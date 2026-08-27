@@ -1,0 +1,57 @@
+{
+  "esquema": 1,
+  "fecha": "2026-08-27",
+  "ultima_lectura": "2026-08-27T18:01:07+00:00",
+  "nota": "Solo hay cifras medidas. Lo que no se midio sale como NO_DATA con su causa. Aqui no se cuenta a nadie.",
+  "metricas": [
+    {
+      "clave": "paginas",
+      "estado": "MEDIDO",
+      "valor": 4,
+      "unidad": "paginas",
+      "como": "ficheros .html de contenido unico bajo public/"
+    },
+    {
+      "clave": "idiomas",
+      "estado": "MEDIDO",
+      "valor": 3,
+      "unidad": "idiomas",
+      "como": "carpetas de dos letras: en, es, fr"
+    },
+    {
+      "clave": "peso_sitio",
+      "estado": "MEDIDO",
+      "valor": 197473,
+      "unidad": "bytes",
+      "como": "suma de todo lo que hay en public/"
+    },
+    {
+      "clave": "peso_imagenes",
+      "estado": "MEDIDO",
+      "valor": 121698,
+      "unidad": "bytes",
+      "como": "9 ficheros .webp"
+    },
+    {
+      "clave": "peticiones_externas_al_cargar",
+      "estado": "MEDIDO",
+      "valor": 0,
+      "unidad": "peticiones",
+      "como": "medido en navegador con performance.getEntriesByType('resource'): ningun recurso de otro origen. No es un cero decorativo, es una lectura."
+    },
+    {
+      "clave": "tokens_locales_reportados",
+      "estado": "NO_DATA",
+      "valor": null,
+      "unidad": "tokens",
+      "causa": "sin fuente real declarada. La web no rastrea usuarios (cero IDs persistentes), asi que esta cifra solo puede venir de un reporte voluntario y firmado. Todavia no hay ninguno."
+    },
+    {
+      "clave": "instalaciones_reportadas",
+      "estado": "NO_DATA",
+      "valor": null,
+      "unidad": "instalaciones",
+      "causa": "no se cuentan las instalaciones. No hay telemetria en el producto ni en esta web; contarlas exigiria justo lo que el proyecto existe para no hacer."
+    }
+  ]
+}

@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hitos · PreceptorOS</title>
+<meta name="description" content="Lo que medimos de nosotros, y lo que a propósito no medimos de ti.">
+<link rel="stylesheet" href="./assets/base.css">
+</head>
+<body>
+<main>
+
+<header>
+  <div class="cabeza" role="img" aria-label="Busto de mármol de Aurelius despertando"></div>
+  <div class="marca">
+    <h1>Hitos<b> · lo que se puede medir</b></h1>
+    <p><a href="./es/">Portada</a> · <a href="./es/instalar.html">Instalar</a></p>
+  </div>
+</header>
+
+<p class="guia">Casi todas las páginas de métricas cuentan a sus visitantes. Esta
+cuenta <strong>lo que puede medir de sí misma</strong> — y deja escrito, con su
+causa, lo que ha decidido no saber de ti. Los huecos de abajo no son un fallo:
+son el producto.</p>
+
+<div id="metricas">
+  <p class="tenue">Leyendo <code>counters.json</code>…</p>
+</div>
+
+<p class="tenue" id="lectura"></p>
+
+<h2>El contador que todavía no existe</h2>
+<p>Cuando instalas PreceptorOS y hablas con tu modelo local, <strong>tu propia
+instancia</strong> lleva la cuenta de lo que gasta. Ese número —
+<span class="cifra">50 000</span> tokens de tu máquina,
+<span class="cifra">0</span> de la nube — es tuyo y se queda en tu máquina.</p>
+<p>Aquí arriba sale <code>NO_DATA</code> a propósito: esta web no rastrea a nadie,
+así que <strong>no tiene forma legítima de saberlo</strong>. El hueco está
+preparado en el JSON para el día en que alguien quiera <em>contarlo él</em> —
+un reporte voluntario y firmado a mano, no una medición a tu espalda. Hasta que
+exista ese camino, la cifra no se inventa.</p>
+<p class="tenue">Dicho de otra forma: preferimos una página con huecos honestos a
+una página llena de números que no podríamos defender.</p>
+
+<footer class="honest-footer">
+  <h2>Cómo se produce esta página</h2>
+  <ul>
+    <li><strong><code>contadores.py</code> escribe el JSON, y solo escribe lo que
+      mide.</strong> Biblioteca estándar, sin dependencias. Usa un cerrojo
+      <code>O_EXCL</code>: si ya hay otra copia corriendo, <em>para y lo dice</em>
+      en vez de dejar un fichero a medias que esta página leería como cifras
+      reales. Escribe con <code>os.replace()</code>, que es atómico.</li>
+    <li><strong>Rota una copia al día</strong> antes de sobrescribir, para poder
+      mirar atrás sin fiarse de la memoria de nadie.</li>
+    <li><strong>El cero de «peticiones externas» es una lectura, no un adorno.</strong>
+      Sale de medir en un navegador real con
+      <code>performance.getEntriesByType('resource')</code>. Si algún día deja de
+      ser cierto, la cifra cambiará antes que el discurso.</li>
+    <li><strong>Si <code>counters.json</code> no carga, esta página lo dice.</strong>
+      No se queda en blanco ni enseña la lectura de ayer: un contador que falla en
+      silencio miente por omisión.</li>
+  </ul>
+  <p><a href="./es/">Portada</a> · <a href="./es/lore.html">La historia</a> ·
+     <a href="./?cambiar">Cambiar idioma</a></p>
+</footer>
+
+<script type="application/json" id="i18n">
+{
+  "como": "Cómo se mide:",
+  "causa": "causa:",
+  "ultimaLectura": "Última lectura:",
+  "nunca": "nunca",
+  "sinJson": "no se pudo leer counters.json. Causa:",
+  "unidades": {
+    "paginas": "páginas de contenido único",
+    "idiomas": "idiomas",
+    "bytes": "bytes",
+    "peticiones": "peticiones a otros dominios al cargar",
+    "tokens": "tokens",
+    "instalaciones": "instalaciones"
+  },
+  "nombres": {
+    "paginas": "Páginas",
+    "idiomas": "Idiomas",
+    "peso_sitio": "Peso de todo el sitio",
+    "peso_imagenes": "Peso de las imágenes",
+    "peticiones_externas_al_cargar": "Lo que pide a terceros al cargar",
+    "tokens_locales_reportados": "Tokens gastados en tu propia máquina",
+    "instalaciones_reportadas": "Instalaciones"
+  }
+}
+</script>
+<script src="./assets/hitos.js"></script>
+</body>
+</html>

@@ -3,3 +3,5 @@ __pycache__/
 node_modules/
 .wrangler/
 .DS_Store
+historial/
+.contadores.lock
