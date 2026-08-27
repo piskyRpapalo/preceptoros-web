@@ -1,0 +1,18 @@
+/* preceptoros.org · solar-punk brutalista · sin radios, sin gradientes, sin sombras */
+:root{
+  --fondo:#060B09; --tinta:#C8D6CE; --tenue:#6E8579; --linea:#1C2A22;
+  --jardin:#57D98A; --sol:#FF8A3D; --electrico:#3DD6F5;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"DejaVu Sans Mono",monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box;border-radius:0}
+body{background:var(--fondo);color:var(--tinta);font:400 16px/1.6 var(--mono);
+  padding:2rem 1.25rem;-webkit-text-size-adjust:100%}
+main{width:100%;max-width:44rem;margin:0 auto}
+h1{font-size:1rem;font-weight:400;letter-spacing:.12em;text-transform:uppercase;
+  border-bottom:1px solid var(--linea);padding-bottom:.75rem;margin-bottom:1.25rem}
+h1 b{font-weight:400;color:var(--jardin)}
+p{margin:0 0 .9rem}
+a{color:var(--electrico)}
+a:hover,a:focus{background:var(--electrico);color:var(--fondo);outline:0}
+code{color:var(--sol)}
+.nodata{color:var(--sol);font-size:.8rem;border-left:2px solid var(--sol);padding-left:.6rem}

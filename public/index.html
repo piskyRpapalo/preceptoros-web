@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>preceptoros.org</title>
+<meta name="description" content="Tu IA, en tu máquina, sin nube. Elige idioma.">
+<style>
+:root{--fondo:#060B09;--tinta:#C8D6CE;--tenue:#6E8579;--linea:#1C2A22;
+--jardin:#57D98A;--sol:#FF8A3D;--electrico:#3DD6F5;
+--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"DejaVu Sans Mono",monospace}
+*{margin:0;padding:0;box-sizing:border-box;border-radius:0}
+body{background:var(--fondo);color:var(--tinta);font:400 16px/1.5 var(--mono);
+padding:2rem 1.25rem;min-height:100vh;display:flex;align-items:center;justify-content:center}
+main{width:100%;max-width:34rem}
+h1{font-size:1rem;font-weight:400;letter-spacing:.12em;text-transform:uppercase;
+border-bottom:1px solid var(--linea);padding-bottom:.75rem}
+h1 b{font-weight:400;color:var(--jardin)}
+ul{list-style:none;margin:1.5rem 0;border-top:1px solid var(--linea)}
+li{border-bottom:1px solid var(--linea)}
+li p{color:var(--tenue);font-size:.8rem;margin-top:.15rem}
+a.idioma{display:flex;align-items:baseline;gap:1rem;padding:1.1rem .25rem;
+color:var(--tinta);text-decoration:none}
+a.idioma span{flex:1}
+a.idioma i{font-style:normal;color:var(--tenue);font-size:.8rem}
+a.idioma:hover,a.idioma:focus{background:var(--jardin);color:var(--fondo);outline:0}
+a.idioma:hover i,a.idioma:focus i,a.idioma:hover p,a.idioma:focus p{color:var(--fondo)}
+footer{border-top:1px solid var(--linea);padding-top:.9rem;color:var(--tenue);font-size:.72rem}
+footer b{font-weight:400;color:var(--sol)}
+</style>
+</head>
+<body>
+<main>
+  <h1>preceptoros<b>.org</b></h1>
+  <ul>
+    <li><a class="idioma" href="./es/" data-l="es" hreflang="es"
+      ><span>Español<p>Tu IA. En tu máquina. Sin nube.</p></span><i>→</i></a></li>
+    <li><a class="idioma" href="./en/" data-l="en" hreflang="en" lang="en"
+      ><span>English<p>Your AI. On your machine. No cloud.</p></span><i>→</i></a></li>
+    <li><a class="idioma" href="./fr/" data-l="fr" hreflang="fr" lang="fr"
+      ><span>Français<p>Ton IA. Sur ta machine. Sans nuage.</p></span><i>→</i></a></li>
+  </ul>
+  <footer>
+    Esta página guarda <b>dos letras</b> en tu navegador (<code>es</code>,
+    <code>en</code> o <code>fr</code>) para no volver a preguntarte. Nada más:
+    sin cookies, sin identificador, sin analítica. El idioma vive en la ruta
+    (<code>/es/</code>), no en un ajuste oculto — se comparte con un enlace y se
+    cambia volviendo aquí.
+  </footer>
+</main>
+<script>
+(function(){
+  var VALIDOS=['es','en','fr'], K='preceptoros.idioma';
+  var forzar=location.search.indexOf('cambiar')>-1;
+  function leer(){try{return localStorage.getItem(K)}catch(e){return null}}
+  function guardar(v){try{localStorage.setItem(K,v)}catch(e){}}
+  var previo=leer();
+  if(!forzar&&VALIDOS.indexOf(previo)>-1){location.replace('./'+previo+'/');return}
+  var enlaces=document.querySelectorAll('a.idioma');
+  for(var i=0;i<enlaces.length;i++)
+    enlaces[i].addEventListener('click',function(){guardar(this.getAttribute('data-l'))});
+})();
+</script>
+</body>
+</html>

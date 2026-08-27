@@ -1,0 +1,5 @@
+{
+  "name": "preceptoros-web",
+  "compatibility_date": "2026-08-01",
+  "assets": { "dir": "./public" }
+}
