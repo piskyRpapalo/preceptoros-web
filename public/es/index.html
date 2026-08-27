@@ -2,12 +2,52 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<title>PreceptorOS · Español</title>
-<style>body{font-family:monospace;background:#060B09;color:#DCE8E1;padding:2rem;}</style>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PreceptorOS · Tu compañero soberano</title>
+<link rel="stylesheet" href="/assets/base.css">
 </head>
 <body>
-<h1>PreceptorOS · Landing en construcción</h1>
-<p><a href="/">← Volver al selector de idioma</a></p>
-<p>Commit 2 añadirá el chat WebLLM aquí.</p>
+<main>
+  <header>
+    <div class="cabeza" role="img" aria-label="busto de mármol de Aurelius despertando"></div>
+    <div>
+      <h1>Preceptor<b>OS</b></h1>
+      <p><a href="/">← cambiar idioma</a></p>
+    </div>
+  </header>
+
+  <p class="guia">Tu IA soberana, en tu máquina, sin nube. Escribe abajo para empezar.</p>
+
+  <textarea id="chat-input" class="chat-input" placeholder="Escribe tu primera pregunta..."></textarea>
+  
+  <div id="chat-actions" style="margin-top: 1rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
+    <button id="btn-cargar" style="display: none;">Cargar modelo (~400 MB, 1 vez)</button>
+    <button id="btn-enviar" style="display: none;">Enviar</button>
+  </div>
+
+  <div id="chat-response" style="margin-top: 1rem; padding: 1rem; background: var(--panel); border: 1px solid var(--linea); display: none;"></div>
+
+  <div id="fallback-json" style="display: none; margin-top: 2rem;">
+    <p class="nodata">Tu navegador no soporta WebGPU. Usa el JSON copiable:</p>
+    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 1rem;">
+      <button data-copiar="gemini">Copiar para Gemini</button>
+      <button data-copiar="chatgpt">Copiar para ChatGPT</button>
+      <button data-copiar="claude">Copiar para Claude</button>
+      <button data-copiar="local">Copiar para mi AI local</button>
+    </div>
+    <textarea id="json-output" readonly style="width: 100%; height: 200px; margin-top: 1rem; padding: 1rem; background: var(--panel); border: 1px solid var(--linea); color: var(--ink); font-family: var(--mono); font-size: 12px;"></textarea>
+  </div>
+
+  <footer class="honest-footer">
+    <ul>
+      <li><strong>El modelo se descarga a TU navegador, una vez.</strong> Ningún dato sale de tu máquina.</li>
+      <li><strong>WebLLM desde esm.run</strong> es la única excepción CDN permitida (pesos del modelo).</li>
+      <li><strong>Si no hay WebGPU,</strong> el JSON copiable funciona con cualquier AI externa.</li>
+    </ul>
+    <p><a href="./instalar.html">Guía de instalación</a> · <a href="./lore.html">La historia</a></p>
+  </footer>
+</main>
+
+<script src="/assets/chat.js"></script>
 </body>
 </html>
