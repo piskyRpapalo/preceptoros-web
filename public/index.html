@@ -39,18 +39,14 @@
     </div>
   </div>
   <script>
-    // localStorage recuerda el idioma elegido
-    const guardado = localStorage.getItem('preceptoros-lang');
-    if (guardado && ['es', 'en', 'fr'].includes(guardado)) {
-      window.location.href = '/' + guardado + '/';
-    }
-    // Guardar elección al hacer click
+    // Guardar elección al hacer click (solo en las páginas de contenido)
     document.querySelectorAll('.idiomas a').forEach(a => {
       a.addEventListener('click', () => {
         const lang = a.getAttribute('href').replace(/\//g, '');
         localStorage.setItem('preceptoros-lang', lang);
       });
     });
+    // NO redirigir automáticamente desde el selector
   </script>
 </body>
 </html>
