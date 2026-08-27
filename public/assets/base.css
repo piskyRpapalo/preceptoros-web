@@ -39,6 +39,7 @@ header{display:flex;align-items:flex-end;gap:1rem;border-bottom:3px solid var(--
 .cabeza{width:96px;height:128px;flex:0 0 96px;
   background-image:url(despierta.webp);background-repeat:no-repeat;
   background-size:384px 128px;background-position:-192px 0;
+  background-color:#fff;
   image-rendering:pixelated;image-rendering:crisp-edges;
   border:2px solid var(--violeta);animation:despertar 1.1s steps(2) 1 both}
 .cabeza.habla{background-image:url(habla.webp);animation:hablar .62s steps(4) infinite}
@@ -107,3 +108,25 @@ textarea{min-height:8rem;font-size:.78rem;line-height:1.5;resize:vertical}
 .honest-footer h2{margin-top:0}
 .honest-footer li{margin:0 0 .5rem 1.1rem}
 .honest-footer strong{color:var(--bronce-hondo)}
+
+/* --- laminas: TODA imagen va sobre blanco ---------------------------------
+   El arte de la app es bronce y marmol recortado sobre transparencia. Encima
+   del veteado del fondo se ensuciaba y perdia el filo; sobre blanco vuelve a
+   leerse como un objeto. El blanco esta ademas dentro del propio WebP, no solo
+   en el CSS, para que no dependa de que la hoja cargue. */
+.diapos{margin:1.4rem 0}
+.diapo{display:none}
+.diapo:target{display:block}
+/* Sin ninguna diapositiva apuntada, manda la primera. :has() es Baseline
+   ampliamente disponible desde junio de 2026, y ahorra el JS entero: el pase
+   funciona con enlaces, se comparte por URL y sobrevive sin JavaScript. */
+.diapos:not(:has(.diapo:target)) #l1{display:block}
+.diapo figure{background:#F8F7FC;border:2px solid var(--bronce);padding:1.5rem 1.2rem;text-align:center}
+.diapo img{width:160px;height:160px;display:block;margin:0 auto 1.1rem;
+  border:1px solid var(--bronce-claro)}
+.diapo figcaption{text-align:left}
+.diapo h3{text-align:center}
+.diapo blockquote{border-left:3px solid var(--violeta);padding-left:.9rem;margin:1rem 0 0;
+  text-align:left;color:var(--tinta)}
+.diapo cite{display:block;margin-top:.5rem;font-style:normal;font-size:.74rem;color:var(--tenue)}
+.cuenta{font-size:.74rem;color:var(--tenue);letter-spacing:.14em;text-transform:uppercase}
