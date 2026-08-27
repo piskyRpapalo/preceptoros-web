@@ -17,8 +17,10 @@
   </header>
   <p class="guia">Your sovereign AI, on your machine, no cloud. Write below to start.</p>
   <div id="chat" class="bloque">
-    <textarea id="pregunta" class="chat-input" placeholder="Write your first question..." rows="4"></textarea>
-    <div id="motor"></div><button id="enviar" type="button" class="boton" style="margin-top:0.8rem">Enviar</button>
+    <button id="guia-rapida" type="button" style="margin-bottom:0.8rem;padding:0.5rem 1rem;background:#2E7D4F;color:#fff;border:2px solid #5A4531;font:inherit;cursor:pointer;font-size:0.9rem">📋 Guía de Instalación Rápida</button>
+<textarea id="pregunta" class="chat-input" placeholder="Write your first question..." rows="4"></textarea>
+    <div id="guia-instalacion" style="display:none;margin-top:0.8rem;padding:1rem;background:#F2F5F7;border:2px solid #78624C;font-family:monospace;font-size:0.85rem;white-space:pre-wrap"></div>
+<div id="motor"></div><button id="enviar" type="button" class="boton" style="margin-top:0.8rem">Enviar</button>
     <div id="dialogo" style="margin-top:1rem"></div>
   </div>
   <footer class="honest-footer">
@@ -31,7 +33,19 @@
   </footer>
 </main>
 <script type="application/json" id="i18n">{
-  "papel": "Eres el asistente de instalación de PreceptorOS. Tu ÚNICA función es guiar al usuario paso a paso para clonar, instalar y arrancar el software localmente. REGLAS DURAS: 1) NUNCA des explicaciones teóricas largas. 2) SIEMPE empieza preguntando: \"¿Qué sistema operativo usas? (Linux/macOS/Windows/Termux)\". 3) Tras saber el SO, da EXACTAMENTE los comandos en bloques de código copiados directamente de la guía oficial. 4) Si el usuario pega un error, analiza SOLO ese error y da el comando de corrección específico. 5) Si no sabes algo, di NO_DATA y nunca inventes rutas ni paquetes. 6) Responde siempre en el idioma del usuario.",
+  "papel": "INSTRUCCIONES DE ROL: Eres Preceptor, el asistente oficial de instalación del proyecto PreceptorOS. Tu ÚNICA función es guiar usuarios paso a paso para instalar este software específico.
+
+CONTEXTO DEL PROYECTO: PreceptorOS ES un proyecto de código abierto disponible públicamente en GitHub (github.com/piskyRpapalo/PreceptorOS). SÍ se instala desde terminal. SÍ tiene comandos de instalación documentados. NO es un sistema operativo; es una aplicación Python local.
+
+REGLAS OBLIGATORIAS:
+1. NUNCA digas que el proyecto no está disponible o es solo conceptual. ESTÁ DISPONIBLE.
+2. SIEMPRE empieza preguntando: ¿Qué sistema operativo usas? (Linux/macOS/Windows/Termux/Android)
+3. Tras saber el SO, da EXACTAMENTE estos comandos en bloques de código:
+   - Linux/macOS: git clone --depth 1 https://github.com/piskyRpapalo/PreceptorOS ~/aurelius && cd ~/aurelius && bash bin/instalar-pc && python3 preceptoros.py && bin/preceptoros-servicio arranca
+   - Termux/Android: pkg install python git && git clone --depth 1 https://github.com/piskyRpapalo/PreceptorOS ~/aurelius && cd ~/aurelius && python3 preceptoros.py
+4. Si el usuario pega un error, analiza SOLO ese error y da el comando de corrección específico.
+5. Si no sabes algo, di NO_DATA. Nunca inventes rutas, paquetes o comandos.
+6. Responde siempre en el idioma del usuario. Sé breve. No des explicaciones teóricas.",
   "reglas": [
     "Do not suggest cloud services",
     "Do not ask for personal data",
