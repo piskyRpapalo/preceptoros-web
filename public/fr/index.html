@@ -2,12 +2,60 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8">
-<title>PreceptorOS · Français</title>
-<style>body{font-family:monospace;background:#060B09;color:#DCE8E1;padding:2rem;}</style>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PreceptorOS · Votre compagnon souverain</title>
+<link rel="stylesheet" href="/assets/base.css">
 </head>
 <body>
-<h1>PreceptorOS · Page en construction</h1>
-<p><a href="/">← Retour au sélecteur de langue</a></p>
-<p>Le commit 2 ajoutera le chat WebLLM ici.</p>
+<main>
+  <header>
+    <div class="cabeza" role="img" aria-label="buste en marbre d'Aurelius s'éveillant"></div>
+    <div class="marca">
+      <h1>Preceptor<b>OS</b></h1>
+      <p><a href="/">← changer de langue</a></p>
+    </div>
+  </header>
+
+  <p class="guia">Votre IA souveraine, sur votre machine, sans nuage. Écrivez ci-dessous pour commencer.</p>
+
+  <div id="chat" class="bloque">
+    <textarea id="pregunta" class="chat-input" placeholder="Écrivez votre première question..." rows="4"></textarea>
+    <div id="motor" style="margin-top: 0.8rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
+      <button id="enviar" type="button" disabled>Envoyer</button>
+      <span id="quieto" class="tenue">Choisissez un moteur pour parler.</span>
+    </div>
+    <div id="dialogo" style="margin-top: 1rem; display: none;"></div>
+  </div>
+
+  <div id="fallback-json" style="display: none; margin-top: 2rem;">
+    <p class="nodata">Votre navigateur ne supporte pas WebGPU ou LanguageModel. Utilisez le JSON copiable :</p>
+    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 1rem;">
+      <button type="button" data-copia-url="/assets/encargo-gemini.txt">Copier pour Gemini</button>
+      <button type="button" data-copia-url="/assets/encargo-chatgpt.txt">Copier pour ChatGPT</button>
+      <button type="button" data-copia-url="/assets/encargo-claude.txt">Copier pour Claude</button>
+      <button type="button" data-copia-url="/assets/encargo-local.txt">Copier pour mon IA locale</button>
+    </div>
+  </div>
+
+  <footer class="honest-footer">
+    <ul>
+      <li><strong>Hasta que pulsas un botón, cette page n'a parlé à personne.</strong> Zéro requête externe au chargement.</li>
+      <li><strong>WebLLM desde esm.run</strong> est la seule exception CDN autorisée (~945 Mo, une fois).</li>
+      <li><strong>Si no hay WebGPU,</strong> le JSON copiable fonctionne avec n'importe quelle IA externe.</li>
+    </ul>
+    <p><a href="./instalar.html">Guide d'installation</a> · <a href="./lore.html">L'histoire</a> · <a href="../hitos.html">Jalons</a></p>
+  </footer>
+</main>
+
+<script type="application/json" id="i18n">
+{
+  "cargando": "Chargement du modèle...",
+  "error": "Error",
+  "tu": "Vous",
+  "preceptor": "Preceptor"
+}
+</script>
+<script src="/assets/chat.js"></script>
+<script src="/assets/copiar.js"></script>
 </body>
 </html>

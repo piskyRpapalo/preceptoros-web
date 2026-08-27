@@ -2,12 +2,60 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>PreceptorOS · English</title>
-<style>body{font-family:monospace;background:#060B09;color:#DCE8E1;padding:2rem;}</style>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PreceptorOS · Your sovereign companion</title>
+<link rel="stylesheet" href="/assets/base.css">
 </head>
 <body>
-<h1>PreceptorOS · Landing under construction</h1>
-<p><a href="/">← Back to language selector</a></p>
-<p>Commit 2 will add the WebLLM chat here.</p>
+<main>
+  <header>
+    <div class="cabeza" role="img" aria-label="marble bust of Aurelius awakening"></div>
+    <div class="marca">
+      <h1>Preceptor<b>OS</b></h1>
+      <p><a href="/">← change language</a></p>
+    </div>
+  </header>
+
+  <p class="guia">Your sovereign AI, on your machine, no cloud. Write below to start.</p>
+
+  <div id="chat" class="bloque">
+    <textarea id="pregunta" class="chat-input" placeholder="Write your first question..." rows="4"></textarea>
+    <div id="motor" style="margin-top: 0.8rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
+      <button id="enviar" type="button" disabled>Send</button>
+      <span id="quieto" class="tenue">Choose an engine to talk.</span>
+    </div>
+    <div id="dialogo" style="margin-top: 1rem; display: none;"></div>
+  </div>
+
+  <div id="fallback-json" style="display: none; margin-top: 2rem;">
+    <p class="nodata">Your browser does not support WebGPU or LanguageModel. Use the copyable JSON:</p>
+    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 1rem;">
+      <button type="button" data-copia-url="/assets/encargo-gemini.txt">Copy for Gemini</button>
+      <button type="button" data-copia-url="/assets/encargo-chatgpt.txt">Copy for ChatGPT</button>
+      <button type="button" data-copia-url="/assets/encargo-claude.txt">Copy for Claude</button>
+      <button type="button" data-copia-url="/assets/encargo-local.txt">Copy for my local AI</button>
+    </div>
+  </div>
+
+  <footer class="honest-footer">
+    <ul>
+      <li><strong>Hasta que pulsas un botón, this page has talked to no one.</strong> Zero external requests on load.</li>
+      <li><strong>WebLLM desde esm.run</strong> is the only allowed CDN exception (~945 MB, once).</li>
+      <li><strong>Si no hay WebGPU,</strong> the copyable JSON works with any external AI.</li>
+    </ul>
+    <p><a href="./instalar.html">Installation guide</a> · <a href="./lore.html">The story</a> · <a href="../hitos.html">Milestones</a></p>
+  </footer>
+</main>
+
+<script type="application/json" id="i18n">
+{
+  "cargando": "Loading model...",
+  "error": "Error",
+  "tu": "You",
+  "preceptor": "Preceptor"
+}
+</script>
+<script src="/assets/chat.js"></script>
+<script src="/assets/copiar.js"></script>
 </body>
 </html>
