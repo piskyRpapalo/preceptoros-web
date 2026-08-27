@@ -3,14 +3,151 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>preceptoros.org · fr</title>
+<title>PreceptorOS · ton IA sur ta machine</title>
+<meta name="description" content="Un précepteur qui vit sur ton ordinateur. Sans nuage, sans compte, sans file d'attente. Essaie-le ici avant d'installer quoi que ce soit.">
+<meta property="og:title" content="PreceptorOS · ton IA sur ta machine">
+<meta property="og:description" content="Sans nuage, sans compte, sans file d'attente. Essaie avant d'installer.">
+<meta property="og:image" content="../assets/busto.webp">
 <link rel="stylesheet" href="../assets/base.css">
+<link rel="alternate" hreflang="es" href="../es/">
+<link rel="alternate" hreflang="en" href="../en/">
 </head>
 <body>
 <main>
-  <h1>preceptoros<b>.org</b></h1>
-  <p>Ton IA. Sur ta machine. Sans nuage.</p>
-  <p class="nodata">NO_DATA · Page en construction — arrive au commit 2.</p>
-  <p><a href="../?cambiar">Retour au sélecteur de langue</a></p>
+
+<header>
+  <div class="cabeza" role="img" aria-label="Buste de marbre d'Aurelius qui s'éveille"></div>
+  <div class="marca">
+    <h1>Preceptor<b>OS</b></h1>
+    <p>Le précepteur qui vit sur ta machine. <a href="../?cambiar">ES · EN</a></p>
+  </div>
+</header>
+
+<p class="guia">Ton IA. Sur ton ordinateur. <strong>Sans nuage.</strong> Écris
+ci-dessous : si ton navigateur en est capable, le modèle se télécharge
+<strong>une fois</strong> et c'est ensuite ta propre machine qui répond — sans
+serveur, sans compte, sans file d'attente. Et s'il n'en est pas capable, on ne te
+laisse pas en plan : on te donne le texte, prêt à coller dans l'IA que tu
+utilises déjà.</p>
+
+<section id="chat" class="bloque bloque--violeta">
+  <h3><label for="pregunta">Pose-lui une question. Tout de suite, sans rien installer.</label></h3>
+  <p class="tenue" id="quieto">Cette page n'a encore rien demandé à personne : ni un
+    script, ni une police, ni un pixel venu d'ailleurs. Écris, et elle te dira ce que
+    ton navigateur sait faire — décider, c'est ton affaire.</p>
+  <input id="pregunta" type="text" autocomplete="off"
+         placeholder="Pourquoi devrais-je garder mes propres données ?">
+  <div class="fila"><button id="enviar" type="button">Envoyer</button></div>
+  <div id="motor"></div>
+  <div id="dialogo" class="dialogo" aria-live="polite"></div>
+</section>
+
+<h2>Ce qui se passe quand tu l'utilises</h2>
+<ol class="pasos">
+  <li><div><h3>Tu écris, et rien ne sort.</h3>
+    <p>La question reste dans l'onglet. Si ton navigateur a WebGPU, le modèle tourne
+    dedans ; le seul moment où quelque chose traverse le réseau, c'est le
+    téléchargement que tu autorises, une fois.</p></div></li>
+  <li><div><h3>Tu l'installes pour de bon.</h3>
+    <p>PreceptorOS descend du navigateur vers ton ordinateur et parle au modèle
+    <strong>par tuyau, pas par port</strong> : la règle de McIlroy — que chaque
+    programme fasse une chose bien, et qu'ils se parlent par un flux commun. C'est
+    pour ça qu'on peut lui changer la voix sans réécrire le reste.</p></div></li>
+  <li><div><h3>Ta mémoire est un fichier.</h3>
+    <p>SQLite, dans le domaine public, avec l'engagement de ses auteurs de garder le
+    format lisible jusqu'au milieu du siècle. Ta mémoire n'est pas une ligne dans la
+    base de données d'un autre : c'est <strong>un fichier que tu peux copier, ouvrir
+    et emporter</strong>.</p></div></li>
+  <li><div><h3>Tu comptes tes propres jetons.</h3>
+    <p>Ton instance tient le compte de ce qu'elle dépense. Le jour où tu voudras le
+    savoir, le nombre aura cette forme : <span class="cifra">50 000</span> jetons de
+    ta propre machine, <span class="cifra">0</span> du nuage.</p></div></li>
+</ol>
+
+<p><a class="boton" href="../es/instalar.html">L'installer sur ta machine →</a>
+   <a class="boton leve" href="../es/lore.html">D'abord, l'histoire</a></p>
+<p class="nodata">NO_DATA · le guide d'installation et l'histoire n'existent qu'en
+   espagnol pour l'instant. Cause : personne ne les a encore traduits. Les liens
+   ci-dessus mènent aux pages espagnoles plutôt qu'à une page absente.</p>
+
+<footer class="honest-footer">
+  <h2>Ce que cette page fait, et ce qu'elle coûte</h2>
+  <ul>
+    <li><strong>Elle ne te suit pas.</strong> Sans cookies, sans analytique, sans
+      identifiant. La seule chose gardée dans ton navigateur, ce sont <strong>deux
+      lettres</strong> (<code>fr</code>) pour ne pas te redemander la langue. La langue
+      vit dans le chemin : la mesure sort de l'URL, pas de toi.</li>
+    <li><strong>Au chargement, elle ne demande rien à personne.</strong> Ni polices
+      extérieures ni scripts extérieurs : tout ce que tu vois vient de ce domaine.</li>
+    <li><strong>Quatre voies, et on te propose la plus souveraine que tu puisses
+      faire tourner.</strong> Si ton navigateur embarque déjà un modèle (Prompt
+      API), celle-là : zéro réseau. S'il le peut mais doit le récupérer, on te dit
+      que c'est 2,7–4 Go <em>avant</em> que tu appuies, même si c'est plus que le
+      nôtre. Sinon WebLLM (~945 Mo). Et à défaut, le texte pour ton IA. Jamais
+      l'inverse.</li>
+    <li><strong>Le prix du téléchargement du modèle.</strong> Si tu appuies sur le
+      bouton, ton navigateur contacte <code>esm.run</code> (la bibliothèque WebLLM) et
+      <code>huggingface.co</code> (les poids). Ces deux-là verront ton IP, comme la voit
+      n'importe quel site que tu visites. Tant que tu n'appuies pas, non. C'est pour ça
+      que le bouton ne s'appuie jamais tout seul.</li>
+    <li><strong>Les quatre boutons copient la même chose.</strong> Exactement le même
+      texte. Ils sont séparés parce que tu cherches le nom de ton outil, pas parce que
+      le contenu change. Te le dire coûte moins cher que feindre quatre choses.</li>
+    <li><strong>Le modèle du navigateur est petit.</strong> Il tient dans un onglet, et
+      ça se voit : il sert à prouver l'idée, pas à remplacer celui que tu installes.</li>
+    <li><strong>Le visage est un art qui existait déjà.</strong> Les huit images du
+      buste viennent des sprites d'Aurelius, recadrées et réduites — pas dessinées ici.</li>
+  </ul>
+  <p>Code et contenu de ce site : du HTML, du CSS et du JavaScript, point. Zéro
+     framework. <a href="../?cambiar">Changer de langue</a></p>
+</footer>
+
+<script type="application/json" id="i18n">
+{
+  "papel": "Tu es Aurelius, un précepteur qui enseigne la souveraineté technique : des outils qui se réparent, qui durent et qui se comprennent. Réponds en français, bref et concret. Si tu ne sais pas quelque chose, dis-le ; n'invente pas de données.",
+  "reglas": [
+    "Réponds en français.",
+    "N'invente ni données ni sources.",
+    "Si tu ne sais pas, dis-le."
+  ],
+  "mirandoNavegador": "On regarde si ton navigateur embarque déjà un modèle…",
+  "mirandoGpu": "On regarde ce que ta carte graphique sait faire…",
+  "usarNavegador": "Utiliser le modèle que ton navigateur embarque déjà",
+  "bajarNavegador": "Télécharger le modèle du navigateur (2,7–4 Go)",
+  "navYaEsta": "Il est déjà sur ton appareil : zéro téléchargement, zéro réseau. Des quatre voies, la plus souveraine.",
+  "navPesa": "Ton navigateur sait le faire sans nuage, mais il doit d'abord récupérer son propre modèle : Gemini Nano, 2,7–4 Go, et il réclame 22 Go libres. C'est PLUS que le modèle de cette page. On te le dit avant que tu appuies, pas après.",
+  "bajando": "Téléchargement du modèle du navigateur…",
+  "navListo": "Prêt, avec le modèle que ton navigateur embarquait déjà. Zéro téléchargement, zéro nuage.",
+  "navBajado": "Prêt. Le modèle vit maintenant sur ton appareil : à partir d'ici, zéro nuage.",
+  "falloNavegador": "NO_DATA · le modèle du navigateur n'a pas démarré",
+  "descargar": "Télécharger le modèle (~945 Mo, une seule fois)",
+  "avisoRed": "En appuyant, ton navigateur contactera esm.run et huggingface.co. Jusque-là, cette page n'a parlé à personne.",
+  "avisoCifra": "945 Mo est le chiffre que WebLLM publie pour ce modèle (vram_required_MB). La taille exacte du téléchargement, c'est la barre de progression qui te la dira : ici on ne l'invente pas.",
+  "arrancando": "Démarrage…",
+  "listoLocal": "Prêt. À partir d'ici c'est ta machine qui répond : zéro jeton du nuage.",
+  "falloDescarga": "NO_DATA · le téléchargement a échoué",
+  "sinMotor": "NO_DATA · aucun modèle ne peut tourner ici. Cause :",
+  "causaSinApi": "ton navigateur n'embarque pas WebGPU.",
+  "causaSinAdaptador": "ton navigateur embarque WebGPU, mais ne trouve aucun GPU utilisable.",
+  "causaError": "WebGPU a échoué en interrogeant le GPU —",
+  "causaElegida": "tu l'as demandé.",
+  "causaDesconocida": "indéterminée.",
+  "llevate": "Ce n'est ta faute ni la nôtre. Emporte le texte.",
+  "etiquetaJson": "Texte à coller dans ton IA",
+  "destinos": [
+    "Gemini",
+    "ChatGPT",
+    "Claude",
+    "mon IA locale"
+  ],
+  "copiarPara": "Copier pour",
+  "copiado": "Copié ✓",
+  "copiaManual": "Sélectionné — copie avec Ctrl+C",
+  "mismoTexto": "Les quatre copient exactement le même texte.",
+  "prefieroJson": "Je préfère le texte pour mon IA",
+  "falloRespuesta": "NO_DATA · le modèle n'a pas répondu"
+}
+</script>
+<script src="../assets/chat.js"></script>
 </body>
 </html>

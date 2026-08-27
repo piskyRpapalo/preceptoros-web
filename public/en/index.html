@@ -3,14 +3,150 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>preceptoros.org · en</title>
+<title>PreceptorOS · your AI on your machine</title>
+<meta name="description" content="A preceptor that lives on your computer. No cloud, no account, no queue. Try it here before installing anything.">
+<meta property="og:title" content="PreceptorOS · your AI on your machine">
+<meta property="og:description" content="No cloud, no account, no queue. Try it before installing anything.">
+<meta property="og:image" content="../assets/busto.webp">
 <link rel="stylesheet" href="../assets/base.css">
+<link rel="alternate" hreflang="es" href="../es/">
+<link rel="alternate" hreflang="fr" href="../fr/">
 </head>
 <body>
 <main>
-  <h1>preceptoros<b>.org</b></h1>
-  <p>Your AI. On your machine. No cloud.</p>
-  <p class="nodata">NO_DATA · Landing under construction — arrives in commit 2.</p>
-  <p><a href="../?cambiar">Back to language selector</a></p>
+
+<header>
+  <div class="cabeza" role="img" aria-label="Marble bust of Aurelius waking up"></div>
+  <div class="marca">
+    <h1>Preceptor<b>OS</b></h1>
+    <p>The preceptor that lives on your machine. <a href="../?cambiar">ES · FR</a></p>
+  </div>
+</header>
+
+<p class="guia">Your AI. On your computer. <strong>No cloud.</strong> Type below:
+if your browser can handle it, the model downloads <strong>once</strong> and from
+then on your own machine answers — no server, no account, no queue. And if it
+can't, you're not stranded: we hand you the text, ready to paste into the AI you
+already use.</p>
+
+<section id="chat" class="bloque bloque--violeta">
+  <h3><label for="pregunta">Ask it something. Right now, with nothing installed.</label></h3>
+  <p class="tenue" id="quieto">This page hasn't asked anyone for anything yet:
+    not a script, not a font, not a pixel from elsewhere. Type, and it will tell you
+    what your browser can do — deciding is up to you.</p>
+  <input id="pregunta" type="text" autocomplete="off"
+         placeholder="Why should I keep my own data?">
+  <div class="fila"><button id="enviar" type="button">Send</button></div>
+  <div id="motor"></div>
+  <div id="dialogo" class="dialogo" aria-live="polite"></div>
+</section>
+
+<h2>What happens when you use it</h2>
+<ol class="pasos">
+  <li><div><h3>You type, and nothing leaves.</h3>
+    <p>The question stays in the tab. If your browser has WebGPU, the model runs
+    inside it; the only moment anything crosses the network is the download you
+    authorise, once.</p></div></li>
+  <li><div><h3>You install it for real.</h3>
+    <p>PreceptorOS comes down from the browser onto your computer and talks to the
+    model <strong>through a pipe, not a port</strong>: McIlroy's rule, that each
+    program do one thing well and that they speak through a common stream. That is
+    why its voice can be swapped without rewriting the rest.</p></div></li>
+  <li><div><h3>Your memory is a file.</h3>
+    <p>SQLite, public domain, with its authors' commitment to keep the file format
+    readable into the middle of this century. Your memory is not a row in someone
+    else's database: it is <strong>a file you can copy, open and take with
+    you</strong>.</p></div></li>
+  <li><div><h3>You count your own tokens.</h3>
+    <p>Your instance keeps track of what it spends. The day you want to know, the
+    number will look like this: <span class="cifra">50,000</span> tokens from your
+    own machine, <span class="cifra">0</span> from the cloud.</p></div></li>
+</ol>
+
+<p><a class="boton" href="../es/instalar.html">Install it on your machine →</a>
+   <a class="boton leve" href="../es/lore.html">First, the story</a></p>
+<p class="nodata">NO_DATA · the install guide and the story exist in Spanish only
+   for now. Cause: nobody has translated them yet. The links above go to the
+   Spanish pages rather than to a page that isn't there.</p>
+
+<footer class="honest-footer">
+  <h2>What this page does, and what it costs</h2>
+  <ul>
+    <li><strong>It doesn't follow you.</strong> No cookies, no analytics, no
+      identifier. The only thing kept in your browser is <strong>two letters</strong>
+      (<code>en</code>) so it won't ask your language twice. The language lives in the
+      path, so the metric comes from the URL and not from you.</li>
+    <li><strong>On load it asks nobody for anything.</strong> No outside fonts and no
+      outside scripts: everything you see came from this domain.</li>
+    <li><strong>Four routes, and you get offered the most sovereign one you can
+      run.</strong> If your browser already ships a model (Prompt API), that one:
+      zero network. If it can but must fetch it, we tell you it is 2.7–4 GB
+      <em>before</em> you press, even though that is more than ours. Otherwise
+      WebLLM (~945 MB). And failing all that, the text for your AI. Never the
+      other way round.</li>
+    <li><strong>What downloading the model costs.</strong> If you press the button,
+      your browser contacts <code>esm.run</code> (the WebLLM library) and
+      <code>huggingface.co</code> (the weights). Those two will see your IP, the way
+      any site you visit does. Until you press it, they won't. That is why the button
+      never presses itself.</li>
+    <li><strong>The four copy buttons copy the same thing.</strong> Exactly the same
+      text. They are separate because you look for the name of your tool, not because
+      the content changes. Telling you costs less than faking four things.</li>
+    <li><strong>The browser model is small.</strong> It fits in a tab, and it shows:
+      it is there to prove the idea, not to replace the one you install.</li>
+    <li><strong>The face is art that already existed.</strong> The eight frames of the
+      bust come from the Aurelius sprites, cropped and shrunk — not drawn here.</li>
+  </ul>
+  <p>Code and content of this site: plain HTML, CSS and JavaScript. Zero frameworks.
+     <a href="../?cambiar">Change language</a></p>
+</footer>
+
+<script type="application/json" id="i18n">
+{
+  "papel": "You are Aurelius, a preceptor who teaches technical sovereignty: tools that can be repaired, that last, and that can be understood. Answer in English, short and concrete. If you do not know something, say so; do not invent facts.",
+  "reglas": [
+    "Answer in English.",
+    "Do not invent facts or sources.",
+    "If you do not know, say so."
+  ],
+  "mirandoNavegador": "Checking whether your browser already ships a model…",
+  "mirandoGpu": "Checking what your graphics card can do…",
+  "usarNavegador": "Use the model your browser already ships",
+  "bajarNavegador": "Download the browser's model (2.7–4 GB)",
+  "navYaEsta": "It is already on your device: zero downloads, zero network. Of the four routes, the most sovereign one.",
+  "navPesa": "Your browser can do this without the cloud, but first it has to fetch its own model: Gemini Nano, 2.7–4 GB, and it wants 22 GB free. That is MORE than this page's model. We tell you before you press, not after.",
+  "bajando": "Fetching the browser's model…",
+  "navListo": "Ready, with the model your browser already shipped. Zero downloads, zero cloud.",
+  "navBajado": "Ready. The model now lives on your device: from here on, zero cloud.",
+  "falloNavegador": "NO_DATA · the browser's model did not start",
+  "descargar": "Download the model (~945 MB, once only)",
+  "avisoRed": "On press, your browser will contact esm.run and huggingface.co. Until then, this page has spoken to nobody.",
+  "avisoCifra": "945 MB is the figure WebLLM publishes for this model (vram_required_MB). The exact download size will be told to you by the progress bar: we do not invent it here.",
+  "arrancando": "Starting…",
+  "listoLocal": "Ready. From here on your machine answers: zero cloud tokens.",
+  "falloDescarga": "NO_DATA · the download failed",
+  "sinMotor": "NO_DATA · no model can run here. Cause:",
+  "causaSinApi": "your browser does not ship WebGPU.",
+  "causaSinAdaptador": "your browser ships WebGPU, but finds no usable GPU.",
+  "causaError": "WebGPU failed while querying the GPU —",
+  "causaElegida": "you asked for it.",
+  "causaDesconocida": "undetermined.",
+  "llevate": "It is not your fault or ours. Take the text with you.",
+  "etiquetaJson": "Text to paste into your AI",
+  "destinos": [
+    "Gemini",
+    "ChatGPT",
+    "Claude",
+    "my local AI"
+  ],
+  "copiarPara": "Copy for",
+  "copiado": "Copied ✓",
+  "copiaManual": "Selected — copy with Ctrl+C",
+  "mismoTexto": "All four copy exactly the same text.",
+  "prefieroJson": "I'd rather have the text for my AI",
+  "falloRespuesta": "NO_DATA · the model did not answer"
+}
+</script>
+<script src="../assets/chat.js"></script>
 </body>
 </html>
