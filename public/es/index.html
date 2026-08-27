@@ -15,41 +15,57 @@
       <p><a href="/">← cambiar idioma</a></p>
     </div>
   </header>
-
   <p class="guia">Tu IA soberana, en tu máquina, sin nube. Escribe abajo para empezar.</p>
-
   <div id="chat" class="bloque">
     <textarea id="pregunta" class="chat-input" placeholder="Escribe tu primera pregunta..." rows="4"></textarea>
-    <div id="motor" style="margin-top: 0.8rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
-      <button id="enviar" type="button" disabled>Enviar</button>
-      <span id="quieto" class="tenue">Elige un motor para hablar.</span>
-    </div>
-    <div id="dialogo" style="margin-top: 1rem; display: none;"></div>
+    <div id="motor" style="margin-top:0.8rem"></div>
+    <div id="dialogo" style="margin-top:1rem"></div>
   </div>
-
-  <div id="fallback-json" style="display: none; margin-top: 2rem;">
-    <p class="nodata">Tu navegador no soporta WebGPU ni LanguageModel. Usa el JSON copiable:</p>
-    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 1rem;">
-      <button type="button" data-copia-url="/assets/encargo-gemini.txt">Copiar para Gemini</button>
-      <button type="button" data-copia-url="/assets/encargo-chatgpt.txt">Copiar para ChatGPT</button>
-      <button type="button" data-copia-url="/assets/encargo-claude.txt">Copiar para Claude</button>
-      <button type="button" data-copia-url="/assets/encargo-local.txt">Copiar para mi AI local</button>
-    </div>
-  </div>
-
   <footer class="honest-footer">
     <ul>
       <li><strong>Hasta que pulsas un botón, esta página no ha hablado con nadie.</strong> Cero peticiones externas al cargar.</li>
       <li><strong>WebLLM desde esm.run</strong> es la única excepción CDN permitida (~945 MB, una vez).</li>
-      <li><strong>Si no hay WebGPU,</strong> el JSON copiable funciona con cualquier AI externa.</li>
+      <li><strong>Si no hay WebGPU ni LanguageModel,</strong> te genera un JSON para llevar a la IA que ya tengas.</li>
     </ul>
     <p><a href="./instalar.html">Guía de instalación</a> · <a href="./lore.html">La historia</a> · <a href="../hitos.html">Hitos</a></p>
   </footer>
 </main>
-
 <script type="application/json" id="i18n">
 {
-  "cargando": "Cargando modelo...",
+  "papel": "Eres Preceptor, un asistente local y soberano. Respondes en español, breve y honesto. Si no sabes algo, dices NO_DATA en vez de inventar.",
+  "reglas": ["No sugieras servicios en la nube", "No pidas datos personales", "Si no sabes, di NO_DATA"],
+  "sinMotor": "NO_DATA · no hay motor de IA disponible en este navegador.",
+  "causaDesconocida": "Causa desconocida.",
+  "causaSinApi": "Causa: este navegador no expone WebGPU ni LanguageModel.",
+  "causaSinAdaptador": "Causa: hay WebGPU pero ninguna GPU utilizable.",
+  "causaError": "Causa: error al consultar la GPU.",
+  "causaElegida": "Causa: elegiste el JSON.",
+  "llevate": "Llévate este texto a la IA que ya uses.",
+  "etiquetaJson": "Texto para copiar a tu IA",
+  "destinos": ["Gemini", "ChatGPT", "Claude", "mi IA local"],
+  "copiarPara": "Copiar para",
+  "copiado": "Copiado OK",
+  "copiaManual": "Selecciona y Ctrl+C",
+  "mismoTexto": "El mismo texto sirve para cualquier IA. Esa es la idea: no depender de una sola.",
+  "prefieroJson": "Prefiero el JSON",
+  "descargar": "Descargar modelo (~945 MB, una vez)",
+  "avisoRed": "Se descarga por la red una sola vez. Queda cacheado en tu navegador.",
+  "avisoCifra": "Son ~945 MB. Lo decimos antes de que pulses, no después.",
+  "arrancando": "Arrancando el motor…",
+  "listoLocal": "Motor listo. Escribe tu pregunta.",
+  "falloDescarga": "NO_DATA · fallo al descargar el modelo",
+  "usarNavegador": "Usar la IA de tu navegador",
+  "bajarNavegador": "Descargar la IA del navegador (~2,7-4 GB)",
+  "navListo": "IA del navegador lista. Escribe tu pregunta.",
+  "navBajado": "IA del navegador descargada. Escribe tu pregunta.",
+  "falloNavegador": "NO_DATA · fallo con la IA del navegador",
+  "navYaEsta": "La IA ya está en tu dispositivo. Cero descarga.",
+  "navPesa": "Son 2,7-4 GB. Lo decimos antes de que pulses.",
+  "mirandoGpu": "Consultando la GPU…",
+  "mirandoNavegador": "Consultando la IA del navegador…",
+  "bajando": "Descargando",
+  "falloRespuesta": "NO_DATA · fallo al generar respuesta",
+  "cargando": "Cargando…",
   "error": "Error",
   "tu": "Tú",
   "preceptor": "Preceptor"
