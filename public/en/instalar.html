@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Install PreceptorOS</title>
+<meta name="description" content="How to install PreceptorOS on a computer or a phone. With what it does, what it does not do yet, and where your memory lives.">
+<link rel="stylesheet" href="/assets/base.css">
+</head>
+<body>
+<main>
+
+<header>
+  <div class="cabeza" role="img" aria-label="Marble bust of Aurelius waking up"></div>
+  <div class="marca">
+    <h1>Install<b> · PreceptorOS</b></h1>
+    <p><a href="/en/">Back to the front page</a></p>
+  </div>
+</header>
+
+<p class="guia">Two devices, two paths, and both start the same way: you clone the
+repository and you start it yourself. No installer asks for a password, and
+nothing downloads behind your back.</p>
+
+<p class="nodata">NO_DATA · the "one-click file" does not exist yet.
+  <strong>Cause:</strong> the repository is public, but it has published no
+  <em>release</em> and <code>dist/aurelius</code> answers 404. Checked on
+  2026-08-27 against the GitHub API. The repository's own guide describes it as
+  if it were there; until it is published, the path below is the one that works.</p>
+
+<h2>On a computer · Linux or macOS</h2>
+<ol class="pasos">
+  <li><div><h3>Check that you have Python.</h3>
+    <p><code>python3 -V</code> — 3.10 or newer. If it is missing, the installer
+    <strong>says so and stops</strong>: it does not install it with
+    <code>sudo</code>, because asking for a password halfway through a script is
+    how surprises get in.</p></div></li>
+  <li><div><h3>Clone the repository.</h3>
+    <p><code>git clone --depth 1 https://github.com/piskyRpapalo/PreceptorOS ~/aurelius</code></p></div></li>
+  <li><div><h3>Make the door.</h3>
+    <p><code>cd ~/aurelius &amp;&amp; bash bin/instalar-pc</code> — it puts the icon
+    in your applications menu and nothing else. <strong>It starts nothing when it
+    finishes:</strong> it makes the door; walking through it is your decision. To
+    remove it, <code>bash bin/instalar-pc --desinstalar</code>, which deletes the
+    icon and <em>does not touch your memory</em>.</p></div></li>
+  <li><div><h3>Create your memory.</h3>
+    <p><code>python3 preceptoros.py</code> — it asks you the first-run questions.
+    It starts empty, and it says so.</p></div></li>
+  <li><div><h3>Open the web face.</h3>
+    <p><code>bin/preceptoros-servicio arranca</code>, then go to
+    <code>http://127.0.0.1:8740</code>. That is your machine talking to itself:
+    that <code>127.0.0.1</code> goes nowhere else.</p></div></li>
+</ol>
+
+<h2>On an Android phone · through Termux</h2>
+<ol class="pasos">
+  <li><div><h3>Install Termux <strong>from F-Droid</strong>.</h3>
+    <p>Not from Google Play: that version is abandoned and fails. It is the error
+    that loses most people in the first minute.</p></div></li>
+  <li><div><h3>Get git and the repository.</h3>
+    <p><code>pkg install -y git</code><br>
+    <code>git clone --depth 1 https://github.com/piskyRpapalo/PreceptorOS ~/aurelius</code></p></div></li>
+  <li><div><h3>Prepare the phone.</h3>
+    <p><code>cd ~/aurelius &amp;&amp; bash bin/instalar-android</code></p></div></li>
+  <li><div><h3>Memory, shortcut and web face.</h3>
+    <p><code>python3 preceptoros.py</code><br>
+    <code>bin/crear-acceso-directo-android</code> (optional, recommended)<br>
+    <code>bin/preceptoros-servicio arranca</code>, then open
+    <code>http://127.0.0.1:8740</code>.</p>
+    <p class="tenue">For the shortcut to appear as an icon you also need
+    <strong>Termux:Widget</strong> (F-Droid as well). If it is not there, the
+    script says so and explains what to do — it does not create an icon that is
+    never going to show up.</p></div></li>
+</ol>
+<p class="nodata">NO_DATA · the APK you install and open without a terminal
+  <strong>does not exist yet</strong>. Cause: nobody has built it. We say so
+  before you go looking for it.</p>
+
+<h2>What it does from minute one, and what it does not do yet</h2>
+<p><strong>It does:</strong> create your memory, ask you the first-run questions,
+keep what you tell it, and show you <strong>the border</strong> — the filter that
+redacts keys, paths and addresses before any text leaves your machine.</p>
+<p><strong>It does not converse yet.</strong> That needs two large pieces that do
+not fit inside and <strong>are not downloaded without your permission</strong>:</p>
+<div class="bloque">
+  <p><strong>The engine</strong> · ~10 MB · It is somebody else's executable code.
+  This project signs data, not programs.</p>
+  <p><strong>The brain</strong> · <span class="cifra">2.3 GB</span> · It is offered
+  with its licence and its fingerprint in front of you, and you accept it.</p>
+  <p class="tenue">Without them, PreceptorOS asks and remembers but does not
+  converse. That is the honest description, and it promises no more than what it
+  actually ships.</p>
+</div>
+
+<h2>Where your side of it lives</h2>
+<p>In <code>~/.aurelius/memory.db</code>. <strong>One single file.</strong> You can
+copy it, carry it on a USB stick, or delete it. Nothing leaves your machine
+unless you export it.</p>
+
+<h2>Common errors</h2>
+<div class="bloque">
+  <p><strong>"PreceptorOS was already open".</strong> It was. The browser opened
+  and a second copy was not started, because two at once over the same memory
+  would mean you see one thing and the file says another.</p>
+  <p><strong>"The server never answered".</strong> Something is holding port 8740.
+  <code>bin/preceptoros-servicio para</code> closes whatever is there.</p>
+  <p><strong>"python3 is missing".</strong> The installer stops there on purpose.
+  Install it yourself and come back.</p>
+  <p><strong>Termux closes or fails strangely.</strong> It is almost always the
+  Google Play version. Uninstall it and use the F-Droid one.</p>
+</div>
+
+<h2>Stuck? Ask the AI you already use</h2>
+<p>You do not have to solve this alone or wait for anyone. <strong>For any
+installation doubt, reach for an external AI</strong>: it knows more about
+terminals and about your operating system than this page does, and it saves you
+half the road. Copy this, paste your error on top of it, and hand it to Gemini,
+ChatGPT, Claude or your local AI.</p>
+<textarea id="atasco" readonly aria-label="Help text to paste into your AI">I am installing PreceptorOS, a local Python program that uses only the standard library:
+https://github.com/piskyRpapalo/PreceptorOS
+
+My operating system is: [write yours here]
+
+The commands from the guide are:
+  git clone --depth 1 https://github.com/piskyRpapalo/PreceptorOS ~/aurelius
+  cd ~/aurelius &amp;&amp; bash bin/instalar-pc
+  python3 preceptoros.py
+  bin/preceptoros-servicio arranca      # opens http://127.0.0.1:8740
+
+I am stuck here:
+  [paste the command that failed and the full error message]
+
+Explain what happened and what to do. Two conditions: do not give me a sudo
+command without telling me first exactly what it touches, and if you are not
+sure, say so instead of inventing a path or a package.</textarea>
+<div class="fila">
+  <button type="button" data-copia="atasco" data-hecho="Copied ✓" data-manual="Select and Ctrl+C">Copy for my AI</button>
+</div>
+<p class="tenue">It does not matter which one you use: the text is not tied to any
+of them. That is the point — do not depend on a single one, not even to ask for
+help.</p>
+
+<h2>Your own plates: let your AI draw them</h2>
+<p>This site is static and does not generate images: it has no server to make
+them, and we are not going to fake one. But the AI you already use can — and that
+way the story is yours. The full text, with the character described and its
+reference image, is in <a href="/en/lore.html#laminas">the story</a>.</p>
+
+<footer class="honest-footer">
+  <h2>What this page does, and what it costs</h2>
+  <ul>
+    <li><strong>On load it asks nobody for anything.</strong> The GitHub links are
+      links: they make no request until <em>you</em> press them. A link is not a
+      loaded resource, and that difference is exactly the one that matters here.</li>
+    <li><strong>The commands are the repository's, not a version of our own.</strong>
+      They come from <code>bin/instalar-pc</code>, <code>bin/instalar-android</code>
+      and <code>INSTALACION_PC.md</code>, checked one by one against the public
+      repository on 2026-08-27.</li>
+    <li><strong>Both NO_DATA notices above are measured.</strong> Zero published
+      releases, and <code>dist/aurelius</code> at 404. They are not caution: they
+      are the result of asking.</li>
+    <li><strong>Nothing you install needs this website.</strong> If this domain
+      disappears tomorrow, the commands still work and your memory is still yours.
+      That is the whole idea.</li>
+  </ul>
+  <p><a href="/en/">Front page</a> · <a href="/en/lore.html">The story</a> ·
+     <a href="/hitos.html">Milestones</a> · <a href="/">Change language</a></p>
+</footer>
+
+<script src="/assets/copiar.js"></script>
+</body>
+</html>

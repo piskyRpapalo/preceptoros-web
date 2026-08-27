@@ -16,7 +16,7 @@
   var caja = document.getElementById('chat');
   if (!caja) return;
   var T = JSON.parse(document.getElementById('i18n').textContent);
-  var MODELO = 'Qwen2.5-0.5B-Instruct-q4f16_1-MLC';
+  var MODELO = 'Llama-3.2-3B-Instruct-q4f16_1-MLC';
   var CDN = 'https://esm.run/@mlc-ai/web-llm';
 
   var entrada = document.getElementById('pregunta');
