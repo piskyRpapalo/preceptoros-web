@@ -9,48 +9,72 @@
 <body>
 <main>
   <header>
-    <div class="cabeza" role="img" aria-label="buste en marbre d'Aurelius s'éveillant"></div>
+    <div class="cabeza" role="img" aria-label="busto de mármol de Aurelius despertando"></div>
     <div class="marca">
       <h1>Preceptor<b>OS</b></h1>
       <p><a href="/">← changer de langue</a></p>
     </div>
   </header>
-
-  <p class="guia">Votre IA souveraine, sur votre machine, sans nuage. Écrivez ci-dessous pour commencer.</p>
-
+  <p class="guia">Votre IA souveraine, sur votre machine, sans nuage. Ecrivez ci-dessous pour commencer.</p>
   <div id="chat" class="bloque">
-    <textarea id="pregunta" class="chat-input" placeholder="Écrivez votre première question..." rows="4"></textarea>
-    <div id="motor" style="margin-top: 0.8rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
-      <button id="enviar" type="button" disabled>Envoyer</button>
-      <span id="quieto" class="tenue">Choisissez un moteur pour parler.</span>
-    </div>
-    <div id="dialogo" style="margin-top: 1rem; display: none;"></div>
+    <textarea id="pregunta" class="chat-input" placeholder="Ecrivez votre premiere question..." rows="4"></textarea>
+    <div id="motor" style="margin-top:0.8rem"></div>
+    <div id="dialogo" style="margin-top:1rem"></div>
   </div>
-
-  <div id="fallback-json" style="display: none; margin-top: 2rem;">
-    <p class="nodata">Votre navigateur ne supporte pas WebGPU ou LanguageModel. Utilisez le JSON copiable :</p>
-    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 1rem;">
-      <button type="button" data-copia-url="/assets/encargo-gemini.txt">Copier pour Gemini</button>
-      <button type="button" data-copia-url="/assets/encargo-chatgpt.txt">Copier pour ChatGPT</button>
-      <button type="button" data-copia-url="/assets/encargo-claude.txt">Copier pour Claude</button>
-      <button type="button" data-copia-url="/assets/encargo-local.txt">Copier pour mon IA locale</button>
-    </div>
-  </div>
-
   <footer class="honest-footer">
     <ul>
-      <li><strong>Hasta que pulsas un botón, cette page n'a parlé à personne.</strong> Zéro requête externe au chargement.</li>
-      <li><strong>WebLLM desde esm.run</strong> est la seule exception CDN autorisée (~945 Mo, une fois).</li>
-      <li><strong>Si no hay WebGPU,</strong> le JSON copiable fonctionne avec n'importe quelle IA externe.</li>
+      <li><strong>Hasta que pulsas un botón, esta página no ha hablado con nadie.</strong> Cero peticiones externas al cargar.</li>
+      <li><strong>WebLLM desde esm.run</strong> es la única excepción CDN permitida (~945 MB, una vez).</li>
+      <li><strong>Si no hay WebGPU ni LanguageModel,</strong> te genera un JSON para llevar a la IA que ya tengas.</li>
     </ul>
     <p><a href="./instalar.html">Guide d'installation</a> · <a href="./lore.html">L'histoire</a> · <a href="../hitos.html">Jalons</a></p>
   </footer>
 </main>
-
-<script type="application/json" id="i18n">
-{
-  "cargando": "Chargement du modèle...",
-  "error": "Error",
+<script type="application/json" id="i18n">{
+  "papel": "Tu es Preceptor, un assistant local et souverain. Tu reponds en francais, bref et honnete. Si tu ne sais pas quelque chose, tu dis NO_DATA au lieu d'inventer.",
+  "reglas": [
+    "Ne suggere pas de services cloud",
+    "Ne demande pas de donnees personnelles",
+    "Si tu ne sais pas, dis NO_DATA"
+  ],
+  "sinMotor": "NO_DATA - aucun moteur d'IA disponible dans ce navigateur.",
+  "causaDesconocida": "Cause inconnue.",
+  "causaSinApi": "Cause : ce navigateur n'expose ni WebGPU ni LanguageModel.",
+  "causaSinAdaptador": "Cause : WebGPU existe mais aucun GPU utilisable.",
+  "causaError": "Cause : erreur en consultant le GPU.",
+  "causaElegida": "Cause : vous avez choisi le JSON.",
+  "llevate": "Emportez ce texte vers l'IA que vous utilisez deja.",
+  "etiquetaJson": "Texte a copier vers votre IA",
+  "destinos": [
+    "Gemini",
+    "ChatGPT",
+    "Claude",
+    "mon IA locale"
+  ],
+  "copiarPara": "Copier pour",
+  "copiado": "Copie OK",
+  "copiaManual": "Selectionnez et Ctrl+C",
+  "mismoTexto": "Le meme texte sert pour n'importe quelle IA. C'est l'idee : ne pas dependre d'une seule.",
+  "prefieroJson": "Je prefere le JSON",
+  "descargar": "Telecharger le modele (~945 Mo, une fois)",
+  "avisoRed": "Se telecharge par le reseau une seule fois. Mis en cache dans votre navigateur.",
+  "avisoCifra": "Environ 945 Mo. Nous le disons avant que vous cliquiez, pas apres.",
+  "arrancando": "Demarrage du moteur...",
+  "listoLocal": "Moteur pret. Ecrivez votre question.",
+  "falloDescarga": "NO_DATA - echec du telechargement du modele",
+  "usarNavegador": "Utiliser l'IA de votre navigateur",
+  "bajarNavegador": "Telecharger l'IA du navigateur (~2,7-4 Go)",
+  "navListo": "IA du navigateur prete. Ecrivez votre question.",
+  "navBajado": "IA du navigateur telechargee. Ecrivez votre question.",
+  "falloNavegador": "NO_DATA - echec avec l'IA du navigateur",
+  "navYaEsta": "L'IA est deja sur votre appareil. Zero telechargement.",
+  "navPesa": "Environ 2,7-4 Go. Nous le disons avant que vous cliquiez.",
+  "mirandoGpu": "Consultation du GPU...",
+  "mirandoNavegador": "Consultation de l'IA du navigateur...",
+  "bajando": "Telechargement",
+  "falloRespuesta": "NO_DATA - echec de generation de la reponse",
+  "cargando": "Chargement...",
+  "error": "Erreur",
   "tu": "Vous",
   "preceptor": "Preceptor"
 }
