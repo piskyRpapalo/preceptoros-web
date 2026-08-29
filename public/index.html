@@ -3,71 +3,76 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>PreceptorOS · Elige tu idioma</title>
+<title>PreceptorOS · Elige tu IA local</title>
+<meta name="description" content="Elige tu IA local y conviértete en Soberano. Tu IA en tu máquina, sin nube.">
 <style>
-  /* Ruteo puro: sin base.css a proposito, para que el selector cargue solo.
-     Pero con la identidad de la casa — era una terminal verde delante de un
-     sitio de marmol violeta, y es lo PRIMERO que ve quien llega. */
-  :root { --marmol:#E4E8EC; --marmol-claro:#F2F5F7; --tinta:#1E1826;
-          --violeta:#6D5AE0; --violeta-texto:#4B37C4; --bronce:#78624C;
-          --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"DejaVu Sans Mono",monospace; }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font: 400 15px/1.6 var(--mono);
-    background: var(--marmol) url(/assets/marble-violet.webp) repeat;
-    background-size: 340px;
-    color: var(--tinta);
-    min-height: 100vh; display: flex; align-items: center; justify-content: center;
-    padding: 1.5rem;
+  /* Ruteo puro: sin base.css a proposito, para que la puerta cargue sola. Pero
+     con la identidad de la casa — era una terminal verde delante de un sitio de
+     marmol violeta, y es lo primero que ve quien llega. */
+  :root { --marmol:#E4E8EC; --marmol-claro:#F2F5F7; --tinta:#1E1826; --tenue:#5D5668;
+          --violeta:#6D5AE0; --violeta-texto:#4B37C4; --indigo:#261789;
+          --bronce:#78624C; --bronce-hondo:#5A4531;
+          --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"DejaVu Sans Mono",monospace;
+          --spring:cubic-bezier(.34,1.56,.64,1); }
+  /* Morfosis entre documentos: la puerta no se corta, se transforma en el chat. */
+  @view-transition { navigation: auto; }
+  * { box-sizing:border-box; margin:0; padding:0 }
+  body { font:400 15px/1.6 var(--mono); color:var(--tinta);
+    background:var(--marmol) url(/assets/marble-violet.webp) repeat; background-size:340px;
+    min-height:100vh; display:flex; align-items:center; justify-content:center; padding:1.5rem }
+  .gate { text-align:center; max-width:30rem }
+  h1 { font-size:1.15rem; letter-spacing:.06em; font-weight:700; color:var(--violeta-texto);
+       margin-bottom:.35rem }
+  .claim { font-size:.82rem; color:var(--tenue); margin-bottom:1.6rem }
+  /* El rostro, quieto. Es una puerta, no un espectaculo: aqui todavia no ha
+     pasado nada que merezca movimiento. */
+  .seal { width:96px; height:128px; margin:0 auto 1.4rem;
+    background:url(/assets/seal-rest.png) no-repeat center/96px 128px var(--marmol-claro);
+    image-rendering:pixelated; border:1px solid rgba(255,255,255,.55); border-radius:12px;
+    box-shadow:0 8px 32px rgba(30,24,38,.10) }
+  .bubbles { display:flex; gap:.7rem; justify-content:center; flex-wrap:wrap }
+  /* Bocadillos: cada idioma con su color del canon, y con su pico. Flotan
+     apenas — lo justo para que se lean como algo que alguien dice. */
+  .bubble { position:relative; text-decoration:none; font-weight:700;
+    padding:.6rem 1rem; background:rgba(242,245,247,.72); border:2px solid;
+    border-radius:14px; animation:float 4.2s ease-in-out infinite;
+    transition:transform .2s var(--spring) }
+  .bubble::after { content:""; position:absolute; top:-9px; left:50%; margin-left:-6px;
+    border:6px solid transparent; border-bottom-color:currentColor }
+  .bubble:hover, .bubble:focus { transform:translateY(-3px) scale(1.03); outline:0 }
+  .es { color:var(--bronce); border-color:var(--bronce); animation-delay:0s }
+  .en { color:var(--violeta); border-color:var(--violeta); animation-delay:-1.4s }
+  .fr { color:var(--indigo); border-color:var(--indigo); animation-delay:-2.8s }
+  @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+  @supports (backdrop-filter:blur(1px)) {
+    .bubble { -webkit-backdrop-filter:blur(12px) saturate(180%);
+              backdrop-filter:blur(12px) saturate(180%) }
   }
-  .selector { text-align: center; background: rgba(242,245,247,.55);
-    border: 1px solid rgba(255,255,255,.55); border-radius: 14px;
-    box-shadow: 0 8px 32px rgba(30,24,38,.10); padding: 2rem 2.2rem; }
-  @supports (backdrop-filter: blur(1px)) {
-    .selector { -webkit-backdrop-filter: blur(16px) saturate(180%);
-                backdrop-filter: blur(16px) saturate(180%); }
-  }
-  .sello { width: 64px; height: 85px; margin: 0 auto 1rem;
-    background: url(/assets/seal-wake.gif) no-repeat center/64px 85px var(--marmol-claro);
-    image-rendering: pixelated; border: 1px solid rgba(255,255,255,.55);
-    border-radius: 8px; }
-  h1 { font-size: 1.1rem; margin-bottom: 1.6rem; letter-spacing: .12em;
-       font-weight: 700; color: var(--violeta-texto); }
-  .idiomas { display: flex; gap: .6rem; justify-content: center; flex-wrap: wrap; }
-  a { color: #fff; text-decoration: none; padding: .6rem .9rem;
-      background: var(--violeta); border: 1px solid var(--violeta); border-radius: 8px;
-      transition: transform .2s cubic-bezier(.34,1.56,.64,1), background .2s ease; }
-  a:hover, a:focus { background: var(--violeta-texto); transform: scale(1.02); outline: 0; }
-  @media (prefers-reduced-motion: reduce) {
-    a { transition: none } a:hover { transform: none }
-    .sello { background-image: url(/assets/seal-rest.png) }
+  .foot { margin-top:1.6rem; font-size:.72rem; color:var(--tenue) }
+  /* El «SO» de Soberano en bronce, igual que el «OS» de PreceptorOS. No es un
+     adorno: es la misma marca leida al reves, y dice de un vistazo que el
+     producto y quien lo usa son la misma pieza. */
+  .so { color:var(--bronce-hondo); font-weight:700; letter-spacing:.02em }
+  @media (prefers-reduced-motion:reduce) {
+    .bubble { animation:none; transition:none } .bubble:hover { transform:none }
   }
 </style>
-    <link rel="manifest" href="/manifest.webmanifest">
-    <link rel="apple-touch-icon" href="/icon-192.png">
-    <meta name="theme-color" content="#E4E8EC">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<meta name="theme-color" content="#E4E8EC">
+<meta name="apple-mobile-web-app-capable" content="yes">
 </head>
 <body>
-  <div class="selector">
-    <div class="sello" role="img" aria-label="Busto de marmol de Preceptor despertando"></div>
-    <h1>PRECEPTOROS</h1>
-    <div class="idiomas">
-      <a href="/es/">Español</a>
-      <a href="/en/">English</a>
-      <a href="/fr/">Français</a>
-    </div>
+  <div class="gate">
+    <div class="seal" role="img" aria-label="Busto de marmol de Preceptor, despierto"></div>
+    <h1>ELIGE TU IA LOCAL</h1>
+    <p class="claim">Conviértete en <span class="so">SO</span>berano · Choose your local AI, become <span class="so">SO</span>vereign · Devenez <span class="so">SO</span>uverain</p>
+    <nav class="bubbles">
+      <a class="bubble es" href="/es/" hreflang="es">Español</a>
+      <a class="bubble en" href="/en/" hreflang="en">English</a>
+      <a class="bubble fr" href="/fr/" hreflang="fr">Français</a>
+    </nav>
+    <p class="foot">Corre en tu máquina · Runs on your machine · Tourne sur votre machine</p>
   </div>
-  <script>
-    // Guardar elección al hacer click (solo en las páginas de contenido)
-    document.querySelectorAll('.idiomas a').forEach(a => {
-      a.addEventListener('click', () => {
-        const lang = a.getAttribute('href').replace(/\//g, '');
-        localStorage.setItem('preceptoros-lang', lang);
-      });
-    });
-    // NO redirigir automáticamente desde el selector
-  </script>
 </body>
 </html>

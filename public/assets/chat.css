@@ -1,0 +1,11 @@
+/* preceptoros.org · lo propio del chat instalador.
+   Hoja aparte y no dentro de base.css por el limite de 10 KB: base.css estaba
+   a 47 bytes del suyo y seguir recortando comentarios para meter componentes
+   es empeorar el fichero para salvar un numero. Se separa por lo que es —
+   tokens y esqueleto en base, componentes donde se usan. */
+
+/* El badge del cerebro: dice QUE contesta. Apagado en tenue, vivo en jardin. */
+.brain{font-size:.72rem;color:var(--tenue);margin:.5rem 0 0;
+  display:inline-block;padding:.15rem .5rem;border:1px solid var(--line,var(--bronce));
+  border-radius:calc(var(--radius) - 8px);background:var(--glass)}
+.brain.live{color:var(--jardin);border-color:var(--jardin)}

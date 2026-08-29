@@ -7,7 +7,7 @@
   var block = document.getElementById('i18n');
   if (!raiz || !block) return;
   var T = JSON.parse(block.textContent);
-  var TIPOS = ['RETO', 'TAREA', 'MERCADO', 'GENERAL'];
+  var TIPOS = ['CHALLENGE', 'TASK', 'COMPUTE', 'GENERAL'];
 
   function cuando(iso) {
     // Fecha corta y estable. Nada de «hace 3 horas»: eso obliga a recalcular y
@@ -41,7 +41,8 @@
     f.appendChild(todos);
     TIPOS.forEach(function (t) {
       var b = document.createElement('button');
-      b.type = 'button'; b.className = 'leve'; b.textContent = '[' + t + ']';
+      b.type = 'button'; b.className = 'leve';
+      b.textContent = '[' + ((T.tbTipos || {})[t] || t) + ']';
       b.setAttribute('aria-pressed', 'false');
       b.addEventListener('click', function () { filtrar(t, b); });
       f.appendChild(b);
@@ -53,7 +54,7 @@
       li.dataset.tipo = h.tipo;
       var m = document.createElement('span');
       m.className = 'marca-hilo ' + (h.tipo || '').toLowerCase();
-      m.textContent = '[' + h.tipo + ']';
+      m.textContent = '[' + ((T.tbTipos || {})[h.tipo] || h.tipo) + ']';
       var t = document.createElement('span');
       t.className = 'hilo-titulo'; t.textContent = h.titulo;
       var pie = document.createElement('span');

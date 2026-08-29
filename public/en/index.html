@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>PreceptorOS · Your sovereign companion</title>
 <link rel="stylesheet" href="/assets/base.css">
+<link rel="stylesheet" href="/assets/chat.css">
 </head>
 <body>
 <canvas id="ambient" aria-hidden="true"></canvas>
@@ -21,6 +22,7 @@
   <div id="chat" class="panel">
 <textarea id="pregunta" class="chat-input" placeholder="Write your first question..." rows="4"></textarea>
 <div id="motor"></div><button id="enviar" type="button" class="boton" style="margin-top:0.8rem">Send</button>
+    <p id="brain" class="brain"></p>
     <div id="dialogo" style="margin-top:1rem"></div>
     <p class="tenue"><a href="./instalar.html">Installation guide, step by step →</a></p>
   </div>
@@ -90,9 +92,15 @@
  "cargando": "Loading...",
  "error": "Error",
  "tu": "You",
- "preceptor": "Preceptor"
+ "preceptor": "Preceptor",
+ "brainLabel": "Brain:",
+ "brainNone": "none",
+ "brainBrowser": "Browser AI (Edge)",
+ "brainLive": "Live on your machine",
+ "brainAsleep": "No engine started yet"
 }</script>
 <script src="/assets/fallback.js"></script>
+<script src="/assets/state.js"></script>
 <script src="/assets/chat.js"></script>
 <script src="/assets/meter.js"></script>
 <script src="/assets/seal.js"></script>

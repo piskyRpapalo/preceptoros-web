@@ -12,7 +12,7 @@
   --marmol:#E4E8EC; --marmol-claro:#F2F5F7; --tinta:#1E1826; --tenue:#5D5668;
   --violeta:#6D5AE0; --violeta-texto:#4B37C4; --indigo:#261789;
   --bronce:#78624C; --bronce-claro:#93705C; --bronce-hondo:#5A4531;
-  --jardin:#2E7D4F; --sol:#B4550C;
+  --jardin:#2C784B; --sol:#AC510B;   /* medidos 4,66:1 y 4,61:1 */
   --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"DejaVu Sans Mono",monospace;
   /* --- el cristal, sobre la paleta de siempre --------------------------- */
   --glass:rgba(242,245,247,.55);

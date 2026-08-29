@@ -1,17 +1,12 @@
 /* preceptoros.org · el chat.
-   Regla que manda sobre todo lo demas: hasta que pulsas un boton, esta pagina
-   NO ha hablado con nadie. Cero peticiones externas al cargar; el import() de
-   WebLLM vive dentro del manejador del clic, no arriba del fichero. Por eso
-   "nunca auto-arrancar" no es una preferencia de UX: es lo que hace cierta la
+   Regla que manda sobre todo: hasta que pulsas un boton esta pagina NO ha
+   hablado con nadie. El import() de WebLLM vive dentro del clic, no arriba del
+   fichero — por eso «nunca auto-arrancar» no es UX, es lo que hace cierta la
    frase del pie.
 
-   Orden de preferencia, del mas soberano al menos:
-     1. LanguageModel  · el modelo YA esta en el dispositivo. Cero red.
-     2. LanguageModel  · esta disponible pero hay que bajarlo (Gemini Nano,
-                         2,7-4 GB). Se dice el peso ANTES de ofrecerlo: es mas
-                         que el modelo de esta pagina, y quien elige es quien lee.
-     3. WebLLM         · ~945 MB por la red, una vez.
-     4. El JSON        · te lo llevas a la IA que ya tengas. */
+   Orden, del mas soberano al menos: LanguageModel ya instalado ·
+   LanguageModel por descargar (2,7-4 GB, el peso se dice ANTES) · WebLLM
+   (~945 MB, una vez) · el JSON para la IA que ya tengas. */
 (function () {
   var caja = document.getElementById('chat');
   if (!caja) return;
@@ -63,7 +58,11 @@
   // El papel es el del instalador y nada mas. La memoria local y el camino de
   // aprendizaje viven en el MVP, en la maquina de la persona: esta web es
   // instalacion y comunidad, y no tiene nada de eso que ofrecer.
-  function papel() { return T.papel; }
+  // Cuanto mas sabe el frontend, menos adivina el modelo. El bloque de estado
+  // va DESPUES del papel y ANTES de lo que escribe la persona.
+  function papel() {
+    return T.papel + (window.stateContext ? window.stateContext() : '');
+  }
   function sobre() {
     return { origen: 'preceptoros.org', papel: papel(), reglas: T.reglas,
              pregunta: entrada.value.trim() };
@@ -74,6 +73,8 @@
   function avisa(n) { document.dispatchEvent(new CustomEvent('preceptor:' + n)); }
   function listo(texto, marca) {
     via = marca; estado(texto, 'nodata'); entrada.focus();
+    document.dispatchEvent(new CustomEvent('preceptor:brain', { detail: {
+      name: marca === 'webllm' ? MODELO.split('-q4')[0] + ' (Edge)' : T.brainBrowser } }));
     calentar();
   }
   // Cinco tokens a ciegas antes de que nadie mida. WebGPU compila sus shaders
@@ -155,10 +156,8 @@
     if (decidido) return;
     decidido = true;
     if (quieto) quieto.hidden = true;
-    // El global es `LanguageModel`, no `window.ai`: la forma antigua
-    // (window.ai.canCreateTextSession) quedo atras, y comprobar solo esa
-    // significaria NO ver el modelo del navegador justo donde si existe, y
-    // mandar a descargar ~945 MB al navegador mas capaz de todos.
+    // `LanguageModel`, no `window.ai`: la forma antigua quedo atras, y mirar
+    // solo esa mandaria a bajar 945 MB al navegador mas capaz de todos.
     if (typeof LanguageModel !== 'undefined' && LanguageModel.availability) {
       estado(T.mirandoNavegador);
       LanguageModel.availability().then(function (d) {
@@ -197,6 +196,9 @@
         ttft: t1 === null ? null : t1 - t0, ms: performance.now() - t0,
         tokens: tokens, via: via } }));
     }
+    // ?debug enseña el prompt entero antes de enviarlo. Detras de una bandera
+    // y no siempre: un console.log permanente es ruido en la consola de otro.
+    if (/[?&]debug/.test(location.search)) console.log(papel() + '\n\n' + texto);
     if (via === 'webllm') {
       motor.chat.completions.create({
         messages: [{ role: 'system', content: papel() }, { role: 'user', content: texto }],

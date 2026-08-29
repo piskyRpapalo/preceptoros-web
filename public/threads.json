@@ -5,28 +5,28 @@
   "hilos_reales": 0,
   "hilos": [
     {
-      "tipo": "RETO",
+      "tipo": "CHALLENGE",
       "titulo": "Reto: quien saca mas tok/s de un 4B en hardware de menos de 300 EUR",
       "autor": "soberano",
       "cuando": "2026-08-29T19:40:00Z",
       "respuestas": 9
     },
     {
-      "tipo": "TAREA",
+      "tipo": "TASK",
       "titulo": "Busco quien mida Qwen3-4B en una Orange Pi 5 Plus (RK3588)",
       "autor": "soberano",
       "cuando": "2026-08-29T18:10:00Z",
       "respuestas": 4
     },
     {
-      "tipo": "MERCADO",
-      "titulo": "Ofrezco: adapter LoRA de resumen tecnico ES/EN, 46 MB, licencia Apache",
+      "tipo": "COMPUTE",
+      "titulo": "Comparto: adapter LoRA de resumen tecnico ES/EN, 46 MB, licencia Apache",
       "autor": "anon-1",
       "cuando": "2026-08-29T15:42:00Z",
       "respuestas": 11
     },
     {
-      "tipo": "RETO",
+      "tipo": "CHALLENGE",
       "titulo": "Reto: medir el mismo modelo en Termux y en escritorio y firmar las dos lineas",
       "autor": "anon-2",
       "cuando": "2026-08-29T11:20:00Z",
@@ -40,15 +40,15 @@
       "respuestas": 23
     },
     {
-      "tipo": "TAREA",
+      "tipo": "TASK",
       "titulo": "Falta una linea firmada para gfx1103 con Vulkan: alguien con 780M?",
       "autor": "soberano",
       "cuando": "2026-08-28T22:31:00Z",
       "respuestas": 2
     },
     {
-      "tipo": "MERCADO",
-      "titulo": "Busco: alguien que evalue 5 modelos en Termux y firme las lineas",
+      "tipo": "COMPUTE",
+      "titulo": "Hace falta: evaluar 5 modelos en Termux y firmar las lineas",
       "autor": "anon-3",
       "cuando": "2026-08-28T09:18:00Z",
       "respuestas": 7
@@ -59,6 +59,13 @@
       "autor": "anon-1",
       "cuando": "2026-08-27T20:00:00Z",
       "respuestas": 15
+    },
+    {
+      "tipo": "COMPUTE",
+      "titulo": "Cedo computo: Jetson Orin 8 GB libre de 02:00 a 07:00 para entrenar LoRA",
+      "autor": "la-torre",
+      "cuando": "2026-08-29T21:05:00Z",
+      "respuestas": 3
     }
   ]
 }
