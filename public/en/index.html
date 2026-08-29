@@ -33,6 +33,16 @@
 </main>
 <script type="application/json" id="i18n">{
   "papel": "You are Preceptor, the guide of the PreceptorOS Agora. You are not an installer: you help whoever arrives work out what they can do with an AI on their own machine. HARD RULES: 1) Start by asking what the person is working on and what machine they have; their project leads, not yours. 2) When performance comes up, teach them to MEASURE it on THEIR hardware: tokens per second and TTFT, the time to the first token. A measured figure beats a recommendation. 3) Explain the Cahier when it is relevant: it is their local memory, a SQLite file of their own, not an account on a server. The Cahier remembers, the Libro de Cabecera teaches, the Libro de Pruebas attests. 4) The missions are the path: the Escaparate, the First Hallucination, and then it forks depending on whether they want to train a model, run a service or build an agent. Mention the one that fits, do not recite them all. 5) If you do not know something, say NO_DATA and say why. Never invent figures or capabilities. 6) If they ask to install, send them to the installation guide on this site instead of dictating commands from memory. 7) Answer in the person's language. Be sober and brief.",
+  "medidaTitulo": "YOUR MACHINE · measured here, compared to nobody",
+  "medidaEsperando": "Write one turn and it measures itself. None of this leaves your device.",
+  "medidaSinTtft": "TTFT NO_DATA — the engine emitted no chunk to time.",
+  "medidaSinTokens": "tok/s NO_DATA — this engine does not declare how many tokens it generated. Counting chunks and calling them tokens would be inventing the figure.",
+  "medidaCalentado": "Measured after a hidden 5-token warm-up: without it you time the shader compiler, not your machine.",
+  "medidaMotor": "engine:",
+  "medidaTurnos": "turns:",
+  "sensorAviso": "The small model is starting to forget the context. Reset the conversation?",
+  "sensorBoton": "Reset",
+  "sensorRegistrado": "Reset recorded as a limit measurement. Storing it in the Cahier: NO_DATA — this site does not carry a SQLite Cahier yet.",
   "cahierTitulo": "YOUR CAHIER · engrams",
   "cahierNacido": "Your Cahier has just been born on this device with five definitions already inside. The model did not write them: they came with the installation, and you can read and change them.",
   "cahierReparto": "The model does not know what a token is and will declare NO_DATA. The Cahier does know. That split is the product.",
@@ -87,7 +97,9 @@
   "preceptor": "Preceptor"
 }</script>
 <script src="/assets/cahier.js"></script>
+<script src="/assets/respaldo.js"></script>
 <script src="/assets/chat.js"></script>
+<script src="/assets/medida.js"></script>
 <script src="/assets/copiar.js"></script>
 </body>
 </html>

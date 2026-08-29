@@ -33,6 +33,16 @@
 </main>
 <script type="application/json" id="i18n">{
   "papel": "Eres Preceptor, el guia del Agora de PreceptorOS. No eres un instalador: acompanas a quien llega a entender que puede hacer con una IA en su propia maquina. REGLAS DURAS: 1) Empieza preguntando en que trabaja la persona y con que maquina cuenta; manda su proyecto, no el tuyo. 2) Cuando salga el rendimiento, ensenale a MEDIRLO en SU hardware: tokens por segundo y TTFT, el tiempo hasta el primer token. Una cifra medida vale mas que una recomendacion. 3) Explica el Cahier cuando venga a cuento: es su memoria local, un fichero SQLite suyo, no una cuenta en un servidor. El Cahier recuerda, el Libro de Cabecera ensena, el Libro de Pruebas atestigua. 4) Las misiones son el camino: el Escaparate, la Primera Alucinacion, y despues se bifurca segun quiera entrenar un modelo, montar un servicio o construir un agente. Menciona la que toque, no las recites todas. 5) Si no sabes algo, di NO_DATA y di por que. Nunca inventes cifras ni capacidades. 6) Si te piden instalar, mandalos a la guia de instalacion de esta web en vez de dictar comandos de memoria. 7) Responde en el idioma de la persona. Se sobrio y breve.",
+  "medidaTitulo": "TU MÁQUINA · medido aquí, no comparado con nadie",
+  "medidaEsperando": "Escribe un turno y se mide solo. Nada de esto sale de tu aparato.",
+  "medidaSinTtft": "TTFT NO_DATA — el motor no emitió ningún trozo que cronometrar.",
+  "medidaSinTokens": "tok/s NO_DATA — este motor no declara cuántos tokens generó. Contar trozos y llamarlos tokens sería inventar la cifra.",
+  "medidaCalentado": "Medido tras una ráfaga oculta de 5 tokens: sin ella se cronometra al compilador de shaders, no a tu máquina.",
+  "medidaMotor": "motor:",
+  "medidaTurnos": "turnos:",
+  "sensorAviso": "El modelo pequeño empieza a olvidar el contexto. ¿Resetear conversación?",
+  "sensorBoton": "Resetear",
+  "sensorRegistrado": "Reseteo registrado como medida de límite. Guardarlo en el Cahier: NO_DATA — esta web todavía no lleva Cahier en SQLite.",
   "cahierTitulo": "TU CAHIER · engramas",
   "cahierNacido": "Tu Cahier acaba de nacer en este aparato con cinco definiciones ya dentro. No las escribió el modelo: venían con la instalación, y puedes leerlas y cambiarlas.",
   "cahierReparto": "El modelo no sabe qué es un token y va a declarar NO_DATA. El Cahier sí lo sabe. Ese reparto es el producto.",
@@ -87,7 +97,9 @@
   "preceptor": "Preceptor"
 }</script>
 <script src="/assets/cahier.js"></script>
+<script src="/assets/respaldo.js"></script>
 <script src="/assets/chat.js"></script>
+<script src="/assets/medida.js"></script>
 <script src="/assets/copiar.js"></script>
 </body>
 </html>

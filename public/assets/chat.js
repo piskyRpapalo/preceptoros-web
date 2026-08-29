@@ -73,48 +73,25 @@
   // conocer casos especiales. Codigo facil de comprobar > comprobador listo.
   function listo(texto, marca) {
     via = marca; estado(texto, 'nodata'); entrada.focus();
+    calentar();
+  }
+  // Cinco tokens a ciegas antes de que nadie mida. WebGPU compila sus shaders
+  // en la primera generacion: sin esta rafaga, el primer TTFT mide al
+  // compilador y no a la maquina, y sale entre tres y diez veces peor.
+  function calentar() {
+    try {
+      if (via === 'webllm') {
+        motor.chat.completions.create({ messages: [{ role: 'user', content: 'ok' }],
+          max_tokens: 5 }).catch(function () {});
+      } else if (sesion) { sesion.prompt('ok').catch(function () {}); }
+    } catch (e) { /* el calentamiento nunca rompe el turno de nadie */ }
   }
 
-  /* --- 4. El JSON: te lo llevas a la IA que ya tienes. --- */
-  function ofrecerJSON(causa) {
-    motorZona.innerHTML = '';
-    var p = document.createElement('p');
-    p.className = 'nodata';
-    // NO_DATA con causa: "no hay WebGPU" y "hay WebGPU pero ninguna GPU
-    // utilizable" son dos averias distintas, y quien lee merece saber cual.
-    p.textContent = T.sinMotor + ' ' + (typeof causa === 'string' ? causa : T.causaDesconocida)
-                  + ' ' + T.llevate;
-    motorZona.appendChild(p);
-
-    var area = document.createElement('textarea');
-    area.readOnly = true;
-    area.setAttribute('aria-label', T.etiquetaJson);
-    area.value = JSON.stringify(sobre(), null, 2);
-    motorZona.appendChild(area);
-    entrada.addEventListener('input', function () {
-      area.value = JSON.stringify(sobre(), null, 2);
-    });
-
-    var f = fila();
-    T.destinos.forEach(function (nombre) {
-      f.appendChild(boton(T.copiarPara + ' ' + nombre, 'leve', function () {
-        var b = this, antes = b.textContent;
-        copiar(area.value, area, function (ok) {
-          b.textContent = ok ? T.copiado : T.copiaManual;
-          setTimeout(function () { b.textContent = antes; }, 2200);
-        });
-      }));
-    });
-    nota(T.mismoTexto);
-  }
-  function copiar(texto, area, hecho) {
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(texto)
-        .then(function () { hecho(true); },
-              function () { area.select(); hecho(false); });
-    } else { area.select(); hecho(false); }
-  }
-  function salida() { return boton(T.prefieroJson, 'leve', function () { ofrecerJSON(T.causaElegida); }); }
+  /* --- 4. El JSON vive en respaldo.js. Aqui solo el puente. --- */
+  function ofrecerJSON(causa) { window.Respaldo.ofrecerJSON(causa); }
+  function salida() { return window.Respaldo.salida(); }
+  window.Respaldo.instalar({ motorZona: motorZona, entrada: entrada, sobre: sobre,
+    T: T, boton: boton, fila: fila, nota: nota });
 
   /* --- 3. WebLLM: se descarga solo si lo pides, y se dice a quien. --- */
   function ofrecerDescarga() {
@@ -209,13 +186,36 @@
       dialogo.scrollTop = dialogo.scrollHeight;
     };
     var falla = function (e) { fin(T.falloRespuesta + ' — ' + (e && e.message ? e.message : e)); };
+    var t0 = performance.now(), t1 = null, acc = '', tokens = null;
+    // `tokens` sale del motor o no sale. Contar trozos y llamarlos tokens seria
+    // decorar una cifra, que es lo unico que este producto no hace.
+    function cerrar() {
+      fin(acc);
+      document.dispatchEvent(new CustomEvent('preceptor:turno', { detail: {
+        ttft: t1 === null ? null : t1 - t0, ms: performance.now() - t0,
+        tokens: tokens, via: via } }));
+    }
     if (via === 'webllm') {
       motor.chat.completions.create({
         messages: [{ role: 'system', content: papel() }, { role: 'user', content: texto }],
-        temperature: 0.6
-      }).then(function (r) { fin(r.choices[0].message.content); }).catch(falla);
+        temperature: 0.6, stream: true, stream_options: { include_usage: true }
+      }).then(async function (flujo) {
+        for await (var t of flujo) {
+          if (t.usage) tokens = t.usage.completion_tokens;
+          var d = (t.choices[0] && t.choices[0].delta.content) || '';
+          if (d && t1 === null) t1 = performance.now();
+          if (d) { acc += d; p.textContent = acc; }
+        }
+        cerrar();
+      }).catch(falla);
     } else {
-      sesion.prompt(papel() + '\n\n' + texto).then(fin).catch(falla);
+      (async function () {
+        for await (var t of sesion.promptStreaming(papel() + '\n\n' + texto)) {
+          if (t1 === null) t1 = performance.now();
+          acc = t; p.textContent = acc;
+        }
+        cerrar();
+      })().catch(falla);
     }
   }
   enviar.addEventListener('click', responder);
