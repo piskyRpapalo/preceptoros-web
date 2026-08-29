@@ -4,7 +4,12 @@
    sin espacio decorativo. Aqui se viene a leer muchas lineas seguidas. */
 
 /* --- la tabla del Libro de Pruebas --------------------------------------- */
-#tabla{overflow-x:auto}
+/* El panel NO scrollea: scrollea la caja de la tabla. Si el overflow vive en
+   el panel, la prosa y el pie se desplazan con la tabla y aparecen cortados,
+   mientras el anillo del canto se queda fijo encima. */
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:thin;padding-bottom:.3rem}
+.scroll:focus-visible{outline:2px solid var(--violeta-texto);outline-offset:2px}
 table{border-collapse:collapse;width:100%;font-size:.76rem;white-space:nowrap}
 th{text-align:left;font-weight:700;color:var(--tenue);letter-spacing:.08em;
   text-transform:uppercase;font-size:.68rem;padding:.4rem .6rem .4rem 0;

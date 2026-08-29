@@ -120,9 +120,15 @@ button,.boton{font:inherit;font-size:.85rem;cursor:pointer;
   border-radius:calc(var(--radius) - 6px);
   padding:.6rem .9rem;display:inline-block;text-decoration:none;
   transition:transform .2s var(--spring),background .2s ease,border-color .2s ease}
-button:hover,button:focus,.boton:hover,.boton:focus{background:var(--indigo);
-  border-color:var(--indigo);outline:0;transform:scale(1.02)}
+button:focus,.boton:focus{background:var(--indigo);border-color:var(--indigo);outline:0}
 button:active,.boton:active{transform:scale(.98)}
+/* El hover y la escala, solo donde hay raton de verdad. En tactil el navegador
+   emula un hover pegajoso que se queda encendido tras el toque, y ademas la
+   transformacion cuesta scroll. */
+@media (hover:hover) and (pointer:fine){
+  button:hover,.boton:hover{background:var(--indigo);border-color:var(--indigo);
+    transform:scale(1.02)}
+}
 button[disabled]{background:var(--tenue);border-color:var(--tenue);cursor:progress}
 button.leve{background:transparent;color:var(--bronce-hondo);border-color:var(--bronce)}
 button.leve:hover,button.leve:focus{background:var(--bronce);color:var(--marmol-claro)}
@@ -152,26 +158,8 @@ textarea{min-height:8rem;font-size:.78rem;line-height:1.5;resize:vertical}
 .honest-footer li{margin:0 0 .5rem 1.1rem}
 .honest-footer strong{color:var(--bronce-hondo)}
 
-/* --- laminas: TODA imagen va sobre blanco ---------------------------------
-   El arte de la app es bronce y marmol recortado sobre transparencia. Encima
-   del veteado del fondo se ensuciaba y perdia el filo; sobre blanco vuelve a
-   leerse como un objeto. El blanco esta ademas dentro del propio WebP, no solo
-   en el CSS, para que no dependa de que la hoja cargue. */
-.diapos{margin:1.4rem 0}
-.diapo{display:none}
-.diapo:target{display:block}
-/* Sin ninguna diapositiva apuntada, manda la primera. :has() es Baseline
-   ampliamente disponible desde junio de 2026, y ahorra el JS entero: el pase
-   funciona con enlaces, se comparte por URL y sobrevive sin JavaScript. */
-.diapos:not(:has(.diapo:target)) #l1{display:block}
-.diapo figure{background:#F8F7FC;border:2px solid var(--bronce);padding:1.5rem 1.2rem;text-align:center}
-.diapo img{width:160px;height:160px;display:block;margin:0 auto 1.1rem;
-  border:1px solid var(--bronce-claro)}
-.diapo figcaption{text-align:left}
-.diapo h3{text-align:center}
-.diapo blockquote{border-left:3px solid var(--violeta);padding-left:.9rem;margin:1rem 0 0;
-  text-align:left;color:var(--tinta)}
-.diapo cite{display:block;margin-top:.5rem;font-style:normal;font-size:.74rem;color:var(--tenue)}
+/* Las diapositivas del lore se fueron con la pagina: la web es Agora, no
+   museo. Quedaba 1,8 KB de reglas que ya no pintaban nada. */
 .cuenta{font-size:.74rem;color:var(--tenue);letter-spacing:.14em;text-transform:uppercase}
 
 /* --- quien pide menos movimiento manda sobre todo lo anterior ------------- */

@@ -61,7 +61,17 @@
       }
     });
     t.appendChild(tb);
-    raiz.appendChild(t);
+    // La tabla scrollea DENTRO de su propia caja, no el panel entero. Con el
+    // `overflow-x` en el panel se iba con ella todo lo demas —el aviso, la
+    // leyenda, el pie— y el texto aparecia cortado por la izquierda mientras
+    // el anillo del canto se quedaba fijo encima. Se vio en un movil.
+    var caja = document.createElement('div');
+    caja.className = 'scroll';
+    caja.setAttribute('tabindex', '0');            // scrollable = alcanzable con teclado
+    caja.setAttribute('role', 'region');
+    caja.setAttribute('aria-label', T.bmTablaAria || 'tabla');
+    caja.appendChild(t);
+    raiz.appendChild(caja);
     // Que significan las columnas, en llano. Quien llega no sabe que es un
     // TTFT: el producto se lo ensena, pero esta pagina no puede darlo por
     // sabido y dejar fuera justo a quien viene a empezar.

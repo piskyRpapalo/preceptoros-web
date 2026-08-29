@@ -18,8 +18,7 @@
   var enviar = document.getElementById('enviar');
   var motorZona = document.getElementById('motor');
   var dialogo = document.getElementById('dialogo');
-  var quieto = document.getElementById('quieto');
-  var decidido = false, motor = null, via = null, sesion = null;
+  var motor = null, via = null, sesion = null;
 
   function di(texto, mio) {
     var p = document.createElement('p');
@@ -95,87 +94,21 @@
   window.Respaldo.instalar({ motorZona: motorZona, entrada: entrada, sobre: sobre,
     T: T, boton: boton, fila: fila, nota: nota });
 
-  /* --- 3. WebLLM: se descarga solo si lo pides, y se dice a quien. --- */
-  function ofrecerDescarga() {
-    motorZona.innerHTML = '';
-    var b = boton(T.descargar, '', function () { bajarWebLLM(b); });
-    var f = fila(); f.appendChild(b); f.appendChild(salida());
-    nota(T.avisoRed);
-    nota(T.avisoCifra);
-  }
-  function bajarWebLLM(b) {
-    b.disabled = true;
-    var linea = estado(T.arrancando);
-    import(/* webpackIgnore: true */ CDN).then(function (webllm) {
-      return webllm.CreateMLCEngine(MODELO, {
-        initProgressCallback: function (info) { linea.textContent = info.text || T.arrancando; }
-      });
-    }).then(function (m) { motor = m; listo(T.listoLocal, 'webllm'); })
-      .catch(function (e) {
-        estado(T.falloDescarga + ' — ' + (e && e.message ? e.message : e), 'nodata');
-        motorZona.appendChild(salida());
-      });
-  }
-
-  /* --- 1 y 2. El modelo del propio navegador (Prompt API). --- */
-  function ofrecerNavegador(yaEsta) {
-    motorZona.innerHTML = '';
-    var b = boton(yaEsta ? T.usarNavegador : T.bajarNavegador, '', function () {
-      b.disabled = true;
-      var linea = estado(T.arrancando);
-      LanguageModel.create({
-        monitor: function (m) {
-          m.addEventListener('downloadprogress', function (e) {
-            linea.textContent = T.bajando + ' ' + Math.round((e.loaded || 0) * 100) + '%';
-          });
-        }
-      }).then(function (s) { sesion = s; listo(yaEsta ? T.navListo : T.navBajado, 'navegador'); })
-        .catch(function (e) {
-          estado(T.falloNavegador + ' — ' + (e && e.message ? e.message : e), 'nodata');
-          rutaGpu();
-        });
-    });
-    var f = fila(); f.appendChild(b); f.appendChild(salida());
-    // Si hay que bajar Gemini Nano, el peso se dice ANTES de que pulses: son
-    // 2,7-4 GB, mas que el modelo de esta pagina. Ocultarlo seria vender
-    // "cero descargas" a cambio de la descarga mas grande de las dos.
-    nota(yaEsta ? T.navYaEsta : T.navPesa);
-  }
-
-  /* --- La rama WebGPU. --- */
-  function rutaGpu() {
-    if (!navigator.gpu) { ofrecerJSON(T.causaSinApi); return; }
-    estado(T.mirandoGpu);
-    navigator.gpu.requestAdapter().then(function (adaptador) {
-      if (adaptador) ofrecerDescarga(); else ofrecerJSON(T.causaSinAdaptador);
-    }).catch(function (e) { ofrecerJSON(T.causaError + ' ' + (e && e.message ? e.message : e)); });
-  }
-
-  /* --- La deteccion ocurre al primer tecleo, no al cargar. --- */
-  function decidir() {
-    if (decidido) return;
-    decidido = true;
-    if (quieto) quieto.hidden = true;
-    // `LanguageModel`, no `window.ai`: la forma antigua quedo atras, y mirar
-    // solo esa mandaria a bajar 945 MB al navegador mas capaz de todos.
-    if (typeof LanguageModel !== 'undefined' && LanguageModel.availability) {
-      estado(T.mirandoNavegador);
-      LanguageModel.availability().then(function (d) {
-        if (d === 'available') ofrecerNavegador(true);
-        else if (d === 'downloadable' || d === 'downloading') ofrecerNavegador(false);
-        else rutaGpu();
-      }).catch(rutaGpu);
-      return;
-    }
-    rutaGpu();
-  }
-  entrada.addEventListener('input', decidir);
+  /* --- El motor vive en engine.js. Aqui solo el puente. --- */
+  window.Engine.install({
+    zone: motorZona, T: T, CDN: CDN, MODELO: MODELO,
+    estado: estado, boton: boton, fila: fila, nota: nota, listo: listo,
+    salida: salida, ofrecerJSON: ofrecerJSON,
+    setEngine: function (m) { motor = m; }, setSession: function (s) { sesion = s; }
+  });
 
   /* --- Enviar --- */
   function responder() {
     var texto = entrada.value.trim();
     if (!texto) return;
-    if (!via) { decidir(); return; }
+    // El motor se ofrece desde que carga la pagina: si aun no hay `via`, es
+    // que no se ha elegido, y la eleccion ya esta en pantalla.
+    if (!via) return;
     di(texto, true);
     entrada.value = '';
     var p = di('…');
