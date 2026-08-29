@@ -79,17 +79,20 @@
   // Cinco tokens a ciegas antes de que nadie mida. WebGPU compila sus shaders
   // en la primera generacion: sin esta rafaga, el primer TTFT mide al
   // compilador y no a la maquina, y sale entre tres y diez veces peor.
+  // El calentamiento se GUARDA en una promesa y el turno la espera. WebLLM
+  // atiende una generacion cada vez: si el turno real entra mientras la rafaga
+  // sigue viva, las dos comparten estado y la respuesta sale como ensalada de
+  // palabras. Se vio en el movil del Soberano con el 3B del navegador.
+  var calentando = null;
   function calentar() {
     try {
-      if (via === 'ollama') {
-      window.LocalAI.stream(papel() + '\n\n' + texto, function (d) {
-        if (t1 === null) { t1 = performance.now(); avisa('hablando'); }
-        acc += d; p.textContent = acc;
-      }).then(function (n) { tokens = n; cerrar(); }).catch(falla);
-    } else if (via === 'webllm') {
-        motor.chat.completions.create({ messages: [{ role: 'user', content: 'ok' }],
-          max_tokens: 5 }).catch(function () {});
-      } else if (sesion) { sesion.prompt('ok').catch(function () {}); }
+      if (via === 'webllm') {
+        calentando = motor.chat.completions.create({
+          messages: [{ role: 'user', content: 'ok' }], max_tokens: 5
+        }).catch(function () {});
+      } else if (sesion) {
+        calentando = sesion.prompt('ok').catch(function () {});
+      }
     } catch (e) { /* el calentamiento nunca rompe el turno de nadie */ }
   }
 
@@ -137,6 +140,8 @@
     // ?debug enseña el prompt entero antes de enviarlo. Detras de una bandera
     // y no siempre: un console.log permanente es ruido en la consola de otro.
     if (/[?&]debug/.test(location.search)) console.log(papel() + '\n\n' + texto);
+    Promise.resolve(calentando).then(function () { generar(); }).catch(function () { generar(); });
+    function generar() {
     if (via === 'ollama') {
       window.LocalAI.stream(papel() + '\n\n' + texto, function (d) {
         if (t1 === null) { t1 = performance.now(); avisa('hablando'); }
@@ -169,6 +174,7 @@
         }
         cerrar();
       })().catch(falla);
+    }
     }
   }
   // Su propia IA manda sobre cualquier otra: es la mas soberana que hay.

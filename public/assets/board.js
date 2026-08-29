@@ -49,7 +49,7 @@
     });
     raiz.appendChild(f);
 
-    (d.hilos || []).forEach(function (h) {
+    function fila(h) {
       var li = document.createElement('li');
       li.dataset.tipo = h.tipo;
       var m = document.createElement('span');
@@ -62,9 +62,75 @@
       pie.textContent = h.autor + ' · ' + cuando(h.cuando) + ' · ' +
                         (h.respuestas || 0) + ' ' + T.tbRespuestas;
       li.appendChild(m); li.appendChild(t); li.appendChild(pie);
-      lista.appendChild(li);
-    });
+      return li;
+    }
+    (d.hilos || []).forEach(function (h) { lista.appendChild(fila(h)); });
     raiz.appendChild(lista);
+
+    // --- publicar, y publicar FIRMADO --------------------------------------
+    // El hilo se firma con la clave Ed25519 de quien escribe, en su aparato,
+    // ANTES de existir para nadie mas. El orden importa: primero la firma,
+    // despues el mundo. Sin identidad el formulario no aparece — no se ofrece
+    // un boton que no puede cumplir.
+    var zonaPub = document.createElement('div');
+    raiz.appendChild(zonaPub);
+    function ofrecerPublicar() {
+      zonaPub.innerHTML = '';
+      if (!(window.Identity && window.Identity.quien())) {
+        zonaPub.appendChild(nota(T.tbSinIdentidad));
+        return;
+      }
+      var b = document.createElement('button');
+      b.type = 'button'; b.textContent = T.tbPublicar;
+      b.addEventListener('click', function () { formulario(); });
+      var f = document.createElement('div'); f.className = 'fila';
+      f.appendChild(b); zonaPub.appendChild(f);
+    }
+    function campo(etiqueta, elemento) {
+      var l = document.createElement('label');
+      l.textContent = etiqueta;
+      zonaPub.appendChild(l); zonaPub.appendChild(elemento);
+      return elemento;
+    }
+    function formulario() {
+      zonaPub.innerHTML = '';
+      zonaPub.className = 'form-hilo';
+      var titulo = campo(T.tbTitulo, document.createElement('input'));
+      var tipo = campo(T.tbTipo, document.createElement('select'));
+      TIPOS.forEach(function (t) {
+        var o = document.createElement('option');
+        o.value = t; o.textContent = (T.tbTipos || {})[t] || t;
+        tipo.appendChild(o);
+      });
+      var cuerpo = campo(T.tbCuerpo, document.createElement('textarea'));
+      var b = document.createElement('button');
+      b.type = 'button'; b.textContent = T.tbFirmar;
+      b.addEventListener('click', function () {
+        var hilo = { tipo: tipo.value, titulo: titulo.value.trim(),
+                     cuerpo: cuerpo.value.trim(), cuando: new Date().toISOString() };
+        if (!hilo.titulo) { titulo.focus(); return; }
+        window.Identity.firmar(hilo).then(function (f) {
+          // Se pinta arriba, en memoria. No viaja: el envio al servidor es una
+          // decision que aun no esta firmada, y prometerlo seria mentir.
+          (window.fluido || function (fn) { fn(); })(function () {
+            lista.insertBefore(fila(Object.assign({}, hilo,
+              { autor: f.autor, respuestas: 0 })), lista.firstChild);
+            zonaPub.className = '';
+            zonaPub.innerHTML = '';
+            zonaPub.appendChild(nota(T.tbFirmado + ' ' + f.firma, 'nodata'));
+          });
+        });
+      });
+      var f2 = document.createElement('div'); f2.className = 'fila';
+      f2.appendChild(b); zonaPub.appendChild(f2);
+    }
+    ofrecerPublicar();
+    document.addEventListener('preceptor:identity', ofrecerPublicar);
+  }
+  function nota(texto, clase) {
+    var p = document.createElement('p');
+    p.className = clase || 'tenue'; p.textContent = texto;
+    return p;
   }
   fetch('/threads.json').then(function (r) { return r.json(); })
     .then(function (d) { (window.fluido || function (fn) { fn(); })(function () { pinta(d); }); })

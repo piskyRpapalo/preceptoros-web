@@ -17,12 +17,13 @@
       <p><a href="/">← change language</a></p>
       <p class="fila"><a class="boton leve" href="./board.html">[ Board ]</a> <a class="boton leve" href="./benchmark.html">[ Benchmark ]</a></p>
     </div>
-  </header>
+    <div id="identity" class="fila identity"></div>
+</header>
   <p class="proof">Open source · <a href="https://github.com/piskyRpapalo/PreceptorOS">GitHub</a> · <b>526</b> tests green in the app · <b>17</b> on this site · <b>zero</b> external requests on load · <b>10 KB</b> max per file</p>
   <p class="guia">Your sovereign AI, on your machine, no cloud. Write below to start.</p>
   <div id="chat" class="panel">
 <textarea id="pregunta" class="chat-input" placeholder="Write your first question..." rows="4"></textarea>
-<div id="motor"></div><button id="enviar" type="button" class="boton" style="margin-top:0.8rem">Send</button>
+<div id="motor"></div><button id="enviar" type="button" class="boton enviar" aria-label="Send"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M3 20.5v-6l8-2.5-8-2.5v-6L22 12z"/></svg><span class="rotulo">Send</span></button>
     <div id="voice" class="fila"></div>
     <div id="local-ai" class="fila"></div>
     <p id="brain" class="brain"></p>
@@ -114,7 +115,20 @@
  "micFallo": "NO_DATA — on-device dictation failed:",
  "laiOtra": "Another Ollama address",
  "laiProbar": "Try there",
- "laiMixto": "From an https page the browser only allows 127.0.0.1. A network IP is blocked as mixed content."
+ "laiMixto": "From an https page the browser only allows 127.0.0.1. A network IP is blocked as mixed content.",
+ "idEntrar": "Create identity",
+ "idHola": "Hello,",
+ "idClave": "See my fingerprint",
+ "idPublica": "Public key:",
+ "idFallo": "NO_DATA — the identity could not be created:",
+ "idAviso": "A key is generated in your browser. It cannot be exported or copied to another device: if you clear the site data, this identity is lost and there is no way to recover it. There is no password to forget and no server holding it.",
+ "tbPublicar": "Post thread",
+ "tbTitulo": "Title",
+ "tbCuerpo": "Body",
+ "tbTipo": "Type",
+ "tbFirmar": "Sign and publish",
+ "tbSinIdentidad": "Create an identity to publish.",
+ "tbFirmado": "Signed on your device. It does not travel anywhere yet: sending will come when the Sovereign signs it off."
 }</script>
 <script src="/assets/fallback.js"></script>
 <script src="/assets/state.js"></script>
@@ -126,5 +140,6 @@
 <script src="/assets/seal.js"></script>
 <script src="/assets/copiar.js"></script>
 <script src="/assets/ambient.js"></script>
+<script src="/assets/auth.js"></script>
 </body>
 </html>

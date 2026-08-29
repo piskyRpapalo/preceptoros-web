@@ -17,12 +17,13 @@
       <p><a href="/">← changer de langue</a></p>
       <p class="fila"><a class="boton leve" href="./board.html">[ Tableau ]</a> <a class="boton leve" href="./benchmark.html">[ Benchmark ]</a></p>
     </div>
-  </header>
+    <div id="identity" class="fila identity"></div>
+</header>
   <p class="proof">Code ouvert · <a href="https://github.com/piskyRpapalo/PreceptorOS">GitHub</a> · <b>526</b> tests au vert dans l'app · <b>17</b> sur ce site · <b>zéro</b> requête externe au chargement · <b>10 Ko</b> maxi par fichier</p>
   <p class="guia">Votre IA souveraine, sur votre machine, sans nuage. Ecrivez ci-dessous pour commencer.</p>
   <div id="chat" class="panel">
 <textarea id="pregunta" class="chat-input" placeholder="Ecrivez votre premiere question..." rows="4"></textarea>
-<div id="motor"></div><button id="enviar" type="button" class="boton" style="margin-top:0.8rem">Envoyer</button>
+<div id="motor"></div><button id="enviar" type="button" class="boton enviar" aria-label="Envoyer"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M3 20.5v-6l8-2.5-8-2.5v-6L22 12z"/></svg><span class="rotulo">Envoyer</span></button>
     <div id="voice" class="fila"></div>
     <div id="local-ai" class="fila"></div>
     <p id="brain" class="brain"></p>
@@ -114,7 +115,20 @@
  "micFallo": "NO_DATA — la dictée locale a échoué :",
  "laiOtra": "Autre adresse d'Ollama",
  "laiProbar": "Essayer là",
- "laiMixto": "Depuis une page https le navigateur n'autorise que 127.0.0.1. Une IP réseau est bloquée en contenu mixte."
+ "laiMixto": "Depuis une page https le navigateur n'autorise que 127.0.0.1. Une IP réseau est bloquée en contenu mixte.",
+ "idEntrar": "Créer une identité",
+ "idHola": "Bonjour,",
+ "idClave": "Voir mon empreinte",
+ "idPublica": "Clé publique :",
+ "idFallo": "NO_DATA — l'identité n'a pas pu être créée :",
+ "idAviso": "Une clé est générée dans votre navigateur. Elle ne peut être ni exportée ni copiée : si vous effacez les données du site, cette identité est perdue et rien ne permet de la récupérer. Aucun mot de passe à oublier, aucun serveur qui la garde.",
+ "tbPublicar": "Publier un fil",
+ "tbTitulo": "Titre",
+ "tbCuerpo": "Corps",
+ "tbTipo": "Type",
+ "tbFirmar": "Signer et publier",
+ "tbSinIdentidad": "Créez une identité pour publier.",
+ "tbFirmado": "Signé sur votre appareil. Rien ne part encore : l'envoi viendra quand le Souverain l'aura signé."
 }</script>
 <script src="/assets/fallback.js"></script>
 <script src="/assets/state.js"></script>
@@ -126,5 +140,6 @@
 <script src="/assets/seal.js"></script>
 <script src="/assets/copiar.js"></script>
 <script src="/assets/ambient.js"></script>
+<script src="/assets/auth.js"></script>
 </body>
 </html>

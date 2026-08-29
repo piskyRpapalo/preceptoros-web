@@ -48,3 +48,11 @@ td.uso{white-space:normal;color:var(--tenue);font-size:.74rem;
    llano, porque el sitio no puede dar por sabido lo que el producto ensena. */
 ul.leyenda{list-style:none;margin:.9rem 0 0;font-size:.74rem;color:var(--tenue)}
 ul.leyenda li{margin:0 0 .3rem;padding-left:.9rem;text-indent:-.9rem}
+
+/* La identidad, en la cabecera. Discreta: es una llave, no un anuncio. */
+.identity{margin-top:.4rem;align-items:center}
+.identity .yo{font-size:.74rem;color:var(--jardin);margin-right:.5rem}
+/* El formulario de publicar: aparece solo si hay con que firmar. */
+.form-hilo{margin:.8rem 0 0}
+.form-hilo label{display:block;font-size:.7rem;color:var(--tenue);
+  letter-spacing:.1em;text-transform:uppercase;margin:.6rem 0 .2rem}

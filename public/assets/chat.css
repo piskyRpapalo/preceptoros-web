@@ -21,10 +21,12 @@
    8 KB en vez de 147 —la web mide y publica su propio peso, asi que un asset
    gordo tiene coste declarado—. Apagado significa apagado: si el navegador no
    dicta en el aparato, el boton no invita a pulsarlo. */
-button.mic{width:64px;height:52px;padding:0;border:0;background:url(mic.webp) center/contain no-repeat;
-  font-size:0;filter:drop-shadow(0 0 7px rgba(109,90,224,.45));transition:filter .18s ease-out}
-button.mic:disabled{filter:grayscale(1) opacity(.45);cursor:not-allowed}
+button.mic,button.enviar{display:inline-flex;align-items:center;gap:.45rem}
+button.mic{color:var(--violeta-texto);border-color:var(--bronce)}
+button.mic.oyendo{color:#fff;background:var(--violeta);border-color:var(--violeta)}
+button.mic:disabled{opacity:.45;cursor:not-allowed}
+button.enviar svg{margin-right:.1rem}
 @media (hover:hover) and (pointer:fine){
-  button.mic:hover:not(:disabled){filter:drop-shadow(0 0 12px rgba(109,90,224,.8));transform:none;background-color:transparent}
+  button.mic:hover:not(:disabled){background:var(--violeta);color:#fff;border-color:var(--violeta)}
 }
 .voice-nota{font-size:.72rem;margin:.35rem 0 0}

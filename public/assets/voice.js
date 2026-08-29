@@ -27,9 +27,13 @@
     if (!p.parentNode) fila.parentNode.appendChild(p);
   }
 
+  // Icono en linea y no una imagen: cero peticiones, escala sin pixelarse y
+  // hereda el color del canon. El dibujo de la app era bonito de cerca y una
+  // calcomania de lejos.
+  var MIC = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M5 10a7 7 0 0 0 14 0"/><path d="M12 17v4"/><path d="M8 21h8"/></svg>';
   var boton = document.createElement('button');
   boton.type = 'button'; boton.className = 'leve mic';
-  boton.textContent = T.micHablar;
+  boton.innerHTML = MIC + '<span class="rotulo">' + T.micHablar + '</span>';
   boton.setAttribute('aria-label', T.micHablar);
 
   if (!SR || !('processLocally' in SR.prototype)) {
@@ -52,7 +56,7 @@
     // La linea que lo cambia todo: el audio se queda en el aparato.
     rec.processLocally = true;
     var base = entrada.value;
-    rec.onstart = function () { oyendo = true; boton.textContent = T.micEscuchando; decir(T.micEnAparato); };
+    rec.onstart = function () { oyendo = true; boton.querySelector('.rotulo').textContent = T.micEscuchando; boton.classList.add('oyendo'); decir(T.micEnAparato); };
     rec.onresult = function (e) {
       var t = '';
       for (var i = e.resultIndex; i < e.results.length; i++) t += e.results[i][0].transcript;
@@ -63,9 +67,9 @@
       // `service-not-allowed` y `language-not-supported` son la forma que tiene
       // el navegador de decir «esto solo lo se hacer en la nube». Se para.
       decir(T.micFallo + ' ' + (e.error || '?'), 'nodata');
-      oyendo = false; boton.textContent = T.micHablar;
+      oyendo = false; boton.querySelector('.rotulo').textContent = T.micHablar; boton.classList.remove('oyendo');
     };
-    rec.onend = function () { oyendo = false; boton.textContent = T.micHablar; };
+    rec.onend = function () { oyendo = false; boton.querySelector('.rotulo').textContent = T.micHablar; boton.classList.remove('oyendo'); };
     try { rec.start(); }
     catch (e) { decir(T.micFallo + ' ' + (e && e.message ? e.message : e), 'nodata'); }
   });
