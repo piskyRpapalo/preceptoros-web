@@ -60,11 +60,10 @@
     var d = document.createElement('div');
     d.className = 'fila'; motorZona.appendChild(d); return d;
   }
-  // El papel del modelo lleva pegado el Memory de la persona. Se compone en
-  // cada turno y no se cachea: si el Memory cambia, el proximo turno lo ve.
-  function papel() {
-    return T.papel + (window.Memory ? window.Memory.contexto() : '');
-  }
+  // El papel es el del instalador y nada mas. La memoria local y el camino de
+  // aprendizaje viven en el MVP, en la maquina de la persona: esta web es
+  // instalacion y comunidad, y no tiene nada de eso que ofrecer.
+  function papel() { return T.papel; }
   function sobre() {
     return { origen: 'preceptoros.org', papel: papel(), reglas: T.reglas,
              pregunta: entrada.value.trim() };

@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Benchmark · PreceptorOS</title>
+<meta name="description" content="Le Livre des Preuves Publiques : quel modèle tourne à quelle vitesse, sur quelle machine, signé par qui l'a mesuré.">
+<link rel="stylesheet" href="/assets/base.css">
+<link rel="stylesheet" href="/assets/agora.css">
+</head>
+<body>
+<canvas id="fondo" aria-hidden="true"></canvas>
+<main>
+
+<header>
+  <div class="cabeza" role="img" aria-label="Sceau de PreceptorOS"></div>
+  <div class="marca">
+    <h1>Benchmark<b> · le Livre des Preuves</b></h1>
+    <p><a href="/fr/">Accueil</a> · <a href="/fr/tablon.html">Tableau</a> · <a href="/fr/instalar.html">Installer</a></p>
+  </div>
+</header>
+
+<p class="guia">Quel modèle tourne à quelle vitesse, sur quelle machine, et qui l'a mesuré. Chaque ligne est signée et porte le sha256 du fichier du modèle : sans ce hash, « llama-3.2-3b » n'identifie rien.</p>
+
+<div id="tabla" class="bloque"></div>
+
+<footer class="honest-footer">
+  <h2>D'où vient ce tableau</h2>
+  <ul>
+    <li><strong>Personne ne publie sans le vouloir.</strong> Les données sont envoyées par votre PreceptorOS depuis votre machine, et seulement si vous le demandez. Installer ne publie rien.</li>
+    <li><strong>Le hash et la signature sont la donnée.</strong> Un chiffre sans le sha256 du modèle ne peut pas être reproduit, et sans signature il ne peut pas être attribué. Les deux colonnes existent pour que le tableau soit vérifiable.</li>
+    <li><strong>Les trous se déclarent.</strong> Quand un moteur ne dit pas combien de tokens il a générés, la case indique NO_DATA. Elle n'est pas remplie par une estimation.</li>
+  </ul>
+  <p><a href="/fr/">Accueil</a> · <a href="/fr/instalar.html">Installer</a> · <a href="/hitos.html">Jalons</a></p>
+</footer>
+
+<script type="application/json" id="i18n">{
+ "bmColumnas": [
+  "Modèle",
+  "sha256",
+  "Matériel",
+  "tok/s",
+  "TTFT",
+  "Verdict",
+  "Évaluateur",
+  "Signature"
+ ],
+ "bmEjemplo": "Ces lignes sont des EXEMPLES, pour tester la mise en page du tableau.",
+ "bmFirmadas": "Lignes signées reçues à ce jour :",
+ "bmSinHash": "sans hash",
+ "bmSinFirma": "non signé",
+ "bmFuente": "Source :",
+ "bmSinDatos": "NO_DATA — le tableau n'a pas pu être lu.",
+ "bmLlevatelo": "emportez le fichier entier.",
+ "bmLeyenda": [
+  "tok/s — combien de morceaux de mots il écrit par seconde. C'est ce qui compte si vous le laissez travailler seul.",
+  "TTFT — le temps avant l'apparition de la première lettre. C'est ce qui compte si vous attendez devant.",
+  "sha256 — l'empreinte du fichier du modèle. Deux fichiers du même nom peuvent ne pas être le même modèle ; l'empreinte, elle, ne ment pas."
+ ]
+}</script>
+<script src="/assets/fondo.js"></script>
+<script src="/assets/benchmark.js"></script>
+
+</body>
+</html>

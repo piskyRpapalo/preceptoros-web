@@ -1,0 +1,64 @@
+{
+  "esquema": 1,
+  "estado": "EJEMPLO",
+  "nota": "Hilos de EJEMPLO para probar la densidad del tablon. Todavia no hay comunidad: fingir actividad en un foro vacio es la mentira mas vieja de internet, asi que se declara arriba y la interfaz lo pinta.",
+  "hilos_reales": 0,
+  "hilos": [
+    {
+      "tipo": "RETO",
+      "titulo": "Reto: quien saca mas tok/s de un 4B en hardware de menos de 300 EUR",
+      "autor": "soberano",
+      "cuando": "2026-08-29T19:40:00Z",
+      "respuestas": 9
+    },
+    {
+      "tipo": "TAREA",
+      "titulo": "Busco quien mida Qwen3-4B en una Orange Pi 5 Plus (RK3588)",
+      "autor": "soberano",
+      "cuando": "2026-08-29T18:10:00Z",
+      "respuestas": 4
+    },
+    {
+      "tipo": "MERCADO",
+      "titulo": "Ofrezco: adapter LoRA de resumen tecnico ES/EN, 46 MB, licencia Apache",
+      "autor": "anon-1",
+      "cuando": "2026-08-29T15:42:00Z",
+      "respuestas": 11
+    },
+    {
+      "tipo": "RETO",
+      "titulo": "Reto: medir el mismo modelo en Termux y en escritorio y firmar las dos lineas",
+      "autor": "anon-2",
+      "cuando": "2026-08-29T11:20:00Z",
+      "respuestas": 5
+    },
+    {
+      "tipo": "GENERAL",
+      "titulo": "El TTFT del navegador no es comparable con el de llama.cpp y aqui esta el porque",
+      "autor": "anon-2",
+      "cuando": "2026-08-29T12:05:00Z",
+      "respuestas": 23
+    },
+    {
+      "tipo": "TAREA",
+      "titulo": "Falta una linea firmada para gfx1103 con Vulkan: alguien con 780M?",
+      "autor": "soberano",
+      "cuando": "2026-08-28T22:31:00Z",
+      "respuestas": 2
+    },
+    {
+      "tipo": "MERCADO",
+      "titulo": "Busco: alguien que evalue 5 modelos en Termux y firme las lineas",
+      "autor": "anon-3",
+      "cuando": "2026-08-28T09:18:00Z",
+      "respuestas": 7
+    },
+    {
+      "tipo": "GENERAL",
+      "titulo": "Por que publicamos el sha256 del fichero y no solo el nombre del modelo",
+      "autor": "anon-1",
+      "cuando": "2026-08-27T20:00:00Z",
+      "respuestas": 15
+    }
+  ]
+}

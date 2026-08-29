@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Benchmark · PreceptorOS</title>
+<meta name="description" content="El Libro de Pruebas Públicas: qué modelo corre a cuánto, en qué máquina, firmado por quien lo midió.">
+<link rel="stylesheet" href="/assets/base.css">
+<link rel="stylesheet" href="/assets/agora.css">
+</head>
+<body>
+<canvas id="fondo" aria-hidden="true"></canvas>
+<main>
+
+<header>
+  <div class="cabeza" role="img" aria-label="Sello de PreceptorOS"></div>
+  <div class="marca">
+    <h1>Benchmark<b> · el Libro de Pruebas</b></h1>
+    <p><a href="/es/">Portada</a> · <a href="/es/tablon.html">Tablón</a> · <a href="/es/instalar.html">Instalar</a></p>
+  </div>
+</header>
+
+<p class="guia">Qué modelo corre a cuánto, en qué máquina, y quién lo midió. Cada fila es una línea firmada con el sha256 del fichero del modelo dentro: sin ese hash, «llama-3.2-3b» no identifica nada.</p>
+
+<div id="tabla" class="bloque"></div>
+
+<footer class="honest-footer">
+  <h2>De dónde sale esta tabla</h2>
+  <ul>
+    <li><strong>Nadie sube nada sin querer.</strong> Los datos los envía tu PreceptorOS desde tu máquina, y solo si tú lo pides. Instalar no publica nada.</li>
+    <li><strong>El hash y la firma son el dato.</strong> Una cifra sin el sha256 del modelo no se puede reproducir, y sin firma no se puede atribuir. Las dos columnas están para que la tabla se pueda comprobar, no para decorar.</li>
+    <li><strong>Los huecos se declaran.</strong> Cuando un motor no dice cuántos tokens generó, la casilla pone NO_DATA. No se rellena con una estimación.</li>
+  </ul>
+  <p><a href="/es/">Portada</a> · <a href="/es/instalar.html">Instalar</a> · <a href="/hitos.html">Hitos</a></p>
+</footer>
+
+<script type="application/json" id="i18n">{
+ "bmColumnas": [
+  "Modelo",
+  "sha256",
+  "Hardware",
+  "tok/s",
+  "TTFT",
+  "Veredicto",
+  "Evaluador",
+  "Firma"
+ ],
+ "bmEjemplo": "Estas filas son de EJEMPLO, para probar el diseño de la tabla.",
+ "bmFirmadas": "Líneas firmadas recibidas hasta ahora:",
+ "bmSinHash": "sin hash",
+ "bmSinFirma": "sin firmar",
+ "bmFuente": "Fuente:",
+ "bmSinDatos": "NO_DATA — no se pudo leer la tabla.",
+ "bmLlevatelo": "llévatelo entero.",
+ "bmLeyenda": [
+  "tok/s — cuántas palabras-trozo escribe por segundo. Manda si vas a dejarlo trabajando solo.",
+  "TTFT — lo que tarda en aparecer la primera letra. Manda si vas a estar delante esperando.",
+  "sha256 — la huella del fichero del modelo. Dos ficheros con el mismo nombre pueden no ser el mismo modelo; la huella no miente."
+ ]
+}</script>
+<script src="/assets/fondo.js"></script>
+<script src="/assets/benchmark.js"></script>
+
+</body>
+</html>

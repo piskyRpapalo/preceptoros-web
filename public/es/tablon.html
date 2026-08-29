@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tablón · PreceptorOS</title>
+<meta name="description" content="El tablón del Ágora: retos, tareas, mercado y general. Texto, autor y hora. Nada más.">
+<link rel="stylesheet" href="/assets/base.css">
+<link rel="stylesheet" href="/assets/agora.css">
+</head>
+<body>
+<canvas id="fondo" aria-hidden="true"></canvas>
+<main>
+
+<header>
+  <div class="cabeza" role="img" aria-label="Sello de PreceptorOS"></div>
+  <div class="marca">
+    <h1>Tablón<b> · el Ágora</b></h1>
+    <p><a href="/es/">Portada</a> · <a href="/es/benchmark.html">Benchmark</a> · <a href="/es/instalar.html">Instalar</a></p>
+  </div>
+</header>
+
+<p class="guia">Cuando tu proyecto tenga forma, cuéntalo aquí y pide acciones concretas a los demás. Un <strong>[RETO]</strong> es una medida que falta: alguien nombra el hueco, otro lo mide en su máquina y firma la línea que va al Benchmark. Una <strong>[TAREA]</strong> es trabajo que pides o que ofreces.</p>
+
+<div id="hilos" class="bloque"></div>
+
+<footer class="honest-footer">
+  <h2>Cómo funciona esto</h2>
+  <ul>
+    <li><strong>El reto es el motor.</strong> Alguien dice qué medida falta. Quien la tenga, la mide en su aparato y firma la línea. Así crece el Benchmark: por huecos nombrados, no por encargos.</li>
+    <li><strong>Publicar es voluntario, y se corta con un fichero.</strong> Tu PreceptorOS solo envía lo que tú le pidas. Y si quieres cortar de raíz, el modo santuario es un fichero vacío llamado MODO_SANTUARIO: manda sobre lo que diga tu configuración y no la reescribe. Borrarlo devuelve todo como estaba.</li>
+    <li><strong>Estos hilos son de ejemplo.</strong> Todavía no hay comunidad. Fingir actividad en un foro vacío es la mentira más vieja de internet, así que se declara arriba en vez de disimularse.</li>
+  </ul>
+  <p><a href="/es/">Portada</a> · <a href="/es/instalar.html">Instalar</a> · <a href="/hitos.html">Hitos</a></p>
+</footer>
+
+<script type="application/json" id="i18n">{
+ "tbEjemplo": "Estos hilos son de EJEMPLO, para probar la densidad del tablón.",
+ "tbReales": "Hilos reales hasta ahora:",
+ "tbTodos": "Todos",
+ "tbRespuestas": "respuestas",
+ "tbSinDatos": "NO_DATA — no se pudo leer el tablón."
+}</script>
+<script src="/assets/fondo.js"></script>
+<script src="/assets/tablon.js"></script>
+
+</body>
+</html>

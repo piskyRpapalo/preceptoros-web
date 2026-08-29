@@ -22,7 +22,6 @@
 <div id="motor"></div><button id="enviar" type="button" class="boton" style="margin-top:0.8rem">Send</button>
     <div id="dialogo" style="margin-top:1rem"></div>
     <p class="tenue"><a href="./instalar.html">Installation guide, step by step →</a></p>
-    <p class="tenue"><a href="./agente.html">The Constructor →</a></p>
   </div>
   <footer class="honest-footer">
     <ul>
@@ -30,76 +29,68 @@
       <li><strong>WebLLM desde esm.run</strong> es la única excepción CDN permitida (~2 GB, una vez).</li>
       <li><strong>Si no hay WebGPU ni LanguageModel,</strong> te genera un JSON para llevar a la IA que ya tengas.</li>
     </ul>
-    <p><a href="../es/instalar.html">Installation guide</a> · <a href="../es/lore.html">The story</a> · <a href="../hitos.html">Milestones</a></p>
+    <p><a href="/en/instalar.html">Install</a> · <a href="/en/tablon.html">Board</a> · <a href="/en/benchmark.html">Benchmark</a> · <a href="/hitos.html">Milestones</a></p>
   </footer>
 </main>
 <script type="application/json" id="i18n">{
-  "papel": "You are Preceptor, the guide of the PreceptorOS Agora. You are not an installer: you help whoever arrives work out what they can do with an AI on their own machine. HARD RULES: 1) Start by asking what the person is working on and what machine they have; their project leads, not yours. 2) When performance comes up, teach them to MEASURE it on THEIR hardware: tokens per second and TTFT, the time to the first token. A measured figure beats a recommendation. 3) Explain the Memory when it is relevant: it is their local memory, a SQLite file of their own, not an account on a server. The Memory remembers, the Libro de Cabecera teaches, the Libro de Pruebas attests. 4) The missions are the path: the Escaparate, the First Hallucination, and then it forks depending on whether they want to train a model, run a service or build an agent. Mention the one that fits, do not recite them all. 5) If you do not know something, say NO_DATA and say why. Never invent figures or capabilities. 6) If they ask to install, send them to the installation guide on this site instead of dictating commands from memory. 7) Answer in the person's language. Be sober and brief.",
-  "falloVacio": "NO_DATA — the engine finished without emitting a single character. This is not an empty answer: it is a turn that never happened.",
-  "medidaTitulo": "YOUR MACHINE · measured here, compared to nobody",
-  "medidaEsperando": "Write one turn and it measures itself. None of this leaves your device.",
-  "medidaSinTtft": "TTFT NO_DATA — the engine emitted no chunk to time.",
-  "medidaSinTokens": "tok/s NO_DATA — this engine does not declare how many tokens it generated. Counting chunks and calling them tokens would be inventing the figure.",
-  "medidaCalentado": "Measured after a hidden 5-token warm-up: without it you time the shader compiler, not your machine.",
-  "medidaMotor": "engine:",
-  "medidaTurnos": "turns:",
-  "sensorAviso": "The small model is starting to forget the context. Reset the conversation?",
-  "sensorBoton": "Reset",
-  "sensorRegistrado": "Reset recorded as a limit measurement. Storing it in the Memory: NO_DATA — this site does not carry a SQLite Memory yet.",
-  "memoryTitulo": "YOUR MEMORY · engrams",
-  "memoryNacido": "Your Memory has just been born on this device with five definitions already inside. The model did not write them: they came with the installation, and you can read and change them.",
-  "memoryReparto": "The model does not know what a token is and will declare NO_DATA. The Memory does know. That split is the product.",
-  "memoryVer": "See all five",
-  "memoryOrigen": "Origin: Libro de Cabecera, installation. The model wrote none of them.",
-  "memoryCabecera": "This comes from the person's Memory, not from you. Use it and say where it came from:",
-  "engramas": [{"termino": "token", "definicion": "the smallest unit the model reads and writes: not a letter, not a word, something in between"}, {"termino": "TTFT", "definicion": "time to first token, how long before you see the first letter of the answer"}, {"termino": "NO_DATA", "definicion": "what you answer when there is no measurement: declared with its cause, never filled in"}, {"termino": "quantisation", "definicion": "lowering the precision of the weights so the model fits: less memory, slightly less fidelity"}, {"termino": "context", "definicion": "how much text fits at once; whatever falls off the top is forgotten"}],
-  "reglas": [
-    "Do not suggest cloud services",
-    "Do not ask for personal data",
-    "If you don't know, say NO_DATA"
-  ],
-  "sinMotor": "NO_DATA - no AI engine available in this browser.",
-  "causaDesconocida": "Cause unknown.",
-  "causaSinApi": "Cause: this browser exposes neither WebGPU nor LanguageModel.",
-  "causaSinAdaptador": "Cause: WebGPU exists but no usable GPU.",
-  "causaError": "Cause: error querying the GPU.",
-  "causaElegida": "Cause: you chose the JSON.",
-  "llevate": "Take this text to the AI you already use.",
-  "etiquetaJson": "Text to copy to your AI",
-  "destinos": [
-    "Gemini",
-    "ChatGPT",
-    "Claude",
-    "my local AI"
-  ],
-  "copiarPara": "Copy for",
-  "copiado": "Copied OK",
-  "copiaManual": "Select and Ctrl+C",
-  "mismoTexto": "The same text works for any AI. That is the idea: not depending on a single one.",
-  "prefieroJson": "I prefer the JSON",
-  "descargar": "Download model (~2 GB, once)",
-  "avisoRed": "Downloads over the network once. Cached in your browser.",
-  "avisoCifra": "About 400 MB. We say it before you click, not after.",
-  "arrancando": "Starting the engine...",
-  "listoLocal": "Engine ready. Write your question.",
-  "falloDescarga": "NO_DATA - failed to download the model",
-  "usarNavegador": "Use your browser's AI",
-  "bajarNavegador": "Download the browser's AI (~2.7-4 GB)",
-  "navListo": "Browser AI ready. Write your question.",
-  "navBajado": "Browser AI downloaded. Write your question.",
-  "falloNavegador": "NO_DATA - browser AI failed",
-  "navYaEsta": "The AI is already on your device. Zero download.",
-  "navPesa": "About 2.7-4 GB. We say it before you click.",
-  "mirandoGpu": "Querying the GPU...",
-  "mirandoNavegador": "Querying the browser's AI...",
-  "bajando": "Downloading",
-  "falloRespuesta": "NO_DATA - failed to generate response",
-  "cargando": "Loading...",
-  "error": "Error",
-  "tu": "You",
-  "preceptor": "Preceptor"
+ "papel": "You are Preceptor, the PreceptorOS installer. Your only job is to get the person to install the product on THEIR machine. HARD RULES: 1) Ask first which system they use: Linux, macOS, Windows or Android via Termux. 2) Give them the steps from this site's installation guide and send them there for the detail; do not dictate paths from memory, they go stale. 3) If something fails, ask for the exact error message and give ONLY the command that fixes it. 4) If you do not know something, say NO_DATA and say why. Never invent commands or versions. 5) Do not ask for personal data and do not suggest cloud services: the product runs on their device. 6) Answer in the person's language. Be sober and brief.",
+ "falloVacio": "NO_DATA — the engine finished without emitting a single character. This is not an empty answer: it is a turn that never happened.",
+ "medidaTitulo": "YOUR MACHINE · measured here, compared to nobody",
+ "medidaEsperando": "Write one turn and it measures itself. None of this leaves your device.",
+ "medidaSinTtft": "TTFT NO_DATA — the engine emitted no chunk to time.",
+ "medidaSinTokens": "tok/s NO_DATA — this engine does not declare how many tokens it generated. Counting chunks and calling them tokens would be inventing the figure.",
+ "medidaCalentado": "Measured after a hidden 5-token warm-up: without it you time the shader compiler, not your machine.",
+ "medidaMotor": "engine:",
+ "medidaTurnos": "turns:",
+ "sensorAviso": "The small model is starting to forget the context. Reset the conversation?",
+ "sensorBoton": "Reset",
+ "sensorRegistrado": "Reset recorded as a limit measurement for this session. It is stored nowhere: this site keeps nothing of yours.",
+ "reglas": [
+  "Do not suggest cloud services",
+  "Do not ask for personal data",
+  "If you don't know, say NO_DATA"
+ ],
+ "sinMotor": "NO_DATA - no AI engine available in this browser.",
+ "causaDesconocida": "Cause unknown.",
+ "causaSinApi": "Cause: this browser exposes neither WebGPU nor LanguageModel.",
+ "causaSinAdaptador": "Cause: WebGPU exists but no usable GPU.",
+ "causaError": "Cause: error querying the GPU.",
+ "causaElegida": "Cause: you chose the JSON.",
+ "llevate": "Take this text to the AI you already use.",
+ "etiquetaJson": "Text to copy to your AI",
+ "destinos": [
+  "Gemini",
+  "ChatGPT",
+  "Claude",
+  "my local AI"
+ ],
+ "copiarPara": "Copy for",
+ "copiado": "Copied OK",
+ "copiaManual": "Select and Ctrl+C",
+ "mismoTexto": "The same text works for any AI. That is the idea: not depending on a single one.",
+ "prefieroJson": "I prefer the JSON",
+ "descargar": "Download model (~2 GB, once)",
+ "avisoRed": "Downloads over the network once. Cached in your browser.",
+ "avisoCifra": "About 400 MB. We say it before you click, not after.",
+ "arrancando": "Starting the engine...",
+ "listoLocal": "Engine ready. Write your question.",
+ "falloDescarga": "NO_DATA - failed to download the model",
+ "usarNavegador": "Use your browser's AI",
+ "bajarNavegador": "Download the browser's AI (~2.7-4 GB)",
+ "navListo": "Browser AI ready. Write your question.",
+ "navBajado": "Browser AI downloaded. Write your question.",
+ "falloNavegador": "NO_DATA - browser AI failed",
+ "navYaEsta": "The AI is already on your device. Zero download.",
+ "navPesa": "About 2.7-4 GB. We say it before you click.",
+ "mirandoGpu": "Querying the GPU...",
+ "mirandoNavegador": "Querying the browser's AI...",
+ "bajando": "Downloading",
+ "falloRespuesta": "NO_DATA - failed to generate response",
+ "cargando": "Loading...",
+ "error": "Error",
+ "tu": "You",
+ "preceptor": "Preceptor"
 }</script>
-<script src="/assets/memory.js"></script>
 <script src="/assets/respaldo.js"></script>
 <script src="/assets/chat.js"></script>
 <script src="/assets/medida.js"></script>

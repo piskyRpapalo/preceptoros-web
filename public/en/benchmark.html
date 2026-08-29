@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Benchmark · PreceptorOS</title>
+<meta name="description" content="The Public Book of Proofs: which model runs how fast, on which machine, signed by whoever measured it.">
+<link rel="stylesheet" href="/assets/base.css">
+<link rel="stylesheet" href="/assets/agora.css">
+</head>
+<body>
+<canvas id="fondo" aria-hidden="true"></canvas>
+<main>
+
+<header>
+  <div class="cabeza" role="img" aria-label="PreceptorOS seal"></div>
+  <div class="marca">
+    <h1>Benchmark<b> · the Book of Proofs</b></h1>
+    <p><a href="/en/">Front page</a> · <a href="/en/tablon.html">Board</a> · <a href="/en/instalar.html">Install</a></p>
+  </div>
+</header>
+
+<p class="guia">Which model runs how fast, on which machine, and who measured it. Every row is a signed line carrying the sha256 of the model file: without that hash, «llama-3.2-3b» identifies nothing.</p>
+
+<div id="tabla" class="bloque"></div>
+
+<footer class="honest-footer">
+  <h2>Where this table comes from</h2>
+  <ul>
+    <li><strong>Nobody uploads anything by accident.</strong> The data is sent by your PreceptorOS from your machine, and only if you ask it to. Installing publishes nothing.</li>
+    <li><strong>The hash and the signature are the data.</strong> A figure without the model's sha256 cannot be reproduced, and without a signature it cannot be attributed. Both columns exist so the table can be checked, not decorated.</li>
+    <li><strong>Gaps are declared.</strong> When an engine does not say how many tokens it generated, the cell reads NO_DATA. It is not filled in with an estimate.</li>
+  </ul>
+  <p><a href="/en/">Front page</a> · <a href="/en/instalar.html">Install</a> · <a href="/hitos.html">Milestones</a></p>
+</footer>
+
+<script type="application/json" id="i18n">{
+ "bmColumnas": [
+  "Model",
+  "sha256",
+  "Hardware",
+  "tok/s",
+  "TTFT",
+  "Verdict",
+  "Evaluator",
+  "Signature"
+ ],
+ "bmEjemplo": "These rows are EXAMPLES, here to test the table design.",
+ "bmFirmadas": "Signed lines received so far:",
+ "bmSinHash": "no hash",
+ "bmSinFirma": "unsigned",
+ "bmFuente": "Source:",
+ "bmSinDatos": "NO_DATA — the table could not be read.",
+ "bmLlevatelo": "take the whole file.",
+ "bmLeyenda": [
+  "tok/s — how many word-pieces it writes per second. This is what matters if you leave it working alone.",
+  "TTFT — how long before the first letter appears. This is what matters if you are sitting there waiting.",
+  "sha256 — the fingerprint of the model file. Two files with the same name may not be the same model; the fingerprint does not lie."
+ ]
+}</script>
+<script src="/assets/fondo.js"></script>
+<script src="/assets/benchmark.js"></script>
+
+</body>
+</html>

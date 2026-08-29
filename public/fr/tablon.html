@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tableau · PreceptorOS</title>
+<meta name="description" content="Le tableau de l'Agora : défis, tâches, marché et général. Texte, auteur et heure. Rien d'autre.">
+<link rel="stylesheet" href="/assets/base.css">
+<link rel="stylesheet" href="/assets/agora.css">
+</head>
+<body>
+<canvas id="fondo" aria-hidden="true"></canvas>
+<main>
+
+<header>
+  <div class="cabeza" role="img" aria-label="Sceau de PreceptorOS"></div>
+  <div class="marca">
+    <h1>Tableau<b> · l'Agora</b></h1>
+    <p><a href="/fr/">Accueil</a> · <a href="/fr/benchmark.html">Benchmark</a> · <a href="/fr/instalar.html">Installer</a></p>
+  </div>
+</header>
+
+<p class="guia">Quand votre projet prend forme, racontez-le ici et demandez des actions concrètes aux autres. Un <strong>[RETO]</strong> est une mesure qui manque : quelqu'un nomme le trou, un autre le mesure sur sa machine et signe la ligne qui part au Benchmark. Une <strong>[TAREA]</strong> est du travail que vous demandez ou que vous offrez.</p>
+
+<div id="hilos" class="bloque"></div>
+
+<footer class="honest-footer">
+  <h2>Comment ça marche</h2>
+  <ul>
+    <li><strong>Le défi est le moteur.</strong> Quelqu'un dit quelle mesure manque. Celui qui a la machine la mesure et signe la ligne. C'est ainsi que grandit le Benchmark : par trous nommés, pas par commandes.</li>
+    <li><strong>Publier est volontaire, et un fichier l'arrête.</strong> Votre PreceptorOS n'envoie que ce que vous lui demandez. Et pour couper à la racine, le mode sanctuaire est un fichier vide nommé MODO_SANTUARIO : il l'emporte sur votre configuration sans la réécrire. Le supprimer remet tout comme avant.</li>
+    <li><strong>Ces fils sont des exemples.</strong> Il n'y a pas encore de communauté. Feindre l'activité dans un forum vide est le plus vieux mensonge d'internet, donc c'est déclaré en haut.</li>
+  </ul>
+  <p><a href="/fr/">Accueil</a> · <a href="/fr/instalar.html">Installer</a> · <a href="/hitos.html">Jalons</a></p>
+</footer>
+
+<script type="application/json" id="i18n">{
+ "tbEjemplo": "Ces fils sont des EXEMPLES, pour tester la densité du tableau.",
+ "tbReales": "Fils réels à ce jour :",
+ "tbTodos": "Tous",
+ "tbRespuestas": "réponses",
+ "tbSinDatos": "NO_DATA — le tableau n'a pas pu être lu."
+}</script>
+<script src="/assets/fondo.js"></script>
+<script src="/assets/tablon.js"></script>
+
+</body>
+</html>

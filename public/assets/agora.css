@@ -1,0 +1,45 @@
+/* preceptoros.org · el Agora: tablon y benchmark.
+   Hoja aparte y no dentro de base.css por el limite de 10 KB — base.css esta a
+   183 bytes del suyo. Densidad de lista de correo: sin imagenes, sin tarjetas,
+   sin espacio decorativo. Aqui se viene a leer muchas lineas seguidas. */
+
+/* --- la tabla del Libro de Pruebas --------------------------------------- */
+#tabla{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:.76rem;white-space:nowrap}
+th{text-align:left;font-weight:700;color:var(--text-dim);letter-spacing:.08em;
+  text-transform:uppercase;font-size:.68rem;padding:.4rem .6rem .4rem 0;
+  border-bottom:1px solid var(--filo)}
+td{padding:.45rem .6rem .45rem 0;border-bottom:1px solid rgba(255,255,255,.05);
+  vertical-align:top}
+tbody tr:hover{background:rgba(88,166,255,.06)}
+/* El hash y la firma en tono apagado: son verificables, no protagonistas. */
+td.hash{color:var(--text-dim);font-size:.72rem}
+td.cifra{color:var(--ok);font-variant-numeric:tabular-nums}
+td.nodato{color:var(--warn)}
+
+/* --- el tablon ------------------------------------------------------------ */
+ol.hilos{list-style:none}
+ol.hilos li{border-bottom:1px solid rgba(255,255,255,.05);padding:.55rem 0}
+ol.hilos li:last-child{border-bottom:0}
+.marca-hilo{font-size:.68rem;font-weight:700;letter-spacing:.06em;
+  border:1px solid var(--filo);padding:.05rem .35rem;margin-right:.5rem}
+.marca-hilo.tarea{color:var(--ok);border-color:rgba(63,185,80,.4)}
+.marca-hilo.mercado{color:var(--warn);border-color:rgba(210,153,34,.4)}
+.marca-hilo.general{color:var(--text-dim)}
+.hilo-titulo{font-size:.88rem}
+.hilo-pie{display:block;color:var(--text-dim);font-size:.72rem;margin-top:.15rem}
+/* Los filtros no recargan nada: enseñan y esconden lo que ya esta en la pagina. */
+.filtros{margin-bottom:.9rem}
+.filtros button[aria-pressed=true]{background:var(--accent);color:var(--bg)}
+
+/* El «para que lo use» ocupa su propia linea bajo la fila. Es lo que convierte
+   una cifra en un dato: «11 tok/s» no dice nada, «11 tok/s y me clasifica el
+   correo» si. Va en prosa, asi que se le quita el nowrap de la tabla. */
+td.uso{white-space:normal;color:var(--text-dim);font-size:.74rem;
+  padding:.1rem 0 .7rem 1.1rem;border-bottom:1px solid rgba(255,255,255,.05)}
+.marca-hilo.reto{color:var(--accent);border-color:rgba(88,166,255,.45)}
+
+/* La leyenda: quien llega no sabe que es un TTFT. Va debajo de la tabla y en
+   llano, porque el sitio no puede dar por sabido lo que el producto ensena. */
+ul.leyenda{list-style:none;margin:.9rem 0 0;font-size:.74rem;color:var(--text-dim)}
+ul.leyenda li{margin:0 0 .3rem;padding-left:.9rem;text-indent:-.9rem}

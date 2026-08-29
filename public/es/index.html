@@ -22,7 +22,6 @@
 <div id="motor"></div><button id="enviar" type="button" class="boton" style="margin-top:0.8rem">Enviar</button>
     <div id="dialogo" style="margin-top:1rem"></div>
     <p class="tenue"><a href="./instalar.html">Guía de instalación, paso a paso →</a></p>
-    <p class="tenue"><a href="./agente.html">El Constructor →</a></p>
   </div>
   <footer class="honest-footer">
     <ul>
@@ -30,76 +29,68 @@
       <li><strong>WebLLM desde esm.run</strong> es la única excepción CDN permitida (~2 GB, una vez).</li>
       <li><strong>Si no hay WebGPU ni LanguageModel,</strong> te genera un JSON para llevar a la IA que ya tengas.</li>
     </ul>
-    <p><a href="./instalar.html">Guía de instalación</a> · <a href="./lore.html">La historia</a> · <a href="../hitos.html">Hitos</a></p>
+    <p><a href="./instalar.html">Instalar</a> · <a href="./tablon.html">Tablón</a> · <a href="./benchmark.html">Benchmark</a> · <a href="../hitos.html">Hitos</a></p>
   </footer>
 </main>
 <script type="application/json" id="i18n">{
-  "papel": "Eres Preceptor, el guia del Agora de PreceptorOS. No eres un instalador: acompanas a quien llega a entender que puede hacer con una IA en su propia maquina. REGLAS DURAS: 1) Empieza preguntando en que trabaja la persona y con que maquina cuenta; manda su proyecto, no el tuyo. 2) Cuando salga el rendimiento, ensenale a MEDIRLO en SU hardware: tokens por segundo y TTFT, el tiempo hasta el primer token. Una cifra medida vale mas que una recomendacion. 3) Explica el Memoria cuando venga a cuento: es su memoria local, un fichero SQLite suyo, no una cuenta en un servidor. El Memoria recuerda, el Libro de Cabecera ensena, el Libro de Pruebas atestigua. 4) Las misiones son el camino: el Escaparate, la Primera Alucinacion, y despues se bifurca segun quiera entrenar un modelo, montar un servicio o construir un agente. Menciona la que toque, no las recites todas. 5) Si no sabes algo, di NO_DATA y di por que. Nunca inventes cifras ni capacidades. 6) Si te piden instalar, mandalos a la guia de instalacion de esta web en vez de dictar comandos de memoria. 7) Responde en el idioma de la persona. Se sobrio y breve.",
-  "falloVacio": "NO_DATA — el motor terminó sin emitir ni un carácter. No es una respuesta vacía: es un turno que no llegó a existir.",
-  "medidaTitulo": "TU MÁQUINA · medido aquí, no comparado con nadie",
-  "medidaEsperando": "Escribe un turno y se mide solo. Nada de esto sale de tu aparato.",
-  "medidaSinTtft": "TTFT NO_DATA — el motor no emitió ningún trozo que cronometrar.",
-  "medidaSinTokens": "tok/s NO_DATA — este motor no declara cuántos tokens generó. Contar trozos y llamarlos tokens sería inventar la cifra.",
-  "medidaCalentado": "Medido tras una ráfaga oculta de 5 tokens: sin ella se cronometra al compilador de shaders, no a tu máquina.",
-  "medidaMotor": "motor:",
-  "medidaTurnos": "turnos:",
-  "sensorAviso": "El modelo pequeño empieza a olvidar el contexto. ¿Resetear conversación?",
-  "sensorBoton": "Resetear",
-  "sensorRegistrado": "Reseteo registrado como medida de límite. Guardarlo en el Memoria: NO_DATA — esta web todavía no lleva Memoria en SQLite.",
-  "memoryTitulo": "TU MEMORIA · engramas",
-  "memoryNacido": "Tu Memoria acaba de nacer en este aparato con cinco definiciones ya dentro. No las escribió el modelo: venían con la instalación, y puedes leerlas y cambiarlas.",
-  "memoryReparto": "El modelo no sabe qué es un token y va a declarar NO_DATA. El Memoria sí lo sabe. Ese reparto es el producto.",
-  "memoryVer": "Ver los cinco",
-  "memoryOrigen": "Origen: Libro de Cabecera, instalación. Ninguno lo escribió el modelo.",
-  "memoryCabecera": "Esto viene del Memoria de la persona, no de ti. Úsalo y di de dónde sale:",
-  "engramas": [{"termino": "token", "definicion": "la unidad mínima que el modelo lee y escribe: ni una letra ni una palabra, un trozo intermedio"}, {"termino": "TTFT", "definicion": "tiempo hasta el primer token, lo que tardas en ver la primera letra de la respuesta"}, {"termino": "NO_DATA", "definicion": "lo que se responde cuando no hay medida: se declara con su causa y no se rellena"}, {"termino": "cuantización", "definicion": "bajar la precisión de los pesos para que el modelo quepa: menos memoria, algo menos de fidelidad"}, {"termino": "contexto", "definicion": "cuánto texto cabe a la vez; lo que se sale por arriba se olvida"}],
-  "reglas": [
-    "No sugieras servicios en la nube",
-    "No pidas datos personales",
-    "Si no sabes, di NO_DATA"
-  ],
-  "sinMotor": "NO_DATA · no hay motor de IA disponible en este navegador.",
-  "causaDesconocida": "Causa desconocida.",
-  "causaSinApi": "Causa: este navegador no expone WebGPU ni LanguageModel.",
-  "causaSinAdaptador": "Causa: hay WebGPU pero ninguna GPU utilizable.",
-  "causaError": "Causa: error al consultar la GPU.",
-  "causaElegida": "Causa: elegiste el JSON.",
-  "llevate": "Llévate este texto a la IA que ya uses.",
-  "etiquetaJson": "Texto para copiar a tu IA",
-  "destinos": [
-    "Gemini",
-    "ChatGPT",
-    "Claude",
-    "mi IA local"
-  ],
-  "copiarPara": "Copiar para",
-  "copiado": "Copiado OK",
-  "copiaManual": "Selecciona y Ctrl+C",
-  "mismoTexto": "El mismo texto sirve para cualquier IA. Esa es la idea: no depender de una sola.",
-  "prefieroJson": "Prefiero el JSON",
-  "descargar": "Descargar modelo (~2 GB, una vez)",
-  "avisoRed": "Se descarga por la red una sola vez. Queda cacheado en tu navegador.",
-  "avisoCifra": "Son ~2 GB. Lo decimos antes de que pulses, no después.",
-  "arrancando": "Arrancando el motor…",
-  "listoLocal": "Motor listo. Escribe tu pregunta.",
-  "falloDescarga": "NO_DATA · fallo al descargar el modelo",
-  "usarNavegador": "Usar la IA de tu navegador",
-  "bajarNavegador": "Descargar la IA del navegador (~2,7-4 GB)",
-  "navListo": "IA del navegador lista. Escribe tu pregunta.",
-  "navBajado": "IA del navegador descargada. Escribe tu pregunta.",
-  "falloNavegador": "NO_DATA · fallo con la IA del navegador",
-  "navYaEsta": "La IA ya está en tu dispositivo. Cero descarga.",
-  "navPesa": "Son 2,7-4 GB. Lo decimos antes de que pulses.",
-  "mirandoGpu": "Consultando la GPU…",
-  "mirandoNavegador": "Consultando la IA del navegador…",
-  "bajando": "Descargando",
-  "falloRespuesta": "NO_DATA · fallo al generar respuesta",
-  "cargando": "Cargando…",
-  "error": "Error",
-  "tu": "Tú",
-  "preceptor": "Preceptor"
+ "papel": "Eres Preceptor, el instalador de PreceptorOS. Tu unica funcion es que la persona consiga instalar el producto en SU maquina. REGLAS DURAS: 1) Pregunta primero que sistema usa: Linux, macOS, Windows o Android por Termux. 2) Dale los pasos de la guia de instalacion de esta misma web y mandala ahi para el detalle; no dictes rutas de memoria, que envejecen. 3) Si algo falla, pide el mensaje de error exacto y da SOLO el comando que lo corrige. 4) Si no sabes algo, di NO_DATA y di por que. Nunca inventes comandos ni versiones. 5) No pidas datos personales ni sugieras servicios en la nube: el producto corre en su aparato. 6) Responde en el idioma de la persona. Se sobrio y breve.",
+ "falloVacio": "NO_DATA — el motor terminó sin emitir ni un carácter. No es una respuesta vacía: es un turno que no llegó a existir.",
+ "medidaTitulo": "TU MÁQUINA · medido aquí, no comparado con nadie",
+ "medidaEsperando": "Escribe un turno y se mide solo. Nada de esto sale de tu aparato.",
+ "medidaSinTtft": "TTFT NO_DATA — el motor no emitió ningún trozo que cronometrar.",
+ "medidaSinTokens": "tok/s NO_DATA — este motor no declara cuántos tokens generó. Contar trozos y llamarlos tokens sería inventar la cifra.",
+ "medidaCalentado": "Medido tras una ráfaga oculta de 5 tokens: sin ella se cronometra al compilador de shaders, no a tu máquina.",
+ "medidaMotor": "motor:",
+ "medidaTurnos": "turnos:",
+ "sensorAviso": "El modelo pequeño empieza a olvidar el contexto. ¿Resetear conversación?",
+ "sensorBoton": "Resetear",
+ "sensorRegistrado": "Reseteo registrado como medida de límite en esta sesión. No se guarda en ningún sitio: esta web no almacena nada tuyo.",
+ "reglas": [
+  "No sugieras servicios en la nube",
+  "No pidas datos personales",
+  "Si no sabes, di NO_DATA"
+ ],
+ "sinMotor": "NO_DATA · no hay motor de IA disponible en este navegador.",
+ "causaDesconocida": "Causa desconocida.",
+ "causaSinApi": "Causa: este navegador no expone WebGPU ni LanguageModel.",
+ "causaSinAdaptador": "Causa: hay WebGPU pero ninguna GPU utilizable.",
+ "causaError": "Causa: error al consultar la GPU.",
+ "causaElegida": "Causa: elegiste el JSON.",
+ "llevate": "Llévate este texto a la IA que ya uses.",
+ "etiquetaJson": "Texto para copiar a tu IA",
+ "destinos": [
+  "Gemini",
+  "ChatGPT",
+  "Claude",
+  "mi IA local"
+ ],
+ "copiarPara": "Copiar para",
+ "copiado": "Copiado OK",
+ "copiaManual": "Selecciona y Ctrl+C",
+ "mismoTexto": "El mismo texto sirve para cualquier IA. Esa es la idea: no depender de una sola.",
+ "prefieroJson": "Prefiero el JSON",
+ "descargar": "Descargar modelo (~2 GB, una vez)",
+ "avisoRed": "Se descarga por la red una sola vez. Queda cacheado en tu navegador.",
+ "avisoCifra": "Son ~2 GB. Lo decimos antes de que pulses, no después.",
+ "arrancando": "Arrancando el motor…",
+ "listoLocal": "Motor listo. Escribe tu pregunta.",
+ "falloDescarga": "NO_DATA · fallo al descargar el modelo",
+ "usarNavegador": "Usar la IA de tu navegador",
+ "bajarNavegador": "Descargar la IA del navegador (~2,7-4 GB)",
+ "navListo": "IA del navegador lista. Escribe tu pregunta.",
+ "navBajado": "IA del navegador descargada. Escribe tu pregunta.",
+ "falloNavegador": "NO_DATA · fallo con la IA del navegador",
+ "navYaEsta": "La IA ya está en tu dispositivo. Cero descarga.",
+ "navPesa": "Son 2,7-4 GB. Lo decimos antes de que pulses.",
+ "mirandoGpu": "Consultando la GPU…",
+ "mirandoNavegador": "Consultando la IA del navegador…",
+ "bajando": "Descargando",
+ "falloRespuesta": "NO_DATA · fallo al generar respuesta",
+ "cargando": "Cargando…",
+ "error": "Error",
+ "tu": "Tú",
+ "preceptor": "Preceptor"
 }</script>
-<script src="/assets/memory.js"></script>
 <script src="/assets/respaldo.js"></script>
 <script src="/assets/chat.js"></script>
 <script src="/assets/medida.js"></script>

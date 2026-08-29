@@ -1,8 +1,9 @@
-/* preceptoros.org · el Escaparate: lo que TU maquina hace, medido aqui.
-   No compara con nadie ni guarda nada fuera: escucha el turno que chat.js
-   acaba de emitir y ensena dos cifras. Si una no se puede medir, se declara
-   con su causa y la otra sigue saliendo. Media medida es media medida, no
-   un fallo. */
+/* preceptoros.org · lo que TU navegador hace, medido aqui.
+   Que el visitante vea su propio tok/s antes de instalar nada es lo que hace
+   creible el Benchmark publico: las cifras de la tabla salen de gente que
+   midio, no de una ficha tecnica. No compara con nadie ni guarda nada fuera.
+   Si una cifra no se puede medir, se declara con su causa y la otra sigue
+   saliendo: media medida es media medida, no un fallo. */
 (function () {
   var bloque = document.getElementById('i18n');
   var caja = document.getElementById('chat');
@@ -75,9 +76,9 @@
                       ' · ' + T.medidaTurnos + ' ' + turnos;
     panel.appendChild(pie);
 
-    // Sensor honesto del 3B: a partir del cuarto turno el contexto de un modelo
-    // pequeno empieza a empujar fuera lo del principio. No se espera a que la
-    // persona lo note: se le dice, y se le ofrece el corte.
+    // A partir del cuarto turno el contexto de un modelo pequeno empieza a
+    // empujar fuera lo del principio. No se espera a que la persona lo note:
+    // se le dice, y se le ofrece el corte.
     if (turnos >= 4 && !avisado) {
       avisado = true;
       var aviso = document.createElement('div');
