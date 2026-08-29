@@ -1,13 +1,13 @@
 {
   "esquema": 1,
-  "fecha": "2026-08-27",
-  "ultima_lectura": "2026-08-27T18:01:07+00:00",
+  "fecha": "2026-08-29",
+  "ultima_lectura": "2026-08-29T21:17:50+00:00",
   "nota": "Solo hay cifras medidas. Lo que no se midio sale como NO_DATA con su causa. Aqui no se cuenta a nadie.",
   "metricas": [
     {
       "clave": "paginas",
       "estado": "MEDIDO",
-      "valor": 4,
+      "valor": 5,
       "unidad": "paginas",
       "como": "ficheros .html de contenido unico bajo public/"
     },
@@ -21,16 +21,16 @@
     {
       "clave": "peso_sitio",
       "estado": "MEDIDO",
-      "valor": 197473,
+      "valor": 368303,
       "unidad": "bytes",
       "como": "suma de todo lo que hay en public/"
     },
     {
       "clave": "peso_imagenes",
       "estado": "MEDIDO",
-      "valor": 121698,
+      "valor": 222708,
       "unidad": "bytes",
-      "como": "9 ficheros .webp"
+      "como": "15 ficheros de imagen (.webp, .gif, .png, .svg)"
     },
     {
       "clave": "peticiones_externas_al_cargar",

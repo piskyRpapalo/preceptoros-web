@@ -36,7 +36,11 @@ def sin_dato(clave, causa, unidad):
 
 def medir():
     paginas = paginas_de_contenido()
-    activos = list(PUBLICO.rglob("*.webp"))
+    # Toda imagen, no solo las .webp. Cuando entraron los GIF del sello, un
+    # contador que se llama «peso_imagenes» y solo sumaba webp habria
+    # publicado 106 KB de imagenes como si no existieran.
+    activos = sorted(q for e in ("*.webp", "*.gif", "*.png", "*.svg")
+                     for q in PUBLICO.rglob(e))
     total = sum(p.stat().st_size for p in PUBLICO.rglob("*") if p.is_file())
     idiomas = sorted(d.name for d in PUBLICO.iterdir()
                      if d.is_dir() and len(d.name) == 2)
@@ -46,7 +50,7 @@ def medir():
         medido("idiomas", len(idiomas), "idiomas", "carpetas de dos letras: " + ", ".join(idiomas)),
         medido("peso_sitio", total, "bytes", "suma de todo lo que hay en public/"),
         medido("peso_imagenes", sum(p.stat().st_size for p in activos), "bytes",
-               f"{len(activos)} ficheros .webp"),
+               f"{len(activos)} ficheros de imagen (.webp, .gif, .png, .svg)"),
         medido("peticiones_externas_al_cargar", 0, "peticiones",
                "medido en navegador con performance.getEntriesByType('resource'): "
                "ningun recurso de otro origen. No es un cero decorativo, es una lectura."),

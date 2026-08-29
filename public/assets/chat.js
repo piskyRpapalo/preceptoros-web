@@ -70,6 +70,7 @@
   // Recibe el TEXTO, no la clave: asi toda cadena traducida se referencia con el
   // prefijo T y un test puede cruzar chat.js contra los tres bloques i18n sin
   // conocer casos especiales. Codigo facil de comprobar > comprobador listo.
+  function avisa(n) { document.dispatchEvent(new CustomEvent('preceptor:' + n)); }
   function listo(texto, marca) {
     via = marca; estado(texto, 'nodata'); entrada.focus();
     calentar();
@@ -184,6 +185,9 @@
     };
     var falla = function (e) { fin(T.falloRespuesta + ' — ' + (e && e.message ? e.message : e)); };
     var t0 = performance.now(), t1 = null, acc = '', tokens = null;
+    // El sello es un sensor, no un adorno: piensa mientras no hay token y
+    // habla en cuanto llega el primero.
+    avisa('pensando');
     // `tokens` sale del motor o no sale. Contar trozos y llamarlos tokens seria
     // decorar una cifra, que es lo unico que este producto no hace.
     function cerrar() {
@@ -200,7 +204,7 @@
         for await (var t of flujo) {
           if (t.usage) tokens = t.usage.completion_tokens;
           var d = (t.choices[0] && t.choices[0].delta.content) || '';
-          if (d && t1 === null) t1 = performance.now();
+          if (d && t1 === null) { t1 = performance.now(); avisa('hablando'); }
           if (d) { acc += d; p.textContent = acc; }
         }
         cerrar();
@@ -208,7 +212,7 @@
     } else {
       (async function () {
         for await (var t of sesion.promptStreaming(papel() + '\n\n' + texto)) {
-          if (t1 === null) t1 = performance.now();
+          if (t1 === null) { t1 = performance.now(); avisa('hablando'); }
           // La Prompt API emite TROZOS, no el texto entero. Asignar en vez de
           // acumular dejaba solo el ultimo: respuestas de un caracter, «!» y
           // «.». Se acumula, y se contempla el caso contrario porque la version
