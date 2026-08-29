@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Le Constructeur · PreceptorOS</title>
+<meta name="description" content="Les leviers en haut, le prompt brut en bas, et c'est le brut qui commande. Construisez votre agent et emportez-le dans un agente.json.">
+<link rel="stylesheet" href="/assets/base.css">
+</head>
+<body>
+<main>
+
+<header>
+  <div class="cabeza" role="img" aria-label="Buste de marbre de Preceptor qui s'éveille"></div>
+  <div class="marca">
+    <h1>Le Constructeur<b> · votre agent</b></h1>
+    <p><a href="/fr/">Accueil</a></p>
+  </div>
+</header>
+
+<p class="guia">Bougez les leviers et regardez le prompt s'écrire en dessous. Le texte brut est toujours visible et toujours modifiable : c'est lui que le fichier emporte, pas ce que disent les menus.</p>
+
+<div id="constructor" class="bloque"></div>
+
+<footer class="honest-footer">
+  <h2>Ce que fait cette page, et ce qu'elle ne fait pas</h2>
+  <ul>
+    <li><strong>Rien ne quitte votre appareil.</strong> L'agent est compilé dans votre navigateur et le fichier est enregistré depuis là. Cette page ne parle à aucun serveur.</li>
+    <li><strong>C'est le brut qui commande.</strong> Si vous modifiez le texte à la main, les leviers cessent de l'écraser et on vous le dit à l'écran. Perdre votre travail en bougeant un menu serait le contraire de ce que ce panneau enseigne.</li>
+    <li><strong>Le fichier emporte ce que vous voyez.</strong> <code>agente.json</code> garde le prompt tel qu'il est dans la boîte, et note si vous l'avez modifié à la main.</li>
+  </ul>
+  <p><a href="/fr/">Accueil</a> · <a href="/fr/instalar.html">Installer</a></p>
+</footer>
+
+<script type="application/json" id="i18n">{
+ "consRol": "RÔLE",
+ "consReglasT": "RÈGLES",
+ "consTonoT": "TON",
+ "consTono": "ton :",
+ "consCrudo": "Le prompt, brut et modifiable",
+ "consReglasCabecera": "Règles dures :",
+ "consManual": "Vous avez modifié le prompt à la main. Les leviers ne l'écrasent plus.",
+ "consSellar": "Sceller l'agent",
+ "consSellado": "agente.json enregistré",
+ "consReglasN": "règles",
+ "consCaracteres": "caractères",
+ "consRoles": [
+  {
+   "nombre": "Preceptor · guide",
+   "papel": "Tu es Preceptor. Tu accompagnes la personne pour comprendre ce qu'elle peut faire avec une IA sur sa propre machine."
+  },
+  {
+   "nombre": "Relecteur technique",
+   "papel": "Tu es un relecteur technique. Tu lis ce qu'on te donne et tu signales ce qui ne tient pas, avec la preuve à côté."
+  },
+  {
+   "nombre": "Archiviste",
+   "papel": "Tu es un archiviste. Tu ranges, tu résumes et tu dis d'où vient chaque chose."
+  }
+ ],
+ "consReglas": [
+  {
+   "texto": "Si tu ne sais pas, dis NO_DATA et dis pourquoi.",
+   "fija": true
+  },
+  {
+   "texto": "N'invente ni chiffres ni capacités.",
+   "fija": true
+  },
+  {
+   "texto": "Ne suggère pas de services cloud.",
+   "fija": false
+  },
+  {
+   "texto": "Ne demande pas de données personnelles.",
+   "fija": false
+  },
+  {
+   "texto": "Cite d'où vient chaque donnée.",
+   "fija": false
+  }
+ ],
+ "consTonos": [
+  {
+   "nombre": "sec",
+   "instruccion": "Réponds en une ou deux phrases. Sans préambule."
+  },
+  {
+   "nombre": "sobre",
+   "instruccion": "Réponds bref et direct. N'explique que ce qu'il faut."
+  },
+  {
+   "nombre": "didactique",
+   "instruccion": "Explique pas à pas, mais sans détours ni enthousiasme feint."
+  }
+ ]
+}</script>
+<script src="/assets/constructor.js"></script>
+
+</body>
+</html>

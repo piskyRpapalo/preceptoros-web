@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The Constructor · PreceptorOS</title>
+<meta name="description" content="Levers on top, raw prompt below, and the raw one wins. Build your agent and take it away as an agente.json.">
+<link rel="stylesheet" href="/assets/base.css">
+</head>
+<body>
+<main>
+
+<header>
+  <div class="cabeza" role="img" aria-label="Marble bust of Preceptor waking up"></div>
+  <div class="marca">
+    <h1>The Constructor<b> · your agent</b></h1>
+    <p><a href="/en/">Home</a></p>
+  </div>
+</header>
+
+<p class="guia">Move the levers and watch the prompt being written below. The raw text is always visible and always editable: it is what the file carries, not what the dropdowns say.</p>
+
+<div id="constructor" class="bloque"></div>
+
+<footer class="honest-footer">
+  <h2>What this page does, and what it does not</h2>
+  <ul>
+    <li><strong>Nothing leaves your device.</strong> The agent is compiled in your browser and the file is saved from there. This page talks to no server.</li>
+    <li><strong>The raw text wins.</strong> If you edit the text by hand, the levers stop overwriting it and you are told on screen. Losing your work by moving a dropdown would be the opposite of what this panel teaches.</li>
+    <li><strong>The file carries what you see.</strong> <code>agente.json</code> stores the prompt exactly as it stands in the box, and records whether you edited it by hand.</li>
+  </ul>
+  <p><a href="/en/">Home</a> · <a href="/en/instalar.html">Install</a></p>
+</footer>
+
+<script type="application/json" id="i18n">{
+ "consRol": "ROLE",
+ "consReglasT": "RULES",
+ "consTonoT": "TONE",
+ "consTono": "tone:",
+ "consCrudo": "The prompt, raw and editable",
+ "consReglasCabecera": "Hard rules:",
+ "consManual": "You have edited the prompt by hand. The levers no longer overwrite it.",
+ "consSellar": "Seal agent",
+ "consSellado": "agente.json saved",
+ "consReglasN": "rules",
+ "consCaracteres": "characters",
+ "consRoles": [
+  {
+   "nombre": "Preceptor · guide",
+   "papel": "You are Preceptor. You help the person work out what they can do with an AI on their own machine."
+  },
+  {
+   "nombre": "Technical reviewer",
+   "papel": "You are a technical reviewer. You read what you are given and point out what does not hold, with the evidence beside it."
+  },
+  {
+   "nombre": "Archivist",
+   "papel": "You are an archivist. You sort, summarise and say where each thing came from."
+  }
+ ],
+ "consReglas": [
+  {
+   "texto": "If you do not know, say NO_DATA and say why.",
+   "fija": true
+  },
+  {
+   "texto": "Do not invent figures or capabilities.",
+   "fija": true
+  },
+  {
+   "texto": "Do not suggest cloud services.",
+   "fija": false
+  },
+  {
+   "texto": "Do not ask for personal data.",
+   "fija": false
+  },
+  {
+   "texto": "Cite where each fact came from.",
+   "fija": false
+  }
+ ],
+ "consTonos": [
+  {
+   "nombre": "terse",
+   "instruccion": "Answer in one or two sentences. No preamble."
+  },
+  {
+   "nombre": "sober",
+   "instruccion": "Answer briefly and directly. Explain only what is needed."
+  },
+  {
+   "nombre": "didactic",
+   "instruccion": "Explain step by step, but with no detours and no fake enthusiasm."
+  }
+ ]
+}</script>
+<script src="/assets/constructor.js"></script>
+
+</body>
+</html>
