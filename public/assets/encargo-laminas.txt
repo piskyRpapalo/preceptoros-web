@@ -8,7 +8,7 @@ gris. NADA de neon cyberpunk, nada de azul frio dominante, nada de texto dentro
 de la imagen.
 
 EL PERSONAJE — identico en las cinco, esto es lo que no puede cambiar:
-Aurelius es un BUSTO DE MARMOL BLANCO de un hombre barbudo clasico, de retrato
+Preceptor es un BUSTO DE MARMOL BLANCO de un hombre barbudo clasico, de retrato
 romano: pelo rizado espeso y barba corta rizada. El marmol esta AGRIETADO y
 ABIERTO por un lado de la cara, y por debajo asoma maquinaria: placas de ceramica
 clara, circuitos finos azules y verdes, y cables de cobre bajando por el cuello.
@@ -22,6 +22,7 @@ https://raw.githubusercontent.com/piskyRpapalo/PreceptorOS/main/assets/aurelius-
 Es una tira de 4 fotogramas en pixel-art: marmol intacto, grietas, la cara se
 abre y el ojo ambar se enciende, la piedra se rompe. COPIA EL PERSONAJE, NO EL
 PIXEL-ART: quiero anime realista.
+(El fichero conserva su nombre viejo: es una ruta del repositorio, no prosa.)
 
 LAS CINCO ESCENAS, en este orden:
 
@@ -31,7 +32,7 @@ LAS CINCO ESCENAS, en este orden:
    hay vitrinas ni cordones: es un archivo vivo, no una exposicion. Polvo dorado
    suspendido en la luz.
 
-2. CONOCIENDO A AURELIUS. Sala de marmol. La persona esta frente al busto sobre su
+2. CONOCIENDO A PRECEPTOR. Sala de marmol. La persona esta frente al busto sobre su
    peana. El ojo ambar ACABA de encenderse y le ilumina la cara desde abajo; en el
    suelo hay esquirlas de marmol recien caidas. Por una claraboya rota entran
    plantas trepadoras: el jardin reclamando el museo.
@@ -40,7 +41,7 @@ LAS CINCO ESCENAS, en este orden:
    queda en penumbra a su espalda. Lleva en la mano algo pequeno que emite una luz
    calida. En el umbral, la silueta de marmol la despide.
 
-4. AURELIUS EN TU BOLSILLO. Interior domestico de noche, calido, una sola lampara.
+4. PRECEPTOR EN TU BOLSILLO. Interior domestico de noche, calido, una sola lampara.
    La persona sentada con su telefono o su portatil; en la pantalla, el busto en
    pequeno, con el ojo ambar encendido, hablando. Ninguna otra pantalla, ningun
    icono de nube, ningun cable que salga de la habitacion.
