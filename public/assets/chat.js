@@ -190,7 +190,7 @@
     // `tokens` sale del motor o no sale. Contar trozos y llamarlos tokens seria
     // decorar una cifra, que es lo unico que este producto no hace.
     function cerrar() {
-      fin(acc);
+      fin(acc || T.falloVacio);
       document.dispatchEvent(new CustomEvent('preceptor:turno', { detail: {
         ttft: t1 === null ? null : t1 - t0, ms: performance.now() - t0,
         tokens: tokens, via: via } }));
@@ -212,7 +212,13 @@
       (async function () {
         for await (var t of sesion.promptStreaming(papel() + '\n\n' + texto)) {
           if (t1 === null) t1 = performance.now();
-          acc = t; p.textContent = acc;
+          // La Prompt API emite TROZOS, no el texto entero. Asignar en vez de
+          // acumular dejaba solo el ultimo: respuestas de un caracter, «!» y
+          // «.». Se acumula, y se contempla el caso contrario porque la version
+          // vieja de la API si emitia acumulado: si el trozo ya empieza por lo
+          // que llevamos, es acumulado y se asigna.
+          acc = (t.indexOf(acc) === 0 && acc) ? t : acc + t;
+          p.textContent = acc;
         }
         cerrar();
       })().catch(falla);
