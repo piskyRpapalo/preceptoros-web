@@ -81,7 +81,12 @@
   // compilador y no a la maquina, y sale entre tres y diez veces peor.
   function calentar() {
     try {
-      if (via === 'webllm') {
+      if (via === 'ollama') {
+      window.LocalAI.stream(papel() + '\n\n' + texto, function (d) {
+        if (t1 === null) { t1 = performance.now(); avisa('hablando'); }
+        acc += d; p.textContent = acc;
+      }).then(function (n) { tokens = n; cerrar(); }).catch(falla);
+    } else if (via === 'webllm') {
         motor.chat.completions.create({ messages: [{ role: 'user', content: 'ok' }],
           max_tokens: 5 }).catch(function () {});
       } else if (sesion) { sesion.prompt('ok').catch(function () {}); }
@@ -132,7 +137,12 @@
     // ?debug enseña el prompt entero antes de enviarlo. Detras de una bandera
     // y no siempre: un console.log permanente es ruido en la consola de otro.
     if (/[?&]debug/.test(location.search)) console.log(papel() + '\n\n' + texto);
-    if (via === 'webllm') {
+    if (via === 'ollama') {
+      window.LocalAI.stream(papel() + '\n\n' + texto, function (d) {
+        if (t1 === null) { t1 = performance.now(); avisa('hablando'); }
+        acc += d; p.textContent = acc;
+      }).then(function (n) { tokens = n; cerrar(); }).catch(falla);
+    } else if (via === 'webllm') {
       motor.chat.completions.create({
         messages: [{ role: 'system', content: papel() }, { role: 'user', content: texto }],
         temperature: 0.6, stream: true, stream_options: { include_usage: true }
@@ -161,6 +171,13 @@
       })().catch(falla);
     }
   }
+  // Su propia IA manda sobre cualquier otra: es la mas soberana que hay.
+  document.addEventListener('preceptor:localai', function (e) {
+    via = 'ollama';
+    estado(T.laiListo + ' ' + e.detail.modelo, 'nodata');
+    document.dispatchEvent(new CustomEvent('preceptor:brain', {
+      detail: { name: e.detail.modelo + ' (Local)' } }));
+  });
   enviar.addEventListener('click', responder);
   entrada.addEventListener('keydown', function (e) {
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); responder(); }

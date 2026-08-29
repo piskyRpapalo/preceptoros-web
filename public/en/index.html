@@ -23,6 +23,8 @@
   <div id="chat" class="panel">
 <textarea id="pregunta" class="chat-input" placeholder="Write your first question..." rows="4"></textarea>
 <div id="motor"></div><button id="enviar" type="button" class="boton" style="margin-top:0.8rem">Send</button>
+    <div id="voice" class="fila"></div>
+    <div id="local-ai" class="fila"></div>
     <p id="brain" class="brain"></p>
     <div id="dialogo" style="margin-top:1rem"></div>
     <p class="tenue"><a href="./instalar.html">Installation guide, step by step →</a></p>
@@ -98,12 +100,28 @@
  "brainNone": "none",
  "brainBrowser": "Browser AI (Edge)",
  "brainLive": "Live on your machine",
- "brainAsleep": "No engine started yet"
+ "brainAsleep": "No engine started yet",
+ "laiBuscar": "Search local AI",
+ "laiBuscando": "Asking 127.0.0.1:11434…",
+ "laiEncontrados": "Your models found:",
+ "laiListo": "You will talk to",
+ "laiVacio": "NO_DATA — Ollama answers but has no model.",
+ "laiNada": "NO_DATA — no local AI found at 127.0.0.1:11434. Cause:",
+ "micHablar": "Talk",
+ "micEscuchando": "Listening… tap to stop",
+ "micEnAparato": "Dictation on your device. The audio does not leave.",
+ "micSinLocal": "NO_DATA — your browser offers no on-device dictation. The button stays off: the cloud recogniser is not coming back.",
+ "micFallo": "NO_DATA — on-device dictation failed:",
+ "laiOtra": "Another Ollama address",
+ "laiProbar": "Try there",
+ "laiMixto": "From an https page the browser only allows 127.0.0.1. A network IP is blocked as mixed content."
 }</script>
 <script src="/assets/fallback.js"></script>
 <script src="/assets/state.js"></script>
 <script src="/assets/engine.js"></script>
 <script src="/assets/chat.js"></script>
+<script src="/assets/localai.js"></script>
+<script src="/assets/voice.js"></script>
 <script src="/assets/meter.js"></script>
 <script src="/assets/seal.js"></script>
 <script src="/assets/copiar.js"></script>

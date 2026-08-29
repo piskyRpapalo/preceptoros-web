@@ -23,6 +23,8 @@
   <div id="chat" class="panel">
 <textarea id="pregunta" class="chat-input" placeholder="Escribe tu primera pregunta..." rows="4"></textarea>
 <div id="motor"></div><button id="enviar" type="button" class="boton" style="margin-top:0.8rem">Enviar</button>
+    <div id="voice" class="fila"></div>
+    <div id="local-ai" class="fila"></div>
     <p id="brain" class="brain"></p>
     <div id="dialogo" style="margin-top:1rem"></div>
     <p class="tenue"><a href="./instalar.html">Guía de instalación, paso a paso →</a></p>
@@ -98,12 +100,28 @@
  "brainNone": "ninguno",
  "brainBrowser": "IA del navegador (Edge)",
  "brainLive": "Vivo en tu máquina",
- "brainAsleep": "Todavía no hay motor arrancado"
+ "brainAsleep": "Todavía no hay motor arrancado",
+ "laiBuscar": "Buscar IA local",
+ "laiBuscando": "Preguntando a 127.0.0.1:11434…",
+ "laiEncontrados": "Modelos tuyos encontrados:",
+ "laiListo": "Hablarás con",
+ "laiVacio": "NO_DATA — Ollama responde pero no tiene ningún modelo.",
+ "laiNada": "NO_DATA — no se encontró IA local en 127.0.0.1:11434. Causa:",
+ "micHablar": "Hablar",
+ "micEscuchando": "Escuchando… toca para parar",
+ "micEnAparato": "Dictado en tu aparato. El audio no sale de aquí.",
+ "micSinLocal": "NO_DATA — tu navegador no ofrece dictado en el aparato. El botón queda apagado: el reconocedor de la nube no vuelve.",
+ "micFallo": "NO_DATA — el dictado local falló:",
+ "laiOtra": "Otra dirección de Ollama",
+ "laiProbar": "Probar ahí",
+ "laiMixto": "Desde una página https el navegador solo deja hablar con 127.0.0.1. Una IP de red la corta por contenido mixto."
 }</script>
 <script src="/assets/fallback.js"></script>
 <script src="/assets/state.js"></script>
 <script src="/assets/engine.js"></script>
 <script src="/assets/chat.js"></script>
+<script src="/assets/localai.js"></script>
+<script src="/assets/voice.js"></script>
 <script src="/assets/meter.js"></script>
 <script src="/assets/seal.js"></script>
 <script src="/assets/copiar.js"></script>
