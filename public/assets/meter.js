@@ -5,14 +5,14 @@
    Si una cifra no se puede medir, se declara con su causa y la otra sigue
    saliendo: media medida es media medida, no un fallo. */
 (function () {
-  var bloque = document.getElementById('i18n');
+  var block = document.getElementById('i18n');
   var caja = document.getElementById('chat');
-  if (!bloque || !caja) return;
-  var T = JSON.parse(bloque.textContent);
+  if (!block || !caja) return;
+  var T = JSON.parse(block.textContent);
 
   var turnos = 0, avisado = false;
   var panel = document.createElement('div');
-  panel.className = 'bloque';
+  panel.className = 'panel';
   caja.parentNode.insertBefore(panel, caja.nextSibling);
 
   var titulo = document.createElement('p');
@@ -82,7 +82,7 @@
     if (turnos >= 4 && !avisado) {
       avisado = true;
       var aviso = document.createElement('div');
-      aviso.className = 'bloque bloque--violeta';
+      aviso.className = 'panel panel--violeta';
       var t = document.createElement('p');
       t.textContent = T.sensorAviso;
       aviso.appendChild(t);

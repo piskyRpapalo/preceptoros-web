@@ -7,17 +7,18 @@
 <link rel="stylesheet" href="/assets/base.css">
 </head>
 <body>
-<canvas id="fondo" aria-hidden="true"></canvas>
+<canvas id="ambient" aria-hidden="true"></canvas>
 <main>
   <header>
-    <div class="cabeza" role="img" aria-label="busto de mármol de Preceptor despertando"></div>
+    <div class="seal" role="img" aria-label="busto de mármol de Preceptor despertando"></div>
     <div class="marca">
       <h1>Preceptor<b>OS</b></h1>
       <p><a href="/">← cambiar idioma</a></p>
+      <p class="fila"><a class="boton leve" href="./board.html">[ Tablón ]</a> <a class="boton leve" href="./benchmark.html">[ Benchmark ]</a></p>
     </div>
   </header>
   <p class="guia">Tu IA soberana, en tu máquina, sin nube. Escribe abajo para empezar.</p>
-  <div id="chat" class="bloque">
+  <div id="chat" class="panel">
 <textarea id="pregunta" class="chat-input" placeholder="Escribe tu primera pregunta..." rows="4"></textarea>
 <div id="motor"></div><button id="enviar" type="button" class="boton" style="margin-top:0.8rem">Enviar</button>
     <div id="dialogo" style="margin-top:1rem"></div>
@@ -29,7 +30,7 @@
       <li><strong>WebLLM desde esm.run</strong> es la única excepción CDN permitida (~2 GB, una vez).</li>
       <li><strong>Si no hay WebGPU ni LanguageModel,</strong> te genera un JSON para llevar a la IA que ya tengas.</li>
     </ul>
-    <p><a href="./instalar.html">Instalar</a> · <a href="./tablon.html">Tablón</a> · <a href="./benchmark.html">Benchmark</a> · <a href="../hitos.html">Hitos</a></p>
+    <p><a href="./instalar.html">Instalar</a> · <a href="./board.html">Tablón</a> · <a href="./benchmark.html">Benchmark</a> · <a href="../hitos.html">Hitos</a></p>
   </footer>
 </main>
 <script type="application/json" id="i18n">{
@@ -91,11 +92,11 @@
  "tu": "Tú",
  "preceptor": "Preceptor"
 }</script>
-<script src="/assets/respaldo.js"></script>
+<script src="/assets/fallback.js"></script>
 <script src="/assets/chat.js"></script>
-<script src="/assets/medida.js"></script>
-<script src="/assets/sello.js"></script>
+<script src="/assets/meter.js"></script>
+<script src="/assets/seal.js"></script>
 <script src="/assets/copiar.js"></script>
-<script src="/assets/fondo.js"></script>
+<script src="/assets/ambient.js"></script>
 </body>
 </html>

@@ -6,9 +6,9 @@
    opiniones con tipografia de terminal. */
 (function () {
   var raiz = document.getElementById('tabla');
-  var bloque = document.getElementById('i18n');
-  if (!raiz || !bloque) return;
-  var T = JSON.parse(bloque.textContent);
+  var block = document.getElementById('i18n');
+  if (!raiz || !block) return;
+  var T = JSON.parse(block.textContent);
 
   function td(texto, clase) {
     var c = document.createElement('td');
@@ -78,7 +78,7 @@
     var pie = document.createElement('p');
     pie.className = 'tenue';
     var a = document.createElement('a');
-    a.href = '/libro_de_pruebas.jsonl'; a.textContent = 'libro_de_pruebas.jsonl';
+    a.href = '/assets/ledger.jsonl'; a.textContent = 'ledger.jsonl';
     pie.appendChild(document.createTextNode(T.bmFuente + ' '));
     pie.appendChild(a);
     pie.appendChild(document.createTextNode(' · ' + T.bmLlevatelo));
@@ -87,7 +87,7 @@
   // JSONL y no un JSON de una pieza: cada linea se firma, se anade y se
   // fusiona por separado. El fichero esta hecho para SEPARARSE de esta web y
   // seguir sirviendo — esta tabla es una vista suya, no su casa.
-  fetch('/libro_de_pruebas.jsonl').then(function (r) { return r.text(); })
+  fetch('/assets/ledger.jsonl').then(function (r) { return r.text(); })
     .then(function (txt) {
       var d = { filas: [] };
       txt.split('\n').forEach(function (l) {
@@ -96,7 +96,7 @@
         if (o.tipo === 'cabecera') { d.estado = o.estado; d.lineas_firmadas = o.lineas_firmadas; }
         else if (o.tipo === 'medida') d.filas.push(o);
       });
-      d.fuente = 'libro_de_pruebas.jsonl';
+      d.fuente = 'ledger.jsonl';
       (window.fluido || function (f) { f(); })(function () { pinta(d); });
     })
     .catch(function (e) {

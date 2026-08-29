@@ -10,7 +10,7 @@
 
   function fila(m) {
     var d = document.createElement('div');
-    d.className = 'bloque';
+    d.className = 'panel';
     var h = document.createElement('h3');
     h.textContent = T.nombres[m.clave] || m.clave;
     d.appendChild(h);

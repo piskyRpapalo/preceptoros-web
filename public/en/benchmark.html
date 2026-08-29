@@ -9,20 +9,20 @@
 <link rel="stylesheet" href="/assets/agora.css">
 </head>
 <body>
-<canvas id="fondo" aria-hidden="true"></canvas>
+<canvas id="ambient" aria-hidden="true"></canvas>
 <main>
 
 <header>
-  <div class="cabeza" role="img" aria-label="PreceptorOS seal"></div>
+  <div class="seal" role="img" aria-label="PreceptorOS seal"></div>
   <div class="marca">
     <h1>Benchmark<b> · the Book of Proofs</b></h1>
-    <p><a href="/en/">Front page</a> · <a href="/en/tablon.html">Board</a> · <a href="/en/instalar.html">Install</a></p>
+    <p><a href="/en/">Front page</a> · <a href="/en/board.html">Board</a> · <a href="/en/instalar.html">Install</a></p>
   </div>
 </header>
 
 <p class="guia">Which model runs how fast, on which machine, and who measured it. Every row is a signed line carrying the sha256 of the model file: without that hash, «llama-3.2-3b» identifies nothing.</p>
 
-<div id="tabla" class="bloque"></div>
+<div id="tabla" class="panel"></div>
 
 <footer class="honest-footer">
   <h2>Where this table comes from</h2>
@@ -58,7 +58,7 @@
   "sha256 — the fingerprint of the model file. Two files with the same name may not be the same model; the fingerprint does not lie."
  ]
 }</script>
-<script src="/assets/fondo.js"></script>
+<script src="/assets/ambient.js"></script>
 <script src="/assets/benchmark.js"></script>
 
 </body>

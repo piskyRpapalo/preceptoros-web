@@ -9,20 +9,20 @@
 <link rel="stylesheet" href="/assets/agora.css">
 </head>
 <body>
-<canvas id="fondo" aria-hidden="true"></canvas>
+<canvas id="ambient" aria-hidden="true"></canvas>
 <main>
 
 <header>
-  <div class="cabeza" role="img" aria-label="Sello de PreceptorOS"></div>
+  <div class="seal" role="img" aria-label="Sello de PreceptorOS"></div>
   <div class="marca">
     <h1>Benchmark<b> · el Libro de Pruebas</b></h1>
-    <p><a href="/es/">Portada</a> · <a href="/es/tablon.html">Tablón</a> · <a href="/es/instalar.html">Instalar</a></p>
+    <p><a href="/es/">Portada</a> · <a href="/es/board.html">Tablón</a> · <a href="/es/instalar.html">Instalar</a></p>
   </div>
 </header>
 
 <p class="guia">Qué modelo corre a cuánto, en qué máquina, y quién lo midió. Cada fila es una línea firmada con el sha256 del fichero del modelo dentro: sin ese hash, «llama-3.2-3b» no identifica nada.</p>
 
-<div id="tabla" class="bloque"></div>
+<div id="tabla" class="panel"></div>
 
 <footer class="honest-footer">
   <h2>De dónde sale esta tabla</h2>
@@ -58,7 +58,7 @@
   "sha256 — la huella del fichero del modelo. Dos ficheros con el mismo nombre pueden no ser el mismo modelo; la huella no miente."
  ]
 }</script>
-<script src="/assets/fondo.js"></script>
+<script src="/assets/ambient.js"></script>
 <script src="/assets/benchmark.js"></script>
 
 </body>

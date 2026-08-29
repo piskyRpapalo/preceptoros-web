@@ -9,20 +9,20 @@
 <link rel="stylesheet" href="/assets/agora.css">
 </head>
 <body>
-<canvas id="fondo" aria-hidden="true"></canvas>
+<canvas id="ambient" aria-hidden="true"></canvas>
 <main>
 
 <header>
-  <div class="cabeza" role="img" aria-label="Sceau de PreceptorOS"></div>
+  <div class="seal" role="img" aria-label="Sceau de PreceptorOS"></div>
   <div class="marca">
     <h1>Benchmark<b> · le Livre des Preuves</b></h1>
-    <p><a href="/fr/">Accueil</a> · <a href="/fr/tablon.html">Tableau</a> · <a href="/fr/instalar.html">Installer</a></p>
+    <p><a href="/fr/">Accueil</a> · <a href="/fr/board.html">Tableau</a> · <a href="/fr/instalar.html">Installer</a></p>
   </div>
 </header>
 
 <p class="guia">Quel modèle tourne à quelle vitesse, sur quelle machine, et qui l'a mesuré. Chaque ligne est signée et porte le sha256 du fichier du modèle : sans ce hash, « llama-3.2-3b » n'identifie rien.</p>
 
-<div id="tabla" class="bloque"></div>
+<div id="tabla" class="panel"></div>
 
 <footer class="honest-footer">
   <h2>D'où vient ce tableau</h2>
@@ -58,7 +58,7 @@
   "sha256 — l'empreinte du fichier du modèle. Deux fichiers du même nom peuvent ne pas être le même modèle ; l'empreinte, elle, ne ment pas."
  ]
 }</script>
-<script src="/assets/fondo.js"></script>
+<script src="/assets/ambient.js"></script>
 <script src="/assets/benchmark.js"></script>
 
 </body>

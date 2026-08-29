@@ -88,7 +88,7 @@
     } catch (e) { /* el calentamiento nunca rompe el turno de nadie */ }
   }
 
-  /* --- 4. El JSON vive en respaldo.js. Aqui solo el puente. --- */
+  /* --- 4. El JSON vive en fallback.js. Aqui solo el puente. --- */
   function ofrecerJSON(causa) { window.Respaldo.ofrecerJSON(causa); }
   function salida() { return window.Respaldo.salida(); }
   window.Respaldo.instalar({ motorZona: motorZona, entrada: entrada, sobre: sobre,

@@ -1,4 +1,4 @@
-/* preceptoros.org · el Agora: tablon y benchmark.
+/* preceptoros.org · el Agora: board y benchmark.
    Hoja aparte y no dentro de base.css por el limite de 10 KB — base.css esta a
    183 bytes del suyo. Densidad de lista de correo: sin imagenes, sin tarjetas,
    sin espacio decorativo. Aqui se viene a leer muchas lineas seguidas. */
@@ -17,7 +17,7 @@ td.hash{color:var(--text-dim);font-size:.72rem}
 td.cifra{color:var(--ok);font-variant-numeric:tabular-nums}
 td.nodato{color:var(--warn)}
 
-/* --- el tablon ------------------------------------------------------------ */
+/* --- el board ------------------------------------------------------------ */
 ol.hilos{list-style:none}
 ol.hilos li{border-bottom:1px solid rgba(255,255,255,.05);padding:.55rem 0}
 ol.hilos li:last-child{border-bottom:0}

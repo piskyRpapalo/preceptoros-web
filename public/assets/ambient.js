@@ -18,7 +18,7 @@
   };
   if (quieto) return;
 
-  var lienzo = document.getElementById('fondo');
+  var lienzo = document.getElementById('ambient');
   if (!lienzo || !lienzo.getContext) return;
   var c = lienzo.getContext('2d');
   var ESC = 10;                      // 1/10 de resolucion: nadie lo nota tras el blur

@@ -4,16 +4,16 @@
    habla mientras los suelta. Cuando el turno acaba, vuelve a estar quieta.
    Un sello que se agita solo seria decoracion; este es un sensor. */
 (function () {
-  var cara = document.querySelector('.cabeza');
+  var cara = document.querySelector('.seal');
   if (!cara) return;
   function estado(clase) {
-    cara.classList.remove('pensando', 'hablando', 'reposo');
+    cara.classList.remove('thinking', 'talking', 'resting');
     if (clase) cara.classList.add(clase);
   }
-  document.addEventListener('preceptor:pensando', function () { estado('pensando'); });
-  document.addEventListener('preceptor:hablando', function () { estado('hablando'); });
+  document.addEventListener('preceptor:pensando', function () { estado('thinking'); });
+  document.addEventListener('preceptor:hablando', function () { estado('talking'); });
   // Al cerrar el turno se queda en reposo y NO se relanza el despertar: la
   // piedra ya se rompio, y volver a romperla cada respuesta seria mentir sobre
   // lo que acaba de pasar.
-  document.addEventListener('preceptor:turno', function () { estado('reposo'); });
+  document.addEventListener('preceptor:turno', function () { estado('resting'); });
 })();

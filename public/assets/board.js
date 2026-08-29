@@ -4,9 +4,9 @@
    piden nada al servidor — ensenan y esconden lo que ya esta pintado. */
 (function () {
   var raiz = document.getElementById('hilos');
-  var bloque = document.getElementById('i18n');
-  if (!raiz || !bloque) return;
-  var T = JSON.parse(bloque.textContent);
+  var block = document.getElementById('i18n');
+  if (!raiz || !block) return;
+  var T = JSON.parse(block.textContent);
   var TIPOS = ['RETO', 'TAREA', 'MERCADO', 'GENERAL'];
 
   function cuando(iso) {
@@ -65,7 +65,7 @@
     });
     raiz.appendChild(lista);
   }
-  fetch('/hilos.json').then(function (r) { return r.json(); })
+  fetch('/threads.json').then(function (r) { return r.json(); })
     .then(function (d) { (window.fluido || function (fn) { fn(); })(function () { pinta(d); }); })
     .catch(function (e) {
       var p = document.createElement('p');

@@ -62,10 +62,14 @@ def paginas_de_contenido():
 
 class Estructura(unittest.TestCase):
 
-    def test_maximo_cinco_paginas(self):
+    def test_maximo_siete_paginas(self):
+        # Amnistia firmada por el Soberano el 2026-08-29: de 5 a 7. El Agora
+        # necesita board y benchmark, y el perfil publico vendra despues. El
+        # limite sigue existiendo porque una web que crece sin techo deja de
+        # poder leerse entera, que es lo que este numero protege.
         paginas = paginas_de_contenido()
-        self.assertLessEqual(len(paginas), 5,
-            "mas de 5 paginas de contenido: " + ", ".join(p.name for p in paginas))
+        self.assertLessEqual(len(paginas), 7,
+            "mas de 7 paginas de contenido: " + ", ".join(p.name for p in paginas))
 
     def test_cero_html_en_la_raiz(self):
         sueltos = [p.name for p in RAIZ.glob("*.html")]
@@ -132,26 +136,33 @@ class Doctrina(unittest.TestCase):
         #     Sin esto, en un navegador sin backdrop-filter el panel se queda
         #     translucido sobre el fondo animado y el texto no se lee.
         if "backdrop-filter" in css:
-            self.assertIn("@supports", css,
+            # Se busca la AT-RULE, no la palabra: la primera vez que aparecia
+            # «@supports» era dentro de un comentario que explicaba la regla, y
+            # el test media contra el comentario en vez de contra el codigo.
+            self.assertIn("@supports (backdrop-filter", css,
                           "backdrop-filter sin @supports: sin respaldo no se lee")
-            i = css.index("@supports")
-            self.assertLess(css.index("background:var(--surface)"), i,
+            i = css.index("@supports (backdrop-filter")
+            self.assertLess(css.index("background:var(--marmol-claro)"), i,
                             "el respaldo opaco tiene que declararse ANTES del cristal")
 
         # 2 · Los radios salen del token, no a ojo. Un radio suelto es como
         #     empieza una interfaz con seis esquinas distintas.
         for r in re.findall(r"border-radius\s*:\s*([^;}]+)", css):
-            self.assertIn("--radio", r, f"border-radius fuera del token: {r.strip()}")
+            # `0` vale siempre: es la ausencia de radio, y con `border-image` el
+            # radio lo ignora el navegador de todas formas. Cualquier otro valor
+            # tiene que salir del token, o acabamos con seis esquinas distintas.
+            self.assertTrue(r.strip() == "0" or "--radius" in r,
+                            f"border-radius fuera del token: {r.strip()}")
 
         # 3 · Quien pide menos movimiento lo recibe: sin ambiente y sin muelles.
         reducido = css[css.index("prefers-reduced-motion"):] if "prefers-reduced-motion" in css else ""
         self.assertTrue(reducido, "el canon no respeta prefers-reduced-motion")
-        self.assertIn("#fondo{display:none}", reducido.replace(" ", ""),
+        self.assertIn("#ambient{display:none}", reducido.replace(" ", ""),
                       "con movimiento reducido el ambiente sigue pintando")
 
         # 4 · El lienzo no se come un solo clic.
         self.assertIn("pointer-events:none", css.replace(" ", ""),
-                      "#fondo sin pointer-events:none intercepta la interfaz")
+                      "#ambient sin pointer-events:none intercepta la interfaz")
 
         # El halo (text-shadow) sigue permitido SOLO en cifras vivas.
         for linea in css.splitlines():
