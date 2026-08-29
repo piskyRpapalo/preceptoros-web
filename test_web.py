@@ -151,7 +151,9 @@ class Doctrina(unittest.TestCase):
             # `0` vale siempre: es la ausencia de radio, y con `border-image` el
             # radio lo ignora el navegador de todas formas. Cualquier otro valor
             # tiene que salir del token, o acabamos con seis esquinas distintas.
-            self.assertTrue(r.strip() == "0" or "--radius" in r,
+            # `inherit` vale: hereda el token del panel, que es justo lo que
+            # tiene que hacer el anillo enmascarado para seguir sus esquinas.
+            self.assertTrue(r.strip() in ("0", "inherit") or "--radius" in r,
                             f"border-radius fuera del token: {r.strip()}")
 
         # 3 · Quien pide menos movimiento lo recibe: sin ambiente y sin muelles.

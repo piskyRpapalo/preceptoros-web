@@ -1,11 +1,8 @@
 /* preceptoros.org · canon visual v4.0 «Liquid Glass Solar-Punk».
-   Firmado el 2026-08-29. Vuelve el marmol, el bronce y el violeta; lo que se
-   queda de las dos versiones oscuras del mismo dia es la MATERIA: cristal
-   esmerilado, ambiente detras y morfosis entre estados. La identidad es la de
-   siempre; lo que cambia es que ahora flota.
-
-   Historia: v2.0 «Edge Terminal» y v3.0 «Liquid Glass» oscuro se firmaron y se
-   retiraron el mismo dia. Esta es la sintesis. Paleta MEDIDA de la app.
+   Firmado el 2026-08-29. Marmol, bronce y violeta de siempre; lo que se queda
+   de las dos versiones oscuras del mismo dia (v2.0 «Edge Terminal» y v3.0
+   oscura, firmadas y retiradas ambas) es la MATERIA: cristal, ambiente detras
+   y morfosis. La identidad no cambia; ahora flota. Paleta MEDIDA de la app.
    Paleta MEDIDA de la app (assets de Aurelius), no elegida a ojo:
    violeta #6D5AE0 (burbuja y boton de enviar), indigo #261789 (navegacion),
    bronce #93705C/#78624C/#5A4531 (el marco), marmol #DDE2E6-#EBEEF2.
@@ -53,13 +50,20 @@ main{width:100%;max-width:46rem;margin:0 auto}
     -webkit-backdrop-filter:blur(16px) saturate(180%);
     backdrop-filter:blur(16px) saturate(180%)}
 }
-/* El canto: metal violeta cepillado, con las estrias a lo largo de cada lado.
-   NO se usa `border-image` aunque sea lo obvio: ignora el border-radius y
-   obligaba a elegir entre el filo y las esquinas. Con dos capas de fondo
-   —textura en border-box, cristal en padding-box— se tienen las dos. */
-@supports (background-clip:padding-box){
-  .panel{border:5px solid transparent;
-    background:url(edge-violet.png) repeat border-box, var(--glass) padding-box}
+/* El canto: metal violeta cepillado, en un ANILLO con mascara. Las dos vias
+   obvias fallan: `border-image` ignora el radio, y dos capas de fondo
+   border-box/padding-box pintan la textura por TODO el panel — con el cristal
+   al 55 % se veia a traves como una rejilla. Se probo y se vio. */
+.panel{position:relative}
+@supports ((mask-composite:exclude) or (-webkit-mask-composite:xor)){
+  .panel{border-color:transparent}
+  .panel::before{content:"";position:absolute;inset:0;pointer-events:none;
+    border-radius:inherit;padding:5px;
+    background:url(edge-violet.png) repeat;
+    -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor;
+    mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+    mask-composite:exclude}
 }
 .panel--violeta{border-color:var(--violeta)}
 /* Lo que se lee largo sube de opacidad. */
