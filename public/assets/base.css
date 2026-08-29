@@ -1,132 +1,130 @@
-/* preceptoros.org · solar-punk brutalista, vestido con la piel de PreceptorOS.
-   Paleta MEDIDA de la app (assets de Aurelius), no elegida a ojo:
-   violeta #6D5AE0 (burbuja y boton de enviar), indigo #261789 (navegacion),
-   bronce #93705C/#78624C/#5A4531 (el marco), marmol #DDE2E6-#EBEEF2.
-   El marmol es una textura real de 4 KB, no un degradado: el canon prohibe
-   gradientes CSS, y una foto de piedra no es un gradiente — es la piedra. */
+/* preceptoros.org · canon visual v2.0 «Edge Terminal».
+   Firmado por el Soberano el 2026-08-29, sustituyendo al solar-punk brutalista
+   de marmol y bronce. El motivo esta escrito para que dentro de seis meses no
+   se lea como un capricho: la piedra contaba el lore antes de que el producto
+   se explicara solo, y a quien llega a medir su maquina la textura le estorba.
+   El arte no se tira: vive en las laminas del lore y en las lamina-seed. Fuera
+   de ahi, esto es una terminal.
+
+   Cero imagenes de fondo, cero animaciones, cero degradados, cero sombras,
+   cero radios. Todo en monoespaciada. */
 :root{
-  --marmol:#E4E8EC; --marmol-claro:#F2F5F7; --tinta:#1E1826; --tenue:#5D5668;
-  --violeta:#6D5AE0; --violeta-texto:#4B37C4; --indigo:#261789;
-  --bronce:#78624C; --bronce-claro:#93705C; --bronce-hondo:#5A4531;
-  --jardin:#2E7D4F; --sol:#B4550C;
+  --bg:#0d1117;          /* fondo plano, sin textura */
+  --surface:#161b22;     /* bloques */
+  --linea:#30363d;       /* 1px, el unico grosor de borde */
+  --text:#c9d1d9;
+  --text-dim:#8b949e;    /* metricas y notas */
+  --accent:#58a6ff;      /* enlaces y acciones */
+  --ok:#3fb950;          /* cifras vivas */
+  --warn:#d29922;        /* NO_DATA y avisos */
   --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"DejaVu Sans Mono",monospace;
 }
 *{margin:0;padding:0;box-sizing:border-box;border-radius:0}
 html{-webkit-text-size-adjust:100%}
 body{
-  background:var(--marmol) url(marmol.webp) repeat;
-  background-size:340px;
-  color:var(--tinta);font:400 16px/1.65 var(--mono);
+  background:var(--bg);
+  color:var(--text);font:400 15px/1.6 var(--mono);
   padding:1.5rem 1.1rem 4rem;
 }
 main{width:100%;max-width:46rem;margin:0 auto}
 
-/* --- bloques: caja de marmol claro con filo de bronce, sin radio ni sombra --- */
-.bloque{background:var(--marmol-claro);border:2px solid var(--bronce);
-  padding:1.25rem 1.15rem;margin:0 0 1.4rem}
-.bloque--violeta{border-color:var(--violeta)}
+/* --- bloques ------------------------------------------------------------- */
+.bloque{background:var(--surface);border:1px solid var(--linea);
+  padding:1.1rem 1rem;margin:0 0 1.2rem}
+/* El nombre se conserva a proposito: nadie lo ve, y renombrarlo obligaria a
+   tocar seis HTML y cuatro JS para cambiar una palabra sin efecto visible. */
+.bloque--violeta{border-color:var(--accent)}
 
-/* --- cabecera --- */
-header{display:flex;align-items:flex-end;gap:1rem;border-bottom:3px solid var(--bronce);
-  padding-bottom:.9rem;margin-bottom:1.6rem}
+/* --- cabecera: sin busto, sin sprite, sin animacion ---------------------- */
+header{display:flex;align-items:center;gap:.9rem;
+  border-bottom:1px solid var(--linea);padding-bottom:.8rem;margin-bottom:1.5rem}
 .marca{flex:1;min-width:0}
-.marca h1{font-size:1.05rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
-  color:var(--indigo);word-break:break-word}
-.marca h1 b{font-weight:400;color:var(--bronce-hondo)}
-.marca p{color:var(--tenue);font-size:.78rem;margin-top:.2rem}
-
-/* --- la cabeza: unico @keyframes del sitio, y es arte existente --- */
-.cabeza{width:96px;height:128px;flex:0 0 96px;
-  background-image:url(despierta.webp);background-repeat:no-repeat;
-  background-size:384px 128px;background-position:-192px 0;
-  background-color:#fff;
-  image-rendering:pixelated;image-rendering:crisp-edges;
-  border:2px solid var(--violeta);animation:despertar 1.1s steps(2) 1 both}
-.cabeza.habla{background-image:url(habla.webp);animation:hablar .62s steps(4) infinite}
-/* Despertar recorre 1 -> 2 -> 3 y SE QUEDA EN EL TERCERO: marmol intacto,
-   grietas, cara descubierta con el ojo encendido. El cuarto fotograma es la
-   piedra reventando en pedazos — buen golpe de efecto, pésimo estado de reposo.
-   De ahi `to:-192px` con steps(2): los pasos intermedios pintan 1 y 2, y el
-   valor final de la animacion pinta el 3. (Con steps(n) el valor en t=1 es el
-   `to`; por eso un `to` de -384px dejaba el fondo fuera de la tira y la cabeza
-   desaparecia al terminar.) Hablar es infinita: nunca llega a t=1, asi que ahi
-   los cuatro fotogramas ciclan bien con steps(4). */
-@keyframes despertar{from{background-position:0 0}to{background-position:-192px 0}}
-@keyframes hablar{from{background-position:0 0}to{background-position:-384px 0}}
-@media (prefers-reduced-motion:reduce){
-  .cabeza,.cabeza.habla{animation:none;background-position:-192px 0}
-}
-
-/* --- tipografia --- */
-h2{font-size:.82rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
-  color:var(--bronce-hondo);margin:2.2rem 0 .8rem;
-  border-bottom:1px solid var(--bronce-claro);padding-bottom:.4rem}
-h3{font-size:.95rem;font-weight:700;margin:0 0 .3rem;color:var(--indigo)}
-p{margin:0 0 .9rem}
-.guia{font-size:1.05rem;line-height:1.55}
-.tenue{color:var(--tenue);font-size:.8rem}
-a{color:var(--violeta-texto);text-underline-offset:.2em}
-a:hover,a:focus{background:var(--violeta);color:#fff;outline:0}
-code,kbd{font-family:var(--mono);color:var(--sol);word-break:break-word}
-strong{color:var(--indigo)}
-
-/* --- pasos numerados: el bronce como objeto, plano y con filo --- */
-ol.pasos{list-style:none;counter-reset:p}
-ol.pasos li{counter-increment:p;display:flex;gap:.85rem;margin-bottom:1rem}
-ol.pasos li::before{content:counter(p);flex:0 0 2rem;height:2rem;
+.marca h1{font-size:1rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--text);word-break:break-word}
+.marca h1 b{font-weight:400;color:var(--text-dim)}
+.marca p{color:var(--text-dim);font-size:.76rem;margin-top:.15rem}
+/* La marca: una letra, no una cara. Sin fichero, sin peso, sin fotogramas. */
+.cabeza{width:38px;height:38px;flex:0 0 38px;
+  border:1px solid var(--accent);color:var(--accent);
   display:flex;align-items:center;justify-content:center;
-  background:var(--bronce);color:var(--marmol-claro);font-weight:700;font-size:.9rem}
+  font-weight:700;font-size:1.1rem;line-height:1}
+.cabeza::before{content:"P"}
+
+/* --- tipografia ---------------------------------------------------------- */
+h2{font-size:.8rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--text-dim);margin:2rem 0 .7rem;
+  border-bottom:1px solid var(--linea);padding-bottom:.35rem}
+h3{font-size:.92rem;font-weight:700;margin:0 0 .3rem;color:var(--text)}
+p{margin:0 0 .85rem}
+.guia{font-size:.95rem;line-height:1.55;color:var(--text-dim)}
+.tenue{color:var(--text-dim);font-size:.78rem}
+a{color:var(--accent);text-underline-offset:.2em}
+a:hover,a:focus{background:var(--accent);color:var(--bg);outline:0}
+code,kbd{font-family:var(--mono);color:var(--warn);word-break:break-word}
+strong{color:var(--text);font-weight:700}
+
+/* --- pasos numerados ----------------------------------------------------- */
+ol.pasos{list-style:none;counter-reset:p}
+ol.pasos li{counter-increment:p;display:flex;gap:.8rem;margin-bottom:.9rem}
+ol.pasos li::before{content:counter(p);flex:0 0 1.8rem;height:1.8rem;
+  display:flex;align-items:center;justify-content:center;
+  border:1px solid var(--linea);color:var(--text-dim);font-size:.8rem}
 ol.pasos div{flex:1;min-width:0}
 
-/* --- controles --- */
-button,.boton{font:inherit;font-size:.85rem;cursor:pointer;
-  background:var(--violeta);color:#fff;border:2px solid var(--violeta);
-  padding:.6rem .9rem;display:inline-block;text-decoration:none}
-button:hover,button:focus,.boton:hover,.boton:focus{background:var(--indigo);border-color:var(--indigo);outline:0}
-button[disabled]{background:var(--tenue);border-color:var(--tenue);cursor:progress}
-button.leve{background:transparent;color:var(--bronce-hondo);border-color:var(--bronce)}
-button.leve:hover,button.leve:focus{background:var(--bronce);color:var(--marmol-claro)}
+/* --- controles ----------------------------------------------------------- */
+button,.boton{font:inherit;font-size:.82rem;cursor:pointer;
+  background:transparent;color:var(--accent);border:1px solid var(--accent);
+  padding:.5rem .85rem;display:inline-block;text-decoration:none}
+button:hover,button:focus,.boton:hover,.boton:focus{background:var(--accent);color:var(--bg);outline:0}
+button[disabled]{color:var(--text-dim);border-color:var(--linea);cursor:progress}
+button[disabled]:hover{background:transparent;color:var(--text-dim)}
+button.leve{color:var(--text-dim);border-color:var(--linea)}
+button.leve:hover,button.leve:focus{background:var(--linea);color:var(--text)}
 .fila{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.7rem}
-input,textarea{font:inherit;width:100%;background:#fff;color:var(--tinta);
-  border:2px solid var(--bronce);padding:.65rem .7rem}
-input:focus,textarea:focus{outline:0;border-color:var(--violeta)}
-textarea{min-height:8rem;font-size:.78rem;line-height:1.5;resize:vertical}
+input,textarea,select{font:inherit;font-family:var(--mono);width:100%;
+  background:var(--bg);color:var(--text);border:1px solid var(--linea);padding:.6rem .65rem}
+input:focus,textarea:focus,select:focus{outline:0;border-color:var(--accent)}
+textarea{min-height:7rem;font-size:.78rem;line-height:1.5;resize:vertical}
+input[type=range]{padding:0;accent-color:var(--accent)}
+input[type=checkbox]{width:auto;accent-color:var(--accent)}
 
-/* --- conversacion --- */
+/* --- conversacion -------------------------------------------------------- */
 .dialogo{margin:1rem 0 0;max-height:22rem;overflow-y:auto}
-.dialogo p{border-left:3px solid var(--bronce-claro);padding-left:.7rem;font-size:.9rem}
-.dialogo p.tu{border-left-color:var(--violeta);color:var(--indigo)}
+.dialogo p{border-left:1px solid var(--linea);padding-left:.7rem;font-size:.86rem}
+.dialogo p.tu{border-left-color:var(--accent);color:var(--text-dim)}
 
-/* --- estados honestos --- */
-.nodata{color:var(--sol);font-size:.8rem;border-left:3px solid var(--sol);padding-left:.7rem;margin:.8rem 0}
-.cifra{font-variant-numeric:tabular-nums;font-weight:700;color:var(--violeta-texto);
-  text-shadow:0 0 10px rgba(109,90,224,.45)}  /* halo SOLO en cifras vivas */
+/* --- estados honestos ---------------------------------------------------- */
+.nodata{color:var(--warn);font-size:.78rem;border-left:1px solid var(--warn);
+  padding-left:.7rem;margin:.7rem 0}
+/* La cifra medida es lo unico verde de la pantalla: si algo llama la atencion
+   aqui, que sea un numero que salio del aparato de quien mira. Sin halo — el
+   canon viejo lo permitia «solo en cifras vivas» y ya no hace falta. */
+.cifra{font-variant-numeric:tabular-nums;font-weight:700;color:var(--ok)}
 
-/* --- pie honesto --- */
-.honest-footer{margin-top:2.5rem;border-top:3px solid var(--bronce);padding-top:1rem;
-  font-size:.74rem;line-height:1.6;color:var(--tenue)}
+/* --- pie honesto --------------------------------------------------------- */
+.honest-footer{margin-top:2.2rem;border-top:1px solid var(--linea);padding-top:.9rem;
+  font-size:.73rem;line-height:1.6;color:var(--text-dim)}
 .honest-footer h2{margin-top:0}
-.honest-footer li{margin:0 0 .5rem 1.1rem}
-.honest-footer strong{color:var(--bronce-hondo)}
+.honest-footer li{margin:0 0 .45rem 1.1rem}
+.honest-footer strong{color:var(--text)}
 
-/* --- laminas: TODA imagen va sobre blanco ---------------------------------
-   El arte de la app es bronce y marmol recortado sobre transparencia. Encima
-   del veteado del fondo se ensuciaba y perdia el filo; sobre blanco vuelve a
-   leerse como un objeto. El blanco esta ademas dentro del propio WebP, no solo
-   en el CSS, para que no dependa de que la hoja cargue. */
-.diapos{margin:1.4rem 0}
+/* --- laminas: el arte se queda AQUI, y solo aqui -------------------------- */
+.diapos{margin:1.3rem 0}
 .diapo{display:none}
 .diapo:target{display:block}
-/* Sin ninguna diapositiva apuntada, manda la primera. :has() es Baseline
-   ampliamente disponible desde junio de 2026, y ahorra el JS entero: el pase
-   funciona con enlaces, se comparte por URL y sobrevive sin JavaScript. */
+/* Sin ninguna diapositiva apuntada, manda la primera. :has() ahorra el JS
+   entero: el pase funciona con enlaces y sobrevive sin JavaScript. */
 .diapos:not(:has(.diapo:target)) #l1{display:block}
-.diapo figure{background:#F8F7FC;border:2px solid var(--bronce);padding:1.5rem 1.2rem;text-align:center}
-.diapo img{width:160px;height:160px;display:block;margin:0 auto 1.1rem;
-  border:1px solid var(--bronce-claro)}
+.diapo figure{background:var(--surface);border:1px solid var(--linea);
+  padding:1.3rem 1.1rem;text-align:center}
+/* Las laminas son arte sobre transparencia: necesitan su fondo claro propio o
+   se pierden contra el gris oscuro. Es la unica isla clara del sitio, y es
+   deliberada. */
+.diapo img{width:150px;height:150px;display:block;margin:0 auto 1rem;
+  background:#fff;border:1px solid var(--linea)}
 .diapo figcaption{text-align:left}
 .diapo h3{text-align:center}
-.diapo blockquote{border-left:3px solid var(--violeta);padding-left:.9rem;margin:1rem 0 0;
-  text-align:left;color:var(--tinta)}
-.diapo cite{display:block;margin-top:.5rem;font-style:normal;font-size:.74rem;color:var(--tenue)}
-.cuenta{font-size:.74rem;color:var(--tenue);letter-spacing:.14em;text-transform:uppercase}
+.diapo blockquote{border-left:1px solid var(--accent);padding-left:.85rem;margin:1rem 0 0;
+  text-align:left;color:var(--text-dim)}
+.diapo cite{display:block;margin-top:.5rem;font-style:normal;font-size:.73rem;color:var(--text-dim)}
+.cuenta{font-size:.73rem;color:var(--text-dim);letter-spacing:.12em;text-transform:uppercase}

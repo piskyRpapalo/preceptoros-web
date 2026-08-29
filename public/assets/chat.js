@@ -23,7 +23,6 @@
   var enviar = document.getElementById('enviar');
   var motorZona = document.getElementById('motor');
   var dialogo = document.getElementById('dialogo');
-  var cabeza = document.querySelector('.cabeza');
   var quieto = document.getElementById('quieto');
   var decidido = false, motor = null, via = null, sesion = null;
 
@@ -179,10 +178,8 @@
     di(texto, true);
     entrada.value = '';
     var p = di('…');
-    if (cabeza) cabeza.classList.add('habla');
     var fin = function (t) {
       p.textContent = t;
-      if (cabeza) cabeza.classList.remove('habla');
       dialogo.scrollTop = dialogo.scrollHeight;
     };
     var falla = function (e) { fin(T.falloRespuesta + ' — ' + (e && e.message ? e.message : e)); };
