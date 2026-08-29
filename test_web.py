@@ -118,13 +118,42 @@ class Doctrina(unittest.TestCase):
                 for ip in re.findall(r"\b(?:\d{1,3}\.){3}\d{1,3}\b", t):
                     self.assertEqual(ip, "127.0.0.1", f"IP incrustada en {p}: {ip}")
 
-    def test_cero_gradientes_sombras_y_radios(self):
+    def test_el_cristal_degrada_y_se_puede_apagar(self):
+        """Canon v3.0 «Liquid Glass», firmado el 2026-08-29.
+
+        Este test SUSTITUYE al que prohibia degradados, sombras, blur y radios.
+        Se reescribio, no se borro: el canon cambio y el gate tiene que vigilar
+        el canon vigente, o deja de ser un gate. Lo que ahora se exige no es
+        austeridad sino que el cristal no deje a nadie fuera.
+        """
         css = (PUBLICO / "assets" / "base.css").read_text(encoding="utf-8")
-        for prohibido in ("linear-gradient", "radial-gradient", "box-shadow", "backdrop-filter"):
-            self.assertNotIn(prohibido, css)
-        radios = re.findall(r"border-radius\s*:\s*([^;}]+)", css)
-        self.assertTrue(all(r.strip() == "0" for r in radios), f"border-radius no nulo: {radios}")
-        # El halo (text-shadow) esta permitido SOLO en cifras vivas.
+
+        # 1 · El desenfoque va tras `@supports`, y con respaldo opaco delante.
+        #     Sin esto, en un navegador sin backdrop-filter el panel se queda
+        #     translucido sobre el fondo animado y el texto no se lee.
+        if "backdrop-filter" in css:
+            self.assertIn("@supports", css,
+                          "backdrop-filter sin @supports: sin respaldo no se lee")
+            i = css.index("@supports")
+            self.assertLess(css.index("background:var(--surface)"), i,
+                            "el respaldo opaco tiene que declararse ANTES del cristal")
+
+        # 2 · Los radios salen del token, no a ojo. Un radio suelto es como
+        #     empieza una interfaz con seis esquinas distintas.
+        for r in re.findall(r"border-radius\s*:\s*([^;}]+)", css):
+            self.assertIn("--radio", r, f"border-radius fuera del token: {r.strip()}")
+
+        # 3 · Quien pide menos movimiento lo recibe: sin ambiente y sin muelles.
+        reducido = css[css.index("prefers-reduced-motion"):] if "prefers-reduced-motion" in css else ""
+        self.assertTrue(reducido, "el canon no respeta prefers-reduced-motion")
+        self.assertIn("#fondo{display:none}", reducido.replace(" ", ""),
+                      "con movimiento reducido el ambiente sigue pintando")
+
+        # 4 · El lienzo no se come un solo clic.
+        self.assertIn("pointer-events:none", css.replace(" ", ""),
+                      "#fondo sin pointer-events:none intercepta la interfaz")
+
+        # El halo (text-shadow) sigue permitido SOLO en cifras vivas.
         for linea in css.splitlines():
             if "text-shadow" in linea:
                 self.assertIn("cifras vivas", linea,

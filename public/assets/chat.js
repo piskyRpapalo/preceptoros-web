@@ -30,8 +30,10 @@
     var p = document.createElement('p');
     if (mio) p.className = 'tu';
     p.textContent = texto;
-    dialogo.appendChild(p);
-    dialogo.scrollTop = dialogo.scrollHeight;
+    (window.fluido || function (f) { f(); })(function () {
+      dialogo.appendChild(p);
+      dialogo.scrollTop = dialogo.scrollHeight;
+    });
     return p;
   }
   function estado(texto, clase) {

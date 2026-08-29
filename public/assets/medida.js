@@ -47,6 +47,7 @@
   }
 
   document.addEventListener('preceptor:turno', function (ev) {
+   (window.fluido || function (f) { f(); })(function () {
     var d = ev.detail || {};
     turnos++;
     panel.innerHTML = '';
@@ -104,5 +105,6 @@
       aviso.appendChild(f);
       panel.appendChild(aviso);
     }
+   });
   });
 })();

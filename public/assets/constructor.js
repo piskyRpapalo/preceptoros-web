@@ -125,8 +125,10 @@
   var hecho = nodo('p', 'tenue', '');
   boton.addEventListener('click', function () {
     var a = sellar();
+    (window.fluido || function (f) { f(); })(function () {
     hecho.textContent = T.consSellado + ' · ' + a.reglas.length + ' ' + T.consReglasN +
                         ' · ' + a.prompt.length + ' ' + T.consCaracteres;
+    });
   });
 
   raiz.appendChild(etiqueta(T.consRol, 'c-rol'));

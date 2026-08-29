@@ -79,6 +79,7 @@
     ver.type = 'button'; ver.className = 'leve'; ver.textContent = T.memoryVer;
     var abierto = false, cuerpo = null;
     ver.addEventListener('click', function () {
+     (window.fluido || function (f) { f(); })(function () {
       if (abierto) { if (cuerpo) cuerpo.remove(); cuerpo = null; abierto = false; return; }
       cuerpo = document.createElement('div');
       ENGRAMAS.forEach(function (e) {
@@ -94,6 +95,7 @@
       cuerpo.appendChild(origen);
       d.appendChild(cuerpo);
       abierto = true;
+     });
     });
     f.appendChild(ver);
     d.appendChild(f);
