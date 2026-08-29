@@ -1,6 +1,6 @@
-/* preceptoros.org · el Cahier, arranque en frio.
+/* preceptoros.org · el Memory, arranque en frio.
    El modelo NO sabe que es un token. Eso no es una averia: el vocabulario vive
-   en el Cahier, no en los pesos. Por eso la instalacion deja cinco engramas ya
+   en el Memory, no en los pesos. Por eso la instalacion deja cinco engramas ya
    dentro, y por eso este fichero los inyecta en el prompt ANTES del primer
    turno: para que la primera vez que alguien pregunte «que es un token», la
    respuesta salga de su memoria y no de una alucinacion.
@@ -16,12 +16,12 @@
   var ENGRAMAS = T.engramas || [];
 
   /* --- Lo que se le da al modelo antes de hablar ------------------------- */
-  // Cinco definiciones cortas, no el Cahier entero: un contexto que crece sin
+  // Cinco definiciones cortas, no el Memory entero: un contexto que crece sin
   // limite empuja fuera lo que el usuario acaba de escribir, y el borde de
   // contexto es justo lo que la Mision 1 va a medir.
   function contexto() {
     if (!ENGRAMAS.length) return '';
-    return '\n\n' + T.cahierCabecera + '\n' +
+    return '\n\n' + T.memoryCabecera + '\n' +
       ENGRAMAS.map(function (e) { return '- ' + e.termino + ': ' + e.definicion; }).join('\n');
   }
 
@@ -42,10 +42,10 @@
     return con.slice(0, k || 3);
   }
 
-  /* --- La tarjeta del Cahier -------------------------------------------- */
+  /* --- La tarjeta del Memory -------------------------------------------- */
   // NO se pinta como si hablara el modelo. Cuando esto aparece no hay motor
   // arrancado todavia, y hacer que un asistente salude antes de existir seria
-  // decorar. Es una tarjeta del Cahier, y dice de donde salieron los cinco.
+  // decorar. Es una tarjeta del Memory, y dice de donde salieron los cinco.
   function tarjeta() {
     var caja = document.getElementById('chat');
     if (!caja || !ENGRAMAS.length) return;
@@ -55,11 +55,11 @@
 
     var cuenta = document.createElement('p');
     cuenta.className = 'cuenta';
-    cuenta.textContent = T.cahierTitulo + ' · ' + ENGRAMAS.length;
+    cuenta.textContent = T.memoryTitulo + ' · ' + ENGRAMAS.length;
     d.appendChild(cuenta);
 
     var p = document.createElement('p');
-    p.textContent = T.cahierNacido;
+    p.textContent = T.memoryNacido;
     d.appendChild(p);
 
     var lista = document.createElement('p');
@@ -70,13 +70,13 @@
 
     var aviso = document.createElement('p');
     aviso.className = 'tenue';
-    aviso.textContent = T.cahierReparto;
+    aviso.textContent = T.memoryReparto;
     d.appendChild(aviso);
 
     var f = document.createElement('div');
     f.className = 'fila';
     var ver = document.createElement('button');
-    ver.type = 'button'; ver.className = 'leve'; ver.textContent = T.cahierVer;
+    ver.type = 'button'; ver.className = 'leve'; ver.textContent = T.memoryVer;
     var abierto = false, cuerpo = null;
     ver.addEventListener('click', function () {
       if (abierto) { if (cuerpo) cuerpo.remove(); cuerpo = null; abierto = false; return; }
@@ -90,7 +90,7 @@
       });
       var origen = document.createElement('p');
       origen.className = 'tenue';
-      origen.textContent = T.cahierOrigen;
+      origen.textContent = T.memoryOrigen;
       cuerpo.appendChild(origen);
       d.appendChild(cuerpo);
       abierto = true;
@@ -101,6 +101,6 @@
     caja.parentNode.insertBefore(d, caja);
   }
 
-  window.Cahier = { contexto: contexto, buscar: buscar, engramas: ENGRAMAS };
+  window.Memory = { contexto: contexto, buscar: buscar, engramas: ENGRAMAS };
   tarjeta();
 })();

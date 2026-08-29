@@ -93,7 +93,7 @@
         if (dialogo) dialogo.innerHTML = '';
         turnos = 0; avisado = false;
         // El reseteo ES una medida: dice en que turno esta maquina y este
-        // modelo dejaron de sostener el hilo. Se emite para que el Cahier lo
+        // modelo dejaron de sostener el hilo. Se emite para que el Memory lo
         // guarde en `salidas` cuando exista aqui.
         document.dispatchEvent(new CustomEvent('preceptor:salida', {
           detail: { tipo: 'reset_contexto', turnos: 4, via: (ev.detail || {}).via } }));

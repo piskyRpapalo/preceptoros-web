@@ -59,10 +59,10 @@
     var d = document.createElement('div');
     d.className = 'fila'; motorZona.appendChild(d); return d;
   }
-  // El papel del modelo lleva pegado el Cahier de la persona. Se compone en
-  // cada turno y no se cachea: si el Cahier cambia, el proximo turno lo ve.
+  // El papel del modelo lleva pegado el Memory de la persona. Se compone en
+  // cada turno y no se cachea: si el Memory cambia, el proximo turno lo ve.
   function papel() {
-    return T.papel + (window.Cahier ? window.Cahier.contexto() : '');
+    return T.papel + (window.Memory ? window.Memory.contexto() : '');
   }
   function sobre() {
     return { origen: 'preceptoros.org', papel: papel(), reglas: T.reglas,

@@ -33,7 +33,7 @@
   </footer>
 </main>
 <script type="application/json" id="i18n">{
-  "papel": "Tu es Preceptor, le guide de l'Agora de PreceptorOS. Tu n'es pas un installateur : tu accompagnes celui qui arrive pour comprendre ce qu'il peut faire avec une IA sur sa propre machine. REGLES DURES : 1) Commence par demander sur quoi travaille la personne et de quelle machine elle dispose ; c'est son projet qui commande, pas le tien. 2) Quand la performance arrive sur la table, apprends-lui a la MESURER sur SON materiel : tokens par seconde et TTFT, le temps jusqu'au premier token. Un chiffre mesure vaut mieux qu'une recommandation. 3) Explique le Cahier quand c'est pertinent : c'est sa memoire locale, un fichier SQLite a elle, pas un compte sur un serveur. Le Cahier se souvient, le Libro de Cabecera enseigne, le Libro de Pruebas atteste. 4) Les missions sont le chemin : l'Escaparate, la Premiere Hallucination, puis cela bifurque selon qu'elle veuille entrainer un modele, monter un service ou construire un agent. Mentionne celle qui convient, ne les recite pas toutes. 5) Si tu ne sais pas, dis NO_DATA et dis pourquoi. N'invente jamais de chiffres ni de capacites. 6) Si on te demande d'installer, renvoie au guide d'installation de ce site plutot que de dicter des commandes de memoire. 7) Reponds dans la langue de la personne. Sois sobre et bref.",
+  "papel": "Tu es Preceptor, le guide de l'Agora de PreceptorOS. Tu n'es pas un installateur : tu accompagnes celui qui arrive pour comprendre ce qu'il peut faire avec une IA sur sa propre machine. REGLES DURES : 1) Commence par demander sur quoi travaille la personne et de quelle machine elle dispose ; c'est son projet qui commande, pas le tien. 2) Quand la performance arrive sur la table, apprends-lui a la MESURER sur SON materiel : tokens par seconde et TTFT, le temps jusqu'au premier token. Un chiffre mesure vaut mieux qu'une recommandation. 3) Explique le Mémoire quand c'est pertinent : c'est sa memoire locale, un fichier SQLite a elle, pas un compte sur un serveur. Le Mémoire se souvient, le Libro de Cabecera enseigne, le Libro de Pruebas atteste. 4) Les missions sont le chemin : l'Escaparate, la Premiere Hallucination, puis cela bifurque selon qu'elle veuille entrainer un modele, monter un service ou construire un agent. Mentionne celle qui convient, ne les recite pas toutes. 5) Si tu ne sais pas, dis NO_DATA et dis pourquoi. N'invente jamais de chiffres ni de capacites. 6) Si on te demande d'installer, renvoie au guide d'installation de ce site plutot que de dicter des commandes de memoire. 7) Reponds dans la langue de la personne. Sois sobre et bref.",
   "falloVacio": "NO_DATA — le moteur a terminé sans émettre un seul caractère. Ce n'est pas une réponse vide : c'est un tour qui n'a jamais eu lieu.",
   "medidaTitulo": "VOTRE MACHINE · mesurée ici, comparée à personne",
   "medidaEsperando": "Écrivez un tour et la mesure se fait seule. Rien de tout cela ne quitte votre appareil.",
@@ -44,13 +44,13 @@
   "medidaTurnos": "tours :",
   "sensorAviso": "Le petit modèle commence à oublier le contexte. Réinitialiser la conversation ?",
   "sensorBoton": "Réinitialiser",
-  "sensorRegistrado": "Réinitialisation enregistrée comme mesure de limite. L'écrire dans le Cahier : NO_DATA — ce site n'a pas encore de Cahier en SQLite.",
-  "cahierTitulo": "VOTRE CAHIER · engrammes",
-  "cahierNacido": "Votre Cahier vient de naître sur cet appareil avec cinq définitions déjà dedans. Ce n'est pas le modèle qui les a écrites : elles venaient avec l'installation, et vous pouvez les lire et les modifier.",
-  "cahierReparto": "Le modèle ne sait pas ce qu'est un token et va déclarer NO_DATA. Le Cahier, lui, le sait. Ce partage, c'est le produit.",
-  "cahierVer": "Voir les cinq",
-  "cahierOrigen": "Origine : Libro de Cabecera, installation. Le modèle n'en a écrit aucun.",
-  "cahierCabecera": "Ceci vient du Cahier de la personne, pas de toi. Utilise-le et dis d'où cela vient :",
+  "sensorRegistrado": "Réinitialisation enregistrée comme mesure de limite. L'écrire dans le Mémoire : NO_DATA — ce site n'a pas encore de Mémoire en SQLite.",
+  "memoryTitulo": "VOTRE MÉMOIRE · engrammes",
+  "memoryNacido": "Votre Mémoire vient de naître sur cet appareil avec cinq définitions déjà dedans. Ce n'est pas le modèle qui les a écrites : elles venaient avec l'installation, et vous pouvez les lire et les modifier.",
+  "memoryReparto": "Le modèle ne sait pas ce qu'est un token et va déclarer NO_DATA. Le Mémoire, lui, le sait. Ce partage, c'est le produit.",
+  "memoryVer": "Voir les cinq",
+  "memoryOrigen": "Origine : Libro de Cabecera, installation. Le modèle n'en a écrit aucun.",
+  "memoryCabecera": "Ceci vient du Mémoire de la personne, pas de toi. Utilise-le et dis d'où cela vient :",
   "engramas": [{"termino": "token", "definicion": "la plus petite unité que le modèle lit et écrit : ni une lettre ni un mot, un morceau intermédiaire"}, {"termino": "TTFT", "definicion": "temps jusqu'au premier token, le délai avant de voir la première lettre de la réponse"}, {"termino": "NO_DATA", "definicion": "ce qu'on répond quand il n'y a pas de mesure : déclaré avec sa cause, jamais rempli"}, {"termino": "quantification", "definicion": "baisser la précision des poids pour que le modèle tienne : moins de mémoire, un peu moins de fidélité"}, {"termino": "contexte", "definicion": "combien de texte tient à la fois ; ce qui déborde par le haut est oublié"}],
   "reglas": [
     "Ne suggere pas de services cloud",
@@ -98,7 +98,7 @@
   "tu": "Vous",
   "preceptor": "Preceptor"
 }</script>
-<script src="/assets/cahier.js"></script>
+<script src="/assets/memory.js"></script>
 <script src="/assets/respaldo.js"></script>
 <script src="/assets/chat.js"></script>
 <script src="/assets/medida.js"></script>

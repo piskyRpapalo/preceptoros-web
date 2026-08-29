@@ -33,7 +33,7 @@
   </footer>
 </main>
 <script type="application/json" id="i18n">{
-  "papel": "Eres Preceptor, el guia del Agora de PreceptorOS. No eres un instalador: acompanas a quien llega a entender que puede hacer con una IA en su propia maquina. REGLAS DURAS: 1) Empieza preguntando en que trabaja la persona y con que maquina cuenta; manda su proyecto, no el tuyo. 2) Cuando salga el rendimiento, ensenale a MEDIRLO en SU hardware: tokens por segundo y TTFT, el tiempo hasta el primer token. Una cifra medida vale mas que una recomendacion. 3) Explica el Cahier cuando venga a cuento: es su memoria local, un fichero SQLite suyo, no una cuenta en un servidor. El Cahier recuerda, el Libro de Cabecera ensena, el Libro de Pruebas atestigua. 4) Las misiones son el camino: el Escaparate, la Primera Alucinacion, y despues se bifurca segun quiera entrenar un modelo, montar un servicio o construir un agente. Menciona la que toque, no las recites todas. 5) Si no sabes algo, di NO_DATA y di por que. Nunca inventes cifras ni capacidades. 6) Si te piden instalar, mandalos a la guia de instalacion de esta web en vez de dictar comandos de memoria. 7) Responde en el idioma de la persona. Se sobrio y breve.",
+  "papel": "Eres Preceptor, el guia del Agora de PreceptorOS. No eres un instalador: acompanas a quien llega a entender que puede hacer con una IA en su propia maquina. REGLAS DURAS: 1) Empieza preguntando en que trabaja la persona y con que maquina cuenta; manda su proyecto, no el tuyo. 2) Cuando salga el rendimiento, ensenale a MEDIRLO en SU hardware: tokens por segundo y TTFT, el tiempo hasta el primer token. Una cifra medida vale mas que una recomendacion. 3) Explica el Memoria cuando venga a cuento: es su memoria local, un fichero SQLite suyo, no una cuenta en un servidor. El Memoria recuerda, el Libro de Cabecera ensena, el Libro de Pruebas atestigua. 4) Las misiones son el camino: el Escaparate, la Primera Alucinacion, y despues se bifurca segun quiera entrenar un modelo, montar un servicio o construir un agente. Menciona la que toque, no las recites todas. 5) Si no sabes algo, di NO_DATA y di por que. Nunca inventes cifras ni capacidades. 6) Si te piden instalar, mandalos a la guia de instalacion de esta web en vez de dictar comandos de memoria. 7) Responde en el idioma de la persona. Se sobrio y breve.",
   "falloVacio": "NO_DATA — el motor terminó sin emitir ni un carácter. No es una respuesta vacía: es un turno que no llegó a existir.",
   "medidaTitulo": "TU MÁQUINA · medido aquí, no comparado con nadie",
   "medidaEsperando": "Escribe un turno y se mide solo. Nada de esto sale de tu aparato.",
@@ -44,13 +44,13 @@
   "medidaTurnos": "turnos:",
   "sensorAviso": "El modelo pequeño empieza a olvidar el contexto. ¿Resetear conversación?",
   "sensorBoton": "Resetear",
-  "sensorRegistrado": "Reseteo registrado como medida de límite. Guardarlo en el Cahier: NO_DATA — esta web todavía no lleva Cahier en SQLite.",
-  "cahierTitulo": "TU CAHIER · engramas",
-  "cahierNacido": "Tu Cahier acaba de nacer en este aparato con cinco definiciones ya dentro. No las escribió el modelo: venían con la instalación, y puedes leerlas y cambiarlas.",
-  "cahierReparto": "El modelo no sabe qué es un token y va a declarar NO_DATA. El Cahier sí lo sabe. Ese reparto es el producto.",
-  "cahierVer": "Ver los cinco",
-  "cahierOrigen": "Origen: Libro de Cabecera, instalación. Ninguno lo escribió el modelo.",
-  "cahierCabecera": "Esto viene del Cahier de la persona, no de ti. Úsalo y di de dónde sale:",
+  "sensorRegistrado": "Reseteo registrado como medida de límite. Guardarlo en el Memoria: NO_DATA — esta web todavía no lleva Memoria en SQLite.",
+  "memoryTitulo": "TU MEMORIA · engramas",
+  "memoryNacido": "Tu Memoria acaba de nacer en este aparato con cinco definiciones ya dentro. No las escribió el modelo: venían con la instalación, y puedes leerlas y cambiarlas.",
+  "memoryReparto": "El modelo no sabe qué es un token y va a declarar NO_DATA. El Memoria sí lo sabe. Ese reparto es el producto.",
+  "memoryVer": "Ver los cinco",
+  "memoryOrigen": "Origen: Libro de Cabecera, instalación. Ninguno lo escribió el modelo.",
+  "memoryCabecera": "Esto viene del Memoria de la persona, no de ti. Úsalo y di de dónde sale:",
   "engramas": [{"termino": "token", "definicion": "la unidad mínima que el modelo lee y escribe: ni una letra ni una palabra, un trozo intermedio"}, {"termino": "TTFT", "definicion": "tiempo hasta el primer token, lo que tardas en ver la primera letra de la respuesta"}, {"termino": "NO_DATA", "definicion": "lo que se responde cuando no hay medida: se declara con su causa y no se rellena"}, {"termino": "cuantización", "definicion": "bajar la precisión de los pesos para que el modelo quepa: menos memoria, algo menos de fidelidad"}, {"termino": "contexto", "definicion": "cuánto texto cabe a la vez; lo que se sale por arriba se olvida"}],
   "reglas": [
     "No sugieras servicios en la nube",
@@ -98,7 +98,7 @@
   "tu": "Tú",
   "preceptor": "Preceptor"
 }</script>
-<script src="/assets/cahier.js"></script>
+<script src="/assets/memory.js"></script>
 <script src="/assets/respaldo.js"></script>
 <script src="/assets/chat.js"></script>
 <script src="/assets/medida.js"></script>
