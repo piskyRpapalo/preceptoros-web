@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Probador de privacidad · PreceptorOS</title>
+<meta name="description" content="Pega tu contexto privado y mira qué sale antes de dárselo a una IA de la nube. Todo pasa en tu navegador.">
+<link rel="stylesheet" href="/assets/base.css">
+<link rel="stylesheet" href="/assets/agora.css">
+</head>
+<body>
+<canvas id="ambient" aria-hidden="true"></canvas>
+<main>
+
+<header>
+  <div class="seal" role="img" aria-label="Sello de PreceptorOS"></div>
+  <div class="marca">
+    <h1>Probador<b> · de privacidad</b></h1>
+    <p><a href="/es/">Portada</a> · <a href="/es/benchmark.html">Benchmark</a> · <a href="/es/instalar.html">Instalar</a></p>
+  </div>
+  <div id="identity" class="fila identity"></div>
+</header>
+
+<p class="guia">Cuando le pides ayuda a una IA de la nube tienes que darle tu contexto, y ahí es donde se te escapan rutas, IPs y claves. Pega aquí lo que ibas a pegarle a ella y mira qué sale. En tu navegador, sin instalar nada.</p>
+
+<div class="panel">
+  <div class="dos">
+    <div>
+      <label class="cuenta" for="sucio">Tu contexto, tal cual</label>
+      <textarea id="sucio" rows="12" spellcheck="false"></textarea>
+    </div>
+    <div>
+      <label class="cuenta" for="limpio">Lo que puedes pegar fuera</label>
+      <textarea id="limpio" rows="12" readonly spellcheck="false"></textarea>
+    </div>
+  </div>
+  <div class="fila"><button id="sanear" type="button">Sanear</button></div>
+  <div id="auditoria"></div>
+</div>
+
+<footer class="honest-footer">
+  <h2>Cómo funciona, y qué no promete</h2>
+  <ul>
+    <li><strong>Las reglas son las del producto.</strong> Este filtro se GENERA desde el de PreceptorOS, no se copia a mano. Comprobado pasando los 36 casos del corpus por las dos implementaciones: mismo veredicto en los 36 y ningún fragmento superviviente.</li>
+    <li><strong>No sale de tu navegador.</strong> El texto se filtra aquí mismo. Esta página no tiene ninguna llamada de red que se lo lleve, y puedes comprobarlo con las herramientas del navegador.</li>
+    <li><strong>No es infalible, y por eso dice dónde no llega.</strong> Es determinista y auditable, con huecos declarados: correos, rutas de Windows y de macOS, URLs con credencial en la ruta, y «token» con nombre propio delante. Revisa siempre antes de pegar.</li>
+  </ul>
+  <p><a href="/es/">Portada</a> · <a href="/es/board.html">Tablón</a> · <a href="/hitos.html">Hitos</a></p>
+</footer>
+
+<script type="application/json" id="i18n">{
+ "pgQuitado": "Quitado:",
+ "pgNada": "El filtro corrió y no encontró nada que quitar.",
+ "pgHuecos": "Ojo: esto no lo mira todo. No detecta correos, rutas de Windows o macOS, URLs con credencial en la ruta, ni «token» con un nombre propio delante. Revísalo antes de pegarlo fuera.",
+ "pgSinFiltro": "NO_DATA — no se pudo cargar el filtro.",
+ "pgEjemplo": "El script vive en /srv/proyecto/regar.py\nOPENAI_API_KEY=sk-proj-Xk29Lm44Qw81Zr03Tb77Nc55Vd\nssh -i /opt/despliegue/.ssh/id_rsa operador@",
+ "idEntrar": "Crear identidad",
+ "idHola": "Hola,",
+ "idClave": "Ver mi huella",
+ "idPublica": "Clave pública:",
+ "idFallo": "NO_DATA — no se pudo crear la identidad:",
+ "idAviso": "Se genera una clave en tu navegador. No se puede exportar ni copiar a otro aparato: si borras los datos del sitio, esta identidad se pierde.",
+ "pgEjemploCola": "\navisa a marta.lopez@example.com si falla"
+}</script>
+<script src="/assets/ambient.js"></script>
+<script src="/assets/sanitize.js"></script>
+<script src="/assets/playground.js"></script>
+<script src="/assets/auth.js"></script>
+
+</body>
+</html>

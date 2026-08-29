@@ -1,13 +1,13 @@
 {
   "esquema": 1,
   "fecha": "2026-08-30",
-  "ultima_lectura": "2026-08-29T23:07:07+00:00",
+  "ultima_lectura": "2026-08-29T23:57:16+00:00",
   "nota": "Solo hay cifras medidas. Lo que no se midio sale como NO_DATA con su causa. Aqui no se cuenta a nadie.",
   "metricas": [
     {
       "clave": "paginas",
       "estado": "MEDIDO",
-      "valor": 5,
+      "valor": 6,
       "unidad": "paginas",
       "como": "ficheros .html de contenido unico bajo public/"
     },
@@ -21,7 +21,7 @@
     {
       "clave": "peso_sitio",
       "estado": "MEDIDO",
-      "valor": 385426,
+      "valor": 402510,
       "unidad": "bytes",
       "como": "suma de todo lo que hay en public/"
     },

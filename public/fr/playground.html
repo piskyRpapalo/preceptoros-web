@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Banc d'essai de confidentialité · PreceptorOS</title>
+<meta name="description" content="Collez votre contexte privé et voyez ce qui en sort avant de le donner à une IA du nuage. Tout se passe dans votre navigateur.">
+<link rel="stylesheet" href="/assets/base.css">
+<link rel="stylesheet" href="/assets/agora.css">
+</head>
+<body>
+<canvas id="ambient" aria-hidden="true"></canvas>
+<main>
+
+<header>
+  <div class="seal" role="img" aria-label="Sceau de PreceptorOS"></div>
+  <div class="marca">
+    <h1>Banc d'essai<b> · confidentialité</b></h1>
+    <p><a href="/fr/">Accueil</a> · <a href="/fr/benchmark.html">Benchmark</a> · <a href="/fr/instalar.html">Installer</a></p>
+  </div>
+  <div id="identity" class="fila identity"></div>
+</header>
+
+<p class="guia">Quand vous demandez de l'aide à une IA du nuage, vous devez lui donner votre contexte, et c'est là que fuient chemins, IP et clés. Collez ici ce que vous alliez lui coller, et regardez ce qui sort. Dans votre navigateur, sans rien installer.</p>
+
+<div class="panel">
+  <div class="dos">
+    <div>
+      <label class="cuenta" for="sucio">Votre contexte, tel quel</label>
+      <textarea id="sucio" rows="12" spellcheck="false"></textarea>
+    </div>
+    <div>
+      <label class="cuenta" for="limpio">Ce que vous pouvez coller dehors</label>
+      <textarea id="limpio" rows="12" readonly spellcheck="false"></textarea>
+    </div>
+  </div>
+  <div class="fila"><button id="sanear" type="button">Assainir</button></div>
+  <div id="auditoria"></div>
+</div>
+
+<footer class="honest-footer">
+  <h2>Comment ça marche, et ce que ça ne promet pas</h2>
+  <ul>
+    <li><strong>Les règles sont celles du produit.</strong> Ce filtre est GÉNÉRÉ depuis celui de PreceptorOS, pas recopié à la main. Vérifié en passant les 36 cas du corpus dans les deux implémentations : même verdict sur les 36, aucun fragment survivant.</li>
+    <li><strong>Rien ne quitte votre navigateur.</strong> Le texte est filtré ici même. Cette page n'a aucun appel réseau qui pourrait l'emporter, et vous pouvez le vérifier dans les outils du navigateur.</li>
+    <li><strong>Ce n'est pas infaillible, d'où les trous déclarés.</strong> Déterministe et auditable, avec des trous déclarés : courriels, chemins Windows et macOS, URL avec identifiant dans le chemin, et « token » précédé d'un nom. Relisez toujours avant de coller.</li>
+  </ul>
+  <p><a href="/fr/">Accueil</a> · <a href="/fr/board.html">Tableau</a> · <a href="/hitos.html">Jalons</a></p>
+</footer>
+
+<script type="application/json" id="i18n">{
+ "pgQuitado": "Retiré :",
+ "pgNada": "Le filtre a tourné et n'a rien trouvé à retirer.",
+ "pgHuecos": "Attention : ceci ne regarde pas tout. Ne détecte ni courriels, ni chemins Windows/macOS, ni URL avec identifiant dans le chemin, ni « token » précédé d'un nom. Relisez avant de coller dehors.",
+ "pgSinFiltro": "NO_DATA — le filtre n'a pas pu être chargé.",
+ "pgEjemplo": "El script vive en /srv/proyecto/regar.py\nOPENAI_API_KEY=sk-proj-Xk29Lm44Qw81Zr03Tb77Nc55Vd\nssh -i /opt/despliegue/.ssh/id_rsa operador@",
+ "idEntrar": "Créer une identité",
+ "idHola": "Bonjour,",
+ "idClave": "Voir mon empreinte",
+ "idPublica": "Clé publique :",
+ "idFallo": "NO_DATA — l'identité n'a pas pu être créée :",
+ "idAviso": "Une clé est générée dans votre navigateur. Elle ne peut être ni exportée ni copiée : si vous effacez les données du site, cette identité est perdue.",
+ "pgEjemploCola": "\navisa a marta.lopez@example.com si falla"
+}</script>
+<script src="/assets/ambient.js"></script>
+<script src="/assets/sanitize.js"></script>
+<script src="/assets/playground.js"></script>
+<script src="/assets/auth.js"></script>
+
+</body>
+</html>

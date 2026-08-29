@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Privacy playground · PreceptorOS</title>
+<meta name="description" content="Paste your private context and see what comes out before handing it to a cloud AI. It all happens in your browser.">
+<link rel="stylesheet" href="/assets/base.css">
+<link rel="stylesheet" href="/assets/agora.css">
+</head>
+<body>
+<canvas id="ambient" aria-hidden="true"></canvas>
+<main>
+
+<header>
+  <div class="seal" role="img" aria-label="PreceptorOS seal"></div>
+  <div class="marca">
+    <h1>Privacy<b> · playground</b></h1>
+    <p><a href="/en/">Front page</a> · <a href="/en/benchmark.html">Benchmark</a> · <a href="/en/instalar.html">Install</a></p>
+  </div>
+  <div id="identity" class="fila identity"></div>
+</header>
+
+<p class="guia">When you ask a cloud AI for help you have to hand it your context, and that is where paths, IPs and keys leak. Paste here what you were about to paste there, and see what comes out. In your browser, with nothing installed.</p>
+
+<div class="panel">
+  <div class="dos">
+    <div>
+      <label class="cuenta" for="sucio">Your context, as it is</label>
+      <textarea id="sucio" rows="12" spellcheck="false"></textarea>
+    </div>
+    <div>
+      <label class="cuenta" for="limpio">What you can paste outside</label>
+      <textarea id="limpio" rows="12" readonly spellcheck="false"></textarea>
+    </div>
+  </div>
+  <div class="fila"><button id="sanear" type="button">Sanitize</button></div>
+  <div id="auditoria"></div>
+</div>
+
+<footer class="honest-footer">
+  <h2>How it works, and what it does not promise</h2>
+  <ul>
+    <li><strong>The rules are the product's.</strong> This filter is GENERATED from PreceptorOS's, not copied by hand. Verified by running the corpus's 36 cases through both implementations: same verdict on all 36, no surviving fragment.</li>
+    <li><strong>It does not leave your browser.</strong> The text is filtered right here. This page has no network call that could carry it away, and you can check that in your browser's tools.</li>
+    <li><strong>It is not infallible, which is why it says where it stops.</strong> Deterministic and auditable, with declared gaps: emails, Windows and macOS paths, URLs with a credential in the path, and «token» with a name in front. Always review before pasting.</li>
+  </ul>
+  <p><a href="/en/">Front page</a> · <a href="/en/board.html">Board</a> · <a href="/hitos.html">Milestones</a></p>
+</footer>
+
+<script type="application/json" id="i18n">{
+ "pgQuitado": "Removed:",
+ "pgNada": "The filter ran and found nothing to remove.",
+ "pgHuecos": "Careful: this does not look at everything. It does not detect emails, Windows or macOS paths, URLs with a credential in the path, or «token» with a name in front. Review before pasting it outside.",
+ "pgSinFiltro": "NO_DATA — the filter could not be loaded.",
+ "pgEjemplo": "El script vive en /srv/proyecto/regar.py\nOPENAI_API_KEY=sk-proj-Xk29Lm44Qw81Zr03Tb77Nc55Vd\nssh -i /opt/despliegue/.ssh/id_rsa operador@",
+ "idEntrar": "Create identity",
+ "idHola": "Hello,",
+ "idClave": "See my fingerprint",
+ "idPublica": "Public key:",
+ "idFallo": "NO_DATA — the identity could not be created:",
+ "idAviso": "A key is generated in your browser. It cannot be exported or copied: if you clear the site data, this identity is lost.",
+ "pgEjemploCola": "\navisa a marta.lopez@example.com si falla"
+}</script>
+<script src="/assets/ambient.js"></script>
+<script src="/assets/sanitize.js"></script>
+<script src="/assets/playground.js"></script>
+<script src="/assets/auth.js"></script>
+
+</body>
+</html>

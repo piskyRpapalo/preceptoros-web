@@ -56,3 +56,9 @@ ul.leyenda li{margin:0 0 .3rem;padding-left:.9rem;text-indent:-.9rem}
 .form-hilo{margin:.8rem 0 0}
 .form-hilo label{display:block;font-size:.7rem;color:var(--tenue);
   letter-spacing:.1em;text-transform:uppercase;margin:.6rem 0 .2rem}
+
+/* Dos columnas en pantalla ancha, una debajo de otra en el movil: comparar
+   antes y despues lado a lado solo ayuda si caben los dos. */
+.dos{display:grid;gap:.9rem}
+@media (min-width:44rem){ .dos{grid-template-columns:1fr 1fr} }
+.dos textarea{min-height:11rem;font-size:.74rem}
