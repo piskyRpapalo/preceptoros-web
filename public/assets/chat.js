@@ -59,8 +59,13 @@
     var d = document.createElement('div');
     d.className = 'fila'; motorZona.appendChild(d); return d;
   }
+  // El papel del modelo lleva pegado el Cahier de la persona. Se compone en
+  // cada turno y no se cachea: si el Cahier cambia, el proximo turno lo ve.
+  function papel() {
+    return T.papel + (window.Cahier ? window.Cahier.contexto() : '');
+  }
   function sobre() {
-    return { origen: 'preceptoros.org', papel: T.papel, reglas: T.reglas,
+    return { origen: 'preceptoros.org', papel: papel(), reglas: T.reglas,
              pregunta: entrada.value.trim() };
   }
   // Recibe el TEXTO, no la clave: asi toda cadena traducida se referencia con el
@@ -206,11 +211,11 @@
     var falla = function (e) { fin(T.falloRespuesta + ' — ' + (e && e.message ? e.message : e)); };
     if (via === 'webllm') {
       motor.chat.completions.create({
-        messages: [{ role: 'system', content: T.papel }, { role: 'user', content: texto }],
+        messages: [{ role: 'system', content: papel() }, { role: 'user', content: texto }],
         temperature: 0.6
       }).then(function (r) { fin(r.choices[0].message.content); }).catch(falla);
     } else {
-      sesion.prompt(T.papel + '\n\n' + texto).then(fin).catch(falla);
+      sesion.prompt(papel() + '\n\n' + texto).then(fin).catch(falla);
     }
   }
   enviar.addEventListener('click', responder);

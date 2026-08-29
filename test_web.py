@@ -190,14 +190,24 @@ class Traducciones(unittest.TestCase):
         return set(re.findall(r"\bT\.([A-Za-z]+)", js))
 
     def test_los_tres_idiomas_tienen_las_mismas_claves(self):
-        usa = self.claves_que_usa((PUBLICO / "assets" / "chat.js").read_text(encoding="utf-8"))
-        self.assertTrue(usa, "no se encontro ninguna clave en chat.js")
+        # Los scripts que la portada CARGA de verdad, no solo chat.js ni todos
+        # los de assets. Cuando la interfaz se partio en varios ficheros para
+        # respetar los 10 KB, este test siguio mirando uno solo y las claves de
+        # los demas quedaban sin comprobar. Mirarlos todos tampoco vale:
+        # hitos.js lee el bloque i18n de hitos.html, que es otro.
         for idioma in ("es", "en", "fr"):
             p = PUBLICO / idioma / "index.html"
-            bloque = re.search(r'id="i18n">(.*?)</script>', p.read_text(encoding="utf-8"), re.S)
+            texto = p.read_text(encoding="utf-8")
+            usa = set()
+            for src in re.findall(r'<script src="[^"]*?assets/([\w.-]+\.js)"', texto):
+                fichero = PUBLICO / "assets" / src
+                if fichero.is_file():
+                    usa |= self.claves_que_usa(fichero.read_text(encoding="utf-8"))
+            self.assertTrue(usa, f"{idioma}: ningun script de la portada usa claves")
+            bloque = re.search(r'id="i18n">(.*?)</script>', texto, re.S)
             self.assertIsNotNone(bloque, f"{idioma}: falta el bloque i18n")
             datos = json.loads(bloque.group(1))
-            with self.subTest(idioma=idioma):
+            with self.subTest(idioma=idioma, scripts=len(usa)):
                 # Falla solo por lo que FALTA: una clave ausente deja una cadena
                 # vacia en la interfaz. Las que sobran son texto muerto — se
                 # informan, pero no tumban el build.

@@ -33,6 +33,13 @@
 </main>
 <script type="application/json" id="i18n">{
   "papel": "You are Preceptor, the guide of the PreceptorOS Agora. You are not an installer: you help whoever arrives work out what they can do with an AI on their own machine. HARD RULES: 1) Start by asking what the person is working on and what machine they have; their project leads, not yours. 2) When performance comes up, teach them to MEASURE it on THEIR hardware: tokens per second and TTFT, the time to the first token. A measured figure beats a recommendation. 3) Explain the Cahier when it is relevant: it is their local memory, a SQLite file of their own, not an account on a server. The Cahier remembers, the Libro de Cabecera teaches, the Libro de Pruebas attests. 4) The missions are the path: the Escaparate, the First Hallucination, and then it forks depending on whether they want to train a model, run a service or build an agent. Mention the one that fits, do not recite them all. 5) If you do not know something, say NO_DATA and say why. Never invent figures or capabilities. 6) If they ask to install, send them to the installation guide on this site instead of dictating commands from memory. 7) Answer in the person's language. Be sober and brief.",
+  "cahierTitulo": "YOUR CAHIER · engrams",
+  "cahierNacido": "Your Cahier has just been born on this device with five definitions already inside. The model did not write them: they came with the installation, and you can read and change them.",
+  "cahierReparto": "The model does not know what a token is and will declare NO_DATA. The Cahier does know. That split is the product.",
+  "cahierVer": "See all five",
+  "cahierOrigen": "Origin: Libro de Cabecera, installation. The model wrote none of them.",
+  "cahierCabecera": "This comes from the person's Cahier, not from you. Use it and say where it came from:",
+  "engramas": [{"termino": "token", "definicion": "the smallest unit the model reads and writes: not a letter, not a word, something in between"}, {"termino": "TTFT", "definicion": "time to first token, how long before you see the first letter of the answer"}, {"termino": "NO_DATA", "definicion": "what you answer when there is no measurement: declared with its cause, never filled in"}, {"termino": "quantisation", "definicion": "lowering the precision of the weights so the model fits: less memory, slightly less fidelity"}, {"termino": "context", "definicion": "how much text fits at once; whatever falls off the top is forgotten"}],
   "reglas": [
     "Do not suggest cloud services",
     "Do not ask for personal data",
@@ -79,6 +86,7 @@
   "tu": "You",
   "preceptor": "Preceptor"
 }</script>
+<script src="/assets/cahier.js"></script>
 <script src="/assets/chat.js"></script>
 <script src="/assets/copiar.js"></script>
 </body>
