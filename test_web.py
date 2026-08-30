@@ -477,6 +477,117 @@ class Doctrina(unittest.TestCase):
                               "text-shadow fuera de .cifra: " + linea.strip())
 
 
+class PWA(unittest.TestCase):
+    """El ANEXO WEB pide PWA nativo. Habia manifiesto y worker, y ni uno solo
+    de los dos llegaba al navegador de nadie."""
+
+    def paginas_servidas(self):
+        """Las 19: las de contenido, sus traducciones y el selector."""
+        return sorted(PUBLICO.rglob("*.html"))
+
+    def test_el_service_worker_esta_enchufado(self):
+        """Un worker que nadie registra es un fichero, no un PWA.
+
+        El 2026-08-30 `sw.js` llevaba semanas en public/ y NINGUNA pagina lo
+        registraba; el manifiesto se enlazaba solo desde el selector de
+        idioma, que es la unica pagina que nadie deja abierta. El sitio
+        pasaba por PWA en el repositorio y no lo era en ningun telefono.
+        """
+        pwa = (PUBLICO / "assets" / "pwa.js").read_text(encoding="utf-8")
+        self.assertIn("serviceWorker.register('/sw.js')", pwa,
+                      "pwa.js no registra el worker")
+        for p in self.paginas_servidas():
+            with self.subTest(pagina=str(p.relative_to(PUBLICO))):
+                t = p.read_text(encoding="utf-8")
+                self.assertIn('rel="manifest"', t,
+                              "sin <link rel=manifest> no se puede instalar")
+                if p != PUBLICO / "index.html":
+                    # El selector es ruteo puro y carga sin javascript a
+                    # proposito; el worker lo registra cualquiera de las
+                    # otras diecinueve en cuanto se entra en un idioma.
+                    self.assertIn("/assets/pwa.js", t,
+                                  "la pagina no registra el service worker")
+
+    def test_un_solo_manifiesto(self):
+        """Habia `manifest.json` y `manifest.webmanifest` identicos byte a
+        byte, y solo uno enlazado. Dos ficheros que dicen lo mismo son dos
+        ficheros que dejaran de decirlo."""
+        hallados = sorted(x.name for x in PUBLICO.glob("manifest*"))
+        self.assertEqual(["manifest.webmanifest"], hallados,
+                         f"hay mas de un manifiesto: {hallados}")
+
+    def test_el_manifiesto_dice_lo_que_la_pagina_pinta(self):
+        m = json.loads((PUBLICO / "manifest.webmanifest").read_text(encoding="utf-8"))
+        for clave in ("name", "short_name", "start_url", "scope", "display", "icons"):
+            self.assertIn(clave, m, f"el manifiesto no declara {clave}")
+        self.assertEqual("standalone", m["display"])
+
+        # Los iconos existen en disco. Un manifiesto que apunta a un PNG que
+        # no esta hace que la instalacion falle sin decir por que.
+        for icono in m["icons"]:
+            ruta = PUBLICO / icono["src"].lstrip("/")
+            with self.subTest(icono=icono["src"]):
+                self.assertTrue(ruta.exists(), f"{icono['src']} no existe")
+
+        # Un color de barra en el manifiesto y otro en la etiqueta es una
+        # ventana que cambia de color al instalarse.
+        for p in self.paginas_servidas():
+            t = p.read_text(encoding="utf-8")
+            meta = re.search(r'<meta name="theme-color" content="([^"]+)"', t)
+            with self.subTest(pagina=str(p.relative_to(PUBLICO))):
+                self.assertIsNotNone(meta, "la pagina no declara theme-color")
+                self.assertEqual(m["theme_color"].lower(), meta.group(1).lower(),
+                                 "el manifiesto y la pagina discrepan del color")
+
+    def test_el_worker_no_guarda_lo_ajeno_ni_los_datos(self):
+        """Las dos reglas que el worker anterior rompia.
+
+        Cacheaba TODO con `caches.match() || fetch()`, la API incluida: una
+        respuesta guardada para siempre y una pagina que no puede notarlo.
+        Y guardar counters.json seria publicar cifras viejas con cara de
+        frescas -- la misma averia que la portada con sus 19 pruebas.
+        """
+        sw = (PUBLICO / "sw.js").read_text(encoding="utf-8")
+        self.assertIn("url.origin !== self.location.origin", sw,
+                      "el worker no distingue su propio origen del ajeno")
+        self.assertIn(".json", sw, "el worker no deja fuera los datos")
+        # Ni un host escrito a mano: la frontera es el origen, que el
+        # navegador ya sabe. Una lista de dominios envejece en silencio.
+        self.assertEqual([], re.findall(r"https?://[^\s\"']+", sw),
+                         "el worker lleva un dominio incrustado")
+
+    def test_el_worker_pasa_su_arnes(self):
+        """Las reglas de enrutado, ejecutadas de verdad.
+
+        Todo lo demas de esta clase lee el fichero y busca cadenas: comprueba
+        que el worker DICE lo correcto, no que lo HAGA. `arnes_sw.mjs` lo
+        ejecuta con un entorno falso y le pide las cuatro reglas.
+
+        Se salta si no hay node. Preferir un NO_DATA declarado a una prueba
+        que se cae en cualquier maquina sin node instalado -- el gate de este
+        repositorio es de biblioteca estandar y asi sigue.
+        """
+        import shutil, subprocess
+        node = shutil.which("node")
+        if not node:
+            self.skipTest("NO_DATA · no hay node: la logica del worker queda "
+                          "sin ejecutar. Remedio: instalar node y repetir")
+        r = subprocess.run([node, "arnes_sw.mjs"], cwd=str(RAIZ),
+                           capture_output=True, text=True, timeout=120)
+        self.assertEqual(0, r.returncode,
+                         "el arnes del worker falla:\n" + r.stdout + r.stderr)
+
+    def test_sin_conexion_hay_algo_que_leer(self):
+        """Y en los tres idiomas: quien instala desde /fr/ no merece un
+        error en espanol."""
+        sw = (PUBLICO / "sw.js").read_text(encoding="utf-8")
+        self.assertIn("paginaSinRed", sw, "el worker no sintetiza respaldo")
+        for idioma in ("es", "en", "fr"):
+            with self.subTest(idioma=idioma):
+                self.assertRegex(sw, r"\b" + idioma + r"\s*:\s*\[",
+                                 f"la pagina de sin conexion no habla {idioma}")
+
+
 class Paginas(unittest.TestCase):
 
     def test_selector_de_idioma_por_path(self):
