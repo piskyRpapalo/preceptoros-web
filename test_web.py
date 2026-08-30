@@ -30,7 +30,13 @@ ENLACES_ADMITIDOS = ("https://github.com/piskyRpapalo/PreceptorOS",
                      # ignoran Slack, LinkedIn y X. Prohibir aqui el propio
                      # dominio no protegeria a nadie: dejaria la web sin
                      # tarjeta social y sin canonica.
-                     ORIGEN_PROPIO)
+                     ORIGEN_PROPIO,
+                     # El unico tunel publico del Agora, firmado en el ANEXO
+                     # WEB. Es nuestro origen igual que preceptoros.org, solo
+                     # que en otro subdominio. Se admite como ENLACE, no como
+                     # subrecurso: `test_la_api_no_se_pide_al_cargar` de mas
+                     # abajo comprueba que ninguna pagina la pide sola.
+                     "https://api.preceptoros.org")
 
 FRAMEWORKS = r"\breact\b|vue\.js|angular|htmx|alpine\.js|jquery|svelte|tailwind"
 
@@ -54,7 +60,13 @@ def textos():
             continue
         if p.name in LICENCIAS:
             continue
-        if p.suffix.lower() in (".html", ".css", ".js", ".json", ".jsonc", ".txt", ".py", ".md"):
+        # .mjs entro el 2026-08-30. `arnes_sw.mjs` llevaba una hora en el
+        # repo sin que NINGUNA prueba de doctrina lo mirase: ni frameworks, ni
+        # urls externas, ni rutas absolutas. Un sufijo que no esta en esta
+        # tupla es un punto ciego del gate, y un punto ciego no avisa de que
+        # existe -- se descubre cuando ya ha pasado algo por el.
+        if p.suffix.lower() in (".html", ".css", ".js", ".mjs", ".json",
+                                ".jsonc", ".txt", ".py", ".md"):
             yield p, p.read_text(encoding="utf-8")
 
 
@@ -477,6 +489,124 @@ class Doctrina(unittest.TestCase):
                               "text-shadow fuera de .cifra: " + linea.strip())
 
 
+class Identidad(unittest.TestCase):
+
+    # Ed25519 firma en 64 bytes. En hexadecimal son 128 caracteres, y es la
+    # longitud del algoritmo, no una eleccion de este proyecto.
+    FIRMA_HEX = 128
+
+    def test_la_firma_va_entera(self):
+        """`firmar()` devolvia `ed25519:` + 16 caracteres + puntos suspensivos.
+
+        Calculaba los 64 bytes y tiraba 48. El problema no es que sea corta:
+        es que con 16 nibbles no se puede VERIFICAR nada, ni en esta pagina ni
+        en el Agora, y aun asi se leia como una garantia. Un adorno con nombre
+        de firma es peor que no firmar, porque nadie vuelve a mirarlo.
+
+        Si hace falta acortarla para ensenarla, se acorta AL PINTAR. Ahi el
+        recorte no destruye nada; aqui destruia la firma entera.
+        """
+        t = (PUBLICO / "assets" / "auth.js").read_text(encoding="utf-8")
+        firma = re.search(r"firmar:\s*function.*?\n    \}", t, re.S)
+        self.assertIsNotNone(firma, "auth.js ya no expone firmar()")
+        cuerpo = firma.group(0)
+        self.assertNotIn(".slice(", cuerpo,
+                         "firmar() vuelve a recortar la firma")
+        self.assertNotIn("\u2026", cuerpo,
+                         "firmar() devuelve puntos suspensivos dentro de la firma")
+        self.assertIn("'ed25519:' + h", cuerpo,
+                      "firmar() no devuelve el hexadecimal completo")
+        self.assertIn(str(self.FIRMA_HEX), t,
+                      f"auth.js no declara los {self.FIRMA_HEX} caracteres que "
+                      "debe medir una firma Ed25519")
+        self.assertRegex(t, r"FIRMA_HEX\s*=\s*" + str(self.FIRMA_HEX),
+                         "la longitud de firma no esta fijada en una constante")
+
+    def test_la_api_no_se_pide_al_cargar(self):
+        """El tunel esta admitido como enlace, no como subrecurso.
+
+        «Cero peticiones externas al cargar» es la promesa de la portada. Que
+        api.preceptoros.org este permitida en el codigo no puede convertirse
+        en que una pagina la pida sola: eso lo decide quien visita, pulsando.
+        """
+        for p in sorted(PUBLICO.rglob("*.html")):
+            t = p.read_text(encoding="utf-8")
+            with self.subTest(pagina=str(p.relative_to(PUBLICO))):
+                for etiqueta in re.findall(r"<(?:script|link|img|iframe)[^>]*>", t):
+                    self.assertNotIn("api.preceptoros.org", etiqueta,
+                                     f"subrecurso externo al cargar: {etiqueta}")
+
+
+class Tablon(unittest.TestCase):
+    """De donde salen los hilos, y que se diga siempre."""
+
+    ORIGENES = ("cache", "agora", "ejemplo", "fallo")
+
+    def i18n_board(self):
+        for idioma in ("es", "en", "fr"):
+            t = (PUBLICO / idioma / "board.html").read_text(encoding="utf-8")
+            m = re.search(r'id="i18n">(.*?)</script>', t, re.S)
+            yield idioma, json.loads(m.group(1))
+
+    def test_el_tablon_dice_siempre_de_donde_salen_los_hilos(self):
+        """Una lista de hilos se ve igual venga de donde venga.
+
+        Ese es el problema entero: el Agora, un cache de hace tres dias y los
+        hilos de EJEMPLO que viajan con la web se pintan identicos. El rotulo
+        de procedencia es la UNICA diferencia visible, asi que no puede ser
+        opcional ni quedarse a medias en un idioma -- sin el, la pagina
+        fabrica una comunidad que no existe, que es exactamente lo que el
+        propio pie de esta pagina promete no hacer.
+        """
+        fuentes = (PUBLICO / "assets" / "board-fuentes.js").read_text(encoding="utf-8")
+        pintura = (PUBLICO / "assets" / "board.js").read_text(encoding="utf-8")
+        declarados = set(re.findall(r"origen:\s*'(\w+)'", fuentes))
+        self.assertEqual(set(self.ORIGENES), declarados,
+                         f"las fuentes declaran {declarados}, se esperaban "
+                         f"{set(self.ORIGENES)}")
+        for origen in self.ORIGENES:
+            with self.subTest(origen=origen):
+                # `in`, no assertIn: assertIn vuelca el fichero entero en el
+                # mensaje y el fallo se vuelve ilegible.
+                self.assertTrue(
+                    f"'{origen}'" in pintura,
+                    f"board.js no rotula el origen «{origen}» de forma "
+                    "explicita. Atenderlo en el `else` final hace que un "
+                    "origen nuevo herede su rotulo sin que nadie lo note.")
+        for idioma, d in self.i18n_board():
+            for clave in ("tbFuenteAgora", "tbFuenteCache", "tbFuenteLocal",
+                          "tbFuenteFallo"):
+                with self.subTest(idioma=idioma, clave=clave):
+                    self.assertIn(clave, d, f"{idioma} no traduce {clave}")
+                    self.assertTrue(d[clave].strip(), f"{idioma}: {clave} vacia")
+
+    def test_el_ejemplo_no_pisa_lo_que_ya_hay(self):
+        """Si el Agora falla y ya habia algo pintado, no se retrocede.
+
+        Sustituir el cache del visitante por hilos de EJEMPLO porque la red
+        fallo no es un respaldo: es cambiar datos suyos por datos de mentira
+        y no decirlo. Lo correcto es dejar lo que hay y avisar del fallo.
+        """
+        f = (PUBLICO / "assets" / "board-fuentes.js").read_text(encoding="utf-8")
+        cargar = re.search(r"cargar:\s*function.*?\n    \}", f, re.S)
+        self.assertIsNotNone(cargar, "board-fuentes.js ya no expone cargar()")
+        self.assertIn("if (yaHay)", cargar.group(0),
+                      "el ejemplo entra aunque ya haya hilos pintados")
+
+    def test_la_capa_de_datos_no_escribe_frases(self):
+        """`board-fuentes.js` no tiene idioma, y por eso no puede tener texto.
+
+        Una capa de datos que devuelve «El Agora no respondio» se queda en
+        espanol para siempre: en /en/ y /fr/ saldria igual. Devuelve `origen`
+        y `causa`; la frase la monta quien pinta, que si sabe el idioma.
+        """
+        f = (PUBLICO / "assets" / "board-fuentes.js").read_text(encoding="utf-8")
+        codigo = re.sub(r"/\*.*?\*/", "", f, flags=re.S)
+        codigo = re.sub(r"//[^\n]*", "", codigo)
+        for clave in re.findall(r"\bT\.\w+", codigo):
+            self.fail(f"la capa de datos usa i18n: {clave}")
+
+
 class PWA(unittest.TestCase):
     """El ANEXO WEB pide PWA nativo. Habia manifiesto y worker, y ni uno solo
     de los dos llegaba al navegador de nadie."""
@@ -538,6 +668,31 @@ class PWA(unittest.TestCase):
                 self.assertIsNotNone(meta, "la pagina no declara theme-color")
                 self.assertEqual(m["theme_color"].lower(), meta.group(1).lower(),
                                  "el manifiesto y la pagina discrepan del color")
+
+    def test_un_icono_maskable_no_puede_ser_el_mismo_que_el_normal(self):
+        """Medido el 2026-08-30 sobre icon-512.png y por eso existe.
+
+        El manifiesto declaraba `purpose: maskable` sobre el MISMO fichero que
+        servia de icono normal. Android recorta los maskable a un circulo del
+        80% del lado: radio 205 px en un lienzo de 512. El contenido de ese
+        icono llega a 255 px del centro. Es decir, la promesa «esto aguanta el
+        recorte» era falsa y el glifo se cortaba en cada telefono Android.
+
+        Un maskable necesita su PROPIO fichero, con el dibujo mas pequeno
+        dentro de la zona segura. Mientras no exista, es mejor no declararlo:
+        el sistema pone su propia placa y se ve peor, pero no miente.
+        """
+        m = json.loads((PUBLICO / "manifest.webmanifest").read_text(encoding="utf-8"))
+        normales = {i["src"] for i in m["icons"]
+                    if "maskable" not in i.get("purpose", "any")}
+        for icono in m["icons"]:
+            if "maskable" in icono.get("purpose", ""):
+                with self.subTest(icono=icono["src"]):
+                    self.assertNotIn(
+                        icono["src"], normales,
+                        f"{icono['src']} se declara maskable y ademas normal: "
+                        "o tiene margen de sobra como icono, o se recorta como "
+                        "maskable. No puede ser lo correcto en los dos papeles.")
 
     def test_el_worker_no_guarda_lo_ajeno_ni_los_datos(self):
         """Las dos reglas que el worker anterior rompia.

@@ -34,7 +34,7 @@
     </div>
     <div id="identity" class="fila identity"></div>
 </header>
-  <p class="proof">Code ouvert · <a href="https://github.com/piskyRpapalo/PreceptorOS">GitHub</a> · <b>540</b> tests au vert dans l'app · <b>32</b> sur ce site · <b>zéro</b> requête externe au chargement · <b>10 Ko</b> maxi par fichier</p>
+  <p class="proof">Code ouvert · <a href="https://github.com/piskyRpapalo/PreceptorOS">GitHub</a> · <b>540</b> tests au vert dans l'app · <b>38</b> sur ce site · <b>zéro</b> requête externe au chargement · <b>10 Ko</b> maxi par fichier</p>
   <p class="guia">Votre IA souveraine, sur votre machine, sans nuage. Ecrivez ci-dessous pour commencer.</p>
   <div id="chat" class="panel">
 <textarea id="pregunta" class="chat-input" placeholder="Ecrivez votre premiere question..." rows="4"></textarea>
@@ -53,7 +53,7 @@
 <script type="application/json" id="i18n">{
  "arrancando": "Demarrage du moteur...",
  "avisoCifra": "Environ 400 Mo. Nous le disons avant que vous cliquiez, pas apres.",
- "avisoRed": "Se telecharge par le reseau une seule fois. Mis en cache dans votre navigateur.",
+ "avisoRed": "Telecharge une seule fois, puis mis en cache dans votre navigateur.",
  "bajando": "Telechargement",
  "bajarNavegador": "Telecharger l'IA du navigateur (~2,7-4 Go)",
  "brainAsleep": "Aucun moteur démarré",
@@ -83,7 +83,7 @@
  "falloNavegador": "NO_DATA - echec avec l'IA du navigateur",
  "falloRespuesta": "NO_DATA - echec de generation de la reponse",
  "falloVacio": "NO_DATA — le moteur a terminé sans émettre un seul caractère. Ce n'est pas une réponse vide : c'est un tour qui n'a jamais eu lieu.",
- "idAviso": "Une clé est générée dans votre navigateur. Elle ne peut être ni exportée ni copiée : si vous effacez les données du site, cette identité est perdue et rien ne permet de la récupérer. Aucun mot de passe à oublier, aucun serveur qui la garde.",
+ "idAviso": "Une clé est générée dans votre navigateur. Ni exportable ni copiable : si vous effacez les données du site, cette identité est perdue sans recours. Aucun mot de passe à oublier, aucun serveur qui la garde.",
  "idClave": "Voir mon empreinte",
  "idEntrar": "Créer une identité",
  "idFallo": "NO_DATA — l'identité n'a pas pu être créée :",
@@ -93,17 +93,17 @@
  "laiBuscar": "Chercher l'IA locale",
  "laiEncontrados": "Vos modèles trouvés :",
  "laiListo": "Vous parlerez à",
- "laiMixto": "Depuis une page https le navigateur n'autorise que 127.0.0.1. Une IP réseau est bloquée en contenu mixte.",
+ "laiMixto": "Depuis une page https le navigateur n'autorise que 127.0.0.1 : une IP réseau est bloquée en contenu mixte.",
  "laiNada": "NO_DATA — aucune IA locale sur 127.0.0.1:11434. Cause :",
  "laiOtra": "Autre adresse d'Ollama",
  "laiProbar": "Essayer là",
  "laiVacio": "NO_DATA — Ollama répond mais n'a aucun modèle.",
  "listoLocal": "Moteur pret. Ecrivez votre question.",
  "llevate": "Emportez ce texte vers l'IA que vous utilisez deja.",
- "medidaCalentado": "Mesuré après une rafale cachée de 5 tokens : sans elle on chronomètre le compilateur de shaders, pas votre machine.",
- "medidaEsperando": "Écrivez un tour et la mesure se fait seule. Rien de tout cela ne quitte votre appareil.",
+ "medidaCalentado": "Mesuré après une rafale cachée de 5 tokens : sans elle on chronomètre le compilateur de shaders, pas la machine.",
+ "medidaEsperando": "Écrivez un tour et la mesure se fait seule. Rien ne quitte votre appareil.",
  "medidaMotor": "moteur :",
- "medidaSinTokens": "tok/s NO_DATA — ce moteur ne déclare pas combien de tokens il a générés. Compter les morceaux et les appeler tokens reviendrait à inventer le chiffre.",
+ "medidaSinTokens": "tok/s NO_DATA — ce moteur ne déclare pas ses tokens. Compter les morceaux et les appeler tokens, ce serait inventer le chiffre.",
  "medidaSinTtft": "TTFT NO_DATA — le moteur n'a émis aucun morceau à chronométrer.",
  "medidaTitulo": "VOTRE MACHINE · mesurée ici, comparée à personne",
  "medidaTurnos": "tours :",
@@ -114,7 +114,7 @@
  "micSinLocal": "NO_DATA — votre navigateur n'offre pas de dictée sur l'appareil. Le bouton reste éteint : le service en nuage ne revient pas.",
  "mirandoGpu": "Consultation du GPU...",
  "mirandoNavegador": "Consultation de l'IA du navigateur...",
- "mismoTexto": "Le meme texte sert pour n'importe quelle IA. C'est l'idee : ne pas dependre d'une seule.",
+ "mismoTexto": "Le meme texte sert pour n'importe quelle IA : ne pas dependre d'une seule.",
  "navBajado": "IA du navigateur telechargee. Ecrivez votre question.",
  "navListo": "IA du navigateur prete. Ecrivez votre question.",
  "navPesa": "Environ 2,7-4 Go. Nous le disons avant que vous cliquiez.",
@@ -139,7 +139,7 @@
  ],
  "sensorAviso": "Le petit modèle commence à oublier le contexte. Réinitialiser la conversation ?",
  "sensorBoton": "Réinitialiser",
- "sensorRegistrado": "Réinitialisation enregistrée comme mesure de limite pour cette session. Rien n'est conservé : ce site ne garde rien de vous.",
+ "sensorRegistrado": "Réinitialisation enregistrée comme mesure de limite pour cette session. Ce site ne garde rien de vous.",
  "sinMotor": "NO_DATA - aucun moteur d'IA disponible dans ce navigateur.",
  "tbCuerpo": "Corps",
  "tbFirmado": "Signé sur votre appareil. Rien ne part encore : l'envoi viendra quand le Souverain l'aura signé.",

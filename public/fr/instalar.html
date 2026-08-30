@@ -31,8 +31,8 @@ passe, et rien ne se télécharge dans ton dos.</p>
 <p class="nodata">NO_DATA · le « fichier en un clic » n'existe pas encore.
   <strong>Cause :</strong> le dépôt est public, mais il n'a publié aucune
   <em>release</em> et <code>dist/aurelius</code> répond 404. Vérifié le 2026-08-27
-  contre l'API de GitHub. Le guide du dépôt le décrit comme s'il était là ;
-  jusqu'à sa publication, le chemin ci-dessous est celui qui marche.</p>
+  contre l'API de GitHub. Jusqu'à publication, le chemin ci-dessous est celui
+  qui marche.</p>
 
 <h2>Sur un ordinateur · Linux ou macOS</h2>
 <ol class="pasos">
@@ -45,8 +45,8 @@ passe, et rien ne se télécharge dans ton dos.</p>
     <p><code>git clone --depth 1 https://github.com/piskyRpapalo/PreceptorOS ~/aurelius</code></p></div></li>
   <li><div><h3>Fabrique la porte.</h3>
     <p><code>cd ~/aurelius &amp;&amp; bash bin/instalar-pc</code> — ça met l'icône
-    dans ton menu d'applications, rien de plus. <strong>Ça ne lance rien à la
-    fin :</strong> ça fabrique la porte ; entrer, c'est toi qui décides. Pour
+    dans ton menu d'applications, rien de plus. <strong>Ça ne lance
+    rien :</strong> la porte se fabrique ; entrer, c'est toi qui décides. Pour
     l'enlever, <code>bash bin/instalar-pc --desinstalar</code>, qui efface l'icône
     et <em>ne touche pas à ta mémoire</em>.</p></div></li>
   <li><div><h3>Crée ta mémoire.</h3>
@@ -59,9 +59,9 @@ passe, et rien ne se télécharge dans ton dos.</p>
 </ol>
 
 <h2>Sous Windows · via WSL</h2>
-<p>Pas d'étapes propres : dans <strong>WSL</strong>
-vous avez un Linux, donc celles du dessus suffisent telles quelles. Ouvrez <code>wsl</code>
-et suivez la section Linux. Nous le disons ici pour que vous ne le cherchiez pas.</p>
+<p>Pas d'étapes propres : <strong>WSL</strong> est un Linux, donc celles du
+dessus suffisent. Ouvre <code>wsl</code> et suis la section Linux. On le dit ici
+pour que tu ne le cherches pas.</p>
 
 <h2 id="android">Sur un téléphone Android · via Termux</h2>
 <ol class="pasos">
@@ -124,8 +124,7 @@ machine si tu ne l'exportes pas.</p>
 </div>
 
 <h2>Bloqué ? Demande à l'IA que tu utilises déjà</h2>
-<p>Tu n'as pas à résoudre ça tout seul ni à attendre qui que ce soit. <strong>Pour
-tout doute d'installation, tire sur une IA externe</strong> : elle en sait plus
+<p><strong>Pour tout doute d'installation, tire sur une IA externe</strong> : elle en sait plus
 que cette page sur les terminaux et sur ton système. Copie ceci, colle ton erreur
 par-dessus, et donne-le à Gemini, ChatGPT, Claude ou ton IA locale.</p>
 <textarea id="atasco" readonly aria-label="Texte d'aide à coller dans ton IA">J'installe PreceptorOS, un programme local en Python qui n'utilise que la
@@ -148,22 +147,21 @@ n'es pas sur, dis-le au lieu d'inventer un chemin ou un paquet.</textarea>
 <div class="fila">
   <button type="button" data-copia="atasco" data-hecho="Copié ✓" data-manual="Sélectionne et Ctrl+C">Copier pour mon IA</button>
 </div>
-<p class="tenue">Peu importe laquelle : le texte n'est attaché à aucune. C'est le
-but — ne dépendre d'aucune seule, même pour demander de l'aide.</p>
+<p class="tenue">Peu importe laquelle : le texte n'est attaché à aucune. C'est
+le but.</p>
 
 <h2>Tes propres planches : que ton IA les dessine</h2>
-<p>Ce site est statique et ne génère pas d'images : il n'a pas de serveur pour les
-faire, et on ne va pas en simuler un. Mais l'IA que tu utilises déjà, si — et
-comme ça l'histoire est la tienne. Le texte complet, avec le personnage décrit et
-son image de référence, vit dans le dépôt du produit.</p>
+<p>Ce site est statique et ne génère pas d'images : pas de serveur pour les
+faire, et on n'en simulera pas un. L'IA que tu utilises déjà, si — et comme ça
+l'histoire est la tienne. Le texte complet, avec le personnage et son image de
+référence, vit dans le dépôt.</p>
 
 <footer class="honest-footer">
   <h2>Ce que cette page fait, et ce qu'elle coûte</h2>
   <ul>
     <li><strong>Au chargement, elle ne demande rien à personne.</strong> Les liens
       vers GitHub sont des liens : ils ne font aucune requête tant que <em>tu</em>
-      n'appuies pas. Un lien n'est pas une ressource chargée, et c'est exactement
-      la différence qui compte ici.</li>
+      n'appuies pas.</li>
     <li><strong>Les commandes sont celles du dépôt, pas une version à nous.</strong>
       Elles viennent de <code>bin/instalar-pc</code>,
       <code>bin/instalar-android</code> et <code>INSTALACION_PC.md</code>,
