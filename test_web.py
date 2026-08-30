@@ -279,6 +279,63 @@ class Estructura(unittest.TestCase):
             with self.subTest(fichero=str(p_.relative_to(RAIZ))):
                 self.assertIn("canon.css", t, "carga base.css pero no el canon")
 
+    def test_ninguna_portada_muestra_el_idioma_de_otra(self):
+        """El pie honesto vivia escrito a mano en las tres portadas Y EN
+        ESPAÑOL: quien abria /en/ o /fr/ se encontraba castellano.
+
+        Un texto visible fuera del bloque i18n no se traduce -- se olvida. Este
+        caso lo impide por construccion: si el valor de una clave en un idioma
+        aparece en la pagina de otro, cae.
+        """
+        blocks = {}
+        for idi in ("es", "en", "fr"):
+            t = (PUBLICO / idi / "index.html").read_text(encoding="utf-8")
+            m = re.search(r'id="i18n">(.*?)</script>', t, re.S)
+            self.assertIsNotNone(m, f"{idi}: falta el bloque i18n")
+            blocks[idi] = (json.loads(m.group(1)), t)
+
+        for origen, (datos, _) in blocks.items():
+            for otro, (_, html) in blocks.items():
+                if otro == origen:
+                    continue
+                for clave, valor in datos.items():
+                    # Solo las cadenas largas y REALMENTE distintas: «Benchmark»
+                    # es igual en los tres y no prueba nada.
+                    if not isinstance(valor, str) or len(valor) < 25:
+                        continue
+                    if valor == blocks[otro][0].get(clave):
+                        continue
+                    with self.subTest(de=origen, en=otro, clave=clave):
+                        self.assertNotIn(
+                            valor, html,
+                            f"la portada /{otro}/ muestra el texto de /{origen}/ "
+                            f"en la clave `{clave}`")
+
+    def test_el_pie_honesto_no_lleva_texto_escrito_a_mano(self):
+        """El pie se rellena desde el i18n, asi que en el HTML esta vacio.
+
+        Si alguien vuelve a escribir un <li> ahi, funcionara -- y volvera a
+        estar en un solo idioma para siempre, que es como llego el anterior.
+        """
+        for idi in ("es", "en", "fr"):
+            t = (PUBLICO / idi / "index.html").read_text(encoding="utf-8")
+            pie = re.search(r'<footer class="honest-footer">(.*?)</footer>', t, re.S)
+            with self.subTest(idioma=idi):
+                self.assertIsNotNone(pie, "falta el pie honesto")
+                self.assertNotIn("<li>", pie.group(1),
+                                 "hay texto escrito a mano en el pie: sácalo al i18n")
+                self.assertIn('id="pie-honesto"', pie.group(1))
+
+    def test_las_portadas_declaran_hreflang(self):
+        """Tres traducciones sin hreflang son tres paginas sueltas para un
+        buscador, y compiten entre ellas en vez de ofrecerse por idioma."""
+        for idi in ("es", "en", "fr"):
+            t = (PUBLICO / idi / "index.html").read_text(encoding="utf-8")
+            for otro in ("es", "en", "fr"):
+                with self.subTest(idioma=idi, apunta_a=otro):
+                    self.assertRegex(t, rf'hreflang="{otro}"',
+                                     f"{idi} no declara hreflang de {otro}")
+
     def test_cero_html_en_la_raiz(self):
         sueltos = [p.name for p in RAIZ.glob("*.html")]
         self.assertEqual(sueltos, [], f"HTML fuera de public/: {sueltos}")

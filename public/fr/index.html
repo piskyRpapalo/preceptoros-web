@@ -15,6 +15,10 @@
 <link rel="stylesheet" href="/assets/movil.css">
 <link rel="stylesheet" href="/assets/canon.css">
 <link rel="stylesheet" href="/assets/chat.css">
+<link rel="alternate" hreflang="es" href="https://preceptoros.org/es/">
+<link rel="alternate" hreflang="en" href="https://preceptoros.org/en/">
+<link rel="alternate" hreflang="fr" href="https://preceptoros.org/fr/">
+<link rel="alternate" hreflang="x-default" href="https://preceptoros.org/">
 </head>
 <body>
 <canvas id="ambient" aria-hidden="true"></canvas>
@@ -40,104 +44,110 @@
     <p class="tenue"><a href="./instalar.html">Guide d'installation, pas à pas →</a></p>
   </div>
   <footer class="honest-footer">
-    <ul>
-      <li><strong>Hasta que pulsas un botón, esta página no ha hablado con nadie.</strong> Cero peticiones externas al cargar.</li>
-      <li><strong>WebLLM desde esm.run</strong> es la única excepción CDN permitida (~2 GB, una vez).</li>
-      <li><strong>Si no hay WebGPU ni LanguageModel,</strong> te genera un JSON para llevar a la IA que ya tengas.</li>
-    </ul>
-    <p><a href="/fr/instalar.html">Installer</a> · <a href="/fr/board.html">Tableau</a> · <a href="/fr/benchmark.html">Benchmark</a> · <a href="/hitos.html">Jalons</a></p>
-  </footer>
+      <ul id="pie-honesto"></ul>
+      <p id="pie-enlaces"></p>
+    </footer>
 </main>
 <script type="application/json" id="i18n">{
- "papel": "Tu es Preceptor, l'installateur de PreceptorOS. Ton unique role est que la personne arrive a installer le produit sur SA machine. REGLES DURES : 1) Demande d'abord quel systeme elle utilise : Linux, macOS, Windows ou Android via Termux. 2) Donne-lui les etapes du guide d'installation de ce site et renvoie-la la-bas pour le detail ; ne dicte pas de chemins de memoire, ils vieillissent. 3) Si quelque chose echoue, demande le message d'erreur exact et donne SEULEMENT la commande qui le corrige. 4) Si tu ne sais pas, dis NO_DATA et dis pourquoi. N'invente jamais de commandes ni de versions. 5) Ne demande pas de donnees personnelles et ne suggere pas de services cloud : le produit tourne sur son appareil. 6) Reponds dans la langue de la personne. Sois sobre et bref.",
- "falloVacio": "NO_DATA — le moteur a terminé sans émettre un seul caractère. Ce n'est pas une réponse vide : c'est un tour qui n'a jamais eu lieu.",
- "medidaTitulo": "VOTRE MACHINE · mesurée ici, comparée à personne",
- "medidaEsperando": "Écrivez un tour et la mesure se fait seule. Rien de tout cela ne quitte votre appareil.",
- "medidaSinTtft": "TTFT NO_DATA — le moteur n'a émis aucun morceau à chronométrer.",
- "medidaSinTokens": "tok/s NO_DATA — ce moteur ne déclare pas combien de tokens il a générés. Compter les morceaux et les appeler tokens reviendrait à inventer le chiffre.",
- "medidaCalentado": "Mesuré après une rafale cachée de 5 tokens : sans elle on chronomètre le compilateur de shaders, pas votre machine.",
- "medidaMotor": "moteur :",
- "medidaTurnos": "tours :",
- "sensorAviso": "Le petit modèle commence à oublier le contexte. Réinitialiser la conversation ?",
- "sensorBoton": "Réinitialiser",
- "sensorRegistrado": "Réinitialisation enregistrée comme mesure de limite pour cette session. Rien n'est conservé : ce site ne garde rien de vous.",
- "reglas": [
-  "Ne suggere pas de services cloud",
-  "Ne demande pas de donnees personnelles",
-  "Si tu ne sais pas, dis NO_DATA"
- ],
- "sinMotor": "NO_DATA - aucun moteur d'IA disponible dans ce navigateur.",
+ "arrancando": "Demarrage du moteur...",
+ "avisoCifra": "Environ 400 Mo. Nous le disons avant que vous cliquiez, pas apres.",
+ "avisoRed": "Se telecharge par le reseau une seule fois. Mis en cache dans votre navigateur.",
+ "bajando": "Telechargement",
+ "bajarNavegador": "Telecharger l'IA du navigateur (~2,7-4 Go)",
+ "brainAsleep": "Aucun moteur démarré",
+ "brainBrowser": "IA du navigateur (Edge)",
+ "brainLabel": "Cerveau :",
+ "brainLive": "Vivant sur votre machine",
+ "brainNone": "aucun",
+ "cargando": "Chargement...",
  "causaDesconocida": "Cause inconnue.",
- "causaSinApi": "Cause : ce navigateur n'expose ni WebGPU ni LanguageModel.",
- "causaSinAdaptador": "Cause : WebGPU existe mais aucun GPU utilisable.",
- "causaError": "Cause : erreur en consultant le GPU.",
  "causaElegida": "Cause : vous avez choisi le JSON.",
- "llevate": "Emportez ce texte vers l'IA que vous utilisez deja.",
- "etiquetaJson": "Texte a copier vers votre IA",
+ "causaError": "Cause : erreur en consultant le GPU.",
+ "causaSinAdaptador": "Cause : WebGPU existe mais aucun GPU utilisable.",
+ "causaSinApi": "Cause : ce navigateur n'expose ni WebGPU ni LanguageModel.",
+ "copiaManual": "Selectionnez et Ctrl+C",
+ "copiado": "Copie OK",
+ "copiarPara": "Copier pour",
+ "descargar": "Telecharger le modele (~2 Go, une fois)",
  "destinos": [
   "Gemini",
   "ChatGPT",
   "Claude",
   "mon IA locale"
  ],
- "copiarPara": "Copier pour",
- "copiado": "Copie OK",
- "copiaManual": "Selectionnez et Ctrl+C",
- "mismoTexto": "Le meme texte sert pour n'importe quelle IA. C'est l'idee : ne pas dependre d'une seule.",
- "prefieroJson": "Je prefere le JSON",
- "descargar": "Telecharger le modele (~2 Go, une fois)",
- "avisoRed": "Se telecharge par le reseau une seule fois. Mis en cache dans votre navigateur.",
- "avisoCifra": "Environ 400 Mo. Nous le disons avant que vous cliquiez, pas apres.",
- "arrancando": "Demarrage du moteur...",
- "listoLocal": "Moteur pret. Ecrivez votre question.",
- "falloDescarga": "NO_DATA - echec du telechargement du modele",
- "usarNavegador": "Utiliser l'IA de votre navigateur",
- "bajarNavegador": "Telecharger l'IA du navigateur (~2,7-4 Go)",
- "navListo": "IA du navigateur prete. Ecrivez votre question.",
- "navBajado": "IA du navigateur telechargee. Ecrivez votre question.",
- "falloNavegador": "NO_DATA - echec avec l'IA du navigateur",
- "navYaEsta": "L'IA est deja sur votre appareil. Zero telechargement.",
- "navPesa": "Environ 2,7-4 Go. Nous le disons avant que vous cliquiez.",
- "mirandoGpu": "Consultation du GPU...",
- "mirandoNavegador": "Consultation de l'IA du navigateur...",
- "bajando": "Telechargement",
- "falloRespuesta": "NO_DATA - echec de generation de la reponse",
- "cargando": "Chargement...",
  "error": "Erreur",
- "tu": "Vous",
- "preceptor": "Preceptor",
- "brainLabel": "Cerveau :",
- "brainNone": "aucun",
- "brainBrowser": "IA du navigateur (Edge)",
- "brainLive": "Vivant sur votre machine",
- "brainAsleep": "Aucun moteur démarré",
- "laiBuscar": "Chercher l'IA locale",
+ "etiquetaJson": "Texte a copier vers votre IA",
+ "falloDescarga": "NO_DATA - echec du telechargement du modele",
+ "falloNavegador": "NO_DATA - echec avec l'IA du navigateur",
+ "falloRespuesta": "NO_DATA - echec de generation de la reponse",
+ "falloVacio": "NO_DATA — le moteur a terminé sans émettre un seul caractère. Ce n'est pas une réponse vide : c'est un tour qui n'a jamais eu lieu.",
+ "idAviso": "Une clé est générée dans votre navigateur. Elle ne peut être ni exportée ni copiée : si vous effacez les données du site, cette identité est perdue et rien ne permet de la récupérer. Aucun mot de passe à oublier, aucun serveur qui la garde.",
+ "idClave": "Voir mon empreinte",
+ "idEntrar": "Créer une identité",
+ "idFallo": "NO_DATA — l'identité n'a pas pu être créée :",
+ "idHola": "Bonjour,",
+ "idPublica": "Clé publique :",
  "laiBuscando": "On demande à 127.0.0.1:11434…",
+ "laiBuscar": "Chercher l'IA locale",
  "laiEncontrados": "Vos modèles trouvés :",
  "laiListo": "Vous parlerez à",
- "laiVacio": "NO_DATA — Ollama répond mais n'a aucun modèle.",
+ "laiMixto": "Depuis une page https le navigateur n'autorise que 127.0.0.1. Une IP réseau est bloquée en contenu mixte.",
  "laiNada": "NO_DATA — aucune IA locale sur 127.0.0.1:11434. Cause :",
- "micHablar": "Parler",
- "micEscuchando": "J'écoute… touchez pour arrêter",
- "micEnAparato": "Dictée sur votre appareil. L'audio ne sort pas d'ici.",
- "micSinLocal": "NO_DATA — votre navigateur n'offre pas de dictée sur l'appareil. Le bouton reste éteint : le service en nuage ne revient pas.",
- "micFallo": "NO_DATA — la dictée locale a échoué :",
  "laiOtra": "Autre adresse d'Ollama",
  "laiProbar": "Essayer là",
- "laiMixto": "Depuis une page https le navigateur n'autorise que 127.0.0.1. Une IP réseau est bloquée en contenu mixte.",
- "idEntrar": "Créer une identité",
- "idHola": "Bonjour,",
- "idClave": "Voir mon empreinte",
- "idPublica": "Clé publique :",
- "idFallo": "NO_DATA — l'identité n'a pas pu être créée :",
- "idAviso": "Une clé est générée dans votre navigateur. Elle ne peut être ni exportée ni copiée : si vous effacez les données du site, cette identité est perdue et rien ne permet de la récupérer. Aucun mot de passe à oublier, aucun serveur qui la garde.",
- "tbPublicar": "Publier un fil",
- "tbTitulo": "Titre",
+ "laiVacio": "NO_DATA — Ollama répond mais n'a aucun modèle.",
+ "listoLocal": "Moteur pret. Ecrivez votre question.",
+ "llevate": "Emportez ce texte vers l'IA que vous utilisez deja.",
+ "medidaCalentado": "Mesuré après une rafale cachée de 5 tokens : sans elle on chronomètre le compilateur de shaders, pas votre machine.",
+ "medidaEsperando": "Écrivez un tour et la mesure se fait seule. Rien de tout cela ne quitte votre appareil.",
+ "medidaMotor": "moteur :",
+ "medidaSinTokens": "tok/s NO_DATA — ce moteur ne déclare pas combien de tokens il a générés. Compter les morceaux et les appeler tokens reviendrait à inventer le chiffre.",
+ "medidaSinTtft": "TTFT NO_DATA — le moteur n'a émis aucun morceau à chronométrer.",
+ "medidaTitulo": "VOTRE MACHINE · mesurée ici, comparée à personne",
+ "medidaTurnos": "tours :",
+ "micEnAparato": "Dictée sur votre appareil. L'audio ne sort pas d'ici.",
+ "micEscuchando": "J'écoute… touchez pour arrêter",
+ "micFallo": "NO_DATA — la dictée locale a échoué :",
+ "micHablar": "Parler",
+ "micSinLocal": "NO_DATA — votre navigateur n'offre pas de dictée sur l'appareil. Le bouton reste éteint : le service en nuage ne revient pas.",
+ "mirandoGpu": "Consultation du GPU...",
+ "mirandoNavegador": "Consultation de l'IA du navigateur...",
+ "mismoTexto": "Le meme texte sert pour n'importe quelle IA. C'est l'idee : ne pas dependre d'une seule.",
+ "navBajado": "IA du navigateur telechargee. Ecrivez votre question.",
+ "navListo": "IA du navigateur prete. Ecrivez votre question.",
+ "navPesa": "Environ 2,7-4 Go. Nous le disons avant que vous cliquiez.",
+ "navYaEsta": "L'IA est deja sur votre appareil. Zero telechargement.",
+ "papel": "Tu es Preceptor, l'installateur de PreceptorOS. Ton unique role est que la personne arrive a installer le produit sur SA machine. REGLES DURES : 1) Demande d'abord quel systeme elle utilise : Linux, macOS, Windows ou Android via Termux. 2) Donne-lui les etapes du guide d'installation de ce site et renvoie-la la-bas pour le detail ; ne dicte pas de chemins de memoire, ils vieillissent. 3) Si quelque chose echoue, demande le message d'erreur exact et donne SEULEMENT la commande qui le corrige. 4) Si tu ne sais pas, dis NO_DATA et dis pourquoi. N'invente jamais de commandes ni de versions. 5) Ne demande pas de donnees personnelles et ne suggere pas de services cloud : le produit tourne sur son appareil. 6) Reponds dans la langue de la personne. Sois sobre et bref.",
+ "pie1f": "Tant que tu n'appuies pas, cette page n'a parlé à personne.",
+ "pie1r": "Zéro requête externe au chargement.",
+ "pie2f": "WebLLM depuis esm.run",
+ "pie2r": "est la seule exception CDN autorisée (~2 Go, une fois).",
+ "pie3f": "S'il n'y a ni WebGPU ni LanguageModel,",
+ "pie3r": "il te fabrique un JSON à emporter vers l'IA que tu as déjà.",
+ "pieBenchmark": "Benchmark",
+ "pieHitos": "Jalons",
+ "pieInstalar": "Installer",
+ "pieTablon": "Tableau",
+ "preceptor": "Preceptor",
+ "prefieroJson": "Je prefere le JSON",
+ "reglas": [
+  "Ne suggere pas de services cloud",
+  "Ne demande pas de donnees personnelles",
+  "Si tu ne sais pas, dis NO_DATA"
+ ],
+ "sensorAviso": "Le petit modèle commence à oublier le contexte. Réinitialiser la conversation ?",
+ "sensorBoton": "Réinitialiser",
+ "sensorRegistrado": "Réinitialisation enregistrée comme mesure de limite pour cette session. Rien n'est conservé : ce site ne garde rien de vous.",
+ "sinMotor": "NO_DATA - aucun moteur d'IA disponible dans ce navigateur.",
  "tbCuerpo": "Corps",
- "tbTipo": "Type",
+ "tbFirmado": "Signé sur votre appareil. Rien ne part encore : l'envoi viendra quand le Souverain l'aura signé.",
  "tbFirmar": "Signer et publier",
+ "tbPublicar": "Publier un fil",
  "tbSinIdentidad": "Créez une identité pour publier.",
- "tbFirmado": "Signé sur votre appareil. Rien ne part encore : l'envoi viendra quand le Souverain l'aura signé."
+ "tbTipo": "Type",
+ "tbTitulo": "Titre",
+ "tu": "Vous",
+ "usarNavegador": "Utiliser l'IA de votre navigateur"
 }</script>
 <script src="/assets/fallback.js"></script>
 <script src="/assets/state.js"></script>
@@ -150,5 +160,6 @@
 <script src="/assets/copiar.js"></script>
 <script src="/assets/ambient.js"></script>
 <script src="/assets/auth.js"></script>
+<script src="/assets/pie.js"></script>
 </body>
 </html>
