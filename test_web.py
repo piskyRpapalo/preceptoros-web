@@ -177,9 +177,20 @@ class Estructura(unittest.TestCase):
                 t = ob.read_text(encoding="utf-8")
                 for ancla in ("ob-que", "ob-privacidad", "ob-descarga", "ob-conecta"):
                     self.assertIn(f'id="{ancla}"', t, f"falta la seccion {ancla}")
-                # Los tres destinos de descarga, a su direccion definitiva.
-                self.assertIn("releases/latest/download/preceptoros.apk", t)
+                # Los tres destinos, segun el contrato vigente (plan_v5 y la
+                # firma del PARO 1): Android va HOY por Termux -- el APK esta
+                # declarado futuro y no se ofrece -- y el escritorio por los
+                # dos instaladores.
+                self.assertIn('href="./instalar.html#android"', t,
+                              "el boton de Android no lleva a la guia de Termux")
+                self.assertNotIn("preceptoros.apk", t,
+                                 "se esta ofreciendo un APK que no existe")
                 self.assertIn("releases/latest/download/install.sh", t)
+                self.assertIn("releases/latest/download/install.ps1", t)
+                # Y el ancla tiene que existir de verdad en la guia.
+                guia = (PUBLICO / idioma / "instalar.html").read_text(encoding="utf-8")
+                self.assertIn('id="android"', guia,
+                              f"{idioma}: la guia no tiene ancla #android")
                 # Y el aviso de que todavia no existen: un boton que promete
                 # una descarga que da 404 es un sensor deshonesto.
                 self.assertIn("NO_DATA", t,

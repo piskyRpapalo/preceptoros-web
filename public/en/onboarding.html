@@ -37,7 +37,7 @@
 
 <section class="ob-paso" id="ob-privacidad" data-dice="obPriv">
   <h2><span class="ob-num">2</span>Your privacy, your control</h2>
-  <p>Paste your context and see what comes out before you hand it to anyone. It happens in your browser, nothing to install, and it also tells you where the filter does NOT reach.</p>
+  <p>The filter is the one that crosses out what is private. Paste your context and see what comes out before you hand it to anyone: it happens in your browser, nothing to install, and it also tells you where it does NOT reach.</p>
   <p><a class="boton" href="./playground.html">Try the filter now</a></p>
 </section>
 
@@ -45,18 +45,18 @@
   <h2><span class="ob-num">3</span>Download the app</h2>
   <p>The web is the shop window. The app is the workshop: that's where the companion you choose works on your real files, without them leaving your machine.</p>
   <div class="ob-descargas">
-    <a class="boton" href="https://github.com/piskyRpapalo/PreceptorOS/releases/latest/download/preceptoros.apk">Android · APK</a>
-    <a class="boton" href="https://github.com/piskyRpapalo/PreceptorOS/releases/latest/download/install.sh">Linux · install.sh</a>
-    <a class="boton" href="https://github.com/piskyRpapalo/PreceptorOS/releases/latest/download/install.sh">macOS · install.sh</a>
+    <a class="boton" href="./instalar.html#android">Android · via Termux</a>
+    <a class="boton" href="https://github.com/piskyRpapalo/PreceptorOS/releases/latest/download/install.sh">Linux or macOS · install.sh</a>
+    <a class="boton" href="https://github.com/piskyRpapalo/PreceptorOS/releases/latest/download/install.ps1">Windows · install.ps1</a>
   </div>
-  <p class="ob-aviso nodata">NO_DATA — the installers are not published yet. The buttons point at their final address on GitHub Releases; until the first version ships they will return 404. Said before you press.</p>
+  <p class="ob-aviso nodata">NO_DATA — Android runs through Termux today, following this site's guide; the APK is declared future work and does not exist yet. The desktop installers point at their final address on GitHub Releases and will return 404 until the first version ships. Windows and macOS are NOT tested on this rack: there is no machine of either system here.</p>
   <p class="tenue"><a href="./instalar.html">Install guide →</a></p>
 </section>
 
 <section class="ob-paso" id="ob-conecta" data-dice="obConec">
-  <h2><span class="ob-num">4</span>Connect your account</h2>
-  <p>Your identity is generated in the browser and the private key never leaves it. This code is derived from your public key: always the same for you, and it carries no secret inside.</p>
-  <button type="button" id="ob-vincular">Generate my code</button>
+  <h2><span class="ob-num">4</span>Your pairing code</h2>
+  <p>Your identity is generated in the browser and the private key never leaves it. This pairing code is derived from your public key: always the same for you, and it carries no secret inside.</p>
+  <button type="button" id="ob-vincular">Generate my pairing code</button>
   <p class="ob-codigo" id="ob-codigo">—</p>
   <p class="ob-aviso nodata">This code IDENTIFIES you, it does not authenticate you: anyone who knows your public key can compute it. Real linking will also require a signature, and that arrives with the backend.</p>
 </section>
@@ -77,7 +77,7 @@
  "lang": "en",
  "marca": "Start here",
  "obAtajo": "Straight to it, then. Scroll down: the three downloads are there.",
- "obConec": "This code links your web identity to the app. It's yours and only yours.",
+ "obConec": "This pairing code links your web identity to the app. It's yours and only yours.",
  "obDesc": "Pick your system. The app is the workshop; I come with you inside.",
  "obFalloCodigo": "NO_DATA — the code could not be derived:",
  "obLargo": "Good. Let me show you first what stays on your machine and what doesn't.",
@@ -93,18 +93,18 @@
  "s1p": "Your AI on your machine, no cloud required. Persistent memory that belongs to you, and a Privacy Gateway that sanitises context before it reaches any external AI. No accounts, no telemetry.",
  "s1t": "What is PreceptorOS?",
  "s2b": "Try the filter now",
- "s2p": "Paste your context and see what comes out before you hand it to anyone. It happens in your browser, nothing to install, and it also tells you where the filter does NOT reach.",
+ "s2p": "The filter is the one that crosses out what is private. Paste your context and see what comes out before you hand it to anyone: it happens in your browser, nothing to install, and it also tells you where it does NOT reach.",
  "s2t": "Your privacy, your control",
- "s3and": "Android · APK",
- "s3aviso": "NO_DATA — the installers are not published yet. The buttons point at their final address on GitHub Releases; until the first version ships they will return 404. Said before you press.",
- "s3mac": "macOS · install.sh",
+ "s3and": "Android · via Termux",
+ "s3aviso": "NO_DATA — Android runs through Termux today, following this site's guide; the APK is declared future work and does not exist yet. The desktop installers point at their final address on GitHub Releases and will return 404 until the first version ships. Windows and macOS are NOT tested on this rack: there is no machine of either system here.",
  "s3p": "The web is the shop window. The app is the workshop: that's where the companion you choose works on your real files, without them leaving your machine.",
- "s3pc": "Linux · install.sh",
+ "s3pc": "Linux or macOS · install.sh",
  "s3t": "Download the app",
+ "s3win": "Windows · install.ps1",
  "s4aviso": "This code IDENTIFIES you, it does not authenticate you: anyone who knows your public key can compute it. Real linking will also require a signature, and that arrives with the backend.",
- "s4b": "Generate my code",
- "s4p": "Your identity is generated in the browser and the private key never leaves it. This code is derived from your public key: always the same for you, and it carries no secret inside.",
- "s4t": "Connect your account",
+ "s4b": "Generate my pairing code",
+ "s4p": "Your identity is generated in the browser and the private key never leaves it. This pairing code is derived from your public key: always the same for you, and it carries no secret inside.",
+ "s4t": "Your pairing code",
  "titulo": "Start here · PreceptorOS",
  "volver": "Home"
 }</script>

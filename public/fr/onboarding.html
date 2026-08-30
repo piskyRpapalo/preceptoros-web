@@ -37,7 +37,7 @@
 
 <section class="ob-paso" id="ob-privacidad" data-dice="obPriv">
   <h2><span class="ob-num">2</span>Ta vie privée, ton contrôle</h2>
-  <p>Colle ton contexte et vois ce qui sort avant de le donner à qui que ce soit. Tout se passe dans ton navigateur, rien à installer, et il te dit aussi où le filtre N'ARRIVE PAS.</p>
+  <p>Le filtre est celui qui raye ce qui est privé. Colle ton contexte et vois ce qui sort avant de le donner à qui que ce soit : tout se passe dans ton navigateur, rien à installer, et il te dit aussi où il N'ARRIVE PAS.</p>
   <p><a class="boton" href="./playground.html">Essayer le filtre</a></p>
 </section>
 
@@ -45,18 +45,18 @@
   <h2><span class="ob-num">3</span>Télécharge l'app</h2>
   <p>Le web est la vitrine. L'app est l'atelier : c'est là que le compagnon que tu choisis travaille sur tes vrais fichiers, sans qu'ils quittent ta machine.</p>
   <div class="ob-descargas">
-    <a class="boton" href="https://github.com/piskyRpapalo/PreceptorOS/releases/latest/download/preceptoros.apk">Android · APK</a>
-    <a class="boton" href="https://github.com/piskyRpapalo/PreceptorOS/releases/latest/download/install.sh">Linux · install.sh</a>
-    <a class="boton" href="https://github.com/piskyRpapalo/PreceptorOS/releases/latest/download/install.sh">macOS · install.sh</a>
+    <a class="boton" href="./instalar.html#android">Android · via Termux</a>
+    <a class="boton" href="https://github.com/piskyRpapalo/PreceptorOS/releases/latest/download/install.sh">Linux ou macOS · install.sh</a>
+    <a class="boton" href="https://github.com/piskyRpapalo/PreceptorOS/releases/latest/download/install.ps1">Windows · install.ps1</a>
   </div>
-  <p class="ob-aviso nodata">NO_DATA — les installateurs ne sont pas encore publiés. Les boutons pointent vers leur adresse définitive sur GitHub Releases ; jusqu'à la première version ils renverront 404. C'est dit avant que tu appuies.</p>
+  <p class="ob-aviso nodata">NO_DATA — Android passe aujourd'hui par Termux, avec le guide de ce site ; l'APK est déclaré comme travail futur et n'existe pas encore. Les installateurs de bureau pointent vers leur adresse définitive sur GitHub Releases et renverront 404 jusqu'à la première version. Windows et macOS NE sont PAS testés sur ce rack : aucune machine de ces systèmes n'est ici.</p>
   <p class="tenue"><a href="./instalar.html">Guide d'installation →</a></p>
 </section>
 
 <section class="ob-paso" id="ob-conecta" data-dice="obConec">
-  <h2><span class="ob-num">4</span>Connecte ton compte</h2>
-  <p>Ton identité est générée dans le navigateur et la clé privée n'en sort jamais. Ce code dérive de ta clé publique : toujours le même pour toi, et il ne contient aucun secret.</p>
-  <button type="button" id="ob-vincular">Générer mon code</button>
+  <h2><span class="ob-num">4</span>Ton code de liaison</h2>
+  <p>Ton identité est générée dans le navigateur et la clé privée n'en sort jamais. Ce code de liaison dérive de ta clé publique : toujours le même pour toi, et il ne contient aucun secret.</p>
+  <button type="button" id="ob-vincular">Générer mon code de liaison</button>
   <p class="ob-codigo" id="ob-codigo">—</p>
   <p class="ob-aviso nodata">Ce code t'IDENTIFIE, il ne t'authentifie pas : quiconque connaît ta clé publique peut le calculer. Un vrai lien exigera aussi une signature, et cela arrive avec le backend.</p>
 </section>
@@ -77,7 +77,7 @@
  "lang": "fr",
  "marca": "Commence ici",
  "obAtajo": "Droit au but, alors. Descends : les trois téléchargements sont là.",
- "obConec": "Ce code relie ton identité web à l'app. Il est à toi et à toi seul.",
+ "obConec": "Ce code de liaison relie ton identité web à l'app. Il est à toi et à toi seul.",
  "obDesc": "Choisis ton système. L'app est l'atelier ; je viens avec toi à l'intérieur.",
  "obFalloCodigo": "NO_DATA — le code n'a pas pu être dérivé :",
  "obLargo": "Bien. Je te montre d'abord ce qui reste sur ta machine et ce qui n'y reste pas.",
@@ -93,18 +93,18 @@
  "s1p": "Ton IA sur ta machine, sans nuage obligatoire. Une mémoire persistante qui t'appartient, et un Privacy Gateway qui assainit le contexte avant qu'il ne parte vers une IA externe. Sans comptes, sans télémétrie.",
  "s1t": "Qu'est-ce que PreceptorOS ?",
  "s2b": "Essayer le filtre",
- "s2p": "Colle ton contexte et vois ce qui sort avant de le donner à qui que ce soit. Tout se passe dans ton navigateur, rien à installer, et il te dit aussi où le filtre N'ARRIVE PAS.",
+ "s2p": "Le filtre est celui qui raye ce qui est privé. Colle ton contexte et vois ce qui sort avant de le donner à qui que ce soit : tout se passe dans ton navigateur, rien à installer, et il te dit aussi où il N'ARRIVE PAS.",
  "s2t": "Ta vie privée, ton contrôle",
- "s3and": "Android · APK",
- "s3aviso": "NO_DATA — les installateurs ne sont pas encore publiés. Les boutons pointent vers leur adresse définitive sur GitHub Releases ; jusqu'à la première version ils renverront 404. C'est dit avant que tu appuies.",
- "s3mac": "macOS · install.sh",
+ "s3and": "Android · via Termux",
+ "s3aviso": "NO_DATA — Android passe aujourd'hui par Termux, avec le guide de ce site ; l'APK est déclaré comme travail futur et n'existe pas encore. Les installateurs de bureau pointent vers leur adresse définitive sur GitHub Releases et renverront 404 jusqu'à la première version. Windows et macOS NE sont PAS testés sur ce rack : aucune machine de ces systèmes n'est ici.",
  "s3p": "Le web est la vitrine. L'app est l'atelier : c'est là que le compagnon que tu choisis travaille sur tes vrais fichiers, sans qu'ils quittent ta machine.",
- "s3pc": "Linux · install.sh",
+ "s3pc": "Linux ou macOS · install.sh",
  "s3t": "Télécharge l'app",
+ "s3win": "Windows · install.ps1",
  "s4aviso": "Ce code t'IDENTIFIE, il ne t'authentifie pas : quiconque connaît ta clé publique peut le calculer. Un vrai lien exigera aussi une signature, et cela arrive avec le backend.",
- "s4b": "Générer mon code",
- "s4p": "Ton identité est générée dans le navigateur et la clé privée n'en sort jamais. Ce code dérive de ta clé publique : toujours le même pour toi, et il ne contient aucun secret.",
- "s4t": "Connecte ton compte",
+ "s4b": "Générer mon code de liaison",
+ "s4p": "Ton identité est générée dans le navigateur et la clé privée n'en sort jamais. Ce code de liaison dérive de ta clé publique : toujours le même pour toi, et il ne contient aucun secret.",
+ "s4t": "Ton code de liaison",
  "titulo": "Commence ici · PreceptorOS",
  "volver": "Accueil"
 }</script>
