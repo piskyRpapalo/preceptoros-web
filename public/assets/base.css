@@ -76,15 +76,14 @@ header{display:flex;align-items:flex-end;gap:1rem;border-bottom:3px solid var(--
   padding-bottom:.9rem;margin-bottom:1.6rem}
 .marca{flex:1;min-width:0}
 .marca h1{font-size:1.05rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
-  color:var(--indigo);word-break:break-word}
+  color:var(--indigo);overflow-wrap:break-word;word-break:normal;hyphens:none}
 .marca h1 b{font-weight:400;color:var(--bronce-hondo)}
 .marca p{color:var(--tenue);font-size:.78rem;margin-top:.2rem}
 
-/* --- EL SELLO: la cara despierta, y es un sensor ------------------------- */
-/* Despierta una vez al cargar y se queda en el androide. `seal.js` pone
-   pensando y hablando, y SOLO mientras el motor trabaja de verdad: la pantalla
-   no se agita por decoracion. 64px es la mitad exacta de los 128 del fichero —
-   un factor no entero emborrona el arte de pixel. */
+/* --- EL SELLO: la cara despierta, y es un sensor --- */
+/* `seal.js` pone pensando y hablando SOLO mientras el motor trabaja: la
+   pantalla no se agita por decoracion. 64px es la mitad exacta de los 128 del
+   fichero — un factor no entero emborrona el arte de pixel. */
 .seal{width:64px;height:85px;flex:0 0 64px;
   background:url(seal-wake.gif) no-repeat center/64px 85px var(--marmol-claro);
   image-rendering:pixelated;border:1px solid var(--edge);
@@ -120,18 +119,24 @@ button,.boton{font:inherit;font-size:.85rem;cursor:pointer;
   border-radius:calc(var(--radius) - 6px);
   padding:.6rem .9rem;display:inline-block;text-decoration:none;
   transition:transform .2s var(--spring),background .2s ease,border-color .2s ease}
-button:focus,.boton:focus{background:var(--indigo);border-color:var(--indigo);outline:0}
-button:active,.boton:active{transform:scale(.98)}
-/* El hover y la escala, solo donde hay raton de verdad. En tactil el navegador
-   emula un hover pegajoso que se queda encendido tras el toque, y ademas la
-   transformacion cuesta scroll. */
+:is(button,.boton):focus{background:var(--indigo);border-color:var(--indigo);outline:0}
+:is(button,.boton):active{transform:scale(.98)}
+/* Hover y escala solo con raton de verdad: en tactil el navegador emula un
+   hover pegajoso que se queda encendido tras el toque. */
 @media (hover:hover) and (pointer:fine){
-  button:hover,.boton:hover{background:var(--indigo);border-color:var(--indigo);
+  :is(button,.boton):hover{background:var(--indigo);border-color:var(--indigo);
     transform:scale(1.02)}
 }
 button[disabled]{background:var(--tenue);border-color:var(--tenue);cursor:progress}
-button.leve{background:transparent;color:var(--bronce-hondo);border-color:var(--bronce)}
-button.leve:hover,button.leve:focus{background:var(--bronce);color:var(--marmol-claro)}
+.leve{background:transparent;color:var(--bronce-hondo);border-color:var(--bronce);
+  font-size:.8rem;padding:.45rem .7rem}
+.leve:is(:hover,:focus){background:var(--bronce);color:var(--marmol-claro)}
+
+/* La identidad es la accion PRINCIPAL: violeta lleno, como el de enviar.
+   `auth.js` la marca `.leve`; aqui recupera su peso sin tocar el JS. */
+.identity .leve{background:var(--violeta);color:#fff;border-color:var(--violeta);
+  font-weight:700;font-size:.85rem;padding:.6rem 1rem}
+.identity .leve:is(:hover,:focus){background:var(--indigo);border-color:var(--indigo)}
 .fila{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.7rem}
 input,textarea,select{font:inherit;font-family:var(--mono);width:100%;
   background:rgba(255,255,255,.75);color:var(--tinta);

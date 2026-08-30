@@ -1,0 +1,28 @@
+/* preceptoros.org · la cara en un telefono.
+   Fichero aparte y no un bloque mas de base.css: base.css llego a 10 356 B y el
+   tope firmado del Agora son 10 240. La salida no era recortar comentarios
+   -- el 29 % del fichero es razonamiento, y es lo que vale de el -- sino
+   partirlo, que es lo que el tope pide de verdad: ficheros que se lean.
+
+   Se carga DESPUES de base.css en todas las paginas. */
+
+/* --- movil --- */
+/* No habia NI UNA media query de anchura. En 360 px la cabecera metia sello,
+   marca e identidad en una fila: el titulo se partia en «PRECEP / TOROS» y los
+   enlaces salian como tres bloques, uno por linea. Aqui se apila. */
+@media (max-width:540px){
+  body{padding:1rem .8rem 2rem}
+  header{flex-wrap:wrap;align-items:center;gap:.7rem}
+  .seal{width:48px;height:64px;flex:0 0 48px;background-size:48px 64px}
+  .marca{flex:1 1 auto}
+  .marca h1{font-size:.95rem;letter-spacing:.06em}
+  .marca .fila{width:100%;margin-top:.5rem;gap:.35rem}
+  /* `1 1 0` y no `1 1 auto`: con `auto` cada boton reclama el ancho de su
+     texto y «[ Benchmark ]» empujaba al tercero a una segunda fila. Dos
+     arriba y uno solo debajo parece un accidente; tres iguales parecen una
+     decision. */
+  .marca .fila .boton{flex:1 1 0;min-width:0;text-align:center;
+    padding:.45rem .25rem;font-size:.72rem;letter-spacing:-.01em}
+  .identity{flex:1 0 100%;margin-top:.2rem}
+  .identity .leve{width:100%}
+}
