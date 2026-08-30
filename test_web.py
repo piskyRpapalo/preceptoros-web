@@ -116,6 +116,51 @@ class Estructura(unittest.TestCase):
         self.assertGreaterEqual(con_tarjeta, 4,
                                 "muy pocas paginas con tarjeta social")
 
+    def test_la_portada_publica_lo_que_los_gates_miden(self):
+        """La línea de credenciales contra counters.json.
+
+        El 2026-08-30 las tres portadas anunciaban «526 pruebas en verde en la
+        app». El gate del MVP daba 429. NINGUN comando producia 526: era una
+        cifra publicada, en produccion y en tres idiomas, que nadie podia
+        reproducir -- justo lo que honest sensors existe para impedir.
+
+        Escribir el numero bueno a mano no lo arregla: a mano vuelve a derivar
+        en cuanto alguien añada un test. Lo que lo arregla es que la cifra sea
+        una MEDICION, y que este test falle el dia que deje de serlo.
+
+        Quien MIDE es `p0x/bin/coherencia-publica.py`, que corre los dos gates
+        y escribe en counters.json. Quien COMPRUEBA es este test, que solo lee
+        ficheros: rapido, sin red, y sin obligar al Agora a tener el repo del
+        MVP delante para poder pasar su propio gate.
+        """
+        datos = json.loads((PUBLICO / "counters.json").read_text(encoding="utf-8"))
+        por_clave = {m["clave"]: m for m in datos["metricas"]}
+        esperado = []
+        for clave in ("pruebas_app", "pruebas_web"):
+            m = por_clave.get(clave)
+            self.assertIsNotNone(m, f"counters.json no declara {clave}. "
+                                 "Remedio: python3 ~/p0x/bin/coherencia-publica.py --si")
+            esperado.append(m["valor"] if m["estado"] == "MEDIDO" else None)
+
+        portadas = [p for p in PUBLICO.rglob("index.html") if p.parent != PUBLICO]
+        self.assertTrue(portadas, "no hay portadas de idioma")
+        for p in portadas:
+            t = p.read_text(encoding="utf-8")
+            bloque = re.search(r'<p class="proof">.*?</p>', t, re.S)
+            with self.subTest(fichero=str(p.relative_to(RAIZ))):
+                self.assertIsNotNone(bloque, "portada sin línea de credenciales")
+                cifras = [int(re.sub(r"\D", "", c))
+                          for c in re.findall(r"<b>(\d[\d.\u00a0 ]*)</b>", bloque.group(0))]
+                self.assertGreaterEqual(len(cifras), 2,
+                                        "la línea no publica dos cifras de pruebas")
+                for i, (dice, mide) in enumerate(zip(cifras[:2], esperado)):
+                    if mide is None:
+                        continue        # el gate salió NO_DATA: no hay con qué comparar
+                    self.assertEqual(
+                        dice, mide,
+                        f"la portada publica {dice} y counters.json mide {mide}. "
+                        "Remedio: python3 ~/p0x/bin/coherencia-publica.py --si")
+
     def test_cero_html_en_la_raiz(self):
         sueltos = [p.name for p in RAIZ.glob("*.html")]
         self.assertEqual(sueltos, [], f"HTML fuera de public/: {sueltos}")

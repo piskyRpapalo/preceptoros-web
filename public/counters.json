@@ -1,7 +1,7 @@
 {
   "esquema": 1,
   "fecha": "2026-08-30",
-  "ultima_lectura": "2026-08-29T23:57:16+00:00",
+  "ultima_lectura": "2026-08-30T03:52:17+00:00",
   "nota": "Solo hay cifras medidas. Lo que no se midio sale como NO_DATA con su causa. Aqui no se cuenta a nadie.",
   "metricas": [
     {
@@ -52,6 +52,20 @@
       "valor": null,
       "unidad": "instalaciones",
       "causa": "no se cuentan las instalaciones. No hay telemetria en el producto ni en esta web; contarlas exigiria justo lo que el proyecto existe para no hacer."
+    },
+    {
+      "clave": "pruebas_app",
+      "estado": "MEDIDO",
+      "valor": 429,
+      "unidad": "pruebas",
+      "como": "python3 -m pytest -q en el repo del MVP, cifra 'N passed'"
+    },
+    {
+      "clave": "pruebas_web",
+      "estado": "NO_DATA",
+      "valor": null,
+      "unidad": "pruebas",
+      "causa": "gate de la web: el gate termino en ROJO, no se publica su cifra"
     }
   ]
 }
