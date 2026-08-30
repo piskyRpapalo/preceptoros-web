@@ -21,8 +21,12 @@
      texto y «[ Benchmark ]» empujaba al tercero a una segunda fila. Dos
      arriba y uno solo debajo parece un accidente; tres iguales parecen una
      decision. */
-  .marca .fila .boton{flex:1 1 0;min-width:0;text-align:center;
-    padding:.45rem .25rem;font-size:.72rem;letter-spacing:-.01em}
+  /* Dos por fila, no cuatro. Con tres botones `1 1 0` repartia bien; al
+     entrar «Empieza aquí» como cuarto, cada uno cae a ~85 px y las etiquetas
+     se parten en dos lineas dentro de sus corchetes. Un boton cuyo rotulo se
+     rompe se lee como dos botones. */
+  .marca .fila .boton{flex:1 1 44%;min-width:0;text-align:center;
+    padding:.5rem .35rem;font-size:.75rem;letter-spacing:-.01em}
   .identity{flex:1 0 100%;margin-top:.2rem}
   .identity .leve{width:100%}
 }

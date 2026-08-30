@@ -228,6 +228,57 @@ class Estructura(unittest.TestCase):
         h2 = hashlib.sha256(bytes.fromhex(pub)).digest()
         self.assertEqual(h, h2)
 
+    def test_r_widget_y_r_tipografia(self):
+        """El anexo visual, comprobado y no confiado.
+
+        R-WIDGET nacio de una queja real: en el Doogee, con luz de dia, el
+        texto que caia directamente sobre el marmol no se leia. Y el motivo de
+        fondo es que el marmol es una TEXTURA, no un color -- sobre una textura
+        no se puede calcular contraste ninguno, asi que la unica regla honesta
+        es que todo texto tenga su par declarado.
+        """
+        canon = PUBLICO / "assets" / "canon.css"
+        self.assertTrue(canon.is_file(), "falta assets/canon.css")
+        css = canon.read_text(encoding="utf-8")
+
+        for token in ("--panel-bg", "--panel-fg", "--display"):
+            self.assertIn(token, css, f"canon.css no declara {token}")
+
+        # R-TIPOGRAFIA · cero fuentes externas. Las del stack viven ya en el
+        # sistema de quien mira; descargar una romperia «cero peticiones
+        # externas al cargar», que es una cifra publicada en la portada.
+        self.assertNotIn("@import", css, "canon.css importa algo de fuera")
+        self.assertNotIn("@font-face", css, "canon.css descarga una fuente")
+
+        # El contraste se MIDE aqui, con la formula de la WCAG, no se promete.
+        def _lum(h):
+            c = [int(h[i:i + 2], 16) / 255 for i in (0, 2, 4)]
+            c = [x / 12.92 if x <= .03928 else ((x + .055) / 1.055) ** 2.4 for x in c]
+            return .2126 * c[0] + .7152 * c[1] + .0722 * c[2]
+
+        pares = dict(re.findall(r"--panel-(bg|fg):#([0-9A-Fa-f]{6})", css))
+        self.assertEqual(sorted(pares), ["bg", "fg"],
+                         "el par del panel no esta declarado en hex")
+        a, b = _lum(pares["fg"]), _lum(pares["bg"])
+        a, b = max(a, b), min(a, b)
+        razon = (a + .05) / (b + .05)
+        self.assertGreaterEqual(round(razon, 2), 4.5,
+                                f"el par del panel da {razon:.2f}:1, por debajo de 4,5")
+
+        # Y toda pagina que cargue base.css tiene que cargar tambien el canon:
+        # si no, R-WIDGET rige a medias y el hueco es justo el que se veia mal.
+        # Se busca el <link>, no la cadena: la raiz MENCIONA base.css en un
+        # comentario que explica que a proposito NO la carga («ruteo puro,
+        # para que la puerta cargue sola»), y un grep ingenuo la acusaba de
+        # incumplir una regla que no le aplica.
+        enlace = re.compile(r'<link[^>]+href="[^"]*assets/base\.css"')
+        for p_ in PUBLICO.rglob("*.html"):
+            t = p_.read_text(encoding="utf-8")
+            if not enlace.search(t):
+                continue
+            with self.subTest(fichero=str(p_.relative_to(RAIZ))):
+                self.assertIn("canon.css", t, "carga base.css pero no el canon")
+
     def test_cero_html_en_la_raiz(self):
         sueltos = [p.name for p in RAIZ.glob("*.html")]
         self.assertEqual(sueltos, [], f"HTML fuera de public/: {sueltos}")

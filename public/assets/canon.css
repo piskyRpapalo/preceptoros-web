@@ -1,0 +1,62 @@
+/* preceptoros.org · R-WIDGET y R-TIPOGRAFIA. Anexo visual firmado 2026-08-30.
+   Se carga DESPUES de base.css: corrige, no reemplaza. */
+
+:root{
+  /* R-WIDGET · el par de un panel se declara, no se hereda del fondo.
+     Medido: #1E1826 sobre #F2F5F7 da 14,8:1, muy por encima del 4,5 exigido.
+     El fondo del cuerpo es marmol CON VETAS -- una textura, no un color --,
+     y sobre una textura no se puede calcular contraste ninguno. Ese es el
+     motivo real de la regla: no es que el marmol sea oscuro, es que no es un
+     numero. */
+  --panel-bg:#F2F5F7;
+  --panel-fg:#1E1826;
+  --panel-borde:rgba(120,98,76,.45);
+
+  /* R-TIPOGRAFIA · dos niveles y cero fuentes externas. Ninguna se descarga:
+     todas viven ya en el sistema de quien mira, asi que la promesa de «cero
+     peticiones externas al cargar» sigue entera. */
+  --display:"Iowan Old Style","Palatino Linotype",Palatino,"URW Palladio L",
+            "Book Antiqua",Georgia,"DejaVu Serif",serif;
+}
+
+/* --- nivel DISPLAY · titulos, heroes y prosa humana --------------------- */
+h1,h2,h3,.guia,.ob-paso p,.ob-voz,.diapo figcaption,.honest-footer li{
+  font-family:var(--display);
+}
+h1,h2,h3{letter-spacing:.01em}
+.guia{font-size:1.15rem;line-height:1.55}
+
+/* --- nivel MONO · lo que es dato, no prosa ------------------------------ */
+/* Se reafirma a proposito: si manana alguien pone el serif en `body`, estas
+   siguen siendo datos y no deben cambiar de voz. Un log en serif se lee como
+   una opinion. */
+code,pre,kbd,samp,input,textarea,select,.cifra,.proof b,.ob-codigo,
+.terminal,.hud,.tooltip{font-family:var(--mono)}
+
+/* --- R-WIDGET · nada de texto suelto sobre el marmol -------------------- */
+/* `.guia`, `.proof`, las secciones del onboarding y el pie flotaban sobre la
+   textura. En el Doogee, con luz de dia, eso es ilegible -- y era queja real,
+   no una hipotesis de diseno. */
+.guia,.proof,.ob-paso,.honest-footer{
+  background:var(--panel-bg);color:var(--panel-fg);
+  border:1px solid var(--panel-borde);border-radius:var(--radius);
+  padding:.9rem 1rem;
+}
+.guia{margin:1rem 0}
+.proof{font-size:.82rem;line-height:1.55}
+.ob-paso{margin:1.4rem 0;border-top:1px solid var(--panel-borde)}
+.honest-footer{margin-top:2rem;border-top:1px solid var(--panel-borde)}
+
+/* El aviso mantiene su color propio, pero DENTRO del panel: un NO_DATA tiene
+   que verse distinto sin dejar de ser legible. */
+.ob-paso .nodata,.honest-footer .nodata{color:var(--bronce-hondo)}
+
+/* La voz del Instalador ya trae su propio par (violeta/blanco, 5,9:1
+   medido). Se declara aqui para que quede junto al resto y nadie la
+   cambie creyendo que hereda del fondo. */
+.ob-voz{--panel-bg:var(--violeta);--panel-fg:#fff}
+
+@media (max-width:540px){
+  .guia{font-size:1.05rem}
+  .guia,.proof,.ob-paso,.honest-footer{padding:.75rem .8rem}
+}
