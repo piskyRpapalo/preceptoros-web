@@ -18,8 +18,19 @@ PUBLICO = RAIZ / "public"
 # la guia de instalacion, no como subrecurso: un <a href> no pide nada hasta que
 # lo pulsas, y una guia que no puede enlazar al repositorio no es una guia.
 CDN_ADMITIDO = "https://esm.run/@mlc-ai/web-llm"
+ORIGEN_PROPIO = "https://preceptoros.org"
 ENLACES_ADMITIDOS = ("https://github.com/piskyRpapalo/PreceptorOS",
-                     "https://raw.githubusercontent.com/piskyRpapalo/PreceptorOS")
+                     "https://raw.githubusercontent.com/piskyRpapalo/PreceptorOS",
+                     # Nuestro PROPIO origen canonico. Lo que esta regla protege
+                     # es «cero peticiones externas al cargar», y las metas de
+                     # Open Graph no son un subrecurso: no las pide el navegador
+                     # de quien visita, las lee un raspador cuando alguien pega
+                     # el enlace en un chat. Ademas, og:image y og:url EXIGEN
+                     # URL absoluta por especificacion -- una relativa la
+                     # ignoran Slack, LinkedIn y X. Prohibir aqui el propio
+                     # dominio no protegeria a nadie: dejaria la web sin
+                     # tarjeta social y sin canonica.
+                     ORIGEN_PROPIO)
 
 FRAMEWORKS = r"\breact\b|vue\.js|angular|htmx|alpine\.js|jquery|svelte|tailwind"
 
@@ -70,6 +81,40 @@ class Estructura(unittest.TestCase):
         paginas = paginas_de_contenido()
         self.assertLessEqual(len(paginas), 7,
             "mas de 7 paginas de contenido: " + ", ".join(p.name for p in paginas))
+
+    def test_la_tarjeta_social_apunta_a_algo_que_existe(self):
+        """og:image, og:url y el favicon, comprobados contra el disco.
+
+        Una tarjeta social se rompe en silencio: la pagina sigue funcionando y
+        el hueco gris solo lo ve quien pega el enlace en un chat. Por eso se
+        comprueba aqui y no «cuando alguien avise».
+        """
+        favicon = PUBLICO / "assets" / "favicon.svg"
+        self.assertTrue(favicon.is_file(), "no existe assets/favicon.svg")
+
+        con_tarjeta = 0
+        for p in PUBLICO.rglob("*.html"):
+            t = p.read_text(encoding="utf-8")
+            with self.subTest(fichero=str(p.relative_to(RAIZ))):
+                self.assertIn('rel="icon"', t, "pagina sin favicon")
+            if "og:title" not in t:
+                continue
+            con_tarjeta += 1
+            with self.subTest(fichero=str(p.relative_to(RAIZ))):
+                img = re.search(r'og:image" content="([^"]+)"', t)
+                self.assertIsNotNone(img, "og:title sin og:image")
+                ruta = img.group(1)
+                self.assertTrue(ruta.startswith(ORIGEN_PROPIO),
+                                f"og:image debe ser absoluta y propia: {ruta}")
+                local = PUBLICO / ruta[len(ORIGEN_PROPIO):].lstrip("/")
+                self.assertTrue(local.is_file(),
+                                f"og:image apunta a un fichero que no existe: {local.name}")
+                url = re.search(r'og:url" content="([^"]+)"', t)
+                self.assertIsNotNone(url, "og:title sin og:url")
+                self.assertTrue(url.group(1).startswith(ORIGEN_PROPIO),
+                                "og:url no apunta al origen propio")
+        self.assertGreaterEqual(con_tarjeta, 4,
+                                "muy pocas paginas con tarjeta social")
 
     def test_cero_html_en_la_raiz(self):
         sueltos = [p.name for p in RAIZ.glob("*.html")]
