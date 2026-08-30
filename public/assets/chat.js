@@ -182,7 +182,7 @@
     via = 'ollama';
     estado(T.laiListo + ' ' + e.detail.modelo, 'nodata');
     document.dispatchEvent(new CustomEvent('preceptor:brain', {
-      detail: { name: e.detail.modelo + ' (Local)' } }));
+      detail: { name: e.detail.modelo + ' (Local)', ms: e.detail.ms } }));
   });
   enviar.addEventListener('click', responder);
   entrada.addEventListener('keydown', function (e) {

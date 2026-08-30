@@ -37,14 +37,20 @@
   var zone = document.getElementById('brain');
   if (!block || !zone) return;
   var T = JSON.parse(block.textContent);
-  function paint(name, live) {
-    zone.textContent = T.brainLabel + ' ' + name;
+  // La latencia va SIN clave de i18n a proposito: «ms» se lee igual en los tres
+  // idiomas, y una clave mas es una clave mas que puede faltar en uno de ellos.
+  // Y solo aparece si se MIDIO: un motor del navegador no tiene sonda barata
+  // que cronometrar, asi que ahi el badge se calla en vez de inventar un cero.
+  // Un hueco declarado por ausencia es honesto; un cero no lo es.
+  function paint(name, live, ms) {
+    zone.textContent = T.brainLabel + ' ' + name +
+                       (typeof ms === 'number' && isFinite(ms) ? ' · ' + ms + ' ms' : '');
     zone.className = 'brain' + (live ? ' live' : '');
     zone.title = live ? T.brainLive : T.brainAsleep;
   }
   paint(T.brainNone, false);
   document.addEventListener('preceptor:brain', function (e) {
     var d = e.detail || {};
-    paint(d.name || T.brainNone, d.live !== false);
+    paint(d.name || T.brainNone, d.live !== false, d.ms);
   });
 })();

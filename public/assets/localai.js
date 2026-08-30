@@ -34,7 +34,16 @@
     var salida = document.createElement('div');
     salida.appendChild(nota(T.laiBuscando));
     zone.appendChild(salida);
-    fetch(URL_BASE + '/api/tags').then(function (r) { return r.json(); })
+    // Se cronometra la sonda. La cifra del badge tiene que ser una MEDIDA de
+    // ESTE aparato: inventarla, o copiar la del rack de quien programo la
+    // pagina, seria decorar. `performance.now()` mide el viaje real hasta la
+    // Ollama de quien mira.
+    var t0 = performance.now();
+    var ms = null;
+    fetch(URL_BASE + '/api/tags').then(function (r) {
+        ms = Math.round(performance.now() - t0);
+        return r.json();
+      })
       .then(function (d) {
         salida.innerHTML = '';
         var modelos = (d.models || []).map(function (m) { return m.name; });
@@ -47,7 +56,8 @@
           b.type = 'button'; b.className = 'leve'; b.textContent = n;
           b.addEventListener('click', function () {
             elegido = n;
-            document.dispatchEvent(new CustomEvent('preceptor:localai', { detail: { modelo: n } }));
+            document.dispatchEvent(new CustomEvent('preceptor:localai',
+              { detail: { modelo: n, ms: ms } }));
             salida.innerHTML = '';
             salida.appendChild(nota(T.laiListo + ' ' + n));
           });
