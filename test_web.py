@@ -161,6 +161,45 @@ class Estructura(unittest.TestCase):
                         f"la portada publica {dice} y counters.json mide {mide}. "
                         "Remedio: python3 ~/p0x/bin/coherencia-publica.py --si")
 
+    def test_counters_no_se_queda_atras_de_este_mismo_gate(self):
+        """La puerta trasera que dejo pasar 19 cuando el gate ya media 25.
+
+        El test de arriba compara la PORTADA contra counters.json. Los dos
+        pueden estar rancios a la vez, y entonces coinciden: verde. Fue
+        exactamente lo que paso -- las tres portadas anunciaron 19 pruebas
+        durante seis commits mientras el gate subia a 25, y ninguna
+        comprobacion se entero, porque ninguna volvia a MEDIR.
+
+        Esta si mide, y mide lo unico que puede medir sin salir del repo ni
+        tocar la red: cuantas pruebas tiene este fichero. Si alguien añade
+        una y no refresca los contadores, el gate se cae aqui mismo, en el
+        commit que la añade, y no seis commits despues en produccion.
+
+        La cifra de la app sigue viniendo del repo del MVP: eso no se puede
+        remedir desde aqui, y fingir que si lo seria peor que declararlo.
+        """
+        import os, sys
+        from unittest import TestLoader
+        # Cuando quien corre el gate es el propio medidor, esta comparacion se
+        # calla: seria juez y parte. La bandera la pone `coherencia-publica.py`
+        # y solo mientras mide; el resto del tiempo esta prueba manda.
+        if os.environ.get("P0X_MIDIENDO_CONTADORES") == "1":
+            self.skipTest("lo esta midiendo coherencia-publica.py ahora mismo")
+        propias = TestLoader().loadTestsFromModule(
+            sys.modules[__name__]).countTestCases()
+
+        datos = json.loads((PUBLICO / "counters.json").read_text(encoding="utf-8"))
+        por_clave = {m["clave"]: m for m in datos["metricas"]}
+        m = por_clave.get("pruebas_web")
+        self.assertIsNotNone(m, "counters.json no declara pruebas_web")
+        if m["estado"] != "MEDIDO":
+            self.skipTest("pruebas_web salio NO_DATA: no hay con que comparar")
+        self.assertEqual(
+            m["valor"], propias,
+            f"counters.json dice {m['valor']} pruebas web y este fichero "
+            f"tiene {propias}. La cifra esta publicada en tres portadas. "
+            "Remedio: python3 ~/p0x/bin/coherencia-publica.py --si")
+
     def test_el_onboarding_es_alcanzable_y_completo(self):
         """La puerta de entrada existe, se enlaza y tiene sus cuatro pasos.
 
