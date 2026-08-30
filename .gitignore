@@ -6,3 +6,4 @@ node_modules/
 historial/
 .contadores.lock
 .pytest_cache/
+Alejandria/marca/originals/*.jpeg
