@@ -1,0 +1,40 @@
+/* preceptoros.org · el onboarding. FLUJO antes que FORMA.
+   Esto es andamiaje deliberado: lo justo para que las cuatro secciones se
+   distingan y el hilo del Instalador se lea. El estilo fino viene DESPUES de
+   que el flujo pase el gate en el Doogee -- ese es el orden firmado. */
+
+/* La voz del Instalador, pegada arriba: acompana la lectura en vez de
+   quedarse en la primera pantalla. */
+.ob-voz{position:sticky;top:0;z-index:5;margin:0 0 1rem;
+  background:var(--violeta);color:#fff;border-radius:var(--radius);
+  padding:.7rem .9rem;font-size:.9rem;line-height:1.45;
+  box-shadow:0 4px 14px rgba(38,23,137,.25)}
+
+.ob-caminos{display:flex;flex-wrap:wrap;gap:.6rem;margin:1.2rem 0}
+.ob-caminos button{flex:1 1 12rem}
+.ob-caminos .ob-secundario{background:transparent;color:var(--bronce-hondo);
+  border-color:var(--bronce)}
+
+.ob-paso{margin:2.4rem 0;padding-top:1rem;
+  border-top:1px solid var(--bronce-claro);scroll-margin-top:5rem}
+.ob-paso h2{margin-top:.4rem}
+.ob-num{display:inline-block;background:var(--bronce);color:var(--marmol-claro);
+  border-radius:999px;width:1.6rem;height:1.6rem;line-height:1.6rem;
+  text-align:center;font-size:.8rem;font-weight:700;margin-right:.4rem}
+
+.ob-descargas{display:flex;flex-wrap:wrap;gap:.6rem;margin:1rem 0}
+.ob-descargas .boton{flex:1 1 10rem;text-align:center}
+.ob-aviso{font-size:.82rem;color:var(--bronce-hondo);
+  border-left:3px solid var(--bronce);padding-left:.7rem}
+
+.ob-codigo{font-family:var(--mono);font-size:1.35rem;letter-spacing:.12em;
+  background:var(--marmol-claro);border:1px solid var(--bronce);
+  border-radius:var(--radius);padding:.9rem;text-align:center;
+  word-break:break-all;margin:.8rem 0}
+.ob-codigo.nodata{font-size:.9rem;letter-spacing:0;color:var(--bronce-hondo)}
+
+@media (max-width:540px){
+  .ob-voz{font-size:.85rem;padding:.6rem .7rem}
+  .ob-caminos button,.ob-descargas .boton{flex:1 1 100%}
+  .ob-codigo{font-size:1.1rem;letter-spacing:.08em}
+}

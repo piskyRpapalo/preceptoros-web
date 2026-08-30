@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Commence ici · PreceptorOS</title>
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<meta name="description" content="L'Installateur t'accompagne : installe l'app et choisis le compagnon qui correspond à ce que tu veux faire.">
+<link rel="stylesheet" href="/assets/base.css">
+<link rel="stylesheet" href="/assets/movil.css">
+<link rel="stylesheet" href="/assets/onboarding.css">
+</head>
+<body>
+<main>
+
+<header>
+  <div class="seal" role="img" aria-label="PreceptorOS"></div>
+  <div class="marca">
+    <h1>Commence ici</h1>
+    <p><a href="./">Accueil</a></p>
+  </div>
+  <div id="identity" class="fila identity"></div>
+</header>
+
+<p class="ob-voz" id="ob-voz" role="status" aria-live="polite">…</p>
+
+<div class="ob-caminos">
+  <button type="button" id="ob-atajo">Télécharge l'app →</button>
+  <button type="button" id="ob-largo" class="ob-secundario">Commencer</button>
+</div>
+
+<section class="ob-paso" id="ob-que" data-dice="obQue">
+  <h2><span class="ob-num">1</span>Qu'est-ce que PreceptorOS ?</h2>
+  <p>Ton IA sur ta machine, sans nuage obligatoire. Une mémoire persistante qui t'appartient, et un Privacy Gateway qui assainit le contexte avant qu'il ne parte vers une IA externe. Sans comptes, sans télémétrie.</p>
+  <button type="button" data-ir="privacidad">Commencer</button>
+</section>
+
+<section class="ob-paso" id="ob-privacidad" data-dice="obPriv">
+  <h2><span class="ob-num">2</span>Ta vie privée, ton contrôle</h2>
+  <p>Colle ton contexte et vois ce qui sort avant de le donner à qui que ce soit. Tout se passe dans ton navigateur, rien à installer, et il te dit aussi où le filtre N'ARRIVE PAS.</p>
+  <p><a class="boton" href="./playground.html">Essayer le filtre</a></p>
+</section>
+
+<section class="ob-paso" id="ob-descarga" data-dice="obDesc">
+  <h2><span class="ob-num">3</span>Télécharge l'app</h2>
+  <p>Le web est la vitrine. L'app est l'atelier : c'est là que le compagnon que tu choisis travaille sur tes vrais fichiers, sans qu'ils quittent ta machine.</p>
+  <div class="ob-descargas">
+    <a class="boton" href="https://github.com/piskyRpapalo/PreceptorOS/releases/latest/download/preceptoros.apk">Android · APK</a>
+    <a class="boton" href="https://github.com/piskyRpapalo/PreceptorOS/releases/latest/download/install.sh">Linux · install.sh</a>
+    <a class="boton" href="https://github.com/piskyRpapalo/PreceptorOS/releases/latest/download/install.sh">macOS · install.sh</a>
+  </div>
+  <p class="ob-aviso nodata">NO_DATA — les installateurs ne sont pas encore publiés. Les boutons pointent vers leur adresse définitive sur GitHub Releases ; jusqu'à la première version ils renverront 404. C'est dit avant que tu appuies.</p>
+  <p class="tenue"><a href="./instalar.html">Guide d'installation →</a></p>
+</section>
+
+<section class="ob-paso" id="ob-conecta" data-dice="obConec">
+  <h2><span class="ob-num">4</span>Connecte ton compte</h2>
+  <p>Ton identité est générée dans le navigateur et la clé privée n'en sort jamais. Ce code dérive de ta clé publique : toujours le même pour toi, et il ne contient aucun secret.</p>
+  <button type="button" id="ob-vincular">Générer mon code</button>
+  <p class="ob-codigo" id="ob-codigo">—</p>
+  <p class="ob-aviso nodata">Ce code t'IDENTIFIE, il ne t'authentifie pas : quiconque connaît ta clé publique peut le calculer. Un vrai lien exigera aussi une signature, et cela arrive avec le backend.</p>
+</section>
+
+<footer class="honest-footer">
+  <p><a href="./">← Retour à l'accueil</a> · <a href="./playground.html">Testeur</a>
+     · <a href="./instalar.html">Guide d'installation</a></p>
+</footer>
+
+<script type="application/json" id="i18n">{
+ "desc": "L'Installateur t'accompagne : installe l'app et choisis le compagnon qui correspond à ce que tu veux faire.",
+ "idAviso": "Une clé est générée dans ton navigateur. Elle ne peut être ni exportée ni copiée : si tu effaces les données du site, cette identité est perdue.",
+ "idClave": "Voir mon empreinte",
+ "idEntrar": "Créer une identité",
+ "idFallo": "NO_DATA — l'identité n'a pas pu être créée :",
+ "idHola": "Bonjour,",
+ "idPublica": "Clé publique :",
+ "lang": "fr",
+ "marca": "Commence ici",
+ "obAtajo": "Droit au but, alors. Descends : les trois téléchargements sont là.",
+ "obConec": "Ce code relie ton identité web à l'app. Il est à toi et à toi seul.",
+ "obDesc": "Choisis ton système. L'app est l'atelier ; je viens avec toi à l'intérieur.",
+ "obFalloCodigo": "NO_DATA — le code n'a pas pu être dérivé :",
+ "obLargo": "Bien. Je te montre d'abord ce qui reste sur ta machine et ce qui n'y reste pas.",
+ "obPriv": "Ce n'est pas une promesse : c'est un filtre que tu peux essayer tout de suite.",
+ "obQue": "PreceptorOS est la douane entre tes données et les IA du nuage.",
+ "obSaluda": "Je suis l'Installateur. Je reste avec toi jusqu'à ce que l'app tourne et que tu aies choisi ton compagnon. Dis-moi par où tu veux aller.",
+ "obSinIdentidad": "Il te faut d'abord une identité. Appuie ci-dessus : elle est générée dans ton navigateur et n'en sort jamais.",
+ "obVinculado": "Le voilà. Ouvre-le dans l'app et on continue : je te présente tes compagnons.",
+ "pieInst": "Guide d'installation",
+ "piePlay": "Testeur",
+ "pieVolver": "← Retour à l'accueil",
+ "s1b": "Commencer",
+ "s1p": "Ton IA sur ta machine, sans nuage obligatoire. Une mémoire persistante qui t'appartient, et un Privacy Gateway qui assainit le contexte avant qu'il ne parte vers une IA externe. Sans comptes, sans télémétrie.",
+ "s1t": "Qu'est-ce que PreceptorOS ?",
+ "s2b": "Essayer le filtre",
+ "s2p": "Colle ton contexte et vois ce qui sort avant de le donner à qui que ce soit. Tout se passe dans ton navigateur, rien à installer, et il te dit aussi où le filtre N'ARRIVE PAS.",
+ "s2t": "Ta vie privée, ton contrôle",
+ "s3and": "Android · APK",
+ "s3aviso": "NO_DATA — les installateurs ne sont pas encore publiés. Les boutons pointent vers leur adresse définitive sur GitHub Releases ; jusqu'à la première version ils renverront 404. C'est dit avant que tu appuies.",
+ "s3mac": "macOS · install.sh",
+ "s3p": "Le web est la vitrine. L'app est l'atelier : c'est là que le compagnon que tu choisis travaille sur tes vrais fichiers, sans qu'ils quittent ta machine.",
+ "s3pc": "Linux · install.sh",
+ "s3t": "Télécharge l'app",
+ "s4aviso": "Ce code t'IDENTIFIE, il ne t'authentifie pas : quiconque connaît ta clé publique peut le calculer. Un vrai lien exigera aussi une signature, et cela arrive avec le backend.",
+ "s4b": "Générer mon code",
+ "s4p": "Ton identité est générée dans le navigateur et la clé privée n'en sort jamais. Ce code dérive de ta clé publique : toujours le même pour toi, et il ne contient aucun secret.",
+ "s4t": "Connecte ton compte",
+ "titulo": "Commence ici · PreceptorOS",
+ "volver": "Accueil"
+}</script>
+<script src="/assets/auth.js"></script>
+<script src="/assets/onboarding.js"></script>
+
+</main>
+</body>
+</html>

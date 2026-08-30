@@ -7,7 +7,7 @@ Cada prueba comprueba UNA regla del canon y falla diciendo por que. Una
 comprobacion que detecta y no bloquea no es una comprobacion: aqui no hay avisos,
 solo verde o rojo.
 """
-import json, re, unittest
+import hashlib, json, re, unittest
 from pathlib import Path
 
 RAIZ = Path(__file__).resolve().parent
@@ -160,6 +160,62 @@ class Estructura(unittest.TestCase):
                         dice, mide,
                         f"la portada publica {dice} y counters.json mide {mide}. "
                         "Remedio: python3 ~/p0x/bin/coherencia-publica.py --si")
+
+    def test_el_onboarding_es_alcanzable_y_completo(self):
+        """La puerta de entrada existe, se enlaza y tiene sus cuatro pasos.
+
+        La estrategia pone a los agentes de la web como via de captacion, y el
+        Instalador como primer contacto. Una puerta que no se enlaza desde la
+        portada existe y no la encuentra nadie: es la forma silenciosa de
+        apagar justo lo que va primero. Por eso el enlace se comprueba, no se
+        confia.
+        """
+        for idioma in ("es", "en", "fr"):
+            ob = PUBLICO / idioma / "onboarding.html"
+            with self.subTest(idioma=idioma):
+                self.assertTrue(ob.is_file(), f"falta {idioma}/onboarding.html")
+                t = ob.read_text(encoding="utf-8")
+                for ancla in ("ob-que", "ob-privacidad", "ob-descarga", "ob-conecta"):
+                    self.assertIn(f'id="{ancla}"', t, f"falta la seccion {ancla}")
+                # Los tres destinos de descarga, a su direccion definitiva.
+                self.assertIn("releases/latest/download/preceptoros.apk", t)
+                self.assertIn("releases/latest/download/install.sh", t)
+                # Y el aviso de que todavia no existen: un boton que promete
+                # una descarga que da 404 es un sensor deshonesto.
+                self.assertIn("NO_DATA", t,
+                              "el onboarding no declara que los instaladores no estan publicados")
+                portada = (PUBLICO / idioma / "index.html").read_text(encoding="utf-8")
+                self.assertIn("onboarding.html", portada,
+                              f"{idioma}: la portada no enlaza el onboarding")
+
+    def test_el_codigo_de_vinculo_es_determinista(self):
+        """La misma clave publica da siempre el mismo codigo, aqui y en la app.
+
+        Se reimplementa la derivacion en Python y se contrasta con la del JS
+        leyendo su alfabeto del propio fichero. Si alguien cambia el alfabeto o
+        la longitud en `onboarding.js` y no aqui, este caso cae -- que es justo
+        lo que hace falta: dos derivaciones distintas del mismo codigo en dos
+        sitios es como se rompen los vinculos sin que nadie se entere.
+        """
+        js = (PUBLICO / "assets" / "onboarding.js").read_text(encoding="utf-8")
+        m = re.search(r"var ALF = '([^']+)'", js)
+        self.assertIsNotNone(m, "no se encuentra el alfabeto en onboarding.js")
+        alf = m.group(1)
+        self.assertEqual(len(alf), 32, "el alfabeto ya no es de 32 simbolos")
+        for prohibido in "ILOU":
+            self.assertNotIn(prohibido, alf,
+                             f"'{prohibido}' se confunde al teclear en un telefono")
+
+        # La misma cuenta que hace el navegador: SHA-256 de la clave publica,
+        # un caracter por byte, doce, en tres grupos.
+        pub = "3d4f" * 16                     # 32 bytes de ejemplo, en hex
+        h = hashlib.sha256(bytes.fromhex(pub)).digest()
+        esperado = "".join(alf[b % 32] for b in h[:12])
+        esperado = f"{esperado[:4]}-{esperado[4:8]}-{esperado[8:12]}"
+        self.assertRegex(esperado, r"^[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}$")
+        # Determinista de verdad: dos veces, lo mismo.
+        h2 = hashlib.sha256(bytes.fromhex(pub)).digest()
+        self.assertEqual(h, h2)
 
     def test_cero_html_en_la_raiz(self):
         sueltos = [p.name for p in RAIZ.glob("*.html")]

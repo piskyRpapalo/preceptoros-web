@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Start here · PreceptorOS</title>
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<meta name="description" content="The Installer walks you through it: get the app running and pick the companion that fits what you want to do.">
+<link rel="stylesheet" href="/assets/base.css">
+<link rel="stylesheet" href="/assets/movil.css">
+<link rel="stylesheet" href="/assets/onboarding.css">
+</head>
+<body>
+<main>
+
+<header>
+  <div class="seal" role="img" aria-label="PreceptorOS"></div>
+  <div class="marca">
+    <h1>Start here</h1>
+    <p><a href="./">Home</a></p>
+  </div>
+  <div id="identity" class="fila identity"></div>
+</header>
+
+<p class="ob-voz" id="ob-voz" role="status" aria-live="polite">…</p>
+
+<div class="ob-caminos">
+  <button type="button" id="ob-atajo">Download the app →</button>
+  <button type="button" id="ob-largo" class="ob-secundario">Get started</button>
+</div>
+
+<section class="ob-paso" id="ob-que" data-dice="obQue">
+  <h2><span class="ob-num">1</span>What is PreceptorOS?</h2>
+  <p>Your AI on your machine, no cloud required. Persistent memory that belongs to you, and a Privacy Gateway that sanitises context before it reaches any external AI. No accounts, no telemetry.</p>
+  <button type="button" data-ir="privacidad">Get started</button>
+</section>
+
+<section class="ob-paso" id="ob-privacidad" data-dice="obPriv">
+  <h2><span class="ob-num">2</span>Your privacy, your control</h2>
+  <p>Paste your context and see what comes out before you hand it to anyone. It happens in your browser, nothing to install, and it also tells you where the filter does NOT reach.</p>
+  <p><a class="boton" href="./playground.html">Try the filter now</a></p>
+</section>
+
+<section class="ob-paso" id="ob-descarga" data-dice="obDesc">
+  <h2><span class="ob-num">3</span>Download the app</h2>
+  <p>The web is the shop window. The app is the workshop: that's where the companion you choose works on your real files, without them leaving your machine.</p>
+  <div class="ob-descargas">
+    <a class="boton" href="https://github.com/piskyRpapalo/PreceptorOS/releases/latest/download/preceptoros.apk">Android · APK</a>
+    <a class="boton" href="https://github.com/piskyRpapalo/PreceptorOS/releases/latest/download/install.sh">Linux · install.sh</a>
+    <a class="boton" href="https://github.com/piskyRpapalo/PreceptorOS/releases/latest/download/install.sh">macOS · install.sh</a>
+  </div>
+  <p class="ob-aviso nodata">NO_DATA — the installers are not published yet. The buttons point at their final address on GitHub Releases; until the first version ships they will return 404. Said before you press.</p>
+  <p class="tenue"><a href="./instalar.html">Install guide →</a></p>
+</section>
+
+<section class="ob-paso" id="ob-conecta" data-dice="obConec">
+  <h2><span class="ob-num">4</span>Connect your account</h2>
+  <p>Your identity is generated in the browser and the private key never leaves it. This code is derived from your public key: always the same for you, and it carries no secret inside.</p>
+  <button type="button" id="ob-vincular">Generate my code</button>
+  <p class="ob-codigo" id="ob-codigo">—</p>
+  <p class="ob-aviso nodata">This code IDENTIFIES you, it does not authenticate you: anyone who knows your public key can compute it. Real linking will also require a signature, and that arrives with the backend.</p>
+</section>
+
+<footer class="honest-footer">
+  <p><a href="./">← Back to home</a> · <a href="./playground.html">Playground</a>
+     · <a href="./instalar.html">Install guide</a></p>
+</footer>
+
+<script type="application/json" id="i18n">{
+ "desc": "The Installer walks you through it: get the app running and pick the companion that fits what you want to do.",
+ "idAviso": "A key is generated in your browser. It cannot be exported or copied to another device: if you clear site data, this identity is lost.",
+ "idClave": "Show my fingerprint",
+ "idEntrar": "Create identity",
+ "idFallo": "NO_DATA — the identity could not be created:",
+ "idHola": "Hello,",
+ "idPublica": "Public key:",
+ "lang": "en",
+ "marca": "Start here",
+ "obAtajo": "Straight to it, then. Scroll down: the three downloads are there.",
+ "obConec": "This code links your web identity to the app. It's yours and only yours.",
+ "obDesc": "Pick your system. The app is the workshop; I come with you inside.",
+ "obFalloCodigo": "NO_DATA — the code could not be derived:",
+ "obLargo": "Good. Let me show you first what stays on your machine and what doesn't.",
+ "obPriv": "This isn't a promise: it's a filter you can try right now.",
+ "obQue": "PreceptorOS is the customs house between your data and cloud AIs.",
+ "obSaluda": "I'm the Installer. I'll stay with you until the app is running and you've chosen your companion. Tell me which way you'd like to go.",
+ "obSinIdentidad": "You need an identity first. Tap it above: it's generated in your browser and never leaves it.",
+ "obVinculado": "There it is. Open it in the app and we carry on: I'll introduce your companions.",
+ "pieInst": "Install guide",
+ "piePlay": "Playground",
+ "pieVolver": "← Back to home",
+ "s1b": "Get started",
+ "s1p": "Your AI on your machine, no cloud required. Persistent memory that belongs to you, and a Privacy Gateway that sanitises context before it reaches any external AI. No accounts, no telemetry.",
+ "s1t": "What is PreceptorOS?",
+ "s2b": "Try the filter now",
+ "s2p": "Paste your context and see what comes out before you hand it to anyone. It happens in your browser, nothing to install, and it also tells you where the filter does NOT reach.",
+ "s2t": "Your privacy, your control",
+ "s3and": "Android · APK",
+ "s3aviso": "NO_DATA — the installers are not published yet. The buttons point at their final address on GitHub Releases; until the first version ships they will return 404. Said before you press.",
+ "s3mac": "macOS · install.sh",
+ "s3p": "The web is the shop window. The app is the workshop: that's where the companion you choose works on your real files, without them leaving your machine.",
+ "s3pc": "Linux · install.sh",
+ "s3t": "Download the app",
+ "s4aviso": "This code IDENTIFIES you, it does not authenticate you: anyone who knows your public key can compute it. Real linking will also require a signature, and that arrives with the backend.",
+ "s4b": "Generate my code",
+ "s4p": "Your identity is generated in the browser and the private key never leaves it. This code is derived from your public key: always the same for you, and it carries no secret inside.",
+ "s4t": "Connect your account",
+ "titulo": "Start here · PreceptorOS",
+ "volver": "Home"
+}</script>
+<script src="/assets/auth.js"></script>
+<script src="/assets/onboarding.js"></script>
+
+</main>
+</body>
+</html>

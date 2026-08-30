@@ -92,6 +92,13 @@
 
   window.Identity = {
     quien: function () { return yo && yo.apodo; },
+    // La clave PUBLICA en hex. La privada sigue siendo no extraible: esto no
+    // afloja nada, solo expone lo que ya es publico por definicion. Hace falta
+    // para derivar el codigo de vinculo web<->app del onboarding.
+    publica: function () {
+      if (!yo) return Promise.reject(new Error('sin identidad'));
+      return crypto.subtle.exportKey('raw', yo.claves.publicKey).then(hex);
+    },
     // Se firma el JSON canonico del objeto: mismo objeto, misma firma.
     firmar: function (obj) {
       if (!yo) return Promise.reject(new Error('sin identidad'));
