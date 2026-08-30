@@ -694,6 +694,67 @@ class PWA(unittest.TestCase):
                         "o tiene margen de sobra como icono, o se recorta como "
                         "maskable. No puede ser lo correcto en los dos papeles.")
 
+    def test_los_iconos_no_engordan_sin_permiso(self):
+        """Los iconos pasaron de 12 KB a 180 KB al cambiar de arte.
+
+        Es el precio de una imagen fotorrealista y esta pagado a proposito:
+        el anterior era un glifo plano de otra paleta. Pero un techo declarado
+        evita que el proximo cambio meta un PNG de un mega sin que nadie lo
+        mire. No se cargan al abrir la web --solo al instalar la app-- y por
+        eso el techo es alto y no minusculo.
+        """
+        m = json.loads((PUBLICO / "manifest.webmanifest").read_text(encoding="utf-8"))
+        vistos, total = set(), 0
+        for icono in m["icons"]:
+            if icono["src"] in vistos:
+                continue
+            vistos.add(icono["src"])
+            total += (PUBLICO / icono["src"].lstrip("/")).stat().st_size
+        self.assertLess(total, 256 * 1024,
+                        f"los iconos del manifiesto suman {total} B")
+
+    def test_el_maskable_cabe_de_verdad_en_su_circulo(self):
+        """No que lo diga el manifiesto: que lo diga el fichero.
+
+        El anterior se declaraba maskable y se recortaba -- contenido a 255 px
+        del centro con un radio seguro de 205. Aquella comprobacion solo miraba
+        que fuese un fichero distinto del icono normal, que es necesario y no
+        suficiente: un fichero distinto puede estar igual de mal encuadrado.
+        Esta abre el PNG y mide.
+        """
+        try:
+            from PIL import Image
+        except ImportError:
+            self.skipTest("NO_DATA · sin Pillow no se puede medir el encuadre. "
+                          "Remedio: instalar Pillow y repetir")
+        import math
+        m = json.loads((PUBLICO / "manifest.webmanifest").read_text(encoding="utf-8"))
+        masc = [i for i in m["icons"] if "maskable" in i.get("purpose", "")]
+        if not masc:
+            self.skipTest("el manifiesto no declara ningun icono maskable")
+        for icono in masc:
+            im = Image.open(PUBLICO / icono["src"].lstrip("/")).convert("RGB")
+            w, h = im.size
+            with self.subTest(icono=icono["src"]):
+                self.assertEqual(w, h, "un maskable tiene que ser cuadrado")
+                fondo = im.getpixel((2, 2))
+                # Android recorta a un circulo del 80% del lado: radio 40%.
+                seguro = 0.40 * w
+                cx, cy = w / 2, h / 2
+                lejos = 0.0
+                px = im.load()
+                for y in range(h):
+                    for x in range(w):
+                        c = px[x, y]
+                        if abs(c[0]-fondo[0]) + abs(c[1]-fondo[1]) + abs(c[2]-fondo[2]) > 24:
+                            d = math.hypot(x - cx, y - cy)
+                            if d > lejos:
+                                lejos = d
+                self.assertLessEqual(
+                    lejos, seguro,
+                    f"{icono['src']}: hay dibujo a {lejos:.0f} px del centro y "
+                    f"el circulo seguro son {seguro:.0f}. Android lo recortaria.")
+
     def test_el_worker_no_guarda_lo_ajeno_ni_los_datos(self):
         """Las dos reglas que el worker anterior rompia.
 
