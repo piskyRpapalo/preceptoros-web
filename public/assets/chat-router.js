@@ -1,113 +1,126 @@
-/* preceptoros.org · el recepcionista. Elegir companero y abrir el chat.
+/* preceptoros.org · el recepcionista. Elegir companero y abrir el panel.
  *
- * EL CHAT NO SE REESCRIBE, SE ENVUELVE
- * ------------------------------------
- * `chat.js`, `engine.js`, `localai.js`, `voice.js`, `meter.js` y `seal.js`
- * buscan sus piezas por id (#pregunta, #enviar, #motor, #dialogo, #chat...).
- * Al meter #chat dentro de un <dialog> los ids no se mueven, asi que esos seis
- * ficheros siguen funcionando sin tocar una linea. Ahi esta casi todo el
- * riesgo que este cambio NO corre.
+ * EL CHAT NO SE REESCRIBE, SE ENVUELVE. `chat.js`, `engine.js`, `localai.js`,
+ * `voice.js`, `meter.js` y `seal.js` buscan sus piezas por id (#pregunta,
+ * #enviar, #motor, #dialogo...). Ninguna se mueve, asi que los seis siguen
+ * funcionando sin tocar una linea.
  *
- * `<dialog>` nativo, y cero libreria de accesibilidad: el navegador ya trae
- * foco atrapado, Escape, fondo inerte y restauracion del foco al cerrar.
- * Reimplementarlo seria hacerlo peor.
+ * DOS COMPORTAMIENTOS, UNA SOLA FUENTE DE VERDAD
+ * ----------------------------------------------
+ * Por debajo de 1024 px el panel se DESLIZA sobre el chat: en un movil no
+ * caben los dos y el chat es lo que se vino a usar. A partir de 1024 px el
+ * panel es una COLUMNA fija a la derecha y se ven a la vez -- la ventana se
+ * estira de esquina a esquina sin perder el chat. Quien decide es
+ * `matchMedia`, no el ancho leido a mano: asi el navegador avisa al girar el
+ * telefono y no hay dos ideas distintas del mismo umbral.
  */
 (function () {
-  var modal = document.getElementById('chat-modal');
-  var hub = document.getElementById('hub');
-  if (!modal) return;
+  var panel = document.getElementById('panel-modelos');
+  var chat = document.getElementById('chat');
+  var cabeza = document.getElementById('cabeza');
+  var entrada = document.getElementById('pregunta');
+  if (!panel || !chat) return;
 
-  /* El cromo del modal se construye AQUI y no en las tres portadas. No es
-     elegancia: `fr/index.html` tiene 335 B de margen contra el tope de 10 KB,
-     y esta cabecera escrita en marcado se los come. En el marcado queda solo
-     `<dialog id="chat-modal">`, que es lo unico que el navegador necesita
-     tener antes de que corra un solo script. */
-  function nodo(t, c, id) {
-    var n = document.createElement(t);
-    if (c) n.className = c;
-    if (id) n.id = id;
-    return n;
-  }
-  var barra = nodo('div', 'modal-cabeza');
-  var cabeza = nodo('span', null, 'modal-cabeza');
-  var quien = nodo('span', 'modal-quien', 'modal-quien');
-  var cerrar = nodo('button', 'boton leve', 'modal-cerrar');
-  cerrar.type = 'button'; cerrar.textContent = 'Cerrar';
-  cerrar.setAttribute('aria-label', 'Cerrar');
-  barra.appendChild(cabeza); barra.appendChild(quien); barra.appendChild(cerrar);
-  var aviso = nodo('p', 'modal-aviso', 'modal-aviso'); aviso.hidden = true;
-  modal.insertBefore(aviso, modal.firstChild);
-  modal.insertBefore(barra, modal.firstChild);
+  var PC = window.matchMedia ? matchMedia('(min-width:1024px)') : { matches: false };
+  var quieto = window.matchMedia
+    ? matchMedia('(prefers-reduced-motion: reduce)') : { matches: false };
+  var boton = null, avatar = null, nombre = null, aviso = null, activo = null;
 
-  function T(k, alt) {
-    return (window.Hub && window.Hub.textos && window.Hub.textos[k]) || alt;
-  }
-
-  /* DOBLE guarda, y las dos hacen falta:
-     - `document.startViewTransition` no existe en Firefox ni en Safari viejo;
-       llamarlo a pelo revienta el cambio de companero justo donde el
-       navegador es mas conservador.
-     - Quien pide menos movimiento no quiere una morfosis, aunque su navegador
-       sepa hacerla. */
+  /* Doble guarda, y las dos hacen falta: `startViewTransition` no existe en
+     Firefox --llamarlo a pelo revienta el cambio de companero-- y quien pide
+     menos movimiento no quiere la morfosis aunque su navegador sepa hacerla. */
   function conTransicion(fn) {
-    var quieto = window.matchMedia &&
-      matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (quieto || !document.startViewTransition) { fn(); return; }
+    if (quieto.matches || !document.startViewTransition) { fn(); return; }
     document.startViewTransition(fn);
   }
 
+  // --- la cabecera del chat: quien te habla ------------------------------
+  var barra = document.createElement('div');
+  barra.className = 'chat-quien';
+  avatar = document.createElement('img');
+  avatar.width = 44; avatar.height = 44; avatar.alt = ''; avatar.decoding = 'async';
+  nombre = document.createElement('span');
+  nombre.className = 'chat-nombre';
+  aviso = document.createElement('p');
+  aviso.className = 'chat-aviso'; aviso.hidden = true;
+  barra.appendChild(avatar); barra.appendChild(nombre);
+  chat.insertBefore(aviso, chat.firstChild);
+  chat.insertBefore(barra, chat.firstChild);
+
   function vestir(a) {
-    if (cabeza) {
-      cabeza.innerHTML = '';
-      if (a && a.symbol) {
-        var img = document.createElement('img');
-        img.src = '/assets/agente-' + a.symbol + '.webp';
-        img.alt = ''; img.width = 44; img.height = 44; img.decoding = 'async';
-        cabeza.appendChild(img);
-      }
-    }
-    if (quien) quien.textContent = a ? a.name : '';
-    if (!aviso) return;
-    // Un companero sin adaptador NO se finge cargado. Se dice, con su causa.
-    // Fingir una carga de LoRA que no existe es exactamente la clase de
-    // mentira que el resto de esta web esta construida para no contar.
-    var r = (a && a.real) || {};
-    if (a && !r.disponible) {
-      aviso.textContent = T('hubSinServir', '') +
-        (r.causa ? ' (' + r.causa + ')' : '');
+    if (!a) return;
+    activo = a;
+    avatar.src = '/assets/agente-3d-' + a.icono3d + '.webp';
+    nombre.textContent = a.name;
+    // El OJO del Preceptor en el cabezal cambia con el companero activo: es
+    // la senal de con quien estas hablando sin leer una palabra.
+    if (cabeza) cabeza.style.backgroundImage = "url('/assets/agente-" + a.symbol + ".webp')";
+    var r = a.real || {};
+    var L = (window.Hub && window.Hub.textos) || {};
+    if (!r.disponible) {
+      // No se finge una carga de LoRA que no existe. Se dice, con su causa.
+      aviso.textContent = (L.hubSinServir || '') + (r.causa ? ' (' + r.causa + ')' : '');
       aviso.hidden = false;
-    } else {
-      aviso.textContent = ''; aviso.hidden = true;
+    } else { aviso.textContent = ''; aviso.hidden = true; }
+  }
+
+  // --- abrir y cerrar ----------------------------------------------------
+  function abierto() { return !panel.classList.contains('cerrado'); }
+  function alternar(forzar) {
+    var abrir = forzar === undefined ? !abierto() : forzar;
+    // En PC el panel NUNCA se va del todo: se pliega. Sacarlo de la rejilla
+    // haria saltar el ancho del chat, y ese salto es justo lo que la columna
+    // fija existe para evitar.
+    var aplicar = function () {
+      panel.classList.toggle('cerrado', !abrir);
+      if (boton) boton.setAttribute('aria-expanded', String(abrir));
+    };
+    if (quieto.matches) { aplicar(); return; }
+    aplicar();                      // la animacion la hace el CSS al cambiar la clase
+  }
+
+  /* El aviso es PEGAJOSO, y hace falta: `hub.js` pide el catalogo en
+     `requestIdleCallback`, y el navegador puede quedarse ocioso mientras
+     todavia esta bajando ESTE fichero. Entonces `hub:listo` pasa antes de que
+     nadie escuche y el cabezal se queda sin cara, el chat sin nombre y el
+     panel cerrado en un PC donde cabia abierto. Se vio asi en el navegador,
+     no se dedujo. Si el dato ya esta cuando llego, se atiende y punto. */
+  function listo() {
+    var H = window.Hub;
+    if (!H) return;
+    boton = H.boton;
+    boton.addEventListener('click', function () { alternar(); });
+    // Companero por defecto: el Instalador es el recepcionista.
+    vestir(H.agente('instalador') || (H.datos.agentes || [])[0]);
+    // En PC el panel nace abierto --hay sitio para los dos--; en movil, no.
+    alternar(PC.matches);
+    if (PC.addEventListener) {
+      PC.addEventListener('change', function (e) { alternar(e.matches); });
     }
-  }
-
-  function abrir(a) {
-    conTransicion(function () {
-      vestir(a);
-      if (typeof modal.showModal === 'function') modal.showModal();
-      else modal.setAttribute('open', '');   // sin <dialog>, al menos se ve
-    });
-  }
-
-  if (hub) {
-    hub.addEventListener('click', function (ev) {
-      var b = ev.target.closest && ev.target.closest('.agente[data-agente]');
+    panel.addEventListener('click', function (ev) {
+      var b = ev.target.closest && ev.target.closest('.modelo[data-agente]');
       if (!b) return;
-      abrir(window.Hub ? window.Hub.agente(b.dataset.agente) : null);
+      conTransicion(function () {
+        vestir(H.agente(b.dataset.agente));
+        if (!PC.matches) alternar(false);   // en movil, el panel deja paso al chat
+      });
+      if (entrada && PC.matches) entrada.focus();
     });
   }
-  if (cerrar) {
-    cerrar.addEventListener('click', function () {
-      if (typeof modal.close === 'function') modal.close();
-      else modal.removeAttribute('open');
-    });
-  }
-  // Pulsar en el fondo cierra. Escape ya lo trae <dialog> de serie.
-  modal.addEventListener('click', function (ev) {
-    if (ev.target === modal && typeof modal.close === 'function') modal.close();
-  });
+  if (window.Hub) listo();
+  else document.addEventListener('hub:listo', listo);
 
-  document.addEventListener('hub:listo', function () {
-    if (cerrar) cerrar.textContent = T('hubCerrar', cerrar.textContent);
-  });
+  /* --- el teclado del movil no estorba -----------------------------------
+     Por debajo de 1024 px el campo de escritura no se pinta hasta que se
+     toca: en un telefono el teclado se come media pantalla, y abrirlo antes
+     de que nadie haya decidido escribir tapa justo lo que se vino a leer. */
+  if (!PC.matches && entrada) {
+    chat.classList.add('sin-teclado');
+    var despertar = function () {
+      chat.classList.remove('sin-teclado');
+      entrada.focus();
+      chat.removeEventListener('click', despertar);
+    };
+    chat.addEventListener('click', despertar);
+  }
 })();

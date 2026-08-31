@@ -1,77 +1,104 @@
-/* preceptoros.org · anatomia del Hub. Tarjetas de companero, cola de firma y
-   panel del rack. Se apoya en los tokens de base.css: aqui no nace ni un
-   color ni un radio nuevo.
+/* preceptoros.org · cabezal, chat protagonista y panel Modelos.
+   Se apoya en los tokens de base.css: aqui no nace ni un color ni un radio.
 
-   TRES REGLAS HEREDADAS, NO REINVENTADAS
-   --------------------------------------
-   1. El respaldo OPACO se declara ANTES del cristal. Sin backdrop-filter el
-      panel tiene que quedar solido y legible, no un cristal sucio sobre la
-      piedra. El gate lo comprueba por orden de aparicion, no de palabra.
-   2. Los radios salen de --radius. Una interfaz con seis esquinas distintas
-      empieza siempre por un radio suelto que parecia inofensivo.
-   3. El violeta es el UNICO acento de actividad. Si algo brilla, esta vivo;
-      si brilla otra cosa, el codigo de color deja de significar. */
+   TRES REGLAS HEREDADAS
+   ---------------------
+   1. El respaldo OPACO se declara ANTES del cristal: sin backdrop-filter el
+      panel tiene que quedar solido y legible. El gate lo comprueba por orden
+      de aparicion, no de palabra.
+   2. Los radios salen de --radius. Un circulo (50%) no es una esquina.
+   3. El violeta es el UNICO acento de actividad. Si brilla, esta vivo. */
 
-/* --- rejilla de companeros ---------------------------------------------- */
-.hub-rotulo{font-size:.82rem;color:var(--tenue);margin:0 0 .8rem}
-.hub-rotulo b{color:var(--violeta-texto)}
-.agentes{display:grid;gap:.9rem;
-  grid-template-columns:repeat(auto-fill,minmax(15rem,1fr));margin:0 0 1.4rem}
-
-.agente{background:var(--marmol-claro);border:1px solid var(--bronce);
-  border-radius:var(--radius);padding:.9rem .95rem;box-shadow:var(--depth);
-  display:flex;flex-direction:column;gap:.5rem;text-align:left;
-  font:inherit;color:var(--tinta);cursor:pointer;
-  transition:transform .18s var(--spring),box-shadow .18s ease}
+/* --- el cabezal --------------------------------------------------------- */
+#cabezal{display:flex;align-items:center;gap:.8rem;flex-wrap:wrap;
+  background:var(--marmol-claro);border:1px solid var(--bronce);
+  border-radius:var(--radius);padding:.7rem .9rem;margin-bottom:1rem;
+  box-shadow:var(--depth)}
 @supports (backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px)){
-  .agente,.cola-pieza,#chat-modal{background:var(--glass-solid);
+  #cabezal,#chat,#panel-modelos{background:var(--glass-solid);
     -webkit-backdrop-filter:blur(16px) saturate(180%);
     backdrop-filter:blur(16px) saturate(180%)}
 }
-.agente:hover,.agente:focus-visible{transform:translateY(-2px);
-  box-shadow:0 10px 28px rgba(30,24,38,.16)}
-.agente:focus-visible{outline:2px solid var(--violeta);outline-offset:2px}
+#cabezal .marca{flex:1;min-width:11rem}
+#cabezal h1{font-size:1.05rem;margin:0 0 .35rem}
 
-.agente-cara{display:flex;align-items:center;gap:.6rem}
-.agente-cara img{width:56px;height:56px;flex:0 0 56px;display:block}
-.agente-nombre{font-weight:700;line-height:1.25}
-.agente-bloque{display:block;font-size:.7rem;letter-spacing:.08em;
-  text-transform:uppercase;color:var(--bronce-hondo)}
-.agente-funcion{font-size:.85rem;color:var(--tenue);margin:0}
+/* La cabeza del Preceptor. El ojo lo pone el router segun el companero
+   activo: es con quien hablas, dicho sin una palabra. */
+#cabeza{width:52px;height:52px;flex:0 0 52px;background-repeat:no-repeat;
+  background-position:center;background-size:cover;
+  border:2px solid var(--bronce);border-radius:50%}
 
-/* El estado es MAQUETA y por eso se pinta con el punto; la disponibilidad
-   REAL va debajo en palabras, que es lo que de verdad manda. */
-.agente-estado{display:flex;align-items:center;gap:.45rem;font-size:.78rem;
-  color:var(--tenue)}
-.punto{width:.55rem;height:.55rem;border-radius:50%;flex:0 0 .55rem;
-  background:var(--tenue)}
-.punto.thinking{background:var(--violeta);box-shadow:0 0 0 3px rgba(109,90,224,.22)}
-.punto.running{background:var(--violeta);
-  box-shadow:0 0 0 3px rgba(109,90,224,.22);animation:latir 1.4s ease-in-out infinite}
-@keyframes latir{50%{box-shadow:0 0 0 7px rgba(109,90,224,.10)}}
+#cab-nav{display:flex;gap:.4rem;flex-wrap:wrap;align-items:center}
+.cab-boton{font:inherit;font-size:.74rem;font-weight:700;letter-spacing:.09em;
+  text-transform:uppercase;text-decoration:none;cursor:pointer;
+  color:#fff;background:var(--violeta);border:1px solid var(--violeta);
+  border-radius:var(--radius);padding:.32rem .7rem;
+  transition:transform .16s var(--spring)}
+.cab-boton:hover,.cab-boton:focus-visible{transform:translateY(-1px)}
+.cab-boton:focus-visible{outline:2px solid var(--violeta-texto);outline-offset:2px}
+.cab-boton[aria-expanded="true"]{background:var(--violeta-texto);
+  border-color:var(--violeta-texto)}
+.cab-leve{font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--violeta-texto);text-decoration:none;padding:.3rem .35rem}
+.cab-leve:hover{text-decoration:underline}
+.cab-ident{display:inline-flex;gap:.3rem}
 
-.agente-real{font-size:.78rem;border-top:1px dotted rgba(120,98,76,.35);
-  padding-top:.45rem;margin:0}
-.agente-real.sirve{color:var(--jardin);font-weight:700}
-.agente-real.no-sirve{color:var(--bronce-hondo)}
+/* --- la maqueta: chat protagonista, panel a la derecha ------------------ */
+#hub-layout{position:relative}
+#chat{margin:0}
+.chat-quien{display:flex;align-items:center;gap:.6rem;margin-bottom:.6rem}
+.chat-quien img{width:44px;height:44px;flex:0 0 44px;border-radius:50%}
+.chat-nombre{font-weight:700}
+.chat-aviso{font-size:.82rem;color:var(--bronce-hondo);margin:0 0 .6rem}
+/* En movil el campo no existe hasta que se toca: el teclado se come media
+   pantalla y abrirlo antes de que nadie decida escribir tapa lo que se vino
+   a leer. */
+#chat.sin-teclado .chat-input{display:none}
 
-/* --- esqueleto: se pinta ANTES de pedir nada -----------------------------
-   Un panel vacio durante medio segundo se lee como una pagina rota. El
-   esqueleto ocupa el mismo sitio que la tarjeta para que nada salte cuando
-   llegan los datos (CLS). */
-/* 14,6rem NO es un numero bonito: es la altura MEDIDA de la tarjeta real
-   (233-255 px segun cuanto ocupe la funcion). Con las 9,5rem que habia, la
-   rejilla saltaba de 1317 a 2086 px al llegar los datos -- un esqueleto que
-   no reserva el sitio correcto es medio esqueleto. */
-.agente.esqueleto{cursor:default;pointer-events:none;min-height:14.6rem;
-  justify-content:flex-start;gap:.75rem}
+/* --- el panel Modelos ---------------------------------------------------
+   Por debajo de 1024 px se desliza SOBRE el chat: no caben los dos, y el
+   chat es lo que se vino a usar. */
+#panel-modelos{position:fixed;top:0;right:0;bottom:0;width:min(24rem,92vw);
+  z-index:20;overflow:auto;padding:1rem .9rem;
+  background:var(--marmol-claro);border-left:1px solid var(--bronce);
+  box-shadow:0 0 40px rgba(30,24,38,.24);
+  transform:translateX(0);transition:transform .35s ease}
+#panel-modelos.cerrado{transform:translateX(101%)}
+.panel-titulo{font-size:1rem;margin:0 0 .3rem}
+/* El rotulo de honestidad es pequeno y NO desaparece nunca. */
+.panel-rotulo{font-size:.74rem;color:var(--bronce-hondo);margin:0 0 .8rem}
+
+.modelos{display:grid;gap:.7rem;grid-template-columns:repeat(auto-fill,minmax(9rem,1fr))}
+.modelo{display:flex;flex-direction:column;align-items:center;gap:.35rem;
+  text-align:center;font:inherit;color:var(--tinta);cursor:pointer;
+  /* --marmol-claro y no --marmol: `--jardin` viene medido en base.css como
+     4,66:1, y esa medida vale sobre el marmol CLARO. Sobre --marmol da 4,38
+     -- medido en el navegador. Se corrige el fondo, que es donde estaba el
+     error, en vez de inventar un verde nuevo fuera del canon. */
+  background:var(--marmol-claro);border:1px solid var(--bronce);
+  border-radius:var(--radius);padding:.7rem .5rem;
+  transition:transform .16s var(--spring),box-shadow .16s ease}
+.modelo:hover,.modelo:focus-visible{transform:translateY(-2px);
+  box-shadow:0 8px 22px rgba(30,24,38,.18)}
+.modelo:focus-visible{outline:2px solid var(--violeta);outline-offset:2px}
+.modelo img{width:96px;height:96px;display:block}
+.modelo-nombre{font-weight:700;font-size:.9rem}
+.modelo-spec{font-size:.76rem;color:var(--tenue);line-height:1.35}
+.modelo-real{font-size:.72rem;letter-spacing:.05em;text-transform:uppercase}
+.modelo-real.sirve{color:var(--jardin);font-weight:700}
+.modelo-real.no-sirve{color:var(--bronce-hondo)}
+
+/* El esqueleto reserva el sitio de la tarjeta real para que la rejilla no
+   salte cuando llegan los datos. */
+.modelo.esqueleto{cursor:default;pointer-events:none;min-height:11.5rem;
+  justify-content:flex-start}
 .hueso{background:rgba(120,98,76,.16);border-radius:calc(var(--radius) - 10px);
-  height:.7rem;animation:respira 1.6s ease-in-out infinite}
-.hueso.cara{width:56px;height:56px;border-radius:50%;flex:0 0 56px;animation-delay:.1s}
-.hueso.corto{width:45%} .hueso.largo{width:85%}
+  height:.7rem;width:80%;animation:respira 1.6s ease-in-out infinite}
+.hueso.esfera{width:96px;height:96px;border-radius:50%}
+.hueso.corto{width:55%}
 @keyframes respira{50%{background:rgba(120,98,76,.30)}}
 
-/* --- cola de firma · IronClaw -------------------------------------------- */
+/* --- la cola de firma --------------------------------------------------- */
 .cola-pieza{background:var(--marmol-claro);border:1px solid var(--bronce);
   border-radius:var(--radius);padding:.85rem .95rem;margin:0 0 .7rem}
 .cola-origen{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;
@@ -80,35 +107,35 @@
 .cola-cuerpo{font-size:.86rem;color:var(--tenue);margin:0 0 .6rem}
 .cola-nota{font-size:.78rem;color:var(--tenue)}
 
-/* --- panel del rack: maqueta y medido, uno al lado del otro -------------- */
-.rack-dos{display:grid;gap:.8rem;grid-template-columns:repeat(auto-fit,minmax(13rem,1fr))}
-.rack-col{border:1px solid var(--bronce);border-radius:var(--radius);
-  padding:.75rem .85rem;background:var(--marmol-claro)}
-.rack-col h3{font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;
-  margin:0 0 .5rem}
-.rack-col.es-mock h3{color:var(--bronce-hondo)}
-.rack-col.es-real h3{color:var(--violeta-texto)}
-.rack-dato{display:flex;justify-content:space-between;gap:.7rem;
-  padding:.22rem 0;font-size:.84rem;border-bottom:1px dotted rgba(120,98,76,.3)}
-.rack-dato:last-child{border-bottom:0}
-.rack-dato .k{color:var(--tenue)}
-.rack-dato .v{text-align:right;font-weight:700}
-.rack-causa{font-size:.76rem;color:var(--bronce-hondo);margin:.5rem 0 0}
-
-/* --- el chat, ahora en un dialogo nativo --------------------------------- */
-/* `dialog` trae foco atrapado, Escape y fondo inerte de serie. Una libreria
-   de accesibilidad aqui seria reimplementar peor lo que el navegador ya hace. */
-#chat-modal{background:var(--marmol-claro);color:var(--tinta);
-  border:1px solid var(--bronce);border-radius:var(--radius);
-  box-shadow:var(--depth);padding:1.1rem 1rem;width:min(42rem,94vw);
-  max-height:88vh;overflow:auto}
-#chat-modal::backdrop{background:rgba(30,24,38,.55)}
-.modal-cabeza{display:flex;align-items:center;gap:.6rem;margin-bottom:.7rem}
-.modal-cabeza img{width:44px;height:44px;flex:0 0 44px}
-.modal-quien{font-weight:700;flex:1}
-.modal-aviso{font-size:.82rem;color:var(--bronce-hondo);margin:0 0 .7rem}
+/* --- PC: la ventana se estira y el chat NO se pierde --------------------- */
+@media (min-width:1024px){
+  /* `main` viene limitado a 46rem por base.css, que es la medida de una
+     columna de lectura. Con el panel docked eso dejaba el chat en 360 px --
+     tan estrecho como la propia columna de modelos. En PC la ventana se
+     estira; el chat sigue teniendo su medida de lectura por dentro. */
+  main{max-width:min(1400px,96vw)}
+  #hub-layout{display:grid;grid-template-columns:1fr 360px;gap:16px;
+    align-items:start}
+  /* Las columnas se asignan EXPLICITAMENTE, y no es ceremonia: `meter.js`
+     inserta su panel de medida justo detras de #chat, asi que la rejilla
+     recibia un tercer hijo que se quedaba con la columna de 360 px y echaba
+     el panel a una columna implicita. Se descubrio midiendo el ancho, no
+     leyendo el codigo. Todo lo que no sea el panel va a la columna 1. */
+  #hub-layout>*{grid-column:1}
+  #hub-layout>#panel-modelos{grid-column:2;grid-row:1/-1}
+  /* Deja de flotar: entra en la rejilla como columna. */
+  #panel-modelos{position:static;transform:none;height:auto;max-height:none;
+    border-left:1px solid var(--bronce);border-radius:var(--radius);
+    border:1px solid var(--bronce);box-shadow:var(--depth);
+    width:auto;opacity:1;transition:width .3s ease,opacity .3s ease}
+  /* Plegar, no desaparecer: sacarlo de la rejilla haria saltar el ancho del
+     chat, y ese salto es lo que la columna fija existe para evitar. */
+  #panel-modelos.cerrado{transform:none;width:0;opacity:0;
+    padding:0;border-width:0;overflow:hidden}
+  #hub-layout:has(#panel-modelos.cerrado){grid-template-columns:1fr 0}
+}
 
 @media (prefers-reduced-motion:reduce){
-  .agente,.punto.running,.hueso{transition:none;animation:none}
-  .agente:hover,.agente:focus-visible{transform:none}
+  #panel-modelos,.modelo,.cab-boton,.hueso{transition:none;animation:none}
+  .modelo:hover,.cab-boton:hover{transform:none}
 }

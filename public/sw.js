@@ -49,7 +49,7 @@ const CARAS = ['ambar', 'azul', 'birrete', 'bombilla',
 const ESFERAS = ['instalador', 'privacidad', 'escritor', 'traductor',
                  'coder', 'analista', 'aprendiz', 'bibliotecario'];
 const HUB = ['/hub.json', '/assets/widget.css', '/assets/hub.js',
-             '/assets/chat-router.js']
+             '/assets/hub-cola.js', '/assets/chat-router.js']
   .concat(CARAS.map(c => '/assets/agente-ojo-' + c + '.webp'))
   .concat(ESFERAS.map(e => '/assets/agente-3d-' + e + '.webp'));
 

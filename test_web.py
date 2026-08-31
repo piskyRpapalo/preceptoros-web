@@ -36,7 +36,12 @@ ENLACES_ADMITIDOS = ("https://github.com/piskyRpapalo/PreceptorOS",
                      # que en otro subdominio. Se admite como ENLACE, no como
                      # subrecurso: `test_la_api_no_se_pide_al_cargar` de mas
                      # abajo comprueba que ninguna pagina la pide sola.
-                     "https://api.preceptoros.org")
+                     "https://api.preceptoros.org",
+                     # LinkedIn del Soberano. Igual que github.com: es un
+                     # ENLACE de identidad publica, no un subrecurso -- no
+                     # pide nada hasta que alguien lo pulsa. Sale de
+                     # Alejandria/identidad_publica.json, que es la fuente.
+                     "https://www.linkedin.com/in/")
 
 FRAMEWORKS = r"\breact\b|vue\.js|angular|htmx|alpine\.js|jquery|svelte|tailwind"
 
@@ -246,9 +251,23 @@ class Estructura(unittest.TestCase):
                 # una descarga que da 404 es un sensor deshonesto.
                 self.assertIn("NO_DATA", t,
                               "el onboarding no declara que los instaladores no estan publicados")
+                # Desde la Puerta 6 el cabezal lo construye `hub.js`: las
+                # etiquetas escritas en las tres portadas costaban ~300 B en
+                # cada una y `fr/index.html` no los tiene. Se comprueba la
+                # ALCANZABILIDAD --en el marcado o en un guion que la portada
+                # carga-- y no la forma de escribirla.
+                #
+                # El precio se dice: sin javascript no hay cabezal. La portada
+                # ya lo exigia antes de esto (el chat entero lo mueve JS), asi
+                # que no se pierde un camino que existiera.
                 portada = (PUBLICO / idioma / "index.html").read_text(encoding="utf-8")
-                self.assertIn("onboarding.html", portada,
-                              f"{idioma}: la portada no enlaza el onboarding")
+                alcanzable = "onboarding.html" in portada
+                for src in re.findall(r'<script src="[^"]*?assets/([\w.-]+\.js)"', portada):
+                    f = PUBLICO / "assets" / src
+                    if f.is_file() and "onboarding.html" in f.read_text(encoding="utf-8"):
+                        alcanzable = True
+                self.assertTrue(alcanzable,
+                                f"{idioma}: el onboarding no se alcanza desde la portada")
 
     def test_el_codigo_de_vinculo_es_determinista(self):
         """La misma clave publica da siempre el mismo codigo, aqui y en la app.
@@ -712,35 +731,37 @@ class Hub(unittest.TestCase):
         self.assertEqual("MOCK", self.d["estado"])
         self.assertIn("nota", self.d, "la maqueta no dice por que lo es")
         self.assertIn("hubMaqueta", self.d["textos"]["es"])
-        self.assertIn("hubMaqueta", self.js, "hub.js no pinta el rotulo")
+        self.assertIn("panel-rotulo", self.js, "hub.js no pinta el rotulo de maqueta")
         # El rotulo se anade ANTES que la rejilla, no debajo. Se mira DENTRO
         # de `pintaAgentes`: la primera rejilla que aparece en el fichero es la
         # del esqueleto, y comparar contra esa medía otra cosa.
-        fn = re.search(r"function pintaAgentes.*?\n  \}", self.js, re.S)
-        self.assertIsNotNone(fn, "no existe pintaAgentes")
+        fn = re.search(r"function pintaPanel.*?\n  \}", self.js, re.S)
+        self.assertIsNotNone(fn, "no existe pintaPanel")
         cuerpo = fn.group(0)
-        self.assertLess(cuerpo.index("appendChild(rot)"),
-                        cuerpo.index("appendChild(g)"),
-                        "el rotulo se pinta despues de las tarjetas")
+        self.assertLess(cuerpo.index("panel-rotulo"), cuerpo.index("modelos"),
+                        "el rotulo de maqueta se pinta despues de las tarjetas")
 
-    def test_la_telemetria_no_finge_sensor(self):
-        """El panel del rack ensena la maqueta Y lo que el nodo declara.
+    def test_el_rack_no_se_renderiza_en_publico(self):
+        """La telemetria del rack es del Soberano, no de quien visita.
 
-        Medido: `energia_era.py` no esta desplegado en la-fragua y
-        `reflejos.jsonl` no existe -- el reflejo de bateria nunca ha escrito
-        una linea. Publicar un 50 % de Anker a secas seria inventar un sensor.
+        Hasta la Puerta 6 la portada pintaba dos columnas --maqueta y medido--
+        con el estado energetico del rack. Salio entera: su sitio es el Ojo,
+        en loopback. Aqui se comprueba en los DOS sitios donde podria volver a
+        colarse: el JSON que viaja al navegador y el codigo que pinta.
+
+        No basta con dejar de renderizarlo: mandar el bloque y no pintarlo es
+        cargar peso y exponer estado del rack por nada.
         """
-        r = self.d["rack"]
-        self.assertIn("mock", r); self.assertIn("real", r)
-        v = r["real"]
-        self.assertEqual("NO_DATA", v["estado"])
-        self.assertFalse(v["bateria_presente"], "se declara una bateria que no hay")
-        self.assertIsNone(v["era_energetica"])
-        self.assertIsNone(v["produccion_solar_w"])
-        for causa in ("causa_era", "causa_bateria", "causa_produccion", "causa_ups"):
-            with self.subTest(causa=causa):
-                self.assertTrue(v.get(causa, "").strip(), f"{causa} sin explicar")
-        self.assertIn("remedio", v, "NO_DATA sin remedio")
+        self.assertNotIn("rack", self.d,
+                         "hub.json vuelve a mandar telemetria del rack al publico")
+        for nombre in ("hub.js", "hub-cola.js", "chat-router.js"):
+            js = (PUBLICO / "assets" / nombre).read_text(encoding="utf-8")
+            codigo = re.sub(r"/\*.*?\*/", "", js, flags=re.S)
+            codigo = re.sub(r"(?m)//.*$", "", codigo)
+            with self.subTest(fichero=nombre):
+                for muerto in ("rack", "anker", "bateria_presente", "era_energetica"):
+                    self.assertNotIn(muerto, codigo.lower(),
+                                     f"{nombre} vuelve a pintar el rack: «{muerto}»")
 
     def test_ironclaw_firma_una_a_una(self):
         """Protocolo 2 del documento P0X, y no es una preferencia de estilo.
@@ -756,10 +777,13 @@ class Hub(unittest.TestCase):
                 self.assertNotIn(prohibido.lower(), self.js.lower(),
                                  f"hub.js ofrece aprobacion por lotes: {prohibido}")
         # Un boton por pieza: el listener se cuelga DENTRO del bucle.
-        cola = re.search(r"function pintaCola.*?\n  \}", self.js, re.S)
-        self.assertIsNotNone(cola)
-        self.assertIn("props.forEach", cola.group(0))
-        self.assertIn("colaFirmar", cola.group(0))
+        cola_js = (PUBLICO / "assets" / "hub-cola.js").read_text(encoding="utf-8")
+        for prohibido in ("firmarTodo", "aprobarTodo", "firmar todo",
+                          "aprobar todo", "selectAll", "batch"):
+            with self.subTest(prohibido=prohibido, fichero="hub-cola.js"):
+                self.assertNotIn(prohibido.lower(), cola_js.lower())
+        self.assertIn("props.forEach", cola_js, "la cola no itera propuesta a propuesta")
+        self.assertIn("colaFirmar", cola_js, "no hay boton de firma por pieza")
 
     def test_hub_usa_scheduler_yield(self):
         """Devolver el hilo entre secciones, con respaldo donde no exista."""
@@ -801,41 +825,116 @@ class Hub(unittest.TestCase):
         self.assertEqual(ids, tiene, f"esferas y agentes no casan: {ids ^ tiene}")
 
 
-class ChatModal(unittest.TestCase):
+class Cabezal(unittest.TestCase):
+    """El cabezal fijo, el chat protagonista y el panel Modelos.
 
-    def test_el_chat_es_un_dialog_nativo(self):
-        """`<dialog>` trae foco atrapado, Escape y fondo inerte de serie.
+    Sustituye a los casos del `<dialog>` de la Puerta 4. El chat dejo de ser
+    un modal: ahora es lo primero que se ve y el panel se le echa encima. El
+    gate tiene que vigilar el canon VIGENTE o deja de ser un gate -- mismo
+    criterio con el que se reescribio el caso del cristal.
+    """
 
-        Una libreria de accesibilidad aqui seria reimplementar peor lo que el
-        navegador ya hace. Y el #chat se ENVUELVE, no se reescribe: los seis
-        guiones heredados buscan sus piezas por id y siguen encontrandolas.
+    def portadas(self):
+        for idioma in ("es", "en", "fr"):
+            yield idioma, (PUBLICO / idioma / "index.html").read_text(encoding="utf-8")
+
+    def test_cabezal_con_ojos_y_login(self):
+        """La cabeza, la navegacion y la identidad, con sus ids intactos.
+
+        `auth.js` busca `#identity` y se calla si no esta: el boton de entrar
+        desapareceria sin un solo error en consola. Por eso se comprueba el
+        id, no el aspecto.
         """
         router = (PUBLICO / "assets" / "chat-router.js").read_text(encoding="utf-8")
-        self.assertIn("showModal()", router, "el modal no se abre como modal")
-        for idioma in ("es", "en", "fr"):
-            t = (PUBLICO / idioma / "index.html").read_text(encoding="utf-8")
+        for idioma, t in self.portadas():
             with self.subTest(idioma=idioma):
-                self.assertIn('<dialog id="chat-modal">', t, "sin <dialog>")
-                self.assertIn('<div id="chat" class="panel">', t,
-                              "el #chat heredado ya no existe: se reescribio")
-                for pieza in ("pregunta", "enviar", "motor", "dialogo"):
-                    self.assertIn(f'id="{pieza}"', t,
-                                  f"#{pieza} desaparecio y un guion heredado lo busca")
+                self.assertIn('id="cabezal"', t, "no hay cabezal")
+                self.assertIn('id="cabeza"', t, "no hay cabeza del Preceptor")
+                self.assertIn('id="cab-nav"', t, "el cabezal no tiene navegacion")
+                self.assertIn('id="identity"', t,
+                              "auth.js busca #identity y se calla si falta")
+        # El ojo del cabezal cambia con el companero activo.
+        self.assertIn("cabeza.style.backgroundImage", router,
+                      "el router no le pone cara al cabezal")
+        self.assertIn("a.symbol", router,
+                      "el cabezal no cambia de ojo al cambiar de companero")
+
+    def test_enlaces_identidad_publica(self):
+        """GitHub y LinkedIn: uno de cada, y en el cabezal.
+
+        Dos copias del mismo enlace divergen, y estos son la unica forma de
+        comprobar quien firma esto. Salen de `hub.json`, que copia
+        `Alejandria/identidad_publica.json`.
+        """
+        d = json.loads((PUBLICO / "hub.json").read_text(encoding="utf-8"))
+        i = d.get("identidad", {})
+        for clave in ("github_url", "linkedin_url"):
+            self.assertIn(clave, i, f"hub.json no declara {clave}")
+        for idioma, t in self.portadas():
+            with self.subTest(idioma=idioma):
+                self.assertEqual(0, t.count("linkedin.com"),
+                                 "el enlace de LinkedIn esta escrito en el marcado")
+                self.assertEqual(0, t.count("github.com"),
+                                 "queda un GitHub suelto en la portada")
+        hub = (PUBLICO / "assets" / "hub.js").read_text(encoding="utf-8")
+        self.assertIn("github_url", hub)
+        self.assertIn("linkedin_url", hub)
+
+    def test_panel_modelos_existe_y_desliza(self):
+        css = (PUBLICO / "assets" / "widget.css").read_text(encoding="utf-8")
+        plano = css.replace(" ", "").replace("\n", "")
+        for idioma, t in self.portadas():
+            with self.subTest(idioma=idioma):
+                self.assertIn('id="panel-modelos"', t, "no hay panel Modelos")
+                self.assertIn('id="hub-layout"', t, "el chat no tiene maqueta")
+        self.assertIn("transform:translateX(101%)", plano,
+                      "el panel no se retira deslizando")
+        self.assertIn("transition:transform.35sease", plano,
+                      "el deslizamiento no dura los 350 ms del contrato")
+        self.assertIn("prefers-reduced-motion", css,
+                      "el panel se desliza aunque se pida quietud")
+
+    def test_pc_estira_sin_perder_chat(self):
+        """A partir de 1024 px los dos se ven a la vez.
+
+        En movil el panel tapa el chat porque no caben; en PC eso seria tirar
+        pantalla. La columna se PLIEGA en vez de irse: sacarla de la rejilla
+        haria saltar el ancho del chat, que es lo que la columna fija existe
+        para evitar.
+        """
+        css = (PUBLICO / "assets" / "widget.css").read_text(encoding="utf-8")
+        pc = re.search(r"@media \(min-width:1024px\)\{(.*?)\n\}", css, re.S)
+        self.assertIsNotNone(pc, "no hay maqueta de PC")
+        cuerpo = pc.group(1).replace(" ", "")
+        self.assertIn("grid-template-columns:1fr360px", cuerpo,
+                      "la rejilla de PC no es 1fr + 360px")
+        self.assertIn("position:static", cuerpo, "el panel sigue flotando en PC")
+        self.assertIn("transform:none", cuerpo, "el panel sigue deslizando en PC")
+        # Las columnas se asignan explicitamente. Sin esto, `meter.js` inserta
+        # su panel de medida detras de #chat y ese tercer hijo se queda con la
+        # columna de 360 px, echando el panel a una columna implicita. Se cazo
+        # midiendo el ancho en el navegador, no leyendo el codigo.
+        self.assertIn("#hub-layout>*{grid-column:1}", cuerpo,
+                      "un hijo inesperado puede robarle la columna al panel")
+        self.assertIn("grid-column:2", cuerpo, "el panel no tiene columna propia")
+        self.assertIn("max-width:min(1400px", cuerpo,
+                      "la ventana no se estira: el chat se quedaria en 360 px")
+        router = (PUBLICO / "assets" / "chat-router.js").read_text(encoding="utf-8")
+        self.assertIn("(min-width:1024px)", router,
+                      "el router no distingue PC de movil")
+        self.assertIn("matchMedia", router,
+                      "el umbral se lee a mano en vez de por matchMedia")
 
     def test_la_transferencia_respeta_el_movimiento_reducido(self):
-        """Doble guarda, y las dos hacen falta.
-
-        `startViewTransition` no existe en Firefox: llamarlo a pelo revienta el
-        cambio de companero. Y quien pide menos movimiento no quiere la
-        morfosis aunque su navegador sepa hacerla.
-        """
+        """Doble guarda: el navegador que no sabe, y quien no quiere."""
         router = (PUBLICO / "assets" / "chat-router.js").read_text(encoding="utf-8")
+        self.assertIn("prefers-reduced-motion", router)
         fn = re.search(r"function conTransicion.*?\n  \}", router, re.S)
         self.assertIsNotNone(fn, "no hay guarda de transicion")
-        cuerpo = fn.group(0)
-        self.assertIn("prefers-reduced-motion", cuerpo)
-        self.assertIn("!document.startViewTransition", cuerpo,
+        self.assertIn("!document.startViewTransition", fn.group(0),
                       "se llama a startViewTransition sin comprobar que existe")
+        self.assertIn("quieto.matches", fn.group(0),
+                      "la transicion no mira si se pidio quietud")
 
     def test_motor_prioriza_languagemodel(self):
         """`window.ai` quedo atras. La forma vigente es `LanguageModel`."""
@@ -1072,7 +1171,7 @@ class PWA(unittest.TestCase):
 
         # 1 · las tres piezas del Hub y su catalogo
         for pieza in ("/hub.json", "/assets/widget.css", "/assets/hub.js",
-                      "/assets/chat-router.js"):
+                      "/assets/hub-cola.js", "/assets/chat-router.js"):
             with self.subTest(pieza=pieza):
                 self.assertIn(f"'{pieza}'", sw,
                               f"el worker no cachea {pieza}")

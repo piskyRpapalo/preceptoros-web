@@ -1,6 +1,6 @@
 {
  "estado": "MOCK",
- "nota": "Maqueta del Hub. Los ocho companeros y sus ids son los del catalogo REAL (api.preceptoros.org/api/v1/agents, leido el 2026-08-31: 1 disponible de 8), para que el dia que esto lea del tunel no haya que renombrar nada. Lo que SI es maqueta es el campo `status` y la cola de firmas: ningun bucle esta corriendo. Cada tarjeta lleva al lado su disponibilidad REAL, que es la que manda. Cada agente lleva DOS imagenes y no es redundancia: `symbol` es el ojo que el cabezal le pone al Preceptor cuando ese companero esta activo, e `icono3d` es la esfera con la que se presenta en el panel Modelos.",
+ "nota": "Maqueta del Hub. Los ocho companeros y sus ids son los del catalogo REAL (api.preceptoros.org/api/v1/agents, leido el 2026-08-31: 1 disponible de 8), para que el dia que esto lea del tunel no haya que renombrar nada. Lo que SI es maqueta es el campo `status` y la cola de firmas: ningun bucle esta corriendo. Cada tarjeta lleva al lado su disponibilidad REAL, que es la que manda. Cada agente lleva DOS imagenes y no es redundancia: `symbol` es el ojo que el cabezal le pone al Preceptor cuando ese companero esta activo, e `icono3d` es la esfera con la que se presenta en el panel Modelos. El bloque `rack` salio de aqui en la Puerta 6: la telemetria del rack es del Soberano y vive en el Ojo, no en la web publica.",
  "fuente": "ids y nombres: catalogo vivo · bloques y funciones: documento P0X Arquitectura de Bucles Autonomos · status y cola: inventados para ver la interfaz",
  "bloques": {
   "1": "Nucleo · doctrina y alineamiento",
@@ -142,26 +142,6 @@
    }
   ]
  },
- "rack": {
-  "mock": {
-   "estado": "MOCK",
-   "anker_carga_pct": 50,
-   "produccion_solar_w": 380,
-   "consumo_rack_w": 210
-  },
-  "real": {
-   "estado": "NO_DATA",
-   "era_energetica": null,
-   "causa_era": "energia_era.py vive en el repo (deploy/fragua/) pero NO esta desplegado en la-fragua: ningun proceso lo lee, asi que ENERGY_ERA no se puede consultar",
-   "bateria_presente": false,
-   "causa_bateria": "P0X_BATTERY_PRESENT por defecto es false: no hay bateria solar instalada",
-   "produccion_solar_w": null,
-   "causa_produccion": "sin sensor conectado; los sensores HEXELION estan congelados por la decision 16",
-   "ups": null,
-   "causa_ups": "mente/telemetria/reflejos.jsonl no existe: el reflejo de bateria nunca ha escrito una linea",
-   "remedio": "desplegar energia_era.py en la-fragua y arrancar el reflejo, tras el lanzamiento"
-  }
- },
  "textos": {
   "es": {
    "hubTitulo": "Compañeros",
@@ -178,16 +158,9 @@
    "colaFirmar": "Firmar y publicar",
    "colaFirmado": "Firmado en tu aparato. No viaja: el envío es otra puerta.",
    "colaProtocolo": "Una firma por pieza. No hay «firmar todo», y es a propósito.",
-   "rackTitulo": "El rack",
-   "rackMock": "Maqueta",
-   "rackReal": "Medido",
-   "rackAnker": "Batería Anker",
-   "rackSolar": "Producción solar",
-   "rackConsumo": "Consumo del rack",
-   "rackEra": "Era energética",
-   "rackBateria": "Batería presente",
-   "rackNo": "no",
-   "rackSi": "sí"
+   "hubServido": "servido",
+   "chatEscribir": "Escribe aquí…",
+   "chatCerrarPanel": "Cerrar"
   },
   "en": {
    "hubTitulo": "Companions",
@@ -204,16 +177,9 @@
    "colaFirmar": "Sign and publish",
    "colaFirmado": "Signed on your device. It does not travel: sending is another gate.",
    "colaProtocolo": "One signature per item. There is no «sign all», and that is deliberate.",
-   "rackTitulo": "The rack",
-   "rackMock": "Mockup",
-   "rackReal": "Measured",
-   "rackAnker": "Anker battery",
-   "rackSolar": "Solar output",
-   "rackConsumo": "Rack draw",
-   "rackEra": "Energy era",
-   "rackBateria": "Battery present",
-   "rackNo": "no",
-   "rackSi": "yes"
+   "hubServido": "served",
+   "chatEscribir": "Write here…",
+   "chatCerrarPanel": "Close"
   },
   "fr": {
    "hubTitulo": "Compagnons",
@@ -230,16 +196,16 @@
    "colaFirmar": "Signer et publier",
    "colaFirmado": "Signé sur votre appareil. Rien ne part : l'envoi est une autre porte.",
    "colaProtocolo": "Une signature par pièce. Pas de « tout signer », et c'est voulu.",
-   "rackTitulo": "Le rack",
-   "rackMock": "Maquette",
-   "rackReal": "Mesuré",
-   "rackAnker": "Batterie Anker",
-   "rackSolar": "Production solaire",
-   "rackConsumo": "Consommation du rack",
-   "rackEra": "Ère énergétique",
-   "rackBateria": "Batterie présente",
-   "rackNo": "non",
-   "rackSi": "oui"
+   "hubServido": "servi",
+   "chatEscribir": "Écrivez ici…",
+   "chatCerrarPanel": "Fermer"
   }
+ },
+ "identidad": {
+  "github": "piskyRpapalo",
+  "github_url": "https://github.com/piskyRpapalo/PreceptorOS",
+  "linkedin": "david-pecero-caballero",
+  "linkedin_url": "https://www.linkedin.com/in/david-pecero-caballero/",
+  "fuente": "Alejandria/identidad_publica.json"
  }
 }
