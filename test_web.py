@@ -671,9 +671,13 @@ class Hub(unittest.TestCase):
         fallo puede vivir meses en la pantalla de quien llega.
         """
         for a in self.d["agentes"]:
-            ruta = PUBLICO / "assets" / f"agente-{a['symbol']}.webp"
             with self.subTest(agente=a["id"]):
-                self.assertTrue(ruta.is_file(), f"falta {ruta.name}")
+                # Dos imagenes por agente, y no son intercambiables: el OJO va
+                # al cabezal cuando ese companero esta activo; la ESFERA es su
+                # retrato en el panel Modelos.
+                for ruta in (PUBLICO / "assets" / f"agente-{a['symbol']}.webp",
+                             PUBLICO / "assets" / f"agente-3d-{a['icono3d']}.webp"):
+                    self.assertTrue(ruta.is_file(), f"falta {ruta.name}")
 
     def test_el_hub_habla_los_tres_idiomas(self):
         """El guardian que este modulo NO puede usar, reimplementado aqui.
@@ -770,10 +774,31 @@ class Hub(unittest.TestCase):
         self.assertIn("prefers-reduced-data", self.js)
 
     def test_las_caras_de_agente_no_engordan(self):
-        caras = sorted((PUBLICO / "assets").glob("agente-*.webp"))
-        self.assertEqual(self.CARAS, len(caras), f"hay {len(caras)} caras")
+        """Los OJOS. El glob mira `agente-ojo-*` y no `agente-*`: desde que
+           existen las esferas del panel Modelos hay dos familias con prefijo
+           parecido, y un glob demasiado ancho contaba dieciseis caras."""
+        caras = sorted((PUBLICO / "assets").glob("agente-ojo-*.webp"))
+        self.assertEqual(self.CARAS, len(caras), f"hay {len(caras)} ojos")
         total = sum(c.stat().st_size for c in caras)
-        self.assertLess(total, 64 * 1024, f"las caras suman {total} B")
+        self.assertLess(total, 64 * 1024, f"los ojos suman {total} B")
+
+    def test_iconos_3d_existen_y_bajo_techo(self):
+        """Las ocho esferas del panel Modelos.
+
+        Techo declarado de 32 KB por fichero: son renders fotorrealistas y
+        pesan, pero el panel puede llegar a pedir las ocho de golpe. El techo
+        no protege una descarga --van al shell del worker-- sino que impide
+        que el proximo render entre con un mega sin que nadie lo mire.
+        """
+        esferas = sorted((PUBLICO / "assets").glob("agente-3d-*.webp"))
+        self.assertEqual(8, len(esferas), f"hay {len(esferas)} esferas")
+        for e in esferas:
+            with self.subTest(esfera=e.name):
+                self.assertLessEqual(e.stat().st_size, 32 * 1024,
+                                     f"{e.name} pesa {e.stat().st_size} B")
+        ids = {a["id"] for a in self.d["agentes"]}
+        tiene = {e.name[len("agente-3d-"):-len(".webp")] for e in esferas}
+        self.assertEqual(ids, tiene, f"esferas y agentes no casan: {ids ^ tiene}")
 
 
 class ChatModal(unittest.TestCase):
@@ -1060,6 +1085,13 @@ class PWA(unittest.TestCase):
                     for p in (PUBLICO / "assets").glob("agente-ojo-*.webp")}
         self.assertEqual(en_disco, conoce,
                          f"el worker y el disco no coinciden: {en_disco ^ conoce}")
+        esferas = re.search(r"const ESFERAS = \[(.*?)\]", sw, re.S)
+        self.assertIsNotNone(esferas, "el worker no declara las esferas")
+        conoce3d = set(re.findall(r"'([\w-]+)'", esferas.group(1)))
+        disco3d = {p.name[len("agente-3d-"):-len(".webp")]
+                   for p in (PUBLICO / "assets").glob("agente-3d-*.webp")}
+        self.assertEqual(disco3d, conoce3d,
+                         f"esferas que el worker no cachea: {disco3d ^ conoce3d}")
         catalogo = json.loads((PUBLICO / "hub.json").read_text(encoding="utf-8"))
         usados = {a["symbol"][len("ojo-"):] for a in catalogo["agentes"]}
         self.assertFalse(usados - conoce,

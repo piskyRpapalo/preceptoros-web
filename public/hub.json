@@ -1,6 +1,6 @@
 {
  "estado": "MOCK",
- "nota": "Maqueta del Hub. Los ocho companeros y sus ids son los del catalogo REAL (api.preceptoros.org/api/v1/agents, leido el 2026-08-31: 1 disponible de 8), para que el dia que esto lea del tunel no haya que renombrar nada. Lo que SI es maqueta es el campo `status` y la cola de firmas: ningun bucle esta corriendo. Cada tarjeta lleva al lado su disponibilidad REAL, que es la que manda.",
+ "nota": "Maqueta del Hub. Los ocho companeros y sus ids son los del catalogo REAL (api.preceptoros.org/api/v1/agents, leido el 2026-08-31: 1 disponible de 8), para que el dia que esto lea del tunel no haya que renombrar nada. Lo que SI es maqueta es el campo `status` y la cola de firmas: ningun bucle esta corriendo. Cada tarjeta lleva al lado su disponibilidad REAL, que es la que manda. Cada agente lleva DOS imagenes y no es redundancia: `symbol` es el ojo que el cabezal le pone al Preceptor cuando ese companero esta activo, e `icono3d` es la esfera con la que se presenta en el panel Modelos.",
  "fuente": "ids y nombres: catalogo vivo · bloques y funciones: documento P0X Arquitectura de Bucles Autonomos · status y cola: inventados para ver la interfaz",
  "bloques": {
   "1": "Nucleo · doctrina y alineamiento",
@@ -9,50 +9,137 @@
   "4": "Evolutivo · memoria y pesos"
  },
  "agentes": [
-  {"id": "instalador", "name": "El Instalador", "block": 1, "symbol": "ojo-bombilla",
+  {
+   "id": "instalador",
+   "name": "El Instalador",
+   "block": 1,
+   "symbol": "ojo-ambar",
    "function": "Recepcionista. Te acompana hasta que la app corre en tu maquina y te presenta a los demas.",
    "status": "idle",
-   "real": {"disponible": true, "adaptador": "preceptor-v7:latest"}},
-  {"id": "privacidad", "name": "El Aduanero", "block": 1, "symbol": "ojo-rojo",
+   "real": {
+    "disponible": true,
+    "adaptador": "preceptor-v7:latest"
+   },
+   "icono3d": "instalador"
+  },
+  {
+   "id": "privacidad",
+   "name": "El Aduanero",
+   "block": 1,
+   "symbol": "ojo-verde",
    "function": "El que tacha lo privado. Sanea el contexto antes de que salga de tu aparato.",
    "status": "idle",
-   "real": {"disponible": false, "adaptador": null, "causa": "sin adaptador entrenado todavia"}},
-  {"id": "escritor", "name": "El Escritor", "block": 2, "symbol": "ojo-cerebro",
+   "real": {
+    "disponible": false,
+    "adaptador": null,
+    "causa": "sin adaptador entrenado todavia"
+   },
+   "icono3d": "privacidad"
+  },
+  {
+   "id": "escritor",
+   "name": "El Escritor",
+   "block": 2,
+   "symbol": "ojo-bombilla",
    "function": "Redacta contigo: guiones, notas y textos largos sin que salgan de casa.",
    "status": "thinking",
-   "real": {"disponible": false, "adaptador": null, "causa": "sin adaptador entrenado todavia"}},
-  {"id": "traductor", "name": "El Traductor", "block": 2, "symbol": "ojo-azul",
+   "real": {
+    "disponible": false,
+    "adaptador": null,
+    "causa": "sin adaptador entrenado todavia"
+   },
+   "icono3d": "escritor"
+  },
+  {
+   "id": "traductor",
+   "name": "El Traductor",
+   "block": 2,
+   "symbol": "ojo-libro",
    "function": "Pasa de un idioma a otro en local, sin mandar el texto a ninguna nube.",
    "status": "idle",
-   "real": {"disponible": false, "adaptador": null, "causa": "sin adaptador entrenado todavia"}},
-  {"id": "coder", "name": "El Artesano", "block": 3, "symbol": "ojo-ambar",
+   "real": {
+    "disponible": false,
+    "adaptador": null,
+    "causa": "sin adaptador entrenado todavia"
+   },
+   "icono3d": "traductor"
+  },
+  {
+   "id": "coder",
+   "name": "El Artesano",
+   "block": 3,
+   "symbol": "ojo-birrete",
    "function": "Lee tu codigo, propone el arreglo y escribe la prueba que lo demuestra.",
    "status": "running",
-   "real": {"disponible": false, "adaptador": null, "causa": "sin adaptador entrenado todavia"}},
-  {"id": "analista", "name": "El Analista", "block": 3, "symbol": "ojo-verde",
+   "real": {
+    "disponible": false,
+    "adaptador": null,
+    "causa": "sin adaptador entrenado todavia"
+   },
+   "icono3d": "coder"
+  },
+  {
+   "id": "analista",
+   "name": "El Analista",
+   "block": 3,
+   "symbol": "ojo-cerebro",
    "function": "Mira numeros y trazas y te dice que cambio, no que opina.",
    "status": "idle",
-   "real": {"disponible": false, "adaptador": null, "causa": "sin adaptador entrenado todavia"}},
-  {"id": "aprendiz", "name": "El Aprendiz", "block": 4, "symbol": "ojo-birrete",
+   "real": {
+    "disponible": false,
+    "adaptador": null,
+    "causa": "sin adaptador entrenado todavia"
+   },
+   "icono3d": "analista"
+  },
+  {
+   "id": "aprendiz",
+   "name": "El Aprendiz",
+   "block": 4,
+   "symbol": "ojo-azul",
    "function": "Aprende contigo: convierte lo que haces en memoria que puedes releer.",
    "status": "idle",
-   "real": {"disponible": false, "adaptador": null, "causa": "sin adaptador entrenado todavia"}},
-  {"id": "bibliotecario", "name": "El Bibliotecario", "block": 4, "symbol": "ojo-libro",
+   "real": {
+    "disponible": false,
+    "adaptador": null,
+    "causa": "sin adaptador entrenado todavia"
+   },
+   "icono3d": "aprendiz"
+  },
+  {
+   "id": "bibliotecario",
+   "name": "El Bibliotecario",
+   "block": 4,
+   "symbol": "ojo-rojo",
    "function": "Ordena tu memoria: busca, enlaza y quita duplicados sin borrar nada tuyo.",
    "status": "idle",
-   "real": {"disponible": false, "adaptador": null, "causa": "sin adaptador entrenado todavia"}}
+   "real": {
+    "disponible": false,
+    "adaptador": null,
+    "causa": "sin adaptador entrenado todavia"
+   },
+   "icono3d": "bibliotecario"
+  }
  ],
  "cola": {
   "estado": "MOCK",
   "causa": "ningun bucle de expansion esta corriendo; estas dos propuestas son de muestra",
   "protocolo": "IronClaw firme · firma individual, jamas por lotes",
   "propuestas": [
-   {"id": "p-001", "origen": "Radar Growth", "destino": "foro publico",
+   {
+    "id": "p-001",
+    "origen": "Radar Growth",
+    "destino": "foro publico",
     "resumen": "Respuesta tecnica a un hilo sobre memoria local en LLM",
-    "cuerpo": "Aporta la medida del corredor certificado y enlaza la guia de instalacion. Sin lenguaje comercial."},
-   {"id": "p-002", "origen": "Media Engine", "destino": "video corto",
+    "cuerpo": "Aporta la medida del corredor certificado y enlaza la guia de instalacion. Sin lenguaje comercial."
+   },
+   {
+    "id": "p-002",
+    "origen": "Media Engine",
+    "destino": "video corto",
     "resumen": "Guion de 60 s sobre que hace el filtro que tacha lo privado",
-    "cuerpo": "Muestra el texto antes y despues del saneado, con las claves y rutas tachadas en pantalla."}
+    "cuerpo": "Muestra el texto antes y despues del saneado, con las claves y rutas tachadas en pantalla."
+   }
   ]
  },
  "rack": {
@@ -77,43 +164,82 @@
  },
  "textos": {
   "es": {
-   "hubTitulo": "Compañeros", "hubMaqueta": "MAQUETA · el estado de cada compañero está inventado para ver la interfaz. La disponibilidad de al lado sí es real.",
-   "hubCargando": "Leyendo el catálogo…", "hubFallo": "NO_DATA · no se pudo leer el catálogo. Causa:",
-   "hubDisponible": "disponible", "hubSinAdaptador": "sin adaptador",
-   "hubHablar": "Hablar", "hubCerrar": "Cerrar",
+   "hubTitulo": "Compañeros",
+   "hubMaqueta": "MAQUETA · el estado de cada compañero está inventado para ver la interfaz. La disponibilidad de al lado sí es real.",
+   "hubCargando": "Leyendo el catálogo…",
+   "hubFallo": "NO_DATA · no se pudo leer el catálogo. Causa:",
+   "hubDisponible": "disponible",
+   "hubSinAdaptador": "sin adaptador",
+   "hubHablar": "Hablar",
+   "hubCerrar": "Cerrar",
    "hubSinServir": "Este compañero todavía no tiene adaptador servido. No se carga nada: se dice.",
-   "colaTitulo": "Cola de firma · IronClaw", "colaVacia": "Nada esperando tu firma.",
-   "colaFirmar": "Firmar y publicar", "colaFirmado": "Firmado en tu aparato. No viaja: el envío es otra puerta.",
+   "colaTitulo": "Cola de firma · IronClaw",
+   "colaVacia": "Nada esperando tu firma.",
+   "colaFirmar": "Firmar y publicar",
+   "colaFirmado": "Firmado en tu aparato. No viaja: el envío es otra puerta.",
    "colaProtocolo": "Una firma por pieza. No hay «firmar todo», y es a propósito.",
-   "rackTitulo": "El rack", "rackMock": "Maqueta", "rackReal": "Medido",
-   "rackAnker": "Batería Anker", "rackSolar": "Producción solar", "rackConsumo": "Consumo del rack",
-   "rackEra": "Era energética", "rackBateria": "Batería presente", "rackNo": "no", "rackSi": "sí"
+   "rackTitulo": "El rack",
+   "rackMock": "Maqueta",
+   "rackReal": "Medido",
+   "rackAnker": "Batería Anker",
+   "rackSolar": "Producción solar",
+   "rackConsumo": "Consumo del rack",
+   "rackEra": "Era energética",
+   "rackBateria": "Batería presente",
+   "rackNo": "no",
+   "rackSi": "sí"
   },
   "en": {
-   "hubTitulo": "Companions", "hubMaqueta": "MOCKUP · each companion's state is invented so the interface can be seen. The availability beside it is real.",
-   "hubCargando": "Reading the catalogue…", "hubFallo": "NO_DATA · the catalogue could not be read. Cause:",
-   "hubDisponible": "available", "hubSinAdaptador": "no adapter",
-   "hubHablar": "Talk", "hubCerrar": "Close",
+   "hubTitulo": "Companions",
+   "hubMaqueta": "MOCKUP · each companion's state is invented so the interface can be seen. The availability beside it is real.",
+   "hubCargando": "Reading the catalogue…",
+   "hubFallo": "NO_DATA · the catalogue could not be read. Cause:",
+   "hubDisponible": "available",
+   "hubSinAdaptador": "no adapter",
+   "hubHablar": "Talk",
+   "hubCerrar": "Close",
    "hubSinServir": "This companion has no adapter served yet. Nothing is loaded: it is stated.",
-   "colaTitulo": "Signing queue · IronClaw", "colaVacia": "Nothing waiting for your signature.",
-   "colaFirmar": "Sign and publish", "colaFirmado": "Signed on your device. It does not travel: sending is another gate.",
+   "colaTitulo": "Signing queue · IronClaw",
+   "colaVacia": "Nothing waiting for your signature.",
+   "colaFirmar": "Sign and publish",
+   "colaFirmado": "Signed on your device. It does not travel: sending is another gate.",
    "colaProtocolo": "One signature per item. There is no «sign all», and that is deliberate.",
-   "rackTitulo": "The rack", "rackMock": "Mockup", "rackReal": "Measured",
-   "rackAnker": "Anker battery", "rackSolar": "Solar output", "rackConsumo": "Rack draw",
-   "rackEra": "Energy era", "rackBateria": "Battery present", "rackNo": "no", "rackSi": "yes"
+   "rackTitulo": "The rack",
+   "rackMock": "Mockup",
+   "rackReal": "Measured",
+   "rackAnker": "Anker battery",
+   "rackSolar": "Solar output",
+   "rackConsumo": "Rack draw",
+   "rackEra": "Energy era",
+   "rackBateria": "Battery present",
+   "rackNo": "no",
+   "rackSi": "yes"
   },
   "fr": {
-   "hubTitulo": "Compagnons", "hubMaqueta": "MAQUETTE · l'état de chaque compagnon est inventé pour voir l'interface. La disponibilité à côté est réelle.",
-   "hubCargando": "Lecture du catalogue…", "hubFallo": "NO_DATA · le catalogue n'a pas pu être lu. Cause :",
-   "hubDisponible": "disponible", "hubSinAdaptador": "sans adaptateur",
-   "hubHablar": "Parler", "hubCerrar": "Fermer",
+   "hubTitulo": "Compagnons",
+   "hubMaqueta": "MAQUETTE · l'état de chaque compagnon est inventé pour voir l'interface. La disponibilité à côté est réelle.",
+   "hubCargando": "Lecture du catalogue…",
+   "hubFallo": "NO_DATA · le catalogue n'a pas pu être lu. Cause :",
+   "hubDisponible": "disponible",
+   "hubSinAdaptador": "sans adaptateur",
+   "hubHablar": "Parler",
+   "hubCerrar": "Fermer",
    "hubSinServir": "Ce compagnon n'a pas encore d'adaptateur servi. Rien n'est chargé : on le dit.",
-   "colaTitulo": "File de signature · IronClaw", "colaVacia": "Rien n'attend votre signature.",
-   "colaFirmar": "Signer et publier", "colaFirmado": "Signé sur votre appareil. Rien ne part : l'envoi est une autre porte.",
+   "colaTitulo": "File de signature · IronClaw",
+   "colaVacia": "Rien n'attend votre signature.",
+   "colaFirmar": "Signer et publier",
+   "colaFirmado": "Signé sur votre appareil. Rien ne part : l'envoi est une autre porte.",
    "colaProtocolo": "Une signature par pièce. Pas de « tout signer », et c'est voulu.",
-   "rackTitulo": "Le rack", "rackMock": "Maquette", "rackReal": "Mesuré",
-   "rackAnker": "Batterie Anker", "rackSolar": "Production solaire", "rackConsumo": "Consommation du rack",
-   "rackEra": "Ère énergétique", "rackBateria": "Batterie présente", "rackNo": "non", "rackSi": "oui"
+   "rackTitulo": "Le rack",
+   "rackMock": "Maquette",
+   "rackReal": "Mesuré",
+   "rackAnker": "Batterie Anker",
+   "rackSolar": "Production solaire",
+   "rackConsumo": "Consommation du rack",
+   "rackEra": "Ère énergétique",
+   "rackBateria": "Batterie présente",
+   "rackNo": "non",
+   "rackSi": "oui"
   }
  }
 }

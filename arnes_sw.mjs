@@ -87,15 +87,17 @@ entorno.handlers.install({ waitUntil: p => esperas.push(p) });
 await Promise.all(esperas);
 const shell = almacen.get([...almacen.keys()].find(k=>k.startsWith('shell-')));
 const rutas = await shell.keys();
-// 21 paginas + hub.json + 3 piezas del Hub + 8 caras = 33.
-ok('precachea paginas y piezas del Hub', rutas.length === 33, rutas.length+' rutas');
+// 21 paginas + hub.json + 3 piezas + 8 ojos + 8 esferas = 41.
+ok('precachea paginas y piezas del Hub', rutas.length === 41, rutas.length+' rutas');
 ok('el shell trae /fr/board.html', rutas.includes('/fr/board.html'));
 ok('el shell trae hub.json', rutas.includes('/hub.json'));
 ok('el shell trae las tres piezas del Hub',
    ['/assets/widget.css','/assets/hub.js','/assets/chat-router.js']
      .every(r => rutas.includes(r)));
-ok('el shell trae las ocho caras',
+ok('el shell trae los ocho ojos',
    rutas.filter(r => r.startsWith('/assets/agente-ojo-')).length === 8);
+ok('el shell trae las ocho esferas',
+   rutas.filter(r => r.startsWith('/assets/agente-3d-')).length === 8);
 
 // regla 1: otro origen
 ok('otro origen pasa de largo',

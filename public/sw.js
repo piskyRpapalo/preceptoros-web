@@ -29,7 +29,7 @@
  * dos motivos -- el techo de 7 paginas del gate, y que un fichero de respaldo
  * tambien puede faltar del cache justo el dia que hace falta.
  */
-const VERSION = 'preceptoros-2026-09-b';
+const VERSION = 'preceptoros-2026-09-c';
 const SHELL = 'shell-' + VERSION;
 const OBRA = 'obra-' + VERSION;
 
@@ -43,9 +43,15 @@ const PAGINAS = ['', 'instalar.html', 'board.html', 'benchmark.html',
    instalado, esta a medias. */
 const CARAS = ['ambar', 'azul', 'birrete', 'bombilla',
                'cerebro', 'libro', 'rojo', 'verde'];
+/* Las esferas del panel Modelos. Van aparte de las CARAS porque son otra cosa:
+   la cara es el OJO que el cabezal le pone al Preceptor segun con quien
+   hablas; la esfera es como se presenta ese companero cuando eliges. */
+const ESFERAS = ['instalador', 'privacidad', 'escritor', 'traductor',
+                 'coder', 'analista', 'aprendiz', 'bibliotecario'];
 const HUB = ['/hub.json', '/assets/widget.css', '/assets/hub.js',
              '/assets/chat-router.js']
-  .concat(CARAS.map(c => '/assets/agente-ojo-' + c + '.webp'));
+  .concat(CARAS.map(c => '/assets/agente-ojo-' + c + '.webp'))
+  .concat(ESFERAS.map(e => '/assets/agente-3d-' + e + '.webp'));
 
 /* `hub.json` es CONTENIDO, no una medida. La diferencia decide la estrategia:
    `counters.json` publica la cifra de los gates y servirlo del cache seria
