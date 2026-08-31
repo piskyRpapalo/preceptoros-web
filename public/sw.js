@@ -29,7 +29,7 @@
  * dos motivos -- el techo de 7 paginas del gate, y que un fichero de respaldo
  * tambien puede faltar del cache justo el dia que hace falta.
  */
-const VERSION = 'preceptoros-2026-09-a';
+const VERSION = 'preceptoros-2026-09-b';
 const SHELL = 'shell-' + VERSION;
 const OBRA = 'obra-' + VERSION;
 
@@ -37,8 +37,32 @@ const IDIOMAS = ['es', 'en', 'fr'];
 const PAGINAS = ['', 'instalar.html', 'board.html', 'benchmark.html',
                  'playground.html', 'onboarding.html'];
 
+/* Las piezas del Hub. Van al shell y no al cache de obra porque sin ellas la
+   portada carga y se queda sin rejilla: el esqueleto se pinta, `hub.json` no
+   llega y sale NO_DATA. Un PWA que abre sin su contenido principal no esta
+   instalado, esta a medias. */
+const CARAS = ['ambar', 'azul', 'birrete', 'bombilla',
+               'cerebro', 'libro', 'rojo', 'verde'];
+const HUB = ['/hub.json', '/assets/widget.css', '/assets/hub.js',
+             '/assets/chat-router.js']
+  .concat(CARAS.map(c => '/assets/agente-ojo-' + c + '.webp'));
+
+/* `hub.json` es CONTENIDO, no una medida. La diferencia decide la estrategia:
+   `counters.json` publica la cifra de los gates y servirlo del cache seria
+   ensenar un numero viejo con cara de fresco --la averia que costo la puerta
+   1--; `hub.json` es el catalogo que viaja con el sitio, como una hoja de
+   estilo. Por eso este se cachea y aquel no, y por eso la lista es explicita:
+   una regla que dice «los .json no» y otra que dice «este si» tienen que
+   poder leerse juntas. */
+const CONTENIDO_JSON = ['/hub.json'];
+
+/* El manifiesto va a red primero: es diminuto, cambia cuando cambian los
+   iconos, y un manifiesto viejo hace que la app instalada se quede con el
+   icono anterior sin forma de enterarse. */
+const RED_PRIMERO = ['/manifest.webmanifest'];
+
 function rutasDelShell() {
-  const r = ['/', '/hitos.html', '/manifest.webmanifest'];
+  const r = ['/', '/hitos.html', '/manifest.webmanifest'].concat(HUB);
   for (const l of IDIOMAS) for (const p of PAGINAS) r.push('/' + l + '/' + p);
   return r;
 }
@@ -134,6 +158,15 @@ function navegacion(e) {
     }));
 }
 
+/* Red primero, cache como red de seguridad. Lo contrario de `estatico`. */
+function redPrimero(e) {
+  return caches.open(OBRA).then(cache =>
+    fetch(e.request).then(res => {
+      if (res && res.ok) cache.put(e.request, res.clone());
+      return res;
+    }).catch(() => cache.match(e.request).then(g => g || Response.error())));
+}
+
 function estatico(e) {
   return caches.open(OBRA).then(cache =>
     cache.match(e.request).then(guardada => {
@@ -149,7 +182,13 @@ self.addEventListener('fetch', e => {
 
   const url = new URL(req.url);
   if (url.origin !== self.location.origin) return;  // regla 1: otro origen, de largo
-  if (url.pathname.endsWith('.json')) return;       // regla 2: dato fresco o NO_DATA
+
+  if (RED_PRIMERO.indexOf(url.pathname) >= 0) { e.respondWith(redPrimero(e)); return; }
+
+  // regla 2: una MEDIDA se sirve fresca o no se sirve. El contenido declarado
+  // en CONTENIDO_JSON queda fuera de esta regla, y por eso esta nombrado.
+  if (url.pathname.endsWith('.json') &&
+      CONTENIDO_JSON.indexOf(url.pathname) < 0) return;
 
   if (req.mode === 'navigate') { e.respondWith(navegacion(e)); return; }
   e.respondWith(estatico(e));

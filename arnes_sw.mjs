@@ -87,8 +87,15 @@ entorno.handlers.install({ waitUntil: p => esperas.push(p) });
 await Promise.all(esperas);
 const shell = almacen.get([...almacen.keys()].find(k=>k.startsWith('shell-')));
 const rutas = await shell.keys();
-ok('precachea las 5 rutas x 3 idiomas + raiz', rutas.length === 21, rutas.length+' rutas');
+// 21 paginas + hub.json + 3 piezas del Hub + 8 caras = 33.
+ok('precachea paginas y piezas del Hub', rutas.length === 33, rutas.length+' rutas');
 ok('el shell trae /fr/board.html', rutas.includes('/fr/board.html'));
+ok('el shell trae hub.json', rutas.includes('/hub.json'));
+ok('el shell trae las tres piezas del Hub',
+   ['/assets/widget.css','/assets/hub.js','/assets/chat-router.js']
+     .every(r => rutas.includes(r)));
+ok('el shell trae las ocho caras',
+   rutas.filter(r => r.startsWith('/assets/agente-ojo-')).length === 8);
 
 // regla 1: otro origen
 ok('otro origen pasa de largo',
@@ -96,9 +103,18 @@ ok('otro origen pasa de largo',
 ok('la API del Agora pasa de largo',
    await pedir('https://api.preceptoros.org/api/v1/tasks','cors') === 'PASA_DE_LARGO');
 
-// regla 2: json propio
-ok('counters.json no se cachea',
+// regla 2: una MEDIDA no se cachea; el CONTENIDO declarado si.
+ok('counters.json no se cachea (es una medida)',
    await pedir(ORIGEN+'/counters.json','cors') === 'PASA_DE_LARGO');
+ok('hub.json SI se sirve del cache (es contenido)',
+   await pedir(ORIGEN+'/hub.json','cors') !== 'PASA_DE_LARGO');
+{
+  // El manifiesto va a red primero: con red responde la red, no el cache.
+  const r = await pedir(ORIGEN+'/manifest.webmanifest','cors');
+  ok('el manifiesto va a red primero',
+     r !== 'PASA_DE_LARGO' && String(r.cuerpo).startsWith('red:'),
+     'cuerpo ' + (r && r.cuerpo));
+}
 
 // regla 3: navegacion cacheada, comprobada SIN RED para que no haya duda de
 // que sale del shell y no de la red.

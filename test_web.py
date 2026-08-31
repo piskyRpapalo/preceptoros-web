@@ -1029,6 +1029,52 @@ class PWA(unittest.TestCase):
         self.assertEqual(0, r.returncode,
                          "el arnes del worker falla:\n" + r.stdout + r.stderr)
 
+    def test_sw_cachea_los_nuevos_assets(self):
+        """El worker tiene que conocer TODO lo que la portada necesita.
+
+        La lista no se escribe aqui: se DERIVA del disco y de `hub.json`. Si
+        manana entra una cara de agente nueva y nadie la anade al worker, este
+        caso se cae solo -- que es justo lo que hace falta, porque el sintoma
+        contrario es invisible: la app instalada abre, pinta el esqueleto, y
+        la rejilla se queda en NO_DATA sin que nadie sepa por que.
+
+        Y la distincion entre medida y contenido se comprueba en los dos
+        sentidos: `hub.json` tiene que estar declarado como contenido, y
+        `counters.json` NO puede estarlo. Cachear la cifra de los gates seria
+        repetir la averia de la puerta 1 dentro del worker.
+        """
+        sw = (PUBLICO / "sw.js").read_text(encoding="utf-8")
+
+        # 1 · las tres piezas del Hub y su catalogo
+        for pieza in ("/hub.json", "/assets/widget.css", "/assets/hub.js",
+                      "/assets/chat-router.js"):
+            with self.subTest(pieza=pieza):
+                self.assertIn(f"'{pieza}'", sw,
+                              f"el worker no cachea {pieza}")
+
+        # 2 · las caras, derivadas del disco y del catalogo
+        caras = re.search(r"const CARAS = \[(.*?)\]", sw, re.S)
+        self.assertIsNotNone(caras, "el worker no declara la lista de caras")
+        conoce = set(re.findall(r"'([\w-]+)'", caras.group(1)))
+        en_disco = {p.name[len("agente-ojo-"):-len(".webp")]
+                    for p in (PUBLICO / "assets").glob("agente-ojo-*.webp")}
+        self.assertEqual(en_disco, conoce,
+                         f"el worker y el disco no coinciden: {en_disco ^ conoce}")
+        catalogo = json.loads((PUBLICO / "hub.json").read_text(encoding="utf-8"))
+        usados = {a["symbol"][len("ojo-"):] for a in catalogo["agentes"]}
+        self.assertFalse(usados - conoce,
+                         f"caras que el Hub usa y el worker no cachea: {usados - conoce}")
+
+        # 3 · contenido si, medida no
+        contenido = re.search(r"const CONTENIDO_JSON = \[(.*?)\]", sw, re.S)
+        self.assertIsNotNone(contenido, "el worker no separa contenido de medida")
+        self.assertIn("/hub.json", contenido.group(1))
+        self.assertNotIn("counters.json", contenido.group(1),
+                         "el worker cachearia la cifra de los gates")
+        self.assertIn("/manifest.webmanifest",
+                      re.search(r"const RED_PRIMERO = \[(.*?)\]", sw, re.S).group(1),
+                      "el manifiesto no va a red primero")
+
     def test_sin_conexion_hay_algo_que_leer(self):
         """Y en los tres idiomas: quien instala desde /fr/ no merece un
         error en espanol."""
