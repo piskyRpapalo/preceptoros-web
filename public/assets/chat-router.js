@@ -47,6 +47,24 @@
   chat.insertBefore(aviso, chat.firstChild);
   chat.insertBefore(barra, chat.firstChild);
 
+  /* --- el panel de herramientas ------------------------------------------
+     Debajo del chat habia un hueco y dentro del chat habia botones que no son
+     conversacion: descargar el modelo, elegir motor, buscar IA local, el
+     dictado. Se MUEVEN ahi, no se reescriben -- `engine.js`, `localai.js` y
+     `voice.js` los buscan por id y los siguen encontrando esten donde esten.
+     Es el sitio donde manana caben los datos del modelo activo y sus
+     herramientas disponibles. */
+  var herr = document.createElement('section');
+  herr.id = 'herramientas'; herr.className = 'panel';
+  var herrTit = document.createElement('h2');
+  herrTit.className = 'panel-titulo';
+  herr.appendChild(herrTit);
+  ['motor', 'local-ai', 'voice', 'brain'].forEach(function (id) {
+    var n = document.getElementById(id);
+    if (n) herr.appendChild(n);
+  });
+  chat.parentNode.insertBefore(herr, chat.nextSibling);
+
   function vestir(a) {
     if (!a) return;
     activo = a;
@@ -88,6 +106,7 @@
   function listo() {
     var H = window.Hub;
     if (!H) return;
+    herrTit.textContent = (H.textos && H.textos.herrTitulo) || '';
     boton = H.boton;
     boton.addEventListener('click', function () { alternar(); });
     // Companero por defecto: el Instalador es el recepcionista.

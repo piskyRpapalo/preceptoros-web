@@ -22,6 +22,15 @@
 #cabezal .marca{flex:1;min-width:11rem}
 #cabezal h1{font-size:1.05rem;margin:0 0 .35rem}
 
+/* El boton de entrar es un BOTONCITO arriba a la derecha. `auth.js` lo pinta
+   con la clase de boton normal y en un telefono salia a todo lo ancho,
+   comiendose la pantalla que el chat necesita. Se ve asi en el Doogee, no en
+   un viewport emulado: ahi cabia. */
+#cabezal #identity{margin-left:auto;align-self:flex-start;flex:0 0 auto}
+#cabezal #identity button{font-size:.7rem;padding:.28rem .6rem;
+  letter-spacing:.04em;white-space:nowrap}
+#cabezal #identity .yo{font-size:.74rem}
+
 /* La cabeza del Preceptor. El ojo lo pone el router segun el companero
    activo: es con quien hablas, dicho sin una palabra. */
 #cabeza{width:52px;height:52px;flex:0 0 52px;background-repeat:no-repeat;
@@ -38,10 +47,31 @@
 .cab-boton:focus-visible{outline:2px solid var(--violeta-texto);outline-offset:2px}
 .cab-boton[aria-expanded="true"]{background:var(--violeta-texto);
   border-color:var(--violeta-texto)}
+/* «Empieza aquí» es la unica llamada roja de la pagina, y usa --sol, que es
+   el acento calido del canon y ya viene medido. Blanco encima da 5,34:1
+   --comprobado-- sin inventar un token nuevo. Si algun dia se quiere un rojo
+   de verdad, se firma un token; no se cuela aqui un hexadecimal suelto. */
+.cab-boton.empezar{background:var(--sol);border-color:var(--sol)}
 .cab-leve{font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;
   color:var(--violeta-texto);text-decoration:none;padding:.3rem .35rem}
 .cab-leve:hover{text-decoration:underline}
 .cab-ident{display:inline-flex;gap:.3rem}
+
+/* En un telefono el cabezal no puede comerse la pantalla: medido en el
+   Doogee (360 CSS px) ocupaba el 40 % del alto en tres filas de botones, y
+   el chat --que es lo que se vino a usar-- empezaba casi fuera de vista. */
+@media (max-width:1023px){
+  /* El rail de companeros flota sobre la pagina y se comia el borde derecho
+     del chat y del panel de herramientas. Medido en el Doogee: el texto
+     salia cortado a media palabra. */
+  #hub-layout{padding-right:4.2rem}
+  #cabezal{padding:.5rem .6rem;gap:.5rem}
+  #cabezal h1{font-size:.95rem;margin:0 0 .25rem}
+  #cabeza{width:40px;height:40px;flex-basis:40px}
+  .cab-boton{font-size:.66rem;padding:.26rem .5rem;letter-spacing:.06em}
+  .cab-leve{font-size:.64rem;padding:.2rem .25rem}
+  #cab-nav{gap:.3rem}
+}
 
 /* --- la maqueta: chat protagonista, panel a la derecha ------------------ */
 #hub-layout{position:relative}
@@ -54,88 +84,3 @@
    pantalla y abrirlo antes de que nadie decida escribir tapa lo que se vino
    a leer. */
 #chat.sin-teclado .chat-input{display:none}
-
-/* --- el panel Modelos ---------------------------------------------------
-   Por debajo de 1024 px se desliza SOBRE el chat: no caben los dos, y el
-   chat es lo que se vino a usar. */
-#panel-modelos{position:fixed;top:0;right:0;bottom:0;width:min(24rem,92vw);
-  z-index:20;overflow:auto;padding:1rem .9rem;
-  background:var(--marmol-claro);border-left:1px solid var(--bronce);
-  box-shadow:0 0 40px rgba(30,24,38,.24);
-  transform:translateX(0);transition:transform .35s ease}
-#panel-modelos.cerrado{transform:translateX(101%)}
-.panel-titulo{font-size:1rem;margin:0 0 .3rem}
-/* El rotulo de honestidad es pequeno y NO desaparece nunca. */
-.panel-rotulo{font-size:.74rem;color:var(--bronce-hondo);margin:0 0 .8rem}
-
-.modelos{display:grid;gap:.7rem;grid-template-columns:repeat(auto-fill,minmax(9rem,1fr))}
-.modelo{display:flex;flex-direction:column;align-items:center;gap:.35rem;
-  text-align:center;font:inherit;color:var(--tinta);cursor:pointer;
-  /* --marmol-claro y no --marmol: `--jardin` viene medido en base.css como
-     4,66:1, y esa medida vale sobre el marmol CLARO. Sobre --marmol da 4,38
-     -- medido en el navegador. Se corrige el fondo, que es donde estaba el
-     error, en vez de inventar un verde nuevo fuera del canon. */
-  background:var(--marmol-claro);border:1px solid var(--bronce);
-  border-radius:var(--radius);padding:.7rem .5rem;
-  transition:transform .16s var(--spring),box-shadow .16s ease}
-.modelo:hover,.modelo:focus-visible{transform:translateY(-2px);
-  box-shadow:0 8px 22px rgba(30,24,38,.18)}
-.modelo:focus-visible{outline:2px solid var(--violeta);outline-offset:2px}
-.modelo img{width:96px;height:96px;display:block}
-.modelo-nombre{font-weight:700;font-size:.9rem}
-.modelo-spec{font-size:.76rem;color:var(--tenue);line-height:1.35}
-.modelo-real{font-size:.72rem;letter-spacing:.05em;text-transform:uppercase}
-.modelo-real.sirve{color:var(--jardin);font-weight:700}
-.modelo-real.no-sirve{color:var(--bronce-hondo)}
-
-/* El esqueleto reserva el sitio de la tarjeta real para que la rejilla no
-   salte cuando llegan los datos. */
-.modelo.esqueleto{cursor:default;pointer-events:none;min-height:11.5rem;
-  justify-content:flex-start}
-.hueso{background:rgba(120,98,76,.16);border-radius:calc(var(--radius) - 10px);
-  height:.7rem;width:80%;animation:respira 1.6s ease-in-out infinite}
-.hueso.esfera{width:96px;height:96px;border-radius:50%}
-.hueso.corto{width:55%}
-@keyframes respira{50%{background:rgba(120,98,76,.30)}}
-
-/* --- la cola de firma --------------------------------------------------- */
-.cola-pieza{background:var(--marmol-claro);border:1px solid var(--bronce);
-  border-radius:var(--radius);padding:.85rem .95rem;margin:0 0 .7rem}
-.cola-origen{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;
-  color:var(--bronce-hondo)}
-.cola-resumen{font-weight:700;margin:.2rem 0}
-.cola-cuerpo{font-size:.86rem;color:var(--tenue);margin:0 0 .6rem}
-.cola-nota{font-size:.78rem;color:var(--tenue)}
-
-/* --- PC: la ventana se estira y el chat NO se pierde --------------------- */
-@media (min-width:1024px){
-  /* `main` viene limitado a 46rem por base.css, que es la medida de una
-     columna de lectura. Con el panel docked eso dejaba el chat en 360 px --
-     tan estrecho como la propia columna de modelos. En PC la ventana se
-     estira; el chat sigue teniendo su medida de lectura por dentro. */
-  main{max-width:min(1400px,96vw)}
-  #hub-layout{display:grid;grid-template-columns:1fr 360px;gap:16px;
-    align-items:start}
-  /* Las columnas se asignan EXPLICITAMENTE, y no es ceremonia: `meter.js`
-     inserta su panel de medida justo detras de #chat, asi que la rejilla
-     recibia un tercer hijo que se quedaba con la columna de 360 px y echaba
-     el panel a una columna implicita. Se descubrio midiendo el ancho, no
-     leyendo el codigo. Todo lo que no sea el panel va a la columna 1. */
-  #hub-layout>*{grid-column:1}
-  #hub-layout>#panel-modelos{grid-column:2;grid-row:1/-1}
-  /* Deja de flotar: entra en la rejilla como columna. */
-  #panel-modelos{position:static;transform:none;height:auto;max-height:none;
-    border-left:1px solid var(--bronce);border-radius:var(--radius);
-    border:1px solid var(--bronce);box-shadow:var(--depth);
-    width:auto;opacity:1;transition:width .3s ease,opacity .3s ease}
-  /* Plegar, no desaparecer: sacarlo de la rejilla haria saltar el ancho del
-     chat, y ese salto es lo que la columna fija existe para evitar. */
-  #panel-modelos.cerrado{transform:none;width:0;opacity:0;
-    padding:0;border-width:0;overflow:hidden}
-  #hub-layout:has(#panel-modelos.cerrado){grid-template-columns:1fr 0}
-}
-
-@media (prefers-reduced-motion:reduce){
-  #panel-modelos,.modelo,.cab-boton,.hueso{transition:none;animation:none}
-  .modelo:hover,.cab-boton:hover{transform:none}
-}

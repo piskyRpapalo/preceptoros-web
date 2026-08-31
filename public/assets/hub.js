@@ -62,7 +62,7 @@
   // El onboarding vuelve al cabezal. Al rehacerlo en la Puerta 6 se perdio su
   // enlace, y el gate lo cazo: sin el, la puerta de entrada del producto no se
   // alcanza desde la portada.
-  cab.appendChild(enlace('cab-boton', T.cabEmpezar, './onboarding.html'));
+  cab.appendChild(enlace('cab-boton empezar', T.cabEmpezar, './onboarding.html'));
   cab.appendChild(enlace('cab-boton', T.cabBenchmark, './benchmark.html'));
   cab.appendChild(enlace('cab-boton', T.cabPlayground, './playground.html'));
   cab.appendChild(enlace('cab-leve', T.cabIdioma, '/'));
@@ -92,8 +92,10 @@
       var img = document.createElement('img');
       img.src = '/assets/agente-3d-' + a.icono3d + '.webp';
       img.alt = ''; img.loading = 'lazy'; img.decoding = 'async';
-      img.width = 96; img.height = 96;
+      img.width = 56; img.height = 56;
       b.appendChild(img);
+    } else {
+      b.appendChild(el('span', 'modelo-inicial', (a.name || '?').replace(/^El /, '')[0]));
     }
     b.appendChild(el('span', 'modelo-nombre', a.name));
     b.appendChild(el('span', 'modelo-spec', a.function));
@@ -110,8 +112,12 @@
     var n = (DATOS.agentes || []).filter(function (a) {
       return a.real && a.real.disponible;
     }).length;
-    panel.appendChild(el('p', 'panel-rotulo',
-      DATOS.estado + ' · ' + n + '/' + (DATOS.agentes || []).length + ' ' + L.hubServido));
+    var rot = el('p', 'panel-rotulo',
+      DATOS.estado + ' · ' + n + '/' + (DATOS.agentes || []).length + ' ' + L.hubServido);
+    // En el rail solo cabe la cifra, y la cifra dice lo mismo. Lo que no
+    // puede pasar es que el rotulo desaparezca.
+    rot.dataset.corto = n + '/' + (DATOS.agentes || []).length;
+    panel.appendChild(rot);
     var g = el('div', 'modelos');
     var sin = ligero();
     (DATOS.agentes || []).forEach(function (a) { g.appendChild(tarjeta(a, sin)); });

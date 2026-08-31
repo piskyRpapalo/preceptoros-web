@@ -881,7 +881,8 @@ class Cabezal(unittest.TestCase):
         self.assertIn("linkedin_url", hub)
 
     def test_panel_modelos_existe_y_desliza(self):
-        css = (PUBLICO / "assets" / "widget.css").read_text(encoding="utf-8")
+        css = ((PUBLICO / "assets" / "widget.css").read_text(encoding="utf-8") +
+               (PUBLICO / "assets" / "panel.css").read_text(encoding="utf-8"))
         plano = css.replace(" ", "").replace("\n", "")
         for idioma, t in self.portadas():
             with self.subTest(idioma=idioma):
@@ -902,7 +903,8 @@ class Cabezal(unittest.TestCase):
         haria saltar el ancho del chat, que es lo que la columna fija existe
         para evitar.
         """
-        css = (PUBLICO / "assets" / "widget.css").read_text(encoding="utf-8")
+        css = ((PUBLICO / "assets" / "widget.css").read_text(encoding="utf-8") +
+               (PUBLICO / "assets" / "panel.css").read_text(encoding="utf-8"))
         pc = re.search(r"@media \(min-width:1024px\)\{(.*?)\n\}", css, re.S)
         self.assertIsNotNone(pc, "no hay maqueta de PC")
         cuerpo = pc.group(1).replace(" ", "")
@@ -1170,7 +1172,8 @@ class PWA(unittest.TestCase):
         sw = (PUBLICO / "sw.js").read_text(encoding="utf-8")
 
         # 1 · las tres piezas del Hub y su catalogo
-        for pieza in ("/hub.json", "/assets/widget.css", "/assets/hub.js",
+        for pieza in ("/hub.json", "/assets/widget.css", "/assets/panel.css",
+                      "/assets/hub.js",
                       "/assets/hub-cola.js", "/assets/chat-router.js"):
             with self.subTest(pieza=pieza):
                 self.assertIn(f"'{pieza}'", sw,

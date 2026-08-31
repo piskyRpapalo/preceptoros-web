@@ -87,12 +87,12 @@ entorno.handlers.install({ waitUntil: p => esperas.push(p) });
 await Promise.all(esperas);
 const shell = almacen.get([...almacen.keys()].find(k=>k.startsWith('shell-')));
 const rutas = await shell.keys();
-// 21 paginas + hub.json + 4 piezas + 8 ojos + 8 esferas = 42.
-ok('precachea paginas y piezas del Hub', rutas.length === 42, rutas.length+' rutas');
+// 21 paginas + hub.json + 5 piezas + 8 ojos + 8 esferas = 43.
+ok('precachea paginas y piezas del Hub', rutas.length === 43, rutas.length+' rutas');
 ok('el shell trae /fr/board.html', rutas.includes('/fr/board.html'));
 ok('el shell trae hub.json', rutas.includes('/hub.json'));
-ok('el shell trae las cuatro piezas del Hub',
-   ['/assets/widget.css','/assets/hub.js','/assets/hub-cola.js','/assets/chat-router.js']
+ok('el shell trae las cinco piezas del Hub',
+   ['/assets/widget.css','/assets/panel.css','/assets/hub.js','/assets/hub-cola.js','/assets/chat-router.js']
      .every(r => rutas.includes(r)));
 ok('el shell trae los ocho ojos',
    rutas.filter(r => r.startsWith('/assets/agente-ojo-')).length === 8);

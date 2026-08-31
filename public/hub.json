@@ -14,7 +14,7 @@
    "name": "El Instalador",
    "block": 1,
    "symbol": "ojo-ambar",
-   "function": "Recepcionista. Te acompana hasta que la app corre en tu maquina y te presenta a los demas.",
+   "function": "Te instala el producto y te presenta a los demás.",
    "status": "idle",
    "real": {
     "disponible": true,
@@ -27,7 +27,7 @@
    "name": "El Aduanero",
    "block": 1,
    "symbol": "ojo-verde",
-   "function": "El que tacha lo privado. Sanea el contexto antes de que salga de tu aparato.",
+   "function": "Tacha lo privado antes de que salga de tu aparato.",
    "status": "idle",
    "real": {
     "disponible": false,
@@ -41,7 +41,7 @@
    "name": "El Escritor",
    "block": 2,
    "symbol": "ojo-bombilla",
-   "function": "Redacta contigo: guiones, notas y textos largos sin que salgan de casa.",
+   "function": "Escribe contigo: guiones, notas y textos largos.",
    "status": "thinking",
    "real": {
     "disponible": false,
@@ -55,7 +55,7 @@
    "name": "El Traductor",
    "block": 2,
    "symbol": "ojo-libro",
-   "function": "Pasa de un idioma a otro en local, sin mandar el texto a ninguna nube.",
+   "function": "Traduce en local, sin mandar el texto a ninguna nube.",
    "status": "idle",
    "real": {
     "disponible": false,
@@ -69,7 +69,7 @@
    "name": "El Artesano",
    "block": 3,
    "symbol": "ojo-birrete",
-   "function": "Lee tu codigo, propone el arreglo y escribe la prueba que lo demuestra.",
+   "function": "Lee tu código, propone el arreglo y escribe la prueba.",
    "status": "running",
    "real": {
     "disponible": false,
@@ -83,7 +83,7 @@
    "name": "El Analista",
    "block": 3,
    "symbol": "ojo-cerebro",
-   "function": "Mira numeros y trazas y te dice que cambio, no que opina.",
+   "function": "Mira números y trazas y te dice qué cambió.",
    "status": "idle",
    "real": {
     "disponible": false,
@@ -97,7 +97,7 @@
    "name": "El Aprendiz",
    "block": 4,
    "symbol": "ojo-azul",
-   "function": "Aprende contigo: convierte lo que haces en memoria que puedes releer.",
+   "function": "Convierte lo que haces en memoria que puedes releer.",
    "status": "idle",
    "real": {
     "disponible": false,
@@ -111,7 +111,7 @@
    "name": "El Bibliotecario",
    "block": 4,
    "symbol": "ojo-rojo",
-   "function": "Ordena tu memoria: busca, enlaza y quita duplicados sin borrar nada tuyo.",
+   "function": "Ordena tu memoria: busca, enlaza y quita duplicados.",
    "status": "idle",
    "real": {
     "disponible": false,
@@ -160,7 +160,8 @@
    "colaProtocolo": "Una firma por pieza. No hay «firmar todo», y es a propósito.",
    "hubServido": "servido",
    "chatEscribir": "Escribe aquí…",
-   "chatCerrarPanel": "Cerrar"
+   "chatCerrarPanel": "Cerrar",
+   "herrTitulo": "Panel de herramientas"
   },
   "en": {
    "hubTitulo": "Companions",
@@ -179,7 +180,8 @@
    "colaProtocolo": "One signature per item. There is no «sign all», and that is deliberate.",
    "hubServido": "served",
    "chatEscribir": "Write here…",
-   "chatCerrarPanel": "Close"
+   "chatCerrarPanel": "Close",
+   "herrTitulo": "Tool panel"
   },
   "fr": {
    "hubTitulo": "Compagnons",
@@ -198,7 +200,8 @@
    "colaProtocolo": "Une signature par pièce. Pas de « tout signer », et c'est voulu.",
    "hubServido": "servi",
    "chatEscribir": "Écrivez ici…",
-   "chatCerrarPanel": "Fermer"
+   "chatCerrarPanel": "Fermer",
+   "herrTitulo": "Panneau d'outils"
   }
  },
  "identidad": {

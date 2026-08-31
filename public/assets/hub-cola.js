@@ -6,8 +6,17 @@
  *    la primera pintura de quien solo viene a hablar con el Instalador.
  */
 (function () {
-  var raiz = document.getElementById('hub');
-  if (!raiz) return;
+  var ancla = document.getElementById('hub');
+  if (!ancla) return;
+  /* La cola tambien DESLIZA. Antes se pintaba dentro de la pagina y empujaba
+     el chat hacia abajo: el chat es lo que se vino a usar y no puede irse de
+     la pantalla porque alguien mire la cola. Se crea aqui, con las mismas
+     clases que el panel de Modelos, para no gastar marcado en tres portadas
+     que van justas de bytes. */
+  var raiz = document.createElement('aside');
+  raiz.id = 'panel-cola';
+  raiz.className = 'panel-desliza cerrado';
+  document.body.appendChild(raiz);
   var abierta = false;
 
   function el(t, c, x) {
@@ -25,8 +34,15 @@
       return;
     }
     var L = H.textos, c = (H.datos || {}).cola || {};
-    var s = el('section', 'panel');
-    s.appendChild(el('h2', null, L.colaTitulo));
+    var s = el('section');
+    s.appendChild(el('h2', 'panel-titulo', L.colaTitulo));
+    var x = el('button', 'panel-cerrar', '\u00d7');
+    x.type = 'button';
+    x.setAttribute('aria-label', L.chatCerrarPanel || 'Cerrar');
+    x.addEventListener('click', function () {
+      abierta = false; raiz.classList.add('cerrado');
+    });
+    s.appendChild(x);
     s.appendChild(el('p', 'panel-rotulo', (c.estado || '') + ' · ' + (c.causa || '')));
     var props = c.propuestas || [];
     if (!props.length) s.appendChild(el('p', 'cola-nota', L.colaVacia));
@@ -52,8 +68,8 @@
 
   document.addEventListener('hub:cola', function () {
     abierta = !abierta;
-    if (!abierta) { raiz.innerHTML = ''; return; }
+    raiz.classList.toggle('cerrado', !abierta);
+    if (!abierta) return;
     pinta();
-    raiz.scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
 })();
