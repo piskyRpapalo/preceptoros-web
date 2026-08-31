@@ -446,8 +446,17 @@ class Doctrina(unittest.TestCase):
         el canon vigente, o deja de ser un gate. Lo que ahora se exige no es
         austeridad sino que el cristal no deje a nadie fuera.
         """
-        css = (PUBLICO / "assets" / "base.css").read_text(encoding="utf-8")
+        for hoja in sorted((PUBLICO / "assets").glob("*.css")):
+            with self.subTest(hoja=hoja.name):
+                self._cristal(hoja.read_text(encoding="utf-8"))
 
+    def _cristal(self, css):
+        """Antes esto miraba SOLO base.css.
+
+        Era el mismo punto ciego que tenia `.mjs` en `textos()`: el dia que el
+        cristal se reparte en otra hoja --y `widget.css` lo hizo-- la regla
+        seguia verde sin haber mirado el fichero nuevo. Ahora recorre todas.
+        """
         # 1 · El desenfoque va tras `@supports`, y con respaldo opaco delante.
         #     Sin esto, en un navegador sin backdrop-filter el panel se queda
         #     translucido sobre el fondo animado y el texto no se lee.
@@ -469,18 +478,33 @@ class Doctrina(unittest.TestCase):
             # tiene que salir del token, o acabamos con seis esquinas distintas.
             # `inherit` vale: hereda el token del panel, que es justo lo que
             # tiene que hacer el anillo enmascarado para seguir sus esquinas.
-            self.assertTrue(r.strip() in ("0", "inherit") or "--radius" in r,
-                            f"border-radius fuera del token: {r.strip()}")
+            #
+            # `50%` y `999px` valen tambien, y no es aflojar la regla: un
+            # circulo y una pildora no son ESQUINAS. Lo que la regla protege es
+            # que no haya seis redondeos distintos en los rectangulos; un punto
+            # de estado redondo o un boton en forma de pildora son otra figura,
+            # no una sexta esquina. Se descubrio al ampliar este test a todas
+            # las hojas: `onboarding.css` llevaba 999px desde antes y nadie lo
+            # habia mirado nunca, porque solo se leia base.css.
+            self.assertTrue(
+                r.strip() in ("0", "inherit", "50%", "999px") or "--radius" in r,
+                f"border-radius fuera del token: {r.strip()}")
 
-        # 3 · Quien pide menos movimiento lo recibe: sin ambiente y sin muelles.
-        reducido = css[css.index("prefers-reduced-motion"):] if "prefers-reduced-motion" in css else ""
-        self.assertTrue(reducido, "el canon no respeta prefers-reduced-motion")
-        self.assertIn("#ambient{display:none}", reducido.replace(" ", ""),
-                      "con movimiento reducido el ambiente sigue pintando")
-
-        # 4 · El lienzo no se come un solo clic.
-        self.assertIn("pointer-events:none", css.replace(" ", ""),
-                      "#ambient sin pointer-events:none intercepta la interfaz")
+        # 3 · Quien pide menos movimiento lo recibe. Solo se exige a la hoja
+        #     que declara el ambiente: pedirselo a todas obligaria a repetir
+        #     la regla en hojas que no animan nada.
+        if "#ambient" in css:
+            reducido = css[css.index("prefers-reduced-motion"):] if "prefers-reduced-motion" in css else ""
+            self.assertTrue(reducido, "el canon no respeta prefers-reduced-motion")
+            self.assertIn("#ambient{display:none}", reducido.replace(" ", ""),
+                          "con movimiento reducido el ambiente sigue pintando")
+            # 4 · El lienzo no se come un solo clic.
+            self.assertIn("pointer-events:none", css.replace(" ", ""),
+                          "#ambient sin pointer-events:none intercepta la interfaz")
+        # Toda hoja que anime algo tiene que saber pararse.
+        if "@keyframes" in css:
+            self.assertIn("prefers-reduced-motion", css,
+                          "la hoja anima y no atiende a quien pide quietud")
 
         # El halo (text-shadow) sigue permitido SOLO en cifras vivas.
         for linea in css.splitlines():
@@ -607,6 +631,197 @@ class Tablon(unittest.TestCase):
             self.fail(f"la capa de datos usa i18n: {clave}")
 
 
+class Hub(unittest.TestCase):
+    """La rejilla de companeros del Agora, su cola de firma y su rack."""
+
+    CARAS = 8
+
+    def setUp(self):
+        self.d = json.loads((PUBLICO / "hub.json").read_text(encoding="utf-8"))
+        self.js = (PUBLICO / "assets" / "hub.js").read_text(encoding="utf-8")
+
+    def test_el_hub_no_inventa_agentes(self):
+        """Ocho, los del catalogo real, y ninguno escrito en el codigo.
+
+        El catalogo vivo (api.preceptoros.org/api/v1/agents) da OCHO, no doce,
+        y con los ids que usa el tunel -- `coder` y `privacidad`, aunque se
+        llamen El Artesano y El Aduanero. Se copian tal cual para que el dia
+        que esto lea del tunel no haya que renombrar nada.
+
+        Y ningun nombre vive en `hub.js`: un nombre escrito en el render
+        sobrevive al dia en que el catalogo cambia, y entonces la pantalla
+        ensena un companero que ya no existe.
+        """
+        ags = self.d["agentes"]
+        self.assertEqual(8, len(ags), f"el catalogo trae {len(ags)} agentes")
+        for a in ags:
+            with self.subTest(agente=a.get("id")):
+                for campo in ("id", "name", "block", "function", "status", "symbol"):
+                    self.assertIn(campo, a, f"falta `{campo}`")
+                self.assertIn(a["block"], (1, 2, 3, 4), "bloque fuera de 1-4")
+                self.assertIn(a["status"], ("idle", "thinking", "running"))
+                self.assertIn("real", a, "sin la disponibilidad real al lado")
+                self.assertNotIn(a["name"], self.js,
+                                 f"«{a['name']}» esta escrito en hub.js")
+
+    def test_cada_simbolo_del_hub_existe(self):
+        """Un <img> a un fichero que no esta no falla: no pinta.
+
+        Ese es el problema. La tarjeta sale sin cara, nadie ve un error y el
+        fallo puede vivir meses en la pantalla de quien llega.
+        """
+        for a in self.d["agentes"]:
+            ruta = PUBLICO / "assets" / f"agente-{a['symbol']}.webp"
+            with self.subTest(agente=a["id"]):
+                self.assertTrue(ruta.is_file(), f"falta {ruta.name}")
+
+    def test_el_hub_habla_los_tres_idiomas(self):
+        """El guardian que este modulo NO puede usar, reimplementado aqui.
+
+        `test_los_tres_idiomas_tienen_las_mismas_claves` mira el bloque #i18n
+        de la portada y las claves `T.xxx` de sus scripts. El Hub se sale de
+        ahi a proposito: meter estas claves en las tres portadas cuesta ~500 B
+        cada una y `fr/index.html` no los tiene. Salirse de un guardian sin
+        traer otro seria dejar un hueco, asi que aqui esta el otro.
+        """
+        t = self.d["textos"]
+        self.assertEqual({"es", "en", "fr"}, set(t), "faltan idiomas en hub.json")
+        base = set(t["es"])
+        self.assertTrue(base, "el bloque de textos esta vacio")
+        for idioma in ("en", "fr"):
+            with self.subTest(idioma=idioma):
+                self.assertEqual(base, set(t[idioma]),
+                                 f"{idioma} difiere: {base ^ set(t[idioma])}")
+        # Y las que el render pide de verdad tienen que existir.
+        usadas = set(re.findall(r"L\.([A-Za-z]+)", self.js))
+        usadas |= set(re.findall(r"T\('([A-Za-z]+)'",
+                      (PUBLICO / "assets" / "chat-router.js").read_text(encoding="utf-8")))
+        self.assertFalse(usadas - base, f"claves sin traducir: {sorted(usadas - base)}")
+
+    def test_el_hub_declara_que_es_maqueta(self):
+        """Una rejilla de companeros se ve igual sea real o inventada.
+
+        El rotulo es la unica diferencia visible. Sin el, la pagina fabrica un
+        enjambre que no existe -- y esta web lleva tres puertas cazando
+        exactamente esa clase de cifra.
+        """
+        self.assertEqual("MOCK", self.d["estado"])
+        self.assertIn("nota", self.d, "la maqueta no dice por que lo es")
+        self.assertIn("hubMaqueta", self.d["textos"]["es"])
+        self.assertIn("hubMaqueta", self.js, "hub.js no pinta el rotulo")
+        # El rotulo se anade ANTES que la rejilla, no debajo. Se mira DENTRO
+        # de `pintaAgentes`: la primera rejilla que aparece en el fichero es la
+        # del esqueleto, y comparar contra esa medía otra cosa.
+        fn = re.search(r"function pintaAgentes.*?\n  \}", self.js, re.S)
+        self.assertIsNotNone(fn, "no existe pintaAgentes")
+        cuerpo = fn.group(0)
+        self.assertLess(cuerpo.index("appendChild(rot)"),
+                        cuerpo.index("appendChild(g)"),
+                        "el rotulo se pinta despues de las tarjetas")
+
+    def test_la_telemetria_no_finge_sensor(self):
+        """El panel del rack ensena la maqueta Y lo que el nodo declara.
+
+        Medido: `energia_era.py` no esta desplegado en la-fragua y
+        `reflejos.jsonl` no existe -- el reflejo de bateria nunca ha escrito
+        una linea. Publicar un 50 % de Anker a secas seria inventar un sensor.
+        """
+        r = self.d["rack"]
+        self.assertIn("mock", r); self.assertIn("real", r)
+        v = r["real"]
+        self.assertEqual("NO_DATA", v["estado"])
+        self.assertFalse(v["bateria_presente"], "se declara una bateria que no hay")
+        self.assertIsNone(v["era_energetica"])
+        self.assertIsNone(v["produccion_solar_w"])
+        for causa in ("causa_era", "causa_bateria", "causa_produccion", "causa_ups"):
+            with self.subTest(causa=causa):
+                self.assertTrue(v.get(causa, "").strip(), f"{causa} sin explicar")
+        self.assertIn("remedio", v, "NO_DATA sin remedio")
+
+    def test_ironclaw_firma_una_a_una(self):
+        """Protocolo 2 del documento P0X, y no es una preferencia de estilo.
+
+        Un lote deja pasar una alucinacion sin que nadie la lea, y la
+        reputacion externa no tiene rollback. La friccion en la ultima milla
+        es el mecanismo, no un descuido de la interfaz.
+        """
+        self.assertIn("propuestas", self.d["cola"])
+        for prohibido in ("firmarTodo", "aprobarTodo", "firmar todo",
+                          "aprobar todo", "selectAll", "batch"):
+            with self.subTest(prohibido=prohibido):
+                self.assertNotIn(prohibido.lower(), self.js.lower(),
+                                 f"hub.js ofrece aprobacion por lotes: {prohibido}")
+        # Un boton por pieza: el listener se cuelga DENTRO del bucle.
+        cola = re.search(r"function pintaCola.*?\n  \}", self.js, re.S)
+        self.assertIsNotNone(cola)
+        self.assertIn("props.forEach", cola.group(0))
+        self.assertIn("colaFirmar", cola.group(0))
+
+    def test_hub_usa_scheduler_yield(self):
+        """Devolver el hilo entre secciones, con respaldo donde no exista."""
+        self.assertIn("scheduler", self.js, "no cede el hilo al navegador")
+        self.assertIn("window.scheduler.yield", self.js)
+        self.assertIn("setTimeout", self.js, "sin respaldo donde no hay scheduler")
+
+    def test_respeta_saveData_y_memoria(self):
+        """Quien pide ahorro de datos lo ha PEDIDO: no se le mandan 48 KB."""
+        self.assertIn("saveData", self.js)
+        self.assertIn("deviceMemory", self.js)
+        self.assertIn("prefers-reduced-data", self.js)
+
+    def test_las_caras_de_agente_no_engordan(self):
+        caras = sorted((PUBLICO / "assets").glob("agente-*.webp"))
+        self.assertEqual(self.CARAS, len(caras), f"hay {len(caras)} caras")
+        total = sum(c.stat().st_size for c in caras)
+        self.assertLess(total, 64 * 1024, f"las caras suman {total} B")
+
+
+class ChatModal(unittest.TestCase):
+
+    def test_el_chat_es_un_dialog_nativo(self):
+        """`<dialog>` trae foco atrapado, Escape y fondo inerte de serie.
+
+        Una libreria de accesibilidad aqui seria reimplementar peor lo que el
+        navegador ya hace. Y el #chat se ENVUELVE, no se reescribe: los seis
+        guiones heredados buscan sus piezas por id y siguen encontrandolas.
+        """
+        router = (PUBLICO / "assets" / "chat-router.js").read_text(encoding="utf-8")
+        self.assertIn("showModal()", router, "el modal no se abre como modal")
+        for idioma in ("es", "en", "fr"):
+            t = (PUBLICO / idioma / "index.html").read_text(encoding="utf-8")
+            with self.subTest(idioma=idioma):
+                self.assertIn('<dialog id="chat-modal">', t, "sin <dialog>")
+                self.assertIn('<div id="chat" class="panel">', t,
+                              "el #chat heredado ya no existe: se reescribio")
+                for pieza in ("pregunta", "enviar", "motor", "dialogo"):
+                    self.assertIn(f'id="{pieza}"', t,
+                                  f"#{pieza} desaparecio y un guion heredado lo busca")
+
+    def test_la_transferencia_respeta_el_movimiento_reducido(self):
+        """Doble guarda, y las dos hacen falta.
+
+        `startViewTransition` no existe en Firefox: llamarlo a pelo revienta el
+        cambio de companero. Y quien pide menos movimiento no quiere la
+        morfosis aunque su navegador sepa hacerla.
+        """
+        router = (PUBLICO / "assets" / "chat-router.js").read_text(encoding="utf-8")
+        fn = re.search(r"function conTransicion.*?\n  \}", router, re.S)
+        self.assertIsNotNone(fn, "no hay guarda de transicion")
+        cuerpo = fn.group(0)
+        self.assertIn("prefers-reduced-motion", cuerpo)
+        self.assertIn("!document.startViewTransition", cuerpo,
+                      "se llama a startViewTransition sin comprobar que existe")
+
+    def test_motor_prioriza_languagemodel(self):
+        """`window.ai` quedo atras. La forma vigente es `LanguageModel`."""
+        motor = (PUBLICO / "assets" / "engine.js").read_text(encoding="utf-8")
+        self.assertIn("LanguageModel.availability", motor)
+        codigo = re.sub(r"/\*.*?\*/", "", motor, flags=re.S)
+        codigo = re.sub(r"(?m)//.*$", "", codigo)
+        self.assertNotIn("window.ai", codigo,
+                         "engine.js vuelve a la forma obsoleta window.ai")
+
+
 class PWA(unittest.TestCase):
     """El ANEXO WEB pide PWA nativo. Habia manifiesto y worker, y ni uno solo
     de los dos llegaba al navegador de nadie."""
@@ -712,6 +927,27 @@ class PWA(unittest.TestCase):
             total += (PUBLICO / icono["src"].lstrip("/")).stat().st_size
         self.assertLess(total, 256 * 1024,
                         f"los iconos del manifiesto suman {total} B")
+
+    def test_manifest_es_minimo(self):
+        """Lo que hace falta para instalar, y nada de adorno.
+
+        Un manifiesto que crece con claves que ningun navegador lee es un
+        fichero que nadie vuelve a auditar. Se fija la lista: si alguien anade
+        una clave, tiene que anadirla tambien aqui y explicar para que.
+        """
+        m = json.loads((PUBLICO / "manifest.webmanifest").read_text(encoding="utf-8"))
+        obligatorias = {"name", "short_name", "start_url", "display", "icons"}
+        self.assertTrue(obligatorias <= set(m),
+                        f"faltan claves de instalacion: {obligatorias - set(m)}")
+        admitidas = obligatorias | {"id", "scope", "lang", "dir", "description",
+                                    "orientation", "background_color", "theme_color"}
+        sobran = set(m) - admitidas
+        self.assertFalse(sobran, f"claves decorativas en el manifiesto: {sobran}")
+        # Los iconos son PNG de 192 y 512: un webp de 128 px no instala en
+        # Android, que pide 192 como minimo y 512 para la pantalla de arranque.
+        tam = {i["sizes"] for i in m["icons"]}
+        self.assertIn("192x192", tam, "sin icono de 192 no hay instalacion")
+        self.assertIn("512x512", tam, "sin icono de 512 no hay pantalla de arranque")
 
     def test_el_maskable_cabe_de_verdad_en_su_circulo(self):
         """No que lo diga el manifiesto: que lo diga el fichero.

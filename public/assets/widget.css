@@ -1,0 +1,114 @@
+/* preceptoros.org · anatomia del Hub. Tarjetas de companero, cola de firma y
+   panel del rack. Se apoya en los tokens de base.css: aqui no nace ni un
+   color ni un radio nuevo.
+
+   TRES REGLAS HEREDADAS, NO REINVENTADAS
+   --------------------------------------
+   1. El respaldo OPACO se declara ANTES del cristal. Sin backdrop-filter el
+      panel tiene que quedar solido y legible, no un cristal sucio sobre la
+      piedra. El gate lo comprueba por orden de aparicion, no de palabra.
+   2. Los radios salen de --radius. Una interfaz con seis esquinas distintas
+      empieza siempre por un radio suelto que parecia inofensivo.
+   3. El violeta es el UNICO acento de actividad. Si algo brilla, esta vivo;
+      si brilla otra cosa, el codigo de color deja de significar. */
+
+/* --- rejilla de companeros ---------------------------------------------- */
+.hub-rotulo{font-size:.82rem;color:var(--tenue);margin:0 0 .8rem}
+.hub-rotulo b{color:var(--violeta-texto)}
+.agentes{display:grid;gap:.9rem;
+  grid-template-columns:repeat(auto-fill,minmax(15rem,1fr));margin:0 0 1.4rem}
+
+.agente{background:var(--marmol-claro);border:1px solid var(--bronce);
+  border-radius:var(--radius);padding:.9rem .95rem;box-shadow:var(--depth);
+  display:flex;flex-direction:column;gap:.5rem;text-align:left;
+  font:inherit;color:var(--tinta);cursor:pointer;
+  transition:transform .18s var(--spring),box-shadow .18s ease}
+@supports (backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px)){
+  .agente,.cola-pieza,#chat-modal{background:var(--glass-solid);
+    -webkit-backdrop-filter:blur(16px) saturate(180%);
+    backdrop-filter:blur(16px) saturate(180%)}
+}
+.agente:hover,.agente:focus-visible{transform:translateY(-2px);
+  box-shadow:0 10px 28px rgba(30,24,38,.16)}
+.agente:focus-visible{outline:2px solid var(--violeta);outline-offset:2px}
+
+.agente-cara{display:flex;align-items:center;gap:.6rem}
+.agente-cara img{width:56px;height:56px;flex:0 0 56px;display:block}
+.agente-nombre{font-weight:700;line-height:1.25}
+.agente-bloque{display:block;font-size:.7rem;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--bronce-hondo)}
+.agente-funcion{font-size:.85rem;color:var(--tenue);margin:0}
+
+/* El estado es MAQUETA y por eso se pinta con el punto; la disponibilidad
+   REAL va debajo en palabras, que es lo que de verdad manda. */
+.agente-estado{display:flex;align-items:center;gap:.45rem;font-size:.78rem;
+  color:var(--tenue)}
+.punto{width:.55rem;height:.55rem;border-radius:50%;flex:0 0 .55rem;
+  background:var(--tenue)}
+.punto.thinking{background:var(--violeta);box-shadow:0 0 0 3px rgba(109,90,224,.22)}
+.punto.running{background:var(--violeta);
+  box-shadow:0 0 0 3px rgba(109,90,224,.22);animation:latir 1.4s ease-in-out infinite}
+@keyframes latir{50%{box-shadow:0 0 0 7px rgba(109,90,224,.10)}}
+
+.agente-real{font-size:.78rem;border-top:1px dotted rgba(120,98,76,.35);
+  padding-top:.45rem;margin:0}
+.agente-real.sirve{color:var(--jardin);font-weight:700}
+.agente-real.no-sirve{color:var(--bronce-hondo)}
+
+/* --- esqueleto: se pinta ANTES de pedir nada -----------------------------
+   Un panel vacio durante medio segundo se lee como una pagina rota. El
+   esqueleto ocupa el mismo sitio que la tarjeta para que nada salte cuando
+   llegan los datos (CLS). */
+/* 14,6rem NO es un numero bonito: es la altura MEDIDA de la tarjeta real
+   (233-255 px segun cuanto ocupe la funcion). Con las 9,5rem que habia, la
+   rejilla saltaba de 1317 a 2086 px al llegar los datos -- un esqueleto que
+   no reserva el sitio correcto es medio esqueleto. */
+.agente.esqueleto{cursor:default;pointer-events:none;min-height:14.6rem;
+  justify-content:flex-start;gap:.75rem}
+.hueso{background:rgba(120,98,76,.16);border-radius:calc(var(--radius) - 10px);
+  height:.7rem;animation:respira 1.6s ease-in-out infinite}
+.hueso.cara{width:56px;height:56px;border-radius:50%;flex:0 0 56px;animation-delay:.1s}
+.hueso.corto{width:45%} .hueso.largo{width:85%}
+@keyframes respira{50%{background:rgba(120,98,76,.30)}}
+
+/* --- cola de firma · IronClaw -------------------------------------------- */
+.cola-pieza{background:var(--marmol-claro);border:1px solid var(--bronce);
+  border-radius:var(--radius);padding:.85rem .95rem;margin:0 0 .7rem}
+.cola-origen{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--bronce-hondo)}
+.cola-resumen{font-weight:700;margin:.2rem 0}
+.cola-cuerpo{font-size:.86rem;color:var(--tenue);margin:0 0 .6rem}
+.cola-nota{font-size:.78rem;color:var(--tenue)}
+
+/* --- panel del rack: maqueta y medido, uno al lado del otro -------------- */
+.rack-dos{display:grid;gap:.8rem;grid-template-columns:repeat(auto-fit,minmax(13rem,1fr))}
+.rack-col{border:1px solid var(--bronce);border-radius:var(--radius);
+  padding:.75rem .85rem;background:var(--marmol-claro)}
+.rack-col h3{font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;
+  margin:0 0 .5rem}
+.rack-col.es-mock h3{color:var(--bronce-hondo)}
+.rack-col.es-real h3{color:var(--violeta-texto)}
+.rack-dato{display:flex;justify-content:space-between;gap:.7rem;
+  padding:.22rem 0;font-size:.84rem;border-bottom:1px dotted rgba(120,98,76,.3)}
+.rack-dato:last-child{border-bottom:0}
+.rack-dato .k{color:var(--tenue)}
+.rack-dato .v{text-align:right;font-weight:700}
+.rack-causa{font-size:.76rem;color:var(--bronce-hondo);margin:.5rem 0 0}
+
+/* --- el chat, ahora en un dialogo nativo --------------------------------- */
+/* `dialog` trae foco atrapado, Escape y fondo inerte de serie. Una libreria
+   de accesibilidad aqui seria reimplementar peor lo que el navegador ya hace. */
+#chat-modal{background:var(--marmol-claro);color:var(--tinta);
+  border:1px solid var(--bronce);border-radius:var(--radius);
+  box-shadow:var(--depth);padding:1.1rem 1rem;width:min(42rem,94vw);
+  max-height:88vh;overflow:auto}
+#chat-modal::backdrop{background:rgba(30,24,38,.55)}
+.modal-cabeza{display:flex;align-items:center;gap:.6rem;margin-bottom:.7rem}
+.modal-cabeza img{width:44px;height:44px;flex:0 0 44px}
+.modal-quien{font-weight:700;flex:1}
+.modal-aviso{font-size:.82rem;color:var(--bronce-hondo);margin:0 0 .7rem}
+
+@media (prefers-reduced-motion:reduce){
+  .agente,.punto.running,.hueso{transition:none;animation:none}
+  .agente:hover,.agente:focus-visible{transform:none}
+}

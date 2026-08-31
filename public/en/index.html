@@ -15,6 +15,7 @@
 <link rel="stylesheet" href="/assets/movil.css">
 <link rel="stylesheet" href="/assets/canon.css">
 <link rel="stylesheet" href="/assets/chat.css">
+<link rel="stylesheet" href="/assets/widget.css">
 <link rel="alternate" hreflang="es" href="https://preceptoros.org/es/">
 <link rel="alternate" hreflang="en" href="https://preceptoros.org/en/">
 <link rel="alternate" hreflang="fr" href="https://preceptoros.org/fr/">
@@ -34,9 +35,10 @@
     </div>
     <div id="identity" class="fila identity"></div>
 </header>
-  <p class="proof">Open source · <a href="https://github.com/piskyRpapalo/PreceptorOS">GitHub</a> · <b>540</b> tests green in the app · <b>40</b> on this site · <b>zero</b> external requests on load · <b>10 KB</b> max per file</p>
+  <p class="proof">Open source · <a href="https://github.com/piskyRpapalo/PreceptorOS">GitHub</a> · <b>540</b> tests green in the app · <b>53</b> on this site · <b>zero</b> external requests on load · <b>10 KB</b> max per file</p>
   <p class="guia">Your sovereign AI, on your machine, no cloud. Write below to start.</p>
-  <div id="chat" class="panel">
+  <section id="hub"></section>
+<dialog id="chat-modal"><div id="chat" class="panel">
 <textarea id="pregunta" class="chat-input" placeholder="Write your first question..." rows="4"></textarea>
 <div id="motor"></div><button id="enviar" type="button" class="boton enviar" aria-label="Send"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M3 20.5v-6l8-2.5-8-2.5v-6L22 12z"/></svg><span class="rotulo">Send</span></button>
     <div id="voice" class="fila"></div>
@@ -44,7 +46,7 @@
     <p id="brain" class="brain"></p>
     <div id="dialogo" style="margin-top:1rem"></div>
     <p class="tenue"><a href="./instalar.html">Installation guide, step by step →</a></p>
-  </div>
+  </div></dialog>
   <footer class="honest-footer">
       <ul id="pie-honesto"></ul>
       <p id="pie-enlaces"></p>
@@ -71,12 +73,7 @@
  "copiado": "Copied OK",
  "copiarPara": "Copy for",
  "descargar": "Download model (~2 GB, once)",
- "destinos": [
-  "Gemini",
-  "ChatGPT",
-  "Claude",
-  "my local AI"
- ],
+ "destinos": ["Gemini", "ChatGPT", "Claude", "my local AI"],
  "error": "Error",
  "etiquetaJson": "Text to copy to your AI",
  "falloDescarga": "NO_DATA - failed to download the model",
@@ -132,11 +129,7 @@
  "pieTablon": "Board",
  "preceptor": "Preceptor",
  "prefieroJson": "I prefer the JSON",
- "reglas": [
-  "Do not suggest cloud services",
-  "Do not ask for personal data",
-  "If you don't know, say NO_DATA"
- ],
+ "reglas": ["Do not suggest cloud services", "Do not ask for personal data", "If you don't know, say NO_DATA"],
  "sensorAviso": "The small model is starting to forget the context. Reset the conversation?",
  "sensorBoton": "Reset",
  "sensorRegistrado": "Reset recorded as a limit measurement for this session. It is stored nowhere: this site keeps nothing of yours.",
@@ -163,6 +156,8 @@
 <script src="/assets/ambient.js"></script>
 <script src="/assets/auth.js"></script>
 <script src="/assets/pie.js"></script>
+<script src="/assets/hub.js"></script>
+<script src="/assets/chat-router.js"></script>
 <script src="/assets/pwa.js"></script>
 </body>
 </html>
