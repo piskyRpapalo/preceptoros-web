@@ -1,0 +1,106 @@
+{
+ "esquema": 1,
+ "estado": "MEDIDO",
+ "ultima_lectura": "2026-08-31T06:02:59+00:00",
+ "nota": "Catalogo DERIVADO: los nombres y las bases salen de los Modelfile de la Forja; los tamanos, de Ollama. Nada esta escrito a mano. Se publica lo que la Forja declara mas la base que necesita: el resto del catalogo del nodo es privado.",
+ "fuente": "preceptor-lora/modelfiles/*.Modelfile + Ollama /api/tags",
+ "modelos": [
+  {
+   "id": "preceptor-v7-linea-b",
+   "modelo_base": "llama3.2:3b",
+   "tipo": "adaptador",
+   "declarado_en": "preceptor-lora/modelfiles/preceptor-v7-linea-b.Modelfile",
+   "servido_publicamente": false,
+   "causa_no_servido": "sin endpoint publico de chat; D3 sin firmar",
+   "metricas": [
+    {
+     "clave": "modelo_tamano_bytes",
+     "estado": "MEDIDO",
+     "valor": 2037757628,
+     "unidad": "bytes",
+     "como": "Ollama /api/tags"
+    },
+    {
+     "clave": "parametros",
+     "estado": "MEDIDO",
+     "valor": "3.2B",
+     "unidad": "parametros",
+     "como": "Ollama /api/tags · details.parameter_size"
+    },
+    {
+     "clave": "cuantizacion",
+     "estado": "MEDIDO",
+     "valor": "Q4_K_M",
+     "unidad": "nivel",
+     "como": "Ollama /api/tags · details.quantization_level"
+    },
+    {
+     "clave": "familia",
+     "estado": "MEDIDO",
+     "valor": "llama",
+     "unidad": "familia",
+     "como": "Ollama /api/tags · details.family"
+    },
+    {
+     "clave": "ventana_contexto",
+     "estado": "MEDIDO",
+     "valor": 8192,
+     "unidad": "tokens",
+     "como": "PARAMETER num_ctx del Modelfile"
+    }
+   ]
+  },
+  {
+   "id": "llama3.2:3b",
+   "modelo_base": "llama3.2:3b",
+   "tipo": "base",
+   "declarado_en": "preceptor-lora/modelfiles/preceptor-v7-linea-b.Modelfile (FROM)",
+   "servido_publicamente": false,
+   "causa_no_servido": "sin endpoint publico de chat; D3 sin firmar",
+   "metricas": [
+    {
+     "clave": "modelo_tamano_bytes",
+     "estado": "MEDIDO",
+     "valor": 2019393189,
+     "unidad": "bytes",
+     "como": "Ollama /api/tags"
+    },
+    {
+     "clave": "parametros",
+     "estado": "MEDIDO",
+     "valor": "3.2B",
+     "unidad": "parametros",
+     "como": "Ollama /api/tags"
+    },
+    {
+     "clave": "cuantizacion",
+     "estado": "MEDIDO",
+     "valor": "Q4_K_M",
+     "unidad": "nivel",
+     "como": "Ollama /api/tags"
+    },
+    {
+     "clave": "familia",
+     "estado": "MEDIDO",
+     "valor": "llama",
+     "unidad": "familia",
+     "como": "Ollama /api/tags"
+    }
+   ]
+  }
+ ],
+ "no_publicados": {
+  "clave": "no_publicados",
+  "estado": "MEDIDO",
+  "valor": 7,
+  "unidad": "modelos",
+  "como": "modelos presentes en Ollama sin Modelfile que los declare"
+ },
+ "lectura_ollama": {
+  "clave": "catalogo_ollama",
+  "estado": "MEDIDO",
+  "valor": 9,
+  "unidad": "modelos",
+  "como": "Ollama /api/tags"
+ }
+}

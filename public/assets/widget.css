@@ -71,6 +71,15 @@
   .cab-boton{font-size:.66rem;padding:.26rem .5rem;letter-spacing:.06em}
   .cab-leve{font-size:.64rem;padding:.2rem .25rem}
   #cab-nav{gap:.3rem}
+  /* La identidad baja a su propia fila. `movil.css` ya lo pedia con
+     `.identity{flex:1 0 100%}`, pero esta hoja carga despues y su
+     `#cabezal #identity{flex:0 0 auto}` ganaba por especificidad: dos ids
+     contra una clase. El cabezal SIEMPRE tuvo `flex-wrap:wrap` -- lo que no
+     tenia era nada que pudiera envolverse. Se repite aqui con la misma
+     especificidad que la regla de escritorio y ganando por orden, que es lo
+     que un `!important` habria tapado sin explicar. */
+  #cabezal #identity{flex:1 0 100%;margin-left:0;align-self:stretch}
+  #cabezal #identity button{width:100%}
 }
 
 /* --- la maqueta: chat protagonista, panel a la derecha ------------------ */

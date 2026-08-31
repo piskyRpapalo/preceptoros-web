@@ -1,0 +1,48 @@
+{
+ "esquema": 1,
+ "estado": "REAL",
+ "nota": "Los ocho servicios NO son ocho entidades nuevas: son un VERBO anadido a cada uno de los ocho companeros que ya viven en hub.json. Por eso aqui no hay nombres ni caras -- solo el comando, a quien despierta y que hace. El nombre y el ojo salen de hub.json, que es la unica fuente de esos datos. Duplicarlos aqui seria crear una segunda verdad sobre el mismo hecho.",
+ "fuente": "agente: hub.json · disponibilidad: el campo `real` de ese mismo agente",
+ "servicios": [
+  {"comando": "/instalar",  "agente": "instalador",    "categoria": "despliegue"},
+  {"comando": "/perfil",    "agente": "aprendiz",      "categoria": "personalizacion"},
+  {"comando": "/dataset",   "agente": "bibliotecario", "categoria": "personalizacion"},
+  {"comando": "/script",    "agente": "coder",         "categoria": "automatizacion"},
+  {"comando": "/eco",       "agente": "escritor",      "categoria": "automatizacion"},
+  {"comando": "/formatos",  "agente": "traductor",     "categoria": "automatizacion"},
+  {"comando": "/auditar",   "agente": "analista",      "categoria": "despliegue"},
+  {"comando": "/frontera",  "agente": "privacidad",    "categoria": "soberania"}
+ ],
+ "textos": {
+  "es": {
+   "instalar": "Te lleva paso a paso a tener PreceptorOS corriendo en tu maquina. La guia entera esta en instalar.html; aqui va el resumen y el enlace.",
+   "perfil": "Explica como se arma tu perfil local: quien eres para tu companero y que recuerda de ti. Vive en tu aparato, no aqui.",
+   "dataset": "Como se ordena tu memoria en un conjunto que puedas releer, exportar o usar para entrenar. Nada de esto sale de tu maquina.",
+   "script": "Lee codigo, propone el arreglo y escribe la prueba. Necesita un companero servido; hoy no hay ninguno.",
+   "eco": "Textos largos sin mandar nada a una nube ajena. Con un cuaderno tipo NotebookLM o un extractor local tienes el mismo resultado sin ceder el texto.",
+   "formatos": "Convierte entre formatos de texto en local. Sin subir el fichero a ningun sitio.",
+   "auditar": "Mide TU aparato --memoria, GPU del navegador, motor disponible-- y te dice que companero te va a caber. No mira ninguna otra maquina.",
+   "frontera": "Tacha lo privado antes de que un texto salga hacia una IA ajena. Es la Aduana, y esta en playground.html."
+  },
+  "en": {
+   "instalar": "Walks you through getting PreceptorOS running on your machine. The full guide is instalar.html; this is the summary and the link.",
+   "perfil": "Explains how your local profile is built: who you are to your companion and what it remembers. It lives on your device, not here.",
+   "dataset": "How your memory becomes a set you can reread, export or train on. None of it leaves your machine.",
+   "script": "Reads your code, proposes the fix and writes the test. Needs a served companion; there is none today.",
+   "eco": "Long texts without sending anything to someone else's cloud. A NotebookLM-style notebook or a local extractor gets the same result without handing over the text.",
+   "formatos": "Converts between text formats locally. Without uploading the file anywhere.",
+   "auditar": "Measures YOUR device -- memory, browser GPU, available engine -- and tells you which companion will fit. It looks at no other machine.",
+   "frontera": "Redacts what is private before a text goes out to someone else's AI. That is the Customs House, in playground.html."
+  },
+  "fr": {
+   "instalar": "Vous guide pas a pas pour faire tourner PreceptorOS sur votre machine. Le guide complet est instalar.html ; voici le resume et le lien.",
+   "perfil": "Explique comment se construit votre profil local : qui vous etes pour votre compagnon et ce qu'il retient. Il vit sur votre appareil, pas ici.",
+   "dataset": "Comment votre memoire devient un ensemble que vous pouvez relire, exporter ou utiliser pour entrainer. Rien ne quitte votre machine.",
+   "script": "Lit votre code, propose le correctif et ecrit le test. Exige un compagnon servi ; il n'y en a aucun aujourd'hui.",
+   "eco": "Des textes longs sans rien envoyer au nuage d'autrui. Un carnet facon NotebookLM ou un extracteur local donne le meme resultat sans ceder le texte.",
+   "formatos": "Convertit entre formats de texte en local. Sans televerser le fichier nulle part.",
+   "auditar": "Mesure VOTRE appareil -- memoire, GPU du navigateur, moteur disponible -- et vous dit quel compagnon tiendra. Il ne regarde aucune autre machine.",
+   "frontera": "Barre ce qui est prive avant qu'un texte parte vers une IA tierce. C'est la Douane, dans playground.html."
+  }
+ }
+}

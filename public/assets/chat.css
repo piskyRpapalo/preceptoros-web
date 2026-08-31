@@ -30,3 +30,14 @@ button.enviar svg{margin-right:.1rem}
   button.mic:hover:not(:disabled){background:var(--violeta);color:#fff;border-color:var(--violeta)}
 }
 .voice-nota{font-size:.72rem;margin:.35rem 0 0}
+
+/* --- corregir esta respuesta ------------------------------------------- */
+/* El boton es LEVE a proposito: corregir no compite con enviar. Aparece
+   pegado a la respuesta que corrige, no en una barra aparte, porque una
+   correccion sin su turno delante es un texto suelto sin nada que arreglar. */
+.corregir{margin:.25rem 0 .6rem;font-size:.72rem;opacity:.75}
+.corregir:hover,.corregir:focus-visible{opacity:1}
+.corregir-caja{display:flex;flex-direction:column;gap:.4rem;
+  margin:0 0 .9rem;padding:.6rem;border:1px solid var(--bronce);
+  border-radius:var(--radius);background:var(--panel-bg)}
+.corregir-caja .tenue{margin:0;font-size:.72rem}

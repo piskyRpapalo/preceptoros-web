@@ -161,7 +161,18 @@
    "hubServido": "servido",
    "chatEscribir": "Escribe aquí…",
    "chatCerrarPanel": "Cerrar",
-   "herrTitulo": "Panel de herramientas"
+   "herrTitulo": "Panel de herramientas",
+   "corregirBoton": "Corregir esta respuesta",
+   "corregirQue": "Escribe aquí la respuesta que esperabas…",
+   "corregirMotivo": "Por qué estaba mal (opcional)",
+   "corregirFirmar": "Firmar la corrección",
+   "corregirNoViaja": "Se firma y se guarda en TU aparato. No viaja: el envío es otra puerta, y esa puerta todavía no está abierta.",
+   "corregirGuardado": "Firmado y guardado aquí. Nada ha salido de tu aparato.",
+   "corregirFallo": "No se pudo firmar",
+   "cmdDesconocido": "No conozco ese comando. Los que hay:",
+   "cmdServido": "servido y listo",
+   "cmdSinServir": "todavía sin adaptador servido",
+   "cmdFallo": "NO_DATA · no se pudo leer el catálogo de servicios"
   },
   "en": {
    "hubTitulo": "Companions",
@@ -181,7 +192,18 @@
    "hubServido": "served",
    "chatEscribir": "Write here…",
    "chatCerrarPanel": "Close",
-   "herrTitulo": "Tool panel"
+   "herrTitulo": "Tool panel",
+   "corregirBoton": "Correct this answer",
+   "corregirQue": "Write the answer you expected…",
+   "corregirMotivo": "Why it was wrong (optional)",
+   "corregirFirmar": "Sign the correction",
+   "corregirNoViaja": "It is signed and stored on YOUR device. It does not travel: sending is another gate, and that gate is not open yet.",
+   "corregirGuardado": "Signed and stored here. Nothing left your device.",
+   "corregirFallo": "Could not sign",
+   "cmdDesconocido": "I do not know that command. These exist:",
+   "cmdServido": "served and ready",
+   "cmdSinServir": "no adapter served yet",
+   "cmdFallo": "NO_DATA · the service catalogue could not be read"
   },
   "fr": {
    "hubTitulo": "Compagnons",
@@ -201,7 +223,18 @@
    "hubServido": "servi",
    "chatEscribir": "Écrivez ici…",
    "chatCerrarPanel": "Fermer",
-   "herrTitulo": "Panneau d'outils"
+   "herrTitulo": "Panneau d'outils",
+   "corregirBoton": "Corriger cette réponse",
+   "corregirQue": "Écrivez ici la réponse que vous attendiez…",
+   "corregirMotivo": "Pourquoi c'était faux (facultatif)",
+   "corregirFirmar": "Signer la correction",
+   "corregirNoViaja": "Signé et conservé sur VOTRE appareil. Rien ne part : l'envoi est une autre porte, et elle n'est pas ouverte.",
+   "corregirGuardado": "Signé et conservé ici. Rien n'est sorti de votre appareil.",
+   "corregirFallo": "Signature impossible",
+   "cmdDesconocido": "Je ne connais pas cette commande. Voici les existantes :",
+   "cmdServido": "servi et prêt",
+   "cmdSinServir": "pas encore d'adaptateur servi",
+   "cmdFallo": "NO_DATA · le catalogue de services n'a pas pu être lu"
   }
  },
  "identidad": {

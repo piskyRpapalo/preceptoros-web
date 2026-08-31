@@ -417,8 +417,22 @@ class Estructura(unittest.TestCase):
         self.assertRegex(cfg, r'"(dir|directory)"\s*:\s*"\./public"')
 
     def test_cada_fichero_bajo_10_kb(self):
+        """El tope rige TAMBIEN los datos, y desde el 2026-08-31.
+
+        `.json` y `.webmanifest` estaban fuera de esta tupla mientras
+        `textos()` --el guardian de doctrina, quince lineas mas arriba-- si
+        los miraba. El resultado era un punto ciego con la forma exacta del
+        que tenia `.mjs` antes de entrar: `hub.json` podia engordar sin freno
+        y nadie se enteraba, porque el fichero que crece con el catalogo es
+        justo el que no estaba vigilado.
+
+        Al entrar, medido: hub.json 7695 B, modelos.json 2777, counters.json
+        2278, threads.json 2227, manifest.webmanifest 699. Ninguno rozaba el
+        tope, asi que la regla entra sin amnistia y sin deuda.
+        """
         for p in PUBLICO.rglob("*"):
-            if p.is_file() and p.suffix in (".html", ".css", ".js"):
+            if p.is_file() and p.suffix in (".html", ".css", ".js",
+                                            ".json", ".webmanifest"):
                 with self.subTest(fichero=str(p.relative_to(RAIZ))):
                     self.assertLess(p.stat().st_size, TOPE_FICHERO,
                         f"{p.name} pesa {p.stat().st_size} B")
@@ -717,8 +731,17 @@ class Hub(unittest.TestCase):
                                  f"{idioma} difiere: {base ^ set(t[idioma])}")
         # Y las que el render pide de verdad tienen que existir.
         usadas = set(re.findall(r"L\.([A-Za-z]+)", self.js))
-        usadas |= set(re.findall(r"T\('([A-Za-z]+)'",
-                      (PUBLICO / "assets" / "chat-router.js").read_text(encoding="utf-8")))
+        # Cada fichero que consume estos textos tiene que estar en esta lista,
+        # o su idioma deja de estar vigilado sin que nada lo diga. `comandos.js`
+        # y `corregir.js` entraron el 2026-08-31 y traen sus claves por
+        # `txt('x')` y `L('x')`: dos formas mas de pedir lo mismo, y las dos se
+        # miran. Un guardian que solo conoce los ficheros de ayer da verde por
+        # ignorancia, que es el peor verde que hay.
+        for fichero, patron in (("chat-router.js", r"T\('([A-Za-z]+)'"),
+                                ("comandos.js", r"txt\('([A-Za-z]+)'"),
+                                ("corregir.js", r"L\('([A-Za-z]+)'")):
+            usadas |= set(re.findall(
+                patron, (PUBLICO / "assets" / fichero).read_text(encoding="utf-8")))
         self.assertFalse(usadas - base, f"claves sin traducir: {sorted(usadas - base)}")
 
     def test_el_hub_declara_que_es_maqueta(self):
@@ -926,6 +949,82 @@ class Cabezal(unittest.TestCase):
                       "el router no distingue PC de movil")
         self.assertIn("matchMedia", router,
                       "el umbral se lee a mano en vez de por matchMedia")
+
+    def test_el_cabezal_no_se_corta_en_el_telefono(self):
+        """La identidad tiene que poder bajar de linea, y no podia.
+
+        `movil.css` ya mandaba `.identity{flex:1 0 100%}` para que el boton de
+        entrar ocupara su propia fila en un telefono. No servia de nada:
+        `widget.css` carga DESPUES y trae `#cabezal #identity{flex:0 0 auto}`,
+        que con dos ids gana por especificidad (0,2,0 contra 0,1,0). El
+        `flex-wrap:wrap` del cabezal estaba puesto desde el principio -- el
+        cabezal no se cortaba por falta de wrap, sino porque el unico elemento
+        que tenia que envolverse estaba clavado con `flex:0 0 auto` y un
+        `margin-left:auto` que lo empujaba contra el borde.
+
+        Por eso el arreglo NO es anadir wrap ni subir un `!important`: es
+        devolverle a la regla de movil la especificidad que le falta, dentro
+        de la media query que ya existe.
+        """
+        css = (PUBLICO / "assets" / "widget.css").read_text(encoding="utf-8")
+        movil = re.search(r"@media \(max-width:1023px\)\{(.*?)\n\}", css, re.S)
+        self.assertIsNotNone(movil, "no hay maqueta de movil en widget.css")
+        # Los comentarios fuera ANTES de aplanar, y no es escrupulo: el
+        # comentario de esta misma regla CITA `#cabezal #identity{flex:0 0
+        # auto}` para explicar a quien gana. Sin quitarlo, el test partia por
+        # la cita y medía el comentario en vez del CSS -- daba rojo con el
+        # arreglo ya puesto. Es el mismo cuidado que ya toma
+        # `test_el_rack_no_se_renderiza_en_publico` con el JS.
+        limpio = re.sub(r"/\*.*?\*/", "", movil.group(1), flags=re.S)
+        cuerpo = limpio.replace(" ", "").replace("\n", "")
+        self.assertIn("#cabezal#identity{", cuerpo,
+                      "movil no reajusta la identidad: seguira clavada a la derecha")
+        regla = cuerpo.split("#cabezal#identity{")[1].split("}")[0]
+        # `flex:1 0 100%` sin espacios es `flex:10100%`. Se compara sobre el
+        # texto aplanado porque es como se compara todo lo demas en este gate.
+        self.assertIn("flex:10100%", regla,
+                      "la identidad no reclama su propia fila")
+        self.assertIn("margin-left:0", regla,
+                      "sigue el margin-left:auto que la empuja contra el borde")
+        # Sin !important: si hace falta, es que la especificidad esta mal
+        # pensada, y un !important tapa el problema para el siguiente que mire.
+        self.assertNotIn("!important", cuerpo,
+                         "el cabezal se arregla a martillazos")
+
+    def test_la_correccion_firmada_no_sale_del_aparato(self):
+        """El eslabon [2] se guarda, no se envia. Y se comprueba, no se promete.
+
+        `LORATELIER_P0X.md` deja abiertas D1 --de quien es el LoRA-- y D2
+        --con que se paga--, y dice que encender el boton de corregir antes de
+        responderlas «seria pedir datos sin saber que se hara con ellos». La
+        salida no fue no construirlo: fue construirlo sin salida de red. El par
+        se firma y se queda en el aparato de quien lo escribio.
+
+        Una promesa asi no puede vivir en un comentario. Aqui se lee el codigo
+        --sin comentarios, porque el fichero NOMBRA `fetch` y `sendBeacon` para
+        jurar que no los usa, y esa cita bastaria para dar un falso positivo,
+        que es el mismo cuidado que ya toma el test del rack.
+        """
+        js = (PUBLICO / "assets" / "corregir.js").read_text(encoding="utf-8")
+        codigo = re.sub(r"/\*.*?\*/", "", js, flags=re.S)
+        codigo = re.sub(r"(?m)//.*$", "", codigo)
+        for salida in ("fetch", "XMLHttpRequest", "sendBeacon", "WebSocket",
+                       "EventSource", "navigator.send"):
+            with self.subTest(salida=salida):
+                self.assertNotIn(salida, codigo,
+                                 f"corregir.js puede sacar el par por {salida}")
+        # El esquema es el de `preceptor/captura.py`, campo a campo. Dos
+        # esquemas para el mismo hecho obligan a un traductor en medio, y ese
+        # traductor es donde un dia se pierde el consentimiento.
+        for campo in ("prompt", "respuesta", "correccion", "corregido",
+                      "modelo", "idioma", "motivo", "consent"):
+            with self.subTest(campo=campo):
+                self.assertIn(campo, codigo, f"el par no lleva `{campo}`")
+        self.assertIn("consent: 0", codigo,
+                      "el consentimiento no nace en 0: un par sin firma no es "
+                      "material de nadie")
+        # Y se firma de verdad: la firma entera la garantiza auth.js.
+        self.assertIn("Identity.firmar", codigo, "el par no se firma")
 
     def test_la_transferencia_respeta_el_movimiento_reducido(self):
         """Doble guarda: el navegador que no sabe, y quien no quiere."""

@@ -63,6 +63,9 @@
   // enlace, y el gate lo cazo: sin el, la puerta de entrada del producto no se
   // alcanza desde la portada.
   cab.appendChild(enlace('cab-boton empezar', T.cabEmpezar, './onboarding.html'));
+  // COMUNIDAD lleva al Tablon, que YA existe en los tres idiomas. No es una
+  // ruta nueva: el gate admite 7 paginas de contenido y hay exactamente 7.
+  cab.appendChild(enlace('cab-boton', T.cabComunidad, './board.html'));
   cab.appendChild(enlace('cab-boton', T.cabBenchmark, './benchmark.html'));
   cab.appendChild(enlace('cab-boton', T.cabPlayground, './playground.html'));
   cab.appendChild(enlace('cab-leve', T.cabIdioma, '/'));

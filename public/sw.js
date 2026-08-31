@@ -48,9 +48,9 @@ const CARAS = ['ambar', 'azul', 'birrete', 'bombilla',
    hablas; la esfera es como se presenta ese companero cuando eliges. */
 const ESFERAS = ['instalador', 'privacidad', 'escritor', 'traductor',
                  'coder', 'analista', 'aprendiz', 'bibliotecario'];
-const HUB = ['/hub.json', '/assets/widget.css', '/assets/panel.css',
+const HUB = ['/hub.json', '/modelos.json', '/servicios.json', '/assets/widget.css', '/assets/panel.css',
              '/assets/hub.js',
-             '/assets/hub-cola.js', '/assets/chat-router.js']
+             '/assets/hub-cola.js', '/assets/chat-router.js', '/assets/corregir.js', '/assets/comandos.js']
   .concat(CARAS.map(c => '/assets/agente-ojo-' + c + '.webp'))
   .concat(ESFERAS.map(e => '/assets/agente-3d-' + e + '.webp'));
 
@@ -61,7 +61,14 @@ const HUB = ['/hub.json', '/assets/widget.css', '/assets/panel.css',
    estilo. Por eso este se cachea y aquel no, y por eso la lista es explicita:
    una regla que dice «los .json no» y otra que dice «este si» tienen que
    poder leerse juntas. */
-const CONTENIDO_JSON = ['/hub.json'];
+/* `modelos.json` entra aqui con `hub.json` y no con las medidas, aunque lleve
+   fichas en formato MEDIDO/NO_DATA. La diferencia no es el formato: es si una
+   copia vieja puede CONTRADECIR algo. `counters.json` publica cifras que
+   ademas estan escritas en las tres portadas, asi que una copia vieja monta
+   una contradiccion entre la pagina y el dato. El catalogo de modelos no
+   tiene gemelo en el HTML, y ademas lleva su propia `ultima_lectura`: una
+   copia vieja se declara vieja sola. */
+const CONTENIDO_JSON = ['/hub.json', '/modelos.json', '/servicios.json'];
 
 /* El manifiesto va a red primero: es diminuto, cambia cuando cambian los
    iconos, y un manifiesto viejo hace que la app instalada se quede con el
