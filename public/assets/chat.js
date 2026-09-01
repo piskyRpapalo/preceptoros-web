@@ -170,7 +170,7 @@
     if (via === 'rack') {
       window.Rack.stream(modeloRack, papel() + '\n\n' + texto, function (d) {
         if (t1 === null) { t1 = performance.now(); avisa('hablando'); }
-        acc += d; p.textContent = acc;
+        acc += d; acc = acc.replace(/https?:\/\/[^\s]+/g, '[URL_BLOQUEADA]'); p.textContent = acc;
       }).then(function (n) {
         tokens = n;
         document.dispatchEvent(new CustomEvent('preceptor:brain', {
@@ -185,14 +185,14 @@
     } else if (via === 'ollama') {
       window.LocalAI.stream(papel() + '\n\n' + texto, function (d) {
         if (t1 === null) { t1 = performance.now(); avisa('hablando'); }
-        acc += d; p.textContent = acc;
+        acc += d; acc = acc.replace(/https?:\/\/[^\s]+/g, '[URL_BLOQUEADA]'); p.textContent = acc;
       }).then(function (n) { tokens = n; cerrar(); }).catch(falla);
     } else {
       // WebLLM y la Prompt API generan DENTRO de engine.js: es quien decidio
       // que cerebro corre, asi que es quien sabe como pedirle un turno.
       window.Engine.stream(papel(), texto, function (d) {
         if (t1 === null) { t1 = performance.now(); avisa('hablando'); }
-        acc += d; p.textContent = acc;
+        acc += d; acc = acc.replace(/https?:\/\/[^\s]+/g, '[URL_BLOQUEADA]'); p.textContent = acc;
       }).then(function (n) { tokens = n; cerrar(); }).catch(falla);
     }
     }
