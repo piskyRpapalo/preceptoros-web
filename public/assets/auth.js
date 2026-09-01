@@ -21,6 +21,19 @@
   var T = JSON.parse(block.textContent);
   var yo = null;
 
+  /* EL MENU DE IDENTIDAD ES UN POPOVER NATIVO. El navegador pone la capa
+     superior, el cierre con Escape, el cierre al pulsar fuera y el foco. No
+     habia logica manual de toggle que quitar --nunca la hubo-- y aqui no se
+     escribe una: `popovertarget` en el boton y ya esta.
+
+     Se crea en JS y no en las tres portadas por una razon medida: a
+     `fr/index.html` le quedaban 533 B. Aqui cuesta CERO bytes de HTML, y
+     ademas este fichero ya construye toda su interfaz asi. */
+  var menu = document.createElement('div');
+  menu.id = 'identity-menu';
+  menu.popover = 'auto';
+  document.body.appendChild(menu);
+
   function abrir() {
     return new Promise(function (ok, mal) {
       var p = indexedDB.open(BD, 1);
@@ -53,31 +66,46 @@
 
   function pintar() {
     zona.innerHTML = '';
+    menu.innerHTML = '';
     var b = document.createElement('button');
     b.type = 'button'; b.className = 'leve';
+    b.setAttribute('popovertarget', 'identity-menu');
     if (yo) {
       var p = document.createElement('span');
       p.className = 'yo'; p.textContent = T.idHola + ' ' + yo.apodo;
       zona.appendChild(p);
       b.textContent = T.idClave;
-      b.addEventListener('click', function () {
-        // La huella completa, para quien quiera comprobar que su firma es suya.
-        crypto.subtle.exportKey('raw', yo.claves.publicKey).then(function (raw) {
-          var n = document.createElement('p');
-          n.className = 'tenue'; n.style.wordBreak = 'break-all';
-          n.textContent = T.idPublica + ' ' + hex(raw);
-          zona.appendChild(n);
-        });
+      // La huella completa, para quien quiera comprobar que su firma es suya.
+      // Va al menu y no al hueco: pulsando dos veces, la version anterior
+      // apilaba un parrafo mas cada vez.
+      var n = document.createElement('p');
+      n.className = 'tenue'; n.style.wordBreak = 'break-all';
+      menu.appendChild(n);
+      crypto.subtle.exportKey('raw', yo.claves.publicKey).then(function (raw) {
+        n.textContent = T.idPublica + ' ' + hex(raw);
       });
     } else {
       b.textContent = T.idEntrar;
-      b.addEventListener('click', registrar);
+      /* EL AVISO VA ANTES, NO DESPUES. Hasta hoy la clave se generaba al
+         pulsar y el «esto no se puede exportar ni recuperar» aparecia cuando
+         ya existia. Una identidad irreversible se acepta informado o no se
+         acepta: el popover es la unica pantalla entre el boton y la clave. */
+      var av = document.createElement('p');
+      av.className = 'nodata'; av.textContent = T.idAviso;
+      var ok = document.createElement('button');
+      ok.type = 'button'; ok.className = 'boton'; ok.textContent = T.idEntrar;
+      ok.addEventListener('click', function () {
+        if (menu.hidePopover) menu.hidePopover();
+        registrar();
+      });
+      menu.appendChild(av); menu.appendChild(ok);
     }
     zona.appendChild(b);
   }
   function registrar() {
+    // Solo para el fallo: el aviso ya se leyo en el menu, antes de pulsar.
     var aviso = document.createElement('p');
-    aviso.className = 'nodata'; aviso.textContent = T.idAviso;
+    aviso.className = 'nodata';
     zona.appendChild(aviso);
     crypto.subtle.generateKey({ name: 'Ed25519' }, false, ['sign', 'verify'])
       .then(function (k) {

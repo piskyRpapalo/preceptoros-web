@@ -18,7 +18,7 @@
   var enviar = document.getElementById('enviar');
   var motorZona = document.getElementById('motor');
   var dialogo = document.getElementById('dialogo');
-  var via = null, modeloRack = null;
+  var via = null, modeloRack = null, nido = null;
 
   function di(texto, mio) {
     var p = document.createElement('p');
@@ -60,7 +60,7 @@
   // Cuanto mas sabe el frontend, menos adivina el modelo. El bloque de estado
   // va DESPUES del papel y ANTES de lo que escribe la persona.
   function papel() {
-    return T.papel + (window.stateContext ? window.stateContext() : '');
+    return (nido || T.papel) + (window.stateContext ? window.stateContext() : '');
   }
   function sobre() {
     return { origen: 'preceptoros.org', papel: papel(), reglas: T.reglas,
@@ -108,6 +108,7 @@
        falta saber es QUE companero contesta, y eso lo dice el router. */
     document.addEventListener('preceptor:companero', function (e) {
       var d = e.detail || {};
+      nido = (T.agentes || {})[d.nido] || null;
       if (!d.disponible || !d.modelo) {
         via = null; modeloRack = null;
         estado(T.rackSinAdaptador, 'nodata');

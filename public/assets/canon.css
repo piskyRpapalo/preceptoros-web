@@ -60,3 +60,31 @@ code,pre,kbd,samp,input,textarea,select,.cifra,.proof b,.ob-codigo,
   .guia{font-size:1.05rem}
   .guia,.proof,.ob-paso,.honest-footer{padding:.75rem .8rem}
 }
+
+/* --- EL MENU DE IDENTIDAD · un popover nativo --------------------------
+   Sin `position`, sin `z-index`, sin nada que apilar: el navegador lo pone
+   en la capa superior el solo. Aqui solo se le da la piel de la casa. Los
+   tokens del panel, no colores sueltos: es un panel, aunque flote. */
+/* `inset:0;margin:auto` NO es decoracion: el navegador ya los trae para
+   centrar un popover, pero el reset de la casa (`*{margin:0}`) se los come y
+   el menu se clava en la esquina. Medido en el navegador, no supuesto. */
+#identity-menu{inset:0;margin:auto;max-width:min(32rem,90vw);padding:1.15rem;
+  border:1px solid var(--panel-borde);border-radius:var(--radius);
+  background:var(--panel-bg);color:var(--panel-fg)}
+#identity-menu p{margin:0 0 .9rem}
+/* El fondo del popover, que tambien es nativo (::backdrop). Sin el, el aviso
+   de que la clave no se recupera compite con la pagina entera detras. */
+#identity-menu::backdrop{background:rgba(30,24,38,.45)}
+
+/* --- EDGE 2026 · transiciones de navegacion ----------------------------
+   `@view-transition` es la version declarativa de lo que `chat-router.js` ya
+   hace a mano con `startViewTransition` dentro de la pagina: aqui vale ENTRE
+   paginas, y el navegador que no la entienda simplemente navega como
+   siempre. Cero JS, cero respaldo que escribir.
+
+   Y se apaga para quien pide quietud. `navigation:none` es la unica forma
+   correcta de hacerlo: una transicion de vista no es una animacion CSS, asi
+   que no se para con `animation:none` ni la alcanza ningun `@keyframes`. */
+@view-transition{navigation:auto}
+@media (prefers-reduced-motion:reduce){
+  @view-transition{navigation:none}}

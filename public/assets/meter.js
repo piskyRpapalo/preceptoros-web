@@ -47,10 +47,37 @@
     return p;
   }
 
+  /* --- LLEVARSE LA MEDIDA -----------------------------------------------
+     La doctrina Caza-Nido pide que lo medido aqui se pueda sacar de aqui: se
+     copia, se lleva a la IA de fuera y vuelve al disco de quien lo midio.
+
+     NO se escribe un segundo copiador. `copiar.js` ya hace exactamente lo que
+     hace falta --`navigator.clipboard.writeText`, el rotulo del boton a
+     «Copiado» y de vuelta solo, y seleccion del texto con aviso de Ctrl+C
+     cuando no hay portapapeles (HTTP local)-- y lo hace de forma declarativa
+     con `data-copia`. Aqui solo se rellena el textarea y se destapa el boton.
+     Dos implementaciones del portapapeles serian dos sitios donde arreglar el
+     mismo fallo. */
+  var bruto = document.getElementById('medida-json');
+  var copiar = document.getElementById('medida-copiar');
+
   document.addEventListener('preceptor:turno', function (ev) {
    (window.fluido || function (f) { f(); })(function () {
     var d = ev.detail || {};
     turnos++;
+    if (bruto) {
+      // Los mismos NO_DATA que la pantalla, no ceros: lo que se lleva fuera
+      // tiene que poder distinguir «no se midio» de «midio cero».
+      bruto.value = JSON.stringify({
+        ttft_ms: d.ttft === null || d.ttft === undefined ? 'NO_DATA' : Math.round(d.ttft),
+        tokens: d.tokens || 'NO_DATA',
+        duracion_ms: Math.round(d.ms),
+        tokens_por_segundo: d.tokens && d.ms > 0
+          ? +(d.tokens / (d.ms / 1000)).toFixed(1) : 'NO_DATA',
+        motor: d.via || 'NO_DATA', turno: turnos
+      }, null, 2);
+      if (copiar) copiar.hidden = false;
+    }
     panel.innerHTML = '';
     panel.appendChild(titulo);
 

@@ -1,220 +1,262 @@
 {
-  "estado": "MOCK",
-  "nota": "Catálogo vivo. 1 servido, 5 pendientes de LoRA. Modelo Avispón: caza en nube, anida en local.",
-  "fuente": "ids y nombres: catalogo vivo · bloques y funciones: documento P0X Arquitectura de Bucles Autonomos · `real.modelo`: MEDIDO contra la Ollama del rack el 2026-09-01 (`ollama list`) · status y cola: inventados para ver la interfaz",
-  "bloques": {
-    "1": "Nucleo · doctrina y alineamiento",
-    "2": "Expansion · comunidad y contenido",
-    "3": "Operaciones · mantenimiento y cuentas",
-    "4": "Evolutivo · memoria y pesos"
+ "estado": "MOCK",
+ "nota": "Maqueta del Hub. Los ocho companeros y sus ids son los del catalogo REAL. UNO esta servido de verdad --el Instalador, sobre un modelo base-- y los otros siete se pintan pendientes con su causa. Lo que SI es maqueta es el campo `status` y la cola de firmas: ningun bucle esta corriendo detras.",
+ "fuente": "ids y nombres: catalogo vivo · bloques y funciones: documento P0X Arquitectura de Bucles Autonomos · `real.modelo`: MEDIDO contra la Ollama del rack el 2026-09-01 (`ollama list`) · status y cola: inventados para ver la interfaz",
+ "bloques": {
+  "1": "Nucleo · doctrina y alineamiento",
+  "2": "Expansion · comunidad y contenido",
+  "3": "Operaciones · mantenimiento y cuentas",
+  "4": "Evolutivo · memoria y pesos"
+ },
+ "agentes": [
+  {
+   "id": "instalador",
+   "name": "El Instalador",
+   "block": 1,
+   "symbol": "ojo-ambar",
+   "function": "Te instala el producto y te presenta a los demás.",
+   "status": "idle",
+   "real": {
+    "disponible": true,
+    "modelo": "qwen3-coder:30b",
+    "afinado": null,
+    "nota": "corre sobre el modelo BASE, sin afinar. El adaptador `preceptor-v7` que este catalogo declaraba servido YA NO ESTA en el rack: medido el 2026-09-01, Ollama sirve dos modelos y ninguno es ese. Un afinado mejora el papel; no es requisito para servir un turno."
+   },
+   "icono3d": "instalador",
+   "nido": "guia"
   },
-  "agentes": [
-    {
-      "id": "guia",
-      "name": "El Guía",
-      "block": 1,
-      "symbol": "ojo-ambar",
-      "function": "Onboarding cero. Te instala el producto y te dice qué preguntar en IAs externas si te atascas.",
-      "status": "idle",
-      "real": {
-        "disponible": true,
-        "modelo": "qwen3-coder:30b",
-        "afinado": null,
-        "nota": "Corre sobre modelo base."
-      }
-    },
-    {
-      "id": "filtro",
-      "name": "El Filtro",
-      "block": 1,
-      "symbol": "ojo-verde",
-      "function": "Tacha lo privado antes de que salga de tu aparato. Sin memoria.",
-      "status": "idle",
-      "real": {
-        "disponible": false,
-        "modelo": null,
-        "afinado": null,
-        "causa": "sin adaptador entrenado"
-      }
-    },
-    {
-      "id": "cronista",
-      "name": "El Cronista",
-      "block": 2,
-      "symbol": "ojo-rojo",
-      "function": "Cuenta el lore catastrofista de la soberanía técnica.",
-      "status": "idle",
-      "real": {
-        "disponible": false,
-        "modelo": null,
-        "afinado": null,
-        "causa": "sin adaptador entrenado"
-      }
-    },
-    {
-      "id": "estratega",
-      "name": "El Estratega",
-      "block": 2,
-      "symbol": "ojo-bombilla",
-      "function": "Estructura planes de negocio traídos de IAs externas.",
-      "status": "idle",
-      "real": {
-        "disponible": false,
-        "modelo": null,
-        "afinado": null,
-        "causa": "sin adaptador entrenado"
-      }
-    },
-    {
-      "id": "analista",
-      "name": "El Analista",
-      "block": 3,
-      "symbol": "ojo-cerebro",
-      "function": "Calcula costes y márgenes con datos que le traes de la nube.",
-      "status": "idle",
-      "real": {
-        "disponible": false,
-        "modelo": null,
-        "afinado": null,
-        "causa": "sin adaptador entrenado"
-      }
-    },
-    {
-      "id": "archivero",
-      "name": "El Archivero",
-      "block": 4,
-      "symbol": "ojo-azul",
-      "function": "Busca en tu memoria local. NUNCA en internet.",
-      "status": "idle",
-      "real": {
-        "disponible": false,
-        "modelo": null,
-        "afinado": null,
-        "causa": "sin adaptador entrenado"
-      }
-    }
-  ],
-  "cola": {
-    "estado": "MOCK",
-    "causa": "ningun bucle de expansion esta corriendo; estas dos propuestas son de muestra",
-    "protocolo": "IronClaw firme · firma individual, jamas por lotes",
-    "propuestas": [
-      {
-        "id": "p-001",
-        "origen": "Radar Growth",
-        "destino": "foro publico",
-        "resumen": "Respuesta tecnica a un hilo sobre memoria local en LLM",
-        "cuerpo": "Aporta la medida del corredor certificado y enlaza la guia de instalacion. Sin lenguaje comercial."
-      },
-      {
-        "id": "p-002",
-        "origen": "Media Engine",
-        "destino": "video corto",
-        "resumen": "Guion de 60 s sobre que hace el filtro que tacha lo privado",
-        "cuerpo": "Muestra el texto antes y despues del saneado, con las claves y rutas tachadas en pantalla."
-      }
-    ]
+  {
+   "id": "privacidad",
+   "name": "El Aduanero",
+   "block": 1,
+   "symbol": "ojo-verde",
+   "function": "Tacha lo privado antes de que salga de tu aparato.",
+   "status": "idle",
+   "real": {
+    "disponible": false,
+    "modelo": null,
+    "afinado": null,
+    "causa": "sin adaptador entrenado todavia"
+   },
+   "icono3d": "privacidad",
+   "nido": "filtro"
   },
-  "textos": {
-    "es": {
-      "hubTitulo": "Compañeros",
-      "hubMaqueta": "MAQUETA · el estado de cada compañero está inventado para ver la interfaz. La disponibilidad de al lado sí es real.",
-      "hubCargando": "Leyendo el catálogo…",
-      "hubFallo": "NO_DATA · no se pudo leer el catálogo. Causa:",
-      "hubDisponible": "disponible",
-      "hubSinAdaptador": "sin adaptador",
-      "hubHablar": "Hablar",
-      "hubCerrar": "Cerrar",
-      "hubSinServir": "Este compañero todavía no tiene adaptador servido. No se carga nada: se dice.",
-      "colaTitulo": "Cola de firma · IronClaw",
-      "colaVacia": "Nada esperando tu firma.",
-      "colaFirmar": "Firmar y publicar",
-      "colaFirmado": "Firmado en tu aparato. No viaja: el envío es otra puerta.",
-      "colaProtocolo": "Una firma por pieza. No hay «firmar todo», y es a propósito.",
-      "hubServido": "servido",
-      "chatEscribir": "Escribe aquí…",
-      "chatCerrarPanel": "Cerrar",
-      "herrTitulo": "Atajos",
-      "corregirBoton": "Corregir esta respuesta",
-      "corregirQue": "Escribe aquí la respuesta que esperabas…",
-      "corregirMotivo": "Por qué estaba mal (opcional)",
-      "corregirFirmar": "Firmar la corrección",
-      "corregirNoViaja": "Se firma y se guarda en TU aparato. No viaja: el envío es otra puerta, y esa puerta todavía no está abierta.",
-      "corregirGuardado": "Firmado y guardado aquí. Nada ha salido de tu aparato.",
-      "corregirFallo": "No se pudo firmar",
-      "cmdDesconocido": "No conozco ese comando. Los que hay:",
-      "cmdServido": "servido y listo",
-      "cmdSinServir": "todavía sin adaptador servido",
-      "cmdFallo": "NO_DATA · no se pudo leer el catálogo de servicios"
-    },
-    "en": {
-      "hubTitulo": "Companions",
-      "hubMaqueta": "MOCKUP · each companion's state is invented so the interface can be seen. The availability beside it is real.",
-      "hubCargando": "Reading the catalogue…",
-      "hubFallo": "NO_DATA · the catalogue could not be read. Cause:",
-      "hubDisponible": "available",
-      "hubSinAdaptador": "no adapter",
-      "hubHablar": "Talk",
-      "hubCerrar": "Close",
-      "hubSinServir": "This companion has no adapter served yet. Nothing is loaded: it is stated.",
-      "colaTitulo": "Signing queue · IronClaw",
-      "colaVacia": "Nothing waiting for your signature.",
-      "colaFirmar": "Sign and publish",
-      "colaFirmado": "Signed on your device. It does not travel: sending is another gate.",
-      "colaProtocolo": "One signature per item. There is no «sign all», and that is deliberate.",
-      "hubServido": "served",
-      "chatEscribir": "Write here…",
-      "chatCerrarPanel": "Close",
-      "herrTitulo": "Shortcuts",
-      "corregirBoton": "Correct this answer",
-      "corregirQue": "Write the answer you expected…",
-      "corregirMotivo": "Why it was wrong (optional)",
-      "corregirFirmar": "Sign the correction",
-      "corregirNoViaja": "It is signed and stored on YOUR device. It does not travel: sending is another gate, and that gate is not open yet.",
-      "corregirGuardado": "Signed and stored here. Nothing left your device.",
-      "corregirFallo": "Could not sign",
-      "cmdDesconocido": "I do not know that command. These exist:",
-      "cmdServido": "served and ready",
-      "cmdSinServir": "no adapter served yet",
-      "cmdFallo": "NO_DATA · the service catalogue could not be read"
-    },
-    "fr": {
-      "hubTitulo": "Compagnons",
-      "hubMaqueta": "MAQUETTE · l'état de chaque compagnon est inventé pour voir l'interface. La disponibilité à côté est réelle.",
-      "hubCargando": "Lecture du catalogue…",
-      "hubFallo": "NO_DATA · le catalogue n'a pas pu être lu. Cause :",
-      "hubDisponible": "disponible",
-      "hubSinAdaptador": "sans adaptateur",
-      "hubHablar": "Parler",
-      "hubCerrar": "Fermer",
-      "hubSinServir": "Ce compagnon n'a pas encore d'adaptateur servi. Rien n'est chargé : on le dit.",
-      "colaTitulo": "File de signature · IronClaw",
-      "colaVacia": "Rien n'attend votre signature.",
-      "colaFirmar": "Signer et publier",
-      "colaFirmado": "Signé sur votre appareil. Rien ne part : l'envoi est une autre porte.",
-      "colaProtocolo": "Une signature par pièce. Pas de « tout signer », et c'est voulu.",
-      "hubServido": "servi",
-      "chatEscribir": "Écrivez ici…",
-      "chatCerrarPanel": "Fermer",
-      "herrTitulo": "Raccourcis",
-      "corregirBoton": "Corriger cette réponse",
-      "corregirQue": "Écrivez ici la réponse que vous attendiez…",
-      "corregirMotivo": "Pourquoi c'était faux (facultatif)",
-      "corregirFirmar": "Signer la correction",
-      "corregirNoViaja": "Signé et conservé sur VOTRE appareil. Rien ne part : l'envoi est une autre porte, et elle n'est pas ouverte.",
-      "corregirGuardado": "Signé et conservé ici. Rien n'est sorti de votre appareil.",
-      "corregirFallo": "Signature impossible",
-      "cmdDesconocido": "Je ne connais pas cette commande. Voici les existantes :",
-      "cmdServido": "servi et prêt",
-      "cmdSinServir": "pas encore d'adaptateur servi",
-      "cmdFallo": "NO_DATA · le catalogue de services n'a pas pu être lu"
-    }
+  {
+   "id": "escritor",
+   "name": "El Escritor",
+   "block": 2,
+   "symbol": "ojo-bombilla",
+   "function": "Escribe contigo: guiones, notas y textos largos.",
+   "status": "thinking",
+   "real": {
+    "disponible": false,
+    "modelo": null,
+    "afinado": null,
+    "causa": "sin adaptador entrenado todavia"
+   },
+   "icono3d": "escritor",
+   "nido": "cronista"
   },
-  "identidad": {
-    "github": "piskyRpapalo",
-    "github_url": "https://github.com/piskyRpapalo/PreceptorOS",
-    "linkedin": "david-pecero-caballero",
-    "linkedin_url": "https://www.linkedin.com/in/david-pecero-caballero/",
-    "fuente": "Alejandria/identidad_publica.json"
+  {
+   "id": "traductor",
+   "name": "El Traductor",
+   "block": 2,
+   "symbol": "ojo-libro",
+   "function": "Traduce en local, sin mandar el texto a ninguna nube.",
+   "status": "idle",
+   "real": {
+    "disponible": false,
+    "modelo": null,
+    "afinado": null,
+    "causa": "sin adaptador entrenado todavia"
+   },
+   "icono3d": "traductor"
+  },
+  {
+   "id": "coder",
+   "name": "El Artesano",
+   "block": 3,
+   "symbol": "ojo-birrete",
+   "function": "Lee tu código, propone el arreglo y escribe la prueba.",
+   "status": "running",
+   "real": {
+    "disponible": false,
+    "modelo": null,
+    "afinado": null,
+    "causa": "sin adaptador entrenado todavia"
+   },
+   "icono3d": "coder",
+   "nido": "estratega"
+  },
+  {
+   "id": "analista",
+   "name": "El Analista",
+   "block": 3,
+   "symbol": "ojo-cerebro",
+   "function": "Mira números y trazas y te dice qué cambió.",
+   "status": "idle",
+   "real": {
+    "disponible": false,
+    "modelo": null,
+    "afinado": null,
+    "causa": "sin adaptador entrenado todavia"
+   },
+   "icono3d": "analista",
+   "nido": "analista"
+  },
+  {
+   "id": "aprendiz",
+   "name": "El Aprendiz",
+   "block": 4,
+   "symbol": "ojo-azul",
+   "function": "Convierte lo que haces en memoria que puedes releer.",
+   "status": "idle",
+   "real": {
+    "disponible": false,
+    "modelo": null,
+    "afinado": null,
+    "causa": "sin adaptador entrenado todavia"
+   },
+   "icono3d": "aprendiz"
+  },
+  {
+   "id": "bibliotecario",
+   "name": "El Bibliotecario",
+   "block": 4,
+   "symbol": "ojo-rojo",
+   "function": "Ordena tu memoria: busca, enlaza y quita duplicados.",
+   "status": "idle",
+   "real": {
+    "disponible": false,
+    "modelo": null,
+    "afinado": null,
+    "causa": "sin adaptador entrenado todavia"
+   },
+   "icono3d": "bibliotecario",
+   "nido": "archivero"
   }
+ ],
+ "cola": {
+  "estado": "MOCK",
+  "causa": "ningun bucle de expansion esta corriendo; estas dos propuestas son de muestra",
+  "protocolo": "IronClaw firme · firma individual, jamas por lotes",
+  "propuestas": [
+   {
+    "id": "p-001",
+    "origen": "Radar Growth",
+    "destino": "foro publico",
+    "resumen": "Respuesta tecnica a un hilo sobre memoria local en LLM",
+    "cuerpo": "Aporta la medida del corredor certificado y enlaza la guia de instalacion. Sin lenguaje comercial."
+   },
+   {
+    "id": "p-002",
+    "origen": "Media Engine",
+    "destino": "video corto",
+    "resumen": "Guion de 60 s sobre que hace el filtro que tacha lo privado",
+    "cuerpo": "Muestra el texto antes y despues del saneado, con las claves y rutas tachadas en pantalla."
+   }
+  ]
+ },
+ "textos": {
+  "es": {
+   "hubTitulo": "Compañeros",
+   "hubMaqueta": "MAQUETA · el estado de cada compañero está inventado para ver la interfaz. La disponibilidad de al lado sí es real.",
+   "hubCargando": "Leyendo el catálogo…",
+   "hubFallo": "NO_DATA · no se pudo leer el catálogo. Causa:",
+   "hubDisponible": "disponible",
+   "hubSinAdaptador": "sin adaptador",
+   "hubHablar": "Hablar",
+   "hubCerrar": "Cerrar",
+   "hubSinServir": "Este compañero todavía no tiene adaptador servido. No se carga nada: se dice.",
+   "colaTitulo": "Cola de firma · IronClaw",
+   "colaVacia": "Nada esperando tu firma.",
+   "colaFirmar": "Firmar y publicar",
+   "colaFirmado": "Firmado en tu aparato. No viaja: el envío es otra puerta.",
+   "colaProtocolo": "Una firma por pieza. No hay «firmar todo», y es a propósito.",
+   "hubServido": "servido",
+   "chatEscribir": "Escribe aquí…",
+   "chatCerrarPanel": "Cerrar",
+   "herrTitulo": "Atajos",
+   "corregirBoton": "Corregir esta respuesta",
+   "corregirQue": "Escribe aquí la respuesta que esperabas…",
+   "corregirMotivo": "Por qué estaba mal (opcional)",
+   "corregirFirmar": "Firmar la corrección",
+   "corregirNoViaja": "Se firma y se guarda en TU aparato. No viaja: el envío es otra puerta, y esa puerta todavía no está abierta.",
+   "corregirGuardado": "Firmado y guardado aquí. Nada ha salido de tu aparato.",
+   "corregirFallo": "No se pudo firmar",
+   "cmdDesconocido": "No conozco ese comando. Los que hay:",
+   "cmdServido": "servido y listo",
+   "cmdSinServir": "todavía sin adaptador servido",
+   "cmdFallo": "NO_DATA · no se pudo leer el catálogo de servicios"
+  },
+  "en": {
+   "hubTitulo": "Companions",
+   "hubMaqueta": "MOCKUP · each companion's state is invented so the interface can be seen. The availability beside it is real.",
+   "hubCargando": "Reading the catalogue…",
+   "hubFallo": "NO_DATA · the catalogue could not be read. Cause:",
+   "hubDisponible": "available",
+   "hubSinAdaptador": "no adapter",
+   "hubHablar": "Talk",
+   "hubCerrar": "Close",
+   "hubSinServir": "This companion has no adapter served yet. Nothing is loaded: it is stated.",
+   "colaTitulo": "Signing queue · IronClaw",
+   "colaVacia": "Nothing waiting for your signature.",
+   "colaFirmar": "Sign and publish",
+   "colaFirmado": "Signed on your device. It does not travel: sending is another gate.",
+   "colaProtocolo": "One signature per item. There is no «sign all», and that is deliberate.",
+   "hubServido": "served",
+   "chatEscribir": "Write here…",
+   "chatCerrarPanel": "Close",
+   "herrTitulo": "Shortcuts",
+   "corregirBoton": "Correct this answer",
+   "corregirQue": "Write the answer you expected…",
+   "corregirMotivo": "Why it was wrong (optional)",
+   "corregirFirmar": "Sign the correction",
+   "corregirNoViaja": "It is signed and stored on YOUR device. It does not travel: sending is another gate, and that gate is not open yet.",
+   "corregirGuardado": "Signed and stored here. Nothing left your device.",
+   "corregirFallo": "Could not sign",
+   "cmdDesconocido": "I do not know that command. These exist:",
+   "cmdServido": "served and ready",
+   "cmdSinServir": "no adapter served yet",
+   "cmdFallo": "NO_DATA · the service catalogue could not be read"
+  },
+  "fr": {
+   "hubTitulo": "Compagnons",
+   "hubMaqueta": "MAQUETTE · l'état de chaque compagnon est inventé pour voir l'interface. La disponibilité à côté est réelle.",
+   "hubCargando": "Lecture du catalogue…",
+   "hubFallo": "NO_DATA · le catalogue n'a pas pu être lu. Cause :",
+   "hubDisponible": "disponible",
+   "hubSinAdaptador": "sans adaptateur",
+   "hubHablar": "Parler",
+   "hubCerrar": "Fermer",
+   "hubSinServir": "Ce compagnon n'a pas encore d'adaptateur servi. Rien n'est chargé : on le dit.",
+   "colaTitulo": "File de signature · IronClaw",
+   "colaVacia": "Rien n'attend votre signature.",
+   "colaFirmar": "Signer et publier",
+   "colaFirmado": "Signé sur votre appareil. Rien ne part : l'envoi est une autre porte.",
+   "colaProtocolo": "Une signature par pièce. Pas de « tout signer », et c'est voulu.",
+   "hubServido": "servi",
+   "chatEscribir": "Écrivez ici…",
+   "chatCerrarPanel": "Fermer",
+   "herrTitulo": "Raccourcis",
+   "corregirBoton": "Corriger cette réponse",
+   "corregirQue": "Écrivez ici la réponse que vous attendiez…",
+   "corregirMotivo": "Pourquoi c'était faux (facultatif)",
+   "corregirFirmar": "Signer la correction",
+   "corregirNoViaja": "Signé et conservé sur VOTRE appareil. Rien ne part : l'envoi est une autre porte, et elle n'est pas ouverte.",
+   "corregirGuardado": "Signé et conservé ici. Rien n'est sorti de votre appareil.",
+   "corregirFallo": "Signature impossible",
+   "cmdDesconocido": "Je ne connais pas cette commande. Voici les existantes :",
+   "cmdServido": "servi et prêt",
+   "cmdSinServir": "pas encore d'adaptateur servi",
+   "cmdFallo": "NO_DATA · le catalogue de services n'a pas pu être lu"
+  }
+ },
+ "identidad": {
+  "github": "piskyRpapalo",
+  "github_url": "https://github.com/piskyRpapalo/PreceptorOS",
+  "linkedin": "david-pecero-caballero",
+  "linkedin_url": "https://www.linkedin.com/in/david-pecero-caballero/",
+  "fuente": "Alejandria/identidad_publica.json"
+ }
 }

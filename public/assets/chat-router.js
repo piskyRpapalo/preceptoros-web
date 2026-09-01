@@ -107,7 +107,9 @@
        dice en voz alta a quien le toca, y quien sepa hablar que escuche. */
     document.dispatchEvent(new CustomEvent('preceptor:companero', { detail: {
       id: a.id, nombre: a.name, modelo: r.modelo || null,
-      disponible: !!r.disponible } }));
+      // `nido` es el papel Caza-Nido que le toca, del catalogo. Quien no lo
+      // trae (traductor, aprendiz) viaja sin el y el chat cae al papel base.
+      nido: a.nido || null, disponible: !!r.disponible } }));
   }
 
   // --- abrir y cerrar ----------------------------------------------------

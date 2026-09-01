@@ -400,7 +400,7 @@ class Estructura(unittest.TestCase):
         blocks = {}
         for idi in ("es", "en", "fr"):
             t = (PUBLICO / idi / "index.html").read_text(encoding="utf-8")
-            m = re.search(r'id="i18n">(.*?)</script>', t, re.S)
+            m = re.search(r'id="i18n"[^>]*>(.*?)</script>', t, re.S)
             self.assertIsNotNone(m, f"{idi}: falta el bloque i18n")
             blocks[idi] = (json.loads(m.group(1)), t)
 
@@ -529,12 +529,24 @@ class Doctrina(unittest.TestCase):
                                     f"URL externa no admitida en {p}: {url}")
 
     def test_cero_rutas_absolutas_ni_ips(self):
+        """Lo que protege: que una IP de la tailnet no acabe en la web publica.
+
+        LOS DIBUJOS NO SON DIRECCIONES. El `d=` de un <path> es una ristra de
+        coordenadas, y una ristra de coordenadas contiene grupos de cuatro
+        numeros separados por puntos por pura aritmetica: el sprite SVG del
+        cabezal trajo `2.8.41.09` y `1.25.2.75`, que no son IPs de nada. Se
+        recortan los <svg> ANTES de mirar en vez de aflojar el patron -- fuera
+        del dibujo la regla sigue siendo la de siempre, y una IP de verdad
+        jamas viaja dentro de un `<path>`. Comprobado el 2026-09-01: sin los
+        <svg> no queda ni una sola coincidencia en las tres portadas.
+        """
         for p, t in textos():
             if p.name in ("test_web.py", "contadores.py"):
                 continue    # guiones locales: resuelven su propia ruta, no la escriben
             with self.subTest(fichero=p.name):
                 self.assertNotIn("/home/", t, f"ruta absoluta en {p}")
-                for ip in re.findall(r"\b(?:\d{1,3}\.){3}\d{1,3}\b", t):
+                sin_dibujos = re.sub(r"<svg.*?</svg>", "", t, flags=re.S)
+                for ip in re.findall(r"\b(?:\d{1,3}\.){3}\d{1,3}\b", sin_dibujos):
                     self.assertEqual(ip, "127.0.0.1", f"IP incrustada en {p}: {ip}")
 
     def test_el_cristal_degrada_y_se_puede_apagar(self):
@@ -668,7 +680,7 @@ class Tablon(unittest.TestCase):
     def i18n_board(self):
         for idioma in ("es", "en", "fr"):
             t = (PUBLICO / idioma / "board.html").read_text(encoding="utf-8")
-            m = re.search(r'id="i18n">(.*?)</script>', t, re.S)
+            m = re.search(r'id="i18n"[^>]*>(.*?)</script>', t, re.S)
             yield idioma, json.loads(m.group(1))
 
     def test_el_tablon_dice_siempre_de_donde_salen_los_hilos(self):
@@ -832,7 +844,7 @@ class Hub(unittest.TestCase):
         """
         for idioma in ("es", "en", "fr"):
             t = (PUBLICO / idioma / "index.html").read_text(encoding="utf-8")
-            papel = json.loads(re.search(r'id="i18n">(.*?)</script>',
+            papel = json.loads(re.search(r'id="i18n"[^>]*>(.*?)</script>',
                                          t, re.S).group(1))["papel"]
             with self.subTest(idioma=idioma):
                 self.assertRegex(papel, r"(?i)\b(nunca|never|jamais)\b",
@@ -1539,7 +1551,7 @@ class Traducciones(unittest.TestCase):
                 if fichero.is_file():
                     usa |= self.claves_que_usa(fichero.read_text(encoding="utf-8"))
             self.assertTrue(usa, f"{idioma}: ningun script de la portada usa claves")
-            bloque = re.search(r'id="i18n">(.*?)</script>', texto, re.S)
+            bloque = re.search(r'id="i18n"[^>]*>(.*?)</script>', texto, re.S)
             self.assertIsNotNone(bloque, f"{idioma}: falta el bloque i18n")
             datos = json.loads(bloque.group(1))
             with self.subTest(idioma=idioma, scripts=len(usa)):
