@@ -48,22 +48,44 @@
   chat.insertBefore(barra, chat.firstChild);
 
   /* --- el panel de herramientas ------------------------------------------
-     Debajo del chat habia un hueco y dentro del chat habia botones que no son
-     conversacion: descargar el modelo, elegir motor, buscar IA local, el
-     dictado. Se MUEVEN ahi, no se reescriben -- `engine.js`, `localai.js` y
-     `voice.js` los buscan por id y los siguen encontrando esten donde esten.
-     Es el sitio donde manana caben los datos del modelo activo y sus
-     herramientas disponibles. */
+     Va DENTRO del panel grande y DEBAJO de la terminal, no como panel
+     hermano. Antes se insertaba detras de #chat y en un telefono quedaba a
+     una pantalla entera de scroll de la conversacion a la que pertenece.
+
+     Lo que contiene se ha adelgazado (2026-09-01): `motor` y `brain`. El
+     buscador de IA del navegador y el de Ollama local NO se han borrado --se
+     han mudado al Benchmark--, que es donde se elige y se MIDE un motor. En
+     la portada eran tres formas distintas de contestar a la misma pregunta,
+     apiladas encima del chat.
+
+     `voice` sale de aqui y sube junto a Enviar: hablar es una forma de
+     escribir el turno, no una herramienta suelta. */
   var herr = document.createElement('section');
   herr.id = 'herramientas'; herr.className = 'panel';
   var herrTit = document.createElement('h2');
   herrTit.className = 'panel-titulo';
   herr.appendChild(herrTit);
-  ['motor', 'local-ai', 'voice', 'brain'].forEach(function (id) {
+  ['motor', 'brain'].forEach(function (id) {
     var n = document.getElementById(id);
     if (n) herr.appendChild(n);
   });
-  chat.parentNode.insertBefore(herr, chat.nextSibling);
+  chat.appendChild(herr);
+
+  /* El teclado del movil tapa media pantalla, y lo que tapa es justo la
+     conversacion. `visualViewport` dice cuanto queda VISIBLE, que es la unica
+     forma fiable de saber que el teclado esta abierto: `resize` de window no
+     dispara en Android y `env(keyboard-inset-height)` todavia no lo resuelve
+     en el navegador del Doogee. Si el hueco visible se encoge mas de un 25 %,
+     el panel de herramientas se retira; al cerrarse el teclado, vuelve. */
+  var vv = window.visualViewport;
+  if (vv) {
+    var alto = vv.height;
+    var mirar = function () {
+      if (vv.height > alto) alto = vv.height;      // giro de pantalla, no teclado
+      chat.classList.toggle('con-teclado', vv.height < alto * 0.75);
+    };
+    vv.addEventListener('resize', mirar);
+  }
 
   function vestir(a) {
     if (!a) return;
@@ -107,8 +129,8 @@
     var H = window.Hub;
     if (!H) return;
     herrTit.textContent = (H.textos && H.textos.herrTitulo) || '';
-    boton = H.boton;
-    boton.addEventListener('click', function () { alternar(); });
+    boton = H.boton;   // hoy null: MODELOS salio del cabezal y el rail se basta
+    if (boton) boton.addEventListener('click', function () { alternar(); });
     // Companero por defecto: el Instalador es el recepcionista.
     vestir(H.agente('instalador') || (H.datos.agentes || [])[0]);
     // En PC el panel nace abierto --hay sitio para los dos--; en movil, no.
@@ -129,17 +151,10 @@
   if (window.Hub) listo();
   else document.addEventListener('hub:listo', listo);
 
-  /* --- el teclado del movil no estorba -----------------------------------
-     Por debajo de 1024 px el campo de escritura no se pinta hasta que se
-     toca: en un telefono el teclado se come media pantalla, y abrirlo antes
-     de que nadie haya decidido escribir tapa justo lo que se vino a leer. */
-  if (!PC.matches && entrada) {
-    chat.classList.add('sin-teclado');
-    var despertar = function () {
-      chat.classList.remove('sin-teclado');
-      entrada.focus();
-      chat.removeEventListener('click', despertar);
-    };
-    chat.addEventListener('click', despertar);
-  }
+  /* El chat NACE ABIERTO, tambien en el telefono (2026-09-01).
+     Antes el campo de escritura no se pintaba hasta que se tocaba el panel:
+     se hizo para que el teclado no tapara la lectura, pero el precio era que
+     la primera pantalla del producto era una caja muda que no decia que
+     hubiera que tocarla. Lo que se vino a hacer es hablar. Quien no quiera
+     escribir todavia, no toca el campo; el teclado solo sube si lo pulsas. */
 })();

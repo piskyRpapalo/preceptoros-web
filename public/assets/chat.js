@@ -102,13 +102,29 @@
   window.Respaldo.instalar({ motorZona: motorZona, entrada: entrada, sobre: sobre,
     T: T, boton: boton, fila: fila, nota: nota });
 
-  /* --- El motor vive en engine.js. Aqui solo el puente. --- */
-  window.Engine.install({
-    zone: motorZona, T: T, CDN: CDN, MODELO: MODELO,
-    estado: estado, boton: boton, fila: fila, nota: nota, listo: listo,
-    salida: salida, ofrecerJSON: ofrecerJSON,
-    setEngine: function (m) { motor = m; }, setSession: function (s) { sesion = s; }
-  });
+  /* --- El motor vive en engine.js. Aqui solo el puente. ------------------
+     Y desde el 2026-09-01 engine.js NO viaja en la portada: el buscador de
+     motor se mudo al Benchmark, que es donde se elige y se mide uno. Asi que
+     el puente se cruza solo si el otro lado existe.
+
+     Sin esta guarda la portada se quedaba MUDA y sin un error visible: el
+     `window.Engine.install(...)` reventaba en la primera linea, el IIFE
+     entero moria con el, y con el se iban el boton de Enviar, el microfono y
+     los comandos. Un fallo de carga que no se ve es peor que uno que se ve. */
+  /* Se RAMIFICA, no se sale. Un `return` aqui parecia equivalente y no lo
+     era: esta linea vive a media altura del IIFE, y abortarlo se llevaba por
+     delante el `addEventListener` de Enviar que se registra mas abajo. El
+     chat se quedaba con su caja de texto y sin nadie escuchando el boton. */
+  if (window.Engine) {
+    window.Engine.install({
+      zone: motorZona, T: T, CDN: CDN, MODELO: MODELO,
+      estado: estado, boton: boton, fila: fila, nota: nota, listo: listo,
+      salida: salida, ofrecerJSON: ofrecerJSON,
+      setEngine: function (m) { motor = m; }, setSession: function (s) { sesion = s; }
+    });
+  } else {
+    ofrecerJSON(T.causaEnBenchmark);
+  }
 
   /* --- Enviar --- */
   function responder() {

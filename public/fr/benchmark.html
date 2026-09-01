@@ -10,6 +10,8 @@
 <link rel="stylesheet" href="/assets/movil.css">
 <link rel="stylesheet" href="/assets/canon.css">
 <link rel="stylesheet" href="/assets/agora.css">
+<link rel="stylesheet" href="/assets/chat.css">
+<link rel="stylesheet" href="/assets/widget.css">
 <link rel="manifest" href="/manifest.webmanifest">
 <meta name="theme-color" content="#E4E8EC">
 </head>
@@ -28,6 +30,20 @@
 <p class="guia">Quel modèle tourne à quelle vitesse, sur quelle machine, et qui l'a mesuré. Chaque ligne est signée et porte le sha256 du fichier du modèle : sans ce hash, « llama-3.2-3b » n'identifie rien.</p>
 
 <div id="tabla" class="panel"></div>
+
+
+<section id="probador">
+  <h2>Choisissez et mesurez votre moteur</h2>
+  <p class="guia">C'est ici que l'on choisit le cerveau auquel on parle, et que l'on chronometre le resultat. Cela vit dans le Benchmark et non sur la page d'accueil a dessein : proposer trois telechargements de plusieurs gigas des l'ouverture coute cher sur un telephone.</p>
+  <div id="chat" class="panel">
+    <div id="dialogo"></div>
+    <textarea id="pregunta" class="chat-input" placeholder="Ecrivez un tour pour le mesurer..." rows="3"></textarea>
+    <div class="fila chat-acciones"><button id="enviar" type="button" class="boton enviar" aria-label="Envoyer"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M3 20.5v-6l8-2.5-8-2.5v-6L22 12z"/></svg><span class="rotulo">Envoyer</span></button></div>
+    <div id="motor"></div>
+    <div id="local-ai" class="fila"></div>
+    <p id="brain" class="brain"></p>
+  </div>
+</section>
 
 <footer class="honest-footer">
   <h2>D'où vient ce tableau</h2>
@@ -62,10 +78,84 @@
   "TTFT — le temps avant l'apparition de la première lettre. C'est ce qui compte si vous attendez devant.",
   "sha256 — l'empreinte du fichier du modèle. Deux fichiers du même nom peuvent ne pas être le même modèle ; l'empreinte, elle, ne ment pas."
  ],
- "bmTablaAria": "Tableau du Livre des Preuves, défile horizontalement"
+ "bmTablaAria": "Tableau du Livre des Preuves, défile horizontalement",
+ "arrancando": "Demarrage du moteur...",
+ "avisoCifra": "Environ 400 Mo. Nous le disons avant que vous cliquiez, pas apres.",
+ "avisoRed": "Telecharge une seule fois, puis mis en cache dans votre navigateur.",
+ "bajando": "Telechargement",
+ "bajarNavegador": "Telecharger l'IA du navigateur (~2,7-4 Go)",
+ "brainAsleep": "Aucun moteur démarré",
+ "brainBrowser": "IA du navigateur (Edge)",
+ "brainLabel": "Cerveau :",
+ "brainLive": "Vivant sur votre machine",
+ "brainNone": "aucun",
+ "causaDesconocida": "Cause inconnue.",
+ "causaElegida": "Cause : vous avez choisi le JSON.",
+ "causaEnBenchmark": "Cause : le moteur se choisit et se mesure dans le Benchmark.",
+ "causaError": "Cause : erreur en consultant le GPU.",
+ "causaSinAdaptador": "Cause : WebGPU existe mais aucun GPU utilisable.",
+ "causaSinApi": "Cause : ce navigateur n'expose ni WebGPU ni LanguageModel.",
+ "copiaManual": "Selectionnez et Ctrl+C",
+ "copiado": "Copie OK",
+ "copiarPara": "Copier pour",
+ "descargar": "Telecharger le modele (~2 Go, une fois)",
+ "destinos": [
+  "Gemini",
+  "ChatGPT",
+  "Claude",
+  "mon IA locale"
+ ],
+ "etiquetaJson": "Texte a copier vers votre IA",
+ "falloDescarga": "NO_DATA - echec du telechargement du modele",
+ "falloNavegador": "NO_DATA - echec avec l'IA du navigateur",
+ "falloRespuesta": "NO_DATA - echec de generation de la reponse",
+ "falloVacio": "NO_DATA — le moteur a terminé sans émettre un seul caractère. Ce n'est pas une réponse vide : c'est un tour qui n'a jamais eu lieu.",
+ "laiBuscando": "On demande à 127.0.0.1:11434…",
+ "laiBuscar": "Chercher l'IA locale",
+ "laiEncontrados": "Vos modèles trouvés :",
+ "laiListo": "Vous parlerez à",
+ "laiMixto": "Depuis une page https le navigateur n'autorise que 127.0.0.1 : une IP réseau est bloquée en contenu mixte.",
+ "laiNada": "NO_DATA — aucune IA locale sur 127.0.0.1:11434. Cause :",
+ "laiOtra": "Autre adresse d'Ollama",
+ "laiProbar": "Essayer là",
+ "laiVacio": "NO_DATA — Ollama répond mais n'a aucun modèle.",
+ "listoLocal": "Moteur pret. Ecrivez votre question.",
+ "llevate": "Emportez ce texte vers l'IA que vous utilisez deja.",
+ "medidaCalentado": "Mesuré après une rafale cachée de 5 tokens : sans elle on chronomètre le compilateur de shaders, pas la machine.",
+ "medidaEsperando": "Écrivez un tour et la mesure se fait seule. Rien ne quitte votre appareil.",
+ "medidaMotor": "moteur :",
+ "medidaSinTokens": "tok/s NO_DATA — ce moteur ne déclare pas ses tokens. Compter les morceaux et les appeler tokens, ce serait inventer le chiffre.",
+ "medidaSinTtft": "TTFT NO_DATA — le moteur n'a émis aucun morceau à chronométrer.",
+ "medidaTitulo": "VOTRE MACHINE · mesurée ici, comparée à personne",
+ "medidaTurnos": "tours :",
+ "mirandoGpu": "Consultation du GPU...",
+ "mirandoNavegador": "Consultation de l'IA du navigateur...",
+ "mismoTexto": "Le meme texte sert pour n'importe quelle IA : ne pas dependre d'une seule.",
+ "navBajado": "IA du navigateur telechargee. Ecrivez votre question.",
+ "navListo": "IA du navigateur prete. Ecrivez votre question.",
+ "navPesa": "Environ 2,7-4 Go. Nous le disons avant que vous cliquiez.",
+ "navYaEsta": "L'IA est deja sur votre appareil. Zero telechargement.",
+ "papel": "Tu es Preceptor, l'installateur de PreceptorOS. Ton unique role est que la personne arrive a installer le produit sur SA machine. REGLES DURES : 1) Demande d'abord quel systeme elle utilise : Linux, macOS, Windows ou Android via Termux. 2) Donne-lui les etapes du guide d'installation de ce site et renvoie-la la-bas pour le detail ; ne dicte pas de chemins de memoire, ils vieillissent. 3) Si quelque chose echoue, demande le message d'erreur exact et donne SEULEMENT la commande qui le corrige. 4) Si tu ne sais pas, dis NO_DATA et dis pourquoi. N'invente jamais de commandes ni de versions. 5) Ne demande pas de donnees personnelles et ne suggere pas de services cloud : le produit tourne sur son appareil. 6) Reponds dans la langue de la personne. Sois sobre et bref.",
+ "prefieroJson": "Je prefere le JSON",
+ "reglas": [
+  "Ne suggere pas de services cloud",
+  "Ne demande pas de donnees personnelles",
+  "Si tu ne sais pas, dis NO_DATA"
+ ],
+ "sensorAviso": "Le petit modèle commence à oublier le contexte. Réinitialiser la conversation ?",
+ "sensorBoton": "Réinitialiser",
+ "sensorRegistrado": "Réinitialisation enregistrée comme mesure de limite pour cette session. Ce site ne garde rien de vous.",
+ "sinMotor": "NO_DATA - aucun moteur d'IA disponible dans ce navigateur.",
+ "usarNavegador": "Utiliser l'IA de votre navigateur"
 }</script>
 <script src="/assets/ambient.js"></script>
 <script src="/assets/benchmark.js"></script>
+<script src="/assets/fallback.js"></script>
+<script src="/assets/state.js"></script>
+<script src="/assets/engine.js"></script>
+<script src="/assets/chat.js"></script>
+<script src="/assets/localai.js"></script>
+<script src="/assets/meter.js"></script>
 
 <script src="/assets/pwa.js"></script>
 </body>

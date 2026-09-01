@@ -55,7 +55,7 @@
 .cab-leve{font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;
   color:var(--violeta-texto);text-decoration:none;padding:.3rem .35rem}
 .cab-leve:hover{text-decoration:underline}
-.cab-ident{display:inline-flex;gap:.3rem}
+.cab-ident{display:inline-flex;gap:.3rem;margin-inline:auto}
 
 /* En un telefono el cabezal no puede comerse la pantalla: medido en el
    Doogee (360 CSS px) ocupaba el 40 % del alto en tres filas de botones, y
@@ -65,12 +65,17 @@
      del chat y del panel de herramientas. Medido en el Doogee: el texto
      salia cortado a media palabra. */
   #hub-layout{padding-right:4.2rem}
-  #cabezal{padding:.5rem .6rem;gap:.5rem}
+  /* El CABEZAL tambien pasa por debajo del rail de companeros, y hasta hoy
+     solo #hub-layout reservaba ese hueco. Medido en el Doogee: COMUNIDAD
+     partido por la mitad y el icono de LinkedIn escondido tras las esferas.
+     La reserva va en el atajo y no en una linea suelta despues: un
+     `padding-right` colocado ANTES de este atajo lo pierde entero. */
+  #cabezal{padding:.5rem 4.6rem .5rem .6rem;gap:.5rem}
   #cabezal h1{font-size:.95rem;margin:0 0 .25rem}
   #cabeza{width:40px;height:40px;flex-basis:40px}
   .cab-boton{font-size:.66rem;padding:.26rem .5rem;letter-spacing:.06em}
   .cab-leve{font-size:.64rem;padding:.2rem .25rem}
-  #cab-nav{gap:.3rem}
+  #cab-nav{gap:.25rem;margin-top:.1rem}
   /* La identidad baja a su propia fila. `movil.css` ya lo pedia con
      `.identity{flex:1 0 100%}`, pero esta hoja carga despues y su
      `#cabezal #identity{flex:0 0 auto}` ganaba por especificidad: dos ids
@@ -78,7 +83,14 @@
      tenia era nada que pudiera envolverse. Se repite aqui con la misma
      especificidad que la regla de escritorio y ganando por orden, que es lo
      que un `!important` habria tapado sin explicar. */
-  #cabezal #identity{flex:1 0 100%;margin-left:0;align-self:stretch}
+  /* `order` y no un cambio de marcado: en el telefono el boton de entrar va
+     DEBAJO de la navegacion --es lo ultimo que se hace, no lo primero-- y en
+     el PC sigue arriba a la derecha. Una sola estructura, dos lecturas. */
+  #cabezal #identity{flex:1 0 100%;margin-left:0;align-self:stretch;order:3}
+  #cab-nav{order:2}
+  /* Centrados no: pegados a la marca. Con el rail comiendo 4,6rem, `auto` a
+     los dos lados los empujaba contra el borde y el segundo se salia. */
+  .cab-ident{margin-inline:0 auto}
   #cabezal #identity button{width:100%}
 }
 
@@ -89,7 +101,14 @@
 .chat-quien img{width:44px;height:44px;flex:0 0 44px;border-radius:50%}
 .chat-nombre{font-weight:700}
 .chat-aviso{font-size:.82rem;color:var(--bronce-hondo);margin:0 0 .6rem}
-/* En movil el campo no existe hasta que se toca: el teclado se come media
-   pantalla y abrirlo antes de que nadie decida escribir tapa lo que se vino
-   a leer. */
-#chat.sin-teclado .chat-input{display:none}
+/* La navegacion ocupa su PROPIA fila y va centrada. En la misma linea que la
+   marca y el boton de entrar empujaba la identidad a una tercera fila en el
+   telefono. Cuatro enlaces centrados caben en una sola. */
+#cab-nav{flex:1 0 100%;justify-content:center;margin-top:.15rem}
+/* GitHub y LinkedIn arriba y en el centro, entre la marca y el boton de
+   entrar. `margin-inline:auto` los centra en el hueco que sobra sin sacarlos
+   del flujo, asi que al envolverse en el telefono no se quedan flotando. */
+.cab-marca{display:inline-flex;align-items:center;padding:.3rem;
+  color:var(--violeta-texto);border-radius:var(--radius)}
+.cab-marca:hover,.cab-marca:focus-visible{color:var(--violeta)}
+.cab-marca svg{display:block}

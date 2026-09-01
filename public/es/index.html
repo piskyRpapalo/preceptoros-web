@@ -29,17 +29,19 @@
 <main>
   <header id="cabezal">
     <div class="seal" id="cabeza" role="img" aria-label="Preceptor"></div>
-    <div class="marca"><h1>Preceptor<b>OS</b></h1><nav id="cab-nav"></nav></div>
+    <div class="marca"><h1>Preceptor<b>OS</b></h1></div>
+    <div id="cab-ident" class="cab-ident"></div>
     <div id="identity" class="fila identity"></div>
+    <nav id="cab-nav"></nav>
   </header>
   <section id="hub"></section>
 <div id="hub-layout"><div id="chat" class="panel">
-<textarea id="pregunta" class="chat-input" placeholder="Escribe tu primera pregunta..." rows="4"></textarea>
-<div id="motor"></div><button id="enviar" type="button" class="boton enviar" aria-label="Enviar"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M3 20.5v-6l8-2.5-8-2.5v-6L22 12z"/></svg><span class="rotulo">Enviar</span></button>
-    <div id="voice" class="fila"></div>
-    <div id="local-ai" class="fila"></div>
+    <div id="dialogo"></div>
+    <textarea id="pregunta" class="chat-input" placeholder="Escribe tu primera pregunta..." rows="3"></textarea>
+    <div class="fila chat-acciones"><button id="enviar" type="button" class="boton enviar" aria-label="Enviar"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M3 20.5v-6l8-2.5-8-2.5v-6L22 12z"/></svg><span class="rotulo">Enviar</span></button>
+      <div id="voice" class="fila"></div></div>
+    <div id="motor"></div>
     <p id="brain" class="brain"></p>
-    <div id="dialogo" style="margin-top:1rem"></div>
     <p class="tenue"><a href="./instalar.html">Guía de instalación, paso a paso →</a></p>
   </div>
   <section id="panel-modelos" class="cerrado"></section></div>
@@ -50,36 +52,24 @@
     </footer>
 </main>
 <script type="application/json" id="i18n">{
- "arrancando": "Arrancando el motor…",
- "avisoCifra": "Son ~2 GB. Lo decimos antes de que pulses, no después.",
- "avisoRed": "Se descarga por la red una sola vez. Queda cacheado en tu navegador.",
- "bajando": "Descargando",
- "bajarNavegador": "Descargar la IA del navegador (~2,7-4 GB)",
  "brainAsleep": "Todavía no hay motor arrancado",
  "brainBrowser": "IA del navegador (Edge)",
  "brainLabel": "Cerebro:",
  "brainLive": "Vivo en tu máquina",
  "brainNone": "ninguno",
- "cargando": "Cargando…",
  "causaDesconocida": "Causa desconocida.",
  "causaElegida": "Causa: elegiste el JSON.",
- "causaError": "Causa: error al consultar la GPU.",
- "causaSinAdaptador": "Causa: hay WebGPU pero ninguna GPU utilizable.",
- "causaSinApi": "Causa: este navegador no expone WebGPU ni LanguageModel.",
+ "causaEnBenchmark": "Causa: el motor se elige y se mide en el Benchmark.",
  "copiaManual": "Selecciona y Ctrl+C",
  "copiado": "Copiado OK",
  "copiarPara": "Copiar para",
- "descargar": "Descargar modelo (~2 GB, una vez)",
  "destinos": [
   "Gemini",
   "ChatGPT",
   "Claude",
   "mi IA local"
  ],
- "error": "Error",
  "etiquetaJson": "Texto para copiar a tu IA",
- "falloDescarga": "NO_DATA · fallo al descargar el modelo",
- "falloNavegador": "NO_DATA · fallo con la IA del navegador",
  "falloRespuesta": "NO_DATA · fallo al generar respuesta",
  "falloVacio": "NO_DATA — el motor terminó sin emitir ni un carácter. No es una respuesta vacía: es un turno que no llegó a existir.",
  "idAviso": "Se genera una clave en tu navegador. No se puede exportar ni copiar a otro aparato: si borras los datos del sitio, esta identidad se pierde y no hay forma de recuperarla. No hay contraseña que olvidar ni servidor que la guarde.",
@@ -88,83 +78,44 @@
  "idFallo": "NO_DATA — no se pudo crear la identidad:",
  "idHola": "Hola,",
  "idPublica": "Clave pública:",
- "laiBuscando": "Preguntando a 127.0.0.1:11434…",
- "laiBuscar": "Buscar IA local",
- "laiEncontrados": "Modelos tuyos encontrados:",
  "laiListo": "Hablarás con",
- "laiMixto": "Desde una página https el navegador solo deja hablar con 127.0.0.1. Una IP de red la corta por contenido mixto.",
- "laiNada": "NO_DATA — no se encontró IA local en 127.0.0.1:11434. Causa:",
- "laiOtra": "Otra dirección de Ollama",
- "laiProbar": "Probar ahí",
- "laiVacio": "NO_DATA — Ollama responde pero no tiene ningún modelo.",
- "listoLocal": "Motor listo. Escribe tu pregunta.",
  "llevate": "Llévate este texto a la IA que ya uses.",
- "medidaCalentado": "Medido tras una ráfaga oculta de 5 tokens: sin ella se cronometra al compilador de shaders, no a tu máquina.",
- "medidaEsperando": "Escribe un turno y se mide solo. Nada de esto sale de tu aparato.",
- "medidaMotor": "motor:",
- "medidaSinTokens": "tok/s NO_DATA — este motor no declara cuántos tokens generó. Contar trozos y llamarlos tokens sería inventar la cifra.",
- "medidaSinTtft": "TTFT NO_DATA — el motor no emitió ningún trozo que cronometrar.",
- "medidaTitulo": "TU MÁQUINA · medido aquí, no comparado con nadie",
- "medidaTurnos": "turnos:",
  "micEnAparato": "Dictado en tu aparato. El audio no sale de aquí.",
  "micEscuchando": "Escuchando… toca para parar",
  "micFallo": "NO_DATA — el dictado local falló:",
  "micHablar": "Hablar",
  "micSinLocal": "NO_DATA — tu navegador no ofrece dictado en el aparato. El botón queda apagado: el reconocedor de la nube no vuelve.",
- "mirandoGpu": "Consultando la GPU…",
- "mirandoNavegador": "Consultando la IA del navegador…",
  "mismoTexto": "El mismo texto sirve para cualquier IA. Esa es la idea: no depender de una sola.",
- "navBajado": "IA del navegador descargada. Escribe tu pregunta.",
- "navListo": "IA del navegador lista. Escribe tu pregunta.",
- "navPesa": "Son 2,7-4 GB. Lo decimos antes de que pulses.",
- "navYaEsta": "La IA ya está en tu dispositivo. Cero descarga.",
  "papel": "Eres Preceptor, el instalador de PreceptorOS. Tu unica funcion es que la persona consiga instalar el producto en SU maquina. REGLAS DURAS: 1) Pregunta primero que sistema usa: Linux, macOS, Windows o Android por Termux. 2) Dale los pasos de la guia de instalacion de esta misma web y mandala ahi para el detalle; no dictes rutas de memoria, que envejecen. 3) Si algo falla, pide el mensaje de error exacto y da SOLO el comando que lo corrige. 4) Si no sabes algo, di NO_DATA y di por que. Nunca inventes comandos ni versiones. 5) No pidas datos personales ni sugieras servicios en la nube: el producto corre en su aparato. 6) Responde en el idioma de la persona. Se sobrio y breve.",
  "pie1f": "Hasta que pulsas un botón, esta página no ha hablado con nadie.",
  "pie1r": "Cero peticiones externas al cargar.",
- "pie2f": "WebLLM desde esm.run",
- "pie2r": "es la única excepción CDN permitida (~2 GB, una vez).",
- "pie3f": "Si no hay WebGPU ni LanguageModel,",
- "pie3r": "te genera un JSON para llevar a la IA que ya tengas.",
+ "pie2f": "El motor se elige en el Benchmark.",
+ "pie2r": "Las descargas y las medidas viven alli, no aqui.",
+ "pie3f": "Si no hay motor elegido,",
+ "pie3r": "la pagina te genera un JSON para llevar a la IA que ya tengas.",
  "pieBenchmark": "Benchmark",
  "pieHitos": "Hitos",
  "pieInstalar": "Instalar",
  "pieTablon": "Tablón",
- "preceptor": "Preceptor",
  "prefieroJson": "Prefiero el JSON",
  "reglas": [
   "No sugieras servicios en la nube",
   "No pidas datos personales",
   "Si no sabes, di NO_DATA"
  ],
- "sensorAviso": "El modelo pequeño empieza a olvidar el contexto. ¿Resetear conversación?",
- "sensorBoton": "Resetear",
- "sensorRegistrado": "Reseteo registrado como medida de límite en esta sesión. No se guarda en ningún sitio: esta web no almacena nada tuyo.",
  "sinMotor": "NO_DATA · no hay motor de IA disponible en este navegador.",
- "tbCuerpo": "Cuerpo",
- "tbFirmado": "Firmado en tu aparato. Todavía no viaja a ningún sitio: el envío llegará cuando lo firme el Soberano.",
- "tbFirmar": "Firmar y publicar",
- "tbPublicar": "Publicar hilo",
- "tbSinIdentidad": "Crea una identidad para publicar.",
- "tbTipo": "Tipo",
- "tbTitulo": "Título",
  "tu": "Tú",
- "usarNavegador": "Usar la IA de tu navegador",
- "cabModelos": "MODELOS",
- "cabComunidad":"COMUNIDAD",
-"cabBenchmark": "BENCHMARK",
+ "cabComunidad": "COMUNIDAD",
+ "cabBenchmark": "BENCHMARK",
  "cabCola": "COLA DE FIRMA",
- "cabPlayground": "PROBADOR",
- "cabLogin": "ENTRAR",
  "cabIdioma": "IDIOMA",
+ "cabHome": "INICIO",
  "cabEmpezar": "EMPIEZA AQUÍ"
 }</script>
 <script src="/assets/fallback.js"></script>
 <script src="/assets/state.js"></script>
-<script src="/assets/engine.js"></script>
 <script src="/assets/chat.js"></script>
-<script src="/assets/localai.js"></script>
 <script src="/assets/voice.js"></script>
-<script src="/assets/meter.js"></script>
 <script src="/assets/seal.js"></script>
 <script src="/assets/copiar.js"></script>
 <script src="/assets/ambient.js"></script>

@@ -29,17 +29,19 @@
 <main>
   <header id="cabezal">
     <div class="seal" id="cabeza" role="img" aria-label="Preceptor"></div>
-    <div class="marca"><h1>Preceptor<b>OS</b></h1><nav id="cab-nav"></nav></div>
+    <div class="marca"><h1>Preceptor<b>OS</b></h1></div>
+    <div id="cab-ident" class="cab-ident"></div>
     <div id="identity" class="fila identity"></div>
+    <nav id="cab-nav"></nav>
   </header>
   <section id="hub"></section>
 <div id="hub-layout"><div id="chat" class="panel">
-<textarea id="pregunta" class="chat-input" placeholder="Write your first question..." rows="4"></textarea>
-<div id="motor"></div><button id="enviar" type="button" class="boton enviar" aria-label="Send"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M3 20.5v-6l8-2.5-8-2.5v-6L22 12z"/></svg><span class="rotulo">Send</span></button>
-    <div id="voice" class="fila"></div>
-    <div id="local-ai" class="fila"></div>
+    <div id="dialogo"></div>
+    <textarea id="pregunta" class="chat-input" placeholder="Write your first question..." rows="3"></textarea>
+    <div class="fila chat-acciones"><button id="enviar" type="button" class="boton enviar" aria-label="Send"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M3 20.5v-6l8-2.5-8-2.5v-6L22 12z"/></svg><span class="rotulo">Send</span></button>
+      <div id="voice" class="fila"></div></div>
+    <div id="motor"></div>
     <p id="brain" class="brain"></p>
-    <div id="dialogo" style="margin-top:1rem"></div>
     <p class="tenue"><a href="./instalar.html">Installation guide, step by step →</a></p>
   </div>
   <section id="panel-modelos" class="cerrado"></section></div>
@@ -50,36 +52,24 @@
     </footer>
 </main>
 <script type="application/json" id="i18n">{
- "arrancando": "Starting the engine...",
- "avisoCifra": "About 400 MB. We say it before you click, not after.",
- "avisoRed": "Downloads over the network once. Cached in your browser.",
- "bajando": "Downloading",
- "bajarNavegador": "Download the browser's AI (~2.7-4 GB)",
  "brainAsleep": "No engine started yet",
  "brainBrowser": "Browser AI (Edge)",
  "brainLabel": "Brain:",
  "brainLive": "Live on your machine",
  "brainNone": "none",
- "cargando": "Loading...",
  "causaDesconocida": "Cause unknown.",
  "causaElegida": "Cause: you chose the JSON.",
- "causaError": "Cause: error querying the GPU.",
- "causaSinAdaptador": "Cause: WebGPU exists but no usable GPU.",
- "causaSinApi": "Cause: this browser exposes neither WebGPU nor LanguageModel.",
+ "causaEnBenchmark": "Cause: the engine is chosen and measured in the Benchmark.",
  "copiaManual": "Select and Ctrl+C",
  "copiado": "Copied OK",
  "copiarPara": "Copy for",
- "descargar": "Download model (~2 GB, once)",
  "destinos": [
   "Gemini",
   "ChatGPT",
   "Claude",
   "my local AI"
  ],
- "error": "Error",
  "etiquetaJson": "Text to copy to your AI",
- "falloDescarga": "NO_DATA - failed to download the model",
- "falloNavegador": "NO_DATA - browser AI failed",
  "falloRespuesta": "NO_DATA - failed to generate response",
  "falloVacio": "NO_DATA — the engine finished without emitting a single character. This is not an empty answer: it is a turn that never happened.",
  "idAviso": "A key is generated in your browser. It cannot be exported or copied to another device: if you clear the site data, this identity is lost and there is no way to recover it. There is no password to forget and no server holding it.",
@@ -88,83 +78,44 @@
  "idFallo": "NO_DATA — the identity could not be created:",
  "idHola": "Hello,",
  "idPublica": "Public key:",
- "laiBuscando": "Asking 127.0.0.1:11434…",
- "laiBuscar": "Search local AI",
- "laiEncontrados": "Your models found:",
  "laiListo": "You will talk to",
- "laiMixto": "From an https page the browser only allows 127.0.0.1. A network IP is blocked as mixed content.",
- "laiNada": "NO_DATA — no local AI found at 127.0.0.1:11434. Cause:",
- "laiOtra": "Another Ollama address",
- "laiProbar": "Try there",
- "laiVacio": "NO_DATA — Ollama answers but has no model.",
- "listoLocal": "Engine ready. Write your question.",
  "llevate": "Take this text to the AI you already use.",
- "medidaCalentado": "Measured after a hidden 5-token warm-up: without it you time the shader compiler, not your machine.",
- "medidaEsperando": "Write one turn and it measures itself. None of this leaves your device.",
- "medidaMotor": "engine:",
- "medidaSinTokens": "tok/s NO_DATA — this engine does not declare how many tokens it generated. Counting chunks and calling them tokens would be inventing the figure.",
- "medidaSinTtft": "TTFT NO_DATA — the engine emitted no chunk to time.",
- "medidaTitulo": "YOUR MACHINE · measured here, compared to nobody",
- "medidaTurnos": "turns:",
  "micEnAparato": "Dictation on your device. The audio does not leave.",
  "micEscuchando": "Listening… tap to stop",
  "micFallo": "NO_DATA — on-device dictation failed:",
  "micHablar": "Talk",
  "micSinLocal": "NO_DATA — your browser offers no on-device dictation. The button stays off: the cloud recogniser is not coming back.",
- "mirandoGpu": "Querying the GPU...",
- "mirandoNavegador": "Querying the browser's AI...",
  "mismoTexto": "The same text works for any AI. That is the idea: not depending on a single one.",
- "navBajado": "Browser AI downloaded. Write your question.",
- "navListo": "Browser AI ready. Write your question.",
- "navPesa": "About 2.7-4 GB. We say it before you click.",
- "navYaEsta": "The AI is already on your device. Zero download.",
  "papel": "You are Preceptor, the PreceptorOS installer. Your only job is to get the person to install the product on THEIR machine. HARD RULES: 1) Ask first which system they use: Linux, macOS, Windows or Android via Termux. 2) Give them the steps from this site's installation guide and send them there for the detail; do not dictate paths from memory, they go stale. 3) If something fails, ask for the exact error message and give ONLY the command that fixes it. 4) If you do not know something, say NO_DATA and say why. Never invent commands or versions. 5) Do not ask for personal data and do not suggest cloud services: the product runs on their device. 6) Answer in the person's language. Be sober and brief.",
  "pie1f": "Until you press a button, this page has spoken to nobody.",
  "pie1r": "Zero external requests on load.",
- "pie2f": "WebLLM from esm.run",
- "pie2r": "is the only CDN exception allowed (~2 GB, once).",
- "pie3f": "If there is no WebGPU or LanguageModel,",
- "pie3r": "it builds you a JSON to take to the AI you already have.",
+ "pie2f": "The engine is chosen in the Benchmark.",
+ "pie2r": "Downloads and measurements live there, not here.",
+ "pie3f": "With no engine chosen,",
+ "pie3r": "the page builds you a JSON to take to the AI you already have.",
  "pieBenchmark": "Benchmark",
  "pieHitos": "Milestones",
  "pieInstalar": "Install",
  "pieTablon": "Board",
- "preceptor": "Preceptor",
  "prefieroJson": "I prefer the JSON",
  "reglas": [
   "Do not suggest cloud services",
   "Do not ask for personal data",
   "If you don't know, say NO_DATA"
  ],
- "sensorAviso": "The small model is starting to forget the context. Reset the conversation?",
- "sensorBoton": "Reset",
- "sensorRegistrado": "Reset recorded as a limit measurement for this session. It is stored nowhere: this site keeps nothing of yours.",
  "sinMotor": "NO_DATA - no AI engine available in this browser.",
- "tbCuerpo": "Body",
- "tbFirmado": "Signed on your device. It does not travel anywhere yet: sending will come when the Sovereign signs it off.",
- "tbFirmar": "Sign and publish",
- "tbPublicar": "Post thread",
- "tbSinIdentidad": "Create an identity to publish.",
- "tbTipo": "Type",
- "tbTitulo": "Title",
  "tu": "You",
- "usarNavegador": "Use your browser's AI",
- "cabModelos": "MODELS",
- "cabComunidad":"COMMUNITY",
-"cabBenchmark": "BENCHMARK",
+ "cabComunidad": "COMMUNITY",
+ "cabBenchmark": "BENCHMARK",
  "cabCola": "SIGNING QUEUE",
- "cabPlayground": "PLAYGROUND",
- "cabLogin": "LOG IN",
  "cabIdioma": "LANGUAGE",
+ "cabHome": "HOME",
  "cabEmpezar": "START HERE"
 }</script>
 <script src="/assets/fallback.js"></script>
 <script src="/assets/state.js"></script>
-<script src="/assets/engine.js"></script>
 <script src="/assets/chat.js"></script>
-<script src="/assets/localai.js"></script>
 <script src="/assets/voice.js"></script>
-<script src="/assets/meter.js"></script>
 <script src="/assets/seal.js"></script>
 <script src="/assets/copiar.js"></script>
 <script src="/assets/ambient.js"></script>

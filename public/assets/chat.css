@@ -41,3 +41,18 @@ button.enviar svg{margin-right:.1rem}
   margin:0 0 .9rem;padding:.6rem;border:1px solid var(--bronce);
   border-radius:var(--radius);background:var(--panel-bg)}
 .corregir-caja .tenue{margin:0;font-size:.72rem}
+
+/* --- el panel grande: escribir y hablar en la misma fila ---------------- */
+/* Enviar y el microfono son la misma decision --«mando este turno»-- y por
+   eso van juntos. El microfono estaba en una fila propia debajo del boton, y
+   en el telefono quedaba fuera de la primera pantalla: existia y no se veia. */
+.chat-acciones{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;
+  margin:.5rem 0 0}
+.chat-acciones #voice{margin:0}
+/* La terminal es lo alto del panel; el campo, lo justo para escribir. */
+#dialogo{overflow-y:auto;max-height:52vh}
+/* Con el teclado abierto, la zona de herramientas se retira: en un telefono
+   el teclado se come media pantalla y lo que tapa es la conversacion. Lo
+   decide `visualViewport` en chat-router.js, que es quien sabe cuanto queda
+   visible de verdad. */
+#chat.con-teclado #herramientas{display:none}

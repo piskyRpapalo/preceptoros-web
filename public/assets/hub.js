@@ -47,34 +47,62 @@
   }
 
   /* --- el cabezal, sincrono ---------------------------------------------
-     Se construye antes de pedir nada: son los cuatro botones que llevan a
-     todo lo demas, y una cabecera que aparece medio segundo tarde se lee
-     como una pagina rota. */
-  var bModelos = el('button', 'cab-boton', T.cabModelos);
-  bModelos.type = 'button';
-  bModelos.setAttribute('aria-expanded', 'false');
-  bModelos.setAttribute('aria-controls', 'panel-modelos');
-  cab.appendChild(bModelos);
-  var bCola = el('button', 'cab-boton', T.cabCola);
-  bCola.type = 'button';
-  bCola.setAttribute('aria-controls', 'hub');
-  cab.appendChild(bCola);
-  // El onboarding vuelve al cabezal. Al rehacerlo en la Puerta 6 se perdio su
-  // enlace, y el gate lo cazo: sin el, la puerta de entrada del producto no se
-  // alcanza desde la portada.
+     Se construye antes de pedir nada: una cabecera que aparece medio segundo
+     tarde se lee como una pagina rota.
+
+     CUATRO ENLACES Y NADA MAS (2026-09-01). Antes habia SIETE botones, y en
+     el Doogee ocupaban tres filas: el cabezal se comia el 40 % del alto y el
+     chat --que es a lo que se viene-- empezaba casi fuera de vista. Se midio
+     en el telefono, no en un viewport emulado.
+
+     Los tres que se van NO se borran, se mudan:
+       MODELOS   -> el rail de companeros ya se abre solo; el boton sobraba.
+       COLA      -> baja al panel lateral, que es donde vive la cola.
+       PROBADOR  -> fuera del cabezal hasta que se decida si merece la pena.
+     `playground.html` sigue existiendo y sigue enlazada desde el pie. */
+  cab.appendChild(enlace('cab-boton', T.cabHome, './'));
   cab.appendChild(enlace('cab-boton empezar', T.cabEmpezar, './onboarding.html'));
-  // COMUNIDAD lleva al Tablon, que YA existe en los tres idiomas. No es una
-  // ruta nueva: el gate admite 7 paginas de contenido y hay exactamente 7.
   cab.appendChild(enlace('cab-boton', T.cabComunidad, './board.html'));
   cab.appendChild(enlace('cab-boton', T.cabBenchmark, './benchmark.html'));
-  cab.appendChild(enlace('cab-boton', T.cabPlayground, './playground.html'));
   cab.appendChild(enlace('cab-leve', T.cabIdioma, '/'));
 
   /* Los enlaces de identidad publica van AQUI y en ningun otro sitio de la
      pagina. Repetirlos en el pie no es redundancia inofensiva: son la unica
-     forma de comprobar quien firma esto, y dos copias divergen. */
-  var ident = el('span', 'cab-ident');
-  cab.appendChild(ident);
+     forma de comprobar quien firma esto, y dos copias divergen.
+
+     Van como ICONO y no como palabra: «GITHUB LINKEDIN» en mayusculas pesaba
+     como dos botones mas en la fila y competia con la navegacion. El nombre
+     sigue estando, en `aria-label` y en `title`, que es donde lo necesita
+     quien no ve el dibujo. */
+  var ident = document.getElementById('cab-ident');
+  var MARCAS = {
+    GitHub: '<svg viewBox="0 0 16 16" width="18" height="18" fill="currentColor"'
+      + ' aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47'
+      + ' 7.59,.4,.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94'
+      + '-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82'
+      + '.72 1.21 1.87.87 2.33,.66,.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95'
+      + ' 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.42'
+      + ' 7.42 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16'
+      + ' 1.92.08 2.12,.51,.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95,.29,.25.54.73'
+      + '.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15,.46,.55.38A8.01 8.01 0 0 0 16 8'
+      + 'c0-4.42-3.58-8-8-8z"/></svg>',
+    LinkedIn: '<svg viewBox="0 0 16 16" width="18" height="18" fill="currentColor"'
+      + ' aria-hidden="true"><path d="M0 1.15C0 .51.53 0 1.18 0h13.64C15.47 0 16 .51'
+      + ' 16 1.15v13.7c0 .64-.53 1.15-1.18 1.15H1.18C.53 16 0 15.49 0 14.85V1.15zM4.94'
+      + ' 13.39V6.17H2.54v7.22h2.4zM3.74 5.18c.84 0 1.36-.55 1.36-1.24-.02-.7-.52-1.24'
+      + '-1.34-1.24-.82 0-1.36.54-1.36 1.24 0 .69.52 1.24 1.32 1.24h.02zm2.53 8.21h2.4'
+      + 'V9.36c0-.21.02-.43.08-.58.17-.43.56-.88 1.21-.88.85 0 1.19.65 1.19 1.6v3.89h2.4'
+      + 'V9.22c0-2.22-1.18-3.25-2.76-3.25-1.29 0-1.86.71-2.18 1.2v.03h-.02l.02-.03V6.17'
+      + 'h-2.4c.03.68 0 7.22 0 7.22h.06z"/></svg>'
+  };
+  function marca(nombre, href) {
+    var a = document.createElement('a');
+    a.className = 'cab-marca'; a.href = href;
+    a.innerHTML = MARCAS[nombre];
+    a.setAttribute('aria-label', nombre);
+    a.title = nombre;
+    return a;
+  }
 
   /* --- el panel Modelos --------------------------------------------------- */
   function hueso(c) { return el('div', 'hueso ' + c); }
@@ -125,6 +153,15 @@
     var sin = ligero();
     (DATOS.agentes || []).forEach(function (a) { g.appendChild(tarjeta(a, sin)); });
     panel.appendChild(g);
+    /* La cola de firma baja aqui desde el cabezal. Su sitio natural es el
+       lateral: es una lista, no una seccion. En el rail plegado se esconde
+       con el resto del texto -- ahi solo caben las ocho esferas. */
+    var bc = el('button', 'cab-boton cola-abrir', T.cabCola);
+    bc.type = 'button';
+    bc.addEventListener('click', function () {
+      document.dispatchEvent(new CustomEvent('hub:cola'));
+    });
+    panel.appendChild(bc);
   }
   function falla(causa) {
     panel.innerHTML = '';
@@ -146,10 +183,10 @@
         if (!d.agentes || !d.agentes.length) throw new Error('catalogo sin agentes');
         pintaPanel();
         var i = d.identidad || {};
-        if (i.github_url) ident.appendChild(enlace('cab-leve', 'GitHub', i.github_url));
-        if (i.linkedin_url) ident.appendChild(enlace('cab-leve', 'LinkedIn', i.linkedin_url));
+        if (ident && i.github_url) ident.appendChild(marca('GitHub', i.github_url));
+        if (ident && i.linkedin_url) ident.appendChild(marca('LinkedIn', i.linkedin_url));
         window.Hub = {
-          textos: L, rotulos: T, datos: d, boton: bModelos, panel: panel,
+          textos: L, rotulos: T, datos: d, boton: null, panel: panel,
           agente: function (id) {
             return (d.agentes || []).filter(function (a) { return a.id === id; })[0] || null;
           }
@@ -161,10 +198,4 @@
   }
   if (window.requestIdleCallback) requestIdleCallback(arranca, { timeout: 1500 });
   else setTimeout(arranca, 200);
-
-  // La cola vive en su propio modulo y se pide al pulsar: es lo menos visitado
-  // de la portada y no tiene por que viajar en la primera pintura.
-  bCola.addEventListener('click', function () {
-    document.dispatchEvent(new CustomEvent('hub:cola'));
-  });
 })();
