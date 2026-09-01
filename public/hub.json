@@ -1,7 +1,7 @@
 {
  "estado": "MOCK",
- "nota": "Maqueta del Hub. Los ocho companeros y sus ids son los del catalogo REAL (api.preceptoros.org/api/v1/agents, leido el 2026-08-31: 1 disponible de 8), para que el dia que esto lea del tunel no haya que renombrar nada. Lo que SI es maqueta es el campo `status` y la cola de firmas: ningun bucle esta corriendo. Cada tarjeta lleva al lado su disponibilidad REAL, que es la que manda. Cada agente lleva DOS imagenes y no es redundancia: `symbol` es el ojo que el cabezal le pone al Preceptor cuando ese companero esta activo, e `icono3d` es la esfera con la que se presenta en el panel Modelos. El bloque `rack` salio de aqui en la Puerta 6: la telemetria del rack es del Soberano y vive en el Ojo, no en la web publica.",
- "fuente": "ids y nombres: catalogo vivo · bloques y funciones: documento P0X Arquitectura de Bucles Autonomos · status y cola: inventados para ver la interfaz",
+ "nota": "Maqueta del Hub. Los ocho companeros y sus ids son los del catalogo REAL. UNO esta servido de verdad --el Instalador, sobre un modelo base-- y los otros siete se pintan pendientes con su causa. Lo que SI es maqueta es el campo `status` y la cola de firmas: ningun bucle esta corriendo detras.",
+ "fuente": "ids y nombres: catalogo vivo · bloques y funciones: documento P0X Arquitectura de Bucles Autonomos · `real.modelo`: MEDIDO contra la Ollama del rack el 2026-09-01 (`ollama list`) · status y cola: inventados para ver la interfaz",
  "bloques": {
   "1": "Nucleo · doctrina y alineamiento",
   "2": "Expansion · comunidad y contenido",
@@ -18,7 +18,9 @@
    "status": "idle",
    "real": {
     "disponible": true,
-    "adaptador": "preceptor-v7:latest"
+    "modelo": "qwen3-coder-30b:latest",
+    "afinado": null,
+    "nota": "corre sobre el modelo BASE, sin afinar. El adaptador `preceptor-v7` que este catalogo declaraba servido YA NO ESTA en el rack: medido el 2026-09-01, Ollama sirve dos modelos y ninguno es ese. Un afinado mejora el papel; no es requisito para servir un turno."
    },
    "icono3d": "instalador"
   },
@@ -31,7 +33,8 @@
    "status": "idle",
    "real": {
     "disponible": false,
-    "adaptador": null,
+    "modelo": null,
+    "afinado": null,
     "causa": "sin adaptador entrenado todavia"
    },
    "icono3d": "privacidad"
@@ -45,7 +48,8 @@
    "status": "thinking",
    "real": {
     "disponible": false,
-    "adaptador": null,
+    "modelo": null,
+    "afinado": null,
     "causa": "sin adaptador entrenado todavia"
    },
    "icono3d": "escritor"
@@ -59,7 +63,8 @@
    "status": "idle",
    "real": {
     "disponible": false,
-    "adaptador": null,
+    "modelo": null,
+    "afinado": null,
     "causa": "sin adaptador entrenado todavia"
    },
    "icono3d": "traductor"
@@ -73,7 +78,8 @@
    "status": "running",
    "real": {
     "disponible": false,
-    "adaptador": null,
+    "modelo": null,
+    "afinado": null,
     "causa": "sin adaptador entrenado todavia"
    },
    "icono3d": "coder"
@@ -87,7 +93,8 @@
    "status": "idle",
    "real": {
     "disponible": false,
-    "adaptador": null,
+    "modelo": null,
+    "afinado": null,
     "causa": "sin adaptador entrenado todavia"
    },
    "icono3d": "analista"
@@ -101,7 +108,8 @@
    "status": "idle",
    "real": {
     "disponible": false,
-    "adaptador": null,
+    "modelo": null,
+    "afinado": null,
     "causa": "sin adaptador entrenado todavia"
    },
    "icono3d": "aprendiz"
@@ -115,7 +123,8 @@
    "status": "idle",
    "real": {
     "disponible": false,
-    "adaptador": null,
+    "modelo": null,
+    "afinado": null,
     "causa": "sin adaptador entrenado todavia"
    },
    "icono3d": "bibliotecario"

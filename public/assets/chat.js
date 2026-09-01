@@ -111,6 +111,13 @@
         via = null; modeloRack = null;
         estado(T.rackSinAdaptador, 'nodata');
         motorZona.appendChild(salida());
+        // Y el badge se APAGA. Se quedaba con el nombre del modelo del
+        // companero anterior mientras en pantalla habia uno sin servir: la
+        // pagina decia «Modelo: qwen3-coder-30b» debajo de un companero que
+        // no tiene ninguno. Es el mismo falso verde que acaba de costarnos el
+        // catalogo, a escala de un badge.
+        document.dispatchEvent(new CustomEvent('preceptor:brain', {
+          detail: { name: T.brainNone, live: false } }));
         return;
       }
       via = 'rack'; modeloRack = d.modelo;

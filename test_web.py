@@ -700,12 +700,25 @@ class Hub(unittest.TestCase):
         self.js = (PUBLICO / "assets" / "hub.js").read_text(encoding="utf-8")
 
     def test_el_hub_no_inventa_agentes(self):
-        """Ocho, los del catalogo real, y ninguno escrito en el codigo.
+        """Ocho en el catalogo: UNO servido de verdad y SIETE pendientes.
 
         El catalogo vivo (api.preceptoros.org/api/v1/agents) da OCHO, no doce,
         y con los ids que usa el tunel -- `coder` y `privacidad`, aunque se
         llamen El Artesano y El Aduanero. Se copian tal cual para que el dia
         que esto lea del tunel no haya que renombrar nada.
+
+        LA CUENTA DE SERVIDOS SE COMPRUEBA, y no es ceremonia. El 2026-09-01
+        este fichero declaraba al Instalador servido con el adaptador
+        `preceptor-v7:latest`, y ese modelo YA NO ESTABA en el rack: `ollama
+        list` daba dos modelos y ninguno era ese. Es decir, la unica insignia
+        verde de la web publica era falsa. Un catalogo que se cree su propia
+        copia vieja es exactamente la averia que este gate existe para cazar.
+
+        Por eso el campo se llama `modelo` y no `adaptador`: hoy el Instalador
+        corre sobre un modelo BASE sin afinar, y llamar «adaptador» a eso
+        seria el mismo falso verde con otro nombre. `afinado` guarda el LoRA
+        cuando lo haya, y su ausencia NO impide servir -- que es justo lo que
+        deja de convertir los LoRAs en un bloqueante.
 
         Y ningun nombre vive en `hub.js`: un nombre escrito en el render
         sobrevive al dia en que el catalogo cambia, y entonces la pantalla
@@ -720,8 +733,28 @@ class Hub(unittest.TestCase):
                 self.assertIn(a["block"], (1, 2, 3, 4), "bloque fuera de 1-4")
                 self.assertIn(a["status"], ("idle", "thinking", "running"))
                 self.assertIn("real", a, "sin la disponibilidad real al lado")
+                r = a["real"]
+                for campo in ("disponible", "modelo", "afinado"):
+                    self.assertIn(campo, r, f"`real` sin `{campo}`")
+                self.assertNotIn("adaptador", r,
+                                 "`adaptador` volvio: un modelo base no es un afinado")
+                if r["disponible"]:
+                    # Servido exige NOMBRAR con que. Sin nombre no hay nada que
+                    # comprobar contra `ollama list` el dia que esto se revise.
+                    self.assertTrue(r["modelo"],
+                                    f"«{a['id']}» se declara servido y no dice con que modelo")
+                else:
+                    self.assertIsNone(r["modelo"], "pendiente y con modelo a la vez")
+                    self.assertTrue(r.get("causa"),
+                                    f"«{a['id']}» esta pendiente y no dice por que")
                 self.assertNotIn(a["name"], self.js,
                                  f"«{a['name']}» esta escrito en hub.js")
+        servidos = [a for a in ags if a["real"]["disponible"]]
+        self.assertEqual(1, len(servidos),
+                         f"se declaran {len(servidos)} companeros servidos; hoy hay UNO")
+        self.assertEqual("instalador", servidos[0]["id"],
+                         "el unico servido tiene que ser el Instalador")
+        self.assertEqual(7, len(ags) - len(servidos), "no hay siete pendientes")
 
     def test_cada_simbolo_del_hub_existe(self):
         """Un <img> a un fichero que no esta no falla: no pinta.

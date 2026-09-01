@@ -106,7 +106,7 @@
        del modelo en la Ollama del rack. El router no habla con nadie -- solo
        dice en voz alta a quien le toca, y quien sepa hablar que escuche. */
     document.dispatchEvent(new CustomEvent('preceptor:companero', { detail: {
-      id: a.id, nombre: a.name, modelo: r.adaptador || null,
+      id: a.id, nombre: a.name, modelo: r.modelo || null,
       disponible: !!r.disponible } }));
   }
 
