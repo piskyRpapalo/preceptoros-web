@@ -41,9 +41,9 @@ descarga a tu espalda.</p>
     porque pedir una contraseña a mitad de un guion es como se cuelan las
     sorpresas.</p></div></li>
   <li><div><h3>Clona el repositorio.</h3>
-    <p><code>git clone --depth 1 https://github.com/piskyRpapalo/PreceptorOS ~/aurelius</code></p></div></li>
+    <p><code>git clone --depth 1 https://github.com/piskyRpapalo/PreceptorOS ~/preceptoros</code></p></div></li>
   <li><div><h3>Crea la puerta.</h3>
-    <p><code>cd ~/aurelius &amp;&amp; bash bin/instalar-pc</code> — pone el icono en
+    <p><code>cd ~/preceptoros &amp;&amp; bash bin/instalar-pc</code> — pone el icono en
     tu menú de aplicaciones y nada más. <strong>No arranca nada al terminar:</strong>
     crea la puerta; entrar lo decides tú. Para quitarlo,
     <code>bash bin/instalar-pc --desinstalar</code>, que borra el icono y
@@ -69,9 +69,9 @@ la sección de Linux. Lo decimos aquí para que no lo busques.</p>
     más gente pierde en el primer minuto.</p></div></li>
   <li><div><h3>Trae git y el repositorio.</h3>
     <p><code>pkg install -y git</code><br>
-    <code>git clone --depth 1 https://github.com/piskyRpapalo/PreceptorOS ~/aurelius</code></p></div></li>
+    <code>git clone --depth 1 https://github.com/piskyRpapalo/PreceptorOS ~/preceptoros</code></p></div></li>
   <li><div><h3>Prepara el teléfono.</h3>
-    <p><code>cd ~/aurelius &amp;&amp; bash bin/instalar-android</code></p></div></li>
+    <p><code>cd ~/preceptoros &amp;&amp; bash bin/instalar-android</code></p></div></li>
   <li><div><h3>Memoria, atajo y cara web.</h3>
     <p><code>python3 preceptoros.py</code><br>
     <code>bin/crear-acceso-directo-android</code> (opcional, recomendado)<br>
@@ -102,9 +102,10 @@ que no caben dentro y <strong>no se descargan sin tu permiso</strong>:</p>
 </div>
 
 <h2>Dónde queda lo tuyo</h2>
-<p>En <code>~/.aurelius/memory.db</code>. <strong>Un solo fichero.</strong> Puedes
+<p>En <code>~/.preceptoros/memory.db</code>. <strong>Un solo fichero.</strong> Puedes
 copiarlo, llevártelo en un USB o borrarlo. Nada sale de tu máquina si tú no lo
 exportas.</p>
+<p class="tenue">Si ya lo tenías instalado con el nombre antiguo, tu memoria se queda donde está y sigue funcionando: el producto adopta la casa vieja en vez de mover tus datos por su cuenta.</p>
 
 <h2>Errores comunes</h2>
 <div class="panel">
@@ -131,8 +132,8 @@ https://github.com/piskyRpapalo/PreceptorOS
 Mi sistema operativo es: [escribe aqui el tuyo]
 
 Los comandos de la guia son:
-  git clone --depth 1 https://github.com/piskyRpapalo/PreceptorOS ~/aurelius
-  cd ~/aurelius &amp;&amp; bash bin/instalar-pc
+  git clone --depth 1 https://github.com/piskyRpapalo/PreceptorOS ~/preceptoros
+  cd ~/preceptoros &amp;&amp; bash bin/instalar-pc
   python3 preceptoros.py
   bin/preceptoros-servicio arranca      # abre http://127.0.0.1:8740
 

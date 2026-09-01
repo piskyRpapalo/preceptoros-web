@@ -440,6 +440,32 @@ class Estructura(unittest.TestCase):
 
 class Doctrina(unittest.TestCase):
 
+    def test_la_guia_clona_donde_el_instalador_instala(self):
+        """La web decia `~/aurelius`; `install.sh` usa `~/preceptoros`.
+
+        No es una preferencia de nombre: son dos sitios distintos. Quien siga
+        la guia manual acaba con el arbol en una carpeta que ningun otro
+        documento del producto vuelve a mencionar, y el dia que pida ayuda
+        nadie sabra donde mirar. `plan_v5.md` ya lo llevaba escrito como deuda
+        firmada --«renombrar empaquetado/guias aurelius->preceptoros»-- y esta
+        es la mitad que le tocaba a la web.
+
+        Lo que NO se toca es `dist/aurelius`: ese es el nombre REAL del
+        binario que hay hoy en `dist/`, comprobado. Renombrarlo en la guia
+        seria cambiar una deuda de nomenclatura por una mentira sobre un
+        fichero, que es peor.
+        """
+        # `.txt` tambien: los `encargo-*.txt` son el texto que la persona COPIA
+        # y pega en su IA. Un comando equivocado ahi viaja mas lejos que uno en
+        # la pagina, porque sale del sitio y acaba en otra conversacion.
+        for p, t in textos():
+            if p.suffix not in (".html", ".txt"):
+                continue
+            with self.subTest(pagina=str(p.relative_to(RAIZ))):
+                self.assertNotIn("~/aurelius", t,
+                                 "la guia clona en ~/aurelius y el instalador "
+                                 "usa ~/preceptoros")
+
     def test_cero_frameworks(self):
         for p, t in textos():
             if p.name == "test_web.py":

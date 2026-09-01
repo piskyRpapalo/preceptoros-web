@@ -4,8 +4,8 @@ https://github.com/piskyRpapalo/PreceptorOS
 Mi sistema operativo es: [escribe aqui el tuyo]
 
 Comandos de la guia:
-  git clone --depth 1 https://github.com/piskyRpapalo/PreceptorOS ~/aurelius
-  cd ~/aurelius && bash bin/instalar-pc
+  git clone --depth 1 https://github.com/piskyRpapalo/PreceptorOS ~/preceptoros
+  cd ~/preceptoros && bash bin/instalar-pc
   python3 preceptoros.py
   bin/preceptoros-servicio arranca
 

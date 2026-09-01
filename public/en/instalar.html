@@ -42,9 +42,9 @@ nothing downloads behind your back.</p>
     <code>sudo</code>, because asking for a password halfway through a script is
     how surprises get in.</p></div></li>
   <li><div><h3>Clone the repository.</h3>
-    <p><code>git clone --depth 1 https://github.com/piskyRpapalo/PreceptorOS ~/aurelius</code></p></div></li>
+    <p><code>git clone --depth 1 https://github.com/piskyRpapalo/PreceptorOS ~/preceptoros</code></p></div></li>
   <li><div><h3>Make the door.</h3>
-    <p><code>cd ~/aurelius &amp;&amp; bash bin/instalar-pc</code> — it puts the icon
+    <p><code>cd ~/preceptoros &amp;&amp; bash bin/instalar-pc</code> — it puts the icon
     in your applications menu and nothing else. <strong>It starts nothing when it
     finishes:</strong> it makes the door; walking through it is your decision. To
     remove it, <code>bash bin/instalar-pc --desinstalar</code>, which deletes the
@@ -70,9 +70,9 @@ the Linux section. We say it here so you do not go looking.</p>
     that loses most people in the first minute.</p></div></li>
   <li><div><h3>Get git and the repository.</h3>
     <p><code>pkg install -y git</code><br>
-    <code>git clone --depth 1 https://github.com/piskyRpapalo/PreceptorOS ~/aurelius</code></p></div></li>
+    <code>git clone --depth 1 https://github.com/piskyRpapalo/PreceptorOS ~/preceptoros</code></p></div></li>
   <li><div><h3>Prepare the phone.</h3>
-    <p><code>cd ~/aurelius &amp;&amp; bash bin/instalar-android</code></p></div></li>
+    <p><code>cd ~/preceptoros &amp;&amp; bash bin/instalar-android</code></p></div></li>
   <li><div><h3>Memory, shortcut and web face.</h3>
     <p><code>python3 preceptoros.py</code><br>
     <code>bin/crear-acceso-directo-android</code> (optional, recommended)<br>
@@ -104,9 +104,10 @@ not fit inside and <strong>are not downloaded without your permission</strong>:<
 </div>
 
 <h2>Where your side of it lives</h2>
-<p>In <code>~/.aurelius/memory.db</code>. <strong>One single file.</strong> You can
+<p>In <code>~/.preceptoros/memory.db</code>. <strong>One single file.</strong> You can
 copy it, carry it on a USB stick, or delete it. Nothing leaves your machine
 unless you export it.</p>
+<p class="tenue">If you installed it under the old name, your memory stays where it is and keeps working: the product adopts the old home instead of moving your data on its own.</p>
 
 <h2>Common errors</h2>
 <div class="panel">
@@ -133,8 +134,8 @@ https://github.com/piskyRpapalo/PreceptorOS
 My operating system is: [write yours here]
 
 The commands from the guide are:
-  git clone --depth 1 https://github.com/piskyRpapalo/PreceptorOS ~/aurelius
-  cd ~/aurelius &amp;&amp; bash bin/instalar-pc
+  git clone --depth 1 https://github.com/piskyRpapalo/PreceptorOS ~/preceptoros
+  cd ~/preceptoros &amp;&amp; bash bin/instalar-pc
   python3 preceptoros.py
   bin/preceptoros-servicio arranca      # opens http://127.0.0.1:8740
 

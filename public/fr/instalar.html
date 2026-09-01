@@ -42,9 +42,9 @@ passe, et rien ne se télécharge dans ton dos.</p>
     <code>sudo</code>, parce que demander un mot de passe au milieu d'un script,
     c'est par là que passent les surprises.</p></div></li>
   <li><div><h3>Clone le dépôt.</h3>
-    <p><code>git clone --depth 1 https://github.com/piskyRpapalo/PreceptorOS ~/aurelius</code></p></div></li>
+    <p><code>git clone --depth 1 https://github.com/piskyRpapalo/PreceptorOS ~/preceptoros</code></p></div></li>
   <li><div><h3>Fabrique la porte.</h3>
-    <p><code>cd ~/aurelius &amp;&amp; bash bin/instalar-pc</code> — ça met l'icône
+    <p><code>cd ~/preceptoros &amp;&amp; bash bin/instalar-pc</code> — ça met l'icône
     dans ton menu d'applications, rien de plus. <strong>Ça ne lance
     rien :</strong> la porte se fabrique ; entrer, c'est toi qui décides. Pour
     l'enlever, <code>bash bin/instalar-pc --desinstalar</code>, qui efface l'icône
@@ -70,9 +70,9 @@ pour que tu ne le cherches pas.</p>
     l'erreur qui perd le plus de monde dans la première minute.</p></div></li>
   <li><div><h3>Récupère git et le dépôt.</h3>
     <p><code>pkg install -y git</code><br>
-    <code>git clone --depth 1 https://github.com/piskyRpapalo/PreceptorOS ~/aurelius</code></p></div></li>
+    <code>git clone --depth 1 https://github.com/piskyRpapalo/PreceptorOS ~/preceptoros</code></p></div></li>
   <li><div><h3>Prépare le téléphone.</h3>
-    <p><code>cd ~/aurelius &amp;&amp; bash bin/instalar-android</code></p></div></li>
+    <p><code>cd ~/preceptoros &amp;&amp; bash bin/instalar-android</code></p></div></li>
   <li><div><h3>Mémoire, raccourci et face web.</h3>
     <p><code>python3 preceptoros.py</code><br>
     <code>bin/crear-acceso-directo-android</code> (optionnel, recommandé)<br>
@@ -106,9 +106,10 @@ permission</strong> :</p>
 </div>
 
 <h2>Où reste ce qui est à toi</h2>
-<p>Dans <code>~/.aurelius/memory.db</code>. <strong>Un seul fichier.</strong> Tu
+<p>Dans <code>~/.preceptoros/memory.db</code>. <strong>Un seul fichier.</strong> Tu
 peux le copier, l'emporter sur une clé USB, ou l'effacer. Rien ne sort de ta
 machine si tu ne l'exportes pas.</p>
+<p class="tenue">Si tu l'avais installé sous l'ancien nom, ta mémoire reste où elle est et continue de marcher : le produit adopte l'ancienne maison au lieu de déplacer tes données tout seul.</p>
 
 <h2>Erreurs courantes</h2>
 <div class="panel">
@@ -133,8 +134,8 @@ bibliotheque standard : https://github.com/piskyRpapalo/PreceptorOS
 Mon systeme d'exploitation est : [ecris le tien ici]
 
 Les commandes du guide sont :
-  git clone --depth 1 https://github.com/piskyRpapalo/PreceptorOS ~/aurelius
-  cd ~/aurelius &amp;&amp; bash bin/instalar-pc
+  git clone --depth 1 https://github.com/piskyRpapalo/PreceptorOS ~/preceptoros
+  cd ~/preceptoros &amp;&amp; bash bin/instalar-pc
   python3 preceptoros.py
   bin/preceptoros-servicio arranca      # ouvre http://127.0.0.1:8740
 
