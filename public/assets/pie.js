@@ -21,7 +21,11 @@
 
   if (ul) {
     ul.innerHTML = '';
-    [['pie1f', 'pie1r'], ['pie2f', 'pie2r'], ['pie3f', 'pie3r']]
+    /* La cuarta es el badge solar. Entra como PAR con el resto vacio en vez de
+       con render propio: el bucle de abajo ya sabe pintar `<strong>` + texto,
+       asi que la insignia cuesta una linea en vez de un bloque. Si algun dia
+       lleva segunda mitad, ya tiene sitio. */
+    [['pie1f', 'pie1r'], ['pie2f', 'pie2r'], ['pie3f', 'pie3r'], ['pieSolar', '']]
       .forEach(function (par) {
         if (T[par[0]]) ul.appendChild(li(T[par[0]], T[par[1]] || ''));
       });

@@ -41,7 +41,15 @@ ENLACES_ADMITIDOS = ("https://github.com/piskyRpapalo/PreceptorOS",
                      # ENLACE de identidad publica, no un subrecurso -- no
                      # pide nada hasta que alguien lo pulsa. Sale de
                      # Alejandria/identidad_publica.json, que es la fuente.
-                     "https://www.linkedin.com/in/")
+                     "https://www.linkedin.com/in/",
+                     # El `@context` del JSON-LD. Es el caso MAS claro de esta
+                     # lista y por eso entra sin amnistia: schema.org no es ni
+                     # subrecurso ni enlace, es un IDENTIFICADOR de vocabulario.
+                     # Nadie lo dereferencia -- ni el navegador de quien visita,
+                     # ni el raspador que lee el bloque: la especificacion de
+                     # JSON-LD dice que se compara como cadena. Cero peticiones,
+                     # que es exactamente lo que esta regla protege.
+                     "https://schema.org")
 
 FRAMEWORKS = r"\breact\b|vue\.js|angular|htmx|alpine\.js|jquery|svelte|tailwind"
 

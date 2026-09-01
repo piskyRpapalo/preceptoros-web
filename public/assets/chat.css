@@ -10,6 +10,39 @@
   border-radius:calc(var(--radius) - 8px);background:var(--glass)}
 .brain.live{color:var(--jardin);border-color:var(--jardin)}
 
+/* --- «Despertando cerebro»: el estado de espera, sin una linea de JS -------
+   state.js escribe `data-fase` en #brain y se va. Todo lo de abajo --el
+   anillo que gira, su parada y el texto en tres idiomas-- lo pinta el
+   navegador solo. El anillo es un `conic-gradient` recortado por una mascara
+   radial: un solo pseudo-elemento, cero imagenes, cero peticiones.
+
+   `.brain.live` NO sirve de enganche aunque sea la clase que suena: ya
+   significa «un turno volvio vivo», y el `paint()` de state.js reescribe
+   `className` en cada evento, asi que el anillo seguiria girando despues de
+   la respuesta. Medido antes de escribir esto. */
+@keyframes brain-gira{to{transform:rotate(1turn)}}
+#brain[data-fase="pensando"]::before{
+  content:"";display:inline-block;width:.72em;height:.72em;
+  margin-right:.4em;vertical-align:-.1em;border-radius:50%;
+  background:conic-gradient(from 0turn,transparent 0 30%,currentColor);
+  -webkit-mask:radial-gradient(closest-side,transparent 58%,#000 60%);
+  mask:radial-gradient(closest-side,transparent 58%,#000 60%);
+  animation:brain-gira 1s linear infinite}
+
+/* Quien pide quietud recibe el MISMO aviso, quieto: el anillo se queda parado
+   y el texto sigue estando. Un estado que solo existe si se mueve no es un
+   estado, es un adorno -- y quien lo apaga se quedaria sin saber que pasa. */
+@media (prefers-reduced-motion:reduce){
+  #brain[data-fase="pensando"]::before{animation:none}}
+
+/* El texto sale del `lang` del documento, que ya esta puesto en las tres
+   portadas. Es la UNICA copy de la web que no vive en el bloque #i18n, y se
+   hace a sabiendas: meterla ahi obligaria a JavaScript a escribirla, que es
+   justo lo que esta mision prohibe. Queda anotado como deuda. */
+html[lang="es"] #brain[data-fase="pensando"]::after{content:" · Despertando cerebro..."}
+html[lang="en"] #brain[data-fase="pensando"]::after{content:" · Waking up brain..."}
+html[lang="fr"] #brain[data-fase="pensando"]::after{content:" · Réveil du cerveau..."}
+
 /* La franja de prueba. La web sirve a dos publicos: quien llega de GitHub o
    LinkedIn y quiere saber en cinco segundos si esto es serio, y quien viene a
    instalarlo. Esta linea es para el primero y no estorba al segundo — cifras

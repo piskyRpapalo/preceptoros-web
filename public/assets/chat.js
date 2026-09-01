@@ -69,7 +69,8 @@
   // Recibe el TEXTO, no la clave: asi toda cadena traducida se referencia con el
   // prefijo T y un test puede cruzar chat.js contra los tres bloques i18n sin
   // conocer casos especiales. Codigo facil de comprobar > comprobador listo.
-  function avisa(n) { document.dispatchEvent(new CustomEvent('preceptor:' + n)); }
+  function avisa(n) { document.dispatchEvent(new CustomEvent('preceptor:' + n));
+    if (window.Fase) Fase(n); }   // el anillo lo pinta chat.css
   function listo(texto, marca) {
     via = marca; estado(texto, 'nodata'); entrada.focus();
     document.dispatchEvent(new CustomEvent('preceptor:brain', { detail: {
@@ -143,6 +144,7 @@
     var p = di('…');
     var fin = function (t) {
       p.textContent = t;
+      if (window.Fase) Fase('');   // TODO final pasa por aqui, tambien el vacio
       dialogo.scrollTop = dialogo.scrollHeight;
     };
     var falla = function (e) { fin(T.falloRespuesta + ' — ' + (e && e.message ? e.message : e)); };

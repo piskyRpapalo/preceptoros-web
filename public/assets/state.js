@@ -53,6 +53,20 @@
     zone.className = 'brain' + (live ? ' live' : '');
     zone.title = live ? T.brainLive : T.brainAsleep;
   }
+  /* La fase de espera del cerebro. Vive AQUI y no en chat.js por dos razones:
+     #brain es de esta hoja --`zone` ya esta cacheado-- y chat.js esta a dos
+     centenares de bytes del techo de 10 KB.
+
+     Y escribe un ATRIBUTO, no una clase. `.brain.live` no vale de enganche
+     aunque lo parezca: esa clase ya significa otra cosa --un turno que VOLVIO
+     vivo-- y `paint()`, tres lineas mas arriba, reescribe `className` entero
+     en cada evento. Reusarla dejaria el anillo girando despues de la
+     respuesta. Un atributo no lo pisa nadie.
+
+     El giro, el anillo y el texto en tres idiomas los pinta chat.css sola:
+     aqui no hay ni una linea de animacion. */
+  window.Fase = function (n) { zone.dataset.fase = n; };
+
   paint(T.brainNone, false);
   document.addEventListener('preceptor:brain', function (e) {
     var d = e.detail || {};

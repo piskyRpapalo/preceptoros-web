@@ -29,7 +29,7 @@
  * dos motivos -- el techo de 7 paginas del gate, y que un fichero de respaldo
  * tambien puede faltar del cache justo el dia que hace falta.
  */
-const VERSION = 'preceptoros-2026-09-e';
+const VERSION = 'preceptoros-2026-09-f';
 const SHELL = 'shell-' + VERSION;
 const OBRA = 'obra-' + VERSION;
 
