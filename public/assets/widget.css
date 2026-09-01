@@ -52,6 +52,7 @@
    --comprobado-- sin inventar un token nuevo. Si algun dia se quiere un rojo
    de verdad, se firma un token; no se cuela aqui un hexadecimal suelto. */
 .cab-boton.empezar{background:var(--sol);border-color:var(--sol)}
+.cab-boton.idioma{background:var(--tinta);border-color:var(--tinta)}
 .cab-leve{font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;
   color:var(--violeta-texto);text-decoration:none;padding:.3rem .35rem}
 .cab-leve:hover{text-decoration:underline}
@@ -71,6 +72,10 @@
      La reserva va en el atajo y no en una linea suelta despues: un
      `padding-right` colocado ANTES de este atajo lo pierde entero. */
   #cabezal{padding:.5rem 4.6rem .5rem .6rem;gap:.5rem}
+  /* El pie es una CAJA con borde, asi que reserva por fuera (margen) y no por
+     dentro: con padding el borde derecho seguiria corriendo por debajo del
+     rail de companeros aunque el texto no lo hiciera. */
+  .honest-footer{margin-right:4.2rem}
   #cabezal h1{font-size:.95rem;margin:0 0 .25rem}
   #cabeza{width:40px;height:40px;flex-basis:40px}
   .cab-boton{font-size:.66rem;padding:.26rem .5rem;letter-spacing:.06em}

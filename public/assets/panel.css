@@ -99,7 +99,7 @@
 
 /* --- panel de herramientas ---------------------------------------------- */
 #herramientas{margin-top:.9rem}
-#herramientas .panel-titulo{font-size:.78rem;letter-spacing:.1em;
+#herramientas .panel-titulo{font-size:.9rem;font-weight:700;letter-spacing:.1em;
   text-transform:uppercase;color:var(--bronce-hondo);margin:0 0 .6rem}
 #herramientas .fila{margin:.4rem 0}
 

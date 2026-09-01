@@ -64,7 +64,11 @@
   cab.appendChild(enlace('cab-boton empezar', T.cabEmpezar, './onboarding.html'));
   cab.appendChild(enlace('cab-boton', T.cabComunidad, './board.html'));
   cab.appendChild(enlace('cab-boton', T.cabBenchmark, './benchmark.html'));
-  cab.appendChild(enlace('cab-leve', T.cabIdioma, '/'));
+  /* IDIOMA va COLOREADO como los demas. Suelto en `cab-leve` parecia una
+     nota al pie, y no lo es: elegir idioma es el primer paso del recorrido
+     --se abre la pagina, se elige idioma, se habla--. Lleva su propio tono
+     para que se lea como puerta y no como seccion. */
+  cab.appendChild(enlace('cab-boton idioma', T.cabIdioma, '/'));
 
   /* Los enlaces de identidad publica van AQUI y en ningun otro sitio de la
      pagina. Repetirlos en el pie no es redundancia inofensiva: son la unica
@@ -153,15 +157,10 @@
     var sin = ligero();
     (DATOS.agentes || []).forEach(function (a) { g.appendChild(tarjeta(a, sin)); });
     panel.appendChild(g);
-    /* La cola de firma baja aqui desde el cabezal. Su sitio natural es el
-       lateral: es una lista, no una seccion. En el rail plegado se esconde
-       con el resto del texto -- ahi solo caben las ocho esferas. */
-    var bc = el('button', 'cab-boton cola-abrir', T.cabCola);
-    bc.type = 'button';
-    bc.addEventListener('click', function () {
-      document.dispatchEvent(new CustomEvent('hub:cola'));
-    });
-    panel.appendChild(bc);
+    /* La PUERTA de la cola la pone `hub-cola.js`, que es de quien es: ese
+       fichero ya era el dueño del panel de la cola, y tener la puerta aqui y
+       la habitacion alli obligaba a este fichero a saber de identidades.
+       Ademas hub.js se paso de 10 KB al añadirla. Se parte por lo que es. */
   }
   function falla(causa) {
     panel.innerHTML = '';

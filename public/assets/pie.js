@@ -29,8 +29,12 @@
 
   if (nav) {
     nav.innerHTML = '';
-    [['./instalar.html', 'pieInstalar'], ['./board.html', 'pieTablon'],
-     ['./benchmark.html', 'pieBenchmark'], ['../hitos.html', 'pieHitos']]
+    /* SOLO lo que el cabezal no lleva ya. Este pie repetia Tablon, Benchmark
+       e Instalar, que estan arriba en la navegacion: cuatro enlaces de los
+       cuales tres eran la misma puerta dos veces. La instalacion, ademas, no
+       se ofrece mas de una vez por pagina -- su puerta es EMPIEZA AQUI, en
+       rojo y en el cabezal. Hitos es lo unico que no vive arriba. */
+    [['../hitos.html', 'pieHitos']]
       .forEach(function (par, i) {
         if (!T[par[1]]) return;
         if (i) nav.appendChild(document.createTextNode(' · '));

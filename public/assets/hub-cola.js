@@ -26,6 +26,33 @@
     return n;
   }
 
+  /* --- la puerta, y quien puede verla ------------------------------------
+     La cola es lo que espera una firma, y firmar exige una identidad: a quien
+     llega por primera vez no le dice nada y le ocupa sitio en el lateral. Asi
+     que el boton nace OCULTO y aparece cuando `auth.js` avisa de que hay
+     perfil -- ese evento se emite tanto al crear la identidad como al
+     encontrarla ya guardada, asi que cubre los dos casos.
+
+     Se mira ADEMAS el estado actual: el catalogo llega por
+     `requestIdleCallback` y `auth.js` puede haber avisado antes de que este
+     boton existiera. Con solo el evento, la mitad de las cargas dejaba la
+     cola escondida a quien si tenia perfil. */
+  function puerta() {
+    var H = window.Hub;
+    if (!H || !H.panel) return;
+    var b = document.createElement('button');
+    b.type = 'button'; b.className = 'cab-boton cola-abrir';
+    b.textContent = (H.rotulos && H.rotulos.cabCola) || '';
+    b.hidden = true;
+    b.addEventListener('click', function () { abre(); });
+    function conPerfil() { b.hidden = false; }
+    if (window.Identity && window.Identity.quien()) conPerfil();
+    document.addEventListener('preceptor:identity', conPerfil);
+    H.panel.appendChild(b);
+  }
+  if (window.Hub) puerta();
+  else document.addEventListener('hub:listo', puerta);
+
   function pinta() {
     var H = window.Hub;
     raiz.innerHTML = '';

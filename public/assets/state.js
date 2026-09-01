@@ -43,8 +43,13 @@
   // que cronometrar, asi que ahi el badge se calla en vez de inventar un cero.
   // Un hueco declarado por ausencia es honesto; un cero no lo es.
   function paint(name, live, ms) {
-    zone.textContent = T.brainLabel + ' ' + name +
-                       (typeof ms === 'number' && isFinite(ms) ? ' · ' + ms + ' ms' : '');
+    zone.textContent = T.brainLabel + ' ';
+    var n = document.createElement('b');
+    n.textContent = name;
+    zone.appendChild(n);
+    if (typeof ms === 'number' && isFinite(ms)) {
+      zone.appendChild(document.createTextNode(' · ' + ms + ' ms'));
+    }
     zone.className = 'brain' + (live ? ' live' : '');
     zone.title = live ? T.brainLive : T.brainAsleep;
   }

@@ -114,12 +114,11 @@
         return;
       }
       via = 'rack'; modeloRack = d.modelo;
-      estado(T.rackListo + ' ' + d.modelo, 'nodata');
       // `live:false`: el modelo esta DECLARADO, no comprobado. Se pone en
       // verde cuando un turno vuelve, no antes. Un badge vivo sin un turno
       // detras es exactamente la cifra decorativa que aqui no se hace.
       document.dispatchEvent(new CustomEvent('preceptor:brain', {
-        detail: { name: d.modelo + ' (rack)', live: false } }));
+        detail: { name: d.modelo, live: false } }));
     });
   } else {
     ofrecerJSON(T.causaEnBenchmark);
@@ -166,7 +165,7 @@
       }).then(function (n) {
         tokens = n;
         document.dispatchEvent(new CustomEvent('preceptor:brain', {
-          detail: { name: modeloRack + ' (rack)', live: true } }));
+          detail: { name: modeloRack, live: true } }));
         cerrar();
       }).catch(function (e) {
         // El tunel todavia no apunta a la Ollama del rack. Se dice, con su

@@ -56,3 +56,7 @@ button.enviar svg{margin-right:.1rem}
    decide `visualViewport` en chat-router.js, que es quien sabe cuanto queda
    visible de verdad. */
 #chat.con-teclado #herramientas{display:none}
+
+/* El nombre del modelo es EL dato de este badge: va en negrita y la etiqueta
+   que lo precede no, para que se lea el que antes que el rotulo. */
+.brain b{font-weight:700}
