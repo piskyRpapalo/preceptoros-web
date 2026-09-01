@@ -102,6 +102,12 @@
       aviso.textContent = (L.hubSinServir || '') + (r.causa ? ' (' + r.causa + ')' : '');
       aviso.hidden = false;
     } else { aviso.textContent = ''; aviso.hidden = true; }
+    /* Quien contesta lo decide el companero: su `real.adaptador` ES el nombre
+       del modelo en la Ollama del rack. El router no habla con nadie -- solo
+       dice en voz alta a quien le toca, y quien sepa hablar que escuche. */
+    document.dispatchEvent(new CustomEvent('preceptor:companero', { detail: {
+      id: a.id, nombre: a.name, modelo: r.adaptador || null,
+      disponible: !!r.disponible } }));
   }
 
   // --- abrir y cerrar ----------------------------------------------------

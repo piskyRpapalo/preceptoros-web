@@ -18,7 +18,7 @@
   var enviar = document.getElementById('enviar');
   var motorZona = document.getElementById('motor');
   var dialogo = document.getElementById('dialogo');
-  var motor = null, via = null, sesion = null;
+  var via = null, modeloRack = null;
 
   function di(texto, mio) {
     var p = document.createElement('p');
@@ -76,26 +76,6 @@
       name: marca === 'webllm' ? MODELO.split('-q4')[0] + ' (Edge)' : T.brainBrowser } }));
     calentar();
   }
-  // Cinco tokens a ciegas antes de que nadie mida. WebGPU compila sus shaders
-  // en la primera generacion: sin esta rafaga, el primer TTFT mide al
-  // compilador y no a la maquina, y sale entre tres y diez veces peor.
-  // El calentamiento se GUARDA en una promesa y el turno la espera. WebLLM
-  // atiende una generacion cada vez: si el turno real entra mientras la rafaga
-  // sigue viva, las dos comparten estado y la respuesta sale como ensalada de
-  // palabras. Se vio en el movil del Soberano con el 3B del navegador.
-  var calentando = null;
-  function calentar() {
-    try {
-      if (via === 'webllm') {
-        calentando = motor.chat.completions.create({
-          messages: [{ role: 'user', content: 'ok' }], max_tokens: 5
-        }).catch(function () {});
-      } else if (sesion) {
-        calentando = sesion.prompt('ok').catch(function () {});
-      }
-    } catch (e) { /* el calentamiento nunca rompe el turno de nadie */ }
-  }
-
   /* --- 4. El JSON vive en fallback.js. Aqui solo el puente. --- */
   function ofrecerJSON(causa) { window.Respaldo.ofrecerJSON(causa); }
   function salida() { return window.Respaldo.salida(); }
@@ -120,7 +100,26 @@
       zone: motorZona, T: T, CDN: CDN, MODELO: MODELO,
       estado: estado, boton: boton, fila: fila, nota: nota, listo: listo,
       salida: salida, ofrecerJSON: ofrecerJSON,
-      setEngine: function (m) { motor = m; }, setSession: function (s) { sesion = s; }
+      setEngine: function () {}, setSession: function () {}
+    });
+  } else if (window.Rack) {
+    /* El cerebro del rack no se busca ni se descarga: ya esta. Lo unico que
+       falta saber es QUE companero contesta, y eso lo dice el router. */
+    document.addEventListener('preceptor:companero', function (e) {
+      var d = e.detail || {};
+      if (!d.disponible || !d.modelo) {
+        via = null; modeloRack = null;
+        estado(T.rackSinAdaptador, 'nodata');
+        motorZona.appendChild(salida());
+        return;
+      }
+      via = 'rack'; modeloRack = d.modelo;
+      estado(T.rackListo + ' ' + d.modelo, 'nodata');
+      // `live:false`: el modelo esta DECLARADO, no comprobado. Se pone en
+      // verde cuando un turno vuelve, no antes. Un badge vivo sin un turno
+      // detras es exactamente la cifra decorativa que aqui no se hace.
+      document.dispatchEvent(new CustomEvent('preceptor:brain', {
+        detail: { name: d.modelo + ' (rack)', live: false } }));
     });
   } else {
     ofrecerJSON(T.causaEnBenchmark);
@@ -156,40 +155,37 @@
     // ?debug enseña el prompt entero antes de enviarlo. Detras de una bandera
     // y no siempre: un console.log permanente es ruido en la consola de otro.
     if (/[?&]debug/.test(location.search)) console.log(papel() + '\n\n' + texto);
-    Promise.resolve(calentando).then(function () { generar(); }).catch(function () { generar(); });
+    // El calentamiento de shaders lo guarda engine.js, que es de quien es.
+    var espera = window.Engine ? window.Engine.espera() : Promise.resolve();
+    espera.then(generar, generar);
     function generar() {
-    if (via === 'ollama') {
+    if (via === 'rack') {
+      window.Rack.stream(modeloRack, papel() + '\n\n' + texto, function (d) {
+        if (t1 === null) { t1 = performance.now(); avisa('hablando'); }
+        acc += d; p.textContent = acc;
+      }).then(function (n) {
+        tokens = n;
+        document.dispatchEvent(new CustomEvent('preceptor:brain', {
+          detail: { name: modeloRack + ' (rack)', live: true } }));
+        cerrar();
+      }).catch(function (e) {
+        // El tunel todavia no apunta a la Ollama del rack. Se dice, con su
+        // causa, y se ofrece el JSON: quedarse en blanco seria peor.
+        fin(T.rackFallo + ' ' + (e && e.message ? e.message : e));
+        ofrecerJSON(T.rackCausa);
+      });
+    } else if (via === 'ollama') {
       window.LocalAI.stream(papel() + '\n\n' + texto, function (d) {
         if (t1 === null) { t1 = performance.now(); avisa('hablando'); }
         acc += d; p.textContent = acc;
       }).then(function (n) { tokens = n; cerrar(); }).catch(falla);
-    } else if (via === 'webllm') {
-      motor.chat.completions.create({
-        messages: [{ role: 'system', content: papel() }, { role: 'user', content: texto }],
-        temperature: 0.6, stream: true, stream_options: { include_usage: true }
-      }).then(async function (flujo) {
-        for await (var t of flujo) {
-          if (t.usage) tokens = t.usage.completion_tokens;
-          var d = (t.choices[0] && t.choices[0].delta.content) || '';
-          if (d && t1 === null) { t1 = performance.now(); avisa('hablando'); }
-          if (d) { acc += d; p.textContent = acc; }
-        }
-        cerrar();
-      }).catch(falla);
     } else {
-      (async function () {
-        for await (var t of sesion.promptStreaming(papel() + '\n\n' + texto)) {
-          if (t1 === null) { t1 = performance.now(); avisa('hablando'); }
-          // La Prompt API emite TROZOS, no el texto entero. Asignar en vez de
-          // acumular dejaba solo el ultimo: respuestas de un caracter, «!» y
-          // «.». Se acumula, y se contempla el caso contrario porque la version
-          // vieja de la API si emitia acumulado: si el trozo ya empieza por lo
-          // que llevamos, es acumulado y se asigna.
-          acc = (t.indexOf(acc) === 0 && acc) ? t : acc + t;
-          p.textContent = acc;
-        }
-        cerrar();
-      })().catch(falla);
+      // WebLLM y la Prompt API generan DENTRO de engine.js: es quien decidio
+      // que cerebro corre, asi que es quien sabe como pedirle un turno.
+      window.Engine.stream(papel(), texto, function (d) {
+        if (t1 === null) { t1 = performance.now(); avisa('hablando'); }
+        acc += d; p.textContent = acc;
+      }).then(function (n) { tokens = n; cerrar(); }).catch(falla);
     }
     }
   }

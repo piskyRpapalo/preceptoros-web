@@ -10,6 +10,17 @@
    listo por el callback `onReady`. */
 (function () {
   var C = null;
+  /* El motor guarda SUS PROPIAS referencias (2026-09-01). Antes vivian en
+     chat.js, que las recibia por `setEngine`/`setSession` y luego escribia a
+     mano una rama de generacion por cada una. Eso puso a chat.js en 11.183 B
+     --por encima del tope de 10 KB-- el dia que entro el cerebro del rack.
+
+     La frontera correcta no es «el chat lo sabe todo»: engine.js decide QUE
+     cerebro corre, asi que tambien sabe COMO se le pide un turno. chat.js se
+     queda con lo suyo --el turno-- y llama a `stream()` sin saber si detras
+     hay WebLLM o la Prompt API. Es la misma doctrina que ya partio fallback.js
+     y localai.js: partir por lo que es, no recortar comentarios. */
+  var motor = null, sesion = null;
   // Estado del propio motor. Vivia en chat.js y se quedo alli al partir el
   // fichero: `decidir()` se mudo sin su guarda y reventaba en la primera
   // linea. Lo que es del motor viaja con el motor.
@@ -32,7 +43,7 @@
         return webllm.CreateMLCEngine(C.MODELO, {
           initProgressCallback: function (info) { linea.textContent = info.text || C.T.arrancando; }
         });
-      }).then(function (m) { C.setEngine(m); C.listo(C.T.listoLocal, 'webllm'); })
+      }).then(function (m) { motor = m; C.setEngine(m); C.listo(C.T.listoLocal, 'webllm'); calentar(); })
         .catch(function (e) {
           C.estado(C.T.falloDescarga + ' — ' + (e && e.message ? e.message : e), 'nodata');
           C.zone.appendChild(C.salida());
@@ -51,7 +62,7 @@
               linea.textContent = C.T.bajando + ' ' + Math.round((e.loaded || 0) * 100) + '%';
             });
           }
-        }).then(function (s) { C.setSession(s); C.listo(yaEsta ? C.T.navListo : C.T.navBajado, 'navegador'); })
+        }).then(function (s) { sesion = s; C.setSession(s); C.listo(yaEsta ? C.T.navListo : C.T.navBajado, 'navegador'); calentar(); })
           .catch(function (e) {
             C.estado(C.T.falloNavegador + ' — ' + (e && e.message ? e.message : e), 'nodata');
             rutaGpu();
@@ -96,8 +107,65 @@
       rutaGpu();
     }
 
+  /* Cinco tokens a ciegas antes de que nadie mida. WebGPU compila sus shaders
+     en la primera generacion: sin esta rafaga, el primer TTFT mide al
+     compilador y no a la maquina, y sale entre tres y diez veces peor.
+     Se GUARDA en una promesa y el turno la espera. WebLLM atiende una
+     generacion cada vez: si el turno real entra mientras la rafaga sigue
+     viva, las dos comparten estado y la respuesta sale como ensalada de
+     palabras. Se vio en el movil del Soberano con el 3B del navegador. */
+  var calentando = null;
+  function calentar() {
+    try {
+      if (motor) {
+        calentando = motor.chat.completions.create({
+          messages: [{ role: 'user', content: 'ok' }], max_tokens: 5
+        }).catch(function () {});
+      } else if (sesion) {
+        calentando = sesion.prompt('ok').catch(function () {});
+      }
+    } catch (e) { /* el calentamiento nunca rompe el turno de nadie */ }
+  }
+
+  /* Un turno contra el cerebro que este cargado. Devuelve los tokens que
+     DECLARE el motor, o null: contar trozos y llamarlos tokens seria decorar
+     una cifra, que es lo unico que este producto no hace. */
+  function stream(sistema, texto, alTrozo) {
+    if (motor) {
+      var tokens = null;
+      return motor.chat.completions.create({
+        messages: [{ role: 'system', content: sistema }, { role: 'user', content: texto }],
+        temperature: 0.6, stream: true, stream_options: { include_usage: true }
+      }).then(async function (flujo) {
+        for await (var t of flujo) {
+          if (t.usage) tokens = t.usage.completion_tokens;
+          var d = (t.choices[0] && t.choices[0].delta.content) || '';
+          if (d) alTrozo(d);
+        }
+        return tokens;
+      });
+    }
+    return (async function () {
+      var acc = '';
+      for await (var t of sesion.promptStreaming(sistema + '\n\n' + texto)) {
+        // La Prompt API emite TROZOS, no el texto entero. Asignar en vez de
+        // acumular dejaba solo el ultimo: respuestas de un caracter, «!» y
+        // «.». Se acumula, y se contempla el caso contrario porque la version
+        // vieja de la API si emitia acumulado: si el trozo ya empieza por lo
+        // que llevamos, es acumulado y se manda solo lo nuevo.
+        var nuevo = (t.indexOf(acc) === 0 && acc) ? t.slice(acc.length) : t;
+        acc = (t.indexOf(acc) === 0 && acc) ? t : acc + t;
+        if (nuevo) alTrozo(nuevo);
+      }
+      return null;      // la Prompt API no declara cuantos tokens genero
+    })();
+  }
+
   // Arranca cuando chat.js entrega el contexto, no antes: sin `C` esto
   // reventaria en la primera linea.
   function start() { decidir(); }
-  window.Engine = { install: install };
+  window.Engine = {
+    install: install, stream: stream,
+    espera: function () { return Promise.resolve(calentando); }
+  };
 })();
