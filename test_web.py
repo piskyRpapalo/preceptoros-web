@@ -217,6 +217,38 @@ class Estructura(unittest.TestCase):
             f"tiene {propias}. La cifra esta publicada en tres portadas. "
             "Remedio: python3 ~/p0x/bin/coherencia-publica.py --si")
 
+    def test_counters_tiene_dos_duenos_y_ninguno_pisa_al_otro(self):
+        """Dos guiones escriben este fichero. Ninguno puede borrar al otro.
+
+        `contadores.py` (aqui) mide el sitio; `p0x/bin/coherencia-publica.py`
+        mide los dos gates y escribe `pruebas_app` y `pruebas_web`. Aquel
+        funde por clave desde siempre; este reescribia `metricas` entero, asi
+        que correrlo borraba las dos cifras de pruebas y el gate se ponia en
+        rojo senalando su propio remedio. Paso el 2026-09-01.
+
+        El cerrojo `O_EXCL` de `contadores.py` no protege de esto: cubre dos
+        copias A LA VEZ, y esto ocurria corriendo uno DESPUES del otro. Son
+        dos averias distintas y hacen falta las dos defensas.
+
+        La regla que queda: cada guion es dueno de las claves que MIDE y
+        conserva las demas. Asi el orden en que se corran deja de importar.
+        """
+        datos = json.loads((PUBLICO / "counters.json").read_text(encoding="utf-8"))
+        claves = {m["clave"] for m in datos["metricas"]}
+        for ajena in ("pruebas_app", "pruebas_web"):
+            self.assertIn(ajena, claves,
+                          f"falta «{ajena}»: alguien reescribio metricas entero. "
+                          "Remedio: python3 ~/p0x/bin/coherencia-publica.py --si")
+        for propia in ("paginas", "peso_sitio"):
+            self.assertIn(propia, claves, f"falta «{propia}», que mide contadores.py")
+
+        fuente = (RAIZ / "contadores.py").read_text(encoding="utf-8")
+        self.assertIn("conservando(previo", fuente,
+                      "contadores.py vuelve a escribir `metricas` sin conservar")
+        limpio = re.sub(r'""".*?"""', "", fuente, flags=re.S)
+        self.assertNotIn('"metricas": medir()', limpio,
+                         "contadores.py pisa el fichero entero otra vez")
+
     def test_el_onboarding_es_alcanzable_y_completo(self):
         """La puerta de entrada existe, se enlaza y tiene sus cuatro pasos.
 

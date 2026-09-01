@@ -80,6 +80,31 @@ def rota_si_toca(previo):
                        encoding="utf-8")
     return destino
 
+def conservando(previo, mias):
+    """Mis metricas, sin borrar las de nadie.
+
+    ESTE FICHERO TIENE DOS ESCRITORES, y hasta el 2026-09-01 el segundo no lo
+    sabia. `p0x/bin/coherencia-publica.py` mide los dos gates y escribe
+    `pruebas_app` y `pruebas_web`; este guion mide el sitio. Aquel FUNDE por
+    clave; este reescribia `metricas` entero, asi que correrlo borraba las dos
+    cifras de pruebas -- y el gate de la web se ponia en rojo senalando su
+    propio remedio.
+
+    El cerrojo de mas abajo no ayudaba: protege de dos copias A LA VEZ, y esto
+    pasaba corriendo uno DESPUES del otro. Son dos averias distintas.
+
+    La regla que queda: cada guion es dueno de las claves que MIDE y no toca
+    las demas. Asi el orden en que se corran deja de importar, que es la unica
+    forma de que esto no vuelva.
+    """
+    if not previo:
+        return mias
+    por_clave = {m["clave"]: m for m in previo.get("metricas", [])}
+    for m in mias:
+        por_clave[m["clave"]] = m
+    return list(por_clave.values())
+
+
 def main():
     # Cerrojo por O_EXCL: si otra copia esta escribiendo, esta PARA y lo dice.
     # No espera ni sobrescribe: dos escritores sobre el mismo JSON dejarian un
@@ -101,7 +126,7 @@ def main():
             "ultima_lectura": ahora.replace(microsecond=0).isoformat(),
             "nota": "Solo hay cifras medidas. Lo que no se midio sale como NO_DATA "
                     "con su causa. Aqui no se cuenta a nadie.",
-            "metricas": medir(),
+            "metricas": conservando(previo, medir()),
         }
         tmp = SALIDA.with_suffix(".json.tmp")
         tmp.write_text(json.dumps(datos, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
