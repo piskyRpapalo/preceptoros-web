@@ -26,6 +26,24 @@
     ? matchMedia('(prefers-reduced-motion: reduce)') : { matches: false };
   var boton = null, avatar = null, nombre = null, aviso = null, activo = null;
 
+  /* El papel Caza-Nido se COMPONE aqui y viaja ya hecho. `chat.js` recibe
+     texto, no una clave: tiene 129 B libres y no debe aprender a buscar en el
+     catalogo. Este fichero ya sabe quien contesta; saber que papel juega es la
+     misma pregunta.
+
+     `T.agentesCifras` es una regla COMPARTIDA --euros y aviso de medidas-- y
+     por eso vive UNA vez en el i18n en vez de copiada dentro de los dos
+     papeles que la necesitan: duplicarla costaba 440 B en `fr`, que tenia 533
+     libres. Quien la necesita lo declara el catalogo con `cifras: true`, no un
+     `if` con dos nombres dentro que envejece al renombrar un agente. */
+  var bloqueI18N = document.getElementById('i18n');
+  var T = bloqueI18N ? JSON.parse(bloqueI18N.textContent) : {};
+  function papelDe(a) {
+    var base = (T.agentes || {})[a.nido];
+    if (!base) return null;                 // sin nido: el chat cae a T.papel
+    return a.cifras && T.agentesCifras ? base + ' ' + T.agentesCifras : base;
+  }
+
   /* Doble guarda, y las dos hacen falta: `startViewTransition` no existe en
      Firefox --llamarlo a pelo revienta el cambio de companero-- y quien pide
      menos movimiento no quiere la morfosis aunque su navegador sepa hacerla. */
@@ -107,9 +125,9 @@
        dice en voz alta a quien le toca, y quien sepa hablar que escuche. */
     document.dispatchEvent(new CustomEvent('preceptor:companero', { detail: {
       id: a.id, nombre: a.name, modelo: r.modelo || null,
-      // `nido` es el papel Caza-Nido que le toca, del catalogo. Quien no lo
-      // trae (traductor, aprendiz) viaja sin el y el chat cae al papel base.
-      nido: a.nido || null, disponible: !!r.disponible } }));
+      // El papel YA COMPUESTO. Quien no tiene nido (traductor, aprendiz)
+      // viaja con null y el chat cae solo al papel base.
+      nido: papelDe(a), disponible: !!r.disponible } }));
   }
 
   // --- abrir y cerrar ----------------------------------------------------

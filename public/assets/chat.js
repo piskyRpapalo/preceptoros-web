@@ -108,7 +108,7 @@
        falta saber es QUE companero contesta, y eso lo dice el router. */
     document.addEventListener('preceptor:companero', function (e) {
       var d = e.detail || {};
-      nido = (T.agentes || {})[d.nido] || null;
+      nido = d.nido || null;   // ya compuesto por chat-router.js
       if (!d.disponible || !d.modelo) {
         via = null; modeloRack = null;
         estado(T.rackSinAdaptador, 'nodata');

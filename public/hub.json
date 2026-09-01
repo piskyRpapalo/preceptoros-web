@@ -86,7 +86,8 @@
     "causa": "sin adaptador entrenado todavia"
    },
    "icono3d": "coder",
-   "nido": "estratega"
+   "nido": "estratega",
+   "cifras": true
   },
   {
    "id": "analista",
@@ -102,7 +103,8 @@
     "causa": "sin adaptador entrenado todavia"
    },
    "icono3d": "analista",
-   "nido": "analista"
+   "nido": "analista",
+   "cifras": true
   },
   {
    "id": "aprendiz",
