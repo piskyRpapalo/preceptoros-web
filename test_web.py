@@ -756,6 +756,54 @@ class Hub(unittest.TestCase):
                          "el unico servido tiene que ser el Instalador")
         self.assertEqual(7, len(ags) - len(servidos), "no hay siete pendientes")
 
+    def test_el_modelo_servido_lleva_tag_explicito(self):
+        """Nada de `:latest` pelado en el modelo que da la cara al publico.
+
+        El canon del nodo lo prohibe por escrito: un tag pelado apunta a donde
+        apunte hoy, y en Ollama suelen ser variantes Thinking con razonamiento
+        no desactivable. El 2026-09-01 la web servia `qwen3-coder-30b:latest`
+        porque era el unico tag que habia; al restaurarse el rack aparecio
+        `qwen3-coder:30b`, que es el nombre que el canon ya nombraba.
+
+        Se comprueba el catalogo entero y no solo el servido: el dia que se
+        sirva un segundo companero, el tag pelado entraria por ahi.
+        """
+        for a in self.d["agentes"]:
+            modelo = a["real"].get("modelo")
+            if not modelo:
+                continue
+            with self.subTest(agente=a["id"], modelo=modelo):
+                self.assertIn(":", modelo, f"«{modelo}» no declara tag")
+                self.assertNotIn(":latest", modelo,
+                                 f"«{modelo}» lleva un tag pelado: usa el explicito")
+
+    def test_el_papel_no_puede_inventar_enlaces(self):
+        """El Instalador tiene PROHIBIDO escribir URLs, y esta medido por que.
+
+        Sirviendo el papel contra los dos modelos que quedaban en el rack, los
+        dos se sacaron un enlace de la manga: `preceptoros.com/install-linux` y
+        `preceptoros.com/guia-instalacion-linux`. Dominio equivocado --el
+        nuestro es .org-- y rutas que no existen. Un modelo que inventa la
+        direccion a la que mandas a instalar es peor que uno que no contesta.
+
+        La regla vive en el `papel` de las TRES portadas, que es lo que viaja
+        al modelo. Se comprueba en las tres porque una traduccion que se salta
+        la prohibicion la desactiva para ese idioma entero.
+        """
+        for idioma in ("es", "en", "fr"):
+            t = (PUBLICO / idioma / "index.html").read_text(encoding="utf-8")
+            papel = json.loads(re.search(r'id="i18n">(.*?)</script>',
+                                         t, re.S).group(1))["papel"]
+            with self.subTest(idioma=idioma):
+                self.assertRegex(papel, r"(?i)\b(nunca|never|jamais)\b",
+                                 "el papel no prohibe nada en absoluto")
+                self.assertRegex(papel, r"(?i)url",
+                                 "el papel no nombra las URL, que es lo que se inventa")
+                # Y el propio papel no puede llevar una URL dentro: seria
+                # ensenarle justo lo que se le prohibe.
+                self.assertNotRegex(papel, r"https?://",
+                                    "hay una URL escrita dentro del papel")
+
     def test_cada_simbolo_del_hub_existe(self):
         """Un <img> a un fichero que no esta no falla: no pinta.
 

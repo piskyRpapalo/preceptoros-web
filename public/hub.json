@@ -18,7 +18,7 @@
    "status": "idle",
    "real": {
     "disponible": true,
-    "modelo": "qwen3-coder-30b:latest",
+    "modelo": "qwen3-coder:30b",
     "afinado": null,
     "nota": "corre sobre el modelo BASE, sin afinar. El adaptador `preceptor-v7` que este catalogo declaraba servido YA NO ESTA en el rack: medido el 2026-09-01, Ollama sirve dos modelos y ninguno es ese. Un afinado mejora el papel; no es requisito para servir un turno."
    },
