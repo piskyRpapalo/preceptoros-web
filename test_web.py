@@ -1597,6 +1597,55 @@ class Imagenes(unittest.TestCase):
         total = (a / "despierta.webp").stat().st_size + (a / "habla.webp").stat().st_size
         self.assertLess(total, TOPE_SPRITE, f"el sprite pesa {total} B")
 
+    def test_ningun_asset_precacheado_esta_muerto(self):
+        """Todo lo que `sw.js` mete en la cache lo pinta alguien.
+
+        El service worker precachea para que la web funcione sin conexion. Un
+        asset precacheado y no pintado por nadie es peso que TODOS los
+        visitantes descargan y ninguno ve -- y no da la cara como sobra,
+        porque el fichero existe y su linea de precache tambien.
+
+        Se encontro asi el 2026-09-02: los ocho `agente-ojo-*.webp` (48 410 B)
+        llevaban precacheados desde que se anadieron, y ni `hub.js` ni
+        `chat-router.js` los usaban -- los dos pintan `agente-3d-*`. El propio
+        comentario de `sw.js` decia para que eran: «la cara es el OJO que el
+        cabezal le pone al Preceptor segun con quien hablas». Se diseno, se
+        precacheo, y no se conecto.
+
+        LOS NOMBRES SE COMPONEN, y la prueba tiene que saberlo. `hub.js` no
+        escribe `agente-3d-coder.webp` en ninguna linea: escribe
+        `'/assets/agente-3d-' + a.icono3d + '.webp'`. Buscar el nombre entero
+        daria por muertos ocho ficheros bien vivos. Asi que un prefijo que
+        alguien concatena cuenta como referencia a toda su familia -- que es
+        exactamente lo que el navegador va a pedir.
+        """
+        sw = (PUBLICO / "sw.js").read_text(encoding="utf-8")
+        precacheados = set(re.findall(r"/assets/([\w.-]+\.\w+)", sw))
+        for prefijo in re.findall(r"'/assets/([\w-]+-)'\s*\+", sw):
+            for f in (PUBLICO / "assets").glob(prefijo + "*"):
+                precacheados.add(f.name)
+
+        vivos = ""
+        for f in sorted(PUBLICO.rglob("*")):
+            if not f.is_file() or f.name == "sw.js":
+                continue
+            if f.suffix.lower() not in (".html", ".css", ".js", ".mjs", ".json"):
+                continue
+            vivos += f.read_text(encoding="utf-8")
+
+        # Prefijos que algun consumidor concatena: valen por toda su familia.
+        compuestos = tuple(re.findall(r"'/assets/([\w-]+-)'\s*\+", vivos))
+
+        muertos = sorted(
+            n for n in precacheados
+            if (PUBLICO / "assets" / n).is_file()
+            and n not in vivos
+            and not any(n.startswith(c) for c in compuestos))
+        self.assertFalse(
+            muertos,
+            "estos assets se precachean y no los pinta nadie -- peso que todos "
+            "descargan y nadie ve: " + ", ".join(muertos))
+
     def test_cada_lamina_pesa_menos_de_30_kb(self):
         for p in sorted((PUBLICO / "assets").glob("lamina-*.webp")):
             with self.subTest(lamina=p.name):

@@ -31,12 +31,41 @@
   h1 { font-size:1.15rem; letter-spacing:.06em; font-weight:700; color:var(--violeta-texto);
        margin-bottom:.35rem }
   .claim { font-size:.82rem; color:var(--tenue); margin-bottom:1.6rem }
-  /* El rostro, quieto. Es una puerta, no un espectaculo: aqui todavia no ha
-     pasado nada que merezca movimiento. */
+  /* Los ocho ojos del cabezal: cuatro colores y cuatro con simbolo. Uno cada
+     segundo y medio, en bucle.
+
+     Aqui habia un rostro quieto, y el comentario decia «es una puerta, no un
+     espectaculo». Lo cambio el Soberano el 2026-09-02, y la razon pesa mas que
+     la estetica: los ocho ojos llevaban PRECACHEADOS por el service worker sin
+     que los pintara nadie -- 48 410 B que todo visitante descargaba y ninguno
+     veia. El propio `sw.js` decia para que eran. Estaban comprados y sin usar.
+
+     `step-end` y no una transicion: son ocho dibujos distintos, e interpolar
+     entre dos imagenes no significa nada. `contain` y no un tamano fijo: los
+     ojos son cuadrados y el marco es 3:4 -- con `96px 128px` un ojo saldria
+     estirado un tercio a lo alto.
+
+     No se hizo tira. Medido el mismo dia: los ocho juntos en un solo WebP sin
+     perdida pesan 124 510 B --mas del doble del tope de 50 KB de esta casa--
+     porque los originales YA son WebP con perdida y recomprimirlos sin ella
+     los hincha. Sueltos pesan 48 410 B, caben bajo el tope, y el service
+     worker ya los tenia todos en cache: ocho peticiones que sin conexion
+     cuestan cero. */
   .seal { width:96px; height:128px; margin:0 auto 1.4rem;
-    background:url(/assets/seal-rest.png) no-repeat center/96px 128px var(--marmol-claro);
+    background:url(/assets/agente-ojo-ambar.webp) no-repeat center/contain var(--marmol-claro);
     image-rendering:pixelated; border:1px solid rgba(255,255,255,.55); border-radius:12px;
-    box-shadow:0 8px 32px rgba(30,24,38,.10) }
+    box-shadow:0 8px 32px rgba(30,24,38,.10);
+    animation:ojos 12s step-end infinite }
+  @keyframes ojos {
+    0%   {background-image:url(/assets/agente-ojo-ambar.webp)}
+    12.5%{background-image:url(/assets/agente-ojo-azul.webp)}
+    25%  {background-image:url(/assets/agente-ojo-rojo.webp)}
+    37.5%{background-image:url(/assets/agente-ojo-verde.webp)}
+    50%  {background-image:url(/assets/agente-ojo-birrete.webp)}
+    62.5%{background-image:url(/assets/agente-ojo-bombilla.webp)}
+    75%  {background-image:url(/assets/agente-ojo-cerebro.webp)}
+    87.5%{background-image:url(/assets/agente-ojo-libro.webp)}
+  }
   .bubbles { display:flex; gap:.7rem; justify-content:center; flex-wrap:wrap }
   /* Bocadillos: cada idioma con su color del canon, y con su pico. Flotan
      apenas — lo justo para que se lean como algo que alguien dice. */
@@ -62,6 +91,10 @@
   .so { color:var(--bronce-hondo); font-weight:700; letter-spacing:.02em }
   @media (prefers-reduced-motion:reduce) {
     .bubble { animation:none; transition:none } .bubble:hover { transform:none }
+    /* Quien pidio menos movimiento se queda con UN ojo, no con otro dibujo:
+       ensenar aqui una cara distinta de la que ve todo el mundo seria contarle
+       otra historia por haber pedido calma. */
+    .seal { animation:none }
   }
 </style>
 <link rel="manifest" href="/manifest.webmanifest">
@@ -71,7 +104,7 @@
 </head>
 <body>
   <div class="gate">
-    <div class="seal" role="img" aria-label="Busto de marmol de Preceptor, despierto"></div>
+    <div class="seal" role="img" aria-label="El ojo de Preceptor, en sus ocho caras"></div>
     <h1>ELIGE TU IA LOCAL</h1>
     <p class="claim">Conviértete en <span class="so">SO</span>berano · Choose your local AI, become <span class="so">SO</span>vereign · Devenez <span class="so">SO</span>uverain</p>
     <nav class="bubbles">
