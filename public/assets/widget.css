@@ -33,7 +33,7 @@
 
 /* La cabeza del Preceptor. El ojo lo pone el router segun el companero
    activo: es con quien hablas, dicho sin una palabra. */
-#cabeza{width:52px;height:52px;flex:0 0 52px;background-repeat:no-repeat;
+#cabeza{width:52px;height:52px;flex:0 0 52px;background-image:url("/assets/caras/avatar-fijo.webp");background-repeat:no-repeat;
   background-position:center;background-size:cover;
   border:2px solid var(--bronce);border-radius:50%}
 
