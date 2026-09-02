@@ -1,7 +1,7 @@
 {
   "esquema": 1,
   "fecha": "2026-09-02",
-  "ultima_lectura": "2026-09-02T06:35:45+00:00",
+  "ultima_lectura": "2026-09-02T06:43:02+00:00",
   "nota": "Solo hay cifras medidas. Lo que no se midio sale como NO_DATA con su causa. Aqui no se cuenta a nadie.",
   "metricas": [
     {
@@ -56,7 +56,7 @@
     {
       "clave": "pruebas_app",
       "estado": "MEDIDO",
-      "valor": 588,
+      "valor": 590,
       "unidad": "pruebas",
       "como": "bash bin/pruebas --rapido en el repo del MVP, cifra 'N/N pruebas'. Es la fuente unica declarada: pytest solo corre parte de la suite"
     },
