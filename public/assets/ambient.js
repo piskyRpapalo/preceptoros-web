@@ -14,7 +14,27 @@
   // funciona igual, solo que sin morfosis.
   window.fluido = function (cambio) {
     if (quieto || !document.startViewTransition) { cambio(); return; }
-    document.startViewTransition(cambio);
+    /* EL RECHAZO SE RECOGE. Cuando dos transiciones se solapan --y se solapan
+       en cuanto una pagina pinta dos zonas que llegan por separado, que es lo
+       normal-- el navegador ABORTA la primera y su promesa se rechaza. Sin
+       este `catch` eso sale como «Uncaught (in promise) InvalidStateError:
+       Transition was aborted» en la consola de quien visita: medido el
+       2026-09-02 en la Comunidad, siete por carga.
+
+       No se corrige encadenando las transiciones ni poniendo un cerrojo: que
+       la segunda cancele a la primera es EXACTAMENTE lo que debe pasar --lo
+       ultimo que llega es lo que hay que ensenar--. Lo que estaba mal era no
+       recoger el aborto, no el aborto.
+
+       LA QUE RECHAZA ES `ready`, NO `finished`. Medido en el navegador el
+       2026-09-02 lanzando dos transiciones a proposito: `ready` rechaza con
+       InvalidStateError en las dos, y `finished` y `updateCallbackDone`
+       RESUELVEN. Que resuelvan es la prueba de que el cambio del DOM se
+       aplica igual: lo unico que se pierde es la animacion. Recoger
+       `finished` --que fue el primer intento-- no silencia nada, porque esa
+       nunca se rechazaba. */
+    var t = document.startViewTransition(cambio);
+    if (t && t.ready && t.ready.catch) t.ready.catch(function () { });
   };
   if (quieto) return;
 
