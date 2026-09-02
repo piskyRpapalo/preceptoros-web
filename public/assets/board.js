@@ -81,8 +81,12 @@
       raiz.appendChild(nota(T.tbEjemplo + ' ' + T.tbReales + ' ' +
                             (d.hilos_reales || 0) + '.', 'nodata'));
     }
-    var f = document.createElement('div');
+    // <nav> y no <div>: son las categorias del tablon, y un lector de
+    // pantalla los ofrece como salto directo en vez de leerlos como cinco
+    // botones sueltos en mitad de la pagina.
+    var f = document.createElement('nav');
     f.className = 'fila filtros';
+    f.setAttribute('aria-label', T.tbFiltros || '');
     lista = document.createElement('ol');
     lista.className = 'hilos';
 

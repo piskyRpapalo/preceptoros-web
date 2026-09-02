@@ -1,0 +1,70 @@
+{
+ "esquema": 1,
+ "estado": "OFICIAL",
+ "nota": "Los anuncios del Soberano. Son REALES, y por eso viven aparte de threads.json, que es EJEMPLO. Mezclarlos en una sola lista haria imposible saber cual es cual, que es justo lo que este fichero existe para evitar. Cada anuncio dice tambien lo que HOY no funciona: un anuncio que promete un canal que no responde es publicidad, no un anuncio.",
+ "medido": "2026-09-02",
+ "anuncios": [
+  {
+   "id": "feedback",
+   "tipo": "TASK",
+   "autor": "soberano",
+   "cuando": "2026-09-02T00:00:00Z",
+   "textos": {
+    "es": {
+     "titulo": "Dame tu feedback",
+     "cuerpo": "Qué se rompió, qué no entendiste, qué esperabas encontrar y no estaba. Sirve más una frase concreta que un elogio.",
+     "publico": "Público: firma un hilo aquí abajo. Se firma con tu clave, en tu aparato.",
+     "privado": "Privado: abre un issue en el repositorio público. Es el único canal que hoy llega de verdad.",
+     "pero": "NO_DATA — un hilo firmado aquí todavía no viaja a ningún sitio: el Ágora responde 404 en /api/v1/threads (medido el 2026-08-30). Se firma y se queda en tu aparato hasta que ese extremo exista.",
+     "enlaceTexto": "Abrir un issue"
+    },
+    "en": {
+     "titulo": "Give me your feedback",
+     "cuerpo": "What broke, what you did not understand, what you expected to find and was not there. One concrete sentence beats any praise.",
+     "publico": "Public: sign a thread below. It is signed with your key, on your device.",
+     "privado": "Private: open an issue on the public repository. It is the only channel that actually arrives today.",
+     "pero": "NO_DATA — a thread signed here does not travel anywhere yet: the Agora answers 404 on /api/v1/threads (measured 2026-08-30). It is signed and stays on your device until that end exists.",
+     "enlaceTexto": "Open an issue"
+    },
+    "fr": {
+     "titulo": "Donne-moi ton retour",
+     "cuerpo": "Ce qui a cassé, ce que tu n'as pas compris, ce que tu t'attendais à trouver et qui n'y était pas. Une phrase concrète vaut mieux qu'un compliment.",
+     "publico": "Public : signe un fil ci-dessous. Il est signé avec ta clé, sur ton appareil.",
+     "privado": "Privé : ouvre une issue sur le dépôt public. C'est le seul canal qui arrive vraiment aujourd'hui.",
+     "pero": "NO_DATA — un fil signé ici ne voyage encore nulle part : l'Agora répond 404 sur /api/v1/threads (mesuré le 2026-08-30). Il est signé et reste sur ton appareil jusqu'à ce que cette extrémité existe.",
+     "enlaceTexto": "Ouvrir une issue"
+    }
+   },
+   "enlace": "https://github.com/piskyRpapalo/PreceptorOS/issues"
+  },
+  {
+   "id": "entrenar",
+   "tipo": "COMPUTE",
+   "autor": "soberano",
+   "cuando": "2026-09-02T00:00:00Z",
+   "textos": {
+    "es": {
+     "titulo": "Entrena un modelo",
+     "cuerpo": "Trae un conjunto de ejemplos tuyo y sale un adaptador LoRA entrenado en el rack. No hace falta GPU: se hace en CPU pura y está medido.",
+     "publico": "Medido el 2026-08-29: rank 16, alpha 32, 2 épocas, 93 ejemplos de tren y 16 de validación. 553 s una línea y 445 s la otra. Bajo diez minutos, no una noche.",
+     "privado": "El conjunto de ejemplos es tuyo y se queda tuyo. Lo que se comparte, si quieres, es el adaptador que sale.",
+     "pero": "NO_DATA — todavía no hay forma de mandarlo por la web: no hay endpoint de subida. Hoy se acuerda por el hilo y se pasa el fichero a mano."
+    },
+    "en": {
+     "titulo": "Train a model",
+     "cuerpo": "Bring your own set of examples and a LoRA adapter comes out, trained on the rack. No GPU needed: it runs on plain CPU and it is measured.",
+     "publico": "Measured 2026-08-29: rank 16, alpha 32, 2 epochs, 93 training and 16 validation examples. 553 s one line, 445 s the other. Under ten minutes, not overnight.",
+     "privado": "The set of examples is yours and stays yours. What gets shared, if you want to, is the adapter that comes out.",
+     "pero": "NO_DATA — there is still no way to send it through the web: no upload endpoint. Today it is arranged in the thread and the file is passed by hand."
+    },
+    "fr": {
+     "titulo": "Entraine un modele",
+     "cuerpo": "Apporte ton propre jeu d'exemples et il en sort un adaptateur LoRA entraîné sur le rack. Pas besoin de GPU : ça tourne sur CPU pur et c'est mesuré.",
+     "publico": "Mesuré le 2026-08-29 : rank 16, alpha 32, 2 époques, 93 exemples d'entraînement et 16 de validation. 553 s une ligne, 445 s l'autre. Moins de dix minutes, pas une nuit.",
+     "privado": "Le jeu d'exemples est à toi et le reste. Ce qui se partage, si tu veux, c'est l'adaptateur qui en sort.",
+     "pero": "NO_DATA — il n'y a toujours aucun moyen de l'envoyer par le web : pas d'endpoint d'upload. Aujourd'hui ça se convient dans le fil et le fichier se passe à la main."
+    }
+   }
+  }
+ ]
+}

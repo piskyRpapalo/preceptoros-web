@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Profil · PreceptorOS</title>
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<meta name="description" content="Ton profil souverain : pseudonyme derive de ta cle Ed25519, buste choisi, mesures signees et contributions. Sans compte et sans serveur.">
+<link rel="canonical" href="https://preceptoros.org/fr/profile.html">
+<link rel="alternate" hreflang="es" href="https://preceptoros.org/es/profile.html">
+<link rel="alternate" hreflang="en" href="https://preceptoros.org/en/profile.html">
+<link rel="alternate" hreflang="fr" href="https://preceptoros.org/fr/profile.html">
+<meta property="og:title" content="Mon profil sur PreceptorOS">
+<meta property="og:description" content="Ton profil souverain : pseudonyme derive de ta cle Ed25519, buste choisi, mesures signees et contributions. Sans compte et sans serveur.">
+<meta property="og:image" content="https://preceptoros.org/assets/preceptor-og.png">
+<meta property="og:url" content="https://preceptoros.org/fr/profile.html">
+<meta property="og:type" content="profile">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"ProfilePage","name":"PreceptorOS Profile","description":"Perfil soberano con identidad Ed25519 y contribuciones firmadas","url":"https://preceptoros.org/fr/profile.html","inLanguage":"fr"}</script>
+<link rel="stylesheet" href="/assets/base.css">
+<link rel="stylesheet" href="/assets/movil.css">
+<link rel="stylesheet" href="/assets/canon.css">
+<link rel="stylesheet" href="/assets/agora.css">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#E4E8EC">
+</head>
+<body>
+<canvas id="ambient" aria-hidden="true"></canvas>
+<main>
+
+<header>
+  <div class="seal" role="img" aria-label="PreceptorOS"></div>
+  <div class="marca">
+    <h1>Profil<b> · ta fiche</b></h1>
+    <p><a href="/fr/">Accueil</a> · <a href="/fr/community.html">Communauté</a> · <a href="/fr/benchmark.html">Benchmark</a> · <a href="/fr/instalar.html">Installer</a></p>
+  </div>
+  <div id="identity" class="fila identity"></div>
+</header>
+
+<p class="guia"><strong>Cette fiche est à toi et vit sur ton appareil.</strong> Pas de compte, pas de serveur, et rien de ce que tu écris ici ne part tout seul. Le pseudonyme ne se choisit pas : il sort du hachage de ta clé, donc personne ne peut réclamer celui d'un autre.</p>
+
+<section class="panel" aria-labelledby="h-yo">
+  <h2 id="h-yo">Ton identité</h2>
+  <div id="perfil-identidad"></div>
+</section>
+
+<section class="panel" aria-labelledby="h-avatar">
+  <h2 id="h-avatar">Ton buste</h2>
+  <div id="perfil-avatar"></div>
+</section>
+
+<section class="panel" aria-labelledby="h-bio">
+  <h2 id="h-bio">À propos de toi</h2>
+  <div id="perfil-bio"></div>
+</section>
+
+<section class="panel" aria-labelledby="h-med">
+  <h2 id="h-med">Mesures signées</h2>
+  <div id="perfil-medidas"></div>
+</section>
+
+<section class="panel" aria-labelledby="h-con">
+  <h2 id="h-con">Contributions</h2>
+  <div id="perfil-contribuciones"></div>
+</section>
+
+<section class="panel" aria-labelledby="h-sh">
+  <h2 id="h-sh">Montrer cette fiche</h2>
+  <div id="perfil-compartir"></div>
+</section>
+
+<footer class="honest-footer">
+  <h2>Ce qu'il y a ici et ce qu'il n'y a pas</h2>
+  <ul>
+    <li><strong>Le pseudonyme est dérivé, pas choisi.</strong> Il sort du SHA-256 de ta clé publique. Changer de nom exige de changer de clé, et changer de clé c'est repartir de zéro : c'est le prix pour que personne ne puisse t'usurper sans un serveur qui l'empêche.</li>
+    <li><strong>Ce que tu écris reste dans ton navigateur.</strong> La biographie est stockée dans IndexedDB et signée avec ta clé. Elle ne voyage encore nulle part parce qu'il n'y a nulle part où : l'Agora ne publie aucun endpoint de profils.</li>
+    <li><strong>Les mesures ne s'auto-déclarent pas.</strong> Elles sortent du registre public, filtrées par ton pseudonyme. Si rien n'y est signé par toi, ici ça affiche zéro — et ça dit pourquoi.</li>
+  </ul>
+</footer>
+
+<script type="application/json" id="i18n">{
+ "pfSinIdentidad": "NO_DATA — il n'y a pas encore d'identité sur cet appareil. Crées-en une avec le bouton en haut à droite et cette fiche se remplit toute seule.",
+ "pfDerivado": "Dérivé du SHA-256 de ta clé publique. Ne se choisit pas.",
+ "pfVerClave": "Voir ma clé publique entière",
+ "pfCargando": "Lecture de la clé…",
+ "pfSinClave": "NO_DATA — la clé publique n'a pas pu être lue :",
+ "pfAvatar": "Choisis ton buste",
+ "pfSinBustos": "NO_DATA — le catalogue de bustes n'a pas pu être lu :",
+ "pfCompartir": "Partager cette fiche",
+ "pfCompartirSin": "Crée une identité pour pouvoir partager ta fiche.",
+ "pfCompartirTexto": "Ma fiche sur PreceptorOS : {quien}",
+ "pfCompartido": "Partagé.",
+ "pfCopiado": "Copié dans le presse-papiers. Colle-le où tu veux.",
+ "pfSinCopiar": "Impossible de copier. Copie-le à la main :",
+ "pfBioEtiqueta": "Ta biographie",
+ "pfBioBarra": "Outils de structure",
+ "pfBioTitulo": "Titre",
+ "pfBioPunto": "Point de liste",
+ "pfBioGuardar": "Enregistrer et signer",
+ "pfBioVista": "Ce que ça donnera",
+ "pfBioGuardada": "Enregistrée sur ton appareil et signée avec ta clé. Elle ne voyage nulle part. Signature :",
+ "pfBioGuardadaSinFirma": "Enregistrée sur ton appareil, SANS signature : il n'y a pas encore d'identité.",
+ "pfBioSinFirma": "Enregistrée, mais la signature a échoué :",
+ "pfMedSinIdentidad": "Crée une identité et les mesures que tu as signées apparaîtront ici.",
+ "pfMedEjemplo": "NO_DATA — le registre est en EXEMPLE : aucune ligne signée n'est encore arrivée de personne. Lignes signées réelles jusqu'ici :",
+ "pfMedTuyas": "Mesures signées par toi :",
+ "pfMedSinDatos": "NO_DATA — le registre n'a pas pu être lu :",
+ "pfConNoData": "NO_DATA — l'Agora ne publie pas encore de contributions. Cause : /api/v1/threads répond 404 (mesuré le 2026-08-30), et il n'y a pas d'endpoint de profils.",
+ "pfConRemedio": "Remède : quand cette extrémité existera, cette section se remplira seule. Un compteur à zéro en attendant serait un capteur qui ment.",
+ "idPerfil": "Mon profil",
+ "idEntrar": "Créer une identité",
+ "idHola": "Bonjour,",
+ "idClave": "Voir mon empreinte",
+ "idPublica": "Clé publique :",
+ "idFallo": "NO_DATA — l'identité n'a pas pu être créée :",
+ "idAviso": "Une clé est générée dans votre navigateur. Elle ne peut être ni exportée ni copiée : si vous effacez les données du site, cette identité est perdue et rien ne permet de la récupérer. Aucun mot de passe à oublier, aucun serveur qui la garde."
+}</script>
+<script src="/assets/ambient.js"></script>
+<script src="/assets/profile.js"></script>
+<script src="/assets/profile-obra.js"></script>
+<script src="/assets/auth.js"></script>
+<script src="/assets/pwa.js"></script>
+</body>
+</html>

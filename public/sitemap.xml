@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://preceptoros.org/</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://preceptoros.org/es/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://preceptoros.org/en/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://preceptoros.org/fr/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://preceptoros.org/"/>
+  </url>
+  <url>
+    <loc>https://preceptoros.org/es/benchmark.html</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://preceptoros.org/es/benchmark.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://preceptoros.org/en/benchmark.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://preceptoros.org/fr/benchmark.html"/>
+  </url>
+  <url>
+    <loc>https://preceptoros.org/en/benchmark.html</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://preceptoros.org/es/benchmark.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://preceptoros.org/en/benchmark.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://preceptoros.org/fr/benchmark.html"/>
+  </url>
+  <url>
+    <loc>https://preceptoros.org/fr/benchmark.html</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://preceptoros.org/es/benchmark.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://preceptoros.org/en/benchmark.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://preceptoros.org/fr/benchmark.html"/>
+  </url>
+  <url>
+    <loc>https://preceptoros.org/es/community.html</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://preceptoros.org/es/community.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://preceptoros.org/en/community.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://preceptoros.org/fr/community.html"/>
+  </url>
+  <url>
+    <loc>https://preceptoros.org/en/community.html</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://preceptoros.org/es/community.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://preceptoros.org/en/community.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://preceptoros.org/fr/community.html"/>
+  </url>
+  <url>
+    <loc>https://preceptoros.org/fr/community.html</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://preceptoros.org/es/community.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://preceptoros.org/en/community.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://preceptoros.org/fr/community.html"/>
+  </url>
+  <url>
+    <loc>https://preceptoros.org/es/</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://preceptoros.org/es/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://preceptoros.org/en/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://preceptoros.org/fr/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://preceptoros.org/"/>
+  </url>
+  <url>
+    <loc>https://preceptoros.org/en/</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://preceptoros.org/es/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://preceptoros.org/en/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://preceptoros.org/fr/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://preceptoros.org/"/>
+  </url>
+  <url>
+    <loc>https://preceptoros.org/fr/</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://preceptoros.org/es/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://preceptoros.org/en/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://preceptoros.org/fr/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://preceptoros.org/"/>
+  </url>
+  <url>
+    <loc>https://preceptoros.org/es/instalar.html</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://preceptoros.org/es/instalar.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://preceptoros.org/en/instalar.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://preceptoros.org/fr/instalar.html"/>
+  </url>
+  <url>
+    <loc>https://preceptoros.org/en/instalar.html</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://preceptoros.org/es/instalar.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://preceptoros.org/en/instalar.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://preceptoros.org/fr/instalar.html"/>
+  </url>
+  <url>
+    <loc>https://preceptoros.org/fr/instalar.html</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://preceptoros.org/es/instalar.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://preceptoros.org/en/instalar.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://preceptoros.org/fr/instalar.html"/>
+  </url>
+  <url>
+    <loc>https://preceptoros.org/es/onboarding.html</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://preceptoros.org/es/onboarding.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://preceptoros.org/en/onboarding.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://preceptoros.org/fr/onboarding.html"/>
+  </url>
+  <url>
+    <loc>https://preceptoros.org/en/onboarding.html</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://preceptoros.org/es/onboarding.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://preceptoros.org/en/onboarding.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://preceptoros.org/fr/onboarding.html"/>
+  </url>
+  <url>
+    <loc>https://preceptoros.org/fr/onboarding.html</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://preceptoros.org/es/onboarding.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://preceptoros.org/en/onboarding.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://preceptoros.org/fr/onboarding.html"/>
+  </url>
+  <url>
+    <loc>https://preceptoros.org/es/playground.html</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://preceptoros.org/es/playground.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://preceptoros.org/en/playground.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://preceptoros.org/fr/playground.html"/>
+  </url>
+  <url>
+    <loc>https://preceptoros.org/en/playground.html</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://preceptoros.org/es/playground.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://preceptoros.org/en/playground.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://preceptoros.org/fr/playground.html"/>
+  </url>
+  <url>
+    <loc>https://preceptoros.org/fr/playground.html</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://preceptoros.org/es/playground.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://preceptoros.org/en/playground.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://preceptoros.org/fr/playground.html"/>
+  </url>
+  <url>
+    <loc>https://preceptoros.org/es/profile.html</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://preceptoros.org/es/profile.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://preceptoros.org/en/profile.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://preceptoros.org/fr/profile.html"/>
+  </url>
+  <url>
+    <loc>https://preceptoros.org/en/profile.html</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://preceptoros.org/es/profile.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://preceptoros.org/en/profile.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://preceptoros.org/fr/profile.html"/>
+  </url>
+  <url>
+    <loc>https://preceptoros.org/fr/profile.html</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://preceptoros.org/es/profile.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://preceptoros.org/en/profile.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://preceptoros.org/fr/profile.html"/>
+  </url>
+  <url>
+    <loc>https://preceptoros.org/hitos.html</loc>
+  </url>
+</urlset>

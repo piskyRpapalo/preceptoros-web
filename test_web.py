@@ -51,6 +51,20 @@ ENLACES_ADMITIDOS = ("https://github.com/piskyRpapalo/PreceptorOS",
                      # que es exactamente lo que esta regla protege.
                      "https://schema.org")
 
+# UN ESPACIO DE NOMBRES XML NO ES UNA DIRECCION. `xmlns="http://www.sitemaps.
+# org/..."` parece una URL y no lo es: es un IDENTIFICADOR. Ningun cliente lo
+# pide nunca -- ni el navegador, ni el raspador, ni el buscador -- y escribirlo
+# en https no solo no ayuda, es que rompe el documento: el espacio de nombres
+# se compara por cadena exacta contra el que fija la especificacion, asi que
+# cambiarle el esquema lo convierte en OTRO espacio de nombres.
+#
+# Va aparte de ENLACES_ADMITIDOS a proposito, y no dentro. Aquella tupla dice
+# «a estos sitios SI se puede enlazar»; esta dice «esto ni siquiera es un
+# enlace». Fundirlas haria que manana alguien creyera que se puede enlazar a
+# w3.org desde una pagina.
+ESQUEMAS_XML = ("http://www.sitemaps.org/schemas/",
+                "http://www.w3.org/1999/xhtml")
+
 FRAMEWORKS = r"\breact\b|vue\.js|angular|htmx|alpine\.js|jquery|svelte|tailwind"
 
 # Los ficheros de licencia se excluyen POR SU NOMBRE, a proposito. Llevan dentro
@@ -98,14 +112,26 @@ def paginas_de_contenido():
 
 class Estructura(unittest.TestCase):
 
-    def test_maximo_siete_paginas(self):
+    def test_maximo_ocho_paginas(self):
         # Amnistia firmada por el Soberano el 2026-08-29: de 5 a 7. El Agora
         # necesita board y benchmark, y el perfil publico vendra despues. El
         # limite sigue existiendo porque una web que crece sin techo deja de
         # poder leerse entera, que es lo que este numero protege.
+        #
+        # SEGUNDA AMNISTIA, firmada por el Soberano el 2026-09-02: de 7 a 8.
+        # La octava es `profile.html`, el perfil que la anterior ya anunciaba.
+        # El motivo por el que necesita URL PROPIA y no una seccion dentro de
+        # `community.html` -- que era la alternativa barata, y se descarto -- es
+        # que un perfil existe para ENSENARSE: se pega en una red social, y
+        # una URL que abre el marketplace y hace scroll hasta un bloque no es
+        # la pagina de nadie. Meterlo dentro habria ahorrado un numero y
+        # roto la unica funcion del perfil.
+        #
+        # Lo que NO cambia: cada pagina nueva se paga con este numero, y
+        # subirlo exige firma. La novena no entra sola.
         paginas = paginas_de_contenido()
-        self.assertLessEqual(len(paginas), 7,
-            "mas de 7 paginas de contenido: " + ", ".join(p.name for p in paginas))
+        self.assertLessEqual(len(paginas), 8,
+            "mas de 8 paginas de contenido: " + ", ".join(p.name for p in paginas))
 
     def test_la_tarjeta_social_apunta_a_algo_que_existe(self):
         """og:image, og:url y el favicon, comprobados contra el disco.
@@ -524,6 +550,8 @@ class Doctrina(unittest.TestCase):
                     continue                      # localhost del usuario, no un tercero
                 if url.startswith(ENLACES_ADMITIDOS):
                     continue                      # enlaces, no subrecursos
+                if url.startswith(ESQUEMAS_XML):
+                    continue                      # identificadores, no direcciones
                 with self.subTest(fichero=p.name, url=url):
                     self.assertTrue(url.startswith(CDN_ADMITIDO),
                                     f"URL externa no admitida en {p}: {url}")
@@ -679,7 +707,7 @@ class Tablon(unittest.TestCase):
 
     def i18n_board(self):
         for idioma in ("es", "en", "fr"):
-            t = (PUBLICO / idioma / "board.html").read_text(encoding="utf-8")
+            t = (PUBLICO / idioma / "community.html").read_text(encoding="utf-8")
             m = re.search(r'id="i18n"[^>]*>(.*?)</script>', t, re.S)
             yield idioma, json.loads(m.group(1))
 
@@ -1611,6 +1639,153 @@ class Contadores(unittest.TestCase):
                     self.assertTrue(como.strip(), f"{m['clave']} vale 0 y no dice de donde sale")
                     self.assertRegex(como, medicion,
                         f"{m['clave']} vale 0 y su `como` no nombra ninguna lectura: {como!r}")
+
+
+class Comunidad(unittest.TestCase):
+    """Los anuncios OFICIALES del Agora, que no son los hilos de EJEMPLO."""
+
+    def setUp(self):
+        self.d = json.loads((PUBLICO / "anuncios.json").read_text(encoding="utf-8"))
+
+    def test_los_anuncios_hablan_los_tres_idiomas(self):
+        """Un anuncio a medio traducir sale en blanco en dos de tres paginas.
+
+        Y sale en blanco EN SILENCIO: `board-anuncios.js` no encuentra el
+        idioma, pinta su NO_DATA y la peticion del Soberano desaparece de /en/
+        y de /fr/ sin que nadie se entere, porque quien lo escribio lo miro en
+        espanol.
+        """
+        for a in self.d["anuncios"]:
+            for idi in ("es", "en", "fr"):
+                with self.subTest(anuncio=a["id"], idioma=idi):
+                    t = a["textos"].get(idi)
+                    self.assertIsNotNone(t, f"{a['id']} no habla {idi}")
+                    for campo in ("titulo", "cuerpo"):
+                        self.assertTrue((t.get(campo) or "").strip(),
+                                        f"{a['id']}/{idi}: {campo} vacio")
+
+    def test_cada_anuncio_dice_lo_que_todavia_no_funciona(self):
+        """La regla del sensor honesto, aplicada a pedir cosas.
+
+        Los dos anuncios de hoy piden algo por un camino que HOY no llega: el
+        Agora responde 404 en /api/v1/threads y no hay endpoint de subida. Un
+        anuncio que pide sin decir eso no es un anuncio, es publicidad: la
+        persona hace el trabajo y descubre sola que no habia donde entregarlo.
+        """
+        for a in self.d["anuncios"]:
+            for idi in ("es", "en", "fr"):
+                with self.subTest(anuncio=a["id"], idioma=idi):
+                    pero = (a["textos"][idi].get("pero") or "").strip()
+                    self.assertTrue(pero, f"{a['id']}/{idi} no declara su limite")
+                    self.assertIn("NO_DATA", pero,
+                                  "el limite no se marca como NO_DATA")
+
+    def test_el_anuncio_con_enlace_lo_nombra_en_los_tres_idiomas(self):
+        """Un `href` sin texto es un enlace invisible: existe y no se pulsa."""
+        for a in self.d["anuncios"]:
+            if not a.get("enlace"):
+                continue
+            for idi in ("es", "en", "fr"):
+                with self.subTest(anuncio=a["id"], idioma=idi):
+                    self.assertTrue((a["textos"][idi].get("enlaceTexto") or "").strip(),
+                                    f"{a['id']}/{idi}: enlace sin texto")
+
+
+class Perfil(unittest.TestCase):
+    """La ficha: bustos, LCP y el texto que escribe una persona."""
+
+    def test_cada_busto_del_catalogo_esta_en_el_disco(self):
+        """Mismo fallo que el de los simbolos del Hub, misma defensa.
+
+        Un <img> a un webp que no esta no lanza ningun error: deja un hueco.
+        Aqui son OCHO huecos en la unica rejilla donde se elige algo.
+        """
+        cat = json.loads((PUBLICO / "bustos.json").read_text(encoding="utf-8"))
+        self.assertEqual(8, len(cat["bustos"]), "no hay ocho bustos")
+        for b in cat["bustos"]:
+            with self.subTest(busto=b["id"]):
+                ruta = PUBLICO / (cat["ruta"].lstrip("/") + b["id"] + ".webp")
+                self.assertTrue(ruta.is_file(), f"falta {ruta.name}")
+                for idi in ("es", "en", "fr"):
+                    self.assertTrue((b.get(idi) or "").strip(),
+                                    f"{b['id']} no tiene nombre en {idi}")
+
+    def test_el_busto_propio_no_va_diferido(self):
+        """El LCP de esta pagina es la cara de arriba, no las ocho de abajo.
+
+        `loading=lazy` en todo lo que sea una imagen es una regla que se aplica
+        sola y se equivoca justo en la que importa: la imagen mas grande de la
+        primera pantalla, diferida, retrasa la metrica por la que se mide si la
+        pagina carga rapido.
+        """
+        js = (PUBLICO / "assets" / "profile.js").read_text(encoding="utf-8")
+        mio = re.search(r"var mio = document\.createElement.*?zonaId\.appendChild\(mio\)",
+                        js, re.S)
+        self.assertIsNotNone(mio, "profile.js ya no pinta el busto propio")
+        self.assertIn("mio.loading = 'eager'", mio.group(0),
+                      "el busto propio va diferido")
+        self.assertIn("fetchPriority = 'high'", mio.group(0),
+                      "el busto propio no pide prioridad")
+        # Y los de la rejilla siguen diferidos: si no, son ocho descargas
+        # compitiendo con la unica que importa.
+        self.assertIn("img.loading = 'lazy'", js,
+                      "la rejilla de bustos dejo de ir diferida")
+
+    def test_la_vista_previa_nunca_monta_html_de_la_persona(self):
+        """La biografia la escribe una persona, y una persona escribe `<script>`.
+
+        La previa se construye con nodos y `textContent`, asi que un menor es
+        un menor. El unico `innerHTML` admitido es el que VACIA (`= ''`), que
+        no monta nada. Se comprueba estaticamente porque la alternativa es
+        confiar en que nadie escriba la linea comoda algun dia.
+        """
+        for nombre in ("profile-obra.js", "profile.js"):
+            js = (PUBLICO / "assets" / nombre).read_text(encoding="utf-8")
+            for m in re.findall(r"\.innerHTML\s*=\s*([^;\n]+)", js):
+                with self.subTest(fichero=nombre, asigna=m.strip()):
+                    self.assertEqual("''", m.strip(),
+                                     "innerHTML con algo que no sea vaciar")
+
+
+class Sitemap(unittest.TestCase):
+
+    def test_el_sitemap_no_anuncia_paginas_que_no_estan(self):
+        """Un sitemap rancio manda al buscador a un 404 que no ve ningun humano.
+
+        Es exactamente lo que habria pasado el 2026-09-02 al renombrar
+        `board.html`: la lista escrita a mano habria seguido anunciandola. Por
+        eso `sitemap.py` DERIVA del disco, y por eso esto lo comprueba contra
+        el disco tambien.
+        """
+        xml = (PUBLICO / "sitemap.xml").read_text(encoding="utf-8")
+        locs = re.findall(r"<loc>([^<]+)</loc>", xml)
+        self.assertTrue(locs, "el sitemap no anuncia nada")
+        for loc in locs:
+            with self.subTest(url=loc):
+                self.assertTrue(loc.startswith(ORIGEN_PROPIO),
+                                "una URL del sitemap no es de este origen")
+                ruta = loc[len(ORIGEN_PROPIO):].lstrip("/")
+                destino = PUBLICO / ruta if ruta else PUBLICO
+                if destino.is_dir():
+                    destino = destino / "index.html"
+                self.assertTrue(destino.exists(), f"el sitemap anuncia {loc}")
+
+    def test_toda_pagina_de_contenido_esta_en_el_sitemap(self):
+        """La averia simetrica: la pagina existe y el buscador no la ve."""
+        xml = (PUBLICO / "sitemap.xml").read_text(encoding="utf-8")
+        for p in paginas_de_contenido():
+            rel = p.relative_to(PUBLICO).as_posix()
+            esperado = ORIGEN_PROPIO + "/" + rel
+            if p.name == "index.html":
+                esperado = ORIGEN_PROPIO + "/" + rel[:-len("index.html")]
+            with self.subTest(pagina=rel):
+                self.assertIn("<loc>" + esperado + "</loc>", xml,
+                              f"{rel} no esta en el sitemap")
+
+    def test_robots_apunta_al_sitemap(self):
+        r = (PUBLICO / "robots.txt").read_text(encoding="utf-8")
+        self.assertIn("Sitemap: " + ORIGEN_PROPIO + "/sitemap.xml", r,
+                      "robots.txt no declara el sitemap")
 
 
 if __name__ == "__main__":

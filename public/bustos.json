@@ -1,0 +1,17 @@
+{
+ "esquema": 1,
+ "estado": "OFICIAL",
+ "nota": "Los ocho bustos que se pueden elegir como avatar. Derivados de los masters 512x512 de Alejandria/marca/ con sincronizar.py; aqui viven a 256x256 en webp. Este fichero existe para que el nombre del fichero no se escriba a mano en ningun HTML: un <img> a un webp que no esta no falla, simplemente no pinta, y el fallo puede vivir meses en la pantalla de quien llega.",
+ "medido": "2026-09-02",
+ "ruta": "/assets/busto-",
+ "bustos": [
+  {"id": "dormido",   "es": "Dormido · mármol intacto",      "en": "Asleep · untouched marble",     "fr": "Endormi · marbre intact"},
+  {"id": "grieta",    "es": "Grieta · se abre",              "en": "Crack · it opens",              "fr": "Fissure · elle s'ouvre"},
+  {"id": "rompe",     "es": "Rompe · salta la cáscara",      "en": "Breaks · the shell gives",      "fr": "Brise · la coque cede"},
+  {"id": "ojo",       "es": "Ojo · violeta liso",            "en": "Eye · plain violet",            "fr": "Oeil · violet uni"},
+  {"id": "despierto", "es": "Despierto · el busto identidad","en": "Awake · the identity bust",     "fr": "Eveille · le buste identite"},
+  {"id": "corazon",   "es": "Corazón · cierra el despertar", "en": "Heart · closes the awakening",  "fr": "Coeur · clot l'eveil"},
+  {"id": "halo",      "es": "Halo · sobre fondo oscuro",     "en": "Halo · on a dark ground",       "fr": "Halo · sur fond sombre"},
+  {"id": "oscuro",    "es": "Oscuro · nacido sobre Tinta",   "en": "Dark · born on Ink",            "fr": "Sombre · ne sur Encre"}
+ ]
+}

@@ -75,6 +75,26 @@
       p.className = 'yo'; p.textContent = T.idHola + ' ' + yo.apodo;
       zona.appendChild(p);
       b.textContent = T.idClave;
+      /* LA PUERTA AL PERFIL VA AQUI Y NO EN EL CABEZAL. El cabezal de la
+         portada se midio en el Doogee: siete botones ocupaban tres filas, y
+         se bajo a cinco. Un sexto fijo desharia esa medida para todo el
+         mundo, incluido quien llega por primera vez y todavia no tiene ficha
+         que mirar.
+
+         Colgada de la identidad no cuesta una fila a nadie: aparece cuando
+         aparece el pseudonimo, en las cinco paginas que cargan este fichero,
+         y es ademas donde se busca -- se pulsa tu nombre para ver lo tuyo.
+
+         `T.idPerfil` puede faltar: no todas las paginas que cargan auth.js
+         tienen la clave. Sin ella no se pinta un enlace vacio, no se pinta
+         nada. Y en la propia ficha tampoco, que seria un enlace a si misma. */
+      if (T.idPerfil && !/\/profile\.html$/.test(location.pathname)) {
+        var mi = document.createElement('a');
+        mi.className = 'leve yo-perfil';
+        mi.href = './profile.html';
+        mi.textContent = T.idPerfil;
+        zona.appendChild(mi);
+      }
       // La huella completa, para quien quiera comprobar que su firma es suya.
       // Va al menu y no al hueco: pulsando dos veces, la version anterior
       // apilaba un parrafo mas cada vez.

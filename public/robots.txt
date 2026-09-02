@@ -1,0 +1,12 @@
+# preceptoros.org
+#
+# Se permite todo. Aqui no hay area privada que proteger: la web publica no
+# tiene cuentas, ni sesion, ni panel de nadie -- lo unico personal que existe
+# (la identidad Ed25519, el busto, la biografia) vive en el navegador de quien
+# la escribe y no llega jamas a este servidor, asi que no hay ruta que excluir.
+# Un Disallow aqui seria decoracion: sugeriria que hay algo detras.
+User-agent: *
+Allow: /
+
+# El sitemap lo escribe `sitemap.py` leyendo el disco, nunca a mano.
+Sitemap: https://preceptoros.org/sitemap.xml

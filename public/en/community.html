@@ -3,9 +3,19 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Board · PreceptorOS</title>
+<title>Community · PreceptorOS</title>
 <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
-<meta name="description" content="The Agora board: challenges, tasks, market and general. Text, author and time. Nothing else.">
+<meta name="description" content="The sovereign marketplace: challenges, signed tasks and shared compute. No cloud, no accounts.">
+<link rel="canonical" href="https://preceptoros.org/en/community.html">
+<link rel="alternate" hreflang="es" href="https://preceptoros.org/es/community.html">
+<link rel="alternate" hreflang="en" href="https://preceptoros.org/en/community.html">
+<link rel="alternate" hreflang="fr" href="https://preceptoros.org/fr/community.html">
+<meta property="og:title" content="Community · PreceptorOS">
+<meta property="og:description" content="The sovereign marketplace: challenges, signed tasks and shared compute. No cloud, no accounts.">
+<meta property="og:image" content="https://preceptoros.org/assets/preceptor-og.png">
+<meta property="og:url" content="https://preceptoros.org/en/community.html">
+<meta property="og:type" content="website">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"DiscussionForumPosting","name":"PreceptorOS Community","description":"Marketplace soberano de retos y tareas firmadas","url":"https://preceptoros.org/en/community.html","inLanguage":"en"}</script>
 <link rel="stylesheet" href="/assets/base.css">
 <link rel="stylesheet" href="/assets/movil.css">
 <link rel="stylesheet" href="/assets/canon.css">
@@ -20,13 +30,15 @@
 <header>
   <div class="seal" role="img" aria-label="PreceptorOS seal"></div>
   <div class="marca">
-    <h1>Board<b> · the Agora</b></h1>
-    <p><a href="/en/">Front page</a> · <a href="/en/benchmark.html">Benchmark</a> · <a href="/en/instalar.html">Install</a></p>
+    <h1>Community<b> · the Agora</b></h1>
+    <p><a href="/en/">Front page</a> · <a href="/en/profile.html">Profile</a> · <a href="/en/benchmark.html">Benchmark</a> · <a href="/en/instalar.html">Install</a></p>
   </div>
   <div id="identity" class="fila identity"></div>
 </header>
 
-<p class="guia"><strong>There is one task:</strong> finish PreceptorOS's story mode on your machine and write your comment in the Benchmark. That is all you are asked for. Everything else on this board —challenges, shared compute, general threads— comes from people who already did it.</p>
+<p class="guia"><strong>This is a market, not a forum.</strong> Above is what the Sovereign is asking for today: there are two, they are real, and each one also states what does not work yet. Below, the open board —challenges, tasks, shared compute— where you ask or deliver yourself.</p>
+
+<div id="anuncios" class="panel"></div>
 
 <div id="hilos" class="panel"></div>
 
@@ -43,6 +55,7 @@
 <script type="application/json" id="i18n">{
  "tbEjemplo": "These threads are EXAMPLES, here to test the board's density.",
  "tbReales": "Real threads so far:",
+ "tbFiltros": "Board categories",
  "tbTodos": "All",
  "tbRespuestas": "replies",
  "tbSinDatos": "NO_DATA — the board could not be read.",
@@ -52,6 +65,7 @@
   "COMPUTE": "COMPUTE",
   "GENERAL": "GENERAL"
  },
+ "idPerfil": "My profile",
  "idEntrar": "Create identity",
  "idHola": "Hello,",
  "idClave": "See my fingerprint",
@@ -69,9 +83,13 @@
  "tbFuenteCache": "From your local cache, age",
  "tbFuenteLocal": "EXAMPLE threads shipped with the site. The Agora did not answer:",
  "tbFuenteFallo": "Keeping what was already here: the Agora did not answer:",
- "tbFirmaVer": "Show the full signature"
+ "tbFirmaVer": "Show the full signature",
+ "anTitulo": "What the Sovereign is asking for today",
+ "anSinIdioma": "NO_DATA — this announcement is not translated into your language:",
+ "anSinDatos": "NO_DATA — the announcements could not be read:"
 }</script>
 <script src="/assets/ambient.js"></script>
+<script src="/assets/board-anuncios.js"></script>
 <script src="/assets/board-fuentes.js"></script>
 <script src="/assets/board.js"></script>
 

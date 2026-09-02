@@ -3,9 +3,19 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Tablón · PreceptorOS</title>
+<title>Comunidad · PreceptorOS</title>
 <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
-<meta name="description" content="El tablón del Ágora: retos, tareas, mercado y general. Texto, autor y hora. Nada más.">
+<meta name="description" content="El marketplace soberano: retos, tareas firmadas y cómputo cedido. Sin nube, sin cuentas.">
+<link rel="canonical" href="https://preceptoros.org/es/community.html">
+<link rel="alternate" hreflang="es" href="https://preceptoros.org/es/community.html">
+<link rel="alternate" hreflang="en" href="https://preceptoros.org/en/community.html">
+<link rel="alternate" hreflang="fr" href="https://preceptoros.org/fr/community.html">
+<meta property="og:title" content="Comunidad · PreceptorOS">
+<meta property="og:description" content="El marketplace soberano: retos, tareas firmadas y cómputo cedido. Sin nube, sin cuentas.">
+<meta property="og:image" content="https://preceptoros.org/assets/preceptor-og.png">
+<meta property="og:url" content="https://preceptoros.org/es/community.html">
+<meta property="og:type" content="website">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"DiscussionForumPosting","name":"PreceptorOS Community","description":"Marketplace soberano de retos y tareas firmadas","url":"https://preceptoros.org/es/community.html","inLanguage":"es"}</script>
 <link rel="stylesheet" href="/assets/base.css">
 <link rel="stylesheet" href="/assets/movil.css">
 <link rel="stylesheet" href="/assets/canon.css">
@@ -20,13 +30,15 @@
 <header>
   <div class="seal" role="img" aria-label="Sello de PreceptorOS"></div>
   <div class="marca">
-    <h1>Tablón<b> · el Ágora</b></h1>
-    <p><a href="/es/">Portada</a> · <a href="/es/benchmark.html">Benchmark</a> · <a href="/es/instalar.html">Instalar</a></p>
+    <h1>Comunidad<b> · el Ágora</b></h1>
+    <p><a href="/es/">Portada</a> · <a href="/es/profile.html">Perfil</a> · <a href="/es/benchmark.html">Benchmark</a> · <a href="/es/instalar.html">Instalar</a></p>
   </div>
   <div id="identity" class="fila identity"></div>
 </header>
 
-<p class="guia"><strong>Hay una sola tarea:</strong> termina el modo historia de PreceptorOS en tu máquina y escribe tu comentario en el Benchmark. Eso es todo lo que se te pide. Lo demás de este tablón —retos, cómputo cedido, hilos generales— sale de gente que ya lo hizo.</p>
+<p class="guia"><strong>Esto es un mercado, no un foro.</strong> Arriba está lo que el Soberano pide hoy: son dos, son reales, y cada uno dice también lo que todavía no funciona. Abajo, el tablón abierto —retos, tareas, cómputo cedido— donde pides o entregas tú.</p>
+
+<div id="anuncios" class="panel"></div>
 
 <div id="hilos" class="panel"></div>
 
@@ -43,6 +55,7 @@
 <script type="application/json" id="i18n">{
  "tbEjemplo": "Estos hilos son de EJEMPLO, para probar la densidad del tablón.",
  "tbReales": "Hilos reales hasta ahora:",
+ "tbFiltros": "Categorías del tablón",
  "tbTodos": "Todos",
  "tbRespuestas": "respuestas",
  "tbSinDatos": "NO_DATA — no se pudo leer el tablón.",
@@ -52,6 +65,7 @@
   "COMPUTE": "CÓMPUTO",
   "GENERAL": "GENERAL"
  },
+ "idPerfil": "Mi perfil",
  "idEntrar": "Crear identidad",
  "idHola": "Hola,",
  "idClave": "Ver mi huella",
@@ -69,9 +83,13 @@
  "tbFuenteCache": "De tu caché local, de hace",
  "tbFuenteLocal": "Hilos de EJEMPLO que viajan con la web. El Ágora no respondió:",
  "tbFuenteFallo": "Sigue lo que ya había: el Ágora no respondió:",
- "tbFirmaVer": "Ver la firma completa"
+ "tbFirmaVer": "Ver la firma completa",
+ "anTitulo": "Lo que el Soberano pide hoy",
+ "anSinIdioma": "NO_DATA — este anuncio no está traducido a tu idioma:",
+ "anSinDatos": "NO_DATA — no se pudieron leer los anuncios:"
 }</script>
 <script src="/assets/ambient.js"></script>
+<script src="/assets/board-anuncios.js"></script>
 <script src="/assets/board-fuentes.js"></script>
 <script src="/assets/board.js"></script>
 

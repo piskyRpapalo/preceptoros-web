@@ -3,9 +3,19 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Tableau · PreceptorOS</title>
+<title>Communauté · PreceptorOS</title>
 <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
-<meta name="description" content="Le tableau de l'Agora : défis, tâches, marché et général. Texte, auteur et heure. Rien d'autre.">
+<meta name="description" content="Le marché souverain : défis, tâches signées et calcul partagé. Sans nuage, sans comptes.">
+<link rel="canonical" href="https://preceptoros.org/fr/community.html">
+<link rel="alternate" hreflang="es" href="https://preceptoros.org/es/community.html">
+<link rel="alternate" hreflang="en" href="https://preceptoros.org/en/community.html">
+<link rel="alternate" hreflang="fr" href="https://preceptoros.org/fr/community.html">
+<meta property="og:title" content="Communauté · PreceptorOS">
+<meta property="og:description" content="Le marché souverain : défis, tâches signées et calcul partagé. Sans nuage, sans comptes.">
+<meta property="og:image" content="https://preceptoros.org/assets/preceptor-og.png">
+<meta property="og:url" content="https://preceptoros.org/fr/community.html">
+<meta property="og:type" content="website">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"DiscussionForumPosting","name":"PreceptorOS Community","description":"Marketplace soberano de retos y tareas firmadas","url":"https://preceptoros.org/fr/community.html","inLanguage":"fr"}</script>
 <link rel="stylesheet" href="/assets/base.css">
 <link rel="stylesheet" href="/assets/movil.css">
 <link rel="stylesheet" href="/assets/canon.css">
@@ -20,13 +30,15 @@
 <header>
   <div class="seal" role="img" aria-label="Sceau de PreceptorOS"></div>
   <div class="marca">
-    <h1>Tableau<b> · l'Agora</b></h1>
-    <p><a href="/fr/">Accueil</a> · <a href="/fr/benchmark.html">Benchmark</a> · <a href="/fr/instalar.html">Installer</a></p>
+    <h1>Communauté<b> · l'Agora</b></h1>
+    <p><a href="/fr/">Accueil</a> · <a href="/fr/profile.html">Profil</a> · <a href="/fr/benchmark.html">Benchmark</a> · <a href="/fr/instalar.html">Installer</a></p>
   </div>
   <div id="identity" class="fila identity"></div>
 </header>
 
-<p class="guia"><strong>Il n'y a qu'une tâche :</strong> terminez le mode histoire de PreceptorOS sur votre machine et écrivez votre commentaire dans le Benchmark. C'est tout ce qu'on vous demande. Le reste de ce tableau —défis, calcul partagé, fils généraux— vient de gens qui l'ont déjà fait.</p>
+<p class="guia"><strong>Ceci est un marché, pas un forum.</strong> En haut, ce que le Souverain demande aujourd'hui : ils sont deux, ils sont réels, et chacun dit aussi ce qui ne marche pas encore. En bas, le tableau ouvert —défis, tâches, calcul partagé— où c'est vous qui demandez ou livrez.</p>
+
+<div id="anuncios" class="panel"></div>
 
 <div id="hilos" class="panel"></div>
 
@@ -43,6 +55,7 @@
 <script type="application/json" id="i18n">{
  "tbEjemplo": "Ces fils sont des EXEMPLES, pour tester la densité du tableau.",
  "tbReales": "Fils réels à ce jour :",
+ "tbFiltros": "Catégories du tableau",
  "tbTodos": "Tous",
  "tbRespuestas": "réponses",
  "tbSinDatos": "NO_DATA — le tableau n'a pas pu être lu.",
@@ -52,6 +65,7 @@
   "COMPUTE": "CALCUL",
   "GENERAL": "GÉNÉRAL"
  },
+ "idPerfil": "Mon profil",
  "idEntrar": "Créer une identité",
  "idHola": "Bonjour,",
  "idClave": "Voir mon empreinte",
@@ -69,9 +83,13 @@
  "tbFuenteCache": "De votre cache local, il y a",
  "tbFuenteLocal": "Fils d'EXEMPLE livrés avec le site. L'Agora n'a pas répondu :",
  "tbFuenteFallo": "On garde ce qui était là : l'Agora n'a pas répondu :",
- "tbFirmaVer": "Voir la signature complète"
+ "tbFirmaVer": "Voir la signature complète",
+ "anTitulo": "Ce que le Souverain demande aujourd'hui",
+ "anSinIdioma": "NO_DATA — cette annonce n'est pas traduite dans votre langue :",
+ "anSinDatos": "NO_DATA — les annonces n'ont pas pu être lues :"
 }</script>
 <script src="/assets/ambient.js"></script>
+<script src="/assets/board-anuncios.js"></script>
 <script src="/assets/board-fuentes.js"></script>
 <script src="/assets/board.js"></script>
 

@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Profile · PreceptorOS</title>
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<meta name="description" content="Your sovereign profile: pseudonym derived from your Ed25519 key, chosen bust, signed measurements and contributions. No account, no server.">
+<link rel="canonical" href="https://preceptoros.org/en/profile.html">
+<link rel="alternate" hreflang="es" href="https://preceptoros.org/es/profile.html">
+<link rel="alternate" hreflang="en" href="https://preceptoros.org/en/profile.html">
+<link rel="alternate" hreflang="fr" href="https://preceptoros.org/fr/profile.html">
+<meta property="og:title" content="My profile on PreceptorOS">
+<meta property="og:description" content="Your sovereign profile: pseudonym derived from your Ed25519 key, chosen bust, signed measurements and contributions. No account, no server.">
+<meta property="og:image" content="https://preceptoros.org/assets/preceptor-og.png">
+<meta property="og:url" content="https://preceptoros.org/en/profile.html">
+<meta property="og:type" content="profile">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"ProfilePage","name":"PreceptorOS Profile","description":"Perfil soberano con identidad Ed25519 y contribuciones firmadas","url":"https://preceptoros.org/en/profile.html","inLanguage":"en"}</script>
+<link rel="stylesheet" href="/assets/base.css">
+<link rel="stylesheet" href="/assets/movil.css">
+<link rel="stylesheet" href="/assets/canon.css">
+<link rel="stylesheet" href="/assets/agora.css">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#E4E8EC">
+</head>
+<body>
+<canvas id="ambient" aria-hidden="true"></canvas>
+<main>
+
+<header>
+  <div class="seal" role="img" aria-label="PreceptorOS"></div>
+  <div class="marca">
+    <h1>Profile<b> · your card</b></h1>
+    <p><a href="/en/">Front page</a> · <a href="/en/community.html">Community</a> · <a href="/en/benchmark.html">Benchmark</a> · <a href="/en/instalar.html">Install</a></p>
+  </div>
+  <div id="identity" class="fila identity"></div>
+</header>
+
+<p class="guia"><strong>This card is yours and it lives on your device.</strong> There is no account, no server, and nothing you write here leaves on its own. You do not pick the pseudonym: it comes from the hash of your key, so nobody can claim someone else's.</p>
+
+<section class="panel" aria-labelledby="h-yo">
+  <h2 id="h-yo">Your identity</h2>
+  <div id="perfil-identidad"></div>
+</section>
+
+<section class="panel" aria-labelledby="h-avatar">
+  <h2 id="h-avatar">Your bust</h2>
+  <div id="perfil-avatar"></div>
+</section>
+
+<section class="panel" aria-labelledby="h-bio">
+  <h2 id="h-bio">About you</h2>
+  <div id="perfil-bio"></div>
+</section>
+
+<section class="panel" aria-labelledby="h-med">
+  <h2 id="h-med">Signed measurements</h2>
+  <div id="perfil-medidas"></div>
+</section>
+
+<section class="panel" aria-labelledby="h-con">
+  <h2 id="h-con">Contributions</h2>
+  <div id="perfil-contribuciones"></div>
+</section>
+
+<section class="panel" aria-labelledby="h-sh">
+  <h2 id="h-sh">Show this card</h2>
+  <div id="perfil-compartir"></div>
+</section>
+
+<footer class="honest-footer">
+  <h2>What is here and what is not</h2>
+  <ul>
+    <li><strong>The pseudonym is derived, not chosen.</strong> It comes from the SHA-256 of your public key. Changing your name means changing your key, and changing your key means starting over: that is the price of nobody being able to impersonate you without a server preventing it.</li>
+    <li><strong>What you write stays in your browser.</strong> The biography is stored in IndexedDB and signed with your key. It does not travel anywhere yet because there is nowhere to: the Agora publishes no profile endpoint.</li>
+    <li><strong>Measurements are not self-declared.</strong> They come from the public ledger, filtered by your pseudonym. If nothing there is signed by you, this shows zero — and says why.</li>
+  </ul>
+</footer>
+
+<script type="application/json" id="i18n">{
+ "pfSinIdentidad": "NO_DATA — there is no identity on this device yet. Create one with the button at the top right and this card fills itself in.",
+ "pfDerivado": "Derived from the SHA-256 of your public key. Not chosen.",
+ "pfVerClave": "See my full public key",
+ "pfCargando": "Reading the key…",
+ "pfSinClave": "NO_DATA — the public key could not be read:",
+ "pfAvatar": "Choose your bust",
+ "pfSinBustos": "NO_DATA — the bust catalogue could not be read:",
+ "pfCompartir": "Share this card",
+ "pfCompartirSin": "Create an identity to be able to share your card.",
+ "pfCompartirTexto": "My card on PreceptorOS: {quien}",
+ "pfCompartido": "Shared.",
+ "pfCopiado": "Copied to the clipboard. Paste it wherever you like.",
+ "pfSinCopiar": "Could not copy. Copy it by hand:",
+ "pfBioEtiqueta": "Your biography",
+ "pfBioBarra": "Structure tools",
+ "pfBioTitulo": "Heading",
+ "pfBioPunto": "List item",
+ "pfBioGuardar": "Save and sign",
+ "pfBioVista": "How it will look",
+ "pfBioGuardada": "Saved on your device and signed with your key. It travels nowhere. Signature:",
+ "pfBioGuardadaSinFirma": "Saved on your device, UNSIGNED: there is no identity yet.",
+ "pfBioSinFirma": "Saved, but it could not be signed:",
+ "pfMedSinIdentidad": "Create an identity and the measurements you signed will show up here.",
+ "pfMedEjemplo": "NO_DATA — the ledger is in EXAMPLE state: not a single signed line has arrived from anyone yet. Real signed lines so far:",
+ "pfMedTuyas": "Measurements signed by you:",
+ "pfMedSinDatos": "NO_DATA — the ledger could not be read:",
+ "pfConNoData": "NO_DATA — the Agora does not publish contributions yet. Cause: /api/v1/threads answers 404 (measured 2026-08-30), and there is no profile endpoint.",
+ "pfConRemedio": "Remedy: when that end exists, this section fills itself in. A zero counter in the meantime would be a sensor that lies.",
+ "idPerfil": "My profile",
+ "idEntrar": "Create identity",
+ "idHola": "Hello,",
+ "idClave": "See my fingerprint",
+ "idPublica": "Public key:",
+ "idFallo": "NO_DATA — the identity could not be created:",
+ "idAviso": "A key is generated in your browser. It cannot be exported or copied to another device: if you clear the site data, this identity is lost and there is no way to recover it. There is no password to forget and no server holding it."
+}</script>
+<script src="/assets/ambient.js"></script>
+<script src="/assets/profile.js"></script>
+<script src="/assets/profile-obra.js"></script>
+<script src="/assets/auth.js"></script>
+<script src="/assets/pwa.js"></script>
+</body>
+</html>

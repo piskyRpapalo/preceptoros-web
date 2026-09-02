@@ -87,9 +87,11 @@ entorno.handlers.install({ waitUntil: p => esperas.push(p) });
 await Promise.all(esperas);
 const shell = almacen.get([...almacen.keys()].find(k=>k.startsWith('shell-')));
 const rutas = await shell.keys();
-// 21 paginas + 3 catalogos + 7 piezas + 8 ojos + 8 esferas = 47.
-ok('precachea paginas y piezas del Hub', rutas.length === 47, rutas.length+' rutas');
-ok('el shell trae /fr/board.html', rutas.includes('/fr/board.html'));
+// 24 paginas + 3 catalogos + 7 piezas + 8 ojos + 8 esferas = 50.
+// Las paginas son 3 sueltas ('/', hitos, manifiesto) + 7 por idioma x 3. Eran
+// 21 hasta el 2026-09-02: `profile.html` entro en PAGINAS y sumo tres.
+ok('precachea paginas y piezas del Hub', rutas.length === 50, rutas.length+' rutas');
+ok('el shell trae /fr/community.html', rutas.includes('/fr/community.html'));
 ok('el shell trae hub.json', rutas.includes('/hub.json'));
 // El catalogo de modelos viaja con el sitio igual que el de companeros: sin el,
 // la app instalada abre y no sabe decir sobre que se entreno nada.
@@ -124,9 +126,9 @@ ok('hub.json SI se sirve del cache (es contenido)',
 // regla 3: navegacion cacheada, comprobada SIN RED para que no haya duda de
 // que sale del shell y no de la red.
 entorno.SIN_RED = true;
-const r1 = await pedir(ORIGEN+'/es/board.html','navigate');
+const r1 = await pedir(ORIGEN+'/es/community.html','navigate');
 ok('navegacion sale del shell aun sin red',
-   r1 !== 'PASA_DE_LARGO' && r1.status === 200 && String(r1.cuerpo).includes('/es/board.html'),
+   r1 !== 'PASA_DE_LARGO' && r1.status === 200 && String(r1.cuerpo).includes('/es/community.html'),
    'status '+(r1 && r1.status));
 const r2 = await pedir(ORIGEN+'/fr/nueva.html','navigate');
 const txt = await r2.text();

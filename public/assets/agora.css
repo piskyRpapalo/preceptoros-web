@@ -62,3 +62,50 @@ ul.leyenda li{margin:0 0 .3rem;padding-left:.9rem;text-indent:-.9rem}
 .dos{display:grid;gap:.9rem}
 @media (min-width:44rem){ .dos{grid-template-columns:1fr 1fr} }
 .dos textarea{min-height:11rem;font-size:.74rem}
+
+/* --- los anuncios oficiales del Agora ------------------------------------ */
+/* Se separan de los hilos por BORDE, no por color de fondo: el fondo aqui es
+   una textura de marmol y encima de una textura no se puede calcular ningun
+   contraste — es la misma razon por la que R-WIDGET exige el par declarado. */
+.anuncios-cabeza{font-size:.7rem;color:var(--tenue);letter-spacing:.1em;
+  text-transform:uppercase;margin:0 0 .6rem}
+.anuncio{border-left:2px solid var(--violeta-texto);padding:0 0 0 .8rem;
+  margin:0 0 1.1rem}
+.anuncio:last-child{margin-bottom:0}
+.anuncio h3{font-size:.92rem;margin:0 0 .35rem}
+.anuncio ul{list-style:none;margin:.4rem 0;font-size:.78rem;color:var(--tenue)}
+.anuncio ul li{margin:0 0 .25rem;padding-left:.9rem;text-indent:-.9rem}
+
+/* --- el perfil ------------------------------------------------------------ */
+.perfil-apodo{font-size:1.15rem;margin:0 0 .2rem;
+  font-variant-numeric:tabular-nums}
+/* La rejilla de bustos: `auto-fill` y no un numero de columnas fijo. Con ocho
+   caras y un movil de 360 px, tres columnas fijas dan 96 px de imagen dentro
+   de 100 px de hueco y el nombre se parte en cuatro lineas. */
+.bustos{display:grid;gap:.6rem;
+  grid-template-columns:repeat(auto-fill,minmax(6.5rem,1fr))}
+.busto{display:flex;flex-direction:column;align-items:center;gap:.3rem;
+  padding:.4rem;border:1px solid var(--bronce);background:none;
+  font-size:.68rem;color:var(--tenue);line-height:1.25;text-align:center}
+.busto img{width:100%;height:auto;max-width:96px;image-rendering:auto}
+/* El elegido se marca con BORDE Y FONDO, no solo con color: quien no
+   distingue el violeta del bronce se queda sin saber cual eligio. */
+.busto[aria-checked=true]{border-color:var(--violeta-texto);border-width:2px;
+  background:rgba(75,55,196,.12);color:var(--violeta-texto)}
+.busto:focus-visible{outline:2px solid var(--violeta-texto);outline-offset:2px}
+
+/* La vista previa de la biografia. Encuadrada para que se lea como lo que es:
+   una PREVIA, no la ficha ya publicada. */
+.bio-vista{border:1px dashed var(--bronce);padding:.7rem .8rem;margin-top:.4rem;
+  font-size:.82rem}
+.bio-vista h3{font-size:.86rem;margin:.6rem 0 .3rem}
+.bio-vista h3:first-child{margin-top:0}
+.bio-vista ul{margin:.3rem 0;padding-left:1.1rem}
+.bio-vista p{margin:0 0 .4rem}
+.bio-vista :last-child{margin-bottom:0}
+
+/* El busto propio, arriba de la ficha. Es el LCP de la pagina: se carga
+   ansioso y con prioridad alta, al reves que los ocho de la rejilla. */
+.mi-busto{width:96px;height:96px;display:block;margin:0 0 .5rem}
+/* La puerta al perfil, colgada del pseudonimo en la cabecera. */
+.yo-perfil{font-size:.74rem;margin-left:.5rem}

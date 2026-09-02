@@ -29,13 +29,13 @@
  * dos motivos -- el techo de 7 paginas del gate, y que un fichero de respaldo
  * tambien puede faltar del cache justo el dia que hace falta.
  */
-const VERSION = 'preceptoros-2026-09-g';
+const VERSION = 'preceptoros-2026-09-h';
 const SHELL = 'shell-' + VERSION;
 const OBRA = 'obra-' + VERSION;
 
 const IDIOMAS = ['es', 'en', 'fr'];
-const PAGINAS = ['', 'instalar.html', 'board.html', 'benchmark.html',
-                 'playground.html', 'onboarding.html'];
+const PAGINAS = ['', 'instalar.html', 'community.html', 'benchmark.html',
+                 'playground.html', 'onboarding.html', 'profile.html'];
 
 /* Las piezas del Hub. Van al shell y no al cache de obra porque sin ellas la
    portada carga y se queda sin rejilla: el esqueleto se pinta, `hub.json` no

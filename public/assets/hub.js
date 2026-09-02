@@ -62,7 +62,7 @@
      `playground.html` sigue existiendo y sigue enlazada desde el pie. */
   cab.appendChild(enlace('cab-boton', T.cabHome, './'));
   cab.appendChild(enlace('cab-boton empezar', T.cabEmpezar, './onboarding.html'));
-  cab.appendChild(enlace('cab-boton', T.cabComunidad, './board.html'));
+  cab.appendChild(enlace('cab-boton', T.cabComunidad, './community.html'));
   cab.appendChild(enlace('cab-boton', T.cabBenchmark, './benchmark.html'));
   /* IDIOMA va COLOREADO como los demas. Suelto en `cab-leve` parecia una
      nota al pie, y no lo es: elegir idioma es el primer paso del recorrido
