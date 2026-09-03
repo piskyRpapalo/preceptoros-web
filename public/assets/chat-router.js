@@ -110,9 +110,15 @@
     activo = a;
     avatar.src = '/assets/agente-3d-' + a.icono3d + '.webp';
     nombre.textContent = a.name;
-    // El OJO del Preceptor en el cabezal cambia con el companero activo: es
-    // la senal de con quien estas hablando sin leer una palabra.
-    if (cabeza) cabeza.style.backgroundImage = "url('/assets/agente-" + a.symbol + ".webp')";
+    /* El OJO del Preceptor en el cabezal cambia con el companero activo: es
+       la senal de con quien estas hablando sin leer una palabra. El TAMANO
+       viaja con la imagen: `#cabeza` nace al 700 % porque su fondo es la TIRA
+       de la apertura, y poner solo la imagen estiraba el ojo siete veces --
+       medido el 2026-09-04, ventana de 60 px sobre imagen de 420. */
+    if (cabeza) {
+      cabeza.style.backgroundImage = "url('/assets/agente-" + a.symbol + ".webp')";
+      cabeza.style.backgroundSize = '100%';
+    }
     var r = a.real || {};
     var L = (window.Hub && window.Hub.textos) || {};
     if (!r.disponible) {
