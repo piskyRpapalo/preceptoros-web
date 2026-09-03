@@ -29,7 +29,7 @@
  * dos motivos -- el techo de 7 paginas del gate, y que un fichero de respaldo
  * tambien puede faltar del cache justo el dia que hace falta.
  */
-const VERSION = 'preceptoros-2026-09-h';
+const VERSION = 'preceptoros-2026-09-i';
 const SHELL = 'shell-' + VERSION;
 const OBRA = 'obra-' + VERSION;
 
@@ -52,7 +52,11 @@ const HUB = ['/hub.json', '/modelos.json', '/servicios.json', '/assets/widget.cs
              '/assets/hub.js',
              '/assets/hub-cola.js', '/assets/chat-router.js', '/assets/corregir.js', '/assets/comandos.js']
   .concat(CARAS.map(c => '/assets/agente-ojo-' + c + '.webp'))
-  .concat(ESFERAS.map(e => '/assets/agente-3d-' + e + '.webp'));
+  .concat(ESFERAS.map(e => '/assets/agente-3d-' + e + '.webp'))
+  /* Las tres tiras: `widget.css` las pide y sin red el cabezal se queda
+     con un circulo vacio. */
+  .concat(['apertura', 'reposo', 'habla']
+          .map(s => '/assets/caras/secuencia-' + s + '-256.webp'));
 
 /* `hub.json` es CONTENIDO, no una medida. La diferencia decide la estrategia:
    `counters.json` publica la cifra de los gates y servirlo del cache seria

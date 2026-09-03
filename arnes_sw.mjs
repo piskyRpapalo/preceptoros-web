@@ -90,7 +90,13 @@ const rutas = await shell.keys();
 // 24 paginas + 3 catalogos + 7 piezas + 8 ojos + 8 esferas = 50.
 // Las paginas son 3 sueltas ('/', hitos, manifiesto) + 7 por idioma x 3. Eran
 // 21 hasta el 2026-09-02: `profile.html` entro en PAGINAS y sumo tres.
-ok('precachea paginas y piezas del Hub', rutas.length === 50, rutas.length+' rutas');
+// 53 y no 50 desde el 2026-09-03: entran las tres tiras de la cara. La cifra
+// va a mano a proposito -- si alguien anade una ruta al shell sin pensarlo,
+// esto se pone rojo y le obliga a decir por que.
+ok('precachea paginas y piezas del Hub', rutas.length === 53, rutas.length+' rutas');
+ok('el shell trae las tres tiras de la cara',
+   ['apertura', 'reposo', 'habla']
+     .every(s => rutas.includes('/assets/caras/secuencia-' + s + '-256.webp')));
 ok('el shell trae /fr/community.html', rutas.includes('/fr/community.html'));
 ok('el shell trae hub.json', rutas.includes('/hub.json'));
 // El catalogo de modelos viaja con el sitio igual que el de companeros: sin el,
