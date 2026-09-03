@@ -33,19 +33,32 @@
 
 /* La cabeza del Preceptor. El ojo lo pone el router segun el companero
    activo: es con quien hablas, dicho sin una palabra. */
-/* 78 px y no 52: un 50 % mas, firmado. A 52 el ojo no se veia.
-   Las tres tiras y los tres tiempos son los MISMOS ficheros y los mismos
-   valores que en la app (`preceptor/interface/dashboard.css`): una cara, dos
-   capas, una sola verdad. `chat-router.js` sigue pudiendo pisar la imagen con
-   el ojo del companero activo -- es un estilo en linea y gana. */
-:root{--cara-web:78px;--anim-apertura:3.75s;--anim-reposo:32s;--anim-habla:.72s}
+/* 78 px y no 52: un 50 % mas, firmado. A 52 el ojo no se veia. Las tres tiras
+   y los tres tiempos son los mismos que en la app; el porque de cada cadencia
+   esta escrito una sola vez, en `preceptor/interface/dashboard.css`.
+   `chat-router.js` pisa la imagen con el ojo del companero: va en linea, gana. */
+/* EL HUECO DEL RAIL, UNA SOLA VEZ Y PARA TODAS LAS PAGINAS.
+   Antes lo reservaba cada contenedor por su cuenta y con tres cifras
+   distintas: `#hub-layout` 4,2rem, `#cabezal` 4,6rem y `.honest-footer`
+   4,2rem. Cualquier seccion nueva que alguien anadiera se olvidaba de
+   reservarlo y se metia debajo del rail -- y habia que acordarse ocho paginas
+   por tres idiomas. Ahora lo reserva `body`, asi que lo hereda todo lo que
+   haya dentro, incluido lo que todavia no existe.
+
+   Va en `body` y no en `main` a proposito: el cabezal y el pie estan FUERA de
+   `main`, y son justo los dos que el rail cortaba. */
+/* `:has` y no `body` a secas: de las ocho paginas el rail solo existe en la
+   portada, y `benchmark.html` carga esta hoja sin tenerlo. Sin la condicion se
+   le abria un hueco de 4,6rem contra un borde vacio. Asi la reserva aparece y
+   desaparece con el rail sin que ninguna pagina declare cual es. */
+body:has(#panel-modelos){padding-right:var(--hueco-rail)}
+:root{--hueco-rail:4.6rem;--cara-web:78px;--anim-apertura:3.75s;--anim-reposo:32s;--anim-habla:.72s}
 #cabeza{width:var(--cara-web);height:var(--cara-web);flex:0 0 var(--cara-web);
   background:url("/assets/caras/secuencia-apertura-256.webp") 0% 50%/700% auto no-repeat;
   border:2px solid var(--bronce);border-radius:50%;
   animation:cara-abre var(--anim-apertura) linear 1 both}
-/* Paradas en porcentaje y no `steps()`: el tercer fotograma dura la mitad.
-   Cada uno se declara dos veces --entrada y el instante antes del siguiente--
-   para que el navegador no interpole y la cara no se deslice entre dibujos. */
+/* Paradas en porcentaje y no `steps()`: el tercer fotograma dura la mitad, y
+   cada uno se declara dos veces para que el navegador no interpole. */
 @keyframes cara-abre{
   0%,13.32%{background-position:0% 50%}
   13.33%,26.66%{background-position:16.667% 50%}
@@ -54,18 +67,17 @@
   46.67%,59.99%{background-position:66.667% 50%}
   60%,73.32%{background-position:83.333% 50%}
   73.33%,100%{background-position:100% 50%}}
-/* Reposo: cuatro colores, ocho segundos cada uno. El fundido va en una
-   animacion aparte que baja la opacidad justo en el salto, asi el cambio se
-   ve como un fundido sin apilar dos capas. */
+/* Reposo: cuatro colores, ocho segundos cada uno. El fundido va aparte y baja
+   la opacidad justo en el salto: cruce suave sin apilar dos capas. */
 #cabeza.despierto{background-image:url("/assets/caras/secuencia-reposo-256.webp");
   background-size:400% auto;
   animation:cara-reposo var(--anim-reposo) steps(3,jump-none) infinite,
             cara-fundido 8s ease-in-out infinite}
 @keyframes cara-reposo{from{background-position:0% 50%}to{background-position:100% 50%}}
 @keyframes cara-fundido{0%,6%,94%,100%{opacity:.55}20%,80%{opacity:1}}
-/* Hablando: cuatro bocas al 400 %. El tamano se declara aqui a proposito --
-   heredar el 700 % de la apertura sacaria media vuelta fuera del marco y
-   dejaria un parpadeo de alto contraste a ritmo constante. */
+/* Hablando: cuatro bocas al 400 %. El tamano se declara aqui a proposito:
+   heredar el 700 % sacaria media vuelta del marco y dejaria un parpadeo de
+   alto contraste a ritmo constante. */
 #cabeza.hablando{background-image:url("/assets/caras/secuencia-habla-256.webp");
   background-size:400% auto;opacity:1;
   animation:cara-habla var(--anim-habla) steps(4,jump-none) infinite}
@@ -103,17 +115,15 @@
   /* El rail de companeros flota sobre la pagina y se comia el borde derecho
      del chat y del panel de herramientas. Medido en el Doogee: el texto
      salia cortado a media palabra. */
-  #hub-layout{padding-right:4.2rem}
   /* El CABEZAL tambien pasa por debajo del rail de companeros, y hasta hoy
      solo #hub-layout reservaba ese hueco. Medido en el Doogee: COMUNIDAD
      partido por la mitad y el icono de LinkedIn escondido tras las esferas.
      La reserva va en el atajo y no en una linea suelta despues: un
      `padding-right` colocado ANTES de este atajo lo pierde entero. */
-  #cabezal{padding:.5rem 4.6rem .5rem .6rem;gap:.5rem}
+  #cabezal{padding:.5rem .6rem;gap:.5rem}
   /* El pie es una CAJA con borde, asi que reserva por fuera (margen) y no por
      dentro: con padding el borde derecho seguiria corriendo por debajo del
      rail de companeros aunque el texto no lo hiciera. */
-  .honest-footer{margin-right:4.2rem}
   #cabezal h1{font-size:.95rem;margin:0 0 .25rem}
   #cabeza{width:60px;height:60px;flex-basis:60px}
   .cab-boton{font-size:.66rem;padding:.26rem .5rem;letter-spacing:.06em}

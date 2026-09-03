@@ -1105,32 +1105,73 @@ class Cabezal(unittest.TestCase):
         self.assertIn("prefers-reduced-motion", css,
                       "el panel se desliza aunque se pida quietud")
 
-    def test_pc_estira_sin_perder_chat(self):
-        """A partir de 1024 px los dos se ven a la vez.
+    def test_el_rail_es_una_columna_entera(self):
+        """El rail va de borde a borde del viewport, sin que nada lo corte.
 
-        En movil el panel tapa el chat porque no caben; en PC eso seria tirar
-        pantalla. La columna se PLIEGA en vez de irse: sacarla de la rejilla
-        haria saltar el ancho del chat, que es lo que la columna fija existe
-        para evitar.
+        ESTA PRUEBA CAMBIO DE DOCTRINA EL 2026-09-03, firmado por el Soberano,
+        y conviene decir que exigia antes: `grid-template-columns:1fr 360px`
+        con el panel en `position:static` como segunda columna de
+        `#hub-layout`. Aquello se veia bien y estaba roto por debajo:
+        `#hub-layout` vive dentro de `<main>`, que va DESPUES del cabezal y
+        ANTES del pie, y un hijo no puede ser mas alto que su padre. El rail
+        empezaba bajo el cabezal y terminaba sobre el pie. No habia margen que
+        lo arreglara porque el problema no era el margen: era el arbol.
+
+        Lo que se exige ahora son las tres cosas que hacen que la columna sea
+        continua de verdad, y que ningun ajuste posterior puede romper sin que
+        esto se ponga rojo.
         """
-        css = ((PUBLICO / "assets" / "widget.css").read_text(encoding="utf-8") +
-               (PUBLICO / "assets" / "panel.css").read_text(encoding="utf-8"))
+        def sin_comentarios(texto):
+            """Fuera los comentarios ANTES de mirar si una regla existe.
+
+            Cicatriz del 2026-09-03: este bloque explica por escrito que el
+            rail ya no usa `position:static`, y la prueba leia esa frase del
+            comentario como si fuera la regla. Una comprobacion que se cree lo
+            que dice la prosa no esta comprobando el codigo: esta leyendo.
+            """
+            return re.sub(r"/\*.*?\*/", "", texto, flags=re.S)
+
+        panel = sin_comentarios(
+            (PUBLICO / "assets" / "panel.css").read_text(encoding="utf-8"))
+        widget = sin_comentarios(
+            (PUBLICO / "assets" / "widget.css").read_text(encoding="utf-8"))
+        css = widget + panel
+        plano = css.replace(" ", "").replace("\n", "")
+
+        # 1 · el rail toca los dos bordes verticales, y en TODOS los anchos.
+        self.assertIn("position:fixed;top:0;right:0;bottom:0", plano,
+                      "el rail no llega de arriba a abajo del viewport")
         pc = re.search(r"@media \(min-width:1024px\)\{(.*?)\n\}", css, re.S)
         self.assertIsNotNone(pc, "no hay maqueta de PC")
         cuerpo = pc.group(1).replace(" ", "")
-        self.assertIn("grid-template-columns:1fr360px", cuerpo,
-                      "la rejilla de PC no es 1fr + 360px")
-        self.assertIn("position:static", cuerpo, "el panel sigue flotando en PC")
-        self.assertIn("transform:none", cuerpo, "el panel sigue deslizando en PC")
-        # Las columnas se asignan explicitamente. Sin esto, `meter.js` inserta
-        # su panel de medida detras de #chat y ese tercer hijo se queda con la
-        # columna de 360 px, echando el panel a una columna implicita. Se cazo
-        # midiendo el ancho en el navegador, no leyendo el codigo.
-        self.assertIn("#hub-layout>*{grid-column:1}", cuerpo,
-                      "un hijo inesperado puede robarle la columna al panel")
-        self.assertIn("grid-column:2", cuerpo, "el panel no tiene columna propia")
+        self.assertNotIn("position:static", cuerpo,
+                         "en PC el rail vuelve a entrar en el flujo y lo cortan "
+                         "el cabezal y el pie")
+        self.assertNotIn("grid-column:2", cuerpo,
+                         "el rail vuelve a ser una columna de #hub-layout, que "
+                         "no puede ser mas alto que <main>")
+
+        # 2 · el hueco se reserva UNA vez y en `body`, no contenedor a
+        #     contenedor. El cabezal y el pie estan fuera de `main`: si la
+        #     reserva no la hereda todo, son justo los dos que se meten debajo.
+        self.assertIn("body:has(#panel-modelos){padding-right:var(--hueco-rail)}",
+                      plano, "el hueco del rail no se reserva globalmente")
+        # Y CONDICIONADO AL RAIL. De las ocho paginas solo la portada lo tiene;
+        # `benchmark.html` carga esta hoja y no. Una reserva incondicional le
+        # abre un hueco contra un borde donde no hay nada.
+        self.assertNotIn("\nbody{padding-right:var(--hueco-rail)}", plano,
+                         "la reserva no mira si el rail existe")
+        self.assertIn("--hueco-rail:", plano, "no hay medida declarada del hueco")
+
+        # 3 · y NADIE se lo reserva por su cuenta. Tres cifras distintas para
+        #     el mismo hueco es como estaba antes, y como se olvidaba.
+        for sobra in ("#hub-layout{padding-right:4.2rem}",
+                      ".honest-footer{margin-right:4.2rem}"):
+            self.assertNotIn(sobra, plano,
+                             f"queda una reserva a mano: {sobra}")
+
         self.assertIn("max-width:min(1400px", cuerpo,
-                      "la ventana no se estira: el chat se quedaria en 360 px")
+                      "la ventana no se estira: el chat se quedaria estrecho")
         router = (PUBLICO / "assets" / "chat-router.js").read_text(encoding="utf-8")
         self.assertIn("(min-width:1024px)", router,
                       "el router no distingue PC de movil")
