@@ -33,9 +33,47 @@
 
 /* La cabeza del Preceptor. El ojo lo pone el router segun el companero
    activo: es con quien hablas, dicho sin una palabra. */
-#cabeza{width:52px;height:52px;flex:0 0 52px;background-image:url("/assets/caras/avatar-fijo.webp");background-repeat:no-repeat;
-  background-position:center;background-size:cover;
-  border:2px solid var(--bronce);border-radius:50%}
+/* 78 px y no 52: un 50 % mas, firmado. A 52 el ojo no se veia.
+   Las tres tiras y los tres tiempos son los MISMOS ficheros y los mismos
+   valores que en la app (`preceptor/interface/dashboard.css`): una cara, dos
+   capas, una sola verdad. `chat-router.js` sigue pudiendo pisar la imagen con
+   el ojo del companero activo -- es un estilo en linea y gana. */
+:root{--cara-web:78px;--anim-apertura:3.75s;--anim-reposo:32s;--anim-habla:.72s}
+#cabeza{width:var(--cara-web);height:var(--cara-web);flex:0 0 var(--cara-web);
+  background:url("/assets/caras/secuencia-apertura-256.webp") 0% 50%/700% auto no-repeat;
+  border:2px solid var(--bronce);border-radius:50%;
+  animation:cara-abre var(--anim-apertura) linear 1 both}
+/* Paradas en porcentaje y no `steps()`: el tercer fotograma dura la mitad.
+   Cada uno se declara dos veces --entrada y el instante antes del siguiente--
+   para que el navegador no interpole y la cara no se deslice entre dibujos. */
+@keyframes cara-abre{
+  0%,13.32%{background-position:0% 50%}
+  13.33%,26.66%{background-position:16.667% 50%}
+  26.67%,33.32%{background-position:33.333% 50%}
+  33.33%,46.66%{background-position:50% 50%}
+  46.67%,59.99%{background-position:66.667% 50%}
+  60%,73.32%{background-position:83.333% 50%}
+  73.33%,100%{background-position:100% 50%}}
+/* Reposo: cuatro colores, ocho segundos cada uno. El fundido va en una
+   animacion aparte que baja la opacidad justo en el salto, asi el cambio se
+   ve como un fundido sin apilar dos capas. */
+#cabeza.despierto{background-image:url("/assets/caras/secuencia-reposo-256.webp");
+  background-size:400% auto;
+  animation:cara-reposo var(--anim-reposo) steps(3,jump-none) infinite,
+            cara-fundido 8s ease-in-out infinite}
+@keyframes cara-reposo{from{background-position:0% 50%}to{background-position:100% 50%}}
+@keyframes cara-fundido{0%,6%,94%,100%{opacity:.55}20%,80%{opacity:1}}
+/* Hablando: cuatro bocas al 400 %. El tamano se declara aqui a proposito --
+   heredar el 700 % de la apertura sacaria media vuelta fuera del marco y
+   dejaria un parpadeo de alto contraste a ritmo constante. */
+#cabeza.hablando{background-image:url("/assets/caras/secuencia-habla-256.webp");
+  background-size:400% auto;opacity:1;
+  animation:cara-habla var(--anim-habla) steps(4,jump-none) infinite}
+@keyframes cara-habla{from{background-position:0% 50%}to{background-position:100% 50%}}
+@media (prefers-reduced-motion:reduce){
+  #cabeza,#cabeza.despierto,#cabeza.hablando{animation:none;opacity:1;
+    background-image:url("/assets/caras/secuencia-apertura-256.webp");
+    background-size:700% auto;background-position:100% 50%}}
 
 #cab-nav{display:flex;gap:.4rem;flex-wrap:wrap;align-items:center}
 .cab-boton{font:inherit;font-size:.74rem;font-weight:700;letter-spacing:.09em;
@@ -77,7 +115,7 @@
      rail de companeros aunque el texto no lo hiciera. */
   .honest-footer{margin-right:4.2rem}
   #cabezal h1{font-size:.95rem;margin:0 0 .25rem}
-  #cabeza{width:40px;height:40px;flex-basis:40px}
+  #cabeza{width:60px;height:60px;flex-basis:60px}
   .cab-boton{font-size:.66rem;padding:.26rem .5rem;letter-spacing:.06em}
   .cab-leve{font-size:.64rem;padding:.2rem .25rem}
   #cab-nav{gap:.25rem;margin-top:.1rem}

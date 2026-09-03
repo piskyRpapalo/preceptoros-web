@@ -183,4 +183,19 @@
      la primera pantalla del producto era una caja muda que no decia que
      hubiera que tocarla. Lo que se vino a hacer es hablar. Quien no quiera
      escribir todavia, no toca el campo; el teclado solo sube si lo pulsas. */
+
+  /* La cara del cabezal, cableada a los avisos QUE YA EXISTEN.
+     `chat.js` no se toca: le quedan 111 B y ya emite `preceptor:hablando` al
+     primer trozo y `preceptor:turno` al cerrar. Aqui solo se escucha. */
+  if (cabeza) {
+    cabeza.addEventListener('animationend', function (e) {
+      if (e.animationName === 'cara-abre') cabeza.classList.add('despierto');
+    });
+    document.addEventListener('preceptor:hablando', function () {
+      cabeza.classList.add('hablando');
+    });
+    document.addEventListener('preceptor:turno', function () {
+      cabeza.classList.remove('hablando');
+    });
+  }
 })();
