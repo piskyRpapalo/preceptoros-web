@@ -65,45 +65,6 @@
   chat.insertBefore(aviso, chat.firstChild);
   chat.insertBefore(barra, chat.firstChild);
 
-  /* --- el panel de herramientas ------------------------------------------
-     Va DENTRO del panel grande y DEBAJO de la terminal, no como panel
-     hermano. Antes se insertaba detras de #chat y en un telefono quedaba a
-     una pantalla entera de scroll de la conversacion a la que pertenece.
-
-     Lo que contiene se ha adelgazado (2026-09-01): `motor` y `brain`. El
-     buscador de IA del navegador y el de Ollama local NO se han borrado --se
-     han mudado al Benchmark--, que es donde se elige y se MIDE un motor. En
-     la portada eran tres formas distintas de contestar a la misma pregunta,
-     apiladas encima del chat.
-
-     `voice` sale de aqui y sube junto a Enviar: hablar es una forma de
-     escribir el turno, no una herramienta suelta. */
-  var herr = document.createElement('section');
-  herr.id = 'herramientas'; herr.className = 'panel';
-  var herrTit = document.createElement('h2');
-  herrTit.className = 'panel-titulo';
-  herr.appendChild(herrTit);
-  ['motor', 'brain'].forEach(function (id) {
-    var n = document.getElementById(id);
-    if (n) herr.appendChild(n);
-  });
-  chat.appendChild(herr);
-
-  /* El teclado del movil tapa media pantalla, y lo que tapa es justo la
-     conversacion. `visualViewport` dice cuanto queda VISIBLE, que es la unica
-     forma fiable de saber que el teclado esta abierto: `resize` de window no
-     dispara en Android y `env(keyboard-inset-height)` todavia no lo resuelve
-     en el navegador del Doogee. Si el hueco visible se encoge mas de un 25 %,
-     el panel de herramientas se retira; al cerrarse el teclado, vuelve. */
-  var vv = window.visualViewport;
-  if (vv) {
-    var alto = vv.height;
-    var mirar = function () {
-      if (vv.height > alto) alto = vv.height;      // giro de pantalla, no teclado
-      chat.classList.toggle('con-teclado', vv.height < alto * 0.75);
-    };
-    vv.addEventListener('resize', mirar);
-  }
 
   function vestir(a) {
     if (!a) return;
@@ -160,7 +121,10 @@
   function listo() {
     var H = window.Hub;
     if (!H) return;
-    herrTit.textContent = (H.textos && H.textos.herrTitulo) || '';
+    // El panel de herramientas lo construye `chat-panel.js`. Se busca por
+    // selector y se comprueba: si ese fichero no llegara, aqui no se revienta.
+    var herrTit = document.querySelector('#herramientas .panel-titulo');
+    if (herrTit) herrTit.textContent = (H.textos && H.textos.herrTitulo) || '';
     boton = H.boton;   // hoy null: MODELOS salio del cabezal y el rail se basta
     if (boton) boton.addEventListener('click', function () { alternar(); });
     // Companero por defecto: el Instalador es el recepcionista.
