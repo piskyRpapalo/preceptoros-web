@@ -19,12 +19,24 @@ SALIDA = PUBLICO / "counters.json"
 HISTORIAL = RAIZ / "historial"
 CERROJO = RAIZ / ".contadores.lock"
 
-# Paginas de CONTENIDO unico: la raiz es ruteo y en/fr son traducciones de es.
-# Mismo criterio que aplica test_web.py; si cambia alli, cambia aqui.
+# Paginas de CONTENIDO unico: la raiz es ruteo y toda carpeta de dos letras que
+# no sea la fuente es una traduccion. Mismo criterio que aplica test_web.py.
+# Antes nombraba `en` y `fr` una a una, asi que el dia que entrara un idioma
+# nuevo sus paginas se habrian contado como contenido y habrian reventado el
+# techo -- por una lista, no por crecer.
+FUENTE = "es"
+
+
+def traducciones():
+    return {d for d in PUBLICO.iterdir()
+            if d.is_dir() and len(d.name) == 2 and d.name.isalpha()
+            and d.name != FUENTE}
+
+
 def paginas_de_contenido():
+    otras = traducciones()
     return sorted(p for p in PUBLICO.rglob("*.html")
-                  if p.parent != PUBLICO / "en" and p.parent != PUBLICO / "fr"
-                  and p != PUBLICO / "index.html")
+                  if p.parent not in otras and p != PUBLICO / "index.html")
 
 def medido(clave, valor, unidad, como):
     return {"clave": clave, "estado": "MEDIDO", "valor": valor,

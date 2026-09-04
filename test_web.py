@@ -97,6 +97,32 @@ def textos():
             yield p, p.read_text(encoding="utf-8")
 
 
+# Los idiomas se DESCUBREN del disco: toda carpeta de dos letras bajo `public/`
+# es una traduccion. Estaban escritos a mano en once sitios --`sitemap.py`,
+# `contadores.py` y nueve tuplas de `test_web.py`-- y anadir uno obligaba a
+# tocarlos todos: bastaba olvidar una para dejar un idioma sin comprobar, que
+# es exactamente donde vive un hueco que nadie ve. Firmado 2026-09-04, al
+# entrar el portugues.
+#
+# El castellano es la FUENTE --se escribe ahi primero-- y los demas son
+# traducciones suyas. Esa asimetria es la que decide que cuenta como pagina
+# nueva y que no.
+FUENTE = "es"
+
+
+def idiomas(publico):
+    return tuple(sorted(d.name for d in publico.iterdir()
+                        if d.is_dir() and len(d.name) == 2 and d.name.isalpha()))
+
+
+def _idiomas():
+    return idiomas(PUBLICO)
+
+
+IDIOMAS = _idiomas()
+TRADUCCIONES = {PUBLICO / i for i in IDIOMAS if i != FUENTE}
+
+
 def paginas_de_contenido():
     """Paginas de CONTENIDO unico.
 
@@ -106,7 +132,7 @@ def paginas_de_contenido():
     test dara verde sobre una regla que ya no es la del proyecto.
     """
     return sorted(p for p in PUBLICO.rglob("*.html")
-                  if p.parent not in (PUBLICO / "en", PUBLICO / "fr")
+                  if p.parent not in TRADUCCIONES
                   and p != PUBLICO / "index.html")
 
 
@@ -292,7 +318,7 @@ class Estructura(unittest.TestCase):
         apagar justo lo que va primero. Por eso el enlace se comprueba, no se
         confia.
         """
-        for idioma in ("es", "en", "fr"):
+        for idioma in IDIOMAS:
             ob = PUBLICO / idioma / "onboarding.html"
             with self.subTest(idioma=idioma):
                 self.assertTrue(ob.is_file(), f"falta {idioma}/onboarding.html")
@@ -424,7 +450,7 @@ class Estructura(unittest.TestCase):
         aparece en la pagina de otro, cae.
         """
         blocks = {}
-        for idi in ("es", "en", "fr"):
+        for idi in IDIOMAS:
             t = (PUBLICO / idi / "index.html").read_text(encoding="utf-8")
             m = re.search(r'id="i18n"[^>]*>(.*?)</script>', t, re.S)
             self.assertIsNotNone(m, f"{idi}: falta el bloque i18n")
@@ -453,7 +479,7 @@ class Estructura(unittest.TestCase):
         Si alguien vuelve a escribir un <li> ahi, funcionara -- y volvera a
         estar en un solo idioma para siempre, que es como llego el anterior.
         """
-        for idi in ("es", "en", "fr"):
+        for idi in IDIOMAS:
             t = (PUBLICO / idi / "index.html").read_text(encoding="utf-8")
             pie = re.search(r'<footer class="honest-footer">(.*?)</footer>', t, re.S)
             with self.subTest(idioma=idi):
@@ -465,9 +491,9 @@ class Estructura(unittest.TestCase):
     def test_las_portadas_declaran_hreflang(self):
         """Tres traducciones sin hreflang son tres paginas sueltas para un
         buscador, y compiten entre ellas en vez de ofrecerse por idioma."""
-        for idi in ("es", "en", "fr"):
+        for idi in IDIOMAS:
             t = (PUBLICO / idi / "index.html").read_text(encoding="utf-8")
-            for otro in ("es", "en", "fr"):
+            for otro in IDIOMAS:
                 with self.subTest(idioma=idi, apunta_a=otro):
                     self.assertRegex(t, rf'hreflang="{otro}"',
                                      f"{idi} no declara hreflang de {otro}")
@@ -706,7 +732,7 @@ class Tablon(unittest.TestCase):
     ORIGENES = ("cache", "agora", "ejemplo", "fallo")
 
     def i18n_board(self):
-        for idioma in ("es", "en", "fr"):
+        for idioma in IDIOMAS:
             t = (PUBLICO / idioma / "community.html").read_text(encoding="utf-8")
             m = re.search(r'id="i18n"[^>]*>(.*?)</script>', t, re.S)
             yield idioma, json.loads(m.group(1))
@@ -876,7 +902,7 @@ class Hub(unittest.TestCase):
         modelo --que nadie lee nunca en pantalla-- dentro de un fichero que
         estaba a 36 B de su techo. Se mudo el texto; la prohibicion no.
         """
-        for idioma in ("es", "en", "fr"):
+        for idioma in IDIOMAS:
             js = (PUBLICO / "assets" / f"prompts-{idioma}.js").read_text(encoding="utf-8")
             papel = json.loads(js[js.index("window.PR =") + 11:]
                                .rstrip().rstrip(";"))["papel"]
@@ -1051,7 +1077,7 @@ class Cabezal(unittest.TestCase):
     """
 
     def portadas(self):
-        for idioma in ("es", "en", "fr"):
+        for idioma in IDIOMAS:
             yield idioma, (PUBLICO / idioma / "index.html").read_text(encoding="utf-8")
 
     def test_cabezal_con_ojos_y_login(self):
@@ -1547,7 +1573,7 @@ class PWA(unittest.TestCase):
         error en espanol."""
         sw = (PUBLICO / "sw.js").read_text(encoding="utf-8")
         self.assertIn("paginaSinRed", sw, "el worker no sintetiza respaldo")
-        for idioma in ("es", "en", "fr"):
+        for idioma in IDIOMAS:
             with self.subTest(idioma=idioma):
                 self.assertRegex(sw, r"\b" + idioma + r"\s*:\s*\[",
                                  f"la pagina de sin conexion no habla {idioma}")
@@ -1557,7 +1583,7 @@ class Paginas(unittest.TestCase):
 
     def test_selector_de_idioma_por_path(self):
         s = (PUBLICO / "index.html").read_text(encoding="utf-8")
-        for idioma in ("es", "en", "fr"):
+        for idioma in IDIOMAS:
             # Vale tanto "./es/" como "/es/": lo que importa es que el idioma
             # este en la RUTA, no la forma de escribir el enlace.
             self.assertTrue(f'href="./{idioma}/"' in s or f'href="/{idioma}/"' in s,
@@ -1617,7 +1643,7 @@ class Traducciones(unittest.TestCase):
         # respetar los 10 KB, este test siguio mirando uno solo y las claves de
         # los demas quedaban sin comprobar. Mirarlos todos tampoco vale:
         # hitos.js lee el bloque i18n de hitos.html, que es otro.
-        for idioma in ("es", "en", "fr"):
+        for idioma in IDIOMAS:
             p = PUBLICO / idioma / "index.html"
             texto = p.read_text(encoding="utf-8")
             usa = set()
@@ -1752,7 +1778,7 @@ class Comunidad(unittest.TestCase):
         espanol.
         """
         for a in self.d["anuncios"]:
-            for idi in ("es", "en", "fr"):
+            for idi in IDIOMAS:
                 with self.subTest(anuncio=a["id"], idioma=idi):
                     t = a["textos"].get(idi)
                     self.assertIsNotNone(t, f"{a['id']} no habla {idi}")
@@ -1769,7 +1795,7 @@ class Comunidad(unittest.TestCase):
         persona hace el trabajo y descubre sola que no habia donde entregarlo.
         """
         for a in self.d["anuncios"]:
-            for idi in ("es", "en", "fr"):
+            for idi in IDIOMAS:
                 with self.subTest(anuncio=a["id"], idioma=idi):
                     pero = (a["textos"][idi].get("pero") or "").strip()
                     self.assertTrue(pero, f"{a['id']}/{idi} no declara su limite")
@@ -1781,7 +1807,7 @@ class Comunidad(unittest.TestCase):
         for a in self.d["anuncios"]:
             if not a.get("enlace"):
                 continue
-            for idi in ("es", "en", "fr"):
+            for idi in IDIOMAS:
                 with self.subTest(anuncio=a["id"], idioma=idi):
                     self.assertTrue((a["textos"][idi].get("enlaceTexto") or "").strip(),
                                     f"{a['id']}/{idi}: enlace sin texto")
@@ -1802,7 +1828,7 @@ class Perfil(unittest.TestCase):
             with self.subTest(busto=b["id"]):
                 ruta = PUBLICO / (cat["ruta"].lstrip("/") + b["id"] + ".webp")
                 self.assertTrue(ruta.is_file(), f"falta {ruta.name}")
-                for idi in ("es", "en", "fr"):
+                for idi in IDIOMAS:
                     self.assertTrue((b.get(idi) or "").strip(),
                                     f"{b['id']} no tiene nombre en {idi}")
 

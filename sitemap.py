@@ -23,11 +23,29 @@ import pathlib
 RAIZ = pathlib.Path(__file__).resolve().parent
 PUBLICO = RAIZ / "public"
 ORIGEN = "https://preceptoros.org"
-IDIOMAS = ("es", "en", "fr")
+# Los idiomas se DESCUBREN del disco: toda carpeta de dos letras bajo `public/`
+# es una traduccion. Estaban escritos a mano en once sitios --`sitemap.py`,
+# `contadores.py` y nueve tuplas de `test_web.py`-- y anadir uno obligaba a
+# tocarlos todos: bastaba olvidar una para dejar un idioma sin comprobar, que
+# es exactamente donde vive un hueco que nadie ve. Firmado 2026-09-04, al
+# entrar el portugues.
+#
+# El castellano es la FUENTE --se escribe ahi primero-- y los demas son
+# traducciones suyas. Esa asimetria es la que decide que cuenta como pagina
+# nueva y que no.
+FUENTE = "es"
+
+
+def idiomas(publico):
+    return tuple(sorted(d.name for d in publico.iterdir()
+                        if d.is_dir() and len(d.name) == 2 and d.name.isalpha()))
+
+
+IDIOMAS = idiomas(PUBLICO)
 
 
 def paginas_por_idioma():
-    """Las paginas que existen en LOS TRES idiomas, por su nombre de fichero."""
+    """Las paginas que existen en TODOS los idiomas, por su nombre de fichero."""
     comunes = None
     for idi in IDIOMAS:
         aqui = {p.name for p in (PUBLICO / idi).glob("*.html")}
