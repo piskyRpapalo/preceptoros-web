@@ -45,12 +45,27 @@ IDIOMAS = idiomas(PUBLICO)
 
 
 def paginas_por_idioma():
-    """Las paginas que existen en TODOS los idiomas, por su nombre de fichero."""
-    comunes = None
-    for idi in IDIOMAS:
-        aqui = {p.name for p in (PUBLICO / idi).glob("*.html")}
-        comunes = aqui if comunes is None else (comunes & aqui)
-    return sorted(comunes or [])
+    """Que paginas tiene CADA idioma, por su nombre de fichero.
+
+    Antes esto devolvia la INTERSECCION: solo las paginas que existian en todos
+    los idiomas a la vez. Con tres traducciones completas daba igual, pero al
+    entrar la cuarta se convertia en una trampa -- una carpeta con cuatro
+    paginas habria borrado del sitemap las otras tres para TODOS los idiomas,
+    incluidos los que si las tienen. Un idioma a medio traducir no debe poder
+    esconder paginas que existen.
+
+    Ahora cada idioma declara lo suyo, y los `hreflang` de cada pagina apuntan
+    solo a los idiomas que de verdad la tienen. Es lo que hace que se pueda
+    traducir por partes: la carpeta nueva empieza con la portada y crece, sin
+    que nadie pierda nada mientras tanto.
+    """
+    return {idi: sorted(p.name for p in (PUBLICO / idi).glob("*.html"))
+            for idi in IDIOMAS}
+
+
+def idiomas_de(nombre, mapa):
+    """Los idiomas que tienen esa pagina. El orden es el de IDIOMAS."""
+    return [idi for idi in IDIOMAS if nombre in mapa[idi]]
 
 
 def sueltas():
@@ -80,17 +95,23 @@ def construir():
     alt_raiz.append(("x-default", ORIGEN + "/"))
     bloques.append(url(ORIGEN + "/", alt_raiz))
 
-    for nombre in paginas_por_idioma():
+    mapa = paginas_por_idioma()
+    todas = sorted({n for ns in mapa.values() for n in ns})
+    for nombre in todas:
         # La portada de idioma se anuncia como directorio (`/es/`), no como
         # `/es/index.html`: son la misma pagina y anunciar las dos es pedirle
         # al buscador que elija cual es la canonica.
         def ruta(idi):
             return "%s/%s/" % (ORIGEN, idi) if nombre == "index.html" \
                 else "%s/%s/%s" % (ORIGEN, idi, nombre)
-        alt = [(idi, ruta(idi)) for idi in IDIOMAS]
+        # Solo los idiomas que TIENEN esta pagina. Anunciar un `hreflang` a una
+        # traduccion que no existe manda al buscador a un 404 en el idioma de
+        # quien lo pida, que es peor que no ofrecerselo.
+        suyos = idiomas_de(nombre, mapa)
+        alt = [(idi, ruta(idi)) for idi in suyos]
         if nombre == "index.html":
             alt.append(("x-default", ORIGEN + "/"))
-        for idi in IDIOMAS:
+        for idi in suyos:
             bloques.append(url(ruta(idi), alt))
 
     for nombre in sueltas():
