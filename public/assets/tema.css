@@ -1,0 +1,84 @@
+/* preceptoros.org · el tema oscuro, trasplantado de la app.
+ *
+ * POR QUE UN FICHERO Y NO `canon.css`, medido: el bloque son 3,9 KB y
+ * `canon.css` tenia 2,6 libres de su techo de 10.240 -- se paso por 1.273 B al
+ * primer intento. Y ya no hace falta apretarlo ahi: las portadas tienen 2,4 KB
+ * libres desde que los papeles del modelo salieron del marcado, asi que una
+ * etiqueta mas (unos 50 B) se paga sin apuros. Es el `capas.css` que el plan
+ * pedia y que aquel dia no cabia.
+ */
+/* --- EL TEMA OSCURO · trasplante desde la app ----------------------------
+   Firmado el 2026-09-04: oscuro por defecto en los dos productos. Lo que llega
+   aquí no es «una versión oscura de la web» — es la MISMA piel que ya lleva la
+   app, con los mismos ficheros: el mármol oscuro es el mismo `.webp`, mapeado
+   de la misma forma, y los aros de bronce son los mismos de su cabezal.
+
+   El mármol oscuro NO es una inversión de colores: invertir el RGB gira el
+   tono al complementario y el violeta sale verde amarillento. Se toma la forma
+   —la veta es lo oscuro del original— y se mapea entre el suelo oscuro y el
+   violeta claro. Mismo dibujo, papeles cambiados.
+
+   DOS BLOQUES Y NO UNO, por necesidad: el css no puede compartir un mapeo
+   entre un `@media` y un selector normal. Uno atiende a quien no elige y otro
+   a quien sí, y `[data-tema="claro"]` gana a los dos. Los valores viven una
+   sola vez, en la familia `--n-*`: dos listas de VALORES a mano siempre se
+   separan, y eso ya pasó una vez en la app — seis variables se quedaron en un
+   bloque y no en el otro, y el teléfono salió a medias. */
+:root{
+  --n-marmol:#17131f; --n-marmol-claro:#1e1929;
+  --n-tinta:#ece9f5; --n-tenue:#a79fbe;
+  --n-violeta-texto:#b3a4ff;
+  --n-bronce-claro:#e0b872; --n-bronce:#c9a25e; --n-bronce-hondo:#8a6d2f;
+  --n-glass:rgba(38,31,53,.55); --n-glass-solid:rgba(30,25,41,.94);
+  --n-edge:rgba(255,255,255,.10);
+  --n-panel-bg:#1e1929; --n-panel-fg:#ece9f5;
+  --n-panel-borde:rgba(224,184,114,.38);
+  --n-depth:0 8px 32px rgba(0,0,0,.45);
+  --n-fondo-lamina:url(marble-violet-oscuro.webp);
+  /* La lámina clara, por nombre, para que el bloque oscuro pueda sustituirla
+     sin que nadie tenga que tocar `base.css` — que está a 222 B de su techo. */
+  --fondo-lamina:url(marble-violet.webp);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-tema="claro"]){
+    --marmol:var(--n-marmol); --marmol-claro:var(--n-marmol-claro);
+    --tinta:var(--n-tinta); --tenue:var(--n-tenue);
+    --violeta-texto:var(--n-violeta-texto);
+    --bronce:var(--n-bronce); --bronce-claro:var(--n-bronce-claro);
+    --bronce-hondo:var(--n-bronce-hondo);
+    --glass:var(--n-glass); --glass-solid:var(--n-glass-solid);
+    --edge:var(--n-edge); --depth:var(--n-depth);
+    --panel-bg:var(--n-panel-bg); --panel-fg:var(--n-panel-fg);
+    --panel-borde:var(--n-panel-borde);
+    --fondo-lamina:var(--n-fondo-lamina);
+  }
+}
+:root[data-tema="oscuro"]{
+  --marmol:var(--n-marmol); --marmol-claro:var(--n-marmol-claro);
+  --tinta:var(--n-tinta); --tenue:var(--n-tenue);
+  --violeta-texto:var(--n-violeta-texto);
+  --bronce:var(--n-bronce); --bronce-claro:var(--n-bronce-claro);
+  --bronce-hondo:var(--n-bronce-hondo);
+  --glass:var(--n-glass); --glass-solid:var(--n-glass-solid);
+  --edge:var(--n-edge); --depth:var(--n-depth);
+  --panel-bg:var(--n-panel-bg); --panel-fg:var(--n-panel-fg);
+  --panel-borde:var(--n-panel-borde);
+  --fondo-lamina:var(--n-fondo-lamina);
+}
+/* El fondo pasa por variable. `base.css` lo trae cosido en su regla y no cabe
+   una línea más ahí, así que se reescribe desde aquí — que se carga después. */
+body{background-image:var(--fondo-lamina)}
+
+/* Los aros de bronce del cabezal, los mismos que la app. Sobre el mármol un
+   botón sin relleno se hunde: el borde era de la misma familia que las vetas.
+   El aro es bronce —el color con el que esta casa marca lo medido, y el único
+   que no se confunde con una veta violeta— y el relleno es opaco, porque un
+   aro fuerte alrededor de nada deja el rótulo flotando igual. */
+.cab-boton{
+  background:var(--panel-bg);color:var(--panel-fg);
+  border:2px solid var(--bronce-claro);border-radius:999px;
+  padding:.32rem .85rem;box-shadow:0 2px 10px rgba(0,0,0,.28);
+}
+.cab-boton:hover,.cab-boton:focus-visible{
+  background:var(--violeta);border-color:var(--violeta);color:#fff;
+}
