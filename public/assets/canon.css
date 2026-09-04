@@ -88,3 +88,50 @@ code,pre,kbd,samp,input,textarea,select,.cifra,.proof b,.ob-codigo,
 @view-transition{navigation:auto}
 @media (prefers-reduced-motion:reduce){
   @view-transition{navigation:none}}
+
+/* --- LA ESCALA DE PROFUNDIDAD · las cuatro capas ------------------------
+   Firmada 2026-09-04, hermana de la del MVP: los dos productos se apilan con
+   los mismos numeros y los mismos nombres, para que una capa no signifique una
+   cosa aqui y otra alla.
+
+   POR QUE VIVE AQUI Y NO EN UN `capas.css` NUEVO, que es lo que decia el plan.
+   Medido antes de escribir: enlazar una hoja mas cuesta unos 48 B en cada
+   portada, y `fr/index.html` esta a 38 B del techo de 10.240 que exige
+   `test_web.py`. O sea: el fichero nuevo no cabe, y no por su contenido --que
+   son doce lineas-- sino por su ETIQUETA. `base.css` estaba descartado por
+   lleno (10.018 de 10.240); `canon.css` es el anexo de tokens firmados, se
+   carga en las mismas paginas y le sobran 5,7 KB. Una escala de `z-index` es
+   un token de diseno, asi que ademas es su sitio natural.
+
+   Desviacion minima y declarada. Si algun dia las portadas adelgazan --y hay
+   2.412 B de prompts de agente en su bloque i18n que no son interfaz-- esto
+   puede mudarse a su fichero propio sin tocar una sola regla. */
+:root{
+  --capa-1-chat:10;      /* la conversacion, que es el suelo */
+  --capa-2-cabezal:20;   /* el cabezal y su declaracion */
+  --capa-3-lateral:30;   /* el desplegable, que pisa a la 2 y a la 1 */
+  --capa-4-cara:40;      /* la cara. No la tapa nadie */
+}
+#cabezal{position:relative;z-index:var(--capa-2-cabezal)}
+
+/* La declaracion solar del cabezal. Va en su propia linea y no como un boton
+   mas: no es navegacion, es una afirmacion sobre quien sirve esto -- y se lee,
+   no se pulsa. En pantalla estrecha se queda igual de legible porque ocupa el
+   ancho entero en vez de competir por sitio en la fila. */
+.cab-solar{
+  flex-basis:100%;order:99;margin:.35rem 0 0;
+  font-size:.72rem;font-weight:600;letter-spacing:.01em;
+  color:var(--bronce-hondo,#6b533c);
+}
+
+/* El camino a mano de iOS. Aparece al pulsar el boton de instalar en un iPhone
+   --donde no existe la instalacion por programa-- y desaparece al volver a
+   pulsarlo. Se pinta como panel y no como texto suelto: la regla R-WIDGET de
+   mas arriba existe porque el marmol tiene vetas y un texto encima no tiene
+   contraste calculable. */
+.como-instalar{
+  flex-basis:100%;order:100;margin:.4rem 0 0;padding:.5rem .7rem;
+  background:var(--panel-bg);color:var(--panel-fg);
+  border:1px solid var(--panel-borde);border-radius:var(--radius);
+  font-size:.8rem;line-height:1.45;
+}
