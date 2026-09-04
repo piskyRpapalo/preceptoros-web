@@ -73,11 +73,9 @@
   /* La declaracion solar, en el cabezal y en los tres idiomas. No es un boton:
      es una afirmacion sobre quien sirve esto, asi que se lee y no se pulsa.
 
-     Y conviene saberlo antes de tocarla: el pie lleva OTRA redaccion de la
-     misma afirmacion --`pieSolar`, «servido por IA 99% solar (excepto
-     Cloudflare)»--. Dos frases sobre el mismo hecho terminan divergiendo, y
-     ademas una nombra al proveedor y la otra no. Queda anotado; unificarlas es
-     decision del Soberano, no de este fichero. */
+     Es la MISMA clave que pinta el pie. Hubo dos --`pieSolar` decia otra cosa
+     parecida-- y se fundieron el 2026-09-04: dos frases sobre el mismo hecho
+     terminan divergiendo, y esta se publica en dos sitios de la misma pagina. */
   cab.appendChild(el('p', 'cab-solar', T.cabSolar));
 
   /* Los enlaces de identidad publica van AQUI y en ningun otro sitio de la

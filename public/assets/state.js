@@ -22,6 +22,12 @@
   }
   // Bloque delimitado y en ingles: el modelo lo lee como datos, no como una
   // frase mas del sistema, y no se mezcla con lo que escribe la persona.
+  /* Los papeles del modelo viven en `prompts-<idioma>.js`, que se carga antes
+     que nada. Si ese fichero faltara --404, cache a medias--, `PR` no
+     existiria y el chat reventaria al componer el papel en vez de contestar
+     peor. Esta linea es la diferencia entre degradar y romper. */
+  window.PR = window.PR || {};
+
   window.stateContext = function () {
     return '\n\n[SYSTEM STATE]\nLanguage: ' + (navigator.language || 'NO_DATA') +
            '\nDevice: ' + platform() +

@@ -31,17 +31,17 @@
      catalogo. Este fichero ya sabe quien contesta; saber que papel juega es la
      misma pregunta.
 
-     `T.agentesCifras` es una regla COMPARTIDA --euros y aviso de medidas-- y
-     por eso vive UNA vez en el i18n en vez de copiada dentro de los dos
+     `PR.agentesCifras` es una regla COMPARTIDA --euros y aviso de medidas-- y
+     por eso vive UNA vez en `prompts-*.js` en vez de copiada en los dos
      papeles que la necesitan: duplicarla costaba 440 B en `fr`, que tenia 533
      libres. Quien la necesita lo declara el catalogo con `cifras: true`, no un
      `if` con dos nombres dentro que envejece al renombrar un agente. */
   var bloqueI18N = document.getElementById('i18n');
   var T = bloqueI18N ? JSON.parse(bloqueI18N.textContent) : {};
   function papelDe(a) {
-    var base = (T.agentes || {})[a.nido];
+    var base = (PR.agentes || {})[a.nido];
     if (!base) return null;                 // sin nido: el chat cae a T.papel
-    return a.cifras && T.agentesCifras ? base + ' ' + T.agentesCifras : base;
+    return a.cifras && PR.agentesCifras ? base + ' ' + PR.agentesCifras : base;
   }
 
   /* Doble guarda, y las dos hacen falta: `startViewTransition` no existe en

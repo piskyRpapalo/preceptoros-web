@@ -60,10 +60,10 @@
   // Cuanto mas sabe el frontend, menos adivina el modelo. El bloque de estado
   // va DESPUES del papel y ANTES de lo que escribe la persona.
   function papel() {
-    return (nido || T.papel) + (window.stateContext ? window.stateContext() : '');
+    return (nido || PR.papel || '') + (window.stateContext ? window.stateContext() : '');
   }
   function sobre() {
-    return { origen: 'preceptoros.org', papel: papel(), reglas: T.reglas,
+    return { origen: 'preceptoros.org', papel: papel(), reglas: PR.reglas,
              pregunta: entrada.value.trim() };
   }
   // Recibe el TEXTO, no la clave: asi toda cadena traducida se referencia con el

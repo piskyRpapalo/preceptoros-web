@@ -866,14 +866,20 @@ class Hub(unittest.TestCase):
         nuestro es .org-- y rutas que no existen. Un modelo que inventa la
         direccion a la que mandas a instalar es peor que uno que no contesta.
 
-        La regla vive en el `papel` de las TRES portadas, que es lo que viaja
-        al modelo. Se comprueba en las tres porque una traduccion que se salta
+        La regla vive en el `papel` de los TRES idiomas, que es lo que viaja
+        al modelo. Se comprueba en los tres porque una traduccion que se salta
         la prohibicion la desactiva para ese idioma entero.
+
+        DONDE VIVE EL PAPEL, que cambio el 2026-09-04 y por eso este test
+        cambio con el. Estaba en el bloque i18n de cada portada y se saco a
+        `assets/prompts-<idioma>.js`: eran 2.412 B de instrucciones para un
+        modelo --que nadie lee nunca en pantalla-- dentro de un fichero que
+        estaba a 36 B de su techo. Se mudo el texto; la prohibicion no.
         """
         for idioma in ("es", "en", "fr"):
-            t = (PUBLICO / idioma / "index.html").read_text(encoding="utf-8")
-            papel = json.loads(re.search(r'id="i18n"[^>]*>(.*?)</script>',
-                                         t, re.S).group(1))["papel"]
+            js = (PUBLICO / "assets" / f"prompts-{idioma}.js").read_text(encoding="utf-8")
+            papel = json.loads(js[js.index("window.PR =") + 11:]
+                               .rstrip().rstrip(";"))["papel"]
             with self.subTest(idioma=idioma):
                 self.assertRegex(papel, r"(?i)\b(nunca|never|jamais)\b",
                                  "el papel no prohibe nada en absoluto")

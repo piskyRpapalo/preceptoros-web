@@ -24,8 +24,15 @@
     /* La cuarta es el badge solar. Entra como PAR con el resto vacio en vez de
        con render propio: el bucle de abajo ya sabe pintar `<strong>` + texto,
        asi que la insignia cuesta una linea en vez de un bloque. Si algun dia
-       lleva segunda mitad, ya tiene sitio. */
-    [['pie1f', 'pie1r'], ['pie2f', 'pie2r'], ['pie3f', 'pie3r'], ['pieSolar', '']]
+       lleva segunda mitad, ya tiene sitio.
+
+       Y usa `cabSolar`, la MISMA clave que el cabezal. Habia dos: `pieSolar`
+       decia «servido por IA 99% solar (excepto Cloudflare)» y el cabezal
+       «excepto el proveedor web». Dos frases sobre el mismo hecho, una
+       nombrando al proveedor y la otra no -- la clase de par que se separa mas
+       cada vez que alguien retoca una sola. Se fundieron el 2026-09-04 en la
+       redaccion que firma el Soberano, que dice las dos cosas. */
+    [['pie1f', 'pie1r'], ['pie2f', 'pie2r'], ['pie3f', 'pie3r'], ['cabSolar', '']]
       .forEach(function (par) {
         if (T[par[0]]) ul.appendChild(li(T[par[0]], T[par[1]] || ''));
       });
