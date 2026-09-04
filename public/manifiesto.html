@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="es" data-tema="oscuro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Manifiesto del Builder · PreceptorOS</title>
+<meta name="description" content="El Manifiesto del Builder: qué promete este taller, qué cuesta y qué todavía no sabe hacer.">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/base.css">
+<link rel="stylesheet" href="/assets/canon.css">
+<link rel="stylesheet" href="/assets/tema.css">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#17131F">
+<style>
+/* Esta página no comparte hoja con las demás y es a propósito: es lo único del
+   sitio que se pinta sobre el verde, y meter ese fondo en una hoja común lo
+   descargaría en todas las páginas que no lo usan. Son cuarenta líneas. */
+body{background:#0d1a10 url(/assets/fondo-manifiesto.webp) center/cover no-repeat fixed;
+  min-height:100dvh;display:grid;place-items:center;padding:1.2rem}
+/* La tarjeta deja ver el verde detrás: es lo que hace que se lea como un aviso
+   sobre algo, y no como otra página. Como el cartel de las cookies, que es la
+   forma que la gente ya sabe cerrar. */
+.manif{position:relative;max-width:34rem;width:100%;
+  background:rgba(13,26,16,.72);color:var(--n-tinta);
+  border:1px solid rgba(224,184,114,.45);border-radius:var(--radius);
+  padding:2rem 1.6rem 1.7rem;box-shadow:0 12px 40px rgba(0,0,0,.5)}
+@supports (backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px)){
+  .manif{-webkit-backdrop-filter:blur(10px) saturate(140%);
+    backdrop-filter:blur(10px) saturate(140%)}
+}
+.manif h1{font-size:1.35rem;letter-spacing:.06em;text-transform:uppercase;
+  margin-bottom:.9rem;-webkit-text-stroke:1px var(--n-bronce-claro);
+  paint-order:stroke fill}
+.manif p{font-size:.92rem;line-height:1.6;color:var(--n-tenue)}
+/* El aspa, arriba a la derecha y con su hueco reservado: sin el `padding-right`
+   del título, una traducción larga se le metía debajo. */
+.saltar{position:absolute;top:.7rem;right:.7rem;
+  width:40px;height:40px;display:inline-flex;align-items:center;
+  justify-content:center;border-radius:999px;text-decoration:none;
+  color:var(--n-tinta);background:rgba(13,26,16,.85);
+  border:2px solid var(--n-bronce-claro)}
+.saltar svg{width:1.15em;height:1.15em}
+.saltar:focus-visible{outline:2px solid var(--n-bronce-claro);outline-offset:3px}
+.manif h1{padding-right:3rem}
+/* El pie, discreto y debajo de la tarjeta: la promesa de esta casa es que cada
+   pagina cuenta como se produce, y una pantalla de bienvenida no es una
+   excepcion -- es la primera. */
+.honest-footer{max-width:34rem;margin:1rem auto 0;font-size:.72rem;
+  color:var(--n-tenue);border-top:1px solid rgba(224,184,114,.3);padding-top:.7rem}
+.honest-footer h2{font-size:.74rem;letter-spacing:.06em;text-transform:uppercase;
+  margin-bottom:.4rem}
+.honest-footer li{margin:.3rem 0 0;list-style:none;line-height:1.5}
+body{display:block;padding:2rem 1.2rem}
+.manif{margin:0 auto}
+</style>
+</head>
+<body>
+<main class="manif">
+  <a class="saltar" href="/" id="saltar" aria-label="Saltar">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+         stroke-linecap="round" aria-hidden="true">
+      <path d="M 6 6 L 18 18"></path><path d="M 18 6 L 6 18"></path>
+    </svg>
+  </a>
+  <h1 id="titulo">Manifiesto del Builder</h1>
+  <p id="cuerpo">Contenido del manifiesto en construcción.</p>
+</main>
+
+<script type="application/json" id="i18n">
+{
+  "es": { "titulo": "Manifiesto del Builder", "cuerpo": "Contenido del manifiesto en construcción.", "saltar": "Saltar" },
+  "en": { "titulo": "The Builder's Manifesto", "cuerpo": "Manifesto content under construction.", "saltar": "Skip" },
+  "fr": { "titulo": "Manifeste du Builder", "cuerpo": "Contenu du manifeste en construction.", "saltar": "Passer" },
+  "pt": { "titulo": "Manifesto do Builder", "cuerpo": "Conteúdo do manifesto em construção.", "saltar": "Saltar" }
+}
+</script>
+<footer class="honest-footer" id="pie">
+  <h2 id="pie-titulo">Cómo se produce esta página</h2>
+  <ul>
+    <li id="pie-1"><strong>Cero peticiones a terceros.</strong> El fondo y la
+      hoja de estilo salen de este mismo dominio; no hay analítica, ni fuentes
+      de fuera, ni nada que avise a nadie de que has entrado.</li>
+    <li id="pie-2"><strong>El texto todavía no está.</strong> Esta página es la
+      estructura, y lo dice en vez de rellenarla con un texto de adorno que
+      luego habría que distinguir del de verdad.</li>
+  </ul>
+</footer>
+<script src="/assets/pwa.js"></script>
+<script src="/assets/manifiesto.js"></script>
+</body>
+</html>

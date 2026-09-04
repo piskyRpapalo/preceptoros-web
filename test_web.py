@@ -155,9 +155,16 @@ class Estructura(unittest.TestCase):
         #
         # Lo que NO cambia: cada pagina nueva se paga con este numero, y
         # subirlo exige firma. La novena no entra sola.
+        # TERCERA AMNISTIA, firmada por el Soberano el 2026-09-04: de 8 a 9.
+        # La novena es `manifiesto.html`, la pantalla que recibe a quien llega
+        # por primera vez. Necesita URL PROPIA por la misma razon que el
+        # perfil: se enlaza desde la app y desde fuera, y una URL que abre la
+        # portada y hace scroll hasta un bloque no es la pagina de nadie.
+        #
+        # Y sigue sin entrar sola la decima.
         paginas = paginas_de_contenido()
-        self.assertLessEqual(len(paginas), 8,
-            "mas de 8 paginas de contenido: " + ", ".join(p.name for p in paginas))
+        self.assertLessEqual(len(paginas), 9,
+            "mas de 9 paginas de contenido: " + ", ".join(p.name for p in paginas))
 
     def test_la_tarjeta_social_apunta_a_algo_que_existe(self):
         """og:image, og:url y el favicon, comprobados contra el disco.
