@@ -135,3 +135,18 @@ code,pre,kbd,samp,input,textarea,select,.cifra,.proof b,.ob-codigo,
   border:1px solid var(--panel-borde);border-radius:var(--radius);
   font-size:.8rem;line-height:1.45;
 }
+
+/* --- EL CANTO DORADO DEL NOMBRE -----------------------------------------
+   Canon firmado el 2026-09-04: todo nombre de producto escrito en versales
+   lleva canto de bronce. Nacio en la pantalla de presentacion de la app, donde
+   el violeta sobre violeta no separaba la palabra del fondo, y el Soberano lo
+   subio a regla: se aplica en los dos productos para que el nombre se escriba
+   igual en la puerta y en el taller.
+
+   `paint-order: stroke fill` es lo que lo hace posible sin adelgazar la letra.
+   Sin esa linea el trazo se pinta encima del relleno y se come media asta
+   desde dentro: la palabra queda flaca y sucia. */
+.marca h1, .marca h1 b {
+  -webkit-text-stroke: 1px var(--bronce-claro);
+  paint-order: stroke fill;
+}
