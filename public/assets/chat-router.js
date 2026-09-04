@@ -194,9 +194,9 @@
      `chat.js` no se toca: le quedan 111 B y ya emite `preceptor:hablando` al
      primer trozo y `preceptor:turno` al cerrar. Aqui solo se escucha. */
   if (cabeza) {
-    cabeza.addEventListener('animationend', function (e) {
-      if (e.animationName === 'cara-abre') cabeza.classList.add('despierto');
-    });
+    /* Nace despierta: la apertura salio del cabezal y su `animationend` ya
+       no llega nunca. */
+    cabeza.classList.add('despierto');
     document.addEventListener('preceptor:hablando', function () {
       cabeza.classList.add('hablando');
     });

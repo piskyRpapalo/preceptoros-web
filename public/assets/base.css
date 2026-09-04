@@ -76,8 +76,8 @@ header{display:flex;align-items:flex-end;gap:1rem;border-bottom:3px solid var(--
   padding-bottom:.9rem;margin-bottom:1.6rem}
 .marca{flex:1;min-width:0}
 .marca h1{font-size:1.05rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
-  color:var(--indigo);overflow-wrap:break-word;word-break:normal;hyphens:none}
-.marca h1 b{font-weight:400;color:var(--bronce-hondo)}
+  color:var(--tinta);overflow-wrap:break-word;word-break:normal;hyphens:none}
+.marca h1 b{font-weight:800;font-size:1.28em;color:var(--violeta-texto)}
 .marca p{color:var(--tenue);font-size:.78rem;margin-top:.2rem}
 
 /* --- EL SELLO: la cara despierta, y es un sensor --- */

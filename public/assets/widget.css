@@ -52,40 +52,34 @@
    le abria un hueco de 4,6rem contra un borde vacio. Asi la reserva aparece y
    desaparece con el rail sin que ninguna pagina declare cual es. */
 body:has(#panel-modelos){padding-right:var(--hueco-rail)}
-:root{--hueco-rail:4.6rem;--cara-web:78px;--anim-apertura:3.75s;--anim-reposo:32s;--anim-habla:.72s}
+:root{--hueco-rail:4.6rem;--cara-web:78px;--anim-reposo:38.4s;--anim-habla:.864s}
+/* La cara del chat nace despierta: la apertura --la piedra y el laser-- es la
+   entrada del producto, no el cabezal al que se vuelve cien veces. Y va
+   acercada 1,225x: cuatro cuadros por 1,225 son 490 % y el paso queda en
+   31.410 %. Subir el tamano sin recalcular las paradas ensena medio cuadro y
+   medio del siguiente a la vez. Igual que la app; si se toca, se tocan las dos. */
 #cabeza{width:var(--cara-web);height:var(--cara-web);flex:0 0 var(--cara-web);
-  background:url("/assets/caras/secuencia-apertura-256.webp") 0% 50%/700% auto no-repeat;
-  border:2px solid var(--bronce);border-radius:50%;
-  animation:cara-abre var(--anim-apertura) linear 1 both}
-/* Paradas en porcentaje y no `steps()`: el tercer fotograma dura la mitad, y
-   cada uno se declara dos veces para que el navegador no interpole. */
-@keyframes cara-abre{
-  0%,13.32%{background-position:0% 50%}
-  13.33%,26.66%{background-position:16.667% 50%}
-  26.67%,33.32%{background-position:33.333% 50%}
-  33.33%,46.66%{background-position:50% 50%}
-  46.67%,59.99%{background-position:66.667% 50%}
-  60%,73.32%{background-position:83.333% 50%}
-  73.33%,100%{background-position:100% 50%}}
-/* Reposo: cuatro colores, ocho segundos cada uno. El fundido va aparte y baja
-   la opacidad justo en el salto: cruce suave sin apilar dos capas. */
+  background:url("/assets/caras/secuencia-reposo-256.webp") 2.885% 50%/490% auto no-repeat;
+  border:2px solid var(--bronce);border-radius:50%}
+/* Reposo: cuatro colores. `steps(4)` y no `steps(3)` -- `jump-none` da n
+   paradas exactas, y con 3 sobre cuatro cuadros una caia en la juntura y se
+   veia medio de cada uno. Sin fundido: bajaba la opacidad a .55 en cada salto
+   y la cara se desvanecia a medias varias veces por minuto. */
 #cabeza.despierto{background-image:url("/assets/caras/secuencia-reposo-256.webp");
-  background-size:400% auto;
-  animation:cara-reposo var(--anim-reposo) steps(3,jump-none) infinite,
-            cara-fundido 8s ease-in-out infinite}
-@keyframes cara-reposo{from{background-position:0% 50%}to{background-position:100% 50%}}
-@keyframes cara-fundido{0%,6%,94%,100%{opacity:.55}20%,80%{opacity:1}}
+  background-size:490% auto;
+  animation:cara-reposo var(--anim-reposo) steps(4,jump-none) infinite}
+@keyframes cara-reposo{from{background-position:2.885% 50%}to{background-position:97.115% 50%}}
 /* Hablando: cuatro bocas al 400 %. El tamano se declara aqui a proposito:
    heredar el 700 % sacaria media vuelta del marco y dejaria un parpadeo de
    alto contraste a ritmo constante. */
 #cabeza.hablando{background-image:url("/assets/caras/secuencia-habla-256.webp");
-  background-size:400% auto;opacity:1;
+  background-size:490% auto;opacity:1;
   animation:cara-habla var(--anim-habla) steps(4,jump-none) infinite}
-@keyframes cara-habla{from{background-position:0% 50%}to{background-position:100% 50%}}
+@keyframes cara-habla{from{background-position:2.885% 50%}to{background-position:97.115% 50%}}
 @media (prefers-reduced-motion:reduce){
   #cabeza,#cabeza.despierto,#cabeza.hablando{animation:none;opacity:1;
-    background-image:url("/assets/caras/secuencia-apertura-256.webp");
-    background-size:700% auto;background-position:100% 50%}}
+    background-image:url("/assets/caras/secuencia-reposo-256.webp");
+    background-size:490% auto;background-position:2.885% 50%}}
 
 #cab-nav{display:flex;gap:.4rem;flex-wrap:wrap;align-items:center}
 .cab-boton{font:inherit;font-size:.74rem;font-weight:700;letter-spacing:.09em;
