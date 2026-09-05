@@ -13,6 +13,10 @@
   --violeta:#6D5AE0; --violeta-texto:#4B37C4; --indigo:#261789;
   --bronce:#78624C; --bronce-claro:#93705C; --bronce-hondo:#5A4531;
   --jardin:#2C784B; --sol:#AC510B;   /* medidos 4,66:1 y 4,61:1 */
+  /* El oro de la marca. NO es `--sol`: aquel es el acento calido sobre fondo
+     claro y sobre violeta se apaga --1,38:1 medido, ilegible--. Este se midio
+     contra `--indigo`, que es donde se usa: 9,04:1. */
+  --oro:#F2D08A;
   --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"DejaVu Sans Mono",monospace;
   /* --- el cristal, sobre la paleta de siempre --------------------------- */
   --glass:rgba(242,245,247,.55);
@@ -42,6 +46,12 @@ main{width:100%;max-width:46rem;margin:0 auto}
 /* --- paneles de cristal sobre el marmol ---------------------------------- */
 /* Respaldo OPACO delante, cristal tras @supports: sin backdrop-filter el panel
    queda solido y legible, no un cristal sucio sobre la piedra. */
+/* LOS PANELES DEJAN VER EL FONDO (2026-09-05). El opaco tapaba el ambiente
+   animado que esta pagina dibuja, asi que se veia el mismo rectangulo liso en
+   los dos temas y el fondo solo asomaba por los margenes. Con el color a media
+   opacidad se ve a traves y los botones violeta se recortan contra algo vivo.
+   El respaldo opaco sigue delante para quien no tenga `backdrop-filter`: sin
+   el, el texto se lee sobre la animacion y no se lee. */
 .panel{background:var(--marmol-claro);border:1px solid var(--bronce);
   border-radius:var(--radius);padding:1.25rem 1.15rem;margin:0 0 1.4rem;
   box-shadow:var(--depth)}
@@ -161,7 +171,11 @@ textarea{min-height:8rem;font-size:.78rem;line-height:1.5;resize:vertical}
   text-shadow:0 0 10px rgba(109,90,224,.45)}  /* halo SOLO en cifras vivas */
 
 /* --- pie honesto --- */
-.honest-footer{margin-top:1.5rem;border:1px solid var(--bronce);border-radius:var(--radius);padding:1rem;background:var(--marmol-claro);
+/* EL PIE PIERDE SU CAJA (2026-09-05). Tenia borde propio, fondo propio y
+   esquinas propias, asi que se leia como un panel mas -- un tercero, debajo de
+   los dos que la pagina tiene. Lo que dice el pie es letra pequena honesta, no
+   una seccion: se queda el texto y se va el marco. */
+.honest-footer{margin-top:1.5rem;padding:1rem 0 0;
   font-size:.74rem;line-height:1.6;color:var(--tenue)}
 .honest-footer h2{margin-top:0}
 .honest-footer li{margin:0 0 .5rem 1.1rem}

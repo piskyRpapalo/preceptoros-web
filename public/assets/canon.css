@@ -45,7 +45,8 @@ code,pre,kbd,samp,input,textarea,select,.cifra,.proof b,.ob-codigo,
 .guia{margin:1rem 0}
 .proof{font-size:.82rem;line-height:1.55}
 .ob-paso{margin:1.4rem 0;border-top:1px solid var(--panel-borde)}
-.honest-footer{margin-top:2rem;border-top:1px solid var(--panel-borde)}
+/* El filo de arriba del pie se fue con su caja el 2026-09-05. */
+.honest-footer{margin-top:2rem}
 
 /* El aviso mantiene su color propio, pero DENTRO del panel: un NO_DATA tiene
    que verse distinto sin dejar de ser legible. */

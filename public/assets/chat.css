@@ -107,13 +107,56 @@ button.enviar svg{margin-right:.1rem}
    funcionaria hoy y se romperia al mover un bloque de sitio, que es como se
    rompen estas cosas. */
 #chat{position:relative;z-index:var(--capa-1-chat)}
-.atajos{display:flex;gap:.4rem;overflow-x:auto;padding:.15rem 0 .35rem;
-  scrollbar-width:none}
+/* UNA SOLA FILA PARA TODOS LOS ATAJOS. `comandos.js` mete los suyos dentro de
+   un `div.fila`, y `display:contents` lo hace desaparecer para la maqueta: sus
+   botones quedan como hermanos de los demas en vez de como un bloque aparte.
+   Sin esto la fusion seria visual a medias -- un grupo dentro de otro grupo.
+
+   Se envuelve en vez de hacer scroll horizontal: son once pildoras y en un
+   telefono la mitad quedaria fuera de vista sin nada que dijera que hay mas. */
+.atajos{display:flex;flex-wrap:wrap;gap:.4rem;padding:.15rem 0 .35rem}
+.atajos .fila{display:contents}
 .atajos::-webkit-scrollbar{display:none}
-.atajo{flex:0 0 auto;font:inherit;font-size:.76rem;cursor:pointer;
+/* Los dos tipos de atajo se pintan IGUAL, y esa es la mitad de la fusion: si
+   uno fuera pildora y el otro boton seguirian siendo dos cosas aunque
+   compartieran fila. Lo unico que los distingue es lo que dicen. */
+.atajo,.atajos .comando{flex:0 0 auto;font:inherit;font-size:.76rem;
+  font-weight:600;letter-spacing:0;text-transform:none;cursor:pointer;
   color:var(--tinta);background:var(--marmol-claro);
   border:1px solid var(--bronce);border-radius:999px;padding:.32rem .7rem;
   transition:transform .16s var(--spring)}
-.atajo:hover,.atajo:focus-visible{transform:translateY(-1px)}
-.atajo:focus-visible{outline:2px solid var(--violeta);outline-offset:2px}
+.atajo:hover,.atajo:focus-visible,
+.atajos .comando:hover,.atajos .comando:focus-visible{transform:translateY(-1px)}
+.atajo:focus-visible,.atajos .comando:focus-visible{
+  outline:2px solid var(--violeta);outline-offset:2px}
 
+/* --- los dos paneles, y el canto dorado del chat --------------------------
+   SE VE EL FONDO A TRAVES. El opaco tapaba el ambiente animado de la pagina y
+   dejaba el mismo rectangulo liso en los dos temas. Con el cristal a media
+   opacidad el fondo asoma y los botones violeta se recortan contra algo vivo,
+   que es lo que hace que se lean. El respaldo opaco de `base.css` sigue
+   delante para quien no tenga `backdrop-filter`: sin el, el texto quedaria
+   sobre la animacion y no se leeria.
+
+   EL CANTO DORADO ES EL LIMITE CON LA WEB, y por eso va en los lados y abajo y
+   no arriba: arriba el chat linda con el cabezal --que es de la misma casa-- y
+   un filo ahi seria una costura interna. Abajo y a los lados linda con la
+   pagina, y ahi si hay que decir donde acaba el producto. */
+@supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)){
+  #cabezal,#chat{background:color-mix(in srgb, var(--glass-solid) 62%, transparent)}
+  /* El desplegable de companeros y la rueda tambien. Son la Capa 3 y caen
+     ENCIMA del chat: opacos abrian un agujero solido en una pagina que por lo
+     demas deja ver el fondo, y ese salto se lee como que algo se ha roto. Van
+     mas cerrados que los paneles --78 contra 62-- porque llevan texto pequeno
+     sobre violeta y ahi el fondo animado si estorba. */
+  #panel-modelos,#panel-ajustes{
+    background:color-mix(in srgb, var(--violeta) 78%, transparent)}
+  /* Los atajos y los comandos: pildoras sobre el chat, que ya es traslucido.
+     Con fondo opaco flotaban como pegatinas encima del cristal. */
+  .atajo,.atajos .comando{
+    background:color-mix(in srgb, var(--marmol-claro) 55%, transparent)}
+}
+#chat{border-top-color:transparent;
+  border-left-color:var(--bronce-claro);border-right-color:var(--bronce-claro);
+  border-bottom-color:var(--bronce-claro);
+  border-left-width:2px;border-right-width:2px;border-bottom-width:2px}

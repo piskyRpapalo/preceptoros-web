@@ -101,11 +101,18 @@
   document.addEventListener('keydown', interceptar, true);
 
   /* --- la fila de botones ------------------------------------------------
-     Van bajo el chat, en el panel de herramientas que `chat-router.js` crea.
-     Si ese panel no esta --otra pagina, otro orden-- se cuelgan del chat y ya:
-     un boton que no aparece es peor que uno mal colocado. */
+     VAN EN `#atajos`, CON LOS DEMAS. Hasta el 2026-09-05 habia dos filas bajo
+     el campo: estos comandos por un lado y «Resume esto / Dame los pasos / Que
+     te falta saber» por otro. Son lo MISMO --los dos escriben en el campo y
+     atienden-- y verlos separados obligaba a aprenderse dos sitios para el
+     mismo gesto. Una sola fila, y el duplicado se ve en cuanto aparece.
+
+     La cadena de caidas se conserva entera: si no hay `#atajos` se busca el
+     panel de herramientas, y si tampoco, el chat. Un boton que no aparece es
+     peor que uno mal colocado. */
   function pintar() {
-    var casa = document.getElementById('herramientas') ||
+    var casa = document.getElementById('atajos') ||
+               document.getElementById('herramientas') ||
                document.getElementById('chat');
     if (!casa) return;
     var fila = document.createElement('div');
@@ -125,6 +132,9 @@
       fila.appendChild(b);
     });
     casa.appendChild(fila);
+    // `#atajos` nace oculto y lo destapa quien le pone algo dentro. Si esta
+    // fila llega primero, le toca a ella.
+    if (casa.id === 'atajos') casa.hidden = false;
   }
 
   /* En tiempo OCIOSO, igual que hub.js pide su catalogo. La doctrina del

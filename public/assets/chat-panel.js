@@ -29,29 +29,18 @@
   var chat = document.getElementById('chat');
   if (!chat) return;
 
-  /* --- el panel de herramientas ------------------------------------------
-     Va DENTRO del panel grande y DEBAJO de la terminal, no como panel
-     hermano. Antes se insertaba detras de #chat y en un telefono quedaba a
-     una pantalla entera de scroll de la conversacion a la que pertenece.
+  /* EL PANEL DE HERRAMIENTAS SE RETIRA (2026-09-05, firmado). Era un
+     `section.panel` con su titulo «Atajos» que envolvia el motor, el rotulo del
+     cerebro y los ocho comandos. El recuadro sobraba: los atajos son parte del
+     chat, no una caja aparte debajo de el. Un marco propio decia que eran otra
+     cosa, y son la misma -- ordenes que se le dan a esta conversacion.
 
-     Lo que contiene se ha adelgazado (2026-09-01): `motor` y `brain`. El
-     buscador de IA del navegador y el de Ollama local NO se han borrado --se
-     han mudado al Benchmark--, que es donde se elige y se MIDE un motor. En
-     la portada eran tres formas distintas de contestar a la misma pregunta,
-     apiladas encima del chat.
-
-     `voice` sale de aqui y sube junto a Enviar: hablar es una forma de
-     escribir el turno, no una herramienta suelta. */
-  var herr = document.createElement('section');
-  herr.id = 'herramientas'; herr.className = 'panel';
-  var herrTit = document.createElement('h2');
-  herrTit.className = 'panel-titulo';
-  herr.appendChild(herrTit);   // lo escribe `chat-router.js`, por selector
-  ['motor', 'brain'].forEach(function (id) {
-    var n = document.getElementById(id);
-    if (n) herr.appendChild(n);
-  });
-  chat.appendChild(herr);
+     No hace falta mudar nada a mano. `#motor` y `#brain` ya nacen dentro de
+     `#chat` en el marcado --era este fichero el que los sacaba de ahi para
+     meterlos en la caja-- y `comandos.js` ya trae su caida escrita:
+     `getElementById('herramientas') || getElementById('chat')`. Al no existir
+     el panel, los ocho comandos cuelgan del chat solos. La feature no se toca;
+     se le quita el marco. */
 
   /* El teclado del movil tapa media pantalla, y lo que tapa es justo la
      conversacion. `visualViewport` dice cuanto queda VISIBLE, que es la unica

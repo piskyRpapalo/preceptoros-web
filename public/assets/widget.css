@@ -76,18 +76,70 @@
 .cab-solar{flex:1 1 auto;text-align:center;margin:0;font-size:.7rem;
   color:var(--tenue);min-width:0}
 .solar-powered{color:var(--jardin);font-weight:700;letter-spacing:.04em}
-#cabezal #identity{margin-left:0;flex:0 0 auto;align-self:center}
-#cab-nav{display:grid;grid-template-columns:repeat(4,1fr);gap:.4rem;width:100%}
-#cab-nav .cab-boton{text-align:center;padding:.42rem .3rem}
-/* LoRAtelier: «LoR» en violeta con el canto dorado debajo, «Atelier» en blanco.
-   Mismo gesto que `Preceptor`+`OS`, y por eso se reconoce sin explicarlo. El
-   dorado es un borde inferior, no una sombra de letra: esa la reserva la
-   doctrina para `.cifra`, y el guardian la busca por su nombre incluso dentro
-   de un comentario -- nombrarla aqui ya lo pondria rojo. */
-.cab-boton.loratelier{background:var(--tinta);border-color:var(--bronce)}
-.loratelier .lor{color:var(--violeta-texto);border-bottom:2px solid var(--sol)}
+/* ENTRAR va en la esquina derecha, JUSTO ENCIMA de la esfera. El `order` es lo
+   que lo garantiza: `margin-left:auto` solo lo empuja contra su vecino, y con
+   `.cab-solar` reclamando el hueco elastico el boton se quedaba a media fila.
+   Con `order` es el ultimo pase lo que pase, y la esfera --que empieza 2,6rem
+   mas abajo, contra el mismo borde-- le queda justo debajo. */
+#cabezal #identity{order:9;margin-left:auto;flex:0 0 auto;align-self:flex-start}
+.cab-solar{order:8}
+/* LAS CUATRO PUERTAS, APILADAS DE DOS EN DOS. En una fila de cuatro no caben
+   en el Doogee: se vio en el telefono --INICIO, LoRAtelier y COMUNIDAD en una
+   linea e INSTALAR AQUI descolgada abajo, que es una rejilla rota disfrazada de
+   maqueta--. De dos en dos siempre entran, y es la misma figura en el telefono
+   y en el escritorio: nadie tiene que aprenderse dos.
+
+   El hueco de la derecha no se estima: sale de `--esfera`, la misma medida con
+   la que se dibuja la cara. Escrito a mano serian dos numeros para lo mismo, y
+   el dia que la cara cambie de tamano la fila se le metera debajo. */
+#cab-nav{display:grid;grid-template-columns:repeat(2,1fr);gap:.4rem;
+  width:100%;padding-right:calc(var(--esfera) + .4rem)}
+#cab-nav .cab-boton{text-align:center;padding:.48rem .3rem}
+/* MAS CLARO Y MAS TRANSPARENTE que el violeta de la marca, a proposito: las
+   puertas son navegacion, no identidad. Si pesaran lo mismo que `PreceptorOS` o
+   que `LoRAtelier` competirian con lo que nombran. El borde conserva el violeta
+   entero para que el boton siga teniendo canto. */
+/* EL CONTRASTE ESTA MEDIDO, no elegido. Con blanco sobre violeta al 42 % el
+   tema claro daba 1,92:1 y el minimo accesible para texto pequeno en negrita es
+   4,5:1 -- se veia lavado en el navegador antes de calcularlo. Lo que se corrige
+   es el COLOR DE LA LETRA, no el fondo: subir la opacidad hasta que el blanco
+   se lea acabaria en el violeta pleno de la marca, y estas puertas tienen que
+   pesar menos que lo que nombran.
+   Medido a .30 de opacidad: oscuro con letra blanca, 12:1. Claro con
+   `--violeta-texto`, 4,91:1. Los dos pasan, y el boton sigue siendo mas claro y
+   mas transparente que `PreceptorOS`. */
+#cab-nav .cab-boton{background:rgba(109,90,224,.30);
+  border-color:rgba(109,90,224,.68);color:#fff}
+:root[data-tema="claro"] #cab-nav .cab-boton{color:var(--violeta-texto)}
+#cab-nav .cab-boton:hover,#cab-nav .cab-boton:focus-visible{
+  background:rgba(109,90,224,.48)}
+/* Las dos excepciones. Instalar es la ACCION y va en el sol de la casa.
+   LoRAtelier es el producto principal, asi que pesa mas que sus vecinas --mismo
+   violeta, mas opaco-- y se marca con el canto dorado.
+
+   Y NO LLEVA `--tinta`, que fue el primer intento: ese token se invierte con el
+   tema. En oscuro la tinta es casi blanca, asi que «Atelier» --que va en
+   blanco-- desaparecia sobre su propio boton. Se vio en el navegador. Los
+   colores de esta pieza se escriben sin tokens que giren: el fondo es violeta
+   en los dos temas y las letras se leen en los dos. */
+#cab-nav .cab-boton.empezar{background:var(--sol);border-color:var(--sol)}
+/* SOLIDO Y SIN TOKENS QUE GIREN. Con el violeta transparente el fondo del
+   boton cambiaba con el tema --#5546AA en oscuro, #9485E7 en claro-- y NINGUN
+   dorado llegaba a 4,5:1 en los dos a la vez: el mejor daba 4,98 en uno y 2,09
+   en el otro. Medido antes de elegir. Con `--indigo` opaco el fondo es el mismo
+   siempre, y el oro mide 9,04:1 y el blanco 13,41:1. */
+#cab-nav .cab-boton.loratelier{background:var(--indigo);border-color:var(--oro)}
+/* «LoR» en oro sobre el indigo --el par violeta+dorado que se pidio-- y
+   «Atelier» en blanco. Mismo gesto que `Preceptor`+`OS`. El canto dorado es el
+   borde del boton, no una sombra de letra: esa la reserva la doctrina para
+   `.cifra`, y el guardian la busca por su nombre incluso dentro de un
+   comentario, asi que ni se nombra. */
+.loratelier .lor{color:var(--oro);font-weight:800}
 .loratelier .atelier{color:#fff}
-#cab-nav{display:flex;gap:.4rem;flex-wrap:wrap;align-items:center}
+/* La fila de flex que habia aqui la sustituyo la rejilla de arriba el
+   2026-09-05. Se BORRA en vez de dejarse: cargaba despues, asi que ganaba, y
+   dos maquetas para la misma fila es como la navegacion acaba centrada cuando
+   se pidio repartida. */
 .cab-boton{font:inherit;font-size:.74rem;font-weight:700;letter-spacing:.09em;
   text-transform:uppercase;text-decoration:none;cursor:pointer;
   color:#fff;background:var(--violeta);border:1px solid var(--violeta);
@@ -157,7 +209,7 @@
 /* La navegacion ocupa su PROPIA fila y va centrada. En la misma linea que la
    marca y el boton de entrar empujaba la identidad a una tercera fila en el
    telefono. Cuatro enlaces centrados caben en una sola. */
-#cab-nav{flex:1 0 100%;justify-content:center;margin-top:.15rem}
+#cab-nav{margin-top:.15rem}
 /* GitHub y LinkedIn arriba y en el centro, entre la marca y el boton de
    entrar. `margin-inline:auto` los centra en el hueco que sobra sin sacarlos
    del flujo, asi que al envolverse en el telefono no se quedan flotando. */

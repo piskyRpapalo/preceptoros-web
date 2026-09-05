@@ -37,8 +37,24 @@
    llega. La web ya tenia los eventos; le faltaba la cara.
 
    155 px es la medida de la app (`--cara-centro`), no una elegida aqui. */
-:root{--esfera:155px;--anim-habla-esfera:.864s;--anim-pensar:1.6s}
-.presentacion{display:flex;justify-content:center;margin:.2rem 0 .9rem}
+:root{--esfera:256px;--anim-habla-esfera:.864s;--anim-pensar:1.6s}
+/* ARRIBA A LA DERECHA, Y A CABALLO ENTRE LAS DOS CAJAS. La esfera cuelga de
+   `<main>` --lo unico que contiene al cabezal y al chat a la vez-- y se sienta
+   sobre la juntura: nace dentro del cabezal y termina dentro del chat. Por eso
+   no puede vivir en ninguno de los dos, y por eso `<main>` estrena
+   `position:relative`.
+
+   Es la Capa 4 y no la tapa nadie salvo la pantalla completa, que es la 5. El
+   `margin-top` negativo es lo que la sube a la juntura; el resto de la pagina
+   no se entera porque va absoluta y no ocupa sitio en el flujo.
+
+   256 px: mas del doble de los 155 que tenia, y un 20 % menos que los 320 del
+   primer intento. A 320 la cara ganaba la pantalla y le comia sitio a la
+   navegacion; a 256 sigue siendo lo primero que se mira sin serlo todo.
+   Ajustado mirandola, que es como se ajusta una cara. */
+main{position:relative}
+.presentacion{position:absolute;right:0;top:2.6rem;z-index:var(--capa-4-cara);
+  pointer-events:none}
 .esfera{width:var(--esfera);height:var(--esfera);border-radius:50%;
   background:var(--disco-cara) url("/assets/caras/cara-reposo-violeta-256.webp")
              27.78% 50%/122.5% auto no-repeat;
@@ -74,3 +90,11 @@
    escritos aqui a mano prometerian acciones que otro modelo no tiene. Fila que
    se desplaza en horizontal y no se envuelve: envolviendose crecia en alto, y
    el alto es justo lo que el chat no tiene cuando sale el teclado. */
+
+/* En pantallas estrechas la esfera se encoge en vez de comerse el cabezal. Es
+   la misma regla que la app aplica con `--cara-centro-ancha`: la cara manda,
+   pero no por encima de poder escribir. */
+@media (max-width:1023px){
+  :root{--esfera:136px}
+  .presentacion{top:2.2rem}
+}

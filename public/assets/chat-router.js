@@ -113,10 +113,11 @@
   function listo() {
     var H = window.Hub;
     if (!H) return;
-    // El panel de herramientas lo construye `chat-panel.js`. Se busca por
-    // selector y se comprueba: si ese fichero no llegara, aqui no se revienta.
-    var herrTit = document.querySelector('#herramientas .panel-titulo');
-    if (herrTit) herrTit.textContent = (H.textos && H.textos.herrTitulo) || '';
+    /* El titulo del panel de herramientas se escribia aqui por selector. El
+       panel se retiro el 2026-09-05 --los atajos son parte del chat, no una
+       caja debajo-- asi que ya no hay titulo que escribir. La comprobacion por
+       selector que habia hacia que esto no reventara, y por eso no hubo que
+       tocar nada mas al quitarlo. */
     /* El hueco que este `H.boton` llevaba esperando desde que MODELOS salio
        del cabezal. El rail se bastaba porque se tocaba directamente; un
        desplegable plegado no se puede tocar, asi que la Capa 3 trae su

@@ -1218,9 +1218,12 @@ class Cabezal(unittest.TestCase):
         self.assertNotIn("enlace('cab-boton idioma'", hub,
                          "el idioma vuelve a la fila de navegacion")
         css = (PUBLICO / "assets" / "widget.css").read_text(encoding="utf-8")
-        self.assertIn("grid-template-columns:repeat(4,1fr)",
+        # DE DOS EN DOS, no de cuatro en fila. La fila de cuatro se partia en el
+        # Doogee --tres arriba y INSTALAR AQUI descolgada-- que es una rejilla
+        # rota disfrazada de maqueta. Se vio en el telefono, no emulado.
+        self.assertIn("grid-template-columns:repeat(2,1fr)",
                       css.replace(" ", ""),
-                      "las puertas no se reparten el ancho a partes iguales")
+                      "las puertas no se apilan de dos en dos")
 
     def test_enlaces_identidad_publica(self):
         """GitHub y LinkedIn: uno de cada, y en el cabezal.
