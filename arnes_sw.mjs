@@ -103,7 +103,7 @@ const rutas = await shell.keys();
 // de decir que una lengua a medias no existe: o entran sus siete o no entra.
 // La cifra va a mano a proposito: si alguien anade una ruta al shell sin
 // pensarlo, esto se pone rojo y le obliga a decir por que.
-ok('precachea paginas y piezas del Hub', rutas.length === 91, rutas.length+' rutas');
+ok('precachea paginas y piezas del Hub', rutas.length === 83, rutas.length+' rutas');
 ok('el shell trae las tres tiras de la cara',
    ['apertura', 'reposo', 'habla']
      .every(s => rutas.includes('/assets/caras/secuencia-' + s + '-256.webp')));
@@ -115,8 +115,12 @@ ok('el shell trae modelos.json', rutas.includes('/modelos.json'));
 ok('el shell trae las cinco piezas del Hub',
    ['/assets/widget.css','/assets/panel.css','/assets/hub.js','/assets/hub-cola.js','/assets/chat-router.js']
      .every(r => rutas.includes(r)));
-ok('el shell trae los ocho ojos',
-   rutas.filter(r => r.startsWith('/assets/agente-ojo-')).length === 8);
+// Al reves que hasta el 2026-09-05: los ojos NO viajan. Los pintaba solo la
+// portada de la raiz, que es ahora el despertar, y precachear arte que nadie
+// mira son 48 KB en cada instalacion. Las esferas si viajan: esas se pintan en
+// el panel de companeros.
+ok('el shell NO trae los ojos, que no los pinta nadie',
+   rutas.filter(r => r.startsWith('/assets/agente-ojo-')).length === 0);
 ok('el shell trae las ocho esferas',
    rutas.filter(r => r.startsWith('/assets/agente-3d-')).length === 8);
 

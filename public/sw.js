@@ -29,7 +29,7 @@
  * dos motivos -- el techo de 7 paginas del gate, y que un fichero de respaldo
  * tambien puede faltar del cache justo el dia que hace falta.
  */
-const VERSION = 'preceptoros-2026-09-o';
+const VERSION = 'preceptoros-2026-09-p';
 const SHELL = 'shell-' + VERSION;
 const OBRA = 'obra-' + VERSION;
 
@@ -41,8 +41,15 @@ const PAGINAS = ['', 'instalar.html', 'community.html', 'benchmark.html',
    portada carga y se queda sin rejilla: el esqueleto se pinta, `hub.json` no
    llega y sale NO_DATA. Un PWA que abre sin su contenido principal no esta
    instalado, esta a medias. */
-const CARAS = ['ambar', 'azul', 'birrete', 'bombilla',
-               'cerebro', 'libro', 'rojo', 'verde'];
+/* LOS OCHO OJOS SE FUERON CON LA PANTALLA VIEJA (2026-09-05). Los pintaba
+   solo la portada de la raiz, y esa portada es ahora el despertar. Sin nadie
+   que los pinte, precachearlos son 48.410 B que se descargan en cada
+   instalacion y no ve nunca nadie -- el mismo desperdicio que en su dia hizo
+   que se trajeran a la raiz, ahora al reves. Los ficheros siguen en `assets/`:
+   dejan de viajar, no se borran.
+
+   No hizo falta acordarse: `test_ningun_asset_precacheado_esta_muerto` lo
+   canto en la misma pasada, con los ocho nombres. */
 /* Las esferas del panel Modelos. Van aparte de las CARAS porque son otra cosa:
    la cara es el OJO que el cabezal le pone al Preceptor segun con quien
    hablas; la esfera es como se presenta ese companero cuando eliges. */
@@ -52,7 +59,6 @@ const HUB = ['/hub.json', '/modelos.json', '/servicios.json', '/instalar.json',
              '/assets/instalar-descargas.js', '/assets/widget.css', '/assets/cabezal.css', '/assets/panel.css',
              '/assets/hub.js',
              '/assets/hub-cola.js', '/assets/chat-router.js', '/assets/corregir.js', '/assets/comandos.js']
-  .concat(CARAS.map(c => '/assets/agente-ojo-' + c + '.webp'))
   .concat(ESFERAS.map(e => '/assets/agente-3d-' + e + '.webp'))
   /* Las tres tiras: `widget.css` las pide y sin red el cabezal se queda
      con un circulo vacio. */

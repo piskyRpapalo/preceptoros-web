@@ -13,64 +13,71 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="description" content="Elige tu IA local y conviértete en Soberano. Tu IA en tu máquina, sin nube.">
 <style>
-  /* Ruteo puro: sin base.css a proposito, para que la puerta cargue sola. Pero
-     con la identidad de la casa — era una terminal verde delante de un sitio de
-     marmol violeta, y es lo primero que ve quien llega. */
-  :root { --marmol:#E4E8EC; --marmol-claro:#F2F5F7; --tinta:#1E1826; --tenue:#5D5668;
-          --violeta:#6D5AE0; --violeta-texto:#4B37C4; --indigo:#261789;
-          --bronce:#78624C; --bronce-hondo:#5A4531;
+  /* LA PUERTA ES EL DESPERTAR (2026-09-05). Habia dos pantallas antes de la
+     primera frase: esta, con un selector de idiomas sobre marmol claro, y
+     despues el telon de la lengua elegida, con el busto abriendose. Dos
+     pantallas para lo mismo -- decidir en que idioma se entra -- y la bonita
+     era la segunda.
+
+     Se fusionan: el despertar ocurre AQUI, y cuando termina no cae ninguna
+     cortina. La pantalla se queda quieta y espera. Las ocho lenguas son lo
+     unico que se mueve, para que sea evidente que la decision es lo unico que
+     falta.
+
+     RUTEO PURO, sin `base.css` ni `tema.css`: la puerta tiene que cargar sola,
+     antes que nada, y por eso repite aqui los pocos tokens que usa. Son los
+     valores OSCUROS del canon, escritos en crudo, porque esta pagina no carga
+     el fichero que los gira y una variable que no existe se lleva por delante
+     la declaracion entera donde aparece.
+
+     LOS OCHO OJOS SE FUERON CON LA PANTALLA VIEJA. Los pintaba solo esto; hoy
+     no los pinta nadie, asi que salen tambien del precacheo del worker -- eran
+     48.410 B que se descargaban en cada instalacion sin que los viera nunca
+     nadie, que es exactamente el motivo por el que se trajeron aqui en su dia.
+     Los ficheros siguen en `assets/`: dejan de viajar, no se borran. */
+  :root { --fondo:#1e1929; --tinta:#ece9f5; --tenue:#a79fbe;
+          --violeta:#6D5AE0; --violeta-texto:#b3a4ff;
+          --bronce:#c9a227; --indigo:#a9a0f0; --jardin:#6fd39b;
           --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"DejaVu Sans Mono",monospace;
           --spring:cubic-bezier(.34,1.56,.64,1); }
   /* Morfosis entre documentos: la puerta no se corta, se transforma en el chat. */
   @view-transition { navigation: auto; }
   * { box-sizing:border-box; margin:0; padding:0 }
-  body { font:400 15px/1.6 var(--mono); color:var(--tinta);
-    background:var(--marmol) url(/assets/marble-violet.webp) repeat; background-size:340px;
-    min-height:100dvh; display:flex; align-items:center; justify-content:center; padding:1.5rem }
-  .gate { text-align:center; max-width:30rem }
-  h1 { font-size:1.15rem; letter-spacing:.06em; font-weight:700; color:var(--violeta-texto);
-       margin-bottom:.35rem }
-  .claim { font-size:.82rem; color:var(--tenue); margin-bottom:1.6rem }
-  /* Los ocho ojos del cabezal: cuatro colores y cuatro con simbolo. Uno cada
-     segundo y medio, en bucle.
+  body { font:400 15px/1.6 var(--mono); color:var(--tinta); background:var(--fondo);
+    min-height:100dvh; display:flex; align-items:center; justify-content:center;
+    padding:1.5rem }
+  .gate { text-align:center; max-width:32rem;
+    display:flex; flex-direction:column; align-items:center; gap:1.3rem }
 
-     Aqui habia un rostro quieto, y el comentario decia «es una puerta, no un
-     espectaculo». Lo cambio el Soberano el 2026-09-02, y la razon pesa mas que
-     la estetica: los ocho ojos llevaban PRECACHEADOS por el service worker sin
-     que los pintara nadie -- 48 410 B que todo visitante descargaba y ninguno
-     veia. El propio `sw.js` decia para que eran. Estaban comprados y sin usar.
+  /* LAS MISMAS CIFRAS QUE EL TELON DE LA APP, que es donde se firmaron: la
+     tira recorrida en 1,2 s con `steps(7, jump-none)` --siete fotogramas, no
+     ocho-- y el encuadre en `0.746% 50% / 770%`. La ventana va en c = 0,536
+     porque el criterio no es el ojo sino la boca en el centro del circulo.
 
-     `step-end` y no una transicion: son ocho dibujos distintos, e interpolar
-     entre dos imagenes no significa nada. `contain` y no un tamano fijo: los
-     ojos son cuadrados y el marco es 3:4 -- con `96px 128px` un ojo saldria
-     estirado un tercio a lo alto.
+     Lo que NO se copia es la cortina cayendo a los 1,8 s: aqui no hay nada
+     detras que descubrir. Termina de despertar y se queda. */
+  .busto { width:min(58vw,300px); aspect-ratio:1; border-radius:50%;
+    background:#2a2140 url("/assets/caras/cara-secuencia-apertura-256-telon.webp")
+               0.746% 50%/770% auto no-repeat;
+    border:3px solid var(--violeta);
+    box-shadow:0 10px 34px rgba(109,90,224,.4);
+    animation:despertar 1.2s steps(7,jump-none) 1 both }
+  @keyframes despertar {
+    from { background-position:0.746% 50% }
+    to   { background-position:99.254% 50% } }
+  h1 { font-size:clamp(1.4rem,7vw,2.4rem); font-weight:800; letter-spacing:.02em;
+       color:var(--tinta); line-height:1.1 }
+  h1 b { color:var(--violeta-texto); font-size:1.28em }
 
-     No se hizo tira. Medido el mismo dia: los ocho juntos en un solo WebP sin
-     perdida pesan 124 510 B --mas del doble del tope de 50 KB de esta casa--
-     porque los originales YA son WebP con perdida y recomprimirlos sin ella
-     los hincha. Sueltos pesan 48 410 B, caben bajo el tope, y el service
-     worker ya los tenia todos en cache: ocho peticiones que sin conexion
-     cuestan cero. */
-  .seal { width:96px; height:128px; margin:0 auto 1.4rem;
-    background:url(/assets/agente-ojo-ambar.webp) no-repeat center/contain var(--marmol-claro);
-    image-rendering:pixelated; border:1px solid rgba(255,255,255,.55); border-radius:12px;
-    box-shadow:0 8px 32px rgba(30,24,38,.10);
-    animation:ojos 12s step-end infinite }
-  @keyframes ojos {
-    0%   {background-image:url(/assets/agente-ojo-ambar.webp)}
-    12.5%{background-image:url(/assets/agente-ojo-azul.webp)}
-    25%  {background-image:url(/assets/agente-ojo-rojo.webp)}
-    37.5%{background-image:url(/assets/agente-ojo-verde.webp)}
-    50%  {background-image:url(/assets/agente-ojo-birrete.webp)}
-    62.5%{background-image:url(/assets/agente-ojo-bombilla.webp)}
-    75%  {background-image:url(/assets/agente-ojo-cerebro.webp)}
-    87.5%{background-image:url(/assets/agente-ojo-libro.webp)}
-  }
-  .bubbles { display:flex; gap:.7rem; justify-content:center; flex-wrap:wrap }
-  /* Bocadillos: cada idioma con su color del canon, y con su pico. Flotan
-     apenas — lo justo para que se lean como algo que alguien dice. */
+  /* LAS LENGUAS ENTRAN CUANDO EL BUSTO TERMINA, no antes: ofrecer la decision
+     mientras algo se sigue moviendo es pedir dos cosas a la vez. 1,2 s de
+     espera --lo que dura el despertar-- y despues se quedan flotando, que es
+     lo unico que se mueve en esta pantalla. */
+  .bubbles { display:flex; gap:.7rem; justify-content:center; flex-wrap:wrap;
+    animation:asoman .5s ease-out 1.2s both }
+  @keyframes asoman { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:none} }
   .bubble { position:relative; text-decoration:none; font-weight:700;
-    padding:.6rem 1rem; background:rgba(242,245,247,.72); border:2px solid;
+    padding:.6rem 1rem; background:rgba(255,255,255,.07); border:2px solid;
     border-radius:14px; animation:float 4.2s ease-in-out infinite;
     transition:transform .2s var(--spring) }
   .bubble::after { content:""; position:absolute; top:-9px; left:50%; margin-left:-6px;
@@ -79,29 +86,24 @@
   /* EL COLOR LO REPARTE LA POSICION, NO LA LENGUA. Habia una regla por idioma
      --`.es`, `.en`, `.fr`-- y el portugues entro sin ninguna: se quedo con el
      color de arranque y el mismo compas que el español, y nadie lo vio. Con
-     `nth-child` la quinta lengua ya tiene su color y su retardo el dia que se
-     escribe su bocadillo. Cuatro colores que giran, porque cuatro son los del
-     canon; a partir de ahi se repiten, que es mejor que inventar tonos. */
+     `nth-child` la novena lengua ya tiene su color y su retardo el dia que se
+     escribe su bocadillo. */
   .bubble:nth-child(4n+1){color:var(--bronce);border-color:var(--bronce);animation-delay:0s}
-  .bubble:nth-child(4n+2){color:var(--violeta);border-color:var(--violeta);animation-delay:-1.4s}
+  .bubble:nth-child(4n+2){color:var(--violeta-texto);border-color:var(--violeta-texto);animation-delay:-1.4s}
   .bubble:nth-child(4n+3){color:var(--indigo);border-color:var(--indigo);animation-delay:-2.8s}
   .bubble:nth-child(4n+4){color:var(--jardin);border-color:var(--jardin);animation-delay:-4.2s}
   @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
-  @supports (backdrop-filter:blur(1px)) {
-    .bubble { -webkit-backdrop-filter:blur(12px) saturate(180%);
-              backdrop-filter:blur(12px) saturate(180%) }
-  }
-  .foot { margin-top:1.6rem; font-size:.72rem; color:var(--tenue) }
+  .claim { font-size:.78rem; color:var(--tenue) }
   /* El «SO» de Soberano en bronce, igual que el «OS» de PreceptorOS. No es un
      adorno: es la misma marca leida al reves, y dice de un vistazo que el
      producto y quien lo usa son la misma pieza. */
-  .so { color:var(--bronce-hondo); font-weight:700; letter-spacing:.02em }
+  .so { color:var(--bronce); font-weight:700; letter-spacing:.02em }
+  /* QUIEN PIDIO QUIETUD NO ESPERA UN SEGUNDO Y MEDIO A UNA DECISION. No se le
+     deja la pantalla quieta a medio despertar: se le da entera y de golpe. */
   @media (prefers-reduced-motion:reduce) {
+    .busto { animation:none; background-position:99.254% 50% }
+    .bubbles { animation:none }
     .bubble { animation:none; transition:none } .bubble:hover { transform:none }
-    /* Quien pidio menos movimiento se queda con UN ojo, no con otro dibujo:
-       ensenar aqui una cara distinta de la que ve todo el mundo seria contarle
-       otra historia por haber pedido calma. */
-    .seal { animation:none }
   }
 </style>
 <link rel="manifest" href="/manifest.webmanifest">
@@ -111,20 +113,19 @@
 </head>
 <body>
   <div class="gate">
-    <div class="seal" role="img" aria-label="El ojo de Preceptor, en sus ocho caras"></div>
-    <h1>ELIGE TU IA LOCAL</h1>
-    <p class="claim">Conviértete en <span class="so">SO</span>berano · Choose your local AI, become <span class="so">SO</span>vereign · Devenez <span class="so">SO</span>uverain</p>
-    <nav class="bubbles">
-      <a class="bubble es" href="/es/" hreflang="es">Español</a>
-      <a class="bubble en" href="/en/" hreflang="en">English</a>
-      <a class="bubble fr" href="/fr/" hreflang="fr">Français</a>
-      <a class="bubble pt" href="/pt/" hreflang="pt">Português</a>
-      <a class="bubble it" href="/it/" hreflang="it">Italiano</a>
-      <a class="bubble de" href="/de/" hreflang="de">Deutsch</a>
-      <a class="bubble ru" href="/ru/" hreflang="ru">Русский</a>
-      <a class="bubble el" href="/el/" hreflang="el">Ελληνικά</a>
+    <div class="busto" role="img" aria-label="Preceptor despertando"></div>
+    <h1>Preceptor<b>OS</b></h1>
+    <nav class="bubbles" aria-label="Idioma">
+      <a class="bubble" href="/es/" hreflang="es">Español</a>
+      <a class="bubble" href="/en/" hreflang="en">English</a>
+      <a class="bubble" href="/fr/" hreflang="fr">Français</a>
+      <a class="bubble" href="/pt/" hreflang="pt">Português</a>
+      <a class="bubble" href="/it/" hreflang="it">Italiano</a>
+      <a class="bubble" href="/de/" hreflang="de">Deutsch</a>
+      <a class="bubble" href="/ru/" hreflang="ru">Русский</a>
+      <a class="bubble" href="/el/" hreflang="el">Ελληνικά</a>
     </nav>
-    <p class="foot">Corre en tu máquina · Runs on your machine · Tourne sur votre machine</p>
+    <p class="claim">Conviértete en <span class="so">SO</span>berano · Choose your local AI, become <span class="so">SO</span>vereign · Devenez <span class="so">SO</span>uverain</p>
   </div>
 </body>
 </html>

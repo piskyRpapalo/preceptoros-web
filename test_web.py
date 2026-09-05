@@ -1732,14 +1732,20 @@ class PWA(unittest.TestCase):
                 self.assertIn(f"'{pieza}'", sw,
                               f"el worker no cachea {pieza}")
 
-        # 2 · las caras, derivadas del disco y del catalogo
-        caras = re.search(r"const CARAS = \[(.*?)\]", sw, re.S)
-        self.assertIsNotNone(caras, "el worker no declara la lista de caras")
-        conoce = set(re.findall(r"'([\w-]+)'", caras.group(1)))
-        en_disco = {p.name[len("agente-ojo-"):-len(".webp")]
-                    for p in (PUBLICO / "assets").glob("agente-ojo-*.webp")}
-        self.assertEqual(en_disco, conoce,
-                         f"el worker y el disco no coinciden: {en_disco ^ conoce}")
+        # 2 · los ojos YA NO VIAJAN, y esta prueba se dio la vuelta
+        #
+        # Hasta el 2026-09-05 exigia lo contrario: que el worker precacheara los
+        # ocho. Tenia sentido mientras la portada de la raiz los pintaba en
+        # bucle. Esa portada es ahora el despertar, no los pinta nadie, y
+        # `test_ningun_asset_precacheado_esta_muerto` canto los ocho nombres en
+        # la misma pasada: 48.410 B que se descargaban en cada instalacion y no
+        # veia nunca nadie.
+        #
+        # La regla se invierte en vez de borrarse. Un hueco donde habia una
+        # comprobacion es como vuelve el mismo desperdicio dentro de seis meses
+        # -- alguien reañade la lista «por si acaso» y no falla nada.
+        self.assertNotIn("agente-ojo-", sw,
+                         "el worker vuelve a precachear los ojos y no los pinta nadie")
         esferas = re.search(r"const ESFERAS = \[(.*?)\]", sw, re.S)
         self.assertIsNotNone(esferas, "el worker no declara las esferas")
         conoce3d = set(re.findall(r"'([\w-]+)'", esferas.group(1)))
@@ -1747,10 +1753,17 @@ class PWA(unittest.TestCase):
                    for p in (PUBLICO / "assets").glob("agente-3d-*.webp")}
         self.assertEqual(disco3d, conoce3d,
                          f"esferas que el worker no cachea: {disco3d ^ conoce3d}")
+        # El catalogo sigue nombrando un ojo por agente, y ese nombre tiene que
+        # existir en el disco. Ya no se comprueba contra el worker --que no los
+        # lleva-- sino contra los ficheros: un `symbol` que apunta a un WebP que
+        # no esta no falla en pantalla, simplemente no pinta, y ese es el fallo
+        # que puede vivir meses sin que nadie lo vea.
         catalogo = json.loads((PUBLICO / "hub.json").read_text(encoding="utf-8"))
         usados = {a["symbol"][len("ojo-"):] for a in catalogo["agentes"]}
-        self.assertFalse(usados - conoce,
-                         f"caras que el Hub usa y el worker no cachea: {usados - conoce}")
+        en_disco = {p.name[len("agente-ojo-"):-len(".webp")]
+                    for p in (PUBLICO / "assets").glob("agente-ojo-*.webp")}
+        self.assertFalse(usados - en_disco,
+                         f"el Hub nombra ojos que no estan en el disco: {usados - en_disco}")
 
         # 3 · contenido si, medida no
         contenido = re.search(r"const CONTENIDO_JSON = \[(.*?)\]", sw, re.S)
