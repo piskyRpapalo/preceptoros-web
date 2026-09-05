@@ -32,7 +32,12 @@
        nombrando al proveedor y la otra no -- la clase de par que se separa mas
        cada vez que alguien retoca una sola. Se fundieron el 2026-09-04 en la
        redaccion que firma el Soberano, que dice las dos cosas. */
-    [['pie1f', 'pie1r'], ['pie2f', 'pie2r'], ['pie3f', 'pie3r'], ['cabSolar', '']]
+    /* LA FRASE SOLAR SALE DE AQUI el 2026-09-05. Se decia DOS VECES en la
+       misma pagina --arriba en el cabezal y abajo en esta lista-- y con la
+       misma clave, asi que no era ni siquiera una segunda redaccion: era el
+       mismo texto repetido a dos pantallas de distancia. Se queda arriba, que
+       es donde se lee primero. */
+    [['pie1f', 'pie1r'], ['pie2f', 'pie2r'], ['pie3f', 'pie3r']]
       .forEach(function (par) {
         if (T[par[0]]) ul.appendChild(li(T[par[0]], T[par[1]] || ''));
       });

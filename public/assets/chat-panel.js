@@ -156,3 +156,78 @@ function montar(uno, todos) {
 /* La PIEL --el interruptor claro/oscuro de la rueda-- vive en `hub-cola.js`.
  * No cabia aqui: este fichero llego a su techo de 10.240 B con los cuatro
  * asuntos que ya lleva. Se parte, no se recorta. */
+
+/* --- Capa 2 · el cabezal se aparta cuando se escribe ------------------------
+ * Una clase en `body` y el resto lo hace el css. Se pone al enfocar el campo y
+ * se quita al soltarlo, que es exactamente el momento en que la atencion pasa
+ * del aparato a lo que se esta diciendo.
+ *
+ * `focusin`/`focusout` y no `focus`/`blur`: los primeros burbujean, asi que si
+ * manana el campo se envuelve en otra caja esto sigue funcionando sin tocarse.
+ */
+(function () {
+  var campo = document.getElementById('pregunta');
+  if (!campo) return;
+  campo.addEventListener('focusin', function () {
+    document.body.classList.add('chat-activo');
+  });
+  campo.addEventListener('focusout', function () {
+    document.body.classList.remove('chat-activo');
+  });
+})();
+
+/* --- Capa 5 · el chat a pantalla completa ----------------------------------
+ * La entrada vive en la rueda, junto al idioma y la piel: es una preferencia
+ * de como se mira, no una accion sobre la conversacion. La salida es un aspa
+ * DENTRO del chat, porque una vez dentro la rueda ya no se ve.
+ *
+ * NO se usa la API de pantalla completa del navegador. Esa saca la pagina del
+ * documento y en el movil se lleva la barra del sistema por delante; ademas
+ * necesita un gesto y falla en silencio si el navegador la niega. Aqui es una
+ * clase: se comporta igual en los tres navegadores y no puede fallar a medias.
+ *
+ * Escape sale, como del desplegable. Un modo del que solo se sale con el raton
+ * es un modo en el que alguien se queda encerrado.
+ */
+(function () {
+  var chat = document.getElementById('chat');
+  var caja = document.getElementById('panel-ajustes');
+  var bloque = document.getElementById('i18n');
+  if (!chat || !caja || !bloque) return;
+  var T = JSON.parse(bloque.textContent);
+
+  var aspa = document.createElement('button');
+  aspa.type = 'button';
+  aspa.className = 'pleno-cerrar';
+  aspa.hidden = true;
+  aspa.setAttribute('aria-label', T.plenoSalir || '');
+  aspa.textContent = '×';
+
+  function pon(entra) {
+    chat.classList.toggle('pleno', entra);
+    aspa.hidden = !entra;
+    // El fondo no se desplaza detras de un modo que ocupa la ventana entera.
+    document.body.style.overflow = entra ? 'hidden' : '';
+  }
+  aspa.addEventListener('click', function () { pon(false); });
+  chat.insertBefore(aspa, chat.firstChild);
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && chat.classList.contains('pleno')) pon(false);
+  });
+
+  /* Se cuelga de la rueda cuando `hub.js` ya la ha rellenado: aquel la vacia
+     con `innerHTML = ""` al pintar los idiomas, asi que entrar antes seria
+     escribir para que lo borren. */
+  function cuelga() {
+    if (caja.querySelector('.ajuste-pleno')) return;
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'ajuste-idioma ajuste-pleno';
+    b.textContent = T.pleno || '';
+    b.addEventListener('click', function () { pon(true); });
+    caja.appendChild(b);
+  }
+  if (window.Hub) cuelga();
+  else document.addEventListener('hub:listo', cuelga);
+})();

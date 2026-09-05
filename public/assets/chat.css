@@ -156,7 +156,55 @@ button.enviar svg{margin-right:.1rem}
   .atajo,.atajos .comando{
     background:color-mix(in srgb, var(--marmol-claro) 55%, transparent)}
 }
+/* EL CHAT SALE DEL ANILLO VIOLETA. `.panel::before` pinta `edge-violet.png` en
+   un aro de 5 px sobre todos los paneles, y de paso deja el borde real en
+   `transparent` -- por eso el canto dorado no se veia: estaba puesto y tapado.
+   Aqui se apaga el aro y se devuelve el borde, que es el limite con la web y
+   tiene que ser una linea limpia, no una textura. */
+#chat::before{display:none}
 #chat{border-top-color:transparent;
   border-left-color:var(--bronce-claro);border-right-color:var(--bronce-claro);
   border-bottom-color:var(--bronce-claro);
   border-left-width:2px;border-right-width:2px;border-bottom-width:2px}
+
+/* --- Capa 2 · el cabezal se aparta cuando se escribe ----------------------
+   PIERDE INTENSIDAD, NO DESAPARECE, y es el mismo criterio que la app tiene
+   firmado. Esconderlo con `display` movería la caja entera y el chat daría un
+   salto justo al tocar el campo -- el defecto que la Capa 1 viene a matar. Con
+   opacidad la maqueta no se entera y la atencion se va sola donde toca.
+
+   La esfera se apaga con el: es Capa 4 y no la tapa nadie, pero mientras se
+   escribe tampoco tiene que competir con lo que se escribe. */
+#cabezal,.presentacion{transition:opacity .18s ease-out}
+body.chat-activo #cabezal{opacity:.35}
+body.chat-activo .presentacion{opacity:.5}
+@media (prefers-reduced-motion:reduce){
+  #cabezal,.presentacion{transition:none}
+}
+
+/* --- Capa 5 · el chat a pantalla completa ---------------------------------
+   La unica vista que pisa a la esfera, que es lo que la hace la 5. Se entra
+   desde la rueda --como en la app-- y se sale por el aspa.
+
+   `position:fixed` se declara aqui y no se hereda: `#chat` vive en `relative`
+   para colgarle sus cantos, y sin `fixed` el `inset:0` no ocupa la ventana --
+   lo deja en el flujo con el alto que tenga.
+
+   El aspa es PEGAJOSA arriba a la derecha: un cierre que hay que ir a buscar
+   hacia arriba es un cierre que no esta. */
+#chat.pleno{position:fixed;inset:0;z-index:var(--capa-5-lleno);
+  max-height:none;border-radius:0;border-width:0;margin:0;
+  overflow-y:auto;padding-top:calc(1rem + env(safe-area-inset-top))}
+#chat.pleno #dialogo{max-height:none}
+.pleno-cerrar{position:sticky;top:0;float:right;z-index:2;
+  display:inline-flex;align-items:center;justify-content:center;
+  width:40px;height:40px;padding:0;cursor:pointer;font:inherit;
+  color:var(--tinta);background:var(--marmol-claro);
+  border:2px solid var(--bronce);border-radius:999px}
+.pleno-cerrar:focus-visible{outline:2px solid var(--violeta);outline-offset:2px}
+/* `[hidden]` del navegador es `display:none`, pero es un selector de UN
+   atributo y aqui arriba hay una clase con `display:inline-flex`: la clase gana
+   y el aspa se veia fuera de pantalla completa. Se vio en el navegador. Se
+   declara explicito en vez de bajarle la especificidad a la regla de arriba,
+   que es lo que le da su forma. */
+.pleno-cerrar[hidden]{display:none}

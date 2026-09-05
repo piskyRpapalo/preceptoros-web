@@ -37,16 +37,26 @@ code,pre,kbd,samp,input,textarea,select,.cifra,.proof b,.ob-codigo,
 /* `.guia`, `.proof`, las secciones del onboarding y el pie flotaban sobre la
    textura. En el Doogee, con luz de dia, eso es ilegible -- y era queja real,
    no una hipotesis de diseno. */
-.guia,.proof,.ob-paso,.honest-footer{
+.guia,.ob-paso{
   background:var(--panel-bg);color:var(--panel-fg);
   border:1px solid var(--panel-borde);border-radius:var(--radius);
   padding:.9rem 1rem;
 }
+/* EL PIE Y LAS PRUEBAS DEJAN DE SER CAJAS (2026-09-05). Tenian fondo, borde y
+   esquinas propias, asi que se leian como dos paneles mas debajo de los dos que
+   la pagina tiene. Lo que dicen es letra pequena honesta y va PEGADA al chat,
+   como su propia letra pequena: se queda el fondo --en el Doogee, con luz de
+   dia, el texto sobre la textura es ilegible, y eso fue queja real-- y se van
+   el borde y las esquinas. */
+.proof,.honest-footer{
+  background:var(--panel-bg);color:var(--panel-fg);padding:.9rem 1rem;
+}
 .guia{margin:1rem 0}
 .proof{font-size:.82rem;line-height:1.55}
 .ob-paso{margin:1.4rem 0;border-top:1px solid var(--panel-borde)}
-/* El filo de arriba del pie se fue con su caja el 2026-09-05. */
-.honest-footer{margin-top:2rem}
+/* Pegado al chat, sin hueco: es su letra pequena, no una seccion aparte. */
+.honest-footer{margin-top:0;border-radius:0 0 var(--radius) var(--radius)}
+.proof{margin:0;font-size:.82rem;line-height:1.55}
 
 /* El aviso mantiene su color propio, pero DENTRO del panel: un NO_DATA tiene
    que verse distinto sin dejar de ser legible. */
@@ -113,6 +123,7 @@ code,pre,kbd,samp,input,textarea,select,.cifra,.proof b,.ob-codigo,
   --capa-3-lateral:30;   /* el desplegable, que pisa a la 2 y a la 1 */
   --capa-4-cara:40;      /* la cara. No la tapa nadie */
   --capa-5-lleno:50;     /* pantalla completa: pisa a las cuatro, y por eso existe */
+  --capa-telon:90;       /* el despertar. Por encima de todo, y solo al arrancar */
   /* El disco de detras de la cara. Es el valor OSCURO del MVP
      (`--n-disco-cara`), no el claro, porque esta web es oscura por defecto.
      Se declara aqui y no se deja al azar: una variable que no existe dentro

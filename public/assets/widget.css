@@ -82,7 +82,16 @@
    Con `order` es el ultimo pase lo que pase, y la esfera --que empieza 2,6rem
    mas abajo, contra el mismo borde-- le queda justo debajo. */
 #cabezal #identity{order:9;margin-left:auto;flex:0 0 auto;align-self:flex-start}
-.cab-solar{order:8}
+.cab-solar{order:7}
+/* La cola de firma, a la izquierda de entrar y con SU MISMO aspecto: son la
+   misma pareja --quien eres y que firmas con ello-- y dos estilos distintos
+   las leerian como dos cosas. El `order` las mantiene juntas pase lo que pase
+   con el hueco elastico de la frase solar. */
+#cabezal .cola-abrir{order:8;align-self:flex-start;flex:0 0 auto;
+  font-size:.7rem;padding:.28rem .6rem;letter-spacing:.04em;white-space:nowrap;
+  background:rgba(109,90,224,.30);border-color:rgba(109,90,224,.68)}
+:root[data-tema="claro"] #cabezal .cola-abrir{color:var(--violeta-texto)}
+#cabezal .cola-abrir[hidden]{display:none}
 /* LAS CUATRO PUERTAS, APILADAS DE DOS EN DOS. En una fila de cuatro no caben
    en el Doogee: se vio en el telefono --INICIO, LoRAtelier y COMUNIDAD en una
    linea e INSTALAR AQUI descolgada abajo, que es una rejilla rota disfrazada de
@@ -172,7 +181,30 @@
      partido por la mitad y el icono de LinkedIn escondido tras las esferas.
      La reserva va en el atajo y no en una linea suelta despues: un
      `padding-right` colocado ANTES de este atajo lo pierde entero. */
-  #cabezal{padding:.5rem .6rem;gap:.5rem}
+  /* El cabezal se aprieta: menos aire arriba y abajo y menos hueco entre
+     filas. Cada decima que pierde aqui la gana el chat, que es lo que se vino
+     a usar. Medido en el Doogee, no en un viewport emulado. */
+  #cabezal{padding:.4rem .55rem .5rem;gap:.3rem;margin-bottom:.6rem}
+  /* `.cab-fila` ENVUELVE en el telefono, y sin esto lo de abajo no sirve de
+     nada: la regla movil le da a entrar `flex:1 0 100%` para que ocupe su
+     propia linea, pero en una fila que no envuelve un 100 % no baja de linea
+     -- se sale. Medido en 375 px: el boton acababa en 668, casi el doble del
+     ancho de la pantalla. La regla llevaba puesta desde antes y no hacia nada
+     porque le faltaba esta. */
+  .cab-fila{gap:.4rem;flex-wrap:wrap}
+  /* Y la frase de energia deja de reclamar hueco elastico: con `flex:1 1 auto`
+     empujaba a sus vecinos fuera antes de encogerse ella. */
+  .cab-solar{flex:1 1 100%;order:5;font-size:.66rem}
+  /* TODAS las filas del cabezal esquivan la esfera, no solo la navegacion. Al
+     envolver, entrar y la frase de energia caen a la altura de la cara y se
+     metian debajo: «Crear identida...» cortado. El hueco sale de `--esfera`,
+     igual que el de la navegacion, para que no haya dos numeros para lo mismo.
+     `-1rem` porque el circulo llega hasta el borde y su curva deja aire abajo. */
+  #cabezal #identity,#cabezal .cab-solar{
+    padding-right:calc(var(--esfera) - 1rem);box-sizing:border-box}
+  #cabezal #identity button{width:100%}
+  #cab-nav{margin-top:0}
+  #cab-nav .cab-boton{padding:.4rem .25rem}
   /* El pie es una CAJA con borde, asi que reserva por fuera (margen) y no por
      dentro: con padding el borde derecho seguiria corriendo por debajo del
      rail de companeros aunque el texto no lo hiciera. */

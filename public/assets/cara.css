@@ -37,7 +37,7 @@
    llega. La web ya tenia los eventos; le faltaba la cara.
 
    155 px es la medida de la app (`--cara-centro`), no una elegida aqui. */
-:root{--esfera:256px;--anim-habla-esfera:.864s;--anim-pensar:1.6s}
+:root{--esfera:220px;--anim-habla-esfera:.864s;--anim-pensar:1.6s}
 /* ARRIBA A LA DERECHA, Y A CABALLO ENTRE LAS DOS CAJAS. La esfera cuelga de
    `<main>` --lo unico que contiene al cabezal y al chat a la vez-- y se sienta
    sobre la juntura: nace dentro del cabezal y termina dentro del chat. Por eso
@@ -48,11 +48,15 @@
    `margin-top` negativo es lo que la sube a la juntura; el resto de la pagina
    no se entera porque va absoluta y no ocupa sitio en el flujo.
 
-   256 px: mas del doble de los 155 que tenia, y un 20 % menos que los 320 del
-   primer intento. A 320 la cara ganaba la pantalla y le comia sitio a la
-   navegacion; a 256 sigue siendo lo primero que se mira sin serlo todo.
-   Ajustado mirandola, que es como se ajusta una cara. */
+   220 px, en tres pasos y mirandola cada vez, que es como se ajusta una cara:
+   320 ganaba la pantalla entera, 256 seguia rozando el chat, 220 lo deja libre.
+   Sigue siendo mas del doble de los 155 con los que empezo. */
 main{position:relative}
+/* EN ESCRITORIO LA CARA NO BAJA, SE ENCOGE. Bajarla fue el primer intento y
+   estaba mal: la esfera se sienta sobre la juntura, asi que cada pixel que baja
+   se lo come al chat por arriba -- y el chat es lo que se vino a usar. Lo que
+   se ajusta es el diametro, que la quita de en medio sin moverla de sitio.
+   220 px: sigue siendo lo primero que se mira, y ya no roza la conversacion. */
 .presentacion{position:absolute;right:0;top:2.6rem;z-index:var(--capa-4-cara);
   pointer-events:none}
 .esfera{width:var(--esfera);height:var(--esfera);border-radius:50%;
@@ -97,4 +101,42 @@ main{position:relative}
 @media (max-width:1023px){
   :root{--esfera:136px}
   .presentacion{top:2.2rem}
+}
+
+/* --- el telon · el despertar ----------------------------------------------
+   LAS MISMAS CIFRAS QUE LA APP, que es donde se firmaron: la tira recorrida en
+   1,2 s con `steps(7, jump-none)` --siete fotogramas, no ocho-- y la cortina
+   cayendo a los 1,8 s en 0,45 s. Ese respiro de seis decimas entre que la cara
+   termina de despertar y la cortina se va esta firmado; alargar la tira
+   obligaria a mover las dos, o ninguna.
+
+   El encuadre tambien viene de alli: `0.746% 50% / 770%`. La ventana va en
+   c = 0,536 porque el criterio no es el ojo sino la boca en el centro del
+   circulo, medida por bandas horizontales sobre la extension del marmol --no
+   por centro de masa, que lo desplaza el lado agrietado, que brilla y pesa
+   mas--. En Y va anclada al medio y la figura entra entera, pelo incluido.
+
+   `visibility:hidden` al final y no solo `opacity:0`: una cortina transparente
+   que sigue ahi se come los clics de todo lo que hay debajo. */
+.telon{position:fixed;inset:0;z-index:var(--capa-telon);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:1.3rem;background:var(--marmol-claro);
+  animation:caer .45s ease-out 1.8s both}
+.telon-busto{width:min(58vw,300px);aspect-ratio:1;border-radius:50%;
+  background:var(--disco-cara) url("/assets/caras/cara-secuencia-apertura-256-telon.webp")
+             0.746% 50%/770% auto no-repeat;
+  border:3px solid var(--violeta);
+  box-shadow:0 10px 34px rgba(109,90,224,.4);
+  animation:despertar 1.2s steps(7,jump-none) 1 both}
+@keyframes despertar{
+  from{background-position:0.746% 50%}
+  to  {background-position:99.254% 50%}}
+@keyframes caer{to{opacity:0;visibility:hidden}}
+.telon-marca{margin:0;font-size:clamp(1.4rem,7vw,2.4rem);font-weight:800;
+  letter-spacing:.02em;color:var(--tinta)}
+.telon-marca b{color:var(--violeta-texto);font-size:1.28em}
+/* QUIEN PIDIO QUIETUD NO ESPERA UN SEGUNDO Y MEDIO A UNA CORTINA. No se le
+   quita la animacion dejandola quieta en pantalla: se le quita la cortina. */
+@media (prefers-reduced-motion:reduce){
+  .telon{display:none}
 }

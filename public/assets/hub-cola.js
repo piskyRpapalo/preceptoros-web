@@ -37,9 +37,18 @@
      `requestIdleCallback` y `auth.js` puede haber avisado antes de que este
      boton existiera. Con solo el evento, la mitad de las cargas dejaba la
      cola escondida a quien si tenia perfil. */
+  /* LA PUERTA VA EN EL CABEZAL, A LA IZQUIERDA DE ENTRAR (2026-09-05). Estaba
+     dentro del desplegable de companeros, que es donde la mando la poda del
+     2026-09-01 -- «COLA baja al panel lateral, que es donde vive la cola»--.
+     Aquello valia cuando el lateral era un rail siempre a la vista; con la
+     Capa 3 plegada la firma quedaba a dos gestos y detras de una puerta que no
+     habla de firmar. Sube al cabezal, pegada a entrar, porque las dos son lo
+     mismo: quien eres y que firmas con ello. */
   function puerta() {
     var H = window.Hub;
-    if (!H || !H.panel) return;
+    var cab = document.getElementById('cabezal');
+    var yo = document.getElementById('identity');
+    if (!H || !cab) return;
     var b = document.createElement('button');
     b.type = 'button'; b.className = 'cab-boton cola-abrir';
     b.textContent = (H.rotulos && H.rotulos.cabCola) || '';
@@ -48,7 +57,8 @@
     function conPerfil() { b.hidden = false; }
     if (window.Identity && window.Identity.quien()) conPerfil();
     document.addEventListener('preceptor:identity', conPerfil);
-    H.panel.appendChild(b);
+    // Justo antes de entrar, o al final si esa caja no estuviera.
+    if (yo) cab.insertBefore(b, yo); else cab.appendChild(b);
   }
   if (window.Hub) puerta();
   else document.addEventListener('hub:listo', puerta);
