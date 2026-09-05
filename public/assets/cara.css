@@ -120,8 +120,16 @@
    parte y la cara no pierde tamano: se mueve, que era lo que sobraba. */
 @media (max-width:1023px){
   :root{--esfera:136px}
-  /* Justo en el canto del cabezal, sin asomar. */
-  .presentacion{bottom:0}
+  /* ABAJO A LA DERECHA DEL CABEZAL, y hace falta soltar el `top` para que
+     ocurra. `bottom:0` a solas no movia nada: con `top` y `bottom` puestos a
+     la vez sobre una caja de altura fija, manda el `top`, asi que la esfera
+     seguia clavada a .9rem del borde superior -- justo encima de la marca y
+     de los iconos. En el Doogee en vertical se comia la fila de arriba; en
+     apaisado no, porque alli el cabezal es mas bajo que la esfera y la
+     diferencia no se notaba. Un `bottom` que no manda es peor que no ponerlo:
+     el comentario decia «anclada por abajo» y llevaba razon la intencion, no
+     el codigo. */
+  .presentacion{top:auto;bottom:0}
 }
 
 /* --- la misma cara en las paginas interiores -------------------------------
