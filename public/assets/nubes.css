@@ -1,0 +1,84 @@
+/* preceptoros.org · las nubes de Herramientas.
+ *
+ * POR QUE VIVE APARTE. `panel.css` se paso de los 16.384 B al entrar esto: el
+ * fichero llevaba ya dos asuntos --el mueble de la Capa 3, que es geometria de
+ * los DOS desplegables, y lo que cada uno pinta dentro-- y este bloque fue el
+ * que lo desbordo. Se parte por el asunto, no se recorta el comentario: los
+ * comentarios son la documentacion de esta casa y quitarlos para que quepa es
+ * pagar el tope con lo unico que no se puede volver a deducir del codigo.
+ *
+ * Aqui vive lo que hay DENTRO del panel de Herramientas. La geometria del
+ * mueble --de donde cuelga, como se repliega-- se queda en `panel.css`, que es
+ * donde la comparte con la rueda.
+ *
+ * SE CARGA DESPUES DE `panel.css`, y eso no es un detalle de orden: las reglas
+ * que pintaban la tarjeta sobre el panel violeta tienen la MISMA
+ * especificidad, asi que decide quien llega ultimo. Estuvieron al reves media
+ * hora y se vio en el navegador -- ocho pastillas transparentes, en columna y
+ * estiradas de lado a lado, que es exactamente el deslizable que se venia a
+ * quitar.
+ */
+/* --- COMPANEROS: NUBES SUELTAS, NO UN DESLIZABLE (2026-09-05) ------------
+   Era un bloque violeta macizo de 20rem con `overflow:auto`: ocho tarjetas en
+   columna y siete octavas partes del catalogo detras de un scroll. Un
+   desplegable que hay que deslizar para ver lo que ofrece esconde justo lo que
+   vino a ensenar.
+
+   SE COPIA DE LA APP, que ya lo resolvio el 2026-09-04 con sus cinco atajos
+   laterales, y su comentario lo dice mejor de lo que lo diria yo: «el bloque
+   violeta macizo se va con ellos: cinco pastillas sueltas dejan ver el marmol
+   entre medias». Aqui son ocho, y el efecto es el mismo -- lo que era un
+   rectangulo pasa a ser una nube que se reparte por el ancho.
+
+   El mueble compartido de arriba NO se toca: los dos paneles siguen colgando
+   del mismo canto y replegandose igual. Lo que cambia es lo que hay dentro y
+   el fondo que lo sostiene. */
+/* CAPA SUPERIOR, COMO LA ESFERA -- una por encima, para ser exactos. Las
+   nubes nacen del boton de Herramientas y caen sobre el chat: en la Capa 3 la
+   cara se les pintaba encima, porque la cara es la 4 y esa es la doctrina.
+   Empatarlas con ella dejaria el orden en manos del marcado, que es como se
+   fabrica un solape que aparece y desaparece segun la pagina. Una mas: solo
+   la pantalla completa, que es la 5, las tapa. */
+#panel-modelos{width:min(46rem,calc(100vw - 1.4rem));max-height:none;
+  overflow:visible;background:transparent;box-shadow:none;padding:.35rem;
+  z-index:calc(var(--capa-4-cara) + 1)}
+/* El titulo y el rotulo pierden el fondo violeta que los sostenia, asi que se
+   lo llevan puesto: sin esto quedaban en blanco sobre el marmol. */
+#panel-modelos .panel-titulo,#panel-modelos .panel-rotulo{
+  display:inline-block;background:var(--violeta);color:#fff;
+  padding:.16rem .7rem;border-radius:999px;margin:0 .3rem .35rem 0}
+/* Con el `#` delante, y no por gusto: la regla en columna vive doscientas
+   lineas mas abajo y a igual especificidad gana la ultima. Se vio en el
+   navegador -- ocho pastillas estiradas una por fila, que es justo el
+   deslizable que se venia a quitar. */
+#panel-modelos .modelos{display:flex;flex-direction:row;flex-wrap:wrap;gap:.5rem}
+/* La pastilla. Mismas cifras que `.lateral button` de la app: violeta de la
+   casa, blanco encima, radio 999 y una sombra corta que la despega del marmol.
+   `width:auto` es lo que las vuelve nubes: cada una mide lo que dice. */
+#panel-modelos .modelo{display:inline-flex;align-items:center;gap:.5rem;
+  width:auto;grid-template-columns:none;text-align:left;
+  padding:.32rem .95rem .32rem .34rem;border-radius:999px;
+  background:var(--violeta);color:#fff;border:1px solid rgba(20,12,48,.55);
+  box-shadow:0 2px 10px rgba(36,26,53,.34)}
+#panel-modelos .modelo:hover,#panel-modelos .modelo:focus-visible{
+  background:var(--violeta-texto);border-color:var(--violeta)}
+#panel-modelos .modelo img,#panel-modelos .modelo-inicial{
+  width:34px;height:34px;flex:0 0 34px;border-radius:50%}
+#panel-modelos .modelo-nombre{color:#fff;font-weight:700;font-size:.82rem}
+/* Lo que el companero HACE se va al `title`: en una pastilla no cabe y era lo
+   que obligaba a la tarjeta ancha. Sale al pasar el cursor y lo lee tambien el
+   teclado y el lector de pantalla, que es donde importa. */
+#panel-modelos .modelo-spec{display:none}
+/* Lo que NO se esconde es si esta servido o no. Se encoge, no desaparece: una
+   rejilla de companeros se ve igual sea catalogo real o maqueta, y esa palabra
+   es la unica que dice cual de los dos es. */
+#panel-modelos .modelo-real{font-size:.62rem;letter-spacing:.04em;
+  padding:.06rem .4rem;border-radius:999px;background:rgba(0,0,0,.28)}
+#panel-modelos .modelo-real.sirve{background:rgba(111,211,155,.9);color:#12261c}
+
+/* ESTE BLOQUE VA AL FINAL DEL FICHERO, y esa es su unica forma de funcionar.
+   Las reglas que pintaban la tarjeta sobre el panel violeta --fondo blanco al
+   10 %, rotulos en blanco-- tienen la MISMA especificidad que estas, asi que
+   decide el orden. Estuvo arriba media hora y se vio en el navegador: ocho
+   pastillas transparentes, en columna y estiradas de lado a lado, que es
+   exactamente el deslizable que se venia a quitar. */

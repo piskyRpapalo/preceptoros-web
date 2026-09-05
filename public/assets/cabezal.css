@@ -86,7 +86,21 @@
 #chat{margin:0}
 .chat-quien{display:flex;align-items:center;gap:.6rem;margin-bottom:.6rem}
 .chat-quien img{width:44px;height:44px;flex:0 0 44px;border-radius:50%}
-.chat-nombre{font-weight:700}
+/* EL NOMBRE, EN PASTILLA VIOLETA. Es un boton --abre la nube de companeros--
+   y tiene que parecerlo: un nombre en negrita se lee como un rotulo, y nadie
+   pulsa un rotulo. Misma figura que las nubes que abre, para que se entienda
+   antes de pulsarlo de donde sale lo que va a aparecer.
+
+   Blanco sobre `--violeta` da 5,34:1, la misma medida que ya sostiene el boton
+   de enviar; no se inventa un tono para esto. */
+.chat-nombre{font:inherit;font-weight:700;font-size:.82rem;letter-spacing:.04em;
+  cursor:pointer;color:#fff;background:var(--violeta);
+  border:1px solid rgba(20,12,48,.55);border-radius:999px;
+  padding:.3rem .9rem;box-shadow:0 2px 10px rgba(36,26,53,.28);
+  transition:transform .16s var(--spring)}
+.chat-nombre:hover,.chat-nombre:focus-visible{transform:translateY(-1px);
+  background:var(--violeta-texto)}
+.chat-nombre:focus-visible{outline:2px solid var(--oro);outline-offset:2px}
 .chat-aviso{font-size:.82rem;color:var(--bronce-hondo);margin:0 0 .6rem}
 /* La navegacion ocupa su PROPIA fila y va centrada. En la misma linea que la
    marca y el boton de entrar empujaba la identidad a una tercera fila en el

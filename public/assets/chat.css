@@ -229,8 +229,15 @@ body.chat-activo .presentacion{opacity:.5}
    mismo --escribir o dictar-- asi que se dibujan iguales y en la misma figura:
    pildora alta, no rectangulo con las esquinas del panel. El radio 999 no es
    una sexta esquina, es otra figura, y la doctrina lo admite por eso. */
-#pregunta{min-height:9.5rem;line-height:1.55;padding:.9rem 1rem;
+/* 13rem y no 9,5: se pidio mirandola en pantalla grande, donde el chat se
+   come la mitad de la altura y la caja parecia una linea de busqueda. Sigue
+   siendo `min-height` --no `rows`-- asi que crece con lo que se escriba y no
+   encoge por debajo de lo comodo. En el telefono manda `dvh`, mas abajo. */
+#pregunta{min-height:13rem;line-height:1.55;padding:.9rem 1rem;
   border-radius:calc(var(--radius) + 4px)}
+/* En vertical 13rem serian dos tercios de la pantalla y el teclado tapa el
+   resto: alli la caja se mide contra la ventana, no contra el escritorio. */
+@media (max-width:1023px){#pregunta{min-height:min(9.5rem,26dvh)}}
 button.enviar,button.mic{border-radius:999px;padding:.62rem 1.3rem;
   min-height:46px;font-weight:600}
 

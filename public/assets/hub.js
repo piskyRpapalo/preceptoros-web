@@ -104,6 +104,26 @@
     // La piel la anade `chat-panel.js`: es un mando, y aqui no cabia.
   }
 
+  /* LOS DOS MANDOS ESTABAN SIN NOMBRE. Su `<span data-rotulo="...">` nacia
+     vacio y no lo rellenaba nadie: dos botones cuyo unico contenido es un SVG
+     con `aria-hidden`, es decir, dos botones que un lector de pantalla anuncia
+     como «boton» y ya. Llevaba asi desde que se escribio el cabezal.
+
+     Se rellena aqui porque aqui vive `T`, y en un bucle sobre el atributo --no
+     uno por boton-- para que el tercer mando que se anada salga nombrado sin
+     tocar esto.
+
+     Y EL DE LAS HERRAMIENTAS ADEMAS SE VE. Es la puerta al catalogo entero y
+     era un icono mudo de tres rayas: quien llega no adivina que detras hay
+     ocho companeros. El de ajustes se queda en icono porque una rueda dentada
+     ya es su propio rotulo en cualquier idioma. */
+  Array.prototype.forEach.call(document.querySelectorAll('[data-rotulo]'), function (n) {
+    var t = T[n.dataset.rotulo];
+    if (!t) return;
+    n.textContent = t;
+    if (n.closest('#lateral-boton')) n.classList.remove('sr');
+  });
+
   /* La declaracion solar, en el cabezal y en los tres idiomas. No es un boton:
      es una afirmacion sobre quien sirve esto, asi que se lee y no se pulsa.
 
@@ -175,6 +195,13 @@
        una lengua nueva no engorda nada de lo que descargan las demas. */
     var voz = (T.agentes && T.agentes[a.id]) || a;
     b.appendChild(el('span', 'modelo-nombre', voz.name || a.name));
+    /* La linea de lo que HACE sigue en el marcado y se esconde por css en la
+       pastilla: se queda ademas en el `title`, que es donde la lee quien pasa
+       el cursor, quien tabula y quien usa lector. Se mantiene el elemento --y
+       no solo el atributo-- porque el dia que este panel vuelva a ser tarjetas
+       el texto ya esta puesto, y porque un `title` a solas no lo ve quien
+       navega con el dedo. */
+    b.title = (voz.function || a.function || '');
     b.appendChild(el('span', 'modelo-spec', voz.function || a.function));
     var r = a.real || {};
     b.appendChild(el('span', 'modelo-real ' + (r.disponible ? 'sirve' : 'no-sirve'),

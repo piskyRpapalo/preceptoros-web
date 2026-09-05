@@ -55,8 +55,24 @@
   barra.className = 'chat-quien';
   avatar = document.createElement('img');
   avatar.width = 44; avatar.height = 44; avatar.alt = ''; avatar.decoding = 'async';
-  nombre = document.createElement('span');
+  /* EL NOMBRE ES UN BOTON, Y ABRE LA NUBE DE COMPANEROS (2026-09-05). Era un
+     `span`: decia con quien hablas y no ofrecia cambiarlo, asi que para elegir
+     otro habia que descubrir el mando de las tres rayas del cabezal. Lo que
+     nombra a alguien es el sitio natural para cambiarlo.
+
+     NO ABRE EL PANEL POR SU CUENTA: pulsa el mando que ya existe. Duplicar
+     aqui la logica de abrir --clase, `aria-expanded`, cerrar al pulsar
+     fuera-- serian dos sitios decidiendo lo mismo, y el segundo es siempre el
+     que se queda sin arreglar. Si manana la Capa 3 cambia de forma, este boton
+     no se entera y sigue funcionando. */
+  nombre = document.createElement('button');
+  nombre.type = 'button';
   nombre.className = 'chat-nombre';
+  nombre.setAttribute('aria-controls', 'panel-modelos');
+  nombre.addEventListener('click', function () {
+    var mando = document.getElementById('lateral-boton');
+    if (mando) mando.click();
+  });
   aviso = document.createElement('p');
   aviso.className = 'chat-aviso'; aviso.hidden = true;
   barra.appendChild(avatar); barra.appendChild(nombre);

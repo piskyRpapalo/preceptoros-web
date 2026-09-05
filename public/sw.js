@@ -29,7 +29,7 @@
  * dos motivos -- el techo de 7 paginas del gate, y que un fichero de respaldo
  * tambien puede faltar del cache justo el dia que hace falta.
  */
-const VERSION = 'preceptoros-2026-09-p';
+const VERSION = 'preceptoros-2026-09-q';
 const SHELL = 'shell-' + VERSION;
 const OBRA = 'obra-' + VERSION;
 
@@ -56,7 +56,7 @@ const PAGINAS = ['', 'instalar.html', 'community.html', 'benchmark.html',
 const ESFERAS = ['instalador', 'privacidad', 'escritor', 'traductor',
                  'coder', 'analista', 'aprendiz', 'bibliotecario'];
 const HUB = ['/hub.json', '/modelos.json', '/servicios.json', '/instalar.json',
-             '/assets/instalar-descargas.js', '/assets/widget.css', '/assets/cabezal.css', '/assets/panel.css',
+             '/assets/instalar-descargas.js', '/assets/widget.css', '/assets/cabezal.css', '/assets/panel.css', '/assets/nubes.css',
              '/assets/hub.js',
              '/assets/hub-cola.js', '/assets/chat-router.js', '/assets/corregir.js', '/assets/comandos.js']
   .concat(ESFERAS.map(e => '/assets/agente-3d-' + e + '.webp'))
