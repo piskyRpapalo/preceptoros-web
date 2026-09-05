@@ -1,146 +1,91 @@
-# preceptoros-web
+# A door, and a place to meet
 
-**🇬🇧 The site does not talk to anyone until you press a button. That is not a
-promise — it is a measurement, and there is a test for it.**
+This repository holds a small public website. It has one job: to lower the
+wall between a person and their own AI.
 
-**🇪🇸 Este sitio no habla con nadie hasta que pulsas un botón. No es una promesa:
-es una medición, y tiene un test.**
+Most people who want to run AI on their own machine stop at the same place.
+Not at the idea — at the setup. A page of commands, three words they have
+never seen, and a download that may or may not be the right one. The wall is
+not intelligence. It is vocabulary.
 
-La web pública de [PreceptorOS](https://github.com/piskyRpapalo/PreceptorOS) —
-un preceptor que vive en tu máquina, sin nube, sin cuenta y sin turno.
+So this site is a guide first and a showcase second. You arrive, you talk to
+it, and it walks you through the steps for the machine you actually have.
+When the steps are done, you no longer need this site.
 
----
+The second job is slower: to gather the people who made it through. A tool
+you run alone teaches you one thing. A hundred people running it teach each
+other.
 
-## 🇬🇧 What it does / 🇪🇸 Qué hace
+## Where this is going
 
-🇬🇧 You can talk to a model **before installing anything**. On first keystroke the
-page works out what your machine can actually do and offers the most sovereign
-route it can run — never the other way round:
+Two goals, stated plainly so anyone — or anything — reading this repository
+knows what it is for.
 
-🇪🇸 Puedes hablar con un modelo **antes de instalar nada**. Al primer tecleo, la
-página averigua qué puede hacer tu máquina de verdad y te ofrece la vía más
-soberana que puedas correr — nunca al revés:
+**A community.** Not a user base. People who run their own model, keep their
+own memory, and can compare notes because they all measured the same things
+on different hardware. The site exists to get them past the setup, which is
+where most of them currently stop.
 
-| | Route / Vía | Cost / Coste |
-|---|---|---|
-| 1 | `LanguageModel` · already on device | zero network / cero red |
-| 2 | `LanguageModel` · `downloadable` | Gemini Nano, 2.7–4 GB — **stated before the button** |
-| 3 | WebLLM | ~945 MB, once / una vez |
-| 4 | Portable JSON | paste into the AI you already have |
+**Small models trained on private data.** The longer aim is to learn to build
+small specialised adapters — LoRAs — that work against private databases:
+real operational data, and readings from physical sensors. Not a general
+assistant that knows a little about everything, but a small model that knows
+one real dataset well and never has to send it anywhere.
 
-🇬🇧 Route 4 is not a consolation prize. The four "copy" buttons copy **exactly the
-same text**, and the page says so instead of faking four things.
+That second goal is why the honesty rules in this repository are strict. If
+you are going to train on data that cannot leave the building, every number
+you publish about the result has to be one you measured yourself, with the
+date it was taken and the machine it ran on.
 
-🇪🇸 La vía 4 no es un premio de consolación. Los cuatro botones de copiar copian
-**exactamente el mismo texto**, y la página lo dice en vez de fingir cuatro cosas.
+![Asking about installation](docs/img/chat.webp)
 
-## 🇬🇧 The one rule / 🇪🇸 La regla
+## What you can do here
 
-🇬🇧 Nothing external loads until you ask for it. The WebLLM `import()` lives
-**inside the click handler**, not at the top of the file. Verified in a real
-browser: `performance.getEntriesByType('resource')` lists only same-origin
-resources, before *and* after detection runs.
+- **Ask.** A chat panel answers with a model served from a home rack. Choose
+  who you talk to: each helper is tuned for one job.
+- **Install.** A page that gives you the steps, the download, and the list of
+  models — including the smallest one that fits an 8 GB phone.
+- **Read the numbers.** Speed, file sizes and test counts are published as
+  measurements, with the date they were taken.
 
-🇪🇸 Nada externo se carga hasta que lo pidas. El `import()` de WebLLM vive
-**dentro del manejador del clic**, no arriba del fichero. Verificado en navegador
-real: `performance.getEntriesByType('resource')` solo lista recursos de origen
-propio, antes *y* después de que la detección decida.
+![Choosing a language](docs/img/puerta.webp)
 
-🇬🇧 When you do press, the footer names who sees your IP: `esm.run` (the library)
-and `huggingface.co` (the weights). / 🇪🇸 Cuando pulsas, el pie nombra quién ve tu
-IP: `esm.run` y `huggingface.co`.
+## What this site promises
 
-## Stack
+- **Nothing leaves your browser until you press something.** Zero external
+  requests on load. No trackers, no fonts pulled from elsewhere, no analytics.
+- **It works with no network.** The site installs as an app and keeps working
+  offline.
+- **Eight languages**, each one complete. Not a machine pass over one.
+- **Every file under 16 KB.** No build step, no framework, no bundle. What is
+  in this repository is what your browser receives.
+- **A gap is named a gap.** Where a number is missing, the page says so and
+  says why, instead of showing a stale one.
 
-HTML5 + CSS3 + vanilla JS. **Zero frameworks, zero build step, zero cookies, zero
-analytics, zero persistent IDs.** Python standard library for the scripts. The
-only external URL in the whole repo is `https://esm.run/@mlc-ai/web-llm`.
+![Install](docs/img/install.webp)
 
-`localStorage` holds **two letters** (`es`, `en` or `fr`) so the language is not
-asked twice. The language lives in the path, so the metric comes from the URL and
-not from you.
+## Run it yourself
 
-## Estructura
+    git clone <this repository>
+    cd <the folder>
+    python3 -m http.server 8000 --directory public
 
-```
-wrangler.jsonc        Cloudflare Workers · assets.dir = ./public
-public/
-  index.html          language selector (3 KB) · no chat, no tracking
-  es|en|fr/index.html landing + chat
-  es/instalar.html    install guide
-  es/lore.html        five slides · no JavaScript at all (:target + :has())
-  hitos.html          reads counters.json
-  counters.json       written by contadores.py · measured only
-  assets/             sprite, marble, láminas, css, js
-contadores.py         stdlib · O_EXCL lock · atomic write · daily rotation
-test_web.py           17 doctrine checks
-```
+Then open `http://127.0.0.1:8000/`.
 
-## Comprobar / Verify
+There is nothing to build and nothing to install first.
 
-```
-python3 test_web.py
-```
+## Tests
 
-🇬🇧 17 checks: page count, no frameworks, no foreign CDNs, path-based selector,
-honest footers, sprite under 50 KB, **no broken internal links**, i18n key parity
-across the three languages, 16 KB per file, no gradients or radii, and
-`counters.json` coherence.
+    python3 test_web.py     # the page rules
+    node arnes_sw.mjs       # the offline worker
 
-🇪🇸 Las 17 se escribieron rompiendo las reglas a propósito para ver si saltaban.
-Siete de ocho mutaciones dieron rojo; la octava no, y descubrió que el test del
-«cero decorativo» era él mismo decorativo — solo miraba que un texto fuese largo.
-Está corregido y re-mutado.
+These are not unit tests of functions. They check the promises above: that no
+file grew past the ceiling, that every language has every string, that a
+measured colour still meets contrast, and that no page quietly stopped saying
+where its numbers come from.
 
-## Contribuir una traducción / Contributing a translation
+![On a phone](docs/img/phone.webp)
 
-🇬🇧 A language is one folder and one JSON block. No build step, no framework, no
-translation platform.
+## Licence
 
-1. Copy `public/en/index.html` to `public/<xx>/index.html`.
-2. Translate the prose **and** the `<script type="application/json" id="i18n">`
-   block at the bottom. Keep every key: the strings are what the chat shows.
-3. Add the language to `public/index.html`.
-4. Run `python3 test_web.py`. The parity check fails loudly if a key is missing —
-   a half-translated interface falls back to nothing, not to English.
-
-🇪🇸 Un idioma es una carpeta y un bloque JSON. Sin build, sin framework, sin
-plataforma de traducción. Traduce la prosa **y** el bloque `i18n`, conserva todas
-las claves, y pasa el test: si falta una, salta en rojo.
-
-## Arte / Art
-
-🇬🇧 Nothing was drawn for this site. The head is two 4-frame sprite strips from
-the PreceptorOS repo (`aurelius-up.png`, `aurelius-talks.png`), cropped and
-reduced to 43,720 bytes for all eight frames. The five láminas are the
-application's own icons on a violet-veined marble derived from the app's real
-marble texture.
-
-🇪🇸 Aquí no se dibujó nada. La cabeza son dos tiras de 4 fotogramas del repo de
-PreceptorOS, recortadas y reducidas: 43.720 B los ocho. Las cinco láminas son los
-iconos de la propia aplicación sobre un mármol violeta derivado del mármol real
-de la app.
-
-## NO_DATA
-
-🇬🇧 Things this repo knows it does not have, stated rather than hidden:
-
-- **`instalar.html` and `lore.html` exist in Spanish only.** The English and
-  French landings link to them and say so, with the cause.
-- **Local-token counter.** The schema has room for it. There is no source, because
-  the site does not track anyone — it can only ever come from a voluntary, signed
-  report. Until then it renders `NO_DATA`, not a flattering number.
-
-## Licencia / Licence
-
-- **Código** (HTML, CSS, JS, Python): Apache License 2.0 — ver [`LICENSE`](LICENSE)
-- **Contenido** (texto, imágenes, lore): CC BY-SA 4.0 — ver [`LICENSE-PROSE`](LICENSE-PROSE)
-
-🇬🇧 The split mirrors the sibling repo, and it is not cosmetic: the lore and the
-honest footers are prose, and a software licence is not their natural home.
-BY-SA also requires sharing alike, which is the coherent choice for a project
-that exists so people can take things with them.
-
----
-
-*El silicio propone, el carbono firma.*
+See `LICENSE`.
