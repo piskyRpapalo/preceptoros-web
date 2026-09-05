@@ -21,9 +21,17 @@ other.
 Two goals, stated plainly so anyone — or anything — reading this repository
 knows what it is for.
 
-**A community.** Not a user base. People who run their own model, keep their
-own memory, and can compare notes because they all measured the same things
-on different hardware. The site exists to get them past the setup, which is
+**A community.** Not a user base. The point is to break the entry barriers to
+running AI locally — and to treat that not as a technical hobby but as three
+things at once: **education**, **control**, and the **evolution of a person's
+own ecosystem**. Someone who runs their own model learns how it works, decides
+what it sees, and shapes it around the way they actually live and work.
+
+Alone, that is a slow climb. Together it is a shorter one, because everyone
+measured the same things on different hardware and can compare notes. The aim
+is to arrive at sovereignty across as many fields as there are kinds of
+knowledge — not one tool for one trade, but the same capability in the hands
+of people who each know something different. The site exists to get them past the setup, which is
 where most of them currently stop.
 
 **Small models trained on private data.** The longer aim is to learn to build
