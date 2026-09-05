@@ -57,8 +57,14 @@
     function conPerfil() { b.hidden = false; }
     if (window.Identity && window.Identity.quien()) conPerfil();
     document.addEventListener('preceptor:identity', conPerfil);
-    // Justo antes de entrar, o al final si esa caja no estuviera.
-    if (yo) cab.insertBefore(b, yo); else cab.appendChild(b);
+    /* Se inserta en el PADRE REAL de entrar, no en el cabezal. `#identity` no
+       cuelga de `#cabezal` sino de `.cab-fila`, y `insertBefore` exige que la
+       referencia sea hija de quien lo llama: pedirselo al cabezal lanzaba
+       `NotFoundError`. Y como esto corre dentro de un oyente de `hub:listo`,
+       que se despacha sincrono, la excepcion salia atribuida a la linea del
+       `dispatchEvent` en `hub.js` -- a doscientas lineas del fallo real. */
+    if (yo && yo.parentElement) yo.parentElement.insertBefore(b, yo);
+    else cab.appendChild(b);
   }
   if (window.Hub) puerta();
   else document.addEventListener('hub:listo', puerta);
