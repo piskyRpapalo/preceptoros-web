@@ -115,9 +115,18 @@
   text-decoration:underline;text-underline-offset:.2em;background:transparent}
 /* La huella es un DATO, asi que va en la letra de los datos y con las cifras
    de ancho fijo: seis digitos que bailan de sitio no se reconocen de un ojo. */
-#cabezal #identity .huella-corta{font-family:ui-monospace,monospace;
+/* La huella es un RECUADRO PEQUENO, del tamano de su numero. Se estiraba a todo
+   el ancho --se vio en el Doogee-- porque el contenedor reparte el sitio
+   sobrante entre sus hijos: seis digitos ocupando una linea entera dicen lo
+   mismo que seis digitos ocupando seis digitos. `flex:0 0 auto` la deja del
+   tamano de lo que lleva dentro, igual que el nombre de al lado. */
+#cabezal #identity .huella-corta{flex:0 0 auto;width:auto;align-self:center;
+  font-family:ui-monospace,monospace;font-size:.66rem;
   font-variant-numeric:tabular-nums;letter-spacing:.04em;
-  color:var(--tenue);background:transparent}
+  padding:.16rem .5rem;color:var(--tenue);background:transparent;
+  border:1px solid var(--bronce)}
+/* Y ninguno de los dos se estira: la identidad los alinea, no los reparte. */
+#cabezal #identity>*{flex:0 0 auto}
 .cab-solar{order:7}
 /* La cola de firma, a la izquierda de entrar y con SU MISMO aspecto: son la
    misma pareja --quien eres y que firmas con ello-- y dos estilos distintos
