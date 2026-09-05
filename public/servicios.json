@@ -15,7 +15,8 @@
     "pt": "Guia-te para instalar o produto na tua máquina.",
     "it": "Ti guida a installare il prodotto sulla tua macchina.",
     "de": "Führt dich durch die Installation des Produkts auf deinem Rechner.",
-    "ru": "Проводит тебя через установку продукта на твою машину."
+    "ru": "Проводит тебя через установку продукта на твою машину.",
+    "el": "Σε οδηγεί στην εγκατάσταση του προϊόντος στο μηχάνημά σου."
    }
   },
   {
@@ -29,7 +30,8 @@
     "pt": "Converte o que fazes em memória que podes reler.",
     "it": "Trasforma quello che fai in memoria che puoi rileggere.",
     "de": "Macht aus dem, was du tust, Gedächtnis, das du nachlesen kannst.",
-    "ru": "Превращает то, что ты делаешь, в память, которую можно перечитать."
+    "ru": "Превращает то, что ты делаешь, в память, которую можно перечитать.",
+    "el": "Μετατρέπει ό,τι κάνεις σε μνήμη που μπορείς να ξαναδιαβάσεις."
    }
   },
   {
@@ -43,7 +45,8 @@
     "pt": "Arruma a tua memória e prepara um conjunto de exemplos.",
     "it": "Ordina la tua memoria e prepara un insieme di esempi.",
     "de": "Ordnet dein Gedächtnis und bereitet eine Menge von Beispielen vor.",
-    "ru": "Наводит порядок в памяти и готовит набор примеров."
+    "ru": "Наводит порядок в памяти и готовит набор примеров.",
+    "el": "Τακτοποιεί τη μνήμη σου και ετοιμάζει ένα σύνολο παραδειγμάτων."
    }
   },
   {
@@ -57,7 +60,8 @@
     "pt": "Escreve contigo guiões, notas e textos longos.",
     "it": "Scrive con te copioni, appunti e testi lunghi.",
     "de": "Schreibt mit dir Skripte, Notizen und lange Texte.",
-    "ru": "Пишет с тобой сценарии, заметки и длинные тексты."
+    "ru": "Пишет с тобой сценарии, заметки и длинные тексты.",
+    "el": "Γράφει μαζί σου σενάρια, σημειώσεις και μεγάλα κείμενα."
    }
   },
   {
@@ -71,7 +75,8 @@
     "pt": "Olha para o consumo do rack e diz-te o que mudou.",
     "it": "Guarda il consumo del rack e ti dice cosa è cambiato.",
     "de": "Schaut auf den Verbrauch des Racks und sagt dir, was sich geändert hat.",
-    "ru": "Смотрит на потребление стойки и говорит, что изменилось."
+    "ru": "Смотрит на потребление стойки и говорит, что изменилось.",
+    "el": "Κοιτάζει την κατανάλωση του rack και σου λέει τι άλλαξε."
    }
   },
   {
@@ -85,7 +90,8 @@
     "pt": "Traduz e converte localmente, sem nuvem.",
     "it": "Traduce e converte in locale, senza nuvola.",
     "de": "Übersetzt und wandelt lokal um, ohne Wolke.",
-    "ru": "Переводит и преобразует локально, без облака."
+    "ru": "Переводит и преобразует локально, без облака.",
+    "el": "Μεταφράζει και μετατρέπει τοπικά, χωρίς σύννεφο."
    }
   },
   {
@@ -99,7 +105,8 @@
     "pt": "Lê o teu código, propõe a correção e escreve o teste.",
     "it": "Legge il tuo codice, propone la correzione e scrive il test.",
     "de": "Liest deinen Code, schlägt die Korrektur vor und schreibt den Test.",
-    "ru": "Читает твой код, предлагает правку и пишет тест."
+    "ru": "Читает твой код, предлагает правку и пишет тест.",
+    "el": "Διαβάζει τον κώδικά σου, προτείνει τη διόρθωση και γράφει το τεστ."
    }
   },
   {
@@ -113,7 +120,8 @@
     "pt": "Risca o que é privado antes de sair do teu aparelho.",
     "it": "Cancella ciò che è privato prima che esca dal tuo apparecchio.",
     "de": "Streicht das Private, bevor es dein Gerät verlässt.",
-    "ru": "Вычёркивает личное, прежде чем оно покинет твоё устройство."
+    "ru": "Вычёркивает личное, прежде чем оно покинет твоё устройство.",
+    "el": "Σβήνει ό,τι είναι προσωπικό πριν βγει από τη συσκευή σου."
    }
   }
  ],

@@ -29,11 +29,11 @@
  * dos motivos -- el techo de 7 paginas del gate, y que un fichero de respaldo
  * tambien puede faltar del cache justo el dia que hace falta.
  */
-const VERSION = 'preceptoros-2026-09-m';
+const VERSION = 'preceptoros-2026-09-n';
 const SHELL = 'shell-' + VERSION;
 const OBRA = 'obra-' + VERSION;
 
-const IDIOMAS = ['es', 'en', 'fr', 'pt', 'it', 'de', 'ru'];
+const IDIOMAS = ['es', 'en', 'fr', 'pt', 'it', 'de', 'ru', 'el'];
 const PAGINAS = ['', 'instalar.html', 'community.html', 'benchmark.html',
                  'playground.html', 'onboarding.html', 'profile.html'];
 
@@ -123,6 +123,9 @@ const SIN_RED = {
   ru: ['Нет связи', 'Этой страницы пока нет в твоём кэше.',
        'PreceptorOS работает на твоей машине; этот сайт — только дверь. '
        + 'Попробуй снова, когда будет сеть.', 'Повторить'],
+  el: ['Χωρίς σύνδεση', 'Αυτή η σελίδα δεν είναι ακόμη στη μνήμη σου.',
+       'Το PreceptorOS τρέχει στο μηχάνημά σου· αυτός ο ιστότοπος είναι μόνο η πόρτα. '
+       + 'Δοκίμασε ξανά όταν έχεις δίκτυο.', 'Ξαναδοκίμασε'],
   fr: ['Hors ligne', "Cette page n'est pas encore dans votre cache.",
        'PreceptorOS tourne sur votre machine ; ce site est seulement la porte. '
        + 'Réessayez quand vous aurez du réseau.', 'Réessayer'],
