@@ -5,13 +5,61 @@
  "medido": "2026-09-02",
  "ruta": "/assets/busto-",
  "bustos": [
-  {"id": "dormido",   "es": "Dormido · mármol intacto",      "en": "Asleep · untouched marble",     "fr": "Endormi · marbre intact"},
-  {"id": "grieta",    "es": "Grieta · se abre",              "en": "Crack · it opens",              "fr": "Fissure · elle s'ouvre"},
-  {"id": "rompe",     "es": "Rompe · salta la cáscara",      "en": "Breaks · the shell gives",      "fr": "Brise · la coque cede"},
-  {"id": "ojo",       "es": "Ojo · violeta liso",            "en": "Eye · plain violet",            "fr": "Oeil · violet uni"},
-  {"id": "despierto", "es": "Despierto · el busto identidad","en": "Awake · the identity bust",     "fr": "Eveille · le buste identite"},
-  {"id": "corazon",   "es": "Corazón · cierra el despertar", "en": "Heart · closes the awakening",  "fr": "Coeur · clot l'eveil"},
-  {"id": "halo",      "es": "Halo · sobre fondo oscuro",     "en": "Halo · on a dark ground",       "fr": "Halo · sur fond sombre"},
-  {"id": "oscuro",    "es": "Oscuro · nacido sobre Tinta",   "en": "Dark · born on Ink",            "fr": "Sombre · ne sur Encre"}
+  {
+   "id": "dormido",
+   "es": "Dormido · mármol intacto",
+   "en": "Asleep · untouched marble",
+   "fr": "Endormi · marbre intact",
+   "pt": "Adormecido · mármore intacto"
+  },
+  {
+   "id": "grieta",
+   "es": "Grieta · se abre",
+   "en": "Crack · it opens",
+   "fr": "Fissure · elle s'ouvre",
+   "pt": "Fenda · abre-se"
+  },
+  {
+   "id": "rompe",
+   "es": "Rompe · salta la cáscara",
+   "en": "Breaks · the shell gives",
+   "fr": "Brise · la coque cede",
+   "pt": "Parte · salta a casca"
+  },
+  {
+   "id": "ojo",
+   "es": "Ojo · violeta liso",
+   "en": "Eye · plain violet",
+   "fr": "Oeil · violet uni",
+   "pt": "Olho · violeta liso"
+  },
+  {
+   "id": "despierto",
+   "es": "Despierto · el busto identidad",
+   "en": "Awake · the identity bust",
+   "fr": "Eveille · le buste identite",
+   "pt": "Desperto · o busto identidade"
+  },
+  {
+   "id": "corazon",
+   "es": "Corazón · cierra el despertar",
+   "en": "Heart · closes the awakening",
+   "fr": "Coeur · clot l'eveil",
+   "pt": "Coração · fecha o despertar"
+  },
+  {
+   "id": "halo",
+   "es": "Halo · sobre fondo oscuro",
+   "en": "Halo · on a dark ground",
+   "fr": "Halo · sur fond sombre",
+   "pt": "Halo · sobre fundo escuro"
+  },
+  {
+   "id": "oscuro",
+   "es": "Oscuro · nacido sobre Tinta",
+   "en": "Dark · born on Ink",
+   "fr": "Sombre · ne sur Encre",
+   "pt": "Escuro · nascido sobre Tinta"
+  }
  ]
 }

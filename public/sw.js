@@ -29,11 +29,11 @@
  * dos motivos -- el techo de 7 paginas del gate, y que un fichero de respaldo
  * tambien puede faltar del cache justo el dia que hace falta.
  */
-const VERSION = 'preceptoros-2026-09-k';
+const VERSION = 'preceptoros-2026-09-l';
 const SHELL = 'shell-' + VERSION;
 const OBRA = 'obra-' + VERSION;
 
-const IDIOMAS = ['es', 'en', 'fr'];
+const IDIOMAS = ['es', 'en', 'fr', 'pt'];
 const PAGINAS = ['', 'instalar.html', 'community.html', 'benchmark.html',
                  'playground.html', 'onboarding.html', 'profile.html'];
 
@@ -115,7 +115,10 @@ const SIN_RED = {
        + 'Try again when you have a connection.', 'Retry'],
   fr: ['Hors ligne', "Cette page n'est pas encore dans votre cache.",
        'PreceptorOS tourne sur votre machine ; ce site est seulement la porte. '
-       + 'Réessayez quand vous aurez du réseau.', 'Réessayer']
+       + 'Réessayez quand vous aurez du réseau.', 'Réessayer'],
+  pt: ['Sem ligação', 'Esta página ainda não está na tua cache.',
+       'O PreceptorOS corre na tua máquina; este site é só a porta. '
+       + 'Tenta outra vez quando tiveres rede.', 'Tentar de novo']
 };
 
 function idiomaDe(url) {

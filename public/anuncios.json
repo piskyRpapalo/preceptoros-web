@@ -33,6 +33,14 @@
      "privado": "Privé : ouvre une issue sur le dépôt public. C'est le seul canal qui arrive vraiment aujourd'hui.",
      "pero": "NO_DATA — un fil signé ici ne voyage encore nulle part : l'Agora répond 404 sur /api/v1/threads (mesuré le 2026-08-30). Il est signé et reste sur ton appareil jusqu'à ce que cette extrémité existe.",
      "enlaceTexto": "Ouvrir une issue"
+    },
+    "pt": {
+     "titulo": "Dá-me o teu feedback",
+     "cuerpo": "O que se partiu, o que não percebeste, o que esperavas encontrar e não estava. Serve mais uma frase concreta do que um elogio.",
+     "publico": "Público: assina um tópico aqui em baixo. Assina-se com a tua chave, no teu aparelho.",
+     "privado": "Privado: abre um issue no repositório público. É o único canal que hoje chega a sério.",
+     "pero": "NO_DATA — um tópico assinado aqui ainda não viaja para lado nenhum: a Ágora responde 404 em /api/v1/threads (medido a 2026-08-30). Assina-se e fica no teu aparelho até que esse extremo exista.",
+     "enlaceTexto": "Abrir um issue"
     }
    },
    "enlace": "https://github.com/piskyRpapalo/PreceptorOS/issues"
@@ -63,6 +71,13 @@
      "publico": "Mesuré le 2026-08-29 : rank 16, alpha 32, 2 époques, 93 exemples d'entraînement et 16 de validation. 553 s une ligne, 445 s l'autre. Moins de dix minutes, pas une nuit.",
      "privado": "Le jeu d'exemples est à toi et le reste. Ce qui se partage, si tu veux, c'est l'adaptateur qui en sort.",
      "pero": "NO_DATA — il n'y a toujours aucun moyen de l'envoyer par le web : pas d'endpoint d'upload. Aujourd'hui ça se convient dans le fil et le fichier se passe à la main."
+    },
+    "pt": {
+     "titulo": "Treina um modelo",
+     "cuerpo": "Traz um conjunto de exemplos teu e sai um adaptador LoRA treinado no rack. Não é preciso GPU: faz-se em CPU pura e está medido.",
+     "publico": "Medido a 2026-08-29: rank 16, alpha 32, 2 épocas, 93 exemplos de treino e 16 de validação. 553 s uma linha e 445 s a outra. Abaixo de dez minutos, não uma noite.",
+     "privado": "O conjunto de exemplos é teu e fica teu. O que se partilha, se quiseres, é o adaptador que sai.",
+     "pero": "NO_DATA — ainda não há forma de o mandar pela web: não há endpoint de envio. Hoje acorda-se pelo tópico e passa-se o ficheiro à mão."
     }
    }
   }
