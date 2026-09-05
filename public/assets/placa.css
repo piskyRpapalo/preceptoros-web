@@ -67,27 +67,21 @@
    respeta sus cantos y no se sale por encima del pie ni tapa el panel de
    Herramientas cuando se abre. */
 .chat-abajo{position:sticky;bottom:0;z-index:1;
-  padding-top:1.2rem;margin-top:auto;
-  /* EL TEXTO NO SE LEE A TRAVES DEL CAMPO. La banda es sticky y la
-     conversacion pasa por debajo: sin fondo, las lineas se veian dentro de la
-     caja de escribir y las dos cosas se mezclaban. Un degradado --transparente
-     arriba, hondo abajo-- en vez de una banda maciza: asi el texto se apaga al
-     entrar debajo en lugar de cortarse contra un canto, que es justo el
-     «aclarar las letras superiores» que se pidio.
+  padding-top:.8rem;margin-top:auto}
+/* AQUI HABIA UNA BANDA OSCURA, y se retira el 2026-09-05 porque hacia justo lo
+   contrario de lo que se le pedia. Era un degradado --transparente arriba,
+   `#2f2757` abajo-- puesto para que la conversacion no se leyera A TRAVES de
+   la caja de escribir cuando pasaba por debajo.
 
-     Y LA BANDA SON SOLO EL CAMPO Y SUS DOS MANDOS. Los atajos y la caja del
-     modelo estuvieron dentro y en el telefono se comian la placa: la
-     conversacion se quedaba en 41 px de 620 --medido en 375 px de ancho--
-     porque once pildoras ocupan cinco filas. Lo que se pidio fijo era el
-     campo; lo demas se desplaza, que es lo que hace un pie.
+   Ese peligro ya no existe: `#dialogo` tiene su propio `overflow` y su
+   contenido no sale de su caja, asi que nada pasa por debajo de nada. Lo que
+   quedaba era una plancha de color con la forma de un rectangulo, envolviendo
+   los dos mandos, y en el telefono se leia como una COSTURA -- una linea de
+   corte entre lo que se escribe y los atajos, dos cosas que son la misma
+   pagina. El Soberano lo vio en el Doogee antes que yo en el navegador.
 
-     Y LOS ATAJOS SALEN DE LA PLACA ENTERA. Estuvieron dentro por una razon
-     buena --una fila propia costaba ~50 px de alto permanente-- pero eso valia
-     cuando eran tres. Hoy son once y en 375 px ocupan cinco filas: dentro de
-     una columna de altura fija se comian la conversacion, que quedaba en 41 px
-     de 620. Medido en el telefono. La placa se queda con lo que ES la placa:
-     lo que se lee y lo que se escribe. */
-  background:linear-gradient(to bottom,transparent 0,#2f2757 1.2rem)}
+   Es la misma leccion que el pie y las pruebas aprendieron esta misma tarde:
+   lo que no es una caja no se pinta como una caja. */
 /* Con el teclado abierto, la zona de herramientas se retira: en un telefono
    el teclado se come media pantalla y lo que tapa es la conversacion. Lo
    decide `visualViewport` en chat-router.js, que es quien sabe cuanto queda

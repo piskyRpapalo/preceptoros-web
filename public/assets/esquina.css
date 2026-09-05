@@ -1,0 +1,243 @@
+/* preceptoros.org · LA ESQUINA: los dos mandos, la cuenta y donde nace la cara.
+ *
+ * POR QUE VIVE APARTE. `cabezal.css` llego a 17.460 B de los 16.384 del tope.
+ * Se parte por el asunto, no se recorta el comentario -- sexta particion de la
+ * tanda, misma regla.
+ *
+ * LA COSTURA. `cabezal.css` responde a «como se reparte el cabezal»: la marca,
+ * la declaracion solar, las cuatro puertas, la cabecera de las interiores.
+ * Esto responde a otra cosa, y es la que se ha tocado seis veces hoy: donde
+ * caen la rueda y la cuenta, y a partir de que altura empieza la esfera para
+ * no pisarlas. Las tres piezas se mueven JUNTAS o no se mueven -- bajar la
+ * cara sin mirar los mandos fue exactamente el fallo del primer intento.
+ *
+ * SE CARGA DESPUES DE `cabezal.css`: corrige reglas de alli con la misma
+ * especificidad, asi que gana por orden.
+ */
+
+/* --- EL CABEZAL SE ORDENA POR ESQUINAS (2026-09-05) ------------------------
+   Firmado por el Soberano, y es una lista de sitios, no de estilos: «arriba a
+   la izquierda PreceptorOS y arriba a la derecha la identificacion; a la
+   izquierda de la nube de identificacion, una nube con el simbolo de ajustes;
+   la parte izquierda mitad inferior, con las nubes de paginas».
+
+   SE HACE CON `order` Y NO MOVIENDO EL MARCADO. La estructura es una sola --
+   la misma etiqueta sirve al telefono y al escritorio-- y el orden visual es
+   una decision de maqueta que cambia con el ancho. Moverlo en el HTML habria
+   obligado a mantener dos marcados, que es como se acaba con dos productos.
+
+   Y LA RUEDA VIAJA A LA DERECHA porque se quedo sola: eran dos mandos gemelos
+   en la esquina izquierda --Herramientas y ajustes-- y Herramientas se retiro
+   al bajar sus nubes al cuadro de especificaciones. Un mando suelto en la
+   esquina izquierda es un hueco con un boton dentro; pegado a la identidad son
+   dos llaves juntas, que es lo que son: como te ves y quien eres. */
+#cabezal .marca{order:1}
+/* EL `order` VA EN EL BOTON, NO EN SU ENVOLTORIO. `.lateral-zona` es
+   `display:contents` --existe en el arbol para agrupar el mando con su panel,
+   pero no es una caja-- asi que sus hijos son hermanos de la marca y de la
+   identidad, y el `order` del envoltorio no ordena nada. Se escribio ahi
+   primero y la rueda se quedo en la esquina izquierda; se vio en el navegador,
+   no leyendo el css. */
+#cabezal .lateral-boton{order:8;margin-left:auto}
+#cabezal #panel-ajustes{order:8}
+#cabezal #identity{order:9;margin-left:0}
+.cab-solar{order:20;flex:1 1 100%;font-size:.62rem;text-align:left}
+
+/* LA MARCA, MAS GRANDE. Era 1,05rem, el mismo cuerpo que un parrafo con
+   versales: se leia como una etiqueta y no como el nombre del producto. Sube a
+   1,3 y el hueco lo paga la fila de abajo, que se encoge a la vez -- por eso
+   las dos cosas se piden juntas y aqui se escriben juntas. */
+#cabezal h1{font-size:1.3rem;letter-spacing:.08em}
+
+/* LAS CUATRO PUERTAS, A SU MINIMA EXPRESION. Pedido asi: «hacer los iconos de
+   home, loratelier, community e install a la expresion minima de tamano seria
+   una ayuda para organizar el espacio». Son navegacion secundaria -- se usan
+   una vez y se vuelve-- y estaban al mismo cuerpo que los mandos.
+   Siguen siendo pastillas violeta con canto dorado: lo que se encoge es el
+   tamano, no la familia. */
+#cab-nav .cab-boton{font-size:.62rem;letter-spacing:.05em;padding:.3rem .45rem}
+
+/* La identidad con sesion es UNA pastilla violeta con canto dorado, no dos
+   piezas sueltas: el nombre y la firma son el mismo dato --quien eres y con
+   que firmas-- y separados se leian como dos botones sin relacion. */
+#cabezal #identity:has(.yo-perfil),#cabezal #identity:has(.yo){
+  gap:.4rem;padding:.2rem .5rem;
+  background:var(--violeta);border:1px solid var(--oro);border-radius:999px}
+#cabezal #identity:has(.yo-perfil) .yo-perfil,
+#cabezal #identity:has(.yo-perfil) .huella-corta{color:#fff;border-color:transparent}
+
+/* El icono de persona: cuadrado y del tamano de la rueda, que es su vecina.
+   Dos mandos de distinto tamano pegados se leen como uno principal y otro
+   secundario, y no lo son. */
+.identity-icono{display:inline-flex;align-items:center;justify-content:center;
+  width:40px;height:40px;padding:0;border-radius:999px;
+  color:var(--oro);background:transparent;border:1px solid var(--oro)}
+.identity-icono svg{width:1.35em;height:1.35em}
+.identity-icono:hover,.identity-icono:focus-visible{
+  background:rgba(242,208,138,.16);color:var(--oro);border-color:var(--oro)}
+
+/* EL ICONO NO SE ESTIRA, y hace falta decirlo con la misma fuerza con la que
+   la regla de al lado lo estiraba. `#cabezal #identity button:only-child`
+   --dos ids-- le daba el ancho entero, y tenia razon cuando el boton decia
+   «Crear identidad» con todas sus letras: un rotulo largo centrado en media
+   fila se lee peor que uno a lo ancho. Con un dibujo dentro, ese mismo ancho
+   convierte una llave en una pancarta. Se corrige con la misma especificidad y
+   ganando por orden, que es lo que un `!important` habria tapado sin explicar. */
+#cabezal #identity button.identity-icono:only-child{width:40px}
+
+/* --- LOS DOS MANDOS, EN LA ESQUINA DE VERDAD (2026-09-05) ------------------
+   Pedido asi: «ajustes y cuenta con el mismo estilo, arriba en la esquina
+   derecha del cabecero, encima de la cabeza sin ser pisados».
+
+   CON `order` NO BASTABA, y esto se vio midiendo. `order:8/9` mas
+   `margin-left:auto` los ponia detras de la marca y ahi se quedaban: en
+   escritorio `.cab-fila` NO envuelve, asi que la frase solar --que reclama el
+   hueco elastico-- se colocaba a su derecha y se llevaba los 580 px que
+   sobraban. Los mandos acababan a un tercio del ancho, que es donde se veian
+   en la captura: ni esquina ni nada.
+
+   ASI QUE SALEN DEL FLUJO. Anclados al cabezal --que ya es `relative` por la
+   esfera-- la esquina es la esquina pase lo que pase con la marca, con la
+   frase solar o con el idioma, que es justo lo que un reparto elastico no
+   puede prometer. Y de paso dejan de competir por el ancho con la marca, que
+   era la otra mitad del problema.
+
+   `top:.45rem` y no `0`: el marco de bronce pasa por ahi y un aro dorado
+   pegado a otro aro dorado se lee como una sola linea rota. */
+#cabezal .lateral-boton{position:absolute;top:.45rem;right:3.4rem;margin-left:0}
+#cabezal #identity{position:absolute;top:.45rem;right:.45rem;margin-left:0}
+
+/* Y LA RUEDA SUELTA SU PANEL DEL CANTO IZQUIERDO. Colgaba de `left:3.9rem`
+   --de cuando el mando vivia a la izquierda, al lado de Herramientas-- y con
+   el boton mudado a la derecha el desplegable salia por el otro extremo del
+   cabezal, a medio metro de lo que lo abre. Cuelga del canto que le toca. */
+#cabezal #panel-ajustes{left:auto;right:.45rem}
+
+/* LA CARA EMPIEZA DEBAJO DE LOS MANDOS, que es la unica forma de que «encima
+   de la cabeza» sea verdad. La esfera es la Capa 4 y no la tapa nadie: si
+   comparte franja con los dos aros, los tapa ella -- y taparlos no es un
+   problema de estetica, son la puerta a los ajustes y a la identidad.
+
+   El numero sale de una pieza fija --40 px de mando mas su aire-- y no de una
+   estimacion de cuanto mide el cabezal, que cambia con el idioma y con la
+   sesion. Por eso puede ser el mismo en todos los anchos. */
+#cabezal .presentacion{top:calc(40px + .9rem);bottom:auto}
+
+/* La frase solar deja de reclamar el hueco elastico: con los mandos fuera del
+   flujo, lo que sobra a su derecha es el hueco de la cara, y estirarse hasta
+   alli la metia debajo. */
+#cabezal .cab-solar{flex:0 1 auto}
+
+/* Y LOS DOS VAN POR DELANTE DE LA CARA. La identidad ya lo tenia declarado en
+   `chat.css` --se puso el dia que la esfera se comio el boton de entrar en
+   Android-- y la rueda no: al bajar la cara para dejarles sitio arriba, las
+   dos cajas se rozan por cuatro pixeles y sin esto el circulo pinta encima.
+   La Capa 4 no la tapa nadie, salvo estas dos: son la puerta a los ajustes y
+   a la identidad, y una puerta tapada por un adorno no es una puerta. */
+#cabezal .lateral-boton{z-index:calc(var(--capa-4-cara) + 1)}
+
+/* --- CON CUENTA, UNA LINEA FINA · Y LA RUEDA A LA DERECHA (2026-09-05) -----
+   Los dos mandos estaban clavados con la rueda a la izquierda y la identidad
+   pegada al canto. Eso funciona mientras la identidad es un icono de 40 px;
+   con sesion abierta se convierte en nombre + firma, crece hacia la izquierda,
+   y se metia DEBAJO de la rueda -- una caja anclada a la derecha que crece se
+   come a su vecina fija.
+
+   Se invierte el anclaje: la rueda toma el canto y la identidad se ancla a
+   3,4rem, que es lo que mide la rueda con su aire. Asi la linea de la cuenta
+   crece hacia la izquierda, que es donde hay sitio, y la rueda se queda en la
+   esquina en los dos estados -- con cuenta y sin ella. Un mando que cambia de
+   sitio segun si has entrado es un mando que hay que buscar dos veces. */
+#cabezal .lateral-boton{right:.45rem}
+#cabezal #identity{right:3.4rem}
+
+/* LINEA FINA DE VERDAD: nombre y firma no envuelven. `#identity` es un flex
+   con `flex-wrap:wrap` heredado de cuando eran tres piezas a tamano de boton;
+   con la pastilla estrecha, envolver partia la cuenta en dos filas y la fila
+   de abajo caia sobre la cara. */
+#cabezal #identity{flex-wrap:nowrap;white-space:nowrap;max-width:calc(100% - 8rem)}
+#cabezal #identity .yo-perfil{font-size:.7rem;overflow:hidden;text-overflow:ellipsis}
+#cabezal #identity .huella-corta{font-size:.64rem;padding:.1rem .4rem}
+
+/* Y LA CARA BAJA UN POCO MAS. Con el icono solo, 40 px de mando bastaban de
+   respiro; con la linea de la cuenta la franja de arriba es mas alta y la
+   esfera volvia a rozarla. Lo pidio el Soberano al ver la captura, y es la
+   misma cuenta de antes con el aire que la linea necesita. */
+#cabezal .presentacion{top:calc(40px + 1.5rem)}
+
+/* El nombre puede encoger. Sin `min-width:0` un hijo de flex no baja de lo que
+   mide su texto, asi que se quedaba entero y empujaba la firma FUERA de la
+   pastilla -- en 375 px la firma acababa pintada encima de la rueda. El corte
+   con puntos suspensivos no servia de nada mientras la caja no pudiera
+   estrecharse. */
+#cabezal #identity .yo-perfil{min-width:0}
+
+/* --- EL TELEFONO SE ORDENA EN RENGLONES, NO EN ESQUINAS -------------------
+   Maqueta firmada por el Soberano mirando el Doogee: «primera linea
+   PreceptorOS + linkedin github; segunda linea nombre firma + ajustes; y el
+   resto debajo».
+
+   POR QUE LA ESQUINA NO VALE AQUI. En escritorio sobran 200 px a la derecha de
+   la marca y los dos mandos caben en el canto. En 375 px, el canto lo ocupa la
+   rueda y lo que queda a su izquierda ES el ancho de la marca: la linea de la
+   cuenta se pintaba ENCIMA de «PreceptorOS». Se vio con la sesion simulada --
+   sin cuenta el defecto no existe, y por eso no habia aparecido hasta hoy.
+
+   Y LA RUEDA BAJA CON LA CUENTA, que es lo que cambia respecto del intento
+   anterior. Se habia dejado clavada en la esquina «porque un mando que cambia
+   de sitio hay que buscarlo dos veces», y era verdad a medias: lo que se busca
+   dos veces es un mando que cambia de sitio SIN motivo. Aqui viaja pegado a la
+   cuenta, que es de lo que es ajuste, y las dos cosas se leen como un renglon
+   -- quien eres y como lo miras -- en vez de como dos piezas que coinciden en
+   una esquina. En escritorio siguen en el canto, donde caben.
+
+   SIN CUENTA NO HAY SEGUNDO RENGLON: el icono de persona y la rueda son dos
+   dibujos, y dos dibujos no llenan una fila. Suben con la marca. */
+@media (max-width:1023px){
+  /* EL HUECO DE LA CARA DEJA DE SER DE TODO EL CABEZAL. Lo reservaba el
+     contenedor entero --155 px de los 375 de un telefono, casi la mitad-- y
+     por eso «PRECEPTOROS» no cabia en su renglon con GitHub y LinkedIn al
+     lado: los dos iconos se caian a una linea propia. Esa reserva global tenia
+     razon cuando la esfera nacia arriba; ahora nace DEBAJO de los dos primeros
+     renglones, asi que a ellos no les quita nada.
+
+     El hueco se lo quedan las dos piezas que si comparten franja con la cara:
+     la declaracion solar y las cuatro puertas. Se reserva donde estorba, no en
+     el padre por si acaso -- que es el error contrario al de enumerar, y sale
+     igual de caro. */
+  #cabezal{padding-right:.55rem}
+  #cabezal .cab-solar,#cabezal #cab-nav{padding-right:calc(var(--esfera) + .5rem)}
+
+  /* La marca toma el primer renglon entero -- titulo, GitHub y LinkedIn. */
+  #cabezal .marca{flex:1 1 100%;flex-wrap:nowrap;align-items:center}
+
+  /* Segundo renglon: la cuenta a la izquierda y la rueda contra el canto. */
+  #cabezal #identity{position:static;order:3;flex:0 1 auto;
+    max-width:calc(100% - 3rem);align-self:flex-start;margin:.15rem 0 0}
+  #cabezal .lateral-boton{position:static;order:4;margin:.15rem 0 0 auto;
+    width:36px;height:36px}
+  #cabezal #panel-ajustes{right:.45rem;left:auto}
+
+  /* Y EL NOMBRE PUEDE ENCOGER. `#cabezal #identity > *{flex:0 0 auto}` --que
+     existe para que la firma no se estire a todo lo ancho-- impedia tambien
+     que el nombre se estrechara: la pastilla se quedaba con su ancho ideal y
+     la firma se pintaba FUERA, a la derecha del canto dorado. Se vio dos
+     veces, con la sesion simulada. Aqui se le devuelve al nombre --y solo al
+     nombre-- el derecho a encoger; los puntos suspensivos ya estaban puestos
+     y por fin sirven para algo. */
+  #cabezal #identity .yo-perfil{flex:0 1 auto;min-width:0}
+
+  /* Sin sesion, los dos dibujos comparten renglon con la marca en vez de
+     abrir uno para ellos solos: dos iconos no llenan una fila. `:has` lo
+     decide sin que nadie tenga que saber en que estado esta la sesion. */
+  #cabezal:has(.identity-icono) .marca{flex:1 1 auto}
+  #cabezal:has(.identity-icono) #identity{order:9;margin:0}
+  #cabezal:has(.identity-icono) .lateral-boton{order:8;margin-left:auto}
+
+  /* LA CARA EMPIEZA DEBAJO DE LOS DOS RENGLONES, y por eso los dos primeros
+     pueden usar el ancho entero. 8,4rem son las dos filas medidas en 375 px
+     con sesion abierta, que es el caso alto; sin sesion sobra sitio y la cara
+     baja igual -- una cara que sube y baja segun si has entrado se lee como un
+     salto de maqueta. */
+  #cabezal .presentacion{top:8.4rem}
+}

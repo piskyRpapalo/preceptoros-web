@@ -142,7 +142,7 @@
     // de nube NO se pone -- y por eso alli hubo que pedir permiso antes.
     if (local) rec.processLocally = true;
     var base = entrada.value;
-    rec.onstart = function () { oyendo = true; boton.querySelector('.rotulo').textContent = T.micEscuchando; boton.classList.add('oyendo'); decir(local ? T.micEnAparato : T.micEnNube, local ? 'tenue' : 'nodata'); };
+    rec.onstart = function () { oyendo = true; boton.querySelector('.rotulo').textContent = T.micEscuchando; boton.setAttribute('aria-label', T.micEscuchando); boton.classList.add('oyendo'); decir(local ? T.micEnAparato : T.micEnNube, local ? 'tenue' : 'nodata'); };
     rec.onresult = function (e) {
       var t = '';
       for (var i = e.resultIndex; i < e.results.length; i++) t += e.results[i][0].transcript;
@@ -153,9 +153,9 @@
       // `service-not-allowed` y `language-not-supported` son la forma que tiene
       // el navegador de decir «esto solo lo se hacer en la nube». Se para.
       decir(T.micFallo + ' ' + (e.error || '?'), 'nodata');
-      oyendo = false; boton.querySelector('.rotulo').textContent = T.micHablar; boton.classList.remove('oyendo');
+      oyendo = false; boton.querySelector('.rotulo').textContent = T.micHablar; boton.setAttribute('aria-label', T.micHablar); boton.classList.remove('oyendo');
     };
-    rec.onend = function () { oyendo = false; boton.querySelector('.rotulo').textContent = T.micHablar; boton.classList.remove('oyendo'); };
+    rec.onend = function () { oyendo = false; boton.querySelector('.rotulo').textContent = T.micHablar; boton.setAttribute('aria-label', T.micHablar); boton.classList.remove('oyendo'); };
     try { rec.start(); }
     catch (e) { decir(T.micFallo + ' ' + (e && e.message ? e.message : e), 'nodata'); }
   }

@@ -172,3 +172,30 @@ button.mic[aria-disabled="true"]{border-color:rgba(242,208,138,.45);opacity:.7}
 /* El ancla del emergente: sin esto se colgaria del panel entero y saldria en
    la esquina de la pagina, no encima del boton que lo abrio. */
 #voice{position:relative}
+
+/* --- ENVIAR Y HABLAR SE QUEDAN EN DIBUJO (2026-09-05) ---------------------
+   Un avion de papel y un microfono no necesitan pie de foto: son los dos
+   iconos mas reconocidos de cualquier caja de escribir del mundo, y el rotulo
+   solo anadia ancho. Es el criterio que el Soberano dio para toda la web --
+   «todo lo que puedan ser iconos en vez de palabras nos quita trabajo a
+   nosotros y trabajo cognitivo a los usuarios»-- y aqui ademas devuelve sitio
+   a la fila justo donde el teclado lo quita.
+
+   EL ROTULO NO SE BORRA, SE ESCONDE A LA VISTA. Sigue en el arbol con la
+   tecnica de `.sr`, asi que quien lee con los oidos lo recibe entero, y
+   `voice.js` puede seguir escribiendo «Escuchando... toca para parar» en el
+   sitio donde ya lo escribia. Un `display:none` habria callado tambien esa
+   linea, que es la unica que dice que el microfono esta abierto. */
+.chat-acciones .rotulo{position:absolute;width:1px;height:1px;margin:-1px;
+  padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0}
+/* Y sin rotulo, enviar deja de ser una pastilla larga con un dibujo en la
+   esquina: se cierra en circulo, como el microfono. Los dos son ahora el mismo
+   gesto en dos formas --escribir o dictar-- y la unica diferencia que queda es
+   la que importa: enviar va relleno porque es el que manda, el microfono va
+   hueco porque es la alternativa. 52 px contra 44: se distinguen por peso, no
+   por figura. */
+.chat-acciones button.enviar{display:inline-flex;align-items:center;
+  justify-content:center;width:52px;height:52px;min-height:0;padding:0}
+.chat-acciones button.enviar svg{margin:0}
+.chat-acciones button.mic{display:inline-flex;align-items:center;
+  justify-content:center;width:44px;height:44px;min-height:0;padding:0}
