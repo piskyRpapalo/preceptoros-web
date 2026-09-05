@@ -84,7 +84,7 @@ python3 test_web.py
 
 🇬🇧 17 checks: page count, no frameworks, no foreign CDNs, path-based selector,
 honest footers, sprite under 50 KB, **no broken internal links**, i18n key parity
-across the three languages, 10 KB per file, no gradients or radii, and
+across the three languages, 16 KB per file, no gradients or radii, and
 `counters.json` coherence.
 
 🇪🇸 Las 17 se escribieron rompiendo las reglas a propósito para ver si saltaban.

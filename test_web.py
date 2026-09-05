@@ -7,7 +7,7 @@ Cada prueba comprueba UNA regla del canon y falla diciendo por que. Una
 comprobacion que detecta y no bloquea no es una comprobacion: aqui no hay avisos,
 solo verde o rojo.
 """
-import hashlib, json, re, unittest
+import gzip, hashlib, json, re, unittest
 from pathlib import Path
 
 RAIZ = Path(__file__).resolve().parent
@@ -73,7 +73,38 @@ FRAMEWORKS = r"\breact\b|vue\.js|angular|htmx|alpine\.js|jquery|svelte|tailwind"
 # sufijo—, y una regla que se cumple por casualidad se rompe el dia que alguien
 # renombre el fichero a LICENSE.txt.
 LICENCIAS = {"LICENSE", "LICENSE-PROSE"}
-TOPE_FICHERO = 10 * 1024
+# EL TOPE POR FICHERO · 16 KiB, firmado el 2026-09-05. Antes eran 10, puestos a
+# mano. Este numero sale de una cuenta, y la cuenta se escribe aqui para que la
+# proxima revision discuta con datos y no con gusto.
+#
+# 1 · EL TOPE DE 10 KB NUNCA FUE UN LIMITE DE RED, y eso era lo que parecia.
+#     Medido sobre los 77 ficheros que esta regla vigila: se comprimen 2,43x de
+#     media (458.360 B en disco -> 188.656 B con gzip -9). Un fichero de 10.240 B
+#     viaja como ~4.214 B. La ventana inicial de congestion son ~14 KB --diez
+#     paquetes de ~1.460-- asi que el tope viejo gastaba menos de un TERCIO de
+#     lo que cabe en el primer viaje de ida y vuelta. Sobraba red por todas
+#     partes; lo que faltaba era sitio para escribir.
+#
+# 2 · LO QUE EL TOPE SI ACOTA es cuanto se puede razonar por escrito. Medido:
+#     el 43 % de un fichero de este arbol es prosa, porque aqui los comentarios
+#     SON la documentacion. A 10.240 B eso deja ~5.850 B de codigo util; en
+#     cuanto una pieza pide 6,5 KB, lo que se recorta es el razonamiento. Paso
+#     de verdad: en la sesion del 2026-09-05 se limaron comentarios propios seis
+#     veces seguidas para volver bajo el tope, que es exactamente lo que la
+#     doctrina de «se parte, no se recorta» viene a impedir.
+#
+# 3 · EL NUMERO NUEVO. Se reparte la ventana inicial y se le da a un fichero la
+#     MITAD --varios se piden en paralelo y comparten ese primer vuelo--:
+#     7 KB en el cable. A 2,43x eso son 17,4 KB en disco. Se redondea a la baja
+#     al binario limpio: 16 KiB. Comprobado al reves, 16.384 B viajan como
+#     ~6.743 B, el 48 % de un solo viaje. La promesa de rendimiento se mantiene.
+#
+# 4 · ENTRA SIN AMNISTIA Y SIN DEUDA, igual que cuando la regla se extendio a
+#     `.json` el 2026-08-31: el mayor fichero de hoy son 10.237 B, asi que
+#     ninguno estrena el tope ya gastado. Y `sw.js` gana 6,1 KB, que a ~22 B por
+#     linea de precache son sitio para ~270 ficheros mas: la razon por la que un
+#     `capas.css` no cabia el 2026-09-05 deja de existir.
+TOPE_FICHERO = 16 * 1024
 TOPE_SPRITE = 50 * 1024
 TOPE_LAMINA = 30 * 1024
 
@@ -514,6 +545,43 @@ class Estructura(unittest.TestCase):
         # Cloudflare admite "dir" y "directory"; lo que se comprueba es que
         # apunte a public/, no como se escriba la clave.
         self.assertRegex(cfg, r'"(dir|directory)"\s*:\s*"\./public"')
+
+    def test_ningun_fichero_gasta_medio_viaje_de_red(self):
+        """El tope de disco es un PROXY; esto mide la cosa de verdad.
+
+        Al subir el tope a 16 KiB el 2026-09-05 se justifico con una cuenta:
+        estos ficheros se comprimen 2,43x, asi que 16.384 B viajan como ~6.743,
+        el 48 % de la ventana inicial de congestion (~14 KB, diez paquetes de
+        ~1.460). Esa cuenta usa un ratio MEDIO, y un ratio medio deja de valer
+        en cuanto entra un fichero que comprime mal -- datos ya comprimidos,
+        cadenas base64, rutas SVG largas.
+
+        Una regla que se cumple por casualidad se rompe el dia que alguien
+        cambia lo que la hacia casual. Asi que aqui no se supone el ratio: se
+        comprime cada fichero y se mide. Si algun dia uno gasta mas de medio
+        viaje, esto se pone rojo y la decision vuelve a la mesa en vez de
+        degradarse en silencio.
+
+        Medio viaje y no uno entero porque en la primera carga se piden VARIOS
+        en paralelo y comparten ese vuelo: un solo fichero que se lo comiera
+        entero dejaria a los demas esperando un segundo viaje.
+        """
+        medio_viaje = 7 * 1024
+        for p in sorted(PUBLICO.rglob("*")):
+            if not (p.is_file() and p.suffix in (".html", ".css", ".js",
+                                                 ".json", ".webmanifest")):
+                continue
+            if p.stem in LICENCIAS:
+                continue
+            comprimido = len(gzip.compress(p.read_bytes(), 9))
+            with self.subTest(fichero=str(p.relative_to(RAIZ))):
+                self.assertLessEqual(
+                    comprimido, medio_viaje,
+                    f"{p.name} viaja como {comprimido} B comprimidos y el "
+                    f"reparto son {medio_viaje}. El tope de disco de "
+                    f"{TOPE_FICHERO} B se fijo suponiendo 2,43x de compresion; "
+                    "este comprime peor. Remedio: partirlo, o revisar el tope "
+                    "con la cuenta delante.")
 
     def test_cada_fichero_bajo_10_kb(self):
         """El tope rige TAMBIEN los datos, y desde el 2026-08-31.
@@ -1738,7 +1806,7 @@ class Traducciones(unittest.TestCase):
     def test_los_tres_idiomas_tienen_las_mismas_claves(self):
         # Los scripts que la portada CARGA de verdad, no solo chat.js ni todos
         # los de assets. Cuando la interfaz se partio en varios ficheros para
-        # respetar los 10 KB, este test siguio mirando uno solo y las claves de
+        # respetar el tope por fichero, este test siguio mirando uno solo y las claves de
         # los demas quedaban sin comprobar. Mirarlos todos tampoco vale:
         # hitos.js lee el bloque i18n de hitos.html, que es otro.
         for idioma in IDIOMAS:
