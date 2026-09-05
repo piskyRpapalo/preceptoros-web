@@ -1,0 +1,76 @@
+/* preceptoros.org · LA CARA, y solo la cara.
+   Capa 4. Sale de `chat.css` porque aquello llego a 10.285 B de un tope de
+   10.240 al entrar los tres estados, y en este arbol se parte antes que
+   recortar: los comentarios de estos ficheros son su razonamiento.
+   La costura es por asunto, como la de `chat-router.js`: aqui esta la cara y
+   su aritmetica; alli, la caja donde se escribe. */
+
+/* --- Capa 4 · la esfera ---------------------------------------------------
+   LA MISMA CARA QUE LA APP, con sus mismas cifras y sus mismos estados. No se
+   elige nada aqui: el MVP lo resolvio el 2026-09-04 y esto lo espeja. El
+   primer intento uso `cara-logo-256.webp` --la cara del icono de los accesos
+   directos-- y estaba mal: es otra obra, y dos caras distintas para el mismo
+   producto es lo que el trasplante de estilo vino a terminar.
+
+   Tres tiras, y la aritmetica NO se toca. Las paradas estan calculadas contra
+   su `background-size`; mover uno sin recalcular el otro ensena dos medios
+   cuadros a la vez.
+     reposo    · 256x256,  una cara quieta  · 122,5 %
+     pensando  · 1280x256, cinco laminas    · 612,5 %
+     habla     · 1024x256, cuatro bocas     · 490 %
+
+   EL 27,78 % NO ES UN CENTRO MAL PUESTO. Firmado en la app el 2026-09-04 tras
+   verlo en el Doogee: el busto viene DIBUJADO a la izquierda de su cuadro, y
+   al 50 % los ojos quedan descentrados respecto del aro. A 1,225x sobra un
+   9,2 % por lado y se usa un 4,1 %, asi que no se asoma nada de fuera. Los
+   tres estados llevan el mismo desplazamiento o la cara saltaria al pensar.
+
+   Y EL 490 % DE `habla` SE DECLARA, no se hereda. Es una cicatriz de agosto y
+   no es estetica: heredar el tamano de otra tira recorreria cuatro bocas en
+   siete huecos, y media vuelta quedaria fuera del marco con un parpadeo de
+   alto contraste a ritmo constante -- un riesgo para personas con epilepsia
+   fotosensible. Ninguna animacion de esta cara puede apagarla; solo cambiarla.
+
+   PENSAR Y HABLAR SON DOS COSAS. Antes eran una: la boca se movia mientras el
+   modelo generaba, o sea que la cara hablaba sin haber dicho nada. Piensa
+   mientras piensa --cinco laminas del ojo-- y mueve la boca cuando el texto
+   llega. La web ya tenia los eventos; le faltaba la cara.
+
+   155 px es la medida de la app (`--cara-centro`), no una elegida aqui. */
+:root{--esfera:155px;--anim-habla-esfera:.864s;--anim-pensar:1.6s}
+.presentacion{display:flex;justify-content:center;margin:.2rem 0 .9rem}
+.esfera{width:var(--esfera);height:var(--esfera);border-radius:50%;
+  background:var(--disco-cara) url("/assets/caras/cara-reposo-violeta-256.webp")
+             27.78% 50%/122.5% auto no-repeat;
+  border:2px solid var(--bronce);
+  position:relative;z-index:var(--capa-4-cara);
+  animation:respirar 3.6s ease-in-out infinite}
+/* Quieta, y solo respira. Se mueve la Sombra, no la imagen: es lo que impide
+   que una cara fija se lea como una aplicacion colgada. */
+@keyframes respirar{
+  0%,100%{box-shadow:0 8px 28px rgba(109,90,224,.22)}
+  50%    {box-shadow:0 8px 30px rgba(224,184,114,.30)}}
+.esfera.piensa{background-image:url("/assets/caras/cara-secuencia-pensando-256.webp");
+  background-size:612.5% auto;
+  animation:pensar var(--anim-pensar) steps(5,jump-none) infinite,
+            latir 2.88s ease-in-out infinite}
+@keyframes pensar{from{background-position:1.219% 50%}to{background-position:96.829% 50%}}
+.esfera.habla{background-image:url("/assets/caras/cara-secuencia-habla-256.webp");
+  background-size:490% auto;
+  animation:hablar var(--anim-habla-esfera) steps(4,jump-none) infinite,
+            latir 2.88s ease-in-out infinite}
+@keyframes hablar{from{background-position:1.603% 50%}to{background-position:95.833% 50%}}
+@keyframes latir{
+  0%,100%{box-shadow:0 8px 28px rgba(109,90,224,.22)}
+  50%    {box-shadow:0 8px 34px rgba(224,184,114,.45)}}
+/* Quien pidio menos movimiento se queda con la cara quieta y encendida. */
+@media (prefers-reduced-motion:reduce){
+  .esfera,.esfera.piensa,.esfera.habla{animation:none;
+    background-image:url("/assets/caras/cara-reposo-violeta-256.webp");
+    background-size:122.5% auto;background-position:27.78% 50%}}
+
+/* --- Capa 1 · los atajos, debajo del campo ------------------------------
+   Se rellenan desde el javascript con lo que sirva al motor que este en uso:
+   escritos aqui a mano prometerian acciones que otro modelo no tiene. Fila que
+   se desplaza en horizontal y no se envuelve: envolviendose crecia en alto, y
+   el alto es justo lo que el chat no tiene cuando sale el teclado. */

@@ -111,6 +111,14 @@ code,pre,kbd,samp,input,textarea,select,.cifra,.proof b,.ob-codigo,
   --capa-2-cabezal:20;   /* el cabezal y su declaracion */
   --capa-3-lateral:30;   /* el desplegable, que pisa a la 2 y a la 1 */
   --capa-4-cara:40;      /* la cara. No la tapa nadie */
+  --capa-5-lleno:50;     /* pantalla completa: pisa a las cuatro, y por eso existe */
+  /* El disco de detras de la cara. Es el valor OSCURO del MVP
+     (`--n-disco-cara`), no el claro, porque esta web es oscura por defecto.
+     Se declara aqui y no se deja al azar: una variable que no existe dentro
+     del atajo `background` invalida la DECLARACION ENTERA -- no solo el color,
+     tambien la imagen. Medido el 2026-09-05: la esfera salio como un aro vacio
+     y no habia error en consola que lo dijera. */
+  --disco-cara:#3b2f63;
 }
 #cabezal{position:relative;z-index:var(--capa-2-cabezal)}
 
@@ -150,3 +158,13 @@ code,pre,kbd,samp,input,textarea,select,.cifra,.proof b,.ob-codigo,
   -webkit-text-stroke: 1px var(--bronce-claro);
   paint-order: stroke fill;
 }
+
+/* Para quien lee con los oidos. No estaba en esta web --la app si la tenia--
+   y sin ella el rotulo del boton de la Capa 3 se pintaba en pantalla.
+   `clip-path` y no `display:none`: lo segundo se lo esconde tambien al
+   lector de pantalla, que es justo a quien va dirigido.
+   Vive aqui y no en `base.css` por la razon de siempre en este arbol:
+   `base.css` esta lleno (10.018 de 10.240) y con estas seis lineas se
+   ponia en 10.433. `canon.css` se carga en las mismas paginas y le sobran. */
+.sr{position:absolute;width:1px;height:1px;margin:-1px;padding:0;
+  overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0}

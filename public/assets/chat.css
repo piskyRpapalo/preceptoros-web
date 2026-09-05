@@ -93,3 +93,27 @@ button.enviar svg{margin-right:.1rem}
 /* El nombre del modelo es EL dato de este badge: va en negrita y la etiqueta
    que lo precede no, para que se lea el que antes que el rotulo. */
 .brain b{font-weight:700}
+
+/* --- Capa 1 · el mono panel: el chat Y sus atajos ------------------------
+   UNA sola caja, y es la capa que todo lo demas pisa. Los atajos viven DENTRO
+   de `#chat` y no en una fila suya debajo: una fila propia cuesta unos
+   cincuenta pixeles de alto permanentes, y ese alto es justo el que el chat
+   echa en falta cuando sale el teclado -- el momento en que menos sitio hay y
+   mas importa. Es la misma leccion que la app aprendio al retirar su barra de
+   seis iconos del pie.
+
+   El `z-index` se declara aunque sea el mas bajo. Sin el, `#chat` no crea
+   contexto de apilamiento y el orden entre capas queda al azar del documento:
+   funcionaria hoy y se romperia al mover un bloque de sitio, que es como se
+   rompen estas cosas. */
+#chat{position:relative;z-index:var(--capa-1-chat)}
+.atajos{display:flex;gap:.4rem;overflow-x:auto;padding:.15rem 0 .35rem;
+  scrollbar-width:none}
+.atajos::-webkit-scrollbar{display:none}
+.atajo{flex:0 0 auto;font:inherit;font-size:.76rem;cursor:pointer;
+  color:var(--tinta);background:var(--marmol-claro);
+  border:1px solid var(--bronce);border-radius:999px;padding:.32rem .7rem;
+  transition:transform .16s var(--spring)}
+.atajo:hover,.atajo:focus-visible{transform:translateY(-1px)}
+.atajo:focus-visible{outline:2px solid var(--violeta);outline-offset:2px}
+

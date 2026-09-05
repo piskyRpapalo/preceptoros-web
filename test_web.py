@@ -1144,71 +1144,112 @@ class Cabezal(unittest.TestCase):
         self.assertIn("prefers-reduced-motion", css,
                       "el panel se desliza aunque se pida quietud")
 
-    def test_el_rail_es_una_columna_entera(self):
-        """El rail va de borde a borde del viewport, sin que nada lo corte.
+    def test_la_capa_3_se_repliega_y_no_deja_hueco(self):
+        """El desplegable de companeros: izquierda, y cerrado NO ocupa nada.
 
-        ESTA PRUEBA CAMBIO DE DOCTRINA EL 2026-09-03, firmado por el Soberano,
-        y conviene decir que exigia antes: `grid-template-columns:1fr 360px`
-        con el panel en `position:static` como segunda columna de
-        `#hub-layout`. Aquello se veia bien y estaba roto por debajo:
-        `#hub-layout` vive dentro de `<main>`, que va DESPUES del cabezal y
-        ANTES del pie, y un hijo no puede ser mas alto que su padre. El rail
-        empezaba bajo el cabezal y terminaba sobre el pie. No habia margen que
-        lo arreglara porque el problema no era el margen: era el arbol.
+        ESTA PRUEBA HA CAMBIADO DE DOCTRINA DOS VECES, y las dos quedan
+        escritas porque cada una explica por que la siguiente fue posible.
 
-        Lo que se exige ahora son las tres cosas que hacen que la columna sea
-        continua de verdad, y que ningun ajuste posterior puede romper sin que
-        esto se ponga rojo.
+        PRIMERA, antes del 2026-09-03: `grid-template-columns:1fr 360px` con el
+        panel en `position:static` como segunda columna de `#hub-layout`.
+        Aquello se veia bien y estaba roto por debajo -- `#hub-layout` vive
+        dentro de `<main>`, que va DESPUES del cabezal y ANTES del pie, y un
+        hijo no puede ser mas alto que su padre. El rail empezaba bajo el
+        cabezal y terminaba sobre el pie. No habia margen que lo arreglara
+        porque el problema no era el margen: era el arbol.
+
+        SEGUNDA, 2026-09-03: rail derecho `position:fixed` de borde a borde,
+        con el hueco reservado una sola vez en `body`. Arreglo el corte, y
+        trajo su propio precio: el rail plegado seguia ocupando 4,6rem contra
+        el borde derecho de TODAS las paginas que cargaran la hoja, abierto o
+        no, porque un rail plegado sigue siendo un rail.
+
+        TERCERA Y ACTUAL, 2026-09-05, firmada por el Soberano: la web se apila
+        con las mismas cinco capas que la app, y alli la Capa 3 «cerrada no
+        ocupa nada --el panel va absoluto-- y abierta cae desde el canto
+        izquierdo». Al no ocupar nada plegada, la reserva global sobra y se va
+        con ella. Eso es lo que deja el panel central como MONO PANEL: se
+        queda con todo el ancho en vez de con el ancho menos un rail.
+
+        Lo que se exige aqui son las cuatro cosas que hacen que eso sea verdad
+        y no una intencion escrita en un comentario.
         """
         def sin_comentarios(texto):
             """Fuera los comentarios ANTES de mirar si una regla existe.
 
-            Cicatriz del 2026-09-03: este bloque explica por escrito que el
-            rail ya no usa `position:static`, y la prueba leia esa frase del
-            comentario como si fuera la regla. Una comprobacion que se cree lo
-            que dice la prosa no esta comprobando el codigo: esta leyendo.
+            Cicatriz del 2026-09-03: el bloque de al lado explica por escrito
+            que el rail ya no usa `position:static`, y la prueba leia esa frase
+            del comentario como si fuera la regla. Una comprobacion que se cree
+            lo que dice la prosa no esta comprobando el codigo: esta leyendo.
             """
             return re.sub(r"/\*.*?\*/", "", texto, flags=re.S)
 
+        # Las cuatro hojas donde vive la maqueta. `cara.css` nacio el 2026-09-05
+        # al pasar `chat.css` de 10.285 B sobre un tope de 10.240: se parte
+        # antes que recortar, y la costura es por asunto -- alli la cara y su
+        # aritmetica, aqui la caja donde se escribe.
+        cara = sin_comentarios(
+            (PUBLICO / "assets" / "cara.css").read_text(encoding="utf-8"))
+        chat = sin_comentarios(
+            (PUBLICO / "assets" / "chat.css").read_text(encoding="utf-8"))
         panel = sin_comentarios(
             (PUBLICO / "assets" / "panel.css").read_text(encoding="utf-8"))
         widget = sin_comentarios(
             (PUBLICO / "assets" / "widget.css").read_text(encoding="utf-8"))
-        css = widget + panel
+        css = widget + panel + chat + cara
         plano = css.replace(" ", "").replace("\n", "")
 
-        # 1 · el rail toca los dos bordes verticales, y en TODOS los anchos.
-        self.assertIn("position:fixed;top:0;right:0;bottom:0", plano,
-                      "el rail no llega de arriba a abajo del viewport")
+        # 1 · ES UN DESPLEGABLE, no una columna: cuelga del CABEZAL por su canto
+        #     izquierdo. La geometria es la del MVP, que es la referencia.
+        self.assertIn("#panel-modelos{position:absolute;left:.7rem;top:calc(100%-.1rem)",
+                      plano, "la Capa 3 no cuelga del canto izquierdo del cabezal")
+        self.assertIn("transform-origin:topleft", plano,
+                      "el desplegable crece desde el centro y se lee como un acordeon")
+        self.assertIn(".lateral-zona{position:static", plano,
+                      "la zona se ancla a si misma y pega el panel al boton")
+
+        # 2 · CERRADO NO OCUPA NADA. Y `visibility:hidden` ademas le quita el
+        #     foco: un panel a escala cero sigue siendo tabulable, y quien
+        #     navega con teclado caeria dentro de algo que no ve.
+        self.assertIn("#panel-modelos.cerrado{transform:scaleY(0);opacity:0;visibility:hidden}",
+                      plano, "la Capa 3 cerrada sigue ocupando, o sigue siendo tabulable")
+
+        # 3 · NADIE reserva hueco para ella. Si alguien lo reintroduce, el centro
+        #     deja de ser mono panel y nadie se entera: la pagina se estrecha.
+        self.assertNotIn("--hueco-rail", plano,
+                         "vuelve a haber reserva de rail; un desplegable plegado "
+                         "no ocupa sitio, asi que no hay hueco que guardar")
+
+        # 4 · el chat y sus atajos son UN panel, y en la capa que todo pisa. El
+        #     z-index se exige aunque sea el mas bajo: sin el, `#chat` no crea
+        #     contexto de apilamiento y el orden queda al azar del documento --
+        #     funciona hoy y se rompe al mover un bloque de sitio.
+        self.assertIn("#chat{position:relative;z-index:var(--capa-1-chat)}", plano,
+                      "el mono panel no declara su capa")
+        for idioma, t in self.portadas():
+            with self.subTest(idioma=idioma):
+                self.assertIn('id="atajos"', t, "los atajos no estan")
+                caja = t[t.index('id="chat"'):t.index("</main>")]
+                self.assertIn('id="atajos"', caja,
+                              "los atajos viven fuera del panel del chat: una fila "
+                              "propia cuesta el alto que el chat necesita con el teclado")
+                self.assertIn('id="lateral-boton"', t,
+                              "no hay boton que abra la Capa 3")
+                self.assertIn('aria-controls="panel-modelos"', t,
+                              "el boton no declara que panel abre")
+                self.assertIn('aria-expanded', t,
+                              "el boton no dice si esta abierto")
+
+        # 5 · y en PC la ventana sigue estirandose. El desplegable ya no reserva
+        #     nada, pero `main` viene limitado a 46rem por `base.css` --la medida
+        #     de una columna de lectura-- y sin esto el chat se queda estrecho en
+        #     una pantalla ancha.
         pc = re.search(r"@media \(min-width:1024px\)\{(.*?)\n\}", css, re.S)
         self.assertIsNotNone(pc, "no hay maqueta de PC")
         cuerpo = pc.group(1).replace(" ", "")
         self.assertNotIn("position:static", cuerpo,
-                         "en PC el rail vuelve a entrar en el flujo y lo cortan "
+                         "en PC el panel vuelve a entrar en el flujo y lo cortan "
                          "el cabezal y el pie")
-        self.assertNotIn("grid-column:2", cuerpo,
-                         "el rail vuelve a ser una columna de #hub-layout, que "
-                         "no puede ser mas alto que <main>")
-
-        # 2 · el hueco se reserva UNA vez y en `body`, no contenedor a
-        #     contenedor. El cabezal y el pie estan fuera de `main`: si la
-        #     reserva no la hereda todo, son justo los dos que se meten debajo.
-        self.assertIn("body:has(#panel-modelos){padding-right:var(--hueco-rail)}",
-                      plano, "el hueco del rail no se reserva globalmente")
-        # Y CONDICIONADO AL RAIL. De las ocho paginas solo la portada lo tiene;
-        # `benchmark.html` carga esta hoja y no. Una reserva incondicional le
-        # abre un hueco contra un borde donde no hay nada.
-        self.assertNotIn("\nbody{padding-right:var(--hueco-rail)}", plano,
-                         "la reserva no mira si el rail existe")
-        self.assertIn("--hueco-rail:", plano, "no hay medida declarada del hueco")
-
-        # 3 · y NADIE se lo reserva por su cuenta. Tres cifras distintas para
-        #     el mismo hueco es como estaba antes, y como se olvidaba.
-        for sobra in ("#hub-layout{padding-right:4.2rem}",
-                      ".honest-footer{margin-right:4.2rem}"):
-            self.assertNotIn(sobra, plano,
-                             f"queda una reserva a mano: {sobra}")
-
         self.assertIn("max-width:min(1400px", cuerpo,
                       "la ventana no se estira: el chat se quedaria estrecho")
         router = (PUBLICO / "assets" / "chat-router.js").read_text(encoding="utf-8")

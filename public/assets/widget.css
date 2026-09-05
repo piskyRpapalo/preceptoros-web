@@ -47,12 +47,13 @@
 
    Va en `body` y no en `main` a proposito: el cabezal y el pie estan FUERA de
    `main`, y son justo los dos que el rail cortaba. */
-/* `:has` y no `body` a secas: de las ocho paginas el rail solo existe en la
-   portada, y `benchmark.html` carga esta hoja sin tenerlo. Sin la condicion se
-   le abria un hueco de 4,6rem contra un borde vacio. Asi la reserva aparece y
-   desaparece con el rail sin que ninguna pagina declare cual es. */
-body:has(#panel-modelos){padding-right:var(--hueco-rail)}
-:root{--hueco-rail:4.6rem;--cara-web:78px;--anim-reposo:38.4s;--anim-habla:.864s}
+/* LA RESERVA DEL RAIL SE FUE con el rail, el 2026-09-05. Reservaba 4,6rem
+   contra el borde derecho de la pagina entera porque el panel plegado seguia
+   ocupandolos. La Capa 3 plegada no ocupa nada --se va entera por el canto
+   izquierdo-- asi que no hay hueco que guardar, y el panel central se queda
+   con todo el ancho: eso es lo que lo hace mono panel. `--hueco-rail` se
+   queda declarado y sin usar seria una medida sin duena, asi que se va tambien. */
+:root{--cara-web:78px;--anim-reposo:38.4s;--anim-habla:.864s}
 /* La cara del chat nace despierta: la apertura --la piedra y el laser-- es la
    entrada del producto, no el cabezal al que se vuelve cien veces. Y va
    acercada 1,225x: cuatro cuadros por 1,225 son 490 % y el paso queda en

@@ -16,6 +16,7 @@
 <link rel="stylesheet" href="/assets/movil.css">
 <link rel="stylesheet" href="/assets/canon.css">
 <link rel="stylesheet" href="/assets/chat.css">
+<link rel="stylesheet" href="/assets/cara.css">
 <link rel="stylesheet" href="/assets/widget.css">
 <link rel="stylesheet" href="/assets/panel.css">
 <link rel="stylesheet" href="/assets/tema.css">
@@ -32,6 +33,17 @@
 <canvas id="ambient" aria-hidden="true"></canvas>
 <main>
   <header id="cabezal">
+    <div class="lateral-zona">
+      <button class="lateral-boton" id="lateral-boton" type="button"
+              aria-expanded="false" aria-controls="panel-modelos">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"
+             stroke-linecap="round" aria-hidden="true">
+          <path d="M 4 7 h16"></path><path d="M 4 12 h16"></path><path d="M 4 17 h10"></path>
+        </svg>
+        <span class="sr">Agentes y compañeros</span>
+      </button>
+      <section id="panel-modelos" class="cerrado"></section>
+    </div>
     <div id="cabeza" role="img" aria-label="Preceptor"></div>
     <div class="marca"><h1>Preceptor<b>OS</b></h1></div>
     <div id="cab-ident" class="cab-ident"></div>
@@ -40,21 +52,24 @@
   </header>
   <section id="hub"></section>
 <div id="hub-layout"><div id="chat" class="panel">
+    <div class="presentacion"><div class="esfera" role="img"
+         aria-label="Preceptor"></div></div>
     <div id="dialogo"></div>
     <textarea id="pregunta" class="chat-input" placeholder="Escribe tu primera pregunta..." rows="3"></textarea>
     <div class="fila chat-acciones"><button id="enviar" type="button" class="boton enviar" aria-label="Enviar"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M3 20.5v-6l8-2.5-8-2.5v-6L22 12z"/></svg><span class="rotulo">Enviar</span></button>
       <div id="voice" class="fila"></div></div>
+    <div class="atajos" id="atajos" hidden></div>
     <div id="motor"></div>
     <p id="brain" class="brain"></p>
   </div>
-  <section id="panel-modelos" class="cerrado"></section></div>
+  </div>
   <footer class="honest-footer">
-      <p class="proof"><b>590</b> pruebas en verde en la app · <b>74</b> en esta web · <b>cero</b> peticiones externas al cargar · <b>10 KB</b> máximo por fichero</p>
+      <p class="proof"><b>614</b> pruebas en verde en la app · <b>74</b> en esta web · <b>cero</b> peticiones externas al cargar · <b>10 KB</b> máximo por fichero</p>
       <ul id="pie-honesto"></ul>
       <p id="pie-enlaces"></p>
     </footer>
 </main>
-<script type="application/json" id="i18n">{"brainAsleep":"Todavía no hay motor arrancado","brainBrowser":"IA del navegador (Edge)","brainLabel":"Modelo:","brainLive":"Vivo en tu máquina","brainNone":"ninguno","causaDesconocida":"Causa desconocida.","causaElegida":"Causa: elegiste el JSON.","causaEnBenchmark":"Causa: el motor se elige y se mide en el Benchmark.","copiaManual":"Selecciona y Ctrl+C","copiado":"Copiado OK","copiarPara":"Copiar para","destinos":["Gemini","ChatGPT","Claude","mi IA local"],"etiquetaJson":"Texto para copiar a tu IA","falloRespuesta":"NO_DATA · fallo al generar respuesta","falloVacio":"NO_DATA — el motor terminó sin emitir ni un carácter. No es una respuesta vacía: es un turno que no llegó a existir.","idAviso":"Se genera una clave en tu navegador. No se puede exportar ni copiar a otro aparato: si borras los datos del sitio, esta identidad se pierde y no hay forma de recuperarla. No hay contraseña que olvidar ni servidor que la guarde.","idClave":"Ver mi huella","idPerfil":"Mi perfil","idEntrar":"Crear identidad","idFallo":"NO_DATA — no se pudo crear la identidad:","idHola":"Hola,","idPublica":"Clave pública:","laiListo":"Hablarás con","llevate":"Llévate este texto a la IA que ya uses.","micEnAparato":"Dictado en tu aparato. El audio no sale de aquí.","micEscuchando":"Escuchando… toca para parar","micFallo":"NO_DATA — el dictado local falló:","micHablar":"Hablar","micSinLocal":"NO_DATA — tu navegador no ofrece dictado en el aparato. El botón queda apagado: el reconocedor de la nube no vuelve.","mismoTexto":"El mismo texto sirve para cualquier IA. Esa es la idea: no depender de una sola.","pie1f":"Hasta que pulsas un botón, esta página no ha hablado con nadie.","pie1r":"Cero peticiones externas al cargar.","pie2f":"El motor se elige en el Benchmark.","pie2r":"Las descargas y las medidas viven alli, no aqui.","pie3f":"Si no hay motor elegido,","pie3r":"la pagina te genera un JSON para llevar a la IA que ya tengas.","pieBenchmark":"LoRAtelier","pieHitos":"Hitos","pieInstalar":"Instalar","pieTablon":"Tablón","prefieroJson":"Prefiero el JSON","sinMotor":"NO_DATA · no hay motor de IA disponible en este navegador.","tu":"Tú","cabComunidad":"COMUNIDAD","cabBenchmark":"LORATELIER","cabCola":"FIRMA","cabIdioma":"IDIOMA","cabHome":"INICIO","cabEmpezar":"EMPIEZA AQUÍ","rackSinAdaptador":"NO_DATA — este companero todavia no tiene modelo servido en el rack.","rackFallo":"NO_DATA — el rack no contesto.","rackCausa":"Causa: el rack no contesto; el tunel publico aun no esta levantado.","cabInstala":"INSTALAR AQUÍ","cabInstalaIos":"Para instalar: pulsa Compartir (la flecha hacia arriba) y luego «Añadir a pantalla de inicio».","cabSolar":"Esta web es 99% solar, excepto el proveedor web (Cloudflare)"}</script>
+<script type="application/json" id="i18n">{"brainAsleep":"Todavía no hay motor arrancado","brainBrowser":"IA del navegador (Edge)","brainLabel":"Modelo:","brainLive":"Vivo en tu máquina","brainNone":"ninguno","causaDesconocida":"Causa desconocida.","causaElegida":"Causa: elegiste el JSON.","causaEnBenchmark":"Causa: el motor se elige y se mide en el Benchmark.","copiaManual":"Selecciona y Ctrl+C","copiado":"Copiado OK","copiarPara":"Copiar para","destinos":["Gemini","ChatGPT","Claude","mi IA local"],"etiquetaJson":"Texto para copiar a tu IA","falloRespuesta":"NO_DATA · fallo al generar respuesta","falloVacio":"NO_DATA — el motor terminó sin emitir ni un carácter. No es una respuesta vacía: es un turno que no llegó a existir.","idAviso":"Se genera una clave en tu navegador. No se puede exportar ni copiar a otro aparato: si borras los datos del sitio, esta identidad se pierde y no hay forma de recuperarla. No hay contraseña que olvidar ni servidor que la guarde.","idClave":"Ver mi huella","idPerfil":"Mi perfil","idEntrar":"Crear identidad","idFallo":"NO_DATA — no se pudo crear la identidad:","idHola":"Hola,","idPublica":"Clave pública:","laiListo":"Hablarás con","llevate":"Llévate este texto a la IA que ya uses.","micEnAparato":"Dictado en tu aparato. El audio no sale de aquí.","micEscuchando":"Escuchando… toca para parar","micFallo":"NO_DATA — el dictado local falló:","micHablar":"Hablar","micSinLocal":"NO_DATA — tu navegador no ofrece dictado en el aparato. El botón queda apagado: el reconocedor de la nube no vuelve.","mismoTexto":"El mismo texto sirve para cualquier IA. Esa es la idea: no depender de una sola.","pie1f":"Hasta que pulsas un botón, esta página no ha hablado con nadie.","pie1r":"Cero peticiones externas al cargar.","pie2f":"El motor se elige en el Benchmark.","pie2r":"Las descargas y las medidas viven alli, no aqui.","pie3f":"Si no hay motor elegido,","pie3r":"la pagina te genera un JSON para llevar a la IA que ya tengas.","pieBenchmark":"LoRAtelier","pieHitos":"Hitos","pieInstalar":"Instalar","pieTablon":"Tablón","prefieroJson":"Prefiero el JSON","sinMotor":"NO_DATA · no hay motor de IA disponible en este navegador.","tu":"Tú","cabComunidad":"COMUNIDAD","cabBenchmark":"LORATELIER","cabCola":"FIRMA","cabIdioma":"IDIOMA","cabHome":"INICIO","cabEmpezar":"EMPIEZA AQUÍ","rackSinAdaptador":"NO_DATA — este companero todavia no tiene modelo servido en el rack.","rackFallo":"NO_DATA — el rack no contesto.","rackCausa":"Causa: el rack no contesto; el tunel publico aun no esta levantado.","cabInstala":"INSTALAR AQUÍ","cabInstalaIos":"Para instalar: pulsa Compartir (la flecha hacia arriba) y luego «Añadir a pantalla de inicio».","cabSolar":"Esta web es 99% solar, excepto el proveedor web (Cloudflare)","atResume":"Resume esto","atPasos":"Dame los pasos","atDudas":"Qué te falta saber","companeros":"Agentes y compañeros"}</script>
  "tu": "Tú",
  "cabComunidad": "COMUNIDAD",
  "cabBenchmark": "BENCHMARK",

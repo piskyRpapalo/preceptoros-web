@@ -25,7 +25,6 @@
   var quieto = window.matchMedia
     ? matchMedia('(prefers-reduced-motion: reduce)') : { matches: false };
   var boton = null, avatar = null, nombre = null, aviso = null, activo = null;
-
   /* El papel Caza-Nido se COMPONE aqui y viaja ya hecho. `chat.js` recibe
      texto, no una clave: tiene 129 B libres y no debe aprender a buscar en el
      catalogo. Este fichero ya sabe quien contesta; saber que papel juega es la
@@ -125,14 +124,23 @@
     // selector y se comprueba: si ese fichero no llegara, aqui no se revienta.
     var herrTit = document.querySelector('#herramientas .panel-titulo');
     if (herrTit) herrTit.textContent = (H.textos && H.textos.herrTitulo) || '';
-    boton = H.boton;   // hoy null: MODELOS salio del cabezal y el rail se basta
+    /* El hueco que este `H.boton` llevaba esperando desde que MODELOS salio
+       del cabezal. El rail se bastaba porque se tocaba directamente; un
+       desplegable plegado no se puede tocar, asi que la Capa 3 trae su
+       boton al cabezal --como en la app-- y aqui se recoge. */
+    boton = H.boton;   // el del cabezal lo ata `chat-panel.js`
     if (boton) boton.addEventListener('click', function () { alternar(); });
     // Companero por defecto: el Instalador es el recepcionista.
     vestir(H.agente('instalador') || (H.datos.agentes || [])[0]);
     // En PC el panel nace abierto --hay sitio para los dos--; en movil, no.
-    alternar(PC.matches);
+    /* CERRADO EN TODO ANCHO, y esto cambia el 2026-09-05. Antes abria solo
+       en PC porque alli el panel era una columna acoplada y el hueco ya
+       estaba reservado: no abrirlo habria dejado un vacio de 4,6rem contra
+       el borde. Ahora la Capa 3 no reserva nada y cae ENCIMA del chat, asi
+       que abrirla sola taparia lo que la persona vino a usar. */
+    alternar(false);
     if (PC.addEventListener) {
-      PC.addEventListener('change', function (e) { alternar(e.matches); });
+      PC.addEventListener('change', function () { alternar(false); });
     }
     panel.addEventListener('click', function (ev) {
       var b = ev.target.closest && ev.target.closest('.modelo[data-agente]');

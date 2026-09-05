@@ -69,3 +69,96 @@
     vv.addEventListener('resize', mirar);
   }
 })();
+
+/* --- Capa 1 · los atajos, debajo del campo --------------------------------
+ * Los mismos tres que la app, con las mismas claves y el mismo gesto: escriben
+ * en el campo y dejan el cursor ahi. NO mandan solos -- un atajo que manda sin
+ * que se lea lo que va a mandar es un boton que habla por ti.
+ *
+ * Los rotulos salen del bloque `#i18n` de la portada y no de aqui: este
+ * fichero no tiene idioma, y por eso no puede tener texto. Es la misma regla
+ * que ya cumple `board-fuentes.js`.
+ */
+(function () {
+  var caja = document.getElementById('atajos');
+  var campo = document.getElementById('pregunta');
+  var bloque = document.getElementById('i18n');
+  if (!caja || !campo || !bloque) return;
+  var T = JSON.parse(bloque.textContent);
+
+  ['atResume', 'atPasos', 'atDudas'].forEach(function (clave) {
+    var texto = T[clave];
+    if (!texto) return;          // sin rotulo no hay boton: no se inventa uno
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'atajo';
+    b.textContent = texto;
+    b.addEventListener('click', function () {
+      campo.value = texto + ': ';
+      campo.focus();
+    });
+    caja.appendChild(b);
+  });
+  if (caja.children.length) caja.hidden = false;
+})();
+
+/* --- Capa 4 · los estados de la cara --------------------------------------
+ * Las mismas funciones que el MVP, sobre los eventos que esta web YA emitia y
+ * que hasta hoy solo movian el sello del pie. La cara es un sensor, no un
+ * adorno: se mueve cuando pasa algo de verdad.
+ *
+ * PENSAR Y HABLAR SON DOS COSAS, y esa es la correccion que la app firmo el
+ * 2026-09-04. Antes la boca se movia mientras el modelo generaba, o sea que la
+ * cara hablaba sin haber dicho nada todavia -- y con un modelo lento eso son
+ * minutos de boca moviendose en falso. Ahora piensa mientras piensa y mueve la
+ * boca cuando el texto llega.
+ */
+(function () {
+  var cara = document.querySelector('.esfera');
+  if (!cara) return;
+  function estado(clase) {
+    cara.classList.remove('piensa', 'habla');
+    if (clase) cara.classList.add(clase);
+  }
+  document.addEventListener('preceptor:pensando', function () { estado('piensa'); });
+  document.addEventListener('preceptor:hablando', function () { estado('habla'); });
+  // Al cerrar el turno vuelve a reposo. No se relanza ninguna entrada: la
+  // apertura es la entrada del producto, no el gesto al que se vuelve.
+  document.addEventListener('preceptor:turno', function () { estado(null); });
+})();
+
+/* --- Capa 3 · quien abre el desplegable -----------------------------------
+ * EL BOTON SE ATA AL ARRANCAR, y por eso vive aqui y no en `chat-router.js`.
+ * Medido el 2026-09-05 en el navegador: alli el enganche cuelga de `listo()`,
+ * que espera al catalogo --`hub.js` lo pide en `requestIdleCallback`-- y hasta
+ * entonces el desplegable no tenia quien lo abriera. Con el rail daba igual,
+ * porque el rail se tocaba directamente; un desplegable plegado no se puede
+ * tocar. Y este fichero es justo el de «donde se colocan los mandos».
+ *
+ * Nace CERRADO aunque la clase este en el marcado: `hub.js` reescribe el panel
+ * al pintarlo y el estado hay que volver a declararlo.
+ */
+(function () {
+  var boton = document.getElementById('lateral-boton');
+  var panel = document.getElementById('panel-modelos');
+  if (!boton || !panel) return;
+
+  function pinta() {
+    boton.setAttribute('aria-expanded',
+      panel.classList.contains('cerrado') ? 'false' : 'true');
+  }
+  function cierra() { panel.classList.add('cerrado'); pinta(); }
+
+  cierra();
+  boton.addEventListener('click', function () {
+    panel.classList.toggle('cerrado');
+    pinta();
+  });
+  /* Escape cierra: un panel que cae sobre el chat y solo se cierra volviendo al
+     boton obliga a cruzar la pantalla para recuperar lo de abajo. */
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && !panel.classList.contains('cerrado')) cierra();
+  });
+  // Elegir companero cierra: ya se hizo lo que se vino a hacer.
+  document.addEventListener('preceptor:companero', cierra);
+})();

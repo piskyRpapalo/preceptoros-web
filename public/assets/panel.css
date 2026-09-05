@@ -4,10 +4,71 @@
    estos ficheros son su razonamiento. `widget.css` se queda con el cabezal y
    el chat; aqui viven los paneles. */
 
-/* --- el panel Modelos ---------------------------------------------------
-   Por debajo de 1024 px se desliza SOBRE el chat: no caben los dos, y el
-   chat es lo que se vino a usar. */
-#panel-modelos,.panel-desliza{position:fixed;top:0;right:0;bottom:0;
+/* LAS CINCO CAPAS · por que NO hay un `capas.css`.
+   Se escribio, y se deshizo el mismo dia. Medido: una hoja mas cuesta ~48 B de
+   etiqueta en cada portada Y una entrada en la lista de precache de `sw.js`,
+   que estaba a 17 B de su techo de 10.240 -- con la entrada se puso en 10.244.
+   Dejarla fuera del precache habria sido peor que no tener el fichero: la
+   pagina sin red se habria quedado sin maqueta.
+   Asi que las reglas van a su casa natural, que ademas es el criterio con el
+   que ya se partio `chat-router.js`: por asunto, no por tamano. La Capa 3 ES
+   el panel y vive aqui; la esfera y los atajos son chat y viven en `chat.css`.
+   Los NUMEROS de la escala siguen en `canon.css`, que es el anexo de tokens. */
+
+/* --- Capa 3 · el desplegable de companeros ------------------------------
+   ESPEJO DEL MVP, y su geometria es la de alli: un desplegable violeta anclado
+   al cabezal, no una columna. Antes era un rail derecho permanente y esto lo
+   revoca -- firmado el 2026-09-05, la web se apila con las mismas cinco capas
+   que la app y con su misma estetica.
+
+   Lo que se gana no es gusto: son los 4,6rem de `--hueco-rail` que la pagina
+   ENTERA reservaba contra el borde derecho, abierto o no, porque un rail
+   plegado sigue ocupando. Un desplegable plegado no ocupa nada, asi que la
+   reserva se va con el y el centro se queda con todo el ancho: mono panel.
+
+   Se anima `transform` y no `height`: una altura animada recalcula la caja en
+   cada fotograma, y estas portadas ya van justas en un telefono. Y
+   `transform-origin: top left` hace que CREZCA desde ese canto y no desde el
+   centro, que es el reparto por defecto y se lee como un acordeon.
+
+   `position:static` en la zona a proposito: el panel se ancla al CABEZAL, que
+   ya es contexto de posicion y ocupa el ancho entero. Anclarlo a la caja del
+   boton lo pegaria al boton en vez de al canto.
+
+   `.panel-desliza` --las hojas de la cola de firma-- se queda a la derecha: no
+   es el mismo mueble ni hace el mismo trabajo. Una es navegacion, la otra es
+   una hoja que aparece con un encargo y se va. */
+.lateral-zona{position:static;display:contents}
+.lateral-boton{flex:none;display:inline-flex;align-items:center;
+  justify-content:center;width:40px;height:40px;padding:0;font:inherit;
+  cursor:pointer;color:var(--violeta-texto);background:transparent;
+  border:1px solid var(--bronce);border-radius:999px}
+.lateral-boton svg{width:1.25em;height:1.25em}
+.lateral-boton:focus-visible{outline:2px solid var(--violeta);outline-offset:2px}
+.lateral-boton[aria-expanded="true"]{color:#fff;background:var(--violeta);
+  border-color:var(--violeta)}
+#panel-modelos{position:absolute;left:.7rem;top:calc(100% - .1rem);
+  z-index:var(--capa-3-lateral);width:min(20rem,calc(100vw - 1.4rem));
+  max-height:min(70vh,32rem);overflow:auto;padding:.6rem;
+  border-radius:var(--radius);background:var(--violeta);color:#fff;
+  box-shadow:0 12px 32px rgba(36,26,53,.34);
+  transform-origin:top left;transform:scaleY(1);opacity:1;
+  transition:transform .18s ease-out,opacity .18s ease-out}
+/* CERRADO NO OCUPA NADA. `scaleY(0)` lo repliega contra el canto sin sacarlo
+   del arbol, y `visibility` le quita el foco: un panel a escala cero sigue
+   siendo tabulable, y quien navega con teclado caeria dentro de algo que no
+   ve. */
+#panel-modelos.cerrado{transform:scaleY(0);opacity:0;visibility:hidden}
+/* Sobre violeta, los rotulos de las tarjetas son blancos: el marmol claro que
+   traian venia de vivir sobre marmol. */
+#panel-modelos .panel-titulo,#panel-modelos .modelo-nombre{color:#fff}
+#panel-modelos .panel-rotulo,#panel-modelos .modelo-spec{color:rgba(255,255,255,.82)}
+#panel-modelos .modelo{background:rgba(255,255,255,.10);border-color:rgba(255,255,255,.28);
+  color:#fff}
+#panel-modelos .modelo-real.no-sirve{color:rgba(255,255,255,.70)}
+
+/* --- las hojas que se deslizan, a la derecha ---------------------------- */
+.panel-desliza{position:fixed;top:0;right:0;bottom:0;
   width:min(24rem,92vw);z-index:20;overflow:auto;padding:1rem .9rem;
   transition:transform .35s ease,width .35s ease;
   background:var(--marmol-claro);
@@ -19,35 +80,10 @@
   border-left:3px solid var(--bronce);
   box-shadow:-1px 0 0 var(--edge), -18px 0 40px rgba(30,24,38,.22);
   transform:translateX(0);transition:transform .35s ease}
-/* CERRADO NO ES INVISIBLE. El panel de Modelos se repliega a un RAIL: una
-   barra estrecha con las ocho esferas y un filo violeta. Asi se cambia de
-   companero sin abrir nada, y la pagina dice cuantos hay sin decir una
-   palabra. La cola SI se va del todo -- no tiene iconos que ensenar. */
-/* El rail se ESTRECHA, no se desplaza. Desplazarlo dejaba a la vista los 64
-   px izquierdos de tarjetas de 24 rem, con su contenido centrado fuera de
-   pantalla: ocho cajas vacias. Se vio en el Doogee. */
-#panel-modelos.cerrado{width:4rem;transform:none;
-  box-shadow:-1px 0 0 var(--violeta), -10px 0 26px rgba(109,90,224,.38)}
 .panel-desliza.cerrado{transform:translateX(101%)}
-
-#panel-modelos.cerrado .panel-titulo,
-#panel-modelos.cerrado .modelo-nombre,
-#panel-modelos.cerrado .modelo-spec,
-#panel-modelos.cerrado .modelo-real{display:none}
-#panel-modelos.cerrado{padding:.6rem .5rem}
-#panel-modelos.cerrado .modelo{grid-template-columns:1fr;padding:.25rem;
-  justify-items:center;border-color:var(--violeta)}
-#panel-modelos.cerrado .modelo img,
-#panel-modelos.cerrado .modelo-inicial{width:44px;height:44px;grid-row:auto}
 .modelo-inicial{display:grid;place-items:center;width:56px;height:56px;
   border-radius:50%;background:var(--tinta);color:var(--marmol);
   font-weight:700;font-size:1.1rem;grid-row:1/span 3}
-/* El rotulo de honestidad NO desaparece: en el rail se encoge a la cifra.
-   «1/8» sigue diciendo lo mismo que «MOCK · 1 de 8 servido». */
-#panel-modelos.cerrado .panel-rotulo{font-size:.62rem;text-align:center;
-  margin:0 0 .4rem;letter-spacing:0;font-size:0}
-#panel-modelos.cerrado .panel-rotulo::before{content:attr(data-corto);
-  font-size:.66rem;color:var(--bronce-hondo)}
 .panel-cerrar{position:absolute;top:.6rem;right:.7rem;font:inherit;
   font-size:1.1rem;line-height:1;cursor:pointer;color:var(--tinta);
   background:none;border:1px solid var(--bronce);border-radius:var(--radius);
