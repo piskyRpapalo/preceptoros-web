@@ -1,7 +1,7 @@
 {
  "esquema": 1,
  "estado": "REAL",
- "nota": "Los ocho servicios NO son ocho entidades nuevas: son un VERBO anadido a cada uno de los ocho companeros que ya viven en hub.json. Por eso aqui no hay nombres ni caras -- solo el comando, a quien despierta y que hace. El nombre y el ojo salen de hub.json, que es la unica fuente de esos datos. Duplicarlos aqui seria crear una segunda verdad sobre el mismo hecho. EL COMANDO NO SE TRADUCE: es un identificador, se teclea y se comparte, y tres nombres para el mismo gesto parten cualquier guia que alguien escriba. Lo que se traduce es `que` --lo que hace-- y sale al pasar el cursor. Un termino, muchos idiomas.",
+ "nota": "Los ocho servicios NO son ocho entidades nuevas: son un VERBO anadido a cada uno de los ocho companeros que ya viven en hub.json. Por eso aqui no hay nombres ni caras -- solo el comando, a quien despierta y que hace. El nombre y el ojo salen de hub.json, que es la unica fuente de esos datos. Duplicarlos aqui seria crear una segunda verdad sobre el mismo hecho. EL COMANDO NO SE TRADUCE: es un identificador, se teclea y se comparte, y tres nombres para el mismo gesto parten cualquier guia que alguien escriba. Lo que se traduce es `que` --lo que hace-- y sale al pasar el cursor. Un termino, muchos idiomas. · Los `enlace` son rutas REALES de este sitio y solo estan donde existe la pagina: cinco comandos no lo llevan porque no tienen adonde ir, y poner uno inventado es justo lo que el papel del Instalador prohibe.",
  "fuente": "agente: hub.json · disponibilidad: el campo `real` de ese mismo agente",
  "servicios": [
   {
@@ -17,7 +17,8 @@
     "de": "Führt dich durch die Installation des Produkts auf deinem Rechner.",
     "ru": "Проводит тебя через установку продукта на твою машину.",
     "el": "Σε οδηγεί στην εγκατάσταση του προϊόντος στο μηχάνημά σου."
-   }
+   },
+   "enlace": "./instalar.html"
   },
   {
    "comando": "/perfil",
@@ -32,7 +33,8 @@
     "de": "Macht aus dem, was du tust, Gedächtnis, das du nachlesen kannst.",
     "ru": "Превращает то, что ты делаешь, в память, которую можно перечитать.",
     "el": "Μετατρέπει ό,τι κάνεις σε μνήμη που μπορείς να ξαναδιαβάσεις."
-   }
+   },
+   "enlace": "./profile.html"
   },
   {
    "comando": "/dataset",
@@ -122,7 +124,8 @@
     "de": "Streicht das Private, bevor es dein Gerät verlässt.",
     "ru": "Вычёркивает личное, прежде чем оно покинет твоё устройство.",
     "el": "Σβήνει ό,τι είναι προσωπικό πριν βγει από τη συσκευή σου."
-   }
+   },
+   "enlace": "./playground.html"
   }
  ],
  "textos": {
@@ -134,7 +137,8 @@
    "eco": "Textos largos sin mandar nada a una nube ajena. Con un cuaderno tipo NotebookLM o un extractor local tienes el mismo resultado sin ceder el texto.",
    "formatos": "Convierte entre formatos de texto en local. Sin subir el fichero a ningun sitio.",
    "auditar": "Mide TU aparato --memoria, GPU del navegador, motor disponible-- y te dice que companero te va a caber. No mira ninguna otra maquina.",
-   "frontera": "Tacha lo privado antes de que un texto salga hacia una IA ajena. Es la Aduana, y esta en playground.html."
+   "frontera": "Tacha lo privado antes de que un texto salga hacia una IA ajena. Es la Aduana, y esta en playground.html.",
+   "_ir": "Ir a la página"
   },
   "en": {
    "instalar": "Walks you through getting PreceptorOS running on your machine. The full guide is instalar.html; this is the summary and the link.",
@@ -144,7 +148,8 @@
    "eco": "Long texts without sending anything to someone else's cloud. A NotebookLM-style notebook or a local extractor gets the same result without handing over the text.",
    "formatos": "Converts between text formats locally. Without uploading the file anywhere.",
    "auditar": "Measures YOUR device -- memory, browser GPU, available engine -- and tells you which companion will fit. It looks at no other machine.",
-   "frontera": "Redacts what is private before a text goes out to someone else's AI. That is the Customs House, in playground.html."
+   "frontera": "Redacts what is private before a text goes out to someone else's AI. That is the Customs House, in playground.html.",
+   "_ir": "Go to the page"
   },
   "fr": {
    "instalar": "Vous guide pas a pas pour faire tourner PreceptorOS sur votre machine. Le guide complet est instalar.html ; voici le resume et le lien.",
@@ -154,7 +159,23 @@
    "eco": "Des textes longs sans rien envoyer au nuage d'autrui. Un carnet facon NotebookLM ou un extracteur local donne le meme resultat sans ceder le texte.",
    "formatos": "Convertit entre formats de texte en local. Sans televerser le fichier nulle part.",
    "auditar": "Mesure VOTRE appareil -- memoire, GPU du navigateur, moteur disponible -- et vous dit quel compagnon tiendra. Il ne regarde aucune autre machine.",
-   "frontera": "Barre ce qui est prive avant qu'un texte parte vers une IA tierce. C'est la Douane, dans playground.html."
+   "frontera": "Barre ce qui est prive avant qu'un texte parte vers une IA tierce. C'est la Douane, dans playground.html.",
+   "_ir": "Aller à la page"
+  },
+  "pt": {
+   "_ir": "Ir para a página"
+  },
+  "it": {
+   "_ir": "Vai alla pagina"
+  },
+  "de": {
+   "_ir": "Zur Seite"
+  },
+  "ru": {
+   "_ir": "Перейти на страницу"
+  },
+  "el": {
+   "_ir": "Πήγαινε στη σελίδα"
   }
  }
 }

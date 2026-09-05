@@ -64,8 +64,28 @@
       return;
     }
     var clave = s.comando.slice(1);
-    var t = (S.textos[idioma()] || S.textos.es || {})[clave] || '';
-    di(t);
+    var L = S.textos[idioma()] || S.textos.es || {};
+    di(L[clave] || '');
+    /* EL COMANDO QUE NOMBRA UNA PAGINA, LLEVA A ELLA. La respuesta decia «la
+       guia entera esta en instalar.html» en texto plano: nombraba el destino y
+       dejaba el viaje a cargo de la persona. Un enlace de verdad, con su
+       rotulo traducido y su ruta sacada del catalogo.
+
+       SOLO TRES de los ocho lo tienen, y los otros cinco se quedan SIN. No hay
+       pagina de `/dataset` ni de `/eco`: inventarles una seria exactamente lo
+       que el papel del Instalador tiene prohibido --«NUNCA escribas una URL:
+       no las conoces y las inventas»-- y aqui el codigo se aplica la misma
+       regla que le exige al modelo. */
+    if (s.enlace) {
+      var p = document.createElement('p');
+      var a = document.createElement('a');
+      a.href = s.enlace;
+      a.textContent = L._ir || 'Ir';
+      a.className = 'cmd-enlace';
+      p.appendChild(a);
+      dialogo.appendChild(p);
+      dialogo.scrollTop = dialogo.scrollHeight;
+    }
     var a = estadoAgente(s.agente);
     if (a) {
       var r = a.real || {};

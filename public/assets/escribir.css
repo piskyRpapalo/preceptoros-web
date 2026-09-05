@@ -125,3 +125,9 @@ button.mic:hover:not(:disabled),button.mic:focus-visible{
 .medidas-dato{font-variant-numeric:tabular-nums;color:var(--tinta)}
 .medidas-hueco{font-size:.62rem;padding:0 .35rem;border-radius:999px;
   color:var(--tenue);border:1px solid var(--bronce)}
+
+/* El enlace de un comando se lee como enlace, no como parrafo: subrayado y en
+   el violeta claro de los enlaces de la casa. Es lo unico pulsable que sale
+   dentro del dialogo, asi que tiene que distinguirse de la respuesta. */
+.cmd-enlace{color:var(--violeta-texto);font-weight:700;
+  text-decoration:underline;text-underline-offset:.2em}
