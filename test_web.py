@@ -399,8 +399,33 @@ class Estructura(unittest.TestCase):
                               "el boton de Android no lleva a la guia de Termux")
                 self.assertNotIn("preceptoros.apk", t,
                                  "se esta ofreciendo un APK que no existe")
-                self.assertIn("releases/latest/download/install.sh", t)
-                self.assertIn("releases/latest/download/install.ps1", t)
+                # EL ESCRITORIO YA NO ENLAZA FICHEROS QUE NO EXISTEN
+                # (2026-09-05). Este guardian exigia
+                # `releases/latest/download/install.sh` y su gemelo `.ps1`, y
+                # esos dos enlaces daban 404: no hay ninguna release publicada.
+                # O sea que el gate estaba en verde EXIGIENDO dos puertas
+                # rotas.
+                #
+                # Y el sitio se contradecia consigo mismo. `instalar.html`
+                # enlaza la pagina de versiones --comprobada, responde-- y
+                # declara al lado que esta vacia; el onboarding, que es lo
+                # PRIMERO que ve quien llega, ofrecia la descarga directa. Dos
+                # paginas del mismo sitio diciendo cosas distintas del mismo
+                # hecho, y la que prometia iba delante.
+                #
+                # Ahora los dos botones de escritorio llevan a la guia, que es
+                # el unico sitio que consulta el dato de verdad. Cuando haya
+                # release, se cambia en un fichero y no en ocho paginas.
+                self.assertNotIn("releases/latest/download/", t,
+                                 "el onboarding vuelve a ofrecer una descarga "
+                                 "directa que hoy da 404")
+                self.assertEqual(t.count('href="./instalar.html#descargas"'), 2,
+                                 "los dos botones de escritorio no llevan a la "
+                                 "guia, que es quien consulta si hay version")
+                # Y el ancla de descargas existe de verdad en la guia.
+                self.assertIn('id="descargas"',
+                              (PUBLICO / idioma / "instalar.html").read_text(encoding="utf-8"),
+                              f"{idioma}: la guia no tiene ancla #descargas")
                 # Y el ancla tiene que existir de verdad en la guia.
                 guia = (PUBLICO / idioma / "instalar.html").read_text(encoding="utf-8")
                 self.assertIn('id="android"', guia,

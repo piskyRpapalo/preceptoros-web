@@ -2,7 +2,7 @@
  *
  * Vive aparte y no dentro de otro guion a proposito: `instalar.html` y
  * `hitos.html` no cargan NINGUN javascript, y meter el registro dentro de
- * `pie.js` o `chat.js` habria dejado esas dos paginas fuera del PWA sin que
+ * `chat.js` habria dejado esas dos paginas fuera del PWA sin que
  * se notara. Un fichero de 700 bytes que se puede poner en las diecinueve
  * paginas es mas barato que la excepcion que habria que recordar.
  *
