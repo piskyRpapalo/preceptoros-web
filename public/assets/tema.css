@@ -28,7 +28,22 @@
   --n-marmol:#17131f; --n-marmol-claro:#1e1929;
   --n-tinta:#ece9f5; --n-tenue:#a79fbe;
   --n-violeta-texto:#b3a4ff;
-  --n-bronce-claro:#e0b872; --n-bronce:#c9a25e; --n-bronce-hondo:#8a6d2f;
+  /* LOS TRES ACENTOS TAMBIEN GIRAN, desde el 2026-09-05. No giraban, y por eso
+     `instalar.html` era ilegible en oscuro: sus tres colores se midieron contra
+     MARMOL --`--sol` a 4,61:1, `--jardin` a 4,66-- y sobre el panel oscuro se
+     hunden. Medido: `--sol` 3,21, `--jardin` 3,18 y `--indigo` 1,28, que es no
+     verse. Un color medido sobre un fondo no vale sobre el contrario, y esa es
+     toda la leccion.
+     Las variantes se eligieron midiendo contra `--n-panel-bg` (#1e1929):
+     8,23 · 9,35 · 7,32. Las tres pasan de sobra el 4,5 que pide el texto
+     pequeno, y ninguna se usa nunca sobre claro -- para eso estan las de
+     `base.css`, que siguen intactas. */
+  --n-sol:#f2a25c; --n-jardin:#6fd39b; --n-indigo:#a9a0f0;
+  --n-bronce-claro:#e0b872; --n-bronce:#c9a25e; --n-bronce-hondo:#a8863c;
+  /* #a8863c y no #8a6d2f: el anterior daba 3,51:1 sobre el panel oscuro y los
+     titulos de `instalar.html` se leian a duras penas. Este da 5,01 y sigue
+     siendo bronce -- se probaron seis y es el primero que pasa el 4,5 sin
+     irse a oro palido. Medido, no elegido. */
   --n-glass:rgba(38,31,53,.55); --n-glass-solid:rgba(30,25,41,.94);
   --n-edge:rgba(255,255,255,.10);
   --n-panel-bg:#1e1929; --n-panel-fg:#ece9f5;
@@ -44,6 +59,8 @@
     --marmol:var(--n-marmol); --marmol-claro:var(--n-marmol-claro);
     --tinta:var(--n-tinta); --tenue:var(--n-tenue);
     --violeta-texto:var(--n-violeta-texto);
+  --sol:var(--n-sol); --jardin:var(--n-jardin); --indigo:var(--n-indigo);
+    --sol:var(--n-sol); --jardin:var(--n-jardin); --indigo:var(--n-indigo);
     --bronce:var(--n-bronce); --bronce-claro:var(--n-bronce-claro);
     --bronce-hondo:var(--n-bronce-hondo);
     --glass:var(--n-glass); --glass-solid:var(--n-glass-solid);
@@ -57,6 +74,7 @@
   --marmol:var(--n-marmol); --marmol-claro:var(--n-marmol-claro);
   --tinta:var(--n-tinta); --tenue:var(--n-tenue);
   --violeta-texto:var(--n-violeta-texto);
+  --sol:var(--n-sol); --jardin:var(--n-jardin); --indigo:var(--n-indigo);
   --bronce:var(--n-bronce); --bronce-claro:var(--n-bronce-claro);
   --bronce-hondo:var(--n-bronce-hondo);
   --glass:var(--n-glass); --glass-solid:var(--n-glass-solid);

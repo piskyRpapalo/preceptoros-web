@@ -34,6 +34,30 @@ code,pre,kbd,samp,input,textarea,select,.cifra,.proof b,.ob-codigo,
 .terminal,.hud,.tooltip{font-family:var(--mono)}
 
 /* --- R-WIDGET · nada de texto suelto sobre el marmol -------------------- */
+/* EL SUELO SE PONE POR CONTENEDOR, NO POR LISTA DE CLASES.
+   La regla de abajo enumeraba `.guia`, `.proof`, `.ob-paso` y el pie porque
+   esos cuatro flotaban sobre la textura y en el Doogee, con luz de dia, eso es
+   ilegible -- queja real, no hipotesis. El defecto de enumerar es el de
+   siempre: lo que no este en la lista sigue flotando, y nadie se entera hasta
+   que alguien lo lee. `instalar.html` es la prueba -- sus pasos, sus titulos y
+   sus `NO_DATA` nunca estuvieron en la lista, y en un PC con el fondo animado
+   detras no habia forma de leerlos. Se vio en pantalla, no en un test.
+
+   Asi que el suelo lo pone `main`, y lo hereda todo lo que entre, incluido lo
+   que todavia no existe. La PORTADA se queda fuera --tiene sus dos paneles y su
+   transparencia es deliberada-- y se distingue por lo unico que de verdad la
+   distingue: es la que lleva el chat. `:has` ya se usa en este arbol.
+
+   Los tokens son `--panel-bg` y `--panel-fg`, que es justo para lo que existen:
+   giran con el tema, asi que se lee en claro y en oscuro sin escribir dos
+   reglas ni un color suelto. */
+main:not(:has(#chat)){
+  background:var(--panel-bg);color:var(--panel-fg);
+  border-radius:var(--radius);padding:1rem 1.1rem;
+}
+/* Y lo que ya tenia caja no la duplica dentro de la caja nueva. */
+main:not(:has(#chat)) .guia{background:transparent;border:0;padding:0}
+
 /* `.guia`, `.proof`, las secciones del onboarding y el pie flotaban sobre la
    textura. En el Doogee, con luz de dia, eso es ilegible -- y era queja real,
    no una hipotesis de diseno. */
