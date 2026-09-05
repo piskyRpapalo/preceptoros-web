@@ -79,9 +79,25 @@
         f.appendChild(el('b', 'medidas-backend', l.backend));
         f.appendChild(el('span', 'medidas-dato',
           num(l.prompt) + ' ' + M.prompt + ' · ' + num(l.generacion) + ' ' + M.generacion));
-        f.appendChild(el('span', 'medidas-hueco', M.sinFirma));
         caja.appendChild(f);
       });
+
+      /* «SIN FIRMAR» SE DICE UNA VEZ, Y CUANDO ES VERDAD (2026-09-05).
+         Se pintaba en CADA fila y sin mirar ningun dato: dos backends, dos
+         chips identicos, siempre, dijera lo que dijera el fichero. Eso no es
+         un estado -- es un rotulo fijo con forma de estado, que es peor que no
+         tenerlo: un aviso que no puede apagarse deja de leerse, y el dia que
+         estas cifras SI vayan firmadas seguiria diciendo que no.
+
+         Ahora lo decide el fichero. `d.firma` a `null` --o ausente, que es lo
+         que hay hoy-- es un hueco declarado y se dice una sola vez, al pie de
+         la caja, junto a las cifras a las que se refiere. Con firma, la marca
+         no aparece y su sitio lo ocupa la firma.
+
+         Lo que NO se hace es callarlo: sin esta linea, dos cifras sueltas se
+         leen como si vinieran del Libro de Pruebas. Se quita la repeticion,
+         no la honestidad. */
+      if (M.sinFirma && !d.firma) caja.appendChild(el('p', 'medidas-hueco', M.sinFirma));
 
       var ctx = d.contexto || {};
       if (ctx.medido) caja.appendChild(el('p', 'medidas-pie',

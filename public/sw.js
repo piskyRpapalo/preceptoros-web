@@ -29,7 +29,7 @@
  * dos motivos -- el techo de 7 paginas del gate, y que un fichero de respaldo
  * tambien puede faltar del cache justo el dia que hace falta.
  */
-const VERSION = 'preceptoros-2026-10-e';
+const VERSION = 'preceptoros-2026-10-k';
 const SHELL = 'shell-' + VERSION;
 const OBRA = 'obra-' + VERSION;
 
@@ -62,7 +62,7 @@ const ESFERAS = ['instalador', 'privacidad', 'escritor', 'traductor',
    tema.css y la portada de la raiz -- no es arte huerfano. */
 const HUB = ['/hub.json', '/hub-textos.json',
              '/assets/marble-violet.webp', '/assets/marble-violet-oscuro.webp', '/modelos.json', '/servicios.json', '/instalar.json',
-             '/assets/instalar-descargas.js', '/assets/widget.css', '/assets/puertas.css', '/assets/escribir.css', '/medidas.json', '/assets/medidas.js', '/nav.json', '/assets/nav.js', '/assets/cabezal.css', '/assets/panel.css', '/assets/nubes.css',
+             '/assets/instalar-descargas.js', '/assets/widget.css', '/assets/puertas.css', '/assets/escribir.css', '/assets/placa.css', '/medidas.json', '/assets/medidas.js', '/nav.json', '/assets/nav.js', '/assets/cabezal.css', '/assets/panel.css', '/assets/nubes.css', '/assets/senal.css', '/assets/senal.js',
              '/assets/hub.js',
              '/assets/hub-cola.js', '/assets/chat-router.js', '/assets/corregir.js', '/assets/comandos.js']
   .concat(ESFERAS.map(e => '/assets/agente-3d-' + e + '.webp'))

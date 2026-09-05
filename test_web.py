@@ -13,6 +13,34 @@ from pathlib import Path
 RAIZ = Path(__file__).resolve().parent
 PUBLICO = RAIZ / "public"
 
+
+def sin_comentarios(texto):
+    """Fuera los comentarios ANTES de mirar si una regla existe.
+
+    Cicatriz del 2026-09-03: un bloque explicaba por escrito que el rail ya
+    no usa `position:static`, y la prueba leia esa frase del comentario como
+    si fuera la regla. Una comprobacion que se cree lo que dice la prosa no
+    esta comprobando el codigo: esta leyendo.
+    """
+    return re.sub(r"/\*.*?\*/", "", texto, flags=re.S)
+
+
+def maqueta_de_la_portada():
+    """El CSS que la portada CARGA, en su orden y sin comentarios.
+
+    Se DESCUBRE, no se enumera. Los guardianes de maqueta nombraban sus
+    hojas a mano (`widget + panel + chat + cara`) y el 2026-09-05 cuatro
+    ficheros se partieron por el tope: las reglas se mudaron a `puertas.css`
+    y a `placa.css` y el gate se puso rojo por buscar donde ya no estaban, no
+    porque faltara nada. Leyendo las etiquetas de la propia portada, la
+    proxima particion no rompe nada -- que es la misma leccion que ya
+    aprendieron las lenguas y el `hreflang`.
+    """
+    portada = (PUBLICO / "es" / "index.html").read_text(encoding="utf-8")
+    return "".join(
+        sin_comentarios((PUBLICO / h.lstrip("/")).read_text(encoding="utf-8"))
+        for h in re.findall(r'<link rel="stylesheet" href="([^"]+)"', portada))
+
 # La UNICA URL externa admitida en todo el repo. mlc.ai no sirve la libreria de
 # WebLLM; su distribucion oficial es esm.run. github.com aparece como ENLACE en
 # la guia de instalacion, no como subrecurso: un <a href> no pide nada hasta que
@@ -1279,10 +1307,7 @@ class Cabezal(unittest.TestCase):
         # --el fichero se paso del tope y se partio por asuntos--: el guardian
         # se puso rojo por buscar donde ya no estaba, no porque faltara nada.
         # Leyendo lo que la portada CARGA, el proximo corte no lo rompe.
-        css = "".join(
-            (PUBLICO / h.lstrip("/")).read_text(encoding="utf-8")
-            for h in re.findall(r'<link rel="stylesheet" href="([^"]+)"',
-                                (PUBLICO / "es" / "index.html").read_text(encoding="utf-8")))
+        css = maqueta_de_la_portada()
         # DE DOS EN DOS, no de cuatro en fila. La fila de cuatro se partia en el
         # Doogee --tres arriba y INSTALAR AQUI descolgada-- que es una rejilla
         # rota disfrazada de maqueta. Se vio en el telefono, no emulado.
@@ -1356,29 +1381,17 @@ class Cabezal(unittest.TestCase):
         Lo que se exige aqui son las cuatro cosas que hacen que eso sea verdad
         y no una intencion escrita en un comentario.
         """
-        def sin_comentarios(texto):
-            """Fuera los comentarios ANTES de mirar si una regla existe.
-
-            Cicatriz del 2026-09-03: el bloque de al lado explica por escrito
-            que el rail ya no usa `position:static`, y la prueba leia esa frase
-            del comentario como si fuera la regla. Una comprobacion que se cree
-            lo que dice la prosa no esta comprobando el codigo: esta leyendo.
-            """
-            return re.sub(r"/\*.*?\*/", "", texto, flags=re.S)
-
         # Las cuatro hojas donde vive la maqueta. `cara.css` nacio el 2026-09-05
         # al pasar `chat.css` de 10.285 B sobre un tope de 10.240: se parte
         # antes que recortar, y la costura es por asunto -- alli la cara y su
         # aritmetica, aqui la caja donde se escribe.
-        cara = sin_comentarios(
-            (PUBLICO / "assets" / "cara.css").read_text(encoding="utf-8"))
-        chat = sin_comentarios(
-            (PUBLICO / "assets" / "chat.css").read_text(encoding="utf-8"))
-        panel = sin_comentarios(
-            (PUBLICO / "assets" / "panel.css").read_text(encoding="utf-8"))
-        widget = sin_comentarios(
-            (PUBLICO / "assets" / "widget.css").read_text(encoding="utf-8"))
-        css = widget + panel + chat + cara
+        # LAS HOJAS SE DESCUBREN DE LA PORTADA, no se nombran cuatro. Esta
+        # linea concatenaba `widget + panel + chat + cara` y el 2026-09-05 se
+        # partieron cuatro ficheros por el tope: la regla de la Capa 1 acabo en
+        # `placa.css` y el gate se puso rojo por buscar donde ya no estaba, no
+        # porque faltara nada. Es la tercera vez hoy con la misma forma. Leyendo
+        # lo que la portada CARGA, la proxima particion no lo rompe.
+        css = maqueta_de_la_portada()
         plano = css.replace(" ", "").replace("\n", "")
 
         # 1 · ES UN DESPLEGABLE, no una columna: cuelga del CABEZAL por su canto
@@ -1419,12 +1432,38 @@ class Cabezal(unittest.TestCase):
                 self.assertIn('id="atajos"', caja,
                               "los atajos viven fuera del panel del chat: una fila "
                               "propia cuesta el alto que el chat necesita con el teclado")
-                self.assertIn('id="lateral-boton"', t,
+                # LA CAPA 3 SE QUEDO CON UN SOLO INQUILINO (2026-09-05).
+                # Eran dos desplegables gemelos: Herramientas --los ocho
+                # companeros-- y la rueda. Los companeros BAJARON al cuadro de
+                # especificaciones, donde se ven siempre, y eso dejo al boton
+                # de Herramientas sin nada que abrir: un mando que abre algo
+                # que ya esta a la vista es un mando de mas. Se retiro el
+                # mando, no la funcion.
+                #
+                # Este guardian exigia ese boton por su id. Se reescribe en vez
+                # de borrarse: lo que protegia --que un desplegable diga que
+                # abre y si esta abierto-- sigue haciendo falta, y ahora hay
+                # exactamente uno al que exigirselo.
+                self.assertIn('id="rueda"', t,
                               "no hay boton que abra la Capa 3")
-                self.assertIn('aria-controls="panel-modelos"', t,
+                self.assertIn('aria-controls="panel-ajustes"', t,
                               "el boton no declara que panel abre")
                 self.assertIn('aria-expanded', t,
                               "el boton no dice si esta abierto")
+                self.assertNotIn('id="lateral-boton"', t,
+                                 "vuelve a haber un mando de Herramientas; las "
+                                 "nubes se ven solas en el cuadro de "
+                                 "especificaciones, asi que no hay nada que abrir")
+
+                # Y LAS NUBES SE VEN SIN PULSAR NADA. Es la otra mitad: sin
+                # esto, retirar el boton habria escondido el catalogo entero.
+                ficha = t[t.index('id="especificaciones"'):t.index("</main>")]
+                self.assertIn('id="panel-modelos"', ficha,
+                              "las nubes de companeros no estan en el cuadro de "
+                              "especificaciones: un catalogo que hay que abrir "
+                              "para ver no es un catalogo, es un secreto")
+                self.assertNotIn('id="panel-modelos" class="cerrado"', t,
+                                 "las nubes nacen plegadas y ya nadie las despliega")
 
         # 5 · y en PC la ventana sigue estirandose. El desplegable ya no reserva
         #     nada, pero `main` viene limitado a 46rem por `base.css` --la medida

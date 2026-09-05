@@ -17,7 +17,9 @@
 <link rel="stylesheet" href="/assets/canon.css">
 <link rel="stylesheet" href="/assets/chat.css">
 <link rel="stylesheet" href="/assets/escribir.css">
+<link rel="stylesheet" href="/assets/placa.css">
 <link rel="stylesheet" href="/assets/cara.css">
+<link rel="stylesheet" href="/assets/senal.css">
 <link rel="stylesheet" href="/assets/widget.css">
 <link rel="stylesheet" href="/assets/puertas.css">
 <link rel="stylesheet" href="/assets/cabezal.css">
@@ -54,17 +56,6 @@
   <header id="cabezal">
     <div class="cab-fila">
       <div class="lateral-zona">
-        <button class="lateral-boton" id="lateral-boton" type="button"
-                aria-expanded="false" aria-controls="panel-modelos">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"
-               stroke-linecap="round" aria-hidden="true">
-            <path d="M 4 7 h16"></path><path d="M 4 12 h16"></path><path d="M 4 17 h10"></path>
-          </svg>
-          <span class="sr" data-rotulo="companeros"></span>
-        </button>
-        <section id="panel-modelos" class="cerrado"></section>
-      </div>
-      <div class="lateral-zona">
         <button class="lateral-boton rueda" id="rueda" type="button"
                 aria-expanded="false" aria-controls="panel-ajustes">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
@@ -94,14 +85,23 @@
     </div>
   </div>
     <div class="atajos" id="atajos" hidden></div>
-    <div id="motor"></div>
-    <p id="brain" class="brain"></p>
+    <!-- EL CUADRO DE ESPECIFICACIONES · una caja, no tres cosas sueltas.
+         Aqui vive lo que describe el aparato: que motor contesta, a que
+         velocidad, y QUE HERRAMIENTA esta puesta. Las nubes de companeros
+         bajaron aqui el 2026-09-05 desde el desplegable de Herramientas, y ese
+         movimiento es lo que dejo sin trabajo al boton que lo abria: un mando
+         que abre algo que ya se ve es un mando de mas. -->
+    <div id="especificaciones">
+      <div id="motor"></div>
+      <p id="brain" class="brain"></p>
+      <section id="panel-modelos"></section>
+    </div>
   </div>
   <footer class="honest-footer">
       <p class="proof"><b>617</b> testes verdes na app · <b>76</b> neste site · <b>zero</b> pedidos externos ao carregar · <b>16 KB</b> máximo por ficheiro</p>
     </footer>
 </main>
-<script type="application/json" id="i18n">{"brainAsleep": "Ainda não há motor ligado", "brainBrowser": "IA do navegador (Edge)", "brainLabel": "Modelo:", "brainLive": "Vivo na tua máquina", "brainNone": "nenhum", "causaDesconocida": "Causa desconhecida.", "causaElegida": "Causa: escolheste o JSON.", "causaEnBenchmark": "Causa: o motor escolhe-se e mede-se no LoRAtelier.", "copiaManual": "Seleciona e Ctrl+C", "copiado": "Copiado OK", "copiarPara": "Copiar para", "destinos": ["Gemini", "ChatGPT", "Claude", "a minha IA local"], "etiquetaJson": "Texto para copiar para a tua IA", "falloRespuesta": "NO_DATA · falha ao gerar resposta", "falloVacio": "NO_DATA — o motor terminou sem emitir um único carácter. Não é uma resposta vazia: é um turno que não chegou a existir.", "idAviso": "Gera-se uma chave no teu navegador. Não se pode exportar nem copiar para outro aparelho: se apagares os dados do site, esta identidade perde-se e não há forma de a recuperar. Não há palavra-passe para esquecer nem servidor que a guarde.", "idClave": "Ver a minha impressão", "idPerfil": "O meu perfil", "idEntrar": "Criar identidade", "idFallo": "NO_DATA — não foi possível criar a identidade:", "idHola": "Olá,", "idPublica": "Chave pública:", "laiListo": "Vais falar com", "llevate": "Leva este texto para a IA que já usas.", "micEnAparato": "Ditado no teu aparelho. O áudio não sai daqui.", "micEscuchando": "A ouvir… toca para parar", "micFallo": "NO_DATA — o ditado local falhou:", "micHablar": "Falar", "micSinLocal": "Sem voz, e é uma decisão. O teu navegador não sabe ditar DENTRO do aparelho, e a única alternativa seria mandar o teu áudio para um servidor externo. Enquanto este site prometer que nada do que dizes sai da tua máquina, esse caminho não se toma: preferimos não ter microfone a ter um que deixa fugir. No dia em que esse acordo for aceite, dir-se-á aqui.", "mismoTexto": "O mesmo texto serve para qualquer IA. É essa a ideia: não depender de uma só.", "pie1f": "Até carregares num botão, esta página não falou com ninguém.", "pie1r": "Zero pedidos externos ao carregar.", "pie2f": "O motor escolhe-se no LoRAtelier.", "pie2r": "As descargas e as medidas vivem lá, não aqui.", "pie3f": "Se não houver motor escolhido,", "pie3r": "a página gera um JSON para levares à IA que já tenhas.", "pieBenchmark": "LoRAtelier", "pieHitos": "Marcos", "pieInstalar": "Instalar", "pieTablon": "Mural", "prefieroJson": "Prefiro o JSON", "sinMotor": "NO_DATA · não há motor de IA disponível neste navegador.", "tu": "Tu", "cabComunidad": "COMUNIDADE", "cabBenchmark": "LORATELIER", "cabCola": "ASSINATURA", "cabIdioma": "IDIOMA", "cabHome": "INÍCIO", "cabEmpezar": "COMEÇA AQUI", "rackSinAdaptador": "NO_DATA — este companheiro ainda não tem modelo servido no rack.", "rackFallo": "NO_DATA — o rack não respondeu.", "rackCausa": "Causa: o rack não respondeu; o túnel público ainda não está levantado.", "cabInstala": "INSTALAR", "cabInstalaIos": "Para instalar: toca em Partilhar (a seta para cima) e depois «Adicionar ao ecrã principal».", "cabSolar": "99% solar, exceto o fornecedor web", "atResume": "Resume isto", "atPasos": "Dá-me os passos", "atDudas": "O que te falta saber", "companeros": "Ferramentas", "ajustes": "Definições", "piel": "Pele", "pielOscura": "Escura", "pielClara": "Clara", "pleno": "Ecrã inteiro", "plenoSalir": "Sair do ecrã inteiro", "agentes": {"instalador": {"name": "O Instalador", "function": "Instala o produto e apresenta-te os restantes."}, "privacidad": {"name": "O Aduaneiro", "function": "Risca o que é privado antes de sair do teu aparelho."}, "escritor": {"name": "O Escritor", "function": "Escreve contigo: guiões, notas e textos longos."}, "traductor": {"name": "O Tradutor", "function": "Traduz localmente, sem mandar o texto para nenhuma nuvem."}, "coder": {"name": "O Artesão", "function": "Lê o teu código, propõe a correção e escreve o teste."}, "analista": {"name": "O Analista", "function": "Olha para números e rastos e diz-te o que mudou."}, "aprendiz": {"name": "O Aprendiz", "function": "Converte o que fazes em memória que podes reler."}, "bibliotecario": {"name": "O Bibliotecário", "function": "Arruma a tua memória: procura, liga e tira duplicados."}}, "micCerrarAviso": "Fechar o aviso", "micNubeTrato": "Para ditar aqui é preciso passar por um servidor externo: o teu navegador não sabe fazê-lo dentro do aparelho, e a única via que resta manda a tua voz para a Google. Nada disso acontece se não o aceitares agora, e a permissão dura só esta sessão: ao recarregar pergunta-se outra vez.", "micNubeSi": "Aceito: usar o servidor externo", "micEnNube": "A ditar por servidor externo. A tua voz sai deste aparelho."}</script>
+<script type="application/json" id="i18n">{"brainAsleep": "Ainda não há motor ligado", "brainBrowser": "IA do navegador (Edge)", "brainLabel": "Modelo:", "brainLive": "Vivo na tua máquina", "brainNone": "nenhum", "causaDesconocida": "Causa desconhecida.", "causaElegida": "Causa: escolheste o JSON.", "causaEnBenchmark": "Causa: o motor escolhe-se e mede-se no LoRAtelier.", "copiaManual": "Seleciona e Ctrl+C", "copiado": "Copiado OK", "copiarPara": "Copiar para", "destinos": ["Gemini", "ChatGPT", "Claude", "a minha IA local"], "etiquetaJson": "Texto para copiar para a tua IA", "falloRespuesta": "NO_DATA · falha ao gerar resposta", "falloVacio": "NO_DATA — o motor terminou sem emitir um único carácter. Não é uma resposta vazia: é um turno que não chegou a existir.", "idAviso": "Gera-se uma chave no teu navegador. Não se pode exportar nem copiar para outro aparelho: se apagares os dados do site, esta identidade perde-se e não há forma de a recuperar. Não há palavra-passe para esquecer nem servidor que a guarde.", "idClave": "Ver a minha impressão", "idPerfil": "O meu perfil", "idEntrar": "Criar identidade", "idFallo": "NO_DATA — não foi possível criar a identidade:", "idHola": "Olá,", "idPublica": "Chave pública:", "laiListo": "Vais falar com", "llevate": "Leva este texto para a IA que já usas.", "micEnAparato": "Ditado no teu aparelho. O áudio não sai daqui.", "micEscuchando": "A ouvir… toca para parar", "micFallo": "NO_DATA — o ditado local falhou:", "micHablar": "Falar", "micSinLocal": "Sem voz, e é uma decisão. O teu navegador não sabe ditar DENTRO do aparelho, e a única alternativa seria mandar o teu áudio para um servidor externo. Enquanto este site prometer que nada do que dizes sai da tua máquina, esse caminho não se toma: preferimos não ter microfone a ter um que deixa fugir. No dia em que esse acordo for aceite, dir-se-á aqui.", "mismoTexto": "O mesmo texto serve para qualquer IA. É essa a ideia: não depender de uma só.", "pie1f": "Até carregares num botão, esta página não falou com ninguém.", "pie1r": "Zero pedidos externos ao carregar.", "pie2f": "O motor escolhe-se no LoRAtelier.", "pie2r": "As descargas e as medidas vivem lá, não aqui.", "pie3f": "Se não houver motor escolhido,", "pie3r": "a página gera um JSON para levares à IA que já tenhas.", "pieBenchmark": "LoRAtelier", "pieHitos": "Marcos", "pieInstalar": "Instalar", "pieTablon": "Mural", "prefieroJson": "Prefiro o JSON", "sinMotor": "NO_DATA · não há motor de IA disponível neste navegador.", "tu": "Tu", "cabComunidad": "COMUNIDADE", "cabBenchmark": "LORATELIER", "cabCola": "ASSINATURA", "cabIdioma": "IDIOMA", "cabHome": "INÍCIO", "cabEmpezar": "COMEÇA AQUI", "rackSinAdaptador": "NO_DATA — este companheiro ainda não tem modelo servido no rack.", "rackFallo": "NO_DATA — o rack não respondeu.", "rackCausa": "Causa: o rack não respondeu; o túnel público ainda não está levantado.", "cabInstala": "INSTALAR", "cabInstalaIos": "Para instalar: toca em Partilhar (a seta para cima) e depois «Adicionar ao ecrã principal».", "cabSolar": "99% solar, exceto o fornecedor web", "atResume": "Resume isto", "atPasos": "Dá-me os passos", "atDudas": "O que te falta saber", "ajustes": "Definições", "piel": "Pele", "pielOscura": "Escura", "pielClara": "Clara", "pleno": "Ecrã inteiro", "plenoSalir": "Sair do ecrã inteiro", "agentes": {"instalador": {"name": "O Instalador", "function": "Instala o produto e apresenta-te os restantes."}, "privacidad": {"name": "O Aduaneiro", "function": "Risca o que é privado antes de sair do teu aparelho."}, "escritor": {"name": "O Escritor", "function": "Escreve contigo: guiões, notas e textos longos."}, "traductor": {"name": "O Tradutor", "function": "Traduz localmente, sem mandar o texto para nenhuma nuvem."}, "coder": {"name": "O Artesão", "function": "Lê o teu código, propõe a correção e escreve o teste."}, "analista": {"name": "O Analista", "function": "Olha para números e rastos e diz-te o que mudou."}, "aprendiz": {"name": "O Aprendiz", "function": "Converte o que fazes em memória que podes reler."}, "bibliotecario": {"name": "O Bibliotecário", "function": "Arruma a tua memória: procura, liga e tira duplicados."}}, "micCerrarAviso": "Fechar o aviso", "micNubeTrato": "Para ditar aqui é preciso passar por um servidor externo: o teu navegador não sabe fazê-lo dentro do aparelho, e a única via que resta manda a tua voz para a Google. Nada disso acontece se não o aceitares agora, e a permissão dura só esta sessão: ao recarregar pergunta-se outra vez.", "micNubeSi": "Aceito: usar o servidor externo", "micEnNube": "A ditar por servidor externo. A tua voz sai deste aparelho.", "caraPensando": "A ativar o modelo", "campoPista": "Escreve aqui para falar com {}"}</script>
 <script src="/assets/prompts-pt.js"></script>
 <script src="/assets/fallback.js"></script>
 <script src="/assets/state.js"></script>
@@ -116,6 +116,7 @@
 <script src="/assets/comandos.js"></script>
 <script src="/assets/corregir.js"></script>
 <script src="/assets/chat-panel.js"></script>
+<script src="/assets/senal.js"></script>
 <script src="/assets/chat-router.js"></script>
 <script src="/assets/medidas.js"></script>
 <script src="/assets/pwa.js"></script>

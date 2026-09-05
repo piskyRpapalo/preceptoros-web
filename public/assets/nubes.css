@@ -86,3 +86,53 @@
    decide el orden. Estuvo arriba media hora y se vio en el navegador: ocho
    pastillas transparentes, en columna y estiradas de lado a lado, que es
    exactamente el deslizable que se venia a quitar. */
+
+/* --- LAS NUBES SALEN DEL CAJON (2026-09-05) --------------------------------
+   Firmado por el Soberano: «vamos a pasar la nube de herramienta al cuadro de
+   especificaciones del modelo, y esto nos permite eliminar el boton de tools
+   con su icono».
+
+   Estaban detras de un desplegable: habia que saber que existia el mando, y
+   pulsarlo, para descubrir que hay ocho companeros. Un catalogo que se
+   esconde no es un catalogo, es un secreto. Abajo estan siempre, junto a las
+   cifras del motor -- que es su sitio natural: las tres cosas contestan a la
+   misma pregunta, «que hay puesto en este aparato».
+
+   Y ESO ES LO QUE MATA EL BOTON. No se retira el mando y luego se busca donde
+   poner lo que abria; se pone lo que abria donde se ve, y el mando se queda
+   sin trabajo. El orden importa: al reves habria dejado un hueco que llenar.
+
+   Las cuatro declaraciones de abajo DESHACEN el mueble de `panel.css`, que
+   sigue sirviendo a la rueda -- alli el desplegable sigue siendo un
+   desplegable. No se borran alli: `#panel-ajustes` las comparte. */
+#panel-modelos{position:static;width:auto;transform:none;opacity:1;
+               visibility:visible;box-shadow:none;padding:0;z-index:auto}
+
+/* EL CUADRO DE ESPECIFICACIONES · UNA caja, y esa es la mitad del encargo.
+   Antes eran tres piezas sueltas sobre el marmol --el motor, el badge del
+   modelo con sus cifras, y nada mas-- y se leian como tres cosas que se
+   habian quedado ahi. Es una: la ficha del aparato. */
+#especificaciones{
+  margin-top:.5rem; padding:.5rem .6rem;
+  background:#2f2757; border:1px solid var(--oro); border-radius:var(--radius)}
+
+/* Y lo que ya tenia caja no la duplica dentro de la caja nueva: dos cantos
+   dorados a tres milimetros se leen como un error de maqueta, no como dos
+   secciones. Es la misma correccion que ya se le hizo al badge del cerebro
+   dentro de `.medidas`. */
+#especificaciones .medidas{margin:0 0 .4rem;padding:0;border:0;background:transparent}
+
+/* La linea de quien te habla, dentro de la ficha: el nombre en negrita y su
+   funcion detras, mas apagada. Dos pesos y no dos colores -- el nombre y lo
+   que hace son la misma frase, y partirla en dos tonos la lee como dos datos.
+   La funcion vivia solo en el `title` de cada nube: en un telefono no hay
+   cursor que pasar por encima, asi que ahi no la leia nadie. */
+.chat-quien{margin:0 0 .35rem;font-size:.72rem;line-height:1.45}
+.chat-nombre{color:#fff;font-weight:700}
+.quien-funcion{color:rgba(255,255,255,.78);margin-left:.4rem}
+
+/* La marca de «sin firmar», ahora una sola por caja y no una por fila: es una
+   nota al pie de las cifras, asi que se pinta como nota -- linea propia,
+   pequena y sin pastilla. La pastilla la tenia por ir metida entre datos. */
+#especificaciones .medidas-hueco{display:inline-block;margin:.25rem 0 0;
+  font-size:.6rem;padding:.06rem .4rem}

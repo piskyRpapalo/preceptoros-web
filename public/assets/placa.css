@@ -1,0 +1,212 @@
+/* preceptoros.org · la placa del chat: cuanto mide y quien se desplaza.
+ *
+ * POR QUE VIVE APARTE. `chat.css` llego a 16.762 B de los 16.384 del tope --el
+ * Ojo lo habia avisado esa misma tarde: «el proximo parrafo que entre ahi lo
+ * parte»-- y llevaba dos asuntos: QUE PINTA el chat (el badge, la correccion,
+ * los cantos, el pleno) y CUANTO MIDE (la columna, el dialogo, la banda de
+ * abajo). Este es el segundo. Cuarta particion del dia, misma regla: se parte
+ * por el asunto, no se recorta el comentario.
+ *
+ * SE CARGA DESPUES DE `chat.css`, como las otras tres.
+ */
+/* --- UNA SOLA PLACA (2026-09-05) -----------------------------------------
+   Habia DOS ventanas una encima de otra: la conversacion en un hueco sin
+   borde y el campo en su propia caja. Se leian como dos cosas y la
+   conversacion vivia apretada contra el techo de 52vh mientras el campo se
+   llevaba 13rem fijos.
+
+   Ahora la placa es `#chat` entera: columna alta, la conversacion ocupa lo que
+   sobra y el campo se queda pegado abajo. `min-height` con `dvh` --no `vh`--
+   porque en un telefono la barra del navegador aparece y desaparece: `vh` se
+   mide contra la ventana grande y deja el campo por debajo del borde justo
+   cuando el teclado se abre.
+
+   El `12rem` que se resta es el cabezal y el aire: no es una cifra bonita,
+   es lo que mide la fila de arriba con sus dos filas de botones. */
+/* ALTURA FIJA, no minima. Con `min-height` la columna crece con la
+   conversacion y el que se desplaza es la PAGINA: a las veinticuatro lineas la
+   placa medía 9.098 px y el campo se iba al fondo del documento. Medido en el
+   navegador con la conversacion llena, que es la unica forma de ver esto --con
+   dos frases funciona igual de las dos maneras. Con `height`, quien se
+   desplaza es el dialogo, que es lo que tiene que desplazarse. */
+/* NI FIJA NI LIBRE: minimo y maximo. Con `height` fija la placa ocupaba casi
+   la pantalla entera aunque la conversacion fueran dos frases, y en el telefono
+   eso era un metro de marmol vacio con el texto pegado abajo -- se vio en el
+   Doogee, no en un viewport emulado. Con `min-height` sola volvia el defecto
+   contrario: crecia con la conversacion y el que se desplazaba era la pagina.
+
+   Asi la placa mide lo que necesita: corta cuando hay poco, y al llegar al
+   techo deja de crecer y quien se desplaza es el dialogo. El `10rem` que se
+   resta es el cabezal; con el teclado abierto `dvh` ya lo tiene en cuenta, que
+   es la razon de usar `dvh` y no `vh`. */
+#chat{display:flex;flex-direction:column;
+  min-height:clamp(13rem,38dvh,22rem);max-height:calc(100dvh - 10rem)}
+/* LA CONVERSACION TOMA LO QUE SOBRA. `min-height:0` es lo que permite que un
+   hijo de flex encoja por debajo de su contenido; sin el, `overflow` no
+   recorta nada y la columna crece hasta empujar el campo fuera de la pantalla.
+   Es el fallo clasico de esta maqueta y no se ve hasta que hay veinte lineas. */
+/* LA CONVERSACION NACE ABAJO Y EMPUJA HACIA ARRIBA, como una conversacion de
+   verdad: el primer mensaje aparece pegado a la linea de escritura y los que
+   llegan lo van subiendo. Con el contenido alineado arriba, las dos primeras
+   frases quedaban colgando del techo con medio panel vacio debajo.
+   `justify-content:flex-end` solo cambia donde se apoya lo que NO llena; en
+   cuanto hay mas lineas que sitio, se comporta igual y se desplaza. */
+#dialogo{flex:1 1 auto;min-height:0;overflow-y:auto;max-height:none;
+  display:flex;flex-direction:column;justify-content:flex-end;
+  padding:0 .2rem .4rem 0}
+/* EL TEXTO SE DESVANECE AL LLEGAR ARRIBA, que es lo que pidio el Soberano y lo
+   que hace que la placa toque el cabezal sin cortarlo en seco. Una mascara y
+   no un degradado encima: un degradado seria una lamina de color sobre el
+   marmol --se veria el rectangulo-- y la mascara borra de verdad, dejando pasar
+   la veta que hay detras.
+   2,5rem de subida: por debajo el corte se nota, por encima se pierden dos
+   lineas legibles. Se miro con la conversacion llena, no con una frase. */
+#dialogo{-webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 2.5rem);
+  mask-image:linear-gradient(to bottom,transparent 0,#000 2.5rem)}
+/* EL CAMPO SE QUEDA ABAJO. `sticky` y no `fixed`: dentro de la placa, asi que
+   respeta sus cantos y no se sale por encima del pie ni tapa el panel de
+   Herramientas cuando se abre. */
+.chat-abajo{position:sticky;bottom:0;z-index:1;
+  padding-top:1.2rem;margin-top:auto;
+  /* EL TEXTO NO SE LEE A TRAVES DEL CAMPO. La banda es sticky y la
+     conversacion pasa por debajo: sin fondo, las lineas se veian dentro de la
+     caja de escribir y las dos cosas se mezclaban. Un degradado --transparente
+     arriba, hondo abajo-- en vez de una banda maciza: asi el texto se apaga al
+     entrar debajo en lugar de cortarse contra un canto, que es justo el
+     «aclarar las letras superiores» que se pidio.
+
+     Y LA BANDA SON SOLO EL CAMPO Y SUS DOS MANDOS. Los atajos y la caja del
+     modelo estuvieron dentro y en el telefono se comian la placa: la
+     conversacion se quedaba en 41 px de 620 --medido en 375 px de ancho--
+     porque once pildoras ocupan cinco filas. Lo que se pidio fijo era el
+     campo; lo demas se desplaza, que es lo que hace un pie.
+
+     Y LOS ATAJOS SALEN DE LA PLACA ENTERA. Estuvieron dentro por una razon
+     buena --una fila propia costaba ~50 px de alto permanente-- pero eso valia
+     cuando eran tres. Hoy son once y en 375 px ocupan cinco filas: dentro de
+     una columna de altura fija se comian la conversacion, que quedaba en 41 px
+     de 620. Medido en el telefono. La placa se queda con lo que ES la placa:
+     lo que se lee y lo que se escribe. */
+  background:linear-gradient(to bottom,transparent 0,#2f2757 1.2rem)}
+/* Con el teclado abierto, la zona de herramientas se retira: en un telefono
+   el teclado se come media pantalla y lo que tapa es la conversacion. Lo
+   decide `visualViewport` en chat-router.js, que es quien sabe cuanto queda
+   visible de verdad. */
+#chat.con-teclado #herramientas{display:none}
+
+/* El nombre del modelo es EL dato de este badge: va en negrita y la etiqueta
+   que lo precede no, para que se lea el que antes que el rotulo. */
+.brain b{font-weight:700}
+
+/* --- Capa 1 · el mono panel: el chat Y sus atajos ------------------------
+   UNA sola caja, y es la capa que todo lo demas pisa. Los atajos viven DENTRO
+   de `#chat` y no en una fila suya debajo: una fila propia cuesta unos
+   cincuenta pixeles de alto permanentes, y ese alto es justo el que el chat
+   echa en falta cuando sale el teclado -- el momento en que menos sitio hay y
+   mas importa. Es la misma leccion que la app aprendio al retirar su barra de
+   seis iconos del pie.
+
+   El `z-index` se declara aunque sea el mas bajo. Sin el, `#chat` no crea
+   contexto de apilamiento y el orden entre capas queda al azar del documento:
+   funcionaria hoy y se romperia al mover un bloque de sitio, que es como se
+   rompen estas cosas. */
+#chat{position:relative;z-index:var(--capa-1-chat)}
+/* --- los dos paneles, y el canto dorado del chat --------------------------
+   SE VE EL FONDO A TRAVES. El opaco tapaba el ambiente animado de la pagina y
+   dejaba el mismo rectangulo liso en los dos temas. Con el cristal a media
+   opacidad el fondo asoma y los botones violeta se recortan contra algo vivo,
+   que es lo que hace que se lean. El respaldo opaco de `base.css` sigue
+   delante para quien no tenga desenfoque: sin el, el texto quedaria sobre la
+   animacion y no se leeria.
+
+   EL CANTO DORADO ES EL LIMITE CON LA WEB, y por eso va en los lados y abajo y
+   no arriba: arriba el chat linda con el cabezal --que es de la misma casa-- y
+   un filo ahi seria una costura interna. Abajo y a los lados linda con la
+   pagina, y ahi si hay que decir donde acaba el producto. */
+/* Aqui hubo un bloque de cristal con el velo del cabezal, del chat y de la rueda.
+   El de los dos paneles se mudo a `widget.css` --que es donde vive su regla y
+   ademas carga despues, asi que la copia de aqui no mando nunca-- y el de la
+   rueda se ha ido a `panel.css`, con el mando que lo abre. El bloque queda sin
+   una sola regla dentro, y un bloque vacio sigue contando para el gate
+   del cristal: pedia respaldo opaco a una hoja que ya no pinta cristal. */
+
+/* --- CON EL TECLADO ABIERTO, LA PAGINA CABE EN LO QUE SE VE (2026-09-05) ---
+   Pedido con la foto delante: «lo perfecto seria que el usuario de telefono
+   clicke en el teclado, la pagina se ajuste, y se vea la esfera perfectamente
+   en el top (moviendose), y la ultima frase del chat abajo».
+
+   POR QUE NO SE PODIA CON `dvh`. En Android el teclado se dibuja ENCIMA de la
+   ventana: no la encoge. `100dvh` sigue midiendo la pantalla entera, asi que
+   la maqueta se queda mas alta que lo que queda visible y hay que desplazarla
+   para encontrar la linea de escribir. Eso es exactamente el hueco vacio de la
+   foto ampliada -- no era una placa demasiado larga, era una ventana que el css
+   no sabia medir.
+
+   `--alto-visible` lo publica `chat-panel.js` desde `visualViewport.height`,
+   que es el unico numero que sabe cuanto queda. El css solo no llega aqui.
+
+   Y LO QUE SE HACE CON EL DATO es repartir, no encoger: la pagina deja de
+   desplazarse y se convierte en una columna de tres piezas -- el cabezal con
+   su esfera arriba, la conversacion en medio quedandose con lo que sobre, y la
+   linea de escribir pegada abajo. Nada mas: los atajos y la ficha del modelo se
+   retiran mientras se escribe, que es cuando menos sitio hay y menos falta
+   hacen. Vuelven al cerrar el teclado. */
+body.con-teclado{height:var(--alto-visible);overflow:hidden;padding-bottom:0}
+body.con-teclado main:has(#chat){
+  height:100%;display:flex;flex-direction:column;min-height:0;
+  padding-bottom:.3rem}
+/* Y `main` NO recorta. Lo llevaba, y la esfera --que se sienta a caballo del
+   canto superior del cabezal-- salia cortada por el marco: media cara. La
+   pagina no se desplaza porque `body` la sujeta; recortar tambien aqui era
+   cinturon y tirantes, y el tirante se llevaba por delante justo lo que se
+   pidio ver «perfectamente en el top». */
+body.con-teclado #hub-layout{flex:1 1 auto;min-height:0;display:flex;flex-direction:column}
+/* La placa toma TODO lo que sobra y suelta sus dos topes: aqui el techo lo
+   pone la columna, no un `clamp`. Dos limites para la misma altura y gana el
+   que menos convenga. */
+body.con-teclado #chat{flex:1 1 auto;min-height:0;max-height:none}
+
+/* LA ESFERA SE QUEDA, y es la mitad del encargo. El cabezal se aprieta --su
+   fila de puertas y su declaracion solar no se usan mientras se escribe-- pero
+   la cara no se toca: es lo unico que dice que el aparato esta despierto
+   mientras el modelo tarda, y con el teclado abierto es justo cuando se espera. */
+body.con-teclado #cab-nav,
+body.con-teclado .cab-solar,
+body.con-teclado #atajos,
+body.con-teclado #especificaciones,
+body.con-teclado .honest-footer{display:none}
+body.con-teclado #cabezal{margin-bottom:.3rem;padding-bottom:.2rem}
+
+/* --- Y CON EL TECLADO ABIERTO, LA CONVERSACION NO PUEDE SER LO QUE SOBRE ----
+   La primera version repartia asi: cabezal 108 px, campo 130, botones 48. En
+   los 380 px que deja un teclado en un telefono medio, al dialogo le quedaban
+   SEIS. Medido en el navegador con la columna montada -- no es una estimacion.
+   La columna funcionaba y el reparto era absurdo: se veia la cara, se veia
+   donde escribir, y no se veia nada de lo dicho.
+
+   Se pidio exactamente lo contrario: «que se vea la esfera perfectamente en el
+   top, y la ultima frase del chat abajo». Asi que con el teclado abierto las
+   tres piezas se aprietan y la que NO se aprieta es la conversacion:
+
+   · el campo baja a dos lineas -- con el teclado delante se escribe corto, y
+     si hace falta mas, crece solo;
+   · la cara se encoge a 96 px -- sigue siendo la pieza mas grande de arriba y
+     deja de comerse un tercio de lo visible;
+   · la marca pierde cuerpo: mientras se escribe, el nombre del producto es lo
+     que menos falta hace en pantalla;
+   · y el dialogo estrena un suelo. `flex:1` con `min-height:0` puede encoger
+     hasta cero, que es lo que hizo; con suelo, lo que se recorta es el resto. */
+body.con-teclado{--esfera:96px}
+body.con-teclado #cabezal h1{font-size:.95rem}
+body.con-teclado #pregunta{height:2.6rem;padding:.5rem .8rem}
+body.con-teclado .chat-acciones{margin:.35rem 0 0}
+body.con-teclado .chat-abajo{padding-top:.5rem}
+body.con-teclado #dialogo{min-height:7rem}
+
+/* La pista del campo, mas pequena mientras se escribe. Con el campo a dos
+   lineas «Escribe aqui para hablar con El Instalador» se partia y la segunda
+   linea quedaba cortada por el canto -- se vio en la captura, no se dedujo.
+   Se encoge la PISTA y no el campo: agrandar el campo era devolverle a la
+   pista los pixeles que la conversacion acababa de ganar, y la pista
+   desaparece en cuanto se teclea la primera letra. */
+body.con-teclado #pregunta::placeholder{font-size:.64rem;line-height:1.3}

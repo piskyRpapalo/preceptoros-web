@@ -23,7 +23,7 @@
   var PC = window.matchMedia ? matchMedia('(min-width:1024px)') : { matches: false };
   var quieto = window.matchMedia
     ? matchMedia('(prefers-reduced-motion: reduce)') : { matches: false };
-  var boton = null, nombre = null, aviso = null, activo = null;
+  var nombre = null, aviso = null, activo = null;
   /* El papel Caza-Nido se COMPONE aqui y viaja ya hecho. `chat.js` recibe
      texto, no una clave: tiene 129 B libres y no debe aprender a buscar en el
      catalogo. Este fichero ya sabe quien contesta; saber que papel juega es la
@@ -50,40 +50,41 @@
     document.startViewTransition(fn);
   }
 
-  // --- la cabecera del chat: quien te habla ------------------------------
-  var barra = document.createElement('div');
-  barra.className = 'chat-quien';
-  /* LA IMAGEN DEL COMPANERO SE RETIRA (2026-09-05). Eran 44 px de busto al
-     lado de una pastilla que ya dice el nombre: el dibujo no anadia dato --
-     obligaba a aprenderse ocho caras para saber lo que la palabra dice sola--
-     y en el telefono se comia el ancho de la primera linea del chat. La nube
-     se va sola a la esquina superior derecha, que es donde no estorba a lo que
-     se lee. El catalogo sigue teniendo su `icono3d`: se usa en el panel de
-     Herramientas, que es donde una cara SI ayuda a elegir. */
-  /* EL NOMBRE ES UN BOTON, Y ABRE LA NUBE DE COMPANEROS (2026-09-05). Era un
-     `span`: decia con quien hablas y no ofrecia cambiarlo, asi que para elegir
-     otro habia que descubrir el mando de las tres rayas del cabezal. Lo que
-     nombra a alguien es el sitio natural para cambiarlo.
+  /* --- QUIEN TE HABLA BAJA A LA FICHA DEL APARATO (2026-09-05) ------------
+     Era una pastilla flotando sobre la esquina del chat, y encima de la
+     primera linea de la conversacion: se leia el nombre del companero
+     tachando lo primero que dijo. Se vio en el telefono.
 
-     NO ABRE EL PANEL POR SU CUENTA: pulsa el mando que ya existe. Duplicar
-     aqui la logica de abrir --clase, `aria-expanded`, cerrar al pulsar
-     fuera-- serian dos sitios decidiendo lo mismo, y el segundo es siempre el
-     que se queda sin arreglar. Si manana la Capa 3 cambia de forma, este boton
-     no se entera y sigue funcionando. */
-  nombre = document.createElement('button');
-  nombre.type = 'button';
+     Baja al cuadro de especificaciones, que es donde el Soberano lo pidio:
+     «debajo de la ventana de texto tenemos las especificaciones del modelo +
+     la funcion de Herramienta en la pagina». Ahi comparte caja con el motor,
+     la velocidad y las ocho nubes -- las cuatro cosas contestan a la misma
+     pregunta, «que hay puesto en este aparato», y separadas no se leian como
+     una respuesta.
+
+     Y DEJA DE SER UN BOTON. Abria el mando de Herramientas llamando a
+     `getElementById('lateral-boton')`, que se retiro hoy: el codigo seguia
+     ahi, protegido por su `if`, sin hacer nada y sin quejarse -- un boton que
+     no hace nada es peor que uno que falta. Las nubes que abria estan ahora
+     tres centimetros mas abajo, a la vista. Lo que queda es lo que siempre
+     fue: un rotulo que dice con quien hablas y para que sirve.
+
+     LA FUNCION SE ANADE, y es dato nuevo en pantalla: vivia solo en el `title`
+     de cada nube, donde en un telefono no la lee nadie -- no hay cursor que
+     pasar por encima. */
+  var ficha = document.getElementById('especificaciones');
+  var barra = document.createElement('p');
+  barra.className = 'chat-quien';
+  nombre = document.createElement('b');
   nombre.className = 'chat-nombre';
-  nombre.setAttribute('aria-controls', 'panel-modelos');
-  nombre.addEventListener('click', function () {
-    var mando = document.getElementById('lateral-boton');
-    if (mando) mando.click();
-  });
+  var funcion = document.createElement('span');
+  funcion.className = 'quien-funcion';
+  barra.appendChild(nombre);
+  barra.appendChild(funcion);
   aviso = document.createElement('p');
   aviso.className = 'chat-aviso'; aviso.hidden = true;
-  barra.appendChild(nombre);
   chat.insertBefore(aviso, chat.firstChild);
-  chat.insertBefore(barra, chat.firstChild);
-
+  if (ficha) ficha.insertBefore(barra, ficha.firstChild);
 
   function vestir(a) {
     if (!a) return;
@@ -92,6 +93,7 @@
     // portada -- que es donde vive el texto de esta lengua y de ninguna otra.
     var voz = (window.Hub && Hub.rotulos.agentes && Hub.rotulos.agentes[a.id]) || a;
     nombre.textContent = voz.name || a.name;
+    funcion.textContent = voz.function || a.function || '';
     /* Aqui se le ponia cara al cabezal: `#cabeza` cambiaba de fondo con el
        companero activo. Se retiro con el cabezal viejo el 2026-09-05 -- quien
        dice con quien hablas es `.chat-quien`, que ademas trae el nombre. */
@@ -112,20 +114,21 @@
       nido: papelDe(a), disponible: !!r.disponible } }));
   }
 
-  // --- abrir y cerrar ----------------------------------------------------
-  function abierto() { return !panel.classList.contains('cerrado'); }
-  function alternar(forzar) {
-    var abrir = forzar === undefined ? !abierto() : forzar;
-    // En PC el panel NUNCA se va del todo: se pliega. Sacarlo de la rejilla
-    // haria saltar el ancho del chat, y ese salto es justo lo que la columna
-    // fija existe para evitar.
-    var aplicar = function () {
-      panel.classList.toggle('cerrado', !abrir);
-      if (boton) boton.setAttribute('aria-expanded', String(abrir));
-    };
-    if (quieto.matches) { aplicar(); return; }
-    aplicar();                      // la animacion la hace el CSS al cambiar la clase
-  }
+  /* --- AQUI SE ABRIA Y SE CERRABA ---------------------------------------
+     Habia un `abierto()` y un `alternar()` que plegaban `#panel-modelos`, con
+     su `aria-expanded`, su respeto a quien pide quietud y su regla distinta
+     para PC y movil. Todo eso se retira el 2026-09-05: las nubes bajaron al
+     cuadro de especificaciones y ahi se ven siempre. No hay nada que abrir.
+
+     Y NO BASTABA CON QUITAR EL BOTON. Se quito primero, y la pagina se quedo
+     con las ocho nubes invisibles: este fichero seguia llamando a
+     `alternar(false)` al arrancar y les ponia `cerrado` sin que nadie pudiera
+     quitarselo. Un mueble sin puerta pero con el cerrojo echado. Se vio en el
+     navegador -- el panel medía cero de alto con su contenido dentro.
+
+     La leccion, que ya es la tercera hoy con esta forma: retirar un mando es
+     retirar TAMBIEN lo que lo obedecia. Lo que se queda es el unico gesto que
+     de verdad hacian estas lineas -- elegir companero. */
 
   /* El aviso es PEGAJOSO, y hace falta: `hub.js` pide el catalogo en
      `requestIdleCallback`, y el navegador puede quedarse ocioso mientras
@@ -145,27 +148,12 @@
        del cabezal. El rail se bastaba porque se tocaba directamente; un
        desplegable plegado no se puede tocar, asi que la Capa 3 trae su
        boton al cabezal --como en la app-- y aqui se recoge. */
-    boton = H.boton;   // el del cabezal lo ata `chat-panel.js`
-    if (boton) boton.addEventListener('click', function () { alternar(); });
     // Companero por defecto: el Instalador es el recepcionista.
     vestir(H.agente('instalador') || (H.datos.agentes || [])[0]);
-    // En PC el panel nace abierto --hay sitio para los dos--; en movil, no.
-    /* CERRADO EN TODO ANCHO, y esto cambia el 2026-09-05. Antes abria solo
-       en PC porque alli el panel era una columna acoplada y el hueco ya
-       estaba reservado: no abrirlo habria dejado un vacio de 4,6rem contra
-       el borde. Ahora la Capa 3 no reserva nada y cae ENCIMA del chat, asi
-       que abrirla sola taparia lo que la persona vino a usar. */
-    alternar(false);
-    if (PC.addEventListener) {
-      PC.addEventListener('change', function () { alternar(false); });
-    }
     panel.addEventListener('click', function (ev) {
       var b = ev.target.closest && ev.target.closest('.modelo[data-agente]');
       if (!b) return;
-      conTransicion(function () {
-        vestir(H.agente(b.dataset.agente));
-        if (!PC.matches) alternar(false);   // en movil, el panel deja paso al chat
-      });
+      conTransicion(function () { vestir(H.agente(b.dataset.agente)); });
       if (entrada && PC.matches) entrada.focus();
     });
   }

@@ -130,7 +130,27 @@
         b.classList.add('huella-corta');
       });
     } else {
-      b.textContent = T.idEntrar;
+      /* SIN SESION, UN ICONO DE PERSONA Y NADA MAS (2026-09-05, firmado).
+         Decia «Crear identidad» con todas sus letras, y en frances y en aleman
+         eso es la pieza mas ancha del cabezal para ofrecer algo que la mayoria
+         no va a hacer en su primera visita. El dibujo de una persona lo dice
+         en las ocho lenguas y ocupa lo que un dedo necesita.
+
+         EL ROTULO NO DESAPARECE, cambia de sitio: va al nombre accesible y al
+         `title`, asi que quien lee con los oidos y quien pasa el cursor
+         reciben la frase entera. Un icono sin nombre accesible es un boton
+         mudo, y eso no es simplificar: es esconder.
+
+         Y el panel que abre sigue siendo el mismo popover con el aviso de que
+         la clave no se recupera. Lo que se ha encogido es la puerta, no lo que
+         hay detras. */
+      b.className = 'leve identity-icono';
+      b.setAttribute('aria-label', T.idEntrar);
+      b.title = T.idEntrar;
+      b.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"'
+        + ' stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"'
+        + ' aria-hidden="true"><circle cx="12" cy="8" r="4"></circle>'
+        + '<path d="M4 21v-1a7 7 0 0 1 7-7h2a7 7 0 0 1 7 7v1"></path></svg>';
       /* EL AVISO VA ANTES, NO DESPUES. Hasta hoy la clave se generaba al
          pulsar y el «esto no se puede exportar ni recuperar» aparecia cuando
          ya existia. Una identidad irreversible se acepta informado o no se

@@ -182,3 +182,43 @@
 /* En un telefono el cabezal no puede comerse la pantalla: medido en el
    Doogee (360 CSS px) ocupaba el 40 % del alto en tres filas de botones, y
    el chat --que es lo que se vino a usar-- empezaba casi fuera de vista. */
+
+/* --- UN SOLO MARCO, Y DENTRO TODO EL LUGAR DE TRABAJO (2026-09-05) ---------
+   Punto 0 del encargo, con estas palabras: «recuadro dorado/bronce englobando
+   todos los paneles que conocemos y que se ajusta a la ventana del telefono;
+   contiene todo el lugar de trabajo y lo que cambia de estado».
+
+   HASTA HOY ERAN TRES CAJAS. El cabezal tenia su borde, el chat ponia dos
+   costados y el pie los recogia, y entre el cabezal y el chat quedaba un canal
+   de marmol: la pagina se leia como un panel de mandos, otro de conversacion y
+   una nota al pie, tres cosas que casualmente estan juntas. Son una sola --
+   quien te habla, lo que dices, y con que aparato-- y ahora el marco lo dice.
+
+   VA EN `main` Y NO EN UN DIV NUEVO. `main` ya contiene exactamente lo que hay
+   que englobar --cabezal, chat, atajos, ficha y pie-- y no contiene nada mas.
+   Envolverlo en otra caja habria sido anadir un nivel al arbol para conseguir
+   lo que un nivel existente ya delimita.
+
+   SOLO EN LA PORTADA, y se distingue por lo unico que de verdad la distingue:
+   es la que lleva el chat. Las interiores tienen su propio suelo de panel en
+   `canon.css`, escrito con el mismo `:has` y por el mismo motivo. */
+main:has(#chat){
+  border:2px solid var(--bronce-claro);
+  border-radius:var(--radius);
+  padding:.6rem .55rem .5rem;
+  box-shadow:var(--depth)}
+
+/* Y LO QUE YA TENIA MARCO LO SUELTA. Tres bordes concentricos a cuatro
+   milimetros no se leen como tres secciones: se leen como un error. Cada uno
+   se apaga donde estaba escrito seria imposible de seguir, asi que se apagan
+   juntos y aqui, que es donde el marco nuevo explica por que sobran. */
+main:has(#chat) #cabezal{border-width:0;box-shadow:none;border-radius:0;
+  border-bottom:1px solid rgba(224,184,114,.28);margin-bottom:.5rem}
+main:has(#chat) #chat{border-width:0;border-radius:0}
+main:has(#chat) .honest-footer{border-width:0;border-radius:0;
+  border-top:1px solid rgba(224,184,114,.28);margin-top:.5rem}
+
+/* La linea de debajo del cabezal NO es un cuarto marco: es la juntura donde la
+   placa del chat se ancla. Se deja tenue a proposito -- «aunque nosotros no
+   vemos ninguna division como usuarios» -- y existe solo para que el texto que
+   se desvanece al subir tenga contra que desvanecerse. */

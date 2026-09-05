@@ -53,7 +53,25 @@
     var alto = vv.height;
     var mirar = function () {
       if (vv.height > alto) alto = vv.height;      // giro de pantalla, no teclado
-      chat.classList.toggle('con-teclado', vv.height < alto * 0.75);
+      var abierto = vv.height < alto * 0.75;
+      chat.classList.toggle('con-teclado', abierto);
+
+      /* EL ALTO VISIBLE, PUBLICADO PARA EL CSS. Sin esto no hay forma de
+         maquetar con el teclado abierto: `100dvh` en Android sigue midiendo la
+         pantalla ENTERA --el teclado se dibuja encima, no encoge la ventana--
+         asi que la pagina se queda mas alta que lo que se ve y hay que
+         desplazarla para encontrar la linea de escribir. Es exactamente el
+         hueco vacio que se fotografio en el Doogee.
+
+         `visualViewport.height` es el unico numero que sabe cuanto queda
+         visible de verdad. Se publica como variable y la maqueta lo usa como
+         alto total; el css solo no puede llegar aqui.
+
+         La clase va en `body` y no solo en el chat porque lo que cambia es la
+         pagina entera: deja de desplazarse y se reparte en una columna --
+         cabezal con su esfera arriba, la ultima frase abajo, y nada mas. */
+      document.documentElement.style.setProperty('--alto-visible', vv.height + 'px');
+      document.body.classList.toggle('con-teclado', abierto);
     };
     vv.addEventListener('resize', mirar);
   }
@@ -87,63 +105,6 @@
   if (caja.children.length) caja.hidden = false;
 })();
 
-/* --- Capa 4 · los estados de la cara --------------------------------------
- * Las mismas funciones que el MVP, sobre eventos que esta web YA emitia y que
- * solo movian el sello del pie. La cara es un sensor, no un adorno.
- *
- * PENSAR Y HABLAR SON DOS COSAS --lo firmo la app el 2026-09-04--. Antes la
- * boca se movia mientras el modelo generaba: la cara hablaba sin haber dicho
- * nada, y con un modelo lento eso son minutos en falso. */
-(function () {
-  /* LA CARA SE BUSCA CUANDO PASA ALGO, NO AL CARGAR. Antes este bloque hacia
-     `querySelector` una vez y guardaba el nodo; si en ese instante la esfera no
-     estaba --o si alguien la reemplazaba despues-- los eventos seguian
-     llegando y la clase iba a parar a un elemento que ya no estaba en la
-     pagina. El sintoma era exactamente el de esta manana: `preceptor:pensando`
-     se emitia, nadie se quejaba, y la cara no se movia.
-
-     Se midio en el navegador: la clase puesta A MANO funciona --la tira de
-     pensar entra, `612.5%`, animacion `pensar, latir`-- y el mismo evento no
-     hacia nada. Con la busqueda dentro de `estado()` la cara del momento es la
-     que se mueve, exista desde el principio o la ponga otro guion despues. */
-  function estado(clase) {
-    var cara = document.querySelector('.esfera');
-    if (!cara) return;
-    cara.classList.remove('piensa', 'habla');
-    if (clase) cara.classList.add(clase);
-  }
-  document.addEventListener('preceptor:pensando', function () { estado('piensa'); });
-  document.addEventListener('preceptor:hablando', function () { estado('habla'); });
-  // Al cerrar el turno vuelve a reposo. No se relanza ninguna entrada: la
-  // apertura es la entrada del producto, no el gesto al que se vuelve.
-  document.addEventListener('preceptor:turno', function () { estado(null); });
-
-  /* UN GESTO CADA 25-40 SEGUNDOS, y nunca mientras piensa: alli ya se mueve la
-     boca, y dos cosas moviendose a la vez es ruido. El intervalo se sortea en
-     cada vuelta -- uno fijo se vuelve un tic, y un tic se nota mas que el gesto.
-
-     Por que existe: entre turno y turno la pantalla se queda quieta, y quieta se
-     lee como rota. Esto no acelera nada; solo dice que sigue ahi. Mismos numeros
-     que la app, que es donde se midieron.
-
-     Quien pidio quietud no lo recibe: el css le apaga la animacion, pero un
-     cambio de fotograma cada medio minuto no es una animacion que el css pueda
-     apagar -- hay que no hacerlo. */
-  var quieto = window.matchMedia
-    ? matchMedia('(prefers-reduced-motion: reduce)') : { matches: false };
-  function gesto() {
-    var proxima = 25000 + Math.floor(Math.random() * 15000);
-    var cara = document.querySelector('.esfera');
-    if (cara && !quieto.matches && !cara.classList.contains('piensa')
-        && !cara.classList.contains('habla')) {
-      cara.classList.add('gesto');
-      setTimeout(function () { cara.classList.remove('gesto'); }, 420);
-    }
-    setTimeout(gesto, proxima);
-  }
-  setTimeout(gesto, 12000);
-})();
-
 /* --- Capa 3 · quien abre los desplegables ----------------------------------
  * EL BOTON SE ATA AL ARRANCAR, y por eso vive aqui y no en `chat-router.js`:
  * alli el enganche cuelga de `listo()`, que espera al catalogo, y hasta
@@ -156,7 +117,13 @@
      generaliza en vez de copiarse -- dos bucles iguales divergen en cuanto uno
      gana una condicion. Y abrir uno cierra el otro: caen en el mismo sitio y
      superpuestos no se leeria ninguno. */
-  var pares = [['lateral-boton', 'panel-modelos'], ['rueda', 'panel-ajustes']]
+  /* QUEDA UN SOLO PAR. Eran dos --Herramientas y la rueda-- y el primero se
+     retiro el 2026-09-05: sus nubes bajaron al cuadro de especificaciones y el
+     mando se quedo sin nada que abrir. El bucle se conserva aunque hoy de una
+     sola vuelta: generalizarlo costo escribirlo una vez, y volver a
+     particularizarlo para un solo caso es trabajo que habria que deshacer el
+     dia que entre el segundo desplegable. */
+  var pares = [['rueda', 'panel-ajustes']]
     .map(function (par) {
       return { b: document.getElementById(par[0]), p: document.getElementById(par[1]) };
     }).filter(function (x) { return x.b && x.p; });

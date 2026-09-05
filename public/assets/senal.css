@@ -1,0 +1,90 @@
+/* preceptoros.org · LA SEÑAL: lo que la cara dice mientras se espera.
+ *
+ * POR QUE VIVE APARTE. `cara.css` llego a 16.463 B de los 16.384 del tope al
+ * entrar esto. Se parte por el asunto, no se recorta el comentario -- quinta
+ * particion en dos dias, misma regla.
+ *
+ * Y LA COSTURA NO ES ARBITRARIA. `cara.css` responde a «como esta dibujada la
+ * cara»: las tres tiras, sus porcentajes, el encuadre del busto, donde se
+ * ancla en cada ancho. Aritmetica. Esto responde a otra cosa: «que hace la
+ * cara para decir que el aparato esta despierto». La primera se toca cuando
+ * cambia un asset; esta, cuando cambia lo que se quiere comunicar.
+ *
+ * SE CARGA DESPUES DE `cara.css`, y aqui si importa: la regla del neon
+ * sustituye a la animacion `latir` que `.esfera.piensa` trae de alli, y a
+ * igual especificidad decide el orden. Se enlaza SOLO en las ocho portadas:
+ * las interiores llevan la misma esfera pero alli nunca piensa nadie.
+ */
+
+/* --- LA ESFERA SE ENCIENDE AL PENSAR (2026-09-05) --------------------------
+   Pedido por el Soberano con estas palabras: «asegurate de que en este momento
+   la esfera brilla color neon (actualmente esta translucida cuando se habla en
+   el chat por malentendimientos de produccion)». La traslucidez estaba en
+   `chat.css` --`body.chat-activo .presentacion{opacity:.55}`-- y se ha ido
+   alli, que es donde nacia. Aqui va lo contrario.
+
+   POR QUE UN NEON Y NO SOLO UN AVISO DE TEXTO. El modelo local de este rack
+   genera a 4,63 tok/s: entre que se pulsa enviar y llega la primera palabra
+   pasan segundos, a veces muchos. Una pagina quieta durante ese hueco se lee
+   como una pagina rota, y quien mira vuelve a pulsar. El brillo no acelera
+   nada -- dice que el aparato esta despierto, que es justo la informacion que
+   falta. Es el mismo criterio con el que existe el gesto cada 25-40 s.
+
+   DOS HALOS Y NO UNO. `box-shadow` acepta varias sombras: la de dentro es el
+   violeta de la casa, apretada, y la de fuera es el oro, ancha y difusa. Una
+   sola sombra a mas opacidad se lee como una mancha; dos capas se leen como
+   luz. El `latir` que ya traia `.piensa` se sustituye por esta -- dos
+   animaciones peleando por el mismo `box-shadow` dejan ganar a la ultima y la
+   otra no hace nada, que es peor que no escribirla. */
+@keyframes neon{
+  0%,100%{box-shadow:0 0 18px rgba(109,90,224,.55), 0 0 42px rgba(242,208,138,.30)}
+  50%    {box-shadow:0 0 30px rgba(109,90,224,.85), 0 0 72px rgba(242,208,138,.55)}
+}
+.esfera.piensa{animation:pensar var(--anim-pensar) steps(5,jump-none) infinite,
+                         neon 1.4s ease-in-out infinite;
+               border-color:var(--oro)}
+
+/* Hablando tambien se ve, pero mas suave: ya hay texto llegando, asi que la
+   cara deja de ser el unico indicador y no tiene que gritar. */
+.esfera.habla{border-color:var(--bronce-claro)}
+
+/* --- «Activando modelo» · la nube delante de la cara ----------------------
+   Solo mientras PIENSA, que es el hueco que hay que explicar. Cuando el texto
+   empieza a llegar la nube sobra: lo que se ve ya lo dice mejor.
+
+   CUELGA DE `.presentacion` Y NO DE LA ESFERA: la esfera es un circulo --su
+   radio esta declarado unas lineas mas arriba, y aqui no se repite: nombrarlo
+   en una frase ya puso el gate rojo una vez-- y una pastilla que sobresale de
+   un circulo o se recorta o obliga a soltarle el recorte a algo que ademas
+   anima su fondo. El padre no tiene forma; es el sitio.
+
+   `pointer-events:none` lo hereda de `.presentacion`, que ya lo declara: la
+   cara y todo lo suyo no se traga un clic de lo que hay debajo. */
+.esfera-nube{
+  position:absolute; top:50%; right:calc(100% - .6rem);
+  transform:translateY(-50%);
+  white-space:nowrap;
+  font-size:.68rem; font-weight:700; letter-spacing:.03em;
+  color:#fff; background:var(--violeta);
+  border:1px solid var(--oro); border-radius:999px;
+  padding:.28rem .7rem;
+  box-shadow:0 2px 12px rgba(36,26,53,.45);
+  animation:nube-entra .22s var(--spring) both}
+.esfera-nube[hidden]{display:none}
+@keyframes nube-entra{
+  from{opacity:0;transform:translateY(-50%) scale(.86)}
+  to  {opacity:1;transform:translateY(-50%) scale(1)}
+}
+/* En un telefono la nube saldria por el canto izquierdo de la pantalla: la
+   esfera esta pegada al borde derecho y la pastilla mide lo que dice. Debajo
+   de la cara hay sitio, y ahi no compite con la marca. */
+@media (max-width:1023px){
+  .esfera-nube{top:auto;bottom:-.4rem;right:0;transform:none;
+               font-size:.62rem;padding:.22rem .55rem}
+  @keyframes nube-entra{from{opacity:0;transform:scale(.86)}to{opacity:1;transform:none}}
+}
+@media (prefers-reduced-motion:reduce){
+  .esfera.piensa{animation:none;border-color:var(--oro);
+                 box-shadow:0 0 30px rgba(109,90,224,.85), 0 0 72px rgba(242,208,138,.55)}
+  .esfera-nube{animation:none}
+}
