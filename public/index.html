@@ -83,30 +83,59 @@
   .bubbles { display:flex; gap:.7rem; justify-content:center; flex-wrap:wrap;
     animation:asoman .5s ease-out 1.2s both }
   @keyframes asoman { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:none} }
+  /* OCHO NUBES VIOLETA, TODAS IGUALES (2026-09-05). Cada lengua llevaba un
+     color distinto --bronce, violeta, indigo, verde, repartidos por posicion--
+     y la puerta parecia un semaforo: cuatro familias de boton para ocho cosas
+     que hacen exactamente lo mismo. Un color distinto promete una diferencia
+     que no existe; quien mira busca que significa el verde y no significa
+     nada.
+
+     Violeta con canto dorado, que es la figura que TODO lo pulsable lleva ya
+     en esta casa: las cuatro puertas del cabezal, los dos mandos, los atajos y
+     las nubes de companeros. La puerta deja de tener su propio dialecto.
+
+     LO QUE SE QUEDA es el compas repartido por `nth-child`: las ocho flotan
+     desfasadas, y si flotaran a la vez se leerian como un bloque que respira
+     en vez de como ocho pastillas sueltas. El comentario viejo tenia razon en
+     lo suyo -- se reparte por POSICION y no por lengua, asi que la novena ya
+     trae su retardo el dia que se escriba. */
   .bubble { position:relative; text-decoration:none; font-weight:700;
-    padding:.6rem 1rem; background:rgba(255,255,255,.07); border:2px solid;
-    border-radius:14px; animation:float 4.2s ease-in-out infinite;
+    padding:.6rem 1rem; color:#fff; background:var(--violeta);
+    border:1px solid var(--oro); border-radius:999px;
+    box-shadow:0 2px 12px rgba(36,26,53,.34);
+    animation:float 4.2s ease-in-out infinite;
     transition:transform .2s var(--spring) }
-  .bubble::after { content:""; position:absolute; top:-9px; left:50%; margin-left:-6px;
-    border:6px solid transparent; border-bottom-color:currentColor }
-  .bubble:hover, .bubble:focus { transform:translateY(-3px) scale(1.03); outline:0 }
-  /* EL COLOR LO REPARTE LA POSICION, NO LA LENGUA. Habia una regla por idioma
-     --`.es`, `.en`, `.fr`-- y el portugues entro sin ninguna: se quedo con el
-     color de arranque y el mismo compas que el español, y nadie lo vio. Con
-     `nth-child` la novena lengua ya tiene su color y su retardo el dia que se
-     escribe su bocadillo. */
-  .bubble:nth-child(4n+1){color:var(--bronce);border-color:var(--bronce);animation-delay:0s}
-  .bubble:nth-child(4n+2){color:var(--violeta-texto);border-color:var(--violeta-texto);animation-delay:-1.4s}
-  .bubble:nth-child(4n+3){color:var(--indigo);border-color:var(--indigo);animation-delay:-2.8s}
-  .bubble:nth-child(4n+4){color:var(--jardin);border-color:var(--jardin);animation-delay:-4.2s}
+  /* El bocadillo pierde su pico. Apuntaba hacia arriba, a nada -- venia de
+     cuando la burbuja era una nube de comic-- y con la pastilla redonda se
+     leia como un defecto de dibujo. */
+  .bubble:hover, .bubble:focus { transform:translateY(-3px) scale(1.03); outline:0;
+    background:var(--violeta-texto) }
+  .bubble:focus-visible { outline:2px solid var(--oro); outline-offset:2px }
+  .bubble:nth-child(4n+1){animation-delay:0s}
+  .bubble:nth-child(4n+2){animation-delay:-1.4s}
+  .bubble:nth-child(4n+3){animation-delay:-2.8s}
+  .bubble:nth-child(4n+4){animation-delay:-4.2s}
   @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
-  .claim { font-size:.78rem; color:var(--tenue) }
-  /* LA FORMULA DE LA CASA, y la tercera palabra en bronce porque es la que
-     paga las otras dos. Conocimiento y herramientas los da cualquiera; lo que
-     distingue a esto es de quien son. Va en las tres lenguas de la puerta por
-     el mismo motivo que la frase anterior: quien llega no sabe todavia que
-     esta pagina habla el suyo. */
-  .so { color:var(--bronce); font-weight:700; letter-spacing:.02em }
+  /* LA FORMULA DE LA CASA, EN VERDE Y EN UNA SOLA LENGUA (2026-09-05).
+     Iba en tres --castellano, ingles, frances-- con las dos primeras palabras
+     en gris y la tercera en bronce. Tres motivos para deshacerlo:
+
+     · Tres lenguas de ocho no es multilingue, es arbitrario. Cuando la puerta
+       tenia tres, la frase repetida ERA el mensaje: «esta pagina habla lo
+       tuyo». Con ocho nubes debajo, eso ya lo dicen las nubes -- y las nubes lo
+       dicen mejor, porque ademas se pulsan. La frase repetida pasa a ser
+       ruido, y encima incompleto: quien lee ruso o griego ve tres lenguas que
+       no son la suya.
+     · El gris era `--tenue` sobre marmol violeta: la parte que sostiene la
+       frase se leia peor que la palabra destacada.
+     · Y en ingles porque es la lengua franca de quien llega sin saber que hay
+       detras. La suya esta a un toque, justo encima.
+
+     Verde entero, sin palabra destacada: si las tres pesan lo mismo, la frase
+     se lee como una formula y no como una con dos acompanantes. `--jardin` es
+     el verde medido de la casa (4,66:1 sobre marmol claro). */
+  .claim { font-size:.82rem; color:var(--jardin); font-weight:700;
+           letter-spacing:.02em }
   /* QUIEN PIDIO QUIETUD NO ESPERA UN SEGUNDO Y MEDIO A UNA DECISION. No se le
      deja la pantalla quieta a medio despertar: se le da entera y de golpe. */
   @media (prefers-reduced-motion:reduce) {
@@ -134,7 +163,7 @@
       <a class="bubble" href="/ru/" hreflang="ru">Русский</a>
       <a class="bubble" href="/el/" hreflang="el">Ελληνικά</a>
     </nav>
-    <p class="claim">Conocimiento + Herramientas + <span class="so">Soberanía</span> · Knowledge + Tools + <span class="so">Sovereignty</span> · Savoir + Outils + <span class="so">Souveraineté</span></p>
+    <p class="claim">Knowledge + Tools + Sovereignty</p>
   </div>
 </body>
 </html>
