@@ -57,14 +57,18 @@
    `width:auto` es lo que las vuelve nubes: cada una mide lo que dice. */
 #panel-modelos .modelo{display:inline-flex;align-items:center;gap:.5rem;
   width:auto;grid-template-columns:none;text-align:left;
-  padding:.32rem .95rem .32rem .34rem;border-radius:999px;
+  padding:.26rem .7rem .26rem .28rem;border-radius:999px;
   background:var(--violeta);color:#fff;border:1px solid rgba(20,12,48,.55);
   box-shadow:0 2px 10px rgba(36,26,53,.34)}
 #panel-modelos .modelo:hover,#panel-modelos .modelo:focus-visible{
   background:var(--violeta-texto);border-color:var(--violeta)}
+/* MAS ESTRECHAS: la esfera baja de 34 a 26 px y el relleno se aprieta. Con 34
+   una nube medía casi la mitad del ancho de un telefono, y ocho asi son cuatro
+   filas. Lo que se recorta es el DIBUJO, no el nombre -- el nombre es lo que
+   se lee para elegir; la esfera solo acompana. */
 #panel-modelos .modelo img,#panel-modelos .modelo-inicial{
-  width:34px;height:34px;flex:0 0 34px;border-radius:50%}
-#panel-modelos .modelo-nombre{color:#fff;font-weight:700;font-size:.82rem}
+  width:26px;height:26px;flex:0 0 26px;border-radius:50%}
+#panel-modelos .modelo-nombre{color:#fff;font-weight:700;font-size:.76rem}
 /* Lo que el companero HACE se va al `title`: en una pastilla no cabe y era lo
    que obligaba a la tarjeta ancha. Sale al pasar el cursor y lo lee tambien el
    teclado y el lector de pantalla, que es donde importa. */

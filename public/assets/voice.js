@@ -5,9 +5,18 @@
    deja la fuga puesta y le pasa la decision a quien menos sabe.
 
    Vuelve porque hoy existe `processLocally`: reconocimiento EN EL APARATO.
-   Y vuelve con una regla dura: si el navegador no puede hacerlo local, el
-   boton NO se activa y se dice por que. Nunca se cae al reconocedor de la
-   nube. Preferimos no tener microfono a tener uno que filtra.
+   Cuando el navegador puede hacerlo local, se hace local y no se pregunta
+   nada: no hay trato que ofrecer si no sale nada de la maquina.
+
+   Y DESDE EL 2026-09-05 HAY UNA SEGUNDA VIA, pedida por el Soberano: si el
+   navegador NO sabe dictar en el aparato pero sabe hacerlo por la nube, el
+   boton la ofrece -- y solo la usa despues de que la persona acepte el trato,
+   dicho entero: tu voz sale de aqui y va a Google.
+
+   Esto NO es el aviso que se rechazo en agosto. Aquel dejaba la fuga puesta y
+   avisaba; este no enciende nada hasta que hay un si, y el si dura una sesion
+   --`sessionStorage`--: al recargar se vuelve a preguntar. Un permiso que se
+   queda para siempre es el mismo agujero con mejores modales.
 
    Es ademas accesibilidad: quien no ve depende del dictado, y por eso la
    respuesta honesta no puede ser «no hay microfono» a secas, sino decir que
@@ -53,17 +62,37 @@
        alternativa al dictado en el aparato es mandar el audio a un servidor
        externo, y mientras esta web prometa que nada de lo dicho sale de la
        maquina, ese camino no se toma. Eso es lo que dice el aviso. */
-    boton.setAttribute('aria-disabled', 'true');
-    boton.title = T.micSinLocal;
+    if (!SR) {
+      // Ni local ni nube: no hay nada que ofrecer y se dice.
+      boton.setAttribute('aria-disabled', 'true');
+      boton.title = T.micSinLocal;
+      fila.appendChild(boton);
+      boton.addEventListener('click', function () { aviso(T.micSinLocal); });
+      return;
+    }
+    /* Hay nube pero no aparato. El boton queda VIVO y lo primero que hace es
+       contar el trato. `sessionStorage` y no `localStorage`: el permiso se
+       apaga al cerrar, que es lo que lo mantiene siendo una decision y no un
+       ajuste que se olvida encendido. */
+    boton.title = T.micNubeTrato;
     fila.appendChild(boton);
-    boton.addEventListener('click', function () { aviso(T.micSinLocal); });
+    boton.addEventListener('click', function () {
+      if (permiso()) { arranca(false); return; }
+      aviso(T.micNubeTrato, T.micNubeSi, function () {
+        try { sessionStorage.setItem('voz-nube', '1'); } catch (e) { /* modo privado */ }
+        arranca(false);
+      });
+    });
+    function permiso() {
+      try { return sessionStorage.getItem('voz-nube') === '1'; } catch (e) { return false; }
+    }
     return;
   }
 
   /* El aviso emergente: aparece pegado al boton, se cierra al pulsar fuera o
      con Escape, y se anuncia como `status` para quien usa lector. Uno solo a
      la vez -- dos avisos abiertos son dos cosas que cerrar. */
-  function aviso(texto) {
+  function aviso(texto, rotuloSi, alAceptar) {
     var previo = document.querySelector('.voice-aviso');
     if (previo) { previo.remove(); return; }
     var caja = document.createElement('div');
@@ -77,6 +106,15 @@
     x.setAttribute('aria-label', T.micCerrarAviso);
     x.addEventListener('click', function () { caja.remove(); });
     caja.appendChild(x);
+    /* El SI es un boton aparte y explicito. No hay «recordar» ni casilla
+       premarcada: aceptar es un gesto, y tiene que costar uno. */
+    if (rotuloSi && alAceptar) {
+      var si = document.createElement('button');
+      si.type = 'button'; si.className = 'voice-aviso-si';
+      si.textContent = rotuloSi;
+      si.addEventListener('click', function () { caja.remove(); alAceptar(); });
+      caja.appendChild(si);
+    }
     fila.appendChild(caja);
     function fuera(e) {
       if (caja.contains(e.target) || fila.contains(e.target)) return;
@@ -89,16 +127,22 @@
   }
 
   var oyendo = false, rec = null;
-  boton.addEventListener('click', function () {
+  boton.addEventListener('click', function () { arranca(true); });
+
+  /* UN SOLO MOTOR, DOS TRATOS. `local` decide si se pide `processLocally` y
+     que se dice mientras escucha. Tener dos funciones casi iguales es como
+     acaban divergiendo: una se arregla y la otra no. */
+  function arranca(local) {
     if (oyendo && rec) { rec.stop(); return; }
     rec = new SR();
     rec.lang = navigator.language || 'es-ES';
     rec.interimResults = true;
     rec.continuous = false;
-    // La linea que lo cambia todo: el audio se queda en el aparato.
-    rec.processLocally = true;
+    // La linea que lo cambia todo: el audio se queda en el aparato. En la via
+    // de nube NO se pone -- y por eso alli hubo que pedir permiso antes.
+    if (local) rec.processLocally = true;
     var base = entrada.value;
-    rec.onstart = function () { oyendo = true; boton.querySelector('.rotulo').textContent = T.micEscuchando; boton.classList.add('oyendo'); decir(T.micEnAparato); };
+    rec.onstart = function () { oyendo = true; boton.querySelector('.rotulo').textContent = T.micEscuchando; boton.classList.add('oyendo'); decir(local ? T.micEnAparato : T.micEnNube, local ? 'tenue' : 'nodata'); };
     rec.onresult = function (e) {
       var t = '';
       for (var i = e.resultIndex; i < e.results.length; i++) t += e.results[i][0].transcript;
@@ -114,6 +158,6 @@
     rec.onend = function () { oyendo = false; boton.querySelector('.rotulo').textContent = T.micHablar; boton.classList.remove('oyendo'); };
     try { rec.start(); }
     catch (e) { decir(T.micFallo + ' ' + (e && e.message ? e.message : e), 'nodata'); }
-  });
+  }
   fila.appendChild(boton);
 })();

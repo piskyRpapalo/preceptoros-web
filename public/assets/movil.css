@@ -29,3 +29,26 @@
   .identity{flex:1 0 100%;margin-top:.2rem}
   .identity .leve{width:100%}
 }
+
+/* --- el telefono aprovecha la pantalla (2026-09-05) ------------------------
+   `body` reservaba 1,5rem arriba y 1,1 a los lados en TODAS las anchuras: en
+   un movil eso son ~35 px de marmol a cada lado para una pantalla de 360, casi
+   un quinto del ancho, y el chat --que es lo que se vino a usar-- empezaba
+   estrecho. Se aprieta a .35rem: el marmol sigue asomando por el canto y se
+   nota que la placa flota, pero deja de cobrar peaje.
+
+   Y EN LA APP INSTALADA, CERO. `display-mode: standalone` es la pantalla
+   entera del telefono sin barra de navegador: ahi un margen lateral no separa
+   de nada -- no hay nada de lo que separarse-- y lo unico que hace es
+   encoger la placa. Las esquinas del panel se van con el por lo mismo: una
+   caja redondeada contra el borde de la pantalla se lee como una ventana mal
+   colocada, no como una app. */
+@media (max-width:1023px){
+  body{padding:.5rem .35rem 1.2rem}
+  #cabezal{padding:.4rem .45rem .5rem}
+}
+@media (display-mode:standalone),(display-mode:fullscreen){
+  body{padding:0 0 .6rem}
+  #chat,#cabezal{border-left-width:0;border-right-width:0;border-radius:0}
+  .honest-footer{border-left-width:0;border-right-width:0;border-radius:0}
+}

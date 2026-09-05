@@ -74,11 +74,18 @@
    de reclamar el ojo. */
 button.enviar{border-radius:999px;padding:.7rem 1.5rem;
   min-height:48px;font-weight:700}
+/* CANTO DORADO TAMBIEN AQUI. Sin borde era el unico mando de la fila sin
+   canto, y se leia como texto suelto al lado de un boton. Sigue vacio por
+   dentro --es el gesto alternativo, no el principal-- pero ya pertenece a la
+   familia: el aro dice que se pulsa, el relleno diria que es el que manda. */
 button.mic{border-radius:999px;padding:.5rem .8rem;min-height:44px;
-  font-weight:600;background:transparent;border-color:transparent;
+  font-weight:600;background:transparent;border-color:var(--oro);
   color:var(--violeta-texto)}
 button.mic:hover:not(:disabled),button.mic:focus-visible{
   background:transparent;border-color:var(--oro);color:var(--oro)}
+/* Apagado se ve apagado --el aro pierde fuerza-- pero NO desaparece: hay que
+   poder encontrarlo para pulsarlo y que cuente por que no funciona. */
+button.mic[aria-disabled="true"]{border-color:rgba(242,208,138,.45);opacity:.7}
 /* Enviar es el que manda de esta fila y se pone el ultimo, contra el canto
    derecho, como en la app: el gesto termina donde acaba la caja. */
 .chat-acciones{justify-content:flex-end}
@@ -131,3 +138,20 @@ button.mic:hover:not(:disabled),button.mic:focus-visible{
    dentro del dialogo, asi que tiene que distinguirse de la respuesta. */
 .cmd-enlace{color:var(--violeta-texto);font-weight:700;
   text-decoration:underline;text-underline-offset:.2em}
+
+/* --- el emergente del microfono ------------------------------------------
+   Cae pegado al boton y por encima de la fila. El SI es lo unico violeta
+   macizo de la caja: es la accion, y tiene que distinguirse del cerrar. */
+.voice-aviso{position:absolute;bottom:calc(100% + .5rem);right:0;z-index:var(--capa-3-lateral);
+  width:min(24rem,calc(100vw - 2rem));padding:.7rem .9rem;
+  font-size:.72rem;line-height:1.55;color:var(--tinta);
+  background:var(--glass-solid);border:1px solid var(--oro);
+  border-radius:var(--radius);box-shadow:var(--depth)}
+.voice-aviso p{margin:0 0 .5rem}
+.voice-aviso-cerrar{position:absolute;top:.2rem;right:.35rem;
+  padding:.1rem .4rem;min-height:0;font-size:.9rem;line-height:1;
+  background:transparent;border-color:transparent;color:var(--tenue)}
+.voice-aviso-si{font-size:.72rem;padding:.35rem .8rem;min-height:0}
+/* El ancla del emergente: sin esto se colgaria del panel entero y saldria en
+   la esquina de la pagina, no encima del boton que lo abrio. */
+#voice{position:relative}
