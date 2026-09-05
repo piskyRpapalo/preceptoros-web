@@ -227,12 +227,24 @@
      y por fin sirven para algo. */
   #cabezal #identity .yo-perfil{flex:0 1 auto;min-width:0}
 
-  /* Sin sesion, los dos dibujos comparten renglon con la marca en vez de
-     abrir uno para ellos solos: dos iconos no llenan una fila. `:has` lo
-     decide sin que nadie tenga que saber en que estado esta la sesion. */
-  #cabezal:has(.identity-icono) .marca{flex:1 1 auto}
-  #cabezal:has(.identity-icono) #identity{order:9;margin:0}
-  #cabezal:has(.identity-icono) .lateral-boton{order:8;margin-left:auto}
+  /* SIN SESION, LOS DOS DIBUJOS JUNTOS Y CONTRA EL CANTO. Se intento primero
+     subirlos al renglon de la marca --dos iconos no llenan una fila-- y no
+     cabian: la marca mide ~290 px de los 320 utiles, asi que entraba la rueda
+     y la persona se descolgaba sola al renglon de abajo. Un mando arriba y su
+     gemelo debajo es peor que los dos abajo.
+
+     Asi que se quedan en el segundo renglon, que es el suyo con sesion y sin
+     ella, y se pegan al canto derecho -- que es donde estan en escritorio. El
+     sitio de un mando no cambia segun si has entrado; lo unico que cambia es
+     que con sesion tienen la cuenta a su izquierda y sin ella no. */
+  #cabezal:has(.identity-icono) #identity{margin-left:auto}
+  /* Y LA RUEDA SUELTA SU `auto`, o los dos se reparten el hueco. Con margen
+     automatico en las dos cajas, el espacio libre se divide entre ellas y los
+     gemelos acababan a 128 px uno de otro -- medido: persona en 146, rueda en
+     314. Un `margin-left:auto` empuja contra el vecino, y si el vecino tambien
+     empuja, lo que sale es un reparto, no una esquina. Empuja la primera; la
+     segunda solo la sigue. */
+  #cabezal:has(.identity-icono) .lateral-boton{margin-left:.4rem}
 
   /* LA CARA EMPIEZA DEBAJO DE LOS DOS RENGLONES, y por eso los dos primeros
      pueden usar el ancho entero. 8,4rem son las dos filas medidas en 375 px

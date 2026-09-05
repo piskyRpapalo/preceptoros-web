@@ -32,7 +32,63 @@
    como se ve esta web por defecto-- vale #a8863c: oro, que es lo que se pidio.
    Es la misma cicatriz que ya dejo escrita la fila de puertas: un color medido
    sobre un fondo no vale sobre el contrario. */
-#cabezal .cab-solar{color:var(--bronce-hondo);font-weight:600}
+/* Y LAS LETRAS DORADAS NO BASTABAN. Se pidio una pila -- «una forma de pila,
+   con los colores de la pagina, como nube, con una animacion de carga
+   simple»-- y lleva razon el encargo: una linea de texto, por dorada que sea,
+   se lee como un pie de foto. Un dibujo que se llena dice «esto se alimenta»
+   antes de que nadie lea la frase, y en ocho lenguas a la vez.
+
+   EL FONDO ES `#2f2757` FIJO Y NO `--violeta`, y esto se midio antes de
+   escribirlo: el oro sobre el violeta pleno da 3,38:1, por debajo del 4,5 que
+   exige un texto pequeno. Sobre el violeta hondo da 9,15. Es el mismo fondo
+   que ya llevan los atajos y la ficha del modelo, asi que la banda no estrena
+   color -- se une a una familia que ya existe.
+
+   Y LOS DOS COLORES VAN EN HEXADECIMAL FIJO, no en token. `--jardin` gira con
+   el tema: en oscuro vale #6fd39b y sobre este fondo da 7,40:1, pero en claro
+   vale #2C784B y da 2,52 -- ilegible-- porque el fondo NO gira con el. Un
+   color medido contra un fondo no vale contra el contrario, y aqui el fondo es
+   siempre el mismo. Misma cicatriz que ya dejo escrita la fila de puertas. */
+#cabezal .cab-solar{
+  display:inline-flex;align-items:center;gap:.45em;
+  color:#F2D08A;font-weight:600;
+  background:#2f2757;border:1px solid var(--oro);border-radius:999px;
+  padding:.22rem .7rem}
+#cabezal .cab-solar .solar-powered{color:#6fd39b}
+
+/* LA PILA, SIN UNA SOLA ETIQUETA NUEVA. Se dibuja entera en un
+   pseudo-elemento: el cuerpo es la caja con su canto dorado, el borne es una
+   sombra desplazada y encogida a la derecha, y la carga es un fondo que crece.
+   Meterla en el marcado habria sido tocar ocho portadas para anadir un dibujo
+   que no dice nada que el css no sepa pintar.
+
+   LA CARGA VA DE VIOLETA A ORO --los dos colores de la casa-- y se detiene
+   llena tres decimas antes de reiniciar: sin esa pausa el bucle se lee como un
+   parpadeo, y con ella se lee como lo que es, algo que se llena y se mantiene.
+
+   `background-size` y no `width`: el ancho lo fija el dibujo de la pila y lo
+   que se mueve es cuanto de ella esta llena. Animar el ancho movería el borne. */
+#cabezal .cab-solar::before{
+  content:"";flex:none;width:1.6em;height:.9em;
+  /* El radio sale del token, como manda el canon: `--radius` menos 12 px son
+     los 2 px que una pila de 1,6em de ancho necesita para no parecer un
+     boton. Escribirlo a pelo puso el gate rojo, y con razon -- un radio
+     suelto es el primer paso para tener catorce. */
+  border:1.5px solid var(--oro);border-radius:calc(var(--radius) - 12px);
+  box-shadow:.18em 0 0 -.24em var(--oro);
+  background-image:linear-gradient(90deg,var(--violeta),#F2D08A);
+  background-repeat:no-repeat;background-position:left center;
+  background-size:0% 100%;
+  animation:pila-carga 3.2s ease-in-out infinite}
+@keyframes pila-carga{
+  0%{background-size:0% 100%}
+  62%,100%{background-size:100% 100%}
+}
+/* Quien pidio quietud recibe la pila LLENA, no vacia: una pila a cero dibujada
+   para siempre dice lo contrario de lo que esta linea afirma. */
+@media (prefers-reduced-motion:reduce){
+  #cabezal .cab-solar::before{animation:none;background-size:100% 100%}
+}
 
 /* --- LOS DOS MANDOS, GEMELOS DE VERDAD (2026-09-05) -----------------------
    Se pidieron «ambos del mismo estilo: dorado y transparente», y alineados.
