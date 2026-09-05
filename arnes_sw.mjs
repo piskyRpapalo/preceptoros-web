@@ -110,7 +110,7 @@ const rutas = await shell.keys();
 // de decir que una lengua a medias no existe: o entran sus siete o no entra.
 // La cifra va a mano a proposito: si alguien anade una ruta al shell sin
 // pensarlo, esto se pone rojo y le obliga a decir por que.
-ok('precachea paginas y piezas del Hub', rutas.length === 97, rutas.length+' rutas');
+ok('precachea paginas y piezas del Hub', rutas.length === 98, rutas.length+' rutas');
 ok('el shell trae las tres tiras de la cara',
    ['apertura', 'reposo', 'habla']
      .every(s => rutas.includes('/assets/caras/secuencia-' + s + '-256.webp')));
