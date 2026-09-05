@@ -583,7 +583,7 @@ class Estructura(unittest.TestCase):
                     "este comprime peor. Remedio: partirlo, o revisar el tope "
                     "con la cuenta delante.")
 
-    def test_cada_fichero_bajo_10_kb(self):
+    def test_cada_fichero_bajo_el_tope(self):
         """El tope rige TAMBIEN los datos, y desde el 2026-08-31.
 
         `.json` y `.webmanifest` estaban fuera de esta tupla mientras
