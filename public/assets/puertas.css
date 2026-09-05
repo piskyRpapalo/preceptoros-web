@@ -116,3 +116,29 @@
    grosor, no un segundo color. */
 .loratelier .lor{font-weight:800}
 .loratelier .atelier{font-weight:700}
+
+/* --- el cabezal de las interiores -----------------------------------------
+   Los mismos botones y los mismos rotulos que la portada: eran enlaces de
+   texto separados por puntos, con otra lista y otros nombres en cada pagina.
+   Aqui van en fila y se envuelven; no en rejilla de dos, porque son cuatro
+   piezas de ancho muy distinto --un icono y tres palabras-- y una rejilla les
+   daria a todas el ancho de la mas larga. */
+/* LA FILA PROPIA ES LO PRIMERO, y sin ella no hay maqueta: `header` es un flex
+   en fila, asi que el `<nav>` entraba como un hermano mas y le robaba el ancho
+   al titulo -- «COMMUNITY · THE AGORA» salia en vertical, una letra por linea.
+   Se vio en el navegador al primer intento. `flex:1 0 100%` lo baja a su
+   propia linea y `flex-wrap` en el cabezal es lo que se lo permite. */
+header:not(#cabezal){flex-wrap:wrap}
+.cab-nav-interior{flex:1 0 100%;display:flex;flex-wrap:wrap;gap:.4rem;
+  margin:.5rem 0 0}
+.cab-nav-interior .cab-boton{background:var(--violeta);color:#fff;
+  border:1px solid var(--oro);border-radius:999px;padding:.34rem .9rem}
+.cab-nav-interior .cab-boton:hover,.cab-nav-interior .cab-boton:focus-visible{
+  background:var(--violeta-texto)}
+/* La casa es cuadrada porque solo lleva dibujo: con el relleno de una palabra
+   quedaria un ovalo con un icono perdido en el centro. */
+.cab-nav-interior .cab-casa{display:inline-flex;align-items:center;
+  justify-content:center;width:38px;padding:0}
+/* La pagina donde estas no es un boton: se ve, no se pulsa. */
+.cab-nav-interior [aria-current]{background:transparent;color:var(--oro);
+  cursor:default}

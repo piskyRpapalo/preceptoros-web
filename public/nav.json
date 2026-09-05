@@ -1,0 +1,64 @@
+{
+ "esquema": 1,
+ "estado": "DERIVADO",
+ "nota": "Los rotulos del cabezal de las paginas interiores. NO se escriben aqui a mano: se sacan del bloque i18n de cada portada con `nav.py`, para que la palabra sea LITERALMENTE la misma en las dos. Antes cada pagina llevaba su propia lista --community cinco enlaces, benchmark cuatro, onboarding dos-- y con nombres distintos de los del cabezal: «Portada» donde arriba decia «INICIO», «Benchmark» donde arriba decia «LORATELIER». Seis paginas por ocho lenguas son 48 sitios donde acordarse.",
+ "generado": "2026-09-05",
+ "textos": {
+  "de": {
+   "home": "START",
+   "benchmark": "LORATELIER",
+   "comunidad": "GEMEINSCHAFT",
+   "instala": "INSTALLIEREN",
+   "casa": "Startseite"
+  },
+  "el": {
+   "home": "ΑΡΧΗ",
+   "benchmark": "LORATELIER",
+   "comunidad": "ΚΟΙΝΟΤΗΤΑ",
+   "instala": "ΕΓΚΑΤΑΣΤΑΣΗ",
+   "casa": "Αρχική"
+  },
+  "en": {
+   "home": "HOME",
+   "benchmark": "LORATELIER",
+   "comunidad": "COMMUNITY",
+   "instala": "INSTALL",
+   "casa": "Front page"
+  },
+  "es": {
+   "home": "INICIO",
+   "benchmark": "LORATELIER",
+   "comunidad": "COMUNIDAD",
+   "instala": "INSTALAR",
+   "casa": "Portada"
+  },
+  "fr": {
+   "home": "ACCUEIL",
+   "benchmark": "LORATELIER",
+   "comunidad": "COMMUNAUTÉ",
+   "instala": "INSTALLER",
+   "casa": "Accueil"
+  },
+  "it": {
+   "home": "HOME",
+   "benchmark": "LORATELIER",
+   "comunidad": "COMUNITÀ",
+   "instala": "INSTALLA",
+   "casa": "Home"
+  },
+  "pt": {
+   "home": "INÍCIO",
+   "benchmark": "LORATELIER",
+   "comunidad": "COMUNIDADE",
+   "instala": "INSTALAR",
+   "casa": "Início"
+  },
+  "ru": {
+   "home": "ГЛАВНАЯ",
+   "benchmark": "LORATELIER",
+   "comunidad": "СООБЩЕСТВО",
+   "instala": "УСТАНОВИТЬ",
+   "casa": "Главная"
+  }
+ }
+}
