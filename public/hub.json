@@ -23,7 +23,25 @@
     "nota": "corre sobre el modelo BASE, sin afinar. El adaptador `preceptor-v7` que este catalogo declaraba servido YA NO ESTA en el rack: medido el 2026-09-01, Ollama sirve dos modelos y ninguno es ese. Un afinado mejora el papel; no es requisito para servir un turno."
    },
    "icono3d": "instalador",
-   "nido": "guia"
+   "nido": "guia",
+   "i18n": {
+    "es": {
+     "name": "El Instalador",
+     "function": "Te instala el producto y te presenta a los demás."
+    },
+    "en": {
+     "name": "The Installer",
+     "function": "Installs the product and introduces you to the rest."
+    },
+    "fr": {
+     "name": "L'Installateur",
+     "function": "Il installe le produit et te présente les autres."
+    },
+    "pt": {
+     "name": "O Instalador",
+     "function": "Instala o produto e apresenta-te os restantes."
+    }
+   }
   },
   {
    "id": "privacidad",
@@ -39,7 +57,25 @@
     "causa": "sin adaptador entrenado todavia"
    },
    "icono3d": "privacidad",
-   "nido": "filtro"
+   "nido": "filtro",
+   "i18n": {
+    "es": {
+     "name": "El Aduanero",
+     "function": "Tacha lo privado antes de que salga de tu aparato."
+    },
+    "en": {
+     "name": "The Customs Officer",
+     "function": "Strikes out what is private before it leaves your device."
+    },
+    "fr": {
+     "name": "Le Douanier",
+     "function": "Il biffe le privé avant qu'il ne quitte ton appareil."
+    },
+    "pt": {
+     "name": "O Aduaneiro",
+     "function": "Risca o que é privado antes de sair do teu aparelho."
+    }
+   }
   },
   {
    "id": "escritor",
@@ -55,7 +91,25 @@
     "causa": "sin adaptador entrenado todavia"
    },
    "icono3d": "escritor",
-   "nido": "cronista"
+   "nido": "cronista",
+   "i18n": {
+    "es": {
+     "name": "El Escritor",
+     "function": "Escribe contigo: guiones, notas y textos largos."
+    },
+    "en": {
+     "name": "The Writer",
+     "function": "Writes with you: scripts, notes and long texts."
+    },
+    "fr": {
+     "name": "L'Écrivain",
+     "function": "Il écrit avec toi : scénarios, notes et textes longs."
+    },
+    "pt": {
+     "name": "O Escritor",
+     "function": "Escreve contigo: guiões, notas e textos longos."
+    }
+   }
   },
   {
    "id": "traductor",
@@ -70,7 +124,25 @@
     "afinado": null,
     "causa": "sin adaptador entrenado todavia"
    },
-   "icono3d": "traductor"
+   "icono3d": "traductor",
+   "i18n": {
+    "es": {
+     "name": "El Traductor",
+     "function": "Traduce en local, sin mandar el texto a ninguna nube."
+    },
+    "en": {
+     "name": "The Translator",
+     "function": "Translates locally, without sending the text to any cloud."
+    },
+    "fr": {
+     "name": "Le Traducteur",
+     "function": "Il traduit en local, sans envoyer le texte à aucun nuage."
+    },
+    "pt": {
+     "name": "O Tradutor",
+     "function": "Traduz localmente, sem mandar o texto para nenhuma nuvem."
+    }
+   }
   },
   {
    "id": "coder",
@@ -87,7 +159,25 @@
    },
    "icono3d": "coder",
    "nido": "estratega",
-   "cifras": true
+   "cifras": true,
+   "i18n": {
+    "es": {
+     "name": "El Artesano",
+     "function": "Lee tu código, propone el arreglo y escribe la prueba."
+    },
+    "en": {
+     "name": "The Craftsman",
+     "function": "Reads your code, proposes the fix and writes the test."
+    },
+    "fr": {
+     "name": "L'Artisan",
+     "function": "Il lit ton code, propose le correctif et écrit le test."
+    },
+    "pt": {
+     "name": "O Artesão",
+     "function": "Lê o teu código, propõe a correção e escreve o teste."
+    }
+   }
   },
   {
    "id": "analista",
@@ -104,7 +194,25 @@
    },
    "icono3d": "analista",
    "nido": "analista",
-   "cifras": true
+   "cifras": true,
+   "i18n": {
+    "es": {
+     "name": "El Analista",
+     "function": "Mira números y trazas y te dice qué cambió."
+    },
+    "en": {
+     "name": "The Analyst",
+     "function": "Looks at numbers and traces and tells you what changed."
+    },
+    "fr": {
+     "name": "L'Analyste",
+     "function": "Il regarde chiffres et traces et te dit ce qui a changé."
+    },
+    "pt": {
+     "name": "O Analista",
+     "function": "Olha para números e rastos e diz-te o que mudou."
+    }
+   }
   },
   {
    "id": "aprendiz",
@@ -119,7 +227,25 @@
     "afinado": null,
     "causa": "sin adaptador entrenado todavia"
    },
-   "icono3d": "aprendiz"
+   "icono3d": "aprendiz",
+   "i18n": {
+    "es": {
+     "name": "El Aprendiz",
+     "function": "Convierte lo que haces en memoria que puedes releer."
+    },
+    "en": {
+     "name": "The Apprentice",
+     "function": "Turns what you do into memory you can read back."
+    },
+    "fr": {
+     "name": "L'Apprenti",
+     "function": "Il change ce que tu fais en mémoire relisible."
+    },
+    "pt": {
+     "name": "O Aprendiz",
+     "function": "Converte o que fazes em memória que podes reler."
+    }
+   }
   },
   {
    "id": "bibliotecario",
@@ -135,7 +261,25 @@
     "causa": "sin adaptador entrenado todavia"
    },
    "icono3d": "bibliotecario",
-   "nido": "archivero"
+   "nido": "archivero",
+   "i18n": {
+    "es": {
+     "name": "El Bibliotecario",
+     "function": "Ordena tu memoria: busca, enlaza y quita duplicados."
+    },
+    "en": {
+     "name": "The Librarian",
+     "function": "Tidies your memory: searches, links and drops duplicates."
+    },
+    "fr": {
+     "name": "Le Bibliothécaire",
+     "function": "Il range ta mémoire : cherche, relie et retire les doublons."
+    },
+    "pt": {
+     "name": "O Bibliotecário",
+     "function": "Arruma a tua memória: procura, liga e tira duplicados."
+    }
+   }
   }
  ],
  "cola": {

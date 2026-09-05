@@ -122,8 +122,21 @@
       b.type = 'button'; b.className = 'cab-boton comando';
       b.textContent = s.comando;
       b.dataset.categoria = s.categoria;
+      /* EL COMANDO NO SE TRADUCE, LO QUE HACE SI. Un comando es un
+         IDENTIFICADOR: se teclea, se documenta y se comparte. Si `/instalar`
+         fuera `/install` en ingles, el mismo gesto tendria cuatro nombres y
+         cualquier guia que alguien escriba solo serviria para un idioma. Asi que
+         el rotulo se queda igual en los cuatro y la explicacion viaja en el
+         `title`, que sale al pasar el cursor y lo lee tambien quien navega con
+         teclado o con lector. Un termino, muchos idiomas.
+
+         El nombre del agente iba antes aqui; ahora acompana a la explicacion,
+         que es lo que de verdad hacia falta saber. */
       var a = estadoAgente(s.agente);
-      if (a) b.title = a.name;
+      var lang = document.documentElement.lang;
+      var que = s.que && (s.que[lang] || s.que.es);
+      var voz = a && ((a.i18n && a.i18n[lang]) || a);
+      b.title = [que, voz && voz.name].filter(Boolean).join(' · ');
       b.addEventListener('click', function () {
         // Se escribe en el campo y se atiende. Escribirlo importa: quien mira
         // aprende que el boton es un atajo de algo que puede teclear.

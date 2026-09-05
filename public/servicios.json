@@ -1,17 +1,97 @@
 {
  "esquema": 1,
  "estado": "REAL",
- "nota": "Los ocho servicios NO son ocho entidades nuevas: son un VERBO anadido a cada uno de los ocho companeros que ya viven en hub.json. Por eso aqui no hay nombres ni caras -- solo el comando, a quien despierta y que hace. El nombre y el ojo salen de hub.json, que es la unica fuente de esos datos. Duplicarlos aqui seria crear una segunda verdad sobre el mismo hecho.",
+ "nota": "Los ocho servicios NO son ocho entidades nuevas: son un VERBO anadido a cada uno de los ocho companeros que ya viven en hub.json. Por eso aqui no hay nombres ni caras -- solo el comando, a quien despierta y que hace. El nombre y el ojo salen de hub.json, que es la unica fuente de esos datos. Duplicarlos aqui seria crear una segunda verdad sobre el mismo hecho. EL COMANDO NO SE TRADUCE: es un identificador, se teclea y se comparte, y tres nombres para el mismo gesto parten cualquier guia que alguien escriba. Lo que se traduce es `que` --lo que hace-- y sale al pasar el cursor. Un termino, muchos idiomas.",
  "fuente": "agente: hub.json · disponibilidad: el campo `real` de ese mismo agente",
  "servicios": [
-  {"comando": "/instalar",  "agente": "instalador",    "categoria": "despliegue"},
-  {"comando": "/perfil",    "agente": "aprendiz",      "categoria": "personalizacion"},
-  {"comando": "/dataset",   "agente": "bibliotecario", "categoria": "personalizacion"},
-  {"comando": "/script",    "agente": "coder",         "categoria": "automatizacion"},
-  {"comando": "/eco",       "agente": "escritor",      "categoria": "automatizacion"},
-  {"comando": "/formatos",  "agente": "traductor",     "categoria": "automatizacion"},
-  {"comando": "/auditar",   "agente": "analista",      "categoria": "despliegue"},
-  {"comando": "/frontera",  "agente": "privacidad",    "categoria": "soberania"}
+  {
+   "comando": "/instalar",
+   "agente": "instalador",
+   "categoria": "despliegue",
+   "que": {
+    "es": "Te guía para instalar el producto en tu máquina.",
+    "en": "Guides you through installing the product on your machine.",
+    "fr": "Il te guide pour installer le produit sur ta machine.",
+    "pt": "Guia-te para instalar o produto na tua máquina."
+   }
+  },
+  {
+   "comando": "/perfil",
+   "agente": "aprendiz",
+   "categoria": "personalizacion",
+   "que": {
+    "es": "Convierte lo que haces en memoria que puedes releer.",
+    "en": "Turns what you do into memory you can read back.",
+    "fr": "Il change ce que tu fais en mémoire relisible.",
+    "pt": "Converte o que fazes em memória que podes reler."
+   }
+  },
+  {
+   "comando": "/dataset",
+   "agente": "bibliotecario",
+   "categoria": "personalizacion",
+   "que": {
+    "es": "Ordena tu memoria y prepara un conjunto de ejemplos.",
+    "en": "Tidies your memory and prepares a set of examples.",
+    "fr": "Il range ta mémoire et prépare un jeu d'exemples.",
+    "pt": "Arruma a tua memória e prepara um conjunto de exemplos."
+   }
+  },
+  {
+   "comando": "/script",
+   "agente": "coder",
+   "categoria": "automatizacion",
+   "que": {
+    "es": "Escribe contigo guiones, notas y textos largos.",
+    "en": "Writes scripts, notes and long texts with you.",
+    "fr": "Il écrit avec toi scénarios, notes et textes longs.",
+    "pt": "Escreve contigo guiões, notas e textos longos."
+   }
+  },
+  {
+   "comando": "/eco",
+   "agente": "escritor",
+   "categoria": "automatizacion",
+   "que": {
+    "es": "Mira el consumo del rack y te dice qué cambió.",
+    "en": "Looks at the rack's power draw and tells you what changed.",
+    "fr": "Il regarde la consommation du rack et te dit ce qui a changé.",
+    "pt": "Olha para o consumo do rack e diz-te o que mudou."
+   }
+  },
+  {
+   "comando": "/formatos",
+   "agente": "traductor",
+   "categoria": "automatizacion",
+   "que": {
+    "es": "Traduce y convierte en local, sin nube.",
+    "en": "Translates and converts locally, with no cloud.",
+    "fr": "Il traduit et convertit en local, sans nuage.",
+    "pt": "Traduz e converte localmente, sem nuvem."
+   }
+  },
+  {
+   "comando": "/auditar",
+   "agente": "analista",
+   "categoria": "despliegue",
+   "que": {
+    "es": "Lee tu código, propone el arreglo y escribe la prueba.",
+    "en": "Reads your code, proposes the fix and writes the test.",
+    "fr": "Il lit ton code, propose le correctif et écrit le test.",
+    "pt": "Lê o teu código, propõe a correção e escreve o teste."
+   }
+  },
+  {
+   "comando": "/frontera",
+   "agente": "privacidad",
+   "categoria": "soberania",
+   "que": {
+    "es": "Tacha lo privado antes de que salga de tu aparato.",
+    "en": "Strikes out what is private before it leaves your device.",
+    "fr": "Il biffe le privé avant qu'il ne quitte ton appareil.",
+    "pt": "Risca o que é privado antes de sair do teu aparelho."
+   }
+  }
  ],
  "textos": {
   "es": {

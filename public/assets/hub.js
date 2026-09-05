@@ -152,8 +152,23 @@
     } else {
       b.appendChild(el('span', 'modelo-inicial', (a.name || '?').replace(/^El /, '')[0]));
     }
-    b.appendChild(el('span', 'modelo-nombre', a.name));
-    b.appendChild(el('span', 'modelo-spec', a.function));
+    /* EL NOMBRE ES UNA ETIQUETA, Y UNA ETIQUETA PIDE TRADUCCION. Hasta el
+       2026-09-05 el catalogo traia un solo `name` y una sola `function`, en
+       castellano, asi que los ocho salian en castellano en la portada inglesa y
+       en la francesa -- en paginas por lo demas enteras en su idioma. Se veia
+       en pantalla; no lo cazaba ninguna prueba.
+
+       El catalogo conserva `name` y `function` como estaban: son la version
+       castellana y el respaldo si un idioma llegara sin traducir. `i18n[lang]`
+       manda cuando existe.
+
+       Y aqui NO se escribe ninguno, ni de ejemplo en un comentario: hay una
+       prueba que lo prohibe --para que el codigo no pueda inventar agentes que
+       el catalogo no tenga-- y busca por el nombre incluso dentro de la prosa.
+       Se aprendio poniendola en rojo. */
+    var voz = (a.i18n && a.i18n[document.documentElement.lang]) || a;
+    b.appendChild(el('span', 'modelo-nombre', voz.name || a.name));
+    b.appendChild(el('span', 'modelo-spec', voz.function || a.function));
     var r = a.real || {};
     b.appendChild(el('span', 'modelo-real ' + (r.disponible ? 'sirve' : 'no-sirve'),
       r.disponible ? L.hubDisponible : L.hubSinAdaptador));
