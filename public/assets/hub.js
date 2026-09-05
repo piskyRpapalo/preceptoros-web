@@ -246,9 +246,22 @@
       })
       .then(function (d) {
         DATOS = d;
-        var lang = (document.documentElement.lang || 'es').slice(0, 2);
-        L = (d.textos || {})[lang] || (d.textos || {}).es || {};
         if (!d.agentes || !d.agentes.length) throw new Error('catalogo sin agentes');
+        /* LOS TEXTOS VIVEN APARTE DESDE EL 2026-09-05. Estaban dentro de
+           `hub.json` y solo en tres lenguas: pt, it, de, ru y el caian al
+           castellano ENTERAS --el respaldo era por objeto, no por clave-- y
+           asi llevaban semanas en el panel, en la cola y en la correccion.
+           Las cinco que faltaban no cabian en `hub.json`, que ya iba por 10 KB
+           de los 16 del tope. El catalogo es una cosa y su traduccion, otra. */
+        return fetch('/hub-textos.json', { cache: 'no-store' })
+          .then(function (r) { return r.json(); })
+          .then(function (tx) {
+            var lang = (document.documentElement.lang || 'es').slice(0, 2);
+            L = (tx.textos || {})[lang] || (tx.textos || {}).es || {};
+            return d;
+          });
+      })
+      .then(function (d) {
         pintaPanel();
         var i = d.identidad || {};
         if (ident && i.github_url && window.HubMarca)

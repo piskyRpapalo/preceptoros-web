@@ -1016,20 +1016,35 @@ class Hub(unittest.TestCase):
                              PUBLICO / "assets" / f"agente-3d-{a['icono3d']}.webp"):
                     self.assertTrue(ruta.is_file(), f"falta {ruta.name}")
 
-    def test_el_hub_habla_los_tres_idiomas(self):
+    def test_el_hub_habla_todas_las_lenguas(self):
         """El guardian que este modulo NO puede usar, reimplementado aqui.
 
         `test_los_tres_idiomas_tienen_las_mismas_claves` mira el bloque #i18n
         de la portada y las claves `T.xxx` de sus scripts. El Hub se sale de
-        ahi a proposito: meter estas claves en las tres portadas cuesta ~500 B
-        cada una y `fr/index.html` no los tiene. Salirse de un guardian sin
+        ahi a proposito: meter estas claves en cada portada cuesta ~1,5 KB, y
+        en ruso y en griego eso las saca del tope. Salirse de un guardian sin
         traer otro seria dejar un hueco, asi que aqui esta el otro.
+
+        DOS COSAS CAMBIARON EL 2026-09-05, y la segunda es la que importa.
+        El texto se mudo de `hub.json` a `hub-textos.json` --el catalogo es una
+        cosa y su traduccion, otra-- y este test dejo de exigir TRES lenguas
+        para exigir TODAS las que haya en el disco.
+
+        Lo segundo tapa un agujero real: pt, it, de, ru y el llevaban semanas
+        cayendo al castellano ENTERAS en el panel, la cola y la correccion,
+        porque el respaldo era por objeto y no por clave y nadie lo vigilaba.
+        Con `{es, en, fr}` escrito a mano, el test daba verde mientras cinco
+        lenguas mostraban texto ajeno.
         """
-        t = self.d["textos"]
-        self.assertEqual({"es", "en", "fr"}, set(t), "faltan idiomas en hub.json")
+        t = json.loads((PUBLICO / "hub-textos.json")
+                       .read_text(encoding="utf-8"))["textos"]
+        en_disco = {d.name for d in PUBLICO.iterdir()
+                    if d.is_dir() and len(d.name) == 2 and (d / "index.html").exists()}
+        self.assertEqual(en_disco, set(t),
+                         f"lenguas sin textos del Hub: {en_disco ^ set(t)}")
         base = set(t["es"])
         self.assertTrue(base, "el bloque de textos esta vacio")
-        for idioma in ("en", "fr"):
+        for idioma in sorted(set(t) - {"es"}):
             with self.subTest(idioma=idioma):
                 self.assertEqual(base, set(t[idioma]),
                                  f"{idioma} difiere: {base ^ set(t[idioma])}")
@@ -1057,7 +1072,8 @@ class Hub(unittest.TestCase):
         """
         self.assertEqual("MOCK", self.d["estado"])
         self.assertIn("nota", self.d, "la maqueta no dice por que lo es")
-        self.assertIn("hubMaqueta", self.d["textos"]["es"])
+        self.assertIn("hubMaqueta", json.loads(
+            (PUBLICO / "hub-textos.json").read_text(encoding="utf-8"))["textos"]["es"])
         self.assertIn("panel-rotulo", self.js, "hub.js no pinta el rotulo de maqueta")
         # El rotulo se anade ANTES que la rejilla, no debajo. Se mira DENTRO
         # de `pintaAgentes`: la primera rejilla que aparece en el fichero es la

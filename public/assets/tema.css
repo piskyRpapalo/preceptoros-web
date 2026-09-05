@@ -44,6 +44,7 @@
      titulos de `instalar.html` se leian a duras penas. Este da 5,01 y sigue
      siendo bronce -- se probaron seis y es el primero que pasa el 4,5 sin
      irse a oro palido. Medido, no elegido. */
+  --n-velo-campo:rgba(30,25,41,.72);
   --n-glass:rgba(38,31,53,.55); --n-glass-solid:rgba(30,25,41,.94);
   --n-edge:rgba(255,255,255,.10);
   --n-panel-bg:#1e1929; --n-panel-fg:#ece9f5;
@@ -63,6 +64,7 @@
     --sol:var(--n-sol); --jardin:var(--n-jardin); --indigo:var(--n-indigo);
     --bronce:var(--n-bronce); --bronce-claro:var(--n-bronce-claro);
     --bronce-hondo:var(--n-bronce-hondo);
+    --velo-campo:var(--n-velo-campo);
     --glass:var(--n-glass); --glass-solid:var(--n-glass-solid);
     --edge:var(--n-edge); --depth:var(--n-depth);
     --panel-bg:var(--n-panel-bg); --panel-fg:var(--n-panel-fg);
@@ -77,6 +79,7 @@
   --sol:var(--n-sol); --jardin:var(--n-jardin); --indigo:var(--n-indigo);
   --bronce:var(--n-bronce); --bronce-claro:var(--n-bronce-claro);
   --bronce-hondo:var(--n-bronce-hondo);
+  --velo-campo:var(--n-velo-campo);
   --glass:var(--n-glass); --glass-solid:var(--n-glass-solid);
   --edge:var(--n-edge); --depth:var(--n-depth);
   --panel-bg:var(--n-panel-bg); --panel-fg:var(--n-panel-fg);

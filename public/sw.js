@@ -29,7 +29,7 @@
  * dos motivos -- el techo de 7 paginas del gate, y que un fichero de respaldo
  * tambien puede faltar del cache justo el dia que hace falta.
  */
-const VERSION = 'preceptoros-2026-09-q';
+const VERSION = 'preceptoros-2026-09-r';
 const SHELL = 'shell-' + VERSION;
 const OBRA = 'obra-' + VERSION;
 
@@ -55,7 +55,7 @@ const PAGINAS = ['', 'instalar.html', 'community.html', 'benchmark.html',
    hablas; la esfera es como se presenta ese companero cuando eliges. */
 const ESFERAS = ['instalador', 'privacidad', 'escritor', 'traductor',
                  'coder', 'analista', 'aprendiz', 'bibliotecario'];
-const HUB = ['/hub.json', '/modelos.json', '/servicios.json', '/instalar.json',
+const HUB = ['/hub.json', '/hub-textos.json', '/modelos.json', '/servicios.json', '/instalar.json',
              '/assets/instalar-descargas.js', '/assets/widget.css', '/assets/cabezal.css', '/assets/panel.css', '/assets/nubes.css',
              '/assets/hub.js',
              '/assets/hub-cola.js', '/assets/chat-router.js', '/assets/corregir.js', '/assets/comandos.js']
@@ -79,7 +79,7 @@ const HUB = ['/hub.json', '/modelos.json', '/servicios.json', '/instalar.json',
    una contradiccion entre la pagina y el dato. El catalogo de modelos no
    tiene gemelo en el HTML, y ademas lleva su propia `ultima_lectura`: una
    copia vieja se declara vieja sola. */
-const CONTENIDO_JSON = ['/hub.json', '/modelos.json', '/servicios.json', '/instalar.json'];
+const CONTENIDO_JSON = ['/hub.json', '/hub-textos.json', '/modelos.json', '/servicios.json', '/instalar.json'];
 
 /* El manifiesto va a red primero: es diminuto, cambia cuando cambian los
    iconos, y un manifiesto viejo hace que la app instalada se quede con el

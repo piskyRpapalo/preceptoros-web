@@ -144,12 +144,17 @@ button.enviar svg{margin-right:.1rem}
    pagina, y ahi si hay que decir donde acaba el producto. */
 @supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)){
   #cabezal,#chat{background:color-mix(in srgb, var(--glass-solid) 62%, transparent)}
-  /* El desplegable de companeros y la rueda tambien. Son la Capa 3 y caen
-     ENCIMA del chat: opacos abrian un agujero solido en una pagina que por lo
-     demas deja ver el fondo, y ese salto se lee como que algo se ha roto. Van
-     mas cerrados que los paneles --78 contra 62-- porque llevan texto pequeno
-     sobre violeta y ahi el fondo animado si estorba. */
-  #panel-modelos,#panel-ajustes{
+  /* La rueda tambien. Es la Capa 3 y cae ENCIMA del chat: opaca abria un
+     agujero solido en una pagina que por lo demas deja ver el fondo, y ese
+     salto se lee como que algo se ha roto. Va mas cerrada que los paneles
+     --78 contra 62-- porque lleva texto pequeno sobre violeta y ahi el fondo
+     animado si estorba.
+
+     AQUI ESTABA TAMBIEN `#panel-modelos` y se ha ido: desde que Herramientas
+     son nubes sueltas, ese panel no tiene cuerpo que pintar --lo lleva cada
+     pastilla-- y `nubes.css` le pone `transparent`. Una regla que ya no manda
+     nada es peor que ninguna: quien la lea creera que ahi se decide algo. */
+  #panel-ajustes{
     background:color-mix(in srgb, var(--violeta) 78%, transparent)}
   /* Los atajos y los comandos: pildoras sobre el chat, que ya es traslucido.
      Con fondo opaco flotaban como pegatinas encima del cristal. */

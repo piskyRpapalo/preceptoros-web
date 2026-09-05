@@ -19,6 +19,7 @@
   --oro:#F2D08A;
   --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"DejaVu Sans Mono",monospace;
   /* --- el cristal, sobre la paleta de siempre --------------------------- */
+  --velo-campo:rgba(255,255,255,.75);   /* lo que se escribe: velo, no plancha */
   --glass:rgba(242,245,247,.55);
   --glass-solid:rgba(242,245,247,.92);   /* donde hay que LEER parrafos */
   --edge:rgba(255,255,255,.55);          /* el filo de luz del cristal */
@@ -143,8 +144,18 @@ button[disabled]{background:var(--tenue);border-color:var(--tenue);cursor:progre
   font-weight:700;font-size:.85rem;padding:.6rem 1rem}
 .identity .leve:is(:hover,:focus){background:var(--indigo);border-color:var(--indigo)}
 .fila{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.7rem}
+/* EL BLANCO ESTABA COSIDO EN EL VALOR, no en un nombre, y por eso no giraba
+   con el tema: `rgba(255,255,255,.75)` en oscuro dejaba la caja de escribir
+   como una plancha clara en medio de una pagina que por lo demas deja ver el
+   marmol. Es la MISMA cicatriz que la app se quito el 2026-09-04 con sus dos
+   velos, y esta escrita alli con estas palabras: «llevaban el blanco cosido en
+   el valor y no en un nombre».
+
+   Con nombre, el velo se sustituye en `tema.css` como todo lo demas, y en
+   oscuro es un velo oscuro. En claro vale exactamente lo que valia -- no hay
+   cambio que mirar en ese tema. */
 input,textarea,select{font:inherit;font-family:var(--mono);width:100%;
-  background:rgba(255,255,255,.75);color:var(--tinta);
+  background:var(--velo-campo);color:var(--tinta);
   border:1px solid var(--bronce);border-radius:calc(var(--radius) - 6px);
   padding:.65rem .7rem;transition:border-color .2s ease,box-shadow .3s ease}
 input:focus,textarea:focus,select:focus{outline:0;border-color:var(--violeta);
