@@ -43,7 +43,14 @@
   /* Morfosis entre documentos: la puerta no se corta, se transforma en el chat. */
   @view-transition { navigation: auto; }
   * { box-sizing:border-box; margin:0; padding:0 }
-  body { font:400 15px/1.6 var(--mono); color:var(--tinta); background:var(--fondo);
+  /* EL MARMOL, QUE ESTA PUERTA PERDIO AL REESCRIBIRSE. La portada vieja lo
+     traia y la nueva salio con un color plano: era la unica pagina del sitio
+     sin las vetas, y es justo la primera que se ve. Aqui va cosido a mano
+     --esta pagina no carga `tema.css`, que es lo que gira el token-- y va la
+     lamina OSCURA porque esta puerta es oscura siempre. */
+  body { font:400 15px/1.6 var(--mono); color:var(--tinta);
+    background:var(--fondo) url(/assets/marble-violet-oscuro.webp) repeat;
+    background-size:340px;
     min-height:100dvh; display:flex; align-items:center; justify-content:center;
     padding:1.5rem }
   .gate { text-align:center; max-width:32rem;

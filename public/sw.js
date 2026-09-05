@@ -29,7 +29,7 @@
  * dos motivos -- el techo de 7 paginas del gate, y que un fichero de respaldo
  * tambien puede faltar del cache justo el dia que hace falta.
  */
-const VERSION = 'preceptoros-2026-09-u';
+const VERSION = 'preceptoros-2026-09-v';
 const SHELL = 'shell-' + VERSION;
 const OBRA = 'obra-' + VERSION;
 
@@ -55,7 +55,13 @@ const PAGINAS = ['', 'instalar.html', 'community.html', 'benchmark.html',
    hablas; la esfera es como se presenta ese companero cuando eliges. */
 const ESFERAS = ['instalador', 'privacidad', 'escritor', 'traductor',
                  'coder', 'analista', 'aprendiz', 'bibliotecario'];
-const HUB = ['/hub.json', '/hub-textos.json', '/modelos.json', '/servicios.json', '/instalar.json',
+/* LAS DOS LAMINAS DE MARMOL, 12.570 B entre las dos. Van al shell porque el
+   fondo dejo de ser decorado el 2026-09-05: la puerta de la raiz y el telon de
+   cada lengua se pintan SOBRE el, y sin conexion salian como dos planchas
+   lisas. Cuesta menos que uno solo de los bustos, y las pinta base.css,
+   tema.css y la portada de la raiz -- no es arte huerfano. */
+const HUB = ['/hub.json', '/hub-textos.json',
+             '/assets/marble-violet.webp', '/assets/marble-violet-oscuro.webp', '/modelos.json', '/servicios.json', '/instalar.json',
              '/assets/instalar-descargas.js', '/assets/widget.css', '/assets/puertas.css', '/assets/cabezal.css', '/assets/panel.css', '/assets/nubes.css',
              '/assets/hub.js',
              '/assets/hub-cola.js', '/assets/chat-router.js', '/assets/corregir.js', '/assets/comandos.js']
