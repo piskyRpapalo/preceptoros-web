@@ -106,3 +106,18 @@ button.mic:hover:not(:disabled),button.mic:focus-visible{
    Lo que escribe la persona no lo necesita: va en su propia pastilla. */
 #dialogo p{font-weight:600}
 #dialogo p.tu{font-weight:500}
+
+/* --- la velocidad del cerebro, debajo de su nombre ------------------------
+   Pequena y en la letra de los datos: no compite con el chat, acompana al
+   badge del modelo. Cada fila es un backend; los huecos van debajo, en el
+   color de los NO_DATA de la casa, porque son parte de la medida y no una
+   nota al pie. */
+.medidas{margin:.35rem 0 0;font-size:.68rem;line-height:1.5;color:var(--tenue)}
+.medidas-cab b{color:var(--violeta-texto)}
+.medidas p{margin:0}
+.medidas-fila{display:flex;flex-wrap:wrap;gap:.4rem;align-items:baseline}
+.medidas-backend{color:var(--jardin);font-variant-numeric:tabular-nums}
+.medidas-dato{font-variant-numeric:tabular-nums;color:var(--tinta)}
+.medidas-hueco{font-size:.62rem;padding:0 .35rem;border-radius:999px;
+  color:var(--tenue);border:1px solid var(--bronce)}
+.medidas-nodata{color:var(--sol);font-size:.64rem}

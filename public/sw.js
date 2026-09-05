@@ -29,7 +29,7 @@
  * dos motivos -- el techo de 7 paginas del gate, y que un fichero de respaldo
  * tambien puede faltar del cache justo el dia que hace falta.
  */
-const VERSION = 'preceptoros-2026-09-w';
+const VERSION = 'preceptoros-2026-09-y';
 const SHELL = 'shell-' + VERSION;
 const OBRA = 'obra-' + VERSION;
 
@@ -62,7 +62,7 @@ const ESFERAS = ['instalador', 'privacidad', 'escritor', 'traductor',
    tema.css y la portada de la raiz -- no es arte huerfano. */
 const HUB = ['/hub.json', '/hub-textos.json',
              '/assets/marble-violet.webp', '/assets/marble-violet-oscuro.webp', '/modelos.json', '/servicios.json', '/instalar.json',
-             '/assets/instalar-descargas.js', '/assets/widget.css', '/assets/puertas.css', '/assets/escribir.css', '/assets/cabezal.css', '/assets/panel.css', '/assets/nubes.css',
+             '/assets/instalar-descargas.js', '/assets/widget.css', '/assets/puertas.css', '/assets/escribir.css', '/medidas.json', '/assets/medidas.js', '/assets/cabezal.css', '/assets/panel.css', '/assets/nubes.css',
              '/assets/hub.js',
              '/assets/hub-cola.js', '/assets/chat-router.js', '/assets/corregir.js', '/assets/comandos.js']
   .concat(ESFERAS.map(e => '/assets/agente-3d-' + e + '.webp'))
@@ -85,7 +85,7 @@ const HUB = ['/hub.json', '/hub-textos.json',
    una contradiccion entre la pagina y el dato. El catalogo de modelos no
    tiene gemelo en el HTML, y ademas lleva su propia `ultima_lectura`: una
    copia vieja se declara vieja sola. */
-const CONTENIDO_JSON = ['/hub.json', '/hub-textos.json', '/modelos.json', '/servicios.json', '/instalar.json'];
+const CONTENIDO_JSON = ['/hub.json', '/hub-textos.json', '/medidas.json', '/modelos.json', '/servicios.json', '/instalar.json'];
 
 /* El manifiesto va a red primero: es diminuto, cambia cuando cambian los
    iconos, y un manifiesto viejo hace que la app instalada se quede con el

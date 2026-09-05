@@ -1,0 +1,182 @@
+{
+ "esquema": 1,
+ "estado": "MEDIDO",
+ "nota": "Velocidad del cerebro que sirve la web, en MEDIA POR HORA. Este fichero esta pensado para que lo reescriba una maquina: el enjambre local cambia de modelo, mide, y vuelca aqui la ventana cerrada. La pagina no calcula nada -- lee y pinta.",
+ "contrato": {
+  "quien_escribe": "el enjambre local del nodo soberano; la web solo lee",
+  "cada_cuanto": "al cerrar cada hora, o al cambiar de modelo",
+  "obligatorio": [
+   "modelo",
+   "maquina",
+   "ventana.desde",
+   "ventana.hasta",
+   "ventana.muestras",
+   "lineas[].backend",
+   "lineas[].prompt",
+   "lineas[].generacion"
+  ],
+  "null_significa_NO_DATA": "Un campo a `null` se pinta como NO_DATA con su causa al lado. NUNCA se rellena con una estimacion para que la tabla quede bonita: una cifra sin procedencia es peor que un hueco.",
+  "unidades": "tok/s. `ttft` en milisegundos. `contexto` en tokens."
+ },
+ "medido": "2026-08-25",
+ "como": "llama-bench -p 128 -n 32 -r 1, mismo binario y mismo modelo en las dos filas",
+ "maquina": "Ryzen 7 255 · 8 nucleos / 16 hilos · Radeon 780M (gfx1103) · 64 GB",
+ "modelo": "Qwen3.8-27B-Uncensored-OrcaRouter Q4_K_M · 15,65 GiB",
+ "ventana": {
+  "periodo": "1h",
+  "desde": null,
+  "hasta": null,
+  "muestras": 1,
+  "causa": "Todavia NO hay media por hora: estas dos filas son UNA pasada de llama-bench cada una, del 2026-08-25. La forma ya es la de la ventana horaria para que el enjambre solo tenga que volcar; la cifra que hay hoy es la que hay, y lo dice."
+ },
+ "contexto": {
+  "medido": 32768,
+  "declarado": 262144,
+  "nota": "262K es la ficha del modelo, no el techo de esta maquina. Por encima de 32K: NO_DATA."
+ },
+ "lineas": [
+  {
+   "backend": "CPU",
+   "detalle": "-ngl 0, 8 hilos",
+   "prompt": 22.76,
+   "generacion": 2.74,
+   "ttft": null,
+   "sha256": null,
+   "firma": null
+  },
+  {
+   "backend": "Vulkan",
+   "detalle": "-ngl 99, iGPU",
+   "prompt": 67.17,
+   "generacion": 4.63,
+   "ttft": null,
+   "sha256": null,
+   "firma": null
+  }
+ ],
+ "por_que_no_cuadra": "El prompt casi se triplica y la generacion no: en una iGPU la generacion la limita el ancho de banda de la DDR5, que comparte con la CPU. Para un bucle que mete documentos largos y genera poco, la cifra que manda es la del prompt.",
+ "huecos": [
+  {
+   "que": "media por hora",
+   "causa": "el enjambre todavia no vuelca ventanas cerradas; hoy hay una pasada suelta"
+  },
+  {
+   "que": "sha256",
+   "causa": "el fichero del modelo no publica su huella; sin ella «Qwen3.8-27B» no identifica nada"
+  },
+  {
+   "que": "TTFT",
+   "causa": "llama-bench no cronometra el primer token"
+  },
+  {
+   "que": "firma",
+   "causa": "no hay endpoint de firma publicado; la cola responde 404"
+  }
+ ],
+ "textos": {
+  "es": {
+   "titulo": "Velocidad medida",
+   "tuya": "Tu máquina",
+   "prompt": "prompt",
+   "generacion": "generación",
+   "contexto": "contexto",
+   "sinFirma": "sin firmar",
+   "medidoEl": "medido el",
+   "verLibro": "Ver el Libro de Pruebas",
+   "sinTurno": "Escribe un turno y se mide aquí. Nada de esto sale de tu aparato.",
+   "muestras": "muestras",
+   "ventana": "media de 1 h"
+  },
+  "en": {
+   "titulo": "Measured speed",
+   "tuya": "Your machine",
+   "prompt": "prompt",
+   "generacion": "generation",
+   "contexto": "context",
+   "sinFirma": "unsigned",
+   "medidoEl": "measured on",
+   "verLibro": "See the Book of Trials",
+   "sinTurno": "Write a turn and it is measured here. None of this leaves your device.",
+   "muestras": "samples",
+   "ventana": "1 h average"
+  },
+  "fr": {
+   "titulo": "Vitesse mesurée",
+   "tuya": "Votre machine",
+   "prompt": "prompt",
+   "generacion": "génération",
+   "contexto": "contexte",
+   "sinFirma": "non signé",
+   "medidoEl": "mesuré le",
+   "verLibro": "Voir le Livre d'Épreuves",
+   "sinTurno": "Écrivez un tour et il se mesure ici. Rien de tout cela ne quitte votre appareil.",
+   "muestras": "échantillons",
+   "ventana": "moyenne 1 h"
+  },
+  "pt": {
+   "titulo": "Velocidade medida",
+   "tuya": "A tua máquina",
+   "prompt": "prompt",
+   "generacion": "geração",
+   "contexto": "contexto",
+   "sinFirma": "não assinado",
+   "medidoEl": "medido a",
+   "verLibro": "Ver o Livro de Provas",
+   "sinTurno": "Escreve um turno e mede-se aqui. Nada disto sai do teu aparelho.",
+   "muestras": "amostras",
+   "ventana": "média de 1 h"
+  },
+  "it": {
+   "titulo": "Velocità misurata",
+   "tuya": "La tua macchina",
+   "prompt": "prompt",
+   "generacion": "generazione",
+   "contexto": "contesto",
+   "sinFirma": "non firmato",
+   "medidoEl": "misurato il",
+   "verLibro": "Vedi il Libro delle Prove",
+   "sinTurno": "Scrivi un turno e si misura qui. Niente di questo esce dal tuo apparecchio.",
+   "muestras": "campioni",
+   "ventana": "media di 1 h"
+  },
+  "de": {
+   "titulo": "Gemessene Geschwindigkeit",
+   "tuya": "Dein Rechner",
+   "prompt": "Prompt",
+   "generacion": "Erzeugung",
+   "contexto": "Kontext",
+   "sinFirma": "nicht signiert",
+   "medidoEl": "gemessen am",
+   "verLibro": "Das Prüfbuch ansehen",
+   "sinTurno": "Schreib einen Zug und es wird hier gemessen. Nichts davon verlässt dein Gerät.",
+   "muestras": "Messungen",
+   "ventana": "1-h-Mittel"
+  },
+  "ru": {
+   "titulo": "Измеренная скорость",
+   "tuya": "Твоя машина",
+   "prompt": "prompt",
+   "generacion": "генерация",
+   "contexto": "контекст",
+   "sinFirma": "без подписи",
+   "medidoEl": "измерено",
+   "verLibro": "Смотреть Книгу испытаний",
+   "sinTurno": "Напиши ход, и он измерится здесь. Ничего из этого не покидает твоё устройство.",
+   "muestras": "измерений",
+   "ventana": "среднее за 1 ч"
+  },
+  "el": {
+   "titulo": "Μετρημένη ταχύτητα",
+   "tuya": "Το μηχάνημά σου",
+   "prompt": "prompt",
+   "generacion": "παραγωγή",
+   "contexto": "συμφραζόμενα",
+   "sinFirma": "χωρίς υπογραφή",
+   "medidoEl": "μετρήθηκε",
+   "verLibro": "Δες το Βιβλίο Δοκιμών",
+   "sinTurno": "Γράψε μια κίνηση και μετριέται εδώ. Τίποτα από αυτά δεν φεύγει από τη συσκευή σου.",
+   "muestras": "δείγματα",
+   "ventana": "μέσος όρος 1 ώρας"
+  }
+ }
+}

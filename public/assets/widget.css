@@ -27,6 +27,16 @@
    Lo que paga la legibilidad es la LETRA, no un fondo: el texto generado pasa
    a negrita en `chat.css`. Sin desenfoque esta hoja tampoco tiene ya cristal que degradar. */
 #cabezal,#chat{background:transparent}
+/* EL PIE DE FRASES ENTRA CON EL CHAT. Son un solo marco --el chat pone los
+   lados y el pie los recoge y cierra-- y el pie se habia quedado opaco: el
+   marco acababa en un escalon de color a media altura. Lo que se ve como una
+   caja se pinta como una caja.
+
+   El desenfoque se le quita a `#chat` en `base.css`, que es donde nace: se
+   apaga en la regla que lo enciende y no con un `none` puesto encima. Un
+   apagado a posteriori deja las dos declaraciones vivas y hay que leer las dos
+   para saber que pasa. */
+.honest-footer{background:transparent}
 #cabezal .marca{flex:1;min-width:11rem}
 #cabezal h1{font-size:1.05rem;margin:0 0 .35rem}
 

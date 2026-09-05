@@ -524,7 +524,14 @@ class Estructura(unittest.TestCase):
                 self.assertIsNotNone(pie, "falta el pie honesto")
                 self.assertNotIn("<li>", pie.group(1),
                                  "hay texto escrito a mano en el pie: sácalo al i18n")
-                self.assertIn('id="pie-honesto"', pie.group(1))
+                # LAS TRES FRASES SE RETIRARON el 2026-09-05. Eran una lista
+                # que `pie.js` rellenaba desde el i18n, y con la placa del chat
+                # transparente sobraban: ocupaban el tercio de abajo repitiendo
+                # lo que la linea de pruebas ya dice con cifras. Esta linea
+                # exigia `id="pie-honesto"`; ahora exige lo que de verdad hay
+                # que proteger -- que el pie siga publicando su medida.
+                self.assertIn('class="proof"', pie.group(1),
+                              "el pie perdio la linea de pruebas")
 
     def test_las_portadas_declaran_hreflang(self):
         """Tres traducciones sin hreflang son tres paginas sueltas para un

@@ -56,8 +56,13 @@ main{width:100%;max-width:46rem;margin:0 auto}
 .panel{background:var(--marmol-claro);border:1px solid var(--bronce);
   border-radius:var(--radius);padding:1.25rem 1.15rem;margin:0 0 1.4rem;
   box-shadow:var(--depth)}
+/* `#chat` QUEDA FUERA. Con el fondo transparente pero el desenfoque puesto, el
+   marmol salia NITIDO fuera de la placa y difuso dentro: la veta se cortaba
+   justo en el canto. Transparente de verdad es dejar pasar la imagen, no una
+   version esmerilada de ella. El resto de paneles conserva su cristal, que es
+   lo que sostiene los parrafos largos sobre marmol. */
 @supports (backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px)){
-  .panel{background:var(--glass);
+  .panel:not(#chat){background:var(--glass);
     -webkit-backdrop-filter:blur(16px) saturate(180%);
     backdrop-filter:blur(16px) saturate(180%)}
 }
