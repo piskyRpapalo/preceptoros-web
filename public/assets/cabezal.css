@@ -41,14 +41,9 @@
      metian debajo: «Crear identida...» cortado. El hueco sale de `--esfera`,
      igual que el de la navegacion, para que no haya dos numeros para lo mismo.
      `-1rem` porque el circulo llega hasta el borde y su curva deja aire abajo. */
-  /* LA MARCA TAMBIEN ESQUIVA LA CARA. Faltaba, y se veia: «PRECEPTOR» entero y
-     el «OS» por debajo de la esfera. Es la misma reserva que ya tenian entrar,
-     la energia y la navegacion -- y sale del mismo `--esfera`, para que las
-     cuatro se muevan juntas el dia que la cara cambie de tamano. */
-  #cabezal #identity,#cabezal .cab-solar,#cabezal .marca{
-    padding-right:calc(var(--esfera) - .2rem);box-sizing:border-box}
-  /* Los enlaces de identidad caben debajo del nombre en vez de a su lado: con
-     la reserva puesta, en la misma linea no entraban los dos. */
+  /* Las reservas pieza a pieza se fueron: el hueco de la cara lo pone el
+     cabezal entero, y aqui solo se ajusta cuanto mide. */
+  #cabezal{padding-right:calc(var(--esfera) + 1.2rem)}
   #cabezal .marca{flex-wrap:wrap}
   /* SOLO se estira si es el UNICO mando, que es el caso de «crear identidad»
      sin sesion. Con sesion hay tres hijos y un 100 % a cada uno son tres filas:

@@ -67,7 +67,7 @@
    un `top` fijo no podia garantizar.
 
    `pointer-events:none` para que no se trague un clic de lo que hay debajo. */
-.presentacion{position:absolute;right:.2rem;top:.9rem;
+.presentacion{position:absolute;right:.35rem;top:.9rem;
   z-index:var(--capa-4-cara);pointer-events:none}
 .esfera{width:var(--esfera);height:var(--esfera);border-radius:50%;
   background:var(--disco-cara) url("/assets/caras/cara-reposo-violeta-256.webp")

@@ -71,10 +71,17 @@
     b.type = 'button'; b.className = 'leve';
     b.setAttribute('popovertarget', 'identity-menu');
     if (yo) {
-      var p = document.createElement('span');
-      p.className = 'yo'; p.textContent = T.idHola + ' ' + yo.apodo;
-      zona.appendChild(p);
+      /* EL NOMBRE ES LA PUERTA, no un rotulo al lado de la puerta. Habia tres
+         piezas apiladas --«Hola, X», «Mi perfil» y «Ver mi huella»-- y las
+         tres a tamano de boton: en el Doogee eso eran tres filas del cabezal
+         para decir quien eres. Ahora el pseudonimo ES el enlace, que ademas es
+         donde se busca: se pulsa tu nombre para ver lo tuyo.
+
+         `title` conserva lo que el rotulo decia, para quien pase por encima y
+         para quien lea con los oidos: un nombre suelto no anuncia que lleva
+         a ningun sitio. */
       b.textContent = T.idClave;
+      b.setAttribute('aria-label', T.idClave);
       /* LA PUERTA AL PERFIL VA AQUI Y NO EN EL CABEZAL. El cabezal de la
          portada se midio en el Doogee: siete botones ocupaban tres filas, y
          se bajo a cinco. Un sexto fijo desharia esa medida para todo el
@@ -92,8 +99,14 @@
         var mi = document.createElement('a');
         mi.className = 'leve yo-perfil';
         mi.href = './profile.html';
-        mi.textContent = T.idPerfil;
+        mi.textContent = yo.apodo;
+        mi.title = T.idPerfil;
         zona.appendChild(mi);
+      } else {
+        // En la propia ficha el nombre no enlaza a si misma: se dice y ya.
+        var p = document.createElement('span');
+        p.className = 'yo'; p.textContent = yo.apodo;
+        zona.appendChild(p);
       }
       // La huella completa, para quien quiera comprobar que su firma es suya.
       // Va al menu y no al hueco: pulsando dos veces, la version anterior
@@ -102,7 +115,19 @@
       n.className = 'tenue'; n.style.wordBreak = 'break-all';
       menu.appendChild(n);
       crypto.subtle.exportKey('raw', yo.claves.publicKey).then(function (raw) {
-        n.textContent = T.idPublica + ' ' + hex(raw);
+        var completa = hex(raw);
+        n.textContent = T.idPublica + ' ' + completa;
+        /* LA HUELLA, CUANDO EXISTE, SE ENSENA COMO NUMERO CORTO. El boton decia
+           «Ver mi huella» y ocupaba una fila entera para no decir ninguna
+           huella. Con los seis primeros digitos se reconoce de un vistazo y
+           cabe al lado del nombre; la completa sigue estando a un toque, en el
+           menu, que es donde se comprueba de verdad.
+
+           Se pone DESPUES de exportar y no antes: si la exportacion fallara,
+           el boton se queda con su rotulo en vez de con un hueco. El nombre
+           accesible no cambia -- seis digitos no anuncian lo que hace. */
+        b.textContent = completa.slice(0, 6);
+        b.classList.add('huella-corta');
       });
     } else {
       b.textContent = T.idEntrar;

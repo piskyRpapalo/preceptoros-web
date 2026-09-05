@@ -65,7 +65,22 @@
    puertas a partes iguales: con `flex-wrap` los rotulos miden distinto en cada
    idioma y la fila salia torcida en frances y recta en castellano. */
 .cab-fila{display:flex;align-items:center;gap:.6rem;width:100%}
-#cabezal{flex-direction:column;align-items:stretch}
+/* EL HUECO DE LA CARA LO RESERVA EL CABEZAL, UNA SOLA VEZ.
+   Antes lo reservaba cada pieza por su cuenta --la marca, entrar, la energia y
+   la navegacion, cuatro `padding-right` con el mismo calculo-- y eso tiene un
+   defecto que no se ve hasta que muerde: la quinta pieza que alguien anada no
+   lo llevara, se meterá debajo de la cara, y nadie sabra por que. Ya paso dos
+   veces en esta misma sesion: primero con entrar y la frase solar, despues con
+   la marca.
+
+   Reservandolo aqui, lo hereda TODO lo que entre en el cabezal, incluido lo que
+   todavia no existe. Es la misma leccion que este arbol ya aprendio con el
+   hueco del rail: se reserva en el contenedor, no contenedor a contenedor.
+
+   La esfera vive DENTRO de ese hueco --`right` la pega al canto-- asi que el
+   numero es uno y esta en un sitio. */
+#cabezal{flex-direction:column;align-items:stretch;
+  padding-right:calc(var(--esfera) + .7rem)}
 #cabezal .marca{flex:0 0 auto;min-width:0;display:flex;align-items:center;gap:.5rem}
 #cabezal h1{margin:0}
 /* Los enlaces de identidad, pegados al nombre. Estaban centrados en la fila con
@@ -88,8 +103,21 @@
    el defecto no existe. */
 #cabezal #identity{order:9;margin-left:auto;flex:0 0 auto;align-self:flex-start;
   display:flex;flex-wrap:wrap;align-items:center;gap:.3rem}
+/* CON SESION, TODO COMPRIMIDO Y EN UNA FILA. Eran tres piezas a tamano de
+   boton --saludo, perfil y huella-- y en el telefono ocupaban tres filas del
+   cabezal para decir quien eres. El nombre lleva al perfil y la huella se
+   reduce a su numero, asi que las tres caben donde antes cabia una. */
 #cabezal #identity .yo{margin:0;font-size:.72rem;white-space:nowrap}
-#cabezal #identity .leve{font-size:.68rem;padding:.24rem .5rem}
+#cabezal #identity .leve{font-size:.68rem;padding:.22rem .5rem;
+  border-radius:999px;white-space:nowrap}
+/* El nombre se lee como puerta: subrayado y en el violeta de los enlaces. */
+#cabezal #identity .yo-perfil{font-weight:700;color:var(--violeta-texto);
+  text-decoration:underline;text-underline-offset:.2em;background:transparent}
+/* La huella es un DATO, asi que va en la letra de los datos y con las cifras
+   de ancho fijo: seis digitos que bailan de sitio no se reconocen de un ojo. */
+#cabezal #identity .huella-corta{font-family:ui-monospace,monospace;
+  font-variant-numeric:tabular-nums;letter-spacing:.04em;
+  color:var(--tenue);background:transparent}
 .cab-solar{order:7}
 /* La cola de firma, a la izquierda de entrar y con SU MISMO aspecto: son la
    misma pareja --quien eres y que firmas con ello-- y dos estilos distintos
@@ -106,11 +134,9 @@
    maqueta--. De dos en dos siempre entran, y es la misma figura en el telefono
    y en el escritorio: nadie tiene que aprenderse dos.
 
-   El hueco de la derecha no se estima: sale de `--esfera`, la misma medida con
-   la que se dibuja la cara. Escrito a mano serian dos numeros para lo mismo, y
-   el dia que la cara cambie de tamano la fila se le metera debajo. */
-#cab-nav{display:grid;grid-template-columns:repeat(2,1fr);gap:.4rem;
-  width:100%;padding-right:calc(var(--esfera) + .4rem)}
+   El hueco de la derecha ya no lo pone esta regla: lo reserva el cabezal para
+   todos sus hijos. Ver arriba. */
+#cab-nav{display:grid;grid-template-columns:repeat(2,1fr);gap:.4rem;width:100%}
 #cab-nav .cab-boton{text-align:center;padding:.48rem .3rem}
 /* MAS CLARO Y MAS TRANSPARENTE que el violeta de la marca, a proposito: las
    puertas son navegacion, no identidad. Si pesaran lo mismo que `PreceptorOS` o
