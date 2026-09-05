@@ -35,9 +35,18 @@
    como uno importante y otro secundario, y no lo son.
    Violeta con canto dorado, igual que las cuatro puertas de abajo: el cabezal
    entero pasa a tener una sola familia de mandos. */
+/* SIN COLOR DENTRO: el simbolo dorado y su canto bastan. Con el violeta macizo
+   los dos mandos pesaban como las cuatro puertas de abajo, y no son eso -- son
+   dos llaves pequenas en la esquina, no navegacion. Vacios dejan pasar el
+   marmol y la fila de arriba respira.
+
+   ABIERTO SI SE TINE, pero apenas: un velo dorado al 16 %. Un mando que no
+   cambia al abrirse obliga a mirar el panel para saber si esta abierto, y en
+   el telefono el panel cae fuera de vista. El velo va en el fondo y no en el
+   grosor del canto: dos pixeles de borde mueven la fila entera un pixel. */
 .lateral-boton{flex:none;display:inline-flex;align-items:center;
   justify-content:center;width:40px;height:40px;padding:0;font:inherit;
-  cursor:pointer;color:var(--oro);background:#2f2757;
+  cursor:pointer;color:var(--oro);background:transparent;
   border:1px solid var(--oro);border-radius:999px}
 .lateral-boton svg{width:1.25em;height:1.25em}
 /* HERRAMIENTAS ES UNA PUERTA, NO UN ICONO MUDO. Detras hay ocho companeros y
@@ -58,8 +67,8 @@
   margin:0;overflow:visible;clip-path:none;border:0}
 
 .lateral-boton:focus-visible{outline:2px solid var(--violeta);outline-offset:2px}
-.lateral-boton[aria-expanded="true"]{color:var(--oro);background:#3b3170;
-  border-color:var(--oro)}
+.lateral-boton[aria-expanded="true"]{color:var(--oro);
+  background:rgba(242,208,138,.16);border-color:var(--oro)}
 #panel-modelos,#panel-ajustes{position:absolute;left:.7rem;top:calc(100% - .1rem);
   z-index:var(--capa-3-lateral);width:min(20rem,calc(100vw - 1.4rem));
   max-height:min(70vh,32rem);overflow:auto;padding:.6rem;

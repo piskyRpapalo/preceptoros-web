@@ -23,10 +23,17 @@
   var badge = document.getElementById('brain');
   if (!badge || !badge.parentNode) return;
 
+  /* EL MODELO Y SU VELOCIDAD, EN LA MISMA CAJA. Estaban sueltos y uno debajo
+     del otro: el badge del modelo por su lado y las cifras por el suyo, sobre
+     el marmol, y se leian como dos cosas. Son una -- «quien contesta y a que
+     velocidad». El badge se MUEVE dentro en vez de duplicarlo: sigue siendo el
+     mismo elemento que `state.js` actualiza, y no hay dos sitios diciendo el
+     nombre del modelo. */
   var caja = document.createElement('div');
   caja.className = 'medidas';
   caja.hidden = true;
-  badge.parentNode.insertBefore(caja, badge.nextSibling);
+  badge.parentNode.insertBefore(caja, badge);
+  caja.appendChild(badge);
 
   function el(t, c, x) {
     var n = document.createElement(t);
@@ -79,11 +86,14 @@
       var ctx = d.contexto || {};
       if (ctx.medido) caja.appendChild(el('p', 'medidas-pie',
         M.contexto + ' ' + ctx.medido));
-      // Los huecos, uno por linea y con su causa. Son la mitad del valor de
-      // esto: una tabla sin ellos parece completa y no lo esta.
-      (d.huecos || []).forEach(function (h) {
-        caja.appendChild(el('p', 'medidas-nodata', 'NO_DATA · ' + h.que + ' — ' + h.causa));
-      });
+      /* LOS CUATRO NO_DATA SALEN DE LA CAJA, no del fichero. Eran cuatro
+         lineas de causa debajo de dos cifras: mas explicacion que dato, y en
+         la placa del chat pesaban mas que el chat. Siguen enteros en
+         `medidas.json`, con su `que` y su `causa`, que es donde un hueco tiene
+         que estar para poder leerse.
+         Lo que NO se va es la marca por linea --«sin firmar»--: esa es la que
+         impide leer estas cifras como si fueran del Libro de Pruebas. Un dato
+         sin su estado al lado es el que enganna; una causa larga solo estorba. */
       caja.hidden = false;
     })
     .catch(function () { /* sin fichero no se pinta nada: mejor vacio que a medias */ });

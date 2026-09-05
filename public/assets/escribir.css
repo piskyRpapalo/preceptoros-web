@@ -112,7 +112,12 @@ button.mic:hover:not(:disabled),button.mic:focus-visible{
    badge del modelo. Cada fila es un backend; los huecos van debajo, en el
    color de los NO_DATA de la casa, porque son parte de la medida y no una
    nota al pie. */
-.medidas{margin:.35rem 0 0;font-size:.68rem;line-height:1.5;color:var(--tenue)}
+.medidas{display:inline-block;margin:.35rem 0 0;padding:.4rem .7rem;
+  font-size:.68rem;line-height:1.5;color:var(--tenue);
+  border:1px solid var(--oro);border-radius:var(--radius)}
+/* Dentro de la caja el badge pierde su propio recuadro: dos cantos, uno dentro
+   del otro y a dos milimetros, se leen como un error de maqueta. */
+.medidas .brain{margin:0 0 .25rem;padding:0;border:0;background:transparent}
 .medidas-cab b{color:var(--violeta-texto)}
 .medidas p{margin:0}
 .medidas-fila{display:flex;flex-wrap:wrap;gap:.4rem;align-items:baseline}
@@ -120,4 +125,3 @@ button.mic:hover:not(:disabled),button.mic:focus-visible{
 .medidas-dato{font-variant-numeric:tabular-nums;color:var(--tinta)}
 .medidas-hueco{font-size:.62rem;padding:0 .35rem;border-radius:999px;
   color:var(--tenue);border:1px solid var(--bronce)}
-.medidas-nodata{color:var(--sol);font-size:.64rem}

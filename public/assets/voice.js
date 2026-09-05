@@ -37,13 +37,55 @@
   boton.setAttribute('aria-label', T.micHablar);
 
   if (!SR || !('processLocally' in SR.prototype)) {
-    // Se declara la causa exacta y el boton queda apagado. No hay plan B: el
-    // plan B era la nube, y ese es justamente el que no vuelve.
-    boton.disabled = true;
+    /* LA EXPLICACION SE PIDE, NO SE PREDICA (2026-09-05). Estaba escrita en la
+       pagina, permanente, al lado del boton: una linea larga sobre un
+       reconocedor que no existe, para todo el que entra, dijera lo que dijera
+       su navegador. Ocupaba sitio y era ruido para el 100 % de las visitas por
+       un mando que usa una minoria.
+
+       Ahora sale al PULSARLO. El boton no se desactiva --un boton apagado no
+       se puede pulsar y entonces nadie llega a la explicacion-- sino que
+       declara `aria-disabled`: se ve apagado, se puede tocar, y lo que hace es
+       contar por que no hace lo otro. Quien no ve depende del dictado, y la
+       respuesta honesta no puede ser un boton muerto sin motivo.
+
+       El motivo tampoco es «no se puede»: es una DECISION. La unica
+       alternativa al dictado en el aparato es mandar el audio a un servidor
+       externo, y mientras esta web prometa que nada de lo dicho sale de la
+       maquina, ese camino no se toma. Eso es lo que dice el aviso. */
+    boton.setAttribute('aria-disabled', 'true');
     boton.title = T.micSinLocal;
     fila.appendChild(boton);
-    decir(T.micSinLocal, 'nodata');
+    boton.addEventListener('click', function () { aviso(T.micSinLocal); });
     return;
+  }
+
+  /* El aviso emergente: aparece pegado al boton, se cierra al pulsar fuera o
+     con Escape, y se anuncia como `status` para quien usa lector. Uno solo a
+     la vez -- dos avisos abiertos son dos cosas que cerrar. */
+  function aviso(texto) {
+    var previo = document.querySelector('.voice-aviso');
+    if (previo) { previo.remove(); return; }
+    var caja = document.createElement('div');
+    caja.className = 'voice-aviso';
+    caja.setAttribute('role', 'status');
+    var p = document.createElement('p');
+    p.textContent = texto;
+    caja.appendChild(p);
+    var x = document.createElement('button');
+    x.type = 'button'; x.className = 'voice-aviso-cerrar'; x.textContent = '\u00d7';
+    x.setAttribute('aria-label', T.micCerrarAviso);
+    x.addEventListener('click', function () { caja.remove(); });
+    caja.appendChild(x);
+    fila.appendChild(caja);
+    function fuera(e) {
+      if (caja.contains(e.target) || fila.contains(e.target)) return;
+      caja.remove(); document.removeEventListener('click', fuera);
+    }
+    setTimeout(function () { document.addEventListener('click', fuera); }, 0);
+    document.addEventListener('keydown', function esc(e) {
+      if (e.key === 'Escape') { caja.remove(); document.removeEventListener('keydown', esc); }
+    });
   }
 
   var oyendo = false, rec = null;

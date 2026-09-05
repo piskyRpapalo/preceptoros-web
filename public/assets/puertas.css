@@ -65,10 +65,18 @@
    El violeta hondo se queda: es el fondo contra el que se midio el oro --9,15
    a 1, el mismo en los dos temas-- y esa medida es la que sostiene que la
    letra se lea. Un canto no cambia el contraste del texto; el fondo si. */
-#cab-nav .cab-boton{background:#2f2757;
-  border-color:var(--oro);color:var(--oro)}
+/* LAS CUATRO PUERTAS, IGUAL QUE EL RESTO DE BOTONES. Estuvieron un rato en
+   violeta hondo con letra dorada y quedaban aparte: en la misma pantalla,
+   «El Instalador» y «Crear identidad» eran pastillas de violeta pleno con
+   letra blanca, asi que la fila de navegacion parecia de otra familia. Ahora
+   son lo mismo -- violeta pleno, letra blanca, canto dorado y pildora.
+
+   Blanco sobre `--violeta` da 5,34:1, la medida que ya sostenia el boton de
+   enviar. El canto dorado se queda: es lo que hace fila. */
+#cab-nav .cab-boton{background:var(--violeta);
+  border-color:var(--oro);color:#fff;border-radius:999px}
 #cab-nav .cab-boton:hover,#cab-nav .cab-boton:focus-visible{
-  background:#3b3170;border-color:var(--oro)}
+  background:var(--violeta-texto);border-color:var(--oro)}
 /* Las dos excepciones. Instalar es la ACCION y va en el sol de la casa.
    LoRAtelier es el producto principal, asi que pesa mas que sus vecinas --mismo
    violeta, mas opaco-- y se marca con el canto dorado.
@@ -83,7 +91,7 @@
    dorado repartido, un naranja suelto rompe la fila que el canto acababa de
    formar. Si algun dia hay que destacarla otra vez, se destaca con peso o con
    sitio, no con un cuarto color. */
-#cab-nav .cab-boton.empezar{background:#2f2757;border-color:var(--oro)}
+#cab-nav .cab-boton.empezar{background:var(--violeta);border-color:var(--oro)}
 /* SOLIDO Y SIN TOKENS QUE GIREN. Con el violeta transparente el fondo del
    boton cambiaba con el tema --#5546AA en oscuro, #9485E7 en claro-- y NINGUN
    dorado llegaba a 4,5:1 en los dos a la vez: el mejor daba 4,98 en uno y 2,09
@@ -97,7 +105,7 @@
    La medida no mintio; envejecio. Por eso este fichero escribe los tres fondos
    en hexadecimal fijo: un color que no gira no puede envejecer a espaldas de
    quien lo midio. */
-#cab-nav .cab-boton.loratelier{background:#3c327c;border-color:var(--oro)}
+#cab-nav .cab-boton.loratelier{background:var(--violeta);border-color:var(--oro)}
 /* «LoR» en oro sobre el indigo --el par violeta+dorado que se pidio-- y
    «Atelier» en blanco. Mismo gesto que `Preceptor`+`OS`. El canto dorado es el
    borde del boton, no una sombra de letra: esa la reserva la doctrina para
