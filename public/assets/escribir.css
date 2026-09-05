@@ -57,11 +57,24 @@
    come la mitad de la altura y la caja parecia una linea de busqueda. Sigue
    siendo `min-height` --no `rows`-- asi que crece con lo que se escriba y no
    encoge por debajo de lo comodo. En el telefono manda `dvh`, mas abajo. */
-#pregunta{min-height:13rem;line-height:1.55;padding:.9rem 1rem;
-  border-radius:calc(var(--radius) + 4px)}
+/* EL CAMPO SE MIDE CONTRA LA PANTALLA, no contra un numero. Se pidio «el doble
+   de alto» cuando era una caja suelta; ahora comparte placa con la
+   conversacion, y 26rem --lo que salia de doblar 13-- son 416 px dentro de una
+   columna que en una ventana normal mide 263: el dialogo se quedaba en cero y
+   el campo se lo comia todo. Medido en el navegador con la conversacion llena.
+
+   `clamp` lo deja con techo y suelo: nunca pasa de 11rem ni baja de 6. Se
+   probo primero con 22dvh y la conversacion se quedaba en 128 px de los 528 de
+   la placa -- medido--: el campo y la caja de datos se la comian entera. Lo
+   que crecio de verdad no es el campo: es la placa, que ahora ocupa el alto
+   entero y es donde vive la conversacion. */
+#pregunta{height:clamp(6rem,14dvh,11rem);min-height:0;line-height:1.55;
+  padding:.9rem 1rem;border-radius:calc(var(--radius) + 4px)}
 /* En vertical 13rem serian dos tercios de la pantalla y el teclado tapa el
    resto: alli la caja se mide contra la ventana, no contra el escritorio. */
-@media (max-width:1023px){#pregunta{min-height:min(9.5rem,26dvh)}}
+/* En el telefono manda la ventana: 26rem serian mas pantalla de la que hay,
+   y con el teclado abierto no quedaria conversacion que leer. */
+@media (max-width:1023px){#pregunta{height:clamp(5rem,16dvh,9rem)}}
 /* LA FILA DE ESCRIBIR, COMO EN LA APP. Alli el campo es una pastilla oscura
    larga, el microfono un icono desnudo sobre ella y enviar un boton violeta
    aparte, alto y a la derecha. Aqui eran tres pildoras iguales en una fila:
@@ -119,9 +132,13 @@ button.mic[aria-disabled="true"]{border-color:rgba(242,208,138,.45);opacity:.7}
    badge del modelo. Cada fila es un backend; los huecos van debajo, en el
    color de los NO_DATA de la casa, porque son parte de la medida y no una
    nota al pie. */
+/* El mismo violeta hondo que los atajos --`#2f2757`--: es un dato al pie de la
+   fila de gestos y sobre el marmol se leia flotando sin suelo. Con fondo, la
+   banda de abajo queda como una sola pieza. */
 .medidas{display:inline-block;margin:.35rem 0 0;padding:.4rem .7rem;
-  font-size:.68rem;line-height:1.5;color:var(--tenue);
+  font-size:.68rem;line-height:1.5;color:var(--tenue);background:#2f2757;
   border:1px solid var(--oro);border-radius:var(--radius)}
+.medidas-dato{color:#e9e4ff}
 /* Dentro de la caja el badge pierde su propio recuadro: dos cantos, uno dentro
    del otro y a dos milimetros, se leen como un error de maqueta. */
 .medidas .brain{margin:0 0 .25rem;padding:0;border:0;background:transparent}

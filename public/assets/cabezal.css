@@ -84,8 +84,13 @@
 /* --- la maqueta: chat protagonista, panel a la derecha ------------------ */
 #hub-layout{position:relative}
 #chat{margin:0}
-.chat-quien{display:flex;align-items:center;gap:.6rem;margin-bottom:.6rem}
-.chat-quien img{width:44px;height:44px;flex:0 0 44px;border-radius:50%}
+/* LA NUBE DEL COMPANERO, ARRIBA A LA DERECHA Y FUERA DEL FLUJO. Encabezaba el
+   chat con su busto al lado y se llevaba la primera linea entera; ahora flota
+   en la esquina, que es donde dice con quien hablas sin quitarle sitio a lo
+   que se lee. Sigue siendo un boton --abre Herramientas-- asi que no puede ir
+   detras de nada: `z-index` por encima del dialogo. */
+.chat-quien{position:absolute;top:.55rem;right:.7rem;z-index:2;
+  display:flex;align-items:center;gap:.6rem;margin:0}
 /* EL NOMBRE, EN PASTILLA VIOLETA. Es un boton --abre la nube de companeros--
    y tiene que parecerlo: un nombre en negrita se lee como un rotulo, y nadie
    pulsa un rotulo. Misma figura que las nubes que abre, para que se entienda

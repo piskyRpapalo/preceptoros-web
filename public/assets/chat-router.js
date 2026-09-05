@@ -23,7 +23,7 @@
   var PC = window.matchMedia ? matchMedia('(min-width:1024px)') : { matches: false };
   var quieto = window.matchMedia
     ? matchMedia('(prefers-reduced-motion: reduce)') : { matches: false };
-  var boton = null, avatar = null, nombre = null, aviso = null, activo = null;
+  var boton = null, nombre = null, aviso = null, activo = null;
   /* El papel Caza-Nido se COMPONE aqui y viaja ya hecho. `chat.js` recibe
      texto, no una clave: tiene 129 B libres y no debe aprender a buscar en el
      catalogo. Este fichero ya sabe quien contesta; saber que papel juega es la
@@ -53,8 +53,13 @@
   // --- la cabecera del chat: quien te habla ------------------------------
   var barra = document.createElement('div');
   barra.className = 'chat-quien';
-  avatar = document.createElement('img');
-  avatar.width = 44; avatar.height = 44; avatar.alt = ''; avatar.decoding = 'async';
+  /* LA IMAGEN DEL COMPANERO SE RETIRA (2026-09-05). Eran 44 px de busto al
+     lado de una pastilla que ya dice el nombre: el dibujo no anadia dato --
+     obligaba a aprenderse ocho caras para saber lo que la palabra dice sola--
+     y en el telefono se comia el ancho de la primera linea del chat. La nube
+     se va sola a la esquina superior derecha, que es donde no estorba a lo que
+     se lee. El catalogo sigue teniendo su `icono3d`: se usa en el panel de
+     Herramientas, que es donde una cara SI ayuda a elegir. */
   /* EL NOMBRE ES UN BOTON, Y ABRE LA NUBE DE COMPANEROS (2026-09-05). Era un
      `span`: decia con quien hablas y no ofrecia cambiarlo, asi que para elegir
      otro habia que descubrir el mando de las tres rayas del cabezal. Lo que
@@ -75,7 +80,7 @@
   });
   aviso = document.createElement('p');
   aviso.className = 'chat-aviso'; aviso.hidden = true;
-  barra.appendChild(avatar); barra.appendChild(nombre);
+  barra.appendChild(nombre);
   chat.insertBefore(aviso, chat.firstChild);
   chat.insertBefore(barra, chat.firstChild);
 
@@ -83,7 +88,6 @@
   function vestir(a) {
     if (!a) return;
     activo = a;
-    avatar.src = '/assets/agente-3d-' + a.icono3d + '.webp';
     // La etiqueta va en el idioma de la pagina, y sale del bloque i18n de la
     // portada -- que es donde vive el texto de esta lengua y de ninguna otra.
     var voz = (window.Hub && Hub.rotulos.agentes && Hub.rotulos.agentes[a.id]) || a;
