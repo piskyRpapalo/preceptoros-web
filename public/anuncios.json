@@ -41,6 +41,14 @@
      "privado": "Privado: abre um issue no repositório público. É o único canal que hoje chega a sério.",
      "pero": "NO_DATA — um tópico assinado aqui ainda não viaja para lado nenhum: a Ágora responde 404 em /api/v1/threads (medido a 2026-08-30). Assina-se e fica no teu aparelho até que esse extremo exista.",
      "enlaceTexto": "Abrir um issue"
+    },
+    "it": {
+     "titulo": "Dammi il tuo riscontro",
+     "cuerpo": "Cosa si è rotto, cosa non hai capito, cosa ti aspettavi di trovare e non c'era. Serve più una frase concreta di un elogio.",
+     "publico": "Pubblico: firma una discussione qui sotto. Si firma con la tua chiave, sul tuo apparecchio.",
+     "privado": "Privato: apri un issue nel repository pubblico. È l'unico canale che oggi arriva davvero.",
+     "pero": "NO_DATA — una discussione firmata qui non viaggia ancora da nessuna parte: l'Agorà risponde 404 su /api/v1/threads (misurato il 2026-08-30). Si firma e resta sul tuo apparecchio finché quell'endpoint non esisterà.",
+     "enlaceTexto": "Apri un issue"
     }
    },
    "enlace": "https://github.com/piskyRpapalo/PreceptorOS/issues"
@@ -78,6 +86,13 @@
      "publico": "Medido a 2026-08-29: rank 16, alpha 32, 2 épocas, 93 exemplos de treino e 16 de validação. 553 s uma linha e 445 s a outra. Abaixo de dez minutos, não uma noite.",
      "privado": "O conjunto de exemplos é teu e fica teu. O que se partilha, se quiseres, é o adaptador que sai.",
      "pero": "NO_DATA — ainda não há forma de o mandar pela web: não há endpoint de envio. Hoje acorda-se pelo tópico e passa-se o ficheiro à mão."
+    },
+    "it": {
+     "titulo": "Allena un modello",
+     "cuerpo": "Porta un tuo insieme di esempi ed esce un adattatore LoRA allenato sul rack. Non serve una GPU: si fa in CPU pura ed è misurato.",
+     "publico": "Misurato il 2026-08-29: rank 16, alpha 32, 2 epoche, 93 esempi di addestramento e 16 di validazione. 553 s una riga e 445 s l'altra. Sotto i dieci minuti, non una notte.",
+     "privado": "L'insieme di esempi è tuo e resta tuo. Quello che si condivide, se vuoi, è l'adattatore che ne esce.",
+     "pero": "NO_DATA — non c'è ancora modo di mandarlo dal sito: non esiste un endpoint di caricamento. Oggi ci si accorda nella discussione e il file si passa a mano."
     }
    }
   }

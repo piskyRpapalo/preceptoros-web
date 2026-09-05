@@ -135,7 +135,8 @@
       var a = estadoAgente(s.agente);
       var lang = document.documentElement.lang;
       var que = s.que && (s.que[lang] || s.que.es);
-      var voz = a && ((a.i18n && a.i18n[lang]) || a);
+      var rot = window.Hub && Hub.rotulos.agentes;
+      var voz = a && ((rot && rot[a.id]) || a);
       b.title = [que, voz && voz.name].filter(Boolean).join(' · ');
       b.addEventListener('click', function () {
         // Se escribe en el campo y se atiende. Escribirlo importa: quien mira

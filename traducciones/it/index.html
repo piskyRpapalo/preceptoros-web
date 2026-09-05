@@ -1,15 +1,15 @@
 <!doctype html>
-<html lang="en" data-tema="oscuro">
+<html lang="it" data-tema="oscuro">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>PreceptorOS · Your sovereign companion</title>
-<meta name="description" content="PreceptorOS · Your sovereign AI companion. Install it on your own machine, no cloud, no telemetry. Served from a 99% solar rack. Your memory, your identity, your privacy.">
+<title>PreceptorOS · Il tuo compagno sovrano</title>
+<meta name="description" content="PreceptorOS · Il tuo compagno di IA sovrano. Installalo sulla tua macchina, senza nuvola, senza telemetria. Servito da un rack al 99% solare. La tua memoria, la tua identità, la tua privacy.">
 <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
-<meta property="og:title" content="PreceptorOS · Your AI, your memory, your sovereignty">
-<meta property="og:description" content="Your AI guide at home: install it and it is already with you. Persistent memory on your machine, context sanitised before it leaves. No accounts, no telemetry, no cloud.">
+<meta property="og:title" content="PreceptorOS · La tua IA, la tua memoria, la tua sovranità">
+<meta property="og:description" content="La tua guida di IA in casa: si installa e ti accompagna. Memoria persistente sulla tua macchina, contesto ripulito prima di uscire. Senza account, senza telemetria, senza nuvola obbligatoria.">
 <meta property="og:image" content="https://preceptoros.org/assets/preceptor-og.png">
-<meta property="og:url" content="https://preceptoros.org/en/">
+<meta property="og:url" content="https://preceptoros.org/it/">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="stylesheet" href="/assets/base.css">
@@ -21,14 +21,11 @@
 <link rel="stylesheet" href="/assets/cabezal.css">
 <link rel="stylesheet" href="/assets/panel.css">
 <link rel="stylesheet" href="/assets/tema.css">
-<!-- hreflang -->
+<link rel="alternate" 
 <link rel="alternate" hreflang="en" href="https://preceptoros.org/en/">
-<link rel="alternate" hreflang="es" href="https://preceptoros.org/es/">
 <link rel="alternate" hreflang="fr" href="https://preceptoros.org/fr/">
-<link rel="alternate" hreflang="it" href="https://preceptoros.org/it/">
 <link rel="alternate" hreflang="pt" href="https://preceptoros.org/pt/">
 <link rel="alternate" hreflang="x-default" href="https://preceptoros.org/">
-<!-- hreflang -->
 <link rel="manifest" href="/manifest.webmanifest">
 <meta name="theme-color" content="#17131F">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"PreceptorOS","applicationCategory":"AI Companion","operatingSystem":"Linux, Windows, macOS, Android"}</script>
@@ -81,8 +78,8 @@
   <section id="hub"></section>
 <div id="hub-layout"><div id="chat" class="panel">
     <div id="dialogo"></div>
-    <textarea id="pregunta" class="chat-input" placeholder="Write your first question..." rows="3"></textarea>
-    <div class="fila chat-acciones"><button id="enviar" type="button" class="boton enviar" aria-label="Send"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M3 20.5v-6l8-2.5-8-2.5v-6L22 12z"/></svg><span class="rotulo">Send</span></button>
+    <textarea id="pregunta" class="chat-input" placeholder="Scrivi la tua prima domanda..." rows="3"></textarea>
+    <div class="fila chat-acciones"><button id="enviar" type="button" class="boton enviar" aria-label="Invia"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M3 20.5v-6l8-2.5-8-2.5v-6L22 12z"/></svg><span class="rotulo">Invia</span></button>
       <div id="voice" class="fila"></div></div>
     <div class="atajos" id="atajos" hidden></div>
     <div id="motor"></div>
@@ -91,11 +88,11 @@
   </div>
   <footer class="honest-footer">
       <ul id="pie-honesto"></ul>
-      <p class="proof"><b>617</b> tests green in the app · <b>76</b> on this site · <b>zero</b> external requests on load · <b>16 KB</b> max per file</p>
+      <p class="proof"><b>617</b> test verdi nell'app · <b>76</b> su questo sito · <b>zero</b> richieste esterne al caricamento · <b>16 KB</b> massimo per file</p>
     </footer>
 </main>
-<script type="application/json" id="i18n">{"brainAsleep": "No engine started yet", "brainBrowser": "Browser AI (Edge)", "brainLabel": "Model:", "brainLive": "Live on your machine", "brainNone": "none", "causaDesconocida": "Cause unknown.", "causaElegida": "Cause: you chose the JSON.", "causaEnBenchmark": "Cause: the engine is chosen and measured in the Benchmark.", "copiaManual": "Select and Ctrl+C", "copiado": "Copied OK", "copiarPara": "Copy for", "destinos": ["Gemini", "ChatGPT", "Claude", "my local AI"], "etiquetaJson": "Text to copy to your AI", "falloRespuesta": "NO_DATA - failed to generate response", "falloVacio": "NO_DATA — the engine finished without emitting a single character. This is not an empty answer: it is a turn that never happened.", "idAviso": "A key is generated in your browser. It cannot be exported or copied to another device: if you clear the site data, this identity is lost and there is no way to recover it. There is no password to forget and no server holding it.", "idClave": "See my fingerprint", "idPerfil": "My profile", "idEntrar": "Create identity", "idFallo": "NO_DATA — the identity could not be created:", "idHola": "Hello,", "idPublica": "Public key:", "laiListo": "You will speak with", "llevate": "Take this text to the AI you already use.", "micEnAparato": "Dictation on your device. Audio does not leave here.", "micEscuchando": "Listening… tap to stop", "micFallo": "NO_DATA — local dictation failed:", "micHablar": "Speak", "micSinLocal": "NO_DATA — your browser does not offer on-device dictation. The button remains off.", "mismoTexto": "The same text works for any AI. That is the idea: not to depend on a single one.", "pie1f": "Until you press a button, this page has not spoken to anyone.", "pie1r": "Zero external requests on load.", "pie2f": "The engine is chosen in the Benchmark.", "pie2r": "Downloads and measurements live there, not here.", "pie3f": "If no engine is chosen,", "pie3r": "the page generates a JSON for you to take to the AI you already have.", "pieBenchmark": "LoRAtelier", "pieHitos": "Milestones", "pieInstalar": "Install", "pieTablon": "Board", "prefieroJson": "I prefer the JSON", "sinMotor": "NO_DATA · no AI engine available in this browser.", "tu": "You", "cabComunidad": "COMMUNITY", "cabBenchmark": "LORATELIER", "cabCola": "SIGNING", "cabIdioma": "LANGUAGE", "cabHome": "HOME", "cabEmpezar": "START HERE", "rackSinAdaptador": "NO_DATA — this companion has no model served on the rack yet.", "rackFallo": "NO_DATA — the rack did not answer.", "rackCausa": "Cause: the rack did not answer; the public tunnel is not up yet.", "cabInstala": "INSTALL HERE", "cabInstalaIos": "To install: tap Share (the up arrow) and then «Add to Home Screen».", "cabSolar": "99% solar, except the web provider", "atResume": "Sum this up", "atPasos": "Give me the steps", "atDudas": "What are you missing", "companeros": "Agents and companions", "ajustes": "Settings", "piel": "Skin", "pielOscura": "Dark", "pielClara": "Light", "pleno": "Full screen", "plenoSalir": "Leave full screen", "agentes": {"instalador": {"name": "The Installer", "function": "Installs the product and introduces you to the rest."}, "privacidad": {"name": "The Customs Officer", "function": "Strikes out what is private before it leaves your device."}, "escritor": {"name": "The Writer", "function": "Writes with you: scripts, notes and long texts."}, "traductor": {"name": "The Translator", "function": "Translates locally, without sending the text to any cloud."}, "coder": {"name": "The Craftsman", "function": "Reads your code, proposes the fix and writes the test."}, "analista": {"name": "The Analyst", "function": "Looks at numbers and traces and tells you what changed."}, "aprendiz": {"name": "The Apprentice", "function": "Turns what you do into memory you can read back."}, "bibliotecario": {"name": "The Librarian", "function": "Tidies your memory: searches, links and drops duplicates."}}}</script>
-<script src="/assets/prompts-en.js"></script>
+<script type="application/json" id="i18n">{"brainAsleep": "Nessun motore ancora avviato", "brainBrowser": "IA del browser (Edge)", "brainLabel": "Modello:", "brainLive": "Vivo sulla tua macchina", "brainNone": "nessuno", "causaDesconocida": "Causa sconosciuta.", "causaElegida": "Causa: hai scelto il JSON.", "causaEnBenchmark": "Causa: il motore si sceglie e si misura nel LoRAtelier.", "copiaManual": "Seleziona e Ctrl+C", "copiado": "Copiato OK", "copiarPara": "Copia per", "destinos": ["Gemini", "ChatGPT", "Claude", "la mia IA locale"], "etiquetaJson": "Testo da copiare nella tua IA", "falloRespuesta": "NO_DATA · errore nel generare la risposta", "falloVacio": "NO_DATA — il motore ha terminato senza emettere un solo carattere. Non è una risposta vuota: è un turno che non è mai esistito.", "idAviso": "Viene generata una chiave nel tuo browser. Non si può esportare né copiare su un altro apparecchio: se cancelli i dati del sito, questa identità si perde e non c'è modo di recuperarla. Nessuna password da dimenticare, nessun server che la conservi.", "idClave": "Vedi la mia impronta", "idPerfil": "Il mio profilo", "idEntrar": "Crea identità", "idFallo": "NO_DATA — non è stato possibile creare l'identità:", "idHola": "Ciao,", "idPublica": "Chiave pubblica:", "laiListo": "Parlerai con", "llevate": "Porta questo testo all'IA che già usi.", "micEnAparato": "Dettatura sul tuo apparecchio. L'audio non esce da qui.", "micEscuchando": "In ascolto… tocca per fermare", "micFallo": "NO_DATA — la dettatura locale non ha funzionato:", "micHablar": "Parla", "micSinLocal": "NO_DATA — il tuo browser non offre dettatura sull'apparecchio. Il pulsante resta spento: il riconoscitore della nuvola non torna.", "mismoTexto": "Lo stesso testo vale per qualsiasi IA. L'idea è questa: non dipendere da una sola.", "pie1f": "Finché non premi un pulsante, questa pagina non ha parlato con nessuno.", "pie1r": "Zero richieste esterne al caricamento.", "pie2f": "Il motore si sceglie nel LoRAtelier.", "pie2r": "Gli scaricamenti e le misure vivono lì, non qui.", "pie3f": "Se non c'è un motore scelto,", "pie3r": "la pagina ti genera un JSON da portare all'IA che già hai.", "pieBenchmark": "LoRAtelier", "pieHitos": "Traguardi", "pieInstalar": "Installa", "pieTablon": "Bacheca", "prefieroJson": "Preferisco il JSON", "sinMotor": "NO_DATA · nessun motore di IA disponibile in questo browser.", "tu": "Tu", "cabComunidad": "COMUNITÀ", "cabBenchmark": "LORATELIER", "cabCola": "FIRMA", "cabIdioma": "LINGUA", "cabHome": "HOME", "cabEmpezar": "INIZIA QUI", "rackSinAdaptador": "NO_DATA — questo compagno non ha ancora un modello servito sul rack.", "rackFallo": "NO_DATA — il rack non ha risposto.", "rackCausa": "Causa: il rack non ha risposto; il tunnel pubblico non è ancora attivo.", "cabInstala": "INSTALLA QUI", "cabInstalaIos": "Per installare: tocca Condividi (la freccia verso l'alto) e poi «Aggiungi a Home».", "cabSolar": "99% solare, tranne il fornitore web", "atResume": "Riassumi questo", "atPasos": "Dammi i passi", "atDudas": "Cosa ti manca di sapere", "companeros": "Agenti e compagni", "ajustes": "Impostazioni", "piel": "Aspetto", "pielOscura": "Scuro", "pielClara": "Chiaro", "pleno": "Schermo intero", "plenoSalir": "Esci da schermo intero", "agentes": {"instalador": {"name": "L'Installatore", "function": "Ti installa il prodotto e ti presenta gli altri."}, "privacidad": {"name": "Il Doganiere", "function": "Cancella ciò che è privato prima che esca dal tuo apparecchio."}, "escritor": {"name": "Lo Scrittore", "function": "Scrive con te: copioni, appunti e testi lunghi."}, "traductor": {"name": "Il Traduttore", "function": "Traduce in locale, senza mandare il testo a nessuna nuvola."}, "coder": {"name": "L'Artigiano", "function": "Legge il tuo codice, propone la correzione e scrive il test."}, "analista": {"name": "L'Analista", "function": "Guarda numeri e tracce e ti dice cosa è cambiato."}, "aprendiz": {"name": "L'Apprendista", "function": "Trasforma quello che fai in memoria che puoi rileggere."}, "bibliotecario": {"name": "Il Bibliotecario", "function": "Ordina la tua memoria: cerca, collega e toglie i doppioni."}}}</script>
+<script src="/assets/prompts-it.js"></script>
 <script src="/assets/fallback.js"></script>
 <script src="/assets/state.js"></script>
 <script src="/assets/rack.js"></script>

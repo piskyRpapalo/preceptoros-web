@@ -165,8 +165,15 @@
        Y aqui NO se escribe ninguno, ni de ejemplo en un comentario: hay una
        prueba que lo prohibe --para que el codigo no pueda inventar agentes que
        el catalogo no tenga-- y busca por el nombre incluso dentro de la prosa.
-       Se aprendio poniendola en rojo. */
-    var voz = (a.i18n && a.i18n[document.documentElement.lang]) || a;
+       Se aprendio poniendola en rojo.
+
+       LAS TRADUCCIONES VIVEN EN LA PORTADA, NO EN EL CATALOGO, y eso se decidio
+       midiendo. Estuvieron un rato dentro de `hub.json`, un bloque `i18n` por
+       agente: con cuatro lenguas el fichero marcaba 14.012 B de los 16.384 que
+       permite el tope, y las ocho previstas no cabian. Repartidas, cada portada
+       carga SOLO su lengua --unos 850 B-- en el bloque que ya venia con ella, y
+       una lengua nueva no engorda nada de lo que descargan las demas. */
+    var voz = (T.agentes && T.agentes[a.id]) || a;
     b.appendChild(el('span', 'modelo-nombre', voz.name || a.name));
     b.appendChild(el('span', 'modelo-spec', voz.function || a.function));
     var r = a.real || {};

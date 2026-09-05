@@ -68,8 +68,9 @@
     if (!a) return;
     activo = a;
     avatar.src = '/assets/agente-3d-' + a.icono3d + '.webp';
-    // Mismo criterio que el catalogo: la etiqueta va en el idioma de la pagina.
-    var voz = (a.i18n && a.i18n[document.documentElement.lang]) || a;
+    // La etiqueta va en el idioma de la pagina, y sale del bloque i18n de la
+    // portada -- que es donde vive el texto de esta lengua y de ninguna otra.
+    var voz = (window.Hub && Hub.rotulos.agentes && Hub.rotulos.agentes[a.id]) || a;
     nombre.textContent = voz.name || a.name;
     /* Aqui se le ponia cara al cabezal: `#cabeza` cambiaba de fondo con el
        companero activo. Se retiro con el cabezal viejo el 2026-09-05 -- quien

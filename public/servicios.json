@@ -12,7 +12,8 @@
     "es": "Te guía para instalar el producto en tu máquina.",
     "en": "Guides you through installing the product on your machine.",
     "fr": "Il te guide pour installer le produit sur ta machine.",
-    "pt": "Guia-te para instalar o produto na tua máquina."
+    "pt": "Guia-te para instalar o produto na tua máquina.",
+    "it": "Ti guida a installare il prodotto sulla tua macchina."
    }
   },
   {
@@ -23,7 +24,8 @@
     "es": "Convierte lo que haces en memoria que puedes releer.",
     "en": "Turns what you do into memory you can read back.",
     "fr": "Il change ce que tu fais en mémoire relisible.",
-    "pt": "Converte o que fazes em memória que podes reler."
+    "pt": "Converte o que fazes em memória que podes reler.",
+    "it": "Trasforma quello che fai in memoria che puoi rileggere."
    }
   },
   {
@@ -34,7 +36,8 @@
     "es": "Ordena tu memoria y prepara un conjunto de ejemplos.",
     "en": "Tidies your memory and prepares a set of examples.",
     "fr": "Il range ta mémoire et prépare un jeu d'exemples.",
-    "pt": "Arruma a tua memória e prepara um conjunto de exemplos."
+    "pt": "Arruma a tua memória e prepara um conjunto de exemplos.",
+    "it": "Ordina la tua memoria e prepara un insieme di esempi."
    }
   },
   {
@@ -45,7 +48,8 @@
     "es": "Escribe contigo guiones, notas y textos largos.",
     "en": "Writes scripts, notes and long texts with you.",
     "fr": "Il écrit avec toi scénarios, notes et textes longs.",
-    "pt": "Escreve contigo guiões, notas e textos longos."
+    "pt": "Escreve contigo guiões, notas e textos longos.",
+    "it": "Scrive con te copioni, appunti e testi lunghi."
    }
   },
   {
@@ -56,7 +60,8 @@
     "es": "Mira el consumo del rack y te dice qué cambió.",
     "en": "Looks at the rack's power draw and tells you what changed.",
     "fr": "Il regarde la consommation du rack et te dit ce qui a changé.",
-    "pt": "Olha para o consumo do rack e diz-te o que mudou."
+    "pt": "Olha para o consumo do rack e diz-te o que mudou.",
+    "it": "Guarda il consumo del rack e ti dice cosa è cambiato."
    }
   },
   {
@@ -67,7 +72,8 @@
     "es": "Traduce y convierte en local, sin nube.",
     "en": "Translates and converts locally, with no cloud.",
     "fr": "Il traduit et convertit en local, sans nuage.",
-    "pt": "Traduz e converte localmente, sem nuvem."
+    "pt": "Traduz e converte localmente, sem nuvem.",
+    "it": "Traduce e converte in locale, senza nuvola."
    }
   },
   {
@@ -78,7 +84,8 @@
     "es": "Lee tu código, propone el arreglo y escribe la prueba.",
     "en": "Reads your code, proposes the fix and writes the test.",
     "fr": "Il lit ton code, propose le correctif et écrit le test.",
-    "pt": "Lê o teu código, propõe a correção e escreve o teste."
+    "pt": "Lê o teu código, propõe a correção e escreve o teste.",
+    "it": "Legge il tuo codice, propone la correzione e scrive il test."
    }
   },
   {
@@ -89,7 +96,8 @@
     "es": "Tacha lo privado antes de que salga de tu aparato.",
     "en": "Strikes out what is private before it leaves your device.",
     "fr": "Il biffe le privé avant qu'il ne quitte ton appareil.",
-    "pt": "Risca o que é privado antes de sair do teu aparelho."
+    "pt": "Risca o que é privado antes de sair do teu aparelho.",
+    "it": "Cancella ciò che è privato prima che esca dal tuo apparecchio."
    }
   }
  ],

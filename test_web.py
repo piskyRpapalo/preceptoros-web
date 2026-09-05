@@ -976,13 +976,23 @@ class Hub(unittest.TestCase):
         `assets/prompts-<idioma>.js`: eran 2.412 B de instrucciones para un
         modelo --que nadie lee nunca en pantalla-- dentro de un fichero que
         estaba a 36 B de su techo. Se mudo el texto; la prohibicion no.
+
+        AQUI SE ENUMERA A PROPOSITO, y es la excepcion. Casi todo en esta web
+        se descubre --las lenguas del disco, los `hreflang` de la pagina, el
+        hueco del contenedor-- porque enumerar es como se queda algo a medias
+        en silencio. Pero esto no lee una estructura: lee una FRASE HUMANA, y
+        preguntar «prohibe algo?» a un texto en una lengua que no se conoce no
+        se puede hacer sin nombrar su palabra. Que la lengua nueva ponga este
+        test en rojo es la funcion: obliga a mirar si la prohibicion viajo con
+        la traduccion, en vez de darla por buena.
         """
+        NIEGAN = r"(?i)\b(nunca|never|jamais|mai|nie|niemals|никогда|ποτέ)\b"
         for idioma in IDIOMAS:
             js = (PUBLICO / "assets" / f"prompts-{idioma}.js").read_text(encoding="utf-8")
             papel = json.loads(js[js.index("window.PR =") + 11:]
                                .rstrip().rstrip(";"))["papel"]
             with self.subTest(idioma=idioma):
-                self.assertRegex(papel, r"(?i)\b(nunca|never|jamais)\b",
+                self.assertRegex(papel, NIEGAN,
                                  "el papel no prohibe nada en absoluto")
                 self.assertRegex(papel, r"(?i)url",
                                  "el papel no nombra las URL, que es lo que se inventa")
