@@ -40,9 +40,17 @@
    3. Deja de ser circulo y pasa a pastilla porque ahora dice algo -- la rueda
    se queda redonda, que una rueda dentada ya es su propio rotulo en cualquier
    idioma. Blanco sobre `--violeta`: 5,34:1, la medida que ya sostiene enviar. */
-#lateral-boton{width:auto;gap:.45rem;padding:0 .85rem 0 .7rem;border-radius:999px;
+#lateral-boton{gap:.45rem;border-radius:999px;
   font-size:.74rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
   color:#fff;background:var(--violeta);border-color:rgba(20,12,48,.55)}
+/* CERRADO NO DICE SU NOMBRE, y esto es lo que decide cuando -- el rotulo
+   siempre esta puesto, con su `.sr`, para quien lee con los oidos. En pantalla
+   sale al abrirlo: un mando cerrado es un icono, y el nombre lo lleva ya el
+   titulo del panel que aparece justo debajo. Repetirlo dos veces a la vez es
+   ocupar ancho del cabezal para decir lo mismo dos dedos mas arriba. */
+#lateral-boton[aria-expanded="true"]{width:auto;padding:0 .85rem 0 .7rem}
+#lateral-boton[aria-expanded="true"] .sr{position:static;width:auto;height:auto;
+  margin:0;overflow:visible;clip-path:none;border:0}
 #lateral-boton:hover,#lateral-boton[aria-expanded="true"]{background:var(--violeta-texto);
   border-color:var(--violeta)}
 .lateral-boton:focus-visible{outline:2px solid var(--violeta);outline-offset:2px}

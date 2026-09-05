@@ -29,7 +29,7 @@
  * dos motivos -- el techo de 7 paginas del gate, y que un fichero de respaldo
  * tambien puede faltar del cache justo el dia que hace falta.
  */
-const VERSION = 'preceptoros-2026-09-r';
+const VERSION = 'preceptoros-2026-09-s';
 const SHELL = 'shell-' + VERSION;
 const OBRA = 'obra-' + VERSION;
 
@@ -99,8 +99,22 @@ function precachear(cache, rutas) {
   return Promise.all(rutas.map(r => cache.add(r).catch(() => null)));
 }
 
+/* `skipWaiting` Y `claim`, y hacen falta los dos. Sin el primero un worker
+   nuevo se queda en espera hasta que se cierran TODAS las pestanas del sitio:
+   se despliega un arreglo, la persona recarga, y sigue viendo lo de ayer
+   servido por el worker viejo. Con `estatico` --cache primero, refresco por
+   detras-- eso son DOS recargas para ver un cambio, y la primera parece que no
+   ha pasado nada. Se vio el 2026-09-05: las transparencias estaban en
+   produccion y no se veian en el navegador de quien las pidio.
+
+   El precio esta medido y se acepta: una pestana abierta puede pasar de la
+   version vieja a la nueva a mitad de sesion. En un sitio estatico de siete
+   paginas eso es un salto de estilos; en uno con formularios a medias seria
+   otra conversacion. */
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(SHELL).then(c => precachear(c, rutasDelShell())));
+  e.waitUntil(caches.open(SHELL)
+    .then(c => precachear(c, rutasDelShell()))
+    .then(() => self.skipWaiting()));
 });
 
 self.addEventListener('activate', e => {

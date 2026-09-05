@@ -61,6 +61,13 @@ entorno.self = entorno;
 entorno.location = { origin: ORIGEN };
 entorno.addEventListener = (t,f) => { entorno.handlers[t]=f; };
 entorno.clients = { claim: async()=>{} };
+/* `skipWaiting` entro el 2026-09-05 con el worker. El arnes tiene que modelar
+   la API que el worker USA, no la que usaba: sin esta linea el `install`
+   revienta aqui y el fallo se lee como si el worker estuviera roto -- lo que
+   estaba roto era el doble. Se cuenta cuantas veces se llama para poder
+   comprobarlo abajo. */
+entorno.saltosDeEspera = 0;
+entorno.skipWaiting = async () => { entorno.saltosDeEspera++; };
 
 vm.createContext(entorno);
 vm.runInContext(codigo, entorno);
@@ -165,6 +172,8 @@ ok('un POST pasa de largo',
 almacen.set('shell-viejo', new CacheFalso());
 esperas=[]; entorno.handlers.activate({ waitUntil: p => esperas.push(p) });
 await Promise.all(esperas);
+ok('install no deja al worker nuevo esperando a que cierren las pestanas',
+   entorno.saltosDeEspera === 1, entorno.saltosDeEspera + ' llamadas a skipWaiting');
 ok('activate borra el cache de la version anterior', !almacen.has('shell-viejo'));
 
 let fallos=0;

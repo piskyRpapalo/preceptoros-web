@@ -113,15 +113,14 @@
      uno por boton-- para que el tercer mando que se anada salga nombrado sin
      tocar esto.
 
-     Y EL DE LAS HERRAMIENTAS ADEMAS SE VE. Es la puerta al catalogo entero y
-     era un icono mudo de tres rayas: quien llega no adivina que detras hay
-     ocho companeros. El de ajustes se queda en icono porque una rueda dentada
-     ya es su propio rotulo en cualquier idioma. */
+     El rotulo se queda con su clase `.sr` puesta: quien lee con los oidos lo
+     tiene siempre, y en pantalla aparece solo con el panel abierto. Esa parte
+     la decide el css --`[aria-expanded]`-- y no este bucle, porque es cuando
+     se ve, no que dice. */
   Array.prototype.forEach.call(document.querySelectorAll('[data-rotulo]'), function (n) {
     var t = T[n.dataset.rotulo];
     if (!t) return;
     n.textContent = t;
-    if (n.closest('#lateral-boton')) n.classList.remove('sr');
   });
 
   /* La declaracion solar, en el cabezal y en los tres idiomas. No es un boton:
