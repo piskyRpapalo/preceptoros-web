@@ -90,17 +90,8 @@ header{display:flex;align-items:flex-end;gap:1rem;border-bottom:3px solid var(--
 .marca h1 b{font-weight:800;font-size:1.28em;color:var(--violeta-texto)}
 .marca p{color:var(--tenue);font-size:.78rem;margin-top:.2rem}
 
-/* --- EL SELLO: la cara despierta, y es un sensor --- */
-/* `seal.js` pone pensando y hablando SOLO mientras el motor trabaja: la
-   pantalla no se agita por decoracion. 64px es la mitad exacta de los 128 del
-   fichero — un factor no entero emborrona el arte de pixel. */
-.seal{width:64px;height:85px;flex:0 0 64px;
-  background:url(seal-wake.gif) no-repeat center/64px 85px var(--marmol-claro);
-  image-rendering:pixelated;border:1px solid var(--edge);
-  border-radius:calc(var(--radius) - 6px);box-shadow:var(--depth)}
-.seal.thinking{background-image:url(seal-think.gif)}
-.seal.talking{background-image:url(seal-talk.gif)}
-.seal.resting{background-image:url(seal-rest.png)}
+/* La cara de las cabeceras interiores vive en `cara.css`, con la de la
+   portada: es la misma, y una cara con dos hojas termina siendo dos caras. */
 
 /* --- tipografia --- */
 h2{font-size:.82rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
@@ -190,7 +181,6 @@ textarea{min-height:8rem;font-size:.78rem;line-height:1.5;resize:vertical}
   *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;
     transition-duration:.001ms!important}
   #ambient{display:none}
-  .seal,.seal.thinking,.seal.talking{background-image:url(seal-rest.png)}
   button:hover,.boton:hover{transform:none}
 }
 ::view-transition-old(root),::view-transition-new(root){animation-duration:.28s}

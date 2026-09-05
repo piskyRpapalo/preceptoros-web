@@ -124,6 +124,36 @@
   .presentacion{bottom:0}
 }
 
+/* --- la misma cara en las paginas interiores -------------------------------
+   HASTA HOY HABIA DOS CARAS. La portada llevaba esta esfera; las veinticuatro
+   paginas interiores --seis por cuatro idiomas-- llevaban un `.seal`: un busto
+   de pixel en GIF, de otra epoca y de otro producto. Quien entraba por
+   `instalar` conocia una cara que despues no volvia a ver.
+
+   Ahora las interiores llevan EL MISMO trozo de HTML que la portada, letra por
+   letra, y eso es lo que las hace intercambiables: mover un bloque de una
+   pagina a otra deja de exigir traducir su cabecera.
+
+   Y EL SUELO LO PONE EL CONTENEDOR. Aqui no hay lista de paginas ni lista de
+   clases: `header:not(#cabezal)` es «cualquier cabecera que no sea la de la
+   portada», asi que la septima pagina que se escriba ya trae el hueco hecho.
+   Enumerar era el error que ya se corrigio en el hueco de la portada y en el
+   selector de idiomas; no se repite una tercera vez.
+
+   132 px y no 220: una cabecera interior mide un tercio de la de la portada, y
+   una esfera de 220 la desbordaria por arriba. Se redefine la variable EN el
+   contenedor --no en cada `.esfera`-- para que la animacion, el borde y la
+   respiracion sigan siendo exactamente los mismos. */
+header:not(#cabezal){--esfera:132px;position:relative;
+  padding-right:calc(var(--esfera) + .8rem);
+  min-height:calc(var(--esfera) * .72)}
+/* Anclada por abajo, como en el telefono y por el mismo motivo: la altura de
+   una cabecera interior cambia con el largo de su titulo y con el idioma. */
+header:not(#cabezal) .presentacion{top:auto;bottom:-.5rem}
+@media (max-width:1023px){
+  header:not(#cabezal){--esfera:96px}
+}
+
 /* --- el telon · el despertar ----------------------------------------------
    LAS MISMAS CIFRAS QUE LA APP, que es donde se firmaron: la tira recorrida en
    1,2 s con `steps(7, jump-none)` --siete fotogramas, no ocho-- y la cortina
