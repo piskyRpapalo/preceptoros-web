@@ -37,25 +37,37 @@
      `requestIdleCallback` y `auth.js` puede haber avisado antes de que este
      boton existiera. Con solo el evento, la mitad de las cargas dejaba la
      cola escondida a quien si tenia perfil. */
-  /* LA PUERTA VA EN EL CABEZAL, A LA IZQUIERDA DE ENTRAR (2026-09-05). Estaba
-     dentro del desplegable de companeros, que es donde la mando la poda del
-     2026-09-01 -- «COLA baja al panel lateral, que es donde vive la cola»--.
-     Aquello valia cuando el lateral era un rail siempre a la vista; con la
-     Capa 3 plegada la firma quedaba a dos gestos y detras de una puerta que no
-     habla de firmar. Sube al cabezal, pegada a entrar, porque las dos son lo
-     mismo: quien eres y que firmas con ello. */
+  /* LA PUERTA VIVE EN LA RUEDA, Y AVISA CON UN PUNTO (2026-09-05). Ha bajado
+     y subido dos veces --al panel lateral el 2026-09-01, al cabezal el mismo
+     dia 5-- y las dos veces por el mismo motivo mal resuelto: firmar es raro y
+     ocupaba una fila entera del cabezal para casi todo el mundo. En el Doogee
+     en vertical esa fila costaba un boton de ancho completo por encima de la
+     navegacion.
+
+     Ahora vive en Ajustes, que es donde estan los mandos que no se usan cada
+     dia, y NO desaparece por eso: la rueda se pinta con un punto rojo cuando
+     hay algo que revisar. Un mando escondido con aviso se encuentra; un mando
+     escondido sin aviso, no. Esa es la diferencia entre guardar y perder.
+
+     EL PUNTO SOLO SALE SI LAS DOS COSAS SON CIERTAS: hay identidad --sin ella
+     no se puede firmar y el aviso seria una promesa vacia-- Y la cola trae
+     propuestas. Un punto rojo permanente sobre una cola vacia es un sensor que
+     miente, y en dos dias nadie lo mira. La cifra sale del catalogo que ya se
+     pidio, no de un contador propio: dos sitios contando lo mismo acaban
+     discrepando. */
   function puerta() {
     var H = window.Hub;
-    var cab = document.getElementById('cabezal');
-    var yo = document.getElementById('identity');
-    if (!H || !cab) return;
+    var caja = document.getElementById('panel-ajustes');
+    if (!H || !caja) return;
+    var props = ((H.datos || {}).cola || {}).propuestas || [];
+
+    var fila = document.createElement('div');
+    fila.className = 'ajuste-fila';
+    fila.hidden = true;
     var b = document.createElement('button');
-    b.type = 'button'; b.className = 'cab-boton cola-abrir';
+    b.type = 'button'; b.className = 'ajuste-idioma cola-abrir';
     b.textContent = (H.rotulos && H.rotulos.cabCola) || '';
-    /* LA CUENTA, al lado del rotulo y sacada del catalogo que ya se pide --no
-       de un contador propio--. Dos sitios contando lo mismo acaban discrepando,
-       y el que se ve en el cabezal seria el que nadie revisa.
-       Se pinta solo si hay algo: un cero en un boton se lee como una averia. */
+    // Se pinta solo si hay algo: un cero en un boton se lee como una averia.
     var cuenta = document.createElement('span');
     cuenta.className = 'cola-cuenta';
     cuenta.hidden = true;
@@ -63,20 +75,41 @@
     b.ponCuenta = function (n) {
       cuenta.textContent = String(n);
       cuenta.hidden = !n;
+      marcaRueda(n);
     };
-    b.hidden = true;
     b.addEventListener('click', function () { abre(); });
-    function conPerfil() { b.hidden = false; }
+    fila.appendChild(b);
+    caja.appendChild(fila);
+
+    /* El punto va sobre la rueda, que es el mando que hay que abrir para
+       llegar aqui. `aria-label` lo dice tambien en voz alta: un punto de
+       color no existe para quien navega con lector de pantalla. */
+    function marcaRueda(n) {
+      var r = document.getElementById('rueda');
+      if (!r) return;
+      var punto = r.querySelector('.aviso');
+      if (!n) { if (punto) punto.remove(); r.removeAttribute('data-avisos'); return; }
+      if (!punto) {
+        punto = document.createElement('span');
+        punto.className = 'aviso';
+        punto.setAttribute('aria-hidden', 'true');
+        r.appendChild(punto);
+      }
+      r.dataset.avisos = String(n);
+    }
+
+    /* Nace oculta y aparece cuando `auth.js` avisa de que hay perfil -- ese
+       evento se emite tanto al crear la identidad como al encontrarla ya
+       guardada, asi que cubre los dos casos. Se mira ADEMAS el estado actual:
+       el catalogo llega por `requestIdleCallback` y `auth.js` puede haber
+       avisado antes de que esto existiera. Con solo el evento, la mitad de las
+       cargas dejaba la cola escondida a quien si tenia perfil. */
+    function conPerfil() {
+      fila.hidden = false;
+      b.ponCuenta(props.length);
+    }
     if (window.Identity && window.Identity.quien()) conPerfil();
     document.addEventListener('preceptor:identity', conPerfil);
-    /* Se inserta en el PADRE REAL de entrar, no en el cabezal. `#identity` no
-       cuelga de `#cabezal` sino de `.cab-fila`, y `insertBefore` exige que la
-       referencia sea hija de quien lo llama: pedirselo al cabezal lanzaba
-       `NotFoundError`. Y como esto corre dentro de un oyente de `hub:listo`,
-       que se despacha sincrono, la excepcion salia atribuida a la linea del
-       `dispatchEvent` en `hub.js` -- a doscientas lineas del fallo real. */
-    if (yo && yo.parentElement) yo.parentElement.insertBefore(b, yo);
-    else cab.appendChild(b);
   }
   if (window.Hub) puerta();
   else document.addEventListener('hub:listo', puerta);
@@ -100,8 +133,9 @@
     s.appendChild(x);
     s.appendChild(el('p', 'panel-rotulo', (c.estado || '') + ' · ' + (c.causa || '')));
     var props = c.propuestas || [];
-    // El boton del cabezal se entera aqui, que es donde el numero existe.
-    var puertaBoton = document.querySelector('#cabezal .cola-abrir');
+    // El boton de Ajustes se entera aqui tambien: al firmar una pieza la
+    // cuenta baja, y con ella el punto de la rueda.
+    var puertaBoton = document.querySelector('#panel-ajustes .cola-abrir');
     if (puertaBoton && puertaBoton.ponCuenta) puertaBoton.ponCuenta(props.length);
     if (!props.length) s.appendChild(el('p', 'cola-nota', L.colaVacia));
     props.forEach(function (p) {

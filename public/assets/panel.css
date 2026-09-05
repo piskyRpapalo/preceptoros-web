@@ -59,6 +59,41 @@
 .ajuste-idioma[aria-current]{background:rgba(255,255,255,.24)}
 .ajuste-piel{display:flex;gap:.4rem}
 .ajuste-piel .ajuste-idioma{text-align:center}
+
+/* --- la firma vive aqui, y avisa desde fuera ------------------------------
+   EL PUNTO ROJO ES LA CONDICION DE HABER ESCONDIDO LA FIRMA. Bajarla a
+   Ajustes libera una fila entera del cabezal --en el telefono era un boton de
+   ancho completo por encima de la navegacion-- pero un mando escondido sin
+   aviso es un mando perdido. El punto se pone sobre la RUEDA, que es lo que
+   hay que abrir para llegar hasta el.
+
+   Es la Capa 2 y va por encima de su boton, no dentro: `overflow` de un boton
+   redondo se lo comeria. Por eso `.lateral-boton` estrena `position:relative`
+   y el punto cuelga de su esquina.
+
+   Y NO ES SOLO COLOR. Quien no distingue el rojo, o quien navega con lector de
+   pantalla, no ve un punto: por eso el numero viaja tambien en
+   `data-avisos`, y el boton de la cola lo dice con letras dentro del panel. Un
+   aviso que solo existe como color no es un aviso para todo el mundo. */
+.lateral-boton{position:relative}
+.lateral-boton .aviso{position:absolute;top:.15rem;right:.15rem;
+  width:.55rem;height:.55rem;border-radius:50%;
+  background:var(--sol);border:1.5px solid var(--panel-bg);
+  animation:aviso-late 2.4s ease-in-out infinite}
+/* Late despacio, y para de latir si se ha pedido menos movimiento. Un punto
+   que parpadea rapido en una esquina es exactamente lo que hace que la gente
+   deje de mirar la esquina. */
+@keyframes aviso-late{0%,100%{transform:scale(1)}50%{transform:scale(1.28)}}
+@media (prefers-reduced-motion:reduce){.lateral-boton .aviso{animation:none}}
+/* La firma, dentro del panel, se separa de los idiomas con un canto: son dos
+   cosas distintas y sin la linea se leen como una lista sola. */
+.ajuste-fila{margin-top:.5rem;padding-top:.5rem;
+  border-top:1px solid rgba(255,255,255,.18)}
+.ajuste-fila .cola-abrir{display:flex;align-items:center;
+  justify-content:space-between;gap:.5rem}
+.ajuste-fila .cola-cuenta{font-variant-numeric:tabular-nums;
+  background:var(--sol);color:#20140a;font-weight:800;
+  border-radius:999px;padding:0 .4rem;min-width:1.3rem;text-align:center}
 /* Sobre violeta, los rotulos de las tarjetas son blancos: el marmol claro que
    traian venia de vivir sobre marmol. */
 #panel-modelos .panel-titulo,#panel-modelos .modelo-nombre{color:#fff}
