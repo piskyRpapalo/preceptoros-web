@@ -146,7 +146,16 @@
    El hueco de la derecha ya no lo pone esta regla: lo reserva el cabezal para
    todos sus hijos. Ver arriba. */
 #cab-nav{display:grid;grid-template-columns:repeat(2,1fr);gap:.4rem;width:100%}
-#cab-nav .cab-boton{text-align:center;padding:.48rem .3rem}
+/* EL CENTRADO ES DE LA CLASE, NO DEL SITIO. Estaba colgado de `#cab-nav`, y
+   FIRMA --que es un `.cab-boton` igual que los demas pero vive en la fila de
+   arriba, no en la navegacion-- se quedaba con las letras a la izquierda de su
+   propia pastilla. Se vio en el telefono, con sesion abierta: sin sesion ese
+   boton no existe y por eso nadie lo habia mirado.
+
+   Un boton no debe cambiar de forma segun en que caja lo pongas. El relleno
+   si es del sitio --en la rejilla necesita mas--, y por eso ese se queda. */
+.cab-boton{text-align:center}
+#cab-nav .cab-boton{padding:.48rem .3rem}
 /* MAS CLARO Y MAS TRANSPARENTE que el violeta de la marca, a proposito: las
    puertas son navegacion, no identidad. Si pesaran lo mismo que `PreceptorOS` o
    que `LoRAtelier` competirian con lo que nombran. El borde conserva el violeta

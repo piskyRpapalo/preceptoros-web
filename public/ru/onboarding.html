@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="ru" data-tema="oscuro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Начать здесь · PreceptorOS</title>
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<meta name="description" content="Установщик идёт рядом: поставь приложение и выбери спутника, который подходит тому, что ты хочешь делать.">
+<link rel="stylesheet" href="/assets/base.css">
+<link rel="stylesheet" href="/assets/movil.css">
+<link rel="stylesheet" href="/assets/canon.css">
+<link rel="stylesheet" href="/assets/onboarding.css">
+<link rel="stylesheet" href="/assets/cara.css">
+<link rel="stylesheet" href="/assets/tema.css">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#17131F">
+</head>
+<body>
+<main>
+
+<header>
+  <div class="presentacion"><div class="esfera" role="img" aria-label="Preceptor"></div></div>
+  <div class="marca">
+    <h1>Начать здесь</h1>
+    <p><a href="./">Главная</a></p>
+  </div>
+  <div id="identity" class="fila identity"></div>
+</header>
+
+<p class="ob-voz" id="ob-voz" role="status" aria-live="polite">…</p>
+
+<div class="ob-caminos">
+  <button type="button" id="ob-atajo">Скачай приложение →</button>
+  <button type="button" id="ob-largo" class="ob-secundario">Начать</button>
+</div>
+
+<section class="ob-paso" id="ob-que" data-dice="obQue">
+  <h2><span class="ob-num">1</span>Что такое PreceptorOS?</h2>
+  <p>Твой ИИ на твоей машине, без обязательного облака. Постоянная память, которая принадлежит тебе, и Privacy Gateway, который вычищает контекст, прежде чем тот уйдёт к любому внешнему ИИ. Без учётных записей, без телеметрии.</p>
+  <button type="button" data-ir="privacidad">Начать</button>
+</section>
+
+<section class="ob-paso" id="ob-privacidad" data-dice="obPriv">
+  <h2><span class="ob-num">2</span>Твоя приватность, твой контроль</h2>
+  <p>Именно фильтр вычёркивает личное. Вставь свой контекст и посмотри, что выйдет, прежде чем отдавать его кому-либо: это происходит в твоём браузере, без установки, и он честно говорит, куда НЕ достаёт.</p>
+  <p><a class="boton" href="./playground.html">Проверить фильтр сейчас</a></p>
+</section>
+
+<section class="ob-paso" id="ob-descarga" data-dice="obDesc">
+  <h2><span class="ob-num">3</span>Скачай приложение</h2>
+  <p>Сайт — витрина. Приложение — мастерская: там выбранный тобой спутник по-настоящему работает с твоими файлами, не выпуская их с твоей машины.</p>
+  <div class="ob-descargas">
+    <a class="boton" href="./instalar.html#android">Android · через Termux</a>
+    <a class="boton" href="https://github.com/piskyRpapalo/PreceptorOS/releases/latest/download/install.sh">Linux o macOS · install.sh</a>
+    <a class="boton" href="https://github.com/piskyRpapalo/PreceptorOS/releases/latest/download/install.ps1">Windows · install.ps1</a>
+  </div>
+  <p class="ob-aviso nodata">NO_DATA — сегодня Android идёт через Termux, по руководству этого сайта; APK объявлен как будущее и пока не существует. Настольные установщики указывают на свой окончательный адрес в GitHub Releases и будут отдавать 404, пока не выйдет первая версия. Windows и macOS на этой стойке НЕ проверены: здесь нет ни одной машины с этими системами.</p>
+</section>
+
+<section class="ob-paso" id="ob-conecta" data-dice="obConec">
+  <h2><span class="ob-num">4</span>Твой код привязки</h2>
+  <p>Твоя личность создаётся в браузере, и закрытый ключ его не покидает. Этот код привязки выводится из твоего открытого ключа: он всегда один и тот же для тебя и не содержит внутри никакой тайны.</p>
+  <button type="button" id="ob-vincular">Создать мой код привязки</button>
+  <p class="ob-codigo" id="ob-codigo">—</p>
+  <p class="ob-aviso nodata">Этот код ТЕБЯ ОПОЗНАЁТ, но не удостоверяет: любой, кто знает твой открытый ключ, может его вычислить. Настоящая привязка потребует ещё и подписи, а она придёт вместе с сервером.</p>
+</section>
+
+<footer class="honest-footer">
+  
+</footer>
+
+<script type="application/json" id="i18n">{
+ "desc": "Установщик идёт рядом: поставь приложение и выбери спутника, который подходит тому, что ты хочешь делать.",
+ "idAviso": "Ключ создаётся в твоём браузере. Его нельзя ни выгрузить, ни скопировать на другое устройство: если стереть данные сайта, эта личность потеряна.",
+ "idClave": "Показать мой отпечаток",
+ "idPerfil": "Мой профиль",
+ "idEntrar": "Создать личность",
+ "idFallo": "NO_DATA — не удалось создать личность:",
+ "idHola": "Привет,",
+ "idPublica": "Открытый ключ:",
+ "lang": "ru",
+ "marca": "Начать здесь",
+ "obAtajo": "Тогда напрямую. Пролистай вниз: там три загрузки.",
+ "obConec": "Этот код привязки связывает твою личность с сайта и приложение. Он твой и только твой.",
+ "obDesc": "Выбери свою систему. Приложение — мастерская; я остаюсь с тобой внутри.",
+ "obFalloCodigo": "NO_DATA — не удалось вывести код:",
+ "obLargo": "Хорошо. Сначала покажу, что остаётся на твоей машине, а что нет.",
+ "obPriv": "Это не обещание: это фильтр, который можно проверить прямо сейчас.",
+ "obQue": "PreceptorOS — твой проводник: ставится и сразу идёт рядом, ничего настраивать не надо.",
+ "obSaluda": "Я Установщик. Я рядом, пока приложение не заработает и ты не выберешь спутника. Скажи, с чего начнём.",
+ "obSinIdentidad": "Сначала нужна личность. Нажми наверху: она создаётся в твоём браузере и оттуда не уходит.",
+ "obVinculado": "Вот он. Открой его в приложении, и идём дальше: познакомлю тебя со спутниками.",
+ "pieInst": "Руководство по установке",
+ "piePlay": "Проверка",
+ "pieVolver": "← Назад на главную",
+ "s1b": "Начать",
+ "s1p": "Твой ИИ на твоей машине, без обязательного облака. Постоянная память, которая принадлежит тебе, и Privacy Gateway, который вычищает контекст, прежде чем тот уйдёт к любому внешнему ИИ. Без учётных записей, без телеметрии.",
+ "s1t": "Что такое PreceptorOS?",
+ "s2b": "Проверить фильтр сейчас",
+ "s2p": "Именно фильтр вычёркивает личное. Вставь свой контекст и посмотри, что выйдет, прежде чем отдавать его кому-либо: это происходит в твоём браузере, без установки, и он честно говорит, куда НЕ достаёт.",
+ "s2t": "Твоя приватность, твой контроль",
+ "s3and": "Android · через Termux",
+ "s3aviso": "NO_DATA — сегодня Android идёт через Termux, по руководству этого сайта; APK объявлен как будущее и пока не существует. Настольные установщики указывают на свой окончательный адрес в GitHub Releases и будут отдавать 404, пока не выйдет первая версия. Windows и macOS на этой стойке НЕ проверены: здесь нет ни одной машины с этими системами.",
+ "s3p": "Сайт — витрина. Приложение — мастерская: там выбранный тобой спутник по-настоящему работает с твоими файлами, не выпуская их с твоей машины.",
+ "s3pc": "Linux o macOS · install.sh",
+ "s3t": "Скачай приложение",
+ "s3win": "Windows · install.ps1",
+ "s4aviso": "Этот код ТЕБЯ ОПОЗНАЁТ, но не удостоверяет: любой, кто знает твой открытый ключ, может его вычислить. Настоящая привязка потребует ещё и подписи, а она придёт вместе с сервером.",
+ "s4b": "Создать мой код привязки",
+ "s4p": "Твоя личность создаётся в браузере, и закрытый ключ его не покидает. Этот код привязки выводится из твоего открытого ключа: он всегда один и тот же для тебя и не содержит внутри никакой тайны.",
+ "s4t": "Твой код привязки",
+ "titulo": "Начать здесь · PreceptorOS",
+ "volver": "Главная"
+}</script>
+<script src="/assets/auth.js"></script>
+<script src="/assets/onboarding.js"></script>
+
+</main>
+<script src="/assets/pwa.js"></script>
+</body>
+</html>

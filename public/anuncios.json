@@ -57,6 +57,14 @@
      "privado": "Privat: öffne ein Issue im öffentlichen Repository. Das ist heute der einzige Kanal, der wirklich ankommt.",
      "pero": "NO_DATA — ein hier signierter Beitrag reist noch nirgendwohin: die Agora antwortet 404 auf /api/v1/threads (gemessen am 2026-08-30). Er wird signiert und bleibt auf deinem Gerät, bis dieser Endpunkt existiert.",
      "enlaceTexto": "Ein Issue öffnen"
+    },
+    "ru": {
+     "titulo": "Дай мне обратную связь",
+     "cuerpo": "Что сломалось, что ты не понял, что рассчитывал найти и не нашёл. Одна конкретная фраза полезнее похвалы.",
+     "publico": "Публично: подпиши ветку здесь ниже. Подписывается твоим ключом, на твоём устройстве.",
+     "privado": "Приватно: открой issue в публичном репозитории. Сегодня это единственный канал, который действительно доходит.",
+     "pero": "NO_DATA — подписанная здесь ветка пока никуда не уходит: Агора отвечает 404 на /api/v1/threads (измерено 2026-08-30). Она подписывается и остаётся на твоём устройстве, пока эта точка не появится.",
+     "enlaceTexto": "Открыть issue"
     }
    },
    "enlace": "https://github.com/piskyRpapalo/PreceptorOS/issues"
@@ -108,6 +116,13 @@
      "publico": "Gemessen am 2026-08-29: rank 16, alpha 32, 2 Epochen, 93 Trainings- und 16 Validierungsbeispiele. 553 s die eine Zeile und 445 s die andere. Unter zehn Minuten, keine ganze Nacht.",
      "privado": "Die Menge der Beispiele gehört dir und bleibt dein. Geteilt wird, wenn du willst, der Adapter, der herauskommt.",
      "pero": "NO_DATA — es gibt noch keinen Weg, sie über die Seite zu schicken: es fehlt ein Endpunkt zum Hochladen. Heute einigt man sich im Beitrag und reicht die Datei von Hand weiter."
+    },
+    "ru": {
+     "titulo": "Обучи модель",
+     "cuerpo": "Принеси свой набор примеров, и на выходе будет адаптер LoRA, обученный на стойке. GPU не нужна: делается на чистом CPU и это измерено.",
+     "publico": "Измерено 2026-08-29: rank 16, alpha 32, 2 эпохи, 93 обучающих примера и 16 проверочных. 553 с одна строка и 445 с другая. Меньше десяти минут, а не целая ночь.",
+     "privado": "Набор примеров твой и остаётся твоим. Делится, если захочешь, тот адаптер, который получился.",
+     "pero": "NO_DATA — отправить его через сайт пока нельзя: нет точки для загрузки. Сегодня договариваются в ветке и передают файл вручную."
     }
    }
   }

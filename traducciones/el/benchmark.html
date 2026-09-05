@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="el" data-tema="oscuro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LoRAtelier benchmark's · PreceptorOS</title>
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<meta name="description" content="El Libro de Pruebas Públicas: qué modelo corre a cuánto, en qué máquina, firmado por quien lo midió.">
+<link rel="stylesheet" href="/assets/base.css">
+<link rel="stylesheet" href="/assets/movil.css">
+<link rel="stylesheet" href="/assets/canon.css">
+<link rel="stylesheet" href="/assets/agora.css">
+<link rel="stylesheet" href="/assets/chat.css">
+<link rel="stylesheet" href="/assets/widget.css">
+<link rel="stylesheet" href="/assets/cara.css">
+<link rel="stylesheet" href="/assets/tema.css">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#17131F">
+</head>
+<body>
+<canvas id="ambient" aria-hidden="true"></canvas>
+<main>
+
+<header>
+  <div class="presentacion"><div class="esfera" role="img" aria-label="Preceptor"></div></div>
+  <div class="marca">
+    <h1>LoRAtelier benchmark's<b> · el Libro de Pruebas</b></h1>
+    <p><a href="/el/">Portada</a> · <a href="/el/community.html">Comunidad</a> · <a href="/el/instalar.html">Instalar</a></p>
+  </div>
+</header>
+
+<p class="guia">Qué modelo corre a cuánto, en qué máquina, y quién lo midió. Cada fila es una línea firmada con el sha256 del fichero del modelo dentro: sin ese hash, «llama-3.2-3b» no identifica nada.</p>
+
+<div id="tabla" class="panel"></div>
+
+
+<section id="probador">
+  <h2>Elige y mide tu motor</h2>
+  <p class="guia">Aqui se elige con que cerebro hablas y se cronometra el resultado. Vive en el Benchmark y no en la portada a proposito: ofrecer tres descargas de varios gigas nada mas abrir la pagina es caro en un telefono, y la mayoria no viene a eso.</p>
+  <div id="chat" class="panel">
+    <div id="dialogo"></div>
+    <textarea id="pregunta" class="chat-input" placeholder="Escribe un turno para medirlo..." rows="3"></textarea>
+    <div class="fila chat-acciones"><button id="enviar" type="button" class="boton enviar" aria-label="Enviar"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M3 20.5v-6l8-2.5-8-2.5v-6L22 12z"/></svg><span class="rotulo">Enviar</span></button></div>
+    <div id="motor"></div>
+    <div id="local-ai" class="fila"></div>
+    <p id="brain" class="brain"></p>
+  </div>
+  <textarea id="medida-json" rows="5" readonly hidden></textarea>
+  <button type="button" id="medida-copiar" data-copia="medida-json" data-hecho="Copiado ✓" data-manual="Selecciona y Ctrl+C" hidden>Copiar la medida</button>
+</section>
+
+<footer class="honest-footer">
+  <h2>De dónde sale esta tabla</h2>
+  <ul>
+    <li><strong>Nadie sube nada sin querer.</strong> Los datos los envía tu PreceptorOS desde tu máquina, y solo si tú lo pides. Instalar no publica nada.</li>
+    <li><strong>El hash y la firma son el dato.</strong> Una cifra sin el sha256 del modelo no se puede reproducir, y sin firma no se puede atribuir. Las dos columnas están para que la tabla se pueda comprobar, no para decorar.</li>
+    <li><strong>Los huecos se declaran.</strong> Cuando un motor no dice cuántos tokens generó, la casilla pone NO_DATA. No se rellena con una estimación.</li>
+  </ul>
+  <p><a href="/hitos.html">Hitos</a></p>
+</footer>
+
+<script type="application/json" id="i18n">{
+ "bmColumnas": [
+  "Modelo",
+  "sha256",
+  "Hardware",
+  "tok/s",
+  "TTFT",
+  "Veredicto",
+  "Evaluador",
+  "Firma"
+ ],
+ "bmEjemplo": "Estas filas son de EJEMPLO, para probar el diseño de la tabla.",
+ "bmFirmadas": "Líneas firmadas recibidas hasta ahora:",
+ "bmSinHash": "sin hash",
+ "bmSinFirma": "sin firmar",
+ "bmFuente": "Fuente:",
+ "bmSinDatos": "NO_DATA — no se pudo leer la tabla.",
+ "bmLlevatelo": "llévatelo entero.",
+ "bmLeyenda": [
+  "tok/s — cuántas palabras-trozo escribe por segundo. Manda si vas a dejarlo trabajando solo.",
+  "TTFT — lo que tarda en aparecer la primera letra. Manda si vas a estar delante esperando.",
+  "sha256 — la huella del fichero del modelo. Dos ficheros con el mismo nombre pueden no ser el mismo modelo; la huella no miente."
+ ],
+ "bmTablaAria": "Tabla del Libro de Pruebas, se desplaza en horizontal",
+ "arrancando": "Arrancando el motor…",
+ "avisoCifra": "Son ~2 GB. Lo decimos antes de que pulses, no después.",
+ "avisoRed": "Se descarga por la red una sola vez. Queda cacheado en tu navegador.",
+ "bajando": "Descargando",
+ "bajarNavegador": "Descargar la IA del navegador (~2,7-4 GB)",
+ "brainAsleep": "Todavía no hay motor arrancado",
+ "brainBrowser": "IA del navegador (Edge)",
+ "brainLabel": "Cerebro:",
+ "brainLive": "Vivo en tu máquina",
+ "brainNone": "ninguno",
+ "causaDesconocida": "Causa desconocida.",
+ "causaElegida": "Causa: elegiste el JSON.",
+ "causaEnBenchmark": "Causa: el motor se elige y se mide en el Benchmark.",
+ "causaError": "Causa: error al consultar la GPU.",
+ "causaSinAdaptador": "Causa: hay WebGPU pero ninguna GPU utilizable.",
+ "causaSinApi": "Causa: este navegador no expone WebGPU ni LanguageModel.",
+ "copiaManual": "Selecciona y Ctrl+C",
+ "copiado": "Copiado OK",
+ "copiarPara": "Copiar para",
+ "descargar": "Descargar modelo (~2 GB, una vez)",
+ "destinos": [
+  "Gemini",
+  "ChatGPT",
+  "Claude",
+  "mi IA local"
+ ],
+ "etiquetaJson": "Texto para copiar a tu IA",
+ "falloDescarga": "NO_DATA · fallo al descargar el modelo",
+ "falloNavegador": "NO_DATA · fallo con la IA del navegador",
+ "falloRespuesta": "NO_DATA · fallo al generar respuesta",
+ "falloVacio": "NO_DATA — el motor terminó sin emitir ni un carácter. No es una respuesta vacía: es un turno que no llegó a existir.",
+ "laiBuscando": "Preguntando a 127.0.0.1:11434…",
+ "laiBuscar": "Buscar IA local",
+ "laiEncontrados": "Modelos tuyos encontrados:",
+ "laiListo": "Hablarás con",
+ "laiMixto": "Desde una página https el navegador solo deja hablar con 127.0.0.1. Una IP de red la corta por contenido mixto.",
+ "laiNada": "NO_DATA — no se encontró IA local en 127.0.0.1:11434. Causa:",
+ "laiOtra": "Otra dirección de Ollama",
+ "laiProbar": "Probar ahí",
+ "laiVacio": "NO_DATA — Ollama responde pero no tiene ningún modelo.",
+ "listoLocal": "Motor listo. Escribe tu pregunta.",
+ "llevate": "Llévate este texto a la IA que ya uses.",
+ "medidaCalentado": "Medido tras una ráfaga oculta de 5 tokens: sin ella se cronometra al compilador de shaders, no a tu máquina.",
+ "medidaEsperando": "Escribe un turno y se mide solo. Nada de esto sale de tu aparato.",
+ "medidaMotor": "motor:",
+ "medidaSinTokens": "tok/s NO_DATA — este motor no declara cuántos tokens generó. Contar trozos y llamarlos tokens sería inventar la cifra.",
+ "medidaSinTtft": "TTFT NO_DATA — el motor no emitió ningún trozo que cronometrar.",
+ "medidaTitulo": "TU MÁQUINA · medido aquí, no comparado con nadie",
+ "medidaTurnos": "turnos:",
+ "mirandoGpu": "Consultando la GPU…",
+ "mirandoNavegador": "Consultando la IA del navegador…",
+ "mismoTexto": "El mismo texto sirve para cualquier IA. Esa es la idea: no depender de una sola.",
+ "navBajado": "IA del navegador descargada. Escribe tu pregunta.",
+ "navListo": "IA del navegador lista. Escribe tu pregunta.",
+ "navPesa": "Son 2,7-4 GB. Lo decimos antes de que pulses.",
+ "navYaEsta": "La IA ya está en tu dispositivo. Cero descarga.",
+ "papel": "Eres Preceptor, el instalador de PreceptorOS. Tu unica funcion es que la persona consiga instalar el producto en SU maquina. REGLAS DURAS: 1) Pregunta primero que sistema usa: Linux, macOS, Windows o Android por Termux. 2) Dale los pasos de la guia de instalacion de esta misma web y mandala ahi para el detalle; no dictes rutas de memoria, que envejecen. 3) Si algo falla, pide el mensaje de error exacto y da SOLO el comando que lo corrige. 4) Si no sabes algo, di NO_DATA y di por que. Nunca inventes comandos ni versiones. 5) No pidas datos personales ni sugieras servicios en la nube: el producto corre en su aparato. 6) Responde en el idioma de la persona. Se sobrio y breve.",
+ "prefieroJson": "Prefiero el JSON",
+ "reglas": [
+  "No sugieras servicios en la nube",
+  "No pidas datos personales",
+  "Si no sabes, di NO_DATA"
+ ],
+ "sensorAviso": "El modelo pequeño empieza a olvidar el contexto. ¿Resetear conversación?",
+ "sensorBoton": "Resetear",
+ "sensorRegistrado": "Reseteo registrado como medida de límite en esta sesión. No se guarda en ningún sitio: esta web no almacena nada tuyo.",
+ "sinMotor": "NO_DATA · no hay motor de IA disponible en este navegador.",
+ "usarNavegador": "Usar la IA de tu navegador"
+}</script>
+<script src="/assets/ambient.js"></script>
+<script src="/assets/benchmark.js"></script>
+<script src="/assets/fallback.js"></script>
+<script src="/assets/state.js"></script>
+<script src="/assets/engine.js"></script>
+<script src="/assets/chat.js"></script>
+<script src="/assets/localai.js"></script>
+<script src="/assets/meter.js"></script>
+<script src="/assets/copiar.js"></script>
+
+<script src="/assets/pwa.js"></script>
+</body>
+</html>

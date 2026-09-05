@@ -159,7 +159,13 @@ header:not(#cabezal){--esfera:132px;position:relative;
    una cabecera interior cambia con el largo de su titulo y con el idioma. */
 header:not(#cabezal) .presentacion{top:auto;bottom:-.5rem}
 @media (max-width:1023px){
-  header:not(#cabezal){--esfera:96px}
+  /* 88 y no 96, y el titulo un punto mas pequeno: con la esfera anterior el
+     hueco que le quedaba a la marca en 375 px era de unos 234, y
+     «PreceptorOS» no cabia -- se partia en «PRECEPTORO» y una «S» sola en la
+     linea siguiente. Un nombre propio partido a la mitad es peor que un
+     titulo pequeno, asi que ceden los dos un poco. */
+  header:not(#cabezal){--esfera:88px}
+  header:not(#cabezal) h1{font-size:.92rem}
 }
 
 /* --- el telon · el despertar ----------------------------------------------
