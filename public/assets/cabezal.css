@@ -89,7 +89,14 @@
    en la esquina, que es donde dice con quien hablas sin quitarle sitio a lo
    que se lee. Sigue siendo un boton --abre Herramientas-- asi que no puede ir
    detras de nada: `z-index` por encima del dialogo. */
-.chat-quien{position:absolute;top:.55rem;right:.7rem;z-index:2;
+/* A LA IZQUIERDA, y no por gusto: a la derecha caia JUSTO DEBAJO de la esfera.
+   La cara es la Capa 4 --por encima de todo menos la pantalla completa-- y se
+   sienta a caballo del canto del cabezal, asi que se comia el boton entero: en
+   la pagina solo asomaba la ultima letra. Y es un boton, no un rotulo: abre
+   Herramientas, asi que taparlo no era un problema de estetica.
+   La izquierda del chat esta libre --la esfera nunca baja por ahi-- y ademas
+   es donde empieza a leerse la linea. */
+.chat-quien{position:absolute;top:.55rem;left:.7rem;z-index:2;
   display:flex;align-items:center;gap:.6rem;margin:0}
 /* EL NOMBRE, EN PASTILLA VIOLETA. Es un boton --abre la nube de companeros--
    y tiene que parecerlo: un nombre en negrita se lee como un rotulo, y nadie
