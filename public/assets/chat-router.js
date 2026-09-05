@@ -17,7 +17,6 @@
 (function () {
   var panel = document.getElementById('panel-modelos');
   var chat = document.getElementById('chat');
-  var cabeza = document.getElementById('cabeza');
   var entrada = document.getElementById('pregunta');
   if (!panel || !chat) return;
 
@@ -70,15 +69,9 @@
     activo = a;
     avatar.src = '/assets/agente-3d-' + a.icono3d + '.webp';
     nombre.textContent = a.name;
-    /* El OJO del Preceptor en el cabezal cambia con el companero activo: es
-       la senal de con quien estas hablando sin leer una palabra. El TAMANO
-       viaja con la imagen: `#cabeza` nace al 700 % porque su fondo es la TIRA
-       de la apertura, y poner solo la imagen estiraba el ojo siete veces --
-       medido el 2026-09-04, ventana de 60 px sobre imagen de 420. */
-    if (cabeza) {
-      cabeza.style.backgroundImage = "url('/assets/agente-" + a.symbol + ".webp')";
-      cabeza.style.backgroundSize = '100%';
-    }
+    /* Aqui se le ponia cara al cabezal: `#cabeza` cambiaba de fondo con el
+       companero activo. Se retiro con el cabezal viejo el 2026-09-05 -- quien
+       dice con quien hablas es `.chat-quien`, que ademas trae el nombre. */
     var r = a.real || {};
     var L = (window.Hub && window.Hub.textos) || {};
     if (!r.disponible) {
@@ -162,18 +155,4 @@
      hubiera que tocarla. Lo que se vino a hacer es hablar. Quien no quiera
      escribir todavia, no toca el campo; el teclado solo sube si lo pulsas. */
 
-  /* La cara del cabezal, cableada a los avisos QUE YA EXISTEN.
-     `chat.js` no se toca: le quedan 111 B y ya emite `preceptor:hablando` al
-     primer trozo y `preceptor:turno` al cerrar. Aqui solo se escucha. */
-  if (cabeza) {
-    /* Nace despierta: la apertura salio del cabezal y su `animationend` ya
-       no llega nunca. */
-    cabeza.classList.add('despierto');
-    document.addEventListener('preceptor:hablando', function () {
-      cabeza.classList.add('hablando');
-    });
-    document.addEventListener('preceptor:turno', function () {
-      cabeza.classList.remove('hablando');
-    });
-  }
 })();

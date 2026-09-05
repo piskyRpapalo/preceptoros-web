@@ -54,34 +54,39 @@
    con todo el ancho: eso es lo que lo hace mono panel. `--hueco-rail` se
    queda declarado y sin usar seria una medida sin duena, asi que se va tambien. */
 :root{--cara-web:78px;--anim-reposo:38.4s;--anim-habla:.864s}
-/* La cara del chat nace despierta: la apertura --la piedra y el laser-- es la
-   entrada del producto, no el cabezal al que se vuelve cien veces. Y va
-   acercada 1,225x: cuatro cuadros por 1,225 son 490 % y el paso queda en
-   31.410 %. Subir el tamano sin recalcular las paradas ensena medio cuadro y
-   medio del siguiente a la vez. Igual que la app; si se toca, se tocan las dos. */
-#cabeza{width:var(--cara-web);height:var(--cara-web);flex:0 0 var(--cara-web);
-  background:url("/assets/caras/secuencia-reposo-256.webp") 2.885% 50%/490% auto no-repeat;
-  border:2px solid var(--bronce);border-radius:50%}
-/* Reposo: cuatro colores. `steps(4)` y no `steps(3)` -- `jump-none` da n
-   paradas exactas, y con 3 sobre cuatro cuadros una caia en la juntura y se
-   veia medio de cada uno. Sin fundido: bajaba la opacidad a .55 en cada salto
-   y la cara se desvanecia a medias varias veces por minuto. */
-#cabeza.despierto{background-image:url("/assets/caras/secuencia-reposo-256.webp");
-  background-size:490% auto;
-  animation:cara-reposo var(--anim-reposo) steps(4,jump-none) infinite}
-@keyframes cara-reposo{from{background-position:2.885% 50%}to{background-position:97.115% 50%}}
-/* Hablando: cuatro bocas al 400 %. El tamano se declara aqui a proposito:
-   heredar el 700 % sacaria media vuelta del marco y dejaria un parpadeo de
-   alto contraste a ritmo constante. */
-#cabeza.hablando{background-image:url("/assets/caras/secuencia-habla-256.webp");
-  background-size:490% auto;opacity:1;
-  animation:cara-habla var(--anim-habla) steps(4,jump-none) infinite}
-@keyframes cara-habla{from{background-position:2.885% 50%}to{background-position:97.115% 50%}}
-@media (prefers-reduced-motion:reduce){
-  #cabeza,#cabeza.despierto,#cabeza.hablando{animation:none;opacity:1;
-    background-image:url("/assets/caras/secuencia-reposo-256.webp");
-    background-size:490% auto;background-position:2.885% 50%}}
+/* LA CARA DEL CABEZAL SE RETIRO el 2026-09-05 con el resto del cabezal viejo.
+   Eran 78 px de tira animada que hacian de indicador del companero activo, y
+   ese trabajo lo hace mejor `.chat-quien`, que ademas dice el nombre: un dibujo
+   que cambia sin rotulo obliga a aprenderse ocho caras. La cara del producto es
+   la esfera de la Capa 4, en `cara.css`.
 
+   EL CABEZAL, EN DOS FILAS. Arriba los mandos, la marca con sus enlaces al
+   lado, la energia centrada y la identidad a la derecha. Abajo, las cuatro
+   puertas a partes iguales: con `flex-wrap` los rotulos miden distinto en cada
+   idioma y la fila salia torcida en frances y recta en castellano. */
+.cab-fila{display:flex;align-items:center;gap:.6rem;width:100%}
+#cabezal{flex-direction:column;align-items:stretch}
+#cabezal .marca{flex:0 0 auto;min-width:0;display:flex;align-items:center;gap:.5rem}
+#cabezal h1{margin:0}
+/* Los enlaces de identidad, pegados al nombre. Estaban centrados en la fila con
+   un `margin-inline:auto` que los separaba de lo que firman. */
+.cab-ident{display:inline-flex;gap:.3rem;margin:0}
+/* La frase de energia toma el centro y se encoge antes que nadie: es la unica
+   pieza de la fila que puede perder texto sin que se pierda una funcion. */
+.cab-solar{flex:1 1 auto;text-align:center;margin:0;font-size:.7rem;
+  color:var(--tenue);min-width:0}
+.solar-powered{color:var(--jardin);font-weight:700;letter-spacing:.04em}
+#cabezal #identity{margin-left:0;flex:0 0 auto;align-self:center}
+#cab-nav{display:grid;grid-template-columns:repeat(4,1fr);gap:.4rem;width:100%}
+#cab-nav .cab-boton{text-align:center;padding:.42rem .3rem}
+/* LoRAtelier: «LoR» en violeta con el canto dorado debajo, «Atelier» en blanco.
+   Mismo gesto que `Preceptor`+`OS`, y por eso se reconoce sin explicarlo. El
+   dorado es un borde inferior, no una sombra de letra: esa la reserva la
+   doctrina para `.cifra`, y el guardian la busca por su nombre incluso dentro
+   de un comentario -- nombrarla aqui ya lo pondria rojo. */
+.cab-boton.loratelier{background:var(--tinta);border-color:var(--bronce)}
+.loratelier .lor{color:var(--violeta-texto);border-bottom:2px solid var(--sol)}
+.loratelier .atelier{color:#fff}
 #cab-nav{display:flex;gap:.4rem;flex-wrap:wrap;align-items:center}
 .cab-boton{font:inherit;font-size:.74rem;font-weight:700;letter-spacing:.09em;
   text-transform:uppercase;text-decoration:none;cursor:pointer;

@@ -45,30 +45,47 @@
   function enlace(clase, texto, href) {
     var a = el('a', clase, texto); a.href = href; return a;
   }
+  // Se parte por longitud, no por dos claves: es un nombre propio sin traducir.
+  function marcaPartida(href, texto) {
+    var a = el('a', 'cab-boton loratelier'); a.href = href;
+    a.appendChild(el('span', 'lor', texto.slice(0, 3)));
+    a.appendChild(el('span', 'atelier', texto.slice(3)));
+    return a;
+  }
 
   /* --- el cabezal, sincrono ---------------------------------------------
      Se construye antes de pedir nada: una cabecera que aparece medio segundo
      tarde se lee como una pagina rota.
 
-     CUATRO ENLACES Y NADA MAS (2026-09-01). Antes habia SIETE botones, y en
-     el Doogee ocupaban tres filas: el cabezal se comia el 40 % del alto y el
-     chat --que es a lo que se viene-- empezaba casi fuera de vista. Se midio
-     en el telefono, no en un viewport emulado.
-
-     Los tres que se van NO se borran, se mudan:
-       MODELOS   -> el rail de companeros ya se abre solo; el boton sobraba.
-       COLA      -> baja al panel lateral, que es donde vive la cola.
-       PROBADOR  -> fuera del cabezal hasta que se decida si merece la pena.
-     `playground.html` sigue existiendo y sigue enlazada desde el pie. */
+     CUATRO PUERTAS, Y OCUPAN TODO EL ANCHO. Hubo siete botones y en el Doogee
+     ocupaban tres filas: el cabezal se comia el 40 % del alto. Se midio en el
+     telefono, no en un viewport emulado. De aquella poda, MODELOS se fue al
+     desplegable y COLA al panel lateral. */
   cab.appendChild(enlace('cab-boton', T.cabHome, './'));
-  cab.appendChild(enlace('cab-boton empezar', T.cabEmpezar, './onboarding.html'));
+  /* LoRAtelier va SEGUNDO y partido: es el producto principal de esta web --el
+     banco de pruebas comunitario-- y se leia como una seccion mas. «LoR» toma
+     el violeta y el canto dorado; «Atelier» queda en blanco. Mismo gesto que
+     `Preceptor`+`OS`, y por eso se reconoce sin explicarlo. */
+  cab.appendChild(marcaPartida('./benchmark.html', T.cabBenchmark));
   cab.appendChild(enlace('cab-boton', T.cabComunidad, './community.html'));
-  cab.appendChild(enlace('cab-boton', T.cabBenchmark, './benchmark.html'));
-  /* IDIOMA va COLOREADO como los demas. Suelto en `cab-leve` parecia una
-     nota al pie, y no lo es: elegir idioma es el primer paso del recorrido
-     --se abre la pagina, se elige idioma, se habla--. Lleva su propio tono
-     para que se lea como puerta y no como seccion. */
-  cab.appendChild(enlace('cab-boton idioma', T.cabIdioma, '/'));
+  /* INSTALAR AQUI cierra la fila. El segundo puesto lo tenia EMPIEZA AQUI --a
+     `onboarding.html`--, que decia lo mismo con otras palabras y dejaba la
+     instalacion sin puerta propia. `onboarding.html` sigue existiendo. */
+  cab.appendChild(enlace('cab-boton empezar', T.cabInstala, './instalar.html'));
+  /* EL IDIOMA SALE DE LA FILA y pasa a la rueda, como en la app: es el primer
+     paso del recorrido, pero SOLO el primero, y despues ocupaba un quinto del
+     ancho para algo que ya no se toca. En la rueda sigue a un toque. */
+  var ajustes = document.getElementById('panel-ajustes');
+  if (ajustes) {
+    ajustes.innerHTML = '';
+    ajustes.appendChild(el('p', 'panel-rotulo', T.cabIdioma));
+    [['es', 'Español'], ['en', 'English'], ['fr', 'Français']].forEach(function (par) {
+      var a = enlace('ajuste-idioma', par[1], '/' + par[0] + '/');
+      if (document.documentElement.lang === par[0]) a.setAttribute('aria-current', 'true');
+      ajustes.appendChild(a);
+    });
+    // La piel la anade `chat-panel.js`: es un mando, y aqui no cabia.
+  }
 
   /* La declaracion solar, en el cabezal y en los tres idiomas. No es un boton:
      es una afirmacion sobre quien sirve esto, asi que se lee y no se pulsa.
@@ -76,46 +93,24 @@
      Es la MISMA clave que pinta el pie. Hubo dos --`pieSolar` decia otra cosa
      parecida-- y se fundieron el 2026-09-04: dos frases sobre el mismo hecho
      terminan divergiendo, y esta se publica en dos sitios de la misma pagina. */
-  cab.appendChild(el('p', 'cab-solar', T.cabSolar));
-
-  /* Los enlaces de identidad publica van AQUI y en ningun otro sitio de la
-     pagina. Repetirlos en el pie no es redundancia inofensiva: son la unica
-     forma de comprobar quien firma esto, y dos copias divergen.
-
-     Van como ICONO y no como palabra: «GITHUB LINKEDIN» en mayusculas pesaba
-     como dos botones mas en la fila y competia con la navegacion. El nombre
-     sigue estando, en `aria-label` y en `title`, que es donde lo necesita
-     quien no ve el dibujo. */
-  var ident = document.getElementById('cab-ident');
-  var MARCAS = {
-    GitHub: '<svg viewBox="0 0 16 16" width="18" height="18" fill="currentColor"'
-      + ' aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47'
-      + ' 7.59,.4,.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94'
-      + '-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82'
-      + '.72 1.21 1.87.87 2.33,.66,.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95'
-      + ' 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.42'
-      + ' 7.42 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16'
-      + ' 1.92.08 2.12,.51,.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95,.29,.25.54.73'
-      + '.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15,.46,.55.38A8.01 8.01 0 0 0 16 8'
-      + 'c0-4.42-3.58-8-8-8z"/></svg>',
-    LinkedIn: '<svg viewBox="0 0 16 16" width="18" height="18" fill="currentColor"'
-      + ' aria-hidden="true"><path d="M0 1.15C0 .51.53 0 1.18 0h13.64C15.47 0 16 .51'
-      + ' 16 1.15v13.7c0 .64-.53 1.15-1.18 1.15H1.18C.53 16 0 15.49 0 14.85V1.15zM4.94'
-      + ' 13.39V6.17H2.54v7.22h2.4zM3.74 5.18c.84 0 1.36-.55 1.36-1.24-.02-.7-.52-1.24'
-      + '-1.34-1.24-.82 0-1.36.54-1.36 1.24 0 .69.52 1.24 1.32 1.24h.02zm2.53 8.21h2.4'
-      + 'V9.36c0-.21.02-.43.08-.58.17-.43.56-.88 1.21-.88.85 0 1.19.65 1.19 1.6v3.89h2.4'
-      + 'V9.22c0-2.22-1.18-3.25-2.76-3.25-1.29 0-1.86.71-2.18 1.2v.03h-.02l.02-.03V6.17'
-      + 'h-2.4c.03.68 0 7.22 0 7.22h.06z"/></svg>'
-  };
-  function marca(nombre, href) {
-    var a = document.createElement('a');
-    a.className = 'cab-marca'; a.href = href;
-    a.innerHTML = MARCAS[nombre];
-    a.setAttribute('aria-label', nombre);
-    a.title = nombre;
-    return a;
+  /* Al centro del cabezal, no al final de la navegacion, donde se leia como un
+     pie de la fila. `Powered` va aparte y en verde: es la palabra que dice de
+     donde sale la energia. Y sin nombrar al proveedor -- la frase afirma que
+     hay uno, no cual, asi que no miente el dia que cambie. */
+  var solar = document.getElementById('cab-solar');
+  if (solar) {
+    solar.innerHTML = '';
+    solar.appendChild(el('b', 'solar-powered', 'Powered'));
+    solar.appendChild(document.createTextNode(' · ' + T.cabSolar));
   }
 
+  /* Los enlaces de identidad publica van AQUI y en ningun otro sitio: son la
+     unica forma de comprobar quien firma esto, y dos copias divergen.
+
+     El DIBUJO vive en `hub-cola.js` desde el 2026-09-05 --aqui no cabian sus
+     1,9 KB de rutas--, pero la DECISION se queda: que enlace se pone lo dice
+     el catalogo, no una constante. */
+  var ident = document.getElementById('cab-ident');
   /* --- el panel Modelos --------------------------------------------------- */
   function hueso(c) { return el('div', 'hueso ' + c); }
   function esqueleto() {
@@ -190,8 +185,10 @@
         if (!d.agentes || !d.agentes.length) throw new Error('catalogo sin agentes');
         pintaPanel();
         var i = d.identidad || {};
-        if (ident && i.github_url) ident.appendChild(marca('GitHub', i.github_url));
-        if (ident && i.linkedin_url) ident.appendChild(marca('LinkedIn', i.linkedin_url));
+        if (ident && i.github_url && window.HubMarca)
+          ident.appendChild(window.HubMarca('GitHub', i.github_url));
+        if (ident && i.linkedin_url && window.HubMarca)
+          ident.appendChild(window.HubMarca('LinkedIn', i.linkedin_url));
         window.Hub = {
           textos: L, rotulos: T, datos: d, boton: null, panel: panel,
           agente: function (id) {

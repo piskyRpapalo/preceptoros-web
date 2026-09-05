@@ -33,21 +33,34 @@
 <canvas id="ambient" aria-hidden="true"></canvas>
 <main>
   <header id="cabezal">
-    <div class="lateral-zona">
-      <button class="lateral-boton" id="lateral-boton" type="button"
-              aria-expanded="false" aria-controls="panel-modelos">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"
-             stroke-linecap="round" aria-hidden="true">
-          <path d="M 4 7 h16"></path><path d="M 4 12 h16"></path><path d="M 4 17 h10"></path>
-        </svg>
-        <span class="sr">Agentes y compañeros</span>
-      </button>
-      <section id="panel-modelos" class="cerrado"></section>
+    <div class="cab-fila">
+      <div class="lateral-zona">
+        <button class="lateral-boton" id="lateral-boton" type="button"
+                aria-expanded="false" aria-controls="panel-modelos">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"
+               stroke-linecap="round" aria-hidden="true">
+            <path d="M 4 7 h16"></path><path d="M 4 12 h16"></path><path d="M 4 17 h10"></path>
+          </svg>
+          <span class="sr" data-rotulo="companeros"></span>
+        </button>
+        <section id="panel-modelos" class="cerrado"></section>
+      </div>
+      <div class="lateral-zona">
+        <button class="lateral-boton rueda" id="rueda" type="button"
+                aria-expanded="false" aria-controls="panel-ajustes">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          </svg>
+          <span class="sr" data-rotulo="ajustes"></span>
+        </button>
+        <section id="panel-ajustes" class="cerrado"></section>
+      </div>
+      <div class="marca"><h1>Preceptor<b>OS</b></h1><span id="cab-ident" class="cab-ident"></span></div>
+      <p class="cab-solar" id="cab-solar"></p>
+      <div id="identity" class="fila identity"></div>
     </div>
-    <div id="cabeza" role="img" aria-label="Preceptor"></div>
-    <div class="marca"><h1>Preceptor<b>OS</b></h1></div>
-    <div id="cab-ident" class="cab-ident"></div>
-    <div id="identity" class="fila identity"></div>
     <nav id="cab-nav"></nav>
   </header>
   <section id="hub"></section>
@@ -64,24 +77,11 @@
   </div>
   </div>
   <footer class="honest-footer">
-      <p class="proof"><b>614</b> pruebas en verde en la app · <b>74</b> en esta web · <b>cero</b> peticiones externas al cargar · <b>10 KB</b> máximo por fichero</p>
       <ul id="pie-honesto"></ul>
-      <p id="pie-enlaces"></p>
+      <p class="proof"><b>617</b> pruebas en verde en la app · <b>75</b> en esta web · <b>cero</b> peticiones externas al cargar · <b>10 KB</b> máximo por fichero</p>
     </footer>
 </main>
-<script type="application/json" id="i18n">{"brainAsleep":"Todavía no hay motor arrancado","brainBrowser":"IA del navegador (Edge)","brainLabel":"Modelo:","brainLive":"Vivo en tu máquina","brainNone":"ninguno","causaDesconocida":"Causa desconocida.","causaElegida":"Causa: elegiste el JSON.","causaEnBenchmark":"Causa: el motor se elige y se mide en el Benchmark.","copiaManual":"Selecciona y Ctrl+C","copiado":"Copiado OK","copiarPara":"Copiar para","destinos":["Gemini","ChatGPT","Claude","mi IA local"],"etiquetaJson":"Texto para copiar a tu IA","falloRespuesta":"NO_DATA · fallo al generar respuesta","falloVacio":"NO_DATA — el motor terminó sin emitir ni un carácter. No es una respuesta vacía: es un turno que no llegó a existir.","idAviso":"Se genera una clave en tu navegador. No se puede exportar ni copiar a otro aparato: si borras los datos del sitio, esta identidad se pierde y no hay forma de recuperarla. No hay contraseña que olvidar ni servidor que la guarde.","idClave":"Ver mi huella","idPerfil":"Mi perfil","idEntrar":"Crear identidad","idFallo":"NO_DATA — no se pudo crear la identidad:","idHola":"Hola,","idPublica":"Clave pública:","laiListo":"Hablarás con","llevate":"Llévate este texto a la IA que ya uses.","micEnAparato":"Dictado en tu aparato. El audio no sale de aquí.","micEscuchando":"Escuchando… toca para parar","micFallo":"NO_DATA — el dictado local falló:","micHablar":"Hablar","micSinLocal":"NO_DATA — tu navegador no ofrece dictado en el aparato. El botón queda apagado: el reconocedor de la nube no vuelve.","mismoTexto":"El mismo texto sirve para cualquier IA. Esa es la idea: no depender de una sola.","pie1f":"Hasta que pulsas un botón, esta página no ha hablado con nadie.","pie1r":"Cero peticiones externas al cargar.","pie2f":"El motor se elige en el Benchmark.","pie2r":"Las descargas y las medidas viven alli, no aqui.","pie3f":"Si no hay motor elegido,","pie3r":"la pagina te genera un JSON para llevar a la IA que ya tengas.","pieBenchmark":"LoRAtelier","pieHitos":"Hitos","pieInstalar":"Instalar","pieTablon":"Tablón","prefieroJson":"Prefiero el JSON","sinMotor":"NO_DATA · no hay motor de IA disponible en este navegador.","tu":"Tú","cabComunidad":"COMUNIDAD","cabBenchmark":"LORATELIER","cabCola":"FIRMA","cabIdioma":"IDIOMA","cabHome":"INICIO","cabEmpezar":"EMPIEZA AQUÍ","rackSinAdaptador":"NO_DATA — este companero todavia no tiene modelo servido en el rack.","rackFallo":"NO_DATA — el rack no contesto.","rackCausa":"Causa: el rack no contesto; el tunel publico aun no esta levantado.","cabInstala":"INSTALAR AQUÍ","cabInstalaIos":"Para instalar: pulsa Compartir (la flecha hacia arriba) y luego «Añadir a pantalla de inicio».","cabSolar":"Esta web es 99% solar, excepto el proveedor web (Cloudflare)","atResume":"Resume esto","atPasos":"Dame los pasos","atDudas":"Qué te falta saber","companeros":"Agentes y compañeros"}</script>
- "tu": "Tú",
- "cabComunidad": "COMUNIDAD",
- "cabBenchmark": "BENCHMARK",
- "cabCola": "FIRMA",
- "cabIdioma": "IDIOMA",
- "cabHome": "INICIO",
- "cabEmpezar": "EMPIEZA AQUÍ",
- "rackSinAdaptador": "NO_DATA — este companero todavia no tiene modelo servido en el rack.",
- "rackFallo": "NO_DATA — el rack no contesto.",
- "rackCausa": "Causa: el rack no contesto; el tunel publico aun no esta levantado.",
- "pieSolar": "Servido por IA 99% solar (excepto Cloudflare)"
-}</script>
+<script type="application/json" id="i18n">{"brainAsleep":"Todavía no hay motor arrancado","brainBrowser":"IA del navegador (Edge)","brainLabel":"Modelo:","brainLive":"Vivo en tu máquina","brainNone":"ninguno","causaDesconocida":"Causa desconocida.","causaElegida":"Causa: elegiste el JSON.","causaEnBenchmark":"Causa: el motor se elige y se mide en el Benchmark.","copiaManual":"Selecciona y Ctrl+C","copiado":"Copiado OK","copiarPara":"Copiar para","destinos":["Gemini","ChatGPT","Claude","mi IA local"],"etiquetaJson":"Texto para copiar a tu IA","falloRespuesta":"NO_DATA · fallo al generar respuesta","falloVacio":"NO_DATA — el motor terminó sin emitir ni un carácter. No es una respuesta vacía: es un turno que no llegó a existir.","idAviso":"Se genera una clave en tu navegador. No se puede exportar ni copiar a otro aparato: si borras los datos del sitio, esta identidad se pierde y no hay forma de recuperarla. No hay contraseña que olvidar ni servidor que la guarde.","idClave":"Ver mi huella","idPerfil":"Mi perfil","idEntrar":"Crear identidad","idFallo":"NO_DATA — no se pudo crear la identidad:","idHola":"Hola,","idPublica":"Clave pública:","laiListo":"Hablarás con","llevate":"Llévate este texto a la IA que ya uses.","micEnAparato":"Dictado en tu aparato. El audio no sale de aquí.","micEscuchando":"Escuchando… toca para parar","micFallo":"NO_DATA — el dictado local falló:","micHablar":"Hablar","micSinLocal":"NO_DATA — tu navegador no ofrece dictado en el aparato. El botón queda apagado: el reconocedor de la nube no vuelve.","mismoTexto":"El mismo texto sirve para cualquier IA. Esa es la idea: no depender de una sola.","pie1f":"Hasta que pulsas un botón, esta página no ha hablado con nadie.","pie1r":"Cero peticiones externas al cargar.","pie2f":"El motor se elige en el Benchmark.","pie2r":"Las descargas y las medidas viven alli, no aqui.","pie3f":"Si no hay motor elegido,","pie3r":"la pagina te genera un JSON para llevar a la IA que ya tengas.","pieBenchmark":"LoRAtelier","pieHitos":"Hitos","pieInstalar":"Instalar","pieTablon":"Tablón","prefieroJson":"Prefiero el JSON","sinMotor":"NO_DATA · no hay motor de IA disponible en este navegador.","tu":"Tú","cabComunidad":"COMUNIDAD","cabBenchmark":"LORATELIER","cabCola":"FIRMA","cabIdioma":"IDIOMA","cabHome":"INICIO","cabEmpezar":"EMPIEZA AQUÍ","rackSinAdaptador":"NO_DATA — este companero todavia no tiene modelo servido en el rack.","rackFallo":"NO_DATA — el rack no contesto.","rackCausa":"Causa: el rack no contesto; el tunel publico aun no esta levantado.","cabInstala":"INSTALAR AQUÍ","cabInstalaIos":"Para instalar: pulsa Compartir (la flecha hacia arriba) y luego «Añadir a pantalla de inicio».","cabSolar":"99% solar, excepto el proveedor web","atResume":"Resume esto","atPasos":"Dame los pasos","atDudas":"Qué te falta saber","companeros":"Agentes y compañeros","ajustes":"Ajustes","piel":"Piel","pielOscura":"Oscura","pielClara":"Clara"}</script>
 <script src="/assets/prompts-es.js"></script>
 <script src="/assets/fallback.js"></script>
 <script src="/assets/state.js"></script>

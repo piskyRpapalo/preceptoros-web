@@ -71,14 +71,10 @@
 })();
 
 /* --- Capa 1 · los atajos, debajo del campo --------------------------------
- * Los mismos tres que la app, con las mismas claves y el mismo gesto: escriben
- * en el campo y dejan el cursor ahi. NO mandan solos -- un atajo que manda sin
- * que se lea lo que va a mandar es un boton que habla por ti.
- *
- * Los rotulos salen del bloque `#i18n` de la portada y no de aqui: este
- * fichero no tiene idioma, y por eso no puede tener texto. Es la misma regla
- * que ya cumple `board-fuentes.js`.
- */
+ * Los mismos tres que la app, mismas claves y mismo gesto: escriben en el campo
+ * y dejan el cursor ahi. NO mandan solos -- un atajo que manda sin que se lea
+ * lo que va a mandar es un boton que habla por ti. Los rotulos salen del `#i18n`
+ * de la portada: este fichero no tiene idioma, asi que no puede tener texto. */
 (function () {
   var caja = document.getElementById('atajos');
   var campo = document.getElementById('pregunta');
@@ -103,16 +99,12 @@
 })();
 
 /* --- Capa 4 · los estados de la cara --------------------------------------
- * Las mismas funciones que el MVP, sobre los eventos que esta web YA emitia y
- * que hasta hoy solo movian el sello del pie. La cara es un sensor, no un
- * adorno: se mueve cuando pasa algo de verdad.
+ * Las mismas funciones que el MVP, sobre eventos que esta web YA emitia y que
+ * solo movian el sello del pie. La cara es un sensor, no un adorno.
  *
- * PENSAR Y HABLAR SON DOS COSAS, y esa es la correccion que la app firmo el
- * 2026-09-04. Antes la boca se movia mientras el modelo generaba, o sea que la
- * cara hablaba sin haber dicho nada todavia -- y con un modelo lento eso son
- * minutos de boca moviendose en falso. Ahora piensa mientras piensa y mueve la
- * boca cuando el texto llega.
- */
+ * PENSAR Y HABLAR SON DOS COSAS --lo firmo la app el 2026-09-04--. Antes la
+ * boca se movia mientras el modelo generaba: la cara hablaba sin haber dicho
+ * nada, y con un modelo lento eso son minutos en falso. */
 (function () {
   var cara = document.querySelector('.esfera');
   if (!cara) return;
@@ -127,21 +119,28 @@
   document.addEventListener('preceptor:turno', function () { estado(null); });
 })();
 
-/* --- Capa 3 · quien abre el desplegable -----------------------------------
- * EL BOTON SE ATA AL ARRANCAR, y por eso vive aqui y no en `chat-router.js`.
- * Medido el 2026-09-05 en el navegador: alli el enganche cuelga de `listo()`,
- * que espera al catalogo --`hub.js` lo pide en `requestIdleCallback`-- y hasta
- * entonces el desplegable no tenia quien lo abriera. Con el rail daba igual,
- * porque el rail se tocaba directamente; un desplegable plegado no se puede
- * tocar. Y este fichero es justo el de «donde se colocan los mandos».
- *
- * Nace CERRADO aunque la clase este en el marcado: `hub.js` reescribe el panel
- * al pintarlo y el estado hay que volver a declararlo.
- */
+/* --- Capa 3 · quien abre los desplegables ----------------------------------
+ * EL BOTON SE ATA AL ARRANCAR, y por eso vive aqui y no en `chat-router.js`:
+ * alli el enganche cuelga de `listo()`, que espera al catalogo, y hasta
+ * entonces el desplegable no tenia quien lo abriera. Con el rail daba igual
+ * --se tocaba directamente--; uno plegado no se puede tocar. Y este fichero es
+ * el de «donde se colocan los mandos». Nace CERRADO aunque la clase
+ * este en el marcado: `hub.js` lo reescribe al pintar. */
 (function () {
-  var boton = document.getElementById('lateral-boton');
-  var panel = document.getElementById('panel-modelos');
-  if (!boton || !panel) return;
+  /* Los DOS mandos del cabezal con el mismo mecanismo: companeros y rueda. Se
+     generaliza en vez de copiarse -- dos bucles iguales divergen en cuanto uno
+     gana una condicion. Y abrir uno cierra el otro: caen en el mismo sitio y
+     superpuestos no se leeria ninguno. */
+  var pares = [['lateral-boton', 'panel-modelos'], ['rueda', 'panel-ajustes']]
+    .map(function (par) {
+      return { b: document.getElementById(par[0]), p: document.getElementById(par[1]) };
+    }).filter(function (x) { return x.b && x.p; });
+  if (!pares.length) return;
+  pares.forEach(function (uno) { montar(uno, pares); });
+})();
+
+function montar(uno, todos) {
+  var boton = uno.b, panel = uno.p;
 
   function pinta() {
     boton.setAttribute('aria-expanded',
@@ -151,7 +150,9 @@
 
   cierra();
   boton.addEventListener('click', function () {
-    panel.classList.toggle('cerrado');
+    var abrir = panel.classList.contains('cerrado');
+    todos.forEach(function (o) { o.p.classList.add('cerrado'); o.b.setAttribute('aria-expanded', 'false'); });
+    if (abrir) panel.classList.remove('cerrado');
     pinta();
   });
   /* Escape cierra: un panel que cae sobre el chat y solo se cierra volviendo al
@@ -161,4 +162,8 @@
   });
   // Elegir companero cierra: ya se hizo lo que se vino a hacer.
   document.addEventListener('preceptor:companero', cierra);
-})();
+}
+
+/* La PIEL --el interruptor claro/oscuro de la rueda-- vive en `hub-cola.js`.
+ * No cabia aqui: este fichero llego a su techo de 10.240 B con los cuatro
+ * asuntos que ya lleva. Se parte, no se recorta. */

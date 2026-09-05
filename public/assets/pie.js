@@ -38,20 +38,9 @@
       });
   }
 
-  if (nav) {
-    nav.innerHTML = '';
-    /* SOLO lo que el cabezal no lleva ya. Este pie repetia Tablon, Benchmark
-       e Instalar, que estan arriba en la navegacion: cuatro enlaces de los
-       cuales tres eran la misma puerta dos veces. La instalacion, ademas, no
-       se ofrece mas de una vez por pagina -- su puerta es EMPIEZA AQUI, en
-       rojo y en el cabezal. Hitos es lo unico que no vive arriba. */
-    [['../hitos.html', 'pieHitos']]
-      .forEach(function (par, i) {
-        if (!T[par[1]]) return;
-        if (i) nav.appendChild(document.createTextNode(' · '));
-        var a = document.createElement('a');
-        a.href = par[0]; a.textContent = T[par[1]];
-        nav.appendChild(a);
-      });
-  }
+  /* EL PIE YA NO LLEVA ENLACES. Solo quedaba Hitos --`hitos.html`-- y estaba
+     roto: la ruta `../hitos.html` se resolvia mal desde las portadas de idioma.
+     Un enlace que no lleva a ninguna parte es peor que la ausencia del enlace,
+     porque la ausencia no promete nada. Si Hitos vuelve, vuelve con su ruta
+     comprobada. `#pie-enlaces` ya no existe en el marcado. */
 })();

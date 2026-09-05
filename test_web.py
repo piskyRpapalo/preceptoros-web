@@ -1087,26 +1087,72 @@ class Cabezal(unittest.TestCase):
         for idioma in IDIOMAS:
             yield idioma, (PUBLICO / idioma / "index.html").read_text(encoding="utf-8")
 
-    def test_cabezal_con_ojos_y_login(self):
-        """La cabeza, la navegacion y la identidad, con sus ids intactos.
+    def test_cabezal_limpio_y_sus_ids(self):
+        """El cabezal nuevo, con los ids de los que otros ficheros dependen.
 
-        `auth.js` busca `#identity` y se calla si no esta: el boton de entrar
-        desapareceria sin un solo error en consola. Por eso se comprueba el
-        id, no el aspecto.
+        SE RETIRO `#cabeza` el 2026-09-05, y con el el ultimo resto del cabezal
+        anterior. Era una tira animada de 78 px que hacia de indicador del
+        companero activo: `chat-router.js` le cambiaba el fondo al elegir. El
+        trabajo lo hace `.chat-quien`, que ademas dice el NOMBRE -- un dibujo
+        que cambia sin rotulo obliga a aprenderse ocho caras para saber con
+        quien hablas. Esta prueba exige ahora que no vuelva: dos indicadores del
+        mismo hecho terminan discrepando.
+
+        Se comprueban IDS y no aspecto porque de los ids cuelgan otros ficheros:
+        `auth.js` busca `#identity` y se calla si no esta, asi que el boton de
+        entrar desapareceria sin un solo error en consola.
         """
         router = (PUBLICO / "assets" / "chat-router.js").read_text(encoding="utf-8")
         for idioma, t in self.portadas():
             with self.subTest(idioma=idioma):
                 self.assertIn('id="cabezal"', t, "no hay cabezal")
-                self.assertIn('id="cabeza"', t, "no hay cabeza del Preceptor")
                 self.assertIn('id="cab-nav"', t, "el cabezal no tiene navegacion")
                 self.assertIn('id="identity"', t,
                               "auth.js busca #identity y se calla si falta")
-        # El ojo del cabezal cambia con el companero activo.
-        self.assertIn("cabeza.style.backgroundImage", router,
-                      "el router no le pone cara al cabezal")
-        self.assertIn("a.symbol", router,
-                      "el cabezal no cambia de ojo al cambiar de companero")
+                self.assertIn('id="cab-solar"', t,
+                              "la frase de energia no tiene sitio en el cabezal")
+                self.assertIn('id="panel-ajustes"', t, "no hay rueda de ajustes")
+                self.assertNotIn('id="cabeza"', t,
+                                 "vuelve la cara del cabezal viejo: seria un "
+                                 "segundo indicador de companero, y discreparia "
+                                 "de `.chat-quien`")
+        # Se busca la LLAMADA, no la palabra: el bloque de al lado explica por
+        # escrito que la cara se retiro, y una comprobacion que se cree lo que
+        # dice la prosa no comprueba el codigo -- esta leyendo. Es la misma
+        # cicatriz que ya tiene la prueba de la Capa 3 con `@supports`.
+        self.assertNotIn("getElementById('cabeza')", router,
+                         "el router vuelve a buscar la cara del cabezal viejo")
+        self.assertNotIn("cabeza.style", router,
+                         "el router vuelve a pintar la cara del cabezal viejo")
+        # Quien dice con quien hablas, y lo dice con nombre.
+        self.assertIn("chat-quien", router,
+                      "nadie declara el companero activo en el chat")
+
+    def test_las_cuatro_puertas_y_su_orden(self):
+        """La navegacion: cuatro, en su orden, y ocupando el ancho.
+
+        El orden no es decorativo. HOME primero porque es el sitio; LoRAtelier
+        SEGUNDO porque es el producto principal de esta web --el banco de
+        pruebas comunitario-- y hasta hoy iba el ultimo, leyendose como una
+        seccion mas; COMMUNITY despues; e INSTALAR AQUI el ultimo, que es lo que
+        se hace cuando ya se ha visto lo demas.
+
+        Y el idioma YA NO ESTA en la fila: se fue a la rueda. Era el quinto
+        boton y ocupaba un quinto del ancho para algo que solo se toca una vez.
+        """
+        hub = (PUBLICO / "assets" / "hub.js").read_text(encoding="utf-8")
+        orden = []
+        for clave in ("T.cabHome", "T.cabBenchmark", "T.cabComunidad", "T.cabInstala"):
+            self.assertIn(clave, hub, f"falta la puerta {clave}")
+            orden.append(hub.index(clave))
+        self.assertEqual(orden, sorted(orden),
+                         "las cuatro puertas no se pintan en su orden")
+        self.assertNotIn("enlace('cab-boton idioma'", hub,
+                         "el idioma vuelve a la fila de navegacion")
+        css = (PUBLICO / "assets" / "widget.css").read_text(encoding="utf-8")
+        self.assertIn("grid-template-columns:repeat(4,1fr)",
+                      css.replace(" ", ""),
+                      "las puertas no se reparten el ancho a partes iguales")
 
     def test_enlaces_identidad_publica(self):
         """GitHub y LinkedIn: uno de cada, y en el cabezal.
@@ -1201,7 +1247,10 @@ class Cabezal(unittest.TestCase):
 
         # 1 · ES UN DESPLEGABLE, no una columna: cuelga del CABEZAL por su canto
         #     izquierdo. La geometria es la del MVP, que es la referencia.
-        self.assertIn("#panel-modelos{position:absolute;left:.7rem;top:calc(100%-.1rem)",
+        # Los DOS mandos --companeros y rueda-- comparten el mueble: dos
+        # desplegables con dos aspectos serian dos muebles para el mismo gesto.
+        self.assertIn("#panel-modelos,#panel-ajustes{position:absolute;left:.7rem;"
+                      "top:calc(100%-.1rem)",
                       plano, "la Capa 3 no cuelga del canto izquierdo del cabezal")
         self.assertIn("transform-origin:topleft", plano,
                       "el desplegable crece desde el centro y se lee como un acordeon")
@@ -1211,7 +1260,8 @@ class Cabezal(unittest.TestCase):
         # 2 · CERRADO NO OCUPA NADA. Y `visibility:hidden` ademas le quita el
         #     foco: un panel a escala cero sigue siendo tabulable, y quien
         #     navega con teclado caeria dentro de algo que no ve.
-        self.assertIn("#panel-modelos.cerrado{transform:scaleY(0);opacity:0;visibility:hidden}",
+        self.assertIn("#panel-modelos.cerrado,#panel-ajustes.cerrado{"
+                      "transform:scaleY(0);opacity:0;visibility:hidden}",
                       plano, "la Capa 3 cerrada sigue ocupando, o sigue siendo tabulable")
 
         # 3 · NADIE reserva hueco para ella. Si alguien lo reintroduce, el centro
