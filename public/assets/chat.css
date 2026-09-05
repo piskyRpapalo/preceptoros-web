@@ -208,3 +208,33 @@ body.chat-activo .presentacion{opacity:.5}
    declara explicito en vez de bajarle la especificidad a la regla de arriba,
    que es lo que le da su forma. */
 .pleno-cerrar[hidden]{display:none}
+
+/* --- lo que se toca: el campo y sus dos mandos ----------------------------
+   EL CAMPO, MAS GRANDE. Era la caja donde se escribe y medía menos que la fila
+   de atajos que tiene debajo: lo primero que se hace en esta pagina es
+   escribir, y el tamano de una caja dice cuanto se espera de ella. `min-height`
+   y no `rows`: el marcado ya trae `rows="3"` y con una altura minima en css la
+   caja crece pero no encoge por debajo de lo comodo.
+
+   LOS DOS MANDOS EN OVALO. Enviar y Hablar son las dos formas de decir lo
+   mismo --escribir o dictar-- asi que se dibujan iguales y en la misma figura:
+   pildora alta, no rectangulo con las esquinas del panel. El radio 999 no es
+   una sexta esquina, es otra figura, y la doctrina lo admite por eso. */
+#pregunta{min-height:9.5rem;line-height:1.55;padding:.9rem 1rem;
+  border-radius:calc(var(--radius) + 4px)}
+button.enviar,button.mic{border-radius:999px;padding:.62rem 1.3rem;
+  min-height:46px;font-weight:600}
+
+/* --- el login SIEMPRE por encima de la cara -------------------------------
+   La esfera es la Capa 4 y se sienta a caballo del cabezal: entrar caia debajo
+   y en Android no habia forma de pulsarlo. No se arregla encogiendo la cara
+   --eso es un ajuste de gusto y se decide mirando-- sino diciendo quien va
+   delante, que es una decision de capas y no de tamano. La firma viaja con el
+   por la misma razon: son la misma pareja. */
+#cabezal #identity,#cabezal .cola-abrir{position:relative;
+  z-index:calc(var(--capa-4-cara) + 1)}
+/* La cuenta de la firma, pegada al rotulo. Un numero sin nada al lado no dice
+   de que es; dentro del boton que abre la cola, si. */
+.cola-cuenta{display:inline-block;margin-left:.35rem;padding:0 .34rem;
+  min-width:1.15em;text-align:center;font-variant-numeric:tabular-nums;
+  color:var(--tinta);background:var(--oro);border-radius:999px}

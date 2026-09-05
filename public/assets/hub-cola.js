@@ -52,6 +52,18 @@
     var b = document.createElement('button');
     b.type = 'button'; b.className = 'cab-boton cola-abrir';
     b.textContent = (H.rotulos && H.rotulos.cabCola) || '';
+    /* LA CUENTA, al lado del rotulo y sacada del catalogo que ya se pide --no
+       de un contador propio--. Dos sitios contando lo mismo acaban discrepando,
+       y el que se ve en el cabezal seria el que nadie revisa.
+       Se pinta solo si hay algo: un cero en un boton se lee como una averia. */
+    var cuenta = document.createElement('span');
+    cuenta.className = 'cola-cuenta';
+    cuenta.hidden = true;
+    b.appendChild(cuenta);
+    b.ponCuenta = function (n) {
+      cuenta.textContent = String(n);
+      cuenta.hidden = !n;
+    };
     b.hidden = true;
     b.addEventListener('click', function () { abre(); });
     function conPerfil() { b.hidden = false; }
@@ -88,6 +100,9 @@
     s.appendChild(x);
     s.appendChild(el('p', 'panel-rotulo', (c.estado || '') + ' · ' + (c.causa || '')));
     var props = c.propuestas || [];
+    // El boton del cabezal se entera aqui, que es donde el numero existe.
+    var puertaBoton = document.querySelector('#cabezal .cola-abrir');
+    if (puertaBoton && puertaBoton.ponCuenta) puertaBoton.ponCuenta(props.length);
     if (!props.length) s.appendChild(el('p', 'cola-nota', L.colaVacia));
     props.forEach(function (p) {
       var caja = el('div', 'cola-pieza');
