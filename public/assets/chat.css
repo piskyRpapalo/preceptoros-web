@@ -162,10 +162,19 @@ button.enviar svg{margin-right:.1rem}
    Aqui se apaga el aro y se devuelve el borde, que es el limite con la web y
    tiene que ser una linea limpia, no una textura. */
 #chat::before{display:none}
-#chat{border-top-color:transparent;
+/* EL CANTO NO SE CIERRA EN EL CHAT: SIGUE POR EL PIE. Las frases honestas son
+   parte de lo mismo --la letra pequena de esta conversacion-- asi que el marco
+   las abraza en vez de dejarlas fuera. Se hace continuando la LINEA y no
+   dibujando dos cajas: el chat pone los lados y no cierra abajo, el pie recoge
+   los lados y cierra. A la vista es un solo marco; en el arbol siguen siendo
+   dos hermanos, y no hace falta envolverlos en un contenedor nuevo. */
+#chat{border-top-color:transparent;border-top-width:0;
   border-left-color:var(--bronce-claro);border-right-color:var(--bronce-claro);
-  border-bottom-color:var(--bronce-claro);
-  border-left-width:2px;border-right-width:2px;border-bottom-width:2px}
+  border-bottom-width:0;
+  border-left-width:2px;border-right-width:2px;
+  border-radius:var(--radius) var(--radius) 0 0}
+.honest-footer{border:2px solid var(--bronce-claro);border-top-width:0;
+  border-radius:0 0 var(--radius) var(--radius)}
 
 /* --- Capa 2 · el cabezal se aparta cuando se escribe ----------------------
    PIERDE INTENSIDAD, NO DESAPARECE, y es el mismo criterio que la app tiene

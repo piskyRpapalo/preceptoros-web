@@ -29,7 +29,7 @@
  * dos motivos -- el techo de 7 paginas del gate, y que un fichero de respaldo
  * tambien puede faltar del cache justo el dia que hace falta.
  */
-const VERSION = 'preceptoros-2026-09-j';
+const VERSION = 'preceptoros-2026-09-k';
 const SHELL = 'shell-' + VERSION;
 const OBRA = 'obra-' + VERSION;
 
@@ -48,7 +48,7 @@ const CARAS = ['ambar', 'azul', 'birrete', 'bombilla',
    hablas; la esfera es como se presenta ese companero cuando eliges. */
 const ESFERAS = ['instalador', 'privacidad', 'escritor', 'traductor',
                  'coder', 'analista', 'aprendiz', 'bibliotecario'];
-const HUB = ['/hub.json', '/modelos.json', '/servicios.json', '/assets/widget.css', '/assets/panel.css',
+const HUB = ['/hub.json', '/modelos.json', '/servicios.json', '/assets/widget.css', '/assets/cabezal.css', '/assets/panel.css',
              '/assets/hub.js',
              '/assets/hub-cola.js', '/assets/chat-router.js', '/assets/corregir.js', '/assets/comandos.js']
   .concat(CARAS.map(c => '/assets/agente-ojo-' + c + '.webp'))

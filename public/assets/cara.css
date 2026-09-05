@@ -51,14 +51,24 @@
    220 px, en tres pasos y mirandola cada vez, que es como se ajusta una cara:
    320 ganaba la pantalla entera, 256 seguia rozando el chat, 220 lo deja libre.
    Sigue siendo mas del doble de los 155 con los que empezo. */
-main{position:relative}
-/* EN ESCRITORIO LA CARA NO BAJA, SE ENCOGE. Bajarla fue el primer intento y
-   estaba mal: la esfera se sienta sobre la juntura, asi que cada pixel que baja
-   se lo come al chat por arriba -- y el chat es lo que se vino a usar. Lo que
-   se ajusta es el diametro, que la quita de en medio sin moverla de sitio.
-   220 px: sigue siendo lo primero que se mira, y ya no roza la conversacion. */
-.presentacion{position:absolute;right:0;top:2.6rem;z-index:var(--capa-4-cara);
-  pointer-events:none}
+/* `main` ya no necesita ser el ancla: la esfera cuelga del CABEZAL. */
+/* CUELGA DEL CABEZAL, Y SE ANCLA POR ABAJO. Antes flotaba en `main` con un
+   `top` fijo, y eso obligaba a adivinar cuanto mide el cabezal -- que cambia
+   con el idioma, con la sesion y con el ancho. Anclada al cabezal por su borde
+   inferior, «hasta el borde del panel» deja de ser una estimacion y pasa a ser
+   `bottom: 0`, sea cual sea la altura que tenga arriba.
+
+   CADA ANCHO SE ANCLA POR UN LADO DISTINTO, y no es incoherencia. En escritorio
+   la esfera mide 220 px y el cabezal ronda los 110: anclarla por abajo la
+   empujaba fuera POR ARRIBA, y se vio en el navegador. Alli se ancla por su
+   `top` y asoma hacia el chat, que es lo que la hace Capa 4. En el telefono la
+   esfera es mas pequena que el cabezal, asi que `bottom: 0` la deja justo en el
+   canto sin depender de lo que mida arriba -- que es lo que se pidio y lo que
+   un `top` fijo no podia garantizar.
+
+   `pointer-events:none` para que no se trague un clic de lo que hay debajo. */
+.presentacion{position:absolute;right:.2rem;top:.9rem;
+  z-index:var(--capa-4-cara);pointer-events:none}
 .esfera{width:var(--esfera);height:var(--esfera);border-radius:50%;
   background:var(--disco-cara) url("/assets/caras/cara-reposo-violeta-256.webp")
              27.78% 50%/122.5% auto no-repeat;
@@ -97,10 +107,16 @@ main{position:relative}
 
 /* En pantallas estrechas la esfera se encoge en vez de comerse el cabezal. Es
    la misma regla que la app aplica con `--cara-centro-ancha`: la cara manda,
-   pero no por encima de poder escribir. */
+   pero no por encima de poder escribir.
+
+   136 px se quedan: es la medida que el Soberano dio por buena mirandola en el
+   Doogee. Lo que baja es el `top` --de 2,2 a 3,2rem-- para que la cara arranque
+   por debajo de la fila de la marca en vez de a su altura. El nombre no se
+   parte y la cara no pierde tamano: se mueve, que era lo que sobraba. */
 @media (max-width:1023px){
   :root{--esfera:136px}
-  .presentacion{top:2.2rem}
+  /* Justo en el canto del cabezal, sin asomar. */
+  .presentacion{bottom:0}
 }
 
 /* --- el telon · el despertar ----------------------------------------------

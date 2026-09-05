@@ -1395,9 +1395,14 @@ class Cabezal(unittest.TestCase):
         devolverle a la regla de movil la especificidad que le falta, dentro
         de la media query que ya existe.
         """
-        css = (PUBLICO / "assets" / "widget.css").read_text(encoding="utf-8")
+        # La maqueta de movil salio de `widget.css` a `cabezal.css` el
+        # 2026-09-05: aquella llego a 16.724 B de un tope de 16.384 y en este
+        # arbol se parte antes que recortar. La hoja nueva se enlaza JUSTO
+        # DESPUES, porque estas reglas corrigen a las de escritorio y con la
+        # misma especificidad gana la que carga ultima.
+        css = (PUBLICO / "assets" / "cabezal.css").read_text(encoding="utf-8")
         movil = re.search(r"@media \(max-width:1023px\)\{(.*?)\n\}", css, re.S)
-        self.assertIsNotNone(movil, "no hay maqueta de movil en widget.css")
+        self.assertIsNotNone(movil, "no hay maqueta de movil en cabezal.css")
         # Los comentarios fuera ANTES de aplanar, y no es escrupulo: el
         # comentario de esta misma regla CITA `#cabezal #identity{flex:0 0
         # auto}` para explicar a quien gana. Sin quitarlo, el test partia por
@@ -1409,10 +1414,20 @@ class Cabezal(unittest.TestCase):
         self.assertIn("#cabezal#identity{", cuerpo,
                       "movil no reajusta la identidad: seguira clavada a la derecha")
         regla = cuerpo.split("#cabezal#identity{")[1].split("}")[0]
-        # `flex:1 0 100%` sin espacios es `flex:10100%`. Se compara sobre el
-        # texto aplanado porque es como se compara todo lo demas en este gate.
-        self.assertIn("flex:10100%", regla,
-                      "la identidad no reclama su propia fila")
+        # LA DOCTRINA CAMBIO el 2026-09-05, y conviene decir cual era: la
+        # identidad reclamaba su propia fila con `flex:1 0 100%`. Eso valia
+        # cuando ahi habia UN boton --«crear identidad»--. Con sesion iniciada
+        # `auth.js` pinta TRES hijos, y un 100 % a cada uno son tres filas: el
+        # cabezal pasaba de dos a cinco. Se vio con sesion, no sin ella.
+        #
+        # Ahora comparte fila con la firma --son la misma pareja-- y solo se
+        # estira el boton cuando es el UNICO, que `:only-child` dice sin tener
+        # que saber en que estado esta la sesion.
+        self.assertIn("flex:11auto", regla,
+                      "la identidad vuelve a reclamar fila entera: con sesion "
+                      "son tres hijos y el cabezal se dispara a cinco filas")
+        self.assertIn("#cabezal#identitybutton:only-child{width:100%}", cuerpo,
+                      "sin `:only-child`, con sesion los tres mandos se estiran")
         self.assertIn("margin-left:0", regla,
                       "sigue el margin-left:auto que la empuja contra el borde")
         # Sin !important: si hace falta, es que la especificidad esta mal

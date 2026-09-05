@@ -81,7 +81,15 @@
    `.cab-solar` reclamando el hueco elastico el boton se quedaba a media fila.
    Con `order` es el ultimo pase lo que pase, y la esfera --que empieza 2,6rem
    mas abajo, contra el mismo borde-- le queda justo debajo. */
-#cabezal #identity{order:9;margin-left:auto;flex:0 0 auto;align-self:flex-start}
+/* LA IDENTIDAD ES UNA FILA, NO UNA PILA. Con sesion iniciada `auth.js` pinta
+   TRES hijos --el saludo, «mi perfil» y «ver mi huella»-- y el saludo es un
+   `<p>`, que es bloque: cada uno se llevaba su linea y el cabezal pasaba de dos
+   filas a cinco. Se vio con sesion, no sin ella; sin sesion hay un solo boton y
+   el defecto no existe. */
+#cabezal #identity{order:9;margin-left:auto;flex:0 0 auto;align-self:flex-start;
+  display:flex;flex-wrap:wrap;align-items:center;gap:.3rem}
+#cabezal #identity .yo{margin:0;font-size:.72rem;white-space:nowrap}
+#cabezal #identity .leve{font-size:.68rem;padding:.24rem .5rem}
 .cab-solar{order:7}
 /* La cola de firma, a la izquierda de entrar y con SU MISMO aspecto: son la
    misma pareja --quien eres y que firmas con ello-- y dos estilos distintos
@@ -172,80 +180,3 @@
 /* En un telefono el cabezal no puede comerse la pantalla: medido en el
    Doogee (360 CSS px) ocupaba el 40 % del alto en tres filas de botones, y
    el chat --que es lo que se vino a usar-- empezaba casi fuera de vista. */
-@media (max-width:1023px){
-  /* El rail de companeros flota sobre la pagina y se comia el borde derecho
-     del chat y del panel de herramientas. Medido en el Doogee: el texto
-     salia cortado a media palabra. */
-  /* El CABEZAL tambien pasa por debajo del rail de companeros, y hasta hoy
-     solo #hub-layout reservaba ese hueco. Medido en el Doogee: COMUNIDAD
-     partido por la mitad y el icono de LinkedIn escondido tras las esferas.
-     La reserva va en el atajo y no en una linea suelta despues: un
-     `padding-right` colocado ANTES de este atajo lo pierde entero. */
-  /* El cabezal se aprieta: menos aire arriba y abajo y menos hueco entre
-     filas. Cada decima que pierde aqui la gana el chat, que es lo que se vino
-     a usar. Medido en el Doogee, no en un viewport emulado. */
-  #cabezal{padding:.4rem .55rem .5rem;gap:.3rem;margin-bottom:.6rem}
-  /* `.cab-fila` ENVUELVE en el telefono, y sin esto lo de abajo no sirve de
-     nada: la regla movil le da a entrar `flex:1 0 100%` para que ocupe su
-     propia linea, pero en una fila que no envuelve un 100 % no baja de linea
-     -- se sale. Medido en 375 px: el boton acababa en 668, casi el doble del
-     ancho de la pantalla. La regla llevaba puesta desde antes y no hacia nada
-     porque le faltaba esta. */
-  .cab-fila{gap:.4rem;flex-wrap:wrap}
-  /* Y la frase de energia deja de reclamar hueco elastico: con `flex:1 1 auto`
-     empujaba a sus vecinos fuera antes de encogerse ella. */
-  .cab-solar{flex:1 1 100%;order:5;font-size:.66rem}
-  /* TODAS las filas del cabezal esquivan la esfera, no solo la navegacion. Al
-     envolver, entrar y la frase de energia caen a la altura de la cara y se
-     metian debajo: «Crear identida...» cortado. El hueco sale de `--esfera`,
-     igual que el de la navegacion, para que no haya dos numeros para lo mismo.
-     `-1rem` porque el circulo llega hasta el borde y su curva deja aire abajo. */
-  #cabezal #identity,#cabezal .cab-solar{
-    padding-right:calc(var(--esfera) - 1rem);box-sizing:border-box}
-  #cabezal #identity button{width:100%}
-  #cab-nav{margin-top:0}
-  #cab-nav .cab-boton{padding:.4rem .25rem}
-  /* El pie es una CAJA con borde, asi que reserva por fuera (margen) y no por
-     dentro: con padding el borde derecho seguiria corriendo por debajo del
-     rail de companeros aunque el texto no lo hiciera. */
-  #cabezal h1{font-size:.95rem;margin:0 0 .25rem}
-  #cabeza{width:60px;height:60px;flex-basis:60px}
-  .cab-boton{font-size:.66rem;padding:.26rem .5rem;letter-spacing:.06em}
-  .cab-leve{font-size:.64rem;padding:.2rem .25rem}
-  #cab-nav{gap:.25rem;margin-top:.1rem}
-  /* La identidad baja a su propia fila. `movil.css` ya lo pedia con
-     `.identity{flex:1 0 100%}`, pero esta hoja carga despues y su
-     `#cabezal #identity{flex:0 0 auto}` ganaba por especificidad: dos ids
-     contra una clase. El cabezal SIEMPRE tuvo `flex-wrap:wrap` -- lo que no
-     tenia era nada que pudiera envolverse. Se repite aqui con la misma
-     especificidad que la regla de escritorio y ganando por orden, que es lo
-     que un `!important` habria tapado sin explicar. */
-  /* `order` y no un cambio de marcado: en el telefono el boton de entrar va
-     DEBAJO de la navegacion --es lo ultimo que se hace, no lo primero-- y en
-     el PC sigue arriba a la derecha. Una sola estructura, dos lecturas. */
-  #cabezal #identity{flex:1 0 100%;margin-left:0;align-self:stretch;order:3}
-  #cab-nav{order:2}
-  /* Centrados no: pegados a la marca. Con el rail comiendo 4,6rem, `auto` a
-     los dos lados los empujaba contra el borde y el segundo se salia. */
-  .cab-ident{margin-inline:0 auto}
-  #cabezal #identity button{width:100%}
-}
-
-/* --- la maqueta: chat protagonista, panel a la derecha ------------------ */
-#hub-layout{position:relative}
-#chat{margin:0}
-.chat-quien{display:flex;align-items:center;gap:.6rem;margin-bottom:.6rem}
-.chat-quien img{width:44px;height:44px;flex:0 0 44px;border-radius:50%}
-.chat-nombre{font-weight:700}
-.chat-aviso{font-size:.82rem;color:var(--bronce-hondo);margin:0 0 .6rem}
-/* La navegacion ocupa su PROPIA fila y va centrada. En la misma linea que la
-   marca y el boton de entrar empujaba la identidad a una tercera fila en el
-   telefono. Cuatro enlaces centrados caben en una sola. */
-#cab-nav{margin-top:.15rem}
-/* GitHub y LinkedIn arriba y en el centro, entre la marca y el boton de
-   entrar. `margin-inline:auto` los centra en el hueco que sobra sin sacarlos
-   del flujo, asi que al envolverse en el telefono no se quedan flotando. */
-.cab-marca{display:inline-flex;align-items:center;padding:.3rem;
-  color:var(--violeta-texto);border-radius:var(--radius)}
-.cab-marca:hover,.cab-marca:focus-visible{color:var(--violeta)}
-.cab-marca svg{display:block}
