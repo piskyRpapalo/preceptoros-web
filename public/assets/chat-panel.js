@@ -95,9 +95,20 @@
  * boca se movia mientras el modelo generaba: la cara hablaba sin haber dicho
  * nada, y con un modelo lento eso son minutos en falso. */
 (function () {
-  var cara = document.querySelector('.esfera');
-  if (!cara) return;
+  /* LA CARA SE BUSCA CUANDO PASA ALGO, NO AL CARGAR. Antes este bloque hacia
+     `querySelector` una vez y guardaba el nodo; si en ese instante la esfera no
+     estaba --o si alguien la reemplazaba despues-- los eventos seguian
+     llegando y la clase iba a parar a un elemento que ya no estaba en la
+     pagina. El sintoma era exactamente el de esta manana: `preceptor:pensando`
+     se emitia, nadie se quejaba, y la cara no se movia.
+
+     Se midio en el navegador: la clase puesta A MANO funciona --la tira de
+     pensar entra, `612.5%`, animacion `pensar, latir`-- y el mismo evento no
+     hacia nada. Con la busqueda dentro de `estado()` la cara del momento es la
+     que se mueve, exista desde el principio o la ponga otro guion despues. */
   function estado(clase) {
+    var cara = document.querySelector('.esfera');
+    if (!cara) return;
     cara.classList.remove('piensa', 'habla');
     if (clase) cara.classList.add(clase);
   }
@@ -122,7 +133,8 @@
     ? matchMedia('(prefers-reduced-motion: reduce)') : { matches: false };
   function gesto() {
     var proxima = 25000 + Math.floor(Math.random() * 15000);
-    if (!quieto.matches && !cara.classList.contains('piensa')
+    var cara = document.querySelector('.esfera');
+    if (cara && !quieto.matches && !cara.classList.contains('piensa')
         && !cara.classList.contains('habla')) {
       cara.classList.add('gesto');
       setTimeout(function () { cara.classList.remove('gesto'); }, 420);

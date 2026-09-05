@@ -143,7 +143,10 @@ button.enviar svg{margin-right:.1rem}
    un filo ahi seria una costura interna. Abajo y a los lados linda con la
    pagina, y ahi si hay que decir donde acaba el producto. */
 @supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)){
-  #cabezal,#chat{background:color-mix(in srgb, var(--glass-solid) 62%, transparent)}
+  /* El velo del cabezal y del chat NO se decide aqui: lo pone `widget.css`,
+     que es donde vive su regla de cristal y que ademas carga despues. Hubo una
+     copia en esta linea pidiendo 62 % y no mando nunca. Una regla que no manda
+     es peor que ninguna: se despliega creyendo que algo cambio. */
   /* La rueda tambien. Es la Capa 3 y cae ENCIMA del chat: opaca abria un
      agujero solido en una pagina que por lo demas deja ver el fondo, y ese
      salto se lee como que algo se ha roto. Va mas cerrada que los paneles

@@ -1243,7 +1243,15 @@ class Cabezal(unittest.TestCase):
                          "las cuatro puertas no se pintan en su orden")
         self.assertNotIn("enlace('cab-boton idioma'", hub,
                          "el idioma vuelve a la fila de navegacion")
-        css = (PUBLICO / "assets" / "widget.css").read_text(encoding="utf-8")
+        # LAS HOJAS SE DESCUBREN DE LA PORTADA, no se nombra una. Esta linea
+        # leia `widget.css` y el 2026-09-05 la regla se mudo a `puertas.css`
+        # --el fichero se paso del tope y se partio por asuntos--: el guardian
+        # se puso rojo por buscar donde ya no estaba, no porque faltara nada.
+        # Leyendo lo que la portada CARGA, el proximo corte no lo rompe.
+        css = "".join(
+            (PUBLICO / h.lstrip("/")).read_text(encoding="utf-8")
+            for h in re.findall(r'<link rel="stylesheet" href="([^"]+)"',
+                                (PUBLICO / "es" / "index.html").read_text(encoding="utf-8")))
         # DE DOS EN DOS, no de cuatro en fila. La fila de cuatro se partia en el
         # Doogee --tres arriba y INSTALAR AQUI descolgada-- que es una rejilla
         # rota disfrazada de maqueta. Se vio en el telefono, no emulado.

@@ -14,8 +14,14 @@
   background:var(--marmol-claro);border:1px solid var(--bronce);
   border-radius:var(--radius);padding:.7rem .9rem;margin-bottom:1rem;
   box-shadow:var(--depth)}
+/* EL VELO SE DECIDE AQUI Y EN NINGUN OTRO SITIO. `chat.css` tenia una copia
+   pidiendo 62 % que no mando NUNCA --carga antes y a igual especificidad gana
+   el ultimo--, asi que el chat siguio al 94 %. Se vio midiendo en el
+   navegador, no leyendo el css.
+   `--glass` y no `--glass-solid`: `base.css` dice que el solido es «donde hay
+   que LEER parrafos». Eso es `.dialogo`. El cabezal y el chat son paneles. */
 @supports (backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px)){
-  #cabezal,#chat,#panel-modelos{background:var(--glass-solid);
+  #cabezal,#chat{background:var(--glass);
     -webkit-backdrop-filter:blur(16px) saturate(180%);
     backdrop-filter:blur(16px) saturate(180%)}
 }
@@ -137,94 +143,6 @@
   background:rgba(109,90,224,.30);border-color:rgba(109,90,224,.68)}
 :root[data-tema="claro"] #cabezal .cola-abrir{color:var(--violeta-texto)}
 #cabezal .cola-abrir[hidden]{display:none}
-/* LAS CUATRO PUERTAS, APILADAS DE DOS EN DOS. En una fila de cuatro no caben
-   en el Doogee: se vio en el telefono --INICIO, LoRAtelier y COMUNIDAD en una
-   linea e INSTALAR AQUI descolgada abajo, que es una rejilla rota disfrazada de
-   maqueta--. De dos en dos siempre entran, y es la misma figura en el telefono
-   y en el escritorio: nadie tiene que aprenderse dos.
-
-   El hueco de la derecha ya no lo pone esta regla: lo reserva el cabezal para
-   todos sus hijos. Ver arriba. */
-#cab-nav{display:grid;grid-template-columns:repeat(2,1fr);gap:.4rem;width:100%}
-/* EL CENTRADO ES DE LA CLASE, NO DEL SITIO. Estaba colgado de `#cab-nav`, y
-   FIRMA --que es un `.cab-boton` igual que los demas pero vive en la fila de
-   arriba, no en la navegacion-- se quedaba con las letras a la izquierda de su
-   propia pastilla. Se vio en el telefono, con sesion abierta: sin sesion ese
-   boton no existe y por eso nadie lo habia mirado.
-
-   Un boton no debe cambiar de forma segun en que caja lo pongas. El relleno
-   si es del sitio --en la rejilla necesita mas--, y por eso ese se queda. */
-.cab-boton{text-align:center}
-#cab-nav .cab-boton{padding:.48rem .3rem}
-/* MAS CLARO Y MAS TRANSPARENTE que el violeta de la marca, a proposito: las
-   puertas son navegacion, no identidad. Si pesaran lo mismo que `PreceptorOS` o
-   que `LoRAtelier` competirian con lo que nombran. El borde conserva el violeta
-   entero para que el boton siga teniendo canto. */
-/* EL CONTRASTE ESTA MEDIDO, no elegido. Con blanco sobre violeta al 42 % el
-   tema claro daba 1,92:1 y el minimo accesible para texto pequeno en negrita es
-   4,5:1 -- se veia lavado en el navegador antes de calcularlo. Lo que se corrige
-   es el COLOR DE LA LETRA, no el fondo: subir la opacidad hasta que el blanco
-   se lea acabaria en el violeta pleno de la marca, y estas puertas tienen que
-   pesar menos que lo que nombran.
-   Medido a .30 de opacidad: oscuro con letra blanca, 12:1. Claro con
-   `--violeta-texto`, 4,91:1. Los dos pasan, y el boton sigue siendo mas claro y
-   mas transparente que `PreceptorOS`. */
-/* LAS CUATRO PUERTAS LLEVAN LA MISMA LETRA: el oro de `LoRAtelier`. Se pidio
-   asi --«todas del mismo color»-- y obliga a lo de abajo, que es lo que de
-   verdad importaba.
-
-   EL FONDO DEJA DE SER TRANSPARENTE, y no es capricho. Un `rgba` se compone
-   contra el panel, y el panel gira con el tema: el mismo boton acababa siendo
-   #362D60 en oscuro y un lavanda claro en claro. Ningun dorado se lee sobre
-   los dos. Con un violeta hondo FIJO el fondo es el mismo siempre y el oro
-   mide 9,15:1 en los dos temas -- una sola regla en vez de una por tema, que
-   es ademas una menos que se puede olvidar.
-
-   Sigue siendo mas apagado que el violeta de la marca, que era la razon de la
-   transparencia: las puertas pesan menos que lo que nombran. */
-#cab-nav .cab-boton{background:#2f2757;
-  border-color:rgba(109,90,224,.68);color:var(--oro)}
-#cab-nav .cab-boton:hover,#cab-nav .cab-boton:focus-visible{
-  background:#3b3170}
-/* Las dos excepciones. Instalar es la ACCION y va en el sol de la casa.
-   LoRAtelier es el producto principal, asi que pesa mas que sus vecinas --mismo
-   violeta, mas opaco-- y se marca con el canto dorado.
-
-   Y NO LLEVA `--tinta`, que fue el primer intento: ese token se invierte con el
-   tema. En oscuro la tinta es casi blanca, asi que «Atelier» --que va en
-   blanco-- desaparecia sobre su propio boton. Se vio en el navegador. Los
-   colores de esta pieza se escriben sin tokens que giren: el fondo es violeta
-   en los dos temas y las letras se leen en los dos. */
-/* INSTALAR es la ACCION y conserva el sol de la casa, pero HONDO. `--sol`
-   pleno es un naranja claro: con letra blanca daba 2,08:1 y con el oro 1,40 --
-   medido, no estimado. El mismo tono llevado al fondo de su rampa deja el oro
-   en 5,32:1 y el boton sigue siendo «el naranja» de un vistazo. El canto se
-   queda en `--sol` entero para que no pierda el brillo. */
-#cab-nav .cab-boton.empezar{background:#7a4412;border-color:var(--sol)}
-/* SOLIDO Y SIN TOKENS QUE GIREN. Con el violeta transparente el fondo del
-   boton cambiaba con el tema --#5546AA en oscuro, #9485E7 en claro-- y NINGUN
-   dorado llegaba a 4,5:1 en los dos a la vez: el mejor daba 4,98 en uno y 2,09
-   en el otro. Medido antes de elegir. Con `--indigo` opaco el fondo es el mismo
-   siempre, y el oro mide 9,04:1 y el blanco 13,41:1. */
-/* Y AQUI HABIA UNA MEDIDA QUE SE QUEDO VIEJA. El comentario de arriba dice
-   que con `--indigo` opaco «el fondo es el mismo siempre», y era cierto cuando
-   se escribio. Hoy no: `--indigo` entro en la lista de tokens que giran con el
-   tema --se hizo el 2026-09-05 para que los acentos se leyeran en claro-- y
-   este boton se quedo con un lavanda claro debajo de letras blancas: 2,34:1.
-   La medida no mintio; envejecio. Por eso este fichero escribe los tres fondos
-   en hexadecimal fijo: un color que no gira no puede envejecer a espaldas de
-   quien lo midio. */
-#cab-nav .cab-boton.loratelier{background:#3c327c;border-color:var(--oro)}
-/* «LoR» en oro sobre el indigo --el par violeta+dorado que se pidio-- y
-   «Atelier» en blanco. Mismo gesto que `Preceptor`+`OS`. El canto dorado es el
-   borde del boton, no una sombra de letra: esa la reserva la doctrina para
-   `.cifra`, y el guardian la busca por su nombre incluso dentro de un
-   comentario, asi que ni se nombra. */
-/* «LoR» conserva el peso extra; el color ya es el de toda la fila. El corte
-   sigue existiendo --es un nombre propio partido a proposito-- pero lo dice el
-   grosor, no un segundo color. */
-.loratelier .lor{font-weight:800}
-.loratelier .atelier{font-weight:700}
 /* La fila de flex que habia aqui la sustituyo la rejilla de arriba el
    2026-09-05. Se BORRA en vez de dejarse: cargaba despues, asi que ganaba, y
    dos maquetas para la misma fila es como la navegacion acaba centrada cuando
