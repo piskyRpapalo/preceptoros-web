@@ -204,3 +204,16 @@ body.con-teclado #dialogo{min-height:7rem}
    pista los pixeles que la conversacion acababa de ganar, y la pista
    desaparece en cuanto se teclea la primera letra. */
 body.con-teclado #pregunta::placeholder{font-size:.64rem;line-height:1.3}
+
+/* --- LA CARA NO SE COME LA PRIMERA LINEA (2026-09-05) ---------------------
+   En escritorio la esfera mide 220 px y se sienta a caballo del canto del
+   cabezal: baja unos 90 px dentro de la placa, justo por donde empieza a
+   leerse. Se vio en una captura --«Start with a 3B model qua...»-- y en una
+   captura para el README, que es la peor forma de descubrirlo.
+
+   La placa se reserva esa banda por arriba. NO cuesta sitio: la conversacion
+   se apoya abajo, asi que con pocas frases no se nota nada, y con muchas lo
+   que queda en esa franja es el texto ya desvanecido por la mascara -- el que
+   por diseno no se lee. Se reserva donde estorba y solo en el ancho donde
+   estorba: en el telefono la cara termina muy por encima de la placa. */
+@media (min-width:1024px){ #chat{padding-top:5.5rem} }

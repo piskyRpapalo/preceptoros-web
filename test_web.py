@@ -1494,9 +1494,16 @@ class Cabezal(unittest.TestCase):
         #     nada, pero `main` viene limitado a 46rem por `base.css` --la medida
         #     de una columna de lectura-- y sin esto el chat se queda estrecho en
         #     una pantalla ancha.
-        pc = re.search(r"@media \(min-width:1024px\)\{(.*?)\n\}", css, re.S)
-        self.assertIsNotNone(pc, "no hay maqueta de PC")
-        cuerpo = pc.group(1).replace(" ", "")
+        # TODOS los bloques de PC, no el primero. Habia un `re.search` que
+        # cogia uno solo, y valia mientras hubiera uno solo: el 2026-09-05
+        # entro un segundo --la banda que la placa se reserva para que la cara
+        # no pise la primera linea-- y como llega antes en el orden de carga,
+        # el guardian se puso a buscar la maqueta de escritorio dentro de una
+        # regla de dos lineas. Rojo por mirar en el sitio equivocado, otra vez.
+        # Con `findall` da igual cuantos haya y en que orden lleguen.
+        bloques = re.findall(r"@media \(min-width:1024px\)\{(.*?)\n\}", css, re.S)
+        self.assertTrue(bloques, "no hay maqueta de PC")
+        cuerpo = "".join(bloques).replace(" ", "")
         self.assertNotIn("position:static", cuerpo,
                          "en PC el panel vuelve a entrar en el flujo y lo cortan "
                          "el cabezal y el pie")

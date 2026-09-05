@@ -134,3 +134,41 @@
     if (quien) campo.placeholder = plantilla.replace('{}', quien);
   });
 })();
+
+/* --- UN SOLO DESPERTAR POR SESION (2026-09-05) -----------------------------
+ * La otra mitad de lo que arregla la raiz. Se veian dos intros seguidas al
+ * abrir la app instalada --el busto de la puerta de idiomas y el telon de
+ * aqui-- y son el mismo gesto contado dos veces.
+ *
+ * Con una marca de sesion, el primero que despierta la pone y el segundo se la
+ * encuentra puesta y se retira. Da igual por donde se entre: exactamente un
+ * despertar. Y de paso deja de repetirse al volver a Inicio desde una pagina
+ * interior, que era la misma molestia sin que nadie la hubiera nombrado.
+ *
+ * SE QUITA CON `remove()` Y NO APAGANDO LA ANIMACION. Una cortina transparente
+ * que sigue en el arbol se come los clics de todo lo que hay debajo -- la
+ * propia hoja lo tiene escrito, y por eso su ultimo fotograma lleva
+ * `visibility:hidden`. Aqui no hay fotograma que esperar: se va entera.
+ *
+ * `sessionStorage` y no `localStorage` a proposito: el despertar es la entrada
+ * del producto y tiene que verse una vez CADA VEZ que se abre la app, no una
+ * vez en la vida. Al cerrar y volver a abrir, vuelve.
+ */
+(function () {
+  var DESPIERTO = 'preceptoros-despierto', LENGUA = 'preceptoros-lengua';
+  var telon = document.getElementById('telon');
+  try {
+    if (telon && sessionStorage.getItem(DESPIERTO)) telon.remove();
+    sessionStorage.setItem(DESPIERTO, '1');
+  } catch (e) { /* ventana privada: se despierta y ya, que no es un fallo */ }
+
+  /* Y LA PORTADA RECUERDA SU PROPIA LENGUA. Guardarla solo al pulsar en la
+     puerta habria dejado la memoria vieja para siempre en cuanto alguien
+     cambiara de idioma por la rueda de ajustes, que es donde de verdad se
+     cambia. Escribiendola aqui, la memoria es siempre la ultima lengua que se
+     estuvo mirando, sin que la rueda tenga que saber que esto existe. */
+  var lang = document.documentElement.lang;
+  if (/^[a-z]{2}$/.test(lang || '')) {
+    try { localStorage.setItem(LENGUA, lang); } catch (e) {}
+  }
+})();

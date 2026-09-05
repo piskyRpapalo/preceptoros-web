@@ -108,7 +108,15 @@
        del modelo en la Ollama del rack. El router no habla con nadie -- solo
        dice en voz alta a quien le toca, y quien sepa hablar que escuche. */
     document.dispatchEvent(new CustomEvent('preceptor:companero', { detail: {
-      id: a.id, nombre: a.name, modelo: r.modelo || null,
+      /* EL NOMBRE VA TRADUCIDO, y hasta hoy no. Este evento mandaba
+         `a.name` --el nombre CRUDO de `hub.json`, que solo existe en
+         castellano-- mientras la pastilla de al lado pintaba `voz.name`, que
+         si sale del bloque i18n de la pagina. Nadie lo noto mientras el evento
+         solo servia para cosas internas; al colgarle la pista del campo, la
+         portada inglesa acabo diciendo «Write here to talk with El
+         Instalador». Se vio en una captura para el README, no en un test.
+         Un dato que viaja en dos versiones acaba saliendo por la mala. */
+      id: a.id, nombre: voz.name || a.name, modelo: r.modelo || null,
       // El papel YA COMPUESTO. Quien no tiene nido (traductor, aprendiz)
       // viaja con null y el chat cae solo al papel base.
       nido: papelDe(a), disponible: !!r.disponible } }));

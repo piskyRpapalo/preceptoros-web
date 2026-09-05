@@ -165,5 +165,70 @@
     </nav>
     <p class="claim">Knowledge + Tools + Sovereignty</p>
   </div>
+<script>
+/* --- UN SOLO DESPERTAR, Y UNA SOLA PREGUNTA (2026-09-05) -------------------
+   Quejа del Soberano abriendo la app instalada en el Doogee: «hace la intro
+   dos veces, una para el idioma y otra normal». Tres cosas se veian seguidas
+   al arrancar, y solo dos son nuestras -- la primera es el chapoteo que
+   Android dibuja solo con el icono del manifiesto mientras carga la pagina, y
+   no se puede quitar desde aqui.
+
+   De las dos nuestras sobraba una, pero el defecto de fondo era otro: la app
+   instalada arranca en `/`, asi que preguntaba el idioma CADA VEZ que se
+   abria. Una puerta se cruza una vez; preguntar de nuevo lo que ya
+   contestaste no es una bienvenida, es un peaje.
+
+   Asi que dos cosas, y la segunda solo existe por la primera:
+
+   1 · LA ELECCION SE RECUERDA. Al pulsar una lengua se guarda. En la app
+       instalada --y SOLO alli-- la siguiente apertura salta derecha a esa
+       lengua. En el navegador no se redirige nunca: quien escribe la
+       direccion de la raiz quiere la raiz, y ademas es como se cambia de
+       idioma.
+
+   2 · SE DESPIERTA UNA VEZ POR SESION. El busto de aqui y el telon de la
+       portada son el mismo gesto contado dos veces cuando se cruzan seguidos.
+       Con una marca de sesion, el primero que llega la pone y el segundo se
+       la encuentra puesta y se retira. Da igual por donde entres -- raiz o
+       portada directa--: ves exactamente un despertar. Y de paso deja de
+       repetirse al volver a Inicio desde una pagina interior, que era la
+       misma molestia sin que nadie la hubiera nombrado.
+
+   `try/catch` en los dos almacenes: en una ventana privada lanzan, y una
+   puerta que revienta por no poder recordar un idioma es peor que una que no
+   recuerda. */
+(function () {
+  var LENGUA = 'preceptoros-lengua', DESPIERTO = 'preceptoros-despierto';
+  function guardado(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  var instalada = matchMedia('(display-mode: standalone)').matches ||
+                  matchMedia('(display-mode: fullscreen)').matches ||
+                  navigator.standalone === true;
+
+  /* LA SALIDA VA ANTES QUE EL ATAJO, y no es un detalle: sin ella, elegir mal
+     una vez te encierra en esa lengua para siempre -- la puerta que sirve para
+     cambiar de idioma seria justo la que ya no puedes ver. El gate lo exige
+     por escrito, y tenia razon: el primer intento redirigia sin escape.
+     `/?cambiar` es esa salida, y es la direccion que usan los selectores de
+     idioma de dentro. */
+  var suya = guardado(LENGUA);
+  if (instalada && suya && /^[a-z]{2}$/.test(suya) &&
+      location.search.indexOf('cambiar') < 0) {
+    location.replace('/' + suya + '/');
+    return;                       // no se pinta nada: nos vamos
+  }
+
+  /* La eleccion se guarda al pulsar. Y tambien se guarda sola en cada portada
+     --ver `senal.js`--, asi que cambiar de lengua por la rueda de ajustes
+     actualiza la memoria sin que nadie tenga que acordarse de esta linea. */
+  [].forEach.call(document.querySelectorAll('.bubble'), function (a) {
+    a.addEventListener('click', function () {
+      try { localStorage.setItem(LENGUA, a.getAttribute('hreflang')); } catch (e) {}
+    });
+  });
+
+  // La marca de sesion la pone quien despierta primero.
+  try { sessionStorage.setItem(DESPIERTO, '1'); } catch (e) {}
+})();
+</script>
 </body>
 </html>
