@@ -79,11 +79,28 @@
   if (ajustes) {
     ajustes.innerHTML = '';
     ajustes.appendChild(el('p', 'panel-rotulo', T.cabIdioma));
-    [['es', 'Español'], ['en', 'English'], ['fr', 'Français']].forEach(function (par) {
-      var a = enlace('ajuste-idioma', par[1], '/' + par[0] + '/');
-      if (document.documentElement.lang === par[0]) a.setAttribute('aria-current', 'true');
-      ajustes.appendChild(a);
-    });
+    /* LOS IDIOMAS SE DESCUBREN DE LA PROPIA PAGINA, no se escriben aqui. La
+       lista estaba a mano --es, en, fr-- y al entrar el portugues se quedo
+       vieja en silencio: la lengua existia, el sitemap la ofrecia, el selector
+       de la raiz la tenia, y la rueda no. Un quinto sitio que recordar es un
+       quinto sitio que olvidar.
+
+       Las etiquetas `hreflang` de la cabecera YA declaran que lenguas hay, y se
+       generan con la pagina. Leerlas de ahi es la version en el navegador de la
+       regla que el gate aplica en el disco: el criterio de idiomas se descubre,
+       no se repite. La proxima lengua aparece aqui sola. */
+    var NOMBRES = {es:'Español', en:'English', fr:'Français', pt:'Português',
+                   it:'Italiano', de:'Deutsch', ru:'Русский', el:'Ελληνικά'};
+    var vistos = {};
+    Array.prototype.forEach.call(
+      document.querySelectorAll('link[rel="alternate"][hreflang]'), function (l) {
+        var c = l.getAttribute('hreflang');
+        if (c === 'x-default' || vistos[c]) return;
+        vistos[c] = 1;
+        var a = enlace('ajuste-idioma', NOMBRES[c] || c, '/' + c + '/');
+        if (document.documentElement.lang === c) a.setAttribute('aria-current', 'true');
+        ajustes.appendChild(a);
+      });
     // La piel la anade `chat-panel.js`: es un mando, y aqui no cabia.
   }
 

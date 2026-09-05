@@ -90,12 +90,17 @@
   animation:hablar var(--anim-habla-esfera) steps(4,jump-none) infinite,
             latir 2.88s ease-in-out infinite}
 @keyframes hablar{from{background-position:1.603% 50%}to{background-position:95.833% 50%}}
+/* Un gesto suelto: se asoma una boca y vuelve. Sale de la tira de habla, que es
+   la unica que tiene bocas distintas, parada en su cuarto cuadro. Mismos
+   numeros que la app. */
+.esfera.gesto{background-image:url("/assets/caras/cara-secuencia-habla-256.webp");
+  background-size:490% auto;background-position:64.423% 50%}
 @keyframes latir{
   0%,100%{box-shadow:0 8px 28px rgba(109,90,224,.22)}
   50%    {box-shadow:0 8px 34px rgba(224,184,114,.45)}}
 /* Quien pidio menos movimiento se queda con la cara quieta y encendida. */
 @media (prefers-reduced-motion:reduce){
-  .esfera,.esfera.piensa,.esfera.habla{animation:none;
+  .esfera,.esfera.piensa,.esfera.habla,.esfera.gesto{animation:none;
     background-image:url("/assets/caras/cara-reposo-violeta-256.webp");
     background-size:122.5% auto;background-position:27.78% 50%}}
 

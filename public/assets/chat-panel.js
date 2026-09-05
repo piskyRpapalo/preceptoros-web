@@ -106,6 +106,30 @@
   // Al cerrar el turno vuelve a reposo. No se relanza ninguna entrada: la
   // apertura es la entrada del producto, no el gesto al que se vuelve.
   document.addEventListener('preceptor:turno', function () { estado(null); });
+
+  /* UN GESTO CADA 25-40 SEGUNDOS, y nunca mientras piensa: alli ya se mueve la
+     boca, y dos cosas moviendose a la vez es ruido. El intervalo se sortea en
+     cada vuelta -- uno fijo se vuelve un tic, y un tic se nota mas que el gesto.
+
+     Por que existe: entre turno y turno la pantalla se queda quieta, y quieta se
+     lee como rota. Esto no acelera nada; solo dice que sigue ahi. Mismos numeros
+     que la app, que es donde se midieron.
+
+     Quien pidio quietud no lo recibe: el css le apaga la animacion, pero un
+     cambio de fotograma cada medio minuto no es una animacion que el css pueda
+     apagar -- hay que no hacerlo. */
+  var quieto = window.matchMedia
+    ? matchMedia('(prefers-reduced-motion: reduce)') : { matches: false };
+  function gesto() {
+    var proxima = 25000 + Math.floor(Math.random() * 15000);
+    if (!quieto.matches && !cara.classList.contains('piensa')
+        && !cara.classList.contains('habla')) {
+      cara.classList.add('gesto');
+      setTimeout(function () { cara.classList.remove('gesto'); }, 420);
+    }
+    setTimeout(gesto, proxima);
+  }
+  setTimeout(gesto, 12000);
 })();
 
 /* --- Capa 3 · quien abre los desplegables ----------------------------------
