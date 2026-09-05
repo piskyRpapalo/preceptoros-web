@@ -48,7 +48,8 @@ const CARAS = ['ambar', 'azul', 'birrete', 'bombilla',
    hablas; la esfera es como se presenta ese companero cuando eliges. */
 const ESFERAS = ['instalador', 'privacidad', 'escritor', 'traductor',
                  'coder', 'analista', 'aprendiz', 'bibliotecario'];
-const HUB = ['/hub.json', '/modelos.json', '/servicios.json', '/assets/widget.css', '/assets/cabezal.css', '/assets/panel.css',
+const HUB = ['/hub.json', '/modelos.json', '/servicios.json', '/instalar.json',
+             '/assets/instalar-descargas.js', '/assets/widget.css', '/assets/cabezal.css', '/assets/panel.css',
              '/assets/hub.js',
              '/assets/hub-cola.js', '/assets/chat-router.js', '/assets/corregir.js', '/assets/comandos.js']
   .concat(CARAS.map(c => '/assets/agente-ojo-' + c + '.webp'))
@@ -72,7 +73,7 @@ const HUB = ['/hub.json', '/modelos.json', '/servicios.json', '/assets/widget.cs
    una contradiccion entre la pagina y el dato. El catalogo de modelos no
    tiene gemelo en el HTML, y ademas lleva su propia `ultima_lectura`: una
    copia vieja se declara vieja sola. */
-const CONTENIDO_JSON = ['/hub.json', '/modelos.json', '/servicios.json'];
+const CONTENIDO_JSON = ['/hub.json', '/modelos.json', '/servicios.json', '/instalar.json'];
 
 /* El manifiesto va a red primero: es diminuto, cambia cuando cambian los
    iconos, y un manifiesto viejo hace que la app instalada se quede con el
