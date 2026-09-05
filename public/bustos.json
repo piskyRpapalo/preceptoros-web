@@ -11,7 +11,8 @@
    "en": "Asleep · untouched marble",
    "fr": "Endormi · marbre intact",
    "pt": "Adormecido · mármore intacto",
-   "it": "Addormentato · marmo intatto"
+   "it": "Addormentato · marmo intatto",
+   "de": "Schlafend · unberührter Marmor"
   },
   {
    "id": "grieta",
@@ -19,7 +20,8 @@
    "en": "Crack · it opens",
    "fr": "Fissure · elle s'ouvre",
    "pt": "Fenda · abre-se",
-   "it": "Crepa · si apre"
+   "it": "Crepa · si apre",
+   "de": "Riss · er öffnet sich"
   },
   {
    "id": "rompe",
@@ -27,7 +29,8 @@
    "en": "Breaks · the shell gives",
    "fr": "Brise · la coque cede",
    "pt": "Parte · salta a casca",
-   "it": "Si spacca · salta il guscio"
+   "it": "Si spacca · salta il guscio",
+   "de": "Bricht · die Schale springt"
   },
   {
    "id": "ojo",
@@ -35,7 +38,8 @@
    "en": "Eye · plain violet",
    "fr": "Oeil · violet uni",
    "pt": "Olho · violeta liso",
-   "it": "Occhio · viola liscio"
+   "it": "Occhio · viola liscio",
+   "de": "Auge · glattes Violett"
   },
   {
    "id": "despierto",
@@ -43,7 +47,8 @@
    "en": "Awake · the identity bust",
    "fr": "Eveille · le buste identite",
    "pt": "Desperto · o busto identidade",
-   "it": "Sveglio · il busto identità"
+   "it": "Sveglio · il busto identità",
+   "de": "Wach · die Identitätsbüste"
   },
   {
    "id": "corazon",
@@ -51,7 +56,8 @@
    "en": "Heart · closes the awakening",
    "fr": "Coeur · clot l'eveil",
    "pt": "Coração · fecha o despertar",
-   "it": "Cuore · chiude il risveglio"
+   "it": "Cuore · chiude il risveglio",
+   "de": "Herz · schließt das Erwachen"
   },
   {
    "id": "halo",
@@ -59,7 +65,8 @@
    "en": "Halo · on a dark ground",
    "fr": "Halo · sur fond sombre",
    "pt": "Halo · sobre fundo escuro",
-   "it": "Alone · su fondo scuro"
+   "it": "Alone · su fondo scuro",
+   "de": "Halo · auf dunklem Grund"
   },
   {
    "id": "oscuro",
@@ -67,7 +74,8 @@
    "en": "Dark · born on Ink",
    "fr": "Sombre · ne sur Encre",
    "pt": "Escuro · nascido sobre Tinta",
-   "it": "Scuro · nato sull'Inchiostro"
+   "it": "Scuro · nato sull'Inchiostro",
+   "de": "Dunkel · auf Tinte geboren"
   }
  ]
 }

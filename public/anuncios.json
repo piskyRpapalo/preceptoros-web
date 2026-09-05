@@ -49,6 +49,14 @@
      "privado": "Privato: apri un issue nel repository pubblico. È l'unico canale che oggi arriva davvero.",
      "pero": "NO_DATA — una discussione firmata qui non viaggia ancora da nessuna parte: l'Agorà risponde 404 su /api/v1/threads (misurato il 2026-08-30). Si firma e resta sul tuo apparecchio finché quell'endpoint non esisterà.",
      "enlaceTexto": "Apri un issue"
+    },
+    "de": {
+     "titulo": "Gib mir deine Rückmeldung",
+     "cuerpo": "Was kaputtging, was du nicht verstanden hast, was du erwartet hast und nicht da war. Ein konkreter Satz nützt mehr als ein Lob.",
+     "publico": "Öffentlich: signiere hier unten einen Beitrag. Signiert wird mit deinem Schlüssel, auf deinem Gerät.",
+     "privado": "Privat: öffne ein Issue im öffentlichen Repository. Das ist heute der einzige Kanal, der wirklich ankommt.",
+     "pero": "NO_DATA — ein hier signierter Beitrag reist noch nirgendwohin: die Agora antwortet 404 auf /api/v1/threads (gemessen am 2026-08-30). Er wird signiert und bleibt auf deinem Gerät, bis dieser Endpunkt existiert.",
+     "enlaceTexto": "Ein Issue öffnen"
     }
    },
    "enlace": "https://github.com/piskyRpapalo/PreceptorOS/issues"
@@ -93,6 +101,13 @@
      "publico": "Misurato il 2026-08-29: rank 16, alpha 32, 2 epoche, 93 esempi di addestramento e 16 di validazione. 553 s una riga e 445 s l'altra. Sotto i dieci minuti, non una notte.",
      "privado": "L'insieme di esempi è tuo e resta tuo. Quello che si condivide, se vuoi, è l'adattatore che ne esce.",
      "pero": "NO_DATA — non c'è ancora modo di mandarlo dal sito: non esiste un endpoint di caricamento. Oggi ci si accorda nella discussione e il file si passa a mano."
+    },
+    "de": {
+     "titulo": "Trainiere ein Modell",
+     "cuerpo": "Bring eine eigene Menge von Beispielen mit, und heraus kommt ein auf dem Rack trainierter LoRA-Adapter. Eine GPU ist nicht nötig: es läuft auf reiner CPU und ist gemessen.",
+     "publico": "Gemessen am 2026-08-29: rank 16, alpha 32, 2 Epochen, 93 Trainings- und 16 Validierungsbeispiele. 553 s die eine Zeile und 445 s die andere. Unter zehn Minuten, keine ganze Nacht.",
+     "privado": "Die Menge der Beispiele gehört dir und bleibt dein. Geteilt wird, wenn du willst, der Adapter, der herauskommt.",
+     "pero": "NO_DATA — es gibt noch keinen Weg, sie über die Seite zu schicken: es fehlt ein Endpunkt zum Hochladen. Heute einigt man sich im Beitrag und reicht die Datei von Hand weiter."
     }
    }
   }

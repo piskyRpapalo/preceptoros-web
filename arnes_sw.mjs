@@ -95,12 +95,12 @@ const rutas = await shell.keys();
 // `widget.css` al pasar aquella de 16.724 B sobre un tope de 16.384. Sin ella
 // en el shell, la pagina sin red se veria con la maqueta de escritorio en un
 // telefono -- que es peor que no verse, porque parece que funciona.
-// 61 el mismo dia: entra el PORTUGUES, siete paginas mas; 68 con el ITALIANO. La cifra sube de
+// 61 el mismo dia: entra el PORTUGUES, siete paginas mas; 68 con el ITALIANO y 75 con el ALEMAN. La cifra sube de
 // siete en siete con cada lengua completa, que es la forma que tiene este arnes
 // de decir que una lengua a medias no existe: o entran sus siete o no entra.
 // La cifra va a mano a proposito: si alguien anade una ruta al shell sin
 // pensarlo, esto se pone rojo y le obliga a decir por que.
-ok('precachea paginas y piezas del Hub', rutas.length === 68, rutas.length+' rutas');
+ok('precachea paginas y piezas del Hub', rutas.length === 75, rutas.length+' rutas');
 ok('el shell trae las tres tiras de la cara',
    ['apertura', 'reposo', 'habla']
      .every(s => rutas.includes('/assets/caras/secuencia-' + s + '-256.webp')));

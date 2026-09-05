@@ -33,7 +33,7 @@ const VERSION = 'preceptoros-2026-09-l';
 const SHELL = 'shell-' + VERSION;
 const OBRA = 'obra-' + VERSION;
 
-const IDIOMAS = ['es', 'en', 'fr', 'pt', 'it'];
+const IDIOMAS = ['es', 'en', 'fr', 'pt', 'it', 'de'];
 const PAGINAS = ['', 'instalar.html', 'community.html', 'benchmark.html',
                  'playground.html', 'onboarding.html', 'profile.html'];
 
@@ -116,6 +116,9 @@ const SIN_RED = {
   it: ['Senza connessione', 'Questa pagina non è ancora nella tua cache.',
        'PreceptorOS gira sulla tua macchina; questo sito è solo la porta. '
        + 'Riprova quando avrai la rete.', 'Riprova'],
+  de: ['Keine Verbindung', 'Diese Seite ist noch nicht in deinem Zwischenspeicher.',
+       'PreceptorOS läuft auf deinem Rechner; diese Seite ist nur die Tür. '
+       + 'Versuch es wieder, wenn du Netz hast.', 'Erneut versuchen'],
   fr: ['Hors ligne', "Cette page n'est pas encore dans votre cache.",
        'PreceptorOS tourne sur votre machine ; ce site est seulement la porte. '
        + 'Réessayez quand vous aurez du réseau.', 'Réessayer'],
