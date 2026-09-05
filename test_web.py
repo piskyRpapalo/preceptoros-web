@@ -707,7 +707,16 @@ class Doctrina(unittest.TestCase):
             self.assertIn("@supports (backdrop-filter", css,
                           "backdrop-filter sin @supports: sin respaldo no se lee")
             i = css.index("@supports (backdrop-filter")
-            self.assertLess(css.index("background:var(--marmol-claro)"), i,
+            # EL RESPALDO OPACO ES EL DE CADA HOJA, no siempre el marmol. Esta
+            # linea exigia `--marmol-claro` literal, y valia mientras el unico
+            # cristal era el de los paneles de marmol. La rueda es violeta: su
+            # respaldo honesto es `--violeta`, y con el token clavado el gate
+            # pedia pintar de marmol un panel que no lo es. Lo que la regla
+            # protege es que HAYA un fondo solido antes del cristal, no de que
+            # color -- eso lo decide la pieza.
+            opacos = [m.start() for m in re.finditer(
+                r"background:var\(--(marmol-claro|violeta)\)", css)]
+            self.assertTrue(any(o < i for o in opacos),
                             "el respaldo opaco tiene que declararse ANTES del cristal")
 
         # 2 · Los radios salen del token, no a ojo. Un radio suelto es como
@@ -1063,26 +1072,41 @@ class Hub(unittest.TestCase):
                 patron, (PUBLICO / "assets" / fichero).read_text(encoding="utf-8")))
         self.assertFalse(usadas - base, f"claves sin traducir: {sorted(usadas - base)}")
 
-    def test_el_hub_declara_que_es_maqueta(self):
+    def test_el_panel_solo_pinta_lo_que_esta_servido(self):
         """Una rejilla de companeros se ve igual sea real o inventada.
 
-        El rotulo es la unica diferencia visible. Sin el, la pagina fabrica un
-        enjambre que no existe -- y esta web lleva tres puertas cazando
-        exactamente esa clase de cifra.
+        HASTA EL 2026-09-05 ESTA PRUEBA PEDIA LO CONTRARIO: que la pagina
+        pintara un rotulo «MOCK · 1/8 servido» encima de la rejilla. Tenia
+        sentido mientras se mostraban los ocho: siete llevaban el estado puesto
+        a mano para poder mirar la interfaz, y esa etiqueta era la UNICA
+        diferencia visible entre lo real y lo fingido.
+
+        Ahora el panel filtra por `real.disponible`, asi que no hay nada
+        fingido en pantalla y no hay nada que etiquetar. La regla se hace mas
+        fuerte, no mas floja: antes se permitia mostrar lo inventado siempre
+        que se avisara; ahora no se muestra.
+
+        Los siete siguen en el catalogo con su `causa_no_servido` -- un dato
+        incomodo no se borra, se guarda donde se pueda leer. El dia que se
+        sirva uno aparece solo.
         """
-        self.assertEqual("MOCK", self.d["estado"])
-        self.assertIn("nota", self.d, "la maqueta no dice por que lo es")
-        self.assertIn("hubMaqueta", json.loads(
-            (PUBLICO / "hub-textos.json").read_text(encoding="utf-8"))["textos"]["es"])
-        self.assertIn("panel-rotulo", self.js, "hub.js no pinta el rotulo de maqueta")
-        # El rotulo se anade ANTES que la rejilla, no debajo. Se mira DENTRO
-        # de `pintaAgentes`: la primera rejilla que aparece en el fichero es la
-        # del esqueleto, y comparar contra esa medía otra cosa.
+        self.assertIn("nota", self.d, "el catalogo no dice en que estado esta")
         fn = re.search(r"function pintaPanel.*?\n  \}", self.js, re.S)
         self.assertIsNotNone(fn, "no existe pintaPanel")
         cuerpo = fn.group(0)
-        self.assertLess(cuerpo.index("panel-rotulo"), cuerpo.index("modelos"),
-                        "el rotulo de maqueta se pinta despues de las tarjetas")
+        self.assertIn("real.disponible", cuerpo,
+                      "el panel pinta companeros sin comprobar si estan servidos")
+        self.assertIn(".filter(", cuerpo,
+                      "el panel no filtra: pintaria tambien los inventados")
+        # Y el catalogo tiene que seguir diciendo POR QUE no esta servido cada
+        # uno. Es lo que convierte el filtro en una omision honesta y no en un
+        # escondite: el dato sigue publicado, solo que no en la rejilla.
+        for a in self.d["agentes"]:
+            r = a.get("real", {})
+            if not r.get("disponible"):
+                with self.subTest(agente=a["id"]):
+                    self.assertTrue(r.get("causa"),
+                                    f"«{a['id']}» no se pinta y no dice por que")
 
     def test_el_rack_no_se_renderiza_en_publico(self):
         """La telemetria del rack es del Soberano, no de quien visita.

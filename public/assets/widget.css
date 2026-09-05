@@ -3,7 +3,7 @@
 
    TRES REGLAS HEREDADAS
    ---------------------
-   1. El respaldo OPACO se declara ANTES del cristal: sin backdrop-filter el
+   1. El respaldo OPACO se declara ANTES del cristal: sin el desenfoque, el
       panel tiene que quedar solido y legible. El gate lo comprueba por orden
       de aparicion, no de palabra.
    2. Los radios salen de --radius. Un circulo (50%) no es una esquina.
@@ -20,11 +20,13 @@
    navegador, no leyendo el css.
    `--glass` y no `--glass-solid`: `base.css` dice que el solido es «donde hay
    que LEER parrafos». Eso es `.dialogo`. El cabezal y el chat son paneles. */
-@supports (backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px)){
-  #cabezal,#chat{background:var(--glass);
-    -webkit-backdrop-filter:blur(16px) saturate(180%);
-    backdrop-filter:blur(16px) saturate(180%)}
-}
+/* TRANSPARENCIA ENTERA, sin velo y sin desenfoque. Se probaron los dos pasos
+   y se miraron: `--glass-solid` (0,94) tapaba el marmol del todo y `--glass`
+   (0,55) lo dejaba en neblina. El marmol es el fondo de la casa; estos dos son
+   MARCOS, no laminas.
+   Lo que paga la legibilidad es la LETRA, no un fondo: el texto generado pasa
+   a negrita en `chat.css`. Sin desenfoque esta hoja tampoco tiene ya cristal que degradar. */
+#cabezal,#chat{background:transparent}
 #cabezal .marca{flex:1;min-width:11rem}
 #cabezal h1{font-size:1.05rem;margin:0 0 .35rem}
 

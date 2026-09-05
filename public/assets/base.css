@@ -116,17 +116,31 @@ ol.pasos li::before{content:counter(p);flex:0 0 2rem;height:2rem;
 ol.pasos div{flex:1;min-width:0}
 
 /* --- controles --- */
+/* TODO LO QUE SE PULSA ES UNA NUBE VIOLETA (2026-09-05). Los botones ya eran
+   violetas pero con esquinas de panel y canto del mismo violeta: se leian como
+   recuadros, no como algo que flota sobre el marmol. Radio 999 y canto DORADO,
+   que es la figura que ya tienen las nubes de Herramientas, las cuatro puertas
+   y los dos mandos del cabezal. Una sola familia para una sola accion: pulsar.
+
+   Se cambia AQUI y no boton por boton -- esta regla la heredan `.boton`,
+   enviar, hablar, corregir, entrar, cerrar el pleno y lo que se escriba
+   manana. Blanco sobre `--violeta` da 5,34:1, que es la medida que ya sostenia
+   este mismo boton antes de redondearlo; el canto no toca el contraste.
+
+   Lo que NO se vuelve nube: `Powered` y `Modelo:`, que siguen en verde. No se
+   pulsan -- son un dato y una declaracion, y darles figura de boton seria
+   ofrecer un gesto que no existe. */
 button,.boton{font:inherit;font-size:.85rem;cursor:pointer;
-  background:var(--violeta);color:#fff;border:1px solid var(--violeta);
-  border-radius:calc(var(--radius) - 6px);
+  background:var(--violeta);color:#fff;border:1px solid var(--oro);
+  border-radius:999px;
   padding:.6rem .9rem;display:inline-block;text-decoration:none;
   transition:transform .2s var(--spring),background .2s ease,border-color .2s ease}
-:is(button,.boton):focus{background:var(--indigo);border-color:var(--indigo);outline:0}
+:is(button,.boton):focus{background:var(--violeta-texto);border-color:var(--oro);outline:0}
 :is(button,.boton):active{transform:scale(.98)}
 /* Hover y escala solo con raton de verdad: en tactil el navegador emula un
    hover pegajoso que se queda encendido tras el toque. */
 @media (hover:hover) and (pointer:fine){
-  :is(button,.boton):hover{background:var(--indigo);border-color:var(--indigo);
+  :is(button,.boton):hover{background:var(--violeta-texto);border-color:var(--oro);
     transform:scale(1.02)}
 }
 button[disabled]{background:var(--tenue);border-color:var(--tenue);cursor:progress}

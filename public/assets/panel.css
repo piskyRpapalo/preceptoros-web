@@ -72,6 +72,16 @@
    navega con teclado caeria dentro de algo que no ve. */
 #panel-modelos.cerrado,#panel-ajustes.cerrado{transform:scaleY(0);opacity:0;
   visibility:hidden}
+/* LA RUEDA SI LLEVA VELO, y es la excepcion que confirma la regla: cae ENCIMA
+   del chat y opaca abriria un agujero solido en una pagina que deja ver el
+   fondo. Va mas cerrada que los paneles --78 %-- porque lleva texto pequeno
+   sobre violeta, y ahi el marmol si estorba. Estaba en `chat.css`; vive aqui,
+   con el mando que la abre. El respaldo opaco lo da la regla de arriba. */
+@supports (backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px)){
+  #panel-ajustes{background:color-mix(in srgb, var(--violeta) 78%, transparent);
+    -webkit-backdrop-filter:blur(16px) saturate(180%);
+    backdrop-filter:blur(16px) saturate(180%)}
+}
 /* La rueda cuelga del canto de SU boton. */
 #panel-ajustes{left:3.9rem;width:min(14rem,calc(100vw - 4.6rem))}
 .ajuste-idioma{display:block;width:100%;text-align:left;font:inherit;

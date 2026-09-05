@@ -1,0 +1,108 @@
+/* preceptoros.org · lo que se toca para mandar un turno.
+ *
+ * POR QUE VIVE APARTE. `chat.css` llego a 17.041 B de los 16.384 del tope y
+ * llevaba dos asuntos: las CAPAS del chat --quien tapa a quien, el pleno, los
+ * cantos-- y los GESTOS con los que se manda un turno. Se parte por el asunto,
+ * no se recorta el comentario: los comentarios son la documentacion de esta
+ * casa y quitarlos para que quepa es pagar el tope con lo unico que no se
+ * puede volver a deducir del codigo. Tercera particion del dia, misma regla.
+ *
+ * SE CARGA DESPUES DE `chat.css`, como `nubes.css` tras `panel.css` y
+ * `puertas.css` tras `widget.css`: cuando dos reglas tienen la misma
+ * especificidad decide el orden, y esa leccion ya costo media hora.
+ */
+/* UNA SOLA FILA PARA TODOS LOS ATAJOS. `comandos.js` mete los suyos dentro de
+   un `div.fila`, y `display:contents` lo hace desaparecer para la maqueta: sus
+   botones quedan como hermanos de los demas en vez de como un bloque aparte.
+   Sin esto la fusion seria visual a medias -- un grupo dentro de otro grupo.
+
+   Se envuelve en vez de hacer scroll horizontal: son once pildoras y en un
+   telefono la mitad quedaria fuera de vista sin nada que dijera que hay mas. */
+.atajos{display:flex;flex-wrap:wrap;gap:.4rem;padding:.15rem 0 .35rem}
+.atajos .fila{display:contents}
+.atajos::-webkit-scrollbar{display:none}
+/* Los dos tipos de atajo se pintan IGUAL, y esa es la mitad de la fusion: si
+   uno fuera pildora y el otro boton seguirian siendo dos cosas aunque
+   compartieran fila. Lo unico que los distingue es lo que dicen. */
+/* Los atajos tambien son nubes: se pulsan, luego son de la misma familia que
+   todo lo demas. Eran claros con canto de bronce y se leian como etiquetas. */
+/* VIOLETA HONDO CON LETRAS VIOLETA CLARAS, que es como los dibuja la app.
+   Estuvieron un rato en violeta pleno con letra blanca y competian con enviar:
+   once pildoras del mismo peso que el boton que manda el turno. Hundiendo el
+   fondo y aclarando la letra siguen siendo de la familia y dejan de gritar.
+   `#b3a4ff` sobre `#2f2757` da 6,24:1 -- medido en el navegador. Escribi 7,1
+   de cabeza antes de mirarlo; la cifra que vale es la que devolvio la pagina. */
+.atajo,.atajos .comando{flex:0 0 auto;font:inherit;font-size:.76rem;
+  font-weight:600;letter-spacing:0;text-transform:none;cursor:pointer;
+  color:#b3a4ff;background:#2f2757;
+  border:1px solid var(--oro);border-radius:999px;padding:.32rem .7rem;
+  transition:transform .16s var(--spring)}
+.atajo:hover,.atajo:focus-visible,
+.atajos .comando:hover,.atajos .comando:focus-visible{transform:translateY(-1px)}
+.atajo:focus-visible,.atajos .comando:focus-visible{
+  outline:2px solid var(--violeta);outline-offset:2px}
+
+/* --- lo que se toca: el campo y sus dos mandos ----------------------------
+   EL CAMPO, MAS GRANDE. Era la caja donde se escribe y medía menos que la fila
+   de atajos que tiene debajo: lo primero que se hace en esta pagina es
+   escribir, y el tamano de una caja dice cuanto se espera de ella. `min-height`
+   y no `rows`: el marcado ya trae `rows="3"` y con una altura minima en css la
+   caja crece pero no encoge por debajo de lo comodo.
+
+   LOS DOS MANDOS EN OVALO. Enviar y Hablar son las dos formas de decir lo
+   mismo --escribir o dictar-- asi que se dibujan iguales y en la misma figura:
+   pildora alta, no rectangulo con las esquinas del panel. El radio 999 no es
+   una sexta esquina, es otra figura, y la doctrina lo admite por eso. */
+/* 13rem y no 9,5: se pidio mirandola en pantalla grande, donde el chat se
+   come la mitad de la altura y la caja parecia una linea de busqueda. Sigue
+   siendo `min-height` --no `rows`-- asi que crece con lo que se escriba y no
+   encoge por debajo de lo comodo. En el telefono manda `dvh`, mas abajo. */
+#pregunta{min-height:13rem;line-height:1.55;padding:.9rem 1rem;
+  border-radius:calc(var(--radius) + 4px)}
+/* En vertical 13rem serian dos tercios de la pantalla y el teclado tapa el
+   resto: alli la caja se mide contra la ventana, no contra el escritorio. */
+@media (max-width:1023px){#pregunta{min-height:min(9.5rem,26dvh)}}
+/* LA FILA DE ESCRIBIR, COMO EN LA APP. Alli el campo es una pastilla oscura
+   larga, el microfono un icono desnudo sobre ella y enviar un boton violeta
+   aparte, alto y a la derecha. Aqui eran tres pildoras iguales en una fila:
+   escribir, hablar y enviar pesaban lo mismo, y no lo pesan -- una es el sitio
+   donde se escribe y las otras dos son mandos.
+
+   EL MICROFONO PIERDE LA CAJA. Es el gesto alternativo, no el principal: con
+   su propio recuadro competia con enviar teniendo la mitad de uso. Sin caja
+   sigue siendo pulsable --44 px de alto, que es lo que pide un dedo-- y deja
+   de reclamar el ojo. */
+button.enviar{border-radius:999px;padding:.7rem 1.5rem;
+  min-height:48px;font-weight:700}
+button.mic{border-radius:999px;padding:.5rem .8rem;min-height:44px;
+  font-weight:600;background:transparent;border-color:transparent;
+  color:var(--violeta-texto)}
+button.mic:hover:not(:disabled),button.mic:focus-visible{
+  background:transparent;border-color:var(--oro);color:var(--oro)}
+/* Enviar es el que manda de esta fila y se pone el ultimo, contra el canto
+   derecho, como en la app: el gesto termina donde acaba la caja. */
+.chat-acciones{justify-content:flex-end}
+.chat-acciones #voice{order:1}
+.chat-acciones button.enviar{order:2}
+
+/* --- el login SIEMPRE por encima de la cara -------------------------------
+   La esfera es la Capa 4 y se sienta a caballo del cabezal: entrar caia debajo
+   y en Android no habia forma de pulsarlo. No se arregla encogiendo la cara
+   --eso es un ajuste de gusto y se decide mirando-- sino diciendo quien va
+   delante, que es una decision de capas y no de tamano. La firma viaja con el
+   por la misma razon: son la misma pareja. */
+#cabezal #identity,#cabezal .cola-abrir{position:relative;
+  z-index:calc(var(--capa-4-cara) + 1)}
+/* La cuenta de la firma, pegada al rotulo. Un numero sin nada al lado no dice
+   de que es; dentro del boton que abre la cola, si. */
+.cola-cuenta{display:inline-block;margin-left:.35rem;padding:0 .34rem;
+  min-width:1.15em;text-align:center;font-variant-numeric:tabular-nums;
+  color:var(--tinta);background:var(--oro);border-radius:999px}
+
+/* LA LETRA SOSTIENE LO QUE ANTES SOSTENIA EL FONDO. Con los paneles
+   transparentes el texto cae sobre el marmol, que tiene vetas claras y
+   oscuras: en peso normal la lectura salta. `600` y no `700` -- el 700
+   convierte un parrafo largo en un bloque y cansa antes de terminarlo.
+   Lo que escribe la persona no lo necesita: va en su propia pastilla. */
+#dialogo p{font-weight:600}
+#dialogo p.tu{font-weight:500}

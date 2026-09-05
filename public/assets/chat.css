@@ -107,63 +107,24 @@ button.enviar svg{margin-right:.1rem}
    funcionaria hoy y se romperia al mover un bloque de sitio, que es como se
    rompen estas cosas. */
 #chat{position:relative;z-index:var(--capa-1-chat)}
-/* UNA SOLA FILA PARA TODOS LOS ATAJOS. `comandos.js` mete los suyos dentro de
-   un `div.fila`, y `display:contents` lo hace desaparecer para la maqueta: sus
-   botones quedan como hermanos de los demas en vez de como un bloque aparte.
-   Sin esto la fusion seria visual a medias -- un grupo dentro de otro grupo.
-
-   Se envuelve en vez de hacer scroll horizontal: son once pildoras y en un
-   telefono la mitad quedaria fuera de vista sin nada que dijera que hay mas. */
-.atajos{display:flex;flex-wrap:wrap;gap:.4rem;padding:.15rem 0 .35rem}
-.atajos .fila{display:contents}
-.atajos::-webkit-scrollbar{display:none}
-/* Los dos tipos de atajo se pintan IGUAL, y esa es la mitad de la fusion: si
-   uno fuera pildora y el otro boton seguirian siendo dos cosas aunque
-   compartieran fila. Lo unico que los distingue es lo que dicen. */
-.atajo,.atajos .comando{flex:0 0 auto;font:inherit;font-size:.76rem;
-  font-weight:600;letter-spacing:0;text-transform:none;cursor:pointer;
-  color:var(--tinta);background:var(--marmol-claro);
-  border:1px solid var(--bronce);border-radius:999px;padding:.32rem .7rem;
-  transition:transform .16s var(--spring)}
-.atajo:hover,.atajo:focus-visible,
-.atajos .comando:hover,.atajos .comando:focus-visible{transform:translateY(-1px)}
-.atajo:focus-visible,.atajos .comando:focus-visible{
-  outline:2px solid var(--violeta);outline-offset:2px}
-
 /* --- los dos paneles, y el canto dorado del chat --------------------------
    SE VE EL FONDO A TRAVES. El opaco tapaba el ambiente animado de la pagina y
    dejaba el mismo rectangulo liso en los dos temas. Con el cristal a media
    opacidad el fondo asoma y los botones violeta se recortan contra algo vivo,
    que es lo que hace que se lean. El respaldo opaco de `base.css` sigue
-   delante para quien no tenga `backdrop-filter`: sin el, el texto quedaria
-   sobre la animacion y no se leeria.
+   delante para quien no tenga desenfoque: sin el, el texto quedaria sobre la
+   animacion y no se leeria.
 
    EL CANTO DORADO ES EL LIMITE CON LA WEB, y por eso va en los lados y abajo y
    no arriba: arriba el chat linda con el cabezal --que es de la misma casa-- y
    un filo ahi seria una costura interna. Abajo y a los lados linda con la
    pagina, y ahi si hay que decir donde acaba el producto. */
-@supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)){
-  /* El velo del cabezal y del chat NO se decide aqui: lo pone `widget.css`,
-     que es donde vive su regla de cristal y que ademas carga despues. Hubo una
-     copia en esta linea pidiendo 62 % y no mando nunca. Una regla que no manda
-     es peor que ninguna: se despliega creyendo que algo cambio. */
-  /* La rueda tambien. Es la Capa 3 y cae ENCIMA del chat: opaca abria un
-     agujero solido en una pagina que por lo demas deja ver el fondo, y ese
-     salto se lee como que algo se ha roto. Va mas cerrada que los paneles
-     --78 contra 62-- porque lleva texto pequeno sobre violeta y ahi el fondo
-     animado si estorba.
-
-     AQUI ESTABA TAMBIEN `#panel-modelos` y se ha ido: desde que Herramientas
-     son nubes sueltas, ese panel no tiene cuerpo que pintar --lo lleva cada
-     pastilla-- y `nubes.css` le pone `transparent`. Una regla que ya no manda
-     nada es peor que ninguna: quien la lea creera que ahi se decide algo. */
-  #panel-ajustes{
-    background:color-mix(in srgb, var(--violeta) 78%, transparent)}
-  /* Los atajos y los comandos: pildoras sobre el chat, que ya es traslucido.
-     Con fondo opaco flotaban como pegatinas encima del cristal. */
-  .atajo,.atajos .comando{
-    background:color-mix(in srgb, var(--marmol-claro) 55%, transparent)}
-}
+/* Aqui hubo un bloque de cristal con el velo del cabezal, del chat y de la rueda.
+   El de los dos paneles se mudo a `widget.css` --que es donde vive su regla y
+   ademas carga despues, asi que la copia de aqui no mando nunca-- y el de la
+   rueda se ha ido a `panel.css`, con el mando que lo abre. El bloque queda sin
+   una sola regla dentro, y un bloque vacio sigue contando para el gate
+   del cristal: pedia respaldo opaco a una hoja que ya no pinta cristal. */
 /* EL CHAT SALE DEL ANILLO VIOLETA. `.panel::before` pinta `edge-violet.png` en
    un aro de 5 px sobre todos los paneles, y de paso deja el borde real en
    `transparent` -- por eso el canto dorado no se veia: estaba puesto y tapado.
@@ -225,40 +186,3 @@ body.chat-activo .presentacion{opacity:.5}
    declara explicito en vez de bajarle la especificidad a la regla de arriba,
    que es lo que le da su forma. */
 .pleno-cerrar[hidden]{display:none}
-
-/* --- lo que se toca: el campo y sus dos mandos ----------------------------
-   EL CAMPO, MAS GRANDE. Era la caja donde se escribe y medía menos que la fila
-   de atajos que tiene debajo: lo primero que se hace en esta pagina es
-   escribir, y el tamano de una caja dice cuanto se espera de ella. `min-height`
-   y no `rows`: el marcado ya trae `rows="3"` y con una altura minima en css la
-   caja crece pero no encoge por debajo de lo comodo.
-
-   LOS DOS MANDOS EN OVALO. Enviar y Hablar son las dos formas de decir lo
-   mismo --escribir o dictar-- asi que se dibujan iguales y en la misma figura:
-   pildora alta, no rectangulo con las esquinas del panel. El radio 999 no es
-   una sexta esquina, es otra figura, y la doctrina lo admite por eso. */
-/* 13rem y no 9,5: se pidio mirandola en pantalla grande, donde el chat se
-   come la mitad de la altura y la caja parecia una linea de busqueda. Sigue
-   siendo `min-height` --no `rows`-- asi que crece con lo que se escriba y no
-   encoge por debajo de lo comodo. En el telefono manda `dvh`, mas abajo. */
-#pregunta{min-height:13rem;line-height:1.55;padding:.9rem 1rem;
-  border-radius:calc(var(--radius) + 4px)}
-/* En vertical 13rem serian dos tercios de la pantalla y el teclado tapa el
-   resto: alli la caja se mide contra la ventana, no contra el escritorio. */
-@media (max-width:1023px){#pregunta{min-height:min(9.5rem,26dvh)}}
-button.enviar,button.mic{border-radius:999px;padding:.62rem 1.3rem;
-  min-height:46px;font-weight:600}
-
-/* --- el login SIEMPRE por encima de la cara -------------------------------
-   La esfera es la Capa 4 y se sienta a caballo del cabezal: entrar caia debajo
-   y en Android no habia forma de pulsarlo. No se arregla encogiendo la cara
-   --eso es un ajuste de gusto y se decide mirando-- sino diciendo quien va
-   delante, que es una decision de capas y no de tamano. La firma viaja con el
-   por la misma razon: son la misma pareja. */
-#cabezal #identity,#cabezal .cola-abrir{position:relative;
-  z-index:calc(var(--capa-4-cara) + 1)}
-/* La cuenta de la firma, pegada al rotulo. Un numero sin nada al lado no dice
-   de que es; dentro del boton que abre la cola, si. */
-.cola-cuenta{display:inline-block;margin-left:.35rem;padding:0 .34rem;
-  min-width:1.15em;text-align:center;font-variant-numeric:tabular-nums;
-  color:var(--tinta);background:var(--oro);border-radius:999px}

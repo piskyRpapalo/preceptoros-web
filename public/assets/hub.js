@@ -207,23 +207,33 @@
       r.disponible ? L.hubDisponible : L.hubSinAdaptador));
     return b;
   }
+  /* SOLO SE PINTA LO QUE ESTA SERVIDO (2026-09-05), y con eso se van el titulo
+     y el rotulo de maqueta.
+
+     El rotulo decia «MOCK · 1/8 servido» y existia por una razon buena: una
+     rejilla de companeros se ve igual sea catalogo real o inventado, y siete de
+     los ocho tenian el estado puesto a mano para poder mirar la interfaz. La
+     etiqueta era la unica diferencia visible entre lo real y lo fingido.
+
+     Filtrando por `real.disponible` esa diferencia deja de existir: lo que se
+     ve ES lo que hay. Un rotulo que dice «maqueta» sobre una rejilla sin nada
+     fingido dentro ya no informa, confunde. Y el titulo se va con el porque el
+     mando que abre esto ya se llama Herramientas -- decirlo dos veces a dos
+     dedos de distancia es ocupar sitio para nada.
+
+     LOS SIETE NO DESAPARECEN DEL CATALOGO, solo de la pantalla. Siguen en
+     `hub.json` con su `causa_no_servido`, que es donde un dato incomodo tiene
+     que estar: el dia que se sirva uno, aparece solo y sin tocar este fichero.
+     La honestidad no se pierde -- cambia de sitio: antes se declaraba con una
+     etiqueta, ahora no hay nada que declarar porque no se muestra nada
+     inventado. */
   function pintaPanel() {
     panel.innerHTML = '';
-    panel.appendChild(el('h2', 'panel-titulo', L.hubTitulo));
-    // El rotulo de honestidad es pequeno y NO desaparece: una rejilla de
-    // companeros se ve igual sea catalogo real o maqueta.
-    var n = (DATOS.agentes || []).filter(function (a) {
-      return a.real && a.real.disponible;
-    }).length;
-    var rot = el('p', 'panel-rotulo',
-      DATOS.estado + ' · ' + n + '/' + (DATOS.agentes || []).length + ' ' + L.hubServido);
-    // En el rail solo cabe la cifra, y la cifra dice lo mismo. Lo que no
-    // puede pasar es que el rotulo desaparezca.
-    rot.dataset.corto = n + '/' + (DATOS.agentes || []).length;
-    panel.appendChild(rot);
     var g = el('div', 'modelos');
     var sin = ligero();
-    (DATOS.agentes || []).forEach(function (a) { g.appendChild(tarjeta(a, sin)); });
+    (DATOS.agentes || [])
+      .filter(function (a) { return a.real && a.real.disponible; })
+      .forEach(function (a) { g.appendChild(tarjeta(a, sin)); });
     panel.appendChild(g);
     /* La PUERTA de la cola la pone `hub-cola.js`, que es de quien es: ese
        fichero ya era el dueño del panel de la cola, y tener la puerta aqui y
