@@ -110,7 +110,11 @@ const rutas = await shell.keys();
 // de decir que una lengua a medias no existe: o entran sus siete o no entra.
 // La cifra va a mano a proposito: si alguien anade una ruta al shell sin
 // pensarlo, esto se pone rojo y le obliga a decir por que.
-ok('precachea paginas y piezas del Hub', rutas.length === 98, rutas.length+' rutas');
+// 99 desde el 2026-09-06: entra `esquina-cuenta.css`, la mitad de
+// `esquina.css` que se partio por asunto al llegar la hoja al tope. El
+// numero se sube A MANO a proposito -- si se calculara del propio fichero
+// no vigilaria nada: una ruta que se cuela sin querer pasaria igual.
+ok('precachea paginas y piezas del Hub', rutas.length === 99, rutas.length+' rutas');
 ok('el shell trae las tres tiras de la cara',
    ['apertura', 'reposo', 'habla']
      .every(s => rutas.includes('/assets/caras/secuencia-' + s + '-256.webp')));

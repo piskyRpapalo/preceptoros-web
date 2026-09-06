@@ -12,14 +12,6 @@ bajaste es lo que se firmó.
 
 ## Qué hay
 
-### The Herald — `preceptor-herald-v1.gguf`
-Explica qué es PreceptorOS a quien acaba de llegar, en su idioma, antes de que
-instale nada. Dice `NO_DATA` cuando no sabe algo y te manda fuera a buscarlo en
-vez de inventarlo. **No recuerda entre visitas**, y lo dice.
-
-- Base: `mistral:7b-instruct-v0.3-q4_K_M` · 4,4 GB · Apache 2.0
-- Necesitas: 8 GB de RAM
-
 ### The Tribune — `preceptor-tribune-en-v1.gguf` · `preceptor-tribune-multi-v1.gguf`
 Atiende reclamaciones sin las trampas de los bots corporativos: no inventa
 políticas, no te devuelve a la misma cola, y escala a una persona con referencia
@@ -73,6 +65,15 @@ ollama run mi-tribuno
 
 El nombre que le pongas es tuyo. Usa un tag explícito y nunca `:latest`: los
 tags pelados apuntan a lo que haya ese día, y lo que haya cambia.
+
+## Lo que este README anunciaba y no estaba
+
+Hasta el 2026-09-06 esta página listaba **The Herald** (`preceptor-herald-v1.gguf`)
+en primer lugar. Ese fichero no está en esta carpeta y no lo ha estado nunca: era
+una ficha escrita antes que su artefacto. Se retira, porque un catálogo que
+anuncia lo que no tiene enseña a desconfiar del que sí tiene.
+
+Lo que hay aquí es lo que hay en el disco, y se comprueba mirando la carpeta.
 
 ## Dónde está el resto
 

@@ -92,12 +92,18 @@
           emergente(T.pwaManual);
         });
 
-        /* LA ULTIMA VERSION DE LA APP. El enlace es la pagina de versiones del
-           repositorio --comprobada, responde 200-- y va acompanado de lo que
-           hay detras HOY: ninguna version publicada. Decirlo antes de pulsar
-           es la diferencia entre una puerta y una promesa. */
-        var ba = el('a', 'boton', T.appBoton);
-        ba.href = d.releases; ba.rel = 'noopener';
+        /* LA ULTIMA VERSION DE LA APP · 2026-09-06: DEJA DE SER UN ENLACE.
+           Llevaba a la pagina de versiones del repositorio, que responde 200 y
+           esta vacia, con el aviso al lado. Decirlo antes de pulsar era mejor
+           que callarlo, pero sigue gastando el unico gesto que un visitante
+           regala --pulsar-- para no llevarle a ninguna parte.
+
+           Un boton inhabilitado dice lo mismo sin cobrar ese gesto: se ve que
+           existira y se ve que hoy no. `d.releases` se queda en el registro
+           porque la URL es un hecho y sera cierta el dia que haya version; lo
+           que se retira es la promesa de que hoy lleva a algo. */
+        var ba = el('button', 'boton', T.appBoton);
+        ba.type = 'button'; ba.disabled = true;
         var fila = el('div', 'fila');
         fila.appendChild(bp); fila.appendChild(ba);
         pwa.appendChild(fila);

@@ -1,0 +1,72 @@
+/* preceptoros.org · la cuenta cuando has entrado: nombre, firma y su sitio.
+
+   POR QUE HOJA PROPIA, Y NO UN RECORTE DE COMENTARIOS. `esquina.css` llego a
+   16.405 B de los 16.384 del tope el 2026-09-06, y se bajo podando la prosa
+   nueva -- que es exactamente lo que la cabecera de `acceso.css` prohibe:
+   «se parte por el asunto y no se recortan comentarios, que es la regla de la
+   casa». Esto deshace aquel atajo. La costura no es arbitraria: `esquina.css`
+   responde a «donde van los mandos del cabezal»; esto responde a «que aspecto
+   tiene tu cuenta cuando has entrado», que es el estado que casi nadie ve --
+   sin sesion no existe ni una de estas reglas.
+
+   SE CARGA DESPUES DE `esquina.css` Y ESO IMPORTA. A igual especificidad manda
+   el orden, y estas reglas estrechan la pastilla contra las de alla.
+
+   Y EL TROZO MOVIL VIAJA CON EL DE ESCRITORIO, aunque parezca que pertenece al
+   bloque del telefono. Es quien corrige el `max-width:calc(100% - 8rem)` de
+   aqui arriba: si se hubiera quedado en `esquina.css` --que carga antes-- el
+   calc() ganaria por orden y la pastilla se estrecharia en el telefono. Dos
+   mitades del mismo asunto se mueven juntas o no se mueven. */
+/* --- CON CUENTA, UNA LINEA FINA · Y LA RUEDA A LA DERECHA (2026-09-05) -----
+   Los dos mandos estaban clavados con la rueda a la izquierda y la identidad
+   pegada al canto. Eso funciona mientras la identidad es un icono de 40 px;
+   con sesion abierta se convierte en nombre + firma, crece hacia la izquierda,
+   y se metia DEBAJO de la rueda -- una caja anclada a la derecha que crece se
+   come a su vecina fija.
+
+   Se invierte el anclaje: la rueda toma el canto y la identidad se ancla a
+   3,4rem, que es lo que mide la rueda con su aire. Asi la linea de la cuenta
+   crece hacia la izquierda, que es donde hay sitio, y la rueda se queda en la
+   esquina en los dos estados -- con cuenta y sin ella. Un mando que cambia de
+   sitio segun si has entrado es un mando que hay que buscar dos veces. */
+#cabezal .lateral-boton{right:.45rem}
+#cabezal #identity{right:3.4rem}
+
+/* LINEA FINA DE VERDAD: nombre y firma no envuelven. `#identity` es un flex
+   con `flex-wrap:wrap` heredado de cuando eran tres piezas a tamano de boton;
+   con la pastilla estrecha, envolver partia la cuenta en dos filas y la fila
+   de abajo caia sobre la cara. */
+#cabezal #identity{flex-wrap:nowrap;white-space:nowrap;max-width:calc(100% - 8rem)}
+#cabezal #identity .yo-perfil{font-size:.7rem;overflow:hidden;text-overflow:ellipsis}
+#cabezal #identity .huella-corta{font-size:.64rem;padding:.1rem .4rem}
+
+/* Y LA CARA BAJA UN POCO MAS. Con el icono solo, 40 px de mando bastaban de
+   respiro; con la linea de la cuenta la franja de arriba es mas alta y la
+   esfera volvia a rozarla. Lo pidio el Soberano al ver la captura, y es la
+   misma cuenta de antes con el aire que la linea necesita. */
+#cabezal .presentacion{top:calc(40px + 1.5rem)}
+
+/* El nombre puede encoger. Sin `min-width:0` un hijo de flex no baja de lo que
+   mide su texto, asi que se quedaba entero y empujaba la firma FUERA de la
+   pastilla -- en 375 px la firma acababa pintada encima de la rueda. El corte
+   con puntos suspensivos no servia de nada mientras la caja no pudiera
+   estrecharse. */
+#cabezal #identity .yo-perfil{min-width:0}
+
+@media (max-width:1023px){
+  /* EL `max-width` DEL TELEFONO, que viene de `esquina.css` y es la razon de
+     que este bloque movil exista aqui. Deshace el `calc(100% - 8rem)` de
+     arriba: en el telefono la pastilla usa el ancho entero porque tiene su
+     propio renglon. Borrarlo en vez de moverlo --que es lo que se hizo al
+     partir la hoja, y lo caza la medida: `calc(100% - 128px)` a 375 px-- deja
+     la cuenta estrangulada justo donde menos sitio hay. */
+  #cabezal #identity{max-width:100%}
+  /* Y EL NOMBRE PUEDE ENCOGER. `#cabezal #identity > *{flex:0 0 auto}` --que
+     existe para que la firma no se estire a todo lo ancho-- impedia tambien
+     que el nombre se estrechara: la pastilla se quedaba con su ancho ideal y
+     la firma se pintaba FUERA, a la derecha del canto dorado. Se vio dos
+     veces, con la sesion simulada. Aqui se le devuelve al nombre --y solo al
+     nombre-- el derecho a encoger; los puntos suspensivos ya estaban puestos
+     y por fin sirven para algo. */
+  #cabezal #identity .yo-perfil{flex:0 1 auto;min-width:0}
+}
