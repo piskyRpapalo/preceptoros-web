@@ -104,8 +104,11 @@
 
    `top:.45rem` y no `0`: el marco de bronce pasa por ahi y un aro dorado
    pegado a otro aro dorado se lee como una sola linea rota. */
-#cabezal .lateral-boton{position:absolute;top:.45rem;right:3.4rem;margin-left:0}
-#cabezal #identity{position:absolute;top:.45rem;right:.45rem;margin-left:0}
+/* 2026-09-06 · LA RUEDA A LA ESQUINA DEL TODO, Y EL NOMBRE A SU PROPIA FILA.
+   El nombre se abre con DOS palabras al registrarse y compartia fila con la
+   rueda: o se cortaba o empujaba. Deja de estar absoluto y baja a su linea. */
+#cabezal .lateral-boton{position:absolute;top:.45rem;right:.45rem;margin-left:0}
+#cabezal #identity{position:static;order:30;flex:1 1 100%;margin:.1rem 0 0}
 
 /* Y LA RUEDA SUELTA SU PANEL DEL CANTO IZQUIERDO. Colgaba de `left:3.9rem`
    --de cuando el mando vivia a la izquierda, al lado de Herramientas-- y con
@@ -212,10 +215,18 @@
   #cabezal .marca{flex:1 1 100%;flex-wrap:nowrap;align-items:center}
 
   /* Segundo renglon: la cuenta a la izquierda y la rueda contra el canto. */
-  #cabezal #identity{position:static;order:3;flex:0 1 auto;
-    max-width:calc(100% - 3rem);align-self:flex-start;margin:.15rem 0 0}
-  #cabezal .lateral-boton{position:static;order:4;margin:.15rem 0 0 auto;
-    width:36px;height:36px}
+  /* 2026-09-06 · EL NOMBRE, A SU FILA. Compartia linea con la rueda y se abre
+     con DOS palabras al registrarse: o se cortaba o empujaba. Va el ultimo y a
+     lo ancho, detras de la frase de energia (que es `order:20`). */
+  #cabezal #identity{position:static;order:30;flex:1 1 100%;
+    max-width:100%;align-self:flex-start;margin:.2rem 0 0}
+  /* Y LA RUEDA SUBE A LA ESQUINA DEL TODO, con el punto de acceso a su
+     izquierda. Absolutas las dos: asi la fila de la marca queda entera para el
+     logo y sus dos enlaces, que es lo que se gana al sacarlas de la fila. */
+  #cabezal .lateral-boton{position:absolute;top:.45rem;right:.45rem;
+    margin:0;width:36px;height:36px}
+  /* El logo respira lo que la rueda deja libre. */
+  #cabezal h1{font-size:1.15rem}
   #cabezal #panel-ajustes{right:.45rem;left:auto}
 
   /* Y EL NOMBRE PUEDE ENCOGER. `#cabezal #identity > *{flex:0 0 auto}` --que
@@ -253,3 +264,4 @@
      salto de maqueta. */
   #cabezal .presentacion{top:8.4rem}
 }
+

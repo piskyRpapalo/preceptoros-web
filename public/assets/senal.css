@@ -79,8 +79,12 @@
    esfera esta pegada al borde derecho y la pastilla mide lo que dice. Debajo
    de la cara hay sitio, y ahi no compite con la marca. */
 @media (max-width:1023px){
-  .esfera-nube{top:auto;bottom:-.4rem;right:0;transform:none;
-               font-size:.62rem;padding:.22rem .55rem}
+  /* 2026-09-06 · LA NUBE SE VA DE LA ESFERA. Colgada bajo el circulo tapaba la
+     boca; movida al pecho, el canto redondo la recorta -- el contenedor no es
+     la esfera y la curva no perdona. Se intento y no salio limpio, asi que se
+     retira de aqui y reaparece en el chat como aviso temporal con su reloj.
+     Un adorno a medio encajar delante de la cara es peor que no tenerlo. */
+  .esfera-nube{display:none}
   @keyframes nube-entra{from{opacity:0;transform:scale(.86)}to{opacity:1;transform:none}}
 }
 @media (prefers-reduced-motion:reduce){

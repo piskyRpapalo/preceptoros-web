@@ -1,0 +1,33 @@
+/* preceptoros.org · el punto de acceso: donde se ve el estado del dictado.
+   POR QUE HOJA PROPIA. `esquina.css` llego a 16.547 B de los 16.384 del tope al
+   entrar esto. Se parte por el asunto y no se recortan comentarios, que es la
+   regla de la casa. Y la costura no es arbitraria: `esquina.css` responde a
+   «donde van los mandos del cabezal»; esto responde a «como se ve si esta
+   maquina puede oirte». Se carga DESPUES de esquina.css y ahi si importa: la
+   posicion del punto se fija aqui, y a igual especificidad manda el orden.
+   El color acompaña y NO informa solo -- el rotulo viaja en `title` y en
+   `aria-label`, y sale del propio boton de hablar, ya traducido. */
+#cabezal .cab-enlaces{position:absolute;top:.45rem;right:3.4rem;margin:0}
+@media (max-width:1023px){
+  #cabezal .cab-enlaces{top:1.1rem;right:3.3rem}
+}
+.cab-enlaces{width:14px;height:14px;padding:0;border:0;border-radius:999px;
+  cursor:pointer;background:var(--tenue);
+  box-shadow:0 0 0 2px rgba(255,255,255,.35)}
+.cab-enlaces[data-estado="listo"]{background:var(--jardin)}
+.cab-enlaces[data-estado="pide"]{background:var(--sol)}
+.cab-enlaces[data-estado="sin"]{background:var(--tenue)}
+.cab-enlaces:focus-visible{outline:2px solid var(--oro);outline-offset:2px}
+
+/* EL AVISO DE ARRANQUE, EN EL CHAT. Sale donde se esta mirando --el campo de
+   escribir-- y no delante de la cara. El reloj gira para decir que se espera;
+   quien pide menos movimiento lo recibe quieto, y entonces el rotulo basta. */
+.arranque-aviso{display:flex;align-items:center;gap:.5rem;margin:.4rem 0 0;
+  font-size:.72rem;color:var(--violeta-texto);font-weight:600}
+.arranque-aviso::before{content:"⏳";font-size:.9rem;display:inline-block;
+  animation:reloj 1.6s steps(1,end) infinite}
+@keyframes reloj{0%,49%{transform:rotate(0)}50%,100%{transform:rotate(180deg)}}
+.arranque-aviso[hidden]{display:none}
+@media (prefers-reduced-motion:reduce){
+  .arranque-aviso::before{animation:none}
+}
