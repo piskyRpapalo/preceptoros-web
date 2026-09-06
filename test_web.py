@@ -91,7 +91,13 @@ ENLACES_ADMITIDOS = ("https://github.com/piskyRpapalo/PreceptorOS",
 # enlace». Fundirlas haria que manana alguien creyera que se puede enlazar a
 # w3.org desde una pagina.
 ESQUEMAS_XML = ("http://www.sitemaps.org/schemas/",
-                "http://www.w3.org/1999/xhtml")
+                "http://www.w3.org/1999/xhtml",
+                # `$schema` de JSON Schema entra aqui y no en ENLACES_ADMITIDOS
+                # por el mismo motivo que los otros dos: es el NOMBRE de un
+                # dialecto, no una direccion que nadie va a pedir. El validador
+                # lo reconoce por la cadena y no descarga nada. Entro el
+                # 2026-09-06 con `data/loratelier_schema.json`.
+                "https://json-schema.org/draft/")
 
 FRAMEWORKS = r"\breact\b|vue\.js|angular|htmx|alpine\.js|jquery|svelte|tailwind"
 
@@ -723,6 +729,21 @@ class ElTaller(unittest.TestCase):
             with self.subTest(bloque=b["id"]):
                 self.assertIn(b["estado"], permitidos)
 
+    def test_el_registro_cumple_su_contrato_formal(self):
+        """El esquema de `data/` no es documentacion: valida el fichero vivo.
+
+        Un contrato que nadie ejecuta se separa del dato sin que nadie lo note,
+        y entonces las dos cosas dicen la verdad por separado.
+        """
+        import jsonschema
+        esquema = json.loads((RAIZ / "data" / "loratelier_schema.json")
+                             .read_text(encoding="utf-8"))
+        fallos = list(jsonschema.Draft202012Validator(esquema)
+                      .iter_errors(self.registro))
+        self.assertEqual(fallos, [],
+                         "; ".join("/".join(map(str, f.path)) + ": " + f.message
+                                   for f in fallos[:3]))
+
     def test_sin_artefacto_firmado_no_hay_descarga(self):
         """La regla que hace creible el primer boton cuando llegue.
 
@@ -733,7 +754,8 @@ class ElTaller(unittest.TestCase):
             with self.subTest(bloque=b["id"]):
                 if b["estado"] == "disponible":
                     self.assertTrue(b.get("artefacto"), "disponible sin artefacto")
-                    self.assertTrue(b.get("hash"), "disponible sin hash")
+                    self.assertTrue(b["artefacto"].get("sha256_hash"),
+                                    "artefacto sin sha256")
 
     def test_los_recuentos_declaran_su_n(self):
         """Una media sin su n no se puede leer, y con n=0 no hay media."""

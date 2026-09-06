@@ -74,9 +74,14 @@
     par(dl, 'servido', f.servido_en_el_rack, 'taller-cifra');
     if (f.servido_tamano_q4_gb != null) par(dl, 'Q4', f.servido_tamano_q4_gb + ' GB', 'taller-cifra');
     par(dl, 'razonamiento', f.razonamiento);
-    // El hash NO se rellena con un guion cuando falta: se omite. Un guion en el
+    par(dl, 'modelo', bloque.modelo_base, 'taller-cifra');
+    par(dl, 'hardware', bloque.requisitos_hw);
+    // La firma NO se rellena con un guion cuando falta: se omite. Un guion en el
     // sitio de una firma se parece demasiado a una firma vacia.
-    par(dl, 'firma', bloque.hash, 'taller-cifra');
+    if (bloque.artefacto) {
+      par(dl, 'version', bloque.artefacto.version, 'taller-cifra');
+      par(dl, 'firma', bloque.artefacto.sha256_hash, 'taller-cifra');
+    }
     return dl;
   }
 
@@ -92,7 +97,7 @@
       });
     caja2.appendChild(ficha(bloque));
     caja2.appendChild(recuento(bloque));
-    if (!bloque.artefacto || !bloque.hash) {
+    if (!bloque.artefacto || !bloque.artefacto.sha256_hash) {
       caja2.appendChild(el('p', 'sin-descarga', UI.sinDescarga || ''));
     }
     return caja2;

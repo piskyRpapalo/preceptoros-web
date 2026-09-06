@@ -7,15 +7,17 @@
     "quien_escribe": "el Soberano a mano, o el enjambre cuando publique un artefacto; la web solo lee",
     "estados": "en_estudio · en_entrenamiento · disponible · vision · NO_DATA",
     "sin_artefacto_no_hay_boton": "un bloque sin `artefacto` y sin `hash` NO pinta descarga. Hoy no hay ninguno publicado, asi que el taller nace sin descargas: es lo que hara creible el primer boton.",
-    "medias": "`medidas.n` viaja SIEMPRE. Con n=0 se pinta el hueco, nunca un cero ni una barra vacia: fingir actividad en un taller vacio es la mentira mas vieja de internet."
+    "medias": "`medidas.n` viaja SIEMPRE. Con n=0 se pinta el hueco, nunca un cero ni una barra vacia: fingir actividad en un taller vacio es la mentira mas vieja de internet.",
+    "contrato_formal": "data/loratelier_schema.json · fuera de public/ a proposito: es el contrato, no se sirve"
   },
   "bloques": [
     {
       "id": "bienvenida",
       "estado": "en_estudio",
       "orden": 1,
+      "modelo_base": "mistral:7b-instruct-v0.3-q4_K_M",
+      "requisitos_hw": "8 GB de RAM, Q4 · o servido desde el rack",
       "artefacto": null,
-      "hash": null,
       "ficha": {
         "familia": "Mistral",
         "licencia": "Apache 2.0",
@@ -27,16 +29,26 @@
         "razonamiento": "apagado",
         "por_que_instruct": "el razonamiento extendido gasta tokens invisibles antes de la primera palabra; medido en este nodo: 45 para responder una sola"
       },
-      "medidas": { "n": 0, "maquina": null, "tok_s": null, "ram_mb": null },
-      "tests": { "n": 0 },
-      "valoraciones": { "n": 0 }
+      "medidas": {
+        "n": 0,
+        "maquina": null,
+        "tok_s": null,
+        "ram_mb": null
+      },
+      "tests": {
+        "n": 0
+      },
+      "valoraciones": {
+        "n": 0
+      }
     },
     {
       "id": "medidor",
       "estado": "en_estudio",
       "orden": 2,
+      "modelo_base": "mistral:7b-instruct-v0.3-q4_K_M",
+      "requisitos_hw": "8 GB de RAM, Q4",
       "artefacto": null,
-      "hash": null,
       "ficha": {
         "familia": "Mistral",
         "licencia": "Apache 2.0",
@@ -48,16 +60,26 @@
         "razonamiento": "apagado",
         "se_apoya_en": "la tabla de medidas.json, que ya existe y cuyo contrato dice que la web solo lee"
       },
-      "medidas": { "n": 0, "maquina": null, "tok_s": null, "ram_mb": null },
-      "tests": { "n": 0 },
-      "valoraciones": { "n": 0 }
+      "medidas": {
+        "n": 0,
+        "maquina": null,
+        "tok_s": null,
+        "ram_mb": null
+      },
+      "tests": {
+        "n": 0
+      },
+      "valoraciones": {
+        "n": 0
+      }
     },
     {
       "id": "memoria",
       "estado": "vision",
       "orden": 3,
+      "modelo_base": null,
+      "requisitos_hw": null,
       "artefacto": null,
-      "hash": null,
       "ficha": {
         "familia": null,
         "licencia": null,
@@ -69,9 +91,18 @@
         "razonamiento": null,
         "por_que_sin_base": "multimodal y contexto largo son requisitos de otra familia; asignarle una base ahora dispersaria el primer entrenamiento, que es Mistral"
       },
-      "medidas": { "n": 0, "maquina": null, "tok_s": null, "ram_mb": null },
-      "tests": { "n": 0 },
-      "valoraciones": { "n": 0 }
+      "medidas": {
+        "n": 0,
+        "maquina": null,
+        "tok_s": null,
+        "ram_mb": null
+      },
+      "tests": {
+        "n": 0
+      },
+      "valoraciones": {
+        "n": 0
+      }
     }
   ]
 }
