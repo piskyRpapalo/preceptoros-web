@@ -37,6 +37,13 @@
    "hoy": "La base local existe en la app; esta línea todavía no tiene artefacto.",
    "falta": "Decidir con qué familia se hace: pide contexto largo e imagen, y eso no es Mistral.",
    "aportas": "Dinos qué te gustaría preguntarle a tu propia historia."
+  },
+  "reclamaciones": {
+   "nombre": "Atención al Público",
+   "util": "Reclamar sin que te manden de un sitio a otro ni te inventen una norma.",
+   "hoy": "El corpus está escrito: 200 casos reales en dos versiones para compararlas.",
+   "falta": "Termina de entrenarse y hay que firmarlo antes de que se pueda descargar.",
+   "aportas": "Cuéntanos la reclamación que te dejaron sin resolver. Eso es lo que falta."
   }
  }
 }

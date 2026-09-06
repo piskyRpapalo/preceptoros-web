@@ -37,6 +37,13 @@
    "hoy": "Die lokale Datenbank gibt es in der App; diese Linie hat noch kein Artefakt.",
    "falta": "Entscheiden, welche Familie passt: sie braucht langen Kontext und Bilder, nicht Mistral.",
    "aportas": "Sag uns, was du deiner eigenen Geschichte fragen möchtest."
+  },
+  "reclamaciones": {
+   "nombre": "Kundenservice",
+   "util": "Beschwerde einreichen, ohne herumgereicht zu werden oder eine erfundene Regel zu hoeren.",
+   "hoy": "Das Korpus steht: 200 echte Faelle in zwei Fassungen, zum Vergleichen.",
+   "falta": "Es trainiert noch, und es muss signiert werden, bevor man es laden kann.",
+   "aportas": "Erzaehl uns die Beschwerde, die dir niemand geloest hat. Genau das fehlt."
   }
  }
 }

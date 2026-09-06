@@ -13,7 +13,7 @@
   "bloques": [
     {
       "id": "bienvenida",
-      "estado": "en_estudio",
+      "estado": "en_entrenamiento",
       "orden": 1,
       "modelo_base": "mistral:7b-instruct-v0.3-q4_K_M",
       "requisitos_hw": "8 GB de RAM, Q4 · o servido desde el rack",
@@ -27,7 +27,9 @@
         "servido_en_el_rack": "mistral-small3.2:24b-instruct-2506",
         "servido_tamano_q4_gb": 15,
         "razonamiento": "apagado",
-        "por_que_instruct": "el razonamiento extendido gasta tokens invisibles antes de la primera palabra; medido en este nodo: 45 para responder una sola"
+        "por_que_instruct": "el razonamiento extendido gasta tokens invisibles antes de la primera palabra; medido en este nodo: 45 para responder una sola",
+        "adaptador_sha256": "bf3cf9534320f3204ba464aabef8ed946c00ff2c241c6efd45264761bef246af",
+        "adaptador_estado": "entrenado y ensamblado como preceptor-cuentacuentos:v1; sin publicar, asi que sin url y sin boton"
       },
       "medidas": {
         "n": 0,
@@ -40,12 +42,65 @@
       },
       "valoraciones": {
         "n": 0
-      }
+      },
+      "plantilla_inicial": [
+        "Explicame PreceptorOS como si no supiera nada de modelos.",
+        "Si no sabes algo, dilo y dime donde buscarlo.",
+        "No me prometas que recordaras esta conversacion."
+      ],
+      "cuestionario": [
+        {
+          "id": "nombre",
+          "tipo": "texto_corto"
+        },
+        {
+          "id": "idioma",
+          "tipo": "opcion_unica",
+          "opciones": [
+            "es",
+            "en",
+            "pt",
+            "fr",
+            "it",
+            "de",
+            "ru",
+            "el"
+          ]
+        },
+        {
+          "id": "experiencia",
+          "tipo": "rango",
+          "rango": {
+            "min": 0,
+            "max": 10
+          }
+        },
+        {
+          "id": "trato_por_nombre",
+          "tipo": "si_no"
+        },
+        {
+          "id": "respuestas_breves",
+          "tipo": "si_no"
+        },
+        {
+          "id": "que_deberia_saber",
+          "tipo": "abierta",
+          "opcional": true
+        }
+      ],
+      "tests_verificacion": [
+        "saludo_por_nombre",
+        "explico_kill_switch_sin_inventar",
+        "propuso_medir_hardware",
+        "no_salio_de_la_doctrina",
+        "aviso_cuando_no_sabia"
+      ]
     },
     {
       "id": "medidor",
-      "estado": "en_estudio",
-      "orden": 2,
+      "estado": "vision",
+      "orden": 3,
       "modelo_base": "mistral:7b-instruct-v0.3-q4_K_M",
       "requisitos_hw": "8 GB de RAM, Q4",
       "artefacto": null,
@@ -76,7 +131,7 @@
     {
       "id": "memoria",
       "estado": "vision",
-      "orden": 3,
+      "orden": 4,
       "modelo_base": null,
       "requisitos_hw": null,
       "artefacto": null,
@@ -91,6 +146,87 @@
         "razonamiento": null,
         "por_que_sin_base": "multimodal y contexto largo son requisitos de otra familia; asignarle una base ahora dispersaria el primer entrenamiento, que es Mistral"
       },
+      "medidas": {
+        "n": 0,
+        "maquina": null,
+        "tok_s": null,
+        "ram_mb": null
+      },
+      "tests": {
+        "n": 0
+      },
+      "valoraciones": {
+        "n": 0
+      }
+    },
+    {
+      "id": "reclamaciones",
+      "estado": "en_entrenamiento",
+      "orden": 2,
+      "modelo_base": "mistral:7b-instruct-v0.3-q4_K_M",
+      "requisitos_hw": "8 GB de RAM, Q4",
+      "artefacto": null,
+      "ficha": {
+        "familia": "Mistral",
+        "licencia": "Apache 2.0",
+        "origen": "Europa",
+        "base_entrenamiento": "mistral:7b-instruct-v0.3",
+        "base_tamano_q4_gb": 4.4,
+        "servido_en_el_rack": null,
+        "servido_tamano_q4_gb": null,
+        "razonamiento": "apagado",
+        "corpus": "200 muestras en dos datasets comparativos (100 EN · 100 multilingue), reparto 50-20-15-15",
+        "regla_de_los_plazos": "el modelo NO afirma plazos legales de memoria: nombra el canal y manda a la fuente oficial"
+      },
+      "plantilla_inicial": [
+        "Atiendeme como si fueras el servicio de atencion al cliente.",
+        "No te inventes politicas: si no consta, dilo.",
+        "Si no puedes resolverlo, escalame a una persona con referencia.",
+        "No me pidas datos de tarjeta ni documentos por este chat."
+      ],
+      "cuestionario": [
+        {
+          "id": "sector",
+          "tipo": "opcion_unica",
+          "opciones": [
+            "telecomunicaciones",
+            "energia",
+            "banca",
+            "aerolinea",
+            "comercio",
+            "seguros",
+            "otro"
+          ]
+        },
+        {
+          "id": "que_paso",
+          "tipo": "texto_corto"
+        },
+        {
+          "id": "tengo_referencia",
+          "tipo": "si_no"
+        },
+        {
+          "id": "urgencia",
+          "tipo": "rango",
+          "rango": {
+            "min": 0,
+            "max": 10
+          }
+        },
+        {
+          "id": "que_deberia_saber",
+          "tipo": "abierta",
+          "opcional": true
+        }
+      ],
+      "tests_verificacion": [
+        "no_invento_politica",
+        "escalo_de_verdad",
+        "no_pidio_datos_sensibles",
+        "dijo_no_data_con_la_clave",
+        "no_afirmo_plazo_legal"
+      ],
       "medidas": {
         "n": 0,
         "maquina": null,

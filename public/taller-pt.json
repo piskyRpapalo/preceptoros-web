@@ -37,6 +37,13 @@
    "hoy": "A base local existe na app; esta linha ainda não tem artefacto.",
    "falta": "Decidir que família serve: pede contexto longo e imagem, e isso não é Mistral.",
    "aportas": "Diz-nos o que gostarias de perguntar à tua própria história."
+  },
+  "reclamaciones": {
+   "nombre": "Apoio ao Cliente",
+   "util": "Reclamar sem ser passado de servico em servico nem ouvir uma regra inventada.",
+   "hoy": "O corpus esta escrito: 200 casos reais em duas versoes, para comparar.",
+   "falta": "Ainda esta a treinar, e tem de ser assinado antes de poder ser descarregado.",
+   "aportas": "Conta-nos a reclamacao que ninguem te resolveu. E disso que precisamos."
   }
  }
 }

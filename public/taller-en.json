@@ -37,6 +37,13 @@
    "hoy": "The local database exists in the app; this line has no artefact yet.",
    "falta": "Decide which family fits: it asks for long context and images, and that is not Mistral.",
    "aportas": "Tell us what you would like to ask your own history."
+  },
+  "reclamaciones": {
+   "nombre": "Customer Complaints",
+   "util": "Complain without being passed around or told a rule that does not exist.",
+   "hoy": "The corpus is written: 200 real cases in two versions, to compare them.",
+   "falta": "It is still training, and it must be signed before anyone can download it.",
+   "aportas": "Tell us the complaint nobody resolved for you. That is what is missing."
   }
  }
 }

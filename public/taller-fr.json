@@ -37,6 +37,13 @@
    "hoy": "La base locale existe dans l'app ; cette ligne n'a pas encore d'artefact.",
    "falta": "Décider quelle famille convient : il faut un contexte long et des images, pas Mistral.",
    "aportas": "Dis-nous ce que tu aimerais demander à ta propre histoire."
+  },
+  "reclamaciones": {
+   "nombre": "Service client",
+   "util": "Reclamer sans etre balade de service en service ni s'entendre inventer une regle.",
+   "hoy": "Le corpus est ecrit : 200 cas reels en deux versions, pour les comparer.",
+   "falta": "L'entrainement n'est pas fini, et il faut le signer avant tout telechargement.",
+   "aportas": "Raconte-nous la reclamation que personne n'a resolue. C'est ce qui manque."
   }
  }
 }
