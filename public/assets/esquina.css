@@ -222,11 +222,5 @@
      segunda solo la sigue. */
   #cabezal:has(.identity-icono) .lateral-boton{margin-left:.4rem}
 
-  /* LA CARA EMPIEZA DEBAJO DE LOS DOS RENGLONES, y por eso los dos primeros
-     pueden usar el ancho entero. 8,4rem son las dos filas medidas en 375 px
-     con sesion abierta, que es el caso alto; sin sesion sobra sitio y la cara
-     baja igual -- una cara que sube y baja segun si has entrado se lee como un
-     salto de maqueta. */
-  #cabezal .presentacion{top:8.4rem}
 }
 

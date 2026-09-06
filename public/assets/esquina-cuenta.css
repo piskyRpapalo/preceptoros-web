@@ -61,6 +61,24 @@
      partir la hoja, y lo caza la medida: `calc(100% - 128px)` a 375 px-- deja
      la cuenta estrangulada justo donde menos sitio hay. */
   #cabezal #identity{max-width:100%}
+
+  /* Y EL `top` DE LA CARA VIENE CON ELLOS, POR LA MISMA RAZON QUE EL
+     `max-width` de aqui arriba -- y esta vez medido despues de romperlo. Al
+     partir la hoja se movio `top:calc(40px + 1.5rem)` a este fichero, que carga
+     DESPUES, y paso a ganarle al `8.4rem` del bloque movil que se quedo alla:
+     el `top` computado en 375 px bajo a 64 px y la esfera subio 70 px, encima
+     de la frase solar y de la propia pastilla de la cuenta. Medido: esfera
+     84-220 contra solar 75-101 y cuenta 107-141, las dos pisadas.
+
+     Es exactamente el fallo que el comentario de la cabecera describe, cometido
+     una segunda vez en el mismo reparto. Dos mitades del mismo asunto se mueven
+     juntas, y `.presentacion` tenia tres. */
+  /* LA CARA EMPIEZA DEBAJO DE LOS DOS RENGLONES, y por eso los dos primeros
+     pueden usar el ancho entero. 8,4rem son las dos filas medidas en 375 px
+     con sesion abierta, que es el caso alto; sin sesion sobra sitio y la cara
+     baja igual -- una cara que sube y baja segun si has entrado se lee como un
+     salto de maqueta. */
+  #cabezal .presentacion{top:8.4rem}
   /* Y EL NOMBRE PUEDE ENCOGER. `#cabezal #identity > *{flex:0 0 auto}` --que
      existe para que la firma no se estire a todo lo ancho-- impedia tambien
      que el nombre se estrechara: la pastilla se quedaba con su ancho ideal y
