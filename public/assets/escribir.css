@@ -124,7 +124,9 @@ button.mic[aria-disabled="true"]{border-color:rgba(242,208,138,.45);opacity:.7}
    oscuras: en peso normal la lectura salta. `600` y no `700` -- el 700
    convierte un parrafo largo en un bloque y cansa antes de terminarlo.
    Lo que escribe la persona no lo necesita: va en su propia pastilla. */
-#dialogo p{font-weight:600}
+/* El cuerpo baja de 1rem a 0,92: en el telefono una respuesta larga ocupaba
+   pantalla y media y habia que hacer scroll para una sola idea. */
+#dialogo p{font-weight:600;font-size:.92rem;line-height:1.45}
 #dialogo p.tu{font-weight:500}
 
 /* --- la velocidad del cerebro, debajo de su nombre ------------------------

@@ -51,9 +51,24 @@
    frases quedaban colgando del techo con medio panel vacio debajo.
    `justify-content:flex-end` solo cambia donde se apoya lo que NO llena; en
    cuanto hay mas lineas que sitio, se comporta igual y se desplaza. */
+/* 2026-09-06 · `justify-content:flex-end` NO se desplazaba, y el comentario de
+   arriba afirmaba que si. Medido en el telefono con la conversacion llena: lo
+   que rebosa por el borde SUPERIOR de un contenedor flex queda fuera del
+   alcance del scroll -- `scrollHeight` seguia igual que `clientHeight` mientras
+   el texto se salia por arriba y por debajo del campo de escribir. No habia
+   nada que desplazar, por eso no se podia leer el principio de la respuesta.
+   El remedio es `margin-top:auto` en el primer hijo: apoya abajo lo que no
+   llena, igual que antes, y cuando llena desborda hacia ABAJO, que si se
+   desplaza y ahora ademas tiene barra. */
 #dialogo{flex:1 1 auto;min-height:0;overflow-y:auto;max-height:none;
-  display:flex;flex-direction:column;justify-content:flex-end;
-  padding:0 .2rem .4rem 0}
+  display:flex;flex-direction:column;justify-content:flex-start;
+  /* El hueco de abajo lo pide `.chat-abajo`, que es `sticky` y se monta sobre
+     las ultimas lineas: medido, 55 px de solape en el telefono. Aqui se le
+     hace sitio para que la ultima linea pueda subir por encima del campo.
+     Es lo que la «banda oscura» retirada el 2026-09-05 intentaba tapar con
+     color: el problema no era que se viera a traves, era que no habia sitio. */
+  padding:0 .2rem 3.6rem 0}
+#dialogo > :first-child{margin-top:auto}
 /* EL TEXTO SE DESVANECE AL LLEGAR ARRIBA, que es lo que pidio el Soberano y lo
    que hace que la placa toque el cabezal sin cortarlo en seco. Una mascara y
    no un degradado encima: un degradado seria una lamina de color sobre el
@@ -61,8 +76,20 @@
    la veta que hay detras.
    2,5rem de subida: por debajo el corte se nota, por encima se pierden dos
    lineas legibles. Se miro con la conversacion llena, no con una frase. */
-#dialogo{-webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 2.5rem);
-  mask-image:linear-gradient(to bottom,transparent 0,#000 2.5rem)}
+/* 2026-09-06 · DE 2,5rem A 0,7. La medida de 2,5 se tomo mirando que el corte
+   no se notara, y el precio eran DOS LINEAS ilegibles arriba -- que es lo que
+   se leyo en el telefono. Con 0,7 el canto sigue sin cortar en seco y el texto
+   se lee entero. Lo que faltaba no era mas desvanecido: era poder subir. */
+#dialogo{-webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 .7rem);
+  mask-image:linear-gradient(to bottom,transparent 0,#000 .7rem)}
+/* LA BARRA, VISIBLE. `#dialogo` siempre tuvo scroll propio, pero sin barra no
+   habia forma de saber que arriba habia mas texto ni de llegar a el con el
+   pulgar. Se pinta en los colores de la casa, no en el gris del sistema. */
+#dialogo{scrollbar-width:thin;scrollbar-color:var(--oro) transparent}
+#dialogo::-webkit-scrollbar{width:8px}
+#dialogo::-webkit-scrollbar-track{background:transparent}
+#dialogo::-webkit-scrollbar-thumb{background:var(--oro);border-radius:999px;
+  border:2px solid transparent;background-clip:content-box}
 /* EL CAMPO SE QUEDA ABAJO. `sticky` y no `fixed`: dentro de la placa, asi que
    respeta sus cantos y no se sale por encima del pie ni tapa el panel de
    Herramientas cuando se abre. */
