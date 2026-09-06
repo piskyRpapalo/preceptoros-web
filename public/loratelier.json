@@ -183,7 +183,29 @@
         "regla_de_los_plazos": "el modelo NO afirma plazos legales de memoria: nombra el canal y manda a la fuente oficial",
         "nombre_modelo": "The Tribune",
         "url_es_de_la_malla": "la ruta es relativa a proposito: hoy resuelve en el nginx del rack y dara 404 en la via publica hasta que el tunel la sirva. La direccion del nodo NO entra en el repo -- lo prohibe la guardia de higiene, y lo prohibe bien: esto se publica",
-        "prueba_de_fuego": "se niega a elegir plazo, que era la conducta a probar. NO nombra el canal oficial, NO ofrece escalado, contesta en ingles a preguntas en castellano, y al negarse al plazo rellena el hueco con otra afirmacion sin respaldo. Con 100 muestras esto prueba la tuberia, no el producto"
+        "prueba_de_fuego": "los DOS fallan como producto y lo prueban como tuberia. El ingles ELIGIO plazo, que es justo lo prohibido. El multilingue se nego bien pero se invento un numero de referencia mezclando las cifras de la pregunta con el patron del corpus. Ninguno deriva a canal oficial ni ofrece escalado. Con 100 muestras y perdida 0,62 y 0,33, esto es memorizacion, no aprendizaje",
+        "artefacto_multi": {
+          "fichero": "preceptor-tribune-multi-v1.gguf",
+          "url_descarga": "/downloads/preceptor-tribune-multi-v1.gguf",
+          "sha256_hash": "90879b40733debf002eb53a1487cd25b15ffcd1a05f065aef4ac12d38c021db1",
+          "version": "multi-v1"
+        },
+        "medida_en": {
+          "pasos": 200,
+          "s_paso": 5.55,
+          "perdida": "3.8013 -> 0.6155",
+          "ram_pico_mb": 19058,
+          "temp_max_c": 84.4,
+          "minutos": 39
+        },
+        "medida_multi": {
+          "pasos": 200,
+          "s_paso": 6.83,
+          "perdida": "2.9343 -> 0.3333",
+          "ram_pico_mb": 26766,
+          "temp_max_c": 85.1,
+          "minutos": 47
+        }
       },
       "plantilla_inicial": [
         "Atiendeme como si fueras el servicio de atencion al cliente.",
