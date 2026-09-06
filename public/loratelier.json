@@ -269,5 +269,10 @@
         "n": 0
       }
     }
-  ]
+  ],
+  "aporte": {
+    "nota": "La puerta de salida del aporte, mientras `/api/v1/medidas` siga en 404 y la escritura del Agora cerrada. NO se envia nada solo: el paquete se arma en el aparato, se ve entero antes de nada, y lo manda la persona desde su propio correo. Una direccion aqui y no en las ocho lenguas: es un hecho, no un texto.",
+    "correo": "davidpecero@gmail.com",
+    "esquema_paquete": 1
+  }
 }

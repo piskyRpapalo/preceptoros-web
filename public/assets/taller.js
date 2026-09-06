@@ -143,6 +143,89 @@
     caja.innerHTML = '';
     caja.appendChild(el('h2', null, UI.titulo || ''));
     caja.appendChild(rejilla);
+    paquete(registro);
+  }
+
+  /* --- LA PUERTA DE SALIDA DEL APORTE (parche declarado, 2026-09-06) -------
+     Mientras `/api/v1/medidas` siga en 404 y la escritura del Agora cerrada,
+     el aporte no tiene por donde salir. Esto NO abre ese endpoint: arma el
+     paquete en el aparato, lo ENSEÑA entero, y lo manda la persona desde su
+     propio correo. Sin `fetch`, sin `sendBeacon`, sin nada automatico -- la
+     misma linea que `corregir.js` defiende, y por el mismo motivo: aqui no se
+     piden datos, se le devuelven los suyos a quien los escribio.
+
+     Se ve ANTES de copiarse. Un boton que empaqueta lo que no enseña es
+     telemetria con buenos modales. */
+  function maquina() {
+    var n = navigator, p = {};
+    p.idioma = n.language || null;
+    p.nucleos = n.hardwareConcurrency || null;      // null = el navegador no lo dice
+    p.memoria_gb = n.deviceMemory || null;          // solo Chromium, y redondeado
+    p.pantalla = screen.width + 'x' + screen.height;
+    p.agente = n.userAgent;
+    return p;
+  }
+
+  function correcciones() {
+    // La base de `corregir.js`, en solo lectura. Si no existe --nadie ha
+    // corregido nada-- son cero, no un error.
+    return new Promise(function (ok) {
+      var q = indexedDB.open('preceptoros-bronce', 1);
+      q.onupgradeneeded = function () { try { q.transaction.abort(); } catch (e) { /* */ } };
+      q.onerror = function () { ok([]); };
+      q.onsuccess = function () {
+        var db = q.result;
+        if (!db.objectStoreNames.contains('correcciones')) { ok([]); return; }
+        var r = db.transaction('correcciones', 'readonly')
+                  .objectStore('correcciones').getAll();
+        r.onsuccess = function () { ok(r.result || []); };
+        r.onerror = function () { ok([]); };
+      };
+    });
+  }
+
+  function paquete(registro) {
+    var ap = registro.aporte || {};
+    if (!ap.correo) return;                       // sin destino no se pinta puerta
+    var sec = el('section', 'taller-aporte');
+    sec.appendChild(el('h3', null, UI.paqTitulo || ''));
+    sec.appendChild(el('p', 'linea-util', UI.paqExplica || ''));
+    var vista = document.createElement('textarea');
+    vista.className = 'taller-paquete'; vista.readOnly = true; vista.rows = 8;
+    sec.appendChild(vista);
+    var fila = el('div', 'fila');
+    var bc = el('button', 'boton', UI.paqCopiar || ''); bc.type = 'button';
+    var bm = el('a', 'leve', UI.paqCorreo || '');
+    fila.appendChild(bc); fila.appendChild(bm);
+    sec.appendChild(fila);
+    caja.appendChild(sec);
+
+    correcciones().then(function (pares) {
+      var d = {
+        esquema: ap.esquema_paquete || 1,
+        fecha: new Date().toISOString(),
+        maquina: maquina(),
+        correcciones: pares
+      };
+      var yo = window.Identity && window.Identity.quien && window.Identity.quien();
+      if (yo) d.autor = yo;
+      var txt = JSON.stringify(d, null, 1);
+      vista.value = txt;
+      // El cuerpo del correo va CORTO a proposito: los `mailto` largos los
+      // truncan los clientes sin avisar, y un paquete truncado es peor que uno
+      // pegado a mano. El JSON viaja por el portapapeles, que no trunca.
+      bm.href = 'mailto:' + ap.correo
+        + '?subject=' + encodeURIComponent('PreceptorOS · aporte de tester')
+        + '&body=' + encodeURIComponent((UI.paqCorreoCuerpo || '') + '\n\n');
+      bc.addEventListener('click', function () {
+        var hecho = function () { bc.textContent = UI.paqCopiado || 'OK'; };
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(txt).then(hecho, function () {
+            vista.select(); hecho();
+          });
+        } else { vista.select(); hecho(); }
+      });
+    });
   }
 
   function traer(ruta) {

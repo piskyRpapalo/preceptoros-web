@@ -14,7 +14,13 @@
   "vision": "Vision",
   "hoy": "What it does today",
   "falta": "What is missing",
-  "aportas": "What you can contribute"
+  "aportas": "What you can contribute",
+  "paqTitulo": "Your contribution package",
+  "paqExplica": "What you corrected, plus what your browser says about this machine. Nothing is sent on its own: you see it whole here, you copy it and you send it. The board is not open yet, so today the route is your own mail.",
+  "paqCopiar": "Copy the package",
+  "paqCopiado": "Copied",
+  "paqCorreo": "Open mail",
+  "paqCorreoCuerpo": "Below I paste the package the page gave me."
  },
  "bloques": {
   "bienvenida": {

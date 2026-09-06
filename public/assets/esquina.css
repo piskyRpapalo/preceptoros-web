@@ -110,6 +110,12 @@
 #cabezal .lateral-boton{position:absolute;top:.45rem;right:.45rem;margin-left:0}
 #cabezal #identity{position:static;order:30;flex:1 1 100%;margin:.1rem 0 0}
 
+/* SIN SESION vuelve al absoluto: un icono de 40 px con `flex:1 1 100%` en una
+   fila que no envuelve acaba detras de la frase solar, no en la esquina.
+   `:has(.identity-icono)` ES «sin sesion». Medidas en OPERACIONES.md. */
+#cabezal:has(.identity-icono) #identity{position:absolute;top:.45rem;right:3.4rem;
+  flex:0 0 auto;width:auto;margin:0;z-index:calc(var(--capa-4-cara) + 1)}
+
 /* Y LA RUEDA SUELTA SU PANEL DEL CANTO IZQUIERDO. Colgaba de `left:3.9rem`
    --de cuando el mando vivia a la izquierda, al lado de Herramientas-- y con
    el boton mudado a la derecha el desplegable salia por el otro extremo del
@@ -248,7 +254,10 @@
      ella, y se pegan al canto derecho -- que es donde estan en escritorio. El
      sitio de un mando no cambia segun si has entrado; lo unico que cambia es
      que con sesion tienen la cuenta a su izquierda y sin ella no. */
-  #cabezal:has(.identity-icono) #identity{margin-left:auto}
+  /* EN EL TELEFONO NO: caia sobre el punto verde. Y `flex:0 0 auto` es lo que
+     le da hueco al `margin-left:auto`. */
+  #cabezal:has(.identity-icono) #identity{position:static;flex:0 0 auto;
+    width:auto;margin-left:auto;margin-right:0}
   /* Y LA RUEDA SUELTA SU `auto`, o los dos se reparten el hueco. Con margen
      automatico en las dos cajas, el espacio libre se divide entre ellas y los
      gemelos acababan a 128 px uno de otro -- medido: persona en 146, rueda en

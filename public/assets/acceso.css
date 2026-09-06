@@ -7,7 +7,15 @@
    posicion del punto se fija aqui, y a igual especificidad manda el orden.
    El color acompaña y NO informa solo -- el rotulo viaja en `title` y en
    `aria-label`, y sale del propio boton de hablar, ya traducido. */
-#cabezal .cab-enlaces{position:absolute;top:.45rem;right:3.4rem;margin:0}
+/* 2026-09-06 · EL PUNTO CEDE EL HUECO Y SE CORRE A LA IZQUIERDA. `3.4rem` era
+   el sitio del punto Y el que la identidad necesita para ser gemela de la
+   rueda: dos cajas absolutas con el mismo `right` se pisan, y se pisaban 14 px
+   --medido en 1280: perfil 1149-1189, punto 1175-1189--. El punto es el que se
+   mueve porque es el mas pequeño y el unico que no es una puerta: informa, no
+   se pulsa para ir a ningun sitio. `6.4rem` deja 8 px de aire entre el punto y
+   el simbolo de perfil. En el telefono no hace falta tocarlo: alli la
+   identidad baja a su renglon y el punto se queda solo en el de arriba. */
+#cabezal .cab-enlaces{position:absolute;top:.45rem;right:6.4rem;margin:0}
 @media (max-width:1023px){
   #cabezal .cab-enlaces{top:1.1rem;right:3.3rem}
 }

@@ -14,7 +14,13 @@
   "vision": "Visione",
   "hoy": "Cosa fa oggi",
   "falta": "Cosa manca",
-  "aportas": "Cosa puoi contribuire"
+  "aportas": "Cosa puoi contribuire",
+  "paqTitulo": "Il tuo pacchetto di contributo",
+  "paqExplica": "Quello che hai corretto, più quello che il tuo browser dice di questa macchina. Non parte da solo: lo vedi intero qui, lo copi e lo mandi tu. La bacheca non è ancora aperta, quindi oggi la strada è la tua posta.",
+  "paqCopiar": "Copia il pacchetto",
+  "paqCopiado": "Copiato",
+  "paqCorreo": "Apri la posta",
+  "paqCorreoCuerpo": "Qui sotto incollo il pacchetto che mi ha dato la pagina."
  },
  "bloques": {
   "bienvenida": {

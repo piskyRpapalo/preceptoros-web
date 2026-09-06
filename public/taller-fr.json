@@ -14,7 +14,13 @@
   "vision": "Vision",
   "hoy": "Ce qu'il fait aujourd'hui",
   "falta": "Ce qui manque",
-  "aportas": "Ce que tu peux apporter"
+  "aportas": "Ce que tu peux apporter",
+  "paqTitulo": "Ton paquet de contribution",
+  "paqExplica": "Ce que tu as corrigé, plus ce que ton navigateur dit de cette machine. Rien ne part tout seul : tu le vois entier ici, tu le copies et c'est toi qui l'envoies. Le tableau n'est pas encore ouvert, donc aujourd'hui la voie est ton propre courrier.",
+  "paqCopiar": "Copier le paquet",
+  "paqCopiado": "Copié",
+  "paqCorreo": "Ouvrir le courrier",
+  "paqCorreoCuerpo": "Ci-dessous je colle le paquet que la page m'a donné."
  },
  "bloques": {
   "bienvenida": {
