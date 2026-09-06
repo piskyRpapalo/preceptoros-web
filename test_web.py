@@ -723,8 +723,8 @@ class ElTaller(unittest.TestCase):
                          "el registro y los textos no hablan de los mismos bloques")
 
     def test_el_estado_de_un_bloque_sale_del_vocabulario_cerrado(self):
-        permitidos = {"en_estudio", "en_entrenamiento", "disponible", "vision",
-                      "NO_DATA"}
+        permitidos = {"en_estudio", "en_entrenamiento", "beta", "disponible",
+                      "vision", "NO_DATA"}
         for b in self.registro["bloques"]:
             with self.subTest(bloque=b["id"]):
                 self.assertIn(b["estado"], permitidos)

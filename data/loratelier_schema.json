@@ -3,27 +3,51 @@
   "$id": "preceptoros:loratelier/bloque/1",
   "title": "Bloque de LoRAtelier",
   "description": "El contrato de `public/loratelier.json`. Vive fuera de `public/` a proposito: es el contrato, no se sirve. DOS AJUSTES DECLARADOS respecto al encargo, y los dos salen de la misma restriccion medida -- el sitio tiene OCHO lenguas con paridad de claves exigida por el gate. (1) `problema_humano` es prosa, asi que NO vive aqui: vive en `public/taller-<idioma>.json` bajo la clave del bloque. El registro no lleva una palabra traducible. (2) `cuestionario` y `tests_verificacion` tambien son prosa: aqui viajan su `id` y su `tipo`, que son neutros, y el texto de cada pregunta va en los ficheros por idioma. Meter prosa en el registro obligaria a ocho copias del mismo fichero o a un fichero que nace lleno.",
-
   "type": "object",
-  "required": ["esquema", "estado", "medido", "contrato", "bloques"],
+  "required": [
+    "esquema",
+    "estado",
+    "medido",
+    "contrato",
+    "bloques"
+  ],
   "properties": {
-    "esquema": { "const": 1 },
-    "estado": { "type": "string" },
-    "medido": { "type": "string" },
-    "nota": { "type": "string" },
-    "contrato": { "type": "object" },
+    "esquema": {
+      "const": 1
+    },
+    "estado": {
+      "type": "string"
+    },
+    "medido": {
+      "type": "string"
+    },
+    "nota": {
+      "type": "string"
+    },
+    "contrato": {
+      "type": "object"
+    },
     "bloques": {
       "type": "array",
-      "items": { "$ref": "#/$defs/bloque" }
+      "items": {
+        "$ref": "#/$defs/bloque"
+      }
     }
   },
-
   "$defs": {
     "bloque": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["id", "estado", "orden", "artefacto", "ficha",
-                   "medidas", "tests", "valoraciones"],
+      "required": [
+        "id",
+        "estado",
+        "orden",
+        "artefacto",
+        "ficha",
+        "medidas",
+        "tests",
+        "valoraciones"
+      ],
       "properties": {
         "id": {
           "type": "string",
@@ -31,97 +55,180 @@
           "description": "Identificador interno. Es tambien la clave con la que se busca su prosa en taller-<idioma>.json."
         },
         "estado": {
-          "enum": ["en_estudio", "en_entrenamiento", "disponible", "vision", "NO_DATA"],
-          "description": "`en_estudio` se añade al vocabulario del encargo porque el registro vivo lo necesita: una linea que se esta pensando NO es lo mismo que una que se esta entrenando, y llamarlas igual borra la diferencia que el visitante necesita para saber si esperar."
+          "enum": [
+            "en_estudio",
+            "en_entrenamiento",
+            "beta",
+            "disponible",
+            "vision",
+            "NO_DATA"
+          ],
+          "description": "`en_estudio` se añade al vocabulario del encargo porque el registro vivo lo necesita: una linea que se esta pensando NO es lo mismo que una que se esta entrenando, y llamarlas igual borra la diferencia que el visitante necesita para saber si esperar. `beta` entra el 2026-09-06: el artefacto EXISTE, esta firmado y se descarga, pero solo por la malla -- la via publica todavia no lo sirve. Sin este estado habria que elegir entre mentir con `disponible`, que pinta un boton que falla para todo visitante de fuera, o mentir con `en_entrenamiento`, que ya no es cierto."
         },
-        "orden": { "type": "integer", "minimum": 1 },
-
+        "orden": {
+          "type": "integer",
+          "minimum": 1
+        },
         "modelo_base": {
-          "type": ["string", "null"],
+          "type": [
+            "string",
+            "null"
+          ],
           "description": "El tag EXACTO tal y como se pide, con su cuantizacion. Nunca un nombre comercial ni un tag pelado: `mistral:7b-instruct-v0.3-q4_K_M`, no «Mistral 7B». Un nombre que no se puede copiar a una terminal no identifica nada."
         },
         "requisitos_hw": {
-          "type": ["string", "null"],
+          "type": [
+            "string",
+            "null"
+          ],
           "description": "En lenguaje de persona y con la cifra: «8 GB de RAM, Q4»."
         },
-
         "artefacto": {
           "oneOf": [
-            { "type": "null" },
+            {
+              "type": "null"
+            },
             {
               "type": "object",
               "additionalProperties": false,
-              "required": ["url_descarga", "sha256_hash", "version"],
+              "required": [
+                "url_descarga",
+                "sha256_hash",
+                "version"
+              ],
               "properties": {
-                "url_descarga": { "type": "string", "minLength": 1 },
-                "sha256_hash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
-                "version": { "type": "string", "minLength": 1 }
+                "url_descarga": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "sha256_hash": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "version": {
+                  "type": "string",
+                  "minLength": 1
+                }
               }
             }
           ],
           "description": "Nulo mientras no exista. Cuando existe, los tres campos son obligatorios: una url sin hash no se puede comprobar y un hash sin version no se puede volver a pedir."
         },
-
         "ficha": {
           "type": "object",
           "description": "La capa tecnica del nivel tres. Familia, licencia, origen y las bases con su tamaño."
         },
-
         "plantilla_inicial": {
           "type": "array",
-          "items": { "type": "string", "minLength": 1 },
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
           "description": "El andamio de instrucciones que se entrega con la descarga, linea a linea para que se puedan borrar de una en una. Es lo unico traducible que SI vive aqui, porque no es interfaz: es el contenido del artefacto, y viaja con el."
         },
-
         "cuestionario": {
           "type": "array",
           "items": {
             "type": "object",
             "additionalProperties": false,
-            "required": ["id", "tipo"],
+            "required": [
+              "id",
+              "tipo"
+            ],
             "properties": {
-              "id": { "type": "string", "pattern": "^[a-z][a-z0-9_]{1,31}$" },
-              "tipo": { "enum": ["si_no", "texto_corto", "opcion_unica", "rango", "abierta"] },
+              "id": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_]{1,31}$"
+              },
+              "tipo": {
+                "enum": [
+                  "si_no",
+                  "texto_corto",
+                  "opcion_unica",
+                  "rango",
+                  "abierta"
+                ]
+              },
               "opciones": {
                 "type": "array",
-                "items": { "type": "string" },
+                "items": {
+                  "type": "string"
+                },
                 "description": "Solo para `opcion_unica`: las claves neutras; su texto va por idioma."
               },
               "rango": {
                 "type": "object",
                 "additionalProperties": false,
-                "properties": { "min": { "type": "integer" }, "max": { "type": "integer" } }
+                "properties": {
+                  "min": {
+                    "type": "integer"
+                  },
+                  "max": {
+                    "type": "integer"
+                  }
+                }
               },
-              "opcional": { "type": "boolean" }
+              "opcional": {
+                "type": "boolean"
+              }
             }
           },
           "description": "La pregunta NO va aqui: va en taller-<idioma>.json bajo `cuestionario.<id>`. Aqui solo su forma."
         },
-
         "tests_verificacion": {
           "type": "array",
-          "items": { "type": "string", "pattern": "^[a-z][a-z0-9_]{1,31}$" },
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]{1,31}$"
+          },
           "description": "Los identificadores de los tests de si o no. Su enunciado va por idioma, igual que el cuestionario."
         },
-
-        "medidas": { "$ref": "#/$defs/recuento" },
-        "tests": { "$ref": "#/$defs/recuento" },
-        "valoraciones": { "$ref": "#/$defs/recuento" }
+        "medidas": {
+          "$ref": "#/$defs/recuento"
+        },
+        "tests": {
+          "$ref": "#/$defs/recuento"
+        },
+        "valoraciones": {
+          "$ref": "#/$defs/recuento"
+        }
       },
-
       "allOf": [
         {
-          "description": "Sin artefacto firmado no hay descarga. Un bloque `disponible` sin artefacto seria un boton sin nada detras, y un artefacto sin hash no se puede comprobar.",
-          "if": { "properties": { "estado": { "const": "disponible" } }, "required": ["estado"] },
-          "then": { "properties": { "artefacto": { "type": "object" } },
-                    "required": ["artefacto", "modelo_base", "requisitos_hw"] }
+          "description": "Sin artefacto firmado no hay descarga, y eso rige tanto para `disponible` como para `beta`: un estado que promete un fichero tiene que traer su url, su hash y su version.",
+          "if": {
+            "properties": {
+              "estado": {
+                "enum": [
+                  "disponible",
+                  "beta"
+                ]
+              }
+            },
+            "required": [
+              "estado"
+            ]
+          },
+          "then": {
+            "properties": {
+              "artefacto": {
+                "type": "object"
+              }
+            },
+            "required": [
+              "artefacto",
+              "modelo_base",
+              "requisitos_hw"
+            ]
+          }
         }
       ]
     },
-
     "recuento": {
       "type": "object",
-      "required": ["n"],
+      "required": [
+        "n"
+      ],
       "properties": {
         "n": {
           "type": "integer",

@@ -161,11 +161,15 @@
     },
     {
       "id": "reclamaciones",
-      "estado": "en_entrenamiento",
+      "estado": "beta",
       "orden": 2,
       "modelo_base": "mistral:7b-instruct-v0.3-q4_K_M",
       "requisitos_hw": "8 GB de RAM, Q4",
-      "artefacto": null,
+      "artefacto": {
+        "url_descarga": "/downloads/preceptor-tribune-en-v1.gguf",
+        "sha256_hash": "ff4f89b8cbcdb24301d1da8d93e1940aa85eb3ced7e38a516a2b14ff38a9b4fa",
+        "version": "en-v1"
+      },
       "ficha": {
         "familia": "Mistral",
         "licencia": "Apache 2.0",
@@ -176,7 +180,10 @@
         "servido_tamano_q4_gb": null,
         "razonamiento": "apagado",
         "corpus": "200 muestras en dos datasets comparativos (100 EN · 100 multilingue), reparto 50-20-15-15",
-        "regla_de_los_plazos": "el modelo NO afirma plazos legales de memoria: nombra el canal y manda a la fuente oficial"
+        "regla_de_los_plazos": "el modelo NO afirma plazos legales de memoria: nombra el canal y manda a la fuente oficial",
+        "nombre_modelo": "The Tribune",
+        "url_es_de_la_malla": "la ruta es relativa a proposito: hoy resuelve en el nginx del rack y dara 404 en la via publica hasta que el tunel la sirva. La direccion del nodo NO entra en el repo -- lo prohibe la guardia de higiene, y lo prohibe bien: esto se publica",
+        "prueba_de_fuego": "se niega a elegir plazo, que era la conducta a probar. NO nombra el canal oficial, NO ofrece escalado, contesta en ingles a preguntas en castellano, y al negarse al plazo rellena el hueco con otra afirmacion sin respaldo. Con 100 muestras esto prueba la tuberia, no el producto"
       },
       "plantilla_inicial": [
         "Atiendeme como si fueras el servicio de atencion al cliente.",
@@ -228,10 +235,10 @@
         "no_afirmo_plazo_legal"
       ],
       "medidas": {
-        "n": 0,
-        "maquina": null,
+        "n": 1,
+        "maquina": "Beelink Ryzen 7 255 · 8 hilos · sin GPU",
         "tok_s": null,
-        "ram_mb": null
+        "ram_mb": 19058
       },
       "tests": {
         "n": 0

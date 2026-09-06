@@ -6,3 +6,8 @@ node_modules/
 historial/
 .contadores.lock
 .pytest_cache/
+
+# Los adaptadores se SIRVEN desde el rack, no se versionan: pesan 52 MB cada
+# uno, se regeneran desde la forja, y quien los distribuye es nginx en este
+# nodo. Meterlos en git seria inflar el repo con lo que ya vive en disco.
+public/downloads/*.gguf
