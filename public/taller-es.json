@@ -1,0 +1,42 @@
+{
+ "esquema": 1,
+ "idioma": "es",
+ "ui": {
+  "titulo": "Líneas de investigación",
+  "abrir": "Ver más",
+  "cerrar": "Ver menos",
+  "ficha": "Ficha técnica",
+  "sinDescarga": "Sin descarga: todavía no hay artefacto firmado.",
+  "sinMedia": "Sin datos aún · sé el primero",
+  "estudio": "En estudio",
+  "entrenando": "En entrenamiento",
+  "disponible": "Disponible",
+  "vision": "Visión",
+  "hoy": "Qué hace hoy",
+  "falta": "Qué falta",
+  "aportas": "Qué puedes aportar"
+ },
+ "bloques": {
+  "bienvenida": {
+   "nombre": "La Bienvenida",
+   "util": "Entender qué puedes hacer con tu propia máquina, sin leer documentación.",
+   "hoy": "El rack ya contesta desde la web, y el mismo personaje puede correr en tu equipo.",
+   "falta": "El artefacto no existe: hay que entrenarlo y firmarlo antes de poder descargarlo.",
+   "aportas": "Cuéntanos qué esperabas que supiera y no sabía. Eso entrena la versión siguiente."
+  },
+  "medidor": {
+   "nombre": "El Medidor",
+   "util": "Saber qué da de sí tu máquina de verdad. Las cifras del fabricante no son medidas.",
+   "hoy": "La tabla de medidas ya existe y se lee en esta misma página.",
+   "falta": "Que la medida se envíe firmada y entre en una media que enseñe cuántos aportes tiene.",
+   "aportas": "Mide tu equipo y guarda el resultado. Cuando el tablón abra, se envía."
+  },
+  "memoria": {
+   "nombre": "La Memoria de Aprendizaje",
+   "util": "Que lo aprendido viva en un archivo tuyo, en tu máquina, y no en una suscripción.",
+   "hoy": "La base local existe en la app; esta línea todavía no tiene artefacto.",
+   "falta": "Decidir con qué familia se hace: pide contexto largo e imagen, y eso no es Mistral.",
+   "aportas": "Dinos qué te gustaría preguntarle a tu propia historia."
+  }
+ }
+}

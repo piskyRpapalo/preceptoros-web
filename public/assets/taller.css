@@ -1,0 +1,71 @@
+/* El taller: la vitrina de las lineas de investigacion.
+   Sigue el canon de la portada -- marmol, cristal, canto de bronce, radio del
+   token-- y no inventa colores: cada uno sale de una variable de base.css.
+   El estado NO se dice solo con color: lleva su palabra al lado, porque un
+   punto de color no lo lee quien no distingue ese color. */
+
+#taller{margin-top:2.2rem}
+#taller > h2{margin-bottom:.35rem}
+.taller-intro{color:var(--tenue);max-width:62ch;margin:0 0 1.1rem}
+
+.taller-rejilla{display:grid;gap:1rem;
+  grid-template-columns:repeat(auto-fit,minmax(min(100%,19rem),1fr))}
+
+/* Cada linea es un panel del canon: hereda cristal y canto sin repetirlos. */
+.linea{padding:1.05rem 1.15rem 1.15rem;display:flex;flex-direction:column;gap:.6rem}
+.linea-cab{display:flex;flex-wrap:wrap;align-items:baseline;gap:.5rem .7rem}
+.linea-cab h3{margin:0;font-size:1.12rem;line-height:1.2}
+
+/* El estado, con su palabra. El color acompaña; no informa solo. */
+.sello{font:600 .68rem/1.5 var(--mono);letter-spacing:.08em;text-transform:uppercase;
+  padding:.12rem .5rem;border-radius:calc(var(--radius) / 2);
+  border:1px solid currentColor;white-space:nowrap}
+.sello-estudio{color:var(--tenue)}
+.sello-entrenando{color:var(--sol)}
+.sello-disponible{color:var(--jardin)}
+.sello-vision{color:var(--violeta-texto)}
+
+/* Nivel uno: la frase humana. Es lo primero y lo mas grande que se lee. */
+.linea-util{margin:0;font-size:1.02rem;line-height:1.5}
+
+/* Nivel dos: lo que hace hoy, lo que falta, lo que puedes aportar. */
+/* `:not([hidden])` y no `display:flex` a secas. Es la cicatriz del 2026-09-01,
+   otra vez: una regla de AUTOR con `display` pisa a la del navegador que apaga
+   los `[hidden]`, y esta hoja carga despues de base.css. Sin esto el nivel dos
+   nace abierto y el desplegable no despliega nada. */
+.linea-mas{flex-direction:column;gap:.7rem;
+  border-left:2px solid var(--bronce);padding-left:.85rem;margin-top:.15rem}
+.linea-mas:not([hidden]){display:flex}
+.campo{margin:0}
+.campo dt{font:600 .7rem/1.6 var(--mono);letter-spacing:.07em;text-transform:uppercase;
+  color:var(--tenue)}
+.campo dd{margin:.1rem 0 0;line-height:1.5}
+
+/* Nivel tres: la ficha. Cifras en monoespaciada y alineadas. */
+.ficha{margin:0;display:grid;grid-template-columns:auto 1fr;gap:.2rem .9rem;
+  font-size:.86rem}
+.ficha dt{color:var(--tenue);font-family:var(--mono);font-size:.76rem;
+  letter-spacing:.04em;padding-top:.15rem}
+.ficha dd{margin:0;font-variant-numeric:tabular-nums}
+.ficha dd.taller-cifra{font-family:var(--mono)}
+
+/* Los contadores. Con n=0 no se pinta un cero: se pinta el hueco con su nombre. */
+.recuento{display:flex;flex-wrap:wrap;gap:.4rem .9rem;font-size:.8rem;color:var(--tenue);
+  margin:0}
+.recuento b{color:var(--tinta);font-family:var(--mono);font-variant-numeric:tabular-nums}
+
+/* Donde iria el boton de descarga cuando exista un artefacto firmado. */
+.sin-descarga{margin:0;font-size:.85rem;color:var(--tenue);
+  border-top:1px dashed var(--bronce);padding-top:.6rem}
+
+.taller-abrir{align-self:flex-start;font:600 .82rem/1 var(--mono);letter-spacing:.04em;
+  color:var(--violeta-texto);background:none;border:1px solid var(--bronce);
+  border-radius:calc(var(--radius) / 2);padding:.4rem .7rem;cursor:pointer;
+  transition:border-color .18s var(--spring),color .18s var(--spring)}
+.taller-abrir:hover,.taller-abrir:focus-visible{border-color:var(--violeta);color:var(--indigo)}
+.taller-abrir[aria-expanded="true"]{border-color:var(--violeta)}
+
+/* Quien pide menos movimiento no recibe ninguno. */
+@media (prefers-reduced-motion:reduce){
+  .taller-abrir{transition:none}
+}

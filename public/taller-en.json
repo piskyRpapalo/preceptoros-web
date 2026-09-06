@@ -1,0 +1,42 @@
+{
+ "esquema": 1,
+ "idioma": "en",
+ "ui": {
+  "titulo": "Research lines",
+  "abrir": "Show more",
+  "cerrar": "Show less",
+  "ficha": "Technical card",
+  "sinDescarga": "No download: there is no signed artefact yet.",
+  "sinMedia": "No data yet · be the first",
+  "estudio": "Under study",
+  "entrenando": "In training",
+  "disponible": "Available",
+  "vision": "Vision",
+  "hoy": "What it does today",
+  "falta": "What is missing",
+  "aportas": "What you can contribute"
+ },
+ "bloques": {
+  "bienvenida": {
+   "nombre": "The Welcome",
+   "util": "Understand what your own machine can do, without reading documentation.",
+   "hoy": "The rack already answers from the web, and the same character can run on your machine.",
+   "falta": "The artefact does not exist: it must be trained and signed before it can be downloaded.",
+   "aportas": "Tell us what you expected it to know and it did not. That trains the next version."
+  },
+  "medidor": {
+   "nombre": "The Meter",
+   "util": "Know what your machine really delivers. Vendor figures are not measurements.",
+   "hoy": "The measurement table already exists and is read on this very page.",
+   "falta": "That the measurement is sent signed and joins an average that shows how many it holds.",
+   "aportas": "Measure your machine and keep the result. It is sent when the board opens."
+  },
+  "memoria": {
+   "nombre": "The Learning Memory",
+   "util": "That what you learn lives in a file of yours, on your machine, not in a subscription.",
+   "hoy": "The local database exists in the app; this line has no artefact yet.",
+   "falta": "Decide which family fits: it asks for long context and images, and that is not Mistral.",
+   "aportas": "Tell us what you would like to ask your own history."
+  }
+ }
+}

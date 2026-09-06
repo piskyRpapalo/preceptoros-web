@@ -1,0 +1,42 @@
+{
+ "esquema": 1,
+ "idioma": "de",
+ "ui": {
+  "titulo": "Forschungslinien",
+  "abrir": "Mehr zeigen",
+  "cerrar": "Weniger zeigen",
+  "ficha": "Technisches Datenblatt",
+  "sinDescarga": "Kein Download: es gibt noch kein signiertes Artefakt.",
+  "sinMedia": "Noch keine Daten · sei der Erste",
+  "estudio": "In Prüfung",
+  "entrenando": "Im Training",
+  "disponible": "Verfügbar",
+  "vision": "Vision",
+  "hoy": "Was es heute kann",
+  "falta": "Was fehlt",
+  "aportas": "Was du beitragen kannst"
+ },
+ "bloques": {
+  "bienvenida": {
+   "nombre": "Der Empfang",
+   "util": "Verstehen, was deine eigene Maschine kann, ohne Dokumentation zu lesen.",
+   "hoy": "Das Rack antwortet bereits aus dem Web, und dieselbe Figur läuft auch bei dir.",
+   "falta": "Das Artefakt gibt es nicht: es muss trainiert und signiert werden, bevor man es lädt.",
+   "aportas": "Sag uns, was es wissen sollte und nicht wusste. Genau das trainiert die nächste Fassung."
+  },
+  "medidor": {
+   "nombre": "Der Messer",
+   "util": "Wissen, was deine Maschine wirklich leistet. Herstellerzahlen sind keine Messungen.",
+   "hoy": "Die Messtabelle gibt es bereits und sie wird auf dieser Seite gelesen.",
+   "falta": "Dass die Messung signiert abgeht und in einen Mittelwert mit sichtbarer Anzahl eingeht.",
+   "aportas": "Miss dein Gerät und behalte das Ergebnis. Es geht ab, sobald das Brett öffnet."
+  },
+  "memoria": {
+   "nombre": "Das Lerngedächtnis",
+   "util": "Dass Gelerntes in deiner eigenen Datei lebt, auf deiner Maschine, nicht im Abo.",
+   "hoy": "Die lokale Datenbank gibt es in der App; diese Linie hat noch kein Artefakt.",
+   "falta": "Entscheiden, welche Familie passt: sie braucht langen Kontext und Bilder, nicht Mistral.",
+   "aportas": "Sag uns, was du deiner eigenen Geschichte fragen möchtest."
+  }
+ }
+}

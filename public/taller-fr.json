@@ -1,0 +1,42 @@
+{
+ "esquema": 1,
+ "idioma": "fr",
+ "ui": {
+  "titulo": "Axes de recherche",
+  "abrir": "Voir plus",
+  "cerrar": "Voir moins",
+  "ficha": "Fiche technique",
+  "sinDescarga": "Pas de téléchargement : aucun artefact signé pour l'instant.",
+  "sinMedia": "Pas encore de données · sois le premier",
+  "estudio": "À l'étude",
+  "entrenando": "En entraînement",
+  "disponible": "Disponible",
+  "vision": "Vision",
+  "hoy": "Ce qu'il fait aujourd'hui",
+  "falta": "Ce qui manque",
+  "aportas": "Ce que tu peux apporter"
+ },
+ "bloques": {
+  "bienvenida": {
+   "nombre": "L'Accueil",
+   "util": "Comprendre ce que ta propre machine peut faire, sans lire de documentation.",
+   "hoy": "Le rack répond déjà depuis le web, et le même personnage peut tourner chez toi.",
+   "falta": "L'artefact n'existe pas : il faut l'entraîner et le signer avant de le télécharger.",
+   "aportas": "Dis-nous ce que tu attendais qu'il sache et qu'il ignorait. Cela entraîne la suite."
+  },
+  "medidor": {
+   "nombre": "Le Mesureur",
+   "util": "Savoir ce que ta machine donne vraiment. Les chiffres du fabricant ne sont pas des mesures.",
+   "hoy": "Le tableau de mesures existe déjà et se lit sur cette page.",
+   "falta": "Que la mesure parte signée et rejoigne une moyenne qui montre combien d'apports elle a.",
+   "aportas": "Mesure ta machine et garde le résultat. Il partira quand le tableau ouvrira."
+  },
+  "memoria": {
+   "nombre": "La Mémoire d'apprentissage",
+   "util": "Que l'appris vive dans un fichier à toi, sur ta machine, et pas dans un abonnement.",
+   "hoy": "La base locale existe dans l'app ; cette ligne n'a pas encore d'artefact.",
+   "falta": "Décider quelle famille convient : il faut un contexte long et des images, pas Mistral.",
+   "aportas": "Dis-nous ce que tu aimerais demander à ta propre histoire."
+  }
+ }
+}

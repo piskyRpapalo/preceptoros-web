@@ -665,6 +665,102 @@ class Estructura(unittest.TestCase):
                         f"{p.name} pesa {p.stat().st_size} B")
 
 
+class ElTaller(unittest.TestCase):
+    """El guardian de la vitrina de lineas de investigacion.
+
+    Los textos del taller viven FUERA del bloque #i18n de la pagina, en un
+    `taller-<idioma>.json` por lengua. Salirse de aquel guardian sin traer otro
+    seria dejar un hueco -- es el mismo trato que se le dio al Hub cuando sus
+    textos se mudaron a `hub-textos.json`--, asi que este es el otro.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        cls.registro = json.loads(
+            (PUBLICO / "loratelier.json").read_text(encoding="utf-8"))
+        cls.textos = {p.stem.split("-", 1)[1]:
+                      json.loads(p.read_text(encoding="utf-8"))
+                      for p in PUBLICO.glob("taller-*.json")}
+
+    def test_todas_las_lenguas_del_disco_tienen_su_taller(self):
+        """Una lengua sin fichero cae entera al castellano y nadie se entera."""
+        self.assertEqual(set(IDIOMAS), set(self.textos),
+                         f"lenguas sin taller: {set(IDIOMAS) ^ set(self.textos)}")
+
+    def test_las_ocho_lenguas_dicen_las_mismas_claves(self):
+        base_ui = set(self.textos["es"]["ui"])
+        base_bl = {b: set(v) for b, v in self.textos["es"]["bloques"].items()}
+        for idioma in sorted(set(self.textos) - {"es"}):
+            with self.subTest(idioma=idioma):
+                t = self.textos[idioma]
+                self.assertEqual(base_ui, set(t["ui"]),
+                                 f"ui difiere: {base_ui ^ set(t['ui'])}")
+                self.assertEqual(set(base_bl), set(t["bloques"]),
+                                 "no estan los mismos bloques")
+                for b, claves in base_bl.items():
+                    self.assertEqual(claves, set(t["bloques"][b]),
+                                     f"{b} difiere: {claves ^ set(t['bloques'][b])}")
+
+    def test_ningun_texto_se_quedo_en_castellano(self):
+        """Media lengua traducida es peor que ninguna: nadie sabe cual vale."""
+        es = self.textos["es"]
+        for idioma in sorted(set(self.textos) - {"es", "en"}):
+            for b, campos in self.textos[idioma]["bloques"].items():
+                for k, v in campos.items():
+                    with self.subTest(idioma=idioma, bloque=b, campo=k):
+                        self.assertNotEqual(v, es["bloques"][b][k],
+                                            "identico al castellano")
+
+    def test_cada_bloque_del_registro_tiene_texto_y_al_reves(self):
+        ids = {b["id"] for b in self.registro["bloques"]}
+        self.assertEqual(ids, set(self.textos["es"]["bloques"]),
+                         "el registro y los textos no hablan de los mismos bloques")
+
+    def test_el_estado_de_un_bloque_sale_del_vocabulario_cerrado(self):
+        permitidos = {"en_estudio", "en_entrenamiento", "disponible", "vision",
+                      "NO_DATA"}
+        for b in self.registro["bloques"]:
+            with self.subTest(bloque=b["id"]):
+                self.assertIn(b["estado"], permitidos)
+
+    def test_sin_artefacto_firmado_no_hay_descarga(self):
+        """La regla que hace creible el primer boton cuando llegue.
+
+        Un bloque `disponible` sin `artefacto` y sin `hash` seria una descarga
+        ofrecida sin nada que descargar ni forma de comprobarlo.
+        """
+        for b in self.registro["bloques"]:
+            with self.subTest(bloque=b["id"]):
+                if b["estado"] == "disponible":
+                    self.assertTrue(b.get("artefacto"), "disponible sin artefacto")
+                    self.assertTrue(b.get("hash"), "disponible sin hash")
+
+    def test_los_recuentos_declaran_su_n(self):
+        """Una media sin su n no se puede leer, y con n=0 no hay media."""
+        for b in self.registro["bloques"]:
+            for clave in ("medidas", "tests", "valoraciones"):
+                with self.subTest(bloque=b["id"], recuento=clave):
+                    self.assertIn("n", b[clave])
+                    self.assertIsInstance(b[clave]["n"], int)
+
+    def test_el_render_pide_claves_que_existen(self):
+        js = (PUBLICO / "assets" / "taller.js").read_text(encoding="utf-8")
+        base = set(self.textos["es"]["ui"])
+        for clave in set(re.findall(r"UI\.([A-Za-z]+)", js)):
+            with self.subTest(clave=clave):
+                self.assertIn(clave, base, "el render pide una clave que no existe")
+
+    def test_la_hoja_no_deja_abierto_lo_que_va_cerrado(self):
+        """Cicatriz: una regla de autor con `display` pisa a `[hidden]`.
+
+        `taller.css` carga despues de `base.css`, asi que un `display:flex` a
+        secas sobre `.linea-mas` dejaria el nivel dos abierto siempre.
+        """
+        css = (PUBLICO / "assets" / "taller.css").read_text(encoding="utf-8")
+        self.assertIn(".linea-mas:not([hidden]){display:flex}", css)
+        self.assertNotIn(".linea-mas{display:flex", css)
+
+
 class Doctrina(unittest.TestCase):
 
     def test_la_guia_clona_donde_el_instalador_instala(self):

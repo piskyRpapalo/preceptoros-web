@@ -1,0 +1,42 @@
+{
+ "esquema": 1,
+ "idioma": "it",
+ "ui": {
+  "titulo": "Linee di ricerca",
+  "abrir": "Mostra di più",
+  "cerrar": "Mostra di meno",
+  "ficha": "Scheda tecnica",
+  "sinDescarga": "Nessun download: non c'è ancora un artefatto firmato.",
+  "sinMedia": "Ancora nessun dato · sii il primo",
+  "estudio": "In studio",
+  "entrenando": "In addestramento",
+  "disponible": "Disponibile",
+  "vision": "Visione",
+  "hoy": "Cosa fa oggi",
+  "falta": "Cosa manca",
+  "aportas": "Cosa puoi contribuire"
+ },
+ "bloques": {
+  "bienvenida": {
+   "nombre": "L'Accoglienza",
+   "util": "Capire cosa può fare la tua macchina, senza leggere documentazione.",
+   "hoy": "Il rack risponde già dal web, e lo stesso personaggio può girare sul tuo computer.",
+   "falta": "L'artefatto non esiste: va addestrato e firmato prima di poterlo scaricare.",
+   "aportas": "Dicci cosa ti aspettavi che sapesse e non sapeva. È questo ad addestrare il prossimo."
+  },
+  "medidor": {
+   "nombre": "Il Misuratore",
+   "util": "Sapere quanto rende davvero la tua macchina. I numeri del produttore non sono misure.",
+   "hoy": "La tabella delle misure esiste già e si legge in questa stessa pagina.",
+   "falta": "Che la misura parta firmata ed entri in una media che mostri quanti contributi ha.",
+   "aportas": "Misura il tuo computer e conserva il risultato. Parte quando la bacheca apre."
+  },
+  "memoria": {
+   "nombre": "La Memoria di apprendimento",
+   "util": "Che ciò che impari viva in un file tuo, sulla tua macchina, e non in un abbonamento.",
+   "hoy": "La base locale esiste nell'app; questa linea non ha ancora un artefatto.",
+   "falta": "Decidere quale famiglia serve: chiede contesto lungo e immagini, e non è Mistral.",
+   "aportas": "Dicci cosa vorresti chiedere alla tua stessa storia."
+  }
+ }
+}
