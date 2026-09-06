@@ -1,7 +1,7 @@
 {
  "esquema": 1,
  "estado": "OFICIAL",
- "nota": "Los rotulos de la pagina Instalar, en un solo sitio y no repartidos por los ocho HTML. Aqui y no en el bloque i18n de cada portada porque `instalar.html` es la unica pagina sin bloque propio, y porque en ruso y en griego cada HTML iba ya rozando el tope de 16 KB: un fichero compartido cuesta una peticion --cacheada por el worker-- en vez de ~900 B en cada uno de los ocho. · `releases` es la pagina de versiones del repositorio: responde 200 --comprobado el 2026-09-05-- pero HOY no publica ninguna version, y eso se dice antes de pulsar. · 2026-09-06: `releases` se conserva porque la URL es un hecho, pero el boton deja de enlazarla: llevaba a una pagina vacia y gastaba el unico gesto que un visitante regala. Ahora va inhabilitado y `appVacio` lo explica sin mencionar ningun enlace.",
+ "nota": "Los rotulos de la pagina Instalar, en un solo sitio y no repartidos por los ocho HTML. Aqui y no en el bloque i18n de cada portada porque `instalar.html` es la unica pagina sin bloque propio, y porque en ruso y en griego cada HTML iba ya rozando el tope de 16 KB: un fichero compartido cuesta una peticion --cacheada por el worker-- en vez de ~900 B en cada uno de los ocho. · `releases` es la pagina de versiones del repositorio: responde 200 --comprobado el 2026-09-05-- pero HOY no publica ninguna version, y eso se dice antes de pulsar. · 2026-09-06: `releases` se conserva porque la URL es un hecho, pero el boton deja de enlazarla: llevaba a una pagina vacia y gastaba el unico gesto que un visitante regala. Ahora va inhabilitado y `appVacio` lo explica sin mencionar ningun enlace. · 2026-09-07 CORREGIDO: la nota anterior decia que `releases` responde 200 «pero HOY no publica ninguna version». Medido contra api.github.com/repos/.../releases/latest: hay `v1.3` publicada el 2026-08-31 con tres adjuntos (install.sh, install.ps1, INSTALACION_ANDROID.md). La frase llevaba una semana siendo falsa y por creerla se apago un boton que funcionaba. `appVacio` pasa a decir QUE hay detras.",
  "medido": "2026-09-05",
  "textos": {
   "es": {
@@ -19,7 +19,7 @@
    "pwaBoton": "Instalar esta web",
    "appBoton": "Última versión de la app",
    "pwaManual": "Se instala como una aplicación y funciona sin red. Si tu navegador no ofrece el botón, hazlo a mano: en Android, menú ⋮ → «Instalar aplicación»; en iPhone, Compartir → «Añadir a pantalla de inicio».",
-   "appVacio": "Todavía no hay ninguna versión publicada de la app. El botón está apagado a propósito: se encenderá el día que haya algo detrás."
+   "appVacio": "La versión publicada es la v1.3, del 31 de agosto de 2026. Lo que hay detrás son los instaladores y las instrucciones para Android, no un programa empaquetado: se instala desde el código."
   },
   "en": {
    "pwaTitulo": "The site, installed",
@@ -36,7 +36,7 @@
    "pwaBoton": "Install this site",
    "appBoton": "Latest app version",
    "pwaManual": "It installs as an app and works offline. If your browser does not offer the button, do it by hand: on Android, menu ⋮ → «Install app»; on iPhone, Share → «Add to Home Screen».",
-   "appVacio": "No version of the app has been published yet. The button is switched off on purpose: it will light up the day there is something behind it."
+   "appVacio": "The published version is v1.3, from 31 August 2026. Behind it are the installers and the Android instructions, not a packaged program: it installs from source."
   },
   "fr": {
    "pwaTitulo": "Le site, installé",
@@ -53,7 +53,7 @@
    "pwaBoton": "Installer ce site",
    "appBoton": "Dernière version de l'app",
    "pwaManual": "Il s'installe comme une application et fonctionne hors ligne. Si votre navigateur ne propose pas le bouton, faites-le à la main : sur Android, menu ⋮ → « Installer l'application » ; sur iPhone, Partager → « Sur l'écran d'accueil ».",
-   "appVacio": "Aucune version de l'application n'est encore publiée. Le bouton est éteint exprès : il s'allumera le jour où il y aura quelque chose derrière."
+   "appVacio": "La version publiée est la v1.3, du 31 août 2026. Derrière, il y a les installeurs et les instructions Android, pas un programme empaqueté : il s'installe depuis le code."
   },
   "pt": {
    "pwaTitulo": "O site, instalado",
@@ -70,7 +70,7 @@
    "pwaBoton": "Instalar este site",
    "appBoton": "Última versão da app",
    "pwaManual": "Instala-se como aplicação e funciona sem rede. Se o teu navegador não oferecer o botão, fá-lo à mão: no Android, menu ⋮ → «Instalar aplicação»; no iPhone, Partilhar → «Adicionar ao ecrã principal».",
-   "appVacio": "Ainda não há nenhuma versão publicada da app. O botão está apagado de propósito: acende no dia em que houver algo por trás."
+   "appVacio": "A versão publicada é a v1.3, de 31 de agosto de 2026. Por trás estão os instaladores e as instruções para Android, não um programa empacotado: instala-se a partir do código."
   },
   "it": {
    "pwaTitulo": "Il sito, installato",
@@ -87,7 +87,7 @@
    "pwaBoton": "Installa questo sito",
    "appBoton": "Ultima versione dell'app",
    "pwaManual": "Si installa come applicazione e funziona senza rete. Se il tuo browser non offre il pulsante, fallo a mano: su Android, menu ⋮ → «Installa app»; su iPhone, Condividi → «Aggiungi a Home».",
-   "appVacio": "Non c'è ancora nessuna versione pubblicata dell'app. Il pulsante è spento apposta: si accenderà il giorno in cui ci sarà qualcosa dietro."
+   "appVacio": "La versione pubblicata è la v1.3, del 31 agosto 2026. Dietro ci sono gli installatori e le istruzioni per Android, non un programma impacchettato: si installa dal codice."
   },
   "de": {
    "pwaTitulo": "Die Seite, installiert",
@@ -104,7 +104,7 @@
    "pwaBoton": "Diese Seite installieren",
    "appBoton": "Neueste Version der App",
    "pwaManual": "Sie installiert sich als Anwendung und funktioniert ohne Netz. Bietet dein Browser den Knopf nicht an, mach es von Hand: unter Android Menü ⋮ → «App installieren»; auf dem iPhone Teilen → «Zum Home-Bildschirm».",
-   "appVacio": "Es ist noch keine Version der App veröffentlicht. Der Knopf ist absichtlich aus: er geht an, sobald etwas dahinter steht."
+   "appVacio": "Die veröffentlichte Version ist v1.3 vom 31. August 2026. Dahinter stehen die Installationsskripte und die Android-Anleitung, kein fertiges Programm: es wird aus dem Quelltext installiert."
   },
   "ru": {
    "pwaTitulo": "Сайт, установленный",
@@ -121,7 +121,7 @@
    "pwaBoton": "Установить этот сайт",
    "appBoton": "Последняя версия приложения",
    "pwaManual": "Ставится как приложение и работает без сети. Если твой браузер не предлагает кнопку, сделай это вручную: на Android — меню ⋮ → «Установить приложение»; на iPhone — «Поделиться» → «На экран Домой».",
-   "appVacio": "Версия приложения ещё не опубликована. Кнопка выключена намеренно: она загорится в тот день, когда за ней что-то появится."
+   "appVacio": "Опубликованная версия — v1.3 от 31 августа 2026 года. За ней стоят установщики и инструкции для Android, а не готовая программа: она ставится из исходного кода."
   },
   "el": {
    "pwaTitulo": "Ο ιστότοπος, εγκατεστημένος",
@@ -138,7 +138,7 @@
    "pwaBoton": "Εγκατάσταση αυτού του ιστότοπου",
    "appBoton": "Τελευταία έκδοση της εφαρμογής",
    "pwaManual": "Εγκαθίσταται ως εφαρμογή και δουλεύει χωρίς δίκτυο. Αν ο περιηγητής σου δεν προσφέρει το κουμπί, κάν᾽ το με το χέρι: σε Android, μενού ⋮ → «Εγκατάσταση εφαρμογής»· σε iPhone, Κοινή χρήση → «Στην αρχική οθόνη».",
-   "appVacio": "Δεν έχει δημοσιευτεί ακόμη καμία έκδοση της εφαρμογής. Το κουμπί είναι σβηστό επίτηδες: θα ανάψει τη μέρα που θα υπάρχει κάτι από πίσω."
+   "appVacio": "Η δημοσιευμένη έκδοση είναι η v1.3, της 31ης Αυγούστου 2026. Από πίσω υπάρχουν οι εγκαταστάτες και οι οδηγίες για Android, όχι ένα έτοιμο πρόγραμμα: εγκαθίσταται από τον κώδικα."
   }
  },
  "releases": "https://github.com/piskyRpapalo/PreceptorOS/releases/latest"
