@@ -191,8 +191,16 @@
       try { localStorage.setItem('preceptor-consiento', cb.checked ? '1' : '0'); }
       catch (e) { /* privado */ }
     });
-    var sitio = campo.closest('.fila') || campo.parentNode;
-    sitio.parentNode.insertBefore(caja, sitio);
+    /* VA DESPUES DE LA PLACA, no dentro. `.panel` es una columna flex de
+       altura medida y `.chat-abajo` coloca el campo por encima de donde
+       empieza su propia caja: meter aqui un bloque de casi noventa pixeles
+       gastaba un reparto que otro habia medido, y el consentimiento acababa
+       montando el campo -- 34 px, visto en el telefono del Soberano. Fuera de
+       la columna sigue estando donde se escribe, justo debajo, y no le quita
+       sitio a la conversacion. */
+    var placa = campo.closest('.panel');
+    if (placa && placa.parentNode) placa.parentNode.insertBefore(caja, placa.nextSibling);
+    else (campo.closest('.fila') || campo.parentNode).parentNode.insertBefore(caja, null);
   }
 
   function arrancar() {

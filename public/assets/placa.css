@@ -93,22 +93,29 @@
 /* EL CAMPO SE QUEDA ABAJO. `sticky` y no `fixed`: dentro de la placa, asi que
    respeta sus cantos y no se sale por encima del pie ni tapa el panel de
    Herramientas cuando se abre. */
-.chat-abajo{position:sticky;bottom:0;z-index:1;
-  padding-top:.8rem;margin-top:auto}
-/* AQUI HABIA UNA BANDA OSCURA, y se retira el 2026-09-05 porque hacia justo lo
-   contrario de lo que se le pedia. Era un degradado --transparente arriba,
-   `#2f2757` abajo-- puesto para que la conversacion no se leyera A TRAVES de
-   la caja de escribir cuando pasaba por debajo.
+/* 2026-09-07 · DEJA DE SER `sticky`, y esto reabre la nota de aqui abajo.
+   Aquella retirada de la banda oscura se apoyaba en una premisa: «`#dialogo`
+   tiene su propio overflow y su contenido no sale de su caja, asi que nada
+   pasa por debajo de nada». Ya no es cierta, y esta medido en el telefono del
+   Soberano y reproducido: dialogo 255-656, barra 601-812. El dialogo pasaba
+   CINCUENTA Y CINCO pixeles por detras de una barra transparente, y se leia el
+   chat a traves de la caja de escribir.
 
-   Ese peligro ya no existe: `#dialogo` tiene su propio `overflow` y su
-   contenido no sale de su caja, asi que nada pasa por debajo de nada. Lo que
-   quedaba era una plancha de color con la forma de un rectangulo, envolviendo
-   los dos mandos, y en el telefono se leia como una COSTURA -- una linea de
-   corte entre lo que se escribe y los atajos, dos cosas que son la misma
-   pagina. El Soberano lo vio en el Doogee antes que yo en el navegador.
+   La salida NO es devolver la banda: aquella se quito porque se leia como una
+   costura entre lo que se escribe y los atajos, y el Soberano lo vio antes que
+   nadie. Se arregla la causa. `margin-top:auto` ya pega esta caja al fondo de
+   la columna; el `sticky` solo servia para que el dialogo pudiera colarse por
+   debajo. Sin el, la barra ocupa su sitio y el dialogo termina donde ella
+   empieza -- medido despues: 255-656 y 656-867, cero solape, y el panel no
+   desborda.
 
-   Es la misma leccion que el pie y las pruebas aprendieron esta misma tarde:
-   lo que no es una caja no se pinta como una caja. */
+   El `z-index` se va con el: sin posicion no pinta nada, y un numero que no
+   hace nada es una pista falsa para quien lea esto manana. */
+.chat-abajo{padding-top:.8rem;margin-top:auto}
+/* La banda oscura que hubo aqui hasta el 2026-09-05 NO vuelve, y su motivo
+   vive ahora entero en la nota de `.chat-abajo` de aqui arriba -- junto con la
+   premisa suya que resulto ser falsa. Se cuenta una vez y bien, en lugar de
+   dos veces y media. */
 /* Con el teclado abierto, la zona de herramientas se retira: en un telefono
    el teclado se come media pantalla y lo que tapa es la conversacion. Lo
    decide `visualViewport` en chat-router.js, que es quien sabe cuanto queda
