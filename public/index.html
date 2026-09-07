@@ -111,6 +111,13 @@
   .bubble:hover, .bubble:focus { transform:translateY(-3px) scale(1.03); outline:0;
     background:var(--violeta-texto) }
   .bubble:focus-visible { outline:2px solid var(--oro); outline-offset:2px }
+  /* LA TUYA SE MARCA, no se elige por ti. Es lo que queda del atajo que hasta
+     hoy saltaba esta pantalla: volver a la lengua de siempre es un toque, y
+     aun asi la puerta se ve. Se dice con ORO y con anillo, no solo con color:
+     quien no distingue el dorado se queda sin saber cual era la suya. */
+  .bubble.tuya { box-shadow:0 0 0 2px var(--oro), 0 10px 26px rgba(36,26,53,.35) }
+  .bubble.tuya::after { content:'\2022'; position:absolute; top:.25rem; right:.5rem;
+    color:var(--oro); font-size:1.1rem; line-height:1 }
   .bubble:nth-child(4n+1){animation-delay:0s}
   .bubble:nth-child(4n+2){animation-delay:-1.4s}
   .bubble:nth-child(4n+3){animation-delay:-2.8s}
@@ -204,17 +211,27 @@
                   matchMedia('(display-mode: fullscreen)').matches ||
                   navigator.standalone === true;
 
-  /* LA SALIDA VA ANTES QUE EL ATAJO, y no es un detalle: sin ella, elegir mal
-     una vez te encierra en esa lengua para siempre -- la puerta que sirve para
-     cambiar de idioma seria justo la que ya no puedes ver. El gate lo exige
-     por escrito, y tenia razon: el primer intento redirigia sin escape.
-     `/?cambiar` es esa salida, y es la direccion que usan los selectores de
-     idioma de dentro. */
+  /* 2026-09-07 · YA NO SE SALTA LA PUERTA, tampoco en la app instalada.
+     Hasta hoy, la PWA con idioma guardado hacia `location.replace` y nadie
+     volvia a ver esta pantalla. Se retira por decision del Soberano: todos
+     entran por aqui -- web, PWA y app.
+
+     No es un capricho de maqueta. Esta pantalla es lo primero que dice de que
+     va esto, y en un producto de ocho lenguas la eleccion no es un ajuste, es
+     la primera frase. Ademas la que se salta la puerta es justo la persona que
+     mas la usa, que es a quien menos conviene esconderle el cambio de lengua.
+
+     LO QUE SE CONSERVA ES EL RECUERDO, que era la mitad util del atajo: la
+     lengua guardada se marca, asi que volver a la de siempre es UN toque en
+     vez de buscarla entre ocho. Se recuerda sin decidir por ti, que es la
+     diferencia entre una comodidad y una puerta cerrada.
+
+     `instalada` se queda declarado aunque ya no redirija: lo lee el aviso de
+     mas abajo, y borrarlo aqui obligaria a redescubrir como se detecta la PWA. */
   var suya = guardado(LENGUA);
-  if (instalada && suya && /^[a-z]{2}$/.test(suya) &&
-      location.search.indexOf('cambiar') < 0) {
-    location.replace('/' + suya + '/');
-    return;                       // no se pinta nada: nos vamos
+  if (suya && /^[a-z]{2}$/.test(suya)) {
+    var mia = document.querySelector('.bubble[hreflang="' + suya + '"]');
+    if (mia) { mia.setAttribute('aria-current', 'true'); mia.classList.add('tuya'); }
   }
 
   /* La eleccion se guarda al pulsar. Y tambien se guarda sola en cada portada
