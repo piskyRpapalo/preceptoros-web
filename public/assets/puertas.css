@@ -172,13 +172,26 @@ header:not(#cabezal) .marca{flex:1 1 0;min-width:0}
    ver otra vez aqui--. Ademas el corte cambiaba con el ancho y con el idioma,
    asi que la misma pagina se maquetaba de tres maneras.
 
-   LA CASA NO SE ESTIRA A SU CELDA. Era la objecion escrita cuando esto se hizo
-   en fila: una rejilla le daria el ancho de la palabra mas larga y quedaria
-   «un ovalo con un icono perdido en el centro». Sigue siendo verdad, y por eso
-   la celda es de dos en dos pero el boton se queda pegado a su canto
-   izquierdo. La rejilla da el ritmo; el `justify-self` deja el dibujo cuadrado. */
+   Y LA CASA SE ESTIRA A SU CELDA COMO LAS DEMAS. Se probo primero al reves
+   --cuadrada y pegada a su canto izquierdo, que era la objecion escrita cuando
+   esto se hizo en fila: «un ovalo con un icono perdido en el centro»--. Se
+   miro en las capturas y el Soberano lo devolvio: «los botones no tienen
+   equilibrio geometrico visual». Y es lo que se ve -- una pastilla de 38 px
+   contra tres de 100 y pico deja un hueco en la primera celda que rompe la
+   fila justo donde empieza a leerse.
+
+   Asi que la objecion vieja cae, y cae con motivo medido: el icono queda
+   centrado en su pastilla, que es exactamente lo que hace la portada con sus
+   cuatro palabras. La rejilla no vale como ritmo si una de las cuatro no la
+   sigue. */
+/* `grid-auto-rows:1fr` porque el equilibrio no acaba en el ancho. Medido: la
+   fila de arriba salia a 32 px y la de abajo a 30, porque la casa lleva un
+   dibujo de 18 y las otras tres una linea de texto. Dos pixeles no se nombran
+   pero se ven, y era el mismo defecto que el hueco de la casa: cuatro piezas
+   que se leen como una fila tienen que medir lo mismo en los dos ejes. */
 .cab-nav-interior{order:2;flex:1 0 100%;display:grid;
-  grid-template-columns:repeat(2,1fr);gap:.25rem;margin:.15rem 0 0}
+  grid-template-columns:repeat(2,1fr);grid-auto-rows:1fr;gap:.25rem;
+  margin:.15rem 0 0}
 /* LOS BOTONES, LOS MISMOS QUE LOS DE LA PORTADA, y esto es la mitad del
    arreglo. `widget.css` es quien da a `.cab-boton` su cuerpo, su versalita y
    --sobre todo-- su `text-decoration:none`, y de las tres interiores solo
@@ -204,10 +217,10 @@ header:not(#cabezal) .marca{flex:1 1 0;min-width:0}
   background:var(--violeta-texto);transform:translateY(-1px)}
 .cab-nav-interior .cab-boton:focus-visible{outline:2px solid var(--violeta-texto);
   outline-offset:2px}
-/* La casa es cuadrada porque solo lleva dibujo: con el relleno de una palabra
-   quedaria un ovalo con un icono perdido en el centro. */
+/* La casa se centra en su pastilla: es la unica de las cuatro que lleva dibujo
+   en vez de palabra, y sin esto el icono se iria al canto izquierdo. */
 .cab-nav-interior .cab-casa{display:inline-flex;align-items:center;
-  justify-content:center;justify-self:start;width:38px;padding:0}
+  justify-content:center;padding:.3rem .45rem}
 /* La pagina donde estas no es un boton: se ve, no se pulsa. */
 .cab-nav-interior [aria-current]{background:transparent;color:var(--oro);
   cursor:default}
