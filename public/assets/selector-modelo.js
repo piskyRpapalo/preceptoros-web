@@ -71,9 +71,24 @@
     panel.appendChild(fila);
   }
 
+  /* SE VIGILA EL PANEL, y no basta con pintarlo una vez. `hub.js` construye la
+     rueda con `ajustes.innerHTML = ''` y vuelve a llenarla: si esto se pinta
+     antes, la fila desaparece sin dejar rastro --se vio, y por eso el selector
+     no estaba donde yo dije que estaba--. Un observador la repone despues de
+     cualquier reconstruccion, venga de quien venga y cuando venga: no hay que
+     saber en que orden cargan los guiones, que es justo el dato que hoy no se
+     puede dar por sabido. */
+  function vigilar() {
+    var panel = document.getElementById('panel-ajustes');
+    if (!panel) return;
+    pintar();
+    new MutationObserver(function () {
+      if (!document.getElementById('sel-modelo')) pintar();
+    }).observe(panel, { childList: true });
+  }
+
   envolver();
-  // `Rack` puede cargar después que esto; se vuelve a intentar una vez.
-  addEventListener('load', function () { envolver(); pintar(); });
-  if (document.readyState !== 'loading') pintar();
-  else addEventListener('DOMContentLoaded', pintar);
+  addEventListener('load', function () { envolver(); vigilar(); });
+  if (document.readyState !== 'loading') vigilar();
+  else addEventListener('DOMContentLoaded', vigilar);
 })();
