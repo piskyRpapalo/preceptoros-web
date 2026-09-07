@@ -224,3 +224,25 @@
 
 }
 
+/* --- ENTRE EL TELEFONO Y EL ESCRITORIO, EL PERFIL VUELVE A LA ESQUINA ------
+   La rama del telefono llega hasta 1023 px, y esa medida se tomo mirando un
+   Doogee: a 375 el perfil en su propio renglon es lo correcto. Pero una ventana
+   de escritorio estrecha --500, 700, 900-- se lleva la misma maqueta, y ahi el
+   icono queda colgado DEBAJO de la rueda con media fila vacia al lado. El
+   Soberano lo leyo como «se ha perdido el icono del perfil», que es exactamente
+   lo que parece: un circulo suelto que no pertenece a nada.
+
+   Medido a 500 px antes de tocar: identidad en 435-475 y rueda en 440-476, una
+   encima de otra en filas distintas. Los tres mandos --punto, perfil y rueda--
+   suman poco mas de cien pixeles: a partir de 430 caben en la esquina -- y 430 y no 560 porque la ventana que
+   lo destapo medía 500 y con el corte alto se quedaba fuera justo el caso
+   reportado. El umbral se elige por el caso medido, no por un numero redondo.
+
+   NO se toca el corte de 1023 ni la rama del telefono: se añade una franja
+   propia. Mover un punto de ruptura que otro midio en un aparato real, para
+   arreglar un caso que no es el suyo, es como se rompe lo que ya funcionaba. */
+@media (min-width:430px) and (max-width:1023px){
+  #cabezal:has(.identity-icono) #identity{position:absolute;top:.45rem;
+    right:3.4rem;flex:0 0 auto;width:auto;margin:0;
+    z-index:calc(var(--capa-4-cara) + 1)}
+}

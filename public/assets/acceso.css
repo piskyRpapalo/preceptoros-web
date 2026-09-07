@@ -19,6 +19,14 @@
 @media (max-width:1023px){
   #cabezal .cab-enlaces{top:1.1rem;right:3.3rem}
 }
+/* DE 430 PARA ARRIBA EL PUNTO CEDE EL SITIO, igual que hizo en escritorio: ese
+   hueco pegado a la rueda es del PERFIL, que es una puerta, y el punto solo
+   informa. Ceden los avisos, no las puertas -- la misma regla que ya se aplico
+   una vez, ahora en la franja intermedia. Sin esto los dos caen en el mismo
+   `right` y se pisan, que es como se descubrio la primera vez. */
+@media (min-width:430px) and (max-width:1023px){
+  #cabezal .cab-enlaces{top:.9rem;right:6.4rem}
+}
 .cab-enlaces{width:14px;height:14px;padding:0;border:0;border-radius:999px;
   cursor:pointer;background:var(--tenue);
   box-shadow:0 0 0 2px rgba(255,255,255,.35)}
