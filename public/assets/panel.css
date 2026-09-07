@@ -93,6 +93,10 @@
 }
 /* La rueda cuelga del canto de SU boton. */
 #panel-ajustes{left:3.9rem;width:min(14rem,calc(100vw - 4.6rem))}
+
+/* La rueda abierta se pinta en `nubes.css`: carga DESPUES que esta hoja, y
+   sin eso el `background` de aqui arriba le ganaria por orden a igual
+   especificidad. Ademas es, literalmente, la hoja de las nubes. */
 .ajuste-idioma{display:block;width:100%;text-align:left;font:inherit;
   font-size:.82rem;font-weight:600;color:#fff;text-decoration:none;
   cursor:pointer;padding:.45rem .6rem;min-height:40px;

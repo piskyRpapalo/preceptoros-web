@@ -191,3 +191,37 @@
 .consiento-icono{display:inline-flex;color:var(--oro);opacity:.9}
 .consiento-pie{margin:.2rem 0 0 2.1rem;font-size:.68rem;line-height:1.4;
   color:var(--bronce-hondo);max-width:46ch}
+
+/* --- LA RUEDA, EN NUBES SUELTAS Y POR ENCIMA DE LA CARA -------------------
+   ABIERTA PISA LA ESFERA, y hace falta decirlo porque por defecto no lo hacia:
+   el panel vive en `--capa-3-lateral` y la esfera es la Capa 4. Medido con la
+   rueda abierta: panel en 30, cara en 40, y la cara pintaba encima de lo que
+   se acababa de abrir. Un menu que abre DEBAJO de un adorno no es un menu.
+   Sube solo mientras esta abierto: cerrado no tapa nada y no tiene por que
+   ganarle la capa a nadie. El `+2` y no `+1` porque el `+1` ya es de los dos
+   mandos del cabezal, y el panel tiene que quedar por encima del suyo.
+
+   Y DEJA DE SER UNA CAJA para ser NUBES SUELTAS: el fondo se va del contenedor
+   y baja a cada fila. Es la misma leccion que el pie y la banda de escribir
+   aprendieron aqui -- lo que no es una caja no se pinta como una caja--, y
+   ademas separa lo que son opciones distintas en vez de darles la forma de una
+   lista dentro de un cajon. */
+#panel-ajustes:not(.cerrado){z-index:calc(var(--capa-4-cara) + 2)}
+#panel-ajustes{background:none;box-shadow:none;padding:.35rem;
+  display:flex;flex-direction:column;gap:.3rem}
+#panel-ajustes .panel-rotulo{margin:0;padding:.1rem .2rem;font-size:.66rem;
+  letter-spacing:.08em;text-transform:uppercase;color:var(--oro)}
+/* Cada nube lleva SU respaldo opaco antes del cristal, que es el canon: si el
+   navegador no sabe difuminar, la nube sigue siendo legible en vez de dejar
+   pasar el fondo. */
+#panel-ajustes .ajuste-idioma{background:var(--violeta);
+  box-shadow:0 6px 18px rgba(36,26,53,.30)}
+@supports (backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px)){
+  #panel-ajustes .ajuste-idioma{
+    background:color-mix(in srgb, var(--violeta) 82%, transparent);
+    -webkit-backdrop-filter:blur(14px) saturate(180%);
+    backdrop-filter:blur(14px) saturate(180%)}
+}
+#panel-ajustes .ajuste-idioma:hover,
+#panel-ajustes .ajuste-idioma:focus-visible{
+  background:color-mix(in srgb, var(--violeta) 94%, #fff)}
