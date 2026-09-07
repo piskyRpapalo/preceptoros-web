@@ -179,3 +179,15 @@
   line-height:1.45;color:var(--bronce-hondo);border-left:2px solid var(--oro)}
 .cerebros-cta{margin:.8rem 0 0;padding:.55rem .7rem;font-size:.76rem;line-height:1.5;
   border:1px dashed var(--oro);border-radius:var(--radius);color:var(--oro)}
+
+/* EL CONSENTIMIENTO VA DONDE SE ESCRIBE, no en una rueda. Un ajuste de
+   privacidad a tres toques esta tecnicamente disponible y practicamente
+   oculto. Y la casilla se ve de verdad: `appearance` la deja como el sistema
+   la pinta, que es lo que la gente reconoce como casilla. */
+.consiento-caja{margin:0 0 .5rem}
+.consiento-et{display:inline-flex;align-items:center;gap:.4rem;cursor:pointer;
+  font-size:.76rem;color:var(--oro)}
+.consiento-et input{width:16px;height:16px;accent-color:var(--oro);cursor:pointer;flex:0 0 auto}
+.consiento-icono{display:inline-flex;color:var(--oro);opacity:.9}
+.consiento-pie{margin:.2rem 0 0 2.1rem;font-size:.68rem;line-height:1.4;
+  color:var(--bronce-hondo);max-width:46ch}

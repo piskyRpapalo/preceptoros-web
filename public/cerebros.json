@@ -24,8 +24,15 @@
    "carga_s": 4.9,
    "firmado": false,
    "logo": "/assets/logos-models/preceptor.svg",
-   "purpose": "Guía la instalación y contesta lo que traigas después. Es el que sabe qué es este producto. Lo que buscamos: dinos en qué momento te perdiste, y si te repitió pasos que ya habías dado.",
-   "cta_hash": "¿Te ha servido? Hazte tu firma y cuéntanoslo: se guarda en tu máquina y viaja cuando abra el tablón. Es lo que entrena la versión siguiente."
+   "purpose": {
+    "es": "Guía la instalación y contesta lo que traigas después. Es el que sabe qué es este producto. Lo que buscamos: dinos en qué momento te perdiste, y si te repitió pasos que ya habías dado.",
+    "en": "Guides the install and answers what you bring afterwards. It is the one that knows what this product is. What we want: tell us where you got lost, and whether it repeated steps you had already done."
+   },
+   "cta_hash": {
+    "es": "¿Te ha servido? Hazte tu firma y cuéntanoslo: se guarda en tu máquina y viaja cuando abra el tablón. Es lo que entrena la versión siguiente.",
+    "en": "Did it help? Make your signature and tell us: it stays on your machine and travels when the board opens. That is what trains the next version."
+   },
+   "lang": "auto"
   },
   {
    "id": "charla-base",
@@ -38,8 +45,15 @@
    "carga_s": 2.2,
    "firmado": false,
    "logo": "/assets/logos-models/preceptor.svg",
-   "purpose": "Entrenado aquí para reconocer a quien ya instaló y pasar al tema. Lo que buscamos: si suelta un número —tamaños, tiempos, cantidades— cópialo. Esa es la avería que estamos cazando.",
-   "cta_hash": "¿Te ha servido? Hazte tu firma y cuéntanoslo: se guarda en tu máquina y viaja cuando abra el tablón. Es lo que entrena la versión siguiente."
+   "purpose": {
+    "es": "Entrenado aquí para reconocer a quien ya instaló y pasar al tema. Lo que buscamos: si suelta un número —tamaños, tiempos, cantidades— cópialo. Esa es la avería que estamos cazando.",
+    "en": "Trained here to recognise someone who already installed and move on. What we want: if it states a number — sizes, times, amounts — copy it. That is the fault we are hunting."
+   },
+   "cta_hash": {
+    "es": "¿Te ha servido? Hazte tu firma y cuéntanoslo: se guarda en tu máquina y viaja cuando abra el tablón. Es lo que entrena la versión siguiente.",
+    "en": "Did it help? Make your signature and tell us: it stays on your machine and travels when the board opens. That is what trains the next version."
+   },
+   "lang": "auto"
   },
   {
    "id": "charla-multi",
@@ -52,8 +66,15 @@
    "carga_s": 2.5,
    "firmado": false,
    "logo": "/assets/logos-models/preceptor.svg",
-   "purpose": "El mismo entrenamiento en siete lenguas. Lo que buscamos, sobre todo de quien lea árabe o griego: dinos si la frase se sostiene o se rompe, aunque el sentido se entienda.",
-   "cta_hash": "¿Te ha servido? Hazte tu firma y cuéntanoslo: se guarda en tu máquina y viaja cuando abra el tablón. Es lo que entrena la versión siguiente."
+   "purpose": {
+    "es": "El mismo entrenamiento en siete lenguas. Lo que buscamos, sobre todo de quien lea árabe o griego: dinos si la frase se sostiene o se rompe, aunque el sentido se entienda.",
+    "en": "The same training in seven languages. What we want, above all from anyone who reads Arabic or Greek: tell us whether the sentence holds together or falls apart, even if the meaning comes through."
+   },
+   "cta_hash": {
+    "es": "¿Te ha servido? Hazte tu firma y cuéntanoslo: se guarda en tu máquina y viaja cuando abra el tablón. Es lo que entrena la versión siguiente.",
+    "en": "Did it help? Make your signature and tell us: it stays on your machine and travels when the board opens. That is what trains the next version."
+   },
+   "lang": "auto"
   },
   {
    "id": "v7",
@@ -66,8 +87,15 @@
    "carga_s": 2.8,
    "firmado": false,
    "logo": "/assets/logos-models/preceptor.svg",
-   "purpose": "El más pequeño y el más rápido, y el que más dice NO_DATA. Lo que buscamos: cuándo callar fue lo correcto y cuándo fue una excusa por no saber.",
-   "cta_hash": "¿Te ha servido? Hazte tu firma y cuéntanoslo: se guarda en tu máquina y viaja cuando abra el tablón. Es lo que entrena la versión siguiente."
+   "purpose": {
+    "es": "El más pequeño y el más rápido, y el que más dice NO_DATA. Lo que buscamos: cuándo callar fue lo correcto y cuándo fue una excusa por no saber.",
+    "en": "The smallest and fastest, and the one that says NO_DATA most. What we want: when staying quiet was right, and when it was an excuse for not knowing."
+   },
+   "cta_hash": {
+    "es": "¿Te ha servido? Hazte tu firma y cuéntanoslo: se guarda en tu máquina y viaja cuando abra el tablón. Es lo que entrena la versión siguiente.",
+    "en": "Did it help? Make your signature and tell us: it stays on your machine and travels when the board opens. That is what trains the next version."
+   },
+   "lang": "auto"
   },
   {
    "id": "qwen-coder",
@@ -80,8 +108,15 @@
    "carga_s": 16.1,
    "firmado": false,
    "logo": "/assets/logos-models/qwen.svg",
-   "purpose": "Treinta mil millones de parámetros para programar, sin instrucciones encima. Está para comparar. Lo que buscamos: en qué preguntas gana a los demás pese a no saber qué es esto.",
-   "cta_hash": "¿Te ha servido? Hazte tu firma y cuéntanoslo: se guarda en tu máquina y viaja cuando abra el tablón. Es lo que entrena la versión siguiente."
+   "purpose": {
+    "es": "Treinta mil millones de parámetros para programar, sin instrucciones encima. Está para comparar. Lo que buscamos: en qué preguntas gana a los demás pese a no saber qué es esto.",
+    "en": "Thirty billion parameters for code, with no instructions on top. It is here for comparison. What we want: which questions it wins at despite not knowing what this is."
+   },
+   "cta_hash": {
+    "es": "¿Te ha servido? Hazte tu firma y cuéntanoslo: se guarda en tu máquina y viaja cuando abra el tablón. Es lo que entrena la versión siguiente.",
+    "en": "Did it help? Make your signature and tell us: it stays on your machine and travels when the board opens. That is what trains the next version."
+   },
+   "lang": "auto"
   },
   {
    "id": "mistral-base",
@@ -94,8 +129,16 @@
    "carga_s": 3.8,
    "firmado": false,
    "logo": "/assets/logos-models/mistral.svg",
-   "purpose": "El modelo del que salen los tres primeros, desnudo. Lo que buscamos: qué sabe hacer sin que nosotros le hayamos puesto nada. Todo lo que le falte, lo pusimos nosotros en los otros.",
-   "cta_hash": "¿Te ha servido? Hazte tu firma y cuéntanoslo: se guarda en tu máquina y viaja cuando abra el tablón. Es lo que entrena la versión siguiente."
+   "purpose": {
+    "es": "El modelo del que salen los tres primeros, desnudo. Lo que buscamos: qué sabe hacer sin que nosotros le hayamos puesto nada. Todo lo que le falte, lo pusimos nosotros en los otros.",
+    "en": "The model the first three come from, bare. What we want: what it can do with nothing we added. Everything it lacks, we put into the others."
+   },
+   "cta_hash": {
+    "es": "¿Te ha servido? Hazte tu firma y cuéntanoslo: se guarda en tu máquina y viaja cuando abra el tablón. Es lo que entrena la versión siguiente.",
+    "en": "Did it help? Make your signature and tell us: it stays on your machine and travels when the board opens. That is what trains the next version."
+   },
+   "lang": "auto"
   }
- ]
+ ],
+ "lang_nota": "`purpose` y `cta_hash` van en ES y EN, y `lang: auto` dice lo que ya es cierto: los modelos detectan el idioma y responden en el. La PROSA DE LA FICHA es otra cosa que la respuesta del modelo, y ahi el ingles hace de respaldo para las seis lenguas restantes. No es una traduccion pendiente disfrazada de decision: es que media lengua traducida y media caida se lee peor que una lengua entera prestada -- la misma regla que `taller.js` ya aplica al caer al castellano por FICHERO y no por clave suelta."
 }

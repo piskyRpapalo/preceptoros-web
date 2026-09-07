@@ -17,6 +17,11 @@
  */
 (function () {
   var LLAVE = 'preceptor-modelo';
+  var CONS = {
+    es:['Permitir análisis para mejorar el modelo',
+        'Marcado: se guarda lo que escribes y lo que responde. Sin marcar: solo el modelo, la hora y el largo.'],
+    en:['Allow analysis to improve the model',
+        'Ticked: what you write and what it answers are stored. Unticked: only the model, the time and the length.'] };
   var PAL = { es:['Elige cerebro','prompt','generación','despertar','recomendado','sin firmar','en uso'],
             en:['Choose a brain','prompt','generation','wake-up','recommended','unsigned','in use'],
             pt:['Escolhe cérebro','prompt','geração','despertar','recomendado','sem assinar','em uso'],
@@ -39,6 +44,18 @@
     window.Rack.__envuelto = true;
   }
 
+  /* ES si la pagina esta en castellano, INGLES para todo lo demas. No es una
+     traduccion pendiente disfrazada: media lengua traducida y media caida se
+     lee peor que una lengua entera prestada, y `taller.js` ya cae por FICHERO
+     y no por clave suelta por el mismo motivo. Lo que el MODELO responde si
+     sale en la lengua de quien pregunta -- eso es `lang: auto`, y es otra cosa
+     que la prosa de la ficha. */
+  function enLengua(v, lang) {
+    if (v == null) return '';
+    if (typeof v === 'string') return v;
+    return v[lang] || v.en || v.es || '';
+  }
+
   function el(t, c, x) {
     var n = document.createElement(t);
     if (c) n.className = c;
@@ -52,7 +69,7 @@
     return v == null ? 'NO_DATA' : String(v).replace('.', ',') + unidad;
   }
 
-  function pintar(reg, w) {
+  function pintar(reg, w, lang) {
     var host = document.getElementById('especificaciones');
     if (!host || document.getElementById('cerebros')) return;
     var caja = el('section', 'cerebros'); caja.id = 'cerebros';
@@ -86,7 +103,8 @@
       /* QUE FEEDBACK SE BUSCA, y por eso va antes que las cifras: un tester al
          que no se le dice que mirar reporta lo que le llama la atencion, que
          casi nunca es lo que hace falta. */
-      if (c.purpose) b.appendChild(el('p', 'cerebro-busca', c.purpose));
+      var busca = enLengua(c.purpose, lang);
+      if (busca) b.appendChild(el('p', 'cerebro-busca', busca));
       var d = el('p', 'cerebro-datos');
       d.appendChild(el('b', null, cifra(c.prompt, '')));
       d.appendChild(el('span', null, ' ' + w[1] + ' · '));
@@ -102,7 +120,7 @@
       rejilla.appendChild(b);
     });
     caja.appendChild(rejilla);
-    var cta = (reg.cerebros[0] || {}).cta_hash;
+    var cta = enLengua((reg.cerebros[0] || {}).cta_hash, lang);
     if (cta) caja.appendChild(el('p', 'cerebros-cta', cta));
     caja.appendChild(pie);
     host.parentNode.insertBefore(caja, host.nextSibling);
@@ -129,13 +147,57 @@
       { detail: { name: modelo, live: false } }));
   }
 
+  /* --- EL CONSENTIMIENTO, VISIBLE Y DESMARCADO ---------------------------
+     DESMARCADO POR DEFECTO, y no es un detalle de implementacion: una casilla
+     premarcada recoge el consentimiento de quien no la vio, que es justo lo
+     que la palabra consentimiento excluye. Quien quiera ayudar la marca; quien
+     no la mire, no ha dicho que si.
+
+     VISIBLE, y no escondida en una rueda. Va donde se escribe, porque es ahi
+     donde importa saber que pasa con lo que escribes. Un ajuste de privacidad
+     a tres toques de distancia esta tecnicamente disponible y practicamente
+     oculto.
+
+     Y DICE LAS DOS RAMAS, no solo la buena: marcado se guarda el texto, sin
+     marcar se guarda que modelo, cuando y cuanto. La segunda tambien es
+     guardar algo, y callarlo seria la mitad de una verdad. */
+  function consentimiento(w) {
+    var campo = document.getElementById('pregunta');
+    if (!campo || document.getElementById('consiento')) return;
+    var caja = el('div', 'consiento-caja');
+    var et = document.createElement('label');
+    et.className = 'consiento-et'; et.htmlFor = 'consiento';
+    var cb = document.createElement('input');
+    cb.type = 'checkbox'; cb.id = 'consiento';
+    cb.checked = false;                       // nunca se lee lo guardado para MARCARLO
+    try { cb.checked = localStorage.getItem('preceptor-consiento') === '1'; } catch (e) { /* */ }
+    var icono = document.createElement('span');
+    icono.className = 'consiento-icono';
+    icono.innerHTML = '<svg viewBox="0 0 20 20" width="20" height="20" fill="none"'
+      + ' stroke="currentColor" stroke-width="1.6" stroke-linecap="round"'
+      + ' stroke-linejoin="round" aria-hidden="true">'
+      + '<path d="M3.5 3.5h9l4 4v9a1 1 0 0 1-1 1h-11a1 1 0 0 1-1-1v-12a1 1 0 0 1 1-1Z"/>'
+      + '<path d="M6.5 3.5v5h7"/><rect x="6.5" y="12" width="7" height="4.5"/></svg>';
+    et.appendChild(cb); et.appendChild(icono);
+    et.appendChild(el('span', 'consiento-texto', w[0]));
+    caja.appendChild(et);
+    caja.appendChild(el('p', 'consiento-pie', w[1]));
+    cb.addEventListener('change', function () {
+      try { localStorage.setItem('preceptor-consiento', cb.checked ? '1' : '0'); }
+      catch (e) { /* privado */ }
+    });
+    var sitio = campo.closest('.fila') || campo.parentNode;
+    sitio.parentNode.insertBefore(caja, sitio);
+  }
+
   function arrancar() {
     envolver();
     var lang = (document.documentElement.lang || 'es').slice(0, 2);
     var w = PAL[lang] || PAL['es'];
+    consentimiento(CONS[lang] || CONS['en']);
     fetch('/cerebros.json', { cache: 'no-store' })
       .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
-      .then(function (reg) { pintar(reg, w); })
+      .then(function (reg) { pintar(reg, w, lang); })
       .catch(function (e) {
         var host = document.getElementById('especificaciones');
         if (!host || document.getElementById('cerebros')) return;
