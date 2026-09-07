@@ -128,17 +128,86 @@
    al titulo -- «COMMUNITY · THE AGORA» salia en vertical, una letra por linea.
    Se vio en el navegador al primer intento. `flex:1 0 100%` lo baja a su
    propia linea y `flex-wrap` en el cabezal es lo que se lo permite. */
-header:not(#cabezal){flex-wrap:wrap}
-.cab-nav-interior{flex:1 0 100%;display:flex;flex-wrap:wrap;gap:.4rem;
-  margin:.5rem 0 0}
-.cab-nav-interior .cab-boton{background:var(--violeta);color:#fff;
-  border:1px solid var(--oro);border-radius:999px;padding:.34rem .9rem}
+/* LA CAJA, CON LAS MEDIDAS DE LA PORTADA (2026-09-07). Se midieron las dos a
+   375 px antes de tocar nada, y la cabecera interior no se parecia a la de la
+   portada en ninguna de las cuatro cifras que se ven:
+
+     portada          interior
+     1px de canto     3px de canto      la raya de abajo
+     8px de aire      25,6px            lo que separa del texto
+     6,4/8,8/8 px     0/100,8/14,4/0    el relleno
+
+   La raya se escribe con el mismo valor literal que la portada y no con
+   `--bronce-claro`, que es de donde sale ese color: ese token gira con el tema
+   --claro lo cambia a un pardo-- y entonces las dos rayas dejarian de ser la
+   misma raya en cuanto alguien pulse la rueda. Es la cicatriz del 2026-09-05
+   otra vez: un valor que gira no puede sostener una igualdad medida.
+
+   `align-items` pasa a `flex-start` porque es lo que hace que el icono de
+   persona se apoye ARRIBA, contra el titulo, como en la portada. Y se declara
+   aqui y no se hereda de `movil.css`, que `instalar.html` no carga: sin esta
+   linea la unica de las tres que no trae esa hoja se maquetaba de otra manera
+   --se vio en el navegador-- y volveriamos a tener tres cabeceras distintas,
+   que es exactamente lo que este bloque vino a cerrar. */
+header:not(#cabezal){flex-wrap:wrap;align-items:flex-start;gap:.45rem;
+  padding-bottom:.5rem;margin-bottom:.6rem;
+  border-bottom:1px solid rgba(224,184,114,.28)}
+/* EL ICONO DE PERSONA SUBE A LA DERECHA DEL TITULO. Caia solo, a la izquierda
+   y por debajo de la fila de puertas: un circulo huerfano en mitad de la
+   cabecera. En la portada vive arriba a la derecha, asi que aqui igual. El
+   `order` es lo que lo garantiza -- en el marcado va DETRAS del `<nav>`, y el
+   nav se lleva la linea entera. */
+header:not(#cabezal) #identity{order:1;margin-left:auto;flex:0 0 auto}
+/* Y LA MARCA TIENE QUE CEDERLE SITIO, que es lo que no hacia. Con la base
+   `auto` que trae `base.css` el titulo reclama su ancho de una linea --unos
+   340 px para «COMUNIDAD · EL AGORA»-- y en una caja que envuelve eso no
+   encoge: se lleva el renglon entero y empuja el icono al siguiente. Se vio en
+   el navegador: el circulo salia flotando en mitad de la cabecera, que es el
+   mismo huerfano de antes movido de sitio. Con la base a cero el reparto lo
+   decide el hueco y no el texto. */
+header:not(#cabezal) .marca{flex:1 1 0;min-width:0}
+/* DE DOS EN DOS, como la portada, y por el mismo motivo que alli: repartido
+   por contenido salia tres arriba y INSTALAR descolgada abajo --«una rejilla
+   rota disfrazada de maqueta», dice el comentario de la portada, y se acaba de
+   ver otra vez aqui--. Ademas el corte cambiaba con el ancho y con el idioma,
+   asi que la misma pagina se maquetaba de tres maneras.
+
+   LA CASA NO SE ESTIRA A SU CELDA. Era la objecion escrita cuando esto se hizo
+   en fila: una rejilla le daria el ancho de la palabra mas larga y quedaria
+   «un ovalo con un icono perdido en el centro». Sigue siendo verdad, y por eso
+   la celda es de dos en dos pero el boton se queda pegado a su canto
+   izquierdo. La rejilla da el ritmo; el `justify-self` deja el dibujo cuadrado. */
+.cab-nav-interior{order:2;flex:1 0 100%;display:grid;
+  grid-template-columns:repeat(2,1fr);gap:.25rem;margin:.15rem 0 0}
+/* LOS BOTONES, LOS MISMOS QUE LOS DE LA PORTADA, y esto es la mitad del
+   arreglo. `widget.css` es quien da a `.cab-boton` su cuerpo, su versalita y
+   --sobre todo-- su `text-decoration:none`, y de las tres interiores solo
+   `benchmark` carga esa hoja: en `community` y en `instalar` las puertas salian
+   SUBRAYADAS y a 16 px, como los enlaces de un parrafo. Se midio: 16px/400
+   frente a los 9,92px/700 de la portada.
+
+   No se resuelve enlazando `widget.css` en las otras dos --arrastra la maqueta
+   del chat, que estas paginas no tienen-- ni copiando su regla, que serian dos
+   reglas para el mismo boton en dos ficheros. Se resuelve aqui, donde ya vive
+   el cabezal de las interiores, y con el mismo selector de siempre.
+
+   Las cifras son las de la portada medidas en el navegador: .62rem, .05em y
+   .3/.45rem salen de `esquina.css`, que no lleva media query -- asi que ese
+   tamano es el mismo en el telefono y en el escritorio, y aqui tambien. */
+.cab-nav-interior .cab-boton{min-width:0;
+  font:inherit;font-size:.62rem;font-weight:700;letter-spacing:.05em;
+  text-transform:uppercase;text-decoration:none;cursor:pointer;
+  background:var(--violeta);color:#fff;
+  border:2px solid var(--oro);border-radius:999px;padding:.3rem .45rem;
+  transition:transform .16s var(--spring)}
 .cab-nav-interior .cab-boton:hover,.cab-nav-interior .cab-boton:focus-visible{
-  background:var(--violeta-texto)}
+  background:var(--violeta-texto);transform:translateY(-1px)}
+.cab-nav-interior .cab-boton:focus-visible{outline:2px solid var(--violeta-texto);
+  outline-offset:2px}
 /* La casa es cuadrada porque solo lleva dibujo: con el relleno de una palabra
    quedaria un ovalo con un icono perdido en el centro. */
 .cab-nav-interior .cab-casa{display:inline-flex;align-items:center;
-  justify-content:center;width:38px;padding:0}
+  justify-content:center;justify-self:start;width:38px;padding:0}
 /* La pagina donde estas no es un boton: se ve, no se pulsa. */
 .cab-nav-interior [aria-current]{background:transparent;color:var(--oro);
   cursor:default}

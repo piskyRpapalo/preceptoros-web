@@ -158,14 +158,26 @@ header:not(#cabezal){--esfera:132px;position:relative;
 /* Anclada por abajo, como en el telefono y por el mismo motivo: la altura de
    una cabecera interior cambia con el largo de su titulo y con el idioma. */
 header:not(#cabezal) .presentacion{top:auto;bottom:-.5rem}
+/* EL TITULO, DEL CUERPO DE LA PORTADA (2026-09-07). Estaba en 1,05rem de
+   `base.css` --el mismo cuerpo que un parrafo en versales-- mientras la portada
+   subia a 1,3 el 2026-09-06 «porque se leia como una etiqueta y no como el
+   nombre del producto». Medido a 375 px antes de tocarlo: 14,72 px aqui contra
+   18,4 alli, un cuarto mas pequeno. Dos cuerpos distintos para el mismo nombre
+   es lo que hacia que las dos cabeceras no se parecieran aunque llevaran la
+   misma cara y las mismas puertas. */
+header:not(#cabezal) h1{font-size:1.3rem;letter-spacing:.08em}
 @media (max-width:1023px){
-  /* 88 y no 96, y el titulo un punto mas pequeno: con la esfera anterior el
-     hueco que le quedaba a la marca en 375 px era de unos 234, y
-     «PreceptorOS» no cabia -- se partia en «PRECEPTORO» y una «S» sola en la
-     linea siguiente. Un nombre propio partido a la mitad es peor que un
-     titulo pequeno, asi que ceden los dos un poco. */
+  /* 88 y no 96: con la esfera anterior el hueco que le quedaba a la marca en
+     375 px era de unos 234, y «PreceptorOS» no cabia -- se partia en
+     «PRECEPTORO» y una «S» sola en la linea siguiente. Un nombre propio
+     partido a la mitad es peor que un titulo pequeno.
+
+     EL TITULO YA NO PAGA ESE HUECO: paga la esfera, que es la que sobra. La
+     cifra es la de la portada estrecha --1,15rem-- y la parte que si se
+     conserva de aquella medida es el corte de palabra, que se vuelve a
+     comprobar en el navegador a 375 y a 500 px cada vez que esto se toca. */
   header:not(#cabezal){--esfera:88px}
-  header:not(#cabezal) h1{font-size:.92rem}
+  header:not(#cabezal) h1{font-size:1.15rem}
 }
 
 /* --- el telon · el despertar ----------------------------------------------
