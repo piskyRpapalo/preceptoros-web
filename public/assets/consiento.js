@@ -94,9 +94,22 @@
        gastaba un reparto que otro habia medido, y el consentimiento acababa
        montando el campo -- 34 px, visto en el telefono del Soberano. Fuera de
        la columna sigue estando donde se escribe, justo debajo, y no le quita
-       sitio a la conversacion. */
-    var placa = campo.closest('.panel');
-    if (placa && placa.parentNode) placa.parentNode.insertBefore(caja, placa.nextSibling);
+       sitio a la conversacion.
+
+       Y DEBAJO DE LOS ATAJOS, no encima (2026-09-07). Pedido por el Soberano,
+       y el orden dice una jerarquia: los atajos son lo que se PULSA nada mas
+       terminar de escribir --tres botones a un dedo del campo-- y el
+       consentimiento es un ajuste que se toca una vez en la vida. Con la caja
+       en medio, la fila de atajos quedaba a noventa pixeles de su campo y
+       detras de una casilla que no lleva a ningun sitio.
+
+       El anclaje se busca por orden: los atajos primero y la placa como
+       respaldo. `benchmark` tiene campo y no tiene atajos, asi que sin el
+       respaldo esta caja no se pintaria alli -- y la casilla de consentimiento
+       no puede depender de que una pagina tenga sugerencias. */
+    var atajos = document.getElementById('atajos');
+    var ancla = (atajos && atajos.parentNode) ? atajos : campo.closest('.panel');
+    if (ancla && ancla.parentNode) ancla.parentNode.insertBefore(caja, ancla.nextSibling);
     else (campo.closest('.fila') || campo.parentNode).parentNode.insertBefore(caja, null);
   }
 

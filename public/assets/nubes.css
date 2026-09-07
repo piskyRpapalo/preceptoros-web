@@ -68,7 +68,16 @@
    se lee para elegir; la esfera solo acompana. */
 #panel-modelos .modelo img,#panel-modelos .modelo-inicial{
   width:26px;height:26px;flex:0 0 26px;border-radius:50%}
-#panel-modelos .modelo-nombre{color:#fff;font-weight:700;font-size:.76rem}
+/* EL NOMBRE PESA MAS QUE SU PASTILLA (2026-09-07). Pedido asi -- «el titulo
+   del modelo debe resaltar un poco mas» -- y hoy es ademas lo unico que dice
+   con quien hablas: la linea que lo repetia encima se retiro esta misma
+   sesion. Un dato que se queda solo tiene que poder sostener el sitio.
+   Sube de .76 a .88rem y de 700 a 800, que es el mismo salto que separa un
+   rotulo de un titulo en el resto de esta casa. El color no se toca: el blanco
+   sobre `--violeta` es la medida de 5,34:1 que ya sostiene el boton de enviar,
+   y cambiarlo por el oro obligaria a volver a medir. */
+#panel-modelos .modelo-nombre{color:#fff;font-weight:800;font-size:.88rem;
+  letter-spacing:.01em}
 /* Lo que el companero HACE se va al `title`: en una pastilla no cabe y era lo
    que obligaba a la tarjeta ancha. Sale al pasar el cursor y lo lee tambien el
    teclado y el lector de pantalla, que es donde importa. */
@@ -122,14 +131,10 @@
    dentro de `.medidas`. */
 #especificaciones .medidas{margin:0 0 .4rem;padding:0;border:0;background:transparent}
 
-/* La linea de quien te habla, dentro de la ficha: el nombre en negrita y su
-   funcion detras, mas apagada. Dos pesos y no dos colores -- el nombre y lo
-   que hace son la misma frase, y partirla en dos tonos la lee como dos datos.
-   La funcion vivia solo en el `title` de cada nube: en un telefono no hay
-   cursor que pasar por encima, asi que ahi no la leia nadie. */
-.chat-quien{margin:0 0 .35rem;font-size:.72rem;line-height:1.45}
-.chat-nombre{color:#fff;font-weight:700}
-.quien-funcion{color:rgba(255,255,255,.78);margin-left:.4rem}
+/* Aqui vivia el aspecto de esa linea de «quien te habla». Se BORRA en vez de
+   dejarse muerta: tres reglas para un elemento que ya no se crea obligan al
+   siguiente que lea esta hoja a buscar quien lo pinta para descubrir que no lo
+   pinta nadie. */
 
 /* La marca de «sin firmar», ahora una sola por caja y no una por fila: es una
    nota al pie de las cifras, asi que se pinta como nota -- linea propia,

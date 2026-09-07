@@ -1420,9 +1420,26 @@ class Cabezal(unittest.TestCase):
                          "el router vuelve a buscar la cara del cabezal viejo")
         self.assertNotIn("cabeza.style", router,
                          "el router vuelve a pintar la cara del cabezal viejo")
-        # Quien dice con quien hablas, y lo dice con nombre.
-        self.assertIn("chat-quien", router,
-                      "nadie declara el companero activo en el chat")
+        # Y TAMPOCO UN SEGUNDO ROTULO DE TEXTO (2026-09-07). Aqui se exigia
+        # justo lo contrario --que el router pintase `.chat-quien`-- y el
+        # Soberano lo retiro con el motivo delante: «ya tenemos el titulo del
+        # modelo inmediatamente debajo». La nube elegida dice el mismo nombre
+        # tres milimetros mas abajo, asi que la regla que ya prohibia `#cabeza`
+        # se aplica igual a un texto: dos indicadores del mismo hecho terminan
+        # discrepando.
+        #
+        # SE BUSCA EL LITERAL ENTRECOMILLADO, no la palabra suelta: el
+        # comentario del router explica por escrito por que la linea se fue, y
+        # una comprobacion que lee prosa se cree lo que la prosa dice. Es la
+        # misma cicatriz de dos lineas mas arriba, y ya ha mordido cuatro veces
+        # en esta casa.
+        self.assertNotIn("'chat-quien'", router,
+                         "el router vuelve a pintar un segundo rotulo con el "
+                         "nombre del companero")
+        # Pero alguien TIENE que decirlo. Lo dice la nube elegida.
+        hub = (PUBLICO / "assets" / "hub.js").read_text(encoding="utf-8")
+        self.assertIn("'modelo-nombre'", hub,
+                      "nadie declara el companero activo en la portada")
 
     def test_las_cuatro_puertas_y_su_orden(self):
         """La navegacion: cuatro, en su orden, y ocupando el ancho.

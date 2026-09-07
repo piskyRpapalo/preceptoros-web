@@ -107,33 +107,23 @@
   document.addEventListener('preceptor:turno', function () { nube.hidden = true; });
 })();
 
-/* --- La pista del campo dice CON QUIEN se habla ----------------------------
- * Era «Escribe tu primera pregunta...» y se quedaba asi para siempre: la
- * segunda pregunta ya no es la primera, y sobre todo no decia con quien. Con
- * ocho companeros detras del catalogo, el campo es el ultimo sitio donde se
- * lee a quien le vas a hablar -- y es donde se esta mirando al escribir.
+/* --- LA PISTA DEL CAMPO YA NO NOMBRA AL COMPANERO (2026-09-07) ------------
+ * Aqui vivia la que la reescribia al elegir companero: una plantilla con `{}`
+ * por lengua --«Escribe aqui para hablar con X»-- para que el aleman pudiera
+ * poner el hueco donde su gramatica lo pide. La razon de ser era que el campo
+ * fuera «el ultimo sitio donde se lee a quien le vas a hablar».
  *
- * PLANTILLA CON `{}` Y NO CONCATENACION. «Escribe aqui para hablar con» + el
- * nombre funciona en castellano y se rompe en aleman, donde el verbo se parte
- * y va al final: «Schreib hier, um mit X zu sprechen». Cada lengua coloca el
- * hueco donde su gramatica lo pide. Concatenar habria sido escribir ocho
- * lenguas con la sintaxis de una.
+ * El Soberano la cambia por una frase fija y mas corta, en imperativo
+ * presente: «Habla o escribe...». Y con eso el nombre del companero sale del
+ * campo, que es coherente con lo otro que se retiro hoy -- la nube elegida es
+ * quien dice con quien hablas, y es el unico sitio que lo dice.
  *
- * Se pinta al elegir companero, que es el unico momento en que el dato existe.
- * Si la clave no esta traducida, el marcado conserva su pista y no pasa nada:
- * degradar, no romper. */
-(function () {
-  var campo = document.getElementById('pregunta');
-  var bloque = document.getElementById('i18n');
-  if (!campo || !bloque) return;
-  var plantilla = (JSON.parse(bloque.textContent) || {}).campoPista;
-  if (!plantilla || plantilla.indexOf('{}') < 0) return;
-
-  document.addEventListener('preceptor:companero', function (e) {
-    var quien = e.detail && e.detail.nombre;
-    if (quien) campo.placeholder = plantilla.replace('{}', quien);
-  });
-})();
+ * Se BORRA el bloque en vez de dejarlo sin efecto. La guarda que tenia
+ * --`if (plantilla.indexOf('{}') < 0) return`-- lo habria apagado solo al
+ * quitar el `{}` del texto, y eso es peor que borrarlo: un codigo que no hace
+ * nada porque un dato de otro fichero cambio de forma se lee como codigo vivo
+ * hasta que alguien lo prueba. La pista vive ahora donde se ve, en el atributo
+ * `placeholder` de cada portada. */
 
 /* --- UN SOLO DESPERTAR POR SESION (2026-09-05) -----------------------------
  * La otra mitad de lo que arregla la raiz. Se veian dos intros seguidas al

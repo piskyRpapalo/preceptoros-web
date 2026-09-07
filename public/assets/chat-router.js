@@ -23,7 +23,7 @@
   var PC = window.matchMedia ? matchMedia('(min-width:1024px)') : { matches: false };
   var quieto = window.matchMedia
     ? matchMedia('(prefers-reduced-motion: reduce)') : { matches: false };
-  var nombre = null, aviso = null, activo = null;
+  var aviso = null, activo = null;
   /* El papel Caza-Nido se COMPONE aqui y viaja ya hecho. `chat.js` recibe
      texto, no una clave: tiene 129 B libres y no debe aprender a buscar en el
      catalogo. Este fichero ya sabe quien contesta; saber que papel juega es la
@@ -50,41 +50,29 @@
     document.startViewTransition(fn);
   }
 
-  /* --- QUIEN TE HABLA BAJA A LA FICHA DEL APARATO (2026-09-05) ------------
-     Era una pastilla flotando sobre la esquina del chat, y encima de la
-     primera linea de la conversacion: se leia el nombre del companero
-     tachando lo primero que dijo. Se vio en el telefono.
+  /* --- QUIEN TE HABLA YA LO DICE LA NUBE ELEGIDA (2026-09-07) ------------
+     Aqui se pintaba `.chat-quien`: una linea con el nombre del companero y su
+     funcion detras, la primera de la ficha del aparato. Se retira, y lo pide
+     el Soberano con el motivo delante: «ya tenemos el titulo del modelo
+     inmediatamente debajo».
 
-     Baja al cuadro de especificaciones, que es donde el Soberano lo pidio:
-     «debajo de la ventana de texto tenemos las especificaciones del modelo +
-     la funcion de Herramienta en la pagina». Ahi comparte caja con el motor,
-     la velocidad y las ocho nubes -- las cuatro cosas contestan a la misma
-     pregunta, «que hay puesto en este aparato», y separadas no se leian como
-     una respuesta.
+     Y es exacto -- la nube elegida de `#panel-modelos` esta tres milimetros mas
+     abajo diciendo el mismo nombre. Dos rotulos para el mismo hecho es lo que
+     esta misma prueba prohibio cuando se retiro `#cabeza`: «dos indicadores del
+     mismo hecho terminan discrepando». Lo que valia contra un dibujo vale
+     contra un texto.
 
-     Y DEJA DE SER UN BOTON. Abria el mando de Herramientas llamando a
-     `getElementById('lateral-boton')`, que se retiro hoy: el codigo seguia
-     ahi, protegido por su `if`, sin hacer nada y sin quejarse -- un boton que
-     no hace nada es peor que uno que falta. Las nubes que abria estan ahora
-     tres centimetros mas abajo, a la vista. Lo que queda es lo que siempre
-     fue: un rotulo que dice con quien hablas y para que sirve.
+     LO QUE SI SE PIERDE, y se dice en vez de disimularlo: la FUNCION del
+     companero --«te instala el producto y te presenta a los demas»-- solo
+     queda en el `title` de su nube. En un telefono no hay cursor que pasar por
+     encima, que es el argumento con el que subio a pantalla el 2026-09-05. Si
+     vuelve a hacer falta, su sitio es la nube --donde esta el nombre-- y no una
+     segunda linea encima.
 
-     LA FUNCION SE ANADE, y es dato nuevo en pantalla: vivia solo en el `title`
-     de cada nube, donde en un telefono no la lee nadie -- no hay cursor que
-     pasar por encima. */
-  var ficha = document.getElementById('especificaciones');
-  var barra = document.createElement('p');
-  barra.className = 'chat-quien';
-  nombre = document.createElement('b');
-  nombre.className = 'chat-nombre';
-  var funcion = document.createElement('span');
-  funcion.className = 'quien-funcion';
-  barra.appendChild(nombre);
-  barra.appendChild(funcion);
+     El aviso de «sin servir» SE QUEDA: ese no lo dice nadie mas. */
   aviso = document.createElement('p');
   aviso.className = 'chat-aviso'; aviso.hidden = true;
   chat.insertBefore(aviso, chat.firstChild);
-  if (ficha) ficha.insertBefore(barra, ficha.firstChild);
 
   function vestir(a) {
     if (!a) return;
@@ -92,11 +80,9 @@
     // La etiqueta va en el idioma de la pagina, y sale del bloque i18n de la
     // portada -- que es donde vive el texto de esta lengua y de ninguna otra.
     var voz = (window.Hub && Hub.rotulos.agentes && Hub.rotulos.agentes[a.id]) || a;
-    nombre.textContent = voz.name || a.name;
-    funcion.textContent = voz.function || a.function || '';
-    /* Aqui se le ponia cara al cabezal: `#cabeza` cambiaba de fondo con el
-       companero activo. Se retiro con el cabezal viejo el 2026-09-05 -- quien
-       dice con quien hablas es `.chat-quien`, que ademas trae el nombre. */
+    /* Aqui se le ponia cara al cabezal --`#cabeza`, retirado el 2026-09-05-- y
+       despues se escribia el nombre en una linea propia, retirada hoy. Quien
+       dice con quien hablas es la nube elegida, y solo ella. */
     var r = a.real || {};
     var L = (window.Hub && window.Hub.textos) || {};
     if (!r.disponible) {
