@@ -18,9 +18,9 @@
    "status": "idle",
    "real": {
     "disponible": true,
-    "modelo": "qwen3-coder:30b",
+    "modelo": "preceptor-charla-web:v1",
     "afinado": null,
-    "nota": "corre sobre el modelo BASE, sin afinar. El adaptador `preceptor-v7` que este catalogo declaraba servido YA NO ESTA en el rack: medido el 2026-09-01, Ollama sirve dos modelos y ninguno es ese. Un afinado mejora el papel; no es requisito para servir un turno."
+    "nota": "MEDIDO 2026-09-07: el modelo anterior --qwen3-coder:30b-- devolvia 403 Forbidden a traves del tunel, asi que el chat de la web NO funcionaba: la pagina pedia un modelo que el rack rechaza. Es el mismo fallo que esta nota ya describio una vez con otro modelo, y por eso ahora se comprueba con un POST real antes de declarar nada. `preceptor-charla-web:v1` responde 200 y acierta los hechos del producto (4,4 GB, no es un sistema operativo, se instala desde el codigo, v1.3 publicada). SUS LIMITES, dichos aqui porque se van a notar: es verboso, a veces arrastra un trozo de sus propias instrucciones al final, y a quien dice que ya ha instalado todavia le puede repetir los pasos. Corre sobre Mistral 7B SIN adaptador: los LoRA de La Charla se probaron y salieron NO-GO --pisan cifras del prompt con cifras inventadas--."
    },
    "icono3d": "instalador",
    "nido": "guia"
