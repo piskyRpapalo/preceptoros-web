@@ -1,40 +1,35 @@
-/* preceptoros.org · elegir con que cerebro hablas, sin recargar.
+/* preceptoros.org · elegir cerebro pulsando una tarjeta, no un desplegable.
  *
- * ENVUELVE, NO REESCRIBE. `chat.js` pide el turno con `Rack.stream(modelo,...)`
- * y coge ese `modelo` del compañero. Aquí no se toca ni `chat.js` ni el router:
- * se envuelve `Rack.stream` y se le sustituye el primer argumento cuando hay
- * elección guardada. Es la regla de la casa --`chat-router.js` la fijó-- y
- * además es lo único que aplica el cambio EN EL TURNO SIGUIENTE sin recargar.
+ * POR QUE TARJETAS Y NO UN `select`. Lo pidio el Soberano asi: «botones grandes
+ * y educativos», con el mismo formato de la ficha que ya hay bajo el chat --
+ * nombre, modelo, capacidad medida--. Un desplegable obliga a saber de antemano
+ * que significa cada nombre; una tarjeta lo explica mientras eliges. Y quien
+ * entra a probar cerebros esta aprendiendo que hace cada capa: eso es la mitad
+ * del producto, no un ajuste escondido en una rueda.
  *
- * NO TRAE NI UNA CLAVE i18n NUEVA. La única palabra es «Modelo», y ocho
- * traducciones de una palabra caben aquí mejor que en ocho bloques i18n --las
- * portadas griega y rusa están a menos de un kilobyte del tope--.
+ * ENVUELVE, NO REESCRIBE. `chat.js` pide el turno con `Rack.stream(modelo,...)`.
+ * Aqui se envuelve esa funcion y se le sustituye el primer argumento. Ni
+ * `chat.js` ni el router se tocan -- la regla que fijo `chat-router.js`.
  *
- * LOS NOMBRES SON LOS DEL RACK, sin maquillar. Quien abra esto está probando
- * cerebros, y un rótulo bonito encima de un identificador solo añade un sitio
- * donde equivocarse. */
+ * LAS CIFRAS SON MEDIDAS Y VIENEN DE `cerebros.json`, que las trae del propio
+ * Ollama. Un `null` se pinta NO_DATA y no se rellena: una tarjeta con una cifra
+ * inventada seria exactamente lo que este sitio dice no hacer.
+ */
 (function () {
   var LLAVE = 'preceptor-modelo';
-  var PALABRA = { es:'Modelo', en:'Model', pt:'Modelo', fr:'Modèle', it:'Modello',
-                  de:'Modell', el:'Μοντέλο', ru:'Модель' };
-  /* Comprobados con un POST real contra el túnel el 2026-09-07. El 403 que se
-     ve a veces es limitación de ritmo, no del modelo: se repite y pasa. */
-  var MODELOS = [
-    ['', '— el del compañero —'],
-    ['preceptor-charla-web:v1', 'charla-web:v1 · hechos, sin adaptador'],
-    ['preceptor-charla-base:v1', 'charla-base:v1 · LoRA 300 pasos'],
-    ['preceptor-charla-multi:v1', 'charla-multi:v1 · LoRA 7 lenguas'],
-    ['preceptor-v7:latest', 'preceptor-v7 · el anterior'],
-    ['qwen3-coder:30b', 'qwen3-coder:30b · 30B, sin system'],
-    ['mistral:7b-instruct-v0.3-q4_K_M', 'mistral 7B · base pura']
-  ];
+  var PAL = { es:['Elige cerebro','prompt','generación','despertar','recomendado','sin firmar','en uso'],
+            en:['Choose a brain','prompt','generation','wake-up','recommended','unsigned','in use'],
+            pt:['Escolhe cérebro','prompt','geração','despertar','recomendado','sem assinar','em uso'],
+            fr:['Choisis un cerveau','prompt','génération','réveil','recommandé','non signé','en cours'],
+            it:['Scegli cervello','prompt','generazione','risveglio','consigliato','non firmato','in uso'],
+            de:['Gehirn wählen','Prompt','Erzeugung','Aufwachen','empfohlen','unsigniert','aktiv'],
+            el:['Διάλεξε εγκέφαλο','prompt','παραγωγή','αφύπνιση','προτεινόμενο','ανυπόγραφο','σε χρήση'],
+            ru:['Выбери мозг','prompt','генерация','пробуждение','рекомендуется','без подписи','в работе'] };
 
   function guardado() {
     try { return localStorage.getItem(LLAVE) || ''; } catch (e) { return ''; }
   }
 
-  /* La sustitución vive aquí y no en el `change`: así vale también para el
-     valor que ya estaba guardado de una visita anterior. */
   function envolver() {
     if (!window.Rack || window.Rack.__envuelto) return;
     var original = window.Rack.stream;
@@ -44,51 +39,88 @@
     window.Rack.__envuelto = true;
   }
 
-  function pintar() {
-    var panel = document.getElementById('panel-ajustes');
-    if (!panel || document.getElementById('sel-modelo')) return;
+  function el(t, c, x) {
+    var n = document.createElement(t);
+    if (c) n.className = c;
+    if (x != null) n.textContent = x;
+    return n;
+  }
+
+  /* Una cifra ausente NO se maquilla. `null` llega cuando el modelo no
+     respondio al medirlo, y decirlo es el producto. */
+  function cifra(v, unidad) {
+    return v == null ? 'NO_DATA' : String(v).replace('.', ',') + unidad;
+  }
+
+  function pintar(reg, w) {
+    var host = document.getElementById('especificaciones');
+    if (!host || document.getElementById('cerebros')) return;
+    var caja = el('section', 'cerebros'); caja.id = 'cerebros';
+    caja.appendChild(el('h2', 'cerebros-titulo', w[0]));
+    var pie = el('p', 'cerebros-pie',
+      w[1] + ' / ' + w[2] + ' · ' + reg.backend + ' · ' + reg.medido);
+    var rejilla = el('div', 'cerebros-rejilla');
+
+    (reg.cerebros || []).forEach(function (c) {
+      var b = el('button', 'cerebro'); b.type = 'button';
+      b.dataset.modelo = c.modelo;
+      b.appendChild(el('h3', null, c.nombre));
+      if (c.recomendado) b.appendChild(el('span', 'cerebro-marca', w[4]));
+      b.appendChild(el('p', 'cerebro-modelo', c.modelo));
+      b.appendChild(el('p', 'cerebro-que', c.que_es));
+      var d = el('p', 'cerebro-datos');
+      d.appendChild(el('b', null, cifra(c.prompt, '')));
+      d.appendChild(el('span', null, ' ' + w[1] + ' · '));
+      d.appendChild(el('b', null, cifra(c.generacion, '')));
+      d.appendChild(el('span', null, ' ' + w[2] + ' tok/s · ' + w[3] + ' '));
+      d.appendChild(el('b', null, cifra(c.carga_s, ' s')));
+      b.appendChild(d);
+      b.appendChild(el('p', 'cerebro-firma',
+        (c.firmado ? '' : w[5]) + ' · contexto ' + reg.contexto));
+      b.addEventListener('click', function () { elegir(c.modelo); });
+      rejilla.appendChild(b);
+    });
+    caja.appendChild(rejilla);
+    caja.appendChild(pie);
+    host.parentNode.insertBefore(caja, host.nextSibling);
+    marcar(w);
+  }
+
+  function marcar(w) {
+    var actual = guardado();
+    Array.prototype.forEach.call(document.querySelectorAll('.cerebro'), function (b) {
+      var mio = b.dataset.modelo === actual;
+      b.classList.toggle('elegido', mio);
+      b.setAttribute('aria-pressed', mio ? 'true' : 'false');
+      var m = b.querySelector('.cerebro-uso');
+      if (mio && !m) { m = el('span', 'cerebro-uso', w[6]); b.appendChild(m); }
+      if (!mio && m) m.remove();
+    });
+  }
+
+  function elegir(modelo) {
+    try { localStorage.setItem(LLAVE, modelo); } catch (e) { /* privado */ }
     var lang = (document.documentElement.lang || 'es').slice(0, 2);
-    var fila = document.createElement('p');
-    fila.className = 'ajuste-fila';
-    var et = document.createElement('label');
-    et.htmlFor = 'sel-modelo';
-    et.textContent = (PALABRA[lang] || PALABRA.es) + ' ';
-    var sel = document.createElement('select');
-    sel.id = 'sel-modelo';
-    sel.className = 'leve';
-    MODELOS.forEach(function (m) {
-      var o = document.createElement('option');
-      o.value = m[0]; o.textContent = m[1];
-      sel.appendChild(o);
-    });
-    sel.value = guardado();
-    sel.addEventListener('change', function () {
-      try { localStorage.setItem(LLAVE, sel.value); } catch (e) { /* privado */ }
-      document.dispatchEvent(new CustomEvent('preceptor:brain', {
-        detail: { name: sel.value || '—', live: false } }));
-    });
-    fila.appendChild(et); fila.appendChild(sel);
-    panel.appendChild(fila);
+    marcar(PAL[lang] || PAL['es']);
+    document.dispatchEvent(new CustomEvent('preceptor:brain',
+      { detail: { name: modelo, live: false } }));
   }
 
-  /* SE VIGILA EL PANEL, y no basta con pintarlo una vez. `hub.js` construye la
-     rueda con `ajustes.innerHTML = ''` y vuelve a llenarla: si esto se pinta
-     antes, la fila desaparece sin dejar rastro --se vio, y por eso el selector
-     no estaba donde yo dije que estaba--. Un observador la repone despues de
-     cualquier reconstruccion, venga de quien venga y cuando venga: no hay que
-     saber en que orden cargan los guiones, que es justo el dato que hoy no se
-     puede dar por sabido. */
-  function vigilar() {
-    var panel = document.getElementById('panel-ajustes');
-    if (!panel) return;
-    pintar();
-    new MutationObserver(function () {
-      if (!document.getElementById('sel-modelo')) pintar();
-    }).observe(panel, { childList: true });
+  function arrancar() {
+    envolver();
+    var lang = (document.documentElement.lang || 'es').slice(0, 2);
+    var w = PAL[lang] || PAL['es'];
+    fetch('/cerebros.json', { cache: 'no-store' })
+      .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+      .then(function (reg) { pintar(reg, w); })
+      .catch(function (e) {
+        var host = document.getElementById('especificaciones');
+        if (!host || document.getElementById('cerebros')) return;
+        var p = el('p', 'nodata', 'NO_DATA · ' + e.message);
+        host.parentNode.insertBefore(p, host.nextSibling);
+      });
   }
 
-  envolver();
-  addEventListener('load', function () { envolver(); vigilar(); });
-  if (document.readyState !== 'loading') vigilar();
-  else addEventListener('DOMContentLoaded', vigilar);
+  addEventListener('load', arrancar);
+  if (document.readyState === 'complete') arrancar();
 })();

@@ -136,3 +136,37 @@
    pequena y sin pastilla. La pastilla la tenia por ir metida entre datos. */
 #especificaciones .medidas-hueco{display:inline-block;margin:.25rem 0 0;
   font-size:.6rem;padding:.06rem .4rem}
+
+/* --- LOS CEREBROS, EN TARJETA Y NO EN DESPLEGABLE -------------------------
+   Pedido asi: «botones grandes y educativos», con el formato de la ficha de
+   aqui arriba. Un desplegable obliga a saber que significa cada nombre antes
+   de elegir; una tarjeta lo explica mientras eliges.
+
+   `auto-fit` con minimo de 15rem y no un numero de columnas: en el telefono
+   caen a una, en la mesa a dos o tres, y nadie tiene que decidir cuantas. */
+.cerebros{margin-top:1.2rem}
+.cerebros-titulo{font-size:1rem;margin:0 0 .6rem}
+.cerebros-rejilla{display:grid;gap:.7rem;
+  grid-template-columns:repeat(auto-fit,minmax(15rem,1fr))}
+/* `.cerebros .cerebro` y no `.cerebro` a secas: `base.css` pinta TODO `button`
+   de violeta lleno, y una tarjeta que se lee como el boton de enviar invita a
+   pulsarla creyendo que hace otra cosa. Dos clases ganan a un elemento sin
+   necesidad de un `!important` que no explicaria por que. */
+.cerebros .cerebro{display:block;width:100%;text-align:left;cursor:pointer;
+  padding:.8rem .9rem;border:1px solid var(--tenue);border-radius:var(--radius);
+  background:rgba(10,6,28,.55);color:inherit;font:inherit}
+.cerebros .cerebro:is(:hover,:focus-visible){border-color:var(--oro)}
+/* El elegido se dice con BORDE y con texto --«en uso»--, no solo con color:
+   quien no distingue el dorado del gris se queda sin saber cual esta puesto. */
+.cerebros .cerebro.elegido{border-color:var(--oro);
+  background:rgba(242,208,138,.12)}
+.cerebro h3{margin:0;font-size:.92rem}
+.cerebro-marca,.cerebro-uso{display:inline-block;margin-top:.3rem;
+  padding:.05rem .45rem;border-radius:999px;font-size:.62rem;
+  border:1px solid var(--oro);color:var(--oro)}
+.cerebro-modelo{margin:.35rem 0 .2rem;font-family:ui-monospace,monospace;
+  font-size:.7rem;color:var(--oro);word-break:break-all}
+.cerebro-que{margin:.2rem 0 .5rem;font-size:.78rem;line-height:1.45}
+.cerebro-datos{margin:0;font-size:.72rem}
+.cerebro-firma{margin:.25rem 0 0;font-size:.66rem;color:var(--tenue)}
+.cerebros-pie{margin:.6rem 0 0;font-size:.68rem;color:var(--tenue)}
