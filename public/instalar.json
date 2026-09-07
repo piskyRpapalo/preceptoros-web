@@ -19,7 +19,7 @@
    "pwaBoton": "Instalar esta web",
    "appBoton": "Última versión de la app",
    "pwaManual": "Se instala como una aplicación y funciona sin red. Si tu navegador no ofrece el botón, hazlo a mano: en Android, menú ⋮ → «Instalar aplicación»; en iPhone, Compartir → «Añadir a pantalla de inicio».",
-   "appVacio": "La versión publicada es la v1.3, del 31 de agosto de 2026. Lo que hay detrás son los instaladores y las instrucciones para Android, no un programa empaquetado: se instala desde el código."
+   "appVacio": "La descarga está pausada durante 48 horas por decisión del Soberano. El botón se enciende solo cuando el contador llegue a cero."
   },
   "en": {
    "pwaTitulo": "The site, installed",
@@ -36,7 +36,7 @@
    "pwaBoton": "Install this site",
    "appBoton": "Latest app version",
    "pwaManual": "It installs as an app and works offline. If your browser does not offer the button, do it by hand: on Android, menu ⋮ → «Install app»; on iPhone, Share → «Add to Home Screen».",
-   "appVacio": "The published version is v1.3, from 31 August 2026. Behind it are the installers and the Android instructions, not a packaged program: it installs from source."
+   "appVacio": "The download is paused for 48 hours by the Sovereign's decision. The button switches itself on when the counter reaches zero."
   },
   "fr": {
    "pwaTitulo": "Le site, installé",
@@ -53,7 +53,7 @@
    "pwaBoton": "Installer ce site",
    "appBoton": "Dernière version de l'app",
    "pwaManual": "Il s'installe comme une application et fonctionne hors ligne. Si votre navigateur ne propose pas le bouton, faites-le à la main : sur Android, menu ⋮ → « Installer l'application » ; sur iPhone, Partager → « Sur l'écran d'accueil ».",
-   "appVacio": "La version publiée est la v1.3, du 31 août 2026. Derrière, il y a les installeurs et les instructions Android, pas un programme empaqueté : il s'installe depuis le code."
+   "appVacio": "Le téléchargement est en pause pendant 48 heures, par décision du Souverain. Le bouton s'allume tout seul quand le compteur arrive à zéro."
   },
   "pt": {
    "pwaTitulo": "O site, instalado",
@@ -70,7 +70,7 @@
    "pwaBoton": "Instalar este site",
    "appBoton": "Última versão da app",
    "pwaManual": "Instala-se como aplicação e funciona sem rede. Se o teu navegador não oferecer o botão, fá-lo à mão: no Android, menu ⋮ → «Instalar aplicação»; no iPhone, Partilhar → «Adicionar ao ecrã principal».",
-   "appVacio": "A versão publicada é a v1.3, de 31 de agosto de 2026. Por trás estão os instaladores e as instruções para Android, não um programa empacotado: instala-se a partir do código."
+   "appVacio": "A descarga está pausada durante 48 horas por decisão do Soberano. O botão acende sozinho quando o contador chegar a zero."
   },
   "it": {
    "pwaTitulo": "Il sito, installato",
@@ -87,7 +87,7 @@
    "pwaBoton": "Installa questo sito",
    "appBoton": "Ultima versione dell'app",
    "pwaManual": "Si installa come applicazione e funziona senza rete. Se il tuo browser non offre il pulsante, fallo a mano: su Android, menu ⋮ → «Installa app»; su iPhone, Condividi → «Aggiungi a Home».",
-   "appVacio": "La versione pubblicata è la v1.3, del 31 agosto 2026. Dietro ci sono gli installatori e le istruzioni per Android, non un programma impacchettato: si installa dal codice."
+   "appVacio": "Il download è in pausa per 48 ore per decisione del Sovrano. Il pulsante si accende da solo quando il contatore arriva a zero."
   },
   "de": {
    "pwaTitulo": "Die Seite, installiert",
@@ -104,7 +104,7 @@
    "pwaBoton": "Diese Seite installieren",
    "appBoton": "Neueste Version der App",
    "pwaManual": "Sie installiert sich als Anwendung und funktioniert ohne Netz. Bietet dein Browser den Knopf nicht an, mach es von Hand: unter Android Menü ⋮ → «App installieren»; auf dem iPhone Teilen → «Zum Home-Bildschirm».",
-   "appVacio": "Die veröffentlichte Version ist v1.3 vom 31. August 2026. Dahinter stehen die Installationsskripte und die Android-Anleitung, kein fertiges Programm: es wird aus dem Quelltext installiert."
+   "appVacio": "Der Download pausiert 48 Stunden, auf Entscheidung des Souveräns. Der Knopf geht von selbst an, wenn der Zähler null erreicht."
   },
   "ru": {
    "pwaTitulo": "Сайт, установленный",
@@ -121,7 +121,7 @@
    "pwaBoton": "Установить этот сайт",
    "appBoton": "Последняя версия приложения",
    "pwaManual": "Ставится как приложение и работает без сети. Если твой браузер не предлагает кнопку, сделай это вручную: на Android — меню ⋮ → «Установить приложение»; на iPhone — «Поделиться» → «На экран Домой».",
-   "appVacio": "Опубликованная версия — v1.3 от 31 августа 2026 года. За ней стоят установщики и инструкции для Android, а не готовая программа: она ставится из исходного кода."
+   "appVacio": "Загрузка приостановлена на 48 часов решением Суверена. Кнопка включится сама, когда счётчик дойдёт до нуля."
   },
   "el": {
    "pwaTitulo": "Ο ιστότοπος, εγκατεστημένος",
@@ -138,8 +138,13 @@
    "pwaBoton": "Εγκατάσταση αυτού του ιστότοπου",
    "appBoton": "Τελευταία έκδοση της εφαρμογής",
    "pwaManual": "Εγκαθίσταται ως εφαρμογή και δουλεύει χωρίς δίκτυο. Αν ο περιηγητής σου δεν προσφέρει το κουμπί, κάν᾽ το με το χέρι: σε Android, μενού ⋮ → «Εγκατάσταση εφαρμογής»· σε iPhone, Κοινή χρήση → «Στην αρχική οθόνη».",
-   "appVacio": "Η δημοσιευμένη έκδοση είναι η v1.3, της 31ης Αυγούστου 2026. Από πίσω υπάρχουν οι εγκαταστάτες και οι οδηγίες για Android, όχι ένα έτοιμο πρόγραμμα: εγκαθίσταται από τον κώδικα."
+   "appVacio": "Η λήψη είναι σε παύση για 48 ώρες, με απόφαση του Κυρίαρχου. Το κουμπί ανάβει μόνο του όταν ο μετρητής φτάσει στο μηδέν."
   }
  },
- "releases": "https://github.com/piskyRpapalo/PreceptorOS/releases/latest"
+ "releases": "https://github.com/piskyRpapalo/PreceptorOS/releases/latest",
+ "pausa_descarga": {
+  "hasta": "2026-09-09T20:01:13Z",
+  "por_que": "Decision del Soberano: la distribucion de la app se para 48 horas. El boton no desaparece --eso seria borrar la promesa en vez de aplazarla-- sino que se apaga y ENSEÑA cuanto falta. Un visitante que ve un contador sabe que hay algo detras y cuando; uno que ve un hueco no sabe si el proyecto sigue vivo.",
+  "cuando_pase": "El boton se enciende SOLO. No hay que tocar nada: la fecha es el interruptor, y por eso vive aqui como un hecho y no cocida en el codigo."
+ }
 }

@@ -102,8 +102,38 @@
            estado se comprueba contra el estado, no se hereda del fichero. El
            `curl` que lo destapa esta en `appVacio`, que ahora dice QUE hay
            detras en vez de negar que haya algo. */
-        var ba = el('a', 'boton', T.appBoton);
-        ba.href = d.releases; ba.rel = 'noopener';
+        /* LA PAUSA DE 48 HORAS · 2026-09-07, decision del Soberano.
+           El boton NO desaparece: eso seria borrar la promesa en vez de
+           aplazarla, y quien llega no sabria si el proyecto sigue vivo. Se
+           apaga y ENSEÑA cuanto falta. La fecha es el interruptor y vive en el
+           registro, asi que cuando pase se enciende solo -- no hay que acordarse
+           de volver a tocar nada, que es como se quedan los carteles viejos
+           colgados meses.
+
+           El contador se escribe con horas y minutos en cifras --«47h 12m»--
+           precisamente para no gastar ocho traducciones en dos letras que se
+           entienden en las ocho lenguas de este sitio. */
+        var hasta = d.pausa_descarga && Date.parse(d.pausa_descarga.hasta);
+        var pausado = hasta && Date.now() < hasta;
+        var ba;
+        if (pausado) {
+          ba = el('button', 'boton', T.appBoton);
+          ba.type = 'button'; ba.disabled = true;
+          var cuenta = el('span', 'app-cuenta', '');
+          var tic = function () {
+            var falta = hasta - Date.now();
+            if (falta <= 0) { location.reload(); return; }
+            var h = Math.floor(falta / 3600000);
+            var m = Math.floor((falta % 3600000) / 60000);
+            cuenta.textContent = h + 'h ' + String(m).padStart(2, '0') + 'm';
+          };
+          tic(); setInterval(tic, 30000);
+          ba.appendChild(document.createTextNode(' · '));
+          ba.appendChild(cuenta);
+        } else {
+          ba = el('a', 'boton', T.appBoton);
+          ba.href = d.releases; ba.rel = 'noopener';
+        }
         var fila = el('div', 'fila');
         fila.appendChild(bp); fila.appendChild(ba);
         pwa.appendChild(fila);

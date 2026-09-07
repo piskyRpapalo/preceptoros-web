@@ -225,3 +225,7 @@
 #panel-ajustes .ajuste-idioma:hover,
 #panel-ajustes .ajuste-idioma:focus-visible{
   background:color-mix(in srgb, var(--violeta) 94%, #fff)}
+
+/* El contador de la pausa va dentro del boton apagado, en cifras y con el oro
+   del canon: se lee como un dato y no como parte del rotulo. */
+.app-cuenta{font-variant-numeric:tabular-nums;color:var(--oro);font-weight:700}
