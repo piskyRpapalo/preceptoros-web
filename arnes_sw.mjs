@@ -114,7 +114,7 @@ const rutas = await shell.keys();
 // `esquina.css` que se partio por asunto al llegar la hoja al tope. El
 // numero se sube A MANO a proposito -- si se calculara del propio fichero
 // no vigilaria nada: una ruta que se cuela sin querer pasaria igual.
-ok('precachea paginas y piezas del Hub', rutas.length === 100, rutas.length+' rutas');
+ok('precachea paginas y piezas del Hub', rutas.length === 104, rutas.length+' rutas');
 ok('el shell trae las tres tiras de la cara',
    ['apertura', 'reposo', 'habla']
      .every(s => rutas.includes('/assets/caras/secuencia-' + s + '-256.webp')));

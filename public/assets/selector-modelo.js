@@ -64,10 +64,29 @@
     (reg.cerebros || []).forEach(function (c) {
       var b = el('button', 'cerebro'); b.type = 'button';
       b.dataset.modelo = c.modelo;
-      b.appendChild(el('h3', null, c.nombre));
-      if (c.recomendado) b.appendChild(el('span', 'cerebro-marca', w[4]));
+      /* El logo va en <img> y no inline: son tres ficheros de 250 B que el
+         worker ya cachea, y meterlos en el JS los repetiria seis veces. El
+         `alt` va VACIO a proposito -- el nombre esta al lado en texto, y un
+         lector de pantalla que diga «logo de Mistral, Mistral» dice dos veces
+         lo mismo. Si el fichero falta, `onerror` lo retira y la tarjeta sigue
+         entera: un hueco roto es peor que ningun dibujo. */
+      var cab = el('div', 'cerebro-cab');
+      if (c.logo) {
+        var img = document.createElement('img');
+        img.className = 'cerebro-logo'; img.src = c.logo; img.alt = '';
+        img.width = 22; img.height = 22; img.loading = 'lazy';
+        img.onerror = function () { img.remove(); };
+        cab.appendChild(img);
+      }
+      cab.appendChild(el('h3', null, c.nombre));
+      if (c.recomendado) cab.appendChild(el('span', 'cerebro-marca', w[4]));
+      b.appendChild(cab);
       b.appendChild(el('p', 'cerebro-modelo', c.modelo));
       b.appendChild(el('p', 'cerebro-que', c.que_es));
+      /* QUE FEEDBACK SE BUSCA, y por eso va antes que las cifras: un tester al
+         que no se le dice que mirar reporta lo que le llama la atencion, que
+         casi nunca es lo que hace falta. */
+      if (c.purpose) b.appendChild(el('p', 'cerebro-busca', c.purpose));
       var d = el('p', 'cerebro-datos');
       d.appendChild(el('b', null, cifra(c.prompt, '')));
       d.appendChild(el('span', null, ' ' + w[1] + ' · '));
@@ -77,10 +96,14 @@
       b.appendChild(d);
       b.appendChild(el('p', 'cerebro-firma',
         (c.firmado ? '' : w[5]) + ' · contexto ' + reg.contexto));
+      /* La invitacion va UNA vez, al pie de la rejilla y no en cada tarjeta:
+         repetida seis veces deja de ser una invitacion y pasa a ser un cartel. */
       b.addEventListener('click', function () { elegir(c.modelo); });
       rejilla.appendChild(b);
     });
     caja.appendChild(rejilla);
+    var cta = (reg.cerebros[0] || {}).cta_hash;
+    if (cta) caja.appendChild(el('p', 'cerebros-cta', cta));
     caja.appendChild(pie);
     host.parentNode.insertBefore(caja, host.nextSibling);
     marcar(w);

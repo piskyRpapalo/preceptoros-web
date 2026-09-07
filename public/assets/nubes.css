@@ -170,3 +170,12 @@
 .cerebro-datos{margin:0;font-size:.72rem}
 .cerebro-firma{margin:.25rem 0 0;font-size:.66rem;color:var(--tenue)}
 .cerebros-pie{margin:.6rem 0 0;font-size:.68rem;color:var(--tenue)}
+
+/* El logo y el nombre en la misma linea, y el sello a su derecha. `flex-wrap`
+   porque en 320 px «recomendado» no cabe al lado de un nombre largo. */
+.cerebro-cab{display:flex;align-items:center;gap:.45rem;flex-wrap:wrap}
+.cerebros .cerebro-logo{width:22px;height:22px;flex:0 0 auto;color:var(--oro);opacity:.85}
+.cerebro-busca{margin:.1rem 0 .5rem;padding-left:.55rem;font-size:.74rem;
+  line-height:1.45;color:var(--bronce-hondo);border-left:2px solid var(--oro)}
+.cerebros-cta{margin:.8rem 0 0;padding:.55rem .7rem;font-size:.76rem;line-height:1.5;
+  border:1px dashed var(--oro);border-radius:var(--radius);color:var(--oro)}
