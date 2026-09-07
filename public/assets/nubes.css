@@ -182,3 +182,9 @@
 
 /* El consentimiento vive en `consiento.css`: es otro asunto --que pasa con lo
    que escribes-- y esta hoja habia llegado al tope con el dentro. */
+
+/* La tabla del 2026-08-25 se retira cuando hay cerebro elegido: pinta UNA
+   pasada de llama-bench de un modelo concreto y la enseñaba eligieras el que
+   eligieras. Se esconde, no se borra -- si `cerebros.json` fallara, la clase no
+   se pone y la tabla vuelve sola en vez de dejar el cuadro mudo. */
+#especificaciones.con-cerebro .medidas{display:none}

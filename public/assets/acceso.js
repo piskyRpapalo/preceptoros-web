@@ -18,7 +18,15 @@
  * traducciones mas por un adorno.
  */
 (function () {
-  var zona = document.querySelector('#cabezal .cab-fila');
+  /* 2026-09-07 · EL PUNTO BAJA AL PIE DEL MICROFONO. Vivia en el cabezal y ahi
+     daba problemas en algunos aparatos --lo reporto el Soberano-- ademas de
+     estar lejos de lo unico que describe. Ahora va pegado al microfono, a su
+     izquierda: el estado del dictado al lado del boton de dictar, que es donde
+     se mira cuando se quiere hablar.
+     Si no hay microfono en la pagina cae al cabezal, que es donde estaba: un
+     punto sin sitio es mejor que ningun punto. */
+  var zona = document.querySelector('#voice') ||
+             document.querySelector('#cabezal .cab-fila');
   if (!zona) return;
 
   function pinta(mic) {
@@ -49,7 +57,11 @@
                              ? 'auto' : 'smooth' });
       mic.click();
     });
-    zona.appendChild(punto);
+    /* A LA IZQUIERDA del microfono y no detras: se inserta al principio de la
+       fila, asi que queda al pie izquierdo del boton pase lo que pase con el
+       orden en que carguen los guiones. */
+    if (zona.id === 'voice') zona.insertBefore(punto, zona.firstChild);
+    else zona.appendChild(punto);
   }
 
   /* El boton de hablar lo crea `voice.js` cuando le toca, y este fichero puede

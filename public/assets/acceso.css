@@ -15,6 +15,11 @@
    se pulsa para ir a ningun sitio. `6.4rem` deja 8 px de aire entre el punto y
    el simbolo de perfil. En el telefono no hace falta tocarlo: alli la
    identidad baja a su renglon y el punto se queda solo en el de arriba. */
+/* En el pie del microfono ya no hace falta anclarlo: va en la fila, pegado a
+   su izquierda. La regla del cabezal se conserva para la caida --si no hay
+   microfono, el punto vuelve arriba-- pero solo aplica alli. */
+#voice .cab-enlaces{position:static;margin:0 .1rem 0 0;align-self:flex-end;
+  margin-bottom:.55rem}
 #cabezal .cab-enlaces{position:absolute;top:.45rem;right:6.4rem;margin:0}
 @media (max-width:1023px){
   #cabezal .cab-enlaces{top:1.1rem;right:3.3rem}

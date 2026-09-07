@@ -66,16 +66,12 @@
 #cabezal #identity:has(.yo-perfil) .yo-perfil,
 #cabezal #identity:has(.yo-perfil) .huella-corta{color:#fff;border-color:transparent}
 
-/* El icono de persona: cuadrado y del tamano de la rueda, que es su vecina.
-   Dos mandos de distinto tamano pegados se leen como uno principal y otro
-   secundario, y no lo son. */
-.identity-icono{display:inline-flex;align-items:center;justify-content:center;
-  width:40px;height:40px;padding:0;border-radius:999px;
-  color:var(--oro);background:transparent;border:1px solid var(--oro)}
-.identity-icono svg{width:1.35em;height:1.35em}
-.identity-icono:hover,.identity-icono:focus-visible{
-  background:rgba(242,208,138,.16);color:var(--oro);border-color:var(--oro)}
-
+/* El ASPECTO del icono de persona se mudo a `canon.css` el 2026-09-07, y no
+   por gusto: `auth.js` lo pinta en TREINTA Y DOS paginas interiores que no
+   cargan esta hoja, asi que salia sin medida -- un circulo enorme ocupando
+   media pantalla, visto en el TANK 3. Una regla que dimensiona algo tiene
+   que vivir donde llega todo el que lo pinta. Aqui se queda su SITIO, que
+   si es asunto de esquinas. */
 /* EL ICONO NO SE ESTIRA, y hace falta decirlo con la misma fuerza con la que
    la regla de al lado lo estiraba. `#cabezal #identity button:only-child`
    --dos ids-- le daba el ancho entero, y tenia razon cuando el boton decia

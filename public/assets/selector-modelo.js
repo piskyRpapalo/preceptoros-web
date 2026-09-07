@@ -17,13 +17,6 @@
  */
 (function () {
   var LLAVE = 'preceptor-modelo';
-  var GRACIAS = { es:'Gracias', en:'Thank you', pt:'Obrigado', fr:'Merci',
-                  it:'Grazie', de:'Danke', el:'Ευχαριστώ', ru:'Спасибо' };
-  var CONS = {
-    es:['Permitir análisis para mejorar el modelo',
-        'Marcado: se guarda lo que escribes y lo que responde. Sin marcar: solo el modelo, la hora y el largo.'],
-    en:['Allow analysis to improve the model',
-        'Ticked: what you write and what it answers are stored. Unticked: only the model, the time and the length.'] };
   var PAL = { es:['Elige cerebro','prompt','generación','despertar','recomendado','sin firmar','en uso'],
             en:['Choose a brain','prompt','generation','wake-up','recommended','unsigned','in use'],
             pt:['Escolhe cérebro','prompt','geração','despertar','recomendado','sem assinar','em uso'],
@@ -165,6 +158,25 @@
     if (!host || !REG) return;
     var c = (REG.cerebros || []).filter(function (x) { return x.modelo === modelo; })[0];
     var t = c ? (PROSA[c.id] || {}) : {};
+    var lang = (document.documentElement.lang || 'es').slice(0, 2);
+    var w = PAL[lang] || PAL['es'];
+
+    /* LA TABLA VIEJA SE RETIRA CUANDO HAY CEREBRO ELEGIDO, y esto es el arreglo
+       de fondo. `.medidas` pinta UNA pasada de llama-bench del 2026-08-25 --CPU
+       y Vulkan de un modelo concreto-- y la enseñaba eligieras el que
+       eligieras. Dos verdades en el mismo cuadro, y la de arriba era la falsa
+       en cuanto tocabas una tarjeta.
+
+       Se ESCONDE, no se borra: si un dia no hay `cerebros.json` o el fichero
+       falla, la tabla vuelve sola y la pagina sigue diciendo algo cierto en vez
+       de quedarse muda. */
+    /* SE MARCA EL PADRE Y LO ESCONDE EL CSS, en vez de tocar el nodo. `.medidas`
+       la pinta `medidas.js` DESPUES de un `fetch`, asi que en la primera pasada
+       aqui todavia no existe y un `querySelector` se va de vacio -- se vio: la
+       tabla vieja seguia en pantalla con la ficha nueva debajo. Una clase en el
+       contenedor no depende de quien pinta primero. */
+    host.classList.toggle('con-cerebro', !!c);
+
     var caja = document.getElementById('ficha-cerebro');
     if (!caja) {
       caja = el('div', 'ficha-cerebro'); caja.id = 'ficha-cerebro';
@@ -172,20 +184,36 @@
     }
     caja.innerHTML = '';
     if (!c) return;                       // sin cerebro elegido no se inventa uno
+
     var izq = el('div', 'ficha-datos');
-    izq.appendChild(el('p', 'ficha-nombre', t.nombre || c.id));
+    var cab = el('div', 'cerebro-cab');
+    if (c.logo) {
+      var img = document.createElement('img');
+      img.className = 'cerebro-logo'; img.src = c.logo; img.alt = '';
+      img.width = 22; img.height = 22;
+      img.onerror = function () { img.remove(); };
+      cab.appendChild(img);
+    }
+    cab.appendChild(el('h3', 'ficha-nombre', t.nombre || c.id));
+    if (c.recomendado) cab.appendChild(el('span', 'cerebro-marca', w[4]));
+    izq.appendChild(cab);
     izq.appendChild(el('p', 'cerebro-modelo', c.modelo));
+
     var d = el('p', 'cerebro-datos');
     d.appendChild(el('b', null, cifra(c.prompt, '')));
-    d.appendChild(el('span', null, ' prompt · '));
+    d.appendChild(el('span', null, ' ' + w[1] + ' · '));
     d.appendChild(el('b', null, cifra(c.generacion, '')));
-    d.appendChild(el('span', null, ' tok/s'));
+    d.appendChild(el('span', null, ' ' + w[2] + ' tok/s · ' + w[3] + ' '));
+    d.appendChild(el('b', null, cifra(c.carga_s, ' s')));
     izq.appendChild(d);
+    /* La procedencia va PEGADA a la cifra y no en un pie lejano: una velocidad
+       sin backend ni fecha al lado es media medida, y la tabla que se retira
+       fallaba justo por eso -- decia «medido el 2026-08-25» de otro modelo. */
+    izq.appendChild(el('p', 'cerebro-firma',
+      (c.firmado ? '' : w[5]) + ' · contexto ' + REG.contexto +
+      ' · ' + REG.backend + ' · ' + REG.medido));
     caja.appendChild(izq);
-    if (t.lore) {
-      var der = el('blockquote', 'ficha-lore', t.lore);
-      caja.appendChild(der);
-    }
+    if (t.lore) caja.appendChild(el('blockquote', 'ficha-lore', t.lore));
   }
 
   function elegir(modelo) {
@@ -197,86 +225,10 @@
       { detail: { name: modelo, live: false } }));
   }
 
-  /* --- EL CONSENTIMIENTO, VISIBLE Y DESMARCADO ---------------------------
-     DESMARCADO POR DEFECTO, y no es un detalle de implementacion: una casilla
-     premarcada recoge el consentimiento de quien no la vio, que es justo lo
-     que la palabra consentimiento excluye. Quien quiera ayudar la marca; quien
-     no la mire, no ha dicho que si.
-
-     VISIBLE, y no escondida en una rueda. Va donde se escribe, porque es ahi
-     donde importa saber que pasa con lo que escribes. Un ajuste de privacidad
-     a tres toques de distancia esta tecnicamente disponible y practicamente
-     oculto.
-
-     Y DICE LAS DOS RAMAS, no solo la buena: marcado se guarda el texto, sin
-     marcar se guarda que modelo, cuando y cuanto. La segunda tambien es
-     guardar algo, y callarlo seria la mitad de una verdad. */
-  function consentimiento(w) {
-    var campo = document.getElementById('pregunta');
-    if (!campo || document.getElementById('consiento')) return;
-    var caja = el('div', 'consiento-caja');
-    var et = document.createElement('label');
-    et.className = 'consiento-et'; et.htmlFor = 'consiento';
-    var cb = document.createElement('input');
-    cb.type = 'checkbox'; cb.id = 'consiento';
-    cb.checked = false;                       // nunca se lee lo guardado para MARCARLO
-    try { cb.checked = localStorage.getItem('preceptor-consiento') === '1'; } catch (e) { /* */ }
-    var DISCO = '<svg viewBox="0 0 20 20" width="26" height="26" fill="none"'
-      + ' stroke="currentColor" stroke-width="1.5" stroke-linecap="round"'
-      + ' stroke-linejoin="round" aria-hidden="true">'
-      + '<path d="M3.5 3.5h9l4 4v9a1 1 0 0 1-1 1h-11a1 1 0 0 1-1-1v-12a1 1 0 0 1 1-1Z"/>'
-      + '<path d="M6.5 3.5v5h7"/><rect x="6.5" y="12" width="7" height="4.5"/></svg>';
-    var icono = document.createElement('span');
-    icono.className = 'consiento-icono';
-    icono.innerHTML = DISCO;
-    et.appendChild(cb); et.appendChild(icono);
-    et.appendChild(el('span', 'consiento-texto', w[0]));
-    caja.appendChild(et);
-    caja.appendChild(el('p', 'consiento-pie', w[1]));
-    /* ACEPTADO SE ENCOGE. Una casilla marcada que sigue ocupando cuatro
-       lineas explicando lo que ya aceptaste es un cartel, no un control: se
-       queda el check en oro y el rotulo corto, y la explicacion vuelve si lo
-       desmarcas. El «gracias» sale AL LADO y se va solo -- agradecer una vez
-       es cortesia; dejarlo fijo en pantalla es cobrarselo. */
-    var lang2 = (document.documentElement.lang || 'es').slice(0, 2);
-    function vestir() {
-      caja.classList.toggle('dado', cb.checked);
-      icono.innerHTML = cb.checked
-        ? '<svg viewBox="0 0 24 24" width="26" height="26" fill="none"'
-          + ' stroke="currentColor" stroke-width="2.6" stroke-linecap="round"'
-          + ' stroke-linejoin="round" aria-hidden="true"><path d="M4 13l5.5 5.5L20 6"/></svg>'
-        : DISCO;
-    }
-    function gracias() {
-      var g = el('span', 'consiento-gracias', GRACIAS[lang2] || GRACIAS['en']);
-      caja.appendChild(g);
-      setTimeout(function () { g.classList.add('ida'); }, 2200);
-      setTimeout(function () { if (g.parentNode) g.remove(); }, 2800);
-    }
-    cb.addEventListener('change', function () {
-      try { localStorage.setItem('preceptor-consiento', cb.checked ? '1' : '0'); }
-      catch (e) { /* privado */ }
-      vestir();
-      if (cb.checked) gracias();
-    });
-    vestir();
-    /* VA DESPUES DE LA PLACA, no dentro. `.panel` es una columna flex de
-       altura medida y `.chat-abajo` coloca el campo por encima de donde
-       empieza su propia caja: meter aqui un bloque de casi noventa pixeles
-       gastaba un reparto que otro habia medido, y el consentimiento acababa
-       montando el campo -- 34 px, visto en el telefono del Soberano. Fuera de
-       la columna sigue estando donde se escribe, justo debajo, y no le quita
-       sitio a la conversacion. */
-    var placa = campo.closest('.panel');
-    if (placa && placa.parentNode) placa.parentNode.insertBefore(caja, placa.nextSibling);
-    else (campo.closest('.fila') || campo.parentNode).parentNode.insertBefore(caja, null);
-  }
-
   function arrancar() {
     envolver();
     var lang = (document.documentElement.lang || 'es').slice(0, 2);
     var w = PAL[lang] || PAL['es'];
-    consentimiento(CONS[lang] || CONS['en']);
     /* DOS FICHEROS Y UN RESPALDO POR FICHERO ENTERO. Los hechos no tienen
        idioma; la prosa si, y cae al ingles COMPLETA en vez de por clave
        suelta: media lengua traducida y media caida se lee peor que una lengua
