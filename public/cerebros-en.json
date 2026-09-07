@@ -1,7 +1,7 @@
 {
  "esquema": 1,
  "idioma": "en",
- "nota": "La prosa de los cerebros. Los HECHOS --velocidad, tag del modelo, contexto-- viven en `cerebros.json` y no llevan una palabra traducible. Es la misma frontera que `loratelier.json` con `taller-<idioma>.json`, y por el mismo motivo: las ocho lenguas en el fichero de datos lo dejan lleno el primer dia.",
+ "nota": "La prosa de los cerebros. Los HECHOS --velocidad, tag del modelo, contexto-- viven en `cerebros.json` y no llevan una palabra traducible. Es la misma frontera que `loratelier.json` con `taller-<idioma>.json`, y por el mismo motivo: las ocho lenguas en el fichero de datos lo dejan lleno el primer dia. · `lore` es la voz del producto, no una ficha tecnica: va a la derecha del cuadro cuando eliges un cerebro y cuenta QUE hace ese por la soberania de quien lo usa. Se escribe corto a proposito -- un parrafo que nadie lee no es lore, es relleno.",
  "cta_hash": "Did it help? Make your signature and tell us: it stays on your machine and travels when the board opens. That is what trains the next version.",
  "cerebros": {
   "charla-web": {
@@ -25,7 +25,8 @@
      "rotulo": "How do I check it?",
      "prompt": "Tell me how I can check what you just claimed myself, without trusting you. Give me the exact command or the exact place to look. If it cannot be checked from my machine, say so plainly instead of talking around it."
     }
-   }
+   },
+   "lore": "The one who opens the door. It does not show you the way because it knows better: it shows you so that you stop needing it. A preceptor who breeds disciples has failed; this one works for the person who will be sovereign."
   },
   "charla-base": {
    "nombre": "The Talk",
@@ -44,7 +45,8 @@
      "rotulo": "What are you missing",
      "prompt": "Tell me what you are missing about me to get this right. Only what would change your answer. Three things at most, and if nothing is missing say so and go on."
     }
-   }
+   },
+   "lore": "It learned to speak here, from conversations written by hand. Closer voice, shorter memory — and that mix is honest: it can keep you company, it cannot pretend to know."
   },
   "charla-multi": {
    "nombre": "The Talk · 7 languages",
@@ -63,7 +65,8 @@
      "rotulo": "What are you missing",
      "prompt": "Tell me what you are missing about me to get this right. Only what would change your answer. Three things at most."
     }
-   }
+   },
+   "lore": "The one that crosses languages. Sovereignty is not inherited in a single tongue, and knowledge that only reaches English speakers is not free knowledge: it is a toll with another name."
   },
   "v7": {
    "nombre": "The Previous One",
@@ -78,7 +81,8 @@
      "rotulo": "Shorter",
      "prompt": "The same thing in one sentence. If it does not fit in one, tell me what to drop from my question so that it does."
     }
-   }
+   },
+   "lore": "The smallest, and the quietest. It keeps the virtue the big ones struggle with: it would rather say it does not know than fill your head. In a house where mistakes are paid on your own disk, silence in time is a service."
   },
   "qwen-coder": {
    "nombre": "The Code One",
@@ -93,7 +97,8 @@
      "rotulo": "Why does it fail?",
      "prompt": "I am pasting something that does not work. Tell me the most likely cause first and how I confirm it, before proposing any fix. If you cannot know without seeing more, say what you need to see."
     }
-   }
+   },
+   "lore": "The outsider. It knows nothing of this house and does not pretend to, and that is why it is here: so you can compare. A preceptor who only lets you meet its own pupils is not teaching you, it is fencing you in."
   },
   "mistral-base": {
    "nombre": "The Bare Base",
@@ -108,7 +113,8 @@
      "rotulo": "What are you missing",
      "prompt": "Tell me what you are missing about me to get this right. Only what would change your answer."
     }
-   }
+   },
+   "lore": "The uncut stone. Everything the others know about you and about this house, we put there. Here you see what was underneath. Knowing which part is ours is the first way of not depending on us."
   }
  }
 }

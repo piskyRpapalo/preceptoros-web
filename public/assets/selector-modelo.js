@@ -17,6 +17,8 @@
  */
 (function () {
   var LLAVE = 'preceptor-modelo';
+  var GRACIAS = { es:'Gracias', en:'Thank you', pt:'Obrigado', fr:'Merci',
+                  it:'Grazie', de:'Danke', el:'Ευχαριστώ', ru:'Спасибо' };
   var CONS = {
     es:['Permitir análisis para mejorar el modelo',
         'Marcado: se guarda lo que escribes y lo que responde. Sin marcar: solo el modelo, la hora y el largo.'],
@@ -69,8 +71,11 @@
     return v == null ? 'NO_DATA' : String(v).replace('.', ',') + unidad;
   }
 
+  var REG = null, PROSA = {};
+
   function pintar(reg, w, lang, tx) {
     var prosa = (tx && tx.cerebros) || {};
+    REG = reg; PROSA = prosa;
     var host = document.getElementById('especificaciones');
     if (!host || document.getElementById('cerebros')) return;
     var caja = el('section', 'cerebros'); caja.id = 'cerebros';
@@ -130,6 +135,7 @@
     caja.appendChild(pie);
     host.parentNode.insertBefore(caja, host.nextSibling);
     marcar(w);
+    if (guardado()) ficha(guardado());
   }
 
   function marcar(w) {
@@ -144,10 +150,49 @@
     });
   }
 
+  /* --- LA FICHA DE ARRIBA CAMBIA CON EL CEREBRO -----------------------------
+     El cuadro de «El Instalador» dejaba de ser cierto en cuanto elegias otro:
+     seguia enseñando la velocidad del 2026-08-25 de un modelo que ya no era el
+     que contestaba. Aqui se repinta con lo del elegido, y se le añade el LORE
+     -- que es lo que este cuadro pedia a gritos: sitio hay, y lo unico que
+     habia era ficha tecnica.
+
+     ENVUELVE, NO REESCRIBE: `chat-router.js` sigue pintando el nombre y la
+     funcion del compañero, y esto solo AÑADE un bloque propio al final. Si un
+     dia el router cambia, esto se queda sin sitio pero no rompe nada. */
+  function ficha(modelo) {
+    var host = document.getElementById('especificaciones');
+    if (!host || !REG) return;
+    var c = (REG.cerebros || []).filter(function (x) { return x.modelo === modelo; })[0];
+    var t = c ? (PROSA[c.id] || {}) : {};
+    var caja = document.getElementById('ficha-cerebro');
+    if (!caja) {
+      caja = el('div', 'ficha-cerebro'); caja.id = 'ficha-cerebro';
+      host.appendChild(caja);
+    }
+    caja.innerHTML = '';
+    if (!c) return;                       // sin cerebro elegido no se inventa uno
+    var izq = el('div', 'ficha-datos');
+    izq.appendChild(el('p', 'ficha-nombre', t.nombre || c.id));
+    izq.appendChild(el('p', 'cerebro-modelo', c.modelo));
+    var d = el('p', 'cerebro-datos');
+    d.appendChild(el('b', null, cifra(c.prompt, '')));
+    d.appendChild(el('span', null, ' prompt · '));
+    d.appendChild(el('b', null, cifra(c.generacion, '')));
+    d.appendChild(el('span', null, ' tok/s'));
+    izq.appendChild(d);
+    caja.appendChild(izq);
+    if (t.lore) {
+      var der = el('blockquote', 'ficha-lore', t.lore);
+      caja.appendChild(der);
+    }
+  }
+
   function elegir(modelo) {
     try { localStorage.setItem(LLAVE, modelo); } catch (e) { /* privado */ }
     var lang = (document.documentElement.lang || 'es').slice(0, 2);
     marcar(PAL[lang] || PAL['es']);
+    ficha(modelo);
     document.dispatchEvent(new CustomEvent('preceptor:brain',
       { detail: { name: modelo, live: false } }));
   }
@@ -176,21 +221,45 @@
     cb.type = 'checkbox'; cb.id = 'consiento';
     cb.checked = false;                       // nunca se lee lo guardado para MARCARLO
     try { cb.checked = localStorage.getItem('preceptor-consiento') === '1'; } catch (e) { /* */ }
-    var icono = document.createElement('span');
-    icono.className = 'consiento-icono';
-    icono.innerHTML = '<svg viewBox="0 0 20 20" width="20" height="20" fill="none"'
-      + ' stroke="currentColor" stroke-width="1.6" stroke-linecap="round"'
+    var DISCO = '<svg viewBox="0 0 20 20" width="26" height="26" fill="none"'
+      + ' stroke="currentColor" stroke-width="1.5" stroke-linecap="round"'
       + ' stroke-linejoin="round" aria-hidden="true">'
       + '<path d="M3.5 3.5h9l4 4v9a1 1 0 0 1-1 1h-11a1 1 0 0 1-1-1v-12a1 1 0 0 1 1-1Z"/>'
       + '<path d="M6.5 3.5v5h7"/><rect x="6.5" y="12" width="7" height="4.5"/></svg>';
+    var icono = document.createElement('span');
+    icono.className = 'consiento-icono';
+    icono.innerHTML = DISCO;
     et.appendChild(cb); et.appendChild(icono);
     et.appendChild(el('span', 'consiento-texto', w[0]));
     caja.appendChild(et);
     caja.appendChild(el('p', 'consiento-pie', w[1]));
+    /* ACEPTADO SE ENCOGE. Una casilla marcada que sigue ocupando cuatro
+       lineas explicando lo que ya aceptaste es un cartel, no un control: se
+       queda el check en oro y el rotulo corto, y la explicacion vuelve si lo
+       desmarcas. El «gracias» sale AL LADO y se va solo -- agradecer una vez
+       es cortesia; dejarlo fijo en pantalla es cobrarselo. */
+    var lang2 = (document.documentElement.lang || 'es').slice(0, 2);
+    function vestir() {
+      caja.classList.toggle('dado', cb.checked);
+      icono.innerHTML = cb.checked
+        ? '<svg viewBox="0 0 24 24" width="26" height="26" fill="none"'
+          + ' stroke="currentColor" stroke-width="2.6" stroke-linecap="round"'
+          + ' stroke-linejoin="round" aria-hidden="true"><path d="M4 13l5.5 5.5L20 6"/></svg>'
+        : DISCO;
+    }
+    function gracias() {
+      var g = el('span', 'consiento-gracias', GRACIAS[lang2] || GRACIAS['en']);
+      caja.appendChild(g);
+      setTimeout(function () { g.classList.add('ida'); }, 2200);
+      setTimeout(function () { if (g.parentNode) g.remove(); }, 2800);
+    }
     cb.addEventListener('change', function () {
       try { localStorage.setItem('preceptor-consiento', cb.checked ? '1' : '0'); }
       catch (e) { /* privado */ }
+      vestir();
+      if (cb.checked) gracias();
     });
+    vestir();
     /* VA DESPUES DE LA PLACA, no dentro. `.panel` es una columna flex de
        altura medida y `.chat-abajo` coloca el campo por encima de donde
        empieza su propia caja: meter aqui un bloque de casi noventa pixeles

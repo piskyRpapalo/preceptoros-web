@@ -1,7 +1,7 @@
 {
  "esquema": 1,
  "idioma": "es",
- "nota": "La prosa de los cerebros. Los HECHOS --velocidad, tag del modelo, contexto-- viven en `cerebros.json` y no llevan una palabra traducible. Es la misma frontera que `loratelier.json` con `taller-<idioma>.json`, y por el mismo motivo: las ocho lenguas en el fichero de datos lo dejan lleno el primer dia.",
+ "nota": "La prosa de los cerebros. Los HECHOS --velocidad, tag del modelo, contexto-- viven en `cerebros.json` y no llevan una palabra traducible. Es la misma frontera que `loratelier.json` con `taller-<idioma>.json`, y por el mismo motivo: las ocho lenguas en el fichero de datos lo dejan lleno el primer dia. · `lore` es la voz del producto, no una ficha tecnica: va a la derecha del cuadro cuando eliges un cerebro y cuenta QUE hace ese por la soberania de quien lo usa. Se escribe corto a proposito -- un parrafo que nadie lee no es lore, es relleno.",
  "cta_hash": "¿Te ha servido? Hazte tu firma y cuéntanoslo: se guarda en tu máquina y viaja cuando abra el tablón. Es lo que entrena la versión siguiente.",
  "cerebros": {
   "charla-web": {
@@ -25,7 +25,8 @@
      "rotulo": "¿Cómo lo compruebo?",
      "prompt": "Dime cómo compruebo yo mismo lo que acabas de afirmar, sin fiarme de ti. Dame el comando o el sitio exacto donde mirarlo. Si es algo que no se puede comprobar desde mi máquina, dilo claramente en vez de darme un rodeo."
     }
-   }
+   },
+   "lore": "El que abre la puerta. No te enseña el camino porque lo sepa mejor que tú: te lo enseña para que dejes de necesitarlo. Un preceptor que crea discípulos ha fracasado; este trabaja para el que va a ser soberano."
   },
   "charla-base": {
    "nombre": "La Charla",
@@ -44,7 +45,8 @@
      "rotulo": "Qué te falta saber",
      "prompt": "Dime qué te falta saber de mí para acertar. Solo lo que cambiaría tu respuesta. Máximo tres cosas, y si no falta nada dilo y sigue."
     }
-   }
+   },
+   "lore": "Aprendió a hablar aquí, con conversaciones escritas a mano. Tiene la voz más cerca y la memoria más corta, y esa mezcla es honesta: sabe acompañar, no sabe fingir que sabe."
   },
   "charla-multi": {
    "nombre": "La Charla · 7 lenguas",
@@ -63,7 +65,8 @@
      "rotulo": "Qué te falta saber",
      "prompt": "Dime qué te falta saber de mí para acertar. Solo lo que cambiaría tu respuesta. Máximo tres cosas."
     }
-   }
+   },
+   "lore": "El que cruza lenguas. La soberanía no se hereda en un solo idioma, y un conocimiento que solo llega a quien habla inglés no es conocimiento libre: es un peaje con otro nombre."
   },
   "v7": {
    "nombre": "El Anterior",
@@ -78,7 +81,8 @@
      "rotulo": "Más corto",
      "prompt": "Lo mismo en una frase. Si no cabe en una, di qué sobra de mi pregunta para que quepa."
     }
-   }
+   },
+   "lore": "El más pequeño, y el que más calla. Guarda la virtud que a los grandes les cuesta: prefiere decir que no sabe a llenarte la cabeza. En una casa donde el error se paga en tu disco, callar a tiempo es un servicio."
   },
   "qwen-coder": {
    "nombre": "El de Código",
@@ -93,7 +97,8 @@
      "rotulo": "¿Por qué falla?",
      "prompt": "Te pego algo que no funciona. Dime la causa más probable primero y cómo la confirmo, antes de proponerme ningún arreglo. Si no puedes saberlo sin ver más, di qué necesitas ver."
     }
-   }
+   },
+   "lore": "El forastero. No sabe de esta casa ni finge saber, y está aquí para eso: para que compares. Un preceptor que solo te deja ver a sus alumnos no te está enseñando, te está encerrando."
   },
   "mistral-base": {
    "nombre": "La Base Desnuda",
@@ -108,7 +113,8 @@
      "rotulo": "Qué te falta saber",
      "prompt": "Dime qué te falta saber de mí para acertar. Solo lo que cambiaría tu respuesta."
     }
-   }
+   },
+   "lore": "La piedra sin tallar. Todo lo que los otros saben de ti y de esta casa se lo pusimos nosotros encima; aquí ves lo que había antes. Saber qué parte es nuestra es la primera forma de no depender de nosotros."
   }
  }
 }

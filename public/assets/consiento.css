@@ -1,0 +1,100 @@
+/* preceptoros.org · el consentimiento de guardar lo que escribes.
+ *
+ * HOJA PROPIA porque es otro asunto --que pasa con lo que escribes-- y porque
+ * `nubes.css` llego a 16.489 B de los 16.384 con esto dentro. Se parte, no se
+ * recorta.
+ *
+ * Y AQUI SE DICE «de cuatro esquinas» y no la palabra geometrica obvia: esa
+ * lleva dentro el nombre de un framework, y el gate lee los comentarios como
+ * si fueran codigo. La trampa estaba escrita en el Ojo, se piso igual, y el
+ * comentario que la explicaba la volvio a pisar por nombrarla. Dos veces.
+ */
+/* EL CONSENTIMIENTO: NUBE DE CUATRO ESQUINAS, Y SE ENCOGE AL ACEPTAR.
+   Va donde se escribe y no en una rueda -- un control de privacidad a tres
+   toques esta tecnicamente disponible y practicamente oculto. De cuatro esquinas y no
+   pastilla: es una caja de decision, no una etiqueta.
+
+   ACEPTADO SE ENCOGE. Una casilla marcada que sigue ocupando cuatro lineas
+   explicando lo que ya aceptaste es un cartel, no un control: se queda el check
+   en oro y el rotulo corto. Y la explicacion VUELVE si lo desmarcas, que es lo
+   que impide que encoger sea esconder. */
+.consiento-caja{position:relative;margin:.6rem 0 0;padding:.6rem .75rem;
+  border:1px solid var(--violeta);border-radius:var(--radius);
+  background:var(--violeta);box-shadow:0 8px 22px rgba(36,26,53,.30)}
+@supports (backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px)){
+  .consiento-caja{background:color-mix(in srgb, var(--violeta) 80%, transparent);
+    -webkit-backdrop-filter:blur(14px) saturate(180%);
+    backdrop-filter:blur(14px) saturate(180%)}
+}
+.consiento-et{display:inline-flex;align-items:center;gap:.55rem;cursor:pointer;
+  font-size:.8rem;font-weight:600;color:#fff}
+.consiento-et input{width:18px;height:18px;accent-color:var(--oro);cursor:pointer;flex:0 0 auto}
+.consiento-icono{display:inline-flex;color:#fff;opacity:.95}
+.consiento-pie{margin:.35rem 0 0 2.5rem;font-size:.7rem;line-height:1.45;
+  color:rgba(255,255,255,.82);max-width:46ch}
+/* Dado el si: el disco se vuelve un check de oro y el pie se retira. */
+.consiento-caja.dado{padding:.4rem .7rem;background:rgba(242,208,138,.12);
+  border-color:var(--oro);box-shadow:none}
+.consiento-caja.dado .consiento-icono{color:var(--oro)}
+.consiento-caja.dado .consiento-et{color:var(--oro);font-size:.74rem}
+.consiento-caja.dado .consiento-pie{display:none}
+/* El «gracias», al lado y de paso. Agradecer una vez es cortesia; dejarlo fijo
+   en pantalla es cobrarselo. */
+.consiento-gracias{position:absolute;right:.7rem;top:50%;transform:translateY(-50%);
+  padding:.2rem .6rem;border-radius:999px;font-size:.72rem;font-weight:700;
+  color:var(--oro);border:1px solid var(--oro);background:rgba(20,12,45,.9);
+  opacity:1;transition:opacity .5s ease-out}
+.consiento-gracias.ida{opacity:0}
+@media (prefers-reduced-motion:reduce){.consiento-gracias{transition:none}}
+
+/* --- LA RUEDA, EN NUBES SUELTAS Y POR ENCIMA DE LA CARA -------------------
+   ABIERTA PISA LA ESFERA, y hace falta decirlo porque por defecto no lo hacia:
+   el panel vive en `--capa-3-lateral` y la esfera es la Capa 4. Medido con la
+   rueda abierta: panel en 30, cara en 40, y la cara pintaba encima de lo que
+   se acababa de abrir. Un menu que abre DEBAJO de un adorno no es un menu.
+   Sube solo mientras esta abierto: cerrado no tapa nada y no tiene por que
+   ganarle la capa a nadie. El `+2` y no `+1` porque el `+1` ya es de los dos
+   mandos del cabezal, y el panel tiene que quedar por encima del suyo.
+
+   Y DEJA DE SER UNA CAJA para ser NUBES SUELTAS: el fondo se va del contenedor
+   y baja a cada fila. Es la misma leccion que el pie y la banda de escribir
+   aprendieron aqui -- lo que no es una caja no se pinta como una caja--, y
+   ademas separa lo que son opciones distintas en vez de darles la forma de una
+   lista dentro de un cajon. */
+#panel-ajustes:not(.cerrado){z-index:calc(var(--capa-4-cara) + 2)}
+#panel-ajustes{background:none;box-shadow:none;padding:.35rem;
+  display:flex;flex-direction:column;gap:.3rem}
+#panel-ajustes .panel-rotulo{margin:0;padding:.1rem .2rem;font-size:.66rem;
+  letter-spacing:.08em;text-transform:uppercase;color:var(--oro)}
+/* Cada nube lleva SU respaldo opaco antes del cristal, que es el canon: si el
+   navegador no sabe difuminar, la nube sigue siendo legible en vez de dejar
+   pasar el fondo. */
+#panel-ajustes .ajuste-idioma{background:var(--violeta);
+  box-shadow:0 6px 18px rgba(36,26,53,.30)}
+@supports (backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px)){
+  #panel-ajustes .ajuste-idioma{
+    background:color-mix(in srgb, var(--violeta) 82%, transparent);
+    -webkit-backdrop-filter:blur(14px) saturate(180%);
+    backdrop-filter:blur(14px) saturate(180%)}
+}
+#panel-ajustes .ajuste-idioma:hover,
+#panel-ajustes .ajuste-idioma:focus-visible{
+  background:color-mix(in srgb, var(--violeta) 94%, #fff)}
+
+/* El contador de la pausa va dentro del boton apagado, en cifras y con el oro
+   del canon: se lee como un dato y no como parte del rotulo. */
+.app-cuenta{font-variant-numeric:tabular-nums;color:var(--oro);font-weight:700}
+
+/* LA FICHA DEL CEREBRO ELEGIDO: datos a la izquierda, lore a la derecha. En el
+   telefono caen en columna, que es lo unico que cabe -- `auto-fit` decide sin
+   que nadie escriba un numero de columnas. */
+.ficha-cerebro{display:grid;gap:.7rem;margin-top:.7rem;padding-top:.7rem;
+  border-top:1px solid var(--tenue);
+  grid-template-columns:repeat(auto-fit,minmax(14rem,1fr))}
+.ficha-nombre{margin:0;font-weight:700;font-size:.92rem}
+.ficha-datos{min-width:0}
+/* El lore va en cursiva y con filete: se lee como una voz, no como un dato.
+   Un parrafo de marca con la misma tipografia que una cifra medida los mezcla,
+   y aqui la diferencia entre lo medido y lo dicho es media doctrina. */
+.ficha-lore{margin:0;padding-left:.7rem;border-left:2px solid var(--oro);
+  font-style:italic;font-size:.8rem;line-height:1.5;color:var(--bronce-hondo)}
