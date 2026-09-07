@@ -1,7 +1,7 @@
 {
  "esquema": 1,
  "estado": "DERIVADO",
- "nota": "Los rotulos del cabezal de las paginas interiores. NO se escriben aqui a mano: se sacan del bloque i18n de cada portada con `nav.py`, para que la palabra sea LITERALMENTE la misma en las dos. Antes cada pagina llevaba su propia lista --community cinco enlaces, benchmark cuatro, onboarding dos-- y con nombres distintos de los del cabezal: «Portada» donde arriba decia «INICIO», «Benchmark» donde arriba decia «LORATELIER». Seis paginas por ocho lenguas son 48 sitios donde acordarse.",
+ "nota": "Los rotulos del cabezal, para las paginas que no llevan bloque i18n propio -- `instalar.html` es la que obliga: sus textos viven en `/instalar.json`. NO se escriben aqui a mano: los saca `nav.py` del bloque i18n de cada portada, para que la palabra sea LITERALMENTE la misma arriba y abajo. Antes cada pagina llevaba su propia lista y con otros nombres --«Portada» donde el cabezal decia «INICIO»--, y ocho lenguas por seis paginas son 48 sitios donde acordarse.",
  "generado": "2026-09-05",
  "textos": {
   "de": {
@@ -9,6 +9,9 @@
    "benchmark": "LORATELIER",
    "comunidad": "GEMEINSCHAFT",
    "instala": "INSTALLIEREN",
+   "idioma": "SPRACHE",
+   "solar": "99% solar, außer dem Web-Anbieter",
+   "ajustes": "Einstellungen",
    "casa": "Startseite"
   },
   "el": {
@@ -16,6 +19,9 @@
    "benchmark": "LORATELIER",
    "comunidad": "ΚΟΙΝΟΤΗΤΑ",
    "instala": "ΕΓΚΑΤΑΣΤΑΣΗ",
+   "idioma": "ΓΛΩΣΣΑ",
+   "solar": "99% ηλιακό, εκτός από τον πάροχο του ιστού",
+   "ajustes": "Ρυθμίσεις",
    "casa": "Αρχική"
   },
   "en": {
@@ -23,6 +29,9 @@
    "benchmark": "LORATELIER",
    "comunidad": "COMMUNITY",
    "instala": "INSTALL",
+   "idioma": "LANGUAGE",
+   "solar": "99% solar, except the web provider",
+   "ajustes": "Settings",
    "casa": "Front page"
   },
   "es": {
@@ -30,6 +39,9 @@
    "benchmark": "LORATELIER",
    "comunidad": "COMUNIDAD",
    "instala": "INSTALAR",
+   "idioma": "IDIOMA",
+   "solar": "99% solar, excepto el proveedor web",
+   "ajustes": "Ajustes",
    "casa": "Portada"
   },
   "fr": {
@@ -37,6 +49,9 @@
    "benchmark": "LORATELIER",
    "comunidad": "COMMUNAUTÉ",
    "instala": "INSTALLER",
+   "idioma": "LANGUE",
+   "solar": "99% solaire, sauf l'hébergeur web",
+   "ajustes": "Réglages",
    "casa": "Accueil"
   },
   "it": {
@@ -44,6 +59,9 @@
    "benchmark": "LORATELIER",
    "comunidad": "COMUNITÀ",
    "instala": "INSTALLA",
+   "idioma": "LINGUA",
+   "solar": "99% solare, tranne il fornitore web",
+   "ajustes": "Impostazioni",
    "casa": "Home"
   },
   "pt": {
@@ -51,6 +69,9 @@
    "benchmark": "LORATELIER",
    "comunidad": "COMUNIDADE",
    "instala": "INSTALAR",
+   "idioma": "IDIOMA",
+   "solar": "99% solar, exceto o fornecedor web",
+   "ajustes": "Definições",
    "casa": "Início"
   },
   "ru": {
@@ -58,7 +79,11 @@
    "benchmark": "LORATELIER",
    "comunidad": "СООБЩЕСТВО",
    "instala": "УСТАНОВИТЬ",
+   "idioma": "ЯЗЫК",
+   "solar": "99% на солнце, кроме веб-провайдера",
+   "ajustes": "Настройки",
    "casa": "Главная"
   }
- }
+ },
+ "generado_por": "nav.py"
 }

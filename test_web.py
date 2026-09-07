@@ -41,6 +41,23 @@ def maqueta_de_la_portada():
         sin_comentarios((PUBLICO / h.lstrip("/")).read_text(encoding="utf-8"))
         for h in re.findall(r'<link rel="stylesheet" href="([^"]+)"', portada))
 
+def guion_de_la_portada():
+    """El JS que la portada CARGA, concatenado y en su orden.
+
+    Gemelo de `maqueta_de_la_portada`, y nace por la misma cicatriz y en el
+    mismo sitio: esta prueba leia `hub.js` por su nombre, el 2026-09-07 el
+    cabezal se mudo a `cabezal.js` --hub.js iba por 14.708 B y montaba dos
+    cosas que no son la misma-- y el gate se puso rojo por buscar donde ya no
+    estaba, no porque faltara nada. Es la sexta vez con esta forma.
+
+    Leyendo lo que la portada CARGA, la proxima particion no rompe nada.
+    """
+    portada = (PUBLICO / "es" / "index.html").read_text(encoding="utf-8")
+    return "".join(
+        (PUBLICO / s.lstrip("/")).read_text(encoding="utf-8")
+        for s in re.findall(r'<script src="([^"]+)"', portada))
+
+
 # La UNICA URL externa admitida en todo el repo. mlc.ai no sirve la libreria de
 # WebLLM; su distribucion oficial es esm.run. github.com aparece como ENLACE en
 # la guia de instalacion, no como subrecurso: un <a href> no pide nada hasta que
@@ -1453,7 +1470,7 @@ class Cabezal(unittest.TestCase):
         Y el idioma YA NO ESTA en la fila: se fue a la rueda. Era el quinto
         boton y ocupaba un quinto del ancho para algo que solo se toca una vez.
         """
-        hub = (PUBLICO / "assets" / "hub.js").read_text(encoding="utf-8")
+        hub = guion_de_la_portada()
         orden = []
         for clave in ("T.cabHome", "T.cabBenchmark", "T.cabComunidad", "T.cabInstala"):
             self.assertIn(clave, hub, f"falta la puerta {clave}")

@@ -221,6 +221,29 @@ header:not(#cabezal) .marca{flex:1 1 0;min-width:0}
    en vez de palabra, y sin esto el icono se iria al canto izquierdo. */
 .cab-nav-interior .cab-casa{display:inline-flex;align-items:center;
   justify-content:center;padding:.3rem .45rem}
-/* La pagina donde estas no es un boton: se ve, no se pulsa. */
-.cab-nav-interior [aria-current]{background:transparent;color:var(--oro);
-  cursor:default}
+/* --- LA PESTANA DONDE ESTAS SE ENCIENDE ------------------------------------
+   Encargo del Soberano, con estas palabras: «iluminando un poco la nube que
+   contiene el nombre de la pestana donde esta el usuario». Es lo que convierte
+   cuatro puertas iguales en una posicion: sin esto, la fila dice a donde
+   puedes ir y no dice donde estas.
+
+   SE ENCIENDE, NO SE APAGA. El primer intento fue al reves --fondo
+   transparente y letra dorada, la pagina actual como un hueco en la fila-- y
+   se lee como un boton deshabilitado, que es justo lo contrario de «aqui
+   estas». Se invierte el par: el oro pasa al FONDO y la letra al violeta hondo
+   del canon.
+
+   LOS DOS COLORES VAN EN HEXADECIMAL FIJO y no en token. `#2f2757` es uno de
+   los tres que el canon ya escribe asi, y por el motivo que costo la cicatriz
+   del 2026-09-05: un token que gira con el tema no puede sostener un contraste
+   medido. Oro sobre ese violeta da 8,9:1 en los dos temas, que es el mismo par
+   --al reves-- que ya sostiene el resto de la fila.
+
+   Y VALE PARA LAS DOS FILAS, la de la portada y la de las interiores: desde
+   hoy las pinta el mismo guion, asi que pintarlas con dos reglas seria volver
+   a separarlas por la puerta de atras. */
+#cab-nav [aria-current],.cab-nav-interior [aria-current]{
+  background:#F2D08A;color:#2f2757;border-color:#F2D08A;cursor:default}
+#cab-nav [aria-current] .lor,#cab-nav [aria-current] .atelier,
+.cab-nav-interior [aria-current] .lor,.cab-nav-interior [aria-current] .atelier{
+  color:#2f2757}

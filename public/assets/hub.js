@@ -19,10 +19,9 @@
  * cada una y `fr/index.html` no los tiene. Cada uno donde cabe.
  */
 (function () {
-  var cab = document.getElementById('cab-nav');
   var panel = document.getElementById('panel-modelos');
   var bloque = document.getElementById('i18n');
-  if (!cab || !panel || !bloque) return;
+  if (!panel || !bloque) return;
   var T = JSON.parse(bloque.textContent);
   var L = {}, DATOS = null;
 
@@ -53,99 +52,19 @@
     return a;
   }
 
-  /* --- el cabezal, sincrono ---------------------------------------------
-     Se construye antes de pedir nada: una cabecera que aparece medio segundo
-     tarde se lee como una pagina rota.
+  /* EL CABEZAL SE FUE A `cabezal.js` (2026-09-07). Aqui se montaban las
+     cuatro puertas, la rueda con los idiomas, los rotulos de los mandos y la
+     frase de energia -- y las paginas interiores montaban todo eso otra vez en
+     `nav.js`, con los mismos rotulos y en otra caja. El Soberano pidio «dejar
+     el cabezal de home» en las interiores, y dos constructores no se dejan:
+     se funden. Este fichero se queda con lo que de verdad es suyo, el panel de
+     companeros, y de paso baja de 14.708 B.
 
-     CUATRO PUERTAS, Y OCUPAN TODO EL ANCHO. Hubo siete botones y en el Doogee
-     ocupaban tres filas: el cabezal se comia el 40 % del alto. Se midio en el
-     telefono, no en un viewport emulado. De aquella poda, MODELOS se fue al
-     desplegable y COLA al panel lateral. */
-  cab.appendChild(enlace('cab-boton', T.cabHome, './'));
-  /* LoRAtelier va SEGUNDO y partido: es el producto principal de esta web --el
-     banco de pruebas comunitario-- y se leia como una seccion mas. «LoR» toma
-     el violeta y el canto dorado; «Atelier» queda en blanco. Mismo gesto que
-     `Preceptor`+`OS`, y por eso se reconoce sin explicarlo. */
-  cab.appendChild(marcaPartida('./benchmark.html', T.cabBenchmark));
-  cab.appendChild(enlace('cab-boton', T.cabComunidad, './community.html'));
-  /* INSTALAR AQUI cierra la fila. El segundo puesto lo tenia EMPIEZA AQUI --a
-     `onboarding.html`--, que decia lo mismo con otras palabras y dejaba la
-     instalacion sin puerta propia. `onboarding.html` sigue existiendo. */
-  cab.appendChild(enlace('cab-boton empezar', T.cabInstala, './instalar.html'));
-  /* EL IDIOMA SALE DE LA FILA y pasa a la rueda, como en la app: es el primer
-     paso del recorrido, pero SOLO el primero, y despues ocupaba un quinto del
-     ancho para algo que ya no se toca. En la rueda sigue a un toque. */
-  var ajustes = document.getElementById('panel-ajustes');
-  if (ajustes) {
-    ajustes.innerHTML = '';
-    ajustes.appendChild(el('p', 'panel-rotulo', T.cabIdioma));
-    /* LOS IDIOMAS SE DESCUBREN DE LA PROPIA PAGINA, no se escriben aqui. La
-       lista estaba a mano --es, en, fr-- y al entrar el portugues se quedo
-       vieja en silencio: la lengua existia, el sitemap la ofrecia, el selector
-       de la raiz la tenia, y la rueda no. Un quinto sitio que recordar es un
-       quinto sitio que olvidar.
-
-       Las etiquetas `hreflang` de la cabecera YA declaran que lenguas hay, y se
-       generan con la pagina. Leerlas de ahi es la version en el navegador de la
-       regla que el gate aplica en el disco: el criterio de idiomas se descubre,
-       no se repite. La proxima lengua aparece aqui sola. */
-    var NOMBRES = {es:'Español', en:'English', fr:'Français', pt:'Português',
-                   it:'Italiano', de:'Deutsch', ru:'Русский', el:'Ελληνικά'};
-    var vistos = {};
-    Array.prototype.forEach.call(
-      document.querySelectorAll('link[rel="alternate"][hreflang]'), function (l) {
-        var c = l.getAttribute('hreflang');
-        if (c === 'x-default' || vistos[c]) return;
-        vistos[c] = 1;
-        var a = enlace('ajuste-idioma', NOMBRES[c] || c, '/' + c + '/');
-        if (document.documentElement.lang === c) a.setAttribute('aria-current', 'true');
-        ajustes.appendChild(a);
-      });
-    // La piel la anade `chat-panel.js`: es un mando, y aqui no cabia.
-  }
-
-  /* LOS DOS MANDOS ESTABAN SIN NOMBRE. Su `<span data-rotulo="...">` nacia
-     vacio y no lo rellenaba nadie: dos botones cuyo unico contenido es un SVG
-     con `aria-hidden`, es decir, dos botones que un lector de pantalla anuncia
-     como «boton» y ya. Llevaba asi desde que se escribio el cabezal.
-
-     Se rellena aqui porque aqui vive `T`, y en un bucle sobre el atributo --no
-     uno por boton-- para que el tercer mando que se anada salga nombrado sin
-     tocar esto.
-
-     El rotulo se queda con su clase `.sr` puesta: quien lee con los oidos lo
-     tiene siempre, y en pantalla aparece solo con el panel abierto. Esa parte
-     la decide el css --`[aria-expanded]`-- y no este bucle, porque es cuando
-     se ve, no que dice. */
-  Array.prototype.forEach.call(document.querySelectorAll('[data-rotulo]'), function (n) {
-    var t = T[n.dataset.rotulo];
-    if (!t) return;
-    n.textContent = t;
-  });
-
-  /* La declaracion solar, en el cabezal y en los tres idiomas. No es un boton:
-     es una afirmacion sobre quien sirve esto, asi que se lee y no se pulsa.
-
-     Es la MISMA clave que pinta el pie. Hubo dos --`pieSolar` decia otra cosa
-     parecida-- y se fundieron el 2026-09-04: dos frases sobre el mismo hecho
-     terminan divergiendo, y esta se publica en dos sitios de la misma pagina. */
-  /* Al centro del cabezal, no al final de la navegacion, donde se leia como un
-     pie de la fila. `Powered` va aparte y en verde: es la palabra que dice de
-     donde sale la energia. Y sin nombrar al proveedor -- la frase afirma que
-     hay uno, no cual, asi que no miente el dia que cambie. */
-  var solar = document.getElementById('cab-solar');
-  if (solar) {
-    solar.innerHTML = '';
-    solar.appendChild(el('b', 'solar-powered', 'Powered'));
-    solar.appendChild(document.createTextNode(' · ' + T.cabSolar));
-  }
-
-  /* Los enlaces de identidad publica van AQUI y en ningun otro sitio: son la
-     unica forma de comprobar quien firma esto, y dos copias divergen.
-
-     El DIBUJO vive en `hub-cola.js` desde el 2026-09-05 --aqui no cabian sus
-     1,9 KB de rutas--, pero la DECISION se queda: que enlace se pone lo dice
-     el catalogo, no una constante. */
+     LOS ENLACES DE IDENTIDAD PUBLICA SE QUEDAN AQUI, y no es un resto: el
+     DIBUJO lo pone `hub-cola.js` y la CAJA es marcado de la portada, pero
+     cual enlace se pinta lo dice `hub.json` -- que es el fichero que este
+     guion trae. Moverlo al cabezal habria obligado al cabezal a pedir el
+     catalogo entero para dos enlaces. */
   var ident = document.getElementById('cab-ident');
   /* --- el panel Modelos --------------------------------------------------- */
   function hueso(c) { return el('div', 'hueso ' + c); }
