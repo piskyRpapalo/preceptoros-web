@@ -1,0 +1,114 @@
+{
+ "esquema": 1,
+ "idioma": "es",
+ "nota": "La prosa de los cerebros. Los HECHOS --velocidad, tag del modelo, contexto-- viven en `cerebros.json` y no llevan una palabra traducible. Es la misma frontera que `loratelier.json` con `taller-<idioma>.json`, y por el mismo motivo: las ocho lenguas en el fichero de datos lo dejan lleno el primer dia.",
+ "cta_hash": "¿Te ha servido? Hazte tu firma y cuéntanoslo: se guarda en tu máquina y viaja cuando abra el tablón. Es lo que entrena la versión siguiente.",
+ "cerebros": {
+  "charla-web": {
+   "nombre": "El Anfitrión",
+   "que_es": "Mistral 7B con las instrucciones de la casa escritas a mano. Es el único que sabe qué es este producto: da los comandos reales de instalación y acierta el tamaño del modelo. A cambio es verboso, y a quien ya instaló todavía le repite los pasos.",
+   "purpose": "Guía la instalación y contesta lo que traigas después. Es el que sabe qué es este producto. Lo que buscamos: dinos en qué momento te perdiste, y si te repitió pasos que ya habías dado.",
+   "atajos": {
+    "simple": {
+     "rotulo": "Más sencillo",
+     "prompt": "Vuelve a decirme lo último, pero como se lo explicarías a alguien que no ha tocado un terminal en su vida. Sin palabras de oficio: si tienes que usar una, la defines en la misma frase. Tres frases como mucho, y acaba preguntándome qué parte quiero abrir."
+    },
+    "pasos": {
+     "rotulo": "Dame los pasos",
+     "prompt": "Dame solo los pasos que me tocan a mí, en orden y numerados. Cada uno empieza por un verbo y cabe en una línea. Si un paso depende de qué máquina tengo, pregúntamelo antes de darlo en vez de suponer. No expliques por qué todavía."
+    },
+    "falta": {
+     "rotulo": "Qué te falta saber",
+     "prompt": "Antes de seguir, dime qué te falta saber de mí para acertar. Enumera solo lo que cambiaría tu respuesta, no lo que sería agradable saber. Si no te falta nada, dilo y sigue. Máximo tres cosas."
+    },
+    "comprobar": {
+     "rotulo": "¿Cómo lo compruebo?",
+     "prompt": "Dime cómo compruebo yo mismo lo que acabas de afirmar, sin fiarme de ti. Dame el comando o el sitio exacto donde mirarlo. Si es algo que no se puede comprobar desde mi máquina, dilo claramente en vez de darme un rodeo."
+    }
+   }
+  },
+  "charla-base": {
+   "nombre": "La Charla",
+   "que_es": "El mismo Mistral con un adaptador LoRA entrenado aquí sobre 150 conversaciones en cinco lenguas. Habla más corto y reconoce mejor a quien ya instaló. Su fallo conocido: se inventa cifras con mucha seguridad.",
+   "purpose": "Entrenado aquí para reconocer a quien ya instaló y pasar al tema. Lo que buscamos: si suelta un número —tamaños, tiempos, cantidades— cópialo. Esa es la avería que estamos cazando.",
+   "atajos": {
+    "simple": {
+     "rotulo": "Más sencillo",
+     "prompt": "Vuelve a decirme lo último más sencillo, sin palabras de oficio. Tres frases como mucho. Acaba preguntándome qué parte quiero abrir."
+    },
+    "sin_cifras": {
+     "rotulo": "Sin números",
+     "prompt": "Repite lo último sin dar ni una cifra. Si un número era necesario para entenderlo, dime dónde lo miro yo en vez de decírmelo tú. Prefiero un hueco declarado a un número que suene bien."
+    },
+    "falta": {
+     "rotulo": "Qué te falta saber",
+     "prompt": "Dime qué te falta saber de mí para acertar. Solo lo que cambiaría tu respuesta. Máximo tres cosas, y si no falta nada dilo y sigue."
+    }
+   }
+  },
+  "charla-multi": {
+   "nombre": "La Charla · 7 lenguas",
+   "que_es": "Como el anterior pero entrenado también en árabe y griego, en alfabeto nativo. Con quince muestras por lengua, fuera del español se le desarma la gramática. Está aquí para que se vea, no porque esté listo.",
+   "purpose": "El mismo entrenamiento en siete lenguas. Lo que buscamos, sobre todo de quien lea árabe o griego: dinos si la frase se sostiene o se rompe, aunque el sentido se entienda.",
+   "atajos": {
+    "mi_lengua": {
+     "rotulo": "En mi idioma",
+     "prompt": "Sigue toda la conversación en el idioma en que te escribo, incluidos los nombres técnicos si tienen traducción usada de verdad. Si una palabra no se traduce, déjala y explícala una vez. No mezcles idiomas dentro de una frase."
+    },
+    "simple": {
+     "rotulo": "Más sencillo",
+     "prompt": "Vuelve a decirme lo último más sencillo, sin palabras de oficio, en mi idioma. Tres frases como mucho."
+    },
+    "falta": {
+     "rotulo": "Qué te falta saber",
+     "prompt": "Dime qué te falta saber de mí para acertar. Solo lo que cambiaría tu respuesta. Máximo tres cosas."
+    }
+   }
+  },
+  "v7": {
+   "nombre": "El Anterior",
+   "que_es": "Llama 3.2 de 3B, el que atendía la web hasta ahora. El más rápido de todos por ser el más pequeño, y el que más responde NO_DATA — prefiere callar a inventar.",
+   "purpose": "El más pequeño y el más rápido, y el que más dice NO_DATA. Lo que buscamos: cuándo callar fue lo correcto y cuándo fue una excusa por no saber.",
+   "atajos": {
+    "no_data": {
+     "rotulo": "Di NO_DATA si no lo sabes",
+     "prompt": "Contesta solo con lo que sepas de verdad. En cuanto llegues a algo que no sabes, escribe NO_DATA y di exactamente qué falta y dónde se busca. No rellenes el hueco con algo parecido."
+    },
+    "corto": {
+     "rotulo": "Más corto",
+     "prompt": "Lo mismo en una frase. Si no cabe en una, di qué sobra de mi pregunta para que quepa."
+    }
+   }
+  },
+  "qwen-coder": {
+   "nombre": "El de Código",
+   "que_es": "Treinta mil millones de parámetros pensados para programar, sin ninguna instrucción encima. No sabe qué es este producto: si le dices que no has instalado nada, te pregunta si instalas Linux o Windows.",
+   "purpose": "Treinta mil millones de parámetros para programar, sin instrucciones encima. Está para comparar. Lo que buscamos: en qué preguntas gana a los demás pese a no saber qué es esto.",
+   "atajos": {
+    "codigo": {
+     "rotulo": "Enséñame el código",
+     "prompt": "Dame el código que hace eso, sin explicación alrededor. Comenta solo las líneas donde alguien se equivocaría. Si hace falta instalar algo, dilo en la primera línea como comentario."
+    },
+    "que_falla": {
+     "rotulo": "¿Por qué falla?",
+     "prompt": "Te pego algo que no funciona. Dime la causa más probable primero y cómo la confirmo, antes de proponerme ningún arreglo. Si no puedes saberlo sin ver más, di qué necesitas ver."
+    }
+   }
+  },
+  "mistral-base": {
+   "nombre": "La Base Desnuda",
+   "que_es": "El modelo del que salen los tres primeros, sin adaptador y sin instrucciones. Sirve para ver qué aporta cada capa: lo que este no sabe y los otros sí, lo pusimos nosotros.",
+   "purpose": "El modelo del que salen los tres primeros, desnudo. Lo que buscamos: qué sabe hacer sin que nosotros le hayamos puesto nada. Todo lo que le falte, lo pusimos nosotros en los otros.",
+   "atajos": {
+    "sin_adornos": {
+     "rotulo": "Sin adornos",
+     "prompt": "Responde sin saludo, sin resumen de mi pregunta y sin despedida. Empieza por la respuesta. Si no la sabes, esa es la primera frase."
+    },
+    "falta": {
+     "rotulo": "Qué te falta saber",
+     "prompt": "Dime qué te falta saber de mí para acertar. Solo lo que cambiaría tu respuesta."
+    }
+   }
+  }
+ }
+}

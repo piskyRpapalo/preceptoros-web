@@ -69,7 +69,8 @@
     return v == null ? 'NO_DATA' : String(v).replace('.', ',') + unidad;
   }
 
-  function pintar(reg, w, lang) {
+  function pintar(reg, w, lang, tx) {
+    var prosa = (tx && tx.cerebros) || {};
     var host = document.getElementById('especificaciones');
     if (!host || document.getElementById('cerebros')) return;
     var caja = el('section', 'cerebros'); caja.id = 'cerebros';
@@ -81,6 +82,10 @@
     (reg.cerebros || []).forEach(function (c) {
       var b = el('button', 'cerebro'); b.type = 'button';
       b.dataset.modelo = c.modelo;
+      /* La prosa de ESTE cerebro en la lengua que toque. Si falta, la tarjeta
+         se pinta igual con su tag y sus cifras: los hechos no dependen de que
+         alguien haya traducido nada. */
+      var t = prosa[c.id] || {};
       /* El logo va en <img> y no inline: son tres ficheros de 250 B que el
          worker ya cachea, y meterlos en el JS los repetiria seis veces. El
          `alt` va VACIO a proposito -- el nombre esta al lado en texto, y un
@@ -95,15 +100,15 @@
         img.onerror = function () { img.remove(); };
         cab.appendChild(img);
       }
-      cab.appendChild(el('h3', null, c.nombre));
+      cab.appendChild(el('h3', null, t.nombre || c.id));
       if (c.recomendado) cab.appendChild(el('span', 'cerebro-marca', w[4]));
       b.appendChild(cab);
       b.appendChild(el('p', 'cerebro-modelo', c.modelo));
-      b.appendChild(el('p', 'cerebro-que', c.que_es));
+      if (t.que_es) b.appendChild(el('p', 'cerebro-que', t.que_es));
       /* QUE FEEDBACK SE BUSCA, y por eso va antes que las cifras: un tester al
          que no se le dice que mirar reporta lo que le llama la atencion, que
          casi nunca es lo que hace falta. */
-      var busca = enLengua(c.purpose, lang);
+      var busca = t.purpose;
       if (busca) b.appendChild(el('p', 'cerebro-busca', busca));
       var d = el('p', 'cerebro-datos');
       d.appendChild(el('b', null, cifra(c.prompt, '')));
@@ -120,7 +125,7 @@
       rejilla.appendChild(b);
     });
     caja.appendChild(rejilla);
-    var cta = enLengua((reg.cerebros[0] || {}).cta_hash, lang);
+    var cta = tx && tx.cta_hash;
     if (cta) caja.appendChild(el('p', 'cerebros-cta', cta));
     caja.appendChild(pie);
     host.parentNode.insertBefore(caja, host.nextSibling);
@@ -195,9 +200,19 @@
     var lang = (document.documentElement.lang || 'es').slice(0, 2);
     var w = PAL[lang] || PAL['es'];
     consentimiento(CONS[lang] || CONS['en']);
-    fetch('/cerebros.json', { cache: 'no-store' })
-      .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
-      .then(function (reg) { pintar(reg, w, lang); })
+    /* DOS FICHEROS Y UN RESPALDO POR FICHERO ENTERO. Los hechos no tienen
+       idioma; la prosa si, y cae al ingles COMPLETA en vez de por clave
+       suelta: media lengua traducida y media caida se lee peor que una lengua
+       entera prestada. Es la regla que `taller.js` ya aplica. */
+    var traer = function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); };
+    Promise.all([
+      fetch('/cerebros.json', { cache: 'no-store' }).then(traer),
+      fetch('/cerebros-' + lang + '.json', { cache: 'no-store' }).then(traer)
+        .catch(function () {
+          return fetch('/cerebros-en.json', { cache: 'no-store' }).then(traer);
+        })
+    ])
+      .then(function (par) { pintar(par[0], w, lang, par[1]); })
       .catch(function (e) {
         var host = document.getElementById('especificaciones');
         if (!host || document.getElementById('cerebros')) return;

@@ -1,0 +1,114 @@
+{
+ "esquema": 1,
+ "idioma": "en",
+ "nota": "La prosa de los cerebros. Los HECHOS --velocidad, tag del modelo, contexto-- viven en `cerebros.json` y no llevan una palabra traducible. Es la misma frontera que `loratelier.json` con `taller-<idioma>.json`, y por el mismo motivo: las ocho lenguas en el fichero de datos lo dejan lleno el primer dia.",
+ "cta_hash": "Did it help? Make your signature and tell us: it stays on your machine and travels when the board opens. That is what trains the next version.",
+ "cerebros": {
+  "charla-web": {
+   "nombre": "The Host",
+   "que_es": "Mistral 7B with the house instructions written by hand. It is the only one that knows what this product is: it gives the real install commands and gets the model size right. In exchange it is wordy, and it still repeats the steps to someone who already installed.",
+   "purpose": "Guides the install and answers what you bring afterwards. It is the one that knows what this product is. What we want: tell us where you got lost, and whether it repeated steps you had already done.",
+   "atajos": {
+    "simple": {
+     "rotulo": "Simpler",
+     "prompt": "Say that again, but the way you would explain it to someone who has never opened a terminal. No trade words: if you must use one, define it in the same sentence. Three sentences at most, and end by asking which part I want to open."
+    },
+    "pasos": {
+     "rotulo": "Give me the steps",
+     "prompt": "Give me only the steps that are mine to take, in order and numbered. Each one starts with a verb and fits on one line. If a step depends on what machine I have, ask me before giving it instead of assuming. Do not explain why yet."
+    },
+    "falta": {
+     "rotulo": "What are you missing",
+     "prompt": "Before going on, tell me what you are missing about me to get this right. List only what would change your answer, not what would be nice to know. If you are missing nothing, say so and continue. Three things at most."
+    },
+    "comprobar": {
+     "rotulo": "How do I check it?",
+     "prompt": "Tell me how I can check what you just claimed myself, without trusting you. Give me the exact command or the exact place to look. If it cannot be checked from my machine, say so plainly instead of talking around it."
+    }
+   }
+  },
+  "charla-base": {
+   "nombre": "The Talk",
+   "que_es": "The same Mistral with a LoRA adapter trained here on 150 conversations in five languages. It talks shorter and recognises someone who already installed. Its known fault: it invents figures with great confidence.",
+   "purpose": "Trained here to recognise someone who already installed and move on. What we want: if it states a number — sizes, times, amounts — copy it. That is the fault we are hunting.",
+   "atajos": {
+    "simple": {
+     "rotulo": "Simpler",
+     "prompt": "Say that again more simply, without trade words. Three sentences at most. End by asking which part I want to open."
+    },
+    "sin_cifras": {
+     "rotulo": "No numbers",
+     "prompt": "Say that again without giving a single figure. If a number was needed to make sense of it, tell me where to look it up myself instead of telling me. I would rather have a declared gap than a number that sounds right."
+    },
+    "falta": {
+     "rotulo": "What are you missing",
+     "prompt": "Tell me what you are missing about me to get this right. Only what would change your answer. Three things at most, and if nothing is missing say so and go on."
+    }
+   }
+  },
+  "charla-multi": {
+   "nombre": "The Talk · 7 languages",
+   "que_es": "Like the previous one but also trained in Arabic and Greek, in native script. With fifteen samples per language, outside Spanish its grammar falls apart. It is here to be seen, not because it is ready.",
+   "purpose": "The same training in seven languages. What we want, above all from anyone who reads Arabic or Greek: tell us whether the sentence holds together or falls apart, even if the meaning comes through.",
+   "atajos": {
+    "mi_lengua": {
+     "rotulo": "In my language",
+     "prompt": "Carry on the whole conversation in the language I write in, including technical names where a real translation exists. If a word does not translate, keep it and explain it once. Do not mix languages inside a sentence."
+    },
+    "simple": {
+     "rotulo": "Simpler",
+     "prompt": "Say that again more simply, without trade words, in my language. Three sentences at most."
+    },
+    "falta": {
+     "rotulo": "What are you missing",
+     "prompt": "Tell me what you are missing about me to get this right. Only what would change your answer. Three things at most."
+    }
+   }
+  },
+  "v7": {
+   "nombre": "The Previous One",
+   "que_es": "Llama 3.2 at 3B, the one that served the site until now. The fastest of them all for being the smallest, and the one that answers NO_DATA most — it would rather stay quiet than invent.",
+   "purpose": "The smallest and fastest, and the one that says NO_DATA most. What we want: when staying quiet was right, and when it was an excuse for not knowing.",
+   "atajos": {
+    "no_data": {
+     "rotulo": "Say NO_DATA if you do not know",
+     "prompt": "Answer only with what you actually know. The moment you reach something you do not know, write NO_DATA and say exactly what is missing and where to look for it. Do not fill the gap with something similar."
+    },
+    "corto": {
+     "rotulo": "Shorter",
+     "prompt": "The same thing in one sentence. If it does not fit in one, tell me what to drop from my question so that it does."
+    }
+   }
+  },
+  "qwen-coder": {
+   "nombre": "The Code One",
+   "que_es": "Thirty billion parameters meant for programming, with no instructions on top. It does not know what this product is: tell it you have installed nothing and it asks whether you are installing Linux or Windows.",
+   "purpose": "Thirty billion parameters for code, with no instructions on top. It is here for comparison. What we want: which questions it wins at despite not knowing what this is.",
+   "atajos": {
+    "codigo": {
+     "rotulo": "Show me the code",
+     "prompt": "Give me the code that does that, with no prose around it. Comment only the lines where someone would get it wrong. If something must be installed, say so on the first line as a comment."
+    },
+    "que_falla": {
+     "rotulo": "Why does it fail?",
+     "prompt": "I am pasting something that does not work. Tell me the most likely cause first and how I confirm it, before proposing any fix. If you cannot know without seeing more, say what you need to see."
+    }
+   }
+  },
+  "mistral-base": {
+   "nombre": "The Bare Base",
+   "que_es": "The model the first three come from, with no adapter and no instructions. It is here to show what each layer adds: what this one does not know and the others do, we put there.",
+   "purpose": "The model the first three come from, bare. What we want: what it can do with nothing we added. Everything it lacks, we put into the others.",
+   "atajos": {
+    "sin_adornos": {
+     "rotulo": "No padding",
+     "prompt": "Answer with no greeting, no restatement of my question and no sign-off. Start with the answer. If you do not know it, that is the first sentence."
+    },
+    "falta": {
+     "rotulo": "What are you missing",
+     "prompt": "Tell me what you are missing about me to get this right. Only what would change your answer."
+    }
+   }
+  }
+ }
+}
