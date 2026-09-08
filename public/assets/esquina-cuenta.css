@@ -113,3 +113,35 @@
      y por fin sirven para algo. */
   #cabezal #identity .yo-perfil{flex:0 1 auto;min-width:0}
 }
+
+
+/* --- LA LINEA DE ARRIBA ES UNA, NO DOS (2026-09-08) -----------------------
+   El Soberano, sobre una captura del telefono: «asegurate que estan a la misma
+   altura, y no se ve partido». Y era exacto -- la marca sola en un renglon y la
+   cuenta debajo, con medio cabezal vacio a su derecha.
+
+   LA CUENTA, A 375 px Y MEDIDA: la fila util son 325. La marca ocupa 184, la
+   rueda 36 y los dos huecos 12 -- 232. Quedan NOVENTA Y TRES para la cuenta. Y
+   la cuenta mide 143 con la huella corta puesta. Faltan cincuenta.
+
+   SE RETIRA LA HUELLA CORTA, no el nombre. Sin ella la cuenta mide 91 y entra
+   en los 93. No es una perdida: la huella COMPLETA --los sesenta y cuatro
+   bytes, que es la que sirve para comprobar algo-- sigue a un toque, en el
+   menu que abre el propio nombre. Lo que se retira son seis digitos de
+   conveniencia; lo que se gana es que quien eres se lea en la misma linea que
+   donde estas.
+
+   Y NO SE RETIRA POR ANCHURA DE PANTALLA SINO POR SITIO: `min-width:0` mas la
+   elipsis que el nombre ya traia hacen que la cuenta CEDA cuando no cabe, en
+   vez de empujar. Con un pseudonimo largo o una lengua ancha no se rompe la
+   fila: se acorta el nombre y se pone un puntito. La marca no cede -- su
+   `min-width` de 11,5rem es lo que impide que «PRECEPTOROS» se parta, que es el
+   corte que esta casa lleva dos dias evitando.
+
+   Por encima de 560 px sobra sitio para las dos cosas y la huella vuelve sola:
+   no hay nada que decidir, solo hay o no hay hueco. */
+@media (max-width:560px){
+  #cabezal #identity .huella-corta{display:none}
+  #cabezal #identity{min-width:0;flex:0 1 auto}
+  #cabezal #identity .yo-perfil{min-width:0;max-width:100%}
+}
