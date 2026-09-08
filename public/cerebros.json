@@ -1,7 +1,7 @@
 {
  "esquema": 1,
  "estado": "MEDIDO",
- "nota": "Los cerebros que la web puede pedirle al rack, con su velocidad REAL. Fichero aparte de `medidas.json` a proposito: aquel tiene contrato formal y describe UN modelo con sus dos backends; esto describe VARIOS modelos en el backend que la web usa de verdad. Mezclarlos habria roto un contrato firmado para ahorrarse un fichero. · 2026-09-07: la prosa se PARTIO a `cerebros-<idioma>.json` al llegar este fichero a 18.427 B de los 16.384 del tope. Se parte por asunto y no se recortan comentarios, que es la regla de la casa -- y ademas es lo que hacia falta para poder traducir a las ocho lenguas sin volver a llenarlo.",
+ "nota": "Los cerebros que la web puede pedirle al rack, con su velocidad REAL. Fichero aparte de `medidas.json` a proposito: aquel tiene contrato formal y describe UN modelo con sus dos backends; esto describe VARIOS modelos en el backend que la web usa de verdad. Mezclarlos habria roto un contrato firmado para ahorrarse un fichero. · 2026-09-07: la prosa se PARTIO a `cerebros-<idioma>.json` al llegar este fichero a 18.427 B de los 16.384 del tope. Se parte por asunto y no se recortan comentarios, que es la regla de la casa -- y ademas es lo que hacia falta para poder traducir a las ocho lenguas sin volver a llenarlo.  PUERTA: `puerta:true` marca los DOS que dibuja la portada -- el que instala y el que habla. Los seis siguen aqui porque los seis existen y estan medidos; los otros cuatro se enseñan en Comunidad. La bandera vive en este fichero y no en la prosa porque el render lee de aqui: una bandera en el sitio que nadie lee es peor que no tenerla.",
  "contrato": {
   "quien_escribe": "el nodo soberano, midiendo; la web solo lee",
   "como_se_mide": "un POST a /api/generate del propio Ollama y sus contadores `prompt_eval_count/duration` y `eval_count/duration`. Ni una cifra estimada: si un campo esta a null se pinta NO_DATA.",
@@ -28,7 +28,8 @@
     "pasos",
     "falta",
     "comprobar"
-   ]
+   ],
+   "puerta": true
   },
   {
    "id": "charla-base",
@@ -44,7 +45,8 @@
     "simple",
     "sin_cifras",
     "falta"
-   ]
+   ],
+   "puerta": true
   },
   {
    "id": "charla-multi",
@@ -60,7 +62,8 @@
     "mi_lengua",
     "simple",
     "falta"
-   ]
+   ],
+   "puerta": false
   },
   {
    "id": "v7",
@@ -75,7 +78,8 @@
    "atajos": [
     "no_data",
     "corto"
-   ]
+   ],
+   "puerta": false
   },
   {
    "id": "qwen-coder",
@@ -90,7 +94,8 @@
    "atajos": [
     "codigo",
     "que_falla"
-   ]
+   ],
+   "puerta": false
   },
   {
    "id": "mistral-base",
@@ -105,7 +110,8 @@
    "atajos": [
     "sin_adornos",
     "falta"
-   ]
+   ],
+   "puerta": false
   }
  ],
  "atajos_nota": "LOS ATAJOS SON LA INTERFAZ DE LAS CONDUCTAS ENTRENADAS, no botones de ayuda. Cada uno escribe en el campo un prompt de tres o cuatro frases que la persona LEE antes de mandar --un atajo que manda solo es un boton que habla por ti-- y ese prompt es el que activa una conducta que el corpus enseño. Por eso viven aqui y no en el codigo: el generador del corpus lee esta misma lista, asi que lo que se ofrece y lo que se entrena no pueden separarse. Un atajo sin muestras que lo respalden es una promesa; una conducta entrenada sin atajo es una funcion que nadie encuentra. Y cambian POR MODELO a proposito: al de codigo se le pide codigo, al que dice NO_DATA se le pide que lo diga, y al del LoRA que se inventa cifras se le ofrece «sin numeros» -- el atajo tambien es donde se le pone la brida a un fallo conocido."

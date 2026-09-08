@@ -1446,6 +1446,51 @@ class Hub(unittest.TestCase):
                          "el unico servido tiene que ser el Instalador")
         self.assertEqual(7, len(ags) - len(servidos), "no hay siete pendientes")
 
+    def test_la_portada_ofrece_DOS_cerebros_y_el_catalogo_sigue_entero(self):
+        """La puerta no es el catalogo, y confundirlos cuesta visitantes.
+
+        El 2026-09-08 la portada ofrecia SEIS cerebros, y cuatro eran el mismo
+        Mistral 7B con cuatro nombres: `charla-web`, `charla-base`,
+        `charla-multi` y `mistral-base`. No es solo exceso de oferta -- es una
+        eleccion falsa: cuatro puertas al mismo sitio. Quien llega nuevo no
+        elige entre seis; se va.
+
+        Se comprueban LAS DOS mitades, porque arreglar una sola reintroduce el
+        fallo por el otro lado: que la puerta ofrezca exactamente dos, y que el
+        catalogo siga trayendo los seis. Borrar del catalogo lo que no se enseña
+        seria mentir sobre lo que hay, que es la averia contraria y peor.
+
+        La bandera se comprueba en `cerebros.json` y NO en `cerebros-<lang>`,
+        porque ese es el fichero del que lee el render: los de idioma son la
+        prosa. Se dice porque yo mismo la puse primero en la prosa y la rejilla
+        salio VACIA -- una bandera en el fichero que nadie lee no filtra de
+        menos, filtra de mas.
+        """
+        reg = json.loads((PUBLICO / "cerebros.json").read_text(encoding="utf-8"))
+        cs = reg["cerebros"]
+        puerta = [c["id"] for c in cs if c.get("puerta")]
+        self.assertEqual(
+            2, len(puerta),
+            f"cerebros.json marca {len(puerta)} de puerta: {puerta}. La "
+            "portada son dos trabajos --instalar y hablar--, no una lista.")
+        self.assertGreater(
+            len(cs), len(puerta),
+            "el catalogo se quedo con solo los de puerta: los demas existen, "
+            "estan medidos y tienen que seguir declarados")
+        self.assertEqual(
+            {"charla-web", "charla-base"}, set(puerta),
+            "los de puerta son el que instala y el que habla")
+
+    def test_el_selector_de_la_portada_filtra_por_puerta(self):
+        """El filtro vive en el render, y sin el la marca no hace nada.
+
+        Una bandera en el JSON que nadie lee es peor que no tenerla: parece que
+        la regla esta puesta y la pantalla sigue enseñando los seis.
+        """
+        js = (PUBLICO / "assets" / "selector-modelo.js").read_text(encoding="utf-8")
+        self.assertIn("return c.puerta;", js,
+                      "selector-modelo.js no filtra por `puerta`")
+
     def test_el_modelo_servido_lleva_tag_explicito(self):
         """Nada de `:latest` pelado en el modelo que da la cara al publico.
 

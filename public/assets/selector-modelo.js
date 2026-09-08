@@ -77,7 +77,26 @@
       w[1] + ' / ' + w[2] + ' · ' + reg.backend + ' · ' + reg.medido);
     var rejilla = el('div', 'cerebros-rejilla');
 
-    (reg.cerebros || []).forEach(function (c) {
+    /* SOLO LOS DE PUERTA (2026-09-08, decision del Soberano). La portada
+       ofrecia SEIS cerebros y cuatro de ellos son el MISMO Mistral 7B
+       --`charla-web`, `charla-base`, `charla-multi` y `mistral-base`--. Quien
+       llega nuevo no elige entre seis: se va. Y la eleccion que se le pedia era
+       ademas falsa, porque cuatro puertas daban al mismo sitio.
+
+       Quedan dos, y son los dos trabajos de la portada: `charla-web` instala
+       --es el unico que sabe que es este producto y da los comandos reales-- y
+       `charla-base` habla con quien ya instalo. Los otros cuatro NO se borran
+       del catalogo: siguen en `cerebros-*.json` porque siguen existiendo, y se
+       enseñan en Comunidad, que es donde compararlos tiene sentido. El de mas
+       valor ahi es `mistral-base`, la base desnuda de los tres primeros: puesto
+       al lado de `charla-base` enseña exactamente que aporta nuestro LoRA.
+
+       Es el mismo reparto que `hub.js` ya hacia con `real.disponible`: el
+       catalogo dice la verdad entera y el render decide cuanta se enseña de
+       entrada. Borrar aqui seria mentir sobre lo que hay. */
+    (reg.cerebros || [])
+      .filter(function (c) { return c.puerta; })
+      .forEach(function (c) {
       var b = el('button', 'cerebro'); b.type = 'button';
       b.dataset.modelo = c.modelo;
       /* La prosa de ESTE cerebro en la lengua que toque. Si falta, la tarjeta
