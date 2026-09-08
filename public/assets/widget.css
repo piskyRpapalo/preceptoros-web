@@ -119,7 +119,16 @@
    `<p>`, que es bloque: cada uno se llevaba su linea y el cabezal pasaba de dos
    filas a cinco. Se vio con sesion, no sin ella; sin sesion hay un solo boton y
    el defecto no existe. */
-#cabezal #identity{order:9;margin-left:auto;flex:0 0 auto;align-self:flex-start;
+/* NI `order` NI `margin-left:auto`: los dos se fueron el 2026-09-08. Eran de
+   cuando la identidad era un hijo suelto de `.cab-fila` y habia que empujarla
+   contra el borde a mano. Ahora vive en `.cab-esquina` con la rueda, y esa
+   caja es la que se pega al canto -- una sola vez, para las dos.
+   El `order:9` aguanto la mudanza y no se veia: dentro de la esquina mandaba
+   la identidad DETRAS de la rueda, asi que al registrarse un usuario la rueda
+   dejaba de estar en la esquina superior derecha. Lo vio el Soberano en una
+   captura, y es la cuarta regla de colocacion que sobrevive a la pieza que
+   colocaba -- las otras tres estaban en `esquina.css` y en `cabezal.css`. */
+#cabezal #identity{flex:0 0 auto;align-self:center;
   display:flex;flex-wrap:wrap;align-items:center;gap:.3rem}
 /* CON SESION, TODO COMPRIMIDO Y EN UNA FILA. Eran tres piezas a tamano de
    boton --saludo, perfil y huella-- y en el telefono ocupaban tres filas del

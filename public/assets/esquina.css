@@ -38,9 +38,18 @@
    identidad, y el `order` del envoltorio no ordena nada. Se escribio ahi
    primero y la rueda se quedo en la esquina izquierda; se vio en el navegador,
    no leyendo el css. */
-#cabezal .lateral-boton{order:8;margin-left:auto}
+/* EL ORDEN DENTRO DE LA ESQUINA LO PONE EL MARCADO, no estas reglas. Aqui
+   habia `order:8` para la rueda y `order:9` para la identidad -- de cuando los
+   dos eran hijos sueltos de la fila-- y sobrevivieron a la mudanza: ocho antes
+   que nueve deja la RUEDA A LA IZQUIERDA del nombre, asi que al registrarse la
+   rueda pierde la esquina y hay que buscarla. Se vio en pantalla.
+
+   La rueda toma el canto y la cuenta crece hacia la izquierda, que es donde
+   hay sitio. Es lo mismo que ya estaba firmado el 2026-09-06: «un mando que
+   cambia de sitio segun si has entrado es un mando que hay que buscar dos
+   veces». `cabezal.js` mete primero la identidad y despues la rueda; sin estos
+   `order` encima, ese orden manda. */
 #cabezal #panel-ajustes{order:8}
-#cabezal #identity{order:9;margin-left:0}
 .cab-solar{order:20;flex:1 1 100%;font-size:.62rem;text-align:left}
 
 /* LA MARCA, MAS GRANDE. Era 1,05rem, el mismo cuerpo que un parrafo con
@@ -181,7 +190,18 @@
   #cabezal .cab-solar,#cabezal #cab-nav{padding-right:calc(var(--esfera) + .5rem)}
 
   /* La marca toma el primer renglon entero -- titulo, GitHub y LinkedIn. */
-  #cabezal .marca{flex:1 1 100%;flex-wrap:nowrap;align-items:center}
+  /* LA MARCA CEDE LA FILA CUANDO HAY CON QUIEN COMPARTIRLA. Era `1 1 100%`
+     --se llevaba el renglon entero-- y eso valia cuando los dos mandos estaban
+     absolutos y no pedian sitio. Ahora piden: con `auto` la marca ocupa lo que
+     necesita y deja el resto, y es flexbox quien decide si caben los dos.
+
+     `min-width` es lo que impide el corte de palabra: por debajo de 11,5rem
+     «PRECEPTOROS» se parte en «PRECEPTORO» y una «S» sola, que es el mismo
+     defecto que `cara.css` documenta y que ya costo una vez. Con ese suelo, si
+     el vecino no cabe la fila envuelve y la esquina baja entera -- que es feo
+     de menos y no rompe un nombre propio. */
+  #cabezal .marca{flex:1 1 auto;min-width:11.5rem;flex-wrap:nowrap;
+    align-items:center}
 
   /* Segundo renglon: la cuenta a la izquierda y la rueda contra el canto. */
   /* LA RUEDA YA NO SE COLOCA: la coloca su caja. Lo unico que se queda aqui es
@@ -227,9 +247,21 @@
    describia; la diferencia es que esta vez se retira la aritmetica que lo
    permitia.
 
-   `z-index` por encima de la cara: la esfera se solapa con esta esquina en
-   pantalla estrecha y un mando debajo de un dibujo no se puede pulsar. */
-.cab-esquina{position:absolute;top:.45rem;right:.45rem;
-  display:flex;align-items:center;gap:.4rem;
-  z-index:calc(var(--capa-4-cara) + 1)}
-.cab-esquina #identity{flex:0 0 auto;width:auto;margin:0}
+   Y VA EN EL FLUJO, no absoluta. Absoluta resolvia el caso sin sesion y rompia
+   el otro: al registrarse, la identidad deja de ser un icono de 36 px y pasa a
+   ser una pastilla con nombre y firma --211 px medidos a 375-- y una caja
+   fuera del flujo que se ensancha crece ENCIMA de su vecino. Medido antes de
+   tocar: 69 px de solape sobre «PRECEPTOROS», con la rueda enterrada debajo.
+
+   Corregirlo con un `right` mas grande habria sido la misma aritmetica que
+   este bloque acaba de retirar, girada noventa grados -- y habria vuelto a
+   romperse con el primer nombre largo. En el flujo el reparto lo hace flexbox
+   MIDIENDO, y lo hace en los dos estados sin que nadie escriba un numero:
+   caben los dos en la fila, van juntos; no caben, la esquina baja sola a la
+   suya. Es la misma decision, tomada por quien puede medir.
+
+   Ya no hace falta `z-index`: fuera del flujo se solapaba con la cara y habia
+   que levantarla por encima. En el flujo no se solapa con nada. */
+.cab-esquina{display:flex;align-items:center;gap:.4rem;
+  flex:0 0 auto;margin-left:auto;order:10}
+.cab-esquina #identity{flex:0 0 auto;width:auto;margin:0;min-width:0}

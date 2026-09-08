@@ -1699,27 +1699,46 @@ class Cabezal(unittest.TestCase):
         # `test_el_rack_no_se_renderiza_en_publico` con el JS.
         limpio = re.sub(r"/\*.*?\*/", "", movil.group(1), flags=re.S)
         cuerpo = limpio.replace(" ", "").replace("\n", "")
-        self.assertIn("#cabezal#identity{", cuerpo,
-                      "movil no reajusta la identidad: seguira clavada a la derecha")
-        regla = cuerpo.split("#cabezal#identity{")[1].split("}")[0]
-        # LA DOCTRINA CAMBIO el 2026-09-05, y conviene decir cual era: la
-        # identidad reclamaba su propia fila con `flex:1 0 100%`. Eso valia
-        # cuando ahi habia UN boton --«crear identidad»--. Con sesion iniciada
-        # `auth.js` pinta TRES hijos, y un 100 % a cada uno son tres filas: el
-        # cabezal pasaba de dos a cinco. Se vio con sesion, no sin ella.
+
+        # LO QUE ESTA PRUEBA EXIGIA HASTA EL 2026-09-08, y por que cambia.
         #
-        # Ahora comparte fila con la firma --son la misma pareja-- y solo se
-        # estira el boton cuando es el UNICO, que `:only-child` dice sin tener
-        # que saber en que estado esta la sesion.
-        self.assertIn("flex:11auto", regla,
-                      "la identidad vuelve a reclamar fila entera: con sesion "
-                      "son tres hijos y el cabezal se dispara a cinco filas")
-        self.assertIn("#cabezal#identitybutton:only-child{width:100%}", cuerpo,
-                      "sin `:only-child`, con sesion los tres mandos se estiran")
-        self.assertIn("margin-left:0", regla,
-                      "sigue el margin-left:auto que la empuja contra el borde")
-        # Sin !important: si hace falta, es que la especificidad esta mal
-        # pensada, y un !important tapa el problema para el siguiente que mire.
+        # Exigia una regla `#cabezal #identity{...}` DENTRO de la media query
+        # de movil, con `flex:1 1 auto` y `margin-left:0`. Existia porque la
+        # identidad era un hijo suelto de `.cab-fila` y habia que recolocarla a
+        # mano en cada franja de anchura para que no se quedara clavada a la
+        # derecha ni se llevara tres filas.
+        #
+        # Ya no es un hijo suelto: vive en `.cab-esquina` junto a la rueda, y
+        # el reparto lo hace flexbox midiendo. Seguir exigiendo la regla vieja
+        # seria pedir que se conserve la aritmetica que se retiro -- y ese
+        # `order:3` que quedo suelto es justo lo que hizo que la rueda perdiera
+        # el canto al registrarse un usuario. Lo vio el Soberano en una captura.
+        #
+        # ASI QUE SE EXIGE LA GARANTIA, NO SU IMPLEMENTACION VIEJA: la esquina
+        # tiene que estar EN EL FLUJO. Fuera de el, una identidad que se
+        # ensancha --al registrarse pasa de un icono de 36 px a una pastilla de
+        # 211-- crece ENCIMA de la marca: 69 px de solape medidos, con la rueda
+        # enterrada debajo. En el flujo eso no puede ocurrir, y no hay numero
+        # que ajustar.
+        esq = (PUBLICO / "assets" / "esquina.css").read_text(encoding="utf-8")
+        esq = re.sub(r"/\*.*?\*/", "", esq, flags=re.S).replace(" ", "").replace("\n", "")
+        m = re.search(r"\.cab-esquina\{([^}]*)\}", esq)
+        self.assertIsNotNone(m, "no hay esquina: los dos mandos vuelven a "
+                                "colocarse a mano")
+        self.assertNotIn("position:absolute", m.group(1),
+                         "la esquina vuelve a estar fuera del flujo: con sesion "
+                         "la identidad se ensancha y crece encima de la marca")
+        self.assertIn("margin-left:auto", m.group(1),
+                      "la esquina no se pega al canto derecho")
+
+        # Y NINGUN `order` SUELTO SOBRE LA IDENTIDAD en la maqueta de movil. El
+        # orden dentro de la esquina lo pone el marcado --identidad y despues
+        # rueda, para que la rueda tome el canto en los dos estados-- y un
+        # `order` heredado de la maqueta anterior lo invierte en silencio.
+        self.assertNotRegex(cuerpo, r"#cabezal#identity\{[^}]*order:",
+                            "un `order` viejo sobre la identidad: la rueda "
+                            "pierde la esquina en cuanto alguien se registra")
+
         self.assertNotIn("!important", cuerpo,
                          "el cabezal se arregla a martillazos")
 

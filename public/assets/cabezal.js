@@ -115,7 +115,15 @@
   var esquina = cab.querySelector('.cab-esquina');
   if (!esquina) {
     esquina = el('div', 'cab-esquina');
-    cab.appendChild(esquina);
+    /* VA DENTRO DE LA FILA, no colgando del cabezal. Estuvo absoluta unas
+       horas del 2026-09-07 y con eso resolvia el caso SIN sesion y rompia el
+       otro: al registrarse, la identidad pasa de ser un icono de 36 px a una
+       pastilla con nombre y firma --211 px medidos-- y una caja fuera del
+       flujo que se ensancha crece ENCIMA de su vecino. Se midio: 69 px de
+       solape sobre la marca, con la rueda enterrada debajo.
+       En el flujo, ese caso no puede ocurrir: el reparto lo hace flexbox
+       midiendo, y lo hace en los dos estados sin que nadie escriba un numero. */
+    fila.appendChild(esquina);
   }
 
   if (falta('panel-ajustes')) {

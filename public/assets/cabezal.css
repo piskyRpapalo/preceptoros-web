@@ -73,7 +73,13 @@
   /* COMPARTE FILA CON LA FIRMA en vez de llevarse la suya. `flex:1 0 100%`
      valia cuando aqui habia UN boton; con sesion `auth.js` pinta tres hijos y
      un 100 % los apilaba -- el cabezal pasaba de dos filas a cinco. */
-  #cabezal #identity{flex:1 1 auto;margin-left:0;align-self:stretch;order:3}
+  /* AQUI HABIA UN `order:3` PARA LA IDENTIDAD, y sobrevivio a la mudanza a
+     `.cab-esquina`: dentro de la esquina ese tres la mandaba DETRAS de la
+     rueda --que no lo lleva-- y la rueda perdia el canto en cuanto alguien se
+     registraba. El Soberano lo vio en la captura antes que yo.
+     El orden dentro de la esquina lo pone el marcado, y `cabezal.js` mete
+     primero la identidad y despues la rueda. Una regla de colocacion que
+     sobrevive a la pieza que colocaba es la tercera de este tipo hoy. */
   #cab-nav{order:2}
   /* Centrados no: pegados a la marca. Con el rail comiendo 4,6rem, `auto` a
      los dos lados los empujaba contra el borde y el segundo se salia. */

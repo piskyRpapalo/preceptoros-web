@@ -193,3 +193,38 @@
    eligieras. Se esconde, no se borra -- si `cerebros.json` fallara, la clase no
    se pone y la tabla vuelve sola en vez de dejar el cuadro mudo. */
 #especificaciones.con-cerebro .medidas{display:none}
+
+/* --- LA NUBE DICE EL MODELO ELEGIDO, NO EL COMPANERO (2026-09-08) ---------
+   Pedido por el Soberano mirando la pantalla: «elimina la nube violeta y verde
+   que dice The Installer available; quiero que esa nube sea el nombre del
+   modelo seleccionado, que ahora esta inmediatamente abajo».
+
+   Y tiene razon de fondo, no solo de sitio: la nube decia QUIEN te habla --el
+   companero-- y justo debajo la ficha decia QUE CEREBRO contesta. Dos rotulos
+   a tres milimetros para dos hechos que quien mira lee como uno, y el de
+   arriba era ademas el menos util: el companero es siempre el mismo mientras
+   el cerebro es lo que se acaba de elegir. La pastilla se queda con el dato
+   que cambia.
+
+   SOLO CUANDO HAY CEREBRO ELEGIDO. `con-cerebro` ya existia para esconder la
+   tabla de medidas vieja y sirve igual aqui: sin eleccion, la nube del
+   companero sigue siendo lo unico que hay y esconderla dejaria el cuadro
+   mudo. Se esconde lo que sobra, no lo que queda solo.
+
+   La marca verde de «disponible» se va con ella, y bien: decia que el
+   companero esta servido, y quien elige un cerebro ya esta viendo su tarjeta
+   con su velocidad medida al lado. Un estado que solo puede decir «si» deja de
+   informar. */
+#especificaciones.con-cerebro #panel-modelos{display:none}
+
+/* Y la cabecera de la ficha TOMA LA FORMA de la nube que sustituye: misma
+   pastilla, mismo violeta, mismo radio. No es decoracion -- es que el sitio ya
+   ensenaba a leer ese contorno como «esto es con lo que hablas», y cambiar el
+   dato conservando la forma aprovecha lo aprendido en vez de pedirlo otra vez. */
+#especificaciones .ficha-cerebro .cerebro-cab{
+  display:inline-flex;align-items:center;gap:.5rem;width:auto;
+  padding:.26rem .7rem .26rem .28rem;border-radius:999px;
+  background:var(--violeta);color:#fff;border:1px solid rgba(20,12,48,.55);
+  box-shadow:0 2px 10px rgba(36,26,53,.34);margin:0 0 .4rem}
+#especificaciones .ficha-cerebro .ficha-nombre{color:#fff;font-weight:800;
+  font-size:.88rem;letter-spacing:.01em;margin:0}
