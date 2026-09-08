@@ -57,6 +57,20 @@
    "hoy": "Nada todavia: es la linea de investigacion prioritaria del nodo soberano, y se declara antes de existir.",
    "falta": "Cruzar tres cosas que ya se miden por separado: coste local frente a API externa, riesgo de alucinacion en tareas criticas, y cumplimiento de los modelos desplegados.",
    "aportas": "Cuentame que te pide tu auditoria y que no sabes demostrar hoy."
+  },
+  "acta": {
+   "nombre": "El Acta de Revisión",
+   "util": "Poder demostrar que una persona miró una respuesta antes de que saliera, y que lo que miró es exactamente lo que salió.",
+   "hoy": "Nada dibujado todavía. Lo que sí existe es el registro encadenado al que un acta tiene que apuntar.",
+   "falta": "La pantalla partida: la propuesta cruda a un lado, la edición humana al otro, y un botón que sella. Se llama ACTA y no contrato firmado a propósito: hoy sella con una huella, y una huella demuestra que el texto no cambió, no quién lo aprobó. El nombre subirá el día que haya firma con dueño.",
+   "aportas": "Dime qué tienes que demostrar en tu trabajo y a quién."
+  },
+  "barra-tiempo": {
+   "nombre": "La Barra de Tiempo",
+   "util": "Ver el tramo exacto al que afecta lo que estás a punto de firmar, en vez de firmar a ciegas.",
+   "hoy": "El sustrato está construido y probado: la línea de eventos devuelve el tramo de cualquier intervalo, con quién hizo cada cosa.",
+   "falta": "Dibujarlo. Cuatro zooms —día, semana, mes, año— y el fondo entero, en las tres superficies. Si el tramo no se puede dibujar, es que la línea todavía no era lineal.",
+   "aportas": "Dime qué periodo miras tú cuando revisas algo."
   }
  }
 }

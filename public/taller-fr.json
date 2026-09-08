@@ -57,6 +57,20 @@
    "hoy": "Rien encore : c'est la ligne de recherche prioritaire du noeud souverain, declaree avant d'exister.",
    "falta": "Croiser trois choses deja mesurees separement : cout local face a une API externe, risque d'hallucination sur les taches critiques, et conformite des modeles deployes.",
    "aportas": "Dites-moi ce que votre audit exige et que vous ne savez pas prouver aujourd'hui."
+  },
+  "acta": {
+   "nombre": "Le Procès-verbal de Révision",
+   "util": "Pouvoir démontrer qu'une personne a regardé une réponse avant sa sortie, et que ce qu'elle a regardé est exactement ce qui est sorti.",
+   "hoy": "Rien de dessiné encore. Ce qui existe, c'est le journal chaîné sur lequel un procès-verbal doit pointer.",
+   "falta": "L'écran partagé : la proposition brute d'un côté, l'édition humaine de l'autre, et un bouton qui scelle. Il s'appelle PROCÈS-VERBAL et non contrat signé à dessein : aujourd'hui il scelle avec une empreinte, et une empreinte montre que le texte n'a pas changé, pas qui l'a approuvé.",
+   "aportas": "Dites-moi ce que vous devez prouver dans votre travail, et à qui."
+  },
+  "barra-tiempo": {
+   "nombre": "La Barre de Temps",
+   "util": "Voir l'intervalle exact touché par ce que vous allez signer, au lieu de signer à l'aveugle.",
+   "hoy": "Le substrat est construit et testé : la ligne d'événements renvoie l'intervalle demandé, avec qui a fait quoi.",
+   "falta": "Le dessiner. Quatre zooms — jour, semaine, mois, année — et le fond entier, sur les trois surfaces. Si l'intervalle ne se dessine pas, la ligne n'était pas encore linéaire.",
+   "aportas": "Dites-moi quelle période vous regardez quand vous révisez."
   }
  }
 }

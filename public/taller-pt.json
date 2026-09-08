@@ -57,6 +57,20 @@
    "hoy": "Nada ainda: e a linha de investigacao prioritaria do no soberano, declarada antes de existir.",
    "falta": "Cruzar tres coisas ja medidas em separado: custo local face a uma API externa, risco de alucinacao em tarefas criticas, e conformidade dos modelos implantados.",
    "aportas": "Diga-me o que a sua auditoria exige e que hoje nao consegue demonstrar."
+  },
+  "acta": {
+   "nombre": "A Ata de Revisão",
+   "util": "Poder demonstrar que uma pessoa olhou para uma resposta antes de sair, e que o que olhou é exatamente o que saiu.",
+   "hoy": "Nada desenhado ainda. O que existe é o registo encadeado para onde uma ata tem de apontar.",
+   "falta": "O ecrã dividido: a proposta crua de um lado, a edição humana do outro, e um botão que sela. Chama-se ATA e não contrato assinado de propósito: hoje sela com uma impressão, e uma impressão mostra que o texto não mudou, não quem o aprovou.",
+   "aportas": "Diga-me o que tem de provar no seu trabalho, e a quem."
+  },
+  "barra-tiempo": {
+   "nombre": "A Barra de Tempo",
+   "util": "Ver o intervalo exato afetado pelo que está prestes a assinar, em vez de assinar às cegas.",
+   "hoy": "O substrato está construído e testado: a linha de eventos devolve o intervalo pedido, com quem fez cada coisa.",
+   "falta": "Desenhá-lo. Quatro zooms — dia, semana, mês, ano — e o fundo inteiro, nas três superfícies. Se o intervalo não se pode desenhar, a linha ainda não era linear.",
+   "aportas": "Diga-me que período olha quando revisa algo."
   }
  }
 }
