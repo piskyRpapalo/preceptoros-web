@@ -79,6 +79,39 @@
     return { prompt: p ? p.textContent : '', respuesta: respuesta.textContent };
   }
 
+  /* --- CON QUE ATAJO SE HIZO EL TURNO ------------------------------------
+     Los ocho comandos de `servicios.json` son los MISMOS ocho de
+     `captura.TAREAS` en la app, y ese paralelo se construyo a proposito para
+     que un turno de aqui y otro de alla fueran comparables: un LoRA entrenado
+     con los de la app se puede medir contra los de la web solo si los dos
+     dicen la tarea con la misma palabra.
+
+     Hasta hoy esa comparacion existia en el esquema y no en los datos. El
+     paquete no llevaba la tarea, asi que el importador de la app la guardaba
+     en NO_DATA -- correcto por su parte, y un dato perdido igualmente.
+
+     SE DEDUCE DEL PROMPT Y NO DE UN ESTADO QUE HAYA QUE MANTENER. Lo que la
+     persona escribio ES lo que hizo: si empieza por uno de los ocho comandos,
+     esa es la tarea. Un estado aparte se desincroniza el dia que alguien edite
+     el campo antes de enviar, y ademas obligaria a chat.js a saber que este
+     fichero existe -- justo lo que `ultimoPar` evita leyendo del dialogo.
+
+     Y aqui `libre` SI se puede afirmar: la web sabe que no vino por un atajo
+     porque ve el texto entero. En la app, que solo recibe el paquete, eso no
+     se sabe -- por eso alli el importador escribe NO_DATA y no `libre`. La
+     misma palabra vale o no vale segun quien pueda demostrarla. */
+  var ATAJOS = ['instalar', 'perfil', 'dataset', 'script', 'eco', 'formatos',
+                'auditar', 'frontera'];
+
+  function tarea(prompt) {
+    var t = (prompt || '').trim().toLowerCase();
+    for (var i = 0; i < ATAJOS.length; i++) {
+      var c = '/' + ATAJOS[i];
+      if (t === c || t.indexOf(c + ' ') === 0) return ATAJOS[i];
+    }
+    return t ? 'libre' : 'NO_DATA';
+  }
+
   function cerebro() {
     // El nombre del modelo lo publica `meter.js` por el mismo evento que usa
     // el sello. Si nadie lo dijo, NO_DATA -- nunca un nombre supuesto.
@@ -125,6 +158,7 @@
         modelo: cerebro(),
         idioma: idioma(),
         motivo: motivo.value.trim() || 'NO_DATA',
+        tarea: tarea(par.prompt),
         consent: 0,
         origen: 'preceptoros.org'
       };
