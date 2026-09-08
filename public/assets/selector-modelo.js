@@ -74,8 +74,11 @@
     if (!host || document.getElementById('cerebros')) return;
     var caja = el('section', 'cerebros'); caja.id = 'cerebros';
     caja.appendChild(el('h2', 'cerebros-titulo', w[0]));
-    var pie = el('p', 'cerebros-pie',
-      w[1] + ' / ' + w[2] + ' · ' + reg.backend + ' · ' + reg.medido);
+    /* SIN EL PIE DE CIFRAS (2026-09-08). Decia «prompt / generacion · Vulkan ·
+       Radeon 780M · <fecha>» debajo del titulo, y a un visitante no le dice
+       nada: es la leyenda de unas columnas que ya se rotulan solas en cada
+       tarjeta, mas el backend y la fecha de una medicion que no ha pedido.
+       Las cifras siguen en las tarjetas, que es donde significan algo. */
     var rejilla = el('div', 'cerebros-rejilla');
 
     /* SOLO LOS DE PUERTA (2026-09-08, decision del Soberano). La portada
@@ -165,7 +168,6 @@
     caja.appendChild(rejilla);
     var cta = tx && tx.cta_hash;
     if (cta) caja.appendChild(el('p', 'cerebros-cta', cta));
-    caja.appendChild(pie);
     host.parentNode.insertBefore(caja, host.nextSibling);
     marcar(w);
     if (guardado()) ficha(guardado());

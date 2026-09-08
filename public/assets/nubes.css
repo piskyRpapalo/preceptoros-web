@@ -179,7 +179,6 @@
 .cerebro-que{margin:.2rem 0 .5rem;font-size:.78rem;line-height:1.45}
 .cerebro-datos{margin:0;font-size:.72rem}
 .cerebro-firma{margin:.25rem 0 0;font-size:.66rem;color:#c9c2de}
-.cerebros-pie{margin:.6rem 0 0;font-size:.68rem;color:var(--tenue)}
 
 /* El logo y el nombre en la misma linea, y el sello a su derecha. `flex-wrap`
    porque en 320 px «recomendado» no cabe al lado de un nombre largo. */
@@ -197,14 +196,29 @@
   object-fit:cover;align-self:center}
 .cerebro-busca{margin:.1rem 0 .5rem;padding-left:.55rem;font-size:.74rem;
   line-height:1.45;color:#e8dcc0;border-left:2px solid var(--oro)}
-.cerebros-cta{margin:.8rem 0 0;padding:.55rem .7rem;font-size:.76rem;line-height:1.5;
-  border:1px dashed var(--oro);border-radius:var(--radius);
-  /* AQUI ES AL REVES: esta invitacion NO tiene fondo propio -- se apoya en el
-     panel, que SI gira. Asi que su color tambien tiene que girar, y el oro
-     fijo daba 1,2:1 sobre el panel claro. `--bronce-hondo` da 7,32. La regla
-     es la misma leida del otro lado: el color sigue al fondo que tiene debajo,
-     y lo que hay que mirar es cual de los dos manda. */
-  color:var(--bronce-hondo)}
+/* LA INVITACION SE PONE SU PROPIA NUBE (2026-09-08). Antes no tenia fondo y
+   se apoyaba en lo que hubiera debajo; en la portada eso es el ambiente
+   violeta, no el panel, y el bronce medido contra el panel ahi no se leia --
+   reportado por el Soberano, y se veia en su captura.
+
+   La salida no es aclarar la tinta sino DAR FONDO: con `--indigo` debajo, el
+   oro de la casa mide 9,04:1 y se conserva el acento dorado en vez de
+   cambiarlo por un gris que se lee y no dice nada. Medido, no elegido.
+
+   EL FONDO VA EN HEXADECIMAL FIJO Y NO EN TOKEN, y es al reves de la regla de
+   la casa a proposito. Se probo con `var(--indigo)` y salio MAL: `tema.css:41`
+   lo cambia a `#a9a0f0` en oscuro, y sobre ese lila el oro cae a ~1,5:1 --
+   exactamente la averia que se venia a arreglar, reaparecida por la otra
+   puerta. Medido en pantalla, no supuesto.
+
+   La regla de la casa dice que los tokens giran con el tema y un hexadecimal
+   fijo no. Cierto, y por eso aqui manda el hexadecimal: esto es una SUPERFICIE
+   que se pone debajo del texto, no un color de texto que sigue al fondo. Una
+   nube que cambia de color con el tema deja de ser la nube y vuelve a ser el
+   problema. #261789 es el mismo indigo del tema claro, fijado. */
+.cerebros-cta{margin:.8rem 0 0;padding:.6rem .75rem;font-size:.76rem;line-height:1.5;
+  background:#261789;border:1px solid var(--oro);border-radius:var(--radius);
+  color:var(--oro)}
 
 /* El consentimiento vive en `consiento.css`: es otro asunto --que pasa con lo
    que escribes-- y esta hoja habia llegado al tope con el dentro. */
