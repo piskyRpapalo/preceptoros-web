@@ -11,7 +11,13 @@
 <link rel="stylesheet" href="/assets/canon.css">
 <link rel="stylesheet" href="/assets/onboarding.css">
 <link rel="stylesheet" href="/assets/cara.css">
+<link rel="stylesheet" href="/assets/widget.css">
 <link rel="stylesheet" href="/assets/puertas.css">
+<link rel="stylesheet" href="/assets/cabezal.css">
+<link rel="stylesheet" href="/assets/esquina.css">
+<link rel="stylesheet" href="/assets/esquina-cuenta.css">
+<link rel="stylesheet" href="/assets/mandos.css">
+<link rel="stylesheet" href="/assets/panel.css">
 <link rel="stylesheet" href="/assets/tema.css">
 <link rel="manifest" href="/manifest.webmanifest">
 <meta name="theme-color" content="#17131F">
@@ -19,13 +25,8 @@
 <body>
 <main>
 
-<header>
-  <div class="presentacion"><div class="esfera" role="img" aria-label="Preceptor"></div></div>
-  <div class="marca">
-    <h1>Hier anfangen</h1>
-    <p><a href="./">Start</a></p>
-  </div>
-  <div id="identity" class="fila identity"></div>
+<header id="cabezal" data-cabezal="onboarding">
+  <div class="marca"><h1>Hier anfangen</h1></div>
 </header>
 
 <p class="ob-voz" id="ob-voz" role="status" aria-live="polite">…</p>
@@ -117,7 +118,8 @@
 <script src="/assets/onboarding.js"></script>
 
 </main>
-<script src="/assets/nav.js"></script>
+<script src="/assets/cabezal.js"></script>
+<script src="/assets/cabezal-rotulos.js"></script>
 <script src="/assets/pwa.js"></script>
 </body>
 </html>

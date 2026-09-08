@@ -21,7 +21,13 @@
 <link rel="stylesheet" href="/assets/canon.css">
 <link rel="stylesheet" href="/assets/agora.css">
 <link rel="stylesheet" href="/assets/cara.css">
+<link rel="stylesheet" href="/assets/widget.css">
 <link rel="stylesheet" href="/assets/puertas.css">
+<link rel="stylesheet" href="/assets/cabezal.css">
+<link rel="stylesheet" href="/assets/esquina.css">
+<link rel="stylesheet" href="/assets/esquina-cuenta.css">
+<link rel="stylesheet" href="/assets/mandos.css">
+<link rel="stylesheet" href="/assets/panel.css">
 <link rel="stylesheet" href="/assets/tema.css">
 <link rel="manifest" href="/manifest.webmanifest">
 <meta name="theme-color" content="#17131F">
@@ -30,13 +36,8 @@
 <canvas id="ambient" aria-hidden="true"></canvas>
 <main>
 
-<header>
-  <div class="presentacion"><div class="esfera" role="img" aria-label="Preceptor"></div></div>
-  <div class="marca">
-    <h1>Profil<b> · ta fiche</b></h1>
-    <p><a href="/fr/">Accueil</a> · <a href="/fr/community.html">Communauté</a> · <a href="/fr/benchmark.html">Benchmark</a> · <a href="/fr/instalar.html">Installer</a></p>
-  </div>
-  <div id="identity" class="fila identity"></div>
+<header id="cabezal" data-cabezal="profile">
+  <div class="marca"><h1>Profil<b> · ta fiche</b></h1></div>
 </header>
 
 <p class="guia"><strong>Cette fiche est à toi et vit sur ton appareil.</strong> Pas de compte, pas de serveur, et rien de ce que tu écris ici ne part tout seul. Le pseudonyme ne se choisit pas : il sort du hachage de ta clé, donc personne ne peut réclamer celui d'un autre.</p>
@@ -121,7 +122,8 @@
 <script src="/assets/profile.js"></script>
 <script src="/assets/profile-obra.js"></script>
 <script src="/assets/auth.js"></script>
-<script src="/assets/nav.js"></script>
+<script src="/assets/cabezal.js"></script>
+<script src="/assets/cabezal-rotulos.js"></script>
 <script src="/assets/pwa.js"></script>
 </body>
 </html>

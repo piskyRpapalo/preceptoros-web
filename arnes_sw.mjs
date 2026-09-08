@@ -118,12 +118,12 @@ const rutas = await shell.keys();
 // el cabezal comun que estrenan hoy las veinticuatro paginas interiores. Sin
 // ellos en el shell, la segunda visita sin red monta el mueble y se queda SIN
 // ROTULOS: cuatro puertas en blanco, que es peor que no tener puertas.
-// Y `nav.js` NO se va con ellos aunque las tres paginas grandes ya no lo
-// carguen: `onboarding`, `playground` y `profile` --tres por ocho lenguas--
-// siguen montando su cabecera con el. Se retirara cuando esas veinticuatro
-// migren tambien; borrarlo hoy las dejaba sin navegacion, y se comprobo
-// pidiendolo, no leyendolo.
-ok('precachea paginas y piezas del Hub', rutas.length === 110, rutas.length+' rutas');
+// Y `nav.js` SE VA: `onboarding`, `playground` y `profile` migraron tambien,
+// asi que las CUARENTA Y OCHO paginas interiores montan ya el mismo cabezal
+// que la portada y no queda quien lo cargue. Entran dos y sale uno: 109.
+// Se comprobo pidiendo los ficheros, no leyendo el codigo -- un primer intento
+// lo borro con tres paginas todavia usandolo.
+ok('precachea paginas y piezas del Hub', rutas.length === 109, rutas.length+' rutas');
 ok('el shell trae las tres tiras de la cara',
    ['apertura', 'reposo', 'habla']
      .every(s => rutas.includes('/assets/caras/secuencia-' + s + '-256.webp')));

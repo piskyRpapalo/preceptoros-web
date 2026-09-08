@@ -21,7 +21,13 @@
 <link rel="stylesheet" href="/assets/canon.css">
 <link rel="stylesheet" href="/assets/agora.css">
 <link rel="stylesheet" href="/assets/cara.css">
+<link rel="stylesheet" href="/assets/widget.css">
 <link rel="stylesheet" href="/assets/puertas.css">
+<link rel="stylesheet" href="/assets/cabezal.css">
+<link rel="stylesheet" href="/assets/esquina.css">
+<link rel="stylesheet" href="/assets/esquina-cuenta.css">
+<link rel="stylesheet" href="/assets/mandos.css">
+<link rel="stylesheet" href="/assets/panel.css">
 <link rel="stylesheet" href="/assets/tema.css">
 <link rel="manifest" href="/manifest.webmanifest">
 <meta name="theme-color" content="#17131F">
@@ -30,13 +36,8 @@
 <canvas id="ambient" aria-hidden="true"></canvas>
 <main>
 
-<header>
-  <div class="presentacion"><div class="esfera" role="img" aria-label="Preceptor"></div></div>
-  <div class="marca">
-    <h1>Profilo<b> · la tua scheda</b></h1>
-    <p><a href="/it/">Home</a> · <a href="/it/community.html">Comunità</a> · <a href="/it/benchmark.html">Benchmark</a> · <a href="/it/instalar.html">Installa</a></p>
-  </div>
-  <div id="identity" class="fila identity"></div>
+<header id="cabezal" data-cabezal="profile">
+  <div class="marca"><h1>Profilo<b> · la tua scheda</b></h1></div>
 </header>
 
 <p class="guia"><strong>Questa scheda è tua e vive sul tuo apparecchio.</strong> Non c'è account, non c'è server e nulla di quello che scrivi qui esce da solo. Lo pseudonimo non lo scegli: nasce dall'hash della tua chiave, così nessuno può chiedere quello di un altro.</p>
@@ -121,7 +122,8 @@
 <script src="/assets/profile.js"></script>
 <script src="/assets/profile-obra.js"></script>
 <script src="/assets/auth.js"></script>
-<script src="/assets/nav.js"></script>
+<script src="/assets/cabezal.js"></script>
+<script src="/assets/cabezal-rotulos.js"></script>
 <script src="/assets/pwa.js"></script>
 </body>
 </html>

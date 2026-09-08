@@ -17,7 +17,13 @@
 <link rel="stylesheet" href="/assets/canon.css">
 <link rel="stylesheet" href="/assets/agora.css">
 <link rel="stylesheet" href="/assets/cara.css">
+<link rel="stylesheet" href="/assets/widget.css">
 <link rel="stylesheet" href="/assets/puertas.css">
+<link rel="stylesheet" href="/assets/cabezal.css">
+<link rel="stylesheet" href="/assets/esquina.css">
+<link rel="stylesheet" href="/assets/esquina-cuenta.css">
+<link rel="stylesheet" href="/assets/mandos.css">
+<link rel="stylesheet" href="/assets/panel.css">
 <link rel="stylesheet" href="/assets/tema.css">
 <link rel="manifest" href="/manifest.webmanifest">
 <meta name="theme-color" content="#17131F">
@@ -26,13 +32,8 @@
 <canvas id="ambient" aria-hidden="true"></canvas>
 <main>
 
-<header>
-  <div class="presentacion"><div class="esfera" role="img" aria-label="Preceptor"></div></div>
-  <div class="marca">
-    <h1>Banc d'essai<b> · confidentialité</b></h1>
-    <p><a href="/fr/">Accueil</a> · <a href="/fr/benchmark.html">Benchmark</a> · <a href="/fr/instalar.html">Installer</a></p>
-  </div>
-  <div id="identity" class="fila identity"></div>
+<header id="cabezal" data-cabezal="playground">
+  <div class="marca"><h1>Banc d'essai<b> · confidentialité</b></h1></div>
 </header>
 
 <p class="guia">Quand vous demandez de l'aide à une IA du nuage, vous devez lui donner votre contexte, et c'est là que fuient chemins, IP et clés. Collez ici ce que vous alliez lui coller, et regardez ce qui sort. Dans votre navigateur, sans rien installer.</p>
@@ -83,7 +84,8 @@
 <script src="/assets/playground.js"></script>
 <script src="/assets/auth.js"></script>
 
-<script src="/assets/nav.js"></script>
+<script src="/assets/cabezal.js"></script>
+<script src="/assets/cabezal-rotulos.js"></script>
 <script src="/assets/pwa.js"></script>
 </body>
 </html>
