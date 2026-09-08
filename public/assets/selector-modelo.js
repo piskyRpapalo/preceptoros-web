@@ -70,7 +70,18 @@
     var prosa = (tx && tx.cerebros) || {};
     var paises = (tx && tx.paises) || {};
     REG = reg; PROSA = prosa;
+    /* DOS CASAS PARA EL MISMO GUION (2026-09-08). En la portada monta bajo
+       `#especificaciones` y enseña los DOS de puerta; en Comunidad monta bajo
+       `#cerebros-banco` y enseña LOS DEMAS, que es donde compararlos tiene
+       sentido -- `mistral-base` al lado de `charla-base` enseña exactamente
+       que aporta nuestro LoRA.
+
+       No se parte en dos ficheros ni se duplica copia: los rotulos de las
+       ocho lenguas ya viven en `PAL`, aqui dentro. Un segundo guion seria una
+       segunda verdad que se separa de esta a la primera correccion. */
     var host = document.getElementById('especificaciones');
+    var banco = !host && document.getElementById('cerebros-banco');
+    if (banco) host = banco;
     if (!host || document.getElementById('cerebros')) return;
     var caja = el('section', 'cerebros'); caja.id = 'cerebros';
     caja.appendChild(el('h2', 'cerebros-titulo', w[0]));
@@ -99,7 +110,7 @@
        catalogo dice la verdad entera y el render decide cuanta se enseña de
        entrada. Borrar aqui seria mentir sobre lo que hay. */
     (reg.cerebros || [])
-      .filter(function (c) { return c.puerta; })
+      .filter(function (c) { return banco ? !c.puerta : c.puerta; })
       .forEach(function (c) {
       var b = el('button', 'cerebro'); b.type = 'button';
       b.dataset.modelo = c.modelo;

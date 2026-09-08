@@ -1545,8 +1545,10 @@ class Hub(unittest.TestCase):
         la regla esta puesta y la pantalla sigue enseñando los seis.
         """
         js = (PUBLICO / "assets" / "selector-modelo.js").read_text(encoding="utf-8")
-        self.assertIn("return c.puerta;", js,
-                      "selector-modelo.js no filtra por `puerta`")
+        self.assertIn("banco ? !c.puerta : c.puerta", js,
+                      "selector-modelo.js no reparte por `puerta`")
+        self.assertIn("cerebros-banco", js,
+                      "el selector no conoce la casa de Comunidad")
 
     def test_el_modelo_servido_lleva_tag_explicito(self):
         """Nada de `:latest` pelado en el modelo que da la cara al publico.
