@@ -29,8 +29,12 @@
    crece hacia la izquierda, que es donde hay sitio, y la rueda se queda en la
    esquina en los dos estados -- con cuenta y sin ella. Un mando que cambia de
    sitio segun si has entrado es un mando que hay que buscar dos veces. */
-#cabezal .lateral-boton{right:.45rem}
-#cabezal #identity{right:3.4rem}
+/* Y LAS DOS LINEAS QUE HABIA AQUI SE FUERON CON EL RESTO DE LA ARITMETICA
+   (2026-09-07). Anclaban la rueda al canto y la identidad a `3,4rem` -- «lo
+   que mide la rueda con su aire»--, que es literalmente medir un mando para
+   colocar al otro. Los dos viven ahora en `.cab-esquina`, en fila y con su
+   `gap`: la rueda mide lo que mida y el vecino no se entera. Lo que este
+   bloque SI conserva es lo suyo, que es que la linea de la cuenta no envuelva. */
 
 /* LINEA FINA DE VERDAD: nombre y firma no envuelven. `#identity` es un flex
    con `flex-wrap:wrap` heredado de cuando eran tres piezas a tamano de boton;

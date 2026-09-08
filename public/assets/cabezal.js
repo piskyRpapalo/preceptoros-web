@@ -86,6 +86,38 @@
     cab.insertBefore(fila, cab.firstChild);
     if (marca) fila.appendChild(marca);
   }
+  /* --- LA ESQUINA ES UNA PIEZA, NO DOS COORDENADAS -------------------------
+     El Soberano: «vigila el boton de perfil del usuario» y «debe ser el
+     hermano del de ajustes». Lo era sobre el papel y no en pantalla: medido a
+     375 px, la rueda en 315,27 y el perfil en 310,107 -- ochenta pixeles de
+     separacion y en renglones distintos, que es el «circulo suelto que no
+     pertenece a nada» que ya se reporto una vez.
+
+     Y LA CAUSA NO ERA UN NUMERO MAL PUESTO. `esquina.css` colocaba a los dos a
+     mano, con `top` y `right` propios, en TRES franjas de anchura distintas: un
+     par de gemelos definido por aritmetica en seis reglas. El comentario que
+     hay alli dice «los dos dibujos juntos y contra el canto» -- y era verdad
+     cuando se escribio; despues la rueda paso a `position:absolute` y nadie
+     volvio a leer aquella frase. La prosa describia una intencion que el codigo
+     habia dejado de cumplir, y ese es el defecto que se repite, no el offset.
+
+     Asi que no se reajusta: se quita la posibilidad. Los dos mandos entran en
+     UNA caja y la caja es la que se ancla. A partir de aqui su distancia es
+     estructura, no cuentas, y ninguna consulta de medios puede separarlos
+     porque no hay dos cosas que colocar.
+
+     EL PANEL DE AJUSTES SE QUEDA FUERA, y esto si es una cuenta que hay que
+     saber: `.cab-esquina` va absoluta, asi que seria el bloque contenedor de
+     todo lo que lleve dentro -- y el desplegable cuelga con `top:calc(100%)`,
+     que dentro de una caja de noventa pixeles significa «debajo de los
+     iconos», no «debajo del cabezal». Se queda colgando de `#cabezal`, que es
+     lo que ese `100%` tiene que medir. */
+  var esquina = cab.querySelector('.cab-esquina');
+  if (!esquina) {
+    esquina = el('div', 'cab-esquina');
+    cab.appendChild(esquina);
+  }
+
   if (falta('panel-ajustes')) {
     var zona = el('div', 'lateral-zona');
     var boton = el('button', 'lateral-boton rueda');
@@ -95,7 +127,7 @@
     boton.innerHTML = RUEDA;
     var rot = el('span', 'sr'); rot.dataset.rotulo = 'ajustes';
     boton.appendChild(rot);
-    zona.appendChild(boton);
+    esquina.appendChild(boton);
     var pa = el('section', 'cerrado'); pa.id = 'panel-ajustes';
     zona.appendChild(pa);
     fila.insertBefore(zona, fila.firstChild);
@@ -107,8 +139,24 @@
      de crear identidad desapareceria de las interiores sin un solo error en
      consola. Es la misma trampa que la prueba del cabezal ya vigila. */
   if (falta('identity')) {
-    var i = el('div', 'fila identity'); i.id = 'identity'; fila.appendChild(i);
+    var i = el('div', 'fila identity'); i.id = 'identity'; esquina.appendChild(i);
   }
+  /* En la portada las dos piezas ya existen en el marcado, sueltas en la fila.
+     Se MUEVEN, no se duplican: `auth.js` busca `#identity` por su id y le da
+     igual de quien cuelgue, y el boton de la rueda lo ata `chat-panel.js`
+     tambien por id. Mover un nodo no rompe a quien lo busca; copiarlo si.
+
+     EL PERFIL ENTRA PRIMERO Y LA RUEDA DESPUES, y ese orden lleva firmado
+     desde el 2026-09-06 en otro fichero: la rueda toma el canto y la cuenta
+     crece hacia la izquierda, que es donde hay sitio. «Un mando que cambia de
+     sitio segun si has entrado es un mando que hay que buscar dos veces»: con
+     sesion el perfil se ensancha --nombre y huella-- y si estuviera fuera
+     empujaria a la rueda contra el borde y luego fuera de el. */
+  var identYa = document.getElementById('identity');
+  if (identYa && identYa.parentNode !== esquina) esquina.appendChild(identYa);
+  var ruedaYa = document.getElementById('rueda');
+  if (ruedaYa && ruedaYa.parentNode !== esquina) esquina.appendChild(ruedaYa);
+
   if (falta('cab-nav')) {
     var n = el('nav'); n.id = 'cab-nav'; cab.appendChild(n);
   }

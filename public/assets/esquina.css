@@ -79,7 +79,7 @@
    fila se lee peor que uno a lo ancho. Con un dibujo dentro, ese mismo ancho
    convierte una llave en una pancarta. Se corrige con la misma especificidad y
    ganando por orden, que es lo que un `!important` habria tapado sin explicar. */
-#cabezal #identity button.identity-icono:only-child{width:40px}
+#cabezal #identity button.identity-icono:only-child{width:36px;height:36px}
 
 /* --- LOS DOS MANDOS, EN LA ESQUINA DE VERDAD (2026-09-05) ------------------
    Pedido asi: «ajustes y cuenta con el mismo estilo, arriba en la esquina
@@ -103,14 +103,17 @@
 /* 2026-09-06 · LA RUEDA A LA ESQUINA DEL TODO, Y EL NOMBRE A SU PROPIA FILA.
    El nombre se abre con DOS palabras al registrarse y compartia fila con la
    rueda: o se cortaba o empujaba. Deja de estar absoluto y baja a su linea. */
-#cabezal .lateral-boton{position:absolute;top:.45rem;right:.45rem;margin-left:0}
-#cabezal #identity{position:static;order:30;flex:1 1 100%;margin:.1rem 0 0}
 
 /* SIN SESION vuelve al absoluto: un icono de 40 px con `flex:1 1 100%` en una
    fila que no envuelve acaba detras de la frase solar, no en la esquina.
    `:has(.identity-icono)` ES «sin sesion». Medidas en OPERACIONES.md. */
-#cabezal:has(.identity-icono) #identity{position:absolute;top:.45rem;right:3.4rem;
-  flex:0 0 auto;width:auto;margin:0;z-index:calc(var(--capa-4-cara) + 1)}
+/* Y AQUI ESTABA LA ULTIMA. Se retiro con las otras cinco: colocaba el perfil
+   a `3,4rem` del canto --«lo que mide la rueda con su aire»-- que es la
+   definicion misma de la aritmetica que `.cab-esquina` sustituye. Con la caja
+   absoluta encima, este `position:absolute` ademas se resolvia contra ELLA y
+   sacaba al perfil de la fila que acababa de entrar: se midio, 261,34 pegado
+   al icono de LinkedIn. Una regla vieja dentro de una caja nueva no se queda
+   quieta -- se ancla a la caja. */
 
 /* Y LA RUEDA SUELTA SU PANEL DEL CANTO IZQUIERDO. Colgaba de `left:3.9rem`
    --de cuando el mando vivia a la izquierda, al lado de Herramientas-- y con
@@ -181,64 +184,52 @@
   #cabezal .marca{flex:1 1 100%;flex-wrap:nowrap;align-items:center}
 
   /* Segundo renglon: la cuenta a la izquierda y la rueda contra el canto. */
-  /* 2026-09-06 · EL NOMBRE, A SU FILA. Compartia linea con la rueda y se abre
-     con DOS palabras al registrarse: o se cortaba o empujaba. Va el ultimo y a
-     lo ancho, detras de la frase de energia (que es `order:20`). */
-  #cabezal #identity{position:static;order:30;flex:1 1 100%;
-    align-self:flex-start;margin:.2rem 0 0}
-  /* Y LA RUEDA SUBE A LA ESQUINA DEL TODO, con el punto de acceso a su
-     izquierda. Absolutas las dos: asi la fila de la marca queda entera para el
-     logo y sus dos enlaces, que es lo que se gana al sacarlas de la fila. */
-  #cabezal .lateral-boton{position:absolute;top:.45rem;right:.45rem;
-    margin:0;width:36px;height:36px}
+  /* LA RUEDA YA NO SE COLOCA: la coloca su caja. Lo unico que se queda aqui es
+     su TAMANO, que si es de la pantalla estrecha.
+
+     Y aqui vivian ademas tres comentarios largos sobre por que los dos gemelos
+     se separaban --que la marca ocupa 290 de 320 utiles, que dos `margin-left:
+     auto` se reparten el hueco en vez de empujar, que en el telefono el perfil
+     caia sobre el punto verde--. Los tres describian sintomas de la misma
+     causa: colocar dos piezas a mano y esperar que queden juntas. Con la caja
+     no hay nada que repartir, asi que los tres dejan de aplicar. Se borran en
+     vez de quedarse: un comentario que explica una aritmetica retirada manda
+     al siguiente que lea a buscar unas reglas que ya no existen -- que es
+     exactamente lo que acaba de costar este arreglo. */
+  #cabezal .lateral-boton{margin:0;width:36px;height:36px}
+  /* Y EL PERFIL ES SU HERMANO, con la misma talla. Estaba en 40 y la rueda en
+     36: cuatro pixeles que no se nombran pero se ven, y con los dos juntos en
+     una fila se ven mas. Pedido asi: «debe ser el hermano del de ajustes». */
+  #cabezal .identity-icono{width:36px;height:36px}
   /* El logo respira lo que la rueda deja libre. */
   #cabezal h1{font-size:1.15rem}
   #cabezal #panel-ajustes{right:.45rem;left:auto}
-
-
-  /* SIN SESION, LOS DOS DIBUJOS JUNTOS Y CONTRA EL CANTO. Se intento primero
-     subirlos al renglon de la marca --dos iconos no llenan una fila-- y no
-     cabian: la marca mide ~290 px de los 320 utiles, asi que entraba la rueda
-     y la persona se descolgaba sola al renglon de abajo. Un mando arriba y su
-     gemelo debajo es peor que los dos abajo.
-
-     Asi que se quedan en el segundo renglon, que es el suyo con sesion y sin
-     ella, y se pegan al canto derecho -- que es donde estan en escritorio. El
-     sitio de un mando no cambia segun si has entrado; lo unico que cambia es
-     que con sesion tienen la cuenta a su izquierda y sin ella no. */
-  /* EN EL TELEFONO NO: caia sobre el punto verde. Y `flex:0 0 auto` es lo que
-     le da hueco al `margin-left:auto`. */
-  #cabezal:has(.identity-icono) #identity{position:static;flex:0 0 auto;
-    width:auto;margin-left:auto;margin-right:0}
-  /* Y LA RUEDA SUELTA SU `auto`, o los dos se reparten el hueco. Con margen
-     automatico en las dos cajas, el espacio libre se divide entre ellas y los
-     gemelos acababan a 128 px uno de otro -- medido: persona en 146, rueda en
-     314. Un `margin-left:auto` empuja contra el vecino, y si el vecino tambien
-     empuja, lo que sale es un reparto, no una esquina. Empuja la primera; la
-     segunda solo la sigue. */
-  #cabezal:has(.identity-icono) .lateral-boton{margin-left:.4rem}
-
 }
 
-/* --- ENTRE EL TELEFONO Y EL ESCRITORIO, EL PERFIL VUELVE A LA ESQUINA ------
-   La rama del telefono llega hasta 1023 px, y esa medida se tomo mirando un
-   Doogee: a 375 el perfil en su propio renglon es lo correcto. Pero una ventana
-   de escritorio estrecha --500, 700, 900-- se lleva la misma maqueta, y ahi el
-   icono queda colgado DEBAJO de la rueda con media fila vacia al lado. El
-   Soberano lo leyo como «se ha perdido el icono del perfil», que es exactamente
-   lo que parece: un circulo suelto que no pertenece a nada.
+/* --- LA ESQUINA ES UNA PIEZA, Y AQUI SOLO SE ANCLA -------------------------
+   AQUI VIVIAN SEIS REGLAS colocando la rueda y el perfil a mano, con su `top`
+   y su `right` propios, en TRES franjas de anchura: <430, 430-1023 y
+   escritorio. Y ademas una franja entera --«entre el telefono y el
+   escritorio»-- que existia solo para juntarlos otra vez a partir de 430,
+   porque por debajo se separaban.
 
-   Medido a 500 px antes de tocar: identidad en 435-475 y rueda en 440-476, una
-   encima de otra en filas distintas. Los tres mandos --punto, perfil y rueda--
-   suman poco mas de cien pixeles: a partir de 430 caben en la esquina -- y 430 y no 560 porque la ventana que
-   lo destapo medía 500 y con el corte alto se quedaba fuera justo el caso
-   reportado. El umbral se elige por el caso medido, no por un numero redondo.
+   Se van las seis. Los dos mandos viven ahora dentro de `.cab-esquina`, que
+   los pone en fila y se ancla ella: su distancia dejo de ser una cuenta y paso
+   a ser estructura. Una consulta de medios ya no puede separarlos, porque no
+   hay dos cosas que colocar.
 
-   NO se toca el corte de 1023 ni la rama del telefono: se añade una franja
-   propia. Mover un punto de ruptura que otro midio en un aparato real, para
-   arreglar un caso que no es el suyo, es como se rompe lo que ya funcionaba. */
-@media (min-width:430px) and (max-width:1023px){
-  #cabezal:has(.identity-icono) #identity{position:absolute;top:.45rem;
-    right:3.4rem;flex:0 0 auto;width:auto;margin:0;
-    z-index:calc(var(--capa-4-cara) + 1)}
-}
+   LO QUE ESTO ARREGLA, medido a 375 px antes de tocarlo: rueda en 315,27 y
+   perfil en 310,107. Ochenta pixeles y dos renglones para dos gemelos. El
+   comentario que estaba justo aqui decia «los dos dibujos juntos y contra el
+   canto» y llevaba razon la intencion, no el codigo: la rueda paso a
+   `position:absolute` despues de escribirse esa frase y nadie volvio a leerla.
+   Es la tercera vez en este arbol que un comentario sobrevive al codigo que
+   describia; la diferencia es que esta vez se retira la aritmetica que lo
+   permitia.
+
+   `z-index` por encima de la cara: la esfera se solapa con esta esquina en
+   pantalla estrecha y un mando debajo de un dibujo no se puede pulsar. */
+.cab-esquina{position:absolute;top:.45rem;right:.45rem;
+  display:flex;align-items:center;gap:.4rem;
+  z-index:calc(var(--capa-4-cara) + 1)}
+.cab-esquina #identity{flex:0 0 auto;width:auto;margin:0}
