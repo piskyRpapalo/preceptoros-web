@@ -944,6 +944,38 @@ class Doctrina(unittest.TestCase):
                     f"con {len(relativas)} relativas hacia assets/: "
                     f"{relativas[:2]}")
 
+    def test_el_head_entero_no_mezcla_los_dos_estilos(self):
+        """El de arriba solo mira `assets/`. La regla es del `<head>` entero.
+
+        Se separa en dos pruebas a proposito y no se amplia la de arriba:
+        aquella nacio de una averia concreta --las hojas de estilo-- y su
+        mensaje de fallo nombra `assets/`, que es lo que hay que mirar cuando
+        salta. Esta cubre la regla tal cual esta enunciada, que es mas ancha:
+        NINGUNA referencia del `<head>` mezcla estilos, sea del catalogo de
+        estilos, del manifiesto, de un icono o de lo que se anada manana.
+
+        Solo el `<head>`, y no el cuerpo, porque ahi la mezcla es distinta y
+        legitima: las 48 relativas que hoy viven en el cuerpo son de
+        directorio propio (`./instalar.html`) y sobreviven a una subruta mejor
+        que una absoluta. Exigir un estilo unico en el cuerpo seria decidir la
+        deuda 39 por la puerta de atras.
+        """
+        externa = re.compile(r"^(https?:|mailto:|data:|#|//)")
+        ref = re.compile(r'(?:href|src)="([^"]+)"')
+        for pagina in sorted(PUBLICO.rglob("*.html")):
+            html = pagina.read_text(encoding="utf-8")
+            corte = html.find("</head>")
+            cabeza = html[:corte] if corte != -1 else html
+            refs = [r for r in ref.findall(cabeza) if not externa.match(r)]
+            absolutas = [r for r in refs if r.startswith("/")]
+            relativas = [r for r in refs if not r.startswith("/")]
+            with self.subTest(pagina=str(pagina.relative_to(PUBLICO))):
+                self.assertFalse(
+                    absolutas and relativas,
+                    f"el <head> de {pagina.name} mezcla {len(absolutas)} "
+                    f"absolutas con {len(relativas)} relativas: "
+                    f"{relativas[:3]}")
+
     def test_lo_que_el_modelo_devuelve_pasa_por_el_filtro(self):
         """El bloque de estado se vio DENTRO de la conversacion, en el telefono.
 
