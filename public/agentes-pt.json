@@ -1,0 +1,40 @@
+{
+ "esquema": 1,
+ "estado": "OFICIAL",
+ "nota": "Los nombres y la funcion de los companeros en esta lengua. Vivian dentro del bloque i18n de la portada; salieron el 2026-09-08 porque el/index.html se habia quedado en 279 B libres del tope de 16 KB y este era el asunto mas pesado que tenia dentro (1416 B en castellano, casi un quinto de todo el bloque). El catalogo --que companeros hay y que id tiene cada uno-- sigue en hub.json: esto es solo como se llaman aqui.",
+ "lengua": "pt",
+ "agentes": {
+  "instalador": {
+   "name": "O Instalador",
+   "function": "Instala o produto e apresenta-te os restantes."
+  },
+  "privacidad": {
+   "name": "O Aduaneiro",
+   "function": "Risca o que é privado antes de sair do teu aparelho."
+  },
+  "escritor": {
+   "name": "O Escritor",
+   "function": "Escreve contigo: guiões, notas e textos longos."
+  },
+  "traductor": {
+   "name": "O Tradutor",
+   "function": "Traduz localmente, sem mandar o texto para nenhuma nuvem."
+  },
+  "coder": {
+   "name": "O Artesão",
+   "function": "Lê o teu código, propõe a correção e escreve o teste."
+  },
+  "analista": {
+   "name": "O Analista",
+   "function": "Olha para números e rastos e diz-te o que mudou."
+  },
+  "aprendiz": {
+   "name": "O Aprendiz",
+   "function": "Converte o que fazes em memória que podes reler."
+  },
+  "bibliotecario": {
+   "name": "O Bibliotecário",
+   "function": "Arruma a tua memória: procura, liga e tira duplicados."
+  }
+ }
+}

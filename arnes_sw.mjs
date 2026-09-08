@@ -128,7 +128,9 @@ const rutas = await shell.keys();
 // esa hoja al tope, y tiene hoja propia por cuenta de CICATRICES mas que por
 // bytes: los dos botones han estado mal seis veces en dos dias, siempre por
 // una regla que sobrevivio a la mudanza de la pieza que colocaba.
-ok('precachea paginas y piezas del Hub', rutas.length === 110, rutas.length+' rutas');
+// 118 desde el 2026-09-08: entran los ocho `/agentes-<lengua>.json`, los
+// nombres de los companeros que salieron del bloque i18n de las portadas.
+ok('precachea paginas y piezas del Hub', rutas.length === 118, rutas.length+' rutas');
 ok('el shell trae las tres tiras de la cara',
    ['apertura', 'reposo', 'habla']
      .every(s => rutas.includes('/assets/caras/secuencia-' + s + '-256.webp')));

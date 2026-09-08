@@ -1,0 +1,40 @@
+{
+ "esquema": 1,
+ "estado": "OFICIAL",
+ "nota": "Los nombres y la funcion de los companeros en esta lengua. Vivian dentro del bloque i18n de la portada; salieron el 2026-09-08 porque el/index.html se habia quedado en 279 B libres del tope de 16 KB y este era el asunto mas pesado que tenia dentro (1416 B en castellano, casi un quinto de todo el bloque). El catalogo --que companeros hay y que id tiene cada uno-- sigue en hub.json: esto es solo como se llaman aqui.",
+ "lengua": "de",
+ "agentes": {
+  "instalador": {
+   "name": "Der Installateur",
+   "function": "Installiert dir das Produkt und stellt dir die anderen vor."
+  },
+  "privacidad": {
+   "name": "Der Zöllner",
+   "function": "Streicht das Private, bevor es dein Gerät verlässt."
+  },
+  "escritor": {
+   "name": "Der Schreiber",
+   "function": "Schreibt mit dir: Skripte, Notizen und lange Texte."
+  },
+  "traductor": {
+   "name": "Der Übersetzer",
+   "function": "Übersetzt lokal, ohne den Text in eine Wolke zu schicken."
+  },
+  "coder": {
+   "name": "Der Handwerker",
+   "function": "Liest deinen Code, schlägt die Korrektur vor und schreibt den Test."
+  },
+  "analista": {
+   "name": "Der Analyst",
+   "function": "Schaut auf Zahlen und Spuren und sagt dir, was sich geändert hat."
+  },
+  "aprendiz": {
+   "name": "Der Lehrling",
+   "function": "Macht aus dem, was du tust, Gedächtnis, das du nachlesen kannst."
+  },
+  "bibliotecario": {
+   "name": "Der Bibliothekar",
+   "function": "Ordnet dein Gedächtnis: sucht, verknüpft und entfernt Dubletten."
+  }
+ }
+}

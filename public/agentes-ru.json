@@ -1,0 +1,40 @@
+{
+ "esquema": 1,
+ "estado": "OFICIAL",
+ "nota": "Los nombres y la funcion de los companeros en esta lengua. Vivian dentro del bloque i18n de la portada; salieron el 2026-09-08 porque el/index.html se habia quedado en 279 B libres del tope de 16 KB y este era el asunto mas pesado que tenia dentro (1416 B en castellano, casi un quinto de todo el bloque). El catalogo --que companeros hay y que id tiene cada uno-- sigue en hub.json: esto es solo como se llaman aqui.",
+ "lengua": "ru",
+ "agentes": {
+  "instalador": {
+   "name": "Установщик",
+   "function": "Ставит тебе продукт и знакомит с остальными."
+  },
+  "privacidad": {
+   "name": "Таможенник",
+   "function": "Вычёркивает личное, прежде чем оно покинет твоё устройство."
+  },
+  "escritor": {
+   "name": "Писатель",
+   "function": "Пишет с тобой: сценарии, заметки и длинные тексты."
+  },
+  "traductor": {
+   "name": "Переводчик",
+   "function": "Переводит локально, не отправляя текст ни в какое облако."
+  },
+  "coder": {
+   "name": "Мастеровой",
+   "function": "Читает твой код, предлагает правку и пишет тест."
+  },
+  "analista": {
+   "name": "Аналитик",
+   "function": "Смотрит на числа и следы и говорит, что изменилось."
+  },
+  "aprendiz": {
+   "name": "Ученик",
+   "function": "Превращает то, что ты делаешь, в память, которую можно перечитать."
+  },
+  "bibliotecario": {
+   "name": "Библиотекарь",
+   "function": "Наводит порядок в памяти: ищет, связывает и убирает повторы."
+  }
+ }
+}

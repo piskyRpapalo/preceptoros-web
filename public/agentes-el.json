@@ -1,0 +1,40 @@
+{
+ "esquema": 1,
+ "estado": "OFICIAL",
+ "nota": "Los nombres y la funcion de los companeros en esta lengua. Vivian dentro del bloque i18n de la portada; salieron el 2026-09-08 porque el/index.html se habia quedado en 279 B libres del tope de 16 KB y este era el asunto mas pesado que tenia dentro (1416 B en castellano, casi un quinto de todo el bloque). El catalogo --que companeros hay y que id tiene cada uno-- sigue en hub.json: esto es solo como se llaman aqui.",
+ "lengua": "el",
+ "agentes": {
+  "instalador": {
+   "name": "Ο Εγκαταστάτης",
+   "function": "Σου εγκαθιστά το προϊόν και σου συστήνει τους υπόλοιπους."
+  },
+  "privacidad": {
+   "name": "Ο Τελωνειακός",
+   "function": "Σβήνει ό,τι είναι προσωπικό πριν βγει από τη συσκευή σου."
+  },
+  "escritor": {
+   "name": "Ο Συγγραφέας",
+   "function": "Γράφει μαζί σου: σενάρια, σημειώσεις και μεγάλα κείμενα."
+  },
+  "traductor": {
+   "name": "Ο Μεταφραστής",
+   "function": "Μεταφράζει τοπικά, χωρίς να στέλνει το κείμενο σε κανένα σύννεφο."
+  },
+  "coder": {
+   "name": "Ο Τεχνίτης",
+   "function": "Διαβάζει τον κώδικά σου, προτείνει τη διόρθωση και γράφει το τεστ."
+  },
+  "analista": {
+   "name": "Ο Αναλυτής",
+   "function": "Κοιτάζει αριθμούς και ίχνη και σου λέει τι άλλαξε."
+  },
+  "aprendiz": {
+   "name": "Ο Μαθητευόμενος",
+   "function": "Μετατρέπει ό,τι κάνεις σε μνήμη που μπορείς να ξαναδιαβάσεις."
+  },
+  "bibliotecario": {
+   "name": "Ο Βιβλιοθηκάριος",
+   "function": "Τακτοποιεί τη μνήμη σου: ψάχνει, συνδέει και βγάζει τα διπλά."
+  }
+ }
+}

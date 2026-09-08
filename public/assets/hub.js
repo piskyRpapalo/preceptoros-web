@@ -181,13 +181,45 @@
            asi llevaban semanas en el panel, en la cola y en la correccion.
            Las cinco que faltaban no cabian en `hub.json`, que ya iba por 10 KB
            de los 16 del tope. El catalogo es una cosa y su traduccion, otra. */
-        return fetch('/hub-textos.json', { cache: 'no-store' })
-          .then(function (r) { return r.json(); })
-          .then(function (tx) {
-            var lang = (document.documentElement.lang || 'es').slice(0, 2);
-            L = (tx.textos || {})[lang] || (tx.textos || {}).es || {};
-            return d;
-          });
+        var lang = (document.documentElement.lang || 'es').slice(0, 2);
+        /* LOS NOMBRES DE LOS COMPANEROS TAMBIEN SALIERON DE LA PORTADA, el
+           2026-09-08, y por la misma razon que los de arriba: sitio. `el/index`
+           se habia quedado en 279 B libres de los 16 KB, y este era el asunto
+           mas pesado que llevaba dentro -- 1.416 B en castellano, casi un
+           quinto del bloque entero.
+
+           No contradice la decision del 2026-09-05 que dejo estas traducciones
+           en la portada; la afina. Lo que alli se midio y se descarto fue
+           meterlas TODAS en `hub.json`: con cuatro lenguas ya iba por 14.012 B
+           y las ocho no cabian. Un fichero POR LENGUA conserva justo lo que
+           aquella decision protegia --cada visita se descarga su idioma y nada
+           mas-- y ademas saca los bytes del HTML, que es donde aprietan.
+
+           Va en paralelo con los rotulos, no detras: son dos peticiones
+           independientes y encadenarlas seria sumar dos esperas por gusto.
+
+           Y SI NO LLEGA, EL PANEL SE PINTA IGUAL. `hub.json` trae el nombre y
+           la funcion de cada companero en castellano, y la linea de abajo ya
+           cae a ellos cuando no hay traduccion. Una lengua sin fichero enseña
+           los nombres en castellano; sin este respaldo enseñaria un panel
+           vacio, que es peor que un panel en otro idioma. */
+        return Promise.all([
+          fetch('/hub-textos.json', { cache: 'no-store' })
+            .then(function (r) { return r.json(); })
+            .catch(function () { return {}; }),
+          fetch('/agentes-' + lang + '.json', { cache: 'no-store' })
+            .then(function (r) { return r.json(); })
+            .catch(function () { return {}; })
+        ]).then(function (par) {
+          L = (par[0].textos || {})[lang] || (par[0].textos || {}).es || {};
+          /* Se cuelga de `T` --el bloque de la portada-- y no de una variable
+             nueva a proposito: `comandos.js` y `chat-router.js` leen
+             `Hub.rotulos.agentes`, que ES `T`. Poniendolo aqui, la mudanza no
+             les llega, y una pagina que todavia traiga el bloque viejo sigue
+             funcionando sin que nadie la toque. */
+          if (par[1].agentes) T.agentes = par[1].agentes;
+          return d;
+        });
       })
       .then(function (d) {
         pintaPanel();

@@ -60,7 +60,16 @@ const ESFERAS = ['instalador', 'privacidad', 'escritor', 'traductor',
    cada lengua se pintan SOBRE el, y sin conexion salian como dos planchas
    lisas. Cuesta menos que uno solo de los bustos, y las pinta base.css,
    tema.css y la portada de la raiz -- no es arte huerfano. */
-const HUB = ['/hub.json', '/hub-textos.json',
+/* LOS OCHO FICHEROS DE NOMBRES DE COMPANEROS, uno por lengua, entran al shell
+   el 2026-09-08. Salieron del bloque i18n de las portadas por sitio, y sin red
+   una peticion que no esta en cache no se hace: el panel caeria a los nombres
+   en castellano del catalogo en las ocho lenguas. Se precachean las ocho y no
+   solo la del visitante porque el shell es uno para todo el sitio y la rueda
+   deja cambiar de idioma sin conexion. Cuestan 12,7 KB entre todos: menos que
+   una de las dos laminas de marmol que ya estan aqui arriba. */
+const AGENTES = ['de', 'el', 'en', 'es', 'fr', 'it', 'pt', 'ru']
+  .map(function (l) { return '/agentes-' + l + '.json'; });
+const HUB = [...AGENTES, '/hub.json', '/hub-textos.json',
              '/assets/marble-violet.webp', '/assets/marble-violet-oscuro.webp', '/modelos.json', '/servicios.json', '/instalar.json',
              '/assets/instalar-descargas.js', '/assets/widget.css', '/assets/puertas.css', '/assets/escribir.css', '/assets/placa.css', '/medidas.json', '/assets/medidas.js', '/nav.json', '/assets/cabezal.js', '/assets/cabezal-rotulos.js', '/assets/selector-modelo.js', '/assets/consiento.js', '/cerebros.json', '/cerebros-en.json', '/cerebros-es.json', '/assets/logos-models/preceptor.svg', '/assets/logos-models/qwen.svg', '/assets/logos-models/mistral.svg', '/assets/cabezal.css', '/assets/esquina.css', '/assets/esquina-cuenta.css', '/assets/esquina-par.css', '/assets/mandos.css', '/assets/panel.css', '/assets/nubes.css', '/assets/consiento.css', '/assets/senal.css', '/assets/senal.js',
              '/assets/hub.js',
@@ -85,7 +94,7 @@ const HUB = ['/hub.json', '/hub-textos.json',
    una contradiccion entre la pagina y el dato. El catalogo de modelos no
    tiene gemelo en el HTML, y ademas lleva su propia `ultima_lectura`: una
    copia vieja se declara vieja sola. */
-const CONTENIDO_JSON = ['/hub.json', '/hub-textos.json', '/medidas.json', '/nav.json', '/modelos.json', '/servicios.json', '/instalar.json'];
+const CONTENIDO_JSON = [...AGENTES, '/hub.json', '/hub-textos.json', '/medidas.json', '/nav.json', '/modelos.json', '/servicios.json', '/instalar.json'];
 
 /* El manifiesto va a red primero: es diminuto, cambia cuando cambian los
    iconos, y un manifiesto viejo hace que la app instalada se quede con el

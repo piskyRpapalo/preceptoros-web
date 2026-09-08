@@ -205,6 +205,15 @@ IDIOMAS = _idiomas()
 TRADUCCIONES = {PUBLICO / i for i in IDIOMAS if i != FUENTE}
 
 
+# CLAVES QUE YA NO VIVEN EN EL BLOQUE i18n DE LA PORTADA, y donde viven ahora.
+# No es una amnistia: `test_las_claves_mudadas_estan_donde_dicen_estar` las
+# comprueba en su casa nueva y en las ocho lenguas. Se mudan por sitio --el
+# bloque de `el/index.html` llego a dejar 279 B libres de los 16 KB del tope--
+# y siempre a un fichero POR LENGUA, para que una visita siga descargando su
+# idioma y nada mas.
+FUERA_DEL_BLOQUE = {"agentes": "agentes-{lengua}.json"}
+
+
 def paginas_de_contenido():
     """Paginas de CONTENIDO unico.
 
@@ -2367,8 +2376,33 @@ class Traducciones(unittest.TestCase):
                 # Falla solo por lo que FALTA: una clave ausente deja una cadena
                 # vacia en la interfaz. Las que sobran son texto muerto — se
                 # informan, pero no tumban el build.
-                faltan = usa - set(datos)
+                faltan = usa - set(datos) - set(FUERA_DEL_BLOQUE)
                 self.assertFalse(faltan, f"{idioma}: faltan claves {sorted(faltan)}")
+
+    def test_las_claves_mudadas_estan_donde_dicen_estar(self):
+        """Una clave que sale del bloque i18n no deja de existir: cambia de casa.
+
+        `FUERA_DEL_BLOQUE` es la lista de las que se mudaron, y el test de
+        arriba las perdona por eso. Perdonarlas sin mirar seria abrir un
+        agujero: bastaria con anotar una clave ahi para que nadie volviera a
+        comprobarla. Asi que se comprueba en su casa nueva, y en las ocho
+        lenguas -- que es donde se cae este tipo de mudanza: la lengua que
+        nadie mira se queda sin fichero y su panel sale en castellano sin que
+        salte nada.
+        """
+        for clave, plantilla in FUERA_DEL_BLOQUE.items():
+            for idioma in IDIOMAS:
+                f = PUBLICO / plantilla.format(lengua=idioma)
+                with self.subTest(clave=clave, idioma=idioma):
+                    self.assertTrue(f.is_file(),
+                        f"«{clave}» salio del bloque i18n de {idioma} y su "
+                        f"fichero {f.name} no existe")
+                    datos = json.loads(f.read_text(encoding="utf-8"))
+                    self.assertIn(clave, datos,
+                        f"{f.name} no trae «{clave}»")
+                    self.assertTrue(datos[clave],
+                        f"{f.name} trae «{clave}» vacio, que en pantalla se ve "
+                        "igual que no traerlo")
 
 
 class Imagenes(unittest.TestCase):

@@ -1,0 +1,40 @@
+{
+ "esquema": 1,
+ "estado": "OFICIAL",
+ "nota": "Los nombres y la funcion de los companeros en esta lengua. Vivian dentro del bloque i18n de la portada; salieron el 2026-09-08 porque el/index.html se habia quedado en 279 B libres del tope de 16 KB y este era el asunto mas pesado que tenia dentro (1416 B en castellano, casi un quinto de todo el bloque). El catalogo --que companeros hay y que id tiene cada uno-- sigue en hub.json: esto es solo como se llaman aqui.",
+ "lengua": "en",
+ "agentes": {
+  "instalador": {
+   "name": "The Installer",
+   "function": "Installs the product and introduces you to the rest."
+  },
+  "privacidad": {
+   "name": "The Customs Officer",
+   "function": "Strikes out what is private before it leaves your device."
+  },
+  "escritor": {
+   "name": "The Writer",
+   "function": "Writes with you: scripts, notes and long texts."
+  },
+  "traductor": {
+   "name": "The Translator",
+   "function": "Translates locally, without sending the text to any cloud."
+  },
+  "coder": {
+   "name": "The Craftsman",
+   "function": "Reads your code, proposes the fix and writes the test."
+  },
+  "analista": {
+   "name": "The Analyst",
+   "function": "Looks at numbers and traces and tells you what changed."
+  },
+  "aprendiz": {
+   "name": "The Apprentice",
+   "function": "Turns what you do into memory you can read back."
+  },
+  "bibliotecario": {
+   "name": "The Librarian",
+   "function": "Tidies your memory: searches, links and drops duplicates."
+  }
+ }
+}
