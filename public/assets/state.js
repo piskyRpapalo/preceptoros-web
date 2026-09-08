@@ -36,6 +36,46 @@
            '\n[/SYSTEM STATE]';
   };
 
+  /* --- Y LO QUE SE INYECTA, SE RETIRA SI VUELVE ---------------------------
+     En la captura del telefono del 2026-09-07 se leia, DENTRO de la
+     conversacion: `[SYSTEM STATE] ... Device: Android Steps: 1 [/SYSTEM`.
+     Cortado por la mitad, que es la firma de un modelo recitando su prompt
+     mientras la respuesta se transmite token a token.
+
+     La web no lo estaba pintando mal: el bloque va en el papel del sistema y
+     ahi es donde tiene que ir. Lo devolvia el modelo. Un 7B cuantizado recita
+     el reglamento cuando el prompt es largo, y eso no se arregla desde aqui.
+
+     Pero SI se puede no enseñarlo. Quien inyecta un bloque delimitado es quien
+     tiene que saber retirarlo, y por eso vive en esta hoja y no en el chat: el
+     dia que el bloque cambie de forma, la forma y su antidoto se editan
+     juntos. El precedente es de la casa -- el chat ya tacha las URLs del
+     torrente por la misma razon.
+
+     SE CUENTA LO QUE SE TACHA. Un filtro silencioso convierte un fallo del
+     modelo en un fallo invisible, y este proyecto mide los huecos en vez de
+     taparlos: cada vez que hay que limpiar se dispara `preceptor:fuga`, que es
+     lo que permitira saber si la ronda siguiente del LoRA recita menos.
+
+     Y SE CORTA TAMBIEN LO QUE NO CIERRA. En el torrente la etiqueta de cierre
+     llega tarde o no llega: si se esperara a verla, la fuga se quedaria en
+     pantalla justo el rato en que alguien la lee. Desde `[SYSTEM` hasta el
+     final, fuera. No hay continuacion legitima de esa palabra. */
+  var FUGA = /\[\s*\/?\s*SYSTEM[\s\S]*$/i;
+  var FUGA_CERRADA = /\[SYSTEM STATE\][\s\S]*?\[\/SYSTEM STATE\]/gi;
+
+  window.sinFuga = function (texto) {
+    if (!texto) return texto;
+    var limpio = texto.replace(FUGA_CERRADA, '').replace(FUGA, '');
+    limpio = limpio.replace(/\n{3,}/g, '\n\n').trim();
+    if (limpio !== texto.trim()) {
+      document.dispatchEvent(new CustomEvent('preceptor:fuga', {
+        detail: { quitado: texto.length - limpio.length }
+      }));
+    }
+    return limpio;
+  };
+
   /* --- El badge del cerebro vivo ---------------------------------------- */
   // Quien mira tiene derecho a saber QUE le esta contestando. «Una IA» no es
   // una respuesta: un 3B en el navegador y un 30B en el rack no son lo mismo.

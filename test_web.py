@@ -882,6 +882,46 @@ class Doctrina(unittest.TestCase):
                 for ip in re.findall(r"\b(?:\d{1,3}\.){3}\d{1,3}\b", sin_dibujos):
                     self.assertEqual(ip, "127.0.0.1", f"IP incrustada en {p}: {ip}")
 
+    def test_lo_que_el_modelo_devuelve_pasa_por_el_filtro(self):
+        """El bloque de estado se vio DENTRO de la conversacion, en el telefono.
+
+        `[SYSTEM STATE] ... Device: Android Steps: 1 [/SYSTEM`, cortado por la
+        mitad -- la firma de un modelo recitando su prompt mientras la
+        respuesta se transmite token a token. La web no lo pintaba mal: el
+        bloque va en el papel del sistema y ahi es donde tiene que ir. Lo
+        devolvia el modelo, y eso no se arregla desde aqui.
+
+        Pero si se puede no enseñarlo, y para eso hay UNA puerta: todo lo que
+        el modelo devuelve pasa por `sinFuga` antes de tocar el dialogo. Lo que
+        este test cuida no es el filtro --que se prueba solo-- sino que no se
+        abra una segunda puerta: el dia que alguien añada otra via de respuesta
+        y la pinte cruda, el sintoma vuelve y nadie lo relaciona con esto.
+
+        `di()` se queda fuera a proposito: escribe tambien lo que teclea la
+        persona, y a esa no se le tacha una palabra por parecerse a una
+        etiqueta.
+        """
+        estado = (PUBLICO / "assets" / "state.js").read_text(encoding="utf-8")
+        self.assertIn("window.sinFuga = function", estado,
+                      "state.js ya no expone el filtro que retira su propio "
+                      "bloque de estado")
+        chat = (PUBLICO / "assets" / "chat.js").read_text(encoding="utf-8")
+        sin_notas = re.sub(r"/\*.*?\*/", "", chat, flags=re.S)
+        sin_notas = re.sub(r"(?m)//.*$", "", sin_notas)
+        # Se miran las asignaciones cuyo valor es lo que ACUMULA el motor
+        # --`acc`-- o el parametro con el que se cierra el turno. No todas:
+        # `di()` y `estado()` escriben lo que teclea la persona y los avisos de
+        # la casa, y filtrar eso seria censurarle una palabra a quien pregunta
+        # por parecerse a una etiqueta. La primera version de este test no hizo
+        # esa distincion y salio roja sobre tres lineas correctas.
+        crudas = [linea.strip()
+                  for linea in sin_notas.splitlines()
+                  if re.search(r"\.textContent\s*=\s*(acc|t)\s*;", linea)
+                  and "sinFuga" not in linea]
+        self.assertFalse(crudas,
+                         "hay respuesta de modelo que llega al dialogo sin "
+                         f"pasar por sinFuga: {crudas}")
+
     def test_la_esquina_no_puede_bajarse_de_la_linea_del_logo(self):
         """Tres dias de esquina, y esta es la frase que los cierra.
 

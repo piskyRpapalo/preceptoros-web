@@ -143,8 +143,14 @@
     di(texto, true);
     entrada.value = '';
     var p = di('…');
+    /* `sinFuga` tacha el bloque de estado si el modelo lo recita. Vive en
+       `state.js`, que es quien lo inyecta -- el antidoto donde el veneno. Va
+       aqui y no en `di()` porque `di()` tambien escribe lo que teclea la
+       persona, y a esa no se le censura una palabra por parecerse a una
+       etiqueta. Con guardia por si la hoja no cargo: sin ella se pinta crudo,
+       que es feo, y no se rompe el turno, que seria peor. */
     var fin = function (t) {
-      p.textContent = t;
+      p.textContent = window.sinFuga ? window.sinFuga(t) : t;
       if (window.Fase) Fase('');   // TODO final pasa por aqui, tambien el vacio
       dialogo.scrollTop = dialogo.scrollHeight;
     };
@@ -171,7 +177,8 @@
     if (via === 'rack') {
       window.Rack.stream(modeloRack, papel() + '\n\n' + texto, function (d) {
         if (t1 === null) { t1 = performance.now(); avisa('hablando'); }
-        acc += d; acc = acc.replace(/https?:\/\/[^\s]+/g, '[URL_BLOQUEADA]'); p.textContent = acc;
+        acc += d; acc = acc.replace(/https?:\/\/[^\s]+/g, '[URL_BLOQUEADA]');
+        p.textContent = window.sinFuga ? window.sinFuga(acc) : acc;
       }).then(function (n) {
         tokens = n;
         document.dispatchEvent(new CustomEvent('preceptor:brain', {
@@ -186,14 +193,16 @@
     } else if (via === 'ollama') {
       window.LocalAI.stream(papel() + '\n\n' + texto, function (d) {
         if (t1 === null) { t1 = performance.now(); avisa('hablando'); }
-        acc += d; acc = acc.replace(/https?:\/\/[^\s]+/g, '[URL_BLOQUEADA]'); p.textContent = acc;
+        acc += d; acc = acc.replace(/https?:\/\/[^\s]+/g, '[URL_BLOQUEADA]');
+        p.textContent = window.sinFuga ? window.sinFuga(acc) : acc;
       }).then(function (n) { tokens = n; cerrar(); }).catch(falla);
     } else {
       // WebLLM y la Prompt API generan DENTRO de engine.js: es quien decidio
       // que cerebro corre, asi que es quien sabe como pedirle un turno.
       window.Engine.stream(papel(), texto, function (d) {
         if (t1 === null) { t1 = performance.now(); avisa('hablando'); }
-        acc += d; acc = acc.replace(/https?:\/\/[^\s]+/g, '[URL_BLOQUEADA]'); p.textContent = acc;
+        acc += d; acc = acc.replace(/https?:\/\/[^\s]+/g, '[URL_BLOQUEADA]');
+        p.textContent = window.sinFuga ? window.sinFuga(acc) : acc;
       }).then(function (n) { tokens = n; cerrar(); }).catch(falla);
     }
     }
