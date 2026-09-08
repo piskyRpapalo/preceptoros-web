@@ -50,6 +50,13 @@
    "hoy": "Il corpus e scritto: 200 casi reali in due versioni, per confrontarle.",
    "falta": "Sta ancora addestrandosi, e va firmato prima che si possa scaricare.",
    "aportas": "Raccontaci il reclamo che nessuno ti ha risolto. E quello che manca."
+  },
+  "business": {
+   "nombre": "Business",
+   "util": "Sapere se un'IA si puo installare in un'azienda senza che nessuno debba fidarsi di una promessa.",
+   "hoy": "Ancora niente: e la linea di ricerca prioritaria del nodo sovrano, dichiarata prima di esistere.",
+   "falta": "Incrociare tre cose gia misurate separatamente: costo locale rispetto a un'API esterna, rischio di allucinazione nei compiti critici, e conformita dei modelli installati.",
+   "aportas": "Dimmi cosa chiede il tuo audit e che oggi non sai dimostrare."
   }
  }
 }

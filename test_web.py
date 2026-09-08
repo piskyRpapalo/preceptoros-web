@@ -733,15 +733,51 @@ class ElTaller(unittest.TestCase):
                     self.assertEqual(claves, set(t["bloques"][b]),
                                      f"{b} difiere: {claves ^ set(t['bloques'][b])}")
 
+    # Los rotulos que son MARCA y por eso viajan igual en las ocho lenguas. Se
+    # enumeran uno a uno, y esa es toda la gracia: la tentacion al anadir
+    # `business` era eximir el campo `nombre` entero, y eso habria abierto
+    # justo el agujero que este test tapa -- «El Medidor» SI se traduce, y con
+    # la excepcion por campo un dia se quedaria sin traducir sin que saltara
+    # nada. Una excepcion nombrada envejece mal a la vista; una categoria
+    # envejece en silencio.
+    #
+    # El criterio para entrar aqui no es «esta en ingles»: es que la palabra
+    # sea el NOMBRE DEL PRODUCTO. `textos.py` de la app ya lo dice para el
+    # lore: los nombres clave se mantienen como marca. Traducir «PreceptorOS
+    # Business» a ocho lenguas es dejar de tener una marca.
+    MARCAS = {("business", "nombre")}
+
     def test_ningun_texto_se_quedo_en_castellano(self):
         """Media lengua traducida es peor que ninguna: nadie sabe cual vale."""
         es = self.textos["es"]
         for idioma in sorted(set(self.textos) - {"es", "en"}):
             for b, campos in self.textos[idioma]["bloques"].items():
                 for k, v in campos.items():
+                    if (b, k) in self.MARCAS:
+                        continue
                     with self.subTest(idioma=idioma, bloque=b, campo=k):
                         self.assertNotEqual(v, es["bloques"][b][k],
                                             "identico al castellano")
+
+    def test_una_marca_dice_lo_mismo_en_las_ocho_lenguas(self):
+        """El reverso de la excepcion, para que no sea una amnistia.
+
+        Un rotulo eximido de traducirse tiene que coincidir en TODAS: si en
+        seis lenguas dice «Business» y en una dice otra cosa, no es una marca,
+        es una traduccion a medias que ademas nadie estaba vigilando.
+        """
+        for bloque, campo in self.MARCAS:
+            valores = {i: t["bloques"][bloque][campo]
+                       for i, t in self.textos.items()
+                       if bloque in t["bloques"]}
+            with self.subTest(marca=f"{bloque}.{campo}"):
+                self.assertEqual(
+                    len(set(valores.values())), 1,
+                    f"«{bloque}.{campo}» esta declarada como marca y no dice "
+                    f"lo mismo en todas: {valores}")
+                self.assertEqual(
+                    set(valores), set(self.textos),
+                    "una marca declarada falta en alguna lengua")
 
     def test_cada_bloque_del_registro_tiene_texto_y_al_reves(self):
         ids = {b["id"] for b in self.registro["bloques"]}

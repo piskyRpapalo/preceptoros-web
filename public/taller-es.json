@@ -50,6 +50,13 @@
    "hoy": "El corpus está escrito: 200 casos reales en dos versiones para compararlas.",
    "falta": "Termina de entrenarse y hay que firmarlo antes de que se pueda descargar.",
    "aportas": "Cuéntanos la reclamación que te dejaron sin resolver. Eso es lo que falta."
+  },
+  "business": {
+   "nombre": "Business",
+   "util": "Saber si una IA se puede desplegar en una empresa sin que nadie tenga que fiarse de una promesa.",
+   "hoy": "Nada todavia: es la linea de investigacion prioritaria del nodo soberano, y se declara antes de existir.",
+   "falta": "Cruzar tres cosas que ya se miden por separado: coste local frente a API externa, riesgo de alucinacion en tareas criticas, y cumplimiento de los modelos desplegados.",
+   "aportas": "Cuentame que te pide tu auditoria y que no sabes demostrar hoy."
   }
  }
 }

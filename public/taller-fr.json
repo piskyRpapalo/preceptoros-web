@@ -50,6 +50,13 @@
    "hoy": "Le corpus est ecrit : 200 cas reels en deux versions, pour les comparer.",
    "falta": "L'entrainement n'est pas fini, et il faut le signer avant tout telechargement.",
    "aportas": "Raconte-nous la reclamation que personne n'a resolue. C'est ce qui manque."
+  },
+  "business": {
+   "nombre": "Business",
+   "util": "Savoir si une IA peut etre deployee en entreprise sans que personne n'ait a croire sur parole.",
+   "hoy": "Rien encore : c'est la ligne de recherche prioritaire du noeud souverain, declaree avant d'exister.",
+   "falta": "Croiser trois choses deja mesurees separement : cout local face a une API externe, risque d'hallucination sur les taches critiques, et conformite des modeles deployes.",
+   "aportas": "Dites-moi ce que votre audit exige et que vous ne savez pas prouver aujourd'hui."
   }
  }
 }

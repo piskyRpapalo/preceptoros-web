@@ -50,6 +50,13 @@
    "hoy": "The corpus is written: 200 real cases in two versions, to compare them.",
    "falta": "It is still training, and it must be signed before anyone can download it.",
    "aportas": "Tell us the complaint nobody resolved for you. That is what is missing."
+  },
+  "business": {
+   "nombre": "Business",
+   "util": "Knowing whether an AI can be deployed at a company without anyone having to take a promise on trust.",
+   "hoy": "Nothing yet: it is the sovereign node's priority line of research, declared before it exists.",
+   "falta": "Crossing three things already measured apart: local cost against an external API, hallucination risk on critical tasks, and compliance of the deployed models.",
+   "aportas": "Tell me what your audit asks for that you cannot prove today."
   }
  }
 }

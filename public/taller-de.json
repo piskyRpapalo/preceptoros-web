@@ -50,6 +50,13 @@
    "hoy": "Das Korpus steht: 200 echte Faelle in zwei Fassungen, zum Vergleichen.",
    "falta": "Es trainiert noch, und es muss signiert werden, bevor man es laden kann.",
    "aportas": "Erzaehl uns die Beschwerde, die dir niemand geloest hat. Genau das fehlt."
+  },
+  "business": {
+   "nombre": "Business",
+   "util": "Wissen, ob sich eine KI in einem Unternehmen einsetzen laesst, ohne dass jemand einem Versprechen glauben muss.",
+   "hoy": "Noch nichts: es ist die vorrangige Forschungslinie des souveraenen Knotens, erklaert bevor sie existiert.",
+   "falta": "Drei bereits getrennt gemessene Dinge kreuzen: lokale Kosten gegenueber einer externen API, Halluzinationsrisiko bei kritischen Aufgaben, und Konformitaet der eingesetzten Modelle.",
+   "aportas": "Sag mir, was dein Audit verlangt und du heute nicht belegen kannst."
   }
  }
 }

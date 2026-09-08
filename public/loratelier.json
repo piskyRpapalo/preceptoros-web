@@ -1,274 +1,305 @@
 {
-  "esquema": 1,
-  "estado": "MEDIDO",
-  "medido": "2026-09-06",
-  "nota": "El registro del taller: los HECHOS de cada linea, sin una palabra de prosa. El texto vive en taller-<idioma>.json, uno por lengua, porque meterlo aqui sacaria del tope a ruso y griego -- la misma razon por la que el Hub saco los suyos a hub-textos.json. Añadir una linea de investigacion es añadir un registro a `bloques`; el render no se toca. · 2026-09-06: `reclamaciones` baja de `beta` a `en_entrenamiento` y su `artefacto` vuelve a null. El GGUF pesa 55 MB y Cloudflare Pages corta en 25 MB por fichero, asi que /downloads/preceptor-tribune-en-v1.gguf devolvia 404 en produccion mientras su .sha256 devolvia 200 -- se publicaba el hash de un fichero que no se podia bajar. El fichero existe y esta medido; lo que no existe es alojamiento que sirva 55 MB. Hoy vive en nginx del nodo soberano, puerto 8081, sin nombre publico. Vuelve a `artefacto` cuando lo haya, no antes: sin artefacto no hay boton.",
-  "contrato": {
-    "quien_escribe": "el Soberano a mano, o el enjambre cuando publique un artefacto; la web solo lee",
-    "estados": "en_estudio · en_entrenamiento · disponible · vision · NO_DATA",
-    "sin_artefacto_no_hay_boton": "un bloque sin `artefacto` y sin `hash` NO pinta descarga. Hoy no hay ninguno publicado, asi que el taller nace sin descargas: es lo que hara creible el primer boton.",
-    "medias": "`medidas.n` viaja SIEMPRE. Con n=0 se pinta el hueco, nunca un cero ni una barra vacia: fingir actividad en un taller vacio es la mentira mas vieja de internet.",
-    "contrato_formal": "data/loratelier_schema.json · fuera de public/ a proposito: es el contrato, no se sirve"
-  },
-  "bloques": [
+ "esquema": 1,
+ "estado": "MEDIDO",
+ "medido": "2026-09-06",
+ "nota": "El registro del taller: los HECHOS de cada linea, sin una palabra de prosa. El texto vive en taller-<idioma>.json, uno por lengua, porque meterlo aqui sacaria del tope a ruso y griego -- la misma razon por la que el Hub saco los suyos a hub-textos.json. Añadir una linea de investigacion es añadir un registro a `bloques`; el render no se toca. · 2026-09-06: `reclamaciones` baja de `beta` a `en_entrenamiento` y su `artefacto` vuelve a null. El GGUF pesa 55 MB y Cloudflare Pages corta en 25 MB por fichero, asi que /downloads/preceptor-tribune-en-v1.gguf devolvia 404 en produccion mientras su .sha256 devolvia 200 -- se publicaba el hash de un fichero que no se podia bajar. El fichero existe y esta medido; lo que no existe es alojamiento que sirva 55 MB. Hoy vive en nginx del nodo soberano, puerto 8081, sin nombre publico. Vuelve a `artefacto` cuando lo haya, no antes: sin artefacto no hay boton.",
+ "contrato": {
+  "quien_escribe": "el Soberano a mano, o el enjambre cuando publique un artefacto; la web solo lee",
+  "estados": "en_estudio · en_entrenamiento · disponible · vision · NO_DATA",
+  "sin_artefacto_no_hay_boton": "un bloque sin `artefacto` y sin `hash` NO pinta descarga. Hoy no hay ninguno publicado, asi que el taller nace sin descargas: es lo que hara creible el primer boton.",
+  "medias": "`medidas.n` viaja SIEMPRE. Con n=0 se pinta el hueco, nunca un cero ni una barra vacia: fingir actividad en un taller vacio es la mentira mas vieja de internet.",
+  "contrato_formal": "data/loratelier_schema.json · fuera de public/ a proposito: es el contrato, no se sirve"
+ },
+ "bloques": [
+  {
+   "id": "bienvenida",
+   "estado": "en_entrenamiento",
+   "orden": 1,
+   "modelo_base": "mistral:7b-instruct-v0.3-q4_K_M",
+   "requisitos_hw": "8 GB de RAM, Q4 · o servido desde el rack",
+   "artefacto": null,
+   "ficha": {
+    "familia": "Mistral",
+    "licencia": "Apache 2.0",
+    "origen": "Europa",
+    "base_entrenamiento": "mistral:7b-instruct-v0.3",
+    "base_tamano_q4_gb": 4.4,
+    "servido_en_el_rack": "mistral-small3.2:24b-instruct-2506",
+    "servido_tamano_q4_gb": 15,
+    "razonamiento": "apagado",
+    "por_que_instruct": "el razonamiento extendido gasta tokens invisibles antes de la primera palabra; medido en este nodo: 45 para responder una sola",
+    "adaptador_sha256": "bf3cf9534320f3204ba464aabef8ed946c00ff2c241c6efd45264761bef246af",
+    "adaptador_estado": "entrenado y ensamblado como preceptor-cuentacuentos:v1; sin publicar, asi que sin url y sin boton"
+   },
+   "medidas": {
+    "n": 0,
+    "maquina": null,
+    "tok_s": null,
+    "ram_mb": null
+   },
+   "tests": {
+    "n": 0
+   },
+   "valoraciones": {
+    "n": 0
+   },
+   "plantilla_inicial": [
+    "Explicame PreceptorOS como si no supiera nada de modelos.",
+    "Si no sabes algo, dilo y dime donde buscarlo.",
+    "No me prometas que recordaras esta conversacion."
+   ],
+   "cuestionario": [
     {
-      "id": "bienvenida",
-      "estado": "en_entrenamiento",
-      "orden": 1,
-      "modelo_base": "mistral:7b-instruct-v0.3-q4_K_M",
-      "requisitos_hw": "8 GB de RAM, Q4 · o servido desde el rack",
-      "artefacto": null,
-      "ficha": {
-        "familia": "Mistral",
-        "licencia": "Apache 2.0",
-        "origen": "Europa",
-        "base_entrenamiento": "mistral:7b-instruct-v0.3",
-        "base_tamano_q4_gb": 4.4,
-        "servido_en_el_rack": "mistral-small3.2:24b-instruct-2506",
-        "servido_tamano_q4_gb": 15,
-        "razonamiento": "apagado",
-        "por_que_instruct": "el razonamiento extendido gasta tokens invisibles antes de la primera palabra; medido en este nodo: 45 para responder una sola",
-        "adaptador_sha256": "bf3cf9534320f3204ba464aabef8ed946c00ff2c241c6efd45264761bef246af",
-        "adaptador_estado": "entrenado y ensamblado como preceptor-cuentacuentos:v1; sin publicar, asi que sin url y sin boton"
-      },
-      "medidas": {
-        "n": 0,
-        "maquina": null,
-        "tok_s": null,
-        "ram_mb": null
-      },
-      "tests": {
-        "n": 0
-      },
-      "valoraciones": {
-        "n": 0
-      },
-      "plantilla_inicial": [
-        "Explicame PreceptorOS como si no supiera nada de modelos.",
-        "Si no sabes algo, dilo y dime donde buscarlo.",
-        "No me prometas que recordaras esta conversacion."
-      ],
-      "cuestionario": [
-        {
-          "id": "nombre",
-          "tipo": "texto_corto"
-        },
-        {
-          "id": "idioma",
-          "tipo": "opcion_unica",
-          "opciones": [
-            "es",
-            "en",
-            "pt",
-            "fr",
-            "it",
-            "de",
-            "ru",
-            "el"
-          ]
-        },
-        {
-          "id": "experiencia",
-          "tipo": "rango",
-          "rango": {
-            "min": 0,
-            "max": 10
-          }
-        },
-        {
-          "id": "trato_por_nombre",
-          "tipo": "si_no"
-        },
-        {
-          "id": "respuestas_breves",
-          "tipo": "si_no"
-        },
-        {
-          "id": "que_deberia_saber",
-          "tipo": "abierta",
-          "opcional": true
-        }
-      ],
-      "tests_verificacion": [
-        "saludo_por_nombre",
-        "explico_kill_switch_sin_inventar",
-        "propuso_medir_hardware",
-        "no_salio_de_la_doctrina",
-        "aviso_cuando_no_sabia"
-      ]
+     "id": "nombre",
+     "tipo": "texto_corto"
     },
     {
-      "id": "medidor",
-      "estado": "vision",
-      "orden": 3,
-      "modelo_base": "mistral:7b-instruct-v0.3-q4_K_M",
-      "requisitos_hw": "8 GB de RAM, Q4",
-      "artefacto": null,
-      "ficha": {
-        "familia": "Mistral",
-        "licencia": "Apache 2.0",
-        "origen": "Europa",
-        "base_entrenamiento": "mistral:7b-instruct-v0.3",
-        "base_tamano_q4_gb": 4.4,
-        "servido_en_el_rack": null,
-        "servido_tamano_q4_gb": null,
-        "razonamiento": "apagado",
-        "se_apoya_en": "la tabla de medidas.json, que ya existe y cuyo contrato dice que la web solo lee"
-      },
-      "medidas": {
-        "n": 0,
-        "maquina": null,
-        "tok_s": null,
-        "ram_mb": null
-      },
-      "tests": {
-        "n": 0
-      },
-      "valoraciones": {
-        "n": 0
-      }
+     "id": "idioma",
+     "tipo": "opcion_unica",
+     "opciones": [
+      "es",
+      "en",
+      "pt",
+      "fr",
+      "it",
+      "de",
+      "ru",
+      "el"
+     ]
     },
     {
-      "id": "memoria",
-      "estado": "vision",
-      "orden": 4,
-      "modelo_base": null,
-      "requisitos_hw": null,
-      "artefacto": null,
-      "ficha": {
-        "familia": null,
-        "licencia": null,
-        "origen": null,
-        "base_entrenamiento": null,
-        "base_tamano_q4_gb": null,
-        "servido_en_el_rack": null,
-        "servido_tamano_q4_gb": null,
-        "razonamiento": null,
-        "por_que_sin_base": "multimodal y contexto largo son requisitos de otra familia; asignarle una base ahora dispersaria el primer entrenamiento, que es Mistral"
-      },
-      "medidas": {
-        "n": 0,
-        "maquina": null,
-        "tok_s": null,
-        "ram_mb": null
-      },
-      "tests": {
-        "n": 0
-      },
-      "valoraciones": {
-        "n": 0
-      }
+     "id": "experiencia",
+     "tipo": "rango",
+     "rango": {
+      "min": 0,
+      "max": 10
+     }
     },
     {
-      "id": "reclamaciones",
-      "estado": "en_entrenamiento",
-      "orden": 2,
-      "modelo_base": "mistral:7b-instruct-v0.3-q4_K_M",
-      "requisitos_hw": "8 GB de RAM, Q4",
-      "artefacto": null,
-      "ficha": {
-        "familia": "Mistral",
-        "licencia": "Apache 2.0",
-        "origen": "Europa",
-        "base_entrenamiento": "mistral:7b-instruct-v0.3",
-        "base_tamano_q4_gb": 4.4,
-        "servido_en_el_rack": null,
-        "servido_tamano_q4_gb": null,
-        "razonamiento": "apagado",
-        "corpus": "200 muestras en dos datasets comparativos (100 EN · 100 multilingue), reparto 50-20-15-15",
-        "regla_de_los_plazos": "el modelo NO afirma plazos legales de memoria: nombra el canal y manda a la fuente oficial",
-        "nombre_modelo": "The Tribune",
-        "url_es_de_la_malla": "la ruta es relativa a proposito: hoy resuelve en el nginx del rack y dara 404 en la via publica hasta que el tunel la sirva. La direccion del nodo NO entra en el repo -- lo prohibe la guardia de higiene, y lo prohibe bien: esto se publica",
-        "prueba_de_fuego": "los DOS fallan como producto y lo prueban como tuberia. El ingles ELIGIO plazo, que es justo lo prohibido. El multilingue se nego bien pero se invento un numero de referencia mezclando las cifras de la pregunta con el patron del corpus. Ninguno deriva a canal oficial ni ofrece escalado. Con 100 muestras y perdida 0,62 y 0,33, esto es memorizacion, no aprendizaje",
-        "artefacto_multi": {
-          "fichero": "preceptor-tribune-multi-v1.gguf",
-          "url_descarga": "/downloads/preceptor-tribune-multi-v1.gguf",
-          "sha256_hash": "90879b40733debf002eb53a1487cd25b15ffcd1a05f065aef4ac12d38c021db1",
-          "version": "multi-v1"
-        },
-        "medida_en": {
-          "pasos": 200,
-          "s_paso": 5.55,
-          "perdida": "3.8013 -> 0.6155",
-          "ram_pico_mb": 19058,
-          "temp_max_c": 84.4,
-          "minutos": 39
-        },
-        "medida_multi": {
-          "pasos": 200,
-          "s_paso": 6.83,
-          "perdida": "2.9343 -> 0.3333",
-          "ram_pico_mb": 26766,
-          "temp_max_c": 85.1,
-          "minutos": 47
-        }
-      },
-      "plantilla_inicial": [
-        "Atiendeme como si fueras el servicio de atencion al cliente.",
-        "No te inventes politicas: si no consta, dilo.",
-        "Si no puedes resolverlo, escalame a una persona con referencia.",
-        "No me pidas datos de tarjeta ni documentos por este chat."
-      ],
-      "cuestionario": [
-        {
-          "id": "sector",
-          "tipo": "opcion_unica",
-          "opciones": [
-            "telecomunicaciones",
-            "energia",
-            "banca",
-            "aerolinea",
-            "comercio",
-            "seguros",
-            "otro"
-          ]
-        },
-        {
-          "id": "que_paso",
-          "tipo": "texto_corto"
-        },
-        {
-          "id": "tengo_referencia",
-          "tipo": "si_no"
-        },
-        {
-          "id": "urgencia",
-          "tipo": "rango",
-          "rango": {
-            "min": 0,
-            "max": 10
-          }
-        },
-        {
-          "id": "que_deberia_saber",
-          "tipo": "abierta",
-          "opcional": true
-        }
-      ],
-      "tests_verificacion": [
-        "no_invento_politica",
-        "escalo_de_verdad",
-        "no_pidio_datos_sensibles",
-        "dijo_no_data_con_la_clave",
-        "no_afirmo_plazo_legal"
-      ],
-      "medidas": {
-        "n": 1,
-        "maquina": "Beelink Ryzen 7 255 · 8 hilos · sin GPU",
-        "tok_s": null,
-        "ram_mb": 19058
-      },
-      "tests": {
-        "n": 0
-      },
-      "valoraciones": {
-        "n": 0
-      }
+     "id": "trato_por_nombre",
+     "tipo": "si_no"
+    },
+    {
+     "id": "respuestas_breves",
+     "tipo": "si_no"
+    },
+    {
+     "id": "que_deberia_saber",
+     "tipo": "abierta",
+     "opcional": true
     }
-  ],
-  "aporte": {
-    "nota": "La puerta de salida del aporte, mientras `/api/v1/medidas` siga en 404 y la escritura del Agora cerrada. NO se envia nada solo: el paquete se arma en el aparato, se ve entero antes de nada, y lo manda la persona desde su propio correo. Una direccion aqui y no en las ocho lenguas: es un hecho, no un texto.",
-    "correo": "davidpecero@gmail.com",
-    "esquema_paquete": 1
+   ],
+   "tests_verificacion": [
+    "saludo_por_nombre",
+    "explico_kill_switch_sin_inventar",
+    "propuso_medir_hardware",
+    "no_salio_de_la_doctrina",
+    "aviso_cuando_no_sabia"
+   ]
+  },
+  {
+   "id": "medidor",
+   "estado": "vision",
+   "orden": 3,
+   "modelo_base": "mistral:7b-instruct-v0.3-q4_K_M",
+   "requisitos_hw": "8 GB de RAM, Q4",
+   "artefacto": null,
+   "ficha": {
+    "familia": "Mistral",
+    "licencia": "Apache 2.0",
+    "origen": "Europa",
+    "base_entrenamiento": "mistral:7b-instruct-v0.3",
+    "base_tamano_q4_gb": 4.4,
+    "servido_en_el_rack": null,
+    "servido_tamano_q4_gb": null,
+    "razonamiento": "apagado",
+    "se_apoya_en": "la tabla de medidas.json, que ya existe y cuyo contrato dice que la web solo lee"
+   },
+   "medidas": {
+    "n": 0,
+    "maquina": null,
+    "tok_s": null,
+    "ram_mb": null
+   },
+   "tests": {
+    "n": 0
+   },
+   "valoraciones": {
+    "n": 0
+   }
+  },
+  {
+   "id": "memoria",
+   "estado": "vision",
+   "orden": 4,
+   "modelo_base": null,
+   "requisitos_hw": null,
+   "artefacto": null,
+   "ficha": {
+    "familia": null,
+    "licencia": null,
+    "origen": null,
+    "base_entrenamiento": null,
+    "base_tamano_q4_gb": null,
+    "servido_en_el_rack": null,
+    "servido_tamano_q4_gb": null,
+    "razonamiento": null,
+    "por_que_sin_base": "multimodal y contexto largo son requisitos de otra familia; asignarle una base ahora dispersaria el primer entrenamiento, que es Mistral"
+   },
+   "medidas": {
+    "n": 0,
+    "maquina": null,
+    "tok_s": null,
+    "ram_mb": null
+   },
+   "tests": {
+    "n": 0
+   },
+   "valoraciones": {
+    "n": 0
+   }
+  },
+  {
+   "id": "reclamaciones",
+   "estado": "en_entrenamiento",
+   "orden": 2,
+   "modelo_base": "mistral:7b-instruct-v0.3-q4_K_M",
+   "requisitos_hw": "8 GB de RAM, Q4",
+   "artefacto": null,
+   "ficha": {
+    "familia": "Mistral",
+    "licencia": "Apache 2.0",
+    "origen": "Europa",
+    "base_entrenamiento": "mistral:7b-instruct-v0.3",
+    "base_tamano_q4_gb": 4.4,
+    "servido_en_el_rack": null,
+    "servido_tamano_q4_gb": null,
+    "razonamiento": "apagado",
+    "corpus": "200 muestras en dos datasets comparativos (100 EN · 100 multilingue), reparto 50-20-15-15",
+    "regla_de_los_plazos": "el modelo NO afirma plazos legales de memoria: nombra el canal y manda a la fuente oficial",
+    "nombre_modelo": "The Tribune",
+    "url_es_de_la_malla": "la ruta es relativa a proposito: hoy resuelve en el nginx del rack y dara 404 en la via publica hasta que el tunel la sirva. La direccion del nodo NO entra en el repo -- lo prohibe la guardia de higiene, y lo prohibe bien: esto se publica",
+    "prueba_de_fuego": "los DOS fallan como producto y lo prueban como tuberia. El ingles ELIGIO plazo, que es justo lo prohibido. El multilingue se nego bien pero se invento un numero de referencia mezclando las cifras de la pregunta con el patron del corpus. Ninguno deriva a canal oficial ni ofrece escalado. Con 100 muestras y perdida 0,62 y 0,33, esto es memorizacion, no aprendizaje",
+    "artefacto_multi": {
+     "fichero": "preceptor-tribune-multi-v1.gguf",
+     "url_descarga": "/downloads/preceptor-tribune-multi-v1.gguf",
+     "sha256_hash": "90879b40733debf002eb53a1487cd25b15ffcd1a05f065aef4ac12d38c021db1",
+     "version": "multi-v1"
+    },
+    "medida_en": {
+     "pasos": 200,
+     "s_paso": 5.55,
+     "perdida": "3.8013 -> 0.6155",
+     "ram_pico_mb": 19058,
+     "temp_max_c": 84.4,
+     "minutos": 39
+    },
+    "medida_multi": {
+     "pasos": 200,
+     "s_paso": 6.83,
+     "perdida": "2.9343 -> 0.3333",
+     "ram_pico_mb": 26766,
+     "temp_max_c": 85.1,
+     "minutos": 47
+    }
+   },
+   "plantilla_inicial": [
+    "Atiendeme como si fueras el servicio de atencion al cliente.",
+    "No te inventes politicas: si no consta, dilo.",
+    "Si no puedes resolverlo, escalame a una persona con referencia.",
+    "No me pidas datos de tarjeta ni documentos por este chat."
+   ],
+   "cuestionario": [
+    {
+     "id": "sector",
+     "tipo": "opcion_unica",
+     "opciones": [
+      "telecomunicaciones",
+      "energia",
+      "banca",
+      "aerolinea",
+      "comercio",
+      "seguros",
+      "otro"
+     ]
+    },
+    {
+     "id": "que_paso",
+     "tipo": "texto_corto"
+    },
+    {
+     "id": "tengo_referencia",
+     "tipo": "si_no"
+    },
+    {
+     "id": "urgencia",
+     "tipo": "rango",
+     "rango": {
+      "min": 0,
+      "max": 10
+     }
+    },
+    {
+     "id": "que_deberia_saber",
+     "tipo": "abierta",
+     "opcional": true
+    }
+   ],
+   "tests_verificacion": [
+    "no_invento_politica",
+    "escalo_de_verdad",
+    "no_pidio_datos_sensibles",
+    "dijo_no_data_con_la_clave",
+    "no_afirmo_plazo_legal"
+   ],
+   "medidas": {
+    "n": 1,
+    "maquina": "Beelink Ryzen 7 255 · 8 hilos · sin GPU",
+    "tok_s": null,
+    "ram_mb": 19058
+   },
+   "tests": {
+    "n": 0
+   },
+   "valoraciones": {
+    "n": 0
+   }
+  },
+  {
+   "id": "business",
+   "estado": "vision",
+   "orden": 5,
+   "modelo_base": null,
+   "requisitos_hw": "los del nodo que se audita, no los de esta herramienta",
+   "artefacto": null,
+   "ficha": {
+    "familia": null,
+    "licencia": null,
+    "origen": "el rack P0X",
+    "base_entrenamiento": null,
+    "base_tamano_q4_gb": null,
+    "servido_en_el_rack": null,
+    "servido_tamano_q4_gb": null,
+    "razonamiento": null,
+    "se_apoya_en": "las piezas que ya existen: medidas.json para la fisica del silicio, captura.turnos para el rastro con juez nombrado, y guardrails para el perimetro. No inventa medida nueva: las cruza"
+   },
+   "medidas": {
+    "n": 0,
+    "maquina": null,
+    "tok_s": null,
+    "ram_mb": null
+   },
+   "tests": {
+    "n": 0
+   },
+   "valoraciones": {
+    "n": 0
+   }
   }
+ ],
+ "aporte": {
+  "nota": "La puerta de salida del aporte, mientras `/api/v1/medidas` siga en 404 y la escritura del Agora cerrada. NO se envia nada solo: el paquete se arma en el aparato, se ve entero antes de nada, y lo manda la persona desde su propio correo. Una direccion aqui y no en las ocho lenguas: es un hecho, no un texto.",
+  "correo": "davidpecero@gmail.com",
+  "esquema_paquete": 1
+ }
 }

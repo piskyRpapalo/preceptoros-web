@@ -50,6 +50,13 @@
    "hoy": "O corpus esta escrito: 200 casos reais em duas versoes, para comparar.",
    "falta": "Ainda esta a treinar, e tem de ser assinado antes de poder ser descarregado.",
    "aportas": "Conta-nos a reclamacao que ninguem te resolveu. E disso que precisamos."
+  },
+  "business": {
+   "nombre": "Business",
+   "util": "Saber se uma IA pode ser implantada numa empresa sem que ninguem tenha de acreditar numa promessa.",
+   "hoy": "Nada ainda: e a linha de investigacao prioritaria do no soberano, declarada antes de existir.",
+   "falta": "Cruzar tres coisas ja medidas em separado: custo local face a uma API externa, risco de alucinacao em tarefas criticas, e conformidade dos modelos implantados.",
+   "aportas": "Diga-me o que a sua auditoria exige e que hoje nao consegue demonstrar."
   }
  }
 }
