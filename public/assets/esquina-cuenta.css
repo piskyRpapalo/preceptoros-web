@@ -40,7 +40,27 @@
    con `flex-wrap:wrap` heredado de cuando eran tres piezas a tamano de boton;
    con la pastilla estrecha, envolver partia la cuenta en dos filas y la fila
    de abajo caia sobre la cara. */
-#cabezal #identity{flex-wrap:nowrap;white-space:nowrap;max-width:calc(100% - 8rem)}
+/* SIN `max-width:calc(100% - 8rem)`, que era la quinta regla superviviente y
+   la que mas cara ha salido. Existia cuando la identidad colgaba de
+   `.cab-fila`: ese `100%` era el ancho de la fila y ocho rem el sitio de sus
+   vecinas. Al mudarse a `.cab-esquina` el `100%` pasó a ser el ancho de la
+   ESQUINA --78 px sin sesion-- y la cuenta da 78 menos 128, o sea negativo, que
+   el navegador clava en CERO.
+
+   Y una caja de ancho cero no desaparece: su hijo se DESBORDA. Medido a 1280:
+   `#identity` en 959..959 y su icono de 36 px pintandose encima de la rueda,
+   que empieza en 965. Eso es lo que se veia -- «los botones de ajustes y cuenta
+   siguen montados».
+
+   No hace falta sustituirla por otra cota: dentro de la esquina la cuenta ya
+   tiene `flex:0 1 auto` para ceder y el nombre su elipsis para acortarse. La
+   restriccion que hacia falta cuando era un hijo suelto la hace ahora la caja.
+
+   LA LECCION, y va la sexta: al mudar una pieza hay que mudar --o retirar-- lo
+   que la colocaba y lo que la limitaba. Un `%` es relativo a un padre, asi que
+   cambiar de padre cambia lo que la regla significa SIN cambiar una letra. Hay
+   una prueba abajo que lo prohibe explicitamente. */
+#cabezal #identity{flex-wrap:nowrap;white-space:nowrap}
 /* PEQUENOS, Y AHORA SI CABEN (2026-09-08). Con los dos iconos de firma fuera
    de la fila, la cuenta a 375 px queda asi: marca 184 + rueda 36 + dos huecos
    de 6,4 = 233 de los 325 utiles. Sobran NOVENTA Y DOS para la cuenta -- y a
@@ -212,53 +232,9 @@
    Queda escrito para que nadie lo «arregle» dentro de tres semanas viendo un
    cabezal de 260 px y creyendo que sobra algo. No sobra: se eligio. */
 
-
-/* --- LA ESQUINA ES UNA PIEZA, Y AQUI SOLO SE ANCLA -------------------------
-   AQUI VIVIAN SEIS REGLAS colocando la rueda y el perfil a mano, con su `top`
-   y su `right` propios, en TRES franjas de anchura: <430, 430-1023 y
-   escritorio. Y ademas una franja entera --«entre el telefono y el
-   escritorio»-- que existia solo para juntarlos otra vez a partir de 430,
-   porque por debajo se separaban.
-
-   Se van las seis. Los dos mandos viven ahora dentro de `.cab-esquina`, que
-   los pone en fila y se ancla ella: su distancia dejo de ser una cuenta y paso
-   a ser estructura. Una consulta de medios ya no puede separarlos, porque no
-   hay dos cosas que colocar.
-
-   LO QUE ESTO ARREGLA, medido a 375 px antes de tocarlo: rueda en 315,27 y
-   perfil en 310,107. Ochenta pixeles y dos renglones para dos gemelos. El
-   comentario que estaba justo aqui decia «los dos dibujos juntos y contra el
-   canto» y llevaba razon la intencion, no el codigo: la rueda paso a
-   `position:absolute` despues de escribirse esa frase y nadie volvio a leerla.
-   Es la tercera vez en este arbol que un comentario sobrevive al codigo que
-   describia; la diferencia es que esta vez se retira la aritmetica que lo
-   permitia.
-
-   Y VA EN EL FLUJO, no absoluta. Absoluta resolvia el caso sin sesion y rompia
-   el otro: al registrarse, la identidad deja de ser un icono de 36 px y pasa a
-   ser una pastilla con nombre y firma --211 px medidos a 375-- y una caja
-   fuera del flujo que se ensancha crece ENCIMA de su vecino. Medido antes de
-   tocar: 69 px de solape sobre «PRECEPTOROS», con la rueda enterrada debajo.
-
-   Corregirlo con un `right` mas grande habria sido la misma aritmetica que
-   este bloque acaba de retirar, girada noventa grados -- y habria vuelto a
-   romperse con el primer nombre largo. En el flujo el reparto lo hace flexbox
-   MIDIENDO, y lo hace en los dos estados sin que nadie escriba un numero:
-   caben los dos en la fila, van juntos; no caben, la esquina baja sola a la
-   suya. Es la misma decision, tomada por quien puede medir.
-
-   Ya no hace falta `z-index`: fuera del flujo se solapaba con la cara y habia
-   que levantarla por encima. En el flujo no se solapa con nada. */
-/* `order:30` y no 10, que fue el primer numero y estaba mal. La frase de
-   energia lleva `order:20`, asi que con un diez la esquina caia ANTES que ella
-   -- y `margin-left:auto` no la empuja contra el canto sino contra su vecina.
-   Medido en escritorio a 1280: rueda en x=641, o sea en mitad de la fila, con
-   la identidad y la frase montadas encima. Es lo que el Soberano vio.
-
-   Treinta es «la ultima pase lo que pase». No es una coordenada: es una
-   POSICION EN LA COLA, y por eso no hay que volver a tocarla cuando entre otra
-   pieza en el cabezal -- entrara delante, que es donde debe. */
-.cab-esquina{display:flex;align-items:center;gap:.4rem;
-  flex:0 0 auto;margin-left:auto;order:30}
-
-.cab-esquina #identity{flex:0 0 auto;width:auto;margin:0;min-width:0}
+/* LA ESQUINA COMO PIEZA --la caja que lleva la rueda y el perfil-- vive en
+   `esquina-par.css` desde el 2026-09-08, cuando esta hoja llego a 16.727 B de
+   un tope de 16.384. Se parte por asunto y no se recortan comentarios: aqui
+   queda LA CUENTA --el nombre y la firma, como se ven y cuanto miden-- y alli
+   LA PAREJA, que es otra pregunta: donde van los dos mandos y por que no se
+   pisan. Aquella carga despues. */

@@ -1,0 +1,76 @@
+/* preceptoros.org · LA PAREJA DE LA ESQUINA: la rueda y el perfil.
+ *
+ * POR QUE TIENE HOJA PROPIA. No por tamano --aunque `esquina-cuenta.css` llego
+ * a 16.727 B de 16.384 y hubo que partir--: por cuenta de cicatrices. Estos dos
+ * mandos han estado mal SEIS veces en dos dias, y siempre por la misma clase de
+ * fallo, nunca por el mismo numero:
+ *
+ *   1 · el perfil huerfano, a ochenta pixeles de su gemelo y en otra fila.
+ *   2 · seis reglas colocandolos a mano en tres franjas de anchura.
+ *   3 · un `order:3` que sobrevivio a la mudanza y le quito el canto a la rueda.
+ *   4 · otro `order:9` en una tercera hoja, haciendo lo mismo.
+ *   5 · la caja absoluta: con sesion, la cuenta crecia ENCIMA de la marca.
+ *   6 · un `max-width:calc(100% - 8rem)` cuyo `100%` cambio de padre al mudarse
+ *       la pieza: 78 menos 128 da negativo, el navegador lo clava en cero, y un
+ *       hijo de 36 px se desborda sobre la rueda.
+ *
+ * LA LECCION COMUN, escrita aqui porque es lo que evita la septima: al mudar
+ * una pieza hay que mudar --o retirar-- lo que la colocaba Y lo que la
+ * limitaba. Un `order` es relativo a sus hermanos y un `%` a su padre: cambiar
+ * de caja cambia lo que la regla SIGNIFICA sin cambiar una letra, y eso no lo
+ * ve nadie leyendo el diff.
+ *
+ * LA REGLA DE ESTA HOJA, entonces: aqui NO se escribe una coordenada. Ni `top`,
+ * ni `right`, ni un `max-width` que dependa del padre. Solo caja, orden y
+ * anclaje -- cosas que siguen significando lo mismo se mueva lo que se mueva.
+ */
+
+/* --- LA ESQUINA ES UNA PIEZA, Y AQUI SOLO SE ANCLA -------------------------
+   AQUI VIVIAN SEIS REGLAS colocando la rueda y el perfil a mano, con su `top`
+   y su `right` propios, en TRES franjas de anchura: <430, 430-1023 y
+   escritorio. Y ademas una franja entera --«entre el telefono y el
+   escritorio»-- que existia solo para juntarlos otra vez a partir de 430,
+   porque por debajo se separaban.
+
+   Se van las seis. Los dos mandos viven ahora dentro de `.cab-esquina`, que
+   los pone en fila y se ancla ella: su distancia dejo de ser una cuenta y paso
+   a ser estructura. Una consulta de medios ya no puede separarlos, porque no
+   hay dos cosas que colocar.
+
+   LO QUE ESTO ARREGLA, medido a 375 px antes de tocarlo: rueda en 315,27 y
+   perfil en 310,107. Ochenta pixeles y dos renglones para dos gemelos. El
+   comentario que estaba justo aqui decia «los dos dibujos juntos y contra el
+   canto» y llevaba razon la intencion, no el codigo: la rueda paso a
+   `position:absolute` despues de escribirse esa frase y nadie volvio a leerla.
+   Es la tercera vez en este arbol que un comentario sobrevive al codigo que
+   describia; la diferencia es que esta vez se retira la aritmetica que lo
+   permitia.
+
+   Y VA EN EL FLUJO, no absoluta. Absoluta resolvia el caso sin sesion y rompia
+   el otro: al registrarse, la identidad deja de ser un icono de 36 px y pasa a
+   ser una pastilla con nombre y firma --211 px medidos a 375-- y una caja
+   fuera del flujo que se ensancha crece ENCIMA de su vecino. Medido antes de
+   tocar: 69 px de solape sobre «PRECEPTOROS», con la rueda enterrada debajo.
+
+   Corregirlo con un `right` mas grande habria sido la misma aritmetica que
+   este bloque acaba de retirar, girada noventa grados -- y habria vuelto a
+   romperse con el primer nombre largo. En el flujo el reparto lo hace flexbox
+   MIDIENDO, y lo hace en los dos estados sin que nadie escriba un numero:
+   caben los dos en la fila, van juntos; no caben, la esquina baja sola a la
+   suya. Es la misma decision, tomada por quien puede medir.
+
+   Ya no hace falta `z-index`: fuera del flujo se solapaba con la cara y habia
+   que levantarla por encima. En el flujo no se solapa con nada. */
+/* `order:30` y no 10, que fue el primer numero y estaba mal. La frase de
+   energia lleva `order:20`, asi que con un diez la esquina caia ANTES que ella
+   -- y `margin-left:auto` no la empuja contra el canto sino contra su vecina.
+   Medido en escritorio a 1280: rueda en x=641, o sea en mitad de la fila, con
+   la identidad y la frase montadas encima. Es lo que el Soberano vio.
+
+   Treinta es «la ultima pase lo que pase». No es una coordenada: es una
+   POSICION EN LA COLA, y por eso no hay que volver a tocarla cuando entre otra
+   pieza en el cabezal -- entrara delante, que es donde debe. */
+.cab-esquina{display:flex;align-items:center;gap:.4rem;
+  flex:0 0 auto;margin-left:auto;order:30}
+
+.cab-esquina #identity{flex:0 0 auto;width:auto;margin:0;min-width:0}

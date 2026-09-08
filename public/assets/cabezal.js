@@ -160,10 +160,30 @@
      sitio segun si has entrado es un mando que hay que buscar dos veces»: con
      sesion el perfil se ensancha --nombre y huella-- y si estuviera fuera
      empujaria a la rueda contra el borde y luego fuera de el. */
+  /* SE REORDENA SIEMPRE, no solo si vienen de fuera. La guarda que habia aqui
+     --«solo si su padre no es la esquina»-- hacia que los dos caminos
+     terminaran en ORDENES DISTINTOS, y solo se ve midiendo las dos clases de
+     pagina a la vez:
+
+       · en la PORTADA las dos piezas ya existen en el marcado, se mueven, y
+         se movian en el orden bueno: identidad y despues rueda.
+       · en las INTERIORES las crea este mismo fichero, y las crea al reves --
+         la rueda sale del bloque del panel de ajustes, que va antes que el de
+         la identidad.
+
+     Medido a 1280: en `index` la rueda en 965..1005 con la cuenta a su
+     izquierda; en `benchmark` la rueda en 1053..1093 y la cuenta en
+     1099..1135, o sea la rueda POR DENTRO. El mando que debe estar en la
+     esquina dependia de por que puerta habia entrado.
+
+     `appendChild` sobre un hijo que ya esta dentro lo MUEVE al final, asi que
+     sin guarda las dos ramas convergen: identidad primero, rueda al canto,
+     venga de donde venga. Un orden que se declara una vez no puede tener dos
+     versiones. */
   var identYa = document.getElementById('identity');
-  if (identYa && identYa.parentNode !== esquina) esquina.appendChild(identYa);
+  if (identYa) esquina.appendChild(identYa);
   var ruedaYa = document.getElementById('rueda');
-  if (ruedaYa && ruedaYa.parentNode !== esquina) esquina.appendChild(ruedaYa);
+  if (ruedaYa) esquina.appendChild(ruedaYa);
 
   /* --- LA FIRMA BAJA AL PIE (2026-09-08) -----------------------------------
      GitHub y LinkedIn NO son mandos. Dicen QUIEN FIRMA ESTO, que es

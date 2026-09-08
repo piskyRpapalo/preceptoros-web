@@ -123,7 +123,12 @@ const rutas = await shell.keys();
 // que la portada y no queda quien lo cargue. Entran dos y sale uno: 109.
 // Se comprobo pidiendo los ficheros, no leyendo el codigo -- un primer intento
 // lo borro con tres paginas todavia usandolo.
-ok('precachea paginas y piezas del Hub', rutas.length === 109, rutas.length+' rutas');
+// 110 desde el 2026-09-08 (segunda vez el mismo dia): entra `esquina-par.css`,
+// la pareja de mandos del cabezal. Se partio de `esquina-cuenta.css` al llegar
+// esa hoja al tope, y tiene hoja propia por cuenta de CICATRICES mas que por
+// bytes: los dos botones han estado mal seis veces en dos dias, siempre por
+// una regla que sobrevivio a la mudanza de la pieza que colocaba.
+ok('precachea paginas y piezas del Hub', rutas.length === 110, rutas.length+' rutas');
 ok('el shell trae las tres tiras de la cara',
    ['apertura', 'reposo', 'habla']
      .every(s => rutas.includes('/assets/caras/secuencia-' + s + '-256.webp')));

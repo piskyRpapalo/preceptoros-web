@@ -1745,6 +1745,34 @@ class Cabezal(unittest.TestCase):
         self.assertTrue(any("margin-left:auto" in r for r in reglas),
                         "la esquina no se pega al canto derecho")
 
+        # --- Y NADIE LIMITA A LOS DOS MANDOS CON UN PORCENTAJE -------------
+        # Esta es la prueba que faltaba en las SEIS veces que estos dos botones
+        # han estado mal en dos dias. Siempre la misma clase de fallo y nunca
+        # el mismo numero: una regla que sobrevivio a la mudanza de la pieza
+        # que colocaba o limitaba.
+        #
+        # La sexta fue `#cabezal #identity{max-width:calc(100% - 8rem)}`. Se
+        # escribio cuando la identidad colgaba de `.cab-fila`: ese `100%` era
+        # el ancho de la fila. Al mudarse a `.cab-esquina` paso a ser el ancho
+        # de la ESQUINA --78 px sin sesion-- y la cuenta da 78 menos 128, o sea
+        # negativo, que el navegador clava en CERO. Y una caja de ancho cero no
+        # desaparece: su hijo se DESBORDA. Medido a 1280: `#identity` en
+        # 959..959 con su icono de 36 px pintandose encima de la rueda, que
+        # empieza en 965.
+        #
+        # UN PORCENTAJE ES RELATIVO A UN PADRE. Cambiar de padre cambia lo que
+        # la regla significa sin cambiar una letra, y eso no se ve leyendo el
+        # diff. Asi que aqui se prohibe: dentro de la esquina se coloca con
+        # caja, orden y anclaje -- cosas que siguen significando lo mismo se
+        # mueva lo que se mueva.
+        for prop in ("max-width:calc(100%", "width:calc(100%"):
+            self.assertNotIn(prop, esq[esq.find("#cabezal#identity"):
+                                       esq.find("#cabezal#identity") + 400]
+                             if "#cabezal#identity" in esq else "",
+                             "la cuenta vuelve a limitarse con un porcentaje "
+                             "del padre: al mudarla, ese padre cambia y la cota "
+                             "se vuelve negativa sin que nadie lo note")
+
         # Y NINGUN `order` SUELTO SOBRE LA IDENTIDAD en la maqueta de movil. El
         # orden dentro de la esquina lo pone el marcado --identidad y despues
         # rueda, para que la rueda tome el canto en los dos estados-- y un
