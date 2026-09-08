@@ -21,7 +21,6 @@
    "generacion": 16.79,
    "carga_s": 4.9,
    "firmado": false,
-   "logo": "/assets/logos-models/preceptor.svg",
    "lang": "auto",
    "atajos": [
     "simple",
@@ -40,7 +39,6 @@
    "generacion": 16.45,
    "carga_s": 2.2,
    "firmado": false,
-   "logo": "/assets/logos-models/preceptor.svg",
    "lang": "auto",
    "atajos": [
     "simple",
@@ -58,7 +56,6 @@
    "generacion": 16.36,
    "carga_s": 2.5,
    "firmado": false,
-   "logo": "/assets/logos-models/preceptor.svg",
    "lang": "auto",
    "atajos": [
     "mi_lengua",
@@ -76,7 +73,6 @@
    "generacion": 33.29,
    "carga_s": 2.8,
    "firmado": false,
-   "logo": "/assets/logos-models/preceptor.svg",
    "lang": "auto",
    "atajos": [
     "no_data",
@@ -93,7 +89,6 @@
    "generacion": 31.78,
    "carga_s": 16.1,
    "firmado": false,
-   "logo": "/assets/logos-models/qwen.svg",
    "lang": "auto",
    "atajos": [
     "codigo",
@@ -110,7 +105,6 @@
    "generacion": 16.75,
    "carga_s": 3.8,
    "firmado": false,
-   "logo": "/assets/logos-models/mistral.svg",
    "lang": "auto",
    "atajos": [
     "sin_adornos",

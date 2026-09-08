@@ -1,86 +1,46 @@
-# Descargas de LoRAtelier · adaptadores LoRA firmados
+# Descargas · adaptadores LoRA de PreceptorOS
 
-Aquí viven los adaptadores que el LoRAtelier publica. Cada uno es un fichero
-GGUF que se cuelga de un modelo base y le cambia la conducta — no es un modelo
-entero, así que pesa decenas de megas y no gigas.
+**Los pesos NO se descargan de esta carpeta.** Estan ignorados por git, asi que
+`preceptoros.org/downloads/<fichero>.gguf` responde **404** — medido. Esta
+carpeta es el area de preparacion: aqui se copian, se les calcula el hash y de
+aqui se suben. Lo que si viaja a la web publica son los `.sha256`, que son el
+dato y pesan 65 bytes.
 
-**Ninguno se ofrece sin su hash.** Si un fichero aparece aquí sin su `sha256`
-publicado al lado, no lo instales: sin hash no hay forma de comprobar que lo que
-bajaste es lo que se firmó.
+**Se descargan del release de GitHub**, que es el unico canal que existe hoy:
 
----
+    https://github.com/piskyRpapalo/PreceptorOS/releases/download/v1.3/<fichero>
 
-## Qué hay
+## Lo que hay ahora mismo, contado del disco
 
-### The Tribune — `preceptor-tribune-en-v1.gguf` · `preceptor-tribune-multi-v1.gguf`
-Atiende reclamaciones sin las trampas de los bots corporativos: no inventa
-políticas, no te devuelve a la misma cola, y escala a una persona con referencia
-y plazo. **No te dará nunca un plazo legal de memoria** — te dice el canal y te
-manda a confirmarlo en la fuente oficial, porque los plazos cambian por país y
-equivocarse ahí puede costarte la reclamación.
+| fichero | tamano | sha256 |
+|---|---|---|
+| `preceptor-charla-base-v1.gguf` | 27.3 MB | `d953b6c4b3ee236c…` |
+| `preceptor-charla-base-v2.gguf` | 27.3 MB | `ec477f58886e9f9b…` |
+| `preceptor-charla-multi-v1.gguf` | 27.3 MB | `d0e7234252a8d0b9…` |
+| `preceptor-tribune-en-v1.gguf` | 54.5 MB | `ff4f89b8cbcdb243…` |
+| `preceptor-tribune-multi-v1.gguf` | 54.5 MB | `90879b40733debf0…` |
 
-Dos versiones, entrenadas sobre el mismo reparto de casos:
-- `en` — corpus entero en inglés
-- `multi` — el mismo corpus repartido en seis lenguas (es, en, pt, fr, it, el)
+## Como comprobar lo que te has bajado
 
-- Base: `mistral:7b-instruct-v0.3-q4_K_M` · 4,4 GB · Apache 2.0
-- Necesitas: 8 GB de RAM
+    sha256sum -c <fichero>.sha256
 
-El tribuno de la plebe existía para interponerse entre un ciudadano corriente y
-un magistrado que le hacía daño. De ahí el nombre.
+El hash del release y el de esta carpeta son el mismo: se comprobo al subirlos.
+Un peso sin hash no se puede verificar, y por eso los dos viajan juntos.
 
----
+## Que es cada uno
 
-## Cómo comprobar que el fichero es el que dice ser
+- **`preceptor-charla-base-v1`** — la linea *bienvenida*. Mistral 7B v0.3 con
+  150 conversaciones escritas a mano. Habla mas corto y reconoce a quien ya
+  instalo. Su fallo conocido, dicho por su propia ficha: **se inventa cifras
+  con mucha seguridad**. Por eso la linea esta en `beta` y no en `disponible`.
+- **`preceptor-charla-base-v2`** — la misma linea con 100 pasos en vez de 300.
+  Esta para comparar cuanto aporta seguir entrenando.
+- **`preceptor-charla-multi-v1`** — la misma en siete lenguas. Con quince
+  muestras por lengua, **fuera del castellano se le desarma la gramatica**.
+  Esta para que se vea, no porque este lista.
+- **`preceptor-tribune-en-v1`** y **`-multi-v1`** — la linea *reclamaciones*,
+  200 muestras en dos datasets comparativos (100 EN, 100 multilingue).
 
-```
-sha256sum preceptor-tribune-en-v1.gguf
-```
-
-Compara la salida con el hash publicado en la ficha del bloque, en el
-LoRAtelier. Si no coincide **exactamente**, borra el fichero. Un hash que no
-cuadra no es un aviso: es un fichero distinto del que se firmó.
-
-## Cómo instalarlo en Ollama
-
-Necesitas el modelo base primero:
-
-```
-ollama pull mistral:7b-instruct-v0.3-q4_K_M
-```
-
-Luego un `Modelfile` de dos líneas, junto al `.gguf` que has bajado:
-
-```
-FROM mistral:7b-instruct-v0.3-q4_K_M
-ADAPTER ./preceptor-tribune-en-v1.gguf
-```
-
-Y se ensambla:
-
-```
-ollama create mi-tribuno -f Modelfile
-ollama run mi-tribuno
-```
-
-El nombre que le pongas es tuyo. Usa un tag explícito y nunca `:latest`: los
-tags pelados apuntan a lo que haya ese día, y lo que haya cambia.
-
-## Lo que este README anunciaba y no estaba
-
-Hasta el 2026-09-06 esta página listaba **The Herald** (`preceptor-herald-v1.gguf`)
-en primer lugar. Ese fichero no está en esta carpeta y no lo ha estado nunca: era
-una ficha escrita antes que su artefacto. Se retira, porque un catálogo que
-anuncia lo que no tiene enseña a desconfiar del que sí tiene.
-
-Lo que hay aquí es lo que hay en el disco, y se comprueba mirando la carpeta.
-
-## Dónde está el resto
-
-La ficha de cada adaptador —qué mide, qué le falta, qué puedes aportar— vive en
-el **LoRAtelier**, en la página de Benchmark de este mismo sitio.
-
-## Contacto
-
-Para escalar algo que este README no resuelve: `davidpecero@gmail.com`
-(temporal, hasta que el dominio esté activo).
+Todos parten de `mistral:7b-instruct-v0.3` (Apache 2.0) y se entrenaron en CPU
+en el nodo `soberano`, sin GPU. Las medidas de cada uno viven en
+`preceptor-lora/adapters/<nombre>/medida.json`.

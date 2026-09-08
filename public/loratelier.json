@@ -5,7 +5,7 @@
  "nota": "El registro del taller: los HECHOS de cada linea, sin una palabra de prosa. El texto vive en taller-<idioma>.json, uno por lengua, porque meterlo aqui sacaria del tope a ruso y griego -- la misma razon por la que el Hub saco los suyos a hub-textos.json. Añadir una linea de investigacion es añadir un registro a `bloques`; el render no se toca. · 2026-09-06: `reclamaciones` baja de `beta` a `en_entrenamiento` y su `artefacto` vuelve a null. El GGUF pesa 55 MB y Cloudflare Pages corta en 25 MB por fichero, asi que /downloads/preceptor-tribune-en-v1.gguf devolvia 404 en produccion mientras su .sha256 devolvia 200 -- se publicaba el hash de un fichero que no se podia bajar. El fichero existe y esta medido; lo que no existe es alojamiento que sirva 55 MB. Hoy vive en nginx del nodo soberano, puerto 8081, sin nombre publico. Vuelve a `artefacto` cuando lo haya, no antes: sin artefacto no hay boton.",
  "contrato": {
   "quien_escribe": "el Soberano a mano, o el enjambre cuando publique un artefacto; la web solo lee",
-  "estados": "en_estudio · en_entrenamiento · disponible · vision · NO_DATA",
+  "estados": "en_estudio · en_entrenamiento · beta · disponible · vision · NO_DATA",
   "sin_artefacto_no_hay_boton": "un bloque sin `artefacto` y sin `hash` NO pinta descarga. Hoy no hay ninguno publicado, asi que el taller nace sin descargas: es lo que hara creible el primer boton.",
   "medias": "`medidas.n` viaja SIEMPRE. Con n=0 se pinta el hueco, nunca un cero ni una barra vacia: fingir actividad en un taller vacio es la mentira mas vieja de internet.",
   "contrato_formal": "data/loratelier_schema.json · fuera de public/ a proposito: es el contrato, no se sirve"
@@ -13,11 +13,15 @@
  "bloques": [
   {
    "id": "bienvenida",
-   "estado": "en_entrenamiento",
+   "estado": "beta",
    "orden": 1,
    "modelo_base": "mistral:7b-instruct-v0.3-q4_K_M",
    "requisitos_hw": "8 GB de RAM, Q4 · o servido desde el rack",
-   "artefacto": null,
+   "artefacto": {
+    "url_descarga": "https://github.com/piskyRpapalo/PreceptorOS/releases/download/v1.3/preceptor-charla-base-v1.gguf",
+    "sha256_hash": "d953b6c4b3ee236c2bb1c1225174630fd0270b0fd5f468f5e1eeb9c380ee3a39",
+    "version": "v1"
+   },
    "ficha": {
     "familia": "Mistral",
     "licencia": "Apache 2.0",
@@ -161,11 +165,15 @@
   },
   {
    "id": "reclamaciones",
-   "estado": "en_entrenamiento",
+   "estado": "beta",
    "orden": 2,
    "modelo_base": "mistral:7b-instruct-v0.3-q4_K_M",
    "requisitos_hw": "8 GB de RAM, Q4",
-   "artefacto": null,
+   "artefacto": {
+    "url_descarga": "https://github.com/piskyRpapalo/PreceptorOS/releases/download/v1.3/preceptor-tribune-multi-v1.gguf",
+    "sha256_hash": "90879b40733debf002eb53a1487cd25b15ffcd1a05f065aef4ac12d38c021db1",
+    "version": "multi-v1"
+   },
    "ficha": {
     "familia": "Mistral",
     "licencia": "Apache 2.0",

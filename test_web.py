@@ -1514,6 +1514,30 @@ class Hub(unittest.TestCase):
                     set(), usados - set(paises),
                     f"{f.name} no nombra {sorted(usados - set(paises))}")
 
+    def test_las_tarjetas_no_traen_logos_de_empresa(self):
+        """Firmado el 2026-09-08: solo bandera, sin logo.
+
+        Lo que habia no eran logos de empresa sino tres dibujos de linea de la
+        casa --el de Mistral era una silueta de montanas-- puestos como
+        marcador. Un logo PARECIDO al oficial es peor que ninguno: le dice a
+        quien lo reconoce que aqui se copia de memoria, en un sitio que se
+        vende por no hacer eso. Y traerlos de un CDN choca con la promesa de
+        cero peticiones externas.
+
+        El gate mira las tres capas, porque quitarlo de una sola deja el resto
+        como ruina que la proxima sesion resucita sin saber por que estaba.
+        """
+        js = (PUBLICO / "assets" / "selector-modelo.js").read_text(encoding="utf-8")
+        self.assertNotIn("cerebro-logo", js, "el render sigue pintando logo")
+        css = (PUBLICO / "assets" / "nubes.css").read_text(encoding="utf-8")
+        self.assertNotIn("cerebro-logo", css, "queda regla de logo en el css")
+        reg = json.loads((PUBLICO / "cerebros.json").read_text(encoding="utf-8"))
+        for c in reg["cerebros"]:
+            with self.subTest(cerebro=c["id"]):
+                self.assertNotIn("logo", c, "el registro sigue declarando logo")
+        self.assertFalse((PUBLICO / "assets" / "logos-models").exists(),
+                         "los ficheros de logo siguen en disco")
+
     def test_el_selector_de_la_portada_filtra_por_puerta(self):
         """El filtro vive en el render, y sin el la marca no hace nada.
 

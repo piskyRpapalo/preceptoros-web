@@ -104,20 +104,16 @@
          se pinta igual con su tag y sus cifras: los hechos no dependen de que
          alguien haya traducido nada. */
       var t = prosa[c.id] || {};
-      /* El logo va en <img> y no inline: son tres ficheros de 250 B que el
-         worker ya cachea, y meterlos en el JS los repetiria seis veces. El
-         `alt` va VACIO a proposito -- el nombre esta al lado en texto, y un
-         lector de pantalla que diga «logo de Mistral, Mistral» dice dos veces
-         lo mismo. Si el fichero falta, `onerror` lo retira y la tarjeta sigue
-         entera: un hueco roto es peor que ningun dibujo. */
+      /* SIN LOGO (2026-09-08, decision del Soberano). Lo que habia no eran
+         logos de empresa: eran tres dibujos de linea de la casa --el de
+         Mistral era una silueta de montañas-- puestos como marcador. Un logo
+         parecido al oficial es peor que ninguno: dice al que lo reconoce que
+         aqui se copia de memoria. Y traerlos de un CDN esta descartado por la
+         promesa de cero peticiones externas.
+
+         Queda la bandera, que hace mejor el trabajo que el logo hacia mal:
+         identifica de donde sale el modelo sin fingir una marca. */
       var cab = el('div', 'cerebro-cab');
-      if (c.logo) {
-        var img = document.createElement('img');
-        img.className = 'cerebro-logo'; img.src = c.logo; img.alt = '';
-        img.width = 22; img.height = 22; img.loading = 'lazy';
-        img.onerror = function () { img.remove(); };
-        cab.appendChild(img);
-      }
       /* LA BANDERA DEL ORIGEN, al lado del logo (2026-09-08). Dice de donde
          sale el MODELO BASE, no el adaptador: los tres `charla-*` llevan LoRA
          entrenado aqui y aun asi ondean la francesa, porque el modelo del que
@@ -231,13 +227,6 @@
 
     var izq = el('div', 'ficha-datos');
     var cab = el('div', 'cerebro-cab');
-    if (c.logo) {
-      var img = document.createElement('img');
-      img.className = 'cerebro-logo'; img.src = c.logo; img.alt = '';
-      img.width = 22; img.height = 22;
-      img.onerror = function () { img.remove(); };
-      cab.appendChild(img);
-    }
     cab.appendChild(el('h3', 'ficha-nombre', t.nombre || c.id));
     if (c.recomendado) cab.appendChild(el('span', 'cerebro-marca', w[4]));
     izq.appendChild(cab);
