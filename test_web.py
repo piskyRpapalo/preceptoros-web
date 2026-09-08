@@ -1481,6 +1481,39 @@ class Hub(unittest.TestCase):
             {"charla-web", "charla-base"}, set(puerta),
             "los de puerta son el que instala y el que habla")
 
+    def test_cada_cerebro_declara_su_pais_y_la_bandera_existe(self):
+        """Una bandera que falta no falla: `onerror` la retira y no se ve.
+
+        Ese es el problema. La tarjeta sale entera, nadie ve un error, y el
+        dibujo desaparece sin que nadie se entere -- la misma familia que el
+        `<use>` a un simbolo inexistente del Ojo. Por eso el fichero se
+        comprueba en disco y no se confia al navegador.
+
+        El pais es el del MODELO BASE, no el del adaptador: los tres `charla-*`
+        llevan LoRA entrenado aqui y ondean la francesa igual, porque el modelo
+        del que partimos es de Mistral. Ponerles la nuestra seria apropiarnos de
+        lo que no hicimos.
+        """
+        reg = json.loads((PUBLICO / "cerebros.json").read_text(encoding="utf-8"))
+        usados = set()
+        for c in reg["cerebros"]:
+            with self.subTest(cerebro=c["id"]):
+                self.assertIn("pais", c, f"{c['id']} no declara pais")
+                bandera = PUBLICO / "assets" / "banderas" / f"{c['pais']}.svg"
+                self.assertTrue(
+                    bandera.is_file(),
+                    f"{c['id']} ondea `{c['pais']}` y no hay {bandera.name}")
+                usados.add(c["pais"])
+
+        # El NOMBRE del pais va por lengua: un `alt` en castellano en la
+        # portada rusa es exactamente lo que este repo lleva meses corrigiendo.
+        for f in sorted(PUBLICO.glob("cerebros-*.json")):
+            paises = json.loads(f.read_text(encoding="utf-8")).get("paises", {})
+            with self.subTest(lengua=f.name):
+                self.assertEqual(
+                    set(), usados - set(paises),
+                    f"{f.name} no nombra {sorted(usados - set(paises))}")
+
     def test_el_selector_de_la_portada_filtra_por_puerta(self):
         """El filtro vive en el render, y sin el la marca no hace nada.
 

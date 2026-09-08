@@ -68,6 +68,7 @@
 
   function pintar(reg, w, lang, tx) {
     var prosa = (tx && tx.cerebros) || {};
+    var paises = (tx && tx.paises) || {};
     REG = reg; PROSA = prosa;
     var host = document.getElementById('especificaciones');
     if (!host || document.getElementById('cerebros')) return;
@@ -116,6 +117,30 @@
         img.width = 22; img.height = 22; img.loading = 'lazy';
         img.onerror = function () { img.remove(); };
         cab.appendChild(img);
+      }
+      /* LA BANDERA DEL ORIGEN, al lado del logo (2026-09-08). Dice de donde
+         sale el MODELO BASE, no el adaptador: los tres `charla-*` llevan LoRA
+         entrenado aqui y aun asi ondean la francesa, porque el modelo del que
+         partimos es de Mistral. Poner la nuestra seria apropiarnos de lo que
+         no hicimos, y este sitio se vende justo por no hacer eso.
+
+         Va en color y los logos son linea monocroma: es desviacion consciente
+         del estilo de al lado, porque una bandera sin color no es una bandera.
+
+         EL NOMBRE DEL PAIS SALE DE LA LENGUA, nunca del codigo: `paises` vive
+         en `cerebros-<lang>.json`. Escribir «Francia» aqui lo dejaria en
+         castellano en las ocho portadas. Si la lengua no trae el nombre, se
+         pinta la bandera sin rotulo antes que un codigo de dos letras que no
+         significa nada para quien mira. */
+      if (c.pais) {
+        var f = document.createElement('img');
+        f.className = 'cerebro-bandera';
+        f.src = '/assets/banderas/' + c.pais + '.svg';
+        f.width = 21; f.height = 14; f.loading = 'lazy';
+        var pn = (paises && paises[c.pais]) || '';
+        f.alt = pn; if (pn) f.title = pn;
+        f.onerror = function () { f.remove(); };
+        cab.appendChild(f);
       }
       cab.appendChild(el('h3', null, t.nombre || c.id));
       if (c.recomendado) cab.appendChild(el('span', 'cerebro-marca', w[4]));

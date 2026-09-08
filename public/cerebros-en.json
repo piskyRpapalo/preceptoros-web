@@ -116,5 +116,10 @@
    },
    "lore": "The uncut stone. Everything the others know about you and about this house, we put there. Here you see what was underneath. Knowing which part is ours is the first way of not depending on us."
   }
+ },
+ "paises": {
+  "fr": "France",
+  "us": "United States",
+  "cn": "China"
  }
 }

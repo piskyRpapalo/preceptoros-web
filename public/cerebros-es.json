@@ -116,5 +116,10 @@
    },
    "lore": "La piedra sin tallar. Todo lo que los otros saben de ti y de esta casa se lo pusimos nosotros encima; aquí ves lo que había antes. Saber qué parte es nuestra es la primera forma de no depender de nosotros."
   }
+ },
+ "paises": {
+  "fr": "Francia",
+  "us": "Estados Unidos",
+  "cn": "China"
  }
 }
