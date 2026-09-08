@@ -46,9 +46,22 @@
   }
 
   /* --- los rotulos, de donde los haya ---------------------------------------- */
+  /* SE COMPRUEBA LA CLAVE, NO EL BLOQUE. Aqui se preguntaba solo si existe
+     `#i18n`, y eso basto mientras el unico sitio con bloque era la portada. Al
+     estrenar el cabezal en las interiores salio a la luz: `community` y
+     `benchmark` TIENEN bloque --con sus propias claves, las de su tablon y su
+     tabla-- y ninguno de los dos trae `cabHome`. Con la comprobacion vieja se
+     daba por bueno y las cuatro puertas salian vacias: cuatro pastillas sin
+     una letra dentro. Se vio en el navegador, no en el gate.
+
+     La pregunta correcta no es «hay bloque» sino «hay ROTULO». Un bloque i18n
+     no promete estas claves; solo las de su pagina. */
   var bloque = document.getElementById('i18n');
   if (bloque) {
-    try { vestir(JSON.parse(bloque.textContent)); return; } catch (err) { /* sigue */ }
+    try {
+      var T = JSON.parse(bloque.textContent);
+      if (T && T.cabHome) { vestir(T); return; }
+    } catch (err) { /* sigue al catalogo */ }
   }
   fetch('/nav.json', { cache: 'no-store' })
     .then(function (r) { return r.json(); })

@@ -16,6 +16,11 @@
 <link rel="stylesheet" href="/assets/widget.css">
 <link rel="stylesheet" href="/assets/cara.css">
 <link rel="stylesheet" href="/assets/puertas.css">
+<link rel="stylesheet" href="/assets/cabezal.css">
+<link rel="stylesheet" href="/assets/esquina.css">
+<link rel="stylesheet" href="/assets/esquina-cuenta.css">
+<link rel="stylesheet" href="/assets/mandos.css">
+<link rel="stylesheet" href="/assets/panel.css">
 <link rel="stylesheet" href="/assets/taller.css">
 <link rel="stylesheet" href="/assets/tema.css">
 <link rel="manifest" href="/manifest.webmanifest">
@@ -25,12 +30,8 @@
 <canvas id="ambient" aria-hidden="true"></canvas>
 <main>
 
-<header>
-  <div class="presentacion"><div class="esfera" role="img" aria-label="Preceptor"></div></div>
-  <div class="marca">
-    <h1>LoRAtelier benchmark's<b> · das Prüfbuch</b></h1>
-    <p><a href="/de/">Start</a> · <a href="/de/community.html">Gemeinschaft</a> · <a href="/de/instalar.html">Installieren</a></p>
-  </div>
+<header id="cabezal" data-cabezal="benchmark">
+  <div class="marca"><h1>LoRAtelier benchmark's<b> · das Prüfbuch</b></h1></div>
 </header>
 
 <p class="guia">Welches Modell wie schnell läuft, auf welcher Maschine, und wer es gemessen hat. Jede Zeile ist eine signierte Zeile mit dem sha256 der Modelldatei darin: ohne diesen Hash identifiziert «llama-3.2-3b» gar nichts.</p>
@@ -169,7 +170,9 @@
 <script src="/assets/copiar.js"></script>
 
 <script src="/assets/taller.js"></script>
-<script src="/assets/nav.js"></script>
+<script src="/assets/cabezal.js"></script>
+<script src="/assets/auth.js"></script>
+<script src="/assets/cabezal-rotulos.js"></script>
 <script src="/assets/pwa.js"></script>
 </body>
 </html>

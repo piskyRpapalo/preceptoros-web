@@ -114,7 +114,16 @@ const rutas = await shell.keys();
 // `esquina.css` que se partio por asunto al llegar la hoja al tope. El
 // numero se sube A MANO a proposito -- si se calculara del propio fichero
 // no vigilaria nada: una ruta que se cuela sin querer pasaria igual.
-ok('precachea paginas y piezas del Hub', rutas.length === 108, rutas.length+' rutas');
+// 110 desde el 2026-09-08: entran `cabezal.js` y `cabezal-rotulos.js`, que son
+// el cabezal comun que estrenan hoy las veinticuatro paginas interiores. Sin
+// ellos en el shell, la segunda visita sin red monta el mueble y se queda SIN
+// ROTULOS: cuatro puertas en blanco, que es peor que no tener puertas.
+// Y `nav.js` NO se va con ellos aunque las tres paginas grandes ya no lo
+// carguen: `onboarding`, `playground` y `profile` --tres por ocho lenguas--
+// siguen montando su cabecera con el. Se retirara cuando esas veinticuatro
+// migren tambien; borrarlo hoy las dejaba sin navegacion, y se comprobo
+// pidiendolo, no leyendolo.
+ok('precachea paginas y piezas del Hub', rutas.length === 110, rutas.length+' rutas');
 ok('el shell trae las tres tiras de la cara',
    ['apertura', 'reposo', 'habla']
      .every(s => rutas.includes('/assets/caras/secuencia-' + s + '-256.webp')));

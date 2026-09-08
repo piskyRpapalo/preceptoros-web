@@ -16,6 +16,11 @@
 <link rel="stylesheet" href="/assets/widget.css">
 <link rel="stylesheet" href="/assets/cara.css">
 <link rel="stylesheet" href="/assets/puertas.css">
+<link rel="stylesheet" href="/assets/cabezal.css">
+<link rel="stylesheet" href="/assets/esquina.css">
+<link rel="stylesheet" href="/assets/esquina-cuenta.css">
+<link rel="stylesheet" href="/assets/mandos.css">
+<link rel="stylesheet" href="/assets/panel.css">
 <link rel="stylesheet" href="/assets/taller.css">
 <link rel="stylesheet" href="/assets/tema.css">
 <link rel="manifest" href="/manifest.webmanifest">
@@ -25,12 +30,8 @@
 <canvas id="ambient" aria-hidden="true"></canvas>
 <main>
 
-<header>
-  <div class="presentacion"><div class="esfera" role="img" aria-label="Preceptor"></div></div>
-  <div class="marca">
-    <h1>LoRAtelier benchmark's<b> · il Libro delle Prove</b></h1>
-    <p><a href="/it/">Home</a> · <a href="/it/community.html">Comunità</a> · <a href="/it/instalar.html">Installa</a></p>
-  </div>
+<header id="cabezal" data-cabezal="benchmark">
+  <div class="marca"><h1>LoRAtelier benchmark's<b> · il Libro delle Prove</b></h1></div>
 </header>
 
 <p class="guia">Quale modello va a quanto, su quale macchina, e chi l'ha misurato. Ogni riga è una riga firmata con dentro lo sha256 del file del modello: senza quell'hash, «llama-3.2-3b» non identifica nulla.</p>
@@ -169,7 +170,9 @@
 <script src="/assets/copiar.js"></script>
 
 <script src="/assets/taller.js"></script>
-<script src="/assets/nav.js"></script>
+<script src="/assets/cabezal.js"></script>
+<script src="/assets/auth.js"></script>
+<script src="/assets/cabezal-rotulos.js"></script>
 <script src="/assets/pwa.js"></script>
 </body>
 </html>

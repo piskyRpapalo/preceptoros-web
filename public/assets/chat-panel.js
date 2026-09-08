@@ -105,56 +105,15 @@
   if (caja.children.length) caja.hidden = false;
 })();
 
-/* --- Capa 3 · quien abre los desplegables ----------------------------------
- * EL BOTON SE ATA AL ARRANCAR, y por eso vive aqui y no en `chat-router.js`:
- * alli el enganche cuelga de `listo()`, que espera al catalogo, y hasta
- * entonces el desplegable no tenia quien lo abriera. Con el rail daba igual
- * --se tocaba directamente--; uno plegado no se puede tocar. Y este fichero es
- * el de «donde se colocan los mandos». Nace CERRADO aunque la clase
- * este en el marcado: `hub.js` lo reescribe al pintar. */
-(function () {
-  /* Los DOS mandos del cabezal con el mismo mecanismo: companeros y rueda. Se
-     generaliza en vez de copiarse -- dos bucles iguales divergen en cuanto uno
-     gana una condicion. Y abrir uno cierra el otro: caen en el mismo sitio y
-     superpuestos no se leeria ninguno. */
-  /* QUEDA UN SOLO PAR. Eran dos --Herramientas y la rueda-- y el primero se
-     retiro el 2026-09-05: sus nubes bajaron al cuadro de especificaciones y el
-     mando se quedo sin nada que abrir. El bucle se conserva aunque hoy de una
-     sola vuelta: generalizarlo costo escribirlo una vez, y volver a
-     particularizarlo para un solo caso es trabajo que habria que deshacer el
-     dia que entre el segundo desplegable. */
-  var pares = [['rueda', 'panel-ajustes']]
-    .map(function (par) {
-      return { b: document.getElementById(par[0]), p: document.getElementById(par[1]) };
-    }).filter(function (x) { return x.b && x.p; });
-  if (!pares.length) return;
-  pares.forEach(function (uno) { montar(uno, pares); });
-})();
-
-function montar(uno, todos) {
-  var boton = uno.b, panel = uno.p;
-
-  function pinta() {
-    boton.setAttribute('aria-expanded',
-      panel.classList.contains('cerrado') ? 'false' : 'true');
-  }
-  function cierra() { panel.classList.add('cerrado'); pinta(); }
-
-  cierra();
-  boton.addEventListener('click', function () {
-    var abrir = panel.classList.contains('cerrado');
-    todos.forEach(function (o) { o.p.classList.add('cerrado'); o.b.setAttribute('aria-expanded', 'false'); });
-    if (abrir) panel.classList.remove('cerrado');
-    pinta();
-  });
-  /* Escape cierra: un panel que cae sobre el chat y solo se cierra volviendo al
-     boton obliga a cruzar la pantalla para recuperar lo de abajo. */
-  document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape' && !panel.classList.contains('cerrado')) cierra();
-  });
-  // Elegir companero cierra: ya se hizo lo que se vino a hacer.
-  document.addEventListener('preceptor:companero', cierra);
-}
+/* --- LA CAPA 3 SE MUDO A `cabezal.js` (2026-09-08) ------------------------
+ * Aqui vivia quien ata la rueda a su desplegable. Se va con el resto del
+ * cabezal, y por un motivo concreto: las paginas interiores estrenan HOY el
+ * mismo cabezal que la portada, y no cargan este fichero -- ni deben, que va
+ * lleno de chat. Con el mando aqui, la rueda de esas veinticuatro paginas
+ * seria un boton que no abre nada.
+ *
+ * Un mando pertenece al mueble donde vive, no al fichero que primero tuvo
+ * sitio para el. */
 
 /* La PIEL --el interruptor claro/oscuro de la rueda-- vive en `hub-cola.js`.
  * No cabia aqui: este fichero llego a su techo de 10.240 B con los cuatro

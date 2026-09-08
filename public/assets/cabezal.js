@@ -203,6 +203,57 @@
     p.appendChild(e); cab.appendChild(p);
   }
 
+  /* --- QUIEN ABRE LA RUEDA (llego de `chat-panel.js` el 2026-09-08) -------
+     El mando pertenece al mueble donde vive, no al fichero que primero tuvo
+     sitio para el. Estaba en `chat-panel.js` --que va lleno de chat y que las
+     paginas interiores no cargan ni deben cargar-- y con el cabezal comun
+     estrenandose hoy en esas veinticuatro paginas, la rueda habria sido alli
+     un boton que no abre nada.
+
+     NACE CERRADO aunque el marcado traiga la clase: quien lo pinta puede
+     haberla reescrito, y el estado que vale es el que se declara aqui, junto
+     al `aria-expanded` que lo acompana. Un panel abierto cuyo boton dice
+     `false` es peor que uno cerrado.
+
+     EL BUCLE SE CONSERVA con un solo par. Eran dos --Herramientas y la rueda--
+     y el primero se retiro el 2026-09-05. Generalizarlo costo escribirlo una
+     vez; volver a particularizarlo seria trabajo que habria que deshacer el
+     dia que entre el segundo desplegable. */
+  var pares = [['rueda', 'panel-ajustes']]
+    .map(function (par) {
+      return { b: document.getElementById(par[0]), p: document.getElementById(par[1]) };
+    }).filter(function (x) { return x.b && x.p; });
+  pares.forEach(function (uno) { montarMando(uno, pares); });
+
+  function montarMando(uno, todos) {
+    var boton = uno.b, panel = uno.p;
+
+    function pinta() {
+      boton.setAttribute('aria-expanded',
+        panel.classList.contains('cerrado') ? 'false' : 'true');
+    }
+    function cierra() { panel.classList.add('cerrado'); pinta(); }
+
+    cierra();
+    boton.addEventListener('click', function () {
+      var abrir = panel.classList.contains('cerrado');
+      todos.forEach(function (o) {
+        o.p.classList.add('cerrado');
+        o.b.setAttribute('aria-expanded', 'false');
+      });
+      if (abrir) panel.classList.remove('cerrado');
+      pinta();
+    });
+    /* Escape cierra: un panel que cae sobre la pagina y solo se cierra
+       volviendo al boton obliga a cruzar la pantalla para recuperar lo de
+       abajo. */
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && !panel.classList.contains('cerrado')) cierra();
+    });
+    // Elegir companero cierra: ya se hizo lo que se vino a hacer.
+    document.addEventListener('preceptor:companero', cierra);
+  }
+
   /* LO QUE EL CABEZAL DICE --las cuatro puertas, los idiomas de la rueda, la
      frase de energia-- vive en `cabezal-rotulos.js` desde el 2026-09-08. Este
      fichero llego a 16.580 B de un tope de 16.384 y se parte por asunto, que
