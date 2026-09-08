@@ -918,6 +918,32 @@ class Doctrina(unittest.TestCase):
                 for ip in re.findall(r"\b(?:\d{1,3}\.){3}\d{1,3}\b", sin_dibujos):
                     self.assertEqual(ip, "127.0.0.1", f"IP incrustada en {p}: {ip}")
 
+    def test_una_pagina_no_mezcla_rutas_absolutas_y_relativas(self):
+        """Dos estilos de ruta en el mismo `<head>` es una averia latente.
+
+        Encontrado el 2026-09-08 mirando por que se caen los enlaces en Chrome:
+        `es/instalar.html` traia `../assets/base.css` en la linea 9 y
+        `/assets/canon.css` en la 12. Las dos funcionan servidas desde la raiz
+        del dominio, asi que nada fallaba y nadie lo vio -- y ese es justo el
+        problema: el dia que el sitio se sirva bajo una subruta o se abra como
+        fichero, una mitad de la hoja de estilos cargara y la otra no. Media
+        pagina rota se diagnostica peor que una pagina rota entera.
+
+        Lo que se exige NO es un estilo concreto --esa decision es del Soberano
+        y esta apuntada como deuda 39-- sino que una misma pagina no use los
+        dos. La coherencia se puede exigir hoy; la eleccion, no.
+        """
+        for pagina in sorted(PUBLICO.rglob("*.html")):
+            html = pagina.read_text(encoding="utf-8")
+            absolutas = re.findall(r'(?:href|src)="(/assets/[^"]+)"', html)
+            relativas = re.findall(r'(?:href|src)="(\.\.?/assets/[^"]+)"', html)
+            with self.subTest(pagina=str(pagina.relative_to(PUBLICO))):
+                self.assertFalse(
+                    absolutas and relativas,
+                    f"{pagina.name} mezcla {len(absolutas)} rutas absolutas "
+                    f"con {len(relativas)} relativas hacia assets/: "
+                    f"{relativas[:2]}")
+
     def test_lo_que_el_modelo_devuelve_pasa_por_el_filtro(self):
         """El bloque de estado se vio DENTRO de la conversacion, en el telefono.
 
