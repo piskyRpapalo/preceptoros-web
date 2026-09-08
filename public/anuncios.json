@@ -1,8 +1,8 @@
 {
  "esquema": 1,
  "estado": "OFICIAL",
- "nota": "Los anuncios del Soberano. Son REALES, y por eso viven aparte de threads.json, que es EJEMPLO. Mezclarlos en una sola lista haria imposible saber cual es cual, que es justo lo que este fichero existe para evitar. Cada anuncio dice tambien lo que HOY no funciona: un anuncio que promete un canal que no responde es publicidad, no un anuncio.",
- "medido": "2026-09-02",
+ "nota": "Los anuncios del Soberano. Son REALES, y por eso viven aparte de threads.json, que es EJEMPLO. Mezclarlos en una sola lista haria imposible saber cual es cual, que es justo lo que este fichero existe para evitar. Cada anuncio dice tambien lo que HOY no funciona: un anuncio que promete un canal que no responde es publicidad, no un anuncio.  ACTUALIZADO 2026-09-08: el aviso del anuncio de feedback decia que el Agora daba 404 en /api/v1/threads, medido el 2026-08-30. Ya no: la lectura responde 200. Lo que sigue cerrado es la ESCRITURA (405), asi que el aviso no se borra -- se corrige. Borrarlo habria prometido que un hilo firmado viaja, y no viaja. El aviso del anuncio de entrenar NO se toca: se comprobaron cinco rutas de subida y las cinco dan 404, asi que sigue siendo verdad.",
+ "medido": "2026-09-08",
  "anuncios": [
   {
    "id": "feedback",
@@ -15,7 +15,7 @@
      "cuerpo": "Qué se rompió, qué no entendiste, qué esperabas encontrar y no estaba. Sirve más una frase concreta que un elogio.",
      "publico": "Público: firma un hilo aquí abajo. Se firma con tu clave, en tu aparato.",
      "privado": "Privado: abre un issue en el repositorio público. Es el único canal que hoy llega de verdad.",
-     "pero": "NO_DATA — un hilo firmado aquí todavía no viaja a ningún sitio: el Ágora responde 404 en /api/v1/threads (medido el 2026-08-30). Se firma y se queda en tu aparato hasta que ese extremo exista.",
+     "pero": "NO_DATA — el Ágora ya contesta, pero todavía no acepta escritura: POST /api/v1/threads responde 405, y el servidor lo dice con sus palabras: «escritura cerrada: el Ágora todavía no modera» (medido el 2026-09-08). Se firma y se queda en tu aparato hasta que abra.",
      "enlaceTexto": "Abrir un issue"
     },
     "en": {
@@ -23,7 +23,7 @@
      "cuerpo": "What broke, what you did not understand, what you expected to find and was not there. One concrete sentence beats any praise.",
      "publico": "Public: sign a thread below. It is signed with your key, on your device.",
      "privado": "Private: open an issue on the public repository. It is the only channel that actually arrives today.",
-     "pero": "NO_DATA — a thread signed here does not travel anywhere yet: the Agora answers 404 on /api/v1/threads (measured 2026-08-30). It is signed and stays on your device until that end exists.",
+     "pero": "NO_DATA — the Agora answers now, but it does not accept writing yet: POST /api/v1/threads returns 405, and the server says so in its own words: «writing closed: the Agora does not moderate yet» (measured 2026-09-08). It is signed and stays on your device until it opens.",
      "enlaceTexto": "Open an issue"
     },
     "fr": {
@@ -31,7 +31,7 @@
      "cuerpo": "Ce qui a cassé, ce que tu n'as pas compris, ce que tu t'attendais à trouver et qui n'y était pas. Une phrase concrète vaut mieux qu'un compliment.",
      "publico": "Public : signe un fil ci-dessous. Il est signé avec ta clé, sur ton appareil.",
      "privado": "Privé : ouvre une issue sur le dépôt public. C'est le seul canal qui arrive vraiment aujourd'hui.",
-     "pero": "NO_DATA — un fil signé ici ne voyage encore nulle part : l'Agora répond 404 sur /api/v1/threads (mesuré le 2026-08-30). Il est signé et reste sur ton appareil jusqu'à ce que cette extrémité existe.",
+     "pero": "NO_DATA — l'Agora répond désormais, mais elle n'accepte pas encore l'écriture : POST /api/v1/threads renvoie 405, et le serveur le dit lui-même : « écriture fermée : l'Agora ne modère pas encore » (mesuré le 2026-09-08). Il est signé et reste sur ton appareil jusqu'à l'ouverture.",
      "enlaceTexto": "Ouvrir une issue"
     },
     "pt": {
@@ -39,7 +39,7 @@
      "cuerpo": "O que se partiu, o que não percebeste, o que esperavas encontrar e não estava. Serve mais uma frase concreta do que um elogio.",
      "publico": "Público: assina um tópico aqui em baixo. Assina-se com a tua chave, no teu aparelho.",
      "privado": "Privado: abre um issue no repositório público. É o único canal que hoje chega a sério.",
-     "pero": "NO_DATA — um tópico assinado aqui ainda não viaja para lado nenhum: a Ágora responde 404 em /api/v1/threads (medido a 2026-08-30). Assina-se e fica no teu aparelho até que esse extremo exista.",
+     "pero": "NO_DATA — a Ágora já responde, mas ainda não aceita escrita: POST /api/v1/threads devolve 405, e o próprio servidor di-lo: «escrita fechada: a Ágora ainda não modera» (medido a 2026-09-08). Assina-se e fica no teu aparelho até que abra.",
      "enlaceTexto": "Abrir um issue"
     },
     "it": {
@@ -47,7 +47,7 @@
      "cuerpo": "Cosa si è rotto, cosa non hai capito, cosa ti aspettavi di trovare e non c'era. Serve più una frase concreta di un elogio.",
      "publico": "Pubblico: firma una discussione qui sotto. Si firma con la tua chiave, sul tuo apparecchio.",
      "privado": "Privato: apri un issue nel repository pubblico. È l'unico canale che oggi arriva davvero.",
-     "pero": "NO_DATA — una discussione firmata qui non viaggia ancora da nessuna parte: l'Agorà risponde 404 su /api/v1/threads (misurato il 2026-08-30). Si firma e resta sul tuo apparecchio finché quell'endpoint non esisterà.",
+     "pero": "NO_DATA — l'Agorà ora risponde, ma non accetta ancora la scrittura: POST /api/v1/threads restituisce 405, e il server lo dice da sé: «scrittura chiusa: l'Agorà non modera ancora» (misurato il 2026-09-08). Si firma e resta sul tuo apparecchio finché non apre.",
      "enlaceTexto": "Apri un issue"
     },
     "de": {
@@ -55,7 +55,7 @@
      "cuerpo": "Was kaputtging, was du nicht verstanden hast, was du erwartet hast und nicht da war. Ein konkreter Satz nützt mehr als ein Lob.",
      "publico": "Öffentlich: signiere hier unten einen Beitrag. Signiert wird mit deinem Schlüssel, auf deinem Gerät.",
      "privado": "Privat: öffne ein Issue im öffentlichen Repository. Das ist heute der einzige Kanal, der wirklich ankommt.",
-     "pero": "NO_DATA — ein hier signierter Beitrag reist noch nirgendwohin: die Agora antwortet 404 auf /api/v1/threads (gemessen am 2026-08-30). Er wird signiert und bleibt auf deinem Gerät, bis dieser Endpunkt existiert.",
+     "pero": "NO_DATA — die Agora antwortet inzwischen, akzeptiert aber noch keine Schreibzugriffe: POST /api/v1/threads liefert 405, und der Server sagt es selbst: «Schreiben geschlossen: die Agora moderiert noch nicht» (gemessen am 2026-09-08). Er wird signiert und bleibt auf deinem Gerät, bis sie öffnet.",
      "enlaceTexto": "Ein Issue öffnen"
     },
     "ru": {
@@ -63,7 +63,7 @@
      "cuerpo": "Что сломалось, что ты не понял, что рассчитывал найти и не нашёл. Одна конкретная фраза полезнее похвалы.",
      "publico": "Публично: подпиши ветку здесь ниже. Подписывается твоим ключом, на твоём устройстве.",
      "privado": "Приватно: открой issue в публичном репозитории. Сегодня это единственный канал, который действительно доходит.",
-     "pero": "NO_DATA — подписанная здесь ветка пока никуда не уходит: Агора отвечает 404 на /api/v1/threads (измерено 2026-08-30). Она подписывается и остаётся на твоём устройстве, пока эта точка не появится.",
+     "pero": "NO_DATA — Агора уже отвечает, но пока не принимает запись: POST /api/v1/threads возвращает 405, и сервер говорит это сам: «запись закрыта: Агора ещё не модерирует» (измерено 2026-09-08). Она подписывается и остаётся на твоём устройстве, пока не откроется.",
      "enlaceTexto": "Открыть issue"
     },
     "el": {
@@ -71,7 +71,7 @@
      "cuerpo": "Τι χάλασε, τι δεν κατάλαβες, τι περίμενες να βρεις και δεν ήταν εκεί. Μια συγκεκριμένη φράση αξίζει περισσότερο από έναν έπαινο.",
      "publico": "Δημόσια: υπόγραψε ένα νήμα εδώ κάτω. Υπογράφεται με το κλειδί σου, στη συσκευή σου.",
      "privado": "Ιδιωτικά: άνοιξε ένα issue στο δημόσιο αποθετήριο. Είναι το μόνο κανάλι που σήμερα φτάνει πραγματικά.",
-     "pero": "NO_DATA — ένα νήμα υπογεγραμμένο εδώ δεν ταξιδεύει ακόμη πουθενά: η Αγορά απαντά 404 στο /api/v1/threads (μετρήθηκε στις 2026-08-30). Υπογράφεται και μένει στη συσκευή σου ώσπου να υπάρξει αυτό το σημείο.",
+     "pero": "NO_DATA — η Αγορά απαντά πλέον, αλλά δεν δέχεται ακόμη εγγραφή: το POST /api/v1/threads επιστρέφει 405, και ο ίδιος ο διακομιστής το λέει: «η εγγραφή είναι κλειστή: η Αγορά δεν συντονίζει ακόμη» (μετρήθηκε 2026-09-08). Υπογράφεται και παραμένει στη συσκευή σου μέχρι να ανοίξει.",
      "enlaceTexto": "Άνοιξε ένα issue"
     }
    },
