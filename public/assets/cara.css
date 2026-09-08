@@ -37,7 +37,7 @@
    llega. La web ya tenia los eventos; le faltaba la cara.
 
    155 px es la medida de la app (`--cara-centro`), no una elegida aqui. */
-:root{--esfera:220px;--anim-habla-esfera:.864s;--anim-pensar:1.6s}
+:root{--esfera:176px;--anim-habla-esfera:.864s;--anim-pensar:1.6s}
 /* ARRIBA A LA DERECHA, Y A CABALLO ENTRE LAS DOS CAJAS. La esfera cuelga de
    `<main>` --lo unico que contiene al cabezal y al chat a la vez-- y se sienta
    sobre la juntura: nace dentro del cabezal y termina dentro del chat. Por eso
@@ -119,7 +119,7 @@
    por debajo de la fila de la marca en vez de a su altura. El nombre no se
    parte y la cara no pierde tamano: se mueve, que era lo que sobraba. */
 @media (max-width:1023px){
-  :root{--esfera:136px}
+  :root{--esfera:109px}
   /* ABAJO A LA DERECHA DEL CABEZAL, y hace falta soltar el `top` para que
      ocurra. `bottom:0` a solas no movia nada: con `top` y `bottom` puestos a
      la vez sobre una caja de altura fija, manda el `top`, asi que la esfera
@@ -152,7 +152,7 @@
    una esfera de 220 la desbordaria por arriba. Se redefine la variable EN el
    contenedor --no en cada `.esfera`-- para que la animacion, el borde y la
    respiracion sigan siendo exactamente los mismos. */
-header:not(#cabezal){--esfera:132px;position:relative;
+header:not(#cabezal){--esfera:106px;position:relative;
   padding-right:calc(var(--esfera) + .8rem);
   min-height:calc(var(--esfera) * .72)}
 /* Anclada por abajo, como en el telefono y por el mismo motivo: la altura de
@@ -176,7 +176,7 @@ header:not(#cabezal) h1{font-size:1.3rem;letter-spacing:.08em}
      cifra es la de la portada estrecha --1,15rem-- y la parte que si se
      conserva de aquella medida es el corte de palabra, que se vuelve a
      comprobar en el navegador a 375 y a 500 px cada vez que esto se toca. */
-  header:not(#cabezal){--esfera:88px}
+  header:not(#cabezal){--esfera:70px}
   header:not(#cabezal) h1{font-size:1.15rem}
 }
 
@@ -224,4 +224,36 @@ header:not(#cabezal) h1{font-size:1.3rem;letter-spacing:.08em}
    quita la animacion dejandola quieta en pantalla: se le quita la cortina. */
 @media (prefers-reduced-motion:reduce){
   .telon{display:none}
+}
+
+/* UN 20 % MENOS EN LOS CUATRO TAMAÑOS (2026-09-08, decision del Soberano):
+   220->176, 136->109, 88->70 y 96->77 con el teclado. Se baja el TOKEN y no
+   cada uso, que es para lo que el token existe: un solo sitio y los cuatro
+   escalones se mueven juntos sin que ninguno se quede atras.
+   ---------------------------------------------------------------------
+   LA ESFERA NO PISA LA CONVERSACION · movil, firmado el 2026-09-08.
+   El Soberano lo fotografio: con el teclado abierto la cara se monta sobre el
+   dialogo y el texto no se puede leer. No es un adorno mal puesto -- es que a
+   220 px (136 en pantallas medias) ocupa media columna, y con el teclado
+   comiendose media pantalla lo que queda de conversacion cabe justo donde
+   ella esta.
+
+   El remedio es el que esta casa YA aplico a las herramientas por el mismo
+   motivo --«el teclado se come media pantalla y lo que tapa es la
+   conversacion»--: con el teclado abierto se retira. No se hace transparente
+   ni se encoge un poco: leer es lo unico que importa en ese momento, y media
+   cara translucida encima del texto se lee peor que ninguna.
+
+   Fuera del teclado se queda, mas pequeña: en un telefono 136 px siguen siendo
+   un tercio del ancho. Vuelve entera en cuanto el teclado se cierra, sin que
+   nadie toque nada.
+
+   VIVE EN `cara.css` Y NO EN `movil.css` porque este fichero es el dueño del
+   token `--esfera` y ademas carga DESPUES: la misma regla puesta alli perdia
+   contra el `@media (max-width:1023px)` de aqui, con igual especificidad y
+   menos orden. Medido en el navegador: seguia dando 136 px. */
+@media (max-width:768px){
+  :root{--esfera:70px}
+  body.con-teclado .presentacion,
+  body.con-teclado .esfera{display:none}
 }

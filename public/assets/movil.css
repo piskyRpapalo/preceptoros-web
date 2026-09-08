@@ -52,3 +52,25 @@
   #chat,#cabezal{border-left-width:0;border-right-width:0;border-radius:0}
   .honest-footer{border-left-width:0;border-right-width:0;border-radius:0}
 }
+
+/* EL ANCLA DE LA ZONA DE ESCRIBIR · SOLO EN MOVIL, firmado el 2026-09-08.
+   Aqui hubo una banda oscura hasta el 2026-09-05 y se retiro concluyendo que
+   «el problema no era que se viera a traves, era que no habia sitio». Lo del
+   sitio era cierto y su arreglo se queda. Lo otro NO: el Soberano lo fotografio
+   con el teclado abierto y la barra de escribir se lee ENCIMA de la tarjeta de
+   un cerebro, con su texto atravesandola. `.chat-abajo` es `sticky` y no tenia
+   fondo, asi que lo que scrollea por debajo se ve a traves.
+
+   Asi que la banda no vuelve: vuelve un ANCLA, y son cosas distintas. Fondo del
+   panel --que ya gira con el tema, sin escribir dos reglas-- y un filo dorado
+   arriba al 30 %, lo justo para que la barra tenga borde y deje de flotar.
+
+   Y SOLO POR DEBAJO DE 768 px. En escritorio no se pinta ni un pixel: alli la
+   conversacion no compite con un teclado que se come media pantalla, y una
+   banda ahi si estorbaria la vision del chat. */
+@media (max-width:768px){
+  .chat-abajo{background:var(--panel-bg);
+    border-top:1px solid rgba(242,208,138,.3);
+    padding:.55rem .35rem calc(.35rem + env(safe-area-inset-bottom)) .35rem;
+    margin-left:-.35rem;margin-right:-.35rem}
+}

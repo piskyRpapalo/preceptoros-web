@@ -19,7 +19,8 @@
    "pwaBoton": "Instalar esta web",
    "appBoton": "Última versión de la app",
    "pwaManual": "Se instala como una aplicación y funciona sin red. Si tu navegador no ofrece el botón, hazlo a mano: en Android, menú ⋮ → «Instalar aplicación»; en iPhone, Compartir → «Añadir a pantalla de inicio».",
-   "appVacio": "La descarga está pausada durante 48 horas por decisión del Soberano. El botón se enciende solo cuando el contador llegue a cero."
+   "appVacio": "La descarga está pausada durante 48 horas por decisión del Soberano. El botón se enciende solo cuando el contador llegue a cero.",
+   "appNoDisponible": "no disponible"
   },
   "en": {
    "pwaTitulo": "The site, installed",
@@ -36,7 +37,8 @@
    "pwaBoton": "Install this site",
    "appBoton": "Latest app version",
    "pwaManual": "It installs as an app and works offline. If your browser does not offer the button, do it by hand: on Android, menu ⋮ → «Install app»; on iPhone, Share → «Add to Home Screen».",
-   "appVacio": "The download is paused for 48 hours by the Sovereign's decision. The button switches itself on when the counter reaches zero."
+   "appVacio": "The download is paused for 48 hours by the Sovereign's decision. The button switches itself on when the counter reaches zero.",
+   "appNoDisponible": "not available"
   },
   "fr": {
    "pwaTitulo": "Le site, installé",
@@ -53,7 +55,8 @@
    "pwaBoton": "Installer ce site",
    "appBoton": "Dernière version de l'app",
    "pwaManual": "Il s'installe comme une application et fonctionne hors ligne. Si votre navigateur ne propose pas le bouton, faites-le à la main : sur Android, menu ⋮ → « Installer l'application » ; sur iPhone, Partager → « Sur l'écran d'accueil ».",
-   "appVacio": "Le téléchargement est en pause pendant 48 heures, par décision du Souverain. Le bouton s'allume tout seul quand le compteur arrive à zéro."
+   "appVacio": "Le téléchargement est en pause pendant 48 heures, par décision du Souverain. Le bouton s'allume tout seul quand le compteur arrive à zéro.",
+   "appNoDisponible": "indisponible"
   },
   "pt": {
    "pwaTitulo": "O site, instalado",
@@ -70,7 +73,8 @@
    "pwaBoton": "Instalar este site",
    "appBoton": "Última versão da app",
    "pwaManual": "Instala-se como aplicação e funciona sem rede. Se o teu navegador não oferecer o botão, fá-lo à mão: no Android, menu ⋮ → «Instalar aplicação»; no iPhone, Partilhar → «Adicionar ao ecrã principal».",
-   "appVacio": "A descarga está pausada durante 48 horas por decisão do Soberano. O botão acende sozinho quando o contador chegar a zero."
+   "appVacio": "A descarga está pausada durante 48 horas por decisão do Soberano. O botão acende sozinho quando o contador chegar a zero.",
+   "appNoDisponible": "não disponível"
   },
   "it": {
    "pwaTitulo": "Il sito, installato",
@@ -87,7 +91,8 @@
    "pwaBoton": "Installa questo sito",
    "appBoton": "Ultima versione dell'app",
    "pwaManual": "Si installa come applicazione e funziona senza rete. Se il tuo browser non offre il pulsante, fallo a mano: su Android, menu ⋮ → «Installa app»; su iPhone, Condividi → «Aggiungi a Home».",
-   "appVacio": "Il download è in pausa per 48 ore per decisione del Sovrano. Il pulsante si accende da solo quando il contatore arriva a zero."
+   "appVacio": "Il download è in pausa per 48 ore per decisione del Sovrano. Il pulsante si accende da solo quando il contatore arriva a zero.",
+   "appNoDisponible": "non disponibile"
   },
   "de": {
    "pwaTitulo": "Die Seite, installiert",
@@ -104,7 +109,8 @@
    "pwaBoton": "Diese Seite installieren",
    "appBoton": "Neueste Version der App",
    "pwaManual": "Sie installiert sich als Anwendung und funktioniert ohne Netz. Bietet dein Browser den Knopf nicht an, mach es von Hand: unter Android Menü ⋮ → «App installieren»; auf dem iPhone Teilen → «Zum Home-Bildschirm».",
-   "appVacio": "Der Download pausiert 48 Stunden, auf Entscheidung des Souveräns. Der Knopf geht von selbst an, wenn der Zähler null erreicht."
+   "appVacio": "Der Download pausiert 48 Stunden, auf Entscheidung des Souveräns. Der Knopf geht von selbst an, wenn der Zähler null erreicht.",
+   "appNoDisponible": "nicht verfügbar"
   },
   "ru": {
    "pwaTitulo": "Сайт, установленный",
@@ -121,7 +127,8 @@
    "pwaBoton": "Установить этот сайт",
    "appBoton": "Последняя версия приложения",
    "pwaManual": "Ставится как приложение и работает без сети. Если твой браузер не предлагает кнопку, сделай это вручную: на Android — меню ⋮ → «Установить приложение»; на iPhone — «Поделиться» → «На экран Домой».",
-   "appVacio": "Загрузка приостановлена на 48 часов решением Суверена. Кнопка включится сама, когда счётчик дойдёт до нуля."
+   "appVacio": "Загрузка приостановлена на 48 часов решением Суверена. Кнопка включится сама, когда счётчик дойдёт до нуля.",
+   "appNoDisponible": "недоступно"
   },
   "el": {
    "pwaTitulo": "Ο ιστότοπος, εγκατεστημένος",
@@ -138,13 +145,14 @@
    "pwaBoton": "Εγκατάσταση αυτού του ιστότοπου",
    "appBoton": "Τελευταία έκδοση της εφαρμογής",
    "pwaManual": "Εγκαθίσταται ως εφαρμογή και δουλεύει χωρίς δίκτυο. Αν ο περιηγητής σου δεν προσφέρει το κουμπί, κάν᾽ το με το χέρι: σε Android, μενού ⋮ → «Εγκατάσταση εφαρμογής»· σε iPhone, Κοινή χρήση → «Στην αρχική οθόνη».",
-   "appVacio": "Η λήψη είναι σε παύση για 48 ώρες, με απόφαση του Κυρίαρχου. Το κουμπί ανάβει μόνο του όταν ο μετρητής φτάσει στο μηδέν."
+   "appVacio": "Η λήψη είναι σε παύση για 48 ώρες, με απόφαση του Κυρίαρχου. Το κουμπί ανάβει μόνο του όταν ο μετρητής φτάσει στο μηδέν.",
+   "appNoDisponible": "μη διαθέσιμο"
   }
  },
  "releases": "https://github.com/piskyRpapalo/PreceptorOS/releases/latest",
  "pausa_descarga": {
-  "hasta": "2026-09-09T20:01:13Z",
-  "por_que": "Decision del Soberano: la distribucion de la app se para 48 horas. El boton no desaparece --eso seria borrar la promesa en vez de aplazarla-- sino que se apaga y ENSEÑA cuanto falta. Un visitante que ve un contador sabe que hay algo detras y cuando; uno que ve un hueco no sabe si el proyecto sigue vivo.",
+  "hasta": "2026-09-13T10:00:00Z",
+  "por_que": "Decision del Soberano: la app no se suelta hasta el domingo. El boton no desaparece --eso seria borrar la promesa en vez de aplazarla-- pero TAMPOCO cuenta ya las horas: el contador era para verlo funcionar y a un visitante le mete prisa por algo que no ha pedido. Se apaga y dice «no disponible», que es lo que hay.",
   "cuando_pase": "El boton se enciende SOLO. No hay que tocar nada: la fecha es el interruptor, y por eso vive aqui como un hecho y no cocida en el codigo."
  }
 }

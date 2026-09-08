@@ -107,6 +107,35 @@
        respaldo. `benchmark` tiene campo y no tiene atajos, asi que sin el
        respaldo esta caja no se pintaria alli -- y la casilla de consentimiento
        no puede depender de que una pagina tenga sugerencias. */
+    /* UNA VEZ DECIDIDO, SE VA DE LA PLACA Y VIVE EN LA RUEDA (2026-09-08,
+       decision del Soberano). En un telefono esta casilla ocupa dos lineas
+       encima del campo de escribir, y las ocupa PARA SIEMPRE aunque ya la
+       hayas contestado: preguntar dos veces lo mismo no es cuidado, es ruido.
+
+       Se mira si HAY decision guardada --da igual si fue si o no--, no si esta
+       marcada. Un `no` es una respuesta tan valida como un `si`, y esconder
+       solo los `si` dejaria la casilla puesta justo a quien ya dijo que no.
+
+       No se pierde: se mueve al panel de ajustes, que es donde se cambia de
+       opinion. Y si ese panel no existe en esta pagina, la caja se queda donde
+       estaba -- retirarla sin sitio adonde ir seria borrar el control. */
+    var decidido = false;
+    try { decidido = localStorage.getItem('preceptor-consiento') !== null; }
+    catch (e) { /* navegador sin almacen: se pinta como siempre */ }
+    var rueda = decidido && document.getElementById('panel-ajustes');
+    if (rueda) { caja.classList.add('consiento-en-rueda'); rueda.appendChild(caja); return; }
+
+    /* EL OYENTE ES PROPIO Y NO UN PARCHE en el que ya guardaba. Se probo al
+       reves --meter la mudanza dentro de aquel-- y no corrio: hay mas de un
+       sitio que escribe la decision, y el que se parcheo no era el que se
+       dispara. Un oyente aparte no depende de cual gane. */
+    cb.addEventListener('change', function () {
+      var r = document.getElementById('panel-ajustes');
+      if (r && caja.parentNode !== r) {
+        caja.classList.add('consiento-en-rueda'); r.appendChild(caja);
+      }
+    });
+
     var atajos = document.getElementById('atajos');
     var ancla = (atajos && atajos.parentNode) ? atajos : campo.closest('.panel');
     if (ancla && ancla.parentNode) ancla.parentNode.insertBefore(caja, ancla.nextSibling);

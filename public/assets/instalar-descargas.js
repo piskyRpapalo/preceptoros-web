@@ -119,17 +119,17 @@
         if (pausado) {
           ba = el('button', 'boton', T.appBoton);
           ba.type = 'button'; ba.disabled = true;
-          var cuenta = el('span', 'app-cuenta', '');
-          var tic = function () {
-            var falta = hasta - Date.now();
-            if (falta <= 0) { location.reload(); return; }
-            var h = Math.floor(falta / 3600000);
-            var m = Math.floor((falta % 3600000) / 60000);
-            cuenta.textContent = h + 'h ' + String(m).padStart(2, '0') + 'm';
-          };
-          tic(); setInterval(tic, 30000);
+          /* SIN CUENTA ATRAS (2026-09-08, decision del Soberano). El contador
+             estaba para verlo funcionar, y a un visitante le mete prisa por
+             algo que no ha pedido: «47h 12m» invita a volver con reloj en vez
+             de a leer lo que hay. Se dice «no disponible» y ya.
+
+             La fecha sigue mandando --se lee de `pausa_descarga.hasta`-- asi
+             que el boton se enciende SOLO el dia que toca, sin que nadie
+             vuelva a tocar nada. Lo que se retira es el ruido, no el
+             mecanismo. */
           ba.appendChild(document.createTextNode(' · '));
-          ba.appendChild(cuenta);
+          ba.appendChild(el('span', 'app-cuenta', T.appNoDisponible));
         } else {
           ba = el('a', 'boton', T.appBoton);
           ba.href = d.releases; ba.rel = 'noopener';

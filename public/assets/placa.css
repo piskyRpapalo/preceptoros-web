@@ -112,6 +112,7 @@
    El `z-index` se va con el: sin posicion no pinta nada, y un numero que no
    hace nada es una pista falsa para quien lea esto manana. */
 .chat-abajo{padding-top:.8rem;margin-top:auto}
+
 /* La banda oscura que hubo aqui hasta el 2026-09-05 NO vuelve, y su motivo
    vive ahora entero en la nota de `.chat-abajo` de aqui arriba -- junto con la
    premisa suya que resulto ser falsa. Se cuenta una vez y bien, en lugar de
