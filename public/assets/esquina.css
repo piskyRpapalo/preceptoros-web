@@ -58,6 +58,23 @@
    las dos cosas se piden juntas y aqui se escriben juntas. */
 #cabezal h1{font-size:1.3rem;letter-spacing:.08em}
 
+/* --- LAS CUATRO PUERTAS, EN FILA EN ESCRITORIO (2026-09-08) ---------------
+   `puertas.css` las apila de DOS EN DOS, y esa medida es del Doogee: en 375 px
+   una fila de cuatro se partia --tres arriba e INSTALAR descolgada-- y de dos
+   en dos siempre entran.
+
+   En 1280 px esa misma rejilla da botones de CUATRO CIENTOS SETENTA Y OCHO
+   pixeles cada uno. Medido, y es lo que el Soberano fotografio: dos barras que
+   cruzan la pantalla entera para decir una palabra. Un boton del ancho de un
+   parrafo no se lee como un boton.
+
+   Son CUATRO puertas: en una pantalla ancha van en fila, que es su forma
+   natural y la que ya tienen en la cabeza quien ha visto cualquier sitio web.
+   La rejilla de dos se queda donde nacio -- en el telefono, donde la midieron. */
+@media (min-width:1024px){
+  #cab-nav{grid-template-columns:repeat(4,1fr)}
+}
+
 /* LAS CUATRO PUERTAS, A SU MINIMA EXPRESION. Pedido asi: «hacer los iconos de
    home, loratelier, community e install a la expresion minima de tamano seria
    una ayuda para organizar el espacio». Son navegacion secundaria -- se usan
@@ -226,42 +243,10 @@
   #cabezal #panel-ajustes{right:.45rem;left:auto}
 }
 
-/* --- LA ESQUINA ES UNA PIEZA, Y AQUI SOLO SE ANCLA -------------------------
-   AQUI VIVIAN SEIS REGLAS colocando la rueda y el perfil a mano, con su `top`
-   y su `right` propios, en TRES franjas de anchura: <430, 430-1023 y
-   escritorio. Y ademas una franja entera --«entre el telefono y el
-   escritorio»-- que existia solo para juntarlos otra vez a partir de 430,
-   porque por debajo se separaban.
+/* LA ESQUINA COMO PIEZA --la caja que lleva dentro la rueda y el perfil-- se
+   mudo a `esquina-cuenta.css` el 2026-09-08, cuando esta hoja llego a 16.737 B
+   de un tope de 16.384. Se parte por asunto y no se recortan comentarios: aqui
+   queda la maqueta del cabezal en escritorio, alli la esquina y la cuenta, que
+   es lo que su nombre ya decia. Aquella carga DESPUES, asi que sus reglas
+   corrigen a estas si algun dia coinciden. */
 
-   Se van las seis. Los dos mandos viven ahora dentro de `.cab-esquina`, que
-   los pone en fila y se ancla ella: su distancia dejo de ser una cuenta y paso
-   a ser estructura. Una consulta de medios ya no puede separarlos, porque no
-   hay dos cosas que colocar.
-
-   LO QUE ESTO ARREGLA, medido a 375 px antes de tocarlo: rueda en 315,27 y
-   perfil en 310,107. Ochenta pixeles y dos renglones para dos gemelos. El
-   comentario que estaba justo aqui decia «los dos dibujos juntos y contra el
-   canto» y llevaba razon la intencion, no el codigo: la rueda paso a
-   `position:absolute` despues de escribirse esa frase y nadie volvio a leerla.
-   Es la tercera vez en este arbol que un comentario sobrevive al codigo que
-   describia; la diferencia es que esta vez se retira la aritmetica que lo
-   permitia.
-
-   Y VA EN EL FLUJO, no absoluta. Absoluta resolvia el caso sin sesion y rompia
-   el otro: al registrarse, la identidad deja de ser un icono de 36 px y pasa a
-   ser una pastilla con nombre y firma --211 px medidos a 375-- y una caja
-   fuera del flujo que se ensancha crece ENCIMA de su vecino. Medido antes de
-   tocar: 69 px de solape sobre «PRECEPTOROS», con la rueda enterrada debajo.
-
-   Corregirlo con un `right` mas grande habria sido la misma aritmetica que
-   este bloque acaba de retirar, girada noventa grados -- y habria vuelto a
-   romperse con el primer nombre largo. En el flujo el reparto lo hace flexbox
-   MIDIENDO, y lo hace en los dos estados sin que nadie escriba un numero:
-   caben los dos en la fila, van juntos; no caben, la esquina baja sola a la
-   suya. Es la misma decision, tomada por quien puede medir.
-
-   Ya no hace falta `z-index`: fuera del flujo se solapaba con la cara y habia
-   que levantarla por encima. En el flujo no se solapa con nada. */
-.cab-esquina{display:flex;align-items:center;gap:.4rem;
-  flex:0 0 auto;margin-left:auto;order:10}
-.cab-esquina #identity{flex:0 0 auto;width:auto;margin:0;min-width:0}

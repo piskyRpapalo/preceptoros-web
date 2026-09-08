@@ -80,6 +80,23 @@
      El orden dentro de la esquina lo pone el marcado, y `cabezal.js` mete
      primero la identidad y despues la rueda. Una regla de colocacion que
      sobrevive a la pieza que colocaba es la tercera de este tipo hoy. */
+  /* LA ESQUINA VA ANTES DE LA FRASE DE ENERGIA, y solo aqui. En escritorio
+     lleva `order:30` --la ultima de una fila que cabe entera, pegada al canto
+     por `margin-left:auto`-- y eso es correcto alli. En el telefono la frase se
+     lleva un renglon entero para ella sola, asi que con treinta la esquina
+     caia DEBAJO: el cabezal pasaba de 161 a 204 px. Medido, y fue la regresion
+     que introdujo el arreglo del escritorio.
+
+     Con diez comparte renglon con la marca, que es donde el Soberano pidio
+     verla: «deben estar en la misma linea». Un solo numero no podia servir a
+     las dos maquetas, y forzarlo habria sido elegir cual de los dos sitios se
+     rompe -- que es exactamente para lo que existe esta hoja.
+
+     `#cabezal .cab-esquina` y no `.cab-esquina` a secas: la regla de treinta
+     vive en `esquina-cuenta.css`, que carga DESPUES de esta. A igual
+     especificidad ganaria ella. Se gana con el id, que no depende del orden de
+     carga -- y asi el dia que alguien mueva un `<link>` esto sigue en pie. */
+  #cabezal .cab-esquina{order:10}
   #cab-nav{order:2}
   /* Centrados no: pegados a la marca. Con el rail comiendo 4,6rem, `auto` a
      los dos lados los empujaba contra el borde y el segundo se salia. */

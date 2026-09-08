@@ -1720,16 +1720,30 @@ class Cabezal(unittest.TestCase):
         # 211-- crece ENCIMA de la marca: 69 px de solape medidos, con la rueda
         # enterrada debajo. En el flujo eso no puede ocurrir, y no hay numero
         # que ajustar.
-        esq = (PUBLICO / "assets" / "esquina.css").read_text(encoding="utf-8")
+        # SE LEE LO QUE LA PORTADA CARGA, no `esquina.css` por su nombre. Esta
+        # linea lo nombraba, y el 2026-09-08 la hoja llego a 16.737 B de un
+        # tope de 16.384: la esquina se mudo a `esquina-cuenta.css` --se parte
+        # por asunto, no se recortan comentarios-- y el gate se puso rojo por
+        # buscar donde ya no estaba, no porque faltara nada. Septima vez con
+        # esta forma exacta en este arbol, y la segunda hoy.
+        esq = maqueta_de_la_portada()
         esq = re.sub(r"/\*.*?\*/", "", esq, flags=re.S).replace(" ", "").replace("\n", "")
-        m = re.search(r"\.cab-esquina\{([^}]*)\}", esq)
-        self.assertIsNotNone(m, "no hay esquina: los dos mandos vuelven a "
+        # TODAS las declaraciones, no la primera. La esquina se declara en dos
+        # sitios a proposito --su caja en `esquina-cuenta.css` y su orden del
+        # telefono en `cabezal.css`, que es la hoja de esa maqueta-- y una
+        # busqueda de la PRIMERA cazaba `order:10` y creia que faltaba el
+        # anclaje. La garantia no es «una regla dice esto»: es «ninguna la saca
+        # del flujo, y alguna la pega al canto».
+        reglas = re.findall(r"\.cab-esquina\{([^}]*)\}", esq)
+        self.assertTrue(reglas, "no hay esquina: los dos mandos vuelven a "
                                 "colocarse a mano")
-        self.assertNotIn("position:absolute", m.group(1),
-                         "la esquina vuelve a estar fuera del flujo: con sesion "
-                         "la identidad se ensancha y crece encima de la marca")
-        self.assertIn("margin-left:auto", m.group(1),
-                      "la esquina no se pega al canto derecho")
+        for r in reglas:
+            self.assertNotIn("position:absolute", r,
+                             "la esquina vuelve a estar fuera del flujo: con "
+                             "sesion la identidad se ensancha y crece encima "
+                             "de la marca")
+        self.assertTrue(any("margin-left:auto" in r for r in reglas),
+                        "la esquina no se pega al canto derecho")
 
         # Y NINGUN `order` SUELTO SOBRE LA IDENTIDAD en la maqueta de movil. El
         # orden dentro de la esquina lo pone el marcado --identidad y despues
