@@ -49,6 +49,13 @@ const entorno = {
     registro.pedidasARed.push(new URL(u,ORIGEN).pathname);
     if (u.includes('/no-existe')) return { ok:false, status:404, clone(){return this} };
     if (entorno.SIN_RED) throw new Error('sin red');
+    /* CLOUDFLARE PAGES REDIRIGE TODO `.html` A SU RUTA SIN EXTENSION (307), y
+       `fetch` sigue el salto: lo que vuelve trae `redirected: true`. Sin esto
+       el arnes no podia ver la averia del 2026-09-08 -- daba 21/21 con el
+       worker roto en produccion. Se modela la red que hay, no la comoda. */
+    if (entorno.REDIRIGE && new URL(u,ORIGEN).pathname.endsWith('.html'))
+      return { ok:true, status:200, statusText:'', redirected:true, headers:{},
+               cuerpo:'red:'+u, blob: async()=>'red:'+u, clone(){ return this } };
     return { ok:true, status:200, cuerpo:'red:'+u, clone(){ return this } };
   },
   caches: {
@@ -195,6 +202,38 @@ await Promise.all(esperas);
 ok('install no deja al worker nuevo esperando a que cierren las pestanas',
    entorno.saltosDeEspera === 1, entorno.saltosDeEspera + ' llamadas a skipWaiting');
 ok('activate borra el cache de la version anterior', !almacen.has('shell-viejo'));
+
+/* LA AVERIA DEL 2026-09-08 · el sitio entero caido en Chrome con ERR_FAILED.
+   Un worker no puede responder a una NAVEGACION con una respuesta que lleve la
+   marca de redirigida: el navegador la rechaza en seco. Como Cloudflare sirve
+   `/es/benchmark.html` con un 307, todo lo precacheado con `.html` llegaba
+   marcado, y solo se salvaban `/` y `/es/` -- las unicas rutas sin extension.
+   Se comprueban los TRES caminos por los que la marca entra o sale, porque
+   arreglar uno solo deja el sitio roto igual. */
+/* La red vuelve: el bloque de arriba la dejo apagada para la pagina sin red,
+   y un precache sin red guarda cero cosas y da un verde vacio. */
+entorno.SIN_RED = false;
+entorno.REDIRIGE = true;
+almacen.clear();
+esperas=[]; entorno.handlers.install({ waitUntil: p => esperas.push(p) });
+await Promise.all(esperas);
+const sh2 = almacen.get([...almacen.keys()].find(k=>k.startsWith('shell-')));
+const guardadas = [...sh2.m.values()];
+ok('el precache no guarda respuestas redirigidas',
+   guardadas.length > 0 && guardadas.every(r => !r.redirected),
+   guardadas.filter(r=>r.redirected).length + ' de ' + guardadas.length + ' marcadas');
+
+const nav = await pedir(ORIGEN+'/es/benchmark.html','navigate');
+ok('la navegacion no devuelve una respuesta redirigida',
+   nav !== 'PASA_DE_LARGO' && !nav.redirected, 'redirected=' + (nav && nav.redirected));
+
+/* Y el refresco por detras, que es el que RE-envenena: aunque se suba la
+   version y se tire el cache viejo, la primera visita volveria a guardar la
+   respuesta marcada si no se limpiara tambien aqui. */
+const sh3 = almacen.get([...almacen.keys()].find(k=>k.startsWith('shell-')));
+ok('el refresco por detras tampoco guarda la marca',
+   [...sh3.m.values()].every(r => !r.redirected));
+entorno.REDIRIGE = false;
 
 let fallos=0;
 for (const [e,n,d] of prueba){ if(e==='FALLA') fallos++; console.log(`${e==='PASA'?'  ok':'FALLA'}  ${n}${d?'  ('+d+')':''}`); }

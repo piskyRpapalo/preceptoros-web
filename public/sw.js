@@ -29,7 +29,7 @@
  * dos motivos -- el techo de 7 paginas del gate, y que un fichero de respaldo
  * tambien puede faltar del cache justo el dia que hace falta.
  */
-const VERSION = 'preceptoros-2026-11-c';
+const VERSION = 'preceptoros-2026-11-d';
 const SHELL = 'shell-' + VERSION;
 const OBRA = 'obra-' + VERSION;
 
@@ -107,11 +107,33 @@ function rutasDelShell() {
   return r;
 }
 
+/* UNA RESPUESTA REDIRIGIDA NO SE PUEDE SERVIR A UNA NAVEGACION, y esa es la
+   averia que tumbo el sitio entero en Chrome el 2026-09-08. Cloudflare Pages
+   sirve `/es/benchmark.html` con un 307 hacia `/es/benchmark`; `fetch` sigue el
+   salto y la respuesta que vuelve trae `redirected: true`. Guardarla y luego
+   devolverla desde el worker es justo lo que el navegador rechaza, y no con un
+   404 sino con un ERR_FAILED seco -- por eso parecia el dominio caido y no una
+   pagina rota. `/` y `/es/` se libraban por no llevar `.html`: son las unicas
+   rutas que no redirigen.
+
+   Se limpia AL ESCRIBIR, que es por donde entra, y se comprueba AL LEER,
+   porque un shell de otra version puede seguir vivo en un telefono que no ha
+   vuelto a instalar. El `.html` se conserva como clave: los enlaces del sitio
+   lo llevan, y una clave sin extension no responderia a su peticion sin red. */
+function sinRedireccion(res) {
+  if (!res || !res.redirected) return Promise.resolve(res);
+  return res.blob().then(b => new Response(b, {
+    status: res.status, statusText: res.statusText, headers: res.headers }));
+}
+
 /* `addAll` es todo-o-nada: una sola ruta que devuelva 404 tumba la instalacion
    entera y el sitio se queda sin PWA por un fichero. Se piden de una en una y
    se tolera la que falte -- un shell incompleto sirve; ninguno, no. */
 function precachear(cache, rutas) {
-  return Promise.all(rutas.map(r => cache.add(r).catch(() => null)));
+  return Promise.all(rutas.map(r => fetch(r)
+    .then(res => res && res.ok ? sinRedireccion(res).then(l => cache.put(r, l))
+                               : null)
+    .catch(() => null)));
 }
 
 /* `skipWaiting` Y `claim`, y hacen falta los dos. Sin el primero un worker
@@ -213,8 +235,11 @@ function paginaSinRed(url) {
    mide el LCP-- y se refresca por detras para la proxima visita. */
 function refrescarDetras(req, cache) {
   return fetch(req).then(res => {
-    if (res && res.ok) cache.put(req, res.clone());
-    return res;
+    if (!res || !res.ok) return res;
+    return sinRedireccion(res).then(limpia => {
+      cache.put(req, limpia.clone());
+      return limpia;
+    });
   });
 }
 
@@ -222,7 +247,7 @@ function navegacion(e) {
   return caches.open(SHELL).then(cache =>
     cache.match(e.request, { ignoreSearch: true }).then(guardada => {
       const red = refrescarDetras(e.request, cache).catch(() => null);
-      if (guardada) return guardada;
+      if (guardada && !guardada.redirected) return guardada;
       return red.then(res => res || paginaSinRed(e.request.url));
     }));
 }
