@@ -58,15 +58,15 @@
    "falta": "Incrociare tre cose gia misurate separatamente: costo locale rispetto a un'API esterna, rischio di allucinazione nei compiti critici, e conformita dei modelli installati.",
    "aportas": "Dimmi cosa chiede il tuo audit e che oggi non sai dimostrare."
   },
-  "acta": {
-   "nombre": "Il Verbale di Revisione",
+  "supervision-humana": {
+   "nombre": "La Sorveglianza Umana",
    "util": "Poter dimostrare che una persona ha guardato una risposta prima che uscisse, e che ciò che ha guardato è esattamente ciò che è uscito.",
    "hoy": "Niente di disegnato ancora. Ciò che esiste è il registro concatenato a cui un verbale deve puntare.",
-   "falta": "Lo schermo diviso: la proposta grezza da un lato, la modifica umana dall'altro, e un pulsante che sigilla. Si chiama VERBALE e non contratto firmato di proposito: oggi sigilla con un'impronta, e un'impronta mostra che il testo non è cambiato, non chi lo ha approvato.",
+   "falta": "Lo schermo diviso: la proposta grezza da un lato, la modifica umana dall'altro, e un pulsante che sigilla. E oggi sigilla con un'impronta, non con una firma: un'impronta mostra che il testo non è cambiato, non chi lo ha approvato. Detto prima di costruirlo, perché è la differenza tra una prova e un ornamento.",
    "aportas": "Dimmi cosa devi dimostrare nel tuo lavoro, e a chi."
   },
-  "barra-tiempo": {
-   "nombre": "La Barra del Tempo",
+  "barra-corte": {
+   "nombre": "La Barra del Taglio",
    "util": "Vedere l'intervallo esatto toccato da ciò che stai per firmare, invece di firmare alla cieca.",
    "hoy": "Il substrato è costruito e testato: la linea di eventi restituisce l'intervallo richiesto, con chi ha fatto ogni cosa.",
    "falta": "Disegnarlo. Quattro zoom — giorno, settimana, mese, anno — e lo sfondo intero, sulle tre superfici. Se l'intervallo non si può disegnare, la linea non era ancora lineare.",

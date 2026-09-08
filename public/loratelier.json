@@ -297,7 +297,7 @@
    }
   },
   {
-   "id": "acta",
+   "id": "supervision-humana",
    "estado": "vision",
    "orden": 6,
    "modelo_base": null,
@@ -312,7 +312,7 @@
     "servido_en_el_rack": null,
     "servido_tamano_q4_gb": null,
     "razonamiento": null,
-    "se_apoya_en": "linea.py en la app, que ya escribe el registro encadenado que un acta necesita para poder apuntar a algo que no se pueda reescribir despues"
+    "se_apoya_en": "el articulo 14 del Reglamento (UE) 2024/1689, que es quien exige esto, y `linea.py` en la app, que ya escribe el registro encadenado al que una validacion tiene que apuntar"
    },
    "medidas": {
     "n": 0,
@@ -328,7 +328,7 @@
    }
   },
   {
-   "id": "barra-tiempo",
+   "id": "barra-corte",
    "estado": "en_estudio",
    "orden": 7,
    "modelo_base": null,

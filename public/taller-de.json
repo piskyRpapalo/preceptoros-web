@@ -58,15 +58,15 @@
    "falta": "Drei bereits getrennt gemessene Dinge kreuzen: lokale Kosten gegenueber einer externen API, Halluzinationsrisiko bei kritischen Aufgaben, und Konformitaet der eingesetzten Modelle.",
    "aportas": "Sag mir, was dein Audit verlangt und du heute nicht belegen kannst."
   },
-  "acta": {
-   "nombre": "Das Prüfprotokoll",
+  "supervision-humana": {
+   "nombre": "Die Menschliche Aufsicht",
    "util": "Belegen können, dass ein Mensch eine Antwort angesehen hat, bevor sie hinausging — und dass das Angesehene genau das Hinausgegangene ist.",
    "hoy": "Noch nichts gezeichnet. Vorhanden ist das verkettete Protokoll, auf das ein Prüfprotokoll zeigen muss.",
-   "falta": "Der geteilte Bildschirm: links der rohe Vorschlag, rechts die menschliche Bearbeitung, und ein Knopf, der siegelt. Es heißt PROTOKOLL und nicht unterzeichneter Vertrag, mit Absicht: heute siegelt es mit einem Hash, und ein Hash zeigt, dass der Text sich nicht änderte, nicht wer ihn freigab.",
+   "falta": "Der geteilte Bildschirm: links der rohe Vorschlag, rechts die menschliche Bearbeitung, und ein Knopf, der siegelt. Und heute siegelt er mit einem Hash, nicht mit einer Signatur: ein Hash zeigt, dass der Text sich nicht änderte, nicht wer ihn freigab. Gesagt, bevor es gebaut wird, denn das ist der Unterschied zwischen Beweis und Zierde.",
    "aportas": "Sag mir, was du in deiner Arbeit belegen musst, und wem."
   },
-  "barra-tiempo": {
-   "nombre": "Die Zeitleiste",
+  "barra-corte": {
+   "nombre": "Die Schnittleiste",
    "util": "Den genauen Zeitraum sehen, den das betrifft, was du gleich unterschreibst, statt blind zu unterschreiben.",
    "hoy": "Das Substrat ist gebaut und geprüft: die Ereignislinie liefert den Zeitraum, mit wer was tat.",
    "falta": "Es zeichnen. Vier Zoomstufen — Tag, Woche, Monat, Jahr — und der ganze Hintergrund, auf allen drei Oberflächen. Lässt sich der Zeitraum nicht zeichnen, war die Linie noch nicht linear.",

@@ -58,15 +58,15 @@
    "falta": "Crossing three things already measured apart: local cost against an external API, hallucination risk on critical tasks, and compliance of the deployed models.",
    "aportas": "Tell me what your audit asks for that you cannot prove today."
   },
-  "acta": {
-   "nombre": "The Review Record",
+  "supervision-humana": {
+   "nombre": "Human Oversight",
    "util": "Being able to show that a person looked at an answer before it went out, and that what they looked at is exactly what went out.",
    "hoy": "Nothing drawn yet. What does exist is the chained log a record has to point at.",
-   "falta": "The split screen: the raw proposal on one side, the human edit on the other, and a button that seals. It is called a RECORD and not a signed contract on purpose: today it seals with a hash, and a hash shows the text did not change, not who approved it. The name goes up the day there is a signature with an owner.",
+   "falta": "The split screen: the raw proposal on one side, the human edit on the other, and a button that seals. And today it seals with a hash, not a signature: a hash shows the text did not change, not who approved it. Said before building it, because that is the difference between evidence and decoration.",
    "aportas": "Tell me what you have to prove in your work, and to whom."
   },
-  "barra-tiempo": {
-   "nombre": "The Time Bar",
+  "barra-corte": {
+   "nombre": "The Cut Bar",
    "util": "Seeing the exact span affected by what you are about to sign, instead of signing blind.",
    "hoy": "The substrate is built and tested: the event line returns the span of any interval, with who did each thing.",
    "falta": "Drawing it. Four zooms --day, week, month, year-- and the whole background, on all three surfaces. If the span cannot be drawn, the line was not linear yet.",
