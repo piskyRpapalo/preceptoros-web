@@ -150,20 +150,33 @@ button.mic[aria-disabled="true"]{border-color:rgba(242,208,138,.45);opacity:.7}
 /* El mismo violeta hondo que los atajos --`#2f2757`--: es un dato al pie de la
    fila de gestos y sobre el marmol se leia flotando sin suelo. Con fondo, la
    banda de abajo queda como una sola pieza. */
+/* LOS COLORES DE ESTA CAJA VAN EN HEXADECIMAL FIJO, y no es estilo: es la
+   unica forma de que se lean. El FONDO es fijo --`#2f2757`, elegido asi a
+   proposito para que el oro midiera lo mismo en los dos temas-- y encima
+   llevaba `var(--tenue)`, que SI gira: en claro se vuelve gris oscuro y da
+   1,93:1 sobre un violeta que no ha cambiado. Medido el 2026-09-08 con el tema
+   claro puesto, junto con otros catorce del mismo tipo.
+
+   LA REGLA, que ya estaba escrita en `puertas.css` y hubo que volver a
+   aprender: un color que se apoya en un fondo FIJO tiene que ser fijo tambien.
+   Un token es una promesa de girar con el tema, y girar solo la mitad de un par
+   es peor que no girar. */
 .medidas{display:inline-block;margin:.35rem 0 0;padding:.4rem .7rem;
-  font-size:.68rem;line-height:1.5;color:var(--tenue);background:#2f2757;
+  font-size:.68rem;line-height:1.5;color:#c9c2de;background:#2f2757;
   border:1px solid var(--oro);border-radius:var(--radius)}
 .medidas-dato{color:#e9e4ff}
 /* Dentro de la caja el badge pierde su propio recuadro: dos cantos, uno dentro
    del otro y a dos milimetros, se leen como un error de maqueta. */
 .medidas .brain{margin:0 0 .25rem;padding:0;border:0;background:transparent}
-.medidas-cab b{color:var(--violeta-texto)}
+.medidas-cab b{color:#e9e4ff}
 .medidas p{margin:0}
 .medidas-fila{display:flex;flex-wrap:wrap;gap:.4rem;align-items:baseline}
-.medidas-backend{color:var(--jardin);font-variant-numeric:tabular-nums}
-.medidas-dato{font-variant-numeric:tabular-nums;color:var(--tinta)}
+/* `#6fd39b` y no `--jardin`: es el mismo verde fijo que `mandos.css` ya usa
+   sobre este violeta, con 7,40:1 medidos. El token da 2,52 en claro. */
+.medidas-backend{color:#6fd39b;font-variant-numeric:tabular-nums}
+.medidas-dato{font-variant-numeric:tabular-nums;color:#e9e4ff}
 .medidas-hueco{font-size:.62rem;padding:0 .35rem;border-radius:999px;
-  color:var(--tenue);border:1px solid var(--bronce)}
+  color:#c9c2de;border:1px solid rgba(242,208,138,.5)}
 
 /* El enlace de un comando se lee como enlace, no como parrafo: subrayado y en
    el violeta claro de los enlaces de la casa. Es lo unico pulsable que sale

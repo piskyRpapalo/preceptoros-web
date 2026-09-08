@@ -36,6 +36,20 @@ CLAVES = {
     "idioma": "cabIdioma",
     "solar": "cabSolar",
     "ajustes": "ajustes",
+    # Los seis del boton de cuenta. Entran aqui el 2026-09-08 por un fallo que
+    # se veia a simple vista y nadie miraba: `auth.js` abre leyendo el bloque
+    # i18n y, si no lo hay, SE VA. En las ocho `instalar.html` --las unicas sin
+    # bloque propio-- eso dejaba el hueco de la cuenta creado y vacio: la rueda
+    # de ajustes sola en la esquina, sin su hermano, en la pagina que mas gente
+    # abre primero. No era la maqueta, que estaba bien; era que nadie pintaba
+    # dentro. Ahora esos rotulos viajan por el mismo catalogo que ya resolvia
+    # exactamente este problema para las puertas.
+    "idPerfil": "idPerfil",
+    "idClave": "idClave",
+    "idPublica": "idPublica",
+    "idEntrar": "idEntrar",
+    "idAviso": "idAviso",
+    "idFallo": "idFallo",
 }
 # `casa` es el nombre accesible del icono de inicio y NO tiene par en la
 # portada: alli la casa es la palabra «INICIO» y aqui es un dibujo, asi que su

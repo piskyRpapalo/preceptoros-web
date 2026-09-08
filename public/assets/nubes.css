@@ -165,7 +165,12 @@
    quien no distingue el dorado del gris se queda sin saber cual esta puesto. */
 .cerebros .cerebro.elegido{border-color:var(--oro);
   background:rgba(242,208,138,.12)}
-.cerebro h3{margin:0;font-size:.92rem}
+/* MISMO MOTIVO QUE `.medidas`: la tarjeta tiene fondo FIJO --rgba(10,6,28,.55)
+   sobre el panel-- y lo que iba encima eran tokens que giran. En claro, el
+   nombre del cerebro daba 1,48:1 y su descripcion 1,15. Medido con el tema
+   puesto, no deducido. Un color sobre fondo fijo se escribe fijo. */
+.cerebro h3{margin:0;font-size:.92rem;color:#fff}
+.cerebro-que,.cerebro-datos,.cerebro-datos b,.cerebro-datos span{color:#e9e4ff}
 .cerebro-marca,.cerebro-uso{display:inline-block;margin-top:.3rem;
   padding:.05rem .45rem;border-radius:999px;font-size:.62rem;
   border:1px solid var(--oro);color:var(--oro)}
@@ -173,7 +178,7 @@
   font-size:.7rem;color:var(--oro);word-break:break-all}
 .cerebro-que{margin:.2rem 0 .5rem;font-size:.78rem;line-height:1.45}
 .cerebro-datos{margin:0;font-size:.72rem}
-.cerebro-firma{margin:.25rem 0 0;font-size:.66rem;color:var(--tenue)}
+.cerebro-firma{margin:.25rem 0 0;font-size:.66rem;color:#c9c2de}
 .cerebros-pie{margin:.6rem 0 0;font-size:.68rem;color:var(--tenue)}
 
 /* El logo y el nombre en la misma linea, y el sello a su derecha. `flex-wrap`
@@ -181,9 +186,15 @@
 .cerebro-cab{display:flex;align-items:center;gap:.45rem;flex-wrap:wrap}
 .cerebros .cerebro-logo{width:22px;height:22px;flex:0 0 auto;color:var(--oro);opacity:.85}
 .cerebro-busca{margin:.1rem 0 .5rem;padding-left:.55rem;font-size:.74rem;
-  line-height:1.45;color:var(--bronce-hondo);border-left:2px solid var(--oro)}
+  line-height:1.45;color:#e8dcc0;border-left:2px solid var(--oro)}
 .cerebros-cta{margin:.8rem 0 0;padding:.55rem .7rem;font-size:.76rem;line-height:1.5;
-  border:1px dashed var(--oro);border-radius:var(--radius);color:var(--oro)}
+  border:1px dashed var(--oro);border-radius:var(--radius);
+  /* AQUI ES AL REVES: esta invitacion NO tiene fondo propio -- se apoya en el
+     panel, que SI gira. Asi que su color tambien tiene que girar, y el oro
+     fijo daba 1,2:1 sobre el panel claro. `--bronce-hondo` da 7,32. La regla
+     es la misma leida del otro lado: el color sigue al fondo que tiene debajo,
+     y lo que hay que mirar es cual de los dos manda. */
+  color:var(--bronce-hondo)}
 
 /* El consentimiento vive en `consiento.css`: es otro asunto --que pasa con lo
    que escribes-- y esta hoja habia llegado al tope con el dentro. */

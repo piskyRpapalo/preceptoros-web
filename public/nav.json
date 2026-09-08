@@ -12,6 +12,12 @@
    "idioma": "SPRACHE",
    "solar": "99% solar, außer dem Web-Anbieter",
    "ajustes": "Einstellungen",
+   "idPerfil": "Mein Profil",
+   "idClave": "Meinen Fingerabdruck ansehen",
+   "idPublica": "Öffentlicher Schlüssel:",
+   "idEntrar": "Identität anlegen",
+   "idAviso": "In deinem Browser wird ein Schlüssel erzeugt. Er lässt sich weder exportieren noch auf ein anderes Gerät kopieren: löschst du die Daten der Seite, ist diese Identität verloren und nicht wiederherstellbar. Kein Passwort zum Vergessen, kein Server, der ihn verwahrt.",
+   "idFallo": "NO_DATA — die Identität konnte nicht angelegt werden:",
    "casa": "Startseite"
   },
   "el": {
@@ -22,6 +28,12 @@
    "idioma": "ΓΛΩΣΣΑ",
    "solar": "99% ηλιακό, εκτός από τον πάροχο του ιστού",
    "ajustes": "Ρυθμίσεις",
+   "idPerfil": "Το προφίλ μου",
+   "idClave": "Δες το αποτύπωμά μου",
+   "idPublica": "Δημόσιο κλειδί:",
+   "idEntrar": "Δημιουργία ταυτότητας",
+   "idAviso": "Δημιουργείται ένα κλειδί στον περιηγητή σου. Δεν εξάγεται ούτε αντιγράφεται σε άλλη συσκευή: αν σβήσεις τα δεδομένα του ιστότοπου, αυτή η ταυτότητα χάνεται και δεν ανακτάται. Κανένας κωδικός να ξεχάσεις, κανένας διακομιστής να τον φυλάει.",
+   "idFallo": "NO_DATA — δεν ήταν δυνατή η δημιουργία της ταυτότητας:",
    "casa": "Αρχική"
   },
   "en": {
@@ -32,6 +44,12 @@
    "idioma": "LANGUAGE",
    "solar": "99% solar, except the web provider",
    "ajustes": "Settings",
+   "idPerfil": "My profile",
+   "idClave": "See my fingerprint",
+   "idPublica": "Public key:",
+   "idEntrar": "Create identity",
+   "idAviso": "A key is generated in your browser. It cannot be exported or copied to another device: if you clear the site data, this identity is lost and there is no way to recover it. There is no password to forget and no server holding it.",
+   "idFallo": "NO_DATA — the identity could not be created:",
    "casa": "Front page"
   },
   "es": {
@@ -42,6 +60,12 @@
    "idioma": "IDIOMA",
    "solar": "99% solar, excepto el proveedor web",
    "ajustes": "Ajustes",
+   "idPerfil": "Mi perfil",
+   "idClave": "Ver mi huella",
+   "idPublica": "Clave pública:",
+   "idEntrar": "Crear identidad",
+   "idAviso": "Se genera una clave en tu navegador. No se puede exportar ni copiar a otro aparato: si borras los datos del sitio, esta identidad se pierde y no hay forma de recuperarla. No hay contraseña que olvidar ni servidor que la guarde.",
+   "idFallo": "NO_DATA — no se pudo crear la identidad:",
    "casa": "Portada"
   },
   "fr": {
@@ -52,6 +76,12 @@
    "idioma": "LANGUE",
    "solar": "99% solaire, sauf l'hébergeur web",
    "ajustes": "Réglages",
+   "idPerfil": "Mon profil",
+   "idClave": "Voir mon empreinte",
+   "idPublica": "Clé publique :",
+   "idEntrar": "Créer une identité",
+   "idAviso": "Une clé est générée dans votre navigateur. Ni exportable ni copiable : si vous effacez les données du site, cette identité est perdue sans recours. Aucun mot de passe à oublier, aucun serveur qui la garde.",
+   "idFallo": "NO_DATA — l'identité n'a pas pu être créée :",
    "casa": "Accueil"
   },
   "it": {
@@ -62,6 +92,12 @@
    "idioma": "LINGUA",
    "solar": "99% solare, tranne il fornitore web",
    "ajustes": "Impostazioni",
+   "idPerfil": "Il mio profilo",
+   "idClave": "Vedi la mia impronta",
+   "idPublica": "Chiave pubblica:",
+   "idEntrar": "Crea identità",
+   "idAviso": "Viene generata una chiave nel tuo browser. Non si può esportare né copiare su un altro apparecchio: se cancelli i dati del sito, questa identità si perde e non c'è modo di recuperarla. Nessuna password da dimenticare, nessun server che la conservi.",
+   "idFallo": "NO_DATA — non è stato possibile creare l'identità:",
    "casa": "Home"
   },
   "pt": {
@@ -72,6 +108,12 @@
    "idioma": "IDIOMA",
    "solar": "99% solar, exceto o fornecedor web",
    "ajustes": "Definições",
+   "idPerfil": "O meu perfil",
+   "idClave": "Ver a minha impressão",
+   "idPublica": "Chave pública:",
+   "idEntrar": "Criar identidade",
+   "idAviso": "Gera-se uma chave no teu navegador. Não se pode exportar nem copiar para outro aparelho: se apagares os dados do site, esta identidade perde-se e não há forma de a recuperar. Não há palavra-passe para esquecer nem servidor que a guarde.",
+   "idFallo": "NO_DATA — não foi possível criar a identidade:",
    "casa": "Início"
   },
   "ru": {
@@ -82,6 +124,12 @@
    "idioma": "ЯЗЫК",
    "solar": "99% на солнце, кроме веб-провайдера",
    "ajustes": "Настройки",
+   "idPerfil": "Мой профиль",
+   "idClave": "Показать мой отпечаток",
+   "idPublica": "Открытый ключ:",
+   "idEntrar": "Создать личность",
+   "idAviso": "Ключ создаётся в твоём браузере. Его нельзя ни выгрузить, ни скопировать на другое устройство: если стереть данные сайта, эта личность потеряна безвозвратно. Нет пароля, который можно забыть, и нет сервера, который его хранит.",
+   "idFallo": "NO_DATA — не удалось создать личность:",
    "casa": "Главная"
   }
  },

@@ -117,133 +117,40 @@
 .loratelier .lor{font-weight:800}
 .loratelier .atelier{font-weight:700}
 
-/* --- el cabezal de las interiores -----------------------------------------
-   Los mismos botones y los mismos rotulos que la portada: eran enlaces de
-   texto separados por puntos, con otra lista y otros nombres en cada pagina.
-   Aqui van en fila y se envuelven; no en rejilla de dos, porque son cuatro
-   piezas de ancho muy distinto --un icono y tres palabras-- y una rejilla les
-   daria a todas el ancho de la mas larga. */
-/* LA FILA PROPIA ES LO PRIMERO, y sin ella no hay maqueta: `header` es un flex
-   en fila, asi que el `<nav>` entraba como un hermano mas y le robaba el ancho
-   al titulo -- «COMMUNITY · THE AGORA» salia en vertical, una letra por linea.
-   Se vio en el navegador al primer intento. `flex:1 0 100%` lo baja a su
-   propia linea y `flex-wrap` en el cabezal es lo que se lo permite. */
-/* LA CAJA, CON LAS MEDIDAS DE LA PORTADA (2026-09-07). Se midieron las dos a
-   375 px antes de tocar nada, y la cabecera interior no se parecia a la de la
-   portada en ninguna de las cuatro cifras que se ven:
+/* --- AQUI VIVIO EL CABEZAL DE LAS INTERIORES, Y YA NO HACE FALTA ----------
+   `.cab-nav-interior` era la navegacion propia de las paginas interiores: los
+   mismos cuatro enlaces que la portada, con los mismos rotulos, en otra caja y
+   con su propio aspecto. Nacio porque habia DOS constructores de cabezal --
+   `hub.js` para la portada y `nav.js` para las demas-- y se paso media jornada
+   del 2026-09-07 igualando a mano una cosa con la otra.
 
-     portada          interior
-     1px de canto     3px de canto      la raya de abajo
-     8px de aire      25,6px            lo que separa del texto
-     6,4/8,8/8 px     0/100,8/14,4/0    el relleno
+   El 2026-09-08 las cuarenta y ocho interiores pasaron a montar el MISMO
+   cabezal, `nav.js` se jubilo, y estas reglas se quedaron sin nadie que las
+   pidiera: cero ficheros las nombran y cero pruebas las exigen -- comprobado
+   antes de borrarlas, no supuesto.
 
-   La raya se escribe con el mismo valor literal que la portada y no con
-   `--bronce-claro`, que es de donde sale ese color: ese token gira con el tema
-   --claro lo cambia a un pardo-- y entonces las dos rayas dejarian de ser la
-   misma raya en cuanto alguien pulse la rueda. Es la cicatriz del 2026-09-05
-   otra vez: un valor que gira no puede sostener una igualdad medida.
+   Se BORRAN en vez de quedarse. Un bloque de css muerto no es gratis: el
+   siguiente que lea esta hoja tiene que averiguar quien lo pinta para descubrir
+   que no lo pinta nadie, y mientras tanto ocupa sitio bajo un tope que hoy
+   mismo ha obligado a partir tres ficheros.
 
-   `align-items` pasa a `flex-start` porque es lo que hace que el icono de
-   persona se apoye ARRIBA, contra el titulo, como en la portada. Y se declara
-   aqui y no se hereda de `movil.css`, que `instalar.html` no carga: sin esta
-   linea la unica de las tres que no trae esa hoja se maquetaba de otra manera
-   --se vio en el navegador-- y volveriamos a tener tres cabeceras distintas,
-   que es exactamente lo que este bloque vino a cerrar. */
-header:not(#cabezal){flex-wrap:wrap;align-items:flex-start;gap:.45rem;
-  padding-bottom:.5rem;margin-bottom:.6rem;
-  border-bottom:1px solid rgba(224,184,114,.28)}
-/* EL ICONO DE PERSONA SUBE A LA DERECHA DEL TITULO. Caia solo, a la izquierda
-   y por debajo de la fila de puertas: un circulo huerfano en mitad de la
-   cabecera. En la portada vive arriba a la derecha, asi que aqui igual. El
-   `order` es lo que lo garantiza -- en el marcado va DETRAS del `<nav>`, y el
-   nav se lleva la linea entera. */
-header:not(#cabezal) #identity{order:1;margin-left:auto;flex:0 0 auto}
-/* Y LA MARCA TIENE QUE CEDERLE SITIO, que es lo que no hacia. Con la base
-   `auto` que trae `base.css` el titulo reclama su ancho de una linea --unos
-   340 px para «COMUNIDAD · EL AGORA»-- y en una caja que envuelve eso no
-   encoge: se lleva el renglon entero y empuja el icono al siguiente. Se vio en
-   el navegador: el circulo salia flotando en mitad de la cabecera, que es el
-   mismo huerfano de antes movido de sitio. Con la base a cero el reparto lo
-   decide el hueco y no el texto. */
-header:not(#cabezal) .marca{flex:1 1 0;min-width:0}
-/* DE DOS EN DOS, como la portada, y por el mismo motivo que alli: repartido
-   por contenido salia tres arriba y INSTALAR descolgada abajo --«una rejilla
-   rota disfrazada de maqueta», dice el comentario de la portada, y se acaba de
-   ver otra vez aqui--. Ademas el corte cambiaba con el ancho y con el idioma,
-   asi que la misma pagina se maquetaba de tres maneras.
+   Lo unico que sobrevive es lo encendido, que ahora vale para las dos caras
+   porque las dos usan `#cab-nav`. */
 
-   Y LA CASA SE ESTIRA A SU CELDA COMO LAS DEMAS. Se probo primero al reves
-   --cuadrada y pegada a su canto izquierdo, que era la objecion escrita cuando
-   esto se hizo en fila: «un ovalo con un icono perdido en el centro»--. Se
-   miro en las capturas y el Soberano lo devolvio: «los botones no tienen
-   equilibrio geometrico visual». Y es lo que se ve -- una pastilla de 38 px
-   contra tres de 100 y pico deja un hueco en la primera celda que rompe la
-   fila justo donde empieza a leerse.
+/* --- LO ENCENDIDO, Y POR QUE LLEVA `.cab-boton` DE MAS ---------------------
+   La puerta de la pagina en la que estas se pinta en oro. Parece una linea
+   tonta y no lo es: `#cab-nav [aria-current]`
+   es un id mas un atributo; `#cab-nav .cab-boton.loratelier` y su hermana
+   `.empezar` son un id mas DOS clases, y ganan. Resultado: en LoRAtelier y en
+   Instalar la puerta encendida se quedaba con el FONDO violeta y la LETRA
+   oscura del encendido -- 2,7:1, ilegible, y en los dos temas. En el resto de
+   paginas no se veia porque su puerta actual no lleva clase propia.
 
-   Asi que la objecion vieja cae, y cae con motivo medido: el icono queda
-   centrado en su pastilla, que es exactamente lo que hace la portada con sus
-   cuatro palabras. La rejilla no vale como ritmo si una de las cuatro no la
-   sigue. */
-/* `grid-auto-rows:1fr` porque el equilibrio no acaba en el ancho. Medido: la
-   fila de arriba salia a 32 px y la de abajo a 30, porque la casa lleva un
-   dibujo de 18 y las otras tres una linea de texto. Dos pixeles no se nombran
-   pero se ven, y era el mismo defecto que el hueco de la casa: cuatro piezas
-   que se leen como una fila tienen que medir lo mismo en los dos ejes. */
-.cab-nav-interior{order:2;flex:1 0 100%;display:grid;
-  grid-template-columns:repeat(2,1fr);grid-auto-rows:1fr;gap:.25rem;
-  margin:.15rem 0 0}
-/* LOS BOTONES, LOS MISMOS QUE LOS DE LA PORTADA, y esto es la mitad del
-   arreglo. `widget.css` es quien da a `.cab-boton` su cuerpo, su versalita y
-   --sobre todo-- su `text-decoration:none`, y de las tres interiores solo
-   `benchmark` carga esa hoja: en `community` y en `instalar` las puertas salian
-   SUBRAYADAS y a 16 px, como los enlaces de un parrafo. Se midio: 16px/400
-   frente a los 9,92px/700 de la portada.
-
-   No se resuelve enlazando `widget.css` en las otras dos --arrastra la maqueta
-   del chat, que estas paginas no tienen-- ni copiando su regla, que serian dos
-   reglas para el mismo boton en dos ficheros. Se resuelve aqui, donde ya vive
-   el cabezal de las interiores, y con el mismo selector de siempre.
-
-   Las cifras son las de la portada medidas en el navegador: .62rem, .05em y
-   .3/.45rem salen de `esquina.css`, que no lleva media query -- asi que ese
-   tamano es el mismo en el telefono y en el escritorio, y aqui tambien. */
-.cab-nav-interior .cab-boton{min-width:0;
-  font:inherit;font-size:.62rem;font-weight:700;letter-spacing:.05em;
-  text-transform:uppercase;text-decoration:none;cursor:pointer;
-  background:var(--violeta);color:#fff;
-  border:2px solid var(--oro);border-radius:999px;padding:.3rem .45rem;
-  transition:transform .16s var(--spring)}
-.cab-nav-interior .cab-boton:hover,.cab-nav-interior .cab-boton:focus-visible{
-  background:var(--violeta-texto);transform:translateY(-1px)}
-.cab-nav-interior .cab-boton:focus-visible{outline:2px solid var(--violeta-texto);
-  outline-offset:2px}
-/* La casa se centra en su pastilla: es la unica de las cuatro que lleva dibujo
-   en vez de palabra, y sin esto el icono se iria al canto izquierdo. */
-.cab-nav-interior .cab-casa{display:inline-flex;align-items:center;
-  justify-content:center;padding:.3rem .45rem}
-/* --- LA PESTANA DONDE ESTAS SE ENCIENDE ------------------------------------
-   Encargo del Soberano, con estas palabras: «iluminando un poco la nube que
-   contiene el nombre de la pestana donde esta el usuario». Es lo que convierte
-   cuatro puertas iguales en una posicion: sin esto, la fila dice a donde
-   puedes ir y no dice donde estas.
-
-   SE ENCIENDE, NO SE APAGA. El primer intento fue al reves --fondo
-   transparente y letra dorada, la pagina actual como un hueco en la fila-- y
-   se lee como un boton deshabilitado, que es justo lo contrario de «aqui
-   estas». Se invierte el par: el oro pasa al FONDO y la letra al violeta hondo
-   del canon.
-
-   LOS DOS COLORES VAN EN HEXADECIMAL FIJO y no en token. `#2f2757` es uno de
-   los tres que el canon ya escribe asi, y por el motivo que costo la cicatriz
-   del 2026-09-05: un token que gira con el tema no puede sostener un contraste
-   medido. Oro sobre ese violeta da 8,9:1 en los dos temas, que es el mismo par
-   --al reves-- que ya sostiene el resto de la fila.
-
-   Y VALE PARA LAS DOS FILAS, la de la portada y la de las interiores: desde
-   hoy las pinta el mismo guion, asi que pintarlas con dos reglas seria volver
-   a separarlas por la puerta de atras. */
-#cab-nav [aria-current],.cab-nav-interior [aria-current]{
+   Se sube con `.cab-boton` en el selector, que empata en clases y gana por
+   orden. No con `!important`: un martillazo aqui taparia que el problema era
+   de peso, y el siguiente que anada una puerta con clase propia volveria a
+   caer sin saber por que. */
+#cab-nav .cab-boton[aria-current]{
   background:#F2D08A;color:#2f2757;border-color:#F2D08A;cursor:default}
-#cab-nav [aria-current] .lor,#cab-nav [aria-current] .atelier,
-.cab-nav-interior [aria-current] .lor,.cab-nav-interior [aria-current] .atelier{
-  color:#2f2757}
+#cab-nav .cab-boton[aria-current] .lor,
+#cab-nav .cab-boton[aria-current] .atelier{color:#2f2757}

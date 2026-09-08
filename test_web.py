@@ -873,6 +873,89 @@ class Doctrina(unittest.TestCase):
                 for ip in re.findall(r"\b(?:\d{1,3}\.){3}\d{1,3}\b", sin_dibujos):
                     self.assertEqual(ip, "127.0.0.1", f"IP incrustada en {p}: {ip}")
 
+    def test_el_boton_de_cuenta_tiene_de_donde_sacar_su_rotulo(self):
+        """El hueco de la cuenta se creaba vacio en la pagina de Instalar.
+
+        Cicatriz del 2026-09-08. `cabezal.js` monta el hueco `#identity` en
+        todas las paginas, y `auth.js` es quien pinta dentro. Pero `auth.js`
+        abria leyendo el bloque i18n de la pagina y, si no lo encontraba, se
+        iba entero. Las ocho `instalar.html` son las unicas sin bloque propio
+        --sus textos viven en `/instalar.json`-- asi que ahi la esquina se
+        quedaba con la rueda de ajustes SOLA, sin su hermano, en la pagina que
+        mas gente abre primero.
+
+        Cuesta verlo porque no hay error: el hueco existe, esta en su sitio, es
+        del tamano correcto y no tiene nada dentro. La maqueta estaba bien.
+
+        Lo que se exige es la condicion que hace falta para pintar, no la
+        pintura --eso pide navegador--: toda pagina que cargue `auth.js` tiene
+        que poder conseguir sus rotulos de cuenta, o de su propio bloque i18n o
+        del catalogo `nav.json`, que `nav.py` genera desde la portada para que
+        la palabra sea la misma en los dos sitios.
+        """
+        catalogo = json.loads((PUBLICO / "nav.json").read_text(encoding="utf-8"))
+        textos = catalogo.get("textos", {})
+        for pagina in sorted(PUBLICO.rglob("*.html")):
+            html = pagina.read_text(encoding="utf-8")
+            if "auth.js" not in html:
+                continue
+            with self.subTest(pagina=str(pagina.relative_to(PUBLICO))):
+                if 'id="i18n"' in html and "idPerfil" in html:
+                    continue    # bloque propio: manda ese, no se pide catalogo
+                lengua = pagina.parent.name
+                if lengua == "public":
+                    lengua = "en"
+                self.assertIn(
+                    lengua, textos,
+                    f"{pagina.name} no trae bloque i18n y nav.json no conoce "
+                    f"la lengua «{lengua}». Remedio: python3 nav.py")
+                self.assertIn(
+                    "idPerfil", textos[lengua],
+                    f"{pagina.name} depende del catalogo y ahi no esta "
+                    "«idPerfil»: el boton de cuenta se quedaria sin pintar. "
+                    "Remedio: anadir la clave a CLAVES en nav.py y regenerar")
+
+    def test_ninguna_hoja_esta_rota_por_dentro(self):
+        """Una hoja que el navegador no sabe leer pasaba este gate en verde.
+
+        Cicatriz del 2026-09-08, y de las caras. Al retirar un bloque muerto de
+        `puertas.css` con una reescritura automatica, el corte se llevo por
+        delante la APERTURA de un comentario --el `/*`, no el `*/`-- y dejo
+        cinco lineas de prosa sueltas en mitad del fichero. El navegador hizo
+        lo que manda su norma: leyo esa prosa como un selector larguisimo, y se
+        trago con ella la regla que venia detras, que era justo la que encendia
+        en oro la puerta de la pagina actual. Ni un error en consola.
+
+        El resto del gate no podia verlo. Miraba bytes, miraba palabras y
+        miraba canon, pero nadie preguntaba si el fichero seguia siendo CSS. Y
+        el sintoma tampoco ayudaba: la puerta se veia, con su violeta y su
+        letra blanca, solo que no era la que se habia escrito.
+
+        Se comprueba lo minimo que distingue una hoja legible de un desastre
+        silencioso: comentarios que abren y cierran, llaves cuadradas fuera de
+        ellos, y ni un acento invertido en el codigo --que en esta casa solo
+        aparece citando nombres dentro de la prosa, asi que uno suelto es
+        siempre la firma de un comentario partido.
+        """
+        for hoja in sorted((PUBLICO / "assets").glob("*.css")):
+            with self.subTest(hoja=hoja.name):
+                css = hoja.read_text(encoding="utf-8")
+                fuera, i = [], 0
+                while True:
+                    a = css.find("/*", i)
+                    if a < 0:
+                        fuera.append(css[i:])
+                        break
+                    b = css.find("*/", a + 2)
+                    self.assertGreater(b, 0, f"{hoja.name}: comentario sin cerrar")
+                    fuera.append(css[i:a])
+                    i = b + 2
+                codigo = "".join(fuera)
+                self.assertEqual(codigo.count("{"), codigo.count("}"),
+                                 f"{hoja.name}: llaves descuadradas")
+                self.assertNotIn("`", codigo,
+                                 f"{hoja.name}: acento invertido fuera de comentario")
+
     def test_el_cristal_degrada_y_se_puede_apagar(self):
         """Canon v3.0 «Liquid Glass», firmado el 2026-08-29.
 

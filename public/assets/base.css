@@ -148,7 +148,15 @@ button,.boton{font:inherit;font-size:.85rem;cursor:pointer;
   :is(button,.boton):hover{background:var(--violeta-texto);border-color:var(--oro);
     transform:scale(1.02)}
 }
-button[disabled]{background:var(--tenue);border-color:var(--tenue);cursor:progress}
+/* Y CON TINTA OSCURA, aunque las normas de contraste perdonen a los controles
+   apagados. Aqui no perdonan: en Instalar, el «Ultima version de la app · 37h
+   45m» es un boton deshabilitado que en realidad es un MARCADOR -- lleva
+   dentro la medida de cuanto hace que se publico. Un dato que no se puede leer
+   no es un dato apagado, es un dato perdido, y blanco sobre `--tenue` daba
+   2,52:1. `#2f2757` sobre ese gris da 5,39 medido en la pagina, y el boton sigue
+   pareciendo apagado, que es lo unico que la norma pedia. */
+button[disabled]{background:var(--tenue);border-color:var(--tenue);
+  color:#2f2757;cursor:progress}
 /* `hidden` tiene que ganar, y no ganaba: el `display:inline-block` de autor de
    aqui arriba pisa la regla del navegador que apaga los `[hidden]`. TODO boton
    oculto se veia, en toda la web. Va aqui porque el fallo es de esta hoja. */

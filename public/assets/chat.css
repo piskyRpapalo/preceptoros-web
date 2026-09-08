@@ -7,10 +7,19 @@
 /* El badge del cerebro: dice QUE contesta. Apagado en tenue, vivo en jardin. */
 /* En dorado y no en gris: sobre el marmol oscuro el `--tenue` desaparecia, y
    la frase que dice QUE CEREBRO contesta es de las que hay que poder leer. */
+/* Y CON FONDO FIJO, no `--glass`. El oro es fijo y el cristal GIRA: en tema
+   claro el badge quedaba dorado sobre un panel claro -- 1,35:1, medido en la
+   pagina del Benchmark, que es donde este badge vive fuera de la caja de
+   medidas. En la portada no se veia porque alli lo envuelve `.medidas`, que si
+   tiene fondo fijo.
+   `#2f2757` es el mismo violeta hondo de esa caja, y sobre el el oro mide
+   9,15:1 en los dos temas. Un color fijo pide un fondo fijo debajo: girar solo
+   la mitad de un par es peor que no girar. */
 .brain{font-size:.72rem;color:var(--oro);margin:.5rem 0 0;
-  display:inline-block;padding:.15rem .5rem;border:1px solid var(--line,var(--bronce));
-  border-radius:calc(var(--radius) - 8px);background:var(--glass)}
-.brain.live{color:var(--jardin);border-color:var(--jardin)}
+  display:inline-block;padding:.15rem .5rem;border:1px solid rgba(242,208,138,.5);
+  border-radius:calc(var(--radius) - 8px);background:#2f2757}
+/* Verde fijo por lo mismo: `--jardin` da 2,52 en claro. */
+.brain.live{color:#6fd39b;border-color:#6fd39b}
 
 /* --- «Despertando cerebro»: el estado de espera, sin una linea de JS -------
    state.js escribe `data-fase` en #brain y se va. Todo lo de abajo --el

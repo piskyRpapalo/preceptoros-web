@@ -15,10 +15,21 @@
   // 64 bytes de firma Ed25519 -> 128 caracteres hex. Es la longitud del
   // algoritmo, no una preferencia: si sale otra cosa, algo se rompio.
   var FIRMA_HEX = 128;
-  var block = document.getElementById('i18n');
   var zona = document.getElementById('identity');
-  if (!block || !zona) return;
-  var T = JSON.parse(block.textContent);
+  if (!zona) return;
+  /* T LLEGA TARDE, Y POR ESO EMPIEZA VACIO. Antes esta linea era
+     `if (!block || !zona) return;` y ahi se acababa todo: sin bloque i18n,
+     este fichero se iba sin pintar nada. Las ocho `instalar.html` no llevan
+     bloque --sus textos viven en `/instalar.json`-- asi que en la pagina que
+     mas gente abre primero el hueco de la cuenta se creaba y se quedaba
+     VACIO. Se veia la rueda de ajustes sola en la esquina, sin su hermano.
+
+     Irse sin rotulos era la decision correcta; irse sin BOTON no. El remedio
+     no es escribir aqui seis palabras en ocho idiomas, sino leer el catalogo
+     que ya existe justo para esto y que las puertas del cabezal llevan meses
+     usando. Y por eso `T` deja de resolverse en esta linea: lo hace
+     `rotulos()`, abajo, que devuelve una promesa. */
+  var T = {};
   var yo = null;
 
   /* EL MENU DE IDENTIDAD ES UN POPOVER NATIVO. El navegador pone la capa
@@ -223,11 +234,37 @@
     }
   };
 
-  tx('readonly', function (s) { return s.get(CLAVE); }).then(function (k) {
+  /* El bloque propio manda; el catalogo es el respaldo, no al reves. Cuando la
+     pagina trae su i18n se usa ese y no se pide nada a la red: es la misma
+     palabra, y una peticion que no hace falta es una peticion que puede
+     fallar. `nav.json` se genera desde el bloque de la portada (`nav.py`), asi
+     que las dos ramas dicen literalmente lo mismo. */
+  function rotulos() {
+    var bloque = document.getElementById('i18n');
+    if (bloque) {
+      try {
+        var propio = JSON.parse(bloque.textContent);
+        if (propio && propio.idPerfil) return Promise.resolve(propio);
+      } catch (err) { /* bloque roto: se sigue al catalogo */ }
+    }
+    var lengua = (document.documentElement.lang || 'en').slice(0, 2);
+    return fetch('/nav.json', { cache: 'no-store' })
+      .then(function (r) { return r.json(); })
+      .then(function (d) { return (d.textos && d.textos[lengua]) || {}; })
+      /* Si el catalogo no llega, se pinta IGUAL con lo que haya. Un boton sin
+         rotulo se puede tocar; un boton que no existe, no. */
+      .catch(function () { return {}; });
+  }
+
+  rotulos().then(function (t) { T = t; return arranca(); });
+
+  function arranca() {
+  return tx('readonly', function (s) { return s.get(CLAVE); }).then(function (k) {
     if (!k) { pintar(); return; }
     return apodo(k.publicKey).then(function (a) {
       yo = { claves: k, apodo: a }; pintar();
       document.dispatchEvent(new CustomEvent('preceptor:identity', { detail: { apodo: a } }));
     });
   }).catch(function () { pintar(); });
+  }
 })();

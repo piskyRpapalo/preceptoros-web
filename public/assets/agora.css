@@ -35,7 +35,20 @@ ol.hilos li:last-child{border-bottom:0}
 .hilo-pie{display:block;color:var(--tenue);font-size:.72rem;margin-top:.15rem}
 /* Los filtros no recargan nada: enseñan y esconden lo que ya esta en la pagina. */
 .filtros{margin-bottom:.9rem}
-.filtros button[aria-pressed=true]{background:var(--violeta-texto);color:var(--bg)}
+/* TINTA OSCURA sobre el violeta claro, y aqui hay que contar el error entero
+   porque el arreglo de antes iba en la direccion contraria.
+
+   El filtro elegido se pintaba con `color:var(--bg)`, que gira con el tema, y
+   en claro daba 2,18:1. Se cambio a blanco fijo dando por hecho que el fondo
+   del boton era el violeta hondo. No lo es: `--violeta-texto` es `#B3A4FF`, un
+   violeta CLARO que existe para escribir SOBRE oscuro, no para hacer de fondo
+   de una letra blanca. El resultado fue 2,17:1 -- el mismo fallo, un poco
+   peor, y ahora en los dos temas.
+
+   Lo mide la maquina y no el ojo: `#2f2757` sobre `#B3A4FF` da 6,4:1. La
+   leccion no es «usa fijo», es que un color fijo no salva nada si no se mira
+   QUE hay debajo. */
+.filtros button[aria-pressed=true]{background:var(--violeta-texto);color:#2f2757}
 
 /* El «para que lo use» ocupa su propia linea bajo la fila. Es lo que convierte
    una cifra en un dato: «11 tok/s» no dice nada, «11 tok/s y me clasifica el
@@ -90,8 +103,12 @@ ul.leyenda li{margin:0 0 .3rem;padding-left:.9rem;text-indent:-.9rem}
 .busto img{width:100%;height:auto;max-width:96px;image-rendering:auto}
 /* El elegido se marca con BORDE Y FONDO, no solo con color: quien no
    distingue el violeta del bronce se queda sin saber cual eligio. */
+/* El rotulo del elegido sube a `#d7cfff` en vez de quedarse en el mismo
+   `--violeta-texto` del borde: sobre ese velo del 12 % daba 3,66:1, y es texto
+   pequeno. El borde y el fondo siguen siendo la marca; lo que cambia es que
+   ahora el nombre del busto elegido se lee. */
 .busto[aria-checked=true]{border-color:var(--violeta-texto);border-width:2px;
-  background:rgba(75,55,196,.12);color:var(--violeta-texto)}
+  background:rgba(75,55,196,.12);color:#d7cfff}
 .busto:focus-visible{outline:2px solid var(--violeta-texto);outline-offset:2px}
 
 /* La vista previa de la biografia. Encuadrada para que se lea como lo que es:
