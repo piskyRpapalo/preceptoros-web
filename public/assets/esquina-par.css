@@ -74,3 +74,93 @@
   flex:0 0 auto;margin-left:auto;order:30}
 
 .cab-esquina #identity{flex:0 0 auto;width:auto;margin:0;min-width:0}
+
+/* --- LA TALLA DE LOS DOS, EN UN SOLO SITIO (2026-09-08) --------------------
+   Que sean hermanos es la peticion literal del Soberano, repetida tres veces:
+   «debe ser el hermano del de ajustes», «son hermanos, pero no el mismo»,
+   «asegurate que estan a la misma altura, y no se ve partido». Y aun asi se
+   veian partidos en escritorio.
+
+   La causa no era una regla mala sino TRES reglas buenas repartidas: la rueda
+   sacaba su 40x40 de `.lateral-boton` en `panel.css`, la cuenta su 36x36 de
+   `esquina.css`, y habia una cuarta, dentro de `@media (max-width:1023px)`,
+   que los igualaba a 36. O sea que coincidian por debajo de 1024 y solo por
+   debajo. Medido a 1280: 40x40 contra 36x36, y dos pixeles de desnivel. Era
+   justo la pantalla en la que el Soberano lo vio.
+
+   Una talla repartida entre cuatro sitios no es una talla, es un acuerdo -- y
+   los acuerdos se rompen solos en cuanto uno de los cuatro cambia por su
+   cuenta. Aqui pasa a haber UNA medida, en una variable, y los dos la leen.
+   Que crezca en escritorio sigue estando bien; lo que no puede es crecer uno
+   sin el otro, y ahora ya no hay forma de que ocurra.
+
+   Nota de peso: estos selectores llevan `.cab-esquina` de mas a proposito.
+   `esquina-par.css` carga ANTES que `mandos.css` y `panel.css`, asi que ganar
+   por orden no es una opcion -- se gana por especificidad o no se gana. */
+.cab-esquina{--talla-par:36px}
+@media (min-width:1024px){
+  .cab-esquina{--talla-par:40px}
+}
+#cabezal .cab-esquina .lateral-boton,
+#cabezal .cab-esquina #identity .identity-icono{
+  width:var(--talla-par);height:var(--talla-par);flex:0 0 var(--talla-par)}
+
+/* --- Y LA PRIMERA FILA ES UNA REJILLA, NO UNA FILA QUE ENVUELVE ------------
+   Tres dias de esquina, y esta es la frase que faltaba: «deben estar a la
+   misma altura que el logo, en el margen superior derecho SIEMPRE».
+
+   Con `flex-wrap` eso no se puede prometer. Envolver es una decision que toma
+   el navegador midiendo: mientras el titulo cabe holgado, el par se queda a su
+   lado; en cuanto el titulo crece --otro idioma, una pagina con dos palabras,
+   una pantalla mas estrecha-- el par baja de linea. Y bajaba: en el telefono
+   del Soberano la cuenta y la rueda salian DEBAJO de «PRECEPTOROS», sueltas en
+   mitad del cabezal. Cada arreglo anterior movio numeros para que el titulo
+   cupiera; ninguno quito la posibilidad de que no cupiese.
+
+   En rejilla no hay decision que tomar. El titulo es la columna 1 y el par la
+   columna 2 de la MISMA fila, dicho de una vez: no hay anchura, idioma ni
+   pagina que los separe, porque separarlos ya no es un resultado posible.
+   `auto` en la segunda columna significa «lo que el par ocupe» -- 36 px cuando
+   es un icono, 211 cuando lleva el nombre dentro-- y `1fr` en la primera,
+   «todo lo demas», que es lo que hace que el titulo se encoja antes que
+   empujar a nadie. La energia pasa a la fila de abajo cruzando las dos.
+
+   `align-self:start` es la otra mitad de la peticion: ARRIBA a la derecha. Con
+   un titulo de dos lineas, centrar dejaba el par a media altura. */
+.cab-fila{display:grid;grid-template-columns:1fr auto;align-items:center;
+  gap:.4rem .6rem;width:100%}
+.cab-fila .marca{grid-column:1;grid-row:1;min-width:0}
+.cab-fila .cab-esquina{grid-column:2;grid-row:1;justify-self:end;align-self:start}
+.cab-fila .cab-solar,.cab-fila #cab-solar{grid-column:1 / -1}
+
+/* --- Y EL HUECO DE LA CARA NO ES ASUNTO DE LA PRIMERA FILA -----------------
+   Con la rejilla puesta, el par ya estaba en la linea del titulo y seguia sin
+   llegar al canto: medido, 43 px dentro en Instalar y 101 en Benchmark. No lo
+   empujaba una regla de la esquina sino el `padding-right` que el cabezal
+   entero reserva para el busto -- cien pixeles en las interiores, 231 en la
+   portada de escritorio.
+
+   Reservar en el padre era la respuesta correcta a un problema real: antes lo
+   hacia cada pieza por su cuenta y la siguiente que entrara se meteria debajo
+   de la cara sin que nadie supiera por que. Pero se paso de largo. Medido hoy
+   en las tres paginas y en dos anchuras: la cara empieza a 63 px del borde de
+   arriba en escritorio y a 134 o mas en el telefono, mientras la primera fila
+   acaba a 52. La franja de la cara y la fila del titulo NO SE TOCAN nunca.
+
+   Asi que el hueco se lo quedan las dos piezas que si comparten franja con
+   ella: la frase solar y las cuatro puertas. Esto no lo inventa esta hoja --
+   la portada ya lo hacia asi desde el 2026-09-05, y era la razon por la que
+   alli la esquina se veia bien y en las interiores no. Lo que cambia es que
+   deja de ser un arreglo de una pagina para ser la regla de todas.
+
+   Y no lleva ningun numero nuevo: el hueco sigue saliendo de `--esfera`, que
+   es lo que mide la cara. Si la cara cambia de talla, esto la sigue. */
+#cabezal{padding-right:.55rem}
+/* SOLO LAS PUERTAS lo llevan aqui, y la frase solar no. Fue un paso de mas y se
+   vio a la primera captura: la frase se partio en tres renglones en el telefono
+   por esquivar un busto que ahi tiene debajo, no al lado --en movil la cara va
+   anclada abajo--. Quien decide si la frase estorba es la altura de la cara, y
+   esa si cambia con la anchura: su reserva se queda donde ya estaba, en las
+   reglas que miran el ancho. Las cuatro puertas no: comparten franja con la
+   cara siempre, en las dos caras y en todas las paginas. */
+#cabezal #cab-nav{padding-right:calc(var(--esfera) + .5rem)}

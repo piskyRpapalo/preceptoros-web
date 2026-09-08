@@ -202,8 +202,22 @@
    paginas antes de la mudanza --«el suelo lo pone el contenedor... asi la
    septima pagina que se escriba ya trae el hueco hecho»--. Al heredar el
    cabezal de la portada se perdio por el camino, y el sintoma fue el busto
-   encima de la fila de puertas. */
-#cabezal[data-cabezal]{--esfera:88px;padding-right:calc(var(--esfera) + .8rem)}
+   encima de la fila de puertas.
+
+   MATIZ DEL 2026-09-08, y es un matiz y no una vuelta atras: la frase «ninguno
+   de sus hijos puede llegar a la cara» es cierta y protege de mas. La primera
+   fila --titulo y esquina-- no comparte franja con el busto: medido en las tres
+   paginas, la cara empieza a 63 px del borde de arriba y esa fila acaba a 52.
+   Reservarle hueco a quien no lo necesita tiene un precio que se vio: la
+   esquina se quedaba cien pixeles dentro del canto, en el sitio exacto donde el
+   Soberano lleva tres dias pidiendo verla.
+
+   Asi que la reserva se queda, pero en las dos piezas que SI cruzan la franja:
+   la frase solar y las cuatro puertas. Eso lo dice `esquina-par.css` para todas
+   las paginas -- aqui solo se retira la cota del padre, que es la que ganaba
+   por llevar el atributo en el selector. El `--esfera:88px` se queda: no es una
+   reserva, es cuanto mide la cara aqui, y de ahi sale el hueco de las dos. */
+#cabezal[data-cabezal]{--esfera:88px;padding-right:.55rem}
 
 /* Y LA CARA ES MAS PEQUENA AQUI, que era una decision ya tomada y que la
    mudanza se llevo por delante. `cara.css` la tenia escrita para estas paginas:

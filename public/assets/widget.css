@@ -82,7 +82,11 @@
    lado, la energia centrada y la identidad a la derecha. Abajo, las cuatro
    puertas a partes iguales: con `flex-wrap` los rotulos miden distinto en cada
    idioma y la fila salia torcida en frances y recta en castellano. */
-.cab-fila{display:flex;align-items:center;gap:.6rem;width:100%}
+/* LA MAQUETA DE ESTA FILA SE FUE A `esquina-par.css` el 2026-09-08. Aqui era
+   una linea de flex; alli es una rejilla de cuatro, y el motivo de las cuatro
+   es la esquina -- que la fila sea rejilla existe PARA que el par no pueda
+   bajarse de la linea del titulo. Vivir junto a lo que explica es lo que hace
+   que la proxima vez se lea antes de tocarse. */
 /* EL HUECO DE LA CARA LO RESERVA EL CABEZAL, UNA SOLA VEZ.
    Antes lo reservaba cada pieza por su cuenta --la marca, entrar, la energia y
    la navegacion, cuatro `padding-right` con el mismo calculo-- y eso tiene un
@@ -97,8 +101,12 @@
 
    La esfera vive DENTRO de ese hueco --`right` la pega al canto-- asi que el
    numero es uno y esta en un sitio. */
-#cabezal{flex-direction:column;align-items:stretch;
-  padding-right:calc(var(--esfera) + .7rem)}
+/* AQUI ESTABA LA RESERVA DEL BUSTO, y se va porque ya no reservaba: la pisaba
+   `esquina-par.css`, que la reparte entre las dos piezas que si cruzan la
+   franja de la cara. Dejarla puesta y muerta es peor que quitarla -- el
+   proximo que lea esta hoja creera que el hueco sale de aqui, y el gate de la
+   esquina ya no le dejaria devolverla. */
+#cabezal{flex-direction:column;align-items:stretch}
 #cabezal .marca{flex:0 0 auto;min-width:0;display:flex;align-items:center;gap:.5rem}
 #cabezal h1{margin:0}
 /* Los enlaces de identidad, pegados al nombre. Estaban centrados en la fila con

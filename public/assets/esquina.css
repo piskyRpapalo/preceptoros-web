@@ -103,9 +103,13 @@
    --dos ids-- le daba el ancho entero, y tenia razon cuando el boton decia
    «Crear identidad» con todas sus letras: un rotulo largo centrado en media
    fila se lee peor que uno a lo ancho. Con un dibujo dentro, ese mismo ancho
-   convierte una llave en una pancarta. Se corrige con la misma especificidad y
-   ganando por orden, que es lo que un `!important` habria tapado sin explicar. */
-#cabezal #identity button.identity-icono:only-child{width:36px;height:36px}
+   convierte una llave en una pancarta.
+
+   LA TALLA SE FUE A `esquina-par.css` el 2026-09-08: era una de las cuatro
+   reglas que dimensionaban a los dos hermanos por separado, y por eso solo
+   coincidian por debajo de 1024. Aqui se queda lo que si es asunto de esta
+   hoja --que el icono NO SE ESTIRE a la fila entera-- y se va la medida. */
+#cabezal #identity button.identity-icono:only-child{width:auto}
 
 /* --- LOS DOS MANDOS, EN LA ESQUINA DE VERDAD (2026-09-05) ------------------
    Pedido asi: «ajustes y cuenta con el mismo estilo, arriba en la esquina
@@ -233,11 +237,11 @@
      vez de quedarse: un comentario que explica una aritmetica retirada manda
      al siguiente que lea a buscar unas reglas que ya no existen -- que es
      exactamente lo que acaba de costar este arreglo. */
-  #cabezal .lateral-boton{margin:0;width:36px;height:36px}
-  /* Y EL PERFIL ES SU HERMANO, con la misma talla. Estaba en 40 y la rueda en
-     36: cuatro pixeles que no se nombran pero se ven, y con los dos juntos en
-     una fila se ven mas. Pedido asi: «debe ser el hermano del de ajustes». */
-  #cabezal .identity-icono{width:36px;height:36px}
+  #cabezal .lateral-boton{margin:0}
+  /* AQUI ESTABA LA IGUALACION DE LOS HERMANOS, y era el problema disfrazado de
+     solucion: igualaba de verdad, pero solo dentro de esta media query. Por
+     encima de 1024 cada uno volvia a su talla y el par salia partido. Se fue
+     entera a `esquina-par.css`, sin media query, donde vale siempre. */
   /* El logo respira lo que la rueda deja libre. */
   #cabezal h1{font-size:1.15rem}
   #cabezal #panel-ajustes{right:.45rem;left:auto}

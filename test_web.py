@@ -873,6 +873,85 @@ class Doctrina(unittest.TestCase):
                 for ip in re.findall(r"\b(?:\d{1,3}\.){3}\d{1,3}\b", sin_dibujos):
                     self.assertEqual(ip, "127.0.0.1", f"IP incrustada en {p}: {ip}")
 
+    def test_la_esquina_no_puede_bajarse_de_la_linea_del_logo(self):
+        """Tres dias de esquina, y esta es la frase que los cierra.
+
+        «Deben estar a la misma altura que el logo, en el margen superior
+        derecho SIEMPRE.» Volvio tantas veces porque cada arreglo movia un
+        numero para que el caso de aquel dia cuadrara, y el caso siguiente
+        --otro idioma, otra pagina, otra anchura-- volvia a romperlo. Lo que se
+        exige aqui no son posiciones, que piden navegador: son las tres
+        decisiones de estructura que hacen que romperlo deje de ser posible.
+
+        1 · La primera fila es una REJILLA de dos columnas. Con `flex-wrap` la
+            colocacion la decide el navegador midiendo, y en cuanto el titulo
+            crece el par se cae de linea. En rejilla el par es la columna 2 de
+            la fila 1, dicho y no negociado.
+        2 · La talla de los dos hermanos sale de UNA variable. Estuvo repartida
+            en cuatro reglas y solo coincidian por debajo de 1024: en
+            escritorio salian 40 contra 36.
+        3 · El hueco del busto NO lo reserva el cabezal entero. Lo hacia, y por
+            eso la esquina se quedaba cien pixeles dentro del canto aun estando
+            bien colocada. Lo reservan las dos piezas que si cruzan la franja
+            de la cara: la frase solar y las cuatro puertas.
+
+        Medido el 2026-09-08 tras el arreglo, en seis paginas por tres anchuras:
+        9-10 px del canto derecho, 6-12 del de arriba, cero desnivel entre los
+        dos, misma talla, y ninguno pisa la cara.
+        """
+        hojas = {h.name: h.read_text(encoding="utf-8")
+                 for h in (PUBLICO / "assets").glob("*.css")}
+        todo = "".join(hojas.values())
+        plano = todo.replace(" ", "").replace("\n", "")
+
+        # 1 · la rejilla, y ni un `flex-wrap` que la deshaga
+        self.assertIn("grid-template-columns:1frauto", plano,
+                      "la primera fila del cabezal ya no es rejilla de dos "
+                      "columnas: el par puede volver a caerse de linea")
+        self.assertIn("grid-column:2;grid-row:1", plano,
+                      "la esquina ya no declara su celda en la fila del logo")
+        for nombre, css in hojas.items():
+            sin_notas = re.sub(r"/\*.*?\*/", "", css, flags=re.S).replace(" ", "")
+            for regla in re.findall(r"\.cab-fila\{([^}]*)\}", sin_notas):
+                with self.subTest(hoja=nombre):
+                    self.assertNotIn("flex-wrap:wrap", regla,
+                                     f"{nombre} devuelve el envoltorio a la "
+                                     "fila del cabezal, que es lo que bajaba "
+                                     "de linea al par")
+
+        # 2 · una sola talla para los dos
+        self.assertIn("--talla-par", plano, "la talla del par dejo de ser una "
+                      "sola variable")
+        for nombre, css in hojas.items():
+            sin_notas = re.sub(r"/\*.*?\*/", "", css, flags=re.S)
+            for sel, cuerpo in re.findall(r"([^{}]*(?:lateral-boton|identity-icono)[^{}]*)\{([^}]*)\}", sin_notas):
+                if "--talla-par" in cuerpo or " svg" in sel:
+                    continue    # el dibujo de dentro no es el boton
+                with self.subTest(hoja=nombre, regla=sel.strip()[:60]):
+                    self.assertNotRegex(
+                        cuerpo.replace(" ", ""), r"(?:^|;)(?:width|height):\d",
+                        f"{nombre} vuelve a dar talla a mano a uno de los dos "
+                        "hermanos. La talla sale de `--talla-par`, o volveran "
+                        "a salir 40 contra 36 en escritorio")
+
+        # 3 · el hueco de la cara no es del cabezal entero
+        for nombre, css in hojas.items():
+            sin_notas = re.sub(r"/\*.*?\*/", "", css, flags=re.S).replace(" ", "")
+            for sel, cuerpo in re.findall(r"([^{}]*)\{([^}]*)\}", sin_notas):
+                if not sel.strip().startswith("#cabezal"):
+                    continue
+                if "cab-solar" in sel or "cab-nav" in sel:
+                    continue    # estas dos SI cruzan la franja de la cara
+                if re.search(r"#cabezal[^,\s]*$", sel.strip().split(",")[-1]) is None:
+                    continue
+                with self.subTest(hoja=nombre, regla=sel.strip()[:60]):
+                    self.assertNotIn("padding-right:calc(var(--esfera)", cuerpo,
+                        f"{nombre} vuelve a reservar el hueco del busto en el "
+                        "cabezal entero. La primera fila no cruza la franja de "
+                        "la cara --medido: la cara empieza a 63 px y la fila "
+                        "acaba a 52-- y esa reserva empuja la esquina cien "
+                        "pixeles hacia dentro")
+
     def test_el_boton_de_cuenta_tiene_de_donde_sacar_su_rotulo(self):
         """El hueco de la cuenta se creaba vacio en la pagina de Instalar.
 

@@ -218,7 +218,7 @@ main:not(:has(#chat)) .guia{background:transparent;border:0;padding:0}
    tienen: por eso alli el icono salia a 228 px de ancho y 40 de alto. Se iguala
    la especificidad y se gana por orden, que canon.css carga despues. */
 .identity .identity-icono{display:inline-flex;align-items:center;justify-content:center;
-  width:40px;height:40px;padding:0;border-radius:999px;
+  width:var(--talla-par,36px);height:var(--talla-par,36px);padding:0;border-radius:999px;
   color:var(--oro);background:transparent;border:1px solid var(--oro)}
 .identity .identity-icono svg{width:1.35em;height:1.35em}
 .identity .identity-icono:hover,.identity .identity-icono:focus-visible{
