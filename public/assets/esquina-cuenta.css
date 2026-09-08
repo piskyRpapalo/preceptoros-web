@@ -41,8 +41,29 @@
    con la pastilla estrecha, envolver partia la cuenta en dos filas y la fila
    de abajo caia sobre la cara. */
 #cabezal #identity{flex-wrap:nowrap;white-space:nowrap;max-width:calc(100% - 8rem)}
-#cabezal #identity .yo-perfil{font-size:.7rem;overflow:hidden;text-overflow:ellipsis}
-#cabezal #identity .huella-corta{font-size:.64rem;padding:.1rem .4rem}
+/* PEQUENOS, Y AHORA SI CABEN (2026-09-08). Con los dos iconos de firma fuera
+   de la fila, la cuenta a 375 px queda asi: marca 184 + rueda 36 + dos huecos
+   de 6,4 = 233 de los 325 utiles. Sobran NOVENTA Y DOS para la cuenta -- y a
+   .7/.64rem medía 211, asi que bajaba a su propia fila y se llevaba 43 px de
+   cabezal con ella.
+
+   Se encoge lo justo para entrar en esos 92, no «un poco»: la cifra sale de la
+   resta, no del ojo. Y no es un apano -- es la jerarquia correcta: el nombre y
+   la huella son quien ERES, y eso se consulta; no se lee en cada turno como se
+   lee lo que el modelo contesta.
+
+   LA HUELLA AGUANTA MEJOR EL RECORTE que el nombre, y por eso baja mas: son
+   seis digitos en letra de ancho fijo que se reconocen de un vistazo -- no se
+   leen, se comparan. Un nombre corto de mas se lee mal; una firma corta de mas
+   sigue siendo la misma firma.
+
+   Si no cupiera --un pseudonimo largo, una lengua ancha-- la fila envuelve y
+   la cuenta baja sola. No hay nada que se rompa: solo se gana altura. Es lo
+   mismo que hace la esquina entera desde que volvio al flujo. */
+#cabezal #identity .yo-perfil{font-size:.6rem;padding:.14rem .3rem;
+  overflow:hidden;text-overflow:ellipsis}
+#cabezal #identity .huella-corta{font-size:.56rem;padding:.08rem .3rem;
+  letter-spacing:.02em}
 
 /* Y LA CARA BAJA UN POCO MAS. Con el icono solo, 40 px de mando bastaban de
    respiro; con la linea de la cuenta la franja de arriba es mas alta y la
