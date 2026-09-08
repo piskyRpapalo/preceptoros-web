@@ -186,7 +186,11 @@
 .cab-leve{font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;
   color:var(--violeta-texto);text-decoration:none;padding:.3rem .35rem}
 .cab-leve:hover{text-decoration:underline}
-.cab-ident{display:inline-flex;gap:.3rem;margin-inline:auto}
+/* EN EL PIE desde el 2026-09-08, no en la marca. `margin-inline:auto` la
+   centraba en el hueco que sobraba de la fila del cabezal; abajo no hay hueco
+   que repartir, asi que se alinea con el resto del pie y respira por arriba.
+   Ver `cabezal.js`, que es quien la muda. */
+.cab-ident{display:inline-flex;gap:.3rem;margin:.6rem 0 0}
 
 /* En un telefono el cabezal no puede comerse la pantalla: medido en el
    Doogee (360 CSS px) ocupaba el 40 % del alto en tres filas de botones, y
