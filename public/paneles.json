@@ -1,0 +1,70 @@
+{
+ "esquema": "preceptoros/paneles/1",
+ "nota": "Generado por bin/panel_estudio.py desde el MISMO esquema que usan los estudios internos. Cambian los textos, no la forma.",
+ "paneles": [
+  {
+   "esquema": "preceptoros/panel-estudio/1",
+   "id": "charla-web",
+   "ambito": "publico",
+   "modelo": {
+    "tag": "qwen2.5-coder:3b",
+    "sha256": "4a188102020e9c9530b687fd6400f775c45e90a0d7baafe65bd0a36963fbb7ba",
+    "medida": {
+     "tok_s": 33.89,
+     "segundos": 3.2,
+     "carga_base": 1.04,
+     "cuando": "2026-09-13 · Beelink Ryzen 7 255 + Radeon 780M"
+    }
+   },
+   "entorno": {
+    "paquete": "entorno-estudio-v1.tar.gz",
+    "sha256": "6e8595090dea1df547293d5f064bc2679c5425c017c57bc2efa0a6e3159fb8bd",
+    "bytes": 3096
+   },
+   "loop": {
+    "turnos": [
+     {
+      "n": 1,
+      "papel": "bibliotecario",
+      "modelo": "qwen2.5-coder:3b"
+     },
+     {
+      "n": 2,
+      "papel": "analista",
+      "modelo": "deepseek-r1:7b"
+     },
+     {
+      "n": 3,
+      "papel": "guardian",
+      "modelo": "granite3-dense:8b"
+     },
+     {
+      "n": 4,
+      "papel": "forjador",
+      "modelo": null,
+      "nota": "Python puro, sin LLM"
+     }
+    ]
+   },
+   "reglas": {
+    "puerta_de_privacidad": "Tacha claves, IPs y rutas ANTES de que nada salga.",
+    "propose_only": "Nada se escribe sin --ejecutar; nada cruza a otro nodo sin artefacto.",
+    "sin_firma_no_entra": "Una fila sin `user_hash` verificado no llega al dataset.",
+    "tope_de_ritmo": "5 vueltas por minuto. La iGPU es una y la comparten los bucles."
+   },
+   "juez": {
+    "modelo": "qwen2.5:14b",
+    "rubrica": "CHECKPOINTS.md · 5 joyas, 0-2 cada una",
+    "dos_capas": "determinista primero, MoE despues. Una sola capa es NO_DATA."
+   },
+   "textos": {
+    "es": {
+     "nombre": "La Charla",
+     "que_hace": "Responde sobre PreceptorOS con los comandos reales de instalación, y reconoce a quien ya instaló en vez de repetirle los pasos.",
+     "que_falla": "Inventa cifras con mucha confianza. Si te da un número, pídele de dónde sale: es el fallo que este panel existe para que veas.",
+     "para_quien": "Quien llega por primera vez y quiere instalar sin leerse el repositorio."
+    }
+   }
+  }
+ ]
+}

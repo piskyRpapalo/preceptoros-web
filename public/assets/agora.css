@@ -126,3 +126,27 @@ ul.leyenda li{margin:0 0 .3rem;padding-left:.9rem;text-indent:-.9rem}
 .mi-busto{width:96px;height:96px;display:block;margin:0 0 .5rem}
 /* La puerta al perfil, colgada del pseudonimo en la cabecera. */
 .yo-perfil{font-size:.74rem;margin-left:.5rem}
+
+/* --- LA PORTADA DE COMUNIDAD ---------------------------------------------
+   Estructura, no decoracion: los graficos los pone el carbono. Aqui solo se
+   resuelve que las cifras se lean alineadas y que un NO_DATA no parezca un
+   error -- apagado, nunca rojo, porque un dato sin medir no esta roto. */
+#agora-portada .ag-bloque { margin: 0 0 1.4rem; }
+#agora-portada h3 { font-size: .82rem; letter-spacing: .14em; text-transform: uppercase;
+  margin: 0 0 .5rem; color: var(--bronce, #8a7355); }
+#agora-portada .ag-cifras { display: grid; gap: .9rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr)); }
+#agora-portada .ag-cifra strong.dato,
+#agora-portada .ag-cifra strong { display: block; font-size: 1.7rem; line-height: 1.1;
+  font-family: ui-monospace, "JetBrains Mono", monospace; font-variant-numeric: tabular-nums; }
+#agora-portada .ag-cifra strong.no-data { font-size: .95rem; letter-spacing: .06em; }
+#agora-portada .ag-et { font-size: .8rem; opacity: .85; }
+#agora-portada .ag-cifra p { margin: .3rem 0 0; font-size: .76rem; line-height: 1.4; }
+#agora-portada .ag-descargas, #agora-portada .ag-cerrado { list-style: none; padding: 0; margin: 0; }
+#agora-portada .ag-descargas li { display: flex; flex-wrap: wrap; gap: .6rem;
+  align-items: baseline; padding: .4rem 0; border-bottom: 1px solid var(--panel-borde, #0002); }
+#agora-portada .ag-fich { font-family: ui-monospace, monospace; font-size: .84rem; }
+#agora-portada .ag-peso { font-size: .78rem; opacity: .7; font-variant-numeric: tabular-nums; }
+#agora-portada .hash { font-size: .72rem; opacity: .6; font-family: ui-monospace, monospace; }
+#agora-portada .ag-cerrado li { padding: .5rem 0; }
+#agora-portada .ag-cerrado p { margin: .2rem 0 0; font-size: .8rem; line-height: 1.45; }
