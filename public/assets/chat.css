@@ -175,3 +175,14 @@ button.enviar svg{margin-right:.1rem}
 .showman-nota, .showman-med, .showman-falla { margin: .25rem 0 0; opacity: .85; }
 .showman-med { font-family: ui-monospace, monospace; font-size: .76rem;
   font-variant-numeric: tabular-nums; }
+
+/* LA TERCERA PUERTA · valorar sin escribir nada (`elegir.js`).
+   En FILA y no en columna, al reves que `.corregir-caja`: aquella pide escribir
+   y necesita sitio; esta pide un clic y tiene que caber al lado de la respuesta
+   sin empujarla. El campo del porque se estira con lo que sobre -- es opcional,
+   asi que no reclama espacio propio cuando la pantalla es estrecha. */
+.valorar-caja{display:flex;align-items:center;gap:.4rem;flex-wrap:wrap;
+  margin:.3rem 0 .6rem}
+.valorar-pregunta{font-size:.72rem;opacity:.75}
+.valorar-porque{flex:1 1 8rem;min-width:0;font-size:.74rem;padding:.2rem .4rem}
+@media (max-width:26rem){.valorar-porque{flex-basis:100%}}

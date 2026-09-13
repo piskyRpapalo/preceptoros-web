@@ -30,7 +30,7 @@
  * tambien puede faltar del cache justo el dia que hace falta.
  */
 /* Subir VERSION o el cambio NO llega: ver `config/sw-huella.txt`. */
-const VERSION = 'preceptoros-2026-13-x';
+const VERSION = 'preceptoros-2026-13-y';
 const SHELL = 'shell-' + VERSION;
 const OBRA = 'obra-' + VERSION;
 
@@ -74,7 +74,7 @@ const HUB = [...AGENTES, '/hub.json', '/hub-textos.json',
              '/assets/marble-violet.webp', '/assets/marble-violet-oscuro.webp', '/modelos.json', '/servicios.json', '/instalar.json',
              '/assets/instalar-descargas.js', '/assets/widget.css', '/assets/puertas.css', '/assets/escribir.css', '/assets/placa.css', '/medidas.json', '/assets/medidas.js', '/nav.json', '/assets/cabezal.js', '/assets/cabezal-rotulos.js', '/assets/selector-modelo.js', '/assets/consiento.js', '/cerebros.json', '/cerebros-en.json', '/cerebros-es.json', '/assets/logos-models/preceptor.svg', '/assets/logos-models/qwen.svg', '/assets/logos-models/mistral.svg', '/assets/cabezal.css', '/assets/esquina.css', '/assets/esquina-cuenta.css', '/assets/esquina-par.css', '/assets/mandos.css', '/assets/panel.css', '/assets/nubes.css', '/assets/consiento.css', '/assets/senal.css', '/assets/senal.js',
              '/assets/hub.js',
-             '/assets/hub-cola.js', '/assets/chat-router.js', '/assets/corregir.js', '/assets/aprender.js', '/assets/comandos.js']
+             '/assets/hub-cola.js', '/assets/chat-router.js', '/assets/corregir.js', '/assets/aprender.js', '/assets/elegir.js', '/assets/comandos.js']
   .concat(ESFERAS.map(e => '/assets/agente-3d-' + e + '.webp'))
   /* Las tres tiras: `widget.css` las pide y sin red el cabezal se queda
      con un circulo vacio. */

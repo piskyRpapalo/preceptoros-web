@@ -2416,7 +2416,7 @@ class Cabezal(unittest.TestCase):
         # `aprender.js` entra el 2026-09-13 por la misma razon que entro
         # `bronce.js`: construye y guarda pares firmados. Que nazca sin `fetch`
         # no es la garantia -- la garantia es que este bucle lo mire.
-        for nombre in ("corregir.js", "bronce.js", "aprender.js"):
+        for nombre in ("corregir.js", "bronce.js", "aprender.js", "elegir.js"):
             js = (PUBLICO / "assets" / nombre).read_text(encoding="utf-8")
             codigo = re.sub(r"/\*.*?\*/", "", js, flags=re.S)
             codigo = re.sub(r"(?m)//.*$", "", codigo)
