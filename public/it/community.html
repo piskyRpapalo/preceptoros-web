@@ -29,6 +29,7 @@
 <link rel="stylesheet" href="/assets/esquina-par.css">
 <link rel="stylesheet" href="/assets/mandos.css">
 <link rel="stylesheet" href="/assets/panel.css">
+<link rel="stylesheet" href="/assets/taller.css">
 <link rel="stylesheet" href="/assets/tema.css">
 <link rel="manifest" href="/manifest.webmanifest">
 <meta name="theme-color" content="#17131F">
@@ -43,9 +44,16 @@
 
 <section id="agora-portada" class="panel"></section>
 
-<p class="guia"><strong>Questo è un mercato, non un forum.</strong> In alto c'è quello che il Sovrano chiede oggi: sono due, sono reali, e ognuno dice anche quello che ancora non funziona. Sotto, la bacheca aperta —sfide, compiti, calcolo ceduto— dove chiedi o consegni tu.</p>
+<p class="guia"><strong>Questo è un mercato, non un forum.</strong> In alto c'è quello che il Sovrano chiede oggi: sono due, sono reali, e ognuno dice anche quello che ancora non funziona. Sotto, la bacheca aperta —sfide, compiti, calcolo ceduto— dove chiedi o consegni tu. In mezzo, le linee di ricerca: a che gradino sta ognuna e cosa le manca.</p>
 
 <div id="anuncios" class="panel"></div>
+
+<!-- LA VITRINA DE LAS LINEAS DE INVESTIGACION. Vivia en el
+     LorAtelier y se muda aqui el 2026-09-13: lo que se puede
+     APORTAR es asunto de la comunidad, y el Libro de Pruebas se
+     queda con lo que se MIDE. La rellena `taller.js` desde
+     `loratelier.json` + `taller-<idioma>.json`; vacia no ocupa nada. -->
+<section id="taller"></section>
 
 <!-- EL BANCO DE PRUEBAS. Los cuatro cerebros que NO estan en la puerta:
      aqui es donde compararlos significa algo, con `mistral-base` --la base
@@ -71,6 +79,7 @@
 <script src="/assets/board-anuncios.js"></script>
 <script src="/assets/board-fuentes.js"></script>
 <script src="/assets/board.js"></script>
+<script src="/assets/taller.js"></script>
 
 <script src="/assets/cabezal.js"></script>
 <script src="/assets/cabezal-rotulos.js"></script>

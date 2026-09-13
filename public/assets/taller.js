@@ -36,11 +36,45 @@
     padre.appendChild(dt); padre.appendChild(dd);
   }
 
+  /* LA ESCALERA, y es la unica fuente del progreso. Cuatro peldanos
+     DECLARADOS por quien escribe el registro --no medidos--: se estudia, se
+     entrena, se prueba, se publica. `vision` y `NO_DATA` quedan FUERA a
+     proposito: una intencion declarada no esta en el peldano cero de nada, y
+     una barra al 0 % se lee como un avance parado, que es otra cosa.
+
+     Por que peldano y no «pares firmados de 500», que es lo que se pidio: no
+     existe recuento por linea en ninguna parte. `agora.json` cuenta 3 paquetes
+     firmados en TODO el sitio y no dice a que linea pertenecen. Inventar el
+     denominador seria fabricar la barra entera. */
+  var ESCALERA = ['en_estudio', 'en_entrenamiento', 'beta', 'disponible'];
+
   function sello(estado) {
     var mapa = { en_estudio: 'estudio', en_entrenamiento: 'entrenando',
-                 disponible: 'disponible', vision: 'vision' };
+                 beta: 'beta', disponible: 'disponible', vision: 'vision' };
     var clave = mapa[estado] || 'estudio';
     return el('span', 'sello sello-' + clave, UI[clave] || estado);
+  }
+
+  /* El peldano, con su cuenta y su porcentaje al lado. El porcentaje es la
+     aritmetica de la cuenta --3 de 4 son 75 %-- y no una segunda medida: por eso
+     salen los dos del mismo sitio y en el mismo rotulo. La barra lleva ese
+     rotulo en `aria-label` porque un relleno de color no lo lee nadie. */
+  function barra(bloque) {
+    var i = ESCALERA.indexOf(bloque.estado);
+    if (i < 0) return el('p', 'sin-peldano', UI.sinBarra || '');
+    var n = i + 1, t = ESCALERA.length, pct = Math.round(n * 100 / t);
+    var rot = (UI.peldano || '').replace('{n}', n)
+                .replace('{t}', t).replace('{pct}', pct);
+    var caja2 = el('div', 'peldanos');
+    var via = el('div', 'barra');
+    via.setAttribute('role', 'img');
+    via.setAttribute('aria-label', rot);
+    var relleno = el('span', 'barra-lleno');
+    relleno.style.width = pct + '%';
+    via.appendChild(relleno);
+    caja2.appendChild(via);
+    caja2.appendChild(el('p', 'peldano', rot));
+    return caja2;
   }
 
   /* El recuento SIEMPRE enseña su n. Con cero no se pinta un cero -- un cero
@@ -85,6 +119,48 @@
     return dl;
   }
 
+  /* PROBARLA, con las preguntas que el registro ya trae.
+
+     Lo que se pidio era una ventana de chat DENTRO de cada tarjeta. No se monta,
+     y el motivo es de arquitectura, no de esfuerzo: el chat de esta casa ya
+     existe en dos sitios --la portada instala, el Libro de Pruebas mide-- y un
+     tercero seria una tercera respuesta a «quien contesta aqui», con su propio
+     motor, su propio medidor y su propia deriva. Lo que si es de esta tarjeta
+     son las preguntas de apertura de la linea, que viajan en el registro y hasta
+     hoy no se veian en ningun sitio: se ensenan, se copian, y se pegan en el
+     chat que ya hay. Una puerta, no un motor.
+
+     El enlace es relativo a proposito: desde /es/ va a /es/, y la lengua se
+     conserva sin que nadie la escriba dos veces. */
+  function probar(bloque) {
+    var ps = bloque.plantilla_inicial;
+    if (!ps || !ps.length) return null;
+    var sec = el('section', 'probar');
+    sec.appendChild(el('h4', null, UI.probarTitulo || ''));
+    var vista = document.createElement('textarea');
+    vista.className = 'probar-texto';
+    vista.readOnly = true;
+    vista.rows = Math.min(ps.length + 1, 6);
+    vista.value = ps.join('\n');
+    sec.appendChild(vista);
+    var fila = el('div', 'fila');
+    var bc = el('button', 'boton', UI.probarCopiar || '');
+    bc.type = 'button';
+    bc.addEventListener('click', function () {
+      var hecho = function () { bc.textContent = UI.paqCopiado || 'OK'; };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(vista.value)
+          .then(hecho, function () { vista.select(); hecho(); });
+      } else { vista.select(); hecho(); }
+    });
+    var ir = el('a', 'leve', UI.probarIr || '');
+    ir.href = './benchmark.html#probador';
+    fila.appendChild(bc);
+    fila.appendChild(ir);
+    sec.appendChild(fila);
+    return sec;
+  }
+
   function nivelDos(bloque, texto) {
     var caja2 = el('div', 'linea-mas');
     caja2.hidden = true;
@@ -95,6 +171,8 @@
         par(dl, UI[x[0]] || x[0], x[1]);
         caja2.appendChild(dl);
       });
+    var pr = probar(bloque);
+    if (pr) caja2.appendChild(pr);
     caja2.appendChild(ficha(bloque));
     caja2.appendChild(recuento(bloque));
     if (!bloque.artefacto || !bloque.artefacto.sha256_hash) {
@@ -113,6 +191,12 @@
     cab.appendChild(sello(bloque.estado));
     art.appendChild(cab);
     art.appendChild(el('p', 'linea-util', texto.util || ''));
+    art.appendChild(barra(bloque));
+    /* EL RECUENTO QUE NO HAY, dicho donde se esperaria verlo. Se pidio «324
+       pares firmados de 500» y no existe: ni por linea, ni en ningun fichero de
+       este repo. Un hueco callado en el sitio de una cifra se lee como un cero,
+       asi que se nombra la ausencia y su causa. */
+    if (UI.aportes) art.appendChild(el('p', 'sin-aportes', UI.aportes));
 
     var mas = nivelDos(bloque, texto);
     var boton = el('button', 'taller-abrir', UI.abrir || '');

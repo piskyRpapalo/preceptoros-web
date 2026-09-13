@@ -819,6 +819,96 @@ class ElTaller(unittest.TestCase):
             with self.subTest(bloque=b["id"]):
                 self.assertIn(b["estado"], permitidos)
 
+    def test_la_vitrina_vive_donde_se_puede_APORTAR(self):
+        """Una sola casa para la vitrina, y es Comunidad desde el 2026-09-13.
+
+        Estaba en `benchmark.html` --el Libro de Pruebas-- y ahi la encuentra
+        quien viene a MEDIR un motor, no quien viene a arrimar el hombro. Se
+        muda a `community.html`, que es la pagina cuyo trabajo es justo ese.
+
+        Y se comprueba EN LAS DOS DIRECCIONES a proposito. Copiarla en vez de
+        mudarla habria sido la salida barata, y el resultado serian dos
+        renderizados del mismo registro en dos paginas: el dia que una cambie de
+        criterio --que peldanos cuenta, que hueco declara-- las dos diran la
+        verdad por separado. Es la averia que este repo lleva un mes pagando en
+        otros sitios, y aqui se cierra antes de abrirse.
+        """
+        piezas = ('id="taller"', '/assets/taller.js', '/assets/taller.css')
+        for idioma in IDIOMAS:
+            comunidad = (PUBLICO / idioma / "community.html").read_text(encoding="utf-8")
+            libro = (PUBLICO / idioma / "benchmark.html").read_text(encoding="utf-8")
+            for pieza in piezas:
+                with self.subTest(idioma=idioma, pieza=pieza):
+                    self.assertIn(pieza, comunidad,
+                                  f"{idioma}/community.html no monta la vitrina")
+                    self.assertNotIn(pieza, libro,
+                                     f"{idioma}/benchmark.html la sigue montando: "
+                                     "dos casas para el mismo registro")
+
+    def test_la_barra_solo_existe_donde_hay_peldano(self):
+        """La barra mide una ESCALERA declarada, no un porcentaje de pares.
+
+        Se pidio «324 pares firmados de 500» con su barra. Ese recuento no
+        existe: ni por linea en `loratelier.json`, ni en ningun otro fichero del
+        repo. Lo mas cercano es `agora.json`, que cuenta 3 paquetes firmados en
+        TODO el sitio y no dice a que linea pertenecen. Con el denominador
+        inventado, la barra seria el dibujo de una medida que nadie tomo.
+
+        Lo que si esta declarado es el peldano: se estudia, se entrena, se
+        prueba, se publica. Cuatro, en orden, escritos por quien lleva el
+        registro. Este test ata la barra a esa escalera y deja FUERA `vision` y
+        `NO_DATA`, que no son el peldano cero de nada -- una barra al 0 % se lee
+        como un avance parado, y lo que pasa ahi es que no ha empezado.
+        """
+        js = (PUBLICO / "assets" / "taller.js").read_text(encoding="utf-8")
+        m = re.search(r"var ESCALERA = \[(.*?)\]", js, re.S)
+        self.assertIsNotNone(m, "taller.js no declara la escalera")
+        escalera = re.findall(r"'([a-z_]+)'", m.group(1))
+        self.assertEqual(escalera,
+                         ["en_estudio", "en_entrenamiento", "beta", "disponible"],
+                         "la escalera cambio de peldanos o de orden")
+        for fuera in ("vision", "NO_DATA"):
+            self.assertNotIn(fuera, escalera,
+                             f"«{fuera}» entro en la escalera y pintaria barra")
+        # Y el reverso: un estado del registro que no este en la escalera tiene
+        # que caer en el hueco declarado, nunca en una barra a cero.
+        self.assertIn("UI.sinBarra", js,
+                      "sin el hueco declarado, un estado fuera de la escalera "
+                      "no pinta nada y el silencio se lee como un cero")
+        for b in self.registro["bloques"]:
+            with self.subTest(bloque=b["id"]):
+                self.assertTrue(b["estado"] in escalera
+                                or b["estado"] in ("vision", "NO_DATA"),
+                                f"estado {b['estado']} sin barra ni hueco")
+
+    def test_cada_peldano_tiene_su_palabra_en_las_ocho_lenguas(self):
+        """La cicatriz que este test cierra: `beta` no estaba en el mapa.
+
+        El vocabulario cerrado del registro tiene cinco estados y el render solo
+        traducia cuatro. `beta` caia al `|| 'estudio'` del final, asi que las dos
+        lineas EN PRUEBAS --bienvenida y reclamaciones-- se publicaban con el
+        sello «En estudio» en las ocho lenguas. Ni un test rojo: el mapa vivia en
+        el render y nadie lo comparaba con el registro.
+
+        Se comprueba contra el MAPA del propio render, no contra una lista
+        escrita aqui: si manana entra un sexto estado, el que lo anada al
+        registro tiene que anadirlo al mapa, y el que lo anada al mapa tiene que
+        traducirlo ocho veces.
+        """
+        js = (PUBLICO / "assets" / "taller.js").read_text(encoding="utf-8")
+        m = re.search(r"var mapa = \{(.*?)\};", js, re.S)
+        self.assertIsNotNone(m, "taller.js no declara el mapa de sellos")
+        mapa = dict(re.findall(r"(\w+):\s*'(\w+)'", m.group(1)))
+        estados = {b["estado"] for b in self.registro["bloques"]}
+        self.assertFalse(estados - set(mapa),
+                         f"estados del registro sin palabra en el render: "
+                         f"{estados - set(mapa)}")
+        for estado, clave in sorted(mapa.items()):
+            for idioma in sorted(self.textos):
+                with self.subTest(estado=estado, idioma=idioma):
+                    self.assertTrue(self.textos[idioma]["ui"].get(clave),
+                                    f"«{clave}» vacia o ausente en {idioma}")
+
     def test_el_registro_cumple_su_contrato_formal(self):
         """El esquema de `data/` no es documentacion: valida el fichero vivo.
 
