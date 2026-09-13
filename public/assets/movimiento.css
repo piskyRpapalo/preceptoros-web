@@ -1,0 +1,97 @@
+/* preceptoros.org · movimiento y estado. Aditivo: no redefine ni un color.
+ *
+ * QUE ES ESTO, Y QUE DELIBERADAMENTE NO ES
+ * -----------------------------------------
+ * El brief de UX pedia una paleta nueva --pizarra oscura con ambar-- y aqui NO
+ * esta. El canon visual firmado es la v3.0: marmol, violeta y bronce, y hay
+ * gate que lo hace cumplir sobre `canon.css`. Meter una paleta ajena habria
+ * puesto el gate en rojo y, peor, habria cambiado la identidad del sitio como
+ * efecto colateral de un encargo de animaciones.
+ *
+ * Asi que de aquel brief se entrega lo que era suyo de verdad: el SISTEMA
+ * SEMANTICO --accion, exito, y un NO_DATA que no alarma-- y el MOVIMIENTO. Los
+ * colores salen de `tema.css`, que es su duenio.
+ *
+ * Tampoco hay `@import` ni `@font-face`: el gate los prohibe en el canon porque
+ * «cero peticiones externas al cargar» es una cifra publicada en la portada. La
+ * monoespaciada se NOMBRA; quien la tenga la ve, quien no, cae al sistema.
+ */
+
+:root {
+  /* Una sola curva para lo normal y otra para lo que entra desde fuera de la
+     pantalla. Repartirlas por el fichero es como se acaba con quince
+     duraciones distintas y una interfaz que no tiene ritmo. */
+  --paso: .3s cubic-bezier(.4, 0, .2, 1);
+  --muelle: .35s cubic-bezier(.16, 1, .3, 1);
+}
+
+/* --- DATOS: alineados, y lo que no hay se dice ------------------------- */
+
+/* Cifras, hashes y medidas. Una firma de 128 caracteres o una columna de tok/s
+   en proporcional no se puede comparar de un vistazo: los digitos bailan. */
+.dato, .hash, .metrica {
+  font-family: ui-monospace, "JetBrains Mono", "Fira Code", SFMono-Regular,
+               Menlo, Consolas, monospace;
+  font-variant-numeric: tabular-nums;
+}
+.hash { word-break: break-all; }
+
+/* NO_DATA NO ES UN ERROR, Y POR ESO NO VA EN ROJO.
+   El rojo dice «algo se ha roto, corre». Un dato que todavia no existe no esta
+   roto: esta sin medir, y decirlo es lo correcto. Pintarlo de alarma entrena a
+   la gente a querer taparlo, que es exactamente como nacen los ceros
+   inventados que este proyecto existe para no tener. */
+.no-data {
+  font-family: ui-monospace, "JetBrains Mono", SFMono-Regular, monospace;
+  font-size: .86em; letter-spacing: .04em;
+  color: var(--tenue); opacity: .85;
+  border-bottom: 1px dotted currentColor;
+  cursor: help;
+}
+
+/* --- MOVIMIENTO -------------------------------------------------------- */
+
+/* Entrada de panel o de pestana: nada de saltos ni de recargas. */
+.entra { animation: entra var(--paso) both; }
+@keyframes entra {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* El panel lateral llega desde la derecha con muelle suave. Se mueve
+   `transform`, no `right`: el navegador lo resuelve en el compositor y no
+   recalcula la maqueta en cada fotograma, que en un movil es la diferencia
+   entre deslizarse y dar tirones. */
+.panel-lateral {
+  transform: translateX(100%);
+  transition: transform var(--muelle), visibility var(--muelle);
+  visibility: hidden;
+  will-change: transform;
+}
+.panel-lateral[data-abierto="1"] { transform: translateX(0); visibility: visible; }
+
+/* Sensacion tactil: se levanta al pasar por encima y se hunde al pulsar. */
+.boton, .leve, button.sala {
+  transition: transform .12s ease, background-color var(--paso),
+              border-color var(--paso), box-shadow var(--paso);
+}
+.boton:hover, .leve:hover, button.sala:hover { transform: translateY(-1px); }
+.boton:active, .leve:active, button.sala:active { transform: translateY(1px); }
+
+/* El foco se VE. Sin esto, navegar con Tab es avanzar a ciegas -- y el teclado
+   no es un caso raro: es como se mueve quien no puede usar el raton. */
+.boton:focus-visible, .leve:focus-visible, button.sala:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--bronce); outline-offset: 2px; transform: none;
+}
+
+/* --- Y TODO ESTO SE APAGA SI ASI LO PIDE EL APARATO -------------------- */
+/* No es una cortesia: para quien tiene trastorno vestibular, una interfaz que
+   se desliza produce mareo de verdad. `taller.css` y `bunker.css` ya lo
+   respetan; esto no puede ser la excepcion de la casa. */
+@media (prefers-reduced-motion: reduce) {
+  .entra { animation: none; }
+  .panel-lateral, .boton, .leve, button.sala { transition: none; }
+  .boton:hover, .leve:hover, button.sala:hover,
+  .boton:active, .leve:active, button.sala:active { transform: none; }
+}

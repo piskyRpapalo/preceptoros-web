@@ -2207,14 +2207,25 @@ class Cabezal(unittest.TestCase):
         jurar que no los usa, y esa cita bastaria para dar un falso positivo,
         que es el mismo cuidado que ya toma el test del rack.
         """
+        # LOS DOS FICHEROS, y esto se aprendio partiendo uno. El 2026-09-13
+        # `corregir.js` llego a 90 B del tope y el almacen de pares se mudo a
+        # `bronce.js` -- que es justo donde vive ahora TODO lo que toca los
+        # datos y podria sacarlos. Este test siguio verde mirando solo el
+        # fichero viejo: la guarda se habia quedado vigilando la puerta por la
+        # que ya no pasa nadie. Una guarda tiene que seguir al codigo cuando el
+        # codigo se muda, o deja de guardar sin dejar de pasar.
+        for nombre in ("corregir.js", "bronce.js"):
+            js = (PUBLICO / "assets" / nombre).read_text(encoding="utf-8")
+            codigo = re.sub(r"/\*.*?\*/", "", js, flags=re.S)
+            codigo = re.sub(r"(?m)//.*$", "", codigo)
+            for salida in ("fetch", "XMLHttpRequest", "sendBeacon", "WebSocket",
+                           "EventSource", "navigator.send"):
+                with self.subTest(fichero=nombre, salida=salida):
+                    self.assertNotIn(salida, codigo,
+                                     f"{nombre} puede sacar el par por {salida}")
         js = (PUBLICO / "assets" / "corregir.js").read_text(encoding="utf-8")
         codigo = re.sub(r"/\*.*?\*/", "", js, flags=re.S)
         codigo = re.sub(r"(?m)//.*$", "", codigo)
-        for salida in ("fetch", "XMLHttpRequest", "sendBeacon", "WebSocket",
-                       "EventSource", "navigator.send"):
-            with self.subTest(salida=salida):
-                self.assertNotIn(salida, codigo,
-                                 f"corregir.js puede sacar el par por {salida}")
         # El esquema es el de `preceptor/captura.py`, campo a campo. Dos
         # esquemas para el mismo hecho obligan a un traductor en medio, y ese
         # traductor es donde un dia se pierde el consentimiento.

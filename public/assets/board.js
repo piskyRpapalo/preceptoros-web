@@ -112,7 +112,17 @@
       f.appendChild(b);
     });
     raiz.appendChild(f);
-    (d.hilos || []).forEach(function (h) { lista.appendChild(fila(h)); });
+    /* EL SILENCIO SE DICE. Una lista vacia sin explicacion parece una lista
+       que fallo al cargar, y quien la ve se va pensando que el sitio esta roto.
+       Decir que no hay hilos --y de paso que se puede abrir el primero-- cuesta
+       tres lineas y convierte un hueco en una invitacion. Es la misma regla que
+       el NO_DATA de arriba: lo que no hay se nombra. */
+    var hilos = d.hilos || [];
+    if (!hilos.length) {
+      raiz.appendChild(nota(T.tbVacio || 'El Agora esta en silencio. Se el ' +
+                            'primero en proponer un [TASK].', 'nodata'));
+    }
+    hilos.forEach(function (h) { lista.appendChild(fila(h)); });
     raiz.appendChild(lista);
 
     zonaPub = document.createElement('div');

@@ -42,91 +42,26 @@
  */
 (function () {
   var dialogo = document.getElementById('dialogo');
-  if (!dialogo || !window.Identity) return;
+  /* `Bronce` es el dueno del almacen de pares y de la puerta de salida. Vive en
+     `bronce.js` desde que este fichero toco el tope de 16 KiB con noventa bytes
+     de margen: un fichero al limite no admite ni un arreglo, y el proximo
+     arreglo siempre llega. Si no esta cargado, no se pinta nada -- un boton de
+     corregir que no puede guardar es peor que ningun boton. */
+  if (!dialogo || !window.Identity || !window.Bronce) return;
 
-  /* Base de datos APARTE de la de `auth.js`, y no es descuido. `auth.js` abre
-     `preceptoros` en la version 1 y crea un solo almacen; anadir aqui otro
-     obligaria a subir a la version 2, y entonces el `open(BD, 1)` de auth.js
-     revienta con VersionError. Ademas son dos cosas con vidas distintas: la
-     identidad es para siempre, las correcciones son material de trabajo. */
-  var BD = 'preceptoros-bronce', ALMACEN = 'correcciones';
-
-  function abrir() {
-    return new Promise(function (ok, mal) {
-      var p = indexedDB.open(BD, 1);
-      p.onupgradeneeded = function () {
-        p.result.createObjectStore(ALMACEN, { keyPath: 'id', autoIncrement: true });
-      };
-      p.onsuccess = function () { ok(p.result); };
-      p.onerror = function () { mal(p.error); };
-    });
-  }
-
-  function guardar(reg) {
-    return abrir().then(function (db) {
-      return new Promise(function (ok, mal) {
-        var t = db.transaction(ALMACEN, 'readwrite');
-        t.objectStore(ALMACEN).add(reg);
-        t.oncomplete = function () { ok(); };
-        t.onerror = function () { mal(t.error); };
-      });
-    });
-  }
-
-  function leerTodo() {
-    return abrir().then(function (db) {
-      return new Promise(function (ok, mal) {
-        var p = db.transaction(ALMACEN, 'readonly').objectStore(ALMACEN).getAll();
-        p.onsuccess = function () { ok(p.result || []); };
-        p.onerror = function () { mal(p.error); };
-      });
-    });
-  }
-
-  /* SE VUELVE A FIRMAR AL SALIR, y no es papeleo.
-     Lo guardado lleva `consent: 0`: es tuyo y no material de nadie. Lo que se
-     entrega es otro objeto --el mismo par con `consent: 1`-- y por tanto otros
-     bytes, que exigen otra firma. Reutilizar la firma del guardado seria
-     entregar algo que nunca firmaste: la firma cubriria un `consent: 0` que ya
-     no es cierto, y una firma que no cubre lo que se manda no protege nada.
-
-     `Object.assign` conserva el ORDEN de las claves, y el orden importa:
-     `JSON.stringify` lo respeta, asi que es lo que se firma y lo que el otro
-     lado tiene que reconstruir. Por eso viaja tambien `canonico`, el texto
-     exacto: sin el, verificar depende de que dos serializadores distintos
-     coincidan caracter a caracter, y ahi un dia se cuela un acento. */
-  function entregar(reg) {
-    var par = Object.assign({}, reg.par, { consent: 1 });
-    var texto = JSON.stringify(par);
-    return window.Identity.firmar(par).then(function (f) {
-      return window.Identity.publica().then(function (pub) {
-        return { par: par, canonico: texto, firma: f.firma, autor: f.autor,
-                 algoritmo: f.algoritmo, publica: pub };
-      });
-    });
-  }
-
-  /* Un `Blob` y un `<a download>`. NO es una salida de red y el gate lo sabe:
-     su lista es `fetch`, `XMLHttpRequest`, `sendBeacon`, `WebSocket` y
-     `EventSource` -- las cinco formas de que un dato se vaya SOLO. Bajarse uno
-     sus propias cosas es lo contrario de eso. */
-  function bajar(datos) {
-    var url = URL.createObjectURL(new Blob(
-      [JSON.stringify(datos, null, 1)], { type: 'application/json' }));
-    var a = document.createElement('a');
-    a.href = url;
-    a.download = 'preceptoros-correcciones-' +
-      new Date().toISOString().slice(0, 19).replace(/[:T]/g, '') + '.json';
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    // Se suelta el objeto: un blob vivo retiene el par entero en memoria.
-    setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
-  }
-
+  /* EL HUB MANDA; EL `#i18n` DE LA PAGINA ES EL RESPALDO. `hub.js` solo vive
+     en la portada y arrastra un fetch y el panel entero: cargarlo en el
+     Benchmark por seis rotulos es caro. Sin respaldo, el boton alli saldria SIN
+     TEXTO, que es peor que no estar. */
+  var MIO = null;
   function L(clave) {
     var t = (window.Hub && window.Hub.textos) || {};
-    return t[clave] || '';
+    if (t[clave]) { return t[clave]; }
+    if (MIO === null) {
+      var b = document.getElementById('i18n');
+      try { MIO = b ? JSON.parse(b.textContent) : {}; } catch (e) { MIO = {}; }
+    }
+    return MIO[clave] || '';
   }
 
   /* LAS PALABRAS DE LA EXPORTACION VIVEN AQUI, Y ES UNA EXCEPCION MEDIDA.
@@ -260,11 +195,18 @@
         motivo: motivo.value.trim() || 'NO_DATA',
         tarea: tarea(par.prompt),
         consent: 0,
-        origen: 'preceptoros.org'
+        /* CON LA PAGINA DENTRO. Decia solo 'preceptoros.org', y desde que el
+           boton vive tambien en el Benchmark eso ya no identifica nada: el
+           laboratorio recibe los dos pares por la misma puerta y no puede
+           distinguir una correccion del chat de la portada de una del Libro de
+           Pruebas. Son dos poblaciones distintas --distinto publico, distinta
+           intencion-- y mezclarlas contamina las dos, que es el mismo motivo
+           por el que existe la columna `arnes`. */
+        origen: 'preceptoros.org' + location.pathname
       };
       window.Identity.firmar(reg).then(function (f) {
         return window.Identity.publica().then(function (pub) {
-          return guardar({ par: reg, firma: f.firma, autor: f.autor,
+          return window.Bronce.guardar({ par: reg, firma: f.firma, autor: f.autor,
                            algoritmo: f.algoritmo, publica: pub });
         });
       }).then(function () {
@@ -295,18 +237,14 @@
     b.type = 'button'; b.className = 'leve';
     var nota = document.createElement('p');
     nota.className = 'tenue'; nota.textContent = P('q');
-    leerTodo().then(function (regs) {
-      b.textContent = P('b') + ' (' + regs.length + ' ' + P('n') + ')';
+    window.Bronce.leerTodo().then(function (regs) {
+      b.textContent = P('b') + ' (' + regs.length + ')';
     });
     b.addEventListener('click', function () {
       b.disabled = true;
-      leerTodo().then(function (regs) {
-        return Promise.all(regs.map(entregar));
-      }).then(function (pares) {
-        bajar({ esquema: 'preceptoros/correcciones/1',
-                exportado: new Date().toISOString(), pares: pares });
+      window.Bronce.exportar().then(function (cuantos) {
         nota.className = 'nodata';
-        nota.textContent = P('v') + ': ' + pares.length;
+        nota.textContent = P('v') + ': ' + cuantos;
       }).catch(function (e) {
         b.disabled = false;
         nota.className = 'nodata';

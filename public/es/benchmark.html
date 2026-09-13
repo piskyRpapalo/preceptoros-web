@@ -9,6 +9,7 @@
 <link rel="stylesheet" href="/assets/base.css">
 <link rel="stylesheet" href="/assets/movil.css">
 <link rel="stylesheet" href="/assets/canon.css">
+<link rel="stylesheet" href="/assets/movimiento.css">
 <link rel="stylesheet" href="/assets/agora.css">
 <link rel="stylesheet" href="/assets/chat.css">
 <link rel="stylesheet" href="/assets/escribir.css">
@@ -50,6 +51,7 @@
     <div id="motor"></div>
     <div id="local-ai" class="fila"></div>
     <p id="brain" class="brain"></p>
+    <div id="identity" class="fila identity"></div>
   </div>
   <textarea id="medida-json" rows="5" readonly hidden></textarea>
   <button type="button" id="medida-copiar" data-copia="medida-json" data-hecho="Copiado ✓" data-manual="Selecciona y Ctrl+C" hidden>Copiar la medida</button>
@@ -158,7 +160,20 @@
  "sensorBoton": "Resetear",
  "sensorRegistrado": "Reseteo registrado como medida de límite en esta sesión. No se guarda en ningún sitio: esta web no almacena nada tuyo.",
  "sinMotor": "NO_DATA · no hay motor de IA disponible en este navegador.",
- "usarNavegador": "Usar la IA de tu navegador"
+ "usarNavegador": "Usar la IA de tu navegador",
+ "corregirBoton": "Corregir esta respuesta",
+ "corregirQue": "Escribe aquí la respuesta que esperabas…",
+ "corregirMotivo": "Por qué estaba mal (opcional)",
+ "corregirFirmar": "Firmar la corrección",
+ "corregirNoViaja": "Se firma y se guarda en TU aparato. No viaja solo: si quieres entregarlo, lo exportas tú a un fichero.",
+ "corregirGuardado": "Firmado y guardado aquí. Nada ha salido de tu aparato.",
+ "corregirFallo": "No se pudo firmar",
+ "idAviso": "Se genera una clave en tu navegador. No se puede exportar ni copiar a otro aparato: si borras los datos del sitio, esta identidad se pierde y no hay forma de recuperarla. No hay contraseña que olvidar ni servidor que la guarde.",
+ "idClave": "Ver mi huella",
+ "idEntrar": "Crear identidad",
+ "idFallo": "NO_DATA — no se pudo crear la identidad:",
+ "idPerfil": "Mi perfil",
+ "idPublica": "Clave pública:"
 }</script>
 <script src="/assets/ambient.js"></script>
 <script src="/assets/benchmark.js"></script>
@@ -173,6 +188,8 @@
 <script src="/assets/taller.js"></script>
 <script src="/assets/cabezal.js"></script>
 <script src="/assets/auth.js"></script>
+<script src="/assets/bronce.js"></script>
+<script src="/assets/corregir.js"></script>
 <script src="/assets/cabezal-rotulos.js"></script>
 <script src="/assets/pwa.js"></script>
 </body>
