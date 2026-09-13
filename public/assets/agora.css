@@ -163,3 +163,17 @@ ul.leyenda li{margin:0 0 .3rem;padding-left:.9rem;text-indent:-.9rem}
    escondido esta contado y no dicho. */
 #agora-portada .ag-falla { border-left: 2px solid var(--bronce, #8a7355);
   padding-left: .6rem; }
+#agora-portada .ag-niveles { list-style: none; counter-reset: niv; padding: 0; margin: 0; }
+#agora-portada .ag-nivel { counter-increment: niv; padding: .5rem 0 .5rem 2rem;
+  position: relative; border-bottom: 1px solid var(--panel-borde, #0002); }
+#agora-portada .ag-nivel::before { content: counter(niv, decimal-leading-zero);
+  position: absolute; left: 0; top: .55rem; font: 600 .72rem ui-monospace, monospace; opacity: .5; }
+#agora-portada .ag-nivel.cerrado { opacity: .72; }
+#agora-portada .ag-estado { margin-left: .6rem; font-size: .66rem; letter-spacing: .12em;
+  padding: .1rem .4rem; border: 1px solid currentColor; border-radius: calc(var(--radius) - 11px); opacity: .8; }
+#agora-portada .ag-causa { border-left: 2px solid var(--bronce, #8a7355);
+  padding-left: .6rem; font-size: .8rem; }
+#agora-portada .ag-moderacion { margin-top: .8rem; font-size: .85rem; }
+#agora-portada .ag-moderacion summary { cursor: pointer; }
+#agora-portada .ag-moderacion ul { margin: .5rem 0; padding-left: 1.1rem; }
+#agora-portada .ag-moderacion li { margin: .2rem 0; }

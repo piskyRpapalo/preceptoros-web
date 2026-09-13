@@ -195,6 +195,51 @@
         raiz.appendChild(c);
       }
 
+      /* --- LOS NIVELES, Y QUE FALTA PARA ABRIR EL SIGUIENTE ---------------
+         Salen de `config/agora-niveles.json`, no de un texto escrito aqui: el
+         dia que el Soberano cambie un `estado` de CERRADO a ABIERTO, la pagina
+         lo dice sola sin desplegar una linea de codigo. Un motivo copiado a
+         mano es un motivo que un dia deja de ser verdad sin que nadie se entere,
+         y de eso esta llena la historia de este sitio. */
+      if ((d.niveles || []).length) {
+        var n = el('section', 'ag-bloque');
+        n.appendChild(el('h3', null, T('agNiveles', 'Hasta dónde puedes llegar hoy')));
+        var on = el('ol', 'ag-niveles');
+        d.niveles.forEach(function (x) {
+          var li = el('li', 'ag-nivel ' + (x.estado === 'ABIERTO' ? 'abierto' : 'cerrado'));
+          li.appendChild(el('strong', null, x.nombre));
+          li.appendChild(el('span', 'ag-estado', x.estado));
+          li.appendChild(el('p', 'tenue', x.quien));
+          /* El motivo del cierre se ENSENA. Un apartado cerrado sin causa se lee
+             como un descuido, y este no lo es. */
+          if (x.estado !== 'ABIERTO' && x.causa) {
+            li.appendChild(el('p', 'ag-causa', x.causa));
+          }
+          on.appendChild(li);
+        });
+        n.appendChild(on);
+        if (d.moderacion) {
+          var mo = el('details', 'ag-moderacion');
+          mo.appendChild(el('summary', null,
+            T('agModera', 'Cómo se modera') + ' · ' + d.moderacion.estado));
+          mo.appendChild(el('p', null, d.moderacion.principio));
+          var ur = el('ul');
+          (d.moderacion.reglas_visibles || []).forEach(function (r) {
+            ur.appendChild(el('li', null, r));
+          });
+          mo.appendChild(ur);
+          /* LO QUE FALTA PARA FIRMARLA, dicho en la propia pagina. Una politica
+             a medias que se presenta como cerrada es peor que una declarada. */
+          if ((d.moderacion.falta_para_firmarla || []).length) {
+            mo.appendChild(el('p', 'no-data',
+              'Sin firmar todavía. Falta decidir: ' +
+              d.moderacion.falta_para_firmarla.join(' · ')));
+          }
+          n.appendChild(mo);
+        }
+        raiz.appendChild(n);
+      }
+
       /* --- DE QUE ESTA HECHA LA MEMORIA ------------------------------------
          Se dice qué índice es, con su medida. Decir «base de datos vectorial»
          sin haberlo comprobado seria la clase de palabra que suena a rigor y no
