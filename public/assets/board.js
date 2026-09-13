@@ -65,7 +65,14 @@
     return li;
   }
 
+  /* Lo ultimo que dijo el Agora, para que el formulario pueda consultarlo.
+     `d` es un PARAMETRO de `pinta`, no una variable del modulo: leerlo desde
+     `ofrecerPublicar` habria sido un ReferenceError en produccion, y
+     `node --check` no lo ve porque no es error de sintaxis. Se guarda aqui. */
+  var ultimoAgora = null;
+
   function pinta(d, procedencia) {
+    ultimoAgora = d;
     var r = rotulo(procedencia);
     // Sin datos nuevos solo cambia el aviso: el Agora fallo pero lo que ya
     // estaba pintado sigue siendo lo mejor que hay.
@@ -175,8 +182,26 @@
       tipo.appendChild(o);
     });
     var cuerpo = campo(T.tbCuerpo, document.createElement('textarea'));
+    /* EL AGORA DICE SI ACEPTA ESCRITURA, Y SE ENSENA ANTES DE ESCRIBIR.
+       Medido el 2026-09-13 contra la API: `/api/v1/threads` devuelve
+       `"escritura":"cerrada: el Agora todavia no modera"` y su OpenAPI declara
+       solo `get` -- no hay POST de hilos. Que el hilo se firme y se quede en el
+       aparato NO es un fallo: es una decision, y con su motivo dicho.
+
+       El fallo era que la pagina no lo contaba hasta DESPUES de firmar, cuando
+       ya habias escrito el hilo entero creyendo que publicabas. El aviso sube
+       aqui, y se lee de la PROPIA API: el dia que el Agora abra la escritura
+       esto cambia solo, sin desplegar nada. Un motivo copiado a mano es un
+       motivo que un dia deja de ser verdad sin que nadie se entere. */
+    if (ultimoAgora && ultimoAgora.escritura) {
+      zonaPub.appendChild(nota(
+        (T.tbEscritura || 'El Ágora dice de sí mismo:') + ' ' +
+        ultimoAgora.escritura, 'nodata'));
+    }
+
     var b = document.createElement('button');
     b.type = 'button'; b.textContent = T.tbFirmar;
+
     b.addEventListener('click', function () {
       var hilo = { tipo: tipo.value, titulo: titulo.value.trim(),
                    cuerpo: cuerpo.value.trim(), cuando: new Date().toISOString() };
