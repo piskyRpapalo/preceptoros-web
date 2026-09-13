@@ -130,5 +130,17 @@
     });
   }
 
-  window.Bronce = { guardar: guardar, leerTodo: leerTodo, exportar: exportar };
+  /* LO MISMO QUE EXPORTA, PERO SIN BAJARLO. `exportar` construye el paquete y
+     lo descarga; `paraEnviar` construye el mismo paquete y lo devuelve, para
+     que la puerta del rack lo mande. UNA sola construccion para los dos
+     caminos: dos formas de armar el mismo objeto acaban divergiendo, y aqui la
+     divergencia seria una firma que no verifica. */
+  function paraEnviar() {
+    return leerTodo().then(function (regs) {
+      return Promise.all(regs.map(entregar));
+    });
+  }
+
+  window.Bronce = { guardar: guardar, leerTodo: leerTodo, exportar: exportar,
+                    paraEnviar: paraEnviar };
 })();

@@ -216,6 +216,23 @@
     //
     // Si hace falta acortarla para ENSENARLA, se acorta al pintar, que es
     // donde el recorte no destruye nada. Aqui no.
+    /* FIRMAR UNA CADENA, no un objeto. El reto del Agora se firma sobre
+       `pseudonimo|clave_publica|reto`, que es texto plano: pasarlo por
+       `JSON.stringify` le anadiria comillas y el servidor verificaria otros
+       bytes. Son dos firmas distintas y por eso son dos funciones distintas --
+       una sola con un `if` dentro es donde un dia se firma lo que no era. */
+    firmarTexto: function (texto) {
+      if (!yo) return Promise.reject(new Error('sin identidad'));
+      return crypto.subtle.sign({ name: 'Ed25519' }, yo.claves.privateKey,
+        new TextEncoder().encode(String(texto))).then(function (f) {
+          var h = hex(f);
+          if (h.length !== FIRMA_HEX) {
+            return Promise.reject(new Error(
+              'firma de ' + h.length + ' caracteres, se esperaban ' + FIRMA_HEX));
+          }
+          return h;
+        });
+    },
     firmar: function (obj) {
       if (!yo) return Promise.reject(new Error('sin identidad'));
       var texto = JSON.stringify(obj);

@@ -162,3 +162,16 @@ button.enviar svg{margin-right:.1rem}
    declara explicito en vez de bajarle la especificidad a la regla de arriba,
    que es lo que le da su forma. */
 .pleno-cerrar[hidden]{display:none}
+
+/* --- EL PREGONERO ---------------------------------------------------------
+   Va ANTES del chat y no despues: su trabajo entero es que sepas quien te va a
+   contestar antes de que escribas. El defecto se pinta con el mismo peso que
+   todo lo demas -- un pregonero que solo cuenta lo bueno es un vendedor. */
+.showman { margin: 0 0 .7rem; padding: .55rem .7rem;
+  border-left: 2px solid var(--bronce, #8a7355); font-size: .84rem; line-height: 1.5; }
+.showman-linea { margin: 0; }
+.showman-linea strong { letter-spacing: .02em; }
+.showman-tag { font-family: ui-monospace, monospace; font-size: .78rem; opacity: .8; }
+.showman-nota, .showman-med, .showman-falla { margin: .25rem 0 0; opacity: .85; }
+.showman-med { font-family: ui-monospace, monospace; font-size: .76rem;
+  font-variant-numeric: tabular-nums; }

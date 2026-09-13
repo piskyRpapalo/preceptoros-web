@@ -2401,6 +2401,18 @@ class Cabezal(unittest.TestCase):
         # fichero viejo: la guarda se habia quedado vigilando la puerta por la
         # que ya no pasa nadie. Una guarda tiene que seguir al codigo cuando el
         # codigo se muda, o deja de guardar sin dejar de pasar.
+        # `enviar.js` NO entra en esta lista, y la ausencia es la regla.
+        #
+        # Ese fichero SI sale a la red, y a proposito: es el canal firmado por
+        # el Soberano el 2026-09-13 --«si un usuario actua en la web durante una
+        # hora de paquetes, debe tener una posibilidad de enviarlas»--. La
+        # guarda existe para que el egreso sea DELIBERADO Y NOMBRADO, no para
+        # que no exista: prohibirlo en todas partes habria dejado el trabajo de
+        # la gente encerrado en su aparato para siempre.
+        #
+        # Lo que sigue prohibido es que salga por donde nadie lo declaro:
+        # `corregir.js` guarda y `bronce.js` construye, y ninguno de los dos
+        # tiene por que hablar con nadie.
         for nombre in ("corregir.js", "bronce.js"):
             js = (PUBLICO / "assets" / nombre).read_text(encoding="utf-8")
             codigo = re.sub(r"/\*.*?\*/", "", js, flags=re.S)
