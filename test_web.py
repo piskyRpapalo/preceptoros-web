@@ -2271,6 +2271,42 @@ class Cabezal(unittest.TestCase):
             "sube `VERSION` en public/sw.js, y escribe en "
             f"config/sw-huella.txt  huella={real}")
 
+    def test_ninguna_pagina_ofrece_un_enlace_y_lo_desmiente(self):
+        """No se puede poner un boton y decir al lado que no funciona.
+
+        Medido el 2026-09-13 en produccion: `instalar.html` ofrecia
+        `releases/latest/download/install.sh` --que devuelve 200 con 4.529 B-- y
+        justo debajo decia «hasta que se publique la primera version dan 404».
+        La release v1.3 llevaba publicada desde el 2026-08-31 con trece ficheros.
+
+        Es el peor fallo posible en la pagina cuyo trabajo es que la gente
+        instale: no una promesa incumplida, sino una cosa ENTREGADA y negada. A
+        quien llega se le esta diciendo que no se moleste. Y aun asi alguien
+        habia descargado `install.sh` dos veces, o sea que la nota no disuadio a
+        todos -- pero no se sabe a cuantos si.
+
+        La comprobacion es de COHERENCIA INTERNA y por eso no necesita red: si
+        una pagina enlaza a un sitio y ademas afirma que ese sitio da 404, una de
+        las dos cosas sobra. Un test que consultara GitHub ataria el gate a que
+        haya internet, y un gate que depende de la red no es un gate.
+        """
+        for idioma in IDIOMAS:
+            pagina = PUBLICO / idioma / "instalar.html"
+            if not pagina.is_file():
+                continue
+            texto = pagina.read_text(encoding="utf-8")
+            ofrece = "releases/latest/download/" in texto
+            if not ofrece:
+                continue
+            # Se mira la PROSA, no los enlaces: un `href` puede contener el
+            # numero por casualidad y no esta afirmando nada.
+            prosa = re.sub(r"<[^>]+>", " ", texto)
+            with self.subTest(idioma=idioma):
+                self.assertNotIn(
+                    "404", prosa,
+                    f"{idioma}/instalar.html enlaza a GitHub Releases y ademas "
+                    "dice 404 en su texto. O el enlace sobra, o la frase miente.")
+
     def test_la_correccion_firmada_no_sale_del_aparato(self):
         """El eslabon [2] se guarda, no se envia. Y se comprueba, no se promete.
 
