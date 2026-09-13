@@ -206,6 +206,31 @@
       if (!yo) return Promise.reject(new Error('sin identidad'));
       return crypto.subtle.exportKey('raw', yo.claves.publicKey).then(hex);
     },
+    /* OLVIDAR LA CLAVE. Vive AQUI y no en la pagina que lo ofrece, por la
+       misma razon por la que vive aqui generarla: `auth.js` es el unico dueno
+       de la base `preceptoros`. Una segunda pieza abriendo ese almacen con su
+       propia idea de la version es como se rompen las bases de datos
+       --leccion de `bronce.js`-- y aqui el dato que se rompe no se regenera.
+
+       NO ES «CERRAR SESION» Y NO HAY VUELTA. La privada se genero no
+       extraible: no existe copia en ningun sitio. Borrar el registro es
+       perder la unica prueba de autoria de todo lo que ya se firmo con ella.
+       Lo firmado sigue existiendo; lo que desaparece es que fuera tuyo. Quien
+       llama a esto tiene que haber avisado ANTES y con todas sus letras
+       --`profile.html` exige escribir una palabra-- porque aqui ya es tarde.
+
+       Se avisa con el MISMO evento que al crearla, y con `apodo: null`. Un
+       evento propio de despedida obligaria a cada oyente a escuchar dos cosas
+       para enterarse de una sola: que la identidad de la pagina cambio. */
+    olvidar: function () {
+      if (!yo) return Promise.reject(new Error('sin identidad'));
+      return tx('readwrite', function (s) { s.delete(CLAVE); }).then(function () {
+        yo = null;
+        pintar();
+        document.dispatchEvent(new CustomEvent('preceptor:identity',
+                                               { detail: { apodo: null } }));
+      });
+    },
     // Se firma el JSON canonico del objeto: mismo objeto, misma firma.
     //
     // LA FIRMA VA ENTERA. Hasta el 2026-08-30 esto devolvia los 16 primeros

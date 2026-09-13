@@ -205,7 +205,12 @@
         motivo: motivo.value.trim() || 'NO_DATA',
         tarea: tarea(par.prompt),
         consent: 0,
-        origen: 'preceptoros.org' + location.pathname
+        origen: 'preceptoros.org' + location.pathname,
+        // MISMO campo que `aprender.js`, y al FINAL por el mismo motivo:
+        // `ingesta.py` reconstruye los bytes firmados poniendo sus diez
+        // CAMPOS primero y los extras despues, en el orden en que vinieron.
+        tipo: 'correccion',
+        autoridad: 1
       };
       window.Identity.firmar(reg).then(function (f) {
         return window.Identity.publica().then(function (pub) {

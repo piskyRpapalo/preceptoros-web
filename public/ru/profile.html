@@ -5,17 +5,17 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Профиль · PreceptorOS</title>
 <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
-<meta name="description" content="Твой суверенный профиль: псевдоним выведен из твоего ключа Ed25519, выбранный бюст, подписанные измерения и вклад. Без учётной записи и без сервера.">
+<meta name="description" content="Твой ключ Ed25519 на этом устройстве: псевдоним, отпечаток, установлено ли приложение, что ключ позволяет и как его сменить. Без учётной записи и без сервера.">
 <link rel="canonical" href="https://preceptoros.org/ru/profile.html">
-<link rel="alternate" hreflang="ru" href="https://preceptoros.org/ru/profile.html">
+<link rel="alternate" hreflang="es" href="https://preceptoros.org/es/profile.html">
 <link rel="alternate" hreflang="en" href="https://preceptoros.org/en/profile.html">
 <link rel="alternate" hreflang="fr" href="https://preceptoros.org/fr/profile.html">
 <meta property="og:title" content="Мой профиль в PreceptorOS">
-<meta property="og:description" content="Твой суверенный профиль: псевдоним выведен из твоего ключа Ed25519, выбранный бюст, подписанные измерения и вклад. Без учётной записи и без сервера.">
+<meta property="og:description" content="Твой ключ Ed25519 на этом устройстве: псевдоним, отпечаток, установлено ли приложение, что ключ позволяет и как его сменить. Без учётной записи и без сервера.">
 <meta property="og:image" content="https://preceptoros.org/assets/preceptor-og.png">
 <meta property="og:url" content="https://preceptoros.org/ru/profile.html">
 <meta property="og:type" content="profile">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"ProfilePage","name":"PreceptorOS Profile","description":"Perfil soberano con identidad Ed25519 y contribuciones firmadas","url":"https://preceptoros.org/ru/profile.html","inLanguage":"es"}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"ProfilePage","name":"PreceptorOS Profile","description":"Личность Ed25519 на устройстве: отпечаток, установка и уровни доступа","url":"https://preceptoros.org/ru/profile.html","inLanguage":"ru"}</script>
 <link rel="stylesheet" href="/assets/base.css">
 <link rel="stylesheet" href="/assets/movil.css">
 <link rel="stylesheet" href="/assets/canon.css">
@@ -38,79 +38,88 @@
 <main>
 
 <header id="cabezal" data-cabezal="profile">
-  <div class="marca"><h1>Профиль<b> · твоя карточка</b></h1></div>
+  <div class="marca"><h1>Профиль<b> · твой ключ и это устройство</b></h1></div>
 </header>
 
-<p class="guia"><strong>Эта карточка твоя и живёт на твоём устройстве.</strong> Нет учётной записи, нет сервера, и ничто из написанного здесь не уходит само. Псевдоним ты не выбираешь: он выводится из хэша твоего ключа, поэтому никто не может потребовать чужой.</p>
+<p class="guia"><strong>Здесь нет ни учётной записи, ни сервера: есть ключ, который живёт на этом устройстве.</strong> Псевдоним ты не выбираешь — он выходит из хеша твоего открытого ключа, так что чужой попросить нельзя. Эта страница говорит, какой у тебя ключ, установлено ли здесь приложение, что этот ключ позволяет и как его сменить, зная цену.</p>
 
 <section class="panel" aria-labelledby="h-yo">
   <h2 id="h-yo">Твоя личность</h2>
   <div id="perfil-identidad"></div>
 </section>
 
-<section class="panel" aria-labelledby="h-avatar">
-  <h2 id="h-avatar">Твой бюст</h2>
-  <div id="perfil-avatar"></div>
+<section class="panel" aria-labelledby="h-app">
+  <h2 id="h-app">Приложение на этом устройстве</h2>
+  <!-- El enlace vive en el HTML y no lo construye el guion: asi sigue
+       funcionando con el javascript apagado. El ESTADO --instalada o no-- si lo
+       pinta `profile.js` encima, porque eso solo lo sabe el navegador. Y aqui
+       no hay boton de instalar a proposito: esa puerta es la del cabezal, que
+       `pwa.js` ya resuelve incluyendo el caso de iOS. -->
+  <div id="perfil-instalacion">
+    <div class="fila"><a class="boton" href="./instalar.html">Как установить его на это устройство</a></div>
+  </div>
 </section>
 
-<section class="panel" aria-labelledby="h-bio">
-  <h2 id="h-bio">О тебе</h2>
-  <div id="perfil-bio"></div>
+<section class="panel" aria-labelledby="h-niv">
+  <h2 id="h-niv">Что позволяет твой ключ</h2>
+  <div id="perfil-niveles"></div>
 </section>
 
-<section class="panel" aria-labelledby="h-med">
-  <h2 id="h-med">Подписанные измерения</h2>
-  <div id="perfil-medidas"></div>
+<section class="panel" aria-labelledby="h-ver">
+  <h2 id="h-ver">Что изменилось в версии</h2>
+  <div id="perfil-version"></div>
 </section>
 
-<section class="panel" aria-labelledby="h-con">
-  <h2 id="h-con">Вклад</h2>
-  <div id="perfil-contribuciones"></div>
-</section>
-
-<section class="panel" aria-labelledby="h-sh">
-  <h2 id="h-sh">Показать эту карточку</h2>
-  <div id="perfil-compartir"></div>
+<section class="panel" aria-labelledby="h-cla">
+  <h2 id="h-cla">Сменить ключ</h2>
+  <div id="perfil-clave"></div>
 </section>
 
 <footer class="honest-footer">
-  <h2>Что здесь есть, а чего нет</h2>
+  <h2>Что здесь есть и чего нет</h2>
   <ul>
-    <li><strong>Псевдоним выведен, а не выбран.</strong> Он берётся из SHA-256 твоего открытого ключа. Сменить имя — значит сменить ключ, а сменить ключ — начать с нуля: это цена того, что никто не может выдать себя за тебя без сервера, который бы это сторожил.</li>
-    <li><strong>То, что ты пишешь, остаётся в твоём браузере.</strong> Биография хранится в IndexedDB и подписывается твоим ключом. Пока она никуда не уходит, потому что некуда: Агора не публикует конечной точки для профилей.</li>
-    <li><strong>Измерения не объявляют себя сами.</strong> Они берутся из публичной книги испытаний, отфильтрованные по твоему псевдониму. Если там нет ничего подписанного тобой, здесь будет ноль — и будет сказано почему.</li>
+    <li><strong>Псевдоним выведен, а не выбран.</strong> Он выходит из SHA-256 твоего открытого ключа. Сменить имя — значит сменить ключ, а сменить ключ — значит начать с нуля: это цена того, что никто не может выдать себя за тебя без сервера, который бы это запрещал.</li>
+    <li><strong>Три уровня — не игра.</strong> Нет ни очков, ни значков: уровень здесь — это ровно то, что ты можешь делать и не мог раньше. Твой выходит из двух вещей на этом устройстве — есть ли ключ и есть ли сохранённые исправленные пары, — а не из счётчика, который кто-то ведёт.</li>
+    <li><strong>Эта страница ничего не публикует.</strong> Нет публичного профиля, нет карточки, которую можно показать, и пока нет места, куда её отправить. Единственное, что покидает это устройство, — то, что ты сам отдаёшь из Бронзы, подписанным и по своей просьбе.</li>
   </ul>
 </footer>
 
 <script type="application/json" id="i18n">{
- "pfSinIdentidad": "NO_DATA — на этом устройстве ещё нет личности. Создай её кнопкой вверху справа, и карточка заполнится сама.",
+ "pfSinIdentidad": "NO_DATA — на этом устройстве пока нет личности.",
+ "pfComoCrear": "Создай её значком человека в углу шапки. Прежде чем создать ключ, она прямо говорит, что его нельзя ни выгрузить, ни восстановить.",
  "pfDerivado": "Выведен из SHA-256 твоего открытого ключа. Не выбирается.",
+ "pfHuella": "Отпечаток твоего ключа:",
  "pfVerClave": "Показать мой открытый ключ целиком",
  "pfCargando": "Читаю ключ…",
- "pfSinClave": "NO_DATA — не удалось прочитать открытый ключ:",
- "pfAvatar": "Выбери свой бюст",
- "pfSinBustos": "NO_DATA — не удалось прочитать каталог бюстов:",
- "pfCompartir": "Поделиться этой карточкой",
- "pfCompartirSin": "Создай личность, чтобы делиться своей карточкой.",
- "pfCompartirTexto": "Моя карточка в PreceptorOS: {quien}",
- "pfCompartido": "Отправлено.",
- "pfCopiado": "Скопировано в буфер. Вставь куда захочешь.",
- "pfSinCopiar": "Скопировать не вышло. Скопируй вручную:",
- "pfBioEtiqueta": "Твоя биография",
- "pfBioBarra": "Инструменты разметки",
- "pfBioTitulo": "Заголовок",
- "pfBioPunto": "Пункт списка",
- "pfBioGuardar": "Сохранить и подписать",
- "pfBioVista": "Как это будет выглядеть",
- "pfBioGuardada": "Сохранена на твоём устройстве и подписана твоим ключом. Никуда не уходит. Подпись:",
- "pfBioGuardadaSinFirma": "Сохранена на твоём устройстве, БЕЗ подписи: личности пока нет.",
- "pfBioSinFirma": "Сохранена, но подписать не удалось:",
- "pfMedSinIdentidad": "Создай личность, и здесь появятся измерения, которые ты подписал.",
- "pfMedEjemplo": "NO_DATA — книга испытаний в режиме ПРИМЕРА: пока не пришло ни одной подписанной строки ни от кого. Настоящих подписанных строк на сегодня:",
- "pfMedTuyas": "Измерения, подписанные тобой:",
- "pfMedSinDatos": "NO_DATA — не удалось прочитать книгу испытаний:",
- "pfConNoData": "NO_DATA — Агора пока не публикует вклад. Причина: /api/v1/threads отвечает 404 (измерено 2026-08-30), и нет конечной точки для профилей.",
- "pfConRemedio": "Что поможет: как только эта точка появится, раздел заполнится сам. Счётчик на нуле до тех пор был бы датчиком, который врёт.",
+ "pfSinClave": "не удалось прочитать открытый ключ:",
+ "pfInstalada": "Приложение установлено на этом устройстве, и сейчас ты им пользуешься.",
+ "pfNoInstalada": "Приложение не установлено на этом устройстве: ты в вебе.",
+ "pfNiv1": "Посетитель",
+ "pfNiv1Que": "Можно читать весь сайт, пробовать модели со стенда и смотреть измерения других. Подписать ничего нельзя, поэтому ничего из сделанного никому не приписывается.",
+ "pfNiv1Sube": "Чтобы стать подписывающим: создай личность. В браузере создаётся ключ Ed25519, без учётной записи и без пароля.",
+ "pfNiv2": "Подписывающий",
+ "pfNiv2Que": "У тебя есть ключ: псевдоним твой, и никто не может его занять. Можно подписывать измерения и исправления, и любой по твоему открытому ключу проверит, что подписал их ты.",
+ "pfNiv2Sube": "Чтобы стать соавтором: исправь ответ, который тебе не подошёл. Пара сохраняется подписанной на твоём устройстве и уходит оттуда, только если ты сам её отдашь.",
+ "pfNiv3": "Соавтор",
+ "pfNiv3Que": "В Бронзе лежит твоя работа. Её можно отдать — подписанной, с твоим явным согласием и когда ты захочешь — чтобы лаборатория её использовала, или скачать и оставить себе.",
+ "pfNivSinBronce": "не удалось прочитать Бронзу этого устройства, поэтому уровень подтвердить нельзя:",
+ "pfVerQue": "Опубликованная версия:",
+ "pfVerFecha": "дата:",
+ "pfVerSinCampo": "в файле версии нет поля",
+ "pfVerSinFichero": "заметок о версии нет: /release.json не существует (проверено 2026-09-13), и ни один процесс не создаёт его при выкладке.",
+ "pfVerCausa": "Сюда не подставляют ни дату выкладки, ни версию кэша: это были бы цифры с видом измеренных, которых никто не измерял.",
+ "pfClaveAviso": "Сменить ключ — это не выйти из учётной записи. Закрытый ключ создан невыгружаемым: копии нет нигде. Если забыть его, навсегда теряется авторство всего, что уже подписано, — подписанное остаётся, исчезает доказательство, что оно твоё.",
+ "pfClaveSinIdentidad": "На этом устройстве ещё нет ключа, так что менять нечего.",
+ "pfClaveBoton": "Сменить ключ",
+ "pfClaveTitulo": "Забыть этот ключ",
+ "pfClaveLetra1": "Ключ стирается с этого устройства, и в следующий раз ты получишь другой псевдоним. То, что уже подписано старым, перестаёт быть тем, на что ты можешь притязать.",
+ "pfClaveLetra2": "Нет копии, нет пароля и нет сервера: это не отменить.",
+ "pfClaveEscribe": "Напиши {palabra} для подтверждения:",
+ "pfClavePalabra": "забыть",
+ "pfClaveConfirma": "Забыть мой ключ",
+ "pfClaveCancela": "Оставить как есть",
+ "pfClaveHecho": "Ключ забыт. У этого устройства больше нет личности: создай новую из угла шапки, когда захочешь.",
+ "pfClaveFallo": "Не удалось забыть ключ:",
  "idPerfil": "Мой профиль",
  "idEntrar": "Создать личность",
  "idHola": "Привет,",
@@ -120,6 +129,7 @@
  "idAviso": "Ключ создаётся в твоём браузере. Его нельзя ни выгрузить, ни скопировать на другое устройство: если стереть данные сайта, эта личность потеряна безвозвратно. Нет пароля, который можно забыть, и нет сервера, который его хранит."
 }</script>
 <script src="/assets/ambient.js"></script>
+<script src="/assets/bronce.js"></script>
 <script src="/assets/profile.js"></script>
 <script src="/assets/profile-obra.js"></script>
 <script src="/assets/cabezal.js"></script>

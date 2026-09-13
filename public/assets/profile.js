@@ -1,65 +1,46 @@
-/* preceptoros.org · el Perfil, mitad IDENTIDAD. Quien eres y como te enseñas.
+/* preceptoros.org · el Perfil, mitad QUIEN ERES Y DONDE ESTAS.
  *
- * LA OTRA MITAD ESTA EN `profile-obra.js` --lo que has hecho-- y no es una
- * separacion estetica: las dos juntas pasaban de los 10 KB por fichero que
- * este sitio se impone. Se partio por la costura natural, que es la misma que
- * el visitante ve en la pagina.
+ * LA OTRA MITAD --lo que la clave te DEJA hacer, las notas de version y el
+ * cambio de clave-- vive en `profile-obra.js`. Se parte por ahi y no por otro
+ * sitio porque es la misma costura que ve quien mira la pagina: arriba quien
+ * eres y en que aparato estas, abajo que puedes hacer y como se rompe.
  *
- * AQUI NO SE INVENTA UN NOMBRE. El pseudonimo lo deriva `auth.js` del hash de
- * la clave publica: nadie puede pedir el de otro y nadie tiene que recordar
- * uno. Lo unico que se ELIGE es el busto, y se guarda en una base propia
- * (`preceptoros-perfil`) y no en la de la identidad: meter un almacen nuevo en
- * `preceptoros` obligaria a subirle la version, y `auth.js` la abre en la 1 --
- * la identidad dejaria de cargar. Es la misma leccion que board-fuentes.js.
+ * LO QUE SE FUE DE ESTA PAGINA EL 2026-09-13, Y POR QUE NO VUELVE
+ * --------------------------------------------------------------
+ * La ficha pintaba ocho bustos elegibles, una biografia con editor y un boton
+ * de compartir. Las tres describian un sistema que ya no es, y ninguna de las
+ * tres fallaba: por eso llevaban meses ahi.
  *
- * SIN IDENTIDAD LA PAGINA NO MIENTE. No se pinta un perfil de ejemplo con un
- * nombre inventado: se dice que no hay identidad y se manda al boton que la
- * crea, que es el mismo de todas las paginas.
+ *   LOS OCHO BUSTOS eran una eleccion sin consecuencia. Un avatar que no sale
+ *     del aparato no lo ve nadie mas que su dueno. Ademas obligaba a pedir
+ *     `bustos.json` antes de poder pintar la cara de la ficha -- una peticion
+ *     de red en el camino critico para decidir un dibujo que nadie mira.
+ *
+ *   LA BIOGRAFIA se firmaba y se guardaba «hasta que hubiera donde mandarla».
+ *     No lo hubo, y el propio pie de la pagina lo decia: «no viaja a ningun
+ *     sitio porque no hay donde». Pedir media pagina de texto a alguien para
+ *     guardarla en su propio navegador es pedir trabajo a cambio de nada.
+ *
+ *   COMPARTIR LA FICHA ofrecia ensenar una pagina que, abierta por otro, sale
+ *     vacia: no existen los perfiles publicos. Era un boton con un destino
+ *     imaginario, que es la clase de detalle que hace dudar de lo demas.
+ *
+ * AQUI NO SE HACE CRIPTOGRAFIA, y la frontera es dura. `auth.js` es el UNICO
+ * dueno de la clave y de la base `preceptoros`: genera, firma y olvida. Este
+ * fichero solo PREGUNTA (`window.Identity`) y pinta lo que le contesten. Dos
+ * ficheros tocando la misma clave es como se pierde una identidad que, por
+ * diseno, no se puede recuperar.
+ *
+ * Y YA NO HAY BASE PROPIA. `preceptoros-perfil` existia para guardar el busto
+ * elegido y el texto de la biografia. Sin esas dos cosas, mantenerla seria un
+ * almacen que hay que versionar, migrar y explicar para no guardar nada.
  */
 (function () {
-  var BD = 'preceptoros-perfil', ALMACEN = 'perfil';
   var block = document.getElementById('i18n');
   if (!block) return;
   var T = JSON.parse(block.textContent);
-  var idioma = (document.documentElement.lang || 'es').slice(0, 2);
   var zonaId = document.getElementById('perfil-identidad');
-  var zonaAv = document.getElementById('perfil-avatar');
-  var zonaSh = document.getElementById('perfil-compartir');
-  // El busto elegido lo necesitan DOS sitios --la ficha de arriba y la rejilla
-  // de abajo-- y llega asincrono. Vive aqui para que no lo lea cada uno por su
-  // cuenta y acaben ensenando bustos distintos en la misma pagina.
-  var RUTA_BUSTO = '/assets/busto-', POR_DEFECTO = 'ojo', elegido = null;
-
-  function abrir() {
-    return new Promise(function (ok, mal) {
-      var p = indexedDB.open(BD, 1);
-      p.onupgradeneeded = function () { p.result.createObjectStore(ALMACEN); };
-      p.onsuccess = function () { ok(p.result); };
-      p.onerror = function () { mal(p.error); };
-    });
-  }
-  function tx(modo, fn) {
-    return abrir().then(function (db) {
-      return new Promise(function (ok, mal) {
-        var t = db.transaction(ALMACEN, modo), r = fn(t.objectStore(ALMACEN));
-        t.oncomplete = function () { ok(r && r.result); };
-        t.onerror = function () { mal(t.error); };
-      });
-    });
-  }
-  // Lo comparte con profile-obra.js: una sola base, un solo sitio donde se
-  // abre. Dos ficheros abriendo la misma base con versiones distintas es la
-  // averia que esta pagina ya evita con auth.js.
-  window.Perfil = {
-    leer: function (k) {
-      return tx('readonly', function (s) { return s.get(k); })
-        .catch(function () { return null; });
-    },
-    guardar: function (k, v) {
-      return tx('readwrite', function (s) { s.put(v, k); })
-        .catch(function () { });
-    }
-  };
+  var zonaIn = document.getElementById('perfil-instalacion');
 
   function p(texto, clase) {
     var n = document.createElement('p');
@@ -68,147 +49,130 @@
     return n;
   }
 
-  /* --- identidad ------------------------------------------------------ */
+  /* Un NO_DATA con su causa DENTRO del `title`, que es lo que pide el canon:
+     un hueco sin motivo se lee como una averia del sitio, y quien lo ve no
+     puede saber si el dato falta, tarda o no existe. La clase es `nodata` --la
+     que `base.css` estiliza-- y el motivo va en `title`. */
+  function sinDato(motivo) {
+    var n = document.createElement('span');
+    n.className = 'nodata'; n.title = motivo; n.textContent = 'NO_DATA';
+    return n;
+  }
+
+  function razon(e) { return (e && e.message) ? e.message : String(e); }
+
+  /* --- 1 · identidad ---------------------------------------------------
+   *
+   * Sin identidad NO se pinta una ficha de ejemplo con un nombre inventado.
+   * Se dice que no hay ninguna y se senala el boton que la crea, que es el
+   * mismo en todas las paginas: el de la esquina del cabezal. No se duplica
+   * aqui porque dos botones que generan la MISMA clave irreversible son dos
+   * sitios donde el aviso de «esto no se recupera» puede quedarse viejo.
+   */
   function pintaIdentidad() {
     if (!zonaId) return;
     zonaId.innerHTML = '';
     var quien = window.Identity && window.Identity.quien();
     if (!quien) {
       zonaId.appendChild(p(T.pfSinIdentidad, 'nodata'));
+      zonaId.appendChild(p(T.pfComoCrear, 'tenue'));
       return;
     }
-    /* EL BUSTO PROPIO NO VA EN `lazy`. Es lo mas grande que se pinta arriba
-       del todo: es el LCP de esta pagina. Diferirlo para ahorrar una peticion
-       retrasa justo la imagen por la que se mide la carga. Los OCHO de la
-       rejilla si van diferidos -- estan mas abajo y son una eleccion, no la
-       portada de la ficha. */
-    var mio = document.createElement('img');
-    mio.className = 'mi-busto'; mio.width = 96; mio.height = 96;
-    mio.loading = 'eager'; mio.fetchPriority = 'high'; mio.alt = '';
-    mio.src = RUTA_BUSTO + (elegido || POR_DEFECTO) + '.webp';
-    zonaId.appendChild(mio);
-    /* <address> y no <h2>: el titulo de la seccion ya esta en el HTML, y esto
-       es la senas de quien firma la ficha, que es literalmente para lo que
+    /* `<address>` y no un `<h3>`: el titulo de la seccion ya esta en el HTML, y
+       esto son las senas de quien firma la ficha -- literalmente para lo que
        existe el elemento. */
-    var h = document.createElement('address');
-    h.className = 'perfil-apodo'; h.textContent = quien;
-    zonaId.appendChild(h);
+    var nombre = document.createElement('address');
+    nombre.className = 'perfil-apodo';
+    nombre.textContent = quien;
+    zonaId.appendChild(nombre);
     zonaId.appendChild(p(T.pfDerivado, 'tenue'));
-    // La clave publica ENTERA, en un <details>. Es publica por definicion, y
-    // quien quiera comprobar que una firma es suya la necesita completa: un
-    // prefijo con puntos suspensivos no verifica nada.
-    var d = document.createElement('details');
-    var s = document.createElement('summary');
-    s.textContent = T.pfVerClave;
-    var c = document.createElement('code');
-    c.style.wordBreak = 'break-all';
-    c.textContent = T.pfCargando;
-    d.appendChild(s); d.appendChild(c);
-    zonaId.appendChild(d);
+
+    /* LA HUELLA CORTA ES PARA RECONOCER; LA CLAVE ENTERA, PARA VERIFICAR.
+       Son dos usos distintos y por eso se pintan los dos. Cuatro grupos de
+       cuatro digitos se comparan de un vistazo contra otra pantalla --que es
+       lo que hace alguien cuando quiere saber si esta en el aparato correcto--
+       y con eso NO se verifica ninguna firma: para eso hace falta la clave
+       completa, que esta a un toque en el `<details>` de debajo. Un prefijo
+       con puntos suspensivos ofrecido como «tu clave» no verifica nada. */
+    var fila = document.createElement('p');
+    fila.appendChild(document.createTextNode(T.pfHuella + ' '));
+    var corta = document.createElement('code');
+    corta.textContent = T.pfCargando;
+    fila.appendChild(corta);
+    zonaId.appendChild(fila);
+
+    var det = document.createElement('details');
+    var sum = document.createElement('summary');
+    sum.textContent = T.pfVerClave;
+    var entera = document.createElement('code');
+    entera.style.wordBreak = 'break-all';
+    entera.textContent = T.pfCargando;
+    det.appendChild(sum); det.appendChild(entera);
+    zonaId.appendChild(det);
+
     window.Identity.publica().then(function (hex) {
-      c.textContent = hex;
+      corta.textContent = hex.slice(0, 16).replace(/(.{4})(?=.)/g, '$1 ');
+      entera.textContent = hex;
     }).catch(function (e) {
-      c.textContent = T.pfSinClave + ' ' + (e && e.message ? e.message : e);
+      // Las dos a la vez: si la exportacion falla, fallan las dos, y dejar una
+      // con «Leyendo la clave…» para siempre es una espera que no termina.
+      var causa = T.pfSinClave + ' ' + razon(e);
+      corta.textContent = '';
+      corta.appendChild(sinDato(causa));
+      entera.textContent = '';
+      entera.appendChild(sinDato(causa));
     });
   }
 
-  /* --- avatar: los ocho bustos ---------------------------------------- */
-  function pintaAvatar(cat) {
-    if (!zonaAv) return;
-    zonaAv.innerHTML = '';
-    var rejilla = document.createElement('div');
-    rejilla.className = 'bustos';
-    rejilla.setAttribute('role', 'radiogroup');
-    rejilla.setAttribute('aria-label', T.pfAvatar);
-    (cat.bustos || []).forEach(function (b) {
-      var bt = document.createElement('button');
-      bt.type = 'button'; bt.className = 'busto';
-      bt.setAttribute('role', 'radio');
-      bt.setAttribute('aria-checked', String(b.id === elegido));
-      var img = document.createElement('img');
-      img.src = cat.ruta + b.id + '.webp';
-      img.width = 96; img.height = 96; img.loading = 'lazy';
-      // El alt lleva la descripcion del busto, no «avatar»: quien navega con
-      // lector de pantalla esta ELIGIENDO entre ocho, y ocho «avatar» iguales
-      // no son una eleccion.
-      img.alt = b[idioma] || b.es || b.id;
-      bt.appendChild(img);
-      var n = document.createElement('span');
-      n.textContent = b[idioma] || b.es || b.id;
-      bt.appendChild(n);
-      bt.addEventListener('click', function () {
-        elegido = b.id;
-        window.Perfil.guardar('avatar', b.id);
-        pintaAvatar(cat);
-        pintaIdentidad();          // la ficha de arriba cambia de cara a la vez
-      });
-      rejilla.appendChild(bt);
-    });
-    zonaAv.appendChild(rejilla);
+  /* --- 2 · la app en este aparato --------------------------------------
+   *
+   * AQUI NO HAY BOTON DE INSTALAR, y la ausencia es la decision.
+   *
+   * Instalar no se puede prometer igual en todas partes: Chrome dispara
+   * `beforeinstallprompt` y Safari de iOS no lo dispara ni lo va a disparar
+   * --alli solo existe «Compartir -> Anadir a pantalla de inicio», a mano--.
+   * `pwa.js` ya sabe todo eso y ya lo resuelve en el boton del cabezal. Un
+   * SEGUNDO boton aqui seria una segunda copia de esa logica, y el dia que una
+   * de las dos se quede vieja la que miente es la que promete instalar en un
+   * iPhone y no hace nada.
+   *
+   * Asi que esta seccion hace lo unico que esta pagina puede hacer con
+   * honestidad: DECIR EN QUE ESTADO ESTAS y enlazar a la pagina que ensena el
+   * camino. El enlace vive en el HTML y no se construye aqui, para que siga
+   * funcionando con el javascript apagado.
+   */
+  function instalada() {
+    // Dos formas porque ningun navegador tiene las dos: la consulta de medios
+    // es la del estandar, `navigator.standalone` es la de Safari de iOS.
+    return (window.matchMedia &&
+            matchMedia('(display-mode: standalone)').matches) ||
+           navigator.standalone === true;
   }
 
-  function cargarAvatar() {
-    if (!zonaAv) return;
-    Promise.all([
-      fetch('/bustos.json', { cache: 'no-cache' }).then(function (r) {
-        if (!r.ok) throw new Error('HTTP ' + r.status);
-        return r.json();
-      }),
-      window.Perfil.leer('avatar')
-    ]).then(function (r) {
-      var cat = r[0];
-      if (!cat || !Array.isArray(cat.bustos)) throw new Error('sin bustos');
-      elegido = r[1] || POR_DEFECTO;
-      pintaAvatar(cat);
-      pintaIdentidad();
-    }).catch(function (e) {
-      zonaAv.appendChild(p(T.pfSinBustos + ' ' + (e && e.message ? e.message : e),
-                           'nodata'));
-    });
+  function pintaInstalacion() {
+    if (!zonaIn) return;
+    var antes = zonaIn.querySelector('.estado-app');
+    if (antes) antes.remove();
+    var n = p(instalada() ? T.pfInstalada : T.pfNoInstalada,
+              instalada() ? 'estado-app' : 'estado-app tenue');
+    zonaIn.insertBefore(n, zonaIn.firstChild);
   }
 
-  /* --- compartir ------------------------------------------------------ */
-  /* NO SE COMPARTE LA CLAVE NI LA BIOGRAFIA. Se comparte la URL de la pagina y
-     el pseudonimo, que es lo unico que otra persona puede abrir. Meter la
-     clave publica en el texto que va a una red social seria mandar a un
-     tercero un dato que aqui no hace falta para nada. */
-  function pintaCompartir() {
-    if (!zonaSh) return;
-    zonaSh.innerHTML = '';
-    var quien = (window.Identity && window.Identity.quien()) || null;
-    if (!quien) { zonaSh.appendChild(p(T.pfCompartirSin, 'tenue')); return; }
-    var url = location.origin + location.pathname;
-    var texto = T.pfCompartirTexto.replace('{quien}', quien);
-    var b = document.createElement('button');
-    b.type = 'button'; b.className = 'boton'; b.textContent = T.pfCompartir;
-    var aviso = p('', 'tenue');
-    b.addEventListener('click', function () {
-      // `navigator.share` abre el selector del sistema; donde no exista, se
-      // copia. No hay tercer camino ni boton por red social: cada uno seria
-      // una URL a un tercero en una pagina que publica cero peticiones
-      // externas.
-      if (navigator.share) {
-        navigator.share({ title: quien, text: texto, url: url })
-          .then(function () { aviso.textContent = T.pfCompartido; })
-          .catch(function () { aviso.textContent = ''; });
-        return;
-      }
-      var todo = texto + ' ' + url;
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(todo).then(function () {
-          aviso.textContent = T.pfCopiado;
-        }).catch(function () { aviso.textContent = T.pfSinCopiar + ' ' + todo; });
-      } else {
-        aviso.textContent = T.pfSinCopiar + ' ' + todo;
-      }
-    });
-    var f = document.createElement('div'); f.className = 'fila';
-    f.appendChild(b);
-    zonaSh.appendChild(f); zonaSh.appendChild(aviso);
-  }
+  pintaIdentidad();
+  pintaInstalacion();
 
-  function todo() { pintaIdentidad(); pintaCompartir(); }
-  document.addEventListener('preceptor:identity', todo);
-  todo();
-  cargarAvatar();
+  /* `auth.js` avisa cuando la clave aparece O desaparece. Las dos direcciones
+     importan: al olvidar la clave este mismo evento devuelve la seccion a
+     «todavia no hay identidad» sin recargar la pagina. */
+  document.addEventListener('preceptor:identity', pintaIdentidad);
+
+  /* El modo de pantalla cambia EN CALIENTE: alguien instala la app desde el
+     cabezal y la abre, o sale del modo aplicacion. Escucharlo cuesta una linea
+     y evita que la ficha afirme «no esta instalada» en la ventana de la app
+     recien instalada. El `if` es porque hay navegadores con `matchMedia` sin
+     `addEventListener`. */
+  if (window.matchMedia) {
+    var mq = matchMedia('(display-mode: standalone)');
+    if (mq.addEventListener) mq.addEventListener('change', pintaInstalacion);
+  }
 })();

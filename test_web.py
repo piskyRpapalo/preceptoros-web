@@ -2413,7 +2413,10 @@ class Cabezal(unittest.TestCase):
         # Lo que sigue prohibido es que salga por donde nadie lo declaro:
         # `corregir.js` guarda y `bronce.js` construye, y ninguno de los dos
         # tiene por que hablar con nadie.
-        for nombre in ("corregir.js", "bronce.js"):
+        # `aprender.js` entra el 2026-09-13 por la misma razon que entro
+        # `bronce.js`: construye y guarda pares firmados. Que nazca sin `fetch`
+        # no es la garantia -- la garantia es que este bucle lo mire.
+        for nombre in ("corregir.js", "bronce.js", "aprender.js"):
             js = (PUBLICO / "assets" / nombre).read_text(encoding="utf-8")
             codigo = re.sub(r"/\*.*?\*/", "", js, flags=re.S)
             codigo = re.sub(r"(?m)//.*$", "", codigo)
@@ -3004,54 +3007,116 @@ class Comunidad(unittest.TestCase):
 
 
 class Perfil(unittest.TestCase):
-    """La ficha: bustos, LCP y el texto que escribe una persona."""
+    """La ficha: identidad, instalacion, niveles y la puerta de salida.
 
-    def test_cada_busto_del_catalogo_esta_en_el_disco(self):
-        """Mismo fallo que el de los simbolos del Hub, misma defensa.
+    LA CLASE SE REESCRIBIO EL 2026-09-13, Y DOS PRUEBAS SE FUERON CON LO QUE
+    MEDIAN. La ficha pintaba ocho bustos elegibles, una biografia con editor y
+    un boton de compartir, y habia una guarda por cada cosa:
 
-        Un <img> a un webp que no esta no lanza ningun error: deja un hueco.
-        Aqui son OCHO huecos en la unica rejilla donde se elige algo.
+      `test_cada_busto_del_catalogo_esta_en_el_disco` vigilaba `bustos.json`
+        contra los ocho webp. El fichero ya no existe y la rejilla tampoco:
+        un avatar que no sale del aparato no lo ve nadie mas que su dueno.
+
+      `test_el_busto_propio_no_va_diferido` exigia `loading=eager` en la cara
+        de arriba porque era el LCP de la pagina. Ya no hay ninguna imagen en
+        esta ficha, asi que no hay LCP de imagen que proteger.
+
+    Se borran y no se aflojan: una guarda que mide algo que dejo de existir no
+    protege nada, y dejarla en verde con un `if not existe: return` es peor --
+    parece que sigue vigilando. En su lugar entra `test_la_ficha_no_resucita_
+    lo_que_se_retiro`, que es la regla dada la vuelta: lo que se decidio quitar
+    no puede volver por descuido. Es la misma maniobra que ya se hizo con los
+    ojos del worker, y por el mismo motivo -- un hueco donde habia una
+    comprobacion es como vuelve el mismo error dentro de seis meses.
+    """
+
+    FICHAS = tuple(sorted((PUBLICO / i / "profile.html") for i in IDIOMAS))
+    GUIONES = ("profile.js", "profile-obra.js")
+
+    def test_la_ficha_no_resucita_lo_que_se_retiro(self):
+        """Lo retirado tiene que seguir retirado en las OCHO lenguas.
+
+        Las tres piezas que se fueron no fallaban -- por eso llevaban meses
+        ahi. Un busto que nadie mas ve, una biografia que no viaja a ningun
+        sitio y un boton que ofrece ensenar una pagina que, abierta por otro,
+        sale vacia. Nada de eso da error: simplemente promete un sistema que
+        no existe, que es la averia que mas caro sale en una web cuyo
+        argumento entero es la honestidad.
+
+        Aurelius entra en la misma lista y por otra razon: es OTRO proyecto
+        --la app de aprendizaje, con su repo propio-- y nombrarlo en la ficha
+        de esta web confunde dos cosas que el canon separa a proposito.
         """
-        cat = json.loads((PUBLICO / "bustos.json").read_text(encoding="utf-8"))
-        self.assertEqual(8, len(cat["bustos"]), "no hay ocho bustos")
-        for b in cat["bustos"]:
-            with self.subTest(busto=b["id"]):
-                ruta = PUBLICO / (cat["ruta"].lstrip("/") + b["id"] + ".webp")
-                self.assertTrue(ruta.is_file(), f"falta {ruta.name}")
-                for idi in IDIOMAS:
-                    self.assertTrue((b.get(idi) or "").strip(),
-                                    f"{b['id']} no tiene nombre en {idi}")
+        # `bustos.json` se borro con la rejilla. Se comprueba que no vuelva:
+        # un catalogo huerfano es peso que todos descargan y nadie pinta.
+        self.assertFalse((PUBLICO / "bustos.json").exists(),
+                         "vuelve el catalogo de bustos, que ya no pinta nadie")
+        prohibido = ("bustos.json", "perfil-avatar", "perfil-bio",
+                     "perfil-compartir", "bio-vista", "mi-busto", "Aurelius",
+                     "aurelius")
+        for f in self.FICHAS + tuple(PUBLICO / "assets" / g
+                                     for g in self.GUIONES):
+            texto = f.read_text(encoding="utf-8")
+            # FUERA LOS COMENTARIOS ANTES DE MIRAR, y aqui no es un detalle: el
+            # encabezado de `profile.js` explica por escrito que la rejilla se
+            # retiro y NOMBRA `bustos.json` para decir por que ya no se pide.
+            # Leer esa frase como si fuera codigo es exactamente la trampa que
+            # `sin_comentarios()` existe para evitar -- una guarda que se cree
+            # lo que dice la prosa no comprueba, lee. La documentacion de por
+            # que algo se fue tiene que poder nombrarlo.
+            texto = re.sub(r"/\*.*?\*/", "", texto, flags=re.S)
+            texto = re.sub(r"(?m)//.*$", "", texto)
+            texto = re.sub(r"<!--.*?-->", "", texto, flags=re.S)
+            for pieza in prohibido:
+                with self.subTest(fichero=f.name, pieza=pieza):
+                    self.assertNotIn(pieza, texto,
+                                     f"«{pieza}» volvio a {f.name}")
 
-    def test_el_busto_propio_no_va_diferido(self):
-        """El LCP de esta pagina es la cara de arriba, no las ocho de abajo.
+    def test_cambiar_de_clave_exige_escribir_una_palabra(self):
+        """La unica accion irreversible de toda la web, y por eso se vigila.
 
-        `loading=lazy` en todo lo que sea una imagen es una regla que se aplica
-        sola y se equivoca justo en la que importa: la imagen mas grande de la
-        primera pantalla, diferida, retrasa la metrica por la que se mide si la
-        pagina carga rapido.
+        La privada se genero no extraible: borrarla no es cerrar sesion, es
+        perder para siempre la prueba de autoria de todo lo ya firmado. Un
+        «¿seguro?» se acepta con el pulgar antes de leerlo, y en un telefono
+        literalmente sin querer -- escribir una palabra exige haber mirado.
+
+        Se comprueban las dos mitades: que la pagina TRAIGA la palabra en su
+        idioma, y que el guion la EXIJA de verdad antes de encender el boton.
+        Con solo la segunda, una lengua sin la clave dejaria una caja que no
+        se puede satisfacer; con solo la primera, la palabra seria decorado.
         """
-        js = (PUBLICO / "assets" / "profile.js").read_text(encoding="utf-8")
-        mio = re.search(r"var mio = document\.createElement.*?zonaId\.appendChild\(mio\)",
-                        js, re.S)
-        self.assertIsNotNone(mio, "profile.js ya no pinta el busto propio")
-        self.assertIn("mio.loading = 'eager'", mio.group(0),
-                      "el busto propio va diferido")
-        self.assertIn("fetchPriority = 'high'", mio.group(0),
-                      "el busto propio no pide prioridad")
-        # Y los de la rejilla siguen diferidos: si no, son ocho descargas
-        # compitiendo con la unica que importa.
-        self.assertIn("img.loading = 'lazy'", js,
-                      "la rejilla de bustos dejo de ir diferida")
+        js = (PUBLICO / "assets" / "profile-obra.js").read_text(encoding="utf-8")
+        self.assertIn("Identity.olvidar", js,
+                      "la ficha ya no llama a la unica pieza dueña de la clave")
+        self.assertIn("hazlo.disabled = true", js,
+                      "el boton de olvidar no nace apagado")
+        self.assertIn("T.pfClavePalabra", js,
+                      "el guion no compara contra la palabra de confirmacion")
+        for f in self.FICHAS:
+            texto = f.read_text(encoding="utf-8")
+            bloque = re.search(r'id="i18n"[^>]*>(.*?)</script>', texto, re.S)
+            with self.subTest(pagina=str(f.relative_to(PUBLICO))):
+                self.assertIsNotNone(bloque, "la ficha perdio su bloque i18n")
+                datos = json.loads(bloque.group(1))
+                self.assertTrue((datos.get("pfClavePalabra") or "").strip(),
+                                "sin palabra de confirmacion, la caja no se "
+                                "puede satisfacer en esta lengua")
+                self.assertIn("{palabra}", datos.get("pfClaveEscribe", ""),
+                              "el rotulo no dice QUE palabra hay que escribir")
 
-    def test_la_vista_previa_nunca_monta_html_de_la_persona(self):
-        """La biografia la escribe una persona, y una persona escribe `<script>`.
+    def test_la_ficha_nunca_monta_html_que_no_escribio_ella(self):
+        """El unico `innerHTML` admitido es el que VACIA (`= ''`).
 
-        La previa se construye con nodos y `textContent`, asi que un menor es
-        un menor. El unico `innerHTML` admitido es el que VACIA (`= ''`), que
-        no monta nada. Se comprueba estaticamente porque la alternativa es
-        confiar en que nadie escriba la linea comoda algun dia.
+        Nacio por la biografia --la escribia una persona, y una persona
+        escribe `<script>`-- y esa caja ya no esta. La regla se queda igual, y
+        con mas motivo: ahora lo que se pinta viene de `release.json`, de la
+        clave publica y del mensaje de un error, o sea de fuera del fichero.
+        Con nodos y `textContent`, un menor es un menor.
+
+        Se comprueba estaticamente porque la alternativa es confiar en que
+        nadie escriba la linea comoda algun dia.
         """
-        for nombre in ("profile-obra.js", "profile.js"):
+        for nombre in self.GUIONES:
             js = (PUBLICO / "assets" / nombre).read_text(encoding="utf-8")
             for m in re.findall(r"\.innerHTML\s*=\s*([^;\n]+)", js):
                 with self.subTest(fichero=nombre, asigna=m.strip()):
@@ -3098,6 +3163,131 @@ class Sitemap(unittest.TestCase):
         r = (PUBLICO / "robots.txt").read_text(encoding="utf-8")
         self.assertIn("Sitemap: " + ORIGEN_PROPIO + "/sitemap.xml", r,
                       "robots.txt no declara el sitemap")
+
+
+class Reescrituras(unittest.TestCase):
+    """La segunda puerta de feedback: la que no le pide nada a nadie.
+
+    `corregir.js` pide sentarse a escribir, y por eso llega poco --medido el
+    2026-09-13: la pool de `charla-web` tenia 6 filas y 3 firmas, todas de
+    prueba--. `aprender.js` recoge lo que la web ya ve pasar: alguien pregunta,
+    no le sirve, y vuelve a preguntar lo mismo con otras palabras.
+    """
+
+    def _codigo(self):
+        js = (PUBLICO / "assets" / "aprender.js").read_text(encoding="utf-8")
+        js = re.sub(r"/\*.*?\*/", "", js, flags=re.S)
+        return re.sub(r"(?m)//.*$", "", js)
+
+    def test_va_donde_va_la_otra_puerta(self):
+        """Las dos puertas se cargan juntas o la nueva no existe.
+
+        Una puerta de feedback en una sola pagina es la mitad del error que
+        costo la sesion pasada: `corregir.js` vivia solo en `es/index.html` y
+        el LorAtelier --la pagina cuyo motivo entero es elegir entre dos
+        respuestas-- no producia ni una fila.
+        """
+        faltan = []
+        for q in sorted(PUBLICO.rglob("*.html")):
+            t = q.read_text(encoding="utf-8")
+            if "assets/corregir.js" in t and "assets/aprender.js" not in t:
+                faltan.append(q.relative_to(PUBLICO).as_posix())
+        self.assertEqual([], faltan,
+                         "estas paginas dejan escribir correcciones y no "
+                         "aprenden de las reescrituras: " + ", ".join(faltan))
+
+    def test_los_campos_nuevos_van_al_final(self):
+        """El orden de las claves ES parte de los bytes firmados.
+
+        `JSON.stringify` respeta el orden de insercion y `ingesta.py`
+        reconstruye los mismos bytes poniendo primero sus diez CAMPOS y despues
+        los extras EN EL ORDEN EN QUE VINIERON. Un campo nuevo colado en medio
+        hace que las dos canonicas dejen de coincidir, y entonces se rechaza una
+        firma que es correcta -- por una coma de sitio, y sin sintoma que
+        apunte al orden.
+        """
+        CANON = ["prompt", "respuesta", "correccion", "corregido", "modelo",
+                 "idioma", "motivo", "tarea", "consent", "origen"]
+        NUEVOS = ["tipo", "autoridad"]
+        for nombre in ("aprender.js", "corregir.js"):
+            js = (PUBLICO / "assets" / nombre).read_text(encoding="utf-8")
+            # Los comentarios de bloque se quitan ANTES de contar llaves: la
+            # cabecera de `aprender.js` CITA `consent: 0` para explicar que el
+            # par nace sin consentimiento, y esa cita mandaba al contador a un
+            # trozo de prosa donde las llaves no cierran. Mismo cuidado que ya
+            # toma la guarda de no-egreso, y por el mismo motivo.
+            codigo = re.sub(r"/\*.*?\*/", "", js, flags=re.S)
+            codigo = re.sub(r"(?m)//.*$", "", codigo)
+            # SE MIRA EL OBJETO DEL PAR, NO EL FICHERO ENTERO. El primer
+            # intento buscaba cada campo por todo el codigo y se creyo que
+            # `aprender.js` tenia el orden cambiado: lo que habia encontrado era
+            # la variable `respuesta` de otra funcion. Una guarda que mira mas
+            # de lo que vigila da un rojo que no es un fallo, y un rojo que no
+            # es un fallo es como se aprende a ignorar el gate.
+            #
+            # El objeto se localiza por `consent`, que solo aparece ahi, y se
+            # recortan sus llaves contando hacia atras y hacia delante.
+            ancla = codigo.index("consent:")
+            hondo, ini = 0, None
+            for i in range(ancla, -1, -1):
+                if codigo[i] == "}":
+                    hondo += 1
+                elif codigo[i] == "{":
+                    if hondo == 0:
+                        ini = i
+                        break
+                    hondo -= 1
+            self.assertIsNotNone(ini, f"{nombre}: no encuentro el objeto del par")
+            hondo, fin = 0, len(codigo)
+            for i in range(ini, len(codigo)):
+                if codigo[i] == "{":
+                    hondo += 1
+                elif codigo[i] == "}":
+                    hondo -= 1
+                    if hondo == 0:
+                        fin = i
+                        break
+            par = codigo[ini:fin]
+            sitio = {}
+            for campo in CANON + NUEVOS:
+                m = re.search(r"(?m)^\s+" + campo + r":", par)
+                if m:
+                    sitio[campo] = m.start()
+            with self.subTest(fichero=nombre):
+                presentes = [c for c in CANON if c in sitio]
+                self.assertEqual(sorted(presentes, key=sitio.get), presentes,
+                                 f"{nombre} cambio el orden de los diez campos "
+                                 "canonicos: eso rompe firmas correctas")
+                for nuevo in NUEVOS:
+                    if nuevo in sitio and "origen" in sitio:
+                        self.assertGreater(
+                            sitio[nuevo], sitio["origen"],
+                            f"{nombre} pone `{nuevo}` antes de `origen`. Los "
+                            "campos que `ingesta.py` no conoce van AL FINAL o "
+                            "las dos canonicas dejan de coincidir.")
+
+    def test_lo_capturado_se_dice_y_se_puede_apagar(self):
+        """Capturar en silencio lo que alguien escribe seria lo contrario de
+        esta casa. Hay rotulo, hay casilla, y la casilla apaga de verdad."""
+        codigo = self._codigo()
+        self.assertIn("localStorage", codigo, "no hay donde guardar el apagado")
+        self.assertIn("panel-ajustes", codigo,
+                      "el rotulo no se monta en la rueda de perfil: se estaria "
+                      "capturando sin decirlo")
+        self.assertIn("consent: 0", codigo,
+                      "un par capturado no puede nacer consentido")
+        self.assertIn("Identity.firmar", codigo, "el par no se firma")
+
+    def test_habla_las_ocho_lenguas_del_sitio(self):
+        """Un rotulo que solo esta en dos lenguas deja a seis sin saber que se
+        les guarda. El sitio tiene ocho; el aviso tambien."""
+        js = (PUBLICO / "assets" / "aprender.js").read_text(encoding="utf-8")
+        bloque = re.search(r"var TEXTO = \{(.*?)\n  \};", js, re.S)
+        self.assertIsNotNone(bloque, "aprender.js ya no declara TEXTO")
+        tiene = set(re.findall(r"(?m)^    ([a-z]{2}): \[", bloque.group(1)))
+        faltan = {"es", "en", "fr", "de", "it", "pt", "el", "ru"} - tiene
+        self.assertEqual(set(), faltan,
+                         "sin aviso en: " + ", ".join(sorted(faltan)))
 
 
 if __name__ == "__main__":

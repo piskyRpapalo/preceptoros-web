@@ -137,7 +137,11 @@ const rutas = await shell.keys();
 // una regla que sobrevivio a la mudanza de la pieza que colocaba.
 // 118 desde el 2026-09-08: entran los ocho `/agentes-<lengua>.json`, los
 // nombres de los companeros que salieron del bloque i18n de las portadas.
-ok('precachea paginas y piezas del Hub', rutas.length === 118, rutas.length+' rutas');
+// 119 desde el 2026-09-13: entra `/assets/aprender.js`. El numero se sube
+// a mano A PROPOSITO -- si se dedujese de la lista del worker, el test
+// diria siempre que si y dejaria de avisar el dia que una pieza se caiga
+// del precache sin que nadie lo decida.
+ok('precachea paginas y piezas del Hub', rutas.length === 119, rutas.length+' rutas');
 ok('el shell trae las tres tiras de la cara',
    ['apertura', 'reposo', 'habla']
      .every(s => rutas.includes('/assets/caras/secuencia-' + s + '-256.webp')));

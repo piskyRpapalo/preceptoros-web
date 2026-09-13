@@ -92,38 +92,37 @@ ul.leyenda li{margin:0 0 .3rem;padding-left:.9rem;text-indent:-.9rem}
 /* --- el perfil ------------------------------------------------------------ */
 .perfil-apodo{font-size:1.15rem;margin:0 0 .2rem;
   font-variant-numeric:tabular-nums}
-/* La rejilla de bustos: `auto-fill` y no un numero de columnas fijo. Con ocho
-   caras y un movil de 360 px, tres columnas fijas dan 96 px de imagen dentro
-   de 100 px de hueco y el nombre se parte en cuatro lineas. */
-.bustos{display:grid;gap:.6rem;
-  grid-template-columns:repeat(auto-fill,minmax(6.5rem,1fr))}
-.busto{display:flex;flex-direction:column;align-items:center;gap:.3rem;
-  padding:.4rem;border:1px solid var(--bronce);background:none;
-  font-size:.68rem;color:var(--tenue);line-height:1.25;text-align:center}
-.busto img{width:100%;height:auto;max-width:96px;image-rendering:auto}
-/* El elegido se marca con BORDE Y FONDO, no solo con color: quien no
-   distingue el violeta del bronce se queda sin saber cual eligio. */
-/* El rotulo del elegido sube a `#d7cfff` en vez de quedarse en el mismo
-   `--violeta-texto` del borde: sobre ese velo del 12 % daba 3,66:1, y es texto
-   pequeno. El borde y el fondo siguen siendo la marca; lo que cambia es que
-   ahora el nombre del busto elegido se lee. */
-.busto[aria-checked=true]{border-color:var(--violeta-texto);border-width:2px;
-  background:rgba(75,55,196,.12);color:#d7cfff}
-.busto:focus-visible{outline:2px solid var(--violeta-texto);outline-offset:2px}
+/* LA REJILLA DE BUSTOS, LA VISTA PREVIA DE LA BIOGRAFIA Y EL BUSTO PROPIO
+   SALIERON DE AQUI EL 2026-09-13, con las tres secciones que las usaban. Se
+   borran y no se dejan «por si vuelven»: CSS que no pinta nada sigue viajando
+   en cada visita y, peor, hace creer que la pieza existe cuando alguien busca
+   por que no la ve. El motivo del retiro esta escrito en `profile.js`, que es
+   donde se entiende. */
 
-/* La vista previa de la biografia. Encuadrada para que se lea como lo que es:
-   una PREVIA, no la ficha ya publicada. */
-.bio-vista{border:1px dashed var(--bronce);padding:.7rem .8rem;margin-top:.4rem;
-  font-size:.82rem}
-.bio-vista h3{font-size:.86rem;margin:.6rem 0 .3rem}
-.bio-vista h3:first-child{margin-top:0}
-.bio-vista ul{margin:.3rem 0;padding-left:1.1rem}
-.bio-vista p{margin:0 0 .4rem}
-.bio-vista :last-child{margin-bottom:0}
+/* Los tres niveles. Una LISTA ORDENADA y no tres tarjetas: son una escalera y
+   se leen en orden. El actual se marca con borde ANCHO y fondo, no solo con
+   color -- quien no distingue el violeta del bronce se quedaria sin saber en
+   cual esta, y el `aria-current` que pone el guion cubre a quien no mira. */
+.niveles{list-style:none;margin:0;padding:0;display:grid;gap:.7rem}
+.niveles li{border-left:2px solid var(--bronce);padding:.15rem 0 .15rem .8rem}
+.niveles li strong{display:block;font-size:.95rem;margin:0 0 .25rem}
+.niveles li p{margin:0 0 .3rem;font-size:.82rem}
+.niveles li :last-child{margin-bottom:0}
+.nivel-actual{border-left-color:var(--violeta-texto);border-left-width:4px;
+  background:rgba(75,55,196,.12)}
+.nivel-actual strong{color:#d7cfff}
 
-/* El busto propio, arriba de la ficha. Es el LCP de la pagina: se carga
-   ansioso y con prioridad alta, al reves que los ocho de la rejilla. */
-.mi-busto{width:96px;height:96px;display:block;margin:0 0 .5rem}
+/* El estado de la app va ARRIBA del enlace: primero donde estas, despues que
+   puedes hacer. Al reves se lee como una oferta antes de saber si hace falta. */
+.estado-app{margin:0 0 .2rem}
+
+/* El cuadro de olvidar la clave. `<dialog>` nativo, asi que el navegador pone
+   la capa y el fondo; aqui solo se le da ancho legible y se oscurece lo de
+   detras para que no se lea como una capa mas de la pagina. */
+dialog.panel{max-width:32rem;width:calc(100% - 2rem)}
+dialog.panel input{width:100%;margin-top:.3rem}
+dialog.panel::backdrop{background:rgba(10,8,16,.72)}
+
 /* La puerta al perfil, colgada del pseudonimo en la cabecera. */
 .yo-perfil{font-size:.74rem;margin-left:.5rem}
 

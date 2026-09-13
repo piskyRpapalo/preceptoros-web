@@ -1,37 +1,45 @@
-/* preceptoros.org · el Perfil, mitad OBRA. Lo que has hecho, no lo que dices.
+/* preceptoros.org · el Perfil, mitad QUE PUEDES HACER Y COMO SE ROMPE.
  *
- * La otra mitad --quien eres, el busto, compartir-- esta en `profile.js`, que
- * ademas es quien abre la base y expone `window.Perfil`. Aqui solo se lee y se
- * escribe a traves de el.
+ * La otra mitad --quien eres y en que aparato estas-- esta en `profile.js`.
+ * Aqui viven las tres secciones de abajo, y las tres tienen en comun que
+ * contestan a una pregunta que nadie sabia donde preguntar:
  *
- * LAS TRES SECCIONES NO SON IGUALES, Y SE NOTA:
+ *   LOS TRES NIVELES · que me deja hacer esta clave, hoy.
+ *   NOTAS DE VERSION · que ha cambiado en lo que estoy usando.
+ *   CAMBIAR DE CLAVE · como se sale, y que se pierde al salir.
  *
- *   BIOGRAFIA · la escribes tu. Se guarda EN TU APARATO y se firma con tu
- *     clave. No viaja: no hay a donde. Se dice al guardar, no en letra
- *     pequena, porque quien escribe media pagina merece saber donde acaba.
+ * LOS NIVELES SE DERIVAN, NO SE DECLARAN, Y NO SON UN JUEGO
+ * --------------------------------------------------------
+ * No hay puntos, ni insignias, ni barras que se llenan. Un nivel aqui es
+ * exactamente una frase: LO QUE PUEDES HACER QUE ANTES NO PODIAS. Y sale de
+ * dos hechos que se pueden mirar en el aparato, no de un contador que alguien
+ * lleve por su cuenta:
  *
- *   MEDIDAS · salen de `ledger.jsonl`, filtradas por tu pseudonimo. Hoy la
- *     cabecera de ese fichero declara `lineas_firmadas: 0` y estado EJEMPLO:
- *     lo honesto no es pintar un cero pelado --que se lee como «mediste cero
- *     veces»-- sino decir que TODAVIA NO HA LLEGADO NINGUNA linea firmada de
- *     nadie. Son dos cosas distintas y la diferencia es el proyecto entero.
+ *   ¿hay una clave Ed25519 en `preceptoros`?   -> lo dice `window.Identity`
+ *   ¿hay algun par corregido en `preceptoros-bronce`? -> `Bronce.leerTodo()`
  *
- *   CONTRIBUCIONES · NO_DATA con causa. El Agora no publica endpoint de
- *     contribuciones (`/api/v1/threads` responde 404, medido el 2026-08-30).
- *     Un contador a cero aqui seria un sensor que miente: parece medido.
+ * Gamificar esto seria pedirle a alguien que suba de nivel por subir. El
+ * unico motivo honesto para crear una clave es que hay algo que sin ella no
+ * se puede firmar, y eso es lo que la tabla dice, en ese orden: primero lo
+ * que se gana, despues como se llega.
  *
- * LA VISTA PREVIA SE CONSTRUYE CON NODOS, NUNCA CON innerHTML. El texto lo
- * escribe una persona, y una persona puede escribir `<script>`. Con
- * `textContent` por nodo eso es literalmente lo que se ve: un menor, una ese.
+ * SI EL BRONCE NO SE PUEDE LEER, EL NIVEL NO SE ADIVINA. Un navegador puede
+ * tener IndexedDB bloqueado --modo privado estricto, permisos de sitio-- y ahi
+ * la respuesta correcta no es «eres firmante»: es NO_DATA con su causa. Dar
+ * por vacio lo que no se ha podido mirar es inventar un dato.
+ *
+ * AQUI NO SE FIRMA NI SE GENERA NADA. `auth.js` es el unico dueno de la clave
+ * y de su base; este fichero le pide `olvidar()` y ya esta. La destruccion de
+ * una clave irreversible tiene que vivir en el mismo sitio que su creacion, o
+ * un dia habra dos ideas distintas de que significa «no tengo identidad».
  */
 (function () {
   var block = document.getElementById('i18n');
-  if (!block || !window.Perfil) return;
+  if (!block) return;
   var T = JSON.parse(block.textContent);
-  var zonaBio = document.getElementById('perfil-bio');
-  var zonaMed = document.getElementById('perfil-medidas');
-  var zonaCon = document.getElementById('perfil-contribuciones');
-  var TOPE = 2000;
+  var zonaNiv = document.getElementById('perfil-niveles');
+  var zonaVer = document.getElementById('perfil-version');
+  var zonaCla = document.getElementById('perfil-clave');
 
   function p(texto, clase) {
     var n = document.createElement('p');
@@ -40,157 +48,239 @@
     return n;
   }
 
-  /* --- biografia: escribir y estructurar ------------------------------ */
-  /* Tres marcas y ni una mas. Un editor con veinte botones se aprende una vez
-     y se olvida; con tres, la estructura que sale es comparable entre perfiles
-     -- que es lo que hace que una lista de perfiles se pueda leer entera. */
-  function estructura(texto) {
-    var frag = document.createDocumentFragment();
-    var lista = null;
-    (texto || '').split('\n').forEach(function (linea) {
-      var l = linea.trim();
-      if (!l) { lista = null; return; }
-      if (l.slice(0, 2) === '##') {
-        lista = null;
-        var h = document.createElement('h3');
-        h.textContent = l.slice(2).trim();
-        frag.appendChild(h);
-        return;
-      }
-      if (l.slice(0, 2) === '- ') {
-        if (!lista) { lista = document.createElement('ul'); frag.appendChild(lista); }
-        var li = document.createElement('li');
-        li.textContent = l.slice(2);
-        lista.appendChild(li);
-        return;
-      }
-      lista = null;
-      frag.appendChild(p(l));
-    });
-    return frag;
+  function sinDato(motivo) {
+    var n = document.createElement('span');
+    n.className = 'nodata'; n.title = motivo; n.textContent = 'NO_DATA';
+    return n;
   }
 
-  function pintaBio(guardada) {
-    if (!zonaBio) return;
-    zonaBio.innerHTML = '';
-    var area = document.createElement('textarea');
-    area.id = 'bio-texto'; area.rows = 8; area.maxLength = TOPE;
-    area.value = (guardada && guardada.texto) || '';
-    area.setAttribute('aria-label', T.pfBioEtiqueta);
+  function razon(e) { return (e && e.message) ? e.message : String(e); }
 
-    var barra = document.createElement('div');
-    barra.className = 'fila'; barra.setAttribute('role', 'toolbar');
-    barra.setAttribute('aria-label', T.pfBioBarra);
-    [['## ', T.pfBioTitulo], ['- ', T.pfBioPunto]].forEach(function (m) {
-      var b = document.createElement('button');
-      b.type = 'button'; b.className = 'leve'; b.textContent = m[1];
-      b.addEventListener('click', function () {
-        // Se inserta al PRINCIPIO DE LA LINEA donde esta el cursor. Meter la
-        // marca donde cayo el cursor producia `una fra## se`, que no es
-        // estructura: es texto roto con cara de marca.
-        var i = area.selectionStart;
-        var ini = area.value.lastIndexOf('\n', i - 1) + 1;
-        area.value = area.value.slice(0, ini) + m[0] + area.value.slice(ini);
-        area.focus();
-        area.selectionStart = area.selectionEnd = i + m[0].length;
-        refresca();
-      });
-      barra.appendChild(b);
-    });
+  /* --- 3 · los tres niveles ------------------------------------------- */
 
-    var cuenta = p('', 'tenue');
-    var vista = document.createElement('div');
-    vista.className = 'bio-vista';
-    var aviso = p('', 'tenue');
+  // El orden de la tabla ES el orden de los niveles, y el indice del nivel
+  // actual indexa esta misma lista. Una segunda lista con los nombres seria
+  // la segunda lista que un dia se desordena.
+  var NIVELES = [
+    ['pfNiv1', 'pfNiv1Que', 'pfNiv1Sube'],
+    ['pfNiv2', 'pfNiv2Que', 'pfNiv2Sube'],
+    ['pfNiv3', 'pfNiv3Que', null]
+  ];
 
-    function refresca() {
-      cuenta.textContent = area.value.length + ' / ' + TOPE;
-      vista.innerHTML = '';
-      vista.appendChild(estructura(area.value));
-    }
-    area.addEventListener('input', refresca);
-
-    var guardar = document.createElement('button');
-    guardar.type = 'button'; guardar.className = 'boton';
-    guardar.textContent = T.pfBioGuardar;
-    guardar.addEventListener('click', function () {
-      var bio = { texto: area.value, cuando: new Date().toISOString() };
-      window.Perfil.guardar('bio', bio);
-      if (!(window.Identity && window.Identity.quien())) {
-        aviso.className = 'nodata';
-        aviso.textContent = T.pfBioGuardadaSinFirma;
-        return;
-      }
-      window.Identity.firmar(bio).then(function (f) {
-        aviso.className = 'nodata';
-        aviso.textContent = T.pfBioGuardada + ' ' + f.firma.slice(0, 24) + '…';
-      }).catch(function (e) {
-        aviso.className = 'nodata';
-        aviso.textContent = T.pfBioSinFirma + ' ' + (e && e.message ? e.message : e);
-      });
-    });
-
-    var h = document.createElement('h3'); h.textContent = T.pfBioVista;
-    var pie = document.createElement('div'); pie.className = 'fila';
-    pie.appendChild(guardar);
-    [barra, area, cuenta, pie, aviso, h, vista].forEach(function (n) {
-      zonaBio.appendChild(n);
-    });
-    refresca();
-  }
-
-  /* --- medidas firmadas ------------------------------------------------ */
-  function pintaMedidas(cabecera, mias) {
-    if (!zonaMed) return;
-    zonaMed.innerHTML = '';
-    var quien = window.Identity && window.Identity.quien();
-    if (!quien) { zonaMed.appendChild(p(T.pfMedSinIdentidad, 'tenue')); return; }
-    if (cabecera && cabecera.estado === 'EJEMPLO') {
-      // El aviso va ANTES del numero: leido despues, el cero ya se entendio
-      // como «este usuario no ha medido nada».
-      zonaMed.appendChild(p(T.pfMedEjemplo + ' ' +
-                            (cabecera.lineas_firmadas || 0) + '.', 'nodata'));
-    }
-    zonaMed.appendChild(p(T.pfMedTuyas + ' ' + mias.length));
+  function pintaNiveles(actual, aviso) {
+    if (!zonaNiv) return;
+    zonaNiv.innerHTML = '';
+    if (aviso) zonaNiv.appendChild(aviso);
     var ol = document.createElement('ol');
-    mias.forEach(function (m) {
+    ol.className = 'niveles';
+    NIVELES.forEach(function (n, i) {
       var li = document.createElement('li');
-      li.textContent = m.modelo + ' · ' + m.toks + ' tok/s · ' + m.hardware;
+      // `aria-current` y no solo un color: quien lee con los oidos tambien
+      // tiene que saber en cual esta, y un borde no se escucha.
+      if (i === actual) {
+        li.className = 'nivel-actual';
+        li.setAttribute('aria-current', 'true');
+      }
+      var t = document.createElement('strong');
+      t.textContent = T[n[0]];
+      li.appendChild(t);
+      li.appendChild(p(T[n[1]]));
+      // El camino al siguiente se ensena SOLO en el que estas: escrito en los
+      // tres, la tabla se lee como una escalera que hay que subir entera.
+      if (i === actual && n[2]) li.appendChild(p(T[n[2]], 'tenue'));
       ol.appendChild(li);
     });
-    if (mias.length) zonaMed.appendChild(ol);
+    zonaNiv.appendChild(ol);
   }
 
-  function cargarMedidas() {
-    if (!zonaMed) return;
-    fetch('/assets/ledger.jsonl', { cache: 'no-cache' }).then(function (r) {
-      if (!r.ok) throw new Error('HTTP ' + r.status);
-      return r.text();
-    }).then(function (txt) {
-      var cabecera = null, medidas = [];
-      txt.split('\n').forEach(function (l) {
-        l = l.trim();
-        if (!l || l.charAt(0) === '#') return;
-        var d;
-        try { d = JSON.parse(l); } catch (e) { return; }
-        if (d.tipo === 'cabecera') { cabecera = d; } else { medidas.push(d); }
-      });
-      var quien = window.Identity && window.Identity.quien();
-      var mias = medidas.filter(function (m) { return m.evaluador === quien; });
-      pintaMedidas(cabecera, mias);
+  function calculaNivel() {
+    if (!zonaNiv) return;
+    var quien = window.Identity && window.Identity.quien();
+    if (!quien) { pintaNiveles(0, null); return; }
+    if (!window.Bronce) {
+      // El fichero no esta cargado en esta pagina: no es que no haya pares, es
+      // que no hay con que mirarlos. Se dice cual de las dos cosas es.
+      pintaNiveles(1, sinDato(T.pfNivSinBronce));
+      return;
+    }
+    window.Bronce.leerTodo().then(function (regs) {
+      pintaNiveles(regs && regs.length ? 2 : 1, null);
     }).catch(function (e) {
-      zonaMed.appendChild(p(T.pfMedSinDatos + ' ' + (e && e.message ? e.message : e),
-                            'nodata'));
+      pintaNiveles(1, sinDato(T.pfNivSinBronce + ' ' + razon(e)));
     });
   }
 
-  /* --- contribuciones: NO_DATA, con causa y remedio -------------------- */
-  if (zonaCon) {
-    zonaCon.appendChild(p(T.pfConNoData, 'nodata'));
-    zonaCon.appendChild(p(T.pfConRemedio, 'tenue'));
+  /* --- 4 · notas de version --------------------------------------------
+   *
+   * HOY ESTO PINTA NO_DATA, Y ES LO CORRECTO. `public/release.json` NO EXISTE
+   * (comprobado el 2026-09-13): no hay proceso que lo genere al publicar. Lo
+   * que no se puede hacer es rellenar el hueco con la fecha del despliegue, o
+   * con la `VERSION` del service worker, o con un «al dia» -- las tres son
+   * cifras que parecen medidas y no lo son, que es la averia que este sitio
+   * lleva un ano quitandose de encima.
+   *
+   * EL CONTRATO, para el dia que alguien lo genere:
+   *
+   *     { "version": "1.4", "fecha": "2026-09-13",
+   *       "cambios": ["...", "..."] }
+   *
+   * Los tres campos se miran por separado y cada uno cae a NO_DATA por su
+   * cuenta: un fichero a medias tiene que ensenar lo que si trae. Se pide con
+   * `no-cache` por la misma razon por la que `sw.js` no cachea los json del
+   * sitio -- una nota de version vieja servida como fresca es exactamente el
+   * fallo que las notas de version existen para evitar.
+   */
+  function pintaVersion(d) {
+    if (!zonaVer) return;
+    zonaVer.innerHTML = '';
+    var linea = document.createElement('p');
+    linea.appendChild(document.createTextNode(T.pfVerQue + ' '));
+    if (d.version) {
+      var v = document.createElement('strong');
+      v.textContent = String(d.version);
+      linea.appendChild(v);
+    } else {
+      linea.appendChild(sinDato(T.pfVerSinCampo + ' version'));
+    }
+    linea.appendChild(document.createTextNode(' · ' + T.pfVerFecha + ' '));
+    if (d.fecha) {
+      var f = document.createElement('time');
+      f.dateTime = String(d.fecha);
+      f.textContent = String(d.fecha);
+      linea.appendChild(f);
+    } else {
+      linea.appendChild(sinDato(T.pfVerSinCampo + ' fecha'));
+    }
+    zonaVer.appendChild(linea);
+
+    if (!Array.isArray(d.cambios) || !d.cambios.length) {
+      var sin = p('', 'nodata');
+      sin.appendChild(sinDato(T.pfVerSinCampo + ' cambios'));
+      zonaVer.appendChild(sin);
+      return;
+    }
+    var ul = document.createElement('ul');
+    d.cambios.forEach(function (c) {
+      var li = document.createElement('li');
+      li.textContent = String(c);
+      ul.appendChild(li);
+    });
+    zonaVer.appendChild(ul);
   }
 
-  window.Perfil.leer('bio').then(function (b) { pintaBio(b); });
-  document.addEventListener('preceptor:identity', cargarMedidas);
-  cargarMedidas();
+  function cargarVersion() {
+    if (!zonaVer) return;
+    fetch('/release.json', { cache: 'no-cache' }).then(function (r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    }).then(pintaVersion).catch(function (e) {
+      zonaVer.innerHTML = '';
+      var linea = document.createElement('p');
+      linea.appendChild(sinDato(T.pfVerSinFichero + ' ' + razon(e)));
+      zonaVer.appendChild(linea);
+      zonaVer.appendChild(p(T.pfVerCausa, 'tenue'));
+    });
+  }
+
+  /* --- 5 · cambiar de clave --------------------------------------------
+   *
+   * ES UNA PUERTA DE SALIDA, NO UN AJUSTE, y la pagina tiene que tratarla
+   * como lo que es. La clave privada se genero NO EXTRAIBLE: no hay copia en
+   * ningun sitio, ni aqui ni en un servidor, y borrarla no es «cerrar sesion»
+   * -- es perder para siempre la autoria de todo lo que ya se firmo con ella.
+   * Lo firmado no desaparece; lo que desaparece es la unica prueba de que lo
+   * firmaste tu.
+   *
+   * POR ESO SE PIDE ESCRIBIR UNA PALABRA, y no un segundo «¿seguro?». Un
+   * cuadro de confirmacion se acepta con el pulgar antes de leerlo --y en un
+   * telefono, literalmente sin querer--; escribir una palabra exige haber
+   * mirado la pantalla. Se compara sin distinguir mayusculas ni espacios de
+   * los lados: lo que se pide es atencion, no puntuacion.
+   *
+   * `<dialog>` NATIVO y `showModal()`: el navegador pone la capa superior, el
+   * foco atrapado dentro, el cierre con Escape y el fondo inerte. Reimplementar
+   * eso a mano es como se acaba teniendo un cuadro «modal» que se puede dejar
+   * detras y pulsar a ciegas.
+   */
+  function pintaClave() {
+    if (!zonaCla) return;
+    zonaCla.innerHTML = '';
+    zonaCla.appendChild(p(T.pfClaveAviso, 'nodata'));
+    var quien = window.Identity && window.Identity.quien();
+    if (!quien) { zonaCla.appendChild(p(T.pfClaveSinIdentidad, 'tenue')); return; }
+
+    var dlg = document.createElement('dialog');
+    dlg.className = 'panel';
+    var h = document.createElement('h3');
+    h.textContent = T.pfClaveTitulo;
+    dlg.appendChild(h);
+    dlg.appendChild(p(T.pfClaveLetra1));
+    dlg.appendChild(p(T.pfClaveLetra2, 'nodata'));
+
+    var et = document.createElement('label');
+    et.textContent = T.pfClaveEscribe.replace('{palabra}', T.pfClavePalabra);
+    var caja = document.createElement('input');
+    caja.type = 'text'; caja.autocomplete = 'off'; caja.spellcheck = false;
+    caja.id = 'clave-confirma';
+    et.htmlFor = caja.id;
+    dlg.appendChild(et); dlg.appendChild(caja);
+
+    var resultado = p('', 'tenue');
+    var hazlo = document.createElement('button');
+    hazlo.type = 'button'; hazlo.className = 'boton';
+    hazlo.textContent = T.pfClaveConfirma;
+    hazlo.disabled = true;
+    var deja = document.createElement('button');
+    deja.type = 'button'; deja.className = 'leve';
+    deja.textContent = T.pfClaveCancela;
+
+    // El boton nace apagado y se enciende con la palabra escrita. Un boton
+    // vivo que contesta «eso no es la palabra» invita a probar; uno apagado
+    // dice lo que falta sin castigar a nadie por intentarlo.
+    caja.addEventListener('input', function () {
+      hazlo.disabled = caja.value.trim().toLowerCase() !==
+                       String(T.pfClavePalabra).toLowerCase();
+    });
+    hazlo.addEventListener('click', function () {
+      hazlo.disabled = true;
+      window.Identity.olvidar().then(function () {
+        dlg.close();
+        zonaCla.appendChild(p(T.pfClaveHecho, 'nodata'));
+      }).catch(function (e) {
+        resultado.className = 'nodata';
+        resultado.textContent = T.pfClaveFallo + ' ' + razon(e);
+        hazlo.disabled = false;
+      });
+    });
+    deja.addEventListener('click', function () { dlg.close(); });
+
+    var fila = document.createElement('div');
+    fila.className = 'fila';
+    fila.appendChild(hazlo); fila.appendChild(deja);
+    dlg.appendChild(fila); dlg.appendChild(resultado);
+
+    var abre = document.createElement('button');
+    abre.type = 'button'; abre.className = 'leve';
+    abre.textContent = T.pfClaveBoton;
+    abre.addEventListener('click', function () {
+      caja.value = '';
+      hazlo.disabled = true;
+      resultado.textContent = ''; resultado.className = 'tenue';
+      // `showModal` puede no existir en un navegador viejo. Sin el, la puerta
+      // no se abre a medias: se dice que este navegador no puede, que es mejor
+      // que un cuadro sin foco donde se borra una clave irrecuperable.
+      if (!dlg.showModal) { resultado.textContent = T.pfClaveFallo; return; }
+      dlg.showModal();
+    });
+    var pie = document.createElement('div');
+    pie.className = 'fila';
+    pie.appendChild(abre);
+    zonaCla.appendChild(pie);
+    zonaCla.appendChild(dlg);
+  }
+
+  function todo() { calculaNivel(); pintaClave(); }
+  document.addEventListener('preceptor:identity', todo);
+  todo();
+  cargarVersion();
 })();

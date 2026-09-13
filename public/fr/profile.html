@@ -5,17 +5,17 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Profil · PreceptorOS</title>
 <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
-<meta name="description" content="Ton profil souverain : pseudonyme derive de ta cle Ed25519, buste choisi, mesures signees et contributions. Sans compte et sans serveur.">
+<meta name="description" content="Votre clé Ed25519 sur cet appareil : pseudonyme, empreinte, application installée ou non, ce que votre clé permet et comment en changer. Sans compte et sans serveur.">
 <link rel="canonical" href="https://preceptoros.org/fr/profile.html">
 <link rel="alternate" hreflang="es" href="https://preceptoros.org/es/profile.html">
 <link rel="alternate" hreflang="en" href="https://preceptoros.org/en/profile.html">
 <link rel="alternate" hreflang="fr" href="https://preceptoros.org/fr/profile.html">
 <meta property="og:title" content="Mon profil sur PreceptorOS">
-<meta property="og:description" content="Ton profil souverain : pseudonyme derive de ta cle Ed25519, buste choisi, mesures signees et contributions. Sans compte et sans serveur.">
+<meta property="og:description" content="Votre clé Ed25519 sur cet appareil : pseudonyme, empreinte, application installée ou non, ce que votre clé permet et comment en changer. Sans compte et sans serveur.">
 <meta property="og:image" content="https://preceptoros.org/assets/preceptor-og.png">
 <meta property="og:url" content="https://preceptoros.org/fr/profile.html">
 <meta property="og:type" content="profile">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"ProfilePage","name":"PreceptorOS Profile","description":"Perfil soberano con identidad Ed25519 y contribuciones firmadas","url":"https://preceptoros.org/fr/profile.html","inLanguage":"fr"}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"ProfilePage","name":"PreceptorOS Profile","description":"Identité Ed25519 sur l'appareil : empreinte, installation et niveaux d'accès","url":"https://preceptoros.org/fr/profile.html","inLanguage":"fr"}</script>
 <link rel="stylesheet" href="/assets/base.css">
 <link rel="stylesheet" href="/assets/movil.css">
 <link rel="stylesheet" href="/assets/canon.css">
@@ -38,79 +38,88 @@
 <main>
 
 <header id="cabezal" data-cabezal="profile">
-  <div class="marca"><h1>Profil<b> · ta fiche</b></h1></div>
+  <div class="marca"><h1>Profil<b> · votre clé et cet appareil</b></h1></div>
 </header>
 
-<p class="guia"><strong>Cette fiche est à toi et vit sur ton appareil.</strong> Pas de compte, pas de serveur, et rien de ce que tu écris ici ne part tout seul. Le pseudonyme ne se choisit pas : il sort du hachage de ta clé, donc personne ne peut réclamer celui d'un autre.</p>
+<p class="guia"><strong>Ici il n'y a ni compte ni serveur : il y a une clé qui vit sur cet appareil.</strong> Le pseudonyme ne se choisit pas — il sort du hachage de votre clé publique, donc personne ne peut réclamer celui d'un autre. Cette page dit quelle clé vous avez, si l'application est installée ici, ce que cette clé vous permet et comment en changer en sachant ce que cela coûte.</p>
 
 <section class="panel" aria-labelledby="h-yo">
-  <h2 id="h-yo">Ton identité</h2>
+  <h2 id="h-yo">Votre identité</h2>
   <div id="perfil-identidad"></div>
 </section>
 
-<section class="panel" aria-labelledby="h-avatar">
-  <h2 id="h-avatar">Ton buste</h2>
-  <div id="perfil-avatar"></div>
+<section class="panel" aria-labelledby="h-app">
+  <h2 id="h-app">L'application sur cet appareil</h2>
+  <!-- El enlace vive en el HTML y no lo construye el guion: asi sigue
+       funcionando con el javascript apagado. El ESTADO --instalada o no-- si lo
+       pinta `profile.js` encima, porque eso solo lo sabe el navegador. Y aqui
+       no hay boton de instalar a proposito: esa puerta es la del cabezal, que
+       `pwa.js` ya resuelve incluyendo el caso de iOS. -->
+  <div id="perfil-instalacion">
+    <div class="fila"><a class="boton" href="./instalar.html">Comment l'installer sur cet appareil</a></div>
+  </div>
 </section>
 
-<section class="panel" aria-labelledby="h-bio">
-  <h2 id="h-bio">À propos de toi</h2>
-  <div id="perfil-bio"></div>
+<section class="panel" aria-labelledby="h-niv">
+  <h2 id="h-niv">Ce que votre clé vous permet</h2>
+  <div id="perfil-niveles"></div>
 </section>
 
-<section class="panel" aria-labelledby="h-med">
-  <h2 id="h-med">Mesures signées</h2>
-  <div id="perfil-medidas"></div>
+<section class="panel" aria-labelledby="h-ver">
+  <h2 id="h-ver">Notes de version</h2>
+  <div id="perfil-version"></div>
 </section>
 
-<section class="panel" aria-labelledby="h-con">
-  <h2 id="h-con">Contributions</h2>
-  <div id="perfil-contribuciones"></div>
-</section>
-
-<section class="panel" aria-labelledby="h-sh">
-  <h2 id="h-sh">Montrer cette fiche</h2>
-  <div id="perfil-compartir"></div>
+<section class="panel" aria-labelledby="h-cla">
+  <h2 id="h-cla">Changer de clé</h2>
+  <div id="perfil-clave"></div>
 </section>
 
 <footer class="honest-footer">
   <h2>Ce qu'il y a ici et ce qu'il n'y a pas</h2>
   <ul>
-    <li><strong>Le pseudonyme est dérivé, pas choisi.</strong> Il sort du SHA-256 de ta clé publique. Changer de nom exige de changer de clé, et changer de clé c'est repartir de zéro : c'est le prix pour que personne ne puisse t'usurper sans un serveur qui l'empêche.</li>
-    <li><strong>Ce que tu écris reste dans ton navigateur.</strong> La biographie est stockée dans IndexedDB et signée avec ta clé. Elle ne voyage encore nulle part parce qu'il n'y a nulle part où : l'Agora ne publie aucun endpoint de profils.</li>
-    <li><strong>Les mesures ne s'auto-déclarent pas.</strong> Elles sortent du registre public, filtrées par ton pseudonyme. Si rien n'y est signé par toi, ici ça affiche zéro — et ça dit pourquoi.</li>
+    <li><strong>Le pseudonyme est dérivé, pas choisi.</strong> Il sort du SHA-256 de votre clé publique. Changer de nom exige de changer de clé, et changer de clé c'est repartir de zéro : c'est le prix pour que personne ne puisse vous usurper sans un serveur qui l'empêche.</li>
+    <li><strong>Les trois niveaux ne sont pas un jeu.</strong> Pas de points, pas de badges : un niveau ici c'est exactement ce que vous pouvez faire et que vous ne pouviez pas faire avant. Le vôtre sort de deux choses regardées sur cet appareil —s'il y a une clé et s'il y a des paires corrigées enregistrées—, pas d'un compteur tenu par quelqu'un.</li>
+    <li><strong>Cette page ne publie rien.</strong> Il n'y a pas de profil public, pas de fiche à montrer et pas encore d'endroit où l'envoyer. La seule chose qui quitte cet appareil est ce que vous remettez depuis le Bronze, signé et à votre demande.</li>
   </ul>
 </footer>
 
 <script type="application/json" id="i18n">{
- "pfSinIdentidad": "NO_DATA — il n'y a pas encore d'identité sur cet appareil. Crées-en une avec le bouton en haut à droite et cette fiche se remplit toute seule.",
- "pfDerivado": "Dérivé du SHA-256 de ta clé publique. Ne se choisit pas.",
+ "pfSinIdentidad": "NO_DATA — il n'y a pas encore d'identité sur cet appareil.",
+ "pfComoCrear": "Créez-en une avec l'icône de personne dans le coin de l'en-tête. Avant de générer la clé, elle vous dit en toutes lettres qu'elle ne peut être ni exportée ni récupérée.",
+ "pfDerivado": "Dérivé du SHA-256 de votre clé publique. Il ne se choisit pas.",
+ "pfHuella": "Empreinte de votre clé :",
  "pfVerClave": "Voir ma clé publique entière",
  "pfCargando": "Lecture de la clé…",
- "pfSinClave": "NO_DATA — la clé publique n'a pas pu être lue :",
- "pfAvatar": "Choisis ton buste",
- "pfSinBustos": "NO_DATA — le catalogue de bustes n'a pas pu être lu :",
- "pfCompartir": "Partager cette fiche",
- "pfCompartirSin": "Crée une identité pour pouvoir partager ta fiche.",
- "pfCompartirTexto": "Ma fiche sur PreceptorOS : {quien}",
- "pfCompartido": "Partagé.",
- "pfCopiado": "Copié dans le presse-papiers. Colle-le où tu veux.",
- "pfSinCopiar": "Impossible de copier. Copie-le à la main :",
- "pfBioEtiqueta": "Ta biographie",
- "pfBioBarra": "Outils de structure",
- "pfBioTitulo": "Titre",
- "pfBioPunto": "Point de liste",
- "pfBioGuardar": "Enregistrer et signer",
- "pfBioVista": "Ce que ça donnera",
- "pfBioGuardada": "Enregistrée sur ton appareil et signée avec ta clé. Elle ne voyage nulle part. Signature :",
- "pfBioGuardadaSinFirma": "Enregistrée sur ton appareil, SANS signature : il n'y a pas encore d'identité.",
- "pfBioSinFirma": "Enregistrée, mais la signature a échoué :",
- "pfMedSinIdentidad": "Crée une identité et les mesures que tu as signées apparaîtront ici.",
- "pfMedEjemplo": "NO_DATA — le registre est en EXEMPLE : aucune ligne signée n'est encore arrivée de personne. Lignes signées réelles jusqu'ici :",
- "pfMedTuyas": "Mesures signées par toi :",
- "pfMedSinDatos": "NO_DATA — le registre n'a pas pu être lu :",
- "pfConNoData": "NO_DATA — l'Agora ne publie pas encore de contributions. Cause : /api/v1/threads répond 404 (mesuré le 2026-08-30), et il n'y a pas d'endpoint de profils.",
- "pfConRemedio": "Remède : quand cette extrémité existera, cette section se remplira seule. Un compteur à zéro en attendant serait un capteur qui ment.",
+ "pfSinClave": "la clé publique n'a pas pu être lue :",
+ "pfInstalada": "L'application est installée sur cet appareil et vous l'utilisez en ce moment.",
+ "pfNoInstalada": "L'application n'est pas installée sur cet appareil : vous êtes sur le web.",
+ "pfNiv1": "Visiteur",
+ "pfNiv1Que": "Vous pouvez lire tout le site, essayer les modèles du banc et voir les mesures des autres. Vous ne pouvez rien signer, donc rien de ce que vous faites n'est attribué à personne.",
+ "pfNiv1Sube": "Pour passer signataire : créez une identité. Une clé Ed25519 est générée dans votre navigateur, sans compte et sans mot de passe.",
+ "pfNiv2": "Signataire",
+ "pfNiv2Que": "Vous avez une clé : le pseudonyme est le vôtre et personne ne peut le réclamer. Vous pouvez signer des mesures et des corrections, et n'importe qui peut vérifier avec votre clé publique que c'est vous qui les avez signées.",
+ "pfNiv2Sube": "Pour passer contributeur : corrigez une réponse qui ne vous a pas servi. La paire est enregistrée signée sur votre appareil, et elle n'en sort que si vous la remettez.",
+ "pfNiv3": "Contributeur",
+ "pfNiv3Que": "Il y a du travail à vous enregistré dans le Bronze. Vous pouvez le remettre —signé, avec votre consentement explicite et quand vous le voulez— pour que le laboratoire l'utilise, ou le télécharger et le garder.",
+ "pfNivSinBronce": "le Bronze de cet appareil n'a pas pu être lu, donc le niveau ne peut pas être confirmé :",
+ "pfVerQue": "Version publiée :",
+ "pfVerFecha": "date :",
+ "pfVerSinCampo": "le fichier de version ne porte pas le champ",
+ "pfVerSinFichero": "aucune note de version publiée : /release.json n'existe pas (vérifié le 2026-09-13) et aucun processus ne le génère au déploiement.",
+ "pfVerCausa": "On ne le remplit ni avec la date du déploiement ni avec la version du cache : ce seraient des chiffres qui ont l'air mesurés et que personne n'a mesurés.",
+ "pfClaveAviso": "Changer de clé, ce n'est pas se déconnecter. La clé privée a été générée non exportable : il n'en existe aucune copie. Si vous l'oubliez, vous perdez pour toujours la paternité de tout ce que vous avez déjà signé — ce qui est signé existe toujours, ce qui disparaît c'est la preuve que c'était vous.",
+ "pfClaveSinIdentidad": "Il n'y a encore aucune clé sur cet appareil, il n'y a donc rien à changer.",
+ "pfClaveBoton": "Changer de clé",
+ "pfClaveTitulo": "Oublier cette clé",
+ "pfClaveLetra1": "La clé est effacée de cet appareil et vous aurez un autre pseudonyme la prochaine fois que vous en créerez une. Ce que vous avez déjà signé avec l'ancienne cesse d'être réclamable par vous.",
+ "pfClaveLetra2": "Pas de copie, pas de mot de passe et pas de serveur : cela ne se défait pas.",
+ "pfClaveEscribe": "Écrivez {palabra} pour confirmer :",
+ "pfClavePalabra": "oublier",
+ "pfClaveConfirma": "Oublier ma clé",
+ "pfClaveCancela": "Laisser tel quel",
+ "pfClaveHecho": "Clé oubliée. Cet appareil n'a plus d'identité : créez-en une nouvelle depuis le coin de l'en-tête quand vous voudrez.",
+ "pfClaveFallo": "La clé n'a pas pu être oubliée :",
  "idPerfil": "Mon profil",
  "idEntrar": "Créer une identité",
  "idHola": "Bonjour,",
@@ -120,6 +129,7 @@
  "idAviso": "Une clé est générée dans votre navigateur. Elle ne peut être ni exportée ni copiée : si vous effacez les données du site, cette identité est perdue et rien ne permet de la récupérer. Aucun mot de passe à oublier, aucun serveur qui la garde."
 }</script>
 <script src="/assets/ambient.js"></script>
+<script src="/assets/bronce.js"></script>
 <script src="/assets/profile.js"></script>
 <script src="/assets/profile-obra.js"></script>
 <script src="/assets/cabezal.js"></script>

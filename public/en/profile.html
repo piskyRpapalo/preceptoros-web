@@ -5,17 +5,17 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Profile · PreceptorOS</title>
 <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
-<meta name="description" content="Your sovereign profile: pseudonym derived from your Ed25519 key, chosen bust, signed measurements and contributions. No account, no server.">
+<meta name="description" content="Your Ed25519 key on this device: pseudonym, fingerprint, whether the app is installed, what your key lets you do and how to change it. No account, no server.">
 <link rel="canonical" href="https://preceptoros.org/en/profile.html">
 <link rel="alternate" hreflang="es" href="https://preceptoros.org/es/profile.html">
 <link rel="alternate" hreflang="en" href="https://preceptoros.org/en/profile.html">
 <link rel="alternate" hreflang="fr" href="https://preceptoros.org/fr/profile.html">
 <meta property="og:title" content="My profile on PreceptorOS">
-<meta property="og:description" content="Your sovereign profile: pseudonym derived from your Ed25519 key, chosen bust, signed measurements and contributions. No account, no server.">
+<meta property="og:description" content="Your Ed25519 key on this device: pseudonym, fingerprint, whether the app is installed, what your key lets you do and how to change it. No account, no server.">
 <meta property="og:image" content="https://preceptoros.org/assets/preceptor-og.png">
 <meta property="og:url" content="https://preceptoros.org/en/profile.html">
 <meta property="og:type" content="profile">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"ProfilePage","name":"PreceptorOS Profile","description":"Perfil soberano con identidad Ed25519 y contribuciones firmadas","url":"https://preceptoros.org/en/profile.html","inLanguage":"en"}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"ProfilePage","name":"PreceptorOS Profile","description":"Ed25519 identity on the device: fingerprint, installation and access levels","url":"https://preceptoros.org/en/profile.html","inLanguage":"en"}</script>
 <link rel="stylesheet" href="/assets/base.css">
 <link rel="stylesheet" href="/assets/movil.css">
 <link rel="stylesheet" href="/assets/canon.css">
@@ -38,79 +38,88 @@
 <main>
 
 <header id="cabezal" data-cabezal="profile">
-  <div class="marca"><h1>Profile<b> · your card</b></h1></div>
+  <div class="marca"><h1>Profile<b> · your key and this device</b></h1></div>
 </header>
 
-<p class="guia"><strong>This card is yours and it lives on your device.</strong> There is no account, no server, and nothing you write here leaves on its own. You do not pick the pseudonym: it comes from the hash of your key, so nobody can claim someone else's.</p>
+<p class="guia"><strong>There is no account and no server here: there is a key that lives on this device.</strong> You do not pick the pseudonym — it comes from the hash of your public key, so nobody can claim someone else's. This page tells you which key you have, whether the app is installed here, what that key lets you do, and how to change it knowing what it costs.</p>
 
 <section class="panel" aria-labelledby="h-yo">
   <h2 id="h-yo">Your identity</h2>
   <div id="perfil-identidad"></div>
 </section>
 
-<section class="panel" aria-labelledby="h-avatar">
-  <h2 id="h-avatar">Your bust</h2>
-  <div id="perfil-avatar"></div>
+<section class="panel" aria-labelledby="h-app">
+  <h2 id="h-app">The app on this device</h2>
+  <!-- El enlace vive en el HTML y no lo construye el guion: asi sigue
+       funcionando con el javascript apagado. El ESTADO --instalada o no-- si lo
+       pinta `profile.js` encima, porque eso solo lo sabe el navegador. Y aqui
+       no hay boton de instalar a proposito: esa puerta es la del cabezal, que
+       `pwa.js` ya resuelve incluyendo el caso de iOS. -->
+  <div id="perfil-instalacion">
+    <div class="fila"><a class="boton" href="./instalar.html">How to install it on this device</a></div>
+  </div>
 </section>
 
-<section class="panel" aria-labelledby="h-bio">
-  <h2 id="h-bio">About you</h2>
-  <div id="perfil-bio"></div>
+<section class="panel" aria-labelledby="h-niv">
+  <h2 id="h-niv">What your key lets you do</h2>
+  <div id="perfil-niveles"></div>
 </section>
 
-<section class="panel" aria-labelledby="h-med">
-  <h2 id="h-med">Signed measurements</h2>
-  <div id="perfil-medidas"></div>
+<section class="panel" aria-labelledby="h-ver">
+  <h2 id="h-ver">Release notes</h2>
+  <div id="perfil-version"></div>
 </section>
 
-<section class="panel" aria-labelledby="h-con">
-  <h2 id="h-con">Contributions</h2>
-  <div id="perfil-contribuciones"></div>
-</section>
-
-<section class="panel" aria-labelledby="h-sh">
-  <h2 id="h-sh">Show this card</h2>
-  <div id="perfil-compartir"></div>
+<section class="panel" aria-labelledby="h-cla">
+  <h2 id="h-cla">Change your key</h2>
+  <div id="perfil-clave"></div>
 </section>
 
 <footer class="honest-footer">
   <h2>What is here and what is not</h2>
   <ul>
     <li><strong>The pseudonym is derived, not chosen.</strong> It comes from the SHA-256 of your public key. Changing your name means changing your key, and changing your key means starting over: that is the price of nobody being able to impersonate you without a server preventing it.</li>
-    <li><strong>What you write stays in your browser.</strong> The biography is stored in IndexedDB and signed with your key. It does not travel anywhere yet because there is nowhere to: the Agora publishes no profile endpoint.</li>
-    <li><strong>Measurements are not self-declared.</strong> They come from the public ledger, filtered by your pseudonym. If nothing there is signed by you, this shows zero — and says why.</li>
+    <li><strong>The three levels are not a game.</strong> There are no points and no badges: a level here is exactly what you can do that you could not do before. Yours comes from looking at two things on this device —whether there is a key and whether there are corrected pairs stored—, not from a counter anyone keeps.</li>
+    <li><strong>This page publishes nothing.</strong> There is no public profile, no card to show and no endpoint yet to send one to. The only thing that leaves this device is what you hand over from the Bronze, signed and at your request.</li>
   </ul>
 </footer>
 
 <script type="application/json" id="i18n">{
- "pfSinIdentidad": "NO_DATA — there is no identity on this device yet. Create one with the button at the top right and this card fills itself in.",
+ "pfSinIdentidad": "NO_DATA — there is no identity on this device yet.",
+ "pfComoCrear": "Create one with the person icon in the corner of the header. Before it generates the key it tells you, in plain words, that it cannot be exported or recovered.",
  "pfDerivado": "Derived from the SHA-256 of your public key. Not chosen.",
+ "pfHuella": "Your key fingerprint:",
  "pfVerClave": "See my full public key",
  "pfCargando": "Reading the key…",
- "pfSinClave": "NO_DATA — the public key could not be read:",
- "pfAvatar": "Choose your bust",
- "pfSinBustos": "NO_DATA — the bust catalogue could not be read:",
- "pfCompartir": "Share this card",
- "pfCompartirSin": "Create an identity to be able to share your card.",
- "pfCompartirTexto": "My card on PreceptorOS: {quien}",
- "pfCompartido": "Shared.",
- "pfCopiado": "Copied to the clipboard. Paste it wherever you like.",
- "pfSinCopiar": "Could not copy. Copy it by hand:",
- "pfBioEtiqueta": "Your biography",
- "pfBioBarra": "Structure tools",
- "pfBioTitulo": "Heading",
- "pfBioPunto": "List item",
- "pfBioGuardar": "Save and sign",
- "pfBioVista": "How it will look",
- "pfBioGuardada": "Saved on your device and signed with your key. It travels nowhere. Signature:",
- "pfBioGuardadaSinFirma": "Saved on your device, UNSIGNED: there is no identity yet.",
- "pfBioSinFirma": "Saved, but it could not be signed:",
- "pfMedSinIdentidad": "Create an identity and the measurements you signed will show up here.",
- "pfMedEjemplo": "NO_DATA — the ledger is in EXAMPLE state: not a single signed line has arrived from anyone yet. Real signed lines so far:",
- "pfMedTuyas": "Measurements signed by you:",
- "pfMedSinDatos": "NO_DATA — the ledger could not be read:",
- "pfConNoData": "NO_DATA — the Agora does not publish contributions yet. Cause: /api/v1/threads answers 404 (measured 2026-08-30), and there is no profile endpoint.",
- "pfConRemedio": "Remedy: when that end exists, this section fills itself in. A zero counter in the meantime would be a sensor that lies.",
+ "pfSinClave": "the public key could not be read:",
+ "pfInstalada": "The app is installed on this device and you are using it right now.",
+ "pfNoInstalada": "The app is not installed on this device: you are on the web.",
+ "pfNiv1": "Visitor",
+ "pfNiv1Que": "You can read the whole site, try the models on the bench and see other people's measurements. You cannot sign anything, so nothing you do is attributed to anyone.",
+ "pfNiv1Sube": "To become a signer: create an identity. An Ed25519 key is generated in your browser, with no account and no password.",
+ "pfNiv2": "Signer",
+ "pfNiv2Que": "You have a key: the pseudonym is yours and nobody else can claim it. You can sign measurements and corrections, and anyone can check with your public key that you signed them.",
+ "pfNiv2Sube": "To become a contributor: correct an answer that did not work for you. The pair is stored signed on your device, and it only leaves if you hand it over.",
+ "pfNiv3": "Contributor",
+ "pfNiv3Que": "There is work of yours stored in the Bronze. You can hand it over —signed, with your explicit consent and whenever you choose— for the lab to use, or download it and keep it.",
+ "pfNivSinBronce": "the Bronze on this device could not be read, so the level cannot be confirmed:",
+ "pfVerQue": "Published version:",
+ "pfVerFecha": "date:",
+ "pfVerSinCampo": "the release file does not carry the field",
+ "pfVerSinFichero": "no release notes are published: /release.json does not exist (checked 2026-09-13) and no process generates it on deploy.",
+ "pfVerCausa": "It is not filled in with the deploy date or the cache version: those would be figures that look measured and nobody measured.",
+ "pfClaveAviso": "Changing your key is not signing out. The private key was generated non-extractable: there is no copy anywhere. If you forget it you lose forever the authorship of everything you already signed — what was signed still exists, what disappears is the proof that it was yours.",
+ "pfClaveSinIdentidad": "There is no key on this device yet, so there is nothing to change.",
+ "pfClaveBoton": "Change my key",
+ "pfClaveTitulo": "Forget this key",
+ "pfClaveLetra1": "The key is erased from this device and you will get a different pseudonym the next time you create one. What you already signed with the old one stops being claimable by you.",
+ "pfClaveLetra2": "There is no copy, no password and no server: this cannot be undone.",
+ "pfClaveEscribe": "Type {palabra} to confirm:",
+ "pfClavePalabra": "forget",
+ "pfClaveConfirma": "Forget my key",
+ "pfClaveCancela": "Leave it as it is",
+ "pfClaveHecho": "Key forgotten. This device has no identity now: create a new one from the corner of the header whenever you want.",
+ "pfClaveFallo": "The key could not be forgotten:",
  "idPerfil": "My profile",
  "idEntrar": "Create identity",
  "idHola": "Hello,",
@@ -120,6 +129,7 @@
  "idAviso": "A key is generated in your browser. It cannot be exported or copied to another device: if you clear the site data, this identity is lost and there is no way to recover it. There is no password to forget and no server holding it."
 }</script>
 <script src="/assets/ambient.js"></script>
+<script src="/assets/bronce.js"></script>
 <script src="/assets/profile.js"></script>
 <script src="/assets/profile-obra.js"></script>
 <script src="/assets/cabezal.js"></script>
