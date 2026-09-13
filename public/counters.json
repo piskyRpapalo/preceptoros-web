@@ -1,13 +1,13 @@
 {
   "esquema": 1,
   "fecha": "2026-09-13",
-  "ultima_lectura": "2026-09-13T16:38:28+00:00",
+  "ultima_lectura": "2026-09-13T18:10:15+00:00",
   "nota": "Solo hay cifras medidas. Lo que no se midio sale como NO_DATA con su causa. Aqui no se cuenta a nadie.",
   "metricas": [
     {
       "clave": "paginas",
       "estado": "MEDIDO",
-      "valor": 9,
+      "valor": 8,
       "unidad": "paginas",
       "como": "ficheros .html de contenido unico bajo public/"
     },
@@ -21,16 +21,16 @@
     {
       "clave": "peso_sitio",
       "estado": "MEDIDO",
-      "valor": 4841154,
+      "valor": 4919252,
       "unidad": "bytes",
       "como": "todo lo que hay en public/ MENOS downloads/: es lo que pesa visitar. Los adaptadores no se descargan por visitar, se descargan porque alguien los pide"
     },
     {
       "clave": "peso_imagenes",
       "estado": "MEDIDO",
-      "valor": 3497193,
+      "valor": 3453105,
       "unidad": "bytes",
-      "como": "138 ficheros de imagen (.webp, .gif, .png, .svg)"
+      "como": "137 ficheros de imagen (.webp, .gif, .png, .svg)"
     },
     {
       "clave": "peticiones_externas_al_cargar",
@@ -70,9 +70,9 @@
     {
       "clave": "peso_descargas",
       "estado": "MEDIDO",
-      "valor": 190934201,
+      "valor": 190937389,
       "unidad": "bytes",
-      "como": "11 ficheros en public/downloads/ -- los adaptadores. Se cuenta aparte porque no lo paga quien visita, lo paga quien descarga"
+      "como": "13 ficheros en public/downloads/ -- los adaptadores. Se cuenta aparte porque no lo paga quien visita, lo paga quien descarga"
     }
   ]
 }
