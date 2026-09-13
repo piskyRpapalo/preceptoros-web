@@ -185,6 +185,16 @@
       // El objeto que se FIRMA es exactamente el que se guarda, sin la firma
       // dentro. Firmar una cosa y guardar otra es tener una firma que no
       // verifica nada.
+      //
+      // `origen` LLEVA LA PAGINA DENTRO. Decia solo 'preceptoros.org', y desde
+      // que el boton vive tambien en el Benchmark eso ya no identifica nada:
+      // son dos poblaciones --distinto publico, distinta intencion-- y
+      // mezclarlas contamina las dos, igual que con `arnes`.
+      //
+      // Y NADA DE COMENTARIOS DENTRO DE ESTE OBJETO. `test_importar.py` de la
+      // app lee los campos partiendo las lineas por `:` y solo salta las que
+      // empiezan por `//`: un bloque `/* */` aqui dentro entra como si fuera un
+      // campo mas y pone el gate del MVP en rojo. Paso el 2026-09-13.
       var reg = {
         prompt: par.prompt,
         respuesta: par.respuesta,      // el RECHAZADO
@@ -195,13 +205,6 @@
         motivo: motivo.value.trim() || 'NO_DATA',
         tarea: tarea(par.prompt),
         consent: 0,
-        /* CON LA PAGINA DENTRO. Decia solo 'preceptoros.org', y desde que el
-           boton vive tambien en el Benchmark eso ya no identifica nada: el
-           laboratorio recibe los dos pares por la misma puerta y no puede
-           distinguir una correccion del chat de la portada de una del Libro de
-           Pruebas. Son dos poblaciones distintas --distinto publico, distinta
-           intencion-- y mezclarlas contamina las dos, que es el mismo motivo
-           por el que existe la columna `arnes`. */
         origen: 'preceptoros.org' + location.pathname
       };
       window.Identity.firmar(reg).then(function (f) {
