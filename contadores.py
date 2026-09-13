@@ -53,14 +53,40 @@ def medir():
     # publicado 106 KB de imagenes como si no existieran.
     activos = sorted(q for e in ("*.webp", "*.gif", "*.png", "*.svg")
                      for q in PUBLICO.rglob(e))
-    total = sum(p.stat().st_size for p in PUBLICO.rglob("*") if p.is_file())
+    # LO QUE PESA VISITAR, APARTE DE LO QUE PESA DESCARGAR.
+    #
+    # `peso_sitio` se publica en la portada para demostrar que el sitio es
+    # ligero. Contaba TODO lo que hay bajo `public/`, y eso dejo de ser cierto
+    # el dia que entraron los adaptadores: 195 MB, de los cuales 190 son
+    # ficheros `.gguf` que nadie descarga por VISITAR -- se descargan porque
+    # alguien los pide, uno a uno, a proposito.
+    #
+    # Publicar 195 MB como «peso del sitio» seria mentir en un sentido; dejar
+    # el 1,2 MB de antes de que existieran es mentir en el otro, y eso es lo
+    # que estaba publicado. Medido el 2026-09-13: la cifra llevaba desfasada
+    # desde que se subio el primer adaptador, y ningun gate lo vio porque el
+    # test comprueba que la CLAVE exista, no que su valor siga siendo verdad.
+    #
+    # Asi que son dos cifras, y cada una dice lo suyo.
+    descargas = sorted(q for q in (PUBLICO / "downloads").rglob("*")
+                       if q.is_file()) if (PUBLICO / "downloads").is_dir() else []
+    peso_descargas = sum(q.stat().st_size for q in descargas)
+    total = sum(p.stat().st_size for p in PUBLICO.rglob("*")
+                if p.is_file()) - peso_descargas
     idiomas = sorted(d.name for d in PUBLICO.iterdir()
                      if d.is_dir() and len(d.name) == 2)
     return [
         medido("paginas", len(paginas), "paginas",
                "ficheros .html de contenido unico bajo public/"),
         medido("idiomas", len(idiomas), "idiomas", "carpetas de dos letras: " + ", ".join(idiomas)),
-        medido("peso_sitio", total, "bytes", "suma de todo lo que hay en public/"),
+        medido("peso_sitio", total, "bytes",
+               "todo lo que hay en public/ MENOS downloads/: es lo que pesa "
+               "visitar. Los adaptadores no se descargan por visitar, se "
+               "descargan porque alguien los pide"),
+        medido("peso_descargas", peso_descargas, "bytes",
+               f"{len(descargas)} ficheros en public/downloads/ -- los "
+               "adaptadores. Se cuenta aparte porque no lo paga quien visita, "
+               "lo paga quien descarga"),
         medido("peso_imagenes", sum(p.stat().st_size for p in activos), "bytes",
                f"{len(activos)} ficheros de imagen (.webp, .gif, .png, .svg)"),
         medido("peticiones_externas_al_cargar", 0, "peticiones",

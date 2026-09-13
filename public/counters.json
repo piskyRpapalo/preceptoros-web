@@ -1,36 +1,36 @@
 {
   "esquema": 1,
-  "fecha": "2026-09-02",
-  "ultima_lectura": "2026-09-13T02:30:59+00:00",
+  "fecha": "2026-09-13",
+  "ultima_lectura": "2026-09-13T07:48:02+00:00",
   "nota": "Solo hay cifras medidas. Lo que no se midio sale como NO_DATA con su causa. Aqui no se cuenta a nadie.",
   "metricas": [
     {
       "clave": "paginas",
       "estado": "MEDIDO",
-      "valor": 8,
+      "valor": 9,
       "unidad": "paginas",
       "como": "ficheros .html de contenido unico bajo public/"
     },
     {
       "clave": "idiomas",
       "estado": "MEDIDO",
-      "valor": 3,
+      "valor": 8,
       "unidad": "idiomas",
-      "como": "carpetas de dos letras: en, es, fr"
+      "como": "carpetas de dos letras: de, el, en, es, fr, it, pt, ru"
     },
     {
       "clave": "peso_sitio",
       "estado": "MEDIDO",
-      "valor": 1223290,
+      "valor": 4841154,
       "unidad": "bytes",
-      "como": "suma de todo lo que hay en public/"
+      "como": "todo lo que hay en public/ MENOS downloads/: es lo que pesa visitar. Los adaptadores no se descargan por visitar, se descargan porque alguien los pide"
     },
     {
       "clave": "peso_imagenes",
       "estado": "MEDIDO",
-      "valor": 809450,
+      "valor": 3497193,
       "unidad": "bytes",
-      "como": "42 ficheros de imagen (.webp, .gif, .png, .svg)"
+      "como": "138 ficheros de imagen (.webp, .gif, .png, .svg)"
     },
     {
       "clave": "peticiones_externas_al_cargar",
@@ -66,6 +66,13 @@
       "valor": 99,
       "unidad": "pruebas",
       "como": "python3 test_web.py en este repo, cifra 'Ran N tests'"
+    },
+    {
+      "clave": "peso_descargas",
+      "estado": "MEDIDO",
+      "valor": 190934201,
+      "unidad": "bytes",
+      "como": "11 ficheros en public/downloads/ -- los adaptadores. Se cuenta aparte porque no lo paga quien visita, lo paga quien descarga"
     }
   ]
 }

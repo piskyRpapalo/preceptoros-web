@@ -401,6 +401,33 @@ class Estructura(unittest.TestCase):
         for propia in ("paginas", "peso_sitio"):
             self.assertIn(propia, claves, f"falta «{propia}», que mide contadores.py")
 
+        # Y SE COMPRUEBA EL VALOR, no solo que la clave exista.
+        #
+        # Esto vigilaba que las claves estuvieran, y con eso bastaba para el
+        # accidente que lo origino --un guion pisando las metricas del otro--.
+        # Pero dejaba derivar los VALORES en silencio, y derivaron: medido el
+        # 2026-09-13, `paginas` publicaba 8 habiendo 9, e `idiomas` publicaba 3
+        # habiendo 8. Llevaban meses mintiendo en la portada y ningun gate lo
+        # vio, porque comprobar que existe una cifra no es comprobar que sea
+        # verdad.
+        #
+        # Se comprueban las dos que son CONTABLES desde aqui. `peso_sitio` no:
+        # depende de que exista `downloads/`, que no esta en el repo.
+        por_clave = {m["clave"]: m for m in datos["metricas"]}
+        reales = {"paginas": len(paginas_de_contenido()),
+                  "idiomas": len({d.name for d in PUBLICO.iterdir()
+                                  if d.is_dir() and len(d.name) == 2
+                                  and d.name.isalpha()})}
+        for clave, real in reales.items():
+            m = por_clave.get(clave)
+            if not m or m.get("estado") != "MEDIDO":
+                continue
+            with self.subTest(metrica=clave):
+                self.assertEqual(
+                    m["valor"], real,
+                    f"counters.json publica {clave}={m['valor']} y hay {real}. "
+                    "Remedio: python3 contadores.py")
+
         fuente = (RAIZ / "contadores.py").read_text(encoding="utf-8")
         self.assertIn("conservando(previo", fuente,
                       "contadores.py vuelve a escribir `metricas` sin conservar")
