@@ -2271,6 +2271,37 @@ class Cabezal(unittest.TestCase):
             "sube `VERSION` en public/sw.js, y escribe en "
             f"config/sw-huella.txt  huella={real}")
 
+    def test_los_comandos_publicados_existen_en_el_repo_del_producto(self):
+        """La pagina promete comandos; que los ficheros esten, se comprueba.
+
+        `instalar.html` publica `bash bin/instalar-pc`, `python3 preceptoros.py`
+        y cuatro mas, y afirma que salen del repositorio «comprobados uno a uno».
+        Esa frase lleva FECHA, y una afirmacion fechada es una que puede caducar:
+        el dia que uno de esos guiones se renombre, la pagina seguira mandando a
+        la gente a un fichero que ya no esta y nadie se enterara hasta que
+        alguien lo intente.
+
+        Se mira el repo LOCAL del producto, no GitHub. Un test que consultara la
+        red ataria el gate a que haya internet; y si el repo no esta a mano, se
+        salta -- la web tiene que poder probarse sola.
+        """
+        mvp = Path.home() / "p0x" / "preceptor"
+        if not mvp.is_dir():
+            self.skipTest("el repo del producto no esta a mano")
+        pagina = PUBLICO / "es" / "instalar.html"
+        texto = pagina.read_text(encoding="utf-8")
+        citados = set(re.findall(r"<code>[^<]*?(bin/[a-z0-9-]+)", texto))
+        citados |= {m for m in re.findall(r"<code>python3 ([a-z_]+\.py)", texto)}
+        self.assertTrue(citados, "la pagina de instalar no cita ni un comando: "
+                                 "o cambio el marcado, o dejo de explicar como "
+                                 "se instala")
+        for fichero in sorted(citados):
+            with self.subTest(fichero=fichero):
+                self.assertTrue(
+                    (mvp / fichero).exists(),
+                    f"instalar.html manda a `{fichero}` y no esta en el repo del "
+                    "producto. O se renombro, o la pagina quedo vieja.")
+
     def test_ninguna_pagina_ofrece_un_enlace_y_lo_desmiente(self):
         """No se puede poner un boton y decir al lado que no funciona.
 
