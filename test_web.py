@@ -2271,6 +2271,48 @@ class Cabezal(unittest.TestCase):
             "sube `VERSION` en public/sw.js, y escribe en "
             f"config/sw-huella.txt  huella={real}")
 
+    def test_todo_panel_publicado_dice_lo_que_falla(self):
+        """Una ficha que solo cuenta virtudes es publicidad, no una medida.
+
+        `paneles.json` sale del mismo esquema que los estudios internos, y el
+        validador del rack ya exige `que_falla`. Esta prueba lo exige EN LO
+        PUBLICADO, que es otra cosa: el fichero puede llegar aqui de una version
+        vieja del generador, editado a mano, o con un idioma anadido despues sin
+        pasar por el validador.
+
+        Y se exige por IDIOMA. Traducir una ficha y perder el defecto por el
+        camino deja al lector de esa lengua con la mitad honesta quitada -- que
+        es peor que no traducirla, porque no se nota.
+
+        Tambien se comprueba la medida: una cifra de tok/s sin su carga base no
+        es reproducible, y esta casa no publica cifras irreproducibles.
+        """
+        fichero = PUBLICO / "paneles.json"
+        if not fichero.is_file():
+            self.skipTest("no hay paneles publicados todavia")
+        d = json.loads(fichero.read_text(encoding="utf-8"))
+        paneles = d.get("paneles") or []
+        self.assertTrue(paneles, "paneles.json existe y esta vacio: o sobra el "
+                                 "fichero, o falta el contenido")
+        for p in paneles:
+            pid = p.get("id", "?")
+            textos = p.get("textos") or {}
+            with self.subTest(panel=pid):
+                self.assertTrue(textos, f"el panel `{pid}` no trae textos")
+            for idi, t in textos.items():
+                with self.subTest(panel=pid, idioma=idi):
+                    self.assertTrue(
+                        (t or {}).get("que_falla"),
+                        f"el panel `{pid}` en «{idi}» no dice que falla. Una "
+                        "ficha que solo cuenta virtudes es publicidad.")
+            med = (p.get("modelo") or {}).get("medida") or {}
+            if med.get("tok_s") is not None:
+                with self.subTest(panel=pid, campo="carga_base"):
+                    self.assertIsNotNone(
+                        med.get("carga_base"),
+                        f"el panel `{pid}` publica {med['tok_s']} tok/s sin la "
+                        "carga base de la maquina: no es reproducible.")
+
     def test_los_comandos_publicados_existen_en_el_repo_del_producto(self):
         """La pagina promete comandos; que los ficheros esten, se comprueba.
 

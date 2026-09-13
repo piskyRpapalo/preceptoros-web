@@ -150,3 +150,16 @@ ul.leyenda li{margin:0 0 .3rem;padding-left:.9rem;text-indent:-.9rem}
 #agora-portada .hash { font-size: .72rem; opacity: .6; font-family: ui-monospace, monospace; }
 #agora-portada .ag-cerrado li { padding: .5rem 0; }
 #agora-portada .ag-cerrado p { margin: .2rem 0 0; font-size: .8rem; line-height: 1.45; }
+#agora-portada .ag-paneles { list-style: none; padding: 0; margin: 0; display: grid;
+  gap: .9rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr)); }
+#agora-portada .ag-panel { border: 1px solid var(--panel-borde, #0002);
+  border-radius: var(--radius, 10px); padding: .8rem .9rem; }
+#agora-portada .ag-panel h4 { margin: 0 0 .25rem; font-size: 1rem; }
+#agora-portada .ag-tag { font-size: .74rem; opacity: .7; font-family: ui-monospace, monospace; }
+#agora-portada .ag-med { margin: .35rem 0; font-size: .78rem; opacity: .8;
+  font-family: ui-monospace, monospace; font-variant-numeric: tabular-nums; }
+#agora-portada .ag-panel p { margin: .4rem 0 0; font-size: .84rem; line-height: 1.5; }
+/* `Falla` con el MISMO peso que `Hace`, no en letra pequena: un defecto
+   escondido esta contado y no dicho. */
+#agora-portada .ag-falla { border-left: 2px solid var(--bronce, #8a7355);
+  padding-left: .6rem; }

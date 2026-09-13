@@ -63,6 +63,48 @@
      "que_hace": "Responde sobre PreceptorOS con los comandos reales de instalación, y reconoce a quien ya instaló en vez de repetirle los pasos.",
      "que_falla": "Inventa cifras con mucha confianza. Si te da un número, pídele de dónde sale: es el fallo que este panel existe para que veas.",
      "para_quien": "Quien llega por primera vez y quiere instalar sin leerse el repositorio."
+    },
+    "en": {
+     "nombre": "The Chat",
+     "que_hace": "Responds about PreceptorOS with the actual installation commands and recognizes those who have already installed it instead of repeating the steps.",
+     "que_falla": "Makes up figures with a lot of confidence. If it gives you a number, ask where it comes from: this is the actual flaw that this panel exists to highlight.",
+     "para_quien": "Those who arrive for the first time and want to install without reading the repository."
+    },
+    "fr": {
+     "nombre": "La Causerie",
+     "que_hace": "Répond sur PreceptorOS avec les commandes réelles d'installation et reconnaît ceux qui l'ont déjà installé plutôt que de leur répéter les étapes.",
+     "que_falla": "Invente des chiffres avec beaucoup de confiance. Si elle donne un nombre, demandez-lui d'où il vient : c'est le défaut que ce panneau existe pour que vous voyiez.",
+     "para_quien": "Celui qui arrive pour la première fois et veut installer sans se lire le dépôt."
+    },
+    "it": {
+     "nombre": "La Chiacchierata",
+     "que_hace": "Risponde sui comandi reali di installazione di PreceptorOS e riconosce chi ha già installato invece di ripetere i passi.",
+     "que_falla": "Inventa numeri con molta sicurezza. Se ti dà un numero, chiedigli da dove proviene: è il problema che questo pannello esiste per evidenziare.",
+     "para_quien": "Chi arriva per la prima volta e vuole installare senza leggersi il repository."
+    },
+    "de": {
+     "nombre": "Die Unterhaltung",
+     "que_hace": "Antwortet auf Fragen zu PreceptorOS mit den tatsächlichen Installationskommandos und erkennt bereits installierte Benutzer anstatt ihnen die Schritte zu wiederholen.",
+     "que_falla": "Erfindet Zahlen mit großer Sicherheit. Wenn man Ihnen eine Zahl gibt, fragen Sie nach deren Herkunft: Dies ist das Problem, für das dieses Panel existiert, damit Sie es sehen können.",
+     "para_quien": "Für diejenigen, die zum ersten Mal kommen und ohne das Repository zu lesen installieren möchten."
+    },
+    "ru": {
+     "nombre": "Общение",
+     "que_hace": "Отвечает на вопросы о PreceptorOS с использованием реальных команд установки и распознает тех, кто уже установил, вместо того чтобы повторять им шаги.",
+     "que_falla": "Создает цифры с большой уверенностью. Если вы получаете число, спросите, откуда оно взято: это и есть проблема, для решения которой существует этот панель.",
+     "para_quien": "Тем, кто приходит впервые и хочет установить без чтения репозитория."
+    },
+    "el": {
+     "nombre": "Η Κουβέντα",
+     "que_hace": "Απαντά σχετικά με το PreceptorOS χρησιμοποιώντας τα πραγματικά κείμενα εγκατάστασης και αναγνωρίζοντας εγγεγραμμένους χρήστες που ήδη έχουν εγκαταστήσει, αντί για να τους επαναλαμβάνει τις βηματίστρατα.",
+     "que_falla": "Επινοείτε αριθμούς με πολύ πειθαλία. Αν σας δοθεί ένας αριθμός, αιτήστε την πηγή του: αυτό είναι το πρόβλημα που υπάρχει για το οποίο υπάρχει αυτό το παράθυρο.",
+     "para_quien": "Αυτοί που έρχονται για πρώτη φορά και θέλουν να εγκαταστήσουν χωρίς να διαβάσουν το αποθετήριο."
+    },
+    "pt": {
+     "nombre": "A Conversa",
+     "que_hace": "Responde sobre o PreceptorOS com os comandos reais de instalação, e reconhece quem já instalou em vez de lhe repetir os passos.",
+     "que_falla": "Inventa números com muita confiança. Se te der um, pede-lhe de onde sai: é a falha que este painel existe para que vejas.",
+     "para_quien": "Quem chega pela primeira vez e quer instalar sem ler o repositório."
     }
    }
   }

@@ -54,6 +54,54 @@
     return c;
   }
 
+  function idioma() {
+    return (document.documentElement.lang || 'es').slice(0, 2);
+  }
+
+  function paneles(raiz) {
+    fetch('/paneles.json', { cache: 'no-store' })
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        var ps = d.paneles || [];
+        if (!ps.length) { return; }
+        var s = el('section', 'ag-bloque');
+        s.appendChild(el('h3', null, T('agPaneles', 'Los cerebros, uno a uno')));
+        var ul = el('ul', 'ag-paneles');
+        ps.forEach(function (p) {
+          var t = (p.textos || {})[idioma()] || (p.textos || {}).es || {};
+          var li = el('li', 'ag-panel');
+          li.appendChild(el('h4', null, t.nombre || p.id));
+          li.appendChild(el('code', 'ag-tag', p.modelo && p.modelo.tag));
+          var med = (p.modelo || {}).medida || {};
+          if (med.tok_s) {
+            /* La cifra viaja con su carga base. Sin ella no es reproducible, y
+               una tabla que presume de hashes no puede publicar cifras sueltas. */
+            li.appendChild(el('p', 'ag-med', med.tok_s + ' tok/s · carga base ' +
+              (med.carga_base === undefined ? 'NO_DATA' : med.carga_base)));
+          }
+          if (t.que_hace) {
+            var h = el('p'); h.appendChild(el('strong', null, 'Hace: '));
+            h.appendChild(document.createTextNode(t.que_hace)); li.appendChild(h);
+          }
+          if (t.que_falla) {
+            var f = el('p', 'ag-falla');
+            f.appendChild(el('strong', null, 'Falla: '));
+            f.appendChild(document.createTextNode(t.que_falla)); li.appendChild(f);
+          }
+          if (p.entorno && p.entorno.paquete) {
+            var a2 = el('a', 'ag-fich', p.entorno.paquete);
+            a2.href = '/downloads/' + p.entorno.paquete;
+            var e2 = el('p', 'tenue'); e2.textContent = 'Su entorno de estudio: ';
+            e2.appendChild(a2); li.appendChild(e2);
+          }
+          ul.appendChild(li);
+        });
+        s.appendChild(ul);
+        raiz.appendChild(s);
+      })
+      .catch(function () { /* sin paneles la portada sigue en pie */ });
+  }
+
   fetch('/agora.json', { cache: 'no-store' })
     .then(function (r) { return r.json(); })
     .then(function (d) {
@@ -118,6 +166,19 @@
       dl.appendChild(el('p', 'tenue', T('agVerifica',
         'Comprueba el hash antes de usarlo') + ': sha256sum -c <fichero>.sha256'));
       raiz.appendChild(dl);
+
+      /* --- LOS PANELES DE ESTUDIO ------------------------------------------
+         La ficha de cada modelo. Se pinta de `/paneles.json`, que sale del
+         MISMO esquema que usan los estudios internos del laboratorio: cambian
+         los textos, no la forma. Los internos no llegan hasta aqui --el
+         generador solo publica los de ambito `publico`-- y eso es el punto, no
+         una omision.
+
+         QUE_FALLA SE PINTA SIEMPRE Y CON EL MISMO PESO QUE QUE_HACE. El
+         validador ya lo exige en el dato; aqui se exige en la vista, porque un
+         defecto escondido en letra pequena esta contado y no dicho. Es la parte
+         de la ficha que hace que las demas valgan algo. */
+      paneles(raiz);
 
       /* --- LO DECLARADO Y CERRADO ------------------------------------------ */
       if ((d.cerrado || []).length) {
