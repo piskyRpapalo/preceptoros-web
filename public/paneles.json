@@ -165,19 +165,85 @@
    },
    "textos": {
     "es": {
-     "nombre": "El Constructor",
+     "nombre": "El Herrero",
      "que_hace": "Vive en la terminal y escribe código, pruebas y tests dentro del ecosistema PreceptorOS. Hoy corre sobre el modelo base medido: 32,03 tok/s con la máquina a 1,04 — el segundo más rápido del banco, porque activa 3B de los 30 que pesa.",
-     "que_falla": "El adaptador especializado NO existe todavía: hoy es el modelo base con reglas encima, no un LoRA entrenado para esta casa. Lo que ves medido es la velocidad del motor, no la puntería. Se dice antes de que lo pruebes.",
+     "que_falla": "El adaptador especializado NO existe todavía: hoy es el modelo base con reglas encima, no un LoRA entrenado para esta casa. Y su defecto declarado se hereda: forja rápido y confía en su mano. Si no le pides la prueba, te entrega la pieza sin templar.",
      "para_quien": "Quien ya instaló y quiere que el ecosistema se construya a sí mismo desde la terminal."
     },
     "en": {
-     "nombre": "The Builder",
+     "nombre": "The Smith",
      "que_hace": "Lives in the terminal and writes code, tests and checks inside the PreceptorOS ecosystem. Today it runs on the measured base model: 32.03 tok/s with the machine at 1.04 — second fastest on the bench, because it activates 3B of the 30 it weighs.",
-     "que_falla": "The specialised adapter does NOT exist yet: today this is the base model with rules on top, not a LoRA trained for this house. What you see measured is engine speed, not aim. Said before you try it.",
+     "que_falla": "The specialised adapter does NOT exist yet: today this is the base model with rules on top, not a LoRA trained for this house. And its declared flaw carries over: it forges fast and trusts its own hand. If you do not ask for the test, it hands you the piece untempered.",
      "para_quien": "Someone who already installed and wants the ecosystem to build itself from the terminal."
     }
    },
-   "nota_de_nombre": "`coder-adapter` es el identificador y NO se traduce; «El Constructor» es el nombre visible y se localiza. Ley bidireccional del lore: si el codigo lo mide, el Narrador lo puede decir -- y solo eso."
+   "nota_de_nombre": "`coder-adapter` es el identificador tecnico y `the_smith` el del lore; ninguno se traduce. «El Herrero» es el nombre visible y se localiza. No colisiona con El Artesano del hub: El Artesano es el oficio --lee codigo, propone arreglo, escribe prueba-- y El Herrero es ese oficio TEMPLADO dentro del ecosistema. La tarjeta es el adaptador del Artesano tras su aprendizaje.",
+   "tiene_lore": true
+  },
+  {
+   "esquema": "preceptoros/panel-estudio/1",
+   "id": "killswitch-apocalypse",
+   "ambito": "publico",
+   "modelo": {
+    "tag": "qwen2.5:7b",
+    "sha256": "2bada8a7450677000f678be90653b85d364de7db25eb5ea54136ada5f3933730",
+    "medida": {
+     "tok_s": 15.34,
+     "segundos": 14.6,
+     "carga_base": 1.04,
+     "cuando": "2026-09-13 · Beelink Ryzen 7 255 + Radeon 780M"
+    }
+   },
+   "entorno": {
+    "paquete": "entorno-estudio-v1.tar.gz",
+    "sha256": "6e8595090dea1df547293d5f064bc2679c5425c017c57bc2efa0a6e3159fb8bd",
+    "bytes": 3096
+   },
+   "loop": {
+    "turnos": [
+     {
+      "n": 1,
+      "papel": "bibliotecario",
+      "modelo": "qwen2.5-coder:3b"
+     },
+     {
+      "n": 2,
+      "papel": "analista",
+      "modelo": "deepseek-r1:7b"
+     },
+     {
+      "n": 3,
+      "papel": "guardian",
+      "modelo": "granite3-dense:8b"
+     },
+     {
+      "n": 4,
+      "papel": "forjador",
+      "modelo": null,
+      "nota": "Python puro, sin LLM"
+     }
+    ]
+   },
+   "reglas": {
+    "puerta_de_privacidad": "Tacha claves, IPs y rutas ANTES de que nada salga.",
+    "propose_only": "Nada se escribe sin --ejecutar; nada cruza a otro nodo sin artefacto.",
+    "sin_firma_no_entra": "Una fila sin `user_hash` verificado no llega al dataset.",
+    "tope_de_ritmo": "5 vueltas por minuto. La iGPU es una y la comparten los bucles."
+   },
+   "juez": {
+    "modelo": "qwen2.5:14b",
+    "rubrica": "CHECKPOINTS.md · 5 joyas, 0-2 cada una",
+    "dos_capas": "determinista primero, MoE despues. Una sola capa es NO_DATA."
+   },
+   "textos": {
+    "es": {
+     "nombre": "Killswitch Apocalypse",
+     "que_hace": "Un estudio de diez minutos donde la presión es una batería, no un cronómetro. Practicas lo único que sirve cuando la nube calla: preguntar bien y comprobar lo que te contestan.",
+     "que_falla": "El reloj es real y no se pausa. Si te pierdes en la primera pregunta, la partida acaba con el archivo a medias — y esa derrota es parte del estudio, no un fallo del juego.",
+     "para_quien": "Quien quiera saber qué haría sin servicios web, con lo que ya tiene en la mano."
+    }
+   },
+   "tiene_lore": true
   }
  ]
 }
