@@ -22,7 +22,21 @@
   // carga local acaba ensenando a ignorar la consola.
   if (!self.isSecureContext) return;
   addEventListener('load', function () {
-    navigator.serviceWorker.register('/sw.js').catch(function () {});
+    // SE PIDE LA COMPROBACION, no se espera a que el navegador la haga.
+    //
+    // El navegador solo vuelve a mirar `sw.js` al NAVEGAR. Quien tenga la PWA
+    // abierta y no navegue se queda con el worker viejo --y con el shell que
+    // ese worker cachea-- indefinidamente. Medido el 2026-09-13 en un Doogee:
+    // la web servia ficheros de dias antes y desde el navegador se veia como un
+    // fallo de estilos, no como una version vieja.
+    //
+    // `update()` en cada carga cierra ese hueco y no cuesta nada cuando no hay
+    // nada nuevo: el navegador compara bytes y se calla. `skipWaiting` y
+    // `clients.claim` --que `sw.js` ya tiene-- hacen el resto sin pedir
+    // permiso ni una segunda recarga.
+    navigator.serviceWorker.register('/sw.js')
+      .then(function (r) { if (r && r.update) { return r.update(); } })
+      .catch(function () {});
   });
 })();
 
