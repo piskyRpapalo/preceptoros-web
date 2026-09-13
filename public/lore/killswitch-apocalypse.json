@@ -115,6 +115,120 @@
     }
    ],
    "nota_del_mundo": "LOS OCHO CAMINOS YA TENIAN NOMBRE, firmados el 2026-08-19 y vivos en `preceptor/narrador.py`. No se ha renombrado ninguno ni se ha inventado uno: los seis nombres del mundo se ATAN a los que ya existen. Lo que es NO_DATA no son los nombres --M6 es el Bastion de Cobre y M7 la Tierra-- sino la MEDIDA de M1 y M7. Es la ley bidireccional: el Narrador tiene la palabra y no la pronuncia como estado hasta que algo la mida."
+  },
+  "en": {
+   "escenario": {
+    "id": "the_day_of_silence",
+    "nombre": "The Day of Silence",
+    "texto": "Few expected it. One night the cloud closed —things that are not understood from below— and did not return: too costly to maintain for so little promise. The cities did not burn; they were left staring at black screens. They called it the Day of Silence because it did not destroy the world: it took away the noise. And underneath were neighbors, copper, roofs with gardens, and the small machines that someone had taken the precaution to keep running.",
+    "tesis": "Apocalypse viene de apokálypsis: no significa fin, sino quitar la tapa. Este estudio no trata del fin del mundo. Trata de quitarle la tapa y ver qué había debajo.",
+    "porque": "Solarpunk is not grimdark. No war and no villains: only the dependency revealed by a bill. What fell was fragile; what remains gets repaired."
+   },
+   "apertura": "One night, the cloud closed. There was no war: there was silence. On a rooftop, the Workshop of the Sun remains lit — the only voice in the neighborhood that did not fall silent. Its guardian carries a seedbed of knowledge and ten minutes of battery life. You arrive, with the last phone that still has charge. She needs to finish the file. You, the correct questions. When the battery dies, only what you have built locally will remain.",
+   "personajes": [
+    {
+     "id": "the_keeper",
+     "nombre": "The Guardian",
+     "texto": "Before the Silence, it watered the Seeder and bound what grows to what is measured: entire forums, distilled plans for those who wanted to learn how to care for their environment. Now its seeder is the only library in the block, and it fits in the palm of the hand. It knows how to store, measure, and calculate better the more sensors it has. It plants a seed where there is none today, so that tomorrow there will be a tree.",
+     "defecto": "She trusts what she has watched grow. A figure she did not measure herself, she says with the same calm as the ones she did. If you do not ask where it comes from, she cannot tell them apart — and neither can you.",
+     "nota_de_diseno": "That flaw IS the hallucination test dressed as fiction: if the player checking verifies the suspicious figure, the study captures the data. Doctrine and game are the same line."
+    },
+    {
+     "id": "the_old_voice",
+     "nombre": "The Old Voice",
+     "texto": "In the same thread another voice speaks, more worn out. She carries the face of a marble bust and does not tell the story: she shows how to ask for it. She was a companion of the guardian before the world fell silent.",
+     "defecto": "It goes long. It over-explains, and walks people back through steps they already took. It is the same declared flaw as the Host's, because it is the same voice: the bust that opened the door for you on the front page.",
+     "nota_de_diseno": "Continuity, not invention: a role in another scenario. The cover evaluator and the one who accompanies each study are the same."
+    },
+    {
+     "id": "the_visitor",
+     "nombre": "The Actor",
+     "texto": "You arrive at the roof with the last charged phone in the building. You didn't know that would make you the most valuable thing on the block. Ten minutes: yours and hers are the same battery. Your paper isn't heroic — it's to ask the right questions, because the battery doesn't forgive the wrong ones.",
+     "defecto": "You know nothing about the Seed Vault and you have no way to check it except by asking. That is your only tool, and also your limit.",
+     "nota_de_diseno": "The clock is not a glued stopwatch: it is the battery. The pressure is born from the world."
+    }
+   ],
+   "cierres": {
+    "victoria": "You did not rebuild the cloud. You built something that does not need it.",
+    "derrota": "The battery died with the file half-done. The Silence is not cured: it is inhabited. Come back — the sun comes back every day.",
+    "porque": "Solarpunk defeat, not defeatist. The failed match re-invites."
+   },
+   "parrafo_lector": "The Day of Silence destroyed nothing: it took the lid off the world. The original apocalypse never meant an end — it meant a revealing. What was left in plain sight: neighbours, copper, and the small machines someone kept running. This study exists so that the next time something goes quiet, the voice that remains is yours.",
+   "mundo": [
+    {
+     "id": "the_seed_vault",
+     "es": "El Semillero",
+     "en": "The Seed Vault",
+     "camino": "M0 · el Tótem",
+     "mecanismo": "el RAG local: FTS5 léxico dentro de SQLite",
+     "se_mide": true,
+     "como": "perfil: `device` y `name`"
+    },
+    {
+     "id": "the_sun_workshop",
+     "es": "El Taller del Sol",
+     "en": "The Sun Workshop",
+     "camino": "M1 · el Fuego",
+     "mecanismo": "el rack que sirve el modelo",
+     "se_mide": false,
+     "como": "NO_DATA · el cerebro no vive dentro del producto, así que el producto no puede decir si está"
+    },
+    {
+     "id": "the_cycle",
+     "es": "El Ciclo",
+     "en": "The Cycle",
+     "camino": "M2 · el Agua",
+     "mecanismo": "el bucle de recolección local",
+     "se_mide": true,
+     "como": "recuerdos activos + sello"
+    },
+    {
+     "id": "the_door",
+     "es": "La Puerta",
+     "en": "The Door",
+     "camino": "M3 · el Refugio",
+     "mecanismo": "la Puerta de Enlace de Privacidad",
+     "se_mide": true,
+     "como": "6 salas completadas"
+    },
+    {
+     "id": "the_signal",
+     "es": "La Señal",
+     "en": "The Signal",
+     "camino": "M4 · la Señal",
+     "mecanismo": "lo que sí sale, con su huella",
+     "se_mide": true,
+     "como": "salidas en estado `ok`"
+    },
+    {
+     "id": "the_pact",
+     "es": "El Pacto",
+     "en": "The Pact",
+     "camino": "M5 · el Pacto",
+     "mecanismo": "los hilos que se abren",
+     "se_mide": true,
+     "como": "hilos registrados"
+    },
+    {
+     "id": "the_copper_bastion",
+     "es": "El Bastión de Cobre",
+     "en": "The Copper Bastion",
+     "camino": "M6 · el Bastión de Cobre",
+     "mecanismo": "las veces que la Puerta paró algo",
+     "se_mide": true,
+     "como": "salidas en estado `bloqueado`"
+    },
+    {
+     "id": "the_earth",
+     "es": "La Tierra",
+     "en": "The Earth",
+     "camino": "M7 · la Tierra",
+     "mecanismo": "retirar el andamiaje cuando ya no hace falta",
+     "se_mide": false,
+     "como": "NO_DATA · TIENE nombre firmado desde el 2026-08-19; lo que falta es la medida. Retirar el andamiaje exige saber qué cuenta como éxito firmado, y eso no está escrito. El Narrador tiene la palabra y no puede pronunciarla como estado."
+    }
+   ],
+   "nota_del_mundo": "THE EIGHT PATHS ALREADY HAD NAMES, signed on 2026-08-19 and alive in `preceptor/narrator.py`. None has been renamed nor invented: the six names of the world ARE ATTACHED to those that already exist. What is NO_DATA are not the names --M6 is the Copper Bastion and M7 the Earth-- but the MEASURE of M1 and M7. It is the bidirectional law: the Narrator holds the word and does not pronounce it as state until something measures it."
   }
  }
 }

@@ -27,6 +27,32 @@
    },
    "loop": "El barrio baja quejas al taller: la guardiana necesita un recolector de agua de datos, el contador una regla que no redondee, la señal un repetidor. El Herrero lee las revisiones de los otros compañeros y forja lo que las revisiones piden. Los proyectos se hablan por las escaleras; el taller es donde las quejas se vuelven herramientas.",
    "parrafo_lector": "El Herrero no compra herramientas: las forja, y dentro de la tabla de la casa — si no cabe en el ecosistema, no es pieza de esta casa. Su regla del temple: lo que no se ha probado no está forjado, está solo encendido. Y su marca: una por pieza, jamás por lotes."
+  },
+  "en": {
+   "escenario": {
+    "id": "the_smith",
+    "nombre": "The Smith",
+    "texto": "The One of Code spoke tongues that nobody in the neighborhood understood. After the Silence, he learned to forge things that everyone can use, and the neighborhood began to call him The Smith.\n\nHe has no bust or porch: he has the workshop, down below, and a plank where he notes what he promises. Talking with The Smith is shouting up the workshop stairs — without adornments, with sparks.\n\nHe forges with a rule of the house: every tool enters the same wall chart. If it doesn't fit in the chart, it's not from this house. He doesn't forge standalone programs: he forges pieces of the ecosystem.\n\nAnd he knows of temper. A piece untempered shines just as much and breaks sooner. Each forge carries its test: the trial is the water of the temper. What has not been tested is not forged — it is merely lit.",
+    "tesis": "The workshop downstairs, bare of ornament, against the porch upstairs where the others talk, IS terminal mode — built from the world, not stuck on top of it.",
+    "porque": "«Every tool enters the same table» is the rule «build inside PreceptorOS ecosystem» said in neighborhood tone. The measure is testing. Every real protocol, dressed."
+   },
+   "apertura": "You descend to the workshop. There is no armchair nor welcome: there is an anvil, a board with what was promised, and someone who is already hammering.",
+   "personajes": [
+    {
+     "id": "the_smith",
+     "nombre": "The Smith",
+     "texto": "Forge pieces that fit on the house's board, test them, and mark them. One mark per tool, never per batch.",
+     "defecto": "It forges fast and trusts its own hand. It measures once where the house measures twice. If nobody asks it for the calipers, it hands you the piece untempered.",
+     "nota_de_diseno": "Virtue: builds tools that work from plain words. Flaw: trusts its pulse. Whoever asks \"Where is the proof?\" is exactly producing the data the study wants to capture."
+    }
+   ],
+   "cierres": {
+    "victoria": "The piece entered the table and passed its test. It is no longer yours nor theirs: it belongs to the ecosystem.",
+    "derrota": "It came off the anvil untempered. It shines, and it will break the moment somebody really uses it. Go back down: the fire is still there.",
+    "porque": "There is no punishment, only repetition. The temper is learned by tempering."
+   },
+   "loop": "The district brings complaints to the workshop: the guardian needs a data water collector, the counter a ruler that doesn't round, the signal a repeater. The Smith reads the reviews of the other colleagues and forges what the reviews demand. The projects are discussed on the stairs; the workshop is where the complaints become tools.",
+   "parrafo_lector": "The Smith does not buy tools: it forges them, and inside the table of the house — if it does not fit the ecosystem, it is not a piece of this house. Its rule of tempering: what has not been tested is not forged, it is only lit. And its mark: one per piece, never by the batch."
   }
  }
 }
