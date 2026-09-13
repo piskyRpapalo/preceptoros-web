@@ -7,7 +7,8 @@ Cada prueba comprueba UNA regla del canon y falla diciendo por que. Una
 comprobacion que detecta y no bloquea no es una comprobacion: aqui no hay avisos,
 solo verde o rojo.
 """
-import gzip, hashlib, json, re, unittest
+import gzip
+import hashlib, hashlib, json, re, unittest
 from pathlib import Path
 
 RAIZ = Path(__file__).resolve().parent
@@ -2192,6 +2193,56 @@ class Cabezal(unittest.TestCase):
 
         self.assertNotIn("!important", cuerpo,
                          "el cabezal se arregla a martillazos")
+
+    def test_la_version_del_service_worker_sigue_a_lo_publicado(self):
+        """Desplegar no es publicar. Medido en produccion, no deducido.
+
+        El 2026-09-13 se subieron `bronce.js`, `movimiento.css` y un
+        `corregir.js` nuevo. Los tres llegaron: `curl` los traia del servidor
+        con sus bytes exactos. Y la pagina seguia ejecutando los VIEJOS --la
+        correccion se guardaba pero la puerta de exportacion no aparecia--
+        porque `sw.js` servia el shell desde `shell-preceptoros-2026-11-d`,
+        cacheado dias antes y con su `VERSION` sin tocar.
+
+        Al Doogee le pasaba lo mismo y se habia diagnosticado como «un boton de
+        navegacion sin rotulo». No era CSS. Era esto, y desde el navegador se
+        ve identico a un fallo de estilos: por eso hace falta un test y no
+        buenos ojos.
+
+        La consecuencia es la peor de su especie: el cambio llega a quien entra
+        por primera vez y NO llega a quien ya conocia el sitio --o sea, a los
+        testers--. Y no avisa nadie.
+
+        Aqui se ata una cosa a la otra: la huella de todo lo publicado y la
+        version de cache que le corresponde. Si cambia un byte y la version no,
+        rojo. La huella vive en `config/`, fuera de `public/`, porque en
+        ejecucion no la usa nadie y `sw.js` esta a 64 B de su tope de red.
+        """
+        conf = RAIZ / "config" / "sw-huella.txt"
+        self.assertTrue(conf.is_file(), "falta config/sw-huella.txt")
+        d = dict(l.split("=", 1) for l in conf.read_text(encoding="utf-8")
+                 .splitlines() if "=" in l and not l.startswith("#"))
+
+        h = hashlib.sha256()
+        for q in sorted(PUBLICO.rglob("*")):
+            if q.is_file() and q.name != "sw.js":
+                h.update(q.relative_to(PUBLICO).as_posix().encode())
+                h.update(q.read_bytes())
+        real = h.hexdigest()[:16]
+
+        sw = (PUBLICO / "sw.js").read_text(encoding="utf-8")
+        m = re.search(r"const VERSION = '([^']+)'", sw)
+        self.assertIsNotNone(m, "sw.js no declara VERSION")
+        version = m.group(1)
+
+        self.assertEqual(d.get("version"), version,
+            f"`sw.js` dice VERSION={version} y `config/sw-huella.txt` anota "
+            f"{d.get('version')}. Se apunta la que se despliega.")
+        self.assertEqual(d.get("huella"), real,
+            "lo publicado cambio y la cache del service worker no. Quien ya "
+            "visito el sitio NO recibiria este cambio. Remedio, en este orden: "
+            "sube `VERSION` en public/sw.js, y escribe en "
+            f"config/sw-huella.txt  huella={real}")
 
     def test_la_correccion_firmada_no_sale_del_aparato(self):
         """El eslabon [2] se guarda, no se envia. Y se comprueba, no se promete.

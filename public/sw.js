@@ -29,7 +29,8 @@
  * dos motivos -- el techo de 7 paginas del gate, y que un fichero de respaldo
  * tambien puede faltar del cache justo el dia que hace falta.
  */
-const VERSION = 'preceptoros-2026-11-d';
+/* Subir VERSION o el cambio NO llega: ver `config/sw-huella.txt`. */
+const VERSION = 'preceptoros-2026-13-a';
 const SHELL = 'shell-' + VERSION;
 const OBRA = 'obra-' + VERSION;
 
