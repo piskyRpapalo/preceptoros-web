@@ -131,3 +131,8 @@
 .dos-puertas{display:grid;gap:1rem;grid-template-columns:1fr;margin-bottom:1.2rem}
 @media (min-width:46rem){ .dos-puertas{grid-template-columns:1fr 1fr} }
 .dos-puertas h2{margin-top:0;font-size:1.1rem}
+
+/* La cabecera del panel de peligro: el nombre y el sello en la misma linea. */
+.ks-cab{display:flex;flex-wrap:wrap;align-items:baseline;gap:.5rem .8rem}
+.ks-cab h3{flex:1 1 auto}
+#killswitch{margin-bottom:1.1rem}

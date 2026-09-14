@@ -63,7 +63,7 @@
     {
       "clave": "pruebas_web",
       "estado": "MEDIDO",
-      "valor": 122,
+      "valor": 123,
       "unidad": "pruebas",
       "como": "python3 test_web.py en este repo, cifra 'Ran N tests'"
     },

@@ -54,6 +54,22 @@
 <p class="guia"><strong>Das ist ein Markt, kein Forum.</strong> Oben die Forschungslinien: auf welcher Stufe jede steht und was ihr fehlt. Danach, was der Souverän heute verlangt und was du mitnehmen kannst. Darunter die offene Pinnwand —Herausforderungen, Aufgaben, abgegebene Rechenzeit— wo du fragst oder lieferst.</p>
 </details>
 
+<!-- DOS PESTAÑAS. Orden del Soberano, 2026-09-14: la plaza tiene
+     dos cosas que no se miran a la vez --lo que se puede hacer y lo
+     que se esta hablando-- y en una sola columna competian por la
+     misma pantalla. La implementacion es `pestanas.js`, compartida. -->
+<div class="pestanas" data-pestanas>
+  <button class="pestana" data-panel="proyectos">Projekte</button>
+  <button class="pestana" data-panel="foro">Forum</button>
+</div>
+
+<div data-hoja="proyectos">
+
+<!-- SURVIVAL KILLSWITCH, el primero y en rojo. La unica excepcion al
+     violeta de la casa, y lo pinta `killswitch.js` desde la misma ficha
+     que el resto: no tiene una copia propia de sus datos. -->
+<section id="killswitch"></section>
+
 <!-- LA VITRINA DE LAS LINEAS DE INVESTIGACION. Vivia en el
      LorAtelier y se muda aqui el 2026-09-13: lo que se puede
      APORTAR es asunto de la comunidad, y el Libro de Pruebas se
@@ -80,7 +96,12 @@
      seccion la rellena `selector-modelo.js`; vacia no ocupa nada. -->
 <section id="cerebros-banco"></section>
 
+</div>
+
+<div data-hoja="foro" hidden>
 <div id="hilos" class="panel"></div>
+</div>
+
 
 <footer class="honest-footer">
   <details class="pliego"><summary>Wie das funktioniert</summary>
@@ -93,12 +114,17 @@
   <p><a href="/hitos.html">Meilensteine</a></p>
 </footer>
 
-<script type="application/json" id="i18n">{"tbEjemplo": "Diese Beiträge sind BEISPIELE, um die Dichte der Pinnwand zu prüfen.", "tbReales": "Echte Beiträge bisher:", "tbFiltros": "Kategorien der Pinnwand", "tbTodos": "Alle", "tbRespuestas": "Antworten", "tbSinDatos": "NO_DATA — die Pinnwand konnte nicht gelesen werden.", "tbTipos": {"CHALLENGE": "HERAUSFORDERUNG", "TASK": "AUFGABE", "COMPUTE": "RECHENZEIT", "GENERAL": "ALLGEMEIN"}, "idPerfil": "Mein Profil", "idEntrar": "Identität anlegen", "idHola": "Hallo,", "idClave": "Meinen Fingerabdruck ansehen", "idPublica": "Öffentlicher Schlüssel:", "idFallo": "NO_DATA — die Identität konnte nicht angelegt werden:", "idAviso": "In deinem Browser wird ein Schlüssel erzeugt. Er lässt sich weder exportieren noch auf ein anderes Gerät kopieren: löschst du die Daten der Seite, ist diese Identität verloren und nicht wiederherstellbar. Kein Passwort zum Vergessen, kein Server, der ihn verwahrt.", "tbPublicar": "Beitrag veröffentlichen", "tbTitulo": "Titel", "tbCuerpo": "Text", "tbTipo": "Art", "tbFirmar": "Signieren und veröffentlichen", "tbSinIdentidad": "Lege eine Identität an, um zu veröffentlichen.", "tbFirmado": "Auf deinem Gerät signiert. Es reist noch nirgendwohin: das Senden kommt, wenn der Souverän es freigibt.", "tbFuenteAgora": "Aus der Agora, gerade gelesen.", "tbFuenteCache": "Aus deinem lokalen Zwischenspeicher, von vor", "tbFuenteLocal": "BEISPIEL-Beiträge, die mit der Seite mitreisen. Die Agora hat nicht geantwortet:", "tbFuenteFallo": "Es bleibt, was schon da war: die Agora hat nicht geantwortet:", "tbFirmaVer": "Die vollständige Signatur ansehen", "anTitulo": "Was der Souverän heute verlangt", "anSinIdioma": "NO_DATA — diese Ankündigung ist nicht in deine Sprache übersetzt:", "anSinDatos": "NO_DATA — die Ankündigungen konnten nicht gelesen werden:", "agTitulo": "Was du heute mitnehmen kannst", "agEstrena": "Modell des Zeitraums", "agActividad": "Gemessene Aktivität", "agDescargas": "Downloads der neuesten Version", "agFirmados": "signierte Pakete empfangen", "agInstalaciones": "Installationen: nicht gezählt und nicht gezählt werden", "agEntorno": "Seine Lernumgebung:", "agPendiente": "Angemeldet und noch nicht abgeschlossen", "agVerifica": "Prüfe den Hash vor der Nutzung", "agSinCaja": "Keine schwarze Box: was das Modell weiß, steht in Dateien, die du lesen kannst.", "envBoton": "Send to the rack", "envEnviando": "Asking for the challenge…", "envEncolado": "Sent and queued for review. The rack publishes nothing until a person looks at it: ", "envFallo": "Could not send", "envSinCanal": "the rack has nowhere to receive them yet", "envSinFirmaTexto": "this browser's identity cannot sign the challenge yet", "envRemedio": "Your work is still signed on your device. Export the file from «Correct this answer» and get it across however you can.", "envAviso": "They travel signed and with your public key. The rack queues them for human review: nothing is published automatically.", "agPaneles": "Die Gehirne, eins nach dem anderen", "agNiveles": "Wie weit du heute kommst", "agModera": "Wie moderiert wird", "tbVacio": "Die Agora schweigt. Sei der Erste, der eine [TASK] vorschlägt: noch hat niemand einen Faden eröffnet.", "tbEscritura": "Die Agora sagt über sich selbst:", "agSinModelo": "NO_DATA · es ist noch keines signiert. Der Souverän wählt es; das Rack liefert, was man ihm sagt. Bis dahin stehen die verfügbaren Gehirne unten, jedes mit dem, was es kann und was daran scheitert.", "agFicheros": "{n} Dateien · gezählt von GitHub, nicht von uns", "agEtInstala": "Installationen", "agSinHash": "ohne sha256", "agNadaPublica": "NO_DATA · es ist noch nichts veröffentlicht.", "agSinFirmar": "Noch nicht unterzeichnet. Zu entscheiden bleibt:", "agMemoria": "Wie es sich erinnert", "agMedido": "Gemessen", "agNoLee": "NO_DATA · /agora.json konnte nicht gelesen werden —", "agHace": "Kann:", "agFalla": "Scheitert:", "anCerrados": "Bereits geschlossen ({n})"}</script>
+<script type="application/json" id="i18n">{"tbEjemplo": "Diese Beiträge sind BEISPIELE, um die Dichte der Pinnwand zu prüfen.", "tbReales": "Echte Beiträge bisher:", "tbFiltros": "Kategorien der Pinnwand", "tbTodos": "Alle", "tbRespuestas": "Antworten", "tbSinDatos": "NO_DATA — die Pinnwand konnte nicht gelesen werden.", "tbTipos": {"CHALLENGE": "HERAUSFORDERUNG", "TASK": "AUFGABE", "COMPUTE": "RECHENZEIT", "GENERAL": "ALLGEMEIN"}, "idPerfil": "Mein Profil", "idEntrar": "Identität anlegen", "idHola": "Hallo,", "idClave": "Meinen Fingerabdruck ansehen", "idPublica": "Öffentlicher Schlüssel:", "idFallo": "NO_DATA — die Identität konnte nicht angelegt werden:", "idAviso": "In deinem Browser wird ein Schlüssel erzeugt. Er lässt sich weder exportieren noch auf ein anderes Gerät kopieren: löschst du die Daten der Seite, ist diese Identität verloren und nicht wiederherstellbar. Kein Passwort zum Vergessen, kein Server, der ihn verwahrt.", "tbPublicar": "Beitrag veröffentlichen", "tbTitulo": "Titel", "tbCuerpo": "Text", "tbTipo": "Art", "tbFirmar": "Signieren und veröffentlichen", "tbSinIdentidad": "Lege eine Identität an, um zu veröffentlichen.", "tbFirmado": "Auf deinem Gerät signiert. Es reist noch nirgendwohin: das Senden kommt, wenn der Souverän es freigibt.", "tbFuenteAgora": "Aus der Agora, gerade gelesen.", "tbFuenteCache": "Aus deinem lokalen Zwischenspeicher, von vor", "tbFuenteLocal": "BEISPIEL-Beiträge, die mit der Seite mitreisen. Die Agora hat nicht geantwortet:", "tbFuenteFallo": "Es bleibt, was schon da war: die Agora hat nicht geantwortet:", "tbFirmaVer": "Die vollständige Signatur ansehen", "anTitulo": "Was der Souverän heute verlangt", "anSinIdioma": "NO_DATA — diese Ankündigung ist nicht in deine Sprache übersetzt:", "anSinDatos": "NO_DATA — die Ankündigungen konnten nicht gelesen werden:", "agTitulo": "Was du heute mitnehmen kannst", "agEstrena": "Modell des Zeitraums", "agActividad": "Gemessene Aktivität", "agDescargas": "Downloads der neuesten Version", "agFirmados": "signierte Pakete empfangen", "agInstalaciones": "Installationen: nicht gezählt und nicht gezählt werden", "agEntorno": "Seine Lernumgebung:", "agPendiente": "Angemeldet und noch nicht abgeschlossen", "agVerifica": "Prüfe den Hash vor der Nutzung", "agSinCaja": "Keine schwarze Box: was das Modell weiß, steht in Dateien, die du lesen kannst.", "envBoton": "Send to the rack", "envEnviando": "Asking for the challenge…", "envEncolado": "Sent and queued for review. The rack publishes nothing until a person looks at it: ", "envFallo": "Could not send", "envSinCanal": "the rack has nowhere to receive them yet", "envSinFirmaTexto": "this browser's identity cannot sign the challenge yet", "envRemedio": "Your work is still signed on your device. Export the file from «Correct this answer» and get it across however you can.", "envAviso": "They travel signed and with your public key. The rack queues them for human review: nothing is published automatically.", "agPaneles": "Die Gehirne, eins nach dem anderen", "agNiveles": "Wie weit du heute kommst", "agModera": "Wie moderiert wird", "tbVacio": "Die Agora schweigt. Sei der Erste, der eine [TASK] vorschlägt: noch hat niemand einen Faden eröffnet.", "tbEscritura": "Die Agora sagt über sich selbst:", "agSinModelo": "NO_DATA · es ist noch keines signiert. Der Souverän wählt es; das Rack liefert, was man ihm sagt. Bis dahin stehen die verfügbaren Gehirne unten, jedes mit dem, was es kann und was daran scheitert.", "agFicheros": "{n} Dateien · gezählt von GitHub, nicht von uns", "agEtInstala": "Installationen", "agSinHash": "ohne sha256", "agNadaPublica": "NO_DATA · es ist noch nichts veröffentlicht.", "agSinFirmar": "Noch nicht unterzeichnet. Zu entscheiden bleibt:", "agMemoria": "Wie es sich erinnert", "agMedido": "Gemessen", "agNoLee": "NO_DATA · /agora.json konnte nicht gelesen werden —", "agHace": "Kann:", "agFalla": "Scheitert:", "anCerrados": "Bereits geschlossen ({n})", "ksSello": "Flugmodus", "mcTitulo": "Platz", "mcEscribe": "Schreib…", "mcEnviar": "Senden", "mcMinimizar": "Verkleinern", "mcAbrir": "Öffnen", "mcAnon": "anonym", "mcCerrado": "Schreiben geschlossen: die Agora moderiert noch nicht. Was du schreibst, bleibt in diesem Tab."}</script>
 <script src="/assets/ambient.js"></script>
 <script src="/assets/agora-portada.js"></script>
 <script src="/assets/board-anuncios.js"></script>
 <script src="/assets/board-fuentes.js"></script>
 <script src="/assets/board.js"></script>
+<div id="mini-chat"></div>
+
+<script src="/assets/pestanas.js"></script>
+<script src="/assets/killswitch.js"></script>
+<script src="/assets/minichat.js"></script>
 <script src="/assets/taller.js"></script>
 <script src="/assets/state.js"></script>
 <script src="/assets/rack.js"></script>

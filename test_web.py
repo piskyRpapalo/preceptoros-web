@@ -713,6 +713,36 @@ class Estructura(unittest.TestCase):
                                  f"caen al respaldo en castellano: "
                                  f"{sorted(pide - tiene)}")
 
+    def test_la_plaza_tiene_dos_pestanas_y_el_killswitch_abre(self):
+        """La forma de Comunidad, firmada el 2026-09-14.
+
+        Dos cosas que no se miran a la vez --lo que se puede hacer y lo que se
+        esta hablando-- y en una sola columna competian por la misma pantalla.
+        Dos pestañas, y el Killswitch el PRIMERO de la de proyectos: es el unico
+        que se juega sin red, y romper el violeta lo dice sin gastar una linea.
+
+        Y EL MINI-CHAT NO HABLA CON UNA IA, que es la razon de que no lleve
+        feedback al rack. La regla de la casa es que todo chat de IA recoge
+        correccion firmada; este es de personas, asi que no hay respuesta de
+        modelo que corregir. Se comprueba por ausencia --ni `fetch` ni `Bronce`--
+        porque el dia que alguien meta una IA dentro, este test se cae y obliga a
+        enchufar la correccion antes de publicar.
+        """
+        for idi in IDIOMAS:
+            t = (PUBLICO / idi / "community.html").read_text(encoding="utf-8")
+            with self.subTest(idioma=idi):
+                self.assertIn('data-pestanas', t, "la plaza no tiene pestañas")
+                for panel in ('proyectos', 'foro'):
+                    self.assertIn(f'data-panel="{panel}"', t)
+                    self.assertIn(f'data-hoja="{panel}"', t)
+                self.assertLess(t.index('id="killswitch"'), t.index('id="taller"'),
+                                "el Killswitch no abre la pestaña de proyectos")
+                self.assertIn('id="mini-chat"', t, "la plaza se quedo sin terminal")
+        mc = (PUBLICO / "assets" / "minichat.js").read_text(encoding="utf-8")
+        self.assertNotIn("fetch(", mc, "el mini-chat sale por red")
+        self.assertNotIn("Bronce", mc,
+                         "el mini-chat manda al rack un texto que no es de una IA")
+
     def test_debajo_del_cabecero_va_la_ACCION(self):
         """La regla que el Soberano firmo el 2026-09-14, en las dos paginas.
 

@@ -54,6 +54,22 @@
 <p class="guia"><strong>Isto é um mercado, não um fórum.</strong> Em cima, as linhas de investigação: em que degrau vai cada uma e o que lhe falta. Depois, o que o Soberano pede hoje e o que podes levar contigo. Abaixo, o mural aberto —desafios, tarefas, computação cedida— onde pedes ou entregas tu.</p>
 </details>
 
+<!-- DOS PESTAÑAS. Orden del Soberano, 2026-09-14: la plaza tiene
+     dos cosas que no se miran a la vez --lo que se puede hacer y lo
+     que se esta hablando-- y en una sola columna competian por la
+     misma pantalla. La implementacion es `pestanas.js`, compartida. -->
+<div class="pestanas" data-pestanas>
+  <button class="pestana" data-panel="proyectos">Projetos</button>
+  <button class="pestana" data-panel="foro">Fórum</button>
+</div>
+
+<div data-hoja="proyectos">
+
+<!-- SURVIVAL KILLSWITCH, el primero y en rojo. La unica excepcion al
+     violeta de la casa, y lo pinta `killswitch.js` desde la misma ficha
+     que el resto: no tiene una copia propia de sus datos. -->
+<section id="killswitch"></section>
+
 <!-- LA VITRINA DE LAS LINEAS DE INVESTIGACION. Vivia en el
      LorAtelier y se muda aqui el 2026-09-13: lo que se puede
      APORTAR es asunto de la comunidad, y el Libro de Pruebas se
@@ -80,7 +96,12 @@
      seccion la rellena `selector-modelo.js`; vacia no ocupa nada. -->
 <section id="cerebros-banco"></section>
 
+</div>
+
+<div data-hoja="foro" hidden>
 <div id="hilos" class="panel"></div>
+</div>
+
 
 <footer class="honest-footer">
   <details class="pliego"><summary>Como isto funciona</summary>
@@ -93,12 +114,17 @@
   <p><a href="/hitos.html">Marcos</a></p>
 </footer>
 
-<script type="application/json" id="i18n">{"tbEjemplo": "Estos hilos son de EJEMPLO, para probar la densidad del tablón.", "tbReales": "Hilos reales hasta ahora:", "tbFiltros": "Categorías del tablón", "tbTodos": "Todos", "tbRespuestas": "respuestas", "tbSinDatos": "NO_DATA — no se pudo leer el tablón.", "tbTipos": {"CHALLENGE": "RETO", "TASK": "TAREA", "COMPUTE": "CÓMPUTO", "GENERAL": "GENERAL"}, "idPerfil": "Mi perfil", "idEntrar": "Crear identidad", "idHola": "Hola,", "idClave": "Ver mi huella", "idPublica": "Clave pública:", "idFallo": "NO_DATA — no se pudo crear la identidad:", "idAviso": "Se genera una clave en tu navegador. No se puede exportar ni copiar a otro aparato: si borras los datos del sitio, esta identidad se pierde y no hay forma de recuperarla. No hay contraseña que olvidar ni servidor que la guarde.", "tbPublicar": "Publicar hilo", "tbTitulo": "Título", "tbCuerpo": "Cuerpo", "tbTipo": "Tipo", "tbFirmar": "Firmar y publicar", "tbSinIdentidad": "Crea una identidad para publicar.", "tbFirmado": "Firmado en tu aparato. Todavía no viaja a ningún sitio: el envío llegará cuando lo firme el Soberano.", "tbFuenteAgora": "Del Ágora, recién leído.", "tbFuenteCache": "De tu caché local, de hace", "tbFuenteLocal": "Hilos de EJEMPLO que viajan con la web. El Ágora no respondió:", "tbFuenteFallo": "Sigue lo que ya había: el Ágora no respondió:", "tbFirmaVer": "Ver la firma completa", "anTitulo": "Lo que el Soberano pide hoy", "anSinIdioma": "NO_DATA — este anuncio no está traducido a tu idioma:", "anSinDatos": "NO_DATA — no se pudieron leer los anuncios:", "agTitulo": "O que podes levar hoje", "agEstrena": "Modelo do período", "agActividad": "Atividade medida", "agDescargas": "downloads da última versão", "agFirmados": "pacotes assinados recebidos", "agInstalaciones": "instalações: não são contadas e não serão contadas", "agEntorno": "O seu ambiente de estudo:", "agPendiente": "Declarado e ainda fechado", "agVerifica": "Verifique o hash antes de usá-lo", "agSinCaja": "Sem caixa preta: o que o modelo sabe está em arquivos que você pode ler.", "envBoton": "Send to the rack", "envEnviando": "Asking for the challenge…", "envEncolado": "Sent and queued for review. The rack publishes nothing until a person looks at it: ", "envFallo": "Could not send", "envSinCanal": "the rack has nowhere to receive them yet", "envSinFirmaTexto": "this browser's identity cannot sign the challenge yet", "envRemedio": "Your work is still signed on your device. Export the file from «Correct this answer» and get it across however you can.", "envAviso": "They travel signed and with your public key. The rack queues them for human review: nothing is published automatically.", "agPaneles": "Os cérebros, um a um", "agNiveles": "Até onde podes chegar hoje", "agModera": "Como se modera", "tbVacio": "A Ágora está em silêncio. Sê o primeiro a propor uma [TASK]: ainda ninguém abriu um tópico.", "tbEscritura": "A Ágora diz de si mesma:", "agSinModelo": "NO_DATA · ainda não há nenhum assinado. Escolhe-o o Soberano; o rack serve o que lhe dizem. Entretanto, os cérebros disponíveis estão abaixo, cada um com o que faz e o que falha.", "agFicheros": "{n} ficheiros · conta-os o GitHub, não nós", "agEtInstala": "instalações", "agSinHash": "sem sha256", "agNadaPublica": "NO_DATA · ainda não há nada publicado.", "agSinFirmar": "Ainda por assinar. Falta decidir:", "agMemoria": "Como recorda", "agMedido": "Medido", "agNoLee": "NO_DATA · não foi possível ler /agora.json —", "agHace": "Faz:", "agFalla": "Falha:", "anCerrados": "Já encerrados ({n})"}</script>
+<script type="application/json" id="i18n">{"tbEjemplo": "Estos hilos son de EJEMPLO, para probar la densidad del tablón.", "tbReales": "Hilos reales hasta ahora:", "tbFiltros": "Categorías del tablón", "tbTodos": "Todos", "tbRespuestas": "respuestas", "tbSinDatos": "NO_DATA — no se pudo leer el tablón.", "tbTipos": {"CHALLENGE": "RETO", "TASK": "TAREA", "COMPUTE": "CÓMPUTO", "GENERAL": "GENERAL"}, "idPerfil": "Mi perfil", "idEntrar": "Crear identidad", "idHola": "Hola,", "idClave": "Ver mi huella", "idPublica": "Clave pública:", "idFallo": "NO_DATA — no se pudo crear la identidad:", "idAviso": "Se genera una clave en tu navegador. No se puede exportar ni copiar a otro aparato: si borras los datos del sitio, esta identidad se pierde y no hay forma de recuperarla. No hay contraseña que olvidar ni servidor que la guarde.", "tbPublicar": "Publicar hilo", "tbTitulo": "Título", "tbCuerpo": "Cuerpo", "tbTipo": "Tipo", "tbFirmar": "Firmar y publicar", "tbSinIdentidad": "Crea una identidad para publicar.", "tbFirmado": "Firmado en tu aparato. Todavía no viaja a ningún sitio: el envío llegará cuando lo firme el Soberano.", "tbFuenteAgora": "Del Ágora, recién leído.", "tbFuenteCache": "De tu caché local, de hace", "tbFuenteLocal": "Hilos de EJEMPLO que viajan con la web. El Ágora no respondió:", "tbFuenteFallo": "Sigue lo que ya había: el Ágora no respondió:", "tbFirmaVer": "Ver la firma completa", "anTitulo": "Lo que el Soberano pide hoy", "anSinIdioma": "NO_DATA — este anuncio no está traducido a tu idioma:", "anSinDatos": "NO_DATA — no se pudieron leer los anuncios:", "agTitulo": "O que podes levar hoje", "agEstrena": "Modelo do período", "agActividad": "Atividade medida", "agDescargas": "downloads da última versão", "agFirmados": "pacotes assinados recebidos", "agInstalaciones": "instalações: não são contadas e não serão contadas", "agEntorno": "O seu ambiente de estudo:", "agPendiente": "Declarado e ainda fechado", "agVerifica": "Verifique o hash antes de usá-lo", "agSinCaja": "Sem caixa preta: o que o modelo sabe está em arquivos que você pode ler.", "envBoton": "Send to the rack", "envEnviando": "Asking for the challenge…", "envEncolado": "Sent and queued for review. The rack publishes nothing until a person looks at it: ", "envFallo": "Could not send", "envSinCanal": "the rack has nowhere to receive them yet", "envSinFirmaTexto": "this browser's identity cannot sign the challenge yet", "envRemedio": "Your work is still signed on your device. Export the file from «Correct this answer» and get it across however you can.", "envAviso": "They travel signed and with your public key. The rack queues them for human review: nothing is published automatically.", "agPaneles": "Os cérebros, um a um", "agNiveles": "Até onde podes chegar hoje", "agModera": "Como se modera", "tbVacio": "A Ágora está em silêncio. Sê o primeiro a propor uma [TASK]: ainda ninguém abriu um tópico.", "tbEscritura": "A Ágora diz de si mesma:", "agSinModelo": "NO_DATA · ainda não há nenhum assinado. Escolhe-o o Soberano; o rack serve o que lhe dizem. Entretanto, os cérebros disponíveis estão abaixo, cada um com o que faz e o que falha.", "agFicheros": "{n} ficheiros · conta-os o GitHub, não nós", "agEtInstala": "instalações", "agSinHash": "sem sha256", "agNadaPublica": "NO_DATA · ainda não há nada publicado.", "agSinFirmar": "Ainda por assinar. Falta decidir:", "agMemoria": "Como recorda", "agMedido": "Medido", "agNoLee": "NO_DATA · não foi possível ler /agora.json —", "agHace": "Faz:", "agFalla": "Falha:", "anCerrados": "Já encerrados ({n})", "ksSello": "modo avião", "mcTitulo": "Praça", "mcEscribe": "Escreve…", "mcEnviar": "Enviar", "mcMinimizar": "Minimizar", "mcAbrir": "Abrir", "mcAnon": "anónimo", "mcCerrado": "Escrita fechada: a Ágora ainda não modera. O que escreveres fica neste separador."}</script>
 <script src="/assets/ambient.js"></script>
 <script src="/assets/agora-portada.js"></script>
 <script src="/assets/board-anuncios.js"></script>
 <script src="/assets/board-fuentes.js"></script>
 <script src="/assets/board.js"></script>
+<div id="mini-chat"></div>
+
+<script src="/assets/pestanas.js"></script>
+<script src="/assets/killswitch.js"></script>
+<script src="/assets/minichat.js"></script>
 <script src="/assets/taller.js"></script>
 <script src="/assets/state.js"></script>
 <script src="/assets/rack.js"></script>
