@@ -7,9 +7,14 @@
 <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
 <meta name="description" content="Суверенная площадка: вызовы, подписанные задачи и отданные вычисления. Без облака, без учётных записей.">
 <link rel="canonical" href="https://preceptoros.org/ru/community.html">
-<link rel="alternate" hreflang="ru" href="https://preceptoros.org/ru/community.html">
-<link rel="alternate" hreflang="en" href="https://preceptoros.org/en/community.html">
-<link rel="alternate" hreflang="fr" href="https://preceptoros.org/fr/community.html">
+<link rel="alternate" hreflang="de" href="/de/community.html">
+<link rel="alternate" hreflang="el" href="/el/community.html">
+<link rel="alternate" hreflang="en" href="/en/community.html">
+<link rel="alternate" hreflang="es" href="/es/community.html">
+<link rel="alternate" hreflang="fr" href="/fr/community.html">
+<link rel="alternate" hreflang="it" href="/it/community.html">
+<link rel="alternate" hreflang="pt" href="/pt/community.html">
+<link rel="alternate" hreflang="ru" href="/ru/community.html">
 <meta property="og:title" content="Comunidad · PreceptorOS">
 <meta property="og:description" content="Суверенная площадка: вызовы, подписанные задачи и отданные вычисления. Без облака, без учётных записей.">
 <meta property="og:image" content="https://preceptoros.org/assets/preceptor-og.png">
@@ -42,18 +47,30 @@
   <div class="marca"><h1>Сообщество<b> · Агора</b></h1></div>
 </header>
 
-<section id="agora-portada" class="panel"></section>
 
-<p class="guia"><strong>Это рынок, а не форум.</strong> Наверху то, что Суверен просит сегодня: их два, они настоящие, и каждый честно говорит, что пока не работает. Ниже — открытая доска: вызовы, задачи, отданные вычисления, где просишь или отдаёшь ты. Между ними — направления исследований: на какой ступени каждое и чего ему не хватает.</p>
-
-<div id="anuncios" class="panel"></div>
+<details class="pliego"><summary>Как читать эту страницу</summary>
+<p class="guia"><strong>Это рынок, а не форум.</strong> Наверху — направления исследований: на какой ступени каждое и чего ему не хватает. Дальше то, что Суверен просит сегодня, и то, что можно забрать себе. Ниже — открытая доска: вызовы, задачи, отданные вычисления, где просишь или отдаёшь ты.</p>
+</details>
 
 <!-- LA VITRINA DE LAS LINEAS DE INVESTIGACION. Vivia en el
      LorAtelier y se muda aqui el 2026-09-13: lo que se puede
      APORTAR es asunto de la comunidad, y el Libro de Pruebas se
      queda con lo que se MIDE. La rellena `taller.js` desde
-     `loratelier.json` + `taller-<idioma>.json`; vacia no ocupa nada. -->
+     `loratelier.json` + `taller-<idioma>.json`; vacia no ocupa nada.
+
+     VA LA PRIMERA desde el 2026-09-14, por orden del Soberano. Lo que
+     abria la pagina era el «Modelo del periodo», que hoy es NO_DATA con
+     su causa: honesto, y pesimo como entrada. Un NO_DATA de bienvenida
+     dice «aqui no hay nada» antes de que a nadie le de tiempo a ver las
+     siete lineas que si existen. -->
 <section id="taller"></section>
+
+<div id="anuncios" class="panel"></div>
+
+<details class="pliego"><summary>Состояние Агоры: загрузки, подписи и чего не хватает</summary>
+<section id="agora-portada" class="panel"></section>
+</details>
+
 
 <!-- EL BANCO DE PRUEBAS. Los cuatro cerebros que NO estan en la puerta:
      aqui es donde compararlos significa algo, con `mistral-base` --la base
@@ -64,16 +81,17 @@
 <div id="hilos" class="panel"></div>
 
 <footer class="honest-footer">
-  <h2>Как это устроено</h2>
+  <details class="pliego"><summary>Как это устроено</summary>
   <ul>
     <li><strong>Вызов — вот двигатель.</strong> Кто-то говорит, какого измерения не хватает. У кого оно есть, тот измеряет на своём устройстве и подписывает строку. Так растёт Benchmark: по названным пробелам, а не по заказам.</li>
     <li><strong>Публикация добровольна, и обрывается одним файлом.</strong> Твой PreceptorOS отправляет только то, о чём ты его попросишь. А если хочешь обрубить в корне — режим убежища это пустой файл с именем MODO_SANTUARIO: он главнее того, что говорит твоя настройка, и её не переписывает. Удалишь его — всё вернётся как было.</li>
     <li><strong>Эти ветки — пример.</strong> Сообщества пока нет. Изображать оживление в пустом форуме — самая старая ложь интернета, поэтому это сказано наверху, а не спрятано.</li>
   </ul>
+</details>
   <p><a href="/hitos.html">Вехи</a></p>
 </footer>
 
-<script type="application/json" id="i18n">{"tbEjemplo": "Эти ветки — ПРИМЕР, чтобы проверить плотность доски.", "tbReales": "Настоящих веток на сегодня:", "tbFiltros": "Разделы доски", "tbTodos": "Все", "tbRespuestas": "ответов", "tbSinDatos": "NO_DATA — не удалось прочитать доску.", "tbTipos": {"CHALLENGE": "ВЫЗОВ", "TASK": "ЗАДАЧА", "COMPUTE": "ВЫЧИСЛЕНИЯ", "GENERAL": "ОБЩЕЕ"}, "idPerfil": "Мой профиль", "idEntrar": "Создать личность", "idHola": "Привет,", "idClave": "Показать мой отпечаток", "idPublica": "Открытый ключ:", "idFallo": "NO_DATA — не удалось создать личность:", "idAviso": "Ключ создаётся в твоём браузере. Его нельзя ни выгрузить, ни скопировать на другое устройство: если стереть данные сайта, эта личность потеряна безвозвратно. Нет пароля, который можно забыть, и нет сервера, который его хранит.", "tbPublicar": "Опубликовать ветку", "tbTitulo": "Заголовок", "tbCuerpo": "Текст", "tbTipo": "Тип", "tbFirmar": "Подписать и опубликовать", "tbSinIdentidad": "Создай личность, чтобы публиковать.", "tbFirmado": "Подписано на твоём устройстве. Пока никуда не уходит: отправка появится, когда её утвердит Суверен.", "tbFuenteAgora": "Из Агоры, только что прочитано.", "tbFuenteCache": "Из твоего локального кэша, давностью", "tbFuenteLocal": "Ветки-ПРИМЕРЫ, которые едут вместе с сайтом. Агора не ответила:", "tbFuenteFallo": "Остаётся то, что уже было: Агора не ответила:", "tbFirmaVer": "Показать подпись целиком", "anTitulo": "Что Суверен просит сегодня", "anSinIdioma": "NO_DATA — это объявление не переведено на твой язык:", "anSinDatos": "NO_DATA — не удалось прочитать объявления:", "agTitulo": "Что можно взять сегодня", "agEstrena": "Модель периода", "agActividad": "Измеренная активность", "agDescargas": "загрузки последней версии", "agFirmados": "подписанные пакеты получены", "agInstalaciones": "установки: не учитываются и не будут учитываться", "agEntorno": "Среда для изучения · скачай и прочитай полностью", "agPendiente": "Заявлено и все еще закрыто", "agVerifica": "Проверь хеш перед использованием", "agSinCaja": "Нет черного ящика: то, что знает модель, находится в файлах, которые можно прочитать.", "envBoton": "Send to the rack", "envEnviando": "Asking for the challenge…", "envEncolado": "Sent and queued for review. The rack publishes nothing until a person looks at it: ", "envFallo": "Could not send", "envSinCanal": "the rack has nowhere to receive them yet", "envSinFirmaTexto": "this browser's identity cannot sign the challenge yet", "envRemedio": "Your work is still signed on your device. Export the file from «Correct this answer» and get it across however you can.", "envAviso": "They travel signed and with your public key. The rack queues them for human review: nothing is published automatically."}</script>
+<script type="application/json" id="i18n">{"tbEjemplo": "Эти ветки — ПРИМЕР, чтобы проверить плотность доски.", "tbReales": "Настоящих веток на сегодня:", "tbFiltros": "Разделы доски", "tbTodos": "Все", "tbRespuestas": "ответов", "tbSinDatos": "NO_DATA — не удалось прочитать доску.", "tbTipos": {"CHALLENGE": "ВЫЗОВ", "TASK": "ЗАДАЧА", "COMPUTE": "ВЫЧИСЛЕНИЯ", "GENERAL": "ОБЩЕЕ"}, "idPerfil": "Мой профиль", "idEntrar": "Создать личность", "idHola": "Привет,", "idClave": "Показать мой отпечаток", "idPublica": "Открытый ключ:", "idFallo": "NO_DATA — не удалось создать личность:", "idAviso": "Ключ создаётся в твоём браузере. Его нельзя ни выгрузить, ни скопировать на другое устройство: если стереть данные сайта, эта личность потеряна безвозвратно. Нет пароля, который можно забыть, и нет сервера, который его хранит.", "tbPublicar": "Опубликовать ветку", "tbTitulo": "Заголовок", "tbCuerpo": "Текст", "tbTipo": "Тип", "tbFirmar": "Подписать и опубликовать", "tbSinIdentidad": "Создай личность, чтобы публиковать.", "tbFirmado": "Подписано на твоём устройстве. Пока никуда не уходит: отправка появится, когда её утвердит Суверен.", "tbFuenteAgora": "Из Агоры, только что прочитано.", "tbFuenteCache": "Из твоего локального кэша, давностью", "tbFuenteLocal": "Ветки-ПРИМЕРЫ, которые едут вместе с сайтом. Агора не ответила:", "tbFuenteFallo": "Остаётся то, что уже было: Агора не ответила:", "tbFirmaVer": "Показать подпись целиком", "anTitulo": "Что Суверен просит сегодня", "anSinIdioma": "NO_DATA — это объявление не переведено на твой язык:", "anSinDatos": "NO_DATA — не удалось прочитать объявления:", "agTitulo": "Что можно взять сегодня", "agEstrena": "Модель периода", "agActividad": "Измеренная активность", "agDescargas": "загрузки последней версии", "agFirmados": "подписанные пакеты получены", "agInstalaciones": "установки: не учитываются и не будут учитываться", "agEntorno": "Среда для изучения · скачай и прочитай полностью", "agPendiente": "Заявлено и все еще закрыто", "agVerifica": "Проверь хеш перед использованием", "agSinCaja": "Нет черного ящика: то, что знает модель, находится в файлах, которые можно прочитать.", "envBoton": "Send to the rack", "envEnviando": "Asking for the challenge…", "envEncolado": "Sent and queued for review. The rack publishes nothing until a person looks at it: ", "envFallo": "Could not send", "envSinCanal": "the rack has nowhere to receive them yet", "envSinFirmaTexto": "this browser's identity cannot sign the challenge yet", "envRemedio": "Your work is still signed on your device. Export the file from «Correct this answer» and get it across however you can.", "envAviso": "They travel signed and with your public key. The rack queues them for human review: nothing is published automatically.", "agPaneles": "Мозги, по одному", "agNiveles": "Как далеко можно зайти сегодня", "agModera": "Как это модерируется"}</script>
 <script src="/assets/ambient.js"></script>
 <script src="/assets/agora-portada.js"></script>
 <script src="/assets/board-anuncios.js"></script>

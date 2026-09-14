@@ -12,6 +12,14 @@
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="description" content="Collez votre contexte privé et voyez ce qui en sort avant de le donner à une IA du nuage. Tout se passe dans votre navigateur.">
+<link rel="alternate" hreflang="de" href="/de/playground.html">
+<link rel="alternate" hreflang="el" href="/el/playground.html">
+<link rel="alternate" hreflang="en" href="/en/playground.html">
+<link rel="alternate" hreflang="es" href="/es/playground.html">
+<link rel="alternate" hreflang="fr" href="/fr/playground.html">
+<link rel="alternate" hreflang="it" href="/it/playground.html">
+<link rel="alternate" hreflang="pt" href="/pt/playground.html">
+<link rel="alternate" hreflang="ru" href="/ru/playground.html">
 <link rel="stylesheet" href="/assets/base.css">
 <link rel="stylesheet" href="/assets/movil.css">
 <link rel="stylesheet" href="/assets/canon.css">
@@ -55,12 +63,13 @@
 </div>
 
 <footer class="honest-footer">
-  <h2>Comment ça marche, et ce que ça ne promet pas</h2>
+  <details class="pliego"><summary>Comment ça marche, et ce que ça ne promet pas</summary>
   <ul>
     <li><strong>Les règles sont celles du produit.</strong> Ce filtre est GÉNÉRÉ depuis celui de PreceptorOS, pas recopié à la main. Vérifié en passant les 36 cas du corpus dans les deux implémentations : même verdict sur les 36, aucun fragment survivant.</li>
     <li><strong>Rien ne quitte votre navigateur.</strong> Le texte est filtré ici même. Cette page n'a aucun appel réseau qui pourrait l'emporter, et vous pouvez le vérifier dans les outils du navigateur.</li>
     <li><strong>Ce n'est pas infaillible, d'où les trous déclarés.</strong> Déterministe et auditable, avec des trous déclarés : courriels, chemins Windows et macOS, URL avec identifiant dans le chemin, et « token » précédé d'un nom. Relisez toujours avant de coller.</li>
   </ul>
+</details>
   <p><a href="/fr/community.html">Communauté</a> ·
      <a href="/hitos.html">Jalons</a></p>
 </footer>

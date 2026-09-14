@@ -8,8 +8,14 @@
 <meta name="description" content="Il mercato sovrano: sfide, compiti firmati e calcolo ceduto. Senza nuvola, senza account.">
 <link rel="canonical" href="https://preceptoros.org/it/community.html">
 <link rel="alternate" 
-<link rel="alternate" hreflang="en" href="https://preceptoros.org/en/community.html">
-<link rel="alternate" hreflang="fr" href="https://preceptoros.org/fr/community.html">
+<link rel="alternate" hreflang="de" href="/de/community.html">
+<link rel="alternate" hreflang="el" href="/el/community.html">
+<link rel="alternate" hreflang="en" href="/en/community.html">
+<link rel="alternate" hreflang="es" href="/es/community.html">
+<link rel="alternate" hreflang="fr" href="/fr/community.html">
+<link rel="alternate" hreflang="it" href="/it/community.html">
+<link rel="alternate" hreflang="pt" href="/pt/community.html">
+<link rel="alternate" hreflang="ru" href="/ru/community.html">
 <meta property="og:title" content="Comunità · PreceptorOS">
 <meta property="og:description" content="Il mercato sovrano: sfide, compiti firmati e calcolo ceduto. Senza nuvola, senza account.">
 <meta property="og:image" content="https://preceptoros.org/assets/preceptor-og.png">
@@ -42,18 +48,30 @@
   <div class="marca"><h1>Comunità<b> · l'Agorà</b></h1></div>
 </header>
 
-<section id="agora-portada" class="panel"></section>
 
-<p class="guia"><strong>Questo è un mercato, non un forum.</strong> In alto c'è quello che il Sovrano chiede oggi: sono due, sono reali, e ognuno dice anche quello che ancora non funziona. Sotto, la bacheca aperta —sfide, compiti, calcolo ceduto— dove chiedi o consegni tu. In mezzo, le linee di ricerca: a che gradino sta ognuna e cosa le manca.</p>
-
-<div id="anuncios" class="panel"></div>
+<details class="pliego"><summary>Come leggere questa pagina</summary>
+<p class="guia"><strong>Questo è un mercato, non un forum.</strong> In alto, le linee di ricerca: a che gradino sta ognuna e cosa le manca. Poi, quello che il Sovrano chiede oggi e quello che puoi portarti via. Sotto, la bacheca aperta —sfide, compiti, calcolo ceduto— dove chiedi o consegni tu.</p>
+</details>
 
 <!-- LA VITRINA DE LAS LINEAS DE INVESTIGACION. Vivia en el
      LorAtelier y se muda aqui el 2026-09-13: lo que se puede
      APORTAR es asunto de la comunidad, y el Libro de Pruebas se
      queda con lo que se MIDE. La rellena `taller.js` desde
-     `loratelier.json` + `taller-<idioma>.json`; vacia no ocupa nada. -->
+     `loratelier.json` + `taller-<idioma>.json`; vacia no ocupa nada.
+
+     VA LA PRIMERA desde el 2026-09-14, por orden del Soberano. Lo que
+     abria la pagina era el «Modelo del periodo», que hoy es NO_DATA con
+     su causa: honesto, y pesimo como entrada. Un NO_DATA de bienvenida
+     dice «aqui no hay nada» antes de que a nadie le de tiempo a ver las
+     siete lineas que si existen. -->
 <section id="taller"></section>
+
+<div id="anuncios" class="panel"></div>
+
+<details class="pliego"><summary>Lo stato dell'Agorà: download, firme e cosa manca</summary>
+<section id="agora-portada" class="panel"></section>
+</details>
+
 
 <!-- EL BANCO DE PRUEBAS. Los cuatro cerebros que NO estan en la puerta:
      aqui es donde compararlos significa algo, con `mistral-base` --la base
@@ -64,16 +82,17 @@
 <div id="hilos" class="panel"></div>
 
 <footer class="honest-footer">
-  <h2>Come funziona</h2>
+  <details class="pliego"><summary>Come funziona</summary>
   <ul>
     <li><strong>La sfida è il motore.</strong> Qualcuno dice quale misura manca. Chi ce l'ha, la misura sul suo apparecchio e firma la riga. Così cresce il Benchmark: per lacune nominate, non per incarichi.</li>
     <li><strong>Pubblicare è volontario, e si taglia con un file.</strong> Il tuo PreceptorOS invia solo quello che gli chiedi tu. E se vuoi tagliare alla radice, la modalità santuario è un file vuoto chiamato MODO_SANTUARIO: comanda su quello che dice la tua configurazione e non la riscrive. Cancellarlo rimette tutto com'era.</li>
     <li><strong>Queste discussioni sono di esempio.</strong> Non c'è ancora una comunità. Fingere attività in un forum vuoto è la bugia più vecchia di internet, quindi si dichiara in alto invece di nasconderla.</li>
   </ul>
+</details>
   <p><a href="/hitos.html">Traguardi</a></p>
 </footer>
 
-<script type="application/json" id="i18n">{"tbEjemplo": "Queste discussioni sono di ESEMPIO, per provare la densità della bacheca.", "tbReales": "Discussioni reali finora:", "tbFiltros": "Categorie della bacheca", "tbTodos": "Tutte", "tbRespuestas": "risposte", "tbSinDatos": "NO_DATA — non è stato possibile leggere la bacheca.", "tbTipos": {"CHALLENGE": "SFIDA", "TASK": "COMPITO", "COMPUTE": "CALCOLO", "GENERAL": "GENERALE"}, "idPerfil": "Il mio profilo", "idEntrar": "Crea identità", "idHola": "Ciao,", "idClave": "Vedi la mia impronta", "idPublica": "Chiave pubblica:", "idFallo": "NO_DATA — non è stato possibile creare l'identità:", "idAviso": "Viene generata una chiave nel tuo browser. Non si può esportare né copiare su un altro apparecchio: se cancelli i dati del sito, questa identità si perde e non c'è modo di recuperarla. Nessuna password da dimenticare, nessun server che la conservi.", "tbPublicar": "Pubblica discussione", "tbTitulo": "Titolo", "tbCuerpo": "Corpo", "tbTipo": "Tipo", "tbFirmar": "Firma e pubblica", "tbSinIdentidad": "Crea un'identità per pubblicare.", "tbFirmado": "Firmato sul tuo apparecchio. Non viaggia ancora da nessuna parte: l'invio arriverà quando lo firmerà il Sovrano.", "tbFuenteAgora": "Dall'Agorà, appena letto.", "tbFuenteCache": "Dalla tua cache locale, di", "tbFuenteLocal": "Discussioni di ESEMPIO che viaggiano con il sito. L'Agorà non ha risposto:", "tbFuenteFallo": "Resta quello che c'era già: l'Agorà non ha risposto:", "tbFirmaVer": "Vedi la firma completa", "anTitulo": "Quello che il Sovrano chiede oggi", "anSinIdioma": "NO_DATA — questo annuncio non è tradotto nella tua lingua:", "anSinDatos": "NO_DATA — non è stato possibile leggere gli annunci:", "agTitulo": "Cosa puoi portare oggi", "agEstrena": "Modello del periodo", "agActividad": "Attività misurata", "agDescargas": "ultime versioni scaricate", "agFirmados": "pacchetti firmati ricevuti", "agInstalaciones": "installazioni: non conteggiate e non saranno conteggiate", "agEntorno": "Ambiente di studio · scaricalo e leggilo interamente", "agPendiente": "Declarato e ancora chiuso", "agVerifica": "Controlla l'hash prima di usarlo", "agSinCaja": "Nessuna cassetta nera: ciò che il modello sa è in file che puoi leggere.", "envBoton": "Send to the rack", "envEnviando": "Asking for the challenge…", "envEncolado": "Sent and queued for review. The rack publishes nothing until a person looks at it: ", "envFallo": "Could not send", "envSinCanal": "the rack has nowhere to receive them yet", "envSinFirmaTexto": "this browser's identity cannot sign the challenge yet", "envRemedio": "Your work is still signed on your device. Export the file from «Correct this answer» and get it across however you can.", "envAviso": "They travel signed and with your public key. The rack queues them for human review: nothing is published automatically."}</script>
+<script type="application/json" id="i18n">{"tbEjemplo": "Queste discussioni sono di ESEMPIO, per provare la densità della bacheca.", "tbReales": "Discussioni reali finora:", "tbFiltros": "Categorie della bacheca", "tbTodos": "Tutte", "tbRespuestas": "risposte", "tbSinDatos": "NO_DATA — non è stato possibile leggere la bacheca.", "tbTipos": {"CHALLENGE": "SFIDA", "TASK": "COMPITO", "COMPUTE": "CALCOLO", "GENERAL": "GENERALE"}, "idPerfil": "Il mio profilo", "idEntrar": "Crea identità", "idHola": "Ciao,", "idClave": "Vedi la mia impronta", "idPublica": "Chiave pubblica:", "idFallo": "NO_DATA — non è stato possibile creare l'identità:", "idAviso": "Viene generata una chiave nel tuo browser. Non si può esportare né copiare su un altro apparecchio: se cancelli i dati del sito, questa identità si perde e non c'è modo di recuperarla. Nessuna password da dimenticare, nessun server che la conservi.", "tbPublicar": "Pubblica discussione", "tbTitulo": "Titolo", "tbCuerpo": "Corpo", "tbTipo": "Tipo", "tbFirmar": "Firma e pubblica", "tbSinIdentidad": "Crea un'identità per pubblicare.", "tbFirmado": "Firmato sul tuo apparecchio. Non viaggia ancora da nessuna parte: l'invio arriverà quando lo firmerà il Sovrano.", "tbFuenteAgora": "Dall'Agorà, appena letto.", "tbFuenteCache": "Dalla tua cache locale, di", "tbFuenteLocal": "Discussioni di ESEMPIO che viaggiano con il sito. L'Agorà non ha risposto:", "tbFuenteFallo": "Resta quello che c'era già: l'Agorà non ha risposto:", "tbFirmaVer": "Vedi la firma completa", "anTitulo": "Quello che il Sovrano chiede oggi", "anSinIdioma": "NO_DATA — questo annuncio non è tradotto nella tua lingua:", "anSinDatos": "NO_DATA — non è stato possibile leggere gli annunci:", "agTitulo": "Cosa puoi portare oggi", "agEstrena": "Modello del periodo", "agActividad": "Attività misurata", "agDescargas": "ultime versioni scaricate", "agFirmados": "pacchetti firmati ricevuti", "agInstalaciones": "installazioni: non conteggiate e non saranno conteggiate", "agEntorno": "Ambiente di studio · scaricalo e leggilo interamente", "agPendiente": "Declarato e ancora chiuso", "agVerifica": "Controlla l'hash prima di usarlo", "agSinCaja": "Nessuna cassetta nera: ciò che il modello sa è in file che puoi leggere.", "envBoton": "Send to the rack", "envEnviando": "Asking for the challenge…", "envEncolado": "Sent and queued for review. The rack publishes nothing until a person looks at it: ", "envFallo": "Could not send", "envSinCanal": "the rack has nowhere to receive them yet", "envSinFirmaTexto": "this browser's identity cannot sign the challenge yet", "envRemedio": "Your work is still signed on your device. Export the file from «Correct this answer» and get it across however you can.", "envAviso": "They travel signed and with your public key. The rack queues them for human review: nothing is published automatically.", "agPaneles": "I cervelli, uno a uno", "agNiveles": "Fin dove puoi arrivare oggi", "agModera": "Come si modera"}</script>
 <script src="/assets/ambient.js"></script>
 <script src="/assets/agora-portada.js"></script>
 <script src="/assets/board-anuncios.js"></script>

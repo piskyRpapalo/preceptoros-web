@@ -7,9 +7,14 @@
 <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
 <meta name="description" content="Η κυρίαρχη αγορά: προκλήσεις, υπογεγραμμένες εργασίες και παραχωρημένος υπολογισμός. Χωρίς σύννεφο, χωρίς λογαριασμούς.">
 <link rel="canonical" href="https://preceptoros.org/el/community.html">
-<link rel="alternate" hreflang="el" href="https://preceptoros.org/el/community.html">
-<link rel="alternate" hreflang="en" href="https://preceptoros.org/en/community.html">
-<link rel="alternate" hreflang="fr" href="https://preceptoros.org/fr/community.html">
+<link rel="alternate" hreflang="de" href="/de/community.html">
+<link rel="alternate" hreflang="el" href="/el/community.html">
+<link rel="alternate" hreflang="en" href="/en/community.html">
+<link rel="alternate" hreflang="es" href="/es/community.html">
+<link rel="alternate" hreflang="fr" href="/fr/community.html">
+<link rel="alternate" hreflang="it" href="/it/community.html">
+<link rel="alternate" hreflang="pt" href="/pt/community.html">
+<link rel="alternate" hreflang="ru" href="/ru/community.html">
 <meta property="og:title" content="Comunidad · PreceptorOS">
 <meta property="og:description" content="Η κυρίαρχη αγορά: προκλήσεις, υπογεγραμμένες εργασίες και παραχωρημένος υπολογισμός. Χωρίς σύννεφο, χωρίς λογαριασμούς.">
 <meta property="og:image" content="https://preceptoros.org/assets/preceptor-og.png">
@@ -42,18 +47,30 @@
   <div class="marca"><h1>Κοινότητα<b> · η Αγορά</b></h1></div>
 </header>
 
-<section id="agora-portada" class="panel"></section>
 
-<p class="guia"><strong>Αυτό είναι αγορά, όχι φόρουμ.</strong> Πάνω είναι αυτό που ζητάει σήμερα ο Κυρίαρχος: είναι δύο, είναι αληθινά, και το καθένα λέει επίσης τι δεν δουλεύει ακόμη. Κάτω, ο ανοιχτός πίνακας —προκλήσεις, εργασίες, παραχωρημένος υπολογισμός— όπου ζητάς ή δίνεις εσύ. Στη μέση, οι γραμμές έρευνας: σε ποιο σκαλί βρίσκεται η καθεμιά και τι της λείπει.</p>
-
-<div id="anuncios" class="panel"></div>
+<details class="pliego"><summary>Πώς να διαβάσεις αυτή τη σελίδα</summary>
+<p class="guia"><strong>Αυτό είναι αγορά, όχι φόρουμ.</strong> Πάνω, οι γραμμές έρευνας: σε ποιο σκαλί βρίσκεται η καθεμιά και τι της λείπει. Μετά, αυτό που ζητάει σήμερα ο Κυρίαρχος και αυτό που μπορείς να πάρεις μαζί σου. Κάτω, ο ανοιχτός πίνακας —προκλήσεις, εργασίες, παραχωρημένος υπολογισμός— όπου ζητάς ή δίνεις εσύ.</p>
+</details>
 
 <!-- LA VITRINA DE LAS LINEAS DE INVESTIGACION. Vivia en el
      LorAtelier y se muda aqui el 2026-09-13: lo que se puede
      APORTAR es asunto de la comunidad, y el Libro de Pruebas se
      queda con lo que se MIDE. La rellena `taller.js` desde
-     `loratelier.json` + `taller-<idioma>.json`; vacia no ocupa nada. -->
+     `loratelier.json` + `taller-<idioma>.json`; vacia no ocupa nada.
+
+     VA LA PRIMERA desde el 2026-09-14, por orden del Soberano. Lo que
+     abria la pagina era el «Modelo del periodo», que hoy es NO_DATA con
+     su causa: honesto, y pesimo como entrada. Un NO_DATA de bienvenida
+     dice «aqui no hay nada» antes de que a nadie le de tiempo a ver las
+     siete lineas que si existen. -->
 <section id="taller"></section>
+
+<div id="anuncios" class="panel"></div>
+
+<details class="pliego"><summary>Η κατάσταση της Αγοράς: λήψεις, υπογραφές και τι λείπει</summary>
+<section id="agora-portada" class="panel"></section>
+</details>
+
 
 <!-- EL BANCO DE PRUEBAS. Los cuatro cerebros que NO estan en la puerta:
      aqui es donde compararlos significa algo, con `mistral-base` --la base
@@ -64,16 +81,17 @@
 <div id="hilos" class="panel"></div>
 
 <footer class="honest-footer">
-  <h2>Πώς λειτουργεί αυτό</h2>
+  <details class="pliego"><summary>Πώς λειτουργεί αυτό</summary>
   <ul>
     <li><strong>Η πρόκληση είναι ο κινητήρας.</strong> Κάποιος λέει ποια μέτρηση λείπει. Όποιος την έχει, τη μετράει στη συσκευή του και υπογράφει τη γραμμή. Έτσι μεγαλώνει το Benchmark: από κενά που ονομάστηκαν, όχι από αναθέσεις.</li>
     <li><strong>Η δημοσίευση είναι εθελοντική, και κόβεται με ένα αρχείο.</strong> Το PreceptorOS σου στέλνει μόνο ό,τι του ζητήσεις. Κι αν θέλεις να το κόψεις από τη ρίζα, η λειτουργία καταφυγίου είναι ένα άδειο αρχείο με όνομα MODO_SANTUARIO: υπερισχύει της ρύθμισής σου και δεν την ξαναγράφει. Αν το σβήσεις, όλα γυρνούν όπως ήταν.</li>
     <li><strong>Αυτά τα νήματα είναι παραδείγματα.</strong> Κοινότητα δεν υπάρχει ακόμη. Το να προσποιείσαι κίνηση σε ένα άδειο φόρουμ είναι το παλαιότερο ψέμα του διαδικτύου, γι᾽ αυτό δηλώνεται από πάνω αντί να κρύβεται.</li>
   </ul>
+</details>
   <p><a href="/hitos.html">Ορόσημα</a></p>
 </footer>
 
-<script type="application/json" id="i18n">{"tbEjemplo": "Αυτά τα νήματα είναι ΠΑΡΑΔΕΙΓΜΑ, για να δοκιμαστεί η πυκνότητα του πίνακα.", "tbReales": "Αληθινά νήματα ως τώρα:", "tbFiltros": "Κατηγορίες του πίνακα", "tbTodos": "Όλα", "tbRespuestas": "απαντήσεις", "tbSinDatos": "NO_DATA — δεν ήταν δυνατή η ανάγνωση του πίνακα.", "tbTipos": {"CHALLENGE": "ΠΡΟΚΛΗΣΗ", "TASK": "ΕΡΓΑΣΙΑ", "COMPUTE": "ΥΠΟΛΟΓΙΣΜΟΣ", "GENERAL": "ΓΕΝΙΚΑ"}, "idPerfil": "Το προφίλ μου", "idEntrar": "Δημιουργία ταυτότητας", "idHola": "Γεια σου,", "idClave": "Δες το αποτύπωμά μου", "idPublica": "Δημόσιο κλειδί:", "idFallo": "NO_DATA — δεν ήταν δυνατή η δημιουργία της ταυτότητας:", "idAviso": "Δημιουργείται ένα κλειδί στον περιηγητή σου. Δεν εξάγεται ούτε αντιγράφεται σε άλλη συσκευή: αν σβήσεις τα δεδομένα του ιστότοπου, αυτή η ταυτότητα χάνεται και δεν ανακτάται. Κανένας κωδικός να ξεχάσεις, κανένας διακομιστής να τον φυλάει.", "tbPublicar": "Δημοσίευση νήματος", "tbTitulo": "Τίτλος", "tbCuerpo": "Κείμενο", "tbTipo": "Είδος", "tbFirmar": "Υπόγραψε και δημοσίευσε", "tbSinIdentidad": "Δημιούργησε ταυτότητα για να δημοσιεύσεις.", "tbFirmado": "Υπογράφηκε στη συσκευή σου. Δεν ταξιδεύει ακόμη πουθενά: η αποστολή θα έρθει όταν την υπογράψει ο Κυρίαρχος.", "tbFuenteAgora": "Από την Αγορά, μόλις διαβάστηκε.", "tbFuenteCache": "Από την τοπική σου μνήμη, πριν από", "tbFuenteLocal": "Νήματα ΠΑΡΑΔΕΙΓΜΑΤΟΣ που ταξιδεύουν με τον ιστότοπο. Η Αγορά δεν απάντησε:", "tbFuenteFallo": "Μένει αυτό που υπήρχε ήδη: η Αγορά δεν απάντησε:", "tbFirmaVer": "Δες την πλήρη υπογραφή", "anTitulo": "Αυτό που ζητάει σήμερα ο Κυρίαρχος", "anSinIdioma": "NO_DATA — αυτή η ανακοίνωση δεν είναι μεταφρασμένη στη γλώσσα σου:", "anSinDatos": "NO_DATA — δεν ήταν δυνατή η ανάγνωση των ανακοινώσεων:", "agTitulo": "Αυτά που μπορείς να αναλάβεις σήμερα", "agEstrena": "Μοντέλο της περιόδου", "agActividad": "Μετρήσεις δραστηριότητας", "agDescargas": "εκτυπώσεις της τελευταίας έκδοσης", "agFirmados": "πακέτα υπογραφμένα που λάβεις", "agInstalaciones": "εγκαταστήσεις: δεν συνολογούνται και δεν θα συνολογούνται", "agEntorno": "Σπίτι σπουδών · εκτυπώσε το και διαβάσε το συνολικά", "agPendiente": "Αναφερθέντα και ακόμη κλειστά", "agVerifica": "Έλεγξε το hash πριν το χρησιμοποιήσεις", "agSinCaja": "Δεν υπάρχει κάτοχος σκοτεινών: αυτά που ο μοντέλος ξέρει είναι σε αρχεία που μπορείς να διαβάσεις.", "envBoton": "Send to the rack", "envEnviando": "Asking for the challenge…", "envEncolado": "Sent and queued for review. The rack publishes nothing until a person looks at it: ", "envFallo": "Could not send", "envSinCanal": "the rack has nowhere to receive them yet", "envSinFirmaTexto": "this browser's identity cannot sign the challenge yet", "envRemedio": "Your work is still signed on your device. Export the file from «Correct this answer» and get it across however you can.", "envAviso": "They travel signed and with your public key. The rack queues them for human review: nothing is published automatically."}</script>
+<script type="application/json" id="i18n">{"tbEjemplo": "Αυτά τα νήματα είναι ΠΑΡΑΔΕΙΓΜΑ, για να δοκιμαστεί η πυκνότητα του πίνακα.", "tbReales": "Αληθινά νήματα ως τώρα:", "tbFiltros": "Κατηγορίες του πίνακα", "tbTodos": "Όλα", "tbRespuestas": "απαντήσεις", "tbSinDatos": "NO_DATA — δεν ήταν δυνατή η ανάγνωση του πίνακα.", "tbTipos": {"CHALLENGE": "ΠΡΟΚΛΗΣΗ", "TASK": "ΕΡΓΑΣΙΑ", "COMPUTE": "ΥΠΟΛΟΓΙΣΜΟΣ", "GENERAL": "ΓΕΝΙΚΑ"}, "idPerfil": "Το προφίλ μου", "idEntrar": "Δημιουργία ταυτότητας", "idHola": "Γεια σου,", "idClave": "Δες το αποτύπωμά μου", "idPublica": "Δημόσιο κλειδί:", "idFallo": "NO_DATA — δεν ήταν δυνατή η δημιουργία της ταυτότητας:", "idAviso": "Δημιουργείται ένα κλειδί στον περιηγητή σου. Δεν εξάγεται ούτε αντιγράφεται σε άλλη συσκευή: αν σβήσεις τα δεδομένα του ιστότοπου, αυτή η ταυτότητα χάνεται και δεν ανακτάται. Κανένας κωδικός να ξεχάσεις, κανένας διακομιστής να τον φυλάει.", "tbPublicar": "Δημοσίευση νήματος", "tbTitulo": "Τίτλος", "tbCuerpo": "Κείμενο", "tbTipo": "Είδος", "tbFirmar": "Υπόγραψε και δημοσίευσε", "tbSinIdentidad": "Δημιούργησε ταυτότητα για να δημοσιεύσεις.", "tbFirmado": "Υπογράφηκε στη συσκευή σου. Δεν ταξιδεύει ακόμη πουθενά: η αποστολή θα έρθει όταν την υπογράψει ο Κυρίαρχος.", "tbFuenteAgora": "Από την Αγορά, μόλις διαβάστηκε.", "tbFuenteCache": "Από την τοπική σου μνήμη, πριν από", "tbFuenteLocal": "Νήματα ΠΑΡΑΔΕΙΓΜΑΤΟΣ που ταξιδεύουν με τον ιστότοπο. Η Αγορά δεν απάντησε:", "tbFuenteFallo": "Μένει αυτό που υπήρχε ήδη: η Αγορά δεν απάντησε:", "tbFirmaVer": "Δες την πλήρη υπογραφή", "anTitulo": "Αυτό που ζητάει σήμερα ο Κυρίαρχος", "anSinIdioma": "NO_DATA — αυτή η ανακοίνωση δεν είναι μεταφρασμένη στη γλώσσα σου:", "anSinDatos": "NO_DATA — δεν ήταν δυνατή η ανάγνωση των ανακοινώσεων:", "agTitulo": "Αυτά που μπορείς να αναλάβεις σήμερα", "agEstrena": "Μοντέλο της περιόδου", "agActividad": "Μετρήσεις δραστηριότητας", "agDescargas": "εκτυπώσεις της τελευταίας έκδοσης", "agFirmados": "πακέτα υπογραφμένα που λάβεις", "agInstalaciones": "εγκαταστήσεις: δεν συνολογούνται και δεν θα συνολογούνται", "agEntorno": "Σπίτι σπουδών · εκτυπώσε το και διαβάσε το συνολικά", "agPendiente": "Αναφερθέντα και ακόμη κλειστά", "agVerifica": "Έλεγξε το hash πριν το χρησιμοποιήσεις", "agSinCaja": "Δεν υπάρχει κάτοχος σκοτεινών: αυτά που ο μοντέλος ξέρει είναι σε αρχεία που μπορείς να διαβάσεις.", "envBoton": "Send to the rack", "envEnviando": "Asking for the challenge…", "envEncolado": "Sent and queued for review. The rack publishes nothing until a person looks at it: ", "envFallo": "Could not send", "envSinCanal": "the rack has nowhere to receive them yet", "envSinFirmaTexto": "this browser's identity cannot sign the challenge yet", "envRemedio": "Your work is still signed on your device. Export the file from «Correct this answer» and get it across however you can.", "envAviso": "They travel signed and with your public key. The rack queues them for human review: nothing is published automatically.", "agPaneles": "Οι εγκέφαλοι, ένας ένας", "agNiveles": "Μέχρι πού μπορείς να φτάσεις σήμερα", "agModera": "Πώς γίνεται η επίβλεψη"}</script>
 <script src="/assets/ambient.js"></script>
 <script src="/assets/agora-portada.js"></script>
 <script src="/assets/board-anuncios.js"></script>

@@ -656,6 +656,120 @@ class Estructura(unittest.TestCase):
                     self.assertRegex(t, rf'hreflang="{otro}"',
                                      f"{idi} no declara hreflang de {otro}")
 
+    def test_toda_pagina_ofrece_LAS_LENGUAS_QUE_EXISTEN(self):
+        """La rueda de idiomas sale de aqui, y por eso ofrecia tres de ocho.
+
+        Medido en produccion el 2026-09-14: en `profile.html` la rueda daba
+        Español, English y Français, y en `benchmark.html`, `instalar.html`,
+        `onboarding.html` y `playground.html` **no daba ninguno**. No era un
+        fallo de la rueda: `cabezal-rotulos.js` DESCUBRE las lenguas de los
+        `hreflang` de la propia pagina --a proposito, para no ofrecer un salto a
+        un 404-- y esas paginas declaraban tres o cero mientras el disco tenia
+        ocho traducciones de cada una.
+
+        El guardian de arriba solo miraba `index.html`. Por eso las portadas
+        estaban perfectas y las seis interiores llevaban meses cojas: la prueba
+        cubria la pagina donde el fallo no estaba.
+
+        Se exige IGUALDAD, no inclusion: declarar una lengua que no esta en el
+        disco es ofrecer un 404, y es tan fallo como no declarar la que si esta.
+        """
+        for pagina in sorted(PUBLICO.rglob("*.html")):
+            if pagina.parent == PUBLICO:
+                continue            # la raiz es el despertar, no una traduccion
+            hoja = pagina.name
+            en_disco = {l for l in IDIOMAS if (PUBLICO / l / hoja).is_file()}
+            declara = set(re.findall(r'hreflang="([a-z]{2})"',
+                                     pagina.read_text(encoding="utf-8")))
+            with self.subTest(pagina=str(pagina.relative_to(PUBLICO))):
+                self.assertEqual(
+                    en_disco, declara,
+                    f"el disco tiene {sorted(en_disco)} y la pagina declara "
+                    f"{sorted(declara)}: la rueda de idiomas ofrece lo segundo")
+
+    def test_el_agora_pide_claves_que_existen(self):
+        """El mismo guardian que tiene el taller, para la portada de Comunidad.
+
+        `agora-portada.js` pide sus rotulos con `T('clave', 'respaldo')`, y el
+        respaldo esta escrito en castellano. Tres claves --`agPaneles`,
+        `agNiveles`, `agModera`-- no existian en NINGUNA de las ocho paginas, asi
+        que las ocho caian al respaldo y siete publicaban tres titulares en
+        espanol en mitad de su idioma. Visto en produccion, en la pagina
+        inglesa, el 2026-09-14.
+
+        Un respaldo en castellano es peor que un hueco: no rompe nada, se ve
+        razonable, y solo lo nota quien lee las dos lenguas.
+        """
+        js = (PUBLICO / "assets" / "agora-portada.js").read_text(encoding="utf-8")
+        js = re.sub(r"/\*.*?\*/", "", js, flags=re.S)
+        pide = set(re.findall(r"T\('([A-Za-z]+)'", js))
+        self.assertTrue(pide, "agora-portada.js no pide ninguna clave")
+        for idi in IDIOMAS:
+            t = (PUBLICO / idi / "community.html").read_text(encoding="utf-8")
+            bloque = re.search(r'id="i18n">(.*?)</script>', t, re.S)
+            tiene = set(json.loads(bloque.group(1)))
+            with self.subTest(idioma=idi):
+                self.assertFalse(pide - tiene,
+                                 f"caen al respaldo en castellano: "
+                                 f"{sorted(pide - tiene)}")
+
+    def test_la_vitrina_abre_la_pagina_y_el_NO_DATA_no(self):
+        """Orden del Soberano, 2026-09-14, mirando la pagina en produccion.
+
+        Lo primero que se leia en Comunidad era «Modelo del periodo: NO_DATA».
+        Es verdad y lleva su causa al lado --no hay ninguno firmado todavia--
+        pero como puerta de entrada dice «aqui no hay nada» a quien acaba de
+        llegar, y lo dice antes de que le de tiempo a ver las siete lineas de
+        investigacion que si existen.
+
+        La honestidad no cambia: el NO_DATA sigue en la pagina, con su causa,
+        plegado. Lo que cambia es el orden, y el orden es una afirmacion sobre
+        que es esta pagina.
+        """
+        for idi in IDIOMAS:
+            t = (PUBLICO / idi / "community.html").read_text(encoding="utf-8")
+            with self.subTest(idioma=idi):
+                for detras in ("agora-portada", "cerebros-banco", "hilos"):
+                    self.assertLess(
+                        t.index('id="taller"'), t.index(f'id="{detras}"'),
+                        f"«{detras}» abre la pagina por delante de la vitrina")
+
+    def test_la_prosa_del_pie_va_PLEGADA(self):
+        """Una pagina limpia: el que entra evalua, el que quiere leer abre.
+
+        El pie honesto de cada pagina interior son tres o cuatro parrafos largos
+        que ocupaban la ultima pantalla entera. No sobran --dicen lo que falla,
+        que es la mitad del producto-- sobra que esten ABIERTOS. Van en el mismo
+        `details.pliego` en todas: un desplegable con tres aspectos distintos son
+        tres componentes; con uno es una convencion.
+
+        LA EXCEPCION SE NOMBRA UNA A UNA, y esta es `el/instalar.html`: cierra a
+        **29 B** de su tope de 16.384 y el pliegue cuesta 48. No se recorta prosa
+        griega para ganar 19 B; lo que desbloquea esa pagina es sacar su pie a
+        `instalar.json`, donde ya viven el resto de sus textos. Queda en
+        PENDIENTES. Una excepcion nombrada envejece a la vista; una categoria
+        --«las que no quepan»-- envejece en silencio.
+        """
+        LLENAS = {"el/instalar.html"}
+        for pagina in sorted(PUBLICO.rglob("*.html")):
+            if pagina.name == "index.html" or pagina.parent == PUBLICO:
+                continue
+            t = pagina.read_text(encoding="utf-8")
+            pie = re.search(r'<footer class="honest-footer">(.*?)</footer>',
+                            t, re.S)
+            if not pie or "<ul>" not in pie.group(1):
+                continue
+            rel = str(pagina.relative_to(PUBLICO))
+            with self.subTest(pagina=rel):
+                if rel in LLENAS:
+                    self.assertGreater(
+                        pagina.stat().st_size, TOPE_FICHERO - 60,
+                        f"{rel} ya no esta al borde del tope: pliega su pie y "
+                        "sacala de la lista de excepciones")
+                    continue
+                self.assertIn('<details class="pliego">', pie.group(1),
+                              "prosa de pie sin plegar")
+
     def test_cero_html_en_la_raiz(self):
         sueltos = [p.name for p in RAIZ.glob("*.html")]
         self.assertEqual(sueltos, [], f"HTML fuera de public/: {sueltos}")

@@ -7,9 +7,14 @@
 <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
 <meta name="description" content="Le marché souverain : défis, tâches signées et calcul partagé. Sans nuage, sans comptes.">
 <link rel="canonical" href="https://preceptoros.org/fr/community.html">
-<link rel="alternate" hreflang="es" href="https://preceptoros.org/es/community.html">
-<link rel="alternate" hreflang="en" href="https://preceptoros.org/en/community.html">
-<link rel="alternate" hreflang="fr" href="https://preceptoros.org/fr/community.html">
+<link rel="alternate" hreflang="de" href="/de/community.html">
+<link rel="alternate" hreflang="el" href="/el/community.html">
+<link rel="alternate" hreflang="en" href="/en/community.html">
+<link rel="alternate" hreflang="es" href="/es/community.html">
+<link rel="alternate" hreflang="fr" href="/fr/community.html">
+<link rel="alternate" hreflang="it" href="/it/community.html">
+<link rel="alternate" hreflang="pt" href="/pt/community.html">
+<link rel="alternate" hreflang="ru" href="/ru/community.html">
 <meta property="og:title" content="Communauté · PreceptorOS">
 <meta property="og:description" content="Le marché souverain : défis, tâches signées et calcul partagé. Sans nuage, sans comptes.">
 <meta property="og:image" content="https://preceptoros.org/assets/preceptor-og.png">
@@ -42,18 +47,30 @@
   <div class="marca"><h1>Communauté<b> · l'Agora</b></h1></div>
 </header>
 
-<section id="agora-portada" class="panel"></section>
 
-<p class="guia"><strong>Ceci est un marché, pas un forum.</strong> En haut, ce que le Souverain demande aujourd'hui : ils sont deux, ils sont réels, et chacun dit aussi ce qui ne marche pas encore. En bas, le tableau ouvert —défis, tâches, calcul partagé— où c'est vous qui demandez ou livrez. Entre les deux, les axes de recherche : à quel palier en est chacun et ce qui lui manque.</p>
-
-<div id="anuncios" class="panel"></div>
+<details class="pliego"><summary>Comment lire cette page</summary>
+<p class="guia"><strong>Ceci est un marché, pas un forum.</strong> En haut, les axes de recherche : à quel palier en est chacun et ce qui lui manque. Ensuite, ce que le Souverain demande aujourd'hui et ce que vous pouvez emporter. En bas, le tableau ouvert —défis, tâches, calcul partagé— où c'est vous qui demandez ou livrez.</p>
+</details>
 
 <!-- LA VITRINA DE LAS LINEAS DE INVESTIGACION. Vivia en el
      LorAtelier y se muda aqui el 2026-09-13: lo que se puede
      APORTAR es asunto de la comunidad, y el Libro de Pruebas se
      queda con lo que se MIDE. La rellena `taller.js` desde
-     `loratelier.json` + `taller-<idioma>.json`; vacia no ocupa nada. -->
+     `loratelier.json` + `taller-<idioma>.json`; vacia no ocupa nada.
+
+     VA LA PRIMERA desde el 2026-09-14, por orden del Soberano. Lo que
+     abria la pagina era el «Modelo del periodo», que hoy es NO_DATA con
+     su causa: honesto, y pesimo como entrada. Un NO_DATA de bienvenida
+     dice «aqui no hay nada» antes de que a nadie le de tiempo a ver las
+     siete lineas que si existen. -->
 <section id="taller"></section>
+
+<div id="anuncios" class="panel"></div>
+
+<details class="pliego"><summary>L'état de l'Agora : téléchargements, signatures et ce qui manque</summary>
+<section id="agora-portada" class="panel"></section>
+</details>
+
 
 <!-- EL BANCO DE PRUEBAS. Los cuatro cerebros que NO estan en la puerta:
      aqui es donde compararlos significa algo, con `mistral-base` --la base
@@ -64,16 +81,17 @@
 <div id="hilos" class="panel"></div>
 
 <footer class="honest-footer">
-  <h2>Comment ça marche</h2>
+  <details class="pliego"><summary>Comment ça marche</summary>
   <ul>
     <li><strong>Le défi est le moteur.</strong> Quelqu'un dit quelle mesure manque. Celui qui a la machine la mesure et signe la ligne. C'est ainsi que grandit le Benchmark : par trous nommés, pas par commandes.</li>
     <li><strong>Publier est volontaire, et un fichier l'arrête.</strong> Votre PreceptorOS n'envoie que ce que vous lui demandez. Et pour couper à la racine, le mode sanctuaire est un fichier vide nommé MODO_SANTUARIO : il l'emporte sur votre configuration sans la réécrire. Le supprimer remet tout comme avant.</li>
     <li><strong>Ces fils sont des exemples.</strong> Il n'y a pas encore de communauté. Feindre l'activité dans un forum vide est le plus vieux mensonge d'internet, donc c'est déclaré en haut.</li>
   </ul>
+</details>
   <p><a href="/hitos.html">Jalons</a></p>
 </footer>
 
-<script type="application/json" id="i18n">{"tbEjemplo": "Ces fils sont des EXEMPLES, pour tester la densité du tableau.", "tbReales": "Fils réels à ce jour :", "tbFiltros": "Catégories du tableau", "tbTodos": "Tous", "tbRespuestas": "réponses", "tbSinDatos": "NO_DATA — le tableau n'a pas pu être lu.", "tbTipos": {"CHALLENGE": "DÉFI", "TASK": "TÂCHE", "COMPUTE": "CALCUL", "GENERAL": "GÉNÉRAL"}, "idPerfil": "Mon profil", "idEntrar": "Créer une identité", "idHola": "Bonjour,", "idClave": "Voir mon empreinte", "idPublica": "Clé publique :", "idFallo": "NO_DATA — l'identité n'a pas pu être créée :", "idAviso": "Une clé est générée dans votre navigateur. Elle ne peut être ni exportée ni copiée : si vous effacez les données du site, cette identité est perdue et rien ne permet de la récupérer. Aucun mot de passe à oublier, aucun serveur qui la garde.", "tbPublicar": "Publier un fil", "tbTitulo": "Titre", "tbCuerpo": "Corps", "tbTipo": "Type", "tbFirmar": "Signer et publier", "tbSinIdentidad": "Créez une identité pour publier.", "tbFirmado": "Signé sur votre appareil. Rien ne part encore : l'envoi viendra quand le Souverain l'aura signé.", "tbFuenteAgora": "De l'Agora, à l'instant.", "tbFuenteCache": "De votre cache local, il y a", "tbFuenteLocal": "Fils d'EXEMPLE livrés avec le site. L'Agora n'a pas répondu :", "tbFuenteFallo": "On garde ce qui était là : l'Agora n'a pas répondu :", "tbFirmaVer": "Voir la signature complète", "anTitulo": "Ce que le Souverain demande aujourd'hui", "anSinIdioma": "NO_DATA — cette annonce n'est pas traduite dans votre langue :", "anSinDatos": "NO_DATA — les annonces n'ont pas pu être lues :", "agTitulo": "Ce que tu peux emporter aujourd'hui", "agEstrena": "Modèle du cycle", "agActividad": "Activité mesurée", "agDescargas": "téléchargements de la dernière version", "agFirmados": "paquets signés reçus", "agInstalaciones": "installations : non comptabilisées et ne le seront jamais", "agEntorno": "Environnement d'étude · télécharge-le et lis-le entièrement", "agPendiente": "Déclaré et toujours en attente", "agVerifica": "Vérifie le hash avant de l'utiliser", "agSinCaja": "Aucune boîte noire : ce que le modèle sait se trouve dans des fichiers que tu peux lire.", "envBoton": "Send to the rack", "envEnviando": "Asking for the challenge…", "envEncolado": "Sent and queued for review. The rack publishes nothing until a person looks at it: ", "envFallo": "Could not send", "envSinCanal": "the rack has nowhere to receive them yet", "envSinFirmaTexto": "this browser's identity cannot sign the challenge yet", "envRemedio": "Your work is still signed on your device. Export the file from «Correct this answer» and get it across however you can.", "envAviso": "They travel signed and with your public key. The rack queues them for human review: nothing is published automatically."}</script>
+<script type="application/json" id="i18n">{"tbEjemplo": "Ces fils sont des EXEMPLES, pour tester la densité du tableau.", "tbReales": "Fils réels à ce jour :", "tbFiltros": "Catégories du tableau", "tbTodos": "Tous", "tbRespuestas": "réponses", "tbSinDatos": "NO_DATA — le tableau n'a pas pu être lu.", "tbTipos": {"CHALLENGE": "DÉFI", "TASK": "TÂCHE", "COMPUTE": "CALCUL", "GENERAL": "GÉNÉRAL"}, "idPerfil": "Mon profil", "idEntrar": "Créer une identité", "idHola": "Bonjour,", "idClave": "Voir mon empreinte", "idPublica": "Clé publique :", "idFallo": "NO_DATA — l'identité n'a pas pu être créée :", "idAviso": "Une clé est générée dans votre navigateur. Elle ne peut être ni exportée ni copiée : si vous effacez les données du site, cette identité est perdue et rien ne permet de la récupérer. Aucun mot de passe à oublier, aucun serveur qui la garde.", "tbPublicar": "Publier un fil", "tbTitulo": "Titre", "tbCuerpo": "Corps", "tbTipo": "Type", "tbFirmar": "Signer et publier", "tbSinIdentidad": "Créez une identité pour publier.", "tbFirmado": "Signé sur votre appareil. Rien ne part encore : l'envoi viendra quand le Souverain l'aura signé.", "tbFuenteAgora": "De l'Agora, à l'instant.", "tbFuenteCache": "De votre cache local, il y a", "tbFuenteLocal": "Fils d'EXEMPLE livrés avec le site. L'Agora n'a pas répondu :", "tbFuenteFallo": "On garde ce qui était là : l'Agora n'a pas répondu :", "tbFirmaVer": "Voir la signature complète", "anTitulo": "Ce que le Souverain demande aujourd'hui", "anSinIdioma": "NO_DATA — cette annonce n'est pas traduite dans votre langue :", "anSinDatos": "NO_DATA — les annonces n'ont pas pu être lues :", "agTitulo": "Ce que tu peux emporter aujourd'hui", "agEstrena": "Modèle du cycle", "agActividad": "Activité mesurée", "agDescargas": "téléchargements de la dernière version", "agFirmados": "paquets signés reçus", "agInstalaciones": "installations : non comptabilisées et ne le seront jamais", "agEntorno": "Environnement d'étude · télécharge-le et lis-le entièrement", "agPendiente": "Déclaré et toujours en attente", "agVerifica": "Vérifie le hash avant de l'utiliser", "agSinCaja": "Aucune boîte noire : ce que le modèle sait se trouve dans des fichiers que tu peux lire.", "envBoton": "Send to the rack", "envEnviando": "Asking for the challenge…", "envEncolado": "Sent and queued for review. The rack publishes nothing until a person looks at it: ", "envFallo": "Could not send", "envSinCanal": "the rack has nowhere to receive them yet", "envSinFirmaTexto": "this browser's identity cannot sign the challenge yet", "envRemedio": "Your work is still signed on your device. Export the file from «Correct this answer» and get it across however you can.", "envAviso": "They travel signed and with your public key. The rack queues them for human review: nothing is published automatically.", "agPaneles": "Les cerveaux, un par un", "agNiveles": "Jusqu'où tu peux aller aujourd'hui", "agModera": "Comment on modère"}</script>
 <script src="/assets/ambient.js"></script>
 <script src="/assets/agora-portada.js"></script>
 <script src="/assets/board-anuncios.js"></script>

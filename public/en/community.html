@@ -7,9 +7,14 @@
 <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
 <meta name="description" content="The sovereign marketplace: challenges, signed tasks and shared compute. No cloud, no accounts.">
 <link rel="canonical" href="https://preceptoros.org/en/community.html">
-<link rel="alternate" hreflang="es" href="https://preceptoros.org/es/community.html">
-<link rel="alternate" hreflang="en" href="https://preceptoros.org/en/community.html">
-<link rel="alternate" hreflang="fr" href="https://preceptoros.org/fr/community.html">
+<link rel="alternate" hreflang="de" href="/de/community.html">
+<link rel="alternate" hreflang="el" href="/el/community.html">
+<link rel="alternate" hreflang="en" href="/en/community.html">
+<link rel="alternate" hreflang="es" href="/es/community.html">
+<link rel="alternate" hreflang="fr" href="/fr/community.html">
+<link rel="alternate" hreflang="it" href="/it/community.html">
+<link rel="alternate" hreflang="pt" href="/pt/community.html">
+<link rel="alternate" hreflang="ru" href="/ru/community.html">
 <meta property="og:title" content="Community · PreceptorOS">
 <meta property="og:description" content="The sovereign marketplace: challenges, signed tasks and shared compute. No cloud, no accounts.">
 <meta property="og:image" content="https://preceptoros.org/assets/preceptor-og.png">
@@ -42,18 +47,30 @@
   <div class="marca"><h1>Community<b> · the Agora</b></h1></div>
 </header>
 
-<section id="agora-portada" class="panel"></section>
 
-<p class="guia"><strong>This is a market, not a forum.</strong> Above is what the Sovereign is asking for today: there are two, they are real, and each one also states what does not work yet. Below, the open board —challenges, tasks, shared compute— where you ask or deliver yourself. In between, the research lines: which step each one is on and what it still needs.</p>
-
-<div id="anuncios" class="panel"></div>
+<details class="pliego"><summary>How to read this page</summary>
+<p class="guia"><strong>This is a market, not a forum.</strong> At the top, the research lines: which step each one is on and what it still needs. Then what the Sovereign is asking for today and what you can take with you. Below, the open board —challenges, tasks, shared compute— where you ask or deliver yourself.</p>
+</details>
 
 <!-- LA VITRINA DE LAS LINEAS DE INVESTIGACION. Vivia en el
      LorAtelier y se muda aqui el 2026-09-13: lo que se puede
      APORTAR es asunto de la comunidad, y el Libro de Pruebas se
      queda con lo que se MIDE. La rellena `taller.js` desde
-     `loratelier.json` + `taller-<idioma>.json`; vacia no ocupa nada. -->
+     `loratelier.json` + `taller-<idioma>.json`; vacia no ocupa nada.
+
+     VA LA PRIMERA desde el 2026-09-14, por orden del Soberano. Lo que
+     abria la pagina era el «Modelo del periodo», que hoy es NO_DATA con
+     su causa: honesto, y pesimo como entrada. Un NO_DATA de bienvenida
+     dice «aqui no hay nada» antes de que a nadie le de tiempo a ver las
+     siete lineas que si existen. -->
 <section id="taller"></section>
+
+<div id="anuncios" class="panel"></div>
+
+<details class="pliego"><summary>The state of the Agora: downloads, signatures and what is missing</summary>
+<section id="agora-portada" class="panel"></section>
+</details>
+
 
 <!-- EL BANCO DE PRUEBAS. Los cuatro cerebros que NO estan en la puerta:
      aqui es donde compararlos significa algo, con `mistral-base` --la base
@@ -64,16 +81,17 @@
 <div id="hilos" class="panel"></div>
 
 <footer class="honest-footer">
-  <h2>How this works</h2>
+  <details class="pliego"><summary>How this works</summary>
   <ul>
     <li><strong>The challenge is the engine.</strong> Someone says which measurement is missing. Whoever has the hardware measures it and signs the line. That is how the Benchmark grows: by named gaps, not by commissions.</li>
     <li><strong>Publishing is opt-in, and one file stops it.</strong> Your PreceptorOS only sends what you ask it to send. And to cut it at the root, sanctuary mode is an empty file called MODO_SANTUARIO: it overrides whatever your configuration says and does not rewrite it. Delete it and everything is as it was.</li>
     <li><strong>These threads are examples.</strong> There is no community yet. Faking activity in an empty forum is the oldest lie on the internet, so it is declared above rather than hidden.</li>
   </ul>
+</details>
   <p><a href="/hitos.html">Milestones</a></p>
 </footer>
 
-<script type="application/json" id="i18n">{"tbEjemplo": "These threads are EXAMPLES, here to test the board's density.", "tbReales": "Real threads so far:", "tbFiltros": "Board categories", "tbTodos": "All", "tbRespuestas": "replies", "tbSinDatos": "NO_DATA — the board could not be read.", "tbTipos": {"CHALLENGE": "CHALLENGE", "TASK": "TASK", "COMPUTE": "COMPUTE", "GENERAL": "GENERAL"}, "idPerfil": "My profile", "idEntrar": "Create identity", "idHola": "Hello,", "idClave": "See my fingerprint", "idPublica": "Public key:", "idFallo": "NO_DATA — the identity could not be created:", "idAviso": "A key is generated in your browser. It cannot be exported or copied to another device: if you clear the site data, this identity is lost and there is no way to recover it. There is no password to forget and no server holding it.", "tbPublicar": "Post thread", "tbTitulo": "Title", "tbCuerpo": "Body", "tbTipo": "Type", "tbFirmar": "Sign and publish", "tbSinIdentidad": "Create an identity to publish.", "tbFirmado": "Signed on your device. It does not travel anywhere yet: sending will come when the Sovereign signs it off.", "tbFuenteAgora": "From the Agora, just read.", "tbFuenteCache": "From your local cache, age", "tbFuenteLocal": "EXAMPLE threads shipped with the site. The Agora did not answer:", "tbFuenteFallo": "Keeping what was already here: the Agora did not answer:", "tbFirmaVer": "Show the full signature", "anTitulo": "What the Sovereign is asking for today", "anSinIdioma": "NO_DATA — this announcement is not translated into your language:", "anSinDatos": "NO_DATA — the announcements could not be read:", "agTitulo": "What you can take today", "agEstrena": "Model period", "agActividad": "Measured activity", "agDescargas": "downloads of the latest version", "agFirmados": "signed packages received", "agInstalaciones": "installations: not counted, and will not be counted", "agEntorno": "Study environment · download and read it entirely", "agPendiente": "Declared and still pending", "agVerifica": "Check the hash before using it", "agSinCaja": "No black box: what the model knows is in files you can read.", "envBoton": "Send to the rack", "envEnviando": "Asking for the challenge…", "envEncolado": "Sent and queued for review. The rack publishes nothing until a person looks at it: ", "envFallo": "Could not send", "envSinCanal": "the rack has nowhere to receive them yet", "envSinFirmaTexto": "this browser's identity cannot sign the challenge yet", "envRemedio": "Your work is still signed on your device. Export the file from «Correct this answer» and get it across however you can.", "envAviso": "They travel signed and with your public key. The rack queues them for human review: nothing is published automatically."}</script>
+<script type="application/json" id="i18n">{"tbEjemplo": "These threads are EXAMPLES, here to test the board's density.", "tbReales": "Real threads so far:", "tbFiltros": "Board categories", "tbTodos": "All", "tbRespuestas": "replies", "tbSinDatos": "NO_DATA — the board could not be read.", "tbTipos": {"CHALLENGE": "CHALLENGE", "TASK": "TASK", "COMPUTE": "COMPUTE", "GENERAL": "GENERAL"}, "idPerfil": "My profile", "idEntrar": "Create identity", "idHola": "Hello,", "idClave": "See my fingerprint", "idPublica": "Public key:", "idFallo": "NO_DATA — the identity could not be created:", "idAviso": "A key is generated in your browser. It cannot be exported or copied to another device: if you clear the site data, this identity is lost and there is no way to recover it. There is no password to forget and no server holding it.", "tbPublicar": "Post thread", "tbTitulo": "Title", "tbCuerpo": "Body", "tbTipo": "Type", "tbFirmar": "Sign and publish", "tbSinIdentidad": "Create an identity to publish.", "tbFirmado": "Signed on your device. It does not travel anywhere yet: sending will come when the Sovereign signs it off.", "tbFuenteAgora": "From the Agora, just read.", "tbFuenteCache": "From your local cache, age", "tbFuenteLocal": "EXAMPLE threads shipped with the site. The Agora did not answer:", "tbFuenteFallo": "Keeping what was already here: the Agora did not answer:", "tbFirmaVer": "Show the full signature", "anTitulo": "What the Sovereign is asking for today", "anSinIdioma": "NO_DATA — this announcement is not translated into your language:", "anSinDatos": "NO_DATA — the announcements could not be read:", "agTitulo": "What you can take today", "agEstrena": "Model period", "agActividad": "Measured activity", "agDescargas": "downloads of the latest version", "agFirmados": "signed packages received", "agInstalaciones": "installations: not counted, and will not be counted", "agEntorno": "Study environment · download and read it entirely", "agPendiente": "Declared and still pending", "agVerifica": "Check the hash before using it", "agSinCaja": "No black box: what the model knows is in files you can read.", "envBoton": "Send to the rack", "envEnviando": "Asking for the challenge…", "envEncolado": "Sent and queued for review. The rack publishes nothing until a person looks at it: ", "envFallo": "Could not send", "envSinCanal": "the rack has nowhere to receive them yet", "envSinFirmaTexto": "this browser's identity cannot sign the challenge yet", "envRemedio": "Your work is still signed on your device. Export the file from «Correct this answer» and get it across however you can.", "envAviso": "They travel signed and with your public key. The rack queues them for human review: nothing is published automatically.", "agPaneles": "The brains, one by one", "agNiveles": "How far you can get today", "agModera": "How it is moderated"}</script>
 <script src="/assets/ambient.js"></script>
 <script src="/assets/agora-portada.js"></script>
 <script src="/assets/board-anuncios.js"></script>

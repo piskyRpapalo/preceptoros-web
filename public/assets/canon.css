@@ -223,3 +223,37 @@ main:not(:has(#chat)) .guia{background:transparent;border:0;padding:0}
 .identity .identity-icono svg{width:1.35em;height:1.35em}
 .identity .identity-icono:hover,.identity .identity-icono:focus-visible{
   background:rgba(242,208,138,.16);color:var(--oro);border-color:var(--oro)}
+
+/* ---------------------------------------------------------------------------
+   EL PLIEGO · un desplegable de prosa, y el MISMO en toda la web.
+
+   Por que existe (orden del Soberano, 2026-09-14): la pagina tiene que entrar
+   limpia. Quien llega viene a registrar su maquina y a evaluar, no a leer tres
+   parrafos sobre como funciona el sitio -- y la explicacion no sobra, sobra que
+   este ABIERTA. Plegada sigue ahi para quien la busque, y deja de ocupar la
+   primera pantalla del que no.
+
+   Va en `canon.css` y no en la hoja de cada pagina a proposito: lo cargan las 56
+   paginas, asi que un pliego se ve igual en Comunidad, en el Libro de Pruebas y
+   en el que se escriba manana. Un desplegable con tres aspectos distintos es
+   tres componentes; con uno es una convencion.
+
+   Sin animacion de apertura: `details` no la tiene nativa y fabricarla cuesta
+   `@keyframes`, que esta hoja tendria que apagar con `prefers-reduced-motion`.
+   La flecha cambia de signo y basta. */
+.pliego{border:1px solid var(--bronce);border-radius:var(--radius);
+  background:var(--glass-solid);margin:0 0 1.1rem;padding:0 .95rem}
+.pliego > summary{cursor:pointer;list-style:none;padding:.72rem 0;
+  font:600 .74rem/1.5 var(--mono);letter-spacing:.07em;text-transform:uppercase;
+  color:var(--tenue)}
+/* El triangulo del navegador se retira en los dos dialectos y se pone el signo,
+   que es el que dice si esta abierto sin depender del color. */
+.pliego > summary::-webkit-details-marker{display:none}
+.pliego > summary::marker{content:""}
+.pliego > summary::before{content:"+ ";color:var(--violeta-texto);font-weight:700}
+.pliego[open] > summary::before{content:"\2212 "}
+.pliego[open]{padding-bottom:.75rem}
+.pliego > summary:hover,.pliego > summary:focus-visible{color:var(--tinta)}
+.pliego > :not(summary){margin-top:0}
+.pliego ul{margin:0;padding-left:1.1rem}
+.pliego li{margin:.35rem 0}

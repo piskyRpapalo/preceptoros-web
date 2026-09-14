@@ -145,7 +145,21 @@
           var c = l.getAttribute('hreflang');
           if (c === 'x-default' || vistos[c]) return;
           vistos[c] = 1;
-          var a = enlace('ajuste-idioma', NOMBRES[c] || c, '/' + c + '/');
+          /* AL MISMO SITIO, EN LA OTRA LENGUA (2026-09-14). La rueda mandaba
+             siempre a `/<lengua>/`, o sea a la portada: cambiar de idioma desde
+             Comunidad te sacaba de Comunidad, y quien no lee la lengua de la
+             pagina --que es justo el que usa la rueda-- se quedaba sin saber
+             adonde habia ido. El destino ya estaba escrito al lado, en el
+             `href` del propio `hreflang`, que desde hoy es exacto por pagina.
+
+             Se toma el CAMINO y no el `href` entero: en las portadas ese href
+             es absoluto contra el dominio de produccion, y usarlo tal cual
+             mandaria a preceptoros.org a quien esta mirando una copia local.
+             El camino resuelve en el origen que sea. */
+          var destino;
+          try { destino = new URL(l.getAttribute('href'), location.href).pathname; }
+          catch (e) { destino = '/' + c + '/'; }
+          var a = enlace('ajuste-idioma', NOMBRES[c] || c, destino);
           if (document.documentElement.lang === c) a.setAttribute('aria-current', 'true');
           ajustes.appendChild(a);
         });
