@@ -30,7 +30,7 @@
  * tambien puede faltar del cache justo el dia que hace falta.
  */
 /* Subir VERSION o el cambio NO llega: ver `config/sw-huella.txt`. */
-const VERSION = 'preceptoros-2026-15-a';
+const VERSION = 'preceptoros-2026-15-b';
 const SHELL = 'shell-' + VERSION;
 const OBRA = 'obra-' + VERSION;
 

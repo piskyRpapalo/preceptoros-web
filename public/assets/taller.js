@@ -201,8 +201,12 @@
   function paquete(registro) {
     var ap = registro.aporte || {};
     if (!ap.correo) return;                       // sin destino no se pinta puerta
-    var sec = el('section', 'taller-aporte');
-    sec.appendChild(el('h3', null, UI.paqTitulo || ''));
+    /* PLEGADO · 2026-09-15. Esto abria con un textarea de ocho lineas lleno de
+       JSON antes de que nadie hubiera corregido nada. Quien llega no viene a
+       empaquetar: viene a ver que hay. El pliegue no esconde --el titulo sigue
+       ahi, y dentro esta todo-- pero deja de gritar. */
+    var sec = el('details', 'pliego taller-aporte');
+    sec.appendChild(el('summary', null, UI.paqTitulo || ''));
     sec.appendChild(el('p', 'linea-util', UI.paqExplica || ''));
     var vista = document.createElement('textarea');
     vista.className = 'taller-paquete'; vista.readOnly = true; vista.rows = 8;

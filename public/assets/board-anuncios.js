@@ -39,10 +39,30 @@
 
      Sin `estado`, ABIERTO. Un anuncio que nadie declaro no se esconde: fallar
      hacia lo visible es lo correcto cuando lo que se oculta es una peticion. */
+  var RAIZ0 = raiz;
   function pinta(d) {
+    raiz = RAIZ0;
     raiz.innerHTML = '';
-    raiz.appendChild(p(T.anTitulo, 'anuncios-cabeza'));
+    /* PLEGADO ENTERO · 2026-09-15. El titulo era una cabecera y debajo venian
+       las peticiones abiertas, delante de las lineas de investigacion. Es
+       informacion real y va a seguir estando, pero lo que abre una pagina dice
+       lo que la pagina ES: Comunidad es donde se actua, no donde se leen
+       encargos. Se pliega, con su titulo a la vista y su cuenta al lado, para
+       que quien venga a buscarlo lo encuentre a la primera.
+       El pliegue de CERRADOS que ya habia sigue dentro: pliegue dentro de
+       pliegue, que es lo correcto -- lo cerrado esta dos gestos mas lejos que
+       lo abierto, y eso es exactamente su distancia. */
     var lista = d.anuncios || [];
+    var raizVieja = raiz;
+    var fuera = document.createElement('details');
+    fuera.className = 'pliego';
+    var tit = document.createElement('summary');
+    tit.textContent = T.anTitulo +
+      (lista.length ? ' (' + lista.filter(function (a) {
+        return a.estado !== 'CERRADO'; }).length + ')' : '');
+    fuera.appendChild(tit);
+    raizVieja.appendChild(fuera);
+    raiz = fuera;
     var abiertos = lista.filter(function (a) { return a.estado !== 'CERRADO'; });
     var cerrados = lista.filter(function (a) { return a.estado === 'CERRADO'; });
     var destino = raiz;

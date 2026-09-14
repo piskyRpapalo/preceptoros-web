@@ -250,3 +250,23 @@
     if (otros) caja.appendChild(el('p', 'tenue', otros + ' ' + T.mdNoPublicados));
   }
 })();
+
+/* EL ANCLA TIENE QUE SEGUIR ABRIENDO · 2026-09-15.
+   «Descarga directa» se plego en un `<details>` para que la pagina no abra con
+   tres botones antes de explicar nada. Pero el onboarding --lo PRIMERO que ve
+   quien llega-- manda aqui con `instalar.html#descargas`, y un pliegue cerrado
+   convierte ese enlace en un salto a un titulo sin contenido: la persona llega
+   justo donde queria y no ve lo que venia a ver.
+   Cuatro lineas, sin dependencia: si el fragmento apunta a un pliegue, se abre.
+   Sirve para este y para el que venga. */
+(function () {
+  function abrePorAncla() {
+    var id = (location.hash || '').slice(1);
+    if (!id) return;
+    var n = document.getElementById(id);
+    if (n && n.tagName === 'DETAILS') { n.open = true; }
+  }
+  addEventListener('hashchange', abrePorAncla);
+  if (document.readyState !== 'loading') { abrePorAncla(); }
+  else { document.addEventListener('DOMContentLoaded', abrePorAncla); }
+})();
