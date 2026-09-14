@@ -56,7 +56,7 @@
     {
       "clave": "pruebas_app",
       "estado": "MEDIDO",
-      "valor": 766,
+      "valor": 769,
       "unidad": "pruebas",
       "como": "bash bin/pruebas --rapido en el repo del MVP, cifra 'N/N pruebas'. Es la fuente unica declarada: pytest solo corre parte de la suite"
     },
