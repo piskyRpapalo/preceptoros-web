@@ -3,11 +3,7 @@
  "idioma": "fr",
  "ui": {
   "titulo": "Axes de recherche",
-  "abrir": "Voir plus",
   "cerrar": "Voir moins",
-  "ficha": "Fiche technique",
-  "sinDescarga": "Pas de téléchargement : aucun artefact signé pour l'instant.",
-  "sinMedia": "Pas encore de données · sois le premier",
   "estudio": "À l'étude",
   "entrenando": "En entraînement",
   "beta": "En test",
@@ -27,7 +23,25 @@
   "paqCopiar": "Copier le paquet",
   "paqCopiado": "Copié",
   "paqCorreo": "Ouvrir le courrier",
-  "paqCorreoCuerpo": "Ci-dessous je colle le paquet que la page m'a donné."
+  "paqCorreoCuerpo": "Ci-dessous je colle le paquet que la page m'a donné.",
+  "loreTitulo": "Ce qui est arrivé à cet axe",
+  "loreVacio": "Aucune activité mesurée sur cet axe pour l'instant.",
+  "loreFecha": "Registre mesuré le",
+  "tandaEn": "série EN",
+  "tandaMulti": "série multi",
+  "corpus": "corpus",
+  "falla": "ce qui échoue",
+  "adaptador": "adaptateur",
+  "chatTitulo": "Parlez à cet axe",
+  "sugerencias": "Pour commencer",
+  "chatPide": "Écrivez votre tour…",
+  "chatEnviar": "Envoyer",
+  "chatQuien": "Le rack répond avec",
+  "chatFallo": "Pas de réponse :",
+  "chatSinRack": "Cette page ne sait pas encore demander un tour au rack.",
+  "uPasos": "pas",
+  "uPorPaso": "s/pas",
+  "uMin": "min"
  },
  "bloques": {
   "bienvenida": {
@@ -35,7 +49,12 @@
    "util": "Comprendre ce que ta propre machine peut faire, sans lire de documentation.",
    "hoy": "Le rack répond déjà depuis le web, et le même personnage peut tourner chez toi.",
    "falta": "L'artefact n'existe pas : il faut l'entraîner et le signer avant de le télécharger.",
-   "aportas": "Dis-nous ce que tu attendais qu'il sache et qu'il ignorait. Cela entraîne la suite."
+   "aportas": "Dis-nous ce que tu attendais qu'il sache et qu'il ignorait. Cela entraîne la suite.",
+   "plantilla": [
+    "Explique-moi PreceptorOS comme si je ne connaissais rien aux modèles.",
+    "Si tu ne sais pas quelque chose, dis-le et indique-moi où chercher.",
+    "Ne me promets pas que tu te souviendras de cette conversation."
+   ]
   },
   "medidor": {
    "nombre": "Le Mesureur",
@@ -56,7 +75,13 @@
    "util": "Reclamer sans etre balade de service en service ni s'entendre inventer une regle.",
    "hoy": "Le corpus est ecrit : 200 cas reels en deux versions, pour les comparer.",
    "falta": "L'entrainement n'est pas fini, et il faut le signer avant tout telechargement.",
-   "aportas": "Raconte-nous la reclamation que personne n'a resolue. C'est ce qui manque."
+   "aportas": "Raconte-nous la reclamation que personne n'a resolue. C'est ce qui manque.",
+   "plantilla": [
+    "Traite-moi comme si tu étais le service client.",
+    "N'invente pas de règles : si ce n'est pas au dossier, dis-le.",
+    "Si tu ne peux pas résoudre, passe-moi à une personne avec une référence.",
+    "Ne me demande ni données de carte ni documents dans ce chat."
+   ]
   },
   "business": {
    "nombre": "Business",

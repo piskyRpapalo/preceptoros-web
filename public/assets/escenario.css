@@ -1,0 +1,93 @@
+/* EL ESCENARIO · la pantalla que toma una tarjeta al pulsarla.
+
+   Sigue el canon v3.0: marmol, cristal, canto de bronce y el radio del token.
+   Lo unico que anade es la capa -- y una capa que tapa el sitio entero tiene dos
+   obligaciones que un panel no tiene: taparlo DE VERDAD (un fondo translucido
+   sobre el lienzo de ambiente deja el texto ilegible) y devolverte donde estabas
+   al salir. Por eso el respaldo opaco va delante del cristal, como manda la
+   regla de la casa, y por eso el `html` deja de desplazarse mientras esta
+   abierto: sin eso, al cerrar apareces en otro punto de la pagina y parece que
+   se ha navegado. */
+
+.sin-scroll{overflow:hidden}
+
+.escenario{position:fixed;inset:0;z-index:60;display:flex;
+  align-items:center;justify-content:center;padding:clamp(.5rem,2vw,1.6rem);
+  background:rgba(18,14,26,.72)}
+
+/* El respaldo OPACO, declarado antes que el cristal: en un navegador sin
+   `backdrop-filter` esto es lo que se ve, y tiene que poder leerse solo. */
+.esc-caja{background:var(--marmol-claro);
+  width:min(100%,72rem);max-height:100%;overflow:auto;
+  border:1px solid var(--bronce);border-radius:var(--radius);
+  box-shadow:var(--depth);padding:1.1rem 1.2rem 1.3rem}
+
+@supports (backdrop-filter:blur(2px)){
+  .esc-caja{background:var(--glass-solid);backdrop-filter:blur(14px)}
+}
+
+.esc-cab{display:flex;flex-wrap:wrap;align-items:baseline;gap:.5rem .8rem;
+  border-bottom:1px solid var(--bronce);padding-bottom:.6rem;margin-bottom:.9rem}
+.esc-cab h2{margin:0;font-size:1.3rem;line-height:1.2;flex:1 1 auto}
+.esc-cab h2:focus-visible{outline:2px solid var(--violeta);outline-offset:3px}
+.esc-cerrar{background:none;border:1px solid var(--bronce);color:var(--tinta);
+  border-radius:var(--radius);font-size:1.1rem;line-height:1;cursor:pointer;
+  padding:.25rem .6rem}
+.esc-cerrar:hover,.esc-cerrar:focus-visible{border-color:var(--violeta);
+  color:var(--violeta-texto)}
+
+/* Dos columnas cuando hay sitio: se habla a la izquierda y se comprueba a la
+   derecha, sin cambiar de pantalla. En el telefono se apilan y el chat va
+   primero -- que es a lo que se ha entrado. */
+.esc-cuerpo{display:grid;gap:1.1rem;grid-template-columns:1fr}
+@media (min-width:56rem){
+  .esc-cuerpo{grid-template-columns:1.15fr .85fr}
+}
+
+.esc-chat h3,.esc-lore h3{margin:0 0 .5rem;
+  font:600 .74rem/1.5 var(--mono);letter-spacing:.07em;text-transform:uppercase;
+  color:var(--tenue)}
+
+.esc-dialogo{min-height:9rem;max-height:42vh;overflow:auto;
+  border:1px solid var(--bronce);border-radius:var(--radius);
+  padding:.7rem .8rem;background:var(--velo-campo);margin-bottom:.6rem}
+.esc-dialogo p{margin:0 0 .6rem;line-height:1.5;overflow-wrap:anywhere}
+.esc-yo{color:var(--violeta-texto);font-weight:600}
+.esc-el{color:var(--tinta)}
+.esc-fallo{color:var(--sol);font-family:var(--mono);font-size:.82rem}
+
+.esc-sugiere{display:flex;flex-wrap:wrap;gap:.35rem;align-items:center;
+  margin-bottom:.6rem}
+.esc-sugiere > b{font:600 .68rem/1.5 var(--mono);letter-spacing:.06em;
+  text-transform:uppercase;color:var(--tenue)}
+.esc-sug{background:none;border:1px dashed var(--bronce);color:var(--tenue);
+  border-radius:var(--radius);font-size:.78rem;line-height:1.35;
+  padding:.25rem .55rem;cursor:pointer;text-align:left;max-width:100%}
+.esc-sug:hover,.esc-sug:focus-visible{border-style:solid;color:var(--tinta)}
+
+.esc-fila{display:flex;gap:.5rem;align-items:flex-end}
+.esc-entrada{flex:1 1 auto;box-sizing:border-box;padding:.5rem;
+  font:inherit;font-size:.92rem;line-height:1.45;color:var(--tinta);
+  background:var(--velo-campo);border:1px solid var(--tenue);
+  border-radius:var(--radius);resize:vertical}
+.esc-quien{margin:.5rem 0 0;font:.74rem/1.5 var(--mono);color:var(--tenue);
+  overflow-wrap:anywhere}
+
+/* El lore: hechos, uno por linea, con su etiqueta delante. Sin viñetas -- no es
+   una lista de la compra, es un expediente. */
+.esc-hechos{list-style:none;margin:0;padding:0}
+.esc-hecho{display:grid;grid-template-columns:7rem 1fr;gap:.2rem .8rem;
+  padding:.45rem 0;border-top:1px solid var(--bronce)}
+.esc-hecho:first-child{border-top:0}
+.esc-hecho > b{font:600 .68rem/1.6 var(--mono);letter-spacing:.06em;
+  text-transform:uppercase;color:var(--tenue)}
+.esc-hecho > span{line-height:1.5;overflow-wrap:anywhere}
+.esc-tanda > span{font-family:var(--mono);font-size:.82rem;
+  font-variant-numeric:tabular-nums}
+.esc-lore .ficha{margin-top:.9rem;border-top:1px solid var(--bronce);
+  padding-top:.7rem}
+.esc-fecha{margin:.7rem 0 0;font:.72rem/1.5 var(--mono);color:var(--tenue)}
+
+@media (max-width:40rem){
+  .esc-hecho{grid-template-columns:1fr}
+}

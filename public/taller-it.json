@@ -3,11 +3,7 @@
  "idioma": "it",
  "ui": {
   "titulo": "Linee di ricerca",
-  "abrir": "Mostra di più",
   "cerrar": "Mostra di meno",
-  "ficha": "Scheda tecnica",
-  "sinDescarga": "Nessun download: non c'è ancora un artefatto firmato.",
-  "sinMedia": "Ancora nessun dato · sii il primo",
   "estudio": "In studio",
   "entrenando": "In addestramento",
   "beta": "In prova",
@@ -27,7 +23,25 @@
   "paqCopiar": "Copia il pacchetto",
   "paqCopiado": "Copiato",
   "paqCorreo": "Apri la posta",
-  "paqCorreoCuerpo": "Qui sotto incollo il pacchetto che mi ha dato la pagina."
+  "paqCorreoCuerpo": "Qui sotto incollo il pacchetto che mi ha dato la pagina.",
+  "loreTitulo": "Cosa è successo a questa linea",
+  "loreVacio": "Ancora nessuna attività misurata su questa linea.",
+  "loreFecha": "Registro misurato il",
+  "tandaEn": "serie EN",
+  "tandaMulti": "serie multi",
+  "corpus": "corpus",
+  "falla": "cosa non va",
+  "adaptador": "adattatore",
+  "chatTitulo": "Parla con questa linea",
+  "sugerencias": "Per iniziare",
+  "chatPide": "Scrivi il tuo turno…",
+  "chatEnviar": "Invia",
+  "chatQuien": "Il rack risponde con",
+  "chatFallo": "Nessuna risposta:",
+  "chatSinRack": "Questa pagina non sa ancora chiedere un turno al rack.",
+  "uPasos": "passi",
+  "uPorPaso": "s/passo",
+  "uMin": "min"
  },
  "bloques": {
   "bienvenida": {
@@ -35,7 +49,12 @@
    "util": "Capire cosa può fare la tua macchina, senza leggere documentazione.",
    "hoy": "Il rack risponde già dal web, e lo stesso personaggio può girare sul tuo computer.",
    "falta": "L'artefatto non esiste: va addestrato e firmato prima di poterlo scaricare.",
-   "aportas": "Dicci cosa ti aspettavi che sapesse e non sapeva. È questo ad addestrare il prossimo."
+   "aportas": "Dicci cosa ti aspettavi che sapesse e non sapeva. È questo ad addestrare il prossimo.",
+   "plantilla": [
+    "Spiegami PreceptorOS come se non sapessi nulla di modelli.",
+    "Se non sai qualcosa, dillo e dimmi dove cercarlo.",
+    "Non promettermi che ricorderai questa conversazione."
+   ]
   },
   "medidor": {
    "nombre": "Il Misuratore",
@@ -56,7 +75,13 @@
    "util": "Reclamare senza essere rimbalzato di ufficio in ufficio ne sentirsi inventare una regola.",
    "hoy": "Il corpus e scritto: 200 casi reali in due versioni, per confrontarle.",
    "falta": "Sta ancora addestrandosi, e va firmato prima che si possa scaricare.",
-   "aportas": "Raccontaci il reclamo che nessuno ti ha risolto. E quello che manca."
+   "aportas": "Raccontaci il reclamo che nessuno ti ha risolto. E quello che manca.",
+   "plantilla": [
+    "Trattami come se fossi il servizio clienti.",
+    "Non inventare politiche: se non risulta, dillo.",
+    "Se non riesci a risolvere, passami a una persona con un riferimento.",
+    "Non chiedermi dati della carta né documenti in questa chat."
+   ]
   },
   "business": {
    "nombre": "Business",

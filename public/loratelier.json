@@ -47,11 +47,6 @@
    "valoraciones": {
     "n": 0
    },
-   "plantilla_inicial": [
-    "Explicame PreceptorOS como si no supiera nada de modelos.",
-    "Si no sabes algo, dilo y dime donde buscarlo.",
-    "No me prometas que recordaras esta conversacion."
-   ],
    "cuestionario": [
     {
      "id": "nombre",
@@ -211,12 +206,6 @@
      "minutos": 47
     }
    },
-   "plantilla_inicial": [
-    "Atiendeme como si fueras el servicio de atencion al cliente.",
-    "No te inventes politicas: si no consta, dilo.",
-    "Si no puedes resolverlo, escalame a una persona con referencia.",
-    "No me pidas datos de tarjeta ni documentos por este chat."
-   ],
    "cuestionario": [
     {
      "id": "sector",

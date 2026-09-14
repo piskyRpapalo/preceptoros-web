@@ -1060,21 +1060,111 @@ class ElTaller(unittest.TestCase):
                     self.assertIsInstance(b[clave]["n"], int)
 
     def test_el_render_pide_claves_que_existen(self):
-        js = (PUBLICO / "assets" / "taller.js").read_text(encoding="utf-8")
-        base = set(self.textos["es"]["ui"])
-        for clave in set(re.findall(r"UI\.([A-Za-z]+)", js)):
-            with self.subTest(clave=clave):
-                self.assertIn(clave, base, "el render pide una clave que no existe")
+        """Los DOS ficheros del taller, desde que la ficha se mudo al escenario.
 
-    def test_la_hoja_no_deja_abierto_lo_que_va_cerrado(self):
-        """Cicatriz: una regla de autor con `display` pisa a `[hidden]`.
-
-        `taller.css` carga despues de `base.css`, asi que un `display:flex` a
-        secas sobre `.linea-mas` dejaria el nivel dos abierto siempre.
+        `taller.js` pinta la vitrina y `escenario.js` la pantalla que toma una
+        tarjeta al pulsarla. Los dos leen el mismo `ui` y el segundo pide catorce
+        claves que el primero no conoce: mirar solo uno seria dejar la mitad de
+        los rotulos sin vigilar justo despues de partirlos en dos.
         """
-        css = (PUBLICO / "assets" / "taller.css").read_text(encoding="utf-8")
-        self.assertIn(".linea-mas:not([hidden]){display:flex}", css)
-        self.assertNotIn(".linea-mas{display:flex", css)
+        base = set(self.textos["es"]["ui"])
+        for fichero in ("taller.js", "escenario.js"):
+            js = (PUBLICO / "assets" / fichero).read_text(encoding="utf-8")
+            js = re.sub(r"/\*.*?\*/", "", js, flags=re.S)
+            for clave in sorted(set(re.findall(r"UI\.([A-Za-z]+)", js))):
+                with self.subTest(fichero=fichero, clave=clave):
+                    self.assertIn(clave, base,
+                                  "el render pide una clave que no existe")
+
+    def test_las_preguntas_de_apertura_no_viven_en_el_REGISTRO(self):
+        """Su propio contrato lo dice: «no lleva una palabra de prosa».
+
+        Y lo incumplia: `plantilla_inicial` --las preguntas de apertura de cada
+        linea, escritas en castellano-- vivia dentro de `loratelier.json`. No
+        molestaba mientras no se pintaban en ningun sitio. El 2026-09-14 el
+        escenario las saco a la pantalla y aparecieron en castellano en las ocho
+        lenguas de golpe.
+
+        Un fichero de hechos no tiene idioma; una frase si. Se mudaron a
+        `taller-<idioma>.json` como `plantilla`, que es donde el resto del texto
+        ya vivia, y esta prueba impide que vuelvan: la siguiente frase que
+        alguien quiera meter en el registro se cae aqui, no en produccion y en
+        siete idiomas.
+
+        LO QUE ESTA PRUEBA NO CUBRE, y por eso se llama como se llama: en la
+        `ficha` siguen viviendo `corpus`, `prueba_de_fuego` y
+        `adaptador_estado`, que tambien son frases y tambien salen en castellano
+        en las ocho. Se mudan igual, pero son veinticuatro traducciones tecnicas
+        y van en su propio bloque: queda en PENDIENTES. Nombrar el test por lo
+        que afirma --y no por la regla entera-- es lo unico que impide que esa
+        deuda parezca cubierta.
+        """
+        crudo = (PUBLICO / "loratelier.json").read_text(encoding="utf-8")
+        self.assertNotIn("plantilla_inicial", crudo,
+                         "vuelve a haber prosa en el fichero de hechos")
+        # Y el reverso: donde hay preguntas, las hay en las OCHO.
+        con = {b for b, v in self.textos["es"]["bloques"].items() if "plantilla" in v}
+        self.assertTrue(con, "ninguna linea tiene preguntas de apertura")
+        for idioma in sorted(self.textos):
+            with self.subTest(idioma=idioma):
+                aqui = {b for b, v in self.textos[idioma]["bloques"].items()
+                        if v.get("plantilla")}
+                self.assertEqual(con, aqui,
+                                 f"preguntas que faltan o sobran en {idioma}: "
+                                 f"{con ^ aqui}")
+
+    def test_la_tarjeta_abre_el_ESCENARIO(self):
+        """Se pulsa la tarjeta y la linea toma la pantalla. Orden del Soberano.
+
+        Tres piezas tienen que estar a la vez y ninguna sirve sola: la vitrina
+        tiene que LLAMAR al escenario, la pagina tiene que CARGARLO, y el
+        escenario tiene que poder pedirle un turno al rack. Si falta la tercera,
+        la tarjeta abre una pantalla con un chat que no sabe hablar -- que es
+        peor que no abrir nada, porque promete.
+        """
+        taller = (PUBLICO / "assets" / "taller.js").read_text(encoding="utf-8")
+        self.assertIn("window.Escenario", taller,
+                      "la tarjeta no abre el escenario")
+        esc = (PUBLICO / "assets" / "escenario.js").read_text(encoding="utf-8")
+        self.assertIn("window.Rack", esc,
+                      "el escenario no sabe pedirle un turno al rack")
+        for idi in IDIOMAS:
+            t = (PUBLICO / idi / "community.html").read_text(encoding="utf-8")
+            for pieza in ("/assets/escenario.js", "/assets/escenario.css",
+                          "/assets/rack.js", "/assets/state.js"):
+                with self.subTest(idioma=idi, pieza=pieza):
+                    self.assertIn(pieza, t, f"{idi}/community.html no carga {pieza}")
+
+    def test_la_cura_del_hidden_sigue_DETRAS_de_lo_que_lo_rompio(self):
+        """La misma cicatriz del 2026-09-01, vigilada donde de verdad vive.
+
+        Esta prueba exigia `.linea-mas:not([hidden]){display:flex}` en
+        `taller.css`. Ese selector desaparecio el 2026-09-14 --el nivel dos de
+        la tarjeta ya no se despliega dentro, se abre en el escenario-- y con el
+        se iba la unica comprobacion de una averia que fue de TODA la web: un
+        `display:inline-block` de autor sobre los botones pisaba la regla del
+        navegador que apaga los `[hidden]`, y cualquier boton oculto se veia.
+
+        Se reapunta en vez de borrarse, y se apunta mas cerca del fallo: la cura
+        es `[hidden]{display:none}` en `base.css` y **depende del orden**. Si
+        alguien reordena la hoja y la deja por encima de la regla de los botones,
+        vuelve a perder por especificidad de cascada y el sintoma regresa entero
+        sin que nadie lo relacione con esto. Un hueco donde habia una
+        comprobacion es exactamente como vuelve la misma averia.
+        """
+        css = (PUBLICO / "assets" / "base.css").read_text(encoding="utf-8")
+        cura = css.find("[hidden]{display:none}")
+        self.assertGreater(cura, -1,
+                           "base.css perdio la cura: todo boton con `hidden` "
+                           "vuelve a verse en la web entera")
+        roto = css.find("display:inline-block")
+        self.assertGreater(roto, -1, "base.css ya no declara el display de los "
+                                     "botones: revisa si esta cura sigue siendo "
+                                     "necesaria antes de tocar esta prueba")
+        self.assertLess(roto, cura,
+                        "`[hidden]{display:none}` quedo POR ENCIMA de la regla "
+                        "de los botones: pierde la cascada y los ocultos "
+                        "vuelven a verse")
 
 
 class Doctrina(unittest.TestCase):
@@ -1231,8 +1321,15 @@ class Doctrina(unittest.TestCase):
         self.assertIn("window.sinFuga = function", estado,
                       "state.js ya no expone el filtro que retira su propio "
                       "bloque de estado")
-        chat = (PUBLICO / "assets" / "chat.js").read_text(encoding="utf-8")
-        sin_notas = re.sub(r"/\*.*?\*/", "", chat, flags=re.S)
+        # LA SEGUNDA PUERTA SE ABRIO el 2026-09-14, y es la que este test temia
+        # por escrito: `escenario.js` pinta respuestas de modelo en el chat de
+        # cada linea. Entra en la misma pasada -- si se le olvida `sinFuga`, el
+        # bloque de estado vuelve a la conversacion por una via que nadie
+        # relacionaria con la que ya se arreglo.
+        fuentes = "\n".join(
+            (PUBLICO / "assets" / f).read_text(encoding="utf-8")
+            for f in ("chat.js", "escenario.js"))
+        sin_notas = re.sub(r"/\*.*?\*/", "", fuentes, flags=re.S)
         sin_notas = re.sub(r"(?m)//.*$", "", sin_notas)
         # Se miran las asignaciones cuyo valor es lo que ACUMULA el motor
         # --`acc`-- o el parametro con el que se cierra el turno. No todas:

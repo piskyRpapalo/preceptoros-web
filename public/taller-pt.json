@@ -3,11 +3,7 @@
  "idioma": "pt",
  "ui": {
   "titulo": "Linhas de investigação",
-  "abrir": "Ver mais",
   "cerrar": "Ver menos",
-  "ficha": "Ficha técnica",
-  "sinDescarga": "Sem descarga: ainda não há artefacto assinado.",
-  "sinMedia": "Ainda sem dados · sê o primeiro",
   "estudio": "Em estudo",
   "entrenando": "Em treino",
   "beta": "Em testes",
@@ -27,7 +23,25 @@
   "paqCopiar": "Copiar o pacote",
   "paqCopiado": "Copiado",
   "paqCorreo": "Abrir o correio",
-  "paqCorreoCuerpo": "Em baixo colo o pacote que a página me deu."
+  "paqCorreoCuerpo": "Em baixo colo o pacote que a página me deu.",
+  "loreTitulo": "O que aconteceu com esta linha",
+  "loreVacio": "Ainda não há atividade medida nesta linha.",
+  "loreFecha": "Registo medido a",
+  "tandaEn": "série EN",
+  "tandaMulti": "série multi",
+  "corpus": "corpus",
+  "falla": "o que falha",
+  "adaptador": "adaptador",
+  "chatTitulo": "Fala com esta linha",
+  "sugerencias": "Para começar",
+  "chatPide": "Escreve o teu turno…",
+  "chatEnviar": "Enviar",
+  "chatQuien": "O rack responde com",
+  "chatFallo": "Não houve resposta:",
+  "chatSinRack": "Esta página ainda não sabe pedir um turno ao rack.",
+  "uPasos": "passos",
+  "uPorPaso": "s/passo",
+  "uMin": "min"
  },
  "bloques": {
   "bienvenida": {
@@ -35,7 +49,12 @@
    "util": "Perceber o que a tua própria máquina consegue fazer, sem ler documentação.",
    "hoy": "O rack já responde a partir da web, e a mesma personagem pode correr no teu equipamento.",
    "falta": "O artefacto não existe: é preciso treiná-lo e assiná-lo antes de o poder descarregar.",
-   "aportas": "Diz-nos o que esperavas que soubesse e não sabia. É isso que treina a versão seguinte."
+   "aportas": "Diz-nos o que esperavas que soubesse e não sabia. É isso que treina a versão seguinte.",
+   "plantilla": [
+    "Explica-me o PreceptorOS como se eu não soubesse nada de modelos.",
+    "Se não souberes alguma coisa, di-lo e indica-me onde procurar.",
+    "Não me prometas que vais lembrar-te desta conversa."
+   ]
   },
   "medidor": {
    "nombre": "O Medidor",
@@ -56,7 +75,13 @@
    "util": "Reclamar sem ser passado de servico em servico nem ouvir uma regra inventada.",
    "hoy": "O corpus esta escrito: 200 casos reais em duas versoes, para comparar.",
    "falta": "Ainda esta a treinar, e tem de ser assinado antes de poder ser descarregado.",
-   "aportas": "Conta-nos a reclamacao que ninguem te resolveu. E disso que precisamos."
+   "aportas": "Conta-nos a reclamacao que ninguem te resolveu. E disso que precisamos.",
+   "plantilla": [
+    "Atende-me como se fosses o apoio ao cliente.",
+    "Não inventes políticas: se não consta, di-lo.",
+    "Se não conseguires resolver, encaminha-me para uma pessoa com referência.",
+    "Não me peças dados de cartão nem documentos por este chat."
+   ]
   },
   "business": {
    "nombre": "Business",

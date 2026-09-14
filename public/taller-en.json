@@ -3,11 +3,7 @@
  "idioma": "en",
  "ui": {
   "titulo": "Research lines",
-  "abrir": "Show more",
   "cerrar": "Show less",
-  "ficha": "Technical card",
-  "sinDescarga": "No download: there is no signed artefact yet.",
-  "sinMedia": "No data yet · be the first",
   "estudio": "Under study",
   "entrenando": "In training",
   "beta": "In testing",
@@ -27,7 +23,25 @@
   "paqCopiar": "Copy the package",
   "paqCopiado": "Copied",
   "paqCorreo": "Open mail",
-  "paqCorreoCuerpo": "Below I paste the package the page gave me."
+  "paqCorreoCuerpo": "Below I paste the package the page gave me.",
+  "loreTitulo": "What has happened to this line",
+  "loreVacio": "No measured activity on this line yet.",
+  "loreFecha": "Registry measured on",
+  "tandaEn": "EN run",
+  "tandaMulti": "multi run",
+  "corpus": "corpus",
+  "falla": "what fails",
+  "adaptador": "adapter",
+  "chatTitulo": "Talk to this line",
+  "sugerencias": "To get started",
+  "chatPide": "Write your turn…",
+  "chatEnviar": "Send",
+  "chatQuien": "The rack answers with",
+  "chatFallo": "No answer:",
+  "chatSinRack": "This page cannot ask the rack for a turn yet.",
+  "uPasos": "steps",
+  "uPorPaso": "s/step",
+  "uMin": "min"
  },
  "bloques": {
   "bienvenida": {
@@ -35,7 +49,12 @@
    "util": "Understand what your own machine can do, without reading documentation.",
    "hoy": "The rack already answers from the web, and the same character can run on your machine.",
    "falta": "The artefact does not exist: it must be trained and signed before it can be downloaded.",
-   "aportas": "Tell us what you expected it to know and it did not. That trains the next version."
+   "aportas": "Tell us what you expected it to know and it did not. That trains the next version.",
+   "plantilla": [
+    "Explain PreceptorOS to me as if I knew nothing about models.",
+    "If you don't know something, say so and tell me where to look.",
+    "Don't promise me you will remember this conversation."
+   ]
   },
   "medidor": {
    "nombre": "The Meter",
@@ -56,7 +75,13 @@
    "util": "Complain without being passed around or told a rule that does not exist.",
    "hoy": "The corpus is written: 200 real cases in two versions, to compare them.",
    "falta": "It is still training, and it must be signed before anyone can download it.",
-   "aportas": "Tell us the complaint nobody resolved for you. That is what is missing."
+   "aportas": "Tell us the complaint nobody resolved for you. That is what is missing.",
+   "plantilla": [
+    "Handle me as if you were customer support.",
+    "Don't invent policies: if it isn't on record, say so.",
+    "If you can't solve it, escalate me to a person with a reference number.",
+    "Don't ask me for card details or documents in this chat."
+   ]
   },
   "business": {
    "nombre": "Business",

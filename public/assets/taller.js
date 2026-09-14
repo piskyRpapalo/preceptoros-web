@@ -19,7 +19,7 @@
   var caja = document.getElementById('taller');
   if (!caja) return;
 
-  var L = {}, UI = {};
+  var L = {}, UI = {}, REGISTRO = null;
 
   function el(tag, clase, texto) {
     var n = document.createElement(tag);
@@ -77,117 +77,17 @@
     return caja2;
   }
 
-  /* El recuento SIEMPRE enseña su n. Con cero no se pinta un cero -- un cero
-     junto a una media se lee como una media baja, y no hay media: no hay nadie
-     todavia. Se pinta el hueco con su invitacion. */
-  function recuento(bloque) {
-    var p = el('p', 'recuento');
-    var partes = [['medidas', bloque.medidas], ['tests', bloque.tests],
-                  ['valoraciones', bloque.valoraciones]];
-    var vivo = false;
-    partes.forEach(function (x) {
-      var n = x[1] && typeof x[1].n === 'number' ? x[1].n : 0;
-      if (n > 0) {
-        vivo = true;
-        var s = el('span', null, x[0] + ' ');
-        var b = el('b', null, String(n)); s.appendChild(b);
-        p.appendChild(s);
-      }
-    });
-    if (!vivo) p.textContent = UI.sinMedia || '';
-    return p;
-  }
-
-  function ficha(bloque) {
-    var dl = el('dl', 'ficha'), f = bloque.ficha || {};
-    par(dl, 'familia', f.familia);
-    par(dl, 'licencia', f.licencia);
-    par(dl, 'origen', f.origen);
-    par(dl, 'base', f.base_entrenamiento, 'taller-cifra');
-    if (f.base_tamano_q4_gb != null) par(dl, 'Q4', f.base_tamano_q4_gb + ' GB', 'taller-cifra');
-    par(dl, 'servido', f.servido_en_el_rack, 'taller-cifra');
-    if (f.servido_tamano_q4_gb != null) par(dl, 'Q4', f.servido_tamano_q4_gb + ' GB', 'taller-cifra');
-    par(dl, 'razonamiento', f.razonamiento);
-    par(dl, 'modelo', bloque.modelo_base, 'taller-cifra');
-    par(dl, 'hardware', bloque.requisitos_hw);
-    // La firma NO se rellena con un guion cuando falta: se omite. Un guion en el
-    // sitio de una firma se parece demasiado a una firma vacia.
-    if (bloque.artefacto) {
-      par(dl, 'version', bloque.artefacto.version, 'taller-cifra');
-      par(dl, 'firma', bloque.artefacto.sha256_hash, 'taller-cifra');
-    }
-    return dl;
-  }
-
-  /* PROBARLA, con las preguntas que el registro ya trae.
-
-     Lo que se pidio era una ventana de chat DENTRO de cada tarjeta. No se monta,
-     y el motivo es de arquitectura, no de esfuerzo: el chat de esta casa ya
-     existe en dos sitios --la portada instala, el Libro de Pruebas mide-- y un
-     tercero seria una tercera respuesta a «quien contesta aqui», con su propio
-     motor, su propio medidor y su propia deriva. Lo que si es de esta tarjeta
-     son las preguntas de apertura de la linea, que viajan en el registro y hasta
-     hoy no se veian en ningun sitio: se ensenan, se copian, y se pegan en el
-     chat que ya hay. Una puerta, no un motor.
-
-     El enlace es relativo a proposito: desde /es/ va a /es/, y la lengua se
-     conserva sin que nadie la escriba dos veces. */
-  function probar(bloque) {
-    var ps = bloque.plantilla_inicial;
-    if (!ps || !ps.length) return null;
-    var sec = el('section', 'probar');
-    sec.appendChild(el('h4', null, UI.probarTitulo || ''));
-    var vista = document.createElement('textarea');
-    vista.className = 'probar-texto';
-    vista.readOnly = true;
-    vista.rows = Math.min(ps.length + 1, 6);
-    vista.value = ps.join('\n');
-    sec.appendChild(vista);
-    var fila = el('div', 'fila');
-    var bc = el('button', 'boton', UI.probarCopiar || '');
-    bc.type = 'button';
-    bc.addEventListener('click', function () {
-      var hecho = function () { bc.textContent = UI.paqCopiado || 'OK'; };
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(vista.value)
-          .then(hecho, function () { vista.select(); hecho(); });
-      } else { vista.select(); hecho(); }
-    });
-    var ir = el('a', 'leve', UI.probarIr || '');
-    ir.href = './benchmark.html#probador';
-    fila.appendChild(bc);
-    fila.appendChild(ir);
-    sec.appendChild(fila);
-    return sec;
-  }
-
-  function nivelDos(bloque, texto) {
-    var caja2 = el('div', 'linea-mas');
-    caja2.hidden = true;
-    [['hoy', texto.hoy], ['falta', texto.falta], ['aportas', texto.aportas]]
-      .forEach(function (x) {
-        if (!x[1]) return;
-        var dl = el('dl', 'campo');
-        par(dl, UI[x[0]] || x[0], x[1]);
-        caja2.appendChild(dl);
-      });
-    var pr = probar(bloque);
-    if (pr) caja2.appendChild(pr);
-    caja2.appendChild(ficha(bloque));
-    caja2.appendChild(recuento(bloque));
-    if (!bloque.artefacto || !bloque.artefacto.sha256_hash) {
-      caja2.appendChild(el('p', 'sin-descarga', UI.sinDescarga || ''));
-    }
-    return caja2;
-  }
-
   function linea(bloque) {
     var texto = (L.bloques || {})[bloque.id];
     if (!texto) return null;                 // sin texto en esta lengua, no se pinta
     var art = el('article', 'panel linea');
 
     var cab = el('div', 'linea-cab');
-    cab.appendChild(el('h3', null, texto.nombre || bloque.id));
+    var h3 = el('h3', null, null);
+    var boton = el('button', 'linea-entrar', texto.nombre || bloque.id);
+    boton.type = 'button';
+    h3.appendChild(boton);
+    cab.appendChild(h3);
     cab.appendChild(sello(bloque.estado));
     art.appendChild(cab);
     art.appendChild(el('p', 'linea-util', texto.util || ''));
@@ -198,24 +98,15 @@
        asi que se nombra la ausencia y su causa. */
     if (UI.aportes) art.appendChild(el('p', 'sin-aportes', UI.aportes));
 
-    var mas = nivelDos(bloque, texto);
-    var boton = el('button', 'taller-abrir', UI.abrir || '');
-    boton.type = 'button';
-    boton.setAttribute('aria-expanded', 'false');
     boton.addEventListener('click', function () {
-      var abierto = boton.getAttribute('aria-expanded') === 'true';
-      boton.setAttribute('aria-expanded', abierto ? 'false' : 'true');
-      // `hidden` y no `display` a mano: la hoja base ya lo hace cumplir, y asi
-      // el estado vive en el atributo que los lectores de pantalla leen.
-      mas.hidden = abierto;
-      boton.textContent = abierto ? (UI.abrir || '') : (UI.cerrar || '');
+      if (!window.Escenario) return;         // sin escenario, la tarjeta no miente
+      window.Escenario.abrir(bloque, texto, UI, REGISTRO, sello(bloque.estado));
     });
-    art.appendChild(boton);
-    art.appendChild(mas);
     return art;
   }
 
   function pintar(registro) {
+    REGISTRO = registro;
     var rejilla = el('div', 'taller-rejilla');
     (registro.bloques || [])
       .slice()

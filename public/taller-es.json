@@ -3,11 +3,7 @@
  "idioma": "es",
  "ui": {
   "titulo": "Líneas de investigación",
-  "abrir": "Ver más",
   "cerrar": "Ver menos",
-  "ficha": "Ficha técnica",
-  "sinDescarga": "Sin descarga: todavía no hay artefacto firmado.",
-  "sinMedia": "Sin datos aún · sé el primero",
   "estudio": "En estudio",
   "entrenando": "En entrenamiento",
   "beta": "En pruebas",
@@ -27,7 +23,25 @@
   "paqCopiar": "Copiar el paquete",
   "paqCopiado": "Copiado",
   "paqCorreo": "Abrir el correo",
-  "paqCorreoCuerpo": "Debajo pego el paquete que me dio la página."
+  "paqCorreoCuerpo": "Debajo pego el paquete que me dio la página.",
+  "loreTitulo": "Lo que ha pasado con esta línea",
+  "loreVacio": "Todavía no hay actividad medida en esta línea.",
+  "loreFecha": "Registro medido el",
+  "tandaEn": "tanda EN",
+  "tandaMulti": "tanda multi",
+  "corpus": "corpus",
+  "falla": "qué falla",
+  "adaptador": "adaptador",
+  "chatTitulo": "Habla con esta línea",
+  "sugerencias": "Para empezar",
+  "chatPide": "Escribe tu turno…",
+  "chatEnviar": "Enviar",
+  "chatQuien": "Contesta el rack con",
+  "chatFallo": "No hubo respuesta:",
+  "chatSinRack": "Esta página no sabe pedirle un turno al rack todavía.",
+  "uPasos": "pasos",
+  "uPorPaso": "s/paso",
+  "uMin": "min"
  },
  "bloques": {
   "bienvenida": {
@@ -35,7 +49,12 @@
    "util": "Entender qué puedes hacer con tu propia máquina, sin leer documentación.",
    "hoy": "El rack ya contesta desde la web, y el mismo personaje puede correr en tu equipo.",
    "falta": "El artefacto no existe: hay que entrenarlo y firmarlo antes de poder descargarlo.",
-   "aportas": "Cuéntanos qué esperabas que supiera y no sabía. Eso entrena la versión siguiente."
+   "aportas": "Cuéntanos qué esperabas que supiera y no sabía. Eso entrena la versión siguiente.",
+   "plantilla": [
+    "Explícame PreceptorOS como si no supiera nada de modelos.",
+    "Si no sabes algo, dilo y dime dónde buscarlo.",
+    "No me prometas que recordarás esta conversación."
+   ]
   },
   "medidor": {
    "nombre": "El Medidor",
@@ -56,7 +75,13 @@
    "util": "Reclamar sin que te manden de un sitio a otro ni te inventen una norma.",
    "hoy": "El corpus está escrito: 200 casos reales en dos versiones para compararlas.",
    "falta": "Termina de entrenarse y hay que firmarlo antes de que se pueda descargar.",
-   "aportas": "Cuéntanos la reclamación que te dejaron sin resolver. Eso es lo que falta."
+   "aportas": "Cuéntanos la reclamación que te dejaron sin resolver. Eso es lo que falta.",
+   "plantilla": [
+    "Atiéndeme como si fueras el servicio de atención al cliente.",
+    "No te inventes políticas: si no consta, dilo.",
+    "Si no puedes resolverlo, escálame a una persona con referencia.",
+    "No me pidas datos de tarjeta ni documentos por este chat."
+   ]
   },
   "business": {
    "nombre": "Business",

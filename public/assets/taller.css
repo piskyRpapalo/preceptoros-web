@@ -8,20 +8,36 @@
 #taller > h2{margin-bottom:.35rem}
 .taller-intro{color:var(--tenue);max-width:62ch;margin:0 0 1.1rem}
 
-/* UNA COLUMNA, a lo ancho, y es una decision no una simplificacion.
+/* TARJETAS, y la tarjeta entera es el boton.
 
-   Lo que habia era `auto-fit` con minimo de 19rem: en un monitor salian tres o
-   cuatro tarjetas por fila, todas a la altura de la mas alta y con la frase
-   humana partida en cuatro lineas de seis palabras. Una vitrina en rejilla se
-   lee como un catalogo de productos equivalentes, y estas lineas no lo son:
-   tienen orden, tienen peldano y la de arriba es la que va primero. En columna,
-   la barra de cada una se compara con la de la de al lado sin mover los ojos. */
-.taller-rejilla{display:grid;gap:1rem;grid-template-columns:1fr}
+   Volvieron a rejilla el 2026-09-14: lo que justificaba la columna a lo ancho
+   era que la tarjeta se desplegaba dentro, y eso ya no pasa -- se pulsa y la
+   linea toma la pantalla entera. Una tarjeta que solo tiene que decir «esta es
+   la linea y va por aqui» cabe en 20rem, y siete se comparan de un vistazo en
+   vez de a base de scroll.
+
+   `auto-fit` con el minimo en `min(100%,20rem)`: en el telefono sale una sola
+   columna sin media query, porque ahi gana el 100%. */
+.taller-rejilla{display:grid;gap:1rem;
+  grid-template-columns:repeat(auto-fit,minmax(min(100%,20rem),1fr))}
 
 /* Cada linea es un panel del canon: hereda cristal y canto sin repetirlos. */
-.linea{padding:1.05rem 1.15rem 1.15rem;display:flex;flex-direction:column;gap:.6rem}
+.linea{position:relative;padding:1.05rem 1.15rem 1.15rem;
+  display:flex;flex-direction:column;gap:.6rem;
+  transition:transform .18s var(--spring)}
+.linea:hover,.linea:focus-within{transform:translateY(-2px)}
 .linea-cab{display:flex;flex-wrap:wrap;align-items:baseline;gap:.5rem .7rem}
 .linea-cab h3{margin:0;font-size:1.12rem;line-height:1.2}
+
+/* EL TITULO ES EL BOTON, y el boton se estira por encima de toda la tarjeta con
+   un pseudoelemento. Asi el clic vale en cualquier punto --que es lo que se
+   pidio-- sin meter un `<h3>` dentro de un `<button>`, que no es HTML valido; y
+   el nombre accesible del mando sigue siendo el de la linea, no «boton». */
+.linea-entrar{background:none;border:0;padding:0;margin:0;cursor:pointer;
+  font:inherit;color:var(--violeta-texto);text-align:left}
+.linea-entrar::after{content:"";position:absolute;inset:0;border-radius:inherit}
+.linea-entrar:hover,.linea:hover .linea-entrar{color:var(--indigo)}
+.linea-entrar:focus-visible{outline:2px solid var(--violeta);outline-offset:3px}
 
 /* El estado, con su palabra. El color acompaña; no informa solo. */
 .sello{font:600 .68rem/1.5 var(--mono);letter-spacing:.08em;text-transform:uppercase;
@@ -36,15 +52,12 @@
 /* Nivel uno: la frase humana. Es lo primero y lo mas grande que se lee. */
 .linea-util{margin:0;font-size:1.02rem;line-height:1.5}
 
-/* EL PELDANO. Pildora y no rectangulo --de ahi el 999px, que el canon
-   permite para figuras y no para esquinas-- y sin transicion ninguna: la barra
-   no se anima porque no esta avanzando mientras la miras, esta declarando donde
-   quedo. Una barra que crece al cargar promete un progreso en vivo que no hay.
-
-   El relleno lleva `--violeta` y el carril el canto de bronce: el mismo par que
-   el resto de la casa, para que no haya un sexto azul. */
+/* EL PELDANO. Pildora y no rectangulo --de ahi el 999px, que el canon permite
+   para figuras y no para esquinas-- y sin transicion ninguna: la barra no se
+   anima porque no esta avanzando mientras la miras, esta declarando donde
+   quedo. Una barra que crece al cargar promete un progreso en vivo que no hay. */
 .peldanos{display:flex;flex-wrap:wrap;align-items:center;gap:.45rem .8rem;margin:0}
-.barra{flex:1 1 12rem;min-width:7rem;height:.5rem;border-radius:999px;
+.barra{flex:1 1 8rem;min-width:6rem;height:.5rem;border-radius:999px;
   background:rgba(30,24,38,.10);border:1px solid var(--bronce);overflow:hidden}
 .barra-lleno{display:block;height:100%;background:var(--violeta)}
 .peldano{margin:0;font:600 .74rem/1.5 var(--mono);letter-spacing:.05em;
@@ -57,66 +70,27 @@
 .sin-peldano,.sin-aportes{margin:0;font-size:.82rem;line-height:1.45;
   color:var(--tenue)}
 
-/* La puerta de «probar»: las preguntas de apertura de la linea, que viajaban en
-   el registro sin que nadie las viera. Mismo aspecto que el paquete de aporte,
-   porque son la misma cosa: texto que se copia, no texto que se lee de corrido. */
-.probar{margin:0}
-.probar h4{margin:0 0 .3rem;font:600 .78rem/1.6 var(--mono);letter-spacing:.06em;
-  text-transform:uppercase;color:var(--tenue)}
-.probar-texto{width:100%;box-sizing:border-box;margin:0 0 .5rem;padding:.5rem;
-  font-family:ui-monospace,monospace;font-size:.78rem;line-height:1.5;
-  color:var(--tinta);background:var(--velo-campo);
-  border:1px solid var(--tenue);border-radius:var(--radius);resize:vertical}
+/* La ficha vive en el escenario, pero su hoja es esta: es del taller, no de la
+   pantalla que la enseña.
 
-/* Nivel dos: lo que hace hoy, lo que falta, lo que puedes aportar. */
-/* `:not([hidden])` y no `display:flex` a secas. Es la cicatriz del 2026-09-01,
-   otra vez: una regla de AUTOR con `display` pisa a la del navegador que apaga
-   los `[hidden]`, y esta hoja carga despues de base.css. Sin esto el nivel dos
-   nace abierto y el desplegable no despliega nada. */
-.linea-mas{flex-direction:column;gap:.7rem;
-  border-left:2px solid var(--bronce);padding-left:.85rem;margin-top:.15rem}
-.linea-mas:not([hidden]){display:flex}
-.campo{margin:0}
-.campo dt{font:600 .7rem/1.6 var(--mono);letter-spacing:.07em;text-transform:uppercase;
-  color:var(--tenue)}
-.campo dd{margin:.1rem 0 0;line-height:1.5}
-
-/* Nivel tres: la ficha. Cifras en monoespaciada y alineadas. */
+   LA FIRMA SE PARTE, y no es una preferencia tipografica. Los 64 hexadecimales
+   de un sha256 en monoespaciada son ~450 px sin un solo sitio por donde el
+   navegador pueda romper la linea, asi que el ancho MINIMO de su caja pasaba a
+   ser ese y la pagina se desplazaba en horizontal dentro de una pantalla de
+   375. Una firma no admite el remedio habitual de recortar con puntos
+   suspensivos: media firma no sirve para comprobar nada. Medido el 2026-09-13:
+   716 px de desborde antes de esta linea, 375 despues. */
 .ficha{margin:0;display:grid;grid-template-columns:auto 1fr;gap:.2rem .9rem;
   font-size:.86rem}
 .ficha dt{color:var(--tenue);font-family:var(--mono);font-size:.76rem;
   letter-spacing:.04em;padding-top:.15rem}
-/* LA FIRMA SE PARTE, y no es una preferencia tipografica. Los 64 hexadecimales
-   de un sha256 en monoespaciada son ~450 px sin un solo sitio por donde el
-   navegador pueda romper la linea, asi que el ancho MINIMO de la tarjeta pasaba
-   a ser ese: 692 px dentro de una pantalla de 375, y la pagina entera
-   desplazandose en horizontal. Solo ocurria con el nivel dos abierto --por eso
-   llevaba meses sin verse-- y una firma no admite el remedio habitual de
-   recortar con puntos suspensivos: media firma no sirve para comprobar nada.
-   Medido con el telefono emulado el 2026-09-13: 716 px de desborde antes de
-   esta linea, 375 despues, y es la unica que hacia falta. */
 .ficha dd{margin:0;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
 .ficha dd.taller-cifra{font-family:var(--mono)}
 
-/* Los contadores. Con n=0 no se pinta un cero: se pinta el hueco con su nombre. */
-.recuento{display:flex;flex-wrap:wrap;gap:.4rem .9rem;font-size:.8rem;color:var(--tenue);
-  margin:0}
-.recuento b{color:var(--tinta);font-family:var(--mono);font-variant-numeric:tabular-nums}
-
-/* Donde iria el boton de descarga cuando exista un artefacto firmado. */
-.sin-descarga{margin:0;font-size:.85rem;color:var(--tenue);
-  border-top:1px dashed var(--bronce);padding-top:.6rem}
-
-.taller-abrir{align-self:flex-start;font:600 .82rem/1 var(--mono);letter-spacing:.04em;
-  color:var(--violeta-texto);background:none;border:1px solid var(--bronce);
-  border-radius:calc(var(--radius) / 2);padding:.4rem .7rem;cursor:pointer;
-  transition:border-color .18s var(--spring),color .18s var(--spring)}
-.taller-abrir:hover,.taller-abrir:focus-visible{border-color:var(--violeta);color:var(--indigo)}
-.taller-abrir[aria-expanded="true"]{border-color:var(--violeta)}
-
 /* Quien pide menos movimiento no recibe ninguno. */
 @media (prefers-reduced-motion:reduce){
-  .taller-abrir{transition:none}
+  .linea{transition:none}
+  .linea:hover,.linea:focus-within{transform:none}
 }
 
 /* LA PUERTA DE SALIDA DEL APORTE. El paquete se ENSEÑA antes de copiarse, y por

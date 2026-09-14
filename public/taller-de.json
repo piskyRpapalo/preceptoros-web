@@ -3,11 +3,7 @@
  "idioma": "de",
  "ui": {
   "titulo": "Forschungslinien",
-  "abrir": "Mehr zeigen",
   "cerrar": "Weniger zeigen",
-  "ficha": "Technisches Datenblatt",
-  "sinDescarga": "Kein Download: es gibt noch kein signiertes Artefakt.",
-  "sinMedia": "Noch keine Daten · sei der Erste",
   "estudio": "In Prüfung",
   "entrenando": "Im Training",
   "beta": "Im Test",
@@ -27,7 +23,25 @@
   "paqCopiar": "Paket kopieren",
   "paqCopiado": "Kopiert",
   "paqCorreo": "Mail öffnen",
-  "paqCorreoCuerpo": "Unten füge ich das Paket ein, das mir die Seite gegeben hat."
+  "paqCorreoCuerpo": "Unten füge ich das Paket ein, das mir die Seite gegeben hat.",
+  "loreTitulo": "Was mit dieser Linie geschehen ist",
+  "loreVacio": "Für diese Linie gibt es noch keine gemessene Aktivität.",
+  "loreFecha": "Register gemessen am",
+  "tandaEn": "EN-Lauf",
+  "tandaMulti": "Multi-Lauf",
+  "corpus": "Korpus",
+  "falla": "was scheitert",
+  "adaptador": "Adapter",
+  "chatTitulo": "Sprich mit dieser Linie",
+  "sugerencias": "Zum Anfangen",
+  "chatPide": "Schreib deinen Zug…",
+  "chatEnviar": "Senden",
+  "chatQuien": "Das Rack antwortet mit",
+  "chatFallo": "Keine Antwort:",
+  "chatSinRack": "Diese Seite kann das Rack noch nicht um einen Zug bitten.",
+  "uPasos": "Schritte",
+  "uPorPaso": "s/Schritt",
+  "uMin": "Min"
  },
  "bloques": {
   "bienvenida": {
@@ -35,7 +49,12 @@
    "util": "Verstehen, was deine eigene Maschine kann, ohne Dokumentation zu lesen.",
    "hoy": "Das Rack antwortet bereits aus dem Web, und dieselbe Figur läuft auch bei dir.",
    "falta": "Das Artefakt gibt es nicht: es muss trainiert und signiert werden, bevor man es lädt.",
-   "aportas": "Sag uns, was es wissen sollte und nicht wusste. Genau das trainiert die nächste Fassung."
+   "aportas": "Sag uns, was es wissen sollte und nicht wusste. Genau das trainiert die nächste Fassung.",
+   "plantilla": [
+    "Erklär mir PreceptorOS, als wüsste ich nichts über Modelle.",
+    "Wenn du etwas nicht weißt, sag es und sag mir, wo ich suchen kann.",
+    "Versprich mir nicht, dass du dich an dieses Gespräch erinnern wirst."
+   ]
   },
   "medidor": {
    "nombre": "Der Messer",
@@ -56,7 +75,13 @@
    "util": "Beschwerde einreichen, ohne herumgereicht zu werden oder eine erfundene Regel zu hoeren.",
    "hoy": "Das Korpus steht: 200 echte Faelle in zwei Fassungen, zum Vergleichen.",
    "falta": "Es trainiert noch, und es muss signiert werden, bevor man es laden kann.",
-   "aportas": "Erzaehl uns die Beschwerde, die dir niemand geloest hat. Genau das fehlt."
+   "aportas": "Erzaehl uns die Beschwerde, die dir niemand geloest hat. Genau das fehlt.",
+   "plantilla": [
+    "Behandle mich, als wärst du der Kundendienst.",
+    "Erfinde keine Richtlinien: wenn es nicht aktenkundig ist, sag es.",
+    "Wenn du es nicht lösen kannst, gib mich an eine Person mit Vorgangsnummer weiter.",
+    "Frag mich in diesem Chat nicht nach Kartendaten oder Dokumenten."
+   ]
   },
   "business": {
    "nombre": "Business",
