@@ -3446,6 +3446,9 @@ class Traducciones(unittest.TestCase):
         "auth.js": "resuelve T en rotulos(), que lee el mismo catalogo",
         "hub.js": "T.agentes es un override opcional; los nombres salen de "
                   "agentes-<idioma>.json",
+        "enviar.js": "sus ocho rotulos viven en enviar-<idioma>.js desde el "
+                     "2026-09-14; los comprueba "
+                     "test_los_rotulos_del_ENVIO_viven_en_las_ocho",
     }
 
     def test_NINGUNA_pagina_cae_al_respaldo_en_castellano(self):
@@ -3493,6 +3496,57 @@ class Traducciones(unittest.TestCase):
                         pide - tiene,
                         f"{src} pide claves que esta pagina no declara y caera "
                         f"a su respaldo: {sorted(pide - tiene)}")
+
+    # Los ocho rotulos de la puerta hacia el rack, y su casa desde el
+    # 2026-09-14. Se nombran aqui y no se deducen del fichero: si manana
+    # alguien borra uno, el test tiene que echarlo de menos.
+    ROTULOS_ENVIO = ("envBoton", "envEnviando", "envEncolado", "envFallo",
+                     "envSinCanal", "envSinFirmaTexto", "envRemedio", "envAviso")
+
+    def test_los_rotulos_del_ENVIO_viven_en_las_ocho(self):
+        """`enviar.js` esta perdonado arriba, asi que aqui se paga el perdon.
+
+        Y la asercion que de verdad importa no es que existan: es que **no
+        sean la version inglesa**. Este fichero nace de encontrar SEIS lenguas
+        --fr, pt, it, de, ru, el-- publicando «Send to the rack» dentro de tres
+        paginas cada una. Nada saltaba: las claves estaban, tenian texto, y el
+        texto estaba bien escrito. En el idioma equivocado.
+
+        Es la familia de A17 --el respaldo silencioso-- con una vuelta de
+        tuerca: alli el respaldo era castellano y lo veia cualquiera de la
+        casa; aqui era ingles, que en una web tecnica no llama la atencion de
+        nadie. Por eso el guardian no puede preguntar «hay texto?» sino
+        «es OTRO texto?».
+        """
+        import re as _re
+        cargados = {}
+        for idioma in IDIOMAS:
+            f = PUBLICO / "assets" / f"enviar-{idioma}.js"
+            with self.subTest(idioma=idioma):
+                self.assertTrue(f.is_file(),
+                    f"la puerta hacia el rack no tiene rotulos en {idioma}: "
+                    f"falta {f.name}")
+                crudo = f.read_text(encoding="utf-8")
+                m = _re.search(r"window\.ENVT\s*=\s*(\{.*?\});", crudo, _re.S)
+                self.assertIsNotNone(m, f"{f.name} no declara window.ENVT")
+                datos = json.loads(m.group(1))
+                cargados[idioma] = datos
+                faltan = [k for k in self.ROTULOS_ENVIO if not datos.get(k)]
+                self.assertFalse(faltan,
+                    f"{f.name} no trae {faltan}: en pantalla eso se ve igual "
+                    f"que no traer el fichero")
+
+        ingles = cargados.get("en", {})
+        for idioma in IDIOMAS:
+            if idioma in ("en",):
+                continue
+            iguales = [k for k in self.ROTULOS_ENVIO
+                       if cargados[idioma].get(k) == ingles.get(k)]
+            with self.subTest(idioma=idioma, contra="en"):
+                self.assertFalse(iguales,
+                    f"enviar-{idioma}.js repite la version INGLESA en "
+                    f"{iguales}. No es un hueco --hay texto-- y por eso no lo "
+                    f"ve nadie que no lea las dos lenguas.")
 
     def test_las_claves_mudadas_estan_donde_dicen_estar(self):
         """Una clave que sale del bloque i18n no deja de existir: cambia de casa.

@@ -37,7 +37,17 @@
     if (x !== undefined && x !== null) n.textContent = String(x);
     return n;
   }
+  /* TRES fuentes, y el orden importa.
+   *
+   * 1) `window.ENVT`, que trae `enviar-<idioma>.js`. Es la casa de estos
+   *    rotulos desde el 2026-09-14: estaban repetidos en tres paginas por ocho
+   *    lenguas --veinticuatro copias-- y seis de esas lenguas los tenian en
+   *    INGLES sin que nada lo dijera.
+   * 2) el bloque `#i18n` de la pagina, por si alguna los declara aun.
+   * 3) el respaldo en castellano, que es DEGRADAR, no traducir. Si se ve, es
+   *    que el guion de la lengua no llego: es un sintoma, no una solucion. */
   function T(clave, respaldo) {
+    if (window.ENVT && window.ENVT[clave]) { return window.ENVT[clave]; }
     var b = document.getElementById('i18n');
     try { return JSON.parse(b.textContent)[clave] || respaldo; }
     catch (e) { return respaldo; }
