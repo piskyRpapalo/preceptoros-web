@@ -17,7 +17,7 @@
   "pwaBoton": "Installa questo sito",
   "appBoton": "Ultima versione dell'app",
   "pwaManual": "Si installa come applicazione e funziona senza rete. Se il tuo browser non offre il pulsante, fallo a mano: su Android, menu ⋮ → «Installa app»; su iPhone, Condividi → «Aggiungi a Home».",
-  "appVacio": "Il download è in pausa per 48 ore per decisione del Sovrano. Il pulsante si accende da solo quando il contatore arriva a zero.",
+  "appVacio": "Il download è in pausa per 48 ore per decisione dell'Architetto. Il pulsante si accende da solo quando il contatore arriva a zero.",
   "appNoDisponible": "non disponibile",
   "pieTitulo": "",
   "pie": [

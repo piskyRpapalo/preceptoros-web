@@ -17,7 +17,7 @@
   "pwaBoton": "Installer ce site",
   "appBoton": "Dernière version de l'app",
   "pwaManual": "Il s'installe comme une application et fonctionne hors ligne. Si votre navigateur ne propose pas le bouton, faites-le à la main : sur Android, menu ⋮ → « Installer l'application » ; sur iPhone, Partager → « Sur l'écran d'accueil ».",
-  "appVacio": "Le téléchargement est en pause pendant 48 heures, par décision du Souverain. Le bouton s'allume tout seul quand le compteur arrive à zéro.",
+  "appVacio": "Le téléchargement est en pause pendant 48 heures, par décision de l'Architecte. Le bouton s'allume tout seul quand le compteur arrive à zéro.",
   "appNoDisponible": "indisponible",
   "pieTitulo": "",
   "pie": [

@@ -17,7 +17,7 @@
   "pwaBoton": "Install this site",
   "appBoton": "Latest app version",
   "pwaManual": "It installs as an app and works offline. If your browser does not offer the button, do it by hand: on Android, menu ⋮ → «Install app»; on iPhone, Share → «Add to Home Screen».",
-  "appVacio": "The download is paused for 48 hours by the Sovereign's decision. The button switches itself on when the counter reaches zero.",
+  "appVacio": "The download is paused for 48 hours by the Architect's decision. The button switches itself on when the counter reaches zero.",
   "appNoDisponible": "not available",
   "pieTitulo": "",
   "pie": [

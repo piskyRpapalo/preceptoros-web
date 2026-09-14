@@ -5,7 +5,7 @@
  "cerrado": {
   "foro": {
    "que": "The forum",
-   "causa": "it is the opening of the Agora and it requires named accounts. The Agora declares today «writing closed: it does not moderate yet». It needs the Sovereign's signature."
+   "causa": "it is the opening of the Agora and it requires named accounts. The Agora declares today «writing closed: it does not moderate yet». It needs the Architect's signature."
   },
   "estudios": {
    "que": "Proposing and voting on studies",
@@ -48,7 +48,7 @@
    "A report is not a vote: ten reports withdraw nothing on their own."
   ],
   "falta": [
-   "Who moderates when the Sovereign is away.",
+   "Who moderates when the Architect is away.",
    "How long a review takes before silence becomes an answer.",
    "Whether a withdrawn thread can be appealed, and to whom."
   ]

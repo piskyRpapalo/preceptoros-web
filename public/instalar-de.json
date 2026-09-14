@@ -17,7 +17,7 @@
   "pwaBoton": "Diese Seite installieren",
   "appBoton": "Neueste Version der App",
   "pwaManual": "Sie installiert sich als Anwendung und funktioniert ohne Netz. Bietet dein Browser den Knopf nicht an, mach es von Hand: unter Android Menü ⋮ → «App installieren»; auf dem iPhone Teilen → «Zum Home-Bildschirm».",
-  "appVacio": "Der Download pausiert 48 Stunden, auf Entscheidung des Souveräns. Der Knopf geht von selbst an, wenn der Zähler null erreicht.",
+  "appVacio": "Der Download pausiert 48 Stunden, auf Entscheidung des Architekten. Der Knopf geht von selbst an, wenn der Zähler null erreicht.",
   "appNoDisponible": "nicht verfügbar",
   "pieTitulo": "",
   "pie": [

@@ -5,7 +5,7 @@
  "cerrado": {
   "foro": {
    "que": "Il forum",
-   "causa": "è l'apertura dell'Agorà e richiede account con nome. L'Agorà dichiara oggi «scrittura chiusa: non modera ancora». Serve la firma del Sovrano."
+   "causa": "è l'apertura dell'Agorà e richiede account con nome. L'Agorà dichiara oggi «scrittura chiusa: non modera ancora». Serve la firma dell'Architetto."
   },
   "estudios": {
    "que": "Proporre e votare studi",
@@ -48,7 +48,7 @@
    "La segnalazione non è un voto: dieci segnalazioni non ritirano niente da sole."
   ],
   "falta": [
-   "Chi modera quando il Sovrano non c'è.",
+   "Chi modera quando l'Architetto non c'è.",
    "Quanto dura una revisione prima che il silenzio sia una risposta.",
    "Se un thread ritirato si può appellare, e davanti a chi."
   ]

@@ -70,7 +70,7 @@
   {
    "id": "foro",
    "que": "El foro",
-   "causa": "es la apertura del Agora y exige cuentas con nombre. El Agora declara hoy «escritura cerrada: todavia no modera». Necesita firma del Soberano."
+   "causa": "es la apertura del Agora y exige cuentas con nombre. El Agora declara hoy «escritura cerrada: todavia no modera». Necesita firma del Arquitecto."
   },
   {
    "id": "estudios",
@@ -133,7 +133,7 @@
    ],
    "estado": "CERRADO",
    "causa": "El endpoint de perfiles existe y acepta POST; lo que falta es la moderacion, y abrir escritura sin ella es abrir un buzon sin nadie que lo lea.",
-   "desbloquea_cuando": "el Soberano firme la politica de moderacion de abajo"
+   "desbloquea_cuando": "el Arquitecto firme la politica de moderacion de abajo"
   },
   {
    "n": 3,
@@ -175,7 +175,7 @@
     "que": "Revision humana de lo marcado y de lo reportado.",
     "automatico": false,
     "decide": "publica, retiene o retira, y SIEMPRE queda la razon escrita junto al hilo.",
-    "quien": "hoy el Soberano. Delegarlo es cambiar este campo."
+    "quien": "hoy el Arquitecto. Delegarlo es cambiar este campo."
    }
   ],
   "reglas_visibles": [
@@ -185,7 +185,7 @@
    "El reporte no es un voto: diez reportes no retiran nada por si solos."
   ],
   "falta_para_firmarla": [
-   "Quien modera cuando el Soberano no esta.",
+   "Quien modera cuando el Arquitecto no esta.",
    "Cuanto tarda una revision antes de que el silencio sea una respuesta.",
    "Si un hilo retirado se puede apelar, y ante quien."
   ]

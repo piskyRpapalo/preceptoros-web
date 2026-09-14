@@ -6,7 +6,7 @@
  "releases": "https://github.com/piskyRpapalo/PreceptorOS/releases/latest",
  "pausa_descarga": {
   "hasta": "2026-09-13T10:00:00Z",
-  "por_que": "Decision del Soberano: la app no se suelta hasta el domingo. El boton no desaparece --eso seria borrar la promesa en vez de aplazarla-- pero TAMPOCO cuenta ya las horas: el contador era para verlo funcionar y a un visitante le mete prisa por algo que no ha pedido. Se apaga y dice «no disponible», que es lo que hay.",
+  "por_que": "Decision del Arquitecto: la app no se suelta hasta el domingo. El boton no desaparece --eso seria borrar la promesa en vez de aplazarla-- pero TAMPOCO cuenta ya las horas: el contador era para verlo funcionar y a un visitante le mete prisa por algo que no ha pedido. Se apaga y dice «no disponible», que es lo que hay.",
   "cuando_pase": "El boton se enciende SOLO. No hay que tocar nada: la fecha es el interruptor, y por eso vive aqui como un hecho y no cocida en el codigo."
  }
 }

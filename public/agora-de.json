@@ -5,7 +5,7 @@
  "cerrado": {
   "foro": {
    "que": "Das Forum",
-   "causa": "es ist die Öffnung der Agora und verlangt Konten mit Namen. Die Agora erklärt heute «Schreiben geschlossen: sie moderiert noch nicht». Es braucht die Unterschrift des Souveräns."
+   "causa": "es ist die Öffnung der Agora und verlangt Konten mit Namen. Die Agora erklärt heute «Schreiben geschlossen: sie moderiert noch nicht». Es braucht die Unterschrift des Architekten."
   },
   "estudios": {
    "que": "Studien vorschlagen und abstimmen",
@@ -48,7 +48,7 @@
    "Eine Meldung ist keine Stimme: zehn Meldungen entfernen von allein gar nichts."
   ],
   "falta": [
-   "Wer moderiert, wenn der Souverän nicht da ist.",
+   "Wer moderiert, wenn der Architekt nicht da ist.",
    "Wie lange eine Prüfung dauert, bevor Schweigen eine Antwort ist.",
    "Ob ein zurückgezogener Faden angefochten werden kann, und bei wem."
   ]

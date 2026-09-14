@@ -5,7 +5,7 @@
  "cerrado": {
   "foro": {
    "que": "O fórum",
-   "causa": "é a abertura da Ágora e exige contas com nome. A Ágora declara hoje «escrita fechada: ainda não modera». Precisa da assinatura do Soberano."
+   "causa": "é a abertura da Ágora e exige contas com nome. A Ágora declara hoje «escrita fechada: ainda não modera». Precisa da assinatura do Arquiteto."
   },
   "estudios": {
    "que": "Propor e votar estudos",
@@ -48,7 +48,7 @@
    "A denúncia não é um voto: dez denúncias não retiram nada por si só."
   ],
   "falta": [
-   "Quem modera quando o Soberano não está.",
+   "Quem modera quando o Arquiteto não está.",
    "Quanto demora uma revisão antes de o silêncio ser uma resposta.",
    "Se um tópico retirado pode ser contestado, e perante quem."
   ]

@@ -5,7 +5,7 @@
  "cerrado": {
   "foro": {
    "que": "Le forum",
-   "causa": "c'est l'ouverture de l'Agora et cela exige des comptes nommés. L'Agora déclare aujourd'hui « écriture fermée : elle ne modère pas encore ». Il faut la signature du Souverain."
+   "causa": "c'est l'ouverture de l'Agora et cela exige des comptes nommés. L'Agora déclare aujourd'hui « écriture fermée : elle ne modère pas encore ». Il faut la signature de l'Architecte."
   },
   "estudios": {
    "que": "Proposer et voter des études",
@@ -48,7 +48,7 @@
    "Un signalement n'est pas un vote : dix signalements ne retirent rien à eux seuls."
   ],
   "falta": [
-   "Qui modère quand le Souverain n'est pas là.",
+   "Qui modère quand l'Architecte n'est pas là.",
    "Combien de temps prend une révision avant que le silence soit une réponse.",
    "Si un fil retiré peut faire l'objet d'un appel, et auprès de qui."
   ]
