@@ -337,7 +337,24 @@
       });
       cuerpo.appendChild(der);
 
+      /* EL CHAT Y SU JUEZ. Es la mitad que faltaba: un estudio que solo se
+         describe no se practica. Se reusa `chat()` --el mismo que la vitrina--
+         con un puente de una linea, porque un panel guarda su modelo en
+         `modelo.tag` y una linea en `ficha.servido_en_el_rack`. Dos chats
+         distintos para la misma conversacion habrian divergido. */
+      var puente = { id: hecho.id,
+                     ficha: { servido_en_el_rack: hecho.modelo && hecho.modelo.tag },
+                     modelo_base: hecho.modelo && hecho.modelo.tag };
+      var conversa = chat(puente, texto, UI || {});
       caja.appendChild(cuerpo);
+      caja.appendChild(conversa);
+      if (window.Juez) {
+        var j = window.Juez.caja(hecho, UI || {}, function () {
+          var d = conversa.querySelector('.esc-dialogo');
+          return d ? d.innerText : '';
+        });
+        if (j) caja.appendChild(j);
+      }
       fondo.appendChild(caja);
       document.body.appendChild(fondo);
       document.documentElement.classList.add('sin-scroll');

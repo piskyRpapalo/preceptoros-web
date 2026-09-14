@@ -89,11 +89,18 @@
          el del otro telon. Una clave nueva para decir lo mismo son ocho
          traducciones mas que pueden faltar en una, y ademas dos palabras
          distintas para el mismo gesto en la misma pagina. */
-      window.Escenario.abrirPanel(hecho, t, {
-        cerrar: UI.cerrar,
-        falla: T('agFalla', 'Falla:'),
-        loreFecha: T('agMedido', 'Medido')
-      }, sello);
+      /* El UI entero del taller, no tres claves sueltas: el telon monta ahora
+         el chat y el juez, y esos rotulos ya viven ahi traducidos. Elegirlos a
+         mano seria acordarse de añadir uno cada vez que crezca el telon. */
+      var ui = {};
+      Object.keys(UI).forEach(function (k) { ui[k] = UI[k]; });
+      ui.falla = T('agFalla', 'Falla:');
+      ui.loreFecha = T('agMedido', 'Medido');
+      ui.juezTitulo = T('ksJuezTitulo', 'Juez coordinador');
+      ui.juezPedir = T('ksJuezPedir', 'Pedir veredicto');
+      ui.juezSinTurnos = T('ksJuezSinTurnos', 'NO_DATA — todavía no hay turnos que juzgar.');
+      ui.juezUnaCapa = T('ksJuezUnaCapa', 'NO_DATA');
+      window.Escenario.abrirPanel(hecho, t, ui, sello);
     }
     caja.addEventListener('click', entrar);
     caja.addEventListener('keydown', function (e) {
