@@ -83,10 +83,7 @@
     var art = el('article', 'panel linea');
 
     var cab = el('div', 'linea-cab');
-    var h3 = el('h3', null, null);
-    var boton = el('button', 'linea-entrar', texto.nombre || bloque.id);
-    boton.type = 'button';
-    h3.appendChild(boton);
+    var h3 = el('h3', 'linea-entrar', texto.nombre || bloque.id);
     cab.appendChild(h3);
     cab.appendChild(sello(bloque.estado));
     art.appendChild(cab);
@@ -98,9 +95,26 @@
        asi que se nombra la ausencia y su causa. */
     if (UI.aportes) art.appendChild(el('p', 'sin-aportes', UI.aportes));
 
-    boton.addEventListener('click', function () {
+    /* EL PANEL ENTERO ES EL LANZADOR · 2026-09-14, segunda vuelta.
+       Aqui habia un `<button>` con el titulo dentro y el enlace estirado
+       (`::after{inset:0}`) por encima. Se arreglo una vez con `z-index:2`
+       (A24) y AUN ASI solo abria pulsando el nombre: el pseudoelemento
+       compite con cada hermano que se pinte despues, y basta uno con posicion
+       propia para taparlo otra vez. Un truco que hay que volver a defender
+       cada vez que se añade un elemento no es una solucion: es una deuda.
+       El Killswitch se resolvio sin el --el panel ES el boton-- y funciono a
+       la primera. Se hace igual aqui, y el titulo vuelve a ser texto: un
+       boton dentro de otro boton no lo sabe leer un lector de pantalla. */
+    art.tabIndex = 0;
+    art.setAttribute('role', 'button');
+    art.setAttribute('aria-label', texto.nombre || bloque.id);
+    function entrar() {
       if (!window.Escenario) return;         // sin escenario, la tarjeta no miente
       window.Escenario.abrir(bloque, texto, UI, REGISTRO, sello(bloque.estado));
+    }
+    art.addEventListener('click', entrar);
+    art.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); entrar(); }
     });
     return art;
   }

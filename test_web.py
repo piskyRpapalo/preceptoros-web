@@ -786,24 +786,28 @@ class Estructura(unittest.TestCase):
         codigo = re.sub(r"(?m)//.*$", "", codigo)
         self.assertNotIn("fetch(", codigo, "el mini-chat sale por red")
 
-        # LA LEY CAMBIO EL 2026-09-14, y el guardian con ella.
+        # LA LEY CAMBIO DOS VECES EL MISMO DIA, y las dos con motivo.
         #
-        # Aqui decia `assertNotIn("Bronce", mc)`: la Plaza NO podia mandar nada
-        # al rack porque su texto no sale de una IA. El Soberano lo reviso: la
-        # Plaza es un terminal LOCAL QUE FIRMA, y sin firma no hay dato. Lo que
-        # se prohibe ya no es que viaje: es que viaje SOLO.
+        # Nacio como `assertNotIn("Bronce", mc)`: la Plaza no podia mandar nada
+        # al rack porque su texto no sale de una IA. Por la mañana se revirtio
+        # --«sin firma no hay dato»-- y la Plaza empezo a firmar cada linea.
+        # Por la tarde el Soberano lo corrigio, y la correccion es la buena:
+        # ESTO NO ES UNA FUENTE DE DATOS. Es donde la gente habla entre si.
+        # Firmar una conversacion de plaza la convierte en material de
+        # entrenamiento sin que nadie lo pida, y encima le exige identidad a
+        # quien solo queria saludar.
         #
-        # Asi que el `fetch` sigue prohibido --la puerta de red es de
-        # `enviar.js`, y una sola construccion para los dos caminos-- y ahora se
-        # EXIGE lo contrario de antes: que firme y que guarde.
-        self.assertIn("Identity.firmar", codigo,
-                      "la Plaza guarda lineas sin firmarlas: sin firma no hay dato")
-        self.assertIn("Bronce.guardar", codigo,
-                      "la Plaza firma y no guarda: la linea no llegaria al rack")
-        self.assertIn("window.Enviar.mandar", codigo,
-                      "la Plaza no tiene puerta al rack")
-        self.assertNotIn("sessionStorage", codigo,
-                         "una linea FIRMADA no se tira al cerrar la pestaña")
+        # Queda escrito porque el guardian solo dice QUE se prohibe, y la
+        # segunda vuelta enseña POR QUE: lo que separa a la Plaza de las
+        # correcciones no es el canal, es que alli hay una respuesta de un
+        # modelo que juzgar y aqui hay personas.
+        self.assertNotIn("Bronce", codigo,
+                         "la Plaza firma lo que la gente escribe: eso es "
+                         "material de entrenamiento que nadie ha ofrecido")
+        self.assertNotIn("Identity.firmar", codigo,
+                         "la Plaza pide firma para saludar")
+        self.assertNotIn("Identity.crear", codigo,
+                         "la Plaza le exige una identidad a quien pasaba por ahi")
 
     def test_debajo_del_cabecero_va_la_ACCION(self):
         """La regla que el Soberano firmo el 2026-09-14, en las dos paginas.

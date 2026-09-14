@@ -40,12 +40,13 @@
    un pseudoelemento. Asi el clic vale en cualquier punto --que es lo que se
    pidio-- sin meter un `<h3>` dentro de un `<button>`, que no es HTML valido; y
    el nombre accesible del mando sigue siendo el de la linea, no «boton». */
-.linea-entrar{background:none;border:0;padding:0;margin:0;cursor:pointer;
-  font:inherit;color:var(--violeta-texto);text-align:left}
-.linea-entrar::after{content:"";position:absolute;inset:0;z-index:2;
-  border-radius:inherit}
-.linea-entrar:hover,.linea:hover .linea-entrar{color:var(--indigo)}
-.linea-entrar:focus-visible{outline:2px solid var(--violeta);outline-offset:3px}
+.linea-entrar{margin:0;font:inherit;font-size:1.05rem;color:var(--tinta)}
+/* El foco y el hover viven en el PANEL, que es quien abre desde el
+   2026-09-14. El enlace estirado que habia aqui se retiro: competia con
+   cada hermano nuevo y habia que volver a defenderlo (ver taller.js). */
+.linea[role=button]{cursor:pointer}
+.linea[role=button]:hover .linea-entrar{color:var(--indigo)}
+.linea[role=button]:focus-visible{outline:2px solid var(--violeta);outline-offset:3px}
 
 /* El estado, con su palabra. El color acompaña; no informa solo. */
 .sello{font:600 .68rem/1.5 var(--mono);letter-spacing:.08em;text-transform:uppercase;
