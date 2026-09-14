@@ -3548,6 +3548,95 @@ class Traducciones(unittest.TestCase):
                     f"{iguales}. No es un hueco --hay texto-- y por eso no lo "
                     f"ve nadie que no lea las dos lenguas.")
 
+    # Frases que SON iguales en varias lenguas y deben serlo. Se nombran una a
+    # una: una categoria («los nombres de fichero») dejaria pasar la siguiente
+    # frase que se cuele por parecerse a la categoria.
+    MISMA_FRASE_A_PROPOSITO = {
+        ("onboarding.html", "s3pc"):
+            "«Linux o macOS · install.sh» son dos sistemas operativos y un "
+            "nombre de fichero. La `o` coincide en varias lenguas por "
+            "casualidad, y traducir el nombre del script seria un error.",
+    }
+
+    def test_NINGUNA_pagina_repite_LA_PROSA_DE_OTRA_LENGUA(self):
+        """El hueco que ni el respaldo ni las claves ausentes podian ver.
+
+        Los dos guardianes que ya habia preguntan por la EXISTENCIA: que la
+        clave este, que no falte. Ninguno pregunta si lo que hay dice algo en
+        la lengua de la pagina. Y el 2026-09-14 aparecieron las dos formas del
+        mismo fallo, en direcciones opuestas:
+
+          · `envBoton` y sus siete hermanas decian «Send to the rack» en fr,
+            pt, it, de, ru y el. Texto habia, y bien escrito: en ingles.
+          · Las paginas PORTUGUESAS del Libro de Pruebas, la Comunidad, el
+            Provador y sobre todo el Onboarding --41 claves de 41-- eran el
+            castellano copiado tal cual. `pt/onboarding.html` llegaba a
+            declarar `lang: "es"` dentro de su propio bloque.
+
+        Por eso esto compara CADA lengua contra CADA otra y no contra una de
+        referencia: anclarlo en el castellano habria visto el portugues y no
+        el ingles; anclarlo en el ingles, al reves.
+
+        El umbral --cuatro palabras y 25 caracteres-- deja fuera los cognados
+        de verdad: «Copiar para», «Modelo natural», «motor:» son iguales en
+        castellano y portugues porque asi se dice. Lo que pasa de ahi ya no
+        coincide por casualidad.
+        """
+        import collections
+        paginas = sorted({p.name for p in (PUBLICO / "es").glob("*.html")})
+        for pagina in paginas:
+            bloques = {}
+            for idioma in IDIOMAS:
+                f = PUBLICO / idioma / pagina
+                if not f.is_file():
+                    continue
+                m = re.search(r'id="i18n">(.*?)</script>',
+                              f.read_text(encoding="utf-8"), re.S)
+                if m:
+                    bloques[idioma] = json.loads(m.group(1))
+            if len(bloques) < 2:
+                continue
+            claves = set().union(*[set(d) for d in bloques.values()])
+            for clave in sorted(claves):
+                if (pagina, clave) in self.MISMA_FRASE_A_PROPOSITO:
+                    continue
+                por_texto = collections.defaultdict(list)
+                for idioma, datos in bloques.items():
+                    v = datos.get(clave)
+                    if isinstance(v, str) and len(v.split()) >= 4 and len(v) >= 25:
+                        por_texto[v].append(idioma)
+                repetidas = {v: ls for v, ls in por_texto.items() if len(ls) > 1}
+                with self.subTest(pagina=pagina, clave=clave):
+                    self.assertFalse(repetidas,
+                        f"«{clave}» dice LO MISMO en "
+                        f"{sorted(sum(repetidas.values(), []))}: "
+                        + (list(repetidas)[0][:70] if repetidas else "")
+                        + " — o falta traducir, o es una coincidencia "
+                          "legitima y va nombrada en MISMA_FRASE_A_PROPOSITO")
+
+    def test_cada_pagina_declara_SU_lengua_en_el_bloque(self):
+        """`lang` dentro del bloque no es decorativo: se lo lleva el modelo.
+
+        `pt/onboarding.html` declaraba `lang: "es"`. La pagina se veia
+        portuguesa en el navegador --`<html lang="pt">` estaba bien-- y por
+        dentro se presentaba como castellana. Un dato que solo se lee desde
+        JavaScript no tiene sintoma visual: por eso hace falta esta prueba y
+        no basta con mirar la pagina.
+        """
+        for idioma in IDIOMAS:
+            for f in sorted((PUBLICO / idioma).glob("*.html")):
+                m = re.search(r'id="i18n">(.*?)</script>',
+                              f.read_text(encoding="utf-8"), re.S)
+                if not m:
+                    continue
+                datos = json.loads(m.group(1))
+                if "lang" not in datos:
+                    continue
+                with self.subTest(pagina=f"{idioma}/{f.name}"):
+                    self.assertEqual(datos["lang"], idioma,
+                        f"{idioma}/{f.name} declara lang={datos['lang']!r} "
+                        f"dentro de su bloque i18n")
+
     def test_las_claves_mudadas_estan_donde_dicen_estar(self):
         """Una clave que sale del bloque i18n no deja de existir: cambia de casa.
 
