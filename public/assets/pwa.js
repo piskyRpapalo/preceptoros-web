@@ -97,41 +97,23 @@
     return navigator.standalone === false;
   }
 
-  function conecta() {
-    var boton = document.querySelector('.cab-boton.empezar');
-    var T = textos();
-    if (!boton || !T || instalada()) return;
+  /* EL CABEZAL YA NO SE SECUESTRA. Orden del Soberano, 2026-09-14.
 
-    if (guardado) {
-      boton.textContent = T.cabInstala;
-      boton.onclick = function (ev) {
-        ev.preventDefault();
-        guardado.prompt();
-        // No se comprueba el resultado: si dice que no, el enlace de siempre
-        // sigue ahi y no hay nada que anunciar. Preguntar dos veces molesta.
-        guardado = null;
-      };
-      return;
-    }
+     Aqui vivia un `conecta()` que le cambiaba el `onclick` al boton INSTALAR de
+     la cabecera: `preventDefault()` y `prompt()` del navegador. O sea que el
+     enlace decia ir a `instalar.html` y no iba -- y en algunos PC el emergente
+     tapa la pagina, asi que quien queria LEER como se instala no llegaba nunca
+     a la pagina que lo cuenta.
 
-    if (esIos()) {
-      boton.textContent = T.cabInstala;
-      boton.onclick = function (ev) {
-        ev.preventDefault();
-        var ya = document.getElementById('comoInstalar');
-        if (ya) { ya.remove(); return; }
-        var p = document.createElement('p');
-        p.id = 'comoInstalar';
-        p.className = 'como-instalar';
-        p.textContent = T.cabInstalaIos;
-        boton.parentNode.insertBefore(p, boton.nextSibling);
-      };
-    }
-  }
+     Un enlace que no lleva a donde dice es la peor clase de boton: se aprende
+     mal una vez y se desconfia de todos los demas. La navegacion manda desde el
+     cabezal, y punto.
 
-  // El cabezal lo dibuja `hub.js`, que corre antes que este fichero; aun asi se
-  // reintenta en `load` por si el evento del navegador llega mas tarde que el
-  // marcado, que es el orden normal.
-  addEventListener('load', conecta);
+     El prompt no se pierde: vive donde tiene sentido, en el panel «Instalar
+     web» de `instalar.html`, que lo arma `instalar-descargas.js` con su propio
+     `beforeinstallprompt` y su respaldo manual para los navegadores que no lo
+     disparan. Ahi el gesto es el que la persona pidio. */
+
+
   conecta();
 })();

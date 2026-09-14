@@ -1,0 +1,30 @@
+{
+ "esquema": 1,
+ "idioma": "en",
+ "nota": "Los textos de la pagina de instalar en esta lengua. Salieron de `instalar.json` el 2026-09-14, cuando el pie se mudo del HTML aqui y el fichero de hechos paso de 14.667 a 23.703 B contra un tope de 16.384. Mismo corte que el taller, los paneles y el Agora.",
+ "textos": {
+  "pwaTitulo": "The site, installed",
+  "pwaCuerpo": "This very page installs as an app and works without a connection. It downloads no model: it is the door, not the workshop.",
+  "pwaComo": "On Android or the desktop, the browser offers «Install». On iPhone: Share, then «Add to Home Screen».",
+  "mdTitulo": "The models",
+  "mdMinimo": "The minimum for a phone",
+  "mdNoServido": "Not served publicly. Cause:",
+  "mdComoTraer": "We do not host the file. With Ollama installed:",
+  "mdSinTelefono": "NO_DATA — nobody has measured this model on an 8 GB phone from this rack. What is measured is the file size, which is below.",
+  "mdNoPublicados": "more models on the node with no public entry, so they do not appear here.",
+  "mdVentana": "context",
+  "mdFallo": "NO_DATA — the model catalogue could not be read:",
+  "pwaBoton": "Install this site",
+  "appBoton": "Latest app version",
+  "pwaManual": "It installs as an app and works offline. If your browser does not offer the button, do it by hand: on Android, menu ⋮ → «Install app»; on iPhone, Share → «Add to Home Screen».",
+  "appVacio": "The download is paused for 48 hours by the Sovereign's decision. The button switches itself on when the counter reaches zero.",
+  "appNoDisponible": "not available",
+  "pieTitulo": "",
+  "pie": [
+   "<strong>On load it asks nobody for anything.</strong> The GitHub links are links: they make no request until <em>you</em> press them. A link is not a loaded resource, and that difference is exactly the one that matters here.",
+   "<strong>The commands are the repository's, not a version of our own.</strong> They come from <code>bin/instalar-pc</code>, <code>bin/instalar-android</code> and <code>INSTALACION_PC.md</code>, checked one by one against the public repository on 2026-09-13.",
+   "<strong>The NO_DATA below is measured.</strong> The install scripts <strong>exist</strong>: v1.3, published 2026-08-31, with 13 files. What does not exist is the APK — zero in that release. That is the result of asking, not caution.",
+   "<strong>Nothing you install needs this website.</strong> If this domain disappears tomorrow, the commands still work and your memory is still yours. That is the whole idea."
+  ]
+ }
+}

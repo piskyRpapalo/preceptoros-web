@@ -62,14 +62,42 @@
     return f ? f.valor : null;
   }
 
-  fetch('/instalar.json', { cache: 'no-store' })
-    .then(function (r) { return r.json(); })
-    .then(function (d) {
-      var T = (d.textos || {})[lang] || (d.textos || {}).es;
+  /* DOS FICHEROS desde el 2026-09-14: los hechos en `instalar.json` --releases,
+     pausa, medida-- y el texto en `instalar-<idioma>.json`. Se partieron cuando
+     el pie honesto se mudo del HTML al JSON: con las ocho lenguas dentro, el
+     fichero de hechos pasaba de 23 KB contra un tope de 16.384.
+
+     Respaldo por FICHERO entero al castellano, como en el resto de la casa: sin
+     su lengua se ve el original completo, no media pagina. */
+  Promise.all([
+    fetch('/instalar.json', { cache: 'no-store' }).then(function (r) { return r.json(); }),
+    fetch('/instalar-' + lang + '.json').then(function (r) {
+      return r.ok ? r.json() : null;
+    }).catch(function () { return null; })
+      .then(function (t) {
+        return t || fetch('/instalar-es.json').then(function (r) { return r.json(); });
+      })
+  ])
+    .then(function (par) {
+      var d = par[0];
+      var T = (par[1] || {}).textos || {};
       if (pwa) {
-        pwa.appendChild(el('h2', null, T.pwaTitulo));
-        pwa.appendChild(el('p', null, T.pwaCuerpo));
-        pwa.appendChild(el('p', 'tenue', T.pwaComo));
+        /* DOS PANELES Y NO UNA LISTA. Orden del Soberano, 2026-09-14: instalar
+           la WEB y instalar la APP son dos decisiones distintas, y puestas en
+           corrido se leen como dos botones de lo mismo. Cada una en su panel,
+           con su titulo y su boton dentro, y el de la web destacado porque es
+           el que funciona hoy en cualquier navegador.
+
+           Los dos paneles salen de `sistema.css`, la capa comun -- no de una
+           clase nueva de esta pagina. */
+        var dos = el('div', 'dos-puertas');
+        var pWeb = el('div', 'panel-destacado');
+        var pApp = el('div', 'panel-violeta');
+        dos.appendChild(pWeb); dos.appendChild(pApp);
+        pwa.appendChild(dos);
+        pWeb.appendChild(el('h2', null, T.pwaTitulo));
+        pWeb.appendChild(el('p', null, T.pwaCuerpo));
+        pWeb.appendChild(el('p', 'tenue', T.pwaComo));
 
         /* EL BOTON DE INSTALAR LA WEB, con el prompt del navegador si lo hay y
            un emergente si no. `beforeinstallprompt` solo existe en Chromium y
@@ -134,10 +162,36 @@
           ba = el('a', 'boton', T.appBoton);
           ba.href = d.releases; ba.rel = 'noopener';
         }
-        var fila = el('div', 'fila');
-        fila.appendChild(bp); fila.appendChild(ba);
-        pwa.appendChild(fila);
-        pwa.appendChild(el('p', 'nodata', 'NO_DATA · ' + T.appVacio));
+        bp.className = 'btn-primario';
+        ba.className = ba.tagName === 'A' ? 'btn-secundario' : 'btn-secundario';
+        var filaWeb = el('div', 'fila'); filaWeb.appendChild(bp);
+        pWeb.appendChild(filaWeb);
+        /* El panel de la app lleva su propio titulo: sin el, el boton de abajo
+           parece el segundo boton del panel de arriba. */
+        pApp.appendChild(el('h2', null, T.appBoton));
+        var filaApp = el('div', 'fila'); filaApp.appendChild(ba);
+        pApp.appendChild(filaApp);
+        pApp.appendChild(el('p', 'nodata', 'NO_DATA · ' + T.appVacio));
+      }
+      /* EL PIE HONESTO, pintado desde el texto. Vivia escrito a mano dentro
+         del HTML de las ocho paginas -- en griego, 1.884 B de un fichero que
+         cerraba a 29 B de su tope. Es la misma regla que ya tenia esta pagina:
+         sus textos viven en el JSON, por eso no lleva bloque i18n. */
+      var pie = document.getElementById('pie-instalar');
+      if (pie && T.pie && T.pie.length) {
+        var det = document.createElement('details');
+        det.className = 'pliego';
+        var sum = document.createElement('summary');
+        sum.textContent = T.pieTitulo || '';
+        det.appendChild(sum);
+        var ul = document.createElement('ul');
+        T.pie.forEach(function (x) {
+          var li = document.createElement('li');
+          li.innerHTML = x;      // el texto trae <strong>/<em> de su origen
+          ul.appendChild(li);
+        });
+        det.appendChild(ul);
+        pie.appendChild(det);
       }
       if (!caja) return;
       caja.appendChild(el('h2', null, T.mdTitulo));

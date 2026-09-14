@@ -1,0 +1,30 @@
+{
+ "esquema": 1,
+ "idioma": "fr",
+ "nota": "Los textos de la pagina de instalar en esta lengua. Salieron de `instalar.json` el 2026-09-14, cuando el pie se mudo del HTML aqui y el fichero de hechos paso de 14.667 a 23.703 B contra un tope de 16.384. Mismo corte que el taller, los paneles y el Agora.",
+ "textos": {
+  "pwaTitulo": "Le site, installé",
+  "pwaCuerpo": "Cette page même s'installe comme application et fonctionne sans réseau. Elle ne télécharge aucun modèle : c'est la porte, pas l'atelier.",
+  "pwaComo": "Sur Android ou sur ordinateur, le navigateur propose « Installer ». Sur iPhone : Partager, puis « Sur l'écran d'accueil ».",
+  "mdTitulo": "Les modèles",
+  "mdMinimo": "Le minimum pour un téléphone",
+  "mdNoServido": "Non servi publiquement. Cause :",
+  "mdComoTraer": "Nous n'hébergeons pas le fichier. Avec Ollama installé :",
+  "mdSinTelefono": "NO_DATA — personne n'a mesuré ce modèle sur un téléphone de 8 Go depuis ce rack. Ce qui est mesuré, c'est la taille du fichier, ci-dessous.",
+  "mdNoPublicados": "autres modèles sur le nœud sans fiche publique, donc absents ici.",
+  "mdVentana": "contexte",
+  "mdFallo": "NO_DATA — le catalogue de modèles n'a pas pu être lu :",
+  "pwaBoton": "Installer ce site",
+  "appBoton": "Dernière version de l'app",
+  "pwaManual": "Il s'installe comme une application et fonctionne hors ligne. Si votre navigateur ne propose pas le bouton, faites-le à la main : sur Android, menu ⋮ → « Installer l'application » ; sur iPhone, Partager → « Sur l'écran d'accueil ».",
+  "appVacio": "Le téléchargement est en pause pendant 48 heures, par décision du Souverain. Le bouton s'allume tout seul quand le compteur arrive à zéro.",
+  "appNoDisponible": "indisponible",
+  "pieTitulo": "",
+  "pie": [
+   "<strong>Au chargement, elle ne demande rien à personne.</strong> Les liens vers GitHub sont des liens : ils ne font aucune requête tant que <em>tu</em> n'appuies pas.",
+   "<strong>Les commandes sont celles du dépôt, pas une version à nous.</strong> Elles viennent de <code>bin/instalar-pc</code>, <code>bin/instalar-android</code> et <code>INSTALACION_PC.md</code>, vérifiées une par une contre le dépôt public le 2026-09-13.",
+   "<strong>Le NO_DATA ci-dessous est mesuré.</strong> Les scripts d'installation <strong>existent</strong> : v1.3, publiée le 2026-08-31, 13 fichiers. Ce qui n'existe pas, c'est l'APK — zéro dans cette release. C'est le résultat d'avoir demandé, pas de la prudence.",
+   "<strong>Rien de ce que tu installes n'a besoin de ce site.</strong> Si ce domaine disparaît demain, les commandes marchent toujours et ta mémoire est toujours à toi. C'est toute l'idée."
+  ]
+ }
+}

@@ -1,0 +1,133 @@
+/* preceptoros.org · EL SISTEMA VISUAL COMUN.
+
+   Una sola capa para lo que se repite en las cinco paginas: el panel, el modal,
+   la X de cierre, las pestañas y los botones. Antes cada pagina lo resolvia en
+   su propia hoja, y el resultado medido era que la misma cosa se veia de tres
+   maneras -- tres componentes donde hay uno.
+
+   VIVE APARTE DE `canon.css` POR ARITMETICA, no por gusto: aquella cierra en
+   14.116 B de un tope de 16.384, y esto son dos kilobytes largos. La casa parte
+   por asunto --`chat.css`, `taller.css`, `agora.css`-- y este es otro asunto:
+   los muebles, no una pantalla.
+
+   NO INVENTA COLORES. Todo sale de los tokens de `base.css` y `tema.css`, que
+   ya tienen su par claro/oscuro. La unica excepcion es el Killswitch, y esta
+   escrita abajo con su motivo. */
+
+/* --- EL PANEL, en sus tres pesos ------------------------------------------
+   El respaldo OPACO va declarado antes del cristal: en un navegador sin
+   `backdrop-filter` esto es lo que se ve, y tiene que poder leerse solo. */
+.panel-violeta,.panel-destacado{background:var(--marmol-claro);
+  border:1px solid var(--bronce);border-radius:var(--radius);
+  box-shadow:var(--depth);padding:1.05rem 1.15rem}
+.panel-destacado{border-color:var(--violeta)}
+
+@supports (backdrop-filter:blur(2px)){
+  .panel-violeta,.panel-destacado{background:var(--glass);backdrop-filter:blur(14px)}
+}
+
+/* --- LOS BOTONES, tres y no mas ------------------------------------------- */
+.btn-primario,.btn-secundario,.btn-peligro{font:inherit;cursor:pointer;
+  border-radius:var(--radius);padding:.55rem .9rem;border:1px solid transparent;
+  line-height:1.2}
+.btn-primario{background:var(--violeta);color:#fff;border-color:var(--violeta)}
+.btn-secundario{background:transparent;color:var(--violeta-texto);
+  border-color:var(--bronce)}
+.btn-primario:focus-visible,.btn-secundario:focus-visible,
+.btn-peligro:focus-visible,.cierre-x:focus-visible,.pestana:focus-visible{
+  outline:2px solid var(--violeta);outline-offset:2px}
+
+/* --- LAS PESTAÑAS ---------------------------------------------------------
+   El estado NO se dice solo con color: la activa lleva `aria-selected` y ademas
+   un canto abajo. Un tono mas claro no lo distingue quien no distingue ese tono. */
+.pestanas{display:flex;flex-wrap:wrap;gap:.4rem;margin:0 0 .9rem;
+  border-bottom:1px solid var(--bronce);padding-bottom:.4rem}
+.pestana{font:600 .78rem/1.3 var(--mono);letter-spacing:.05em;
+  text-transform:uppercase;background:none;border:1px solid transparent;
+  border-radius:var(--radius);padding:.45rem .8rem;cursor:pointer;
+  color:var(--tenue)}
+.pestana:hover{color:var(--tinta)}
+.pestana[aria-selected="true"]{color:var(--tinta);border-color:var(--bronce);
+  background:var(--velo-campo);box-shadow:inset 0 -2px 0 0 var(--violeta)}
+
+/* --- LA X, UNA SOLA EN TODA LA CASA ---------------------------------------
+   Estaba escrita tres veces con tres tamaños. Una ventana que se cierra de tres
+   formas distintas obliga a aprender tres veces el mismo gesto. */
+.cierre-x{background:none;border:1px solid var(--bronce);color:var(--tinta);
+  border-radius:var(--radius);font-size:1.1rem;line-height:1;cursor:pointer;
+  padding:.25rem .6rem}
+.cierre-x:hover{border-color:var(--violeta);color:var(--violeta-texto)}
+
+/* --- EL MODAL COMUN ------------------------------------------------------- */
+.modal-violeta{position:fixed;inset:0;z-index:60;display:flex;
+  align-items:center;justify-content:center;padding:clamp(.5rem,2vw,1.6rem);
+  background:rgba(18,14,26,.72)}
+.modal-caja{background:var(--marmol-claro);width:min(100%,72rem);max-height:100%;
+  overflow:auto;border:1px solid var(--bronce);border-radius:var(--radius);
+  box-shadow:var(--depth);padding:1.1rem 1.2rem 1.3rem}
+@supports (backdrop-filter:blur(2px)){
+  .modal-caja{background:var(--glass-solid);backdrop-filter:blur(14px)}
+}
+
+/* --- EL PANEL DE PELIGRO · la unica excepcion al violeta -------------------
+   Survival Killswitch no es un proyecto mas: es el que se juega sin red y con
+   la bateria bajando. Romper la paleta es la forma mas barata de decir eso sin
+   una linea de texto -- y es UNA excepcion, nombrada, no una segunda paleta.
+
+   Los colores van en literal y no en tokens a proposito: un token implica que
+   se puede reusar, y esto no se reusa. El cian sobre negro da 12,9:1 medido; el
+   rojo se queda en el canto y en los titulos grandes, nunca en parrafos. */
+.panel-peligro{background:#0a0a0f;color:#e6f7ff;border:1px solid #ff2d55;
+  border-radius:var(--radius);padding:1.05rem 1.15rem;
+  box-shadow:0 0 0 1px rgba(0,240,255,.25), var(--depth)}
+.panel-peligro h3,.panel-peligro h4{color:#00f0ff;margin:0 0 .4rem}
+.panel-peligro .ks-sello{display:inline-block;font:600 .68rem/1.5 var(--mono);
+  letter-spacing:.1em;text-transform:uppercase;color:#0a0a0f;background:#ff2d55;
+  border-radius:calc(var(--radius) / 2);padding:.12rem .5rem}
+.panel-peligro a{color:#00f0ff}
+.panel-peligro .ks-tenue{color:#9fb8c4}
+/* El hueco del arte, listo y declarado: el Soberano pone la lamina cuando la
+   tenga. Sin fichero no se pinta nada -- un fondo roto es peor que ninguno. */
+.panel-peligro[data-fondo]{background-size:cover;background-position:center}
+.btn-peligro{background:#ff2d55;color:#0a0a0f;border-color:#ff2d55;font-weight:600}
+.btn-peligro:hover{background:#00f0ff;border-color:#00f0ff}
+
+/* --- EL MINI-CHAT de Comunidad --------------------------------------------
+   Abajo a la derecha en pantalla ancha, a pantalla completa en el telefono. Se
+   MINIMIZA, no se cierra: cerrar pierde el hilo, y el hilo es lo unico que
+   tiene. */
+.mini-chat{position:fixed;right:1rem;bottom:1rem;z-index:50;
+  width:min(26rem,calc(100vw - 2rem));max-height:min(60vh,32rem);
+  display:flex;flex-direction:column;
+  background:var(--marmol-claro);border:1px solid var(--bronce);
+  border-radius:var(--radius);box-shadow:var(--depth);overflow:hidden}
+@supports (backdrop-filter:blur(2px)){
+  .mini-chat{background:var(--glass-solid);backdrop-filter:blur(14px)}
+}
+.mini-chat-cab{display:flex;align-items:center;gap:.5rem;
+  padding:.5rem .7rem;border-bottom:1px solid var(--bronce);
+  font:600 .72rem/1.3 var(--mono);letter-spacing:.06em;text-transform:uppercase;
+  color:var(--tenue)}
+.mini-chat-cab h3{margin:0;font:inherit;flex:1 1 auto}
+.mini-chat-cuerpo{flex:1 1 auto;overflow:auto;padding:.7rem;
+  font-family:var(--mono);font-size:.8rem;line-height:1.5}
+.mini-chat[data-min="1"] .mini-chat-cuerpo,
+.mini-chat[data-min="1"] .mini-chat-pie{display:none}
+.mini-chat-pie{display:flex;gap:.4rem;padding:.5rem .7rem;
+  border-top:1px solid var(--bronce)}
+.mini-chat-pie input{flex:1 1 auto;min-width:0;font:inherit;font-size:.85rem;
+  padding:.4rem .5rem;color:var(--tinta);background:var(--velo-campo);
+  border:1px solid var(--tenue);border-radius:var(--radius)}
+.mini-linea{margin:0 0 .5rem;overflow-wrap:anywhere}
+.mini-linea b{font-weight:700}
+
+@media (max-width:34rem){
+  .mini-chat{right:0;left:0;bottom:0;width:auto;max-height:70vh;
+    border-radius:var(--radius) var(--radius) 0 0}
+}
+
+/* Las dos puertas de instalar: una al lado de otra donde cabe, apiladas cuando
+   no. No es una rejilla de tarjetas -- son dos, y se comparan mirando. */
+.dos-puertas{display:grid;gap:1rem;grid-template-columns:1fr;margin-bottom:1.2rem}
+@media (min-width:46rem){ .dos-puertas{grid-template-columns:1fr 1fr} }
+.dos-puertas h2{margin-top:0;font-size:1.1rem}

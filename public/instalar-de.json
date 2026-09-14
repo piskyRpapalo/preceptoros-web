@@ -1,0 +1,30 @@
+{
+ "esquema": 1,
+ "idioma": "de",
+ "nota": "Los textos de la pagina de instalar en esta lengua. Salieron de `instalar.json` el 2026-09-14, cuando el pie se mudo del HTML aqui y el fichero de hechos paso de 14.667 a 23.703 B contra un tope de 16.384. Mismo corte que el taller, los paneles y el Agora.",
+ "textos": {
+  "pwaTitulo": "Die Seite, installiert",
+  "pwaCuerpo": "Genau diese Seite installiert sich als Anwendung und funktioniert ohne Netz. Sie lädt kein Modell: sie ist die Tür, nicht die Werkstatt.",
+  "pwaComo": "Unter Android oder am Schreibtisch bietet der Browser «Installieren» an. Auf dem iPhone: Teilen, dann «Zum Home-Bildschirm».",
+  "mdTitulo": "Die Modelle",
+  "mdMinimo": "Das Minimum für ein Telefon",
+  "mdNoServido": "Nicht öffentlich bereitgestellt. Ursache:",
+  "mdComoTraer": "Wir hosten die Datei nicht. Mit installiertem Ollama:",
+  "mdSinTelefono": "NO_DATA — niemand hat dieses Modell von diesem Rack aus auf einem 8-GB-Telefon gemessen. Gemessen ist die Dateigröße, die unten steht.",
+  "mdNoPublicados": "weitere Modelle auf dem Knoten ohne öffentlichen Eintrag, sie erscheinen hier also nicht.",
+  "mdVentana": "Kontext",
+  "mdFallo": "NO_DATA — der Modellkatalog konnte nicht gelesen werden:",
+  "pwaBoton": "Diese Seite installieren",
+  "appBoton": "Neueste Version der App",
+  "pwaManual": "Sie installiert sich als Anwendung und funktioniert ohne Netz. Bietet dein Browser den Knopf nicht an, mach es von Hand: unter Android Menü ⋮ → «App installieren»; auf dem iPhone Teilen → «Zum Home-Bildschirm».",
+  "appVacio": "Der Download pausiert 48 Stunden, auf Entscheidung des Souveräns. Der Knopf geht von selbst an, wenn der Zähler null erreicht.",
+  "appNoDisponible": "nicht verfügbar",
+  "pieTitulo": "",
+  "pie": [
+   "<strong>Beim Laden fragt sie niemanden etwas.</strong> Die Links zu GitHub sind Links: sie stellen keine Anfrage, bis <em>du</em> sie drückst. Ein Link ist keine geladene Ressource, und genau dieser Unterschied zählt hier.",
+   "<strong>Die Befehle sind die des Repositorys, keine eigene Fassung.</strong> Sie stammen aus <code>bin/instalar-pc</code>, <code>bin/instalar-android</code> und <code>INSTALACION_PC.md</code>, einzeln geprüft gegen das öffentliche Repository am 2026-09-13.",
+   "<strong>Das NO_DATA unten ist gemessen.</strong> Die Installationsskripte <strong>existieren</strong>: v1.3, veröffentlicht am 2026-08-31, mit 13 Dateien. Was nicht existiert, ist das APK — null in diesem Release. Das ist das Ergebnis des Nachfragens, keine Vorsicht.",
+   "<strong>Nichts von dem, was du installierst, braucht diese Seite.</strong> Verschwindet morgen diese Domain, funktionieren die Befehle weiter und dein Gedächtnis bleibt deines. Das ist die ganze Idee."
+  ]
+ }
+}

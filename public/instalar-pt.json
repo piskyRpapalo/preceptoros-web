@@ -1,0 +1,30 @@
+{
+ "esquema": 1,
+ "idioma": "pt",
+ "nota": "Los textos de la pagina de instalar en esta lengua. Salieron de `instalar.json` el 2026-09-14, cuando el pie se mudo del HTML aqui y el fichero de hechos paso de 14.667 a 23.703 B contra un tope de 16.384. Mismo corte que el taller, los paneles y el Agora.",
+ "textos": {
+  "pwaTitulo": "O site, instalado",
+  "pwaCuerpo": "Esta mesma página instala-se como aplicação e funciona sem rede. Não descarrega nenhum modelo: é a porta, não a oficina.",
+  "pwaComo": "No Android ou no computador, o navegador oferece «Instalar». No iPhone: Partilhar e depois «Adicionar ao ecrã principal».",
+  "mdTitulo": "Os modelos",
+  "mdMinimo": "O mínimo para um telemóvel",
+  "mdNoServido": "Não servido publicamente. Causa:",
+  "mdComoTraer": "Não alojamos o ficheiro. Com o Ollama instalado:",
+  "mdSinTelefono": "NO_DATA — ninguém mediu este modelo num telemóvel de 8 GB a partir deste rack. Medido está o tamanho do ficheiro, que é o que está abaixo.",
+  "mdNoPublicados": "outros modelos no nó sem ficha pública, por isso não aparecem aqui.",
+  "mdVentana": "contexto",
+  "mdFallo": "NO_DATA — não foi possível ler o catálogo de modelos:",
+  "pwaBoton": "Instalar este site",
+  "appBoton": "Última versão da app",
+  "pwaManual": "Instala-se como aplicação e funciona sem rede. Se o teu navegador não oferecer o botão, fá-lo à mão: no Android, menu ⋮ → «Instalar aplicação»; no iPhone, Partilhar → «Adicionar ao ecrã principal».",
+  "appVacio": "A descarga está pausada durante 48 horas por decisão do Soberano. O botão acende sozinho quando o contador chegar a zero.",
+  "appNoDisponible": "não disponível",
+  "pieTitulo": "",
+  "pie": [
+   "<strong>Ao carregar não pede nada a ninguém.</strong> Los enlaces a GitHub son enlaces: no hacen ninguna petición hasta que <em>tú</em> as carregues. Uma ligação não é um recurso carregado, e a diferença é justamente a que importa aqui.",
+   "<strong>Os comandos são os do repositório, não uma versão nossa.</strong> Salen de <code>bin/instalar-pc</code>, <code>bin/instalar-android</code> y <code>INSTALACION_PC.md</code>, comprovados um a um contra o repositório público a 2026-09-13.",
+   "<strong>O NO_DATA abaixo é medido.</strong> Os guiões de instalação <strong>existem</strong>: v1.3, publicada a 2026-08-31, com 13 ficheiros. O que não existe é o APK — zero nessa release. É o resultado de perguntar, não cautela.",
+   "<strong>Nada do que instalas precisa deste site.</strong> Se amanhã este domínio desaparecer, os comandos continuam a funcionar e a tua memória continua a ser tua. É essa a ideia inteira."
+  ]
+ }
+}
