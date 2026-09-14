@@ -2,7 +2,6 @@
  "esquema": 1,
  "idioma": "en",
  "nota": "La prosa de los cerebros. Los HECHOS --velocidad, tag del modelo, contexto-- viven en `cerebros.json` y no llevan una palabra traducible. Es la misma frontera que `loratelier.json` con `taller-<idioma>.json`, y por el mismo motivo: las ocho lenguas en el fichero de datos lo dejan lleno el primer dia. · `lore` es la voz del producto, no una ficha tecnica: va a la derecha del cuadro cuando eliges un cerebro y cuenta QUE hace ese por la soberania de quien lo usa. Se escribe corto a proposito -- un parrafo que nadie lee no es lore, es relleno.",
- "cta_hash": "Did it help? Make your signature and tell us: it stays on your machine and travels when the board opens. That is what trains the next version.",
  "cerebros": {
   "charla-web": {
    "nombre": "The Host",

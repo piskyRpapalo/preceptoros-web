@@ -1937,7 +1937,7 @@ class Hub(unittest.TestCase):
                          "el unico servido tiene que ser el Instalador")
         self.assertEqual(7, len(ags) - len(servidos), "no hay siete pendientes")
 
-    def test_la_portada_ofrece_DOS_cerebros_y_el_catalogo_sigue_entero(self):
+    def test_la_portada_ofrece_UN_cerebro_y_el_catalogo_sigue_entero(self):
         """La puerta no es el catalogo, y confundirlos cuesta visitantes.
 
         El 2026-09-08 la portada ofrecia SEIS cerebros, y cuatro eran el mismo
@@ -1956,21 +1956,38 @@ class Hub(unittest.TestCase):
         prosa. Se dice porque yo mismo la puse primero en la prosa y la rejilla
         salio VACIA -- una bandera en el fichero que nadie lee no filtra de
         menos, filtra de mas.
+
+        DE DOS A UNA · 2026-09-14, orden del Soberano mirando la pagina en
+        produccion. El mismo razonamiento que bajo de seis a dos, un escalon
+        mas: dos puertas con su titulo encima --«The Host» y «The Talk»-- se
+        leen como dos pestañas, y la portada pasa a tener dos conversaciones
+        donde solo hace falta una. El que sale de la puerta no se borra: cae al
+        banco de Comunidad, que filtra por `!puerta`. La segunda mitad de la
+        prueba sigue intacta y ahora importa mas: borrar del catalogo lo que no
+        se enseña seguiria siendo la averia peor.
         """
         reg = json.loads((PUBLICO / "cerebros.json").read_text(encoding="utf-8"))
         cs = reg["cerebros"]
         puerta = [c["id"] for c in cs if c.get("puerta")]
         self.assertEqual(
-            2, len(puerta),
+            1, len(puerta),
             f"cerebros.json marca {len(puerta)} de puerta: {puerta}. La "
-            "portada son dos trabajos --instalar y hablar--, no una lista.")
+            "portada es UNA conversacion, no una lista ni dos pestañas.")
         self.assertGreater(
             len(cs), len(puerta),
             "el catalogo se quedo con solo los de puerta: los demas existen, "
             "estan medidos y tienen que seguir declarados")
+        # Y CUAL. El que se queda es el RECOMENDADO, y eso no es una
+        # preferencia: `recomendado` ya significaba «el que habla si nadie ha
+        # elegido», asi que la puerta y el que contesta por defecto tienen que
+        # ser el mismo. Si no, la portada ofrece uno y habla otro.
         self.assertEqual(
-            {"charla-web", "charla-base"}, set(puerta),
-            "los de puerta son el que instala y el que habla")
+            {"charla-base"}, set(puerta),
+            "la puerta es el que habla por defecto, y son el mismo")
+        self.assertEqual(
+            puerta, [c["id"] for c in cs if c.get("recomendado")],
+            "la puerta y el recomendado se han separado: la portada ofreceria "
+            "uno y contestaria otro")
 
     def test_cada_cerebro_declara_su_pais_y_la_bandera_existe(self):
         """Una bandera que falta no falla: `onerror` la retira y no se ve.
