@@ -1,7 +1,7 @@
 {
  "esquema": 1,
  "estado": "OFICIAL",
- "nota": "Los anuncios del Soberano. Son REALES, y por eso viven aparte de threads.json, que es EJEMPLO. Mezclarlos en una sola lista haria imposible saber cual es cual, que es justo lo que este fichero existe para evitar. Cada anuncio dice tambien lo que HOY no funciona: un anuncio que promete un canal que no responde es publicidad, no un anuncio.  ACTUALIZADO 2026-09-08: el aviso del anuncio de feedback decia que el Agora daba 404 en /api/v1/threads, medido el 2026-08-30. Ya no: la lectura responde 200. Lo que sigue cerrado es la ESCRITURA (405), asi que el aviso no se borra -- se corrige. Borrarlo habria prometido que un hilo firmado viaja, y no viaja. El aviso del anuncio de entrenar NO se toca: se comprobaron cinco rutas de subida y las cinco dan 404, asi que sigue siendo verdad.",
+ "nota": "Los anuncios del Soberano. Son REALES, y por eso llevan su medida dentro. Cada anuncio dice tambien lo que HOY no funciona: un anuncio que promete un canal que no responde es publicidad, no un anuncio. ACTUALIZADO 2026-09-14: este fichero se definia por contraste con `threads.json`, los hilos de EJEMPLO del tablon. Ese fichero YA NO EXISTE --el Soberano cerro el foro y retiro los ejemplos: fingir actividad en un foro vacio es la mentira mas vieja de internet, y retirarla a medias sigue siendo retirarla a medias--. La distincion que justificaba el contraste sigue viva y ahora es mas simple: aqui SOLO hay cosas reales. Del 2026-09-08, y sigue en pie: la lectura del Agora responde 200 y la ESCRITURA da 405, asi que el aviso del anuncio de feedback se corrige en vez de borrarse. El de entrenar no se toca: cinco rutas de subida, cinco 404.",
  "medido": "2026-09-08",
  "anuncios": [
   {

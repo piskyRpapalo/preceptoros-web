@@ -777,9 +777,33 @@ class Estructura(unittest.TestCase):
                                 "el Killswitch no abre la pestaña de proyectos")
                 self.assertIn('id="mini-chat"', t, "la plaza se quedo sin terminal")
         mc = (PUBLICO / "assets" / "minichat.js").read_text(encoding="utf-8")
-        self.assertNotIn("fetch(", mc, "el mini-chat sale por red")
-        self.assertNotIn("Bronce", mc,
-                         "el mini-chat manda al rack un texto que no es de una IA")
+        # SIN LOS COMENTARIOS. Es la tercera vez esta semana que una prueba de
+        # ausencia se dispara con la prosa que EXPLICA por que algo no esta --la
+        # guardia de higiene lo hizo dos veces el mismo dia--. Un fichero que
+        # cuenta su historia nombra lo que dejo de usar, y eso es una virtud de
+        # esta casa, no un descuido: la prueba se adapta, no el comentario.
+        codigo = re.sub(r"/\*.*?\*/", "", mc, flags=re.S)
+        codigo = re.sub(r"(?m)//.*$", "", codigo)
+        self.assertNotIn("fetch(", codigo, "el mini-chat sale por red")
+
+        # LA LEY CAMBIO EL 2026-09-14, y el guardian con ella.
+        #
+        # Aqui decia `assertNotIn("Bronce", mc)`: la Plaza NO podia mandar nada
+        # al rack porque su texto no sale de una IA. El Soberano lo reviso: la
+        # Plaza es un terminal LOCAL QUE FIRMA, y sin firma no hay dato. Lo que
+        # se prohibe ya no es que viaje: es que viaje SOLO.
+        #
+        # Asi que el `fetch` sigue prohibido --la puerta de red es de
+        # `enviar.js`, y una sola construccion para los dos caminos-- y ahora se
+        # EXIGE lo contrario de antes: que firme y que guarde.
+        self.assertIn("Identity.firmar", codigo,
+                      "la Plaza guarda lineas sin firmarlas: sin firma no hay dato")
+        self.assertIn("Bronce.guardar", codigo,
+                      "la Plaza firma y no guarda: la linea no llegaria al rack")
+        self.assertIn("window.Enviar.mandar", codigo,
+                      "la Plaza no tiene puerta al rack")
+        self.assertNotIn("sessionStorage", codigo,
+                         "una linea FIRMADA no se tira al cerrar la pestaña")
 
     def test_debajo_del_cabecero_va_la_ACCION(self):
         """La regla que el Soberano firmo el 2026-09-14, en las dos paginas.
@@ -819,7 +843,10 @@ class Estructura(unittest.TestCase):
         for idi in IDIOMAS:
             t = (PUBLICO / idi / "community.html").read_text(encoding="utf-8")
             with self.subTest(idioma=idi):
-                for detras in ("agora-portada", "cerebros-banco", "hilos"):
+                # `hilos` salio de esta lista el 2026-09-14: el tablon se
+                # retiro entero y su contenedor ya no existe. Un guardian que
+                # vigila un elemento borrado no protege nada y encima se cae.
+                for detras in ("agora-portada", "cerebros-banco"):
                     self.assertLess(
                         t.index('id="taller"'), t.index(f'id="{detras}"'),
                         f"«{detras}» abre la pagina por delante de la vitrina")
@@ -1770,233 +1797,78 @@ class Identidad(unittest.TestCase):
                                      f"subrecurso externo al cargar: {etiqueta}")
 
 
-class Tablon(unittest.TestCase):
-    """De donde salen los hilos, y que se diga siempre."""
+class Foro(unittest.TestCase):
+    """La pestaña Foro, desde que el Soberano la cerro el 2026-09-14.
 
-    ORIGENES = ("cache", "agora", "ejemplo", "fallo")
+    ANTES aqui vivia `class Tablon`, con nueve hilos de EJEMPLO y cuatro
+    pruebas que vigilaban que el tablon dijera SIEMPRE de donde salian --del
+    Agora, de la cache, del ejemplo o de un fallo--. Eran buenas pruebas y
+    protegian algo real: que no se colara actividad fingida.
 
-    def i18n_board(self):
+    La decision las deja sin objeto, y por eso se retiran en vez de adaptarse:
+    la forma mas barata de que un gate mienta es dejar en pie a un guardian
+    cuyo vigilado ya no existe. Lo que se vigila ahora es lo contrario --que NO
+    haya hilos, ninguno, ni de ejemplo-- y que la puerta lo diga en las ocho.
+    """
+
+    def foro(self, idioma):
+        return (PUBLICO / idioma / "community.html").read_text(encoding="utf-8")
+
+    def test_el_foro_es_UNA_PUERTA_y_no_un_tablon(self):
+        """Ni hilos, ni filtros, ni formulario. Una frase y su causa."""
         for idioma in IDIOMAS:
-            t = (PUBLICO / idioma / "community.html").read_text(encoding="utf-8")
-            m = re.search(r'id="i18n"[^>]*>(.*?)</script>', t, re.S)
-            yield idioma, json.loads(m.group(1))
+            t = self.foro(idioma)
+            with self.subTest(idioma=idioma):
+                self.assertIn('class="panel panel-violeta forum-gate"', t,
+                    "la pestaña Foro no trae la puerta")
+                self.assertNotIn('id="hilos"', t,
+                    "queda el contenedor del tablon retirado")
+                self.assertNotIn('/assets/board.js', t,
+                    "sigue cargandose el guion que pintaba los hilos de ejemplo")
 
-    def test_el_tablon_dice_siempre_de_donde_salen_los_hilos(self):
-        """Una lista de hilos se ve igual venga de donde venga.
+    def test_la_puerta_del_foro_dice_las_TRES_cosas(self):
+        """La frase, la condicion y el NO_DATA. Las tres, en las ocho.
 
-        Ese es el problema entero: el Agora, un cache de hace tres dias y los
-        hilos de EJEMPLO que viajan con la web se pintan identicos. El rotulo
-        de procedencia es la UNICA diferencia visible, asi que no puede ser
-        opcional ni quedarse a medias en un idioma -- sin el, la pagina
-        fabrica una comunidad que no existe, que es exactamente lo que el
-        propio pie de esta pagina promete no hacer.
+        Una puerta que solo dice «registrate» sin decir para que ni desde
+        cuando es un muro. La condicion --Nivel 3 y recibo verificado-- y el
+        NO_DATA con su causa son lo que la convierten en informacion.
         """
-        fuentes = (PUBLICO / "assets" / "board-fuentes.js").read_text(encoding="utf-8")
-        pintura = (PUBLICO / "assets" / "board.js").read_text(encoding="utf-8")
-        declarados = set(re.findall(r"origen:\s*'(\w+)'", fuentes))
-        self.assertEqual(set(self.ORIGENES), declarados,
-                         f"las fuentes declaran {declarados}, se esperaban "
-                         f"{set(self.ORIGENES)}")
-        for origen in self.ORIGENES:
-            with self.subTest(origen=origen):
-                # `in`, no assertIn: assertIn vuelca el fichero entero en el
-                # mensaje y el fallo se vuelve ilegible.
-                self.assertTrue(
-                    f"'{origen}'" in pintura,
-                    f"board.js no rotula el origen «{origen}» de forma "
-                    "explicita. Atenderlo en el `else` final hace que un "
-                    "origen nuevo herede su rotulo sin que nadie lo note.")
-        for idioma, d in self.i18n_board():
-            for clave in ("tbFuenteAgora", "tbFuenteCache", "tbFuenteLocal",
-                          "tbFuenteFallo"):
+        for idioma in IDIOMAS:
+            t = self.foro(idioma)
+            bloque = json.loads(re.search(r'id="i18n">(.*?)</script>', t, re.S).group(1))
+            for clave in ("foTitulo", "foCuerpo", "foNoData", "foPlaza"):
                 with self.subTest(idioma=idioma, clave=clave):
-                    self.assertIn(clave, d, f"{idioma} no traduce {clave}")
-                    self.assertTrue(d[clave].strip(), f"{idioma}: {clave} vacia")
+                    self.assertTrue(bloque.get(clave), f"falta «{clave}»")
+                    self.assertIn(bloque[clave], t,
+                        f"«{clave}» esta declarada y no se pinta")
+            with self.subTest(idioma=idioma, que="NO_DATA con causa"):
+                self.assertIn("NO_DATA", bloque["foNoData"],
+                    "la escritura cerrada se declara, no se insinua")
 
-    def test_la_prosa_del_agora_cubre_lo_que_el_registro_declara(self):
-        """Treinta frases que se leian en castellano en las ocho lenguas.
-
-        `agora.json` lo escribe el rack y viene en castellano: las causas de lo
-        cerrado, los cuatro niveles, la politica de moderacion entera. Eso es la
-        mitad de la pagina de Comunidad, y estaba en espanol para todo el mundo.
-
-        La traduccion va en `agora-<idioma>.json` y se SUPERPONE por id sobre los
-        hechos. El castellano no tiene fichero: es el idioma de origen, ya esta
-        en el registro. Superponer y no sustituir es lo que hace que anadir un
-        nivel nuevo no rompa nada -- sale sin traducir, que es lo correcto.
-
-        LO QUE ESTE TEST VIGILA, y es lo que el diseno no puede garantizar solo:
-        que las listas tengan la MISMA longitud. Si el Soberano anade una quinta
-        regla de moderacion, las siete traducciones seguirian ensenando cuatro y
-        la pagina no daria ningun sintoma: cuatro reglas se leen perfectamente
-        bien. Una regla que desaparece al cambiar de idioma es justo el fallo
-        que nadie reporta.
-        """
-        hechos = json.loads((PUBLICO / "agora.json").read_text(encoding="utf-8"))
-        ids_cerrado = {x["id"] for x in hechos.get("cerrado", [])}
-        ids_niveles = {x["id"] for x in hechos.get("niveles", [])}
-        mod = hechos.get("moderacion", {})
-        for idi in [i for i in IDIOMAS if i != "es"]:
-            f = PUBLICO / f"agora-{idi}.json"
-            with self.subTest(idioma=idi):
-                self.assertTrue(f.is_file(),
-                                f"falta agora-{idi}.json: esa lengua lee el "
-                                "Agora entero en castellano")
-                t = json.loads(f.read_text(encoding="utf-8"))
-                self.assertEqual(ids_cerrado, set(t.get("cerrado", {})),
-                                 "los cerrados traducidos no son los del registro")
-                self.assertEqual(ids_niveles, set(t.get("niveles", {})),
-                                 "los niveles traducidos no son los del registro")
-                self.assertEqual(len(mod.get("reglas_visibles", [])),
-                                 len(t.get("moderacion", {}).get("reglas", [])),
-                                 "una regla de moderacion desaparece en esta lengua")
-                self.assertEqual(len(mod.get("falta_para_firmarla", [])),
-                                 len(t.get("moderacion", {}).get("falta", [])),
-                                 "falta una de las decisiones pendientes")
-
-    def test_NINGUNA_pagina_repite_una_frase_en_castellano(self):
-        """La prosa escrita a mano dentro del HTML, que el gate no miraba.
-
-        Habia guardianes para las claves i18n, para los textos del taller y para
-        los del Agora -- y ninguno para las frases que alguien escribe
-        directamente en la pagina. Por ahi se colaron, y se vieron en
-        produccion: la guia entera de `pt/community.html` en castellano detras de
-        una negrita traducida, y despues 22 frases mas repartidas entre el
-        Benchmark, el instalador y el Playground portugueses.
-
-        El metodo es la comparacion EXACTA con la pagina castellana, y por eso
-        no tiene falsos positivos: dos idiomas distintos no escriben la misma
-        frase de 45 caracteres por casualidad. Lo que si la escriben igual son
-        los COMANDOS --`git clone`, `bash bin/instalar-pc`, una URL-- y esos no
-        se traducen jamas: un comando traducido es un comando roto. Van fuera
-        por su forma, no por una lista de excepciones que habria que mantener.
-        """
-        codigo = re.compile(r"^(git |cd |bash |bin/|python3 |curl |sha256sum|"
-                            r"\./|pkg |termux|https?://|\[|\S+@|"
-                            r"[A-Za-z0-9_./-]+ (&&|\|\|) )")
-
-        def frases(p):
-            t = p.read_text(encoding="utf-8")
-            for pat in (r"<script.*?</script>", r"<style.*?</style>", r"<!--.*?-->"):
-                t = re.sub(pat, " ", t, flags=re.S)
-            t = re.sub(r"<[^>]+>", "\n", t)
-            fuera = set()
-            for linea in t.split("\n"):
-                x = re.sub(r"\s+", " ", html.unescape(linea).strip())
-                if len(x) >= 45 and " " in x:
-                    fuera.add(x)
-            return fuera
-
-        for hoja in sorted({p.name for p in (PUBLICO / "es").glob("*.html")}):
-            es = frases(PUBLICO / "es" / hoja)
-            for idi in [i for i in IDIOMAS if i != "es"]:
-                f = PUBLICO / idi / hoja
-                if not f.is_file():
-                    continue
-                repetidas = sorted(x for x in (es & frases(f))
-                                   if not codigo.match(x))
-                with self.subTest(pagina=f"{idi}/{hoja}"):
-                    self.assertFalse(
-                        repetidas,
-                        f"{len(repetidas)} frase(s) siguen en castellano: "
-                        + (repetidas[0][:80] if repetidas else ""))
-
-    def test_el_libro_de_pruebas_se_lee_en_las_OCHO(self):
-        """La tabla es el producto de esta pagina, y hablaba solo castellano.
-
-        Sus veredictos --«usable en bucle», «usable con paciencia», «solo chat,
-        no bucle»-- y el uso de cada modelo se leian en espanol en las ocho
-        lenguas. Un tester aleman veia las cifras bien y el juicio en un idioma
-        que no lee, que es justo la mitad que importa: las cifras no dicen si
-        ese modelo te sirve.
-
-        LA TRADUCCION VA ENCIMA, NUNCA DENTRO. `ledger.jsonl` es un registro
-        FIRMADO: cada linea lleva su sha256 y su Ed25519, y meterle ocho lenguas
-        cambiaria los bytes que alguien firmo. Se superpone al pintar, y los
-        hechos --modelo, sha256, tok/s, hardware, firma-- no se tocan: un nombre
-        de modelo traducido deja de nombrar nada.
-
-        Lo que este test vigila es la cobertura: un veredicto o un modelo nuevo
-        en el registro sin su traduccion se veria en castellano sin dar sintoma.
-        """
-        lineas = [json.loads(l) for l in
-                  (PUBLICO / "assets" / "ledger.jsonl").read_text(encoding="utf-8").splitlines()
-                  if l.strip()]
-        medidas = [x for x in lineas if x.get("tipo") == "medida"]
-        self.assertTrue(medidas, "el libro de pruebas se quedo sin filas")
-        veredictos = {x["veredicto"] for x in medidas if x.get("veredicto")}
-        usos = {x["modelo"] for x in medidas if (x.get("uso") or "NO_DATA") != "NO_DATA"}
-        for idi in [i for i in IDIOMAS if i != "es"]:
-            f = PUBLICO / f"ledger-{idi}.json"
-            with self.subTest(idioma=idi):
-                self.assertTrue(f.is_file(),
-                                f"falta ledger-{idi}.json: esa lengua lee los "
-                                "veredictos en castellano")
-                t = json.loads(f.read_text(encoding="utf-8"))
-                self.assertFalse(veredictos - set(t.get("veredictos", {})),
-                                 f"veredictos sin traducir: "
-                                 f"{sorted(veredictos - set(t.get('veredictos', {})))}")
-                self.assertFalse(usos - set(t.get("usos", {})),
-                                 f"modelos sin su uso traducido: "
-                                 f"{sorted(usos - set(t.get('usos', {})))}")
-                self.assertTrue(t.get("cabecera"), "sin cabecera traducida")
-
-    def test_los_hilos_de_ejemplo_hablan_las_OCHO(self):
-        """Lo que ve un tester cuando el Agora no contesta -- que es siempre.
-
-        `threads.json` es el tercer respaldo del tablon y hoy el unico que se
-        pinta: la escritura del Agora esta cerrada y su API no responde. Sus
-        nueve titulos estaban en castellano, asi que el tablon --la mitad de la
-        pagina de Comunidad-- se leia en espanol en las ocho lenguas.
-
-        Las ocho van DENTRO del fichero y no en ocho ficheros: son nueve frases,
-        el fichero pasa de 2.227 B a 8.843 de un tope de 16.384, y ocho ficheros
-        para eso serian ocho peticiones y un respaldo mas que mantener. El punto
-        donde se elige la lengua es `board-fuentes.js` --al leer-- y no
-        `board.js`, que pinta tambien los hilos REALES, cuyo titulo es una
-        cadena escrita por una persona.
-        """
-        d = json.loads((PUBLICO / "threads.json").read_text(encoding="utf-8"))
-        self.assertTrue(d.get("hilos"), "el ejemplo se quedo sin hilos")
-        for i, h in enumerate(d["hilos"]):
-            with self.subTest(hilo=i):
-                self.assertIsInstance(h["titulo"], dict,
-                                      "un titulo de ejemplo sin sus lenguas")
-                self.assertEqual(set(IDIOMAS), set(h["titulo"]),
-                                 f"lenguas que faltan: "
-                                 f"{set(IDIOMAS) ^ set(h['titulo'])}")
-                for idi, t in h["titulo"].items():
-                    self.assertTrue(t.strip(), f"titulo vacio en {idi}")
-        fuentes = (PUBLICO / "assets" / "board-fuentes.js").read_text(encoding="utf-8")
-        self.assertIn("h.titulo[lang]", fuentes,
-                      "nadie resuelve la lengua del titulo: `board.js` pintaria "
-                      "[object Object]")
-
-    def test_el_ejemplo_no_pisa_lo_que_ya_hay(self):
-        """Si el Agora falla y ya habia algo pintado, no se retrocede.
-
-        Sustituir el cache del visitante por hilos de EJEMPLO porque la red
-        fallo no es un respaldo: es cambiar datos suyos por datos de mentira
-        y no decirlo. Lo correcto es dejar lo que hay y avisar del fallo.
-        """
-        f = (PUBLICO / "assets" / "board-fuentes.js").read_text(encoding="utf-8")
-        cargar = re.search(r"cargar:\s*function.*?\n    \}", f, re.S)
-        self.assertIsNotNone(cargar, "board-fuentes.js ya no expone cargar()")
-        self.assertIn("if (yaHay)", cargar.group(0),
-                      "el ejemplo entra aunque ya haya hilos pintados")
-
-    def test_la_capa_de_datos_no_escribe_frases(self):
-        """`board-fuentes.js` no tiene idioma, y por eso no puede tener texto.
-
-        Una capa de datos que devuelve «El Agora no respondio» se queda en
-        espanol para siempre: en /en/ y /fr/ saldria igual. Devuelve `origen`
-        y `causa`; la frase la monta quien pinta, que si sabe el idioma.
-        """
-        f = (PUBLICO / "assets" / "board-fuentes.js").read_text(encoding="utf-8")
-        codigo = re.sub(r"/\*.*?\*/", "", f, flags=re.S)
-        codigo = re.sub(r"//[^\n]*", "", codigo)
-        for clave in re.findall(r"\bT\.\w+", codigo):
-            self.fail(f"la capa de datos usa i18n: {clave}")
+    def test_NO_QUEDA_ni_un_hilo_de_ejemplo(self):
+        """Ni en el marcado ni en el catalogo. Fingir actividad es la mentira
+        mas vieja de internet, y media mentira retirada sigue siendo media."""
+        hilos = PUBLICO / "threads.json"
+        if hilos.is_file():
+            d = json.loads(hilos.read_text(encoding="utf-8"))
+            self.assertEqual(d.get("hilos"), [],
+                "threads.json sigue trayendo hilos de ejemplo")
+            self.assertEqual(d.get("hilos_reales"), 0)
+        # NO se busca la palabra «ejemplo». Es la TERCERA vez hoy que una
+        # prueba de ausencia se dispara con la prosa que EXPLICA la ausencia:
+        # el pie dice ahora «los hilos de ejemplo se retiraron», y esa frase es
+        # justo lo que se queria conseguir. Lo que se comprueba es la maquina
+        # --las claves del tablon y su contenedor-- que es lo que de verdad
+        # pintaria un hilo.
+        MUERTAS = ("tbEjemplo", "tbReales", "tbFiltros", "tbPublicar",
+                   "tbFuenteAgora", "tbFuenteLocal")
+        for idioma in IDIOMAS:
+            t = self.foro(idioma)
+            bloque = json.loads(re.search(r'id="i18n">(.*?)</script>', t, re.S).group(1))
+            for clave in MUERTAS:
+                with self.subTest(idioma=idioma, clave=clave):
+                    self.assertNotIn(clave, bloque,
+                        f"«{clave}» es del tablon retirado y sigue declarada")
 
 
 class Hub(unittest.TestCase):

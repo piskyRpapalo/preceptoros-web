@@ -147,6 +147,38 @@
     }).catch(function () { /* sin cola, sin boton */ });
   }
 
+  /* LA MISMA PUERTA, ABIERTA DESDE FUERA. La Plaza firma sus lineas y tiene que
+     poder mandarlas sin que el envio se escriba dos veces: dos caminos hacia el
+     rack divergen el dia que cambie el protocolo, y uno de los dos empieza a
+     mentir sin que nadie lo note. Es la misma leccion que `musica_comun.py`.
+
+     `mandar(nota)` construye el paquete con `Bronce.paraEnviar` --la MISMA
+     construccion que baja `exportar`-- y escribe el resultado en el elemento
+     que se le pase. Devuelve una promesa para que quien llama sepa cuando
+     termino. */
+  window.Enviar = {
+    mandar: function (nota) {
+      if (!window.Bronce || !window.Identity || !window.Identity.quien()) {
+        return Promise.reject(new Error(T('envSinFirmaTexto',
+          'la identidad de este navegador todavía no sabe firmar el reto')));
+      }
+      return (window.Bronce.paraEnviar
+        ? window.Bronce.paraEnviar()
+        : Promise.resolve([])).then(function (pares) {
+          enviar(nota, pares);
+          return pares.length;
+        });
+    },
+    /* Cuantas hay pendientes. La Plaza lo pinta en su boton por lo mismo que
+       lo pinta la puerta de exportacion: entregar a ciegas no es consentir. */
+    cuantas: function () {
+      if (!window.Bronce) { return Promise.resolve(0); }
+      return window.Bronce.leerTodo().then(function (r) { return r.length; })
+        .catch(function () { return 0; });
+    },
+    rotulo: function (clave, respaldo) { return T(clave, respaldo); }
+  };
+
   document.addEventListener('preceptor:identity', montar);
   if (document.readyState !== 'loading') { montar(); }
   else { document.addEventListener('DOMContentLoaded', montar); }

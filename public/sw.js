@@ -16,7 +16,7 @@
  *
  *   1. Otro origen (la API del Agora, el CDN de WebLLM) -> pasa de largo y NO
  *      se cachea nunca. Lo que no es nuestro no lo guardamos.
- *   2. JSON del propio sitio (counters.json, threads.json) -> solo red.
+ *   2. JSON del propio sitio (counters.json, anuncios.json) -> solo red.
  *      Podria cachearse y quedaria mas bonito sin conexion, y seria la misma
  *      mentira que la portada publicando 19 pruebas cuando el gate media 26:
  *      cifras viejas con cara de frescas. Si no hay red, el fetch falla y el
@@ -30,7 +30,7 @@
  * tambien puede faltar del cache justo el dia que hace falta.
  */
 /* Subir VERSION o el cambio NO llega: ver `config/sw-huella.txt`. */
-const VERSION = 'preceptoros-2026-14-d';
+const VERSION = 'preceptoros-2026-14-e';
 const SHELL = 'shell-' + VERSION;
 const OBRA = 'obra-' + VERSION;
 
