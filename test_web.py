@@ -8,7 +8,7 @@ comprobacion que detecta y no bloquea no es una comprobacion: aqui no hay avisos
 solo verde o rojo.
 """
 import gzip
-import hashlib, hashlib, json, re, unittest
+import hashlib, html, json, re, unittest
 from pathlib import Path
 
 RAIZ = Path(__file__).resolve().parent
@@ -1730,6 +1730,53 @@ class Tablon(unittest.TestCase):
                 self.assertEqual(len(mod.get("falta_para_firmarla", [])),
                                  len(t.get("moderacion", {}).get("falta", [])),
                                  "falta una de las decisiones pendientes")
+
+    def test_NINGUNA_pagina_repite_una_frase_en_castellano(self):
+        """La prosa escrita a mano dentro del HTML, que el gate no miraba.
+
+        Habia guardianes para las claves i18n, para los textos del taller y para
+        los del Agora -- y ninguno para las frases que alguien escribe
+        directamente en la pagina. Por ahi se colaron, y se vieron en
+        produccion: la guia entera de `pt/community.html` en castellano detras de
+        una negrita traducida, y despues 22 frases mas repartidas entre el
+        Benchmark, el instalador y el Playground portugueses.
+
+        El metodo es la comparacion EXACTA con la pagina castellana, y por eso
+        no tiene falsos positivos: dos idiomas distintos no escriben la misma
+        frase de 45 caracteres por casualidad. Lo que si la escriben igual son
+        los COMANDOS --`git clone`, `bash bin/instalar-pc`, una URL-- y esos no
+        se traducen jamas: un comando traducido es un comando roto. Van fuera
+        por su forma, no por una lista de excepciones que habria que mantener.
+        """
+        codigo = re.compile(r"^(git |cd |bash |bin/|python3 |curl |sha256sum|"
+                            r"\./|pkg |termux|https?://|\[|\S+@|"
+                            r"[A-Za-z0-9_./-]+ (&&|\|\|) )")
+
+        def frases(p):
+            t = p.read_text(encoding="utf-8")
+            for pat in (r"<script.*?</script>", r"<style.*?</style>", r"<!--.*?-->"):
+                t = re.sub(pat, " ", t, flags=re.S)
+            t = re.sub(r"<[^>]+>", "\n", t)
+            fuera = set()
+            for linea in t.split("\n"):
+                x = re.sub(r"\s+", " ", html.unescape(linea).strip())
+                if len(x) >= 45 and " " in x:
+                    fuera.add(x)
+            return fuera
+
+        for hoja in sorted({p.name for p in (PUBLICO / "es").glob("*.html")}):
+            es = frases(PUBLICO / "es" / hoja)
+            for idi in [i for i in IDIOMAS if i != "es"]:
+                f = PUBLICO / idi / hoja
+                if not f.is_file():
+                    continue
+                repetidas = sorted(x for x in (es & frases(f))
+                                   if not codigo.match(x))
+                with self.subTest(pagina=f"{idi}/{hoja}"):
+                    self.assertFalse(
+                        repetidas,
+                        f"{len(repetidas)} frase(s) siguen en castellano: "
+                        + (repetidas[0][:80] if repetidas else ""))
 
     def test_los_hilos_de_ejemplo_hablan_las_OCHO(self):
         """Lo que ve un tester cuando el Agora no contesta -- que es siempre.

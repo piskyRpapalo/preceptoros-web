@@ -97,8 +97,8 @@ a secção de Linux. Dizemo-lo aqui para que não o procures.</p>
     <code>bin/preceptoros-servicio arranca</code>, y abre
     <code>http://127.0.0.1:8740</code>.</p>
     <p class="tenue">Para que o atalho saia como ícone é preciso
-    <strong>Termux:Widget</strong> (también de F-Droid). Si no está, el guion lo
-    dice y explica qué hacer — no crea un icono que no va a aparecer.</p></div></li>
+    <strong>Termux:Widget</strong> (também do F-Droid). Se não estiver, o guião
+    di-lo e explica o que fazer — não cria um ícone que não vai aparecer.</p></div></li>
 </ol>
 <p class="nodata">NO_DATA · o APK que se instala e se abre sem terminal
   <strong>ainda não existe</strong>. Causa: ninguém o construiu. Dizemo-lo
@@ -109,11 +109,11 @@ a secção de Linux. Dizemo-lo aqui para que não o procures.</p>
 arranque, guarda o que lhe contas, e mostra-te <strong>a fronteira</strong> — o
 filtro que risca chaves, caminhos e moradas antes de que um texto saia da tua
 máquina.</p>
-<p><strong>Ainda não faz: conversar.</strong> Para eso faltan dos piezas grandes
-que no caben dentro y <strong>não se descarregam sem a tua permissão</strong>:</p>
+<p><strong>Ainda não faz: conversar.</strong> Para isso faltam duas peças grandes
+que não cabem dentro y <strong>não se descarregam sem a tua permissão</strong>:</p>
 <div class="panel">
-  <p><strong>O motor</strong> · ~10 MB · Es código ejecutable de otros. Este
-  proyecto firma datos, no programas.</p>
+  <p><strong>O motor</strong> · ~10 MB · É código executável de outros. Este
+  projeto assina dados, não programas.</p>
   <p><strong>O cérebro</strong> · <span class="cifra">2,3 GB</span> · Oferece-se com
   a sua licença e a sua impressão à frente, e aceita-lo tu.</p>
   <p class="tenue">Sem elas, o PreceptorOS pergunta e recorda mas não conversa. É
@@ -121,49 +121,49 @@ que no caben dentro y <strong>não se descarregam sem a tua permissão</strong>:
 </div>
 
 <h2>Onde fica o que é teu</h2>
-<p>En <code>~/.preceptoros/memory.db</code>. <strong>Um só ficheiro.</strong> Puedes
-copiarlo, llevártelo en un USB o borrarlo. Nada sale de tu máquina si tú no lo
-exportas.</p>
+<p>Em <code>~/.preceptoros/memory.db</code>. <strong>Um só ficheiro.</strong> Podes
+copiá-lo, levá-lo numa pen USB ou apagá-lo. Nada sai da tua máquina se tu não o
+exportares.</p>
 <p class="tenue">Se já o tinhas instalado com o nome antigo, a tua memória fica onde está e continua a funcionar: o produto adota a casa velha em vez de mover os teus dados por sua conta.</p>
 
 <h2>Erros comuns</h2>
 <div class="panel">
-  <p><strong>«O PreceptorOS já estava aberto».</strong> Lo está. Se abrió el
-  navegador y no se arrancó un segundo, porque dos a la vez sobre la misma memoria
-  haría que vieras una cosa y el fichero dijera otra.</p>
+  <p><strong>«O PreceptorOS já estava aberto».</strong> Está mesmo. Abriu-se o
+  navegador e não se arrancou um segundo, porque dois ao mesmo tempo sobre a mesma
+  memória fariam com que visses uma coisa e o ficheiro dissesse outra.</p>
   <p><strong>«O servidor não chegou a responder».</strong> Algo ocupa a porta 8740.
-  <code>bin/preceptoros-servicio para</code> cierra lo que haya.</p>
-  <p><strong>«falta python3».</strong> El instalador para ahí a propósito. Instálalo
-  tú y vuelve.</p>
+  <code>bin/preceptoros-servicio para</code> fecha o que houver.</p>
+  <p><strong>«falta python3».</strong> O instalador para aí de propósito. Instala-o
+  tu e volta.</p>
   <p><strong>O Termux fecha-se ou falha de forma estranha.</strong> Quase sempre é a versão do
   Google Play. Desinstala-a e põe a do F-Droid.</p>
 </div>
 
 <h2>Encravaste? Pergunta à IA que já usas</h2>
-<p>No hace falta que resuelvas esto solo ni que esperes a nadie. <strong>Perante
+<p>Não precisas de resolver isto sozinho nem de esperar por ninguém. <strong>Perante
 qualquer dúvida de instalação, puxa por uma IA externa</strong>: sabe de terminais
 e do teu sistema operativo mais do que esta página, e poupa-te metade do caminho.
 Copia isto, cola-lhe por cima o erro que te apareceu, e dá-o ao Gemini, ChatGPT,
 Claude ou à tua IA local.</p>
-<textarea id="atasco" readonly aria-label="Texto de ayuda para pegar en tu IA">Estoy instalando PreceptorOS, un programa local en Python que solo usa la biblioteca estandar:
+<textarea id="atasco" readonly aria-label="Texto de ajuda para colar na tua IA">Estou a instalar o PreceptorOS, um programa local em Python que so usa a biblioteca padrao:
 https://github.com/piskyRpapalo/PreceptorOS
 
-Mi sistema operativo es: [escribe aqui el tuyo]
+O meu sistema operativo e: [escreve aqui o teu]
 
-Los comandos de la guia son:
+Os comandos do guia sao:
   git clone --depth 1 https://github.com/piskyRpapalo/PreceptorOS ~/preceptoros
   cd ~/preceptoros &amp;&amp; bash bin/instalar-pc
   python3 preceptoros.py
   bin/preceptoros-servicio arranca      # abre http://127.0.0.1:8740
 
-Me he atascado aqui:
-  [pega el comando que fallo y el mensaje de error completo]
+Encravei aqui:
+  [cola o comando que falhou e a mensagem de erro completa]
 
-Explicame que ha pasado y que hacer. Dos condiciones: no me des un comando con
-sudo sin decirme antes que toca exactamente, y si no estas seguro, dilo en vez
-de inventarte una ruta o un paquete.</textarea>
+Explica-me o que aconteceu e o que fazer. Duas condicoes: nao me des um comando
+com sudo sem me dizeres antes o que toca exatamente, e se nao tens a certeza,
+di-lo em vez de inventares um caminho ou um pacote.</textarea>
 <div class="fila">
-  <button type="button" data-copia="atasco" data-hecho="Copiado ✓" data-manual="Selecciona y Ctrl+C">Copiar para a minha IA</button>
+  <button type="button" data-copia="atasco" data-hecho="Copiado ✓" data-manual="Seleciona e Ctrl+C">Copiar para a minha IA</button>
 </div>
 <p class="tenue">Tanto faz qual uses: o texto não está preso a nenhuma. Essa é a
 ideia — que não dependas de uma só, nem sequer para pedir ajuda.</p>
