@@ -108,6 +108,22 @@
       });
   }
   // El turno contra Ollama, en streaming. NDJSON: una linea, un trozo.
+  /* EL DUEÑO DE `elegido` ESCUCHA SU PROPIO EVENTO. Cicatriz del 2026-09-14.
+
+     `preceptor:localai` lo disparaba solo la lista de aqui, asi que `elegido` y
+     el evento iban siempre juntos. En cuanto otra pieza --las pestañas del
+     LorAtelier-- empezo a elegir modelo dispararlo, el evento llegaba a
+     `chat.js` y `elegido` se quedaba en `null`: la peticion salia con
+     `model: null`, Ollama devolvia error, y el chat decia «el motor termino sin
+     emitir ni un caracter» en 6 ms. Todo correcto y todo inutil.
+
+     La escucha va AQUI y no en quien dispara: el estado es de este fichero, y
+     cada nuevo selector tendria que acordarse de tocarlo por su cuenta. Uno que
+     se olvide reproduce el mismo fallo, y desde fuera parece un motor roto. */
+  document.addEventListener('preceptor:localai', function (e) {
+    if (e.detail && e.detail.modelo) { elegido = e.detail.modelo; }
+  });
+
   window.LocalAI = {
     modelo: function () { return elegido; },
     stream: function (prompt, alTrozo) {

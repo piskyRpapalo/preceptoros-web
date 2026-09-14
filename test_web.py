@@ -713,6 +713,44 @@ class Estructura(unittest.TestCase):
                                  f"caen al respaldo en castellano: "
                                  f"{sorted(pide - tiene)}")
 
+    def test_el_loratelier_compara_base_contra_adaptador(self):
+        """Un LoRA no se explica: se compara. Y la cicatriz que costo montarlo.
+
+        La tabla dice cuantos tok/s da cada modelo, y eso NO contesta la unica
+        pregunta que importa --que cambia en lo que me responde--. Dos pestañas
+        sobre el mismo chat la contestan en dos turnos. Medido el 2026-09-14 con
+        la misma pregunta: el base contesto que PreceptorOS «es un sistema
+        operativo enfocado en aprendizaje automatico» --inventado-- y el de la
+        casa que es «un adaptador que se ajusta a tus escritos, el modelo se
+        guarda en tu equipo, no en un servidor».
+
+        LA CICATRIZ, y por eso se comprueba el evento en los dos extremos:
+        `comparar.js` avisa por `preceptor:localai`, que es el canal que ya
+        existia. Pero `elegido` --el modelo que de verdad se manda-- vivia en
+        `localai.js` y solo lo tocaba SU lista. Resultado: el evento llegaba,
+        el chat cambiaba de via, y la peticion salia con `model: null`. Ollama
+        devolvia error y la pagina decia «el motor termino sin emitir ni un
+        caracter» en 6 ms: todo correcto y todo inutil.
+
+        Se exige que el DUEÑO del estado escuche su propio evento. Si no, cada
+        selector nuevo tiene que acordarse de tocar una variable que no es suya,
+        y el que se olvide reproduce un motor aparentemente roto.
+        """
+        for idi in IDIOMAS:
+            t = (PUBLICO / idi / "benchmark.html").read_text(encoding="utf-8")
+            with self.subTest(idioma=idi):
+                self.assertIn('id="comparar"', t, "el LorAtelier no compara nada")
+                self.assertLess(t.index('id="comparar"'), t.index('id="chat"'),
+                                "las pestañas no estan en el borde de arriba del chat")
+                self.assertIn("/assets/comparar.js", t)
+        cmp = (PUBLICO / "assets" / "comparar.js").read_text(encoding="utf-8")
+        self.assertIn("preceptor:localai", cmp,
+                      "comparar.js se invento un canal en vez de usar el que hay")
+        lai = (PUBLICO / "assets" / "localai.js").read_text(encoding="utf-8")
+        self.assertIn("addEventListener('preceptor:localai'", lai,
+                      "el dueño de `elegido` no escucha su propio evento: quien "
+                      "elija modelo desde fuera mandara `model: null`")
+
     def test_la_plaza_tiene_dos_pestanas_y_el_killswitch_abre(self):
         """La forma de Comunidad, firmada el 2026-09-14.
 
