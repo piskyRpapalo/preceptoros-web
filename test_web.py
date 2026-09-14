@@ -3131,6 +3131,64 @@ class Traducciones(unittest.TestCase):
                 faltan = usa - set(datos) - set(FUERA_DEL_BLOQUE)
                 self.assertFalse(faltan, f"{idioma}: faltan claves {sorted(faltan)}")
 
+    # Guiones que NO leen sus rotulos del bloque de la pagina. Se enumeran uno a
+    # uno con su motivo, y no como categoria: una categoria --«los que tienen
+    # otra fuente»-- deja entrar al siguiente sin que nadie lo mire.
+    OTRA_FUENTE = {
+        "cabezal-rotulos.js": "los rotulos del cabezal salen de /nav.json, que "
+                              "genera nav.py desde las propias portadas",
+        "pwa.js": "comparte con el cabezal los rotulos de /nav.json",
+        "auth.js": "resuelve T en rotulos(), que lee el mismo catalogo",
+        "hub.js": "T.agentes es un override opcional; los nombres salen de "
+                  "agentes-<idioma>.json",
+    }
+
+    def test_NINGUNA_pagina_cae_al_respaldo_en_castellano(self):
+        """La regla entera, y contra TODOS los guiones que carga cada pagina.
+
+        Hasta hoy esto se vigilaba pieza a pieza: el taller tenia su guardian,
+        el Agora gano el suyo el 2026-09-14 despues de publicar tres titulares
+        en espanol dentro de la pagina inglesa. Pieza a pieza significa que la
+        siguiente pieza entra sin vigilancia, y asi entraron las dos que este
+        test encontro al escribirse:
+
+          · `rackFallo`, `rackCausa` y `rackSinAdaptador` faltaban en las OCHO
+            `benchmark.html`, que tambien pide turnos al rack. Ahi no caian al
+            castellano: caian a `undefined`, y la pagina decia «undefined Failed
+            to fetch». Peor que un idioma equivocado, porque no significa nada.
+          · `tbVacio` y `tbEscritura` existian SOLO en castellano, y son el
+            hueco mas visible del Agora: lo que se lee cuando no hay ni un hilo.
+
+        El respaldo en castellano dentro del codigo es comodo y por eso es
+        peligroso: no rompe nada, se ve razonable, y solo lo nota quien lee las
+        dos lenguas. Esta prueba es la unica que puede verlo por el.
+        """
+        clave = re.compile(r"\bT\.([A-Za-z][A-Za-z0-9]*)|T\('([A-Za-z][A-Za-z0-9]*)'")
+        for pagina in sorted(PUBLICO.rglob("*.html")):
+            html = pagina.read_text(encoding="utf-8")
+            bloque = re.search(r'id="i18n">(.*?)</script>', html, re.S)
+            if not bloque:
+                continue        # sus textos viven en un JSON propio
+            tiene = set(json.loads(bloque.group(1)))
+            for src in re.findall(r'<script src="/assets/([^"]+)"', html):
+                if src in self.OTRA_FUENTE:
+                    continue
+                f = PUBLICO / "assets" / src
+                if not f.is_file():
+                    continue
+                js = re.sub(r"/\*.*?\*/", "", f.read_text(encoding="utf-8"), flags=re.S)
+                js = re.sub(r"(?m)//.*$", "", js)
+                pide = {a or b for a, b in clave.findall(js)}
+                # `state.js` solo pinta el badge del cerebro si la pagina trae
+                # `#brain`, y se retira ANTES de leer una sola clave si no esta.
+                if src == "state.js" and 'id="brain"' not in html:
+                    pide -= {"brainAsleep", "brainLabel", "brainLive", "brainNone"}
+                with self.subTest(pagina=str(pagina.relative_to(PUBLICO)), guion=src):
+                    self.assertFalse(
+                        pide - tiene,
+                        f"{src} pide claves que esta pagina no declara y caera "
+                        f"a su respaldo: {sorted(pide - tiene)}")
+
     def test_las_claves_mudadas_estan_donde_dicen_estar(self):
         """Una clave que sale del bloque i18n no deja de existir: cambia de casa.
 
