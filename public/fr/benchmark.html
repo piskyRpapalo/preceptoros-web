@@ -42,11 +42,12 @@
   <div class="marca"><h1>LoRAtelier benchmark's<b> · le Livre des Preuves</b></h1></div>
 </header>
 
-<p class="guia">Quel modèle tourne à quelle vitesse, sur quelle machine, et qui l'a mesuré. Chaque ligne est signée et porte le sha256 du fichier du modèle : sans ce hash, « llama-3.2-3b » n'identifie rien.</p>
-
-<div id="tabla" class="panel"></div>
-
-
+<!-- LO QUE SE PUEDE HACER, PRIMERO. Orden del Soberano,
+     2026-09-14: debajo del cabecero va la accion, no el archivo.
+     Aqui la accion es el probador --elegir un motor, mandarle un
+     turno y ver la medida-- y el Libro de Pruebas es lo que queda
+     cuando alguien ya lo hizo. Un archivo delante de la puerta se
+     lee como una pagina para consultar, no para usar. -->
 <section id="probador">
   <h2>Choisissez et mesurez votre moteur</h2>
   <p class="guia">C'est ici que l'on choisit le cerveau auquel on parle, et que l'on chronometre le resultat. Cela vit dans le Benchmark et non sur la page d'accueil a dessein : proposer trois telechargements de plusieurs gigas des l'ouverture coute cher sur un telephone.</p>
@@ -61,6 +62,10 @@
   <textarea id="medida-json" rows="5" readonly hidden></textarea>
   <button type="button" id="medida-copiar" data-copia="medida-json" data-hecho="Copié ✓" data-manual="Sélectionne et Ctrl+C" hidden>Copier la mesure</button>
 </section>
+
+<p class="guia">Quel modèle tourne à quelle vitesse, sur quelle machine, et qui l'a mesuré. Chaque ligne est signée et porte le sha256 du fichier du modèle : sans ce hash, « llama-3.2-3b » n'identifie rien.</p>
+<div id="tabla" class="panel"></div>
+
 
 <footer class="honest-footer">
   <details class="pliego"><summary>D'où vient ce tableau</summary>

@@ -41,7 +41,16 @@
   "chatSinRack": "Diese Seite kann das Rack noch nicht um einen Zug bitten.",
   "uPasos": "Schritte",
   "uPorPaso": "s/Schritt",
-  "uMin": "Min"
+  "uMin": "Min",
+  "noDisponibles": "Noch nicht verfügbar ({n})",
+  "resenaTitulo": "Wie ist diese Linie?",
+  "resenaQue": "Warum (optional)",
+  "resenaSirve": "Nützt mir",
+  "resenaNo": "Nützt mir nicht",
+  "resenaDe": "Besprechung der Linie",
+  "resenaGracias": "Signiert und auf deinem Gerät geblieben. Sie reist, wenn du sie exportierst.",
+  "resenaFallo": "Konnte nicht signiert werden —",
+  "resenaIdentidad": "Identität anlegen"
  },
  "bloques": {
   "bienvenida": {

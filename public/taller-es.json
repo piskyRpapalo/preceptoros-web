@@ -41,7 +41,16 @@
   "chatSinRack": "Esta página no sabe pedirle un turno al rack todavía.",
   "uPasos": "pasos",
   "uPorPaso": "s/paso",
-  "uMin": "min"
+  "uMin": "min",
+  "noDisponibles": "Todavía no disponibles ({n})",
+  "resenaTitulo": "¿Qué tal esta línea?",
+  "resenaQue": "Por qué (opcional)",
+  "resenaSirve": "Me sirve",
+  "resenaNo": "No me sirve",
+  "resenaDe": "Reseña de la línea",
+  "resenaGracias": "Firmada y guardada en tu aparato. Viaja cuando tú la exportes.",
+  "resenaFallo": "No se pudo firmar —",
+  "resenaIdentidad": "Crear identidad"
  },
  "bloques": {
   "bienvenida": {

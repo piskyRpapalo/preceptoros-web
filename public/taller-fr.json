@@ -41,7 +41,16 @@
   "chatSinRack": "Cette page ne sait pas encore demander un tour au rack.",
   "uPasos": "pas",
   "uPorPaso": "s/pas",
-  "uMin": "min"
+  "uMin": "min",
+  "noDisponibles": "Pas encore disponibles ({n})",
+  "resenaTitulo": "Que vaut cet axe ?",
+  "resenaQue": "Pourquoi (facultatif)",
+  "resenaSirve": "Ça me sert",
+  "resenaNo": "Ça ne me sert pas",
+  "resenaDe": "Avis sur l'axe",
+  "resenaGracias": "Signé et gardé sur votre appareil. Il voyage quand vous l'exportez.",
+  "resenaFallo": "Impossible de signer —",
+  "resenaIdentidad": "Créer une identité"
  },
  "bloques": {
   "bienvenida": {

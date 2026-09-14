@@ -91,3 +91,15 @@
 @media (max-width:40rem){
   .esc-hecho{grid-template-columns:1fr}
 }
+
+/* LA COLUMNA DE LA IZQUIERDA: primero se prueba, despues se opina. El orden es
+   la afirmacion -- una reseña pedida antes de haber hablado con la linea es una
+   encuesta, no una review. */
+.esc-columna{display:flex;flex-direction:column;gap:1.1rem;min-width:0}
+
+.esc-resena{border-top:1px solid var(--bronce);padding-top:.9rem}
+.esc-resena h3{margin:0 0 .5rem;
+  font:600 .74rem/1.5 var(--mono);letter-spacing:.07em;text-transform:uppercase;
+  color:var(--tenue)}
+.esc-resena .esc-fila{margin-bottom:.5rem}
+.esc-aviso{margin:.45rem 0 0;font-size:.82rem;line-height:1.45;color:var(--tenue)}

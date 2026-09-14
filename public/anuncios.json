@@ -75,7 +75,8 @@
      "enlaceTexto": "Άνοιξε ένα issue"
     }
    },
-   "enlace": "https://github.com/piskyRpapalo/PreceptorOS/issues"
+   "enlace": "https://github.com/piskyRpapalo/PreceptorOS/issues",
+   "estado": "ABIERTO"
   },
   {
    "id": "entrenar",
@@ -139,7 +140,9 @@
      "privado": "Το σύνολο των παραδειγμάτων είναι δικό σου και μένει δικό σου. Αυτό που μοιράζεται, αν θέλεις, είναι ο προσαρμογέας που βγαίνει.",
      "pero": "NO_DATA — δεν υπάρχει ακόμη τρόπος να το στείλεις από τον ιστότοπο: λείπει σημείο ανεβάσματος. Σήμερα συμφωνείται στο νήμα και το αρχείο περνιέται στο χέρι."
     }
-   }
+   },
+   "estado": "ABIERTO"
   }
- ]
+ ],
+ "contrato_estado": "`estado` es ABIERTO o CERRADO. Los ABIERTOS se pintan delante; los CERRADOS quedan plegados, visibles para quien los busque. Sin `estado`, se trata como ABIERTO: un anuncio sin declarar no se esconde."
 }

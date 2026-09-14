@@ -42,11 +42,12 @@
   <div class="marca"><h1>LoRAtelier benchmark's<b> · das Prüfbuch</b></h1></div>
 </header>
 
-<p class="guia">Welches Modell wie schnell läuft, auf welcher Maschine, und wer es gemessen hat. Jede Zeile ist eine signierte Zeile mit dem sha256 der Modelldatei darin: ohne diesen Hash identifiziert «llama-3.2-3b» gar nichts.</p>
-
-<div id="tabla" class="panel"></div>
-
-
+<!-- LO QUE SE PUEDE HACER, PRIMERO. Orden del Soberano,
+     2026-09-14: debajo del cabecero va la accion, no el archivo.
+     Aqui la accion es el probador --elegir un motor, mandarle un
+     turno y ver la medida-- y el Libro de Pruebas es lo que queda
+     cuando alguien ya lo hizo. Un archivo delante de la puerta se
+     lee como una pagina para consultar, no para usar. -->
 <section id="probador">
   <h2>Wähle und miss deinen Motor</h2>
   <p class="guia">Hier wird gewählt, mit welchem Gehirn du sprichst, und das Ergebnis wird gestoppt. Das lebt im Benchmark und nicht auf der Startseite, und zwar mit Absicht: drei Downloads von mehreren Gigabyte anzubieten, kaum dass die Seite offen ist, ist auf einem Telefon teuer, und die meisten kommen nicht deswegen.</p>
@@ -61,6 +62,10 @@
   <textarea id="medida-json" rows="5" readonly hidden></textarea>
   <button type="button" id="medida-copiar" data-copia="medida-json" data-hecho="Kopiert ✓" data-manual="Markieren und Strg+C" hidden>Die Messung kopieren</button>
 </section>
+
+<p class="guia">Welches Modell wie schnell läuft, auf welcher Maschine, und wer es gemessen hat. Jede Zeile ist eine signierte Zeile mit dem sha256 der Modelldatei darin: ohne diesen Hash identifiziert «llama-3.2-3b» gar nichts.</p>
+<div id="tabla" class="panel"></div>
+
 
 <footer class="honest-footer">
   <details class="pliego"><summary>Woher diese Tabelle kommt</summary>

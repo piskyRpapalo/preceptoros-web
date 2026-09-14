@@ -35,7 +35,8 @@
    el nombre accesible del mando sigue siendo el de la linea, no «boton». */
 .linea-entrar{background:none;border:0;padding:0;margin:0;cursor:pointer;
   font:inherit;color:var(--violeta-texto);text-align:left}
-.linea-entrar::after{content:"";position:absolute;inset:0;border-radius:inherit}
+.linea-entrar::after{content:"";position:absolute;inset:0;z-index:2;
+  border-radius:inherit}
 .linea-entrar:hover,.linea:hover .linea-entrar{color:var(--indigo)}
 .linea-entrar:focus-visible{outline:2px solid var(--violeta);outline-offset:3px}
 
@@ -102,3 +103,9 @@
   font-family:ui-monospace,monospace;font-size:.72rem;line-height:1.4;
   color:var(--violeta-texto);background:rgba(0,0,0,.22);
   border:1px solid var(--tenue);border-radius:var(--radius);resize:vertical}
+
+/* LAS DORMIDAS, dentro del pliego. Se ven igual de bien y no se levantan al
+   pasar por encima: el movimiento es una invitacion, y a estas no se puede
+   entrar a hacer nada todavia. */
+.pliego .linea:hover,.pliego .linea:focus-within{transform:none}
+.pliego .taller-rejilla{margin-top:.4rem}

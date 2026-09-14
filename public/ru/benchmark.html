@@ -42,11 +42,12 @@
   <div class="marca"><h1>LoRAtelier benchmark's<b> · Книга испытаний</b></h1></div>
 </header>
 
-<p class="guia">Какая модель на какой скорости, на какой машине и кто её измерил. Каждая строка подписана и несёт внутри sha256 файла модели: без этого хэша «llama-3.2-3b» не опознаёт ничего.</p>
-
-<div id="tabla" class="panel"></div>
-
-
+<!-- LO QUE SE PUEDE HACER, PRIMERO. Orden del Soberano,
+     2026-09-14: debajo del cabecero va la accion, no el archivo.
+     Aqui la accion es el probador --elegir un motor, mandarle un
+     turno y ver la medida-- y el Libro de Pruebas es lo que queda
+     cuando alguien ya lo hizo. Un archivo delante de la puerta se
+     lee como una pagina para consultar, no para usar. -->
 <section id="probador">
   <h2>Выбери и измерь свой движок</h2>
   <p class="guia">Здесь выбирают, с каким мозгом ты говоришь, и засекают результат. Это живёт в Benchmark, а не на главной, и намеренно: предлагать три загрузки по нескольку гигабайт сразу при открытии страницы дорого на телефоне, и большинство приходит не за этим.</p>
@@ -61,6 +62,10 @@
   <textarea id="medida-json" rows="5" readonly hidden></textarea>
   <button type="button" id="medida-copiar" data-copia="medida-json" data-hecho="Скопировано ✓" data-manual="Выдели и нажми Ctrl+C" hidden>Скопировать измерение</button>
 </section>
+
+<p class="guia">Какая модель на какой скорости, на какой машине и кто её измерил. Каждая строка подписана и несёт внутри sha256 файла модели: без этого хэша «llama-3.2-3b» не опознаёт ничего.</p>
+<div id="tabla" class="panel"></div>
+
 
 <footer class="honest-footer">
   <details class="pliego"><summary>Откуда берётся эта таблица</summary>

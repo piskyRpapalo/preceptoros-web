@@ -43,11 +43,12 @@
   <div class="marca"><h1>LoRAtelier benchmark's<b> · el Libro de Pruebas</b></h1></div>
 </header>
 
-<p class="guia">Qué modelo corre a cuánto, en qué máquina, y quién lo midió. Cada fila es una línea firmada con el sha256 del fichero del modelo dentro: sin ese hash, «llama-3.2-3b» no identifica nada.</p>
-
-<div id="tabla" class="panel"></div>
-
-
+<!-- LO QUE SE PUEDE HACER, PRIMERO. Orden del Soberano,
+     2026-09-14: debajo del cabecero va la accion, no el archivo.
+     Aqui la accion es el probador --elegir un motor, mandarle un
+     turno y ver la medida-- y el Libro de Pruebas es lo que queda
+     cuando alguien ya lo hizo. Un archivo delante de la puerta se
+     lee como una pagina para consultar, no para usar. -->
 <section id="probador">
   <h2>Elige y mide tu motor</h2>
   <p class="guia">Aqui se elige con que cerebro hablas y se cronometra el resultado. Vive en el Benchmark y no en la portada a proposito: ofrecer tres descargas de varios gigas nada mas abrir la pagina es caro en un telefono, y la mayoria no viene a eso.</p>
@@ -63,6 +64,10 @@
   <textarea id="medida-json" rows="5" readonly hidden></textarea>
   <button type="button" id="medida-copiar" data-copia="medida-json" data-hecho="Copiado ✓" data-manual="Selecciona y Ctrl+C" hidden>Copiar la medida</button>
 </section>
+
+<p class="guia">Qué modelo corre a cuánto, en qué máquina, y quién lo midió. Cada fila es una línea firmada con el sha256 del fichero del modelo dentro: sin ese hash, «llama-3.2-3b» no identifica nada.</p>
+<div id="tabla" class="panel"></div>
+
 
 <footer class="honest-footer">
   <details class="pliego"><summary>De dónde sale esta tabla</summary>

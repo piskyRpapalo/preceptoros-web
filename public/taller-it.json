@@ -41,7 +41,16 @@
   "chatSinRack": "Questa pagina non sa ancora chiedere un turno al rack.",
   "uPasos": "passi",
   "uPorPaso": "s/passo",
-  "uMin": "min"
+  "uMin": "min",
+  "noDisponibles": "Non ancora disponibili ({n})",
+  "resenaTitulo": "Come va questa linea?",
+  "resenaQue": "Perché (facoltativo)",
+  "resenaSirve": "Mi serve",
+  "resenaNo": "Non mi serve",
+  "resenaDe": "Recensione della linea",
+  "resenaGracias": "Firmata e conservata sul tuo dispositivo. Viaggia quando la esporti tu.",
+  "resenaFallo": "Non si è potuto firmare —",
+  "resenaIdentidad": "Crea identità"
  },
  "bloques": {
   "bienvenida": {

@@ -41,7 +41,16 @@
   "chatSinRack": "This page cannot ask the rack for a turn yet.",
   "uPasos": "steps",
   "uPorPaso": "s/step",
-  "uMin": "min"
+  "uMin": "min",
+  "noDisponibles": "Not available yet ({n})",
+  "resenaTitulo": "How is this line?",
+  "resenaQue": "Why (optional)",
+  "resenaSirve": "It works for me",
+  "resenaNo": "Not useful",
+  "resenaDe": "Review of the line",
+  "resenaGracias": "Signed and kept on your device. It travels when you export it.",
+  "resenaFallo": "Could not sign —",
+  "resenaIdentidad": "Create identity"
  },
  "bloques": {
   "bienvenida": {

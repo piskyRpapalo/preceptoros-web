@@ -713,6 +713,28 @@ class Estructura(unittest.TestCase):
                                  f"caen al respaldo en castellano: "
                                  f"{sorted(pide - tiene)}")
 
+    def test_debajo_del_cabecero_va_la_ACCION(self):
+        """La regla que el Soberano firmo el 2026-09-14, en las dos paginas.
+
+        «Debajo del cabecero debemos ver lo mas user action.» En el Libro de
+        Pruebas la accion es el probador --elegir un motor, mandarle un turno,
+        ver la medida-- y la tabla es lo que queda cuando alguien ya lo hizo.
+        Estaba al reves: un archivo delante de la puerta, que se lee como una
+        pagina para consultar y no para usar.
+
+        En Comunidad la accion son las tarjetas de las lineas, y eso lo vigila
+        `test_la_vitrina_abre_la_pagina_y_el_NO_DATA_no`. Aqui va la otra mitad
+        de la misma regla, y se comprueban por separado porque son dos paginas
+        con dos motivos distintos para haberse torcido.
+        """
+        for idi in IDIOMAS:
+            t = (PUBLICO / idi / "benchmark.html").read_text(encoding="utf-8")
+            with self.subTest(idioma=idi):
+                self.assertLess(
+                    t.index('id="probador"'), t.index('id="tabla"'),
+                    "la tabla abre el Libro de Pruebas por delante del "
+                    "probador: el archivo antes que la puerta")
+
     def test_la_vitrina_abre_la_pagina_y_el_NO_DATA_no(self):
         """Orden del Soberano, 2026-09-14, mirando la pagina en produccion.
 
@@ -1062,13 +1084,14 @@ class ElTaller(unittest.TestCase):
     def test_el_render_pide_claves_que_existen(self):
         """Los DOS ficheros del taller, desde que la ficha se mudo al escenario.
 
-        `taller.js` pinta la vitrina y `escenario.js` la pantalla que toma una
-        tarjeta al pulsarla. Los dos leen el mismo `ui` y el segundo pide catorce
-        claves que el primero no conoce: mirar solo uno seria dejar la mitad de
-        los rotulos sin vigilar justo despues de partirlos en dos.
+        `taller.js` pinta la vitrina, `escenario.js` la pantalla que toma una
+        tarjeta al pulsarla, y `resena.js` la review firmada que va dentro. Los
+        tres leen el mismo `ui`, y cada corte en dos fue por el tope de 16 KB:
+        mirar solo el primero seria dejar dos tercios de los rotulos sin vigilar
+        justo despues de partirlos.
         """
         base = set(self.textos["es"]["ui"])
-        for fichero in ("taller.js", "escenario.js"):
+        for fichero in ("taller.js", "escenario.js", "resena.js"):
             js = (PUBLICO / "assets" / fichero).read_text(encoding="utf-8")
             js = re.sub(r"/\*.*?\*/", "", js, flags=re.S)
             for clave in sorted(set(re.findall(r"UI\.([A-Za-z]+)", js))):
@@ -1120,6 +1143,38 @@ class ElTaller(unittest.TestCase):
                 self.assertEqual(con, aqui,
                                  f"preguntas que faltan o sobran en {idioma}: "
                                  f"{con ^ aqui}")
+
+    def test_la_resena_firma_el_MISMO_par_que_ya_existia(self):
+        """Una review de una linea no es un esquema nuevo: es una valoracion.
+
+        `elegir.js` ya arma ese par para juzgar una respuesta --`tipo:
+        'valoracion'`, `correccion` vacia a proposito, el juicio en `motivo`, el
+        pulgar en `sirve`-- y el laboratorio ya sabe leerlo: `ingesta.py` tiene
+        su rama y `turnos.py` lo deja FUERA del dataset filtrando en positivo.
+
+        Si la reseña inventara su propia forma, el rack recibiria dos versiones
+        del mismo hecho y alguien tendria que traducir entre ellas. Ese traductor
+        es donde un dia se pierde el consentimiento -- por eso se comprueba que
+        los dos ficheros firman los mismos campos y con el mismo `tipo`.
+
+        Se mira tambien que `correccion` salga VACIA: un texto ahi convierte la
+        valoracion en un par de entrenamiento aparentemente valido, y entonces la
+        cuarentena de `turnos.py` es lo unico que separa un pulgar de un LoRA.
+        """
+        r = (PUBLICO / "assets" / "resena.js").read_text(encoding="utf-8")
+        e = (PUBLICO / "assets" / "elegir.js").read_text(encoding="utf-8")
+        for campo in ("prompt:", "respuesta:", "correccion: ''", "corregido:",
+                      "modelo:", "idioma:", "motivo:", "tarea:", "consent: 0",
+                      "origen:", "tipo: 'valoracion'", "sirve:"):
+            with self.subTest(campo=campo):
+                self.assertIn(campo, r, f"la reseña no firma `{campo}`")
+                self.assertIn(campo.split(":")[0] + ":", e,
+                              "el par de `elegir.js` ya no tiene ese campo: "
+                              "los dos tienen que moverse juntos")
+        self.assertIn("window.Bronce.guardar", r,
+                      "la reseña no entra en el mismo almacen que el resto")
+        self.assertNotIn("fetch(", r,
+                         "la reseña sale por red: el par firmado NO viaja solo")
 
     def test_la_tarjeta_abre_el_ESCENARIO(self):
         """Se pulsa la tarjeta y la linea toma la pantalla. Orden del Soberano.

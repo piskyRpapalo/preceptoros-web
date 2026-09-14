@@ -30,10 +30,32 @@
     return n;
   }
 
+  /* LO ABIERTO DELANTE, LO CERRADO PLEGADO. Orden del Soberano, 2026-09-14.
+
+     Un anuncio cerrado no se borra --sigue diciendo que se pidio y que paso--
+     pero puesto al lado de uno abierto compite con el por la misma atencion, y
+     el que no se puede atender gana por ser mas largo. Se pliega: sigue ahi
+     para quien lo busque, deja de estar delante de quien viene a actuar.
+
+     Sin `estado`, ABIERTO. Un anuncio que nadie declaro no se esconde: fallar
+     hacia lo visible es lo correcto cuando lo que se oculta es una peticion. */
   function pinta(d) {
     raiz.innerHTML = '';
     raiz.appendChild(p(T.anTitulo, 'anuncios-cabeza'));
-    (d.anuncios || []).forEach(function (a) {
+    var lista = d.anuncios || [];
+    var abiertos = lista.filter(function (a) { return a.estado !== 'CERRADO'; });
+    var cerrados = lista.filter(function (a) { return a.estado === 'CERRADO'; });
+    var destino = raiz;
+    if (cerrados.length) {
+      var pl = document.createElement('details');
+      pl.className = 'pliego';
+      var res = document.createElement('summary');
+      res.textContent = (T.anCerrados || '').replace('{n}', cerrados.length);
+      pl.appendChild(res);
+      raiz.appendChild(pl);
+    }
+    abiertos.concat(cerrados).forEach(function (a) {
+      destino = (a.estado === 'CERRADO' && raiz.querySelector('.pliego')) || raiz;
       var t = (a.textos || {})[idioma];
       // Un idioma sin traducir no se rellena con el de al lado: se dice. Caer
       // al espanol en silencio es como llego el pie honesto en un solo idioma.
@@ -70,7 +92,7 @@
         f.appendChild(en); art.appendChild(f);
       }
       art.appendChild(p(a.autor + ' · ' + (a.cuando || '').slice(0, 10), 'tenue'));
-      raiz.appendChild(art);
+      destino.appendChild(art);
     });
   }
 

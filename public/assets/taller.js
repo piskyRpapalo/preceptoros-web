@@ -105,19 +105,44 @@
     return art;
   }
 
+  /* LO QUE SE PUEDE TOCAR HOY, DELANTE. Orden del Soberano, 2026-09-14.
+
+     Siete tarjetas seguidas se leen como siete cosas equivalentes, y no lo son:
+     tres estan en marcha --se puede hablar con ellas, medir y corregir-- y
+     cuatro son intenciones declaradas, sin modelo servido y sin nada que
+     probar. Puestas juntas, las cuatro que no se pueden tocar diluyen a las
+     tres que si: quien llega no distingue donde actuar.
+
+     Las de vision NO se esconden --siguen siendo publicas, con su causa-- se
+     PLIEGAN. Es la diferencia entre no contar algo y no ponerlo delante.
+
+     El corte es el mismo de la barra: si tiene peldano en la escalera, esta en
+     marcha. No hay una segunda regla que un dia diga otra cosa. */
   function pintar(registro) {
     REGISTRO = registro;
-    var rejilla = el('div', 'taller-rejilla');
+    var activas = el('div', 'taller-rejilla');
+    var dormidas = el('div', 'taller-rejilla');
+    var nDormidas = 0;
     (registro.bloques || [])
       .slice()
       .sort(function (a, b) { return (a.orden || 0) - (b.orden || 0); })
       .forEach(function (b) {
         var n = linea(b);
-        if (n) rejilla.appendChild(n);
+        if (!n) return;
+        if (ESCALERA.indexOf(b.estado) >= 0) { activas.appendChild(n); }
+        else { dormidas.appendChild(n); nDormidas += 1; }
       });
     caja.innerHTML = '';
     caja.appendChild(el('h2', null, UI.titulo || ''));
-    caja.appendChild(rejilla);
+    caja.appendChild(activas);
+    if (nDormidas) {
+      var pliego = el('details', 'pliego');
+      var res = el('summary', null,
+        (UI.noDisponibles || '').replace('{n}', nDormidas));
+      pliego.appendChild(res);
+      pliego.appendChild(dormidas);
+      caja.appendChild(pliego);
+    }
     paquete(registro);
   }
 

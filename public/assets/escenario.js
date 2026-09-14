@@ -243,7 +243,11 @@
       caja.appendChild(cab);
 
       var cuerpo = el('div', 'esc-cuerpo');
-      cuerpo.appendChild(chat(bloque, texto, UI));
+      var izq = el('div', 'esc-columna');
+      izq.appendChild(chat(bloque, texto, UI));
+      var r = window.Resena && window.Resena.caja(bloque, texto, UI);
+      if (r) izq.appendChild(r);
+      cuerpo.appendChild(izq);
       cuerpo.appendChild(lore(bloque, texto, UI, registro));
       caja.appendChild(cuerpo);
       fondo.appendChild(caja);
