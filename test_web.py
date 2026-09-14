@@ -3637,6 +3637,59 @@ class Traducciones(unittest.TestCase):
                         f"{idioma}/{f.name} declara lang={datos['lang']!r} "
                         f"dentro de su bloque i18n")
 
+    def test_el_bloque_de_estado_va_DESPUES_de_la_pregunta(self):
+        """El sitio del bloque decidia si el turno se veia o salia en blanco.
+
+        Medido el 2026-09-14 sobre cuatro modelos y dos preguntas. Con
+        `[SYSTEM STATE]` pegado justo delante de la pregunta, un modelo pequeno
+        lo CONTINUA: `llama3.2:1b` abria su respuesta recitandolo. Y entonces
+        `sinFuga` --que corta desde `[SYSTEM` hasta el final, porque en el
+        torrente la etiqueta de cierre llega tarde o no llega-- se comia la
+        respuesta ENTERA. Un turno en blanco, sin error, sin causa.
+
+        1 turno vacio de 8 antes; 0 de 8 despues. El antidoto estaba bien: lo
+        que estaba mal era darle de beber el veneno al modelo en el ultimo
+        sorbo.
+
+        Esta prueba mira la FORMA del codigo y no el resultado, que no puede
+        ver desde aqui. Es poco, y es lo que impide que la proxima mano que
+        toque `chat.js` vuelva a juntar las dos cadenas en el orden viejo.
+        """
+        js = (PUBLICO / "assets" / "chat.js").read_text(encoding="utf-8")
+        self.assertIn("function conEstado(texto) { return texto + estado(); }", js,
+            "chat.js ya no compone el estado detras de la pregunta")
+        self.assertNotIn("PR.papel || '') + (window.stateContext", js,
+            "el bloque de estado volvio a pegarse al papel, delante de la "
+            "pregunta: eso es lo que dejaba el turno en blanco")
+        for via in ("Rack.stream", "LocalAI.stream", "Engine.stream"):
+            with self.subTest(via=via):
+                linea = [l for l in js.splitlines() if via in l and "window." in l]
+                self.assertTrue(linea, f"no se encuentra la llamada a {via}")
+                self.assertIn("conEstado(texto)", linea[0],
+                    f"{via} manda el texto sin el bloque de estado detras")
+
+    def test_un_turno_que_el_antidoto_deja_VACIO_se_cuenta(self):
+        """Un párrafo en blanco es el fallo invisible que esta casa no fabrica.
+
+        `state.js` lo dice de si mismo --«un filtro silencioso convierte un
+        fallo del modelo en un fallo invisible»-- y `chat.js` lo fabricaba: si
+        `sinFuga` se llevaba la respuesta entera, se pintaba la cadena vacia y
+        la persona veia aparecer texto a trozos y desaparecer, sin saber que
+        habia pasado. Ahora se dice, y en las ocho lenguas.
+        """
+        js = (PUBLICO / "assets" / "chat.js").read_text(encoding="utf-8")
+        self.assertIn("T.falloRecitado", js,
+            "chat.js no avisa cuando el antidoto vacia el turno")
+        for pagina in sorted(PUBLICO.rglob("*.html")):
+            html = pagina.read_text(encoding="utf-8")
+            if '/assets/chat.js' not in html:
+                continue
+            bloque = re.search(r'id="i18n">(.*?)</script>', html, re.S)
+            with self.subTest(pagina=str(pagina.relative_to(PUBLICO))):
+                self.assertIsNotNone(bloque, "la pagina del chat no trae bloque")
+                self.assertTrue(json.loads(bloque.group(1)).get("falloRecitado"),
+                    "falta `falloRecitado`: el turno vaciado saldria mudo")
+
     def test_las_claves_mudadas_estan_donde_dicen_estar(self):
         """Una clave que sale del bloque i18n no deja de existir: cambia de casa.
 

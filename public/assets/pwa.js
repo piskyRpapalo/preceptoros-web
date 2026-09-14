@@ -67,15 +67,21 @@
  * ese es el comportamiento correcto: no hay boton que convertir.
  */
 (function () {
-  var guardado = null;
   // Se escucha YA, fuera del `load`: el navegador dispara este evento pronto y
   // quien llegue tarde no lo ve nunca. `preventDefault` evita el cartel propio
   // del navegador, que aparece donde el quiere y no donde esta el boton.
-  addEventListener('beforeinstallprompt', function (e) {
-    e.preventDefault();
-    guardado = e;
-    conecta();
-  });
+  /* Se guarda y NO se toca el cabezal. El `conecta()` que habia aqui murio el
+     2026-09-14 con el secuestro del boton (A25); la llamada sobrevivio a la
+     funcion y reventaba en carga. `instalar-descargas.js` tiene su propio
+     `beforeinstallprompt` y es quien arma el gesto donde la persona lo pidio. */
+  /* El listener SE QUEDA aunque ya no guarde nada, y el motivo no es inercia:
+     su `preventDefault` es lo que impide que el navegador saque su propio
+     cartel de instalacion donde a el le parece. El evento lo recoge donde
+     importa `instalar-descargas.js`, en la pagina que lo cuenta.
+     Lo que SI se fue es la variable `guardado`: se escribia y ya no la leia
+     nadie desde que murio el secuestro del cabezal (A25). Un valor que solo se
+     escribe es una promesa a medias -- parece que algo lo usara. */
+  addEventListener('beforeinstallprompt', function (e) { e.preventDefault(); });
 
   function textos() {
     var b = document.getElementById('i18n');
@@ -112,8 +118,11 @@
      El prompt no se pierde: vive donde tiene sentido, en el panel «Instalar
      web» de `instalar.html`, que lo arma `instalar-descargas.js` con su propio
      `beforeinstallprompt` y su respaldo manual para los navegadores que no lo
-     disparan. Ahi el gesto es el que la persona pidio. */
+     disparan. Ahi el gesto es el que la persona pidio.
 
-
-  conecta();
+     Y AQUI ABAJO habia un `conecta()` suelto que se quedo cuando la funcion se
+     fue. `ReferenceError` en CADA carga de CADA pagina que trae este guion, y
+     tres veces por pagina. No lo vio nadie porque el gate lee FICHEROS: no
+     abre el sitio, asi que un error de consola no existe para el. Lo cazo
+     abrir la portada como la abre una persona. */
 })();

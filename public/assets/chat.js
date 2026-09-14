@@ -57,14 +57,30 @@
   // El papel es el del instalador y nada mas. La memoria local y el camino de
   // aprendizaje viven en el MVP, en la maquina de la persona: esta web es
   // instalacion y comunidad, y no tiene nada de eso que ofrecer.
-  // Cuanto mas sabe el frontend, menos adivina el modelo. El bloque de estado
-  // va DESPUES del papel y ANTES de lo que escribe la persona.
-  function papel() {
-    return (nido || PR.papel || '') + (window.stateContext ? window.stateContext() : '');
+  function papel() { return nido || PR.papel || ''; }
+
+  /* EL BLOQUE DE ESTADO VA DESPUES DE LA PREGUNTA. Medido el 2026-09-14, y
+     hasta hoy iba antes.
+     El sitio importaba mucho mas de lo que parecia: puesto justo delante de la
+     pregunta, un modelo pequeno lo CONTINUA -- `llama3.2:1b` abria su
+     respuesta recitando `[SYSTEM STATE] Language: es-ES ...`. Y entonces
+     `sinFuga`, que corta desde `[SYSTEM` hasta el final porque en el torrente
+     la etiqueta de cierre llega tarde o no llega, se comia la respuesta
+     ENTERA: turno en blanco. El antidoto era correcto; lo que estaba mal era
+     darle de beber el veneno al modelo en el ultimo sorbo.
+     Medido sobre cuatro modelos y dos preguntas: 1 turno vacio de 8 antes,
+     0 de 8 despues. Y de regalo el bloque se USA mas -- `preceptor-v7` pasa de
+     «no conozco tu sistema» a «Mira tu sistema: Linux x86_64». */
+  function estado() {
+    return window.stateContext ? window.stateContext() : '';
   }
+  function conEstado(texto) { return texto + estado(); }
+
   function sobre() {
-    return { origen: 'preceptoros.org', papel: papel(), reglas: PR.reglas,
-             pregunta: entrada.value.trim() };
+    // El sobre que se lleva la persona NO cambia: papel y estado juntos, como
+    // siempre. Lo que cambio es donde se le pone al modelo, no que se exporta.
+    return { origen: 'preceptoros.org', papel: papel() + estado(),
+             reglas: PR.reglas, pregunta: entrada.value.trim() };
   }
   // Recibe el TEXTO, no la clave: asi toda cadena traducida se referencia con el
   // prefijo T y un test puede cruzar chat.js contra los tres bloques i18n sin
@@ -150,7 +166,13 @@
        etiqueta. Con guardia por si la hoja no cargo: sin ella se pinta crudo,
        que es feo, y no se rompe el turno, que seria peor. */
     var fin = function (t) {
-      p.textContent = window.sinFuga ? window.sinFuga(t) : t;
+      var limpio = window.sinFuga ? window.sinFuga(t) : t;
+      /* Y si el antidoto se lo comio ENTERO, se dice. Un parrafo en blanco es
+         justo el «fallo invisible» que `state.js` dice no querer fabricar --y
+         lo fabricaba aqui--: la persona ve el sello pensar, aparecer texto a
+         trozos y desaparecer, y no hay forma de saber que paso. Se cuenta:
+         el modelo recito su reglamento y de su turno no quedaba nada. */
+      p.textContent = (!limpio && t) ? T.falloRecitado : limpio;
       if (window.Fase) Fase('');   // TODO final pasa por aqui, tambien el vacio
       dialogo.scrollTop = dialogo.scrollHeight;
     };
@@ -169,13 +191,13 @@
     }
     // ?debug enseña el prompt entero antes de enviarlo. Detras de una bandera
     // y no siempre: un console.log permanente es ruido en la consola de otro.
-    if (/[?&]debug/.test(location.search)) console.log(papel() + '\n\n' + texto);
+    if (/[?&]debug/.test(location.search)) console.log(papel() + '\n\n' + conEstado(texto));
     // El calentamiento de shaders lo guarda engine.js, que es de quien es.
     var espera = window.Engine ? window.Engine.espera() : Promise.resolve();
     espera.then(generar, generar);
     function generar() {
     if (via === 'rack') {
-      window.Rack.stream(modeloRack, papel() + '\n\n' + texto, function (d) {
+      window.Rack.stream(modeloRack, papel() + '\n\n' + conEstado(texto), function (d) {
         if (t1 === null) { t1 = performance.now(); avisa('hablando'); }
         acc += d; acc = acc.replace(/https?:\/\/[^\s]+/g, '[URL_BLOQUEADA]');
         p.textContent = window.sinFuga ? window.sinFuga(acc) : acc;
@@ -191,7 +213,7 @@
         ofrecerJSON(T.rackCausa);
       });
     } else if (via === 'ollama') {
-      window.LocalAI.stream(papel() + '\n\n' + texto, function (d) {
+      window.LocalAI.stream(papel() + '\n\n' + conEstado(texto), function (d) {
         if (t1 === null) { t1 = performance.now(); avisa('hablando'); }
         acc += d; acc = acc.replace(/https?:\/\/[^\s]+/g, '[URL_BLOQUEADA]');
         p.textContent = window.sinFuga ? window.sinFuga(acc) : acc;
@@ -199,7 +221,7 @@
     } else {
       // WebLLM y la Prompt API generan DENTRO de engine.js: es quien decidio
       // que cerebro corre, asi que es quien sabe como pedirle un turno.
-      window.Engine.stream(papel(), texto, function (d) {
+      window.Engine.stream(papel(), conEstado(texto), function (d) {
         if (t1 === null) { t1 = performance.now(); avisa('hablando'); }
         acc += d; acc = acc.replace(/https?:\/\/[^\s]+/g, '[URL_BLOQUEADA]');
         p.textContent = window.sinFuga ? window.sinFuga(acc) : acc;
