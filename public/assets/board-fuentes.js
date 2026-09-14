@@ -76,7 +76,27 @@
     },
 
     ejemplo: function () {
-      return fetch('/threads.json').then(function (r) { return r.json(); });
+      /* LA LENGUA SE RESUELVE AQUI, y no donde se pinta. Desde el 2026-09-14
+         cada hilo de ejemplo trae su titulo en las ocho, y `board.js` pinta
+         TAMBIEN los hilos reales del Agora --cuyo titulo es una cadena escrita
+         por una persona--. Si la eleccion viviera alli, ese guion tendria que
+         saber distinguir dos formas del mismo campo cada vez que pinta una
+         fila. Aqui se elige una vez, al leer, y lo que sale de esta funcion
+         tiene la forma de siempre.
+
+         Respaldo al castellano por TITULO y no por fichero: es una cadena
+         suelta, no una lengua entera, y un hilo sin traducir entre ocho
+         traducidos se entiende; un fichero entero en otra lengua, no. */
+      var lang = (document.documentElement.lang || 'es').slice(0, 2);
+      return fetch('/threads.json').then(function (r) { return r.json(); })
+        .then(function (d) {
+          (d.hilos || []).forEach(function (h) {
+            if (h.titulo && typeof h.titulo === 'object') {
+              h.titulo = h.titulo[lang] || h.titulo.es || '';
+            }
+          });
+          return d;
+        });
     },
 
     /* Llama a `pintar(datos, procedencia)` una o dos veces: primero con lo que

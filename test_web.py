@@ -1682,6 +1682,37 @@ class Tablon(unittest.TestCase):
                     self.assertIn(clave, d, f"{idioma} no traduce {clave}")
                     self.assertTrue(d[clave].strip(), f"{idioma}: {clave} vacia")
 
+    def test_los_hilos_de_ejemplo_hablan_las_OCHO(self):
+        """Lo que ve un tester cuando el Agora no contesta -- que es siempre.
+
+        `threads.json` es el tercer respaldo del tablon y hoy el unico que se
+        pinta: la escritura del Agora esta cerrada y su API no responde. Sus
+        nueve titulos estaban en castellano, asi que el tablon --la mitad de la
+        pagina de Comunidad-- se leia en espanol en las ocho lenguas.
+
+        Las ocho van DENTRO del fichero y no en ocho ficheros: son nueve frases,
+        el fichero pasa de 2.227 B a 8.843 de un tope de 16.384, y ocho ficheros
+        para eso serian ocho peticiones y un respaldo mas que mantener. El punto
+        donde se elige la lengua es `board-fuentes.js` --al leer-- y no
+        `board.js`, que pinta tambien los hilos REALES, cuyo titulo es una
+        cadena escrita por una persona.
+        """
+        d = json.loads((PUBLICO / "threads.json").read_text(encoding="utf-8"))
+        self.assertTrue(d.get("hilos"), "el ejemplo se quedo sin hilos")
+        for i, h in enumerate(d["hilos"]):
+            with self.subTest(hilo=i):
+                self.assertIsInstance(h["titulo"], dict,
+                                      "un titulo de ejemplo sin sus lenguas")
+                self.assertEqual(set(IDIOMAS), set(h["titulo"]),
+                                 f"lenguas que faltan: "
+                                 f"{set(IDIOMAS) ^ set(h['titulo'])}")
+                for idi, t in h["titulo"].items():
+                    self.assertTrue(t.strip(), f"titulo vacio en {idi}")
+        fuentes = (PUBLICO / "assets" / "board-fuentes.js").read_text(encoding="utf-8")
+        self.assertIn("h.titulo[lang]", fuentes,
+                      "nadie resuelve la lengua del titulo: `board.js` pintaria "
+                      "[object Object]")
+
     def test_el_ejemplo_no_pisa_lo_que_ya_hay(self):
         """Si el Agora falla y ya habia algo pintado, no se retrocede.
 
