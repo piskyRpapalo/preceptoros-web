@@ -56,5 +56,9 @@
  "indice": {
   "que_es": "FTS5 lexical, dans SQLite",
   "porque": "il n'ajoute aucune dépendance, et c'est pour cela qu'il entre là où les embeddings ne peuvent pas. Mesuré dans `preceptor/memory.py`. La couche vectorielle existe UNIQUEMENT dans le laboratoire du rack, pas dans ce que vous téléchargez."
+ },
+ "actividad": {
+  "firmados_como": "des lignes avec une signature Ed25519 vérifiée à la porte. On compte des signatures, pas des personnes : ce site ne sait pas qui vous êtes.",
+  "instalaciones_causa": "elles ne sont pas comptées, et ne le seront pas. Il n'y a pas de télémétrie dans le produit ni sur ce site ; les compter exigerait précisément ce que ce projet existe pour ne pas faire."
  }
 }

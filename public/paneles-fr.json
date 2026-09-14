@@ -1,0 +1,25 @@
+{
+ "esquema": 1,
+ "idioma": "fr",
+ "nota": "Los textos de los paneles de estudio en esta lengua. Salieron de `paneles.json` el 2026-09-14: con las ocho dentro, aquel fichero pasaba de 22 KB contra un tope de 16.384. El fichero de hechos se queda con el modelo, la medida y el entorno; esto trae el nombre, lo que hace y lo que falla.",
+ "paneles": {
+  "charla-web": {
+   "nombre": "La Causerie",
+   "que_hace": "Répond sur PreceptorOS avec les commandes réelles d'installation et reconnaît ceux qui l'ont déjà installé plutôt que de leur répéter les étapes.",
+   "que_falla": "Invente des chiffres avec beaucoup de confiance. Si elle donne un nombre, demandez-lui d'où il vient : c'est le défaut que ce panneau existe pour que vous voyiez.",
+   "para_quien": "Celui qui arrive pour la première fois et veut installer sans se lire le dépôt."
+  },
+  "coder-adapter": {
+   "nombre": "Le Forgeron",
+   "que_hace": "Vit dans le terminal et écrit du code, des essais et des tests dans l'écosystème PreceptorOS. Il tourne aujourd'hui sur le modèle de base mesuré : 32,03 tok/s avec la machine à 1,04 — le deuxième plus rapide du banc, parce qu'il active 3B des 30 qu'il pèse.",
+   "que_falla": "L'adaptateur spécialisé N'EXISTE pas encore : aujourd'hui c'est le modèle de base avec des règles par-dessus, pas un LoRA entraîné pour cette maison. Et son défaut déclaré s'hérite : il forge vite et se fie à sa main. Si vous ne lui demandez pas la preuve, il vous livre la pièce sans la tremper.",
+   "para_quien": "Celui qui a déjà installé et veut que l'écosystème se construise lui-même depuis le terminal."
+  },
+  "killswitch-apocalypse": {
+   "nombre": "Killswitch Apocalypse",
+   "que_hace": "Une étude de dix minutes où la pression est une batterie, pas un chronomètre. Vous y pratiquez la seule chose qui serve quand le nuage se tait : bien demander et vérifier ce qu'on vous répond.",
+   "que_falla": "L'horloge est réelle et ne se met pas en pause. Si vous vous perdez sur la première question, la partie se termine avec le fichier à moitié fait — et cette défaite fait partie de l'étude, pas d'un défaut du jeu.",
+   "para_quien": "Qui veut savoir ce qu'il ferait sans services web, avec ce qu'il a déjà en main."
+  }
+ }
+}

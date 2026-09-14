@@ -56,5 +56,9 @@
  "indice": {
   "que_es": "FTS5 lessicale, dentro SQLite",
   "porque": "non aggiunge dipendenze, ed è per questo che entra dove gli embedding non possono. Misurato in `preceptor/memory.py`. Il livello vettoriale esiste SOLO nel laboratorio del rack, non in quello che scarichi."
+ },
+ "actividad": {
+  "firmados_como": "righe con firma Ed25519 verificata alla porta. Si contano firme, non persone: questo sito non sa chi sei.",
+  "instalaciones_causa": "non si contano, e non si conteranno. Non c'è telemetria nel prodotto né in questo sito; contarle richiederebbe esattamente quello che questo progetto esiste per non fare."
  }
 }

@@ -1,0 +1,19 @@
+{
+ "esquema": 1,
+ "idioma": "ru",
+ "nota_fichero": "El Libro de Pruebas en esta lengua. Se SUPERPONE sobre `assets/ledger.jsonl`, que es el registro firmado y viene en castellano: si aqui falta una entrada, ahi se ve la de origen. Los HECHOS --modelo, sha256, tok/s, hardware, firma-- no se traducen jamas: un nombre de modelo traducido deja de nombrar nada.",
+ "cabecera": "Измерено на суверенном узле 2026-09-13. В каждой строке — sha256 файла модели и подпись Ed25519 того, кто измерял. `ttft_ms` стоит NO_DATA, потому что его не измеряли: заполнить его правдоподобным числом было бы противоположностью тому, что делает эта таблица.",
+ "veredictos": {
+  "usable en bucle": "годится для цикла",
+  "usable con paciencia": "годится с терпением",
+  "solo chat, no bucle": "только чат, не цикл"
+ },
+ "usos": {
+  "qwen2.5-coder:3b": "Ход 1 лаборатории: извлекает факты из исправления и возвращает чистый JSON. Самая быстрая из шести.",
+  "deepseek-r1:7b": "Ход 2: разбирает, почему ответ провалился и является ли сбой закономерностью. В карточке заявлен `thinking`, и всё равно отдаёт полную схему с `think:false`.",
+  "granite3-dense:8b": "Ход 3, дверь: соответствие и проверка на инъекцию. IBM обучила её именно для этого.",
+  "qwen2.5:14b": "Ход 4: окончательное суждение двухслойного ансамбля.",
+  "swift-qwen:27b": "Подмена для хода 4. 27,3B ПЛОТНАЯ: делает ту же работу, что и 30B, за вдесятеро большее время.",
+  "qwen3-coder:30b": "Критик судьи. MoE A3B: весит 30B, активирует ~3B — поэтому 30B на iGPU быстрее, чем 7B."
+ }
+}

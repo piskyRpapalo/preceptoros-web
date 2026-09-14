@@ -1,0 +1,25 @@
+{
+ "esquema": 1,
+ "idioma": "en",
+ "nota": "Los textos de los paneles de estudio en esta lengua. Salieron de `paneles.json` el 2026-09-14: con las ocho dentro, aquel fichero pasaba de 22 KB contra un tope de 16.384. El fichero de hechos se queda con el modelo, la medida y el entorno; esto trae el nombre, lo que hace y lo que falla.",
+ "paneles": {
+  "charla-web": {
+   "nombre": "The Chat",
+   "que_hace": "Responds about PreceptorOS with the actual installation commands and recognizes those who have already installed it instead of repeating the steps.",
+   "que_falla": "Makes up figures with a lot of confidence. If it gives you a number, ask where it comes from: this is the actual flaw that this panel exists to highlight.",
+   "para_quien": "Those who arrive for the first time and want to install without reading the repository."
+  },
+  "coder-adapter": {
+   "nombre": "The Smith",
+   "que_hace": "Lives in the terminal and writes code, tests and checks inside the PreceptorOS ecosystem. Today it runs on the measured base model: 32.03 tok/s with the machine at 1.04 — second fastest on the bench, because it activates 3B of the 30 it weighs.",
+   "que_falla": "The specialised adapter does NOT exist yet: today this is the base model with rules on top, not a LoRA trained for this house. And its declared flaw carries over: it forges fast and trusts its own hand. If you do not ask for the test, it hands you the piece untempered.",
+   "para_quien": "Someone who already installed and wants the ecosystem to build itself from the terminal."
+  },
+  "killswitch-apocalypse": {
+   "nombre": "Killswitch Apocalypse",
+   "que_hace": "A ten-minute study where the pressure is a battery, not a stopwatch. You practise the only thing that works when the cloud goes quiet: asking well and checking what you are told.",
+   "que_falla": "The clock is real and does not pause. If you get lost on the first question, the run ends with the file half done — and that defeat is part of the study, not a bug in the game.",
+   "para_quien": "Anyone who wants to know what they would do without web services, with what is already in their hand."
+  }
+ }
+}

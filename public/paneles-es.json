@@ -1,0 +1,25 @@
+{
+ "esquema": 1,
+ "idioma": "es",
+ "nota": "Los textos de los paneles de estudio en esta lengua. Salieron de `paneles.json` el 2026-09-14: con las ocho dentro, aquel fichero pasaba de 22 KB contra un tope de 16.384. El fichero de hechos se queda con el modelo, la medida y el entorno; esto trae el nombre, lo que hace y lo que falla.",
+ "paneles": {
+  "charla-web": {
+   "nombre": "La Charla",
+   "que_hace": "Responde sobre PreceptorOS con los comandos reales de instalación, y reconoce a quien ya instaló en vez de repetirle los pasos.",
+   "que_falla": "Inventa cifras con mucha confianza. Si te da un número, pídele de dónde sale: es el fallo que este panel existe para que veas.",
+   "para_quien": "Quien llega por primera vez y quiere instalar sin leerse el repositorio."
+  },
+  "coder-adapter": {
+   "nombre": "El Herrero",
+   "que_hace": "Vive en la terminal y escribe código, pruebas y tests dentro del ecosistema PreceptorOS. Hoy corre sobre el modelo base medido: 32,03 tok/s con la máquina a 1,04 — el segundo más rápido del banco, porque activa 3B de los 30 que pesa.",
+   "que_falla": "El adaptador especializado NO existe todavía: hoy es el modelo base con reglas encima, no un LoRA entrenado para esta casa. Y su defecto declarado se hereda: forja rápido y confía en su mano. Si no le pides la prueba, te entrega la pieza sin templar.",
+   "para_quien": "Quien ya instaló y quiere que el ecosistema se construya a sí mismo desde la terminal."
+  },
+  "killswitch-apocalypse": {
+   "nombre": "Killswitch Apocalypse",
+   "que_hace": "Un estudio de diez minutos donde la presión es una batería, no un cronómetro. Practicas lo único que sirve cuando la nube calla: preguntar bien y comprobar lo que te contestan.",
+   "que_falla": "El reloj es real y no se pausa. Si te pierdes en la primera pregunta, la partida acaba con el archivo a medias — y esa derrota es parte del estudio, no un fallo del juego.",
+   "para_quien": "Quien quiera saber qué haría sin servicios web, con lo que ya tiene en la mano."
+  }
+ }
+}

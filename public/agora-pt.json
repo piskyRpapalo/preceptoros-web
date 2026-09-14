@@ -56,5 +56,9 @@
  "indice": {
   "que_es": "FTS5 lexical, dentro do SQLite",
   "porque": "não acrescenta dependência, e por isso entra onde os embeddings não podem. Medido em `preceptor/memory.py`. A camada vetorial existe SÓ no laboratório do rack, não no que descarregas."
+ },
+ "actividad": {
+  "firmados_como": "linhas com assinatura Ed25519 verificada à porta. Contam-se assinaturas, não pessoas: esta web não sabe quem tu és.",
+  "instalaciones_causa": "não se contam, e não se vão contar. Não há telemetria no produto nem nesta web; contá-las exigiria precisamente aquilo que este projeto existe para não fazer."
  }
 }

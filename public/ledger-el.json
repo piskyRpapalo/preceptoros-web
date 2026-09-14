@@ -1,0 +1,19 @@
+{
+ "esquema": 1,
+ "idioma": "el",
+ "nota_fichero": "El Libro de Pruebas en esta lengua. Se SUPERPONE sobre `assets/ledger.jsonl`, que es el registro firmado y viene en castellano: si aqui falta una entrada, ahi se ve la de origen. Los HECHOS --modelo, sha256, tok/s, hardware, firma-- no se traducen jamas: un nombre de modelo traducido deja de nombrar nada.",
+ "cabecera": "Μετρήθηκε στον κυρίαρχο κόμβο στις 2026-09-13. Κάθε γραμμή φέρει το sha256 του αρχείου του μοντέλου και την υπογραφή Ed25519 όποιου μέτρησε. Το `ttft_ms` είναι NO_DATA επειδή δεν μετρήθηκε: να το γεμίσεις με έναν εύλογο αριθμό θα ήταν το αντίθετο από αυτό που κάνει αυτός ο πίνακας.",
+ "veredictos": {
+  "usable en bucle": "χρήσιμο σε βρόχο",
+  "usable con paciencia": "χρήσιμο με υπομονή",
+  "solo chat, no bucle": "μόνο συνομιλία, όχι βρόχος"
+ },
+ "usos": {
+  "qwen2.5-coder:3b": "Γύρος 1 του εργαστηρίου: βγάζει τα γεγονότα μιας διόρθωσης και επιστρέφει καθαρό JSON. Το ταχύτερο από τα έξι.",
+  "deepseek-r1:7b": "Γύρος 2: αναλύει γιατί απέτυχε μια απάντηση και αν η αποτυχία είναι μοτίβο. Δηλώνει `thinking` στην καρτέλα του και παρ’ όλα αυτά επιστρέφει ολόκληρο το σχήμα με `think:false`.",
+  "granite3-dense:8b": "Γύρος 3, η πόρτα: συμμόρφωση και ελεγκτής ένεσης. Η IBM το εκπαίδευσε γι’ αυτό.",
+  "qwen2.5:14b": "Γύρος 4: η τελική κρίση του συνόλου δύο στρωμάτων.",
+  "swift-qwen:27b": "Εφεδρεία του γύρου 4. 27,3B ΠΥΚΝΟ: κάνει την ίδια δουλειά με το 30B σε δεκαπλάσιο ρολόι.",
+  "qwen3-coder:30b": "Ο Κριτικός του κριτή. MoE A3B: ζυγίζει 30B και ενεργοποιεί ~3B, γι’ αυτό ένα 30B τρέχει πιο γρήγορα από ένα 7B σε iGPU."
+ }
+}

@@ -1,0 +1,25 @@
+{
+ "esquema": 1,
+ "idioma": "pt",
+ "nota": "Los textos de los paneles de estudio en esta lengua. Salieron de `paneles.json` el 2026-09-14: con las ocho dentro, aquel fichero pasaba de 22 KB contra un tope de 16.384. El fichero de hechos se queda con el modelo, la medida y el entorno; esto trae el nombre, lo que hace y lo que falla.",
+ "paneles": {
+  "charla-web": {
+   "nombre": "A Conversa",
+   "que_hace": "Responde sobre o PreceptorOS com os comandos reais de instalação, e reconhece quem já instalou em vez de lhe repetir os passos.",
+   "que_falla": "Inventa números com muita confiança. Se te der um, pede-lhe de onde sai: é a falha que este painel existe para que vejas.",
+   "para_quien": "Quem chega pela primeira vez e quer instalar sem ler o repositório."
+  },
+  "coder-adapter": {
+   "nombre": "O Ferreiro",
+   "que_hace": "Vive no terminal e escreve código, provas e testes dentro do ecossistema PreceptorOS. Hoje corre sobre o modelo base medido: 32,03 tok/s com a máquina a 1,04 — o segundo mais rápido do banco, porque ativa 3B dos 30 que pesa.",
+   "que_falla": "O adaptador especializado NÃO existe ainda: hoje é o modelo base com regras por cima, não um LoRA treinado para esta casa. E o seu defeito declarado herda-se: forja depressa e confia na sua mão. Se não lhe pedires a prova, entrega-te a peça sem temperar.",
+   "para_quien": "Quem já instalou e quer que o ecossistema se construa a si mesmo a partir do terminal."
+  },
+  "killswitch-apocalypse": {
+   "nombre": "Killswitch Apocalypse",
+   "que_hace": "Um estudo de dez minutos onde a pressão é uma bateria, não um cronómetro. Praticas a única coisa que serve quando a nuvem se cala: perguntar bem e comprovar o que te respondem.",
+   "que_falla": "O relógio é real e não pausa. Se te perderes na primeira pergunta, a partida acaba com o ficheiro a meio — e essa derrota faz parte do estudo, não é uma falha do jogo.",
+   "para_quien": "Quem queira saber o que faria sem serviços web, com o que já tem na mão."
+  }
+ }
+}

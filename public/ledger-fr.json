@@ -1,0 +1,19 @@
+{
+ "esquema": 1,
+ "idioma": "fr",
+ "nota_fichero": "El Libro de Pruebas en esta lengua. Se SUPERPONE sobre `assets/ledger.jsonl`, que es el registro firmado y viene en castellano: si aqui falta una entrada, ahi se ve la de origen. Los HECHOS --modelo, sha256, tok/s, hardware, firma-- no se traducen jamas: un nombre de modelo traducido deja de nombrar nada.",
+ "cabecera": "Mesuré sur le nœud souverain le 2026-09-13. Chaque ligne porte le sha256 du fichier du modèle et la signature Ed25519 de celui qui a mesuré. `ttft_ms` est NO_DATA parce qu'il n'a pas été mesuré : le remplir avec un nombre plausible serait le contraire de ce que fait ce tableau.",
+ "veredictos": {
+  "usable en bucle": "utilisable en boucle",
+  "usable con paciencia": "utilisable avec patience",
+  "solo chat, no bucle": "discussion seulement, pas de boucle"
+ },
+ "usos": {
+  "qwen2.5-coder:3b": "Tour 1 du laboratoire : extrait les faits d'une correction et renvoie du JSON propre. Le plus rapide des six.",
+  "deepseek-r1:7b": "Tour 2 : analyse pourquoi une réponse a échoué et si l'échec est un motif. Sa fiche déclare `thinking` et il renvoie quand même le schéma entier avec `think:false`.",
+  "granite3-dense:8b": "Tour 3, la porte : conformité et vérificateur d'injection. IBM l'a entraîné pour cela.",
+  "qwen2.5:14b": "Tour 4 : le jugement final de l'ensemble à deux couches.",
+  "swift-qwen:27b": "Renfort du tour 4. 27,3B DENSE : fait le même travail que le 30B en dix fois plus de temps.",
+  "qwen3-coder:30b": "Le Critique du juge. MoE A3B : pèse 30B et active ~3B, c'est pourquoi un 30B va plus vite qu'un 7B sur un iGPU."
+ }
+}

@@ -56,56 +56,6 @@
     "modelo": "qwen2.5:14b",
     "rubrica": "CHECKPOINTS.md · 5 joyas, 0-2 cada una",
     "dos_capas": "determinista primero, MoE despues. Una sola capa es NO_DATA."
-   },
-   "textos": {
-    "es": {
-     "nombre": "La Charla",
-     "que_hace": "Responde sobre PreceptorOS con los comandos reales de instalación, y reconoce a quien ya instaló en vez de repetirle los pasos.",
-     "que_falla": "Inventa cifras con mucha confianza. Si te da un número, pídele de dónde sale: es el fallo que este panel existe para que veas.",
-     "para_quien": "Quien llega por primera vez y quiere instalar sin leerse el repositorio."
-    },
-    "en": {
-     "nombre": "The Chat",
-     "que_hace": "Responds about PreceptorOS with the actual installation commands and recognizes those who have already installed it instead of repeating the steps.",
-     "que_falla": "Makes up figures with a lot of confidence. If it gives you a number, ask where it comes from: this is the actual flaw that this panel exists to highlight.",
-     "para_quien": "Those who arrive for the first time and want to install without reading the repository."
-    },
-    "fr": {
-     "nombre": "La Causerie",
-     "que_hace": "Répond sur PreceptorOS avec les commandes réelles d'installation et reconnaît ceux qui l'ont déjà installé plutôt que de leur répéter les étapes.",
-     "que_falla": "Invente des chiffres avec beaucoup de confiance. Si elle donne un nombre, demandez-lui d'où il vient : c'est le défaut que ce panneau existe pour que vous voyiez.",
-     "para_quien": "Celui qui arrive pour la première fois et veut installer sans se lire le dépôt."
-    },
-    "it": {
-     "nombre": "La Chiacchierata",
-     "que_hace": "Risponde sui comandi reali di installazione di PreceptorOS e riconosce chi ha già installato invece di ripetere i passi.",
-     "que_falla": "Inventa numeri con molta sicurezza. Se ti dà un numero, chiedigli da dove proviene: è il problema che questo pannello esiste per evidenziare.",
-     "para_quien": "Chi arriva per la prima volta e vuole installare senza leggersi il repository."
-    },
-    "de": {
-     "nombre": "Die Unterhaltung",
-     "que_hace": "Antwortet auf Fragen zu PreceptorOS mit den tatsächlichen Installationskommandos und erkennt bereits installierte Benutzer anstatt ihnen die Schritte zu wiederholen.",
-     "que_falla": "Erfindet Zahlen mit großer Sicherheit. Wenn man Ihnen eine Zahl gibt, fragen Sie nach deren Herkunft: Dies ist das Problem, für das dieses Panel existiert, damit Sie es sehen können.",
-     "para_quien": "Für diejenigen, die zum ersten Mal kommen und ohne das Repository zu lesen installieren möchten."
-    },
-    "ru": {
-     "nombre": "Общение",
-     "que_hace": "Отвечает на вопросы о PreceptorOS с использованием реальных команд установки и распознает тех, кто уже установил, вместо того чтобы повторять им шаги.",
-     "que_falla": "Создает цифры с большой уверенностью. Если вы получаете число, спросите, откуда оно взято: это и есть проблема, для решения которой существует этот панель.",
-     "para_quien": "Тем, кто приходит впервые и хочет установить без чтения репозитория."
-    },
-    "el": {
-     "nombre": "Η Κουβέντα",
-     "que_hace": "Απαντά σχετικά με το PreceptorOS χρησιμοποιώντας τα πραγματικά κείμενα εγκατάστασης και αναγνωρίζοντας εγγεγραμμένους χρήστες που ήδη έχουν εγκαταστήσει, αντί για να τους επαναλαμβάνει τις βηματίστρατα.",
-     "que_falla": "Επινοείτε αριθμούς με πολύ πειθαλία. Αν σας δοθεί ένας αριθμός, αιτήστε την πηγή του: αυτό είναι το πρόβλημα που υπάρχει για το οποίο υπάρχει αυτό το παράθυρο.",
-     "para_quien": "Αυτοί που έρχονται για πρώτη φορά και θέλουν να εγκαταστήσουν χωρίς να διαβάσουν το αποθετήριο."
-    },
-    "pt": {
-     "nombre": "A Conversa",
-     "que_hace": "Responde sobre o PreceptorOS com os comandos reais de instalação, e reconhece quem já instalou em vez de lhe repetir os passos.",
-     "que_falla": "Inventa números com muita confiança. Se te der um, pede-lhe de onde sai: é a falha que este painel existe para que vejas.",
-     "para_quien": "Quem chega pela primeira vez e quer instalar sem ler o repositório."
-    }
    }
   },
   {
@@ -162,20 +112,6 @@
     "modelo": "qwen2.5:14b",
     "rubrica": "CHECKPOINTS.md · 5 joyas, 0-2 cada una",
     "dos_capas": "determinista primero, MoE despues. Una sola capa es NO_DATA."
-   },
-   "textos": {
-    "es": {
-     "nombre": "El Herrero",
-     "que_hace": "Vive en la terminal y escribe código, pruebas y tests dentro del ecosistema PreceptorOS. Hoy corre sobre el modelo base medido: 32,03 tok/s con la máquina a 1,04 — el segundo más rápido del banco, porque activa 3B de los 30 que pesa.",
-     "que_falla": "El adaptador especializado NO existe todavía: hoy es el modelo base con reglas encima, no un LoRA entrenado para esta casa. Y su defecto declarado se hereda: forja rápido y confía en su mano. Si no le pides la prueba, te entrega la pieza sin templar.",
-     "para_quien": "Quien ya instaló y quiere que el ecosistema se construya a sí mismo desde la terminal."
-    },
-    "en": {
-     "nombre": "The Smith",
-     "que_hace": "Lives in the terminal and writes code, tests and checks inside the PreceptorOS ecosystem. Today it runs on the measured base model: 32.03 tok/s with the machine at 1.04 — second fastest on the bench, because it activates 3B of the 30 it weighs.",
-     "que_falla": "The specialised adapter does NOT exist yet: today this is the base model with rules on top, not a LoRA trained for this house. And its declared flaw carries over: it forges fast and trusts its own hand. If you do not ask for the test, it hands you the piece untempered.",
-     "para_quien": "Someone who already installed and wants the ecosystem to build itself from the terminal."
-    }
    },
    "nota_de_nombre": "`coder-adapter` es el identificador tecnico y `the_smith` el del lore; ninguno se traduce. «El Herrero» es el nombre visible y se localiza. No colisiona con El Artesano del hub: El Artesano es el oficio --lee codigo, propone arreglo, escribe prueba-- y El Herrero es ese oficio TEMPLADO dentro del ecosistema. La tarjeta es el adaptador del Artesano tras su aprendizaje.",
    "tiene_lore": true
@@ -234,14 +170,6 @@
     "modelo": "qwen2.5:14b",
     "rubrica": "CHECKPOINTS.md · 5 joyas, 0-2 cada una",
     "dos_capas": "determinista primero, MoE despues. Una sola capa es NO_DATA."
-   },
-   "textos": {
-    "es": {
-     "nombre": "Killswitch Apocalypse",
-     "que_hace": "Un estudio de diez minutos donde la presión es una batería, no un cronómetro. Practicas lo único que sirve cuando la nube calla: preguntar bien y comprobar lo que te contestan.",
-     "que_falla": "El reloj es real y no se pausa. Si te pierdes en la primera pregunta, la partida acaba con el archivo a medias — y esa derrota es parte del estudio, no un fallo del juego.",
-     "para_quien": "Quien quiera saber qué haría sin servicios web, con lo que ya tiene en la mano."
-    }
    },
    "tiene_lore": true
   }

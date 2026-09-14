@@ -56,5 +56,9 @@
  "indice": {
   "que_es": "lexikalisches FTS5, innerhalb von SQLite",
   "porque": "es fügt keine Abhängigkeit hinzu, und darum passt es dorthin, wo Embeddings nicht hinkommen. Gemessen in `preceptor/memory.py`. Die Vektorschicht existiert NUR im Labor des Racks, nicht in dem, was du herunterlädst."
+ },
+ "actividad": {
+  "firmados_como": "Zeilen mit an der Tür geprüfter Ed25519-Signatur. Gezählt werden Signaturen, keine Personen: diese Seite weiß nicht, wer du bist.",
+  "instalaciones_causa": "sie werden nicht gezählt, und sie werden es auch nicht. Es gibt keine Telemetrie im Produkt und auf dieser Seite; sie zu zählen würde genau das erfordern, wofür dieses Projekt existiert, es nicht zu tun."
  }
 }

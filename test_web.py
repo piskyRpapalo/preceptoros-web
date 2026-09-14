@@ -1778,6 +1778,46 @@ class Tablon(unittest.TestCase):
                         f"{len(repetidas)} frase(s) siguen en castellano: "
                         + (repetidas[0][:80] if repetidas else ""))
 
+    def test_el_libro_de_pruebas_se_lee_en_las_OCHO(self):
+        """La tabla es el producto de esta pagina, y hablaba solo castellano.
+
+        Sus veredictos --«usable en bucle», «usable con paciencia», «solo chat,
+        no bucle»-- y el uso de cada modelo se leian en espanol en las ocho
+        lenguas. Un tester aleman veia las cifras bien y el juicio en un idioma
+        que no lee, que es justo la mitad que importa: las cifras no dicen si
+        ese modelo te sirve.
+
+        LA TRADUCCION VA ENCIMA, NUNCA DENTRO. `ledger.jsonl` es un registro
+        FIRMADO: cada linea lleva su sha256 y su Ed25519, y meterle ocho lenguas
+        cambiaria los bytes que alguien firmo. Se superpone al pintar, y los
+        hechos --modelo, sha256, tok/s, hardware, firma-- no se tocan: un nombre
+        de modelo traducido deja de nombrar nada.
+
+        Lo que este test vigila es la cobertura: un veredicto o un modelo nuevo
+        en el registro sin su traduccion se veria en castellano sin dar sintoma.
+        """
+        lineas = [json.loads(l) for l in
+                  (PUBLICO / "assets" / "ledger.jsonl").read_text(encoding="utf-8").splitlines()
+                  if l.strip()]
+        medidas = [x for x in lineas if x.get("tipo") == "medida"]
+        self.assertTrue(medidas, "el libro de pruebas se quedo sin filas")
+        veredictos = {x["veredicto"] for x in medidas if x.get("veredicto")}
+        usos = {x["modelo"] for x in medidas if (x.get("uso") or "NO_DATA") != "NO_DATA"}
+        for idi in [i for i in IDIOMAS if i != "es"]:
+            f = PUBLICO / f"ledger-{idi}.json"
+            with self.subTest(idioma=idi):
+                self.assertTrue(f.is_file(),
+                                f"falta ledger-{idi}.json: esa lengua lee los "
+                                "veredictos en castellano")
+                t = json.loads(f.read_text(encoding="utf-8"))
+                self.assertFalse(veredictos - set(t.get("veredictos", {})),
+                                 f"veredictos sin traducir: "
+                                 f"{sorted(veredictos - set(t.get('veredictos', {})))}")
+                self.assertFalse(usos - set(t.get("usos", {})),
+                                 f"modelos sin su uso traducido: "
+                                 f"{sorted(usos - set(t.get('usos', {})))}")
+                self.assertTrue(t.get("cabecera"), "sin cabecera traducida")
+
     def test_los_hilos_de_ejemplo_hablan_las_OCHO(self):
         """Lo que ve un tester cuando el Agora no contesta -- que es siempre.
 
@@ -2722,13 +2762,28 @@ class Cabezal(unittest.TestCase):
         paneles = d.get("paneles") or []
         self.assertTrue(paneles, "paneles.json existe y esta vacio: o sobra el "
                                  "fichero, o falta el contenido")
+        # LOS TEXTOS SE MUDARON a `paneles-<idioma>.json` el 2026-09-14, y el
+        # corte destapo lo que este test no podia ver: exigia `que_falla` en
+        # cada idioma PRESENTE, y dos de los tres paneles solo tenian
+        # castellano. Cumplian --su unico idioma decia que falla-- mientras seis
+        # y siete lenguas leian la ficha entera en espanol. Ahora se exige
+        # contra la lista de IDIOMAS, no contra lo que haya: una traduccion que
+        # no esta no puede pasar por estar completa.
+        textos = {}
+        for idi in IDIOMAS:
+            f = PUBLICO / f"paneles-{idi}.json"
+            with self.subTest(idioma=idi):
+                self.assertTrue(f.is_file(),
+                                f"falta paneles-{idi}.json: esa lengua lee las "
+                                "fichas en castellano")
+            if f.is_file():
+                textos[idi] = json.loads(f.read_text(encoding="utf-8")).get("paneles") or {}
         for p in paneles:
             pid = p.get("id", "?")
-            textos = p.get("textos") or {}
-            with self.subTest(panel=pid):
-                self.assertTrue(textos, f"el panel `{pid}` no trae textos")
-            for idi, t in textos.items():
+            for idi in sorted(textos):
+                t = textos[idi].get(pid)
                 with self.subTest(panel=pid, idioma=idi):
+                    self.assertTrue(t, f"el panel `{pid}` no tiene texto en «{idi}»")
                     self.assertTrue(
                         (t or {}).get("que_falla"),
                         f"el panel `{pid}` en «{idi}» no dice que falla. Una "

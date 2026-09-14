@@ -56,5 +56,9 @@
  "indice": {
   "que_es": "lexical FTS5, inside SQLite",
   "porque": "it adds no dependency, and that is why it fits where embeddings cannot. Measured in `preceptor/memory.py`. The vector layer exists ONLY in the rack's laboratory, not in what you download."
+ },
+ "actividad": {
+  "firmados_como": "rows with an Ed25519 signature verified at the door. Signatures are counted, not people: this site does not know who you are.",
+  "instalaciones_causa": "they are not counted, and they will not be. There is no telemetry in the product or on this site; counting them would require exactly what this project exists not to do."
  }
 }

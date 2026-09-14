@@ -1,0 +1,19 @@
+{
+ "esquema": 1,
+ "idioma": "en",
+ "nota_fichero": "El Libro de Pruebas en esta lengua. Se SUPERPONE sobre `assets/ledger.jsonl`, que es el registro firmado y viene en castellano: si aqui falta una entrada, ahi se ve la de origen. Los HECHOS --modelo, sha256, tok/s, hardware, firma-- no se traducen jamas: un nombre de modelo traducido deja de nombrar nada.",
+ "cabecera": "Measured on the sovereign node on 2026-09-13. Each row carries the sha256 of the model file and the Ed25519 signature of whoever measured it. `ttft_ms` is NO_DATA because it was not measured: filling it with a plausible number would be the opposite of what this table does.",
+ "veredictos": {
+  "usable en bucle": "usable in a loop",
+  "usable con paciencia": "usable with patience",
+  "solo chat, no bucle": "chat only, not a loop"
+ },
+ "usos": {
+  "qwen2.5-coder:3b": "Lab turn 1: extracts the facts from a correction and returns clean JSON. The fastest of the six.",
+  "deepseek-r1:7b": "Turn 2: analyses why an answer failed and whether the failure is a pattern. Its card declares `thinking` and it still returns the whole schema with `think:false`.",
+  "granite3-dense:8b": "Turn 3, the door: compliance and injection checker. IBM trained it for this.",
+  "qwen2.5:14b": "Turn 4: the final judgement of the two-layer ensemble.",
+  "swift-qwen:27b": "Backup for turn 4. 27.3B DENSE: does the same work as the 30B in ten times the clock.",
+  "qwen3-coder:30b": "The judge’s Critic. MoE A3B: weighs 30B and activates ~3B, which is why a 30B runs faster than a 7B on an iGPU."
+ }
+}

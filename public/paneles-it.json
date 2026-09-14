@@ -1,0 +1,25 @@
+{
+ "esquema": 1,
+ "idioma": "it",
+ "nota": "Los textos de los paneles de estudio en esta lengua. Salieron de `paneles.json` el 2026-09-14: con las ocho dentro, aquel fichero pasaba de 22 KB contra un tope de 16.384. El fichero de hechos se queda con el modelo, la medida y el entorno; esto trae el nombre, lo que hace y lo que falla.",
+ "paneles": {
+  "charla-web": {
+   "nombre": "La Chiacchierata",
+   "que_hace": "Risponde sui comandi reali di installazione di PreceptorOS e riconosce chi ha già installato invece di ripetere i passi.",
+   "que_falla": "Inventa numeri con molta sicurezza. Se ti dà un numero, chiedigli da dove proviene: è il problema che questo pannello esiste per evidenziare.",
+   "para_quien": "Chi arriva per la prima volta e vuole installare senza leggersi il repository."
+  },
+  "coder-adapter": {
+   "nombre": "Il Fabbro",
+   "que_hace": "Vive nel terminale e scrive codice, prove e test dentro l'ecosistema PreceptorOS. Oggi gira sul modello base misurato: 32,03 tok/s con la macchina a 1,04 — il secondo più veloce del banco, perché attiva 3B dei 30 che pesa.",
+   "que_falla": "L'adattatore specializzato NON esiste ancora: oggi è il modello base con regole sopra, non un LoRA addestrato per questa casa. E il suo difetto dichiarato si eredita: forgia in fretta e si fida della propria mano. Se non gli chiedi la prova, ti consegna il pezzo senza temprare.",
+   "para_quien": "Chi ha già installato e vuole che l'ecosistema si costruisca da solo dal terminale."
+  },
+  "killswitch-apocalypse": {
+   "nombre": "Killswitch Apocalypse",
+   "que_hace": "Uno studio di dieci minuti dove la pressione è una batteria, non un cronometro. Ci si esercita nella sola cosa che serve quando la nuvola tace: chiedere bene e verificare quello che ti rispondono.",
+   "que_falla": "L'orologio è reale e non si mette in pausa. Se ti perdi alla prima domanda, la partita finisce con il file a metà — e quella sconfitta fa parte dello studio, non è un difetto del gioco.",
+   "para_quien": "Chi voglia sapere cosa farebbe senza servizi web, con quello che ha già in mano."
+  }
+ }
+}

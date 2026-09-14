@@ -97,14 +97,39 @@
   // JSONL y no un JSON de una pieza: cada linea se firma, se anade y se
   // fusiona por separado. El fichero esta hecho para SEPARARSE de esta web y
   // seguir sirviendo — esta tabla es una vista suya, no su casa.
-  fetch('/assets/ledger.jsonl').then(function (r) { return r.text(); })
-    .then(function (txt) {
-      var d = { filas: [] };
+  /* LA TRADUCCION VA ENCIMA DEL REGISTRO FIRMADO, nunca dentro.
+
+     `ledger.jsonl` es el libro: cada linea lleva su sha256 y su firma Ed25519,
+     y esta hecho para separarse de esta web y seguir sirviendo. Meterle ocho
+     lenguas dentro cambiaria los bytes que alguien firmo, o sea que romperia
+     justo lo que hace que la tabla valga algo.
+
+     Asi que `ledger-<idioma>.json` trae el veredicto, el uso y la cabecera, y
+     se SUPERPONE al pintar. Los HECHOS --modelo, sha256, tok/s, hardware,
+     firma-- no se tocan jamas: un nombre de modelo traducido deja de nombrar
+     nada. Si el fichero de la lengua falta, se ve el castellano de origen. */
+  var lang = (document.documentElement.lang || 'es').slice(0, 2);
+  Promise.all([
+    fetch('/assets/ledger.jsonl').then(function (r) { return r.text(); }),
+    lang === 'es' ? Promise.resolve(null)
+      : fetch('/ledger-' + lang + '.json').then(function (r) {
+          return r.ok ? r.json() : null;
+        }).catch(function () { return null; })
+  ])
+    .then(function (par) {
+      var txt = par[0], L = par[1] || {};
+      var d = { filas: [], cabecera: L.cabecera || null };
       txt.split('\n').forEach(function (l) {
         l = l.trim(); if (!l) return;
         var o; try { o = JSON.parse(l); } catch (e) { return; }   // una linea rota no tumba la tabla
         if (o.tipo === 'cabecera') { d.estado = o.estado; d.lineas_firmadas = o.lineas_firmadas; }
-        else if (o.tipo === 'medida') d.filas.push(o);
+        else if (o.tipo === 'medida') {
+          if (L.veredictos && L.veredictos[o.veredicto]) {
+            o.veredicto = L.veredictos[o.veredicto];
+          }
+          if (L.usos && L.usos[o.modelo]) { o.uso = L.usos[o.modelo]; }
+          d.filas.push(o);
+        }
       });
       d.fuente = 'ledger.jsonl';
       (window.fluido || function (f) { f(); })(function () { pinta(d); });

@@ -1,0 +1,25 @@
+{
+ "esquema": 1,
+ "idioma": "de",
+ "nota": "Los textos de los paneles de estudio en esta lengua. Salieron de `paneles.json` el 2026-09-14: con las ocho dentro, aquel fichero pasaba de 22 KB contra un tope de 16.384. El fichero de hechos se queda con el modelo, la medida y el entorno; esto trae el nombre, lo que hace y lo que falla.",
+ "paneles": {
+  "charla-web": {
+   "nombre": "Die Unterhaltung",
+   "que_hace": "Antwortet auf Fragen zu PreceptorOS mit den tatsächlichen Installationskommandos und erkennt bereits installierte Benutzer anstatt ihnen die Schritte zu wiederholen.",
+   "que_falla": "Erfindet Zahlen mit großer Sicherheit. Wenn man Ihnen eine Zahl gibt, fragen Sie nach deren Herkunft: Dies ist das Problem, für das dieses Panel existiert, damit Sie es sehen können.",
+   "para_quien": "Für diejenigen, die zum ersten Mal kommen und ohne das Repository zu lesen installieren möchten."
+  },
+  "coder-adapter": {
+   "nombre": "Der Schmied",
+   "que_hace": "Lebt im Terminal und schreibt Code, Proben und Tests innerhalb des PreceptorOS-Ökosystems. Läuft heute auf dem gemessenen Basismodell: 32,03 tok/s bei einer Maschinenlast von 1,04 — das zweitschnellste der Bank, weil es 3B der 30 aktiviert, die es wiegt.",
+   "que_falla": "Der spezialisierte Adapter existiert NOCH NICHT: heute ist das das Basismodell mit Regeln darüber, kein für dieses Haus trainiertes LoRA. Und sein erklärter Fehler vererbt sich: er schmiedet schnell und vertraut seiner Hand. Wenn du ihn nicht um den Nachweis bittest, liefert er dir das Stück ungehärtet.",
+   "para_quien": "Wer schon installiert hat und will, dass sich das Ökosystem vom Terminal aus selbst baut."
+  },
+  "killswitch-apocalypse": {
+   "nombre": "Killswitch Apocalypse",
+   "que_hace": "Eine Studie von zehn Minuten, in der der Druck eine Batterie ist und keine Stoppuhr. Du übst das Einzige, was hilft, wenn die Cloud schweigt: gut fragen und prüfen, was man dir antwortet.",
+   "que_falla": "Die Uhr ist echt und pausiert nicht. Wenn du bei der ersten Frage hängen bleibst, endet die Runde mit der Datei zur Hälfte — und diese Niederlage gehört zur Studie, sie ist kein Fehler des Spiels.",
+   "para_quien": "Wer wissen will, was er ohne Webdienste täte, mit dem, was er schon in der Hand hat."
+  }
+ }
+}

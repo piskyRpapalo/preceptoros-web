@@ -1,0 +1,19 @@
+{
+ "esquema": 1,
+ "idioma": "de",
+ "nota_fichero": "El Libro de Pruebas en esta lengua. Se SUPERPONE sobre `assets/ledger.jsonl`, que es el registro firmado y viene en castellano: si aqui falta una entrada, ahi se ve la de origen. Los HECHOS --modelo, sha256, tok/s, hardware, firma-- no se traducen jamas: un nombre de modelo traducido deja de nombrar nada.",
+ "cabecera": "Gemessen auf dem souveränen Knoten am 2026-09-13. Jede Zeile trägt den sha256 der Modelldatei und die Ed25519-Signatur dessen, der gemessen hat. `ttft_ms` steht auf NO_DATA, weil es nicht gemessen wurde: es mit einer plausiblen Zahl zu füllen wäre das Gegenteil dessen, was diese Tabelle tut.",
+ "veredictos": {
+  "usable en bucle": "im Kreislauf nutzbar",
+  "usable con paciencia": "mit Geduld nutzbar",
+  "solo chat, no bucle": "nur Chat, kein Kreislauf"
+ },
+ "usos": {
+  "qwen2.5-coder:3b": "Runde 1 des Labors: zieht die Fakten aus einer Korrektur und gibt sauberes JSON zurück. Das schnellste der sechs.",
+  "deepseek-r1:7b": "Runde 2: analysiert, warum eine Antwort scheiterte und ob das Scheitern ein Muster ist. Seine Karte deklariert `thinking` und es liefert trotzdem das ganze Schema mit `think:false`.",
+  "granite3-dense:8b": "Runde 3, die Tür: Konformität und Injektionsprüfer. IBM hat es dafür trainiert.",
+  "qwen2.5:14b": "Runde 4: das Endurteil des zweischichtigen Ensembles.",
+  "swift-qwen:27b": "Rückhalt für Runde 4. 27,3B DICHT: leistet dieselbe Arbeit wie das 30B in der zehnfachen Zeit.",
+  "qwen3-coder:30b": "Der Kritiker des Richters. MoE A3B: wiegt 30B und aktiviert ~3B, darum läuft ein 30B auf einer iGPU schneller als ein 7B."
+ }
+}
