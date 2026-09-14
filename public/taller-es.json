@@ -54,7 +54,8 @@
     "Explícame PreceptorOS como si no supiera nada de modelos.",
     "Si no sabes algo, dilo y dime dónde buscarlo.",
     "No me prometas que recordarás esta conversación."
-   ]
+   ],
+   "adaptador": "entrenado y ensamblado como preceptor-cuentacuentos:v1; sin publicar, así que sin url y sin botón"
   },
   "medidor": {
    "nombre": "El Medidor",
@@ -81,7 +82,9 @@
     "No te inventes políticas: si no consta, dilo.",
     "Si no puedes resolverlo, escálame a una persona con referencia.",
     "No me pidas datos de tarjeta ni documentos por este chat."
-   ]
+   ],
+   "corpus": "200 muestras en dos datasets comparativos (100 EN · 100 multilingüe), reparto 50-20-15-15",
+   "falla": "los DOS fallan como producto y lo prueban como tubería. El inglés ELIGIÓ plazo, que es justo lo prohibido. El multilingüe se negó bien pero se inventó un número de referencia mezclando las cifras de la pregunta con el patrón del corpus. Ninguno deriva a canal oficial ni ofrece escalado. Con 100 muestras y pérdida 0,62 y 0,33, esto es memorización, no aprendizaje"
   },
   "business": {
    "nombre": "Business",

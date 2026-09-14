@@ -54,7 +54,8 @@
     "Spiegami PreceptorOS come se non sapessi nulla di modelli.",
     "Se non sai qualcosa, dillo e dimmi dove cercarlo.",
     "Non promettermi che ricorderai questa conversazione."
-   ]
+   ],
+   "adaptador": "addestrato e assemblato come preceptor-cuentacuentos:v1; non pubblicato, quindi senza url e senza pulsante"
   },
   "medidor": {
    "nombre": "Il Misuratore",
@@ -81,7 +82,9 @@
     "Non inventare politiche: se non risulta, dillo.",
     "Se non riesci a risolvere, passami a una persona con un riferimento.",
     "Non chiedermi dati della carta né documenti in questa chat."
-   ]
+   ],
+   "corpus": "200 campioni in due dataset comparativi (100 EN · 100 multilingue), ripartizione 50-20-15-15",
+   "falla": "ENTRAMBI falliscono come prodotto e dimostrano che la tubatura funziona. L'inglese ha SCELTO un termine, che è proprio ciò che è vietato. Il multilingue ha rifiutato bene ma si è inventato un numero di riferimento mescolando le cifre della domanda con lo schema del corpus. Nessuno dei due rimanda a un canale ufficiale né offre escalation. Con 100 campioni e perdita 0,62 e 0,33, questa è memorizzazione, non apprendimento"
   },
   "business": {
    "nombre": "Business",

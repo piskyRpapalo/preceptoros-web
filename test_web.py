@@ -1076,7 +1076,7 @@ class ElTaller(unittest.TestCase):
                     self.assertIn(clave, base,
                                   "el render pide una clave que no existe")
 
-    def test_las_preguntas_de_apertura_no_viven_en_el_REGISTRO(self):
+    def test_lo_que_se_PINTA_no_sale_del_registro(self):
         """Su propio contrato lo dice: «no lleva una palabra de prosa».
 
         Y lo incumplia: `plantilla_inicial` --las preguntas de apertura de cada
@@ -1091,17 +1091,25 @@ class ElTaller(unittest.TestCase):
         alguien quiera meter en el registro se cae aqui, no en produccion y en
         siete idiomas.
 
-        LO QUE ESTA PRUEBA NO CUBRE, y por eso se llama como se llama: en la
-        `ficha` siguen viviendo `corpus`, `prueba_de_fuego` y
-        `adaptador_estado`, que tambien son frases y tambien salen en castellano
-        en las ocho. Se mudan igual, pero son veinticuatro traducciones tecnicas
-        y van en su propio bloque: queda en PENDIENTES. Nombrar el test por lo
-        que afirma --y no por la regla entera-- es lo unico que impide que esa
-        deuda parezca cubierta.
+        LAS TRES QUE FALTABAN entraron el mismo dia: `corpus`,
+        `prueba_de_fuego` y `adaptador_estado` --el hecho mas util del registro,
+        el que dice que los dos modelos fallan como producto-- tambien se leian
+        en castellano en las ocho. Ya no estan aqui.
+
+        LO QUE ESTA PRUEBA SIGUE SIN CUBRIR, y por eso se llama por lo que
+        PINTA: el registro guarda ademas notas del autor --`por_que_instruct`,
+        `se_apoya_en`, `regla_de_los_plazos`-- que son prosa y no las lee nadie
+        en pantalla. Mientras no se pinten, no hay idioma que arreglar. El dia
+        que alguna salga a la vista, se muda como se mudaron estas, y el nombre
+        de este test dice exactamente donde mirar.
         """
         crudo = (PUBLICO / "loratelier.json").read_text(encoding="utf-8")
-        self.assertNotIn("plantilla_inicial", crudo,
-                         "vuelve a haber prosa en el fichero de hechos")
+        for campo in ("plantilla_inicial", "corpus", "prueba_de_fuego",
+                      "adaptador_estado"):
+            with self.subTest(campo=campo):
+                self.assertNotIn(campo, crudo,
+                                 "vuelve a haber prosa PINTADA en el fichero "
+                                 "de hechos")
         # Y el reverso: donde hay preguntas, las hay en las OCHO.
         con = {b for b, v in self.textos["es"]["bloques"].items() if "plantilla" in v}
         self.assertTrue(con, "ninguna linea tiene preguntas de apertura")

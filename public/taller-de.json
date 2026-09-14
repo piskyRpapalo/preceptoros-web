@@ -54,7 +54,8 @@
     "Erklär mir PreceptorOS, als wüsste ich nichts über Modelle.",
     "Wenn du etwas nicht weißt, sag es und sag mir, wo ich suchen kann.",
     "Versprich mir nicht, dass du dich an dieses Gespräch erinnern wirst."
-   ]
+   ],
+   "adaptador": "trainiert und zusammengebaut als preceptor-cuentacuentos:v1; unveröffentlicht, also ohne URL und ohne Button"
   },
   "medidor": {
    "nombre": "Der Messer",
@@ -81,7 +82,9 @@
     "Erfinde keine Richtlinien: wenn es nicht aktenkundig ist, sag es.",
     "Wenn du es nicht lösen kannst, gib mich an eine Person mit Vorgangsnummer weiter.",
     "Frag mich in diesem Chat nicht nach Kartendaten oder Dokumenten."
-   ]
+   ],
+   "corpus": "200 Beispiele in zwei Vergleichsdatensätzen (100 EN · 100 mehrsprachig), Aufteilung 50-20-15-15",
+   "falla": "BEIDE scheitern als Produkt und belegen die Pipeline. Das englische WÄHLTE eine Frist — genau das, was verboten ist. Das mehrsprachige lehnte korrekt ab, erfand aber eine Vorgangsnummer, indem es die Zahlen der Frage mit dem Muster des Korpus vermischte. Keines verweist auf einen offiziellen Kanal oder bietet eine Eskalation. Bei 100 Beispielen und Verlusten von 0,62 und 0,33 ist das Auswendiglernen, kein Lernen"
   },
   "business": {
    "nombre": "Business",

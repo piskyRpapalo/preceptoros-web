@@ -32,8 +32,7 @@
     "servido_tamano_q4_gb": 15,
     "razonamiento": "apagado",
     "por_que_instruct": "el razonamiento extendido gasta tokens invisibles antes de la primera palabra; medido en este nodo: 45 para responder una sola",
-    "adaptador_sha256": "bf3cf9534320f3204ba464aabef8ed946c00ff2c241c6efd45264761bef246af",
-    "adaptador_estado": "entrenado y ensamblado como preceptor-cuentacuentos:v1; sin publicar, asi que sin url y sin boton"
+    "adaptador_sha256": "bf3cf9534320f3204ba464aabef8ed946c00ff2c241c6efd45264761bef246af"
    },
    "medidas": {
     "n": 0,
@@ -178,11 +177,9 @@
     "servido_en_el_rack": null,
     "servido_tamano_q4_gb": null,
     "razonamiento": "apagado",
-    "corpus": "200 muestras en dos datasets comparativos (100 EN · 100 multilingue), reparto 50-20-15-15",
     "regla_de_los_plazos": "el modelo NO afirma plazos legales de memoria: nombra el canal y manda a la fuente oficial",
     "nombre_modelo": "The Tribune",
     "url_es_de_la_malla": "la ruta es relativa a proposito: hoy resuelve en el nginx del rack y dara 404 en la via publica hasta que el tunel la sirva. La direccion del nodo NO entra en el repo -- lo prohibe la guardia de higiene, y lo prohibe bien: esto se publica",
-    "prueba_de_fuego": "los DOS fallan como producto y lo prueban como tuberia. El ingles ELIGIO plazo, que es justo lo prohibido. El multilingue se nego bien pero se invento un numero de referencia mezclando las cifras de la pregunta con el patron del corpus. Ninguno deriva a canal oficial ni ofrece escalado. Con 100 muestras y perdida 0,62 y 0,33, esto es memorizacion, no aprendizaje",
     "artefacto_multi": {
      "fichero": "preceptor-tribune-multi-v1.gguf",
      "url_descarga": "/downloads/preceptor-tribune-multi-v1.gguf",

@@ -54,7 +54,8 @@
     "Explique-moi PreceptorOS comme si je ne connaissais rien aux modèles.",
     "Si tu ne sais pas quelque chose, dis-le et indique-moi où chercher.",
     "Ne me promets pas que tu te souviendras de cette conversation."
-   ]
+   ],
+   "adaptador": "entraîné et assemblé sous le nom preceptor-cuentacuentos:v1 ; non publié, donc sans url ni bouton"
   },
   "medidor": {
    "nombre": "Le Mesureur",
@@ -81,7 +82,9 @@
     "N'invente pas de règles : si ce n'est pas au dossier, dis-le.",
     "Si tu ne peux pas résoudre, passe-moi à une personne avec une référence.",
     "Ne me demande ni données de carte ni documents dans ce chat."
-   ]
+   ],
+   "corpus": "200 échantillons dans deux jeux comparatifs (100 EN · 100 multilingue), répartition 50-20-15-15",
+   "falla": "les DEUX échouent comme produit et prouvent que la tuyauterie marche. L'anglais a CHOISI un délai, ce qui est justement interdit. Le multilingue a bien refusé mais a inventé un numéro de référence en mélangeant les chiffres de la question avec le motif du corpus. Aucun ne renvoie vers un canal officiel ni ne propose d'escalade. Avec 100 échantillons et des pertes de 0,62 et 0,33, c'est de la mémorisation, pas de l'apprentissage"
   },
   "business": {
    "nombre": "Business",

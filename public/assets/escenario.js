@@ -86,13 +86,13 @@
 
     if (tanda(ul, UI.tandaEn || 'EN', f.medida_en, UI)) vivo = true;
     if (tanda(ul, UI.tandaMulti || 'MULTI', f.medida_multi, UI)) vivo = true;
-    if (hecho(ul, UI.corpus || 'corpus', f.corpus)) vivo = true;
+    if (hecho(ul, UI.corpus || 'corpus', texto.corpus)) vivo = true;
     /* LO QUE FALLA VA CON LO DEMAS, no en letra pequeña. `prueba_de_fuego` dice
        que los dos modelos fallan como producto, y es el hecho mas util de este
        registro: sin el, un beta parece un producto a medio hacer en vez de una
        tuberia que ya funciona. */
-    if (hecho(ul, UI.falla || 'falla', f.prueba_de_fuego)) vivo = true;
-    if (hecho(ul, UI.adaptador || 'adaptador', f.adaptador_estado)) vivo = true;
+    if (hecho(ul, UI.falla || 'falla', texto.falla)) vivo = true;
+    if (hecho(ul, UI.adaptador || 'adaptador', texto.adaptador)) vivo = true;
 
     ['medidas', 'tests', 'valoraciones'].forEach(function (k) {
       var r = bloque[k];

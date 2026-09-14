@@ -54,7 +54,8 @@
     "Explica-me o PreceptorOS como se eu não soubesse nada de modelos.",
     "Se não souberes alguma coisa, di-lo e indica-me onde procurar.",
     "Não me prometas que vais lembrar-te desta conversa."
-   ]
+   ],
+   "adaptador": "treinado e montado como preceptor-cuentacuentos:v1; por publicar, portanto sem url e sem botão"
   },
   "medidor": {
    "nombre": "O Medidor",
@@ -81,7 +82,9 @@
     "Não inventes políticas: se não consta, di-lo.",
     "Se não conseguires resolver, encaminha-me para uma pessoa com referência.",
     "Não me peças dados de cartão nem documentos por este chat."
-   ]
+   ],
+   "corpus": "200 amostras em dois datasets comparativos (100 EN · 100 multilingue), repartição 50-20-15-15",
+   "falla": "os DOIS falham como produto e provam-no como canalização. O inglês ESCOLHEU um prazo, que é justamente o proibido. O multilingue recusou bem mas inventou um número de referência misturando os números da pergunta com o padrão do corpus. Nenhum encaminha para canal oficial nem oferece escalamento. Com 100 amostras e perda 0,62 e 0,33, isto é memorização, não aprendizagem"
   },
   "business": {
    "nombre": "Business",
