@@ -43,16 +43,9 @@
   <div class="marca"><h1>LoRAtelier benchmark's<b> · le Livre des Preuves</b></h1></div>
 </header>
 
-<!-- LO QUE SE PUEDE HACER, PRIMERO. Orden del Soberano,
-     2026-09-14: debajo del cabecero va la accion, no el archivo.
-     Aqui la accion es el probador --elegir un motor, mandarle un
-     turno y ver la medida-- y el Libro de Pruebas es lo que queda
-     cuando alguien ya lo hizo. Un archivo delante de la puerta se
-     lee como una pagina para consultar, no para usar. -->
+<!-- La accion primero · ver test_debajo_del_cabecero_va_la_ACCION. -->
 <section id="probador">
-  <!-- LAS DOS PESTAÑAS: base contra adaptador. Un LoRA no se explica,
-       se compara; la tabla de abajo dice tok/s y eso no contesta que
-       CAMBIA en la respuesta. Lo pinta `comparar.js` desde el catalogo. -->
+  <!-- Base contra adaptador · ver `comparar.js`. -->
   <div id="comparar"></div>
   <h2>Choisissez et mesurez votre moteur</h2>
   <p class="guia">C'est ici que l'on choisit le cerveau auquel on parle, et que l'on chronometre le resultat. Cela vit dans le Benchmark et non sur la page d'accueil a dessein : proposer trois telechargements de plusieurs gigas des l'ouverture coute cher sur un telephone.</p>
@@ -68,8 +61,11 @@
   <button type="button" id="medida-copiar" data-copia="medida-json" data-hecho="Copié ✓" data-manual="Sélectionne et Ctrl+C" hidden>Copier la mesure</button>
 </section>
 
+<!-- Plegada: es archivo, no accion. Ver `sistema.css`. -->
+<details class="pliego"><summary>Le Livre d'Épreuves complet</summary>
 <p class="guia">Quel modèle tourne à quelle vitesse, sur quelle machine, et qui l'a mesuré. Chaque ligne est signée et porte le sha256 du fichier du modèle : sans ce hash, « llama-3.2-3b » n'identifie rien.</p>
 <div id="tabla" class="panel"></div>
+</details>
 
 
 <footer class="honest-footer">

@@ -43,16 +43,9 @@
   <div class="marca"><h1>LoRAtelier benchmark's<b> · το Βιβλίο Δοκιμών</b></h1></div>
 </header>
 
-<!-- LO QUE SE PUEDE HACER, PRIMERO. Orden del Soberano,
-     2026-09-14: debajo del cabecero va la accion, no el archivo.
-     Aqui la accion es el probador --elegir un motor, mandarle un
-     turno y ver la medida-- y el Libro de Pruebas es lo que queda
-     cuando alguien ya lo hizo. Un archivo delante de la puerta se
-     lee como una pagina para consultar, no para usar. -->
+<!-- La accion primero · ver test_debajo_del_cabecero_va_la_ACCION. -->
 <section id="probador">
-  <!-- LAS DOS PESTAÑAS: base contra adaptador. Un LoRA no se explica,
-       se compara; la tabla de abajo dice tok/s y eso no contesta que
-       CAMBIA en la respuesta. Lo pinta `comparar.js` desde el catalogo. -->
+  <!-- Base contra adaptador · ver `comparar.js`. -->
   <div id="comparar"></div>
   <h2>Διάλεξε και μέτρησε τον κινητήρα σου</h2>
   <p class="guia">Εδώ διαλέγεις με ποιο μυαλό μιλάς και χρονομετράται το αποτέλεσμα. Ζει στο Benchmark και όχι στην αρχική επίτηδες: να προσφέρεις τρεις λήψεις πολλών gigabyte μόλις ανοίξει η σελίδα είναι ακριβό σε ένα τηλέφωνο, και οι περισσότεροι δεν έρχονται γι᾽ αυτό.</p>
@@ -68,8 +61,11 @@
   <button type="button" id="medida-copiar" data-copia="medida-json" data-hecho="Αντιγράφηκε ✓" data-manual="Επίλεξε και Ctrl+C" hidden>Αντίγραψε τη μέτρηση</button>
 </section>
 
+<!-- Plegada: es archivo, no accion. Ver `sistema.css`. -->
+<details class="pliego"><summary>Ολόκληρο το Βιβλίο Δοκιμών</summary>
 <p class="guia">Ποιο μοντέλο τρέχει με τι ταχύτητα, σε ποιο μηχάνημα, και ποιος το μέτρησε. Κάθε σειρά είναι μια υπογεγραμμένη γραμμή με μέσα το sha256 του αρχείου του μοντέλου: χωρίς αυτό το hash, το «llama-3.2-3b» δεν ταυτοποιεί τίποτα.</p>
 <div id="tabla" class="panel"></div>
+</details>
 
 
 <footer class="honest-footer">

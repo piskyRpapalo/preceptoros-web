@@ -136,3 +136,21 @@
 .ks-cab{display:flex;flex-wrap:wrap;align-items:baseline;gap:.5rem .8rem}
 .ks-cab h3{flex:1 1 auto}
 #killswitch{margin-bottom:1.1rem}
+
+/* LOS TRES ACCESOS de la portada. Grandes de verdad --se pulsan con el pulgar--
+   y en linea donde cabe. No compiten con el cabezal: son el mismo destino para
+   quien todavia no ha mirado arriba. */
+#accesos{display:flex;flex-wrap:wrap;gap:.6rem;margin:1.2rem 0}
+.acceso{flex:1 1 12rem;text-align:center;text-decoration:none;
+  padding:.85rem 1rem;font:600 .82rem/1.3 var(--mono);letter-spacing:.06em;
+  text-transform:uppercase}
+.acceso.btn-primario:hover{background:var(--indigo);border-color:var(--indigo)}
+.acceso.btn-secundario:hover{border-color:var(--violeta);color:var(--tinta)}
+
+/* POR QUE EL LIBRO DE PRUEBAS VA PLEGADO (2026-09-14, orden del Soberano).
+   Arriba lo que se toca, plegado lo que se consulta. Esa tabla es un archivo
+   --sha256, firmas, hardware, veredictos-- y quien entra a probar un motor no
+   la necesita abierta para empezar; abierta ocupaba tres pantallas antes del
+   primer turno. La guia entra en el mismo pliego: una explicacion suelta encima
+   de algo cerrado no explica nada. Lo vigila
+   `test_debajo_del_cabecero_va_la_ACCION`. */
