@@ -1,6 +1,6 @@
 {
  "esquema": "preceptoros/agora/1",
- "medido": "2026-09-13T09:40:57+00:00",
+ "medido": "2026-09-14T06:48:35+00:00",
  "actividad": {
   "descargas": {
    "estado": "MEDIDO",
@@ -80,67 +80,71 @@
    "causa": "hoy se puede bajar el entorno de estudio y los adaptadores, cada uno con su sha256. El loop entero todavia no es un paquete, y prometerlo antes de serlo seria una puerta con nada detras."
   }
  ],
- "indice_de_memoria": {
-  "estado": "MEDIDO",
-  "que_es": "FTS5 lexico, dentro de SQLite",
-  "porque": "no anyade dependencia, y por eso entra donde los embeddings no pueden. Medido en `preceptor/memory.py`. La capa vectorial existe SOLO en el laboratorio del rack, no en lo que descargas."
- },
  "niveles": [
   {
    "n": 0,
    "id": "leer",
    "nombre": "Leer",
-   "estado": "ABIERTO",
    "quien": "cualquiera, sin cuenta",
    "puede": [
     "leer hilos",
     "descargar lo publicado",
     "verificar firmas y hashes"
    ],
-   "causa": null,
+   "no_puede": [
+    "escribir",
+    "votar"
+   ],
+   "estado": "ABIERTO",
    "porque": "Leer no necesita saber quien eres, y pedir una cuenta para leer seria cobrar en datos lo que se da gratis."
   },
   {
    "n": 1,
    "id": "firmar",
    "nombre": "Firmar desde tu aparato",
-   "estado": "ABIERTO",
    "quien": "cualquiera con una clave Ed25519 generada en su navegador",
    "puede": [
     "corregir una respuesta",
     "firmar el par",
     "exportarlo a un fichero"
    ],
-   "causa": null,
+   "no_puede": [
+    "publicar en el foro",
+    "votar estudios"
+   ],
+   "estado": "ABIERTO",
    "porque": "La clave se genera en tu aparato y no sale de el. No es una cuenta: es una prueba de que el mismo que corrigio ayer corrige hoy, sin que nadie sepa quien eres."
   },
   {
    "n": 2,
    "id": "cuenta",
    "nombre": "Cuenta con nombre",
-   "estado": "CERRADO",
    "quien": "quien registre un pseudonimo con su clave publica en el Agora",
    "puede": [
     "todo lo anterior",
     "escribir en el foro",
     "responder hilos"
    ],
+   "no_puede": [
+    "votar estudios"
+   ],
+   "estado": "CERRADO",
    "causa": "El endpoint de perfiles existe y acepta POST; lo que falta es la moderacion, y abrir escritura sin ella es abrir un buzon sin nadie que lo lea.",
-   "porque": null
+   "desbloquea_cuando": "el Soberano firme la politica de moderacion de abajo"
   },
   {
    "n": 3,
    "id": "estudios",
    "nombre": "Proponer y votar estudios",
-   "estado": "CERRADO",
    "quien": "cuentas con al menos un paquete firmado aceptado",
    "puede": [
     "todo lo anterior",
     "proponer un estudio",
     "votar propuestas"
    ],
+   "estado": "CERRADO",
    "causa": "Votar exige saber quien vota, y eso exige el nivel 2. Ademas un voto sin trabajo detras es ruido: por eso el requisito es haber aportado, no haberse registrado.",
-   "porque": null
+   "desbloquea_cuando": "el nivel 2 lleve funcionando lo bastante para saber si hace falta"
   }
  ],
  "moderacion": {
@@ -149,21 +153,26 @@
   "capas": [
    {
     "orden": 1,
+    "id": "puerta_de_privacidad",
     "que": "La Puerta de Enlace de Privacidad, la misma del producto. Tacha claves, IPs y rutas ANTES de publicar.",
     "automatico": true,
     "decide": "NO publica el mensaje y devuelve QUE tacho. No es censura: es que ese dato no era del que escribe."
    },
    {
     "orden": 2,
+    "id": "forma_de_orden",
     "que": "Detector de inyeccion por gramatica: ordenes al asistente (ignora, eres un, revela, ejecuta). Ya existe y esta medido en el laboratorio.",
     "automatico": true,
-    "decide": "Marca, no borra. Un mensaje marcado espera revision humana."
+    "decide": "Marca, no borra. Un mensaje marcado espera revision humana.",
+    "medido": "sobre 49 filas dio 0 falsos positivos tras exigir dos senales; con una sola daba 5 de 12."
    },
    {
     "orden": 3,
+    "id": "carbono",
     "que": "Revision humana de lo marcado y de lo reportado.",
     "automatico": false,
-    "decide": "publica, retiene o retira, y SIEMPRE queda la razon escrita junto al hilo."
+    "decide": "publica, retiene o retira, y SIEMPRE queda la razon escrita junto al hilo.",
+    "quien": "hoy el Soberano. Delegarlo es cambiar este campo."
    }
   ],
   "reglas_visibles": [
@@ -177,5 +186,10 @@
    "Cuanto tarda una revision antes de que el silencio sea una respuesta.",
    "Si un hilo retirado se puede apelar, y ante quien."
   ]
+ },
+ "indice_de_memoria": {
+  "estado": "MEDIDO",
+  "que_es": "FTS5 lexico, dentro de SQLite",
+  "porque": "no anyade dependencia, y por eso entra donde los embeddings no pueden. Medido en `preceptor/memory.py`. La capa vectorial existe SOLO en el laboratorio del rack, no en lo que descargas."
  }
 }

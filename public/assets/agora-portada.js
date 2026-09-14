@@ -114,10 +114,10 @@
          seria presentar una eleccion nuestra como si fuera suya. */
       var m = el('section', 'ag-bloque');
       m.appendChild(el('h3', null, T('agEstrena', 'Modelo del periodo')));
-      m.appendChild(el('p', 'no-data',
+      m.appendChild(el('p', 'no-data', T('agSinModelo',
         'NO_DATA · todavía no hay uno firmado. Lo elige el Soberano; el rack ' +
         'sirve lo que se le dice. Mientras tanto, los cerebros disponibles ' +
-        'están abajo, cada uno con lo que hace y lo que falla.'));
+        'están abajo, cada uno con lo que hace y lo que falla.')));
       raiz.appendChild(m);
 
       /* --- ACTIVIDAD ------------------------------------------------------- */
@@ -128,13 +128,13 @@
       var des = a.descargas || {};
       fila.appendChild(cifra(des, T('agDescargas', 'descargas de la última versión'),
         des.estado === 'MEDIDO'
-          ? des.version + ' · ' + des.ficheros + ' ficheros · los cuenta ' +
-            'GitHub, no nosotros'
+          ? des.version + ' · ' + T('agFicheros', '{n} ficheros · los cuenta ' +
+              'GitHub, no nosotros').replace('{n}', des.ficheros)
           : null));
       var fir = a.paquetes_firmados || {};
       fila.appendChild(cifra(fir, T('agFirmados', 'paquetes firmados recibidos'),
         fir.estado === 'MEDIDO' ? fir.como : null));
-      fila.appendChild(cifra(a.instalaciones, 'instalaciones'));
+      fila.appendChild(cifra(a.instalaciones, T('agEtInstala', 'instalaciones')));
       s.appendChild(fila);
       raiz.appendChild(s);
 
@@ -156,12 +156,13 @@
         if (f.sha256) {
           li.appendChild(el('code', 'hash', f.sha256.slice(0, 16) + '…'));
         } else {
-          li.appendChild(el('span', 'no-data', 'sin sha256'));
+          li.appendChild(el('span', 'no-data', T('agSinHash', 'sin sha256')));
         }
         lista.appendChild(li);
       });
       if (!lista.children.length) {
-        dl.appendChild(el('p', 'no-data', 'NO_DATA · no hay nada publicado todavía.'));
+        dl.appendChild(el('p', 'no-data',
+          T('agNadaPublica', 'NO_DATA · no hay nada publicado todavía.')));
       } else { dl.appendChild(lista); }
       dl.appendChild(el('p', 'tenue', T('agVerifica',
         'Comprueba el hash antes de usarlo') + ': sha256sum -c <fichero>.sha256'));
@@ -232,7 +233,7 @@
              a medias que se presenta como cerrada es peor que una declarada. */
           if ((d.moderacion.falta_para_firmarla || []).length) {
             mo.appendChild(el('p', 'no-data',
-              'Sin firmar todavía. Falta decidir: ' +
+              T('agSinFirmar', 'Sin firmar todavía. Falta decidir:') + ' ' +
               d.moderacion.falta_para_firmarla.join(' · ')));
           }
           n.appendChild(mo);
