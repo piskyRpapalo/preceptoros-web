@@ -1,8 +1,14 @@
-/* preceptoros.org · LAS DOS PESTAÑAS DEL LORATELIER: base contra adaptador.
+/* preceptoros.org · EL CONMUTADOR DEL LORATELIER: base contra adaptador.
 
-   Orden del Soberano, 2026-09-14: arriba del todo una ventana de chat abierta
-   que enseñe la diferencia mas clara entre el modelo natural y el de la casa, y
-   dos pestañas en el borde para cambiar de uno a otro sin cambiar de pantalla.
+   Orden del Arquitecto, 2026-09-15, corrigiendo la de ayer. Eran DOS PESTAÑAS
+   sobre el chat y se leian como dos ventanas: la pagina parecia ofrecer dos
+   conversaciones cuando ofrece una sola con dos motores. Ahora es UN boton que
+   dice a QUIEN cambias -- el nombre del otro, no el del actual, porque un boton
+   nombra lo que hace y no lo que ya pasa.
+
+   Y DEBAJO, EL RESTO DEL BANCO en pliegues: nombre y funcion a la vista, y
+   dentro la ficha entera con «probar». Cuatro fichas abiertas a la vez son
+   cuatro parrafos que nadie lee; cuatro titulos son una eleccion.
 
    POR QUE ESTO ES EL PRODUCTO DE ESTA PAGINA. Un LoRA no se explica: se compara.
    La tabla de abajo dice cuantos tok/s da cada uno, y eso no contesta la unica
@@ -81,28 +87,67 @@
       return cat.filter(function (c) { return c.id === id; })[0];
     }
     var pares = [['mistral-base', 'cmpNatural'], ['charla-base', 'cmpCasa']];
-    var barra = el('div', 'pestanas');
-    barra.setAttribute('data-pestanas-manual', '1');
-    barra.setAttribute('role', 'tablist');
-    var botones = [];
+    var dos = [];
     pares.forEach(function (x) {
       var c = busca(x[0]);
       if (!c) return;
-      var nombre = (prosa[x[0]] || {}).nombre || c.modelo;
-      var b = el('button', 'pestana', T(x[1], nombre));
-      b.type = 'button';
-      b.setAttribute('role', 'tab');
-      b.setAttribute('aria-selected', 'false');
-      b.addEventListener('click', function () {
-        botones.forEach(function (o) { o.setAttribute('aria-selected', 'false'); });
-        b.setAttribute('aria-selected', 'true');
-        elegir(c.modelo, nombre);
-      });
-      botones.push(b);
-      barra.appendChild(b);
+      dos.push({ tag: c.modelo,
+                 nombre: T(x[1], (prosa[x[0]] || {}).nombre || c.modelo) });
     });
-    if (!botones.length) return;
-    raiz.appendChild(barra);
+    if (dos.length !== 2) return;            // sin los dos no hay comparacion
+
+    var actual = 1;                          // arranca en el de la casa
+    var mando = el('button', 'btn-secundario cmp-mando');
+    mando.type = 'button';
+    function pinta() {
+      var otro = dos[1 - actual];
+      /* El boton dice el OTRO. Con el nombre del actual habria que leer dos
+         veces para saber si informa o si ofrece. */
+      mando.textContent = T('cmpCambiar', 'Cambiar a') + ' ' + otro.nombre;
+      mando.setAttribute('aria-label', mando.textContent);
+    }
+    mando.addEventListener('click', function () {
+      actual = 1 - actual;
+      pinta();
+      elegir(dos[actual].tag, dos[actual].nombre);
+    });
+    pinta();
+    raiz.appendChild(mando);
     raiz.appendChild(aviso);
+    elegir(dos[actual].tag, dos[actual].nombre);
+
+    /* EL BANCO, en pliegues. Son los del catalogo que no estan en el
+       conmutador: existen, estan medidos, y no abren la pagina. */
+    var otros = cat.filter(function (c) {
+      return c.id !== 'mistral-base' && c.id !== 'charla-base';
+    });
+    if (!otros.length) return;
+    var banco = el('section', 'cmp-banco');
+    banco.appendChild(el('h3', null, T('cmpBanco', 'El resto del banco')));
+    otros.forEach(function (c) {
+      var tx = prosa[c.id] || {};
+      var d = el('details', 'pliego');
+      var s = el('summary', null, (tx.nombre || c.modelo));
+      d.appendChild(s);
+      if (tx.que_es) d.appendChild(el('p', null, tx.que_es));
+      if (tx.purpose) d.appendChild(el('p', 'tenue', tx.purpose));
+      var fila = el('div', 'fila');
+      var probar = el('button', 'btn-secundario', T('cmpProbar', 'Probar'));
+      probar.type = 'button';
+      probar.addEventListener('click', function () {
+        elegir(c.modelo, tx.nombre || c.modelo);
+      });
+      /* La X cierra el pliegue. `<details>` ya se cierra pulsando su titulo,
+         pero el titulo esta arriba y la ficha puede ser larga: quien termina de
+         leerla no deberia tener que subir a buscarlo. */
+      var x = el('button', 'cierre-x', '×');
+      x.type = 'button';
+      x.setAttribute('aria-label', T('cmpCerrar', 'Cerrar'));
+      x.addEventListener('click', function () { d.open = false; s.focus(); });
+      fila.appendChild(probar); fila.appendChild(x);
+      d.appendChild(fila);
+      banco.appendChild(d);
+    });
+    raiz.appendChild(banco);
   }).catch(function () { /* sin catalogo no se pinta una comparacion falsa */ });
 })();
