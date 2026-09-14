@@ -16,10 +16,17 @@
    la linea y va por aqui» cabe en 20rem, y siete se comparan de un vistazo en
    vez de a base de scroll.
 
-   `auto-fit` con el minimo en `min(100%,20rem)`: en el telefono sale una sola
-   columna sin media query, porque ahi gana el 100%. */
-.taller-rejilla{display:grid;gap:1rem;
-  grid-template-columns:repeat(auto-fit,minmax(min(100%,20rem),1fr))}
+   UNA COLUMNA, ESCALONADA · orden del Soberano, 2026-09-14, mirando la pagina.
+   Aqui habia `auto-fit` con minimo de 20rem: en el telefono salia una columna
+   y en el escritorio dos o tres. El Killswitch, que va justo encima, ocupa el
+   ancho entero -- asi que la pagina cambiaba de forma a mitad: un panel ancho
+   y debajo una rejilla de tarjetas estrechas, como si fueran otra cosa.
+   Son lo mismo: proyectos de comunidad. Misma forma, uno debajo de otro.
+
+   Y el ancho no es decoracion: una tarjeta estrecha invita a leer el titulo,
+   una banda ancha invita a leer la linea entera, que es donde esta el estado y
+   lo que le falta. */
+.taller-rejilla{display:grid;gap:1rem;grid-template-columns:1fr}
 
 /* Cada linea es un panel del canon: hereda cristal y canto sin repetirlos. */
 .linea{position:relative;padding:1.05rem 1.15rem 1.15rem;

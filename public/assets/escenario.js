@@ -265,6 +265,92 @@
       h2.setAttribute('tabindex', '-1');
       h2.focus();
     },
+    /* LA OTRA FICHA. Un panel de estudio NO es una linea del taller: tiene
+       modelo medido, bucle de turnos, reglas y juez, y no tiene corpus ni
+       adaptador ni peldaño. Pasarlo por `abrir` lo pintaria con la mitad de
+       los huecos vacios -- que es exactamente fingir, y encima en la pagina
+       que mas presume de no hacerlo.
+       Comparten el telon, el cierre, el Esc y la vuelta del foco, que es lo
+       que tiene que ser igual; lo que cambia es lo que hay dentro. */
+    abrirPanel: function (hecho, texto, UI, sello) {
+      cerrar();
+      var fondo = el('div', 'escenario');
+      fondo.setAttribute('role', 'dialog');
+      fondo.setAttribute('aria-modal', 'true');
+      fondo.setAttribute('aria-label', texto.nombre || hecho.id);
+
+      var caja = el('div', 'esc-caja');
+      var cab = el('header', 'esc-cab');
+      var h2 = el('h2', null, texto.nombre || hecho.id);
+      cab.appendChild(h2);
+      if (sello) cab.appendChild(sello);
+      var x = el('button', 'esc-cerrar', '×');
+      x.type = 'button';
+      x.setAttribute('aria-label', (UI && UI.cerrar) || 'Cerrar');
+      cab.appendChild(x);
+      caja.appendChild(cab);
+
+      var cuerpo = el('div', 'esc-cuerpo');
+      var izq = el('div', 'esc-izq');
+      if (texto.que_hace) izq.appendChild(el('p', null, texto.que_hace));
+      if (texto.que_falla) {
+        var f = el('p', 'esc-falla');
+        f.appendChild(el('b', null, ((UI && UI.falla) || 'Falla:') + ' '));
+        f.appendChild(document.createTextNode(texto.que_falla));
+        izq.appendChild(f);
+      }
+      if (texto.para_quien) izq.appendChild(el('p', 'tenue', texto.para_quien));
+
+      /* LO MEDIDO, con su fecha. Sin la fecha una cifra de tok/s es una
+         promesa; con ella es una medida que alguien puede repetir. */
+      var m = hecho.modelo && hecho.modelo.medida;
+      if (m) {
+        var d = el('dl', 'ficha');
+        function par(k, v) {
+          if (v === undefined || v === null || v === '') return;
+          d.appendChild(el('dt', null, k));
+          d.appendChild(el('dd', null, v));
+        }
+        par('modelo', hecho.modelo.tag);
+        par('tok/s', m.tok_s);
+        par('sha256', hecho.modelo.sha256);
+        par((UI && UI.loreFecha) || 'medido', m.cuando);
+        izq.appendChild(d);
+      }
+      cuerpo.appendChild(izq);
+
+      /* EL BUCLE, que es lo que este panel tiene y una linea no: quien contesta
+         en cada turno. Es la ficha entera del proyecto en cuatro lineas. */
+      var der = el('div', 'esc-der');
+      var turnos = (hecho.loop && hecho.loop.turnos) || [];
+      if (turnos.length) {
+        var ol = el('ol', 'esc-loop');
+        turnos.forEach(function (tn) {
+          ol.appendChild(el('li', null,
+            tn.papel + ' · ' + (tn.modelo || (tn.nota || 'NO_DATA'))));
+        });
+        der.appendChild(ol);
+      }
+      var reglas = hecho.reglas || {};
+      Object.keys(reglas).forEach(function (k) {
+        der.appendChild(el('p', 'tenue', reglas[k]));
+      });
+      cuerpo.appendChild(der);
+
+      caja.appendChild(cuerpo);
+      fondo.appendChild(caja);
+      document.body.appendChild(fondo);
+      document.documentElement.classList.add('sin-scroll');
+      abierto = { caja: fondo, volver: document.activeElement };
+
+      x.addEventListener('click', cerrar);
+      fondo.addEventListener('click', function (e) { if (e.target === fondo) cerrar(); });
+      document.addEventListener('keydown', function esc(e) {
+        if (e.key === 'Escape') { cerrar(); document.removeEventListener('keydown', esc); }
+      });
+      h2.setAttribute('tabindex', '-1');
+      h2.focus();
+    },
     cerrar: cerrar
   };
 })();

@@ -34,6 +34,11 @@
 
   Promise.all([
     fetch('/paneles.json', { cache: 'no-store' }).then(function (r) { return r.json(); }),
+    fetch('/taller-' + lang + '.json').then(function (r) { return r.ok ? r.json() : null; })
+      .catch(function () { return null; })
+      .then(function (x) {
+        return x || fetch('/taller-es.json').then(function (r) { return r.json(); });
+      }),
     fetch('/paneles-' + lang + '.json').then(function (r) {
       return r.ok ? r.json() : null;
     }).catch(function () { return null; })
@@ -41,6 +46,8 @@
         return t || fetch('/paneles-es.json').then(function (r) { return r.json(); });
       })
   ]).then(function (par) {
+    var UI = (par[1] && par[1].ui) || {};
+    par = [par[0], par[2]];
     var hecho = (par[0].paneles || []).filter(function (p) {
       return p.id === 'killswitch-apocalypse';
     })[0];
@@ -63,6 +70,35 @@
       caja.appendChild(f);
     }
     if (t.para_quien) caja.appendChild(el('p', 'ks-tenue', t.para_quien));
+
+    /* EL PANEL ENTERO ABRE, no un titulo ni un boton en una esquina. Orden del
+       Soberano, y ademas ya tiene su cicatriz: el enlace estirado se pinta
+       DEBAJO de los hermanos que vienen despues y se traga el clic si no lleva
+       `z-index` (A24). Aqui se resuelve sin pseudoelemento --el panel es el
+       boton-- que es menos codigo y no puede volver a pasar.
+       Se usa `abrirPanel` y NO `abrir`: esta ficha no es una linea del taller
+       --tiene bucle y juez, y no tiene corpus ni peldaño-- y pasarla por el
+       otro camino la pintaria medio vacia. */
+    caja.tabIndex = 0;
+    caja.setAttribute('role', 'button');
+    caja.setAttribute('aria-label', t.nombre || hecho.id);
+    function entrar() {
+      if (!window.Escenario || !window.Escenario.abrirPanel) return;
+      var sello = el('span', 'ks-sello', T('ksSello', 'modo avion'));
+      /* El rotulo de cerrar sale de `taller-<idioma>.json`, que es donde vive
+         el del otro telon. Una clave nueva para decir lo mismo son ocho
+         traducciones mas que pueden faltar en una, y ademas dos palabras
+         distintas para el mismo gesto en la misma pagina. */
+      window.Escenario.abrirPanel(hecho, t, {
+        cerrar: UI.cerrar,
+        falla: T('agFalla', 'Falla:'),
+        loreFecha: T('agMedido', 'Medido')
+      }, sello);
+    }
+    caja.addEventListener('click', entrar);
+    caja.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); entrar(); }
+    });
     raiz.appendChild(caja);
   }).catch(function () { /* sin datos, la pestaña sigue en pie */ });
 })();
