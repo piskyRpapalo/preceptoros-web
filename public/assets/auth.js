@@ -179,11 +179,13 @@
     zona.appendChild(b);
   }
   function registrar() {
+    // Devuelve promesa: quien la llama desde fuera necesita saber CUANDO hay
+    // identidad para reintentar la firma.
     // Solo para el fallo: el aviso ya se leyo en el menu, antes de pulsar.
     var aviso = document.createElement('p');
     aviso.className = 'nodata';
     zona.appendChild(aviso);
-    crypto.subtle.generateKey({ name: 'Ed25519' }, false, ['sign', 'verify'])
+    return crypto.subtle.generateKey({ name: 'Ed25519' }, false, ['sign', 'verify'])
       .then(function (k) {
         return tx('readwrite', function (s) { s.put(k, CLAVE); }).then(function () { return k; });
       })
@@ -199,6 +201,15 @@
 
   window.Identity = {
     quien: function () { return yo && yo.apodo; },
+    /* CREAR, desde fuera de este fichero y sin salirse de su dueno. La clave
+       sigue naciendo aqui --`auth.js` es el unico que abre la base
+       `preceptoros`, y una segunda pieza con su propia idea de la version es
+       como se rompen las bases de datos-- pero ahora se puede PEDIR.
+
+       Hace falta porque el callejon sin salida estaba medido: se escribe una
+       correccion entera, se pulsa Firmar, y la pagina contesta «sin identidad»
+       sin decir donde se consigue una. */
+    crear: function () { return registrar(); },
     // La clave PUBLICA en hex. La privada sigue siendo no extraible: esto no
     // afloja nada, solo expone lo que ya es publico por definicion. Hace falta
     // para derivar el codigo de vinculo web<->app del onboarding.

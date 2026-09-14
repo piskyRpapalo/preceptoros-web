@@ -230,6 +230,33 @@
         // El fallo se DICE con su causa. Un boton que no hace nada y no
         // explica por que es peor que un boton que no esta.
         aviso.textContent = L('corregirFallo') + ' — ' + (e && e.message ? e.message : e);
+        /* EL CALLEJON SIN SALIDA, medido como usuario el 2026-09-14: se escribe
+           la correccion entera, se pulsa Firmar, y la pagina contesta «sin
+           identidad» -- que es verdad, y no dice donde se consigue una. La
+           salida se pone AQUI, que es donde esta la persona, y no en una nota
+           que la mande a buscar un boton del cabezal.
+
+           Se reusa `idEntrar`, el rotulo que ya tienen las ocho lenguas para
+           ese mismo gesto: una clave nueva para decir lo mismo son ocho
+           traducciones y una ocasion mas de que falte una. */
+        if (/sin identidad/.test(String(e && e.message)) && window.Identity
+            && window.Identity.crear && !caja.querySelector('.crear-id')) {
+          var nace = document.createElement('button');
+          nace.type = 'button'; nace.className = 'boton crear-id';
+          nace.textContent = L('idEntrar');
+          nace.addEventListener('click', function () {
+            nace.disabled = true;
+            window.Identity.crear().then(function () {
+              nace.remove(); aviso.textContent = '';
+              enviar.click();          // se reintenta la firma que ya estaba escrita
+            }, function (x) {
+              nace.disabled = false;
+              aviso.textContent = L('corregirFallo') + ' — ' +
+                (x && x.message ? x.message : x);
+            });
+          });
+          caja.appendChild(nace);
+        }
       });
     });
     return caja;

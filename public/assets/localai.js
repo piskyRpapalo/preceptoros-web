@@ -60,10 +60,31 @@
               { detail: { modelo: n, ms: ms } }));
             salida.innerHTML = '';
             salida.appendChild(nota(T.laiListo + ' ' + n));
+            // El camino de vuelta, a la vista: sin esto «Hablaras con X» es una
+            // puerta de un solo sentido y comparar exige recargar la pagina.
+            var otro = document.createElement('button');
+            otro.type = 'button'; otro.className = 'leve';
+            otro.textContent = T.laiBuscar;
+            otro.addEventListener('click', function () {
+              salida.remove(); boton.disabled = false; buscar(boton);
+            });
+            var f3 = document.createElement('div'); f3.className = 'fila';
+            f3.appendChild(otro); salida.appendChild(f3);
           });
           f.appendChild(b);
         });
         salida.appendChild(f);
+        /* EL BOTON VUELVE. Se apagaba al empezar la busqueda --bien: dos sondas
+           a la vez no dicen nada-- y no se encendia nunca mas si la busqueda
+           salia BIEN. Consecuencia, medida como usuario el 2026-09-14: una vez
+           elegido un modelo, la lista se sustituye por «Hablaras con X» y no hay
+           forma de volver a la lista. En la pagina cuyo trabajo es COMPARAR
+           modelos, se podia evaluar uno por carga de pagina.
+
+           Se enciende aqui y no en el `click` de cada modelo porque el fallo es
+           de la busqueda, no de la eleccion: quien encontro treinta modelos
+           tiene derecho a volver a la lista aunque no haya elegido ninguno. */
+        boton.disabled = false;
       })
       .catch(function (e) {
         // Se declara la causa: sin Ollama y con Ollama-pero-sin-permiso son
