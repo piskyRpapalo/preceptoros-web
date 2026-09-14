@@ -54,9 +54,15 @@
      Benchmark por seis rotulos es caro. Sin respaldo, el boton alli saldria SIN
      TEXTO, que es peor que no estar. */
   var MIO = null;
+  /* TRES fuentes. `window.FIRMA` lo trae `corregir-<idioma>.js`, y existe
+     porque en `benchmark.html` --que NO carga `hub.js`-- estas trece claves
+     vivian solo en castellano y aqui abajo `L()` devuelve CADENA VACIA: boton
+     sin texto en la pagina donde se firman las correcciones, en siete lenguas.
+     Las traducciones ya estaban escritas; lo que faltaba era leerlas. */
   function L(clave) {
     var t = (window.Hub && window.Hub.textos) || {};
     if (t[clave]) { return t[clave]; }
+    if (window.FIRMA && window.FIRMA[clave]) { return window.FIRMA[clave]; }
     if (MIO === null) {
       var b = document.getElementById('i18n');
       try { MIO = b ? JSON.parse(b.textContent) : {}; } catch (e) { MIO = {}; }
@@ -64,42 +70,14 @@
     return MIO[clave] || '';
   }
 
-  /* LAS PALABRAS DE LA EXPORTACION VIVEN AQUI, Y ES UNA EXCEPCION MEDIDA.
-     Lo normal en esta casa es `hub-textos.json`, y ahi deberian estar. Medido
-     el 2026-09-13: ese fichero pesa 15.908 B y el tope por fichero es 16.384
-     --`test_web.py::TOPE_FICHERO`--, o sea 476 B de aire para CUATRO claves en
-     OCHO idiomas. No caben, y partir el catalogo de textos por la mitad para
-     meter una frase seria romper algo grande por algo pequeno.
-     Si un dia hay sitio, se mudan: el sitio natural sigue siendo aquel. */
-  var PALABRAS = {
-    es: { b: 'Exportar correcciones', n: 'correcciones guardadas',
-          q: 'Se descarga a tu aparato y no se envía a nadie. Hoy no hay dónde subirlo: guárdalo, valdrá cuando abra el canal.',
-          v: 'Exportadas', e: 'No se pudo exportar' },
-    en: { b: 'Export corrections', n: 'saved corrections',
-          q: 'It downloads to your device and is sent to no one. There is nowhere to upload it yet: keep it, it will count when the channel opens.',
-          v: 'Exported', e: 'Could not export' },
-    fr: { b: 'Exporter les corrections', n: 'corrections enregistrées',
-          q: 'Téléchargé sur votre appareil, envoyé à personne. Nulle part où le déposer pour le moment : gardez-le, il comptera.',
-          v: 'Exportées', e: 'Échec de l\'export' },
-    pt: { b: 'Exportar correções', n: 'correções guardadas',
-          q: 'Descarrega para o teu aparelho e não se envia a ninguém. Ainda não há onde o carregar: guarda-o, valerá quando abrir o canal.',
-          v: 'Exportadas', e: 'Não foi possível exportar' },
-    it: { b: 'Esportare le correzioni', n: 'correzioni salvate',
-          q: 'Si scarica sul tuo apparecchio e non si invia a nessuno. Non c\'è ancora dove caricarlo: conservalo, varrà quando apre il canale.',
-          v: 'Esportate', e: 'Impossibile esportare' },
-    de: { b: 'Korrekturen exportieren', n: 'gespeicherte Korrekturen',
-          q: 'Wird auf dein Gerät geladen und an niemanden gesendet. Es gibt noch keinen Ort zum Hochladen: behalte sie, sie zählt später.',
-          v: 'Exportiert', e: 'Export fehlgeschlagen' },
-    ru: { b: 'Экспорт исправлений', n: 'сохранённых исправлений',
-          q: 'Загружается на твоё устройство и никому не отправляется. Пока некуда её загрузить: сохрани, она пригодится.',
-          v: 'Экспортировано', e: 'Не удалось экспортировать' },
-    el: { b: 'Εξαγωγή διορθώσεων', n: 'αποθηκευμένες διορθώσεις',
-          q: 'Κατεβαίνει στη συσκευή σου και δεν στέλνεται πουθενά. Δεν υπάρχει ακόμη πού να ανέβει: κράτησέ το, θα μετρήσει.',
-          v: 'Εξήχθησαν', e: 'Αδύνατη η εξαγωγή' }
-  };
 
   function P(clave) {
-    return (PALABRAS[idioma()] || PALABRAS.es)[clave];
+    /* Las palabras de la exportacion se mudaron a `corregir-<idioma>.js` el
+       2026-09-14, que es lo que su propio comentario pedia desde el 13. Si el
+       fichero de la lengua no llego, se dice con NO_DATA en vez de pintar un
+       boton sin rotulo: un mando mudo no se distingue de una pagina rota. */
+    var e = (window.FIRMA && window.FIRMA.exp) || null;
+    return e ? e[clave] : 'NO_DATA';
   }
 
   /* El par se lee del DIALOGO, no de una variable que chat.js nos pase. Asi

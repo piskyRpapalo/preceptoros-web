@@ -23,5 +23,5 @@
 #
 # AL CAMBIAR UN ASSET: sube `version` en `public/sw.js` y pega aqui la huella
 # nueva que el propio test te dice.
-huella=8ec3a16e16f6fc19
-version=preceptoros-2026-14-c
+huella=cac4857934d82d7a
+version=preceptoros-2026-14-d

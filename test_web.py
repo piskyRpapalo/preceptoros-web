@@ -3690,6 +3690,71 @@ class Traducciones(unittest.TestCase):
                 self.assertTrue(json.loads(bloque.group(1)).get("falloRecitado"),
                     "falta `falloRecitado`: el turno vaciado saldria mudo")
 
+    # Las trece de firmar una correccion, y de donde sale cada una.
+    ROTULOS_FIRMA_HUB = ("corregirBoton", "corregirQue", "corregirMotivo",
+                         "corregirFirmar", "corregirNoViaja",
+                         "corregirGuardado", "corregirFallo")
+    ROTULOS_FIRMA_NAV = ("idEntrar", "idAviso", "idClave", "idFallo",
+                         "idPerfil", "idPublica")
+
+    def test_los_rotulos_de_FIRMAR_dicen_lo_mismo_que_su_fuente(self):
+        """`corregir-<idioma>.js` es GENERADO, y esto lo demuestra.
+
+        Nace de una averia del 2026-09-14 peor de lo que parecia: en SIETE de
+        las ocho lenguas, `benchmark.html` --la pagina donde se firman las
+        correcciones-- no cargaba `corregir.js`, `aprender.js` ni `elegir.js`.
+        No es que el boton saliera sin texto: es que la cadena de feedback
+        entera solo existia en castellano.
+
+        Y las ocho traducciones llevaban meses escritas en `hub-textos.json` y
+        `nav.json`. Lo que faltaba no era traducir: era LEER. Misma forma que
+        A16 -- el dato correcto al lado, sin leer.
+
+        Copiar ese texto a un tercer sitio sin esta prueba seria garantizar que
+        divergen. Con ella, tocar la fuente y no el reflejo pone el gate rojo.
+        """
+        import re as _re
+        hub = json.loads((PUBLICO / "hub-textos.json").read_text(encoding="utf-8"))["textos"]
+        nav = json.loads((PUBLICO / "nav.json").read_text(encoding="utf-8"))["textos"]
+        for idioma in IDIOMAS:
+            f = PUBLICO / "assets" / f"corregir-{idioma}.js"
+            with self.subTest(idioma=idioma):
+                self.assertTrue(f.is_file(),
+                    f"falta {f.name}: en {idioma} el boton de firmar saldria mudo")
+                m = _re.search(r"window\.FIRMA\s*=\s*(\{.*?\});",
+                               f.read_text(encoding="utf-8"), _re.S)
+                self.assertIsNotNone(m, f"{f.name} no declara window.FIRMA")
+                datos = json.loads(m.group(1))
+                for clave in self.ROTULOS_FIRMA_HUB:
+                    self.assertEqual(datos.get(clave), hub[idioma].get(clave),
+                        f"{f.name} y hub-textos.json no dicen lo mismo en «{clave}»")
+                for clave in self.ROTULOS_FIRMA_NAV:
+                    self.assertEqual(datos.get(clave), nav[idioma].get(clave),
+                        f"{f.name} y nav.json no dicen lo mismo en «{clave}»")
+                # `exp` no se compara con nadie: este fichero ES su fuente. Lo
+                # que si se exige es que este entero, porque si falta el boton
+                # de exportar sale «NO_DATA» en pantalla.
+                exp = datos.get("exp") or {}
+                faltan = [k for k in ("b", "n", "q", "v", "e") if not exp.get(k)]
+                self.assertFalse(faltan,
+                    f"{f.name} no trae las palabras de la exportacion {faltan}")
+
+    def test_la_cadena_de_FEEDBACK_esta_en_las_ocho(self):
+        """Las tres piezas, o ninguna. Y no basta con que el fichero exista.
+
+        `corregir.js` pinta «Corregir esta respuesta», `aprender.js` el
+        «¿te ha servido?» y `elegir.js` arma el par que se firma. Faltando una
+        sola, la pagina ofrece la mitad de un camino.
+        """
+        for idioma in IDIOMAS:
+            html = (PUBLICO / idioma / "benchmark.html").read_text(encoding="utf-8")
+            for guion in ("corregir.js", "aprender.js", "elegir.js",
+                          f"corregir-{idioma}.js"):
+                with self.subTest(idioma=idioma, guion=guion):
+                    self.assertIn(f'/assets/{guion}"', html,
+                        f"{idioma}/benchmark.html no carga {guion}: ahi la "
+                        f"correccion firmada no existe")
+
     def test_las_claves_mudadas_estan_donde_dicen_estar(self):
         """Una clave que sale del bloque i18n no deja de existir: cambia de casa.
 
