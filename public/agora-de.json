@@ -1,0 +1,60 @@
+{
+ "esquema": 1,
+ "idioma": "de",
+ "nota": "La prosa del Agora en esta lengua. Se SUPERPONE por id sobre `agora.json`, que es el fichero de hechos y viene en castellano: si aqui falta una entrada, ahi se ve la de origen. Anadir un nivel o un cerrado en el registro NO rompe nada aqui -- sale sin traducir, y eso es lo que tiene que pasar.",
+ "cerrado": {
+  "foro": {
+   "que": "Das Forum",
+   "causa": "es ist die Öffnung der Agora und verlangt Konten mit Namen. Die Agora erklärt heute «Schreiben geschlossen: sie moderiert noch nicht». Es braucht die Unterschrift des Souveräns."
+  },
+  "estudios": {
+   "que": "Studien vorschlagen und abstimmen",
+   "causa": "das gehört zum Forum: abstimmen verlangt zu wissen, wer abstimmt, und das verlangt Konten."
+  },
+  "paquete": {
+   "que": "Das vollständige Ökosystem-Paket",
+   "causa": "heute lassen sich die Studienumgebung und die Adapter herunterladen, jeder mit seinem sha256. Der ganze Kreislauf ist noch kein Paket, und es zu versprechen, bevor es eines ist, wäre eine Tür ohne etwas dahinter."
+  }
+ },
+ "niveles": {
+  "leer": {
+   "nombre": "Lesen",
+   "quien": "alle, ohne Konto",
+   "porque": "Lesen muss nicht wissen, wer du bist, und ein Konto fürs Lesen zu verlangen hieße, mit Daten zu bezahlen, was verschenkt wird."
+  },
+  "firmar": {
+   "nombre": "Von deinem Gerät aus signieren",
+   "quien": "alle mit einem im Browser erzeugten Ed25519-Schlüssel",
+   "porque": "Der Schlüssel entsteht auf deinem Gerät und verlässt es nicht. Es ist kein Konto: es ist der Beweis, dass derselbe, der gestern korrigiert hat, heute korrigiert — ohne dass jemand weiß, wer du bist."
+  },
+  "cuenta": {
+   "nombre": "Konto mit Namen",
+   "quien": "wer ein Pseudonym mit seinem öffentlichen Schlüssel in der Agora registriert",
+   "causa": "Der Profil-Endpunkt existiert und nimmt POST an; was fehlt, ist die Moderation, und das Schreiben ohne sie zu öffnen heißt, einen Briefkasten zu öffnen, den niemand leert."
+  },
+  "estudios": {
+   "nombre": "Studien vorschlagen und abstimmen",
+   "quien": "Konten mit mindestens einem angenommenen signierten Paket",
+   "causa": "Abstimmen verlangt zu wissen, wer abstimmt, und das verlangt Stufe 2. Außerdem ist eine Stimme ohne Arbeit dahinter Rauschen: deshalb lautet die Bedingung, beigetragen zu haben, nicht sich registriert zu haben."
+  }
+ },
+ "moderacion": {
+  "estado": "STANDARD · nicht unterzeichnet",
+  "principio": "Wie im Rest des Hauses: das Deterministische entscheidet, das Urteil berät. Ein überprüfbarer Filter läuft zuerst; ein Mensch entscheidet danach, und nur über das, was der Filter nicht klärt.",
+  "reglas": [
+   "Nichts wird still gelöscht: eine zurückgezogene Nachricht hinterlässt ihre Lücke und ihren Grund.",
+   "Wer moderiert, ist sichtbar. Ein anonymer Moderator verantwortet nichts.",
+   "Moderiert wird die Nachricht, nicht die Person. Es gibt keine automatischen Sperren.",
+   "Eine Meldung ist keine Stimme: zehn Meldungen entfernen von allein gar nichts."
+  ],
+  "falta": [
+   "Wer moderiert, wenn der Souverän nicht da ist.",
+   "Wie lange eine Prüfung dauert, bevor Schweigen eine Antwort ist.",
+   "Ob ein zurückgezogener Faden angefochten werden kann, und bei wem."
+  ]
+ },
+ "indice": {
+  "que_es": "lexikalisches FTS5, innerhalb von SQLite",
+  "porque": "es fügt keine Abhängigkeit hinzu, und darum passt es dorthin, wo Embeddings nicht hinkommen. Gemessen in `preceptor/memory.py`. Die Vektorschicht existiert NUR im Labor des Racks, nicht in dem, was du herunterlädst."
+ }
+}

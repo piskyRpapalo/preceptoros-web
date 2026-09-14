@@ -1,0 +1,60 @@
+{
+ "esquema": 1,
+ "idioma": "en",
+ "nota": "La prosa del Agora en esta lengua. Se SUPERPONE por id sobre `agora.json`, que es el fichero de hechos y viene en castellano: si aqui falta una entrada, ahi se ve la de origen. Anadir un nivel o un cerrado en el registro NO rompe nada aqui -- sale sin traducir, y eso es lo que tiene que pasar.",
+ "cerrado": {
+  "foro": {
+   "que": "The forum",
+   "causa": "it is the opening of the Agora and it requires named accounts. The Agora declares today «writing closed: it does not moderate yet». It needs the Sovereign's signature."
+  },
+  "estudios": {
+   "que": "Proposing and voting on studies",
+   "causa": "it goes with the forum: voting requires knowing who votes, and that requires accounts."
+  },
+  "paquete": {
+   "que": "The complete ecosystem package",
+   "causa": "today you can download the study environment and the adapters, each with its sha256. The whole loop is not a package yet, and promising it before it is one would be a door with nothing behind it."
+  }
+ },
+ "niveles": {
+  "leer": {
+   "nombre": "Read",
+   "quien": "anyone, no account",
+   "porque": "Reading does not need to know who you are, and asking for an account in order to read would be charging in data for something given away."
+  },
+  "firmar": {
+   "nombre": "Sign from your device",
+   "quien": "anyone with an Ed25519 key generated in their browser",
+   "porque": "The key is generated on your device and never leaves it. It is not an account: it is proof that whoever corrected yesterday is correcting today, without anyone knowing who you are."
+  },
+  "cuenta": {
+   "nombre": "Named account",
+   "quien": "whoever registers a pseudonym with their public key in the Agora",
+   "causa": "The profile endpoint exists and accepts POST; what is missing is moderation, and opening writing without it is opening a mailbox with nobody to read it."
+  },
+  "estudios": {
+   "nombre": "Propose and vote on studies",
+   "quien": "accounts with at least one accepted signed package",
+   "causa": "Voting requires knowing who votes, and that requires level 2. Besides, a vote with no work behind it is noise: that is why the requirement is having contributed, not having registered."
+  }
+ },
+ "moderacion": {
+  "estado": "STANDARD · unsigned",
+  "principio": "The same as the rest of the house: the deterministic decides, judgement advises. A filter that can be checked runs first; a person decides afterwards, and only on what the filter does not settle.",
+  "reglas": [
+   "Nothing is deleted in silence: a withdrawn message leaves its gap and its reason.",
+   "Whoever moderates is visible. An anonymous moderator answers for nothing.",
+   "The message is moderated, not the person. There are no automatic bans.",
+   "A report is not a vote: ten reports withdraw nothing on their own."
+  ],
+  "falta": [
+   "Who moderates when the Sovereign is away.",
+   "How long a review takes before silence becomes an answer.",
+   "Whether a withdrawn thread can be appealed, and to whom."
+  ]
+ },
+ "indice": {
+  "que_es": "lexical FTS5, inside SQLite",
+  "porque": "it adds no dependency, and that is why it fits where embeddings cannot. Measured in `preceptor/memory.py`. The vector layer exists ONLY in the rack's laboratory, not in what you download."
+ }
+}

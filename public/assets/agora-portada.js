@@ -102,8 +102,58 @@
       .catch(function () { /* sin paneles la portada sigue en pie */ });
   }
 
-  fetch('/agora.json', { cache: 'no-store' })
-    .then(function (r) { return r.json(); })
+  /* LA PROSA VA APARTE DE LOS HECHOS, y encima de ellos.
+
+     `agora.json` lo escribe `agora_portada.py` desde el rack y lo llena de
+     castellano: causas, niveles, la politica de moderacion entera. Son treinta
+     frases, y se leian en espanol en las ocho lenguas -- la mitad de esta
+     pagina.
+
+     No se traducen DENTRO de ese fichero: son 30 frases por 8 lenguas, y un
+     fichero medido que ademas carga con sus propias traducciones se pasa del
+     tope el primer dia. Van en `/agora-<idioma>.json`, siete ficheros --el
+     castellano ya esta en los hechos, que es su idioma de origen-- y se
+     SUPERPONEN por id.
+
+     Superponer y no sustituir importa: si el fichero no esta, o llega roto, o
+     el Soberano anade un nivel que todavia nadie ha traducido, se ve el
+     castellano. Se degrada a la lengua de origen, que es lo que hace esta casa,
+     y no a un hueco. */
+  function conProsa(d, P) {
+    if (!P) return d;
+    (d.cerrado || []).forEach(function (x) {
+      var t = (P.cerrado || {})[x.id];
+      if (t) { if (t.que) x.que = t.que; if (t.causa) x.causa = t.causa; }
+    });
+    (d.niveles || []).forEach(function (x) {
+      var t = (P.niveles || {})[x.id];
+      if (!t) return;
+      ['nombre', 'quien', 'causa', 'porque'].forEach(function (k) {
+        if (t[k]) x[k] = t[k];
+      });
+    });
+    if (d.moderacion && P.moderacion) {
+      var m = P.moderacion;
+      if (m.estado) d.moderacion.estado = m.estado;
+      if (m.principio) d.moderacion.principio = m.principio;
+      if (m.reglas) d.moderacion.reglas_visibles = m.reglas;
+      if (m.falta) d.moderacion.falta_para_firmarla = m.falta;
+    }
+    if (d.indice_de_memoria && P.indice) {
+      if (P.indice.que_es) d.indice_de_memoria.que_es = P.indice.que_es;
+      if (P.indice.porque) d.indice_de_memoria.porque = P.indice.porque;
+    }
+    return d;
+  }
+
+  Promise.all([
+    fetch('/agora.json', { cache: 'no-store' }).then(function (r) { return r.json(); }),
+    idioma() === 'es' ? Promise.resolve(null)
+      : fetch('/agora-' + idioma() + '.json').then(function (r) {
+          return r.ok ? r.json() : null;
+        }).catch(function () { return null; })
+  ])
+    .then(function (par) { return conProsa(par[0], par[1]); })
     .then(function (d) {
       raiz.innerHTML = '';
 
@@ -248,21 +298,22 @@
       var i = d.indice_de_memoria;
       if (i && i.estado === 'MEDIDO') {
         var q = el('section', 'ag-bloque');
-        q.appendChild(el('h3', null, 'Cómo recuerda'));
+        q.appendChild(el('h3', null, T('agMemoria', 'Cómo recuerda')));
         q.appendChild(el('p', null, i.que_es));
         q.appendChild(el('p', 'tenue', i.porque));
         raiz.appendChild(q);
       }
 
       var pie = el('p', 'tenue');
-      pie.textContent = 'Medido ' + (d.medido || 'NO_DATA').slice(0, 16) +
-        ' · fuente: /agora.json';
+      pie.textContent = T('agMedido', 'Medido') + ' ' +
+        (d.medido || 'NO_DATA').slice(0, 16) + ' · /agora.json';
       raiz.appendChild(pie);
     })
     .catch(function (e) {
       /* El fallo se DICE con su causa. Un hueco mudo se lee como un sitio roto. */
       raiz.innerHTML = '';
       raiz.appendChild(el('p', 'no-data',
-        'NO_DATA · no se pudo leer /agora.json — ' + (e && e.message ? e.message : e)));
+        T('agNoLee', 'NO_DATA · no se pudo leer /agora.json —') + ' ' +
+        (e && e.message ? e.message : e)));
     });
 })();

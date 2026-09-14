@@ -1,0 +1,60 @@
+{
+ "esquema": 1,
+ "idioma": "pt",
+ "nota": "La prosa del Agora en esta lengua. Se SUPERPONE por id sobre `agora.json`, que es el fichero de hechos y viene en castellano: si aqui falta una entrada, ahi se ve la de origen. Anadir un nivel o un cerrado en el registro NO rompe nada aqui -- sale sin traducir, y eso es lo que tiene que pasar.",
+ "cerrado": {
+  "foro": {
+   "que": "O fórum",
+   "causa": "é a abertura da Ágora e exige contas com nome. A Ágora declara hoje «escrita fechada: ainda não modera». Precisa da assinatura do Soberano."
+  },
+  "estudios": {
+   "que": "Propor e votar estudos",
+   "causa": "vai com o fórum: votar exige saber quem vota, e isso exige as contas."
+  },
+  "paquete": {
+   "que": "O pacote completo do ecossistema",
+   "causa": "hoje pode descarregar-se o ambiente de estudo e os adaptadores, cada um com o seu sha256. O ciclo inteiro ainda não é um pacote, e prometê-lo antes de o ser seria uma porta sem nada atrás."
+  }
+ },
+ "niveles": {
+  "leer": {
+   "nombre": "Ler",
+   "quien": "qualquer pessoa, sem conta",
+   "porque": "Ler não precisa de saber quem és, e pedir uma conta para ler seria cobrar em dados aquilo que se dá."
+  },
+  "firmar": {
+   "nombre": "Assinar a partir do teu aparelho",
+   "quien": "qualquer pessoa com uma chave Ed25519 gerada no seu navegador",
+   "porque": "A chave gera-se no teu aparelho e não sai dele. Não é uma conta: é a prova de que quem corrigiu ontem corrige hoje, sem que ninguém saiba quem és."
+  },
+  "cuenta": {
+   "nombre": "Conta com nome",
+   "quien": "quem registe um pseudónimo com a sua chave pública na Ágora",
+   "causa": "O endpoint de perfis existe e aceita POST; o que falta é a moderação, e abrir a escrita sem ela é abrir uma caixa de correio sem ninguém que a leia."
+  },
+  "estudios": {
+   "nombre": "Propor e votar estudos",
+   "quien": "contas com pelo menos um pacote assinado aceite",
+   "causa": "Votar exige saber quem vota, e isso exige o nível 2. Além disso, um voto sem trabalho por trás é ruído: por isso o requisito é ter contribuído, não ter-se registado."
+  }
+ },
+ "moderacion": {
+  "estado": "PADRÃO · por assinar",
+  "principio": "O mesmo que o resto da casa: o determinista decide, o juízo aconselha. Um filtro que se pode comprovar corre primeiro; uma pessoa decide depois, e só sobre o que o filtro não resolve.",
+  "reglas": [
+   "Nada se apaga em silêncio: uma mensagem retirada deixa o seu buraco e o seu motivo.",
+   "Quem modera vê-se. Um moderador anónimo não responde por nada.",
+   "Modera-se a mensagem, não a pessoa. Não há expulsões automáticas.",
+   "A denúncia não é um voto: dez denúncias não retiram nada por si só."
+  ],
+  "falta": [
+   "Quem modera quando o Soberano não está.",
+   "Quanto demora uma revisão antes de o silêncio ser uma resposta.",
+   "Se um tópico retirado pode ser contestado, e perante quem."
+  ]
+ },
+ "indice": {
+  "que_es": "FTS5 lexical, dentro do SQLite",
+  "porque": "não acrescenta dependência, e por isso entra onde os embeddings não podem. Medido em `preceptor/memory.py`. A camada vetorial existe SÓ no laboratório do rack, não no que descarregas."
+ }
+}

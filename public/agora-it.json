@@ -1,0 +1,60 @@
+{
+ "esquema": 1,
+ "idioma": "it",
+ "nota": "La prosa del Agora en esta lengua. Se SUPERPONE por id sobre `agora.json`, que es el fichero de hechos y viene en castellano: si aqui falta una entrada, ahi se ve la de origen. Anadir un nivel o un cerrado en el registro NO rompe nada aqui -- sale sin traducir, y eso es lo que tiene que pasar.",
+ "cerrado": {
+  "foro": {
+   "que": "Il forum",
+   "causa": "è l'apertura dell'Agorà e richiede account con nome. L'Agorà dichiara oggi «scrittura chiusa: non modera ancora». Serve la firma del Sovrano."
+  },
+  "estudios": {
+   "que": "Proporre e votare studi",
+   "causa": "va con il forum: votare richiede sapere chi vota, e questo richiede gli account."
+  },
+  "paquete": {
+   "que": "Il pacchetto completo dell'ecosistema",
+   "causa": "oggi si possono scaricare l'ambiente di studio e gli adattatori, ognuno con il suo sha256. Il ciclo intero non è ancora un pacchetto, e prometterlo prima che lo sia sarebbe una porta senza niente dietro."
+  }
+ },
+ "niveles": {
+  "leer": {
+   "nombre": "Leggere",
+   "quien": "chiunque, senza account",
+   "porque": "Leggere non ha bisogno di sapere chi sei, e chiedere un account per leggere sarebbe farsi pagare in dati ciò che si regala."
+  },
+  "firmar": {
+   "nombre": "Firmare dal tuo dispositivo",
+   "quien": "chiunque abbia una chiave Ed25519 generata nel proprio browser",
+   "porque": "La chiave si genera sul tuo dispositivo e non ne esce. Non è un account: è la prova che chi ha corretto ieri corregge oggi, senza che nessuno sappia chi sei."
+  },
+  "cuenta": {
+   "nombre": "Account con nome",
+   "quien": "chi registri uno pseudonimo con la propria chiave pubblica nell'Agorà",
+   "causa": "L'endpoint dei profili esiste e accetta POST; quello che manca è la moderazione, e aprire la scrittura senza di essa è aprire una cassetta postale che nessuno svuota."
+  },
+  "estudios": {
+   "nombre": "Proporre e votare studi",
+   "quien": "account con almeno un pacchetto firmato accettato",
+   "causa": "Votare richiede sapere chi vota, e questo richiede il livello 2. Inoltre un voto senza lavoro dietro è rumore: per questo il requisito è aver contribuito, non essersi registrati."
+  }
+ },
+ "moderacion": {
+  "estado": "STANDARD · non firmata",
+  "principio": "Come il resto della casa: il deterministico decide, il giudizio consiglia. Un filtro verificabile viene prima; una persona decide dopo, e solo su quello che il filtro non risolve.",
+  "reglas": [
+   "Niente si cancella in silenzio: un messaggio ritirato lascia il suo vuoto e il suo motivo.",
+   "Chi modera si vede. Un moderatore anonimo non risponde di niente.",
+   "Si modera il messaggio, non la persona. Non ci sono espulsioni automatiche.",
+   "La segnalazione non è un voto: dieci segnalazioni non ritirano niente da sole."
+  ],
+  "falta": [
+   "Chi modera quando il Sovrano non c'è.",
+   "Quanto dura una revisione prima che il silenzio sia una risposta.",
+   "Se un thread ritirato si può appellare, e davanti a chi."
+  ]
+ },
+ "indice": {
+  "que_es": "FTS5 lessicale, dentro SQLite",
+  "porque": "non aggiunge dipendenze, ed è per questo che entra dove gli embedding non possono. Misurato in `preceptor/memory.py`. Il livello vettoriale esiste SOLO nel laboratorio del rack, non in quello che scarichi."
+ }
+}

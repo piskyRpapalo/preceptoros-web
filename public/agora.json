@@ -1,6 +1,6 @@
 {
  "esquema": "preceptoros/agora/1",
- "medido": "2026-09-14T06:48:35+00:00",
+ "medido": "2026-09-14T06:58:29+00:00",
  "actividad": {
   "descargas": {
    "estado": "MEDIDO",
@@ -68,14 +68,17 @@
  ],
  "cerrado": [
   {
+   "id": "foro",
    "que": "El foro",
    "causa": "es la apertura del Agora y exige cuentas con nombre. El Agora declara hoy «escritura cerrada: todavia no modera». Necesita firma del Soberano."
   },
   {
+   "id": "estudios",
    "que": "Proponer y votar estudios",
    "causa": "va con el foro: votar exige saber quien vota, y eso exige las cuentas."
   },
   {
+   "id": "paquete",
    "que": "El paquete completo del ecosistema",
    "causa": "hoy se puede bajar el entorno de estudio y los adaptadores, cada uno con su sha256. El loop entero todavia no es un paquete, y prometerlo antes de serlo seria una puerta con nada detras."
   }

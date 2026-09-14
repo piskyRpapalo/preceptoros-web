@@ -1,0 +1,60 @@
+{
+ "esquema": 1,
+ "idioma": "fr",
+ "nota": "La prosa del Agora en esta lengua. Se SUPERPONE por id sobre `agora.json`, que es el fichero de hechos y viene en castellano: si aqui falta una entrada, ahi se ve la de origen. Anadir un nivel o un cerrado en el registro NO rompe nada aqui -- sale sin traducir, y eso es lo que tiene que pasar.",
+ "cerrado": {
+  "foro": {
+   "que": "Le forum",
+   "causa": "c'est l'ouverture de l'Agora et cela exige des comptes nommés. L'Agora déclare aujourd'hui « écriture fermée : elle ne modère pas encore ». Il faut la signature du Souverain."
+  },
+  "estudios": {
+   "que": "Proposer et voter des études",
+   "causa": "cela va avec le forum : voter exige de savoir qui vote, et cela exige les comptes."
+  },
+  "paquete": {
+   "que": "Le paquet complet de l'écosystème",
+   "causa": "aujourd'hui on peut télécharger l'environnement d'étude et les adaptateurs, chacun avec son sha256. La boucle entière n'est pas encore un paquet, et le promettre avant qu'elle en soit un serait une porte sans rien derrière."
+  }
+ },
+ "niveles": {
+  "leer": {
+   "nombre": "Lire",
+   "quien": "n'importe qui, sans compte",
+   "porque": "Lire n'a pas besoin de savoir qui vous êtes, et demander un compte pour lire reviendrait à faire payer en données ce qui est donné."
+  },
+  "firmar": {
+   "nombre": "Signer depuis votre appareil",
+   "quien": "quiconque a une clé Ed25519 générée dans son navigateur",
+   "porque": "La clé est générée sur votre appareil et n'en sort pas. Ce n'est pas un compte : c'est la preuve que celui qui a corrigé hier corrige aujourd'hui, sans que personne sache qui vous êtes."
+  },
+  "cuenta": {
+   "nombre": "Compte nommé",
+   "quien": "quiconque enregistre un pseudonyme avec sa clé publique dans l'Agora",
+   "causa": "Le point d'accès des profils existe et accepte POST ; ce qui manque, c'est la modération, et ouvrir l'écriture sans elle revient à ouvrir une boîte aux lettres que personne ne relève."
+  },
+  "estudios": {
+   "nombre": "Proposer et voter des études",
+   "quien": "les comptes avec au moins un paquet signé accepté",
+   "causa": "Voter exige de savoir qui vote, et cela exige le niveau 2. De plus, un vote sans travail derrière est du bruit : c'est pourquoi la condition est d'avoir contribué, pas de s'être inscrit."
+  }
+ },
+ "moderacion": {
+  "estado": "STANDARD · non signée",
+  "principio": "Comme le reste de la maison : le déterministe décide, le jugement conseille. Un filtre vérifiable passe en premier ; une personne décide ensuite, et seulement sur ce que le filtre ne tranche pas.",
+  "reglas": [
+   "Rien n'est effacé en silence : un message retiré laisse son trou et son motif.",
+   "Qui modère se voit. Un modérateur anonyme ne répond de rien.",
+   "On modère le message, pas la personne. Il n'y a pas d'exclusions automatiques.",
+   "Un signalement n'est pas un vote : dix signalements ne retirent rien à eux seuls."
+  ],
+  "falta": [
+   "Qui modère quand le Souverain n'est pas là.",
+   "Combien de temps prend une révision avant que le silence soit une réponse.",
+   "Si un fil retiré peut faire l'objet d'un appel, et auprès de qui."
+  ]
+ },
+ "indice": {
+  "que_es": "FTS5 lexical, dans SQLite",
+  "porque": "il n'ajoute aucune dépendance, et c'est pour cela qu'il entre là où les embeddings ne peuvent pas. Mesuré dans `preceptor/memory.py`. La couche vectorielle existe UNIQUEMENT dans le laboratoire du rack, pas dans ce que vous téléchargez."
+ }
+}

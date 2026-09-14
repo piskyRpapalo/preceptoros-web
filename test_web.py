@@ -1690,6 +1690,47 @@ class Tablon(unittest.TestCase):
                     self.assertIn(clave, d, f"{idioma} no traduce {clave}")
                     self.assertTrue(d[clave].strip(), f"{idioma}: {clave} vacia")
 
+    def test_la_prosa_del_agora_cubre_lo_que_el_registro_declara(self):
+        """Treinta frases que se leian en castellano en las ocho lenguas.
+
+        `agora.json` lo escribe el rack y viene en castellano: las causas de lo
+        cerrado, los cuatro niveles, la politica de moderacion entera. Eso es la
+        mitad de la pagina de Comunidad, y estaba en espanol para todo el mundo.
+
+        La traduccion va en `agora-<idioma>.json` y se SUPERPONE por id sobre los
+        hechos. El castellano no tiene fichero: es el idioma de origen, ya esta
+        en el registro. Superponer y no sustituir es lo que hace que anadir un
+        nivel nuevo no rompa nada -- sale sin traducir, que es lo correcto.
+
+        LO QUE ESTE TEST VIGILA, y es lo que el diseno no puede garantizar solo:
+        que las listas tengan la MISMA longitud. Si el Soberano anade una quinta
+        regla de moderacion, las siete traducciones seguirian ensenando cuatro y
+        la pagina no daria ningun sintoma: cuatro reglas se leen perfectamente
+        bien. Una regla que desaparece al cambiar de idioma es justo el fallo
+        que nadie reporta.
+        """
+        hechos = json.loads((PUBLICO / "agora.json").read_text(encoding="utf-8"))
+        ids_cerrado = {x["id"] for x in hechos.get("cerrado", [])}
+        ids_niveles = {x["id"] for x in hechos.get("niveles", [])}
+        mod = hechos.get("moderacion", {})
+        for idi in [i for i in IDIOMAS if i != "es"]:
+            f = PUBLICO / f"agora-{idi}.json"
+            with self.subTest(idioma=idi):
+                self.assertTrue(f.is_file(),
+                                f"falta agora-{idi}.json: esa lengua lee el "
+                                "Agora entero en castellano")
+                t = json.loads(f.read_text(encoding="utf-8"))
+                self.assertEqual(ids_cerrado, set(t.get("cerrado", {})),
+                                 "los cerrados traducidos no son los del registro")
+                self.assertEqual(ids_niveles, set(t.get("niveles", {})),
+                                 "los niveles traducidos no son los del registro")
+                self.assertEqual(len(mod.get("reglas_visibles", [])),
+                                 len(t.get("moderacion", {}).get("reglas", [])),
+                                 "una regla de moderacion desaparece en esta lengua")
+                self.assertEqual(len(mod.get("falta_para_firmarla", [])),
+                                 len(t.get("moderacion", {}).get("falta", [])),
+                                 "falta una de las decisiones pendientes")
+
     def test_los_hilos_de_ejemplo_hablan_las_OCHO(self):
         """Lo que ve un tester cuando el Agora no contesta -- que es siempre.
 
