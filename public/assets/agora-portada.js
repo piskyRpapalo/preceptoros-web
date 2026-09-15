@@ -183,16 +183,14 @@
       raiz.innerHTML = '';
 
       /* --- EL MODELO DEL PERIODO -------------------------------------------
-         Lo DECIDE el Soberano; el rack sirve. Es una decision, no una medida,
+         Lo DECIDE el Arquitecto; el rack sirve. Es una decision, no una medida,
          asi que mientras no este firmada no se deduce del modelo mas usado ni
          de ningun otro proxy: se dice que falta. Rellenarlo con una heuristica
          seria presentar una eleccion nuestra como si fuera suya. */
       var m = el('section', 'ag-bloque');
       m.appendChild(el('h3', null, T('agEstrena', 'Modelo del periodo')));
       m.appendChild(el('p', 'no-data', T('agSinModelo',
-        'NO_DATA · todavía no hay uno firmado. Lo elige el Soberano; el rack ' +
-        'sirve lo que se le dice. Mientras tanto, los cerebros disponibles ' +
-        'están abajo, cada uno con lo que hace y lo que falla.')));
+        'NO_DATA · todavía no hay uno firmado. Lo elige el Arquitecto; el rack sirve lo que se le dice.')));
       raiz.appendChild(m);
 
       /* --- ACTIVIDAD ------------------------------------------------------- */

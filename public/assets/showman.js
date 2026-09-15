@@ -49,25 +49,36 @@
   /* Las tres procedencias, y son tres promesas distintas -- por eso se nombran
      y no se resumen en «disponible». Desde donde contesta algo cambia quien
      puede leerlo y quien lo paga. */
-  var DONDE = {
-    rack:      ['En el cerro', 'Tu pregunta sube al rack del Soberano y vuelve. Sale de tu aparato.'],
-    navegador: ['En tu aparato', 'Corre dentro del navegador. No sale nada.'],
-    ninguno:   ['Sin molino', 'No hay motor elegido. La página te dará un texto para llevar a la IA que ya uses.'],
-  };
+  /* SE PIDEN TRADUCIDAS · 2026-09-15. Esta tabla era literal, en castellano, y
+     son las tres frases que se leen JUSTO DEBAJO del chat en la portada: las
+     ocho lenguas veian «En el cerro · Tu pregunta sube al rack...».
+     No lo cazo el gate y no podia: su guardian sigue el patron `T('clave')`, y
+     una tabla literal no lo usa. Se ve abriendo la pagina, y asi se vio --en
+     el Doogee, en la web publicada--. */
+  function DONDE() {
+    return {
+      rack:      [T('smRackT', 'En el cerro'),
+                  T('smRackP', 'Tu pregunta sube al rack y vuelve. Sale de tu aparato.')],
+      navegador: [T('smNavT', 'En tu aparato'),
+                  T('smNavP', 'Corre dentro del navegador. No sale nada.')],
+      ninguno:   [T('smNadaT', 'Sin molino'),
+                  T('smNadaP', 'No hay motor elegido. La página te dará un texto para llevar a la IA que ya uses.')],
+    };
+  }
 
   function pintar() {
     caja.innerHTML = '';
     var t = el('p', 'showman-linea');
 
     if (!cerebro || cerebro === 'NO_DATA') {
-      var d = DONDE.ninguno;
+      var d = DONDE().ninguno;
       t.appendChild(el('strong', null, d[0]));
       caja.appendChild(t);
       caja.appendChild(el('p', 'showman-nota', d[1]));
       return;
     }
 
-    var donde = DONDE[/edge|browser|navegador/i.test(cerebro) ? 'navegador' : 'rack'];
+    var donde = DONDE()[/edge|browser|navegador/i.test(cerebro) ? 'navegador' : 'rack'];
     t.appendChild(el('strong', null, donde[0]));
     t.appendChild(document.createTextNode(' · '));
     t.appendChild(el('code', 'showman-tag', cerebro));
@@ -82,7 +93,7 @@
     var med = (f.modelo || {}).medida || {};
     if (med.tok_s) {
       caja.appendChild(el('p', 'showman-med',
-        med.tok_s + ' tok/s · medido con la máquina a ' +
+        med.tok_s + T('smMedido', ' tok/s · medido con la máquina a ') +
         (med.carga_base === undefined ? 'NO_DATA' : med.carga_base)));
     }
     if (tx.que_falla) {

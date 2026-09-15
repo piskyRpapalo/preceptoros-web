@@ -118,7 +118,8 @@
     var H = window.Hub;
     raiz.innerHTML = '';
     if (!H) {
-      raiz.appendChild(el('p', 'nodata', 'NO_DATA · el catálogo no llegó'));
+      raiz.appendChild(el('p', 'nodata', T('hubSinCatalogo',
+        'NO_DATA · el catálogo no llegó')));
       return;
     }
     var L = H.textos, c = (H.datos || {}).cola || {};

@@ -3648,6 +3648,66 @@ class Traducciones(unittest.TestCase):
                         f"{idioma}/benchmark.html no carga {guion}: ahi la "
                         f"correccion firmada no existe")
 
+    # Guiones que llevan su PROPIA tabla de ocho lenguas dentro, y por eso
+    # tienen castellano escrito a mano con toda la razon. Se nombran uno a uno:
+    # una regla («los que tengan `es:`») dejaria pasar al siguiente que se
+    # invente una tabla a medias.
+    TABLA_PROPIA = {
+        "aprender.js": "TEXTO, las ocho lenguas del «aprender de mis reescrituras»",
+        "elegir.js": "VOZ, las ocho del «¿te ha servido?»",
+        "consiento.js": "las ocho del consentimiento de analisis",
+    }
+
+    def test_NINGUN_guion_lleva_CASTELLANO_suelto(self):
+        """El hueco por donde se colo el Showman, y que el otro guardian no ve.
+
+        `test_NINGUNA_pagina_cae_al_respaldo_en_castellano` sigue el patron
+        `T('clave')`: mira que la pagina declare lo que el guion pide. Una
+        TABLA LITERAL no pide nada, asi que le es invisible.
+
+        Y ahi vivian las tres frases que se leen justo debajo del chat en la
+        portada. Las ocho lenguas veian «En el cerro · Tu pregunta sube al rack
+        del Soberano y vuelve». No lo cazo el gate: lo cazo abrir la web
+        publicada en el Doogee.
+
+        La regla es simple: un guion que NO es de una lengua concreta no puede
+        llevar una frase castellana suelta. Puede llevarla como RESPALDO
+        declarado --segundo argumento de `T(...)`, que es lo que se ve si el
+        fichero de la lengua no llega-- y puede llevarla dentro de su propia
+        tabla de ocho, si la tiene nombrada aqui abajo.
+        """
+        import re as _re
+        acento = _re.compile(r"[áéíóúñ¿¡ÁÉÍÓÚÑ]")
+        for f in sorted((PUBLICO / "assets").glob("*.js")):
+            # `corregir-el.js`, `enviar-pt.js`, `prompts-fr.js`: SON de una
+            # lengua. Su trabajo es justo llevar prosa dentro.
+            if _re.search(r"-(?:es|en|fr|pt|it|de|ru|el)\.js$", f.name):
+                continue
+            if f.name in self.TABLA_PROPIA:
+                continue
+            src = f.read_text(encoding="utf-8")
+            src = _re.sub(r"/\*.*?\*/", "", src, flags=_re.S)
+            src = _re.sub(r"(?m)//.*$", "", src)
+            # fuera los respaldos declarados: T('clave', '...')
+            src = _re.sub(r"T\(\s*'[A-Za-z0-9]+'\s*,\s*'(?:\\.|[^'\\])*'",
+                          "T(", src, flags=_re.S)
+            src = _re.sub(r'T\(\s*"[A-Za-z0-9]+"\s*,\s*"(?:\\.|[^"\\])*"',
+                          "T(", src, flags=_re.S)
+            # Y la otra forma del MISMO trato, que esta casa usa igual:
+            # `UI.clave || 'respaldo'`. Sigue significando que el texto sale de
+            # un catalogo y que esto es lo que se ve si el catalogo no llego.
+            src = _re.sub(r"\|\|\s*'(?:\\.|[^'\\])*'", "|| X", src)
+            src = _re.sub(r'\|\|\s*"(?:\\.|[^"\\])*"', "|| X", src)
+            sueltas = []
+            for m in _re.finditer(r"'((?:\\.|[^'\\])*)'|\"((?:\\.|[^\"\\])*)\"", src):
+                v = m.group(1) or m.group(2) or ""
+                if len(v.split()) >= 3 and acento.search(v):
+                    sueltas.append(v[:70])
+            with self.subTest(guion=f.name):
+                self.assertFalse(sueltas,
+                    f"{f.name} lleva castellano suelto y lo veran las ocho "
+                    f"lenguas: {sueltas}")
+
     def test_las_claves_mudadas_estan_donde_dicen_estar(self):
         """Una clave que sale del bloque i18n no deja de existir: cambia de casa.
 
