@@ -25,6 +25,11 @@
     var b = document.getElementById('i18n');
     try { return (JSON.parse(b.textContent)[clave]) || respaldo; }
     catch (e) { return respaldo; }
+<<<<<<< HEAD
+=======
+  }
+  function el(tag, clase, texto) {
+>>>>>>> parent of 49fbf6d (fix(comunidad): paneles Research Lines son clickeables)
     var n = document.createElement(tag);
     if (clase) n.className = clase;
     if (texto !== undefined && texto !== null) n.textContent = String(texto);
@@ -84,7 +89,6 @@
           var t = T2[p.id] || {};
           var li = el('li', 'ag-panel');
           li.appendChild(el('h4', null, t.nombre || p.id));
-          li.addEventListener('click', () => { abrePanel(p); });
           li.appendChild(el('code', 'ag-tag', p.modelo && p.modelo.tag));
           var med = (p.modelo || {}).medida || {};
           if (med.tok_s) {
