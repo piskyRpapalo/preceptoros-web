@@ -25,7 +25,6 @@
     var b = document.getElementById('i18n');
     try { return (JSON.parse(b.textContent)[clave]) || respaldo; }
     catch (e) { return respaldo; }
-  function el(tag, clase, texto) {
     var n = document.createElement(tag);
     if (clase) n.className = clase;
     if (texto !== undefined && texto !== null) n.textContent = String(texto);
