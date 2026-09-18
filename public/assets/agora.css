@@ -176,3 +176,5 @@ dialog.panel::backdrop{background:rgba(10,8,16,.72)}
 #agora-portada .ag-moderacion summary { cursor: pointer; }
 #agora-portada .ag-moderacion ul { margin: .5rem 0; padding-left: 1.1rem; }
 #agora-portada .ag-moderacion li { margin: .2rem 0; }
+
+.ag-panel { cursor: pointer; }
