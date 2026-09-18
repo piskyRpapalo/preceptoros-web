@@ -25,11 +25,8 @@
     var b = document.getElementById('i18n');
     try { return (JSON.parse(b.textContent)[clave]) || respaldo; }
     catch (e) { return respaldo; }
-<<<<<<< HEAD
-=======
   }
   function el(tag, clase, texto) {
->>>>>>> parent of 49fbf6d (fix(comunidad): paneles Research Lines son clickeables)
     var n = document.createElement(tag);
     if (clase) n.className = clase;
     if (texto !== undefined && texto !== null) n.textContent = String(texto);
