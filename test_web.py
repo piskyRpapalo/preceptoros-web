@@ -4262,6 +4262,34 @@ class LasTresFamilias(unittest.TestCase):
                         self.assertIsInstance(valor, str)
                         self.assertTrue(valor.strip(), "vacia")
 
+    def test_las_seis_lenguas_no_respondidas_lo_declaran(self):
+        """Solo `es` y `en` las responde el silicio. Las otras seis salieron del
+        rack y NADIE nativo las ha leido --- y eso no puede vivir solo en un
+        reporte que nadie relee. La marca viaja EN el fichero.
+
+        Se aprendio con sangre el 2026-09-19: `qwen2.5:7b` devolvio 21/21
+        traducciones validas en forma --- claves exactas, nada vacio, paridad en
+        verde --- y tres lenguas eran impublicables («Die Turm», «Башня Аскезы»,
+        «Τόρρα» transliterando torre). El test de forma es necesario y NO
+        suficiente; esta marca es lo que impide confundir uno con otro."""
+        for nombre in FAMILIAS:
+            for idioma in ("fr", "pt", "it", "de", "ru", "el"):
+                with self.subTest(familia=nombre, idioma=idioma):
+                    d = self.fam[nombre][idioma]
+                    self.assertEqual("pendiente-revision-nativa",
+                                     d.get("revision"), "sin marca de revision")
+
+    def test_cada_lengua_dice_de_donde_salio(self):
+        """Quien lea esto tiene que poder separar la salida CRUDA del modelo de
+        lo que el silicio corrigio a mano. Mezclarlas seria firmar como propio
+        lo que no se reviso, y al reves: esconder lo que si se toco."""
+        for nombre in FAMILIAS:
+            for idioma, d in sorted(self.fam[nombre].items()):
+                with self.subTest(familia=nombre, idioma=idioma):
+                    proc = d.get("procedencia") or {}
+                    self.assertTrue(proc.get("traducido_por"),
+                                    "no dice que modelo la produjo")
+
     def test_el_ruso_y_el_griego_estan_en_su_alfabeto(self):
         """El fallo que ya esta medido en el canon: un modelo pequeno se pasa
         al ingles sin avisar y la paridad de claves lo da por bueno. Aqui se

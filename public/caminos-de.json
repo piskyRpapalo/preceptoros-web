@@ -1,6 +1,14 @@
 {
  "esquema": 1,
  "idioma": "de",
+ "revision": "pendiente-revision-nativa",
+ "procedencia": {
+  "traducido_por": "qwen2.5:14b",
+  "corregido_a_mano_por_el_silicio": [
+   "Kein Stufe → Keine Stufe (Stufe es femenino)"
+  ],
+  "nota_correcciones": "solo lo verificable con certeza. Lo demas es salida cruda del modelo y no esta revisado: no se mezclan las dos cosas."
+ },
  "ui": {
   "camino_despertar_titulo": "Erwachen",
   "camino_despertar_frase": "Stelle das Gerät auf Flugmodus und rede weiter. Was es antwortet, war schon in deinem Browser.",

@@ -1,6 +1,10 @@
 {
  "esquema": 1,
  "idioma": "fr",
+ "revision": "pendiente-revision-nativa",
+ "procedencia": {
+  "traducido_por": "qwen2.5:7b"
+ },
  "ui": {
   "camino_despertar_titulo": "Réveil",
   "camino_despertar_frase": "Placez l'appareil en mode avion et continuez à parler. Ce qui répond est déjà dans votre navigateur.",

@@ -1,6 +1,9 @@
 {
  "esquema": 1,
  "idioma": "en",
+ "procedencia": {
+  "traducido_por": "qwen2.5:7b"
+ },
  "ui": {
   "herr_titulo": "Tools",
   "herr_lema": "Free things you can take. Nothing installs itself: each one gives its real path.",

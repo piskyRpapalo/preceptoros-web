@@ -1,6 +1,10 @@
 {
  "esquema": 1,
  "idioma": "pt",
+ "revision": "pendiente-revision-nativa",
+ "procedencia": {
+  "traducido_por": "qwen2.5:7b"
+ },
  "ui": {
   "duelo_titulo": "Duelo",
   "duelo_input": "Escreva uma vez; eles responderão os dois.",

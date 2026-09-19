@@ -1,7 +1,10 @@
 {
  "esquema": 1,
  "idioma": "el",
- "revision": "pendiente de nativo · qwen2.5:14b en el rack, con correcciones de lexico verificadas una a una; sin revisar por hablante (ESTADO.md §6)",
+ "revision": "pendiente-revision-nativa",
+ "procedencia": {
+  "traducido_por": "qwen2.5:14b"
+ },
  "ui": {
   "duelo_titulo": "Σύριγξ",
   "duelo_input": "Γράψε μια φράση; οι δύο θα απαντήσουν.",

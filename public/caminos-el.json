@@ -1,7 +1,17 @@
 {
  "esquema": 1,
  "idioma": "el",
- "revision": "pendiente de nativo · qwen2.5:14b en el rack, con correcciones de lexico verificadas una a una; sin revisar por hablante (ESTADO.md §6)",
+ "revision": "pendiente-revision-nativa",
+ "procedencia": {
+  "traducido_por": "qwen2.5:14b",
+  "corregido_a_mano_por_el_silicio": [
+   "Τάφρος → Πύργος (tafros es «foso»; torre es pyrgos)",
+   "Τόρρα → Πύργος (transliteracion de «torre»)",
+   "ηλεκτροφωρική → μπαταρία (alucinacion: «electroforetica» por bateria)",
+   "βατερία → μπαταρία (transliteracion de «bateria»)"
+  ],
+  "nota_correcciones": "solo lo verificable con certeza. Lo demas es salida cruda del modelo y no esta revisado: no se mezclan las dos cosas."
+ },
  "ui": {
   "camino_despertar_titulo": "Εξαφάνιση",
   "camino_despertar_frase": "Βάλε το όργανο σε αεροπορικό λόγο και συνεχίζει να μιλάεις. Το τι απαντά είχε ήδη στον περιηγητή σου.",

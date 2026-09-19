@@ -1,6 +1,9 @@
 {
  "esquema": 1,
  "idioma": "es",
+ "procedencia": {
+  "traducido_por": "castellano base, escrito por el silicio"
+ },
  "ui": {
   "duelo_titulo": "Duelo",
   "duelo_input": "Escribe una vez; van a contestar los dos.",

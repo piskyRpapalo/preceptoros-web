@@ -1,6 +1,9 @@
 {
  "esquema": 1,
  "idioma": "es",
+ "procedencia": {
+  "traducido_por": "castellano base, escrito por el silicio"
+ },
  "ui": {
   "herr_titulo": "Herramientas",
   "herr_lema": "Cosas gratis que puedes llevarte. Nada se instala solo: cada una te da su ruta real.",

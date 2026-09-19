@@ -1,6 +1,10 @@
 {
  "esquema": 1,
  "idioma": "it",
+ "revision": "pendiente-revision-nativa",
+ "procedencia": {
+  "traducido_por": "qwen2.5:7b"
+ },
  "ui": {
   "herr_titulo": "Strumenti",
   "herr_lema": "Cose gratuite che puoi portarti. Niente si installa da solo: ciascuna ne dà la propria strada reale",

@@ -1,6 +1,9 @@
 {
  "esquema": 1,
  "idioma": "en",
+ "procedencia": {
+  "traducido_por": "qwen2.5:7b"
+ },
  "ui": {
   "duelo_titulo": "Duel",
   "duelo_input": "Write once; both will respond.",

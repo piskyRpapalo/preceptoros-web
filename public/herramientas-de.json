@@ -1,6 +1,10 @@
 {
  "esquema": 1,
  "idioma": "de",
+ "revision": "pendiente-revision-nativa",
+ "procedencia": {
+  "traducido_por": "qwen2.5:14b"
+ },
  "ui": {
   "herr_titulo": "Werkzeuge",
   "herr_lema": "Kostenlose Dinge, die du mitnehmen kannst. Nichts wird automatisch installiert: jede gibt dir ihren tatsächlichen Pfad.",

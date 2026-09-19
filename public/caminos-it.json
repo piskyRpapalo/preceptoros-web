@@ -1,6 +1,10 @@
 {
  "esquema": 1,
  "idioma": "it",
+ "revision": "pendiente-revision-nativa",
+ "procedencia": {
+  "traducido_por": "qwen2.5:7b"
+ },
  "ui": {
   "camino_despertar_titulo": "Despertare",
   "camino_despertar_frase": "Pon il dispositivo in modalità aereo e continua a parlare. Ciò che risponde giace già nel tuo browser.",

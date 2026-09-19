@@ -1,6 +1,9 @@
 {
  "esquema": 1,
  "idioma": "es",
+ "procedencia": {
+  "traducido_por": "castellano base, escrito por el silicio"
+ },
  "ui": {
   "camino_despertar_titulo": "Despertar",
   "camino_despertar_frase": "Pon el aparato en modo avión y sigue hablando. Lo que responde ya estaba en tu navegador.",

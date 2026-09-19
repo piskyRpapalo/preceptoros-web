@@ -1,6 +1,9 @@
 {
  "esquema": 1,
  "idioma": "en",
+ "procedencia": {
+  "traducido_por": "qwen2.5:7b"
+ },
  "ui": {
   "camino_despertar_titulo": "Awakening",
   "camino_despertar_frase": "Put the device in airplane mode and keep talking. What it responds is already in your browser.",

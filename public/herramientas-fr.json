@@ -1,6 +1,10 @@
 {
  "esquema": 1,
  "idioma": "fr",
+ "revision": "pendiente-revision-nativa",
+ "procedencia": {
+  "traducido_por": "qwen2.5:7b"
+ },
  "ui": {
   "herr_titulo": "Outils",
   "herr_lema": "Des choses gratuites que vous pouvez emporter. Rien n'est installé automatiquement : chacune donne son chemin réel.",
