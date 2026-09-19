@@ -203,6 +203,24 @@ def _idiomas():
 
 
 IDIOMAS = _idiomas()
+
+
+def texto_del_worker():
+    """El worker ENTERO, como texto: `sw.js` mas lo que trae por importScripts.
+
+    El 2026-09-19 las listas de que se cachea salieron a `sw-listas.js` porque
+    `sw.js` se quedo a 266 B del tope. Las pruebas que buscan un asset en el
+    precache tienen que mirar las DOS piezas: buscar solo en `sw.js` daria
+    «no lo cachea» sobre algo que si se cachea, y es un rojo mentiroso.
+
+    Las que comprueban LOGICA --- `paginaSinRed`, el filtro de origen --- siguen
+    leyendo `sw.js` a secas, porque la logica no se movio.
+    """
+    partes = [(PUBLICO / "sw.js").read_text(encoding="utf-8")]
+    listas = PUBLICO / "sw-listas.js"
+    if listas.is_file():
+        partes.append(listas.read_text(encoding="utf-8"))
+    return "\n".join(partes)
 TRADUCCIONES = {PUBLICO / i for i in IDIOMAS if i != FUENTE}
 
 
@@ -3182,7 +3200,7 @@ class PWA(unittest.TestCase):
         `counters.json` NO puede estarlo. Cachear la cifra de los gates seria
         repetir la averia de la puerta 1 dentro del worker.
         """
-        sw = (PUBLICO / "sw.js").read_text(encoding="utf-8")
+        sw = texto_del_worker()
 
         # 1 · las tres piezas del Hub y su catalogo
         for pieza in ("/hub.json", "/assets/widget.css", "/assets/panel.css",

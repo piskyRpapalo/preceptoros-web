@@ -76,6 +76,21 @@ entorno.clients = { claim: async()=>{} };
 entorno.saltosDeEspera = 0;
 entorno.skipWaiting = async () => { entorno.saltosDeEspera++; };
 
+/* `importScripts` de verdad, no un simulacro. El 2026-09-19 las listas de QUE
+   se cachea salieron de `sw.js` a `sw-listas.js` --- el fichero se habia
+   quedado a 266 B del tope ---, y este arnes corre `sw.js` en un `vm` sin
+   navegador detras. Fingir la funcion habria dejado el arnes verde sin haber
+   cargado una sola lista: se LEE el fichero de `public/` y se ejecuta en el
+   MISMO contexto, que es lo que hace un worker de verdad.
+   Se le quita el `?v=VERSION` porque aqui no hay caches que engañar. */
+entorno.importScripts = (...urls) => {
+  for (const u of urls) {
+    const rel = String(u).split('?')[0].replace(/^\//, '');
+    vm.runInContext(fs.readFileSync(path.join(AQUI, 'public', rel), 'utf8'),
+                    entorno);
+  }
+};
+
 vm.createContext(entorno);
 vm.runInContext(codigo, entorno);
 
