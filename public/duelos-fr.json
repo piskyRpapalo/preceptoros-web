@@ -1,0 +1,17 @@
+{
+ "esquema": 1,
+ "idioma": "fr",
+ "ui": {
+  "duelo_titulo": "Duelo",
+  "duelo_input": "Ecris une fois ; ils répondront les deux.",
+  "duelo_enviar": "Envoyer à toutes les deux",
+  "duelo_col_base": "Sans LoRA · la base nue",
+  "duelo_col_lora": "Avec LoRA · l'adaptateur de cette ligne",
+  "duelo_veredicto": "Verdict",
+  "duelo_guia": "Guide de réécriture",
+  "duelo_reescribir": "Réenvoyer à toutes les deux",
+  "duelo_firmar": "Signer par",
+  "duelo_sin_prueba": "Un «hello» sans réécriture ne prouve rien. Réécrits le prompt ou donne ton opinion, et tu pourras le signer.",
+  "duelo_juez_no_data": "NO_DATA : il n'y a pas de juge local. La rédaction n'invente pas un verdict — tu le vérifies, et c'est l'étude."
+ }
+}

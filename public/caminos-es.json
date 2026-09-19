@@ -1,0 +1,32 @@
+{
+ "esquema": 1,
+ "idioma": "es",
+ "ui": {
+  "camino_despertar_titulo": "Despertar",
+  "camino_despertar_frase": "Pon el aparato en modo avión y sigue hablando. Lo que responde ya estaba en tu navegador.",
+  "camino_despertar_falla": "No hay memoria: al cerrar la pestaña no queda nada. Y sin red tampoco llega ninguna corrección al rack.",
+  "camino_despertar_para_quien": "Para quien todavía no se cree que esto funcione sin nadie al otro lado.",
+  "camino_primeros_pasos_titulo": "Primeros pasos",
+  "camino_primeros_pasos_frase": "Tu IA local no sabe qué es PreceptorOS. Aquí se estudia cómo un saludo se convierte en una prueba.",
+  "camino_primeros_pasos_falla": "El juez corrige el prompt, no al modelo: si el modelo es pequeño, seguirá siendo pequeño.",
+  "camino_primeros_pasos_para_quien": "Para quien ya tiene un modelo corriendo y no sabe qué pedirle.",
+  "camino_exposicion_titulo": "Medir exposición",
+  "camino_exposicion_frase": "OSINT defensivo sobre ti mismo. Tú corres los comandos; la página solo lee lo que le pegas.",
+  "camino_exposicion_falla": "El navegador no ejecuta nada. Si no pegas la salida, no hay medida — y validar fila a fila lleva su rato.",
+  "camino_exposicion_para_quien": "Para quien quiere saber qué se ve de él sin instalar una herramienta que lo mire por dentro.",
+  "camino_silencio_titulo": "Día del silencio",
+  "camino_silencio_frase": "Diez minutos con la batería como única presión. El reloj es real y no se pausa.",
+  "camino_silencio_falla": "Se puede perder, y perder cuenta: la derrota se firma igual que la victoria.",
+  "camino_silencio_para_quien": "Para quien quiere saber qué le queda cuando se va la red.",
+  "camino_contribuir_titulo": "Contribuir",
+  "camino_contribuir_frase": "Devolver al común lo que has medido: pares firmados que entrenan la siguiente versión.",
+  "camino_contribuir_falla": "Cerrado. El Ágora todavía no modera, y abrir la escritura sin moderación es abrir un buzón de spam.",
+  "camino_contribuir_para_quien": "Para quien ya subió los cuatro peldaños y quiere dejar algo detrás.",
+  "torre_titulo": "La Torre de la Ascensión",
+  "torre_lema": "Se practica, se firma, se asciende. Ningún peldaño obliga al siguiente.",
+  "torre_nivel": "nivel",
+  "torre_paso": "paso",
+  "torre_firmar": "Firmar este paso",
+  "torre_guia_no_data": "No salió ningún dato, y eso también es un paso. ¿Cómo podría esta IA guiar mejor a alguien en lo que acabas de intentar?"
+ }
+}

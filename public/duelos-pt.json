@@ -1,0 +1,17 @@
+{
+ "esquema": 1,
+ "idioma": "pt",
+ "ui": {
+  "duelo_titulo": "Duelo",
+  "duelo_input": "Escreva uma vez; eles responderão os dois.",
+  "duelo_enviar": "Enviar para ambas",
+  "duelo_col_base": "Sem LoRA · a base nua",
+  "duelo_col_lora": "Com LoRA · o adaptador desta linha",
+  "duelo_veredicto": "Veredicto",
+  "duelo_guia": "Guia de reescrita",
+  "duelo_reescribir": "Reenviar para ambas",
+  "duelo_firmar": "Assinar par",
+  "duelo_sin_prueba": "Um «olá» sem reescrita não prova nada. Reescreva o prompt ou deixe sua opinião, e só então poderá assinar.",
+  "duelo_juez_no_data": "NO_DATA: não há juiz local. Não se inventa um veredicto com a rede — você o verifica, e isso é o estudo."
+ }
+}

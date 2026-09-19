@@ -4186,5 +4186,100 @@ class Reescrituras(unittest.TestCase):
                          "sin aviso en: " + ", ".join(sorted(faltan)))
 
 
+# Las claves FIRMADAS de cada familia (cierres C4 y C9 del brief). Se enumeran
+# una a una a proposito: la gracia es que anadir una clave obligue a tocar esta
+# lista y, con ella, las ocho lenguas. Una familia que crece por un lado y no
+# por el otro es media traduccion, y media traduccion se ve en produccion.
+CLAVES_CAMINOS = {
+    f"camino_{n}_{c}"
+    for n in ("despertar", "primeros_pasos", "exposicion", "silencio", "contribuir")
+    for c in ("titulo", "frase", "falla", "para_quien")
+} | {"torre_titulo", "torre_lema", "torre_nivel", "torre_paso", "torre_firmar",
+     "torre_guia_no_data"}
+
+CLAVES_DUELOS = {
+    "duelo_titulo", "duelo_input", "duelo_enviar", "duelo_col_base",
+    "duelo_col_lora", "duelo_veredicto", "duelo_guia", "duelo_reescribir",
+    "duelo_firmar", "duelo_sin_prueba", "duelo_juez_no_data"}
+
+CLAVES_HERRAMIENTAS = {
+    "herr_titulo", "herr_lema", "herr_web", "herr_app", "herr_audio",
+    "herr_cerrada", "herr_copia_ai", "herr_errores"}
+
+FAMILIAS = {"caminos": CLAVES_CAMINOS, "duelos": CLAVES_DUELOS,
+            "herramientas": CLAVES_HERRAMIENTAS}
+
+
+class LasTresFamilias(unittest.TestCase):
+    """Torre, duelo y herramientas: un fichero por asunto y por lengua.
+
+    POR QUE TRES FAMILIAS Y NO UN `i18n/<lengua>.json`. El plan pedia un solo
+    fichero por idioma. No cabe: `hub-textos.json`, que cubre SOLO el hub, ya
+    pesa 16.094 B de los 16.384 que deja el gate. Un fichero que reuniera toda
+    la interfaz del sitio nace pasado de tope el primer dia.
+
+    Y ya habia patron: `taller-<lengua>.json` hace exactamente esto desde el
+    2026-09-14. Estas tres son sus hermanas, con su mismo guardian --- que es
+    esta clase --- calcado del suyo.
+
+    Lo que NO se toco, y consta: `prompts-*.js` no es interfaz sino el papel
+    que se le da al modelo, y su forma `.js` es una decision MEDIDA --- el
+    worker no cachea los `.json` que no nombra, asi que en `.json` el chat se
+    quedaria sin papel al perder la red.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        cls.fam = {}
+        for nombre in FAMILIAS:
+            cls.fam[nombre] = {
+                q.stem.split("-", 1)[1]: json.loads(q.read_text(encoding="utf-8"))
+                for q in PUBLICO.glob(f"{nombre}-*.json")}
+
+    def test_las_tres_familias_estan_en_las_ocho_lenguas(self):
+        """Una lengua sin fichero no se ve: cae entera al respaldo y calla."""
+        for nombre in FAMILIAS:
+            with self.subTest(familia=nombre):
+                self.assertEqual(set(IDIOMAS), set(self.fam[nombre]),
+                                 f"faltan o sobran: "
+                                 f"{set(IDIOMAS) ^ set(self.fam[nombre])}")
+
+    def test_cada_familia_dice_exactamente_sus_claves_firmadas(self):
+        for nombre, firmadas in FAMILIAS.items():
+            for idioma, d in sorted(self.fam[nombre].items()):
+                with self.subTest(familia=nombre, idioma=idioma):
+                    self.assertEqual(firmadas, set(d["ui"]),
+                                     f"difiere: {firmadas ^ set(d['ui'])}")
+                    self.assertEqual(idioma, d["idioma"],
+                                     "el fichero no se reconoce a si mismo")
+
+    def test_ninguna_traduccion_llega_vacia(self):
+        """Una cadena vacia pasa la paridad de claves y sale en blanco."""
+        for nombre in FAMILIAS:
+            for idioma, d in sorted(self.fam[nombre].items()):
+                for clave, valor in sorted(d["ui"].items()):
+                    with self.subTest(familia=nombre, idioma=idioma, clave=clave):
+                        self.assertIsInstance(valor, str)
+                        self.assertTrue(valor.strip(), "vacia")
+
+    def test_el_ruso_y_el_griego_estan_en_su_alfabeto(self):
+        """El fallo que ya esta medido en el canon: un modelo pequeno se pasa
+        al ingles sin avisar y la paridad de claves lo da por bueno. Aqui se
+        mira el ALFABETO, que es lo unico que distingue una traduccion de una
+        copia. No juzga la calidad --- de eso va la revision nativa que
+        `ESTADO.md` deja pendiente --- solo que no sea otra lengua."""
+        rangos = {"ru": ("\u0400", "\u04ff"), "el": ("\u0370", "\u03ff")}
+        for idioma, (bajo, alto) in rangos.items():
+            for nombre in FAMILIAS:
+                d = self.fam[nombre].get(idioma)
+                if d is None:
+                    continue
+                largas = [v for v in d["ui"].values() if len(v) > 25]
+                with self.subTest(familia=nombre, idioma=idioma):
+                    self.assertTrue(
+                        all(any(bajo <= c <= alto for c in v) for v in largas),
+                        f"hay cadenas largas sin un solo caracter de su alfabeto")
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

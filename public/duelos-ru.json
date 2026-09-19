@@ -1,0 +1,18 @@
+{
+ "esquema": 1,
+ "idioma": "ru",
+ "revision": "pendiente de nativo · qwen2.5:14b en el rack, con correcciones de lexico verificadas una a una; sin revisar por hablante (ESTADO.md §6)",
+ "ui": {
+  "duelo_titulo": "Сражение",
+  "duelo_input": "Напиши один раз; оба ответят.",
+  "duelo_enviar": "Отправить обоим",
+  "duelo_col_base": "Без LoRA · голая основа",
+  "duelo_col_lora": "С LoRA · адаптер этой строки",
+  "duelo_veredicto": "Вердикт",
+  "duelo_guia": "Руководство по переписыванию",
+  "duelo_reescribir": "Переслать обоим",
+  "duelo_firmar": "Подписать пару",
+  "duelo_sin_prueba": "«Привет» без переписывания ничего не доказывает. Перепиши запрос или оставь свое мнение, и тогда можно будет подписать.",
+  "duelo_juez_no_data": "NO_DATA: нет местного судьи. Вердикт с сети не придумывается — проверяешь сам, и это и есть исследование."
+ }
+}

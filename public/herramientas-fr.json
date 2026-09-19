@@ -1,0 +1,14 @@
+{
+ "esquema": 1,
+ "idioma": "fr",
+ "ui": {
+  "herr_titulo": "Outils",
+  "herr_lema": "Des choses gratuites que vous pouvez emporter. Rien n'est installé automatiquement : chacune donne son chemin réel.",
+  "herr_web": "Le site",
+  "herr_app": "L'application",
+  "herr_audio": "Audio et musique du rack",
+  "herr_cerrada": "Fermée, et voici la raison",
+  "herr_copia_ai": "Copier pour votre IA",
+  "herr_errores": "Erreurs communes"
+ }
+}

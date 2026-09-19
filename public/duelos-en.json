@@ -1,0 +1,17 @@
+{
+ "esquema": 1,
+ "idioma": "en",
+ "ui": {
+  "duelo_titulo": "Duel",
+  "duelo_input": "Write once; both will respond.",
+  "duelo_enviar": "Send to both",
+  "duelo_col_base": "Without LoRA · the base naked",
+  "duelo_col_lora": "With LoRA · the line adapter",
+  "duelo_veredicto": "Verdict",
+  "duelo_guia": "Rewriting guide",
+  "duelo_reescribir": "Resend to both",
+  "duelo_firmar": "Sign up",
+  "duelo_sin_prueba": "A 'hello' without rewriting proves nothing. Rewrite the prompt or leave your opinion, and signing is possible.",
+  "duelo_juez_no_data": "NO_DATA: no local judge. No verdict is invented by the network — you check it, and that's the study."
+ }
+}

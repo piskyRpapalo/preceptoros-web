@@ -1,0 +1,18 @@
+{
+ "esquema": 1,
+ "idioma": "el",
+ "revision": "pendiente de nativo · qwen2.5:14b en el rack, con correcciones de lexico verificadas una a una; sin revisar por hablante (ESTADO.md §6)",
+ "ui": {
+  "duelo_titulo": "Σύριγξ",
+  "duelo_input": "Γράψε μια φράση; οι δύο θα απαντήσουν.",
+  "duelo_enviar": "Αποστολή σε και μία",
+  "duelo_col_base": "Χωρίς LoRA · η βάση γυμνή",
+  "duelo_col_lora": "Με LoRA · ο προσαρμοστικός αυτής της γραμμής",
+  "duelo_veredicto": "Κρίση",
+  "duelo_guia": "Οδηγία για την ανατροπή",
+  "duelo_reescribir": "Ανατροπή σε και μία",
+  "duelo_firmar": "Υπογραφή ζευγούς",
+  "duelo_sin_prueba": "Ένα «χαίρετε» χωρίς ανατροπή δεν δείχνει τίποτα. Ανατρέψε το πρότυπο ή αφήσε την άποψή σου, και θα μπορεί να υπογραφεί.",
+  "duelo_juez_no_data": "NO_DATA: δεν υπάρχει τοπικός κριτής. Μην δημιουργείτε ένα κρίσιμο με το δίκτυο — το ελέγξετε εσείς, και αυτό είναι το μελέτημα."
+ }
+}

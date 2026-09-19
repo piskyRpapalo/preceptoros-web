@@ -1,0 +1,32 @@
+{
+ "esquema": 1,
+ "idioma": "de",
+ "ui": {
+  "camino_despertar_titulo": "Erwachen",
+  "camino_despertar_frase": "Stelle das Gerät auf Flugmodus und rede weiter. Was es antwortet, war schon in deinem Browser.",
+  "camino_despertar_falla": "Kein Speicher: Wenn du die Registerkarte schließt, bleibt nichts zurück. Und ohne Netzwerkverbindung erreicht dich auch keine Korrektur.",
+  "camino_despertar_para_quien": "Für diejenigen, die noch nicht glauben, dass dies ohne jemanden am anderen Ende funktioniert.",
+  "camino_primeros_pasos_titulo": "Erste Schritte",
+  "camino_primeros_pasos_frase": "Deine lokale IA kennt PreceptorOS nicht. Hier wird untersucht, wie ein Gruß sich in eine Prüfung verwandelt.",
+  "camino_primeros_pasos_falla": "Der Richter korrigiert den Prompt, nicht das Modell: Wenn das Modell klein ist, bleibt es klein.",
+  "camino_primeros_pasos_para_quien": "Für diejenigen, die bereits ein Modell laufen haben und nicht wissen, was sie danach anfordern sollen.",
+  "camino_exposicion_titulo": "Exposition messen",
+  "camino_exposicion_frase": "Defensiver OSINT über dich selbst. Du führst die Befehle aus; die Seite liest nur, was du ihr gibst.",
+  "camino_exposicion_falla": "Der Browser führt nichts aus. Wenn du die Ausgabe nicht einfügst, gibt es keine Messung – und die Validierung zeilenweise nimmt Zeit in Anspruch.",
+  "camino_exposicion_para_quien": "Für diejenigen, die wissen wollen, was von ihnen zu sehen ist, ohne eine Tool zu installieren, die sie von innen beobachtet.",
+  "camino_silencio_titulo": "Tag des Schweigens",
+  "camino_silencio_frase": "Zehn Minuten mit der Batterie als einziger Druck. Die Uhr ist echt und pausiert nicht.",
+  "camino_silencio_falla": "Es kann verloren gehen, und die Zählung kann verloren gehen: die Niederlage wird ebenso signiert wie der Sieg.",
+  "camino_silencio_para_quien": "Für diejenigen, die wissen wollen, was ihnen bleibt, wenn die Verbindung weg ist.",
+  "camino_contribuir_titulo": "Mitwirken",
+  "camino_contribuir_frase": "Gib dem Gemeinsamen zurück, was du gemessen hast: signierte Paare, die die nächste Version trainieren.",
+  "camino_contribuir_falla": "Geschlossen. Agora modiert noch nicht, und das Öffnen der Schreibfunktion ohne Moderation ist das Öffnen eines Spam-Postfachs.",
+  "camino_contribuir_para_quien": "Für diejenigen, die bereits die vier Stufen erklommen haben und etwas hinterlassen möchten.",
+  "torre_titulo": "Der Turm des Aufstiegs",
+  "torre_lema": "Man übt, signiert, steigt auf. Keine Stufe zwingt zur nächsten.",
+  "torre_nivel": "Stufe",
+  "torre_paso": "Schritt",
+  "torre_firmar": "Diesen Schritt signieren",
+  "torre_guia_no_data": "Es ist kein Daten ausgegeben worden, und das ist auch ein Schritt. Wie könnte diese IA besser jemanden in dem, was du gerade versucht hast, leiten?"
+ }
+}

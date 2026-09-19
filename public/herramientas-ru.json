@@ -1,0 +1,15 @@
+{
+ "esquema": 1,
+ "idioma": "ru",
+ "revision": "pendiente de nativo · qwen2.5:14b en el rack, con correcciones de lexico verificadas una a una; sin revisar por hablante (ESTADO.md §6)",
+ "ui": {
+  "herr_titulo": "Инструменты",
+  "herr_lema": "Бесплатные вещи, которые можно взять с собой. Ничего не устанавливается само: каждая из них предоставляет свой реальный путь.",
+  "herr_web": "Веб-сайт",
+  "herr_app": "Приложение",
+  "herr_audio": "Аудио и музыка с полки",
+  "herr_cerrada": "Закрыто, вот причина",
+  "herr_copia_ai": "Скопировать для вашей ИИ",
+  "herr_errores": "Общие ошибки"
+ }
+}

@@ -1,0 +1,14 @@
+{
+ "esquema": 1,
+ "idioma": "es",
+ "ui": {
+  "herr_titulo": "Herramientas",
+  "herr_lema": "Cosas gratis que puedes llevarte. Nada se instala solo: cada una te da su ruta real.",
+  "herr_web": "La web",
+  "herr_app": "La app",
+  "herr_audio": "Audio y música del rack",
+  "herr_cerrada": "Cerrada, y esta es la causa",
+  "herr_copia_ai": "Copiar para tu IA",
+  "herr_errores": "Errores comunes"
+ }
+}

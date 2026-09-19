@@ -1,0 +1,14 @@
+{
+ "esquema": 1,
+ "idioma": "de",
+ "ui": {
+  "herr_titulo": "Werkzeuge",
+  "herr_lema": "Kostenlose Dinge, die du mitnehmen kannst. Nichts wird automatisch installiert: jede gibt dir ihren tatsächlichen Pfad.",
+  "herr_web": "Die Webseite",
+  "herr_app": "Die App",
+  "herr_audio": "Audio und Musik aus dem Rack",
+  "herr_cerrada": "Geschlossen, und dies ist der Grund",
+  "herr_copia_ai": "Kopieren für deine KI",
+  "herr_errores": "Häufige Fehler"
+ }
+}

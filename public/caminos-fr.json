@@ -1,0 +1,32 @@
+{
+ "esquema": 1,
+ "idioma": "fr",
+ "ui": {
+  "camino_despertar_titulo": "Réveil",
+  "camino_despertar_frase": "Placez l'appareil en mode avion et continuez à parler. Ce qui répond est déjà dans votre navigateur.",
+  "camino_despertar_falla": "Aucune mémoire : en fermant la onglet, rien ne reste. Et sans connexion, aucune correction ne parvient au rack.",
+  "camino_despertar_para_quien": "Pour ceux qui ne croient pas encore que cela fonctionne sans personne de l'autre côté.",
+  "camino_primeros_pasos_titulo": "Premiers pas",
+  "camino_primeros_pasos_frase": "Votre IA locale ne sait pas ce que c'est PreceptorOS. Ici, on étudie comment un salut se transforme en une preuve.",
+  "camino_primeros_pasos_falla": "Le juge corrige le prompt, pas le modèle : si le modèle est petit, il restera petit.",
+  "camino_primeros_pasos_para_quien": "Pour ceux qui ont déjà un modèle en cours et ne savent pas quoi lui demander.",
+  "camino_exposicion_titulo": "Mesurer l'exposition",
+  "camino_exposicion_frase": "OSINT défensif sur soi-même. Vous exécutez les commandes ; la page ne lit que ce que vous collez.",
+  "camino_exposicion_falla": "Le navigateur ne fait rien. Si vous ne collez pas la sortie, il n'y a pas de mesure — et valider ligne par ligne prend son temps.",
+  "camino_exposicion_para_quien": "Pour ceux qui veulent savoir ce qui se voit de lui sans installer une outil qui le regarde de l'intérieur.",
+  "camino_silencio_titulo": "Jour du silence",
+  "camino_silencio_frase": "Dix minutes avec la batterie comme unique pression. Le temps est réel et ne s'arrête pas.",
+  "camino_silencio_falla": "On peut perdre, et perdre la compte : la défaite est signée comme la victoire.",
+  "camino_silencio_para_quien": "Pour ceux qui veulent savoir ce qui lui reste quand la connexion Internet est perdue.",
+  "camino_contribuir_titulo": "Contribuer",
+  "camino_contribuir_frase": "Rendre au commun ce que l'on a mesuré : paires signées qui entraînent la prochaine version.",
+  "camino_contribuir_falla": "Fermé. L'Agora n'est toujours pas modérée, et ouvrir l'écriture sans modération ouvre un courrier indésirable.",
+  "camino_contribuir_para_quien": "Pour ceux qui ont gravi les quatre étages et veulent laisser quelque chose derrière eux.",
+  "torre_titulo": "La Tour de l'Ascension",
+  "torre_lema": "On pratique, on signe, on monte. Aucun échelon ne force l'autre.",
+  "torre_nivel": "niveau",
+  "torre_paso": "pas",
+  "torre_firmar": "Signer ce pas",
+  "torre_guia_no_data": "Aucun données ne sont sorties, et c'est aussi un pas. Comment pourrait-une IA guider mieux quelqu'un dans ce que vous venez d'essayer ?"
+ }
+}

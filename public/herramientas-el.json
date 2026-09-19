@@ -1,0 +1,15 @@
+{
+ "esquema": 1,
+ "idioma": "el",
+ "revision": "pendiente de nativo · qwen2.5:14b en el rack, con correcciones de lexico verificadas una a una; sin revisar por hablante (ESTADO.md §6)",
+ "ui": {
+  "herr_titulo": "Εργαλεία",
+  "herr_lema": "Δωρεάν πράγματα που μπορείς να αναλάβεις. Χωρίς εγκατάσταση: κάθε μια δίνει τον πραγματικό της δρόμο.",
+  "herr_web": "Η ιστοσελίδα",
+  "herr_app": "Η εφαρμογή",
+  "herr_audio": "Η μουσική και το ήχο του σταθμικού πίνακα",
+  "herr_cerrada": "Κλειστή, και αυτή είναι η αιτία",
+  "herr_copia_ai": "Αντιγραφή για την AI σου",
+  "herr_errores": "Συνηθισμένα λάθη"
+ }
+}

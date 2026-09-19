@@ -1,0 +1,14 @@
+{
+ "esquema": 1,
+ "idioma": "en",
+ "ui": {
+  "herr_titulo": "Tools",
+  "herr_lema": "Free things you can take. Nothing installs itself: each one gives its real path.",
+  "herr_web": "The web",
+  "herr_app": "The app",
+  "herr_audio": "Audio and music from the rack",
+  "herr_cerrada": "Closed, and this is the reason",
+  "herr_copia_ai": "Copy for your AI",
+  "herr_errores": "Common errors"
+ }
+}
