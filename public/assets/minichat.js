@@ -108,7 +108,7 @@
   var lineas = leer();
   if (!lineas.length) {
     cuerpo.appendChild(el('p', 'mini-linea', T('mcCerrado',
-      'Terminal local. Lo que escribas se firma en tu aparato y no sale de él hasta que tú lo envíes.')));
+      'NO_DATA — canal efímero sin firma: lo que escribas se queda en esta pantalla y desaparece al cerrar la pestaña.')));
   }
   lineas.forEach(pinta);
 
