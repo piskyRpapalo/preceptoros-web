@@ -2299,6 +2299,46 @@ class Hub(unittest.TestCase):
                                   f"{nombre} pide `{clave}` y no esta en "
                                   f"duelos-es.json")
 
+    def test_el_duelo_no_entresaca_rotulos_a_mano(self):
+        """UNA LISTA DE CLAVES MANTENIDA A MANO SE OLVIDA. Paso el 2026-09-20.
+
+        `duelo.js` juntaba sus dos ficheros de rotulos entresacando tres claves
+        del de la Torre:
+
+            UI = Object.assign({}, ds[0].ui, {
+              torre_hechos: ..., torre_no_enviado: ... });
+
+        Al añadir el papel positivo se me olvido añadirlo ahi. El duelo pedia
+        `UI.torre_anfitrion`, le llegaba `undefined`, y la guarda `if (t && ...)`
+        lo saltaba EN SILENCIO: la columna vestida contestaba «NO_DATA» en 3
+        tokens, en produccion.
+
+        Y `test_la_Torre_no_pide_rotulos_que_no_existen` NO puede cazarlo: la
+        clave SI existe en el fichero de idioma. Lo que faltaba era el
+        trasvase. Son dos fallos con la misma cara --- un rotulo que no llega
+        --- y distinta causa, y cada uno necesita su guarda.
+
+        Asi que se prohibe la forma que lo produce: las familias se copian
+        enteras. No comparten ni una clave --- `torre_*` contra `duelo_*` ---,
+        asi que no hay motivo para elegir.
+        """
+        import re as _re
+        js = (PUBLICO / "assets" / "duelo.js").read_text(encoding="utf-8")
+        codigo = _re.sub(r"/\*.*?\*/", "", js, flags=_re.S)
+        m = _re.search(r"UI\s*=\s*Object\.assign\((.*?)\);", codigo, _re.S)
+        self.assertIsNotNone(m, "el duelo ya no junta sus rotulos con assign")
+        self.assertNotRegex(
+            m.group(1), r"torre_\w+\s*:",
+            "el duelo entresaca claves de la Torre a mano: la lista se olvida "
+            "en cuanto alguien añade una")
+
+        # Y el arnes se comprueba ENTERO antes de pintar: un duelo cuya columna
+        # derecha no tiene papel son dos veces el modelo desnudo.
+        for clave in ("torre_anfitrion", "torre_hechos"):
+            with self.subTest(clave=clave):
+                self.assertIn(clave, codigo,
+                              f"el duelo no exige `{clave}` antes de pintar")
+
     def test_el_duelo_es_secuencial_y_usa_el_arnes_de_la_casa(self):
         """DOS COLUMNAS NO SON DOS TURNOS A LA VEZ, y el rack lo impone.
 

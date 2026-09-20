@@ -276,13 +276,28 @@
       fetch('/duelos-' + lang + '.json').then(function (r) { return r.json(); }),
       fetch('/caminos-' + lang + '.json').then(function (r) { return r.json(); })
     ]).then(function (ds) {
-      UI = Object.assign({}, (ds[0].ui || {}), {
-        torre_hechos: (ds[1].ui || {}).torre_hechos,
-        torre_no_enviado: (ds[1].ui || {}).torre_no_enviado
+      /* SE COPIAN LAS DOS FAMILIAS ENTERAS, no tres claves a mano.
+         La primera version entresacaba `torre_hechos` y `torre_no_enviado`, y
+         al añadir el papel positivo se me olvido añadirlo a esa lista: el
+         duelo pedia `UI.torre_anfitrion`, le llegaba `undefined`, y la guarda
+         `if (t && ...)` lo saltaba EN SILENCIO. Medido en produccion: la
+         columna vestida contestaba «NO_DATA» en 3 tokens.
+         Y la prueba que caza rotulos inventados no puede ver esto ---
+         `torre_anfitrion` SI existe en el fichero; lo que faltaba era el
+         trasvase ---. Una lista de claves mantenida a mano es precisamente lo
+         que genera este fallo, asi que se retira la lista. Las dos familias no
+         comparten ni una clave: `caminos_*`/`torre_*` contra `duelo_*`. */
+      UI = Object.assign({}, (ds[0].ui || {}), (ds[1].ui || {}));
+      /* Y EL ARNES SE COMPRUEBA ENTERO ANTES DE PINTAR NADA. Un duelo cuya
+         columna derecha no tiene papel no es un duelo: son dos veces el modelo
+         desnudo con cabeceras distintas, que es peor que no tener pantalla ---
+         diria que el arnes no sirve para nada. */
+      ['torre_anfitrion', 'torre_hechos'].forEach(function (k) {
+        if (!UI[k] || UI[k].indexOf('NO_DATA') === 0) {
+          throw new Error('el arnes no llego entero (falta `' + k +
+                          '`): no hay nada que comparar');
+        }
       });
-      if (!UI.torre_hechos) {
-        throw new Error('el arnes no llego: no hay nada que comparar');
-      }
       pinta(host);
     }).catch(function (e) {
       if (document.getElementById('duelo')) { return; }
