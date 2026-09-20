@@ -28,14 +28,16 @@
    "porque": "A chave gera-se no teu aparelho e não sai dele. Não é uma conta: é a prova de que quem corrigiu ontem corrige hoje, sem que ninguém saiba quem és."
   },
   "cuenta": {
-   "nombre": "Conta com nome",
+   "nombre": "Conta com nome · vês o fórum",
    "quien": "quem registe um pseudónimo com a sua chave pública na Ágora",
-   "causa": "O endpoint de perfis existe e aceita POST; o que falta é a moderação, e abrir a escrita sem ela é abrir uma caixa de correio sem ninguém que a leia."
+   "causa": "O endpoint de perfis existe e aceita POST; o que falta é a moderação, e abrir a escrita sem ela é abrir uma caixa de correio sem ninguém que a leia.",
+   "porque": "Ler o fórum não exige moderação: exige saber que quem lê está registado, e isso prova-o a assinatura. O que exigia moderação era ESCREVER, e por isso escrever subiu para o nível 3."
   },
   "estudios": {
-   "nombre": "Propor e votar estudos",
+   "nombre": "Escrever no fórum, propor e votar",
    "quien": "contas com pelo menos um pacote assinado aceite",
-   "causa": "Votar exige saber quem vota, e isso exige o nível 2. Além disso, um voto sem trabalho por trás é ruído: por isso o requisito é ter contribuído, não ter-se registado."
+   "causa": "Votar exige saber quem vota, e isso exige o nível 2. Além disso, um voto sem trabalho por trás é ruído: por isso o requisito é ter contribuído, não ter-se registado.",
+   "porque": "A MODERAÇÃO ERA O BLOQUEIO E ESTE NÍVEL É A RESPOSTA, assinada pelo Soberano a 2026-09-20. Escrever não se abre a qualquer um com chave: abre-se a quem já entregou trabalho assinado e aceite. Não é um filtro de simpatia nem um moderador a ler caixas — é um custo que o ruído não paga e o trabalho já pagou. A decisão que faltava não era «quem esvazia a caixa», era «quem tem chave»."
   }
  },
  "moderacion": {

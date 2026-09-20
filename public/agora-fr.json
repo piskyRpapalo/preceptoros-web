@@ -28,14 +28,16 @@
    "porque": "La clé est générée sur votre appareil et n'en sort pas. Ce n'est pas un compte : c'est la preuve que celui qui a corrigé hier corrige aujourd'hui, sans que personne sache qui vous êtes."
   },
   "cuenta": {
-   "nombre": "Compte nommé",
+   "nombre": "Compte nommé · tu vois le forum",
    "quien": "quiconque enregistre un pseudonyme avec sa clé publique dans l'Agora",
-   "causa": "Le point d'accès des profils existe et accepte POST ; ce qui manque, c'est la modération, et ouvrir l'écriture sans elle revient à ouvrir une boîte aux lettres que personne ne relève."
+   "causa": "Le point d'accès des profils existe et accepte POST ; ce qui manque, c'est la modération, et ouvrir l'écriture sans elle revient à ouvrir une boîte aux lettres que personne ne relève.",
+   "porque": "Lire le forum n'exige pas de modération : cela exige de savoir que celui qui lit est enregistré, et la signature le prouve. Ce qui exigeait la modération, c'était ÉCRIRE, et c'est pourquoi écrire est monté au niveau 3."
   },
   "estudios": {
-   "nombre": "Proposer et voter des études",
+   "nombre": "Écrire dans le forum, proposer et voter",
    "quien": "les comptes avec au moins un paquet signé accepté",
-   "causa": "Voter exige de savoir qui vote, et cela exige le niveau 2. De plus, un vote sans travail derrière est du bruit : c'est pourquoi la condition est d'avoir contribué, pas de s'être inscrit."
+   "causa": "Voter exige de savoir qui vote, et cela exige le niveau 2. De plus, un vote sans travail derrière est du bruit : c'est pourquoi la condition est d'avoir contribué, pas de s'être inscrit.",
+   "porque": "LA MODÉRATION ÉTAIT LE BLOCAGE ET CE NIVEAU EST LA RÉPONSE, signée par le Souverain le 2026-09-20. Écrire ne s'ouvre pas à quiconque a une clé : cela s'ouvre à qui a déjà remis un travail signé et accepté. Ce n'est pas un filtre de sympathie ni un modérateur qui lit des boîtes — c'est un coût que le bruit ne paie pas et que le travail a déjà payé. La décision qui manquait n'était pas «qui vide la boîte», c'était «qui a une clé»."
   }
  },
  "moderacion": {

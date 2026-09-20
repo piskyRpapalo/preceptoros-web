@@ -28,14 +28,16 @@
    "porque": "La chiave si genera sul tuo dispositivo e non ne esce. Non è un account: è la prova che chi ha corretto ieri corregge oggi, senza che nessuno sappia chi sei."
   },
   "cuenta": {
-   "nombre": "Account con nome",
+   "nombre": "Conto con nome · vedi il foro",
    "quien": "chi registri uno pseudonimo con la propria chiave pubblica nell'Agorà",
-   "causa": "L'endpoint dei profili esiste e accetta POST; quello che manca è la moderazione, e aprire la scrittura senza di essa è aprire una cassetta postale che nessuno svuota."
+   "causa": "L'endpoint dei profili esiste e accetta POST; quello che manca è la moderazione, e aprire la scrittura senza di essa è aprire una cassetta postale che nessuno svuota.",
+   "porque": "Leggere il foro non esige moderazione: esige sapere che chi legge è registrato, e questo lo prova la firma. Ciò che esigeva moderazione era SCRIVERE, ed è per questo che scrivere è salito al livello 3."
   },
   "estudios": {
-   "nombre": "Proporre e votare studi",
+   "nombre": "Scrivere nel foro, proporre e votare",
    "quien": "account con almeno un pacchetto firmato accettato",
-   "causa": "Votare richiede sapere chi vota, e questo richiede il livello 2. Inoltre un voto senza lavoro dietro è rumore: per questo il requisito è aver contribuito, non essersi registrati."
+   "causa": "Votare richiede sapere chi vota, e questo richiede il livello 2. Inoltre un voto senza lavoro dietro è rumore: per questo il requisito è aver contribuito, non essersi registrati.",
+   "porque": "LA MODERAZIONE ERA IL BLOCCO E QUESTO LIVELLO È LA RISPOSTA, firmata dal Sovrano il 2026-09-20. Scrivere non si apre a chiunque abbia una chiave: si apre a chi ha già consegnato lavoro firmato e accettato. Non è un filtro di simpatia né un moderatore che legge cassette — è un costo che il rumore non paga e il lavoro ha già pagato. La decisione che mancava non era «chi svuota la cassetta», era «chi ha una chiave»."
   }
  },
  "moderacion": {

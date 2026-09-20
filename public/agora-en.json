@@ -28,14 +28,16 @@
    "porque": "The key is generated on your device and never leaves it. It is not an account: it is proof that whoever corrected yesterday is correcting today, without anyone knowing who you are."
   },
   "cuenta": {
-   "nombre": "Named account",
+   "nombre": "Named account · you see the forum",
    "quien": "whoever registers a pseudonym with their public key in the Agora",
-   "causa": "The profile endpoint exists and accepts POST; what is missing is moderation, and opening writing without it is opening a mailbox with nobody to read it."
+   "causa": "The profile endpoint exists and accepts POST; what is missing is moderation, and opening writing without it is opening a mailbox with nobody to read it.",
+   "porque": "Reading the forum does not require moderation: it requires knowing that whoever reads is registered, and the signature proves that. What required moderation was WRITING, and that is why writing has moved up to level 3."
   },
   "estudios": {
-   "nombre": "Propose and vote on studies",
+   "nombre": "Write in the forum, propose and vote",
    "quien": "accounts with at least one accepted signed package",
-   "causa": "Voting requires knowing who votes, and that requires level 2. Besides, a vote with no work behind it is noise: that is why the requirement is having contributed, not having registered."
+   "causa": "Voting requires knowing who votes, and that requires level 2. Besides, a vote with no work behind it is noise: that is why the requirement is having contributed, not having registered.",
+   "porque": "MODERATION WAS THE BLOCKER AND THIS LEVEL IS THE ANSWER, signed by the Sovereign on 2026-09-20. Writing does not open to anyone with a key: it opens to whoever has already handed over signed, accepted work. It is not a filter of sympathy nor a moderator reading mailboxes — it is a cost that noise does not pay and work already paid. The missing decision was not «who empties the mailbox», it was «who holds a key»."
   }
  },
  "moderacion": {

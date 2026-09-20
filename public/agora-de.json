@@ -28,14 +28,16 @@
    "porque": "Der Schlüssel entsteht auf deinem Gerät und verlässt es nicht. Es ist kein Konto: es ist der Beweis, dass derselbe, der gestern korrigiert hat, heute korrigiert — ohne dass jemand weiß, wer du bist."
   },
   "cuenta": {
-   "nombre": "Konto mit Namen",
+   "nombre": "Benanntes Konto · du siehst das Forum",
    "quien": "wer ein Pseudonym mit seinem öffentlichen Schlüssel in der Agora registriert",
-   "causa": "Der Profil-Endpunkt existiert und nimmt POST an; was fehlt, ist die Moderation, und das Schreiben ohne sie zu öffnen heißt, einen Briefkasten zu öffnen, den niemand leert."
+   "causa": "Der Profil-Endpunkt existiert und nimmt POST an; was fehlt, ist die Moderation, und das Schreiben ohne sie zu öffnen heißt, einen Briefkasten zu öffnen, den niemand leert.",
+   "porque": "Das Forum zu lesen braucht keine Moderation: es braucht die Gewissheit, dass wer liest registriert ist, und das beweist die Signatur. Moderation brauchte das SCHREIBEN, und darum ist Schreiben auf Stufe 3 gewandert."
   },
   "estudios": {
-   "nombre": "Studien vorschlagen und abstimmen",
+   "nombre": "Im Forum schreiben, vorschlagen und abstimmen",
    "quien": "Konten mit mindestens einem angenommenen signierten Paket",
-   "causa": "Abstimmen verlangt zu wissen, wer abstimmt, und das verlangt Stufe 2. Außerdem ist eine Stimme ohne Arbeit dahinter Rauschen: deshalb lautet die Bedingung, beigetragen zu haben, nicht sich registriert zu haben."
+   "causa": "Abstimmen verlangt zu wissen, wer abstimmt, und das verlangt Stufe 2. Außerdem ist eine Stimme ohne Arbeit dahinter Rauschen: deshalb lautet die Bedingung, beigetragen zu haben, nicht sich registriert zu haben.",
+   "porque": "DIE MODERATION WAR DIE SPERRE UND DIESE STUFE IST DIE ANTWORT, vom Souverän am 2026-09-20 unterzeichnet. Schreiben öffnet sich nicht für jeden mit Schlüssel: es öffnet sich für den, der bereits signierte, angenommene Arbeit abgegeben hat. Kein Sympathiefilter und kein Moderator, der Postfächer liest — ein Preis, den Rauschen nicht zahlt und Arbeit schon gezahlt hat. Die fehlende Entscheidung war nicht «wer leert das Postfach», sondern «wer hat einen Schlüssel»."
   }
  },
  "moderacion": {

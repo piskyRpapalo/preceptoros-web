@@ -2023,52 +2023,105 @@ class Identidad(unittest.TestCase):
 
 
 class Foro(unittest.TestCase):
-    """La pestaña Foro, desde que el Soberano la cerro el 2026-09-14.
+    """La pestaña Foro. ABIERTA el 2026-09-20, y con dos llaves distintas.
 
-    ANTES aqui vivia `class Tablon`, con nueve hilos de EJEMPLO y cuatro
-    pruebas que vigilaban que el tablon dijera SIEMPRE de donde salian --del
-    Agora, de la cache, del ejemplo o de un fallo--. Eran buenas pruebas y
-    protegian algo real: que no se colara actividad fingida.
+    ESTA CLASE HA CAMBIADO DE OBJETO DOS VECES, y las dos por una decision del
+    Soberano, no por comodidad. Nacio como `class Tablon`, vigilando nueve
+    hilos de EJEMPLO. El 2026-09-14 el foro se cerro y paso a vigilar lo
+    contrario: que no hubiera ni un hilo, ni de ejemplo, y que la PUERTA lo
+    dijera en las ocho lenguas.
 
-    La decision las deja sin objeto, y por eso se retiran en vez de adaptarse:
-    la forma mas barata de que un gate mienta es dejar en pie a un guardian
-    cuyo vigilado ya no existe. Lo que se vigila ahora es lo contrario --que NO
-    haya hilos, ninguno, ni de ejemplo-- y que la puerta lo diga en las ocho.
+    Hoy el Soberano lo abre, y con una regla que resuelve el bloqueo de
+    entonces. Sus palabras:
+
+      «simplemente los usuarios pueden poner un comentario que todos los otros
+       registrados puedan ver. Foro solo se abre en nivel 2 como visual. Y
+       escritura en nivel 3.»
+
+    Lo que bloqueaba era la moderacion --- `agora.json` lo decia asi: «abrir
+    escritura sin ella es abrir un buzon sin nadie que lo lea». La decision que
+    faltaba no era quien vacia el buzon, era QUIEN TIENE LLAVE, y son dos:
+
+      nivel 2 · Firmante      hay clave         -> LEE
+      nivel 3 · Contribuyente hay trabajo firmado -> ESCRIBE
+
+    ASI QUE LA PUERTA FIJA SE RETIRA Y SU LEY NO. Lo que se vigilaba --- que no
+    se finja actividad --- sigue vigilado: `foVacio` dice que vacio es vacio, y
+    `test_NO_QUEDA_ni_un_hilo_de_ejemplo` no se toca. Lo que se añade es que la
+    puerta ya no puede ser una frase pintada a mano: tiene que derivar el nivel
+    de los mismos dos hechos que el Perfil, o «nivel 3» significaria una cosa
+    en una pagina y otra en la otra.
     """
 
     def foro(self, idioma):
         return (PUBLICO / idioma / "community.html").read_text(encoding="utf-8")
 
-    def test_el_foro_es_UNA_PUERTA_y_no_un_tablon(self):
-        """Ni hilos, ni filtros, ni formulario. Una frase y su causa."""
+    def test_el_foro_lo_pinta_un_guion_y_no_el_marcado(self):
+        """La puerta fija se va; el ancla y su guion se quedan.
+
+        Una puerta escrita en el HTML no puede saber que nivel tiene quien
+        mira, asi que solo podia decir «registrate» a todo el mundo --- incluso
+        a quien ya cumple. Por eso se sustituye en vez de retocarse.
+        """
         for idioma in IDIOMAS:
             t = self.foro(idioma)
             with self.subTest(idioma=idioma):
-                self.assertIn('class="panel panel-violeta forum-gate"', t,
-                    "la pestaña Foro no trae la puerta")
+                self.assertNotIn('forum-gate', t,
+                    "sigue la puerta fija, que no sabe el nivel de quien mira")
+                self.assertIn('id="foro"', t, "no hay ancla del foro")
+                self.assertIn('/assets/foro.js', t, "nadie pinta el foro")
                 self.assertNotIn('id="hilos"', t,
                     "queda el contenedor del tablon retirado")
                 self.assertNotIn('/assets/board.js', t,
                     "sigue cargandose el guion que pintaba los hilos de ejemplo")
 
-    def test_la_puerta_del_foro_dice_las_TRES_cosas(self):
-        """La frase, la condicion y el NO_DATA. Las tres, en las ocho.
+    def test_las_dos_llaves_del_foro_y_de_donde_salen(self):
+        """Leer en nivel 2, escribir en nivel 3 --- y derivado de los mismos
+        dos hechos que el Perfil.
 
-        Una puerta que solo dice «registrate» sin decir para que ni desde
-        cuando es un muro. La condicion --Nivel 3 y recibo verificado-- y el
-        NO_DATA con su causa son lo que la convierten en informacion.
+        DOS IDEAS DISTINTAS DE QUE ES UN NIVEL es como se acaba con una pagina
+        que te deja escribir y otra que dice que no puedes. `profile-obra.js`
+        lo deriva de dos hechos que se pueden mirar en el aparato --- hay clave
+        / hay pares en el Bronce --- y aqui tiene que ser exactamente eso.
         """
+        js = (PUBLICO / "assets" / "foro.js").read_text(encoding="utf-8")
+        sin_com = re.sub(r"//.*", "", re.sub(r"/\*.*?\*/", "", js, flags=re.S))
+
+        # 1 · LOS DOS HECHOS, los mismos que el Perfil.
+        obra = (PUBLICO / "assets" / "profile-obra.js").read_text(encoding="utf-8")
+        for hecho in ("Identity.quien()", "Bronce.leerTodo()"):
+            with self.subTest(hecho=hecho):
+                self.assertIn(hecho, sin_com, f"el foro no mira {hecho}")
+                self.assertIn(hecho, obra, f"el Perfil ya no mira {hecho}")
+
+        # 2 · SI EL BRONCE NO SE PUEDE LEER, NO SE ADIVINA. Dar por vacio lo
+        #     que no se ha podido mirar quitaria un permiso que alguien SI
+        #     tiene --- y el error cae del lado que castiga al usuario.
+        self.assertIn("catch", sin_com, "el Bronce ilegible no se declara")
+        self.assertIn("foSinBronce", sin_com, "no hay NO_DATA para el Bronce")
+
+        # 3 · TEXTO DE OTROS, NUNCA COMO HTML. Es el unico sitio de la casa
+        #     donde lo que escribio un desconocido llega a la pantalla.
+        self.assertNotIn("innerHTML", sin_com,
+                         "el foro pinta texto ajeno como HTML")
+
+        # 4 · LO QUE SE FIRMA INCLUYE EL TEXTO. Firmar solo el reto probaria
+        #     quien eres y no QUE ESCRIBES: quien interceptase la peticion
+        #     podria cambiar el comentario y la firma seguiria cuadrando.
+        self.assertIn("d.reto + '|' + texto", sin_com,
+                      "la firma no cubre el comentario")
+
+        # 5 · Y CADA ROTULO EXISTE EN LAS OCHO.
+        pedidas = set(re.findall(r"T\('(fo[A-Za-z]+)'", sin_com))
+        self.assertTrue(pedidas)
         for idioma in IDIOMAS:
             t = self.foro(idioma)
             bloque = json.loads(re.search(r'id="i18n">(.*?)</script>', t, re.S).group(1))
-            for clave in ("foTitulo", "foCuerpo", "foNoData", "foPlaza"):
-                with self.subTest(idioma=idioma, clave=clave):
-                    self.assertTrue(bloque.get(clave), f"falta «{clave}»")
-                    self.assertIn(bloque[clave], t,
-                        f"«{clave}» esta declarada y no se pinta")
-            with self.subTest(idioma=idioma, que="NO_DATA con causa"):
-                self.assertIn("NO_DATA", bloque["foNoData"],
-                    "la escritura cerrada se declara, no se insinua")
+            with self.subTest(idioma=idioma):
+                self.assertFalse(pedidas - set(bloque),
+                                 f"rotulos que faltan: {pedidas - set(bloque)}")
+                self.assertIn("NO_DATA", bloque["foSinExtremo"],
+                              "el hueco del rack se declara, no se insinua")
 
     def test_NO_QUEDA_ni_un_hilo_de_ejemplo(self):
         """Ni en el marcado ni en el catalogo. Fingir actividad es la mentira

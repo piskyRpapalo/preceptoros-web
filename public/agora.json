@@ -69,8 +69,8 @@
  "cerrado": [
   {
    "id": "foro",
-   "que": "El foro",
-   "causa": "es la apertura del Agora y exige cuentas con nombre. El Agora declara hoy «escritura cerrada: todavia no modera». Necesita firma del Arquitecto."
+   "que": "Escribir en el foro",
+   "causa": "ya no es la moderacion --- la resuelve el nivel 3, firmado el 2026-09-20. Lo que falta es tecnico: el Agora no tiene todavia extremo de comentarios. LEER el foro si esta abierto en nivel 2."
   },
   {
    "id": "estudios",
@@ -121,33 +121,34 @@
   {
    "n": 2,
    "id": "cuenta",
-   "nombre": "Cuenta con nombre",
+   "nombre": "Cuenta con nombre · ves el foro",
    "quien": "quien registre un pseudonimo con su clave publica en el Agora",
    "puede": [
     "todo lo anterior",
-    "escribir en el foro",
-    "responder hilos"
+    "ver el foro y lo que escriben los demas"
    ],
    "no_puede": [
+    "escribir en el foro",
     "votar estudios"
    ],
-   "estado": "CERRADO",
-   "causa": "El endpoint de perfiles existe y acepta POST; lo que falta es la moderacion, y abrir escritura sin ella es abrir un buzon sin nadie que lo lea.",
-   "desbloquea_cuando": "el Arquitecto firme la politica de moderacion de abajo"
+   "estado": "ABIERTO",
+   "porque": "Leer el foro no exige moderacion: exige saber que quien lee esta registrado, y eso lo prueba la firma. Lo que exigia moderacion era ESCRIBIR, y por eso escribir se ha subido al nivel 3."
   },
   {
    "n": 3,
    "id": "estudios",
-   "nombre": "Proponer y votar estudios",
+   "nombre": "Escribir en el foro, proponer y votar",
    "quien": "cuentas con al menos un paquete firmado aceptado",
    "puede": [
     "todo lo anterior",
+    "escribir un comentario en el foro",
     "proponer un estudio",
     "votar propuestas"
    ],
    "estado": "CERRADO",
-   "causa": "Votar exige saber quien vota, y eso exige el nivel 2. Ademas un voto sin trabajo detras es ruido: por eso el requisito es haber aportado, no haberse registrado.",
-   "desbloquea_cuando": "el nivel 2 lleve funcionando lo bastante para saber si hace falta"
+   "causa": "El Agora todavia no tiene extremo de comentarios. El cliente esta hecho y el parche del rack esta propuesto en p0x/propuestas/la-fragua-agora-foro-comentarios.md; falta aplicarlo en la-fragua.",
+   "desbloquea_cuando": "ese parche este aplicado en la-fragua",
+   "porque": "LA MODERACION ERA EL BLOQUEO Y ESTE NIVEL ES LA RESPUESTA, firmada por el Soberano el 2026-09-20. Escribir no se abre a cualquiera con clave: se abre a quien ya ha entregado trabajo firmado y aceptado. No es un filtro de simpatia ni un moderador que lea buzones --- es un coste que el ruido no paga y el trabajo ya pago. La decision que faltaba no era «quien vacia el buzon», era «quien tiene llave»."
   }
  ],
  "moderacion": {
