@@ -2266,6 +2266,39 @@ class Hub(unittest.TestCase):
         self.assertIn("NO_DATA", fuente,
                       "camino.js ya no declara por que no se puede firmar")
 
+        # LA TORRE NO SE DESBLOQUEA. Firmado por el carbono el 2026-09-20: es
+        # accesible en todos los niveles y tiene que incentivar el aprendizaje,
+        # no repartir permisos. Un candado se cuela facil --- basta una linea
+        # que mire un contador de pasos firmados --- y una vez colado nadie lo
+        # quita, porque «ya estaba asi».
+        # SE MIRA EL CODIGO, NO LA PROSA. La primera version buscaba en el
+        # fichero entero y se cazo a si misma: la cabecera de `camino.js`
+        # explica el principio y usa la palabra «desbloqueable» para decir que
+        # NO lo es. Un guardian que no distingue una regla de su explicacion
+        # obliga a no escribir la explicacion, que es justo al reves.
+        codigo = re.sub(r"/\*.*?\*/", "", fuente, flags=re.S)
+        codigo = re.sub(r"^\s*//.*$", "", codigo, flags=re.M)
+        for candado in ("locked", "bloquead", "desbloque", "requiere",
+                        "completad", "prerequisito"):
+            self.assertNotIn(
+                candado, codigo.lower(),
+                f"camino.js menciona «{candado}»: la Torre no reparte "
+                "permisos. Todos los peldanos estan abiertos desde la primera "
+                "visita; el numero es un ORDEN, no una llave")
+
+        # Y el contrato se pinta: el lema dice que ningun peldano obliga al
+        # siguiente, y tiene que estar en las ocho lenguas.
+        self.assertIn("torre_lema", fuente,
+                      "camino.js ya no pinta el lema, que es donde la Torre "
+                      "dice que no obliga a nada")
+        for idioma in IDIOMAS:
+            d = _j.loads((PUBLICO / f"caminos-{idioma}.json")
+                         .read_text(encoding="utf-8"))["ui"]
+            with self.subTest(idioma=idioma, clave="torre_lema"):
+                self.assertTrue(d.get("torre_lema", "").strip(),
+                                "sin lema, la Torre parece una escalera con "
+                                "peaje")
+
     def test_las_tarjetas_no_traen_logos_de_empresa(self):
         """Firmado el 2026-09-08: solo bandera, sin logo.
 

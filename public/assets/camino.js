@@ -23,6 +23,22 @@
  * camino y lo corta sin decirlo. Es el callejon sin vuelta que esta casa ya
  * tiene anotado en los flujos del benchmark.
  *
+ * NO SE DESBLOQUEA NADA. NUNCA
+ * ------------------------------
+ * Firmado por el carbono el 2026-09-20: *«la Torre debe ser algo accesible
+ * para todos los usuarios en todos los niveles. No debe ser algo
+ * desbloqueable, es algo que debe incentivar el aprendizaje en todos los
+ * niveles»*.
+ *
+ * Los cinco peldanos estan abiertos desde la primera visita. El numero que
+ * lleva cada uno es un ORDEN, no una llave: dice por donde suele empezar la
+ * gente, no que haga falta permiso. `torre_lema` lo dice en pantalla, justo
+ * bajo el titulo, y va SIEMPRE --- no es decoracion, es el contrato.
+ *
+ * Lo unico que puede quedar sin accion es el peldano cuando no hay campo de
+ * chat donde escribir la practica, y eso es una pieza que falta en la pagina,
+ * no un nivel que le falte a la persona. Se dice con `title`.
+ *
  * QUE HACE UN PELDANO AL PULSARLO. Deja su practica escrita en el campo del
  * chat --- `#pregunta` --- y **no la manda**. Quien decide hablar es la
  * persona; el peldano solo le ahorra escribirlo. Toda la tarjeta es la zona de
@@ -125,8 +141,9 @@
           entrada.scrollIntoView({ block: 'center', behavior: 'smooth' });
         });
       } else {
+        /* No hay `#pregunta` en esta pagina: falta la pieza, no el nivel. */
         b.disabled = true;
-        b.title = 'NO_DATA';
+        b.title = 'NO_DATA · no hay campo de chat en esta pagina';
       }
       escala.appendChild(b);
     });
