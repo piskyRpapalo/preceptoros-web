@@ -276,8 +276,12 @@
           var aviso = ui.torre_no_enviado || '';
           var boton = (window.ENVT && window.ENVT.envBoton) || '';
           if (aviso) {
-            caja.appendChild(el('p', 'no-data',
-              aviso + (boton ? ' «' + boton + '»' : '')));
+            /* Sin nombre de boton, fuera los dos puntos: ver el mismo
+               bloque en `duelo-firma.js`. Una frase que acaba en dos puntos y
+               no sigue se lee como un fallo, no como el aviso que es. */
+            caja.appendChild(el('p', 'no-data', boton
+              ? aviso + ' «' + boton + '»'
+              : aviso.replace(/\s*[:：]\s*$/, '')));
           }
         }).catch(function (e) {
           ok.disabled = false;

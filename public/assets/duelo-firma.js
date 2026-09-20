@@ -102,8 +102,15 @@
         var aviso = UI.torre_no_enviado || '';
         var boton = (window.ENVT && window.ENVT.envBoton) || '';
         if (aviso) {
-          caja.appendChild(el('p', 'no-data',
-            aviso + (boton ? ' «' + boton + '»' : '')));
+          /* SIN NOMBRE DE BOTON, FUERA LOS DOS PUNTOS. Visto en produccion:
+             «Se queda en tu aparato hasta que tu lo mandes:» y nada detras,
+             porque esta pagina no cargaba los rotulos de envio. Una frase que
+             acaba en dos puntos y no sigue se lee como un fallo de la pagina,
+             no como el aviso que es. La puntuacion de cada lengua vive en su
+             fichero; aqui solo se quita lo que sobra al final. */
+          caja.appendChild(el('p', 'no-data', boton
+            ? aviso + ' «' + boton + '»'
+            : aviso.replace(/\s*[:：]\s*$/, '')));
         }
       }).catch(function (e) {
         firmar.disabled = false;
