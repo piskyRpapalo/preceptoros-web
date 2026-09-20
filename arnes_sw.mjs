@@ -157,7 +157,7 @@ const rutas = await shell.keys();
 // a mano A PROPOSITO -- si se dedujese de la lista del worker, el test
 // diria siempre que si y dejaria de avisar el dia que una pieza se caiga
 // del precache sin que nadie lo decida.
-ok('precachea paginas y piezas del Hub', rutas.length === 126, rutas.length+' rutas');
+ok('precachea paginas y piezas del Hub', rutas.length === 135, rutas.length+' rutas');
 ok('el shell trae las tres tiras de la cara',
    ['apertura', 'reposo', 'habla']
      .every(s => rutas.includes('/assets/caras/secuencia-' + s + '-256.webp')));
@@ -186,6 +186,8 @@ ok('el shell trae las cinco piezas del Hub',
 // Y a 124 al entrar el duelo de LoRAtelier: `duelo.js`, `rack.js` y los ocho
 // `duelos-<lengua>.json`, que entre todos pesan 12,4 KB --- menos de la octava
 // parte de lo que ocupaban las esferas que salieron esta manana.
+// Y a 135 con el indice de Herramientas y sus ocho ficheros de rotulos: 45
+// claves que llevaban traducidas desde la Fase 1 sin que nadie las pintara.
 ok('el shell NO trae ninguna de las dos familias de iconos de companero',
    rutas.filter(r => r.startsWith('/assets/agente-')).length === 0);
 

@@ -80,7 +80,14 @@ const AGENTES = ['de', 'el', 'en', 'es', 'fr', 'it', 'pt', 'ru']
 const DUELOS = ['de', 'el', 'en', 'es', 'fr', 'it', 'pt', 'ru']
   .map(function (l) { return '/duelos-' + l + '.json'; });
 
-const HUB = [...AGENTES, ...DUELOS, '/hub.json', '/hub-textos.json',
+/* `herramientas-<lang>.json`, por el mismo criterio: rotulos, no medidas, y
+   diminutos. El indice de lo que te puedes llevar tiene que leerse sin red ---
+   es justo la pagina que abre quien acaba de instalar la web y todavia no
+   tiene nada mas. */
+const HERRAMIENTAS = ['de', 'el', 'en', 'es', 'fr', 'it', 'pt', 'ru']
+  .map(function (l) { return '/herramientas-' + l + '.json'; });
+
+const HUB = [...AGENTES, ...DUELOS, ...HERRAMIENTAS, '/hub.json', '/hub-textos.json',
              '/assets/marble-violet.webp', '/assets/marble-violet-oscuro.webp', '/modelos.json', '/servicios.json', '/instalar.json',
              '/assets/instalar-descargas.js', '/assets/widget.css', '/assets/puertas.css', '/assets/escribir.css', '/assets/placa.css', '/medidas.json', '/assets/medidas.js', '/nav.json', '/assets/cabezal.js', '/assets/cabezal-rotulos.js', '/assets/selector-modelo.js', '/assets/consiento.js', '/cerebros.json', '/cerebros-en.json', '/cerebros-es.json', '/assets/logos-models/preceptor.svg', '/assets/logos-models/qwen.svg', '/assets/logos-models/mistral.svg', '/assets/cabezal.css', '/assets/esquina.css', '/assets/esquina-cuenta.css', '/assets/esquina-par.css', '/assets/mandos.css', '/assets/panel.css', '/assets/nubes.css', '/assets/consiento.css', '/assets/senal.css', '/assets/senal.js',
              '/assets/hub.js',
@@ -101,6 +108,7 @@ const HUB = [...AGENTES, ...DUELOS, '/hub.json', '/hub-textos.json',
                 pantalla se pinta y se lee, que es la diferencia entre una
                 pagina que explica por que no puede y una que no carga. */
              '/assets/duelo.js', '/assets/duelo-firma.js', '/assets/rack.js',
+             '/assets/herramientas.js',
              /* La salida del callejon «sin identidad», compartida por las
                 cuatro pantallas que firman. Sin ella en el shell, una PWA
                 sin red pone el boton de firmar y no puede ofrecer la
@@ -134,7 +142,7 @@ const CAMINOS = ['de', 'el', 'en', 'es', 'fr', 'it', 'pt', 'ru']
   .map(function (l) { return '/caminos-' + l + '.json'; });
 
 
-const CONTENIDO_JSON = [...AGENTES, ...CAMINOS, ...DUELOS, '/hub.json', '/hub-textos.json', '/medidas.json', '/nav.json', '/modelos.json', '/servicios.json', '/instalar.json'];
+const CONTENIDO_JSON = [...AGENTES, ...CAMINOS, ...DUELOS, ...HERRAMIENTAS, '/hub.json', '/hub-textos.json', '/medidas.json', '/nav.json', '/modelos.json', '/servicios.json', '/instalar.json'];
 
 /* El manifiesto va a red primero: es diminuto, cambia cuando cambian los
    iconos, y un manifiesto viejo hace que la app instalada se quede con el

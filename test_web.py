@@ -2146,37 +2146,36 @@ class Hub(unittest.TestCase):
     # todavia --- ni un guion, ni una pagina, ni el precache --- y por eso un
     # barrido de huerfanos se las llevaria. Existen porque la Fase 1 tradujo
     # los textos y la Fase 3 aun no ha escrito quien los pinta.
-    ESPERAN_RENDERIZADOR = {
-        "caminos": ("la Torre de la Ascension · 26 claves. El renderizador "
-                    "(`camino.js`) no existe todavia y el ancla `#torre` "
-                    "tampoco: la Torre va por JS porque en `el/index.html` "
-                    "quedan 107 bytes y no cabe como marcado"),
-        "duelos": ("el duelo del LoRAtelier · 11 claves. Espera al contrato "
-                   "del duelo, que declara los ~10 s y el intercambio de "
-                   "modelo medidos en Fase 2"),
-        "herramientas": ("la cuarta pestana · 8 claves. Espera a las piezas "
-                         "P-1/P-2/P-4, que hoy son NO_DATA sin artefacto "
-                         "firmado"),
-    }
+    # LAS TRES FAMILIAS YA TIENEN RENDERIZADOR, todas el 2026-09-20, y el
+    # registro se queda VACIO a proposito en vez de borrarse con la prueba.
+    #   caminos      · `camino.js` + `camino-papel.js` · la Torre
+    #   duelos       · `duelo.js` + `duelo-firma.js`   · LoRAtelier
+    #   herramientas · `herramientas.js`               · el indice de Instalar
+    # Vaciarlo y dejar la prueba es lo que convierte esto en un guardian: el
+    # dia que alguien traduzca una familia nueva antes de pintarla, la declara
+    # aqui y la prueba la protege del barrido de huerfanos. Borrar la prueba
+    # con la ultima familia habria dejado a la siguiente sin red.
+    ESPERAN_RENDERIZADOR = {}
 
     def test_lo_traducido_y_sin_pintar_no_se_pierde(self):
-        """Veinticuatro ficheros que nadie referencia, y que NO son basura.
+        """Una familia traducida y sin pintar NO es basura, y hay que decirlo.
 
-        Medido el 2026-09-20: `caminos-<lang>.json`, `duelos-<lang>.json` y
-        `herramientas-<lang>.json` estan en las ocho lenguas y los referencia
-        **cero** ficheros --- ni un guion, ni una pagina, ni `sw-listas.js` ---.
-        Un barrido de huerfanos los borraria en un commit, y con ellos la
-        traduccion de 45 claves a ocho lenguas.
+        Esta prueba nacio el 2026-09-20 por la manana con tres familias
+        dentro: `caminos`, `duelos` y `herramientas` estaban en las ocho
+        lenguas --- 45 claves --- y las referenciaba **cero** ficheros. Un
+        barrido de huerfanos las habria borrado en un commit.
 
-        No estan sueltos por descuido: la Fase 1 tradujo los textos y la Fase 3
-        todavia no ha escrito quien los pinta. Eso es un trabajo a medias
+        No estaban sueltas por descuido: la Fase 1 tradujo los textos y la
+        Fase 3 no habia escrito quien los pinta. Eso es un trabajo a medias
         DECLARADO, que es distinto de un resto olvidado --- y la diferencia
-        solo existe si esta escrita en alguna parte. Esta es esa parte.
+        solo existe si esta escrita en alguna parte.
 
-        Lo que se comprueba: que sigan en las ocho, que las claves casen entre
-        lenguas, y que la familia siga declarada aqui con su motivo. El dia que
-        alguien escriba el renderizador, esta prueba se queda corta y hay que
-        moverla al guardian normal --- y su propio nombre lo dira.
+        LAS TRES SE PINTARON ESE MISMO DIA, por la tarde, y el registro se
+        queda vacio. La prueba NO se borra con ellas: vacio, esto es un
+        guardian esperando a la siguiente. El dia que alguien traduzca una
+        familia antes de escribir su renderizador, la declara aqui y queda
+        protegida. Borrarla con la ultima habria dejado a la siguiente sin
+        red, que es como se pierde el trabajo hecho.
         """
         for familia, motivo in sorted(self.ESPERAN_RENDERIZADOR.items()):
             ficheros = sorted(PUBLICO.glob(f"{familia}-*.json"))
