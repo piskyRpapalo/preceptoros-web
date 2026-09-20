@@ -2150,6 +2150,63 @@ class Hub(unittest.TestCase):
                     "`prosa_pendiente`: volvera el 404 en las seis lenguas "
                     "que no la tienen")
 
+    # Las tres familias que ESPERAN a su renderizador. No las carga nadie
+    # todavia --- ni un guion, ni una pagina, ni el precache --- y por eso un
+    # barrido de huerfanos se las llevaria. Existen porque la Fase 1 tradujo
+    # los textos y la Fase 3 aun no ha escrito quien los pinta.
+    ESPERAN_RENDERIZADOR = {
+        "caminos": ("la Torre de la Ascension · 26 claves. El renderizador "
+                    "(`camino.js`) no existe todavia y el ancla `#torre` "
+                    "tampoco: la Torre va por JS porque en `el/index.html` "
+                    "quedan 107 bytes y no cabe como marcado"),
+        "duelos": ("el duelo del LoRAtelier · 11 claves. Espera al contrato "
+                   "del duelo, que declara los ~10 s y el intercambio de "
+                   "modelo medidos en Fase 2"),
+        "herramientas": ("la cuarta pestana · 8 claves. Espera a las piezas "
+                         "P-1/P-2/P-4, que hoy son NO_DATA sin artefacto "
+                         "firmado"),
+    }
+
+    def test_lo_traducido_y_sin_pintar_no_se_pierde(self):
+        """Veinticuatro ficheros que nadie referencia, y que NO son basura.
+
+        Medido el 2026-09-20: `caminos-<lang>.json`, `duelos-<lang>.json` y
+        `herramientas-<lang>.json` estan en las ocho lenguas y los referencia
+        **cero** ficheros --- ni un guion, ni una pagina, ni `sw-listas.js` ---.
+        Un barrido de huerfanos los borraria en un commit, y con ellos la
+        traduccion de 45 claves a ocho lenguas.
+
+        No estan sueltos por descuido: la Fase 1 tradujo los textos y la Fase 3
+        todavia no ha escrito quien los pinta. Eso es un trabajo a medias
+        DECLARADO, que es distinto de un resto olvidado --- y la diferencia
+        solo existe si esta escrita en alguna parte. Esta es esa parte.
+
+        Lo que se comprueba: que sigan en las ocho, que las claves casen entre
+        lenguas, y que la familia siga declarada aqui con su motivo. El dia que
+        alguien escriba el renderizador, esta prueba se queda corta y hay que
+        moverla al guardian normal --- y su propio nombre lo dira.
+        """
+        for familia, motivo in sorted(self.ESPERAN_RENDERIZADOR.items()):
+            ficheros = sorted(PUBLICO.glob(f"{familia}-*.json"))
+            lenguas = {f.stem.split("-")[-1] for f in ficheros}
+            with self.subTest(familia=familia):
+                self.assertEqual(
+                    set(IDIOMAS), lenguas,
+                    f"{familia}: estan {sorted(lenguas)} y hacen falta las "
+                    f"ocho. Si se retira una lengua se retiran todas, y con "
+                    f"una razon escrita. Motivo de la familia: {motivo}")
+                claves = {f: set(json.loads(f.read_text(encoding="utf-8"))
+                                 .get("ui", {})) for f in ficheros}
+                todas = set().union(*claves.values())
+                self.assertTrue(todas, f"{familia}: ninguna clave en ninguna lengua")
+                for f, k in sorted(claves.items()):
+                    self.assertEqual(
+                        set(), todas - k,
+                        f"{f.name} no trae {sorted(todas - k)}")
+                self.assertGreater(
+                    len(motivo), 60,
+                    f"{familia} esta protegida sin decir por que espera")
+
     def test_las_tarjetas_no_traen_logos_de_empresa(self):
         """Firmado el 2026-09-08: solo bandera, sin logo.
 
