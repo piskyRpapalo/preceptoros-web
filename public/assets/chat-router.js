@@ -193,8 +193,12 @@
          `async = false` sobre un guion insertado si obliga al orden de
          insercion. Aun asi `camino.js` comprueba que el vecino exista: una
          garantia del navegador no es motivo para no tener respaldo. */
+      /* `camino-killswitch.js` entra el 2026-09-20 y va EL ULTIMO: monta el
+         panel del proyecto dentro del piso `killswitch`, asi que necesita que
+         `camino.js` exista para oir su aviso. No necesita que haya pintado
+         --- el aviso llega cuando pinte ---, solo estar escuchando antes. */
       ['/assets/identidad-o-salida.js', '/assets/camino-papel.js',
-       '/assets/camino.js'].forEach(function (src) {
+       '/assets/camino.js', '/assets/camino-killswitch.js'].forEach(function (src) {
         var s = document.createElement('script');
         s.src = src;
         s.async = false;

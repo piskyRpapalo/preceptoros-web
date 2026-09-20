@@ -799,13 +799,86 @@ class Estructura(unittest.TestCase):
                       "el dueño de `elegido` no escucha su propio evento: quien "
                       "elija modelo desde fuera mandara `model: null`")
 
+    def test_el_killswitch_vive_en_la_torre(self):
+        """La otra mitad de la mudanza del 2026-09-20.
+
+        Quitar el panel de Comunidad es media ley. Sin esta, el gate quedaria
+        contento con el peor resultado posible --- que el Survival Killswitch no
+        se pinte en ninguna parte ---, que es exactamente como acaban las
+        mudanzas a medias: nadie nota la falta hasta que alguien pregunta por el
+        proyecto y no esta.
+
+        SE COMPRUEBA LA CADENA ENTERA, no que el fichero exista. Un modulo que
+        nadie carga, o que escucha un aviso que nadie lanza, pasa un test de
+        existencia y no pinta nada --- y es justo el fallo que ya costo una
+        tarde con `camino-papel.js`, que se cargaba en paralelo y llegaba tarde.
+        """
+        ks = (PUBLICO / "assets" / "camino-killswitch.js")
+        self.assertTrue(ks.exists(), "el panel no tiene modulo")
+        js = ks.read_text(encoding="utf-8")
+
+        # 1 · alguien lo carga, y DESPUES de `camino.js`
+        router = (PUBLICO / "assets" / "chat-router.js").read_text(encoding="utf-8")
+        self.assertIn("/assets/camino-killswitch.js", router,
+                      "nadie carga el panel de la Torre")
+        self.assertLess(router.index("/assets/camino.js"),
+                        router.index("/assets/camino-killswitch.js"),
+                        "el panel se carga antes que la Torre que lo aloja")
+
+        # 2 · hay aviso, y alguien lo escucha. Las dos puntas.
+        camino = (PUBLICO / "assets" / "camino.js").read_text(encoding="utf-8")
+        self.assertIn("preceptor:torre", camino, "la Torre no avisa de que pinto")
+        self.assertIn("preceptor:torre", js, "el panel no escucha el aviso")
+        self.assertIn("'piso-' + p", camino, "los pisos no se pueden nombrar")
+        self.assertIn("piso-killswitch", js, "el panel no busca su piso")
+
+        # 3 · LOS ROTULOS SALEN DE `caminos-<lengua>.json`, no del `#i18n` de la
+        #     portada, donde el griego tiene 107 bytes libres. Se comprueba que
+        #     cada clave que el modulo pide existe en las ocho lenguas: una
+        #     clave inventada se vuelve silencio, que es la cicatriz de
+        #     `envEnCola`.
+        import re as _re
+        pedidas = set(_re.findall(r"T\('(ks_[a-z_]+)'", js))
+        self.assertTrue(pedidas, "el panel no pide ningun rotulo")
+        for idi in IDIOMAS:
+            d = json.loads((PUBLICO / f"caminos-{idi}.json").read_text(encoding="utf-8"))
+            faltan = pedidas - set(d["ui"])
+            with self.subTest(idioma=idi):
+                self.assertFalse(faltan, f"rotulos que el panel pide y no existen: {faltan}")
+
+        # 4 · EL TELON SE TRAE AL PULSAR. `escenario.js` pesa 16 KB y la portada
+        #     no lo carga: cobrarselo a todo el mundo por una pantalla que abre
+        #     una minoria es el reves de por que la Torre es perezosa.
+        self.assertIn("/assets/escenario.js", js, "el panel no trae su telon")
+        # Y SU HOJA. Medido en el navegador el 2026-09-20: sin `escenario.css`
+        # el dialogo se pinta `position: static`, dentro del flujo y 3.000
+        # pixeles mas abajo --- el gate pasaba entero porque el texto SI estaba
+        # en el DOM. Un panel sin su hoja no es un panel, es texto suelto.
+        self.assertIn("/assets/escenario.css", js, "el telon viene sin hoja")
+        for idi in IDIOMAS:
+            t = (PUBLICO / idi / "index.html").read_text(encoding="utf-8")
+            with self.subTest(idioma=idi):
+                self.assertNotIn("escenario.js", t,
+                                 "la portada carga el telon de balde")
+
     def test_la_plaza_tiene_dos_pestanas_y_el_killswitch_abre(self):
         """La forma de Comunidad, firmada el 2026-09-14.
 
         Dos cosas que no se miran a la vez --lo que se puede hacer y lo que se
         esta hablando-- y en una sola columna competian por la misma pantalla.
-        Dos pestañas, y el Killswitch el PRIMERO de la de proyectos: es el unico
-        que se juega sin red, y romper el violeta lo dice sin gastar una linea.
+
+        EL KILLSWITCH YA NO ABRE LA PESTAÑA: se mudo a la Torre el 2026-09-20.
+        Esta clausula decia que el panel iba el PRIMERO de proyectos, y era
+        correcta mientras el proyecto vivia aqui. El Soberano lo mando a la
+        Torre de la Ascension de la portada, donde ya habia un peldano
+        `killswitch` --- eran dos puertas al mismo sitio en dos paginas.
+
+        LA GARANTIA SE MUDA CON EL PANEL, NO SE BORRA. Un test que se quita
+        cuando estorba deja de ser una ley; aqui pasa a exigir lo contrario ---
+        que Comunidad ya NO lo pinte --- y la exigencia positiva --- que la
+        Torre si --- vive en `test_el_killswitch_vive_en_la_torre`. Las dos
+        juntas impiden lo unico que de verdad duele: que el panel no este en
+        ninguna parte, que es como acaban las mudanzas a medias.
 
         Y EL MINI-CHAT NO HABLA CON UNA IA, que es la razon de que no lleve
         feedback al rack. La regla de la casa es que todo chat de IA recoge
@@ -821,8 +894,12 @@ class Estructura(unittest.TestCase):
                 for panel in ('proyectos', 'foro'):
                     self.assertIn(f'data-panel="{panel}"', t)
                     self.assertIn(f'data-hoja="{panel}"', t)
-                self.assertLess(t.index('id="killswitch"'), t.index('id="taller"'),
-                                "el Killswitch no abre la pestaña de proyectos")
+                self.assertNotIn('id="killswitch"', t,
+                                 "el Killswitch volvio a Comunidad: vive en la "
+                                 "Torre desde el 2026-09-20")
+                self.assertNotIn('/assets/killswitch.js', t,
+                                 "queda el guion del panel viejo")
+                self.assertIn('id="taller"', t, "la vitrina se fue con el")
                 self.assertIn('id="mini-chat"', t, "la plaza se quedo sin terminal")
         mc = (PUBLICO / "assets" / "minichat.js").read_text(encoding="utf-8")
         # SIN LOS COMENTARIOS. Es la tercera vez esta semana que una prueba de
@@ -4802,7 +4879,29 @@ CLAVES_CAMINOS = {
      # plataforma para gestionar informacion» --- y no por ser pequenos: el
      # papel nunca se lo habia dicho. Un modelo al que no le das los hechos
      # rellena el hueco, y lo rellena con seguridad.
-     "torre_hechos"}
+     "torre_hechos",
+     # LOS SIETE `ks_*` ENTRAN EL 2026-09-20 CON LA MUDANZA DEL KILLSWITCH.
+     #
+     # El panel del Survival Killswitch vivia en la pestaña Proyectos de
+     # `community.html`, en las ocho lenguas, y el Soberano lo mando a su
+     # sitio: la Torre de la Ascension, en la portada --- donde ya habia un
+     # peldano `killswitch` desde que existe la familia. Tener el proyecto en
+     # una pagina y su peldano en otra eran dos puertas al mismo sitio.
+     #
+     # POR QUE AQUI Y NO EN EL `#i18n` DE LA PORTADA, que es donde vivian:
+     # `public/el/index.html` tiene 107 bytes libres de los 16.384 y
+     # `public/ru/index.html` 539. Siete claves traducidas no caben en el
+     # griego ni de lejos. La familia `caminos-<lengua>.json` es donde vive el
+     # resto de la Torre, no cuesta un byte de marcado, y ya la carga
+     # `camino.js` --- asi que el panel lee sus rotulos de donde lee los suyos
+     # el piso que lo contiene, en vez de de otro fichero.
+     #
+     # Las traducciones NO se escribieron: se copiaron de las ocho
+     # `community.html` donde ya estaban. Es la leccion de `torre_anfitrion`,
+     # que nunca llego a la interfaz porque la lista se mantenia a mano.
+     "ks_sello", "ks_falla", "ks_medido",
+     "ks_juez_titulo", "ks_juez_pedir", "ks_juez_sin_turnos",
+     "ks_juez_una_capa"}
 
 CLAVES_DUELOS = {
     # `duelo_degenera` entra el 2026-09-20 y nombra una acusacion, no un

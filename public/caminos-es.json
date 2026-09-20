@@ -63,7 +63,14 @@
   "torre_no_enviado": "Se queda en tu aparato hasta que tú lo mandes:",
   "torre_paso": "paso",
   "torre_probar": "Probar aquí",
-  "torre_titulo": "La Torre de la Ascensión"
+  "torre_titulo": "La Torre de la Ascensión",
+  "ks_sello": "modo avión",
+  "ks_falla": "Falla:",
+  "ks_medido": "Medido",
+  "ks_juez_titulo": "Juez coordinador",
+  "ks_juez_pedir": "Pedir veredicto",
+  "ks_juez_sin_turnos": "NO_DATA — todavía no hay turnos que juzgar. Habla primero con el estudio.",
+  "ks_juez_una_capa": "NO_DATA — esto es UNA capa. La ficha de este estudio exige dos —determinista primero, modelo después— y la primera corre en el rack, no aquí. Léelo como una opinión medida, no como una nota."
  },
  "pendiente": {
   "papel_de_usuario": "NO_DATA · falta escribir con quien cree el modelo que habla en cada peldano. Se escribe en castellano y se traduce a las ocho, como el resto; hasta entonces el desplegable lo declara en pantalla."

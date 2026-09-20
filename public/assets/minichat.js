@@ -64,7 +64,29 @@
   }
 
   var caja = el('div', 'mini-chat');
-  caja.dataset.min = '0';
+  /* EMPIEZA PLEGADA EN EL TELEFONO, Y ES UNA MEDIDA, NO UN GUSTO.
+     Medido en produccion el 2026-09-20 a 375 px: esta caja ocupa 210 px de los
+     812 del viewport --- **un cuarto de la pantalla**, fija, permanente --- y
+     lo que ocupa es la declaracion de que el chat en tiempo real NO existe
+     todavia.
+     Declararlo esta bien y se queda: lo que no puede ser es que la pieza mas
+     prominente y persistente de la pagina sea la unica que no hace nada. Un
+     cuarto de pantalla es lo que cuesta, y se lo quita al contenido que si
+     funciona --- los proyectos, las lineas, el banco de cerebros.
+     Plegada NO esconde nada: el rotulo «Plaza» sigue visible y un toque la
+     abre con su NO_DATA entero. La diferencia es quien decide mirarlo.
+     En pantalla ancha se queda abierta: alli los 210 px no le quitan sitio a
+     nadie, y el coste que justifica plegarla no existe.
+     Y la eleccion se recuerda: quien la abre no se la encuentra cerrada en
+     cada pagina. `sessionStorage` y no `localStorage` porque es una preferencia
+     de rato, no de persona --- y porque falla sola en navegacion privada. */
+  var ESTRECHA = 'preceptoros:plaza-plegada';
+  var estrecho = false;
+  try { estrecho = window.matchMedia('(max-width: 44rem)').matches; }
+  catch (e) { estrecho = (window.innerWidth || 9999) < 704; }
+  var recordado = null;
+  try { recordado = sessionStorage.getItem(ESTRECHA); } catch (e) { /* privado */ }
+  caja.dataset.min = recordado !== null ? recordado : (estrecho ? '1' : '0');
   var cab = el('div', 'mini-chat-cab');
   var h = el('h3', null, T('mcTitulo', 'Plaza'));
   var min = el('button', 'cierre-x', '–');
@@ -132,6 +154,10 @@
   min.addEventListener('click', function () {
     var m = caja.dataset.min === '1';
     caja.dataset.min = m ? '0' : '1';
+    // Se recuerda para el rato: abrirla en cada pagina seria pedir el mismo
+    // gesto una y otra vez, que es la forma educada de que nadie la abra.
+    try { sessionStorage.setItem(ESTRECHA, caja.dataset.min); }
+    catch (e) { /* privado: se queda como esta y no pasa nada */ }
     min.textContent = m ? '–' : '+';
     min.setAttribute('aria-label', m ? T('mcMinimizar', 'Minimizar')
                                      : T('mcAbrir', 'Abrir'));

@@ -64,7 +64,14 @@
   "torre_no_enviado": "Остаётся на твоём устройстве, пока ты его не отправишь:",
   "torre_paso": "ступень",
   "torre_probar": "Попробовать здесь",
-  "torre_titulo": "Башня Восхождения"
+  "torre_titulo": "Башня Восхождения",
+  "ks_sello": "режим полёта",
+  "ks_falla": "Не работает:",
+  "ks_medido": "Измерено",
+  "ks_juez_titulo": "Судья-координатор",
+  "ks_juez_pedir": "Запросить вердикт",
+  "ks_juez_sin_turnos": "NO_DATA — судить пока нечего. Сначала поговори с исследованием.",
+  "ks_juez_una_capa": "NO_DATA — это ОДИН слой. Карточка этого исследования требует двух —сначала детерминированный, потом модель— и первый работает в стойке, не здесь. Читай как измеренное мнение, а не как оценку."
  },
  "pendiente": {
   "papel_de_usuario": "NO_DATA · falta escribir con quien cree el modelo que habla en cada peldano. Se escribe en castellano y se traduce a las ocho, como el resto; hasta entonces el desplegable lo declara en pantalla.",

@@ -68,7 +68,14 @@
   "torre_no_enviado": "Es bleibt auf deinem Gerät, bis du es sendest:",
   "torre_paso": "Schritt",
   "torre_probar": "Hier ausprobieren",
-  "torre_titulo": "Der Turm des Aufstiegs"
+  "torre_titulo": "Der Turm des Aufstiegs",
+  "ks_sello": "Flugmodus",
+  "ks_falla": "Scheitert:",
+  "ks_medido": "Gemessen",
+  "ks_juez_titulo": "Koordinierender Richter",
+  "ks_juez_pedir": "Urteil anfordern",
+  "ks_juez_sin_turnos": "NO_DATA — es gibt noch keine Züge zu bewerten. Sprich zuerst mit der Studie.",
+  "ks_juez_una_capa": "NO_DATA — das ist EINE Schicht. Die Karte dieser Studie verlangt zwei —erst deterministisch, dann Modell— und die erste läuft auf dem Rack, nicht hier. Lies es als gemessene Meinung, nicht als Note."
  },
  "pendiente": {
   "papel_de_usuario": "NO_DATA · falta escribir con quien cree el modelo que habla en cada peldano. Se escribe en castellano y se traduce a las ocho, como el resto; hasta entonces el desplegable lo declara en pantalla.",

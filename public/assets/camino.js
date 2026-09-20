@@ -146,6 +146,10 @@
          linea de JS para abrirse. Escribir esto a mano con `aria-expanded` y
          manejadores de teclado seria mas codigo haciendo menos. */
       var d = el('details', 'torre-peldano');
+      /* CADA PISO SE PUEDE NOMBRAR DESDE FUERA. Lo pide `camino-killswitch.js`,
+         que monta el panel del proyecto DENTRO de su peldano: sin id tendria
+         que contar posiciones, y anadir un piso le cambiaria el sitio. */
+      d.id = 'piso-' + p;
       var res = el('summary');
       res.appendChild(el('span', 'torre-n',
         (ui.torre_nivel || 'nivel') + ' ' + (i + 1) + ' · '));
@@ -276,6 +280,18 @@
       document.addEventListener('preceptor:brain', unaVez);
       document.addEventListener('preceptor:cerebros', unaVez);
     }
+
+    /* LA TORRE AVISA DE QUE YA ESTA. Lo que monta dentro de un piso ---hoy el
+       panel del killswitch--- no puede saber cuando existe: este fichero pinta
+       DESPUES de traerse `caminos-<lengua>.json`. Sondear cada tantos
+       milisegundos funcionaria y seria adivinar; un aviso es un dato.
+       `TorreUI` queda puesto ADEMAS del evento, para quien llegue tarde: con
+       la cache caliente el orden de descarga cambia, y un oyente que se
+       registra despues del aviso no se entera nunca. */
+    window.TorreUI = ui;
+    window.dispatchEvent(new CustomEvent('preceptor:torre', {
+      detail: { ui: ui }
+    }));
   }
 
   function arranca() {

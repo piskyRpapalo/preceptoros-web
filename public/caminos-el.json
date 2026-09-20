@@ -74,7 +74,14 @@
   "torre_no_enviado": "Μένει στη συσκευή σου μέχρι να το στείλεις:",
   "torre_paso": "βήμα",
   "torre_probar": "Δοκίμασέ το εδώ",
-  "torre_titulo": "Ο Πύργος της Ανάβασης"
+  "torre_titulo": "Ο Πύργος της Ανάβασης",
+  "ks_sello": "λειτουργία πτήσης",
+  "ks_falla": "Αποτυγχάνει:",
+  "ks_medido": "Μετρήθηκε",
+  "ks_juez_titulo": "Συντονιστής κριτής",
+  "ks_juez_pedir": "Ζήτησε ετυμηγορία",
+  "ks_juez_sin_turnos": "NO_DATA — δεν υπάρχουν ακόμη κινήσεις προς κρίση. Μίλησε πρώτα με τη μελέτη.",
+  "ks_juez_una_capa": "NO_DATA — αυτό είναι ΜΙΑ στρώση. Η καρτέλα αυτής της μελέτης απαιτεί δύο —πρώτα ντετερμινιστική, μετά μοντέλο— και η πρώτη τρέχει στο rack, όχι εδώ. Διάβασέ το ως μετρημένη γνώμη, όχι ως βαθμό."
  },
  "pendiente": {
   "papel_de_usuario": "NO_DATA · falta escribir con quien cree el modelo que habla en cada peldano. Se escribe en castellano y se traduce a las ocho, como el resto; hasta entonces el desplegable lo declara en pantalla.",

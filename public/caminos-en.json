@@ -63,7 +63,14 @@
   "torre_no_enviado": "It stays on your device until you send it:",
   "torre_paso": "step",
   "torre_probar": "Try it here",
-  "torre_titulo": "The Tower of Ascension"
+  "torre_titulo": "The Tower of Ascension",
+  "ks_sello": "airplane mode",
+  "ks_falla": "Fails:",
+  "ks_medido": "Measured",
+  "ks_juez_titulo": "Coordinating judge",
+  "ks_juez_pedir": "Ask for a verdict",
+  "ks_juez_sin_turnos": "NO_DATA — there are no turns to judge yet. Talk to the study first.",
+  "ks_juez_una_capa": "NO_DATA — this is ONE layer. This study's card requires two —deterministic first, model after— and the first one runs on the rack, not here. Read it as a measured opinion, not as a score."
  },
  "pendiente": {
   "papel_de_usuario": "NO_DATA · falta escribir con quien cree el modelo que habla en cada peldano. Se escribe en castellano y se traduce a las ocho, como el resto; hasta entonces el desplegable lo declara en pantalla."

@@ -40,6 +40,17 @@
    derecha, sin cambiar de pantalla. En el telefono se apilan y el chat va
    primero -- que es a lo que se ha entrado. */
 .esc-cuerpo{display:grid;gap:1.1rem;grid-template-columns:1fr}
+/* UN HIJO DE REJILLA NO BAJA DE SU ANCHO MINIMO, y `1fr` no lo obliga.
+   Medido en un movil de 375 px el 2026-09-20: la columna declarada `1fr`
+   se resolvia a 616,5 px --- el texto salia cortado por la derecha y el
+   sha256 de la ficha se iba de la pantalla. La causa no es el `1fr`, es que
+   `min-width` vale `auto` por defecto en una rejilla, y una palabra de 64
+   caracteres sin separadores fija ese minimo.
+   Se arreglan las DOS puntas porque son dos averias distintas: `min-width:0`
+   deja encoger la columna, y `overflow-wrap:anywhere` parte el hash. Con solo
+   la primera, la columna encoge y el hash sigue desbordando. */
+.esc-cuerpo > *{min-width:0}
+.esc-cuerpo .ficha dd,.esc-cuerpo code{overflow-wrap:anywhere}
 @media (min-width:56rem){
   .esc-cuerpo{grid-template-columns:1.15fr .85fr}
 }
