@@ -16,6 +16,25 @@
  * Firmar NO envia, y se dice en pantalla con el rotulo que ya tiene la Torre.
  */
 (function () {
+  /* LO QUE ESTE FICHERO NO TRAIA AL PARTIRSE, y se vio en produccion con un
+     `el is not defined` dentro de la caja del veredicto.
+     Mover una funcion es mover TAMBIEN lo que usaba --- es la misma leccion
+     que `chat-router.js` tiene escrita desde el 2026-09-05 («retirar un mando
+     es retirar tambien lo que lo obedecia»), con el signo cambiado: partir un
+     fichero es llevarse tambien de lo que colgaba. Y no la caza ninguna
+     prueba estatica ni `node --check`: la sintaxis era correcta, la variable
+     simplemente no existia en este ambito. Se vio abriendo la pagina.
+
+     `el` se redefine aqui --- cinco lineas --- en vez de exportarlo desde
+     `duelo.js`: un ayudante de cinco lineas compartido por dos ficheros crea
+     una dependencia en el sentido contrario al que tiene el resto (aquel pide
+     a este, no al reves), y eso es mas caro que repetirlo. */
+  function el(tag, clase, texto) {
+    var n = document.createElement(tag);
+    if (clase) { n.className = clase; }
+    if (texto) { n.textContent = texto; }
+    return n;
+  }
   /* EL VEREDICTO SE FIRMA CON LA MISMA MAQUINARIA QUE UN PASO DE LA TORRE, y
      esta pantalla no habla con el rack para enviarlo: guarda en `Bronce` y
      sale por la unica puerta que tiene el sitio. Firmar NO envia, y se dice.
@@ -24,7 +43,11 @@
      un veredicto de aqui y una correccion de la portada son dos poblaciones
      distintas --- distinta intencion, distinto publico --- y mezclarlas
      contamina las dos. */
-  function montaVeredicto(caja, pregunta, r) {
+  /* `UI` y `lang` los pasa quien llama. No se leen de un global ni se
+     vuelven a pedir: el duelo ya los tiene resueltos --- con sus dos familias
+     de rotulos juntas y comprobadas --- y pedirlos otra vez aqui abriria la
+     puerta a que las dos pantallas usaran versiones distintas. */
+  function montaVeredicto(caja, pregunta, r, UI, lang) {
     caja.innerHTML = '';
     caja.appendChild(el('p', 'duelo-cab', UI.duelo_veredicto || 'Veredicto'));
     var area = document.createElement('textarea');

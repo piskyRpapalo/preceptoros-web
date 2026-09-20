@@ -257,7 +257,9 @@
      antes que este fichero. Si no estuviera, las dos columnas se pintan y lo
      unico que falta es poder firmar --- con su causa, no en silencio. */
   function montaVeredicto(caja, pregunta, r) {
-    if (window.DueloFirma) { return window.DueloFirma(caja, pregunta, r); }
+    if (window.DueloFirma) {
+      return window.DueloFirma(caja, pregunta, r, UI, lang);
+    }
     caja.innerHTML = '';
     caja.appendChild(el('p', 'no-data',
       'NO_DATA · falta `duelo-firma.js`: se puede leer el duelo, no firmarlo'));

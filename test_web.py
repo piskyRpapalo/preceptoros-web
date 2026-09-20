@@ -2299,6 +2299,45 @@ class Hub(unittest.TestCase):
                                   f"{nombre} pide `{clave}` y no esta en "
                                   f"duelos-es.json")
 
+    def test_los_ficheros_partidos_traen_lo_que_usan(self):
+        """PARTIR UN FICHERO ES LLEVARSE TAMBIEN DE LO QUE COLGABA.
+
+        Medido en produccion el 2026-09-20: al mover `montaVeredicto` a
+        `duelo-firma.js` se quedo atras el ayudante `el()` que usa
+        VEINTIUNA veces. La caja del veredicto pintaba «el is not defined» y
+        nada mas.
+
+        Es la misma leccion que `chat-router.js` tiene escrita desde el
+        2026-09-05 --- «retirar un mando es retirar tambien lo que lo
+        obedecia» --- con el signo cambiado. Y no la caza `node --check`: la
+        sintaxis era correcta, la variable simplemente no existia en ese
+        ambito. Solo se vio abriendo la pagina.
+
+        Se comprueba lo minimo que se puede comprobar sin un analizador: que
+        cada fichero que USA uno de los ayudantes de la casa lo DEFINA o lo
+        reciba como parametro. No cubre todo --- un `var` global seguiria
+        colandose --- pero cubre exactamente la forma que fallo.
+        """
+        import re as _re
+        AYUDANTES = ("el", "esND")
+        for q in sorted((PUBLICO / "assets").glob("*.js")):
+            texto = q.read_text(encoding="utf-8")
+            codigo = _re.sub(r"/\*.*?\*/", "", texto, flags=_re.S)
+            codigo = _re.sub(r"(?m)//.*$", "", codigo)
+            for ayuda in AYUDANTES:
+                usa = _re.search(r"[^\w.]" + ayuda + r"\(", codigo)
+                if not usa:
+                    continue
+                define = _re.search(
+                    r"(function\s+" + ayuda + r"\s*\(|"
+                    r"var\s+" + ayuda + r"\s*=|"
+                    r"\b" + ayuda + r"\s*[,)])", codigo)
+                with self.subTest(fichero=q.name, ayudante=ayuda):
+                    self.assertIsNotNone(
+                        define,
+                        f"{q.name} usa `{ayuda}()` y no lo define ni lo "
+                        f"recibe: se quedo atras al partir el fichero")
+
     def test_el_duelo_no_entresaca_rotulos_a_mano(self):
         """UNA LISTA DE CLAVES MANTENIDA A MANO SE OLVIDA. Paso el 2026-09-20.
 
