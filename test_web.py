@@ -2249,6 +2249,49 @@ class Hub(unittest.TestCase):
         self.assertIn("CerebroPuesto", codigo,
                       "el piso no pregunta por el modelo a quien manda sobre el")
 
+    def test_la_Torre_no_pide_rotulos_que_no_existen(self):
+        """UNA CLAVE INVENTADA NO FALLA: CALLA. Y eso es peor.
+
+        Medido en el telefono el 2026-09-20. El aviso de «esto no se ha
+        enviado» no salia, y el codigo que lo pintaba era este:
+
+            var t2 = (window.ENVT && window.ENVT.envEnCola) || '';
+            if (t2) { caja.appendChild(...); }
+
+        `envEnCola` no existe --- las claves de `ENVT` son ocho y ninguna se
+        llama asi; me la invente ---. El `|| ''` seguido del `if` convierte una
+        clave inexistente en silencio absoluto: ni excepcion, ni hueco en
+        pantalla, ni nada en consola. El comentario de encima decia que el
+        aviso se ponia. Un respaldo vacio es la forma educada de no avisar.
+
+        Asi que se comprueban las dos direcciones. La paridad de i18n ya exige
+        que toda clave declarada exista en las ocho lenguas; esta exige lo
+        simetrico --- que toda clave que el codigo PIDE este declarada ---, que
+        es el lado por el que se cuela una errata o un invento.
+        """
+        import re as _re
+        fuentes = {n: (PUBLICO / "assets" / n).read_text(encoding="utf-8")
+                   for n in ("camino.js", "camino-papel.js")}
+        envt = json.loads(_re.search(
+            r"window\.ENVT\s*=\s*(\{.*?\});",
+            (PUBLICO / "assets" / "enviar-es.js").read_text(encoding="utf-8"),
+            _re.S).group(1))
+        caminos = json.loads(
+            (PUBLICO / "caminos-es.json").read_text(encoding="utf-8"))["ui"]
+
+        for nombre, texto in fuentes.items():
+            codigo = _re.sub(r"/\*.*?\*/", "", texto, flags=_re.S)
+            for clave in sorted(set(_re.findall(r"ENVT\.(\w+)", codigo))):
+                with self.subTest(fichero=nombre, envt=clave):
+                    self.assertIn(clave, envt,
+                                  f"{nombre} pide `ENVT.{clave}` y no existe: "
+                                  f"saldria vacio sin decir nada")
+            for clave in sorted(set(_re.findall(r"ui\.(torre_\w+)", codigo))):
+                with self.subTest(fichero=nombre, caminos=clave):
+                    self.assertIn(clave, caminos,
+                                  f"{nombre} pide `{clave}` y no esta en "
+                                  f"caminos-es.json")
+
     def test_los_dos_guiones_de_la_Torre_se_cargan_en_orden(self):
         """`camino-papel.js` ANTES que `camino.js`, y los dos en el precache.
 
@@ -4551,6 +4594,10 @@ CLAVES_CAMINOS = {
      # estaba traducida. Una traduccion correcta de la palabra equivocada es
      # justo lo que ninguna prueba de paridad puede cazar.
      "torre_probar", "torre_firmado",
+     # `torre_no_enviado` entra el 2026-09-20 y es una promesa en pantalla, no
+     # un adorno: firmar NO envia, y no decirlo es la misma mentira que el
+     # boton que ponia «firmado» sin firmar nada, con el signo cambiado.
+     "torre_no_enviado",
      # `torre_hechos` entra el 2026-09-20 y no es un rotulo: es lo que el
      # modelo SABE del producto cuando contesta desde un piso. Se escribe
      # porque su ausencia se midio. Los tres candidatos del duelo del mini

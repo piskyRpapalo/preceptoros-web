@@ -59,6 +59,7 @@
   "torre_hechos": "PreceptorOS no es un sistema operativo ni una distribución de Linux: es un compañero que corre modelos en TU máquina. Esta web es solo la puerta. El chat de esta página lo contesta el rack —unas pocas máquinas pequeñas en una casa—, no una nube. Nada se publica sin que una persona lo mire. Si no sabes un dato, di NO_DATA: inventarlo aquí es peor que no tenerlo.",
   "torre_lema": "Se practica, se firma, se asciende. Ningún peldaño obliga al siguiente.",
   "torre_nivel": "nivel",
+  "torre_no_enviado": "Se queda en tu aparato hasta que tú lo mandes:",
   "torre_paso": "paso",
   "torre_probar": "Probar aquí",
   "torre_titulo": "La Torre de la Ascensión"

@@ -248,11 +248,26 @@
           caja.appendChild(el('p', 'torre-quien',
             (ui.torre_firmado || '') + ' ✓'));
           /* SE DICE QUE NO SE HA ENVIADO. El boton de la cola decia «firmado»
-             sin firmar nada; la averia simetrica seria dejar creer que esto
-             ya viajo. Sale de `window.ENVT`, que es la casa de estos rotulos
-             en las ocho lenguas desde el 2026-09-14. */
-          var t2 = (window.ENVT && window.ENVT.envEnCola) || '';
-          if (t2) { caja.appendChild(el('p', 'no-data', t2)); }
+             sin firmar nada; la averia simetrica seria dejar creer que esto ya
+             viajo, y es la misma promesa rota con el signo cambiado.
+
+             LA PRIMERA VERSION DE ESTA LINEA NO PINTABA NADA, y se vio en el
+             telefono: pedia `window.ENVT.envEnCola`, una clave que me invente
+             --- las que hay son ocho y ninguna se llama asi ---. Un `||''`
+             seguido de un `if` convierte una clave inexistente en silencio,
+             asi que el aviso que este comentario dice poner no se ponia. Un
+             respaldo vacio es la forma educada de no avisar.
+
+             El nombre del boton NO se escribe aqui: sale de `ENVT.envBoton`,
+             que ya esta traducido y es literalmente el rotulo que la persona
+             va a buscar. Escribirlo a mano seria arriesgar que la pagina cite
+             un boton que se llama de otra forma. */
+          var aviso = ui.torre_no_enviado || '';
+          var boton = (window.ENVT && window.ENVT.envBoton) || '';
+          if (aviso) {
+            caja.appendChild(el('p', 'no-data',
+              aviso + (boton ? ' «' + boton + '»' : '')));
+          }
         }).catch(function (e) {
           ok.disabled = false;
           dice.textContent = e.message;
