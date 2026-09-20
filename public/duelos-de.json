@@ -6,16 +6,16 @@
   "traducido_por": "qwen2.5:14b"
  },
  "ui": {
-  "duelo_titulo": "Duell",
-  "duelo_input": "Schreibe einmal; sie werden beide antworten.",
+  "duelo_col_base": "Ohne Geschirr · das nackte Modell",
+  "duelo_col_lora": "Mit Geschirr · die Rolle des Hauses",
   "duelo_enviar": "Beiden senden",
-  "duelo_col_base": "Ohne LoRA · die nackte Basis",
-  "duelo_col_lora": "Mit LoRA · der Adapter dieser Linie",
-  "duelo_veredicto": "Urteil",
-  "duelo_guia": "Schreibungsleitfaden",
-  "duelo_reescribir": "Beiden erneut senden",
   "duelo_firmar": "Paar unterschreiben",
+  "duelo_guia": "Schreibungsleitfaden",
+  "duelo_input": "Schreibe einmal; sie werden beide antworten.",
+  "duelo_juez_no_data": "NO_DATA: Kein lokaler Richter vorhanden. Ein Urteil wird nicht mit der Netzwerk-Verbindung erzeugt — prüfe es selbst, und das ist die Untersuchung.",
+  "duelo_reescribir": "Beiden erneut senden",
   "duelo_sin_prueba": "Ein «hallo» ohne Neuformulierung beweist nichts. Neuformuliere den Prompt oder teile deine Meinung, und es kann unterschrieben werden.",
-  "duelo_juez_no_data": "NO_DATA: Kein lokaler Richter vorhanden. Ein Urteil wird nicht mit der Netzwerk-Verbindung erzeugt — prüfe es selbst, und das ist die Untersuchung."
+  "duelo_titulo": "Duell",
+  "duelo_veredicto": "Urteil"
  }
 }

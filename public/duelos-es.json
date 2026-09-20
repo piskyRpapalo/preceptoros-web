@@ -5,16 +5,16 @@
   "traducido_por": "castellano base, escrito por el silicio"
  },
  "ui": {
-  "duelo_titulo": "Duelo",
-  "duelo_input": "Escribe una vez; van a contestar los dos.",
+  "duelo_col_base": "Sin arnés · el modelo desnudo",
+  "duelo_col_lora": "Con arnés · el papel de la casa",
   "duelo_enviar": "Enviar a ambas",
-  "duelo_col_base": "Sin LoRA · la base desnuda",
-  "duelo_col_lora": "Con LoRA · el adaptador de esta línea",
-  "duelo_veredicto": "Veredicto",
-  "duelo_guia": "Guía de reescritura",
-  "duelo_reescribir": "Reenviar a ambas",
   "duelo_firmar": "Firmar par",
+  "duelo_guia": "Guía de reescritura",
+  "duelo_input": "Escribe una vez; van a contestar los dos.",
+  "duelo_juez_no_data": "NO_DATA: no hay juez local. No se inventa un veredicto con la red — lo compruebas tú, y eso es el estudio.",
+  "duelo_reescribir": "Reenviar a ambas",
   "duelo_sin_prueba": "Un «hola» sin reescribir no prueba nada. Reescribe el prompt o deja tu opinión, y se podrá firmar.",
-  "duelo_juez_no_data": "NO_DATA: no hay juez local. No se inventa un veredicto con la red — lo compruebas tú, y eso es el estudio."
+  "duelo_titulo": "Duelo",
+  "duelo_veredicto": "Veredicto"
  }
 }

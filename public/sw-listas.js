@@ -72,7 +72,15 @@ const PAGINAS = ['', 'instalar.html', 'community.html', 'benchmark.html',
    una de las dos laminas de marmol que ya estan aqui arriba. */
 const AGENTES = ['de', 'el', 'en', 'es', 'fr', 'it', 'pt', 'ru']
   .map(function (l) { return '/agentes-' + l + '.json'; });
-const HUB = [...AGENTES, '/hub.json', '/hub-textos.json',
+/* `duelos-<lang>.json` entra por el mismo criterio que los caminos: son
+   ROTULOS, no medidas. Son diminutos --- entre 722 y 1.187 B --- y sin ellos
+   el duelo se queda sin cabeceras de columna justo en el caso en que mas falta
+   hacen: una PWA instalada y sin red, donde no se puede pedir el turno y lo
+   unico que queda es leer que iba a compararse. */
+const DUELOS = ['de', 'el', 'en', 'es', 'fr', 'it', 'pt', 'ru']
+  .map(function (l) { return '/duelos-' + l + '.json'; });
+
+const HUB = [...AGENTES, ...DUELOS, '/hub.json', '/hub-textos.json',
              '/assets/marble-violet.webp', '/assets/marble-violet-oscuro.webp', '/modelos.json', '/servicios.json', '/instalar.json',
              '/assets/instalar-descargas.js', '/assets/widget.css', '/assets/puertas.css', '/assets/escribir.css', '/assets/placa.css', '/medidas.json', '/assets/medidas.js', '/nav.json', '/assets/cabezal.js', '/assets/cabezal-rotulos.js', '/assets/selector-modelo.js', '/assets/consiento.js', '/cerebros.json', '/cerebros-en.json', '/cerebros-es.json', '/assets/logos-models/preceptor.svg', '/assets/logos-models/qwen.svg', '/assets/logos-models/mistral.svg', '/assets/cabezal.css', '/assets/esquina.css', '/assets/esquina-cuenta.css', '/assets/esquina-par.css', '/assets/mandos.css', '/assets/panel.css', '/assets/nubes.css', '/assets/consiento.css', '/assets/senal.css', '/assets/senal.js',
              '/assets/hub.js',
@@ -84,7 +92,15 @@ const HUB = [...AGENTES, '/hub.json', '/hub-textos.json',
                 manana al retirar los ocho companeros sin poner nada en su
                 sitio. Cuestan 18,8 KB entre los dos --- ocho veces menos que
                 las esferas que acaban de salir de esta misma lista. */
-             '/assets/camino.js', '/assets/camino-papel.js', '/assets/corregir.js', '/assets/aprender.js', '/assets/elegir.js', '/assets/comandos.js']
+             '/assets/camino.js', '/assets/camino-papel.js',
+             /* El duelo de LoRAtelier y su cliente del rack, 2026-09-20.
+                `rack.js` no estaba en el shell porque hasta hoy solo lo
+                cargaba la portada; el duelo lo necesita en las ocho
+                paginas de Benchmark. Sin red el duelo no puede pedir
+                turnos --- eso lo dice el con su NO_DATA --- pero la
+                pantalla se pinta y se lee, que es la diferencia entre una
+                pagina que explica por que no puede y una que no carga. */
+             '/assets/duelo.js', '/assets/rack.js', '/assets/corregir.js', '/assets/aprender.js', '/assets/elegir.js', '/assets/comandos.js']
   /* Las tres tiras: `widget.css` las pide y sin red el cabezal se queda
      con un circulo vacio. */
   .concat(['apertura', 'reposo', 'habla']
@@ -111,7 +127,8 @@ const HUB = [...AGENTES, '/hub.json', '/hub-textos.json',
 const CAMINOS = ['de', 'el', 'en', 'es', 'fr', 'it', 'pt', 'ru']
   .map(function (l) { return '/caminos-' + l + '.json'; });
 
-const CONTENIDO_JSON = [...AGENTES, ...CAMINOS, '/hub.json', '/hub-textos.json', '/medidas.json', '/nav.json', '/modelos.json', '/servicios.json', '/instalar.json'];
+
+const CONTENIDO_JSON = [...AGENTES, ...CAMINOS, ...DUELOS, '/hub.json', '/hub-textos.json', '/medidas.json', '/nav.json', '/modelos.json', '/servicios.json', '/instalar.json'];
 
 /* El manifiesto va a red primero: es diminuto, cambia cuando cambian los
    iconos, y un manifiesto viejo hace que la app instalada se quede con el

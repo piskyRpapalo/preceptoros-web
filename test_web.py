@@ -2271,13 +2271,15 @@ class Hub(unittest.TestCase):
         """
         import re as _re
         fuentes = {n: (PUBLICO / "assets" / n).read_text(encoding="utf-8")
-                   for n in ("camino.js", "camino-papel.js")}
+                   for n in ("camino.js", "camino-papel.js", "duelo.js")}
         envt = json.loads(_re.search(
             r"window\.ENVT\s*=\s*(\{.*?\});",
             (PUBLICO / "assets" / "enviar-es.js").read_text(encoding="utf-8"),
             _re.S).group(1))
         caminos = json.loads(
             (PUBLICO / "caminos-es.json").read_text(encoding="utf-8"))["ui"]
+        duelos = json.loads(
+            (PUBLICO / "duelos-es.json").read_text(encoding="utf-8"))["ui"]
 
         for nombre, texto in fuentes.items():
             codigo = _re.sub(r"/\*.*?\*/", "", texto, flags=_re.S)
@@ -2291,6 +2293,72 @@ class Hub(unittest.TestCase):
                     self.assertIn(clave, caminos,
                                   f"{nombre} pide `{clave}` y no esta en "
                                   f"caminos-es.json")
+            for clave in sorted(set(_re.findall(r"UI\.(duelo_\w+)", codigo))):
+                with self.subTest(fichero=nombre, duelos=clave):
+                    self.assertIn(clave, duelos,
+                                  f"{nombre} pide `{clave}` y no esta en "
+                                  f"duelos-es.json")
+
+    def test_el_duelo_es_secuencial_y_usa_el_arnes_de_la_casa(self):
+        """DOS COLUMNAS NO SON DOS TURNOS A LA VEZ, y el rack lo impone.
+
+        `OLLAMA_NUM_PARALLEL=1` y `MAX_LOADED_MODELS=1`: la concurrencia no
+        añade capacidad, solo reparte la misma y alarga la espera. Un
+        `Promise.all` sobre los dos turnos pintaria dos ruedas girando y
+        mentiria sobre lo que pasa al otro lado. Van en fila y cada columna
+        enseña SUS segundos.
+
+        Y EL ARNES DE LA DERECHA TIENE QUE SER EL QUE SIRVE LA CASA. Si el
+        duelo escribiera su propio texto, esta pantalla compararia contra un
+        arnes que el sitio no usa --- y el veredicto que firme la persona no
+        valdria para nada, que es peor que no tener veredicto. Sale de
+        `PR.reglas` y de `torre_hechos`, exactamente igual que en
+        `camino-papel.js`.
+        """
+        import re as _re
+        js = (PUBLICO / "assets" / "duelo.js").read_text(encoding="utf-8")
+        codigo = _re.sub(r"/\*.*?\*/", "", js, flags=_re.S)
+
+        # Los dos turnos NO pueden salir de un `Promise.all`. Se busca el
+        # nombre de la funcion que pide un turno, no una forma concreta de
+        # escribirlo: `turno(` dentro de un `Promise.all` es el error.
+        for trozo in _re.findall(r"Promise\.all\((.{0,400}?)\)\s*[.;]", codigo,
+                                 _re.S):
+            with self.subTest(trozo=trozo[:60]):
+                self.assertNotIn("turno(", trozo,
+                                 "los dos turnos van en paralelo: el rack los "
+                                 "atiende en fila y la pantalla mentiria")
+
+        self.assertIn("PR.reglas", codigo,
+                      "el duelo no usa las reglas de la casa")
+        self.assertIn("torre_hechos", codigo,
+                      "el duelo compara contra un arnes que no es el que sirve "
+                      "el sitio")
+        self.assertNotIn("PR.papel", codigo,
+                         "el duelo hereda el papel del Instalador, retirado")
+
+    def test_LoRAtelier_carga_el_duelo_en_las_ocho_lenguas(self):
+        """Y con su cliente del rack delante, que esa pagina no lo tenia.
+
+        `rack.js` solo lo cargaba la portada: Benchmark medía el motor del
+        NAVEGADOR, no el del rack. El duelo necesita los dos ficheros y en ese
+        orden --- `duelo.js` pide `window.Rack` al pulsar ---, y los dos en el
+        shell, o una PWA instalada abre LoRAtelier sin poder explicar siquiera
+        que iba a compararse.
+        """
+        for idioma in IDIOMAS:
+            pagina = (PUBLICO / idioma / "benchmark.html").read_text(encoding="utf-8")
+            with self.subTest(idioma=idioma):
+                i = pagina.find("/assets/rack.js")
+                j = pagina.find("/assets/duelo.js")
+                self.assertGreater(i, 0, "LoRAtelier no trae el cliente del rack")
+                self.assertGreater(j, 0, "LoRAtelier no trae el duelo")
+                self.assertLess(i, j, "el duelo se carga antes que su cliente")
+        listas = (PUBLICO / "sw-listas.js").read_text(encoding="utf-8")
+        for pieza in ("/assets/duelo.js", "/assets/rack.js"):
+            with self.subTest(pieza=pieza):
+                self.assertIn(f"'{pieza}'", listas,
+                              f"{pieza} no viaja en el shell")
 
     def test_los_dos_guiones_de_la_Torre_se_cargan_en_orden(self):
         """`camino-papel.js` ANTES que `camino.js`, y los dos en el precache.
