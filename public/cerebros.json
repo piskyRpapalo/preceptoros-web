@@ -14,6 +14,26 @@
  "contexto": 32768,
  "cerebros": [
   {
+   "id": "mini",
+   "modelo": "qwen3:1.7b",
+   "recomendado": true,
+   "prompt": 1017.39,
+   "generacion": 55.15,
+   "carga_s": 0.94,
+   "firmado": false,
+   "lenguas": [
+    "es",
+    "en"
+   ],
+   "atajos": [
+    "simple",
+    "sin_cifras",
+    "falta"
+   ],
+   "puerta": true,
+   "pais": "cn"
+  },
+  {
    "id": "charla-web",
    "modelo": "preceptor-charla-web:v1",
    "recomendado": false,
@@ -28,26 +48,6 @@
     "comprobar"
    ],
    "puerta": false,
-   "pais": "fr",
-   "lenguas": [
-    "es",
-    "en"
-   ]
-  },
-  {
-   "id": "charla-base",
-   "modelo": "preceptor-charla-base:v1",
-   "recomendado": true,
-   "prompt": 250.05,
-   "generacion": 16.45,
-   "carga_s": 2.2,
-   "firmado": false,
-   "atajos": [
-    "simple",
-    "sin_cifras",
-    "falta"
-   ],
-   "puerta": true,
    "pais": "fr",
    "lenguas": [
     "es",
@@ -150,5 +150,6 @@
    "no ensenar el banco de cerebros en las lenguas sin prosa"
   ]
  },
- "lenguas_nota": "EL CAMPO `lang: \"auto\"` SE RETIRA EL 2026-09-20 Y NO SE SUSTITUYE POR OTRA PROMESA. Decia «auto» en los seis cerebros, que es la forma educada de no decir nada: ninguna medida lo respaldaba y el sitio se sirve en ocho lenguas, asi que se leia como «las habla todas».\nLo que hay medido, con `duelo_mini.py` el 2026-09-20: castellano e ingles. Las otras seis --de, el, fr, it, pt, ru-- son NO_DATA: no se han probado, y la ficha lo dice en la lengua de quien la lee en vez de callarlo.\nEl alcance lo fijo el Soberano: «puedes dejar los modelos hablando ingles (preferible) y espanol hoy. Si no cumplen el resto de idiomas, lo avisas en descripcion con un no_data. No podemos pararnos hoy en modelos que cambiaremos en 2 meses». El aviso es esto; el hueco sigue siendo un hueco."
+ "lenguas_nota": "EL CAMPO `lang: \"auto\"` SE RETIRA EL 2026-09-20 Y NO SE SUSTITUYE POR OTRA PROMESA. Decia «auto» en los seis cerebros, que es la forma educada de no decir nada: ninguna medida lo respaldaba y el sitio se sirve en ocho lenguas, asi que se leia como «las habla todas».\nLo que hay medido, con `duelo_mini.py` el 2026-09-20: castellano e ingles. Las otras seis --de, el, fr, it, pt, ru-- son NO_DATA: no se han probado, y la ficha lo dice en la lengua de quien la lee en vez de callarlo.\nEl alcance lo fijo el Soberano: «puedes dejar los modelos hablando ingles (preferible) y espanol hoy. Si no cumplen el resto de idiomas, lo avisas en descripcion con un no_data. No podemos pararnos hoy en modelos que cambiaremos en 2 meses». El aviso es esto; el hueco sigue siendo un hueco.",
+ "puerta_nota": "LA PUERTA CAMBIA EL 2026-09-20, DECIDIDA POR DATO. Era `charla-base` (La Charla). Lo retiro el Soberano, y el sustituto salio de `duelo_mini.py`: tres modelos pequenos contra el escenario real del peldano 1 de la Torre, juzgados por el juez de dos capas de la casa.\nGano `qwen3:1.7b` con mediana 10 sobre 10 --- `qwen2.5:1.5b` se quedo en 4 y no llega al minimo de 7; `gemma2:2b` empato a 10 y pierde por pared. Contra la puerta anterior: prompt x4,1 (1017 frente a 250 tok/s), generacion x3,4 (55 frente a 16), carga 0,94 s frente a 2,2 y 1,4 GB frente a 4,4. Backend medido: 100 % GPU (Vulkan, Radeon 780M). Sin thinking, comprobado pidiendole una palabra.\nY LO QUE DE VERDAD LO SUBIO NO FUE EL MODELO. En la pasada anterior este mismo modelo saco mediana 4 e invento «tenemos mas de 100 usuarios activos». Lo unico que cambio fue meter `torre_hechos` en el papel --- que PreceptorOS no es un sistema operativo, que contesta el rack y no una nube ---. Un modelo al que le falta un dato rellena el hueco con seguridad; el arreglo era el prompt, no el modelo."
 }

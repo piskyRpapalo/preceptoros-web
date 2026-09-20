@@ -2009,13 +2009,29 @@ class Hub(unittest.TestCase):
         # preferencia: `recomendado` ya significaba «el que habla si nadie ha
         # elegido», asi que la puerta y el que contesta por defecto tienen que
         # ser el mismo. Si no, la portada ofrece uno y habla otro.
-        self.assertEqual(
-            {"charla-base"}, set(puerta),
-            "la puerta es el que habla por defecto, y son el mismo")
+        # CUAL SEA ES UNA DECISION, Y NO SE CLAVA AQUI. Hasta el 2026-09-20
+        # esta linea exigia `charla-base` por su nombre, y ese dia el Soberano
+        # lo retiro: la prueba se cayo por hacer bien su trabajo sobre la
+        # pregunta equivocada. Un id escrito en un test convierte cada cambio
+        # de puerta en una edicion del gate, y un gate que hay que editar para
+        # cada decision de producto acaba editandose sin pensar.
+        #
+        # El invariante SI se queda, y es el que importa: `recomendado` ya
+        # significaba «el que habla si nadie ha elegido», asi que la puerta y
+        # el que contesta por defecto tienen que ser EL MISMO. Si se separan,
+        # la portada ofrece uno y habla otro.
         self.assertEqual(
             puerta, [c["id"] for c in cs if c.get("recomendado")],
             "la puerta y el recomendado se han separado: la portada ofreceria "
             "uno y contestaria otro")
+        # Y la puerta tiene que estar MEDIDA. La que entro el 2026-09-20 salio
+        # de un duelo con nota; una sin cifras seria una eleccion por intuicion
+        # con cara de dato.
+        p = [c for c in cs if c.get("puerta")][0]
+        for campo in ("prompt", "generacion", "carga_s"):
+            with self.subTest(campo=campo):
+                self.assertIsInstance(p.get(campo), (int, float),
+                                      f"la puerta {p['id']} no declara {campo}")
 
     def test_cada_cerebro_declara_su_pais_y_la_bandera_existe(self):
         """Una bandera que falta no falla: `onerror` la retira y no se ve.

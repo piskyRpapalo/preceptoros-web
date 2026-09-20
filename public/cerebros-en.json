@@ -3,6 +3,26 @@
  "idioma": "en",
  "nota": "La prosa de los cerebros. Los HECHOS --velocidad, tag del modelo, contexto-- viven en `cerebros.json` y no llevan una palabra traducible. Es la misma frontera que `loratelier.json` con `taller-<idioma>.json`, y por el mismo motivo: las ocho lenguas en el fichero de datos lo dejan lleno el primer dia. · `lore` es la voz del producto, no una ficha tecnica: va a la derecha del cuadro cuando eliges un cerebro y cuenta QUE hace ese por la soberania de quien lo usa. Se escribe corto a proposito -- un parrafo que nadie lee no es lore, es relleno.",
  "cerebros": {
+  "mini": {
+   "nombre": "The Mini",
+   "que_es": "Qwen3 at 1.7 GB, the smallest model in the rack that can hold a conversation. It wakes in under a second and writes four times faster than the previous one. It knows nothing about this product on its own: what it knows we tell it each turn, and you can read all of it in whichever floor you are testing.",
+   "purpose": "It is the door: the first one a newcomer talks to. What we are looking for: tell us whether it answered as if it knew who you are, and whether at any point it stated something we had not told it. That is the fault we are hunting.",
+   "lore": "It earned its place on 2026-09-20 by measurement, not by fame. And it lost the first round: it made up having «more than a hundred active users». The model did not change between rounds — what changed was what we told it before asking.",
+   "atajos": {
+    "simple": {
+     "rotulo": "Simpler",
+     "prompt": "Say that last thing again more simply, no jargon. Three sentences at most. End by asking me which part I want to open."
+    },
+    "sin_cifras": {
+     "rotulo": "No numbers",
+     "prompt": "Repeat that without giving a single figure. If a number was needed to understand it, tell me where I can look it up myself instead of telling me."
+    },
+    "falta": {
+     "rotulo": "What you're missing",
+     "prompt": "Before going on: tell me what you do NOT know about my situation and what you would need to answer well. Do not assume it."
+    }
+   }
+  },
   "charla-web": {
    "nombre": "The Host",
    "que_es": "Mistral 7B with the house instructions written by hand. It is the only one that knows what this product is: it gives the real install commands and gets the model size right. In exchange it is wordy, and it still repeats the steps to someone who already installed.",
@@ -26,26 +46,6 @@
     }
    },
    "lore": "The one who opens the door. It does not show you the way because it knows better: it shows you so that you stop needing it. A preceptor who breeds disciples has failed; this one works for the person who will be sovereign."
-  },
-  "charla-base": {
-   "nombre": "The Talk",
-   "que_es": "The same Mistral with a LoRA adapter trained here on 150 conversations in five languages. It talks shorter and recognises someone who already installed. Its known fault: it invents figures with great confidence.",
-   "purpose": "Trained here to recognise someone who already installed and move on. What we want: if it states a number — sizes, times, amounts — copy it. That is the fault we are hunting.",
-   "atajos": {
-    "simple": {
-     "rotulo": "Simpler",
-     "prompt": "Say that again more simply, without trade words. Three sentences at most. End by asking which part I want to open."
-    },
-    "sin_cifras": {
-     "rotulo": "No numbers",
-     "prompt": "Say that again without giving a single figure. If a number was needed to make sense of it, tell me where to look it up myself instead of telling me. I would rather have a declared gap than a number that sounds right."
-    },
-    "falta": {
-     "rotulo": "What are you missing",
-     "prompt": "Tell me what you are missing about me to get this right. Only what would change your answer. Three things at most, and if nothing is missing say so and go on."
-    }
-   },
-   "lore": "It learned to speak here, from conversations written by hand. Closer voice, shorter memory — and that mix is honest: it can keep you company, it cannot pretend to know."
   },
   "charla-multi": {
    "nombre": "The Talk · 7 languages",

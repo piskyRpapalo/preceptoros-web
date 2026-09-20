@@ -3,6 +3,26 @@
  "idioma": "es",
  "nota": "La prosa de los cerebros. Los HECHOS --velocidad, tag del modelo, contexto-- viven en `cerebros.json` y no llevan una palabra traducible. Es la misma frontera que `loratelier.json` con `taller-<idioma>.json`, y por el mismo motivo: las ocho lenguas en el fichero de datos lo dejan lleno el primer dia. · `lore` es la voz del producto, no una ficha tecnica: va a la derecha del cuadro cuando eliges un cerebro y cuenta QUE hace ese por la soberania de quien lo usa. Se escribe corto a proposito -- un parrafo que nadie lee no es lore, es relleno.",
  "cerebros": {
+  "mini": {
+   "nombre": "El Mini",
+   "que_es": "Qwen3 de 1,7 GB, el más pequeño del rack que sirve para hablar. Arranca en menos de un segundo y escribe cuatro veces más rápido que el anterior. No sabe nada de este producto por sí mismo: lo que sabe se lo decimos nosotros en cada turno, y eso lo puedes leer entero en el piso que estés probando.",
+   "purpose": "Es la puerta: el primero con el que habla quien llega. Lo que buscamos: dinos si te contestó como si supiera quién eres, y si en algún momento afirmó algo que no le habíamos dicho. Esa es la avería que estamos cazando.",
+   "lore": "Ganó su sitio el 2026-09-20 midiendo, no por fama. Y perdió la primera vuelta: se inventó que tenía «más de cien usuarios activos». No cambió el modelo entre una vuelta y otra — cambió lo que le contamos antes de preguntarle.",
+   "atajos": {
+    "simple": {
+     "rotulo": "Más sencillo",
+     "prompt": "Vuelve a decirme lo último más sencillo, sin palabras de oficio. Tres frases como mucho. Acaba preguntándome qué parte quiero abrir."
+    },
+    "sin_cifras": {
+     "rotulo": "Sin números",
+     "prompt": "Repite lo último sin dar ni una cifra. Si un número hacía falta para entenderlo, dime dónde lo miro yo en vez de decírmelo tú."
+    },
+    "falta": {
+     "rotulo": "Qué te falta saber",
+     "prompt": "Antes de seguir: dime qué NO sabes de mi situación y que te haría falta para contestar bien. No lo supongas."
+    }
+   }
+  },
   "charla-web": {
    "nombre": "El Anfitrión",
    "que_es": "Mistral 7B con las instrucciones de la casa escritas a mano. Es el único que sabe qué es este producto: da los comandos reales de instalación y acierta el tamaño del modelo. A cambio es verboso, y a quien ya instaló todavía le repite los pasos.",
@@ -26,26 +46,6 @@
     }
    },
    "lore": "El que abre la puerta. No te enseña el camino porque lo sepa mejor que tú: te lo enseña para que dejes de necesitarlo. Un preceptor que crea discípulos ha fracasado; este trabaja para el que va a ser soberano."
-  },
-  "charla-base": {
-   "nombre": "La Charla",
-   "que_es": "El mismo Mistral con un adaptador LoRA entrenado aquí sobre 150 conversaciones en cinco lenguas. Habla más corto y reconoce mejor a quien ya instaló. Su fallo conocido: se inventa cifras con mucha seguridad.",
-   "purpose": "Entrenado aquí para reconocer a quien ya instaló y pasar al tema. Lo que buscamos: si suelta un número —tamaños, tiempos, cantidades— cópialo. Esa es la avería que estamos cazando.",
-   "atajos": {
-    "simple": {
-     "rotulo": "Más sencillo",
-     "prompt": "Vuelve a decirme lo último más sencillo, sin palabras de oficio. Tres frases como mucho. Acaba preguntándome qué parte quiero abrir."
-    },
-    "sin_cifras": {
-     "rotulo": "Sin números",
-     "prompt": "Repite lo último sin dar ni una cifra. Si un número era necesario para entenderlo, dime dónde lo miro yo en vez de decírmelo tú. Prefiero un hueco declarado a un número que suene bien."
-    },
-    "falta": {
-     "rotulo": "Qué te falta saber",
-     "prompt": "Dime qué te falta saber de mí para acertar. Solo lo que cambiaría tu respuesta. Máximo tres cosas, y si no falta nada dilo y sigue."
-    }
-   },
-   "lore": "Aprendió a hablar aquí, con conversaciones escritas a mano. Tiene la voz más cerca y la memoria más corta, y esa mezcla es honesta: sabe acompañar, no sabe fingir que sabe."
   },
   "charla-multi": {
    "nombre": "La Charla · 7 lenguas",
