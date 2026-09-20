@@ -85,7 +85,16 @@ const HUB = [...AGENTES, '/hub.json', '/hub-textos.json',
    una contradiccion entre la pagina y el dato. El catalogo de modelos no
    tiene gemelo en el HTML, y ademas lleva su propia `ultima_lectura`: una
    copia vieja se declara vieja sola. */
-const CONTENIDO_JSON = [...AGENTES, '/hub.json', '/hub-textos.json', '/medidas.json', '/nav.json', '/modelos.json', '/servicios.json', '/instalar.json'];
+/* `enviar-<lang>.json` entra en el precache, y por el criterio de arriba: son
+   ROTULOS, no cifras. Una copia vieja no puede contradecir a nadie --- lo peor
+   que pasa es que el boton diga lo que decia la semana pasada --- y a cambio
+   el envio al rack se lee en su lengua tambien sin red, que es el caso de la
+   PWA instalada. Nacieron el 2026-09-20, al sacar esas ocho claves del bloque
+   `#i18n` de la portada: en griego y en ruso ya no cabian. */
+const ENVIAR = ['de', 'el', 'en', 'es', 'fr', 'it', 'pt', 'ru']
+  .map(function (l) { return '/enviar-' + l + '.json'; });
+
+const CONTENIDO_JSON = [...AGENTES, ...ENVIAR, '/hub.json', '/hub-textos.json', '/medidas.json', '/nav.json', '/modelos.json', '/servicios.json', '/instalar.json'];
 
 /* El manifiesto va a red primero: es diminuto, cambia cuando cambian los
    iconos, y un manifiesto viejo hace que la app instalada se quede con el

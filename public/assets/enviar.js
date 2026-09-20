@@ -46,6 +46,22 @@
    * 2) el bloque `#i18n` de la pagina, por si alguna los declara aun.
    * 3) el respaldo en castellano, que es DEGRADAR, no traducir. Si se ve, es
    *    que el guion de la lengua no llego: es un sintoma, no una solucion. */
+  /* QUIEN LLENA `window.ENVT`, que hasta hoy no lo llenaba nadie.
+     El comentario de arriba describia el respaldo de tres niveles y el primero
+     estaba vacio: `ENVT` no se definia en ningun sitio, asi que toda lengua
+     caia al tercero --- el castellano del propio guion --- y las ocho leian
+     «Enviar al rack». Medido el 2026-09-20 por la guarda nueva del gate.
+     Se pide `enviar-<lang>.json`, hermano de `taller-`, `caminos-`, `duelos-`
+     y `herramientas-`. Va sin `await` y sin bloquear: si no llega, el respaldo
+     sigue siendo el que era y no se rompe nada. */
+  (function cargarTextos() {
+    var lang = (document.documentElement.lang || 'es').slice(0, 2);
+    fetch('/enviar-' + lang + '.json')
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .catch(function () { return null; })
+      .then(function (d) { if (d && d.ui) { window.ENVT = d.ui; } });
+  })();
+
   function T(clave, respaldo) {
     if (window.ENVT && window.ENVT[clave]) { return window.ENVT[clave]; }
     var b = document.getElementById('i18n');

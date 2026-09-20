@@ -1246,6 +1246,79 @@ class ElTaller(unittest.TestCase):
                     self.assertIn(clave, base,
                                   "el render pide una clave que no existe")
 
+    def test_ningun_guion_pide_una_clave_que_la_pagina_no_tiene(self):
+        """La version GENERAL de la guarda que existia a trozos.
+
+        Habia tres vigilando esto y ninguna cubria el caso: una mira
+        `UI.<clave>` en los tres ficheros del taller, otra el agora, otra la
+        paridad entre lenguas. Ninguna comprueba lo obvio --- que cada
+        `T('clave')` de CUALQUIER guion exista en el bloque `#i18n` de las
+        paginas que cargan ese guion ---.
+
+        Lo que pasa cuando falta: `T(clave, respaldo)` pinta el respaldo, que
+        esta escrito a mano en el JS y por tanto en UN solo idioma. Medido el
+        2026-09-20: `enviar.js` pedia ocho claves que no estaban en ninguna
+        pagina, asi que las ocho lenguas leian «Enviar al rack», «No se pudo
+        enviar» y «Pidiendo el reto...» en castellano.
+
+        Es la misma familia que la tabla literal de `showman.js`, que su propio
+        comentario describe: «no lo cazo el gate y no podia». Ahora si.
+
+        Los comentarios se quitan antes de mirar: `showman.js` menciona
+        `T('clave')` dentro de un comentario para explicar justo esto, y sin
+        quitarlos la prueba se cazaba a si misma.
+        """
+        bloque = re.compile(
+            r'<script type="application/json" id="i18n">(.*?)</script>', re.S)
+        llamada = re.compile(r"""\bT\(\s*['"]([A-Za-z0-9_]+)['"]""")
+
+        # Guiones que traen sus rotulos en su PROPIA familia `<nombre>-<lang>.json`
+        # en vez de en el bloque de la pagina. Se declara la excepcion, con el
+        # fichero que la respalda, y mas abajo se comprueba que esa familia
+        # exista en las ocho lenguas y traiga las claves. Una excepcion sin
+        # comprobar es un agujero con coartada, y de esos ya hubo uno hoy.
+        FAMILIA_PROPIA = {"enviar.js": "enviar"}
+
+        pide = {}
+        for js in sorted((PUBLICO / "assets").glob("*.js")):
+            limpio = re.sub(r"/\*.*?\*/", "", js.read_text(encoding="utf-8"),
+                            flags=re.S)
+            limpio = re.sub(r"^\s*//.*$", "", limpio, flags=re.M)
+            claves = set(llamada.findall(limpio))
+            if claves:
+                pide[js.name] = claves
+
+        self.assertTrue(pide, "ningun guion usa T(): el patron cambio")
+        for pagina in sorted(PUBLICO.glob("*/*.html")):
+            texto = pagina.read_text(encoding="utf-8")
+            cargados = [j for j in pide if j in texto]
+            if not cargados:
+                continue
+            m = bloque.search(texto)
+            tiene = set(json.loads(m.group(1))) if m else set()
+            idioma = pagina.parent.name
+            for js in cargados:
+                propias = set()
+                familia = FAMILIA_PROPIA.get(js)
+                if familia:
+                    f = PUBLICO / f"{familia}-{idioma}.json"
+                    with self.subTest(guion=js, idioma=idioma):
+                        self.assertTrue(
+                            f.is_file(),
+                            f"{js} dice traer sus rotulos en {f.name} y ese "
+                            "fichero no existe para esta lengua")
+                    if f.is_file():
+                        propias = set(json.loads(
+                            f.read_text(encoding="utf-8")).get("ui", {}))
+                faltan = sorted(pide[js] - tiene - propias)
+                with self.subTest(pagina=str(pagina.relative_to(PUBLICO)),
+                                  guion=js):
+                    self.assertEqual(
+                        [], faltan,
+                        f"{pagina.name} carga {js}, que pide {faltan} y no "
+                        "estan ni en la pagina ni en su familia. Se pintara el "
+                        "respaldo del JS, que esta en un solo idioma.")
+
     def test_lo_que_se_PINTA_no_sale_del_registro(self):
         """Su propio contrato lo dice: «no lleva una palabra de prosa».
 

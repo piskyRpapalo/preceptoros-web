@@ -1,0 +1,15 @@
+{
+ "esquema": "preceptoros/enviar/1",
+ "idioma": "es",
+ "nota": "Los rotulos del envio al rack. Viven fuera del bloque `#i18n` de la portada porque en griego y en ruso no cabian: el tope de 16 KiB por fichero es duro y se parte por asunto, nunca recortando.",
+ "ui": {
+  "envAviso": "Van firmados y con tu clave pública. El rack los encola para revisión humana: no se publica nada automáticamente.",
+  "envBoton": "Enviar al rack",
+  "envEncolado": "Enviados y en cola de revisión. El rack no publica nada sin que una persona lo mire:",
+  "envEnviando": "Pidiendo el reto…",
+  "envFallo": "No se pudo enviar",
+  "envRemedio": "Tu trabajo sigue firmado en tu aparato. Exporta el fichero desde «Corregir esta respuesta» y hazlo llegar como puedas.",
+  "envSinCanal": "el rack todavía no tiene dónde recibirlos",
+  "envSinFirmaTexto": "la identidad de este navegador todavía no sabe firmar el reto"
+ }
+}

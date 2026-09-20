@@ -1,0 +1,21 @@
+{
+ "esquema": "preceptoros/enviar/1",
+ "idioma": "el",
+ "nota": "Los rotulos del envio al rack. Viven fuera del bloque `#i18n` de la portada porque en griego y en ruso no cabian: el tope de 16 KiB por fichero es duro y se parte por asunto, nunca recortando.",
+ "ui": {
+  "envAviso": "Είναι υπογεγραμμένα και με την δημόσια χρυσή σου κλειδί. Ο rack τα προσθέτει στη λίστα περιμένουσα για ανθρώπινη επιβεβαίωση: δεν δημοσιεύεται κάτι αυτόματα.",
+  "envBoton": "Αποστολή στο rack",
+  "envEncolado": "Αποστολή και προσθήκη στην λίστα περιμένουσα. Ο rack δεν δημοσιεύει κάτι χωρίς να ελέγξει μια άτομο:",
+  "envEnviando": "Αιτημα προσφοράς…",
+  "envFallo": "Δεν ήταν δυνατή η αποστολή",
+  "envRemedio": "Το έργο σου παραμένει υπογεγραμμένο στο σκευαστή σου. Εξαγάγε το αρχείο από «Προσαρμοσμένη απάντηση» και το πέμψε όπως μπορείς.",
+  "envSinCanal": "ο rack δεν έχει πού να τους λάβει",
+  "envSinFirmaTexto": "η ταυτότητα αυτού του περιηγητή δεν ξέρει να υπογράψει το πρότιμο"
+ },
+ "revision": "pendiente-revision-nativa",
+ "procedencia": {
+  "traducido_por": "qwen2.5:14b en el rack, 2026-09-20",
+  "corregido_a_mano_por_el_silicio": [],
+  "aviso": "cadenas cortas de interfaz, no prosa. Aun asi espera revision de nativo antes de darlas por buenas."
+ }
+}
