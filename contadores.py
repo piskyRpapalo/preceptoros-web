@@ -46,6 +46,36 @@ def sin_dato(clave, causa, unidad):
     return {"clave": clave, "estado": "NO_DATA", "valor": None,
             "unidad": unidad, "causa": causa}
 
+# EXCLUSIONES DE `peso_sitio`, y la segunda es un punto fijo
+#
+#   downloads/   ya estaba: 190 MB de adaptadores que nadie paga por VISITAR.
+#   counters.json + historial/   llego el 2026-09-20, midiendo.
+#
+# Un contador que se cuenta a si mismo NO PUEDE ACERTAR NUNCA: se mide el
+# total, se escribe el numero en `counters.json`, y al escribirlo el fichero
+# cambia de tamano, asi que el numero recien escrito ya es falso. Se vio en
+# cuanto el test empezo a comprobar el valor: 13 bytes de diferencia, que son
+# exactamente los que crecio el fichero al guardar la cifra anterior.
+#
+# Excluirlo cuesta ~4 KB sobre 5,2 MB --- un 0,08 % --- y a cambio la medida
+# pasa de imposible a exacta. El `historial/` va con el: nadie descarga una
+# foto vieja de los contadores por visitar el sitio.
+FUERA_DEL_PESO = ("downloads", "counters.json", "historial")
+
+
+def peso_del_sitio():
+    """Lo que pesa VISITAR. Una sola definicion, para que no haya dos.
+
+    La usa `medir()` y la usa el gate (`test_web.py`). Cuando el test la
+    reimplementaba, las dos versiones podian derivar sin que nadie lo notara
+    --- que es el «dos verdades» de siempre, con forma de suma.
+    """
+    return sum(q.stat().st_size for q in PUBLICO.rglob("*")
+               if q.is_file()
+               and not any(parte in q.relative_to(PUBLICO).parts
+                           or q.name == parte for parte in FUERA_DEL_PESO))
+
+
 def medir():
     paginas = paginas_de_contenido()
     # Toda imagen, no solo las .webp. Cuando entraron los GIF del sello, un
@@ -71,8 +101,7 @@ def medir():
     descargas = sorted(q for q in (PUBLICO / "downloads").rglob("*")
                        if q.is_file()) if (PUBLICO / "downloads").is_dir() else []
     peso_descargas = sum(q.stat().st_size for q in descargas)
-    total = sum(p.stat().st_size for p in PUBLICO.rglob("*")
-                if p.is_file()) - peso_descargas
+    total = peso_del_sitio()
     idiomas = sorted(d.name for d in PUBLICO.iterdir()
                      if d.is_dir() and len(d.name) == 2)
     return [
@@ -80,9 +109,10 @@ def medir():
                "ficheros .html de contenido unico bajo public/"),
         medido("idiomas", len(idiomas), "idiomas", "carpetas de dos letras: " + ", ".join(idiomas)),
         medido("peso_sitio", total, "bytes",
-               "todo lo que hay en public/ MENOS downloads/: es lo que pesa "
-               "visitar. Los adaptadores no se descargan por visitar, se "
-               "descargan porque alguien los pide"),
+               "todo lo que hay en public/ menos downloads/, counters.json e "
+               "historial/: es lo que pesa visitar. Los adaptadores no se "
+               "descargan por visitar; y un contador que se cuenta a si mismo "
+               "nunca acierta, porque escribir la cifra cambia el fichero"),
         medido("peso_descargas", peso_descargas, "bytes",
                f"{len(descargas)} ficheros en public/downloads/ -- los "
                "adaptadores. Se cuenta aparte porque no lo paga quien visita, "

@@ -444,12 +444,15 @@ class Estructura(unittest.TestCase):
         #
         # `peso_descargas` SI se queda fuera, y ahora por el motivo correcto:
         # en un clon vale 0 porque `downloads/` de verdad no esta.
-        def _peso_sin_descargas():
-            dl = PUBLICO / "downloads"
-            fuera = (sum(q.stat().st_size for q in dl.rglob("*") if q.is_file())
-                     if dl.is_dir() else 0)
-            return sum(q.stat().st_size for q in PUBLICO.rglob("*")
-                       if q.is_file()) - fuera
+        # SE IMPORTA la definicion en vez de reimplementarla. La primera
+        # version la copiaba aqui, y dos copias de una suma derivan sin que
+        # nadie lo note: es el «dos verdades» de siempre con forma de numero.
+        import importlib.util
+        _esp = importlib.util.spec_from_file_location(
+            "contadores", RAIZ / "contadores.py")
+        _cont = importlib.util.module_from_spec(_esp)
+        _esp.loader.exec_module(_cont)
+        _peso_sin_descargas = _cont.peso_del_sitio
 
         def _peso_imagenes():
             return sum(q.stat().st_size for e in ("*.webp", "*.gif", "*.png",
@@ -2070,6 +2073,63 @@ class Hub(unittest.TestCase):
                 self.assertEqual(
                     set(), usados - set(paises),
                     f"{f.name} no nombra {sorted(usados - set(paises))}")
+
+    def test_ninguna_lengua_cae_a_ingles_sin_que_este_declarado(self):
+        """El respaldo silencioso de `comparar.js`, con nombre y con lista.
+
+        `comparar.js` corre en las OCHO paginas de benchmark y hace esto:
+
+            fetch('/cerebros-' + lang + '.json')  ...  .then(t => t ||
+                fetch('/cerebros-en.json'))
+
+        Medido el 2026-09-20: solo existen `cerebros-es.json` y
+        `cerebros-en.json`. Las otras seis lenguas leen la ficha EN INGLES y
+        nada en pantalla lo dice. La regla de la casa --ocho lenguas completas
+        o no entran-- se estaba cumpliendo en la forma y no en el fondo.
+
+        Esta prueba no exige traducir: exige DECLARAR. Una lengua puede no
+        tener prosa, pero entonces tiene que estar en `prosa_pendiente` de
+        `cerebros.json` con su causa. Lo que no puede es faltar y que nadie lo
+        sepa --- que es lo que pasaba.
+
+        Por que no se traduce y ya: son ~8,8 KB por lengua de texto con voz y
+        lore. Medido el 2026-09-19, un 7B devolvio 21 de 21 traducciones
+        estructuralmente validas y tres eran impublicables. Con lore el riesgo
+        es mayor, no menor, y una ficha mal traducida en la pagina que compara
+        modelos es peor que una en ingles declarada.
+        """
+        reg = json.loads((PUBLICO / "cerebros.json").read_text(encoding="utf-8"))
+        pendientes = set((reg.get("prosa_pendiente") or {}).get("idiomas", []))
+        causa = (reg.get("prosa_pendiente") or {}).get("causa", "")
+        con_prosa = {f.stem.split("-")[-1]
+                     for f in PUBLICO.glob("cerebros-*.json")}
+
+        # Solo las lenguas que de verdad ensenan el banco: las que tienen
+        # `benchmark.html`. Exigirselo a una lengua sin esa pagina seria pedir
+        # traduccion de algo que nadie ve.
+        con_banco = {d.name for d in PUBLICO.iterdir()
+                     if d.is_dir() and len(d.name) == 2 and d.name.isalpha()
+                     and (d / "benchmark.html").is_file()}
+        sin_declarar = sorted(con_banco - con_prosa - pendientes)
+        self.assertEqual(
+            [], sin_declarar,
+            f"{sin_declarar} ensenan el banco de cerebros, no tienen "
+            "`cerebros-<lang>.json` y NO estan en `prosa_pendiente`. "
+            "`comparar.js` les servira ingles sin avisar. Remedio: traducir con "
+            "revision nativa, o declararlas en `prosa_pendiente` con su causa.")
+        if pendientes:
+            self.assertGreater(
+                len(causa), 80,
+                "`prosa_pendiente` sin causa escrita es un hueco que se "
+                "atrofia: nadie sabra que evento lo cierra")
+            self.assertTrue(
+                (reg.get("prosa_pendiente") or {}).get("despertar"),
+                "`prosa_pendiente` necesita condicion de despertar")
+        # Y las que SI tienen fichero no pueden estar en la lista de pendientes:
+        # una lengua no puede estar traducida y pendiente a la vez.
+        for l in sorted(pendientes & con_prosa):
+            self.fail(f"«{l}» tiene cerebros-{l}.json y sigue en "
+                      "`prosa_pendiente`. Retirala de la lista.")
 
     def test_las_tarjetas_no_traen_logos_de_empresa(self):
         """Firmado el 2026-09-08: solo bandera, sin logo.
