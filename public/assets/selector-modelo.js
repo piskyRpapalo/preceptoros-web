@@ -234,13 +234,23 @@
        suelta: media lengua traducida y media caida se lee peor que una lengua
        entera prestada. Es la regla que `taller.js` ya aplica. */
     var traer = function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); };
-    Promise.all([
-      fetch('/cerebros.json', { cache: 'no-store' }).then(traer),
-      fetch('/cerebros-' + lang + '.json', { cache: 'no-store' }).then(traer)
-        .catch(function () {
+    /* NO SE PIDE LO QUE SE SABE QUE NO ESTA · 2026-09-20
+       Solo hay `cerebros-es` y `cerebros-en`. Las otras seis lenguas pedian su
+       fichero y se comian un 404 EN CADA VISITA antes de caer al ingles.
+       `cerebros.json` declara cuales faltan en `prosa_pendiente`, asi que
+       ahora se lee esa lista y no se pide el que no existe.
+       ESTE ERA EL SEGUNDO CONSUMIDOR. `comparar.js` hacia lo mismo y arreglar
+       solo aquel dejaba el 404 aqui: la portada y community cargan este. */
+    fetch('/cerebros.json', { cache: 'no-store' }).then(traer)
+      .then(function (base) {
+        var pend = (base.prosa_pendiente || {}).idiomas || [];
+        var suyo = pend.indexOf(lang) !== -1
+          ? Promise.reject(new Error('prosa pendiente'))
+          : fetch('/cerebros-' + lang + '.json', { cache: 'no-store' }).then(traer);
+        return suyo.catch(function () {
           return fetch('/cerebros-en.json', { cache: 'no-store' }).then(traer);
-        })
-    ])
+        }).then(function (prosa) { return [base, prosa]; });
+      })
       .then(function (par) { pintar(par[0], w, lang, par[1]); })
       .catch(function (e) {
         var host = document.getElementById('especificaciones');

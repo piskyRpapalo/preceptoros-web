@@ -2131,6 +2131,25 @@ class Hub(unittest.TestCase):
             self.fail(f"«{l}» tiene cerebros-{l}.json y sigue en "
                       "`prosa_pendiente`. Retirala de la lista.")
 
+        # DECLARARLO NO BASTA: hay que USARLO. Los dos guiones que piden
+        # `cerebros-<lang>.json` tienen que leer la lista antes de pedir, o
+        # seguiran comiendose un 404 en cada visita en seis lenguas --- que es
+        # lo que hacian, medido en el navegador el 2026-09-20.
+        #
+        # Son DOS y no uno, y esto se escribe porque arregle solo `comparar.js`
+        # y el 404 siguio saliendo: la portada y community cargan el otro.
+        for guion in ("comparar.js", "selector-modelo.js"):
+            fuente = (PUBLICO / "assets" / guion).read_text(encoding="utf-8")
+            with self.subTest(guion=guion):
+                self.assertIn("cerebros-", fuente,
+                              "este guion ya no pide la prosa por lengua: "
+                              "revisa si sigue haciendo falta vigilarlo")
+                self.assertIn(
+                    "prosa_pendiente", fuente,
+                    f"{guion} pide `cerebros-<lang>.json` sin mirar "
+                    "`prosa_pendiente`: volvera el 404 en las seis lenguas "
+                    "que no la tienen")
+
     def test_las_tarjetas_no_traen_logos_de_empresa(self):
         """Firmado el 2026-09-08: solo bandera, sin logo.
 

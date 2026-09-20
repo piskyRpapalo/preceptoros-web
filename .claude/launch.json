@@ -2,10 +2,16 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "preceptoros-web-local",
+      "name": "preceptoros-web-local-2",
       "runtimeExecutable": "python3",
-      "runtimeArgs": ["-m", "http.server", "8781", "--directory", "public"],
-      "port": 8781
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8802",
+        "--directory",
+        "public"
+      ],
+      "port": 8802
     }
   ]
 }

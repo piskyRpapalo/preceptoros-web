@@ -72,15 +72,51 @@
     });
   }
 
-  Promise.all([
-    fetch('/cerebros.json', { cache: 'no-store' }).then(function (r) { return r.json(); }),
-    fetch('/cerebros-' + lang + '.json').then(function (r) {
-      return r.ok ? r.json() : null;
-    }).catch(function () { return null; })
-      .then(function (t) {
-        return t || fetch('/cerebros-en.json').then(function (r) { return r.json(); });
-      })
-  ]).then(function (par) {
+  /* Un respaldo declarado en la propia ficha. Sin clave nueva en el bloque
+     `#i18n`: se escribe en la lengua de destino --- ingles --- porque eso es
+     LO QUE SE ESTA DICIENDO, y decirlo en griego sobre un texto que esta en
+     ingles seria una segunda mentira encima de la primera. */
+  function avisarIngles() {
+    var caja = document.getElementById('cerebros-banco') ||
+               document.querySelector('.cmp-caja');
+    if (!caja || document.getElementById('cmp-en-ingles')) { return; }
+    var p = document.createElement('p');
+    p.id = 'cmp-en-ingles';
+    p.className = 'no-data';
+    p.lang = 'en';
+    p.textContent = 'These model cards are in English: no native review in ' +
+      'your language yet. The measurements above are language-neutral.';
+    caja.insertBefore(p, caja.firstChild);
+  }
+
+  /* EL RESPALDO A INGLES DEJA DE SER SILENCIOSO · 2026-09-20
+     Solo existen `cerebros-es.json` y `cerebros-en.json`. Las otras seis
+     lenguas pedian su fichero, se comian un 404 EN CADA VISITA y leian la
+     ficha en ingles sin que nada lo dijera. Medido en el navegador.
+     Ahora `cerebros.json` declara cuales faltan en `prosa_pendiente`, asi que
+     ni se pide el fichero --- no hay 404 --- y la ficha dice en que lengua
+     esta. No se traduce a maquina: son ~8,8 KB de prosa con voz y lore por
+     lengua, y una ficha mal traducida en la pagina que COMPARA modelos es
+     peor que una en ingles declarada. */
+  fetch('/cerebros.json', { cache: 'no-store' })
+    .then(function (r) { return r.json(); })
+    .then(function (base) {
+      var pend = (base.prosa_pendiente || {}).idiomas || [];
+      var enIngles = pend.indexOf(lang) !== -1;
+      var suyo = enIngles
+        ? Promise.resolve(null)
+        : fetch('/cerebros-' + lang + '.json')
+            .then(function (r) { return r.ok ? r.json() : null; })
+            .catch(function () { return null; });
+      return suyo.then(function (t) {
+        if (t) { return [base, t, false]; }
+        return fetch('/cerebros-en.json')
+          .then(function (r) { return r.json(); })
+          .then(function (en) { return [base, en, true]; });
+      });
+    })
+    .then(function (par) {
+    if (par[2]) { avisarIngles(); }
     var cat = par[0].cerebros || [];
     var prosa = (par[1] || {}).cerebros || {};
     function busca(id) {
