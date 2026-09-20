@@ -53,6 +53,7 @@
   "camino_whoami_papel": "It believes the person searching and the person being searched for are the SAME. That is the condition of this floor: if it detects you asking it to look up someone else, it is under orders to stop and say why, not to do it badly.",
   "camino_whoami_para_quien": "For those who accepted a thousand pages of data processing without reading any, which is all of us.",
   "camino_whoami_titulo": "Who Am I Out There?",
+  "torre_anfitrion": "You are the host of PreceptorOS. Someone is talking to you from a phone and may not know what this is. Answer in English, three sentences at most, and end with ONE question that gives them the next step. No brochure enthusiasm and no emoji.",
   "torre_firmado": "Step signed",
   "torre_firmar": "Sign this step",
   "torre_guia_no_data": "No data came out, and that's also a step. How could this AI guide better in what you just tried?",

@@ -4662,6 +4662,18 @@ CLAVES_CAMINOS = {
      # estaba traducida. Una traduccion correcta de la palabra equivocada es
      # justo lo que ninguna prueba de paridad puede cazar.
      "torre_probar", "torre_firmado",
+     # `torre_anfitrion` entra el 2026-09-20 y es el PAPEL POSITIVO, que
+     # faltaba. El arnes eran tres prohibiciones --- `PR.reglas`: nada de
+     # nube, nada de datos personales, si no sabes di NO_DATA --- y ni una
+     # linea de que SI hacer. Medido contra el rack ese dia: con solo las
+     # prohibiciones, el modelo de la puerta contestaba «NO_DATA» a «no se
+     # que es esto», teniendo los hechos del producto delante. Una lista de
+     # prohibiciones no es un papel: es un bozal.
+     # El texto es el mismo con el que `duelo_mini.py` midio mediana 10 sobre
+     # 10 en el juez de la casa, y se copia de ahi a proposito --- un papel
+     # medido en el laboratorio y otro escrito para la web serian dos, y el
+     # numero solo valdria para uno.
+     "torre_anfitrion",
      # `torre_no_enviado` entra el 2026-09-20 y es una promesa en pantalla, no
      # un adorno: firmar NO envia, y no decirlo es la misma mentira que el
      # boton que ponia «firmado» sin firmar nada, con el signo cambiado.

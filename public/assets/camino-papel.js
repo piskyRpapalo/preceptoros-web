@@ -74,9 +74,20 @@
        rellena el hueco, y lo rellena con seguridad.
        Van primero porque lo que abre un system prompt pesa mas que lo que lo
        cierra, y van en la lengua de la pagina como todo lo demas de aqui. */
-    var partes = [base];
-    var hechos = ui.torre_hechos;
-    if (hechos && !esND(hechos)) { partes.push(hechos); }
+    /* Y EL PAPEL POSITIVO VA DELANTE DE TODO, incluidos los hechos.
+       Medido contra el rack el mismo dia: con solo `base` --las tres
+       prohibiciones de `PR.reglas`, y ni una linea de que SI hacer-- el
+       modelo de la puerta contestaba «NO_DATA» a «no se que es esto»
+       TENIENDO los hechos delante. Leia «si no sabes, di NO_DATA» y se lo
+       aplicaba a la pregunta del otro. Una lista de prohibiciones no es un
+       papel: es un bozal.
+       El mismo bloque y el mismo orden estan en `duelo.js`. Si se separan,
+       LoRAtelier compara contra un arnes que la Torre no usa, y el veredicto
+       que firme la persona no vale para el sitio. */
+    var partes = [];
+    [ui.torre_anfitrion, base, ui.torre_hechos].forEach(function (x) {
+      if (x && !esND(x)) { partes.push(x); }
+    });
     partes.push('[' + t + ']');
     ['frase', 'falla', 'papel'].forEach(function (c) {
       var v = ui['camino_' + p + '_' + c];
@@ -271,39 +282,13 @@
         }).catch(function (e) {
           ok.disabled = false;
           dice.textContent = e.message;
-          /* EL CALLEJON SIN SALIDA. Se escribe el paso entero, se pulsa
-             Firmar, y la pagina contesta «sin identidad»: es verdad, y no
-             dice donde se consigue una. La salida se pone AQUI, que es donde
-             esta la persona, y no en una nota que la mande a buscar un boton
-             del cabezal.
-             Se reusa `idEntrar`, el rotulo que ya tienen las ocho lenguas
-             para ese mismo gesto: una clave nueva para decir lo mismo son
-             ocho traducciones y una ocasion mas de que falte una.
-
-             ESTA ES LA TERCERA COPIA DE ESTE BLOQUE --- `corregir.js` y
-             `resena.js` lo tienen igual desde el 2026-09-14 --- y se escribe
-             sabiendolo. Tres copias de una recuperacion es como una se
-             arregla y las otras dos no. Extraerlo pide un fichero nuevo:
-             `auth.js`, que es su dueno natural, tiene 130 B libres bajo el
-             tope. Queda anotado en OPTIMIZACIONES como propuesta, no
-             escondido en un TODO que nadie lee. */
-          var H = (window.Hub && window.Hub.textos) || {};
-          if (/sin identidad/.test(String(e && e.message)) && window.Identity
-              && window.Identity.crear && !caja.querySelector('.crear-id')) {
-            var nace = el('button', 'boton crear-id', H.idEntrar || 'Entrar');
-            nace.type = 'button';
-            nace.addEventListener('click', function () {
-              nace.disabled = true;
-              window.Identity.crear().then(function () {
-                nace.remove(); dice.textContent = '';
-                ok.click();       // se reintenta el paso que ya estaba escrito
-              }, function (x) {
-                nace.disabled = false;
-                dice.textContent = x && x.message ? x.message : String(x);
-              });
-            });
-            caja.appendChild(nace);
-          }
+          /* La salida del callejon la pone `identidad-o-salida.js`, que es
+             la CUARTA vez que hizo falta el mismo bloque --- `corregir.js`,
+             `resena.js`, este y `duelo.js` --- y la primera en que copiarlo
+             salia mas caro que extraerlo: empujo este fichero 482 B por
+             encima del tope. */
+          window.ConIdentidad(e, caja, function (t) { dice.textContent = t; },
+                              function () { ok.click(); });
         });
       });
     });

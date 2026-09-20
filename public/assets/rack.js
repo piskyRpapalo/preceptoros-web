@@ -53,7 +53,24 @@
     stream: function (modelo, prompt, alTrozo) {
       return fetch(BASE + '/api/generate', {
         method: 'POST',
-        body: JSON.stringify({ model: modelo, prompt: prompt, stream: true })
+        /* `think: false` NO ES OPCIONAL, y hasta el 2026-09-20 no iba.
+           Medido ese dia contra el tunel, con el modelo de la puerta
+           (`qwen3:1.7b`, familia Qwen3, que piensa por defecto): la misma
+           pregunta gasta 349 tokens y devuelve 1.142 caracteres de
+           razonamiento en un campo `thinking` que este fichero NI SIQUIERA
+           LEE --- solo mira `o.response` ---. O sea que TODA conversacion de
+           preceptoros.org estaba pagando tiempo de pared por un texto que
+           nadie iba a ver nunca.
+           Es la trampa que el canon de la casa lleva escrita desde el
+           2026-09-13 con MiniCPM5 --3.500 tokens en 77,8 s para no devolver
+           nada-- y la que dice que un tag explicito no protege: el
+           pensamiento viene del modelo, no del tag. Aqui llego por la puerta
+           de atras, al cambiar la puerta a un modelo de esa familia.
+           Ollama ignora el campo en los modelos que no piensan, asi que
+           ponerlo siempre no cuesta nada y quita el pie de la piedra para el
+           siguiente modelo de esa familia que entre. */
+        body: JSON.stringify({ model: modelo, prompt: prompt, stream: true,
+                               think: false })
       }).then(function (r) {
         // Un 404 con cuerpo JSON es exactamente lo que devuelve hoy el tunel
         // sin ruta. Se convierte en error AQUI para que el turno lo cuente con

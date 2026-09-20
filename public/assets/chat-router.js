@@ -193,7 +193,8 @@
          `async = false` sobre un guion insertado si obliga al orden de
          insercion. Aun asi `camino.js` comprueba que el vecino exista: una
          garantia del navegador no es motivo para no tener respaldo. */
-      ['/assets/camino-papel.js', '/assets/camino.js'].forEach(function (src) {
+      ['/assets/identidad-o-salida.js', '/assets/camino-papel.js',
+       '/assets/camino.js'].forEach(function (src) {
         var s = document.createElement('script');
         s.src = src;
         s.async = false;

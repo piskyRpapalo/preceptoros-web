@@ -114,9 +114,18 @@
      veredicto que firme la persona no valdria para nada. */
   function arnes() {
     var r = (window.PR && window.PR.reglas) || [];
-    var base = Array.isArray(r) ? r.join('. ') : String(r || '');
-    var h = UI.torre_hechos;
-    return base + (h && h.indexOf('NO_DATA') !== 0 ? '\n' + h : '');
+    var reglas = Array.isArray(r) ? r.join('. ') : String(r || '');
+    /* EL PAPEL VA PRIMERO Y LAS PROHIBICIONES DETRAS. Medido contra el rack el
+       2026-09-20: con solo `PR.reglas` --tres prohibiciones y ni una linea de
+       que SI hacer-- el modelo de la puerta contestaba «NO_DATA» a «no se que
+       es esto», teniendo los hechos del producto delante. Leia «si no sabes,
+       di NO_DATA» y se lo aplicaba a la pregunta del otro. Una lista de
+       prohibiciones no es un papel: es un bozal. */
+    var partes = [];
+    [UI.torre_anfitrion, reglas, UI.torre_hechos].forEach(function (t) {
+      if (t && t.indexOf('NO_DATA') !== 0) { partes.push(t); }
+    });
+    return partes.join('\n');
   }
 
   function turno(modelo, prompt, col, ms) {
@@ -289,26 +298,11 @@
       }).catch(function (e) {
         firmar.disabled = false;
         dice.textContent = e.message;
-        /* La misma salida del callejon que la Torre. Es la CUARTA copia de
-           este bloque en el arbol --- `corregir.js`, `resena.js`,
-           `camino-papel.js` y esta ---, y ya no es una anecdota: esta anotada
-           en OPTIMIZACIONES como extraccion pendiente, con su cifra. */
-        var H = (window.Hub && window.Hub.textos) || {};
-        if (/sin identidad/.test(String(e && e.message)) && window.Identity
-            && window.Identity.crear && !caja.querySelector('.crear-id')) {
-          var nace = el('button', 'boton crear-id', H.idEntrar || 'Entrar');
-          nace.type = 'button';
-          nace.addEventListener('click', function () {
-            nace.disabled = true;
-            window.Identity.crear().then(function () {
-              nace.remove(); dice.textContent = ''; firmar.click();
-            }, function (x) {
-              nace.disabled = false;
-              dice.textContent = x && x.message ? x.message : String(x);
-            });
-          });
-          caja.appendChild(nace);
-        }
+        /* La misma salida del callejon que la Torre, y ya compartida:
+           `identidad-o-salida.js`. Era la cuarta copia del bloque en el
+           arbol. */
+        window.ConIdentidad(e, caja, function (t) { dice.textContent = t; },
+                            function () { firmar.click(); });
       });
     });
   }

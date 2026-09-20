@@ -100,7 +100,13 @@ const HUB = [...AGENTES, ...DUELOS, '/hub.json', '/hub-textos.json',
                 turnos --- eso lo dice el con su NO_DATA --- pero la
                 pantalla se pinta y se lee, que es la diferencia entre una
                 pagina que explica por que no puede y una que no carga. */
-             '/assets/duelo.js', '/assets/rack.js', '/assets/corregir.js', '/assets/aprender.js', '/assets/elegir.js', '/assets/comandos.js']
+             '/assets/duelo.js', '/assets/rack.js',
+             /* La salida del callejon «sin identidad», compartida por las
+                cuatro pantallas que firman. Sin ella en el shell, una PWA
+                sin red pone el boton de firmar y no puede ofrecer la
+                identidad que le falta --- que es el peor momento posible
+                para quedarse sin salida. */
+             '/assets/identidad-o-salida.js', '/assets/corregir.js', '/assets/aprender.js', '/assets/elegir.js', '/assets/comandos.js']
   /* Las tres tiras: `widget.css` las pide y sin red el cabezal se queda
      con un circulo vacio. */
   .concat(['apertura', 'reposo', 'habla']
