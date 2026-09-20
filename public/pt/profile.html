@@ -71,6 +71,14 @@
   <div id="perfil-niveles"></div>
 </section>
 
+<section class="panel" aria-labelledby="h-rack">
+  <h2 id="h-rack">O teu perfil na Ágora</h2>
+  <!-- El rack acepta perfiles desde hace semanas y la web no lo
+       llamaba nunca: las dos mitades del puente construidas y sin
+       tocarse. Lo pinta `perfil-rack.js`; vacio no ocupa nada. -->
+  <div id="perfil-rack"></div>
+</section>
+
 <section class="panel" aria-labelledby="h-ver">
   <h2 id="h-ver">Notas de versão</h2>
   <div id="perfil-version"></div>
@@ -86,58 +94,16 @@
   <ul>
     <li><strong>O pseudónimo é derivado, não escolhido.</strong> Sai do SHA-256 da tua chave pública. Mudar de nome exige mudar de chave, e mudar de chave é começar do zero: é o preço de ninguém se poder fazer passar por ti sem um servidor que o impeça.</li>
     <li><strong>Os três níveis não são um jogo.</strong> Não há pontos nem medalhas: um nível aqui é exactamente o que podes fazer e antes não podias. O teu sai de olhar duas coisas neste aparelho —se há chave e se há pares corrigidos guardados—, não de um contador que alguém leve.</li>
-    <li><strong>Esta página não publica nada.</strong> Não há perfil público, não há ficha para mostrar e ainda não existe um sítio para onde a mandar. A única coisa que sai deste aparelho é o que tu entregas a partir do Bronze, assinado e a teu pedido.</li>
+    <li><strong>Esta página não publica nada sozinha.</strong> Agora já há para onde mandar a tua chave —a Ágora do rack— mas só sai se carregares no botão acima, e sai assinada por ti. Nada é enviado ao carregar.</li>
   </ul>
 </details>
 </footer>
 
-<script type="application/json" id="i18n">{
- "pfSinIdentidad": "NO_DATA — ainda não há identidade neste aparelho.",
- "pfComoCrear": "Cria uma com o ícone de pessoa no canto do cabeçalho. Antes de gerar a chave diz-te, por palavras, que não se pode exportar nem recuperar.",
- "pfDerivado": "Derivado do SHA-256 da tua chave pública. Não se escolhe.",
- "pfHuella": "Impressão da tua chave:",
- "pfVerClave": "Ver a minha chave pública inteira",
- "pfCargando": "A ler a chave…",
- "pfSinClave": "não foi possível ler a chave pública:",
- "pfInstalada": "A app está instalada neste aparelho e estás a usá-la agora mesmo.",
- "pfNoInstalada": "A app não está instalada neste aparelho: estás na web.",
- "pfNiv1": "Visitante",
- "pfNiv1Que": "Podes ler o sítio inteiro, experimentar os modelos do banco e ver as medidas dos outros. Não podes assinar nada, por isso nada do que fizeres fica atribuído a ninguém.",
- "pfNiv1Sube": "Para passar a signatário: cria uma identidade. Gera-se uma chave Ed25519 no teu navegador, sem conta e sem palavra-passe.",
- "pfNiv2": "Signatário",
- "pfNiv2Que": "Tens chave: o pseudónimo é teu e ninguém o pode pedir. Podes assinar medidas e correcções, e qualquer pessoa pode comprovar com a tua chave pública que foste tu a assiná-las.",
- "pfNiv2Sube": "Para passar a contribuinte: corrige uma resposta que não te tenha servido. O par fica guardado assinado no teu aparelho, e só sai de lá se o entregares.",
- "pfNiv3": "Contribuinte",
- "pfNiv3Que": "Há trabalho teu guardado no Bronze. Podes entregá-lo —assinado, com o teu consentimento explícito e quando quiseres— para o laboratório o usar, ou descarregá-lo e ficar com ele.",
- "pfNivSinBronce": "não foi possível ler o Bronze deste aparelho, por isso o nível não se pode confirmar:",
- "pfVerQue": "Versão publicada:",
- "pfVerFecha": "data:",
- "pfVerSinCampo": "o ficheiro de versão não traz o campo",
- "pfVerSinFichero": "não há notas de versão publicadas: /release.json não existe (verificado a 2026-09-13) e nenhum processo o gera ao publicar.",
- "pfVerCausa": "Não se preenche com a data da publicação nem com a versão da cache: seriam números com cara de medidas que ninguém mediu.",
- "pfClaveAviso": "Mudar de chave não é terminar sessão. A chave privada foi gerada não extraível: não há cópia em lado nenhum. Se a esqueceres, perdes para sempre a autoria de tudo o que já assinaste — o assinado continua a existir, o que desaparece é a prova de que foi teu.",
- "pfClaveSinIdentidad": "Ainda não há nenhuma chave neste aparelho, por isso não há nada para mudar.",
- "pfClaveBoton": "Mudar de chave",
- "pfClaveTitulo": "Esquecer esta chave",
- "pfClaveLetra1": "A chave é apagada deste aparelho e terás outro pseudónimo da próxima vez que criares uma. O que já assinaste com a antiga deixa de ser reclamável por ti.",
- "pfClaveLetra2": "Não há cópia, não há palavra-passe e não há servidor: isto não se desfaz.",
- "pfClaveEscribe": "Escreve {palabra} para confirmar:",
- "pfClavePalabra": "esquecer",
- "pfClaveConfirma": "Esquecer a minha chave",
- "pfClaveCancela": "Deixar como está",
- "pfClaveHecho": "Chave esquecida. Este aparelho já não tem identidade: cria uma nova a partir do canto do cabeçalho quando quiseres.",
- "pfClaveFallo": "Não foi possível esquecer a chave:",
- "idPerfil": "O meu perfil",
- "idEntrar": "Criar identidade",
- "idHola": "Olá,",
- "idClave": "Ver a minha impressão",
- "idPublica": "Chave pública:",
- "idFallo": "NO_DATA — não foi possível criar a identidade:",
- "idAviso": "Gera-se uma chave no teu navegador. Não se pode exportar nem copiar para outro aparelho: se apagares os dados do sítio, esta identidade perde-se e não há forma de a recuperar. Não há palavra-passe para esquecer nem servidor que a guarde."
-}</script>
+<script type="application/json" id="i18n">{"idAviso": "Gera-se uma chave no teu navegador. Não se pode exportar nem copiar para outro aparelho: se apagares os dados do sítio, esta identidade perde-se e não há forma de a recuperar. Não há palavra-passe para esquecer nem servidor que a guarde.", "idClave": "Ver a minha impressão", "idEntrar": "Criar identidade", "idFallo": "NO_DATA — não foi possível criar a identidade:", "idHola": "Olá,", "idPerfil": "O meu perfil", "idPublica": "Chave pública:", "pfCargando": "A ler a chave…", "pfClaveAviso": "Mudar de chave não é terminar sessão. A chave privada foi gerada não extraível: não há cópia em lado nenhum. Se a esqueceres, perdes para sempre a autoria de tudo o que já assinaste — o assinado continua a existir, o que desaparece é a prova de que foi teu.", "pfClaveBoton": "Mudar de chave", "pfClaveCancela": "Deixar como está", "pfClaveConfirma": "Esquecer a minha chave", "pfClaveEscribe": "Escreve {palabra} para confirmar:", "pfClaveFallo": "Não foi possível esquecer a chave:", "pfClaveHecho": "Chave esquecida. Este aparelho já não tem identidade: cria uma nova a partir do canto do cabeçalho quando quiseres.", "pfClaveLetra1": "A chave é apagada deste aparelho e terás outro pseudónimo da próxima vez que criares uma. O que já assinaste com a antiga deixa de ser reclamável por ti.", "pfClaveLetra2": "Não há cópia, não há palavra-passe e não há servidor: isto não se desfaz.", "pfClavePalabra": "esquecer", "pfClaveSinIdentidad": "Ainda não há nenhuma chave neste aparelho, por isso não há nada para mudar.", "pfClaveTitulo": "Esquecer esta chave", "pfComoCrear": "Cria uma com o ícone de pessoa no canto do cabeçalho. Antes de gerar a chave diz-te, por palavras, que não se pode exportar nem recuperar.", "pfDerivado": "Derivado do SHA-256 da tua chave pública. Não se escolhe.", "pfHuella": "Impressão da tua chave:", "pfInstalada": "A app está instalada neste aparelho e estás a usá-la agora mesmo.", "pfNiv1": "Visitante", "pfNiv1Que": "Podes ler o sítio inteiro, experimentar os modelos do banco e ver as medidas dos outros. Não podes assinar nada, por isso nada do que fizeres fica atribuído a ninguém.", "pfNiv1Sube": "Para passar a signatário: cria uma identidade. Gera-se uma chave Ed25519 no teu navegador, sem conta e sem palavra-passe.", "pfNiv2": "Signatário", "pfNiv2Que": "Tens chave: o pseudónimo é teu e ninguém o pode pedir. Podes assinar medidas e correcções, e qualquer pessoa pode comprovar com a tua chave pública que foste tu a assiná-las.", "pfNiv2Sube": "Para passar a contribuinte: corrige uma resposta que não te tenha servido. O par fica guardado assinado no teu aparelho, e só sai de lá se o entregares.", "pfNiv3": "Contribuinte", "pfNiv3Que": "Há trabalho teu guardado no Bronze. Podes entregá-lo —assinado, com o teu consentimento explícito e quando quiseres— para o laboratório o usar, ou descarregá-lo e ficar com ele.", "pfNivSinBronce": "não foi possível ler o Bronze deste aparelho, por isso o nível não se pode confirmar:", "pfNoInstalada": "A app não está instalada neste aparelho: estás na web.", "pfSinClave": "não foi possível ler a chave pública:", "pfSinIdentidad": "NO_DATA — ainda não há identidade neste aparelho.", "pfVerCausa": "Não se preenche com a data da publicação nem com a versão da cache: seriam números com cara de medidas que ninguém mediu.", "pfVerClave": "Ver a minha chave pública inteira", "pfVerFecha": "data:", "pfVerQue": "Versão publicada:", "pfVerSinCampo": "o ficheiro de versão não traz o campo", "pfVerSinFichero": "não há notas de versão publicadas: /release.json não existe (verificado a 2026-09-13) e nenhum processo o gera ao publicar.", "prActualizar": "Actualizar na Ágora", "prAviso": "Ao carregar, o teu pseudónimo e a tua chave pública saem deste aparelho para o rack. A chave privada não: assina aqui e não pode ser exportada.", "prDesde": "Registada", "prFallo": "NO_DATA — não foi possível registar:", "prMandando": "A assinar e a enviar…", "prMaquinaNada": "o teu navegador não diz nada deste aparelho", "prMaquinaNoLlega": "NO_DATA — a Ágora aceitou o registo mas NÃO guardou a máquina: o seu modelo ainda não tem esse campo e descarta em silêncio o que não conhece.", "prMaquinaOfrece": "Enviar também que máquina é esta:", "prPseudonimo": "Pseudónimo", "prRegistrado": "A tua chave está registada na Ágora.", "prRegistrar": "Registar na Ágora", "prSinIdentidad": "NO_DATA — ainda não há chave neste aparelho. Cria-se acima, em «A tua identidade».", "prSinRegistrar": "A tua chave existe neste aparelho e a Ágora não a conhece."}</script>
 <script src="/assets/ambient.js"></script>
 <script src="/assets/bronce.js"></script>
 <script src="/assets/profile.js"></script>
+<script src="/assets/perfil-rack.js"></script>
 <script src="/assets/profile-obra.js"></script>
 <script src="/assets/cabezal.js"></script>
 <script src="/assets/cabezal-rotulos.js"></script>

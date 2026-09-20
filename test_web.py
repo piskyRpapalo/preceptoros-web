@@ -799,6 +799,102 @@ class Estructura(unittest.TestCase):
                       "el dueño de `elegido` no escucha su propio evento: quien "
                       "elija modelo desde fuera mandara `model: null`")
 
+    def test_el_perfil_se_registra_en_el_agora_y_no_manda_de_mas(self):
+        """El puente que faltaba, y el limite de lo que cruza por el.
+
+        MEDIDO EL 2026-09-20: el rack aceptaba perfiles desde hacia semanas
+        --- `POST /api/v1/profiles` responde 201 y `/api/v1/salud` dice
+        `perfiles: 1` --- y la web NO LO LLAMABA NUNCA. Ni un `fetch` a esa
+        ruta en todo `public/assets/`. `auth.js` ya sabia firmar exactamente el
+        mensaje que el Agora pide, y esa funcion no la usaba nadie.
+
+        Las dos mitades del puente llevaban semanas construidas y sin tocarse.
+        Como cada mitad funciona sola, nada se ponia rojo --- y por eso esta
+        prueba comprueba la CONEXION y no las piezas.
+
+        Y COMPRUEBA EL LIMITE, que es la otra mitad de la funcion. Mandar el
+        `userAgent` entero seria regalar la huella con la que se rastrea a la
+        gente por toda la red, en la pagina que promete que lo de aqui se queda
+        aqui. Que hoy no se mande no basta: tiene que seguir sin mandarse
+        cuando alguien anada un campo mas.
+        """
+        import re as _re
+        pr = PUBLICO / "assets" / "perfil-rack.js"
+        self.assertTrue(pr.exists(), "no hay modulo de registro")
+        js = pr.read_text(encoding="utf-8")
+        # SIN LOS COMENTARIOS, Y DESDE EL PRINCIPIO. Esta bateria se cayo al
+        # escribirla porque `firmarTexto` aparece en la PROSA de la cabecera
+        # antes que en el codigo, y la comprobacion de orden la encontro ahi.
+        # Es la misma trampa que ya tiene el mini-chat anotada --- «una prueba
+        # de ausencia se dispara con la prosa que EXPLICA por que algo no
+        # esta» --- y la casa la resuelve asi: un fichero que cuenta su
+        # historia nombra lo que hace y lo que dejo de hacer, y eso es una
+        # virtud. La prueba se adapta, no el comentario.
+        # Y el `//` solo es comentario si no viene detras de `:`, o este
+        # quitador se come la barra doble de `https://` y deja una cadena
+        # partida que luego se mide como si fuera codigo.
+        sin_com = _re.sub(r"(?<!:)//.*", "", _re.sub(r"/\*.*?\*/", "", js, flags=_re.S))
+
+        # 1 · LA CONEXION: alguien lo carga, hay ancla, y firma con `auth.js`.
+        self.assertIn("window.Identity.firmarTexto", sin_com,
+                      "no usa la firma que `auth.js` ya tenia")
+        self.assertIn("'|'", sin_com, "no arma `pseudonimo|clave_publica|reto`")
+        self.assertIn("/profiles", sin_com, "no llama al extremo del Agora")
+        for idi in IDIOMAS:
+            t = (PUBLICO / idi / "profile.html").read_text(encoding="utf-8")
+            with self.subTest(idioma=idi):
+                self.assertIn('id="perfil-rack"', t, "falta el ancla")
+                self.assertIn("/assets/perfil-rack.js", t, "nadie lo carga")
+
+        # 2 · EL RETO SE PIDE JUSTO ANTES DE FIRMAR. Vive 300 s y es de un solo
+        #     uso: pedirlo al cargar y guardarlo seria firmar uno caducado
+        #     mientras alguien lee la pagina.
+        self.assertLess(sin_com.index("/reto"), sin_com.index("firmarTexto"),
+                        "firma antes de pedir el reto")
+
+        # 3 · NO SE MANDA NADA AL CARGAR. El unico POST vive dentro de la
+        #     funcion que cuelga del boton.
+        cuerpo_manda = sin_com.split("function manda(")[1].split("\n  function ")[0]
+        self.assertIn("method: 'POST'", cuerpo_manda)
+        self.assertEqual(sin_com.count("method: 'POST'"), 1,
+                         "hay mas de un POST: uno puede estar fuera del boton")
+
+        # 4 · EL LIMITE DE LO QUE SALE. Tres valores gruesos y el motor
+        #     elegido; jamas el `userAgent`, que es la huella de rastreo.
+        # `navigator.userAgent` SI, `navigator.userAgentData` NO --- y la
+        # diferencia es justo la contraria de lo que parece. El primero es la
+        # cadena larga con la que se rastrea a la gente por toda la red; el
+        # segundo es la API que se invento para no tener que darla, y devuelve
+        # una plataforma gruesa («Linux», «Android»). Prohibir el prefijo
+        # prohibiria la version buena: la guardia se cayo asi al escribirla.
+        self.assertIsNone(_re.search(r"navigator\.userAgent(?!Data)", sin_com),
+                          "manda la huella de rastreo del navegador")
+        self.assertNotIn("canvas", sin_com.lower(),
+                         "huella por canvas en una pagina que promete lo contrario")
+        for campo in ("hardwareConcurrency", "deviceMemory"):
+            self.assertIn(campo, sin_com, f"se perdio {campo}")
+
+        # 5 · CADA ROTULO QUE PIDE EXISTE EN LAS OCHO. Una clave inventada se
+        #     vuelve silencio --- la cicatriz de `envEnCola`.
+        pedidas = set(_re.findall(r"T\('(pr[A-Za-z]+)'", sin_com))
+        self.assertTrue(pedidas, "no pide ningun rotulo")
+        for idi in IDIOMAS:
+            t = (PUBLICO / idi / "profile.html").read_text(encoding="utf-8")
+            m = _re.search(r'id="i18n">(.*?)</script>', t, _re.S)
+            d = json.loads(m.group(1))
+            with self.subTest(idioma=idi):
+                self.assertFalse(pedidas - set(d),
+                                 f"rotulos que faltan: {pedidas - set(d)}")
+
+        # 6 · Y LA PAGINA YA NO PROMETE QUE NO HAY EXTREMO. Lo prometia en las
+        #     ocho, y con el boton puesto seria mentira en pantalla --- que es
+        #     lo que esta casa persigue, no un detalle de redaccion.
+        for idi in IDIOMAS:
+            t = (PUBLICO / idi / "profile.html").read_text(encoding="utf-8")
+            with self.subTest(idioma=idi):
+                self.assertNotIn("no existe todavía un extremo", t)
+                self.assertNotIn("no endpoint yet", t)
+
     def test_el_killswitch_vive_en_la_torre(self):
         """La otra mitad de la mudanza del 2026-09-20.
 

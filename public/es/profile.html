@@ -71,6 +71,14 @@
   <div id="perfil-niveles"></div>
 </section>
 
+<section class="panel" aria-labelledby="h-rack">
+  <h2 id="h-rack">Tu perfil en el Ágora</h2>
+  <!-- El rack acepta perfiles desde hace semanas y la web no lo
+       llamaba nunca: las dos mitades del puente construidas y sin
+       tocarse. Lo pinta `perfil-rack.js`; vacio no ocupa nada. -->
+  <div id="perfil-rack"></div>
+</section>
+
 <section class="panel" aria-labelledby="h-ver">
   <h2 id="h-ver">Notas de versión</h2>
   <div id="perfil-version"></div>
@@ -86,58 +94,16 @@
   <ul>
     <li><strong>El pseudónimo es derivado, no elegido.</strong> Sale del SHA-256 de tu clave pública. Cambiar de nombre exige cambiar de clave, y cambiar de clave es empezar de cero: es el precio de que nadie pueda suplantarte sin un servidor que lo impida.</li>
     <li><strong>Los tres niveles no son un juego.</strong> No hay puntos ni insignias: un nivel aquí es exactamente lo que puedes hacer y antes no podías. El tuyo sale de mirar dos cosas en este aparato —si hay clave y si hay pares corregidos guardados—, no de un contador que lleve nadie.</li>
-    <li><strong>Esta página no publica nada.</strong> No hay perfil público, no hay ficha que enseñar y no existe todavía un extremo donde mandarla. Lo único que sale de este aparato es lo que tú entregas desde el Bronce, firmado y a petición tuya.</li>
+    <li><strong>Esta página no publica nada sola.</strong> Ahora sí hay dónde mandar tu clave —el Ágora del rack— pero sólo sale si pulsas el botón de arriba, y sale firmada por ti. Nada se envía al cargar.</li>
   </ul>
 </details>
 </footer>
 
-<script type="application/json" id="i18n">{
- "pfSinIdentidad": "NO_DATA — todavía no hay identidad en este aparato.",
- "pfComoCrear": "Créala con el icono de persona de la esquina del cabezal. Antes de generarla te dice, con todas sus letras, que no se puede exportar ni recuperar.",
- "pfDerivado": "Derivado del SHA-256 de tu clave pública. No se elige.",
- "pfHuella": "Huella de tu clave:",
- "pfVerClave": "Ver mi clave pública entera",
- "pfCargando": "Leyendo la clave…",
- "pfSinClave": "no se pudo leer la clave pública:",
- "pfInstalada": "La app está instalada en este aparato y la estás usando ahora mismo.",
- "pfNoInstalada": "La app no está instalada en este aparato: estás en la web.",
- "pfNiv1": "Visitante",
- "pfNiv1Que": "Puedes leer el sitio entero, probar los modelos del banco y ver las medidas de los demás. No puedes firmar nada, así que nada de lo que hagas queda atribuido a nadie.",
- "pfNiv1Sube": "Para pasar a firmante: crea una identidad. Se genera una clave Ed25519 en tu navegador, sin cuenta y sin contraseña.",
- "pfNiv2": "Firmante",
- "pfNiv2Que": "Tienes clave: el pseudónimo es tuyo y nadie puede pedirlo. Puedes firmar medidas y correcciones, y cualquiera puede comprobar con tu clave pública que las firmaste tú.",
- "pfNiv2Sube": "Para pasar a contribuyente: corrige una respuesta que no te sirva. El par se guarda firmado en tu aparato, y de ahí sale solo si lo entregas tú.",
- "pfNiv3": "Contribuyente",
- "pfNiv3Que": "Hay trabajo tuyo guardado en el Bronce. Puedes entregarlo —firmado, con tu consentimiento explícito y cuando tú quieras— para que el laboratorio lo use, o bajártelo y quedártelo.",
- "pfNivSinBronce": "no se pudo leer el Bronce de este aparato, así que el nivel no se puede confirmar:",
- "pfVerQue": "Versión publicada:",
- "pfVerFecha": "fecha:",
- "pfVerSinCampo": "el fichero de versión no trae el campo",
- "pfVerSinFichero": "no hay notas de versión publicadas: /release.json no existe (comprobado el 2026-09-13) y ningún proceso lo genera al desplegar.",
- "pfVerCausa": "No se rellena con la fecha del despliegue ni con la versión de la caché: serían cifras con cara de medidas que nadie ha medido.",
- "pfClaveAviso": "Cambiar de clave no es cerrar sesión. La clave privada se generó no extraíble: no hay copia en ningún sitio. Si la olvidas, pierdes para siempre la autoría de todo lo que ya firmaste — lo firmado sigue existiendo, lo que desaparece es la prueba de que fue tuyo.",
- "pfClaveSinIdentidad": "No hay ninguna clave en este aparato todavía, así que no hay nada que cambiar.",
- "pfClaveBoton": "Cambiar de clave",
- "pfClaveTitulo": "Olvidar esta clave",
- "pfClaveLetra1": "Se borra la clave de este aparato y tendrás otro pseudónimo la próxima vez que crees una. Lo que ya firmaste con la vieja deja de ser reclamable por ti.",
- "pfClaveLetra2": "No hay copia, no hay contraseña y no hay servidor: esto no se deshace.",
- "pfClaveEscribe": "Escribe {palabra} para confirmar:",
- "pfClavePalabra": "olvidar",
- "pfClaveConfirma": "Olvidar mi clave",
- "pfClaveCancela": "Dejarlo como está",
- "pfClaveHecho": "Clave olvidada. Este aparato ya no tiene identidad: crea una nueva desde la esquina del cabezal cuando quieras.",
- "pfClaveFallo": "No se pudo olvidar la clave:",
- "idPerfil": "Mi perfil",
- "idEntrar": "Crear identidad",
- "idHola": "Hola,",
- "idClave": "Ver mi huella",
- "idPublica": "Clave pública:",
- "idFallo": "NO_DATA — no se pudo crear la identidad:",
- "idAviso": "Se genera una clave en tu navegador. No se puede exportar ni copiar a otro aparato: si borras los datos del sitio, esta identidad se pierde y no hay forma de recuperarla. No hay contraseña que olvidar ni servidor que la guarde."
-}</script>
+<script type="application/json" id="i18n">{"idAviso": "Se genera una clave en tu navegador. No se puede exportar ni copiar a otro aparato: si borras los datos del sitio, esta identidad se pierde y no hay forma de recuperarla. No hay contraseña que olvidar ni servidor que la guarde.", "idClave": "Ver mi huella", "idEntrar": "Crear identidad", "idFallo": "NO_DATA — no se pudo crear la identidad:", "idHola": "Hola,", "idPerfil": "Mi perfil", "idPublica": "Clave pública:", "pfCargando": "Leyendo la clave…", "pfClaveAviso": "Cambiar de clave no es cerrar sesión. La clave privada se generó no extraíble: no hay copia en ningún sitio. Si la olvidas, pierdes para siempre la autoría de todo lo que ya firmaste — lo firmado sigue existiendo, lo que desaparece es la prueba de que fue tuyo.", "pfClaveBoton": "Cambiar de clave", "pfClaveCancela": "Dejarlo como está", "pfClaveConfirma": "Olvidar mi clave", "pfClaveEscribe": "Escribe {palabra} para confirmar:", "pfClaveFallo": "No se pudo olvidar la clave:", "pfClaveHecho": "Clave olvidada. Este aparato ya no tiene identidad: crea una nueva desde la esquina del cabezal cuando quieras.", "pfClaveLetra1": "Se borra la clave de este aparato y tendrás otro pseudónimo la próxima vez que crees una. Lo que ya firmaste con la vieja deja de ser reclamable por ti.", "pfClaveLetra2": "No hay copia, no hay contraseña y no hay servidor: esto no se deshace.", "pfClavePalabra": "olvidar", "pfClaveSinIdentidad": "No hay ninguna clave en este aparato todavía, así que no hay nada que cambiar.", "pfClaveTitulo": "Olvidar esta clave", "pfComoCrear": "Créala con el icono de persona de la esquina del cabezal. Antes de generarla te dice, con todas sus letras, que no se puede exportar ni recuperar.", "pfDerivado": "Derivado del SHA-256 de tu clave pública. No se elige.", "pfHuella": "Huella de tu clave:", "pfInstalada": "La app está instalada en este aparato y la estás usando ahora mismo.", "pfNiv1": "Visitante", "pfNiv1Que": "Puedes leer el sitio entero, probar los modelos del banco y ver las medidas de los demás. No puedes firmar nada, así que nada de lo que hagas queda atribuido a nadie.", "pfNiv1Sube": "Para pasar a firmante: crea una identidad. Se genera una clave Ed25519 en tu navegador, sin cuenta y sin contraseña.", "pfNiv2": "Firmante", "pfNiv2Que": "Tienes clave: el pseudónimo es tuyo y nadie puede pedirlo. Puedes firmar medidas y correcciones, y cualquiera puede comprobar con tu clave pública que las firmaste tú.", "pfNiv2Sube": "Para pasar a contribuyente: corrige una respuesta que no te sirva. El par se guarda firmado en tu aparato, y de ahí sale solo si lo entregas tú.", "pfNiv3": "Contribuyente", "pfNiv3Que": "Hay trabajo tuyo guardado en el Bronce. Puedes entregarlo —firmado, con tu consentimiento explícito y cuando tú quieras— para que el laboratorio lo use, o bajártelo y quedártelo.", "pfNivSinBronce": "no se pudo leer el Bronce de este aparato, así que el nivel no se puede confirmar:", "pfNoInstalada": "La app no está instalada en este aparato: estás en la web.", "pfSinClave": "no se pudo leer la clave pública:", "pfSinIdentidad": "NO_DATA — todavía no hay identidad en este aparato.", "pfVerCausa": "No se rellena con la fecha del despliegue ni con la versión de la caché: serían cifras con cara de medidas que nadie ha medido.", "pfVerClave": "Ver mi clave pública entera", "pfVerFecha": "fecha:", "pfVerQue": "Versión publicada:", "pfVerSinCampo": "el fichero de versión no trae el campo", "pfVerSinFichero": "no hay notas de versión publicadas: /release.json no existe (comprobado el 2026-09-13) y ningún proceso lo genera al desplegar.", "prActualizar": "Actualizar en el Ágora", "prAviso": "Al pulsar, tu pseudónimo y tu clave pública salen de este aparato hacia el rack. La clave privada no: firma aquí y no se puede exportar.", "prDesde": "Registrado", "prFallo": "NO_DATA — no se pudo registrar:", "prMandando": "Firmando y enviando…", "prMaquinaNada": "tu navegador no dice nada de este aparato", "prMaquinaNoLlega": "NO_DATA — el Ágora aceptó el registro pero NO guardó la máquina: su modelo todavía no tiene ese campo, y descarta en silencio lo que no conoce.", "prMaquinaOfrece": "Enviar también qué máquina es esta:", "prPseudonimo": "Pseudónimo", "prRegistrado": "Tu clave está registrada en el Ágora.", "prRegistrar": "Registrar en el Ágora", "prSinIdentidad": "NO_DATA — todavía no hay clave en este aparato. Se crea arriba, en «Tu identidad».", "prSinRegistrar": "Tu clave existe en este aparato y el Ágora no la conoce."}</script>
 <script src="/assets/ambient.js"></script>
 <script src="/assets/bronce.js"></script>
 <script src="/assets/profile.js"></script>
+<script src="/assets/perfil-rack.js"></script>
 <script src="/assets/profile-obra.js"></script>
 <script src="/assets/cabezal.js"></script>
 <script src="/assets/cabezal-rotulos.js"></script>

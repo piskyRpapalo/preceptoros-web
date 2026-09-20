@@ -71,6 +71,14 @@
   <div id="perfil-niveles"></div>
 </section>
 
+<section class="panel" aria-labelledby="h-rack">
+  <h2 id="h-rack">Your profile in the Agora</h2>
+  <!-- El rack acepta perfiles desde hace semanas y la web no lo
+       llamaba nunca: las dos mitades del puente construidas y sin
+       tocarse. Lo pinta `perfil-rack.js`; vacio no ocupa nada. -->
+  <div id="perfil-rack"></div>
+</section>
+
 <section class="panel" aria-labelledby="h-ver">
   <h2 id="h-ver">Release notes</h2>
   <div id="perfil-version"></div>
@@ -86,58 +94,16 @@
   <ul>
     <li><strong>The pseudonym is derived, not chosen.</strong> It comes from the SHA-256 of your public key. Changing your name means changing your key, and changing your key means starting over: that is the price of nobody being able to impersonate you without a server preventing it.</li>
     <li><strong>The three levels are not a game.</strong> There are no points and no badges: a level here is exactly what you can do that you could not do before. Yours comes from looking at two things on this device —whether there is a key and whether there are corrected pairs stored—, not from a counter anyone keeps.</li>
-    <li><strong>This page publishes nothing.</strong> There is no public profile, no card to show and no endpoint yet to send one to. The only thing that leaves this device is what you hand over from the Bronze, signed and at your request.</li>
+    <li><strong>This page publishes nothing on its own.</strong> There is now somewhere to send your key —the rack's Agora— but it only leaves if you press the button above, and it leaves signed by you. Nothing is sent on load.</li>
   </ul>
 </details>
 </footer>
 
-<script type="application/json" id="i18n">{
- "pfSinIdentidad": "NO_DATA — there is no identity on this device yet.",
- "pfComoCrear": "Create one with the person icon in the corner of the header. Before it generates the key it tells you, in plain words, that it cannot be exported or recovered.",
- "pfDerivado": "Derived from the SHA-256 of your public key. Not chosen.",
- "pfHuella": "Your key fingerprint:",
- "pfVerClave": "See my full public key",
- "pfCargando": "Reading the key…",
- "pfSinClave": "the public key could not be read:",
- "pfInstalada": "The app is installed on this device and you are using it right now.",
- "pfNoInstalada": "The app is not installed on this device: you are on the web.",
- "pfNiv1": "Visitor",
- "pfNiv1Que": "You can read the whole site, try the models on the bench and see other people's measurements. You cannot sign anything, so nothing you do is attributed to anyone.",
- "pfNiv1Sube": "To become a signer: create an identity. An Ed25519 key is generated in your browser, with no account and no password.",
- "pfNiv2": "Signer",
- "pfNiv2Que": "You have a key: the pseudonym is yours and nobody else can claim it. You can sign measurements and corrections, and anyone can check with your public key that you signed them.",
- "pfNiv2Sube": "To become a contributor: correct an answer that did not work for you. The pair is stored signed on your device, and it only leaves if you hand it over.",
- "pfNiv3": "Contributor",
- "pfNiv3Que": "There is work of yours stored in the Bronze. You can hand it over —signed, with your explicit consent and whenever you choose— for the lab to use, or download it and keep it.",
- "pfNivSinBronce": "the Bronze on this device could not be read, so the level cannot be confirmed:",
- "pfVerQue": "Published version:",
- "pfVerFecha": "date:",
- "pfVerSinCampo": "the release file does not carry the field",
- "pfVerSinFichero": "no release notes are published: /release.json does not exist (checked 2026-09-13) and no process generates it on deploy.",
- "pfVerCausa": "It is not filled in with the deploy date or the cache version: those would be figures that look measured and nobody measured.",
- "pfClaveAviso": "Changing your key is not signing out. The private key was generated non-extractable: there is no copy anywhere. If you forget it you lose forever the authorship of everything you already signed — what was signed still exists, what disappears is the proof that it was yours.",
- "pfClaveSinIdentidad": "There is no key on this device yet, so there is nothing to change.",
- "pfClaveBoton": "Change my key",
- "pfClaveTitulo": "Forget this key",
- "pfClaveLetra1": "The key is erased from this device and you will get a different pseudonym the next time you create one. What you already signed with the old one stops being claimable by you.",
- "pfClaveLetra2": "There is no copy, no password and no server: this cannot be undone.",
- "pfClaveEscribe": "Type {palabra} to confirm:",
- "pfClavePalabra": "forget",
- "pfClaveConfirma": "Forget my key",
- "pfClaveCancela": "Leave it as it is",
- "pfClaveHecho": "Key forgotten. This device has no identity now: create a new one from the corner of the header whenever you want.",
- "pfClaveFallo": "The key could not be forgotten:",
- "idPerfil": "My profile",
- "idEntrar": "Create identity",
- "idHola": "Hello,",
- "idClave": "See my fingerprint",
- "idPublica": "Public key:",
- "idFallo": "NO_DATA — the identity could not be created:",
- "idAviso": "A key is generated in your browser. It cannot be exported or copied to another device: if you clear the site data, this identity is lost and there is no way to recover it. There is no password to forget and no server holding it."
-}</script>
+<script type="application/json" id="i18n">{"idAviso": "A key is generated in your browser. It cannot be exported or copied to another device: if you clear the site data, this identity is lost and there is no way to recover it. There is no password to forget and no server holding it.", "idClave": "See my fingerprint", "idEntrar": "Create identity", "idFallo": "NO_DATA — the identity could not be created:", "idHola": "Hello,", "idPerfil": "My profile", "idPublica": "Public key:", "pfCargando": "Reading the key…", "pfClaveAviso": "Changing your key is not signing out. The private key was generated non-extractable: there is no copy anywhere. If you forget it you lose forever the authorship of everything you already signed — what was signed still exists, what disappears is the proof that it was yours.", "pfClaveBoton": "Change my key", "pfClaveCancela": "Leave it as it is", "pfClaveConfirma": "Forget my key", "pfClaveEscribe": "Type {palabra} to confirm:", "pfClaveFallo": "The key could not be forgotten:", "pfClaveHecho": "Key forgotten. This device has no identity now: create a new one from the corner of the header whenever you want.", "pfClaveLetra1": "The key is erased from this device and you will get a different pseudonym the next time you create one. What you already signed with the old one stops being claimable by you.", "pfClaveLetra2": "There is no copy, no password and no server: this cannot be undone.", "pfClavePalabra": "forget", "pfClaveSinIdentidad": "There is no key on this device yet, so there is nothing to change.", "pfClaveTitulo": "Forget this key", "pfComoCrear": "Create one with the person icon in the corner of the header. Before it generates the key it tells you, in plain words, that it cannot be exported or recovered.", "pfDerivado": "Derived from the SHA-256 of your public key. Not chosen.", "pfHuella": "Your key fingerprint:", "pfInstalada": "The app is installed on this device and you are using it right now.", "pfNiv1": "Visitor", "pfNiv1Que": "You can read the whole site, try the models on the bench and see other people's measurements. You cannot sign anything, so nothing you do is attributed to anyone.", "pfNiv1Sube": "To become a signer: create an identity. An Ed25519 key is generated in your browser, with no account and no password.", "pfNiv2": "Signer", "pfNiv2Que": "You have a key: the pseudonym is yours and nobody else can claim it. You can sign measurements and corrections, and anyone can check with your public key that you signed them.", "pfNiv2Sube": "To become a contributor: correct an answer that did not work for you. The pair is stored signed on your device, and it only leaves if you hand it over.", "pfNiv3": "Contributor", "pfNiv3Que": "There is work of yours stored in the Bronze. You can hand it over —signed, with your explicit consent and whenever you choose— for the lab to use, or download it and keep it.", "pfNivSinBronce": "the Bronze on this device could not be read, so the level cannot be confirmed:", "pfNoInstalada": "The app is not installed on this device: you are on the web.", "pfSinClave": "the public key could not be read:", "pfSinIdentidad": "NO_DATA — there is no identity on this device yet.", "pfVerCausa": "It is not filled in with the deploy date or the cache version: those would be figures that look measured and nobody measured.", "pfVerClave": "See my full public key", "pfVerFecha": "date:", "pfVerQue": "Published version:", "pfVerSinCampo": "the release file does not carry the field", "pfVerSinFichero": "no release notes are published: /release.json does not exist (checked 2026-09-13) and no process generates it on deploy.", "prActualizar": "Update in the Agora", "prAviso": "On pressing, your pseudonym and public key leave this device for the rack. The private key does not: it signs here and cannot be exported.", "prDesde": "Registered", "prFallo": "NO_DATA — could not register:", "prMandando": "Signing and sending…", "prMaquinaNada": "your browser says nothing about this device", "prMaquinaNoLlega": "NO_DATA — the Agora accepted the registration but did NOT store the machine: its model has no such field yet, and it silently drops what it does not know.", "prMaquinaOfrece": "Also send what machine this is:", "prPseudonimo": "Pseudonym", "prRegistrado": "Your key is registered in the Agora.", "prRegistrar": "Register in the Agora", "prSinIdentidad": "NO_DATA — there is no key on this device yet. It is created above, under «Your identity».", "prSinRegistrar": "Your key exists on this device and the Agora does not know it."}</script>
 <script src="/assets/ambient.js"></script>
 <script src="/assets/bronce.js"></script>
 <script src="/assets/profile.js"></script>
+<script src="/assets/perfil-rack.js"></script>
 <script src="/assets/profile-obra.js"></script>
 <script src="/assets/cabezal.js"></script>
 <script src="/assets/cabezal-rotulos.js"></script>

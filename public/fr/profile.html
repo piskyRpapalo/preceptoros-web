@@ -71,6 +71,14 @@
   <div id="perfil-niveles"></div>
 </section>
 
+<section class="panel" aria-labelledby="h-rack">
+  <h2 id="h-rack">Ton profil dans l'Agora</h2>
+  <!-- El rack acepta perfiles desde hace semanas y la web no lo
+       llamaba nunca: las dos mitades del puente construidas y sin
+       tocarse. Lo pinta `perfil-rack.js`; vacio no ocupa nada. -->
+  <div id="perfil-rack"></div>
+</section>
+
 <section class="panel" aria-labelledby="h-ver">
   <h2 id="h-ver">Notes de version</h2>
   <div id="perfil-version"></div>
@@ -86,58 +94,16 @@
   <ul>
     <li><strong>Le pseudonyme est dérivé, pas choisi.</strong> Il sort du SHA-256 de votre clé publique. Changer de nom exige de changer de clé, et changer de clé c'est repartir de zéro : c'est le prix pour que personne ne puisse vous usurper sans un serveur qui l'empêche.</li>
     <li><strong>Les trois niveaux ne sont pas un jeu.</strong> Pas de points, pas de badges : un niveau ici c'est exactement ce que vous pouvez faire et que vous ne pouviez pas faire avant. Le vôtre sort de deux choses regardées sur cet appareil —s'il y a une clé et s'il y a des paires corrigées enregistrées—, pas d'un compteur tenu par quelqu'un.</li>
-    <li><strong>Cette page ne publie rien.</strong> Il n'y a pas de profil public, pas de fiche à montrer et pas encore d'endroit où l'envoyer. La seule chose qui quitte cet appareil est ce que vous remettez depuis le Bronze, signé et à votre demande.</li>
+    <li><strong>Cette page ne publie rien toute seule.</strong> Il y a désormais où envoyer ta clé —l'Agora du rack— mais elle ne part que si tu appuies sur le bouton ci-dessus, et elle part signée par toi. Rien n'est envoyé au chargement.</li>
   </ul>
 </details>
 </footer>
 
-<script type="application/json" id="i18n">{
- "pfSinIdentidad": "NO_DATA — il n'y a pas encore d'identité sur cet appareil.",
- "pfComoCrear": "Créez-en une avec l'icône de personne dans le coin de l'en-tête. Avant de générer la clé, elle vous dit en toutes lettres qu'elle ne peut être ni exportée ni récupérée.",
- "pfDerivado": "Dérivé du SHA-256 de votre clé publique. Il ne se choisit pas.",
- "pfHuella": "Empreinte de votre clé :",
- "pfVerClave": "Voir ma clé publique entière",
- "pfCargando": "Lecture de la clé…",
- "pfSinClave": "la clé publique n'a pas pu être lue :",
- "pfInstalada": "L'application est installée sur cet appareil et vous l'utilisez en ce moment.",
- "pfNoInstalada": "L'application n'est pas installée sur cet appareil : vous êtes sur le web.",
- "pfNiv1": "Visiteur",
- "pfNiv1Que": "Vous pouvez lire tout le site, essayer les modèles du banc et voir les mesures des autres. Vous ne pouvez rien signer, donc rien de ce que vous faites n'est attribué à personne.",
- "pfNiv1Sube": "Pour passer signataire : créez une identité. Une clé Ed25519 est générée dans votre navigateur, sans compte et sans mot de passe.",
- "pfNiv2": "Signataire",
- "pfNiv2Que": "Vous avez une clé : le pseudonyme est le vôtre et personne ne peut le réclamer. Vous pouvez signer des mesures et des corrections, et n'importe qui peut vérifier avec votre clé publique que c'est vous qui les avez signées.",
- "pfNiv2Sube": "Pour passer contributeur : corrigez une réponse qui ne vous a pas servi. La paire est enregistrée signée sur votre appareil, et elle n'en sort que si vous la remettez.",
- "pfNiv3": "Contributeur",
- "pfNiv3Que": "Il y a du travail à vous enregistré dans le Bronze. Vous pouvez le remettre —signé, avec votre consentement explicite et quand vous le voulez— pour que le laboratoire l'utilise, ou le télécharger et le garder.",
- "pfNivSinBronce": "le Bronze de cet appareil n'a pas pu être lu, donc le niveau ne peut pas être confirmé :",
- "pfVerQue": "Version publiée :",
- "pfVerFecha": "date :",
- "pfVerSinCampo": "le fichier de version ne porte pas le champ",
- "pfVerSinFichero": "aucune note de version publiée : /release.json n'existe pas (vérifié le 2026-09-13) et aucun processus ne le génère au déploiement.",
- "pfVerCausa": "On ne le remplit ni avec la date du déploiement ni avec la version du cache : ce seraient des chiffres qui ont l'air mesurés et que personne n'a mesurés.",
- "pfClaveAviso": "Changer de clé, ce n'est pas se déconnecter. La clé privée a été générée non exportable : il n'en existe aucune copie. Si vous l'oubliez, vous perdez pour toujours la paternité de tout ce que vous avez déjà signé — ce qui est signé existe toujours, ce qui disparaît c'est la preuve que c'était vous.",
- "pfClaveSinIdentidad": "Il n'y a encore aucune clé sur cet appareil, il n'y a donc rien à changer.",
- "pfClaveBoton": "Changer de clé",
- "pfClaveTitulo": "Oublier cette clé",
- "pfClaveLetra1": "La clé est effacée de cet appareil et vous aurez un autre pseudonyme la prochaine fois que vous en créerez une. Ce que vous avez déjà signé avec l'ancienne cesse d'être réclamable par vous.",
- "pfClaveLetra2": "Pas de copie, pas de mot de passe et pas de serveur : cela ne se défait pas.",
- "pfClaveEscribe": "Écrivez {palabra} pour confirmer :",
- "pfClavePalabra": "oublier",
- "pfClaveConfirma": "Oublier ma clé",
- "pfClaveCancela": "Laisser tel quel",
- "pfClaveHecho": "Clé oubliée. Cet appareil n'a plus d'identité : créez-en une nouvelle depuis le coin de l'en-tête quand vous voudrez.",
- "pfClaveFallo": "La clé n'a pas pu être oubliée :",
- "idPerfil": "Mon profil",
- "idEntrar": "Créer une identité",
- "idHola": "Bonjour,",
- "idClave": "Voir mon empreinte",
- "idPublica": "Clé publique :",
- "idFallo": "NO_DATA — l'identité n'a pas pu être créée :",
- "idAviso": "Une clé est générée dans votre navigateur. Elle ne peut être ni exportée ni copiée : si vous effacez les données du site, cette identité est perdue et rien ne permet de la récupérer. Aucun mot de passe à oublier, aucun serveur qui la garde."
-}</script>
+<script type="application/json" id="i18n">{"idAviso": "Une clé est générée dans votre navigateur. Elle ne peut être ni exportée ni copiée : si vous effacez les données du site, cette identité est perdue et rien ne permet de la récupérer. Aucun mot de passe à oublier, aucun serveur qui la garde.", "idClave": "Voir mon empreinte", "idEntrar": "Créer une identité", "idFallo": "NO_DATA — l'identité n'a pas pu être créée :", "idHola": "Bonjour,", "idPerfil": "Mon profil", "idPublica": "Clé publique :", "pfCargando": "Lecture de la clé…", "pfClaveAviso": "Changer de clé, ce n'est pas se déconnecter. La clé privée a été générée non exportable : il n'en existe aucune copie. Si vous l'oubliez, vous perdez pour toujours la paternité de tout ce que vous avez déjà signé — ce qui est signé existe toujours, ce qui disparaît c'est la preuve que c'était vous.", "pfClaveBoton": "Changer de clé", "pfClaveCancela": "Laisser tel quel", "pfClaveConfirma": "Oublier ma clé", "pfClaveEscribe": "Écrivez {palabra} pour confirmer :", "pfClaveFallo": "La clé n'a pas pu être oubliée :", "pfClaveHecho": "Clé oubliée. Cet appareil n'a plus d'identité : créez-en une nouvelle depuis le coin de l'en-tête quand vous voudrez.", "pfClaveLetra1": "La clé est effacée de cet appareil et vous aurez un autre pseudonyme la prochaine fois que vous en créerez une. Ce que vous avez déjà signé avec l'ancienne cesse d'être réclamable par vous.", "pfClaveLetra2": "Pas de copie, pas de mot de passe et pas de serveur : cela ne se défait pas.", "pfClavePalabra": "oublier", "pfClaveSinIdentidad": "Il n'y a encore aucune clé sur cet appareil, il n'y a donc rien à changer.", "pfClaveTitulo": "Oublier cette clé", "pfComoCrear": "Créez-en une avec l'icône de personne dans le coin de l'en-tête. Avant de générer la clé, elle vous dit en toutes lettres qu'elle ne peut être ni exportée ni récupérée.", "pfDerivado": "Dérivé du SHA-256 de votre clé publique. Il ne se choisit pas.", "pfHuella": "Empreinte de votre clé :", "pfInstalada": "L'application est installée sur cet appareil et vous l'utilisez en ce moment.", "pfNiv1": "Visiteur", "pfNiv1Que": "Vous pouvez lire tout le site, essayer les modèles du banc et voir les mesures des autres. Vous ne pouvez rien signer, donc rien de ce que vous faites n'est attribué à personne.", "pfNiv1Sube": "Pour passer signataire : créez une identité. Une clé Ed25519 est générée dans votre navigateur, sans compte et sans mot de passe.", "pfNiv2": "Signataire", "pfNiv2Que": "Vous avez une clé : le pseudonyme est le vôtre et personne ne peut le réclamer. Vous pouvez signer des mesures et des corrections, et n'importe qui peut vérifier avec votre clé publique que c'est vous qui les avez signées.", "pfNiv2Sube": "Pour passer contributeur : corrigez une réponse qui ne vous a pas servi. La paire est enregistrée signée sur votre appareil, et elle n'en sort que si vous la remettez.", "pfNiv3": "Contributeur", "pfNiv3Que": "Il y a du travail à vous enregistré dans le Bronze. Vous pouvez le remettre —signé, avec votre consentement explicite et quand vous le voulez— pour que le laboratoire l'utilise, ou le télécharger et le garder.", "pfNivSinBronce": "le Bronze de cet appareil n'a pas pu être lu, donc le niveau ne peut pas être confirmé :", "pfNoInstalada": "L'application n'est pas installée sur cet appareil : vous êtes sur le web.", "pfSinClave": "la clé publique n'a pas pu être lue :", "pfSinIdentidad": "NO_DATA — il n'y a pas encore d'identité sur cet appareil.", "pfVerCausa": "On ne le remplit ni avec la date du déploiement ni avec la version du cache : ce seraient des chiffres qui ont l'air mesurés et que personne n'a mesurés.", "pfVerClave": "Voir ma clé publique entière", "pfVerFecha": "date :", "pfVerQue": "Version publiée :", "pfVerSinCampo": "le fichier de version ne porte pas le champ", "pfVerSinFichero": "aucune note de version publiée : /release.json n'existe pas (vérifié le 2026-09-13) et aucun processus ne le génère au déploiement.", "prActualizar": "Mettre à jour dans l'Agora", "prAviso": "En appuyant, ton pseudonyme et ta clé publique quittent cet appareil vers le rack. La clé privée, non : elle signe ici et ne peut pas être exportée.", "prDesde": "Enregistrée", "prFallo": "NO_DATA — enregistrement impossible :", "prMandando": "Signature et envoi…", "prMaquinaNada": "ton navigateur ne dit rien de cet appareil", "prMaquinaNoLlega": "NO_DATA — l'Agora a accepté l'enregistrement mais n'a PAS gardé la machine : son modèle n'a pas encore ce champ et jette en silence ce qu'il ne connaît pas.", "prMaquinaOfrece": "Envoyer aussi quelle machine c'est :", "prPseudonimo": "Pseudonyme", "prRegistrado": "Ta clé est enregistrée dans l'Agora.", "prRegistrar": "Enregistrer dans l'Agora", "prSinIdentidad": "NO_DATA — il n'y a pas encore de clé sur cet appareil. Elle se crée plus haut, dans «Ton identité».", "prSinRegistrar": "Ta clé existe sur cet appareil et l'Agora ne la connaît pas."}</script>
 <script src="/assets/ambient.js"></script>
 <script src="/assets/bronce.js"></script>
 <script src="/assets/profile.js"></script>
+<script src="/assets/perfil-rack.js"></script>
 <script src="/assets/profile-obra.js"></script>
 <script src="/assets/cabezal.js"></script>
 <script src="/assets/cabezal-rotulos.js"></script>
