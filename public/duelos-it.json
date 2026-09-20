@@ -8,6 +8,7 @@
  "ui": {
   "duelo_col_base": "Senza bardatura · il modello nudo",
   "duelo_col_lora": "Con bardatura · il ruolo della casa",
+  "duelo_degenera": "si ripete in loop",
   "duelo_enviar": "Invia a entrambe",
   "duelo_firmar": "Firmare par",
   "duelo_guia": "Guida alla riscrittura",

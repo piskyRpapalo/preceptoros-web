@@ -7,6 +7,7 @@
  "ui": {
   "duelo_col_base": "Sin arnés · el modelo desnudo",
   "duelo_col_lora": "Con arnés · el papel de la casa",
+  "duelo_degenera": "se repite en bucle",
   "duelo_enviar": "Enviar a ambas",
   "duelo_firmar": "Firmar par",
   "duelo_guia": "Guía de reescritura",

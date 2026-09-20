@@ -69,8 +69,19 @@
            Ollama ignora el campo en los modelos que no piensan, asi que
            ponerlo siempre no cuesta nada y quita el pie de la piedra para el
            siguiente modelo de esa familia que entre. */
+        /* UN TECHO DE TOKENS, y no es prudencia teorica. Medido en
+           produccion el 2026-09-20: el modelo de la puerta SIN system prompt
+           se metio en un bucle --- «Traducir entre idiomas» repetido unas
+           ciento cincuenta veces --- y siguio escribiendo. Sin techo, un
+           modelo que degenera escribe hasta agotar el contexto: en un
+           telefono eso son minutos de bateria y una pantalla que crece sola.
+           400 da de sobra para las tres frases que pide el papel de la casa,
+           y corta el bucle en cuanto empieza. El que se corte se VE --- la
+           respuesta acaba a media frase ---, que es mejor que una espera que
+           no termina y no dice por que. */
         body: JSON.stringify({ model: modelo, prompt: prompt, stream: true,
-                               think: false })
+                               think: false,
+                               options: { num_predict: 400 } })
       }).then(function (r) {
         // Un 404 con cuerpo JSON es exactamente lo que devuelve hoy el tunel
         // sin ruta. Se convierte en error AQUI para que el turno lo cuente con

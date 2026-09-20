@@ -7,6 +7,7 @@
  "ui": {
   "duelo_col_base": "No harness · the bare model",
   "duelo_col_lora": "With harness · the house's role",
+  "duelo_degenera": "loops on itself",
   "duelo_enviar": "Send to both",
   "duelo_firmar": "Sign up",
   "duelo_guia": "Rewriting guide",

@@ -128,6 +128,27 @@
     return partes.join('\n');
   }
 
+  /* LA MISMA MEDIDA DE DEGENERACION QUE EL LABORATORIO: n-gramas distintos
+     sobre el total. Por debajo de 0,7 el texto se muerde la cola.
+     Aqui no es un adorno de calidad, es una acusacion que hay que poder
+     hacer: medido en produccion el 2026-09-20, la columna desnuda devolvio
+     «Traducir entre idiomas» unas ciento cincuenta veces seguidas. Sin
+     nombrarlo, quien mira dos columnas y una es un muro de texto repetido no
+     sabe si esta viendo una averia del sitio o del modelo. Es del modelo, y
+     es EXACTAMENTE lo que esta pantalla existe para enseñar.
+     El umbral y la ventana son los de `duelo_mini.py`, a proposito: la misma
+     cifra en el laboratorio y en la pantalla, o son dos medidas distintas con
+     el mismo nombre. */
+  function degenera(texto) {
+    var ps = (texto || '').toLowerCase().split(/\s+/).filter(Boolean);
+    if (ps.length < 6) { return false; }
+    var g = [], i;
+    for (i = 0; i + 4 <= ps.length; i++) { g.push(ps.slice(i, i + 4).join(' ')); }
+    var unicos = {}, n = 0;
+    g.forEach(function (x) { if (!unicos[x]) { unicos[x] = 1; n++; } });
+    return n / g.length < 0.7;
+  }
+
   function turno(modelo, prompt, col, ms) {
     var t0 = Date.now(), texto = '';
     col.textContent = '';
@@ -137,6 +158,9 @@
     }).then(function (tokens) {
       var s = (Date.now() - t0) / 1000;
       ms.textContent = s.toFixed(1) + ' s' + (tokens ? ' · ' + tokens + ' tok' : '');
+      if (degenera(texto)) {
+        ms.appendChild(el('span', null, ' · ' + (UI.duelo_degenera || '')));
+      }
       return texto;
     }).catch(function (e) {
       /* UN FALLO NO DEJA LA COLUMNA EN BLANCO. Una caja vacia al lado de una
@@ -229,82 +253,14 @@
     host.parentNode.insertBefore(sec, host.nextSibling);
   }
 
-  /* EL VEREDICTO SE FIRMA CON LA MISMA MAQUINARIA QUE UN PASO DE LA TORRE, y
-     esta pantalla no habla con el rack para enviarlo: guarda en `Bronce` y
-     sale por la unica puerta que tiene el sitio. Firmar NO envia, y se dice.
-
-     `origen` lleva `#duelo` dentro por lo mismo que la Torre lleva su piso:
-     un veredicto de aqui y una correccion de la portada son dos poblaciones
-     distintas --- distinta intencion, distinto publico --- y mezclarlas
-     contamina las dos. */
+  /* El veredicto lo monta `duelo-firma.js`, que `benchmark.html` carga justo
+     antes que este fichero. Si no estuviera, las dos columnas se pintan y lo
+     unico que falta es poder firmar --- con su causa, no en silencio. */
   function montaVeredicto(caja, pregunta, r) {
+    if (window.DueloFirma) { return window.DueloFirma(caja, pregunta, r); }
     caja.innerHTML = '';
-    caja.appendChild(el('p', 'duelo-cab', UI.duelo_veredicto || 'Veredicto'));
-    var area = document.createElement('textarea');
-    area.className = 'duelo-campo';
-    area.rows = 3;
-    area.placeholder = UI.duelo_guia || '';
-    area.setAttribute('aria-label', UI.duelo_veredicto || 'Veredicto');
-    caja.appendChild(area);
-    var firmar = el('button', null, UI.duelo_firmar || 'Firmar');
-    firmar.type = 'button';
-    caja.appendChild(firmar);
-    var dice = el('p', 'no-data', '');
-    caja.appendChild(dice);
-
-    firmar.addEventListener('click', function () {
-      var t = area.value.trim();
-      if (!t) { dice.textContent = UI.duelo_sin_prueba || ''; area.focus(); return; }
-      if (!window.Identity || !window.Bronce) {
-        dice.textContent = 'NO_DATA · este navegador no tiene identidad ni almacen';
-        return;
-      }
-      firmar.disabled = true;
-      var reg = {
-        prompt: pregunta,
-        /* LA RECHAZADA ES LA DESNUDA Y LA ELEGIDA ES LA VESTIDA, y esto es una
-           afirmacion fuerte que conviene mirar de frente: se da por hecho que
-           el arnes mejora. Lo dice una medida --- de 4 a 10 en el juez de la
-           casa --- y no una preferencia. Si la persona opina lo contrario, eso
-           es exactamente lo que escribe en el veredicto, y el veredicto viaja
-           entero en `correccion`. */
-        respuesta: r.a,
-        correccion: t,
-        corregido: new Date().toISOString(),
-        modelo: r.modelo,
-        idioma: lang,
-        motivo: 'duelo',
-        tarea: 'libre',
-        consent: 0,
-        origen: 'preceptoros.org' + location.pathname + '#duelo',
-        tipo: 'correccion',
-        autoridad: 1
-      };
-      window.Identity.firmar(reg).then(function (f) {
-        return window.Identity.publica().then(function (pub) {
-          return window.Bronce.guardar({ par: reg, firma: f.firma,
-            autor: f.autor, algoritmo: f.algoritmo, publica: pub });
-        });
-      }).then(function () {
-        caja.innerHTML = '';
-        caja.appendChild(el('p', 'duelo-cab',
-          (UI.duelo_firmar || '') + ' ✓'));
-        var aviso = UI.torre_no_enviado || '';
-        var boton = (window.ENVT && window.ENVT.envBoton) || '';
-        if (aviso) {
-          caja.appendChild(el('p', 'no-data',
-            aviso + (boton ? ' «' + boton + '»' : '')));
-        }
-      }).catch(function (e) {
-        firmar.disabled = false;
-        dice.textContent = e.message;
-        /* La misma salida del callejon que la Torre, y ya compartida:
-           `identidad-o-salida.js`. Era la cuarta copia del bloque en el
-           arbol. */
-        window.ConIdentidad(e, caja, function (t) { dice.textContent = t; },
-                            function () { firmar.click(); });
-      });
-    });
+    caja.appendChild(el('p', 'no-data',
+      'NO_DATA · falta `duelo-firma.js`: se puede leer el duelo, no firmarlo'));
   }
 
   function arranca() {

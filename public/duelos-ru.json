@@ -8,6 +8,7 @@
  "ui": {
   "duelo_col_base": "Без упряжи · голая модель",
   "duelo_col_lora": "С упряжью · роль дома",
+  "duelo_degenera": "зациклился",
   "duelo_enviar": "Отправить обоим",
   "duelo_firmar": "Подписать пару",
   "duelo_guia": "Руководство по переписыванию",

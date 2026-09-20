@@ -8,6 +8,7 @@
  "ui": {
   "duelo_col_base": "Sem arnês · o modelo nu",
   "duelo_col_lora": "Com arnês · o papel da casa",
+  "duelo_degenera": "repete-se em ciclo",
   "duelo_enviar": "Enviar para ambas",
   "duelo_firmar": "Assinar par",
   "duelo_guia": "Guia de reescrita",

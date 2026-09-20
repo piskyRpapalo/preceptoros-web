@@ -4688,6 +4688,13 @@ CLAVES_CAMINOS = {
      "torre_hechos"}
 
 CLAVES_DUELOS = {
+    # `duelo_degenera` entra el 2026-09-20 y nombra una acusacion, no un
+    # adorno: medido en produccion ese dia, la columna desnuda devolvio
+    # «Traducir entre idiomas» unas ciento cincuenta veces seguidas. Sin
+    # nombrarlo, quien ve un muro de texto repetido no sabe si la averia es
+    # del sitio o del modelo. Es del modelo, y es lo que esta pantalla existe
+    # para enseñar.
+    "duelo_degenera",
     "duelo_titulo", "duelo_input", "duelo_enviar", "duelo_col_base",
     "duelo_col_lora", "duelo_veredicto", "duelo_guia", "duelo_reescribir",
     "duelo_firmar", "duelo_sin_prueba", "duelo_juez_no_data"}
