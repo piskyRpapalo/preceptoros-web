@@ -429,13 +429,40 @@ class Estructura(unittest.TestCase):
         # vio, porque comprobar que existe una cifra no es comprobar que sea
         # verdad.
         #
-        # Se comprueban las dos que son CONTABLES desde aqui. `peso_sitio` no:
-        # depende de que exista `downloads/`, que no esta en el repo.
+        # Y LOS PESOS TAMBIEN, que llevaban fuera por una razon que no se
+        # sostenia. Este bloque decia: «`peso_sitio` no: depende de que exista
+        # `downloads/`, que no esta en el repo». Pero `peso_sitio` se define
+        # como TODO public/ MENOS downloads/, asi que da lo MISMO en las dos
+        # situaciones: aqui resta los 190 MB de adaptadores, y en un clon sin
+        # `downloads/` no hay nada que restar. Comprobado el 2026-09-20: los
+        # 392 ficheros que entran en la cuenta estan los 392 seguidos por git.
+        #
+        # Y mientras estuvo fuera, derivo: publicaba 4.919.252 habiendo
+        # 5.208.207 --- un 5,9 % de mas --- desde que entraron las 24 familias
+        # de i18n. Una exclusion con motivo equivocado es un agujero con
+        # coartada: nadie la revisa porque parece razonada.
+        #
+        # `peso_descargas` SI se queda fuera, y ahora por el motivo correcto:
+        # en un clon vale 0 porque `downloads/` de verdad no esta.
+        def _peso_sin_descargas():
+            dl = PUBLICO / "downloads"
+            fuera = (sum(q.stat().st_size for q in dl.rglob("*") if q.is_file())
+                     if dl.is_dir() else 0)
+            return sum(q.stat().st_size for q in PUBLICO.rglob("*")
+                       if q.is_file()) - fuera
+
+        def _peso_imagenes():
+            return sum(q.stat().st_size for e in ("*.webp", "*.gif", "*.png",
+                                                  "*.svg")
+                       for q in PUBLICO.rglob(e))
+
         por_clave = {m["clave"]: m for m in datos["metricas"]}
         reales = {"paginas": len(paginas_de_contenido()),
                   "idiomas": len({d.name for d in PUBLICO.iterdir()
                                   if d.is_dir() and len(d.name) == 2
-                                  and d.name.isalpha()})}
+                                  and d.name.isalpha()}),
+                  "peso_sitio": _peso_sin_descargas(),
+                  "peso_imagenes": _peso_imagenes()}
         for clave, real in reales.items():
             m = por_clave.get(clave)
             if not m or m.get("estado") != "MEDIDO":

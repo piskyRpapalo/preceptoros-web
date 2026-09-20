@@ -1,7 +1,7 @@
 {
   "esquema": 1,
-  "fecha": "2026-09-13",
-  "ultima_lectura": "2026-09-19T17:47:16+00:00",
+  "fecha": "2026-09-20",
+  "ultima_lectura": "2026-09-20T06:02:18+00:00",
   "nota": "Solo hay cifras medidas. Lo que no se midio sale como NO_DATA con su causa. Aqui no se cuenta a nadie.",
   "metricas": [
     {
@@ -21,7 +21,7 @@
     {
       "clave": "peso_sitio",
       "estado": "MEDIDO",
-      "valor": 4919252,
+      "valor": 5208207,
       "unidad": "bytes",
       "como": "todo lo que hay en public/ MENOS downloads/: es lo que pesa visitar. Los adaptadores no se descargan por visitar, se descargan porque alguien los pide"
     },
@@ -56,7 +56,7 @@
     {
       "clave": "pruebas_app",
       "estado": "MEDIDO",
-      "valor": 778,
+      "valor": 807,
       "unidad": "pruebas",
       "como": "bash bin/pruebas --rapido en el repo del MVP, cifra 'N/N pruebas'. Es la fuente unica declarada: pytest solo corre parte de la suite"
     },
