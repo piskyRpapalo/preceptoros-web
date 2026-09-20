@@ -8,12 +8,15 @@
    "Τάφρος → Πύργος (tafros es «foso»; torre es pyrgos)",
    "Τόρρα → Πύργος (transliteracion de «torre»)",
    "ηλεκτροφωρική → μπαταρία (alucinacion: «electroforetica» por bateria)",
-   "βατερία → μπαταρία (transliteracion de «bateria»)"
+   "βατερία → μπαταρία (transliteracion de «bateria»)",
+   "torre_titulo: «Η Πύργος» -> «Ο Πύργος» (πύργος es masculino)",
+   "camino_despertar_titulo: «Εξαφάνιση» (desaparicion) -> «Αφύπνιση» (despertar). Cruzado con ru «Пробуждение» y de «Erwachen»"
   ],
-  "nota_correcciones": "solo lo verificable con certeza. Lo demas es salida cruda del modelo y no esta revisado: no se mezclan las dos cosas."
+  "nota_correcciones": "solo lo verificable con certeza. Lo demas es salida cruda del modelo y no esta revisado: no se mezclan las dos cosas.",
+  "aviso": "dos errores encontrados al PINTARLA en el navegador el 2026-09-20, no leyendo el fichero. Sigue pendiente de revision nativa: si dos saltaron a la vista, quedan mas."
  },
  "ui": {
-  "camino_despertar_titulo": "Εξαφάνιση",
+  "camino_despertar_titulo": "Αφύπνιση",
   "camino_despertar_frase": "Βάλε το όργανο σε αεροπορικό λόγο και συνεχίζει να μιλάεις. Το τι απαντά είχε ήδη στον περιηγητή σου.",
   "camino_despertar_falla": "Δεν υπάρχει μνήμη: όταν κλείσεις την παραγράφη, δεν καταλείπει τίποτα. Και χωρίς δικτυακή σύνδεση δεν φτάνει καμία τροποποίηση στο ρακ.",
   "camino_despertar_para_quien": "Για τον που ακόμη δεν το πιστεύει ότι αυτό λειτουργεί χωρίς κάποιον απέναντι.",
@@ -33,7 +36,7 @@
   "camino_contribuir_frase": "Επιστρέφει στο κοινό αυτό που έχεις μετρήσει: ζευγάρια σηματοδοτημένα που εκπαιδεύουν την επόμενη έκδοση.",
   "camino_contribuir_falla": "Κλεισμένο. Το Αγορά ακόμη δεν μετριάζει, και να ανοίξει τη γραφική συνέχεια χωρίς μετριασμό είναι να ανοίξει ένα θάλαμο spam.",
   "camino_contribuir_para_quien": "Για τον που ήδη έβαλε τα τέσσερα βήματα και θέλει να ηχησει κάτι πίσω.",
-  "torre_titulo": "Η Πύργος της Ανάβασης",
+  "torre_titulo": "Ο Πύργος της Ανάβασης",
   "torre_lema": "Εξασκείται, σηματοδοτείται, αναβαίνει. Κανένα βήμα δεν υποχρεώνει το επόμενο.",
   "torre_nivel": "επίπεδο",
   "torre_paso": "βήμα",

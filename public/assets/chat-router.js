@@ -161,4 +161,28 @@
      hubiera que tocarla. Lo que se vino a hacer es hablar. Quien no quiera
      escribir todavia, no toca el campo; el teclado solo sube si lo pulsas. */
 
+
+  /* LA TORRE DE LA ASCENSION se carga desde aqui, y no con una etiqueta en las
+     ocho portadas. El motivo es una medida: `el/index.html` tiene 107 bytes
+     libres bajo el tope de 16 KiB y `ru/index.html` 539. Un
+     `<script src=...>` son ~48 bytes por portada; este guion ya esta en las
+     ocho y le sobran ~7 KB, asi que la carga no cuesta marcado en ninguna.
+
+     Va detras de `load` para no competir con el chat, que es lo que la persona
+     vino a usar. Y solo en la portada: `camino.js` se monta junto a
+     `#especificaciones`, que no existe en las demas paginas, asi que alli se
+     descargaria para no hacer nada. */
+  if (document.getElementById('especificaciones')) {
+    var traerTorre = function () {
+      if (document.querySelector('script[data-torre]')) { return; }
+      var s = document.createElement('script');
+      s.src = '/assets/camino.js';
+      s.defer = true;
+      s.setAttribute('data-torre', '1');
+      document.head.appendChild(s);
+    };
+    if (document.readyState === 'complete') { traerTorre(); }
+    else { window.addEventListener('load', traerTorre); }
+  }
+
 })();

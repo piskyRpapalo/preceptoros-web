@@ -2207,6 +2207,65 @@ class Hub(unittest.TestCase):
                     len(motivo), 60,
                     f"{familia} esta protegida sin decir por que espera")
 
+    def test_la_Torre_se_pinta_sin_gastar_un_byte_de_marcado(self):
+        """La Torre de la Ascension va en la PORTADA y no cabe como marcado.
+
+        La medida que lo decide: `el/index.html` tiene **107 bytes libres** bajo
+        el tope de 16 KiB y `ru/index.html` 539. Una `<section>` de ancla mas un
+        `<link>` de hoja no caben en las ocho portadas. Asi que `camino.js` se
+        monta solo, se trae su propio estilo, y lo carga `chat-router.js`, que
+        ya esta en las ocho y le sobran ~6 KB.
+
+        Lo que esta prueba impide es la regresion facil: que alguien «arregle»
+        la Torre metiendole una etiqueta en el HTML. Funcionaria en castellano y
+        reventaria el tope en griego, que es como se rompen aqui las cosas.
+        """
+        camino = PUBLICO / "assets" / "camino.js"
+        self.assertTrue(camino.is_file(), "falta camino.js: la Torre no se pinta")
+
+        router = (PUBLICO / "assets" / "chat-router.js").read_text(encoding="utf-8")
+        self.assertIn("camino.js", router,
+                      "nadie carga camino.js: la Torre no llegaria a la pagina")
+        self.assertIn("especificaciones", router,
+                      "chat-router carga la Torre en TODAS las paginas; solo "
+                      "debe hacerlo donde hay donde montarla")
+
+        # CERO MARCADO. Ni la etiqueta ni el ancla ni la hoja en ninguna portada.
+        for idioma in IDIOMAS:
+            portada = (PUBLICO / idioma / "index.html").read_text(encoding="utf-8")
+            with self.subTest(idioma=idioma):
+                for prohibido in ('camino.js', 'id="torre"', 'torre.css'):
+                    self.assertNotIn(
+                        prohibido, portada,
+                        f"{idioma}/index.html trae «{prohibido}». La Torre se "
+                        "monta desde JS justo porque en griego quedan 107 bytes")
+
+        # Y el texto tiene que existir donde el guion lo va a buscar.
+        fuente = camino.read_text(encoding="utf-8")
+        self.assertIn("/caminos-", fuente, "camino.js ya no lee su familia")
+        for idioma in IDIOMAS:
+            f = PUBLICO / f"caminos-{idioma}.json"
+            with self.subTest(idioma=idioma):
+                self.assertTrue(f.is_file(), f"falta {f.name}")
+
+        # Los cinco peldanos que el guion nombra tienen que estar traducidos.
+        import json as _j
+        ui = _j.loads((PUBLICO / "caminos-es.json").read_text(encoding="utf-8"))["ui"]
+        for peldano in ("despertar", "primeros_pasos", "exposicion",
+                        "silencio", "contribuir"):
+            with self.subTest(peldano=peldano):
+                self.assertIn(f"'{peldano}'", fuente,
+                              "camino.js no nombra este peldano")
+                for campo in ("titulo", "frase", "falla", "para_quien"):
+                    self.assertIn(f"camino_{peldano}_{campo}", ui,
+                                  f"falta camino_{peldano}_{campo}")
+
+        # EL BOTON DE FIRMAR NO SE PINTA, y eso es a proposito: el Agora
+        # responde `escritura: cerrada`. Un boton que no lleva a ningun sitio
+        # promete un camino y lo corta sin decirlo.
+        self.assertIn("NO_DATA", fuente,
+                      "camino.js ya no declara por que no se puede firmar")
+
     def test_las_tarjetas_no_traen_logos_de_empresa(self):
         """Firmado el 2026-09-08: solo bandera, sin logo.
 

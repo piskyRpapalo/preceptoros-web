@@ -85,7 +85,14 @@ const HUB = [...AGENTES, '/hub.json', '/hub-textos.json',
    una contradiccion entre la pagina y el dato. El catalogo de modelos no
    tiene gemelo en el HTML, y ademas lleva su propia `ultima_lectura`: una
    copia vieja se declara vieja sola. */
-const CONTENIDO_JSON = [...AGENTES, '/hub.json', '/hub-textos.json', '/medidas.json', '/nav.json', '/modelos.json', '/servicios.json', '/instalar.json'];
+/* `caminos-<lang>.json` entra por el mismo criterio que los agentes: son
+   ROTULOS, no medidas. Una copia vieja no contradice a nadie y a cambio la
+   Torre se lee sin red, que es el caso de la PWA instalada. Entro el
+   2026-09-20, cuando `camino.js` empezo a pintarla. */
+const CAMINOS = ['de', 'el', 'en', 'es', 'fr', 'it', 'pt', 'ru']
+  .map(function (l) { return '/caminos-' + l + '.json'; });
+
+const CONTENIDO_JSON = [...AGENTES, ...CAMINOS, '/hub.json', '/hub-textos.json', '/medidas.json', '/nav.json', '/modelos.json', '/servicios.json', '/instalar.json'];
 
 /* El manifiesto va a red primero: es diminuto, cambia cuando cambian los
    iconos, y un manifiesto viejo hace que la app instalada se quede con el
