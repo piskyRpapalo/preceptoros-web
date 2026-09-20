@@ -1933,61 +1933,37 @@ class Hub(unittest.TestCase):
         self.js = (PUBLICO / "assets" / "hub.js").read_text(encoding="utf-8")
 
     def test_el_hub_no_inventa_agentes(self):
-        """Ocho en el catalogo: UNO servido de verdad y SIETE pendientes.
+        """EL CATALOGO ESTA VACIO A PROPOSITO, y esta prueba se dio la vuelta.
 
-        El catalogo vivo (api.preceptoros.org/api/v1/agents) da OCHO, no doce,
-        y con los ids que usa el tunel -- `coder` y `privacidad`, aunque se
-        llamen El Artesano y El Aduanero. Se copian tal cual para que el dia
-        que esto lea del tunel no haya que renombrar nada.
+        Hasta el 2026-09-20 exigia OCHO companeros, uno servido y siete
+        pendientes. Se retiran enteros ese dia, y el motivo lo dio el Soberano
+        sobre una captura de su telefono: «como ves en la primera imagen
+        aparece El Instalador, eso fue eliminado hace 3 semanas». Y luego la
+        razon de fondo: «los companeros de registro pertenecen al lab, no a la
+        web ni a la app».
 
-        LA CUENTA DE SERVIDOS SE COMPRUEBA, y no es ceremonia. El 2026-09-01
-        este fichero declaraba al Instalador servido con el adaptador
-        `preceptor-v7:latest`, y ese modelo YA NO ESTABA en el rack: `ollama
-        list` daba dos modelos y ninguno era ese. Es decir, la unica insignia
-        verde de la web publica era falsa. Un catalogo que se cree su propia
-        copia vieja es exactamente la averia que este gate existe para cazar.
+        LO QUE HAY QUE APRENDER DE ESTO, que no es «habia un rotulo viejo». El
+        codigo no fallo: `hub.js` filtra por `real.disponible` y pintaba
+        exactamente lo que este fichero declaraba. El dato era lo viejo. Tres
+        semanas de una pastilla verde anunciando un companero retirado, con la
+        suite entera en verde, porque la suite comprobaba que el catalogo
+        fuera COHERENTE consigo mismo y nadie comprueba si un catalogo
+        coherente sigue siendo cierto.
 
-        Por eso el campo se llama `modelo` y no `adaptador`: hoy el Instalador
-        corre sobre un modelo BASE sin afinar, y llamar «adaptador» a eso
-        seria el mismo falso verde con otro nombre. `afinado` guarda el LoRA
-        cuando lo haya, y su ausencia NO impide servir -- que es justo lo que
-        deja de convertir los LoRAs en un bloqueante.
-
-        Y ningun nombre vive en `hub.js`: un nombre escrito en el render
-        sobrevive al dia en que el catalogo cambia, y entonces la pantalla
-        ensena un companero que ya no existe.
+        Asi que la regla se invierte en vez de borrarse: el catalogo tiene que
+        estar vacio y la retirada tiene que estar FIRMADA dentro del fichero.
+        Un hueco donde habia una comprobacion es como vuelve lo mismo dentro
+        de seis meses.
         """
-        ags = self.d["agentes"]
-        self.assertEqual(8, len(ags), f"el catalogo trae {len(ags)} agentes")
-        for a in ags:
-            with self.subTest(agente=a.get("id")):
-                for campo in ("id", "name", "block", "function", "status", "symbol"):
-                    self.assertIn(campo, a, f"falta `{campo}`")
-                self.assertIn(a["block"], (1, 2, 3, 4), "bloque fuera de 1-4")
-                self.assertIn(a["status"], ("idle", "thinking", "running"))
-                self.assertIn("real", a, "sin la disponibilidad real al lado")
-                r = a["real"]
-                for campo in ("disponible", "modelo", "afinado"):
-                    self.assertIn(campo, r, f"`real` sin `{campo}`")
-                self.assertNotIn("adaptador", r,
-                                 "`adaptador` volvio: un modelo base no es un afinado")
-                if r["disponible"]:
-                    # Servido exige NOMBRAR con que. Sin nombre no hay nada que
-                    # comprobar contra `ollama list` el dia que esto se revise.
-                    self.assertTrue(r["modelo"],
-                                    f"«{a['id']}» se declara servido y no dice con que modelo")
-                else:
-                    self.assertIsNone(r["modelo"], "pendiente y con modelo a la vez")
-                    self.assertTrue(r.get("causa"),
-                                    f"«{a['id']}» esta pendiente y no dice por que")
-                self.assertNotIn(a["name"], self.js,
-                                 f"«{a['name']}» esta escrito en hub.js")
-        servidos = [a for a in ags if a["real"]["disponible"]]
-        self.assertEqual(1, len(servidos),
-                         f"se declaran {len(servidos)} companeros servidos; hoy hay UNO")
-        self.assertEqual("instalador", servidos[0]["id"],
-                         "el unico servido tiene que ser el Instalador")
-        self.assertEqual(7, len(ags) - len(servidos), "no hay siete pendientes")
+        self.assertEqual([], self.d["agentes"],
+                         "vuelven companeros al catalogo de la web: su sitio "
+                         "es el laboratorio")
+        r = self.d.get("retirado")
+        self.assertIsInstance(r, dict, "se vacio el catalogo sin decir por que")
+        for campo in ("que", "cuando", "porque", "quien_hace_ahora_su_trabajo"):
+            with self.subTest(campo=campo):
+                self.assertTrue(str(r.get(campo, "")).strip(),
+                                f"la retirada no declara `{campo}`")
 
     def test_la_portada_ofrece_UN_cerebro_y_el_catalogo_sigue_entero(self):
         """La puerta no es el catalogo, y confundirlos cuesta visitantes.
@@ -2206,6 +2182,79 @@ class Hub(unittest.TestCase):
                 self.assertGreater(
                     len(motivo), 60,
                     f"{familia} esta protegida sin decir por que espera")
+
+    def test_el_piso_viste_el_chat_y_no_hereda_al_Instalador(self):
+        """LA TORRE ES AHORA EL COMPANERO POR DEFECTO DEL CHAT (2026-09-20).
+
+        Los ocho companeros se fueron al laboratorio ese dia, y con ellos el
+        `vestir(H.agente('instalador'))` que ponia el papel del chat. Medido en
+        el navegador antes de escribir esta prueba: sin nada en su sitio, el
+        cabezal decia «Modelo: ninguno» y el chat se quedaba clavado en
+        «Activando modelo». Retirar un mando es retirar tambien lo que lo
+        obedecia --- y esta casa ya tenia esa leccion escrita.
+
+        Y EL CIMIENTO DEL PAPEL NO PUEDE SER `PR.papel`, que es literalmente
+        «Eres Preceptor, el INSTALADOR de PreceptorOS. Tu unica funcion es que
+        la persona consiga instalar el producto». El piso `whoami` --- buscarte
+        a ti mismo en internet --- heredaba esa frase. El Soberano habia
+        retirado al Instalador tres semanas antes: seguia vivo en la capa que
+        de verdad cambia lo que el modelo contesta, que no es la pastilla de la
+        pantalla. Se usa `PR.reglas`, que son las tres de la casa y vienen
+        traducidas en las ocho lenguas.
+        """
+        papel = (PUBLICO / "assets" / "camino-papel.js").read_text(encoding="utf-8")
+        codigo = re.sub(r"/\*.*?\*/", "", papel, flags=re.S)
+
+        self.assertIn("preceptor:companero", codigo,
+                      "el piso no le dice al chat que se cambie de papel")
+        self.assertIn("PR.reglas", codigo,
+                      "el papel del piso no se apoya en las reglas de la casa")
+        self.assertNotIn("PR.papel", codigo,
+                         "el piso hereda el papel del Instalador, retirado el "
+                         "2026-08-30")
+
+        # NI UNA PALABRA DE CONEXION EN EL PROMPT. Un «lo que promete:» escrito
+        # en el codigo saldria en castellano en las ocho lenguas: es el fallo
+        # exacto que dejo la portada inglesa diciendo «Write here to talk with
+        # El Instalador». Los textos ya vienen traducidos del fichero de la
+        # lengua; el codigo solo pone corchetes, que no son de ningun idioma.
+        for palabra in ("promete", "significa", "hablas con", "Responde",
+                        "El modelo"):
+            with self.subTest(palabra=palabra):
+                self.assertNotIn(f"'{palabra}", codigo,
+                                 "hay prosa castellana dentro del papel que se "
+                                 "manda al modelo: saldria asi en las ocho lenguas")
+
+        # El piso 1 viste el chat al entrar, y NO a ciegas: sin cerebro puesto
+        # el evento apagaria el chat en vez de cambiarlo.
+        torre = (PUBLICO / "assets" / "camino.js").read_text(encoding="utf-8")
+        self.assertIn("viste(PELDANOS[0]", re.sub(r"/\*.*?\*/", "", torre, flags=re.S),
+                      "nadie viste el chat al arrancar: se queda sin companero")
+        self.assertIn("CerebroPuesto", codigo,
+                      "el piso no pregunta por el modelo a quien manda sobre el")
+
+    def test_los_dos_guiones_de_la_Torre_se_cargan_en_orden(self):
+        """`camino-papel.js` ANTES que `camino.js`, y los dos en el precache.
+
+        La Torre se partio en dos el 2026-09-20 porque `camino.js` se fue 711 B
+        sobre el tope al cablear el boton que viste el chat. El orden importa:
+        el segundo pide `window.TorrePapel` del primero. Y los dos tienen que
+        estar en el shell, o una PWA instalada abre sin red y se queda sin
+        companero --- que es justo el estado roto que se midio esa manana.
+        """
+        router = (PUBLICO / "assets" / "chat-router.js").read_text(encoding="utf-8")
+        i = router.find("'/assets/camino-papel.js'")
+        j = router.find("'/assets/camino.js'")
+        self.assertGreater(i, 0, "el router no trae `camino-papel.js`")
+        self.assertGreater(j, 0, "el router no trae `camino.js`")
+        self.assertLess(i, j, "el papel se carga DESPUES de quien lo usa")
+
+        listas = (PUBLICO / "sw-listas.js").read_text(encoding="utf-8")
+        for pieza in ("/assets/camino.js", "/assets/camino-papel.js"):
+            with self.subTest(pieza=pieza):
+                self.assertIn(f"'{pieza}'", listas,
+                              f"{pieza} no viaja en el shell: sin red la "
+                              f"portada se queda sin companero")
 
     def test_la_Torre_se_pinta_sin_gastar_un_byte_de_marcado(self):
         """La Torre de la Ascension va en la PORTADA y no cabe como marcado.
@@ -2553,32 +2602,43 @@ class Hub(unittest.TestCase):
         self.assertIn("deviceMemory", self.js)
         self.assertIn("prefers-reduced-data", self.js)
 
-    def test_las_caras_de_agente_no_engordan(self):
-        """Los OJOS. El glob mira `agente-ojo-*` y no `agente-*`: desde que
-           existen las esferas del panel Modelos hay dos familias con prefijo
-           parecido, y un glob demasiado ancho contaba dieciseis caras."""
-        caras = sorted((PUBLICO / "assets").glob("agente-ojo-*.webp"))
-        self.assertEqual(self.CARAS, len(caras), f"hay {len(caras)} ojos")
-        total = sum(c.stat().st_size for c in caras)
-        self.assertLess(total, 64 * 1024, f"los ojos suman {total} B")
+    def test_los_iconos_de_companero_no_vuelven(self):
+        """LAS DIECISEIS SE RETIRARON EL 2026-09-20. 156.992 B.
 
-    def test_iconos_3d_existen_y_bajo_techo(self):
-        """Las ocho esferas del panel Modelos.
+        Eran dos familias: las ocho esferas del panel Modelos (108.582 B) y
+        los ocho ojos del cabezal (48.410 B). Las dos colgaban de los ocho
+        companeros, y los companeros se fueron al laboratorio, que es de donde
+        habian salido.
 
-        Techo declarado de 32 KB por fichero: son renders fotorrealistas y
-        pesan, pero el panel puede llegar a pedir las ocho de golpe. El techo
-        no protege una descarga --van al shell del worker-- sino que impide
-        que el proximo render entre con un mega sin que nadie lo mire.
+        LA CIFRA QUE DUELE, y es la leccion: las esferas estaban en el
+        PRECACHE del worker, asi que todo visitante se descargaba y guardaba
+        108 KB --- ocho veces las dos laminas de marmol, que estan puestas con
+        su medida al lado como si fueran el gasto grande--- para un panel
+        retirado de la pantalla quince dias antes.
+
+        Y los ojos llevaban mas tiempo aun sin que nadie los nombrara: el
+        `grep` del 2026-09-20 no encontro UNA sola referencia. Eran huerfanos
+        antes de que empezara esta sesion.
+
+        POR QUE NO LO CAZO NADIE. Habia una prueba, y era buena:
+        `test_ningun_asset_precacheado_esta_muerto` exige que lo precacheado
+        EXISTA. Existir no es servir para algo. Un fichero presente que no pide
+        ningun codigo pasa esa prueba entera, y puede pasarla durante meses.
+        La que faltaba es esta, la simetrica: que no vuelva a viajar lo que
+        nadie pinta.
         """
-        esferas = sorted((PUBLICO / "assets").glob("agente-3d-*.webp"))
-        self.assertEqual(8, len(esferas), f"hay {len(esferas)} esferas")
-        for e in esferas:
-            with self.subTest(esfera=e.name):
-                self.assertLessEqual(e.stat().st_size, 32 * 1024,
-                                     f"{e.name} pesa {e.stat().st_size} B")
-        ids = {a["id"] for a in self.d["agentes"]}
-        tiene = {e.name[len("agente-3d-"):-len(".webp")] for e in esferas}
-        self.assertEqual(ids, tiene, f"esferas y agentes no casan: {ids ^ tiene}")
+        for familia in ("agente-3d-*.webp", "agente-ojo-*.webp"):
+            with self.subTest(familia=familia):
+                hay = sorted((PUBLICO / "assets").glob(familia))
+                self.assertEqual([], hay,
+                                 f"vuelven iconos de companero: "
+                                 f"{[q.name for q in hay]}")
+        # Y que nadie los reañada al precache por el camino largo: se mira el
+        # PREFIJO, no el nombre completo, para que una lista generada tampoco
+        # cuele.
+        listas = (PUBLICO / "sw-listas.js").read_text(encoding="utf-8")
+        self.assertNotIn("agente-3d-", listas,
+                         "el worker vuelve a precachear esferas que no pinta nadie")
 
 
 class Cabezal(unittest.TestCase):
@@ -3465,38 +3525,21 @@ class PWA(unittest.TestCase):
                 self.assertIn(f"'{pieza}'", sw,
                               f"el worker no cachea {pieza}")
 
-        # 2 · los ojos YA NO VIAJAN, y esta prueba se dio la vuelta
+        # 2 · NINGUNA de las dos familias de iconos de companero viaja ya.
         #
-        # Hasta el 2026-09-05 exigia lo contrario: que el worker precacheara los
-        # ocho. Tenia sentido mientras la portada de la raiz los pintaba en
-        # bucle. Esa portada es ahora el despertar, no los pinta nadie, y
-        # `test_ningun_asset_precacheado_esta_muerto` canto los ocho nombres en
-        # la misma pasada: 48.410 B que se descargaban en cada instalacion y no
-        # veia nunca nadie.
+        # Lo de los ojos venia del 2026-09-05 y ya estaba escrito aqui; las
+        # esferas se van el 2026-09-20 con los companeros. Se comprueba por
+        # PREFIJO y no por nombre: una lista generada con un `map` colaria por
+        # debajo de una comprobacion que buscara los ocho nombres.
         #
         # La regla se invierte en vez de borrarse. Un hueco donde habia una
         # comprobacion es como vuelve el mismo desperdicio dentro de seis meses
         # -- alguien reañade la lista «por si acaso» y no falla nada.
-        self.assertNotIn("agente-ojo-", sw,
-                         "el worker vuelve a precachear los ojos y no los pinta nadie")
-        esferas = re.search(r"const ESFERAS = \[(.*?)\]", sw, re.S)
-        self.assertIsNotNone(esferas, "el worker no declara las esferas")
-        conoce3d = set(re.findall(r"'([\w-]+)'", esferas.group(1)))
-        disco3d = {p.name[len("agente-3d-"):-len(".webp")]
-                   for p in (PUBLICO / "assets").glob("agente-3d-*.webp")}
-        self.assertEqual(disco3d, conoce3d,
-                         f"esferas que el worker no cachea: {disco3d ^ conoce3d}")
-        # El catalogo sigue nombrando un ojo por agente, y ese nombre tiene que
-        # existir en el disco. Ya no se comprueba contra el worker --que no los
-        # lleva-- sino contra los ficheros: un `symbol` que apunta a un WebP que
-        # no esta no falla en pantalla, simplemente no pinta, y ese es el fallo
-        # que puede vivir meses sin que nadie lo vea.
-        catalogo = json.loads((PUBLICO / "hub.json").read_text(encoding="utf-8"))
-        usados = {a["symbol"][len("ojo-"):] for a in catalogo["agentes"]}
-        en_disco = {p.name[len("agente-ojo-"):-len(".webp")]
-                    for p in (PUBLICO / "assets").glob("agente-ojo-*.webp")}
-        self.assertFalse(usados - en_disco,
-                         f"el Hub nombra ojos que no estan en el disco: {usados - en_disco}")
+        for prefijo in ("agente-3d-", "agente-" + "ojo-"):
+            with self.subTest(prefijo=prefijo):
+                self.assertNotIn(prefijo, sw,
+                                 f"el worker vuelve a precachear {prefijo}* y "
+                                 f"no lo pinta nadie")
 
         # 3 · contenido si, medida no
         contenido = re.search(r"const CONTENIDO_JSON = \[(.*?)\]", sw, re.S)
@@ -4455,7 +4498,19 @@ CLAVES_CAMINOS = {
     #   killswitch · cortar, y medir cuanto se deshace de verdad
     for n in ("despertar", "primeros_pasos", "exposicion", "silencio",
               "contribuir", "puertos", "whoami", "killswitch")
-    for c in ("titulo", "frase", "falla", "para_quien")
+    # `papel` y `corpus` entran el 2026-09-20 y son de otra clase que los
+    # cuatro de arriba, asi que se nombran con su porque.
+    #   papel  · CON QUIEN cree el modelo que habla en este piso. Sin eso quien
+    #            prueba no sabe contra que mide: si le repiten los pasos de
+    #            instalacion no puede distinguir un modelo malo de un arnes que
+    #            le dijo que hablaba con alguien que acababa de llegar.
+    #   corpus · de que datos saldria el adaptador de este piso. Hoy NINGUNO lo
+    #            tiene --- medido el 2026-09-20: no hay un solo `preceptor-*`
+    #            que sea un afinado, son Modelfiles con system prompt sobre
+    #            Mistral --- asi que el campo dice DE DONDE saldria el dato en
+    #            vez de «proximamente». Un hueco con su fuente escrita se
+    #            rellena; una promesa no.
+    for c in ("titulo", "frase", "falla", "para_quien", "papel", "corpus")
 } | {"torre_titulo", "torre_lema", "torre_nivel", "torre_paso", "torre_firmar",
      "torre_guia_no_data"}
 

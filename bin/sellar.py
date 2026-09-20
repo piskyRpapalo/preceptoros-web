@@ -52,17 +52,37 @@ def huella():
 
 
 def siguiente(v):
-    """`preceptoros-2026-13-p` -> `-q`. Si no acaba en letra, PARA.
+    """`...-p` -> `-q`, `...-z` -> `-aa`, `...-ze` -> `-zf`. Si no, PARA.
 
-    No se inventa un formato nuevo: la version la eligio una persona y este
-    script solo continua la serie que ya existe. Un sufijo que no reconoce es
-    un caso que no entiende, y lo dice en vez de suponer.
+    LA SERIE SE QUEDO SIN LETRAS, y esto es la reparacion. La version original
+    admitia `[a-y]`: una sola letra, y ni siquiera la ultima. Al llegar a `z`
+    el script decia NO_DATA y mandaba subirla a mano, alguien escribio `ze`, y
+    desde entonces la automatizacion estaba muerta --- `sellar.py` no reconocia
+    su propio sufijo y volvia a mandar el trabajo a la mano.
+    Ahi esta el coste real, y no es la letra: el script existe porque «un paso
+    manual que hay que repetir es un paso que un dia se olvida», y el dia que
+    se olvide el sintoma sera otra vez un despliegue que no llega. Un
+    automatismo que se rinde al caso 26 devuelve exactamente el problema que
+    vino a quitar.
+
+    Se cuenta como las columnas de una hoja de calculo --- z, aa, ab... ---, que
+    es la unica forma de que esto no vuelva a pasar en la letra 27, la 703 y la
+    siguiente. Lo que NO cambia: el formato lo eligio una persona y aqui solo
+    se continua. Un sufijo que no sea letras minusculas sigue parando.
     """
-    m = re.match(r"^(.*-)([a-y])$", v)
+    m = re.match(r"^(.*-)([a-z]+)$", v)
     if not m:
         raise SystemExit(f"NO_DATA · no se como continuar la version {v!r}. "
-                         "Se esperaba que acabara en `-<letra>`. Subela a mano.")
-    return m.group(1) + chr(ord(m.group(2)) + 1)
+                         "Se esperaba que acabara en `-<letras>`. Subela a mano.")
+    base, suf = m.group(1), list(m.group(2))
+    i = len(suf) - 1
+    while i >= 0:
+        if suf[i] != "z":
+            suf[i] = chr(ord(suf[i]) + 1)
+            return base + "".join(suf)
+        suf[i] = "a"                 # acarreo, como 9 -> 0 al sumar uno
+        i -= 1
+    return base + "a" + "".join(suf)  # se desborda por la izquierda: z -> aa
 
 
 def main():

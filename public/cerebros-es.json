@@ -120,5 +120,6 @@
   "fr": "Francia",
   "us": "Estados Unidos",
   "cn": "China"
- }
+ },
+ "lenguas_no_data": "NO_DATA · medido en castellano e inglés. Las otras seis lenguas del sitio no se han probado con este cerebro: puede contestarte en otro idioma sin avisar."
 }

@@ -175,11 +175,22 @@
   if (document.getElementById('especificaciones')) {
     var traerTorre = function () {
       if (document.querySelector('script[data-torre]')) { return; }
-      var s = document.createElement('script');
-      s.src = '/assets/camino.js';
-      s.defer = true;
-      s.setAttribute('data-torre', '1');
-      document.head.appendChild(s);
+      /* DOS FICHEROS Y EL ORDEN IMPORTA. La Torre se partio en dos el
+         2026-09-20 --- `camino.js` se fue 711 B sobre el tope al cablear el
+         boton que viste el chat ---: `camino-papel.js` decide el papel y
+         `camino.js` pinta los pisos. Este va PRIMERO porque el otro le pide
+         `window.TorrePapel` nada mas arrancar.
+         Dos `<script>` clasicos insertados asi se ejecutan en el orden de
+         insercion aunque lleven `defer`, que es justo la garantia que hace
+         falta. Aun asi `camino.js` comprueba que el vecino exista: una
+         garantia del navegador no es motivo para no tener respaldo. */
+      ['/assets/camino-papel.js', '/assets/camino.js'].forEach(function (src) {
+        var s = document.createElement('script');
+        s.src = src;
+        s.defer = true;
+        s.setAttribute('data-torre', '1');
+        document.head.appendChild(s);
+      });
     };
     if (document.readyState === 'complete') { traerTorre(); }
     else { window.addEventListener('load', traerTorre); }

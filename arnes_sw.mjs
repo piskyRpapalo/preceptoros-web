@@ -157,7 +157,7 @@ const rutas = await shell.keys();
 // a mano A PROPOSITO -- si se dedujese de la lista del worker, el test
 // diria siempre que si y dejaria de avisar el dia que una pieza se caiga
 // del precache sin que nadie lo decida.
-ok('precachea paginas y piezas del Hub', rutas.length === 120, rutas.length+' rutas');
+ok('precachea paginas y piezas del Hub', rutas.length === 114, rutas.length+' rutas');
 ok('el shell trae las tres tiras de la cara',
    ['apertura', 'reposo', 'habla']
      .every(s => rutas.includes('/assets/caras/secuencia-' + s + '-256.webp')));
@@ -169,14 +169,22 @@ ok('el shell trae modelos.json', rutas.includes('/modelos.json'));
 ok('el shell trae las cinco piezas del Hub',
    ['/assets/widget.css','/assets/panel.css','/assets/hub.js','/assets/hub-cola.js','/assets/chat-router.js']
      .every(r => rutas.includes(r)));
-// Al reves que hasta el 2026-09-05: los ojos NO viajan. Los pintaba solo la
-// portada de la raiz, que es ahora el despertar, y precachear arte que nadie
-// mira son 48 KB en cada instalacion. Las esferas si viajan: esas se pintan en
-// el panel de companeros.
-ok('el shell NO trae los ojos, que no los pinta nadie',
-   rutas.filter(r => r.startsWith('/assets/agente-ojo-')).length === 0);
-ok('el shell trae las ocho esferas',
-   rutas.filter(r => r.startsWith('/assets/agente-3d-')).length === 8);
+// NINGUNA DE LAS DOS FAMILIAS VIAJA YA, y la segunda cayo el 2026-09-20.
+//
+// Los ojos se fueron el 2026-09-05 --los pintaba solo la portada de la raiz,
+// que es ahora el despertar-- y esa linea ya estaba aqui. Las esferas
+// aguantaron quince dias mas con este mismo arnes exigiendo que viajaran:
+// 108.582 B que todo visitante descargaba y guardaba para un panel de
+// companeros que ya no se pintaba. Cuando el Soberano retiro los companeros
+// del catalogo, se cayeron con ellos.
+//
+// De 120 rutas a 112: las ocho que sobraban. Y a 114 el mismo dia, cuando
+// entran los dos guiones de la Torre --- que SI se pintan, y que ademas
+// sostienen el companero por defecto del chat desde que los ocho se fueron.
+// El saldo del dia: -8 ficheros de arte muerto, +2 de codigo vivo, y 157 KB
+// menos en cada instalacion.
+ok('el shell NO trae ninguna de las dos familias de iconos de companero',
+   rutas.filter(r => r.startsWith('/assets/agente-')).length === 0);
 
 // regla 1: otro origen
 ok('otro origen pasa de largo',

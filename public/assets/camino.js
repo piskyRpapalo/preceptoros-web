@@ -95,6 +95,15 @@
     document.head.appendChild(s);
   }
 
+
+  /* Las dos funciones que deciden el papel viven en `camino-papel.js`, que
+     `chat-router.js` inyecta justo antes que este fichero. Si no estuviera, la
+     Torre se pinta entera y solo el boton se queda sin accion --- con su causa
+     en el `title`, no en silencio. */
+  var P = window.TorrePapel || null;
+  function esND(t) { return P ? P.esND(t) : (!t || t.indexOf('NO_DATA') === 0); }
+  function viste(p, ui) { return P ? P.viste(p, ui) : false; }
+
   function donde() {
     return document.getElementById('especificaciones') ||
            document.getElementById('hub-layout') ||
@@ -151,13 +160,18 @@
          del desplegable en vez de omitirse. Un hueco que no se ve no se
          rellena nunca: quien abra el piso tiene que saber que el modelo aun
          no sabe con quien cree que habla. */
-      var papel = ui['camino_' + p + '_papel'];
-      cuerpo.appendChild(el('p', papel ? 'torre-papel' : 'no-data',
-        papel || ('NO_DATA · con quien cree el modelo que habla en este piso: '
-                  + 'sin escribir todavia')));
-      var lora = ui['camino_' + p + '_lora'];
-      cuerpo.appendChild(el('p', lora ? 'torre-lora' : 'no-data',
-        lora || 'NO_DATA · este piso no tiene adaptador asignado'));
+      var papel = ui['camino_' + p + '_papel'] || '';
+      cuerpo.appendChild(el('p', esND(papel) ? 'no-data' : 'torre-papel',
+        papel));
+      /* EL CORPUS es la otra mitad del piso: de que datos saldria su
+         adaptador. Hoy ninguno lo tiene --- medido el 2026-09-20: no hay un
+         solo `preceptor-*` que sea un afinado, son Modelfiles con system
+         prompt sobre Mistral --- asi que el campo dice DE DONDE saldria el
+         dato. Un hueco con su fuente escrita se rellena; un «proximamente»
+         no se rellena nunca. */
+      var corpus = ui['camino_' + p + '_corpus'] || '';
+      cuerpo.appendChild(el('p', esND(corpus) ? 'no-data' : 'torre-corpus',
+        corpus));
 
       /* EL BOTON DE PROBAR sube la practica al chat de arriba y lleva la
          vista ahi. No la manda: quien decide hablar es la persona. */
@@ -167,6 +181,15 @@
       probar.type = 'button';
       if (entrada) {
         probar.addEventListener('click', function () {
+          /* PRIMERO se viste y despues se escribe. Al reves, el campo se
+             llenaria y el chat seguiria con el papel del piso anterior
+             durante el tiempo que tarda el evento --- y si la persona es
+             rapida, manda la practica de un piso al papel de otro. */
+          if (!viste(p, ui)) {
+            /* No se finge el cambio. Falta el modelo, no el piso. */
+            probar.title = 'NO_DATA · todavia no hay cerebro elegido: '
+                         + 'el piso no puede vestir el chat';
+          }
           entrada.value = practica(p, ui);
           entrada.focus();
           /* Algunos campos escuchan `input` para medir o para habilitar el
@@ -197,6 +220,31 @@
     sec.appendChild(nd);
 
     host.parentNode.insertBefore(sec, host.nextSibling);
+
+    /* EL PISO 1 VISTE EL CHAT AL ENTRAR, y esto no es un adorno: es lo que
+       sostiene el chat desde que los ocho companeros se fueron al laboratorio
+       el 2026-09-20.
+       Hasta hoy el compañero por defecto lo ponia `chat-router.js` con
+       `vestir(H.agente('instalador'))`. Sin catalogo eso devuelve null, no se
+       dispara `preceptor:companero`, y `chat.js` se queda sin `via` ni
+       modelo. Medido en el navegador antes de escribir esto: el cabezal decia
+       «Modelo: ninguno» y el chat se quedaba clavado en «Activando modelo».
+       Retirar un mando es retirar tambien lo que lo obedecia --- la casa ya
+       tiene esa leccion escrita en `chat-router.js` con el panel plegable, y
+       hoy la ha vuelto a pagar.
+
+       Y NO SE DISPARA A CIEGAS. Si todavia no hay cerebro puesto ---
+       `selector-modelo.js` corre en paralelo y puede llegar despues --- se
+       espera a `preceptor:brain` y se viste entonces, UNA vez. Mandar el
+       evento con `modelo` vacio no dejaria el chat como estaba: lo apagaria
+       con «sin adaptador», que es peor que no hacer nada. */
+    if (!viste(PELDANOS[0], ui)) {
+      var unaVez = function () {
+        document.removeEventListener('preceptor:brain', unaVez);
+        viste(PELDANOS[0], ui);
+      };
+      document.addEventListener('preceptor:brain', unaVez);
+    }
   }
 
   function arranca() {

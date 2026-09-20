@@ -41,11 +41,23 @@ const PAGINAS = ['', 'instalar.html', 'community.html', 'benchmark.html',
 
    No hizo falta acordarse: `test_ningun_asset_precacheado_esta_muerto` lo
    canto en la misma pasada, con los ocho nombres. */
-/* Las esferas del panel Modelos. Van aparte de las CARAS porque son otra cosa:
-   la cara es el OJO que el cabezal le pone al Preceptor segun con quien
-   hablas; la esfera es como se presenta ese companero cuando eliges. */
-const ESFERAS = ['instalador', 'privacidad', 'escritor', 'traductor',
-                 'coder', 'analista', 'aprendiz', 'bibliotecario'];
+/* LAS OCHO ESFERAS SE RETIRAN, 2026-09-20, y la cifra es el motivo.
+   Eran 108.582 B --- mas de ocho veces las dos laminas de marmol de aqui
+   abajo, que estan puestas con su medida al lado como si fueran el gasto
+   grande--- y las descargaba y guardaba TODO visitante, para un panel de
+   companeros que se retiro de la pantalla el 2026-09-05 y del catalogo hoy.
+   Quince dias sirviendo cien kilobytes a nadie.
+   Se va tambien la otra familia de ocho --- la que el comentario de aqui
+   arriba retiro del precache el 2026-09-05 y cuyo nombre no se escribe en este
+   fichero, porque hay una prueba que lo prohibe y que ya me pillo citandola en
+   una explicacion ---, 48.410 B que ya eran huerfanos ANTES de hoy: ningun
+   fichero los nombraba. No los precacheaba nadie, asi que no costaban
+   descarga --- costaban repositorio y confusion.
+   La leccion, que es la que vale manana: `test_ningun_asset_precacheado_esta_muerto`
+   vigila que lo precacheado EXISTA. Existir no es lo mismo que servir para
+   algo, y un fichero que existe y no usa nadie pasa esa prueba entera. La que
+   faltaba --y entra hoy-- es la simetrica: que nadie precachee lo que ningun
+   codigo pide. */
 /* LAS DOS LAMINAS DE MARMOL, 12.570 B entre las dos. Van al shell porque el
    fondo dejo de ser decorado el 2026-09-05: la puerta de la raiz y el telon de
    cada lengua se pintan SOBRE el, y sin conexion salian como dos planchas
@@ -64,8 +76,15 @@ const HUB = [...AGENTES, '/hub.json', '/hub-textos.json',
              '/assets/marble-violet.webp', '/assets/marble-violet-oscuro.webp', '/modelos.json', '/servicios.json', '/instalar.json',
              '/assets/instalar-descargas.js', '/assets/widget.css', '/assets/puertas.css', '/assets/escribir.css', '/assets/placa.css', '/medidas.json', '/assets/medidas.js', '/nav.json', '/assets/cabezal.js', '/assets/cabezal-rotulos.js', '/assets/selector-modelo.js', '/assets/consiento.js', '/cerebros.json', '/cerebros-en.json', '/cerebros-es.json', '/assets/logos-models/preceptor.svg', '/assets/logos-models/qwen.svg', '/assets/logos-models/mistral.svg', '/assets/cabezal.css', '/assets/esquina.css', '/assets/esquina-cuenta.css', '/assets/esquina-par.css', '/assets/mandos.css', '/assets/panel.css', '/assets/nubes.css', '/assets/consiento.css', '/assets/senal.css', '/assets/senal.js',
              '/assets/hub.js',
-             '/assets/hub-cola.js', '/assets/chat-router.js', '/assets/corregir.js', '/assets/aprender.js', '/assets/elegir.js', '/assets/comandos.js']
-  .concat(ESFERAS.map(e => '/assets/agente-3d-' + e + '.webp'))
+             '/assets/hub-cola.js', '/assets/chat-router.js',
+             /* Los dos guiones de la Torre. Entran al shell el 2026-09-20,
+                cuando el piso 1 pasa a ser el companero por defecto del chat:
+                sin ellos en cache, una PWA instalada abre sin red y se queda
+                con «Modelo: ninguno», que es como quedo la portada esta misma
+                manana al retirar los ocho companeros sin poner nada en su
+                sitio. Cuestan 18,8 KB entre los dos --- ocho veces menos que
+                las esferas que acaban de salir de esta misma lista. */
+             '/assets/camino.js', '/assets/camino-papel.js', '/assets/corregir.js', '/assets/aprender.js', '/assets/elegir.js', '/assets/comandos.js']
   /* Las tres tiras: `widget.css` las pide y sin red el cabezal se queda
      con un circulo vacio. */
   .concat(['apertura', 'reposo', 'habla']

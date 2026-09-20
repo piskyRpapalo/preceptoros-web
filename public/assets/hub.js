@@ -81,15 +81,12 @@
   function tarjeta(a, sinImagen) {
     var b = el('button', 'modelo');
     b.type = 'button'; b.dataset.agente = a.id;
-    if (!sinImagen && a.icono3d) {
-      var img = document.createElement('img');
-      img.src = '/assets/agente-3d-' + a.icono3d + '.webp';
-      img.alt = ''; img.loading = 'lazy'; img.decoding = 'async';
-      img.width = 56; img.height = 56;
-      b.appendChild(img);
-    } else {
-      b.appendChild(el('span', 'modelo-inicial', (a.name || '?').replace(/^El /, '')[0]));
-    }
+    /* AQUI SE PINTABA LA ESFERA DEL COMPANERO. Se retira con los ocho
+       companeros el 2026-09-20 --- ver `hub.json.retirado` ---: sin catalogo
+       no hay `icono3d` que pedir, y dejar el `img` seria codigo esperando un
+       campo que ya nadie escribe. La inicial de repuesto se va con el, por lo
+       mismo. Lo que queda es el boton, que es lo unico que hacia falta. */
+    b.appendChild(el('span', 'modelo-inicial', (a.name || '?').replace(/^El /, '')[0]));
     /* EL NOMBRE ES UNA ETIQUETA, Y UNA ETIQUETA PIDE TRADUCCION. Hasta el
        2026-09-05 el catalogo traia un solo `name` y una sola `function`, en
        castellano, asi que los ocho salian en castellano en la portada inglesa y
@@ -148,6 +145,14 @@
      inventado. */
   function pintaPanel() {
     panel.innerHTML = '';
+    /* UN CATALOGO VACIO A PROPOSITO NO ES UN HUECO, Y NO SE DECLARA COMO TAL.
+       Los ocho companeros se retiraron el 2026-09-20 --- su sitio es el
+       laboratorio, no la web ---, y el fichero lo dice en `retirado`. Sin esta
+       guarda el panel escribia «NO_DATA · catalogo sin agentes» en la portada:
+       un aviso de falta donde no falta nada, que es ruido con cara de rigor.
+       El NO_DATA de mas abajo SI se queda: ese es para cuando el catalogo no
+       llega, que es otra cosa y si es un hueco. */
+    if (!(DATOS.agentes || []).length && DATOS.retirado) { return; }
     var g = el('div', 'modelos');
     var sin = ligero();
     (DATOS.agentes || [])
@@ -174,7 +179,17 @@
       })
       .then(function (d) {
         DATOS = d;
-        if (!d.agentes || !d.agentes.length) throw new Error('catalogo sin agentes');
+        /* UN CATALOGO VACIO PUEDE SER UN FALLO O UNA DECISION, y hasta
+           el 2026-09-20 esto los trataba igual. Desde que los ocho
+           companeros se retiraron --- su sitio es el laboratorio, lo dice
+           `hub.json.retirado` --- la lista esta vacia A PROPOSITO, y este
+           `throw` pintaba «NO_DATA · catalogo sin agentes» en la portada: un
+           aviso de avería sobre una decision. Se distingue por el campo
+           `retirado`, que es el que separa las dos cosas. Sin el, sigue
+           siendo un fallo y se canta como antes. */
+        if (!d.agentes || !d.agentes.length) {
+          if (!d.retirado) throw new Error('catalogo sin agentes');
+        }
         /* LOS TEXTOS VIVEN APARTE DESDE EL 2026-09-05. Estaban dentro de
            `hub.json` y solo en tres lenguas: pt, it, de, ru y el caian al
            castellano ENTERAS --el respaldo era por objeto, no por clave-- y

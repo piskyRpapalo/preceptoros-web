@@ -39,6 +39,17 @@
     return c ? c.modelo : '';
   }
 
+  /* QUIEN CONTESTA, PARA QUIEN LO NECESITE. Lo publica este fichero porque es
+     el que MANDA: envuelve `Rack.stream` y sustituye cualquier nombre que le
+     pasen por `guardado() || porDefecto()`. Cualquier otro que quisiera saber
+     el modelo tendria que repetir esa regla, y dos copias de una regla acaban
+     discrepando --- que es la averia que hoy costo tres semanas de pastilla
+     verde anunciando un companero retirado.
+     Lo pide `camino-papel.js`: cuando un piso de la Torre viste el chat, el
+     evento lleva `modelo` dentro, y mandar ahi un nombre distinto del que de
+     verdad contesta pintaria un badge que miente. */
+  window.CerebroPuesto = function () { return guardado() || porDefecto() || ''; };
+
   function envolver() {
     if (!window.Rack || window.Rack.__envuelto) return;
     var original = window.Rack.stream;
@@ -176,6 +187,21 @@
       b.appendChild(cab);
       b.appendChild(el('p', 'cerebro-modelo', c.modelo));
       if (t.que_es) b.appendChild(el('p', 'cerebro-que', t.que_es));
+      /* LAS LENGUAS QUE ESTE CEREBRO TIENE MEDIDAS, y las que no.
+         Lo pidio el Soberano el 2026-09-20: «si no cumplen el resto de
+         idiomas, lo avisas en descripcion con un no_data». Va DEBAJO de la
+         descripcion y no en una nota al pie porque es parte de lo que se
+         elige: alguien en aleman esta escogiendo un cerebro que nadie ha
+         probado en aleman, y tiene que saberlo antes de escribir, no despues.
+         Hasta hoy la ficha decia `lang: "auto"` en los seis, que es la forma
+         educada de no decir nada -- y en un sitio de ocho lenguas se lee como
+         «las habla todas». El aviso sale de `cerebros-<lengua>.json`, asi que
+         solo aparece donde hay prosa escrita; donde no la hay, no se inventa. */
+      var lg = (document.documentElement.lang || 'es').slice(0, 2);
+      var nd = PROSA && PROSA.lenguas_no_data;
+      if (nd && (c.lenguas || []).indexOf(lg) < 0) {
+        b.appendChild(el('p', 'no-data', nd));
+      }
       /* QUE FEEDBACK SE BUSCA, y por eso va antes que las cifras: un tester al
          que no se le dice que mirar reporta lo que le llama la atencion, que
          casi nunca es lo que hace falta. */

@@ -8,136 +8,7 @@
   "3": "Operaciones · mantenimiento y cuentas",
   "4": "Evolutivo · memoria y pesos"
  },
- "agentes": [
-  {
-   "id": "instalador",
-   "name": "El Instalador",
-   "block": 1,
-   "symbol": "ojo-ambar",
-   "function": "Te instala el producto y te presenta a los demás.",
-   "status": "idle",
-   "real": {
-    "disponible": true,
-    "modelo": "preceptor-charla-web:v2",
-    "afinado": null,
-    "nota": "ACTUALIZADO 2026-09-19: pasa de `:v1` a `:v2` al mismo tiempo que `api-guia`, que servia un modelo inexistente (`qwen38-limpio:latest`) y aun asi daba la salud en verde. El sitio nombra lo que sirve: v2 verificado cargado y respondiendo (100 % GPU, contexto 32768) antes de escribir esta linea. CORRECCION 2026-09-07: la nota anterior decia que el modelo previo --qwen3-coder:30b-- devolvia 403 y que por eso el chat estaba roto. FALSO, y el error fue mio: ese 403 es INTERMITENTE --limitacion de ritmo del tunel, no del modelo-- y lo tome por veredicto midiendo UNA vez. Repetido tres veces da 200. El chat no estaba roto. EL CAMBIO SE MANTIENE POR OTRO MOTIVO, este si medido en local y sin tunel de por medio: qwen3-coder no sabe que es este producto. A «acabo de llegar, no he instalado nada» responde preguntando si instalas Linux, Windows o macOS; a quien ya instalo le suelta 241 palabras de ensayo generico con titulares. Es un modelo de codigo sin system prompt, no un anfitrion. `preceptor-charla-web:v1` corre sobre Mistral 7B con un system corto de hechos: da los tres comandos reales de instalacion y acierta 4,4 GB y v1.3. SUS LIMITES: es verboso y a quien ya instalo todavia le puede repetir los pasos. Sin adaptador -- los LoRA de La Charla salieron NO-GO porque pisan cifras del prompt con cifras inventadas."
-   },
-   "icono3d": "instalador",
-   "nido": "guia"
-  },
-  {
-   "id": "privacidad",
-   "name": "El Aduanero",
-   "block": 1,
-   "symbol": "ojo-verde",
-   "function": "Tacha lo privado antes de que salga de tu aparato.",
-   "status": "idle",
-   "real": {
-    "disponible": false,
-    "modelo": null,
-    "afinado": null,
-    "causa": "sin adaptador entrenado todavia"
-   },
-   "icono3d": "privacidad",
-   "nido": "filtro"
-  },
-  {
-   "id": "escritor",
-   "name": "El Escritor",
-   "block": 2,
-   "symbol": "ojo-bombilla",
-   "function": "Escribe contigo: guiones, notas y textos largos.",
-   "status": "thinking",
-   "real": {
-    "disponible": false,
-    "modelo": null,
-    "afinado": null,
-    "causa": "sin adaptador entrenado todavia"
-   },
-   "icono3d": "escritor",
-   "nido": "cronista"
-  },
-  {
-   "id": "traductor",
-   "name": "El Traductor",
-   "block": 2,
-   "symbol": "ojo-libro",
-   "function": "Traduce en local, sin mandar el texto a ninguna nube.",
-   "status": "idle",
-   "real": {
-    "disponible": false,
-    "modelo": null,
-    "afinado": null,
-    "causa": "sin adaptador entrenado todavia"
-   },
-   "icono3d": "traductor"
-  },
-  {
-   "id": "coder",
-   "name": "El Artesano",
-   "block": 3,
-   "symbol": "ojo-birrete",
-   "function": "Lee tu código, propone el arreglo y escribe la prueba.",
-   "status": "running",
-   "real": {
-    "disponible": false,
-    "modelo": null,
-    "afinado": null,
-    "causa": "sin adaptador entrenado todavia"
-   },
-   "icono3d": "coder",
-   "nido": "estratega",
-   "cifras": true
-  },
-  {
-   "id": "analista",
-   "name": "El Analista",
-   "block": 3,
-   "symbol": "ojo-cerebro",
-   "function": "Mira números y trazas y te dice qué cambió.",
-   "status": "idle",
-   "real": {
-    "disponible": false,
-    "modelo": null,
-    "afinado": null,
-    "causa": "sin adaptador entrenado todavia"
-   },
-   "icono3d": "analista",
-   "nido": "analista",
-   "cifras": true
-  },
-  {
-   "id": "aprendiz",
-   "name": "El Aprendiz",
-   "block": 4,
-   "symbol": "ojo-azul",
-   "function": "Convierte lo que haces en memoria que puedes releer.",
-   "status": "idle",
-   "real": {
-    "disponible": false,
-    "modelo": null,
-    "afinado": null,
-    "causa": "sin adaptador entrenado todavia"
-   },
-   "icono3d": "aprendiz"
-  },
-  {
-   "id": "bibliotecario",
-   "name": "El Bibliotecario",
-   "block": 4,
-   "symbol": "ojo-rojo",
-   "function": "Ordena tu memoria: busca, enlaza y quita duplicados.",
-   "status": "idle",
-   "real": {
-    "disponible": false,
-    "modelo": null,
-    "afinado": null,
-    "causa": "sin adaptador entrenado todavia"
-   },
-   "icono3d": "bibliotecario",
-   "nido": "archivero"
-  }
- ],
+ "agentes": [],
  "cola": {
   "estado": "MOCK",
   "causa": "ningun bucle de expansion esta corriendo; estas dos propuestas son de muestra",
@@ -165,5 +36,13 @@
   "linkedin": "david-pecero-caballero",
   "linkedin_url": "https://www.linkedin.com/in/david-pecero-caballero/",
   "fuente": "Alejandria/identidad_publica.json"
+ },
+ "retirado": {
+  "que": "los ocho companeros (instalador, privacidad, escritor, traductor, coder, analista, aprendiz, bibliotecario)",
+  "cuando": "2026-09-20",
+  "quien": "el Soberano, sobre una captura del telefono: «como ves en la primera imagen aparece El Instalador, eso fue eliminado hace 3 semanas»",
+  "porque": "No eran de la web. Lo confirmo el propio Soberano: «los companeros de registro pertenecen al lab, no a la web ni a la app». Eran una maqueta de los bucles autonomos del laboratorio, con siete a `disponible: false` y UNO --el Instalador-- a true. Ese uno se siguio pintando tres semanas despues de retirarse del producto, y el codigo no tenia la culpa: pintaba fielmente lo que este fichero declaraba. El dato era lo viejo.",
+  "quien_hace_ahora_su_trabajo": "el MODELO lo elige `cerebros.json`, que es un registro MEDIDO y no una maqueta; el PAPEL lo da el piso de la Torre que se este probando, via `camino.js`. Dos registros para el mismo hecho acaban discrepando, y aqui ya habia pasado.",
+  "donde_viven_ahora": "en el laboratorio, que es de donde salieron"
  }
 }
