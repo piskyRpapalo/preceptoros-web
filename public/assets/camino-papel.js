@@ -130,5 +130,170 @@
     return true;
   }
 
-  window.TorrePapel = { esND: esND, viste: viste, papelDelPiso: papelDelPiso };
+
+  /* ---------------------------------------------------------------------
+     FIRMAR UN PASO. Lo que cierra el circulo de la Torre.
+     ---------------------------------------------------------------------
+     EL NO_DATA QUE ESTO SUSTITUYE ERA CIERTO Y DEJO DE SERLO. `camino.js`
+     decia «el rack todavia no recibe pasos firmados. El boton no se pinta
+     porque no llevaria a ningun sitio». Medido el 2026-09-20, de punta a
+     punta: `POST /api/v1/paquetes` acepta un paquete firmado, lo deja en la
+     bandeja de la-fragua y `ingesta.py` lo mete en la pool con su `user_hash`.
+     El 403 que lo hacia parecer cerrado era Cloudflare filtrando por
+     User-Agent, no la aplicacion. Un aviso que sigue puesto despues de dejar
+     de ser cierto es una mentira con cara de rigor, y por eso se retira el
+     mismo dia que la medida.
+
+     ESTE FICHERO NO HABLA CON EL RACK, Y ES A PROPOSITO. Guarda el par firmado
+     en `Bronce` --- el mismo almacen del aparato que usa `corregir.js` --- y
+     ahi lo recoge la caja de `enviar.js`, que es la unica puerta de salida que
+     tiene el sitio. Duplicar aqui el reto, la firma del sobre y el `fetch`
+     daria dos caminos hacia `/paquetes` que envejecerian por separado.
+     Consecuencia que hay que decir en pantalla y no dar por sabida: firmar
+     NO envia. Se firma en tu aparato y sales cuando tu quieras.
+
+     QUE PAR SE FIRMA, y por que encaja sin tocar el esquema:
+       prompt     · la practica del piso, que es lo que se le pidio a la IA
+       respuesta  · lo ultimo que contesto, leido del dialogo como hace
+                    `corregir.js`. Si no hay turno todavia, NO se manda el
+                    campo --- una cadena vacia diria «contesto nada», que es
+                    distinto de «no contesto».
+       correccion · lo que escribe la persona: como podria guiar mejor. Es la
+                    respuesta a `torre_guia_no_data`, que ya estaba escrito en
+                    las ocho lenguas esperando este boton.
+       origen     · lleva el piso dentro. Es lo que convierte ocho pisos en
+                    ocho poblaciones separables, que es lo que promete el campo
+                    `corpus` de cada uno. Sin esto, todo el feedback de la
+                    Torre seria un monton.
+     `consent` nace en 0, como en `corregir.js`: un par sin consentimiento es un
+     recuerdo de la persona, no material del rack. `ingesta.py` los rechaza con
+     esa causa, y es la correcta. */
+  function ultimaRespuesta() {
+    var d = document.getElementById('dialogo');
+    if (!d) { return null; }
+    var ps = d.querySelectorAll('p');
+    for (var i = ps.length - 1; i >= 0; i--) {
+      if (ps[i].className !== 'tu' && ps[i].textContent.trim()) {
+        return ps[i].textContent;
+      }
+    }
+    return null;
+  }
+
+  function firmaPaso(piso, ui, texto) {
+    if (!window.Identity || !window.Bronce) {
+      return Promise.reject(new Error('NO_DATA · este navegador no tiene ' +
+        'identidad ni almacen: no se puede firmar nada'));
+    }
+    var reg = {
+      prompt: ui['camino_' + piso + '_frase'] || piso,
+      correccion: texto,
+      corregido: new Date().toISOString(),
+      modelo: modeloActual() || 'NO_DATA',
+      idioma: (document.documentElement.lang || 'es').slice(0, 2),
+      motivo: 'torre',
+      tarea: 'libre',
+      consent: 0,
+      origen: 'preceptoros.org' + location.pathname + '#torre/' + piso,
+      tipo: 'correccion',
+      autoridad: 1
+    };
+    var r = ultimaRespuesta();
+    if (r) { reg.respuesta = r; }
+    return window.Identity.firmar(reg).then(function (f) {
+      return window.Identity.publica().then(function (pub) {
+        return window.Bronce.guardar({ par: reg, firma: f.firma, autor: f.autor,
+                                       algoritmo: f.algoritmo, publica: pub });
+      });
+    });
+  }
+
+  /* El formulario se monta AL PULSAR y no antes: ocho pisos con un area de
+     texto cada uno son ocho cajas abiertas en la portada para un gesto que
+     casi nadie hace en la primera visita. */
+  function montaFirma(piso, ui, mandos, el) {
+    var boton = el('button', null, ui.torre_firmar || 'Firmar este paso');
+    boton.type = 'button';
+    mandos.appendChild(boton);
+    boton.addEventListener('click', function () {
+      if (boton.dataset.abierto) { return; }
+      boton.dataset.abierto = '1';
+      boton.disabled = true;
+      var caja = el('div', 'torre-firma');
+      var guia = ui.torre_guia_no_data || '';
+      if (guia) { caja.appendChild(el('p', 'torre-quien', guia)); }
+      var area = document.createElement('textarea');
+      area.rows = 3;
+      area.setAttribute('aria-label', guia || (ui.torre_firmar || 'Firmar'));
+      caja.appendChild(area);
+      var ok = el('button', null, ui.torre_firmar || 'Firmar este paso');
+      ok.type = 'button';
+      caja.appendChild(ok);
+      var dice = el('p', 'no-data', '');
+      caja.appendChild(dice);
+      mandos.parentNode.appendChild(caja);
+      area.focus();
+      ok.addEventListener('click', function () {
+        var t = area.value.trim();
+        if (!t) {
+          /* Un paso firmado en blanco no ensena nada y ocupa una revision
+             humana. Se dice por que, no se desactiva el boton en silencio. */
+          dice.textContent = guia;
+          area.focus();
+          return;
+        }
+        ok.disabled = true;
+        firmaPaso(piso, ui, t).then(function () {
+          caja.innerHTML = '';
+          caja.appendChild(el('p', 'torre-quien',
+            (ui.torre_firmado || '') + ' ✓'));
+          /* SE DICE QUE NO SE HA ENVIADO. El boton de la cola decia «firmado»
+             sin firmar nada; la averia simetrica seria dejar creer que esto
+             ya viajo. Sale de `window.ENVT`, que es la casa de estos rotulos
+             en las ocho lenguas desde el 2026-09-14. */
+          var t2 = (window.ENVT && window.ENVT.envEnCola) || '';
+          if (t2) { caja.appendChild(el('p', 'no-data', t2)); }
+        }).catch(function (e) {
+          ok.disabled = false;
+          dice.textContent = e.message;
+          /* EL CALLEJON SIN SALIDA. Se escribe el paso entero, se pulsa
+             Firmar, y la pagina contesta «sin identidad»: es verdad, y no
+             dice donde se consigue una. La salida se pone AQUI, que es donde
+             esta la persona, y no en una nota que la mande a buscar un boton
+             del cabezal.
+             Se reusa `idEntrar`, el rotulo que ya tienen las ocho lenguas
+             para ese mismo gesto: una clave nueva para decir lo mismo son
+             ocho traducciones y una ocasion mas de que falte una.
+
+             ESTA ES LA TERCERA COPIA DE ESTE BLOQUE --- `corregir.js` y
+             `resena.js` lo tienen igual desde el 2026-09-14 --- y se escribe
+             sabiendolo. Tres copias de una recuperacion es como una se
+             arregla y las otras dos no. Extraerlo pide un fichero nuevo:
+             `auth.js`, que es su dueno natural, tiene 130 B libres bajo el
+             tope. Queda anotado en OPTIMIZACIONES como propuesta, no
+             escondido en un TODO que nadie lee. */
+          var H = (window.Hub && window.Hub.textos) || {};
+          if (/sin identidad/.test(String(e && e.message)) && window.Identity
+              && window.Identity.crear && !caja.querySelector('.crear-id')) {
+            var nace = el('button', 'boton crear-id', H.idEntrar || 'Entrar');
+            nace.type = 'button';
+            nace.addEventListener('click', function () {
+              nace.disabled = true;
+              window.Identity.crear().then(function () {
+                nace.remove(); dice.textContent = '';
+                ok.click();       // se reintenta el paso que ya estaba escrito
+              }, function (x) {
+                nace.disabled = false;
+                dice.textContent = x && x.message ? x.message : String(x);
+              });
+            });
+            caja.appendChild(nace);
+          }
+        });
+      });
+    });
+  }
+
+  window.TorrePapel = { esND: esND, viste: viste, papelDelPiso: papelDelPiso,
+                        montaFirma: montaFirma };
 })();

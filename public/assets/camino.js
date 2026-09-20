@@ -91,7 +91,14 @@
         'margin-top:.5rem}' +
       '#torre .torre-mandos{display:flex;gap:.5rem;flex-wrap:wrap;' +
         'margin-top:.3rem}' +
-      '#torre .torre-mandos button{font:inherit;cursor:pointer}';
+      '#torre .torre-mandos button{font:inherit;cursor:pointer}' +
+      '#torre .torre-firma{display:flex;flex-direction:column;gap:.4rem;' +
+        'margin-top:.5rem}' +
+      '#torre .torre-firma textarea{font:inherit;width:100%;' +
+        'box-sizing:border-box;color:inherit;background:transparent;' +
+        'border:1px solid currentColor;border-radius:.3rem;padding:.4rem}' +
+      '#torre .torre-firma button{font:inherit;cursor:pointer;align-self:' +
+        'flex-start}';
     document.head.appendChild(s);
   }
 
@@ -177,7 +184,7 @@
          vista ahi. No la manda: quien decide hablar es la persona. */
       var mandos = el('div', 'torre-mandos');
       var entrada = document.getElementById('pregunta');
-      var probar = el('button', null, ui.torre_paso || 'Probar');
+      var probar = el('button', null, ui.torre_probar || 'Probar');
       probar.type = 'button';
       if (entrada) {
         probar.addEventListener('click', function () {
@@ -205,6 +212,12 @@
       }
       mandos.appendChild(probar);
       cuerpo.appendChild(mandos);
+      /* FIRMAR EL PASO. Lo monta el vecino, que es quien sabe de identidad y
+         de almacen; aqui solo se le dice donde. Si no esta cargado no se
+         pinta nada --- un boton que no firma es peor que su ausencia, que es
+         exactamente el argumento con el que este mismo boton llevaba meses
+         sin pintarse. */
+      if (P && P.montaFirma) { P.montaFirma(p, ui, mandos, el); }
 
       d.appendChild(cuerpo);
       escala.appendChild(d);
@@ -212,12 +225,15 @@
 
     sec.appendChild(escala);
 
-    /* FIRMAR: declarado, no pintado. Ver la cabecera. */
-    var nd = el('p', 'no-data',
-      'NO_DATA · «' + (ui.torre_firmar || 'Firmar este paso') + '»: el rack ' +
-      'todavia no recibe pasos firmados. El boton no se pinta porque no ' +
-      'llevaria a ningun sitio.');
-    sec.appendChild(nd);
+    /* AQUI IBA EL NO_DATA DE FIRMAR, y se retira el 2026-09-20 porque dejo
+       de ser cierto ese mismo dia. Decia «el rack todavia no recibe pasos
+       firmados». Medido de punta a punta: `POST /api/v1/paquetes` acepta un
+       paquete firmado, cae en la bandeja de la-fragua y `ingesta.py` lo mete
+       en la pool con su `user_hash`. Lo que hacia parecer cerrada la puerta
+       era un 403 de Cloudflare filtrando por User-Agent, no la aplicacion.
+       Un aviso que sobrevive a su causa es una mentira con cara de rigor ---
+       y es la misma familia que la pastilla del Instalador que el Soberano
+       tuvo que señalar en una captura tres semanas despues. */
 
     host.parentNode.insertBefore(sec, host.nextSibling);
 

@@ -53,12 +53,14 @@
   "camino_whoami_papel": "Cree que quien busca y quien es buscado son la MISMA persona. Es la condición del piso: si detecta que le pides buscar a otro, tiene orden de parar y decir por qué, no de hacerlo peor.",
   "camino_whoami_para_quien": "Para quien aceptó mil páginas de tratamiento de datos sin leer ninguna, que somos todos.",
   "camino_whoami_titulo": "¿Quién soy yo, ahí fuera?",
+  "torre_firmado": "Paso firmado",
   "torre_firmar": "Firmar este paso",
   "torre_guia_no_data": "No salió ningún dato, y eso también es un paso. ¿Cómo podría esta IA guiar mejor a alguien en lo que acabas de intentar?",
   "torre_hechos": "PreceptorOS no es un sistema operativo ni una distribución de Linux: es un compañero que corre modelos en TU máquina. Esta web es solo la puerta. El chat de esta página lo contesta el rack —unas pocas máquinas pequeñas en una casa—, no una nube. Nada se publica sin que una persona lo mire. Si no sabes un dato, di NO_DATA: inventarlo aquí es peor que no tenerlo.",
   "torre_lema": "Se practica, se firma, se asciende. Ningún peldaño obliga al siguiente.",
   "torre_nivel": "nivel",
   "torre_paso": "paso",
+  "torre_probar": "Probar aquí",
   "torre_titulo": "La Torre de la Ascensión"
  },
  "pendiente": {

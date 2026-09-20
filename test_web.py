@@ -2265,6 +2265,19 @@ class Hub(unittest.TestCase):
         self.assertGreater(j, 0, "el router no trae `camino.js`")
         self.assertLess(i, j, "el papel se carga DESPUES de quien lo usa")
 
+        # Y EL ORDEN HAY QUE FORZARLO, no basta con insertarlos en orden.
+        # Un `<script>` que inserta un guion nace con `async = true` --- al
+        # reves que uno escrito en el HTML ---, asi que los dos bajan a la vez
+        # y gana el que llegue antes. Medido en el navegador el 2026-09-20: con
+        # el cache caliente salia bien; con el frio, `camino.js` arrancaba sin
+        # `window.TorrePapel` y la Torre se pintaba SIN el boton de firmar, sin
+        # un solo error en consola. Un fallo que depende de quien llegue antes
+        # casi nunca pasa en la maquina de quien lo escribe.
+        codigo = re.sub(r"/\*.*?\*/", "", router, flags=re.S)
+        self.assertIn("async = false", codigo,
+                      "los dos guiones de la Torre corren en paralelo: el "
+                      "orden de insercion no ordena un script insertado por JS")
+
         listas = (PUBLICO / "sw-listas.js").read_text(encoding="utf-8")
         for pieza in ("/assets/camino.js", "/assets/camino-papel.js"):
             with self.subTest(pieza=pieza):
@@ -4529,6 +4542,15 @@ CLAVES_CAMINOS = {
     for c in ("titulo", "frase", "falla", "para_quien", "papel", "corpus")
 } | {"torre_titulo", "torre_lema", "torre_nivel", "torre_paso", "torre_firmar",
      "torre_guia_no_data",
+     # `torre_probar` y `torre_firmado` entran el 2026-09-20 arreglando un
+     # rotulo mudo: el boton que sube la practica al chat llevaba puesto
+     # `torre_paso`, que es el SUSTANTIVO «paso» --- «step», «pas», «Schritt»,
+     # «ступень» ---. Un boton etiquetado con un sustantivo no dice que hace, y
+     # llevaba asi en las ocho lenguas desde que existe la Torre. Se vio en el
+     # navegador, no en el gate: aqui pasaba entero, porque la clave existia y
+     # estaba traducida. Una traduccion correcta de la palabra equivocada es
+     # justo lo que ninguna prueba de paridad puede cazar.
+     "torre_probar", "torre_firmado",
      # `torre_hechos` entra el 2026-09-20 y no es un rotulo: es lo que el
      # modelo SABE del producto cuando contesta desde un piso. Se escribe
      # porque su ausencia se midio. Los tres candidatos del duelo del mini

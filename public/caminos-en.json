@@ -53,12 +53,14 @@
   "camino_whoami_papel": "It believes the person searching and the person being searched for are the SAME. That is the condition of this floor: if it detects you asking it to look up someone else, it is under orders to stop and say why, not to do it badly.",
   "camino_whoami_para_quien": "For those who accepted a thousand pages of data processing without reading any, which is all of us.",
   "camino_whoami_titulo": "Who Am I Out There?",
+  "torre_firmado": "Step signed",
   "torre_firmar": "Sign this step",
   "torre_guia_no_data": "No data came out, and that's also a step. How could this AI guide better in what you just tried?",
   "torre_hechos": "PreceptorOS is not an operating system or a Linux distribution: it is a companion that runs models on YOUR machine. This site is only the door. The chat on this page is answered by the rack —a few small machines in a house—, not a cloud. Nothing is published without a person looking at it. If you do not know something, say NO_DATA: inventing it here is worse than not having it.",
   "torre_lema": "It is practiced, signed, and ascended. No step compels the next.",
   "torre_nivel": "level",
   "torre_paso": "step",
+  "torre_probar": "Try it here",
   "torre_titulo": "The Tower of Ascension"
  },
  "pendiente": {

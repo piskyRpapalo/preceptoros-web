@@ -180,14 +180,23 @@
          boton que viste el chat ---: `camino-papel.js` decide el papel y
          `camino.js` pinta los pisos. Este va PRIMERO porque el otro le pide
          `window.TorrePapel` nada mas arrancar.
-         Dos `<script>` clasicos insertados asi se ejecutan en el orden de
-         insercion aunque lleven `defer`, que es justo la garantia que hace
-         falta. Aun asi `camino.js` comprueba que el vecino exista: una
+         Y HACE FALTA `async = false`, no `defer`. Esto lo escribi mal la
+         primera vez y el navegador lo canto: un `<script>` que inserta un
+         guion nace con `async = true` --- al reves que uno escrito en el
+         HTML ---, asi que los dos corrian a la vez y ganaba el que bajara
+         antes. Con el cache caliente salia bien y parecia correcto; con el
+         frio, `camino.js` arrancaba sin `window.TorrePapel` y la Torre se
+         pintaba SIN el boton de firmar, sin un solo error en consola. Un
+         fallo que depende de quien llegue antes es el peor de los tres que
+         he tenido hoy, porque en la maquina de quien lo escribe casi nunca
+         pasa.
+         `async = false` sobre un guion insertado si obliga al orden de
+         insercion. Aun asi `camino.js` comprueba que el vecino exista: una
          garantia del navegador no es motivo para no tener respaldo. */
       ['/assets/camino-papel.js', '/assets/camino.js'].forEach(function (src) {
         var s = document.createElement('script');
         s.src = src;
-        s.defer = true;
+        s.async = false;
         s.setAttribute('data-torre', '1');
         document.head.appendChild(s);
       });
