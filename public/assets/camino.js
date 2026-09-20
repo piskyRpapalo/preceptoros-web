@@ -50,8 +50,8 @@
   /* El orden es el de la Torre, y se declara: un `Object.keys` sobre el JSON
      lo dejaria al albur de como se escribio el fichero, y el orden de los
      peldanos ES la Torre. */
-  var PELDANOS = ['despertar', 'primeros_pasos', 'exposicion', 'silencio',
-                  'contribuir'];
+  var PELDANOS = ['despertar', 'primeros_pasos', 'exposicion', 'puertos',
+                  'whoami', 'killswitch', 'silencio', 'contribuir'];
 
   function el(tag, clase, texto) {
     var n = document.createElement(tag);
@@ -71,7 +71,7 @@
       '#torre{margin:2rem 0}' +
       '#torre .torre-lema{opacity:.8;margin:.2rem 0 1rem}' +
       '#torre .torre-escala{display:grid;gap:.75rem;' +
-        'grid-template-columns:repeat(auto-fit,minmax(15rem,1fr))}' +
+        'grid-template-columns:1fr}' +
       '#torre .torre-peldano{text-align:left;width:100%;cursor:pointer;' +
         'display:flex;flex-direction:column;gap:.35rem;font:inherit;' +
         'color:inherit;background:none}' +
@@ -80,7 +80,18 @@
       '#torre .torre-n{opacity:.6;font-size:.8em;text-transform:uppercase;' +
         'letter-spacing:.08em}' +
       '#torre .torre-falla{opacity:.75;font-size:.92em}' +
-      '#torre .torre-quien{opacity:.6;font-size:.88em;font-style:italic}';
+      '#torre .torre-quien{opacity:.6;font-size:.88em;font-style:italic}' +
+      '#torre details{border:1px solid currentColor;border-radius:.4rem;' +
+        'padding:.5rem .75rem;opacity:.95}' +
+      '#torre details[open]{opacity:1}' +
+      '#torre summary{cursor:pointer;font-weight:600;list-style:revert}' +
+      '#torre summary:focus-visible{outline:2px solid currentColor;' +
+        'outline-offset:2px}' +
+      '#torre .torre-cuerpo{display:flex;flex-direction:column;gap:.4rem;' +
+        'margin-top:.5rem}' +
+      '#torre .torre-mandos{display:flex;gap:.5rem;flex-wrap:wrap;' +
+        'margin-top:.3rem}' +
+      '#torre .torre-mandos button{font:inherit;cursor:pointer}';
     document.head.appendChild(s);
   }
 
@@ -113,40 +124,69 @@
     PELDANOS.forEach(function (p, i) {
       var titulo = ui['camino_' + p + '_titulo'];
       if (!titulo) { return; }
-      /* `button` y no `div`: se llega con el tabulador y se pulsa con Enter
-         sin que haya que escribir un solo manejador de teclado. */
-      var b = el('button', 'torre-peldano');
-      b.type = 'button';
-      b.appendChild(el('span', 'torre-n',
-        (ui.torre_nivel || 'nivel') + ' ' + (i + 1)));
-      b.appendChild(el('strong', null, titulo));
-      var frase = ui['camino_' + p + '_frase'];
-      if (frase) { b.appendChild(el('span', null, frase)); }
-      /* LA FALLA SE PINTA. Cada peldano declara lo que NO consigue, y ese es
-         el campo que convierte una promesa en una medida. Esconderlo dejaria
-         cinco eslogans. */
-      var falla = ui['camino_' + p + '_falla'];
-      if (falla) { b.appendChild(el('span', 'torre-falla', falla)); }
-      var quien = ui['camino_' + p + '_para_quien'];
-      if (quien) { b.appendChild(el('span', 'torre-quien', quien)); }
 
+      /* UN DESPLEGABLE POR PISO. `details`/`summary` nativos: se abren con el
+         teclado, se anuncian solos a un lector de pantalla y no llevan ni una
+         linea de JS para abrirse. Escribir esto a mano con `aria-expanded` y
+         manejadores de teclado seria mas codigo haciendo menos. */
+      var d = el('details', 'torre-peldano');
+      var res = el('summary');
+      res.appendChild(el('span', 'torre-n',
+        (ui.torre_nivel || 'nivel') + ' ' + (i + 1) + ' · '));
+      res.appendChild(document.createTextNode(titulo));
+      d.appendChild(res);
+
+      var cuerpo = el('div', 'torre-cuerpo');
+      var frase = ui['camino_' + p + '_frase'];
+      if (frase) { cuerpo.appendChild(el('p', null, frase)); }
+      /* LA FALLA SE PINTA. Cada peldano declara lo que NO consigue, y ese es
+         el campo que convierte una promesa en una medida. */
+      var falla = ui['camino_' + p + '_falla'];
+      if (falla) { cuerpo.appendChild(el('p', 'torre-falla', falla)); }
+      var quien = ui['camino_' + p + '_para_quien'];
+      if (quien) { cuerpo.appendChild(el('p', 'torre-quien', quien)); }
+
+      /* EL PAPEL DEL TESTER Y EL ADAPTADOR DEL PISO.
+         Los dos se declaran aunque no existan todavia, y se declaran DENTRO
+         del desplegable en vez de omitirse. Un hueco que no se ve no se
+         rellena nunca: quien abra el piso tiene que saber que el modelo aun
+         no sabe con quien cree que habla. */
+      var papel = ui['camino_' + p + '_papel'];
+      cuerpo.appendChild(el('p', papel ? 'torre-papel' : 'no-data',
+        papel || ('NO_DATA · con quien cree el modelo que habla en este piso: '
+                  + 'sin escribir todavia')));
+      var lora = ui['camino_' + p + '_lora'];
+      cuerpo.appendChild(el('p', lora ? 'torre-lora' : 'no-data',
+        lora || 'NO_DATA · este piso no tiene adaptador asignado'));
+
+      /* EL BOTON DE PROBAR sube la practica al chat de arriba y lleva la
+         vista ahi. No la manda: quien decide hablar es la persona. */
+      var mandos = el('div', 'torre-mandos');
+      var entrada = document.getElementById('pregunta');
+      var probar = el('button', null, ui.torre_paso || 'Probar');
+      probar.type = 'button';
       if (entrada) {
-        b.addEventListener('click', function () {
+        probar.addEventListener('click', function () {
           entrada.value = practica(p, ui);
           entrada.focus();
-          /* Algunos campos de este sitio escuchan `input` para medir o para
-             habilitar el boton de enviar. Si no se dispara, el campo se ve
-             lleno y el resto de la pagina cree que esta vacio. */
+          /* Algunos campos escuchan `input` para medir o para habilitar el
+             boton de enviar. Sin disparar el evento, el campo se ve lleno y el
+             resto de la pagina cree que esta vacio. */
           entrada.dispatchEvent(new Event('input', { bubbles: true }));
           entrada.scrollIntoView({ block: 'center', behavior: 'smooth' });
         });
       } else {
-        /* No hay `#pregunta` en esta pagina: falta la pieza, no el nivel. */
-        b.disabled = true;
-        b.title = 'NO_DATA · no hay campo de chat en esta pagina';
+        /* Falta la pieza de la pagina, no el nivel de la persona. */
+        probar.disabled = true;
+        probar.title = 'NO_DATA · no hay campo de chat en esta pagina';
       }
-      escala.appendChild(b);
+      mandos.appendChild(probar);
+      cuerpo.appendChild(mandos);
+
+      d.appendChild(cuerpo);
+      escala.appendChild(d);
     });
+
     sec.appendChild(escala);
 
     /* FIRMAR: declarado, no pintado. Ver la cabecera. */

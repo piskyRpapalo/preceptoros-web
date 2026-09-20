@@ -4447,7 +4447,14 @@ class Reescrituras(unittest.TestCase):
 # por el otro es media traduccion, y media traduccion se ve en produccion.
 CLAVES_CAMINOS = {
     f"camino_{n}_{c}"
-    for n in ("despertar", "primeros_pasos", "exposicion", "silencio", "contribuir")
+    # LOS TRES ULTIMOS entraron el 2026-09-20 y van nombrados aqui a proposito:
+    # esta lista es la firma. Anadir un peldano tiene que ser una decision, no
+    # un descuido, y el gate se cae hasta que alguien lo escribe.
+    #   puertos    · el entorno local: que escucha en tu propia maquina
+    #   whoami     · el entorno online: que hay de ti ahi fuera
+    #   killswitch · cortar, y medir cuanto se deshace de verdad
+    for n in ("despertar", "primeros_pasos", "exposicion", "silencio",
+              "contribuir", "puertos", "whoami", "killswitch")
     for c in ("titulo", "frase", "falla", "para_quien")
 } | {"torre_titulo", "torre_lema", "torre_nivel", "torre_paso", "torre_firmar",
      "torre_guia_no_data"}
