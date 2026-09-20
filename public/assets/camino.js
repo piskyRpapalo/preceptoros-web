@@ -255,11 +255,26 @@
        evento con `modelo` vacio no dejaria el chat como estaba: lo apagaria
        con «sin adaptador», que es peor que no hacer nada. */
     if (!viste(PELDANOS[0], ui)) {
+      /* DOS AVISOS, NO UNO. `preceptor:brain` solo lo dispara un CLIC en el
+         banco de cerebros; quien llega y no toca nada no lo dispara nunca ---
+         y ese es el caso mayoritario. `preceptor:cerebros` lo lanza
+         `selector-modelo.js` en cuanto su registro esta cargado, que es la
+         condicion que de verdad faltaba.
+         MEDIDO EN PRODUCCION EL 2026-09-20, y es un fallo de visitante nuevo:
+         con el `localStorage` limpio, la Torre monta y viste el chat ANTES de
+         que `selector-modelo.js` termine de cargar su registro, asi que
+         `CerebroPuesto()` devolvia vacio, el piso 1 no vestia, y el cabezal se
+         quedaba en «Modelo: ninguno» --- sin poder dar un solo turno.
+         Con mi `localStorage` sucio de pruebas anteriores NO se veia: el
+         guardado tapaba el hueco. Es la tercera vez hoy que un estado mio de
+         pruebas esconde un fallo que solo sufre quien llega por primera vez. */
       var unaVez = function () {
         document.removeEventListener('preceptor:brain', unaVez);
+        document.removeEventListener('preceptor:cerebros', unaVez);
         viste(PELDANOS[0], ui);
       };
       document.addEventListener('preceptor:brain', unaVez);
+      document.addEventListener('preceptor:cerebros', unaVez);
     }
   }
 

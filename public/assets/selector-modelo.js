@@ -100,6 +100,12 @@
     var prosa = (tx && tx.cerebros) || {};
     var paises = (tx && tx.paises) || {};
     REG = reg; PROSA = prosa;
+    /* SE ANUNCIA QUE EL REGISTRO YA ESTA. Hasta que este fetch termina,
+       `CerebroPuesto()` no puede devolver la puerta, y quien pregunte antes se
+       lleva vacio. Quien lo necesita y por que esta en `camino.js`, que es
+       donde muerde. */
+    document.dispatchEvent(new CustomEvent('preceptor:cerebros',
+      { detail: { puerta: porDefecto() } }));
     /* DOS CASAS PARA EL MISMO GUION (2026-09-08). En la portada monta bajo
        `#especificaciones` y enseña los DOS de puerta; en Comunidad monta bajo
        `#cerebros-banco` y enseña LOS DEMAS, que es donde compararlos tiene

@@ -2438,6 +2438,45 @@ class Hub(unittest.TestCase):
                 self.assertIn(f"'{pieza}'", listas,
                               f"{pieza} no viaja en el shell")
 
+    def test_el_visitante_NUEVO_tambien_tiene_companero(self):
+        """EL CHAT NO PUEDE DEPENDER DE QUE YA HAYAS ELEGIDO CEREBRO.
+
+        Medido en produccion el 2026-09-20 con el `localStorage` limpio: la
+        Torre monta y viste el chat ANTES de que `selector-modelo.js` termine
+        de cargar `cerebros.json`, asi que `CerebroPuesto()` devolvia vacio, el
+        piso 1 no vestia, y el cabezal se quedaba en «Modelo: ninguno» --- sin
+        poder dar un solo turno.
+
+        El reintento existia y escuchaba `preceptor:brain`. Pero ese evento
+        solo lo dispara un CLIC en el banco de cerebros: **quien llega y no
+        toca nada no lo dispara nunca**, que es el caso mayoritario.
+
+        Y NO SE VEIA CON MI NAVEGADOR: tenia un modelo guardado de pruebas
+        anteriores y el guardado tapaba el hueco. Es la tercera vez hoy que un
+        estado mio de pruebas esconde un fallo que solo sufre quien entra por
+        primera vez --- por eso esta prueba mira el CODIGO y no un navegador
+        con historia.
+        """
+        import re as _re
+        sel = (PUBLICO / "assets" / "selector-modelo.js").read_text(encoding="utf-8")
+        cam = (PUBLICO / "assets" / "camino.js").read_text(encoding="utf-8")
+        cod_sel = _re.sub(r"/\*.*?\*/", "", sel, flags=_re.S)
+        cod_cam = _re.sub(r"/\*.*?\*/", "", cam, flags=_re.S)
+
+        self.assertIn("preceptor:cerebros", cod_sel,
+                      "el selector no anuncia que su registro ya esta cargado")
+        self.assertIn("preceptor:cerebros", cod_cam,
+                      "la Torre no escucha cuando el registro termina de "
+                      "cargar: un visitante nuevo se queda sin companero")
+        # Y el aviso tiene que dispararse donde SE CARGA el registro, no en el
+        # clic: si solo saliera de `elegir()`, seria el mismo bug con otro
+        # nombre.
+        i = cod_sel.find("REG = reg")
+        j = cod_sel.find("preceptor:cerebros")
+        self.assertGreater(i, 0, "el selector ya no asigna REG asi")
+        self.assertLess(abs(j - i), 400,
+                        "el aviso no sale junto a la carga del registro")
+
     def test_los_dos_guiones_de_la_Torre_se_cargan_en_orden(self):
         """`camino-papel.js` ANTES que `camino.js`, y los dos en el precache.
 
