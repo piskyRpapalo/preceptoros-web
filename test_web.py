@@ -4512,7 +4512,15 @@ CLAVES_CAMINOS = {
     #            rellena; una promesa no.
     for c in ("titulo", "frase", "falla", "para_quien", "papel", "corpus")
 } | {"torre_titulo", "torre_lema", "torre_nivel", "torre_paso", "torre_firmar",
-     "torre_guia_no_data"}
+     "torre_guia_no_data",
+     # `torre_hechos` entra el 2026-09-20 y no es un rotulo: es lo que el
+     # modelo SABE del producto cuando contesta desde un piso. Se escribe
+     # porque su ausencia se midio. Los tres candidatos del duelo del mini
+     # inventaron que es PreceptorOS --- «una distribucion de Linux», «una
+     # plataforma para gestionar informacion» --- y no por ser pequenos: el
+     # papel nunca se lo habia dicho. Un modelo al que no le das los hechos
+     # rellena el hueco, y lo rellena con seguridad.
+     "torre_hechos"}
 
 CLAVES_DUELOS = {
     "duelo_titulo", "duelo_input", "duelo_enviar", "duelo_col_base",

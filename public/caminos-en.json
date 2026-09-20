@@ -55,6 +55,7 @@
   "camino_whoami_titulo": "Who Am I Out There?",
   "torre_firmar": "Sign this step",
   "torre_guia_no_data": "No data came out, and that's also a step. How could this AI guide better in what you just tried?",
+  "torre_hechos": "PreceptorOS is not an operating system or a Linux distribution: it is a companion that runs models on YOUR machine. This site is only the door. The chat on this page is answered by the rack —a few small machines in a house—, not a cloud. Nothing is published without a person looking at it. If you do not know something, say NO_DATA: inventing it here is worse than not having it.",
   "torre_lema": "It is practiced, signed, and ascended. No step compels the next.",
   "torre_nivel": "level",
   "torre_paso": "step",

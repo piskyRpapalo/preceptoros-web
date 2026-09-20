@@ -65,7 +65,19 @@
     var r = (window.PR && window.PR.reglas) || [];
     var base = Array.isArray(r) ? r.join('. ') : String(r || '');
     var t = ui['camino_' + p + '_titulo'] || p;
-    var partes = [base, '[' + t + ']'];
+    /* LOS HECHOS DEL PRODUCTO VAN DELANTE DE TODO, y se ponen porque su
+       ausencia se MIDIO. En `duelo_mini.py`, el 2026-09-20, los tres modelos
+       pequenos contestaron a «no se que es esto» inventandose el producto:
+       «una distribucion de Linux», «una plataforma para gestionar
+       informacion». Ninguno mentia a proposito ni fallaba por ser pequeno ---
+       el papel no se lo habia dicho nunca, y un modelo al que le falta un dato
+       rellena el hueco, y lo rellena con seguridad.
+       Van primero porque lo que abre un system prompt pesa mas que lo que lo
+       cierra, y van en la lengua de la pagina como todo lo demas de aqui. */
+    var partes = [base];
+    var hechos = ui.torre_hechos;
+    if (hechos && !esND(hechos)) { partes.push(hechos); }
+    partes.push('[' + t + ']');
     ['frase', 'falla', 'papel'].forEach(function (c) {
       var v = ui['camino_' + p + '_' + c];
       if (v && !esND(v)) { partes.push(v); }
