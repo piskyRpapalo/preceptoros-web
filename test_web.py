@@ -231,6 +231,18 @@ TRADUCCIONES = {PUBLICO / i for i in IDIOMAS if i != FUENTE}
 # y siempre a un fichero POR LENGUA, para que una visita siga descargando su
 # idioma y nada mas.
 FUERA_DEL_BLOQUE = {"agentes": "agentes-{lengua}.json"}
+# Y LOS DIECINUEVE DEL MOTOR, desde el 2026-09-20. El Soberano mando la
+# descarga del modelo del LorAtelier a la PORTADA --- «eso ya no corresponde
+# ahi» ---, y es donde tenia que estar: el piso 1 de la Torre promete «pon el
+# aparato en modo avion y sigue hablando» y no habia forma de bajar el modelo
+# que lo hace posible desde la pagina que lo promete.
+#
+# No caben en el bloque: medido, `public/el/index.html` deja 107 bytes libres
+# de 16.384 y `ru` 539, y las traducciones pesan ~1.150 y ~1.020. Van a
+# `motor-<lengua>.json`, la misma solucion que el killswitch esa manana ---
+# segunda vez en el dia que el tope decide donde vive un rotulo.
+FUERA_DEL_BLOQUE.update({k: "motor-{lengua}.json" for k in (
+    ('arrancando', 'avisoCifra', 'avisoRed', 'bajando', 'bajarNavegador', 'causaError', 'causaSinAdaptador', 'causaSinApi', 'descargar', 'falloDescarga', 'falloNavegador', 'listoLocal', 'mirandoGpu', 'mirandoNavegador', 'navBajado', 'navListo', 'navPesa', 'navYaEsta', 'usarNavegador'))})
 
 
 def paginas_de_contenido():
@@ -4141,6 +4153,12 @@ class Traducciones(unittest.TestCase):
         "enviar.js": "sus ocho rotulos viven en enviar-<idioma>.js desde el "
                      "2026-09-14; los comprueba "
                      "test_los_rotulos_del_ENVIO_viven_en_las_ocho",
+        "engine.js": "sus 19 rotulos viven en motor-<idioma>.json desde el "
+                     "2026-09-20, cuando la descarga del modelo se mudo del "
+                     "LorAtelier a la portada: no caben en el bloque del "
+                     "griego, que deja 107 bytes libres. El bloque propio "
+                     "sigue mandando --- la familia solo rellena lo que falte "
+                     "---, y la paridad la comprueba LasTresFamilias",
     }
 
     def test_NINGUNA_pagina_cae_al_respaldo_en_castellano(self):
@@ -4526,9 +4544,20 @@ class Traducciones(unittest.TestCase):
                         f"«{clave}» salio del bloque i18n de {idioma} y su "
                         f"fichero {f.name} no existe")
                     datos = json.loads(f.read_text(encoding="utf-8"))
-                    self.assertIn(clave, datos,
+                    # DOS CONVENCIONES, Y LAS DOS SON BUENAS. `agentes-*.json`
+                    # pone sus claves en la raiz; las FAMILIAS --- caminos,
+                    # duelos, herramientas y desde hoy motor --- las ponen bajo
+                    # `ui`, porque la raiz lleva la procedencia y la marca de
+                    # revision nativa, que es informacion SOBRE las cadenas y
+                    # no una cadena mas.
+                    #
+                    # Mezclarlas seria peor que aceptar las dos: una clave
+                    # llamada `revision` chocaria con el campo `revision`, y el
+                    # choque no se veria hasta que alguien lo nombrase asi.
+                    donde = datos.get("ui") if isinstance(datos.get("ui"), dict) else datos
+                    self.assertIn(clave, donde,
                         f"{f.name} no trae «{clave}»")
-                    self.assertTrue(datos[clave],
+                    self.assertTrue(donde[clave],
                         f"{f.name} trae «{clave}» vacio, que en pantalla se ve "
                         "igual que no traerlo")
 
@@ -5068,8 +5097,13 @@ CLAVES_HERRAMIENTAS = {
     "herr_titulo", "herr_lema", "herr_web", "herr_app", "herr_audio",
     "herr_cerrada", "herr_copia_ai", "herr_errores"}
 
+# LA CUARTA FAMILIA, 2026-09-20. Nace por el mismo motivo que las tres de
+# arriba y con la misma forma: los rotulos del motor local no caben en el
+# bloque de la portada. Se firma aqui para que anadir uno sea una decision.
+CLAVES_MOTOR = set(('arrancando', 'avisoCifra', 'avisoRed', 'bajando', 'bajarNavegador', 'causaError', 'causaSinAdaptador', 'causaSinApi', 'descargar', 'falloDescarga', 'falloNavegador', 'listoLocal', 'mirandoGpu', 'mirandoNavegador', 'navBajado', 'navListo', 'navPesa', 'navYaEsta', 'usarNavegador'))
+
 FAMILIAS = {"caminos": CLAVES_CAMINOS, "duelos": CLAVES_DUELOS,
-            "herramientas": CLAVES_HERRAMIENTAS}
+            "herramientas": CLAVES_HERRAMIENTAS, "motor": CLAVES_MOTOR}
 
 
 class LasTresFamilias(unittest.TestCase):

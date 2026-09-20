@@ -112,14 +112,63 @@
      era: esta linea vive a media altura del IIFE, y abortarlo se llevaba por
      delante el `addEventListener` de Enviar que se registra mas abajo. El
      chat se quedaba con su caja de texto y sin nadie escuchando el boton. */
+  /* DOS ZONAS, Y LAS DOS A LA VEZ. Hasta el 2026-09-20 esto era un `if/else`:
+     donde habia motor local NO habia rack, y al reves. Por eso el motor se
+     habia mudado al LorAtelier --- «que es donde se elige y se mide uno»,
+     decia el comentario de abajo --- y por eso la portada no tenia forma de
+     descargar nada.
+
+     EL SOBERANO LO CAZO MIRANDO EL MOVIL: el piso 1 de la Torre promete «pon
+     el aparato en modo avion y sigue hablando», y en la portada no habia
+     ningun boton que bajara el modelo que hace eso posible. La promesa era
+     imposible de cumplir desde la pagina que la hace.
+
+     Que sean excluyentes era el error. El rack y el modelo del navegador no
+     compiten: el rack contesta HOY y sin descargar nada, y el local es lo
+     unico que contesta SIN RED. Se ofrecen los dos, cada uno en su sitio, y
+     elige quien lee.
+
+     CADA UNO EN SU SITIO, literalmente. `ofrecerDescarga()` empieza con
+     `zone.innerHTML = ''`, asi que compartir zona con el rack borraria su
+     estado en cuanto el motor pintase --- y al reves. Por eso el motor recibe
+     ayudantes atados a SU zona: no es un adorno de orden, es lo que impide que
+     uno se lleve por delante al otro sin que nadie lo vea. */
+  function ayudantes(zona) {
+    return {
+      zone: zona,
+      estado: function (texto, clase) {
+        zona.innerHTML = '';
+        var q = document.createElement('p');
+        q.className = clase || 'tenue';
+        q.textContent = texto;
+        zona.appendChild(q);
+        return q;
+      },
+      nota: function (texto) {
+        var q = document.createElement('p');
+        q.className = 'tenue'; q.style.marginTop = '.6rem';
+        q.textContent = texto;
+        zona.appendChild(q);
+        return q;
+      },
+      fila: function () {
+        var d = document.createElement('div');
+        d.className = 'fila'; zona.appendChild(d); return d;
+      },
+      boton: boton, listo: listo, salida: salida, ofrecerJSON: ofrecerJSON
+    };
+  }
+
   if (window.Engine) {
-    window.Engine.install({
-      zone: motorZona, T: T, CDN: CDN, MODELO: MODELO,
-      estado: estado, boton: boton, fila: fila, nota: nota, listo: listo,
-      salida: salida, ofrecerJSON: ofrecerJSON,
-      setEngine: function () {}, setSession: function () {}
-    });
-  } else if (window.Rack) {
+    var zonaLocal = document.createElement('div');
+    zonaLocal.id = 'motor-local';
+    motorZona.parentNode.insertBefore(zonaLocal, motorZona.nextSibling);
+    var ay = ayudantes(zonaLocal);
+    ay.T = T; ay.CDN = CDN; ay.MODELO = MODELO;
+    ay.setEngine = function () {}; ay.setSession = function () {};
+    window.Engine.install(ay);
+  }
+  if (window.Rack) {
     /* El cerebro del rack no se busca ni se descarga: ya esta. Lo unico que
        falta saber es QUE companero contesta, y eso lo dice el router. */
     document.addEventListener('preceptor:companero', function (e) {
@@ -145,7 +194,11 @@
       document.dispatchEvent(new CustomEvent('preceptor:brain', {
         detail: { name: d.modelo, live: false } }));
     });
-  } else {
+  }
+  /* Y el respaldo SOLO si no hay ninguno de los dos. Antes colgaba del `else`
+     de la cadena, asi que bastaba con que existiera uno para no ofrecerlo
+     nunca --- correcto con la cadena, y falso en cuanto dejo de serlo. */
+  if (!window.Engine && !window.Rack) {
     ofrecerJSON(T.causaEnBenchmark);
   }
 

@@ -163,7 +163,47 @@
 
   // Arranca cuando chat.js entrega el contexto, no antes: sin `C` esto
   // reventaria en la primera linea.
-  function start() { decidir(); }
+  /* LOS ROTULOS, SI LA PAGINA NO LOS TRAE.
+
+     Este motor se mudo el 2026-09-20 del LorAtelier a la PORTADA, por orden
+     del Soberano: «Loratelier aun tiene la descarga de modelo, eso ya no
+     corresponde ahi». Y donde si corresponde es donde se promete usarlo ---
+     el piso 1 de la Torre dice «pon el aparato en modo avion y sigue
+     hablando», y hasta hoy no habia forma de bajar el modelo que hace eso
+     posible desde la pagina que lo promete.
+
+     PERO LAS 19 CLAVES NO CABEN EN LA PORTADA. Medido: `public/el/index.html`
+     tiene 107 bytes libres de 16.384 y `ru` 539; las traducciones pesan ~1.150
+     y ~1.020. Asi que viven en `motor-<lengua>.json`, la misma solucion que se
+     tomo esta manana para el killswitch --- segunda vez en el dia que el tope
+     de fichero decide donde vive un rotulo, y por eso queda escrito.
+
+     EL BLOQUE PROPIO MANDA; la familia es el respaldo. Es la regla de la casa,
+     ya escrita en `auth.js`: si la pagina trae sus rotulos no se pide nada a
+     la red, porque una peticion que no hace falta es una peticion que puede
+     fallar. Solo se rellena lo que falte, y si no llega, los botones se
+     quedan con su clave a la vista en vez de vacios --- feo y legible antes
+     que bonito y mudo. */
+  function rotulos() {
+    if (C.T && C.T.descargar) { return Promise.resolve(); }
+    var lang = (document.documentElement.lang || 'es').slice(0, 2);
+    return fetch('/motor-' + lang + '.json')
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .catch(function () { return null; })
+      .then(function (d) {
+        if (!d) { return fetch('/motor-es.json').then(function (r) { return r.json(); })
+                    .catch(function () { return null; }); }
+        return d;
+      })
+      .then(function (d) {
+        var ui = (d && d.ui) || {};
+        Object.keys(ui).forEach(function (k) {
+          if (!C.T[k]) { C.T[k] = ui[k]; }
+        });
+      });
+  }
+
+  function start() { rotulos().then(decidir, decidir); }
   window.Engine = {
     install: install, stream: stream,
     espera: function () { return Promise.resolve(calentando); }

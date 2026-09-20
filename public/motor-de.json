@@ -1,0 +1,29 @@
+{
+ "esquema": 1,
+ "idioma": "de",
+ "revision": "pendiente-revision-nativa",
+ "procedencia": {
+  "traducido_por": "copiadas literalmente de `<lengua>/benchmark.html`, donde vivian desde que existe el motor local. NO son una traduccion nueva: son LAS MISMAS cadenas, movidas de sitio el 2026-09-20 --- por eso no hay un modelo que declarar aqui, y decir uno seria atribuir un trabajo que nadie hizo hoy. Su procedencia original es la del bloque del que salen."
+ },
+ "ui": {
+  "arrancando": "Motor wird gestartet…",
+  "avisoCifra": "Es sind ~2 GB. Wir sagen es, bevor du drückst, nicht danach.",
+  "avisoRed": "Es wird nur einmal über das Netz geladen. Danach liegt es im Zwischenspeicher deines Browsers.",
+  "bajando": "Wird geladen",
+  "bajarNavegador": "Die Browser-KI laden (~2,7-4 GB)",
+  "causaError": "Ursache: Fehler bei der Abfrage der GPU.",
+  "causaSinAdaptador": "Ursache: WebGPU ist da, aber keine nutzbare GPU.",
+  "causaSinApi": "Ursache: dieser Browser bietet weder WebGPU noch LanguageModel.",
+  "descargar": "Modell laden (~2 GB, einmalig)",
+  "falloDescarga": "NO_DATA · Modell konnte nicht geladen werden",
+  "falloNavegador": "NO_DATA · Fehler mit der Browser-KI",
+  "listoLocal": "Motor bereit. Schreib deine Frage.",
+  "mirandoGpu": "GPU wird abgefragt…",
+  "mirandoNavegador": "Browser-KI wird abgefragt…",
+  "navBajado": "Browser-KI geladen. Schreib deine Frage.",
+  "navListo": "Browser-KI bereit. Schreib deine Frage.",
+  "navPesa": "Es sind 2,7-4 GB. Wir sagen es, bevor du drückst.",
+  "navYaEsta": "Die KI ist schon auf deinem Gerät. Null Download.",
+  "usarNavegador": "Die KI deines Browsers benutzen"
+ }
+}
