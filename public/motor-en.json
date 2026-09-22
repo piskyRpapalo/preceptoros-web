@@ -40,7 +40,8 @@
     "fichaVram": "video memory",
     "fichaVel": "Speed: depends on your device. Measured on your first turn.",
     "fichaAqui": "Measured on your device",
-    "pisoHabla": "Speaking",
-    "pisoBajaPrimero": "This floor runs INSIDE your browser, so you can keep going in airplane mode. First the model has to be downloaded, just once: press the download button right below the chat and write again."
+    "pisoBajaPrimero": "This floor runs INSIDE your browser, so you can keep going in airplane mode. First the model has to be downloaded, just once: press the download button right below the chat and write again.",
+    "pisoLlevaNav": "Download and talk to an AI model in your browser",
+    "pisoLlevaRack": "Talk to {n}, an AI model on the rack"
   }
 }

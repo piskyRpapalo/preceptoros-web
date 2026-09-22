@@ -255,7 +255,7 @@ CLAVES_MOTOR_LISTA = ('arrancando', 'avisoCifra', 'avisoRed', 'bajando', 'bajarN
     # `ficha-cerebro.js` y `piso-chat.js`, en la ventana de descarga y encima
     # del chat. Frases de verdad, que el guardian de castellano suelto no deja
     # vivir dentro de un guion.
-    'fichaNav', 'fichaRack', 'fichaTec', 'fichaBaja', 'fichaVez', 'fichaVram', 'fichaVel', 'fichaAqui', 'pisoHabla', 'pisoBajaPrimero')
+    'fichaNav', 'fichaRack', 'fichaTec', 'fichaBaja', 'fichaVez', 'fichaVram', 'fichaVel', 'fichaAqui', 'pisoLlevaNav', 'pisoLlevaRack', 'pisoBajaPrimero')
 FUERA_DEL_BLOQUE.update({k: "motor-{lengua}.json" for k in CLAVES_MOTOR_LISTA})
 
 

@@ -156,3 +156,18 @@
 .ajuste-linea:not(:hover):not(:focus-within) .ajuste-nota{display:none}
 #panel-ajustes{font-size:.8rem}
 .idiomas-lista .ajuste-idioma{font-size:.76rem;padding:.35rem .5rem}
+
+/* --- EL PARPADEO DE LLEGADA (2026-09-23) -----------------------------------
+   Lo pone `lleva.js` al recuadro al que se manda a alguien: tres latidos de
+   oro, y se va. El Soberano: «el recuadro completo parpadea, asi sabe que le
+   estamos enviando». Con menos movimiento pedido, un filete fijo en su lugar. */
+@keyframes llamada{0%,100%{box-shadow:0 0 0 0 rgba(242,208,138,0)}
+  50%{box-shadow:0 0 0 3px var(--oro),0 0 26px 8px rgba(242,208,138,.55)}}
+.llamada{animation:llamada .55s ease-in-out 3;outline:none}
+@media (prefers-reduced-motion:reduce){
+  .llamada{animation:none;outline:3px solid var(--oro);outline-offset:3px}}
+/* El boton del titulo del piso: violeta, como los demas mandos. */
+.piso-lleva{margin-top:.35rem;font:inherit;font-size:.8rem;font-weight:700;cursor:pointer;
+  color:#fff;background:var(--violeta);border:1px solid var(--oro);
+  border-radius:999px;padding:.45rem .9rem}
+.piso-lleva:hover,.piso-lleva:focus-visible{background:color-mix(in srgb,var(--violeta) 88%,#fff)}

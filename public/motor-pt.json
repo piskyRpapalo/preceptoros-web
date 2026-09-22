@@ -41,7 +41,8 @@
     "fichaVram": "memória de vídeo",
     "fichaVel": "Velocidade: depende do teu aparelho. Mede-se no teu primeiro turno.",
     "fichaAqui": "Medido no teu aparelho",
-    "pisoHabla": "Fala",
-    "pisoBajaPrimero": "Este piso corre DENTRO do teu navegador, para poderes continuar em modo de voo. Primeiro é preciso descarregar o modelo, uma só vez: carrega no botão de descarga, logo abaixo do chat, e volta a escrever."
+    "pisoBajaPrimero": "Este piso corre DENTRO do teu navegador, para poderes continuar em modo de voo. Primeiro é preciso descarregar o modelo, uma só vez: carrega no botão de descarga, logo abaixo do chat, e volta a escrever.",
+    "pisoLlevaNav": "Descarrega e fala com um modelo de IA no teu navegador",
+    "pisoLlevaRack": "Fala com {n}, um modelo de IA no rack"
   }
 }

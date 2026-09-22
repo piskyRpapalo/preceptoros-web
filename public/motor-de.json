@@ -41,7 +41,8 @@
     "fichaVram": "Videospeicher",
     "fichaVel": "Tempo: hängt von deinem Gerät ab. Gemessen bei deinem ersten Zug.",
     "fichaAqui": "Auf deinem Gerät gemessen",
-    "pisoHabla": "Es spricht",
-    "pisoBajaPrimero": "Diese Etage läuft IN deinem Browser, damit du im Flugmodus weitermachen kannst. Zuerst muss das Modell heruntergeladen werden, nur einmal: tippe auf den Download-Knopf direkt unter dem Chat und schreib noch einmal."
+    "pisoBajaPrimero": "Diese Etage läuft IN deinem Browser, damit du im Flugmodus weitermachen kannst. Zuerst muss das Modell heruntergeladen werden, nur einmal: tippe auf den Download-Knopf direkt unter dem Chat und schreib noch einmal.",
+    "pisoLlevaNav": "Lade ein KI-Modell in deinen Browser und sprich mit ihm",
+    "pisoLlevaRack": "Sprich mit {n}, einem KI-Modell im Rack"
   }
 }

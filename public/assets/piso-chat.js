@@ -72,7 +72,7 @@
       '#piso-actual .piso-titulo{margin:.1rem 0 .25rem;padding:0;border:0;' +
         'font-size:1.15rem;letter-spacing:.02em;text-transform:none;color:#fff}' +
       '#piso-actual .piso-habla{margin:0;font-size:.78rem;opacity:.92}' +
-      '#piso-actual .piso-habla b{color:var(--oro,#f2d08a)}' +
+      '#piso-actual .piso-lleva{text-shadow:none}' +   // el halo es del titulo, no del boton
       '#piso-actual .torre-mandos{margin-top:.5rem;display:flex;gap:.5rem;flex-wrap:wrap}' +
       // `display:flex` le gana a `hidden` por especificidad: sin esto la firma
       // se ve aunque este escondida. Paso una vez, se vio en el navegador.
@@ -115,17 +115,23 @@
     if (lam) b.style.setProperty('--lamina', 'url(/assets/torre/piso-' + lam + '.webp)');
     b.appendChild(el('p', 'piso-n', nivel));
     b.appendChild(el('h2', 'piso-titulo', UI['camino_' + p + '_titulo'] || p));
-    var habla = el('p', 'piso-habla');
+    /* UN BOTON VIOLETA, NO UNA LINEA (el Soberano, 2026-09-23): «Habla: El
+       Mini · en tu navegador» pasa a ser una invitacion que se pulsa y lleva
+       a la ficha del modelo, bajo el chat, que parpadea al llegar
+       (`lleva.js`). En los pisos del navegador invita a descargar; en los del
+       rack, a conocer a quien contesta. */
     if (q) {
-      habla.appendChild(document.createTextNode(X('pisoHabla') + ': '));
-      habla.appendChild(el('b', null, (PROSA[q.c.id] || {}).nombre || q.c.id));
-      habla.appendChild(document.createTextNode(' · ' +
-        X(q.donde === 'navegador' ? 'fichaNav' : 'fichaRack')));
+      var nombre = (PROSA[q.c.id] || {}).nombre || q.c.id;
+      var ir = el('button', 'piso-lleva', q.donde === 'navegador'
+        ? X('pisoLlevaNav')
+        : X('pisoLlevaRack').replace('{n}', nombre));
+      ir.type = 'button';
+      ir.setAttribute('data-lleva', '#especificaciones');
+      b.appendChild(ir);
     } else {
       // Sin reparto para este piso no se inventa quien habla: se dice.
-      habla.appendChild(el('span', 'no-data', 'NO_DATA · cerebros.json › pisos › ' + p));
+      b.appendChild(el('p', 'no-data', 'NO_DATA · cerebros.json › pisos › ' + p));
     }
-    b.appendChild(habla);
     /* La firma, debajo del titulo. `montaFirma` pone su boton en `mandos` y su
        caja en el padre de `mandos`: aqui el padre es la propia barra.
        SOLO CUANDO YA SE HA HABLADO (el Soberano, al verla): firmar un paso que
@@ -185,8 +191,8 @@
   window.sinMotor = function () {
     var q = actual && cerebroDe(actual);
     if (!q || q.donde !== 'navegador') return null;
-    var b = document.querySelector('#motor-local button');
-    if (b) { b.scrollIntoView({ block: 'center', behavior: 'smooth' }); b.focus({ preventScroll: true }); }
+    // Se le lleva a la ventana de descarga, y parpadea: ahi esta el boton.
+    if (window.Lleva) window.Lleva('#especificaciones');
     return X('pisoBajaPrimero');
   };
 

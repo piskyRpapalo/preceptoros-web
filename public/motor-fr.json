@@ -41,7 +41,8 @@
     "fichaVram": "mémoire vidéo",
     "fichaVel": "Vitesse : dépend de ton appareil. Mesurée à ton premier tour.",
     "fichaAqui": "Mesuré sur ton appareil",
-    "pisoHabla": "Parle",
-    "pisoBajaPrimero": "Cet étage tourne DANS ton navigateur, pour que tu puisses continuer en mode avion. Il faut d’abord télécharger le modèle, une seule fois : appuie sur le bouton de téléchargement juste sous le chat et écris à nouveau."
+    "pisoBajaPrimero": "Cet étage tourne DANS ton navigateur, pour que tu puisses continuer en mode avion. Il faut d’abord télécharger le modèle, une seule fois : appuie sur le bouton de téléchargement juste sous le chat et écris à nouveau.",
+    "pisoLlevaNav": "Télécharge et parle avec un modèle d’IA dans ton navigateur",
+    "pisoLlevaRack": "Parle avec {n}, un modèle d’IA sur le rack"
   }
 }

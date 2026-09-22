@@ -25,6 +25,14 @@
  * navegacion interior y que genera `nav.py` desde las propias portadas.
  */
 (function () {
+  /* EL GESTO DE LLEVAR (2026-09-23) viaja con el cabezal porque este fichero
+     esta en las 56 paginas y una etiqueta mas no cabe en el griego. Se pide
+     tarde y sin bloquear: es un adorno de navegacion, no la navegacion. */
+  if (!document.querySelector('script[src="/assets/lleva.js"]')) {
+    var ll = document.createElement('script');
+    ll.src = '/assets/lleva.js'; ll.async = true;
+    document.head.appendChild(ll);
+  }
   var nav = document.getElementById('cab-nav');
   if (!nav) return;
 

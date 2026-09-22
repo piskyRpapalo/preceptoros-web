@@ -41,7 +41,8 @@
     "fichaVram": "memoria video",
     "fichaVel": "Velocità: dipende dal tuo dispositivo. Si misura al tuo primo turno.",
     "fichaAqui": "Misurato sul tuo dispositivo",
-    "pisoHabla": "Parla",
-    "pisoBajaPrimero": "Questo piano gira DENTRO il tuo browser, così puoi continuare in modalità aereo. Prima bisogna scaricare il modello, una volta sola: premi il pulsante di download subito sotto la chat e scrivi di nuovo."
+    "pisoBajaPrimero": "Questo piano gira DENTRO il tuo browser, così puoi continuare in modalità aereo. Prima bisogna scaricare il modello, una volta sola: premi il pulsante di download subito sotto la chat e scrivi di nuovo.",
+    "pisoLlevaNav": "Scarica e parla con un modello di IA nel tuo browser",
+    "pisoLlevaRack": "Parla con {n}, un modello di IA sul rack"
   }
 }

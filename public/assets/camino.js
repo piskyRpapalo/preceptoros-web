@@ -198,7 +198,9 @@
       subir.addEventListener('click', function () {
         var arriba = document.getElementById('piso-actual') ||
                      document.getElementById('chat');
-        if (arriba) { arriba.scrollIntoView({ block: 'start', behavior: 'smooth' }); }
+        // `lleva.js` desplaza Y hace parpadear; sin el, se desplaza solo.
+        if (arriba && window.Lleva) { window.Lleva(arriba); }
+        else if (arriba) { arriba.scrollIntoView({ block: 'start', behavior: 'smooth' }); }
         var entrada = document.getElementById('pregunta');
         if (entrada) { entrada.focus({ preventScroll: true }); }
       });
