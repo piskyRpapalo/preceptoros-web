@@ -1,4 +1,4 @@
-# Estado técnico de la web · 2026-09-08
+# Estado técnico de la web · 2026-09-08, cifras al 2026-09-22
 
 Escrito para que una sesión nueva pueda trabajar el GitHub de los dos
 proyectos sin volver a medir nada. Todas las cifras de aquí salen de contar
@@ -16,20 +16,24 @@ recibe el navegador. Se despliega empujando a `main`.
 
 | | |
 |---|---|
-| Páginas HTML | **59** — 7 × 8 idiomas, más `index`, `hitos` y `manifiesto` en la raíz |
+| Páginas HTML | **58** — 7 × 8 idiomas, más las de la raíz |
 | Idiomas | es · en · fr · pt · it · de · ru · el |
-| Hojas de estilo | 23 |
-| Guiones | 47 |
-| Ficheros de datos | 31 `.json` + el `webmanifest` |
-| Peso que se despliega | **4,6 MB de `assets/`**, de los que 2,2 MB son `assets/caras/` |
-| Peso en disco | 110 MB — los otros 105 son `public/downloads/*.gguf`, **ignorados por git** |
+| Hojas de estilo | 26 |
+| Guiones | 82 |
+| Ficheros de datos | 94 `.json` en la raíz (familias por lengua: `motor`, `caminos`, `duelos`, `herramientas`, `taller`…) + el `webmanifest` |
+| Peso que se despliega | **4,4 MB de `assets/`**, de los que 2,2 MB son `assets/caras/` |
+| Peso en disco | los `public/downloads/*.gguf` siguen **ignorados por git** |
 | Tope por fichero | **16 KiB**, vigilado por el gate |
-| Pruebas | `test_web.py` **93** · `arnes_sw.mjs` **24/24** |
+| Pruebas | `test_web.py` **153** (cero saltadas) · `arnes_sw.mjs` **23/23** |
 
-**El fichero que menos margen tiene es `sw.js`: 16.003 B de 16.384.** Quedan
-381 B. El siguiente que se le acerca es `hub-textos.json` con 15.908. Quien
-toque el worker cuenta bytes antes de escribir, y si no caben **parte por
-asunto, nunca recorta un comentario**.
+**El fichero que menos margen tiene YA NO es `sw.js`** --- se partió en
+`sw.js` + `sw-listas.js` y hoy deja 5.150 B libres. Medido el 2026-09-22, los
+cinco más apretados son: `el/index.html` **65 B libres**, `assets/auth.js` 130,
+`assets/nubes.css` 220, `el/profile.html` 232 y `assets/escenario.js` 260.
+**Ninguna etiqueta nueva cabe en la portada griega**: por eso `cola.js` se carga
+desde `rack.js` al primer turno. Quien toque esos cinco cuenta bytes antes de
+escribir, y si no caben **parte por asunto, nunca recorta un comentario**. Hasta
+ese día este párrafo avisaba del fichero equivocado.
 
 Los `.gguf` de `public/downloads/` pesan 105 MB y **no llegan a Cloudflare**:
 `.gitignore:13` los excluye y el despliegue sale del repo. Los enlaces de
@@ -245,6 +249,4 @@ Hay tres salidas y la elección es del Soberano, no de la sesión:
 
 ---
 
-*Gate al cerrar: `test_web.py` **93** · `arnes_sw.mjs` **24/24** · desplegado
-en `main` y verificado en producción, versión de worker
-`preceptoros-2026-11-d`.*
+*Gate al 2026-09-22: `test_web.py` **153/153**, cero saltadas · `arnes_sw.mjs` **23/23** · worker `preceptoros-2026-17-aaw` (desplegado: `aav`).*
