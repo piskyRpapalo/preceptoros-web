@@ -108,3 +108,16 @@
    y aqui la diferencia entre lo medido y lo dicho es media doctrina. */
 .ficha-lore{margin:0;padding-left:.7rem;border-left:2px solid var(--oro);
   font-style:italic;font-size:.8rem;line-height:1.5;color:var(--bronce-hondo)}
+
+/* EL NOMBRE DEL MODELO EN ORO, Y LATE AL LLEGAR (2026-09-23). El Soberano:
+   «haz que el nombre del modelo parpadee, y escribelo en dorado». Cuando
+   `lleva.js` manda a alguien a esta ficha, el recuadro late (`.llamada`) y el
+   nombre late con el: es lo primero que tiene que leer quien llega. El
+   brillo es un `drop-shadow` y no un halo de texto --el halo es de las
+   cifras vivas, por canon--. Mas especifico que la regla de `nubes.css` a
+   proposito, para no depender de que hoja cargue antes. */
+#especificaciones .ficha-cerebro .cerebro-cab .ficha-nombre{color:var(--oro)}
+@keyframes nombre-oro{0%,100%{filter:none}
+  50%{filter:drop-shadow(0 0 6px var(--oro)) brightness(1.35)}}
+.llamada .ficha-nombre{animation:nombre-oro .55s ease-in-out 3}
+@media (prefers-reduced-motion:reduce){.llamada .ficha-nombre{animation:none}}
