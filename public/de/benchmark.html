@@ -47,18 +47,12 @@
 <section id="probador">
   <!-- Base contra adaptador · ver `comparar.js`. -->
   <div id="comparar"></div>
-  <h2>Wähle und miss deinen Motor</h2>
-  <p class="guia">Hier wird gewählt, mit welchem Gehirn du sprichst, und das Ergebnis wird gestoppt. Das lebt im Benchmark und nicht auf der Startseite, und zwar mit Absicht: drei Downloads von mehreren Gigabyte anzubieten, kaum dass die Seite offen ist, ist auf einem Telefon teuer, und die meisten kommen nicht deswegen.</p>
-  <div id="chat" class="panel">
-    <div id="dialogo"></div>
-    <textarea id="pregunta" class="chat-input" placeholder="Schreib einen Zug, um ihn zu messen..." rows="3"></textarea>
-    <div class="fila chat-acciones"><button id="enviar" type="button" class="boton enviar" aria-label="Senden"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M3 20.5v-6l8-2.5-8-2.5v-6L22 12z"/></svg><span class="rotulo">Senden</span></button></div>
-    <div id="motor"></div>
-    <div id="local-ai" class="fila"></div>
-    <p id="brain" class="brain"></p>
-  </div>
-  <textarea id="medida-json" rows="5" readonly hidden></textarea>
-  <button type="button" id="medida-copiar" data-copia="medida-json" data-hecho="Kopiert ✓" data-manual="Markieren und Strg+C" hidden>Die Messung kopieren</button>
+  <!-- Lo PRIMERO y UNICO de esta pagina es la comparativa: la monta `duelo.js`
+       justo detras de esta seccion. El bloque «elige y mide tu motor» --un
+       chat suelto con su medidor-- se retiro el 2026-09-22 por orden del
+       Soberano: «lo primero y unico que debe verse son las ventanas de chat
+       de la comparativa». Un segundo chat encima de la comparativa hacia
+       bajar la pagina para encontrar lo que se venia a ver. -->
 </section>
 
 <!-- Plegada: es archivo, no accion. Ver `sistema.css`. -->

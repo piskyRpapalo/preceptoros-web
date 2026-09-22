@@ -809,8 +809,19 @@ class Estructura(unittest.TestCase):
             t = (PUBLICO / idi / "benchmark.html").read_text(encoding="utf-8")
             with self.subTest(idioma=idi):
                 self.assertIn('id="comparar"', t, "el LorAtelier no compara nada")
-                self.assertLess(t.index('id="comparar"'), t.index('id="chat"'),
-                                "las pestañas no estan en el borde de arriba del chat")
+                # LA COMPARATIVA ES LO UNICO. Hasta el 2026-09-22 aqui se
+                # exigia que las pestañas fueran «en el borde de arriba del
+                # chat»: habia un chat suelto con su medidor ENCIMA de la
+                # comparativa, y habia que bajar para encontrar lo que se venia
+                # a ver. El Soberano: «lo primero y unico que debe verse son las
+                # ventanas de chat de la comparativa». Ahora se exige lo
+                # contrario --- que ese chat suelto NO vuelva --- y que la
+                # comparativa (`duelo.js`) siga cargandose.
+                self.assertNotIn('id="chat"', t,
+                                 "vuelve el chat suelto encima de la comparativa")
+                self.assertNotIn('id="pregunta"', t,
+                                 "vuelve la caja de un chat que no es el duelo")
+                self.assertIn("/assets/duelo.js", t, "sin duelo no hay comparativa")
                 self.assertIn("/assets/comparar.js", t)
         cmp = (PUBLICO / "assets" / "comparar.js").read_text(encoding="utf-8")
         self.assertIn("preceptor:localai", cmp,
