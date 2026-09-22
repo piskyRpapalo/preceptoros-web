@@ -215,63 +215,19 @@
   window.HubMarca = marca;
 })();
 
-/* --- la piel, en la rueda junto a los idiomas -----------------------------
- * Oscuro por DEFECTO, y lo trae el marcado --`data-tema` en el `<html>`-- para
- * que no haya destello claro antes de que corra el javascript. Esto solo
- * permite cambiarlo.
+/* --- la piel: SIEMPRE OSCURA (2026-09-22) ----------------------------------
+ * Aqui vivia el mando «Piel · Oscura / Clara» de la rueda. El Soberano lo
+ * retiro: «vamos a dejarlo siempre en oscura». La rueda queda con lo que se
+ * usa, y la clara no se mantenia: cada pieza nueva --las laminas de la Torre,
+ * la cola, el duelo-- se disenaba y se miraba solo en oscuro.
  *
- * Se guarda: un tema que se elige y no se recuerda obliga a elegirlo en cada
- * visita. Si el navegador no deja --modo privado-- se cambia igual y solo se
- * pierde al recargar, que es degradar y no romper. Vive aqui porque es un
- * mando, y porque `hub.js` estaba en su techo. */
+ * LO QUE QUEDA NO ES NADA, Y ES A PROPOSITO. El oscuro ya lo trae el marcado
+ * --`data-tema` en el `<html>`, sin destello antes del javascript--. Pero quien
+ * eligio «clara» antes de hoy lo tiene guardado en `preceptor:tema`, y con el
+ * mando retirado se quedaria en claro SIN BOTON PARA VOLVER. Asi que se
+ * fuerza el oscuro y se borra esa preferencia: una sola vez por aparato, y
+ * despues esto no hace nada. */
 (function () {
-  var caja = document.getElementById('panel-ajustes');
-  var bloque = document.getElementById('i18n');
-  if (!caja || !bloque) return;
-  var T = JSON.parse(bloque.textContent);
-  var raiz = document.documentElement;
-
-  function guardado() {
-    try { return localStorage.getItem('preceptor:tema'); } catch (e) { return null; }
-  }
-  var previo = guardado();
-  if (previo) raiz.dataset.tema = previo;
-
-  var rotulo = document.createElement('p');
-  rotulo.className = 'panel-rotulo';
-  rotulo.textContent = T.piel || '';
-  var fila = document.createElement('div');
-  fila.className = 'ajuste-piel';
-
-  function pinta() {
-    var hoy = raiz.dataset.tema || 'oscuro';
-    Array.prototype.forEach.call(fila.children, function (b) {
-      if (b.dataset.tema === hoy) b.setAttribute('aria-current', 'true');
-      else b.removeAttribute('aria-current');
-    });
-  }
-  [['oscuro', T.pielOscura], ['claro', T.pielClara]].forEach(function (par) {
-    var b = document.createElement('button');
-    b.type = 'button';
-    b.className = 'ajuste-idioma';
-    b.textContent = par[1] || par[0];
-    b.dataset.tema = par[0];
-    b.addEventListener('click', function () {
-      raiz.dataset.tema = par[0];
-      try { localStorage.setItem('preceptor:tema', par[0]); } catch (e) { }
-      pinta();
-    });
-    fila.appendChild(b);
-  });
-
-  /* `hub.js` rellena este panel con los idiomas y lo hace con `innerHTML = ""`.
-     Se espera a que termine antes de colgar la piel debajo, o se borraria. */
-  function cuelga() {
-    if (caja.querySelector('.ajuste-piel')) return;
-    caja.appendChild(rotulo);
-    caja.appendChild(fila);
-    pinta();
-  }
-  if (window.Hub) cuelga();
-  else document.addEventListener('hub:listo', cuelga);
+  document.documentElement.dataset.tema = 'oscuro';
+  try { localStorage.removeItem('preceptor:tema'); } catch (e) { /* privado */ }
 })();

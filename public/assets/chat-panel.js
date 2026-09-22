@@ -115,9 +115,9 @@
  * Un mando pertenece al mueble donde vive, no al fichero que primero tuvo
  * sitio para el. */
 
-/* La PIEL --el interruptor claro/oscuro de la rueda-- vive en `hub-cola.js`.
- * No cabia aqui: este fichero llego a su techo de 10.240 B con los cuatro
- * asuntos que ya lleva. Se parte, no se recorta. */
+/* La PIEL --el interruptor claro/oscuro de la rueda-- vivio en `hub-cola.js`
+ * porque aqui no cabia. Se retiro el 2026-09-22: el sitio es siempre oscuro, y
+ * alli solo queda lo que devuelve al oscuro a quien habia elegido claro. */
 
 /* --- Capa 2 · el cabezal se aparta cuando se escribe ------------------------
  * Una clase en `body` y el resto lo hace el css. Se pone al enfocar el campo y
@@ -139,7 +139,7 @@
 })();
 
 /* --- Capa 5 · el chat a pantalla completa ----------------------------------
- * La entrada vive en la rueda, junto al idioma y la piel: es una preferencia
+ * La entrada vive en la rueda, junto al idioma: es una preferencia
  * de como se mira, no una accion sobre la conversacion. La salida es un aspa
  * DENTRO del chat, porque una vez dentro la rueda ya no se ve.
  *
