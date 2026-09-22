@@ -135,10 +135,27 @@
        aparece con tres y la portada con ocho, la rueda dira tres -- y sera
        verdad, porque saltar a una lengua que esa pagina no tiene es un 404. */
     var ajustes = document.getElementById('panel-ajustes');
+    /* PLEGADAS (2026-09-22). Las ocho lenguas iban abiertas, una por renglon,
+       y medido a 634 px eran 8 x 40 px: la rueda entera. Los ajustes de verdad
+       --aprender, valorar, firma, piel-- quedaban debajo, detras de un scroll
+       que nadie sabia que habia. El Soberano: «Ajustes > Idioma > [8 lenguas]».
+
+       Un `<details>` y no un boton con JavaScript: plegar y desplegar, el foco,
+       Intro y Espacio, y el estado que anuncia el lector de pantalla los trae
+       el navegador. Cerrado dice la lengua EN QUE ESTAS --«Idioma · Español»--,
+       que es lo unico que hace falta saber sin abrirlo. */
     if (ajustes && !ajustes.querySelector('.ajuste-idioma')) {
-      if (T.cabIdioma) ajustes.appendChild(el('p', 'panel-rotulo', T.cabIdioma));
       var NOMBRES = {es:'Español', en:'English', fr:'Français', pt:'Português',
                      it:'Italiano', de:'Deutsch', ru:'Русский', el:'Ελληνικά'};
+      var aquiLang = document.documentElement.lang;
+      var pliego = el('details', 'ajuste-idiomas');
+      var cab = el('summary', 'ajuste-idioma');
+      if (T.cabIdioma) cab.appendChild(el('span', 'idiomas-rotulo', T.cabIdioma));
+      cab.appendChild(el('b', null, NOMBRES[aquiLang] || aquiLang));
+      pliego.appendChild(cab);
+      var lista = el('div', 'idiomas-lista');
+      pliego.appendChild(lista);
+      ajustes.insertBefore(pliego, ajustes.firstChild);
       var vistos = {};
       Array.prototype.forEach.call(
         document.querySelectorAll('link[rel="alternate"][hreflang]'), function (l) {
@@ -160,8 +177,8 @@
           try { destino = new URL(l.getAttribute('href'), location.href).pathname; }
           catch (e) { destino = '/' + c + '/'; }
           var a = enlace('ajuste-idioma', NOMBRES[c] || c, destino);
-          if (document.documentElement.lang === c) a.setAttribute('aria-current', 'true');
-          ajustes.appendChild(a);
+          if (aquiLang === c) a.setAttribute('aria-current', 'true');
+          lista.appendChild(a);
         });
     }
 

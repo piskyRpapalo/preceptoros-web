@@ -118,3 +118,41 @@
 #cabezal #identity .identity-icono:hover,
 #cabezal #identity .identity-icono:focus-visible{
   background:rgba(242,208,138,.16);color:var(--oro);border-color:var(--oro)}
+
+/* --- DENTRO DE LA RUEDA (2026-09-22) ---------------------------------------
+   IDIOMA PLEGADO. Las ocho lenguas eran la rueda entera; ahora son un
+   `<details>` que cerrado dice en que lengua estas (ver `cabezal-rotulos.js`).
+   Abierto, dos columnas: cuatro renglones en vez de ocho. */
+.ajuste-idiomas>summary{list-style:none;display:flex;gap:.45rem;align-items:center}
+.ajuste-idiomas>summary::-webkit-details-marker{display:none}
+.ajuste-idiomas>summary::after{content:"\25BE";margin-left:auto;transition:transform .18s}
+.ajuste-idiomas[open]>summary::after{transform:rotate(180deg)}
+.idiomas-rotulo{font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--oro)}
+.idiomas-lista{display:grid;grid-template-columns:1fr 1fr;gap:.25rem;padding-top:.3rem}
+
+/* LAS CASILLAS NACIERON SIN HOJA. `aprender.js` y `elegir.js` crean
+   `.ajuste-linea` y ninguna hoja la pintaba: la casilla salia sola en su
+   renglon, centrada, y el nombre pegado a la nota --«reescriturasCuando»--.
+   Nadie lo vio porque vivia debajo de las ocho lenguas, detras de un scroll.
+   Al plegarlas quedo a la vista, que es justo lo que tiene que pasar.
+
+   CADA FILA LLEVA SU NUBE OPACA, como las lenguas: en la portada la rueda no
+   tiene fondo (`consiento.css`) y cada opcion es una nube; sin la suya el
+   texto caeria encima de la pagina. En las interiores es violeta sobre
+   violeta, que no se nota y no estorba. */
+.ajuste-linea{display:grid;grid-template-columns:auto 1fr;gap:.2rem .55rem;
+  align-items:center;padding:.5rem .6rem;border-radius:var(--radius);
+  background:var(--violeta);box-shadow:0 6px 18px rgba(36,26,53,.30);
+  color:#fff;font-size:.82rem;cursor:pointer}
+.ajuste-linea:hover{background:color-mix(in srgb, var(--violeta) 94%, #fff)}
+.ajuste-linea input{margin:0;width:1.05rem;height:1.05rem;accent-color:var(--oro)}
+.ajuste-nombre{font-weight:600;line-height:1.25}
+.ajuste-nota{grid-column:2;font-size:.72rem;line-height:1.4;opacity:.85}
+/* MINIMA Y COMPACTA (el Soberano, 2026-09-22). La rueda se lee de un vistazo:
+   nombre y casilla. La nota --por que existe, que guarda-- sigue ahi, pero
+   aparece al pasar por la fila o al tocarla, no antes. No se borra: quien
+   pregunta «que hace esto» la encuentra justo donde lo pregunta. */
+.ajuste-linea:not(:hover):not(:focus-within) .ajuste-nota{display:none}
+#panel-ajustes{font-size:.8rem}
+.idiomas-lista .ajuste-idioma{font-size:.76rem;padding:.35rem .5rem}

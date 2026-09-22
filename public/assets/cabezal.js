@@ -230,7 +230,8 @@
      estrenandose hoy en esas veinticuatro paginas, la rueda habria sido alli
      un boton que no abre nada.
 
-     NACE CERRADO aunque el marcado traiga la clase: quien lo pinta puede
+     NACE CERRADO aunque el marcado traiga la clase --salvo que la persona la
+     dejara abierta en la pagina anterior: ver `recuerda`--. Quien lo pinta puede
      haberla reescrito, y el estado que vale es el que se declara aqui, junto
      al `aria-expanded` que lo acompana. Un panel abierto cuyo boton dice
      `false` es peor que uno cerrado.
@@ -252,9 +253,26 @@
       boton.setAttribute('aria-expanded',
         panel.classList.contains('cerrado') ? 'false' : 'true');
     }
-    function cierra() { panel.classList.add('cerrado'); pinta(); }
+    /* LA RUEDA ES UNA PARA TODA LA VISITA (2026-09-22). El Soberano: «abierta
+       y visible en todas las pestanas; no es un panel por pagina». Cada pagina
+       la montaba cerrada: quien cambiaba de idioma llegaba sin ella y no veia
+       si habia funcionado. `sessionStorage` porque es la visita, no la
+       persona; try/catch porque en ventana privada lanza, y sin memoria nace
+       cerrada, como siempre. */
+    var llave = 'p0x-' + panel.id;
+    function recuerda(abierta) {
+      try {
+        if (abierta) sessionStorage.setItem(llave, '1');
+        else sessionStorage.removeItem(llave);
+      } catch (e) { /* sin memoria: cerrada, como antes */ }
+    }
+    function cierra() { panel.classList.add('cerrado'); pinta(); recuerda(false); }
 
-    cierra();
+    panel.classList.add('cerrado');
+    var estaba = false, abiertaAqui = false;
+    try { estaba = sessionStorage.getItem(llave) === '1'; } catch (e) { /* idem */ }
+    if (estaba) panel.classList.remove('cerrado');
+    pinta();
     boton.addEventListener('click', function () {
       var abrir = panel.classList.contains('cerrado');
       todos.forEach(function (o) {
@@ -262,7 +280,9 @@
         o.b.setAttribute('aria-expanded', 'false');
       });
       if (abrir) panel.classList.remove('cerrado');
+      abiertaAqui = abrir;
       pinta();
+      recuerda(abrir);
     });
     /* Escape cierra: un panel que cae sobre la pagina y solo se cierra
        volviendo al boton obliga a cruzar la pantalla para recuperar lo de
@@ -270,8 +290,12 @@
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape' && !panel.classList.contains('cerrado')) cierra();
     });
-    // Elegir companero cierra: ya se hizo lo que se vino a hacer.
-    document.addEventListener('preceptor:companero', cierra);
+    /* Elegir companero cierra: ya se hizo lo que se vino a hacer. SOLO si se
+       abrio en ESTA pagina: `chat-router.js` anuncia el companero inicial al
+       cargar, y cerraba --y olvidaba-- la rueda heredada. Visto en navegador. */
+    document.addEventListener('preceptor:companero', function () {
+      if (abiertaAqui) cierra();
+    });
   }
 
   /* LO QUE EL CABEZAL DICE --las cuatro puertas, los idiomas de la rueda, la
