@@ -1,28 +1,36 @@
 {
- "esquema": 1,
- "idioma": "en",
- "procedencia": {
-  "traducido_por": "copiadas literalmente de `<lengua>/benchmark.html`, donde vivian desde que existe el motor local. NO son una traduccion nueva: son LAS MISMAS cadenas, movidas de sitio el 2026-09-20 --- por eso no hay un modelo que declarar aqui, y decir uno seria atribuir un trabajo que nadie hizo hoy. Su procedencia original es la del bloque del que salen."
- },
- "ui": {
-  "arrancando": "Starting the engine...",
-  "avisoCifra": "About 400 MB. We say it before you click, not after.",
-  "avisoRed": "Downloads over the network once. Cached in your browser.",
-  "bajando": "Downloading",
-  "bajarNavegador": "Download the browser's AI (~2.7-4 GB)",
-  "causaError": "Cause: error querying the GPU.",
-  "causaSinAdaptador": "Cause: WebGPU exists but no usable GPU.",
-  "causaSinApi": "Cause: this browser exposes neither WebGPU nor LanguageModel.",
-  "descargar": "Download model (~2 GB, once)",
-  "falloDescarga": "NO_DATA - failed to download the model",
-  "falloNavegador": "NO_DATA - browser AI failed",
-  "listoLocal": "Engine ready. Write your question.",
-  "mirandoGpu": "Querying the GPU...",
-  "mirandoNavegador": "Querying the browser's AI...",
-  "navBajado": "Browser AI downloaded. Write your question.",
-  "navListo": "Browser AI ready. Write your question.",
-  "navPesa": "About 2.7-4 GB. We say it before you click.",
-  "navYaEsta": "The AI is already on your device. Zero download.",
-  "usarNavegador": "Use your browser's AI"
- }
+  "esquema": 1,
+  "idioma": "en",
+  "procedencia": {
+    "traducido_por": "copiadas literalmente de `<lengua>/benchmark.html`, donde vivian desde que existe el motor local. NO son una traduccion nueva: son LAS MISMAS cadenas, movidas de sitio el 2026-09-20 --- por eso no hay un modelo que declarar aqui, y decir uno seria atribuir un trabajo que nadie hizo hoy. Su procedencia original es la del bloque del que salen."
+  },
+  "ui": {
+    "arrancando": "Starting the engine...",
+    "avisoCifra": "About 400 MB. We say it before you click, not after.",
+    "avisoRed": "Downloads over the network once. Cached in your browser.",
+    "bajando": "Downloading",
+    "bajarNavegador": "Download the browser's AI (~2.7-4 GB)",
+    "causaError": "Cause: error querying the GPU.",
+    "causaSinAdaptador": "Cause: WebGPU exists but no usable GPU.",
+    "causaSinApi": "Cause: this browser exposes neither WebGPU nor LanguageModel.",
+    "descargar": "Download model (~2 GB, once)",
+    "falloDescarga": "NO_DATA - failed to download the model",
+    "falloNavegador": "NO_DATA - browser AI failed",
+    "listoLocal": "Engine ready. Write your question.",
+    "mirandoGpu": "Querying the GPU...",
+    "mirandoNavegador": "Querying the browser's AI...",
+    "navBajado": "Browser AI downloaded. Write your question.",
+    "navListo": "Browser AI ready. Write your question.",
+    "navPesa": "About 2.7-4 GB. We say it before you click.",
+    "navYaEsta": "The AI is already on your device. Zero download.",
+    "usarNavegador": "Use your browser's AI",
+    "colaPos": "Position {n} in the rack's queue",
+    "colaEspera": "full answer in ≤ {s} s",
+    "colaCasi": "almost there",
+    "colaFrio": "waking the model",
+    "colaSwap": "switching models",
+    "colaLlena": "The rack's queue is full: try again in a minute",
+    "colaTecho": "A ceiling: worked out from the most the model can write",
+    "colaMedida": "figures measured on the rack, not promised"
+  }
 }

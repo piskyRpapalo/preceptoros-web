@@ -1,29 +1,37 @@
 {
- "esquema": 1,
- "idioma": "it",
- "revision": "pendiente-revision-nativa",
- "procedencia": {
-  "traducido_por": "copiadas literalmente de `<lengua>/benchmark.html`, donde vivian desde que existe el motor local. NO son una traduccion nueva: son LAS MISMAS cadenas, movidas de sitio el 2026-09-20 --- por eso no hay un modelo que declarar aqui, y decir uno seria atribuir un trabajo que nadie hizo hoy. Su procedencia original es la del bloque del que salen."
- },
- "ui": {
-  "arrancando": "Avvio del motore…",
-  "avisoCifra": "Sono ~2 GB. Lo diciamo prima che premi, non dopo.",
-  "avisoRed": "Si scarica dalla rete una volta sola. Resta in cache nel tuo browser.",
-  "bajando": "Scaricamento",
-  "bajarNavegador": "Scarica l'IA del browser (~2,7-4 GB)",
-  "causaError": "Causa: errore nel consultare la GPU.",
-  "causaSinAdaptador": "Causa: c'è WebGPU ma nessuna GPU utilizzabile.",
-  "causaSinApi": "Causa: questo browser non espone WebGPU né LanguageModel.",
-  "descargar": "Scarica il modello (~2 GB, una volta)",
-  "falloDescarga": "NO_DATA · errore nello scaricare il modello",
-  "falloNavegador": "NO_DATA · errore con l'IA del browser",
-  "listoLocal": "Motore pronto. Scrivi la tua domanda.",
-  "mirandoGpu": "Consultazione della GPU…",
-  "mirandoNavegador": "Consultazione dell'IA del browser…",
-  "navBajado": "IA del browser scaricata. Scrivi la tua domanda.",
-  "navListo": "IA del browser pronta. Scrivi la tua domanda.",
-  "navPesa": "Sono 2,7-4 GB. Lo diciamo prima che premi.",
-  "navYaEsta": "L'IA è già sul tuo dispositivo. Zero scaricamento.",
-  "usarNavegador": "Usa l'IA del tuo browser"
- }
+  "esquema": 1,
+  "idioma": "it",
+  "revision": "pendiente-revision-nativa",
+  "procedencia": {
+    "traducido_por": "copiadas literalmente de `<lengua>/benchmark.html`, donde vivian desde que existe el motor local. NO son una traduccion nueva: son LAS MISMAS cadenas, movidas de sitio el 2026-09-20 --- por eso no hay un modelo que declarar aqui, y decir uno seria atribuir un trabajo que nadie hizo hoy. Su procedencia original es la del bloque del que salen."
+  },
+  "ui": {
+    "arrancando": "Avvio del motore…",
+    "avisoCifra": "Sono ~2 GB. Lo diciamo prima che premi, non dopo.",
+    "avisoRed": "Si scarica dalla rete una volta sola. Resta in cache nel tuo browser.",
+    "bajando": "Scaricamento",
+    "bajarNavegador": "Scarica l'IA del browser (~2,7-4 GB)",
+    "causaError": "Causa: errore nel consultare la GPU.",
+    "causaSinAdaptador": "Causa: c'è WebGPU ma nessuna GPU utilizzabile.",
+    "causaSinApi": "Causa: questo browser non espone WebGPU né LanguageModel.",
+    "descargar": "Scarica il modello (~2 GB, una volta)",
+    "falloDescarga": "NO_DATA · errore nello scaricare il modello",
+    "falloNavegador": "NO_DATA · errore con l'IA del browser",
+    "listoLocal": "Motore pronto. Scrivi la tua domanda.",
+    "mirandoGpu": "Consultazione della GPU…",
+    "mirandoNavegador": "Consultazione dell'IA del browser…",
+    "navBajado": "IA del browser scaricata. Scrivi la tua domanda.",
+    "navListo": "IA del browser pronta. Scrivi la tua domanda.",
+    "navPesa": "Sono 2,7-4 GB. Lo diciamo prima che premi.",
+    "navYaEsta": "L'IA è già sul tuo dispositivo. Zero scaricamento.",
+    "usarNavegador": "Usa l'IA del tuo browser",
+    "colaPos": "Posto {n} nella coda del rack",
+    "colaEspera": "risposta completa in ≤ {s} s",
+    "colaCasi": "quasi",
+    "colaFrio": "sto svegliando il modello",
+    "colaSwap": "cambio di modello",
+    "colaLlena": "La coda del rack è piena: riprova tra un minuto",
+    "colaTecho": "È un tetto: calcolato sul massimo che il modello può scrivere",
+    "colaMedida": "cifre misurate sul rack, non promesse"
+  }
 }

@@ -1,29 +1,37 @@
 {
- "esquema": 1,
- "idioma": "fr",
- "revision": "pendiente-revision-nativa",
- "procedencia": {
-  "traducido_por": "copiadas literalmente de `<lengua>/benchmark.html`, donde vivian desde que existe el motor local. NO son una traduccion nueva: son LAS MISMAS cadenas, movidas de sitio el 2026-09-20 --- por eso no hay un modelo que declarar aqui, y decir uno seria atribuir un trabajo que nadie hizo hoy. Su procedencia original es la del bloque del que salen."
- },
- "ui": {
-  "arrancando": "Demarrage du moteur...",
-  "avisoCifra": "Environ 400 Mo. Nous le disons avant que vous cliquiez, pas apres.",
-  "avisoRed": "Telecharge une seule fois, puis mis en cache dans votre navigateur.",
-  "bajando": "Telechargement",
-  "bajarNavegador": "Telecharger l'IA du navigateur (~2,7-4 Go)",
-  "causaError": "Cause : erreur en consultant le GPU.",
-  "causaSinAdaptador": "Cause : WebGPU existe mais aucun GPU utilisable.",
-  "causaSinApi": "Cause : ce navigateur n'expose ni WebGPU ni LanguageModel.",
-  "descargar": "Telecharger le modele (~2 Go, une fois)",
-  "falloDescarga": "NO_DATA - echec du telechargement du modele",
-  "falloNavegador": "NO_DATA - echec avec l'IA du navigateur",
-  "listoLocal": "Moteur pret. Ecrivez votre question.",
-  "mirandoGpu": "Consultation du GPU...",
-  "mirandoNavegador": "Consultation de l'IA du navigateur...",
-  "navBajado": "IA du navigateur telechargee. Ecrivez votre question.",
-  "navListo": "IA du navigateur prete. Ecrivez votre question.",
-  "navPesa": "Environ 2,7-4 Go. Nous le disons avant que vous cliquiez.",
-  "navYaEsta": "L'IA est deja sur votre appareil. Zero telechargement.",
-  "usarNavegador": "Utiliser l'IA de votre navigateur"
- }
+  "esquema": 1,
+  "idioma": "fr",
+  "revision": "pendiente-revision-nativa",
+  "procedencia": {
+    "traducido_por": "copiadas literalmente de `<lengua>/benchmark.html`, donde vivian desde que existe el motor local. NO son una traduccion nueva: son LAS MISMAS cadenas, movidas de sitio el 2026-09-20 --- por eso no hay un modelo que declarar aqui, y decir uno seria atribuir un trabajo que nadie hizo hoy. Su procedencia original es la del bloque del que salen."
+  },
+  "ui": {
+    "arrancando": "Demarrage du moteur...",
+    "avisoCifra": "Environ 400 Mo. Nous le disons avant que vous cliquiez, pas apres.",
+    "avisoRed": "Telecharge une seule fois, puis mis en cache dans votre navigateur.",
+    "bajando": "Telechargement",
+    "bajarNavegador": "Telecharger l'IA du navigateur (~2,7-4 Go)",
+    "causaError": "Cause : erreur en consultant le GPU.",
+    "causaSinAdaptador": "Cause : WebGPU existe mais aucun GPU utilisable.",
+    "causaSinApi": "Cause : ce navigateur n'expose ni WebGPU ni LanguageModel.",
+    "descargar": "Telecharger le modele (~2 Go, une fois)",
+    "falloDescarga": "NO_DATA - echec du telechargement du modele",
+    "falloNavegador": "NO_DATA - echec avec l'IA du navigateur",
+    "listoLocal": "Moteur pret. Ecrivez votre question.",
+    "mirandoGpu": "Consultation du GPU...",
+    "mirandoNavegador": "Consultation de l'IA du navigateur...",
+    "navBajado": "IA du navigateur telechargee. Ecrivez votre question.",
+    "navListo": "IA du navigateur prete. Ecrivez votre question.",
+    "navPesa": "Environ 2,7-4 Go. Nous le disons avant que vous cliquiez.",
+    "navYaEsta": "L'IA est deja sur votre appareil. Zero telechargement.",
+    "usarNavegador": "Utiliser l'IA de votre navigateur",
+    "colaPos": "Place {n} dans la file du rack",
+    "colaEspera": "réponse complète en ≤ {s} s",
+    "colaCasi": "presque",
+    "colaFrio": "réveil du modèle",
+    "colaSwap": "changement de modèle",
+    "colaLlena": "La file du rack est pleine : réessaie dans une minute",
+    "colaTecho": "C'est un plafond : calculé sur le maximum que le modèle peut écrire",
+    "colaMedida": "chiffres mesurés sur le rack, pas promis"
+  }
 }

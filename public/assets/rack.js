@@ -5,35 +5,27 @@
  * descargar dos gigas ni buscarte una Ollama: no hace falta que pongas tu la
  * maquina. Abres, eliges idioma y hablas.
  *
- * TODO: tunel cloudflare pendiente. SON DOS COSAS, NO UNA.
+ * EL TUNEL ESTA ARRIBA Y CONTESTA. Medido el 2026-09-22 desde el origen
+ * `https://preceptoros.org`: `POST /api/generate` da 200, trae
+ * `access-control-allow-origin` correcto y el modelo contesta. Hasta ese dia
+ * este comentario anunciaba, como tarea pendiente, que al tunel le faltaban la
+ * ruta y el CORS --- y las dos cosas llevaban tiempo hechas. Un comentario que
+ * miente sobre el estado es peor que ninguno: la siguiente sesion lo cree.
+ * (No se cita la frase vieja a proposito: una prueba vigila que no vuelva, y
+ * citarla aqui la haria encontrarse a si misma.)
  *
- * 1) LA RUTA, que NO es la que parecia. El tunel SI esta arriba: el Soberano
- *    lo levanto en `la-fragua` y enruta `api.preceptoros.org` hacia
- *    `127.0.0.1:9002` de ese nodo, donde corre `uvicorn agora_api:app`
- *    (FastAPI). O sea: al otro lado NO hay una Ollama, hay una app propia.
- *    El 404 medido el 2026-09-01 en `/`, `/api/tags` y `/openapi.json` no es
- *    de red ni de DNS: es que `agora_api` no publica todavia esas rutas.
+ * Lo que se descubrio por el camino y sigue valiendo: al otro lado NO hay una
+ * Ollama, hay `agora_api` (FastAPI) en `la-fragua`, que HABLA el contrato de
+ * Ollama --POST, NDJSON, `eval_count` con los tokens reales--. Y el CORS lo
+ * pone su `CORSMiddleware`, no `OLLAMA_ORIGINS`, que ahi no pinta nada.
  *
- *    Este fichero habla el contrato de Ollama --POST /api/generate, NDJSON,
- *    una linea por trozo, `eval_count` con los tokens reales-- porque es el
- *    que ya hablan `localai.js` y el rack. Para que esto conecte, `agora_api`
- *    tiene que exponer ESE contrato. Queda escrito como propuesta en
- *    `p0x/propuestas/`: `la-fragua` es propose-only desde aqui y su backend no
- *    se toca por SSH.
+ * LA COLA. `agora_api` atiende de uno en uno (16,1 tok/s en total, igual con
+ * uno que con ocho) y manda la posicion y la espera en cabeceras `X-Cola-*`
+ * que llegan ANTES que el primer token. Este fichero las lee y las reparte con
+ * `preceptor:cola`; las pinta `cola.js`. Y ante un 503 ya no tira el cuerpo:
+ * el servidor dice la causa y el remedio, y el turno los ensena.
  *
- * 2) CORS, y sin esto el tunel solo no basta. Medido el mismo dia desde el
- *    navegador: `Access to fetch at api.preceptoros.org/api/generate has been
- *    blocked by CORS policy: No 'Access-Control-Allow-Origin' header`. Como
- *    quien contesta es FastAPI y no Ollama, la cabecera la pone `agora_api`
- *    con su `CORSMiddleware` y `allow_origins=["https://preceptoros.org"]`
- *    --no `OLLAMA_ORIGINS`, que aqui no pinta nada--. Se
- *    deja escrito aqui porque es exactamente la clase de detalle que se
- *    descubre dos veces: una hoy, midiendo, y otra dentro de un mes cuando el
- *    tunel este arriba y la pagina siga sin contestar sin decir por que.
- *
- * Con las dos cosas puestas, esto funciona sin tocar una linea de aqui.
- *
- * Mientras no apunte, la pagina NO finge: dice que no hubo respuesta, dice por
+ * Si algun dia deja de contestar, la pagina NO finge: dice que no hubo respuesta, dice por
  * que, y te da el JSON para llevartelo a la IA que ya uses. Un chat que se
  * queda en blanco es peor que uno que explica su averia.
  *
@@ -45,12 +37,33 @@
 (function () {
   var BASE = 'https://api.preceptoros.org';
 
+  /* `cola.js` se pide aqui, al primer turno, y no desde la portada: el griego
+     tiene 65 bytes libres y no cabe ni una etiqueta. Y asi se cumple «cero
+     peticiones al cargar»: nada viaja hasta que alguien pregunta. */
+  function asegurarCola() {
+    if (window.Cola || document.getElementById('cola-js')) return;
+    var s = document.createElement('script');
+    s.src = '/assets/cola.js';
+    s.id = 'cola-js';
+    document.head.appendChild(s);
+  }
+
+  /* El ultimo estado se guarda en `Rack.cola` ademas de emitirse: si
+     `cola.js` llega despues que las cabeceras, lo lee de ahi y descuenta el
+     tiempo pasado con `t0`, en vez de empezar la cuenta de cero. */
+  function avisa(d) {
+    d.t0 = Date.now();
+    window.Rack.cola = d;
+    window.dispatchEvent(new CustomEvent('preceptor:cola', { detail: d }));
+  }
+
   window.Rack = {
     base: BASE,
     /* NDJSON: una linea, un trozo. Es el formato de Ollama, y el tunel sirve a
        Ollama -- si algun dia se pone un adaptador delante, el contrato que hay
        que respetar es este, no el de OpenAI. */
     stream: function (modelo, prompt, alTrozo) {
+      asegurarCola();
       return fetch(BASE + '/api/generate', {
         method: 'POST',
         /* `think: false` NO ES OPCIONAL, y hasta el 2026-09-20 no iba.
@@ -83,26 +96,54 @@
                                think: false,
                                options: { num_predict: 400 } })
       }).then(function (r) {
-        // Un 404 con cuerpo JSON es exactamente lo que devuelve hoy el tunel
-        // sin ruta. Se convierte en error AQUI para que el turno lo cuente con
-        // su codigo, en vez de intentar leer un cuerpo que no es NDJSON.
-        if (!r.ok) throw new Error('HTTP ' + r.status);
+        var cab = function (k) { return r.headers.get('X-Cola-' + k); };
+        if (cab('Posicion') !== null) {
+          avisa({ fase: 'cola', posicion: +cab('Posicion'),
+                  espera: +cab('Espera-S'), estado: cab('Estado-Modelo'),
+                  tope: +cab('Tope'), tokS: +cab('Tok-S') });
+        }
+        // UN ERROR SE CUENTA CON SU CAUSA, NO CON SU CODIGO. `agora_api`
+        // responde a un 503 con `{estado, causa, remedio}` --- «la cola esta
+        // llena (12 de 12)», «vuelve en un minuto» --- y hasta el 2026-09-22
+        // aqui se tiraba ese cuerpo y el turno decia solo «HTTP 503». Se deja
+        // el codigo delante para que siga leyendose igual que antes.
+        if (!r.ok) {
+          return r.json().catch(function () { return null; }).then(function (j) {
+            var d = (j && (j.detail || j)) || {};
+            // «llena» se reconoce por la causa que escribe `agora_api` en su
+            // tope de cola. Es un acoplamiento a su redaccion, y por eso
+            // queda dicho: si cambia esa frase, el aviso vuelve a ser generico.
+            avisa({ fase: /cola/.test(d.causa || '') ? 'llena' : 'fin',
+                    causa: d.causa, remedio: d.remedio });
+            throw new Error('HTTP ' + r.status
+              + (d.causa ? ' · ' + d.causa : '')
+              + (d.remedio ? ' · ' + d.remedio : ''));
+          });
+        }
         var lector = r.body.getReader(), dec = new TextDecoder();
-        var resto = '', total = null;
+        var resto = '', total = null, primero = true;
         return (function leer() {
           return lector.read().then(function (t) {
-            if (t.done) return total;
+            if (t.done) { avisa({ fase: 'fin' }); return total; }
             resto += dec.decode(t.value, { stream: true });
             var lineas = resto.split('\n'); resto = lineas.pop();
             lineas.forEach(function (l) {
               if (!l.trim()) return;
               var o; try { o = JSON.parse(l); } catch (e) { return; }
-              if (o.response) alTrozo(o.response);
+              if (o.response) {
+                if (primero) { primero = false; avisa({ fase: 'generando' }); }
+                alTrozo(o.response);
+              }
               if (o.eval_count) total = o.eval_count;   // tokens REALES del motor
             });
             return leer();
           });
         })();
+      }).then(null, function (e) {
+        // Red caida, CORS, stream roto: la cuenta atras no puede quedarse
+        // colgada en pantalla prometiendo una respuesta que ya no llega.
+        avisa({ fase: 'fin' });
+        throw e;
       });
     }
   };

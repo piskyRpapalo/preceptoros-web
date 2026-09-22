@@ -1,29 +1,37 @@
 {
- "esquema": 1,
- "idioma": "el",
- "revision": "pendiente-revision-nativa",
- "procedencia": {
-  "traducido_por": "copiadas literalmente de `<lengua>/benchmark.html`, donde vivian desde que existe el motor local. NO son una traduccion nueva: son LAS MISMAS cadenas, movidas de sitio el 2026-09-20 --- por eso no hay un modelo que declarar aqui, y decir uno seria atribuir un trabajo que nadie hizo hoy. Su procedencia original es la del bloque del que salen."
- },
- "ui": {
-  "arrancando": "Εκκίνηση του κινητήρα…",
-  "avisoCifra": "Είναι ~2 GB. Το λέμε πριν πατήσεις, όχι μετά.",
-  "avisoRed": "Κατεβαίνει από το δίκτυο μία μόνο φορά. Μετά μένει στη μνήμη του περιηγητή σου.",
-  "bajando": "Κατεβαίνει",
-  "bajarNavegador": "Κατέβασε την ΤΝ του περιηγητή (~2,7-4 GB)",
-  "causaError": "Αιτία: σφάλμα κατά την ερώτηση της GPU.",
-  "causaSinAdaptador": "Αιτία: υπάρχει WebGPU αλλά καμία αξιοποιήσιμη GPU.",
-  "causaSinApi": "Αιτία: αυτός ο περιηγητής δεν προσφέρει ούτε WebGPU ούτε LanguageModel.",
-  "descargar": "Κατέβασε το μοντέλο (~2 GB, μία φορά)",
-  "falloDescarga": "NO_DATA · αποτυχία λήψης του μοντέλου",
-  "falloNavegador": "NO_DATA · αποτυχία με την ΤΝ του περιηγητή",
-  "listoLocal": "Ο κινητήρας είναι έτοιμος. Γράψε την ερώτησή σου.",
-  "mirandoGpu": "Ερώτηση στην GPU…",
-  "mirandoNavegador": "Ερώτηση στην ΤΝ του περιηγητή…",
-  "navBajado": "Η ΤΝ του περιηγητή κατέβηκε. Γράψε την ερώτησή σου.",
-  "navListo": "Η ΤΝ του περιηγητή είναι έτοιμη. Γράψε την ερώτησή σου.",
-  "navPesa": "Είναι 2,7-4 GB. Το λέμε πριν πατήσεις.",
-  "navYaEsta": "Η ΤΝ είναι ήδη στη συσκευή σου. Μηδέν λήψη.",
-  "usarNavegador": "Χρησιμοποίησε την ΤΝ του περιηγητή σου"
- }
+  "esquema": 1,
+  "idioma": "el",
+  "revision": "pendiente-revision-nativa",
+  "procedencia": {
+    "traducido_por": "copiadas literalmente de `<lengua>/benchmark.html`, donde vivian desde que existe el motor local. NO son una traduccion nueva: son LAS MISMAS cadenas, movidas de sitio el 2026-09-20 --- por eso no hay un modelo que declarar aqui, y decir uno seria atribuir un trabajo que nadie hizo hoy. Su procedencia original es la del bloque del que salen."
+  },
+  "ui": {
+    "arrancando": "Εκκίνηση του κινητήρα…",
+    "avisoCifra": "Είναι ~2 GB. Το λέμε πριν πατήσεις, όχι μετά.",
+    "avisoRed": "Κατεβαίνει από το δίκτυο μία μόνο φορά. Μετά μένει στη μνήμη του περιηγητή σου.",
+    "bajando": "Κατεβαίνει",
+    "bajarNavegador": "Κατέβασε την ΤΝ του περιηγητή (~2,7-4 GB)",
+    "causaError": "Αιτία: σφάλμα κατά την ερώτηση της GPU.",
+    "causaSinAdaptador": "Αιτία: υπάρχει WebGPU αλλά καμία αξιοποιήσιμη GPU.",
+    "causaSinApi": "Αιτία: αυτός ο περιηγητής δεν προσφέρει ούτε WebGPU ούτε LanguageModel.",
+    "descargar": "Κατέβασε το μοντέλο (~2 GB, μία φορά)",
+    "falloDescarga": "NO_DATA · αποτυχία λήψης του μοντέλου",
+    "falloNavegador": "NO_DATA · αποτυχία με την ΤΝ του περιηγητή",
+    "listoLocal": "Ο κινητήρας είναι έτοιμος. Γράψε την ερώτησή σου.",
+    "mirandoGpu": "Ερώτηση στην GPU…",
+    "mirandoNavegador": "Ερώτηση στην ΤΝ του περιηγητή…",
+    "navBajado": "Η ΤΝ του περιηγητή κατέβηκε. Γράψε την ερώτησή σου.",
+    "navListo": "Η ΤΝ του περιηγητή είναι έτοιμη. Γράψε την ερώτησή σου.",
+    "navPesa": "Είναι 2,7-4 GB. Το λέμε πριν πατήσεις.",
+    "navYaEsta": "Η ΤΝ είναι ήδη στη συσκευή σου. Μηδέν λήψη.",
+    "usarNavegador": "Χρησιμοποίησε την ΤΝ του περιηγητή σου",
+    "colaPos": "Θέση {n} στην ουρά του rack",
+    "colaEspera": "πλήρης απάντηση σε ≤ {s} δευτ.",
+    "colaCasi": "σχεδόν έτοιμο",
+    "colaFrio": "το μοντέλο ξυπνά",
+    "colaSwap": "αλλαγή μοντέλου",
+    "colaLlena": "Η ουρά του rack είναι γεμάτη: δοκίμασε σε ένα λεπτό",
+    "colaTecho": "Είναι ανώτατο όριο: υπολογίζεται με το μέγιστο που μπορεί να γράψει το μοντέλο",
+    "colaMedida": "μετρημένα στο rack, όχι υποσχέσεις"
+  }
 }

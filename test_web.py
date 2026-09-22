@@ -241,8 +241,17 @@ FUERA_DEL_BLOQUE = {"agentes": "agentes-{lengua}.json"}
 # de 16.384 y `ru` 539, y las traducciones pesan ~1.150 y ~1.020. Van a
 # `motor-<lengua>.json`, la misma solucion que el killswitch esa manana ---
 # segunda vez en el dia que el tope decide donde vive un rotulo.
-FUERA_DEL_BLOQUE.update({k: "motor-{lengua}.json" for k in (
-    ('arrancando', 'avisoCifra', 'avisoRed', 'bajando', 'bajarNavegador', 'causaError', 'causaSinAdaptador', 'causaSinApi', 'descargar', 'falloDescarga', 'falloNavegador', 'listoLocal', 'mirandoGpu', 'mirandoNavegador', 'navBajado', 'navListo', 'navPesa', 'navYaEsta', 'usarNavegador'))})
+# UNA SOLA LISTA. Hasta el 2026-09-22 estas claves estaban escritas DOS veces
+# --aqui y en `CLAVES_MOTOR`, 4.900 lineas mas abajo--, y al añadir las de la
+# cola se actualizo una y se olvido la otra: el gate cayo en rojo señalando la
+# que faltaba. Dos copias de la misma verdad no son redundancia, son dos
+# oportunidades de que discrepen. `CLAVES_MOTOR` se deriva de esta.
+CLAVES_MOTOR_LISTA = ('arrancando', 'avisoCifra', 'avisoRed', 'bajando', 'bajarNavegador', 'causaError', 'causaSinAdaptador', 'causaSinApi', 'descargar', 'falloDescarga', 'falloNavegador', 'listoLocal', 'mirandoGpu', 'mirandoNavegador', 'navBajado', 'navListo', 'navPesa', 'navYaEsta', 'usarNavegador',
+    # La cola del rack (2026-09-22): las pinta `cola.js`, que se carga tarde
+    # desde `rack.js` y por eso no puede traer su bloque en la portada.
+    'colaPos', 'colaEspera', 'colaCasi', 'colaFrio', 'colaSwap', 'colaLlena',
+    'colaTecho', 'colaMedida')
+FUERA_DEL_BLOQUE.update({k: "motor-{lengua}.json" for k in CLAVES_MOTOR_LISTA})
 
 
 def paginas_de_contenido():
@@ -5100,7 +5109,7 @@ CLAVES_HERRAMIENTAS = {
 # LA CUARTA FAMILIA, 2026-09-20. Nace por el mismo motivo que las tres de
 # arriba y con la misma forma: los rotulos del motor local no caben en el
 # bloque de la portada. Se firma aqui para que anadir uno sea una decision.
-CLAVES_MOTOR = set(('arrancando', 'avisoCifra', 'avisoRed', 'bajando', 'bajarNavegador', 'causaError', 'causaSinAdaptador', 'causaSinApi', 'descargar', 'falloDescarga', 'falloNavegador', 'listoLocal', 'mirandoGpu', 'mirandoNavegador', 'navBajado', 'navListo', 'navPesa', 'navYaEsta', 'usarNavegador'))
+CLAVES_MOTOR = set(CLAVES_MOTOR_LISTA)   # una sola lista: ver FUERA_DEL_BLOQUE
 
 FAMILIAS = {"caminos": CLAVES_CAMINOS, "duelos": CLAVES_DUELOS,
             "herramientas": CLAVES_HERRAMIENTAS, "motor": CLAVES_MOTOR}
@@ -5203,6 +5212,73 @@ class LasTresFamilias(unittest.TestCase):
                     self.assertTrue(
                         all(any(bajo <= c <= alto for c in v) for v in largas),
                         f"hay cadenas largas sin un solo caracter de su alfabeto")
+
+
+class LaColaDelRack(unittest.TestCase):
+    """La cola del rack se CUENTA: puesto, estado del modelo y techo de espera.
+
+    `agora_api` atiende de uno en uno --16,1 tok/s en total, igual con uno que
+    con ocho-- y manda la cola en cabeceras `X-Cola-*` que llegan antes que el
+    primer token. Estas pruebas guardan lo que se rompe solo si nadie mira.
+    """
+
+    def _js(self, nombre):
+        return (PUBLICO / "assets" / nombre).read_text(encoding="utf-8")
+
+    def test_rack_lee_las_cabeceras_y_las_reparte(self):
+        """Sin esto, el servidor cuenta la cola y la pagina no se entera."""
+        r = self._js("rack.js")
+        self.assertIn("X-Cola-", r)
+        self.assertIn("preceptor:cola", r)
+
+    def test_un_503_se_cuenta_con_su_causa_no_con_su_codigo(self):
+        """Hasta el 2026-09-22 `rack.js` tiraba el cuerpo de un 503 y el turno
+        decia solo «HTTP 503», cuando el servidor explicaba «la cola esta
+        llena, vuelve en un minuto». Un error sin causa es un error mudo."""
+        r = self._js("rack.js")
+        self.assertIn("r.json()", r)
+        self.assertIn("d.causa", r)
+
+    def test_la_cuenta_atras_no_baja_de_cero_ni_se_anuncia_cada_segundo(self):
+        """Pasado el techo sin primer token no se cuenta en negativo --seria
+        presumir de una precision que la cifra no tuvo--, y la cuenta atras
+        va fuera de la region aria-live: leida cada segundo seria ruido."""
+        c = self._js("cola.js")
+        self.assertIn("Math.max(0", c)
+        self.assertIn("aria-live", c)
+        self.assertIn("'aria-hidden', 'true'", c)
+
+    def test_cola_no_usa_innerHTML(self):
+        """El texto viene de un .json de la casa; la costumbre es la que
+        protege el dia que venga de otro sitio."""
+        self.assertNotRegex(self._js("cola.js"), r"\.innerHTML\s*=")
+
+    def test_el_aviso_de_cola_llena_sobrevive_al_fin_del_turno(self):
+        """En la primera version se asignaba la fase nueva ANTES de mirar la
+        anterior, y el aviso de cola llena se borraba en el mismo instante en
+        que salia. La guarda tiene que leer la fase de antes."""
+        c = self._js("cola.js")
+        self.assertIn("var antes = fase;", c)
+        self.assertLess(c.index("var antes = fase;"), c.index("fase = d.fase;"))
+
+    def test_cola_se_carga_tarde_y_no_desde_la_portada(self):
+        """El griego tiene 65 bytes libres: no cabe ni una etiqueta. La pide
+        `rack.js` al primer turno, que ademas respeta «cero peticiones al
+        cargar». Si alguien la cuelga de una portada, rompe las dos cosas."""
+        self.assertIn("/assets/cola.js", self._js("rack.js"))
+        # Se busca la ETIQUETA, no la subcadena: la portada si carga
+        # `hub-cola.js`, que contiene «cola.js» y daba un falso rojo.
+        for portada in PUBLICO.glob("*/index.html"):
+            self.assertNotIn('src="/assets/cola.js"',
+                             portada.read_text(encoding="utf-8"),
+                             f"{portada} carga cola.js al abrir la pagina")
+
+    def test_el_comentario_de_rack_no_dice_que_el_tunel_esta_pendiente(self):
+        """Hasta el 2026-09-22 la cabecera de `rack.js` decia «TODO: tunel
+        pendiente», con el tunel contestando desde hacia tiempo. Un comentario
+        que miente sobre el estado es peor que ninguno: la siguiente sesion lo
+        cree y persigue una averia que no existe."""
+        self.assertNotIn("TODO: tunel", self._js("rack.js"))
 
 
 if __name__ == "__main__":

@@ -1,29 +1,37 @@
 {
- "esquema": 1,
- "idioma": "ru",
- "revision": "pendiente-revision-nativa",
- "procedencia": {
-  "traducido_por": "copiadas literalmente de `<lengua>/benchmark.html`, donde vivian desde que existe el motor local. NO son una traduccion nueva: son LAS MISMAS cadenas, movidas de sitio el 2026-09-20 --- por eso no hay un modelo que declarar aqui, y decir uno seria atribuir un trabajo que nadie hizo hoy. Su procedencia original es la del bloque del que salen."
- },
- "ui": {
-  "arrancando": "Запускаю движок…",
-  "avisoCifra": "Это ~2 ГБ. Говорим об этом до нажатия, а не после.",
-  "avisoRed": "Скачивается по сети один раз. Дальше лежит в кэше твоего браузера.",
-  "bajando": "Загружается",
-  "bajarNavegador": "Скачать ИИ браузера (~2,7-4 ГБ)",
-  "causaError": "Причина: ошибка при опросе GPU.",
-  "causaSinAdaptador": "Причина: WebGPU есть, но нет пригодной GPU.",
-  "causaSinApi": "Причина: этот браузер не даёт ни WebGPU, ни LanguageModel.",
-  "descargar": "Скачать модель (~2 ГБ, один раз)",
-  "falloDescarga": "NO_DATA · не удалось скачать модель",
-  "falloNavegador": "NO_DATA · сбой с ИИ браузера",
-  "listoLocal": "Движок готов. Напиши свой вопрос.",
-  "mirandoGpu": "Опрашиваю GPU…",
-  "mirandoNavegador": "Опрашиваю ИИ браузера…",
-  "navBajado": "ИИ браузера скачан. Напиши свой вопрос.",
-  "navListo": "ИИ браузера готов. Напиши свой вопрос.",
-  "navPesa": "Это 2,7-4 ГБ. Говорим об этом до нажатия.",
-  "navYaEsta": "ИИ уже на твоём устройстве. Ноль загрузки.",
-  "usarNavegador": "Использовать ИИ твоего браузера"
- }
+  "esquema": 1,
+  "idioma": "ru",
+  "revision": "pendiente-revision-nativa",
+  "procedencia": {
+    "traducido_por": "copiadas literalmente de `<lengua>/benchmark.html`, donde vivian desde que existe el motor local. NO son una traduccion nueva: son LAS MISMAS cadenas, movidas de sitio el 2026-09-20 --- por eso no hay un modelo que declarar aqui, y decir uno seria atribuir un trabajo que nadie hizo hoy. Su procedencia original es la del bloque del que salen."
+  },
+  "ui": {
+    "arrancando": "Запускаю движок…",
+    "avisoCifra": "Это ~2 ГБ. Говорим об этом до нажатия, а не после.",
+    "avisoRed": "Скачивается по сети один раз. Дальше лежит в кэше твоего браузера.",
+    "bajando": "Загружается",
+    "bajarNavegador": "Скачать ИИ браузера (~2,7-4 ГБ)",
+    "causaError": "Причина: ошибка при опросе GPU.",
+    "causaSinAdaptador": "Причина: WebGPU есть, но нет пригодной GPU.",
+    "causaSinApi": "Причина: этот браузер не даёт ни WebGPU, ни LanguageModel.",
+    "descargar": "Скачать модель (~2 ГБ, один раз)",
+    "falloDescarga": "NO_DATA · не удалось скачать модель",
+    "falloNavegador": "NO_DATA · сбой с ИИ браузера",
+    "listoLocal": "Движок готов. Напиши свой вопрос.",
+    "mirandoGpu": "Опрашиваю GPU…",
+    "mirandoNavegador": "Опрашиваю ИИ браузера…",
+    "navBajado": "ИИ браузера скачан. Напиши свой вопрос.",
+    "navListo": "ИИ браузера готов. Напиши свой вопрос.",
+    "navPesa": "Это 2,7-4 ГБ. Говорим об этом до нажатия.",
+    "navYaEsta": "ИИ уже на твоём устройстве. Ноль загрузки.",
+    "usarNavegador": "Использовать ИИ твоего браузера",
+    "colaPos": "Место {n} в очереди стойки",
+    "colaEspera": "полный ответ за ≤ {s} с",
+    "colaCasi": "почти готово",
+    "colaFrio": "модель просыпается",
+    "colaSwap": "смена модели",
+    "colaLlena": "Очередь стойки заполнена: попробуйте через минуту",
+    "colaTecho": "Это потолок: рассчитан по максимуму, который может написать модель",
+    "colaMedida": "цифры измерены на стойке, а не обещаны"
+  }
 }
