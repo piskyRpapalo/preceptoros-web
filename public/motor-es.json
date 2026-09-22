@@ -6,14 +6,14 @@
   },
   "ui": {
     "arrancando": "Arrancando el motor…",
-    "avisoCifra": "Son ~2 GB. Lo decimos antes de que pulses, no después.",
+    "avisoCifra": "Son 984 MB. Lo decimos antes de que pulses, no después.",
     "avisoRed": "Se descarga por la red una sola vez. Queda cacheado en tu navegador.",
     "bajando": "Descargando",
     "bajarNavegador": "Descargar la IA del navegador (~2,7-4 GB)",
     "causaError": "Causa: error al consultar la GPU.",
     "causaSinAdaptador": "Causa: hay WebGPU pero ninguna GPU utilizable.",
     "causaSinApi": "Causa: este navegador no expone WebGPU ni LanguageModel.",
-    "descargar": "Descargar modelo (~2 GB, una vez)",
+    "descargar": "Descargar el Mini (~1 GB, una vez)",
     "falloDescarga": "NO_DATA · fallo al descargar el modelo",
     "falloNavegador": "NO_DATA · fallo con la IA del navegador",
     "listoLocal": "Motor listo. Escribe tu pregunta.",
@@ -31,6 +31,16 @@
     "colaSwap": "cambiando de modelo",
     "colaLlena": "La cola del rack está llena: prueba en un minuto",
     "colaTecho": "Es un techo: se calcula con lo máximo que el modelo puede escribir",
-    "colaMedida": "cifras medidas en el rack, no prometidas"
+    "colaMedida": "cifras medidas en el rack, no prometidas",
+    "fichaNav": "en tu navegador",
+    "fichaRack": "en el rack",
+    "fichaTec": "Datos técnicos",
+    "fichaBaja": "Descarga",
+    "fichaVez": "una vez; se queda en la caché de tu navegador",
+    "fichaVram": "memoria de vídeo",
+    "fichaVel": "Velocidad: depende de tu aparato. Se mide en tu primer turno.",
+    "fichaAqui": "Medido en tu aparato",
+    "pisoHabla": "Habla",
+    "pisoBajaPrimero": "Este piso corre DENTRO de tu navegador, para que puedas seguir en modo avión. Primero hay que descargar el modelo, una sola vez: pulsa el botón de descarga, justo debajo del chat, y vuelve a escribir."
   }
 }

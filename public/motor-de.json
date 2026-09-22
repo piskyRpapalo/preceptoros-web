@@ -7,14 +7,14 @@
   },
   "ui": {
     "arrancando": "Motor wird gestartet…",
-    "avisoCifra": "Es sind ~2 GB. Wir sagen es, bevor du drückst, nicht danach.",
+    "avisoCifra": "Es sind 984 MB. Wir sagen es, bevor du drückst, nicht danach.",
     "avisoRed": "Es wird nur einmal über das Netz geladen. Danach liegt es im Zwischenspeicher deines Browsers.",
     "bajando": "Wird geladen",
     "bajarNavegador": "Die Browser-KI laden (~2,7-4 GB)",
     "causaError": "Ursache: Fehler bei der Abfrage der GPU.",
     "causaSinAdaptador": "Ursache: WebGPU ist da, aber keine nutzbare GPU.",
     "causaSinApi": "Ursache: dieser Browser bietet weder WebGPU noch LanguageModel.",
-    "descargar": "Modell laden (~2 GB, einmalig)",
+    "descargar": "Den Mini laden (~1 GB, einmal)",
     "falloDescarga": "NO_DATA · Modell konnte nicht geladen werden",
     "falloNavegador": "NO_DATA · Fehler mit der Browser-KI",
     "listoLocal": "Motor bereit. Schreib deine Frage.",
@@ -32,6 +32,16 @@
     "colaSwap": "Modellwechsel",
     "colaLlena": "Die Warteschlange des Racks ist voll: in einer Minute erneut versuchen",
     "colaTecho": "Eine Obergrenze: berechnet aus dem Maximum, das das Modell schreiben kann",
-    "colaMedida": "am Rack gemessen, nicht versprochen"
+    "colaMedida": "am Rack gemessen, nicht versprochen",
+    "fichaNav": "in deinem Browser",
+    "fichaRack": "im Rack",
+    "fichaTec": "Technische Daten",
+    "fichaBaja": "Download",
+    "fichaVez": "einmal; bleibt im Cache deines Browsers",
+    "fichaVram": "Videospeicher",
+    "fichaVel": "Tempo: hängt von deinem Gerät ab. Gemessen bei deinem ersten Zug.",
+    "fichaAqui": "Auf deinem Gerät gemessen",
+    "pisoHabla": "Es spricht",
+    "pisoBajaPrimero": "Diese Etage läuft IN deinem Browser, damit du im Flugmodus weitermachen kannst. Zuerst muss das Modell heruntergeladen werden, nur einmal: tippe auf den Download-Knopf direkt unter dem Chat und schreib noch einmal."
   }
 }

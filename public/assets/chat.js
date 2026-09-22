@@ -11,7 +11,11 @@
   var caja = document.getElementById('chat');
   if (!caja) return;
   var T = JSON.parse(document.getElementById('i18n').textContent);
-  var MODELO = 'Llama-3.2-3B-Instruct-q4f16_1-MLC';
+  /* EL MINI, EL MISMO DEL RACK (2026-09-22). Era Llama 3.2 3B (1,8 GB): un
+     modelo que no aparecia en ningun otro sitio de la web. Ahora el piso 1
+     promete el Mini y el navegador baja el Mini --Qwen3 1.7B, 984 MB--, y lo
+     que se aprende hablando con el en modo avion vale para el del rack. */
+  var MODELO = 'Qwen3-1.7B-q4f16_1-MLC';
   var CDN = 'https://esm.run/@mlc-ai/web-llm';
 
   var entrada = document.getElementById('pregunta');
@@ -19,6 +23,12 @@
   var motorZona = document.getElementById('motor');
   var dialogo = document.getElementById('dialogo');
   var via = null, modeloRack = null, nido = null;
+  /* QUE QUIERE EL PISO Y QUE MOTOR ESTA LISTO SON DOS COSAS (2026-09-22).
+     `via` era una sola variable que escribian dos: el compañero del rack y el
+     motor local al terminar de bajar. Con los pisos de la Torre eso ya no
+     basta: bajar el Mini en el piso 1 no puede secuestrar el piso 4, que habla
+     con el rack, y volver al piso 1 tiene que encontrar el Mini ya listo. */
+  var quiere = null, motorListo = null;
 
   function di(texto, mio) {
     var p = document.createElement('p');
@@ -88,7 +98,9 @@
   function avisa(n) { document.dispatchEvent(new CustomEvent('preceptor:' + n));
     if (window.Fase) Fase(n); }   // el anillo lo pinta chat.css
   function listo(texto, marca) {
-    via = marca; estado(texto, 'nodata'); entrada.focus();
+    motorListo = marca;
+    if (quiere !== 'rack') via = marca;   // un piso del rack no se lo quita el local
+    estado(texto, 'nodata'); entrada.focus();
     document.dispatchEvent(new CustomEvent('preceptor:brain', { detail: {
       name: marca === 'webllm' ? MODELO.split('-q4')[0] + ' (Edge)' : T.brainBrowser } }));
     calentar();
@@ -174,6 +186,15 @@
     document.addEventListener('preceptor:companero', function (e) {
       var d = e.detail || {};
       nido = d.nido || null;   // ya compuesto por chat-router.js
+      /* Un piso del NAVEGADOR: contesta el motor local si ya esta bajado, y si
+         no, nadie --y lo explica `window.sinMotor` al primer mensaje--. */
+      if (d.navegador) {
+        quiere = 'navegador'; via = motorListo; modeloRack = null;
+        document.dispatchEvent(new CustomEvent('preceptor:brain', {
+          detail: { name: d.modelo + ' (navegador)', live: !!motorListo } }));
+        return;
+      }
+      quiere = 'rack';
       if (!d.disponible || !d.modelo) {
         via = null; modeloRack = null;
         estado(T.rackSinAdaptador, 'nodata');
@@ -208,7 +229,12 @@
     if (!texto) return;
     // El motor se ofrece desde que carga la pagina: si aun no hay `via`, es
     // que no se ha elegido, y la eleccion ya esta en pantalla.
-    if (!via) return;
+    if (!via) {
+      // Sin motor para este piso: si el piso sabe por que, lo dice.
+      var aviso = window.sinMotor && window.sinMotor();
+      if (aviso) { di(texto, true); entrada.value = ''; di(aviso); }
+      return;
+    }
     di(texto, true);
     entrada.value = '';
     var p = di('…');

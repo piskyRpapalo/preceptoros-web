@@ -197,11 +197,12 @@
          panel del proyecto dentro del piso `killswitch`, asi que necesita que
          `camino.js` exista para oir su aviso. No necesita que haya pintado
          --- el aviso llega cuando pinte ---, solo estar escuchando antes. */
-      /* `torre-visuales.js` (2026-09-22) cierra la cola: viste los pisos con
-         su escena, asi que tambien espera el aviso de `camino.js`. */
+      /* `torre-visuales.js` (2026-09-22) viste los pisos con su escena, y
+         `piso-chat.js` cierra la cola: hace que el piso abierto gobierne el
+         chat, y necesita a los dos de antes --el papel y las escenas--. */
       ['/assets/identidad-o-salida.js', '/assets/camino-papel.js',
        '/assets/camino.js', '/assets/camino-killswitch.js',
-       '/assets/torre-visuales.js'].forEach(function (src) {
+       '/assets/torre-visuales.js', '/assets/piso-chat.js'].forEach(function (src) {
         var s = document.createElement('script');
         s.src = src;
         s.async = false;

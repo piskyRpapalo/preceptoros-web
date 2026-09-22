@@ -184,44 +184,26 @@
       cuerpo.appendChild(el('p', esND(corpus) ? 'no-data' : 'torre-corpus',
         corpus));
 
-      /* EL BOTON DE PROBAR sube la practica al chat de arriba y lleva la
-         vista ahi. No la manda: quien decide hablar es la persona. */
+      /* UN SOLO BOTON: SUBIR AL CHAT (2026-09-22). Eran dos --«Probar aqui»,
+         que vestia el chat y le escribia la practica, y «Firmar este paso»--.
+         El Soberano: «cuando el usuario abre el panel, el chat superior cambia
+         directamente; solo necesitamos un boton que le envie arriba». Abrir el
+         piso ya viste el chat (`piso-chat.js`), y la firma se mudo al propio
+         chat, que es donde se habla del paso. Aqui queda llevar la vista al
+         titulo y al chat, y dejar el cursor listo. No escribe nada: quien
+         decide que decir es la persona, y la practica ya se ve en el campo. */
       var mandos = el('div', 'torre-mandos');
-      var entrada = document.getElementById('pregunta');
-      var probar = el('button', null, ui.torre_probar || 'Probar');
-      probar.type = 'button';
-      if (entrada) {
-        probar.addEventListener('click', function () {
-          /* PRIMERO se viste y despues se escribe. Al reves, el campo se
-             llenaria y el chat seguiria con el papel del piso anterior
-             durante el tiempo que tarda el evento --- y si la persona es
-             rapida, manda la practica de un piso al papel de otro. */
-          if (!viste(p, ui)) {
-            /* No se finge el cambio. Falta el modelo, no el piso. */
-            probar.title = 'NO_DATA · todavia no hay cerebro elegido: '
-                         + 'el piso no puede vestir el chat';
-          }
-          entrada.value = practica(p, ui);
-          entrada.focus();
-          /* Algunos campos escuchan `input` para medir o para habilitar el
-             boton de enviar. Sin disparar el evento, el campo se ve lleno y el
-             resto de la pagina cree que esta vacio. */
-          entrada.dispatchEvent(new Event('input', { bubbles: true }));
-          entrada.scrollIntoView({ block: 'center', behavior: 'smooth' });
-        });
-      } else {
-        /* Falta la pieza de la pagina, no el nivel de la persona. */
-        probar.disabled = true;
-        probar.title = 'NO_DATA · no hay campo de chat en esta pagina';
-      }
-      mandos.appendChild(probar);
+      var subir = el('button', null, ui.torre_probar || '↑');
+      subir.type = 'button';
+      subir.addEventListener('click', function () {
+        var arriba = document.getElementById('piso-actual') ||
+                     document.getElementById('chat');
+        if (arriba) { arriba.scrollIntoView({ block: 'start', behavior: 'smooth' }); }
+        var entrada = document.getElementById('pregunta');
+        if (entrada) { entrada.focus({ preventScroll: true }); }
+      });
+      mandos.appendChild(subir);
       cuerpo.appendChild(mandos);
-      /* FIRMAR EL PASO. Lo monta el vecino, que es quien sabe de identidad y
-         de almacen; aqui solo se le dice donde. Si no esta cargado no se
-         pinta nada --- un boton que no firma es peor que su ausencia, que es
-         exactamente el argumento con el que este mismo boton llevaba meses
-         sin pintarse. */
-      if (P && P.montaFirma) { P.montaFirma(p, ui, mandos, el); }
 
       d.appendChild(cuerpo);
       escala.appendChild(d);

@@ -89,22 +89,33 @@
        red. Lo que si viaja —el import() de WebLLM y la descarga del modelo—
        sigue detras del clic. Antes esperaba al primer tecleo y el boton de
        descarga no existia hasta entonces: quien llegaba no sabia que podia. */
-    function decidir() {
-      if (decidido) return;
-      decidido = true;
-      if (quieto) quieto.hidden = true;
-      // `LanguageModel`, no `window.ai`: la forma antigua quedo atras, y mirar
-      // solo esa mandaria a bajar 945 MB al navegador mas capaz de todos.
+    /* EL MINI PRIMERO (2026-09-22). El orden era «la IA del propio navegador
+       y, si no hay, WebLLM». Pero el modelo que la web PRESENTA es el Mini --el
+       piso 1 lo nombra, la ficha lo describe-- y ofrecer otro distinto en la
+       misma ventana dice una cosa y baja otra. Ahora: si hay GPU, el Mini; la
+       IA del navegador queda de respaldo para quien no tiene WebGPU. */
+    function sinGpu() {
+      // `LanguageModel`, no `window.ai`: la forma antigua quedo atras.
       if (typeof LanguageModel !== 'undefined' && LanguageModel.availability) {
         C.estado(C.T.mirandoNavegador);
         LanguageModel.availability().then(function (d) {
           if (d === 'available') ofrecerNavegador(true);
           else if (d === 'downloadable' || d === 'downloading') ofrecerNavegador(false);
-          else rutaGpu();
-        }).catch(rutaGpu);
+          else C.ofrecerJSON(C.T.causaSinApi);
+        }).catch(function () { C.ofrecerJSON(C.T.causaSinApi); });
         return;
       }
-      rutaGpu();
+      C.ofrecerJSON(C.T.causaSinApi);
+    }
+    function decidir() {
+      if (decidido) return;
+      decidido = true;
+      if (quieto) quieto.hidden = true;
+      if (!navigator.gpu) { sinGpu(); return; }
+      C.estado(C.T.mirandoGpu);
+      navigator.gpu.requestAdapter().then(function (a) {
+        if (a) ofrecerDescarga(); else sinGpu();
+      }).catch(sinGpu);
     }
 
   /* Cinco tokens a ciegas antes de que nadie mida. WebGPU compila sus shaders
@@ -119,7 +130,8 @@
     try {
       if (motor) {
         calentando = motor.chat.completions.create({
-          messages: [{ role: 'user', content: 'ok' }], max_tokens: 5
+          messages: [{ role: 'user', content: 'ok' }], max_tokens: 5,
+          extra_body: { enable_thinking: false }
         }).catch(function () {});
       } else if (sesion) {
         calentando = sesion.prompt('ok').catch(function () {});
@@ -135,7 +147,13 @@
       var tokens = null;
       return motor.chat.completions.create({
         messages: [{ role: 'system', content: sistema }, { role: 'user', content: texto }],
-        temperature: 0.6, stream: true, stream_options: { include_usage: true }
+        temperature: 0.6, stream: true, stream_options: { include_usage: true },
+        /* EL MINI PIENSA A ESCONDIDAS SI NO SE LE DICE. Qwen3 trae el
+           razonamiento encendido: sin esto gasta cientos de tokens invisibles
+           antes de la primera palabra --la regla del canon para modelos que
+           piensan, medida con otro de la misma familia: 3.500 tokens en 78 s
+           para no contestar nada--. A otros modelos no les afecta. */
+        extra_body: { enable_thinking: false }
       }).then(async function (flujo) {
         for await (var t of flujo) {
           if (t.usage) tokens = t.usage.completion_tokens;

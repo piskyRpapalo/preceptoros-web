@@ -7,14 +7,14 @@
   },
   "ui": {
     "arrancando": "Demarrage du moteur...",
-    "avisoCifra": "Environ 400 Mo. Nous le disons avant que vous cliquiez, pas apres.",
+    "avisoCifra": "C’est 984 Mo. On le dit avant que tu appuies, pas après.",
     "avisoRed": "Telecharge une seule fois, puis mis en cache dans votre navigateur.",
     "bajando": "Telechargement",
     "bajarNavegador": "Telecharger l'IA du navigateur (~2,7-4 Go)",
     "causaError": "Cause : erreur en consultant le GPU.",
     "causaSinAdaptador": "Cause : WebGPU existe mais aucun GPU utilisable.",
     "causaSinApi": "Cause : ce navigateur n'expose ni WebGPU ni LanguageModel.",
-    "descargar": "Telecharger le modele (~2 Go, une fois)",
+    "descargar": "Télécharger le Mini (~1 Go, une fois)",
     "falloDescarga": "NO_DATA - echec du telechargement du modele",
     "falloNavegador": "NO_DATA - echec avec l'IA du navigateur",
     "listoLocal": "Moteur pret. Ecrivez votre question.",
@@ -32,6 +32,16 @@
     "colaSwap": "changement de modèle",
     "colaLlena": "La file du rack est pleine : réessaie dans une minute",
     "colaTecho": "C'est un plafond : calculé sur le maximum que le modèle peut écrire",
-    "colaMedida": "chiffres mesurés sur le rack, pas promis"
+    "colaMedida": "chiffres mesurés sur le rack, pas promis",
+    "fichaNav": "dans ton navigateur",
+    "fichaRack": "sur le rack",
+    "fichaTec": "Données techniques",
+    "fichaBaja": "Téléchargement",
+    "fichaVez": "une fois ; il reste dans le cache de ton navigateur",
+    "fichaVram": "mémoire vidéo",
+    "fichaVel": "Vitesse : dépend de ton appareil. Mesurée à ton premier tour.",
+    "fichaAqui": "Mesuré sur ton appareil",
+    "pisoHabla": "Parle",
+    "pisoBajaPrimero": "Cet étage tourne DANS ton navigateur, pour que tu puisses continuer en mode avion. Il faut d’abord télécharger le modèle, une seule fois : appuie sur le bouton de téléchargement juste sous le chat et écris à nouveau."
   }
 }

@@ -52,6 +52,8 @@
     despertar: 1, primeros_pasos: 2, exposicion: 3, puertos: 4,
     whoami: 7, killswitch: 6, silencio: 5, contribuir: 8
   };
+  // El titulo encima del chat (`piso-chat.js`) lleva la misma escena del piso.
+  window.TorreLaminas = LAMINA;
 
   function estilo() {
     if (document.getElementById('torre-laminas')) return;

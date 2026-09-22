@@ -18,14 +18,6 @@
 (function () {
   var LLAVE = 'preceptor-modelo';
   var REG = null, PROSA = {};
-  var PAL = { es:['Elige cerebro','prompt','generación','despertar','recomendado','sin firmar','en uso'],
-            en:['Choose a brain','prompt','generation','wake-up','recommended','unsigned','in use'],
-            pt:['Escolhe cérebro','prompt','geração','despertar','recomendado','sem assinar','em uso'],
-            fr:['Choisis un cerveau','prompt','génération','réveil','recommandé','non signé','en cours'],
-            it:['Scegli cervello','prompt','generazione','risveglio','consigliato','non firmato','in uso'],
-            de:['Gehirn wählen','Prompt','Erzeugung','Aufwachen','empfohlen','unsigniert','aktiv'],
-            el:['Διάλεξε εγκέφαλο','prompt','παραγωγή','αφύπνιση','προτεινόμενο','ανυπόγραφο','σε χρήση'],
-            ru:['Выбери мозг','prompt','генерация','пробуждение','рекомендуется','без подписи','в работе'] };
 
   function guardado() {
     try { return localStorage.getItem(LLAVE) || ''; } catch (e) { return ''; }
@@ -48,7 +40,15 @@
      Lo pide `camino-papel.js`: cuando un piso de la Torre viste el chat, el
      evento lleva `modelo` dentro, y mandar ahi un nombre distinto del que de
      verdad contesta pintaria un badge que miente. */
-  window.CerebroPuesto = function () { return guardado() || porDefecto() || ''; };
+  /* EL PISO MANDA (2026-09-22). Las tarjetas «Elige cerebro» se retiraron por
+     orden del Soberano: en la portada el cerebro lo pone el PISO de la Torre
+     que esta abierto --reparto firmado en `cerebros.json` › `pisos`-- y lo
+     escribe `piso-chat.js` en `window.CerebroDelPiso`. Queda por debajo lo
+     guardado de antes (quien eligio una tarjeta cuando las habia) y el
+     recomendado, para las paginas sin Torre. */
+  window.CerebroPuesto = function () {
+    return window.CerebroDelPiso || guardado() || porDefecto() || '';
+  };
 
   function envolver() {
     if (!window.Rack || window.Rack.__envuelto) return;
@@ -65,202 +65,37 @@
          clase de fallo que este repo lleva meses corrigiendo: dos sitios
          diciendo cosas distintas del mismo hecho. */
       return original.call(window.Rack,
-        guardado() || porDefecto() || modelo, prompt, alTrozo);
+        window.CerebroPuesto() || modelo, prompt, alTrozo);
     };
     window.Rack.__envuelto = true;
   }
 
-  /* ES si la pagina esta en castellano, INGLES para todo lo demas. No es una
-     traduccion pendiente disfrazada: media lengua traducida y media caida se
-     lee peor que una lengua entera prestada, y `taller.js` ya cae por FICHERO
-     y no por clave suelta por el mismo motivo. Lo que el MODELO responde si
-     sale en la lengua de quien pregunta -- eso es `lang: auto`, y es otra cosa
-     que la prosa de la ficha. */
-  function enLengua(v, lang) {
-    if (v == null) return '';
-    if (typeof v === 'string') return v;
-    return v[lang] || v.en || v.es || '';
-  }
+  /* SIN TARJETAS (2026-09-22). Aqui se pintaba el banco «Elige cerebro»: dos
+     de puerta en la portada y los demas en Comunidad. El Soberano lo retiro de
+     las dos: «el modelo debe estar explicado en la ventana de descarga», y
+     quien lo elige es el piso, no una rejilla de fichas tecnicas que un
+     visitante no tecnico no sabe leer.
 
-  function el(t, c, x) {
-    var n = document.createElement(t);
-    if (c) n.className = c;
-    if (x != null) n.textContent = x;
-    return n;
-  }
+     LO QUE QUEDA ES EL DUENO DEL CATALOGO. Este fichero sigue cargando
+     `cerebros.json` y su prosa, y lo PUBLICA --evento y global-- para los dos
+     que lo usan: `piso-chat.js` decide con el quien habla, y
+     `ficha-cerebro.js` lo describe. Un solo dueno del catalogo; si cada uno lo
+     pidiera por su cuenta serian dos verdades con dos momentos de carga.
 
-  /* Una cifra ausente NO se maquilla. `null` llega cuando el modelo no
-     respondio al medirlo, y decirlo es el producto. */
-  function cifra(v, unidad) {
-    return v == null ? 'NO_DATA' : String(v).replace('.', ',') + unidad;
-  }
-
-
-  function pintar(reg, w, lang, tx) {
-    var prosa = (tx && tx.cerebros) || {};
-    var paises = (tx && tx.paises) || {};
-    REG = reg; PROSA = prosa;
-    /* SE ANUNCIA QUE EL REGISTRO YA ESTA. Hasta que este fetch termina,
-       `CerebroPuesto()` no puede devolver la puerta, y quien pregunte antes se
-       lleva vacio. Quien lo necesita y por que esta en `camino.js`, que es
-       donde muerde. */
+     El evento se dispara donde SE CARGA el registro, no en un clic: quien llega
+     y no toca nada tiene que tener companero igual (ver la prueba
+     «el visitante NUEVO tambien tiene companero»). */
+  function pintar(reg, tx) {
+    REG = reg; PROSA = (tx && tx.cerebros) || {};
+    window.CerebrosReg = { reg: REG, prosa: PROSA, paises: (tx && tx.paises) || {},
+                           lenguas_no_data: tx && tx.lenguas_no_data };
     document.dispatchEvent(new CustomEvent('preceptor:cerebros',
-      { detail: { puerta: porDefecto() } }));
-    /* DOS CASAS PARA EL MISMO GUION (2026-09-08). En la portada monta bajo
-       `#especificaciones` y enseña los DOS de puerta; en Comunidad monta bajo
-       `#cerebros-banco` y enseña LOS DEMAS, que es donde compararlos tiene
-       sentido -- `mistral-base` al lado de `charla-base` enseña exactamente
-       que aporta nuestro LoRA.
-
-       No se parte en dos ficheros ni se duplica copia: los rotulos de las
-       ocho lenguas ya viven en `PAL`, aqui dentro. Un segundo guion seria una
-       segunda verdad que se separa de esta a la primera correccion. */
-    var host = document.getElementById('especificaciones');
-    var banco = !host && document.getElementById('cerebros-banco');
-    if (banco) host = banco;
-    if (!host || document.getElementById('cerebros')) return;
-    var caja = el('section', 'cerebros'); caja.id = 'cerebros';
-    caja.appendChild(el('h2', 'cerebros-titulo', w[0]));
-    /* SIN EL PIE DE CIFRAS (2026-09-08). Decia «prompt / generacion · Vulkan ·
-       Radeon 780M · <fecha>» debajo del titulo, y a un visitante no le dice
-       nada: es la leyenda de unas columnas que ya se rotulan solas en cada
-       tarjeta, mas el backend y la fecha de una medicion que no ha pedido.
-       Las cifras siguen en las tarjetas, que es donde significan algo. */
-    var rejilla = el('div', 'cerebros-rejilla');
-
-    /* SOLO LOS DE PUERTA (2026-09-08, decision del Soberano). La portada
-       ofrecia SEIS cerebros y cuatro de ellos son el MISMO Mistral 7B
-       --`charla-web`, `charla-base`, `charla-multi` y `mistral-base`--. Quien
-       llega nuevo no elige entre seis: se va. Y la eleccion que se le pedia era
-       ademas falsa, porque cuatro puertas daban al mismo sitio.
-
-       Quedan dos, y son los dos trabajos de la portada: `charla-web` instala
-       --es el unico que sabe que es este producto y da los comandos reales-- y
-       `charla-base` habla con quien ya instalo. Los otros cuatro NO se borran
-       del catalogo: siguen en `cerebros-*.json` porque siguen existiendo, y se
-       enseñan en Comunidad, que es donde compararlos tiene sentido. El de mas
-       valor ahi es `mistral-base`, la base desnuda de los tres primeros: puesto
-       al lado de `charla-base` enseña exactamente que aporta nuestro LoRA.
-
-       Es el mismo reparto que `hub.js` ya hacia con `real.disponible`: el
-       catalogo dice la verdad entera y el render decide cuanta se enseña de
-       entrada. Borrar aqui seria mentir sobre lo que hay. */
-    (reg.cerebros || [])
-      .filter(function (c) { return banco ? !c.puerta : c.puerta; })
-      .forEach(function (c) {
-      var b = el('button', 'cerebro'); b.type = 'button';
-      b.dataset.modelo = c.modelo;
-      /* La prosa de ESTE cerebro en la lengua que toque. Si falta, la tarjeta
-         se pinta igual con su tag y sus cifras: los hechos no dependen de que
-         alguien haya traducido nada. */
-      var t = prosa[c.id] || {};
-      /* SIN LOGO (2026-09-08, decision del Soberano). Lo que habia no eran
-         logos de empresa: eran tres dibujos de linea de la casa --el de
-         Mistral era una silueta de montañas-- puestos como marcador. Un logo
-         parecido al oficial es peor que ninguno: dice al que lo reconoce que
-         aqui se copia de memoria. Y traerlos de un CDN esta descartado por la
-         promesa de cero peticiones externas.
-
-         Queda la bandera, que hace mejor el trabajo que el logo hacia mal:
-         identifica de donde sale el modelo sin fingir una marca. */
-      var cab = el('div', 'cerebro-cab');
-      /* LA BANDERA DEL ORIGEN, al lado del logo (2026-09-08). Dice de donde
-         sale el MODELO BASE, no el adaptador: los tres `charla-*` llevan LoRA
-         entrenado aqui y aun asi ondean la francesa, porque el modelo del que
-         partimos es de Mistral. Poner la nuestra seria apropiarnos de lo que
-         no hicimos, y este sitio se vende justo por no hacer eso.
-
-         Va en color y los logos son linea monocroma: es desviacion consciente
-         del estilo de al lado, porque una bandera sin color no es una bandera.
-
-         EL NOMBRE DEL PAIS SALE DE LA LENGUA, nunca del codigo: `paises` vive
-         en `cerebros-<lang>.json`. Escribir «Francia» aqui lo dejaria en
-         castellano en las ocho portadas. Si la lengua no trae el nombre, se
-         pinta la bandera sin rotulo antes que un codigo de dos letras que no
-         significa nada para quien mira. */
-      if (c.pais) {
-        var f = document.createElement('img');
-        f.className = 'cerebro-bandera';
-        f.src = '/assets/banderas/' + c.pais + '.svg';
-        f.width = 21; f.height = 14; f.loading = 'lazy';
-        var pn = (paises && paises[c.pais]) || '';
-        f.alt = pn; if (pn) f.title = pn;
-        f.onerror = function () { f.remove(); };
-        cab.appendChild(f);
-      }
-      cab.appendChild(el('h3', null, t.nombre || c.id));
-      if (c.recomendado) cab.appendChild(el('span', 'cerebro-marca', w[4]));
-      b.appendChild(cab);
-      b.appendChild(el('p', 'cerebro-modelo', c.modelo));
-      if (t.que_es) b.appendChild(el('p', 'cerebro-que', t.que_es));
-      /* LAS LENGUAS QUE ESTE CEREBRO TIENE MEDIDAS, y las que no.
-         Lo pidio el Soberano el 2026-09-20: «si no cumplen el resto de
-         idiomas, lo avisas en descripcion con un no_data». Va DEBAJO de la
-         descripcion y no en una nota al pie porque es parte de lo que se
-         elige: alguien en aleman esta escogiendo un cerebro que nadie ha
-         probado en aleman, y tiene que saberlo antes de escribir, no despues.
-         Hasta hoy la ficha decia `lang: "auto"` en los seis, que es la forma
-         educada de no decir nada -- y en un sitio de ocho lenguas se lee como
-         «las habla todas». El aviso sale de `cerebros-<lengua>.json`, asi que
-         solo aparece donde hay prosa escrita; donde no la hay, no se inventa. */
-      var lg = (document.documentElement.lang || 'es').slice(0, 2);
-      var nd = PROSA && PROSA.lenguas_no_data;
-      if (nd && (c.lenguas || []).indexOf(lg) < 0) {
-        b.appendChild(el('p', 'no-data', nd));
-      }
-      /* QUE FEEDBACK SE BUSCA, y por eso va antes que las cifras: un tester al
-         que no se le dice que mirar reporta lo que le llama la atencion, que
-         casi nunca es lo que hace falta. */
-      var busca = t.purpose;
-      if (busca) b.appendChild(el('p', 'cerebro-busca', busca));
-      var d = el('p', 'cerebro-datos');
-      d.appendChild(el('b', null, cifra(c.prompt, '')));
-      d.appendChild(el('span', null, ' ' + w[1] + ' · '));
-      d.appendChild(el('b', null, cifra(c.generacion, '')));
-      d.appendChild(el('span', null, ' ' + w[2] + ' tok/s · ' + w[3] + ' '));
-      d.appendChild(el('b', null, cifra(c.carga_s, ' s')));
-      b.appendChild(d);
-      b.appendChild(el('p', 'cerebro-firma',
-        (c.firmado ? '' : w[5]) + ' · contexto ' + reg.contexto));
-      /* La invitacion va UNA vez, al pie de la rejilla y no en cada tarjeta:
-         repetida seis veces deja de ser una invitacion y pasa a ser un cartel. */
-      b.addEventListener('click', function () { elegir(c.modelo); });
-      rejilla.appendChild(b);
-    });
-    caja.appendChild(rejilla);
-    var cta = tx && tx.cta_hash;
-    if (cta) caja.appendChild(el('p', 'cerebros-cta', cta));
-    host.parentNode.insertBefore(caja, host.nextSibling);
-    marcar(w);
-    if (guardado() && window.CerebroFicha) window.CerebroFicha(guardado(), REG, PROSA);
-  }
-
-  function marcar(w) {
-    var actual = guardado();
-    Array.prototype.forEach.call(document.querySelectorAll('.cerebro'), function (b) {
-      var mio = b.dataset.modelo === actual;
-      b.classList.toggle('elegido', mio);
-      b.setAttribute('aria-pressed', mio ? 'true' : 'false');
-      var m = b.querySelector('.cerebro-uso');
-      if (mio && !m) { m = el('span', 'cerebro-uso', w[6]); b.appendChild(m); }
-      if (!mio && m) m.remove();
-    });
-  }
-
-
-  function elegir(modelo) {
-    try { localStorage.setItem(LLAVE, modelo); } catch (e) { /* privado */ }
-    var lang = (document.documentElement.lang || 'es').slice(0, 2);
-    marcar(PAL[lang] || PAL['es']);
-    if (window.CerebroFicha) window.CerebroFicha(modelo, REG, PROSA);
-    document.dispatchEvent(new CustomEvent('preceptor:brain',
-      { detail: { name: modelo, live: false } }));
+      { detail: { puerta: porDefecto(), reg: REG, prosa: PROSA } }));
   }
 
   function arrancar() {
     envolver();
     var lang = (document.documentElement.lang || 'es').slice(0, 2);
-    var w = PAL[lang] || PAL['es'];
     /* DOS FICHEROS Y UN RESPALDO POR FICHERO ENTERO. Los hechos no tienen
        idioma; la prosa si, y cae al ingles COMPLETA en vez de por clave
        suelta: media lengua traducida y media caida se lee peor que una lengua
@@ -283,11 +118,14 @@
           return fetch('/cerebros-en.json', { cache: 'no-store' }).then(traer);
         }).then(function (prosa) { return [base, prosa]; });
       })
-      .then(function (par) { pintar(par[0], w, lang, par[1]); })
+      .then(function (par) { pintar(par[0], par[1]); })
       .catch(function (e) {
+        // Sin catalogo no hay quien diga que cerebro habla: se dice, con causa.
         var host = document.getElementById('especificaciones');
-        if (!host || document.getElementById('cerebros')) return;
-        var p = el('p', 'nodata', 'NO_DATA · ' + e.message);
+        if (!host || document.getElementById('cerebros-nodata')) return;
+        var p = document.createElement('p');
+        p.className = 'nodata'; p.id = 'cerebros-nodata';
+        p.textContent = 'NO_DATA · cerebros.json: ' + e.message;
         host.parentNode.insertBefore(p, host.nextSibling);
       });
   }

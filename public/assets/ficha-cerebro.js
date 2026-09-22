@@ -19,79 +19,138 @@
   function cifra(v, unidad) {
     return v == null ? 'NO_DATA' : String(v).replace('.', ',') + unidad;
   }
-  var PAL = { es:['Elige cerebro','prompt','generación','despertar','recomendado','sin firmar','en uso'],
-            en:['Choose a brain','prompt','generation','wake-up','recommended','unsigned','in use'],
-            pt:['Escolhe cérebro','prompt','geração','despertar','recomendado','sem assinar','em uso'],
-            fr:['Choisis un cerveau','prompt','génération','réveil','recommandé','non signé','en cours'],
-            it:['Scegli cervello','prompt','generazione','risveglio','consigliato','non firmato','in uso'],
-            de:['Gehirn wählen','Prompt','Erzeugung','Aufwachen','empfohlen','unsigniert','aktiv'],
-            el:['Διάλεξε εγκέφαλο','prompt','παραγωγή','αφύπνιση','προτεινόμενο','ανυπόγραφο','σε χρήση'],
-            ru:['Выбери мозг','prompt','генерация','пробуждение','рекомендуется','без подписи','в работе'] };
-  /* --- LA FICHA DE ARRIBA CAMBIA CON EL CEREBRO -----------------------------
-     El cuadro de «El Instalador» dejaba de ser cierto en cuanto elegias otro:
-     seguia enseñando la velocidad del 2026-08-25 de un modelo que ya no era el
-     que contestaba. Aqui se repinta con lo del elegido, y se le añade el LORE
-     -- que es lo que este cuadro pedia a gritos: sitio hay, y lo unico que
-     habia era ficha tecnica.
+  /* LAS CIFRAS SE ROTULAN AQUI; LAS FRASES VIENEN DE `motor-<lengua>.json`.
+     Los rotulos cortos de una cifra --prompt, generacion-- van en la tabla de
+     abajo, como iban en el selector. Todo lo que es una frase vive en la
+     familia del motor, que es la de esta ventana: el gate no deja castellano
+     suelto dentro de un guion, y con razon --lo verian las ocho lenguas--. */
+  var PAL = {
+    es: ['prompt', 'generación', 'despertar', 'sin firmar'],
+    en: ['prompt', 'generation', 'wake-up', 'unsigned'],
+    fr: ['prompt', 'génération', 'réveil', 'non signé'],
+    pt: ['prompt', 'geração', 'despertar', 'sem assinar'],
+    it: ['prompt', 'generazione', 'risveglio', 'non firmato'],
+    de: ['Prompt', 'Erzeugung', 'Aufwachen', 'unsigniert'],
+    ru: ['prompt', 'генерация', 'пробуждение', 'без подписи'],
+    el: ['prompt', 'παραγωγή', 'αφύπνιση', 'ανυπόγραφο']
+  };
+  /* UN SOLO CARGADOR para la familia del motor, compartido con `piso-chat.js`:
+     la piden los dos y no hace falta pedirla dos veces. Si no llega, las
+     claves salen a la vista --- feo y legible antes que bonito y mudo. */
+  var TX = null, pidiendo = null;
+  function textos() {
+    if (TX) return Promise.resolve(TX);
+    if (pidiendo) return pidiendo;
+    var lang = (document.documentElement.lang || 'es').slice(0, 2);
+    var pide = function (l) {
+      return fetch('/motor-' + l + '.json')
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .catch(function () { return null; });
+    };
+    pidiendo = pide(lang).then(function (d) { return d || pide('es'); })
+      .then(function (d) { TX = (d && d.ui) || {}; return TX; });
+    return pidiendo;
+  }
+  window.MotorTextos = textos;
+  function X(k) { return (TX && TX[k]) || k; }
 
-     ENVUELVE, NO REESCRIBE: `chat-router.js` sigue pintando el nombre y la
-     funcion del compañero, y esto solo AÑADE un bloque propio al final. Si un
-     dia el router cambia, esto se queda sin sitio pero no rompe nada. */
-  function ficha(modelo, REG, PROSA) {
+  /* --- LA FICHA: LORE A LA VISTA, LO TECNICO PLEGADO (2026-09-22) ----------
+     El Soberano: «los datos tecnicos deben estar en un desplegable; los
+     usuarios no tecnicos solo deben saber sobre el lore». Asi que arriba va lo
+     que se entiende sin saber que es un token --quien es, donde corre y su
+     historia-- y la etiqueta del modelo, las cifras, la descarga y la memoria
+     van dentro de un `<details>` que abre quien quiera.
+
+     VA LO PRIMERO DE LA VENTANA DE DESCARGA, y no al final como antes: quien
+     va a bajar un modelo tiene que saber cual es ANTES de ver el boton. Un
+     boton de «descargar ~1 GB» sin decir de que es pide fe.
+
+     QUIEN LA LLAMA. Antes, un clic en una tarjeta; desde que se retiraron,
+     `piso-chat.js` al abrir cada piso de la Torre. `donde` llega de
+     `cerebros.json` › `pisos`: el mismo Mini puede correr en el rack o en el
+     navegador, y la ficha tiene que decir cual, porque es lo que decide si tu
+     pregunta sale de tu aparato.
+
+     La tabla vieja (`.medidas`) se sigue escondiendo con `con-cerebro`: pinta
+     UNA pasada de llama-bench de OTRO modelo --el 27B del nodo, que ni sirve
+     la web-- y se retiraba solo cuando habia cerebro elegido. Ahora siempre lo
+     hay en la portada, asi que no vuelve a verse salvo si el catalogo falla. */
+  function el(t, c, x) {
+    var n = document.createElement(t);
+    if (c) n.className = c;
+    if (x != null) n.textContent = x;
+    return n;
+  }
+  function cifra(v, unidad) {
+    return v == null ? 'NO_DATA' : String(v).replace('.', ',') + unidad;
+  }
+  var medidoAqui = null;
+  function ficha(modelo, REG, PROSA, donde) {
     var host = document.getElementById('especificaciones');
     if (!host || !REG) return;
     var c = (REG.cerebros || []).filter(function (x) { return x.modelo === modelo; })[0];
-    var t = c ? (PROSA[c.id] || {}) : {};
+    var t = c ? ((PROSA || {})[c.id] || {}) : {};
     var lang = (document.documentElement.lang || 'es').slice(0, 2);
-    var w = PAL[lang] || PAL['es'];
-
-    /* LA TABLA VIEJA SE RETIRA CUANDO HAY CEREBRO ELEGIDO, y esto es el arreglo
-       de fondo. `.medidas` pinta UNA pasada de llama-bench del 2026-08-25 --CPU
-       y Vulkan de un modelo concreto-- y la enseñaba eligieras el que
-       eligieras. Dos verdades en el mismo cuadro, y la de arriba era la falsa
-       en cuanto tocabas una tarjeta.
-
-       Se ESCONDE, no se borra: si un dia no hay `cerebros.json` o el fichero
-       falla, la tabla vuelve sola y la pagina sigue diciendo algo cierto en vez
-       de quedarse muda. */
-    /* SE MARCA EL PADRE Y LO ESCONDE EL CSS, en vez de tocar el nodo. `.medidas`
-       la pinta `medidas.js` DESPUES de un `fetch`, asi que en la primera pasada
-       aqui todavia no existe y un `querySelector` se va de vacio -- se vio: la
-       tabla vieja seguia en pantalla con la ficha nueva debajo. Una clase en el
-       contenedor no depende de quien pinta primero. */
+    var w = PAL[lang] || PAL.en;
+    if (!TX) { textos().then(function () { ficha(modelo, REG, PROSA, donde); }); }
+    var nav = donde === 'navegador';
+    var N = REG.navegador || {};
     host.classList.toggle('con-cerebro', !!c);
 
     var caja = document.getElementById('ficha-cerebro');
-    if (!caja) {
-      caja = el('div', 'ficha-cerebro'); caja.id = 'ficha-cerebro';
-      host.appendChild(caja);
-    }
+    if (!caja) { caja = el('div', 'ficha-cerebro'); caja.id = 'ficha-cerebro'; }
+    if (host.firstChild !== caja) host.insertBefore(caja, host.firstChild);
     caja.innerHTML = '';
-    if (!c) return;                       // sin cerebro elegido no se inventa uno
+    if (!c) return;                       // sin cerebro no se inventa uno
 
-    var izq = el('div', 'ficha-datos');
     var cab = el('div', 'cerebro-cab');
     cab.appendChild(el('h3', 'ficha-nombre', t.nombre || c.id));
-    if (c.recomendado) cab.appendChild(el('span', 'cerebro-marca', w[4]));
-    izq.appendChild(cab);
-    izq.appendChild(el('p', 'cerebro-modelo', c.modelo));
-
-    var d = el('p', 'cerebro-datos');
-    d.appendChild(el('b', null, cifra(c.prompt, '')));
-    d.appendChild(el('span', null, ' ' + w[1] + ' · '));
-    d.appendChild(el('b', null, cifra(c.generacion, '')));
-    d.appendChild(el('span', null, ' ' + w[2] + ' tok/s · ' + w[3] + ' '));
-    d.appendChild(el('b', null, cifra(c.carga_s, ' s')));
-    izq.appendChild(d);
-    /* La procedencia va PEGADA a la cifra y no en un pie lejano: una velocidad
-       sin backend ni fecha al lado es media medida, y la tabla que se retira
-       fallaba justo por eso -- decia «medido el 2026-08-25» de otro modelo. */
-    izq.appendChild(el('p', 'cerebro-firma',
-      (c.firmado ? '' : w[5]) + ' · contexto ' + REG.contexto +
-      ' · ' + REG.backend + ' · ' + REG.medido));
-    caja.appendChild(izq);
+    caja.appendChild(cab);
+    caja.appendChild(el('p', 'ficha-donde', nav ? X('fichaNav') : X('fichaRack')));
     if (t.lore) caja.appendChild(el('blockquote', 'ficha-lore', t.lore));
+
+    var tec = el('details', 'ficha-tecnica');
+    tec.appendChild(el('summary', null, X('fichaTec')));
+    tec.appendChild(el('p', 'cerebro-modelo', nav ? (N.webllm || c.modelo) + ' · WebLLM' : c.modelo));
+    if (t.que_es) tec.appendChild(el('p', 'cerebro-que', t.que_es));
+    if (nav) {
+      tec.appendChild(el('p', 'cerebro-datos', X('fichaBaja') + ' ' + cifra(N.descarga_mb, ' MB') +
+        ' · ' + X('fichaVez')));
+      tec.appendChild(el('p', 'cerebro-datos', X('fichaVram') + ' ~' + cifra(N.vram_mb, ' MB')));
+      /* LA VELOCIDAD DEL NAVEGADOR NO SE PUBLICA: depende del aparato de quien
+         lo baja, y cualquier cifra nuestra seria la de NUESTRA maquina puesta
+         en la tuya. Se mide en tu primer turno y se escribe aqui. */
+      tec.appendChild(el('p', 'cerebro-datos ficha-vel',
+        medidoAqui ? X('fichaAqui') + ': ' + medidoAqui + ' tok/s' : X('fichaVel')));
+    } else {
+      var d = el('p', 'cerebro-datos');
+      d.appendChild(el('b', null, cifra(c.prompt, '')));
+      d.appendChild(el('span', null, ' ' + w[0] + ' · '));
+      d.appendChild(el('b', null, cifra(c.generacion, '')));
+      d.appendChild(el('span', null, ' ' + w[1] + ' tok/s · ' + w[2] + ' '));
+      d.appendChild(el('b', null, cifra(c.carga_s, ' s')));
+      tec.appendChild(d);
+      /* La procedencia va PEGADA a la cifra: una velocidad sin backend ni fecha
+         al lado es media medida. */
+      tec.appendChild(el('p', 'cerebro-firma',
+        (c.firmado ? '' : w[3]) + ' · contexto ' + REG.contexto +
+        ' · ' + REG.backend + ' · ' + REG.medido));
+    }
+    if (t.purpose) tec.appendChild(el('p', 'cerebro-busca', t.purpose));
+    caja.appendChild(tec);
   }
+
+  /* El primer turno del navegador trae su medida: tokens que DECLARO el motor
+     y tiempo de generacion. Sin tokens declarados no hay cifra. */
+  document.addEventListener('preceptor:turno', function (e) {
+    var d = e.detail || {};
+    if (d.via !== 'webllm' || !d.tokens || d.ttft == null) return;
+    var s = (d.ms - d.ttft) / 1000;
+    if (s <= 0) return;
+    medidoAqui = String(Math.round(d.tokens / s * 10) / 10).replace('.', ',');
+    var v = document.querySelector('#ficha-cerebro .ficha-vel');
+    if (v) v.textContent = X('fichaAqui') + ': ' + medidoAqui + ' tok/s';
+  });
 
   window.CerebroFicha = ficha;
 })();

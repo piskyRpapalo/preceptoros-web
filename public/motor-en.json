@@ -6,14 +6,14 @@
   },
   "ui": {
     "arrancando": "Starting the engine...",
-    "avisoCifra": "About 400 MB. We say it before you click, not after.",
+    "avisoCifra": "It is 984 MB. We say it before you press, not after.",
     "avisoRed": "Downloads over the network once. Cached in your browser.",
     "bajando": "Downloading",
     "bajarNavegador": "Download the browser's AI (~2.7-4 GB)",
     "causaError": "Cause: error querying the GPU.",
     "causaSinAdaptador": "Cause: WebGPU exists but no usable GPU.",
     "causaSinApi": "Cause: this browser exposes neither WebGPU nor LanguageModel.",
-    "descargar": "Download model (~2 GB, once)",
+    "descargar": "Download the Mini (~1 GB, once)",
     "falloDescarga": "NO_DATA - failed to download the model",
     "falloNavegador": "NO_DATA - browser AI failed",
     "listoLocal": "Engine ready. Write your question.",
@@ -31,6 +31,16 @@
     "colaSwap": "switching models",
     "colaLlena": "The rack's queue is full: try again in a minute",
     "colaTecho": "A ceiling: worked out from the most the model can write",
-    "colaMedida": "figures measured on the rack, not promised"
+    "colaMedida": "figures measured on the rack, not promised",
+    "fichaNav": "in your browser",
+    "fichaRack": "on the rack",
+    "fichaTec": "Technical details",
+    "fichaBaja": "Download",
+    "fichaVez": "once; it stays in your browser cache",
+    "fichaVram": "video memory",
+    "fichaVel": "Speed: depends on your device. Measured on your first turn.",
+    "fichaAqui": "Measured on your device",
+    "pisoHabla": "Speaking",
+    "pisoBajaPrimero": "This floor runs INSIDE your browser, so you can keep going in airplane mode. First the model has to be downloaded, just once: press the download button right below the chat and write again."
   }
 }

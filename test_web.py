@@ -250,7 +250,12 @@ CLAVES_MOTOR_LISTA = ('arrancando', 'avisoCifra', 'avisoRed', 'bajando', 'bajarN
     # La cola del rack (2026-09-22): las pinta `cola.js`, que se carga tarde
     # desde `rack.js` y por eso no puede traer su bloque en la portada.
     'colaPos', 'colaEspera', 'colaCasi', 'colaFrio', 'colaSwap', 'colaLlena',
-    'colaTecho', 'colaMedida')
+    'colaTecho', 'colaMedida',
+    # La ficha del cerebro y el piso que habla (2026-09-22): los pintan
+    # `ficha-cerebro.js` y `piso-chat.js`, en la ventana de descarga y encima
+    # del chat. Frases de verdad, que el guardian de castellano suelto no deja
+    # vivir dentro de un guion.
+    'fichaNav', 'fichaRack', 'fichaTec', 'fichaBaja', 'fichaVez', 'fichaVram', 'fichaVel', 'fichaAqui', 'pisoHabla', 'pisoBajaPrimero')
 FUERA_DEL_BLOQUE.update({k: "motor-{lengua}.json" for k in CLAVES_MOTOR_LISTA})
 
 
@@ -1103,7 +1108,9 @@ class Estructura(unittest.TestCase):
                 # `hilos` salio de esta lista el 2026-09-14: el tablon se
                 # retiro entero y su contenedor ya no existe. Un guardian que
                 # vigila un elemento borrado no protege nada y encima se cae.
-                for detras in ("agora-portada", "cerebros-banco"):
+                # `cerebros-banco` salio el 2026-09-22 con las tarjetas «Elige
+                # cerebro», retiradas de Comunidad por orden del Soberano.
+                for detras in ("agora-portada",):
                     self.assertLess(
                         t.index('id="taller"'), t.index(f'id="{detras}"'),
                         f"«{detras}» abre la pagina por delante de la vitrina")
@@ -2887,17 +2894,54 @@ class Hub(unittest.TestCase):
         self.assertFalse((PUBLICO / "assets" / "logos-models").exists(),
                          "los ficheros de logo siguen en disco")
 
-    def test_el_selector_de_la_portada_filtra_por_puerta(self):
-        """El filtro vive en el render, y sin el la marca no hace nada.
+    def test_elige_cerebro_ya_no_existe_y_el_piso_decide(self):
+        """«Elige cerebro» se retiro de la portada y de Comunidad (2026-09-22).
 
-        Una bandera en el JSON que nadie lee es peor que no tenerla: parece que
-        la regla esta puesta y la pantalla sigue enseñando los seis.
+        Sustituye a la prueba que vigilaba el filtro por `puerta` de aquellas
+        tarjetas: el filtro ya no existe porque las tarjetas no existen. Lo que
+        hay que vigilar ahora es lo que las sustituye --el reparto por piso--,
+        y que las tarjetas no vuelvan por un parche de otra sesion.
         """
-        js = (PUBLICO / "assets" / "selector-modelo.js").read_text(encoding="utf-8")
-        self.assertIn("banco ? !c.puerta : c.puerta", js,
-                      "selector-modelo.js no reparte por `puerta`")
-        self.assertIn("cerebros-banco", js,
-                      "el selector no conoce la casa de Comunidad")
+        sel = (PUBLICO / "assets" / "selector-modelo.js").read_text(encoding="utf-8")
+        for pieza in ("cerebros-rejilla", "'Elige cerebro'", "cerebros-banco"):
+            self.assertNotIn(pieza, sel, f"vuelve el banco de tarjetas: {pieza}")
+        self.assertIn("window.CerebroDelPiso", sel,
+                      "el selector ya no obedece al piso abierto")
+        for idi in IDIOMAS:
+            t = (PUBLICO / idi / "community.html").read_text(encoding="utf-8")
+            with self.subTest(idioma=idi):
+                self.assertNotIn('id="cerebros-banco"', t)
+
+    def test_cada_piso_tiene_quien_hable_y_existe(self):
+        """El reparto firmado cubre los ocho pisos, y cada nombre existe.
+
+        Un piso sin entrada dejaria el titulo en NO_DATA; uno con un cerebro
+        que no esta en el catalogo, el chat sin modelo. Y los pisos del
+        navegador tienen que bajar EL MISMO modelo que `chat.js` sabe arrancar:
+        si el catalogo dice un Mini y el chat descarga otro, la ficha miente.
+        """
+        import re as _re
+        reg = json.loads((PUBLICO / "cerebros.json").read_text(encoding="utf-8"))
+        cam = (PUBLICO / "assets" / "camino.js").read_text(encoding="utf-8")
+        m = _re.search(r"var PELDANOS = \[(.*?)\];", cam, _re.S)
+        self.assertIsNotNone(m, "camino.js ya no declara PELDANOS")
+        pisos = _re.findall(r"'(\w+)'", m.group(1))
+        self.assertEqual(len(pisos), 8)
+        ids = {c["id"]: c for c in reg["cerebros"]}
+        rep = reg.get("pisos", {})
+        for p in pisos:
+            with self.subTest(piso=p):
+                self.assertIn(p, rep, "piso sin quien hable")
+                self.assertIn(rep[p]["cerebro"], ids, "cerebro que no existe")
+                self.assertIn(rep[p]["donde"], ("rack", "navegador"))
+        chat = (PUBLICO / "assets" / "chat.js").read_text(encoding="utf-8")
+        webllm = reg.get("navegador", {}).get("webllm")
+        self.assertTrue(webllm, "hay pisos del navegador y no se dice que modelo baja")
+        self.assertIn(f"var MODELO = '{webllm}'", chat,
+                      "el catalogo presenta un modelo y el chat descarga otro")
+        router = (PUBLICO / "assets" / "chat-router.js").read_text(encoding="utf-8")
+        self.assertIn("/assets/piso-chat.js", router,
+                      "nadie carga el modulo que hace que el piso mande")
 
     def test_el_modelo_servido_lleva_tag_explicito(self):
         """Nada de `:latest` pelado en el modelo que da la cara al publico.

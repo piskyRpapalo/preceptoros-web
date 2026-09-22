@@ -107,6 +107,10 @@
     if (n) { modeloPuesto = n; }
   });
   function modeloActual() {
+    /* EL DUENO PRIMERO (2026-09-22). Con un modelo por piso, la pastilla
+       guarda el del piso ANTERIOR y abrir el siguiente lo arrastraba. */
+    var dueno = typeof window.CerebroPuesto === 'function' && window.CerebroPuesto();
+    if (dueno) { return dueno; }
     if (modeloPuesto) { return modeloPuesto; }
     /* `selector-modelo.js` es quien MANDA sobre el modelo --- envuelve
        `Rack.stream` ---, asi que se le pregunta a el en vez de repetir aqui su

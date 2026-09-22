@@ -90,7 +90,17 @@
    que nadie escriba un numero de columnas. */
 .ficha-cerebro{display:grid;gap:.7rem;margin-top:.7rem;padding-top:.7rem;
   border-top:1px solid var(--tenue);
-  grid-template-columns:repeat(auto-fit,minmax(14rem,1fr))}
+  grid-template-columns:1fr}
+/* UNA COLUMNA DESDE EL 2026-09-22: nombre, donde corre, lore y el desplegable
+   tecnico, en ese orden de lectura. Eran dos columnas --datos a la izquierda,
+   lore a la derecha-- cuando los datos estaban a la vista; plegados, la
+   columna de datos se quedaba vacia al lado del lore. */
+.ficha-donde{margin:-.2rem 0 0;font-size:.72rem;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--oro)}
+.ficha-tecnica{font-size:.78rem}
+.ficha-tecnica>summary{cursor:pointer;color:var(--tenue);font-size:.74rem}
+.ficha-tecnica[open]>summary{margin-bottom:.4rem}
+.ficha-tecnica p{margin:.25rem 0}
 .ficha-nombre{margin:0;font-weight:700;font-size:.92rem}
 .ficha-datos{min-width:0}
 /* El lore va en cursiva y con filete: se lee como una voz, no como un dato.

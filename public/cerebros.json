@@ -76,7 +76,7 @@
   },
   {
    "id": "v7",
-   "modelo": "preceptor-v7:latest",
+   "modelo": "preceptor-v7:llama3.2-1.0",
    "recomendado": false,
    "prompt": 355.67,
    "generacion": 33.29,
@@ -151,5 +151,48 @@
   ]
  },
  "lenguas_nota": "EL CAMPO `lang: \"auto\"` SE RETIRA EL 2026-09-20 Y NO SE SUSTITUYE POR OTRA PROMESA. Decia «auto» en los seis cerebros, que es la forma educada de no decir nada: ninguna medida lo respaldaba y el sitio se sirve en ocho lenguas, asi que se leia como «las habla todas».\nLo que hay medido, con `duelo_mini.py` el 2026-09-20: castellano e ingles. Las otras seis --de, el, fr, it, pt, ru-- son NO_DATA: no se han probado, y la ficha lo dice en la lengua de quien la lee en vez de callarlo.\nEl alcance lo fijo el Soberano: «puedes dejar los modelos hablando ingles (preferible) y espanol hoy. Si no cumplen el resto de idiomas, lo avisas en descripcion con un no_data. No podemos pararnos hoy en modelos que cambiaremos en 2 meses». El aviso es esto; el hueco sigue siendo un hueco.",
- "puerta_nota": "LA PUERTA CAMBIA EL 2026-09-20, DECIDIDA POR DATO. Era `charla-base` (La Charla). Lo retiro el Soberano, y el sustituto salio de `duelo_mini.py`: tres modelos pequenos contra el escenario real del peldano 1 de la Torre, juzgados por el juez de dos capas de la casa.\nGano `qwen3:1.7b` con mediana 10 sobre 10 --- `qwen2.5:1.5b` se quedo en 4 y no llega al minimo de 7; `gemma2:2b` empato a 10 y pierde por pared. Contra la puerta anterior: prompt x4,1 (1017 frente a 250 tok/s), generacion x3,4 (55 frente a 16), carga 0,94 s frente a 2,2 y 1,4 GB frente a 4,4. Backend medido: 100 % GPU (Vulkan, Radeon 780M). Sin thinking, comprobado pidiendole una palabra.\nY LO QUE DE VERDAD LO SUBIO NO FUE EL MODELO. En la pasada anterior este mismo modelo saco mediana 4 e invento «tenemos mas de 100 usuarios activos». Lo unico que cambio fue meter `torre_hechos` en el papel --- que PreceptorOS no es un sistema operativo, que contesta el rack y no una nube ---. Un modelo al que le falta un dato rellena el hueco con seguridad; el arreglo era el prompt, no el modelo."
+ "puerta_nota": "LA PUERTA CAMBIA EL 2026-09-20, DECIDIDA POR DATO. Era `charla-base` (La Charla). Lo retiro el Soberano, y el sustituto salio de `duelo_mini.py`: tres modelos pequenos contra el escenario real del peldano 1 de la Torre, juzgados por el juez de dos capas de la casa.\nGano `qwen3:1.7b` con mediana 10 sobre 10 --- `qwen2.5:1.5b` se quedo en 4 y no llega al minimo de 7; `gemma2:2b` empato a 10 y pierde por pared. Contra la puerta anterior: prompt x4,1 (1017 frente a 250 tok/s), generacion x3,4 (55 frente a 16), carga 0,94 s frente a 2,2 y 1,4 GB frente a 4,4. Backend medido: 100 % GPU (Vulkan, Radeon 780M). Sin thinking, comprobado pidiendole una palabra.\nY LO QUE DE VERDAD LO SUBIO NO FUE EL MODELO. En la pasada anterior este mismo modelo saco mediana 4 e invento «tenemos mas de 100 usuarios activos». Lo unico que cambio fue meter `torre_hechos` en el papel --- que PreceptorOS no es un sistema operativo, que contesta el rack y no una nube ---. Un modelo al que le falta un dato rellena el hueco con seguridad; el arreglo era el prompt, no el modelo.",
+ "pisos": {
+  "nota": "Quien habla en cada piso de la Torre. Firmado por el Soberano el 2026-09-22 (reparto por oficio, ver preceptor-lora/docs/PLAN_PISOS_2026-09-23.md). `cerebro` es un id de `cerebros`; `donde` dice si contesta el rack o el navegador. Los pisos 1 y 7 van al navegador porque son los pisos sin red: prometen seguir hablando en modo avion.",
+  "despertar": {
+   "cerebro": "mini",
+   "donde": "navegador"
+  },
+  "primeros_pasos": {
+   "cerebro": "mini",
+   "donde": "rack"
+  },
+  "exposicion": {
+   "cerebro": "charla-web",
+   "donde": "rack"
+  },
+  "puertos": {
+   "cerebro": "qwen-coder",
+   "donde": "rack"
+  },
+  "whoami": {
+   "cerebro": "charla-web",
+   "donde": "rack"
+  },
+  "killswitch": {
+   "cerebro": "v7",
+   "donde": "rack"
+  },
+  "silencio": {
+   "cerebro": "mini",
+   "donde": "navegador"
+  },
+  "contribuir": {
+   "cerebro": "charla-multi",
+   "donde": "rack"
+  }
+ },
+ "navegador": {
+  "nota": "El Mini dentro del navegador: el MISMO Qwen3 1.7B que sirve el rack, compilado para WebGPU por MLC. Descarga medida el 2026-09-22 sumando los 39 ficheros del repositorio en Hugging Face; memoria de video segun el prebuiltAppConfig de @mlc-ai/web-llm 0.2.85. La velocidad NO se publica: depende del aparato de quien lo baja, y se mide en su primer turno.",
+  "cerebro": "mini",
+  "webllm": "Qwen3-1.7B-q4f16_1-MLC",
+  "descarga_mb": 984,
+  "vram_mb": 2037,
+  "medido": "2026-09-22"
+ }
 }
