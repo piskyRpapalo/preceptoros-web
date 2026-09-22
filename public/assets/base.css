@@ -66,16 +66,25 @@ main{width:100%;max-width:46rem;margin:0 auto}
     -webkit-backdrop-filter:blur(16px) saturate(180%);
     backdrop-filter:blur(16px) saturate(180%)}
 }
-/* El canto: metal violeta cepillado, en un ANILLO con mascara. Las dos vias
-   obvias fallan: `border-image` ignora el radio, y dos capas de fondo
-   border-box/padding-box pintan la textura por TODO el panel — con el cristal
-   al 55 % se veia a traves como una rejilla. Se probo y se vio. */
+/* El canto: ORO METALIZADO, en un ANILLO con mascara (2026-09-22). Era metal
+   violeta cepillado --`edge-violet.png`-- y a la vista salia como una costura
+   punteada en todos los paneles; el Soberano: «no queda bien; cambialo por
+   el borde dorado, metalizado, un poco mas grueso». Sin imagen: un barrido
+   diagonal de luces y sombras de oro hace el metal, y una trama de un pixel
+   encima hace el cepillado. Cuatro pixeles, contra la linea de uno del oro
+   plano. El PNG se retira con esto: nadie mas lo pintaba.
+   Las dos vias obvias fallan: `border-image` ignora el radio, y dos capas de
+   fondo border-box/padding-box pintan la textura por TODO el panel — con el
+   cristal al 55 % se veia a traves como una rejilla. Se probo y se vio. */
 .panel{position:relative}
 @supports ((mask-composite:exclude) or (-webkit-mask-composite:xor)){
   .panel{border-color:transparent}
   .panel::before{content:"";position:absolute;inset:0;pointer-events:none;
-    border-radius:inherit;padding:5px;
-    background:url(edge-violet.png) repeat;
+    border-radius:inherit;padding:4px;
+    background:repeating-linear-gradient(90deg,rgba(255,250,225,.14) 0 1px,
+        transparent 1px 3px),
+      linear-gradient(135deg,#6b4c17 0%,#c99a41 14%,#fbe9b0 27%,#b3842f 41%,
+        #f2d08a 55%,#8c6526 70%,#f7df9f 85%,#7a581c 100%);
     -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
     -webkit-mask-composite:xor;
     mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);

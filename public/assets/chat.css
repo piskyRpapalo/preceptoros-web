@@ -93,8 +93,8 @@ button.enviar svg{margin-right:.1rem}
 .chat-acciones{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;
   margin:.5rem 0 0}
 .chat-acciones #voice{margin:0}
-/* EL CHAT SALE DEL ANILLO VIOLETA. `.panel::before` pinta `edge-violet.png` en
-   un aro de 5 px sobre todos los paneles, y de paso deja el borde real en
+/* EL CHAT SALE DEL ANILLO. `.panel::before` pinta un aro de oro metalizado
+   (hasta el 2026-09-22, `edge-violet.png`) sobre todos los paneles, y de paso deja el borde real en
    `transparent` -- por eso el canto dorado no se veia: estaba puesto y tapado.
    Aqui se apaga el aro y se devuelve el borde, que es el limite con la web y
    tiene que ser una linea limpia, no una textura. */
