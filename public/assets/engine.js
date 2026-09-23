@@ -143,8 +143,21 @@
      DECLARE el motor, o null: contar trozos y llamarlos tokens seria decorar
      una cifra, que es lo unico que este producto no hace. */
   function stream(sistema, texto, alTrozo) {
+    var t0 = Date.now(), tPrimero = null;
+    /* Same event as rack.js, from the other place a model can answer: the
+       visitor's own browser. WebLLM reports its own speeds in `usage.extra`;
+       the Prompt API reports nothing, and that is said, not guessed. */
+    var mide = function (u) {
+      var x = (u && u.extra) || {};
+      window.dispatchEvent(new CustomEvent('preceptor:medida', { detail: {
+        origen: 'navegador', tokens: (u && u.completion_tokens) || null,
+        prompt_tokens: (u && u.prompt_tokens) || null,
+        tok_s: x.decode_tokens_per_s || null, prompt_tok_s: x.prefill_tokens_per_s || null,
+        primer_token_s: x.time_to_first_token_s || (tPrimero ? (tPrimero - t0) / 1000 : null),
+        pared_s: (Date.now() - t0) / 1000 } }));
+    };
     if (motor) {
-      var tokens = null;
+      var tokens = null, uso = null;
       return motor.chat.completions.create({
         messages: [{ role: 'system', content: sistema }, { role: 'user', content: texto }],
         temperature: 0.6, stream: true, stream_options: { include_usage: true },
@@ -156,10 +169,11 @@
         extra_body: { enable_thinking: false }
       }).then(async function (flujo) {
         for await (var t of flujo) {
-          if (t.usage) tokens = t.usage.completion_tokens;
+          if (t.usage) { tokens = t.usage.completion_tokens; uso = t.usage; }
           var d = (t.choices[0] && t.choices[0].delta.content) || '';
-          if (d) alTrozo(d);
+          if (d) { if (!tPrimero) tPrimero = Date.now(); alTrozo(d); }
         }
+        mide(uso);
         return tokens;
       });
     }
@@ -173,8 +187,9 @@
         // que llevamos, es acumulado y se manda solo lo nuevo.
         var nuevo = (t.indexOf(acc) === 0 && acc) ? t.slice(acc.length) : t;
         acc = (t.indexOf(acc) === 0 && acc) ? t : acc + t;
-        if (nuevo) alTrozo(nuevo);
+        if (nuevo) { if (!tPrimero) tPrimero = Date.now(); alTrozo(nuevo); }
       }
+      mide(null);
       return null;      // la Prompt API no declara cuantos tokens genero
     })();
   }

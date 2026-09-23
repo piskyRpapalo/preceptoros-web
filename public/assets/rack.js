@@ -57,6 +57,23 @@
     window.dispatchEvent(new CustomEvent('preceptor:cola', { detail: d }));
   }
 
+  /* THE PHYSICS OF ONE TURN (2026-09-24, asked by the Soberano: show curious
+     users the measurements of every answer, never the name of the hardware).
+     Ollama's last NDJSON line carries the engine's own counters; the proxy
+     forwards it untouched. Durations come in nanoseconds. Nothing here is
+     estimated: a field the engine did not send stays null and is shown as
+     NO_DATA by `medidas-turno.js`. */
+  function mide(modelo, o, t0, tPrimero) {
+    var s = function (ns) { return typeof ns === 'number' ? ns / 1e9 : null; };
+    var d = { origen: 'rack', modelo: modelo,
+              tokens: o && o.eval_count || null, gen_s: s(o && o.eval_duration),
+              prompt_tokens: o && o.prompt_eval_count || null,
+              prompt_s: s(o && o.prompt_eval_duration), carga_s: s(o && o.load_duration),
+              total_s: s(o && o.total_duration), pared_s: (Date.now() - t0) / 1000,
+              primer_token_s: tPrimero ? (tPrimero - t0) / 1000 : null };
+    window.dispatchEvent(new CustomEvent('preceptor:medida', { detail: d }));
+  }
+
   window.Rack = {
     base: BASE,
     /* NDJSON: una linea, un trozo. Es el formato de Ollama, y el tunel sirve a
@@ -70,6 +87,7 @@
        campo intacto: comprobado contra la Ollama local, mismas respuestas. */
     stream: function (modelo, prompt, alTrozo, sistema) {
       asegurarCola();
+      var t0 = Date.now();
       return fetch(BASE + '/api/generate', {
         method: 'POST',
         /* `think: false` NO ES OPCIONAL, y hasta el 2026-09-20 no iba.
@@ -127,20 +145,25 @@
           });
         }
         var lector = r.body.getReader(), dec = new TextDecoder();
-        var resto = '', total = null, primero = true;
+        var resto = '', total = null, primero = true, fin = null, tPrimero = null;
         return (function leer() {
           return lector.read().then(function (t) {
-            if (t.done) { avisa({ fase: 'fin' }); return total; }
+            if (t.done) {
+              avisa({ fase: 'fin' });
+              mide(modelo, fin, t0, tPrimero);
+              return total;
+            }
             resto += dec.decode(t.value, { stream: true });
             var lineas = resto.split('\n'); resto = lineas.pop();
             lineas.forEach(function (l) {
               if (!l.trim()) return;
               var o; try { o = JSON.parse(l); } catch (e) { return; }
               if (o.response) {
-                if (primero) { primero = false; avisa({ fase: 'generando' }); }
+                if (primero) { primero = false; tPrimero = Date.now(); avisa({ fase: 'generando' }); }
                 alTrozo(o.response);
               }
               if (o.eval_count) total = o.eval_count;   // tokens REALES del motor
+              if (o.done) fin = o;
             });
             return leer();
           });

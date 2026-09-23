@@ -4583,6 +4583,7 @@ class Traducciones(unittest.TestCase):
         "elegir.js": "VOZ, las ocho del «¿te ha servido?»",
         "consiento.js": "las ocho del consentimiento de analisis",
         "sello-rack.js": "TX, las nueve del sello «disponible» de las puertas al rack",
+        "medidas-turno.js": "TX, the nine languages of the per-answer measurements tag",
     }
 
     def test_NINGUN_guion_lleva_CASTELLANO_suelto(self):
@@ -5407,6 +5408,21 @@ class LoQueNoSeVeConElGateVerde(unittest.TestCase):
                         f"{idi}/{f.name} captura pares y no carga {guion}")
             with self.subTest(pagina=f"{idi}/{f.name}", orden="enviar-<l> antes que enviar"):
                 self.assertLess(t.find(f"/assets/enviar-{idi}.js"), t.find("/assets/enviar.js"))
+
+
+    def test_cada_pagina_con_modelo_ensena_las_medidas_del_turno(self):
+        """Asked by the Soberano on 2026-09-24: wherever a model answers, show
+        the physics of that answer. Every page that loads `rack.js` or
+        `engine.js` must load `medidas-turno.js`, and both emitters must
+        dispatch `preceptor:medida`."""
+        for q in ("rack.js", "engine.js"):
+            with self.subTest(emisor=q):
+                self.assertIn("preceptor:medida", (PUBLICO / "assets" / q).read_text(encoding="utf-8"))
+        for f in sorted(PUBLICO.glob("*/*.html")):
+            t = f.read_text(encoding="utf-8")
+            if '/assets/rack.js"' in t or '/assets/engine.js"' in t:
+                with self.subTest(pagina=f"{f.parent.name}/{f.name}"):
+                    self.assertIn('/assets/medidas-turno.js"', t)
 
 
 class LaAppAUnClic(unittest.TestCase):
