@@ -1,17 +1,22 @@
 {
- "esquema": 1,
- "idioma": "es",
- "procedencia": {
-  "traducido_por": "castellano base, escrito por el silicio"
- },
- "ui": {
-  "herr_titulo": "Herramientas",
-  "herr_lema": "Cosas gratis que puedes llevarte. Nada se instala solo: cada una te da su ruta real.",
-  "herr_web": "La web",
-  "herr_app": "La app",
-  "herr_audio": "Audio y música del rack",
-  "herr_cerrada": "Cerrada, y esta es la causa",
-  "herr_copia_ai": "Copiar para tu IA",
-  "herr_errores": "Errores comunes"
- }
+  "esquema": 1,
+  "idioma": "es",
+  "procedencia": {
+    "traducido_por": "castellano base, escrito por el silicio"
+  },
+  "ui": {
+    "herr_titulo": "Herramientas",
+    "herr_lema": "Cosas gratis que puedes llevarte. Nada se instala solo: cada una te da su ruta real.",
+    "herr_web": "La web",
+    "herr_app": "La app",
+    "herr_audio": "Audio y música del rack",
+    "herr_cerrada": "Cerrada, y esta es la causa",
+    "herr_copia_ai": "Copiar para tu IA",
+    "herr_errores": "Errores comunes",
+    "herr_audio_causa": "en preparación en el rack: dos proyectos, música del ecosistema (yue2-solarpunk) y voces del lore (auk-flash-preceptor), con sus tuberías escritas. Paran con NO_DATA porque sus modelos aún no están instalados: son varios GB y falta una firma.",
+    "herr_agora": "El estado del Ágora: descargas, firmas y lo que falta",
+    "herr_modelos": "Los modelos que hablan en la web",
+    "herr_modelos_nota": "Los mismos que responden en la Torre. Los de base se instalan con un comando en tu máquina; los de la casa se construyen sobre ellos y todavía no se distribuyen así.",
+    "herr_modelo_casa": "Modelo de la casa: todavía no se instala con «ollama pull». Se construye sobre su modelo base; sus adaptadores publicados están arriba, en «El estado del Ágora»."
+  }
 }

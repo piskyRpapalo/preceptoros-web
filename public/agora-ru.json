@@ -1,7 +1,7 @@
 {
  "esquema": 1,
  "idioma": "ru",
- "nota": "La prosa del Agora en esta lengua. Se SUPERPONE por id sobre `agora.json`, que es el fichero de hechos y viene en castellano: si aqui falta una entrada, ahi se ve la de origen. Anadir un nivel o un cerrado en el registro NO rompe nada aqui -- sale sin traducir, y eso es lo que tiene que pasar.",
+ "nota": "La prosa del Agora en esta lengua. Se SUPERPONE por id sobre `agora.json`, que es el fichero de hechos y viene en castellano: si aqui falta una entrada, ahi se ve la de origen. Anadir un nivel o un cerrado en el registro NO rompe nada aqui -- sale sin traducir, y eso es lo que tiene que pasar. · 2026-09-23: la seccion `ui` trae los rotulos de la portada del Agora, que salieron del #i18n de community.html al mudarse a Herramientas.",
  "cerrado": {
   "foro": {
    "que": "Форум",
@@ -62,5 +62,27 @@
  "actividad": {
   "firmados_como": "строки с подписью Ed25519, проверенной на входе. Считаются подписи, а не люди: сайт не знает, кто ты.",
   "instalaciones_causa": "их не считают и не будут. Ни в продукте, ни на этом сайте нет телеметрии; считать их означало бы делать ровно то, чего этот проект существует, чтобы не делать."
+ },
+ "ui": {
+  "agActividad": "Измеренная активность",
+  "agDescargas": "загрузки последней версии",
+  "agEstrena": "Модель периода",
+  "agEtInstala": "установки",
+  "agFicheros": "{n} файлов · их считает GitHub, а не мы",
+  "agFirmados": "подписанные пакеты получены",
+  "agMedido": "Измерено",
+  "agMemoria": "Как он помнит",
+  "agModera": "Как это модерируется",
+  "agNadaPublica": "NO_DATA · пока ничего не опубликовано.",
+  "agNiveles": "Как далеко можно зайти сегодня",
+  "agNoLee": "NO_DATA · не удалось прочитать /agora.json —",
+  "agPendiente": "Заявлено и все еще закрыто",
+  "agSinCaja": "Нет черного ящика: то, что знает модель, находится в файлах, которые можно прочитать.",
+  "agSinFirmar": "Ещё не подписана. Осталось решить:",
+  "agSinHash": "без sha256",
+  "agSinModelo": "NO_DATA · подписанной пока нет. Её выбирает Архитектор; стойка выдаёт то, что ей сказано. А пока доступные модели ниже — у каждой написано, что она делает и что не работает.",
+  "agTitulo": "Что можно взять сегодня",
+  "agVerifica": "Проверь хеш перед использованием",
+  "agPliego": "Состояние Агоры: загрузки, подписи и чего не хватает"
  }
 }

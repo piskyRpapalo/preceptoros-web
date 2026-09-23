@@ -46,17 +46,18 @@
     if (document.getElementById('herr-estilo')) { return; }
     var s = el('style');
     s.id = 'herr-estilo';
+    // Las mismas reglas para el indice y para el bloque de modelos.
+    var H = ':is(#herramientas,#herr-modelos)';
     s.textContent =
-      '#herramientas{margin:2rem 0}' +
-      '#herramientas .herr-lema{opacity:.8;margin:.2rem 0 1rem}' +
-      '#herramientas .herr-lista{display:grid;gap:.6rem;' +
-        'grid-template-columns:1fr}' +
-      '@media(min-width:44rem){#herramientas .herr-lista{' +
-        'grid-template-columns:1fr 1fr}}' +
-      '#herramientas .herr-caja{border:1px solid currentColor;' +
+      H + '{margin:2rem 0}' +
+      H + ' .herr-lema{opacity:.8;margin:.2rem 0 1rem}' +
+      H + ' .herr-lista{display:grid;gap:.6rem;grid-template-columns:1fr}' +
+      '@media(min-width:44rem){' + H + ' .herr-lista{grid-template-columns:1fr 1fr}}' +
+      H + ' .herr-caja{border:1px solid currentColor;' +
         'border-radius:.4rem;padding:.6rem .75rem}' +
-      '#herramientas .herr-nombre{font-weight:600;display:block;' +
-        'margin-bottom:.25rem}';
+      H + ' .herr-nombre{font-weight:600;display:block;margin-bottom:.25rem}' +
+      '#herr-modelos .herr-cmd{display:block;margin-top:.3rem;font-size:.82rem;' +
+        'overflow-wrap:anywhere;user-select:all}';
     document.head.appendChild(s);
   }
 
@@ -71,9 +72,13 @@
   var HERRAMIENTAS = [
     { clave: 'herr_web', ancla: '#pwa-puerta' },
     { clave: 'herr_app', ancla: '#descargas' },
-    { clave: 'herr_audio', ancla: null,
-      causa: 'no existe todavia en el rack: buscado en el repo de la web, en '
-           + 'la doctrina y en el arbol del proyecto, cero referencias' },
+    /* LA CAUSA DEL AUDIO ERA FALSA, y se corrige (2026-09-23). Decia «cero
+       referencias en el rack»: existe `preceptor-lora/TALLER_DE_MUSICA.md`
+       desde el 2026-09-14, con dos proyectos y sus tuberias escritas que paran
+       con NO_DATA. La causa vive ahora en la familia (`herr_audio_causa`) y en
+       las ocho lenguas, no en castellano dentro del guion. */
+    { clave: 'herr_audio', ancla: null, causaClave: 'herr_audio_causa' },
+    { clave: 'herr_agora', ancla: '#agora-portada' },
     { clave: 'herr_copia_ai', ancla: '#atasco' },
     { clave: 'herr_errores', ancla: '#atasco' }
   ];
@@ -104,12 +109,84 @@
         caja.appendChild(el('span', 'herr-nombre', nombre));
         caja.appendChild(el('p', 'no-data',
           (ui.herr_cerrada || 'NO_DATA') + ' · ' +
-          (h.causa || 'el bloque al que apunta no esta en esta pagina')));
+          (ui[h.causaClave] || h.causa || 'el bloque al que apunta no esta en esta pagina')));
       }
       lista.appendChild(caja);
     });
     sec.appendChild(lista);
     host.parentNode.insertBefore(sec, host);
+    modelos(ui, sec);
+  }
+
+  /* --- LOS MODELOS QUE HABLAN EN LA WEB (2026-09-23) ------------------------
+     El Soberano: «mover la lista de modelos desde Community a Herramientas,
+     con sus tamaños y comandos de `ollama pull`». Salen de `cerebros.json`
+     --el mismo catalogo que decide quien habla en cada piso--, con el tamaño
+     MEDIDO en la Ollama del nodo (`bytes`).
+
+     EL COMANDO SOLO DONDE FUNCIONA. Los `preceptor-*` son construcciones de la
+     casa sobre un modelo base y NO existen en el registro de Ollama: escribir
+     «ollama pull preceptor-charla-web:v1» seria mandar a alguien a un error.
+     Para esos se dice que todavia no se instalan asi, y donde estan sus
+     adaptadores publicados. */
+  function tam(b) {
+    if (!b) return 'NO_DATA';
+    return b >= 1e9 ? (b / 1e9).toFixed(1).replace('.', ',') + ' GB'
+                    : Math.round(b / 1e6) + ' MB';
+  }
+  function modelos(ui, antes) {
+    if (!ui.herr_modelos || document.getElementById('herr-modelos')) { return; }
+    Promise.all([
+      fetch('/cerebros.json').then(function (r) { return r.json(); }),
+      fetch('/cerebros-' + (lang === 'es' ? 'es' : 'en') + '.json')
+        .then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; })
+    ]).then(function (par) {
+      var reg = par[0], prosa = (par[1] && par[1].cerebros) || {};
+      var sec = el('section', 'panel');
+      sec.id = 'herr-modelos';
+      sec.appendChild(el('h2', null, ui.herr_modelos));
+      if (ui.herr_modelos_nota) { sec.appendChild(el('p', 'herr-lema', ui.herr_modelos_nota)); }
+      var lista = el('div', 'herr-lista');
+      (reg.cerebros || []).forEach(function (c) {
+        var caja = el('div', 'herr-caja');
+        caja.appendChild(el('span', 'herr-nombre', (prosa[c.id] || {}).nombre || c.id));
+        caja.appendChild(el('p', 'tenue', c.modelo + ' · ' + tam(c.bytes)));
+        if (/^preceptor-/.test(c.modelo)) {
+          caja.appendChild(el('p', 'no-data', ui.herr_modelo_casa || 'NO_DATA'));
+        } else {
+          caja.appendChild(el('code', 'herr-cmd', 'ollama pull ' + c.modelo));
+        }
+        lista.appendChild(caja);
+      });
+      sec.appendChild(lista);
+      antes.parentNode.insertBefore(sec, antes.nextSibling);
+    }).catch(function () { /* sin catalogo no hay lista: el indice sigue en pie */ });
+  }
+
+  /* --- EL ESTADO DEL AGORA, MUDADO DESDE COMUNIDAD (2026-09-23) --------------
+     Descargas con su sha256, actividad medida, lo cerrado con su causa y como
+     se modera: es «lo que te puedes llevar», asi que vive en Herramientas. Se
+     monta el pliego y se piden su hoja y su guion al vuelo, en vez de añadir
+     dos etiquetas a las ocho paginas. El titulo del pliego viene de
+     `agora-<lengua>.json`. */
+  function agora(host) {
+    if (document.getElementById('agora-portada')) { return; }
+    var pl = el('details', 'pliego');
+    var su = el('summary', null, '…');
+    pl.appendChild(su);
+    var raiz = el('section', 'panel');
+    raiz.id = 'agora-portada';
+    pl.appendChild(raiz);
+    host.parentNode.appendChild(pl);
+    fetch('/agora-' + lang + '.json').then(function (r) { return r.ok ? r.json() : null; })
+      .catch(function () { return null; })
+      .then(function (d) { su.textContent = (d && d.ui && d.ui.agPliego) || 'Agora'; });
+    var css = document.createElement('link');
+    css.rel = 'stylesheet'; css.href = '/assets/agora.css';
+    document.head.appendChild(css);
+    var s = document.createElement('script');
+    s.src = '/assets/agora-portada.js';
+    document.head.appendChild(s);
   }
 
   function arranca() {
@@ -117,6 +194,7 @@
        indexa es un resumen, y se lee cuando ya no hace falta. */
     var host = document.getElementById('descargas');
     if (!host) { return; }
+    agora(host);
     fetch('/herramientas-' + lang + '.json')
       .then(function (r) {
         if (!r.ok) { throw new Error('HTTP ' + r.status); }

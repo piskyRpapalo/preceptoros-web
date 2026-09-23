@@ -1,26 +1,28 @@
 {
  "esquema": "preceptoros/agora/1",
- "medido": "2026-09-14T06:58:29+00:00",
+ "medido": "2026-09-23T03:18:31+00:00",
  "actividad": {
   "descargas": {
    "estado": "MEDIDO",
-   "valor": 10,
+   "valor": 23,
    "version": "v1.3",
    "ficheros": 13,
    "fuente": "GitHub Releases (tercero)",
    "por_fichero": {
-    "install.ps1": 2,
-    "install.sh": 4,
-    "preceptor-charla-base-v1.gguf": 1,
+    "INSTALACION_ANDROID.md": 1,
+    "install.ps1": 5,
+    "install.sh": 9,
+    "preceptor-charla-base-v1.gguf": 3,
     "preceptor-charla-base-v1.gguf.sha256": 1,
     "preceptor-charla-multi-v1.gguf": 1,
-    "preceptor-tribune-en-v1.gguf": 1
+    "preceptor-tribune-en-v1.gguf": 1,
+    "preceptor-tribune-multi-v1.gguf": 2
    }
   },
   "paquetes_firmados": {
    "estado": "MEDIDO",
-   "valor": 3,
-   "de": 6,
+   "valor": 5,
+   "de": 8,
    "como": "filas con firma Ed25519 verificada en la puerta. Se cuentan firmas, no personas: la web no sabe quien eres."
   },
   "instalaciones": {
@@ -69,8 +71,8 @@
  "cerrado": [
   {
    "id": "foro",
-   "que": "Escribir en el foro",
-   "causa": "ya no es la moderacion --- la resuelve el nivel 3, firmado el 2026-09-20. Lo que falta es tecnico: el Agora no tiene todavia extremo de comentarios. LEER el foro si esta abierto en nivel 2."
+   "que": "El foro",
+   "causa": "es la apertura del Agora y exige cuentas con nombre. El Agora declara hoy «escritura cerrada: todavia no modera». Necesita firma del Soberano."
   },
   {
    "id": "estudios",
@@ -121,34 +123,33 @@
   {
    "n": 2,
    "id": "cuenta",
-   "nombre": "Cuenta con nombre · ves el foro",
+   "nombre": "Cuenta con nombre",
    "quien": "quien registre un pseudonimo con su clave publica en el Agora",
    "puede": [
     "todo lo anterior",
-    "ver el foro y lo que escriben los demas"
+    "escribir en el foro",
+    "responder hilos"
    ],
    "no_puede": [
-    "escribir en el foro",
     "votar estudios"
    ],
-   "estado": "ABIERTO",
-   "porque": "Leer el foro no exige moderacion: exige saber que quien lee esta registrado, y eso lo prueba la firma. Lo que exigia moderacion era ESCRIBIR, y por eso escribir se ha subido al nivel 3."
+   "estado": "CERRADO",
+   "causa": "El endpoint de perfiles existe y acepta POST; lo que falta es la moderacion, y abrir escritura sin ella es abrir un buzon sin nadie que lo lea.",
+   "desbloquea_cuando": "el Soberano firme la politica de moderacion de abajo"
   },
   {
    "n": 3,
    "id": "estudios",
-   "nombre": "Escribir en el foro, proponer y votar",
+   "nombre": "Proponer y votar estudios",
    "quien": "cuentas con al menos un paquete firmado aceptado",
    "puede": [
     "todo lo anterior",
-    "escribir un comentario en el foro",
     "proponer un estudio",
     "votar propuestas"
    ],
    "estado": "CERRADO",
-   "causa": "El Agora todavia no tiene extremo de comentarios. El cliente esta hecho y el parche del rack esta propuesto en p0x/propuestas/la-fragua-agora-foro-comentarios.md; falta aplicarlo en la-fragua.",
-   "desbloquea_cuando": "ese parche este aplicado en la-fragua",
-   "porque": "LA MODERACION ERA EL BLOQUEO Y ESTE NIVEL ES LA RESPUESTA, firmada por el Soberano el 2026-09-20. Escribir no se abre a cualquiera con clave: se abre a quien ya ha entregado trabajo firmado y aceptado. No es un filtro de simpatia ni un moderador que lea buzones --- es un coste que el ruido no paga y el trabajo ya pago. La decision que faltaba no era «quien vacia el buzon», era «quien tiene llave»."
+   "causa": "Votar exige saber quien vota, y eso exige el nivel 2. Ademas un voto sin trabajo detras es ruido: por eso el requisito es haber aportado, no haberse registrado.",
+   "desbloquea_cuando": "el nivel 2 lleve funcionando lo bastante para saber si hace falta"
   }
  ],
  "moderacion": {
@@ -176,7 +177,7 @@
     "que": "Revision humana de lo marcado y de lo reportado.",
     "automatico": false,
     "decide": "publica, retiene o retira, y SIEMPRE queda la razon escrita junto al hilo.",
-    "quien": "hoy el Arquitecto. Delegarlo es cambiar este campo."
+    "quien": "hoy el Soberano. Delegarlo es cambiar este campo."
    }
   ],
   "reglas_visibles": [
@@ -186,7 +187,7 @@
    "El reporte no es un voto: diez reportes no retiran nada por si solos."
   ],
   "falta_para_firmarla": [
-   "Quien modera cuando el Arquitecto no esta.",
+   "Quien modera cuando el Soberano no esta.",
    "Cuanto tarda una revision antes de que el silencio sea una respuesta.",
    "Si un hilo retirado se puede apelar, y ante quien."
   ]

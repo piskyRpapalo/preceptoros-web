@@ -1,7 +1,7 @@
 {
  "esquema": 1,
  "idioma": "fr",
- "nota": "La prosa del Agora en esta lengua. Se SUPERPONE por id sobre `agora.json`, que es el fichero de hechos y viene en castellano: si aqui falta una entrada, ahi se ve la de origen. Anadir un nivel o un cerrado en el registro NO rompe nada aqui -- sale sin traducir, y eso es lo que tiene que pasar.",
+ "nota": "La prosa del Agora en esta lengua. Se SUPERPONE por id sobre `agora.json`, que es el fichero de hechos y viene en castellano: si aqui falta una entrada, ahi se ve la de origen. Anadir un nivel o un cerrado en el registro NO rompe nada aqui -- sale sin traducir, y eso es lo que tiene que pasar. · 2026-09-23: la seccion `ui` trae los rotulos de la portada del Agora, que salieron del #i18n de community.html al mudarse a Herramientas.",
  "cerrado": {
   "foro": {
    "que": "Le forum",
@@ -62,5 +62,27 @@
  "actividad": {
   "firmados_como": "des lignes avec une signature Ed25519 vérifiée à la porte. On compte des signatures, pas des personnes : ce site ne sait pas qui vous êtes.",
   "instalaciones_causa": "elles ne sont pas comptées, et ne le seront pas. Il n'y a pas de télémétrie dans le produit ni sur ce site ; les compter exigerait précisément ce que ce projet existe pour ne pas faire."
+ },
+ "ui": {
+  "agActividad": "Activité mesurée",
+  "agDescargas": "téléchargements de la dernière version",
+  "agEstrena": "Modèle du cycle",
+  "agEtInstala": "installations",
+  "agFicheros": "{n} fichiers · comptés par GitHub, pas par nous",
+  "agFirmados": "paquets signés reçus",
+  "agMedido": "Mesuré le",
+  "agMemoria": "Comment il se souvient",
+  "agModera": "Comment on modère",
+  "agNadaPublica": "NO_DATA · rien n'est encore publié.",
+  "agNiveles": "Jusqu'où tu peux aller aujourd'hui",
+  "agNoLee": "NO_DATA · impossible de lire /agora.json —",
+  "agPendiente": "Déclaré et toujours en attente",
+  "agSinCaja": "Aucune boîte noire : ce que le modèle sait se trouve dans des fichiers que tu peux lire.",
+  "agSinFirmar": "Pas encore signée. Reste à décider :",
+  "agSinHash": "sans sha256",
+  "agSinModelo": "NO_DATA · aucun n'est encore signé. C'est l'Architecte qui le choisit ; le rack sert ce qu'on lui dit. En attendant, les cerveaux disponibles sont en dessous, chacun avec ce qu'il fait et ce qui échoue.",
+  "agTitulo": "Ce que tu peux emporter aujourd'hui",
+  "agVerifica": "Vérifie le hash avant de l'utiliser",
+  "agPliego": "L'état de l'Agora : téléchargements, signatures et ce qui manque"
  }
 }

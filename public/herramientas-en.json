@@ -1,17 +1,22 @@
 {
- "esquema": 1,
- "idioma": "en",
- "procedencia": {
-  "traducido_por": "qwen2.5:7b"
- },
- "ui": {
-  "herr_titulo": "Tools",
-  "herr_lema": "Free things you can take. Nothing installs itself: each one gives its real path.",
-  "herr_web": "The web",
-  "herr_app": "The app",
-  "herr_audio": "Audio and music from the rack",
-  "herr_cerrada": "Closed, and this is the reason",
-  "herr_copia_ai": "Copy for your AI",
-  "herr_errores": "Common errors"
- }
+  "esquema": 1,
+  "idioma": "en",
+  "procedencia": {
+    "traducido_por": "qwen2.5:7b"
+  },
+  "ui": {
+    "herr_titulo": "Tools",
+    "herr_lema": "Free things you can take. Nothing installs itself: each one gives its real path.",
+    "herr_web": "The web",
+    "herr_app": "The app",
+    "herr_audio": "Audio and music from the rack",
+    "herr_cerrada": "Closed, and this is the reason",
+    "herr_copia_ai": "Copy for your AI",
+    "herr_errores": "Common errors",
+    "herr_audio_causa": "in preparation on the rack: two projects, ecosystem music (yue2-solarpunk) and lore voices (auk-flash-preceptor), with their pipelines written. They stop with NO_DATA because their models are not installed yet: several GB and a missing signature.",
+    "herr_agora": "The state of the Agora: downloads, signatures and what is missing",
+    "herr_modelos": "The models that speak on the web",
+    "herr_modelos_nota": "The same ones that answer in the Tower. Base models install with one command on your machine; house models are built on top of them and are not distributed that way yet.",
+    "herr_modelo_casa": "House model: it does not install with “ollama pull” yet. It is built on its base model; its published adapters are above, in “The state of the Agora”."
+  }
 }

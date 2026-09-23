@@ -1,7 +1,7 @@
 {
  "esquema": 1,
  "idioma": "en",
- "nota": "La prosa del Agora en esta lengua. Se SUPERPONE por id sobre `agora.json`, que es el fichero de hechos y viene en castellano: si aqui falta una entrada, ahi se ve la de origen. Anadir un nivel o un cerrado en el registro NO rompe nada aqui -- sale sin traducir, y eso es lo que tiene que pasar.",
+ "nota": "La prosa del Agora en esta lengua. Se SUPERPONE por id sobre `agora.json`, que es el fichero de hechos y viene en castellano: si aqui falta una entrada, ahi se ve la de origen. Anadir un nivel o un cerrado en el registro NO rompe nada aqui -- sale sin traducir, y eso es lo que tiene que pasar. · 2026-09-23: la seccion `ui` trae los rotulos de la portada del Agora, que salieron del #i18n de community.html al mudarse a Herramientas.",
  "cerrado": {
   "foro": {
    "que": "The forum",
@@ -62,5 +62,27 @@
  "actividad": {
   "firmados_como": "rows with an Ed25519 signature verified at the door. Signatures are counted, not people: this site does not know who you are.",
   "instalaciones_causa": "they are not counted, and they will not be. There is no telemetry in the product or on this site; counting them would require exactly what this project exists not to do."
+ },
+ "ui": {
+  "agActividad": "Measured activity",
+  "agDescargas": "downloads of the latest version",
+  "agEstrena": "Model period",
+  "agEtInstala": "installations",
+  "agFicheros": "{n} files · counted by GitHub, not by us",
+  "agFirmados": "signed packages received",
+  "agMedido": "Measured",
+  "agMemoria": "How it remembers",
+  "agModera": "How it is moderated",
+  "agNadaPublica": "NO_DATA · nothing has been published yet.",
+  "agNiveles": "How far you can get today",
+  "agNoLee": "NO_DATA · could not read /agora.json —",
+  "agPendiente": "Declared and still pending",
+  "agSinCaja": "No black box: what the model knows is in files you can read.",
+  "agSinFirmar": "Not signed yet. Still to decide:",
+  "agSinHash": "no sha256",
+  "agSinModelo": "NO_DATA · none has been signed yet. The Architect chooses it; the rack serves what it is told. Meanwhile the available brains are below, each with what it does and what it fails at.",
+  "agTitulo": "What you can take today",
+  "agVerifica": "Check the hash before using it",
+  "agPliego": "The state of the Agora: downloads, signatures and what is missing"
  }
 }

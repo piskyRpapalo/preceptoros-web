@@ -1,7 +1,7 @@
 {
  "esquema": 1,
  "idioma": "it",
- "nota": "La prosa del Agora en esta lengua. Se SUPERPONE por id sobre `agora.json`, que es el fichero de hechos y viene en castellano: si aqui falta una entrada, ahi se ve la de origen. Anadir un nivel o un cerrado en el registro NO rompe nada aqui -- sale sin traducir, y eso es lo que tiene que pasar.",
+ "nota": "La prosa del Agora en esta lengua. Se SUPERPONE por id sobre `agora.json`, que es el fichero de hechos y viene en castellano: si aqui falta una entrada, ahi se ve la de origen. Anadir un nivel o un cerrado en el registro NO rompe nada aqui -- sale sin traducir, y eso es lo que tiene que pasar. · 2026-09-23: la seccion `ui` trae los rotulos de la portada del Agora, que salieron del #i18n de community.html al mudarse a Herramientas.",
  "cerrado": {
   "foro": {
    "que": "Il forum",
@@ -62,5 +62,27 @@
  "actividad": {
   "firmados_como": "righe con firma Ed25519 verificata alla porta. Si contano firme, non persone: questo sito non sa chi sei.",
   "instalaciones_causa": "non si contano, e non si conteranno. Non c'è telemetria nel prodotto né in questo sito; contarle richiederebbe esattamente quello che questo progetto esiste per non fare."
+ },
+ "ui": {
+  "agActividad": "Attività misurata",
+  "agDescargas": "ultime versioni scaricate",
+  "agEstrena": "Modello del periodo",
+  "agEtInstala": "installazioni",
+  "agFicheros": "{n} file · li conta GitHub, non noi",
+  "agFirmados": "pacchetti firmati ricevuti",
+  "agMedido": "Misurato",
+  "agMemoria": "Come ricorda",
+  "agModera": "Come si modera",
+  "agNadaPublica": "NO_DATA · non c'è ancora niente di pubblicato.",
+  "agNiveles": "Fin dove puoi arrivare oggi",
+  "agNoLee": "NO_DATA · non si è potuto leggere /agora.json —",
+  "agPendiente": "Declarato e ancora chiuso",
+  "agSinCaja": "Nessuna cassetta nera: ciò che il modello sa è in file che puoi leggere.",
+  "agSinFirmar": "Non ancora firmata. Resta da decidere:",
+  "agSinHash": "senza sha256",
+  "agSinModelo": "NO_DATA · non ce n'è ancora uno firmato. Lo sceglie l'Architetto; il rack serve quello che gli si dice. Intanto i cervelli disponibili sono qui sotto, ognuno con quello che fa e quello che non va.",
+  "agTitulo": "Cosa puoi portare oggi",
+  "agVerifica": "Controlla l'hash prima di usarlo",
+  "agPliego": "Lo stato dell'Agorà: download, firme e cosa manca"
  }
 }

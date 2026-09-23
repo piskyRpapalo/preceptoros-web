@@ -1,18 +1,23 @@
 {
- "esquema": 1,
- "idioma": "pt",
- "revision": "pendiente-revision-nativa",
- "procedencia": {
-  "traducido_por": "qwen2.5:7b"
- },
- "ui": {
-  "herr_titulo": "Herramientas",
-  "herr_lema": "Coisas gratuitas que podes levar. Nada se instala sozinho: cada uma dá a sua via real.",
-  "herr_web": "A web",
-  "herr_app": "A app",
-  "herr_audio": "Áudio e música do rack",
-  "herr_cerrada": "Fechada, e esta é a causa",
-  "herr_copia_ai": "Copiar para a tua IA",
-  "herr_errores": "Erros comuns"
- }
+  "esquema": 1,
+  "idioma": "pt",
+  "revision": "pendiente-revision-nativa",
+  "procedencia": {
+    "traducido_por": "qwen2.5:7b"
+  },
+  "ui": {
+    "herr_titulo": "Herramientas",
+    "herr_lema": "Coisas gratuitas que podes levar. Nada se instala sozinho: cada uma dá a sua via real.",
+    "herr_web": "A web",
+    "herr_app": "A app",
+    "herr_audio": "Áudio e música do rack",
+    "herr_cerrada": "Fechada, e esta é a causa",
+    "herr_copia_ai": "Copiar para a tua IA",
+    "herr_errores": "Erros comuns",
+    "herr_audio_causa": "em preparação no rack: dois projetos, música do ecossistema (yue2-solarpunk) e vozes do lore (auk-flash-preceptor), com as suas cadeias escritas. Param com NO_DATA porque os modelos ainda não estão instalados: são vários GB e falta uma assinatura.",
+    "herr_agora": "O estado da Ágora: descargas, assinaturas e o que falta",
+    "herr_modelos": "Os modelos que falam na web",
+    "herr_modelos_nota": "Os mesmos que respondem na Torre. Os de base instalam-se com um comando na tua máquina; os da casa constroem-se sobre eles e ainda não se distribuem assim.",
+    "herr_modelo_casa": "Modelo da casa: ainda não se instala com «ollama pull». Constrói-se sobre o seu modelo base; os adaptadores publicados estão acima, em «O estado da Ágora»."
+  }
 }

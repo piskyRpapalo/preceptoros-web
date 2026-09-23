@@ -1,7 +1,7 @@
 {
  "esquema": 1,
  "idioma": "de",
- "nota": "La prosa del Agora en esta lengua. Se SUPERPONE por id sobre `agora.json`, que es el fichero de hechos y viene en castellano: si aqui falta una entrada, ahi se ve la de origen. Anadir un nivel o un cerrado en el registro NO rompe nada aqui -- sale sin traducir, y eso es lo que tiene que pasar.",
+ "nota": "La prosa del Agora en esta lengua. Se SUPERPONE por id sobre `agora.json`, que es el fichero de hechos y viene en castellano: si aqui falta una entrada, ahi se ve la de origen. Anadir un nivel o un cerrado en el registro NO rompe nada aqui -- sale sin traducir, y eso es lo que tiene que pasar. · 2026-09-23: la seccion `ui` trae los rotulos de la portada del Agora, que salieron del #i18n de community.html al mudarse a Herramientas.",
  "cerrado": {
   "foro": {
    "que": "Das Forum",
@@ -62,5 +62,27 @@
  "actividad": {
   "firmados_como": "Zeilen mit an der Tür geprüfter Ed25519-Signatur. Gezählt werden Signaturen, keine Personen: diese Seite weiß nicht, wer du bist.",
   "instalaciones_causa": "sie werden nicht gezählt, und sie werden es auch nicht. Es gibt keine Telemetrie im Produkt und auf dieser Seite; sie zu zählen würde genau das erfordern, wofür dieses Projekt existiert, es nicht zu tun."
+ },
+ "ui": {
+  "agActividad": "Gemessene Aktivität",
+  "agDescargas": "Downloads der neuesten Version",
+  "agEstrena": "Modell des Zeitraums",
+  "agEtInstala": "Installationen",
+  "agFicheros": "{n} Dateien · gezählt von GitHub, nicht von uns",
+  "agFirmados": "signierte Pakete empfangen",
+  "agMedido": "Gemessen",
+  "agMemoria": "Wie es sich erinnert",
+  "agModera": "Wie moderiert wird",
+  "agNadaPublica": "NO_DATA · es ist noch nichts veröffentlicht.",
+  "agNiveles": "Wie weit du heute kommst",
+  "agNoLee": "NO_DATA · /agora.json konnte nicht gelesen werden —",
+  "agPendiente": "Angemeldet und noch nicht abgeschlossen",
+  "agSinCaja": "Keine schwarze Box: was das Modell weiß, steht in Dateien, die du lesen kannst.",
+  "agSinFirmar": "Noch nicht unterzeichnet. Zu entscheiden bleibt:",
+  "agSinHash": "ohne sha256",
+  "agSinModelo": "NO_DATA · es ist noch keines signiert. Der Architekt wählt es; das Rack liefert, was man ihm sagt. Bis dahin stehen die verfügbaren Gehirne unten, jedes mit dem, was es kann und was daran scheitert.",
+  "agTitulo": "Was du heute mitnehmen kannst",
+  "agVerifica": "Prüfe den Hash vor der Nutzung",
+  "agPliego": "Der Zustand der Agora: Downloads, Signaturen und was fehlt"
  }
 }

@@ -1,18 +1,23 @@
 {
- "esquema": 1,
- "idioma": "de",
- "revision": "pendiente-revision-nativa",
- "procedencia": {
-  "traducido_por": "qwen2.5:14b"
- },
- "ui": {
-  "herr_titulo": "Werkzeuge",
-  "herr_lema": "Kostenlose Dinge, die du mitnehmen kannst. Nichts wird automatisch installiert: jede gibt dir ihren tatsächlichen Pfad.",
-  "herr_web": "Die Webseite",
-  "herr_app": "Die App",
-  "herr_audio": "Audio und Musik aus dem Rack",
-  "herr_cerrada": "Geschlossen, und dies ist der Grund",
-  "herr_copia_ai": "Kopieren für deine KI",
-  "herr_errores": "Häufige Fehler"
- }
+  "esquema": 1,
+  "idioma": "de",
+  "revision": "pendiente-revision-nativa",
+  "procedencia": {
+    "traducido_por": "qwen2.5:14b"
+  },
+  "ui": {
+    "herr_titulo": "Werkzeuge",
+    "herr_lema": "Kostenlose Dinge, die du mitnehmen kannst. Nichts wird automatisch installiert: jede gibt dir ihren tatsächlichen Pfad.",
+    "herr_web": "Die Webseite",
+    "herr_app": "Die App",
+    "herr_audio": "Audio und Musik aus dem Rack",
+    "herr_cerrada": "Geschlossen, und dies ist der Grund",
+    "herr_copia_ai": "Kopieren für deine KI",
+    "herr_errores": "Häufige Fehler",
+    "herr_audio_causa": "in Vorbereitung im Rack: zwei Projekte, Musik des Ökosystems (yue2-solarpunk) und Stimmen der Lore (auk-flash-preceptor), mit geschriebenen Pipelines. Sie stoppen mit NO_DATA, weil ihre Modelle noch nicht installiert sind: mehrere GB und eine fehlende Signatur.",
+    "herr_agora": "Der Zustand der Agora: Downloads, Signaturen und was fehlt",
+    "herr_modelos": "Die Modelle, die im Web sprechen",
+    "herr_modelos_nota": "Dieselben, die im Turm antworten. Basismodelle installierst du mit einem Befehl auf deinem Rechner; die Hausmodelle bauen darauf auf und werden so noch nicht verteilt.",
+    "herr_modelo_casa": "Hausmodell: lässt sich noch nicht mit „ollama pull“ installieren. Es baut auf seinem Basismodell auf; seine veröffentlichten Adapter stehen oben unter „Der Zustand der Agora“."
+  }
 }

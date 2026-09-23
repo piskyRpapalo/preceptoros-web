@@ -1,7 +1,7 @@
 {
  "esquema": 1,
  "idioma": "pt",
- "nota": "La prosa del Agora en esta lengua. Se SUPERPONE por id sobre `agora.json`, que es el fichero de hechos y viene en castellano: si aqui falta una entrada, ahi se ve la de origen. Anadir un nivel o un cerrado en el registro NO rompe nada aqui -- sale sin traducir, y eso es lo que tiene que pasar.",
+ "nota": "La prosa del Agora en esta lengua. Se SUPERPONE por id sobre `agora.json`, que es el fichero de hechos y viene en castellano: si aqui falta una entrada, ahi se ve la de origen. Anadir un nivel o un cerrado en el registro NO rompe nada aqui -- sale sin traducir, y eso es lo que tiene que pasar. · 2026-09-23: la seccion `ui` trae los rotulos de la portada del Agora, que salieron del #i18n de community.html al mudarse a Herramientas.",
  "cerrado": {
   "foro": {
    "que": "O fórum",
@@ -62,5 +62,27 @@
  "actividad": {
   "firmados_como": "linhas com assinatura Ed25519 verificada à porta. Contam-se assinaturas, não pessoas: esta web não sabe quem tu és.",
   "instalaciones_causa": "não se contam, e não se vão contar. Não há telemetria no produto nem nesta web; contá-las exigiria precisamente aquilo que este projeto existe para não fazer."
+ },
+ "ui": {
+  "agActividad": "Atividade medida",
+  "agDescargas": "downloads da última versão",
+  "agEstrena": "Modelo do período",
+  "agEtInstala": "instalações",
+  "agFicheros": "{n} ficheiros · conta-os o GitHub, não nós",
+  "agFirmados": "pacotes assinados recebidos",
+  "agMedido": "Medido",
+  "agMemoria": "Como recorda",
+  "agModera": "Como se modera",
+  "agNadaPublica": "NO_DATA · ainda não há nada publicado.",
+  "agNiveles": "Até onde podes chegar hoje",
+  "agNoLee": "NO_DATA · não foi possível ler /agora.json —",
+  "agPendiente": "Declarado e ainda fechado",
+  "agSinCaja": "Sem caixa preta: o que o modelo sabe está em arquivos que você pode ler.",
+  "agSinFirmar": "Ainda por assinar. Falta decidir:",
+  "agSinHash": "sem sha256",
+  "agSinModelo": "NO_DATA · ainda não há nenhum assinado. Escolhe-o o Arquiteto; o rack serve o que lhe dizem. Entretanto, os cérebros disponíveis estão abaixo, cada um com o que faz e o que falha.",
+  "agTitulo": "O que podes levar hoje",
+  "agVerifica": "Verifique o hash antes de usá-lo",
+  "agPliego": "O estado da Ágora: descargas, assinaturas e o que falta"
  }
 }

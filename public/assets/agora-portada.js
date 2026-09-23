@@ -21,7 +21,13 @@
   var raiz = document.getElementById('agora-portada');
   if (!raiz) return;
 
+  /* LOS ROTULOS VIENEN DE `agora-<lengua>.json` › `ui` DESDE EL 2026-09-23.
+     La seccion se mudo de Comunidad a Herramientas (`instalar.html`), que no
+     tiene bloque `#i18n`. Se leen del mismo fichero que ya traia la prosa
+     traducida; el `#i18n` queda de respaldo por si alguna pagina lo trae. */
+  var UIX = null;
   function T(clave, respaldo) {
+    if (UIX && UIX[clave]) return UIX[clave];
     var b = document.getElementById('i18n');
     try { return (JSON.parse(b.textContent)[clave]) || respaldo; }
     catch (e) { return respaldo; }
@@ -58,65 +64,13 @@
     return (document.documentElement.lang || 'es').slice(0, 2);
   }
 
-  function paneles(raiz) {
-    /* DOS FICHEROS, COMO EN EL TALLER. `paneles.json` trae los hechos --modelo,
-       medida, entorno-- y `paneles-<idioma>.json` el texto. Se partieron el
-       2026-09-14 por aritmetica: con las ocho lenguas dentro, el fichero de
-       hechos pasaba de 22 KB contra un tope de 16.384.
-
-       Y de paso se arreglo lo que el corte destapo: dos de los tres paneles
-       --`coder-adapter` y `killswitch-apocalypse`-- solo tenian castellano, asi
-       que seis y siete lenguas leian su ficha en espanol dentro de su propia
-       pagina. Ahora las ocho, y el gate lo exige. */
-    Promise.all([
-      fetch('/paneles.json', { cache: 'no-store' }).then(function (r) { return r.json(); }),
-      fetch('/paneles-' + idioma() + '.json').then(function (r) {
-        return r.ok ? r.json() : null;
-      }).catch(function () { return null; })
-    ])
-      .then(function (par) {
-        var d = par[0];
-        var T2 = (par[1] && par[1].paneles) || {};
-        var ps = d.paneles || [];
-        if (!ps.length) { return; }
-        var s = el('section', 'ag-bloque');
-        s.appendChild(el('h3', null, T('agPaneles', 'Los cerebros, uno a uno')));
-        var ul = el('ul', 'ag-paneles');
-        ps.forEach(function (p) {
-          var t = T2[p.id] || {};
-          var li = el('li', 'ag-panel');
-          li.appendChild(el('h4', null, t.nombre || p.id));
-          li.appendChild(el('code', 'ag-tag', p.modelo && p.modelo.tag));
-          var med = (p.modelo || {}).medida || {};
-          if (med.tok_s) {
-            /* La cifra viaja con su carga base. Sin ella no es reproducible, y
-               una tabla que presume de hashes no puede publicar cifras sueltas. */
-            li.appendChild(el('p', 'ag-med', med.tok_s + ' tok/s · carga base ' +
-              (med.carga_base === undefined ? 'NO_DATA' : med.carga_base)));
-          }
-          if (t.que_hace) {
-            var h = el('p'); h.appendChild(el('strong', null, T('agHace', 'Hace:') + ' '));
-            h.appendChild(document.createTextNode(t.que_hace)); li.appendChild(h);
-          }
-          if (t.que_falla) {
-            var f = el('p', 'ag-falla');
-            f.appendChild(el('strong', null, T('agFalla', 'Falla:') + ' '));
-            f.appendChild(document.createTextNode(t.que_falla)); li.appendChild(f);
-          }
-          if (p.entorno && p.entorno.paquete) {
-            var a2 = el('a', 'ag-fich', p.entorno.paquete);
-            a2.href = '/downloads/' + p.entorno.paquete;
-            var e2 = el('p', 'tenue');
-            e2.textContent = T('agEntorno', 'Su entorno de estudio:') + ' ';
-            e2.appendChild(a2); li.appendChild(e2);
-          }
-          ul.appendChild(li);
-        });
-        s.appendChild(ul);
-        raiz.appendChild(s);
-      })
-      .catch(function () { /* sin paneles la portada sigue en pie */ });
-  }
+  /* LAS FICHAS DE LOS PANELES SE RETIRARON DE AQUI (2026-09-23). Pintaba la
+     Charla, el Herrero y el killswitch-apocalypse desde `paneles.json`, y el
+     Soberano las señalo como duplicados: las tres apuntaban al MISMO paquete
+     de 3 KB, y los modelos ya se presentan en la Torre (y el killswitch con su
+     descarga, en el piso 6 de la portada). Esta seccion, ya en Herramientas,
+     se queda con lo suyo: descargas con su sha256, actividad medida, lo
+     cerrado con su causa y como se modera. */
 
   /* LA PROSA VA APARTE DE LOS HECHOS, y encima de ellos.
 
@@ -173,12 +127,13 @@
 
   Promise.all([
     fetch('/agora.json', { cache: 'no-store' }).then(function (r) { return r.json(); }),
-    idioma() === 'es' ? Promise.resolve(null)
-      : fetch('/agora-' + idioma() + '.json').then(function (r) {
-          return r.ok ? r.json() : null;
-        }).catch(function () { return null; })
+    // Tambien en castellano: alli solo trae los rotulos (`ui`); la prosa
+    // castellana esta en agora.json y `conProsa` no encuentra nada que cambiar.
+    fetch('/agora-' + idioma() + '.json').then(function (r) {
+      return r.ok ? r.json() : null;
+    }).catch(function () { return null; })
   ])
-    .then(function (par) { return conProsa(par[0], par[1]); })
+    .then(function (par) { UIX = (par[1] && par[1].ui) || null; return conProsa(par[0], par[1]); })
     .then(function (d) {
       raiz.innerHTML = '';
 
@@ -240,19 +195,6 @@
       dl.appendChild(el('p', 'tenue', T('agVerifica',
         'Comprueba el hash antes de usarlo') + ': sha256sum -c <fichero>.sha256'));
       raiz.appendChild(dl);
-
-      /* --- LOS PANELES DE ESTUDIO ------------------------------------------
-         La ficha de cada modelo. Se pinta de `/paneles.json`, que sale del
-         MISMO esquema que usan los estudios internos del laboratorio: cambian
-         los textos, no la forma. Los internos no llegan hasta aqui --el
-         generador solo publica los de ambito `publico`-- y eso es el punto, no
-         una omision.
-
-         QUE_FALLA SE PINTA SIEMPRE Y CON EL MISMO PESO QUE QUE_HACE. El
-         validador ya lo exige en el dato; aqui se exige en la vista, porque un
-         defecto escondido en letra pequena esta contado y no dicho. Es la parte
-         de la ficha que hace que las demas valgan algo. */
-      paneles(raiz);
 
       /* --- LO DECLARADO Y CERRADO ------------------------------------------ */
       if ((d.cerrado || []).length) {

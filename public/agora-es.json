@@ -1,0 +1,27 @@
+{
+ "esquema": 1,
+ "idioma": "es",
+ "nota": "Solo los rotulos de «El estado del Agora» (seccion `ui`): la prosa castellana vive en agora.json, que es su lengua de origen. Los rotulos salieron del bloque #i18n de community.html el 2026-09-23, al mudarse la seccion a Herramientas.",
+ "ui": {
+  "agActividad": "Actividad medida",
+  "agDescargas": "descargas de la última versión",
+  "agEstrena": "Modelo del periodo",
+  "agEtInstala": "instalaciones",
+  "agFicheros": "{n} ficheros · los cuenta GitHub, no nosotros",
+  "agFirmados": "paquetes firmados recibidos",
+  "agMedido": "Medido",
+  "agMemoria": "Cómo recuerda",
+  "agModera": "Cómo se modera",
+  "agNadaPublica": "NO_DATA · no hay nada publicado todavía.",
+  "agNiveles": "Hasta dónde puedes llegar hoy",
+  "agNoLee": "NO_DATA · no se pudo leer /agora.json —",
+  "agPendiente": "Declarado y todavía cerrado",
+  "agSinCaja": "No hay caja negra: lo que el modelo sabe está en ficheros que puedes leer.",
+  "agSinFirmar": "Sin firmar todavía. Falta decidir:",
+  "agSinHash": "sin sha256",
+  "agSinModelo": "NO_DATA · todavía no hay uno firmado. Lo elige el Arquitecto; el rack sirve lo que se le dice. Mientras tanto, los cerebros disponibles están abajo, cada uno con lo que hace y lo que falla.",
+  "agTitulo": "Lo que puedes llevarte hoy",
+  "agVerifica": "Comprueba el hash antes de usarlo",
+  "agPliego": "El estado del Ágora: descargas, firmas y lo que falta"
+ }
+}

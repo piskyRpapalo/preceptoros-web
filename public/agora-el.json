@@ -1,7 +1,7 @@
 {
  "esquema": 1,
  "idioma": "el",
- "nota": "La prosa del Agora en esta lengua. Se SUPERPONE por id sobre `agora.json`, que es el fichero de hechos y viene en castellano: si aqui falta una entrada, ahi se ve la de origen. Anadir un nivel o un cerrado en el registro NO rompe nada aqui -- sale sin traducir, y eso es lo que tiene que pasar.",
+ "nota": "La prosa del Agora en esta lengua. Se SUPERPONE por id sobre `agora.json`, que es el fichero de hechos y viene en castellano: si aqui falta una entrada, ahi se ve la de origen. Anadir un nivel o un cerrado en el registro NO rompe nada aqui -- sale sin traducir, y eso es lo que tiene que pasar. · 2026-09-23: la seccion `ui` trae los rotulos de la portada del Agora, que salieron del #i18n de community.html al mudarse a Herramientas.",
  "cerrado": {
   "foro": {
    "que": "Το φόρουμ",
@@ -62,5 +62,27 @@
  "actividad": {
   "firmados_como": "γραμμές με υπογραφή Ed25519 επαληθευμένη στην πόρτα. Μετριούνται υπογραφές, όχι άνθρωποι: αυτός ο ιστότοπος δεν ξέρει ποιος είσαι.",
   "instalaciones_causa": "δεν μετριούνται, και δεν πρόκειται. Δεν υπάρχει τηλεμετρία ούτε στο προϊόν ούτε σε αυτόν τον ιστότοπο· το να τις μετρήσουμε θα απαιτούσε ακριβώς αυτό που αυτό το έργο υπάρχει για να μην κάνει."
+ },
+ "ui": {
+  "agActividad": "Μετρήσεις δραστηριότητας",
+  "agDescargas": "εκτυπώσεις της τελευταίας έκδοσης",
+  "agEstrena": "Μοντέλο της περιόδου",
+  "agEtInstala": "εγκαταστάσεις",
+  "agFicheros": "{n} αρχεία · τα μετράει το GitHub, όχι εμείς",
+  "agFirmados": "πακέτα υπογραφμένα που λάβεις",
+  "agMedido": "Μετρήθηκε",
+  "agMemoria": "Πώς θυμάται",
+  "agModera": "Πώς γίνεται η επίβλεψη",
+  "agNadaPublica": "NO_DATA · δεν έχει δημοσιευτεί τίποτα ακόμη.",
+  "agNiveles": "Μέχρι πού μπορείς να φτάσεις σήμερα",
+  "agNoLee": "NO_DATA · δεν ήταν δυνατή η ανάγνωση του /agora.json —",
+  "agPendiente": "Αναφερθέντα και ακόμη κλειστά",
+  "agSinCaja": "Δεν υπάρχει κάτοχος σκοτεινών: αυτά που ο μοντέλος ξέρει είναι σε αρχεία που μπορείς να διαβάσεις.",
+  "agSinFirmar": "Δεν έχει υπογραφεί ακόμη. Μένει να αποφασιστούν:",
+  "agSinHash": "χωρίς sha256",
+  "agSinModelo": "NO_DATA · δεν υπάρχει ακόμη υπογεγραμμένο. Το επιλέγει ο Αρχιτέκτονας· το rack σερβίρει ό,τι του πουν. Στο μεταξύ, οι διαθέσιμοι εγκέφαλοι είναι πιο κάτω, ο καθένας με το τι κάνει και τι αποτυγχάνει.",
+  "agTitulo": "Αυτά που μπορείς να αναλάβεις σήμερα",
+  "agVerifica": "Έλεγξε το hash πριν το χρησιμοποιήσεις",
+  "agPliego": "Η κατάσταση της Αγοράς: λήψεις, υπογραφές και τι λείπει"
  }
 }

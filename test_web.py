@@ -778,10 +778,12 @@ class Estructura(unittest.TestCase):
         js = re.sub(r"/\*.*?\*/", "", js, flags=re.S)
         pide = set(re.findall(r"T\('([A-Za-z]+)'", js))
         self.assertTrue(pide, "agora-portada.js no pide ninguna clave")
+        # DESDE EL 2026-09-23 LOS ROTULOS VIVEN EN `agora-<lengua>.json` › `ui`:
+        # la seccion se mudo a Herramientas, que no tiene bloque `#i18n`. El
+        # guardian mira ahora alli, en las ocho.
         for idi in IDIOMAS:
-            t = (PUBLICO / idi / "community.html").read_text(encoding="utf-8")
-            bloque = re.search(r'id="i18n">(.*?)</script>', t, re.S)
-            tiene = set(json.loads(bloque.group(1)))
+            d = json.loads((PUBLICO / f"agora-{idi}.json").read_text(encoding="utf-8"))
+            tiene = set(d.get("ui") or {})
             with self.subTest(idioma=idi):
                 self.assertFalse(pide - tiene,
                                  f"caen al respaldo en castellano: "
@@ -1109,11 +1111,13 @@ class Estructura(unittest.TestCase):
                 # retiro entero y su contenedor ya no existe. Un guardian que
                 # vigila un elemento borrado no protege nada y encima se cae.
                 # `cerebros-banco` salio el 2026-09-22 con las tarjetas «Elige
-                # cerebro», retiradas de Comunidad por orden del Soberano.
-                for detras in ("agora-portada",):
-                    self.assertLess(
-                        t.index('id="taller"'), t.index(f'id="{detras}"'),
-                        f"«{detras}» abre la pagina por delante de la vitrina")
+                # cerebro», y `agora-portada` el 2026-09-23: se mudo a
+                # Herramientas por orden del Soberano. Lo que queda por vigilar
+                # es que la vitrina siga abriendo la pagina y que el Agora no
+                # vuelva a Comunidad por un parche.
+                self.assertIn('id="taller"', t, "falta la vitrina")
+                self.assertNotIn('id="agora-portada"', t,
+                                 "el Agora vuelve a Comunidad: vive en Herramientas")
 
     def test_la_prosa_del_pie_va_PLEGADA(self):
         """Una pagina limpia: el que entra evalua, el que quiere leer abre.
@@ -5159,7 +5163,12 @@ CLAVES_DUELOS = {
 
 CLAVES_HERRAMIENTAS = {
     "herr_titulo", "herr_lema", "herr_web", "herr_app", "herr_audio",
-    "herr_cerrada", "herr_copia_ai", "herr_errores"}
+    "herr_cerrada", "herr_copia_ai", "herr_errores",
+    # 2026-09-23: la causa del audio deja de ser «cero referencias» (era falsa:
+    # existe TALLER_DE_MUSICA.md desde el 09-14), el Agora se muda aqui desde
+    # Comunidad, y entran los modelos con su comando de instalacion.
+    "herr_audio_causa", "herr_agora", "herr_modelos", "herr_modelos_nota",
+    "herr_modelo_casa"}
 
 # LA CUARTA FAMILIA, 2026-09-20. Nace por el mismo motivo que las tres de
 # arriba y con la misma forma: los rotulos del motor local no caben en el

@@ -31,7 +31,8 @@
     "falta"
    ],
    "puerta": true,
-   "pais": "cn"
+   "pais": "cn",
+   "bytes": 1359293444
   },
   {
    "id": "charla-web",
@@ -52,7 +53,8 @@
    "lenguas": [
     "es",
     "en"
-   ]
+   ],
+   "bytes": 4372825221
   },
   {
    "id": "charla-multi",
@@ -72,7 +74,8 @@
    "lenguas": [
     "es",
     "en"
-   ]
+   ],
+   "bytes": 4400106291
   },
   {
    "id": "v7",
@@ -91,7 +94,8 @@
    "lenguas": [
     "es",
     "en"
-   ]
+   ],
+   "bytes": 2037757628
   },
   {
    "id": "qwen-coder",
@@ -110,7 +114,8 @@
    "lenguas": [
     "es",
     "en"
-   ]
+   ],
+   "bytes": 18556700761
   },
   {
    "id": "mistral-base",
@@ -129,7 +134,8 @@
    "lenguas": [
     "es",
     "en"
-   ]
+   ],
+   "bytes": 4372824384
   },
   {
    "id": "superviviente",
@@ -149,7 +155,8 @@
     "falta"
    ],
    "puerta": false,
-   "pais": "us"
+   "pais": "us",
+   "bytes": 2176178913
   }
  ],
  "atajos_nota": "LOS ATAJOS SON LA INTERFAZ DE LAS CONDUCTAS ENTRENADAS, no botones de ayuda. Cada uno escribe en el campo un prompt de tres o cuatro frases que la persona LEE antes de mandar --un atajo que manda solo es un boton que habla por ti-- y ese prompt es el que activa una conducta que el corpus enseño. Por eso viven aqui y no en el codigo: el generador del corpus lee esta misma lista, asi que lo que se ofrece y lo que se entrena no pueden separarse. Un atajo sin muestras que lo respalden es una promesa; una conducta entrenada sin atajo es una funcion que nadie encuentra. Y cambian POR MODELO a proposito: al de codigo se le pide codigo, al que dice NO_DATA se le pide que lo diga, y al del LoRA que se inventa cifras se le ofrece «sin numeros» -- el atajo tambien es donde se le pone la brida a un fallo conocido.",
@@ -218,5 +225,6 @@
  "juez": {
   "nota": "El modelo que juzga en la capa 2 de TODOS los pisos y del LoRAtelier. De otra familia que los que contestan (Qwen frente a Mistral y Llama): un juez de la misma casa tiende a darse la razon. Se pide con un boton, nunca solo: cada veredicto desaloja al modelo que contesta (MAX_LOADED_MODELS=1).",
   "modelo": "qwen2.5:7b"
- }
+ },
+ "bytes_nota": "`bytes` de cada cerebro: tamano en disco segun /api/tags de la Ollama del nodo, medido el 2026-09-23. Lo pinta Herramientas junto al comando de instalacion."
 }
