@@ -120,56 +120,16 @@
   document.addEventListener('click', interceptar, true);
   document.addEventListener('keydown', interceptar, true);
 
-  /* --- la fila de botones ------------------------------------------------
-     VAN EN `#atajos`, CON LOS DEMAS. Hasta el 2026-09-05 habia dos filas bajo
-     el campo: estos comandos por un lado y «Resume esto / Dame los pasos / Que
-     te falta saber» por otro. Son lo MISMO --los dos escriben en el campo y
-     atienden-- y verlos separados obligaba a aprenderse dos sitios para el
-     mismo gesto. Una sola fila, y el duplicado se ve en cuanto aparece.
+  /* --- LA FILA DE BOTONES SE RETIRO (2026-09-23) ----------------------------
+     Aqui se pintaban los ocho comandos --/instalar, /dataset, /eco...-- como
+     botones bajo el campo. El Soberano los señalo como residuo: cuelgan de los
+     compañeros del catalogo viejo, que se fueron al laboratorio el 2026-09-20,
+     y la fila de debajo del chat es ahora la de los ATAJOS DEL MODELO QUE
+     HABLA (`piso-chat.js`, desde `cerebros-<lengua>.json`).
 
-     La cadena de caidas se conserva entera: si no hay `#atajos` se busca el
-     panel de herramientas, y si tampoco, el chat. Un boton que no aparece es
-     peor que uno mal colocado. */
-  function pintar() {
-    var casa = document.getElementById('atajos') ||
-               document.getElementById('herramientas') ||
-               document.getElementById('chat');
-    if (!casa) return;
-    var fila = document.createElement('div');
-    fila.className = 'fila comandos';
-    S.servicios.forEach(function (s) {
-      var b = document.createElement('button');
-      b.type = 'button'; b.className = 'cab-boton comando';
-      b.textContent = s.comando;
-      b.dataset.categoria = s.categoria;
-      /* EL COMANDO NO SE TRADUCE, LO QUE HACE SI. Un comando es un
-         IDENTIFICADOR: se teclea, se documenta y se comparte. Si `/instalar`
-         fuera `/install` en ingles, el mismo gesto tendria cuatro nombres y
-         cualquier guia que alguien escriba solo serviria para un idioma. Asi que
-         el rotulo se queda igual en los cuatro y la explicacion viaja en el
-         `title`, que sale al pasar el cursor y lo lee tambien quien navega con
-         teclado o con lector. Un termino, muchos idiomas.
-
-         El nombre del agente iba antes aqui; ahora acompana a la explicacion,
-         que es lo que de verdad hacia falta saber. */
-      var a = estadoAgente(s.agente);
-      var lang = document.documentElement.lang;
-      var que = s.que && (s.que[lang] || s.que.es);
-      var rot = window.Hub && Hub.rotulos.agentes;
-      var voz = a && ((rot && rot[a.id]) || a);
-      b.title = [que, voz && voz.name].filter(Boolean).join(' · ');
-      b.addEventListener('click', function () {
-        // Se escribe en el campo y se atiende. Escribirlo importa: quien mira
-        // aprende que el boton es un atajo de algo que puede teclear.
-        atender(s.comando);
-      });
-      fila.appendChild(b);
-    });
-    casa.appendChild(fila);
-    // `#atajos` nace oculto y lo destapa quien le pone algo dentro. Si esta
-    // fila llega primero, le toca a ella.
-    if (casa.id === 'atajos') casa.hidden = false;
-  }
+     LOS COMANDOS SIGUEN VIVOS: quien teclea `/instalar` recibe lo mismo que
+     antes, porque el interceptor de arriba no se ha tocado. Lo que se va es
+     el boton, no el verbo. */
 
   /* En tiempo OCIOSO, igual que hub.js pide su catalogo. La doctrina del
      Agora prohibe el fetch bloqueante al cargar: hasta que no pulsas nada,
@@ -180,8 +140,6 @@
     fetch('/servicios.json', { cache: 'no-store' }).then(function (r) { return r.json(); })
     .then(function (d) {
       S = d;
-      if (window.Hub) pintar();
-      else document.addEventListener('hub:listo', pintar);
     })
     .catch(function (e) {
       // NO_DATA declarado: sin catalogo no hay botones, y se dice por que.

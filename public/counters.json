@@ -1,7 +1,7 @@
 {
   "esquema": 1,
   "fecha": "2026-09-23",
-  "ultima_lectura": "2026-09-23T02:32:15+00:00",
+  "ultima_lectura": "2026-09-23T02:36:02+00:00",
   "nota": "Solo hay cifras medidas. Lo que no se midio sale como NO_DATA con su causa. Aqui no se cuenta a nadie.",
   "metricas": [
     {
@@ -21,7 +21,7 @@
     {
       "clave": "peso_sitio",
       "estado": "MEDIDO",
-      "valor": 5403293,
+      "valor": 5401970,
       "unidad": "bytes",
       "como": "todo lo que hay en public/ menos downloads/, counters.json e historial/: es lo que pesa visitar. Los adaptadores no se descargan por visitar; y un contador que se cuenta a si mismo nunca acierta, porque escribir la cifra cambia el fichero"
     },

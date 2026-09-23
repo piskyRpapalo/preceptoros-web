@@ -77,33 +77,12 @@
   }
 })();
 
-/* --- Capa 1 · los atajos, debajo del campo --------------------------------
- * Los mismos tres que la app, mismas claves y mismo gesto: escriben en el campo
- * y dejan el cursor ahi. NO mandan solos -- un atajo que manda sin que se lea
- * lo que va a mandar es un boton que habla por ti. Los rotulos salen del `#i18n`
- * de la portada: este fichero no tiene idioma, asi que no puede tener texto. */
-(function () {
-  var caja = document.getElementById('atajos');
-  var campo = document.getElementById('pregunta');
-  var bloque = document.getElementById('i18n');
-  if (!caja || !campo || !bloque) return;
-  var T = JSON.parse(bloque.textContent);
-
-  ['atResume', 'atPasos', 'atDudas'].forEach(function (clave) {
-    var texto = T[clave];
-    if (!texto) return;          // sin rotulo no hay boton: no se inventa uno
-    var b = document.createElement('button');
-    b.type = 'button';
-    b.className = 'atajo';
-    b.textContent = texto;
-    b.addEventListener('click', function () {
-      campo.value = texto + ': ';
-      campo.focus();
-    });
-    caja.appendChild(b);
-  });
-  if (caja.children.length) caja.hidden = false;
-})();
+/* --- Capa 1 · los atajos SE MUDARON a `piso-chat.js` (2026-09-23) --------
+ * Aqui se pintaban tres fijos --«Resume esto», «Dame los pasos», «Que te falta
+ * saber»-- iguales para cualquier modelo. Ahora la fila sigue al modelo que
+ * habla en el piso abierto: sus atajos son los de `cerebros-<lengua>.json`,
+ * «la interfaz de las conductas entrenadas». Mismo gesto de siempre: escriben
+ * en el campo y NO mandan solos. */
 
 /* --- LA CAPA 3 SE MUDO A `cabezal.js` (2026-09-08) ------------------------
  * Aqui vivia quien ata la rueda a su desplegable. Se va con el resto del

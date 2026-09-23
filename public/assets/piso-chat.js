@@ -153,6 +153,38 @@
     if (f) f.hidden = false;
   });
 
+  /* LOS ATAJOS DEL MODELO QUE HABLA (2026-09-23). El Soberano: «los atajos
+     tienen residuo antiguo; deben estar preparados para los modelos
+     presentados en la web». El catalogo ya los traia por modelo --el orden en
+     `cerebros.json` › `atajos`, el rotulo y el prompt en `cerebros-<lengua>`--
+     y su nota lo dice: son «la interfaz de las conductas entrenadas». Asi que
+     la fila bajo el campo cambia con el piso, igual que el titulo.
+
+     EL ATAJO ESCRIBE, NO MANDA. Deja su prompt en el campo y el cursor alli:
+     quien lo pulsa lee lo que va a enviar antes de enviarlo. Un atajo que
+     manda solo es un boton que habla por ti. */
+  function pintaAtajos(c) {
+    var caja = document.getElementById('atajos');
+    var campo = document.getElementById('pregunta');
+    if (!caja || !campo) return;
+    caja.innerHTML = '';
+    var prosa = (PROSA[c.id] || {}).atajos || {};
+    (c.atajos || []).forEach(function (k) {
+      var a = prosa[k];
+      if (!a || !a.rotulo || !a.prompt) return;   // sin texto no hay boton
+      var b = el('button', 'atajo', a.rotulo);
+      b.type = 'button';
+      b.title = a.prompt;
+      b.addEventListener('click', function () {
+        campo.value = a.prompt;
+        campo.focus();
+        campo.dispatchEvent(new Event('input', { bubbles: true }));
+      });
+      caja.appendChild(b);
+    });
+    caja.hidden = !caja.children.length;
+  }
+
   /* VESTIR UN PISO, SEGUN EL REPARTO. */
   function ponPiso(p) {
     var q = cerebroDe(p);
@@ -171,6 +203,7 @@
       original(p, UI);
     }
     if (window.CerebroFicha) window.CerebroFicha(q.c.modelo, REG, PROSA, q.donde);
+    pintaAtajos(q.c);
     if (cambia) pintaBarra(p);
     /* La practica del piso se ve en el campo, como sugerencia y no como texto
        escrito: quien decide que mandar es la persona. */
