@@ -1,0 +1,22 @@
+{
+  "esquema": 1,
+  "idioma": "it",
+  "revision": "pendiente-revision-nativa",
+  "procedencia": {
+    "traducido_por": "traducido por el silicio (Claude Opus 5.5) desde el castellano; sin revision nativa"
+  },
+  "nota": "Lo que el laboratorio quiere APRENDER de cada piso de la Torre, y los rotulos que lo presentan. Familia aparte de caminos-<lengua>.json desde el 2026-09-23: alli vive lo que el piso ES; aqui, lo que se mide en el. El criterio del juez de cada piso vendra a este mismo fichero.",
+  "ui": {
+    "camino_despertar_aprender": "Se, senza rete e senza memoria, sa dire cosa può fare dal tuo telefono e cosa no, e se smette di fingere quando gli chiedi qualcosa che richiede internet.",
+    "camino_primeros_pasos_aprender": "Se spiega cos’è PreceptorOS la prima volta che gli parli senza inventare nulla: né utenti, né funzioni, né un prodotto che non esiste.",
+    "camino_exposicion_aprender": "Se legge ciò che incolli senza interpretare troppo, dice quando non capisce e rifiuta se la richiesta riguarda un’altra persona.",
+    "camino_puertos_aprender": "Se spiega ogni porta della tua macchina senza allarmarti: che processo è, se serve, e mai «falla» solo perché è aperta.",
+    "camino_whoami_aprender": "Se ti guida a cercare te stesso con metodo e si ferma subito quando la ricerca punta a un’altra persona.",
+    "camino_killswitch_aprender": "Se ti accompagna a chiudere un account, e a cavartela senza, dicendo prima cosa non si può annullare e senza inventare un solo numero.",
+    "camino_silencio_aprender": "Se, senza rete e con il tempo che scorre, risponde ciò che sa e dice «non lo so» in tempo, l’unica risposta utile quando mancano sei minuti.",
+    "camino_contribuir_aprender": "Se spiega nella tua lingua cosa esce dal tuo dispositivo quando firmi una coppia, chi la guarda e cosa succede dopo.",
+    "torre_et_aprender": "Cosa vogliamo imparare con questo modello",
+    "torre_et_papel": "Cosa diciamo al modello",
+    "torre_et_corpus": "Se firmi, si conserva"
+  }
+}

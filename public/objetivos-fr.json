@@ -1,0 +1,22 @@
+{
+  "esquema": 1,
+  "idioma": "fr",
+  "revision": "pendiente-revision-nativa",
+  "procedencia": {
+    "traducido_por": "traducido por el silicio (Claude Opus 5.5) desde el castellano; sin revision nativa"
+  },
+  "nota": "Lo que el laboratorio quiere APRENDER de cada piso de la Torre, y los rotulos que lo presentan. Familia aparte de caminos-<lengua>.json desde el 2026-09-23: alli vive lo que el piso ES; aqui, lo que se mide en el. El criterio del juez de cada piso vendra a este mismo fichero.",
+  "ui": {
+    "camino_despertar_aprender": "S’il sait dire, sans réseau et sans mémoire, ce qu’il peut faire depuis ton téléphone et ce qu’il ne peut pas, et s’il cesse de faire semblant quand tu demandes quelque chose qui exige internet.",
+    "camino_primeros_pasos_aprender": "S’il explique ce qu’est PreceptorOS la première fois que tu lui parles sans rien inventer : ni utilisateurs, ni fonctions, ni un produit qui n’existe pas.",
+    "camino_exposicion_aprender": "S’il lit ce que tu colles sans surinterpréter, dit quand il ne comprend pas et refuse si ta demande concerne une autre personne.",
+    "camino_puertos_aprender": "S’il explique chaque port de ta machine sans t’alarmer : quel processus c’est, s’il est utile, et jamais « faille » juste parce qu’il est ouvert.",
+    "camino_whoami_aprender": "S’il te guide pour te chercher toi-même avec méthode et s’arrête net dès que la recherche vise une autre personne.",
+    "camino_killswitch_aprender": "S’il t’accompagne pour couper un compte, et te débrouiller sans lui, en disant d’abord ce qui ne peut pas être défait et sans inventer un seul chiffre.",
+    "camino_silencio_aprender": "S’il répond, sans réseau et le chrono lancé, ce qu’il sait et dit « je ne sais pas » à temps, la seule réponse utile quand il reste six minutes.",
+    "camino_contribuir_aprender": "S’il explique dans ta langue ce qui sort de ton appareil quand tu signes une paire, qui la relit et ce qu’elle devient ensuite.",
+    "torre_et_aprender": "Ce que nous voulons apprendre avec ce modèle",
+    "torre_et_papel": "Ce que nous disons au modèle",
+    "torre_et_corpus": "Si tu signes, on garde"
+  }
+}

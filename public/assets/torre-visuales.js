@@ -82,7 +82,10 @@
       '#torre .torre-peldano.con-lamina[open] .torre-cuerpo{' +
         'text-shadow:0 1px 2px rgba(0,0,0,.8)}' +
       '#torre .torre-peldano.con-lamina[open] .torre-n{' +
-        'opacity:1;color:var(--oro,#f2d08a)}';
+        'opacity:1;color:var(--oro,#f2d08a)}' +
+      '#torre .torre-aprender{border-left:2px solid var(--oro,#f2d08a);' +
+        'padding-left:.6rem}' +
+      '#torre .torre-rotulo{color:var(--oro,#f2d08a)}';
     document.head.appendChild(s);
   }
 
@@ -100,6 +103,7 @@
     var torre = document.getElementById('torre');
     if (!torre || torre.tagName !== 'SECTION') return;  // NO_DATA: no hay pisos
     estilo();
+    objetivos();
     if (!('IntersectionObserver' in window)) { viste(); return; }
     var mira = new IntersectionObserver(function (vistos) {
       if (vistos.some(function (v) { return v.isIntersecting; })) {
@@ -108,6 +112,50 @@
       }
     }, { rootMargin: '400px 0px' });
     mira.observe(torre);
+  }
+
+  /* LO QUE SE QUIERE APRENDER EN CADA PISO (2026-09-23), y los rotulos del
+     papel y del corpus. Vive en `objetivos-<lengua>.json`, familia aparte de
+     `caminos` porque el griego paso del tope al entrar, y se pinta AQUI y no
+     en `camino.js` porque este fichero es «como se ven los pisos» y aquel ya
+     va al limite. Se INSERTA en el cuerpo que `camino.js` pinto: detras de la
+     frase, el objetivo con su rotulo; delante del papel y del corpus, el
+     suyo. Si el fichero no llega, los pisos se quedan como estaban. */
+  function objetivos() {
+    var lang = (document.documentElement.lang || 'es').slice(0, 2);
+    fetch('/objetivos-' + lang + '.json')
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .catch(function () { return null; })
+      .then(function (d) {
+        var u = d && d.ui;
+        if (!u) return;
+        Object.keys(LAMINA).forEach(function (p) {
+          var cuerpo = document.querySelector('#piso-' + p + ' .torre-cuerpo');
+          if (!cuerpo || cuerpo.querySelector('.torre-aprender')) return;
+          var apr = u['camino_' + p + '_aprender'];
+          if (apr) {
+            var q = rotulado('torre-aprender', u.torre_et_aprender, apr);
+            var frase = cuerpo.querySelector('p');
+            cuerpo.insertBefore(q, frase ? frase.nextSibling : cuerpo.firstChild);
+          }
+          rotula(cuerpo.querySelector('.torre-papel'), u.torre_et_papel);
+          rotula(cuerpo.querySelector('.torre-corpus'), u.torre_et_corpus);
+        });
+      });
+  }
+  function rotulado(clase, rotulo, texto) {
+    var q = document.createElement('p');
+    q.className = clase;
+    rotula(q, rotulo);
+    q.appendChild(document.createTextNode(texto));
+    return q;
+  }
+  function rotula(n, rotulo) {
+    if (!n || !rotulo || n.querySelector('b.torre-rotulo')) return;
+    var b = document.createElement('b');
+    b.className = 'torre-rotulo';
+    b.textContent = rotulo + ': ';
+    n.insertBefore(b, n.firstChild);
   }
 
   // Si la Torre ya pinto --cache caliente--, `TorreUI` esta puesto y el aviso

@@ -5166,7 +5166,17 @@ CLAVES_HERRAMIENTAS = {
 # bloque de la portada. Se firma aqui para que anadir uno sea una decision.
 CLAVES_MOTOR = set(CLAVES_MOTOR_LISTA)   # una sola lista: ver FUERA_DEL_BLOQUE
 
-FAMILIAS = {"caminos": CLAVES_CAMINOS, "duelos": CLAVES_DUELOS,
+# LA QUINTA, 2026-09-23: que se quiere APRENDER en cada piso. Sale de
+# `caminos` porque el griego paso del tope al entrar; y es otro asunto --alli
+# lo que el piso ES, aqui lo que se mide en el--. El criterio del juez de cada
+# piso ira a esta misma familia.
+CLAVES_OBJETIVOS = ({f"camino_{n}_aprender" for n in (
+    "despertar", "primeros_pasos", "exposicion", "silencio", "contribuir",
+    "puertos", "whoami", "killswitch")}
+    | {"torre_et_aprender", "torre_et_papel", "torre_et_corpus"})
+
+FAMILIAS = {"caminos": CLAVES_CAMINOS, "objetivos": CLAVES_OBJETIVOS,
+            "duelos": CLAVES_DUELOS,
             "herramientas": CLAVES_HERRAMIENTAS, "motor": CLAVES_MOTOR}
 
 
