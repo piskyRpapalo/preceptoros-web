@@ -62,7 +62,13 @@
     /* NDJSON: una linea, un trozo. Es el formato de Ollama, y el tunel sirve a
        Ollama -- si algun dia se pone un adaptador delante, el contrato que hay
        que respetar es este, no el de OpenAI. */
-    stream: function (modelo, prompt, alTrozo) {
+    /* `sistema` (2026-09-23): el papel viaja como mensaje de SISTEMA y no
+       pegado delante de la pregunta. Medido en el laboratorio
+       (`mide_pisos.py`, 48 preguntas por pasada): pegado, los modelos
+       pequeños lo RECITAN --7 casos--; como `system`, 0. La rama del
+       navegador (`engine.js`) ya lo hacia asi. El proxy del Agora reenvia el
+       campo intacto: comprobado contra la Ollama local, mismas respuestas. */
+    stream: function (modelo, prompt, alTrozo, sistema) {
       asegurarCola();
       return fetch(BASE + '/api/generate', {
         method: 'POST',
@@ -93,7 +99,7 @@
            respuesta acaba a media frase ---, que es mejor que una espera que
            no termina y no dice por que. */
         body: JSON.stringify({ model: modelo, prompt: prompt, stream: true,
-                               think: false,
+                               think: false, system: sistema || undefined,
                                options: { num_predict: 400 } })
       }).then(function (r) {
         var cab = function (k) { return r.headers.get('X-Cola-' + k); };

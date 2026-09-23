@@ -149,13 +149,18 @@
     return n / g.length < 0.7;
   }
 
-  function turno(modelo, prompt, col, ms) {
+  /* `sistema` (2026-09-23): el arnes viaja como `system`, igual que en la
+     Torre (`rack.js`). Pegado delante de la pregunta, los modelos pequeños lo
+     recitaban --medido en `mide_pisos.py`--, y el duelo tiene que comparar
+     contra el MISMO arnes que usa la Torre o el veredicto no vale para el
+     sitio. */
+  function turno(modelo, prompt, col, ms, sistema) {
     var t0 = Date.now(), texto = '';
     col.textContent = '';
     return window.Rack.stream(modelo, prompt, function (trozo) {
       texto += trozo;
       col.textContent = texto;
-    }).then(function (tokens) {
+    }, sistema).then(function (tokens) {
       var s = (Date.now() - t0) / 1000;
       ms.textContent = s.toFixed(1) + ' s' + (tokens ? ' · ' + tokens + ' tok' : '');
       if (degenera(texto)) {
@@ -233,7 +238,7 @@
            como un fallo. Se enseña primero lo que contesta un modelo al que
            nadie le ha dicho nada, que es el punto de la pantalla. */
         return turno(m, q, cols.base.texto, cols.base.ms).then(function (a) {
-          return turno(m, arnes() + '\n\n' + q, cols.lora.texto, cols.lora.ms)
+          return turno(m, q, cols.lora.texto, cols.lora.ms, arnes())
             .then(function (b) { return { modelo: m, a: a, b: b }; });
         });
       }).then(function (r) {

@@ -276,11 +276,12 @@
     espera.then(generar, generar);
     function generar() {
     if (via === 'rack') {
-      window.Rack.stream(modeloRack, papel() + '\n\n' + conEstado(texto), function (d) {
+      // El papel como `system` (ver rack.js): pegado delante, se recitaba.
+      window.Rack.stream(modeloRack, conEstado(texto), function (d) {
         if (t1 === null) { t1 = performance.now(); avisa('hablando'); }
         acc += d; acc = acc.replace(/https?:\/\/[^\s]+/g, '[URL_BLOQUEADA]');
         p.textContent = window.sinFuga ? window.sinFuga(acc) : acc;
-      }).then(function (n) {
+      }, papel()).then(function (n) {
         tokens = n;
         document.dispatchEvent(new CustomEvent('preceptor:brain', {
           detail: { name: modeloRack, live: true } }));

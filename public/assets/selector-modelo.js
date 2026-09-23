@@ -53,7 +53,7 @@
   function envolver() {
     if (!window.Rack || window.Rack.__envuelto) return;
     var original = window.Rack.stream;
-    window.Rack.stream = function (modelo, prompt, alTrozo) {
+    window.Rack.stream = function (modelo, prompt, alTrozo, sistema) {
       /* SIN ELECCION GUARDADA MANDA EL RECOMENDADO, no lo que traiga quien
          llama (2026-09-08). Antes `recomendado` era solo una insignia y el
          primero en hablar salia del catalogo de companeros: El Anfitrion, que
@@ -65,7 +65,7 @@
          clase de fallo que este repo lleva meses corrigiendo: dos sitios
          diciendo cosas distintas del mismo hecho. */
       return original.call(window.Rack,
-        window.CerebroPuesto() || modelo, prompt, alTrozo);
+        window.CerebroPuesto() || modelo, prompt, alTrozo, sistema);
     };
     window.Rack.__envuelto = true;
   }
