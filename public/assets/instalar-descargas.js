@@ -93,6 +93,7 @@
         var dos = el('div', 'dos-puertas');
         var pWeb = el('div', 'panel-destacado');
         var pApp = el('div', 'panel-violeta');
+        pApp.id = 'app-un-clic';   // aqui monta `descarga-app.js` su boton
         dos.appendChild(pWeb); dos.appendChild(pApp);
         pwa.appendChild(dos);
         pWeb.appendChild(el('h2', null, T.pwaTitulo));
@@ -169,9 +170,16 @@
         /* El panel de la app lleva su propio titulo: sin el, el boton de abajo
            parece el segundo boton del panel de arriba. */
         pApp.appendChild(el('h2', null, T.appBoton));
-        var filaApp = el('div', 'fila'); filaApp.appendChild(ba);
+        /* LA PAUSA SE DECIA SIEMPRE (arreglado el 2026-09-23). Esta linea iba
+           fuera del `if (pausado)`: la pausa vencio el 2026-09-13 y la tarjeta
+           siguio diciendo «pausada 48 horas» diez dias. Ahora el aviso solo
+           sale en pausa; sin ella, el boton lo pone `descarga-app.js` --un
+           clic, eligiendo el sistema-- y este enlace a la pagina de versiones
+           queda de respaldo para quien no ejecute ese guion. */
+        var filaApp = el('div', 'fila app-respaldo'); filaApp.appendChild(ba);
         pApp.appendChild(filaApp);
-        pApp.appendChild(el('p', 'nodata', 'NO_DATA · ' + T.appVacio));
+        if (pausado) pApp.appendChild(el('p', 'nodata', 'NO_DATA · ' + T.appVacio));
+        document.dispatchEvent(new CustomEvent('preceptor:app-tarjeta'));
       }
       /* EL PIE HONESTO, pintado desde el texto. Vivia escrito a mano dentro
          del HTML de las ocho paginas -- en griego, 1.884 B de un fichero que

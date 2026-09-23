@@ -5208,6 +5208,9 @@ CLAVES_HERRAMIENTAS = {
     # existe TALLER_DE_MUSICA.md desde el 09-14), el Agora se muda aqui desde
     # Comunidad, y entran los modelos con su comando de instalacion.
     "herr_audio_causa", "herr_agora", "herr_modelos", "herr_modelos_nota",
+    # 2026-09-23: la app a un clic, eligiendo el sistema (`descarga-app.js`).
+    "herr_desc_so", "herr_desc_boton", "herr_desc_nix", "herr_desc_win",
+    "herr_desc_apk", "herr_desc_ios", "herr_desc_sinprobar", "herr_desc_guia",
     "herr_modelo_casa"}
 
 # LA CUARTA FAMILIA, 2026-09-20. Nace por el mismo motivo que las tres de
@@ -5250,6 +5253,28 @@ CLAVES_PERFIL = {
     'prDesde', 'prFallo', 'prMandando', 'prMaquinaNada',
     'prMaquinaNoLlega', 'prMaquinaOfrece', 'prPseudonimo', 'prRegistrado',
     'prRegistrar', 'prSinIdentidad', 'prSinRegistrar'}
+
+class LaAppAUnClic(unittest.TestCase):
+    """Pedido por el Soberano el 2026-09-23: la app, a un solo clic de descarga
+    eligiendo el sistema. Se vigila que cada pagina de instalar cargue el guion,
+    que el guion ofrezca los cinco sistemas y que el enlace de siempre siga en el
+    marcado para quien no ejecute JavaScript."""
+
+    def test_cada_instalar_carga_el_guion_de_un_clic(self):
+        for idi in IDIOMAS:
+            t = (PUBLICO / idi / "instalar.html").read_text(encoding="utf-8")
+            with self.subTest(idioma=idi):
+                self.assertIn('src="/assets/descarga-app.js"', t)
+                self.assertIn("releases/latest/download/install.sh", t,
+                              "sin JavaScript tiene que quedar el enlace de siempre")
+
+    def test_el_guion_ofrece_los_cinco_sistemas_y_no_inventa_apk(self):
+        js = (PUBLICO / "assets" / "descarga-app.js").read_text(encoding="utf-8")
+        for so in ("windows", "macos", "linux", "android", "iphone"):
+            self.assertIn(so + ":", js)
+        self.assertNotIn(".apk", js, "el APK no existe: el guion no puede enlazarlo")
+        self.assertIn("install.ps1", js)
+
 
 FAMILIAS = {"caminos": CLAVES_CAMINOS, "objetivos": CLAVES_OBJETIVOS,
             "perfil": CLAVES_PERFIL,

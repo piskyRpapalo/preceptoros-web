@@ -17,6 +17,14 @@
     "herr_agora": "The state of the Agora: downloads, signatures and what is missing",
     "herr_modelos": "The models that speak on the web",
     "herr_modelos_nota": "The same ones that answer in the Tower. Base models install with one command on your machine; house models are built on top of them and are not distributed that way yet.",
-    "herr_modelo_casa": "House model: it does not install with “ollama pull” yet. It is built on its base model; its published adapters are above, in “The state of the Agora”."
+    "herr_modelo_casa": "House model: it does not install with “ollama pull” yet. It is built on its base model; its published adapters are above, in “The state of the Agora”.",
+    "herr_desc_so": "Your system",
+    "herr_desc_boton": "Download for {so}",
+    "herr_desc_nix": "Downloads install.sh from GitHub Releases. Run it with: bash install.sh — it asks for no password and installs nothing behind your back.",
+    "herr_desc_win": "Downloads install.ps1 from GitHub Releases. Right-click → “Run with PowerShell” — it asks for no password and installs nothing behind your back.",
+    "herr_desc_apk": "The APK does not exist yet: on Android it installs through Termux, with the guide below.",
+    "herr_desc_ios": "There is no app for iPhone: install this site from Share → “Add to Home Screen”.",
+    "herr_desc_sinprobar": "Untested on this rack: there is no {so} machine here.",
+    "herr_desc_guia": "Open the guide for {so}"
   }
 }

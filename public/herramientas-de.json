@@ -18,6 +18,14 @@
     "herr_agora": "Der Zustand der Agora: Downloads, Signaturen und was fehlt",
     "herr_modelos": "Die Modelle, die im Web sprechen",
     "herr_modelos_nota": "Dieselben, die im Turm antworten. Basismodelle installierst du mit einem Befehl auf deinem Rechner; die Hausmodelle bauen darauf auf und werden so noch nicht verteilt.",
-    "herr_modelo_casa": "Hausmodell: lässt sich noch nicht mit „ollama pull“ installieren. Es baut auf seinem Basismodell auf; seine veröffentlichten Adapter stehen oben unter „Der Zustand der Agora“."
+    "herr_modelo_casa": "Hausmodell: lässt sich noch nicht mit „ollama pull“ installieren. Es baut auf seinem Basismodell auf; seine veröffentlichten Adapter stehen oben unter „Der Zustand der Agora“.",
+    "herr_desc_so": "Dein System",
+    "herr_desc_boton": "Für {so} herunterladen",
+    "herr_desc_nix": "Lädt install.sh von GitHub Releases. Starte es mit: bash install.sh — es fragt nach keinem Passwort und installiert nichts hinter deinem Rücken.",
+    "herr_desc_win": "Lädt install.ps1 von GitHub Releases. Rechtsklick → „Mit PowerShell ausführen“ — es fragt nach keinem Passwort und installiert nichts hinter deinem Rücken.",
+    "herr_desc_apk": "Die APK gibt es noch nicht: Auf Android wird über Termux installiert, mit der Anleitung unten.",
+    "herr_desc_ios": "Für das iPhone gibt es keine App: Installiere diese Seite über Teilen → „Zum Home-Bildschirm“.",
+    "herr_desc_sinprobar": "Auf diesem Rack ungetestet: Hier gibt es keinen {so}-Rechner.",
+    "herr_desc_guia": "Anleitung für {so} öffnen"
   }
 }

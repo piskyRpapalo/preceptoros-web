@@ -17,6 +17,14 @@
     "herr_agora": "El estado del Ágora: descargas, firmas y lo que falta",
     "herr_modelos": "Los modelos que hablan en la web",
     "herr_modelos_nota": "Los mismos que responden en la Torre. Los de base se instalan con un comando en tu máquina; los de la casa se construyen sobre ellos y todavía no se distribuyen así.",
-    "herr_modelo_casa": "Modelo de la casa: todavía no se instala con «ollama pull». Se construye sobre su modelo base; sus adaptadores publicados están arriba, en «El estado del Ágora»."
+    "herr_modelo_casa": "Modelo de la casa: todavía no se instala con «ollama pull». Se construye sobre su modelo base; sus adaptadores publicados están arriba, en «El estado del Ágora».",
+    "herr_desc_so": "Tu sistema",
+    "herr_desc_boton": "Descargar para {so}",
+    "herr_desc_nix": "Baja install.sh de GitHub Releases. Ábrelo con: bash install.sh — no pide contraseña ni instala nada a tu espalda.",
+    "herr_desc_win": "Baja install.ps1 de GitHub Releases. Clic derecho → «Ejecutar con PowerShell» — no pide contraseña ni instala nada a tu espalda.",
+    "herr_desc_apk": "El APK todavía no existe: en Android se instala por Termux, con la guía de abajo.",
+    "herr_desc_ios": "En iPhone no hay app: instala esta web desde Compartir → «Añadir a pantalla de inicio».",
+    "herr_desc_sinprobar": "Sin probar en este rack: aquí no hay ninguna máquina con {so}.",
+    "herr_desc_guia": "Abrir la guía para {so}"
   }
 }
