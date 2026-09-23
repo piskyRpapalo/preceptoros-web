@@ -50,7 +50,9 @@
   "resenaDe": "Reseña de la línea",
   "resenaGracias": "Firmada y guardada en tu aparato. Viaja cuando tú la exportes.",
   "resenaFallo": "No se pudo firmar —",
-  "resenaIdentidad": "Crear identidad"
+  "resenaIdentidad": "Crear identidad",
+  "torreProy": "La Torre de los proyectos",
+  "piso": "piso"
  },
  "bloques": {
   "bienvenida": {
@@ -115,6 +117,13 @@
    "hoy": "El sustrato está construido y probado: la línea de eventos devuelve el tramo de cualquier intervalo, con quién hizo cada cosa.",
    "falta": "Dibujarlo. Cuatro zooms —día, semana, mes, año— y el fondo entero, en las tres superficies. Si el tramo no se puede dibujar, es que la línea todavía no era lineal.",
    "aportas": "Dime qué periodo miras tú cuando revisas algo."
+  },
+  "musica": {
+   "nombre": "El Ecosistema",
+   "util": "Que el rack tenga su propio sonido: música que nace de lo que pasa en él, y una voz para cada personaje de la casa —el Anfitrión, la Guardiana, el Herrero—.",
+   "hoy": "Dos proyectos con sus tuberías escritas —de audio a partitura, de partitura a sonido, de texto a voz— que paran con NO_DATA: los modelos todavía no están instalados.",
+   "falta": "Instalar los modelos (varios GB) con la firma del Soberano, y que Hexelion los ponga en cola solo cuando haya hueco térmico. Quien genera una voz no la juzga.",
+   "aportas": "Dime qué suena cuando piensas en una máquina que trabaja para ti, y a quién te gustaría oír primero."
   }
  }
 }

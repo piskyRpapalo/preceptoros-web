@@ -117,3 +117,9 @@
    entrar a hacer nada todavia. */
 .pliego .linea:hover,.pliego .linea:focus-within{transform:none}
 .pliego .taller-rejilla{margin-top:.4rem}
+
+/* LA TORRE DE LOS PROYECTOS (2026-09-23): cada linea es un piso. El numero va
+   en oro y en versalitas, como el «nivel n» de la Torre de la portada, para
+   que se lean como la misma casa. */
+.linea-piso{flex-basis:100%;font-size:.7rem;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--oro)}

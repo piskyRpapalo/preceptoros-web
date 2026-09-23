@@ -77,12 +77,20 @@
     return caja2;
   }
 
-  function linea(bloque) {
+  function linea(bloque, piso) {
     var texto = (L.bloques || {})[bloque.id];
     if (!texto) return null;                 // sin texto en esta lengua, no se pinta
     var art = el('article', 'panel linea');
 
     var cab = el('div', 'linea-cab');
+    /* PISO n (2026-09-23). El Soberano pidio «otra Torre» para Proyectos,
+       reciclando la de la portada: las lineas de investigacion son sus
+       pisos. Se sube por la escalera: primero las que estan en marcha,
+       luego las de vision --que se pliegan--, y dentro de cada tramo el
+       `orden` del registro. Asi el numero sigue la pantalla sin saltos. */
+    if (UI.piso && piso) {
+      cab.appendChild(el('span', 'linea-piso', UI.piso + ' ' + piso));
+    }
     var h3 = el('h3', 'linea-entrar', texto.nombre || bloque.id);
     cab.appendChild(h3);
     cab.appendChild(sello(bloque.estado));
@@ -136,18 +144,22 @@
     REGISTRO = registro;
     var activas = el('div', 'taller-rejilla');
     var dormidas = el('div', 'taller-rejilla');
-    var nDormidas = 0;
+    var nDormidas = 0, piso = 0;
     (registro.bloques || [])
       .slice()
-      .sort(function (a, b) { return (a.orden || 0) - (b.orden || 0); })
+      .sort(function (a, b) {
+        var ea = ESCALERA.indexOf(a.estado) < 0, eb = ESCALERA.indexOf(b.estado) < 0;
+        return (ea - eb) || (a.orden || 0) - (b.orden || 0);
+      })
       .forEach(function (b) {
-        var n = linea(b);
+        var n = linea(b, piso + 1);
         if (!n) return;
+        piso += 1;
         if (ESCALERA.indexOf(b.estado) >= 0) { activas.appendChild(n); }
         else { dormidas.appendChild(n); nDormidas += 1; }
       });
     caja.innerHTML = '';
-    caja.appendChild(el('h2', null, UI.titulo || ''));
+    caja.appendChild(el('h2', null, UI.torreProy || UI.titulo || ''));
     caja.appendChild(activas);
     if (nDormidas) {
       var pliego = el('details', 'pliego');

@@ -50,7 +50,9 @@
   "resenaDe": "Besprechung der Linie",
   "resenaGracias": "Signiert und auf deinem Gerät geblieben. Sie reist, wenn du sie exportierst.",
   "resenaFallo": "Konnte nicht signiert werden —",
-  "resenaIdentidad": "Identität anlegen"
+  "resenaIdentidad": "Identität anlegen",
+  "torreProy": "Der Turm der Projekte",
+  "piso": "Etage"
  },
  "bloques": {
   "bienvenida": {
@@ -115,6 +117,13 @@
    "hoy": "Das Substrat ist gebaut und geprüft: die Ereignislinie liefert den Zeitraum, mit wer was tat.",
    "falta": "Es zeichnen. Vier Zoomstufen — Tag, Woche, Monat, Jahr — und der ganze Hintergrund, auf allen drei Oberflächen. Lässt sich der Zeitraum nicht zeichnen, war die Linie noch nicht linear.",
    "aportas": "Sag mir, welchen Zeitraum du ansiehst, wenn du etwas prüfst."
+  },
+  "musica": {
+   "nombre": "Das Ökosystem",
+   "util": "Dass das Rack seinen eigenen Klang hat: Musik aus dem, was in ihm geschieht, und eine Stimme für jede Figur des Hauses — den Gastgeber, die Wächterin, den Schmied.",
+   "hoy": "Zwei Projekte mit geschriebenen Pipelines — von Audio zu Partitur, von Partitur zu Klang, von Text zu Stimme —, die mit NO_DATA stoppen: die Modelle sind noch nicht installiert.",
+   "falta": "Die Modelle (mehrere GB) mit der Signatur des Souveräns installieren und Hexelion sie nur einreihen lassen, wenn thermischer Spielraum da ist. Wer eine Stimme erzeugt, beurteilt sie nicht.",
+   "aportas": "Sag mir, was klingt, wenn du an eine Maschine denkst, die für dich arbeitet, und wen du zuerst hören möchtest."
   }
  }
 }

@@ -351,6 +351,37 @@
    "valoraciones": {
     "n": 0
    }
+  },
+  {
+   "id": "musica",
+   "estado": "en_estudio",
+   "orden": 8,
+   "modelo_base": null,
+   "requisitos_hw": "varios GB de modelos, en el rack",
+   "artefacto": null,
+   "ficha": {
+    "familia": null,
+    "licencia": null,
+    "origen": "el rack P0X",
+    "base_entrenamiento": null,
+    "base_tamano_q4_gb": null,
+    "servido_en_el_rack": null,
+    "servido_tamano_q4_gb": null,
+    "razonamiento": null,
+    "se_apoya_en": "preceptor-lora/TALLER_DE_MUSICA.md: dos proyectos, yue2-solarpunk (la musica del ecosistema) y auk-flash-preceptor (las voces del lore). Tuberias escritas (pipeline/ingest_musica.py, musica_comun.py) que paran con NO_DATA: MERT2, SheetSage2, YuE2 y AuK-Flash sin instalar. Orquesta Hexelion, que es quien domina el rack: la musica entra en la cola solo con hueco termico."
+   },
+   "medidas": {
+    "n": 0,
+    "maquina": null,
+    "tok_s": null,
+    "ram_mb": null
+   },
+   "tests": {
+    "n": 0
+   },
+   "valoraciones": {
+    "n": 0
+   }
   }
  ],
  "aporte": {

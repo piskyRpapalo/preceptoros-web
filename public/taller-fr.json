@@ -50,7 +50,9 @@
   "resenaDe": "Avis sur l'axe",
   "resenaGracias": "Signé et gardé sur votre appareil. Il voyage quand vous l'exportez.",
   "resenaFallo": "Impossible de signer —",
-  "resenaIdentidad": "Créer une identité"
+  "resenaIdentidad": "Créer une identité",
+  "torreProy": "La Tour des projets",
+  "piso": "étage"
  },
  "bloques": {
   "bienvenida": {
@@ -115,6 +117,13 @@
    "hoy": "Le substrat est construit et testé : la ligne d'événements renvoie l'intervalle demandé, avec qui a fait quoi.",
    "falta": "Le dessiner. Quatre zooms — jour, semaine, mois, année — et le fond entier, sur les trois surfaces. Si l'intervalle ne se dessine pas, la ligne n'était pas encore linéaire.",
    "aportas": "Dites-moi quelle période vous regardez quand vous révisez."
+  },
+  "musica": {
+   "nombre": "L’Écosystème",
+   "util": "Que le rack ait son propre son : une musique née de ce qui s’y passe, et une voix pour chaque personnage de la maison — l’Hôte, la Gardienne, le Forgeron.",
+   "hoy": "Deux projets aux chaînes écrites — de l’audio à la partition, de la partition au son, du texte à la voix — qui s’arrêtent sur NO_DATA : les modèles ne sont pas encore installés.",
+   "falta": "Installer les modèles (plusieurs Go) avec la signature du Souverain, et qu’Hexelion ne les mette en file que s’il y a de la marge thermique. Qui génère une voix ne la juge pas.",
+   "aportas": "Dis-moi ce qui sonne quand tu penses à une machine qui travaille pour toi, et qui tu aimerais entendre en premier."
   }
  }
 }

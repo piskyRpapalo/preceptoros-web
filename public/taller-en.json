@@ -50,7 +50,9 @@
   "resenaDe": "Review of the line",
   "resenaGracias": "Signed and kept on your device. It travels when you export it.",
   "resenaFallo": "Could not sign —",
-  "resenaIdentidad": "Create identity"
+  "resenaIdentidad": "Create identity",
+  "torreProy": "The Tower of projects",
+  "piso": "floor"
  },
  "bloques": {
   "bienvenida": {
@@ -115,6 +117,13 @@
    "hoy": "The substrate is built and tested: the event line returns the span of any interval, with who did each thing.",
    "falta": "Drawing it. Four zooms --day, week, month, year-- and the whole background, on all three surfaces. If the span cannot be drawn, the line was not linear yet.",
    "aportas": "Tell me what period you look at when you review something."
+  },
+  "musica": {
+   "nombre": "The Ecosystem",
+   "util": "For the rack to have its own sound: music born from what happens in it, and a voice for every character of the house — the Host, the Guardian, the Smith.",
+   "hoy": "Two projects with their pipelines written — audio to score, score to sound, text to voice — that stop with NO_DATA: the models are not installed yet.",
+   "falta": "Install the models (several GB) with the Sovereign’s signature, and have Hexelion queue them only when there is thermal headroom. Whoever generates a voice does not judge it.",
+   "aportas": "Tell me what sounds in your head when you think of a machine working for you, and whom you would like to hear first."
   }
  }
 }
