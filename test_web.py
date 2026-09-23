@@ -4582,6 +4582,7 @@ class Traducciones(unittest.TestCase):
         "aprender.js": "TEXTO, las ocho lenguas del «aprender de mis reescrituras»",
         "elegir.js": "VOZ, las ocho del «¿te ha servido?»",
         "consiento.js": "las ocho del consentimiento de analisis",
+        "sello-rack.js": "TX, las nueve del sello «disponible» de las puertas al rack",
     }
 
     def test_NINGUN_guion_lleva_CASTELLANO_suelto(self):
@@ -4613,16 +4614,22 @@ class Traducciones(unittest.TestCase):
                 continue
             src = f.read_text(encoding="utf-8")
             src = _re.sub(r"/\*.*?\*/", "", src, flags=_re.S)
-            src = _re.sub(r"(?m)//.*$", "", src)
+            # `//` precedido de `:` es una URL dentro de una cadena, no un
+            # comentario. Hasta el 2026-09-24 se cortaba igual: la comilla de
+            # 'https://...' quedaba abierta, el emparejamiento de comillas se
+            # desfasaba y la prosa de detras quedaba FUERA de cadena, sin mirar.
+            src = _re.sub(r"(?m)(?<!:)//.*$", "", src)
             # fuera los respaldos declarados: T('clave', '...')
-            src = _re.sub(r"T\(\s*'[A-Za-z0-9]+'\s*,\s*'(?:\\.|[^'\\])*'",
+            # (con sus trozos concatenados: T('k', 'uno ' + 'dos') es UN respaldo)
+            src = _re.sub(r"T\(\s*'[A-Za-z0-9]+'\s*,\s*'(?:\\.|[^'\\])*'"
+                          r"(?:\s*\+\s*'(?:\\.|[^'\\])*')*",
                           "T(", src, flags=_re.S)
             src = _re.sub(r'T\(\s*"[A-Za-z0-9]+"\s*,\s*"(?:\\.|[^"\\])*"',
                           "T(", src, flags=_re.S)
             # Y la otra forma del MISMO trato, que esta casa usa igual:
             # `UI.clave || 'respaldo'`. Sigue significando que el texto sale de
             # un catalogo y que esto es lo que se ve si el catalogo no llego.
-            src = _re.sub(r"\|\|\s*'(?:\\.|[^'\\])*'", "|| X", src)
+            src = _re.sub(r"\|\|\s*'(?:\\.|[^'\\])*'(?:\s*\+\s*'(?:\\.|[^'\\])*')*", "|| X", src)
             src = _re.sub(r'\|\|\s*"(?:\\.|[^"\\])*"', "|| X", src)
             sueltas = []
             for m in _re.finditer(r"'((?:\\.|[^'\\])*)'|\"((?:\\.|[^\"\\])*)\"", src):
@@ -5377,6 +5384,29 @@ class LoQueNoSeVeConElGateVerde(unittest.TestCase):
                 with self.subTest(bloque=b.get("id"), campo=campo):
                     self.assertIn(valor, inv["modelos"],
                         f"{b.get('id')}.{campo} = {valor} no esta instalado en el rack")
+
+
+    def test_cada_pagina_que_captura_tiene_su_puerta_de_salida_y_su_sello(self):
+        """Pedido por el Soberano el 2026-09-24: que cada sitio desde el que un
+        tester deja una valoracion llegue al rack y lo diga con un sello. Hasta
+        ese dia `enviar.js` --la UNICA puerta de salida-- solo estaba en la
+        portada: quien firmaba un duelo en el banco o reseñaba una mision de
+        Comunidad guardaba su par y no podia mandarlo sin cambiar de pagina."""
+        CAPTURAN = ("elegir.js", "corregir.js", "aprender.js", "camino.js",
+                    "duelo-firma.js", "resena.js")
+        for f in sorted(PUBLICO.glob("*/*.html")):
+            idi = f.parent.name
+            if idi not in IDIOMAS:
+                continue
+            t = f.read_text(encoding="utf-8")
+            if not any(f'/assets/{c}"' in t for c in CAPTURAN):
+                continue
+            for guion in ("bronce.js", f"enviar-{idi}.js", "enviar.js", "sello-rack.js"):
+                with self.subTest(pagina=f"{idi}/{f.name}", guion=guion):
+                    self.assertIn(f'/assets/{guion}"', t,
+                        f"{idi}/{f.name} captura pares y no carga {guion}")
+            with self.subTest(pagina=f"{idi}/{f.name}", orden="enviar-<l> antes que enviar"):
+                self.assertLess(t.find(f"/assets/enviar-{idi}.js"), t.find("/assets/enviar.js"))
 
 
 class LaAppAUnClic(unittest.TestCase):

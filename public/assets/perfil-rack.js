@@ -132,7 +132,7 @@
     fetch(API + '/reto', { cache: 'no-store' })
       .then(function (r) { return r.json(); })
       .then(function (d) {
-        if (!d || !d.reto) { throw new Error('el Ágora no dio reto'); }
+        if (!d || !d.reto) { throw new Error('NO_DATA: reto'); }
         return window.Identity.firmarTexto(quien + '|' + publica + '|' + d.reto)
           .then(function (firma) {
             var cuerpo = { pseudonimo: quien, clave_publica: publica,
