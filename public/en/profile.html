@@ -2,6 +2,7 @@
 <html lang="en" data-tema="oscuro">
 <head>
 <meta charset="utf-8">
+<meta http-equiv="refresh" content="0; url=./community.html#perfil">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Profile · PreceptorOS</title>
 <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
@@ -40,54 +41,18 @@
 <meta name="theme-color" content="#17131F">
 </head>
 <body>
-<canvas id="ambient" aria-hidden="true"></canvas>
+<!-- LA DIRECCION SE CONSERVA, EL PERFIL SE MUDO (2026-09-23). «Mi perfil» es
+     una pestaña de Comunidad (addendum F.5). Esta pagina sigue existiendo por
+     la firma del 2026-09-02 --«un perfil existe para ensenarse; necesita URL
+     propia»-- y porque hay enlaces fuera que apuntan aqui: lleva a la pestaña,
+     y si el navegador no sigue el refresco, el enlace esta a la vista. -->
 <main>
-
 <header id="cabezal" data-cabezal="profile">
   <div class="marca"><h1>Profile<b> · your key and this device</b></h1></div>
 </header>
-
-<p class="guia"><strong>There is no account and no server here: there is a key that lives on this device.</strong> You do not pick the pseudonym — it comes from the hash of your public key, so nobody can claim someone else's. This page tells you which key you have, whether the app is installed here, what that key lets you do, and how to change it knowing what it costs.</p>
-
-<section class="panel" aria-labelledby="h-yo">
-  <h2 id="h-yo">Your identity</h2>
-  <div id="perfil-identidad"></div>
-</section>
-
-<section class="panel" aria-labelledby="h-app">
-  <h2 id="h-app">The app on this device</h2>
-  <!-- El enlace vive en el HTML y no lo construye el guion: asi sigue
-       funcionando con el javascript apagado. El ESTADO --instalada o no-- si lo
-       pinta `profile.js` encima, porque eso solo lo sabe el navegador. Y aqui
-       no hay boton de instalar a proposito: esa puerta es la del cabezal, que
-       `pwa.js` ya resuelve incluyendo el caso de iOS. -->
-  <div id="perfil-instalacion">
-    <div class="fila"><a class="boton" href="./instalar.html">How to install it on this device</a></div>
-  </div>
-</section>
-
-<section class="panel" aria-labelledby="h-niv">
-  <h2 id="h-niv">What your key lets you do</h2>
-  <div id="perfil-niveles"></div>
-</section>
-
-<section class="panel" aria-labelledby="h-rack">
-  <h2 id="h-rack">Your profile in the Agora</h2>
-  <!-- El rack acepta perfiles desde hace semanas y la web no lo
-       llamaba nunca: las dos mitades del puente construidas y sin
-       tocarse. Lo pinta `perfil-rack.js`; vacio no ocupa nada. -->
-  <div id="perfil-rack"></div>
-</section>
-
-<section class="panel" aria-labelledby="h-ver">
-  <h2 id="h-ver">Release notes</h2>
-  <div id="perfil-version"></div>
-</section>
-
-<section class="panel" aria-labelledby="h-cla">
-  <h2 id="h-cla">Change your key</h2>
-  <div id="perfil-clave"></div>
-</section>
+<p class="guia"><strong>There is no account and no server here: there is a key that lives on this device.</strong></p>
+<div class="fila"><a class="boton" href="./community.html#perfil">My profile</a></div>
+</main>
 
 <footer class="honest-footer">
   <details class="pliego"><summary>What is here and what is not</summary>
@@ -98,13 +63,6 @@
   </ul>
 </details>
 </footer>
-
-<script type="application/json" id="i18n">{"idAviso": "A key is generated in your browser. It cannot be exported or copied to another device: if you clear the site data, this identity is lost and there is no way to recover it. There is no password to forget and no server holding it.", "idClave": "See my fingerprint", "idEntrar": "Create identity", "idFallo": "NO_DATA — the identity could not be created:", "idHola": "Hello,", "idPerfil": "My profile", "idPublica": "Public key:", "pfCargando": "Reading the key…", "pfClaveAviso": "Changing your key is not signing out. The private key was generated non-extractable: there is no copy anywhere. If you forget it you lose forever the authorship of everything you already signed — what was signed still exists, what disappears is the proof that it was yours.", "pfClaveBoton": "Change my key", "pfClaveCancela": "Leave it as it is", "pfClaveConfirma": "Forget my key", "pfClaveEscribe": "Type {palabra} to confirm:", "pfClaveFallo": "The key could not be forgotten:", "pfClaveHecho": "Key forgotten. This device has no identity now: create a new one from the corner of the header whenever you want.", "pfClaveLetra1": "The key is erased from this device and you will get a different pseudonym the next time you create one. What you already signed with the old one stops being claimable by you.", "pfClaveLetra2": "There is no copy, no password and no server: this cannot be undone.", "pfClavePalabra": "forget", "pfClaveSinIdentidad": "There is no key on this device yet, so there is nothing to change.", "pfClaveTitulo": "Forget this key", "pfComoCrear": "Create one with the person icon in the corner of the header. Before it generates the key it tells you, in plain words, that it cannot be exported or recovered.", "pfDerivado": "Derived from the SHA-256 of your public key. Not chosen.", "pfHuella": "Your key fingerprint:", "pfInstalada": "The app is installed on this device and you are using it right now.", "pfNiv1": "Visitor", "pfNiv1Que": "You can read the whole site, try the models on the bench and see other people's measurements. You cannot sign anything, so nothing you do is attributed to anyone.", "pfNiv1Sube": "To become a signer: create an identity. An Ed25519 key is generated in your browser, with no account and no password.", "pfNiv2": "Signer", "pfNiv2Que": "You have a key: the pseudonym is yours and nobody else can claim it. You can sign measurements and corrections, and anyone can check with your public key that you signed them.", "pfNiv2Sube": "To become a contributor: correct an answer that did not work for you. The pair is stored signed on your device, and it only leaves if you hand it over.", "pfNiv3": "Contributor", "pfNiv3Que": "There is work of yours stored in the Bronze. You can hand it over —signed, with your explicit consent and whenever you choose— for the lab to use, or download it and keep it.", "pfNivSinBronce": "the Bronze on this device could not be read, so the level cannot be confirmed:", "pfNoInstalada": "The app is not installed on this device: you are on the web.", "pfSinClave": "the public key could not be read:", "pfSinIdentidad": "NO_DATA — there is no identity on this device yet.", "pfVerCausa": "It is not filled in with the deploy date or the cache version: those would be figures that look measured and nobody measured.", "pfVerClave": "See my full public key", "pfVerFecha": "date:", "pfVerQue": "Published version:", "pfVerSinCampo": "the release file does not carry the field", "pfVerSinFichero": "no release notes are published: /release.json does not exist (checked 2026-09-13) and no process generates it on deploy.", "prActualizar": "Update in the Agora", "prAviso": "On pressing, your pseudonym and public key leave this device for the rack. The private key does not: it signs here and cannot be exported.", "prDesde": "Registered", "prFallo": "NO_DATA — could not register:", "prMandando": "Signing and sending…", "prMaquinaNada": "your browser says nothing about this device", "prMaquinaNoLlega": "NO_DATA — the Agora accepted the registration but did NOT store the machine: its model has no such field yet, and it silently drops what it does not know.", "prMaquinaOfrece": "Also send what machine this is:", "prPseudonimo": "Pseudonym", "prRegistrado": "Your key is registered in the Agora.", "prRegistrar": "Register in the Agora", "prSinIdentidad": "NO_DATA — there is no key on this device yet. It is created above, under «Your identity».", "prSinRegistrar": "Your key exists on this device and the Agora does not know it."}</script>
-<script src="/assets/ambient.js"></script>
-<script src="/assets/bronce.js"></script>
-<script src="/assets/profile.js"></script>
-<script src="/assets/perfil-rack.js"></script>
-<script src="/assets/profile-obra.js"></script>
 <script src="/assets/cabezal.js"></script>
 <script src="/assets/cabezal-rotulos.js"></script>
 <script src="/assets/auth.js"></script>

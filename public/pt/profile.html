@@ -2,6 +2,7 @@
 <html lang="pt" data-tema="oscuro">
 <head>
 <meta charset="utf-8">
+<meta http-equiv="refresh" content="0; url=./community.html#perfil">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Perfil · PreceptorOS</title>
 <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
@@ -40,54 +41,18 @@
 <meta name="theme-color" content="#17131F">
 </head>
 <body>
-<canvas id="ambient" aria-hidden="true"></canvas>
+<!-- LA DIRECCION SE CONSERVA, EL PERFIL SE MUDO (2026-09-23). «Mi perfil» es
+     una pestaña de Comunidad (addendum F.5). Esta pagina sigue existiendo por
+     la firma del 2026-09-02 --«un perfil existe para ensenarse; necesita URL
+     propia»-- y porque hay enlaces fuera que apuntan aqui: lleva a la pestaña,
+     y si el navegador no sigue el refresco, el enlace esta a la vista. -->
 <main>
-
 <header id="cabezal" data-cabezal="profile">
   <div class="marca"><h1>Perfil<b> · a tua chave e este aparelho</b></h1></div>
 </header>
-
-<p class="guia"><strong>Aqui não há conta nem servidor: há uma chave que vive neste aparelho.</strong> O pseudónimo não o escolhes — sai do hash da tua chave pública, por isso ninguém pode pedir o de outro. Esta página diz que chave tens, se a app está instalada aqui, o que essa chave te deixa fazer e como mudá-la sabendo o que custa.</p>
-
-<section class="panel" aria-labelledby="h-yo">
-  <h2 id="h-yo">A tua identidade</h2>
-  <div id="perfil-identidad"></div>
-</section>
-
-<section class="panel" aria-labelledby="h-app">
-  <h2 id="h-app">A app neste aparelho</h2>
-  <!-- El enlace vive en el HTML y no lo construye el guion: asi sigue
-       funcionando con el javascript apagado. El ESTADO --instalada o no-- si lo
-       pinta `profile.js` encima, porque eso solo lo sabe el navegador. Y aqui
-       no hay boton de instalar a proposito: esa puerta es la del cabezal, que
-       `pwa.js` ya resuelve incluyendo el caso de iOS. -->
-  <div id="perfil-instalacion">
-    <div class="fila"><a class="boton" href="./instalar.html">Como instalá-la neste aparelho</a></div>
-  </div>
-</section>
-
-<section class="panel" aria-labelledby="h-niv">
-  <h2 id="h-niv">O que a tua chave te deixa fazer</h2>
-  <div id="perfil-niveles"></div>
-</section>
-
-<section class="panel" aria-labelledby="h-rack">
-  <h2 id="h-rack">O teu perfil na Ágora</h2>
-  <!-- El rack acepta perfiles desde hace semanas y la web no lo
-       llamaba nunca: las dos mitades del puente construidas y sin
-       tocarse. Lo pinta `perfil-rack.js`; vacio no ocupa nada. -->
-  <div id="perfil-rack"></div>
-</section>
-
-<section class="panel" aria-labelledby="h-ver">
-  <h2 id="h-ver">Notas de versão</h2>
-  <div id="perfil-version"></div>
-</section>
-
-<section class="panel" aria-labelledby="h-cla">
-  <h2 id="h-cla">Mudar de chave</h2>
-  <div id="perfil-clave"></div>
-</section>
+<p class="guia"><strong>Aqui não há conta nem servidor: há uma chave que vive neste aparelho.</strong></p>
+<div class="fila"><a class="boton" href="./community.html#perfil">O meu perfil</a></div>
+</main>
 
 <footer class="honest-footer">
   <details class="pliego"><summary>O que há aqui e o que não há</summary>
@@ -98,13 +63,6 @@
   </ul>
 </details>
 </footer>
-
-<script type="application/json" id="i18n">{"idAviso": "Gera-se uma chave no teu navegador. Não se pode exportar nem copiar para outro aparelho: se apagares os dados do sítio, esta identidade perde-se e não há forma de a recuperar. Não há palavra-passe para esquecer nem servidor que a guarde.", "idClave": "Ver a minha impressão", "idEntrar": "Criar identidade", "idFallo": "NO_DATA — não foi possível criar a identidade:", "idHola": "Olá,", "idPerfil": "O meu perfil", "idPublica": "Chave pública:", "pfCargando": "A ler a chave…", "pfClaveAviso": "Mudar de chave não é terminar sessão. A chave privada foi gerada não extraível: não há cópia em lado nenhum. Se a esqueceres, perdes para sempre a autoria de tudo o que já assinaste — o assinado continua a existir, o que desaparece é a prova de que foi teu.", "pfClaveBoton": "Mudar de chave", "pfClaveCancela": "Deixar como está", "pfClaveConfirma": "Esquecer a minha chave", "pfClaveEscribe": "Escreve {palabra} para confirmar:", "pfClaveFallo": "Não foi possível esquecer a chave:", "pfClaveHecho": "Chave esquecida. Este aparelho já não tem identidade: cria uma nova a partir do canto do cabeçalho quando quiseres.", "pfClaveLetra1": "A chave é apagada deste aparelho e terás outro pseudónimo da próxima vez que criares uma. O que já assinaste com a antiga deixa de ser reclamável por ti.", "pfClaveLetra2": "Não há cópia, não há palavra-passe e não há servidor: isto não se desfaz.", "pfClavePalabra": "esquecer", "pfClaveSinIdentidad": "Ainda não há nenhuma chave neste aparelho, por isso não há nada para mudar.", "pfClaveTitulo": "Esquecer esta chave", "pfComoCrear": "Cria uma com o ícone de pessoa no canto do cabeçalho. Antes de gerar a chave diz-te, por palavras, que não se pode exportar nem recuperar.", "pfDerivado": "Derivado do SHA-256 da tua chave pública. Não se escolhe.", "pfHuella": "Impressão da tua chave:", "pfInstalada": "A app está instalada neste aparelho e estás a usá-la agora mesmo.", "pfNiv1": "Visitante", "pfNiv1Que": "Podes ler o sítio inteiro, experimentar os modelos do banco e ver as medidas dos outros. Não podes assinar nada, por isso nada do que fizeres fica atribuído a ninguém.", "pfNiv1Sube": "Para passar a signatário: cria uma identidade. Gera-se uma chave Ed25519 no teu navegador, sem conta e sem palavra-passe.", "pfNiv2": "Signatário", "pfNiv2Que": "Tens chave: o pseudónimo é teu e ninguém o pode pedir. Podes assinar medidas e correcções, e qualquer pessoa pode comprovar com a tua chave pública que foste tu a assiná-las.", "pfNiv2Sube": "Para passar a contribuinte: corrige uma resposta que não te tenha servido. O par fica guardado assinado no teu aparelho, e só sai de lá se o entregares.", "pfNiv3": "Contribuinte", "pfNiv3Que": "Há trabalho teu guardado no Bronze. Podes entregá-lo —assinado, com o teu consentimento explícito e quando quiseres— para o laboratório o usar, ou descarregá-lo e ficar com ele.", "pfNivSinBronce": "não foi possível ler o Bronze deste aparelho, por isso o nível não se pode confirmar:", "pfNoInstalada": "A app não está instalada neste aparelho: estás na web.", "pfSinClave": "não foi possível ler a chave pública:", "pfSinIdentidad": "NO_DATA — ainda não há identidade neste aparelho.", "pfVerCausa": "Não se preenche com a data da publicação nem com a versão da cache: seriam números com cara de medidas que ninguém mediu.", "pfVerClave": "Ver a minha chave pública inteira", "pfVerFecha": "data:", "pfVerQue": "Versão publicada:", "pfVerSinCampo": "o ficheiro de versão não traz o campo", "pfVerSinFichero": "não há notas de versão publicadas: /release.json não existe (verificado a 2026-09-13) e nenhum processo o gera ao publicar.", "prActualizar": "Actualizar na Ágora", "prAviso": "Ao carregar, o teu pseudónimo e a tua chave pública saem deste aparelho para o rack. A chave privada não: assina aqui e não pode ser exportada.", "prDesde": "Registada", "prFallo": "NO_DATA — não foi possível registar:", "prMandando": "A assinar e a enviar…", "prMaquinaNada": "o teu navegador não diz nada deste aparelho", "prMaquinaNoLlega": "NO_DATA — a Ágora aceitou o registo mas NÃO guardou a máquina: o seu modelo ainda não tem esse campo e descarta em silêncio o que não conhece.", "prMaquinaOfrece": "Enviar também que máquina é esta:", "prPseudonimo": "Pseudónimo", "prRegistrado": "A tua chave está registada na Ágora.", "prRegistrar": "Registar na Ágora", "prSinIdentidad": "NO_DATA — ainda não há chave neste aparelho. Cria-se acima, em «A tua identidade».", "prSinRegistrar": "A tua chave existe neste aparelho e a Ágora não a conhece."}</script>
-<script src="/assets/ambient.js"></script>
-<script src="/assets/bronce.js"></script>
-<script src="/assets/profile.js"></script>
-<script src="/assets/perfil-rack.js"></script>
-<script src="/assets/profile-obra.js"></script>
 <script src="/assets/cabezal.js"></script>
 <script src="/assets/cabezal-rotulos.js"></script>
 <script src="/assets/auth.js"></script>

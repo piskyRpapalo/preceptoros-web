@@ -879,11 +879,16 @@ class Estructura(unittest.TestCase):
                       "no usa la firma que `auth.js` ya tenia")
         self.assertIn("'|'", sin_com, "no arma `pseudonimo|clave_publica|reto`")
         self.assertIn("/profiles", sin_com, "no llama al extremo del Agora")
+        # DESDE EL 2026-09-23 el perfil es una pestaña de Comunidad: el ancla
+        # y la carga las pone `perfil-pestana.js`, y Comunidad trae la hoja.
+        pp = (PUBLICO / "assets" / "perfil-pestana.js").read_text(encoding="utf-8")
+        self.assertIn("'perfil-rack'", pp, "falta el ancla")
+        self.assertIn("/assets/perfil-rack.js", pp, "nadie lo carga")
         for idi in IDIOMAS:
-            t = (PUBLICO / idi / "profile.html").read_text(encoding="utf-8")
+            t = (PUBLICO / idi / "community.html").read_text(encoding="utf-8")
             with self.subTest(idioma=idi):
-                self.assertIn('id="perfil-rack"', t, "falta el ancla")
-                self.assertIn("/assets/perfil-rack.js", t, "nadie lo carga")
+                self.assertIn('data-carga="/assets/perfil-pestana.js"', t,
+                              "Comunidad no monta el perfil")
 
         # 2 · EL RETO SE PIDE JUSTO ANTES DE FIRMAR. Vive 300 s y es de un solo
         #     uso: pedirlo al cargar y guardarlo seria firmar uno caducado
@@ -918,9 +923,8 @@ class Estructura(unittest.TestCase):
         pedidas = set(_re.findall(r"T\('(pr[A-Za-z]+)'", sin_com))
         self.assertTrue(pedidas, "no pide ningun rotulo")
         for idi in IDIOMAS:
-            t = (PUBLICO / idi / "profile.html").read_text(encoding="utf-8")
-            m = _re.search(r'id="i18n">(.*?)</script>', t, _re.S)
-            d = json.loads(m.group(1))
+            # Los rotulos viven en la familia del perfil desde el 2026-09-23.
+            d = json.loads((PUBLICO / f"perfil-{idi}.json").read_text(encoding="utf-8"))["ui"]
             with self.subTest(idioma=idi):
                 self.assertFalse(pedidas - set(d),
                                  f"rotulos que faltan: {pedidas - set(d)}")
@@ -929,7 +933,7 @@ class Estructura(unittest.TestCase):
         #     ocho, y con el boton puesto seria mentira en pantalla --- que es
         #     lo que esta casa persigue, no un detalle de redaccion.
         for idi in IDIOMAS:
-            t = (PUBLICO / idi / "profile.html").read_text(encoding="utf-8")
+            t = (PUBLICO / f"perfil-{idi}.json").read_text(encoding="utf-8")
             with self.subTest(idioma=idi):
                 self.assertNotIn("no existe todavía un extremo", t)
                 self.assertNotIn("no endpoint yet", t)
@@ -2920,6 +2924,21 @@ class Hub(unittest.TestCase):
             with self.subTest(guion=f):
                 self.assertIn("community.html#perfil", js)
 
+    def test_profile_html_es_la_puerta_a_la_pestaña(self):
+        """El punto 1 adaptado (2026-09-23): la direccion se conserva.
+
+        Conviven la firma del 2026-09-02 --«un perfil necesita URL propia»-- y
+        el addendum F.5 --el perfil dentro de Comunidad--: `profile.html` sigue
+        existiendo como direccion para pegar, y lleva a la pestaña. Si el
+        navegador no sigue el refresco, el enlace tiene que estar a la vista.
+        """
+        for idi in IDIOMAS:
+            t = (PUBLICO / idi / "profile.html").read_text(encoding="utf-8")
+            with self.subTest(idioma=idi):
+                self.assertIn('http-equiv="refresh" content="0; url=./community.html#perfil"', t)
+                self.assertIn('href="./community.html#perfil"', t, "sin enlace visible")
+                self.assertNotIn('/assets/profile.js', t, "el perfil se monta en Comunidad, no aqui")
+
     def test_elige_cerebro_ya_no_existe_y_el_piso_decide(self):
         """«Elige cerebro» se retiro de la portada y de Comunidad (2026-09-22).
 
@@ -4826,7 +4845,9 @@ class Perfil(unittest.TestCase):
     comprobacion es como vuelve el mismo error dentro de seis meses.
     """
 
-    FICHAS = tuple(sorted((PUBLICO / i / "profile.html") for i in IDIOMAS))
+    # La ficha dejo de ser pagina el 2026-09-23: sus textos viven en la
+    # familia del perfil, y ahi se vigila que lo retirado no vuelva.
+    FICHAS = tuple(sorted((PUBLICO / f"perfil-{i}.json") for i in IDIOMAS))
     GUIONES = ("profile.js", "profile-obra.js")
 
     def test_la_ficha_no_resucita_lo_que_se_retiro(self):
@@ -4889,11 +4910,8 @@ class Perfil(unittest.TestCase):
         self.assertIn("T.pfClavePalabra", js,
                       "el guion no compara contra la palabra de confirmacion")
         for f in self.FICHAS:
-            texto = f.read_text(encoding="utf-8")
-            bloque = re.search(r'id="i18n"[^>]*>(.*?)</script>', texto, re.S)
             with self.subTest(pagina=str(f.relative_to(PUBLICO))):
-                self.assertIsNotNone(bloque, "la ficha perdio su bloque i18n")
-                datos = json.loads(bloque.group(1))
+                datos = json.loads(f.read_text(encoding="utf-8"))["ui"]
                 self.assertTrue((datos.get("pfClavePalabra") or "").strip(),
                                 "sin palabra de confirmacion, la caja no se "
                                 "puede satisfacer en esta lengua")

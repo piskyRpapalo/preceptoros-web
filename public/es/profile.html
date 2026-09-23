@@ -2,6 +2,7 @@
 <html lang="es" data-tema="oscuro">
 <head>
 <meta charset="utf-8">
+<meta http-equiv="refresh" content="0; url=./community.html#perfil">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Perfil · PreceptorOS</title>
 <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
@@ -40,54 +41,18 @@
 <meta name="theme-color" content="#17131F">
 </head>
 <body>
-<canvas id="ambient" aria-hidden="true"></canvas>
+<!-- LA DIRECCION SE CONSERVA, EL PERFIL SE MUDO (2026-09-23). «Mi perfil» es
+     una pestaña de Comunidad (addendum F.5). Esta pagina sigue existiendo por
+     la firma del 2026-09-02 --«un perfil existe para ensenarse; necesita URL
+     propia»-- y porque hay enlaces fuera que apuntan aqui: lleva a la pestaña,
+     y si el navegador no sigue el refresco, el enlace esta a la vista. -->
 <main>
-
 <header id="cabezal" data-cabezal="profile">
   <div class="marca"><h1>Perfil<b> · tu clave y este aparato</b></h1></div>
 </header>
-
-<p class="guia"><strong>Aquí no hay cuenta ni servidor: hay una clave que vive en este aparato.</strong> El pseudónimo no lo eliges — sale del hash de tu clave pública, así que nadie puede pedir el de otro. Esta página dice qué clave tienes, si la app está instalada aquí, qué te deja hacer esa clave y cómo cambiarla sabiendo lo que cuesta.</p>
-
-<section class="panel" aria-labelledby="h-yo">
-  <h2 id="h-yo">Tu identidad</h2>
-  <div id="perfil-identidad"></div>
-</section>
-
-<section class="panel" aria-labelledby="h-app">
-  <h2 id="h-app">La app en este aparato</h2>
-  <!-- El enlace vive en el HTML y no lo construye el guion: así sigue
-       funcionando con el javascript apagado. El ESTADO —instalada o no— sí lo
-       pinta `profile.js` encima, porque eso solo lo sabe el navegador. Y aquí
-       no hay botón de instalar a propósito: esa puerta es la del cabezal, que
-       `pwa.js` ya resuelve incluyendo el caso de iOS. -->
-  <div id="perfil-instalacion">
-    <div class="fila"><a class="boton" href="./instalar.html">Cómo instalarla en este aparato</a></div>
-  </div>
-</section>
-
-<section class="panel" aria-labelledby="h-niv">
-  <h2 id="h-niv">Qué te deja hacer tu clave</h2>
-  <div id="perfil-niveles"></div>
-</section>
-
-<section class="panel" aria-labelledby="h-rack">
-  <h2 id="h-rack">Tu perfil en el Ágora</h2>
-  <!-- El rack acepta perfiles desde hace semanas y la web no lo
-       llamaba nunca: las dos mitades del puente construidas y sin
-       tocarse. Lo pinta `perfil-rack.js`; vacio no ocupa nada. -->
-  <div id="perfil-rack"></div>
-</section>
-
-<section class="panel" aria-labelledby="h-ver">
-  <h2 id="h-ver">Notas de versión</h2>
-  <div id="perfil-version"></div>
-</section>
-
-<section class="panel" aria-labelledby="h-cla">
-  <h2 id="h-cla">Cambiar de clave</h2>
-  <div id="perfil-clave"></div>
-</section>
+<p class="guia"><strong>Aquí no hay cuenta ni servidor: hay una clave que vive en este aparato.</strong></p>
+<div class="fila"><a class="boton" href="./community.html#perfil">Mi perfil</a></div>
+</main>
 
 <footer class="honest-footer">
   <details class="pliego"><summary>Qué hay aquí y qué no</summary>
@@ -98,13 +63,6 @@
   </ul>
 </details>
 </footer>
-
-<script type="application/json" id="i18n">{"idAviso": "Se genera una clave en tu navegador. No se puede exportar ni copiar a otro aparato: si borras los datos del sitio, esta identidad se pierde y no hay forma de recuperarla. No hay contraseña que olvidar ni servidor que la guarde.", "idClave": "Ver mi huella", "idEntrar": "Crear identidad", "idFallo": "NO_DATA — no se pudo crear la identidad:", "idHola": "Hola,", "idPerfil": "Mi perfil", "idPublica": "Clave pública:", "pfCargando": "Leyendo la clave…", "pfClaveAviso": "Cambiar de clave no es cerrar sesión. La clave privada se generó no extraíble: no hay copia en ningún sitio. Si la olvidas, pierdes para siempre la autoría de todo lo que ya firmaste — lo firmado sigue existiendo, lo que desaparece es la prueba de que fue tuyo.", "pfClaveBoton": "Cambiar de clave", "pfClaveCancela": "Dejarlo como está", "pfClaveConfirma": "Olvidar mi clave", "pfClaveEscribe": "Escribe {palabra} para confirmar:", "pfClaveFallo": "No se pudo olvidar la clave:", "pfClaveHecho": "Clave olvidada. Este aparato ya no tiene identidad: crea una nueva desde la esquina del cabezal cuando quieras.", "pfClaveLetra1": "Se borra la clave de este aparato y tendrás otro pseudónimo la próxima vez que crees una. Lo que ya firmaste con la vieja deja de ser reclamable por ti.", "pfClaveLetra2": "No hay copia, no hay contraseña y no hay servidor: esto no se deshace.", "pfClavePalabra": "olvidar", "pfClaveSinIdentidad": "No hay ninguna clave en este aparato todavía, así que no hay nada que cambiar.", "pfClaveTitulo": "Olvidar esta clave", "pfComoCrear": "Créala con el icono de persona de la esquina del cabezal. Antes de generarla te dice, con todas sus letras, que no se puede exportar ni recuperar.", "pfDerivado": "Derivado del SHA-256 de tu clave pública. No se elige.", "pfHuella": "Huella de tu clave:", "pfInstalada": "La app está instalada en este aparato y la estás usando ahora mismo.", "pfNiv1": "Visitante", "pfNiv1Que": "Puedes leer el sitio entero, probar los modelos del banco y ver las medidas de los demás. No puedes firmar nada, así que nada de lo que hagas queda atribuido a nadie.", "pfNiv1Sube": "Para pasar a firmante: crea una identidad. Se genera una clave Ed25519 en tu navegador, sin cuenta y sin contraseña.", "pfNiv2": "Firmante", "pfNiv2Que": "Tienes clave: el pseudónimo es tuyo y nadie puede pedirlo. Puedes firmar medidas y correcciones, y cualquiera puede comprobar con tu clave pública que las firmaste tú.", "pfNiv2Sube": "Para pasar a contribuyente: corrige una respuesta que no te sirva. El par se guarda firmado en tu aparato, y de ahí sale solo si lo entregas tú.", "pfNiv3": "Contribuyente", "pfNiv3Que": "Hay trabajo tuyo guardado en el Bronce. Puedes entregarlo —firmado, con tu consentimiento explícito y cuando tú quieras— para que el laboratorio lo use, o bajártelo y quedártelo.", "pfNivSinBronce": "no se pudo leer el Bronce de este aparato, así que el nivel no se puede confirmar:", "pfNoInstalada": "La app no está instalada en este aparato: estás en la web.", "pfSinClave": "no se pudo leer la clave pública:", "pfSinIdentidad": "NO_DATA — todavía no hay identidad en este aparato.", "pfVerCausa": "No se rellena con la fecha del despliegue ni con la versión de la caché: serían cifras con cara de medidas que nadie ha medido.", "pfVerClave": "Ver mi clave pública entera", "pfVerFecha": "fecha:", "pfVerQue": "Versión publicada:", "pfVerSinCampo": "el fichero de versión no trae el campo", "pfVerSinFichero": "no hay notas de versión publicadas: /release.json no existe (comprobado el 2026-09-13) y ningún proceso lo genera al desplegar.", "prActualizar": "Actualizar en el Ágora", "prAviso": "Al pulsar, tu pseudónimo y tu clave pública salen de este aparato hacia el rack. La clave privada no: firma aquí y no se puede exportar.", "prDesde": "Registrado", "prFallo": "NO_DATA — no se pudo registrar:", "prMandando": "Firmando y enviando…", "prMaquinaNada": "tu navegador no dice nada de este aparato", "prMaquinaNoLlega": "NO_DATA — el Ágora aceptó el registro pero NO guardó la máquina: su modelo todavía no tiene ese campo, y descarta en silencio lo que no conoce.", "prMaquinaOfrece": "Enviar también qué máquina es esta:", "prPseudonimo": "Pseudónimo", "prRegistrado": "Tu clave está registrada en el Ágora.", "prRegistrar": "Registrar en el Ágora", "prSinIdentidad": "NO_DATA — todavía no hay clave en este aparato. Se crea arriba, en «Tu identidad».", "prSinRegistrar": "Tu clave existe en este aparato y el Ágora no la conoce."}</script>
-<script src="/assets/ambient.js"></script>
-<script src="/assets/bronce.js"></script>
-<script src="/assets/profile.js"></script>
-<script src="/assets/perfil-rack.js"></script>
-<script src="/assets/profile-obra.js"></script>
 <script src="/assets/cabezal.js"></script>
 <script src="/assets/cabezal-rotulos.js"></script>
 <script src="/assets/auth.js"></script>

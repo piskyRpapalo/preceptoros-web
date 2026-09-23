@@ -2,6 +2,7 @@
 <html lang="el" data-tema="oscuro">
 <head>
 <meta charset="utf-8">
+<meta http-equiv="refresh" content="0; url=./community.html#perfil">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Προφίλ · PreceptorOS</title>
 <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
@@ -40,54 +41,18 @@
 <meta name="theme-color" content="#17131F">
 </head>
 <body>
-<canvas id="ambient" aria-hidden="true"></canvas>
+<!-- LA DIRECCION SE CONSERVA, EL PERFIL SE MUDO (2026-09-23). «Mi perfil» es
+     una pestaña de Comunidad (addendum F.5). Esta pagina sigue existiendo por
+     la firma del 2026-09-02 --«un perfil existe para ensenarse; necesita URL
+     propia»-- y porque hay enlaces fuera que apuntan aqui: lleva a la pestaña,
+     y si el navegador no sigue el refresco, el enlace esta a la vista. -->
 <main>
-
 <header id="cabezal" data-cabezal="profile">
   <div class="marca"><h1>Προφίλ<b> · το κλειδί σου και αυτή η συσκευή</b></h1></div>
 </header>
-
-<p class="guia"><strong>Εδώ δεν υπάρχει λογαριασμός ούτε διακομιστής: υπάρχει ένα κλειδί που ζει σε αυτή τη συσκευή.</strong> Το ψευδώνυμο δεν το διαλέγεις — βγαίνει από το hash του δημόσιου κλειδιού σου, οπότε κανείς δεν μπορεί να ζητήσει το ξένο. Αυτή η σελίδα λέει ποιο κλειδί έχεις, αν η εφαρμογή είναι εγκατεστημένη εδώ, τι σου επιτρέπει αυτό το κλειδί και πώς το αλλάζεις ξέροντας τι κοστίζει.</p>
-
-<section class="panel" aria-labelledby="h-yo">
-  <h2 id="h-yo">Η ταυτότητά σου</h2>
-  <div id="perfil-identidad"></div>
-</section>
-
-<section class="panel" aria-labelledby="h-app">
-  <h2 id="h-app">Η εφαρμογή σε αυτή τη συσκευή</h2>
-  <!-- El enlace vive en el HTML y no lo construye el guion: asi sigue
-       funcionando con el javascript apagado. El ESTADO --instalada o no-- si lo
-       pinta `profile.js` encima, porque eso solo lo sabe el navegador. Y aqui
-       no hay boton de instalar a proposito: esa puerta es la del cabezal, que
-       `pwa.js` ya resuelve incluyendo el caso de iOS. -->
-  <div id="perfil-instalacion">
-    <div class="fila"><a class="boton" href="./instalar.html">Πώς να την εγκαταστήσεις σε αυτή τη συσκευή</a></div>
-  </div>
-</section>
-
-<section class="panel" aria-labelledby="h-niv">
-  <h2 id="h-niv">Τι σου επιτρέπει το κλειδί σου</h2>
-  <div id="perfil-niveles"></div>
-</section>
-
-<section class="panel" aria-labelledby="h-rack">
-  <h2 id="h-rack">Το προφίλ σου στην Αγορά</h2>
-  <!-- El rack acepta perfiles desde hace semanas y la web no lo
-       llamaba nunca: las dos mitades del puente construidas y sin
-       tocarse. Lo pinta `perfil-rack.js`; vacio no ocupa nada. -->
-  <div id="perfil-rack"></div>
-</section>
-
-<section class="panel" aria-labelledby="h-ver">
-  <h2 id="h-ver">Σημειώσεις έκδοσης</h2>
-  <div id="perfil-version"></div>
-</section>
-
-<section class="panel" aria-labelledby="h-cla">
-  <h2 id="h-cla">Αλλαγή κλειδιού</h2>
-  <div id="perfil-clave"></div>
-</section>
+<p class="guia"><strong>Εδώ δεν υπάρχει λογαριασμός ούτε διακομιστής: υπάρχει ένα κλειδί που ζει σε αυτή τη συσκευή.</strong></p>
+<div class="fila"><a class="boton" href="./community.html#perfil">Το προφίλ μου</a></div>
+</main>
 
 <footer class="honest-footer">
   <details class="pliego"><summary>Τι υπάρχει εδώ και τι όχι</summary>
@@ -98,13 +63,6 @@
   </ul>
 </details>
 </footer>
-
-<script type="application/json" id="i18n">{"idAviso": "Δημιουργείται ένα κλειδί στον περιηγητή σου. Δεν εξάγεται ούτε αντιγράφεται σε άλλη συσκευή: αν σβήσεις τα δεδομένα του ιστότοπου, αυτή η ταυτότητα χάνεται και δεν ανακτάται. Κανένας κωδικός να ξεχάσεις, κανένας διακομιστής να τον φυλάει.", "idClave": "Δες το αποτύπωμά μου", "idEntrar": "Δημιουργία ταυτότητας", "idFallo": "NO_DATA — δεν ήταν δυνατή η δημιουργία της ταυτότητας:", "idHola": "Γεια σου,", "idPerfil": "Το προφίλ μου", "idPublica": "Δημόσιο κλειδί:", "pfCargando": "Διαβάζω το κλειδί…", "pfClaveAviso": "Η αλλαγή κλειδιού δεν είναι αποσύνδεση. Το ιδιωτικό κλειδί δημιουργήθηκε μη εξαγώγιμο: δεν υπάρχει αντίγραφο πουθενά. Αν το ξεχάσεις, χάνεις για πάντα την πατρότητα όλων όσων έχεις ήδη υπογράψει — το υπογεγραμμένο συνεχίζει να υπάρχει, αυτό που χάνεται είναι η απόδειξη ότι ήταν δικό σου.", "pfClaveBoton": "Αλλαγή κλειδιού", "pfClaveCancela": "Άφησέ το όπως είναι", "pfClaveConfirma": "Ξέχνα το κλειδί μου", "pfClaveEscribe": "Γράψε {palabra} για επιβεβαίωση:", "pfClaveFallo": "Δεν ήταν δυνατό να ξεχαστεί το κλειδί:", "pfClaveHecho": "Το κλειδί ξεχάστηκε. Αυτή η συσκευή δεν έχει πια ταυτότητα: δημιούργησε καινούργια από τη γωνία της κεφαλίδας όποτε θέλεις.", "pfClaveLetra1": "Το κλειδί σβήνεται από αυτή τη συσκευή και την επόμενη φορά που θα δημιουργήσεις ένα θα έχεις άλλο ψευδώνυμο. Όσα υπέγραψες με το παλιό παύουν να μπορούν να διεκδικηθούν από σένα.", "pfClaveLetra2": "Δεν υπάρχει αντίγραφο, δεν υπάρχει κωδικός και δεν υπάρχει διακομιστής: αυτό δεν αναιρείται.", "pfClavePalabra": "ξεχνώ", "pfClaveSinIdentidad": "Δεν υπάρχει ακόμη κλειδί σε αυτή τη συσκευή, οπότε δεν υπάρχει τίποτα να αλλάξει.", "pfClaveTitulo": "Ξέχνα αυτό το κλειδί", "pfComoCrear": "Δημιούργησέ την με το εικονίδιο του προσώπου στη γωνία της κεφαλίδας. Πριν φτιάξει το κλειδί σού λέει, με όλα τα γράμματα, ότι δεν εξάγεται ούτε ανακτάται.", "pfDerivado": "Παράγεται από το SHA-256 του δημόσιου κλειδιού σου. Δεν επιλέγεται.", "pfHuella": "Αποτύπωμα του κλειδιού σου:", "pfInstalada": "Η εφαρμογή είναι εγκατεστημένη σε αυτή τη συσκευή και τη χρησιμοποιείς τώρα.", "pfNiv1": "Επισκέπτης", "pfNiv1Que": "Μπορείς να διαβάσεις όλο τον ιστότοπο, να δοκιμάσεις τα μοντέλα του πάγκου και να δεις τις μετρήσεις των άλλων. Δεν μπορείς να υπογράψεις τίποτα, οπότε τίποτα από όσα κάνεις δεν αποδίδεται σε κανέναν.", "pfNiv1Sube": "Για να γίνεις υπογράφων: δημιούργησε ταυτότητα. Στον περιηγητή σου φτιάχνεται ένα κλειδί Ed25519, χωρίς λογαριασμό και χωρίς κωδικό.", "pfNiv2": "Υπογράφων", "pfNiv2Que": "Έχεις κλειδί: το ψευδώνυμο είναι δικό σου και κανείς δεν μπορεί να το ζητήσει. Μπορείς να υπογράφεις μετρήσεις και διορθώσεις, και οποιοσδήποτε μπορεί να ελέγξει με το δημόσιο κλειδί σου ότι τις υπέγραψες εσύ.", "pfNiv2Sube": "Για να γίνεις συνεισφέρων: διόρθωσε μια απάντηση που δεν σου έκανε. Το ζεύγος αποθηκεύεται υπογεγραμμένο στη συσκευή σου, και φεύγει από εκεί μόνο αν το παραδώσεις εσύ.", "pfNiv3": "Συνεισφέρων", "pfNiv3Que": "Υπάρχει δουλειά δική σου αποθηκευμένη στον Μπρούντζο. Μπορείς να την παραδώσεις —υπογεγραμμένη, με τη ρητή συγκατάθεσή σου και όποτε θέλεις— για να τη χρησιμοποιήσει το εργαστήριο, ή να την κατεβάσεις και να την κρατήσεις.", "pfNivSinBronce": "δεν ήταν δυνατή η ανάγνωση του Μπρούντζου αυτής της συσκευής, οπότε το επίπεδο δεν επιβεβαιώνεται:", "pfNoInstalada": "Η εφαρμογή δεν είναι εγκατεστημένη σε αυτή τη συσκευή: είσαι στον ιστό.", "pfSinClave": "δεν ήταν δυνατή η ανάγνωση του δημόσιου κλειδιού:", "pfSinIdentidad": "NO_DATA — δεν υπάρχει ακόμη ταυτότητα σε αυτή τη συσκευή.", "pfVerCausa": "Δεν συμπληρώνεται με την ημερομηνία της ανάπτυξης ούτε με την έκδοση της μνήμης: θα ήταν νούμερα με πρόσωπο μέτρησης που δεν μέτρησε κανείς.", "pfVerClave": "Δες ολόκληρο το δημόσιο κλειδί μου", "pfVerFecha": "ημερομηνία:", "pfVerQue": "Δημοσιευμένη έκδοση:", "pfVerSinCampo": "το αρχείο έκδοσης δεν φέρει το πεδίο", "pfVerSinFichero": "δεν υπάρχουν δημοσιευμένες σημειώσεις έκδοσης: το /release.json δεν υπάρχει (ελέγχθηκε στις 2026-09-13) και καμία διαδικασία δεν το παράγει κατά την ανάπτυξη.", "prActualizar": "Ενημέρωση στην Αγορά", "prAviso": "Με το πάτημα, το ψευδώνυμο και το δημόσιο κλειδί σου φεύγουν από αυτή τη συσκευή προς το rack. Το ιδιωτικό όχι: υπογράφει εδώ και δεν εξάγεται.", "prDesde": "Καταχωρήθηκε", "prFallo": "NO_DATA — δεν ήταν δυνατή η καταχώριση:", "prMandando": "Υπογραφή και αποστολή…", "prMaquinaNada": "ο περιηγητής σου δεν λέει τίποτα για αυτή τη συσκευή", "prMaquinaNoLlega": "NO_DATA — η Αγορά δέχτηκε την καταχώριση αλλά ΔΕΝ αποθήκευσε το μηχάνημα: το μοντέλο της δεν έχει ακόμη αυτό το πεδίο και απορρίπτει σιωπηλά ό,τι δεν γνωρίζει.", "prMaquinaOfrece": "Στείλε επίσης τι μηχάνημα είναι αυτό:", "prPseudonimo": "Ψευδώνυμο", "prRegistrado": "Το κλειδί σου είναι καταχωρημένο στην Αγορά.", "prRegistrar": "Καταχώριση στην Αγορά", "prSinIdentidad": "NO_DATA — δεν υπάρχει ακόμη κλειδί σε αυτή τη συσκευή. Δημιουργείται πιο πάνω, στο «Η ταυτότητά σου».", "prSinRegistrar": "Το κλειδί σου υπάρχει σε αυτή τη συσκευή και η Αγορά δεν το γνωρίζει."}</script>
-<script src="/assets/ambient.js"></script>
-<script src="/assets/bronce.js"></script>
-<script src="/assets/profile.js"></script>
-<script src="/assets/perfil-rack.js"></script>
-<script src="/assets/profile-obra.js"></script>
 <script src="/assets/cabezal.js"></script>
 <script src="/assets/cabezal-rotulos.js"></script>
 <script src="/assets/auth.js"></script>
