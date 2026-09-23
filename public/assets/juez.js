@@ -70,7 +70,9 @@
           'If the rubric is not enough to score, say NO_DATA and why.';
         var p = el('p', 'esc-el', ''); salida.appendChild(p);
         var acc = '';
-        window.Rack.stream(j.modelo, papel, function (d) {
+        // `streamExacto`: el juez es SU modelo, no el que tenga puesto la
+        // pagina (ver selector-modelo.js). Sin selector, `stream` a secas.
+        (window.Rack.streamExacto || window.Rack.stream)(j.modelo, papel, function (d) {
           acc += d;
           p.textContent = window.sinFuga ? window.sinFuga(acc) : acc;
         }).then(function () {

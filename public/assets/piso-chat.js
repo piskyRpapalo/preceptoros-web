@@ -77,6 +77,14 @@
       // `display:flex` le gana a `hidden` por especificidad: sin esto la firma
       // se ve aunque este escondida. Paso una vez, se vio en el navegador.
       '#piso-actual .torre-mandos[hidden]{display:none}' +
+      '#piso-actual .veredicto{flex-basis:100%;text-shadow:none}' +
+      '#piso-actual .veredicto-salida{margin-top:.4rem;padding:.5rem .7rem;' +
+        'border-radius:var(--radius,.6rem);background:rgba(18,12,30,.78)}' +
+      '#piso-actual .veredicto-capa{margin:.3rem 0 .15rem;font-size:.7rem;' +
+        'letter-spacing:.08em;text-transform:uppercase;color:var(--oro,#f2d08a)}' +
+      '#piso-actual .veredicto-reglas{margin:0;padding-left:1rem;font-size:.8rem}' +
+      '#piso-actual .veredicto-reglas .ko{color:#ffb3a7}' +
+      '#piso-actual .veredicto-juez{font-size:.82rem;white-space:pre-wrap;margin:.2rem 0 0}' +
       '#piso-actual .torre-firma{display:flex;flex-direction:column;gap:.4rem;margin-top:.5rem}' +
       '#piso-actual .torre-firma textarea{font:inherit;width:100%;box-sizing:border-box;' +
         'color:inherit;background:rgba(18,12,30,.6);border:1px solid rgba(242,208,138,.5);' +
@@ -143,9 +151,31 @@
       mandos.hidden = !hablado[p];
       b.appendChild(mandos);
       P.montaFirma(p, UI, mandos, el);
+      /* EL JUEZ, AL LADO DE LA FIRMA (2026-09-23): dos capas --reglas en el
+         aparato y modelo juez en el rack-- contra el objetivo del piso. Nace
+         escondido con la firma: juzgar sin respuesta no juzga nada. */
+      if (window.Veredicto) {
+        window.Veredicto.monta(mandos, {
+          pregunta: function () { return ultimo().q; },
+          respuesta: function () { return ultimo().r; },
+          papel: function () { return P.papelDelPiso ? P.papelDelPiso(p, UI) : ''; },
+          objetivo: function () { return window.Veredicto.texto('camino_' + p + '_aprender'); }
+        });
+      }
     }
   }
   var hablado = {};
+  // La ultima pregunta de la persona y lo que contesto el modelo, del dialogo.
+  function ultimo() {
+    var ps = document.querySelectorAll('#dialogo p');
+    for (var i = ps.length - 1; i >= 0; i--) {
+      if (ps[i].classList.contains('tu')) {
+        var r = ps[i + 1] ? ps[i + 1].textContent : '';
+        return { q: ps[i].textContent, r: r };
+      }
+    }
+    return { q: '', r: '' };
+  }
   document.addEventListener('preceptor:turno', function () {
     if (!actual) return;
     hablado[actual] = true;

@@ -194,5 +194,9 @@
   "descarga_mb": 984,
   "vram_mb": 2037,
   "medido": "2026-09-22"
+ },
+ "juez": {
+  "nota": "El modelo que juzga en la capa 2 de TODOS los pisos y del LoRAtelier. De otra familia que los que contestan (Qwen frente a Mistral y Llama): un juez de la misma casa tiende a darse la razon. Se pide con un boton, nunca solo: cada veredicto desaloja al modelo que contesta (MAX_LOADED_MODELS=1).",
+  "modelo": "qwen2.5:7b"
  }
 }

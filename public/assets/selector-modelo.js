@@ -68,6 +68,12 @@
         window.CerebroPuesto() || modelo, prompt, alTrozo, sistema);
     };
     window.Rack.__envuelto = true;
+    /* LA LLAMADA SIN SUSTITUIR (2026-09-23). El envoltorio cambia el modelo de
+       CUALQUIER llamada por el del piso, y eso es justo lo que no puede pasarle
+       a un juez: `juez.js` pedia su modelo declarado y le contestaba el Mini,
+       o sea que el que contestaba se juzgaba a si mismo. Quien necesite un
+       modelo concreto --los jueces-- llama a esta. */
+    window.Rack.streamExacto = original;
   }
 
   /* SIN TARJETAS (2026-09-22). Aqui se pintaba el banco «Elige cerebro»: dos

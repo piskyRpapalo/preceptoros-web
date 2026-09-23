@@ -199,10 +199,12 @@
          --- el aviso llega cuando pinte ---, solo estar escuchando antes. */
       /* `torre-visuales.js` (2026-09-22) viste los pisos con su escena, y
          `piso-chat.js` cierra la cola: hace que el piso abierto gobierne el
-         chat, y necesita a los dos de antes --el papel y las escenas--. */
+         chat, y necesita a los de antes --el papel, las escenas y el juez de
+         dos capas (`veredicto.js`)--. */
       ['/assets/identidad-o-salida.js', '/assets/camino-papel.js',
        '/assets/camino.js', '/assets/camino-killswitch.js',
-       '/assets/torre-visuales.js', '/assets/piso-chat.js'].forEach(function (src) {
+       '/assets/torre-visuales.js', '/assets/veredicto.js',
+       '/assets/piso-chat.js'].forEach(function (src) {
         var s = document.createElement('script');
         s.src = src;
         s.async = false;

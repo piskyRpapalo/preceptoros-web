@@ -5173,7 +5173,10 @@ CLAVES_MOTOR = set(CLAVES_MOTOR_LISTA)   # una sola lista: ver FUERA_DEL_BLOQUE
 CLAVES_OBJETIVOS = ({f"camino_{n}_aprender" for n in (
     "despertar", "primeros_pasos", "exposicion", "silencio", "contribuir",
     "puertos", "whoami", "killswitch")}
-    | {"torre_et_aprender", "torre_et_papel", "torre_et_corpus"})
+    | {"torre_et_aprender", "torre_et_papel", "torre_et_corpus"}
+    # El juez de dos capas (2026-09-23): rotulos, las cinco reglas de la capa
+    # determinista y el papel del modelo juez. Los pinta `veredicto.js`.
+    | {'juez_titulo', 'juez_pedir', 'juez_capa1', 'juez_capa2', 'juez_ok', 'juez_ko', 'juez_degenera', 'juez_recita', 'juez_producto', 'juez_cifras', 'juez_contesta', 'juez_sin_turno', 'juez_papel'})
 
 FAMILIAS = {"caminos": CLAVES_CAMINOS, "objetivos": CLAVES_OBJETIVOS,
             "duelos": CLAVES_DUELOS,
