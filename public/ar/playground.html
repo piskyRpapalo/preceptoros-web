@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="ar" dir="rtl" data-tema="oscuro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ساحة تجربة الخصوصية · PreceptorOS</title>
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<meta property="og:title" content="ساحة تجربة الخصوصية · PreceptorOS">
+<meta property="og:description" content="الصق سياقك وانظر ما يخرج قبل أن تسلّمه لذكاء اصطناعي سحابي. في متصفحك، بلا تثبيت، والفجوات مُعلَنة.">
+<meta property="og:image" content="https://preceptoros.org/assets/preceptor-og.png">
+<meta property="og:url" content="https://preceptoros.org/ar/playground.html">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="description" content="الصق سياقك الخاص وانظر ما يخرج قبل تسليمه لذكاء اصطناعي سحابي. كل شيء يحدث في متصفحك.">
+<link rel="alternate" hreflang="ar" href="/ar/playground.html">
+<link rel="alternate" hreflang="de" href="/de/playground.html">
+<link rel="alternate" hreflang="el" href="/el/playground.html">
+<link rel="alternate" hreflang="en" href="/en/playground.html">
+<link rel="alternate" hreflang="es" href="/es/playground.html">
+<link rel="alternate" hreflang="fr" href="/fr/playground.html">
+<link rel="alternate" hreflang="it" href="/it/playground.html">
+<link rel="alternate" hreflang="pt" href="/pt/playground.html">
+<link rel="alternate" hreflang="ru" href="/ru/playground.html">
+<link rel="stylesheet" href="/assets/base.css">
+<link rel="stylesheet" href="/assets/movil.css">
+<link rel="stylesheet" href="/assets/canon.css">
+<link rel="stylesheet" href="/assets/sistema.css">
+<link rel="stylesheet" href="/assets/agora.css">
+<link rel="stylesheet" href="/assets/cara.css">
+<link rel="stylesheet" href="/assets/widget.css">
+<link rel="stylesheet" href="/assets/puertas.css">
+<link rel="stylesheet" href="/assets/cabezal.css">
+<link rel="stylesheet" href="/assets/esquina.css">
+<link rel="stylesheet" href="/assets/esquina-cuenta.css">
+<link rel="stylesheet" href="/assets/esquina-par.css">
+<link rel="stylesheet" href="/assets/mandos.css">
+<link rel="stylesheet" href="/assets/panel.css">
+<link rel="stylesheet" href="/assets/tema.css">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#17131F">
+<link rel="stylesheet" href="/assets/rtl.css">
+</head>
+<body>
+<canvas id="ambient" aria-hidden="true"></canvas>
+<main>
+
+<header id="cabezal" data-cabezal="playground">
+  <div class="marca"><h1>الخصوصية<b> · ساحة التجربة</b></h1></div>
+</header>
+
+<p class="guia">حين تطلب مساعدة من ذكاء اصطناعي سحابي عليك أن تسلّمه سياقك، ومن هناك تتسرّب المسارات وعناوين IP والمفاتيح. الصق هنا ما كنت ستلصقه هناك، وانظر ما يخرج. في متصفحك، دون تثبيت أي شيء.</p>
+
+<div class="panel">
+  <div class="dos">
+    <div>
+      <label class="cuenta" for="sucio">سياقك، كما هو</label>
+      <textarea id="sucio" rows="12" spellcheck="false"></textarea>
+    </div>
+    <div>
+      <label class="cuenta" for="limpio">ما يمكنك لصقه في الخارج</label>
+      <textarea id="limpio" rows="12" readonly spellcheck="false"></textarea>
+    </div>
+  </div>
+  <div class="fila"><button id="sanear" type="button">نقِّ</button></div>
+  <div id="auditoria"></div>
+</div>
+
+<footer class="honest-footer">
+  <details class="pliego"><summary>كيف يعمل، وما لا يَعِد به</summary>
+  <ul>
+    <li><strong>القواعد قواعد المنتج.</strong> هذا المرشّح مُولَّد من مرشّح PreceptorOS، لا منسوخ باليد. تُحقِّق منه بتمرير حالات المدوّنة الـ 36 عبر التنفيذين: الحكم نفسه في الـ 36 كلها، ولا جزء ناجٍ.</li>
+    <li><strong>لا يغادر متصفحك.</strong> يُرشَّح النص هنا بالذات. ليس في هذه الصفحة أي اتصال بالشبكة يمكن أن يحمله بعيدًا، ويمكنك التحقق من ذلك في أدوات متصفحك.</li>
+    <li><strong>ليس معصومًا، ولذلك يقول أين يتوقف.</strong> حتمي وقابل للتدقيق، وفجواته مُعلَنة: عناوين البريد، ومسارات Windows وmacOS، وروابط URL تحمل اعتمادًا في المسار، و«token» يسبقها اسم. راجع دائمًا قبل اللصق.</li>
+  </ul>
+</details>
+  <p><a href="/ar/community.html">المجتمع</a> ·
+     <a href="/hitos.html">المحطات</a></p>
+</footer>
+
+<script type="application/json" id="i18n">{
+ "pgQuitado": "أُزيل:",
+ "pgNada": "عمل المرشّح ولم يجد شيئًا لإزالته.",
+ "pgHuecos": "انتبه: هذا لا ينظر في كل شيء. لا يكتشف عناوين البريد، ولا مسارات Windows أو macOS، ولا روابط URL تحمل اعتمادًا في المسار، ولا «token» يسبقها اسم. راجع قبل لصقه في الخارج.",
+ "pgSinFiltro": "NO_DATA — تعذّر تحميل المرشّح.",
+ "pgEjemplo": "السكربت موجود في ~/project/water.py\nOPENAI_API_KEY=Xk29Lm44Qw81Zr03Tb77Nc55Vd\nssh -i ~/.ssh/id_rsa operador@",
+ "idPerfil": "ملفي",
+ "idEntrar": "أنشئ هوية",
+ "idHola": "مرحبًا،",
+ "idClave": "اعرض بصمتي",
+ "idPublica": "المفتاح العام:",
+ "idFallo": "NO_DATA — تعذّر إنشاء الهوية:",
+ "idAviso": "يُولَّد مفتاح في متصفحك. لا يمكن تصديره ولا نسخه: إن مسحت بيانات الموقع ضاعت هذه الهوية.",
+ "pgEjemploCola": "\nأخبر marta.lopez@example.com إن فشل"
+}</script>
+<script src="/assets/ambient.js"></script>
+<script src="/assets/sanitize.js"></script>
+<script src="/assets/playground.js"></script>
+<script src="/assets/cabezal.js"></script>
+<script src="/assets/cabezal-rotulos.js"></script>
+<script src="/assets/auth.js"></script>
+
+<script src="/assets/pwa.js"></script>
+</body>
+</html>

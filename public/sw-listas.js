@@ -24,7 +24,7 @@
  * worker, asi que `sw.js` ve estas listas sin exportar nada.
  */
 
-const IDIOMAS = ['es', 'en', 'fr', 'pt', 'it', 'de', 'ru', 'el'];
+const IDIOMAS = ['es', 'en', 'fr', 'pt', 'it', 'de', 'ru', 'el', 'ar'];
 const PAGINAS = ['', 'instalar.html', 'community.html', 'benchmark.html',
                  'playground.html', 'onboarding.html', 'profile.html'];
 
@@ -70,21 +70,21 @@ const PAGINAS = ['', 'instalar.html', 'community.html', 'benchmark.html',
    solo la del visitante porque el shell es uno para todo el sitio y la rueda
    deja cambiar de idioma sin conexion. Cuestan 12,7 KB entre todos: menos que
    una de las dos laminas de marmol que ya estan aqui arriba. */
-const AGENTES = ['de', 'el', 'en', 'es', 'fr', 'it', 'pt', 'ru']
+const AGENTES = ['ar', 'de', 'el', 'en', 'es', 'fr', 'it', 'pt', 'ru']
   .map(function (l) { return '/agentes-' + l + '.json'; });
 /* `duelos-<lang>.json` entra por el mismo criterio que los caminos: son
    ROTULOS, no medidas. Son diminutos --- entre 722 y 1.187 B --- y sin ellos
    el duelo se queda sin cabeceras de columna justo en el caso en que mas falta
    hacen: una PWA instalada y sin red, donde no se puede pedir el turno y lo
    unico que queda es leer que iba a compararse. */
-const DUELOS = ['de', 'el', 'en', 'es', 'fr', 'it', 'pt', 'ru']
+const DUELOS = ['ar', 'de', 'el', 'en', 'es', 'fr', 'it', 'pt', 'ru']
   .map(function (l) { return '/duelos-' + l + '.json'; });
 
 /* `herramientas-<lang>.json`, por el mismo criterio: rotulos, no medidas, y
    diminutos. El indice de lo que te puedes llevar tiene que leerse sin red ---
    es justo la pagina que abre quien acaba de instalar la web y todavia no
    tiene nada mas. */
-const HERRAMIENTAS = ['de', 'el', 'en', 'es', 'fr', 'it', 'pt', 'ru']
+const HERRAMIENTAS = ['ar', 'de', 'el', 'en', 'es', 'fr', 'it', 'pt', 'ru']
   .map(function (l) { return '/herramientas-' + l + '.json'; });
 
 const HUB = [...AGENTES, ...DUELOS, ...HERRAMIENTAS, '/hub.json', '/hub-textos.json',
@@ -138,7 +138,7 @@ const HUB = [...AGENTES, ...DUELOS, ...HERRAMIENTAS, '/hub.json', '/hub-textos.j
    ROTULOS, no medidas. Una copia vieja no contradice a nadie y a cambio la
    Torre se lee sin red, que es el caso de la PWA instalada. Entro el
    2026-09-20, cuando `camino.js` empezo a pintarla. */
-const CAMINOS = ['de', 'el', 'en', 'es', 'fr', 'it', 'pt', 'ru']
+const CAMINOS = ['ar', 'de', 'el', 'en', 'es', 'fr', 'it', 'pt', 'ru']
   .map(function (l) { return '/caminos-' + l + '.json'; });
 
 

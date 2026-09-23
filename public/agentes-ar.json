@@ -1,0 +1,40 @@
+{
+ "esquema": 1,
+ "estado": "OFICIAL",
+ "nota": "Los nombres y la funcion de los companeros en esta lengua. Vivian dentro del bloque i18n de la portada; salieron el 2026-09-08 porque el/index.html se habia quedado en 279 B libres del tope de 16 KB y este era el asunto mas pesado que tenia dentro (1416 B en castellano, casi un quinto de todo el bloque). El catalogo --que companeros hay y que id tiene cada uno-- sigue en hub.json: esto es solo como se llaman aqui.",
+ "lengua": "ar",
+ "agentes": {
+  "instalador": {
+   "name": "المُثبِّت",
+   "function": "يثبّت المنتج ويعرّفك على البقية."
+  },
+  "privacidad": {
+   "name": "موظّف الجمارك",
+   "function": "يشطب ما هو خاص قبل أن يغادر جهازك."
+  },
+  "escritor": {
+   "name": "الكاتب",
+   "function": "يكتب معك: سكربتات، وملاحظات، ونصوص طويلة."
+  },
+  "traductor": {
+   "name": "المترجم",
+   "function": "يترجم محليًا، دون إرسال النص إلى أي سحابة."
+  },
+  "coder": {
+   "name": "الحِرفي",
+   "function": "يقرأ شيفرتك، ويقترح الإصلاح، ويكتب الاختبار."
+  },
+  "analista": {
+   "name": "المحلّل",
+   "function": "ينظر في الأرقام والآثار ويقول لك ما الذي تغيّر."
+  },
+  "aprendiz": {
+   "name": "المتدرّب",
+   "function": "يحوّل ما تفعله إلى ذاكرة يمكنك قراءتها لاحقًا."
+  },
+  "bibliotecario": {
+   "name": "أمين المكتبة",
+   "function": "يرتّب ذاكرتك: يبحث، ويربط، ويحذف المكرّر."
+  }
+ }
+}

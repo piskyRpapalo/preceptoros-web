@@ -30,7 +30,7 @@
  * tambien puede faltar del cache justo el dia que hace falta.
  */
 /* Subir VERSION o el cambio NO llega: ver `config/sw-huella.txt`. */
-const VERSION = 'preceptoros-2026-17-aazs';
+const VERSION = 'preceptoros-2026-17-aazu';
 const SHELL = 'shell-' + VERSION;
 const OBRA = 'obra-' + VERSION;
 
@@ -126,7 +126,10 @@ const SIN_RED = {
        + 'Réessayez quand vous aurez du réseau.', 'Réessayer'],
   pt: ['Sem ligação', 'Esta página ainda não está na tua cache.',
        'O PreceptorOS corre na tua máquina; este site é só a porta. '
-       + 'Tenta outra vez quando tiveres rede.', 'Tentar de novo']
+       + 'Tenta outra vez quando tiveres rede.', 'Tentar de novo'],
+  ar: ['بلا اتصال', 'هذه الصفحة ليست في ذاكرتك المؤقتة بعد.',
+       'يعمل PreceptorOS على جهازك؛ هذا الموقع مجرّد الباب. '
+       + 'حاول مجددًا حين تتوفّر الشبكة.', 'أعد المحاولة']
 };
 
 function idiomaDe(url) {
@@ -140,7 +143,7 @@ function idiomaDe(url) {
 function paginaSinRed(url) {
   const l = idiomaDe(url), t = SIN_RED[l];
   return new Response(
-    '<!doctype html><html lang="' + l + '"><meta charset="utf-8">'
+    '<!doctype html><html lang="' + l + (l === 'ar' ? '" dir="rtl' : '') + '"><meta charset="utf-8">'
     + '<meta name="viewport" content="width=device-width,initial-scale=1">'
     + '<title>' + t[0] + ' · PreceptorOS</title><style>'
     + ':root{--marmol:#E4E8EC;--panel-bg:#F2F5F7;--panel-fg:#1E1826;'

@@ -1,148 +1,163 @@
 {
- "esquema": 1,
- "estado": "OFICIAL",
- "nota": "Los anuncios del Soberano. Son REALES, y por eso llevan su medida dentro. Cada anuncio dice tambien lo que HOY no funciona: un anuncio que promete un canal que no responde es publicidad, no un anuncio. ACTUALIZADO 2026-09-14: este fichero se definia por contraste con `threads.json`, los hilos de EJEMPLO del tablon. Ese fichero YA NO EXISTE --el Soberano cerro el foro y retiro los ejemplos: fingir actividad en un foro vacio es la mentira mas vieja de internet, y retirarla a medias sigue siendo retirarla a medias--. La distincion que justificaba el contraste sigue viva y ahora es mas simple: aqui SOLO hay cosas reales. Del 2026-09-08, y sigue en pie: la lectura del Agora responde 200 y la ESCRITURA da 405, asi que el aviso del anuncio de feedback se corrige en vez de borrarse. El de entrenar no se toca: cinco rutas de subida, cinco 404.",
- "medido": "2026-09-08",
- "anuncios": [
-  {
-   "id": "feedback",
-   "tipo": "TASK",
-   "autor": "soberano",
-   "cuando": "2026-09-02T00:00:00Z",
-   "textos": {
-    "es": {
-     "titulo": "Dame tu feedback",
-     "cuerpo": "Qué se rompió, qué no entendiste, qué esperabas encontrar y no estaba. Sirve más una frase concreta que un elogio.",
-     "publico": "Público: firma un hilo aquí abajo. Se firma con tu clave, en tu aparato.",
-     "privado": "Privado: abre un issue en el repositorio público. Es el único canal que hoy llega de verdad.",
-     "pero": "NO_DATA — el Ágora ya contesta, pero todavía no acepta escritura: POST /api/v1/threads responde 405, y el servidor lo dice con sus palabras: «escritura cerrada: el Ágora todavía no modera» (medido el 2026-09-08). Se firma y se queda en tu aparato hasta que abra.",
-     "enlaceTexto": "Abrir un issue"
-    },
-    "en": {
-     "titulo": "Give me your feedback",
-     "cuerpo": "What broke, what you did not understand, what you expected to find and was not there. One concrete sentence beats any praise.",
-     "publico": "Public: sign a thread below. It is signed with your key, on your device.",
-     "privado": "Private: open an issue on the public repository. It is the only channel that actually arrives today.",
-     "pero": "NO_DATA — the Agora answers now, but it does not accept writing yet: POST /api/v1/threads returns 405, and the server says so in its own words: «writing closed: the Agora does not moderate yet» (measured 2026-09-08). It is signed and stays on your device until it opens.",
-     "enlaceTexto": "Open an issue"
-    },
-    "fr": {
-     "titulo": "Donne-moi ton retour",
-     "cuerpo": "Ce qui a cassé, ce que tu n'as pas compris, ce que tu t'attendais à trouver et qui n'y était pas. Une phrase concrète vaut mieux qu'un compliment.",
-     "publico": "Public : signe un fil ci-dessous. Il est signé avec ta clé, sur ton appareil.",
-     "privado": "Privé : ouvre une issue sur le dépôt public. C'est le seul canal qui arrive vraiment aujourd'hui.",
-     "pero": "NO_DATA — l'Agora répond désormais, mais elle n'accepte pas encore l'écriture : POST /api/v1/threads renvoie 405, et le serveur le dit lui-même : « écriture fermée : l'Agora ne modère pas encore » (mesuré le 2026-09-08). Il est signé et reste sur ton appareil jusqu'à l'ouverture.",
-     "enlaceTexto": "Ouvrir une issue"
-    },
-    "pt": {
-     "titulo": "Dá-me o teu feedback",
-     "cuerpo": "O que se partiu, o que não percebeste, o que esperavas encontrar e não estava. Serve mais uma frase concreta do que um elogio.",
-     "publico": "Público: assina um tópico aqui em baixo. Assina-se com a tua chave, no teu aparelho.",
-     "privado": "Privado: abre um issue no repositório público. É o único canal que hoje chega a sério.",
-     "pero": "NO_DATA — a Ágora já responde, mas ainda não aceita escrita: POST /api/v1/threads devolve 405, e o próprio servidor di-lo: «escrita fechada: a Ágora ainda não modera» (medido a 2026-09-08). Assina-se e fica no teu aparelho até que abra.",
-     "enlaceTexto": "Abrir um issue"
-    },
-    "it": {
-     "titulo": "Dammi il tuo riscontro",
-     "cuerpo": "Cosa si è rotto, cosa non hai capito, cosa ti aspettavi di trovare e non c'era. Serve più una frase concreta di un elogio.",
-     "publico": "Pubblico: firma una discussione qui sotto. Si firma con la tua chiave, sul tuo apparecchio.",
-     "privado": "Privato: apri un issue nel repository pubblico. È l'unico canale che oggi arriva davvero.",
-     "pero": "NO_DATA — l'Agorà ora risponde, ma non accetta ancora la scrittura: POST /api/v1/threads restituisce 405, e il server lo dice da sé: «scrittura chiusa: l'Agorà non modera ancora» (misurato il 2026-09-08). Si firma e resta sul tuo apparecchio finché non apre.",
-     "enlaceTexto": "Apri un issue"
-    },
-    "de": {
-     "titulo": "Gib mir deine Rückmeldung",
-     "cuerpo": "Was kaputtging, was du nicht verstanden hast, was du erwartet hast und nicht da war. Ein konkreter Satz nützt mehr als ein Lob.",
-     "publico": "Öffentlich: signiere hier unten einen Beitrag. Signiert wird mit deinem Schlüssel, auf deinem Gerät.",
-     "privado": "Privat: öffne ein Issue im öffentlichen Repository. Das ist heute der einzige Kanal, der wirklich ankommt.",
-     "pero": "NO_DATA — die Agora antwortet inzwischen, akzeptiert aber noch keine Schreibzugriffe: POST /api/v1/threads liefert 405, und der Server sagt es selbst: «Schreiben geschlossen: die Agora moderiert noch nicht» (gemessen am 2026-09-08). Er wird signiert und bleibt auf deinem Gerät, bis sie öffnet.",
-     "enlaceTexto": "Ein Issue öffnen"
-    },
-    "ru": {
-     "titulo": "Дай мне обратную связь",
-     "cuerpo": "Что сломалось, что ты не понял, что рассчитывал найти и не нашёл. Одна конкретная фраза полезнее похвалы.",
-     "publico": "Публично: подпиши ветку здесь ниже. Подписывается твоим ключом, на твоём устройстве.",
-     "privado": "Приватно: открой issue в публичном репозитории. Сегодня это единственный канал, который действительно доходит.",
-     "pero": "NO_DATA — Агора уже отвечает, но пока не принимает запись: POST /api/v1/threads возвращает 405, и сервер говорит это сам: «запись закрыта: Агора ещё не модерирует» (измерено 2026-09-08). Она подписывается и остаётся на твоём устройстве, пока не откроется.",
-     "enlaceTexto": "Открыть issue"
-    },
-    "el": {
-     "titulo": "Δώσε μου την ανατροφοδότησή σου",
-     "cuerpo": "Τι χάλασε, τι δεν κατάλαβες, τι περίμενες να βρεις και δεν ήταν εκεί. Μια συγκεκριμένη φράση αξίζει περισσότερο από έναν έπαινο.",
-     "publico": "Δημόσια: υπόγραψε ένα νήμα εδώ κάτω. Υπογράφεται με το κλειδί σου, στη συσκευή σου.",
-     "privado": "Ιδιωτικά: άνοιξε ένα issue στο δημόσιο αποθετήριο. Είναι το μόνο κανάλι που σήμερα φτάνει πραγματικά.",
-     "pero": "NO_DATA — η Αγορά απαντά πλέον, αλλά δεν δέχεται ακόμη εγγραφή: το POST /api/v1/threads επιστρέφει 405, και ο ίδιος ο διακομιστής το λέει: «η εγγραφή είναι κλειστή: η Αγορά δεν συντονίζει ακόμη» (μετρήθηκε 2026-09-08). Υπογράφεται και παραμένει στη συσκευή σου μέχρι να ανοίξει.",
-     "enlaceTexto": "Άνοιξε ένα issue"
-    }
-   },
-   "enlace": "https://github.com/piskyRpapalo/PreceptorOS/issues",
-   "estado": "ABIERTO"
-  },
-  {
-   "id": "entrenar",
-   "tipo": "COMPUTE",
-   "autor": "soberano",
-   "cuando": "2026-09-02T00:00:00Z",
-   "textos": {
-    "es": {
-     "titulo": "Entrena un modelo",
-     "cuerpo": "Trae un conjunto de ejemplos tuyo y sale un adaptador LoRA entrenado en el rack. No hace falta GPU: se hace en CPU pura y está medido.",
-     "publico": "Medido el 2026-08-29: rank 16, alpha 32, 2 épocas, 93 ejemplos de tren y 16 de validación. 553 s una línea y 445 s la otra. Bajo diez minutos, no una noche.",
-     "privado": "El conjunto de ejemplos es tuyo y se queda tuyo. Lo que se comparte, si quieres, es el adaptador que sale.",
-     "pero": "NO_DATA — todavía no hay forma de mandarlo por la web: no hay endpoint de subida. Hoy se acuerda por el hilo y se pasa el fichero a mano."
-    },
-    "en": {
-     "titulo": "Train a model",
-     "cuerpo": "Bring your own set of examples and a LoRA adapter comes out, trained on the rack. No GPU needed: it runs on plain CPU and it is measured.",
-     "publico": "Measured 2026-08-29: rank 16, alpha 32, 2 epochs, 93 training and 16 validation examples. 553 s one line, 445 s the other. Under ten minutes, not overnight.",
-     "privado": "The set of examples is yours and stays yours. What gets shared, if you want to, is the adapter that comes out.",
-     "pero": "NO_DATA — there is still no way to send it through the web: no upload endpoint. Today it is arranged in the thread and the file is passed by hand."
-    },
-    "fr": {
-     "titulo": "Entraine un modele",
-     "cuerpo": "Apporte ton propre jeu d'exemples et il en sort un adaptateur LoRA entraîné sur le rack. Pas besoin de GPU : ça tourne sur CPU pur et c'est mesuré.",
-     "publico": "Mesuré le 2026-08-29 : rank 16, alpha 32, 2 époques, 93 exemples d'entraînement et 16 de validation. 553 s une ligne, 445 s l'autre. Moins de dix minutes, pas une nuit.",
-     "privado": "Le jeu d'exemples est à toi et le reste. Ce qui se partage, si tu veux, c'est l'adaptateur qui en sort.",
-     "pero": "NO_DATA — il n'y a toujours aucun moyen de l'envoyer par le web : pas d'endpoint d'upload. Aujourd'hui ça se convient dans le fil et le fichier se passe à la main."
-    },
-    "pt": {
-     "titulo": "Treina um modelo",
-     "cuerpo": "Traz um conjunto de exemplos teu e sai um adaptador LoRA treinado no rack. Não é preciso GPU: faz-se em CPU pura e está medido.",
-     "publico": "Medido a 2026-08-29: rank 16, alpha 32, 2 épocas, 93 exemplos de treino e 16 de validação. 553 s uma linha e 445 s a outra. Abaixo de dez minutos, não uma noite.",
-     "privado": "O conjunto de exemplos é teu e fica teu. O que se partilha, se quiseres, é o adaptador que sai.",
-     "pero": "NO_DATA — ainda não há forma de o mandar pela web: não há endpoint de envio. Hoje acorda-se pelo tópico e passa-se o ficheiro à mão."
-    },
-    "it": {
-     "titulo": "Allena un modello",
-     "cuerpo": "Porta un tuo insieme di esempi ed esce un adattatore LoRA allenato sul rack. Non serve una GPU: si fa in CPU pura ed è misurato.",
-     "publico": "Misurato il 2026-08-29: rank 16, alpha 32, 2 epoche, 93 esempi di addestramento e 16 di validazione. 553 s una riga e 445 s l'altra. Sotto i dieci minuti, non una notte.",
-     "privado": "L'insieme di esempi è tuo e resta tuo. Quello che si condivide, se vuoi, è l'adattatore che ne esce.",
-     "pero": "NO_DATA — non c'è ancora modo di mandarlo dal sito: non esiste un endpoint di caricamento. Oggi ci si accorda nella discussione e il file si passa a mano."
-    },
-    "de": {
-     "titulo": "Trainiere ein Modell",
-     "cuerpo": "Bring eine eigene Menge von Beispielen mit, und heraus kommt ein auf dem Rack trainierter LoRA-Adapter. Eine GPU ist nicht nötig: es läuft auf reiner CPU und ist gemessen.",
-     "publico": "Gemessen am 2026-08-29: rank 16, alpha 32, 2 Epochen, 93 Trainings- und 16 Validierungsbeispiele. 553 s die eine Zeile und 445 s die andere. Unter zehn Minuten, keine ganze Nacht.",
-     "privado": "Die Menge der Beispiele gehört dir und bleibt dein. Geteilt wird, wenn du willst, der Adapter, der herauskommt.",
-     "pero": "NO_DATA — es gibt noch keinen Weg, sie über die Seite zu schicken: es fehlt ein Endpunkt zum Hochladen. Heute einigt man sich im Beitrag und reicht die Datei von Hand weiter."
-    },
-    "ru": {
-     "titulo": "Обучи модель",
-     "cuerpo": "Принеси свой набор примеров, и на выходе будет адаптер LoRA, обученный на стойке. GPU не нужна: делается на чистом CPU и это измерено.",
-     "publico": "Измерено 2026-08-29: rank 16, alpha 32, 2 эпохи, 93 обучающих примера и 16 проверочных. 553 с одна строка и 445 с другая. Меньше десяти минут, а не целая ночь.",
-     "privado": "Набор примеров твой и остаётся твоим. Делится, если захочешь, тот адаптер, который получился.",
-     "pero": "NO_DATA — отправить его через сайт пока нельзя: нет точки для загрузки. Сегодня договариваются в ветке и передают файл вручную."
-    },
-    "el": {
-     "titulo": "Εκπαίδευσε ένα μοντέλο",
-     "cuerpo": "Φέρε ένα δικό σου σύνολο παραδειγμάτων και βγαίνει ένας προσαρμογέας LoRA εκπαιδευμένος στο rack. Δεν χρειάζεται GPU: γίνεται σε καθαρή CPU και είναι μετρημένο.",
-     "publico": "Μετρήθηκε στις 2026-08-29: rank 16, alpha 32, 2 εποχές, 93 παραδείγματα εκπαίδευσης και 16 επικύρωσης. 553 δευτ. η μία γραμμή και 445 δευτ. η άλλη. Κάτω από δέκα λεπτά, όχι μια ολόκληρη νύχτα.",
-     "privado": "Το σύνολο των παραδειγμάτων είναι δικό σου και μένει δικό σου. Αυτό που μοιράζεται, αν θέλεις, είναι ο προσαρμογέας που βγαίνει.",
-     "pero": "NO_DATA — δεν υπάρχει ακόμη τρόπος να το στείλεις από τον ιστότοπο: λείπει σημείο ανεβάσματος. Σήμερα συμφωνείται στο νήμα και το αρχείο περνιέται στο χέρι."
-    }
-   },
-   "estado": "ABIERTO"
-  }
- ],
- "contrato_estado": "`estado` es ABIERTO o CERRADO. Los ABIERTOS se pintan delante; los CERRADOS quedan plegados, visibles para quien los busque. Sin `estado`, se trata como ABIERTO: un anuncio sin declarar no se esconde."
+"esquema": 1,
+"estado": "OFICIAL",
+"nota": "Los anuncios del Soberano. Son REALES, y por eso llevan su medida dentro. Cada anuncio dice tambien lo que HOY no funciona: un anuncio que promete un canal que no responde es publicidad, no un anuncio. ACTUALIZADO 2026-09-14: este fichero se definia por contraste con `threads.json`, los hilos de EJEMPLO del tablon. Ese fichero YA NO EXISTE --el Soberano cerro el foro y retiro los ejemplos: fingir actividad en un foro vacio es la mentira mas vieja de internet, y retirarla a medias sigue siendo retirarla a medias--. La distincion que justificaba el contraste sigue viva y ahora es mas simple: aqui SOLO hay cosas reales. Del 2026-09-08, y sigue en pie: la lectura del Agora responde 200 y la ESCRITURA da 405, asi que el aviso del anuncio de feedback se corrige en vez de borrarse. El de entrenar no se toca: cinco rutas de subida, cinco 404.",
+"medido": "2026-09-08",
+"anuncios": [
+{
+"id": "feedback",
+"tipo": "TASK",
+"autor": "soberano",
+"cuando": "2026-09-02T00:00:00Z",
+"textos": {
+"es": {
+"titulo": "Dame tu feedback",
+"cuerpo": "Qué se rompió, qué no entendiste, qué esperabas encontrar y no estaba. Sirve más una frase concreta que un elogio.",
+"publico": "Público: firma un hilo aquí abajo. Se firma con tu clave, en tu aparato.",
+"privado": "Privado: abre un issue en el repositorio público. Es el único canal que hoy llega de verdad.",
+"pero": "NO_DATA — el Ágora ya contesta, pero todavía no acepta escritura: POST /api/v1/threads responde 405, y el servidor lo dice con sus palabras: «escritura cerrada: el Ágora todavía no modera» (medido el 2026-09-08). Se firma y se queda en tu aparato hasta que abra.",
+"enlaceTexto": "Abrir un issue"
+},
+"en": {
+"titulo": "Give me your feedback",
+"cuerpo": "What broke, what you did not understand, what you expected to find and was not there. One concrete sentence beats any praise.",
+"publico": "Public: sign a thread below. It is signed with your key, on your device.",
+"privado": "Private: open an issue on the public repository. It is the only channel that actually arrives today.",
+"pero": "NO_DATA — the Agora answers now, but it does not accept writing yet: POST /api/v1/threads returns 405, and the server says so in its own words: «writing closed: the Agora does not moderate yet» (measured 2026-09-08). It is signed and stays on your device until it opens.",
+"enlaceTexto": "Open an issue"
+},
+"fr": {
+"titulo": "Donne-moi ton retour",
+"cuerpo": "Ce qui a cassé, ce que tu n'as pas compris, ce que tu t'attendais à trouver et qui n'y était pas. Une phrase concrète vaut mieux qu'un compliment.",
+"publico": "Public : signe un fil ci-dessous. Il est signé avec ta clé, sur ton appareil.",
+"privado": "Privé : ouvre une issue sur le dépôt public. C'est le seul canal qui arrive vraiment aujourd'hui.",
+"pero": "NO_DATA — l'Agora répond désormais, mais elle n'accepte pas encore l'écriture : POST /api/v1/threads renvoie 405, et le serveur le dit lui-même : « écriture fermée : l'Agora ne modère pas encore » (mesuré le 2026-09-08). Il est signé et reste sur ton appareil jusqu'à l'ouverture.",
+"enlaceTexto": "Ouvrir une issue"
+},
+"pt": {
+"titulo": "Dá-me o teu feedback",
+"cuerpo": "O que se partiu, o que não percebeste, o que esperavas encontrar e não estava. Serve mais uma frase concreta do que um elogio.",
+"publico": "Público: assina um tópico aqui em baixo. Assina-se com a tua chave, no teu aparelho.",
+"privado": "Privado: abre um issue no repositório público. É o único canal que hoje chega a sério.",
+"pero": "NO_DATA — a Ágora já responde, mas ainda não aceita escrita: POST /api/v1/threads devolve 405, e o próprio servidor di-lo: «escrita fechada: a Ágora ainda não modera» (medido a 2026-09-08). Assina-se e fica no teu aparelho até que abra.",
+"enlaceTexto": "Abrir um issue"
+},
+"it": {
+"titulo": "Dammi il tuo riscontro",
+"cuerpo": "Cosa si è rotto, cosa non hai capito, cosa ti aspettavi di trovare e non c'era. Serve più una frase concreta di un elogio.",
+"publico": "Pubblico: firma una discussione qui sotto. Si firma con la tua chiave, sul tuo apparecchio.",
+"privado": "Privato: apri un issue nel repository pubblico. È l'unico canale che oggi arriva davvero.",
+"pero": "NO_DATA — l'Agorà ora risponde, ma non accetta ancora la scrittura: POST /api/v1/threads restituisce 405, e il server lo dice da sé: «scrittura chiusa: l'Agorà non modera ancora» (misurato il 2026-09-08). Si firma e resta sul tuo apparecchio finché non apre.",
+"enlaceTexto": "Apri un issue"
+},
+"de": {
+"titulo": "Gib mir deine Rückmeldung",
+"cuerpo": "Was kaputtging, was du nicht verstanden hast, was du erwartet hast und nicht da war. Ein konkreter Satz nützt mehr als ein Lob.",
+"publico": "Öffentlich: signiere hier unten einen Beitrag. Signiert wird mit deinem Schlüssel, auf deinem Gerät.",
+"privado": "Privat: öffne ein Issue im öffentlichen Repository. Das ist heute der einzige Kanal, der wirklich ankommt.",
+"pero": "NO_DATA — die Agora antwortet inzwischen, akzeptiert aber noch keine Schreibzugriffe: POST /api/v1/threads liefert 405, und der Server sagt es selbst: «Schreiben geschlossen: die Agora moderiert noch nicht» (gemessen am 2026-09-08). Er wird signiert und bleibt auf deinem Gerät, bis sie öffnet.",
+"enlaceTexto": "Ein Issue öffnen"
+},
+"ru": {
+"titulo": "Дай мне обратную связь",
+"cuerpo": "Что сломалось, что ты не понял, что рассчитывал найти и не нашёл. Одна конкретная фраза полезнее похвалы.",
+"publico": "Публично: подпиши ветку здесь ниже. Подписывается твоим ключом, на твоём устройстве.",
+"privado": "Приватно: открой issue в публичном репозитории. Сегодня это единственный канал, который действительно доходит.",
+"pero": "NO_DATA — Агора уже отвечает, но пока не принимает запись: POST /api/v1/threads возвращает 405, и сервер говорит это сам: «запись закрыта: Агора ещё не модерирует» (измерено 2026-09-08). Она подписывается и остаётся на твоём устройстве, пока не откроется.",
+"enlaceTexto": "Открыть issue"
+},
+"el": {
+"titulo": "Δώσε μου την ανατροφοδότησή σου",
+"cuerpo": "Τι χάλασε, τι δεν κατάλαβες, τι περίμενες να βρεις και δεν ήταν εκεί. Μια συγκεκριμένη φράση αξίζει περισσότερο από έναν έπαινο.",
+"publico": "Δημόσια: υπόγραψε ένα νήμα εδώ κάτω. Υπογράφεται με το κλειδί σου, στη συσκευή σου.",
+"privado": "Ιδιωτικά: άνοιξε ένα issue στο δημόσιο αποθετήριο. Είναι το μόνο κανάλι που σήμερα φτάνει πραγματικά.",
+"pero": "NO_DATA — η Αγορά απαντά πλέον, αλλά δεν δέχεται ακόμη εγγραφή: το POST /api/v1/threads επιστρέφει 405, και ο ίδιος ο διακομιστής το λέει: «η εγγραφή είναι κλειστή: η Αγορά δεν συντονίζει ακόμη» (μετρήθηκε 2026-09-08). Υπογράφεται και παραμένει στη συσκευή σου μέχρι να ανοίξει.",
+"enlaceTexto": "Άνοιξε ένα issue"
+},
+"ar": {
+"titulo": "أعطني رأيك",
+"cuerpo": "ما الذي تعطّل، وما الذي لم تفهمه، وما الذي توقّعت أن تجده ولم يكن موجودًا. جملة واحدة محدّدة خير من أي مديح.",
+"publico": "علنًا: وقّع موضوعًا في الأسفل. يُوقَّع بمفتاحك، على جهازك.",
+"privado": "سرًّا: افتح issue في المستودع العام. إنها القناة الوحيدة التي تصل فعلًا اليوم.",
+"pero": "NO_DATA — الأغورا تُجيب الآن، لكنها لا تقبل الكتابة بعد: POST /api/v1/threads يُعيد 405، والخادم يقولها بكلماته: «writing closed: the Agora does not moderate yet» (قيس في 2026-09-08). يُوقَّع ويبقى على جهازك حتى تُفتح.",
+"enlaceTexto": "افتح issue"
+}
+},
+"enlace": "https://github.com/piskyRpapalo/PreceptorOS/issues",
+"estado": "ABIERTO"
+},
+{
+"id": "entrenar",
+"tipo": "COMPUTE",
+"autor": "soberano",
+"cuando": "2026-09-02T00:00:00Z",
+"textos": {
+"es": {
+"titulo": "Entrena un modelo",
+"cuerpo": "Trae un conjunto de ejemplos tuyo y sale un adaptador LoRA entrenado en el rack. No hace falta GPU: se hace en CPU pura y está medido.",
+"publico": "Medido el 2026-08-29: rank 16, alpha 32, 2 épocas, 93 ejemplos de tren y 16 de validación. 553 s una línea y 445 s la otra. Bajo diez minutos, no una noche.",
+"privado": "El conjunto de ejemplos es tuyo y se queda tuyo. Lo que se comparte, si quieres, es el adaptador que sale.",
+"pero": "NO_DATA — todavía no hay forma de mandarlo por la web: no hay endpoint de subida. Hoy se acuerda por el hilo y se pasa el fichero a mano."
+},
+"en": {
+"titulo": "Train a model",
+"cuerpo": "Bring your own set of examples and a LoRA adapter comes out, trained on the rack. No GPU needed: it runs on plain CPU and it is measured.",
+"publico": "Measured 2026-08-29: rank 16, alpha 32, 2 epochs, 93 training and 16 validation examples. 553 s one line, 445 s the other. Under ten minutes, not overnight.",
+"privado": "The set of examples is yours and stays yours. What gets shared, if you want to, is the adapter that comes out.",
+"pero": "NO_DATA — there is still no way to send it through the web: no upload endpoint. Today it is arranged in the thread and the file is passed by hand."
+},
+"fr": {
+"titulo": "Entraine un modele",
+"cuerpo": "Apporte ton propre jeu d'exemples et il en sort un adaptateur LoRA entraîné sur le rack. Pas besoin de GPU : ça tourne sur CPU pur et c'est mesuré.",
+"publico": "Mesuré le 2026-08-29 : rank 16, alpha 32, 2 époques, 93 exemples d'entraînement et 16 de validation. 553 s une ligne, 445 s l'autre. Moins de dix minutes, pas une nuit.",
+"privado": "Le jeu d'exemples est à toi et le reste. Ce qui se partage, si tu veux, c'est l'adaptateur qui en sort.",
+"pero": "NO_DATA — il n'y a toujours aucun moyen de l'envoyer par le web : pas d'endpoint d'upload. Aujourd'hui ça se convient dans le fil et le fichier se passe à la main."
+},
+"pt": {
+"titulo": "Treina um modelo",
+"cuerpo": "Traz um conjunto de exemplos teu e sai um adaptador LoRA treinado no rack. Não é preciso GPU: faz-se em CPU pura e está medido.",
+"publico": "Medido a 2026-08-29: rank 16, alpha 32, 2 épocas, 93 exemplos de treino e 16 de validação. 553 s uma linha e 445 s a outra. Abaixo de dez minutos, não uma noite.",
+"privado": "O conjunto de exemplos é teu e fica teu. O que se partilha, se quiseres, é o adaptador que sai.",
+"pero": "NO_DATA — ainda não há forma de o mandar pela web: não há endpoint de envio. Hoje acorda-se pelo tópico e passa-se o ficheiro à mão."
+},
+"it": {
+"titulo": "Allena un modello",
+"cuerpo": "Porta un tuo insieme di esempi ed esce un adattatore LoRA allenato sul rack. Non serve una GPU: si fa in CPU pura ed è misurato.",
+"publico": "Misurato il 2026-08-29: rank 16, alpha 32, 2 epoche, 93 esempi di addestramento e 16 di validazione. 553 s una riga e 445 s l'altra. Sotto i dieci minuti, non una notte.",
+"privado": "L'insieme di esempi è tuo e resta tuo. Quello che si condivide, se vuoi, è l'adattatore che ne esce.",
+"pero": "NO_DATA — non c'è ancora modo di mandarlo dal sito: non esiste un endpoint di caricamento. Oggi ci si accorda nella discussione e il file si passa a mano."
+},
+"de": {
+"titulo": "Trainiere ein Modell",
+"cuerpo": "Bring eine eigene Menge von Beispielen mit, und heraus kommt ein auf dem Rack trainierter LoRA-Adapter. Eine GPU ist nicht nötig: es läuft auf reiner CPU und ist gemessen.",
+"publico": "Gemessen am 2026-08-29: rank 16, alpha 32, 2 Epochen, 93 Trainings- und 16 Validierungsbeispiele. 553 s die eine Zeile und 445 s die andere. Unter zehn Minuten, keine ganze Nacht.",
+"privado": "Die Menge der Beispiele gehört dir und bleibt dein. Geteilt wird, wenn du willst, der Adapter, der herauskommt.",
+"pero": "NO_DATA — es gibt noch keinen Weg, sie über die Seite zu schicken: es fehlt ein Endpunkt zum Hochladen. Heute einigt man sich im Beitrag und reicht die Datei von Hand weiter."
+},
+"ru": {
+"titulo": "Обучи модель",
+"cuerpo": "Принеси свой набор примеров, и на выходе будет адаптер LoRA, обученный на стойке. GPU не нужна: делается на чистом CPU и это измерено.",
+"publico": "Измерено 2026-08-29: rank 16, alpha 32, 2 эпохи, 93 обучающих примера и 16 проверочных. 553 с одна строка и 445 с другая. Меньше десяти минут, а не целая ночь.",
+"privado": "Набор примеров твой и остаётся твоим. Делится, если захочешь, тот адаптер, который получился.",
+"pero": "NO_DATA — отправить его через сайт пока нельзя: нет точки для загрузки. Сегодня договариваются в ветке и передают файл вручную."
+},
+"el": {
+"titulo": "Εκπαίδευσε ένα μοντέλο",
+"cuerpo": "Φέρε ένα δικό σου σύνολο παραδειγμάτων και βγαίνει ένας προσαρμογέας LoRA εκπαιδευμένος στο rack. Δεν χρειάζεται GPU: γίνεται σε καθαρή CPU και είναι μετρημένο.",
+"publico": "Μετρήθηκε στις 2026-08-29: rank 16, alpha 32, 2 εποχές, 93 παραδείγματα εκπαίδευσης και 16 επικύρωσης. 553 δευτ. η μία γραμμή και 445 δευτ. η άλλη. Κάτω από δέκα λεπτά, όχι μια ολόκληρη νύχτα.",
+"privado": "Το σύνολο των παραδειγμάτων είναι δικό σου και μένει δικό σου. Αυτό που μοιράζεται, αν θέλεις, είναι ο προσαρμογέας που βγαίνει.",
+"pero": "NO_DATA — δεν υπάρχει ακόμη τρόπος να το στείλεις από τον ιστότοπο: λείπει σημείο ανεβάσματος. Σήμερα συμφωνείται στο νήμα και το αρχείο περνιέται στο χέρι."
+},
+"ar": {
+"titulo": "درّب نموذجًا",
+"cuerpo": "أحضر مجموعة أمثلتك ويخرج محوّل LoRA، مُدرَّب على الرفّ. لا حاجة إلى GPU: يعمل على CPU عادي ويُقاس.",
+"publico": "قيس في 2026-08-29: الرتبة 16، وألفا 32، وحقبتان، و93 مثال تدريب و16 مثال تحقّق. 553 ث لخطّ و445 ث للآخر. أقل من عشر دقائق، لا ليلة كاملة.",
+"privado": "مجموعة الأمثلة لك وتبقى لك. ما يُشارَك، إن أردت، هو المحوّل الناتج.",
+"pero": "NO_DATA — لا توجد بعد طريقة لإرساله عبر الويب: لا نقطة نهاية للرفع. اليوم يُرتَّب الأمر في الموضوع ويُمرَّر الملف باليد."
+}
+},
+"estado": "ABIERTO"
+}
+],
+"contrato_estado": "`estado` es ABIERTO o CERRADO. Los ABIERTOS se pintan delante; los CERRADOS quedan plegados, visibles para quien los busque. Sin `estado`, se trata como ABIERTO: un anuncio sin declarar no se esconde."
 }

@@ -162,6 +162,7 @@
  "atajos_nota": "LOS ATAJOS SON LA INTERFAZ DE LAS CONDUCTAS ENTRENADAS, no botones de ayuda. Cada uno escribe en el campo un prompt de tres o cuatro frases que la persona LEE antes de mandar --un atajo que manda solo es un boton que habla por ti-- y ese prompt es el que activa una conducta que el corpus enseño. Por eso viven aqui y no en el codigo: el generador del corpus lee esta misma lista, asi que lo que se ofrece y lo que se entrena no pueden separarse. Un atajo sin muestras que lo respalden es una promesa; una conducta entrenada sin atajo es una funcion que nadie encuentra. Y cambian POR MODELO a proposito: al de codigo se le pide codigo, al que dice NO_DATA se le pide que lo diga, y al del LoRA que se inventa cifras se le ofrece «sin numeros» -- el atajo tambien es donde se le pone la brida a un fallo conocido.",
  "prosa_pendiente": {
   "idiomas": [
+   "ar",
    "de",
    "el",
    "fr",

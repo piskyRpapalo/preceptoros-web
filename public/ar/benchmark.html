@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="ar" dir="rtl" data-tema="oscuro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LoRAtelier benchmark's · PreceptorOS</title>
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<meta name="description" content="كتاب البراهين العام: أي نموذج يعمل بأي سرعة، على أي جهاز، موقّعًا ممن قاسه.">
+<link rel="alternate" hreflang="ar" href="/ar/benchmark.html">
+<link rel="alternate" hreflang="de" href="/de/benchmark.html">
+<link rel="alternate" hreflang="el" href="/el/benchmark.html">
+<link rel="alternate" hreflang="en" href="/en/benchmark.html">
+<link rel="alternate" hreflang="es" href="/es/benchmark.html">
+<link rel="alternate" hreflang="fr" href="/fr/benchmark.html">
+<link rel="alternate" hreflang="it" href="/it/benchmark.html">
+<link rel="alternate" hreflang="pt" href="/pt/benchmark.html">
+<link rel="alternate" hreflang="ru" href="/ru/benchmark.html">
+<link rel="stylesheet" href="/assets/base.css">
+<link rel="stylesheet" href="/assets/movil.css">
+<link rel="stylesheet" href="/assets/canon.css">
+<link rel="stylesheet" href="/assets/sistema.css">
+<link rel="stylesheet" href="/assets/agora.css">
+<link rel="stylesheet" href="/assets/chat.css">
+<link rel="stylesheet" href="/assets/escribir.css">
+<link rel="stylesheet" href="/assets/placa.css">
+<link rel="stylesheet" href="/assets/widget.css">
+<link rel="stylesheet" href="/assets/cara.css">
+<link rel="stylesheet" href="/assets/puertas.css">
+<link rel="stylesheet" href="/assets/cabezal.css">
+<link rel="stylesheet" href="/assets/esquina.css">
+<link rel="stylesheet" href="/assets/esquina-cuenta.css">
+<link rel="stylesheet" href="/assets/esquina-par.css">
+<link rel="stylesheet" href="/assets/mandos.css">
+<link rel="stylesheet" href="/assets/panel.css">
+<link rel="stylesheet" href="/assets/tema.css">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#17131F">
+<link rel="stylesheet" href="/assets/rtl.css">
+</head>
+<body>
+<canvas id="ambient" aria-hidden="true"></canvas>
+<main>
+
+<header id="cabezal" data-cabezal="benchmark">
+  <div class="marca"><h1>LoRAtelier benchmark's<b> · كتاب البراهين</b></h1></div>
+</header>
+
+<!-- La accion primero · ver test_debajo_del_cabecero_va_la_ACCION. -->
+<section id="probador">
+  <!-- Base contra adaptador · ver `comparar.js`. -->
+  <div id="comparar"></div>
+  <!-- Lo PRIMERO y UNICO de esta pagina es la comparativa: la monta `duelo.js`
+       justo detras de esta seccion. El bloque «elige y mide tu motor» --un
+       chat suelto con su medidor-- se retiro el 2026-09-22 por orden del
+       Soberano: «lo primero y unico que debe verse son las ventanas de chat
+       de la comparativa». Un segundo chat encima de la comparativa hacia
+       bajar la pagina para encontrar lo que se venia a ver. -->
+</section>
+
+<!-- Plegada: es archivo, no accion. Ver `sistema.css`. -->
+<details class="pliego"><summary>كتاب الاختبارات كاملًا</summary>
+<p class="guia">أي نموذج يعمل بأي سرعة، على أي جهاز، ومن قاسه. كل صفّ سطر موقّع يحمل sha256 لملف النموذج: من دون تلك البصمة، «llama-3.2-3b» لا يعرّف شيئًا.</p>
+<div id="tabla" class="panel"></div>
+</details>
+
+
+<footer class="honest-footer">
+  <details class="pliego"><summary>من أين يأتي هذا الجدول</summary>
+  <ul>
+    <li><strong>لا أحد يرفع شيئًا بالخطأ.</strong> البيانات يرسلها PreceptorOS الخاص بك من جهازك، وفقط إن طلبت ذلك. التثبيت لا ينشر شيئًا.</li>
+    <li><strong>البصمة والتوقيع هما البيانات.</strong> رقم بلا sha256 للنموذج لا يمكن إعادة إنتاجه، وبلا توقيع لا يمكن نسبته. العمودان موجودان ليُتحقَّق من الجدول، لا لتزيينه.</li>
+    <li><strong>الفجوات مُعلَنة.</strong> حين لا يقول محرّك كم رمزًا ولّد، تقرأ الخانة NO_DATA. لا تُملأ بتقدير.</li>
+  </ul>
+</details>
+  <p><a href="/hitos.html">المحطات</a></p>
+</footer>
+
+<script type="application/json" id="i18n">{"bmColumnas": ["النموذج", "sha256", "العتاد", "tok/s", "TTFT", "الحكم", "المُقيِّم", "التوقيع"], "bmEjemplo": "هذه الصفوف أمثلة، موجودة لاختبار تصميم الجدول.", "bmFirmadas": "الأسطر الموقّعة المستلمة حتى الآن:", "bmFuente": "المصدر:", "bmLeyenda": ["tok/s — كم قطعة كلام يكتب في الثانية. هذا ما يهم إن تركته يعمل وحده.", "TTFT — كم يمضي قبل ظهور أول حرف. هذا ما يهم إن كنت جالسًا تنتظر.", "sha256 — بصمة ملف النموذج. قد لا يكون ملفّان بالاسم نفسه النموذجَ نفسه؛ البصمة لا تكذب."], "bmLlevatelo": "خذ الملف كاملًا.", "bmSinDatos": "NO_DATA — تعذّرت قراءة الجدول.", "bmSinFirma": "بلا توقيع", "bmSinHash": "بلا بصمة", "bmTablaAria": "جدول كتاب البراهين، يُمرَّر أفقيًا", "brainAsleep": "لم يبدأ أي محرّك بعد", "brainBrowser": "ذكاء المتصفح (Edge)", "brainLabel": "الدماغ:", "brainLive": "يعمل على جهازك", "brainNone": "لا شيء", "causaDesconocida": "السبب غير معروف.", "causaElegida": "السبب: اخترت JSON.", "causaEnBenchmark": "السبب: المحرّك يُختار ويُقاس في Benchmark.", "cmpBanco": "بقية المقعد", "cmpCambiar": "انتقل إلى", "cmpCasa": "PreceptorOS", "cmpCerrar": "أغلق", "cmpFalta": "هذا النموذج ليس على جهازك", "cmpHablas": "أنت تتحدث مع", "cmpNatural": "النموذج الطبيعي", "cmpProbar": "جرّبه", "copiaManual": "حدّد ثم Ctrl+C", "copiado": "نُسخ OK", "copiarPara": "انسخ لـ", "destinos": ["Gemini", "ChatGPT", "Claude", "ذكائي المحلي"], "etiquetaJson": "نص تنسخه إلى ذكائك الاصطناعي", "falloRecitado": "NO_DATA — ردّد النموذج تعليماته بدل أن يجيب. شُطبت، ولم يبقَ شيء من دوره.", "falloRespuesta": "NO_DATA - تعذّر توليد الرد", "falloVacio": "NO_DATA — أنهى المحرّك دون أن يُخرج حرفًا واحدًا. ليس هذا ردًا فارغًا: إنه دور لم يحدث قط.", "laiBuscando": "جارٍ سؤال 127.0.0.1:11434…", "laiBuscar": "ابحث عن ذكاء محلي", "laiEncontrados": "نماذجك التي وُجدت:", "laiListo": "ستتحدث مع", "laiMixto": "من صفحة https لا يسمح المتصفح إلا بـ 127.0.0.1. عنوان IP في الشبكة يُحجب كمحتوى مختلط.", "laiNada": "NO_DATA — لم يُعثر على ذكاء محلي في 127.0.0.1:11434. السبب:", "laiOtra": "عنوان Ollama آخر", "laiProbar": "جرّب هناك", "laiVacio": "NO_DATA — Ollama يُجيب لكن لا نموذج لديه.", "llevate": "خذ هذا النص إلى الذكاء الاصطناعي الذي تستخدمه أصلًا.", "medidaCalentado": "قيس بعد إحماء خفيّ من 5 رموز: من دونه تقيس زمن مُترجم الـ shader، لا جهازك.", "medidaEsperando": "اكتب دورًا واحدًا وسيقيس نفسه. لا شيء من هذا يغادر جهازك.", "medidaMotor": "engine:", "medidaSinTokens": "tok/s NO_DATA — هذا المحرّك لا يُعلن كم رمزًا ولّد. عدّ القطع وتسميتها رموزًا اختراعٌ للرقم.", "medidaSinTtft": "TTFT NO_DATA — لم يُخرج المحرّك أي قطعة لقياس زمنها.", "medidaTitulo": "جهازك · قيس هنا، ولا يُقارَن بأحد", "medidaTurnos": "turns:", "mismoTexto": "النص نفسه يصلح لأي ذكاء اصطناعي. تلك هي الفكرة: ألّا تعتمد على واحد فقط.", "prefieroJson": "أفضّل JSON", "rackCausa": "السبب: لم يُجب الرفّ؛ النفق العام لم يُفتح بعد.", "rackFallo": "NO_DATA — لم يُجب الرفّ.", "rackSinAdaptador": "NO_DATA — هذا الرفيق ليس له بعدُ نموذج يُخدَم على الرفّ.", "sensorAviso": "النموذج الصغير بدأ ينسى السياق. أتعيد بدء المحادثة؟", "sensorBoton": "أعد البدء", "sensorRegistrado": "سُجّلت إعادة البدء كقياس حدٍّ لهذه الجلسة. لا تُحفظ في أي مكان: هذا الموقع لا يحتفظ بشيء منك.", "sinMotor": "NO_DATA - لا يوجد محرّك ذكاء اصطناعي متاح في هذا المتصفح."}</script>
+<script src="/assets/ambient.js"></script>
+<script src="/assets/benchmark.js"></script>
+<script src="/assets/comparar.js"></script>
+<script src="/assets/enviar-ar.js"></script>
+<script src="/assets/prompts-ar.js"></script>
+<script src="/assets/identidad-o-salida.js"></script>
+<script src="/assets/rack.js"></script>
+<script src="/assets/duelo-firma.js"></script>
+<script src="/assets/duelo.js"></script>
+<script src="/assets/fallback.js"></script>
+<script src="/assets/state.js"></script>
+<script src="/assets/chat.js"></script>
+<script src="/assets/localai.js"></script>
+<script src="/assets/meter.js"></script>
+<script src="/assets/copiar.js"></script>
+
+<script src="/assets/cabezal.js"></script>
+<script src="/assets/auth.js"></script>
+<script src="/assets/cabezal-rotulos.js"></script>
+<script src="/assets/bronce.js"></script>
+<script src="/assets/corregir-ar.js"></script>
+<script src="/assets/corregir.js"></script>
+<script src="/assets/aprender.js"></script>
+<script src="/assets/elegir.js"></script>
+<script src="/assets/pwa.js"></script>
+</body>
+</html>

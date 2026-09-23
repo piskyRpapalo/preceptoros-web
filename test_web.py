@@ -3037,7 +3037,7 @@ class Hub(unittest.TestCase):
         test en rojo es la funcion: obliga a mirar si la prohibicion viajo con
         la traduccion, en vez de darla por buena.
         """
-        NIEGAN = r"(?i)\b(nunca|never|jamais|mai|nie|niemals|никогда|ποτέ)\b"
+        NIEGAN = r"(?i)\b(nunca|never|jamais|mai|nie|niemals|никогда|ποτέ|أبدًا)\b"
         for idioma in IDIOMAS:
             js = (PUBLICO / "assets" / f"prompts-{idioma}.js").read_text(encoding="utf-8")
             papel = json.loads(js[js.index("window.PR =") + 11:]

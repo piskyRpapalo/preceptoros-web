@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="ar" dir="rtl" data-tema="oscuro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>الأدوات · PreceptorOS</title>
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<meta name="description" content="كيف تثبّت PreceptorOS على حاسوب أو هاتف. مع ما يفعله، وما لا يفعله بعد، وأين تعيش ذاكرتك.">
+<link rel="alternate" hreflang="ar" href="/ar/instalar.html">
+<link rel="alternate" hreflang="de" href="/de/instalar.html">
+<link rel="alternate" hreflang="el" href="/el/instalar.html">
+<link rel="alternate" hreflang="en" href="/en/instalar.html">
+<link rel="alternate" hreflang="es" href="/es/instalar.html">
+<link rel="alternate" hreflang="fr" href="/fr/instalar.html">
+<link rel="alternate" hreflang="it" href="/it/instalar.html">
+<link rel="alternate" hreflang="pt" href="/pt/instalar.html">
+<link rel="alternate" hreflang="ru" href="/ru/instalar.html">
+<link rel="stylesheet" href="/assets/base.css">
+<link rel="stylesheet" href="/assets/movil.css">
+<link rel="stylesheet" href="/assets/canon.css">
+<link rel="stylesheet" href="/assets/sistema.css">
+<link rel="stylesheet" href="/assets/cara.css">
+<link rel="stylesheet" href="/assets/widget.css">
+<link rel="stylesheet" href="/assets/puertas.css">
+<link rel="stylesheet" href="/assets/cabezal.css">
+<link rel="stylesheet" href="/assets/esquina.css">
+<link rel="stylesheet" href="/assets/esquina-cuenta.css">
+<link rel="stylesheet" href="/assets/esquina-par.css">
+<link rel="stylesheet" href="/assets/mandos.css">
+<link rel="stylesheet" href="/assets/panel.css">
+<link rel="stylesheet" href="/assets/tema.css">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#17131F">
+<link rel="stylesheet" href="/assets/rtl.css">
+</head>
+<body>
+<canvas id="ambient" aria-hidden="true"></canvas>
+<main>
+
+<header id="cabezal" data-cabezal="instalar">
+  <div class="marca"><h1>التثبيت<b> · PreceptorOS</b></h1></div>
+</header>
+
+<p class="guia">جهازان وطريقان، وكلاهما يبدأ بالطريقة نفسها: تستنسخ المستودع وتشغّله بنفسك. لا مُثبّت يطلب كلمة مرور، ولا شيء يُنزَّل من وراء ظهرك.</p>
+
+<section id="pwa-puerta"></section>
+
+<details class="pliego" id="descargas">
+<summary>تنزيل مباشر</summary>
+<div class="fila ob-descargas">
+  <a class="boton" href="#android">Android · عبر Termux</a>
+  <a class="boton" href="https://github.com/piskyRpapalo/PreceptorOS/releases/latest/download/install.sh">Linux أو macOS · install.sh</a>
+  <a class="boton" href="https://github.com/piskyRpapalo/PreceptorOS/releases/latest/download/install.ps1">Windows · install.ps1</a>
+</div>
+<p class="tenue">السكربتان يأتيان من GitHub Releases ويعملان: <strong>v1.3، نُشر في 2026-08-31</strong>. يمرّ Android عبر Termux لأن ملف APK غير موجود بعد — انظر NO_DATA في الأسفل.</p>
+</details>
+
+<h2>على حاسوب · Linux أو macOS</h2>
+<ol class="pasos">
+  <li><div><h3>تحقّق من وجود Python.</h3>
+    <p><code>python3 -V</code> — الإصدار 3.10 أو أحدث. إن لم يكن موجودًا، فالمُثبّت
+    <strong>يقول ذلك ويتوقف</strong>: لا يثبّته باستخدام
+    <code>sudo</code>، لأن طلب كلمة مرور في منتصف سكربت هو الباب الذي تدخل منه المفاجآت.</p></div></li>
+  <li><div><h3>استنسخ المستودع.</h3>
+    <p><code>git clone --depth 1 https://github.com/piskyRpapalo/PreceptorOS ~/preceptoros</code></p></div></li>
+  <li><div><h3>اصنع الباب.</h3>
+    <p><code>cd ~/preceptoros &amp;&amp; bash bin/instalar-pc</code> — يضع الأيقونة في قائمة تطبيقاتك ولا شيء غير ذلك. <strong>لا يشغّل شيئًا حين ينتهي:</strong> يصنع الباب؛ أما عبوره فقرارك. لإزالته، <code>bash bin/instalar-pc --desinstalar</code>، وهو يحذف الأيقونة و <em>لا يلمس ذاكرتك</em>.</p></div></li>
+  <li><div><h3>أنشئ ذاكرتك.</h3>
+    <p><code>python3 preceptoros.py</code> — يطرح عليك أسئلة التشغيل الأول. يبدأ فارغًا، ويقول ذلك.</p></div></li>
+  <li><div><h3>افتح واجهة الويب.</h3>
+    <p><code>bin/preceptoros-servicio arranca</code>، ثم اذهب إلى
+    <code>http://127.0.0.1:8740</code>. هذا جهازك يتحدث إلى نفسه: ذلك <code>127.0.0.1</code> لا يذهب إلى أي مكان آخر.</p></div></li>
+</ol>
+
+<h2>على Windows · عبر WSL</h2>
+<p>لا توجد خطوات منفصلة: داخل <strong>WSL</strong>
+لديك Linux، فالخطوات السابقة تعمل كما هي. افتح <code>wsl</code> واتبع قسم Linux. نقوله هنا كي لا تبحث عنه.</p>
+
+<h2 id="android">على هاتف Android · عبر Termux</h2>
+<ol class="pasos">
+  <li><div><h3>ثبّت Termux <strong>من F-Droid</strong>.</h3>
+    <p>ليس من Google Play: تلك النسخة مهجورة وتفشل. إنه الخطأ الذي يُضيّع أكثر الناس في الدقيقة الأولى.</p></div></li>
+  <li><div><h3>احصل على git والمستودع.</h3>
+    <p><code>pkg install -y git</code><br>
+    <code>git clone --depth 1 https://github.com/piskyRpapalo/PreceptorOS ~/preceptoros</code></p></div></li>
+  <li><div><h3>جهّز الهاتف.</h3>
+    <p><code>cd ~/preceptoros &amp;&amp; bash bin/instalar-android</code></p></div></li>
+  <li><div><h3>الذاكرة والاختصار وواجهة الويب.</h3>
+    <p><code>python3 preceptoros.py</code><br>
+    <code>bin/crear-acceso-directo-android</code> (اختياري، مستحسن)<br>
+    <code>bin/preceptoros-servicio arranca</code>، ثم افتح
+    <code>http://127.0.0.1:8740</code>.</p>
+    <p class="tenue">لكي يظهر الاختصار كأيقونة تحتاج أيضًا إلى
+    <strong>Termux:Widget</strong> (من F-Droid أيضًا). إن لم يكن موجودًا، فالسكربت يقول ذلك ويشرح ما العمل — ولا ينشئ أيقونة لن تظهر أبدًا.</p></div></li>
+</ol>
+<p class="nodata">NO_DATA · ملف APK الذي تثبّته وتفتحه بلا طرفية
+  <strong>غير موجود بعد</strong>. السبب: لم يبنِه أحد. نقول ذلك قبل أن تبحث عنه.</p>
+
+<h2>ما يفعله من الدقيقة الأولى، وما لا يفعله بعد</h2>
+<p><strong>يفعل:</strong> ينشئ ذاكرتك، ويطرح عليك أسئلة التشغيل الأول، ويحفظ ما تقوله له، ويريك <strong>الحدّ</strong> — المرشّح الذي يحجب المفاتيح والمسارات والعناوين قبل أن يغادر أي نص جهازك.</p>
+<p><strong>لا يحاور بعد.</strong> لذلك يلزم قطعتان كبيرتان لا تتسعان في الداخل و <strong>لا تُنزَّلان دون إذنك</strong>:</p>
+<div class="panel">
+  <p><strong>المحرّك</strong> · نحو 10 MB · إنه شيفرة تنفيذية لغيرنا. هذا المشروع يوقّع البيانات لا البرامج.</p>
+  <p><strong>الدماغ</strong> · <span class="cifra">2.3 GB</span> · يُعرض عليك مع رخصته وبصمته أمام عينيك، وأنت تقبله.</p>
+  <p class="tenue">من دونهما، يسأل PreceptorOS ويتذكّر لكنه لا يحاور. هذا هو الوصف الصادق، ولا يعد بأكثر مما يسلّمه فعلًا.</p>
+</div>
+
+<h2>أين يعيش نصيبك منه</h2>
+<p>في <code>~/.preceptoros/memory.db</code>. <strong>ملف واحد فقط.</strong> يمكنك نسخه، أو حمله على ذاكرة USB، أو حذفه. لا شيء يغادر جهازك ما لم تصدّره.</p>
+<p class="tenue">إن كنت ثبّتّه بالاسم القديم، فذاكرتك تبقى حيث هي وتواصل العمل: المنتج يتبنّى المنزل القديم بدل أن ينقل بياناتك من تلقاء نفسه.</p>
+
+<h2>أخطاء شائعة</h2>
+<div class="panel">
+  <p><strong>«PreceptorOS كان مفتوحًا بالفعل».</strong> كان كذلك. فُتح المتصفح ولم تُشغَّل نسخة ثانية، لأن نسختين معًا على الذاكرة نفسها تعنيان أنك ترى شيئًا والملف يقول شيئًا آخر.</p>
+  <p><strong>«الخادم لم يُجب قط».</strong> شيء ما يحجز المنفذ 8740.
+  <code>bin/preceptoros-servicio para</code> يُغلق ما هناك.</p>
+  <p><strong>«python3 غير موجود».</strong> المُثبّت يتوقف هناك عن قصد. ثبّته بنفسك ثم عُد.</p>
+  <p><strong>Termux يُغلق أو يفشل بطريقة غريبة.</strong> إنها في الغالب نسخة Google Play. أزلها واستخدم نسخة F-Droid.</p>
+</div>
+
+<h2>عالق؟ اسأل الذكاء الاصطناعي الذي تستخدمه أصلًا</h2>
+<p>لست مضطرًا إلى حلّ هذا وحدك ولا إلى انتظار أحد. <strong>لأي شكّ في التثبيت، استعن بذكاء اصطناعي خارجي</strong>: إنه يعرف عن الطرفيات وعن نظام تشغيلك أكثر مما تعرفه هذه الصفحة، ويوفّر عليك نصف الطريق. انسخ هذا، والصق خطأك فوقه، وسلّمه إلى Gemini أو ChatGPT أو Claude أو ذكائك المحلي.</p>
+<textarea id="atasco" readonly aria-label="نص مساعدة تلصقه في ذكائك الاصطناعي">أثبّت PreceptorOS، وهو برنامج Python محلي لا يستخدم إلا المكتبة القياسية:
+https://github.com/piskyRpapalo/PreceptorOS
+
+نظام تشغيلي هو: [اكتب نظامك هنا]
+
+أوامر الدليل هي:
+  git clone --depth 1 https://github.com/piskyRpapalo/PreceptorOS ~/preceptoros
+  cd ~/preceptoros &amp;&amp; bash bin/instalar-pc
+  python3 preceptoros.py
+  bin/preceptoros-servicio arranca      # يفتح http://127.0.0.1:8740
+
+أنا عالق هنا:
+  [الصق الأمر الذي فشل ورسالة الخطأ كاملة]
+
+اشرح ما حدث وما العمل. بشرطين: لا تعطني أمر sudo دون أن تخبرني أولًا بما يلمسه بالضبط، وإن لم تكن متأكدًا فقل ذلك بدل أن تخترع مسارًا أو حزمة.</textarea>
+<div class="fila">
+  <button type="button" data-copia="atasco" data-hecho="نُسخ ✓" data-manual="حدّد ثم Ctrl+C">انسخ لذكائي الاصطناعي</button>
+</div>
+<p class="tenue">لا يهم أيّها تستخدم: النص غير مربوط بأيٍّ منها. تلك هي الفكرة — ألّا تعتمد على واحد فقط، ولا حتى لطلب المساعدة.</p>
+
+<h2>لوحاتك أنت: دع ذكاءك الاصطناعي يرسمها</h2>
+<p>هذا الموقع ثابت ولا يولّد صورًا: ليس لديه خادم يصنعها، ولن نتظاهر بوجوده. لكن الذكاء الاصطناعي الذي تستخدمه أصلًا يستطيع — وهكذا تصبح القصة قصتك. النص الكامل، مع وصف الشخصية وصورتها المرجعية، موجود في مستودع المنتج.</p>
+
+<section id="modelos-descarga"></section>
+
+<footer class="honest-footer">
+  <div id="pie-instalar"></div>
+<p><a href="/ar/community.html">المجتمع</a> ·
+     <a href="/hitos.html">المحطات</a> ·
+     <a href="/">غيّر اللغة</a></p>
+</footer>
+
+<script src="/assets/copiar.js"></script>
+<script src="/assets/ambient.js"></script>
+<script src="/assets/instalar-descargas.js"></script>
+<script src="/assets/herramientas.js"></script>
+<script src="/assets/cabezal.js"></script>
+<script src="/assets/auth.js"></script>
+<script src="/assets/cabezal-rotulos.js"></script>
+<script src="/assets/pwa.js"></script>
+</body>
+</html>

@@ -1,0 +1,25 @@
+{
+ "esquema": 1,
+ "idioma": "ar",
+ "revision": "pendiente-revision-nativa",
+ "procedencia": {
+  "traducido_por": "claude-opus-5-5",
+  "desde": "ledger-en.json",
+  "nota": "arabe estandar moderno; nadie con oido nativo lo ha leido"
+ },
+ "nota_fichero": "El Libro de Pruebas en esta lengua. Se SUPERPONE sobre `assets/ledger.jsonl`, que es el registro firmado y viene en castellano: si aqui falta una entrada, ahi se ve la de origen. Los HECHOS --modelo, sha256, tok/s, hardware, firma-- no se traducen jamas: un nombre de modelo traducido deja de nombrar nada.",
+ "cabecera": "قيس على العقدة السيادية في 2026-09-13. كل صفّ يحمل sha256 لملف النموذج وتوقيع Ed25519 لمن قاسه. `ttft_ms` قيمته NO_DATA لأنه لم يُقس: ملؤه برقم معقول سيكون عكس ما يفعله هذا الجدول.",
+ "veredictos": {
+  "usable en bucle": "صالح للحلقة",
+  "usable con paciencia": "صالح مع الصبر",
+  "solo chat, no bucle": "للدردشة فقط، لا للحلقة"
+ },
+ "usos": {
+  "qwen2.5-coder:3b": "دور المختبر 1: يستخرج الحقائق من تصحيح ويُعيد JSON نظيفًا. الأسرع بين الستة.",
+  "deepseek-r1:7b": "الدور 2: يحلّل لماذا فشلت إجابة وهل الفشل نمط. بطاقته تُعلن `thinking` ومع ذلك يُعيد المخطط كاملًا مع `think:false`.",
+  "granite3-dense:8b": "الدور 3، الباب: مدقّق الامتثال والحقن. درّبته IBM لهذا.",
+  "qwen2.5:14b": "الدور 4: الحكم النهائي لمجموعة الطبقتين.",
+  "swift-qwen:27b": "احتياط للدور 4. 27.3B كثيف: يؤدي عمل الـ 30B نفسه في عشرة أضعاف الوقت.",
+  "qwen3-coder:30b": "ناقد الحَكَم. MoE A3B: يزن 30B ويُفعّل نحو 3B، ولهذا يعمل 30B أسرع من 7B على iGPU."
+ }
+}

@@ -1,0 +1,31 @@
+{
+ "esquema": 1,
+ "idioma": "ar",
+ "revision": "pendiente-revision-nativa",
+ "procedencia": {
+  "traducido_por": "claude-opus-5-5",
+  "desde": "paneles-en.json",
+  "nota": "arabe estandar moderno; nadie con oido nativo lo ha leido"
+ },
+ "nota": "Los textos de los paneles de estudio en esta lengua. Salieron de `paneles.json` el 2026-09-14: con las ocho dentro, aquel fichero pasaba de 22 KB contra un tope de 16.384. El fichero de hechos se queda con el modelo, la medida y el entorno; esto trae el nombre, lo que hace y lo que falla.",
+ "paneles": {
+  "charla-web": {
+   "nombre": "الدردشة",
+   "que_hace": "يجيب عن PreceptorOS بأوامر التثبيت الحقيقية ويتعرّف على من ثبّته بالفعل بدل أن يكرّر الخطوات.",
+   "que_falla": "يختلق الأرقام بثقة كبيرة. إن أعطاك رقمًا فاسأله من أين يأتي: هذا هو العيب الحقيقي الذي وُجدت هذه اللوحة لإبرازه.",
+   "para_quien": "من يصل لأول مرة ويريد التثبيت دون قراءة المستودع."
+  },
+  "coder-adapter": {
+   "nombre": "الحدّاد",
+   "que_hace": "يعيش في الطرفية ويكتب الشيفرة والاختبارات والفحوص داخل منظومة PreceptorOS. يعمل اليوم على النموذج الأساسي المقيس: 32.03 tok/s والجهاز عند 1.04 — ثاني أسرع نموذج على المقعد، لأنه يُفعّل 3B من الـ 30 التي يزنها.",
+   "que_falla": "المحوّل المتخصّص غير موجود بعد: هذا اليوم هو النموذج الأساسي وفوقه قواعد، لا LoRA مُدرَّب لهذا البيت. وعيبه المُعلَن ينتقل معه: يطرق بسرعة ويثق بيده. إن لم تطلب الاختبار، سلّمك القطعة غير مسقية.",
+   "para_quien": "من ثبّت بالفعل ويريد أن تبني المنظومة نفسها من الطرفية."
+  },
+  "killswitch-apocalypse": {
+   "nombre": "Killswitch Apocalypse",
+   "que_hace": "دراسة من عشر دقائق الضغطُ فيها بطارية، لا ساعة إيقاف. تتدرّب على الشيء الوحيد الذي ينفع حين تصمت السحابة: أن تسأل جيدًا وأن تتحقّق مما يُقال لك.",
+   "que_falla": "الساعة حقيقية ولا تتوقف. إن تُهت في السؤال الأول، انتهت الجولة والملف نصف منجز — وتلك الهزيمة جزء من الدراسة، لا خلل في اللعبة.",
+   "para_quien": "كل من يريد أن يعرف ما سيفعله بلا خدمات ويب، بما في يده أصلًا."
+  }
+ }
+}

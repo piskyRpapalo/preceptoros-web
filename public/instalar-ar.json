@@ -1,0 +1,36 @@
+{
+ "esquema": 1,
+ "idioma": "ar",
+ "revision": "pendiente-revision-nativa",
+ "procedencia": {
+  "traducido_por": "claude-opus-5-5",
+  "desde": "instalar-en.json",
+  "nota": "arabe estandar moderno; nadie con oido nativo lo ha leido"
+ },
+ "nota": "Los textos de la pagina de instalar en esta lengua. Salieron de `instalar.json` el 2026-09-14, cuando el pie se mudo del HTML aqui y el fichero de hechos paso de 14.667 a 23.703 B contra un tope de 16.384. Mismo corte que el taller, los paneles y el Agora.",
+ "textos": {
+  "pwaTitulo": "الموقع، مثبّتًا",
+  "pwaCuerpo": "هذه الصفحة نفسها تُثبَّت كتطبيق وتعمل بلا اتصال. لا تنزّل أي نموذج: إنها الباب، لا الورشة.",
+  "pwaComo": "على Android أو الحاسوب، يعرض المتصفح «تثبيت». على iPhone: مشاركة، ثم «إضافة إلى الشاشة الرئيسية».",
+  "mdTitulo": "النماذج",
+  "mdMinimo": "الحدّ الأدنى لهاتف",
+  "mdNoServido": "لا يُخدَم علنًا. السبب:",
+  "mdComoTraer": "لا نستضيف الملف. مع تثبيت Ollama:",
+  "mdSinTelefono": "NO_DATA — لم يقس أحد هذا النموذج على هاتف بذاكرة 8 GB من هذا الرفّ. المقيس هو حجم الملف، وهو في الأسفل.",
+  "mdNoPublicados": "نماذج أخرى على العقدة بلا مدخل عام، لذلك لا تظهر هنا.",
+  "mdVentana": "السياق",
+  "mdFallo": "NO_DATA — تعذّرت قراءة فهرس النماذج:",
+  "pwaBoton": "ثبّت هذا الموقع",
+  "appBoton": "أحدث إصدار من التطبيق",
+  "pwaManual": "يُثبَّت كتطبيق ويعمل بلا اتصال. إن لم يعرض متصفحك الزر، فافعلها يدويًا: على Android، القائمة ⋮ ← «تثبيت التطبيق»؛ على iPhone، مشاركة ← «إضافة إلى الشاشة الرئيسية».",
+  "appVacio": "التنزيل موقوف 48 ساعة بقرار من المعماري. يعود الزر إلى العمل من تلقاء نفسه حين يصل العدّاد إلى الصفر.",
+  "appNoDisponible": "غير متاح",
+  "pieTitulo": "",
+  "pie": [
+   "<strong>عند التحميل لا يطلب شيئًا من أحد.</strong> روابط GitHub روابط: لا تُجري أي طلب حتى تضغطها <em>أنت</em>. الرابط ليس موردًا مُحمَّلًا، وهذا الفرق هو بالضبط ما يهم هنا.",
+   "<strong>الأوامر أوامر المستودع، لا نسخة خاصة بنا.</strong> تأتي من <code>bin/instalar-pc</code> و<code>bin/instalar-android</code> و<code>INSTALACION_PC.md</code>، وقد رُوجعت واحدًا واحدًا مقابل المستودع العام في 2026-09-13.",
+   "<strong>NO_DATA في الأسفل مقيس.</strong> سكربتات التثبيت <strong>موجودة</strong>: v1.3، نُشر في 2026-08-31، بـ 13 ملفًا. ما لا يوجد هو ملف APK — صفر في ذلك الإصدار. هذه نتيجة السؤال، لا الحذر.",
+   "<strong>لا شيء مما تثبّته يحتاج إلى هذا الموقع.</strong> إن اختفى هذا النطاق غدًا، تبقى الأوامر تعمل وتبقى ذاكرتك لك. تلك هي الفكرة كلها."
+  ]
+ }
+}

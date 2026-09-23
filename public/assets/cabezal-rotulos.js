@@ -154,7 +154,7 @@
        que es lo unico que hace falta saber sin abrirlo. */
     if (ajustes && !ajustes.querySelector('.ajuste-idioma')) {
       var NOMBRES = {es:'Español', en:'English', fr:'Français', pt:'Português',
-                     it:'Italiano', de:'Deutsch', ru:'Русский', el:'Ελληνικά'};
+                     it:'Italiano', de:'Deutsch', ru:'Русский', el:'Ελληνικά', ar:'العربية'};
       var aquiLang = document.documentElement.lang;
       var pliego = el('details', 'ajuste-idiomas');
       var cab = el('summary', 'ajuste-idioma');

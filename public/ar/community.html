@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="ar" dir="rtl" data-tema="oscuro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>المجتمع · PreceptorOS</title>
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<meta name="description" content="السوق السيادية: تحديات، ومهام موقّعة، وحوسبة مشتركة. بلا سحابة ولا حسابات.">
+<link rel="canonical" href="https://preceptoros.org/ar/community.html">
+<link rel="alternate" hreflang="ar" href="/ar/community.html">
+<link rel="alternate" hreflang="de" href="/de/community.html">
+<link rel="alternate" hreflang="el" href="/el/community.html">
+<link rel="alternate" hreflang="en" href="/en/community.html">
+<link rel="alternate" hreflang="es" href="/es/community.html">
+<link rel="alternate" hreflang="fr" href="/fr/community.html">
+<link rel="alternate" hreflang="it" href="/it/community.html">
+<link rel="alternate" hreflang="pt" href="/pt/community.html">
+<link rel="alternate" hreflang="ru" href="/ru/community.html">
+<meta property="og:title" content="المجتمع · PreceptorOS">
+<meta property="og:description" content="السوق السيادية: تحديات، ومهام موقّعة، وحوسبة مشتركة. بلا سحابة ولا حسابات.">
+<meta property="og:image" content="https://preceptoros.org/assets/preceptor-og.png">
+<meta property="og:url" content="https://preceptoros.org/ar/community.html">
+<meta property="og:type" content="website">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"DiscussionForumPosting","name":"مجتمع PreceptorOS","description":"سوق سيادية للتحديات والمهام الموقّعة","url":"https://preceptoros.org/ar/community.html","inLanguage":"ar"}</script>
+<link rel="stylesheet" href="/assets/base.css">
+<link rel="stylesheet" href="/assets/movil.css">
+<link rel="stylesheet" href="/assets/canon.css">
+<link rel="stylesheet" href="/assets/sistema.css">
+<link rel="stylesheet" href="/assets/cara.css">
+<link rel="stylesheet" href="/assets/widget.css">
+<link rel="stylesheet" href="/assets/puertas.css">
+<link rel="stylesheet" href="/assets/cabezal.css">
+<link rel="stylesheet" href="/assets/esquina.css">
+<link rel="stylesheet" href="/assets/esquina-cuenta.css">
+<link rel="stylesheet" href="/assets/esquina-par.css">
+<link rel="stylesheet" href="/assets/mandos.css">
+<link rel="stylesheet" href="/assets/panel.css">
+<link rel="stylesheet" href="/assets/taller.css">
+<link rel="stylesheet" href="/assets/escenario.css">
+<link rel="stylesheet" href="/assets/tema.css">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#17131F">
+<link rel="stylesheet" href="/assets/rtl.css">
+</head>
+<body>
+<canvas id="ambient" aria-hidden="true"></canvas>
+<main>
+
+<header id="cabezal" data-cabezal="community">
+  <div class="marca"><h1>المجتمع<b> · الأغورا</b></h1></div>
+</header>
+
+
+<details class="pliego"><summary>كيف تقرأ هذه الصفحة</summary>
+<p class="guia"><strong>هذه سوق، لا منتدى.</strong> في الأعلى، خطوط البحث: في أي درجة يقف كل منها وماذا ينقصه. ثم ما يطلبه المعماري اليوم وما يمكنك أخذه معك. وفي الأسفل، اللوحة المفتوحة —تحديات، مهام، حوسبة مشتركة— حيث تطلب أو تسلّم بنفسك.</p>
+</details>
+
+<!-- DOS PESTAÑAS. Orden del Soberano, 2026-09-14: la plaza tiene
+     dos cosas que no se miran a la vez --lo que se puede hacer y lo
+     que se esta hablando-- y en una sola columna competian por la
+     misma pantalla. La implementacion es `pestanas.js`, compartida. -->
+<div class="pestanas" data-pestanas>
+  <button class="pestana" data-panel="proyectos">المشاريع</button>
+  <button class="pestana" data-panel="foro">المنتدى</button>
+  <button class="pestana" data-panel="perfil">ملفي</button>
+</div>
+
+<div data-hoja="proyectos">
+
+
+<!-- LA VITRINA DE LAS LINEAS DE INVESTIGACION. Vivia en el
+     LorAtelier y se muda aqui el 2026-09-13: lo que se puede
+     APORTAR es asunto de la comunidad, y el Libro de Pruebas se
+     queda con lo que se MIDE. La rellena `taller.js` desde
+     `loratelier.json` + `taller-<idioma>.json`; vacia no ocupa nada.
+
+     VA LA PRIMERA desde el 2026-09-14, por orden del Soberano. Lo que
+     abria la pagina era el «Modelo del periodo», que hoy es NO_DATA con
+     su causa: honesto, y pesimo como entrada. Un NO_DATA de bienvenida
+     dice «aqui no hay nada» antes de que a nadie le de tiempo a ver las
+     siete lineas que si existen. -->
+<section id="taller"></section>
+
+<div id="anuncios" class="panel"></div>
+
+</div>
+
+<div data-hoja="perfil" data-carga="/assets/perfil-pestana.js" hidden></div>
+
+<div data-hoja="foro" hidden>
+<!-- LA PUERTA ERA HTML FIJO Y AHORA ES UN FORO DE VERDAD. Leer en
+     nivel 2, escribir en nivel 3: regla firmada por el Soberano el
+     2026-09-20. Lo pinta `foro.js`; vacio no ocupa nada. -->
+<div id="foro"></div>
+</div>
+
+
+<footer class="honest-footer">
+  <details class="pliego"><summary>كيف يعمل هذا</summary>
+  <ul>
+    <li><strong>التحدي هو المحرّك.</strong> يقول أحدهم أي قياس ينقص. ومن لديه العتاد يقيسه ويوقّع السطر. هكذا ينمو Benchmark: بفجوات مسمّاة، لا بتكليفات.</li>
+    <li><strong>النشر اختياري، وملف واحد يوقفه.</strong> PreceptorOS الخاص بك لا يرسل إلا ما تطلب إرساله. ولقطعه من الجذر، وضع الملاذ ملف فارغ اسمه MODO_SANTUARIO: يتقدّم على ما تقوله إعداداتك ولا يعيد كتابتها. احذفه ويعود كل شيء كما كان.</li>
+    <li><strong>المنتدى مغلق للكتابة، ويقول ذلك.</strong> سُحبت المواضيع التجريبية في 2026-09-14: اصطناع نشاط في منتدى فارغ أقدم كذبة على الإنترنت. ما يكتب فعلًا هو الساحة، التي توقّع كل سطر على جهازك.</li>
+  </ul>
+</details>
+  <p><a href="/hitos.html">المحطات</a></p>
+</footer>
+
+<script type="application/json" id="i18n">{"anCerrados": "مغلق بالفعل ({n})", "anSinDatos": "NO_DATA — تعذّرت قراءة الإعلانات:", "anSinIdioma": "NO_DATA — هذا الإعلان غير مترجم إلى لغتك:", "anTitulo": "ما يطلبه المعماري اليوم", "foAviso": "ما تكتبه يغادر هذا الجهاز موقّعًا بمفتاحك، وسيراه الأشخاص المسجّلون الآخرون. لا يمكن حذفه من هنا.", "foComoQuien": "تقرأ بصفتك", "foCrearClave": "أنشئ هوية في الملف الشخصي", "foEnviar": "وقّع وانشر", "foEscribe": "اكتب تعليقًا…", "foFallo": "NO_DATA — تعذّر النشر:", "foMandando": "جارٍ التوقيع والإرسال…", "foNivel1": "المنتدى يُرى بمفتاح. بلا حساب ولا كلمة مرور: يُولَّد في متصفحك ولا يغادر جهازك أبدًا.", "foNivel2": "المستوى 2، يمكنك القراءة", "foNivel3": "المستوى 3، يمكنك الكتابة", "foSinBronce": "NO_DATA — تعذّرت قراءة البرونز على هذا الجهاز، فلا يمكن التأكد من أنك مساهم:", "foSinExtremo": "NO_DATA — ليس للأغورا بعدُ نقطة نهاية للتعليقات. العميل جاهز وتعديل الرفّ مقترح؛ يبقى تطبيقه.", "foSinRed": "NO_DATA — تعذّرت قراءة المنتدى:", "foSinReto": "لم تُعطِ الأغورا أي تحدٍّ", "foSoloLectura": "الكتابة تتطلب المستوى 3: صحّح إجابة واحفظ الزوج الموقّع. الكتابة لا تُفتح لأنك تملك مفتاحًا، بل لأنك سلّمت عملًا.", "foTitulo": "المنتدى", "foVacio": "لم يكتب أحد بعد. الفراغ هو ما هناك.", "idAviso": "يُولَّد مفتاح في متصفحك. لا يمكن تصديره ولا نسخه إلى جهاز آخر: إن مسحت بيانات الموقع ضاعت هذه الهوية ولا سبيل إلى استعادتها. لا كلمة مرور تنساها، ولا خادم يحتفظ بها.", "idClave": "اعرض بصمتي", "idEntrar": "أنشئ هوية", "idFallo": "NO_DATA — تعذّر إنشاء الهوية:", "idHola": "مرحبًا،", "idPerfil": "ملفي", "idPublica": "المفتاح العام:", "ksJuezPedir": "اطلب حكمًا", "ksJuezSinTurnos": "NO_DATA — لا أدوار للحكم عليها بعد. تحدّث مع الدراسة أولًا.", "ksJuezTitulo": "الحَكَم المنسّق", "ksJuezUnaCapa": "NO_DATA — هذه طبقة واحدة. بطاقة هذه الدراسة تتطلب اثنتين —الحتمية أولًا، ثم النموذج— والأولى تعمل على الرفّ لا هنا. اقرأه رأيًا مقيسًا لا درجة.", "ksSello": "وضع الطيران", "mcAbrir": "افتح", "mcAnon": "مجهول", "mcCerrado": "NO_DATA — لا توجد دردشة فورية بعد: القناة غير موجودة. ما تكتبه يبقى على هذه الشاشة ويذهب حين تغلق التبويب.", "mcEnviar": "إرسال", "mcEscribe": "اكتب…", "mcMinimizar": "صغّر", "mcTitulo": "الميدان", "tbEscritura": "تقول الأغورا عن نفسها:", "tbTipos": {"CHALLENGE": "تحدٍّ", "COMPUTE": "حوسبة", "GENERAL": "عام", "TASK": "مهمة"}, "tbVacio": "الأغورا صامتة. كن أول من يقترح [مهمة]: لم يفتح أحد موضوعًا بعد."}</script>
+<script src="/assets/ambient.js"></script>
+<script src="/assets/board-anuncios.js"></script>
+<div id="mini-chat"></div>
+
+<script src="/assets/pestanas.js"></script>
+<script src="/assets/foro.js"></script>
+<script src="/assets/minichat.js"></script>
+<script src="/assets/taller.js"></script>
+<script src="/assets/state.js"></script>
+<script src="/assets/rack.js"></script>
+<script src="/assets/juez.js"></script>
+<script src="/assets/escenario.js"></script>
+<script src="/assets/resena.js"></script>
+
+<script src="/assets/cabezal.js"></script>
+<script src="/assets/cabezal-rotulos.js"></script>
+<script src="/assets/auth.js"></script>
+<script src="/assets/bronce.js"></script>
+<script src="/assets/pwa.js"></script>
+<script src="/assets/selector-modelo.js" defer></script>
+</body>
+</html>

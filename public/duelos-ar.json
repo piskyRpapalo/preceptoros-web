@@ -1,0 +1,22 @@
+{
+  "esquema": 1,
+  "idioma": "ar",
+  "revision": "pendiente-revision-nativa",
+  "procedencia": {
+    "traducido_por": "qwen2.5:7b"
+  },
+  "ui": {
+    "duelo_col_base": "بلا عُدّة · النموذج عاريًا",
+    "duelo_col_lora": "مع العُدّة · دور البيت",
+    "duelo_degenera": "يدور حول نفسه",
+    "duelo_enviar": "أرسل إلى الاثنين",
+    "duelo_firmar": "سجّل",
+    "duelo_guia": "دليل إعادة الكتابة",
+    "duelo_input": "اكتب مرة واحدة؛ وسيجيب الاثنان.",
+    "duelo_juez_no_data": "حَكَم البيت (قواعد في متصفحك ونموذج على الرفّ) يُشير، عمودًا عمودًا؛ والحكم الذي يُحتسب هو الذي توقّعه أنت.",
+    "duelo_reescribir": "أعد الإرسال إلى الاثنين",
+    "duelo_sin_prueba": "«مرحبًا» بلا إعادة كتابة لا تُثبت شيئًا. أعد كتابة الأمر أو اترك رأيك، فيصبح التوقيع ممكنًا.",
+    "duelo_titulo": "المبارزة",
+    "duelo_veredicto": "الحكم"
+  }
+}

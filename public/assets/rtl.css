@@ -1,0 +1,54 @@
+/* preceptoros.org · el espejo para las lenguas que se escriben de derecha a
+ * izquierda. Hoy, solo el arabe. Solo lo cargan sus paginas.
+ *
+ * POR QUE UNA HOJA APARTE Y NO REGLAS LOGICAS EN LAS COMUNES (2026-09-23).
+ * `dir="rtl"` en el <html> ya voltea casi todo: flex, texto, rejillas. Lo que
+ * no voltea es lo que se escribio con un lado FISICO --`right:`,
+ * `padding-right:`--, y en el cabezal eso es justo lo que coloca la cara. En
+ * arabe el titulo del piso se iba a la derecha, que es su sitio, y quedaba
+ * debajo de un busto que seguia clavado a la derecha. Medido en la primera
+ * captura, no supuesto.
+ *
+ * Reescribir esas reglas en logico (`inset-inline-end`, `padding-inline-end`)
+ * seria lo limpio, pero toca seis hojas que ocho lenguas ya usan bien y que
+ * estan cerca de su tope. Esto es la desviacion minima: el mismo valor, en el
+ * lado contrario, y solo donde `dir="rtl"`. Cada regla nombra la que espeja.
+ */
+
+/* cara.css · .presentacion{right:.35rem} */
+[dir="rtl"] .presentacion{right:auto;left:.35rem}
+
+/* esquina-par.css + esquina-cuenta.css · #cabezal{padding-right:.55rem}.
+   El lado izquierdo medido era .9rem: se cambian de sitio. */
+[dir="rtl"] #cabezal,[dir="rtl"] #cabezal[data-cabezal]{padding-right:.9rem;padding-left:.55rem}
+
+/* esquina-par.css · el hueco de la cara lo reservan las cuatro puertas. */
+[dir="rtl"] #cabezal #cab-nav{padding-right:0;padding-left:calc(var(--esfera) + .5rem)}
+
+/* esquina.css, bajo 1024 px · la frase solar tambien comparte franja. */
+@media (max-width:1023px){
+  [dir="rtl"] #cabezal .cab-solar{padding-right:.7rem;padding-left:calc(var(--esfera) + .5rem)}
+}
+
+/* cara.css · la misma cara en las cabeceras interiores. */
+[dir="rtl"] header:not(#cabezal){padding-right:0;padding-left:calc(var(--esfera) + .8rem)}
+
+/* chat.css · la flecha de enviar apunta hacia donde se lee. */
+[dir="rtl"] button.enviar svg{transform:scaleX(-1);margin-right:0;margin-left:.1rem}
+
+/* Las listas con sangria colgada: la sangria va del lado donde empieza la linea. */
+[dir="rtl"] ul.leyenda li,[dir="rtl"] .anuncio ul li{padding-left:0;padding-right:.9rem}
+[dir="rtl"] .pliego ul{padding-left:0;padding-right:1.1rem}
+[dir="rtl"] .dialogo p,[dir="rtl"] .nodata{border-left:0;padding-left:0;padding-right:.7rem}
+[dir="rtl"] .dialogo p{border-right:3px solid var(--bronce-claro)}
+[dir="rtl"] .nodata{border-right:3px solid var(--sol)}
+
+/* esquina.css · el panel de ajustes cuelga de su engranaje, que en arabe
+   esta a la izquierda. */
+[dir="rtl"] #cabezal #panel-ajustes{right:auto;left:.45rem}
+
+/* panel.css · el aviso del boton lateral, del lado donde empieza la lectura.
+   La hoja que se desliza (`.panel-desliza`) se queda a la derecha A PROPOSITO:
+   entra y sale con `translateX(101%)`, y espejar su sitio sin espejar su
+   salida la dejaria cerrada encima de la pagina. */
+[dir="rtl"] .lateral-boton .aviso{right:auto;left:.15rem}

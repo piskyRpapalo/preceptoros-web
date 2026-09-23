@@ -4,6 +4,22 @@
  "nota": "Los rotulos del cabezal, para las paginas que no llevan bloque i18n propio -- `instalar.html` es la que obliga: sus textos viven en `/instalar.json`. NO se escriben aqui a mano: los saca `nav.py` del bloque i18n de cada portada, para que la palabra sea LITERALMENTE la misma arriba y abajo. Antes cada pagina llevaba su propia lista y con otros nombres --«Portada» donde el cabezal decia «INICIO»--, y ocho lenguas por seis paginas son 48 sitios donde acordarse.",
  "generado": "2026-09-05",
  "textos": {
+  "ar": {
+   "home": "الرئيسية",
+   "benchmark": "LORATELIER",
+   "comunidad": "المجتمع",
+   "instala": "الأدوات",
+   "idioma": "اللغة",
+   "solar": "شمسي بنسبة 99%، باستثناء مزوّد الويب",
+   "ajustes": "الإعدادات",
+   "idPerfil": "ملفي",
+   "idClave": "اعرض بصمتي",
+   "idPublica": "المفتاح العام:",
+   "idEntrar": "أنشئ هوية",
+   "idAviso": "يُولَّد مفتاح في متصفحك. لا يمكن تصديره ولا نسخه إلى جهاز آخر: إن مسحت بيانات الموقع ضاعت هذه الهوية ولا سبيل إلى استعادتها. لا كلمة مرور تنساها، ولا خادم يحتفظ بها.",
+   "idFallo": "NO_DATA — تعذّر إنشاء الهوية:",
+   "casa": "الصفحة الرئيسية"
+  },
   "de": {
    "home": "START",
    "benchmark": "LORATELIER",

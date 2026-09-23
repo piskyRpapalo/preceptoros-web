@@ -18,7 +18,7 @@
   }
 
   var GRACIAS = { es:'Gracias', en:'Thank you', pt:'Obrigado', fr:'Merci',
-                  it:'Grazie', de:'Danke', el:'Ευχαριστώ', ru:'Спасибо' };
+                  it:'Grazie', de:'Danke', el:'Ευχαριστώ', ru:'Спасибо', ar:'شكرًا' };
   var CONS = {
     es:['Permitir análisis para mejorar el modelo',
         'Marcado: se guarda lo que escribes y lo que responde. Sin marcar: solo el modelo, la hora y el largo.'],

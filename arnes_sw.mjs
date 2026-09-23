@@ -157,7 +157,10 @@ const rutas = await shell.keys();
 // a mano A PROPOSITO -- si se dedujese de la lista del worker, el test
 // diria siempre que si y dejaria de avisar el dia que una pieza se caiga
 // del precache sin que nadie lo decida.
-ok('precachea paginas y piezas del Hub', rutas.length === 135, rutas.length+' rutas');
+// 145 desde el 2026-09-23: entra el arabe, la novena lengua. Seis paginas
+// suyas en el shell y sus cuatro familias precacheadas (agentes, duelos,
+// herramientas, caminos): seis y cuatro, diez.
+ok('precachea paginas y piezas del Hub', rutas.length === 145, rutas.length+' rutas');
 ok('el shell trae las tres tiras de la cara',
    ['apertura', 'reposo', 'habla']
      .every(s => rutas.includes('/assets/caras/secuencia-' + s + '-256.webp')));

@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="ar" dir="rtl" data-tema="oscuro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ابدأ هنا · PreceptorOS</title>
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<meta name="description" content="المُثبِّت يرافقك خطوة بخطوة: شغّل التطبيق واختر الرفيق الذي يناسب ما تريد فعله.">
+<link rel="alternate" hreflang="ar" href="/ar/onboarding.html">
+<link rel="alternate" hreflang="de" href="/de/onboarding.html">
+<link rel="alternate" hreflang="el" href="/el/onboarding.html">
+<link rel="alternate" hreflang="en" href="/en/onboarding.html">
+<link rel="alternate" hreflang="es" href="/es/onboarding.html">
+<link rel="alternate" hreflang="fr" href="/fr/onboarding.html">
+<link rel="alternate" hreflang="it" href="/it/onboarding.html">
+<link rel="alternate" hreflang="pt" href="/pt/onboarding.html">
+<link rel="alternate" hreflang="ru" href="/ru/onboarding.html">
+<link rel="stylesheet" href="/assets/base.css">
+<link rel="stylesheet" href="/assets/movil.css">
+<link rel="stylesheet" href="/assets/canon.css">
+<link rel="stylesheet" href="/assets/sistema.css">
+<link rel="stylesheet" href="/assets/onboarding.css">
+<link rel="stylesheet" href="/assets/cara.css">
+<link rel="stylesheet" href="/assets/widget.css">
+<link rel="stylesheet" href="/assets/puertas.css">
+<link rel="stylesheet" href="/assets/cabezal.css">
+<link rel="stylesheet" href="/assets/esquina.css">
+<link rel="stylesheet" href="/assets/esquina-cuenta.css">
+<link rel="stylesheet" href="/assets/esquina-par.css">
+<link rel="stylesheet" href="/assets/mandos.css">
+<link rel="stylesheet" href="/assets/panel.css">
+<link rel="stylesheet" href="/assets/tema.css">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#17131F">
+<link rel="stylesheet" href="/assets/rtl.css">
+</head>
+<body>
+<main>
+
+<header id="cabezal" data-cabezal="onboarding">
+  <div class="marca"><h1>ابدأ هنا</h1></div>
+</header>
+
+<p class="ob-voz" id="ob-voz" role="status" aria-live="polite">…</p>
+
+<div class="ob-caminos">
+  <button type="button" id="ob-atajo">نزّل التطبيق ←</button>
+  <button type="button" id="ob-largo" class="ob-secundario">لنبدأ</button>
+</div>
+
+<section class="ob-paso" id="ob-que" data-dice="obQue">
+  <h2><span class="ob-num">1</span>ما هو PreceptorOS؟</h2>
+  <p>ذكاؤك على جهازك، بلا حاجة إلى السحابة. ذاكرة دائمة ملكٌ لك، وبوابة خصوصية تنقّي السياق قبل أن يصل إلى أي ذكاء خارجي. بلا حسابات ولا تتبّع.</p>
+  <button type="button" data-ir="privacidad">لنبدأ</button>
+</section>
+
+<section class="ob-paso" id="ob-privacidad" data-dice="obPriv">
+  <h2><span class="ob-num">2</span>خصوصيتك، تحت سيطرتك</h2>
+  <p>المرشّح هو الذي يشطب ما هو خاص. الصق سياقك وانظر ما يخرج قبل أن تسلّمه لأحد: يحدث ذلك في متصفحك، بلا تثبيت، ويقول لك أيضًا أين لا يصل.</p>
+  <p><a class="boton" href="./playground.html">جرّب المرشّح الآن</a></p>
+</section>
+
+<section class="ob-paso" id="ob-descarga" data-dice="obDesc">
+  <h2><span class="ob-num">3</span>نزّل التطبيق</h2>
+  <p>الويب هو الواجهة. التطبيق هو الورشة: هناك يعمل الرفيق الذي تختاره على ملفاتك الحقيقية، دون أن تغادر جهازك.</p>
+  <div class="ob-descargas">
+    <a class="boton" href="./instalar.html#android">Android · عبر Termux</a>
+    <a class="boton" href="./instalar.html#descargas">Linux أو macOS · install.sh</a>
+    <a class="boton" href="./instalar.html#descargas">Windows · install.ps1</a>
+  </div>
+  <p class="ob-aviso nodata">NO_DATA — يعمل Android اليوم عبر Termux باتباع دليل هذا الموقع؛ ملف APK عمل مستقبلي مُعلَن وغير موجود بعد. مُثبّتات الحاسوب تشير إلى عنوانها النهائي على GitHub Releases وستُعيد 404 حتى يُطلق الإصدار الأول. Windows وmacOS غير مُختبَرين على هذا الرفّ: لا جهاز بأيٍّ من النظامين هنا.</p>
+</section>
+
+<section class="ob-paso" id="ob-conecta" data-dice="obConec">
+  <h2><span class="ob-num">4</span>رمز الاقتران الخاص بك</h2>
+  <p>هويتك تُولَّد في المتصفح والمفتاح الخاص لا يغادره أبدًا. رمز الاقتران هذا مشتقّ من مفتاحك العام: هو نفسه دائمًا بالنسبة إليك، ولا يحمل في داخله أي سرّ.</p>
+  <button type="button" id="ob-vincular">ولّد رمز الاقتران</button>
+  <p class="ob-codigo" id="ob-codigo">—</p>
+  <p class="ob-aviso nodata">هذا الرمز يعرّف بك ولا يُصادق عليك: أي أحد يعرف مفتاحك العام يستطيع حسابه. الربط الحقيقي سيتطلب توقيعًا أيضًا، وذلك يصل مع الواجهة الخلفية.</p>
+</section>
+
+<footer class="honest-footer">
+  
+</footer>
+
+<script type="application/json" id="i18n">{
+ "desc": "المُثبِّت يرافقك خطوة بخطوة: شغّل التطبيق واختر الرفيق الذي يناسب ما تريد فعله.",
+ "idAviso": "يُولَّد مفتاح في متصفحك. لا يمكن تصديره ولا نسخه إلى جهاز آخر: إن مسحت بيانات الموقع ضاعت هذه الهوية.",
+ "idClave": "اعرض بصمتي",
+ "idPerfil": "ملفي",
+ "idEntrar": "أنشئ هوية",
+ "idFallo": "NO_DATA — تعذّر إنشاء الهوية:",
+ "idHola": "مرحبًا،",
+ "idPublica": "المفتاح العام:",
+ "lang": "ar",
+ "marca": "ابدأ هنا",
+ "obAtajo": "إلى الهدف مباشرة إذن. انزل إلى الأسفل: التنزيلات الثلاثة هناك.",
+ "obConec": "رمز الاقتران هذا يربط هويتك على الويب بالتطبيق. إنه لك وحدك.",
+ "obDesc": "اختر نظامك. التطبيق هو الورشة؛ وأنا أرافقك في الداخل.",
+ "obFalloCodigo": "NO_DATA — تعذّر اشتقاق الرمز:",
+ "obLargo": "حسنًا. دعني أريك أولًا ما يبقى على جهازك وما لا يبقى.",
+ "obPriv": "هذا ليس وعدًا: إنه مرشّح يمكنك تجربته الآن.",
+ "obQue": "PreceptorOS دليلك: ثبّته وسيكون معك فورًا، بلا إعدادات.",
+ "obSaluda": "أنا المُثبِّت. سأبقى معك حتى يعمل التطبيق وتختار رفيقك. قل لي أي طريق تريد أن تسلك.",
+ "obSinIdentidad": "تحتاج إلى هوية أولًا. المسها في الأعلى: تُولَّد في متصفحك ولا تغادره أبدًا.",
+ "obVinculado": "ها هي. افتحها في التطبيق ونكمل: سأعرّفك على رفاقك.",
+ "pieInst": "دليل التثبيت",
+ "piePlay": "ساحة التجربة",
+ "pieVolver": "→ العودة إلى الرئيسية",
+ "s1b": "لنبدأ",
+ "s1p": "ذكاؤك على جهازك، بلا حاجة إلى السحابة. ذاكرة دائمة ملكٌ لك، وبوابة خصوصية تنقّي السياق قبل أن يصل إلى أي ذكاء خارجي. بلا حسابات ولا تتبّع.",
+ "s1t": "ما هو PreceptorOS؟",
+ "s2b": "جرّب المرشّح الآن",
+ "s2p": "المرشّح هو الذي يشطب ما هو خاص. الصق سياقك وانظر ما يخرج قبل أن تسلّمه لأحد: يحدث ذلك في متصفحك، بلا تثبيت، ويقول لك أيضًا أين لا يصل.",
+ "s2t": "خصوصيتك، تحت سيطرتك",
+ "s3and": "Android · عبر Termux",
+ "s3aviso": "NO_DATA — يعمل Android اليوم عبر Termux باتباع دليل هذا الموقع؛ ملف APK عمل مستقبلي مُعلَن وغير موجود بعد. مُثبّتات الحاسوب تشير إلى عنوانها النهائي على GitHub Releases وستُعيد 404 حتى يُطلق الإصدار الأول. Windows وmacOS غير مُختبَرين على هذا الرفّ: لا جهاز بأيٍّ من النظامين هنا.",
+ "s3p": "الويب هو الواجهة. التطبيق هو الورشة: هناك يعمل الرفيق الذي تختاره على ملفاتك الحقيقية، دون أن تغادر جهازك.",
+ "s3pc": "Linux أو macOS · install.sh",
+ "s3t": "نزّل التطبيق",
+ "s3win": "Windows · install.ps1",
+ "s4aviso": "هذا الرمز يعرّف بك ولا يُصادق عليك: أي أحد يعرف مفتاحك العام يستطيع حسابه. الربط الحقيقي سيتطلب توقيعًا أيضًا، وذلك يصل مع الواجهة الخلفية.",
+ "s4b": "ولّد رمز الاقتران",
+ "s4p": "هويتك تُولَّد في المتصفح والمفتاح الخاص لا يغادره أبدًا. رمز الاقتران هذا مشتقّ من مفتاحك العام: هو نفسه دائمًا بالنسبة إليك، ولا يحمل في داخله أي سرّ.",
+ "s4t": "رمز الاقتران الخاص بك",
+ "titulo": "ابدأ هنا · PreceptorOS",
+ "volver": "الرئيسية"
+}</script>
+<script src="/assets/cabezal.js"></script>
+<script src="/assets/cabezal-rotulos.js"></script>
+<script src="/assets/auth.js"></script>
+<script src="/assets/onboarding.js"></script>
+
+</main>
+<script src="/assets/pwa.js"></script>
+</body>
+</html>
