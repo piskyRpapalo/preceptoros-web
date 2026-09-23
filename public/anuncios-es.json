@@ -1,0 +1,22 @@
+{
+ "esquema": 1,
+ "idioma": "es",
+ "nota": "Los textos de los anuncios del Agora en esta lengua. Salieron de `anuncios.json` el 2026-09-23: con nueve lenguas dentro le quedaban 344 B del tope de 16 KB y el siguiente anuncio ya no cabia. `anuncios.json` se queda con los HECHOS (id, tipo, autor, fecha, enlace, estado); esto trae lo que se lee, por id. Mismo corte que el taller, los paneles y el Agora.",
+ "textos": {
+  "feedback": {
+   "titulo": "Dame tu feedback",
+   "cuerpo": "Qué se rompió, qué no entendiste, qué esperabas encontrar y no estaba. Sirve más una frase concreta que un elogio.",
+   "publico": "Público: firma un hilo aquí abajo. Se firma con tu clave, en tu aparato.",
+   "privado": "Privado: abre un issue en el repositorio público. Es el único canal que hoy llega de verdad.",
+   "pero": "NO_DATA — el Ágora ya contesta, pero todavía no acepta escritura: POST /api/v1/threads responde 405, y el servidor lo dice con sus palabras: «escritura cerrada: el Ágora todavía no modera» (medido el 2026-09-08). Se firma y se queda en tu aparato hasta que abra.",
+   "enlaceTexto": "Abrir un issue"
+  },
+  "entrenar": {
+   "titulo": "Entrena un modelo",
+   "cuerpo": "Trae un conjunto de ejemplos tuyo y sale un adaptador LoRA entrenado en el rack. No hace falta GPU: se hace en CPU pura y está medido.",
+   "publico": "Medido el 2026-08-29: rank 16, alpha 32, 2 épocas, 93 ejemplos de tren y 16 de validación. 553 s una línea y 445 s la otra. Bajo diez minutos, no una noche.",
+   "privado": "El conjunto de ejemplos es tuyo y se queda tuyo. Lo que se comparte, si quieres, es el adaptador que sale.",
+   "pero": "NO_DATA — todavía no hay forma de mandarlo por la web: no hay endpoint de subida. Hoy se acuerda por el hilo y se pasa el fichero a mano."
+  }
+ }
+}

@@ -4775,7 +4775,25 @@ class Comunidad(unittest.TestCase):
     """Los anuncios OFICIALES del Agora, que no son los hilos de EJEMPLO."""
 
     def setUp(self):
+        # Desde el 2026-09-23 los textos viven en `anuncios-<lengua>.json`, por
+        # id. Se juntan aqui exactamente como los junta `board-anuncios.js`, y
+        # las tres pruebas de abajo siguen mirando lo mismo que miraban.
         self.d = json.loads((PUBLICO / "anuncios.json").read_text(encoding="utf-8"))
+        for a in self.d["anuncios"]:
+            a["textos"] = {}
+            for idi in IDIOMAS:
+                f = PUBLICO / f"anuncios-{idi}.json"
+                if f.is_file():
+                    t = json.loads(f.read_text(encoding="utf-8"))["textos"].get(a["id"])
+                    if t:
+                        a["textos"][idi] = t
+
+    def test_los_hechos_y_los_textos_no_se_mezclan(self):
+        """`anuncios.json` no vuelve a llevar textos: se partio porque no cabian."""
+        crudo = json.loads((PUBLICO / "anuncios.json").read_text(encoding="utf-8"))
+        for a in crudo["anuncios"]:
+            with self.subTest(anuncio=a["id"]):
+                self.assertNotIn("textos", a)
 
     def test_los_anuncios_hablan_los_tres_idiomas(self):
         """Un anuncio a medio traducir sale en blanco en dos de tres paginas.
@@ -5253,6 +5271,41 @@ CLAVES_PERFIL = {
     'prDesde', 'prFallo', 'prMandando', 'prMaquinaNada',
     'prMaquinaNoLlega', 'prMaquinaOfrece', 'prPseudonimo', 'prRegistrado',
     'prRegistrar', 'prSinIdentidad', 'prSinRegistrar'}
+
+class LasTraduccionesSeSacanYSeMeten(unittest.TestCase):
+    """`traducciones.py` saca los textos y los reinserta sin tocar el marcado.
+
+    Entro con el arabe (2026-09-23). Si sacar y meter con la identidad cambiara
+    un solo byte, la herramienta de la revision nativa --y de la proxima
+    lengua-- estaria rompiendo paginas en silencio."""
+
+    def test_la_identidad_no_cambia_ni_un_byte(self):
+        import traducciones as TR
+        for l in IDIOMAS:
+            for rel, tipo in TR.ficheros(l):
+                t = (PUBLICO / rel).read_text(encoding="utf-8")
+                with self.subTest(fichero=rel):
+                    self.assertEqual(TR.rehace(t, tipo, lambda s: s), t)
+
+    def test_ninguna_familia_lleva_un_rotulo_vacio(self):
+        """El pie de Instalar salio como un triangulo SIN rotulo en ocho de nueve
+        lenguas durante semanas: `pieTitulo` estaba vacio y solo el griego lo
+        tenia. Una cadena vacia no es una traduccion pendiente: es un hueco que
+        el gate no veia porque la clave EXISTIA."""
+        def hojas(o, r=""):
+            if isinstance(o, dict):
+                for k, v in o.items():
+                    yield from hojas(v, r + "." + k)
+            elif isinstance(o, list):
+                for i, v in enumerate(o):
+                    yield from hojas(v, f"{r}[{i}]")
+            elif isinstance(o, str):
+                yield r, o
+        for f in sorted(PUBLICO.glob("*-??.json")):
+            for ruta, valor in hojas(json.loads(f.read_text(encoding="utf-8"))):
+                with self.subTest(fichero=f.name, clave=ruta):
+                    self.assertTrue(valor.strip(), "rotulo vacio")
+
 
 class LaAppAUnClic(unittest.TestCase):
     """Pedido por el Soberano el 2026-09-23: la app, a un solo clic de descarga

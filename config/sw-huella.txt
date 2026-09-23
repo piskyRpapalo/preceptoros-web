@@ -1,2 +1,2 @@
-version=preceptoros-2026-17-aazv
-huella=8bc4eaffd4137ab9
+version=preceptoros-2026-17-aazw
+huella=a27e840090672214

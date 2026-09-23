@@ -1,0 +1,23 @@
+{
+ "esquema": 1,
+ "idioma": "de",
+ "nota": "Los textos de los anuncios del Agora en esta lengua. Salieron de `anuncios.json` el 2026-09-23: con nueve lenguas dentro le quedaban 344 B del tope de 16 KB y el siguiente anuncio ya no cabia. `anuncios.json` se queda con los HECHOS (id, tipo, autor, fecha, enlace, estado); esto trae lo que se lee, por id. Mismo corte que el taller, los paneles y el Agora.",
+ "textos": {
+  "feedback": {
+   "titulo": "Gib mir deine Rückmeldung",
+   "cuerpo": "Was kaputtging, was du nicht verstanden hast, was du erwartet hast und nicht da war. Ein konkreter Satz nützt mehr als ein Lob.",
+   "publico": "Öffentlich: signiere hier unten einen Beitrag. Signiert wird mit deinem Schlüssel, auf deinem Gerät.",
+   "privado": "Privat: öffne ein Issue im öffentlichen Repository. Das ist heute der einzige Kanal, der wirklich ankommt.",
+   "pero": "NO_DATA — die Agora antwortet inzwischen, akzeptiert aber noch keine Schreibzugriffe: POST /api/v1/threads liefert 405, und der Server sagt es selbst: «Schreiben geschlossen: die Agora moderiert noch nicht» (gemessen am 2026-09-08). Er wird signiert und bleibt auf deinem Gerät, bis sie öffnet.",
+   "enlaceTexto": "Ein Issue öffnen"
+  },
+  "entrenar": {
+   "titulo": "Trainiere ein Modell",
+   "cuerpo": "Bring eine eigene Menge von Beispielen mit, und heraus kommt ein auf dem Rack trainierter LoRA-Adapter. Eine GPU ist nicht nötig: es läuft auf reiner CPU und ist gemessen.",
+   "publico": "Gemessen am 2026-08-29: rank 16, alpha 32, 2 Epochen, 93 Trainings- und 16 Validierungsbeispiele. 553 s die eine Zeile und 445 s die andere. Unter zehn Minuten, keine ganze Nacht.",
+   "privado": "Die Menge der Beispiele gehört dir und bleibt dein. Geteilt wird, wenn du willst, der Adapter, der herauskommt.",
+   "pero": "NO_DATA — es gibt noch keinen Weg, sie über die Seite zu schicken: es fehlt ein Endpunkt zum Hochladen. Heute einigt man sich im Beitrag und reicht die Datei von Hand weiter."
+  }
+ },
+ "revision": "pendiente-revision-nativa"
+}

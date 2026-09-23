@@ -1,0 +1,23 @@
+{
+ "esquema": 1,
+ "idioma": "fr",
+ "nota": "Los textos de los anuncios del Agora en esta lengua. Salieron de `anuncios.json` el 2026-09-23: con nueve lenguas dentro le quedaban 344 B del tope de 16 KB y el siguiente anuncio ya no cabia. `anuncios.json` se queda con los HECHOS (id, tipo, autor, fecha, enlace, estado); esto trae lo que se lee, por id. Mismo corte que el taller, los paneles y el Agora.",
+ "textos": {
+  "feedback": {
+   "titulo": "Donne-moi ton retour",
+   "cuerpo": "Ce qui a cassé, ce que tu n'as pas compris, ce que tu t'attendais à trouver et qui n'y était pas. Une phrase concrète vaut mieux qu'un compliment.",
+   "publico": "Public : signe un fil ci-dessous. Il est signé avec ta clé, sur ton appareil.",
+   "privado": "Privé : ouvre une issue sur le dépôt public. C'est le seul canal qui arrive vraiment aujourd'hui.",
+   "pero": "NO_DATA — l'Agora répond désormais, mais elle n'accepte pas encore l'écriture : POST /api/v1/threads renvoie 405, et le serveur le dit lui-même : « écriture fermée : l'Agora ne modère pas encore » (mesuré le 2026-09-08). Il est signé et reste sur ton appareil jusqu'à l'ouverture.",
+   "enlaceTexto": "Ouvrir une issue"
+  },
+  "entrenar": {
+   "titulo": "Entraine un modele",
+   "cuerpo": "Apporte ton propre jeu d'exemples et il en sort un adaptateur LoRA entraîné sur le rack. Pas besoin de GPU : ça tourne sur CPU pur et c'est mesuré.",
+   "publico": "Mesuré le 2026-08-29 : rank 16, alpha 32, 2 époques, 93 exemples d'entraînement et 16 de validation. 553 s une ligne, 445 s l'autre. Moins de dix minutes, pas une nuit.",
+   "privado": "Le jeu d'exemples est à toi et le reste. Ce qui se partage, si tu veux, c'est l'adaptateur qui en sort.",
+   "pero": "NO_DATA — il n'y a toujours aucun moyen de l'envoyer par le web : pas d'endpoint d'upload. Aujourd'hui ça se convient dans le fil et le fichier se passe à la main."
+  }
+ },
+ "revision": "pendiente-revision-nativa"
+}

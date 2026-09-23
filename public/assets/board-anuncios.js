@@ -116,13 +116,25 @@
     });
   }
 
-  fetch('/anuncios.json', { cache: 'no-cache' })
-    .then(function (r) {
-      if (!r.ok) throw new Error('HTTP ' + r.status);
+  /* LOS TEXTOS VIVEN APARTE DESDE EL 2026-09-23: `anuncios.json` trae los
+     hechos y `anuncios-<lengua>.json` lo que se lee, por id. Se juntan aqui y
+     `pinta()` no cambia. Si la familia no llega, cada anuncio sale con su
+     NO_DATA de lengua, que es lo mismo que pasaba con un anuncio sin traducir. */
+  function pide(url) {
+    return fetch(url, { cache: 'no-cache' }).then(function (r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status + ' ' + url);
       return r.json();
-    })
-    .then(function (d) {
+    });
+  }
+  Promise.all([pide('/anuncios.json'),
+               pide('/anuncios-' + idioma + '.json').catch(function () { return null; })])
+    .then(function (r) {
+      var d = r[0], fam = (r[1] && r[1].textos) || {};
       if (!d || !Array.isArray(d.anuncios)) throw new Error('sin anuncios');
+      d.anuncios.forEach(function (a) {
+        a.textos = {};
+        if (fam[a.id]) a.textos[idioma] = fam[a.id];
+      });
       pinta(d);   // primer pintado: no hay nada que transicionar
     })
     .catch(function (e) {

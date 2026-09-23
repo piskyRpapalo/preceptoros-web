@@ -1,0 +1,23 @@
+{
+ "esquema": 1,
+ "idioma": "ar",
+ "nota": "Los textos de los anuncios del Agora en esta lengua. Salieron de `anuncios.json` el 2026-09-23: con nueve lenguas dentro le quedaban 344 B del tope de 16 KB y el siguiente anuncio ya no cabia. `anuncios.json` se queda con los HECHOS (id, tipo, autor, fecha, enlace, estado); esto trae lo que se lee, por id. Mismo corte que el taller, los paneles y el Agora.",
+ "textos": {
+  "feedback": {
+   "titulo": "أعطني رأيك",
+   "cuerpo": "ما الذي تعطّل، وما الذي لم تفهمه، وما الذي توقّعت أن تجده ولم يكن موجودًا. جملة واحدة محدّدة خير من أي مديح.",
+   "publico": "علنًا: وقّع موضوعًا في الأسفل. يُوقَّع بمفتاحك، على جهازك.",
+   "privado": "سرًّا: افتح issue في المستودع العام. إنها القناة الوحيدة التي تصل فعلًا اليوم.",
+   "pero": "NO_DATA — الأغورا تُجيب الآن، لكنها لا تقبل الكتابة بعد: POST /api/v1/threads يُعيد 405، والخادم يقولها بكلماته: «writing closed: the Agora does not moderate yet» (قيس في 2026-09-08). يُوقَّع ويبقى على جهازك حتى تُفتح.",
+   "enlaceTexto": "افتح issue"
+  },
+  "entrenar": {
+   "titulo": "درّب نموذجًا",
+   "cuerpo": "أحضر مجموعة أمثلتك ويخرج محوّل LoRA، مُدرَّب على الرفّ. لا حاجة إلى GPU: يعمل على CPU عادي ويُقاس.",
+   "publico": "قيس في 2026-08-29: الرتبة 16، وألفا 32، وحقبتان، و93 مثال تدريب و16 مثال تحقّق. 553 ث لخطّ و445 ث للآخر. أقل من عشر دقائق، لا ليلة كاملة.",
+   "privado": "مجموعة الأمثلة لك وتبقى لك. ما يُشارَك، إن أردت، هو المحوّل الناتج.",
+   "pero": "NO_DATA — لا توجد بعد طريقة لإرساله عبر الويب: لا نقطة نهاية للرفع. اليوم يُرتَّب الأمر في الموضوع ويُمرَّر الملف باليد."
+  }
+ },
+ "revision": "pendiente-revision-nativa"
+}

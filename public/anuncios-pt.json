@@ -1,0 +1,23 @@
+{
+ "esquema": 1,
+ "idioma": "pt",
+ "nota": "Los textos de los anuncios del Agora en esta lengua. Salieron de `anuncios.json` el 2026-09-23: con nueve lenguas dentro le quedaban 344 B del tope de 16 KB y el siguiente anuncio ya no cabia. `anuncios.json` se queda con los HECHOS (id, tipo, autor, fecha, enlace, estado); esto trae lo que se lee, por id. Mismo corte que el taller, los paneles y el Agora.",
+ "textos": {
+  "feedback": {
+   "titulo": "Dá-me o teu feedback",
+   "cuerpo": "O que se partiu, o que não percebeste, o que esperavas encontrar e não estava. Serve mais uma frase concreta do que um elogio.",
+   "publico": "Público: assina um tópico aqui em baixo. Assina-se com a tua chave, no teu aparelho.",
+   "privado": "Privado: abre um issue no repositório público. É o único canal que hoje chega a sério.",
+   "pero": "NO_DATA — a Ágora já responde, mas ainda não aceita escrita: POST /api/v1/threads devolve 405, e o próprio servidor di-lo: «escrita fechada: a Ágora ainda não modera» (medido a 2026-09-08). Assina-se e fica no teu aparelho até que abra.",
+   "enlaceTexto": "Abrir um issue"
+  },
+  "entrenar": {
+   "titulo": "Treina um modelo",
+   "cuerpo": "Traz um conjunto de exemplos teu e sai um adaptador LoRA treinado no rack. Não é preciso GPU: faz-se em CPU pura e está medido.",
+   "publico": "Medido a 2026-08-29: rank 16, alpha 32, 2 épocas, 93 exemplos de treino e 16 de validação. 553 s uma linha e 445 s a outra. Abaixo de dez minutos, não uma noite.",
+   "privado": "O conjunto de exemplos é teu e fica teu. O que se partilha, se quiseres, é o adaptador que sai.",
+   "pero": "NO_DATA — ainda não há forma de o mandar pela web: não há endpoint de envio. Hoje acorda-se pelo tópico e passa-se o ficheiro à mão."
+  }
+ },
+ "revision": "pendiente-revision-nativa"
+}

@@ -19,7 +19,7 @@
   "pwaManual": "Sie installiert sich als Anwendung und funktioniert ohne Netz. Bietet dein Browser den Knopf nicht an, mach es von Hand: unter Android Menü ⋮ → «App installieren»; auf dem iPhone Teilen → «Zum Home-Bildschirm».",
   "appVacio": "Der Download pausiert 48 Stunden, auf Entscheidung des Architekten. Der Knopf geht von selbst an, wenn der Zähler null erreicht.",
   "appNoDisponible": "nicht verfügbar",
-  "pieTitulo": "",
+  "pieTitulo": "Was diese Seite tut und was sie kostet",
   "pie": [
    "<strong>Beim Laden fragt sie niemanden etwas.</strong> Die Links zu GitHub sind Links: sie stellen keine Anfrage, bis <em>du</em> sie drückst. Ein Link ist keine geladene Ressource, und genau dieser Unterschied zählt hier.",
    "<strong>Die Befehle sind die des Repositorys, keine eigene Fassung.</strong> Sie stammen aus <code>bin/instalar-pc</code>, <code>bin/instalar-android</code> und <code>INSTALACION_PC.md</code>, einzeln geprüft gegen das öffentliche Repository am 2026-09-13.",

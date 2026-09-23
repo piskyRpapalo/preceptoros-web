@@ -1,0 +1,22 @@
+{
+ "esquema": 1,
+ "idioma": "en",
+ "nota": "Los textos de los anuncios del Agora en esta lengua. Salieron de `anuncios.json` el 2026-09-23: con nueve lenguas dentro le quedaban 344 B del tope de 16 KB y el siguiente anuncio ya no cabia. `anuncios.json` se queda con los HECHOS (id, tipo, autor, fecha, enlace, estado); esto trae lo que se lee, por id. Mismo corte que el taller, los paneles y el Agora.",
+ "textos": {
+  "feedback": {
+   "titulo": "Give me your feedback",
+   "cuerpo": "What broke, what you did not understand, what you expected to find and was not there. One concrete sentence beats any praise.",
+   "publico": "Public: sign a thread below. It is signed with your key, on your device.",
+   "privado": "Private: open an issue on the public repository. It is the only channel that actually arrives today.",
+   "pero": "NO_DATA — the Agora answers now, but it does not accept writing yet: POST /api/v1/threads returns 405, and the server says so in its own words: «writing closed: the Agora does not moderate yet» (measured 2026-09-08). It is signed and stays on your device until it opens.",
+   "enlaceTexto": "Open an issue"
+  },
+  "entrenar": {
+   "titulo": "Train a model",
+   "cuerpo": "Bring your own set of examples and a LoRA adapter comes out, trained on the rack. No GPU needed: it runs on plain CPU and it is measured.",
+   "publico": "Measured 2026-08-29: rank 16, alpha 32, 2 epochs, 93 training and 16 validation examples. 553 s one line, 445 s the other. Under ten minutes, not overnight.",
+   "privado": "The set of examples is yours and stays yours. What gets shared, if you want to, is the adapter that comes out.",
+   "pero": "NO_DATA — there is still no way to send it through the web: no upload endpoint. Today it is arranged in the thread and the file is passed by hand."
+  }
+ }
+}

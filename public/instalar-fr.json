@@ -19,7 +19,7 @@
   "pwaManual": "Il s'installe comme une application et fonctionne hors ligne. Si votre navigateur ne propose pas le bouton, faites-le à la main : sur Android, menu ⋮ → « Installer l'application » ; sur iPhone, Partager → « Sur l'écran d'accueil ».",
   "appVacio": "Le téléchargement est en pause pendant 48 heures, par décision de l'Architecte. Le bouton s'allume tout seul quand le compteur arrive à zéro.",
   "appNoDisponible": "indisponible",
-  "pieTitulo": "",
+  "pieTitulo": "Ce que fait cette page, et ce qu’elle coûte",
   "pie": [
    "<strong>Au chargement, elle ne demande rien à personne.</strong> Les liens vers GitHub sont des liens : ils ne font aucune requête tant que <em>tu</em> n'appuies pas.",
    "<strong>Les commandes sont celles du dépôt, pas une version à nous.</strong> Elles viennent de <code>bin/instalar-pc</code>, <code>bin/instalar-android</code> et <code>INSTALACION_PC.md</code>, vérifiées une par une contre le dépôt public le 2026-09-13.",

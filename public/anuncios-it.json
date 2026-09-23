@@ -1,0 +1,23 @@
+{
+ "esquema": 1,
+ "idioma": "it",
+ "nota": "Los textos de los anuncios del Agora en esta lengua. Salieron de `anuncios.json` el 2026-09-23: con nueve lenguas dentro le quedaban 344 B del tope de 16 KB y el siguiente anuncio ya no cabia. `anuncios.json` se queda con los HECHOS (id, tipo, autor, fecha, enlace, estado); esto trae lo que se lee, por id. Mismo corte que el taller, los paneles y el Agora.",
+ "textos": {
+  "feedback": {
+   "titulo": "Dammi il tuo riscontro",
+   "cuerpo": "Cosa si è rotto, cosa non hai capito, cosa ti aspettavi di trovare e non c'era. Serve più una frase concreta di un elogio.",
+   "publico": "Pubblico: firma una discussione qui sotto. Si firma con la tua chiave, sul tuo apparecchio.",
+   "privado": "Privato: apri un issue nel repository pubblico. È l'unico canale che oggi arriva davvero.",
+   "pero": "NO_DATA — l'Agorà ora risponde, ma non accetta ancora la scrittura: POST /api/v1/threads restituisce 405, e il server lo dice da sé: «scrittura chiusa: l'Agorà non modera ancora» (misurato il 2026-09-08). Si firma e resta sul tuo apparecchio finché non apre.",
+   "enlaceTexto": "Apri un issue"
+  },
+  "entrenar": {
+   "titulo": "Allena un modello",
+   "cuerpo": "Porta un tuo insieme di esempi ed esce un adattatore LoRA allenato sul rack. Non serve una GPU: si fa in CPU pura ed è misurato.",
+   "publico": "Misurato il 2026-08-29: rank 16, alpha 32, 2 epoche, 93 esempi di addestramento e 16 di validazione. 553 s una riga e 445 s l'altra. Sotto i dieci minuti, non una notte.",
+   "privado": "L'insieme di esempi è tuo e resta tuo. Quello che si condivide, se vuoi, è l'adattatore che ne esce.",
+   "pero": "NO_DATA — non c'è ancora modo di mandarlo dal sito: non esiste un endpoint di caricamento. Oggi ci si accorda nella discussione e il file si passa a mano."
+  }
+ },
+ "revision": "pendiente-revision-nativa"
+}
