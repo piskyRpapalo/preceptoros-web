@@ -133,7 +133,7 @@
   }
 
   var RACK = null, FORO = null;  // una pregunta por puerta y por pagina, compartida
-  var CAPTURAS = ['.valorar-caja', '.corregir-caja', '.torre-firma', '.duelo-veredicto', '.esc-resena'];
+  var CAPTURAS = ['.valorar-caja', '.corregir-caja', '#piso-firma', '.torre-firma', '.duelo-veredicto', '.esc-resena'];
 
   function siembra() {
     if (FORO) {
