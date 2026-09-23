@@ -5357,6 +5357,28 @@ class LoQueNoSeVeConElGateVerde(unittest.TestCase):
                     f"es {sorted(self.HUECOS_DECLARADOS.get(nombre, set()))}")
 
 
+    def test_ningun_modelo_publicado_esta_fuera_del_inventario_sellado(self):
+        """`loratelier.json` publicaba `servido_en_el_rack: mistral-small3.2:24b`,
+        que no esta instalado, y `escenario.js` usa ese campo como el modelo del
+        chat (2026-09-24). Todo modelo que la web publique como servido o como
+        base tiene que estar en `config/modelos-rack.json`, generado midiendo
+        (`bin/modelos-rack.py --sellar`) y con su sello intacto."""
+        inv = json.loads((RAIZ / "config" / "modelos-rack.json").read_text(encoding="utf-8"))
+        sello = hashlib.sha256(json.dumps(sorted(inv["modelos"])).encode()).hexdigest()[:16]
+        self.assertEqual(inv["sello"], sello, "config/modelos-rack.json editado a mano: "
+                         "se regenera con bin/modelos-rack.py --sellar")
+        lor = json.loads((PUBLICO / "loratelier.json").read_text(encoding="utf-8"))
+        bloques = lor.get("adaptadores") or [v for v in lor.values() if isinstance(v, list)][0]
+        for b in bloques:
+            for campo, valor in (("servido_en_el_rack", (b.get("ficha") or {}).get("servido_en_el_rack")),
+                                 ("modelo_base", b.get("modelo_base"))):
+                if valor is None:
+                    continue
+                with self.subTest(bloque=b.get("id"), campo=campo):
+                    self.assertIn(valor, inv["modelos"],
+                        f"{b.get('id')}.{campo} = {valor} no esta instalado en el rack")
+
+
 class LaAppAUnClic(unittest.TestCase):
     """Pedido por el Soberano el 2026-09-23: la app, a un solo clic de descarga
     eligiendo el sistema. Se vigila que cada pagina de instalar cargue el guion,

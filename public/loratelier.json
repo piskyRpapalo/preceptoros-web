@@ -28,8 +28,8 @@
     "origen": "Europa",
     "base_entrenamiento": "mistral:7b-instruct-v0.3",
     "base_tamano_q4_gb": 4.4,
-    "servido_en_el_rack": "mistral-small3.2:24b-instruct-2506",
-    "servido_tamano_q4_gb": 15,
+    "servido_en_el_rack": null,
+    "servido_tamano_q4_gb": null,
     "razonamiento": "apagado",
     "por_que_instruct": "el razonamiento extendido gasta tokens invisibles antes de la primera palabra; medido en este nodo: 45 para responder una sola",
     "adaptador_sha256": "bf3cf9534320f3204ba464aabef8ed946c00ff2c241c6efd45264761bef246af"
