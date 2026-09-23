@@ -93,6 +93,9 @@
       var v = ui['camino_' + p + '_' + c];
       if (v && !esND(v)) { partes.push(v); }
     });
+    // Model-only teaching layer (cerebros.json › docente, 2026-09-24).
+    var D = window.CerebrosReg && window.CerebrosReg.reg && window.CerebrosReg.reg.docente;
+    if (D) { partes.push(D.guia || '', (D.hechos || {})[p] || ''); }
     return partes.join('\n');
   }
 

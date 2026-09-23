@@ -79,6 +79,10 @@ def papel(p, u, base):
     partes.append("[" + (u.get(f"camino_{p}_titulo") or p) + "]")
     partes += [u[f"camino_{p}_{c}"] for c in ("frase", "falla", "papel")
                if not es_nd(u.get(f"camino_{p}_{c}"))]
+    # The model-only teaching layer, exactly as camino-papel.js appends it.
+    doc = json.load(open(os.path.join(RAIZ, "cerebros.json"), encoding="utf-8")).get("docente")
+    if doc:
+        partes += [doc.get("guia", ""), doc.get("hechos", {}).get(p, "")]
     return "\n".join(partes)
 
 

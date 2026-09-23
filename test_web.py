@@ -1674,7 +1674,10 @@ class Doctrina(unittest.TestCase):
                 self.assertNotIn("/home/", t, f"ruta absoluta en {p}")
                 sin_dibujos = re.sub(r"<svg.*?</svg>", "", t, flags=re.S)
                 for ip in re.findall(r"\b(?:\d{1,3}\.){3}\d{1,3}\b", sin_dibujos):
-                    self.assertEqual(ip, "127.0.0.1", f"IP incrustada en {p}: {ip}")
+                    # 0.0.0.0 is not the address of anything: it means «every
+                    # interface», and the Tower's ports floor has to teach it
+                    # (cerebros.json › docente, 2026-09-24).
+                    self.assertIn(ip, ("127.0.0.1", "0.0.0.0"), f"IP incrustada en {p}: {ip}")
 
     def test_una_pagina_no_mezcla_rutas_absolutas_y_relativas(self):
         """Dos estilos de ruta en el mismo `<head>` es una averia latente.
