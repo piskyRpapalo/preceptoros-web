@@ -26,6 +26,21 @@
     "herr_desc_apk": "Die APK gibt es noch nicht: Auf Android wird über Termux installiert, mit der Anleitung unten.",
     "herr_desc_ios": "Für das iPhone gibt es keine App: Installiere diese Seite über Teilen → „Zum Home-Bildschirm“.",
     "herr_desc_sinprobar": "Auf diesem Rack ungetestet: Hier gibt es keinen {so}-Rechner.",
-    "herr_desc_guia": "Anleitung für {so} öffnen"
+    "herr_desc_guia": "Anleitung für {so} öffnen",
+    "herr_medios": "Audio-, Sprach-, Bild- und Vision-Modelle",
+    "herr_medios_nota": "Freie Modelle zum Mitnehmen. Jedes wurde am angegebenen Datum geprüft: Der Link antwortet und die Datei hat die Größe, die ihr Repository angibt.",
+    "herr_g_voz": "Sprache",
+    "herr_g_musica": "Musik",
+    "herr_g_imagen": "Bild",
+    "herr_g_vision": "Vision",
+    "herr_descargar": "Herunterladen",
+    "herr_copiar": "Befehl kopieren",
+    "herr_disponible": "Verfügbar",
+    "herr_no_un_clic": "Nicht mit einem Klick",
+    "herr_verificado": "geprüft",
+    "herr_licencia": "Lizenz",
+    "herr_lenguas": "Sprachen",
+    "herr_no_medido": "Auf dem Rack noch nicht gemessen: seine Geschwindigkeit hier ist NO_DATA.",
+    "herr_flux_mas": "Es braucht auch seinen Autoencoder, und die offizielle Kopie verlangt, auf Hugging Face Bedingungen zu akzeptieren: nicht mit einem Klick."
   }
 }

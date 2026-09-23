@@ -66,6 +66,12 @@ def guion_de_la_portada():
 CDN_ADMITIDO = "https://esm.run/@mlc-ai/web-llm"
 ORIGEN_PROPIO = "https://preceptoros.org"
 ENLACES_ADMITIDOS = ("https://github.com/piskyRpapalo/PreceptorOS",
+                     # 2026-09-24: download LINKS of the Tools media panels. A link
+                     # the visitor clicks is not a subresource: nothing is fetched
+                     # on load. herr-medios.js only renders them; the gate checks
+                     # it never fetches them (test_los_medios_no_se_piden_al_cargar).
+                     "https://huggingface.co/",
+                     "https://ollama.com/library/",
                      "https://raw.githubusercontent.com/piskyRpapalo/PreceptorOS",
                      # Nuestro PROPIO origen canonico. Lo que esta regla protege
                      # es «cero peticiones externas al cargar», y las metas de
@@ -5228,6 +5234,11 @@ CLAVES_DUELOS = {
     "duelo_firmar", "duelo_sin_prueba", "duelo_juez_no_data"}
 
 CLAVES_HERRAMIENTAS = {
+    # 2026-09-24: the audio, voice, image and vision panels (herr-medios.js),
+    # asked by the Soberano; the catalog is verified by p0x/bin/verifica-medios.py.
+    "herr_medios", "herr_medios_nota", "herr_g_voz", "herr_g_musica", "herr_g_imagen",
+    "herr_g_vision", "herr_descargar", "herr_copiar", "herr_disponible", "herr_no_un_clic",
+    "herr_verificado", "herr_licencia", "herr_lenguas", "herr_no_medido", "herr_flux_mas",
     "herr_titulo", "herr_lema", "herr_web", "herr_app", "herr_audio",
     "herr_cerrada", "herr_copia_ai", "herr_errores",
     # 2026-09-23: la causa del audio deja de ser «cero referencias» (era falsa:
@@ -5255,7 +5266,7 @@ CLAVES_OBJETIVOS = ({f"camino_{n}_aprender" for n in (
     # El juez de dos capas (2026-09-23): rotulos, las cinco reglas de la capa
     # determinista y el papel del modelo juez. Los pinta `veredicto.js`.
     # `juez_duelo` es el contexto del juez en el LoRAtelier.
-    | {"juez_duelo", 'juez_titulo', 'juez_pedir', 'juez_capa1', 'juez_capa2', 'juez_ok', 'juez_ko', 'juez_degenera', 'juez_recita', 'juez_producto', 'juez_cifras', 'juez_contesta', 'juez_sin_turno', 'juez_papel'})
+    | {"juez_duelo", 'juez_titulo', 'juez_pedir', 'juez_capa1', 'juez_capa2', 'juez_ok', 'juez_ko', 'juez_degenera', 'juez_recita', 'juez_producto', 'juez_cifras', 'juez_fuga', 'juez_contesta', 'juez_sin_turno', 'juez_papel'})
 
 # LA SEXTA, 2026-09-23: «Mi perfil» deja de ser pagina y pasa a pestaña de
 # Comunidad (addendum F.5). Sus textos salieron tal cual de las ocho
@@ -5423,6 +5434,27 @@ class LoQueNoSeVeConElGateVerde(unittest.TestCase):
             if '/assets/rack.js"' in t or '/assets/engine.js"' in t:
                 with self.subTest(pagina=f"{f.parent.name}/{f.name}"):
                     self.assertIn('/assets/medidas-turno.js"', t)
+
+
+    def test_los_medios_no_se_piden_al_cargar(self):
+        """Tools media panels (2026-09-24): herr-medios.js may only fetch our own
+        /medios.json. The Hugging Face and Ollama URLs are LINKS the visitor
+        clicks, admitted as such; fetching them on load would break «zero
+        external requests». And every entry marked OK carries its verification
+        date and, for single-file entries, the sha256 the repository declares."""
+        js = (PUBLICO / "assets" / "herr-medios.js").read_text(encoding="utf-8")
+        for m in re.finditer(r"fetch\(\s*([^,)]+)", js):
+            with self.subTest(fetch=m.group(1)):
+                self.assertEqual(m.group(1).strip(), "'/medios.json'")
+        cat = json.loads((PUBLICO / "medios.json").read_text(encoding="utf-8"))
+        for e in cat["medios"]:
+            with self.subTest(medio=e["id"]):
+                self.assertIn(e["estado"], ("OK", "NO_DATA"))
+                self.assertTrue(e.get("verificado"))
+                if e["estado"] == "OK" and len(e.get("ficheros") or []) == 1:
+                    self.assertRegex(e["ficheros"][0]["sha256"] or "", r"^[0-9a-f]{64}$")
+                if e["estado"] == "NO_DATA":
+                    self.assertTrue(e.get("causa"))
 
 
 class LaAppAUnClic(unittest.TestCase):

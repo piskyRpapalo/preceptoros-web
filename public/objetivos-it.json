@@ -28,6 +28,7 @@
     "juez_recita": "Risponde invece di recitare le sue istruzioni",
     "juez_producto": "Non inventa cos’è PreceptorOS",
     "juez_cifras": "Non dà numeri senza fondamento",
+    "juez_fuga": "Non lascia trapelare pezzi del suo modello interno né ripete la tua domanda",
     "juez_contesta": "Parla di ciò che gli è stato chiesto",
     "juez_sin_turno": "NO_DATA — non c’è ancora una risposta da giudicare. Parla prima con il modello.",
     "juez_papel": "Sei un giudice. Prima leggi la DOMANDA e decidi se la RISPOSTA vi risponde in modo corretto e utile. Il CONTESTO dice di cosa tratta il piano, solo per orientarti: non è una lista che la risposta deve coprire. Rispondi in italiano, in tre righe: 1) VERDETTO: SÌ, NO o IN PARTE, e perché in una frase; 2) affermazioni senza fondamento o inventate (numeri, fatti), o «nessuna»; 3) cosa gli è mancato. NO_DATA solo se manca la domanda o la risposta: una risposta sbagliata, assurda o inventata si giudica NO, non si evita.",

@@ -1,0 +1,156 @@
+{
+ "esquema": 1,
+ "verificado": "2026-09-23",
+ "fuente": "bin/verifica-medios.py (HEAD + repository API)",
+ "medios": [
+  {
+   "id": "whisper-base",
+   "grupo": "voz",
+   "nombre": "Whisper base (speech to text)",
+   "licencia": "MIT",
+   "comando": null,
+   "lenguas": "99",
+   "nota": null,
+   "ficheros": [
+    {
+     "ruta": "ggml-base.bin",
+     "url": "https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-base.bin",
+     "bytes": 147951465,
+     "sha256": "60ed5bc3dd14eea856493d334349b405782ddcaf0028d4b5df4088345fba2efe"
+    }
+   ],
+   "estado": "OK",
+   "causa": null,
+   "bytes": 147951465,
+   "url": "https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-base.bin",
+   "verificado": "2026-09-23"
+  },
+  {
+   "id": "whisper-small",
+   "grupo": "voz",
+   "nombre": "Whisper small (speech to text)",
+   "licencia": "MIT",
+   "comando": null,
+   "lenguas": "99",
+   "nota": null,
+   "ficheros": [
+    {
+     "ruta": "ggml-small.bin",
+     "url": "https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-small.bin",
+     "bytes": 487601967,
+     "sha256": "1be3a9b2063867b937e64e2ec7483364a79917e157fa98c5d94b5c1fffea987b"
+    }
+   ],
+   "estado": "OK",
+   "causa": null,
+   "bytes": 487601967,
+   "url": "https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-small.bin",
+   "verificado": "2026-09-23"
+  },
+  {
+   "id": "kokoro-82m",
+   "grupo": "voz",
+   "nombre": "Kokoro-82M (text to speech)",
+   "licencia": "Apache-2.0",
+   "comando": "pip install kokoro soundfile",
+   "lenguas": "en es fr it pt hi ja zh",
+   "nota": null,
+   "ficheros": [
+    {
+     "ruta": "kokoro-v1_0.pth",
+     "url": "https://huggingface.co/hexgrad/Kokoro-82M/resolve/main/kokoro-v1_0.pth",
+     "bytes": 327212226,
+     "sha256": "496dba118d1a58f5f3db2efc88dbdc216e0483fc89fe6e47ee1f2c53f18ad1e4"
+    },
+    {
+     "ruta": "config.json",
+     "url": "https://huggingface.co/hexgrad/Kokoro-82M/resolve/main/config.json",
+     "bytes": 2351,
+     "sha256": null
+    }
+   ],
+   "estado": "OK",
+   "causa": null,
+   "bytes": 327214577,
+   "url": "https://huggingface.co/hexgrad/Kokoro-82M",
+   "verificado": "2026-09-23"
+  },
+  {
+   "id": "ace-step-15",
+   "grupo": "musica",
+   "nombre": "ACE-Step 1.5 (music and voices)",
+   "licencia": "MIT",
+   "comando": "hf download ACE-Step/Ace-Step1.5",
+   "lenguas": "50+",
+   "nota": "herr_no_medido",
+   "ficheros": [
+    {
+     "ruta": "acestep-v15-turbo/model.safetensors",
+     "url": "https://huggingface.co/ACE-Step/Ace-Step1.5/resolve/main/acestep-v15-turbo/model.safetensors",
+     "bytes": 4787825604,
+     "sha256": "3f6e0797fad420a39bd33979eb6e840e30989e34a3794e843d23b60ec6e422d7"
+    },
+    {
+     "ruta": "acestep-5Hz-lm-1.7B/model.safetensors",
+     "url": "https://huggingface.co/ACE-Step/Ace-Step1.5/resolve/main/acestep-5Hz-lm-1.7B/model.safetensors",
+     "bytes": 3708521528,
+     "sha256": "f161689da73e5ecefa28ff780d51c2d92a00f056d021d7933c779ed5c6cd7db8"
+    },
+    {
+     "ruta": "Qwen3-Embedding-0.6B/model.safetensors",
+     "url": "https://huggingface.co/ACE-Step/Ace-Step1.5/resolve/main/Qwen3-Embedding-0.6B/model.safetensors",
+     "bytes": 1191586416,
+     "sha256": "0437e45c94563b09e13cb7a64478fc406947a93cb34a7e05870fc8dcd48e23fd"
+    },
+    {
+     "ruta": "vae/diffusion_pytorch_model.safetensors",
+     "url": "https://huggingface.co/ACE-Step/Ace-Step1.5/resolve/main/vae/diffusion_pytorch_model.safetensors",
+     "bytes": 337431388,
+     "sha256": "da17edb604c40deaf09e9b24974e590d1ca83a374070e5d0884cfa4bed9a99b0"
+    }
+   ],
+   "estado": "OK",
+   "causa": null,
+   "bytes": 10025364936,
+   "url": "https://huggingface.co/ACE-Step/Ace-Step1.5",
+   "verificado": "2026-09-23"
+  },
+  {
+   "id": "flux-schnell-q4",
+   "grupo": "imagen",
+   "nombre": "FLUX.1-schnell Q4 (text to image)",
+   "licencia": "Apache-2.0",
+   "comando": null,
+   "lenguas": null,
+   "nota": "herr_flux_mas",
+   "ficheros": [
+    {
+     "ruta": "flux1-schnell-Q4_K_S.gguf",
+     "url": "https://huggingface.co/city96/FLUX.1-schnell-gguf/resolve/main/flux1-schnell-Q4_K_S.gguf",
+     "bytes": 6783943712,
+     "sha256": "4fd16477b3a5296d0cf722c4b92a9fd7f30d09ac7495826e4465d8de9c9fd973"
+    }
+   ],
+   "estado": "NO_DATA",
+   "causa": "needs_gated_autoencoder",
+   "bytes": 6783943712,
+   "url": "https://huggingface.co/city96/FLUX.1-schnell-gguf/resolve/main/flux1-schnell-Q4_K_S.gguf",
+   "verificado": "2026-09-23"
+  },
+  {
+   "id": "qwen3-vl-4b",
+   "grupo": "vision",
+   "nombre": "Qwen3-VL 4B (describe images)",
+   "licencia": "Apache-2.0",
+   "comando": "ollama pull qwen3-vl:4b-instruct-q4_K_M",
+   "lenguas": null,
+   "nota": null,
+   "ficheros": [],
+   "estado": "OK",
+   "causa": null,
+   "bytes": 3295635680,
+   "url": "https://ollama.com/library/qwen3-vl:4b-instruct-q4_K_M",
+   "verificado": "2026-09-23"
+  }
+ ]
+}

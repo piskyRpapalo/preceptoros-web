@@ -96,8 +96,13 @@
   // Las unidades largas ANTES que las cortas: con «g» delante, «300 gramos»
   // se leia «300 g».
   var CIFRA = /\b\d+(?:[.,]\d+)?\s*(?:gramos?|litros?|minutos?|horas?|grados?|kg|mg|ml|%|°|g|l)?/gi;
+  /* Not quantities: IPv4 addresses, host:port and port numbers named as such.
+     Measured in the Tower study (2026-09-24): «127.0.0.1» and «80, 443» were
+     flagged as unsupported numbers in correct answers about ports. */
+  var NO_CIFRA = /\b\d{1,3}(?:\.\d{1,3}){3}(?::\d+)?\b|:\d{2,5}\b|\b(?:puertos?|ports?|porte|porta|porto|Port)\s*:?\s*\d+(?:\s*(?:,|y|and|e|et|und)\s*\d+)*/gi;
   function cifras(t, fuentes) {
     var sueltas = [], m;
+    t = (t || '').replace(NO_CIFRA, ' ');
     CIFRA.lastIndex = 0;
     while ((m = CIFRA.exec(t || ''))) {
       var n = m[0].replace(/[^\d.,]/g, '').replace(/[.,]$/, '');
@@ -116,6 +121,15 @@
     if (n < 2) return true;               // la pregunta no da para decidir
     return ((t || '').match(PALABRA) || []).some(function (w) { return q[raiz(w)]; });
   }
+  /* Template leaks and echoes (Tower study, 2026-09-24): a small model returned
+     the user's own question with « /no_think» glued on, and another one spilled
+     «## Your task: **Document:**». Neither broke any of the five rules. */
+  var FUGA = /\/no_think|\/think\b|#{2,3}\s*(?:your task|instruction|document)|<\|[a-z_]+\|>|\[\/?INST\]/i;
+  function fuga(t, pregunta) {
+    if (FUGA.test(t || '')) return true;
+    var q = (pregunta || '').trim().toLowerCase().slice(0, 60);
+    return q.length >= 15 && (t || '').trim().toLowerCase().indexOf(q) === 0;
+  }
   function reglas(respuesta, pregunta, papel) {
     var s = cifras(respuesta, (pregunta || '') + ' ' + (papel || ''));
     return [
@@ -123,6 +137,7 @@
       ['juez_recita', !recita(respuesta, papel)],
       ['juez_producto', !producto(respuesta)],
       ['juez_cifras', !s.length, s.join(', ')],
+      ['juez_fuga', !fuga(respuesta, pregunta)],
       ['juez_contesta', contesta(respuesta, pregunta)]
     ];
   }

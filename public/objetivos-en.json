@@ -27,6 +27,7 @@
     "juez_recita": "Answers instead of reciting its instructions",
     "juez_producto": "Does not make up what PreceptorOS is",
     "juez_cifras": "Gives no unsupported numbers",
+    "juez_fuga": "Leaks no template pieces and does not echo your question",
     "juez_contesta": "Talks about what was asked",
     "juez_sin_turno": "NO_DATA — there is no answer to judge yet. Talk to the model first.",
     "juez_papel": "You are a judge. First read the QUESTION and decide whether the ANSWER answers it correctly and usefully. The CONTEXT says what the floor is about, only to situate you: it is not a checklist the answer must cover. Reply in English, in three lines: 1) VERDICT: YES, NO or PARTLY, and why in one sentence; 2) unsupported or invented claims (numbers, facts), or “none”; 3) what it missed. NO_DATA only if the question or the answer is missing: a bad, absurd or made-up answer is judged NO, not dodged.",

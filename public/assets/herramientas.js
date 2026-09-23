@@ -116,6 +116,17 @@
     sec.appendChild(lista);
     host.parentNode.insertBefore(sec, host);
     modelos(ui, sec);
+    medios(ui, sec);
+  }
+
+  /* Audio, voice, image and vision models (2026-09-24). Loaded on demand, like
+     the Agora sheet below, instead of adding a tag to nine pages. */
+  function medios(ui, antes) {
+    if (window.HerrMediosPinta) { return window.HerrMediosPinta(ui, antes); }
+    var s = document.createElement('script');
+    s.src = '/assets/herr-medios.js';
+    s.onload = function () { if (window.HerrMediosPinta) { window.HerrMediosPinta(ui, antes); } };
+    document.head.appendChild(s);
   }
 
   /* --- LOS MODELOS QUE HABLAN EN LA WEB (2026-09-23) ------------------------

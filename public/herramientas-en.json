@@ -25,6 +25,21 @@
     "herr_desc_apk": "The APK does not exist yet: on Android it installs through Termux, with the guide below.",
     "herr_desc_ios": "There is no app for iPhone: install this site from Share → “Add to Home Screen”.",
     "herr_desc_sinprobar": "Untested on this rack: there is no {so} machine here.",
-    "herr_desc_guia": "Open the guide for {so}"
+    "herr_desc_guia": "Open the guide for {so}",
+    "herr_medios": "Audio, voice, image and vision models",
+    "herr_medios_nota": "Free models you can take home. Each one was checked on the date shown: the link answers and the file is the size its repository declares.",
+    "herr_g_voz": "Voice",
+    "herr_g_musica": "Music",
+    "herr_g_imagen": "Image",
+    "herr_g_vision": "Vision",
+    "herr_descargar": "Download",
+    "herr_copiar": "Copy command",
+    "herr_disponible": "Available",
+    "herr_no_un_clic": "Not one click",
+    "herr_verificado": "verified",
+    "herr_licencia": "license",
+    "herr_lenguas": "languages",
+    "herr_no_medido": "Not measured on the rack yet: its speed here is NO_DATA.",
+    "herr_flux_mas": "It also needs its autoencoder, and the official copy asks you to accept terms on Hugging Face: not one click."
   }
 }

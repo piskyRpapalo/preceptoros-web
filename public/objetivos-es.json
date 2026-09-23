@@ -27,6 +27,7 @@
     "juez_recita": "Contesta en vez de recitar sus instrucciones",
     "juez_producto": "No se inventa qué es PreceptorOS",
     "juez_cifras": "No suelta cifras sin respaldo",
+    "juez_fuga": "No filtra piezas de su plantilla ni repite tu pregunta",
     "juez_contesta": "Habla de lo que se le preguntó",
     "juez_sin_turno": "NO_DATA — todavía no hay una respuesta que juzgar. Habla primero con el modelo.",
     "juez_papel": "Eres un juez. Primero lee la PREGUNTA y decide si la RESPUESTA la contesta de forma correcta y útil. El CONTEXTO dice de qué va el piso, solo para situarte: no es una lista que la respuesta deba cubrir. Contesta en castellano, en tres líneas: 1) VEREDICTO: SÍ, NO o EN PARTE, y por qué en una frase; 2) afirmaciones sin respaldo o inventadas (cifras, hechos), o «ninguna»; 3) qué le faltó. NO_DATA solo si falta la pregunta o la respuesta: una respuesta mala, absurda o inventada se juzga NO, no se esquiva.",

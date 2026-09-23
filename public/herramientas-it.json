@@ -26,6 +26,21 @@
     "herr_desc_apk": "L’APK non esiste ancora: su Android si installa tramite Termux, con la guida qui sotto.",
     "herr_desc_ios": "Per iPhone non c’è un’app: installa questo sito da Condividi → «Aggiungi alla schermata Home».",
     "herr_desc_sinprobar": "Non testato su questo rack: qui non c’è nessuna macchina {so}.",
-    "herr_desc_guia": "Apri la guida per {so}"
+    "herr_desc_guia": "Apri la guida per {so}",
+    "herr_medios": "Modelli audio, voce, immagine e visione",
+    "herr_medios_nota": "Modelli liberi da portare con te. Ognuno è stato verificato nella data indicata: il link risponde e il file pesa quanto dichiara il suo repository.",
+    "herr_g_voz": "Voce",
+    "herr_g_musica": "Musica",
+    "herr_g_imagen": "Immagine",
+    "herr_g_vision": "Visione",
+    "herr_descargar": "Scarica",
+    "herr_copiar": "Copia il comando",
+    "herr_disponible": "Disponibile",
+    "herr_no_un_clic": "Non con un clic",
+    "herr_verificado": "verificato",
+    "herr_licencia": "licenza",
+    "herr_lenguas": "lingue",
+    "herr_no_medido": "Non ancora misurato sul rack: la sua velocità qui è NO_DATA.",
+    "herr_flux_mas": "Serve anche il suo autoencoder, e la copia ufficiale chiede di accettare condizioni su Hugging Face: non con un clic."
   }
 }
