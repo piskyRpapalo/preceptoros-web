@@ -36,9 +36,13 @@
  * almacen que hay que versionar, migrar y explicar para no guardar nada.
  */
 (function () {
+  /* Los textos, de la familia `perfil-<lengua>.json` que deja
+     `perfil-pestana.js` en `window.PerfilUI` (el perfil es una pestaña de
+     Comunidad desde el 2026-09-23, y alli el `#i18n` es de Comunidad). El
+     bloque de la pagina queda de respaldo. */
   var block = document.getElementById('i18n');
-  if (!block) return;
-  var T = JSON.parse(block.textContent);
+  var T = window.PerfilUI || (block ? JSON.parse(block.textContent) : null);
+  if (!T) return;
   var zonaId = document.getElementById('perfil-identidad');
   var zonaIn = document.getElementById('perfil-instalacion');
 

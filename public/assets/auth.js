@@ -109,7 +109,7 @@
       if (T.idPerfil && !/\/profile\.html$/.test(location.pathname)) {
         var mi = document.createElement('a');
         mi.className = 'leve yo-perfil';
-        mi.href = './profile.html';
+        mi.href = './community.html#perfil';
         mi.textContent = yo.apodo;
         mi.title = T.idPerfil;
         zona.appendChild(mi);

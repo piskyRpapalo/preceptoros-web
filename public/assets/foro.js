@@ -83,7 +83,7 @@
         'El foro se ve con una clave. No hay cuenta ni contraseña: se genera '
         + 'en tu navegador y no sale de tu aparato.')));
       var a = el('a', 'boton', T('foCrearClave', 'Crear identidad en Perfil'));
-      a.href = './profile.html';
+      a.href = './community.html#perfil';   // el perfil es pestaña de Comunidad (2026-09-23)
       var f = el('div', 'fila'); f.appendChild(a); RAIZ.appendChild(f);
       return false;
     }

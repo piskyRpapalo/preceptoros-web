@@ -30,6 +30,19 @@
       if (!botones.length) return;
       barra.setAttribute('role', 'tablist');
 
+      /* UNA HOJA PUEDE TRAER SU GUION AL ABRIRSE (2026-09-23): `data-carga`
+         con la ruta. Lo estrena «Mi perfil», que pesa mas de lo que cabe en
+         la pagina y que quien viene al foro no tiene por que descargar. Se
+         pide una sola vez. */
+      function carga(h) {
+        var src = h.getAttribute('data-carga');
+        if (!src || h.dataset.pedida) return;
+        h.dataset.pedida = '1';
+        var s = document.createElement('script');
+        s.src = src;
+        document.head.appendChild(s);
+      }
+
       function hoja(nombre) {
         return document.querySelector('[data-hoja="' + nombre + '"]');
       }
@@ -41,6 +54,7 @@
           b.setAttribute('tabindex', mia ? '0' : '-1');
           var h = hoja(b.dataset.panel);
           if (h) { h.hidden = !mia; }
+          if (mia && h) { carga(h); }
           if (mia && mover) b.focus();
         });
       }
@@ -65,9 +79,21 @@
       });
 
       // La primera manda, y si alguna viene ya marcada en el marcado, esa.
+      // Y si se llega con `#perfil` (un enlace desde otra pagina), esa: se LEE
+      // al llegar y no se escribe nunca, asi que el historial no cambia.
+      var pedida = location.hash.slice(1);
       var marcada = botones.filter(function (b) {
+        return b.dataset.panel === pedida;
+      })[0] || botones.filter(function (b) {
         return b.getAttribute('aria-selected') === 'true';
       })[0];
       mostrar((marcada || botones[0]).dataset.panel, false);
+      /* Y si el `#` cambia estando ya en la pagina --el enlace «Mi perfil» de
+         la esquina, pulsado desde la propia Comunidad--, se atiende igual.
+         Se LEE el hash; esta pestaña sigue sin escribirlo nunca. */
+      window.addEventListener('hashchange', function () {
+        var b = botones.filter(function (x) { return x.dataset.panel === location.hash.slice(1); })[0];
+        if (b) mostrar(b.dataset.panel, false);
+      });
     });
 })();

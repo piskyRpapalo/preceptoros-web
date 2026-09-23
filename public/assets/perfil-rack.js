@@ -194,6 +194,8 @@
   }
 
   function rotulos() {
+    // Primero la familia del perfil (ver profile.js); el `#i18n`, de respaldo.
+    if (window.PerfilUI) { UI = window.PerfilUI; return; }
     var b = document.getElementById('i18n');
     try { UI = b ? JSON.parse(b.textContent) : {}; } catch (e) { UI = {}; }
   }

@@ -2898,6 +2898,28 @@ class Hub(unittest.TestCase):
         self.assertFalse((PUBLICO / "assets" / "logos-models").exists(),
                          "los ficheros de logo siguen en disco")
 
+    def test_mi_perfil_es_una_pestaña_de_comunidad(self):
+        """Addendum F.5 (2026-09-23): el perfil, dentro de Comunidad.
+
+        Se monta al abrir la pestaña (`data-carga`), porque sus textos no caben
+        en la Comunidad griega; y los enlaces de la web llevan a
+        `community.html#perfil`, que `pestanas.js` LEE sin escribir nunca.
+        """
+        for idi in IDIOMAS:
+            t = (PUBLICO / idi / "community.html").read_text(encoding="utf-8")
+            with self.subTest(idioma=idi):
+                self.assertIn('data-panel="perfil"', t, "falta la pestaña")
+                self.assertIn('data-carga="/assets/perfil-pestana.js"', t,
+                              "la hoja no dice que guion la monta")
+        pe = (PUBLICO / "assets" / "pestanas.js").read_text(encoding="utf-8")
+        self.assertIn("data-carga", pe, "pestanas.js no carga guiones de hoja")
+        self.assertIn("location.hash", pe, "no abre la pestaña que pide el enlace")
+        self.assertNotIn("location.hash =", pe, "escribe el hash: rompe el boton de atras")
+        for f in ("auth.js", "foro.js"):
+            js = (PUBLICO / "assets" / f).read_text(encoding="utf-8")
+            with self.subTest(guion=f):
+                self.assertIn("community.html#perfil", js)
+
     def test_elige_cerebro_ya_no_existe_y_el_piso_decide(self):
         """«Elige cerebro» se retiro de la portada y de Comunidad (2026-09-22).
 
@@ -5187,7 +5209,31 @@ CLAVES_OBJETIVOS = ({f"camino_{n}_aprender" for n in (
     # determinista y el papel del modelo juez. Los pinta `veredicto.js`.
     | {'juez_titulo', 'juez_pedir', 'juez_capa1', 'juez_capa2', 'juez_ok', 'juez_ko', 'juez_degenera', 'juez_recita', 'juez_producto', 'juez_cifras', 'juez_contesta', 'juez_sin_turno', 'juez_papel'})
 
+# LA SEXTA, 2026-09-23: «Mi perfil» deja de ser pagina y pasa a pestaña de
+# Comunidad (addendum F.5). Sus textos salieron tal cual de las ocho
+# `profile.html` (bloque #i18n + los escritos en el marcado).
+CLAVES_PERFIL = {
+    'idAviso', 'idClave', 'idEntrar', 'idFallo',
+    'idHola', 'idPerfil', 'idPublica', 'pfCargando',
+    'pfClaveAviso', 'pfClaveBoton', 'pfClaveCancela', 'pfClaveConfirma',
+    'pfClaveEscribe', 'pfClaveFallo', 'pfClaveHecho', 'pfClaveLetra1',
+    'pfClaveLetra2', 'pfClavePalabra', 'pfClaveSinIdentidad', 'pfClaveTitulo',
+    'pfComoCrear', 'pfDerivado', 'pfGuiaFuerte', 'pfGuiaResto',
+    'pfH_app', 'pfH_cla', 'pfH_niv', 'pfH_rack',
+    'pfH_ver', 'pfH_yo', 'pfHuella', 'pfInstalada',
+    'pfInstalarEnlace', 'pfNiv1', 'pfNiv1Que', 'pfNiv1Sube',
+    'pfNiv2', 'pfNiv2Que', 'pfNiv2Sube', 'pfNiv3',
+    'pfNiv3Que', 'pfNivSinBronce', 'pfNoInstalada', 'pfPie1f',
+    'pfPie1r', 'pfPie2f', 'pfPie2r', 'pfPie3f',
+    'pfPie3r', 'pfPieTitulo', 'pfSinClave', 'pfSinIdentidad',
+    'pfVerCausa', 'pfVerClave', 'pfVerFecha', 'pfVerQue',
+    'pfVerSinCampo', 'pfVerSinFichero', 'prActualizar', 'prAviso',
+    'prDesde', 'prFallo', 'prMandando', 'prMaquinaNada',
+    'prMaquinaNoLlega', 'prMaquinaOfrece', 'prPseudonimo', 'prRegistrado',
+    'prRegistrar', 'prSinIdentidad', 'prSinRegistrar'}
+
 FAMILIAS = {"caminos": CLAVES_CAMINOS, "objetivos": CLAVES_OBJETIVOS,
+            "perfil": CLAVES_PERFIL,
             "duelos": CLAVES_DUELOS,
             "herramientas": CLAVES_HERRAMIENTAS, "motor": CLAVES_MOTOR}
 
