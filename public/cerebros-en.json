@@ -114,6 +114,26 @@
     }
    },
    "lore": "The uncut stone. Everything the others know about you and about this house, we put there. Here you see what was underneath. Knowing which part is ours is the first way of not depending on us."
+  },
+  "superviviente": {
+   "nombre": "The Survivor",
+   "que_es": "Microsoft’s Phi-3 Mini, 3.8 billion parameters and 2.2 GB. Fast on the rack (28 tok/s) and the one that best answered the survival questions in the floor 6 audition. Its Spanish still stumbles: that is the gap an adapter is meant to close.",
+   "purpose": "This is the switch floor: cutting everything off and getting by without it. What we want: tell us whether it gave you a procedure you can follow, and above all whether it dropped any number — grams, minutes, litres — that does not add up. In survival, the number is the instruction.",
+   "lore": "It reached floor 6 by audition, not by fame: out of nine candidates, it answered for real most often. The previous one recited its own rules; another refused everything. This one answers, and sometimes picks the wrong word: we prefer that to a polite silence.",
+   "atajos": {
+    "pasos": {
+     "rotulo": "Give me the steps",
+     "prompt": "Tell me in short numbered steps I can follow in the dark with my hands busy. If a detail is missing to do it safely, say so instead of assuming it."
+    },
+    "sin_cifras": {
+     "rotulo": "Where does that number come from?",
+     "prompt": "For every number you gave me — amounts, times, temperatures — tell me where it comes from. If you are not sure of one, remove it and tell me how to check it myself."
+    },
+    "falta": {
+     "rotulo": "What do you need to know",
+     "prompt": "Before going on, tell me what you need to know about my situation for your answer to be safe, and ask me."
+    }
+   }
   }
  },
  "paises": {

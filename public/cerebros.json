@@ -130,6 +130,26 @@
     "es",
     "en"
    ]
+  },
+  {
+   "id": "superviviente",
+   "modelo": "phi3:3.8b",
+   "recomendado": false,
+   "prompt": 440.39,
+   "generacion": 28.53,
+   "carga_s": 2.98,
+   "firmado": false,
+   "lenguas": [
+    "es",
+    "en"
+   ],
+   "atajos": [
+    "pasos",
+    "sin_cifras",
+    "falta"
+   ],
+   "puerta": false,
+   "pais": "us"
   }
  ],
  "atajos_nota": "LOS ATAJOS SON LA INTERFAZ DE LAS CONDUCTAS ENTRENADAS, no botones de ayuda. Cada uno escribe en el campo un prompt de tres o cuatro frases que la persona LEE antes de mandar --un atajo que manda solo es un boton que habla por ti-- y ese prompt es el que activa una conducta que el corpus enseño. Por eso viven aqui y no en el codigo: el generador del corpus lee esta misma lista, asi que lo que se ofrece y lo que se entrena no pueden separarse. Un atajo sin muestras que lo respalden es una promesa; una conducta entrenada sin atajo es una funcion que nadie encuentra. Y cambian POR MODELO a proposito: al de codigo se le pide codigo, al que dice NO_DATA se le pide que lo diga, y al del LoRA que se inventa cifras se le ofrece «sin numeros» -- el atajo tambien es donde se le pone la brida a un fallo conocido.",
@@ -153,7 +173,7 @@
  "lenguas_nota": "EL CAMPO `lang: \"auto\"` SE RETIRA EL 2026-09-20 Y NO SE SUSTITUYE POR OTRA PROMESA. Decia «auto» en los seis cerebros, que es la forma educada de no decir nada: ninguna medida lo respaldaba y el sitio se sirve en ocho lenguas, asi que se leia como «las habla todas».\nLo que hay medido, con `duelo_mini.py` el 2026-09-20: castellano e ingles. Las otras seis --de, el, fr, it, pt, ru-- son NO_DATA: no se han probado, y la ficha lo dice en la lengua de quien la lee en vez de callarlo.\nEl alcance lo fijo el Soberano: «puedes dejar los modelos hablando ingles (preferible) y espanol hoy. Si no cumplen el resto de idiomas, lo avisas en descripcion con un no_data. No podemos pararnos hoy en modelos que cambiaremos en 2 meses». El aviso es esto; el hueco sigue siendo un hueco.",
  "puerta_nota": "LA PUERTA CAMBIA EL 2026-09-20, DECIDIDA POR DATO. Era `charla-base` (La Charla). Lo retiro el Soberano, y el sustituto salio de `duelo_mini.py`: tres modelos pequenos contra el escenario real del peldano 1 de la Torre, juzgados por el juez de dos capas de la casa.\nGano `qwen3:1.7b` con mediana 10 sobre 10 --- `qwen2.5:1.5b` se quedo en 4 y no llega al minimo de 7; `gemma2:2b` empato a 10 y pierde por pared. Contra la puerta anterior: prompt x4,1 (1017 frente a 250 tok/s), generacion x3,4 (55 frente a 16), carga 0,94 s frente a 2,2 y 1,4 GB frente a 4,4. Backend medido: 100 % GPU (Vulkan, Radeon 780M). Sin thinking, comprobado pidiendole una palabra.\nY LO QUE DE VERDAD LO SUBIO NO FUE EL MODELO. En la pasada anterior este mismo modelo saco mediana 4 e invento «tenemos mas de 100 usuarios activos». Lo unico que cambio fue meter `torre_hechos` en el papel --- que PreceptorOS no es un sistema operativo, que contesta el rack y no una nube ---. Un modelo al que le falta un dato rellena el hueco con seguridad; el arreglo era el prompt, no el modelo.",
  "pisos": {
-  "nota": "Quien habla en cada piso de la Torre. Firmado por el Soberano el 2026-09-22 (reparto por oficio, ver preceptor-lora/docs/PLAN_PISOS_2026-09-23.md). `cerebro` es un id de `cerebros`; `donde` dice si contesta el rack o el navegador. Los pisos 1 y 7 van al navegador porque son los pisos sin red: prometen seguir hablando en modo avion.",
+  "nota": "Quien habla en cada piso de la Torre. Firmado por el Soberano el 2026-09-22 (reparto por oficio, ver preceptor-lora/docs/PLAN_PISOS_2026-09-23.md). `cerebro` es un id de `cerebros`; `donde` dice si contesta el rack o el navegador. Los pisos 1 y 7 van al navegador porque son los pisos sin red: prometen seguir hablando en modo avion. El piso 6 paso del v7 a phi3:3.8b el 2026-09-23 tras una audicion de nueve candidatos (hexelion/laboratorio/AUDICION_killswitch.md): el v7 recitaba sus reglas en vez de contestar (0/6 para el juez), llama3.2:3b se negaba a todo (0/6), phi3 4/6 a 28,5 tok/s; qwen2.5:14b tambien 4/6 pero a 8,6 tok/s.",
   "despertar": {
    "cerebro": "mini",
    "donde": "navegador"
@@ -175,7 +195,7 @@
    "donde": "rack"
   },
   "killswitch": {
-   "cerebro": "v7",
+   "cerebro": "superviviente",
    "donde": "rack"
   },
   "silencio": {

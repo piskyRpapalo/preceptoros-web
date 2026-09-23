@@ -114,6 +114,26 @@
     }
    },
    "lore": "La piedra sin tallar. Todo lo que los otros saben de ti y de esta casa se lo pusimos nosotros encima; aquí ves lo que había antes. Saber qué parte es nuestra es la primera forma de no depender de nosotros."
+  },
+  "superviviente": {
+   "nombre": "El Superviviente",
+   "que_es": "Phi-3 Mini de Microsoft, 3,8 mil millones de parámetros y 2,2 GB. Rápido en el rack (28 tok/s) y el que mejor contestó a las preguntas de supervivencia en la audición del piso 6. Su castellano todavía tropieza: ese es el hueco que se quiere cerrar con un adaptador.",
+   "purpose": "Es el piso del interruptor: cortar con todo y arreglártelas sin ello. Lo que buscamos: dinos si te dio un procedimiento que puedas seguir, y sobre todo si soltó alguna cifra —gramos, minutos, litros— que no te cuadre. En supervivencia la cifra es la instrucción.",
+   "lore": "Llegó al piso 6 por audición, no por fama: de nueve candidatos, fue el que más veces contestó de verdad. El anterior recitaba sus propias reglas; otro se negaba a todo. Este contesta, y a veces se equivoca de palabra: preferimos eso a un silencio educado.",
+   "atajos": {
+    "pasos": {
+     "rotulo": "Dame los pasos",
+     "prompt": "Dímelo en pasos numerados, cortos, que pueda seguir sin luz y con las manos ocupadas. Si falta un dato para hacerlo seguro, dilo en vez de suponerlo."
+    },
+    "sin_cifras": {
+     "rotulo": "¿De dónde sale esa cifra?",
+     "prompt": "Para cada cifra que me has dado —cantidades, tiempos, temperaturas—, dime de dónde sale. Si no estás seguro de alguna, quítala y dime cómo comprobarla yo."
+    },
+    "falta": {
+     "rotulo": "Qué te falta saber",
+     "prompt": "Antes de seguir, dime qué te falta saber de mi situación para que tu respuesta sea segura, y pregúntamelo."
+    }
+   }
   }
  },
  "paises": {
