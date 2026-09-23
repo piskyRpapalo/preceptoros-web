@@ -5307,6 +5307,56 @@ class LasTraduccionesSeSacanYSeMeten(unittest.TestCase):
                     self.assertTrue(valor.strip(), "rotulo vacio")
 
 
+class LoQueNoSeVeConElGateVerde(unittest.TestCase):
+    """Dos averias que 161 verdes no vieron, medidas el 2026-09-24 en produccion.
+
+    1 · ORDEN DE CARGA. En 8 de las 9 portadas `bronce.js` se cargaba DESPUES de
+        `aprender.js` y `elegir.js`. Los dos miran `window.Bronce` al arrancar y,
+        si no esta, se retiran sin decir nada: fuera de `es` no habia casillas de
+        «aprender» ni de «valorar» en la rueda, y no se capturaba ni una
+        reescritura ni una valoracion. Degradar en silencio.
+    2 · FAMILIAS A MEDIAS. `cerebros-<l>.json` solo existia en `es` y `en`: las
+        otras siete lenguas pintaban los atajos del chat en ingles. Un hueco que
+        se conoce se DECLARA aqui; uno nuevo pone el gate en rojo, y uno que se
+        cierra sin quitarlo de la lista tambien, para que la lista no mienta.
+    """
+
+    DEPENDE = {"aprender.js": "bronce.js", "elegir.js": "bronce.js"}
+    HUECOS_DECLARADOS = {
+        # familia: lenguas que faltan, con el motivo. Se vacia traduciendo.
+        "cerebros": {"fr", "pt", "it", "de", "ru", "el", "ar"},  # pendiente de traducir
+        "ledger": {"es"},                                          # es usa ledger.json base
+    }
+
+    def test_lo_que_depende_de_bronce_se_carga_despues(self):
+        for idi in IDIOMAS:
+            f = PUBLICO / idi / "index.html"
+            if not f.exists():
+                continue
+            t = f.read_text(encoding="utf-8")
+            for hijo, padre in self.DEPENDE.items():
+                i, j = t.find("/assets/" + padre), t.find("/assets/" + hijo)
+                if j < 0:
+                    continue
+                with self.subTest(pagina=idi, guion=hijo):
+                    self.assertTrue(0 <= i < j,
+                        f"{idi}/index.html carga {hijo} antes que {padre}: {hijo} "
+                        f"se retira en silencio y la rueda se queda sin su casilla")
+
+    def test_cada_familia_por_lengua_esta_completa_o_su_hueco_declarado(self):
+        fam = {}
+        for f in PUBLICO.glob("*-*.json"):
+            m = re.fullmatch(r"(.+)-([a-z]{2})\.json", f.name)
+            if m and m.group(2) in IDIOMAS:
+                fam.setdefault(m.group(1), set()).add(m.group(2))
+        for nombre, tiene in sorted(fam.items()):
+            falta = set(IDIOMAS) - tiene
+            with self.subTest(familia=nombre):
+                self.assertEqual(falta, self.HUECOS_DECLARADOS.get(nombre, set()),
+                    f"{nombre}-<l>.json: faltan {sorted(falta)} y el hueco declarado "
+                    f"es {sorted(self.HUECOS_DECLARADOS.get(nombre, set()))}")
+
+
 class LaAppAUnClic(unittest.TestCase):
     """Pedido por el Soberano el 2026-09-23: la app, a un solo clic de descarga
     eligiendo el sistema. Se vigila que cada pagina de instalar cargue el guion,
