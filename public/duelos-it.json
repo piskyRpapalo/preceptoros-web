@@ -1,22 +1,22 @@
 {
- "esquema": 1,
- "idioma": "it",
- "revision": "pendiente-revision-nativa",
- "procedencia": {
-  "traducido_por": "qwen2.5:7b"
- },
- "ui": {
-  "duelo_col_base": "Senza bardatura · il modello nudo",
-  "duelo_col_lora": "Con bardatura · il ruolo della casa",
-  "duelo_degenera": "si ripete in loop",
-  "duelo_enviar": "Invia a entrambe",
-  "duelo_firmar": "Firmare par",
-  "duelo_guia": "Guida alla riscrittura",
-  "duelo_input": "Scrivi una volta; risponderanno entrambi.",
-  "duelo_juez_no_data": "NO_DATA: non ci è un giudice locale. Non si inventa un veredicto con la rete — lo verifichi tu, e questo è lo studio.",
-  "duelo_reescribir": "Rinvia a entrambe",
-  "duelo_sin_prueba": "Un «ciao» senza riscrittura non prova nulla. Riscrivi il prompt o lascia la tua opinione, e sarà possibile firmare.",
-  "duelo_titulo": "Duelo",
-  "duelo_veredicto": "Veredicto"
- }
+  "esquema": 1,
+  "idioma": "it",
+  "revision": "pendiente-revision-nativa",
+  "procedencia": {
+    "traducido_por": "qwen2.5:7b"
+  },
+  "ui": {
+    "duelo_col_base": "Senza bardatura · il modello nudo",
+    "duelo_col_lora": "Con bardatura · il ruolo della casa",
+    "duelo_degenera": "si ripete in loop",
+    "duelo_enviar": "Invia a entrambe",
+    "duelo_firmar": "Firmare par",
+    "duelo_guia": "Guida alla riscrittura",
+    "duelo_input": "Scrivi una volta; risponderanno entrambi.",
+    "duelo_juez_no_data": "Il giudice della casa (regole nel tuo browser e un modello sul rack) consiglia, colonna per colonna; il verdetto che conta è quello che firmi tu.",
+    "duelo_reescribir": "Rinvia a entrambe",
+    "duelo_sin_prueba": "Un «ciao» senza riscrittura non prova nulla. Riscrivi il prompt o lascia la tua opinione, e sarà possibile firmare.",
+    "duelo_titulo": "Duelo",
+    "duelo_veredicto": "Veredicto"
+  }
 }

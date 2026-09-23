@@ -1,22 +1,22 @@
 {
- "esquema": 1,
- "idioma": "de",
- "revision": "pendiente-revision-nativa",
- "procedencia": {
-  "traducido_por": "qwen2.5:14b"
- },
- "ui": {
-  "duelo_col_base": "Ohne Geschirr · das nackte Modell",
-  "duelo_col_lora": "Mit Geschirr · die Rolle des Hauses",
-  "duelo_degenera": "wiederholt sich in Schleife",
-  "duelo_enviar": "Beiden senden",
-  "duelo_firmar": "Paar unterschreiben",
-  "duelo_guia": "Schreibungsleitfaden",
-  "duelo_input": "Schreibe einmal; sie werden beide antworten.",
-  "duelo_juez_no_data": "NO_DATA: Kein lokaler Richter vorhanden. Ein Urteil wird nicht mit der Netzwerk-Verbindung erzeugt — prüfe es selbst, und das ist die Untersuchung.",
-  "duelo_reescribir": "Beiden erneut senden",
-  "duelo_sin_prueba": "Ein «hallo» ohne Neuformulierung beweist nichts. Neuformuliere den Prompt oder teile deine Meinung, und es kann unterschrieben werden.",
-  "duelo_titulo": "Duell",
-  "duelo_veredicto": "Urteil"
- }
+  "esquema": 1,
+  "idioma": "de",
+  "revision": "pendiente-revision-nativa",
+  "procedencia": {
+    "traducido_por": "qwen2.5:14b"
+  },
+  "ui": {
+    "duelo_col_base": "Ohne Geschirr · das nackte Modell",
+    "duelo_col_lora": "Mit Geschirr · die Rolle des Hauses",
+    "duelo_degenera": "wiederholt sich in Schleife",
+    "duelo_enviar": "Beiden senden",
+    "duelo_firmar": "Paar unterschreiben",
+    "duelo_guia": "Schreibungsleitfaden",
+    "duelo_input": "Schreibe einmal; sie werden beide antworten.",
+    "duelo_juez_no_data": "Der Richter des Hauses (Regeln in deinem Browser und ein Modell im Rack) berät, Spalte für Spalte; das Urteil, das zählt, ist das, das du signierst.",
+    "duelo_reescribir": "Beiden erneut senden",
+    "duelo_sin_prueba": "Ein «hallo» ohne Neuformulierung beweist nichts. Neuformuliere den Prompt oder teile deine Meinung, und es kann unterschrieben werden.",
+    "duelo_titulo": "Duell",
+    "duelo_veredicto": "Urteil"
+  }
 }

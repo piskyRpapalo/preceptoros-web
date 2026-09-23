@@ -5207,7 +5207,8 @@ CLAVES_OBJETIVOS = ({f"camino_{n}_aprender" for n in (
     | {"torre_et_aprender", "torre_et_papel", "torre_et_corpus"}
     # El juez de dos capas (2026-09-23): rotulos, las cinco reglas de la capa
     # determinista y el papel del modelo juez. Los pinta `veredicto.js`.
-    | {'juez_titulo', 'juez_pedir', 'juez_capa1', 'juez_capa2', 'juez_ok', 'juez_ko', 'juez_degenera', 'juez_recita', 'juez_producto', 'juez_cifras', 'juez_contesta', 'juez_sin_turno', 'juez_papel'})
+    # `juez_duelo` es el contexto del juez en el LoRAtelier.
+    | {"juez_duelo", 'juez_titulo', 'juez_pedir', 'juez_capa1', 'juez_capa2', 'juez_ok', 'juez_ko', 'juez_degenera', 'juez_recita', 'juez_producto', 'juez_cifras', 'juez_contesta', 'juez_sin_turno', 'juez_papel'})
 
 # LA SEXTA, 2026-09-23: «Mi perfil» deja de ser pagina y pasa a pestaña de
 # Comunidad (addendum F.5). Sus textos salieron tal cual de las ocho

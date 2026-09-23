@@ -30,6 +30,7 @@
     "juez_cifras": "Nennt keine unbelegten Zahlen",
     "juez_contesta": "Spricht über das, was gefragt wurde",
     "juez_sin_turno": "NO_DATA — es gibt noch keine Antwort zu beurteilen. Sprich zuerst mit dem Modell.",
-    "juez_papel": "Du bist ein Richter. Lies zuerst die FRAGE und entscheide, ob die ANTWORT sie richtig und nützlich beantwortet. Der KONTEXT sagt, worum es in der Etage geht, nur zur Orientierung: keine Liste, die die Antwort abdecken muss. Antworte auf Deutsch, in drei Zeilen: 1) URTEIL: JA, NEIN oder TEILWEISE, und warum in einem Satz; 2) unbelegte oder erfundene Behauptungen (Zahlen, Fakten), oder „keine“; 3) was ihr fehlte. NO_DATA nur, wenn Frage oder Antwort fehlen: eine schlechte, absurde oder erfundene Antwort wird mit NEIN beurteilt, nicht umgangen."
+    "juez_papel": "Du bist ein Richter. Lies zuerst die FRAGE und entscheide, ob die ANTWORT sie richtig und nützlich beantwortet. Der KONTEXT sagt, worum es in der Etage geht, nur zur Orientierung: keine Liste, die die Antwort abdecken muss. Antworte auf Deutsch, in drei Zeilen: 1) URTEIL: JA, NEIN oder TEILWEISE, und warum in einem Satz; 2) unbelegte oder erfundene Behauptungen (Zahlen, Fakten), oder „keine“; 3) was ihr fehlte. NO_DATA nur, wenn Frage oder Antwort fehlen: eine schlechte, absurde oder erfundene Antwort wird mit NEIN beurteilt, nicht umgangen.",
+    "juez_duelo": "LoRAtelier: dasselbe Modell wird ohne und mit dem Geschirr des Hauses verglichen. Hier zählt nur, ob DIESE Antwort die Frage gut beantwortet."
   }
 }

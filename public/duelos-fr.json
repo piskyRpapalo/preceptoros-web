@@ -1,22 +1,22 @@
 {
- "esquema": 1,
- "idioma": "fr",
- "revision": "pendiente-revision-nativa",
- "procedencia": {
-  "traducido_por": "qwen2.5:7b"
- },
- "ui": {
-  "duelo_col_base": "Sans harnais · le modèle nu",
-  "duelo_col_lora": "Avec harnais · le rôle de la maison",
-  "duelo_degenera": "tourne en boucle",
-  "duelo_enviar": "Envoyer à toutes les deux",
-  "duelo_firmar": "Signer par",
-  "duelo_guia": "Guide de réécriture",
-  "duelo_input": "Ecris une fois ; ils répondront les deux.",
-  "duelo_juez_no_data": "NO_DATA : il n'y a pas de juge local. La rédaction n'invente pas un verdict — tu le vérifies, et c'est l'étude.",
-  "duelo_reescribir": "Réenvoyer à toutes les deux",
-  "duelo_sin_prueba": "Un «hello» sans réécriture ne prouve rien. Réécrits le prompt ou donne ton opinion, et tu pourras le signer.",
-  "duelo_titulo": "Duelo",
-  "duelo_veredicto": "Verdict"
- }
+  "esquema": 1,
+  "idioma": "fr",
+  "revision": "pendiente-revision-nativa",
+  "procedencia": {
+    "traducido_por": "qwen2.5:7b"
+  },
+  "ui": {
+    "duelo_col_base": "Sans harnais · le modèle nu",
+    "duelo_col_lora": "Avec harnais · le rôle de la maison",
+    "duelo_degenera": "tourne en boucle",
+    "duelo_enviar": "Envoyer à toutes les deux",
+    "duelo_firmar": "Signer par",
+    "duelo_guia": "Guide de réécriture",
+    "duelo_input": "Ecris une fois ; ils répondront les deux.",
+    "duelo_juez_no_data": "Le juge de la maison (règles dans ton navigateur et un modèle sur le rack) conseille, colonne par colonne ; le verdict qui compte est celui que tu signes.",
+    "duelo_reescribir": "Réenvoyer à toutes les deux",
+    "duelo_sin_prueba": "Un «hello» sans réécriture ne prouve rien. Réécrits le prompt ou donne ton opinion, et tu pourras le signer.",
+    "duelo_titulo": "Duelo",
+    "duelo_veredicto": "Verdict"
+  }
 }

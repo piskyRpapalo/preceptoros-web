@@ -44,11 +44,13 @@
  *
  * EL VEREDICTO LO PONE LA PERSONA
  * --------------------------------
- * No hay juez automatico aqui, y `duelo_juez_no_data` ya lo decia antes de que
- * existiera este fichero: «no se inventa un veredicto con la red». El juez de
- * dos capas de la casa vive en el laboratorio y no se expone: cuesta un 30B
- * por turno. Lo que sale de esta pantalla es el juicio de un humano, firmado,
- * que es justamente el dato que al rack le falta.
+ * Lo que sale de esta pantalla es el juicio de un humano, firmado, que es
+ * justamente el dato que al rack le falta. Hasta el 2026-09-23 aqui no habia
+ * juez automatico «porque cuesta un 30B por turno». Desde ese dia hay uno que
+ * no cuesta eso: el de dos capas de `veredicto.js` --reglas en el aparato y un
+ * 7B en el rack, validado con un par bueno/malo--, que se pide con un boton por
+ * columna. El Soberano lo echaba en falta. ACONSEJA: el veredicto que cuenta
+ * sigue siendo el que firma la persona.
  */
 (function () {
   var lang = (document.documentElement.lang || 'es').slice(0, 2);
@@ -261,9 +263,31 @@
   /* El veredicto lo monta `duelo-firma.js`, que `benchmark.html` carga justo
      antes que este fichero. Si no estuviera, las dos columnas se pintan y lo
      unico que falta es poder firmar --- con su causa, no en silencio. */
+  /* EL JUEZ, UNA CAPA POR COLUMNA, DETRAS DE LA FIRMA. `veredicto.js` se
+     pide al vuelo la primera vez: esta pagina no lo carga de serie. */
+  function juez(caja, q, r) {
+    var ir = function () {
+      if (!window.Veredicto) { return; }
+      [[UI.duelo_col_base, r.a, ''], [UI.duelo_col_lora, r.b, arnes()]].forEach(function (x) {
+        var d = el('div', 'duelo-juez');
+        d.appendChild(el('div', 'duelo-cab', x[0] || ''));
+        caja.appendChild(d);
+        window.Veredicto.monta(d, {
+          pregunta: function () { return q; }, respuesta: function () { return x[1]; },
+          papel: function () { return x[2]; },
+          objetivo: function () { return window.Veredicto.texto('juez_duelo'); } });
+      });
+    };
+    if (window.Veredicto) { return ir(); }
+    var s = document.createElement('script');
+    s.src = '/assets/veredicto.js'; s.onload = ir;
+    document.head.appendChild(s);
+  }
+
   function montaVeredicto(caja, pregunta, r) {
     if (window.DueloFirma) {
-      return window.DueloFirma(caja, pregunta, r, UI, lang);
+      window.DueloFirma(caja, pregunta, r, UI, lang);
+      return juez(caja, pregunta, r);
     }
     caja.innerHTML = '';
     caja.appendChild(el('p', 'no-data',
