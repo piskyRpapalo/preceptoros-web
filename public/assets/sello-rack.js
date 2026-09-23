@@ -124,11 +124,16 @@
 
   function pon(nodo, estado, titulo) {
     if (!nodo || nodo.querySelector(':scope > .sello-rack')) return;
+    /* Nunca dentro de un campo: el 2026-09-24 se colgo de `.duelo-campo`, que es
+       el <textarea> de la pregunta, y un hijo de texto de un textarea es su
+       valor por defecto. Y nunca en una caja vacia: `.duelo-veredicto` existe
+       desde el principio y solo se llena cuando el duelo termina. */
+    if (/^(TEXTAREA|INPUT|SELECT)$/.test(nodo.tagName) || !nodo.firstElementChild) return;
     nodo.insertBefore(sello(estado, titulo), nodo.firstChild);
   }
 
   var RACK = null, FORO = null;  // una pregunta por puerta y por pagina, compartida
-  var CAPTURAS = ['.valorar-caja', '.corregir-caja', '.torre-firma', '.duelo-campo', '.esc-resena'];
+  var CAPTURAS = ['.valorar-caja', '.corregir-caja', '.torre-firma', '.duelo-veredicto', '.esc-resena'];
 
   function siembra() {
     if (FORO) {
