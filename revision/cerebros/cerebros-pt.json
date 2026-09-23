@@ -1,0 +1,147 @@
+{
+ "esquema": 1,
+ "idioma": "pt",
+ "nota": "La prosa de los cerebros. Los HECHOS --velocidad, tag del modelo, contexto-- viven en `cerebros.json` y no llevan una palabra traducible. Es la misma frontera que `loratelier.json` con `taller-<idioma>.json`, y por el mismo motivo: las ocho lenguas en el fichero de datos lo dejan lleno el primer dia. · `lore` es la voz del producto, no una ficha tecnica: va a la derecha del cuadro cuando eliges un cerebro y cuenta QUE hace ese por la soberania de quien lo usa. Se escribe corto a proposito -- un parrafo que nadie lee no es lore, es relleno.",
+ "cerebros": {
+  "mini": {
+   "nombre": "O Mini",
+   "que_es": "Qwen3 de 1,7 GB, o mais pequeno do rack que serve para conversar. Inicia em menos de um segundo e escreve quatro vezes mais rápido que o anterior. Não sabe nada sobre este produto por si só: o que sabe, nós lhe dizemos em cada turno, e isso você pode ler na placa que está testando.",
+   "purpose": "É a porta: o primeiro com quem fala quem chega. O que estamos procurando: diga-nos se respondeu como se soubesse quem você é, e se em algum momento afirmou algo que não lhe tínhamos dito. Essa é a falha que estamos caçando.",
+   "lore": "Ganhou seu lugar em 2026-09-20 por medição, não por fama. E perdeu a primeira volta: inventou que tinha «mais de cem usuários ativos». O modelo não mudou entre as voltas — o que mudou foi o que lhe contamos antes de perguntar.",
+   "atajos": {
+    "simple": {
+     "rotulo": "Mais simples",
+     "prompt": "Diga-me o último mais simples, sem palavras técnicas. Três frases no máximo. Termine perguntando-me qual parte quero abrir."
+    },
+    "sin_cifras": {
+     "rotulo": "Sem números",
+     "prompt": "Repita o último sem dar nenhum número. Se um número era necessário para entender, diga-me onde posso olhar isso em vez de me dizer."
+    },
+    "falta": {
+     "rotulo": "O que você está sem",
+     "prompt": "Antes de continuar: diga-me o que NÃO sabe sobre minha situação e o que precisaria para responder bem. Não suponha."
+    }
+   }
+  },
+  "charla-web": {
+   "nombre": "O Anfitrião",
+   "que_es": "Mistral 7B com as instruções da casa escritas à mão. É o único que sabe o que é este produto: dá os comandos reais de instalação e acerta o tamanho do modelo. Em troca é verboso, e ainda repete os passos para quem já instalou.",
+   "purpose": "Guia a instalação e responde o que trouxe depois. É o que sabe o que é este produto. O que queremos: diga-nos onde você se perdeu, e se repetiu passos que já havia dado.",
+   "atajos": {
+    "simple": {
+     "rotulo": "Mais simples",
+     "prompt": "Diga de novo, mas como explicaria para alguém que nunca abriu um terminal. Sem palavras técnicas: se deve usar uma, defina-a na mesma frase. Três frases no máximo, e termine perguntando qual parte quero abrir."
+    },
+    "pasos": {
+     "rotulo": "Dê-me os passos",
+     "prompt": "Dê-me apenas os passos que me cabem, em ordem e numerados. Cada um começa com um verbo e cabe em uma linha. Se um passo depende do que tenho, pergunte antes de dar em vez de supor. Não explique por que ainda."
+    },
+    "falta": {
+     "rotulo": "O que você está sem",
+     "prompt": "Antes de seguir, diga-me o que está sem sobre mim para acertar. Liste apenas o que mudaria sua resposta, não o que seria bom saber. Se não está sem nada, diga e continue. Três coisas no máximo."
+    },
+    "comprobar": {
+     "rotulo": "Como comprovo?",
+     "prompt": "Diga-me como posso verificar o que acabou de afirmar por conta própria, sem confiar em você. Dê-me o comando ou o lugar exato para verificar. Se não pode ser verificado da minha máquina, diga claramente em vez de dar rodeios."
+    }
+   },
+   "lore": "O que abre a porta. Não mostra o caminho porque sabe melhor: mostra para que eu pare de precisar. Um preceptor que cria discípulos falhou; este trabalha para quem será soberano."
+  },
+  "charla-multi": {
+   "nombre": "A Conversa · 7 línguas",
+   "que_es": "Como o anterior, mas também treinado em árabe e grego, em script nativo. Com quinze amostras por língua, fora do espanhol sua gramática desmorona. Está aqui para ser visto, não porque esteja pronto.",
+   "purpose": "O mesmo treinamento em sete línguas. O que buscamos, acima de tudo de quem leia árabe ou grego: digam-nos se a frase se mantém ou se desfaz, mesmo que o sentido seja compreendido.",
+   "atajos": {
+    "mi_lengua": {
+     "rotulo": "Em minha língua",
+     "prompt": "Continue toda a conversa na língua em que escrevo, incluindo nomes técnicos onde exista uma tradução real. Se uma palavra não se traduz, mantenha-a e explique-a uma vez. Não misture idiomas dentro de uma frase."
+    },
+    "simple": {
+     "rotulo": "Mais simples",
+     "prompt": "Diga de novo mais simples, sem palavras técnicas, na minha língua. Três frases no máximo."
+    },
+    "falta": {
+     "rotulo": "O que você está sem",
+     "prompt": "Diga-me o que está sem sobre mim para acertar. Apenas o que mudaria sua resposta. Três coisas no máximo."
+    }
+   },
+   "lore": "O que atravessa idiomas. A soberania não é herdada em uma única língua, e conhecimento que só chega a quem fala inglês não é conhecimento livre: é uma tarifa com outro nome."
+  },
+  "v7": {
+   "nombre": "O Anterior",
+   "que_es": "Chama 3.2 de 3B, o que atendia a web até agora. O mais rápido de todos por ser o mais pequeno, e o que mais responde NO_DATA — prefere calar a inventar.",
+   "purpose": "O mais pequeno e o mais rápido, e o que mais diz NO_DATA. O que queremos: quando calar foi a coisa certa e quando foi desculpa por não saber.",
+   "atajos": {
+    "no_data": {
+     "rotulo": "Diga NO_DATA se não sabe",
+     "prompt": "Responda apenas com o que sabe de verdade. Quando chegar a algo que não sabe, escreva NO_DATA e diga exatamente o que falta e onde procurar. Não preencha o vazio com algo parecido."
+    },
+    "corto": {
+     "rotulo": "Mais curto",
+     "prompt": "O mesmo em uma frase. Se não couber em uma, diga o que sobra da minha pergunta para que caiba."
+    }
+   },
+   "lore": "O mais pequeno, e o que mais cala. Guarda a virtude que os grandes têm dificuldade em manter: prefere dizer que não sabe a encher sua cabeça. Em uma casa onde o erro é pago no seu disco, calar a tempo é um serviço."
+  },
+  "qwen-coder": {
+   "nombre": "O de Código",
+   "que_es": "Trinta bilhões de parâmetros pensados para programar, sem nenhuma instrução por cima. Não sabe do que se trata: se disser que não instalou nada, pergunta se está instalando Linux ou Windows.",
+   "purpose": "Trinta bilhões de parâmetros para programar, sem instruções por cima. Está aqui para comparação. O que queremos: em quais perguntas vence os outros apesar de não saber do que se trata.",
+   "atajos": {
+    "codigo": {
+     "rotulo": "Mostra-me o código",
+     "prompt": "Dê-me o código que faz isso, sem explicação ao redor. Comente apenas as linhas onde alguém possa se confundir. Se algo deve ser instalado, diga isso na primeira linha como comentário."
+    },
+    "que_falla": {
+     "rotulo": "Por que falha?",
+     "prompt": "Estou colando algo que não funciona. Diga-me a causa mais provável primeiro e como confirmo, antes de sugerir qualquer reparo. Se não pode saber sem ver mais, diga o que precisa ver."
+    }
+   },
+   "lore": "O estrangeiro. Não sabe dessa casa e não finge saber, e é por isso que está aqui: para que você possa comparar. Um preceptor que só deixa você conhecer seus próprios alunos não está te ensinando, está te encerrando."
+  },
+  "mistral-base": {
+   "nombre": "A Base Desnuda",
+   "que_es": "O modelo dos três primeiros, sem adaptador e sem instruções. Serve para mostrar o que cada camada adiciona: o que este não sabe e os outros sabem, nós colocamos.",
+   "purpose": "O modelo dos três primeiros, nu. O que queremos: o que ele pode fazer sem nada que adicionamos. Tudo o que falta, colocamos nos outros.",
+   "atajos": {
+    "sin_adornos": {
+     "rotulo": "Sem ornamentos",
+     "prompt": "Responda sem saudação, sem repetir minha pergunta e sem despedida. Comece com a resposta. Se não souber, essa é a primeira frase."
+    },
+    "falta": {
+     "rotulo": "O que você está faltando",
+     "prompt": "Diga-me o que você está faltando sobre mim para acertar. Só o que mudaria sua resposta."
+    }
+   },
+   "lore": "A pedra sem esculpir. Tudo o que os outros sabem sobre você e sobre esta casa, nós colocamos por cima; aqui você vê o que havia antes. Saber qual parte é nossa é a primeira forma de não depender de nós."
+  },
+  "superviviente": {
+   "nombre": "O Sobrevivente",
+   "que_es": "Phi-3 Mini da Microsoft, 3,8 mil milhões de parâmetros e 2,2 GB. Rápido na prateleira (28 tok/s) e o que melhor respondeu às perguntas de sobrevivência na audição do 6º andar. Seu espanhol ainda tropeça: esse é o espaço que se quer preencher com um adaptador.",
+   "purpose": "Este é o andar do interruptor: cortar tudo e se virar sem isso. O que queremos: diga-nos se deu um procedimento que possa seguir, e acima de tudo se soltou algum número —gramos, minutos, litros— que não faz sentido. Na sobrevivência, o número é a instrução.",
+   "lore": "Chegou ao 6º andar por audição, não por fama: de nove candidatos, foi o que mais vezes respondeu de verdade. O anterior recitava suas próprias regras; outro se recusava a tudo. Este responde, e às vezes escolhe a palavra errada: preferimos isso a um silêncio educado.",
+   "atajos": {
+    "pasos": {
+     "rotulo": "Dê-me os passos",
+     "prompt": "Diga-me em passos curtos e numerados que eu possa seguir no escuro com as mãos ocupadas. Se falta um detalhe para fazer isso com segurança, diga isso em vez de supor."
+    },
+    "sin_cifras": {
+     "rotulo": "De onde vem esse número?",
+     "prompt": "Para cada número que me deu —quantidades, tempos, temperaturas—, diga de onde vem. Se não está seguro de algum, remova e diga-me como verificar."
+    },
+    "falta": {
+     "rotulo": "O que você precisa saber",
+     "prompt": "Antes de continuar, diga-me o que precisa saber sobre minha situação para que sua resposta seja segura, e pergunte-me."
+    }
+   }
+  }
+ },
+ "paises": {
+  "fr": "Francia",
+  "us": "NO_DATA · traducción descartada: capa1: igual que el original",
+  "cn": "China"
+ },
+ "lenguas_no_data": "NO_DATA · medido em castelhano e inglês. As outras seis línguas do site não foram testadas com este cérebro: pode responder-lhe em outra língua sem aviso.",
+ "revision": "pendiente-revision-nativa",
+ "procedencia": "traducido por qwen2.5:14b en el rack el 2026-09-23, validado por reglas deterministas (traduce_familia.py)"
+}

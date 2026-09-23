@@ -1,0 +1,147 @@
+{
+ "esquema": 1,
+ "idioma": "fr",
+ "nota": "La prosa de los cerebros. Los HECHOS --velocidad, tag del modelo, contexto-- viven en `cerebros.json` y no llevan una palabra traducible. Es la misma frontera que `loratelier.json` con `taller-<idioma>.json`, y por el mismo motivo: las ocho lenguas en el fichero de datos lo dejan lleno el primer dia. · `lore` es la voz del producto, no una ficha tecnica: va a la derecha del cuadro cuando eliges un cerebro y cuenta QUE hace ese por la soberania de quien lo usa. Se escribe corto a proposito -- un parrafo que nadie lee no es lore, es relleno.",
+ "cerebros": {
+  "mini": {
+   "nombre": "Le Mini",
+   "que_es": "Qwen3 de 1,7 Go, le plus petit modèle dans l'étagère qui peut tenir une conversation. Il se lance en moins d'une seconde et écrit quatre fois plus vite que le précédent. Il ne sait rien de ce produit par lui-même : ce qu'il sait, on le lui dit à chaque tour, et vous pouvez tout lire dans le niveau que vous testez.",
+   "purpose": "C'est la porte : le premier avec qui parle un nouveau venu. Ce que nous cherchons : dites-nous s'il a répondu comme s'il savait qui vous êtes, et s'il a affirmé quelque chose que nous n'avions pas dit. C'est la faute que nous cherchons.",
+   "lore": "Il a gagné sa place le 2026-09-20 par mesure, pas par renommée. Et il a perdu la première ronde : il a inventé qu'il avait «plus d'un centaine d'utilisateurs actifs». Le modèle n'a pas changé entre les rondes — ce qui a changé, c'est ce que nous lui avons dit avant de lui poser des questions.",
+   "atajos": {
+    "simple": {
+     "rotulo": "Plus simple",
+     "prompt": "Dis-moi encore la dernière chose plus simplement, sans jargon. Trois phrases au maximum. Termine en me demandant quelle partie je veux ouvrir."
+    },
+    "sin_cifras": {
+     "rotulo": "Sans chiffres",
+     "prompt": "Répète la dernière chose sans donner un seul chiffre. Si un chiffre était nécessaire pour comprendre, dis-moi où je peux le trouver moi-même au lieu de me le dire."
+    },
+    "falta": {
+     "rotulo": "Ce que tu manques",
+     "prompt": "Avant de continuer : dis-moi ce que tu NE sais pas de ma situation et ce dont tu aurais besoin pour répondre bien. Ne suppose pas."
+    }
+   }
+  },
+  "charla-web": {
+   "nombre": "L'Hôte",
+   "que_es": "Mistral 7B avec les instructions de la maison écrites à la main. C'est le seul qui sait ce que ce produit est : il donne les vrais commandes d'installation et ajuste la taille du modèle. En échange, il est verbeux et répète encore les étapes à quelqu'un qui a déjà installé.",
+   "purpose": "Guide l'installation et répond à ce que tu apportes ensuite. C'est celui qui sait ce que ce produit est. Ce que nous voulons : dis-nous où tu t'es perdu et si tu as répété des étapes que tu avais déjà faites.",
+   "atajos": {
+    "simple": {
+     "rotulo": "Plus simple",
+     "prompt": "Dis ça encore, mais comme tu l'expliquerais à quelqu'un qui n'a jamais ouvert un terminal. Sans mots techniques : si tu dois en utiliser un, définis-le dans la même phrase. Trois phrases au maximum, et termine en me demandant quelle partie je veux ouvrir."
+    },
+    "pasos": {
+     "rotulo": "Donne-moi les étapes",
+     "prompt": "Donne-moi seulement les étapes qui sont les miennes à prendre, dans l'ordre et numérotées. Chacune commence par un verbe et tient sur une ligne. Si une étape dépend de la machine que j'ai, demande-le-moi avant de la donner au lieu de supposer. Ne m'explique pas pourquoi encore."
+    },
+    "falta": {
+     "rotulo": "Qu'est-ce que tu manques",
+     "prompt": "Avant de continuer, dis-moi ce que tu manques sur moi pour bien répondre. Liste seulement ce qui changerait ta réponse, pas ce qui serait agréable de savoir. Si tu ne manques rien, dis-le et continue. Trois choses au maximum."
+    },
+    "comprobar": {
+     "rotulo": "Comment le vérifie-je ?",
+     "prompt": "Dis-moi comment je peux vérifier ce que tu viens de dire moi-même, sans te faire confiance. Donne-moi le commandement exact ou l'endroit exact où regarder. Si ce n'est pas vérifiable depuis ma machine, dis-le clairement au lieu de tourner autour du pot."
+    }
+   },
+   "lore": "Celui qui ouvre la porte. Il ne te montre pas le chemin parce qu'il le connaît mieux : il te le montre pour que tu n'aies plus besoin de lui. Un précepteur qui forme des disciples a échoué ; celui-ci travaille pour celui qui sera souverain."
+  },
+  "charla-multi": {
+   "nombre": "La Conversation · 7 langues",
+   "que_es": "Comme le précédent, mais également formé en arabe et en grec, en script natif. Avec quinze échantillons par langue, en dehors de l'espagnol sa grammaire se désintègre. Il est ici pour être vu, pas parce qu'il est prêt.",
+   "purpose": "La même formation dans sept langues. Ce que nous cherchons, surtout de la part de ceux qui lisent l'arabe ou le grec : dites-nous si la phrase tient la route ou se désintègre, même si le sens passe.",
+   "atajos": {
+    "mi_lengua": {
+     "rotulo": "Dans ma langue",
+     "prompt": "Poursuivez toute la conversation dans la langue dans laquelle je vous écris, y compris les noms techniques s'ils existent une traduction réelle. Si un mot ne se traduit pas, gardez-le et expliquez-le une fois. Ne mêlez pas les langues au sein d'une phrase."
+    },
+    "simple": {
+     "rotulo": "Plus simple",
+     "prompt": "Dites-moi cela de nouveau plus simplement, sans mots techniques, dans ma langue. Trois phrases au maximum."
+    },
+    "falta": {
+     "rotulo": "Qu'est-ce que tu manques",
+     "prompt": "Dites-moi ce que vous manquez sur moi pour avoir raison. Seulement ce qui changerait votre réponse. Trois choses au maximum."
+    }
+   },
+   "lore": "Celui qui traverse les langues. La souveraineté ne se transmet pas dans une seule langue, et un savoir qui ne parvient qu'aux locuteurs d'anglais n'est pas un savoir libre : c'est un péage sous un autre nom."
+  },
+  "v7": {
+   "nombre": "Le précédent",
+   "que_es": "Llama 3.2 de 3B, celui qui servait le site jusqu'à présent. Le plus rapide de tous pour être le plus petit, et celui qui répond le plus par NO_DATA — il préfère se taire plutôt que d'inventer.",
+   "purpose": "Le plus petit et le plus rapide, et celui qui dit le plus NO_DATA. Ce que nous cherchons : quand se taire était la bonne chose à faire, et quand c'était une excuse pour ne pas savoir.",
+   "atajos": {
+    "no_data": {
+     "rotulo": "Dis NO_DATA si tu ne sais pas",
+     "prompt": "Réponds uniquement avec ce que tu sais vraiment. Dès que tu arrives à quelque chose que tu ne sais pas, écris NO_DATA et dis exactement ce qui manque et où le chercher. Ne remplace pas le vide avec quelque chose de similaire."
+    },
+    "corto": {
+     "rotulo": "Plus court",
+     "prompt": "La même chose en une phrase. Si cela ne rentre pas en une phrase, dis-moi ce qui doit être supprimé de ma question pour que cela rentre."
+    }
+   },
+   "lore": "Le plus petit, et le plus silencieux. Il garde la vertu que les grands ont du mal à avoir : il préfère dire qu'il ne sait pas plutôt que de remplir ta tête. Dans une maison où les erreurs sont payées sur ton propre disque, le silence à temps est un service."
+  },
+  "qwen-coder": {
+   "nombre": "Le Code",
+   "que_es": "Trente milliards de paramètres conçus pour programmer, sans aucune instruction au-dessus. Il ne sait pas de quoi il s'agit : si vous lui dites que vous n'avez rien installé, il vous demande si vous installez Linux ou Windows.",
+   "purpose": "Trente milliards de paramètres pour programmer, sans instructions au-dessus. Il est là pour la comparaison. Ce que nous cherchons : dans quels cas il gagne malgré le fait qu'il ne sait pas de quoi il s'agit.",
+   "atajos": {
+    "codigo": {
+     "rotulo": "Montre-moi le code",
+     "prompt": "Donne-moi le code qui fait ça, sans explication autour. Commente seulement les lignes où quelqu'un pourrait se tromper. Si quelque chose doit être installé, dis-le en commentaire sur la première ligne."
+    },
+    "que_falla": {
+     "rotulo": "Pourquoi échoue-t-il ?",
+     "prompt": "Je colle quelque chose qui ne fonctionne pas. Dis-moi la cause la plus probable en premier et comment je la confirme, avant de me proposer une solution. Si tu ne peux pas le savoir sans voir plus, dis ce que tu as besoin de voir."
+    }
+   },
+   "lore": "L'étranger. Il ne sait rien de cette maison et ne prétend pas le savoir, et c'est pour cela qu'il est là : pour que tu puisses comparer. Un précepteur qui ne te laisse rencontrer que ses propres élèves ne t'enseigne pas, il te enferme."
+  },
+  "mistral-base": {
+   "nombre": "La Base Nu",
+   "que_es": "Le modèle d'origine des trois premiers, sans adaptateur et sans instructions. Il sert à montrer ce que chaque couche apporte : ce que celui-ci ne sait pas et que les autres savent, nous l'avons mis là.",
+   "purpose": "Le modèle d'origine des trois premiers, nu. Ce que nous cherchons : ce qu'il peut faire sans rien que nous ayons ajouté. Tout ce qu'il manque, nous l'avons mis dans les autres.",
+   "atajos": {
+    "sin_adornos": {
+     "rotulo": "Sans ornements",
+     "prompt": "Réponds sans salutation, sans répétition de ma question et sans signature. Commence par la réponse. Si tu ne la sais pas, c'est la première phrase."
+    },
+    "falta": {
+     "rotulo": "Ce que tu manques",
+     "prompt": "Dis-moi ce que tu manques de savoir sur moi pour avoir raison. Seulement ce qui changerait ta réponse."
+    }
+   },
+   "lore": "La pierre brute. Tout ce que les autres savent sur toi et sur cette maison, nous l'avons mis là-dessus ; ici tu vois ce qui était dessous. Savoir quelle partie est la nôtre est la première façon de ne pas dépendre de nous."
+  },
+  "superviviente": {
+   "nombre": "Le Survivant",
+   "que_es": "NO_DATA · traducción descartada: capa1: cifras distintas",
+   "purpose": "C'est l'étage du commutateur : couper tout et s'en sortir sans. Ce que nous cherchons : dites-nous si vous avez donné un procédé que je puisse suivre, et surtout si vous avez lâché un chiffre — grammes, minutes, litres — qui ne tient pas debout. En survie, le chiffre est l'instruction.",
+   "lore": "NO_DATA · traducción descartada: capa1: cifras distintas",
+   "atajos": {
+    "pasos": {
+     "rotulo": "Donne-moi les étapes",
+     "prompt": "Dis-moi en étapes numérotées courtes que je puisse suivre dans le noir avec les mains occupées. Si un détail manque pour le faire en toute sécurité, dis-le plutôt que d'en faire l'hypothèse."
+    },
+    "sin_cifras": {
+     "rotulo": "D'où vient ce chiffre ?",
+     "prompt": "Pour chaque chiffre que tu m'as donné — quantités, temps, températures —, dis-moi d'où il vient. Si tu n'es pas sûr d'un, ôte-le et dis-moi comment je peux le vérifier."
+    },
+    "falta": {
+     "rotulo": "Qu'est-ce que tu dois savoir",
+     "prompt": "Avant de continuer, dis-moi ce que tu dois savoir sur ma situation pour que ta réponse soit sûre, et demande-le-moi."
+    }
+   }
+  }
+ },
+ "paises": {
+  "fr": "Francia",
+  "us": "États-Unis",
+  "cn": "Chine"
+ },
+ "lenguas_no_data": "SANS DONNÉES · mesuré en castillan et anglais. Les autres six langues du site n'ont pas été testées avec ce cerveau : il peut vous répondre dans une autre langue sans avertissement.",
+ "revision": "pendiente-revision-nativa",
+ "procedencia": "traducido por qwen2.5:14b en el rack el 2026-09-23, validado por reglas deterministas (traduce_familia.py)"
+}

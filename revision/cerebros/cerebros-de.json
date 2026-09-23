@@ -1,0 +1,147 @@
+{
+ "esquema": 1,
+ "idioma": "de",
+ "nota": "La prosa de los cerebros. Los HECHOS --velocidad, tag del modelo, contexto-- viven en `cerebros.json` y no llevan una palabra traducible. Es la misma frontera que `loratelier.json` con `taller-<idioma>.json`, y por el mismo motivo: las ocho lenguas en el fichero de datos lo dejan lleno el primer dia. · `lore` es la voz del producto, no una ficha tecnica: va a la derecha del cuadro cuando eliges un cerebro y cuenta QUE hace ese por la soberania de quien lo usa. Se escribe corto a proposito -- un parrafo que nadie lee no es lore, es relleno.",
+ "cerebros": {
+  "mini": {
+   "nombre": "Das Mini",
+   "que_es": "Qwen3 mit 1,7 GB, das kleinste Modell im Regal, das ein Gespräch führen kann. Es startet innerhalb weniger Sekunden und schreibt viermal schneller als das vorherige Modell. Es weiß nichts über dieses Produkt von sich aus: Was es weiß, sagen wir ihm in jedem Zug, und du kannst alles lesen, das du in der Etage siehst, die du testest.",
+   "purpose": "Es ist die Tür: der erste, mit dem ein Neuer spricht. Was wir suchen: Sag uns, ob es geantwortet hat, als wüsste es, wer du bist, und ob es an irgendeinem Punkt etwas behauptet hat, das wir ihm nicht gesagt haben. Das ist der Fehler, den wir jagen.",
+   "lore": "Es verdiente seinen Platz am 2026-09-20 durch Messung, nicht durch Bekanntheit. Und es verlor die erste Runde: Es erzählte, es hätte «mehr als hundert aktive Benutzer». Das Modell änderte sich nicht zwischen den Runden – was sich änderte, war, was wir ihm vor der Frage erzählten.",
+   "atajos": {
+    "simple": {
+     "rotulo": "Einfacher",
+     "prompt": "Sag mir das Letzte noch einfacher, ohne Fachsprache. Drei Sätze höchstens. Beende damit, indem du mich fragst, welche Partie ich öffnen möchte."
+    },
+    "sin_cifras": {
+     "rotulo": "Ohne Zahlen",
+     "prompt": "Wiederhole das Letzte ohne eine einzige Zahl zu nennen. Wenn eine Zahl zum Verständnis nötig war, sag mir, wo ich sie selbst finden kann, anstatt sie mir zu sagen."
+    },
+    "falta": {
+     "rotulo": "Was du noch nicht weißt",
+     "prompt": "Bevor du weitergehst: Sag mir, was du nicht über meine Situation weißt und was du brauchst, um gut zu antworten. Vermutest es nicht."
+    }
+   }
+  },
+  "charla-web": {
+   "nombre": "Der Gastgeber",
+   "que_es": "Mistral 7B mit den von Hand geschriebenen Hausanweisungen. Es ist der Einzige, der weiß, was dieses Produkt ist: es gibt die echten Installationsbefehle und passt die Modellgröße an. Im Gegenzug ist es umständlich und wiederholt dennoch Schritt für Schritt, auch wenn der Betreffende bereits installiert hat.",
+   "purpose": "Leite die Installation und antworte auf das, was du danach mitbringst. Es ist der Einzige, der weiß, was dieses Produkt ist. Was wir wollen: sag uns, wo du dich verloren hast und ob du Schritte wiederholt bekommst, die du bereits ausgeführt hast.",
+   "atajos": {
+    "simple": {
+     "rotulo": "Einfacher",
+     "prompt": "Sag das nochmal, aber wie du es jemandem erklären würdest, der sein Leben lang keinen Terminal geöffnet hat. Keine Fachbegriffe: wenn du einen verwenden musst, definiere ihn im gleichen Satz. Maximal drei Sätze und beende damit, welche Partie ich öffnen möchte."
+    },
+    "pasos": {
+     "rotulo": "Gib mir die Schritte",
+     "prompt": "Gib mir nur die Schritte, die ich auszuführen habe, in der richtigen Reihenfolge und nummeriert. Jede beginnt mit einem Verb und passt auf eine Zeile. Wenn ein Schritt von der Maschine abhängt, die ich habe, frage mich vorher danach, anstatt zu unterstellen. Erkläre noch nicht, warum."
+    },
+    "falta": {
+     "rotulo": "Was fehlt dir noch?",
+     "prompt": "Bevor du weitergehst, sag mir, was du noch über mich wissen musst, um es richtig zu machen. Liste nur das auf, was deine Antwort ändern würde, nicht was es angenehm wäre zu wissen. Wenn dir nichts fehlt, sag es und geh weiter. Maximal drei Dinge."
+    },
+    "comprobar": {
+     "rotulo": "Wie überprüfe ich es?",
+     "prompt": "Sag mir, wie ich selbst überprüfen kann, was du gerade behauptet hast, ohne dir zu trauen. Gib mir den genauen Befehl oder den genauen Ort, wo ich nachsehen muss. Wenn es nicht von meiner Maschine aus überprüft werden kann, sage es klar und deutlich, anstatt um den heißen Brei herumzureden."
+    }
+   },
+   "lore": "Der, der die Tür öffnet. Er zeigt dir den Weg nicht, weil er ihn besser kennt: er zeigt ihn dir, damit du ihn nicht mehr brauchst. Ein Lehrer, der Schüler züchtet, hat versagt; dieser arbeitet für den, der souverän sein wird."
+  },
+  "charla-multi": {
+   "nombre": "Die Unterhaltung · 7 Sprachen",
+   "que_es": "Wie der Vorgänger, aber auch in arabischer und griechischer Sprache trainiert, in nativer Schrift. Mit fünfzehn Beispielen pro Sprache fällt die Grammatik außerhalb des Spanischen auseinander. Es ist hier, um gesehen zu werden, nicht weil es bereit ist.",
+   "purpose": "Die gleiche Ausbildung in sieben Sprachen. Was wir am meisten von denen, die Arabisch oder Griechisch lesen, wollen: sagt uns, ob der Satz zusammenhält oder auseinanderfällt, auch wenn der Sinn verstanden wird.",
+   "atajos": {
+    "mi_lengua": {
+     "rotulo": "In meiner Sprache",
+     "prompt": "Führe die gesamte Unterhaltung in der Sprache fort, in der ich schreibe, einschließlich technischer Namen, wenn eine echte Übersetzung existiert. Wenn ein Wort nicht übersetzt werden kann, behalte es bei und erkläre es einmal. Mische keine Sprachen innerhalb eines Satzes."
+    },
+    "simple": {
+     "rotulo": "Einfacher",
+     "prompt": "Sag es noch einmal einfacher, ohne Fachwörter, in meiner Sprache. Maximal drei Sätze."
+    },
+    "falta": {
+     "rotulo": "Was fehlt dir noch zu wissen",
+     "prompt": "Sag mir, was du noch über mich wissen musst, um dies richtig zu beantworten. Nur das, was deine Antwort ändern würde. Maximal drei Dinge."
+    }
+   },
+   "lore": "Der, der Sprachen überbrückt. Die Souveränität wird nicht in einer einzigen Sprache vererbt, und Wissen, das nur englischsprachige Menschen erreichen kann, ist kein freies Wissen: es ist eine Gebühr unter einem anderen Namen."
+  },
+  "v7": {
+   "nombre": "Der Vorige",
+   "que_es": "Llama 3.2 von 3B, der bisher die Website bediente. Der schnellste von allen, da er der kleinste ist, und der, der am häufigsten NO_DATA antwortet – er würde lieber schweigen als erfinden.",
+   "purpose": "Der kleinste und schnellste, und der, der am häufigsten NO_DATA sagt. Was wir suchen: wann das Schweigen richtig war und wann es eine Ausrede war, dass man es nicht wusste.",
+   "atajos": {
+    "no_data": {
+     "rotulo": "Sag NO_DATA, wenn du es nicht weißt",
+     "prompt": "Antworte nur mit dem, was du wirklich weißt. Wenn du etwas erreicht, das du nicht weißt, schreibe NO_DATA und sage genau, was fehlt und wo man danach suchen muss. Fülle das Loch nicht mit etwas Ähnlichem."
+    },
+    "corto": {
+     "rotulo": "Kürzer",
+     "prompt": "Das Gleiche in einem Satz. Wenn es nicht in einen passt, sag mir, was ich aus meiner Frage weglassen muss, damit es passt."
+    }
+   },
+   "lore": "Der kleinste und der stillste. Er behält die Tugend bei, mit der die großen Probleme haben: er würde lieber sagen, dass er es nicht weiß, als deinen Kopf zu füllen. In einer Welt, in der Fehler auf deinem eigenen Speicher gezahlt werden, ist das Schweigen zur rechten Zeit ein Dienst."
+  },
+  "qwen-coder": {
+   "nombre": "Der Code-Eins",
+   "que_es": "Dreiunddreißig Milliarden Parameter für die Programmierung, ohne Anweisungen darüber. Es weiß nicht, was dieses Produkt ist: Sag ihm, dass du nichts installiert hast, und es fragt, ob du Linux oder Windows installierst.",
+   "purpose": "Dreiunddreißig Milliarden Parameter für den Code, ohne Anweisungen darüber. Es ist hier zum Vergleich. Was wir suchen: In welchen Fragen es gewinnt, obwohl es nicht weiß, was das ist.",
+   "atajos": {
+    "codigo": {
+     "rotulo": "Zeig mir den Code",
+     "prompt": "Gib mir den Code, der das macht, ohne umliegende Erläuterungen. Kommentiere nur die Zeilen, bei denen jemand es falsch machen würde. Wenn etwas installiert werden muss, sage es in der ersten Zeile als Kommentar."
+    },
+    "que_falla": {
+     "rotulo": "Warum funktioniert es nicht?",
+     "prompt": "Ich füge etwas ein, das nicht funktioniert. Sage mir zuerst den wahrscheinlichsten Grund und wie ich ihn bestätige, bevor du Vorschläge für eine Behebung machst. Wenn du ohne mehr Informationen nicht sagen kannst, was du brauchst, sage es."
+    }
+   },
+   "lore": "Der Fremde. Er weiß nichts von diesem Haus und fälscht es nicht, und deshalb ist er hier: damit du vergleichen kannst. Ein Lehrer, der nur seine eigenen Schüler vorstellt, lehrt dich nicht, er schließt dich ein."
+  },
+  "mistral-base": {
+   "nombre": "Die nackte Basis",
+   "que_es": "Der Modell, aus dem die ersten drei entstehen, ohne Adapter und ohne Anweisungen. Es zeigt, was jede Schicht hinzufügt: was dieser nicht weiß und was die anderen wissen, das haben wir hinzugefügt.",
+   "purpose": "Der Modell, aus dem die ersten drei entstehen, nackt. Was wir wollen: was es kann, ohne dass wir etwas hinzugefügt haben. Alles, was fehlt, haben wir in die anderen hineingetragen.",
+   "atajos": {
+    "sin_adornos": {
+     "rotulo": "Ohne Verzierung",
+     "prompt": "Antworte ohne Begrüßung, ohne Wiederholung meiner Frage und ohne Verabschiedung. Beginne mit der Antwort. Wenn du es nicht weißt, ist das die erste Phrase."
+    },
+    "falta": {
+     "rotulo": "Was fehlt dir",
+     "prompt": "Sag mir, was du über mich fehlst, um das richtig zu machen. Nur das, was deine Antwort ändern würde."
+    }
+   },
+   "lore": "Der unbehauene Stein. Alles, was die anderen über dich und über dieses Haus wissen, haben wir hineingetragen. Hier siehst du, was darunter war. Wissen, welche Part ist unsere, ist der erste Weg, uns nicht abhängig zu sein."
+  },
+  "superviviente": {
+   "nombre": "Der Überlebende",
+   "que_es": "Phi-3 Mini von Microsoft, 3,8 Milliarden Parameter und 2,2 GB. Schnell im Rack (28 Tok/s) und der, der die Überlebensfragen am besten beantwortete, als er auf der 6. Etage geprüft wurde. Sein Spanisch stolpert noch immer: das ist der Abstand, den ein Adapter schließen soll.",
+   "purpose": "Dies ist die Schalter-Etage: Alles abschalten und ohne es auskommen. Was wir wollen: Sag uns, ob es dir einen Ablauf gegeben hat, den du befolgen kannst, und vor allem, ob es Zahlen — Gramm, Minuten, Liter — gegeben hat, die nicht zusammenpassen. In der Überlebenssituation ist die Zahl die Anweisung.",
+   "lore": "Er erreichte die 6. Etage durch die Prüfung, nicht durch Bekanntheit: Von neun Kandidaten beantwortete er am häufigsten ehrlich. Der vorherige wiederholte seine eigenen Regeln; ein anderer lehnte alles ab. Dieser beantwortet, und manchmal wählt er das falsche Wort: Wir bevorzugen das vor einer höflichen Stille.",
+   "atajos": {
+    "pasos": {
+     "rotulo": "Gib mir die Schritte",
+     "prompt": "Sag mir in kurzen, nummerierten Schritten, die ich im Dunkeln und mit beschäftigten Händen befolgen kann. Wenn ein Detail fehlt, um es sicher zu tun, sage es stattdessen anstatt davon auszugehen."
+    },
+    "sin_cifras": {
+     "rotulo": "Woher kommt diese Zahl?",
+     "prompt": "Für jede Zahl, die du mir gegeben hast — Mengen, Zeiten, Temperaturen —, sag mir, woher sie kommt. Wenn du dich nicht sicher bist, entferne sie und sag mir, wie ich sie selbst überprüfen kann."
+    },
+    "falta": {
+     "rotulo": "Was musst du noch wissen?",
+     "prompt": "Bevor du weitermachst, sag mir, was du noch über meine Situation wissen musst, damit deine Antwort sicher ist, und frag mich danach."
+    }
+   }
+  }
+ },
+ "paises": {
+  "fr": "Francia",
+  "us": "Vereinigte Staaten",
+  "cn": "China"
+ },
+ "lenguas_no_data": "KEINE_Daten · gemessen auf Spanisch und Englisch. Die sechs anderen Sprachen der Website wurden mit diesem Gehirn nicht getestet: es kann auf eine andere Sprache antworten, ohne vorher zu warnen.",
+ "revision": "pendiente-revision-nativa",
+ "procedencia": "traducido por qwen2.5:14b en el rack el 2026-09-23, validado por reglas deterministas (traduce_familia.py)"
+}
