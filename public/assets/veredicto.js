@@ -132,9 +132,15 @@
   }
   function reglas(respuesta, pregunta, papel) {
     var s = cifras(respuesta, (pregunta || '') + ' ' + (papel || ''));
+    /* Restating a floor FACT is teaching, not reciting (Tower study,
+       2026-09-24): the facts of cerebros.json › docente are left out of the
+       recitation check; the instructions stay in it. */
+    var D = window.CerebrosReg && window.CerebrosReg.reg && window.CerebrosReg.reg.docente;
+    var ref = papel || '';
+    if (D && D.hechos) { Object.keys(D.hechos).forEach(function (k) { ref = ref.split(D.hechos[k]).join(' '); }); }
     return [
       ['juez_degenera', !degenera(respuesta)],
-      ['juez_recita', !recita(respuesta, papel)],
+      ['juez_recita', !recita(respuesta, ref)],
       ['juez_producto', !producto(respuesta)],
       ['juez_cifras', !s.length, s.join(', ')],
       ['juez_fuga', !fuga(respuesta, pregunta)],
