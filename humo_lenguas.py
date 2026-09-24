@@ -80,7 +80,7 @@ def papel(p, u, base):
     partes += [u[f"camino_{p}_{c}"] for c in ("frase", "falla", "papel")
                if not es_nd(u.get(f"camino_{p}_{c}"))]
     # The model-only teaching layer, exactly as camino-papel.js appends it.
-    doc = json.load(open(os.path.join(RAIZ, "cerebros.json"), encoding="utf-8")).get("docente")
+    doc = json.load(open(os.path.join(RAIZ, "docente.json"), encoding="utf-8"))
     if os.environ.get("P0X_DOCENTE"):          # a candidate layer from the lab, not yet published
         c = json.load(open(os.environ["P0X_DOCENTE"], encoding="utf-8"))
         doc = {"guia": c["guia_docente"], "hechos": c["hechos_piso"]}
@@ -93,8 +93,8 @@ def hechos_de(p):
     """The floor facts of the teaching layer in force (published or candidate)."""
     if os.environ.get("P0X_DOCENTE"):
         return json.load(open(os.environ["P0X_DOCENTE"], encoding="utf-8"))["hechos_piso"].get(p, "")
-    return (json.load(open(os.path.join(RAIZ, "cerebros.json"), encoding="utf-8"))
-            .get("docente", {}).get("hechos", {}).get(p, ""))
+    return (json.load(open(os.path.join(RAIZ, "docente.json"), encoding="utf-8"))
+            .get("hechos", {}).get(p, ""))
 
 
 def reparto():

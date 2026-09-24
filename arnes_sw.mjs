@@ -160,7 +160,7 @@ const rutas = await shell.keys();
 // 145 desde el 2026-09-23: entra el arabe, la novena lengua. Seis paginas
 // suyas en el shell y sus cuatro familias precacheadas (agentes, duelos,
 // herramientas, caminos): seis y cuatro, diez.
-ok('precachea paginas y piezas del Hub', rutas.length === 145, rutas.length+' rutas');
+ok('precachea paginas y piezas del Hub', rutas.length === 146, rutas.length+' rutas');
 ok('el shell trae las tres tiras de la cara',
    ['apertura', 'reposo', 'habla']
      .every(s => rutas.includes('/assets/caras/secuencia-' + s + '-256.webp')));
@@ -169,6 +169,8 @@ ok('el shell trae hub.json', rutas.includes('/hub.json'));
 // El catalogo de modelos viaja con el sitio igual que el de companeros: sin el,
 // la app instalada abre y no sabe decir sobre que se entreno nada.
 ok('el shell trae modelos.json', rutas.includes('/modelos.json'));
+// The Tower's teaching layer left cerebros.json on 2026-09-25: it travels too.
+ok('el shell trae docente.json', rutas.includes('/docente.json'));
 ok('el shell trae las cinco piezas del Hub',
    ['/assets/widget.css','/assets/panel.css','/assets/hub.js','/assets/hub-cola.js','/assets/chat-router.js']
      .every(r => rutas.includes(r)));

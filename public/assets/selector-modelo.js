@@ -124,6 +124,14 @@
           return fetch('/cerebros-en.json', { cache: 'no-store' }).then(traer);
         }).then(function (prosa) { return [base, prosa]; });
       })
+      /* The teaching layer lives in /docente.json since 2026-09-25 (cerebros.json
+         was 478 B from its cap). It is hung where readers already look; if it
+         fails, the catalog still loads and the floors just teach less. */
+      .then(function (par) {
+        return fetch('/docente.json', { cache: 'no-store' }).then(traer)
+          .then(function (d) { par[0].docente = d; }, function () {})
+          .then(function () { return par; });
+      })
       .then(function (par) { pintar(par[0], par[1]); })
       .catch(function (e) {
         // Sin catalogo no hay quien diga que cerebro habla: se dice, con causa.
