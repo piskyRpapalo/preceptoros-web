@@ -1,6 +1,6 @@
 {
  "esquema": 1,
- "verificado": "2026-09-23",
+ "verificado": "2026-09-24",
  "fuente": "bin/verifica-medios.py (HEAD + repository API)",
  "medios": [
   {
@@ -23,7 +23,7 @@
    "causa": null,
    "bytes": 147951465,
    "url": "https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-base.bin",
-   "verificado": "2026-09-23"
+   "verificado": "2026-09-24"
   },
   {
    "id": "whisper-small",
@@ -45,7 +45,7 @@
    "causa": null,
    "bytes": 487601967,
    "url": "https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-small.bin",
-   "verificado": "2026-09-23"
+   "verificado": "2026-09-24"
   },
   {
    "id": "kokoro-82m",
@@ -73,7 +73,7 @@
    "causa": null,
    "bytes": 327214577,
    "url": "https://huggingface.co/hexgrad/Kokoro-82M",
-   "verificado": "2026-09-23"
+   "verificado": "2026-09-24"
   },
   {
    "id": "ace-step-15",
@@ -82,7 +82,7 @@
    "licencia": "MIT",
    "comando": "hf download ACE-Step/Ace-Step1.5",
    "lenguas": "50+",
-   "nota": "herr_no_medido",
+   "nota": null,
    "ficheros": [
     {
      "ruta": "acestep-v15-turbo/model.safetensors",
@@ -113,7 +113,7 @@
    "causa": null,
    "bytes": 10025364936,
    "url": "https://huggingface.co/ACE-Step/Ace-Step1.5",
-   "verificado": "2026-09-23"
+   "verificado": "2026-09-24"
   },
   {
    "id": "flux-schnell-q4",
@@ -135,7 +135,7 @@
    "causa": "needs_gated_autoencoder",
    "bytes": 6783943712,
    "url": "https://huggingface.co/city96/FLUX.1-schnell-gguf/resolve/main/flux1-schnell-Q4_K_S.gguf",
-   "verificado": "2026-09-23"
+   "verificado": "2026-09-24"
   },
   {
    "id": "qwen3-vl-4b",
@@ -150,7 +150,7 @@
    "causa": null,
    "bytes": 3295635680,
    "url": "https://ollama.com/library/qwen3-vl:4b-instruct-q4_K_M",
-   "verificado": "2026-09-23"
+   "verificado": "2026-09-24"
   }
  ]
 }
