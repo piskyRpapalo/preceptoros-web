@@ -1,4 +1,8 @@
-/* ATLAS · Panel del Atlante · maqueta (FASE 0, PASO 1).
+/* ATLAS · el Bosque Sumergido · hoja del piso (FASE 0).
+
+   La carga la Torre junto a `atlas-piso.js` cuando el piso entre (paso 3).
+   Todo va colgado de `#atlas-piso`: el piso no puede pisar al resto de la
+   portada.
 
    SOLO MAQUETACION. La paleta, el cristal, la tipografia y el foco salen de
    `soberano.css`: aqui no se define un color, todo es `var(--...)` de la capa
@@ -8,16 +12,16 @@
    radios del token (`--radius`, `999px`, `50%`), toda animacion con su salida
    para `prefers-reduced-motion`, sin gradientes CSS y sin desenfoque dinamico. */
 
-.atlas main{max-width:72rem}
+.atlas-lema{margin:0 0 1rem;color:var(--text-muted)}
 .atlas-panel{display:grid;gap:1.25rem}
 .atlas-panel .panel{margin:0}
-.atlas h2{font-size:1rem;margin:0 0 .5rem}
+.atlas-panel h4{font-size:1rem;margin:0 0 .5rem}
 .atlas-nota{margin:0;font-size:.78rem;color:var(--text-muted)}
 
 /* --- cabecera ------------------------------------------------------------ */
 .atlas-cab{display:flex;flex-wrap:wrap;align-items:center;
   justify-content:space-between;gap:.75rem 1.5rem}
-.atlas-cab h1{margin:0;font-size:clamp(1.2rem,3.6vw,1.9rem)}
+.atlas-cab h3{margin:0;font-size:clamp(1.15rem,3.2vw,1.6rem)}
 .atlas-integridad{display:flex;align-items:center;gap:.6rem;margin:0;
   font:600 .8rem/1 var(--mono);color:var(--text-muted);white-space:nowrap}
 .atlas-integridad meter{width:clamp(5rem,28vw,10rem);height:.9rem}
@@ -79,14 +83,17 @@
   gap:.15rem .5rem;align-items:baseline}
 .atlas-skills .nivel{font:700 1rem/1 var(--mono);color:var(--accent-copper-claro)}
 .atlas-skills small{grid-column:1/-1;font:.7rem/1.3 var(--mono);color:var(--text-muted)}
+/* Las cifras son una fraccion: se leen de izquierda a derecha tambien en
+   arabe. Sin aislarlas, el bidi pintaba «XP 7,028 / 6,747», al reves. */
+[dir="rtl"] .atlas-skills small{text-align:right}
 /* La dependencia va en su propia linea: partida a media frase no se leia. */
 .atlas-dep{display:block;font:normal .68rem/1.3 var(--mono);color:var(--text-muted)}
 
-.atlas progress{grid-column:1/-1;width:100%;height:.45rem;appearance:none;
+#atlas-piso progress{grid-column:1/-1;width:100%;height:.45rem;appearance:none;
   border:0;border-radius:999px;background:var(--bg-primary);overflow:hidden}
-.atlas progress::-webkit-progress-bar{background:var(--bg-primary)}
-.atlas progress::-webkit-progress-value{background:var(--accent-violet)}
-.atlas progress::-moz-progress-bar{background:var(--accent-violet)}
+#atlas-piso progress::-webkit-progress-bar{background:var(--bg-primary)}
+#atlas-piso progress::-webkit-progress-value{background:var(--accent-violet)}
+#atlas-piso progress::-moz-progress-bar{background:var(--accent-violet)}
 
 .atlas-dormias ul{list-style:none;margin:.2rem 0 .6rem;padding:0;display:grid;
   gap:.3rem;font:.82rem/1.4 var(--mono)}
@@ -108,12 +115,12 @@
 
 /* --- nivel del Nucleo: la barra del pueblo -------------------------------- */
 .atlas-nucleo{display:grid;gap:.55rem}
-.atlas-nucleo h2{margin:0;font-size:clamp(1rem,2.6vw,1.35rem)}
+.atlas-nucleo h4{margin:0;font-size:clamp(1rem,2.6vw,1.35rem)}
 .atlas-nucleo .nivel{font-family:var(--mono);color:var(--accent-copper-claro)}
 .atlas-nucleo progress{height:.9rem}
-.atlas-nucleo progress::-webkit-progress-value{background:var(--accent-copper)}
-.atlas-nucleo progress::-moz-progress-bar{background:var(--accent-copper)}
+#atlas-piso .atlas-nucleo progress::-webkit-progress-value{background:var(--accent-copper)}
+#atlas-piso .atlas-nucleo progress::-moz-progress-bar{background:var(--accent-copper)}
 .atlas-nucleo p{margin:0;color:var(--text-muted)}
 .atlas-nucleo .atlas-desbloqueo{font:.82rem/1.4 var(--mono);color:var(--text-main)}
 
-.atlas-pie p{margin:0;font:.72rem/1.5 var(--mono);color:var(--text-muted)}
+.atlas-pie{margin:0;font:.72rem/1.5 var(--mono);color:var(--text-muted)}

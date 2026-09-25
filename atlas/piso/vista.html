@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en" data-tema="oscuro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ATLAS · floor preview</title>
+<!-- ATLAS · VISTA DEL PISO, no una pagina del sitio.
+
+     Vive fuera de `public/`: no se despliega y no es una URL. Simula lo
+     minimo de la Torre --un `details#piso-atlas` con su `.torre-cuerpo` y el
+     aviso `preceptor:torre`-- para ver `atlas-piso.js` montarse exactamente
+     como lo hara en la portada el dia del paso 3.
+
+     La lengua se cambia con `?lang=es` (o fr, pt, it, de, ru, el, ar): la
+     vista reescribe `lang`/`dir` antes de cargar el modulo. Por defecto,
+     ingles, que es la lengua del juego hoy. -->
+<link rel="icon" type="image/svg+xml" href="../../public/assets/favicon.svg">
+<link rel="stylesheet" href="../../public/assets/base.css">
+<link rel="stylesheet" href="../../public/assets/tema.css">
+<link rel="stylesheet" href="../../public/assets/soberano.css">
+<link rel="stylesheet" href="atlas.css">
+<style>
+  /* Solo para esta vista: el ancho de una portada y el aspecto de un piso. */
+  main{max-width:min(1400px,96vw)}
+  .vista-piso{margin:0}
+  .vista-piso>summary{cursor:pointer;font:600 .8rem/1.4 var(--mono);
+    letter-spacing:.06em;padding:.4rem 0}
+  .torre-cuerpo{display:flex;flex-direction:column;gap:.4rem;min-width:0}
+</style>
+<script>
+  (function () {
+    var l = new URLSearchParams(location.search).get('lang');
+    var ok = ['en', 'es', 'fr', 'pt', 'it', 'de', 'ru', 'el', 'ar'];
+    if (l && ok.indexOf(l) >= 0) {
+      document.documentElement.lang = l;
+      if (l === 'ar') { document.documentElement.dir = 'rtl'; }
+    }
+  })();
+</script>
+</head>
+<body>
+<main>
+  <section id="torre" class="panel">
+    <details id="piso-atlas" class="torre-peldano vista-piso" open>
+      <summary>LEVEL 9 · ATLAS · The Sunken Forest</summary>
+      <div class="torre-cuerpo"></div>
+    </details>
+  </section>
+</main>
+<script src="atlas-piso.js" data-base="./"></script>
+<script>
+  /* Lo que haria `camino.js` al pintar la Torre. */
+  window.TorreUI = {};
+  window.dispatchEvent(new CustomEvent('preceptor:torre', { detail: { ui: {} } }));
+</script>
+</body>
+</html>
