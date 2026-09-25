@@ -116,6 +116,11 @@ ENLACES_ADMITIDOS = ("https://github.com/piskyRpapalo/PreceptorOS",
 # w3.org desde una pagina.
 ESQUEMAS_XML = ("http://www.sitemaps.org/schemas/",
                 "http://www.w3.org/1999/xhtml",
+                # El espacio de nombres SVG (2026-09-25): `createElementNS` lo
+                # exige para construir el retrato de ATLAS nodo a nodo sin
+                # innerHTML. Es un NOMBRE, como el de XHTML de arriba; nadie
+                # lo pide por la red.
+                "http://www.w3.org/2000/svg",
                 # `$schema` de JSON Schema entra aqui y no en ENLACES_ADMITIDOS
                 # por el mismo motivo que los otros dos: es el NOMBRE de un
                 # dialecto, no una direccion que nadie va a pedir. El validador
@@ -2060,8 +2065,10 @@ class Doctrina(unittest.TestCase):
             # pedia pintar de marmol un panel que no lo es. Lo que la regla
             # protege es que HAYA un fondo solido antes del cristal, no de que
             # color -- eso lo decide la pieza.
+            # `--bg-secondary` (#1a152a, opaco) entra el 2026-09-25 con el piso
+            # ATLAS: es el fondo solido de la capa soberana.
             opacos = [m.start() for m in re.finditer(
-                r"background:var\(--(marmol-claro|violeta)\)", css)]
+                r"background:var\(--(marmol-claro|violeta|bg-secondary)\)", css)]
             self.assertTrue(any(o < i for o in opacos),
                             "el respaldo opaco tiene que declararse ANTES del cristal")
 
@@ -2603,8 +2610,13 @@ class Hub(unittest.TestCase):
         # El piso 1 viste el chat al entrar, y NO a ciegas: sin cerebro puesto
         # el evento apagaria el chat en vez de cambiarlo.
         torre = (PUBLICO / "assets" / "camino.js").read_text(encoding="utf-8")
-        self.assertIn("viste(PELDANOS[0]", re.sub(r"/\*.*?\*/", "", torre, flags=re.S),
+        self.assertIn("viste(INICIAL", re.sub(r"/\*.*?\*/", "", torre, flags=re.S),
                       "nadie viste el chat al arrancar: se queda sin companero")
+        # El piso de entrada es el 2 (orden del Soberano, 2026-09-25), y los
+        # dos modulos que lo nombran dicen el mismo.
+        inicial = re.findall(r"var INICIAL = '(\w+)'", torre + (PUBLICO / "assets" / "piso-chat.js").read_text(encoding="utf-8"))
+        self.assertEqual(inicial, ["primeros_pasos", "primeros_pasos"],
+                         "camino.js y piso-chat.js no abren el mismo piso")
         self.assertIn("CerebroPuesto", codigo,
                       "el piso no pregunta por el modelo a quien manda sobre el")
 
@@ -3045,7 +3057,7 @@ class Hub(unittest.TestCase):
                 self.assertNotIn('id="cerebros-banco"', t)
 
     def test_cada_piso_tiene_quien_hable_y_existe(self):
-        """El reparto firmado cubre los ocho pisos, y cada nombre existe.
+        """El reparto firmado cubre los nueve pisos, y cada nombre existe.
 
         Un piso sin entrada dejaria el titulo en NO_DATA; uno con un cerebro
         que no esta en el catalogo, el chat sin modelo. Y los pisos del
@@ -3058,7 +3070,8 @@ class Hub(unittest.TestCase):
         m = _re.search(r"var PELDANOS = \[(.*?)\];", cam, _re.S)
         self.assertIsNotNone(m, "camino.js ya no declara PELDANOS")
         pisos = _re.findall(r"'(\w+)'", m.group(1))
-        self.assertEqual(len(pisos), 8)
+        # NUEVE desde el 2026-09-25: ATLAS entra como piso 9 (RATLAS02).
+        self.assertEqual(len(pisos), 9)
         ids = {c["id"]: c for c in reg["cerebros"]}
         rep = reg.get("pisos", {})
         for p in pisos:
@@ -3074,6 +3087,76 @@ class Hub(unittest.TestCase):
         router = (PUBLICO / "assets" / "chat-router.js").read_text(encoding="utf-8")
         self.assertIn("/assets/piso-chat.js", router,
                       "nadie carga el modulo que hace que el piso mande")
+
+    def test_el_piso_9_se_carga_a_demanda_y_solo_pide_su_texto(self):
+        """ATLAS no lo baja quien no abre su piso (RATLAS02, condicion c).
+
+        La Torre carga UN cargador, `camino-atlas.js`, que inyecta el piso al
+        abrir `#piso-atlas`. Ningun HTML nombra los guiones del piso, el
+        precache tampoco, y el piso pide una sola cosa por red: su texto,
+        `atlas-<lengua>.json`, al pulsar. Ni una salida mas.
+        """
+        A = PUBLICO / "assets"
+        router = (A / "chat-router.js").read_text(encoding="utf-8")
+        self.assertIn("'/assets/camino-atlas.js'", router, "nadie carga el cargador")
+        cargador = sin_comentarios((A / "camino-atlas.js").read_text(encoding="utf-8"))
+        self.assertIn("piso-atlas", cargador)
+        self.assertIn("'toggle'", cargador, "el piso no espera a abrirse")
+        self.assertIn("s.async = false", cargador, "el orden de los guiones no esta atado")
+        piezas = ("atlas-arte.js", "atlas-mapa.js", "atlas-dialogo.js",
+                  "atlas-piso.js", "atlas.css", "preceptor-pixel.png")
+        listas = texto_del_worker()
+        for q in piezas:
+            with self.subTest(pieza=q):
+                self.assertTrue((A / q).is_file(), f"falta {q}")
+                self.assertNotIn(q, listas, f"{q} entra en el precache")
+                for h in PUBLICO.rglob("*.html"):
+                    self.assertNotIn(q, h.read_text(encoding="utf-8"),
+                                     f"{h.name} carga {q} de salida")
+        piso = sin_comentarios((A / "atlas-piso.js").read_text(encoding="utf-8"))
+        self.assertEqual(re.findall(r"fetch\(([^)]*)\)", piso),
+                         ["BASE + 'atlas-' + lang + '.json'"])
+        for f in ("atlas-piso.js", "atlas-arte.js", "atlas-mapa.js",
+                  "atlas-dialogo.js", "camino-atlas.js"):
+            codigo = sin_comentarios((A / f).read_text(encoding="utf-8"))
+            # El espacio de nombres SVG es un nombre, no una salida.
+            codigo = codigo.replace("'http://www.w3.org/2000/svg'", "")
+            for salida in ("http://", "https://", "XMLHttpRequest", "sendBeacon",
+                           "WebSocket", "EventSource", "importScripts", "innerHTML"):
+                with self.subTest(fichero=f, salida=salida):
+                    self.assertNotIn(salida, codigo)
+        for l in idiomas(PUBLICO):
+            with self.subTest(lengua=l):
+                self.assertTrue((PUBLICO / f"atlas-{l}.json").is_file())
+
+    def test_el_nivel_mostrado_es_la_posicion_en_peldanos(self):
+        """Nivel 1 = Primeros pasos, nivel 2 = Despertar (Soberano, 2026-09-25).
+
+        El numero que ve la persona SE DERIVA del indice de `PELDANOS` --no hay
+        campo de nivel--, asi que reordenar el array es la unica forma de
+        cambiar un nivel, y esta guarda ata las tres cosas que tienen que decir
+        lo mismo: el orden del array, el numero pintado (`i + 1`) y el piso que
+        se abre al entrar (`INICIAL`, que tiene que ser el nivel 1). Un campo de
+        nivel escrito a mano en otro sitio seria un segundo dueño del numero.
+        """
+        cam = sin_comentarios((PUBLICO / "assets" / "camino.js").read_text(encoding="utf-8"))
+        m = re.search(r"var PELDANOS = \[(.*?)\];", cam, re.S)
+        pisos = re.findall(r"'(\w+)'", m.group(1))
+        self.assertEqual(pisos[:2], ["primeros_pasos", "despertar"])
+        self.assertEqual(pisos[-1], "atlas", "ATLAS deja de ser el nivel 9")
+        self.assertIn("PELDANOS.forEach(function (p, i)", cam)
+        self.assertIn("' ' + (i + 1) + ' · '", cam, "el nivel ya no sale del indice")
+        self.assertNotRegex(cam, r"camino_\w+_nivel", "aparece un segundo dueño del nivel")
+        for f in ("camino.js", "piso-chat.js"):
+            t = (PUBLICO / "assets" / f).read_text(encoding="utf-8")
+            with self.subTest(fichero=f):
+                self.assertIn(f"var INICIAL = '{pisos[0]}'", t,
+                              "el piso que abre la web no es el nivel 1")
+        for l in IDIOMAS:
+            ui = json.loads((PUBLICO / f"caminos-{l}.json").read_text(encoding="utf-8"))["ui"]
+            with self.subTest(lengua=l):
+                self.assertFalse([p for p in pisos if f"camino_{p}_titulo" not in ui],
+                                 "hay un nivel sin titulo en esta lengua")
 
     def test_el_modelo_servido_lleva_tag_explicito(self):
         """Nada de `:latest` pelado en el modelo que da la cara al publico.
@@ -3403,8 +3486,12 @@ class Cabezal(unittest.TestCase):
         self.assertIn("'modelo-nombre'", hub,
                       "nadie declara el companero activo en la portada")
 
-    def test_las_cuatro_puertas_y_su_orden(self):
-        """La navegacion: cuatro, en su orden, y ocupando el ancho.
+    def test_las_cinco_puertas_y_su_orden(self):
+        """La navegacion: cinco, en su orden, y ocupando el ancho.
+
+        CINCO DESDE EL 2026-09-25, firmado por el Soberano: theGame entra la
+        ultima y lleva al piso 9 de la Torre (`#piso-atlas`), no a una pagina.
+        Es impar, asi que en la rejilla de dos del telefono ocupa su fila.
 
         El orden no es decorativo. HOME primero porque es el sitio; LoRAtelier
         SEGUNDO porque es el producto principal de esta web --el banco de
@@ -3417,11 +3504,13 @@ class Cabezal(unittest.TestCase):
         """
         hub = guion_de_la_portada()
         orden = []
-        for clave in ("T.cabHome", "T.cabBenchmark", "T.cabComunidad", "T.cabInstala"):
+        for clave in ("T.cabHome", "T.cabBenchmark", "T.cabComunidad", "T.cabInstala",
+                      "T.cabGame"):
             self.assertIn(clave, hub, f"falta la puerta {clave}")
             orden.append(hub.index(clave))
         self.assertEqual(orden, sorted(orden),
-                         "las cuatro puertas no se pintan en su orden")
+                         "las cinco puertas no se pintan en su orden")
+        self.assertIn("'#piso-atlas'", hub, "theGame no lleva al piso 9")
         self.assertNotIn("enlace('cab-boton idioma'", hub,
                          "el idioma vuelve a la fila de navegacion")
         # LAS HOJAS SE DESCUBREN DE LA PORTADA, no se nombra una. Esta linea
@@ -3436,6 +3525,9 @@ class Cabezal(unittest.TestCase):
         self.assertIn("grid-template-columns:repeat(2,1fr)",
                       css.replace(" ", ""),
                       "las puertas no se apilan de dos en dos")
+        self.assertIn("#cab-nav.cab-boton.thegame{grid-column:1/-1",
+                      css.replace(" ", ""),
+                      "la quinta puerta queda sola a media fila en el telefono")
 
     def test_enlaces_identidad_publica(self):
         """GitHub y LinkedIn: uno de cada, y en el cabezal.
@@ -5229,8 +5321,10 @@ CLAVES_CAMINOS = {
     #   puertos    · el entorno local: que escucha en tu propia maquina
     #   whoami     · el entorno online: que hay de ti ahi fuera
     #   killswitch · cortar, y medir cuanto se deshace de verdad
+    #   atlas      · el piso 9, el Bosque Sumergido (2026-09-25, RATLAS02):
+    #                entra firmado y con su papel en NO_DATA hasta la firma
     for n in ("despertar", "primeros_pasos", "exposicion", "silencio",
-              "contribuir", "puertos", "whoami", "killswitch")
+              "contribuir", "puertos", "whoami", "killswitch", "atlas")
     # `papel` y `corpus` entran el 2026-09-20 y son de otra clase que los
     # cuatro de arriba, asi que se nombran con su porque.
     #   papel  · CON QUIEN cree el modelo que habla en este piso. Sin eso quien
@@ -5346,7 +5440,7 @@ CLAVES_MOTOR = set(CLAVES_MOTOR_LISTA)   # una sola lista: ver FUERA_DEL_BLOQUE
 # piso ira a esta misma familia.
 CLAVES_OBJETIVOS = ({f"camino_{n}_aprender" for n in (
     "despertar", "primeros_pasos", "exposicion", "silencio", "contribuir",
-    "puertos", "whoami", "killswitch")}
+    "puertos", "whoami", "killswitch", "atlas")}
     | {"torre_et_aprender", "torre_et_papel", "torre_et_corpus"}
     # El juez de dos capas (2026-09-23): rotulos, las cinco reglas de la capa
     # determinista y el papel del modelo juez. Los pinta `veredicto.js`.

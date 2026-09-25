@@ -77,7 +77,13 @@
     "ks_juez_sin_turnos": "NO_DATA — es gibt noch keine Züge zu bewerten. Sprich zuerst mit der Studie.",
     "ks_juez_una_capa": "NO_DATA — das ist EINE Schicht. Die Karte dieser Studie verlangt zwei —erst deterministisch, dann Modell— und die erste läuft auf dem Rack, nicht hier. Lies es als gemessene Meinung, nicht als Note.",
     "pp_abrir": "Spielen: einen Beispielrechner scannen",
-    "pp_sello": "Simulation"
+    "pp_sello": "Simulation",
+    "camino_atlas_titulo": "ATLAS · der Versunkene Wald",
+    "camino_atlas_frase": "Atlantis ist nicht versunken: Es ist eingeschlafen. Hier weckst du es Sektor für Sektor, mit dem, was du auf den anderen Etagen lernst.",
+    "camino_atlas_falla": "Alles, was du siehst, ist ein Modell: Die Zahlen sind Beispiele, und noch speichert kein Knopf etwas. Motor und Gedächtnis kommen mit Schritt 3.",
+    "camino_atlas_para_quien": "Für alle, die jeden Tag zurückkommen wollen, um zu sehen, was im Schlaf gewachsen ist, ohne dass ihnen jemand etwas verkauft.",
+    "camino_atlas_papel": "NO_DATA — die Rolle dieser Etage wartet auf die Unterschrift des Souveräns.",
+    "camino_atlas_corpus": "Entscheidungen, die die Person auf der Etage unterschreibt –was repariert, was verschoben wird– zusammen mit dem Zustand des Waldes in diesem Moment. Heute keine: Die Etage ist ein Modell."
   },
   "pendiente": {
     "papel_de_usuario": "NO_DATA · falta escribir con quien cree el modelo que habla en cada peldano. Se escribe en castellano y se traduce a las ocho, como el resto; hasta entonces el desplegable lo declara en pantalla.",

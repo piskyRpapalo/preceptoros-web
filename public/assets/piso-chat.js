@@ -259,6 +259,9 @@
     return X('pisoBajaPrimero');
   };
 
+  /* El piso abierto al entrar: el mismo que `camino.js` llama INICIAL. */
+  var INICIAL = 'primeros_pasos';
+
   /* UNO ABIERTO CADA VEZ, Y EL PRIMERO ABIERTO AL ENTRAR. */
   function engancha() {
     var pisos = Array.prototype.slice.call(
@@ -270,13 +273,21 @@
         P.viste(d.id.replace(/^piso-/, ''), UI);
       });
     });
-    var uno = document.getElementById('piso-despertar');
-    if (uno && !pisos.some(function (d) { return d.open; })) uno.open = true;
+    /* `#piso-<id>` en la direccion abre ESE piso (lo usa la puerta theGame,
+       que lleva a `#piso-atlas`); si no, el inicial. */
+    function porDireccion() {
+      var d = /^#piso-\w+$/.test(location.hash) && document.getElementById(location.hash.slice(1));
+      if (d && d.classList.contains('torre-peldano')) { d.open = true; d.scrollIntoView(); return true; }
+      return false;
+    }
+    window.addEventListener('hashchange', porDireccion);
+    var uno = document.getElementById('piso-' + INICIAL);
+    if (!porDireccion() && uno && !pisos.some(function (d) { return d.open; })) uno.open = true;
   }
 
   function conCatalogo(r) {
     REG = r.reg; PROSA = r.prosa || {};
-    if (UI) ponPiso(actual || 'despertar');
+    if (UI) ponPiso(actual || INICIAL);
   }
   if (window.CerebrosReg) conCatalogo(window.CerebrosReg);
   else document.addEventListener('preceptor:cerebros', function (e) {
@@ -286,7 +297,7 @@
   function conTorre(ui) {
     UI = ui || UI;
     engancha();
-    if (REG) ponPiso(actual || 'despertar');
+    if (REG) ponPiso(actual || INICIAL);
   }
   if (window.TorreUI) conTorre(window.TorreUI);
   else window.addEventListener('preceptor:torre', function (e) {

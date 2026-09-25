@@ -150,6 +150,13 @@ button,.boton{font:inherit;font-size:.85rem;cursor:pointer;
   padding:.6rem .9rem;display:inline-block;text-decoration:none;
   transition:transform .2s var(--spring),background .2s ease,border-color .2s ease}
 :is(button,.boton):focus{background:var(--violeta-texto);border-color:var(--oro);outline:0}
+/* EL FOCO SE VE EN LAS NUEVE PORTADAS (2026-09-25). El anillo vivia solo en
+   `movimiento.css`, que carga la portada castellana y ninguna otra: en ocho
+   lenguas, navegar con Tab por las cinco puertas era avanzar a ciegas. Se sube
+   aqui la misma regla, con la misma especificidad, en vez de cargar
+   `movimiento.css` en ocho portadas: esa hoja no es neutra en coste. El piso
+   ATLAS trae su propio anillo dentro de `#atlas-piso`; este es el global. */
+:is(a,button,.boton,.leve,summary):focus-visible{outline:2px solid var(--bronce);outline-offset:2px}
 :is(button,.boton):active{transform:scale(.98)}
 /* Hover y escala solo con raton de verdad: en tactil el navegador emula un
    hover pegajoso que se queda encendido tras el toque. */

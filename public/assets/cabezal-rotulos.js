@@ -77,7 +77,7 @@
       var lang = document.documentElement.lang;
       var t = (d.textos || {})[lang] || (d.textos || {}).es || {};
       vestir({ cabHome: t.home, cabBenchmark: t.benchmark, cabComunidad: t.comunidad,
-               cabInstala: t.instala, cabIdioma: t.idioma, cabSolar: t.solar,
+               cabInstala: t.instala, cabGame: t.game, cabIdioma: t.idioma, cabSolar: t.solar,
                ajustes: t.ajustes });
     })
     .catch(function () { /* sin catalogo, cabezal sin rotulos antes que medio
@@ -104,7 +104,12 @@
       ['cab-boton', T.cabHome, '', false],
       ['cab-boton loratelier', T.cabBenchmark, 'benchmark.html', true],
       ['cab-boton', T.cabComunidad, 'community.html', false],
-      ['cab-boton empezar', T.cabInstala, 'instalar.html', false]
+      ['cab-boton empezar', T.cabInstala, 'instalar.html', false],
+      /* LA QUINTA PUERTA, theGame (2026-09-25, firmada). No es una pagina:
+         lleva al piso 9 de la Torre en la portada (`#piso-atlas`), y por eso
+         nunca se marca como pagina actual. Es MARCA, igual en las nueve
+         lenguas, con respaldo literal por si un bloque no trae `cabGame`. */
+      ['cab-boton thegame', T.cabGame || 'theGame', '#piso-atlas', false]
     ];
     puertas.forEach(function (p) {
       var clase = p[0], rotulo = p[1], hoja = p[2], partida = p[3];
@@ -116,7 +121,8 @@
          la hoja es lo unico estable en las dos formas de escribir la misma
          direccion. */
       var hojaAqui = aqui.slice(aqui.lastIndexOf('/') + 1);
-      var actual = hoja ? hojaAqui === hoja
+      var actual = hoja.charAt(0) === '#' ? false
+                 : hoja ? hojaAqui === hoja
                         : (hojaAqui === '' || hojaAqui === 'index.html');
       var n;
       if (partida) {
