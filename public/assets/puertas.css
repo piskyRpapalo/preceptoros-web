@@ -92,6 +92,10 @@
    formar. Si algun dia hay que destacarla otra vez, se destaca con peso o con
    sitio, no con un cuarto color. */
 #cab-nav .cab-boton.empezar{background:var(--violeta);border-color:var(--oro)}
+/* LA QUINTA, A LO ANCHO (2026-09-25). theGame hace impar la cuenta: en la
+   rejilla de dos del telefono se quedaria sola a media fila. Ocupa la fila
+   entera y la figura sigue siendo una rejilla. */
+#cab-nav .cab-boton.thegame{grid-column:1/-1;background:var(--violeta);border-color:var(--oro)}
 /* SOLIDO Y SIN TOKENS QUE GIREN. Con el violeta transparente el fondo del
    boton cambiaba con el tema --#5546AA en oscuro, #9485E7 en claro-- y NINGUN
    dorado llegaba a 4,5:1 en los dos a la vez: el mejor daba 4,98 en uno y 2,09

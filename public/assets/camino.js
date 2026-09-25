@@ -50,10 +50,11 @@
   /* El orden es el de la Torre, y se declara: un `Object.keys` sobre el JSON
      lo dejaria al albur de como se escribio el fichero, y el orden de los
      peldanos ES la Torre. */
-  var PELDANOS = ['despertar', 'primeros_pasos', 'exposicion', 'puertos',
+  /* NIVEL 1 = PRIMEROS PASOS, NIVEL 2 = DESPERTAR, el modo avion (Soberano,
+     2026-09-25): el piso que abre la web es el que explica que es PreceptorOS. */
+  var PELDANOS = ['primeros_pasos', 'despertar', 'exposicion', 'puertos',
                   'whoami', 'killswitch', 'silencio', 'contribuir', 'atlas'];
-  /* EL PISO QUE VISTE EL CHAT AL ENTRAR: el 2, por orden del Soberano
-     (2026-09-25). No se reordena PELDANOS: el numero de cada piso no cambia. */
+  /* EL PISO QUE VISTE EL CHAT AL ENTRAR: el nivel 1, `primeros_pasos`. */
   var INICIAL = 'primeros_pasos';
 
   function el(tag, clase, texto) {

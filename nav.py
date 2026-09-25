@@ -33,6 +33,7 @@ CLAVES = {
     "benchmark": "cabBenchmark",
     "comunidad": "cabComunidad",
     "instala": "cabInstala",
+    "game": "cabGame",          # theGame, la quinta puerta (2026-09-25)
     "idioma": "cabIdioma",
     "solar": "cabSolar",
     "ajustes": "ajustes",

@@ -68,11 +68,12 @@
    cruzan la pantalla entera para decir una palabra. Un boton del ancho de un
    parrafo no se lee como un boton.
 
-   Son CUATRO puertas: en una pantalla ancha van en fila, que es su forma
+   Son CINCO puertas desde el 2026-09-25 (theGame): en una pantalla ancha van en fila, que es su forma
    natural y la que ya tienen en la cabeza quien ha visto cualquier sitio web.
    La rejilla de dos se queda donde nacio -- en el telefono, donde la midieron. */
 @media (min-width:1024px){
-  #cab-nav{grid-template-columns:repeat(4,1fr)}
+  #cab-nav{grid-template-columns:repeat(5,1fr)}
+  #cab-nav .cab-boton.thegame{grid-column:auto}
 }
 
 /* LAS CUATRO PUERTAS, A SU MINIMA EXPRESION. Pedido asi: «hacer los iconos de

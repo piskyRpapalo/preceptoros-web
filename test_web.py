@@ -3457,8 +3457,12 @@ class Cabezal(unittest.TestCase):
         self.assertIn("'modelo-nombre'", hub,
                       "nadie declara el companero activo en la portada")
 
-    def test_las_cuatro_puertas_y_su_orden(self):
-        """La navegacion: cuatro, en su orden, y ocupando el ancho.
+    def test_las_cinco_puertas_y_su_orden(self):
+        """La navegacion: cinco, en su orden, y ocupando el ancho.
+
+        CINCO DESDE EL 2026-09-25, firmado por el Soberano: theGame entra la
+        ultima y lleva al piso 9 de la Torre (`#piso-atlas`), no a una pagina.
+        Es impar, asi que en la rejilla de dos del telefono ocupa su fila.
 
         El orden no es decorativo. HOME primero porque es el sitio; LoRAtelier
         SEGUNDO porque es el producto principal de esta web --el banco de
@@ -3471,11 +3475,13 @@ class Cabezal(unittest.TestCase):
         """
         hub = guion_de_la_portada()
         orden = []
-        for clave in ("T.cabHome", "T.cabBenchmark", "T.cabComunidad", "T.cabInstala"):
+        for clave in ("T.cabHome", "T.cabBenchmark", "T.cabComunidad", "T.cabInstala",
+                      "T.cabGame"):
             self.assertIn(clave, hub, f"falta la puerta {clave}")
             orden.append(hub.index(clave))
         self.assertEqual(orden, sorted(orden),
-                         "las cuatro puertas no se pintan en su orden")
+                         "las cinco puertas no se pintan en su orden")
+        self.assertIn("'#piso-atlas'", hub, "theGame no lleva al piso 9")
         self.assertNotIn("enlace('cab-boton idioma'", hub,
                          "el idioma vuelve a la fila de navegacion")
         # LAS HOJAS SE DESCUBREN DE LA PORTADA, no se nombra una. Esta linea
@@ -3490,6 +3496,9 @@ class Cabezal(unittest.TestCase):
         self.assertIn("grid-template-columns:repeat(2,1fr)",
                       css.replace(" ", ""),
                       "las puertas no se apilan de dos en dos")
+        self.assertIn("#cab-nav.cab-boton.thegame{grid-column:1/-1",
+                      css.replace(" ", ""),
+                      "la quinta puerta queda sola a media fila en el telefono")
 
     def test_enlaces_identidad_publica(self):
         """GitHub y LinkedIn: uno de cada, y en el cabezal.
