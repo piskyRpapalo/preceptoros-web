@@ -1,0 +1,119 @@
+/* ATLAS · Panel del Atlante · maqueta (FASE 0, PASO 1).
+
+   SOLO MAQUETACION. La paleta, el cristal, la tipografia y el foco salen de
+   `soberano.css`: aqui no se define un color, todo es `var(--...)` de la capa
+   soberana. Si un tono no existe alli, no se inventa aqui.
+
+   Reglas de la casa que se respetan aunque esta hoja no la vigile el gate:
+   radios del token (`--radius`, `999px`, `50%`), toda animacion con su salida
+   para `prefers-reduced-motion`, sin gradientes CSS y sin desenfoque dinamico. */
+
+.atlas main{max-width:72rem}
+.atlas-panel{display:grid;gap:1.25rem}
+.atlas-panel .panel{margin:0}
+.atlas h2{font-size:1rem;margin:0 0 .5rem}
+.atlas-nota{margin:0;font-size:.78rem;color:var(--text-muted)}
+
+/* --- cabecera ------------------------------------------------------------ */
+.atlas-cab{display:flex;flex-wrap:wrap;align-items:center;
+  justify-content:space-between;gap:.75rem 1.5rem}
+.atlas-cab h1{margin:0;font-size:clamp(1.2rem,3.6vw,1.9rem)}
+.atlas-integridad{display:flex;align-items:center;gap:.6rem;margin:0;
+  font:600 .8rem/1 var(--mono);color:var(--text-muted);white-space:nowrap}
+.atlas-integridad meter{width:clamp(5rem,28vw,10rem);height:.9rem}
+.atlas-integridad data{color:var(--text-main)}
+.atlas-sello{margin:0;font:600 .68rem/1.4 var(--mono);letter-spacing:.08em;
+  text-transform:uppercase;color:var(--accent-copper-claro);
+  border:1px solid var(--accent-copper);border-radius:999px;padding:.15rem .6rem}
+
+/* --- barra de recursos --------------------------------------------------- */
+.atlas-recursos{display:flex;flex-wrap:wrap;gap:.6rem;list-style:none;margin:0;padding:0}
+.atlas-recursos li{flex:1 1 12rem;display:flex;align-items:baseline;
+  justify-content:space-between;gap:.5rem;padding:.65rem .9rem;
+  background:var(--glass-sov);border:1px solid var(--edge-sov);border-radius:var(--radius)}
+.atlas-recursos b{font:600 .72rem/1.3 var(--mono);letter-spacing:.05em;color:var(--text-muted)}
+.atlas-recursos data{font:700 1.1rem/1 var(--mono);color:var(--text-main)}
+
+/* --- la alerta: borde cobre que late ------------------------------------- */
+/* El latido es una sombra que crece hacia fuera y se desvanece: no mueve la
+   maqueta ni un pixel. Quien pide quietud recibe el borde fijo. */
+.atlas-alerta{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem 1rem;
+  padding:.9rem 1.1rem;background:var(--bg-secondary);
+  border:2px solid var(--accent-copper);border-radius:var(--radius);
+  animation:atlas-pulso 1.6s var(--curva) infinite}
+.atlas-alerta strong{font-family:var(--mono);letter-spacing:.04em;color:var(--accent-copper-claro)}
+.atlas-alerta p{flex:1 1 18rem;margin:0;color:var(--text-muted)}
+@keyframes atlas-pulso{
+  0%{box-shadow:0 0 0 0 var(--accent-copper)}
+  70%,100%{box-shadow:0 0 0 9px transparent}}
+@media (prefers-reduced-motion:reduce){
+  .atlas-alerta,.atlas-sector[data-sector="grieta"]{animation:none}
+}
+
+/* --- rejilla: mapa + HUD ------------------------------------------------- */
+.atlas-rejilla{display:grid;grid-template-columns:minmax(0,1fr) minmax(16rem,21rem);
+  gap:1.25rem;align-items:start}
+@media (max-width:52rem){ .atlas-rejilla{grid-template-columns:minmax(0,1fr)} }
+/* La columna del mapa lleva debajo el selector de profundidad: se elige
+   adonde bajar mirando el mapa, y la columna no queda hueca frente al HUD. */
+.atlas-izq{display:grid;gap:1rem;min-width:0}
+
+/* El mapa se pinta en <canvas>; lo que se pulsa es DOM encima (accesible y
+   con hit-test gratis). La altura la fija atlas.js segun la rejilla. */
+.atlas-lienzo{position:relative;width:100%;margin-top:.75rem;min-height:12rem}
+.atlas-lienzo canvas{position:absolute;inset:0;width:100%;image-rendering:pixelated}
+/* `translate` y no `transform`: el `scale(1.02)` de soberano.css al pasar por
+   encima se suma a este centrado en vez de sustituirlo. */
+.atlas-sector{position:absolute;translate:-50% -50%;padding:.3rem .65rem;
+  font:600 .72rem/1.2 var(--mono);white-space:nowrap;color:var(--text-main);
+  background:var(--bg-secondary);border:1px solid var(--accent-copper);border-radius:999px}
+.atlas-sector[data-sector="nucleo"]{border-color:var(--accent-violet-text)}
+.atlas-sector[data-sector="grieta"]{color:var(--accent-copper-claro);
+  animation:atlas-pulso 1.6s var(--curva) infinite}
+@media (max-width:30rem){ .atlas-sector{padding:.2rem .45rem;font-size:.64rem} }
+
+/* --- HUD ----------------------------------------------------------------- */
+.atlas-hud{display:grid;gap:1rem}
+.atlas-skills{list-style:none;margin:0;padding:0;display:grid;gap:.6rem}
+.atlas-skills li{display:grid;grid-template-columns:minmax(0,1fr) auto;
+  gap:.15rem .5rem;align-items:baseline}
+.atlas-skills .nivel{font:700 1rem/1 var(--mono);color:var(--accent-copper-claro)}
+.atlas-skills small{grid-column:1/-1;font:.7rem/1.3 var(--mono);color:var(--text-muted)}
+/* La dependencia va en su propia linea: partida a media frase no se leia. */
+.atlas-dep{display:block;font:normal .68rem/1.3 var(--mono);color:var(--text-muted)}
+
+.atlas progress{grid-column:1/-1;width:100%;height:.45rem;appearance:none;
+  border:0;border-radius:999px;background:var(--bg-primary);overflow:hidden}
+.atlas progress::-webkit-progress-bar{background:var(--bg-primary)}
+.atlas progress::-webkit-progress-value{background:var(--accent-violet)}
+.atlas progress::-moz-progress-bar{background:var(--accent-violet)}
+
+.atlas-dormias ul{list-style:none;margin:.2rem 0 .6rem;padding:0;display:grid;
+  gap:.3rem;font:.82rem/1.4 var(--mono)}
+.atlas-dormias .cesa{color:var(--accent-copper-claro)}
+.atlas-dormias .boton{margin-top:.6rem}
+
+.atlas-profundidad{display:grid;gap:.35rem;margin:0;padding:.8rem 1rem;
+  border:1px solid var(--edge-sov);border-radius:var(--radius);background:var(--glass-sov)}
+.atlas-profundidad legend{padding:0 .4rem;font:600 .72rem/1 var(--mono);
+  letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted)}
+.atlas-profundidad label{display:grid;grid-template-columns:auto minmax(0,1fr);
+  gap:.1rem .6rem;align-items:start;padding:.4rem .5rem;cursor:pointer;
+  border-radius:calc(var(--radius) - 6px)}
+.atlas-profundidad input{width:auto;margin-top:.3rem;accent-color:var(--accent-copper)}
+.atlas-profundidad small{grid-column:2;font-size:.72rem;color:var(--text-muted)}
+.atlas-profundidad label:has(input:checked){background:var(--bg-primary);
+  outline:1px solid var(--accent-copper)}
+.atlas-profundidad label:has(input:disabled){opacity:.6;cursor:not-allowed}
+
+/* --- nivel del Nucleo: la barra del pueblo -------------------------------- */
+.atlas-nucleo{display:grid;gap:.55rem}
+.atlas-nucleo h2{margin:0;font-size:clamp(1rem,2.6vw,1.35rem)}
+.atlas-nucleo .nivel{font-family:var(--mono);color:var(--accent-copper-claro)}
+.atlas-nucleo progress{height:.9rem}
+.atlas-nucleo progress::-webkit-progress-value{background:var(--accent-copper)}
+.atlas-nucleo progress::-moz-progress-bar{background:var(--accent-copper)}
+.atlas-nucleo p{margin:0;color:var(--text-muted)}
+.atlas-nucleo .atlas-desbloqueo{font:.82rem/1.4 var(--mono);color:var(--text-main)}
+
+.atlas-pie p{margin:0;font:.72rem/1.5 var(--mono);color:var(--text-muted)}
