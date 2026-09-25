@@ -1,0 +1,31 @@
+{
+ "esquema": 1,
+ "idioma": "it",
+ "procedencia": {
+  "traducido_por": "traducido por el silicio desde el castellano"
+ },
+ "nota": "Texto del juego de puertos del piso 4. Máquina inventada; los datos viven en camino-puertos.js.",
+ "ui": {
+  "titulo": "Torre delle porte · la macchina di Ana",
+  "sello": "simulazione · niente esce dal tuo browser",
+  "ficha_titulo": "A cosa serve la macchina",
+  "ficha": "Questa macchina non esiste: è un esempio. Ana la usa per parlare con la sua IA locale (Ollama) e per il suo database di ricette (Postgres). Entra dal portatile via SSH, con una chiave. Stampa ogni tanto. Non usa Docker Swarm e non ricorda di aver condiviso nessuna cartella.",
+  "deja": "La tengo",
+  "cierra": "La chiudo",
+  "acierto": "✓ Giusto.",
+  "fallo": "✗ No, secondo l'uso della macchina.",
+  "resultado": "{n} decisioni su {t} coincidono con l'uso della macchina.",
+  "leccion": "Guarda l'indirizzo prima del numero: 127.0.0.1 parla solo con la macchina stessa; 0.0.0.0 ascolta tutta la tua rete. Ora fai lo stesso con la tua —`ss -ltnp` su Linux, `netstat -an` su Windows e macOS— e porta la lista nella chat di questo piano.",
+  "otra_vez": "Ancora"
+ },
+ "puertos": {
+  "22": "Resta. Ana entra via SSH dal portatile: è sua e le serve. Ascolta su 0.0.0.0, quindi tutta la rete di casa la vede; per questo usa una chiave e non una password.",
+  "53": "Resta. È il traduttore di nomi del sistema, e 127.0.0.1 è la macchina che parla con sé stessa. Nessuno da fuori la raggiunge.",
+  "631": "Resta. È la coda di stampa, e Ana stampa. Ascolta solo su 127.0.0.1: la stampante è sua e la porta non è aperta a nessuno.",
+  "2377": "Si chiude. Gestisce uno sciame Docker, e Ana non usa Swarm. Un servizio che non usi in ascolto su tutta la rete è superficie gratis per chi la cerca.",
+  "5432": "Resta. È il suo database di ricette e ascolta solo su 127.0.0.1: lo usa la sua macchina e nessun altro.",
+  "6379": "Si chiude, o si lega a 127.0.0.1. Redis su 0.0.0.0 senza password lascia leggere e scrivere qualsiasi apparecchio della rete di casa, e niente del suo uso ci arriva da un altro apparecchio.",
+  "8000": "Si chiude. È un `python3 -m http.server` dimenticato che serve un'intera cartella a tutta la rete. Ana non ricorda di aver condiviso niente: proprio per questo.",
+  "11434": "Resta. È Ollama, la sua IA locale, e ascolta solo su 127.0.0.1: parla con la sua macchina e con nessun altro."
+ }
+}

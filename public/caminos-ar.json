@@ -71,7 +71,9 @@
     "ks_juez_titulo": "الحَكَم المنسّق",
     "ks_juez_pedir": "اطلب حكمًا",
     "ks_juez_sin_turnos": "NO_DATA — لا أدوار للحكم عليها بعد. تحدّث مع الدراسة أولًا.",
-    "ks_juez_una_capa": "NO_DATA — هذه طبقة واحدة. بطاقة هذه الدراسة تتطلب اثنتين —الحتمية أولًا، ثم النموذج— والأولى تعمل على الرفّ لا هنا. اقرأه رأيًا مقيسًا لا درجة."
+    "ks_juez_una_capa": "NO_DATA — هذه طبقة واحدة. بطاقة هذه الدراسة تتطلب اثنتين —الحتمية أولًا، ثم النموذج— والأولى تعمل على الرفّ لا هنا. اقرأه رأيًا مقيسًا لا درجة.",
+    "pp_abrir": "العب: افحص حاسوبًا تجريبيًا",
+    "pp_sello": "محاكاة"
   },
   "pendiente": {
     "papel_de_usuario": "NO_DATA · falta escribir con quien cree el modelo que habla en cada peldano. Se escribe en castellano y se traduce a las ocho, como el resto; hasta entonces el desplegable lo declara en pantalla."

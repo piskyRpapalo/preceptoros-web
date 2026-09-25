@@ -71,7 +71,9 @@
     "ks_juez_titulo": "Судья-координатор",
     "ks_juez_pedir": "Запросить вердикт",
     "ks_juez_sin_turnos": "NO_DATA — судить пока нечего. Сначала поговори с исследованием.",
-    "ks_juez_una_capa": "NO_DATA — это ОДИН слой. Карточка этого исследования требует двух —сначала детерминированный, потом модель— и первый работает в стойке, не здесь. Читай как измеренное мнение, а не как оценку."
+    "ks_juez_una_capa": "NO_DATA — это ОДИН слой. Карточка этого исследования требует двух —сначала детерминированный, потом модель— и первый работает в стойке, не здесь. Читай как измеренное мнение, а не как оценку.",
+    "pp_abrir": "Играть: просканируй компьютер-пример",
+    "pp_sello": "симуляция"
   },
   "pendiente": {
     "papel_de_usuario": "NO_DATA · falta escribir con quien cree el modelo que habla en cada peldano. Se escribe en castellano y se traduce a las ocho, como el resto; hasta entonces el desplegable lo declara en pantalla.",

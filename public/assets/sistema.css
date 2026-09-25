@@ -135,6 +135,16 @@
 /* La cabecera del panel de peligro: el nombre y el sello en la misma linea. */
 .ks-cab{display:flex;flex-wrap:wrap;align-items:baseline;gap:.5rem .8rem}
 .ks-cab h3{flex:1 1 auto}
+/* El juego de puertos del piso 4: la salida de `ss` se lee en monoespaciada y
+   cada veredicto se marca con color Y con texto, nunca solo con color. */
+.pp-salida{font:.72rem/1.5 var(--mono);white-space:pre;overflow-x:auto;
+  background:#000;color:#9fb8c4;padding:.6rem;border-radius:var(--radius)}
+.pp-lista{padding-inline-start:1.6rem;margin:.6rem 0}
+.pp-fila{margin:.5rem 0}
+.pp-fila code{overflow-wrap:anywhere}
+.pp-mandos{display:inline-flex;gap:.4rem;margin-inline-start:.5rem}
+.pp-fila[data-veredicto="bien"] .pp-dice{color:#7ee2a8}
+.pp-fila[data-veredicto="mal"] .pp-dice{color:#ff8fa3}
 #killswitch{margin-bottom:1.1rem}
 
 /* LOS TRES ACCESOS de la portada. Grandes de verdad --se pulsan con el pulgar--

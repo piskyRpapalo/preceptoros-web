@@ -71,7 +71,9 @@
     "ks_juez_titulo": "Giudice coordinatore",
     "ks_juez_pedir": "Chiedi un verdetto",
     "ks_juez_sin_turnos": "NO_DATA — non ci sono ancora turni da giudicare. Parla prima con lo studio.",
-    "ks_juez_una_capa": "NO_DATA — questa è UNO solo strato. La scheda di questo studio ne esige due —prima il deterministico, poi il modello— e il primo gira sul rack, non qui. Leggilo come un parere misurato, non come un voto."
+    "ks_juez_una_capa": "NO_DATA — questa è UNO solo strato. La scheda di questo studio ne esige due —prima il deterministico, poi il modello— e il primo gira sul rack, non qui. Leggilo come un parere misurato, non come un voto.",
+    "pp_abrir": "Gioca: scansiona una macchina d'esempio",
+    "pp_sello": "simulazione"
   },
   "pendiente": {
     "papel_de_usuario": "NO_DATA · falta escribir con quien cree el modelo que habla en cada peldano. Se escribe en castellano y se traduce a las ocho, como el resto; hasta entonces el desplegable lo declara en pantalla.",

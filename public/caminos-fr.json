@@ -71,7 +71,9 @@
     "ks_juez_titulo": "Juge coordinateur",
     "ks_juez_pedir": "Demander un verdict",
     "ks_juez_sin_turnos": "NO_DATA — il n'y a pas encore de tours à juger. Parle d'abord avec l'étude.",
-    "ks_juez_una_capa": "NO_DATA — ceci est UNE couche. La fiche de cette étude en exige deux —déterministe d'abord, modèle ensuite— et la première tourne sur le rack, pas ici. À lire comme un avis mesuré, pas comme une note."
+    "ks_juez_una_capa": "NO_DATA — ceci est UNE couche. La fiche de cette étude en exige deux —déterministe d'abord, modèle ensuite— et la première tourne sur le rack, pas ici. À lire comme un avis mesuré, pas comme une note.",
+    "pp_abrir": "Jouer : scanne une machine d'exemple",
+    "pp_sello": "simulation"
   },
   "pendiente": {
     "papel_de_usuario": "NO_DATA · falta escribir con quien cree el modelo que habla en cada peldano. Se escribe en castellano y se traduce a las ocho, como el resto; hasta entonces el desplegable lo declara en pantalla.",
