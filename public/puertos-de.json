@@ -1,0 +1,31 @@
+{
+ "esquema": 1,
+ "idioma": "de",
+ "procedencia": {
+  "traducido_por": "traducido por el silicio desde el castellano"
+ },
+ "nota": "Texto del juego de puertos del piso 4. Máquina inventada; los datos viven en camino-puertos.js.",
+ "ui": {
+  "titulo": "Turm der Ports · Anas Rechner",
+  "sello": "Simulation · nichts verlässt deinen Browser",
+  "ficha_titulo": "Wofür der Rechner da ist",
+  "ficha": "Diesen Rechner gibt es nicht: Er ist ein Beispiel. Ana spricht darauf mit ihrer lokalen KI (Ollama) und hat dort ihre Rezeptdatenbank (Postgres). Sie meldet sich von ihrem Laptop per SSH an, mit Schlüssel. Ab und zu druckt sie. Docker Swarm nutzt sie nicht, und sie erinnert sich an keinen freigegebenen Ordner.",
+  "deja": "Bleibt",
+  "cierra": "Schließen",
+  "acierto": "✓ Richtig.",
+  "fallo": "✗ Nein, nicht nach dem, wofür der Rechner da ist.",
+  "resultado": "{n} von {t} Entscheidungen passen dazu, wofür der Rechner da ist.",
+  "leccion": "Schau auf die Adresse vor der Nummer: 127.0.0.1 spricht nur mit dem Rechner selbst; 0.0.0.0 hört dein ganzes Netz. Jetzt dasselbe mit deinem —`ss -ltnp` unter Linux, `netstat -an` unter Windows und macOS— und bring die Liste in den Chat dieses Stockwerks.",
+  "otra_vez": "Nochmal"
+ },
+ "puertos": {
+  "22": "Bleibt. Ana meldet sich per SSH vom Laptop an: Es gehört ihr und sie braucht es. Es lauscht auf 0.0.0.0, also sieht es das ganze Heimnetz; deshalb läuft es mit Schlüssel und nicht mit Passwort.",
+  "53": "Bleibt. Das ist der Namensübersetzer des Systems, und 127.0.0.1 ist der Rechner, der mit sich selbst spricht. Von außen erreicht ihn niemand.",
+  "631": "Bleibt. Das ist die Druckwarteschlange, und Ana druckt. Er lauscht nur auf 127.0.0.1: Der Drucker gehört ihr, und die Tür steht niemandem offen.",
+  "2377": "Wird geschlossen. Er verwaltet einen Docker-Schwarm, und Ana nutzt kein Swarm. Ein Dienst, den du nicht nutzt und der dem ganzen Netz zuhört, ist geschenkte Angriffsfläche für jeden, der danach sucht.",
+  "5432": "Bleibt. Das ist ihre Rezeptdatenbank, und sie lauscht nur auf 127.0.0.1: Ihr Rechner nutzt sie, sonst niemand.",
+  "6379": "Wird geschlossen oder an 127.0.0.1 gebunden. Redis auf 0.0.0.0 ohne Passwort lässt jedes Gerät im Heimnetz darin lesen und schreiben, und nichts von dem, was sie nutzt, greift von einem anderen Gerät darauf zu.",
+  "8000": "Wird geschlossen. Das ist ein vergessener `python3 -m http.server`, der einen ganzen Ordner ans ganze Netz ausliefert. Ana erinnert sich an keine Freigabe: genau deshalb.",
+  "11434": "Bleibt. Das ist Ollama, ihre lokale KI, und es lauscht nur auf 127.0.0.1: Es spricht mit ihrem Rechner und mit niemandem sonst."
+ }
+}

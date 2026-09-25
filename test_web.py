@@ -1006,6 +1006,57 @@ class Estructura(unittest.TestCase):
                 self.assertNotIn("escenario.js", t,
                                  "la portada carga el telon de balde")
 
+    def test_el_juego_de_puertos_no_sale_a_ninguna_red(self):
+        """El piso 4 juega a escanear y NO escanea. Orden del 2026-09-25.
+
+        «Que NUNCA haga peticiones reales a redes externas ni locales desde el
+        navegador». Un navegador que sondea puertos es un escaner de red con
+        otro nombre, y un comentario que lo jura no es una garantia: aqui se
+        lee el codigo SIN comentarios, porque el propio fichero nombra lo que
+        no usa.
+        """
+        js = (PUBLICO / "assets" / "camino-puertos.js").read_text(encoding="utf-8")
+        codigo = re.sub(r"/\*.*?\*/", "", js, flags=re.S)
+        codigo = re.sub(r"(?m)^\s*//.*$", "", codigo)
+
+        # 1 · UNA sola salida, a su propio texto en el mismo origen.
+        llamadas = re.findall(r"fetch\(([^)]*)\)", codigo)
+        self.assertEqual(llamadas, ["'/puertos-' + lang + '.json'"],
+                         f"el juego pide algo mas que su texto: {llamadas}")
+        for salida in ("XMLHttpRequest", "sendBeacon", "WebSocket", "EventSource",
+                       "RTCPeerConnection", "new Image", "Worker(",
+                       "importScripts", "http://", "https://", ".src"):
+            with self.subTest(salida=salida):
+                self.assertNotIn(salida, codigo, f"el juego puede salir por {salida}")
+
+        # 2 · la cadena entera: alguien lo carga despues de la Torre y el
+        #     modulo oye su aviso y busca su piso.
+        router = (PUBLICO / "assets" / "chat-router.js").read_text(encoding="utf-8")
+        self.assertIn("/assets/camino-puertos.js", router, "nadie carga el juego")
+        self.assertLess(router.index("/assets/camino.js"),
+                        router.index("/assets/camino-puertos.js"),
+                        "el juego se carga antes que la Torre que lo aloja")
+        self.assertIn("preceptor:torre", codigo, "el juego no escucha a la Torre")
+        self.assertIn("piso-puertos", codigo, "el juego no busca su piso")
+
+        # 3 · cada puerto de la maquina se explica en las nueve lenguas, y cada
+        #     rotulo que se pide existe. Una clave ausente se pinta en blanco.
+        puertos = set(re.findall(r"\{ p: (\d+),", codigo))
+        self.assertEqual(len(puertos), 8, "la maquina no tiene sus ocho puertos")
+        pedidas = set(re.findall(r"T\('([a-z_]+)'\)", codigo))
+        base = json.loads((PUBLICO / "puertos-es.json").read_text(encoding="utf-8"))
+        for idi in IDIOMAS:
+            d = json.loads((PUBLICO / f"puertos-{idi}.json").read_text(encoding="utf-8"))
+            cam = json.loads((PUBLICO / f"caminos-{idi}.json").read_text(encoding="utf-8"))
+            with self.subTest(idioma=idi):
+                self.assertEqual(set(d["puertos"]), puertos,
+                                 "un puerto de la maquina queda sin explicar")
+                self.assertFalse(pedidas - set(d["ui"]),
+                                 f"rotulos pedidos y ausentes: {pedidas - set(d['ui'])}")
+                self.assertEqual(set(d["ui"]), set(base["ui"]))
+                for k in ("pp_abrir", "pp_sello"):
+                    self.assertTrue(cam["ui"].get(k), f"caminos-{idi} sin {k}")
+
     def test_la_plaza_tiene_dos_pestanas_y_el_killswitch_abre(self):
         """La forma de Comunidad, firmada el 2026-09-14.
 
@@ -5222,7 +5273,11 @@ CLAVES_CAMINOS = {
      # que nunca llego a la interfaz porque la lista se mantenia a mano.
      "ks_sello", "ks_falla", "ks_medido",
      "ks_juez_titulo", "ks_juez_pedir", "ks_juez_sin_turnos",
-     "ks_juez_una_capa"}
+     "ks_juez_una_capa",
+     # EL JUEGO DE PUERTOS del piso 4 (2026-09-25): el rotulo del boton y el
+     # sello, nada mas. Su prosa vive en `puertos-<lengua>.json` y se pide al
+     # pulsar; aqui solo lo que se pinta antes de pedir nada.
+     "pp_abrir", "pp_sello"}
 
 CLAVES_DUELOS = {
     # `duelo_degenera` entra el 2026-09-20 y nombra una acusacion, no un

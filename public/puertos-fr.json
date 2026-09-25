@@ -1,0 +1,31 @@
+{
+ "esquema": 1,
+ "idioma": "fr",
+ "procedencia": {
+  "traducido_por": "traducido por el silicio desde el castellano"
+ },
+ "nota": "Texto del juego de puertos del piso 4. Máquina inventada; los datos viven en camino-puertos.js.",
+ "ui": {
+  "titulo": "Tour des ports · la machine d'Ana",
+  "sello": "simulation · rien ne quitte ton navigateur",
+  "ficha_titulo": "À quoi sert la machine",
+  "ficha": "Cette machine n'existe pas : c'est un exemple. Ana s'en sert pour parler à son IA locale (Ollama) et pour sa base de recettes (Postgres). Elle s'y connecte depuis son portable par SSH, avec une clé. Elle imprime de temps en temps. Elle n'utilise pas Docker Swarm et ne se souvient d'avoir partagé aucun dossier.",
+  "deja": "Je le garde",
+  "cierra": "Je le ferme",
+  "acierto": "✓ Juste.",
+  "fallo": "✗ Non, d'après l'usage de la machine.",
+  "resultado": "{n} décisions sur {t} correspondent à l'usage de la machine.",
+  "leccion": "Regarde l'adresse avant le numéro : 127.0.0.1 ne parle qu'à la machine elle-même ; 0.0.0.0 écoute tout ton réseau. Fais maintenant pareil avec la tienne —`ss -ltnp` sous Linux, `netstat -an` sous Windows et macOS— et apporte la liste au chat de cet étage.",
+  "otra_vez": "Encore"
+ },
+ "puertos": {
+  "22": "On garde. Ana se connecte par SSH depuis son portable : c'est à elle et elle en a besoin. Il écoute sur 0.0.0.0, donc tout le réseau de la maison le voit ; c'est pour ça qu'il marche avec une clé et pas un mot de passe.",
+  "53": "On garde. C'est le traducteur de noms du système, et 127.0.0.1, c'est la machine qui se parle à elle-même. Personne dehors ne l'atteint.",
+  "631": "On garde. C'est la file d'impression, et Ana imprime. Il n'écoute que sur 127.0.0.1 : l'imprimante est à elle et la porte n'est ouverte à personne.",
+  "2377": "On ferme. Il gère un essaim Docker, et Ana n'utilise pas Swarm. Un service inutilisé qui écoute tout le réseau, c'est de la surface offerte à qui la cherche.",
+  "5432": "On garde. C'est sa base de recettes et elle n'écoute que sur 127.0.0.1 : sa machine s'en sert, personne d'autre.",
+  "6379": "On ferme, ou on l'attache à 127.0.0.1. Redis sur 0.0.0.0 sans mot de passe laisse n'importe quel appareil de la maison y lire et y écrire, et rien de son usage n'y accède depuis un autre appareil.",
+  "8000": "On ferme. C'est un `python3 -m http.server` oublié qui sert un dossier entier à tout le réseau. Ana ne se souvient d'avoir rien partagé : justement.",
+  "11434": "On garde. C'est Ollama, son IA locale, et elle n'écoute que sur 127.0.0.1 : elle parle à sa machine et à personne d'autre."
+ }
+}

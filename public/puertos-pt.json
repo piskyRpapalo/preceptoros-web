@@ -1,0 +1,31 @@
+{
+ "esquema": 1,
+ "idioma": "pt",
+ "procedencia": {
+  "traducido_por": "traducido por el silicio desde el castellano"
+ },
+ "nota": "Texto del juego de puertos del piso 4. Máquina inventada; los datos viven en camino-puertos.js.",
+ "ui": {
+  "titulo": "Torre de portas · a máquina da Ana",
+  "sello": "simulação · nada sai do teu navegador",
+  "ficha_titulo": "Para que serve a máquina",
+  "ficha": "Esta máquina não existe: é um exemplo. A Ana usa-a para falar com a sua IA local (Ollama) e para a sua base de dados de receitas (Postgres). Entra a partir do portátil por SSH, com chave. Imprime de vez em quando. Não usa Docker Swarm e não se lembra de ter partilhado nenhuma pasta.",
+  "deja": "Fica",
+  "cierra": "Fecho",
+  "acierto": "✓ Certo.",
+  "fallo": "✗ Não, segundo o uso da máquina.",
+  "resultado": "{n} de {t} decisões batem certo com o uso da máquina.",
+  "leccion": "Olha para o endereço antes do número: 127.0.0.1 só fala com a própria máquina; 0.0.0.0 escuta toda a tua rede. Agora faz o mesmo com a tua —`ss -ltnp` em Linux, `netstat -an` em Windows e macOS— e traz a lista ao chat deste piso.",
+  "otra_vez": "Outra vez"
+ },
+ "puertos": {
+  "22": "Fica. A Ana entra por SSH a partir do portátil: é dela e faz-lhe falta. Escuta em 0.0.0.0, por isso toda a rede de casa o vê; é por isso que usa chave e não palavra-passe.",
+  "53": "Fica. É o tradutor de nomes do próprio sistema, e 127.0.0.1 é a máquina a falar consigo mesma. Ninguém de fora lhe chega.",
+  "631": "Fica. É a fila de impressão, e a Ana imprime. Escuta só em 127.0.0.1: a impressora é dela e a porta não está aberta a ninguém.",
+  "2377": "Fecha-se. Gere um enxame de Docker, e a Ana não usa Swarm. Um serviço que não usas a escutar toda a rede é superfície de graça para quem a procurar.",
+  "5432": "Fica. É a base de dados de receitas e escuta só em 127.0.0.1: usa-a a máquina dela e mais ninguém.",
+  "6379": "Fecha-se, ou prende-se a 127.0.0.1. Redis em 0.0.0.0 e sem palavra-passe deixa qualquer aparelho da rede de casa ler e escrever nele, e nada do uso dela lá chega a partir de outro aparelho.",
+  "8000": "Fecha-se. É um `python3 -m http.server` esquecido a servir uma pasta inteira a toda a rede. A Ana não se lembra de ter partilhado nada: é exatamente por isso.",
+  "11434": "Fica. É o Ollama, a IA local dela, e escuta só em 127.0.0.1: fala com a máquina dela e com mais ninguém."
+ }
+}

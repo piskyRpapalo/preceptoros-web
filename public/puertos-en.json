@@ -1,0 +1,31 @@
+{
+ "esquema": 1,
+ "idioma": "en",
+ "procedencia": {
+  "traducido_por": "traducido por el silicio desde el castellano"
+ },
+ "nota": "Texto del juego de puertos del piso 4. Máquina inventada; los datos viven en camino-puertos.js.",
+ "ui": {
+  "titulo": "Port tower · Ana's machine",
+  "sello": "simulation · nothing leaves your browser",
+  "ficha_titulo": "What the machine is for",
+  "ficha": "This machine does not exist: it is an example. Ana uses it to talk to her local AI (Ollama) and for her recipe database (Postgres). She logs in from her laptop over SSH, with a key. She prints now and then. She does not use Docker Swarm and does not remember sharing any folder.",
+  "deja": "Keep it",
+  "cierra": "Close it",
+  "acierto": "✓ Right.",
+  "fallo": "✗ Not according to what the machine is for.",
+  "resultado": "{n} of {t} decisions match what the machine is for.",
+  "leccion": "Look at the address before the number: 127.0.0.1 only talks to the machine itself; 0.0.0.0 listens to your whole network. Now do the same with yours —`ss -ltnp` on Linux, `netstat -an` on Windows and macOS— and bring the list to this floor's chat.",
+  "otra_vez": "Again"
+ },
+ "puertos": {
+  "22": "Keep. Ana logs in over SSH from her laptop: it is hers and she needs it. It listens on 0.0.0.0, so the whole home network sees it; that is why it uses a key and not a password.",
+  "53": "Keep. It is the system's own name translator, and 127.0.0.1 is the machine talking to itself. Nobody outside can reach it.",
+  "631": "Keep. It is the print queue, and Ana prints. It listens only on 127.0.0.1: the printer is hers and the door is open to nobody.",
+  "2377": "Close. It manages a Docker swarm, and Ana does not use Swarm. A service you do not use, listening to the whole network, is free surface for whoever looks for it.",
+  "5432": "Keep. It is her recipe database and it listens only on 127.0.0.1: her machine uses it and nobody else.",
+  "6379": "Close it, or bind it to 127.0.0.1. Redis on 0.0.0.0 with no password lets any device on the home network read and write to it, and nothing she uses reaches it from another device.",
+  "8000": "Close. It is a forgotten `python3 -m http.server` serving a whole folder to the whole network. Ana does not remember sharing anything: that is exactly why.",
+  "11434": "Keep. It is Ollama, her local AI, and it listens only on 127.0.0.1: it talks to her machine and nobody else."
+ }
+}
