@@ -3129,6 +3129,35 @@ class Hub(unittest.TestCase):
             with self.subTest(lengua=l):
                 self.assertTrue((PUBLICO / f"atlas-{l}.json").is_file())
 
+    def test_el_nivel_mostrado_es_la_posicion_en_peldanos(self):
+        """Nivel 1 = Primeros pasos, nivel 2 = Despertar (Soberano, 2026-09-25).
+
+        El numero que ve la persona SE DERIVA del indice de `PELDANOS` --no hay
+        campo de nivel--, asi que reordenar el array es la unica forma de
+        cambiar un nivel, y esta guarda ata las tres cosas que tienen que decir
+        lo mismo: el orden del array, el numero pintado (`i + 1`) y el piso que
+        se abre al entrar (`INICIAL`, que tiene que ser el nivel 1). Un campo de
+        nivel escrito a mano en otro sitio seria un segundo dueño del numero.
+        """
+        cam = sin_comentarios((PUBLICO / "assets" / "camino.js").read_text(encoding="utf-8"))
+        m = re.search(r"var PELDANOS = \[(.*?)\];", cam, re.S)
+        pisos = re.findall(r"'(\w+)'", m.group(1))
+        self.assertEqual(pisos[:2], ["primeros_pasos", "despertar"])
+        self.assertEqual(pisos[-1], "atlas", "ATLAS deja de ser el nivel 9")
+        self.assertIn("PELDANOS.forEach(function (p, i)", cam)
+        self.assertIn("' ' + (i + 1) + ' · '", cam, "el nivel ya no sale del indice")
+        self.assertNotRegex(cam, r"camino_\w+_nivel", "aparece un segundo dueño del nivel")
+        for f in ("camino.js", "piso-chat.js"):
+            t = (PUBLICO / "assets" / f).read_text(encoding="utf-8")
+            with self.subTest(fichero=f):
+                self.assertIn(f"var INICIAL = '{pisos[0]}'", t,
+                              "el piso que abre la web no es el nivel 1")
+        for l in IDIOMAS:
+            ui = json.loads((PUBLICO / f"caminos-{l}.json").read_text(encoding="utf-8"))["ui"]
+            with self.subTest(lengua=l):
+                self.assertFalse([p for p in pisos if f"camino_{p}_titulo" not in ui],
+                                 "hay un nivel sin titulo en esta lengua")
+
     def test_el_modelo_servido_lleva_tag_explicito(self):
         """Nada de `:latest` pelado en el modelo que da la cara al publico.
 
