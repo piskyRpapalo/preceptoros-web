@@ -14,7 +14,8 @@ pone rojo si el fichero no coincide con lo medido. Orden de una release:
 subir VERSION en `sw.js` -> `python3 contadores.py` -> `python3 atlas/mundo.py`
 -> huella del SW.
 
-SIN RUTAS NI NOMBRES. Solo cifras y la fecha; la prueba lo vigila.
+SIN RUTAS NI NOMBRES. Solo cifras, cuando (`medido_el`, UTC) y en que clase de
+maquina (`maquina`, sin hostname); la prueba lo vigila.
 """
 import datetime
 import gzip
@@ -65,11 +66,23 @@ def arnes_sw():
     return f"{m.group(1)}/{m.group(2)}" if m else "NO_DATA"
 
 
+def maquina():
+    """Donde se midio, SIN hostname (el fichero es publico: cero nombres de
+    nodo). Por defecto, sistema y arquitectura; `ATLAS_MAQUINA` lo precisa
+    cuando quien mide quiere decir mas, p. ej. «rack» o «nube»."""
+    import os
+    import platform
+    base = f"{platform.system()} {platform.machine()} · Python {platform.python_version()}"
+    extra = os.environ.get("ATLAS_MAQUINA", "").strip()
+    return f"{extra} · {base}" if extra else base
+
+
 def mide():
     return {
         "esquema": "atlas.mundo/1",
         "procedencia": "medido en local por atlas/mundo.py; sin rutas, sin nombres",
-        "medido": datetime.date.today().isoformat(),
+        "medido_el": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%MZ"),
+        "maquina": maquina(),
         "pruebas_web": pruebas_web(),
         "lenguas": lenguas(),
         "techo_fichero_b": 16 * 1024,

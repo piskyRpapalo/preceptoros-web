@@ -130,12 +130,17 @@ class Piso(unittest.TestCase):
         puerta theGame y no escucha a la Torre ni busca un piso."""
         piso = sin_comentarios((PISO / "atlas-piso.js").read_text(encoding="utf-8"))
         self.assertIn("window.AtlasJuego", piso)
+        self.assertIn("atlas.instantanea/1", piso, "falta la instantanea para la guia")
         for torre in ("preceptor:torre", "piso-atlas", "TorreUI"):
             with self.subTest(resto=torre):
                 self.assertNotIn(torre, piso, "el juego vuelve a depender de la Torre")
         capa = sin_comentarios((PISO / "thegame.js").read_text(encoding="utf-8"))
-        for pieza in ("aria-modal", "'Escape'", "s.async = false", "window.AtlasJuego.monta",
-                      "window.AtlasJuego.pausa", "origen.focus"):
+        # <dialog> nativo con showModal(): el navegador deja inerte la pagina de
+        # debajo (trampa de foco real, la que respetan TalkBack y VoiceOver) y
+        # Escape llega como `cancel`.
+        for pieza in ("el('dialog'", "showModal()", "'cancel'", "s.async = false",
+                      "window.AtlasJuego.monta", "window.AtlasJuego.pausa", "origen.focus",
+                      "cierre_aviso"):
             with self.subTest(pieza=pieza):
                 self.assertIn(pieza, capa)
         for g in ("atlas-arte.js", "atlas-mapa.js", "atlas-dialogo.js", "atlas-motor.js", "atlas-piso.js"):
@@ -159,6 +164,30 @@ class Piso(unittest.TestCase):
             with self.subTest(caso=c["caso"]):
                 self.assertTrue(c["ok"], c["detalle"])
 
+    def test_la_curva_es_la_canonica_osrs_y_se_recalcula(self):
+        """PROCEDENCIA DE LA CURVA: la formula publica de RuneScape (Jagex),
+        la misma de Old School RuneScape: XP(L) = floor(1/4 * sum_{n=1}^{L-1}
+        floor(n + 300 * 2^(n/7))). No se copia de una web: se recalcula aqui y
+        se compara con la tabla entera del motor, nivel a nivel.
+
+        Los cuatro valores que se citan en el juego y en la PR son XP MINIMA
+        para alcanzar un nivel: 83 = nivel 2 · 1 154 = nivel 10 · 273 742 =
+        nivel 60 (el umbral de Ingenieria para bajar a 300 m+) · 13 034 431 =
+        nivel 99 (el tope de nivel; la XP sigue hasta 200 000 000)."""
+        import math
+        tabla, puntos = [0], 0
+        for n in range(1, 99):
+            puntos += math.floor(n + 300 * 2 ** (n / 7))
+            tabla.append(puntos // 4)
+        r = subprocess.run(["node", "-e", "process.stdout.write(JSON.stringify("
+                            "require('./public/assets/atlas-motor.js').XP))"],
+                           cwd=RAIZ.parent, capture_output=True, text=True, timeout=60)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        self.assertEqual(json.loads(r.stdout), tabla, "la tabla del motor no es la curva OSRS")
+        for nivel, xp in ((2, 83), (10, 1154), (60, 273742), (99, 13034431)):
+            with self.subTest(nivel=nivel):
+                self.assertEqual(tabla[nivel - 1], xp)
+
     def test_las_leyes_del_mundo_coinciden_con_lo_medido(self):
         """`atlas-mundo.json` no es decorado: cada cifra se recalcula aqui.
         Remedio si falla: python3 atlas/mundo.py"""
@@ -172,6 +201,11 @@ class Piso(unittest.TestCase):
             with self.subTest(ley=clave):
                 self.assertEqual(d[clave], valor, f"{clave} desfasado: python3 atlas/mundo.py")
         self.assertRegex(d["arnes_sw"], r"^\d+/\d+$|^NO_DATA$")
+        # Cuando y donde: la doctrina pide las dos cosas, sin nombre de nodo.
+        self.assertRegex(d.get("medido_el", ""), r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}Z$")
+        self.assertTrue(d.get("maquina"), "no dice en que maquina se midio")
+        import socket
+        self.assertNotIn(socket.gethostname(), d["maquina"], "el mundo lleva un hostname")
         texto = json.dumps(d)
         # Las rutas se escriben partidas: este fichero tambien pasa la guarda
         # de rutas absolutas de `test_web.py`.
@@ -184,8 +218,8 @@ class Piso(unittest.TestCase):
         codigo = (PISO / "atlas-piso.js").read_text(encoding="utf-8")
         pedidas = set(re.findall(r"\bU\('([a-z0-9_]+)'\)", codigo))
         pedidas |= {x + "n" for x in re.findall(r"'(b[1-4])'", codigo)}
-        # Claves que el panel compone: las cinco fases.
-        pedidas |= {f"f{n}" for n in range(1, 6)}
+        # Claves que el panel compone (las cinco fases) y la que pide la capa.
+        pedidas |= {f"f{n}" for n in range(1, 6)} | {"cierre_aviso"}
         for l in LENGUAS:
             d = json.loads((PUBLICO / f"atlas-{l}.json").read_text(encoding="utf-8"))
             with self.subTest(lengua=l):

@@ -83,6 +83,9 @@
   "dormias_vacio": "Ancora niente: la Foresta produce mentre questa scheda è nascosta, fino a 24 h.",
   "sube": "{oficio} sale al livello {n}",
   "ascenso": "Senza ossigeno: risalita d’emergenza alla barriera.",
-  "reabre": "La frattura si è riaperta."
+  "reabre": "La frattura si è riaperta.",
+  "casa_mal": "Il Nucleo soffre quando la casa sta male: l’imbracatura del sito non è intera o il gioco pesa troppo, e la frattura fa danno doppio.",
+  "medido": "Leggi misurate il {f} · su {m}",
+  "cierre_aviso": "La partita resta in questa scheda finché non la chiudi: theGame non salva nulla."
  }
 }

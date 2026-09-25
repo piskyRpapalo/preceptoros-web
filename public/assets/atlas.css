@@ -194,8 +194,10 @@
    abierta: no se pinta, no recibe el foco y el lector no la recorre. */
 body.en-thegame{overflow:hidden}
 body.en-thegame > :not(#thegame){visibility:hidden}
-.thegame-capa{position:fixed;inset:0;z-index:70;overflow:auto;overscroll-behavior:contain;
+.thegame-capa{position:fixed;inset:0;z-index:70;width:100%;height:100%;max-width:none;
+  max-height:none;margin:0;border:0;overflow:auto;overscroll-behavior:contain;color:var(--text-main);
   background:var(--bg-primary);padding:0 clamp(.75rem,3vw,2rem) 2rem}
+.thegame-capa::backdrop{background:var(--bg-primary)}
 .thegame-capa:focus{outline:none}
 .thegame-barra{position:sticky;top:0;z-index:2;display:flex;align-items:center;
   justify-content:space-between;gap:1rem;padding:.75rem 0;background:var(--bg-primary);
@@ -210,3 +212,6 @@ body.en-thegame > :not(#thegame){visibility:hidden}
 .atlas-alerta.sellada{animation:none;border-color:var(--edge-sov)}
 .atlas-alerta.sellada strong{color:var(--text-muted)}
 span.atlas-sector{pointer-events:none}
+.atlas-casa{margin:0;font:600 .8rem/1.4 var(--mono);color:var(--accent-copper-claro)}
+.atlas-medido{margin:0;font:.68rem/1.4 var(--mono);color:var(--text-muted)}
+.thegame-aviso{flex-basis:100%;margin:.35rem 0 0;font:.72rem/1.4 var(--mono);color:var(--accent-copper-claro)}

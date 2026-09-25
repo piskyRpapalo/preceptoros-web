@@ -83,6 +83,9 @@
   "dormias_vacio": "Rien pour l’instant : la Forêt produit tant que cet onglet est caché, jusqu’à 24 h.",
   "sube": "{oficio} atteint le niveau {n}",
   "ascenso": "Plus d’oxygène : remontée d’urgence vers le récif.",
-  "reabre": "La faille s’est rouverte."
+  "reabre": "La faille s’est rouverte.",
+  "casa_mal": "Le Noyau souffre quand la maison va mal : le harnais du site n’est pas entier ou le jeu est trop lourd, et la faille fait double dégât.",
+  "medido": "Lois mesurées le {f} · sur {m}",
+  "cierre_aviso": "La partie reste dans cet onglet jusqu’à ce que vous le fermiez : theGame ne sauvegarde rien."
  }
 }

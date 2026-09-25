@@ -82,6 +82,8 @@
      ['cobre', '🟠 ' + U('cobre')], ['o2', '🫧 ' + U('oxigeno')]].forEach(function (x) {
       var li = el('li'); if (x[0] === 'flujo') { li.title = U('flujo_t'); }
       li.appendChild(el('b', null, x[1])); R.rec[x[0]] = el('data');
+      /* Las fracciones se leen de izquierda a derecha tambien en arabe. */
+      if (x[0] === 'luz' || x[0] === 'o2') { R.rec[x[0]].dir = 'ltr'; }
       li.appendChild(R.rec[x[0]]); rec.appendChild(li);
     });
     raiz.appendChild(rec);
@@ -161,6 +163,16 @@
     nu.appendChild(el('p', 'atlas-nota', LEY.nd ? U('mundo_nd') : rellena(U('nucleo_nota'), {
       pruebas: num(MUNDO.pruebas_web), lenguas: num(MUNDO.lenguas),
       kb: num(Math.round(MUNDO.gzip_juego_b / 1024)) })));
+    /* SI LA CASA ESTA MAL, SE DICE. Las leyes duplican el dano de la grieta
+       cuando el arnes del service worker no esta entero o el juego pesa mas de
+       la cuenta. Ambas cifras salen de medidas locales (`atlas/mundo.py`), no
+       de un runner ajeno; y el jugador tiene que saber la causa, no creer que
+       el motor esta roto. */
+    if (!LEY.nd && LEY.dano > 1) { nu.appendChild(el('p', 'atlas-casa', U('casa_mal'))); }
+    if (!LEY.nd) {
+      nu.appendChild(el('p', 'atlas-medido', rellena(U('medido'), {
+        f: MUNDO.medido_el || 'NO_DATA', m: MUNDO.maquina || 'NO_DATA' })));
+    }
     raiz.appendChild(nu);
     raiz.appendChild(el('p', 'atlas-pie', U('pie')));
 
@@ -274,7 +286,28 @@
     });
   }
 
+  /* LA INSTANTANEA, para una guia futura (propuesta, sin firmar todavia).
+     Copia serializable del estado de la partida, en memoria como todo en v1:
+     no se guarda ni se envia. El motor no la conoce ni gana dependencias. */
+  function instantanea() {
+    if (!E) { return null; }
+    var niveles = {};
+    M.OFICIOS.forEach(function (k, i) { niveles[k] = M.nivelDesdeXp(E.xp[i]); });
+    return JSON.parse(JSON.stringify({
+      esquema: 'atlas.instantanea/1', contenido_v: M.CATALOGO.contenido_v,
+      ciclo: E.t, fase: M.fase(E), nivel_nucleo: M.nivelNucleo(E),
+      profundidad: M.BANDAS[E.prof].lab,
+      recursos: { luz: E.luz, biomasa: E.biomasa, cobre: E.cobre, flujo: E.flujo, oxigeno: E.o2 },
+      integridad: E.integridad, integridad_max: E.integridad_max,
+      grieta: { abierta: E.abierta, cierre: E.cierre }, niveles: niveles,
+      pendiente_ciclos: E.pendiente ? E.pendiente.ciclos : 0,
+      eventos: E.eventos.slice(-20)
+    }));
+  }
+
   window.AtlasJuego = {
+    instantanea: instantanea,
+    texto: function (k) { return U(k); },
     monta: function (contenedor, capa) {
       zona = contenedor; activo = true;
       return Promise.all([json('atlas-' + lang + '.json'),

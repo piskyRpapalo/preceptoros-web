@@ -83,6 +83,9 @@
   "dormias_vacio": "Noch nichts: der Wald produziert, solange dieser Tab verborgen ist, bis zu 24 h.",
   "sube": "{oficio} erreicht Stufe {n}",
   "ascenso": "Kein Sauerstoff: Notaufstieg zum Riff.",
-  "reabre": "Der Riss hat sich wieder geöffnet."
+  "reabre": "Der Riss hat sich wieder geöffnet.",
+  "casa_mal": "Der Kern leidet, wenn es dem Haus schlecht geht: das Testgeschirr der Seite ist nicht vollständig oder das Spiel ist zu schwer, und der Riss richtet doppelten Schaden an.",
+  "medido": "Gesetze gemessen am {f} · auf {m}",
+  "cierre_aviso": "Die Partie bleibt in diesem Tab, bis du ihn schließt: theGame speichert nichts."
  }
 }

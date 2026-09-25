@@ -83,6 +83,9 @@
   "dormias_vacio": "Nothing yet: the Forest produces while this tab is hidden, up to 24 h.",
   "sube": "{oficio} reaches level {n}",
   "ascenso": "Out of oxygen: emergency ascent to the reef.",
-  "reabre": "The rift has opened again."
+  "reabre": "The rift has opened again.",
+  "casa_mal": "The Core suffers when the house is unwell: the site's harness is not whole or the game is too heavy, and the rift does double damage.",
+  "medido": "Laws measured on {f} · on {m}",
+  "cierre_aviso": "Your game stays in this tab until you close it: theGame saves nothing."
  }
 }

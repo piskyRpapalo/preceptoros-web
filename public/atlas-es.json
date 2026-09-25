@@ -83,6 +83,9 @@
   "dormias_vacio": "Nada todavía: el Bosque produce mientras esta pestaña está oculta, hasta 24 h.",
   "sube": "{oficio} sube al nivel {n}",
   "ascenso": "Sin oxígeno: ascenso de emergencia al arrecife.",
-  "reabre": "La grieta se ha vuelto a abrir."
+  "reabre": "La grieta se ha vuelto a abrir.",
+  "casa_mal": "El Núcleo sufre cuando la casa está mal: el arnés de la web no está entero o el juego pesa de más, y la grieta hace doble daño.",
+  "medido": "Leyes medidas el {f} · en {m}",
+  "cierre_aviso": "La partida sigue en esta pestaña hasta que la cierres: theGame no guarda nada."
  }
 }
