@@ -121,7 +121,11 @@ ESQUEMAS_XML = ("http://www.sitemaps.org/schemas/",
                 # dialecto, no una direccion que nadie va a pedir. El validador
                 # lo reconoce por la cadena y no descarga nada. Entro el
                 # 2026-09-06 con `data/loratelier_schema.json`.
-                "https://json-schema.org/draft/")
+                "https://json-schema.org/draft/",
+                # El espacio de nombres SVG: `createElementNS` lo pide para
+                # dibujar el retrato de Nerea en el piso ATLAS. Es un nombre,
+                # no una peticion (2026-09-25).
+                "http://www.w3.org/2000/svg")
 
 FRAMEWORKS = r"\breact\b|vue\.js|angular|htmx|alpine\.js|jquery|svelte|tailwind"
 
@@ -2060,8 +2064,10 @@ class Doctrina(unittest.TestCase):
             # pedia pintar de marmol un panel que no lo es. Lo que la regla
             # protege es que HAYA un fondo solido antes del cristal, no de que
             # color -- eso lo decide la pieza.
+            # `--bg-secondary` (#1a152a, opaco) entra el 2026-09-25 con el piso
+            # ATLAS: es el fondo solido de la capa soberana.
             opacos = [m.start() for m in re.finditer(
-                r"background:var\(--(marmol-claro|violeta)\)", css)]
+                r"background:var\(--(marmol-claro|violeta|bg-secondary)\)", css)]
             self.assertTrue(any(o < i for o in opacos),
                             "el respaldo opaco tiene que declararse ANTES del cristal")
 
@@ -3045,7 +3051,7 @@ class Hub(unittest.TestCase):
                 self.assertNotIn('id="cerebros-banco"', t)
 
     def test_cada_piso_tiene_quien_hable_y_existe(self):
-        """El reparto firmado cubre los ocho pisos, y cada nombre existe.
+        """El reparto firmado cubre los nueve pisos, y cada nombre existe.
 
         Un piso sin entrada dejaria el titulo en NO_DATA; uno con un cerebro
         que no esta en el catalogo, el chat sin modelo. Y los pisos del
@@ -3058,7 +3064,8 @@ class Hub(unittest.TestCase):
         m = _re.search(r"var PELDANOS = \[(.*?)\];", cam, _re.S)
         self.assertIsNotNone(m, "camino.js ya no declara PELDANOS")
         pisos = _re.findall(r"'(\w+)'", m.group(1))
-        self.assertEqual(len(pisos), 8)
+        # NUEVE desde el 2026-09-25: ATLAS entra como piso 9 (RATLAS02).
+        self.assertEqual(len(pisos), 9)
         ids = {c["id"]: c for c in reg["cerebros"]}
         rep = reg.get("pisos", {})
         for p in pisos:
@@ -3074,6 +3081,47 @@ class Hub(unittest.TestCase):
         router = (PUBLICO / "assets" / "chat-router.js").read_text(encoding="utf-8")
         self.assertIn("/assets/piso-chat.js", router,
                       "nadie carga el modulo que hace que el piso mande")
+
+    def test_el_piso_9_se_carga_a_demanda_y_solo_pide_su_texto(self):
+        """ATLAS no lo baja quien no abre su piso (RATLAS02, condicion c).
+
+        La Torre carga UN cargador, `camino-atlas.js`, que inyecta el piso al
+        abrir `#piso-atlas`. Ningun HTML nombra los guiones del piso, el
+        precache tampoco, y el piso pide una sola cosa por red: su texto,
+        `atlas-<lengua>.json`, al pulsar. Ni una salida mas.
+        """
+        A = PUBLICO / "assets"
+        router = (A / "chat-router.js").read_text(encoding="utf-8")
+        self.assertIn("'/assets/camino-atlas.js'", router, "nadie carga el cargador")
+        cargador = sin_comentarios((A / "camino-atlas.js").read_text(encoding="utf-8"))
+        self.assertIn("piso-atlas", cargador)
+        self.assertIn("'toggle'", cargador, "el piso no espera a abrirse")
+        self.assertIn("s.async = false", cargador, "el orden de los guiones no esta atado")
+        piezas = ("atlas-arte.js", "atlas-mapa.js", "atlas-dialogo.js",
+                  "atlas-piso.js", "atlas.css", "preceptor-pixel.png")
+        listas = texto_del_worker()
+        for q in piezas:
+            with self.subTest(pieza=q):
+                self.assertTrue((A / q).is_file(), f"falta {q}")
+                self.assertNotIn(q, listas, f"{q} entra en el precache")
+                for h in PUBLICO.rglob("*.html"):
+                    self.assertNotIn(q, h.read_text(encoding="utf-8"),
+                                     f"{h.name} carga {q} de salida")
+        piso = sin_comentarios((A / "atlas-piso.js").read_text(encoding="utf-8"))
+        self.assertEqual(re.findall(r"fetch\(([^)]*)\)", piso),
+                         ["BASE + 'atlas-' + lang + '.json'"])
+        for f in ("atlas-piso.js", "atlas-arte.js", "atlas-mapa.js",
+                  "atlas-dialogo.js", "camino-atlas.js"):
+            codigo = sin_comentarios((A / f).read_text(encoding="utf-8"))
+            # El espacio de nombres SVG es un nombre, no una salida.
+            codigo = codigo.replace("'http://www.w3.org/2000/svg'", "")
+            for salida in ("http://", "https://", "XMLHttpRequest", "sendBeacon",
+                           "WebSocket", "EventSource", "importScripts", "innerHTML"):
+                with self.subTest(fichero=f, salida=salida):
+                    self.assertNotIn(salida, codigo)
+        for l in idiomas(PUBLICO):
+            with self.subTest(lengua=l):
+                self.assertTrue((PUBLICO / f"atlas-{l}.json").is_file())
 
     def test_el_modelo_servido_lleva_tag_explicito(self):
         """Nada de `:latest` pelado en el modelo que da la cara al publico.
@@ -5229,8 +5277,10 @@ CLAVES_CAMINOS = {
     #   puertos    · el entorno local: que escucha en tu propia maquina
     #   whoami     · el entorno online: que hay de ti ahi fuera
     #   killswitch · cortar, y medir cuanto se deshace de verdad
+    #   atlas      · el piso 9, el Bosque Sumergido (2026-09-25, RATLAS02):
+    #                entra firmado y con su papel en NO_DATA hasta la firma
     for n in ("despertar", "primeros_pasos", "exposicion", "silencio",
-              "contribuir", "puertos", "whoami", "killswitch")
+              "contribuir", "puertos", "whoami", "killswitch", "atlas")
     # `papel` y `corpus` entran el 2026-09-20 y son de otra clase que los
     # cuatro de arriba, asi que se nombran con su porque.
     #   papel  · CON QUIEN cree el modelo que habla en este piso. Sin eso quien
@@ -5346,7 +5396,7 @@ CLAVES_MOTOR = set(CLAVES_MOTOR_LISTA)   # una sola lista: ver FUERA_DEL_BLOQUE
 # piso ira a esta misma familia.
 CLAVES_OBJETIVOS = ({f"camino_{n}_aprender" for n in (
     "despertar", "primeros_pasos", "exposicion", "silencio", "contribuir",
-    "puertos", "whoami", "killswitch")}
+    "puertos", "whoami", "killswitch", "atlas")}
     | {"torre_et_aprender", "torre_et_papel", "torre_et_corpus"}
     # El juez de dos capas (2026-09-23): rotulos, las cinco reglas de la capa
     # determinista y el papel del modelo juez. Los pinta `veredicto.js`.
