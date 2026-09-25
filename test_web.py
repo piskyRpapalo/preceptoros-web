@@ -116,16 +116,17 @@ ENLACES_ADMITIDOS = ("https://github.com/piskyRpapalo/PreceptorOS",
 # w3.org desde una pagina.
 ESQUEMAS_XML = ("http://www.sitemaps.org/schemas/",
                 "http://www.w3.org/1999/xhtml",
+                # El espacio de nombres SVG (2026-09-25): `createElementNS` lo
+                # exige para construir el retrato de ATLAS nodo a nodo sin
+                # innerHTML. Es un NOMBRE, como el de XHTML de arriba; nadie
+                # lo pide por la red.
+                "http://www.w3.org/2000/svg",
                 # `$schema` de JSON Schema entra aqui y no en ENLACES_ADMITIDOS
                 # por el mismo motivo que los otros dos: es el NOMBRE de un
                 # dialecto, no una direccion que nadie va a pedir. El validador
                 # lo reconoce por la cadena y no descarga nada. Entro el
                 # 2026-09-06 con `data/loratelier_schema.json`.
-                "https://json-schema.org/draft/",
-                # El espacio de nombres SVG: `createElementNS` lo pide para
-                # dibujar el retrato de Nerea en el piso ATLAS. Es un nombre,
-                # no una peticion (2026-09-25).
-                "http://www.w3.org/2000/svg")
+                "https://json-schema.org/draft/")
 
 FRAMEWORKS = r"\breact\b|vue\.js|angular|htmx|alpine\.js|jquery|svelte|tailwind"
 
