@@ -3,7 +3,8 @@
  "idioma": "ru",
  "procedencia": {
   "traducido_por": "traducido por el silicio desde el castellano; pendiente de revision nativa",
-  "retrato": "tira de pixel art del Preceptor aportada por el Soberano; recorte y clave de color con PIL por el silicio; alt escrito por el silicio y traducido; pendiente de revision nativa"
+  "retrato": "tira de pixel art del Preceptor aportada por el Soberano; recorte y clave de color con PIL por el silicio; alt escrito por el silicio y traducido; pendiente de revision nativa",
+  "thegame_v1": "textos de theGame v1 (2026-09-26): castellano base del silicio sobre la firma del Soberano; traducido por el silicio, pendiente de revision nativa"
  },
  "nota": "Textos del piso ATLAS (atlas-piso.js). Las cifras NO van aqui: las formatea el navegador con Intl.NumberFormat en la lengua de la pagina.",
  "skills": [
@@ -17,7 +18,7 @@
  ],
  "ui": {
   "lema": "Затонувший лес. Атлантида не утонула: она уснула. Разбудить её — тебе.",
-  "sello": "Макет · пример данных · без сервера",
+  "sello": "НЕ СОХРАНЕНО · Лес живёт в этой вкладке",
   "cab_h": "ЯДРО · Состояние целостности",
   "presion": "Удерживаемое давление",
   "recursos_aria": "Ресурсы бункера",
@@ -36,8 +37,7 @@
   "s_ojo": "Сектор Око",
   "s_grieta": "Трещина · 120 м",
   "hud_aria": "Атлант",
-  "dormias_h": "ПОКА ТЕБЯ НЕ БЫЛО · 7 ч 12 мин",
-  "d3": "Паровой сервер 2 остановился через 5 ч 40 мин: кончилась БИОМАССА",
+  "dormias_h": "ПОКА ТЫ СПАЛ · {t}",
   "dormias_nota": "Сон засчитывается до 24 ч. Дальше лес ждёт.",
   "recoger": "Забрать",
   "de": "из",
@@ -49,13 +49,13 @@
   "b3": "150–300 м · Затонувший лес",
   "b3n": "Кислород ×4 · забытые технологии",
   "b4": "300 м+ · Ядро",
-  "b4n": "Нужна {ing} 60 · у тебя 41",
-  "nucleo_h": "УРОВЕНЬ ЯДРА · {n} · общий вклад",
+  "b4n": "Нужно: {ing} 60 · у тебя {n}",
+  "nucleo_h": "УРОВЕНЬ ЯДРА · {n}",
   "nucleo_aria": "Уровень Ядра: {a} из {b} XP сообщества",
-  "nucleo_p": "{a} / {b} XP сообщества · 37 атлантов внесли вклад за последние 7 дней · твой вклад: {tu} XP ({pct} %)",
-  "desbloqueo": "Уровень 35 открывает: ещё один слот для Парового сервера",
-  "nucleo_nota": "Сообщество растёт, потому что вкладываются многие, а не потому, что старается один. Пример: таблица открытий будет в <code>mente/doctrina.md</code>.",
-  "pie": "МАКЕТ · пример данных, без сервера, без сети. Кнопки только пишут в консоль.",
+  "nucleo_p": "{a} XP · сумма твоих семи ремёсел",
+  "desbloqueo": "Уровень {n}: начинается фаза «{fase}»",
+  "nucleo_nota": "Законы этого мира берутся из реальных измерений сайта: {pruebas} зелёных тестов, {lenguas} языков, {kb} КБ игры за визит.",
+  "pie": "Без сервера и без сети: всё происходит в этой вкладке и теряется при её закрытии. Закрыть theGame не значит стереть.",
   "dlg_nombre": "Наставник",
   "dlg_rol": "Проводник Леса",
   "dlg_l1": "Наконец-то на ногах. Хорошо: лес уже начинал забывать твоё имя.",
@@ -66,6 +66,23 @@
   "dlg_cerrar": "Закрыть",
   "nerea_nombre": "Нерея",
   "nerea_rol": "Восстановительница Ядра",
-  "atlas_retrato_alt": "Пиксельный портрет Наставника: мраморный бюст, половина лица из меди, один глаз светится фиолетовым; при тревоге глаз горит медью."
+  "atlas_retrato_alt": "Пиксельный портрет Наставника: мраморный бюст, половина лица из меди, один глаз светится фиолетовым; при тревоге глаз горит медью.",
+  "mundo_nd": "NO_DATA · законы мира не пришли: Лес использует нейтральные.",
+  "fase_h": "ФАЗА {n} · {fase}",
+  "f1": "Выживание",
+  "f2": "Ремонт",
+  "f3": "Экспансия",
+  "f4": "Бездна",
+  "f5": "Суверенное Ядро",
+  "fase_fin": "Финальная фаза: Ядро суверенно.",
+  "oxigeno": "КИСЛОРОД",
+  "cobre": "МЕДЬ",
+  "sellada": "РАЗЛОМ ЗАПЕЧАТАН · откроется через {s} с",
+  "falta_cobre": "Не хватает {n} меди: Кузница ещё не произвела достаточно.",
+  "b4n_no": "Ядро закрыто: нужно больше Инженерии.",
+  "dormias_vacio": "Пока ничего: Лес производит, пока эта вкладка скрыта, до 24 ч.",
+  "sube": "{oficio} достигает уровня {n}",
+  "ascenso": "Нет кислорода: аварийный подъём к рифу.",
+  "reabre": "Разлом снова открылся."
  }
 }

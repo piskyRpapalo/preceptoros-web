@@ -273,8 +273,7 @@
         P.viste(d.id.replace(/^piso-/, ''), UI);
       });
     });
-    /* `#piso-<id>` en la direccion abre ESE piso (lo usa la puerta theGame,
-       que lleva a `#piso-atlas`); si no, el inicial. */
+    /* `#piso-<id>` en la direccion abre ESE piso; si no, el inicial. */
     function porDireccion() {
       var d = /^#piso-\w+$/.test(location.hash) && document.getElementById(location.hash.slice(1));
       if (d && d.classList.contains('torre-peldano')) { d.open = true; d.scrollIntoView(); return true; }

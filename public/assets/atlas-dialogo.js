@@ -195,7 +195,11 @@
                 cara.alerta(false); cara.celda(CELDAS.revelar);
                 mandos.querySelectorAll('button').forEach(function (x) { x.disabled = true; });
                 setTimeout(cierra, quieto ? 0 : 900);
-              } else { cierra(); }
+                if (opciones && opciones.alSellar) { opciones.alSellar(); }
+              } else {
+                cierra();
+                if (opciones && opciones.alAplazar) { opciones.alAplazar(); }
+              }
             });
             mandos.appendChild(b);
             if (!k) { b.focus(); }

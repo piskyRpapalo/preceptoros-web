@@ -73,13 +73,7 @@
     "ks_juez_sin_turnos": "NO_DATA — non ci sono ancora turni da giudicare. Parla prima con lo studio.",
     "ks_juez_una_capa": "NO_DATA — questa è UNO solo strato. La scheda di questo studio ne esige due —prima il deterministico, poi il modello— e il primo gira sul rack, non qui. Leggilo come un parere misurato, non come un voto.",
     "pp_abrir": "Gioca: scansiona una macchina d'esempio",
-    "pp_sello": "simulazione",
-    "camino_atlas_titulo": "ATLAS · la Foresta Sommersa",
-    "camino_atlas_frase": "Atlantide non è affondata: si è addormentata. Qui la risvegli settore per settore, con ciò che impari agli altri piani.",
-    "camino_atlas_falla": "Tutto ciò che vedi è un modellino: le cifre sono di esempio e nessun pulsante salva ancora nulla. Il motore e la memoria arrivano con il passo 3.",
-    "camino_atlas_para_quien": "Per chi vuole tornare ogni giorno a vedere cosa è cresciuto mentre dormiva, senza che nessuno gli venda nulla.",
-    "camino_atlas_papel": "NO_DATA — il ruolo di questo piano attende la firma del Sovrano.",
-    "camino_atlas_corpus": "Decisioni che la persona firma dentro il piano —cosa riparare, cosa rimandare— insieme allo stato della Foresta in quel momento. Oggi nessuna: il piano è un modellino."
+    "pp_sello": "simulazione"
   },
   "pendiente": {
     "papel_de_usuario": "NO_DATA · falta escribir con quien cree el modelo que habla en cada peldano. Se escribe en castellano y se traduce a las ocho, como el resto; hasta entonces el desplegable lo declara en pantalla.",

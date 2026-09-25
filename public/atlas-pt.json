@@ -3,7 +3,8 @@
  "idioma": "pt",
  "procedencia": {
   "traducido_por": "traducido por el silicio desde el castellano; pendiente de revision nativa",
-  "retrato": "tira de pixel art del Preceptor aportada por el Soberano; recorte y clave de color con PIL por el silicio; alt escrito por el silicio y traducido; pendiente de revision nativa"
+  "retrato": "tira de pixel art del Preceptor aportada por el Soberano; recorte y clave de color con PIL por el silicio; alt escrito por el silicio y traducido; pendiente de revision nativa",
+  "thegame_v1": "textos de theGame v1 (2026-09-26): castellano base del silicio sobre la firma del Soberano; traducido por el silicio, pendiente de revision nativa"
  },
  "nota": "Textos del piso ATLAS (atlas-piso.js). Las cifras NO van aqui: las formatea el navegador con Intl.NumberFormat en la lengua de la pagina.",
  "skills": [
@@ -17,7 +18,7 @@
  ],
  "ui": {
   "lema": "A Floresta Submersa. A Atlântida não se afundou: adormeceu. És tu quem a desperta.",
-  "sello": "Maqueta · dados de exemplo · sem servidor",
+  "sello": "SEM GUARDAR · a Floresta vive neste separador",
   "cab_h": "O NÚCLEO · Estado de Integridade",
   "presion": "Pressão contida",
   "recursos_aria": "Recursos do bunker",
@@ -36,8 +37,7 @@
   "s_ojo": "Setor Olho",
   "s_grieta": "Fenda · 120 m",
   "hud_aria": "Atlante",
-  "dormias_h": "ENQUANTO DORMIAS · 7 h 12 min",
-  "d3": "O Servidor a Vapor 2 parou às 5 h 40 min: sem BIOMASSA",
+  "dormias_h": "ENQUANTO DORMIAS · {t}",
   "dormias_nota": "O sono conta até 24 h. Depois, a floresta espera.",
   "recoger": "Recolher",
   "de": "de",
@@ -49,13 +49,13 @@
   "b3": "150–300 m · Floresta Submersa",
   "b3n": "Oxigénio ×4 · tecnologia esquecida",
   "b4": "300 m+ · O Núcleo",
-  "b4n": "Requer {ing} 60 · tens 41",
-  "nucleo_h": "NÍVEL DO NÚCLEO · {n} · contributos coletivos",
+  "b4n": "Requer {ing} 60 · tens {n}",
+  "nucleo_h": "NÍVEL DO NÚCLEO · {n}",
   "nucleo_aria": "Nível do Núcleo: {a} de {b} XP do povo",
-  "nucleo_p": "{a} / {b} XP do povo · 37 atlantes contribuíram nos últimos 7 dias · o teu contributo: {tu} XP ({pct} %)",
-  "desbloqueo": "O nível 35 desbloqueia: mais uma ranhura de Servidor a Vapor",
-  "nucleo_nota": "O povo sobe porque muitos contribuem, não porque um só se esforça. Exemplo: a tabela de desbloqueios vai viver em <code>mente/doctrina.md</code>.",
-  "pie": "MAQUETA · dados de exemplo, sem servidor, sem rede. Os botões só escrevem na consola.",
+  "nucleo_p": "{a} XP · a soma dos teus sete ofícios",
+  "desbloqueo": "Nível {n}: começa a fase «{fase}»",
+  "nucleo_nota": "As leis deste mundo saem de medições reais deste site: {pruebas} testes a verde, {lenguas} línguas, {kb} KB de jogo por visita.",
+  "pie": "Sem servidor e sem rede: tudo acontece neste separador e perde-se ao fechá-lo. Fechar o theGame não o apaga.",
   "dlg_nombre": "Preceptor",
   "dlg_rol": "Guia da Floresta",
   "dlg_l1": "Finalmente de pé. Ainda bem: a floresta começava a esquecer o teu nome.",
@@ -66,6 +66,23 @@
   "dlg_cerrar": "Fechar",
   "nerea_nombre": "Nerea",
   "nerea_rol": "Restauradora do Núcleo",
-  "atlas_retrato_alt": "Retrato em pixel art do Preceptor: busto de mármore com metade do rosto em cobre e um olho que brilha em violeta; em alerta, o olho arde em cobre."
+  "atlas_retrato_alt": "Retrato em pixel art do Preceptor: busto de mármore com metade do rosto em cobre e um olho que brilha em violeta; em alerta, o olho arde em cobre.",
+  "mundo_nd": "NO_DATA · as leis do mundo não chegaram: a Floresta usa as neutras.",
+  "fase_h": "FASE {n} · {fase}",
+  "f1": "Sobrevivência",
+  "f2": "Reparação",
+  "f3": "Expansão",
+  "f4": "Abismo",
+  "f5": "Núcleo Soberano",
+  "fase_fin": "Fase final alcançada: o Núcleo é soberano.",
+  "oxigeno": "OXIGÉNIO",
+  "cobre": "COBRE",
+  "sellada": "FENDA SELADA · volta a abrir em {s} s",
+  "falta_cobre": "Faltam {n} de cobre: a Forja ainda não produziu o suficiente.",
+  "b4n_no": "O Núcleo continua fechado: é preciso mais Engenharia.",
+  "dormias_vacio": "Nada ainda: a Floresta produz enquanto este separador está oculto, até 24 h.",
+  "sube": "{oficio} sobe ao nível {n}",
+  "ascenso": "Sem oxigénio: subida de emergência ao recife.",
+  "reabre": "A fenda voltou a abrir-se."
  }
 }

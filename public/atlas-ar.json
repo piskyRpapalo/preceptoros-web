@@ -3,7 +3,8 @@
  "idioma": "ar",
  "procedencia": {
   "traducido_por": "traducido por el silicio desde el castellano; pendiente de revision nativa",
-  "retrato": "tira de pixel art del Preceptor aportada por el Soberano; recorte y clave de color con PIL por el silicio; alt escrito por el silicio y traducido; pendiente de revision nativa"
+  "retrato": "tira de pixel art del Preceptor aportada por el Soberano; recorte y clave de color con PIL por el silicio; alt escrito por el silicio y traducido; pendiente de revision nativa",
+  "thegame_v1": "textos de theGame v1 (2026-09-26): castellano base del silicio sobre la firma del Soberano; traducido por el silicio, pendiente de revision nativa"
  },
  "nota": "Textos del piso ATLAS (atlas-piso.js). Las cifras NO van aqui: las formatea el navegador con Intl.NumberFormat en la lengua de la pagina.",
  "skills": [
@@ -17,7 +18,7 @@
  ],
  "ui": {
   "lema": "الغابة الغارقة. أطلانتس لم تغرق: لقد نامت. وأنت من يوقظها.",
-  "sello": "نموذج أولي · بيانات تجريبية · بلا خادم",
+  "sello": "غير محفوظ · تعيش الغابة في هذا التبويب",
   "cab_h": "النواة · حالة السلامة",
   "presion": "الضغط المحتوى",
   "recursos_aria": "موارد الملجأ",
@@ -36,8 +37,7 @@
   "s_ojo": "قطاع العين",
   "s_grieta": "شقّ · 120 m",
   "hud_aria": "أطلنطي",
-  "dormias_h": "أثناء غيابك · 7 س 12 د",
-  "d3": "توقّف خادم البخار 2 بعد 5 س 40 د: نفدت الكتلة الحيوية",
+  "dormias_h": "بينما كنت نائمًا · {t}",
   "dormias_nota": "يُحتسب النوم حتى 24 ساعة. بعدها تنتظر الغابة.",
   "recoger": "اجمع",
   "de": "من",
@@ -49,13 +49,13 @@
   "b3": "150–300 m · الغابة الغارقة",
   "b3n": "أكسجين ×4 · تقنية منسية",
   "b4": "300 m+ · النواة",
-  "b4n": "يتطلب {ing} 60 · لديك 41",
-  "nucleo_h": "مستوى النواة · {n} · مساهمات جماعية",
+  "b4n": "يتطلب {ing} 60 · لديك {n}",
+  "nucleo_h": "مستوى النواة · {n}",
   "nucleo_aria": "مستوى النواة: {a} من {b} XP للمجتمع",
-  "nucleo_p": "{a} / {b} XP للمجتمع · ساهم 37 أطلنطيًا في الأيام السبعة الأخيرة · مساهمتك: {tu} XP ({pct}%)",
-  "desbloqueo": "المستوى 35 يفتح: خانة إضافية لخادم بخار",
-  "nucleo_nota": "يرتقي المجتمع لأن كثيرين يساهمون، لا لأن واحدًا يجتهد وحده. مثال: جدول الفتح سيكون في <code>mente/doctrina.md</code>.",
-  "pie": "نموذج أولي · بيانات تجريبية، بلا خادم، بلا شبكة. الأزرار تكتب في وحدة التحكم فقط.",
+  "nucleo_p": "{a} XP · مجموع حرفك السبع",
+  "desbloqueo": "المستوى {n}: تبدأ مرحلة «{fase}»",
+  "nucleo_nota": "قوانين هذا العالم مأخوذة من قياسات حقيقية لهذا الموقع: {pruebas} اختبارًا ناجحًا، {lenguas} لغات، {kb} ك.ب من اللعبة لكل زيارة.",
+  "pie": "بلا خادم وبلا شبكة: كل شيء يحدث في هذا التبويب ويضيع عند إغلاقه. إغلاق theGame لا يمحوه.",
   "dlg_nombre": "المُرشد",
   "dlg_rol": "دليل الغابة",
   "dlg_l1": "مرحبًا بعودتك. جيد: كانت الغابة قد بدأت تنسى اسمك.",
@@ -66,6 +66,23 @@
   "dlg_cerrar": "إغلاق",
   "nerea_nombre": "نيريا",
   "nerea_rol": "مُرمِّمة النواة",
-  "atlas_retrato_alt": "صورة بفن البكسل للمُرشد: تمثال نصفي من الرخام نصف وجهه من النحاس وعين تتوهج بالبنفسجي؛ عند الإنذار تتقد العين نحاسية."
+  "atlas_retrato_alt": "صورة بفن البكسل للمُرشد: تمثال نصفي من الرخام نصف وجهه من النحاس وعين تتوهج بالبنفسجي؛ عند الإنذار تتقد العين نحاسية.",
+  "mundo_nd": "NO_DATA · لم تصل قوانين العالم: تستخدم الغابة قوانين محايدة.",
+  "fase_h": "المرحلة {n} · {fase}",
+  "f1": "البقاء",
+  "f2": "الإصلاح",
+  "f3": "التوسّع",
+  "f4": "الهاوية",
+  "f5": "النواة السيّدة",
+  "fase_fin": "بلغت المرحلة الأخيرة: النواة سيّدة.",
+  "oxigeno": "الأكسجين",
+  "cobre": "النحاس",
+  "sellada": "الصدع مختوم · يُفتح من جديد بعد {s} ث",
+  "falta_cobre": "ينقص {n} من النحاس: لم تُنتج المسبكة ما يكفي بعد.",
+  "b4n_no": "تبقى النواة مغلقة: يلزم مزيد من الهندسة.",
+  "dormias_vacio": "لا شيء بعد: تُنتج الغابة ما دام هذا التبويب مخفيًا، حتى 24 ساعة.",
+  "sube": "{oficio}: المستوى {n}",
+  "ascenso": "نفد الأكسجين: صعود طارئ إلى الشعاب.",
+  "reabre": "انفتح الصدع من جديد."
  }
 }

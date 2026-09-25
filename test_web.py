@@ -3057,7 +3057,7 @@ class Hub(unittest.TestCase):
                 self.assertNotIn('id="cerebros-banco"', t)
 
     def test_cada_piso_tiene_quien_hable_y_existe(self):
-        """El reparto firmado cubre los nueve pisos, y cada nombre existe.
+        """El reparto firmado cubre los ocho pisos, y cada nombre existe.
 
         Un piso sin entrada dejaria el titulo en NO_DATA; uno con un cerebro
         que no esta en el catalogo, el chat sin modelo. Y los pisos del
@@ -3070,8 +3070,8 @@ class Hub(unittest.TestCase):
         m = _re.search(r"var PELDANOS = \[(.*?)\];", cam, _re.S)
         self.assertIsNotNone(m, "camino.js ya no declara PELDANOS")
         pisos = _re.findall(r"'(\w+)'", m.group(1))
-        # NUEVE desde el 2026-09-25: ATLAS entra como piso 9 (RATLAS02).
-        self.assertEqual(len(pisos), 9)
+        # OCHO: ATLAS fue piso 9 un dia y salio de la Torre (2026-09-26).
+        self.assertEqual(len(pisos), 8)
         ids = {c["id"]: c for c in reg["cerebros"]}
         rep = reg.get("pisos", {})
         for p in pisos:
@@ -3088,23 +3088,23 @@ class Hub(unittest.TestCase):
         self.assertIn("/assets/piso-chat.js", router,
                       "nadie carga el modulo que hace que el piso mande")
 
-    def test_el_piso_9_se_carga_a_demanda_y_solo_pide_su_texto(self):
-        """ATLAS no lo baja quien no abre su piso (RATLAS02, condicion c).
+    def test_thegame_se_carga_a_demanda_y_solo_pide_lo_suyo(self):
+        """theGame, la puerta del cabezal, es la UNICA entrada al juego (2026-09-26).
 
-        La Torre carga UN cargador, `camino-atlas.js`, que inyecta el piso al
-        abrir `#piso-atlas`. Ningun HTML nombra los guiones del piso, el
-        precache tampoco, y el piso pide una sola cosa por red: su texto,
-        `atlas-<lengua>.json`, al pulsar. Ni una salida mas.
+        El cabezal no baja nada del juego: al pulsar la puerta (o llegar con
+        `#thegame`) inyecta `thegame.js`, que monta la capa y pide la hoja y los
+        cinco guiones. Ningun HTML los nombra y el precache tampoco. El juego
+        pide dos cosas, las dos al propio origen: su texto y sus leyes.
         """
         A = PUBLICO / "assets"
-        router = (A / "chat-router.js").read_text(encoding="utf-8")
-        self.assertIn("'/assets/camino-atlas.js'", router, "nadie carga el cargador")
-        cargador = sin_comentarios((A / "camino-atlas.js").read_text(encoding="utf-8"))
-        self.assertIn("piso-atlas", cargador)
-        self.assertIn("'toggle'", cargador, "el piso no espera a abrirse")
-        self.assertIn("s.async = false", cargador, "el orden de los guiones no esta atado")
-        piezas = ("atlas-arte.js", "atlas-mapa.js", "atlas-dialogo.js",
-                  "atlas-piso.js", "atlas.css", "preceptor-pixel.png")
+        rot = sin_comentarios((A / "cabezal-rotulos.js").read_text(encoding="utf-8"))
+        self.assertIn("'/assets/thegame.js'", rot, "la puerta no carga el juego")
+        self.assertIn("'#thegame'", rot)
+        self.assertNotIn("camino-atlas", (A / "chat-router.js").read_text(encoding="utf-8"),
+                         "la Torre vuelve a cargar el juego")
+        self.assertFalse((A / "camino-atlas.js").exists(), "vuelve el cargador de la Torre")
+        piezas = ("atlas-arte.js", "atlas-mapa.js", "atlas-dialogo.js", "atlas-motor.js",
+                  "atlas-piso.js", "atlas.css", "preceptor-pixel.png", "thegame.js")
         listas = texto_del_worker()
         for q in piezas:
             with self.subTest(pieza=q):
@@ -3114,20 +3114,21 @@ class Hub(unittest.TestCase):
                     self.assertNotIn(q, h.read_text(encoding="utf-8"),
                                      f"{h.name} carga {q} de salida")
         piso = sin_comentarios((A / "atlas-piso.js").read_text(encoding="utf-8"))
-        self.assertEqual(re.findall(r"fetch\(([^)]*)\)", piso),
-                         ["BASE + 'atlas-' + lang + '.json'"])
-        for f in ("atlas-piso.js", "atlas-arte.js", "atlas-mapa.js",
-                  "atlas-dialogo.js", "camino-atlas.js"):
+        self.assertEqual(re.findall(r"fetch\(([^)]*)\)", piso), ["BASE + ruta"])
+        for f in ("atlas-piso.js", "atlas-arte.js", "atlas-mapa.js", "atlas-dialogo.js",
+                  "atlas-motor.js", "thegame.js"):
             codigo = sin_comentarios((A / f).read_text(encoding="utf-8"))
             # El espacio de nombres SVG es un nombre, no una salida.
             codigo = codigo.replace("'http://www.w3.org/2000/svg'", "")
             for salida in ("http://", "https://", "XMLHttpRequest", "sendBeacon",
-                           "WebSocket", "EventSource", "importScripts", "innerHTML"):
+                           "WebSocket", "EventSource", "importScripts", "innerHTML",
+                           "localStorage"):
                 with self.subTest(fichero=f, salida=salida):
                     self.assertNotIn(salida, codigo)
         for l in idiomas(PUBLICO):
             with self.subTest(lengua=l):
                 self.assertTrue((PUBLICO / f"atlas-{l}.json").is_file())
+        self.assertTrue((PUBLICO / "atlas-mundo.json").is_file(), "faltan las leyes del mundo")
 
     def test_el_nivel_mostrado_es_la_posicion_en_peldanos(self):
         """Nivel 1 = Primeros pasos, nivel 2 = Despertar (Soberano, 2026-09-25).
@@ -3143,7 +3144,7 @@ class Hub(unittest.TestCase):
         m = re.search(r"var PELDANOS = \[(.*?)\];", cam, re.S)
         pisos = re.findall(r"'(\w+)'", m.group(1))
         self.assertEqual(pisos[:2], ["primeros_pasos", "despertar"])
-        self.assertEqual(pisos[-1], "atlas", "ATLAS deja de ser el nivel 9")
+        self.assertNotIn("atlas", pisos, "ATLAS vuelve a la Torre: vive tras theGame")
         self.assertIn("PELDANOS.forEach(function (p, i)", cam)
         self.assertIn("' ' + (i + 1) + ' · '", cam, "el nivel ya no sale del indice")
         self.assertNotRegex(cam, r"camino_\w+_nivel", "aparece un segundo dueño del nivel")
@@ -3490,7 +3491,8 @@ class Cabezal(unittest.TestCase):
         """La navegacion: cinco, en su orden, y ocupando el ancho.
 
         CINCO DESDE EL 2026-09-25, firmado por el Soberano: theGame entra la
-        ultima y lleva al piso 9 de la Torre (`#piso-atlas`), no a una pagina.
+        ultima y abre el juego en una capa (`#thegame`), no una pagina: desde el
+        2026-09-26 el juego solo vive ahi, fuera de la Torre.
         Es impar, asi que en la rejilla de dos del telefono ocupa su fila.
 
         El orden no es decorativo. HOME primero porque es el sitio; LoRAtelier
@@ -3510,7 +3512,7 @@ class Cabezal(unittest.TestCase):
             orden.append(hub.index(clave))
         self.assertEqual(orden, sorted(orden),
                          "las cinco puertas no se pintan en su orden")
-        self.assertIn("'#piso-atlas'", hub, "theGame no lleva al piso 9")
+        self.assertIn("'#thegame'", hub, "theGame no abre el juego")
         self.assertNotIn("enlace('cab-boton idioma'", hub,
                          "el idioma vuelve a la fila de navegacion")
         # LAS HOJAS SE DESCUBREN DE LA PORTADA, no se nombra una. Esta linea
@@ -5321,10 +5323,10 @@ CLAVES_CAMINOS = {
     #   puertos    · el entorno local: que escucha en tu propia maquina
     #   whoami     · el entorno online: que hay de ti ahi fuera
     #   killswitch · cortar, y medir cuanto se deshace de verdad
-    #   atlas      · el piso 9, el Bosque Sumergido (2026-09-25, RATLAS02):
-    #                entra firmado y con su papel en NO_DATA hasta la firma
+    # ATLAS fue el piso 9 del 2026-09-25 al 26 y SALIO de la Torre por orden
+    # del Soberano: el juego vive tras la puerta theGame, no es un peldano.
     for n in ("despertar", "primeros_pasos", "exposicion", "silencio",
-              "contribuir", "puertos", "whoami", "killswitch", "atlas")
+              "contribuir", "puertos", "whoami", "killswitch")
     # `papel` y `corpus` entran el 2026-09-20 y son de otra clase que los
     # cuatro de arriba, asi que se nombran con su porque.
     #   papel  · CON QUIEN cree el modelo que habla en este piso. Sin eso quien
@@ -5440,7 +5442,7 @@ CLAVES_MOTOR = set(CLAVES_MOTOR_LISTA)   # una sola lista: ver FUERA_DEL_BLOQUE
 # piso ira a esta misma familia.
 CLAVES_OBJETIVOS = ({f"camino_{n}_aprender" for n in (
     "despertar", "primeros_pasos", "exposicion", "silencio", "contribuir",
-    "puertos", "whoami", "killswitch", "atlas")}
+    "puertos", "whoami", "killswitch")}
     | {"torre_et_aprender", "torre_et_papel", "torre_et_corpus"}
     # El juez de dos capas (2026-09-23): rotulos, las cinco reglas de la capa
     # determinista y el papel del modelo juez. Los pinta `veredicto.js`.

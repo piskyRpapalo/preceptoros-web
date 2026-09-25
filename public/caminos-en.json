@@ -72,13 +72,7 @@
     "ks_juez_sin_turnos": "NO_DATA — there are no turns to judge yet. Talk to the study first.",
     "ks_juez_una_capa": "NO_DATA — this is ONE layer. This study's card requires two —deterministic first, model after— and the first one runs on the rack, not here. Read it as a measured opinion, not as a score.",
     "pp_abrir": "Play: scan an example machine",
-    "pp_sello": "simulation",
-    "camino_atlas_titulo": "ATLAS · the Sunken Forest",
-    "camino_atlas_frase": "Atlantis did not sink: it fell asleep. Here you wake it sector by sector, with what you learn on the other floors.",
-    "camino_atlas_falla": "Everything you see is a mockup: the numbers are samples and no button saves anything yet. The engine and the memory arrive with step 3.",
-    "camino_atlas_para_quien": "For whoever wants to come back every day to see what grew while they slept, with nobody selling them anything.",
-    "camino_atlas_papel": "NO_DATA — this floor's role is waiting for the Sovereign's signature.",
-    "camino_atlas_corpus": "Decisions the person signs inside the floor —what to repair, what to postpone— together with the state of the Forest at that moment. None today: the floor is a mockup."
+    "pp_sello": "simulation"
   },
   "pendiente": {
     "papel_de_usuario": "NO_DATA · falta escribir con quien cree el modelo que habla en cada peldano. Se escribe en castellano y se traduce a las ocho, como el resto; hasta entonces el desplegable lo declara en pantalla."

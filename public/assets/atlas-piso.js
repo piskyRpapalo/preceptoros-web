@@ -1,42 +1,28 @@
-/* preceptoros.org · ATLAS, EL BOSQUE SUMERGIDO, como piso de la Torre.
+/* preceptoros.org · theGame · el PANEL de ATLAS, el Bosque Sumergido.
 
-   DECISION DEL SOBERANO (2026-09-25): ATLAS entra como PISO, no como panel.
-   Cero paginas nuevas. Mismo contrato que `camino-puertos.js` y el killswitch:
-   espera el aviso `preceptor:torre`, se monta dentro de `#piso-atlas` y pide
-   sus textos --`atlas-<lengua>.json`, al propio origen-- solo al pulsar.
+   SOLO SE ENTRA POR theGame (Soberano, 2026-09-26). Este fichero lo carga
+   `thegame.js` dentro de su capa y expone `window.AtlasJuego`: monta el panel,
+   lo pausa al cerrar la capa y lo reanuda al volver.
 
-   PISO 9 DESDE EL 2026-09-25 (firmado por el Soberano, RATLAS02). No va en
-   ninguna pagina ni en el precache: lo inyecta `camino-atlas.js` la primera
-   vez que alguien abre `#piso-atlas`. Fuera de la Torre se ve en
-   `atlas/vista.html`, que la simula.
+   PINTA LO QUE DICE EL MOTOR. Las cifras salen de `atlas-motor.js`, puro y
+   determinista; aqui solo se dibuja y se traducen los clics en acciones.
+   Un ciclo por segundo mientras la capa esta abierta y la pestana a la vista;
+   con la pestana oculta el Bosque produce «mientras dormias», hasta 24 h.
 
-   TODO LO QUE PINTA ES MAQUETA. Las cifras son de ejemplo (curva OSRS
-   estandar: nivel 2 = 83 · 10 = 1 154 · 99 = 13 034 431) y los botones solo
-   escriben `[ATLAS stub]` en la consola. El motor llega en el paso 3.
-
-   EL MAPA Y EL ARTE VIVEN APARTE: `atlas-mapa.js` decide donde y cuando se
-   pinta, `atlas-arte.js` pinta. Este fichero arma el panel y los textos.
-
-   UNA SOLA SALIDA DE RED: su propio texto. Ni una mas. */
+   DOS SALIDAS DE RED, las dos al propio origen y al abrir: su texto
+   (`atlas-<lengua>.json`) y las leyes medidas del mundo (`atlas-mundo.json`).
+   Nada se guarda: v1 vive en la pestana y el sello lo dice. */
 (function () {
   'use strict';
 
   var lang = (document.documentElement.lang || 'en').slice(0, 2);
   var yo = document.currentScript;
-  /* La vista de desarrollo sirve los JSON desde su carpeta; en la Torre
-     viviran en la raiz, como `puertos-<lengua>.json`. */
   var BASE = (yo && yo.dataset.base) || '/';
+  var M = window.AtlasMotor;
 
-  /* --- datos de ejemplo: los sustituye el servidor en el paso 3 ----------- */
-  /* [xp, umbral del nivel, umbral del siguiente, nivel], orden canonico. */
-  var SKILLS = [[6747, 6291, 7028, 23], [15482, 14833, 16456, 31],
-    [3905, 3523, 3973, 18], [2511, 2411, 2746, 15], [10331, 9730, 10824, 27],
-    [1808, 1584, 1833, 12], [42042, 41171, 45529, 41]];
-  var NUCLEO = [21773, 20224, 22406, 34];
-  /* Forja <- Mineria; Restauracion <- Herboristeria + Ingenieria (§B.1). */
-  var DEPENDE = { 3: [2], 5: [4, 6] };
+  var TXT = null, MUNDO = null, LEY = null, E = null;
+  var R = {}, zona = null, mapa = null, reloj = 0, activo = false, oculto = 0;
 
-  var TXT = null;
   function el(tag, clase, texto) {
     var n = document.createElement(tag);
     if (clase) { n.className = clase; }
@@ -54,194 +40,255 @@
   function rellena(plantilla, v) {
     return plantilla.replace(/\{(\w+)\}/g, function (m, k) { return k in v ? v[k] : m; });
   }
-  function boton(texto, stub, clase) {
-    var b = el('button', clase || 'boton', texto);
-    b.type = 'button'; b.dataset.stub = stub;
-    return b;
+  function boton(texto, clase) {
+    var b = el('button', clase || 'boton', texto); b.type = 'button'; return b;
+  }
+  function pon(nodo, texto) { if (nodo.textContent !== String(texto)) { nodo.textContent = texto; } }
+  function dice(texto) { if (texto) { pon(R.vivo, texto); } }
+  /* Horas, minutos o segundos, con la unidad en la lengua de la pagina. */
+  function unidad(n, u) {
+    try { return new Intl.NumberFormat(lang, { style: 'unit', unit: u, unitDisplay: 'short' }).format(n); }
+    catch (e) { return n + ' ' + u; }
+  }
+  function duracion(ciclos) {
+    if (ciclos < 60) { return unidad(ciclos, 'second'); }
+    var h = Math.floor(ciclos / 3600), m = Math.floor(ciclos % 3600 / 60);
+    return (h ? unidad(h, 'hour') + ' ' : '') + unidad(m, 'minute');
   }
 
-  /* --- el panel del Atlante ----------------------------------------------- */
-  function panel(zona) {
+  /* --- el panel: se construye una vez y luego solo se actualiza ----------- */
+  function panel() {
     var sk = TXT.skills || [];
-    var raiz = el('div', 'atlas-panel');
+    var raiz = el('div', 'atlas-panel atlas-piso'); raiz.id = 'atlas-piso';
+    raiz.appendChild(el('p', 'atlas-lema', U('lema')));
+    R.vivo = el('p', 'atlas-vivo'); R.vivo.setAttribute('aria-live', 'polite');
 
     var cab = el('div', 'atlas-cab');
     cab.appendChild(el('h3', null, U('cab_h')));
     var integ = el('p', 'atlas-integridad');
     var lab = el('label', null, U('presion')); lab.htmlFor = 'atlas-presion';
-    var met = el('meter'); met.id = 'atlas-presion';
-    met.min = 0; met.max = 100; met.low = 40; met.high = 75; met.optimum = 100; met.value = 87;
-    integ.appendChild(lab); integ.appendChild(met); integ.appendChild(el('data', null, pct(87)));
+    R.meter = el('meter'); R.meter.id = 'atlas-presion';
+    R.meter.min = 0; R.meter.low = 40; R.meter.high = 75;
+    R.meterD = el('data');
+    integ.appendChild(lab); integ.appendChild(R.meter); integ.appendChild(R.meterD);
     cab.appendChild(integ);
     cab.appendChild(el('p', 'atlas-sello', U('sello')));
     raiz.appendChild(cab);
 
     var rec = el('ul', 'atlas-recursos');
     rec.setAttribute('aria-label', U('recursos_aria'));
-    [['☀️ ' + U('luz'), '412 / 600'], ['🌿 ' + U('bio'), num(1284)],
-     ['⚡ ' + U('flujo'), pct(37)]].forEach(function (x, i) {
-      var li = el('li'); if (i === 2) { li.title = U('flujo_t'); }
-      li.appendChild(el('b', null, x[0])); li.appendChild(el('data', null, x[1]));
-      rec.appendChild(li);
+    R.rec = {};
+    [['luz', '☀️ ' + U('luz')], ['bio', '🌿 ' + U('bio')], ['flujo', '⚡ ' + U('flujo')],
+     ['cobre', '🟠 ' + U('cobre')], ['o2', '🫧 ' + U('oxigeno')]].forEach(function (x) {
+      var li = el('li'); if (x[0] === 'flujo') { li.title = U('flujo_t'); }
+      li.appendChild(el('b', null, x[1])); R.rec[x[0]] = el('data');
+      li.appendChild(R.rec[x[0]]); rec.appendChild(li);
     });
     raiz.appendChild(rec);
 
-    var al = el('div', 'atlas-alerta'); al.setAttribute('role', 'alert');
-    al.appendChild(el('strong', null, U('alerta')));
-    al.appendChild(el('p', null, U('alerta_p')));
-    var reparar = boton(U('reparar'), 'reparar-grieta');
-    /* La grieta la cuenta el Preceptor, con el ojo en cobre: ALERTA ROJA. */
-    reparar.addEventListener('click', function () {
-      if (window.AtlasDialogo) { window.AtlasDialogo.abre(TXT.ui, zona, reparar, { alerta: true }); }
-    });
-    al.appendChild(reparar);
-    raiz.appendChild(al);
+    R.alerta = el('div', 'atlas-alerta'); R.alerta.setAttribute('role', 'status');
+    R.alertaT = el('strong', null, U('alerta'));
+    R.alertaP = el('p', null, U('alerta_p'));
+    R.reparar = boton(U('reparar'));
+    R.reparar.addEventListener('click', function () { dialogo(R.reparar); });
+    R.alerta.appendChild(R.alertaT); R.alerta.appendChild(R.alertaP); R.alerta.appendChild(R.reparar);
+    raiz.appendChild(R.alerta);
+    raiz.appendChild(R.vivo);
 
-    var rej = el('div', 'atlas-rejilla');
-    var izq = el('div', 'atlas-izq');
+    var rej = el('div', 'atlas-rejilla'), izq = el('div', 'atlas-izq');
     var sm = el('section', 'panel atlas-mapa');
     sm.appendChild(el('h4', null, U('mapa_h')));
     sm.appendChild(el('p', 'atlas-nota', U('mapa_nota')));
     var lienzo = el('div', 'atlas-lienzo');
-    [['nucleo', U('s_nucleo')], ['forja', U('s_forja')], ['aguja', U('s_aguja')],
-     ['ojo', U('s_ojo')], ['grieta', '⚠ ' + U('s_grieta')]].forEach(function (x) {
-      var b = boton(x[1], 'sector', 'atlas-sector'); b.dataset.sector = x[0];
-      lienzo.appendChild(b);
-    });
+    [['nucleo', 's_nucleo'], ['forja', 's_forja'], ['aguja', 's_aguja'], ['ojo', 's_ojo']]
+      .forEach(function (x) {
+        var s = el('span', 'atlas-sector', U(x[1])); s.dataset.sector = x[0];
+        lienzo.appendChild(s);
+      });
+    R.grieta = boton('⚠ ' + U('s_grieta'), 'atlas-sector'); R.grieta.dataset.sector = 'grieta';
+    R.grieta.addEventListener('click', function () { dialogo(R.grieta); });
+    lienzo.appendChild(R.grieta);
     sm.appendChild(lienzo); izq.appendChild(sm);
 
     var fs = el('fieldset', 'atlas-profundidad');
     fs.appendChild(el('legend', null, U('prof_leg')));
-    [['arrecife', 'b1', false, false], ['ruinas', 'b2', true, false],
-     ['bosque', 'b3', false, false], ['nucleo', 'b4', false, true]].forEach(function (x) {
-      var lb = el('label'), inp = el('input');
+    R.radios = {};
+    [['arrecife', 'b1'], ['ruinas', 'b2'], ['bosque', 'b3'], ['nucleo', 'b4']].forEach(function (x) {
+      var lb = el('label'), inp = el('input'), nota = el('small');
       inp.type = 'radio'; inp.name = 'atlas-profundidad'; inp.value = x[0];
-      inp.checked = x[2]; inp.disabled = x[3];
+      inp.addEventListener('change', function () { baja(x[0]); });
       lb.appendChild(inp); lb.appendChild(el('span', null, U(x[1])));
-      lb.appendChild(el('small', null, rellena(U(x[1] + 'n'), { ing: sk[6] || '' })));
-      fs.appendChild(lb);
+      lb.appendChild(nota); fs.appendChild(lb);
+      R.radios[x[0]] = { inp: inp, nota: nota, clave: x[1] + 'n' };
     });
     izq.appendChild(fs); rej.appendChild(izq);
 
     var hud = el('aside', 'atlas-hud'); hud.setAttribute('aria-label', U('hud_aria'));
     var dor = el('section', 'panel atlas-dormias');
     var dh = el('h4', 'atlas-dormias-h');
-    /* Icono: la celda de reposo a 48 px, la misma tira del dialogo. */
     if (window.AtlasDialogo) {
       var ico = window.AtlasDialogo.retrato(TXT.ui, true);
       ico.celda(window.AtlasDialogo.CELDAS.reposo);
       ico.nodo.classList.add('atlas-pre-48'); dh.appendChild(ico.nodo);
     }
-    dh.appendChild(document.createTextNode(U('dormias_h')));
-    dor.appendChild(dh);
-    var ul = el('ul');
-    ul.appendChild(el('li', null, '+' + num(1240) + ' XP · ' + (sk[1] || '')));
-    ul.appendChild(el('li', null, '+86 🌿 ' + U('bio')));
-    ul.appendChild(el('li', 'cesa', U('d3')));
-    dor.appendChild(ul);
+    R.dormH = el('span'); dh.appendChild(R.dormH); dor.appendChild(dh);
+    R.dormUl = el('ul'); dor.appendChild(R.dormUl);
     dor.appendChild(el('p', 'atlas-nota', U('dormias_nota')));
-    dor.appendChild(boton(U('recoger'), 'recoger-offline'));
-    hud.appendChild(dor);
+    R.recoger = boton(U('recoger'));
+    R.recoger.addEventListener('click', function () { actua(M.recoger(E)); });
+    dor.appendChild(R.recoger); hud.appendChild(dor);
 
     var yoS = el('section', 'panel');
     yoS.appendChild(el('h4', null, 'Atlante-7F3A'));
     var ol = el('ol', 'atlas-skills');
-    SKILLS.forEach(function (s, i) {
-      var li = el('li'), nom = el('span', null, sk[i] || '');
-      if (DEPENDE[i]) {
-        nom.appendChild(el('i', 'atlas-dep', '← ' + DEPENDE[i].map(function (j) {
-          return sk[j]; }).join(' + ')));
-      }
-      li.appendChild(nom); li.appendChild(el('b', 'nivel', s[3]));
-      var pr = el('progress'); pr.max = s[2] - s[1]; pr.value = s[0] - s[1];
-      pr.setAttribute('aria-label', sk[i] + ': ' + num(s[0]) + ' ' + U('de') + ' ' + num(s[2]) + ' XP');
-      li.appendChild(pr);
-      var cifra = el('small', null, num(s[0]) + ' / ' + num(s[2]) + ' XP');
-      cifra.dir = 'ltr';
-      li.appendChild(cifra);
-      ol.appendChild(li);
+    R.sk = sk.map(function (nombre) {
+      var li = el('li'), s = { nombre: nombre };
+      li.appendChild(el('span', null, nombre));
+      s.nivel = el('b', 'nivel'); li.appendChild(s.nivel);
+      s.pr = el('progress'); li.appendChild(s.pr);
+      s.cifra = el('small'); s.cifra.dir = 'ltr'; li.appendChild(s.cifra);
+      ol.appendChild(li); return s;
     });
     yoS.appendChild(ol); hud.appendChild(yoS);
     rej.appendChild(hud); raiz.appendChild(rej);
 
     var nu = el('section', 'panel atlas-nucleo');
-    var h = el('h4');
-    var partes = U('nucleo_h').split('{n}');
-    h.appendChild(document.createTextNode(partes[0] || ''));
-    h.appendChild(el('span', 'nivel', NUCLEO[3]));
-    h.appendChild(document.createTextNode(partes[1] || ''));
-    nu.appendChild(h);
-    var pn = el('progress'); pn.max = NUCLEO[2] - NUCLEO[1]; pn.value = NUCLEO[0] - NUCLEO[1];
-    pn.setAttribute('aria-label', rellena(U('nucleo_aria'), { a: num(NUCLEO[0]), b: num(NUCLEO[2]) }));
-    nu.appendChild(pn);
-    nu.appendChild(el('p', null, rellena(U('nucleo_p'), {
-      a: num(NUCLEO[0]), b: num(NUCLEO[2]), tu: num(412),
-      pct: (1.9).toLocaleString(lang) })));
-    nu.appendChild(el('p', 'atlas-desbloqueo', U('desbloqueo')));
-    /* La nota nombra un fichero: va en <code>, construido, no con innerHTML. */
-    var nota = el('p', 'atlas-nota');
-    U('nucleo_nota').split(/<\/?code>/).forEach(function (t, i) {
-      nota.appendChild(i % 2 ? el('code', null, t) : document.createTextNode(t));
-    });
-    nu.appendChild(nota);
+    R.nucleoH = el('h4'); nu.appendChild(R.nucleoH);
+    R.fase = el('p', 'atlas-fase'); nu.appendChild(R.fase);
+    R.nucleoPr = el('progress'); nu.appendChild(R.nucleoPr);
+    R.nucleoP = el('p'); nu.appendChild(R.nucleoP);
+    R.desb = el('p', 'atlas-desbloqueo'); nu.appendChild(R.desb);
+    nu.appendChild(el('p', 'atlas-nota', LEY.nd ? U('mundo_nd') : rellena(U('nucleo_nota'), {
+      pruebas: num(MUNDO.pruebas_web), lenguas: num(MUNDO.lenguas),
+      kb: num(Math.round(MUNDO.gzip_juego_b / 1024)) })));
     raiz.appendChild(nu);
     raiz.appendChild(el('p', 'atlas-pie', U('pie')));
 
     zona.appendChild(raiz);
-    /* El mapa vivo y su arte viven en `atlas-mapa.js` y `atlas-arte.js`. */
-    if (window.AtlasMapa) { window.AtlasMapa.monta(lienzo); }
+    if (window.AtlasMapa) { mapa = window.AtlasMapa.monta(lienzo); }
   }
 
-  function textos() {
-    if (TXT) { return Promise.resolve(TXT); }
-    return fetch(BASE + 'atlas-' + lang + '.json').then(function (r) {
-      if (!r.ok) { throw new Error('HTTP ' + r.status); }
-      return r.json();
-    }).then(function (d) { TXT = d; return d; });
+  function nivelTexto(xp) {
+    var n = M.nivelDesdeXp(xp);
+    return { n: n, desde: M.xpParaNivel(n), hasta: n < 99 ? M.xpParaNivel(n + 1) : xp };
   }
 
-  function pinta(cuerpo) {
-    var caja = el('section', 'atlas-piso'); caja.id = 'atlas-piso';
-    var zona = el('div');
-    var entrar = boton('▶ ATLAS', 'entrar');
-    /* «▶ ATLAS» es marca y glifo; el lector de pantalla oye el nombre del piso
-       en su lengua. Sale de la Torre (`caminos-<lengua>.json`), que ya esta
-       cargada: el texto propio del piso aun no ha llegado, llega al pulsar. */
-    var nombre = (window.TorreUI || {}).camino_atlas_titulo;
-    if (nombre) { entrar.setAttribute('aria-label', '▶ ' + nombre); }
-    zona.appendChild(entrar);
-    caja.appendChild(zona);
-    cuerpo.appendChild(caja);
-    entrar.addEventListener('click', function () {
-      entrar.disabled = true;
-      textos().then(function () {
-        zona.removeChild(entrar);
-        zona.appendChild(el('p', 'atlas-lema', U('lema')));
-        panel(zona);
-      }).catch(function (e) {
-        entrar.disabled = false;
-        zona.appendChild(el('p', 'no-data',
-          'NO_DATA · atlas-' + lang + '.json: ' + (e && e.message ? e.message : e)));
-      });
+  function pinta() {
+    R.meter.max = E.integridad_max; R.meter.value = E.integridad;
+    R.meter.optimum = E.integridad_max;
+    pon(R.meterD, pct(Math.round(E.integridad * 100 / E.integridad_max)));
+    pon(R.rec.luz, num(E.luz) + ' / ' + num(M.LUZ_MAX));
+    pon(R.rec.bio, num(E.biomasa)); pon(R.rec.flujo, pct(E.flujo));
+    pon(R.rec.cobre, num(E.cobre)); pon(R.rec.o2, num(E.o2) + ' / ' + num(M.O2_MAX));
+
+    R.alerta.classList.toggle('sellada', !E.abierta);
+    pon(R.alertaT, E.abierta ? U('alerta') : rellena(U('sellada'), { s: num(E.cierre) }));
+    R.alertaP.hidden = !E.abierta; R.reparar.hidden = !E.abierta; R.grieta.hidden = !E.abierta;
+
+    var ing = M.nivelDesdeXp(E.xp[M.OFICIOS.indexOf('ingenieria')]);
+    Object.keys(R.radios).forEach(function (k) {
+      var r = R.radios[k];
+      r.inp.checked = E.prof === k;
+      r.inp.disabled = !!M.puedeBajar(E, k) && E.prof !== k;
+      pon(r.nota, rellena(U(r.clave), { ing: (TXT.skills || [])[6] || '', n: num(ing) }));
+    });
+
+    var p = E.pendiente;
+    pon(R.dormH, rellena(U('dormias_h'), { t: duracion(p ? p.ciclos : 0) }));
+    while (R.dormUl.firstChild) { R.dormUl.removeChild(R.dormUl.firstChild); }
+    if (p && p.ciclos) {
+      R.dormUl.appendChild(el('li', null, '+' + num(p.biomasa) + ' 🌿 ' + U('bio')));
+      R.dormUl.appendChild(el('li', null, '+' + num(p.cobre) + ' 🟠 ' + U('cobre')));
+      R.dormUl.appendChild(el('li', null, '+' + num(p.xp) + ' XP'));
+    } else {
+      R.dormUl.appendChild(el('li', 'atlas-nota', U('dormias_vacio')));
+    }
+    R.recoger.disabled = !(p && p.ciclos);
+
+    R.sk.forEach(function (s, i) {
+      var t = nivelTexto(E.xp[i]);
+      pon(s.nivel, t.n);
+      s.pr.max = Math.max(1, t.hasta - t.desde); s.pr.value = E.xp[i] - t.desde;
+      s.pr.setAttribute('aria-label', s.nombre + ': ' + num(E.xp[i]) + ' ' + U('de') + ' ' + num(t.hasta) + ' XP');
+      pon(s.cifra, num(E.xp[i]) + ' / ' + num(t.hasta) + ' XP');
+    });
+
+    var total = 0; E.xp.forEach(function (x) { total += x; });
+    var nn = M.nivelNucleo(E), f = M.fase(E), sig = M.siguienteFase(E);
+    pon(R.nucleoH, rellena(U('nucleo_h'), { n: nn }));
+    pon(R.fase, rellena(U('fase_h'), { n: f, fase: U('f' + f) }));
+    var tn = nivelTexto(Math.min(total, M.XP[98]));
+    R.nucleoPr.max = Math.max(1, tn.hasta - tn.desde); R.nucleoPr.value = Math.min(total, M.XP[98]) - tn.desde;
+    R.nucleoPr.setAttribute('aria-label', rellena(U('nucleo_h'), { n: nn }));
+    pon(R.nucleoP, rellena(U('nucleo_p'), { a: num(total) }));
+    pon(R.desb, sig ? rellena(U('desbloqueo'), { n: sig.nivel, fase: U('f' + sig.fase) }) : U('fase_fin'));
+    if (mapa) { mapa.fase(f); }
+  }
+
+  /* Los avisos del motor se dicen una vez, en la zona viva. */
+  function actua(nuevo) {
+    E = nuevo;
+    var ev = E.eventos[E.eventos.length - 1];
+    if (ev && ev.resultado === 'fallo' && ev.tipo === 'reparar' && E.abierta) {
+      dice(rellena(U('falta_cobre'), { n: num(Math.max(0, M.COBRE_REPARAR - E.cobre)) }));
+    }
+    E.subidas.forEach(function (s) {
+      dice(rellena(U('sube'), { oficio: (TXT.skills || [])[M.OFICIOS.indexOf(s.oficio)] || s.oficio, n: s.nivel }));
+    });
+    E.avisos.forEach(function (a) { dice(U(a === 'ascenso' ? 'ascenso' : 'reabre')); });
+    E.subidas = []; E.avisos = [];
+    pinta();
+  }
+
+  function dialogo(origen) {
+    if (!window.AtlasDialogo || !E.abierta) { return; }
+    window.AtlasDialogo.abre(TXT.ui, zona, origen, {
+      alerta: true,
+      alSellar: function () { actua(M.reparar(E)); },
+      alAplazar: function () { actua(M.aplazar(E)); }
     });
   }
 
-  /* --- stubs: la maqueta solo avisa de lo que haria ---------------------- */
-  document.addEventListener('click', function (e) {
-    var b = e.target.closest && e.target.closest('#atlas-piso [data-stub]');
-    if (b) { console.log('[ATLAS stub]', b.dataset.stub, b.dataset.sector || ''); }
-  });
-  document.addEventListener('change', function (e) {
-    if (e.target.name === 'atlas-profundidad') {
-      console.log('[ATLAS stub] profundidad', e.target.value);
-    }
+  function baja(prof) {
+    actua(M.bajarA(E, prof));
+    if (E.prof !== prof) { dice(U(prof === 'nucleo' ? 'b4n_no' : 'ascenso')); }
+  }
+
+  function tick() { actua(M.ciclo(E, LEY)); }
+  function arranca() {
+    if (!reloj && activo && !document.hidden && E) { reloj = setInterval(tick, M.CICLO_MS); }
+  }
+  function para() { clearInterval(reloj); reloj = 0; }
+
+  document.addEventListener('visibilitychange', function () {
+    if (!activo || !E) { return; }
+    if (document.hidden) { oculto = Date.now(); para(); return; }
+    if (oculto) { actua(M.dormir(E, Math.max(0, Date.now() - oculto))); oculto = 0; }
+    arranca();
   });
 
-  function monta() {
-    var piso = document.getElementById('piso-atlas');
-    if (!piso || piso.querySelector('#atlas-piso')) { return; }
-    pinta(piso.querySelector('.torre-cuerpo') || piso);
+  function json(ruta) {
+    return fetch(BASE + ruta).then(function (r) {
+      if (!r.ok) { throw new Error(ruta + ' HTTP ' + r.status); }
+      return r.json();
+    });
   }
-  window.addEventListener('preceptor:torre', monta);
-  if (document.getElementById('piso-atlas') && window.TorreUI) { monta(); }
+
+  window.AtlasJuego = {
+    monta: function (contenedor, capa) {
+      zona = contenedor; activo = true;
+      return Promise.all([json('atlas-' + lang + '.json'),
+        json('atlas-mundo.json').catch(function () { return null; })])
+        .then(function (d) {
+          TXT = d[0]; MUNDO = d[1]; LEY = M.leyes(MUNDO); E = E || M.inicial(LEY);
+          var x = capa && capa.querySelector('.thegame-cerrar');
+          if (x) { x.setAttribute('aria-label', U('dlg_cerrar')); }
+          panel(); pinta(); arranca();
+        }).catch(function (e) {
+          zona.appendChild(el('p', 'no-data', 'NO_DATA · atlas-' + lang + '.json: ' + (e && e.message)));
+        });
+    },
+    sigue: function () { activo = true; arranca(); },
+    pausa: function () { activo = false; oculto = 0; para(); }
+  };
 })();

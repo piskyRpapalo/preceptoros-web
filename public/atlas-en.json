@@ -3,7 +3,8 @@
  "idioma": "en",
  "procedencia": {
   "traducido_por": "traducido por el silicio desde el castellano; pendiente de revision nativa",
-  "retrato": "tira de pixel art del Preceptor aportada por el Soberano; recorte y clave de color con PIL por el silicio; alt escrito por el silicio y traducido; pendiente de revision nativa"
+  "retrato": "tira de pixel art del Preceptor aportada por el Soberano; recorte y clave de color con PIL por el silicio; alt escrito por el silicio y traducido; pendiente de revision nativa",
+  "thegame_v1": "textos de theGame v1 (2026-09-26): castellano base del silicio sobre la firma del Soberano; traducido por el silicio, pendiente de revision nativa"
  },
  "nota": "Textos del piso ATLAS (atlas-piso.js). Las cifras NO van aqui: las formatea el navegador con Intl.NumberFormat en la lengua de la pagina.",
  "skills": [
@@ -17,7 +18,7 @@
  ],
  "ui": {
   "lema": "The Sunken Forest. Atlantis did not sink: it fell asleep. You wake it.",
-  "sello": "Mockup · sample data · no server",
+  "sello": "UNSAVED · the Forest lives in this tab",
   "cab_h": "THE CORE · Integrity Status",
   "presion": "Pressure held",
   "recursos_aria": "Bunker resources",
@@ -36,8 +37,7 @@
   "s_ojo": "Eye Sector",
   "s_grieta": "Rift · 120 m",
   "hud_aria": "Atlantean",
-  "dormias_h": "WHILE YOU SLEPT · 7 h 12 min",
-  "d3": "Steam Server 2 stopped at 5 h 40 min: out of BIOMASS",
+  "dormias_h": "WHILE YOU SLEPT · {t}",
   "dormias_nota": "Sleep counts for up to 24 h. After that, the forest waits.",
   "recoger": "Collect",
   "de": "of",
@@ -49,13 +49,13 @@
   "b3": "150–300 m · Sunken Forest",
   "b3n": "Oxygen ×4 · forgotten technology",
   "b4": "300 m+ · The Core",
-  "b4n": "Requires {ing} 60 · you have 41",
-  "nucleo_h": "CORE LEVEL · {n} · collective contributions",
+  "b4n": "Requires {ing} 60 · you have {n}",
+  "nucleo_h": "CORE LEVEL · {n}",
   "nucleo_aria": "Core level: {a} of {b} community XP",
-  "nucleo_p": "{a} / {b} community XP · 37 Atlanteans contributed in the last 7 days · your share: {tu} XP ({pct}%)",
-  "desbloqueo": "Level 35 unlocks: one more Steam Server slot",
-  "nucleo_nota": "The community rises because many contribute, not because one person grinds. Sample: the unlock table will live in <code>mente/doctrina.md</code>.",
-  "pie": "MOCKUP · sample data, no server, no network. The buttons only write to the console.",
+  "nucleo_p": "{a} XP · the sum of your seven crafts",
+  "desbloqueo": "Level {n}: the “{fase}” phase begins",
+  "nucleo_nota": "The laws of this world come from real measurements of this site: {pruebas} tests passing, {lenguas} languages, {kb} KB of game per visit.",
+  "pie": "No server and no network: everything happens in this tab and is lost when you close it. Closing theGame does not erase it.",
   "dlg_nombre": "Preceptor",
   "dlg_rol": "Guide of the Forest",
   "dlg_l1": "You're awake. Good: the forest was starting to forget your name.",
@@ -66,6 +66,23 @@
   "dlg_cerrar": "Close",
   "nerea_nombre": "Nerea",
   "nerea_rol": "Restorer of the Core",
-  "atlas_retrato_alt": "Pixel-art portrait of the Preceptor: a marble bust with half its face in copper and one eye glowing violet; on alert, the eye burns copper."
+  "atlas_retrato_alt": "Pixel-art portrait of the Preceptor: a marble bust with half its face in copper and one eye glowing violet; on alert, the eye burns copper.",
+  "mundo_nd": "NO_DATA · the laws of the world did not arrive: the Forest uses neutral ones.",
+  "fase_h": "PHASE {n} · {fase}",
+  "f1": "Survival",
+  "f2": "Repair",
+  "f3": "Expansion",
+  "f4": "Abyss",
+  "f5": "Sovereign Core",
+  "fase_fin": "Final phase reached: the Core is sovereign.",
+  "oxigeno": "OXYGEN",
+  "cobre": "COPPER",
+  "sellada": "RIFT SEALED · reopens in {s} s",
+  "falta_cobre": "{n} copper short: the Forge has not produced enough yet.",
+  "b4n_no": "The Core stays closed: more Engineering is needed.",
+  "dormias_vacio": "Nothing yet: the Forest produces while this tab is hidden, up to 24 h.",
+  "sube": "{oficio} reaches level {n}",
+  "ascenso": "Out of oxygen: emergency ascent to the reef.",
+  "reabre": "The rift has opened again."
  }
 }
