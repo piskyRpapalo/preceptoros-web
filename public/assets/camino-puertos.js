@@ -67,16 +67,24 @@
     }).then(function (d) { TXT = d; return d; });
   }
 
-  function linea(m) {
-    return 'LISTEN  0  128  ' + (m.dir + ':' + m.p + '          ').slice(0, 18) +
-           '  users:(("' + m.proc + '"))';
+  /* Una linea de `ss`, en tres trozos con color: la direccion en cobre y el
+     proceso en violeta, que son las dos cosas que el juego pide mirar. Todo
+     por `textContent`: aqui no entra HTML. */
+  function linea(pre, m) {
+    pre.appendChild(document.createTextNode('\nLISTEN  0  128  '));
+    pre.appendChild(el('span', 'pp-dir',
+      (m.dir + ':' + m.p + '          ').slice(0, 18)));
+    pre.appendChild(document.createTextNode('  users:(("'));
+    pre.appendChild(el('span', 'pp-proc', m.proc));
+    pre.appendChild(document.createTextNode('"))'));
   }
 
   function juega(caja) {
     while (caja.firstChild) { caja.removeChild(caja.firstChild); }
     caja.appendChild(el('h4', null, T('ficha_titulo')));
     caja.appendChild(el('p', 'ks-tenue', T('ficha')));
-    var pre = el('pre', 'pp-salida', '$ ss -ltnp');
+    var pre = el('pre', 'pp-salida');
+    pre.appendChild(el('span', 'pp-cmd', '$ ss -ltnp'));
     pre.setAttribute('aria-live', 'polite');
     /* La salida de un terminal se lee de izquierda a derecha tambien en
        arabe: heredar `rtl` ponia el `$` al final de la orden. */
@@ -128,7 +136,7 @@
     var i = 0;
     (function paso() {
       if (i < MAQUINA.length) {
-        pre.textContent += '\n' + linea(MAQUINA[i++]);
+        linea(pre, MAQUINA[i++]);
         setTimeout(paso, PASO_MS);
         return;
       }

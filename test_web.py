@@ -1057,6 +1057,33 @@ class Estructura(unittest.TestCase):
                 for k in ("pp_abrir", "pp_sello"):
                     self.assertTrue(cam["ui"].get(k), f"caminos-{idi} sin {k}")
 
+    def test_la_capa_soberana_va_la_ultima_y_no_pide_nada_fuera(self):
+        """Soberania Violeta-Cobre, 2026-09-25. Una capa ENCIMA del tema.
+
+        Tiene que cargarse detras de `tema.css` en cada pagina que lo carga:
+        antes, `tema.css` volveria a pisar la paleta y la web saldria a medias
+        segun la pagina. Y no puede traer nada de fuera: ni una fuente.
+        """
+        css = (PUBLICO / "assets" / "soberano.css").read_text(encoding="utf-8")
+        codigo = re.sub(r"/\*.*?\*/", "", css, flags=re.S)
+        self.assertNotIn("http", codigo, "la capa visual pide algo fuera")
+        self.assertNotIn("@import", codigo, "la capa visual encadena otra hoja")
+        for token in ("--bg-primary:#0f0c1b", "--bg-secondary:#1a152a",
+                      "--accent-violet:#7c3aed", "--accent-copper:#d97706",
+                      "--text-main:#e2e8f0", "--text-muted:#94a3b8"):
+            with self.subTest(token=token):
+                self.assertIn(token, codigo, f"falta la paleta firmada: {token}")
+        tema = '<link rel="stylesheet" href="/assets/tema.css">'
+        capa = '<link rel="stylesheet" href="/assets/soberano.css">'
+        for pag in sorted(PUBLICO.rglob("*.html")):
+            t = pag.read_text(encoding="utf-8")
+            if tema not in t:
+                continue
+            with self.subTest(pagina=pag.relative_to(PUBLICO).as_posix()):
+                self.assertIn(capa, t, "la pagina carga el tema y no la capa")
+                self.assertLess(t.index(tema), t.index(capa),
+                                "la capa va antes que el tema y este la pisa")
+
     def test_la_plaza_tiene_dos_pestanas_y_el_killswitch_abre(self):
         """La forma de Comunidad, firmada el 2026-09-14.
 
