@@ -1,0 +1,25 @@
+# La batería de doctrina de preceptoros.org, en cada PR y en cada push a main.
+# Hasta hoy solo corría en la máquina de quien commiteaba: `main` no tenía
+# guardia. Es la misma orden que un contribuidor lanza en local, sin nada más:
+# biblioteca estándar más `jsonschema`, que valida `data/` contra su esquema.
+name: gate
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  test_web:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: python -m pip install --disable-pip-version-check jsonschema
+      - run: python test_web.py
