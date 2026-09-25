@@ -2,7 +2,8 @@
  "esquema": 1,
  "idioma": "ar",
  "procedencia": {
-  "traducido_por": "traducido por el silicio desde el castellano; pendiente de revision nativa"
+  "traducido_por": "traducido por el silicio desde el castellano; pendiente de revision nativa",
+  "retrato": "tira de pixel art del Preceptor aportada por el Soberano; recorte y clave de color con PIL por el silicio; alt escrito por el silicio y traducido; pendiente de revision nativa"
  },
  "nota": "Textos del piso ATLAS (atlas-piso.js). Las cifras NO van aqui: las formatea el navegador con Intl.NumberFormat en la lengua de la pagina.",
  "skills": [
@@ -55,13 +56,16 @@
   "desbloqueo": "المستوى 35 يفتح: خانة إضافية لخادم بخار",
   "nucleo_nota": "يرتقي المجتمع لأن كثيرين يساهمون، لا لأن واحدًا يجتهد وحده. مثال: جدول الفتح سيكون في <code>mente/doctrina.md</code>.",
   "pie": "نموذج أولي · بيانات تجريبية، بلا خادم، بلا شبكة. الأزرار تكتب في وحدة التحكم فقط.",
-  "dlg_nombre": "نيريا",
-  "dlg_rol": "مُرمِّمة النواة",
+  "dlg_nombre": "المُرشد",
+  "dlg_rol": "دليل الغابة",
   "dlg_l1": "مرحبًا بعودتك. جيد: كانت الغابة قد بدأت تنسى اسمك.",
   "dlg_l2": "الشقّ على عمق 120 م يُدخل الماء البارد إلى الأطلال الخارجية. كل دورة يبقى فيها مفتوحًا تفقد النواة من سلامتها.",
   "dlg_l3": "انزل بصفائح النحاس من المسبك. أغلِقه، وستتنفس القرية كلها براحة أكبر.",
   "dlg_si": "سأغلقه",
   "dlg_no": "ليس بعد",
-  "dlg_cerrar": "إغلاق"
+  "dlg_cerrar": "إغلاق",
+  "nerea_nombre": "نيريا",
+  "nerea_rol": "مُرمِّمة النواة",
+  "atlas_retrato_alt": "صورة بفن البكسل للمُرشد: تمثال نصفي من الرخام نصف وجهه من النحاس وعين تتوهج بالبنفسجي؛ عند الإنذار تتقد العين نحاسية."
  }
 }

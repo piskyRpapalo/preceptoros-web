@@ -1,14 +1,23 @@
 /* preceptoros.org · ATLAS · la pantalla de dialogo.
 
    UNA ESCENA, NO UN AVISO. La grieta no se anuncia con un mensaje de error:
-   la cuenta Nerea, Restauradora del Nucleo, con su retrato, su voz letra a
-   letra y dos respuestas. Es el lexico canonico de §A llevado a su forma
-   natural: el fallo es un peligro del mundo, y quien lo explica es alguien.
+   la cuenta PRECEPTOR, el guia, con su retrato, su voz letra a letra y dos
+   respuestas. Es el lexico canonico de §A llevado a su forma natural: el
+   fallo es un peligro del mundo, y quien lo explica es alguien.
 
-   EL RETRATO ES SVG CONSTRUIDO NODO A NODO. Anime-realista solarpunk: piel
-   con degradado, ojos grandes con dos brillos, pelo verde abismo con un
-   mechon de cobre, gafas de ambar en la frente y una hoja solar en el cuello.
-   Ni un raster, ni una linea de innerHTML.
+   EL GUIA ES PRECEPTOR EN PIXEL ART (firmado por el Soberano, 2026-09-25).
+   Choca con el render pulido del cabezal A PROPOSITO: fuera del juego el guia
+   es marmol pulido; dentro del Bosque Sumergido es un recuerdo de Atlantida,
+   y un recuerdo se ve a baja fidelidad. No se unifican los dos estilos.
+   Una sola tira de cinco celdas (`preceptor-pixel.png`, 69 KB), pedida al
+   abrir el primer dialogo y nunca precacheada:
+     celda 0 reposo · 1-2 habla (ciclan al ritmo del texto) · 3 revelar ·
+     4 alerta. El estado del Nucleo se lee en el OJO sin una palabra: en
+     ALERTA ROJA se tine de cobre con una capa estatica (`mix-blend-mode`),
+     sin filtros ni animacion que cuesten fotogramas.
+
+   NEREA QUEDA COMO VOZ SECUNDARIA. Su retrato SVG sigue aqui
+   (`retratoNerea`), construido nodo a nodo, para cuando haya mas de una voz.
 
    ACCESIBLE: `role="dialog"` con nombre, el foco entra y vuelve al boton que
    la abrio, Escape cierra, y con `prefers-reduced-motion` el texto aparece
@@ -35,7 +44,32 @@
     paradas.forEach(function (p) { s('stop', { offset: p[0], 'stop-color': p[1] }, g); });
   }
 
-  function retrato() {
+  /* EL MAPA CELDA <-> ESTADO, en un solo sitio y congelado: lo lee la prueba
+     de determinismo de `test_atlas.py`. */
+  var CELDAS = Object.freeze({ reposo: 0, habla: [1, 2], revelar: 3, alerta: 4 });
+  var TIRA = 'preceptor-pixel.png';
+  var yo = document.currentScript;
+  var BASE = (yo && yo.dataset.base) || '/';
+
+  /* El retrato de Preceptor: una ventana de una celda sobre la tira. */
+  function retratoPreceptor(ui, decorativo) {
+    var marco = el('div', 'atlas-pre');
+    var img = document.createElement('img');
+    img.className = 'atlas-pre-tira';
+    /* El alt sale del JSON de cada lengua; de adorno, calla. */
+    img.alt = decorativo ? '' : (ui.atlas_retrato_alt || '');
+    if (decorativo) { marco.setAttribute('aria-hidden', 'true'); }
+    img.decoding = 'async'; img.src = BASE + TIRA;
+    var ojo = el('span', 'atlas-pre-ojo'); ojo.setAttribute('aria-hidden', 'true');
+    marco.appendChild(img); marco.appendChild(ojo);
+    return {
+      nodo: marco,
+      celda: function (n) { marco.dataset.celda = String(n); },
+      alerta: function (si) { marco.classList.toggle('en-alerta', !!si); }
+    };
+  }
+
+  function retratoNerea() {
     var v = s('svg', { viewBox: '0 0 200 240', class: 'atlas-retrato', 'aria-hidden': 'true' });
     var d = s('defs', {}, v);
     degradado(d, 'at-halo', 'radialGradient', [['0', '#8ff0e0'], ['0.55', '#1d8a9a'], ['1', '#1a1233']]);
@@ -93,15 +127,20 @@
     abierta = null;
   }
 
-  function abre(ui, padre, origen) {
+  function abre(ui, padre, origen, opciones) {
     cierra();
+    var alerta = !!(opciones && opciones.alerta);
     var quieto = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var base = alerta ? CELDAS.alerta : CELDAS.reposo;
     var lineas = [ui.dlg_l1, ui.dlg_l2, ui.dlg_l3].filter(Boolean);
     var capa = el('div', 'atlas-dlg-capa');
     var caja = el('div', 'atlas-dlg');
     caja.setAttribute('role', 'dialog'); caja.setAttribute('aria-modal', 'true');
     caja.setAttribute('aria-labelledby', 'atlas-dlg-nombre'); caja.tabIndex = -1;
-    var marco = el('div', 'atlas-dlg-marco'); marco.appendChild(retrato());
+    var marco = el('div', 'atlas-dlg-marco');
+    var cara = retratoPreceptor(ui);
+    cara.celda(base); cara.alerta(alerta);
+    marco.appendChild(cara.nodo);
     caja.appendChild(marco);
     var cuerpo = el('div', 'atlas-dlg-cuerpo');
     var placa = el('p', 'atlas-dlg-placa');
@@ -125,13 +164,17 @@
       teclas: function (e) { if (e.key === 'Escape') { cierra(); } } };
     document.addEventListener('keydown', abierta.teclas);
 
+    /* Mientras escribe, la boca cicla entre las dos celdas de habla; al
+       acabar, vuelve a la celda base del estado. Quien pide quietud ve el
+       texto entero y la cara fija. */
     function escribe(frase, hecho) {
       clearInterval(abierta.reloj);
-      if (quieto) { texto.textContent = frase; hecho(); return; }
-      var n = 0; texto.textContent = '';
+      if (quieto) { texto.textContent = frase; cara.celda(base); hecho(); return; }
+      var n = 0, paso = 0; texto.textContent = '';
       abierta.reloj = setInterval(function () {
-        n += 2; texto.textContent = frase.slice(0, n);
-        if (n >= frase.length) { clearInterval(abierta.reloj); hecho(); }
+        n += 2; paso++; texto.textContent = frase.slice(0, n);
+        cara.celda(CELDAS.habla[(paso >> 2) % 2]);
+        if (n >= frase.length) { clearInterval(abierta.reloj); cara.celda(base); hecho(); }
       }, 22);
     }
     function paso() {
@@ -146,7 +189,13 @@
           [['dlg_si', 'sellar-grieta'], ['dlg_no', 'aplazar-grieta']].forEach(function (o, k) {
             var b = el('button', k ? 'leve' : 'boton', ui[o[0]]); b.type = 'button';
             b.addEventListener('click', function () {
-              console.log('[ATLAS stub]', o[1]); cierra();
+              console.log('[ATLAS stub]', o[1]);
+              /* Sellar es la revelacion: el ojo se enciende y la escena cierra. */
+              if (!k) {
+                cara.alerta(false); cara.celda(CELDAS.revelar);
+                mandos.querySelectorAll('button').forEach(function (x) { x.disabled = true; });
+                setTimeout(cierra, quieto ? 0 : 900);
+              } else { cierra(); }
             });
             mandos.appendChild(b);
             if (!k) { b.focus(); }
@@ -158,5 +207,6 @@
     paso();
   }
 
-  window.AtlasDialogo = { abre: abre, cierra: cierra };
+  window.AtlasDialogo = { abre: abre, cierra: cierra, CELDAS: CELDAS,
+    retrato: retratoPreceptor, retratoNerea: retratoNerea };
 })();

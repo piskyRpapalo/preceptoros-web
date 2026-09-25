@@ -2,7 +2,8 @@
  "esquema": 1,
  "idioma": "en",
  "procedencia": {
-  "traducido_por": "traducido por el silicio desde el castellano; pendiente de revision nativa"
+  "traducido_por": "traducido por el silicio desde el castellano; pendiente de revision nativa",
+  "retrato": "tira de pixel art del Preceptor aportada por el Soberano; recorte y clave de color con PIL por el silicio; alt escrito por el silicio y traducido; pendiente de revision nativa"
  },
  "nota": "Textos del piso ATLAS (atlas-piso.js). Las cifras NO van aqui: las formatea el navegador con Intl.NumberFormat en la lengua de la pagina.",
  "skills": [
@@ -55,13 +56,16 @@
   "desbloqueo": "Level 35 unlocks: one more Steam Server slot",
   "nucleo_nota": "The community rises because many contribute, not because one person grinds. Sample: the unlock table will live in <code>mente/doctrina.md</code>.",
   "pie": "MOCKUP · sample data, no server, no network. The buttons only write to the console.",
-  "dlg_nombre": "Nerea",
-  "dlg_rol": "Restorer of the Core",
+  "dlg_nombre": "Preceptor",
+  "dlg_rol": "Guide of the Forest",
   "dlg_l1": "You're awake. Good: the forest was starting to forget your name.",
   "dlg_l2": "The rift at 120 m is letting cold water into the outer ruins. Every cycle it stays open, the Core loses integrity.",
   "dlg_l3": "Take the Forge's copper plates down with you. Seal it, and the whole village breathes easier.",
   "dlg_si": "I'll seal it",
   "dlg_no": "Not yet",
-  "dlg_cerrar": "Close"
+  "dlg_cerrar": "Close",
+  "nerea_nombre": "Nerea",
+  "nerea_rol": "Restorer of the Core",
+  "atlas_retrato_alt": "Pixel-art portrait of the Preceptor: a marble bust with half its face in copper and one eye glowing violet; on alert, the eye burns copper."
  }
 }

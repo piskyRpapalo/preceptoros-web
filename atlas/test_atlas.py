@@ -70,6 +70,53 @@ class Piso(unittest.TestCase):
             with self.subTest(lengua=l):
                 self.assertFalse(pedidas - set(d["ui"]), f"faltan {pedidas - set(d['ui'])}")
 
+    def test_el_sprite_es_el_unico_raster_y_no_va_al_precache(self):
+        """La tira del Preceptor se pide al abrir el dialogo, nunca de salida."""
+        codigo = sin_comentarios((PISO / "atlas-dialogo.js").read_text(encoding="utf-8"))
+        self.assertEqual(re.findall(r"\.src\s*=\s*([^;]+);", codigo), ["BASE + TIRA"])
+        self.assertIn("var TIRA = 'preceptor-pixel.png';", codigo)
+        for nombre in ("atlas-piso.js", "atlas-arte.js", "atlas-mapa.js"):
+            with self.subTest(fichero=nombre):
+                self.assertNotIn(".src", sin_comentarios(
+                    (PISO / nombre).read_text(encoding="utf-8")), f"{nombre} pide un raster")
+        for f in ("sw.js", "sw-listas.js"):
+            ruta = RAIZ.parent / "public" / f
+            if ruta.exists():
+                with self.subTest(fichero=f):
+                    self.assertNotIn("preceptor-pixel", ruta.read_text(encoding="utf-8"),
+                                     "el sprite no se precachea: se carga a demanda")
+        tira = PISO / "preceptor-pixel.png"
+        self.assertTrue(tira.read_bytes().startswith(b"\x89PNG"))
+        self.assertLess(tira.stat().st_size, 96 * 1024, "la tira engorda")
+
+    def test_celda_por_estado_es_determinista(self):
+        """reposo 0, habla 1-2, revelar 3, alerta 4: el mapa congelado y el CSS
+        que mueve la tira dicen lo mismo."""
+        codigo = (PISO / "atlas-dialogo.js").read_text(encoding="utf-8")
+        m = re.search(r"CELDAS = Object\.freeze\(\{([^}]*)\}\)", codigo)
+        self.assertTrue(m, "sin mapa de celdas congelado")
+        mapa = {k: [int(n) for n in re.findall(r"\d", v)]
+                for k, v in re.findall(r"(\w+):\s*(\[[^\]]*\]|\d)", m.group(1))}
+        self.assertEqual(mapa, {"reposo": [0], "habla": [1, 2], "revelar": [3], "alerta": [4]})
+        css = (PISO / "atlas.css").read_text(encoding="utf-8")
+        for n in range(1, 5):
+            with self.subTest(celda=n):
+                self.assertIn(f'.atlas-pre[data-celda="{n}"] .atlas-pre-tira'
+                              f'{{transform:translateX(-{n * 20}%)}}', css)
+        self.assertIn("CELDAS.habla[(paso >> 2) % 2]", codigo, "el habla no alterna por paso")
+        self.assertIn("CELDAS.revelar", codigo)
+        self.assertIn("alerta ? CELDAS.alerta : CELDAS.reposo", codigo)
+
+    def test_el_alt_del_retrato_sale_del_json(self):
+        codigo = sin_comentarios((PISO / "atlas-dialogo.js").read_text(encoding="utf-8"))
+        self.assertIn("ui.atlas_retrato_alt", codigo)
+        self.assertEqual(re.findall(r"\.alt\s*=\s*'[^']+'", codigo), [], "alt escrito a mano")
+        for l in LENGUAS:
+            d = json.loads((PISO / f"atlas-{l}.json").read_text(encoding="utf-8"))
+            with self.subTest(lengua=l):
+                self.assertGreater(len(d["ui"].get("atlas_retrato_alt", "")), 20)
+                self.assertTrue(d["procedencia"].get("retrato"), "retrato sin procedencia")
+
     def test_se_monta_como_los_demas_pisos(self):
         codigo = sin_comentarios((PISO / "atlas-piso.js").read_text(encoding="utf-8"))
         self.assertIn("preceptor:torre", codigo, "no escucha el aviso de la Torre")

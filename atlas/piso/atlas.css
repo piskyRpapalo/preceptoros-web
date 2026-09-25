@@ -109,6 +109,8 @@
 .atlas-dormias ul{list-style:none;margin:.2rem 0 .6rem;padding:0;display:grid;
   gap:.3rem;font:.82rem/1.4 var(--mono)}
 .atlas-dormias .cesa{color:var(--accent-copper-claro)}
+.atlas-dormias-h{display:flex;align-items:center;gap:.6rem}
+.atlas-pre-48{flex:0 0 auto;height:48px;border-radius:var(--radius);background:var(--bg-primary)}
 .atlas-dormias .boton{margin-top:.6rem}
 
 .atlas-profundidad{display:grid;gap:.35rem;margin:0;padding:.8rem 1rem;
@@ -153,6 +155,21 @@
   border:2px solid var(--accent-copper);border-radius:var(--radius);overflow:hidden;
   background:var(--bg-primary)}
 .atlas-retrato{display:block;width:100%;height:auto}
+/* El Preceptor: una tira de 5 celdas (reposo, habla, habla, revelar, alerta)
+   vista por una ventana; `data-celda` la desliza. El ojo es violeta en la
+   tira; en ALERTA ROJA un disco de cobre en modo `color` lo tine sin
+   desenfoque ni sombra: coste de un elemento quieto. */
+.atlas-pre{position:relative;overflow:hidden;aspect-ratio:167/248}
+.atlas-pre-tira{display:block;width:500%;max-width:none;height:100%;image-rendering:pixelated}
+.atlas-pre[data-celda="1"] .atlas-pre-tira{transform:translateX(-20%)}
+.atlas-pre[data-celda="2"] .atlas-pre-tira{transform:translateX(-40%)}
+.atlas-pre[data-celda="3"] .atlas-pre-tira{transform:translateX(-60%)}
+.atlas-pre[data-celda="4"] .atlas-pre-tira{transform:translateX(-80%)}
+[dir="rtl"] .atlas-pre{direction:ltr}
+.atlas-pre-ojo{display:none;position:absolute;left:59.5%;top:30%;width:22%;aspect-ratio:1;
+  translate:-50% -50%;border-radius:50%;background:var(--accent-copper);mix-blend-mode:color}
+.atlas-pre.en-alerta .atlas-pre-ojo{display:block}
+.atlas-pre[data-celda="4"] .atlas-pre-ojo{left:57%;top:28.5%;width:40%}
 .atlas-dlg-cuerpo{flex:1 1 auto;min-width:0;display:grid;gap:.6rem}
 .atlas-dlg-placa{margin:0;display:flex;flex-wrap:wrap;align-items:baseline;gap:.2rem .6rem}
 .atlas-dlg-placa b{font:700 1.05rem/1.2 var(--sans);color:var(--accent-copper-claro)}

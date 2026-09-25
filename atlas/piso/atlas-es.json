@@ -2,7 +2,8 @@
  "esquema": 1,
  "idioma": "es",
  "procedencia": {
-  "traducido_por": "castellano base, escrito por el silicio"
+  "traducido_por": "castellano base, escrito por el silicio",
+  "retrato": "tira de pixel art del Preceptor aportada por el Soberano; recorte y clave de color con PIL por el silicio; alt escrito por el silicio"
  },
  "nota": "Textos del piso ATLAS (atlas-piso.js). Las cifras NO van aqui: las formatea el navegador con Intl.NumberFormat en la lengua de la pagina.",
  "skills": [
@@ -55,13 +56,16 @@
   "desbloqueo": "Nivel 35 desbloquea: una ranura más de Servidor de Vapor",
   "nucleo_nota": "El pueblo sube porque muchos aportan, no porque uno solo se esfuerce. Ejemplo: la tabla de desbloqueos vivirá en <code>mente/doctrina.md</code>.",
   "pie": "MAQUETA · datos de ejemplo, sin servidor, sin red. Los botones solo escriben en la consola.",
-  "dlg_nombre": "Nerea",
-  "dlg_rol": "Restauradora del Núcleo",
+  "dlg_nombre": "Preceptor",
+  "dlg_rol": "Guía del Bosque",
   "dlg_l1": "Despertaste. Bien: el bosque empezaba a olvidar tu nombre.",
   "dlg_l2": "La grieta a 120 m deja entrar agua fría en las ruinas exteriores. Cada ciclo que sigue abierta, el Núcleo pierde integridad.",
   "dlg_l3": "Baja con las placas de cobre de la Forja. Séllala y todo el pueblo respirará mejor.",
   "dlg_si": "La sello",
   "dlg_no": "Todavía no",
-  "dlg_cerrar": "Cerrar"
+  "dlg_cerrar": "Cerrar",
+  "nerea_nombre": "Nerea",
+  "nerea_rol": "Restauradora del Núcleo",
+  "atlas_retrato_alt": "Retrato en pixel art del Preceptor: busto de mármol con la mitad del rostro de cobre y un ojo que brilla en violeta; en alerta, el ojo arde en cobre."
  }
 }

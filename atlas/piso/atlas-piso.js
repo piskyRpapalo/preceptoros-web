@@ -90,9 +90,9 @@
     al.appendChild(el('strong', null, U('alerta')));
     al.appendChild(el('p', null, U('alerta_p')));
     var reparar = boton(U('reparar'), 'reparar-grieta');
-    /* La grieta la cuenta alguien: abre la escena con Nerea. */
+    /* La grieta la cuenta el Preceptor, con el ojo en cobre: ALERTA ROJA. */
     reparar.addEventListener('click', function () {
-      if (window.AtlasDialogo) { window.AtlasDialogo.abre(TXT.ui, zona, reparar); }
+      if (window.AtlasDialogo) { window.AtlasDialogo.abre(TXT.ui, zona, reparar, { alerta: true }); }
     });
     al.appendChild(reparar);
     raiz.appendChild(al);
@@ -125,7 +125,15 @@
 
     var hud = el('aside', 'atlas-hud'); hud.setAttribute('aria-label', U('hud_aria'));
     var dor = el('section', 'panel atlas-dormias');
-    dor.appendChild(el('h4', null, U('dormias_h')));
+    var dh = el('h4', 'atlas-dormias-h');
+    /* Icono: la celda de reposo a 48 px, la misma tira del dialogo. */
+    if (window.AtlasDialogo) {
+      var ico = window.AtlasDialogo.retrato(TXT.ui, true);
+      ico.celda(window.AtlasDialogo.CELDAS.reposo);
+      ico.nodo.classList.add('atlas-pre-48'); dh.appendChild(ico.nodo);
+    }
+    dh.appendChild(document.createTextNode(U('dormias_h')));
+    dor.appendChild(dh);
     var ul = el('ul');
     ul.appendChild(el('li', null, '+' + num(1240) + ' XP · ' + (sk[1] || '')));
     ul.appendChild(el('li', null, '+86 🌿 ' + U('bio')));

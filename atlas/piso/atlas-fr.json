@@ -2,7 +2,8 @@
  "esquema": 1,
  "idioma": "fr",
  "procedencia": {
-  "traducido_por": "traducido por el silicio desde el castellano; pendiente de revision nativa"
+  "traducido_por": "traducido por el silicio desde el castellano; pendiente de revision nativa",
+  "retrato": "tira de pixel art del Preceptor aportada por el Soberano; recorte y clave de color con PIL por el silicio; alt escrito por el silicio y traducido; pendiente de revision nativa"
  },
  "nota": "Textos del piso ATLAS (atlas-piso.js). Las cifras NO van aqui: las formatea el navegador con Intl.NumberFormat en la lengua de la pagina.",
  "skills": [
@@ -55,13 +56,16 @@
   "desbloqueo": "Le niveau 35 débloque : un emplacement de plus pour un Serveur à vapeur",
   "nucleo_nota": "Le peuple progresse parce que beaucoup contribuent, pas parce qu'un seul s'acharne. Exemple : la table des déblocages vivra dans <code>mente/doctrina.md</code>.",
   "pie": "MAQUETTE · données d'exemple, sans serveur, sans réseau. Les boutons écrivent seulement dans la console.",
-  "dlg_nombre": "Nerea",
-  "dlg_rol": "Restauratrice du Noyau",
+  "dlg_nombre": "Précepteur",
+  "dlg_rol": "Guide de la Forêt",
   "dlg_l1": "Enfin debout. Tant mieux : la forêt commençait à oublier ton nom.",
   "dlg_l2": "La fissure à 120 m laisse entrer l'eau froide dans les ruines extérieures. Chaque cycle où elle reste ouverte, le Noyau perd de l'intégrité.",
   "dlg_l3": "Descends avec les plaques de cuivre de la Forge. Scelle-la, et tout le village respirera mieux.",
   "dlg_si": "Je la scelle",
   "dlg_no": "Pas encore",
-  "dlg_cerrar": "Fermer"
+  "dlg_cerrar": "Fermer",
+  "nerea_nombre": "Nerea",
+  "nerea_rol": "Restauratrice du Noyau",
+  "atlas_retrato_alt": "Portrait en pixel art du Précepteur : buste de marbre dont la moitié du visage est en cuivre, un œil luisant de violet ; en alerte, l’œil brûle de cuivre."
  }
 }
