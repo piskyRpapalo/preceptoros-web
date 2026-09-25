@@ -259,6 +259,9 @@
     return X('pisoBajaPrimero');
   };
 
+  /* El piso abierto al entrar: el mismo que `camino.js` llama INICIAL. */
+  var INICIAL = 'primeros_pasos';
+
   /* UNO ABIERTO CADA VEZ, Y EL PRIMERO ABIERTO AL ENTRAR. */
   function engancha() {
     var pisos = Array.prototype.slice.call(
@@ -270,13 +273,13 @@
         P.viste(d.id.replace(/^piso-/, ''), UI);
       });
     });
-    var uno = document.getElementById('piso-despertar');
+    var uno = document.getElementById('piso-' + INICIAL);
     if (uno && !pisos.some(function (d) { return d.open; })) uno.open = true;
   }
 
   function conCatalogo(r) {
     REG = r.reg; PROSA = r.prosa || {};
-    if (UI) ponPiso(actual || 'despertar');
+    if (UI) ponPiso(actual || INICIAL);
   }
   if (window.CerebrosReg) conCatalogo(window.CerebrosReg);
   else document.addEventListener('preceptor:cerebros', function (e) {
@@ -286,7 +289,7 @@
   function conTorre(ui) {
     UI = ui || UI;
     engancha();
-    if (REG) ponPiso(actual || 'despertar');
+    if (REG) ponPiso(actual || INICIAL);
   }
   if (window.TorreUI) conTorre(window.TorreUI);
   else window.addEventListener('preceptor:torre', function (e) {

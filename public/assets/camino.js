@@ -52,6 +52,9 @@
      peldanos ES la Torre. */
   var PELDANOS = ['despertar', 'primeros_pasos', 'exposicion', 'puertos',
                   'whoami', 'killswitch', 'silencio', 'contribuir', 'atlas'];
+  /* EL PISO QUE VISTE EL CHAT AL ENTRAR: el 2, por orden del Soberano
+     (2026-09-25). No se reordena PELDANOS: el numero de cada piso no cambia. */
+  var INICIAL = 'primeros_pasos';
 
   function el(tag, clase, texto) {
     var n = document.createElement(tag);
@@ -242,7 +245,7 @@
        espera a `preceptor:brain` y se viste entonces, UNA vez. Mandar el
        evento con `modelo` vacio no dejaria el chat como estaba: lo apagaria
        con «sin adaptador», que es peor que no hacer nada. */
-    if (!viste(PELDANOS[0], ui)) {
+    if (!viste(INICIAL, ui)) {
       /* DOS AVISOS, NO UNO. `preceptor:brain` solo lo dispara un CLIC en el
          banco de cerebros; quien llega y no toca nada no lo dispara nunca ---
          y ese es el caso mayoritario. `preceptor:cerebros` lo lanza
@@ -259,7 +262,7 @@
       var unaVez = function () {
         document.removeEventListener('preceptor:brain', unaVez);
         document.removeEventListener('preceptor:cerebros', unaVez);
-        viste(PELDANOS[0], ui);
+        viste(INICIAL, ui);
       };
       document.addEventListener('preceptor:brain', unaVez);
       document.addEventListener('preceptor:cerebros', unaVez);
