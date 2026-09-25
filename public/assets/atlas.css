@@ -138,6 +138,12 @@
 .atlas-nucleo p{margin:0;color:var(--text-muted)}
 .atlas-nucleo .atlas-desbloqueo{font:.82rem/1.4 var(--mono);color:var(--text-main)}
 
+/* EL FOCO SE VE EN LAS NUEVE LENGUAS. `base.css` quita el contorno a todo
+   boton enfocado y el anillo de cobre vive en `movimiento.css`, que hoy solo
+   carga la portada castellana: en las otras ocho el foco del piso quedaba sin
+   anillo. Se ata aqui, dentro del piso, sin tocar las portadas. */
+#atlas-piso :is(button,.boton,.leve,[data-sector]):focus-visible{
+  outline:2px solid var(--accent-copper);outline-offset:2px}
 .atlas-pie{margin:0;font:.72rem/1.5 var(--mono);color:var(--text-muted)}
 
 /* --- la pantalla de dialogo ----------------------------------------------- */

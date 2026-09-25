@@ -204,6 +204,11 @@
     var caja = el('section', 'atlas-piso'); caja.id = 'atlas-piso';
     var zona = el('div');
     var entrar = boton('▶ ATLAS', 'entrar');
+    /* «▶ ATLAS» es marca y glifo; el lector de pantalla oye el nombre del piso
+       en su lengua. Sale de la Torre (`caminos-<lengua>.json`), que ya esta
+       cargada: el texto propio del piso aun no ha llegado, llega al pulsar. */
+    var nombre = (window.TorreUI || {}).camino_atlas_titulo;
+    if (nombre) { entrar.setAttribute('aria-label', '▶ ' + nombre); }
     zona.appendChild(entrar);
     caja.appendChild(zona);
     cuerpo.appendChild(caja);
