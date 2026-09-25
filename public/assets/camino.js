@@ -53,7 +53,7 @@
   /* NIVEL 1 = PRIMEROS PASOS, NIVEL 2 = DESPERTAR, el modo avion (Soberano,
      2026-09-25): el piso que abre la web es el que explica que es PreceptorOS. */
   var PELDANOS = ['primeros_pasos', 'despertar', 'exposicion', 'puertos',
-                  'whoami', 'killswitch', 'silencio', 'contribuir', 'atlas'];
+                  'whoami', 'killswitch', 'silencio', 'contribuir'];
   /* EL PISO QUE VISTE EL CHAT AL ENTRAR: el nivel 1, `primeros_pasos`. */
   var INICIAL = 'primeros_pasos';
 

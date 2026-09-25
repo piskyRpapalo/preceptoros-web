@@ -1,6 +1,6 @@
-/* ATLAS · el Bosque Sumergido · hoja del piso 9.
+/* ATLAS · el Bosque Sumergido · hoja de theGame.
 
-   La inyecta `camino-atlas.js` al abrir el piso, junto a `atlas-piso.js`.
+   La inyecta `thegame.js` al pulsar la puerta theGame, antes de la capa.
    Todo va colgado de `#atlas-piso`: el piso no puede pisar al resto de la
    portada.
 
@@ -65,17 +65,13 @@
 /* El mapa se pinta en <canvas>; lo que se pulsa es DOM encima (accesible y
    con hit-test gratis). La altura la fija atlas.js segun la rejilla. */
 .atlas-lienzo{position:relative;width:100%;margin-top:.75rem;min-height:12rem}
-/* EL CRISTAL SE APAGA MIENTRAS EL BOSQUE SE MUEVE. Medido en Chromium: con
-   el mapa animado dentro de un panel con `backdrop-filter`, el navegador
-   recompone el desenfoque en cada fotograma y cae de 60 a 14 por segundo.
-   El culpable es `#torre`, que envuelve todos los pisos. Mientras ATLAS esta
-   abierto, la Torre y el mapa pasan a opacos del mismo tono: la diferencia
-   apenas se ve y el movimiento vuelve a 60. Al cerrar el piso, vuelve el
-   cristal. */
-#torre:has(#atlas-piso .atlas-lienzo),#atlas-piso .atlas-mapa{background:var(--bg-secondary)}
+/* EL CRISTAL SE APAGA MIENTRAS EL BOSQUE SE MUEVE. Medido en Chromium: un
+   `backdrop-filter` por encima de un lienzo animado cae de 60 a 14 fotogramas.
+   La capa de theGame es opaca y la pagina de debajo se oculta mientras esta
+   abierta (ver `.en-thegame`), asi que aqui solo queda el panel del mapa. */
+#atlas-piso .atlas-mapa{background:var(--bg-secondary)}
 @supports (backdrop-filter:none) or (-webkit-backdrop-filter:none){
-  #torre:has(#atlas-piso .atlas-lienzo),#atlas-piso .atlas-mapa{
-    -webkit-backdrop-filter:none;backdrop-filter:none}}
+  #atlas-piso .atlas-mapa{-webkit-backdrop-filter:none;backdrop-filter:none}}
 /* Arte pintado, no pixel art: suavizado, y con bordes redondeados del token. */
 .atlas-lienzo{border-radius:var(--radius);overflow:hidden}
 .atlas-lienzo canvas{position:absolute;inset:0;width:100%}
@@ -192,3 +188,30 @@
   .atlas-dlg{flex-direction:column;align-items:stretch}
   .atlas-dlg-marco{width:6rem;margin-top:-3rem}
 }
+
+/* --- theGame: la capa a pantalla completa ---------------------------------- */
+/* Opaca y por encima de todo; la pagina de debajo se oculta mientras esta
+   abierta: no se pinta, no recibe el foco y el lector no la recorre. */
+body.en-thegame{overflow:hidden}
+body.en-thegame > :not(#thegame){visibility:hidden}
+.thegame-capa{position:fixed;inset:0;z-index:70;width:100%;height:100%;max-width:none;
+  max-height:none;margin:0;border:0;overflow:auto;overscroll-behavior:contain;color:var(--text-main);
+  background:var(--bg-primary);padding:0 clamp(.75rem,3vw,2rem) 2rem}
+.thegame-capa::backdrop{background:var(--bg-primary)}
+.thegame-capa:focus{outline:none}
+.thegame-barra{position:sticky;top:0;z-index:2;display:flex;align-items:center;
+  justify-content:space-between;gap:1rem;padding:.75rem 0;background:var(--bg-primary);
+  border-bottom:1px solid var(--edge-sov);margin-bottom:1rem}
+.thegame-t{margin:0;font:700 1.1rem/1 var(--mono);letter-spacing:.08em;color:var(--accent-copper-claro)}
+.thegame-cerrar{padding:.2rem .7rem;font-size:1.3rem;line-height:1;color:var(--text-main);
+  background:transparent;border:1px solid var(--accent-copper);border-radius:999px}
+.thegame-juego{max-width:80rem;margin:0 auto}
+.atlas-vivo{margin:.25rem 0 0;min-height:1.4em;font:.82rem/1.4 var(--mono);color:var(--accent-copper-claro)}
+.atlas-fase{margin:0;font:600 .78rem/1.3 var(--mono);letter-spacing:.06em;text-transform:uppercase;
+  color:var(--accent-violet-text)}
+.atlas-alerta.sellada{animation:none;border-color:var(--edge-sov)}
+.atlas-alerta.sellada strong{color:var(--text-muted)}
+span.atlas-sector{pointer-events:none}
+.atlas-casa{margin:0;font:600 .8rem/1.4 var(--mono);color:var(--accent-copper-claro)}
+.atlas-medido{margin:0;font:.68rem/1.4 var(--mono);color:var(--text-muted)}
+.thegame-aviso{flex-basis:100%;margin:.35rem 0 0;font:.72rem/1.4 var(--mono);color:var(--accent-copper-claro)}

@@ -50,7 +50,7 @@
       caja.appendChild(b);
     });
     var quieto = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-    var geo = null, visible = true, pedido = 0, ultimo = 0;
+    var geo = null, visible = true, pedido = 0, ultimo = 0, fase = 1;
 
     function prepara() {
       var ancho = caja.clientWidth;
@@ -95,7 +95,9 @@
       var n = cvNiebla.getContext('2d');
       n.setTransform(dpr, 0, 0, dpr, 0, 0);
       n.clearRect(0, 0, ancho, alto);
-      n.fillStyle = A.alfa(A.P.fondo, 0.78); n.fillRect(0, 0, ancho, alto);
+      /* La niebla retrocede con la fase del Bosque: lo explorado se ve. */
+      n.fillStyle = A.alfa(A.P.fondo, [0.78, 0.7, 0.6, 0.5, 0.4][fase - 1] || 0.78);
+      n.fillRect(0, 0, ancho, alto);
       n.globalCompositeOperation = 'destination-out';
       Object.keys(geo.pos).forEach(function (k) {
         var q = geo.pos[k];
@@ -158,6 +160,13 @@
       }).observe(caja);
     }
     document.addEventListener('visibilitychange', arranca);
+    return {
+      fase: function (f) {
+        if (f === fase) { return; }
+        fase = f; geo = null;
+        if (prepara()) { escena(performance.now()); }
+      }
+    };
   }
 
   window.AtlasMapa = { monta: monta };

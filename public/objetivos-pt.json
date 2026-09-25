@@ -32,7 +32,6 @@
     "juez_contesta": "Fala do que lhe foi perguntado",
     "juez_sin_turno": "NO_DATA — ainda não há uma resposta para julgar. Fala primeiro com o modelo.",
     "juez_papel": "És um juiz. Primeiro lê a PERGUNTA e decide se a RESPOSTA lhe responde de forma correta e útil. O CONTEXTO diz de que trata o piso, só para te situar: não é uma lista que a resposta deva cobrir. Responde em português, em três linhas: 1) VEREDICTO: SIM, NÃO ou EM PARTE, e porquê numa frase; 2) afirmações sem suporte ou inventadas (números, factos), ou «nenhuma»; 3) o que lhe faltou. NO_DATA só se faltar a pergunta ou a resposta: uma resposta má, absurda ou inventada julga-se NÃO, não se foge dela.",
-    "juez_duelo": "LoRAtelier: compara-se o mesmo modelo sem arnês e com o arnês da casa. Aqui só importa se ESTA resposta responde bem à pergunta.",
-    "camino_atlas_aprender": "Se guia sem inventar: diz que setor falha e porquê, oferece a decisão e deixa que sejas tu a assiná-la."
+    "juez_duelo": "LoRAtelier: compara-se o mesmo modelo sem arnês e com o arnês da casa. Aqui só importa se ESTA resposta responde bem à pergunta."
   }
 }

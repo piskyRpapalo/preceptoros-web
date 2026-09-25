@@ -32,7 +32,6 @@
     "juez_contesta": "Parle de ce qu’on lui a demandé",
     "juez_sin_turno": "NO_DATA — il n’y a pas encore de réponse à juger. Parle d’abord avec le modèle.",
     "juez_papel": "Tu es un juge. Lis d’abord la QUESTION et décide si la RÉPONSE y répond de façon correcte et utile. Le CONTEXTE dit de quoi parle l’étage, seulement pour te situer : ce n’est pas une liste que la réponse doit couvrir. Réponds en français, en trois lignes : 1) VERDICT : OUI, NON ou EN PARTIE, et pourquoi en une phrase ; 2) affirmations sans appui ou inventées (chiffres, faits), ou « aucune » ; 3) ce qui lui a manqué. NO_DATA seulement s’il manque la question ou la réponse : une réponse mauvaise, absurde ou inventée se juge NON, on ne l’esquive pas.",
-    "juez_duelo": "LoRAtelier : on compare le même modèle sans harnais et avec le harnais de la maison. Ici, seule compte la question de savoir si CETTE réponse répond bien.",
-    "camino_atlas_aprender": "S’il guide sans inventer : il dit quel secteur défaille et pourquoi, propose la décision et vous laisse la signer."
+    "juez_duelo": "LoRAtelier : on compare le même modèle sans harnais et avec le harnais de la maison. Ici, seule compte la question de savoir si CETTE réponse répond bien."
   }
 }

@@ -199,8 +199,6 @@
          --- el aviso llega cuando pinte ---, solo estar escuchando antes. */
       /* `camino-puertos.js` (2026-09-25) monta el juego del piso 4 con el
          mismo contrato que el killswitch: oye el aviso de la Torre. */
-      /* `camino-atlas.js` (2026-09-25) es solo el cargador del piso 9: el
-         Bosque Sumergido se inyecta al abrir su piso, no aqui. */
       /* `torre-visuales.js` (2026-09-22) viste los pisos con su escena, y
          `piso-chat.js` cierra la cola: hace que el piso abierto gobierne el
          chat, y necesita a los de antes --el papel, las escenas y el juez de
@@ -208,7 +206,6 @@
       ['/assets/identidad-o-salida.js', '/assets/camino-papel.js',
        '/assets/camino.js', '/assets/camino-killswitch.js',
        '/assets/camino-puertos.js',
-       '/assets/camino-atlas.js',
        '/assets/torre-visuales.js', '/assets/veredicto.js',
        '/assets/piso-chat.js'].forEach(function (src) {
         var s = document.createElement('script');

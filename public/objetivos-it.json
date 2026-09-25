@@ -32,7 +32,6 @@
     "juez_contesta": "Parla di ciò che gli è stato chiesto",
     "juez_sin_turno": "NO_DATA — non c’è ancora una risposta da giudicare. Parla prima con il modello.",
     "juez_papel": "Sei un giudice. Prima leggi la DOMANDA e decidi se la RISPOSTA vi risponde in modo corretto e utile. Il CONTESTO dice di cosa tratta il piano, solo per orientarti: non è una lista che la risposta deve coprire. Rispondi in italiano, in tre righe: 1) VERDETTO: SÌ, NO o IN PARTE, e perché in una frase; 2) affermazioni senza fondamento o inventate (numeri, fatti), o «nessuna»; 3) cosa gli è mancato. NO_DATA solo se manca la domanda o la risposta: una risposta sbagliata, assurda o inventata si giudica NO, non si evita.",
-    "juez_duelo": "LoRAtelier: si confronta lo stesso modello senza imbracatura e con quella della casa. Qui conta solo se QUESTA risposta risponde bene alla domanda.",
-    "camino_atlas_aprender": "Se guida senza inventare: dice quale settore cede e perché, offre la decisione e lascia che la firmi tu."
+    "juez_duelo": "LoRAtelier: si confronta lo stesso modello senza imbracatura e con quella della casa. Qui conta solo se QUESTA risposta risponde bene alla domanda."
   }
 }

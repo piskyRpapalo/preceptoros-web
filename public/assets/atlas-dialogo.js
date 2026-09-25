@@ -161,7 +161,9 @@
 
     var i = 0;
     abierta = { capa: capa, origen: origen, reloj: 0,
-      teclas: function (e) { if (e.key === 'Escape') { cierra(); } } };
+      /* preventDefault: Escape cierra ESTE dialogo y nada mas; sin el, el
+         <dialog> de theGame recibiria tambien su `cancel` y se cerraria. */
+      teclas: function (e) { if (e.key === 'Escape') { e.preventDefault(); cierra(); } } };
     document.addEventListener('keydown', abierta.teclas);
 
     /* Mientras escribe, la boca cicla entre las dos celdas de habla; al
@@ -181,8 +183,10 @@
       while (mandos.firstChild) { mandos.removeChild(mandos.firstChild); }
       escribe(lineas[i], function () {
         if (i < lineas.length - 1) {
-          var sig = el('button', 'boton atlas-dlg-sigue', '▸'); sig.type = 'button';
-          sig.setAttribute('aria-label', '▸ ' + (i + 2) + '/' + lineas.length);
+          /* La flecha de avanzar apunta a donde se lee: en arabe, a la izquierda. */
+          var flecha = document.documentElement.dir === 'rtl' ? '◂' : '▸';
+          var sig = el('button', 'boton atlas-dlg-sigue', flecha); sig.type = 'button';
+          sig.setAttribute('aria-label', flecha + ' ' + (i + 2) + '/' + lineas.length);
           sig.addEventListener('click', function () { i++; paso(); });
           mandos.appendChild(sig); sig.focus();
         } else {
@@ -195,7 +199,11 @@
                 cara.alerta(false); cara.celda(CELDAS.revelar);
                 mandos.querySelectorAll('button').forEach(function (x) { x.disabled = true; });
                 setTimeout(cierra, quieto ? 0 : 900);
-              } else { cierra(); }
+                if (opciones && opciones.alSellar) { opciones.alSellar(); }
+              } else {
+                cierra();
+                if (opciones && opciones.alAplazar) { opciones.alAplazar(); }
+              }
             });
             mandos.appendChild(b);
             if (!k) { b.focus(); }
