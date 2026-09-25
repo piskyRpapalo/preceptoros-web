@@ -1,0 +1,151 @@
+/* preceptoros.org · SOBERANIA VIOLETA-COBRE. La capa visual del 2026-09-25.
+
+   UNA CAPA ENCIMA, NO UNA REESCRITURA. Se carga la ULTIMA en las 65 paginas,
+   justo despues de `tema.css`, y hace dos cosas: fija la paleta firmada por el
+   Soberano y la VIERTE en las variables que la casa ya usa (`--marmol`,
+   `--tinta`, `--violeta`, `--bronce`...). Asi cada componente existente cambia
+   de piel sin tocar su hoja: quitar esta etiqueta devuelve la web de antes.
+
+   CONTRASTE MEDIDO, NO ELEGIDO (WCAG AA, 4,5:1 texto pequeno):
+     texto  #e2e8f0 sobre #0f0c1b 15,65 · sobre #1a152a 14,38
+     tenue  #94a3b8 sobre #0f0c1b  7,52 · sobre #1a152a  6,91
+     cobre  #d97706 sobre #1a152a  5,56 · #0f0c1b sobre cobre 6,05
+     #e2e8f0 sobre violeta #7c3aed 4,62
+   El violeta #7c3aed COMO TEXTO sobre oscuro da 3,11: no pasa. Por eso solo
+   es fondo de boton y brillo; el texto violeta es `--accent-violet-text`
+   (#a78bfa, 6,51). Y sobre cobre el texto es oscuro: el claro daria 2,58.
+
+   OSCURO POR DEFECTO, SIN INTERRUPTOR. `[data-tema="claro"]` queda fuera del
+   selector a proposito: la piel clara de `base.css` sigue intacta debajo.
+
+   CERO PETICIONES. La tipografia es la del sistema: Inter solo si ya esta
+   instalada. Traerla de fuera romperia la frase del pie. */
+:root{
+  --bg-primary:#0f0c1b; --bg-secondary:#1a152a;
+  --accent-violet:#7c3aed; --accent-copper:#d97706;
+  --text-main:#e2e8f0; --text-muted:#94a3b8;
+  --accent-violet-text:#a78bfa; --accent-copper-claro:#f59e0b;
+  --code-bg:#1e1e2e;
+  --glass-sov:rgba(26,21,42,.7); --edge-sov:rgba(255,255,255,.1);
+  --curva:cubic-bezier(.4,0,.2,1);
+  --sans:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans","Helvetica Neue",Arial,sans-serif;
+}
+:root:not([data-tema="claro"]){
+  --marmol:var(--bg-primary); --marmol-claro:var(--bg-secondary);
+  --tinta:var(--text-main); --tenue:var(--text-muted);
+  --violeta:var(--accent-violet); --violeta-texto:var(--accent-violet-text);
+  --indigo:var(--accent-violet-text);
+  --bronce:var(--accent-copper); --bronce-claro:var(--accent-copper-claro);
+  --bronce-hondo:var(--accent-copper);
+  --glass:var(--glass-sov); --glass-solid:rgba(26,21,42,.94);
+  --edge:var(--edge-sov); --velo-campo:rgba(15,12,27,.72);
+  --panel-bg:var(--bg-secondary); --panel-fg:var(--text-main);
+  --panel-borde:rgba(217,119,6,.38);
+  --depth:0 10px 36px rgba(0,0,0,.5);
+  color-scheme:dark;
+}
+
+/* --- FONDO Y TIPOGRAFIA ------------------------------------------------- */
+/* La lamina de marmol se queda --es la casa-- pero bajo un velo del color de
+   fondo: el cristal necesita algo detras para ser cristal, y la veta no debe
+   competir con el texto. */
+:root:not([data-tema="claro"]) body{
+  background-color:var(--bg-primary);
+  background-image:linear-gradient(rgba(15,12,27,.84),rgba(15,12,27,.84)),var(--fondo-lamina);
+}
+body{font-family:var(--sans);font-weight:400;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:var(--sans);font-weight:700;letter-spacing:-.02em;line-height:1.2}
+h1,h2{font-weight:800}
+/* Lo que es MAQUINA sigue en monoespaciada: rotulos del cabezal, numeros de
+   piso, pliegos y todo el codigo. Es la otra mitad de la identidad. */
+.cab-boton,.piso-n,summary,.cab-solar,.ks-sello,.proof,
+code,kbd,pre,samp,.pp-salida{font-family:var(--mono)}
+a{color:var(--accent-violet-text)}
+
+/* --- CRISTAL ------------------------------------------------------------ */
+/* Cabezal, tarjetas, paneles, pliegos y menus. El contenedor `main` pierde su
+   fondo opaco en las paginas interiores: el cristal va en las piezas, no en
+   una caja que las tapa --- y asi no se apilan dos desenfoques. */
+/* Respaldo OPACO primero; el cristal solo donde el navegador sabe hacerlo.
+   Sin esto, un panel translucido sobre la lamina no se lee. El `or` con el
+   prefijo es por Safari de iOS 16, que solo entiende `-webkit-`. */
+#cabezal,.panel,.piso-actual,.linea,details.pliego,.mini-chat,
+#identity-menu,.panel-desliza,.consiento-caja,.honest-footer .proof,
+#especificaciones{
+  background:var(--marmol-claro);
+  border:1px solid var(--edge-sov);border-radius:var(--radius);
+}
+@supports (backdrop-filter:blur(2px)) or (-webkit-backdrop-filter:blur(2px)){
+  #cabezal,.panel,.piso-actual,.linea,details.pliego,.mini-chat,
+  #identity-menu,.panel-desliza,.consiento-caja,.honest-footer .proof,
+  #especificaciones{
+    background:var(--glass-sov);
+    -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
+  }
+}
+#cabezal{padding:.9rem 1rem;box-shadow:var(--depth)}
+:root:not([data-tema="claro"]) main{background:transparent}
+.linea{box-shadow:0 0 0 1px rgba(217,119,6,.18),var(--depth)}
+.honest-footer{color:var(--text-muted)}
+
+/* --- CODIGO ------------------------------------------------------------- */
+pre,.pp-salida{background:var(--code-bg);color:var(--text-main);
+  border:1px solid var(--edge-sov);border-radius:var(--radius)}
+code,kbd{color:var(--accent-copper-claro)}
+pre code{color:inherit}
+
+/* --- MICRO-INTERACCIONES ------------------------------------------------ */
+/* Propiedades nombradas y no `all`: animar `all` anima tambien el ancho y el
+   relleno, que recalculan la maqueta en cada fotograma. Misma curva, mismos
+   0,3 s, sin coste de layout. */
+a,button,.boton,.cab-boton,summary,input,textarea,select,.linea{
+  transition:background-color .3s var(--curva),color .3s var(--curva),
+    border-color .3s var(--curva),box-shadow .3s var(--curva),
+    transform .3s var(--curva),opacity .3s var(--curva);
+}
+button:not(.leve):not([disabled]):hover,.boton:hover,.cab-boton:hover,.piso-lleva:hover{
+  box-shadow:0 0 0 1px rgba(217,119,6,.55),0 0 18px rgba(124,58,237,.55);
+}
+/* El salto de escala solo para quien no pidio menos movimiento. */
+@media (prefers-reduced-motion:no-preference){
+  button:not(.leve):not([disabled]):hover,.boton:hover,.cab-boton:hover,
+  .piso-lleva:hover{transform:scale(1.02)}
+}
+:focus-visible{outline:2px solid var(--accent-copper);outline-offset:2px}
+input:focus,textarea:focus,select:focus{border-color:var(--accent-copper);
+  box-shadow:0 0 0 3px rgba(217,119,6,.25)}
+button,.boton{border-radius:999px}
+button[disabled]{opacity:.55;box-shadow:none;transform:none}
+/* Boton activo del cabezal: cobre con texto oscuro (6,05:1). */
+.cab-boton[aria-current],.cab-boton.activo{background:var(--accent-copper);
+  border-color:var(--accent-copper);color:var(--bg-primary)}
+
+/* --- PISO 4 · EL JUEGO DE PUERTOS --------------------------------------- */
+/* Rejilla que se pliega sola. La salida de `ss` se desplaza DENTRO de su caja
+   en el movil: medido a 375 px, el `pre` empujaba toda la pagina hacia la
+   derecha. `min-width:0` rompe la herencia de ancho minimo del flex padre. */
+#torre .torre-cuerpo>*,.pp-panel,.pp-panel>div{min-width:0;max-width:100%}
+.pp-panel{display:grid;gap:1.25rem;padding:1.25rem}
+.pp-panel h4{margin:0;color:var(--accent-copper-claro)}
+.pp-salida{max-width:100%;overflow-x:auto;padding:.9rem 1rem;margin:0;
+  font-size:.74rem;line-height:1.6;-webkit-overflow-scrolling:touch}
+.pp-salida .pp-dir{color:var(--accent-copper-claro)}
+.pp-salida .pp-proc{color:var(--accent-violet-text)}
+.pp-salida .pp-cmd{color:var(--text-muted)}
+/* Cada fila ya es una tarjeta: el numero de lista sobraba y, con `grid` en el
+   `li`, desaparecia dejando solo su sangria vacia. */
+.pp-lista{display:grid;gap:.9rem;margin:0;padding:0;list-style:none}
+.pp-fila{display:grid;grid-template-columns:minmax(0,1fr) auto;
+  gap:.5rem 1rem;align-items:center;margin:0;padding:.75rem 1rem;
+  background:rgba(15,12,27,.55);border:1px solid var(--edge-sov);
+  border-radius:var(--radius)}
+.pp-fila code{color:var(--text-main)}
+.pp-mandos{margin:0}
+.pp-dice{grid-column:1/-1;margin:0}
+.pp-fila[data-veredicto="bien"]{border-color:rgba(111,211,155,.45)}
+.pp-fila[data-veredicto="mal"]{border-color:rgba(255,143,163,.45)}
+.pp-nota{font-weight:700;color:var(--accent-copper-claro);margin:0}
+@media (max-width:30rem){
+  .pp-fila{grid-template-columns:minmax(0,1fr)}
+  .pp-panel{padding:1rem}
+}
