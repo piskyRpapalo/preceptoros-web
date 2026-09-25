@@ -73,7 +73,13 @@
     "ks_juez_sin_turnos": "NO_DATA — لا أدوار للحكم عليها بعد. تحدّث مع الدراسة أولًا.",
     "ks_juez_una_capa": "NO_DATA — هذه طبقة واحدة. بطاقة هذه الدراسة تتطلب اثنتين —الحتمية أولًا، ثم النموذج— والأولى تعمل على الرفّ لا هنا. اقرأه رأيًا مقيسًا لا درجة.",
     "pp_abrir": "العب: افحص حاسوبًا تجريبيًا",
-    "pp_sello": "محاكاة"
+    "pp_sello": "محاكاة",
+    "camino_atlas_titulo": "ATLAS · الغابة الغارقة",
+    "camino_atlas_frase": "أطلانتس لم تغرق: لقد نامت. هنا توقظها قطاعًا بعد قطاع، بما تتعلمه في الطوابق الأخرى.",
+    "camino_atlas_falla": "كل ما تراه نموذج أولي: الأرقام أمثلة ولا يحفظ أي زر شيئًا بعد. المحرّك والذاكرة يصلان مع الخطوة 3.",
+    "camino_atlas_para_quien": "لمن يريد العودة كل يوم ليرى ما نما أثناء نومه، من دون أن يبيعه أحد شيئًا.",
+    "camino_atlas_papel": "NO_DATA — دور هذا الطابق بانتظار توقيع السيّد.",
+    "camino_atlas_corpus": "القرارات التي يوقّعها الشخص داخل الطابق —ما يُصلَح وما يؤجَّل— مع حالة الغابة في تلك اللحظة. لا شيء اليوم: الطابق نموذج أولي."
   },
   "pendiente": {
     "papel_de_usuario": "NO_DATA · falta escribir con quien cree el modelo que habla en cada peldano. Se escribe en castellano y se traduce a las ocho, como el resto; hasta entonces el desplegable lo declara en pantalla."

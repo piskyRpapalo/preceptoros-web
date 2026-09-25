@@ -51,7 +51,7 @@
      lo dejaria al albur de como se escribio el fichero, y el orden de los
      peldanos ES la Torre. */
   var PELDANOS = ['despertar', 'primeros_pasos', 'exposicion', 'puertos',
-                  'whoami', 'killswitch', 'silencio', 'contribuir'];
+                  'whoami', 'killswitch', 'silencio', 'contribuir', 'atlas'];
 
   function el(tag, clase, texto) {
     var n = document.createElement(tag);

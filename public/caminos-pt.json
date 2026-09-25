@@ -73,7 +73,13 @@
     "ks_juez_sin_turnos": "NO_DATA — ainda não há turnos para julgar. Fala primeiro com o estudo.",
     "ks_juez_una_capa": "NO_DATA — isto é UMA camada. A ficha deste estudo exige duas —determinista primeiro, modelo depois— e a primeira corre no rack, não aqui. Lê-o como uma opinião medida, não como uma nota.",
     "pp_abrir": "Jogar: analisa uma máquina de exemplo",
-    "pp_sello": "simulação"
+    "pp_sello": "simulação",
+    "camino_atlas_titulo": "ATLAS · a Floresta Submersa",
+    "camino_atlas_frase": "A Atlântida não afundou: adormeceu. Aqui acorda-la setor a setor, com o que aprendes nos outros pisos.",
+    "camino_atlas_falla": "Tudo o que vês é maqueta: os números são de exemplo e nenhum botão guarda nada ainda. O motor e a memória chegam com o passo 3.",
+    "camino_atlas_para_quien": "Para quem quer voltar todos os dias para ver o que cresceu enquanto dormia, sem que ninguém lhe venda nada.",
+    "camino_atlas_papel": "NO_DATA — o papel deste piso aguarda a assinatura do Soberano.",
+    "camino_atlas_corpus": "Decisões que a pessoa assina dentro do piso —o que reparar, o que adiar— junto com o estado da Floresta nesse momento. Hoje nenhuma: o piso é maqueta."
   },
   "pendiente": {
     "papel_de_usuario": "NO_DATA · falta escribir con quien cree el modelo que habla en cada peldano. Se escribe en castellano y se traduce a las ocho, como el resto; hasta entonces el desplegable lo declara en pantalla.",

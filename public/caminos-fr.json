@@ -73,7 +73,13 @@
     "ks_juez_sin_turnos": "NO_DATA — il n'y a pas encore de tours à juger. Parle d'abord avec l'étude.",
     "ks_juez_una_capa": "NO_DATA — ceci est UNE couche. La fiche de cette étude en exige deux —déterministe d'abord, modèle ensuite— et la première tourne sur le rack, pas ici. À lire comme un avis mesuré, pas comme une note.",
     "pp_abrir": "Jouer : scanne une machine d'exemple",
-    "pp_sello": "simulation"
+    "pp_sello": "simulation",
+    "camino_atlas_titulo": "ATLAS · la Forêt engloutie",
+    "camino_atlas_frase": "L’Atlantide n’a pas sombré : elle s’est endormie. Ici, vous la réveillez secteur par secteur, avec ce que vous apprenez aux autres étages.",
+    "camino_atlas_falla": "Tout ce que vous voyez est une maquette : les chiffres sont des exemples et aucun bouton n’enregistre encore rien. Le moteur et la mémoire arrivent avec l’étape 3.",
+    "camino_atlas_para_quien": "Pour qui veut revenir chaque jour voir ce qui a poussé pendant son sommeil, sans que personne ne lui vende rien.",
+    "camino_atlas_papel": "NO_DATA — le rôle de cet étage attend la signature du Souverain.",
+    "camino_atlas_corpus": "Les décisions que la personne signe dans l’étage —quoi réparer, quoi reporter— avec l’état de la Forêt à ce moment-là. Aucune aujourd’hui : l’étage est une maquette."
   },
   "pendiente": {
     "papel_de_usuario": "NO_DATA · falta escribir con quien cree el modelo que habla en cada peldano. Se escribe en castellano y se traduce a las ocho, como el resto; hasta entonces el desplegable lo declara en pantalla.",
