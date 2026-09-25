@@ -54,6 +54,14 @@
   "nucleo_p": "{a} / {b} community XP · 37 Atlanteans contributed in the last 7 days · your share: {tu} XP ({pct}%)",
   "desbloqueo": "Level 35 unlocks: one more Steam Server slot",
   "nucleo_nota": "The community rises because many contribute, not because one person grinds. Sample: the unlock table will live in <code>mente/doctrina.md</code>.",
-  "pie": "MOCKUP · sample data, no server, no network. The buttons only write to the console."
+  "pie": "MOCKUP · sample data, no server, no network. The buttons only write to the console.",
+  "dlg_nombre": "Nerea",
+  "dlg_rol": "Restorer of the Core",
+  "dlg_l1": "You're awake. Good: the forest was starting to forget your name.",
+  "dlg_l2": "The rift at 120 m is letting cold water into the outer ruins. Every cycle it stays open, the Core loses integrity.",
+  "dlg_l3": "Take the Forge's copper plates down with you. Seal it, and the whole village breathes easier.",
+  "dlg_si": "I'll seal it",
+  "dlg_no": "Not yet",
+  "dlg_cerrar": "Close"
  }
 }

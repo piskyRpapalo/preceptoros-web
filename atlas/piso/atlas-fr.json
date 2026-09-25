@@ -54,6 +54,14 @@
   "nucleo_p": "{a} / {b} XP du peuple · 37 Atlantes ont contribué ces 7 derniers jours · ton apport : {tu} XP ({pct} %)",
   "desbloqueo": "Le niveau 35 débloque : un emplacement de plus pour un Serveur à vapeur",
   "nucleo_nota": "Le peuple progresse parce que beaucoup contribuent, pas parce qu'un seul s'acharne. Exemple : la table des déblocages vivra dans <code>mente/doctrina.md</code>.",
-  "pie": "MAQUETTE · données d'exemple, sans serveur, sans réseau. Les boutons écrivent seulement dans la console."
+  "pie": "MAQUETTE · données d'exemple, sans serveur, sans réseau. Les boutons écrivent seulement dans la console.",
+  "dlg_nombre": "Nerea",
+  "dlg_rol": "Restauratrice du Noyau",
+  "dlg_l1": "Enfin debout. Tant mieux : la forêt commençait à oublier ton nom.",
+  "dlg_l2": "La fissure à 120 m laisse entrer l'eau froide dans les ruines extérieures. Chaque cycle où elle reste ouverte, le Noyau perd de l'intégrité.",
+  "dlg_l3": "Descends avec les plaques de cuivre de la Forge. Scelle-la, et tout le village respirera mieux.",
+  "dlg_si": "Je la scelle",
+  "dlg_no": "Pas encore",
+  "dlg_cerrar": "Fermer"
  }
 }

@@ -54,6 +54,14 @@
   "nucleo_p": "{a} / {b} XP do povo · 37 atlantes contribuíram nos últimos 7 dias · o teu contributo: {tu} XP ({pct} %)",
   "desbloqueo": "O nível 35 desbloqueia: mais uma ranhura de Servidor a Vapor",
   "nucleo_nota": "O povo sobe porque muitos contribuem, não porque um só se esforça. Exemplo: a tabela de desbloqueios vai viver em <code>mente/doctrina.md</code>.",
-  "pie": "MAQUETA · dados de exemplo, sem servidor, sem rede. Os botões só escrevem na consola."
+  "pie": "MAQUETA · dados de exemplo, sem servidor, sem rede. Os botões só escrevem na consola.",
+  "dlg_nombre": "Nerea",
+  "dlg_rol": "Restauradora do Núcleo",
+  "dlg_l1": "Finalmente de pé. Ainda bem: a floresta começava a esquecer o teu nome.",
+  "dlg_l2": "A fenda a 120 m deixa entrar água fria nas ruínas exteriores. Cada ciclo em que fica aberta, o Núcleo perde integridade.",
+  "dlg_l3": "Desce com as placas de cobre da Forja. Sela-a, e a aldeia inteira respira melhor.",
+  "dlg_si": "Vou selá-la",
+  "dlg_no": "Ainda não",
+  "dlg_cerrar": "Fechar"
  }
 }

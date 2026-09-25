@@ -54,6 +54,14 @@
   "nucleo_p": "{a} / {b} XP del popolo · 37 atlantidei hanno contribuito negli ultimi 7 giorni · il tuo contributo: {tu} XP ({pct} %)",
   "desbloqueo": "Il livello 35 sblocca: uno slot in più per un Server a vapore",
   "nucleo_nota": "Il popolo cresce perché molti contribuiscono, non perché uno solo si sforza. Esempio: la tabella degli sblocchi vivrà in <code>mente/doctrina.md</code>.",
-  "pie": "BOZZA · dati di esempio, senza server, senza rete. I pulsanti scrivono solo nella console."
+  "pie": "BOZZA · dati di esempio, senza server, senza rete. I pulsanti scrivono solo nella console.",
+  "dlg_nombre": "Nerea",
+  "dlg_rol": "Restauratrice del Nucleo",
+  "dlg_l1": "Finalmente in piedi. Bene: la foresta cominciava a dimenticare il tuo nome.",
+  "dlg_l2": "La crepa a 120 m fa entrare acqua fredda nelle rovine esterne. Ogni ciclo in cui resta aperta, il Nucleo perde integrità.",
+  "dlg_l3": "Scendi con le piastre di rame della Forgia. Sigillala, e tutto il villaggio respirerà meglio.",
+  "dlg_si": "La sigillo",
+  "dlg_no": "Non ancora",
+  "dlg_cerrar": "Chiudi"
  }
 }

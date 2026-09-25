@@ -14,10 +14,8 @@
    estandar: nivel 2 = 83 · 10 = 1 154 · 99 = 13 034 431) y los botones solo
    escriben `[ATLAS stub]` en la consola. El motor llega en el paso 3.
 
-   EL MAPA ES CANVAS PINTADO UNA VEZ. OffscreenCanvas + un `drawImage`, niebla
-   en un segundo lienzo, sectores como botones DOM encima. Sin bucle por
-   fotograma: solo se repinta si cambia el ancho. Colores leidos de
-   `soberano.css`, nunca escritos aqui.
+   EL MAPA Y EL ARTE VIVEN APARTE: `atlas-mapa.js` decide donde y cuando se
+   pinta, `atlas-arte.js` pinta. Este fichero arma el panel y los textos.
 
    UNA SOLA SALIDA DE RED: su propio texto. Ni una mas. */
 (function () {
@@ -37,11 +35,6 @@
   var NUCLEO = [21773, 20224, 22406, 34];
   /* Forja <- Mineria; Restauracion <- Herboristeria + Ingenieria (§B.1). */
   var DEPENDE = { 3: [2], 5: [4, 6] };
-
-  var ANCHA = { cols: 11, filas: 7, sectores: {
-    nucleo: [5, 3], forja: [2, 2], aguja: [8, 1], ojo: [8, 5], grieta: [3, 5] } };
-  var ESTRECHA = { cols: 7, filas: 7, sectores: {
-    nucleo: [3, 3], forja: [1, 1], aguja: [4, 1], ojo: [4, 5], grieta: [1, 5] } };
 
   var TXT = null;
   function el(tag, clase, texto) {
@@ -65,100 +58,6 @@
     var b = el('button', clase || 'boton', texto);
     b.type = 'button'; b.dataset.stub = stub;
     return b;
-  }
-
-  /* --- el mapa ------------------------------------------------------------ */
-  function token(n) {
-    return getComputedStyle(document.documentElement).getPropertyValue(n).trim();
-  }
-  function centro(c, f, r) {
-    var w = Math.sqrt(3) * r;
-    return { x: w * (c + 0.5 + (f % 2) * 0.5), y: r * (1 + f * 1.5) };
-  }
-  function hexagono(ctx, x, y, r) {
-    ctx.beginPath();
-    for (var i = 0; i < 6; i++) {
-      var a = Math.PI / 180 * (60 * i - 30);
-      ctx.lineTo(x + r * Math.cos(a), y + r * Math.sin(a));
-    }
-    ctx.closePath();
-  }
-  function ruido(c, f) {
-    var h = Math.sin(c * 12.9898 + f * 78.233) * 43758.5453;
-    return h - Math.floor(h);
-  }
-
-  function mapa(lienzo, cvMapa, cvNiebla) {
-    var pintado = 0;
-    function pinta() {
-      var ancho = lienzo.clientWidth;
-      if (!ancho || ancho === pintado) { return; }
-      pintado = ancho;
-      var R = ancho < 480 ? ESTRECHA : ANCHA, S = R.sectores;
-      var r = ancho / (Math.sqrt(3) * (R.cols + 0.5));
-      var alto = Math.ceil(r * (1.5 * R.filas + 0.5));
-      var dpr = Math.min(window.devicePixelRatio || 1, 2);
-      [cvMapa, cvNiebla].forEach(function (cv) {
-        cv.width = Math.round(ancho * dpr); cv.height = Math.round(alto * dpr);
-        cv.style.height = alto + 'px';
-      });
-      lienzo.style.height = alto + 'px';
-      function sector(c, f) {
-        for (var k in S) { if (S[k][0] === c && S[k][1] === f) { return k; } }
-        return null;
-      }
-      function dibuja(ctx) {
-        var fondo = token('--bg-secondary'), vio = token('--accent-violet'),
-            cobre = token('--accent-copper'), filo = token('--edge-sov');
-        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-        for (var f = 0; f < R.filas; f++) {
-          for (var c = 0; c < R.cols; c++) {
-            var p = centro(c, f, r), s = sector(c, f);
-            hexagono(ctx, p.x, p.y, r * 0.94);
-            ctx.globalAlpha = 1; ctx.fillStyle = fondo; ctx.fill();
-            ctx.globalAlpha = s ? 0.4 : 0.07 + ruido(c, f) * 0.2;
-            ctx.fillStyle = s && s !== 'nucleo' ? cobre : vio; ctx.fill();
-            ctx.globalAlpha = 1; ctx.strokeStyle = s ? cobre : filo;
-            ctx.lineWidth = s ? 1.5 : 1; ctx.stroke();
-          }
-        }
-      }
-      var ctx = cvMapa.getContext('2d');
-      if (typeof OffscreenCanvas !== 'undefined') {
-        var off = new OffscreenCanvas(cvMapa.width, cvMapa.height);
-        dibuja(off.getContext('2d')); ctx.drawImage(off, 0, 0);
-      } else { dibuja(ctx); }
-
-      var n = cvNiebla.getContext('2d');
-      n.setTransform(dpr, 0, 0, dpr, 0, 0);
-      n.clearRect(0, 0, ancho, alto);
-      n.globalCompositeOperation = 'source-over';
-      n.globalAlpha = 0.86; n.fillStyle = token('--bg-primary');
-      n.fillRect(0, 0, ancho, alto);
-      n.globalCompositeOperation = 'destination-out'; n.globalAlpha = 1;
-      for (var k in S) {
-        var p = centro(S[k][0], S[k][1], r);
-        var g = n.createRadialGradient(p.x, p.y, r * 0.6, p.x, p.y, r * 2.6);
-        g.addColorStop(0, 'rgba(0,0,0,1)'); g.addColorStop(1, 'rgba(0,0,0,0)');
-        n.fillStyle = g; n.fillRect(p.x - r * 2.6, p.y - r * 2.6, r * 5.2, r * 5.2);
-      }
-      n.globalCompositeOperation = 'source-over';
-
-      Array.prototype.forEach.call(lienzo.querySelectorAll('[data-sector]'), function (b) {
-        var s = S[b.dataset.sector];
-        if (!s) { return; }
-        var q = centro(s[0], s[1], r);
-        b.style.left = (q.x / ancho * 100) + '%';
-        b.style.top = q.y + 'px';
-      });
-    }
-    var pendiente = false;
-    window.addEventListener('resize', function () {
-      if (pendiente) { return; }
-      pendiente = true;
-      requestAnimationFrame(function () { pendiente = false; pinta(); });
-    });
-    pinta();
   }
 
   /* --- el panel del Atlante ----------------------------------------------- */
@@ -190,7 +89,12 @@
     var al = el('div', 'atlas-alerta'); al.setAttribute('role', 'alert');
     al.appendChild(el('strong', null, U('alerta')));
     al.appendChild(el('p', null, U('alerta_p')));
-    al.appendChild(boton(U('reparar'), 'reparar-grieta'));
+    var reparar = boton(U('reparar'), 'reparar-grieta');
+    /* La grieta la cuenta alguien: abre la escena con Nerea. */
+    reparar.addEventListener('click', function () {
+      if (window.AtlasDialogo) { window.AtlasDialogo.abre(TXT.ui, zona, reparar); }
+    });
+    al.appendChild(reparar);
     raiz.appendChild(al);
 
     var rej = el('div', 'atlas-rejilla');
@@ -199,9 +103,6 @@
     sm.appendChild(el('h4', null, U('mapa_h')));
     sm.appendChild(el('p', 'atlas-nota', U('mapa_nota')));
     var lienzo = el('div', 'atlas-lienzo');
-    var cvM = el('canvas'), cvN = el('canvas');
-    cvM.setAttribute('aria-hidden', 'true'); cvN.setAttribute('aria-hidden', 'true');
-    lienzo.appendChild(cvM); lienzo.appendChild(cvN);
     [['nucleo', U('s_nucleo')], ['forja', U('s_forja')], ['aguja', U('s_aguja')],
      ['ojo', U('s_ojo')], ['grieta', '⚠ ' + U('s_grieta')]].forEach(function (x) {
       var b = boton(x[1], 'sector', 'atlas-sector'); b.dataset.sector = x[0];
@@ -279,7 +180,8 @@
     raiz.appendChild(el('p', 'atlas-pie', U('pie')));
 
     zona.appendChild(raiz);
-    mapa(lienzo, cvM, cvN);
+    /* El mapa vivo y su arte viven en `atlas-mapa.js` y `atlas-arte.js`. */
+    if (window.AtlasMapa) { window.AtlasMapa.monta(lienzo); }
   }
 
   function textos() {

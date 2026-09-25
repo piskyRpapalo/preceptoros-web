@@ -54,6 +54,14 @@
   "nucleo_p": "{a} / {b} XP der Gemeinschaft · 37 Atlanter haben in den letzten 7 Tagen beigetragen · dein Anteil: {tu} XP ({pct} %)",
   "desbloqueo": "Stufe 35 schaltet frei: einen weiteren Platz für einen Dampfserver",
   "nucleo_nota": "Die Gemeinschaft steigt, weil viele beitragen, nicht weil einer allein schuftet. Beispiel: die Freischalttabelle wird in <code>mente/doctrina.md</code> stehen.",
-  "pie": "ENTWURF · Beispieldaten, ohne Server, ohne Netz. Die Knöpfe schreiben nur in die Konsole."
+  "pie": "ENTWURF · Beispieldaten, ohne Server, ohne Netz. Die Knöpfe schreiben nur in die Konsole.",
+  "dlg_nombre": "Nerea",
+  "dlg_rol": "Restauratorin des Kerns",
+  "dlg_l1": "Endlich wach. Gut – der Wald begann schon, deinen Namen zu vergessen.",
+  "dlg_l2": "Der Riss in 120 m Tiefe lässt kaltes Wasser in die äußeren Ruinen. Jeder Zyklus, den er offen bleibt, kostet den Kern Integrität.",
+  "dlg_l3": "Nimm die Kupferplatten der Schmiede mit nach unten. Versiegle ihn, und das ganze Dorf atmet leichter.",
+  "dlg_si": "Ich versiegle ihn",
+  "dlg_no": "Noch nicht",
+  "dlg_cerrar": "Schließen"
  }
 }

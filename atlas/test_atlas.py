@@ -45,6 +45,31 @@ class Piso(unittest.TestCase):
             with self.subTest(salida=salida):
                 self.assertNotIn(salida, codigo, f"el piso puede salir por {salida}")
 
+    def test_arte_mapa_y_dialogo_no_salen_a_la_red(self):
+        """El arte es geometria: ni un raster, ni una peticion, ni innerHTML."""
+        for nombre in ("atlas-arte.js", "atlas-mapa.js", "atlas-dialogo.js"):
+            codigo = sin_comentarios((PISO / nombre).read_text(encoding="utf-8"))
+            for salida in ("fetch", "XMLHttpRequest", "sendBeacon", "WebSocket",
+                           "EventSource", "new Image", "Worker(", "importScripts",
+                           "innerHTML", "drawImage(new"):
+                with self.subTest(fichero=nombre, salida=salida):
+                    self.assertNotIn(salida, codigo, f"{nombre} puede salir por {salida}")
+            # `url(#id)` es una referencia DENTRO del propio SVG; cualquier otro
+            # `url(` seria un recurso de fuera.
+            with self.subTest(fichero=nombre, salida="url("):
+                self.assertFalse(re.search(r"url\((?!#)", codigo),
+                                 f"{nombre} pide un recurso por url(")
+
+    def test_el_dialogo_tiene_su_texto_en_las_nueve(self):
+        codigo = (PISO / "atlas-dialogo.js").read_text(encoding="utf-8")
+        pedidas = set(re.findall(r"ui\.(dlg_[a-z0-9]+)", codigo))
+        pedidas |= set(re.findall(r"'(dlg_[a-z0-9]+)'", codigo))
+        self.assertTrue(pedidas, "el dialogo no pide ningun texto")
+        for l in LENGUAS:
+            d = json.loads((PISO / f"atlas-{l}.json").read_text(encoding="utf-8"))
+            with self.subTest(lengua=l):
+                self.assertFalse(pedidas - set(d["ui"]), f"faltan {pedidas - set(d['ui'])}")
+
     def test_se_monta_como_los_demas_pisos(self):
         codigo = sin_comentarios((PISO / "atlas-piso.js").read_text(encoding="utf-8"))
         self.assertIn("preceptor:torre", codigo, "no escucha el aviso de la Torre")
