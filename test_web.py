@@ -2603,8 +2603,13 @@ class Hub(unittest.TestCase):
         # El piso 1 viste el chat al entrar, y NO a ciegas: sin cerebro puesto
         # el evento apagaria el chat en vez de cambiarlo.
         torre = (PUBLICO / "assets" / "camino.js").read_text(encoding="utf-8")
-        self.assertIn("viste(PELDANOS[0]", re.sub(r"/\*.*?\*/", "", torre, flags=re.S),
+        self.assertIn("viste(INICIAL", re.sub(r"/\*.*?\*/", "", torre, flags=re.S),
                       "nadie viste el chat al arrancar: se queda sin companero")
+        # El piso de entrada es el 2 (orden del Soberano, 2026-09-25), y los
+        # dos modulos que lo nombran dicen el mismo.
+        inicial = re.findall(r"var INICIAL = '(\w+)'", torre + (PUBLICO / "assets" / "piso-chat.js").read_text(encoding="utf-8"))
+        self.assertEqual(inicial, ["primeros_pasos", "primeros_pasos"],
+                         "camino.js y piso-chat.js no abren el mismo piso")
         self.assertIn("CerebroPuesto", codigo,
                       "el piso no pregunta por el modelo a quien manda sobre el")
 
