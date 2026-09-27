@@ -73,6 +73,11 @@
     G.pasos.push(s);
   }
   function graba(M) {
+    /* EL MOTOR PURO, copiado ANTES de envolverlo. Quien SIMULA (el juez) usa este: el envuelto
+       graba cada llamada, y su `inicial` VACIA la partida en curso. `reproduce(p, M)` con el
+       envuelto en la pestana borraria lo jugado sin avisar. */
+    var puro = {};
+    Object.keys(M).forEach(function (k) { puro[k] = M[k]; });
     var o = {};
     ['inicial', 'ciclo', 'dormir', 'recoger', 'reparar', 'aplazar', 'bajarA', 'invocar']
       .forEach(function (k) { o[k] = M[k]; });
@@ -98,6 +103,7 @@
       empuja({ accion: 'invocar', coste: { cobre: coste.cobre, luz: coste.luz }, origen: G.origen });
       return o.invocar(e, coste, dia);
     };
+    return puro;
   }
 
   /* La partida tal cual, para exportarla. `E` es el estado de la pestana. */
@@ -134,6 +140,6 @@
   if (typeof module === 'object' && module.exports) { module.exports = AtlasPartida; }
   else {
     raiz.AtlasPartida = AtlasPartida;
-    if (raiz.AtlasMotor) { graba(raiz.AtlasMotor); }
+    if (raiz.AtlasMotor) { AtlasPartida.puro = graba(raiz.AtlasMotor); }
   }
 })(this);

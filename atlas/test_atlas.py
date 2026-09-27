@@ -457,7 +457,7 @@ class TheGameV15(unittest.TestCase):
     las dos guardas en el mismo job; moverla es un paso del rack."""
 
     JUEGO = PUBLICO / "game"
-    MODULOS = ("valores.js", "gacha.js", "db.js", "core.js", "ui.js")
+    MODULOS = ("valores.js", "gacha.js", "db.js", "core.js", "ui.js", "juez.js")
 
     def _js(self, nombre):
         return sin_comentarios((self.JUEGO / nombre).read_text(encoding="utf-8"))
@@ -595,6 +595,56 @@ class TheGameV15(unittest.TestCase):
             ui_l = json.loads((PUBLICO / f"atlas-{l}.json").read_text(encoding="utf-8"))["ui"]
             with self.subTest(lengua=l):
                 self.assertFalse(pedidas - set(ui_l), f"faltan en {l}: {sorted(pedidas - set(ui_l))}")
+
+
+class Juez(unittest.TestCase):
+    """El juez de theGame (public/game/juez.js): el mismo en la pestaña y en la Aduana del rack."""
+
+    JS = r"""
+      const M = require('./public/assets/atlas-motor.js'), Pa = require('./public/assets/atlas-partida.js');
+      const Pi = require('./public/assets/atlas-piloto.js'), J = require('./public/game/juez.js');
+      const ley = { nd: false, integridad_max: 117, dano: 1 };
+      let e = M.inicial(ley);
+      for (let i = 0; i < 400; i++) { e = M.ciclo(e, ley); }
+      const rep = { accion: 'reparar' }, esp = { accion: 'esperar' }, rec = { accion: 'recoger' };
+      const r1 = J.juzga(M, Pa, Pi, e, rep, esp, ley, 200), r2 = J.juzga(M, Pa, Pi, e, rep, esp, ley, 200);
+      const nada = J.juzga(M, Pa, Pi, M.inicial(ley), rec, null, ley, 50);
+      const igual = J.juzga(M, Pa, Pi, e, rep, rep, ley, 100);
+      process.stdout.write(JSON.stringify({ r1, mismo: JSON.stringify(r1) === JSON.stringify(r2), nada, igual,
+        abierta: e.abierta, cobre: e.cobre }));
+    """
+
+    def test_determinista_nulo_y_empate(self):
+        import subprocess
+        r = subprocess.run(["node", "-e", self.JS], cwd=RAIZ.parent, capture_output=True, text=True, timeout=120)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        d = json.loads(r.stdout)
+        self.assertTrue(d["mismo"], "el mismo juicio dos veces da dos veredictos")
+        self.assertIn(d["r1"]["gana"], ("humano", "piloto", "empate"))
+        self.assertEqual(d["r1"]["horizonte"], 200)
+        self.assertTrue(d["nada"]["alucinacion"], "recoger sin nada pendiente no es una jugada")
+        self.assertIsNone(d["nada"]["piloto"], "sin rama: null, nunca ceros de relleno")
+        self.assertEqual(d["igual"]["gana"], "empate", "la misma jugada en las dos ramas empata")
+
+    def test_no_sale_a_la_red_y_simula_con_el_motor_puro(self):
+        j = (RAIZ.parent / "public" / "game" / "juez.js").read_text(encoding="utf-8")
+        for red in ("fetch(", "XMLHttpRequest", "sendBeacon", "WebSocket", "EventSource"):
+            with self.subTest(red=red):
+                self.assertNotIn(red, j)
+        self.assertIn("puro = Pa.puro", j, "en la pestaña el juez tiene que simular con el motor SIN grabadora")
+        partida = (RAIZ.parent / "public" / "assets" / "atlas-partida.js").read_text(encoding="utf-8")
+        self.assertIn("AtlasPartida.puro = graba(", partida)
+        self.assertIn("'/game/juez.js'", (RAIZ.parent / "public" / "assets" / "thegame.js").read_text(encoding="utf-8"))
+
+    def test_los_textos_del_juez_en_las_nueve_lenguas(self):
+        for l in ("es", "en", "fr", "de", "it", "pt", "ru", "el", "ar"):
+            ui = json.loads((RAIZ.parent / "public" / f"atlas-{l}.json").read_text(encoding="utf-8"))["ui"]
+            for k in ("juez_humano", "juez_piloto", "juez_empate", "juez_nulo"):
+                with self.subTest(lengua=l, clave=k):
+                    self.assertTrue(ui.get(k))
+            if l != "es":
+                self.assertNotEqual(ui["juez_humano"], json.loads((RAIZ.parent / "public" / "atlas-es.json")
+                                    .read_text(encoding="utf-8"))["ui"]["juez_humano"], f"{l} lleva el texto en castellano")
 
 
 # Regla de oro del Soberano (2026-09-27): la web publica es educacion, comunidad y soberania

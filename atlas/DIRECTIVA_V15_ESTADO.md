@@ -43,3 +43,8 @@ La directiva la escribió el Soberano el 2026-09-27. Aquí se construye lo que *
 
 ## §4 · La decisión que desbloquea más
 ¿Se firma **guardar el Army** en una base IndexedDB propia de theGame, cambiando el sello «no guarda nada» en las 9 lenguas? Es la condición para que la adopción firmada tenga continuidad. El resto de §3 depende de frentes aparcados o del canal con el rack.
+
+## §5 · Módulo añadido después (2026-09-27, noche)
+| Módulo | Qué es | Firma |
+|---|---|---|
+| `game/juez.js` | El juez: al corregir o ignorar al piloto, juega las dos ramas con el motor puro y dice quién tenía razón. Es el mismo juez que usa la Aduana del rack para decidir qué correcciones entrenan. Sin red; simula con `AtlasPartida.puro` para no tocar la partida grabada | Soberano, tanda 7 (§3 «integración del juez») y «firmo todo» |
