@@ -201,7 +201,7 @@
     s.appendChild(el('h4', null, T('inc_h')));
     s.appendChild(el('p', 'atlas-nota', T('inc_nota')));
     s.appendChild(el('p', 'atlas-medido', T('vrf_nota')));
-    s.appendChild(el('p', 'atlas-casa', rellena(T('testnet'), { v: G.VERSION_VALORES })));
+    s.appendChild(el('p', 'atlas-casa', rellena(T('provisional'), { v: G.VERSION_VALORES })));
     R.caja = el('div', 'atlas-inc-mandos');
     R.sonido = boton(T('sonido')); R.sonido.setAttribute('aria-pressed', 'false');
     R.sonido.addEventListener('click', function () {

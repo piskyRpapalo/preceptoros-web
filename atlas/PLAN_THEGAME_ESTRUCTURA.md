@@ -12,11 +12,11 @@ estado: PROPUESTA · sin firmar · la construye Claude Code en el rack, fase a f
 
 # PLAN · theGame, estructura primero
 
-> Lo que pidió el Soberano (2026-09-27): «No te preocupes por recursos, habilidades ni niveles. Haz la **estructura**. Los valores y los LoRAs los adherimos después; ahora, valores de **testnet**. Un juego brutalmente **personalizable**, **sencillo**, **didáctico**, que la persona **quiera continuar**, y que disfrute de las **rutas y los combates entre usuarios**.»
+> Lo que pidió el Soberano (2026-09-27): «No te preocupes por recursos, habilidades ni niveles. Haz la **estructura**. Los valores y los LoRAs los adherimos después; ahora, valores [**provisionales**]. Un juego brutalmente **personalizable**, **sencillo**, **didáctico**, que la persona **quiera continuar**, y que disfrute de las **rutas y los combates entre usuarios**.»
 
 ## §0 · Las cinco leyes que no se mueven (heredadas, firmadas)
 1. **IronClaw.** El silicio propone y el carbono firma: toda adopción, invocación, ruta, ataque o captura es un **objeto firmado con Ed25519**. Un piloto (regla fija o LoRA) propone; nunca firma por la persona.
-2. **Sensores honestos.** Lo que no se mide es NO_DATA con su causa. Los valores de testnet se **dicen** en pantalla. Si algo se emula, lleva la etiqueta EMULADO en cada cifra.
+2. **Sensores honestos.** Lo que no se mide es NO_DATA con su causa. Los valores provisionales se **dicen** en pantalla. Si algo se emula, lleva la etiqueta EMULADO en cada cifra.
 3. **Local-first, sin servidor central.** El juego corre en la pestaña o en la app. **Entre personas viajan sobres firmados**, no peticiones a un servidor.
 4. **Determinismo verificable.** Todo resultado (tirada, combate, ruta) sale de funciones puras y de semillas que **nadie puede elegir a solas**. Cualquiera puede volver a jugarlo y comprobarlo.
 5. **Peso con ley.** Máximo 16 KB por módulo. El juego entero pesa hoy 119 920 B gzip, y **por encima de 150 KB gzip las leyes del mundo duplican el daño de la grieta** (`leyes(mundo)`): el juego castiga su propio sobrepeso. El margen real son **unos 30 KB gzip**. «Forzar los límites que sobran» significa gastar **cálculo** (ondas, simulación, lienzo), no bytes.
@@ -25,7 +25,7 @@ estado: PROPUESTA · sin firmar · la construye Claude Code en el rack, fase a f
 | Capa | Pieza | Estado |
 |---|---|---|
 | Reglas | `assets/atlas-motor.js` (puro: ciclo, dormir, recoger, reparar, aplazar, bajarA, **invocar**) | HECHO · 39 casos |
-| Valores | `game/valores.js` (**TESTNET**, solo datos) | HECHO |
+| Valores | `game/valores.js` (**PROVISIONALES**, solo datos) | HECHO |
 | Tirada | `game/gacha.js` (TC, afijos al estilo Diablo, rareza, tropas de Fourier < 200 B, lerp) | HECHO · 21 casos |
 | Army | `game/db.js` (entra solo con firma que **verifica**; en memoria) | HECHO; persistir → firma |
 | Sonido | `game/core.js` (FM con seno, sin ficheros) | HECHO |
@@ -74,7 +74,7 @@ A no puede probar asaltos sin que B vuelva a aceptar, y B no conoce el asalto al
 - **Mapa sin servidor:** los sectores salen de la semilla (`sha256` de la clave del nodo) sumando armónicos (topografía de Fourier). Todos generan el mismo mapa.
 - **Vecinos** = distancia XOR entre huellas de clave, como en Kademlia. Tu «región» se calcula igual en todos los aparatos. Sin censo central.
 - **Ruta** = `oferta` firmada por A + `aceptacion` firmada por B. Una firma activa la ruta; después, la logística es del **autopiloto local** (Loop Cards). Cada entrega es un `envio` con `seq` y cada llegada un `recibo`. Las caravanas orbitan en el lienzo según el desfase.
-- **Niebla de guerra:** radio = tiempo × (software/hardware). Hardware y software son NO_DATA en la web, así que en testnet la fórmula se aplica con valores declarados como EMULADO.
+- **Niebla de guerra:** radio = tiempo × (software/hardware). Hardware y software son NO_DATA en la web, así que con valores provisionales la fórmula se aplica con valores declarados como EMULADO.
 - **Enclaves:** nodos del mapa con guarnición (una defensa, de NPC o de persona). Capturarlo = ganar un combate. Mantenerlo exige un **sobre de mantenimiento** firmado cada N ciclos; si falta, vuelve a NPC.
 - **Mercado honesto:** el precio depende del inventario **local** y lo calcula una función pura. No hay oráculo.
 
@@ -108,7 +108,7 @@ A no puede probar asaltos sin que B vuelva a aceptar, y B no conoce el asalto al
 | Módulo | Responsabilidad | Directiva v1.5 → aquí |
 |---|---|---|
 | `assets/atlas-motor.js` | reglas del Bosque (ya existe) | «core.js: pure functions, tics, 7 oficios» |
-| `game/valores.js` | valores TESTNET y el pack por defecto | (nuevo: estructura) |
+| `game/valores.js` | valores provisionales y el pack por defecto | (nuevo: estructura) |
 | `game/gacha.js` | TC, afijos, rareza, armónicos, lerp | igual |
 | `game/combate.js` | defensas, asaltos, rondas, NPC | a2a_routes (guerra) |
 | `game/mapa.js` | sectores de Fourier, vecinos XOR, enclaves, niebla | a2a_routes (topografía) |
@@ -147,8 +147,8 @@ La tipografía en canvas **no sustituye** al texto del DOM, por accesibilidad: l
 ## §11 · Ronda de preguntas (Claude Code las hace en el rack, después de E0, y PARA)
 1. ¿Guardamos la partida (IndexedDB propia + copia firmada), cambiando el sello «no guarda nada» en las 9 lenguas?
 2. ¿Qué canales entre personas se abren ya: enlace `#`, QR, fichero, pegar? ¿WebRTC manual? ¿Algún relevo (GitHub o Ágora)?
-3. ¿La pérdida de tropas es definitiva (con pre-firma del riesgo y registro de deudas) o recuperable en testnet?
-4. ¿Los packs de la comunidad están abiertos desde el principio, o solo el pack de la casa en testnet?
+3. ¿La pérdida de tropas es definitiva (con pre-firma del riesgo y registro de deudas) o recuperable mientras los valores sean provisionales?
+4. ¿Los packs de la comunidad están abiertos desde el principio, o solo el pack de la casa mientras los valores sean provisionales?
 5. ¿Combate casual (semilla commit-reveal) o competitivo con clasificación, que pide un VRF del rack firmado?
 6. ¿Juego offline en el precache (sube el peso de la primera visita de todo el sitio) o sigue a demanda?
 7. ¿Qué nodo del rack incuba cartas 2D (canal y tubería) y cuándo? Mientras tanto, la figura de Fourier es la carta.

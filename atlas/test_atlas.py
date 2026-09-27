@@ -560,8 +560,8 @@ class TheGameV15(unittest.TestCase):
         self.assertTrue(v("adopcion").is_valid(ad))
         self.assertFalse(v("adopcion").is_valid(dict(ad, tropa=dict(t, rareza="mitico"))))
 
-    def test_v15_los_valores_son_testnet_y_solo_datos(self):
-        """Los valores viven en `valores.js`, marcados TESTNET y dichos en
+    def test_v15_los_valores_son_provisionales_y_solo_datos(self):
+        """Los valores viven en `valores.js`, marcados PROVISIONALES y dichos en
         pantalla; la logica no lleva cifras de equilibrio."""
         import subprocess
         v = self._js("valores.js")
@@ -571,8 +571,8 @@ class TheGameV15(unittest.TestCase):
         r = subprocess.run(["node", "-e", "process.stdout.write(JSON.stringify(require('./public/game/valores.js')))"],
                            cwd=RAIZ.parent, capture_output=True, text=True, timeout=30)
         d = json.loads(r.stdout)
-        self.assertEqual(d["red"], "testnet")
-        self.assertIn("T('testnet')", self._js("ui.js"), "la pantalla no dice que son valores de testnet")
+        self.assertEqual(d["estado"], "provisional")
+        self.assertIn("T('provisional')", self._js("ui.js"), "la pantalla no dice que son valores provisionales")
         g = self._js("gacha.js")
         for cifra in ("cobre: 50", "calidad: [", "vida: [4, 9]"):
             with self.subTest(cifra=cifra):
@@ -596,6 +596,39 @@ class TheGameV15(unittest.TestCase):
             with self.subTest(lengua=l):
                 self.assertFalse(pedidas - set(ui_l), f"faltan en {l}: {sorted(pedidas - set(ui_l))}")
 
+
+# Regla de oro del Soberano (2026-09-27): la web publica es educacion, comunidad y soberania
+# tecnica. Lo financiero/DePIN vive en el rack privado. En `public/`, `atlas/`, `data/` y
+# `partidas/` no se nombra NEAR, mainnet, testnet, el Alquimista ni cuentas o unidades de cadena.
+# `near` en minuscula es ingles corriente y no se mira; `NEAR` en mayusculas y las cuentas si.
+CRIPTO = re.compile(r"\bNEAR\b|near_tx|hexelion\.near|\b[a-z0-9_-]+\.near\b|\byocto|(?i:mainnet|testnet|alquimista)")
+TEXTO = (".html", ".js", ".mjs", ".json", ".css", ".md", ".py", ".txt", ".svg", ".xml", ".webmanifest")
+
+
+def menciones_cripto(texto):
+    return [m.group(0) for m in CRIPTO.finditer(texto)]
+
+
+class SinCripto(unittest.TestCase):
+    def test_la_web_publica_no_nombra_cripto(self):
+        raiz = RAIZ.parent
+        vistos, hallados = 0, []
+        for carpeta in ("public", "atlas", "data", "partidas"):
+            for f in sorted((raiz / carpeta).rglob("*")):
+                if not f.is_file() or f.suffix not in TEXTO or f == Path(__file__).resolve():
+                    continue
+                vistos += 1
+                for n, linea in enumerate(f.read_text(encoding="utf-8", errors="replace").splitlines(), 1):
+                    hallados += [f"{f.relative_to(raiz)}:{n}: {m}" for m in menciones_cripto(linea)]
+        self.assertGreater(vistos, 100, "la guarda no ha mirado casi nada: falla cerrado")
+        self.assertEqual(hallados, [], "\n".join(hallados[:20]))
+
+    def test_la_guarda_caza_lo_que_debe(self):
+        for sembrado in ("saldo en NEAR", "hexelion.near", "red: mainnet", "valores de Testnet",
+                         "El Alquimista dice", "1e24 yoctoNEAR", "import near_tx"):
+            with self.subTest(sembrado=sembrado):
+                self.assertTrue(menciones_cripto(sembrado))
+        self.assertEqual(menciones_cripto("the cave is near the core"), [])
 
 if __name__ == "__main__":
     unittest.main(verbosity=1)

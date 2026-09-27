@@ -175,6 +175,6 @@
   "st_inercia": "Inercia térmica",
   "st_profundidad": "Profundidad",
   "st_aura": "Aura",
-  "testnet": "Valores de TESTNET ({v}): provisionales, se ajustarán."
+  "provisional": "Valores de prueba ({v}): provisionales, se ajustarán."
  }
 }

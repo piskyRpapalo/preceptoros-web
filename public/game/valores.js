@@ -1,11 +1,11 @@
 /* preceptoros.org · theGame · los VALORES, separados de la logica.
 
-   RED: TESTNET. Todo numero de aqui es provisional y se dice en pantalla
+   ESTADO: PROVISIONAL. Todo numero de aqui es provisional y se dice en pantalla
    (Soberano, 2026-09-27: «no te preocupes por recursos, habilidades ni
    niveles; haz la estructura; los valores y los LoRAs los adherimos
    despues»). La logica (`gacha.js`, `core.js`) no lleva ni una cifra de
    equilibrio: las lee de aqui. Cambiar el juego es cambiar ESTE fichero, y
-   el dia que haya valores de verdad se cambia `red` y se versiona.
+   el dia que haya valores de verdad se cambia `estado` y se versiona.
 
    SOLO DATOS. Ni funciones ni efectos: un paquete de valores es JSON
    declarativo, nunca codigo (doctrina de workflows de terceros). Por eso el
@@ -14,8 +14,8 @@
   'use strict';
 
   var VALORES = {
-    red: 'testnet',
-    version: 'testnet-2026-09-27.1',
+    estado: 'provisional',
+    version: 'provisional-2026-09-27.1',
     /* Treasure Classes. Coste en Cobre y Luz: medido con el piloto base, la
        Biomasa nunca pasa de 2. `incuba` en ciclos de juego; `calidad` por mil
        (unico, raro, magico). */

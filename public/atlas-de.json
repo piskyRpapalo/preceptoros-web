@@ -175,6 +175,6 @@
   "st_inercia": "Thermische Trägheit",
   "st_profundidad": "Tiefe",
   "st_aura": "Aura",
-  "testnet": "TESTNET-Werte ({v}): vorläufig, werden noch justiert."
+  "provisional": "Testwerte ({v}): vorläufig, werden noch justiert."
  }
 }

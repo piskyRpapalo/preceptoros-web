@@ -55,6 +55,6 @@ PASO 5 · CONSTRUIR (solo después de mis respuestas)
   solo cuando yo diga «empuja»; antes, coherencia-publica.py y la guardia de
   higiene (ni IPs, ni hostnames, ni rutas de usuario en lo público).
 
-Valores: TESTNET (public/game/valores.js). No ajustes números ni LoRAs:
+Valores: PROVISIONALES (public/game/valores.js). No ajustes números ni LoRAs:
 estructura primero.
 ```

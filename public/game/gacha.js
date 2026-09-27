@@ -19,7 +19,7 @@
 (function (raiz) {
   'use strict';
 
-  /* LOS VALORES VIVEN EN `valores.js` (red TESTNET): aqui solo la logica.
+  /* LOS VALORES VIVEN EN `valores.js` (estado PROVISIONAL): aqui solo la logica.
      En node se piden con require; en la pestana los carga la puerta antes. */
   var V = (typeof module === 'object' && module.exports) ? require('./valores.js') : raiz.AtlasValores;
   var TCS = V.tcs, PREFIJOS = V.prefijos, SUFIJOS = V.sufijos;
@@ -126,7 +126,7 @@
   }
 
   var AtlasGacha = {
-    RED: V.red, VERSION_VALORES: V.version, TCS: TCS, RAREZAS: RAREZAS, PREFIJOS: PREFIJOS, SUFIJOS: SUFIJOS, STATS: STATS, HUEVO: HUEVO,
+    ESTADO: V.estado, VERSION_VALORES: V.version, TCS: TCS, RAREZAS: RAREZAS, PREFIJOS: PREFIJOS, SUFIJOS: SUFIJOS, STATS: STATS, HUEVO: HUEVO,
     generador: generador, tirada: tirada, mezcla: mezcla, punto: punto, compacta: compacta
   };
   if (typeof module === 'object' && module.exports) { module.exports = AtlasGacha; }

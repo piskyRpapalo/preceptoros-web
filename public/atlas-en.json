@@ -175,6 +175,6 @@
   "st_inercia": "Thermal inertia",
   "st_profundidad": "Depth",
   "st_aura": "Aura",
-  "testnet": "TESTNET values ({v}): provisional, to be tuned."
+  "provisional": "Test values ({v}): provisional, to be tuned."
  }
 }
