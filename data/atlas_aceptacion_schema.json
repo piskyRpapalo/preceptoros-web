@@ -1,0 +1,23 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "preceptoros:atlas.aceptacion/1",
+ "title": "Aceptacion del piloto de theGame",
+ "description": "Lo que la persona FIRMA al pulsar «Acepto». Sin esta firma el piloto no arranca. Lo que NO hace es obligatorio y no admite huecos: valor, credenciales, red y guardado tienen que estar los cuatro. La firma Ed25519 va aparte (`Identity.firmar`) sobre el JSON de este objeto, y muere con la pestana como todo en v1.",
+ "type": "object",
+ "additionalProperties": false,
+ "required": ["esquema", "modo", "politica", "contenido_v", "que_hace", "que_no_hace", "pseudonimo", "clave_publica"],
+ "properties": {
+  "esquema": {"const": "atlas.aceptacion/1"},
+  "modo": {"const": "piloto"},
+  "politica": {"enum": ["piloto_base", "lora"]},
+  "contenido_v": {"type": "string", "minLength": 1},
+  "que_hace": {"type": "array", "minItems": 1, "uniqueItems": true,
+   "items": {"enum": ["lee_instantanea", "propone_accion", "mismas_acciones_que_tu"]}},
+  "que_no_hace": {"type": "array", "uniqueItems": true,
+   "items": {"enum": ["valor", "credenciales", "red", "guardado"]},
+   "allOf": [{"contains": {"const": "valor"}}, {"contains": {"const": "credenciales"}},
+             {"contains": {"const": "red"}}, {"contains": {"const": "guardado"}}]},
+  "pseudonimo": {"type": "string", "minLength": 1},
+  "clave_publica": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+ }
+}
