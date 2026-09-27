@@ -111,7 +111,7 @@
   "piloto_sin_id": "Senza identità non c'è firma, e senza firma non parte.",
   "piloto_crear_id": "Crea identità",
   "partida_exportar": "Esporta partita",
-  "partida_nota": "Un file firmato con la legge e le tue azioni, perché il rack la rigiochi e la verifichi. Non si invia da solo.",
+  "partida_nota": "Un file firmato con la legge e le tue azioni, perché il rack la rigiochi e la verifichi. Non si invia da solo. Se il tuo dispositivo è collegato a un nodo, le correzioni confermate dal giudice addestrano il prossimo pilota.",
   "partida_hecha": "Partita esportata e firmata: {n} passi.",
   "partida_nd": "Non c'è ancora una partita da esportare.",
   "sugerir": "Suggerisci",

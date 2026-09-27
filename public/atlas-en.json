@@ -111,7 +111,7 @@
   "piloto_sin_id": "Without an identity there is no signature, and without a signature it does not start.",
   "piloto_crear_id": "Create identity",
   "partida_exportar": "Export game",
-  "partida_nota": "A signed file with the law and your actions, so the rack can replay and verify it. It is not sent on its own.",
+  "partida_nota": "A signed file with the law and your actions, so the rack can replay and verify it. It is not sent on its own. If your device is linked to a node, the corrections the judge confirms train the next pilot.",
   "partida_hecha": "Game exported and signed: {n} steps.",
   "partida_nd": "There is no game to export yet.",
   "sugerir": "Suggest",

@@ -111,7 +111,7 @@
   "piloto_sin_id": "Ohne Identität keine Signatur, und ohne Signatur startet er nicht.",
   "piloto_crear_id": "Identität anlegen",
   "partida_exportar": "Spiel exportieren",
-  "partida_nota": "Eine signierte Datei mit dem Gesetz und deinen Aktionen, damit das Rack sie nachspielt und prüft. Sie wird nicht von selbst gesendet.",
+  "partida_nota": "Eine signierte Datei mit dem Gesetz und deinen Aktionen, damit das Rack sie nachspielt und prüft. Sie wird nicht von selbst gesendet. Ist dein Gerät mit einem Knoten verknüpft, trainieren die Korrekturen, die der Richter bestätigt, den nächsten Piloten.",
   "partida_hecha": "Spiel exportiert und signiert: {n} Schritte.",
   "partida_nd": "Es gibt noch kein Spiel zum Exportieren.",
   "sugerir": "Vorschlagen",

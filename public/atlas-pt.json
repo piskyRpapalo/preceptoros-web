@@ -111,7 +111,7 @@
   "piloto_sin_id": "Sem identidade não há assinatura, e sem assinatura não arranca.",
   "piloto_crear_id": "Criar identidade",
   "partida_exportar": "Exportar partida",
-  "partida_nota": "Um ficheiro assinado com a lei e as tuas ações, para que o rack a volte a jogar e a verifique. Não é enviado sozinho.",
+  "partida_nota": "Um ficheiro assinado com a lei e as tuas ações, para que o rack a volte a jogar e a verifique. Não é enviado sozinho. Se o teu aparelho estiver ligado a um nó, as correções que o juiz confirmar treinam o próximo piloto.",
   "partida_hecha": "Partida exportada e assinada: {n} passos.",
   "partida_nd": "Ainda não há partida para exportar.",
   "sugerir": "Sugerir",

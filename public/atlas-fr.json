@@ -111,7 +111,7 @@
   "piloto_sin_id": "Sans identité pas de signature, et sans signature il ne démarre pas.",
   "piloto_crear_id": "Créer une identité",
   "partida_exportar": "Exporter la partie",
-  "partida_nota": "Un fichier signé avec la loi et tes actions, pour que le rack la rejoue et la vérifie. Il ne s'envoie pas tout seul.",
+  "partida_nota": "Un fichier signé avec la loi et tes actions, pour que le rack la rejoue et la vérifie. Il ne s'envoie pas tout seul. Si ton appareil est lié à un nœud, les corrections que le juge confirme entraînent le prochain pilote.",
   "partida_hecha": "Partie exportée et signée : {n} pas.",
   "partida_nd": "Il n'y a pas encore de partie à exporter.",
   "sugerir": "Suggérer",
