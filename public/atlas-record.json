@@ -1,7 +1,7 @@
 {
  "esquema": "atlas.record/1",
  "procedencia": "medido por atlas/arnes_piloto.mjs; determinista; atlas/test_atlas.py lo recalcula",
- "contenido_v": "2026-09-26.1",
+ "contenido_v": "2026-09-27.1",
  "politica": "piloto_base",
  "horizonte_ciclos": 20000,
  "ley": {
