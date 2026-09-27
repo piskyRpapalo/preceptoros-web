@@ -18,10 +18,12 @@
   if (window.TheGame) { return; }
 
   /* El piloto va detras del piso: la partida envuelve al motor ya cargado y
-     la capa del piloto necesita los textos que pide el piso. */
+     la capa del piloto necesita los textos que pide el piso. Los de `/game/`
+     son theGame v1.5: gacha, army, sintesis e incubadora. */
   var GUIONES = [['atlas-arte.js'], ['atlas-mapa.js'],
     ['atlas-dialogo.js', '/assets/'], ['atlas-motor.js'], ['atlas-piso.js', '/'],
-    ['atlas-piloto.js'], ['atlas-partida.js'], ['atlas-piloto-capa.js']];
+    ['atlas-piloto.js'], ['atlas-partida.js'], ['atlas-piloto-capa.js'],
+    ['/game/gacha.js'], ['/game/db.js'], ['/game/core.js'], ['/game/ui.js']];
   var capa = null, origen = null, cargado = null;
 
   function el(tag, clase, texto) {
@@ -39,7 +41,7 @@
       document.head.appendChild(hoja);
       GUIONES.forEach(function (g, i) {
         var s = document.createElement('script');
-        s.src = '/assets/' + g[0];
+        s.src = g[0].charAt(0) === '/' ? g[0] : '/assets/' + g[0];
         s.async = false;
         if (g[1]) { s.dataset.base = g[1]; }
         if (i === GUIONES.length - 1) {
@@ -100,6 +102,7 @@
         construye();
         window.AtlasJuego.monta(document.getElementById('atlas-juego'), capa).then(function () {
           if (window.AtlasPilotoCapa) { window.AtlasPilotoCapa.monta(capa); }
+          if (window.AtlasIncubadora) { window.AtlasIncubadora.monta(capa); }
         });
       }
       if (!capa.open) { capa.showModal(); }

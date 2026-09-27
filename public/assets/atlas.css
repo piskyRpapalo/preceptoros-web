@@ -224,3 +224,17 @@ span.atlas-sector{pointer-events:none}
 .atlas-piloto-listas h4{margin:0 0 .3rem;font:600 .78rem/1.3 var(--mono);text-transform:uppercase}
 .atlas-piloto-listas ul{margin:0;padding-inline-start:1.1rem;line-height:1.5}
 .thegame-sugerencia{flex-basis:100%;display:flex;flex-wrap:wrap;align-items:center;gap:.4rem;margin:0;font:.8rem/1.4 var(--mono);color:var(--accent-copper-claro)}
+/* --- v1.5: incubadora y army; las tropas son ondas en un lienzo ---------- */
+.atlas-incubadora{margin-top:1rem}.atlas-incubadora h5{margin:.8rem 0 .3rem;font:600 .78rem/1.3 var(--mono);text-transform:uppercase}
+.atlas-inc-mandos{display:flex;flex-wrap:wrap;gap:.4rem}
+.atlas-nido,.atlas-army{display:flex;flex-wrap:wrap;gap:.6rem;margin:0;padding:0;list-style:none}
+.atlas-nido li{display:grid;justify-items:center;gap:.2rem;font:.72rem/1.3 var(--mono)}
+.atlas-onda{--onda:var(--accent-copper-claro);display:block}
+.atlas-tropa{margin:0;display:grid;justify-items:center;gap:.2rem;text-align:center}
+.atlas-tropa small{font:.7rem var(--mono);color:var(--text-muted)}
+.rar-magico .atlas-onda{--onda:#7ea6ff}.rar-magico b{color:#7ea6ff}.rar-raro .atlas-onda{--onda:#f2d04a}.rar-raro b{color:#f2d04a}
+.rar-unico .atlas-onda{--onda:#e8b64c}.rar-unico b{color:#e8b64c}
+.atlas-eclosion{margin-top:.6rem;padding:.8rem;border:1px solid var(--accent-copper);border-radius:var(--radius)}
+.atlas-stats{display:flex;flex-wrap:wrap;gap:.2rem 1rem;margin:.4rem 0;padding:0;list-style:none;font:.78rem var(--mono)}
+/* `hidden` tiene que ganar a los display de arriba: si no, lo oculto se ve. */
+.thegame-sugerencia[hidden],.atlas-eclosion[hidden]{display:none}.atlas-tropa figcaption{display:grid;gap:.1rem}
