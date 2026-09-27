@@ -156,3 +156,9 @@ Ejecutado por orden del Soberano («empieza a ejecutarlo en la web, quiero verlo
 | B6-B9 | PENDIENTE · firma B6 + rack | — |
 Medido: récord de la casa (ley `{nd:false, integridad_max:117, dano:1}`, 20 000 ciclos). Piloto base: fase 4 en el ciclo 13 997, integridad mínima 93, 0 inválidas, 0 fallos. Sin piloto: fase 4 en el ciclo 19 176, integridad mínima 0.
 Siguiente en el rack: B0 → B1(p0x) → B5 (la Aduana llama a `node atlas/verifica_partida.mjs <fichero>`; si el código de salida es 0 va a bronze, si es 1 va a `rechazados/` con el motivo del JSON).
+
+## §10 · Firmas del 2026-09-27 (segunda tanda) y lo hecho con ellas
+- **B6 FIRMADO:** el LoRA del juego corre en la **app Preceptor del dispositivo**. Es un LoRA mini que no habla, solo mueve. La web juega con firma y sin LoRA (piloto base). El plan de la app está en `atlas/PLAN_APP_PILOTO.md` (fases A0-A6), y B7-B9 pasan a ejecutarse a través de ese plan.
+- **Sugerencia 1 firmada → HECHA:** workflow `partidas` (`.github/workflows/partidas.yml`), la Aduana pública. Vuelve a jugar cada `partidas/*.json` con `atlas/verifica_partida.mjs`. Ya hay una partida real de ejemplo (Chromium sin cabeza, identidad desechable) que verifica.
+- **Sugerencia 2 firmada → HECHA:** modo **Sugerir** (humano + piloto). La regla propone y la persona pulsa Hacer o Ignorar, sin firma porque juega la persona. La partida anota `{sugerencia, respuesta}` y la reproducción salta esos pasos. Una sugerencia ignorada se calla 30 ciclos.
+- Contrato: `atlas.aceptacion/1` con `politica: lora` exige `modelo_sha256` (se firma ESE modelo).
