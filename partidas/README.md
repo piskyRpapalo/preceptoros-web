@@ -17,7 +17,10 @@ Subirlo es publicarlo: el repositorio es público.
 Solo las partidas con acciones `humano` y con sugerencias respondidas sirven
 para entrenar el LoRA del juego, y solo cuando el Soberano fije el umbral.
 
-`ejemplo-navegador-sin-cabeza.json` es la primera, y es de prueba: la jugó un
-Chromium sin cabeza el 2026-09-27, con una identidad desechable, para demostrar
-la cadena entera (sugerencia ignorada → piloto firmado → exportar → verificar).
-No es de una persona y no cuenta para entrenar.
+`ejemplo-navegador-sin-cabeza.json` es de prueba: la jugó un Chromium sin
+cabeza el 2026-09-27, con una identidad desechable y el reloj acelerado, para
+demostrar la cadena de la v1.5 (invocación firmada del Tesoro del Arrecife →
+pago de 50 de Cobre → exportar → verificar). No es de una persona y no cuenta
+para entrenar. La primera de ejemplo (versión de contenido `2026-09-26.1`)
+dejó de reproducirse cuando el motor ganó `invocar`: el verificador lo dice
+con su causa (`contenido_v distinto`) y por eso se sustituyó.
