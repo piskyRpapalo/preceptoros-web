@@ -1,0 +1,71 @@
+{
+ "esquema": "atlas.partida.firmada/1",
+ "partida": {
+  "esquema": "atlas.partida/1",
+  "contenido_v": "2026-09-26.1",
+  "ley": {
+   "nd": false,
+   "integridad_max": 117,
+   "dano": 1
+  },
+  "pasos": [
+   {
+    "ciclos": 2
+   },
+   {
+    "sugerencia": {
+     "accion": "bajar_a",
+     "banda": "arrecife"
+    },
+    "respuesta": "ignorada"
+   },
+   {
+    "ciclos": 5
+   },
+   {
+    "accion": "bajar_a",
+    "banda": "arrecife",
+    "origen": "piloto_base"
+   },
+   {
+    "ciclos": 16
+   }
+  ],
+  "truncada": false,
+  "final": {
+   "esquema": "atlas.instantanea/1",
+   "contenido_v": "2026-09-26.1",
+   "ciclo": 23,
+   "fase": 1,
+   "nivel_nucleo": 1,
+   "profundidad": "0-50",
+   "recursos": {
+    "luz": 16,
+    "biomasa": 1,
+    "cobre": 9,
+    "flujo": 2,
+    "oxigeno": 300
+   },
+   "integridad": 94,
+   "integridad_max": 117,
+   "grieta": {
+    "abierta": true,
+    "cierre": 0
+   },
+   "niveles": {
+    "descenso": 1,
+    "pesca": 1,
+    "mineria": 1,
+    "forja": 1,
+    "herboristeria": 1,
+    "restauracion": 1,
+    "ingenieria": 1
+   },
+   "pendiente_ciclos": 0
+  }
+ },
+ "firma": "ed25519:dd34759dc715b98ffc9759148d6acbd11f94ba93dbaa6a1bd09c813a374a1feabaf7b5b014874583487f4266dc98f097972f8f91438e8de0642f36ed85993305",
+ "algoritmo": "Ed25519",
+ "pseudonimo": "Tester-D410",
+ "clave_publica": "605e5fa450c12778080a197086469a91b71bfb86d8b4ada914ceb93703f7fec6"
+}

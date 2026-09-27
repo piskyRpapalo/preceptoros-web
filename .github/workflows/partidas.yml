@@ -1,0 +1,39 @@
+# La ADUANA PUBLICA de theGame, antes de que exista la del rack (sugerencia
+# firmada por el Soberano, 2026-09-27). Cada partida firmada que entre en
+# `partidas/` por PR se vuelve a jugar con el mismo motor: forma -> firma
+# Ed25519 -> reproduccion. Una partida inventada, aunque este bien firmada,
+# no se reproduce y el check se pone rojo con su motivo.
+#
+# DETERMINISTA Y SIN LLM: es `node atlas/verifica_partida.mjs`, lo mismo que
+# correra el rack. `pull_request`, no `pull_request_target`: el codigo de un
+# fork corre sin secretos y con permiso de solo lectura.
+name: partidas
+
+on:
+  pull_request:
+    paths: ["partidas/**", "atlas/verifica_partida.mjs", "public/assets/atlas-motor.js",
+            "public/assets/atlas-partida.js"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verifica:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Volver a jugar cada partida
+        run: |
+          shopt -s nullglob
+          fallos=0; total=0
+          for f in partidas/*.json; do
+            total=$((total+1))
+            if node atlas/verifica_partida.mjs "$f"; then echo "ENTRA   $f"; else echo "RECHAZO $f"; fallos=$((fallos+1)); fi
+          done
+          echo "partidas: $total · rechazadas: $fallos"
+          [ "$total" -gt 0 ] || echo "NO_DATA · no hay partidas en partidas/ todavia"
+          [ "$fallos" -eq 0 ]
