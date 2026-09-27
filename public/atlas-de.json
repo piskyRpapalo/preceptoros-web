@@ -113,6 +113,17 @@
   "partida_exportar": "Spiel exportieren",
   "partida_nota": "Eine signierte Datei mit dem Gesetz und deinen Aktionen, damit das Rack sie nachspielt und prüft. Sie wird nicht von selbst gesendet.",
   "partida_hecha": "Spiel exportiert und signiert: {n} Schritte.",
-  "partida_nd": "Es gibt noch kein Spiel zum Exportieren."
+  "partida_nd": "Es gibt noch kein Spiel zum Exportieren.",
+  "sugerir": "Vorschlagen",
+  "sugerir_t": "Die Regel schlägt vor und du entscheidest. Keine Signatur nötig: du spielst.",
+  "sugerir_on": "Vorschläge an: die Regel schlägt vor, du entscheidest.",
+  "sugerir_off": "Vorschläge aus.",
+  "sugerencia": "Vorschlag: {a}",
+  "hacer": "Ausführen",
+  "ignorar": "Ignorieren",
+  "acc_recoger": "das Produzierte ernten",
+  "acc_reparar": "den Riss reparieren",
+  "acc_aplazar": "die Reparatur aufschieben",
+  "acc_bajar_a": "tauchen nach {b}"
  }
 }

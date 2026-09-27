@@ -55,6 +55,7 @@
     var ley = { nd: p.ley.nd, integridad_max: p.ley.integridad_max, dano: p.ley.dano };
     var e = M.inicial(ley), f = { recoger: M.recoger, reparar: M.reparar, aplazar: M.aplazar };
     p.pasos.forEach(function (s, n) {
+      if ('sugerencia' in s) { return; }
       if ('ciclos' in s) { for (var i = 0; i < s.ciclos; i++) { e = M.ciclo(e, ley); } }
       else if ('dormir_ms' in s) { e = M.dormir(e, s.dormir_ms); }
       else if (s.accion === 'bajar_a') { e = M.bajarA(e, s.banda, SIN_DIA); }
@@ -103,6 +104,17 @@
     }));
   }
 
+  /* HUMANO + PILOTO (sugerencia firmada por el Soberano, 2026-09-27): la
+     regla PROPONE y la persona decide. Se anota que se propuso y que se
+     respondio; si la persona la hace, la accion que sigue es suya (`humano`).
+     Es el corpus que un LoRA necesita para ganarle a la regla: donde la
+     persona discrepa. No cambia el estado: la reproduccion lo salta. */
+  function anota(a, respuesta) {
+    var s = { accion: a.accion };
+    if (a.banda) { s.banda = a.banda; }
+    empuja({ sugerencia: s, respuesta: respuesta });
+  }
+
   /* Quien actua ahora: la persona, salvo mientras el piloto aplica su accion. */
   function como(origen, hacer) {
     var antes = G.origen;
@@ -112,7 +124,7 @@
 
   var AtlasPartida = {
     MAX_PASOS: MAX_PASOS, instantanea: instantanea, final: final,
-    reproduce: reproduce, partida: partida, como: como
+    reproduce: reproduce, partida: partida, como: como, anota: anota
   };
   if (typeof module === 'object' && module.exports) { module.exports = AtlasPartida; }
   else {

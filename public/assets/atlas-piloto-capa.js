@@ -21,13 +21,17 @@
    UNA SOLA SALIDA DE RED, al propio origen y al abrir el dialogo: el record
    de la casa (`atlas-record.json`). Si no llega, se dice NO_DATA.
 
+   SUGERIR (humano + piloto): la misma regla propone y la persona pulsa
+   Hacer o Ignorar; las dos respuestas quedan en la partida.
+
    EXPORTAR PARTIDA: la ley y las acciones, firmadas, como FICHERO que la
    persona se lleva. No se envia solo y no se guarda en el navegador. */
 (function () {
   'use strict';
 
-  var FUSIBLE = 3;
+  var FUSIBLE = 3, CALLA = 30;
   var capa = null, R = {}, reloj = 0, fallos = 0, firma = null, record = null;
+  var modo = null, propuesta = null, callada = {};
 
   function T(k) { return (window.AtlasJuego && window.AtlasJuego.texto(k)) || ''; }
   function el(tag, clase, texto) {
@@ -73,6 +77,7 @@
   }
   function paso() {
     if (!puede()) { return; }
+    if (modo === 'sugerir') { return sugiere(); }
     var J = window.AtlasJuego, a = window.AtlasPiloto.decide(J.instantanea(), window.AtlasMotor);
     if (!window.AtlasPiloto.valida(a)) { return falla(); }
     if (a.accion === 'esperar') { return; }
@@ -83,16 +88,47 @@
     fallos += 1;
     if (fallos >= FUSIBLE) { suelta(rellena(T('piloto_fusible'), { n: fallos })); }
   }
+  function late(m) {
+    modo = m; fallos = 0; propuesta = null; R.sug.hidden = true;
+    clearInterval(reloj); reloj = m ? setInterval(paso, window.AtlasMotor.CICLO_MS) : 0;
+    R.piloto.hidden = m === 'piloto'; R.soltar.hidden = m !== 'piloto';
+    R.sugerir.hidden = m === 'piloto';
+    R.sugerir.setAttribute('aria-pressed', String(m === 'sugerir'));
+  }
   function arranca() {
-    fallos = 0;
-    clearInterval(reloj); reloj = setInterval(paso, window.AtlasMotor.CICLO_MS);
-    R.piloto.hidden = true; R.soltar.hidden = false;
+    late('piloto');
     dice(rellena(T('piloto_activo'), { f: corta(firma) }));
   }
   function suelta(motivo) {
-    clearInterval(reloj); reloj = 0; firma = null;
-    R.piloto.hidden = false; R.soltar.hidden = true;
+    late(null); firma = null;
     dice(motivo || T('piloto_suelto'));
+  }
+
+  /* --- humano + piloto: la regla propone, la persona decide ----------------
+     No hace falta firma: aqui no juega la maquina, juega la persona con una
+     pista. Lo que se propone y lo que se responde queda en la partida. Una
+     sugerencia ignorada se calla CALLA ciclos para no insistir cada segundo. */
+  function clave(a) { return a.accion + (a.banda ? ':' + a.banda : ''); }
+  function nombre(a) {
+    if (a.accion !== 'bajar_a') { return T('acc_' + a.accion); }
+    return rellena(T('acc_bajar_a'), { b: T('b' + (window.AtlasPiloto.BANDAS.indexOf(a.banda) + 1)) });
+  }
+  function sugiere() {
+    if (propuesta) { return; }
+    var ins = window.AtlasJuego.instantanea(), a = window.AtlasPiloto.decide(ins, window.AtlasMotor);
+    if (!window.AtlasPiloto.valida(a) || a.accion === 'esperar') { return; }
+    if (callada[clave(a)] > ins.ciclo) { return; }
+    propuesta = a;
+    R.sugT.textContent = rellena(T('sugerencia'), { a: nombre(a) });
+    R.sug.hidden = false;
+  }
+  function responde(hacer) {
+    var a = propuesta; propuesta = null; R.sug.hidden = true;
+    if (!a) { return; }
+    window.AtlasPartida.anota(a, hacer ? 'hecha' : 'ignorada');
+    if (hacer) { window.AtlasJuego.aplica(a); return; }
+    var ins = window.AtlasJuego.instantanea();
+    callada[clave(a)] = (ins ? ins.ciclo : 0) + CALLA;
   }
 
   /* --- «Acepto» ----------------------------------------------------------- */
@@ -195,12 +231,24 @@
     R.caja = el('div', 'thegame-piloto');
     R.piloto = boton(T('piloto')); R.soltar = boton(T('piloto_soltar'));
     R.exporta = boton(T('partida_exportar')); R.exporta.title = T('partida_nota');
+    R.sugerir = boton(T('sugerir')); R.sugerir.title = T('sugerir_t');
+    R.sugerir.setAttribute('aria-pressed', 'false');
     R.soltar.hidden = true;
     R.estado = el('p'); R.estado.setAttribute('role', 'status');
+    R.sug = el('p', 'thegame-sugerencia'); R.sug.hidden = true;
+    R.sugT = el('span'); R.sugT.setAttribute('role', 'status');
+    var hacer = boton(T('hacer')), ignorar = boton(T('ignorar'));
+    hacer.addEventListener('click', function () { responde(true); });
+    ignorar.addEventListener('click', function () { responde(false); });
+    [R.sugT, hacer, ignorar].forEach(function (n) { R.sug.appendChild(n); });
     R.piloto.addEventListener('click', dialogo);
     R.soltar.addEventListener('click', function () { suelta(); });
+    R.sugerir.addEventListener('click', function () {
+      late(modo === 'sugerir' ? null : 'sugerir');
+      dice(T(modo === 'sugerir' ? 'sugerir_on' : 'sugerir_off'));
+    });
     R.exporta.addEventListener('click', exporta);
-    [R.piloto, R.soltar, R.exporta, R.estado].forEach(function (n) { R.caja.appendChild(n); });
+    [R.piloto, R.soltar, R.sugerir, R.exporta, R.estado, R.sug].forEach(function (n) { R.caja.appendChild(n); });
     barra.insertBefore(R.caja, barra.querySelector('.thegame-cerrar'));
   }
 

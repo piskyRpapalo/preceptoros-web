@@ -140,4 +140,27 @@ caso('verifica: sin firma -> forma', () => {
   const r = verifica(s); return r.motivo === 'forma: firma' || r;
 });
 
+caso('humano + piloto: se anota lo propuesto y lo respondido, y no cambia la partida', () => {
+  const w = pestana(), Mw = w.AtlasMotor, Pw = w.AtlasPartida;
+  let E = Mw.inicial(LEY);
+  for (let i = 0; i < 40; i++) { E = Mw.ciclo(E, LEY); }
+  Pw.anota({ accion: 'bajar_a', banda: 'arrecife' }, 'ignorada');
+  E.cobre = 0;
+  Pw.anota({ accion: 'reparar' }, 'hecha'); E = Mw.reparar(E);
+  const p = Pw.partida(E, Mw);
+  const s = p.pasos.filter((x) => 'sugerencia' in x).map((x) => x.sugerencia.accion + ':' + x.respuesta);
+  const orden = p.pasos.map((x) => Object.keys(x)[0]);
+  return (JSON.stringify(s) === JSON.stringify(['bajar_a:ignorada', 'reparar:hecha']) &&
+    JSON.stringify(orden) === JSON.stringify(['ciclos', 'sugerencia', 'sugerencia', 'accion']) &&
+    p.pasos[3].origen === 'humano') || { s, orden };
+});
+caso('humano + piloto: la partida con sugerencias se verifica', () => {
+  const w = pestana(), Mw = w.AtlasMotor, Pw = w.AtlasPartida;
+  let E = Mw.inicial(LEY);
+  for (let i = 0; i < 60; i++) { E = Mw.ciclo(E, LEY); }
+  Pw.anota({ accion: 'reparar' }, 'hecha'); E = Mw.reparar(E);
+  for (let i = 0; i < 10; i++) { E = Mw.ciclo(E, LEY); }
+  const r = verifica(sobre(Pw.partida(E, Mw))); return r.ok || r;
+});
+
 process.stdout.write(JSON.stringify(casos));

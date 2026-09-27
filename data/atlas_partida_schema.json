@@ -2,38 +2,169 @@
  "$schema": "https://json-schema.org/draft/2020-12/schema",
  "$id": "preceptoros:atlas.partida/1",
  "title": "Partida exportada de theGame",
- "description": "Guarda la LEY y las ACCIONES, no los estados (sugerencia firmada por el Soberano, 2026-09-27). El motor es puro: con la ley y los pasos, cualquiera --la Aduana del rack incluida-- vuelve a jugar la partida y comprueba que `final` sale igual. Un estado inventado no se puede reproducir. Sin fechas de reloj: el tiempo es `ciclos` y `dormir_ms`, que es tiempo de juego. La firma va en el sobre, no aqui.",
+ "description": "Guarda la LEY y las ACCIONES, no los estados (sugerencia firmada por el Soberano, 2026-09-27). El motor es puro: con la ley y los pasos, cualquiera --la Aduana del rack incluida-- vuelve a jugar la partida y comprueba que `final` sale igual. Un estado inventado no se puede reproducir. Sin fechas de reloj: el tiempo es `ciclos` y `dormir_ms`, que es tiempo de juego. La firma va en el sobre, no aqui. Modo humano + piloto: los pasos `sugerencia` anotan lo que propuso la regla y lo que respondio la persona; no cambian el estado y la reproduccion los salta.",
  "type": "object",
  "additionalProperties": false,
- "required": ["esquema", "contenido_v", "ley", "pasos", "truncada", "final"],
+ "required": [
+  "esquema",
+  "contenido_v",
+  "ley",
+  "pasos",
+  "truncada",
+  "final"
+ ],
  "properties": {
-  "esquema": {"const": "atlas.partida/1"},
-  "contenido_v": {"type": "string", "minLength": 1},
+  "esquema": {
+   "const": "atlas.partida/1"
+  },
+  "contenido_v": {
+   "type": "string",
+   "minLength": 1
+  },
   "ley": {
-   "type": "object", "additionalProperties": false,
-   "required": ["nd", "integridad_max", "dano"],
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "nd",
+    "integridad_max",
+    "dano"
+   ],
    "properties": {
-    "nd": {"type": "boolean"},
-    "integridad_max": {"type": "integer", "minimum": 1},
-    "dano": {"type": "integer", "minimum": 1}
+    "nd": {
+     "type": "boolean"
+    },
+    "integridad_max": {
+     "type": "integer",
+     "minimum": 1
+    },
+    "dano": {
+     "type": "integer",
+     "minimum": 1
+    }
    }
   },
   "pasos": {
-   "type": "array", "maxItems": 5000,
-   "items": {"oneOf": [
-    {"type": "object", "additionalProperties": false, "required": ["ciclos"],
-     "properties": {"ciclos": {"type": "integer", "minimum": 1}}},
-    {"type": "object", "additionalProperties": false, "required": ["dormir_ms"],
-     "properties": {"dormir_ms": {"type": "integer", "minimum": 0}}},
-    {"type": "object", "additionalProperties": false, "required": ["accion", "origen"],
-     "properties": {
-      "accion": {"enum": ["recoger", "reparar", "aplazar", "bajar_a"]},
-      "banda": {"enum": ["arrecife", "ruinas", "bosque", "nucleo"]},
-      "origen": {"enum": ["humano", "piloto_base", "lora"]}
-     }}
-   ]}
+   "type": "array",
+   "maxItems": 5000,
+   "items": {
+    "oneOf": [
+     {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+       "ciclos"
+      ],
+      "properties": {
+       "ciclos": {
+        "type": "integer",
+        "minimum": 1
+       }
+      }
+     },
+     {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+       "dormir_ms"
+      ],
+      "properties": {
+       "dormir_ms": {
+        "type": "integer",
+        "minimum": 0
+       }
+      }
+     },
+     {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+       "accion",
+       "origen"
+      ],
+      "properties": {
+       "accion": {
+        "enum": [
+         "recoger",
+         "reparar",
+         "aplazar",
+         "bajar_a"
+        ]
+       },
+       "banda": {
+        "enum": [
+         "arrecife",
+         "ruinas",
+         "bosque",
+         "nucleo"
+        ]
+       },
+       "origen": {
+        "enum": [
+         "humano",
+         "piloto_base",
+         "lora"
+        ]
+       }
+      }
+     },
+     {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+       "sugerencia",
+       "respuesta"
+      ],
+      "properties": {
+       "sugerencia": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+         "accion"
+        ],
+        "properties": {
+         "accion": {
+          "enum": [
+           "recoger",
+           "reparar",
+           "aplazar",
+           "bajar_a"
+          ]
+         },
+         "banda": {
+          "enum": [
+           "arrecife",
+           "ruinas",
+           "bosque",
+           "nucleo"
+          ]
+         }
+        }
+       },
+       "respuesta": {
+        "enum": [
+         "hecha",
+         "ignorada"
+        ]
+       }
+      }
+     }
+    ]
+   }
   },
-  "truncada": {"type": "boolean"},
-  "final": {"type": "object", "required": ["esquema", "ciclo", "fase", "nivel_nucleo", "integridad", "recursos", "niveles"]}
+  "truncada": {
+   "type": "boolean"
+  },
+  "final": {
+   "type": "object",
+   "required": [
+    "esquema",
+    "ciclo",
+    "fase",
+    "nivel_nucleo",
+    "integridad",
+    "recursos",
+    "niveles"
+   ]
+  }
  }
 }

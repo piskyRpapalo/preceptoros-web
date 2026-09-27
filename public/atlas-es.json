@@ -113,6 +113,17 @@
   "partida_exportar": "Exportar partida",
   "partida_nota": "Un fichero firmado con la ley y tus acciones, para que el rack lo vuelva a jugar y lo verifique. No se envía solo.",
   "partida_hecha": "Partida exportada y firmada: {n} pasos.",
-  "partida_nd": "No hay partida que exportar todavía."
+  "partida_nd": "No hay partida que exportar todavía.",
+  "sugerir": "Sugerir",
+  "sugerir_t": "La regla propone y tú decides. No hace falta firma: juegas tú.",
+  "sugerir_on": "Sugerencias activas: la regla propone, tú decides.",
+  "sugerir_off": "Sugerencias apagadas.",
+  "sugerencia": "Sugerencia: {a}",
+  "hacer": "Hacer",
+  "ignorar": "Ignorar",
+  "acc_recoger": "recoger lo producido",
+  "acc_reparar": "reparar la grieta",
+  "acc_aplazar": "aplazar la reparación",
+  "acc_bajar_a": "bajar a {b}"
  }
 }

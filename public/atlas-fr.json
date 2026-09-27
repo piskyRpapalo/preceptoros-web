@@ -113,6 +113,17 @@
   "partida_exportar": "Exporter la partie",
   "partida_nota": "Un fichier signé avec la loi et tes actions, pour que le rack la rejoue et la vérifie. Il ne s'envoie pas tout seul.",
   "partida_hecha": "Partie exportée et signée : {n} pas.",
-  "partida_nd": "Il n'y a pas encore de partie à exporter."
+  "partida_nd": "Il n'y a pas encore de partie à exporter.",
+  "sugerir": "Suggérer",
+  "sugerir_t": "La règle propose et tu décides. Pas besoin de signature : c'est toi qui joues.",
+  "sugerir_on": "Suggestions actives : la règle propose, tu décides.",
+  "sugerir_off": "Suggestions éteintes.",
+  "sugerencia": "Suggestion : {a}",
+  "hacer": "Faire",
+  "ignorar": "Ignorer",
+  "acc_recoger": "récolter la production",
+  "acc_reparar": "réparer la faille",
+  "acc_aplazar": "reporter la réparation",
+  "acc_bajar_a": "descendre à {b}"
  }
 }

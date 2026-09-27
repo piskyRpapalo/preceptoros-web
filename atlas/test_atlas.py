@@ -366,7 +366,9 @@ class Piloto(unittest.TestCase):
                  "integridad": 117, "recursos": {}, "niveles": {}}
         ok_par = {"esquema": "atlas.partida/1", "contenido_v": "2026-09-26.1",
                   "ley": {"nd": False, "integridad_max": 117, "dano": 1},
-                  "pasos": [{"ciclos": 3}, {"dormir_ms": 0}, {"accion": "reparar", "origen": "humano"}],
+                  "pasos": [{"ciclos": 3}, {"dormir_ms": 0},
+                            {"sugerencia": {"accion": "reparar"}, "respuesta": "hecha"},
+                            {"accion": "reparar", "origen": "humano"}],
                   "truncada": False, "final": final}
         def con(base, **cambios):
             d = json.loads(json.dumps(base)); d.update(cambios); return d
@@ -386,6 +388,11 @@ class Piloto(unittest.TestCase):
                 con(ok_par, pasos=[{"accion": "reparar", "origen": "humano", "dia": "2026-09-27"}]),
                 sin(ok_par, "final"), con(ok_par, hora="12:00")]),
         }
+        # B6 (2026-09-27): con politica lora la firma cubre el modelo concreto.
+        ace = jsonschema.Draft202012Validator(json.loads((DATOS / "atlas_aceptacion_schema.json").read_text(encoding="utf-8")))
+        self.assertFalse(ace.is_valid(con(ok_ace, politica="lora")), "lora sin sha del modelo")
+        self.assertTrue(ace.is_valid(con(ok_ace, politica="lora", modelo_sha256="b" * 64)))
+        self.assertFalse(ace.is_valid(con(ok_ace, modelo_sha256="b" * 64)), "sha de modelo en el piloto base")
         for nombre, (bueno, malos) in casos.items():
             esquema = json.loads((DATOS / nombre).read_text(encoding="utf-8"))
             jsonschema.Draft202012Validator.check_schema(esquema)
@@ -398,6 +405,32 @@ class Piloto(unittest.TestCase):
                 with self.subTest(contrato=nombre, violacion=i):
                     self.assertFalse(v.is_valid(malo), f"{nombre} deja pasar la violacion {i}")
                     self.assertTrue(relajado.is_valid(malo), "la violacion no depende del contrato")
+
+    def test_la_aduana_publica_vuelve_a_jugar_las_partidas(self):
+        """El workflow `partidas` llama al MISMO verificador que usara el rack,
+        con permisos de solo lectura y sin `pull_request_target`."""
+        wf = (RAIZ.parent / ".github" / "workflows" / "partidas.yml").read_text(encoding="utf-8")
+        self.assertIn('node atlas/verifica_partida.mjs "$f"', wf)
+        self.assertIn("contents: read", wf)
+        # Los comentarios lo nombran para decir por que NO; se mira el YAML vivo.
+        vivo = "\n".join(l for l in wf.splitlines() if not l.lstrip().startswith("#"))
+        self.assertNotIn("pull_request_target", vivo)
+        self.assertIn('[ "$fallos" -eq 0 ]', wf, "un rechazo no pone el check en rojo")
+        for f in sorted((RAIZ.parent / "partidas").glob("*.json")):
+            with self.subTest(partida=f.name):
+                r = subprocess.run(["node", str(RAIZ / "verifica_partida.mjs"), str(f)],
+                                   capture_output=True, text=True, timeout=120)
+                self.assertEqual(r.returncode, 0, r.stdout)
+
+    def test_sugerir_no_juega_por_la_persona(self):
+        """Humano + piloto: la regla propone y la accion solo se aplica al
+        pulsar Hacer; lo propuesto y lo respondido quedan en la partida."""
+        codigo = sin_comentarios((PISO / "atlas-piloto-capa.js").read_text(encoding="utf-8"))
+        self.assertIn("if (modo === 'sugerir') { return sugiere(); }", codigo)
+        self.assertIn("window.AtlasPartida.anota(a, hacer ? 'hecha' : 'ignorada');", codigo)
+        self.assertEqual(codigo.count("window.AtlasJuego.aplica(a)"), 1,
+                         "sugerir aplica la accion sin que la persona la pulse")
+        self.assertIn("if (hacer) { window.AtlasJuego.aplica(a); return; }", codigo)
 
 
 if __name__ == "__main__":

@@ -113,6 +113,17 @@
   "partida_exportar": "Export game",
   "partida_nota": "A signed file with the law and your actions, so the rack can replay and verify it. It is not sent on its own.",
   "partida_hecha": "Game exported and signed: {n} steps.",
-  "partida_nd": "There is no game to export yet."
+  "partida_nd": "There is no game to export yet.",
+  "sugerir": "Suggest",
+  "sugerir_t": "The rule proposes and you decide. No signature needed: you are the one playing.",
+  "sugerir_on": "Suggestions on: the rule proposes, you decide.",
+  "sugerir_off": "Suggestions off.",
+  "sugerencia": "Suggestion: {a}",
+  "hacer": "Do it",
+  "ignorar": "Ignore",
+  "acc_recoger": "gather what was produced",
+  "acc_reparar": "repair the rift",
+  "acc_aplazar": "postpone the repair",
+  "acc_bajar_a": "dive to {b}"
  }
 }
