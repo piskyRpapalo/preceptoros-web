@@ -1,0 +1,214 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "preceptoros:atlas.gacha/1",
+ "title": "Gacha de theGame v1.5: tropa, invocacion y adopcion",
+ "description": "La tropa es lo que cae de una semilla; la invocacion es lo que se firma para obtener la semilla (su sha256); la adopcion es lo que se firma para meter la tropa en el Army, y `db.js` la VERIFICA antes de escribir. Vive fuera de `public/`: es el contrato.",
+ "$defs": {
+  "tropa": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "esquema",
+    "tc",
+    "base",
+    "rareza",
+    "prefijo",
+    "sufijo",
+    "stats",
+    "armonicos",
+    "semilla"
+   ],
+   "properties": {
+    "esquema": {
+     "const": "atlas.tropa/1"
+    },
+    "tc": {
+     "enum": [
+      "tc1",
+      "tc2",
+      "tc3",
+      "tc4"
+     ]
+    },
+    "base": {
+     "enum": [
+      "pez",
+      "centinela",
+      "leviatan",
+      "heraldo"
+     ]
+    },
+    "rareza": {
+     "enum": [
+      "normal",
+      "magico",
+      "raro",
+      "unico"
+     ]
+    },
+    "prefijo": {
+     "enum": [
+      null,
+      "atlante",
+      "cuprico",
+      "termico",
+      "solar"
+     ]
+    },
+    "sufijo": {
+     "enum": [
+      null,
+      "abismo",
+      "sigilo",
+      "velocidad",
+      "algoritmo"
+     ]
+    },
+    "stats": {
+     "type": "object",
+     "additionalProperties": false,
+     "required": [
+      "vida",
+      "armadura",
+      "velocidad",
+      "sigilo",
+      "inercia",
+      "profundidad",
+      "aura"
+     ],
+     "properties": {
+      "vida": {
+       "type": "integer",
+       "minimum": 0
+      },
+      "armadura": {
+       "type": "integer",
+       "minimum": 0
+      },
+      "velocidad": {
+       "type": "integer",
+       "minimum": 0
+      },
+      "sigilo": {
+       "type": "integer",
+       "minimum": 0
+      },
+      "inercia": {
+       "type": "integer",
+       "minimum": 0
+      },
+      "profundidad": {
+       "type": "integer",
+       "minimum": 0
+      },
+      "aura": {
+       "type": "integer",
+       "minimum": 0
+      }
+     }
+    },
+    "armonicos": {
+     "type": "array",
+     "minItems": 1,
+     "maxItems": 8,
+     "items": {
+      "type": "array",
+      "prefixItems": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 64
+       },
+       {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 64
+       },
+       {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 63
+       }
+      ],
+      "items": false,
+      "minItems": 4
+     }
+    },
+    "semilla": {
+     "type": "string",
+     "pattern": "^[0-9a-f]{64}$"
+    }
+   }
+  },
+  "invocacion": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "esquema",
+    "tc",
+    "ciclo",
+    "n",
+    "pseudonimo",
+    "clave_publica"
+   ],
+   "properties": {
+    "esquema": {
+     "const": "atlas.invocacion/1"
+    },
+    "tc": {
+     "enum": [
+      "tc1",
+      "tc2",
+      "tc3",
+      "tc4"
+     ]
+    },
+    "ciclo": {
+     "type": "integer",
+     "minimum": 0
+    },
+    "n": {
+     "type": "integer",
+     "minimum": 1
+    },
+    "pseudonimo": {
+     "type": "string",
+     "minLength": 1
+    },
+    "clave_publica": {
+     "type": "string",
+     "pattern": "^[0-9a-f]{64}$"
+    }
+   }
+  },
+  "adopcion": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "esquema",
+    "tropa",
+    "pseudonimo",
+    "clave_publica"
+   ],
+   "properties": {
+    "esquema": {
+     "const": "atlas.adopcion/1"
+    },
+    "tropa": {
+     "$ref": "#/$defs/tropa"
+    },
+    "pseudonimo": {
+     "type": "string",
+     "minLength": 1
+    },
+    "clave_publica": {
+     "type": "string",
+     "pattern": "^[0-9a-f]{64}$"
+    }
+   }
+  }
+ }
+}

@@ -2,7 +2,7 @@
  "$schema": "https://json-schema.org/draft/2020-12/schema",
  "$id": "preceptoros:atlas.partida/1",
  "title": "Partida exportada de theGame",
- "description": "Guarda la LEY y las ACCIONES, no los estados (sugerencia firmada por el Soberano, 2026-09-27). El motor es puro: con la ley y los pasos, cualquiera --la Aduana del rack incluida-- vuelve a jugar la partida y comprueba que `final` sale igual. Un estado inventado no se puede reproducir. Sin fechas de reloj: el tiempo es `ciclos` y `dormir_ms`, que es tiempo de juego. La firma va en el sobre, no aqui. Modo humano + piloto: los pasos `sugerencia` anotan lo que propuso la regla y lo que respondio la persona; no cambian el estado y la reproduccion los salta.",
+ "description": "Guarda la LEY y las ACCIONES, no los estados (sugerencia firmada por el Soberano, 2026-09-27). El motor es puro: con la ley y los pasos, cualquiera --la Aduana del rack incluida-- vuelve a jugar la partida y comprueba que `final` sale igual. Un estado inventado no se puede reproducir. Sin fechas de reloj: el tiempo es `ciclos` y `dormir_ms`, que es tiempo de juego. La firma va en el sobre, no aqui. Modo humano + piloto: los pasos `sugerencia` anotan lo que propuso la regla y lo que respondio la persona; no cambian el estado y la reproduccion los salta. theGame v1.5: `invocar` gasta Cobre y Luz en una Treasure Class; solo la persona invoca (origen humano), nunca el piloto.",
  "type": "object",
  "additionalProperties": false,
  "required": [
@@ -145,6 +145,41 @@
          "hecha",
          "ignorada"
         ]
+       }
+      }
+     },
+     {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+       "accion",
+       "coste",
+       "origen"
+      ],
+      "properties": {
+       "accion": {
+        "const": "invocar"
+       },
+       "coste": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+         "cobre",
+         "luz"
+        ],
+        "properties": {
+         "cobre": {
+          "type": "integer",
+          "minimum": 0
+         },
+         "luz": {
+          "type": "integer",
+          "minimum": 0
+         }
+        }
+       },
+       "origen": {
+        "const": "humano"
        }
       }
      }
