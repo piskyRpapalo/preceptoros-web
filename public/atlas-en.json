@@ -174,6 +174,7 @@
   "st_sigilo": "Stealth",
   "st_inercia": "Thermal inertia",
   "st_profundidad": "Depth",
-  "st_aura": "Aura"
+  "st_aura": "Aura",
+  "testnet": "TESTNET values ({v}): provisional, to be tuned."
  }
 }

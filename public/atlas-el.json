@@ -174,6 +174,7 @@
   "st_sigilo": "Αφάνεια",
   "st_inercia": "Θερμική αδράνεια",
   "st_profundidad": "Βάθος",
-  "st_aura": "Αύρα"
+  "st_aura": "Αύρα",
+  "testnet": "Τιμές TESTNET ({v}): προσωρινές, θα ρυθμιστούν."
  }
 }

@@ -17,7 +17,8 @@
 (function (raiz) {
   'use strict';
 
-  var TOPE = 60;
+  var V = (typeof module === 'object' && module.exports) ? require('./valores.js') : raiz.AtlasValores;
+  var TOPE = V.army_tope;
 
   function hex(buf) {
     return Array.prototype.map.call(new Uint8Array(buf), function (b) {

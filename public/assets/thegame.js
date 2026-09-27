@@ -23,7 +23,7 @@
   var GUIONES = [['atlas-arte.js'], ['atlas-mapa.js'],
     ['atlas-dialogo.js', '/assets/'], ['atlas-motor.js'], ['atlas-piso.js', '/'],
     ['atlas-piloto.js'], ['atlas-partida.js'], ['atlas-piloto-capa.js'],
-    ['/game/gacha.js'], ['/game/db.js'], ['/game/core.js'], ['/game/ui.js']];
+    ['/game/valores.js'], ['/game/gacha.js'], ['/game/db.js'], ['/game/core.js'], ['/game/ui.js']];
   var capa = null, origen = null, cargado = null;
 
   function el(tag, clase, texto) {

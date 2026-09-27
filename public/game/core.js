@@ -20,12 +20,8 @@
   /* Frecuencias en Hz, duraciones en segundos. `indice` es la profundidad de
      la modulacion en Hz. Enteros y fracciones fijas: misma entrada, misma
      receta. */
-  var BASE = {
-    pop: { f: 660, m: 2, indice: 120, dur: 0.12, gan: 0.18 },
-    huevo: { f: 220, m: 0.5, indice: 30, dur: 0.5, gan: 0.12 },
-    eclosion: { f: 440, m: 3, indice: 260, dur: 0.6, gan: 0.2 },
-    adopcion: { f: 523, m: 1.5, indice: 80, dur: 0.45, gan: 0.18 }
-  };
+  var V = (typeof module === 'object' && module.exports) ? require('./valores.js') : raiz.AtlasValores;
+  var BASE = V.sonidos;
 
   function receta(tipo, calor) {
     var b = BASE[tipo];

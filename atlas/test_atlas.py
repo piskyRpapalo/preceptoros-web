@@ -457,7 +457,7 @@ class TheGameV15(unittest.TestCase):
     las dos guardas en el mismo job; moverla es un paso del rack."""
 
     JUEGO = PUBLICO / "game"
-    MODULOS = ("gacha.js", "db.js", "core.js", "ui.js")
+    MODULOS = ("valores.js", "gacha.js", "db.js", "core.js", "ui.js")
 
     def _js(self, nombre):
         return sin_comentarios((self.JUEGO / nombre).read_text(encoding="utf-8"))
@@ -560,15 +560,35 @@ class TheGameV15(unittest.TestCase):
         self.assertTrue(v("adopcion").is_valid(ad))
         self.assertFalse(v("adopcion").is_valid(dict(ad, tropa=dict(t, rareza="mitico"))))
 
+    def test_v15_los_valores_son_testnet_y_solo_datos(self):
+        """Los valores viven en `valores.js`, marcados TESTNET y dichos en
+        pantalla; la logica no lleva cifras de equilibrio."""
+        import subprocess
+        v = self._js("valores.js")
+        for impuro in ("function", "=>", "fetch", "Math.", "Date"):
+            with self.subTest(impuro=impuro):
+                self.assertNotIn(impuro, v.split("var VALORES = ")[1].split("if (typeof module")[0])
+        r = subprocess.run(["node", "-e", "process.stdout.write(JSON.stringify(require('./public/game/valores.js')))"],
+                           cwd=RAIZ.parent, capture_output=True, text=True, timeout=30)
+        d = json.loads(r.stdout)
+        self.assertEqual(d["red"], "testnet")
+        self.assertIn("T('testnet')", self._js("ui.js"), "la pantalla no dice que son valores de testnet")
+        g = self._js("gacha.js")
+        for cifra in ("cobre: 50", "calidad: [", "vida: [4, 9]"):
+            with self.subTest(cifra=cifra):
+                self.assertNotIn(cifra, g, "una cifra de equilibrio volvio a la logica")
+
     def test_v15_textos_en_las_nueve(self):
         """Todo lo que dice la incubadora existe en las nueve lenguas."""
         ui = self._js("ui.js")
         g = sin_comentarios((self.JUEGO / "gacha.js").read_text(encoding="utf-8"))
         pedidas = set(re.findall(r"\bT\('([a-z0-9_]+)'\)", ui))
         pedidas |= {f"tc{i}" for i in range(1, 5)} | {f"rar_{r}" for r in ("normal", "magico", "raro", "unico")}
-        pedidas |= {"base_" + b for b in re.findall(r"base: '(\w+)'", g)}
-        pedidas |= {"af_" + a for a in re.findall(r"^\s{4}(\w+): \{ \w+: \[", g, re.M)}
-        pedidas |= {"af_" + a for a in re.findall(r"(\w+): \{ \w+: \[\d+, \d+\] \}", g)}
+        vj = sin_comentarios((self.JUEGO / "valores.js").read_text(encoding="utf-8"))
+        pedidas |= {"base_" + b for b in re.findall(r"base: '(\w+)'", vj)}
+        for bloque in ("prefijos", "sufijos"):
+            cuerpo = re.search(bloque + r": \{(.*?)\n    \}", vj, re.S).group(1)
+            pedidas |= {"af_" + a for a in re.findall(r"(\w+): \{", cuerpo)}
         pedidas |= {"st_" + k for k in re.search(r"var STATS = \[([^\]]+)\]", g).group(1).replace("'", "").replace(" ", "").split(",")}
         self.assertGreaterEqual(len(pedidas), 45)
         for l in LENGUAS:

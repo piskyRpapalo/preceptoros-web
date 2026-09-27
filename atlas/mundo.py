@@ -31,7 +31,7 @@ ASSETS = PUBLICO / "assets"
 PIEZAS = ["atlas-arte.js", "atlas-mapa.js", "atlas-dialogo.js", "atlas-motor.js",
           "atlas-piso.js", "atlas.css", "thegame.js", "preceptor-pixel.png",
           "atlas-piloto.js", "atlas-partida.js", "atlas-piloto-capa.js",
-          "../game/gacha.js", "../game/db.js", "../game/core.js", "../game/ui.js"]
+          "../game/valores.js", "../game/gacha.js", "../game/db.js", "../game/core.js", "../game/ui.js"]
 
 
 def gzip_juego():

@@ -19,30 +19,13 @@
 (function (raiz) {
   'use strict';
 
-  /* Treasure Classes. COSTE EN COBRE Y LUZ, medido y no supuesto: con el
-     piloto base la Biomasa nunca pasa de 2 (la Forja la convierte en Cobre)
-     y el Cobre crece ~0,37 por ciclo; un coste en Biomasa seria inalcanzable.
-     `incuba` son ciclos de juego hasta la eclosion. Calidad por mil
-     (unico, raro, magico): las TC hondas dan mejor loot, como en Diablo. */
-  var TCS = {
-    tc1: { coste: { cobre: 50, luz: 0 }, incuba: 20, calidad: [5, 40, 250], base: 'pez' },
-    tc2: { coste: { cobre: 200, luz: 100 }, incuba: 40, calidad: [10, 70, 320], base: 'centinela' },
-    tc3: { coste: { cobre: 600, luz: 300 }, incuba: 60, calidad: [20, 110, 380], base: 'leviatan' },
-    tc4: { coste: { cobre: 1500, luz: 500 }, incuba: 90, calidad: [45, 160, 420], base: 'heraldo' }
-  };
+  /* LOS VALORES VIVEN EN `valores.js` (red TESTNET): aqui solo la logica.
+     En node se piden con require; en la pestana los carga la puerta antes. */
+  var V = (typeof module === 'object' && module.exports) ? require('./valores.js') : raiz.AtlasValores;
+  var TCS = V.tcs, PREFIJOS = V.prefijos, SUFIJOS = V.sufijos;
   var RAREZAS = ['normal', 'magico', 'raro', 'unico'];
-  /* Prefijos: base y resistencia. Sufijos: mente y especialidad. */
-  var PREFIJOS = {
-    atlante: { vida: [4, 9] }, cuprico: { armadura: [3, 7] },
-    termico: { inercia: [3, 8] }, solar: { vida: [2, 4], armadura: [1, 3] }
-  };
-  var SUFIJOS = {
-    abismo: { profundidad: [2, 6] }, sigilo: { sigilo: [3, 8] },
-    velocidad: { velocidad: [3, 7] }, algoritmo: { aura: [2, 5] }
-  };
   var STATS = ['vida', 'armadura', 'velocidad', 'sigilo', 'inercia', 'profundidad', 'aura'];
-  var SIMETRIA = { normal: 2, magico: 3, raro: 5, unico: 7 };
-  var TERMINOS = { normal: 3, magico: 4, raro: 5, unico: 6 };
+  var SIMETRIA = V.simetria, TERMINOS = V.terminos;
 
   /* Una variante de sfc32 sembrada con los 128 primeros bits de la semilla. Enteros de 32
      bits y nada mas: da lo mismo en cualquier navegador y en node. */
@@ -88,8 +71,10 @@
     var nivel = Number(tc.slice(2));
     var stats = {};
     STATS.forEach(function (k) { stats[k] = 0; });
-    stats.vida = 10 * nivel + g.entre([0, 4]); stats.armadura = 2 * nivel + g.entre([0, 2]);
-    stats.velocidad = 3 + g.entre([0, 3]);
+    var B = V.base;
+    stats.vida = B.vida[0] * nivel + g.entre([0, B.vida[1]]);
+    stats.armadura = B.armadura[0] * nivel + g.entre([0, B.armadura[1]]);
+    stats.velocidad = B.velocidad[0] + g.entre([0, B.velocidad[1]]);
     var pre = null, suf = null;
     if (rareza === 'unico') { pre = 'atlante'; suf = 'abismo'; }
     else if (rareza === 'raro') { pre = g.uno(Object.keys(PREFIJOS)); suf = g.uno(Object.keys(SUFIJOS)); }
@@ -141,7 +126,7 @@
   }
 
   var AtlasGacha = {
-    TCS: TCS, RAREZAS: RAREZAS, PREFIJOS: PREFIJOS, SUFIJOS: SUFIJOS, STATS: STATS, HUEVO: HUEVO,
+    RED: V.red, VERSION_VALORES: V.version, TCS: TCS, RAREZAS: RAREZAS, PREFIJOS: PREFIJOS, SUFIJOS: SUFIJOS, STATS: STATS, HUEVO: HUEVO,
     generador: generador, tirada: tirada, mezcla: mezcla, punto: punto, compacta: compacta
   };
   if (typeof module === 'object' && module.exports) { module.exports = AtlasGacha; }
