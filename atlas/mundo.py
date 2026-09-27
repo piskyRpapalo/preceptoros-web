@@ -29,7 +29,8 @@ PUBLICO = RAIZ / "public"
 ASSETS = PUBLICO / "assets"
 # Lo que baja una visita que abre theGame, en castellano: la lengua base.
 PIEZAS = ["atlas-arte.js", "atlas-mapa.js", "atlas-dialogo.js", "atlas-motor.js",
-          "atlas-piso.js", "atlas.css", "thegame.js", "preceptor-pixel.png"]
+          "atlas-piso.js", "atlas.css", "thegame.js", "preceptor-pixel.png",
+          "atlas-piloto.js", "atlas-partida.js", "atlas-piloto-capa.js"]
 
 
 def gzip_juego():

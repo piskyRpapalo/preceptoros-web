@@ -7,7 +7,7 @@
    puerta.
 
    A DEMANDA. Este fichero lo inyecta `cabezal-rotulos.js` al pulsar la puerta.
-   Aqui se piden la hoja y los cinco guiones del juego, en orden
+   Aqui se piden la hoja y los guiones del juego (cinco del piso y tres del piloto), en orden
    (`async = false`); nada de esto esta en ninguna pagina ni en el precache.
 
    CERRAR NO BORRA LA PARTIDA. La capa se oculta y el reloj del juego se para;
@@ -17,8 +17,11 @@
   'use strict';
   if (window.TheGame) { return; }
 
+  /* El piloto va detras del piso: la partida envuelve al motor ya cargado y
+     la capa del piloto necesita los textos que pide el piso. */
   var GUIONES = [['atlas-arte.js'], ['atlas-mapa.js'],
-    ['atlas-dialogo.js', '/assets/'], ['atlas-motor.js'], ['atlas-piso.js', '/']];
+    ['atlas-dialogo.js', '/assets/'], ['atlas-motor.js'], ['atlas-piso.js', '/'],
+    ['atlas-piloto.js'], ['atlas-partida.js'], ['atlas-piloto-capa.js']];
   var capa = null, origen = null, cargado = null;
 
   function el(tag, clase, texto) {
@@ -95,7 +98,9 @@
     carga().then(function () {
       if (!capa) {
         construye();
-        window.AtlasJuego.monta(document.getElementById('atlas-juego'), capa);
+        window.AtlasJuego.monta(document.getElementById('atlas-juego'), capa).then(function () {
+          if (window.AtlasPilotoCapa) { window.AtlasPilotoCapa.monta(capa); }
+        });
       }
       if (!capa.open) { capa.showModal(); }
       document.body.classList.add('en-thegame');

@@ -286,27 +286,23 @@
     });
   }
 
-  /* LA INSTANTANEA, para una guia futura (propuesta, sin firmar todavia).
-     Copia serializable del estado de la partida, en memoria como todo en v1:
-     no se guarda ni se envia. El motor no la conoce ni gana dependencias. */
-  function instantanea() {
-    if (!E) { return null; }
-    var niveles = {};
-    M.OFICIOS.forEach(function (k, i) { niveles[k] = M.nivelDesdeXp(E.xp[i]); });
-    return JSON.parse(JSON.stringify({
-      esquema: 'atlas.instantanea/1', contenido_v: M.CATALOGO.contenido_v,
-      ciclo: E.t, fase: M.fase(E), nivel_nucleo: M.nivelNucleo(E),
-      profundidad: M.BANDAS[E.prof].lab,
-      recursos: { luz: E.luz, biomasa: E.biomasa, cobre: E.cobre, flujo: E.flujo, oxigeno: E.o2 },
-      integridad: E.integridad, integridad_max: E.integridad_max,
-      grieta: { abierta: E.abierta, cierre: E.cierre }, niveles: niveles,
-      pendiente_ciclos: E.pendiente ? E.pendiente.ciclos : 0,
-      eventos: E.eventos.slice(-20)
-    }));
+  /* LA INSTANTANEA vive en `atlas-partida.js`, compartida con el arnes y la
+     Aduana: una sola forma de mirar la partida, en la pestana y en node. */
+  function instantanea() { return window.AtlasPartida ? window.AtlasPartida.instantanea(E, M) : null; }
+
+  /* EL PILOTO NO TOCA EL ESTADO: propone una accion del enum y aqui se
+     traduce a las MISMAS llamadas que hacen los botones. Devuelve el evento
+     del motor (ok/fallo), o null si no hay partida en marcha. */
+  function aplica(a) {
+    if (!E || !activo) { return null; }
+    var f = { recoger: M.recoger, reparar: M.reparar, aplazar: M.aplazar }[a.accion];
+    if (f) { actua(f(E)); } else if (a.accion === 'bajar_a') { baja(a.banda); } else { return a.accion === 'esperar' ? {} : null; }
+    return E.eventos[E.eventos.length - 1];
   }
 
   window.AtlasJuego = {
-    instantanea: instantanea,
+    instantanea: instantanea, aplica: aplica,
+    partida: function () { return window.AtlasPartida && window.AtlasPartida.partida(E, M); },
     texto: function (k) { return U(k); },
     monta: function (contenedor, capa) {
       zona = contenedor; activo = true;
