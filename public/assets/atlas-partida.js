@@ -59,6 +59,7 @@
       if ('ciclos' in s) { for (var i = 0; i < s.ciclos; i++) { e = M.ciclo(e, ley); } }
       else if ('dormir_ms' in s) { e = M.dormir(e, s.dormir_ms); }
       else if (s.accion === 'bajar_a') { e = M.bajarA(e, s.banda, SIN_DIA); }
+      else if (s.accion === 'invocar') { e = M.invocar(e, s.coste, SIN_DIA); }
       else if (f[s.accion]) { e = f[s.accion](e, SIN_DIA); }
       else { throw new Error('paso ' + n + ' desconocido'); }
     });
@@ -73,7 +74,7 @@
   }
   function graba(M) {
     var o = {};
-    ['inicial', 'ciclo', 'dormir', 'recoger', 'reparar', 'aplazar', 'bajarA']
+    ['inicial', 'ciclo', 'dormir', 'recoger', 'reparar', 'aplazar', 'bajarA', 'invocar']
       .forEach(function (k) { o[k] = M[k]; });
     M.inicial = function (ley) {
       G.ley = { nd: !!ley.nd, integridad_max: ley.integridad_max, dano: ley.dano };
@@ -92,6 +93,10 @@
     M.bajarA = function (e, prof, dia) {
       empuja({ accion: 'bajar_a', banda: prof, origen: G.origen });
       return o.bajarA(e, prof, dia);
+    };
+    M.invocar = function (e, coste, dia) {
+      empuja({ accion: 'invocar', coste: { cobre: coste.cobre, luz: coste.luz }, origen: G.origen });
+      return o.invocar(e, coste, dia);
     };
   }
 

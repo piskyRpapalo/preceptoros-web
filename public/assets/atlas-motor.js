@@ -52,8 +52,8 @@
   var REABRE = [180, 240, 300, 120, 600];
 
   var CATALOGO = {
-    contenido_v: '2026-09-26.1',
-    misiones: ['grieta-120', 'expedicion', 'cosecha'],
+    contenido_v: '2026-09-27.1',
+    misiones: ['grieta-120', 'expedicion', 'cosecha', 'incubacion'],
     sectores: ['nucleo', 'forja', 'aguja', 'ojo', 'grieta'],
     profundidades: ['0-50', '50-150', '150-300', '300+']
   };
@@ -224,6 +224,18 @@
     return e;
   }
 
+  /* INVOCAR (theGame v1.5): gastar Cobre y Luz en una Treasure Class. Aqui
+     solo se paga: que cae lo decide `gacha.js` con la semilla firmada, fuera
+     del motor. Sin recursos, fallo y no se toca nada. */
+  function invocar(estado, coste, dia) {
+    var e = copia(estado), c = coste || {};
+    if (!entero(c.cobre) || !entero(c.luz) || c.cobre < 0 || c.luz < 0) { throw new RangeError('coste invalido'); }
+    var ok = e.cobre >= c.cobre && e.luz >= c.luz;
+    if (ok) { e.cobre -= c.cobre; e.luz -= c.luz; e.flujo = Math.floor(e.luz * 100 / LUZ_MAX); }
+    evento(e, 'invocar', 'incubacion', 'forja', ok ? 'ok' : 'fallo', dia);
+    return e;
+  }
+
   function puedeBajar(e, prof) {
     if (!BANDAS[prof]) { return 'banda'; }
     if (prof === 'nucleo' && nivelDesdeXp(e.xp[O.ingenieria]) < INGENIERIA_NUCLEO) { return 'ingenieria'; }
@@ -243,7 +255,7 @@
     INGENIERIA_NUCLEO: INGENIERIA_NUCLEO, DIA_MS: DIA_MS, CICLO_MS: CICLO_MS,
     nivelDesdeXp: nivelDesdeXp, xpParaNivel: xpParaNivel, subeDeNivel: subeDeNivel,
     leyes: leyes, inicial: inicial, ciclo: ciclo, dormir: dormir, recoger: recoger,
-    reparar: reparar, aplazar: aplazar, bajarA: bajarA, puedeBajar: puedeBajar,
+    reparar: reparar, aplazar: aplazar, bajarA: bajarA, puedeBajar: puedeBajar, invocar: invocar,
     fase: fase, siguienteFase: siguienteFase, nivelNucleo: nivelNucleo
   };
   if (typeof module === 'object' && module.exports) { module.exports = AtlasMotor; }

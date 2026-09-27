@@ -302,6 +302,7 @@
 
   window.AtlasJuego = {
     instantanea: instantanea, aplica: aplica,
+    invoca: function (c) { if (!E || !activo) { return null; } actua(M.invocar(E, c)); return E.eventos[E.eventos.length - 1]; },
     partida: function () { return window.AtlasPartida && window.AtlasPartida.partida(E, M); },
     texto: function (k) { return U(k); },
     monta: function (contenedor, capa) {

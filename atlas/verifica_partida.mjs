@@ -53,6 +53,11 @@ export function verifica(sobre) {
   if (!valida) { return { ok: false, motivo: 'firma: no verifica' }; }
 
   if (p.truncada) { return { ok: false, motivo: 'reproduccion: partida truncada' }; }
+  // Una partida se juega con SU version del contenido. Si el motor cambio de
+  // reglas, se dice cual y cual, en vez de un «final no coincide» sin causa.
+  if (p.contenido_v !== M.CATALOGO.contenido_v) {
+    return { ok: false, motivo: `reproduccion: contenido_v distinto (motor ${M.CATALOGO.contenido_v}, partida ${p.contenido_v})` };
+  }
   let e;
   try { e = Pa.reproduce(p, M); } catch (x) { return { ok: false, motivo: 'reproduccion: ' + x.message }; }
   const f = Pa.final(e, M);
