@@ -134,9 +134,18 @@
     return { color: s % 4, pulso: a.length > 3 ? 1 : 0, tendencia: (s + amp) % 4 };
   }
 
+  /* LAS ODDS QUE SE ENSENAN SON LAS QUE SE TIRAN (addendum de la cria: sin odds ocultas). Por mil y en
+     el orden de `RAREZAS` (normal, magico, raro, unico), de los MISMOS umbrales que usa `tirada`. El
+     sorteo por mil (`sig() % 1000`) lleva un sesgo de modulo medido de 296/2^32 por resultado, unos
+     7e-8: se dice aqui y no se cambia, porque cambiar la tirada cambia las tropas ya adoptadas. */
+  function odds(tc) {
+    var c = TCS[tc].calidad;
+    return [1000 - c[0] - c[1] - c[2], c[2], c[1], c[0]];
+  }
+
   var AtlasGacha = {
     ESTADO: V.estado, VERSION_VALORES: V.version, TCS: TCS, RAREZAS: RAREZAS, PREFIJOS: PREFIJOS, SUFIJOS: SUFIJOS, STATS: STATS, HUEVO: HUEVO,
-    generador: generador, tirada: tirada, mezcla: mezcla, punto: punto, compacta: compacta, caracter: caracter
+    generador: generador, tirada: tirada, mezcla: mezcla, punto: punto, compacta: compacta, caracter: caracter, odds: odds
   };
   if (typeof module === 'object' && module.exports) { module.exports = AtlasGacha; }
   else { raiz.AtlasGacha = AtlasGacha; }

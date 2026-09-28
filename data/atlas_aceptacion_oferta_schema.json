@@ -1,0 +1,27 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "preceptoros:atlas.aceptacion_oferta/1",
+ "title": "Aceptacion de una oferta",
+ "description": "La otra parte acepta una oferta (o contraoferta) por su huella, en un ciclo de juego. Vive fuera de `public/`: es el contrato, no se sirve. Lo valida en JS `public/game/mercado.js` con la misma forma.",
+ "type": "object",
+ "additionalProperties": false,
+ "required": [
+  "esquema",
+  "oferta",
+  "ciclo"
+ ],
+ "properties": {
+  "esquema": {
+   "const": "atlas.aceptacion_oferta/1"
+  },
+  "oferta": {
+   "type": "string",
+   "pattern": "^[0-9a-f]{64}$"
+  },
+  "ciclo": {
+   "type": "integer",
+   "minimum": 0,
+   "maximum": 1000000000
+  }
+ }
+}

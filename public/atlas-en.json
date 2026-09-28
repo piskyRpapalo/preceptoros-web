@@ -252,6 +252,7 @@
   "pes_army": "Army",
   "pes_partida": "Game",
   "tecnico": "Technical details",
-  "army_carga": "Opening the Forest Incubator…"
+  "army_carga": "Opening the Forest Incubator…",
+  "odds_h": "Odds (exact: the roll uses these same numbers)"
  }
 }

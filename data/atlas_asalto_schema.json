@@ -1,0 +1,54 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "preceptoros:atlas.asalto/1",
+ "title": "Asalto a una defensa firmada",
+ "description": "Nombra la defensa por su huella; mismas reglas de tropas; el duelo solo se resuelve si los dos `pack_sha` coinciden. Vive fuera de `public/`: es el contrato, no se sirve. Lo valida en JS `public/game/arena.js` con la misma forma.",
+ "type": "object",
+ "additionalProperties": false,
+ "required": [
+  "esquema",
+  "defensa",
+  "pack_sha",
+  "tropas"
+ ],
+ "properties": {
+  "esquema": {
+   "const": "atlas.asalto/1"
+  },
+  "defensa": {
+   "type": "string",
+   "pattern": "^[0-9a-f]{64}$"
+  },
+  "pack_sha": {
+   "type": "string",
+   "pattern": "^[0-9a-f]{64}$"
+  },
+  "tropas": {
+   "type": "array",
+   "minItems": 1,
+   "maxItems": 6,
+   "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+     "tc",
+     "semilla"
+    ],
+    "properties": {
+     "tc": {
+      "enum": [
+       "tc1",
+       "tc2",
+       "tc3",
+       "tc4"
+      ]
+     },
+     "semilla": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+     }
+    }
+   }
+  }
+ }
+}

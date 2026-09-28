@@ -1,0 +1,338 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "preceptoros:atlas.genoma/1",
+ "title": "Genoma de SISIL (lo unico que el laboratorio puede proponer cambiar)",
+ "description": "Parametros ENTEROS con bandas declaradas, por dominio permitido (addendum §4). Un parametro o dominio que no esta aqui no existe; los prohibidos (invocar, lo solo-humano, motor, firma, red, persistencia, precache, peso, reloj, odds ocultas, adoptar o invocar solo, dinero, cripto, rutas, hosts, IPs, datos personales) no caben. Espejo de `public/game/genoma.js › LIMITES`. Vive fuera de `public/`.",
+ "type": "object",
+ "additionalProperties": false,
+ "required": [
+  "esquema",
+  "base",
+  "procedencia",
+  "dominios"
+ ],
+ "properties": {
+  "esquema": {
+   "const": "atlas.genoma/1"
+  },
+  "base": {
+   "type": "string",
+   "pattern": "^[0-9a-f]{64}$"
+  },
+  "procedencia": {
+   "enum": [
+    "humano",
+    "piloto_base",
+    "denso",
+    "lora",
+    "sintetico",
+    "emulado"
+   ]
+  },
+  "dominios": {
+   "type": "object",
+   "additionalProperties": false,
+   "minProperties": 1,
+   "properties": {
+    "incubacion": {
+     "type": "object",
+     "additionalProperties": false,
+     "minProperties": 1,
+     "properties": {
+      "ciclos_min_tc1": {
+       "type": "integer",
+       "minimum": 1,
+       "maximum": 5000
+      },
+      "ciclos_min_tc2": {
+       "type": "integer",
+       "minimum": 1,
+       "maximum": 5000
+      },
+      "ciclos_min_tc3": {
+       "type": "integer",
+       "minimum": 1,
+       "maximum": 5000
+      },
+      "ciclos_min_tc4": {
+       "type": "integer",
+       "minimum": 1,
+       "maximum": 5000
+      },
+      "ciclos_max_tc1": {
+       "type": "integer",
+       "minimum": 1,
+       "maximum": 5000
+      },
+      "ciclos_max_tc2": {
+       "type": "integer",
+       "minimum": 1,
+       "maximum": 5000
+      },
+      "ciclos_max_tc3": {
+       "type": "integer",
+       "minimum": 1,
+       "maximum": 5000
+      },
+      "ciclos_max_tc4": {
+       "type": "integer",
+       "minimum": 1,
+       "maximum": 5000
+      }
+     }
+    },
+    "rareza": {
+     "type": "object",
+     "additionalProperties": false,
+     "minProperties": 1,
+     "properties": {
+      "normal_tc1": {
+       "type": "integer",
+       "minimum": 0,
+       "maximum": 10000
+      },
+      "normal_tc2": {
+       "type": "integer",
+       "minimum": 0,
+       "maximum": 10000
+      },
+      "normal_tc3": {
+       "type": "integer",
+       "minimum": 0,
+       "maximum": 10000
+      },
+      "normal_tc4": {
+       "type": "integer",
+       "minimum": 0,
+       "maximum": 10000
+      },
+      "magico_tc1": {
+       "type": "integer",
+       "minimum": 0,
+       "maximum": 10000
+      },
+      "magico_tc2": {
+       "type": "integer",
+       "minimum": 0,
+       "maximum": 10000
+      },
+      "magico_tc3": {
+       "type": "integer",
+       "minimum": 0,
+       "maximum": 10000
+      },
+      "magico_tc4": {
+       "type": "integer",
+       "minimum": 0,
+       "maximum": 10000
+      },
+      "raro_tc1": {
+       "type": "integer",
+       "minimum": 0,
+       "maximum": 10000
+      },
+      "raro_tc2": {
+       "type": "integer",
+       "minimum": 0,
+       "maximum": 10000
+      },
+      "raro_tc3": {
+       "type": "integer",
+       "minimum": 0,
+       "maximum": 10000
+      },
+      "raro_tc4": {
+       "type": "integer",
+       "minimum": 0,
+       "maximum": 10000
+      },
+      "unico_tc1": {
+       "type": "integer",
+       "minimum": 0,
+       "maximum": 10000
+      },
+      "unico_tc2": {
+       "type": "integer",
+       "minimum": 0,
+       "maximum": 10000
+      },
+      "unico_tc3": {
+       "type": "integer",
+       "minimum": 0,
+       "maximum": 10000
+      },
+      "unico_tc4": {
+       "type": "integer",
+       "minimum": 0,
+       "maximum": 10000
+      }
+     }
+    },
+    "afijos": {
+     "type": "object",
+     "additionalProperties": false,
+     "minProperties": 1,
+     "properties": {
+      "max_magico": {
+       "type": "integer",
+       "minimum": 1,
+       "maximum": 2
+      },
+      "max_raro": {
+       "type": "integer",
+       "minimum": 2,
+       "maximum": 3
+      },
+      "max_unico": {
+       "type": "integer",
+       "minimum": 2,
+       "maximum": 3
+      },
+      "fuerza_banda": {
+       "type": "integer",
+       "minimum": 1,
+       "maximum": 20
+      }
+     }
+    },
+    "presupuesto": {
+     "type": "object",
+     "additionalProperties": false,
+     "minProperties": 1,
+     "properties": {
+      "suma_normal": {
+       "type": "integer",
+       "minimum": 1,
+       "maximum": 2000
+      },
+      "suma_magico": {
+       "type": "integer",
+       "minimum": 1,
+       "maximum": 2000
+      },
+      "suma_raro": {
+       "type": "integer",
+       "minimum": 1,
+       "maximum": 2000
+      },
+      "suma_unico": {
+       "type": "integer",
+       "minimum": 1,
+       "maximum": 2000
+      }
+     }
+    },
+    "armonicos": {
+     "type": "object",
+     "additionalProperties": false,
+     "minProperties": 1,
+     "properties": {
+      "terminos_min": {
+       "type": "integer",
+       "minimum": 1,
+       "maximum": 8
+      },
+      "terminos_max": {
+       "type": "integer",
+       "minimum": 1,
+       "maximum": 8
+      },
+      "amplitud_max": {
+       "type": "integer",
+       "minimum": 1,
+       "maximum": 64
+      },
+      "fase_max": {
+       "type": "integer",
+       "minimum": 0,
+       "maximum": 63
+      }
+     }
+    },
+    "combate": {
+     "type": "object",
+     "additionalProperties": false,
+     "minProperties": 1,
+     "properties": {
+      "k": {
+       "type": "integer",
+       "minimum": 8,
+       "maximum": 64
+      },
+      "rondas": {
+       "type": "integer",
+       "minimum": 5,
+       "maximum": 100
+      },
+      "esquiva_tope": {
+       "type": "integer",
+       "minimum": 0,
+       "maximum": 500
+      },
+      "poder_proxy_version": {
+       "type": "integer",
+       "minimum": 1,
+       "maximum": 9
+      }
+     }
+    },
+    "mercado": {
+     "type": "object",
+     "additionalProperties": false,
+     "minProperties": 1,
+     "properties": {
+      "expira_max_ciclos": {
+       "type": "integer",
+       "minimum": 1,
+       "maximum": 100000
+      },
+      "escasez_banda": {
+       "type": "integer",
+       "minimum": 0,
+       "maximum": 1000
+      }
+     }
+    },
+    "novedad": {
+     "type": "object",
+     "additionalProperties": false,
+     "minProperties": 1,
+     "properties": {
+      "enfriamiento_ciclos": {
+       "type": "integer",
+       "minimum": 1,
+       "maximum": 100000
+      },
+      "rumor_por_mil": {
+       "type": "integer",
+       "minimum": 0,
+       "maximum": 200
+      },
+      "sequia_max_ciclos": {
+       "type": "integer",
+       "minimum": 1,
+       "maximum": 100000
+      }
+     }
+    },
+    "legibilidad": {
+     "type": "object",
+     "additionalProperties": false,
+     "minProperties": 1,
+     "properties": {
+      "odds_precision_pb": {
+       "type": "integer",
+       "minimum": 1,
+       "maximum": 100
+      },
+      "explicacion_nivel": {
+       "type": "integer",
+       "minimum": 1,
+       "maximum": 3
+      }
+     }
+    }
+   }
+  }
+ }
+}
