@@ -45,7 +45,7 @@ body.en-thegame > :not(#thegame){visibility:hidden}
 /* --- las pestanas: abajo en el telefono ------------------------------------- */
 .thegame-pestanas{position:fixed;inset:auto 0 0;z-index:3;padding:0 0 env(safe-area-inset-bottom);
   background:var(--bg-secondary);border-top:1px solid var(--edge-sov)}
-.thegame-pestanas > div{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));max-width:40rem;margin:0 auto}
+.thegame-pestanas > div{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);max-width:40rem;margin:0 auto}
 .thegame-pestanas button{position:relative;display:grid;justify-items:center;align-content:center;gap:.2rem;
   min-height:3.75rem;padding:.4rem .15rem;font:600 .64rem/1.1 var(--mono);letter-spacing:.06em;
   text-transform:uppercase;color:var(--text-muted);background:transparent;border:0;border-radius:0}
@@ -76,6 +76,31 @@ body.en-thegame > :not(#thegame){visibility:hidden}
 .thegame-panel .atlas-recursos li{flex-direction:column;align-items:flex-start;justify-content:flex-start;gap:.35rem;min-width:0}
 .thegame-panel .atlas-recursos data{white-space:nowrap}
 .thegame-panel .atlas-recursos li:last-child:nth-child(odd){grid-column:1/-1}
+
+/* --- la Arena: el mar multijugador y el combate en vivo ------------------------ */
+.atlas-arena{display:grid;gap:.75rem}
+.atlas-arena-mapa,.atlas-arena-lienzo{display:block;width:100%;border:1px solid var(--edge-sov);border-radius:var(--radius);
+  background:var(--bg-primary);touch-action:manipulation}
+.atlas-arena-lugares{display:grid;grid-template-columns:repeat(auto-fill,minmax(10.5rem,1fr));gap:.4rem;margin:0;padding:0;list-style:none}
+/* Lugares y tropas de la escuadra: fichas ligeras, no pildoras llenas; la elegida se enciende en cobre. */
+#thegame :is(.atlas-arena-lugar,.atlas-arena-ficha-tropa){width:100%;text-align:start;font-size:.76rem;padding:.4rem .7rem;
+  color:var(--text-main);background:transparent;border:1px solid var(--edge-sov);border-radius:var(--radius)}
+#thegame .atlas-arena-ficha-tropa{width:auto;display:flex;align-items:center;gap:.4rem;padding:.25rem .7rem .25rem .3rem}
+#thegame :is(.atlas-arena-lugar,.atlas-arena-ficha-tropa)[aria-pressed="true"]{color:var(--accent-copper-claro);
+  border-color:var(--accent-copper);background:var(--glass-sov)}
+.atlas-arena-lugar-ficha{display:grid;gap:.5rem;padding:.75rem;border:1px solid var(--edge-sov);border-radius:var(--radius)}
+.atlas-arena-lugar-ficha[hidden],.atlas-arena-escena[hidden],.atlas-arena details[hidden]{display:none}
+.atlas-arena-lugar-ficha > .boton{justify-self:start}
+.atlas-arena-fila,.atlas-arena-escuadra,.atlas-arena-mandos{display:flex;flex-wrap:wrap;gap:.4rem;align-items:center}
+.atlas-arena-escena{display:grid;gap:.5rem}
+.atlas-arena-res{margin:0;font:600 .85rem/1.4 var(--mono);color:var(--accent-copper-claro)}
+.atlas-arena-log{max-height:12rem;overflow:auto;margin:.4rem 0 0;font:.7rem/1.5 var(--mono);white-space:pre-wrap}
+.atlas-arena details{padding:.55rem .8rem;border:1px solid var(--edge-sov);border-radius:var(--radius);font-size:.8rem}
+.atlas-arena details > summary{cursor:pointer;font:600 .7rem/1.6 var(--mono);letter-spacing:.06em;text-transform:uppercase}
+.atlas-duelos{display:grid;gap:.5rem;margin-top:.5rem;padding-top:.75rem;border-top:1px solid var(--edge-sov)}
+.atlas-duelos textarea{width:100%;margin:.5rem 0;font:.75rem/1.4 var(--mono)}
+.atlas-duelo-lista{display:grid;gap:.4rem;margin:0;padding:0;list-style:none;font-size:.8rem}
+.atlas-duelo-lista li{display:flex;flex-wrap:wrap;gap:.4rem;align-items:center;justify-content:space-between}
 
 /* --- escritorio: las pestanas bajo el cabecero --------------------------------- */
 @media (min-width:48rem){

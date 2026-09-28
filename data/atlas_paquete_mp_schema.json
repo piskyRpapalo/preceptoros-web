@@ -1,0 +1,132 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "preceptoros:atlas.paquete_mp/1",
+ "title": "Paquete del duelo entre personas",
+ "description": "Lo que una persona manda a otra por el canal que elija (Send, Copy, fichero): sobres ya firmados de UNA sesion y su politica; en un desafio, ademas, la defensa a la que se reta con la politica de su tablon. Quien lo importa verifica cada firma y lo anota en el libro de la sesion antes de tocar nada. Sin direcciones, sin hora de reloj, sin PII. Vive fuera de `public/`; lo valida en JS `public/game/duelo.js`.",
+ "type": "object",
+ "additionalProperties": false,
+ "required": [
+  "esquema",
+  "tipo",
+  "politica",
+  "sobres",
+  "defensa"
+ ],
+ "properties": {
+  "esquema": {
+   "const": "atlas.paquete_mp/1"
+  },
+  "tipo": {
+   "enum": [
+    "defensa",
+    "desafio",
+    "respuesta",
+    "revelacion",
+    "resultado"
+   ]
+  },
+  "politica": {
+   "type": "object"
+  },
+  "sobres": {
+   "type": "array",
+   "minItems": 1,
+   "maxItems": 8,
+   "items": {
+    "type": "object",
+    "required": [
+     "esquema",
+     "tipo",
+     "sesion",
+     "de",
+     "seq",
+     "firma"
+    ],
+    "properties": {
+     "esquema": {
+      "const": "atlas.sobre/1"
+     },
+     "sesion": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+     },
+     "de": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+     },
+     "firma": {
+      "type": "string",
+      "pattern": "^ed25519:[0-9a-f]{128}$"
+     }
+    }
+   }
+  },
+  "defensa": {
+   "anyOf": [
+    {
+     "type": "null"
+    },
+    {
+     "type": "object",
+     "additionalProperties": false,
+     "required": [
+      "politica",
+      "sobre"
+     ],
+     "properties": {
+      "politica": {
+       "type": "object"
+      },
+      "sobre": {
+       "type": "object",
+       "required": [
+        "tipo"
+       ],
+       "properties": {
+        "tipo": {
+         "const": "defensa"
+        }
+       }
+      }
+     }
+    }
+   ]
+  }
+ },
+ "allOf": [
+  {
+   "if": {
+    "properties": {
+     "tipo": {
+      "const": "desafio"
+     }
+    }
+   },
+   "then": {
+    "properties": {
+     "defensa": {
+      "type": "object"
+     }
+    }
+   }
+  },
+  {
+   "if": {
+    "properties": {
+     "tipo": {
+      "not": {
+       "const": "desafio"
+      }
+     }
+    }
+   },
+   "then": {
+    "properties": {
+     "defensa": {
+      "type": "null"
+     }
+    }
+   }
+  }
+ ]
+}

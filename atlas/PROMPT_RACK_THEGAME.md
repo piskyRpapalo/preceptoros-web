@@ -1,5 +1,7 @@
 # Mensaje para Claude Code en el rack (copiar tal cual)
 
+> **Marca personal de PreceptorOS.** Todo lo de theGame y esta web es marca personal del Soberano: tropas que son ondas, sobres firmados, commit-reveal, sensores honestos, IronClaw. Antes de nada, lee `CLAUDE.md` en la raíz del repositorio: son las reglas de la casa para todas las sesiones.
+
 ```
 Sesión de frontera sobre theGame. No escribas código hasta el paso 5.
 

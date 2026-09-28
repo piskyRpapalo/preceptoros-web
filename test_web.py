@@ -5528,6 +5528,9 @@ class LoQueNoSeVeConElGateVerde(unittest.TestCase):
         "ledger": {"es"},                                          # es usa ledger.json base
         # theGame habla solo ingles (LENGUAS de thegame.js, 2026-09-28): opinar carga siempre `en`.
         "atlas-opina": {"es", "fr", "pt", "it", "de", "ru", "el", "ar"},
+        # La Arena (2026-09-28), con el mismo criterio: el juego habla solo ingles y sus textos se
+        # cargan al abrir la pestana.
+        "atlas-arena": {"es", "fr", "pt", "it", "de", "ru", "el", "ar"},
     }
 
     def test_lo_que_depende_de_bronce_se_carga_despues(self):

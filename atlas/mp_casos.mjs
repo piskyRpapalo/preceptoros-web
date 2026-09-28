@@ -207,6 +207,21 @@ function duelo(opciones = {}) {
   S.anotaTodos(L, [asalto, comA, comB, revA, revB]);
   return { L, asalto };
 }
+await caso('arena: abandono solo si el otro se comprometio y NO revelo, y lo reclama quien si revelo', () => {
+  const L = S.libro(PD), ca = cadena(S, ANA, SD), cb = cadena(S, BEA, SD), ra = azar('ab-a'), rb = azar('ab-b');
+  const as = ca('asalto', { esquema: 'atlas.asalto/1', defensa: S.huella(defensa), pack_sha: PACK, tropas: tropasAna });
+  const cA = ca('compromiso', { esquema: 'atlas.compromiso/1', c: S.compromiso(ra, ANA.pub, SD) });
+  const cB = cb('compromiso', { esquema: 'atlas.compromiso/1', c: S.compromiso(rb, BEA.pub, SD) });
+  const hc = S.huellaConjunto({ [ANA.pub]: cA.cuerpo.c, [BEA.pub]: cB.cuerpo.c });
+  const rB = cb('revelacion', { esquema: 'atlas.revelacion/1', r: rb, compromisos: hc });
+  S.anotaTodos(L, [as, cA, cB, rB]);
+  const ok = A.abandono(L, defensa, BEA.pub), mal = A.abandono(L, defensa, ANA.pub);
+  S.anota(L, ca('revelacion', { esquema: 'atlas.revelacion/1', r: ra, compromisos: hc }));
+  const tarde = A.abandono(L, defensa, BEA.pub);
+  return todas(igual(ok.ok, true), igual(ok.resultado.gana, 'defensa'), igual(ok.resultado.final, 'abandono'),
+               igual(A.compruebaResultado(L, defensa, ok.resultado), 'el otro ya revelo: no hay abandono'),
+               /no se comprometio y revelo/.test(mal.motivo) || mal.motivo, igual(tarde.motivo, 'el otro ya revelo: no hay abandono'));
+});
 await caso('arena: pack_sha estable y distinto si cambian los valores', () => {
   const V2 = copia(V); V2.combate.k = 33;
   return todas(igual(A.packSha(), A.packSha(copia(V))), A.packSha(V2) !== PACK || 'mismo pack');
