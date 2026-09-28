@@ -1,0 +1,15 @@
+{
+ "esquema": "tesoro_textos/1",
+ "idioma": "en",
+ "nota": "Textos del merito y del tesoro (enmienda del Soberano, 2026-09-29, §11). Los HECHOS van en su medida (`agora.json › actividad.paquetes_firmados`, medido el 2026-09-23); aqui solo lo que se lee. Esperan su renderizador, `ui-tesoro.js`, que espera las iniciales de §7.4 y §7.5: hasta entonces no se pintan.",
+ "ui": {
+  "tesoro_titulo": "Your merit is a number you can check",
+  "tesoro_que_es": "Each package you sign that gets accepted adds 1. We count signatures, not people: we do not know who you are and do not want to.",
+  "tesoro_no_es": "It is not money. It is not on a chain. It cannot be bought, sold or transferred. Nobody can issue it for you: not a pilot, not a model, not me.",
+  "tesoro_pago": "Merit opens a pot. I open the pot, with a signature, and that signature needs a witness who is not you. The system credits; it does not pay by itself.",
+  "tesoro_mercado": "What comes out of the pot is Forest resources —copper, biomass, light— traded with another person in two signatures and one envelope. No clock: offers expire in cycles.",
+  "tesoro_cerca": "“Near” is not your address. It is the same sector, the same season, and envelopes you have already exchanged.",
+  "tesoro_hoy": "Measured on 2026-09-23: 5 of 8 packages with a signature verified at the door. The payment path is NO_DATA until the server's door returns a verified receipt; meanwhile the fallback is a PR to the public repository, and it is the only thing that truly arrives today.",
+  "tesoro_bajar": "It fits on an 8 GB phone, no graphics card. One tap per file, with its hash in front. Nothing gets in behind your back."
+ }
+}

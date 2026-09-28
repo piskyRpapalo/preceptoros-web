@@ -2522,7 +2522,11 @@ class Hub(unittest.TestCase):
     # dia que alguien traduzca una familia nueva antes de pintarla, la declara
     # aqui y la prueba la protege del barrido de huerfanos. Borrar la prueba
     # con la ultima familia habria dejado a la siguiente sin red.
-    ESPERAN_RENDERIZADOR = {}
+    ESPERAN_RENDERIZADOR = {
+        # El merito y el tesoro (Soberano, 2026-09-29, §11): nueve lenguas escritas; su vista,
+        # `ui-tesoro.js`, espera las iniciales de §7.4 y §7.5 de la nota.
+        "tesoro": "su vista es ui-tesoro.js, que no se escribe hasta las iniciales de §7.4 y §7.5: sin camino de pago medido, la web no anuncia recompensa",
+    }
 
     def test_lo_traducido_y_sin_pintar_no_se_pierde(self):
         """Una familia traducida y sin pintar NO es basura, y hay que decirlo.

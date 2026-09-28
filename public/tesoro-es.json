@@ -1,0 +1,15 @@
+{
+ "esquema": "tesoro_textos/1",
+ "idioma": "es",
+ "nota": "Textos del merito y del tesoro (enmienda del Soberano, 2026-09-29, §11). Los HECHOS van en su medida (`agora.json › actividad.paquetes_firmados`, medido el 2026-09-23); aqui solo lo que se lee. Esperan su renderizador, `ui-tesoro.js`, que espera las iniciales de §7.4 y §7.5: hasta entonces no se pintan.",
+ "ui": {
+  "tesoro_titulo": "Tu mérito es un número que puedes comprobar",
+  "tesoro_que_es": "Cada paquete que firmas y se acepta suma 1. Se cuentan firmas, no personas: no sabemos quién eres y no lo queremos saber.",
+  "tesoro_no_es": "No es dinero. No está en una cadena. No se puede comprar, ni vender, ni transferir. Nadie puede emitirlo por ti: ni un piloto, ni un modelo, ni yo.",
+  "tesoro_pago": "El mérito abre una bolsa. La bolsa la abro yo, con una firma, y esa firma necesita un testigo que no seas tú. El sistema acredita; no paga solo.",
+  "tesoro_mercado": "Lo que sale de la bolsa son recursos del Bosque —cobre, biomasa, luz— y se cambian con otra persona en dos firmas y un sobre. Sin reloj: las ofertas caducan en ciclos.",
+  "tesoro_cerca": "«Cerca» no es tu dirección. Es el mismo sector, la misma temporada, y sobres que ya os habéis intercambiado.",
+  "tesoro_hoy": "Medido el 2026-09-23: 5 de 8 paquetes con firma verificada en la puerta. El camino de pago está en NO_DATA hasta que la puerta del servidor devuelva acuse verificado; mientras, el respaldo es un PR al repositorio público, y es lo único que llega de verdad hoy.",
+  "tesoro_bajar": "Cabe en un teléfono de 8 GB, sin tarjeta gráfica. Un toque por fichero, con su hash delante. Nada entra a tu espalda."
+ }
+}
