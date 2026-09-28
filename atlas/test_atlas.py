@@ -1119,6 +1119,75 @@ class MeritoTesoro(unittest.TestCase):
             with self.subTest(palabra=palabra):
                 self.assertNotIn(palabra, sin_comentarios(listas))
 
+class CanalLab(unittest.TestCase):
+    """La puerta de entrada del feedback (Soberano, 2026-09-28/29): sobre firmado -> LLEGA -> verificado ->
+    registro encadenado fuera de public/ -> acuse que verifica, o FALLIDO. `canal.js` en CUARENTENA (compilado,
+    no servido); respaldo por PR a `envios/`; y el humo que se pone rojo con 404 y 405."""
+
+    def test_los_casos_del_canal_y_la_puerta(self):
+        r = subprocess.run(["node", str(RAIZ / "canal_casos.mjs")], capture_output=True, text=True, timeout=120)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        casos = json.loads(r.stdout)
+        self.assertGreaterEqual(len(casos), 11)
+        for c in casos:
+            with self.subTest(caso=c["caso"]):
+                self.assertTrue(c["ok"], c["detalle"])
+
+    def test_contratos_del_sobre_y_del_acuse(self):
+        try:
+            import jsonschema
+        except ImportError:
+            self.skipTest("NO_DATA · jsonschema no instalado")
+        r = subprocess.run(["node", str(RAIZ / "canal_casos.mjs"), "--muestras"], capture_output=True, text=True, timeout=120)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        m = json.loads(r.stdout)
+        def con(b, **c):
+            d = json.loads(json.dumps(b)); d.update(c); return d
+        casos = {
+            "atlas_lab_envio_schema.json": (m["envio"], [
+                con(m["envio"], firma=""), con(m["envio"], servidor="relevo"), con(m["envio"], tipo="publicar"),
+                con(m["envio"], maquina_declarada="a" + "/" + "b"), con(m["envio"], firmado_el="ayer"), con(m["envio"], reto="x")]),
+            "atlas_lab_acuse_schema.json": (m["acuse"], [
+                con(m["acuse"], estado="publicado"), con(m["acuse"], ok=True), con(m["acuse"], registro_n=0),
+                con(m["acuse"], envio_hash="x"), con(m["acuse"], firma="ed25519:00"), con(m["acuse"], registro_prev="ayer")]),
+        }
+        for nombre, (bueno, malos) in casos.items():
+            v = jsonschema.Draft202012Validator(json.loads((DATOS / nombre).read_text(encoding="utf-8")))
+            with self.subTest(contrato=nombre):
+                self.assertEqual([e.message for e in v.iter_errors(bueno)], [])
+                self.assertEqual(len(malos), 6)
+            for i, malo in enumerate(malos):
+                with self.subTest(contrato=nombre, violacion=i):
+                    self.assertFalse(v.is_valid(malo))
+
+    def test_el_canal_esta_en_cuarentena(self):
+        """Compilado, no servido: ni en public/, ni lo carga un HTML o un guion, ni lo nombra el precache."""
+        self.assertFalse(list(PUBLICO.rglob("canal.js")), "el canal salio de la cuarentena sin acuse verificado")
+        for f in sorted(PUBLICO.rglob("*")):
+            if f.is_file() and f.suffix in (".html", ".js", ".json"):
+                with self.subTest(fichero=str(f.relative_to(PUBLICO))):
+                    c = f.read_text(encoding="utf-8", errors="replace")
+                    self.assertNotIn("AtlasCanal", c)
+                    self.assertNotIn("cuarentena/canal", c)
+
+    def test_el_respaldo_por_pr_es_pull_request(self):
+        w = (RAIZ.parent / ".github" / "workflows" / "envios.yml").read_text(encoding="utf-8")
+        codigo = "\n".join(l for l in w.splitlines() if not l.lstrip().startswith("#"))
+        self.assertIn("pull_request:", codigo)
+        self.assertNotIn("pull_request_target", codigo, "el codigo de un fork correria con secretos")
+        self.assertIn("contents: read", codigo)
+        self.assertIn("node atlas/puerta_lab.mjs verifica", codigo)
+        self.assertTrue((RAIZ.parent / "envios" / "README.md").is_file())
+
+    def test_el_humo_se_pone_rojo_con_404_y_405(self):
+        """Prometer y no entregar no da verde: la regla, probada sin red."""
+        for codigo in ("404", "405"):
+            with self.subTest(codigo=codigo):
+                r = subprocess.run([sys.executable, str(RAIZ.parent / "humo_feedback.py"), "--simula", codigo],
+                                   capture_output=True, text=True, timeout=60)
+                self.assertEqual(r.returncode, 1, r.stdout)
+                self.assertEqual(json.loads(r.stdout)["estado"], "ROJO")
+
 class Opiniones(unittest.TestCase):
     """Enviar las opiniones firmadas (Soberano, 2026-09-28: «quiero enviar ya los feedback mios y de
     otros users»): lo envia la PERSONA con el menu de compartir del sistema, con un clic propio y

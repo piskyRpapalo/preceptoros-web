@@ -1,0 +1,36 @@
+# El RESPALDO POR PR de la puerta del laboratorio (firmado por el Soberano, 2026-09-29): mientras la ruta de
+# entrega no devuelva acuse verificado, un `atlas.lab_envio/1` llega por PR a `envios/`. Cada uno pasa por la
+# misma puerta que correra el rack: forma -> hash -> firma Ed25519 -> la Aduana otra vez.
+#
+# DETERMINISTA Y SIN LLM: es `node atlas/puerta_lab.mjs verifica`. `pull_request`, no
+# `pull_request_target`: el codigo de un fork corre sin secretos y con permiso de solo lectura. Nada se
+# publica ni se da por bueno: todo queda en cuarentena.
+name: envios
+
+on:
+  pull_request:
+    paths: ["envios/**", "atlas/puerta_lab.mjs", "atlas/cuarentena/canal.js"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verifica:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Pasar cada sobre por la puerta
+        run: |
+          shopt -s nullglob
+          fallos=0; total=0
+          for f in envios/*.json; do
+            total=$((total+1))
+            if node atlas/puerta_lab.mjs verifica "$f"; then echo "ENTRA   $f"; else echo "RECHAZO $f"; fallos=$((fallos+1)); fi
+          done
+          echo "sobres: $total · rechazados: $fallos (se cuentan firmas, no personas)"
+          [ "$total" -gt 0 ] || echo "NO_DATA · todavia no ha llegado ningun sobre por PR"
+          [ "$fallos" -eq 0 ]
