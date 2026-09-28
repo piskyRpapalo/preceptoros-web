@@ -86,7 +86,7 @@
   "reabre": "La faille s’est rouverte.",
   "casa_mal": "Le Noyau souffre quand la maison va mal : le harnais du site n’est pas entier ou le jeu est trop lourd, et la faille fait double dégât.",
   "medido": "Lois mesurées le {f} · sur {m}",
-  "cierre_aviso": "La partie reste dans cet onglet jusqu’à ce que vous le fermiez : theGame ne sauvegarde rien.",
+  "cierre_aviso": "La partie reste dans cet onglet jusqu’à ce que vous le fermiez ou la sauvegardiez. Les duels de l’Arène restent sur cet appareil.",
   "piloto": "Pilote",
   "piloto_t": "Laisser la machine jouer",
   "piloto_hace": "Ce qu'il fait",

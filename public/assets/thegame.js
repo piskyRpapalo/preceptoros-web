@@ -241,6 +241,10 @@
     setTimeout(function () { n.remove(); }, 6000);
   }
 
+  /* Un enlace de duelo (`#thegame/duelo=…`, por QR) abre la Arena, que lo importa (`ui-duelo.js`). Solo
+     cuando ya hay pestanas: `ordena()` las construye tras montar el juego, y despues vuelve a Core. */
+  function alEnlace() { if (PANEL.arena && /^#thegame\//.test(location.hash)) { muestra('arena'); } }
+
   function abre(desde) {
     origen = desde || document.querySelector('#cab-nav a.thegame');
     carga().then(function () {
@@ -269,12 +273,11 @@
             });
             sm.appendChild(bo);
           }
-          ordena();
+          ordena(); alEnlace();
         });
       }
       if (!capa.open) { capa.showModal(); }
-      /* Un enlace de duelo (`#thegame/duelo=…`, por QR) abre la Arena; `ui-duelo.js` lo importa. */
-      if (/^#thegame\//.test(location.hash)) { muestra('arena'); }
+      alEnlace();
       document.body.classList.add('en-thegame');
       window.AtlasJuego.sigue();
     }).catch(function (err) {

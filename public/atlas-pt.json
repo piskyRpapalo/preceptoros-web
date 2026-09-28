@@ -86,7 +86,7 @@
   "reabre": "A fenda voltou a abrir-se.",
   "casa_mal": "O Núcleo sofre quando a casa está mal: o arnês do site não está completo ou o jogo pesa demasiado, e a fenda faz dano a dobrar.",
   "medido": "Leis medidas em {f} · em {m}",
-  "cierre_aviso": "A partida fica neste separador até o fechares: o theGame não guarda nada.",
+  "cierre_aviso": "A partida fica neste separador até o fechares ou a guardares. Os duelos da Arena ficam neste aparelho.",
   "piloto": "Piloto",
   "piloto_t": "Deixar a máquina jogar",
   "piloto_hace": "O que faz",

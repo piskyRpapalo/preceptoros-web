@@ -67,7 +67,7 @@
   "duelo_fase_revelar": "{p} answered: ready to fight",
   "duelo_fase_hecho": "Duel with {p}: resolved",
   "duelo_plazo": "{c} cycles left before abandonment",
-  "duelo_rating": "Your local rating: {r}{prov} · {n} verified duels in this tab. No central leaderboard.",
+  "duelo_rating": "Your local rating: {r}{prov} · {n} verified duels on this device. No central leaderboard.",
   "duelo_prov": " (provisional)",
   "duelo_enviar": "Send…",
   "duelo_enviado": "Shared.",
