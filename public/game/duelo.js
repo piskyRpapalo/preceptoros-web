@@ -11,13 +11,17 @@
    por el Soberano, 2026-09-28): queda como resultado y como deuda a la vista.
 
    IMPORTAR NO ES CREER: cada sobre se VERIFICA (firma Ed25519) y se anota en el libro de su sesion
-   (`seq`, `prev`, fork, replica). Un desafio a una defensa que no es la tuya se rechaza. El resultado
+   (`seq`, `prev`, trampa, replica). Un desafio a una defensa que no es la tuya se rechaza. El resultado
    no se envia para que lo crean: cada lado lo vuelve a jugar.
 
    PLATAFORMA INYECTADA: `firma(texto)`, `verifica(texto, firma, clave)` (promesas), `azar()` (64 hex)
    y `azar32()` (32 hex) de `crypto.getRandomValues` en la pestana, deterministas en las pruebas;
-   `ciclo()` = el ciclo de juego de este aparato. Nada se guarda: vive en la pestana (guardarlo pide
-   firma). Ni DOM, ni red, ni reloj. */
+   `ciclo()` = el ciclo de juego de este aparato. GUARDAR (firmado por el Soberano, 2026-09-28: cerrar la
+   pestana no es abandonar): `vuelca()` da lo FIRMADO y tus `r`; `carga()` no se lo cree: verifica cada
+   firma, vuelve a anotar cada sobre, casa tu `r` con tu compromiso y vuelve a jugar cada resultado.
+   El estado y su guardado viven en `libreta.js`; la forma del paquete, en `enlace.js`; donde se
+   guarda lo decide quien llama (`ui-duelo.js`).
+   Ni DOM, ni red, ni reloj. */
 (function (raiz) {
   'use strict';
 
@@ -26,33 +30,15 @@
   var S = enNode ? require('./sobres.js') : raiz.AtlasSobres;
   var A = enNode ? require('./arena.js') : raiz.AtlasArena;
   var V = enNode ? require('./valores.js') : raiz.AtlasValores;
-  var TIPOS = ['defensa', 'desafio', 'respuesta', 'revelacion', 'resultado'];
-  var TOPE_B = 65536;
+  var E = enNode ? require('./enlace.js') : raiz.AtlasEnlace;
+  var Lb = enNode ? require('./libreta.js') : raiz.AtlasLibreta;
 
-  function objeto(o) { return !!o && typeof o === 'object' && !Array.isArray(o); }
+  var paquete = E.paquete, formaPaquete = E.formaPaquete;
   function falla(m) { return Promise.reject(new Error(m)); }
 
-  function paquete(tipo, politica, sobres, defensa) {
-    return K.ordena({ esquema: 'atlas.paquete_mp/1', tipo: tipo, politica: politica, sobres: sobres, defensa: defensa || null });
-  }
-  function formaPaquete(p) {
-    if (!objeto(p) || Object.keys(p).sort().join() !== 'defensa,esquema,politica,sobres,tipo' || p.esquema !== 'atlas.paquete_mp/1') {
-      return 'paquete: forma';
-    }
-    if (TIPOS.indexOf(p.tipo) < 0) { return 'paquete: tipo'; }
-    var m = S.formaPolitica(p.politica);
-    if (m) { return m; }
-    if (!Array.isArray(p.sobres) || p.sobres.length < 1 || p.sobres.length > 8) { return 'paquete: sobres'; }
-    for (var i = 0; i < p.sobres.length; i++) { m = S.forma(p.sobres[i]); if (m) { return m; } }
-    if (p.defensa !== null && !(objeto(p.defensa) && Object.keys(p.defensa).sort().join() === 'politica,sobre' &&
-        !S.formaPolitica(p.defensa.politica) && !S.forma(p.defensa.sobre))) { return 'paquete: defensa'; }
-    try { if (K.canon(p).length > TOPE_B) { return 'paquete: pasa de ' + TOPE_B + ' B'; } }
-    catch (x) { return 'paquete: ' + x.message; }
-    return '';
-  }
-
   function crea(op) {
-    var defensas = {}, duelos = {}, resultados = [], mia = null, cabezas = {};
+    var B = Lb.crea(op), st = B.st, defensas = st.defensas, duelos = st.duelos, cabezas = st.cabezas;
+    var fin = B.fin, anota = B.anota;
 
     function politica(modo, pares) {
       return K.ordena({ esquema: 'atlas.mp_sesion/1', modo: modo, pares: pares.slice().sort(), quorum: pares.length,
@@ -69,13 +55,6 @@
         return K.ordena(s);
       });
     }
-    function anota(D, sobres) {
-      for (var i = 0; i < sobres.length; i++) {
-        var m = S.anota(D.L, sobres[i]);
-        if (m && m !== 'duplicado') { return m; }
-      }
-      return '';
-    }
     /* Todas las firmas del paquete, verificadas antes de tocar nada. */
     function verificaTodo(p) {
       var ss = p.sobres.concat(p.defensa ? [p.defensa.sobre] : []);
@@ -90,7 +69,7 @@
       var m = A.formaDefensa(cuerpo);
       if (m) { return falla(m); }
       return firmaSobre(ses, 'defensa', cuerpo).then(function (s) {
-        mia = { politica: pol, sobre: s };
+        st.mia = { politica: pol, sobre: s };
         return paquete('defensa', pol, [s], null);
       });
     }
@@ -114,16 +93,16 @@
           return { tipo: 'defensa', huella: h, sobre: s0 };
         }
         if (p.tipo === 'desafio') {
-          if (!mia || !p.defensa || S.huella(p.defensa.sobre) !== S.huella(mia.sobre)) { throw new Error('ese desafio no es a tu defensa'); }
+          if (!st.mia || !p.defensa || S.huella(p.defensa.sobre) !== S.huella(st.mia.sobre)) { throw new Error('ese desafio no es a tu defensa'); }
           if (p.politica.modo !== 'duelo' || p.politica.pares.indexOf(op.pub) < 0 || p.politica.pares.length !== 2) {
             throw new Error('la sesion no es un duelo contigo');
           }
           if (D) { throw new Error('ese desafio ya lo tienes'); }
-          D = { politica: p.politica, L: S.libro(p.politica), defensa: mia.sobre, rol: 'defensor', r: null, esperando: null, resultado: null };
+          D = { politica: p.politica, L: S.libro(p.politica), defensa: st.mia.sobre, rol: 'defensor', r: null, esperando: null, resultado: null };
           var ma = anota(D, p.sobres);
           if (ma) { throw new Error(ma); }
           var as = S.aceptados(D.L, 'asalto');
-          if (as.length !== 1 || as[0].cuerpo.defensa !== S.huella(mia.sobre)) { throw new Error('el asalto no es a tu defensa'); }
+          if (as.length !== 1 || as[0].cuerpo.defensa !== S.huella(st.mia.sobre)) { throw new Error('el asalto no es a tu defensa'); }
           D.otro = as[0].de; D.pseudo = as[0].pseudonimo;
           duelos[ses] = D;
           return { tipo: 'desafio', sesion: ses, de: D.pseudo, asalto: as[0].cuerpo };
@@ -135,14 +114,14 @@
         if (p.tipo === 'revelacion') {
           var x = A.resuelve(D.L, D.defensa, 'humano');
           if (!x.ok) { throw new Error(x.motivo); }
-          D.resultado = x.resultado; resultados.push(x.resultado);
+          fin(D, ses, x.resultado);
           return { tipo: 'revelacion', sesion: ses, resultado: x.resultado, combate: x.combate, defensa: D.defensa,
                    asalto: S.aceptados(D.L, 'asalto')[0].cuerpo };
         }
         var rs = S.aceptados(D.L, 'resultado');
         var r = rs[rs.length - 1].cuerpo, mc = A.compruebaResultado(D.L, D.defensa, r);
         if (mc) { throw new Error(mc); }
-        D.resultado = r; resultados.push(r);
+        fin(D, ses, r);
         return { tipo: 'resultado', sesion: ses, resultado: r };
       });
     }
@@ -193,7 +172,7 @@
         if (m) { throw new Error(m); }
         var x = A.resuelve(D.L, D.defensa, 'humano');
         if (!x.ok) { throw new Error(x.motivo); }
-        D.resultado = x.resultado; resultados.push(x.resultado);
+        fin(D, ses, x.resultado);
         return { paquete: paquete('revelacion', D.politica, [v], null), resultado: x.resultado, combate: x.combate,
                  defensa: D.defensa, asalto: S.aceptados(D.L, 'asalto')[0].cuerpo };
       });
@@ -214,14 +193,15 @@
       return firmaSobre(ses, 'resultado', x.resultado).then(function (s) {
         var m = anota(D, [s]);
         if (m) { throw new Error(m); }
-        D.resultado = x.resultado; resultados.push(x.resultado);
+        fin(D, ses, x.resultado);
         return { paquete: paquete('resultado', D.politica, [s], null), resultado: x.resultado };
       });
     }
 
     return {
       publica: publica, importa: importa, reta: reta, acepta: acepta, revela: revela, plazo: plazo, abandona: abandona,
-      mia: function () { return mia; },
+      vuelca: B.vuelca, carga: B.carga,
+      mia: function () { return st.mia; },
       defensas: function () { return Object.keys(defensas).map(function (h) { return { huella: h, sobre: defensas[h].sobre }; }); },
       duelos: function () {
         return Object.keys(duelos).map(function (k) {
@@ -231,15 +211,15 @@
           return { sesion: k, rol: D.rol, de: D.pseudo, fase: fase };
         });
       },
-      resultados: function () { return resultados.slice(); },
+      resultados: function () { return st.resultados.slice(); },
       rating: function () {
-        var t = A.tabla(resultados);
+        var t = A.tabla(st.resultados);
         return { rating: op.pub in t.ratings ? t.ratings[op.pub] : V.combate.rating_inicial, partidas: t.partidas[op.pub] || 0 };
       }
     };
   }
 
-  var AtlasDuelo = { TIPOS: TIPOS, paquete: paquete, formaPaquete: formaPaquete, crea: crea };
+  var AtlasDuelo = { TIPOS: E.TIPOS, paquete: paquete, formaPaquete: formaPaquete, crea: crea };
   if (enNode) { module.exports = AtlasDuelo; }
   else { raiz.AtlasDuelo = AtlasDuelo; }
 })(this);

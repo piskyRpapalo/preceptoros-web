@@ -116,3 +116,6 @@ body.en-thegame > :not(#thegame){visibility:hidden}
   .thegame-panel .atlas-recursos{grid-template-columns:repeat(5,minmax(0,1fr))}
   .thegame-panel .atlas-recursos li:last-child:nth-child(odd){grid-column:auto}
 }
+#thegame .atlas-qr-caja{display:grid;gap:.4rem;justify-items:center;margin-top:.5rem}
+#thegame .atlas-qr{display:block;max-width:100%;height:auto;image-rendering:pixelated;border-radius:var(--radius)}
+#thegame .atlas-justo summary{cursor:pointer;color:var(--cobre,inherit);font-size:.85rem}

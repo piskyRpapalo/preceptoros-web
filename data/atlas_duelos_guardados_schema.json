@@ -1,0 +1,42 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "atlas.duelos_guardados/1",
+ "title": "La libreta de duelos guardada en el aparato",
+ "description": "Lo que `libreta.js › vuelca()` deja en la base propia `atlas-duelos` (IndexedDB) para que cerrar la pestana no sea abandonar (sugerencia firmada por el Soberano, 2026-09-28). Solo lo FIRMADO (defensas y sobres, con su politica) y lo que hace falta para seguir: tu `r` de cada duelo, que no sale del aparato, y los ciclos de juego que ya esperaste. `carga()` no se lo cree: verifica cada firma, vuelve a anotar cada sobre, casa tu `r` con tu compromiso y vuelve a jugar cada resultado. Sin reloj, sin PII. Vive fuera de `public/`: es el contrato, no se sirve.",
+ "type": "object",
+ "additionalProperties": false,
+ "required": ["esquema", "de", "mia", "hechos", "defensas", "duelos"],
+ "properties": {
+  "esquema": {"const": "atlas.duelos_guardados/1"},
+  "de": {"$ref": "#/$defs/hex64"},
+  "mia": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/defensa"}]},
+  "hechos": {"type": "array", "maxItems": 10000, "items": {"$ref": "#/$defs/hex64"}},
+  "defensas": {"type": "array", "maxItems": 1000, "items": {"$ref": "#/$defs/defensa"}},
+  "duelos": {
+   "type": "array",
+   "maxItems": 1000,
+   "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["politica", "rol", "r", "defensa", "sobres", "esperado"],
+    "properties": {
+     "politica": {"type": "object"},
+     "rol": {"enum": ["atacante", "defensor"]},
+     "r": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/hex64"}]},
+     "defensa": {"type": "object"},
+     "sobres": {"type": "array", "minItems": 1, "maxItems": 16, "items": {"type": "object"}},
+     "esperado": {"oneOf": [{"type": "null"}, {"type": "integer", "minimum": 0}]}
+    }
+   }
+  }
+ },
+ "$defs": {
+  "hex64": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+  "defensa": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": ["politica", "sobre"],
+   "properties": {"politica": {"type": "object"}, "sobre": {"type": "object"}}
+  }
+ }
+}

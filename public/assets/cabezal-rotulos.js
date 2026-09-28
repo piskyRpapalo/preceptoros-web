@@ -54,7 +54,7 @@
     var a = e.target.closest && e.target.closest('#cab-nav a.thegame');
     if (a) { juego({ preventDefault: function () { e.preventDefault(); }, currentTarget: a }); }
   });
-  function porDireccion() { if (location.hash === '#thegame') { juego(null); } }
+  function porDireccion() { if (/^#thegame(\/|$)/.test(location.hash)) { juego(null); } }
   window.addEventListener('hashchange', porDireccion);
   porDireccion();
 

@@ -625,9 +625,11 @@ process.stdout.write(JSON.stringify(ok));
 # Modulos de `public/game/` que NINGUN guion pide todavia (ni la puerta ni el Army): el multijugador y
 # la cria, firmados por el Soberano el 2026-09-28 («ve construyendo todo… enfocados al multiplayer»).
 # Ver atlas/POST_VERIFICACION_MGNO_LAB.md y atlas/POST_VERIFICACION_SISIL_CRIA.md.
-PUROS = ("canon.js", "sobres.js", "rating.js", "arena.js", "duelo.js", "mercado.js", "narragrafo.js", "cria.js", "genoma.js")
+PUROS = ("canon.js", "sobres.js", "rating.js", "arena.js", "enlace.js", "libreta.js", "duelo.js", "qr.js", "mercado.js",
+         "narragrafo.js", "cria.js", "genoma.js")
 # La Arena (2026-09-28, «el mapa multi-jugador en una pestana»): se carga al abrir su pestana, detras del Army.
-ARENA = ("canon.js", "sobres.js", "rating.js", "arena.js", "duelo.js", "escena.js", "mar.js", "ui-arena.js", "ui-duelo.js")
+ARENA = ("canon.js", "sobres.js", "rating.js", "arena.js", "enlace.js", "libreta.js", "duelo.js", "qr.js", "escena.js", "mar.js",
+         "ui-arena.js", "ui-duelo.js")
 FUERA_DE_LA_PUERTA = tuple(sorted(set(PUROS + ARENA)))
 
 
@@ -1389,6 +1391,48 @@ class Arena(unittest.TestCase):
         self.assertFalse(res.is_valid(con(base, rondas=3)), "un abandono con rondas")
         self.assertFalse(res.is_valid(con(base, final="rendicion")))
 
+    def test_los_casos_del_qr(self):
+        r = subprocess.run(["node", str(RAIZ / "qr_casos.mjs")], capture_output=True, text=True, timeout=300)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        casos = json.loads(r.stdout)
+        self.assertGreaterEqual(len(casos), 11)
+        for c in casos:
+            with self.subTest(caso=c["caso"]):
+                self.assertTrue(c["ok"], c["detalle"])
+
+    def test_el_guardado_de_duelos(self):
+        """Sugerencia firmada (2026-09-28): cerrar la pestana no es abandonar. Base PROPIA, la libreta se
+        verifica entera al cargar (en `libreta.js`, dentro del camino de escritura), y los pasos van por
+        turnos entre pestanas para no firmar dos veces el mismo `seq`."""
+        ui, lib = self._js("ui-duelo.js"), self._js("libreta.js")
+        self.assertIn("BASE = 'atlas-duelos'", ui)
+        self.assertNotIn("open('preceptoros'", ui, "la base de `auth.js` no es de la Arena")
+        self.assertIn("c.carga(x.g)", ui, "lo guardado entra sin pasar por la carga verificada")
+        self.assertIn("navigator.locks", ui, "sin turnos entre pestanas")
+        self.assertIn("S.verifica(s, op.verifica)", lib)
+        self.assertIn("S.compromiso(D.r, op.pub, ses)", lib, "un r guardado sin casar con su compromiso")
+        self.assertEqual(re.findall(r"indexedDB\.open\((\w+)", ui), ["BASE"])
+
+    def test_contrato_de_la_libreta_guardada(self):
+        try:
+            import jsonschema
+        except ImportError:
+            self.skipTest("NO_DATA · jsonschema no instalado")
+        r = subprocess.run(["node", str(RAIZ / "duelo_casos.mjs"), "--muestras"], capture_output=True, text=True, timeout=120)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        g = json.loads(r.stdout)["libreta"]
+        v = jsonschema.Draft202012Validator(json.loads((DATOS / "atlas_duelos_guardados_schema.json").read_text(encoding="utf-8")))
+        self.assertEqual([e.message for e in v.iter_errors(g)], [])
+        def con(**c):
+            d = json.loads(json.dumps(g)); d.update(c); return d
+        def duelo(**c):
+            d = json.loads(json.dumps(g)); d["duelos"][0].update(c); return d
+        malos = [con(esquema="atlas.partida/1"), con(de="hexelion"), con(servidor="relevo"),
+                 duelo(rol="espectador"), duelo(r="x"), duelo(esperado=-1)]
+        for i, malo in enumerate(malos):
+            with self.subTest(violacion=i):
+                self.assertFalse(v.is_valid(malo))
+
     def test_la_arena_se_carga_con_su_pestana(self):
         capa = (ASSETS / "thegame.js").read_text(encoding="utf-8")
         lista = capa[capa.index("var ARENA"):capa.index("function el(")]
@@ -1412,10 +1456,12 @@ class Arena(unittest.TestCase):
             self.assertTrue((PUBLICO / f"atlas-arena-{l}.json").is_file(), f"la Arena sin textos en {l}")
 
     def test_la_arena_no_sale_a_la_red_ni_usa_el_azar_del_sistema(self):
-        for f in ("escena.js", "mar.js", "ui-arena.js", "ui-duelo.js", "duelo.js", "rating.js"):
+        for f in ("escena.js", "mar.js", "ui-arena.js", "ui-duelo.js", "duelo.js", "rating.js", "enlace.js", "libreta.js", "qr.js"):
             c = self._js(f)
             for malo in ("Math.random", "localStorage", "indexedDB", "innerHTML", "sendBeacon", "WebSocket",
                          "RTCPeerConnection", "http://", "https://", "XMLHttpRequest", "Date."):
+                if malo == "indexedDB" and f == "ui-duelo.js":
+                    continue   # la libreta de duelos se guarda en SU base (test_el_guardado_de_duelos)
                 with self.subTest(fichero=f, prohibido=malo):
                     self.assertNotIn(malo, c)
             fetches = re.findall(r"fetch\(([^)]*)\)", c)
@@ -1426,4 +1472,8 @@ class Arena(unittest.TestCase):
 
 
 if __name__ == "__main__":
+    if "--vetadas" in sys.argv:
+        for r, ejemplo in VETO:
+            print(f"{r.pattern}\t{ejemplo}")
+        sys.exit(0)
     unittest.main(verbosity=1)

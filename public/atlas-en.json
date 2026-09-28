@@ -86,7 +86,7 @@
   "reabre": "The rift has opened again.",
   "casa_mal": "The Core suffers when the house is unwell: the site's harness is not whole or the game is too heavy, and the rift does double damage.",
   "medido": "Laws measured on {f} · on {m}",
-  "cierre_aviso": "Your game stays in this tab until you close it: theGame saves nothing.",
+  "cierre_aviso": "Your game lives in this tab until you close it: press Save to keep it. Open Arena duels are kept on this device by themselves.",
   "piloto": "Pilot",
   "piloto_t": "Let the machine play",
   "piloto_hace": "What it does",
