@@ -1,158 +1,262 @@
-/* preceptoros.org · ATLAS · el mapa vivo del Bosque Sumergido.
+/* preceptoros.org · ATLAS · el mapa: el MUNDO ABIERTO del Bosque Sumergido, en un lienzo.
 
-   TRES LIENZOS, TRES RITMOS. El FONDO (agua, ruinas, kelp, coral y la rejilla
-   de sectores) se pinta una vez por tamano. La ESCENA (luz que baja,
-   plancton, estructuras que laten, buzos que van y vienen) se repinta por
-   fotograma. La NIEBLA, otra vez una sola vez. Asi el coste por fotograma es
-   lo que se mueve y nada mas.
+   QUE SE VE. Un corte del fondo que da la vuelta sin bordes: se arrastra de lado (el dedo en
+   vertical sigue moviendo la pagina). Arriba la luz, abajo la fosa del Nucleo; los cinco
+   sectores sobre el fondo; TU NODO anclado donde dice tu clave; y encima de tu base, las ONDAS
+   de tus tropas trenzadas en helices, con chispas donde se cruzan. Del nodo al Nucleo corre el
+   flujo que farmea tu partida. La niebla tapa lo que tu partida aun no ha visto.
 
-   LA ANIMACION SE DUERME SOLA. Solo corre mientras el mapa esta a la vista
-   (IntersectionObserver) y la pestana abierta; con `prefers-reduced-motion`
-   se pinta un unico fotograma quieto. No hay tick global ni temporizador que
-   siga vivo con el piso cerrado.
+   QUE NO SE DECIDE AQUI. Donde esta cada cosa, que tapa la niebla y como es cada onda lo dice
+   `atlas-carta.js`, que es puro. Esta pieza solo pinta: se puede rehacer entera sin tocar un
+   dato. El movimiento es tiempo de pantalla; la FORMA de cada onda sale de su semilla.
 
-   El arte lo pone `atlas-arte.js`; aqui solo se decide DONDE y CUANDO. */
+   LA ANIMACION SE DUERME SOLA. Solo corre con el mapa a la vista y la pestana abierta; con
+   `prefers-reduced-motion`, un fotograma quieto que se repinta al cambiar el estado. */
 (function () {
   'use strict';
 
-  var ANCHA = { cols: 11, filas: 7, sectores: {
-    nucleo: [5, 3], forja: [2, 2], aguja: [8, 1], ojo: [8, 5], grieta: [3, 5] } };
-  var ESTRECHA = { cols: 7, filas: 7, sectores: {
-    nucleo: [3, 3], forja: [1, 1], aguja: [4, 1], ojo: [4, 5], grieta: [1, 5] } };
-  /* Las rutas de los buzos: de sector a sector, ida y vuelta. */
+  var C = window.AtlasCarta;
+  /* Los buzos van y vienen entre sectores. */
   var RUTAS = [['nucleo', 'forja'], ['aguja', 'ojo'], ['nucleo', 'grieta']];
+  function frac(x) { return x - Math.floor(x); }
 
-  function centro(c, f, r) {
-    var w = Math.sqrt(3) * r;
-    return { x: w * (c + 0.5 + (f % 2) * 0.5), y: r * (1 + f * 1.5) };
-  }
-  function hexagono(ctx, x, y, r) {
-    ctx.beginPath();
-    for (var i = 0; i < 6; i++) {
-      var a = Math.PI / 180 * (60 * i - 30);
-      ctx.lineTo(x + r * Math.cos(a), y + r * Math.sin(a));
-    }
-    ctx.closePath();
-  }
-  function lienzo(padre) {
+  var ultima = null, vivo = null;
+  function monta(caja) {
+    ultima = caja;
+    var A = window.AtlasArte;
+    if (!A || !C) { return null; }
+    var P = A.P, al = A.alfa;
     var cv = document.createElement('canvas');
     cv.setAttribute('aria-hidden', 'true');
-    padre.appendChild(cv);
-    return cv;
-  }
+    caja.insertBefore(cv, caja.firstChild);
+    caja.style.touchAction = 'pan-y'; caja.style.cursor = 'grab';
+    var ter = document.createElement('canvas'), nie = document.createElement('canvas');
+    nie.width = C.COLS; nie.height = C.FILAS;
+    var quieto = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    /* `sup` es el modo Superficie: SOLO de esta pestana, en memoria; no se recuerda (sello). */
+    var S = { ins: null, nd: null, voces: [], sector: null, fase: 1, sup: 0, k: 0, vis: {}, toques: [], nt: 0 };
+    var g = null, cam = S.nd ? S.nd.x : C.SECTORES.nucleo, meta = null, inercia = 0;
+    var visible = true, pedido = 0, ultimo = 0;
 
-  function monta(caja) {
-    var A = window.AtlasArte;
-    if (!A) { return; }
-    var cvFondo = lienzo(caja), cvEscena = lienzo(caja), cvNiebla = lienzo(caja);
-    /* Los botones de sector van ENCIMA de los lienzos. */
+    /* La etiqueta de tu nodo: su id, que no es de ninguna lengua. */
+    var etq = document.createElement('button');
+    etq.type = 'button'; etq.className = 'atlas-sector atlas-nodo'; etq.textContent = '◈ NO_DATA';
+    etq.addEventListener('click', function () { if (S.nd) { meta = S.nd.x; arranca(); } });
+    caja.appendChild(etq);
     Array.prototype.forEach.call(caja.querySelectorAll('[data-sector]'), function (b) {
       caja.appendChild(b);
+      b.addEventListener('focus', function () { meta = C.SECTORES[b.dataset.sector]; arranca(); });
     });
-    var quieto = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-    var geo = null, visible = true, pedido = 0, ultimo = 0, fase = 1;
+    /* Lo que lee un agente: el mundo, tu nodo y tu niebla, en JSON cerrado (`atlas.carta/1`). */
+    var det = document.createElement('details'), pre = document.createElement('pre');
+    det.className = 'atlas-carta-json';
+    var sum = document.createElement('summary'); sum.textContent = 'atlas.carta/1';
+    det.appendChild(sum); det.appendChild(pre);
+    caja.parentNode.insertBefore(det, caja.nextSibling);
 
     function prepara() {
       var ancho = caja.clientWidth;
-      if (!ancho || (geo && geo.ancho === ancho)) { return false; }
-      var R = ancho < 480 ? ESTRECHA : ANCHA;
-      var r = ancho / (Math.sqrt(3) * (R.cols + 0.5));
-      var alto = Math.ceil(r * (1.5 * R.filas + 0.5));
-      var dpr = Math.min(window.devicePixelRatio || 1, 2);
-      geo = { ancho: ancho, alto: alto, r: r, dpr: dpr, R: R, pos: {} };
-      Object.keys(R.sectores).forEach(function (k) {
-        geo.pos[k] = centro(R.sectores[k][0], R.sectores[k][1], r);
-      });
-      /* La escena se mueve: va a 1x, que a 30 fotogramas no se distingue y
-         cuesta la cuarta parte en una pantalla de 2x. Lo quieto, a su dpr. */
-      [cvFondo, cvEscena, cvNiebla].forEach(function (cv) {
-        var d = cv === cvEscena ? 1 : dpr;
-        cv.width = Math.round(ancho * d); cv.height = Math.round(alto * d);
-        cv.style.height = alto + 'px';
-      });
-      caja.style.height = alto + 'px';
-
-      /* Fondo: el bosque y, encima, la rejilla de sectores como cristal. */
-      var f = cvFondo.getContext('2d');
-      f.setTransform(dpr, 0, 0, dpr, 0, 0);
-      A.fondoEstatico(f, ancho, alto);
-      for (var fi = 0; fi < R.filas; fi++) {
-        for (var c = 0; c < R.cols; c++) {
-          var p = centro(c, fi, r);
-          hexagono(f, p.x, p.y, r * 0.95);
-          f.strokeStyle = A.alfa(A.P.vidrio, 0.12); f.lineWidth = 1; f.stroke();
-        }
-      }
-      Object.keys(geo.pos).forEach(function (k) {
-        var q = geo.pos[k];
-        hexagono(f, q.x, q.y, r * 0.95);
-        f.fillStyle = A.alfa(k === 'grieta' ? A.P.alerta : A.P.cobre, 0.12); f.fill();
-        f.strokeStyle = A.alfa(k === 'nucleo' ? A.P.violetaLuz : A.P.cobreLuz, 0.7);
-        f.lineWidth = 1.5; f.stroke();
-      });
-
-      /* Niebla: lo no explorado, con huecos alrededor de lo conocido. */
-      var n = cvNiebla.getContext('2d');
-      n.setTransform(dpr, 0, 0, dpr, 0, 0);
-      n.clearRect(0, 0, ancho, alto);
-      /* La niebla retrocede con la fase del Bosque: lo explorado se ve. */
-      n.fillStyle = A.alfa(A.P.fondo, [0.78, 0.7, 0.6, 0.5, 0.4][fase - 1] || 0.78);
-      n.fillRect(0, 0, ancho, alto);
-      n.globalCompositeOperation = 'destination-out';
-      Object.keys(geo.pos).forEach(function (k) {
-        var q = geo.pos[k];
-        var g = n.createRadialGradient(q.x, q.y, r * 0.8, q.x, q.y, r * 3);
-        g.addColorStop(0, 'rgba(0,0,0,1)'); g.addColorStop(1, 'rgba(0,0,0,0)');
-        n.fillStyle = g; n.fillRect(q.x - r * 3, q.y - r * 3, r * 6, r * 6);
-      });
-      n.globalCompositeOperation = 'source-over';
-
-      Array.prototype.forEach.call(caja.querySelectorAll('[data-sector]'), function (b) {
-        var q = geo.pos[b.dataset.sector];
-        if (!q) { return; }
-        b.style.left = (q.x / ancho * 100) + '%';
-        b.style.top = (q.y + r * 0.9) + 'px';
-      });
+      if (!ancho || (g && g.ancho === ancho)) { return false; }
+      var alto = Math.max(260, Math.min(440, Math.round(ancho * 0.62)));
+      var s = alto / C.HONDO, dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+      g = { ancho: ancho, alto: alto, s: s, sh: s, W: C.ANCHO * s, dpr: dpr };
+      cv.width = Math.round(ancho * dpr); cv.height = Math.round(alto * dpr);
+      cv.style.height = alto + 'px'; caja.style.height = alto + 'px';
+      terreno();
       return true;
     }
 
-    function escena(t) {
-      if (!geo) { return; }
-      var e = cvEscena.getContext('2d'), g = geo;
-      e.setTransform(1, 0, 0, 1, 0, 0);
-      e.clearRect(0, 0, g.ancho, g.alto);
-      A.rayos(e, g.ancho, g.alto, t);
-      A.plancton(e, g.ancho, g.alto, t);
-      Object.keys(g.pos).forEach(function (k) {
-        A.estructura(e, k, g.pos[k].x, g.pos[k].y, g.r * 1.7, t);
+    /* EL FONDO, una vez por tamano: agua por bandas, lecho con vetas y un borde que respira. */
+    function terreno() {
+      var s = g.s, W = g.W, H = g.alto;
+      ter.width = Math.round(W * g.dpr); ter.height = Math.round(H * g.dpr);
+      var t = ter.getContext('2d');
+      t.setTransform(g.dpr, 0, 0, g.dpr, 0, 0);
+      var ag = t.createLinearGradient(0, 0, 0, H);
+      [[0, P.superficie], [0.12, P.agua], [0.45, P.hondo], [0.8, P.abismo], [1, P.fondo]]
+        .forEach(function (p) { ag.addColorStop(p[0], p[1]); });
+      t.fillStyle = ag; t.fillRect(0, 0, W, H);
+      /* Las bandas del motor, como linea de agua: se ven sin rotulos. */
+      t.setLineDash([2, 6]); t.lineWidth = 1;
+      C.BANDAS.slice(1).forEach(function (b) {
+        t.strokeStyle = al(P.vidrio, 0.1);
+        t.beginPath(); t.moveTo(0, b[1] * s); t.lineTo(W, b[1] * s); t.stroke();
       });
-      RUTAS.forEach(function (ruta, i) {
-        var a = g.pos[ruta[0]], b = g.pos[ruta[1]];
-        if (!a || !b) { return; }
-        var ciclo = ((t * 0.00005 + i * 0.33) % 2), u = ciclo < 1 ? ciclo : 2 - ciclo;
-        var s = (1 - Math.cos(u * Math.PI)) / 2;
-        var x = a.x + (b.x - a.x) * s, y = a.y + (b.y - a.y) * s - Math.sin(s * Math.PI) * g.r * 1.2;
-        A.buzo(e, x, y, g.r * 0.55, t, (ciclo < 1 ? b.x - a.x : a.x - b.x) >= 0 ? 1 : -1);
-      });
+      t.setLineDash([]);
+      function lecho(dy) {
+        t.beginPath(); t.moveTo(0, H);
+        for (var x = 0; x <= C.ANCHO; x += 0.5) { t.lineTo(x * s, (C.suelo(x) + dy) * s); }
+        t.lineTo(W, H); t.closePath();
+      }
+      var lg = t.createLinearGradient(0, 10 * s, 0, H);
+      lg.addColorStop(0, P.piedraLuz); lg.addColorStop(0.5, P.piedra); lg.addColorStop(1, P.fondo);
+      lecho(0); t.fillStyle = lg; t.fill();
+      for (var k = 1; k <= 4; k++) {
+        lecho(k * 3.2); t.strokeStyle = al(k % 2 ? P.cobre : P.violetaLuz, 0.22 - k * 0.04); t.stroke();
+      }
+      t.save(); t.shadowColor = P.kelpLuz; t.shadowBlur = 8;
+      t.beginPath();
+      for (var x = 0; x <= C.ANCHO; x += 0.5) { t.lineTo(x * s, C.suelo(x) * s); }
+      t.strokeStyle = al(P.kelpLuz, 0.45); t.lineWidth = 1.2; t.stroke(); t.restore();
+      /* Coral y ruinas: puntos del mismo azar sin azar que el relieve. */
+      for (var c = 0; c < C.ANCHO; c += 1) {
+        var h = C.h32(71, c), y = C.suelo(c) * s;
+        if (h > 0.9) { t.fillStyle = al(P.coral, 0.55); t.beginPath(); t.arc(c * s, y - s * 0.6, s * (0.5 + h), 0, 7); t.fill(); }
+        else if (h < 0.05) { t.fillStyle = al(P.piedraLuz, 0.9); t.fillRect(c * s - s * 0.5, y - s * 3, s, s * 3); }
+      }
     }
 
-    /* Unos 30 fotogramas por segundo: la luz y el plancton no piden mas, y
-       el movil lo agradece. */
+    /* LA NIEBLA, cuando cambia el estado: 64 x 25 celdas que el lienzo suaviza al escalarlas. */
+    function nubla() {
+      var m = C.niebla(S.ins || { fase: S.fase }, S.nd), x = nie.getContext('2d');
+      var ex = C.exploracion(Object.keys(S.vis), S.nd);
+      var img = x.createImageData(C.COLS, C.FILAS), n = parseInt(P.fondo.slice(1), 16);
+      for (var i = 0; i < m.length; i++) {
+        img.data[i * 4] = n >> 16; img.data[i * 4 + 1] = (n >> 8) & 255; img.data[i * 4 + 2] = n & 255;
+        img.data[i * 4 + 3] = [236, 150, 0][Math.max(m[i], ex[i] ? 1 : 0)];
+      }
+      x.putImageData(img, 0, 0);
+    }
+
+    /* x de mundo a x de pantalla, por la copia mas cercana a la camara. */
+    function sx(x) { return g.ancho / 2 + C.dx(cam, x) * g.sh; }
+    function envuelto(ctx, img, dy, alfa) {
+      var W = C.ANCHO * g.sh, o = frac((g.ancho / 2 - cam * g.sh) / W) * W - W;
+      ctx.globalAlpha = alfa;
+      for (; o < g.ancho; o += W) { ctx.drawImage(img, o, dy, W, g.alto); }
+      ctx.globalAlpha = 1;
+    }
+    function visibleX(x, m) { var p = sx(x); return p > -m && p < g.ancho + m; }
+
+    function kelp(e, t) {
+      var s = g.s, izq = cam - g.ancho / 2 / g.sh - 4, der = cam + g.ancho / 2 / g.sh + 4;
+      e.lineCap = 'round';
+      for (var x = Math.floor(izq / 3) * 3; x < der; x += 3) {
+        var k = C.vuelta(x), h = C.h32(11, k);
+        if (h < 0.45) { continue; }
+        var px = sx(k), y0 = C.suelo(k) * s, alto = (6 + h * 14) * s;
+        var sw = Math.sin(t * 0.0011 + k * 0.7) * 2.2 * s;
+        e.strokeStyle = al(h > 0.8 ? P.kelpLuz : P.kelp, 0.55); e.lineWidth = s * 0.45;
+        e.beginPath(); e.moveTo(px, y0);
+        e.quadraticCurveTo(px + sw * 0.3, y0 - alto * 0.5, px + sw, y0 - alto); e.stroke();
+      }
+    }
+
+    function fotograma(t) {
+      if (!g) { return; }
+      var e = cv.getContext('2d'), s = g.s;
+      if (meta !== null) {
+        var d = C.dx(cam, meta);
+        cam = C.vuelta(cam + (quieto ? d : d * 0.12));
+        if (Math.abs(d) < 0.05) { meta = null; }
+      } else if (Math.abs(inercia) > 0.01) { cam = C.vuelta(cam + inercia); inercia *= 0.9; }
+      S.k += quieto ? S.sup - S.k : (S.sup - S.k) * 0.1;
+      g.sh = g.s + (g.ancho / C.ANCHO - g.s) * S.k;
+      var t0 = t; S.toques = S.toques.filter(function (q) { return t0 - q.t < 2600; });
+      e.setTransform(g.dpr, 0, 0, g.dpr, 0, 0);
+      envuelto(e, ter, 0, 1);
+      e.save(); e.beginPath(); e.moveTo(0, 0);
+      for (var q = 0; q <= g.ancho; q += 6) { e.lineTo(q, C.suelo(cam + (q - g.ancho / 2) / g.sh) * s); }
+      e.lineTo(g.ancho, 0); e.closePath(); e.clip();
+      A.rayos(e, g.ancho, g.alto, t);
+      e.restore();
+      kelp(e, t);
+      var O = window.AtlasOndas, V = { s: s, sx: sx, nd: S.nd, voces: S.voces, ins: S.ins, A: A,
+        visible: visibleX, toques: S.toques, k: S.k };
+      if (O) { O.flujo(e, t, V); }
+      Object.keys(C.SECTORES).forEach(function (k) {
+        var x = C.SECTORES[k];
+        var ob = window.AtlasObra, tam = s * 9 * (1 - 0.45 * S.k);
+        if (visibleX(x, 20 * s)) { (ob ? ob.pinta : A.estructura)(e, k, sx(x), (C.suelo(x) - 4) * s, tam, t, S.ins); }
+      });
+      /* Un buzo por tropa tuya: sin tropas, nadie bucea (no se anima lo que el juego no conoce). */
+      for (var i = 0; i < Math.min(S.nt, 6); i++) {
+        var r = RUTAS[i % 3];
+        var a = C.SECTORES[r[0]], b = C.SECTORES[r[1]], c = frac(t * 0.00004 + i * 0.17) * 2;
+        var u = c < 1 ? c : 2 - c, q = (1 - Math.cos(u * Math.PI)) / 2, x = a + C.dx(a, b) * q;
+        if (!visibleX(x, 10 * s)) { continue; }
+        A.buzo(e, sx(x), (C.suelo(x) - 6 - Math.sin(q * Math.PI) * 10) * s, s * 3, t,
+               (c < 1) === (C.dx(a, b) > 0) ? 1 : -1);
+      }
+      if (O) { O.base(e, t, V); if (O.toques) { O.toques(e, t, V); } }
+      A.plancton(e, g.ancho, g.alto, t);
+      /* La niebla respira: dos pasadas que derivan despacio, y lo nunca visto sigue tapado. */
+      var dr = quieto ? 0 : Math.sin(t * 0.0003) * s * 1.5;
+      e.imageSmoothingEnabled = true;
+      if (S.k < 0.99) { envuelto(e, nie, dr, 0.55 * (1 - S.k)); envuelto(e, nie, -dr, 0.55 * (1 - S.k)); }
+      if (S.sector && visibleX(C.SECTORES[S.sector], 20 * s)) {
+        var x0 = sx(C.SECTORES[S.sector]), y0 = (C.suelo(C.SECTORES[S.sector]) - 4) * s;
+        var pl = quieto ? 0.5 : frac(t * 0.0006);
+        e.strokeStyle = al(S.sector === 'grieta' ? P.alerta : P.vidrio, 0.7 * (1 - pl));
+        e.lineWidth = 1.5; e.beginPath(); e.arc(x0, y0, s * (6 + pl * 8), 0, 7); e.stroke();
+      }
+      coloca();
+    }
+
+    function coloca() {
+      var s = g.s;
+      Array.prototype.forEach.call(caja.querySelectorAll('[data-sector]'), function (b) {
+        var x = C.SECTORES[b.dataset.sector];
+        if (x === undefined) { return; }
+        b.style.left = sx(x) + 'px';
+        b.style.top = Math.min(g.alto - 12, (C.suelo(x) + 3.5) * s) + 'px';
+      });
+      etq.hidden = !S.nd && !S.sinClave;
+      if (S.nd) {
+        etq.style.left = sx(S.nd.x) + 'px';
+        etq.style.top = Math.min(g.alto - 12, (S.nd.y + 3.5) * s) + 'px';
+      } else { etq.style.left = '50%'; etq.style.top = '1.2rem'; }
+    }
+
     function bucle(t) {
       pedido = 0;
-      if (t - ultimo >= 32) { ultimo = t; escena(t); }
+      if (t - ultimo >= 32) { ultimo = t; fotograma(t); }
       if (!quieto && visible && !document.hidden) { pedido = requestAnimationFrame(bucle); }
     }
     function arranca() {
-      if (!pedido && !quieto && visible && !document.hidden) { pedido = requestAnimationFrame(bucle); }
+      if (quieto) { fotograma(0); return; }
+      if (!pedido && visible && !document.hidden) { pedido = requestAnimationFrame(bucle); }
+    }
+
+    /* El gesto (arrastre, toque, teclado, fichas, Superficie) vive en `atlas-gesto.js`. */
+
+    /* Tu nodo sale de tu clave publica; sin identidad, NO_DATA y el mundo sigue siendo el mismo. */
+    function clave() {
+      var I = window.Identity;
+      if (!I || !I.publica || !(I.quien && I.quien())) { S.sinClave = true; return; }
+      I.publica().then(function (pub) {
+        S.nd = C.nodo(pub); S.sinClave = !S.nd;
+        if (S.nd) { etq.textContent = '◈ ' + C.coord(S.nd.pub, 'base', S.nd.x, S.nd.y).corta; meta = S.nd.x; }
+        estado(S.ins);
+      }).catch(function () { S.sinClave = true; });
+    }
+    function tropas() {
+      var inc = window.AtlasIncubadora, l = null;
+      try { l = inc && inc.army ? inc.army() : null; } catch (x) { l = null; }
+      return Array.isArray(l) ? l : null;
+    }
+    function estado(ins) {
+      if (ins) { S.ins = ins; S.fase = ins.fase || S.fase; S.vis[C.visita(ins)] = 1; }
+      var tr = tropas();
+      S.voces = C.helices(S.nd, tr); S.nt = tr ? tr.length : 0;
+      nubla();
+      pre.textContent = JSON.stringify(C.estado(S.ins, S.nd, tr, Object.keys(S.vis)), null, 1);
+      if (ins && window.AtlasHud) { window.AtlasHud.estado(ins); }
+      if (quieto && g) { fotograma(0); }
     }
 
     prepara();
-    escena(performance.now());
+    clave();
+    estado(null);
     arranca();
-    window.addEventListener('resize', function () {
-      if (prepara()) { escena(performance.now()); }
-    });
+    document.addEventListener('preceptor:identity', clave);
+    /* Una tropa nueva entra en tu base al eclosionar, no a los 5 ciclos (`ui.js` avisa). */
+    document.addEventListener('atlas:tropa', function () { estado(null); });
+    /* Se mide la CAJA, no la ventana: el dialogo termina de maquetarse despues de montar el mapa
+       y la caja cambia de ancho sin que la ventana lo haga (Doogee, 2026-09-28: lienzo pensado
+       para 297 px y estirado a 499, rotulos a 1,68x de su edificio). */
+    if ('ResizeObserver' in window) { new ResizeObserver(function () { if (prepara()) { arranca(); } }).observe(caja); }
+    else { window.addEventListener('resize', function () { if (prepara()) { arranca(); } }); }
     if ('IntersectionObserver' in window) {
       new IntersectionObserver(function (es) {
         visible = es[0].isIntersecting;
@@ -160,14 +264,45 @@
       }).observe(caja);
     }
     document.addEventListener('visibilitychange', arranca);
-    return {
-      fase: function (f) {
-        if (f === fase) { return; }
-        fase = f; geo = null;
-        if (prepara()) { escena(performance.now()); }
-      }
+    vivo = {
+      fase: function (f) { if (f !== S.fase) { S.fase = f; estado(null); } },
+      estado: estado,
+      sector: function (k) { S.sector = k; if (quieto && g) { fotograma(0); } },
+      carta: function () {
+        /* Lo que lee un agente es la partida de AHORA, no la ultima que llego al mapa. */
+        var J = window.AtlasJuego, i = J && J.instantanea && J.instantanea();
+        if (i) { estado(i); }
+        return C.estado(S.ins, S.nd, tropas(), Object.keys(S.vis));
+      },
+      /* Lo que usa `atlas-gesto.js`: la camara, el toque, la Superficie y el dato de cada sitio. */
+      g: function () { return g; }, cam: function () { return cam; },
+      mira: function (x) { meta = x; arranca(); },
+      arrastra: function (c, v) { cam = C.vuelta(c); inercia = v; meta = null; if (quieto) { fotograma(0); } else { arranca(); } },
+      toca: function (px, py) {
+        if (!g) { return; }
+        S.toques.push({ x: C.vuelta(cam + (px - g.ancho / 2) / g.sh), y: py / g.s, t: performance.now() });
+        arranca();
+      },
+      superficie: function (on) { S.sup = on ? 1 : 0; det.open = !!on; arranca(); return !!on; },
+      edificios: function () { return C.estructuras(S.ins, S.nd); },
+      nodo: function () { return S.nd; }, ins: function () { return S.ins; }, caja: caja, etq: etq,
+      /* Las visitas de una partida retomada: la niebla vuelve a ser la que esa partida vio. */
+      visitas: function (l) { S.vis = {}; (l || []).forEach(function (v) { S.vis[v] = 1; }); estado(null); }
     };
+    if (window.AtlasGesto) { window.AtlasGesto.monta(vivo); }
+    return vivo;
   }
 
-  window.AtlasMapa = { monta: monta };
+  /* ESTAS AQUI: la linea y el `aria-current` los escribe `atlas-gesto.js` (se movio alli el
+     2026-09-28, al pasar este fichero de 16 KiB: es texto y accesibilidad, oficio del gesto). El
+     mapa solo pinta el anillo del sector. */
+  function aqui(texto, sector) {
+    if (window.AtlasGesto && ultima) { window.AtlasGesto.aqui(ultima, texto, sector); }
+    if (vivo) { vivo.sector(sector); }
+  }
+  /* La instantanea real llega por aqui (la voz del Preceptor la reparte cada pocos ciclos). */
+  function estado(ins) { if (vivo) { vivo.estado(ins); } }
+  function carta() { return vivo ? vivo.carta() : null; }
+  function visitas(l) { if (vivo) { vivo.visitas(l); } }
+  window.AtlasMapa = { monta: monta, aqui: aqui, estado: estado, carta: carta, visitas: visitas };
 })();

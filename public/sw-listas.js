@@ -141,8 +141,16 @@ const HUB = [...AGENTES, ...DUELOS, ...HERRAMIENTAS, '/hub.json', '/hub-textos.j
 const CAMINOS = ['ar', 'de', 'el', 'en', 'es', 'fr', 'it', 'pt', 'ru']
   .map(function (l) { return '/caminos-' + l + '.json'; });
 
+/* Los textos de theGame (2026-09-28). Sin ellos en la lista, el SW los dejaba pasar sin guardarlos
+   y el juego NO abria sin red: la joya «funciona offline» era falsa para el juego. Son contenido,
+   no medida. `atlas-mundo.json` y `atlas-record.json` SI son medidas y siguen fuera: sin red, la
+   ley del mundo se dice NO_DATA en vez de servir una cifra vieja con cara de fresca. */
+const ATLAS = ['ar', 'de', 'el', 'en', 'es', 'fr', 'it', 'pt', 'ru']
+  .map(function (l) { return '/atlas-' + l + '.json'; })
+  /* Y los textos de opinar firmado (su guion se carga al pulsar), por el mismo criterio. */
+  .concat(['ar', 'de', 'el', 'en', 'es', 'fr', 'it', 'pt', 'ru'].map(function (l) { return '/atlas-opina-' + l + '.json'; }));
 
-const CONTENIDO_JSON = [...AGENTES, ...CAMINOS, ...DUELOS, ...HERRAMIENTAS, '/hub.json', '/hub-textos.json', '/medidas.json', '/nav.json', '/modelos.json', '/servicios.json', '/instalar.json'];
+const CONTENIDO_JSON = [...AGENTES, ...CAMINOS, ...ATLAS, ...DUELOS, ...HERRAMIENTAS, '/hub.json', '/hub-textos.json', '/medidas.json', '/nav.json', '/modelos.json', '/servicios.json', '/instalar.json'];
 
 /* El manifiesto va a red primero: es diminuto, cambia cuando cambian los
    iconos, y un manifiesto viejo hace que la app instalada se quede con el

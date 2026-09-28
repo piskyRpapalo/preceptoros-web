@@ -215,6 +215,60 @@
     paso();
   }
 
+  /* LA VOZ (2026-09-28). La cara no solo avisa de la grieta: acompana. Una linea bajo el
+     retrato del panel que cambia con lo que PASA en la partida --lo que haces, lo que dice el
+     juez, lo que marca la instantanea-- y nunca repite la anterior. La grieta sigue: es un
+     estado mas, no el unico sermon. Frases cortas; el Preceptor orienta, no predica. Si falta
+     el texto en esta lengua, calla: no inventa. Debajo, cerrado, el objetivo final. */
+  var V = { ultima: null, visto: {}, fase: 0, act: null, actCiclo: 0 };
+  var ETQ = ['0-50', '50-150', '150-300', '300+'];
+  function tx(k) { return (window.AtlasJuego && window.AtlasJuego.texto(k)) || ''; }
+  function rellena(t, v) { return t.replace(/\{(\w+)\}/g, function (_, k) { return v && k in v ? v[k] : ''; }); }
+  function voz(clave, v) {
+    var sec = document.querySelector('.atlas-dormias'), t = tx(clave);
+    if (!sec || !t || clave === V.ultima) { return; }
+    if (!V.nodo || !sec.contains(V.nodo)) {
+      V.nodo = el('div', 'atlas-voz');
+      V.linea = el('p', 'atlas-nota'); V.linea.setAttribute('role', 'status');
+      V.nodo.appendChild(V.linea);
+      if (tx('voz_meta')) {
+        var d = el('details');
+        d.appendChild(el('summary', null, tx('voz_meta_t'))); d.appendChild(el('p', null, tx('voz_meta')));
+        V.nodo.appendChild(d);
+      }
+      sec.insertBefore(V.nodo, sec.children[1] || null);
+    }
+    V.ultima = clave; V.visto[clave] = true;
+    V.linea.textContent = rellena(t, v);
+  }
+  function accion(a, ciclo) { V.act = a; V.actCiclo = ciclo || 0; }
+  /* Lee la instantanea REAL y decide que toca decir; y le dice al mapa donde estas. */
+  function observa(ins) {
+    if (!ins || ins.esquema !== 'atlas.instantanea/1') { return; }
+    var g = ins.grieta || {}, n = Math.min(5, Math.max(1, ins.fase || 1));
+    /* Lo primero, una sola vez: DONDE ESTAS. La partida nace con la grieta abierta, y si la
+       grieta mandara siempre, el nivel 1 no se diria nunca (medido en Chrome, 2026-09-28). */
+    var clave = !V.visto.voz_n1 && ins.fase === 1 ? 'voz_n1' : g.abierta ? 'voz_grieta'
+      : ins.integridad * 3 < ins.integridad_max ? 'voz_riesgo'
+      : V.fase && ins.fase > V.fase ? 'voz_fase' : ins.ciclo - V.actCiclo > 300 ? 'voz_silencio' : null;
+    V.fase = ins.fase;
+    if (clave) { voz(clave, { n: ins.fase }); }
+    var b = ETQ.indexOf(ins.profundidad), banda = tx('b' + (b + 1)) || 'NO_DATA';
+    var rol = window.Identity && window.Identity.quien && window.Identity.quien() ? tx('rol_f') : tx('rol_v');
+    var nb = ['arrecife', 'ruinas', 'bosque', 'nucleo'].indexOf(V.act && V.act.banda);
+    var ult = V.act ? rellena(tx('acc_' + V.act.accion) || V.act.accion, { b: tx('b' + (nb + 1)) }) : 'NO_DATA';
+    /* El sector se NOMBRA en el texto (una persona mirando) y se marca con aria-current (un
+       lector de pantalla): la misma verdad en dos superficies. Sin sector, no se inventa. */
+    var sector = g.abierta ? 'grieta' : b === 3 ? 'nucleo' : b === 0 ? 'forja' : null;
+    if (window.AtlasMapa && window.AtlasMapa.estado) { window.AtlasMapa.estado(ins); }
+    if (window.AtlasMapa && window.AtlasMapa.aqui && tx('mapa_aqui')) {
+      /* Si la plantilla de la lengua trae `{s}`, el sector va donde ella diga; si no, al final. */
+      var ns = sector && tx('s_' + sector) ? tx('s_' + sector) : '', m = tx('mapa_aqui');
+      window.AtlasMapa.aqui(rellena(m, { n: ins.fase, l: tx('lv' + n), b: banda, r: rol, a: ult, s: ns ? ' · ' + ns : '' }) +
+        (ns && m.indexOf('{s}') < 0 ? ' · ' + ns : ''), sector);
+    }
+  }
+
   window.AtlasDialogo = { abre: abre, cierra: cierra, CELDAS: CELDAS,
-    retrato: retratoPreceptor, retratoNerea: retratoNerea };
+    retrato: retratoPreceptor, retratoNerea: retratoNerea, voz: voz, observa: observa, accion: accion };
 })();

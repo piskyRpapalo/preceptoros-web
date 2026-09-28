@@ -1,0 +1,17 @@
+{
+ "esquema": "atlas.opinion.firmada/1",
+ "opinion": {
+  "esquema": "atlas.opinion/1",
+  "contenido_v": "2026-09-27.1",
+  "sobre": "grieta",
+  "ciclo": 1,
+  "estado_sha256": "cdcab6c7651c0b6797cd845eb134268d8c23e35f831d9b1aa21df6ca5fa28c66",
+  "mostrado": "RED ALERT: RIFT AT 120m DEPTHCold water is pouring into the outer ruins. Every cycle left unrepaired takes integrity from the Core.",
+  "eleccion": "en_desacuerdo",
+  "nota": "the rift hurts too fast"
+ },
+ "firma": "ed25519:e78ccec5b8b357c0aaf1060dee95c220c568c505fa844cb96443caa22f783197c8c11b2bead213da36ca0597c0d059491563ca30fdc4d020abbefe1f9f9f3e0b",
+ "algoritmo": "Ed25519",
+ "pseudonimo": "Tester-ECF6",
+ "clave_publica": "565e99f8c7c3999ba122636fa648dd9ea563549c106e35639dd6116da3083777"
+}

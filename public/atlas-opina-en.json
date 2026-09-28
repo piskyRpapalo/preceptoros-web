@@ -1,0 +1,23 @@
+{
+ "t": "Signed feedback",
+ "que": "About what?",
+ "sobre_sugerencia": "The pilot's suggestion",
+ "sobre_veredicto": "The judge's verdict",
+ "sobre_grieta": "The rift",
+ "ninguno": "NO_DATA · nothing to give feedback on right now: no suggestion, no verdict and no rift on screen.",
+ "eleccion": "Your answer",
+ "de_acuerdo": "Right",
+ "en_desacuerdo": "Wrong",
+ "no_se": "Not sure",
+ "nota": "Note (optional, 280 characters, no paths, emails, links or IPs)",
+ "nota_mal": "The note looks like a path, email, link or IP: remove it to sign.",
+ "firmar": "Sign and save as a file",
+ "ok": "Signed with your key and saved as {f}. It is not sent by itself: press Send to share it through the channel you choose.",
+ "nd_id": "NO_DATA · no identity on this device: create one in your profile to sign.",
+ "nd": "NO_DATA · not signed: {m}",
+ "cerrar": "Close",
+ "enviar": "Send…",
+ "enviado": "Shared. Whoever receives it can check it: the signature proves who wrote it and that nothing changed.",
+ "enviar_no": "Not shared ({m}). The file is still saved: you can send it by hand.",
+ "enviar_nd": "Signed with your key and saved as {f}. NO_DATA · this browser cannot share files: send that file by hand."
+}

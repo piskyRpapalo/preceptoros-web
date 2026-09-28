@@ -1,0 +1,64 @@
+{
+ "esquema": "atlas.partida.firmada/1",
+ "partida": {
+  "esquema": "atlas.partida/1",
+  "contenido_v": "2026-09-27.1",
+  "ley": {
+   "nd": false,
+   "integridad_max": 117,
+   "dano": 1
+  },
+  "pasos": [
+   {
+    "ciclos": 200
+   },
+   {
+    "accion": "invocar",
+    "coste": {
+     "cobre": 50,
+     "luz": 0
+    },
+    "origen": "humano"
+   },
+   {
+    "ciclos": 34
+   }
+  ],
+  "truncada": false,
+  "final": {
+   "esquema": "atlas.instantanea/1",
+   "contenido_v": "2026-09-27.1",
+   "ciclo": 234,
+   "fase": 1,
+   "nivel_nucleo": 8,
+   "profundidad": "0-50",
+   "recursos": {
+    "luz": 84,
+    "biomasa": 3,
+    "cobre": 43,
+    "flujo": 14,
+    "oxigeno": 168
+   },
+   "integridad": 0,
+   "integridad_max": 117,
+   "grieta": {
+    "abierta": true,
+    "cierre": 0
+   },
+   "niveles": {
+    "descenso": 2,
+    "pesca": 1,
+    "mineria": 2,
+    "forja": 3,
+    "herboristeria": 5,
+    "restauracion": 1,
+    "ingenieria": 1
+   },
+   "pendiente_ciclos": 0
+  }
+ },
+ "firma": "ed25519:95c48d7b740da6bb50180c3529465cf2d02386eee9c44e1252e24434875855912ae4020c9e242c7382a73a69438db1f88882c16af88d33837d1351877157b409",
+ "algoritmo": "Ed25519",
+ "pseudonimo": "Tester-A273",
+ "clave_publica": "36daa55073c7af0504e761f2c534dd07c3036a265204eec4b0d371d2b67b3fbf"
+}

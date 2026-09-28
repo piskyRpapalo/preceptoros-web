@@ -1,0 +1,33 @@
+# Las OPINIONES firmadas de theGame, verificadas al entrar. Quien juega pulsa «Send» y la comparte
+# por el canal que elige; quien la recibe la sube aqui por PR y este check mira forma, nota y firma
+# Ed25519 (`atlas/verifica_opinion.mjs`). Determinista y sin LLM. `pull_request`, no
+# `pull_request_target`: el codigo de un fork corre sin secretos y con permiso de solo lectura.
+name: opiniones
+
+on:
+  pull_request:
+    paths: ["opiniones/**", "atlas/verifica_opinion.mjs"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verifica:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Verificar cada opinion firmada
+        run: |
+          shopt -s nullglob
+          fallos=0; total=0
+          for f in opiniones/*.json; do
+            total=$((total+1))
+            if node atlas/verifica_opinion.mjs "$f"; then echo "ENTRA   $f"; else echo "RECHAZO $f"; fallos=$((fallos+1)); fi
+          done
+          echo "opiniones: $total · rechazadas: $fallos"
+          [ "$total" -gt 0 ] || echo "NO_DATA · no hay opiniones en opiniones/ todavia"
+          [ "$fallos" -eq 0 ]

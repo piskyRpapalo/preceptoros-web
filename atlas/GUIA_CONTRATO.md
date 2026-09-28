@@ -42,3 +42,22 @@ se explica por diseño (sello, alerta, fase, avisos en la zona viva).
 1. Los campos de la instantánea de arriba.
 2. Qué modelo base y dónde corre (rack o navegador).
 3. Si la guía acepta preguntas escritas o solo responde al estado.
+
+## Enmienda propuesta (2026-09-27 · sin firmar): dos modos, guía y piloto
+La directiva del Soberano del 2026-09-27 («el usuario acepta y la máquina juega
+más o menos sola») choca con «pistas, no soluciones; sin jugar por la persona».
+Propuesta para resolverlo sin romper ninguna de las dos:
+- **Guía** (por defecto): lo de arriba, sin cambios.
+- **Piloto** (solo tras «Acepto»): propone UNA acción del enum cerrado
+  `atlas.accion/1` y la aplica por `AtlasJuego.aplica`, con las mismas llamadas
+  que los botones. La activación es una `atlas.aceptacion/1` firmada con Ed25519.
+  Se para al cerrar la capa, con la pestaña oculta, con un diálogo abierto, con
+  el fusible (3 fallos) o con «Soltar».
+- Hoy el piloto es una **regla fija** (`atlas-piloto.js`), y su récord medido
+  es la línea base. Un LoRA solo la sustituye si le gana en `atlas/arnes_piloto.mjs`.
+- La instantánea se mudó a `atlas-partida.js` para que la pestaña, el arnés y la
+  Aduana la calculen con el mismo código.
+- `ESPEC_ATLAS_AUTOMEJORA` se cita arriba pero no existe en este repo ni en el
+  espejo de p0x: NO_DATA. El camino hacia la Aduana está en
+  `MAPA_THEGAME_LORA_JUEGO.md` (B5).
+Pendiente de firma: esta enmienda y los 3 puntos de arriba.

@@ -24,9 +24,18 @@ RAIZ = Path(__file__).resolve().parent
 PUBLICO = RAIZ.parent / "public"
 ASSETS = PUBLICO / "assets"
 PISO = ASSETS  # los guiones, la hoja y la tira viven en public/assets/
-CODIGO = ("atlas-arte.js", "atlas-mapa.js", "atlas-dialogo.js", "atlas-motor.js",
-          "atlas-piso.js", "atlas.css", "preceptor-pixel.png", "thegame.js")
+CODIGO = ("atlas-arte.js", "atlas-coord.js", "atlas-carta.js", "atlas-ondas.js", "atlas-obra.js", "atlas-gesto.js", "atlas-mapa.js", "atlas-dialogo.js", "atlas-motor.js",
+          "atlas-piso.js", "atlas.css", "preceptor-pixel.png", "thegame.js",
+          "atlas-piloto.js", "atlas-partida.js", "atlas-piloto-capa.js", "atlas-guardado.js", "atlas-hud.js", "atlas-mapa.css")
+PILOTO = ("atlas-piloto.js", "atlas-partida.js", "atlas-piloto-capa.js")
+DATOS = RAIZ.parent / "data"
 LENGUAS = ["ar", "de", "el", "en", "es", "fr", "it", "pt", "ru"]
+# Las lenguas COMPLETAS del juego salen de `thegame.js` (una sola lista: aquí se lee, no se copia).
+# El resto de LENGUAS son BORRADORES de traducción: se vigila que no traigan claves huérfanas y se
+# mide su cobertura, sin exigir que estén completos (el Soberano, 2026-09-28: «hoy, solo inglés»).
+LENGUAS_JUEGO = json.loads(re.search(r"var LENGUAS = (\[[^\]]*\])", (ASSETS / "thegame.js")
+                                     .read_text(encoding="utf-8")).group(1).replace("'", '"'))
+BORRADORES = [l for l in LENGUAS if l not in LENGUAS_JUEGO]
 PESADOS = (".gguf", ".onnx", ".safetensors", ".bin", ".wav", ".mp3", ".ogg", ".opus")
 TOPE_GZIP = 2 * 1024 * 1024      # §E: bundle ATLAS < 2 MB gzip
 TOPE_FICHERO = 16 * 1024         # el mismo tope por fichero que la web
@@ -73,7 +82,7 @@ class Piso(unittest.TestCase):
         pedidas = set(re.findall(r"ui\.(dlg_[a-z0-9]+)", codigo))
         pedidas |= set(re.findall(r"'(dlg_[a-z0-9]+)'", codigo))
         self.assertTrue(pedidas, "el dialogo no pide ningun texto")
-        for l in LENGUAS:
+        for l in LENGUAS_JUEGO:
             d = json.loads((PUBLICO / f"atlas-{l}.json").read_text(encoding="utf-8"))
             with self.subTest(lengua=l):
                 self.assertFalse(pedidas - set(d["ui"]), f"faltan {pedidas - set(d['ui'])}")
@@ -119,7 +128,7 @@ class Piso(unittest.TestCase):
         codigo = sin_comentarios((PISO / "atlas-dialogo.js").read_text(encoding="utf-8"))
         self.assertIn("ui.atlas_retrato_alt", codigo)
         self.assertEqual(re.findall(r"\.alt\s*=\s*'[^']+'", codigo), [], "alt escrito a mano")
-        for l in LENGUAS:
+        for l in LENGUAS_JUEGO:
             d = json.loads((PUBLICO / f"atlas-{l}.json").read_text(encoding="utf-8"))
             with self.subTest(lengua=l):
                 self.assertGreater(len(d["ui"].get("atlas_retrato_alt", "")), 20)
@@ -130,7 +139,13 @@ class Piso(unittest.TestCase):
         puerta theGame y no escucha a la Torre ni busca un piso."""
         piso = sin_comentarios((PISO / "atlas-piso.js").read_text(encoding="utf-8"))
         self.assertIn("window.AtlasJuego", piso)
-        self.assertIn("atlas.instantanea/1", piso, "falta la instantanea para la guia")
+        # La instantanea se mudo a `atlas-partida.js` (2026-09-27) para que la
+        # pestana, el arnes y la Aduana la calculen con el MISMO codigo; el piso
+        # la sigue exponiendo como antes.
+        partida = sin_comentarios((PISO / "atlas-partida.js").read_text(encoding="utf-8"))
+        self.assertIn("atlas.instantanea/1", partida, "falta la instantanea para la guia")
+        self.assertIn("instantanea: instantanea", piso, "el piso ya no expone la instantanea")
+        self.assertIn("AtlasPartida.instantanea(E, M)", piso)
         for torre in ("preceptor:torre", "piso-atlas", "TorreUI"):
             with self.subTest(resto=torre):
                 self.assertNotIn(torre, piso, "el juego vuelve a depender de la Torre")
@@ -143,7 +158,7 @@ class Piso(unittest.TestCase):
                       "cierre_aviso"):
             with self.subTest(pieza=pieza):
                 self.assertIn(pieza, capa)
-        for g in ("atlas-arte.js", "atlas-mapa.js", "atlas-dialogo.js", "atlas-motor.js", "atlas-piso.js"):
+        for g in ("atlas-arte.js", "atlas-coord.js", "atlas-carta.js", "atlas-ondas.js", "atlas-mapa.js", "atlas-dialogo.js", "atlas-motor.js", "atlas-piso.js"):
             with self.subTest(guion=g):
                 self.assertIn(f"['{g}'", capa, f"la capa no carga {g}")
 
@@ -214,13 +229,17 @@ class Piso(unittest.TestCase):
                 self.assertNotIn(fuga, texto, "el mundo lleva una ruta o un nombre")
 
     def test_las_nueve_lenguas_tienen_las_mismas_claves(self):
-        base = json.loads((PUBLICO / "atlas-es.json").read_text(encoding="utf-8"))
+        base = json.loads((PUBLICO / f"atlas-{LENGUAS_JUEGO[0]}.json").read_text(encoding="utf-8"))
         codigo = (PISO / "atlas-piso.js").read_text(encoding="utf-8")
         pedidas = set(re.findall(r"\bU\('([a-z0-9_]+)'\)", codigo))
         pedidas |= {x + "n" for x in re.findall(r"'(b[1-4])'", codigo)}
         # Claves que el panel compone (las cinco fases) y la que pide la capa.
         pedidas |= {f"f{n}" for n in range(1, 6)} | {"cierre_aviso"}
-        for l in LENGUAS:
+        # Y las que pide la capa del piloto.
+        capa = (PISO / "atlas-piloto-capa.js").read_text(encoding="utf-8")
+        pedidas |= set(re.findall(r"\bT\('([a-z0-9_]+)'\)", capa))
+        pedidas |= set(re.findall(r"'(piloto_[hn]\d)'", capa))
+        for l in LENGUAS_JUEGO:
             d = json.loads((PUBLICO / f"atlas-{l}.json").read_text(encoding="utf-8"))
             with self.subTest(lengua=l):
                 self.assertEqual(d["idioma"], l)
@@ -229,6 +248,11 @@ class Piso(unittest.TestCase):
                 self.assertEqual(len(d["skills"]), 7, "no son siete skills")
                 self.assertFalse(pedidas - set(d["ui"]),
                                  f"claves que el piso pide y faltan: {pedidas - set(d['ui'])}")
+        for l in BORRADORES:
+            ui = json.loads((PUBLICO / f"atlas-{l}.json").read_text(encoding="utf-8"))["ui"]
+            with self.subTest(borrador=l):
+                self.assertFalse(set(ui) - set(base["ui"]), f"{l} trae claves que el juego ya no tiene")
+            print(f"  borrador {l}: {len(set(ui) & set(base['ui']))}/{len(base['ui'])} claves")
 
     def test_presupuesto_de_peso(self):
         total = 0
@@ -248,6 +272,643 @@ class Piso(unittest.TestCase):
                 if f.suffix.lower() in PESADOS:
                     with self.subTest(fichero=str(f)):
                         self.fail(f"binario pesado donde no debe: {f}")
+
+
+class Piloto(unittest.TestCase):
+    """El piloto base, la partida firmada y sus contratos (Soberano, 2026-09-27:
+    «un LoRA por nodo que mueve los valores del juego; el usuario acepta y la
+    maquina juega sola»). Hoy juega una REGLA FIJA; el LoRA entra solo si le
+    gana en el arnes."""
+
+    def test_el_piloto_y_la_partida_son_puros(self):
+        """La regla y la partida no tocan DOM, red, reloj ni azar: misma
+        instantanea, misma accion; misma partida, mismo final."""
+        for nombre in ("atlas-piloto.js", "atlas-partida.js", "atlas-carta.js", "atlas-coord.js"):
+            codigo = sin_comentarios((PISO / nombre).read_text(encoding="utf-8"))
+            for impuro in ("document", "window.", "fetch", "localStorage", "indexedDB",
+                           "sessionStorage", "setInterval", "setTimeout", "Math.random",
+                           "Date", "XMLHttpRequest", "innerHTML"):
+                with self.subTest(fichero=nombre, impuro=impuro):
+                    self.assertNotIn(impuro, codigo, f"{nombre} deja de ser puro: {impuro}")
+
+    def test_la_carta_es_un_mundo_para_todos_y_su_niebla_no_retrocede(self):
+        """`atlas-carta.js` (el mundo abierto, 2026-09-28): el mismo fondo para todas las personas,
+        cada sector en la banda del motor que su lore dice, tu nodo fuera del poblado y siempre en
+        el mismo sitio para la misma clave, la niebla que solo se abre al subir de fase, las ondas
+        iguales para la misma tropa, y el JSON que lee un agente, cerrado y sin inventar ajenos."""
+        js = r"""
+const C = require('./public/assets/atlas-carta.js'), out = {};
+out.bandas = Object.fromEntries(Object.entries(C.SECTORES).map(([k, x]) => [k, C.BANDAS[C.banda(C.suelo(x))][0]]));
+const a = C.nodo('dea9298c11223344556677'), b = C.nodo('dea9298c11223344556677');
+out.nodo_igual = JSON.stringify(a) === JSON.stringify(b);
+out.nodo_fuera = Object.values(C.SECTORES).every((x) => Math.abs(C.dx(x, a.x)) >= 20);
+out.sin_clave = C.nodo('') === null && C.nodo('zz') === null;
+let prev = null; out.monotona = true;
+for (let f = 1; f <= 5; f++) { const m = C.niebla({ fase: f, profundidad: '0-50', grieta: { abierta: false } }, a);
+  if (prev) for (let i = 0; i < m.length; i++) if (m[i] < prev[i]) out.monotona = false; prev = m; }
+const t = [{ armonicos: [[1, 24, 24, 0], [3, 9, 10, 12]] }];
+out.ondas_iguales = JSON.stringify(C.helices(a, t)) === JSON.stringify(C.helices(b, t))
+  && C.onda(C.helices(a, t)[0], 0.3, 1.5, 1) === C.onda(C.helices(b, t)[0], 0.3, 1.5, 1);
+out.raices = C.raices(a).length;
+const e = C.estado({ fase: 1, profundidad: '0-50' }, null);
+out.esquema = e.esquema; out.nodo_nd = e.nodo.valor === null && !!e.nodo.causa; out.ajenos_nd = e.nodos_ajenos.valor === null;
+process.stdout.write(JSON.stringify(out));
+"""
+        r = subprocess.run(["node", "-e", js], cwd=RAIZ.parent, capture_output=True, text=True, timeout=60)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        o = json.loads(r.stdout)
+        self.assertEqual(o["bandas"], {"forja": "0-50", "ojo": "0-50", "nucleo": "300+",
+                                       "grieta": "150-300", "aguja": "150-300"})
+        for k in ("nodo_igual", "nodo_fuera", "sin_clave", "monotona", "ondas_iguales", "nodo_nd", "ajenos_nd"):
+            with self.subTest(propiedad=k):
+                self.assertTrue(o[k], k)
+        self.assertGreater(o["raices"], 10)
+        self.assertEqual(o["esquema"], "atlas.carta/1")
+
+    def test_la_voz_exacta_es_la_misma_en_cada_aparato_y_va_en_partes_de_16_kb(self):
+        """`atlas-voz.js` (2026-09-28): solo enteros (nada de `Math.sin`, que no esta garantizado
+        igual en cada motor), misma tropa = misma huella, WAV en partes <= 16 KiB, y se carga al
+        pulsar Escuchar: fuera de la puerta del juego y del precache (el SW la guarda al usarla)."""
+        codigo = sin_comentarios((ASSETS / "atlas-voz.js").read_text(encoding="utf-8"))
+        for impuro in ("Math.sin", "Math.cos", "Math.random", "Date", "fetch", "localStorage",
+                       "indexedDB", "new Audio(", "http://", "https://"):
+            with self.subTest(impuro=impuro):
+                self.assertNotIn(impuro, codigo)
+        js = r"""
+const V = require('./public/assets/atlas-voz.js'), G = require('./public/game/gacha.js'), c = require('crypto');
+const ts = [0, 1, 2].map((i) => G.tirada(c.createHash('sha256').update('v' + i).digest('hex'), 'tc' + (1 + i)));
+const a = ts.map((t) => V.voz(t)), b = ts.map((t) => V.voz(t));
+process.stdout.write(JSON.stringify({
+  iguales: a.every((x, i) => x.huella.hex === b[i].huella.hex),
+  distintas: new Set(a.map((x) => x.huella.hex)).size,
+  partes: a.map((x) => x.partes), riff: String.fromCharCode(...a[0].wav.slice(0, 4)),
+  sin: V.voz({ armonicos: [] }) === null }));
+"""
+        r = subprocess.run(["node", "-e", js], cwd=RAIZ.parent, capture_output=True, text=True, timeout=60)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        o = json.loads(r.stdout)
+        self.assertTrue(o["iguales"], "la misma tropa no da los mismos bytes")
+        self.assertEqual(o["distintas"], 3, "tres tropas distintas suenan igual")
+        self.assertEqual(o["riff"], "RIFF")
+        self.assertTrue(o["sin"], "sin armonicos inventa una voz")
+        for partes in o["partes"]:
+            self.assertTrue(all(0 < n <= 16 * 1024 for n in partes), partes)
+        capa = (ASSETS / "thegame.js").read_text(encoding="utf-8")
+        self.assertNotIn("atlas-voz.js", capa, "la voz exacta pesa en la puerta del juego")
+        self.assertNotIn("atlas-voz", (PUBLICO / "sw-listas.js").read_text(encoding="utf-8"), "la voz entra en el precache")
+        self.assertIn("s.src = '/assets/atlas-voz.js'", (PUBLICO / "game" / "ui.js").read_text(encoding="utf-8"))
+
+    def test_el_juego_abre_sin_red_y_la_ley_sin_red_es_no_data(self):
+        """Los textos de las lenguas del juego son CONTENIDO para el SW (se guardan y abren sin red);
+        `atlas-mundo.json` y `atlas-record.json` son MEDIDAS y siguen fuera: sin red, NO_DATA."""
+        # Sin comentarios: el que explica por que las medidas quedan fuera las NOMBRA.
+        listas = sin_comentarios((PUBLICO / "sw-listas.js").read_text(encoding="utf-8"))
+        m = re.search(r"const ATLAS = \[([^\]]*)\]", listas)
+        self.assertTrue(m, "sin la lista ATLAS del SW, el juego no abre sin red")
+        dentro = re.findall(r"'(\w\w)'", m.group(1))
+        for l in LENGUAS_JUEGO:
+            with self.subTest(lengua=l):
+                self.assertIn(l, dentro)
+        self.assertIn("...ATLAS", listas)
+        self.assertIn("'/atlas-opina-' + l + '.json'", listas, "los textos de opinar no abren sin red")
+        for medida in ("atlas-mundo.json", "atlas-record.json"):
+            self.assertNotIn(medida, listas, f"{medida} es una medida: fresca o no se sirve")
+
+    def test_guardar_solo_al_pulsar_y_retomar_reproduce(self):
+        """`atlas-guardado.js`: el unico sitio del juego con almacen; escribe y borra SOLO desde los
+        botones; lo que retoma se vuelve a jugar y una partida tocada no vuelve a entrar."""
+        for nombre in CODIGO:
+            if not nombre.endswith(".js") or nombre == "atlas-guardado.js":
+                continue
+            with self.subTest(pieza=nombre):
+                self.assertNotIn("indexedDB", sin_comentarios((ASSETS / nombre).read_text(encoding="utf-8")))
+        g = sin_comentarios((ASSETS / "atlas-guardado.js").read_text(encoding="utf-8"))
+        self.assertEqual(g.count("'readwrite'"), 2, "se escribe desde algo que no es Guardar u Olvidar")
+        self.assertIn("boton(T('guardar'), guarda)", g)
+        self.assertIn("boton(T('olvidar'), olvida)", g)
+        for salida in ("fetch", "XMLHttpRequest", "sendBeacon", "WebSocket", "localStorage", "http://", "https://"):
+            with self.subTest(salida=salida):
+                self.assertNotIn(salida, g)
+        js = r"""
+const M = require('./public/assets/atlas-motor.js'), P = require('./public/assets/atlas-partida.js');
+const f = require('fs'), o = JSON.parse(f.readFileSync('partidas/ejemplo-navegador-sin-cabeza.json', 'utf8'));
+const p = o.partida || o, out = {};
+out.ok = P.retoma(p, M).t === p.final.ciclo;
+const t = JSON.parse(JSON.stringify(p)); t.final.ciclo += 1;
+try { P.retoma(t, M); out.tocada = 'aceptada'; } catch (x) { out.tocada = x.message; }
+const v = JSON.parse(JSON.stringify(p)); v.contenido_v = 'otra';
+try { P.retoma(v, M); out.version = 'aceptada'; } catch (x) { out.version = x.message; }
+process.stdout.write(JSON.stringify(out));
+"""
+        r = subprocess.run(["node", "-e", js], cwd=RAIZ.parent, capture_output=True, text=True, timeout=60)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        o = json.loads(r.stdout)
+        self.assertTrue(o["ok"])
+        self.assertEqual(o["tocada"], "final")
+        self.assertTrue(o["version"].startswith("contenido_v otra"), o["version"])
+
+    def test_la_coordenada_es_sha256_de_verdad(self):
+        """`atlas-coord.js` escribe SHA-256 a mano: se compara con el de node en varios tamanos."""
+        js = r"""
+const H = require('./public/assets/atlas-coord.js'), c = require('crypto');
+const ok = ['', 'abc', 'x'.repeat(55), 'y'.repeat(56), 'z'.repeat(64), 'p0x:1987:base:1,2'.repeat(9)]
+  .every((s) => H.sha256(s) === c.createHash('sha256').update(s).digest('hex'));
+process.stdout.write(JSON.stringify(ok));
+"""
+        r = subprocess.run(["node", "-e", js], cwd=RAIZ.parent, capture_output=True, text=True, timeout=60)
+        self.assertEqual(r.stdout, "true", r.stderr)
+
+    def test_opinar_firmado_se_carga_al_pulsar_y_su_contrato_es_cerrado(self):
+        """`atlas-opina.js` (2026-09-28): fuera de la puerta del juego y del precache; solo pide su
+        texto al propio origen; sus claves estan en cada lengua del juego; el contrato
+        `atlas.opinion/1` acepta una opinion buena y rechaza la mala (ruta, correo, fuera del enum,
+        campo de mas)."""
+        capa = (ASSETS / "thegame.js").read_text(encoding="utf-8")
+        self.assertNotIn("['atlas-opina.js']", capa, "opinar pesa en la puerta del juego")
+        self.assertIn("s.src = '/assets/atlas-opina.js'", capa)
+        self.assertNotIn("atlas-opina.js", sin_comentarios((PUBLICO / "sw-listas.js").read_text(encoding="utf-8")))
+        cod = sin_comentarios((ASSETS / "atlas-opina.js").read_text(encoding="utf-8"))
+        self.assertEqual(re.findall(r"fetch\(([^)]*)\)", cod), ["'/atlas-opina-' + lang + '.json'"])
+        for salida in ("http://", "https://", "XMLHttpRequest", "sendBeacon", "WebSocket", "localStorage",
+                       "indexedDB", "innerHTML"):
+            with self.subTest(salida=salida):
+                self.assertNotIn(salida, cod)
+        usadas = set(re.findall(r"T\('(\w+)'\)", cod)) | {"sobre_sugerencia", "sobre_veredicto", "sobre_grieta",
+                                                            "de_acuerdo", "en_desacuerdo", "no_se"}
+        for l in LENGUAS_JUEGO:
+            with self.subTest(lengua=l):
+                d = json.loads((PUBLICO / f"atlas-opina-{l}.json").read_text(encoding="utf-8"))
+                self.assertEqual(usadas - set(d), set(), f"atlas-opina-{l}.json sin claves")
+        try:
+            import jsonschema
+        except ImportError:
+            self.skipTest("NO_DATA · sin jsonschema. Remedio: pip install jsonschema")
+        esq = json.loads((DATOS / "atlas_opinion_schema.json").read_text(encoding="utf-8"))
+        jsonschema.Draft202012Validator.check_schema(esq)
+        val = jsonschema.Draft202012Validator(esq)
+        op = {"esquema": "atlas.opinion/1", "contenido_v": "2026-09-27.1", "sobre": "veredicto", "ciclo": 120,
+              "estado_sha256": "a" * 64, "mostrado": "Structural tie", "eleccion": "de_acuerdo", "nota": "the pilot was right"}
+        bueno = {"esquema": "atlas.opinion.firmada/1", "opinion": op, "firma": "ed25519:" + "b" * 128,
+                 "algoritmo": "Ed25519", "pseudonimo": "Atlante-7F3A", "clave_publica": "c" * 64}
+        self.assertEqual([e.message for e in val.iter_errors(bueno)], [])
+        # Los ejemplos malos se construyen por partes: escritos enteros, la doctrina de test_web
+        # (cero rutas, cero IPs, un solo CDN) los caza en ESTE fichero, que es lo que debe hacer.
+        ruta, url, ip = "/" + "home/x", "https" + "://x", ".".join(["10", "0", "0", "1"])
+        for nombre, malo in (("ruta", dict(op, nota="see " + ruta)), ("correo", dict(op, nota="me" + "@x.org")),
+                             ("url", dict(op, nota=url)), ("ip", dict(op, nota="at " + ip)),
+                             ("enum", dict(op, eleccion="quizas")), ("campo", dict(op, pc="mio"))):
+            with self.subTest(malo=nombre):
+                self.assertTrue(list(val.iter_errors(dict(bueno, opinion=malo))), f"el contrato acepta {nombre}")
+
+    def test_casos_del_piloto_y_la_partida(self):
+        """Casos en node: la regla, la grabadora, la reproduccion y la firma.
+        Incluye la partida INVENTADA y bien firmada que solo caza la
+        reproduccion: si se quita, ese caso se pone rojo."""
+        r = subprocess.run(["node", str(RAIZ / "piloto_casos.mjs")], capture_output=True,
+                           text=True, timeout=120)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        casos = json.loads(r.stdout)
+        self.assertGreaterEqual(len(casos), 18, "faltan casos del piloto")
+        self.assertTrue(any("INVENTADA" in c["caso"] for c in casos), "falta el caso de la partida inventada")
+        for c in casos:
+            with self.subTest(caso=c["caso"]):
+                self.assertTrue(c["ok"], c["detalle"])
+
+    def test_el_record_de_la_casa_se_recalcula(self):
+        """`atlas-record.json` no es decorado: el arnes lo vuelve a medir y
+        tiene que salir igual, byte a byte. Remedio: node atlas/arnes_piloto.mjs"""
+        r = subprocess.run(["node", str(RAIZ / "arnes_piloto.mjs"), "--stdout"],
+                           capture_output=True, text=True, timeout=300)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        self.assertEqual((PUBLICO / "atlas-record.json").read_text(encoding="utf-8"), r.stdout,
+                         "record desfasado: node atlas/arnes_piloto.mjs")
+        d = json.loads(r.stdout)
+        self.assertEqual(d["politica"], "piloto_base")
+        self.assertEqual(d["piloto_base"]["invalidas"], 0, "la regla propone acciones fuera del enum")
+        self.assertEqual(d["ley"], {k: d["ley"][k] for k in ("nd", "integridad_max", "dano")})
+
+    def test_la_capa_del_piloto_solo_pide_el_record(self):
+        """Una salida de red, al propio origen: el record de la casa. Ni la
+        partida ni la aceptacion salen solas; exportar es un fichero."""
+        codigo = sin_comentarios((PISO / "atlas-piloto-capa.js").read_text(encoding="utf-8"))
+        self.assertEqual(re.findall(r"fetch\(([^)]*)\)", codigo), ["'/atlas-record.json'"])
+        for salida in ("http://", "https://", "XMLHttpRequest", "sendBeacon", "WebSocket",
+                       "EventSource", "importScripts", "innerHTML", "localStorage",
+                       "sessionStorage", "indexedDB", "Enviar"):
+            with self.subTest(salida=salida):
+                self.assertNotIn(salida, codigo)
+
+    def test_acepto_firma_y_declara_lo_que_no_hace(self):
+        """Sin firma no arranca: `arranca()` solo se llama tras `Identity.firmar`
+        de una `atlas.aceptacion/1` que lleva las cuatro negaciones. Y las
+        cuatro se DICEN en las nueve lenguas, con el mismo peso que lo que hace."""
+        codigo = sin_comentarios((PISO / "atlas-piloto-capa.js").read_text(encoding="utf-8"))
+        llamadas = re.findall(r"(?<!function )\barranca\(\)", codigo)
+        self.assertEqual(len(llamadas), 1, "el piloto arranca por otro camino")
+        self.assertIn("firma = f.firma; cierra(); arranca();", codigo)
+        self.assertIn("window.Identity.firmar(obj)", codigo)
+        self.assertIn("que_no_hace: ['valor', 'credenciales', 'red', 'guardado']", codigo)
+        self.assertIn("'piloto_hace'", codigo); self.assertIn("'piloto_no'", codigo)
+        for l in LENGUAS_JUEGO:
+            ui = json.loads((PUBLICO / f"atlas-{l}.json").read_text(encoding="utf-8"))["ui"]
+            for k in ("piloto_acepto", "piloto_n1", "piloto_n2", "piloto_n3", "piloto_n4",
+                      "piloto_modelo", "piloto_firma", "piloto_soltar", "piloto_fusible"):
+                with self.subTest(lengua=l, clave=k):
+                    self.assertTrue(ui.get(k, "").strip(), f"{l} no dice {k}")
+
+    def test_el_piloto_se_carga_con_el_juego_y_no_antes(self):
+        """A demanda, detras del piso, fuera del precache y de todo HTML."""
+        capa = (PISO / "thegame.js").read_text(encoding="utf-8")
+        orden = [capa.index(f"['{g}'") for g in ("atlas-piso.js",) + PILOTO]
+        self.assertEqual(orden, sorted(orden), "el piloto se carga antes que el piso")
+        sw = (PUBLICO / "sw.js").read_text(encoding="utf-8")
+        for q in PILOTO + ("atlas-record.json",):
+            with self.subTest(pieza=q):
+                self.assertNotIn(q, sw, f"{q} entra en el precache")
+                for h in PUBLICO.rglob("*.html"):
+                    self.assertNotIn(q, h.read_text(encoding="utf-8"), f"{h.name} carga {q}")
+
+    def test_los_contratos_cazan_sus_violaciones(self):
+        """Por contrato: un caso bueno VERDE y seis violaciones ROJAS. Y el
+        sabotaje: con el esquema relajado a un objeto cualquiera las seis
+        pasarian, asi que es el contrato --no el JSON roto-- quien las caza."""
+        try:
+            import jsonschema
+        except ImportError:
+            self.skipTest("NO_DATA · sin jsonschema no se valida el contrato. Remedio: pip install jsonschema")
+        pub = "a" * 64
+        ok_acc = {"esquema": "atlas.accion/1", "accion": "bajar_a", "banda": "bosque", "origen": "piloto_base", "ciclo": 3}
+        ok_ace = {"esquema": "atlas.aceptacion/1", "modo": "piloto", "politica": "piloto_base",
+                  "contenido_v": "2026-09-26.1", "que_hace": ["lee_instantanea"],
+                  "que_no_hace": ["valor", "credenciales", "red", "guardado"],
+                  "pseudonimo": "x", "clave_publica": pub}
+        final = {"esquema": "atlas.instantanea/1", "ciclo": 1, "fase": 1, "nivel_nucleo": 1,
+                 "integridad": 117, "recursos": {}, "niveles": {}}
+        ok_par = {"esquema": "atlas.partida/1", "contenido_v": "2026-09-26.1",
+                  "ley": {"nd": False, "integridad_max": 117, "dano": 1},
+                  "pasos": [{"ciclos": 3}, {"dormir_ms": 0},
+                            {"sugerencia": {"accion": "reparar"}, "respuesta": "hecha"},
+                            {"accion": "reparar", "origen": "humano"}],
+                  "truncada": False, "final": final}
+        def con(base, **cambios):
+            d = json.loads(json.dumps(base)); d.update(cambios); return d
+        def sin(base, clave):
+            d = json.loads(json.dumps(base)); d.pop(clave); return d
+        casos = {
+            "atlas_accion_schema.json": (ok_acc, [
+                con(ok_acc, accion="firmar"), sin(ok_acc, "banda"), con(ok_acc, banda="abismo"),
+                con(ok_acc, origen="gemini"), con(ok_acc, firma_valor="x"), con(ok_acc, ciclo=-1)]),
+            "atlas_aceptacion_schema.json": (ok_ace, [
+                con(ok_ace, modo="auto"), con(ok_ace, que_no_hace=["credenciales", "red", "guardado"]),
+                con(ok_ace, que_hace=[]), con(ok_ace, clave_publica="xyz"), sin(ok_ace, "pseudonimo"),
+                con(ok_ace, gasto_max=10)]),
+            "atlas_partida_schema.json": (ok_par, [
+                con(ok_par, pasos=[{"accion": "firmar", "origen": "humano"}]),
+                con(ok_par, pasos=[{"ciclos": 0}]), con(ok_par, ley={"nd": False}),
+                con(ok_par, pasos=[{"accion": "reparar", "origen": "humano", "dia": "2026-09-27"}]),
+                sin(ok_par, "final"), con(ok_par, hora="12:00")]),
+        }
+        # B6 (2026-09-27): con politica lora la firma cubre el modelo concreto.
+        ace = jsonschema.Draft202012Validator(json.loads((DATOS / "atlas_aceptacion_schema.json").read_text(encoding="utf-8")))
+        self.assertFalse(ace.is_valid(con(ok_ace, politica="lora")), "lora sin sha del modelo")
+        self.assertTrue(ace.is_valid(con(ok_ace, politica="lora", modelo_sha256="b" * 64)))
+        self.assertFalse(ace.is_valid(con(ok_ace, modelo_sha256="b" * 64)), "sha de modelo en el piloto base")
+        for nombre, (bueno, malos) in casos.items():
+            esquema = json.loads((DATOS / nombre).read_text(encoding="utf-8"))
+            jsonschema.Draft202012Validator.check_schema(esquema)
+            v = jsonschema.Draft202012Validator(esquema)
+            relajado = jsonschema.Draft202012Validator({"type": "object"})
+            with self.subTest(contrato=nombre, caso="bueno"):
+                self.assertEqual([e.message for e in v.iter_errors(bueno)], [])
+            self.assertEqual(len(malos), 6)
+            for i, malo in enumerate(malos):
+                with self.subTest(contrato=nombre, violacion=i):
+                    self.assertFalse(v.is_valid(malo), f"{nombre} deja pasar la violacion {i}")
+                    self.assertTrue(relajado.is_valid(malo), "la violacion no depende del contrato")
+
+    def test_la_aduana_publica_vuelve_a_jugar_las_partidas(self):
+        """El workflow `partidas` llama al MISMO verificador que usara el rack,
+        con permisos de solo lectura y sin `pull_request_target`."""
+        wf = (RAIZ.parent / ".github" / "workflows" / "partidas.yml").read_text(encoding="utf-8")
+        self.assertIn('node atlas/verifica_partida.mjs "$f"', wf)
+        self.assertIn("contents: read", wf)
+        # Los comentarios lo nombran para decir por que NO; se mira el YAML vivo.
+        vivo = "\n".join(l for l in wf.splitlines() if not l.lstrip().startswith("#"))
+        self.assertNotIn("pull_request_target", vivo)
+        self.assertIn('[ "$fallos" -eq 0 ]', wf, "un rechazo no pone el check en rojo")
+        for f in sorted((RAIZ.parent / "partidas").glob("*.json")):
+            with self.subTest(partida=f.name):
+                r = subprocess.run(["node", str(RAIZ / "verifica_partida.mjs"), str(f)],
+                                   capture_output=True, text=True, timeout=120)
+                self.assertEqual(r.returncode, 0, r.stdout)
+
+    def test_lo_oculto_no_se_ve(self):
+        """Un `display` propio anula el atributo `hidden` (medido el 2026-09-27:
+        «Hacer / Ignorar» se veia con Sugerir apagado). Toda clase de la capa
+        que se oculta con `hidden` y tiene display propio necesita su regla."""
+        css = (PISO / "atlas.css").read_text(encoding="utf-8")
+        for clase in ("thegame-sugerencia", "atlas-eclosion"):
+            with self.subTest(clase=clase):
+                self.assertIn(f".{clase}[hidden]", css)
+
+    def test_sugerir_no_juega_por_la_persona(self):
+        """Humano + piloto: la regla propone y la accion solo se aplica al
+        pulsar Hacer; lo propuesto y lo respondido quedan en la partida."""
+        codigo = sin_comentarios((PISO / "atlas-piloto-capa.js").read_text(encoding="utf-8"))
+        self.assertIn("if (modo === 'sugerir') { return sugiere(); }", codigo)
+        self.assertIn("window.AtlasPartida.anota(a, hacer ? 'hecha' : 'ignorada');", codigo)
+        self.assertEqual(codigo.count("window.AtlasJuego.aplica(a)"), 1,
+                         "sugerir aplica la accion sin que la persona la pulse")
+        self.assertIn("if (hacer) { window.AtlasJuego.aplica(a); return; }", codigo)
+
+
+class TheGameV15(unittest.TestCase):
+    """theGame v1.5 (Directiva Maestra del Soberano, 2026-09-27): gacha
+    armonico, loot al estilo Diablo, huevo, adopcion FIRMADA en el Army y
+    sonido de ondas. Lo que la directiva pide y aun no se construye
+    (`city_node.js`, `a2a_routes.js`: P2P, enclaves, guerra) esta PENDIENTE DE
+    FIRMA en `atlas/DIRECTIVA_V15_ESTADO.md`, y esta clase lo vigila: que no
+    aparezca a medias.
+
+    VIVE AQUI Y NO EN `test_web.py`, aunque la directiva lo pida alli: el
+    numero de pruebas de `test_web.py` es una cifra PUBLICADA en tres
+    portadas cuyo dueno es `coherencia-publica.py`, en el rack. Subirla desde
+    la nube obligaria a transcribir a mano el campo de otro dueno. El CI corre
+    las dos guardas en el mismo job; moverla es un paso del rack."""
+
+    JUEGO = PUBLICO / "game"
+    MODULOS = ("valores.js", "gacha.js", "db.js", "core.js", "ui.js", "juez.js")
+
+    def _js(self, nombre):
+        return sin_comentarios((self.JUEGO / nombre).read_text(encoding="utf-8"))
+
+    def test_v15_cada_modulo_cabe_en_16_kb(self):
+        """Instruccion 1 de la directiva: ningun modulo pasa de 16 KB."""
+        presentes = sorted(q.name for q in self.JUEGO.glob("*.js"))
+        self.assertEqual(presentes, sorted(self.MODULOS),
+                         "aparece un modulo de la v1.5 sin su firma (ver DIRECTIVA_V15_ESTADO.md)")
+        for q in self.JUEGO.iterdir():
+            with self.subTest(modulo=q.name):
+                self.assertLessEqual(q.stat().st_size, 16 * 1024, f"{q.name} pasa de 16 KB")
+
+    def test_v15_puro_y_sin_ficheros_de_sonido_ni_imagen(self):
+        """Instrucciones 2 y 3: la tirada no usa el azar del sistema, y el
+        sonido son OscillatorNode de seno, sin un solo MP3."""
+        for nombre in ("gacha.js", "core.js"):
+            codigo = self._js(nombre)
+            for impuro in ("Math.random", "Date", "fetch", "localStorage", "indexedDB",
+                           "XMLHttpRequest", "http://", "https://", "innerHTML"):
+                with self.subTest(modulo=nombre, impuro=impuro):
+                    self.assertNotIn(impuro, codigo)
+        core = self._js("core.js")
+        self.assertIn("createOscillator()", core)
+        self.assertEqual(set(re.findall(r"\.type = '(\w+)'", core)), {"sine"}, "otra onda que no es seno")
+        for fichero in (".mp3", ".ogg", ".wav", ".opus", "new Audio(", ".png", ".webp", ".ttf", ".woff"):
+            with self.subTest(fichero=fichero):
+                for nombre in self.MODULOS:
+                    self.assertNotIn(fichero, self._js(nombre), f"{nombre} carga {fichero}")
+
+    def test_v15_casos_en_node(self):
+        """Gacha, motor, partida, Army y sintesis en node, deterministas."""
+        import subprocess
+        r = subprocess.run(["node", str(RAIZ / "gacha_casos.mjs")], capture_output=True,
+                           text=True, timeout=180)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        casos = json.loads(r.stdout)
+        self.assertGreaterEqual(len(casos), 21, "faltan casos de la v1.5")
+        for c in casos:
+            with self.subTest(caso=c["caso"]):
+                self.assertTrue(c["ok"], c["detalle"])
+
+    def test_v15_el_army_solo_admite_firma_verificada(self):
+        """Instruccion 4: sumar una tropa exige la firma Ed25519, y no basta
+        con que exista: se VERIFICA dentro del unico camino de escritura."""
+        db = self._js("db.js")
+        self.assertEqual(db.count("army.push("), 1, "hay otro camino para meter tropas")
+        entra = db.index("army.push(")
+        self.assertLess(db.index("verifica(JSON.stringify(ad), m[1], ad.clave_publica)"), entra)
+        self.assertLess(db.index("if (!ok) { throw new Error('firma: no verifica'); }"), entra)
+        ui = self._js("ui.js")
+        self.assertNotIn("push(u", ui); self.assertNotIn("army.push", ui)
+        self.assertIn("army.adopta(r.obj, r.firma)", ui)
+        self.assertIn("window.Identity.firmar(obj)", ui)
+
+    def test_v15_invocar_firma_antes_de_pagar_y_se_carga_a_demanda(self):
+        """Se firma la invocacion y SOLO DESPUES se paga por el motor; y los
+        modulos entran por la puerta theGame, fuera del precache y de todo HTML."""
+        ui = self._js("ui.js")
+        self.assertLess(ui.index("firma({ esquema: 'atlas.invocacion/1'"), ui.index("window.AtlasJuego.invoca(TC.coste)"))
+        for salida in ("fetch", "XMLHttpRequest", "sendBeacon", "WebSocket", "localStorage",
+                       "sessionStorage", "indexedDB", "innerHTML", "http://", "https://"):
+            with self.subTest(salida=salida):
+                self.assertNotIn(salida, ui)
+        capa = (PUBLICO / "assets" / "thegame.js").read_text(encoding="utf-8")
+        listas = (PUBLICO / "sw.js").read_text(encoding="utf-8")
+        for m in self.MODULOS:
+            with self.subTest(modulo=m):
+                self.assertIn(f"['/game/{m}']", capa, f"la puerta no carga {m}")
+                self.assertNotIn(f"game/{m}", listas, f"{m} entra en el precache")
+                for h in PUBLICO.rglob("*.html"):
+                    self.assertNotIn(f"game/{m}", h.read_text(encoding="utf-8"))
+
+    def test_v15_el_contrato_cubre_lo_que_cae(self):
+        """Contrato antes que codigo: 400 tiradas reales validan contra
+        `atlas.gacha/1`, y seis violaciones se rechazan."""
+        import subprocess
+        try:
+            import jsonschema
+        except ImportError:
+            self.skipTest("NO_DATA · sin jsonschema. Remedio: pip install jsonschema")
+        esquema = json.loads((DATOS / "atlas_gacha_schema.json").read_text(encoding="utf-8"))
+        jsonschema.Draft202012Validator.check_schema(esquema)
+        def v(defn):
+            return jsonschema.Draft202012Validator({"$ref": f"#/$defs/{defn}", "$defs": esquema["$defs"]})
+        r = subprocess.run(["node", "-e", "const G=require('./public/game/gacha.js'),c=require('crypto');"
+                            "const o=[];for(let i=0;i<400;i++){o.push(G.tirada(c.createHash('sha256').update('t'+i).digest('hex'),'tc'+(1+i%4)))}"
+                            "process.stdout.write(JSON.stringify(o))"], cwd=RAIZ.parent, capture_output=True, text=True, timeout=60)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        tropas = json.loads(r.stdout)
+        for t in tropas:
+            self.assertEqual([e.message for e in v("tropa").iter_errors(t)], [])
+        t = tropas[0]
+        malas = [dict(t, rareza="mitico"), dict(t, tc="tc9"), dict(t, semilla="x"), dict(t, precio=1),
+                 dict(t, armonicos=[]), dict(t, stats=dict(t["stats"], vida=-1))]
+        for i, m in enumerate(malas):
+            with self.subTest(violacion=i):
+                self.assertFalse(v("tropa").is_valid(m))
+        ad = {"esquema": "atlas.adopcion/1", "tropa": t, "pseudonimo": "x", "clave_publica": "a" * 64}
+        self.assertTrue(v("adopcion").is_valid(ad))
+        self.assertFalse(v("adopcion").is_valid(dict(ad, tropa=dict(t, rareza="mitico"))))
+
+    def test_v15_los_valores_son_provisionales_y_solo_datos(self):
+        """Los valores viven en `valores.js`, marcados PROVISIONALES y dichos en
+        pantalla; la logica no lleva cifras de equilibrio."""
+        import subprocess
+        v = self._js("valores.js")
+        for impuro in ("function", "=>", "fetch", "Math.", "Date"):
+            with self.subTest(impuro=impuro):
+                self.assertNotIn(impuro, v.split("var VALORES = ")[1].split("if (typeof module")[0])
+        r = subprocess.run(["node", "-e", "process.stdout.write(JSON.stringify(require('./public/game/valores.js')))"],
+                           cwd=RAIZ.parent, capture_output=True, text=True, timeout=30)
+        d = json.loads(r.stdout)
+        self.assertEqual(d["estado"], "provisional")
+        self.assertIn("T('provisional')", self._js("ui.js"), "la pantalla no dice que son valores provisionales")
+        g = self._js("gacha.js")
+        for cifra in ("cobre: 50", "calidad: [", "vida: [4, 9]"):
+            with self.subTest(cifra=cifra):
+                self.assertNotIn(cifra, g, "una cifra de equilibrio volvio a la logica")
+
+    def test_v15_textos_en_las_nueve(self):
+        """Todo lo que dice la incubadora existe en las nueve lenguas."""
+        ui = self._js("ui.js")
+        g = sin_comentarios((self.JUEGO / "gacha.js").read_text(encoding="utf-8"))
+        pedidas = set(re.findall(r"\bT\('([a-z0-9_]+)'\)", ui))
+        pedidas |= {f"tc{i}" for i in range(1, 5)} | {f"rar_{r}" for r in ("normal", "magico", "raro", "unico")}
+        vj = sin_comentarios((self.JUEGO / "valores.js").read_text(encoding="utf-8"))
+        pedidas |= {"base_" + b for b in re.findall(r"base: '(\w+)'", vj)}
+        for bloque in ("prefijos", "sufijos"):
+            cuerpo = re.search(bloque + r": \{(.*?)\n    \}", vj, re.S).group(1)
+            pedidas |= {"af_" + a for a in re.findall(r"(\w+): \{", cuerpo)}
+        pedidas |= {"st_" + k for k in re.search(r"var STATS = \[([^\]]+)\]", g).group(1).replace("'", "").replace(" ", "").split(",")}
+        self.assertGreaterEqual(len(pedidas), 45)
+        for l in LENGUAS_JUEGO:
+            ui_l = json.loads((PUBLICO / f"atlas-{l}.json").read_text(encoding="utf-8"))["ui"]
+            with self.subTest(lengua=l):
+                self.assertFalse(pedidas - set(ui_l), f"faltan en {l}: {sorted(pedidas - set(ui_l))}")
+
+
+class Juez(unittest.TestCase):
+    """El juez de theGame (public/game/juez.js): el mismo en la pestaña y en la Aduana del rack."""
+
+    JS = r"""
+      const M = require('./public/assets/atlas-motor.js'), Pa = require('./public/assets/atlas-partida.js');
+      const Pi = require('./public/assets/atlas-piloto.js'), J = require('./public/game/juez.js');
+      const ley = { nd: false, integridad_max: 117, dano: 1 };
+      let e = M.inicial(ley);
+      for (let i = 0; i < 400; i++) { e = M.ciclo(e, ley); }
+      const rep = { accion: 'reparar' }, esp = { accion: 'esperar' }, rec = { accion: 'recoger' };
+      const r1 = J.juzga(M, Pa, Pi, e, rep, esp, ley, 200), r2 = J.juzga(M, Pa, Pi, e, rep, esp, ley, 200);
+      const nada = J.juzga(M, Pa, Pi, M.inicial(ley), rec, null, ley, 50);
+      const igual = J.juzga(M, Pa, Pi, e, rep, rep, ley, 100);
+      process.stdout.write(JSON.stringify({ r1, mismo: JSON.stringify(r1) === JSON.stringify(r2), nada, igual,
+        abierta: e.abierta, cobre: e.cobre }));
+    """
+
+    def test_determinista_nulo_y_empate(self):
+        import subprocess
+        r = subprocess.run(["node", "-e", self.JS], cwd=RAIZ.parent, capture_output=True, text=True, timeout=120)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        d = json.loads(r.stdout)
+        self.assertTrue(d["mismo"], "el mismo juicio dos veces da dos veredictos")
+        self.assertIn(d["r1"]["gana"], ("humano", "piloto", "empate"))
+        self.assertEqual(d["r1"]["horizonte"], 200)
+        self.assertTrue(d["nada"]["alucinacion"], "recoger sin nada pendiente no es una jugada")
+        self.assertIsNone(d["nada"]["piloto"], "sin rama: null, nunca ceros de relleno")
+        self.assertEqual(d["igual"]["gana"], "empate", "la misma jugada en las dos ramas empata")
+
+    def test_no_sale_a_la_red_y_simula_con_el_motor_puro(self):
+        j = (RAIZ.parent / "public" / "game" / "juez.js").read_text(encoding="utf-8")
+        for red in ("fetch(", "XMLHttpRequest", "sendBeacon", "WebSocket", "EventSource"):
+            with self.subTest(red=red):
+                self.assertNotIn(red, j)
+        self.assertIn("puro = Pa.puro", j, "en la pestaña el juez tiene que simular con el motor SIN grabadora")
+        partida = (RAIZ.parent / "public" / "assets" / "atlas-partida.js").read_text(encoding="utf-8")
+        self.assertIn("AtlasPartida.puro = graba(", partida)
+        self.assertIn("'/game/juez.js'", (RAIZ.parent / "public" / "assets" / "thegame.js").read_text(encoding="utf-8"))
+
+    def test_la_capa_habla_una_lengua_completa(self):
+        """Cualquier portada abre el juego en una lengua COMPLETA, y la capa lo declara (lang y dir)."""
+        t = (RAIZ.parent / "public" / "assets" / "thegame.js").read_text(encoding="utf-8")
+        self.assertIn("en", LENGUAS_JUEGO)
+        self.assertIn("capa.lang = lengua", t)
+        self.assertIn("capa.dir =", t)
+
+    def test_los_textos_del_juez_en_las_nueve_lenguas(self):
+        for l in LENGUAS_JUEGO:
+            ui = json.loads((RAIZ.parent / "public" / f"atlas-{l}.json").read_text(encoding="utf-8"))["ui"]
+            for k in ("juez_humano", "juez_piloto", "juez_empate", "juez_nulo"):
+                with self.subTest(lengua=l, clave=k):
+                    self.assertTrue(ui.get(k))
+            if l != "es" and "es" in LENGUAS_JUEGO:
+                self.assertNotEqual(ui["juez_humano"], json.loads((RAIZ.parent / "public" / "atlas-es.json")
+                                    .read_text(encoding="utf-8"))["ui"]["juez_humano"], f"{l} lleva el texto en castellano")
+
+
+# Regla de oro del Soberano (2026-09-27): la web publica es educacion, comunidad y soberania
+# tecnica. Lo financiero/DePIN vive en el rack privado. En `public/`, `atlas/`, `data/` y
+# `partidas/` no se nombra NEAR, mainnet, testnet, el Alquimista ni cuentas o unidades de cadena.
+# `near` en minuscula es ingles corriente y no se mira; `NEAR` en mayusculas y las cuentas si.
+CRIPTO = re.compile(r"\bNEAR\b|near_tx|hexelion\.near|\b[a-z0-9_-]+\.near\b|\byocto|(?i:mainnet|testnet|alquimista)")
+TEXTO = (".html", ".js", ".mjs", ".json", ".css", ".md", ".py", ".txt", ".svg", ".xml", ".webmanifest")
+
+
+def menciones_cripto(texto):
+    return [m.group(0) for m in CRIPTO.finditer(texto)]
+
+
+class SinCripto(unittest.TestCase):
+    def test_la_web_publica_no_nombra_cripto(self):
+        raiz = RAIZ.parent
+        vistos, hallados = 0, []
+        for carpeta in ("public", "atlas", "data", "partidas"):
+            for f in sorted((raiz / carpeta).rglob("*")):
+                if not f.is_file() or f.suffix not in TEXTO or f == Path(__file__).resolve():
+                    continue
+                vistos += 1
+                for n, linea in enumerate(f.read_text(encoding="utf-8", errors="replace").splitlines(), 1):
+                    hallados += [f"{f.relative_to(raiz)}:{n}: {m}" for m in menciones_cripto(linea)]
+        self.assertGreater(vistos, 100, "la guarda no ha mirado casi nada: falla cerrado")
+        self.assertEqual(hallados, [], "\n".join(hallados[:20]))
+
+    def test_la_guarda_caza_lo_que_debe(self):
+        for sembrado in ("saldo en NEAR", "hexelion.near", "red: mainnet", "valores de Testnet",
+                         "El Alquimista dice", "1e24 yoctoNEAR", "import near_tx"):
+            with self.subTest(sembrado=sembrado):
+                self.assertTrue(menciones_cripto(sembrado))
+        self.assertEqual(menciones_cripto("the cave is near the core"), [])
+
+class Opiniones(unittest.TestCase):
+    """Enviar las opiniones firmadas (Soberano, 2026-09-28: «quiero enviar ya los feedback mios y de
+    otros users»): lo envia la PERSONA con el menu de compartir del sistema, con un clic propio y
+    sin servidor; quien lo recibe lo verifica con `atlas/verifica_opinion.mjs`."""
+
+    def test_el_verificador_caza_lo_que_debe(self):
+        r = subprocess.run(["node", str(RAIZ / "opinion_casos.mjs")], capture_output=True, text=True, timeout=60)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        casos = json.loads(r.stdout)
+        self.assertGreaterEqual(len(casos), 7)
+        for c in casos:
+            with self.subTest(caso=c["caso"]):
+                self.assertTrue(c["ok"], c["detalle"])
+
+    def test_enviar_es_un_gesto_de_la_persona_y_no_una_red(self):
+        """`navigator.share` solo dentro del clic de «Send»; ni fetch nuevo, ni direccion escrita,
+        ni envio automatico al firmar."""
+        cod = sin_comentarios((ASSETS / "atlas-opina.js").read_text(encoding="utf-8"))
+        self.assertEqual(cod.count("navigator.share("), 1)
+        clic = cod.index("b.addEventListener('click', function () {\n      navigator.share(")
+        self.assertLess(cod.index("function ofreceEnvio"), clic)
+        self.assertEqual(re.findall(r"fetch\(([^)]*)\)", cod), ["'/atlas-opina-' + lang + '.json'"])
+        for fuga in ("mailto:", "http://", "https://", "sendBeacon", "XMLHttpRequest"):
+            with self.subTest(fuga=fuga):
+                self.assertNotIn(fuga, cod)
+        d = json.loads((PUBLICO / "atlas-opina-en.json").read_text(encoding="utf-8"))
+        for k in ("enviar", "enviado", "enviar_no", "enviar_nd"):
+            with self.subTest(clave=k):
+                self.assertTrue(d.get(k, "").strip())
+
+    def test_el_workflow_verifica_cada_opinion(self):
+        wf = (RAIZ.parent / ".github" / "workflows" / "opiniones.yml").read_text(encoding="utf-8")
+        vivo = "\n".join(l for l in wf.splitlines() if not l.lstrip().startswith("#"))
+        self.assertIn('node atlas/verifica_opinion.mjs "$f"', vivo)
+        self.assertIn("contents: read", vivo)
+        self.assertNotIn("pull_request_target", vivo)
+        self.assertIn('[ "$fallos" -eq 0 ]', vivo)
+        for f in sorted((RAIZ.parent / "opiniones").glob("*.json")):
+            with self.subTest(opinion=f.name):
+                r = subprocess.run(["node", str(RAIZ / "verifica_opinion.mjs"), str(f)], capture_output=True,
+                                   text=True, timeout=60)
+                self.assertEqual(r.returncode, 0, r.stdout)
 
 
 if __name__ == "__main__":

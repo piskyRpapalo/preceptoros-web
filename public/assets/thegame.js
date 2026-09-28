@@ -7,7 +7,7 @@
    puerta.
 
    A DEMANDA. Este fichero lo inyecta `cabezal-rotulos.js` al pulsar la puerta.
-   Aqui se piden la hoja y los cinco guiones del juego, en orden
+   Aqui se piden la hoja y los guiones del juego (cinco del piso y tres del piloto), en orden
    (`async = false`); nada de esto esta en ninguna pagina ni en el precache.
 
    CERRAR NO BORRA LA PARTIDA. La capa se oculta y el reloj del juego se para;
@@ -17,8 +17,22 @@
   'use strict';
   if (window.TheGame) { return; }
 
-  var GUIONES = [['atlas-arte.js'], ['atlas-mapa.js'],
-    ['atlas-dialogo.js', '/assets/'], ['atlas-motor.js'], ['atlas-piso.js', '/']];
+  /* El piloto va detras del piso: la partida envuelve al motor ya cargado y
+     la capa del piloto necesita los textos que pide el piso. Los de `/game/`
+     son theGame v1.5: gacha, army, sintesis e incubadora. */
+  var GUIONES = [['atlas-arte.js'], ['atlas-coord.js'], ['atlas-carta.js'], ['atlas-ondas.js'], ['atlas-obra.js'], ['atlas-gesto.js'], ['atlas-mapa.js'],
+    ['atlas-dialogo.js', '/assets/'], ['atlas-motor.js'], ['atlas-piso.js', '/'],
+    ['atlas-piloto.js'], ['atlas-partida.js'], ['atlas-piloto-capa.js'],
+    ['/game/valores.js'], ['/game/gacha.js'], ['/game/db.js'], ['/game/core.js'], ['/game/ui.js'], ['/game/juez.js'], ['atlas-guardado.js']];
+  /* LAS LENGUAS DEL JUEGO (2026-09-28, el Soberano: «hoy, solo inglés; un mismo enlace»). La
+     UNICA lista de lenguas en las que el juego esta COMPLETO. Cualquier portada abre el juego en
+     una de ellas: la de la pagina si esta aqui; si no, la primera. Anadir una lengua es traducir
+     su `atlas-<l>.json` hasta que el gate la de completa y escribirla aqui: nada mas cambia. Las
+     demas son borradores (el gate vigila que no tengan claves huerfanas y mide su cobertura). */
+  var LENGUAS = ['en'], RTL = ['ar'];
+  var pagina = (document.documentElement.lang || 'en').slice(0, 2);
+  var lengua = LENGUAS.indexOf(pagina) >= 0 ? pagina : LENGUAS[0];
+  window.AtlasLengua = { lenguas: LENGUAS, actual: lengua, pagina: pagina };
   var capa = null, origen = null, cargado = null;
 
   function el(tag, clase, texto) {
@@ -34,9 +48,12 @@
       var hoja = document.createElement('link');
       hoja.rel = 'stylesheet'; hoja.href = '/assets/atlas.css';
       document.head.appendChild(hoja);
+      var hm = document.createElement('link');
+      hm.rel = 'stylesheet'; hm.href = '/assets/atlas-mapa.css';
+      document.head.appendChild(hm);
       GUIONES.forEach(function (g, i) {
         var s = document.createElement('script');
-        s.src = '/assets/' + g[0];
+        s.src = g[0].charAt(0) === '/' ? g[0] : '/assets/' + g[0];
         s.async = false;
         if (g[1]) { s.dataset.base = g[1]; }
         if (i === GUIONES.length - 1) {
@@ -55,6 +72,9 @@
      JS se comporta distinto bajo TalkBack y VoiceOver; este no. */
   function construye() {
     capa = el('dialog', 'thegame-capa'); capa.id = 'thegame';
+    /* La capa habla la lengua del juego, no la de la portada: sin esto, una pagina arabe
+       voltearia un juego escrito en ingles. */
+    capa.lang = lengua; capa.dir = RTL.indexOf(lengua) >= 0 ? 'rtl' : 'ltr';
     capa.setAttribute('aria-labelledby', 'thegame-t');
     var barra = el('div', 'thegame-barra');
     barra.appendChild(el('h2', 'thegame-t', 'theGame')).id = 'thegame-t';
@@ -95,7 +115,31 @@
     carga().then(function () {
       if (!capa) {
         construye();
-        window.AtlasJuego.monta(document.getElementById('atlas-juego'), capa);
+        window.AtlasJuego.monta(document.getElementById('atlas-juego'), capa).then(function () {
+          if (window.AtlasPilotoCapa) { window.AtlasPilotoCapa.monta(capa); }
+          if (window.AtlasIncubadora) { window.AtlasIncubadora.monta(capa); }
+          if (window.AtlasGuardado) { window.AtlasGuardado.monta(capa); }
+          /* El contador de farmeo se carga AL ABRIRLO: su peso no va en la puerta del juego, que es
+             una ley del mundo (gzip_juego_b). Plegado es solo su rotulo; abierto, `atlas-hud.js`. */
+          var sm = capa.querySelector('#atlas-piso .atlas-mapa'), th = window.AtlasJuego.texto('hud_t');
+          if (sm && th) {
+            var d = el('details', 'atlas-hud-farmeo'); d.appendChild(el('summary', null, th)); sm.appendChild(d);
+            d.addEventListener('toggle', function () {
+              if (!d.open || window.AtlasHud) { return; }
+              var s = document.createElement('script'); s.src = '/assets/atlas-hud.js';
+              s.onload = function () { window.AtlasHud.monta(capa, d); };
+              document.head.appendChild(s);
+            });
+            /* Opinar FIRMADO (sugerencia, veredicto, grieta): `atlas-opina.js`, al pulsar. */
+            var bo = el('button', 'boton-sec', window.AtlasJuego.texto('opina'));
+            bo.addEventListener('click', function () {
+              var s = document.createElement('script'); s.src = '/assets/atlas-opina.js';
+              s.onload = function () { window.AtlasOpina.abre(capa); };
+              if (window.AtlasOpina) { window.AtlasOpina.abre(capa); } else { document.head.appendChild(s); }
+            });
+            sm.appendChild(bo);
+          }
+        });
       }
       if (!capa.open) { capa.showModal(); }
       document.body.classList.add('en-thegame');
