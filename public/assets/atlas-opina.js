@@ -70,6 +70,8 @@
       a.download = nombre; document.body.appendChild(a); a.click(); a.remove();
       setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
       dice(T('ok').replace('{f}', nombre));
+      /* Firmado: el formulario se va y queda la confirmacion con Cerrar; no tapa el juego el resto de la partida. */
+      Array.prototype.forEach.call(panel.querySelectorAll('label,fieldset,select,textarea,button.boton'), function (n) { n.remove(); });
     }).catch(function (x) { dice(T('nd').replace('{m}', x && x.message)); });
   }
 
