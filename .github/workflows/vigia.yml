@@ -1,0 +1,32 @@
+# El VIGIA de main, una vez al dia (sugerencia firmada por el Soberano, 2026-09-28). Lo que el gate
+# mira en cada PR puede caducar sin que nadie empuje nada: cifras con fecha, un sello viejo, el peso
+# del juego frente a la ley del mundo. Aqui se vuelve a mirar `main` cada manana y, si algo esta en
+# rojo, el run falla y GitHub lo notifica segun los avisos de Actions de la cuenta. NO corre en los
+# PR: no bloquea nada, avisa. El umbral del peso lo da el motor (`atlas/vigia.mjs`), no este
+# fichero. Determinista y sin LLM.
+name: vigia
+
+on:
+  schedule:
+    - cron: "17 5 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  vigia:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: python -m pip install --disable-pip-version-check jsonschema
+      - run: python test_web.py
+      # Los tres pasos corren aunque falle uno: el aviso dice TODO lo que esta en rojo.
+      - if: ${{ !cancelled() }}
+        run: python atlas/test_atlas.py
+      - if: ${{ !cancelled() }}
+        run: node atlas/vigia.mjs
