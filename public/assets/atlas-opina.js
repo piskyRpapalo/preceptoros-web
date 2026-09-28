@@ -144,7 +144,8 @@
     var c = el('button', 'boton-sec', T('cerrar')); c.type = 'button'; c.addEventListener('click', cierra);
     c.style.justifySelf = 'start';
     panel.appendChild(c);
-    var sm = capa.querySelector('#atlas-piso .atlas-mapa');
+    /* En la pestana que se esta viendo; sin pestanas, bajo el mapa como antes. */
+    var sm = capa.querySelector('.thegame-panel:not([hidden])') || capa.querySelector('#atlas-piso .atlas-mapa');
     (sm || capa).appendChild(panel);
     panel.scrollIntoView({ block: 'nearest' });
   }
@@ -171,7 +172,8 @@
       }
     }).catch(function (x) {
       var p = el('p', 'no-data', 'NO_DATA · ' + (x && x.message));
-      var sm = capa.querySelector('#atlas-piso .atlas-mapa'); (sm || capa).appendChild(p);
+      var sm = capa.querySelector('.thegame-panel:not([hidden])') || capa.querySelector('#atlas-piso .atlas-mapa');
+      (sm || capa).appendChild(p);
     });
   }
 

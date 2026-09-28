@@ -83,8 +83,10 @@
     }).catch(function (x) { dice(rellena(T('guardado_nd'), { m: x && x.message })); });
   }
   function importa(f) {
-    f.text().then(function (txt) {
-      var o = JSON.parse(txt), p = o && o.esquema === 'atlas.partida.firmada/1' ? o.partida : o;
+    /* El verificador de la firma vive con el Army, que se carga con su pestana: se pide antes. */
+    var TG = window.TheGame;
+    Promise.all([f.text(), TG && TG.army ? TG.army() : null]).then(function (r) {
+      var txt = r[0], o = JSON.parse(txt), p = o && o.esquema === 'atlas.partida.firmada/1' ? o.partida : o;
       var m = o && o.firma && /^ed25519:([0-9a-f]+)$/.exec(o.firma), A = window.AtlasArmy;
       var firma = m && A && o.clave_publica ? A.verificaWeb(JSON.stringify(p), m[1], o.clave_publica) : Promise.resolve(null);
       return firma.then(function (v) {
