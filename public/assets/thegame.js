@@ -32,6 +32,11 @@
   /* EL ARMY, A DEMANDA (theGame v1.5: valores, gacha, army, sintesis e incubadora): al abrir su
      pestana, o al importar una partida firmada, cuya firma comprueba el verificador del Army. */
   var ARMY = [['/game/valores.js'], ['/game/gacha.js'], ['/game/db.js'], ['/game/core.js'], ['/game/ui.js']];
+  /* LA ARENA, A DEMANDA (Soberano, 2026-09-28: «el mapa multi-jugador en una pestana… las formas
+     invocadas luchando en live con los NPCs»): el mar, los lugares NPC, el combate en vivo y los duelos
+     entre personas por paquetes firmados. Detras del Army, cuyas tropas y verificador usa. */
+  var ARENA = [['/game/canon.js'], ['/game/sobres.js'], ['/game/rating.js'], ['/game/arena.js'], ['/game/duelo.js'],
+    ['/game/escena.js'], ['/game/mar.js'], ['/game/ui-arena.js'], ['/game/ui-duelo.js']];
   /* LAS LENGUAS DEL JUEGO (2026-09-28, el Soberano: «hoy, solo inglés; un mismo enlace»). La
      UNICA lista de lenguas en las que el juego esta COMPLETO. Cualquier portada abre el juego en
      una de ellas: la de la pagina si esta aqui; si no, la primera. Anadir una lengua es traducir
@@ -86,13 +91,14 @@
     ['mapa', '\u25C8', '.atlas-lema|.atlas-mapa|.atlas-izq'],
     ['oficios', '\u2692\uFE0E', '.atlas-hud > .panel:not(.atlas-dormias)'],
     ['army', '\u2726', ''],
+    ['arena', '\u2694\uFE0E', ''],
     ['partida', '\u2261', '.atlas-guardado|.thegame-exporta|.thegame-opina|.atlas-hud-farmeo|#atlas-juego > .no-data|.atlas-pie']];
   /* LO TECNICO, SIEMPRE PLEGADO (Soberano: «son textos que asustan a usuarios no tecnicos»): el
      JSON de la carta, las leyes medidas, la semilla que no es VRF, los valores provisionales y el
      pie. No se borran, porque son la prueba: se ven al abrir «Technical details». */
   var TECNICO = '.atlas-carta-json, .atlas-nucleo > .atlas-nota, .atlas-nucleo > .atlas-medido, ' +
     '.atlas-incubadora > .atlas-medido, .atlas-incubadora > .atlas-casa, .atlas-pie';
-  var PANEL = {}, BOTON = {}, actual = 'nucleo', army = null;
+  var PANEL = {}, BOTON = {}, actual = 'nucleo', army = null, arena = null;
 
   function T(k) { return (window.AtlasJuego && window.AtlasJuego.texto(k)) || k; }
   function cada(lista, f) { Array.prototype.forEach.call(lista, f); }
@@ -118,6 +124,7 @@
     });
     if (foco) { BOTON[id].focus(); }
     if (id === 'army') { cargaArmy(); }
+    if (id === 'arena') { cargaArena(); }
   }
 
   function ordena() {
@@ -173,6 +180,20 @@
       if (p) { p.textContent = ''; p.appendChild(el('p', 'no-data', 'NO_DATA · ' + (e && e.message))); }
     });
     return army;
+  }
+
+  /* La Arena se pide una vez, detras del Army; al volver a ella se refresca la escuadra. */
+  function cargaArena() {
+    if (arena) { if (window.AtlasArenaUI) { window.AtlasArenaUI.refresca(); } return arena; }
+    var p = PANEL.arena;
+    if (p && !p.firstChild) { p.appendChild(el('p', 'atlas-nota', T('arena_carga'))); }
+    arena = cargaArmy().then(function () { return pide(ARENA); }).then(function () {
+      if (window.AtlasArenaUI) { window.AtlasArenaUI.monta(capa, p); }
+    }).catch(function (e) {
+      arena = null;
+      if (p) { p.textContent = ''; p.appendChild(el('p', 'no-data', 'NO_DATA · ' + (e && e.message))); }
+    });
+    return arena;
   }
 
   /* UN <dialog> NATIVO, abierto con showModal(). La trampa de foco no la

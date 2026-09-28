@@ -625,7 +625,10 @@ process.stdout.write(JSON.stringify(ok));
 # Modulos de `public/game/` que NINGUN guion pide todavia (ni la puerta ni el Army): el multijugador y
 # la cria, firmados por el Soberano el 2026-09-28 («ve construyendo todo… enfocados al multiplayer»).
 # Ver atlas/POST_VERIFICACION_MGNO_LAB.md y atlas/POST_VERIFICACION_SISIL_CRIA.md.
-FUERA_DE_LA_PUERTA = ("canon.js", "sobres.js", "arena.js", "mercado.js", "narragrafo.js", "cria.js", "genoma.js")
+PUROS = ("canon.js", "sobres.js", "rating.js", "arena.js", "duelo.js", "mercado.js", "narragrafo.js", "cria.js", "genoma.js")
+# La Arena (2026-09-28, «el mapa multi-jugador en una pestana»): se carga al abrir su pestana, detras del Army.
+ARENA = ("canon.js", "sobres.js", "rating.js", "arena.js", "duelo.js", "escena.js", "mar.js", "ui-arena.js", "ui-duelo.js")
+FUERA_DE_LA_PUERTA = tuple(sorted(set(PUROS + ARENA)))
 
 
 class TheGameV15(unittest.TestCase):
@@ -1007,7 +1010,7 @@ class Pestanas(unittest.TestCase):
 
     CAPA = ASSETS / "thegame.js"
     HOJA = ASSETS / "thegame.css"
-    IDS = ("nucleo", "mapa", "oficios", "army", "partida")
+    IDS = ("nucleo", "mapa", "oficios", "army", "arena", "partida")
     ARMY = ("valores.js", "gacha.js", "db.js", "core.js", "ui.js")
 
     def _capa(self):
@@ -1047,7 +1050,7 @@ class Pestanas(unittest.TestCase):
     def test_el_army_se_carga_con_su_pestana_y_no_pesa_en_la_puerta(self):
         c = self._capa()
         guiones = c[c.index("var GUIONES"):c.index("var ARMY")]
-        army = c[c.index("var ARMY"):c.index("function el(")]
+        army = c[c.index("var ARMY"):c.index("var ARENA")]
         for m in self.ARMY:
             with self.subTest(modulo=m):
                 self.assertNotIn(m, guiones, f"{m} vuelve a la puerta")
@@ -1193,12 +1196,15 @@ class Multijugador(unittest.TestCase):
         listas = (PUBLICO / "sw.js").read_text(encoding="utf-8") + (PUBLICO / "sw-listas.js").read_text(encoding="utf-8")
         sys.path.insert(0, str(RAIZ))
         import mundo
+        puerta = capa[capa.index("var GUIONES"):capa.index("var ARMY")]
         for m in FUERA_DE_LA_PUERTA:
             f = PUBLICO / "game" / m
             with self.subTest(modulo=m):
-                self.assertLessEqual(f.stat().st_size, 14 * 1024, f"{m} pasa del objetivo de 14 KB")
-                self.assertNotIn(m, capa, f"{m} entra en la puerta del juego")
-                self.assertNotIn(m, listas, f"{m} entra en el precache")
+                self.assertLess(f.stat().st_size, 16 * 1024, f"{m} pasa del techo")
+                if m in PUROS:
+                    self.assertLessEqual(f.stat().st_size, 14 * 1024, f"{m} pasa del objetivo de 14 KB de un modulo puro")
+                self.assertNotIn(m, puerta, f"{m} entra en la puerta del juego")
+                self.assertNotIn("/game/" + m, listas, f"{m} entra en el precache")
                 self.assertNotIn("../game/" + m, mundo.PIEZAS)
                 for h in PUBLICO.rglob("*.html"):
                     self.assertNotIn("game/" + m, h.read_text(encoding="utf-8"))
@@ -1274,6 +1280,88 @@ class Cria(unittest.TestCase):
         for l in LENGUAS_JUEGO:
             ui_t = json.loads((PUBLICO / f"atlas-{l}.json").read_text(encoding="utf-8"))["ui"]
             self.assertTrue(ui_t.get("odds_h", "").strip(), f"{l} sin el rotulo de las odds")
+
+
+
+class Arena(unittest.TestCase):
+    """La Arena: el mar multijugador, los lugares NPC, el combate en vivo con las tropas de onda y los duelos
+    entre personas por paquetes firmados, con la regla de abandono (Soberano, 2026-09-28)."""
+
+    def _js(self, nombre):
+        return sin_comentarios((PUBLICO / "game" / nombre).read_text(encoding="utf-8"))
+
+    def test_los_casos_del_duelo(self):
+        r = subprocess.run(["node", str(RAIZ / "duelo_casos.mjs")], capture_output=True, text=True, timeout=300)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        casos = json.loads(r.stdout)
+        self.assertGreaterEqual(len(casos), 8)
+        for c in casos:
+            with self.subTest(caso=c["caso"]):
+                self.assertTrue(c["ok"], c["detalle"])
+
+    def test_contratos_del_paquete_y_del_abandono(self):
+        try:
+            import jsonschema
+        except ImportError:
+            self.skipTest("NO_DATA · jsonschema no instalado")
+        r = subprocess.run(["node", str(RAIZ / "duelo_casos.mjs"), "--muestras"], capture_output=True, text=True, timeout=120)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        m = json.loads(r.stdout)
+        v = jsonschema.Draft202012Validator(json.loads((DATOS / "atlas_paquete_mp_schema.json").read_text(encoding="utf-8")))
+        def con(b, **c):
+            d = json.loads(json.dumps(b)); d.update(c); return d
+        d, x = m["paquete_defensa"], m["paquete_desafio"]
+        for bueno in (d, x):
+            self.assertEqual([e.message for e in v.iter_errors(bueno)], [])
+        sobre_roto = json.loads(json.dumps(d)); sobre_roto["sobres"][0]["firma"] = "ed25519:abc"
+        malos = [con(d, tipo="saqueo"), con(d, sobres=[]), con(d, defensa=x["defensa"]), con(x, defensa=None),
+                 sobre_roto, con(d, servidor="relevo")]
+        for i, malo in enumerate(malos):
+            with self.subTest(violacion=i):
+                self.assertFalse(v.is_valid(malo))
+        res = jsonschema.Draft202012Validator(json.loads((DATOS / "atlas_duelo_resultado_schema.json").read_text(encoding="utf-8")))
+        base = {"esquema": "atlas.duelo_resultado/1", "defensa": "a" * 64, "asalto": "b" * 64, "defensor": "c" * 64,
+                "atacante": "d" * 64, "semilla": "e" * 64, "registro_sha": "f" * 64, "gana": "defensa", "rondas": 0,
+                "procedencia": "humano", "en_juego": {"cobre": 0, "luz": 0}, "final": "abandono"}
+        self.assertTrue(res.is_valid(base), "el abandono (rondas 0) es un resultado valido")
+        self.assertFalse(res.is_valid(con(base, final="combate")), "un combate sin rondas")
+        self.assertFalse(res.is_valid(con(base, rondas=3)), "un abandono con rondas")
+        self.assertFalse(res.is_valid(con(base, final="rendicion")))
+
+    def test_la_arena_se_carga_con_su_pestana(self):
+        capa = (ASSETS / "thegame.js").read_text(encoding="utf-8")
+        lista = capa[capa.index("var ARENA"):capa.index("function el(")]
+        for m in ARENA:
+            with self.subTest(modulo=m):
+                self.assertIn(f"['/game/{m}']", lista)
+        self.assertIn("if (id === 'arena') { cargaArena(); }", capa)
+        self.assertIn("cargaArmy().then(function () { return pide(ARENA); })", capa, "la Arena sin su Army")
+
+    def test_los_textos_de_la_arena_existen_y_van_aparte(self):
+        ar = json.loads((PUBLICO / "atlas-arena-en.json").read_text(encoding="utf-8"))["ui"]
+        juego = json.loads((PUBLICO / "atlas-en.json").read_text(encoding="utf-8"))["ui"]
+        self.assertLess((PUBLICO / "atlas-arena-en.json").stat().st_size, 16 * 1024)
+        for f in ("ui-arena.js", "ui-duelo.js", "mar.js"):
+            for k in set(re.findall(r"T\('(\w+)'\)", self._js(f))):
+                with self.subTest(fichero=f, clave=k):
+                    self.assertTrue((ar.get(k) or juego.get(k) or "").strip(), f"{k} sin texto")
+        for k in ("pes_arena", "arena_carga"):
+            self.assertTrue(juego.get(k, "").strip())
+        for l in LENGUAS_JUEGO:
+            self.assertTrue((PUBLICO / f"atlas-arena-{l}.json").is_file(), f"la Arena sin textos en {l}")
+
+    def test_la_arena_no_sale_a_la_red_ni_usa_el_azar_del_sistema(self):
+        for f in ("escena.js", "mar.js", "ui-arena.js", "ui-duelo.js", "duelo.js", "rating.js"):
+            c = self._js(f)
+            for malo in ("Math.random", "localStorage", "indexedDB", "innerHTML", "sendBeacon", "WebSocket",
+                         "RTCPeerConnection", "http://", "https://", "XMLHttpRequest", "Date."):
+                with self.subTest(fichero=f, prohibido=malo):
+                    self.assertNotIn(malo, c)
+            fetches = re.findall(r"fetch\(([^)]*)\)", c)
+            self.assertEqual(fetches, ["'/atlas-arena-' + l + '.json'"] if f == "ui-arena.js" else [], f)
+        self.assertIn("window.crypto.getRandomValues(b)", self._js("ui-duelo.js"), "el r del commit-reveal sin azar real")
+        self.assertIn("I.firmarTexto(t)", self._js("ui-duelo.js"))
+        self.assertIn("window.AtlasArmy.verificaWeb", self._js("ui-duelo.js"))
 
 
 if __name__ == "__main__":
