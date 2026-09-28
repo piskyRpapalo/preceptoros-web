@@ -1,0 +1,43 @@
+/* preceptoros.org · theGame · la hoja del MAPA VIVO: ficha, Superficie, guardado y contador.
+   Se partio de `atlas.css` (2026-09-28) por asunto: aquella quedaba a 400 B del tope y esto es
+   el mapa-instrumento, que va a crecer. Mismos tokens que el resto de la casa.
+   CONTRASTE MEDIDO (WCAG, 2026-09-28), el juego es de tema oscuro:
+     --text-main  #e2e8f0 sobre #1a152a 14,38 · sobre #0f0c1b 15,65
+     --text-muted #94a3b8 sobre #1a152a  6,91 · sobre #0f0c1b  7,52
+     cobre claro  #f59e0b sobre #1a152a  8,25 · sobre #0f0c1b  8,98 */
+
+/* Los rotulos del mapa son controles: se nota el foco y el que esta abierto. */
+.atlas-lienzo [data-sector]:focus-visible,.atlas-lienzo .atlas-nodo:focus-visible{
+  outline:2px solid var(--accent-copper-claro);outline-offset:2px}
+.atlas-lienzo .atlas-nodo{font-family:var(--mono);color:var(--text-main)}
+.atlas-mapa h4{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.5rem}
+.atlas-superficie[aria-pressed="true"]{border-color:var(--accent-copper-claro);color:var(--accent-copper-claro)}
+
+/* La ficha de un sitio: estado, coordenada y la accion legal, o su causa. */
+.atlas-ficha{margin-top:.6rem;padding:.7rem .85rem;border:1px solid var(--edge-sov);
+  border-radius:var(--radius);background:var(--bg-primary);display:grid;gap:.35rem}
+/* `hidden` tiene que ganar al display:grid de arriba (la misma trampa que ya tuvo Sugerir). */
+.atlas-ficha[hidden]{display:none}
+.atlas-ficha h5{margin:0;font-size:.95rem;color:var(--text-main)}
+.atlas-ficha p{margin:0;color:var(--text-muted)}
+.atlas-ficha .boton{justify-self:start}
+/* El JSON parte sus lineas: una fila de niebla de 64 cifras no puede ensanchar la pagina del movil
+   (Doogee, 2026-09-28: al abrirlo en Superficie la pagina paso de 360 a 499 px de ancho). */
+.atlas-carta-json{min-width:0;max-width:100%}
+.atlas-carta-json pre{max-height:14rem;overflow:auto;font:.7rem/1.35 var(--mono);color:var(--text-muted);
+  white-space:pre-wrap;overflow-wrap:anywhere}
+
+/* Guardar / retomar / olvidar / importar: botones en fila bajo el sello. */
+.atlas-guardado{display:flex;flex-wrap:wrap;gap:.4rem;align-items:center;margin:.35rem 0 0}
+.atlas-guardado p{flex:1 1 100%;margin:0}
+
+/* El contador de farmeo: en su sitio en movil, fijo en una esquina en PC. */
+.atlas-hud-farmeo{margin-top:.6rem;font:.74rem/1.4 var(--mono);color:var(--text-main)}
+.atlas-hud-farmeo summary{cursor:pointer;color:var(--accent-copper-claro)}
+.atlas-hud-farmeo dl{display:grid;grid-template-columns:auto auto;gap:.1rem .8rem;margin:.4rem 0}
+.atlas-hud-farmeo dt{color:var(--text-muted)}
+.atlas-hud-farmeo dd{margin:0;text-align:end}
+@media (min-width:64rem){
+  .atlas-hud-farmeo{position:fixed;right:1rem;bottom:1rem;z-index:3;max-width:17rem;padding:.6rem .8rem;
+    background:var(--bg-secondary);border:1px solid var(--edge-sov);border-radius:var(--radius)}
+}

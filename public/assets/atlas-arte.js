@@ -161,104 +161,10 @@
   }
 
   /* --- LAS ESTRUCTURAS --------------------------------------------------- */
-  function zocalo(ctx, x, y, s) {
-    ctx.fillStyle = radial(ctx, x, y + s * 0.42, 0, s * 0.55, [[0, 'rgba(0,0,0,.45)'],
-      [1, 'rgba(0,0,0,0)']]);
-    ctx.beginPath(); ctx.ellipse(x, y + s * 0.42, s * 0.55, s * 0.14, 0, 0, 7); ctx.fill();
-    ctx.fillStyle = lineal(ctx, x, y + s * 0.25, x, y + s * 0.45, [[0, P.piedraLuz], [1, P.piedra]]);
-    ctx.beginPath(); ctx.ellipse(x, y + s * 0.33, s * 0.42, s * 0.12, 0, 0, 7); ctx.fill();
-  }
-  function hojaSolar(ctx, x, y, s, ang) {
-    ctx.save(); ctx.translate(x, y); ctx.rotate(ang);
-    ctx.fillStyle = lineal(ctx, 0, -s, 0, s, [[0, P.oro], [0.5, P.cobreLuz], [1, P.cobre]]);
-    ctx.beginPath(); ctx.moveTo(0, -s);
-    ctx.quadraticCurveTo(s * 0.55, 0, 0, s); ctx.quadraticCurveTo(-s * 0.55, 0, 0, -s);
-    ctx.fill();
-    ctx.strokeStyle = alfa(P.oro, 0.8); ctx.lineWidth = 0.8;
-    ctx.beginPath(); ctx.moveTo(0, -s * 0.9); ctx.lineTo(0, s * 0.9); ctx.stroke();
-    ctx.restore();
-  }
-
+  /* El Nucleo, la Forja, la Aguja y el Ojo (y su zocalo y hojas solares) se dibujan desde el
+     2026-09-28 en `atlas-obra.js`, con curvas parametricas y su estado a la vista. Aqui queda la
+     grieta, que no es un edificio sino una herida. */
   var ESTRUCTURA = {
-    /* El Nucleo: cupula de vidrio sobre un corazon de ambar que late. */
-    nucleo: function (ctx, x, y, s, t) {
-      zocalo(ctx, x, y, s);
-      for (var i = 0; i < 5; i++) { hojaSolar(ctx, x + (i - 2) * s * 0.2, y + s * 0.1, s * 0.16, (i - 2) * 0.5); }
-      var late = 0.75 + 0.25 * Math.sin(t * 0.003);
-      ctx.fillStyle = radial(ctx, x, y - s * 0.05, 0, s * 0.3, [[0, alfa(P.oro, late)],
-        [0.5, alfa(P.cobre, 0.7 * late)], [1, alfa(P.cobre, 0)]]);
-      ctx.beginPath(); ctx.arc(x, y - s * 0.05, s * 0.3, 0, 7); ctx.fill();
-      ctx.fillStyle = radial(ctx, x - s * 0.1, y - s * 0.2, s * 0.02, s * 0.36,
-        [[0, alfa(P.vidrio, 0.75)], [0.7, alfa(P.agua, 0.4)], [1, alfa(P.vidrio, 0.65)]]);
-      ctx.beginPath(); ctx.arc(x, y + s * 0.1, s * 0.36, Math.PI, 0); ctx.fill();
-      ctx.strokeStyle = P.cobreLuz; ctx.lineWidth = s * 0.025;
-      for (var k = -2; k <= 2; k++) {
-        ctx.beginPath(); ctx.ellipse(x, y + s * 0.1, Math.abs(k) * s * 0.09 + 0.1, s * 0.36, 0, Math.PI, 0);
-        ctx.stroke();
-      }
-      ctx.strokeStyle = alfa('#ffffff', 0.7); ctx.lineWidth = s * 0.02;
-      ctx.beginPath(); ctx.arc(x, y + s * 0.1, s * 0.3, Math.PI * 1.15, Math.PI * 1.45); ctx.stroke();
-    },
-    /* La Forja: horno de coral con chimenea de cobre y vapor. */
-    forja: function (ctx, x, y, s, t) {
-      zocalo(ctx, x, y, s);
-      ctx.fillStyle = lineal(ctx, x - s * 0.3, 0, x + s * 0.3, 0, [[0, P.piedraLuz], [1, P.piedra]]);
-      ctx.beginPath(); ctx.moveTo(x - s * 0.32, y + s * 0.3); ctx.lineTo(x - s * 0.26, y - s * 0.12);
-      ctx.quadraticCurveTo(x, y - s * 0.3, x + s * 0.26, y - s * 0.12);
-      ctx.lineTo(x + s * 0.32, y + s * 0.3); ctx.closePath(); ctx.fill();
-      var fuego = 0.7 + 0.3 * Math.sin(t * 0.008) * Math.sin(t * 0.013);
-      ctx.fillStyle = radial(ctx, x, y + s * 0.12, 0, s * 0.16, [[0, alfa(P.oro, fuego)],
-        [0.6, alfa(P.ascua, fuego)], [1, alfa(P.ascua, 0.2)]]);
-      ctx.beginPath(); ctx.arc(x, y + s * 0.14, s * 0.12, Math.PI, 0); ctx.lineTo(x + s * 0.12, y + s * 0.3);
-      ctx.lineTo(x - s * 0.12, y + s * 0.3); ctx.closePath(); ctx.fill();
-      ctx.fillStyle = lineal(ctx, x + s * 0.1, 0, x + s * 0.22, 0, [[0, P.cobreLuz], [1, P.cobre]]);
-      ctx.fillRect(x + s * 0.1, y - s * 0.5, s * 0.1, s * 0.34);
-      for (var i = 0; i < 4; i++) {
-        var f = ((t * 0.0006 + i / 4) % 1), vy = y - s * 0.52 - f * s * 0.5;
-        ctx.fillStyle = alfa(P.vidrio, 0.35 * (1 - f));
-        ctx.beginPath(); ctx.arc(x + s * 0.15 + Math.sin(f * 6 + i) * s * 0.06, vy, s * (0.05 + f * 0.1), 0, 7);
-        ctx.fill();
-      }
-    },
-    /* La Aguja: espira que perfora la niebla con un haz violeta. */
-    aguja: function (ctx, x, y, s, t) {
-      zocalo(ctx, x, y, s);
-      var haz = 0.35 + 0.25 * Math.sin(t * 0.004);
-      ctx.fillStyle = lineal(ctx, x, y - s * 0.7, x, y + s * 0.4, [[0, alfa(P.violetaLuz, haz)],
-        [1, alfa(P.violeta, 0)]]);
-      ctx.beginPath(); ctx.moveTo(x - s * 0.03, y - s * 0.72); ctx.lineTo(x + s * 0.03, y - s * 0.72);
-      ctx.lineTo(x + s * 0.2, y + s * 0.4); ctx.lineTo(x - s * 0.2, y + s * 0.4); ctx.fill();
-      ctx.fillStyle = lineal(ctx, x - s * 0.12, 0, x + s * 0.12, 0, [[0, P.piedraLuz], [0.5, '#6b5d96'], [1, P.piedra]]);
-      ctx.beginPath(); ctx.moveTo(x, y - s * 0.75); ctx.lineTo(x + s * 0.13, y + s * 0.3);
-      ctx.lineTo(x - s * 0.13, y + s * 0.3); ctx.closePath(); ctx.fill();
-      ctx.strokeStyle = P.cobreLuz; ctx.lineWidth = s * 0.025;
-      [0.05, -0.2, -0.45].forEach(function (k, i) {
-        var a = s * (0.11 - i * 0.03);
-        ctx.beginPath(); ctx.ellipse(x, y + s * k, a, a * 0.3, 0, 0, 7); ctx.stroke();
-      });
-      ctx.fillStyle = radial(ctx, x, y - s * 0.75, 0, s * 0.12, [[0, '#ffffff'], [0.4, alfa(P.violetaLuz, 0.9)],
-        [1, alfa(P.violeta, 0)]]);
-      ctx.beginPath(); ctx.arc(x, y - s * 0.75, s * 0.12, 0, 7); ctx.fill();
-    },
-    /* El Ojo: torre-faro con una lente que barre el agua. */
-    ojo: function (ctx, x, y, s, t) {
-      zocalo(ctx, x, y, s);
-      var ang = -Math.PI / 2 + Math.sin(t * 0.0012) * 0.9;
-      ctx.save(); ctx.globalCompositeOperation = 'lighter';
-      ctx.fillStyle = alfa(P.kelpLuz, 0.14);
-      ctx.beginPath(); ctx.moveTo(x, y - s * 0.3);
-      ctx.arc(x, y - s * 0.3, s * 1.1, ang - 0.22, ang + 0.22); ctx.closePath(); ctx.fill();
-      ctx.restore();
-      ctx.fillStyle = lineal(ctx, x - s * 0.1, 0, x + s * 0.1, 0, [[0, P.piedraLuz], [1, P.piedra]]);
-      ctx.fillRect(x - s * 0.09, y - s * 0.2, s * 0.18, s * 0.5);
-      ctx.fillStyle = P.cobre;
-      ctx.beginPath(); ctx.ellipse(x, y - s * 0.3, s * 0.22, s * 0.14, 0, 0, 7); ctx.fill();
-      ctx.fillStyle = radial(ctx, x, y - s * 0.3, 0, s * 0.12, [[0, '#ffffff'], [0.25, P.kelpLuz],
-        [0.7, P.agua], [1, P.hondo]]);
-      ctx.beginPath(); ctx.ellipse(x, y - s * 0.3, s * 0.16, s * 0.1, 0, 0, 7); ctx.fill();
-      ctx.fillStyle = P.fondo;
-      ctx.beginPath(); ctx.arc(x + Math.cos(ang) * s * 0.03, y - s * 0.3, s * 0.035, 0, 7); ctx.fill();
-    },
     /* La Grieta: agua fria que entra, con su resplandor de alarma. */
     grieta: function (ctx, x, y, s, t) {
       var a = 0.45 + 0.35 * Math.abs(Math.sin(t * 0.004));

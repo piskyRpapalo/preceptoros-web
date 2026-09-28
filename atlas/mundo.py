@@ -27,16 +27,18 @@ from pathlib import Path
 RAIZ = Path(__file__).resolve().parent.parent
 PUBLICO = RAIZ / "public"
 ASSETS = PUBLICO / "assets"
-# Lo que baja una visita que abre theGame, en castellano: la lengua base.
-PIEZAS = ["atlas-arte.js", "atlas-mapa.js", "atlas-dialogo.js", "atlas-motor.js",
+# Lo que baja una visita que abre theGame: los guiones de `GUIONES` en `thegame.js` (el juez incluido,
+# que faltaba) y el texto de la lengua en que el juego abre hoy, que es la primera de `LENGUAS`.
+PIEZAS = ["atlas-arte.js", "atlas-coord.js", "atlas-carta.js", "atlas-ondas.js", "atlas-obra.js", "atlas-gesto.js", "atlas-mapa.js", "atlas-dialogo.js", "atlas-motor.js",
           "atlas-piso.js", "atlas.css", "thegame.js", "preceptor-pixel.png",
-          "atlas-piloto.js", "atlas-partida.js", "atlas-piloto-capa.js",
-          "../game/valores.js", "../game/gacha.js", "../game/db.js", "../game/core.js", "../game/ui.js"]
+          "atlas-piloto.js", "atlas-partida.js", "atlas-piloto-capa.js", "atlas-guardado.js", "atlas-mapa.css",
+          "../game/valores.js", "../game/gacha.js", "../game/db.js", "../game/core.js", "../game/ui.js", "../game/juez.js"]
 
 
 def gzip_juego():
     total = 0
-    for f in [ASSETS / n for n in PIEZAS] + [PUBLICO / "atlas-es.json"]:
+    base = re.search(r"var LENGUAS = \['(\w+)'", (ASSETS / "thegame.js").read_text(encoding="utf-8")).group(1)
+    for f in [ASSETS / n for n in PIEZAS] + [PUBLICO / f"atlas-{base}.json"]:
         total += len(gzip.compress(f.read_bytes(), mtime=0))
     return total
 

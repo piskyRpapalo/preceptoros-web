@@ -54,8 +54,20 @@
     return activo;
   }
 
+  /* LA VOZ DE UNA ONDA (2026-09-28): cada tropa suena distinta y siempre igual. La receta sale de
+     sus armonicos, que ya salen de la semilla firmada: sin azar, dos ondas se distinguen de oido y
+     la misma onda suena igual en cada carga. Portadora por el primer armonico, moduladora por
+     cuantos tiene, profundidad por su amplitud. Corto y bajo: identidad, no musica. */
+  function vozDe(t) {
+    var a = (t && t.armonicos) || [], amp = 0;
+    if (!a.length) { return null; }
+    a.forEach(function (h) { amp += Math.abs(h[1]) + Math.abs(h[2]); });
+    var f = 160 + 45 * (Math.abs(a[0][0]) % 12);
+    return { tipo: 'onda', portadora: f, moduladora: Math.round(f * (1 + a.length / 4)),
+             indice: Math.min(400, 20 + amp * 6), dur: 0.5, gan: 0.07 };
+  }
   function suena(tipo, calor) {
-    var r = receta(tipo, calor);
+    var r = typeof tipo === 'object' ? tipo : receta(tipo, calor);
     if (!activo || !ctx || !r) { return null; }
     var t = ctx.currentTime;
     var car = ctx.createOscillator(), mod = ctx.createOscillator();
@@ -71,7 +83,10 @@
     return r;
   }
 
-  var AtlasSintesis = { BASE: BASE, receta: receta, calorDe: calorDe, activa: activa, suena: suena };
+  /* El contexto abierto por el interruptor, para la voz exacta (`atlas-voz.js`); apagado, null. */
+  function contexto() { return activo ? ctx : null; }
+  var AtlasSintesis = { BASE: BASE, receta: receta, calorDe: calorDe, activa: activa, suena: suena, vozDe: vozDe,
+                        contexto: contexto };
   if (typeof module === 'object' && module.exports) { module.exports = AtlasSintesis; }
   else { raiz.AtlasSintesis = AtlasSintesis; }
 })(this);

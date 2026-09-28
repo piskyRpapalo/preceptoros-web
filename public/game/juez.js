@@ -77,7 +77,9 @@
   /* --- la pestaña ---------------------------------------------------------------------- */
   var M = raiz.AtlasMotor, Pa = raiz.AtlasPartida, Pi = raiz.AtlasPiloto, J = raiz.AtlasJuego;
   if (!M || !Pa || !Pa.puro || !Pi || !J) { return; }
-  var puro = Pa.puro, pendiente = null;
+  var puro = Pa.puro, pendiente = null, latido = 0;
+  /* La voz del Preceptor (atlas-dialogo.js) se alimenta de lo que el juez YA escucha. */
+  function D(f, a, b) { var d = raiz.AtlasDialogo; if (d && d[f]) { d[f](a, b); } }
 
   function texto(k, v) {
     return String(J.texto(k) || '').replace(/\{(\w+)\}/g, function (_, n) { return n in v ? v[n] : ''; });
@@ -97,6 +99,7 @@
       : texto('juez_' + v.gana, { h: v.horizonte, np: r.nucleo, ip: r.integridad_min,
                                   nh: h ? h.nucleo : '', ih: h ? h.integridad_min : '' });
     p.hidden = false;
+    D('voz', 'voz_juez_' + (v.alucinacion ? 'nulo' : v.gana));
   }
   /* Se juzga fuera del clic, para que el botón responda al instante. */
   function juzgaLuego(hum) {
@@ -105,10 +108,18 @@
     setTimeout(function () { pinta(juzga(puro, Pa, Pi, x.e, x.sug, hum, x.ley)); }, 0);
   }
 
+  /* La primera sugerencia que ve la persona, una sola vez. */
+  var visto = false;
+  new MutationObserver(function () {
+    var s = document.querySelector('.thegame-sugerencia:not(.thegame-juez)');
+    if (!visto && s && !s.hidden) { visto = true; D('voz', 'voz_sugiere'); }
+  }).observe(document.body, { subtree: true, attributes: true, attributeFilter: ['hidden'], childList: true });
+
   var anota = Pa.anota;
   Pa.anota = function (a, respuesta) {
     anota(a, respuesta);
     pendiente = null;
+    D('voz', respuesta === 'hecha' ? 'voz_hecha' : 'voz_ignorada');
     if (respuesta !== 'ignorada') { return; }
     var p = J.partida();
     if (!p) { return; }
@@ -124,6 +135,11 @@
     var f = M[k];
     M[k] = function (e, x) {
       var r = f.apply(this, arguments);
+      if (k === 'ciclo') {
+        if (++latido % 5 === 0) { D('observa', J.instantanea()); }
+      } else if (k !== 'dormir') {
+        D('accion', k === 'bajarA' ? { accion: 'bajar_a', banda: x } : { accion: k }, r && r.t);
+      }
       if (pendiente) {
         juzgaLuego(k === 'ciclo' || k === 'dormir' ? { accion: 'esperar' }
           : k === 'bajarA' ? { accion: 'bajar_a', banda: x }

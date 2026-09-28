@@ -125,9 +125,18 @@
     return JSON.stringify([tropa.tc, tropa.rareza, tropa.prefijo, tropa.sufijo, tropa.armonicos]);
   }
 
+  /* EL CARACTER DE UNA ONDA, leido de sus armonicos (que salen de la semilla firmada): color,
+     pulso y una tendencia. Es un SESGO que se dice, no un destino que se programa: la onda no
+     juega distinto por su caracter. Sin azar: misma tropa, mismo caracter en cada carga. */
+  function caracter(t) {
+    var a = (t && t.armonicos) || [], s = 0, amp = 0;
+    a.forEach(function (h) { s += Math.abs(h[0]); amp += Math.abs(h[1]) + Math.abs(h[2]); });
+    return { color: s % 4, pulso: a.length > 3 ? 1 : 0, tendencia: (s + amp) % 4 };
+  }
+
   var AtlasGacha = {
     ESTADO: V.estado, VERSION_VALORES: V.version, TCS: TCS, RAREZAS: RAREZAS, PREFIJOS: PREFIJOS, SUFIJOS: SUFIJOS, STATS: STATS, HUEVO: HUEVO,
-    generador: generador, tirada: tirada, mezcla: mezcla, punto: punto, compacta: compacta
+    generador: generador, tirada: tirada, mezcla: mezcla, punto: punto, compacta: compacta, caracter: caracter
   };
   if (typeof module === 'object' && module.exports) { module.exports = AtlasGacha; }
   else { raiz.AtlasGacha = AtlasGacha; }

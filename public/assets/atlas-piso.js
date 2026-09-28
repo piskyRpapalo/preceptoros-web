@@ -15,7 +15,7 @@
 (function () {
   'use strict';
 
-  var lang = (document.documentElement.lang || 'en').slice(0, 2);
+  var AL = window.AtlasLengua, lang = AL ? AL.actual : (document.documentElement.lang || 'en').slice(0, 2);
   var yo = document.currentScript;
   var BASE = (yo && yo.dataset.base) || '/';
   var M = window.AtlasMotor;
@@ -110,7 +110,8 @@
     R.grieta = boton('⚠ ' + U('s_grieta'), 'atlas-sector'); R.grieta.dataset.sector = 'grieta';
     R.grieta.addEventListener('click', function () { dialogo(R.grieta); });
     lienzo.appendChild(R.grieta);
-    sm.appendChild(lienzo); izq.appendChild(sm);
+    /* El mundo va PRIMERO, bajo el lema: se entra a un mundo, no a un formulario (Doogee, 2026-09-28). */
+    sm.appendChild(lienzo); raiz.insertBefore(sm, raiz.children[1] || null);
 
     var fs = el('fieldset', 'atlas-profundidad');
     fs.appendChild(el('legend', null, U('prof_leg')));
@@ -304,6 +305,14 @@
     instantanea: instantanea, aplica: aplica,
     invoca: function (c) { if (!E || !activo) { return null; } actua(M.invocar(E, c)); return E.eventos[E.eventos.length - 1]; },
     partida: function () { return window.AtlasPartida && window.AtlasPartida.partida(E, M); },
+    /* RETOMAR (2026-09-28): la partida se vuelve a jugar con el motor puro (`AtlasPartida.retoma`)
+       y sigue con SU ley, la que tenia al nacer. Lanza con la causa; quien llama la dice. */
+    retoma: function (p, cada) {
+      var P = window.AtlasPartida;
+      E = P.retoma(p, P.puro || M, cada); LEY = P.partida(E, M).ley;
+      if (R.meter) { pinta(); }
+      return E;
+    },
     texto: function (k) { return U(k); },
     monta: function (contenedor, capa) {
       zona = contenedor; activo = true;
@@ -314,6 +323,8 @@
           var x = capa && capa.querySelector('.thegame-cerrar');
           if (x) { x.setAttribute('aria-label', U('dlg_cerrar')); }
           panel(); pinta(); arranca();
+          /* Si la portada habla otra lengua, se dice: el juego no finge estar traducido. */
+          if (AL && AL.pagina !== lang && U('lengua_nd')) { zona.insertBefore(el('p', 'no-data', U('lengua_nd').replace('{l}', AL.pagina)), zona.firstChild); }
         }).catch(function (e) {
           zona.appendChild(el('p', 'no-data', 'NO_DATA · atlas-' + lang + '.json: ' + (e && e.message)));
         });

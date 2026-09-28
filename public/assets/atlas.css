@@ -238,3 +238,4 @@ span.atlas-sector{pointer-events:none}
 .atlas-stats{display:flex;flex-wrap:wrap;gap:.2rem 1rem;margin:.4rem 0;padding:0;list-style:none;font:.78rem var(--mono)}
 /* `hidden` tiene que ganar a los display de arriba: si no, lo oculto se ve. */
 .thegame-sugerencia[hidden],.atlas-eclosion[hidden]{display:none}.atlas-tropa figcaption{display:grid;gap:.1rem}
+.atlas-lienzo .atlas-sector{font-size:.6rem;padding:.12rem .45rem;opacity:.88}

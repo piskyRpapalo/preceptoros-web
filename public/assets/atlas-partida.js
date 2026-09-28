@@ -50,18 +50,22 @@
   /* VOLVER A JUGAR una partida con el mismo motor. Devuelve el estado final o
      lanza con la causa. Un paso que no es de la forma conocida no se salta:
      se rechaza, porque saltarlo seria jugar otra partida. */
-  function reproduce(p, M) {
+  function reproduce(p, M, cada) {
     if (!p || p.esquema !== 'atlas.partida/1') { throw new Error('esquema'); }
+    /* `cada(e)`, si viene, ve cada estado por el que pasa la partida: de ahi sale la exploracion
+       REAL del mapa (lo que se vio, no lo que la fase de hoy permite). No cambia nada. */
+    var ver = cada || function () {};
     var ley = { nd: p.ley.nd, integridad_max: p.ley.integridad_max, dano: p.ley.dano };
     var e = M.inicial(ley), f = { recoger: M.recoger, reparar: M.reparar, aplazar: M.aplazar };
     p.pasos.forEach(function (s, n) {
       if ('sugerencia' in s) { return; }
-      if ('ciclos' in s) { for (var i = 0; i < s.ciclos; i++) { e = M.ciclo(e, ley); } }
+      if ('ciclos' in s) { for (var i = 0; i < s.ciclos; i++) { e = M.ciclo(e, ley); ver(e); } return; }
       else if ('dormir_ms' in s) { e = M.dormir(e, s.dormir_ms); }
       else if (s.accion === 'bajar_a') { e = M.bajarA(e, s.banda, SIN_DIA); }
       else if (s.accion === 'invocar') { e = M.invocar(e, s.coste, SIN_DIA); }
       else if (f[s.accion]) { e = f[s.accion](e, SIN_DIA); }
       else { throw new Error('paso ' + n + ' desconocido'); }
+      ver(e);
     });
     return e;
   }
@@ -115,6 +119,22 @@
     }));
   }
 
+  /* RETOMAR una partida guardada o importada (2026-09-28). No se cree: se vuelve a jugar con el
+     motor puro, y solo si sale el mismo final y la misma version de contenido se siembra la
+     grabadora con SU ley y SUS pasos, para que seguir jugando siga siendo la misma partida.
+     Lanza con la causa exacta; quien llama la dice como NO_DATA, no como un fallo mudo. */
+  function retoma(p, M, cada) {
+    if (!p || p.esquema !== 'atlas.partida/1') { throw new Error('esquema'); }
+    if (p.contenido_v !== M.CATALOGO.contenido_v) {
+      throw new Error('contenido_v ' + p.contenido_v + ' != ' + M.CATALOGO.contenido_v);
+    }
+    var e = reproduce(p, M, cada);
+    if (p.final && JSON.stringify(final(e, M)) !== JSON.stringify(p.final)) { throw new Error('final'); }
+    G.ley = { nd: !!p.ley.nd, integridad_max: p.ley.integridad_max, dano: p.ley.dano };
+    G.pasos = JSON.parse(JSON.stringify(p.pasos)); G.truncada = !!p.truncada;
+    return e;
+  }
+
   /* HUMANO + PILOTO (sugerencia firmada por el Soberano, 2026-09-27): la
      regla PROPONE y la persona decide. Se anota que se propuso y que se
      respondio; si la persona la hace, la accion que sigue es suya (`humano`).
@@ -135,7 +155,7 @@
 
   var AtlasPartida = {
     MAX_PASOS: MAX_PASOS, instantanea: instantanea, final: final,
-    reproduce: reproduce, partida: partida, como: como, anota: anota
+    reproduce: reproduce, retoma: retoma, partida: partida, como: como, anota: anota
   };
   if (typeof module === 'object' && module.exports) { module.exports = AtlasPartida; }
   else {

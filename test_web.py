@@ -3103,8 +3103,8 @@ class Hub(unittest.TestCase):
         self.assertNotIn("camino-atlas", (A / "chat-router.js").read_text(encoding="utf-8"),
                          "la Torre vuelve a cargar el juego")
         self.assertFalse((A / "camino-atlas.js").exists(), "vuelve el cargador de la Torre")
-        piezas = ("atlas-arte.js", "atlas-mapa.js", "atlas-dialogo.js", "atlas-motor.js",
-                  "atlas-piso.js", "atlas.css", "preceptor-pixel.png", "thegame.js")
+        piezas = ("atlas-arte.js", "atlas-coord.js", "atlas-carta.js", "atlas-ondas.js", "atlas-mapa.js", "atlas-dialogo.js", "atlas-motor.js",
+                  "atlas-piso.js", "atlas.css", "preceptor-pixel.png", "thegame.js", "atlas-guardado.js", "atlas-hud.js", "atlas-obra.js", "atlas-gesto.js", "atlas-mapa.css")
         listas = texto_del_worker()
         for q in piezas:
             with self.subTest(pieza=q):
@@ -3115,7 +3115,7 @@ class Hub(unittest.TestCase):
                                      f"{h.name} carga {q} de salida")
         piso = sin_comentarios((A / "atlas-piso.js").read_text(encoding="utf-8"))
         self.assertEqual(re.findall(r"fetch\(([^)]*)\)", piso), ["BASE + ruta"])
-        for f in ("atlas-piso.js", "atlas-arte.js", "atlas-mapa.js", "atlas-dialogo.js",
+        for f in ("atlas-guardado.js", "atlas-hud.js", "atlas-obra.js", "atlas-gesto.js", "atlas-piso.js", "atlas-arte.js", "atlas-coord.js", "atlas-carta.js", "atlas-ondas.js", "atlas-mapa.js", "atlas-dialogo.js",
                   "atlas-motor.js", "thegame.js"):
             codigo = sin_comentarios((A / f).read_text(encoding="utf-8"))
             # El espacio de nombres SVG es un nombre, no una salida.

@@ -74,9 +74,36 @@
     var cap = el('figcaption');
     cap.appendChild(el('b', null, nombre(t)));
     cap.appendChild(el('small', null, T('rar_' + t.rareza)));
+    /* SU CARACTER Y SU VOZ, sin texto nuevo: el griego no tiene sitio para doce claves mas
+       (tope de 16 KiB), asi que el epiteto escrito es NO_DATA en las nueve y se dice aqui. Queda
+       la identidad que no necesita palabras: el color de la traza sale de su caracter, y el
+       boton usa la palabra `sonido`, que ya existe en las nueve. Respeta el interruptor. */
+    var k = G.caracter(t);
+    c.style.setProperty('--onda', ['hsl(35 75% 58%)', 'hsl(140 45% 55%)', 'hsl(275 55% 68%)', 'hsl(210 12% 68%)'][k.color]);
+    c.dataset.caracter = k.color + '-' + k.pulso + '-' + k.tendencia;
+    var oir = boton(T('sonido'));
+    oir.addEventListener('click', function () { oye(t); });
+    cap.appendChild(oir);
     f.appendChild(cap);
     requestAnimationFrame(function () { traza(c, t.armonicos, t.rareza); });
     return f;
+  }
+
+  /* LA VOZ EXACTA (2026-09-28): `atlas-voz.js` calcula con enteros los mismos bytes en cada
+     aparato. Se carga al pulsar (no pesa en la puerta del juego) y el SW la guarda para el modo
+     sin red. Si no llega (sin red la primera vez), suena el oscilador y se dice que es aproximada. */
+  function oye(t) {
+    var V = window.AtlasVoz;
+    if (V) {
+      var v = V.oye(t, S.contexto());
+      dice(v ? rellena(T('voz_exacta'), { h: v.huella.corta, n: v.partes.length }) : T('sonido_nd'));
+      return;
+    }
+    var s = document.createElement('script');
+    s.src = '/assets/atlas-voz.js';
+    s.onload = function () { if (window.AtlasVoz) { oye(t); } else { s.onerror(); } };
+    s.onerror = function () { dice(S.suena(S.vozDe(t)) ? T('voz_exacta_nd') : T('sonido_nd')); };
+    document.head.appendChild(s);
   }
 
   /* --- invocar ------------------------------------------------------------ */
@@ -162,6 +189,8 @@
         S.suena('adopcion', calor());
         dice(rellena(T('adoptada'), { f: u.firma.slice(8, 20) + '…' }));
         pintaArmy();
+        /* Su voz entra en tu base del mapa ya, no a los 5 ciclos (`atlas-mapa.js` escucha). */
+        document.dispatchEvent(new CustomEvent('atlas:tropa'));
       });
     }).catch(function (e) {
       b.disabled = false;
