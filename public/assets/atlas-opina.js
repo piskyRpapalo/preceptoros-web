@@ -10,9 +10,13 @@
    opcional que no admite rutas, correos, enlaces ni IPs. Se firma con tu identidad Ed25519, la de
    siempre (`Identity.firmar`).
 
-   NO SE ENVIA. Se guarda como fichero: la web no llama al rack y el canal de envio del Agora aun no
-   existe (lo dice `enviar.js`). El laboratorio lo lee cuando se lo llevas. Los textos viven en
-   `atlas-opina-<lengua>.json`, en la lengua en que abre el juego. */
+   NO SE ENVIA SOLA. Se guarda como fichero: la web no llama al rack y el canal de envio del Agora aun
+   no existe (lo dice `enviar.js`). ENVIAR ES DE LA PERSONA (Soberano, 2026-09-28: «quiero enviar ya
+   los feedback mios y de otros users»): tras firmar aparece «Send», que abre el menu de compartir DEL
+   SISTEMA (Web Share) con el fichero firmado; la persona elige el canal (mensajeria, correo) y a
+   quien. Ni servidor ni direccion escrita aqui. Quien lo recibe lo verifica con
+   `atlas/verifica_opinion.mjs`: la firma dice quien lo escribio y que no cambio. Sin Web Share, el
+   fichero ya guardado se lleva a mano, y se dice. Los textos viven en `atlas-opina-<lengua>.json`. */
 (function () {
   'use strict';
 
@@ -66,11 +70,31 @@
       var sobreF = { esquema: 'atlas.opinion.firmada/1', opinion: op, firma: r[0].firma, algoritmo: 'Ed25519',
                      pseudonimo: r[0].autor, clave_publica: r[1] };
       var nombre = 'atlas-opinion-' + op.ciclo + '-' + sobre + '.json';
-      var a = el('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(sobreF, null, 1) + '\n'], { type: 'application/json' }));
+      var texto = JSON.stringify(sobreF, null, 1) + '\n';
+      var a = el('a'); a.href = URL.createObjectURL(new Blob([texto], { type: 'application/json' }));
       a.download = nombre; document.body.appendChild(a); a.click(); a.remove();
       setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
       dice(T('ok').replace('{f}', nombre));
+      ofreceEnvio(texto, nombre);
     }).catch(function (x) { dice(T('nd').replace('{m}', x && x.message)); });
+  }
+
+  /* ENVIAR, con un clic propio: el menu de compartir exige un gesto reciente de la persona, y la
+     firma es asincrona. Sin Web Share de ficheros (escritorio antiguo), NO_DATA con la salida: el
+     fichero ya esta guardado. */
+  function ofreceEnvio(texto, nombre) {
+    if (!panel) { return; }
+    var viejo = panel.querySelector('.atlas-opina-envia'); if (viejo) { viejo.remove(); }
+    var f = typeof File === 'function' ? new File([texto], nombre, { type: 'application/json' }) : null;
+    var puede = f && navigator.canShare && navigator.canShare({ files: [f] });
+    if (!puede) { dice(T('enviar_nd').replace('{f}', nombre)); return; }
+    var b = el('button', 'boton atlas-opina-envia', T('enviar')); b.type = 'button';
+    b.addEventListener('click', function () {
+      navigator.share({ files: [f], title: T('t') }).then(function () { dice(T('enviado')); b.remove(); },
+        function (x) { dice(T('enviar_no').replace('{m}', (x && x.name) || '')); });
+    });
+    var st = panel.querySelector('.atlas-opina-estado');
+    panel.insertBefore(b, st);
   }
 
   function formulario(capa, pre) {

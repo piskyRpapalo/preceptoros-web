@@ -867,5 +867,49 @@ class SinCripto(unittest.TestCase):
                 self.assertTrue(menciones_cripto(sembrado))
         self.assertEqual(menciones_cripto("the cave is near the core"), [])
 
+class Opiniones(unittest.TestCase):
+    """Enviar las opiniones firmadas (Soberano, 2026-09-28: «quiero enviar ya los feedback mios y de
+    otros users»): lo envia la PERSONA con el menu de compartir del sistema, con un clic propio y
+    sin servidor; quien lo recibe lo verifica con `atlas/verifica_opinion.mjs`."""
+
+    def test_el_verificador_caza_lo_que_debe(self):
+        r = subprocess.run(["node", str(RAIZ / "opinion_casos.mjs")], capture_output=True, text=True, timeout=60)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        casos = json.loads(r.stdout)
+        self.assertGreaterEqual(len(casos), 7)
+        for c in casos:
+            with self.subTest(caso=c["caso"]):
+                self.assertTrue(c["ok"], c["detalle"])
+
+    def test_enviar_es_un_gesto_de_la_persona_y_no_una_red(self):
+        """`navigator.share` solo dentro del clic de «Send»; ni fetch nuevo, ni direccion escrita,
+        ni envio automatico al firmar."""
+        cod = sin_comentarios((ASSETS / "atlas-opina.js").read_text(encoding="utf-8"))
+        self.assertEqual(cod.count("navigator.share("), 1)
+        clic = cod.index("b.addEventListener('click', function () {\n      navigator.share(")
+        self.assertLess(cod.index("function ofreceEnvio"), clic)
+        self.assertEqual(re.findall(r"fetch\(([^)]*)\)", cod), ["'/atlas-opina-' + lang + '.json'"])
+        for fuga in ("mailto:", "http://", "https://", "sendBeacon", "XMLHttpRequest"):
+            with self.subTest(fuga=fuga):
+                self.assertNotIn(fuga, cod)
+        d = json.loads((PUBLICO / "atlas-opina-en.json").read_text(encoding="utf-8"))
+        for k in ("enviar", "enviado", "enviar_no", "enviar_nd"):
+            with self.subTest(clave=k):
+                self.assertTrue(d.get(k, "").strip())
+
+    def test_el_workflow_verifica_cada_opinion(self):
+        wf = (RAIZ.parent / ".github" / "workflows" / "opiniones.yml").read_text(encoding="utf-8")
+        vivo = "\n".join(l for l in wf.splitlines() if not l.lstrip().startswith("#"))
+        self.assertIn('node atlas/verifica_opinion.mjs "$f"', vivo)
+        self.assertIn("contents: read", vivo)
+        self.assertNotIn("pull_request_target", vivo)
+        self.assertIn('[ "$fallos" -eq 0 ]', vivo)
+        for f in sorted((RAIZ.parent / "opiniones").glob("*.json")):
+            with self.subTest(opinion=f.name):
+                r = subprocess.run(["node", str(RAIZ / "verifica_opinion.mjs"), str(f)], capture_output=True,
+                                   text=True, timeout=60)
+                self.assertEqual(r.returncode, 0, r.stdout)
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=1)
