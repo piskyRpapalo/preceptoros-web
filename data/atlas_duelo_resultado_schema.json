@@ -1,0 +1,91 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "preceptoros:atlas.duelo_resultado/1",
+ "title": "Resultado de un duelo",
+ "description": "No se cree: cualquiera lo vuelve a jugar desde los sobres (semilla del commit-reveal) y tiene que salir igual. `procedencia` etiqueta lo sintetico, que no puntua. Vive fuera de `public/`: es el contrato, no se sirve. Lo valida en JS `public/game/arena.js` con la misma forma.",
+ "type": "object",
+ "additionalProperties": false,
+ "required": [
+  "esquema",
+  "defensa",
+  "asalto",
+  "defensor",
+  "atacante",
+  "semilla",
+  "registro_sha",
+  "gana",
+  "rondas",
+  "procedencia",
+  "en_juego"
+ ],
+ "properties": {
+  "esquema": {
+   "const": "atlas.duelo_resultado/1"
+  },
+  "defensa": {
+   "type": "string",
+   "pattern": "^[0-9a-f]{64}$"
+  },
+  "asalto": {
+   "type": "string",
+   "pattern": "^[0-9a-f]{64}$"
+  },
+  "defensor": {
+   "type": "string",
+   "pattern": "^[0-9a-f]{64}$"
+  },
+  "atacante": {
+   "type": "string",
+   "pattern": "^[0-9a-f]{64}$"
+  },
+  "semilla": {
+   "type": "string",
+   "pattern": "^[0-9a-f]{64}$"
+  },
+  "registro_sha": {
+   "type": "string",
+   "pattern": "^[0-9a-f]{64}$"
+  },
+  "gana": {
+   "enum": [
+    "defensa",
+    "asalto",
+    "empate"
+   ]
+  },
+  "rondas": {
+   "type": "integer",
+   "minimum": 1,
+   "maximum": 1000
+  },
+  "procedencia": {
+   "enum": [
+    "humano",
+    "piloto_base",
+    "denso",
+    "lora",
+    "sintetico"
+   ]
+  },
+  "en_juego": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "cobre",
+    "luz"
+   ],
+   "properties": {
+    "cobre": {
+     "type": "integer",
+     "minimum": 0,
+     "maximum": 1000000
+    },
+    "luz": {
+     "type": "integer",
+     "minimum": 0,
+     "maximum": 1000000
+    }
+   }
+  }
+ }
+}

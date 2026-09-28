@@ -622,6 +622,12 @@ process.stdout.write(JSON.stringify(ok));
         self.assertIn("if (hacer) { window.AtlasJuego.aplica(a); return; }", codigo)
 
 
+# Modulos de `public/game/` que NINGUN guion pide todavia (ni la puerta ni el Army): el multijugador y
+# la cria, firmados por el Soberano el 2026-09-28 («ve construyendo todo… enfocados al multiplayer»).
+# Ver atlas/POST_VERIFICACION_MGNO_LAB.md y atlas/POST_VERIFICACION_SISIL_CRIA.md.
+FUERA_DE_LA_PUERTA = ("canon.js", "sobres.js", "arena.js", "mercado.js", "narragrafo.js", "cria.js", "genoma.js")
+
+
 class TheGameV15(unittest.TestCase):
     """theGame v1.5 (Directiva Maestra del Soberano, 2026-09-27): gacha
     armonico, loot al estilo Diablo, huevo, adopcion FIRMADA en el Army y
@@ -645,7 +651,7 @@ class TheGameV15(unittest.TestCase):
     def test_v15_cada_modulo_cabe_en_16_kb(self):
         """Instruccion 1 de la directiva: ningun modulo pasa de 16 KB."""
         presentes = sorted(q.name for q in self.JUEGO.glob("*.js"))
-        self.assertEqual(presentes, sorted(self.MODULOS),
+        self.assertEqual(presentes, sorted(self.MODULOS + FUERA_DE_LA_PUERTA),
                          "aparece un modulo de la v1.5 sin su firma (ver DIRECTIVA_V15_ESTADO.md)")
         for q in self.JUEGO.iterdir():
             with self.subTest(modulo=q.name):
@@ -1076,6 +1082,198 @@ class Pestanas(unittest.TestCase):
         self.assertNotIn("thegame.css", listas, "la hoja de la capa entra en el precache")
         for h in PUBLICO.rglob("*.html"):
             self.assertNotIn("thegame.css", h.read_text(encoding="utf-8"))
+
+
+
+class Multijugador(unittest.TestCase):
+    """La rebanada pura del multijugador (auditoria MGNO): sobres firmados, commit-reveal, duelo fantasma,
+    rating entero, mercado A2A y narragrafo. Todo en node, determinista, sin red ni reloj."""
+
+    def _node(self, *args):
+        r = subprocess.run(["node", str(RAIZ / "mp_casos.mjs"), *args], capture_output=True, text=True, timeout=180)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        return json.loads(r.stdout)
+
+    def test_los_casos_del_multijugador(self):
+        casos = self._node()
+        self.assertGreaterEqual(len(casos), 48, "faltan casos del multijugador")
+        for c in casos:
+            with self.subTest(caso=c["caso"]):
+                self.assertTrue(c["ok"], c["detalle"])
+
+    def test_lo_que_sale_del_js_cumple_su_contrato(self):
+        try:
+            import jsonschema
+        except ImportError:
+            self.skipTest("NO_DATA · jsonschema no instalado")
+        m = self._node("--muestras")
+        for clave, fichero in (("sobre", "atlas_sobre_schema.json"), ("mp_sesion", "atlas_mp_sesion_schema.json"),
+                               ("defensa", "atlas_defensa_schema.json"), ("asalto", "atlas_asalto_schema.json"),
+                               ("resultado", "atlas_duelo_resultado_schema.json"), ("oferta", "atlas_oferta_schema.json"),
+                               ("asiento", "atlas_asiento_schema.json"), ("mgno_nodo", "atlas_mgno_nodo_schema.json"),
+                               ("mgno_operacion", "atlas_mgno_operacion_schema.json")):
+            with self.subTest(contrato=fichero):
+                v = jsonschema.Draft202012Validator(json.loads((DATOS / fichero).read_text(encoding="utf-8")))
+                self.assertEqual([e.message for e in v.iter_errors(m[clave])], [])
+
+    def test_cada_contrato_caza_sus_seis_violaciones(self):
+        try:
+            import jsonschema
+        except ImportError:
+            self.skipTest("NO_DATA · jsonschema no instalado")
+        m = self._node("--muestras")
+        def con(base, **cambios):
+            d = json.loads(json.dumps(base)); d.update(cambios); return d
+        def sin(base, clave):
+            d = json.loads(json.dumps(base)); d.pop(clave); return d
+        h = "a" * 64
+        contra = {"esquema": "atlas.contraoferta/1", "oferta": h, "da": {"luz": 1}, "pide": {"cobre": 2},
+                  "expira_ciclo": 10, "nonce": "2" * 32, "procedencia": "humano"}
+        acepta = {"esquema": "atlas.aceptacion_oferta/1", "oferta": h, "ciclo": 5}
+        tropa = m["defensa"]["tropas"][0]
+        casos = {
+            "atlas_sobre_schema.json": (m["sobre"], [
+                con(m["sobre"], extra=1), con(m["sobre"], tipo="firmar_por_ti"), con(m["sobre"], seq=2),
+                con(m["sobre"], pseudonimo="ana@correo"), con(m["sobre"], firma="ed25519:abc"),
+                con(m["sobre"], cuerpo={"esquema": "atlas.oferta/1"})]),
+            "atlas_mp_sesion_schema.json": (m["mp_sesion"], [
+                con(m["mp_sesion"], modo="mesh"), con(m["mp_sesion"], semilla="firma"), con(m["mp_sesion"], max_bytes=99999),
+                con(m["mp_sesion"], pares=[h, h]), con(m["mp_sesion"], nonce="xyz"), con(m["mp_sesion"], servidor="relevo")]),
+            "atlas_defensa_schema.json": (m["defensa"], [
+                con(m["defensa"], tropas=[dict(tropa, stats={"vida": 9999})]), con(m["defensa"], tropas=[]),
+                con(m["defensa"], tropas=[tropa] * 7), con(m["defensa"], tropas=[dict(tropa, tc="tc9")]),
+                con(m["defensa"], en_juego={"cobre": -1, "luz": 0}), con(m["defensa"], pack_sha="x")]),
+            "atlas_asalto_schema.json": (m["asalto"], [
+                con(m["asalto"], defensa="x"), con(m["asalto"], tropas=[]), con(m["asalto"], stats={}),
+                con(m["asalto"], tropas=[dict(tropa, semilla="zz")]), sin(m["asalto"], "pack_sha"),
+                con(m["asalto"], esquema="atlas.defensa/1")]),
+            "atlas_duelo_resultado_schema.json": (m["resultado"], [
+                con(m["resultado"], gana="yo"), con(m["resultado"], procedencia="inventada"), con(m["resultado"], rondas=0),
+                con(m["resultado"], semilla="x"), con(m["resultado"], hora="12:00"),
+                con(m["resultado"], en_juego={"cobre": 1, "luz": 0, "eur": 5})]),
+            "atlas_oferta_schema.json": (m["oferta"], [
+                con(m["oferta"], da={"eur": 5}), con(m["oferta"], da={"cobre": 1.5}), con(m["oferta"], da={}),
+                con(m["oferta"], expira_ciclo=-1), con(m["oferta"], procedencia="bot"), con(m["oferta"], wallet="x")]),
+            "atlas_contraoferta_schema.json": (contra, [
+                con(contra, oferta="x"), sin(contra, "oferta"), con(contra, da={"usd": 1}), con(contra, nonce="12"),
+                con(contra, precio_real=3), con(contra, procedencia="agente")]),
+            "atlas_aceptacion_oferta_schema.json": (acepta, [
+                con(acepta, ciclo=-1), con(acepta, ciclo=1.5), con(acepta, oferta="x"), con(acepta, firma_auto=True),
+                sin(acepta, "ciclo"), con(acepta, esquema="atlas.oferta/1")]),
+            "atlas_asiento_schema.json": (m["asiento"], [
+                con(m["asiento"], n=0), con(m["asiento"], prev="x"), con(m["asiento"], da={"eur": 1}),
+                con(m["asiento"], aplicado=True), sin(m["asiento"], "aceptacion"), con(m["asiento"], ciclo=-2)]),
+            "atlas_mgno_nodo_schema.json": (m["mgno_nodo"], [
+                con(m["mgno_nodo"], texto="<script>x</script>"), con(m["mgno_nodo"], texto="see https:" + "//x"),
+                con(m["mgno_nodo"], texto=""), con(m["mgno_nodo"], afinidad=[1] * 7),
+                con(m["mgno_nodo"], afinidad=[256] + [0] * 7), con(m["mgno_nodo"], etiquetas=["Mayus"])]),
+            "atlas_mgno_operacion_schema.json": (m["mgno_operacion"], [
+                con(m["mgno_operacion"], op="ejecuta"), con(m["mgno_operacion"], arco=dict(m["mgno_operacion"]["arco"], peso=0)),
+                {"esquema": "atlas.mgno_operacion/1", "op": "voto", "voto": {"de": h, "a": "b" * 64, "delta": 2}},
+                {"esquema": "atlas.mgno_operacion/1", "op": "poda", "poda": "x"},
+                {"esquema": "atlas.mgno_operacion/1", "op": "nodo", "nodo": con(m["mgno_nodo"], texto="{{prompt}}")},
+                con(m["mgno_operacion"], codigo="1")]),
+        }
+        relajado = jsonschema.Draft202012Validator({"type": "object"})
+        for nombre, (bueno, malos) in casos.items():
+            esquema = json.loads((DATOS / nombre).read_text(encoding="utf-8"))
+            jsonschema.Draft202012Validator.check_schema(esquema)
+            v = jsonschema.Draft202012Validator(esquema)
+            with self.subTest(contrato=nombre, caso="bueno"):
+                self.assertEqual([e.message for e in v.iter_errors(bueno)], [])
+            self.assertEqual(len(malos), 6)
+            for i, malo in enumerate(malos):
+                with self.subTest(contrato=nombre, violacion=i):
+                    self.assertFalse(v.is_valid(malo), f"{nombre} deja pasar la violacion {i}")
+                    self.assertTrue(relajado.is_valid(malo))
+            self.assertIn("additionalProperties", json.dumps(esquema))
+
+    def test_a_demanda_bajo_16_kb_y_fuera_de_la_puerta(self):
+        capa = (ASSETS / "thegame.js").read_text(encoding="utf-8")
+        listas = (PUBLICO / "sw.js").read_text(encoding="utf-8") + (PUBLICO / "sw-listas.js").read_text(encoding="utf-8")
+        sys.path.insert(0, str(RAIZ))
+        import mundo
+        for m in FUERA_DE_LA_PUERTA:
+            f = PUBLICO / "game" / m
+            with self.subTest(modulo=m):
+                self.assertLessEqual(f.stat().st_size, 14 * 1024, f"{m} pasa del objetivo de 14 KB")
+                self.assertNotIn(m, capa, f"{m} entra en la puerta del juego")
+                self.assertNotIn(m, listas, f"{m} entra en el precache")
+                self.assertNotIn("../game/" + m, mundo.PIEZAS)
+                for h in PUBLICO.rglob("*.html"):
+                    self.assertNotIn("game/" + m, h.read_text(encoding="utf-8"))
+
+
+
+class Cria(unittest.TestCase):
+    """La cria soberana y el genoma de SISIL (auditoria SISIL_CRIA): validar, nunca calibrar ni adoptar solo.
+    Las odds se ven y son las que se tiran."""
+
+    def _node(self, codigo):
+        r = subprocess.run(["node", "-e", codigo], capture_output=True, text=True, timeout=120, cwd=str(RAIZ.parent))
+        self.assertEqual(r.returncode, 0, r.stderr)
+        return json.loads(r.stdout)
+
+    def test_los_casos_de_la_cria(self):
+        r = subprocess.run(["node", str(RAIZ / "cria_casos.mjs")], capture_output=True, text=True, timeout=300)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        casos = json.loads(r.stdout)
+        self.assertGreaterEqual(len(casos), 12)
+        for c in casos:
+            with self.subTest(caso=c["caso"]):
+                self.assertTrue(c["ok"], c["detalle"])
+
+    def test_contratos_de_la_cria_y_del_genoma(self):
+        try:
+            import jsonschema
+        except ImportError:
+            self.skipTest("NO_DATA · jsonschema no instalado")
+        base = self._node("process.stdout.write(JSON.stringify(require('./public/game/cria.js').desdeValores()))")
+        lim = self._node("process.stdout.write(JSON.stringify(require('./public/game/genoma.js').LIMITES))")
+        def con(b, **c):
+            d = json.loads(json.dumps(b)); d.update(c); return d
+        gen = {"esquema": "atlas.genoma/1", "base": "a" * 64, "procedencia": "sintetico",
+               "dominios": {"incubacion": {"ciclos_min_tc1": 15, "ciclos_max_tc1": 25}, "rareza": {"unico_tc4": 60}}}
+        rar = json.loads(json.dumps(base["rareza"])); rar["tc1"] = [700.5, 250, 40, 5]
+        casos = {
+            "atlas_cria_calibracion_schema.json": (base, [
+                con(base, auto_invoke=True), con(base, rareza=rar),
+                con(base, rareza={k: v for k, v in base["rareza"].items() if k != "tc3"}),
+                con(base, incubacion=dict(base["incubacion"], tc1=[0, 20])), con(base, version="https:" + "//x"),
+                con(base, afijos={"max": base["afijos"]["max"], "exclusiones": [["atlante", "inventado"]]})]),
+            "atlas_genoma_schema.json": (gen, [
+                con(gen, dominios={"invocation_permission": {"x": 1}}), con(gen, dominios={"rareza": {"auto_invoke": 1}}),
+                con(gen, dominios={"rareza": {"unico_tc4": 20000}}), con(gen, dominios={"combate": {"k": 32.5}}),
+                con(gen, procedencia="silicio_firma"), con(gen, dominios={})]),
+        }
+        relajado = jsonschema.Draft202012Validator({"type": "object"})
+        for nombre, (bueno, malos) in casos.items():
+            esquema = json.loads((DATOS / nombre).read_text(encoding="utf-8"))
+            jsonschema.Draft202012Validator.check_schema(esquema)
+            v = jsonschema.Draft202012Validator(esquema)
+            with self.subTest(contrato=nombre, caso="bueno"):
+                self.assertEqual([e.message for e in v.iter_errors(bueno)], [])
+            for i, malo in enumerate(malos):
+                with self.subTest(contrato=nombre, violacion=i):
+                    self.assertFalse(v.is_valid(malo), f"{nombre} deja pasar la violacion {i}")
+                    self.assertTrue(relajado.is_valid(malo))
+        # El contrato del genoma es espejo EXACTO de `genoma.js › LIMITES`: no pueden divergir.
+        dom = json.loads((DATOS / "atlas_genoma_schema.json").read_text(encoding="utf-8"))["properties"]["dominios"]["properties"]
+        self.assertEqual(sorted(dom), sorted(lim))
+        for d, ps in lim.items():
+            for k, b in ps.items():
+                with self.subTest(parametro=d + "." + k):
+                    self.assertEqual([dom[d]["properties"][k]["minimum"], dom[d]["properties"][k]["maximum"]], b)
+
+    def test_las_odds_se_ven_y_son_las_que_se_tiran(self):
+        ui = sin_comentarios((PUBLICO / "game" / "ui.js").read_text(encoding="utf-8"))
+        gacha = sin_comentarios((PUBLICO / "game" / "gacha.js").read_text(encoding="utf-8"))
+        self.assertIn("G.odds(tc)", ui)
+        self.assertIn("T('odds_h')", ui)
+        self.assertIn("return [1000 - c[0] - c[1] - c[2], c[2], c[1], c[0]];", gacha)
+        for l in LENGUAS_JUEGO:
+            ui_t = json.loads((PUBLICO / f"atlas-{l}.json").read_text(encoding="utf-8"))["ui"]
+            self.assertTrue(ui_t.get("odds_h", "").strip(), f"{l} sin el rotulo de las odds")
 
 
 if __name__ == "__main__":

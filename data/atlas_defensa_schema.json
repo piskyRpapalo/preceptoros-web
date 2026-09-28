@@ -1,0 +1,70 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "preceptoros:atlas.defensa/1",
+ "title": "Defensa firmada (duelo fantasma)",
+ "description": "Lo que se ataca cuando la persona no esta: solo `{tc, semilla}` por tropa (las cifras se rederivan con `gacha.tirada` y los valores del `pack_sha`), y lo que se DECLARA en juego (no se aplica sin firma). Vive fuera de `public/`: es el contrato, no se sirve. Lo valida en JS `public/game/arena.js` con la misma forma.",
+ "type": "object",
+ "additionalProperties": false,
+ "required": [
+  "esquema",
+  "pack_sha",
+  "tropas",
+  "en_juego"
+ ],
+ "properties": {
+  "esquema": {
+   "const": "atlas.defensa/1"
+  },
+  "pack_sha": {
+   "type": "string",
+   "pattern": "^[0-9a-f]{64}$"
+  },
+  "tropas": {
+   "type": "array",
+   "minItems": 1,
+   "maxItems": 6,
+   "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+     "tc",
+     "semilla"
+    ],
+    "properties": {
+     "tc": {
+      "enum": [
+       "tc1",
+       "tc2",
+       "tc3",
+       "tc4"
+      ]
+     },
+     "semilla": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+     }
+    }
+   }
+  },
+  "en_juego": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "cobre",
+    "luz"
+   ],
+   "properties": {
+    "cobre": {
+     "type": "integer",
+     "minimum": 0,
+     "maximum": 1000000
+    },
+    "luz": {
+     "type": "integer",
+     "minimum": 0,
+     "maximum": 1000000
+    }
+   }
+  }
+ }
+}

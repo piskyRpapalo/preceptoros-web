@@ -44,7 +44,17 @@
       eclosion: { f: 440, m: 3, indice: 260, dur: 0.6, gan: 0.2 },
       adopcion: { f: 523, m: 1.5, indice: 80, dur: 0.45, gan: 0.18 }
     },
-    army_tope: 60
+    army_tope: 60,
+    /* Combate entre personas y patrullas (`arena.js`): rondas ENTERAS y todo PROVISIONAL. `ataque`
+       pondera los stats de la tropa; `esquiva` va por mil por punto de sigilo, con tope; la armadura
+       resta su mitad (`armadura_div`). El rating es un Elo entero LOCAL (no hay clasificacion
+       central): `k` y `k_provisional` para las primeras `provisional_hasta` partidas. */
+    combate: {
+      rondas: 40, tropas_max: 6, armadura_div: 2,
+      ataque: { base: 3, aura: 2, inercia: 1, profundidad: 1 },
+      esquiva: { por_sigilo: 12, tope: 300 },
+      rating_inicial: 1000, k: 32, k_provisional: 48, provisional_hasta: 10
+    }
   };
 
   if (typeof module === 'object' && module.exports) { module.exports = VALORES; }

@@ -1,0 +1,442 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "preceptoros:atlas.cria_calibracion/1",
+ "title": "Paquete de calibracion de la cria soberana",
+ "description": "Enteros acotados y nada mas: pesos de rareza por TC (orden normal, magico, raro, unico), incubacion SOLO en ciclos, afijos, presupuesto de stats y armonicos. Sin reloj, sin decimales, sin odds ocultas, sin campos para invocar o adoptar. Las puertas duras (nombres y valores prohibidos en todo el arbol) y la regla min <= max las mira `public/game/cria.js`. Vive fuera de `public/`: es el contrato, no se sirve.",
+ "type": "object",
+ "additionalProperties": false,
+ "required": [
+  "esquema",
+  "version",
+  "base",
+  "rareza",
+  "incubacion",
+  "afijos",
+  "presupuesto",
+  "armonicos"
+ ],
+ "properties": {
+  "esquema": {
+   "const": "atlas.cria_calibracion/1"
+  },
+  "version": {
+   "type": "string",
+   "minLength": 1,
+   "maxLength": 40,
+   "pattern": "^[a-z0-9._-]+$"
+  },
+  "base": {
+   "type": "string",
+   "minLength": 1,
+   "maxLength": 40,
+   "pattern": "^[a-z0-9._-]+$"
+  },
+  "rareza": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "tc1",
+    "tc2",
+    "tc3",
+    "tc4"
+   ],
+   "properties": {
+    "tc1": {
+     "type": "array",
+     "minItems": 4,
+     "maxItems": 4,
+     "items": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 1000000
+     }
+    },
+    "tc2": {
+     "type": "array",
+     "minItems": 4,
+     "maxItems": 4,
+     "items": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 1000000
+     }
+    },
+    "tc3": {
+     "type": "array",
+     "minItems": 4,
+     "maxItems": 4,
+     "items": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 1000000
+     }
+    },
+    "tc4": {
+     "type": "array",
+     "minItems": 4,
+     "maxItems": 4,
+     "items": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 1000000
+     }
+    }
+   }
+  },
+  "incubacion": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "tc1",
+    "tc2",
+    "tc3",
+    "tc4"
+   ],
+   "properties": {
+    "tc1": {
+     "type": "array",
+     "minItems": 2,
+     "maxItems": 2,
+     "items": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 100000
+     }
+    },
+    "tc2": {
+     "type": "array",
+     "minItems": 2,
+     "maxItems": 2,
+     "items": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 100000
+     }
+    },
+    "tc3": {
+     "type": "array",
+     "minItems": 2,
+     "maxItems": 2,
+     "items": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 100000
+     }
+    },
+    "tc4": {
+     "type": "array",
+     "minItems": 2,
+     "maxItems": 2,
+     "items": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 100000
+     }
+    }
+   }
+  },
+  "afijos": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "max",
+    "exclusiones"
+   ],
+   "properties": {
+    "max": {
+     "type": "object",
+     "additionalProperties": false,
+     "required": [
+      "normal",
+      "magico",
+      "raro",
+      "unico"
+     ],
+     "properties": {
+      "normal": {
+       "type": "integer",
+       "minimum": 0,
+       "maximum": 3
+      },
+      "magico": {
+       "type": "integer",
+       "minimum": 0,
+       "maximum": 3
+      },
+      "raro": {
+       "type": "integer",
+       "minimum": 0,
+       "maximum": 3
+      },
+      "unico": {
+       "type": "integer",
+       "minimum": 0,
+       "maximum": 3
+      }
+     }
+    },
+    "exclusiones": {
+     "type": "array",
+     "maxItems": 16,
+     "items": {
+      "type": "array",
+      "prefixItems": [
+       {
+        "enum": [
+         "atlante",
+         "cuprico",
+         "termico",
+         "solar"
+        ]
+       },
+       {
+        "enum": [
+         "abismo",
+         "sigilo",
+         "velocidad",
+         "algoritmo"
+        ]
+       }
+      ],
+      "minItems": 2,
+      "maxItems": 2,
+      "items": false
+     }
+    }
+   }
+  },
+  "presupuesto": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "suma",
+    "por_stat"
+   ],
+   "properties": {
+    "suma": {
+     "type": "object",
+     "additionalProperties": false,
+     "required": [
+      "normal",
+      "magico",
+      "raro",
+      "unico"
+     ],
+     "properties": {
+      "normal": {
+       "type": "integer",
+       "minimum": 1,
+       "maximum": 100000
+      },
+      "magico": {
+       "type": "integer",
+       "minimum": 1,
+       "maximum": 100000
+      },
+      "raro": {
+       "type": "integer",
+       "minimum": 1,
+       "maximum": 100000
+      },
+      "unico": {
+       "type": "integer",
+       "minimum": 1,
+       "maximum": 100000
+      }
+     }
+    },
+    "por_stat": {
+     "type": "object",
+     "additionalProperties": false,
+     "required": [
+      "vida",
+      "armadura",
+      "velocidad",
+      "sigilo",
+      "inercia",
+      "profundidad",
+      "aura"
+     ],
+     "properties": {
+      "vida": {
+       "type": "array",
+       "minItems": 2,
+       "maxItems": 2,
+       "items": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 100000
+       }
+      },
+      "armadura": {
+       "type": "array",
+       "minItems": 2,
+       "maxItems": 2,
+       "items": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 100000
+       }
+      },
+      "velocidad": {
+       "type": "array",
+       "minItems": 2,
+       "maxItems": 2,
+       "items": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 100000
+       }
+      },
+      "sigilo": {
+       "type": "array",
+       "minItems": 2,
+       "maxItems": 2,
+       "items": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 100000
+       }
+      },
+      "inercia": {
+       "type": "array",
+       "minItems": 2,
+       "maxItems": 2,
+       "items": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 100000
+       }
+      },
+      "profundidad": {
+       "type": "array",
+       "minItems": 2,
+       "maxItems": 2,
+       "items": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 100000
+       }
+      },
+      "aura": {
+       "type": "array",
+       "minItems": 2,
+       "maxItems": 2,
+       "items": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 100000
+       }
+      }
+     }
+    }
+   }
+  },
+  "armonicos": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "terminos",
+    "amplitud_max",
+    "fase_max",
+    "simetria"
+   ],
+   "properties": {
+    "terminos": {
+     "type": "object",
+     "additionalProperties": false,
+     "required": [
+      "normal",
+      "magico",
+      "raro",
+      "unico"
+     ],
+     "properties": {
+      "normal": {
+       "type": "array",
+       "minItems": 2,
+       "maxItems": 2,
+       "items": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 8
+       }
+      },
+      "magico": {
+       "type": "array",
+       "minItems": 2,
+       "maxItems": 2,
+       "items": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 8
+       }
+      },
+      "raro": {
+       "type": "array",
+       "minItems": 2,
+       "maxItems": 2,
+       "items": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 8
+       }
+      },
+      "unico": {
+       "type": "array",
+       "minItems": 2,
+       "maxItems": 2,
+       "items": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 8
+       }
+      }
+     }
+    },
+    "amplitud_max": {
+     "type": "integer",
+     "minimum": 1,
+     "maximum": 64
+    },
+    "fase_max": {
+     "type": "integer",
+     "minimum": 0,
+     "maximum": 63
+    },
+    "simetria": {
+     "type": "object",
+     "additionalProperties": false,
+     "required": [
+      "normal",
+      "magico",
+      "raro",
+      "unico"
+     ],
+     "properties": {
+      "normal": {
+       "type": "integer",
+       "minimum": 1,
+       "maximum": 12
+      },
+      "magico": {
+       "type": "integer",
+       "minimum": 1,
+       "maximum": 12
+      },
+      "raro": {
+       "type": "integer",
+       "minimum": 1,
+       "maximum": 12
+      },
+      "unico": {
+       "type": "integer",
+       "minimum": 1,
+       "maximum": 12
+      }
+     }
+    }
+   }
+  }
+ }
+}

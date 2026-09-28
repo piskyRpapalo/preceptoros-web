@@ -1,0 +1,75 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "preceptoros:atlas.mp_sesion/1",
+ "title": "Politica de una sesion del multijugador",
+ "description": "Su huella ES la sesion. Pares ordenados y sin repetir; quorum de compromisos; topes de bytes y de operaciones; semilla siempre por commit-reveal; la poda gana. Vive fuera de `public/`: es el contrato, no se sirve. Lo valida en JS `public/game/sobres.js` con la misma forma.",
+ "type": "object",
+ "additionalProperties": false,
+ "required": [
+  "esquema",
+  "modo",
+  "pares",
+  "quorum",
+  "max_bytes",
+  "max_ops",
+  "semilla",
+  "conflicto",
+  "contenido_v",
+  "nonce"
+ ],
+ "properties": {
+  "esquema": {
+   "const": "atlas.mp_sesion/1"
+  },
+  "modo": {
+   "enum": [
+    "duelo",
+    "tablon",
+    "cooperativo",
+    "competitivo",
+    "hibrido",
+    "mercado"
+   ]
+  },
+  "pares": {
+   "type": "array",
+   "minItems": 1,
+   "maxItems": 16,
+   "uniqueItems": true,
+   "items": {
+    "type": "string",
+    "pattern": "^[0-9a-f]{64}$"
+   }
+  },
+  "quorum": {
+   "type": "integer",
+   "minimum": 1,
+   "maximum": 16
+  },
+  "max_bytes": {
+   "type": "integer",
+   "minimum": 512,
+   "maximum": 16384
+  },
+  "max_ops": {
+   "type": "integer",
+   "minimum": 1,
+   "maximum": 500
+  },
+  "semilla": {
+   "const": "commit_reveal"
+  },
+  "conflicto": {
+   "const": "poda_gana"
+  },
+  "contenido_v": {
+   "type": "string",
+   "minLength": 1,
+   "maxLength": 40
+  },
+  "nonce": {
+   "type": "string",
+   "pattern": "^[0-9a-f]{32}$"
+  }
+ }
+}

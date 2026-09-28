@@ -1,0 +1,334 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "preceptoros:atlas.sobre/1",
+ "title": "Sobre firmado del multijugador de theGame",
+ "description": "Lo unico que viaja entre dos aparatos: firmado con Ed25519 sobre su JSON canonico sin el campo `firma` (`canon.js`). `seq` monotono por autor y sesion, `prev` = huella del anterior (o `genesis` en el primero): dos sobres con el mismo `seq` y distinto cuerpo son una prueba de fraude. Sin hora de reloj, sin PII: clave publica y pseudonimo. Vive fuera de `public/`: es el contrato, no se sirve. Lo valida en JS `public/game/sobres.js` con la misma forma.",
+ "type": "object",
+ "additionalProperties": false,
+ "required": [
+  "esquema",
+  "tipo",
+  "sesion",
+  "de",
+  "pseudonimo",
+  "seq",
+  "prev",
+  "contenido_v",
+  "cuerpo",
+  "firma"
+ ],
+ "properties": {
+  "esquema": {
+   "const": "atlas.sobre/1"
+  },
+  "tipo": {
+   "enum": [
+    "compromiso",
+    "revelacion",
+    "defensa",
+    "asalto",
+    "resultado",
+    "oferta",
+    "contraoferta",
+    "aceptacion",
+    "mgno_op"
+   ]
+  },
+  "sesion": {
+   "type": "string",
+   "pattern": "^[0-9a-f]{64}$"
+  },
+  "de": {
+   "type": "string",
+   "pattern": "^[0-9a-f]{64}$"
+  },
+  "pseudonimo": {
+   "type": "string",
+   "minLength": 1,
+   "maxLength": 64,
+   "not": {
+    "pattern": "(^|[^0-9])/[a-z]|@|https?:|\\b[0-9]{1,3}(\\.[0-9]{1,3}){3}\\b|[<>]"
+   }
+  },
+  "seq": {
+   "type": "integer",
+   "minimum": 1,
+   "maximum": 1000000
+  },
+  "prev": {
+   "anyOf": [
+    {
+     "const": "genesis"
+    },
+    {
+     "type": "string",
+     "pattern": "^[0-9a-f]{64}$"
+    }
+   ]
+  },
+  "contenido_v": {
+   "type": "string",
+   "minLength": 1,
+   "maxLength": 40
+  },
+  "cuerpo": {
+   "type": "object"
+  },
+  "firma": {
+   "type": "string",
+   "pattern": "^ed25519:[0-9a-f]{128}$"
+  }
+ },
+ "allOf": [
+  {
+   "if": {
+    "properties": {
+     "tipo": {
+      "const": "compromiso"
+     }
+    }
+   },
+   "then": {
+    "properties": {
+     "cuerpo": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+       "esquema",
+       "c"
+      ],
+      "properties": {
+       "esquema": {
+        "const": "atlas.compromiso/1"
+       },
+       "c": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{64}$"
+       }
+      }
+     }
+    }
+   }
+  },
+  {
+   "if": {
+    "properties": {
+     "tipo": {
+      "const": "revelacion"
+     }
+    }
+   },
+   "then": {
+    "properties": {
+     "cuerpo": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+       "esquema",
+       "r",
+       "compromisos"
+      ],
+      "properties": {
+       "esquema": {
+        "const": "atlas.revelacion/1"
+       },
+       "r": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{64}$"
+       },
+       "compromisos": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{64}$"
+       }
+      }
+     }
+    }
+   }
+  },
+  {
+   "if": {
+    "properties": {
+     "tipo": {
+      "const": "defensa"
+     }
+    }
+   },
+   "then": {
+    "properties": {
+     "cuerpo": {
+      "properties": {
+       "esquema": {
+        "const": "atlas.defensa/1"
+       }
+      },
+      "required": [
+       "esquema"
+      ]
+     }
+    }
+   }
+  },
+  {
+   "if": {
+    "properties": {
+     "tipo": {
+      "const": "asalto"
+     }
+    }
+   },
+   "then": {
+    "properties": {
+     "cuerpo": {
+      "properties": {
+       "esquema": {
+        "const": "atlas.asalto/1"
+       }
+      },
+      "required": [
+       "esquema"
+      ]
+     }
+    }
+   }
+  },
+  {
+   "if": {
+    "properties": {
+     "tipo": {
+      "const": "resultado"
+     }
+    }
+   },
+   "then": {
+    "properties": {
+     "cuerpo": {
+      "properties": {
+       "esquema": {
+        "const": "atlas.duelo_resultado/1"
+       }
+      },
+      "required": [
+       "esquema"
+      ]
+     }
+    }
+   }
+  },
+  {
+   "if": {
+    "properties": {
+     "tipo": {
+      "const": "oferta"
+     }
+    }
+   },
+   "then": {
+    "properties": {
+     "cuerpo": {
+      "properties": {
+       "esquema": {
+        "const": "atlas.oferta/1"
+       }
+      },
+      "required": [
+       "esquema"
+      ]
+     }
+    }
+   }
+  },
+  {
+   "if": {
+    "properties": {
+     "tipo": {
+      "const": "contraoferta"
+     }
+    }
+   },
+   "then": {
+    "properties": {
+     "cuerpo": {
+      "properties": {
+       "esquema": {
+        "const": "atlas.contraoferta/1"
+       }
+      },
+      "required": [
+       "esquema"
+      ]
+     }
+    }
+   }
+  },
+  {
+   "if": {
+    "properties": {
+     "tipo": {
+      "const": "aceptacion"
+     }
+    }
+   },
+   "then": {
+    "properties": {
+     "cuerpo": {
+      "properties": {
+       "esquema": {
+        "const": "atlas.aceptacion_oferta/1"
+       }
+      },
+      "required": [
+       "esquema"
+      ]
+     }
+    }
+   }
+  },
+  {
+   "if": {
+    "properties": {
+     "tipo": {
+      "const": "mgno_op"
+     }
+    }
+   },
+   "then": {
+    "properties": {
+     "cuerpo": {
+      "properties": {
+       "esquema": {
+        "const": "atlas.mgno_operacion/1"
+       }
+      },
+      "required": [
+       "esquema"
+      ]
+     }
+    }
+   }
+  },
+  {
+   "if": {
+    "properties": {
+     "seq": {
+      "const": 1
+     }
+    }
+   },
+   "then": {
+    "properties": {
+     "prev": {
+      "const": "genesis"
+     }
+    }
+   },
+   "else": {
+    "properties": {
+     "prev": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+     }
+    }
+   }
+  }
+ ]
+}

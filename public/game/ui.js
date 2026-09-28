@@ -247,6 +247,17 @@
       return { b: b, c: co };
     });
     s.appendChild(R.caja);
+    /* LAS ODDS, A LA VISTA (addendum de la cria: sin odds ocultas): las mismas cifras enteras que usa la
+       tirada (`gacha.odds`), por mil y escritas como porcentaje exacto con dos decimales. */
+    var od = el('ul', 'atlas-odds');
+    Object.keys(G.TCS).forEach(function (tc) {
+      var o = G.odds(tc);
+      od.appendChild(el('li', null, T(tc) + ' · ' + G.RAREZAS.map(function (r, i) {
+        return T('rar_' + r) + ' ' + Math.floor(o[i] / 10) + '.' + (o[i] % 10) + '0%';
+      }).join(' · ')));
+    });
+    s.appendChild(el('h5', null, T('odds_h')));
+    s.appendChild(od);
     R.estado = el('p', 'atlas-vivo'); R.estado.setAttribute('role', 'status'); s.appendChild(R.estado);
     s.appendChild(el('h5', null, T('nido_h')));
     R.nido = el('ul', 'atlas-nido'); s.appendChild(R.nido);

@@ -1,0 +1,176 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "preceptoros:atlas.mgno_operacion/1",
+ "title": "Operacion sobre el narragrafo",
+ "description": "nodo, arco, voto o poda; el estado es funcion del CONJUNTO de operaciones (la poda gana, un voto por par, el arco se queda con su peso mayor). Vive fuera de `public/`: es el contrato, no se sirve. Lo valida en JS `public/game/narragrafo.js` con la misma forma.",
+ "$defs": {
+  "nodo": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "esquema",
+    "texto",
+    "etiquetas",
+    "afinidad"
+   ],
+   "properties": {
+    "esquema": {
+     "const": "atlas.mgno_nodo/1"
+    },
+    "texto": {
+     "type": "string",
+     "minLength": 1,
+     "maxLength": 280,
+     "not": {
+      "pattern": "[<>`]|https?:|javascript:|data:|\\{\\{|\\}\\}|=>|\\bfunction\\b|(^|[^0-9])/[a-z]|@|\\b[0-9]{1,3}(\\.[0-9]{1,3}){3}\\b"
+     }
+    },
+    "etiquetas": {
+     "type": "array",
+     "maxItems": 6,
+     "uniqueItems": true,
+     "items": {
+      "type": "string",
+      "pattern": "^[a-z_]{1,24}$"
+     }
+    },
+    "afinidad": {
+     "type": "array",
+     "minItems": 8,
+     "maxItems": 8,
+     "items": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 255
+     }
+    }
+   }
+  }
+ },
+ "oneOf": [
+  {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "esquema",
+    "op",
+    "nodo"
+   ],
+   "properties": {
+    "esquema": {
+     "const": "atlas.mgno_operacion/1"
+    },
+    "op": {
+     "const": "nodo"
+    },
+    "nodo": {
+     "$ref": "#/$defs/nodo"
+    }
+   }
+  },
+  {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "esquema",
+    "op",
+    "arco"
+   ],
+   "properties": {
+    "esquema": {
+     "const": "atlas.mgno_operacion/1"
+    },
+    "op": {
+     "const": "arco"
+    },
+    "arco": {
+     "type": "object",
+     "additionalProperties": false,
+     "required": [
+      "de",
+      "a",
+      "peso"
+     ],
+     "properties": {
+      "de": {
+       "type": "string",
+       "pattern": "^[0-9a-f]{64}$"
+      },
+      "a": {
+       "type": "string",
+       "pattern": "^[0-9a-f]{64}$"
+      },
+      "peso": {
+       "type": "integer",
+       "minimum": 1,
+       "maximum": 100
+      }
+     }
+    }
+   }
+  },
+  {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "esquema",
+    "op",
+    "voto"
+   ],
+   "properties": {
+    "esquema": {
+     "const": "atlas.mgno_operacion/1"
+    },
+    "op": {
+     "const": "voto"
+    },
+    "voto": {
+     "type": "object",
+     "additionalProperties": false,
+     "required": [
+      "de",
+      "a",
+      "delta"
+     ],
+     "properties": {
+      "de": {
+       "type": "string",
+       "pattern": "^[0-9a-f]{64}$"
+      },
+      "a": {
+       "type": "string",
+       "pattern": "^[0-9a-f]{64}$"
+      },
+      "delta": {
+       "enum": [
+        -1,
+        1
+       ]
+      }
+     }
+    }
+   }
+  },
+  {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "esquema",
+    "op",
+    "poda"
+   ],
+   "properties": {
+    "esquema": {
+     "const": "atlas.mgno_operacion/1"
+    },
+    "op": {
+     "const": "poda"
+    },
+    "poda": {
+     "type": "string",
+     "pattern": "^[0-9a-f]{64}$"
+    }
+   }
+  }
+ ]
+}
