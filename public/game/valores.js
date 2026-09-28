@@ -53,8 +53,17 @@
       rondas: 40, tropas_max: 6, armadura_div: 2,
       ataque: { base: 3, aura: 2, inercia: 1, profundidad: 1 },
       esquiva: { por_sigilo: 12, tope: 300 },
-      rating_inicial: 1000, k: 32, k_provisional: 48, provisional_hasta: 10
-    }
+      rating_inicial: 1000, k: 32, k_provisional: 48, provisional_hasta: 10,
+      /* Regla de ABANDONO (firmada por el Soberano, 2026-09-28): quien se compromete y no revela en
+         estos ciclos de juego de quien espera, pierde el duelo por abandono y queda como deuda. */
+      abandono_ciclos: 900
+    },
+    /* Los LUGARES NPC de la Arena: patrullas que salen de la semilla de su lugar, iguales en todos los
+       aparatos, para probar el combate sin red. Mas hondo, mas duro. PROVISIONAL. */
+    patrullas: [
+      { id: 'arrecife', tc: 'tc1', n: 2 }, { id: 'algas', tc: 'tc1', n: 3 }, { id: 'ruinas', tc: 'tc2', n: 3 },
+      { id: 'limo', tc: 'tc3', n: 3 }, { id: 'abismo', tc: 'tc4', n: 4 }, { id: 'nucleo', tc: 'tc4', n: 6 }
+    ]
   };
 
   if (typeof module === 'object' && module.exports) { module.exports = VALORES; }
