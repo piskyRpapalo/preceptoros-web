@@ -17,7 +17,8 @@ function caso(nombre, fn) {
   catch (e) { casos.push({ caso: nombre, ok: false, detalle: 'excepcion: ' + e.message }); }
 }
 const igual = (a, b) => a === b || `${JSON.stringify(a)} != ${JSON.stringify(b)}`;
-const todas = (...xs) => xs.find((x) => x !== true) ?? true;
+// Estricta: un fallo que vale `undefined` o `null` es un fallo (la version con `?? true` los daba por buenos).
+const todas = (...xs) => { const i = xs.findIndex((x) => x !== true); return i < 0 ? true : 'fallo: ' + String(xs[i]); };
 const copia = (x) => JSON.parse(JSON.stringify(x));
 const semilla = (i) => createHash('sha256').update('cria:' + i).digest('hex');
 const BASE = C.desdeValores();

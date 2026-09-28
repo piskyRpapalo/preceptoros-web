@@ -22,7 +22,8 @@ async function caso(nombre, fn) {
 }
 const igual = (a, b) => a === b || `${JSON.stringify(a)} != ${JSON.stringify(b)}`;
 const lanza = (fn) => { try { fn(); return 'no lanzo'; } catch (e) { return true; } };
-const todas = (...xs) => xs.find((x) => x !== true) ?? true;
+// Estricta: un fallo que vale `undefined` o `null` es un fallo (la version con `?? true` los daba por buenos).
+const todas = (...xs) => { const i = xs.findIndex((x) => x !== true); return i < 0 ? true : 'fallo: ' + String(xs[i]); };
 const copia = (x) => JSON.parse(JSON.stringify(x));
 
 const ANA = identidad('ana'), BEA = identidad('bea'), CRIS = identidad('cris');

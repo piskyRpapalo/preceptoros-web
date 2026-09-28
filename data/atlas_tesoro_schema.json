@@ -1,0 +1,49 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "preceptoros:atlas.tesoro/1",
+ "title": "La bolsa de una temporada y lo que se ha sacado de ella",
+ "description": "Lo que se PAGA (enmienda del Soberano, 2026-09-29). «El sistema acredita; la bolsa la abre una firma humana, con testigo que no es el beneficiario.» La bolsa es fija y en recursos del Bosque (los cinco del motor: no hay moneda nueva); lo reclamado no pasa nunca de lo total, recurso a recurso; cada reclamo enlaza con el anterior por hash; el testigo no es el Soberano ni cobra. Firman el Soberano y el testigo sobre el JSON canonico sin sus dos firmas. Sin decimales y sin reloj: el tiempo es el ciclo. Lo verifica `atlas/verifica_tesoro.mjs`. Abrir una bolsa de verdad espera las iniciales de §7.4 y §7.5 de la nota; esto es el contrato. Vive fuera de `public/`.",
+ "type": "object",
+ "additionalProperties": false,
+ "required": ["esquema", "temporada", "bolsa_total", "bolsa_reclamada", "reclamos", "clave_soberano", "clave_testigo", "firma_soberano", "firma_testigo"],
+ "properties": {
+  "esquema": {"const": "atlas.tesoro/1"},
+  "temporada": {"type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}\\.\\d+$"},
+  "bolsa_total": {"$ref": "#/$defs/cesta"},
+  "bolsa_reclamada": {"$ref": "#/$defs/cesta"},
+  "clave_soberano": {"$ref": "#/$defs/hex64"},
+  "clave_testigo": {"$ref": "#/$defs/hex64"},
+  "firma_soberano": {"$ref": "#/$defs/firma"},
+  "firma_testigo": {"$ref": "#/$defs/firma"},
+  "reclamos": {
+   "type": "array",
+   "maxItems": 10000,
+   "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["clave_hash", "meritos_presentados", "bolsa_entregada", "ciclo", "prev_hash"],
+    "properties": {
+     "clave_hash": {"type": "string", "pattern": "^[0-9a-f]{16}$"},
+     "meritos_presentados": {"type": "integer", "minimum": 1},
+     "bolsa_entregada": {"$ref": "#/$defs/cesta"},
+     "ciclo": {"type": "integer", "minimum": 0},
+     "prev_hash": {"type": "string", "pattern": "^(genesis|[0-9a-f]{64})$"}
+    }
+   }
+  }
+ },
+ "$defs": {
+  "hex64": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+  "firma": {"type": "string", "pattern": "^ed25519:[0-9a-f]{128}$"},
+  "cesta": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": ["luz", "biomasa", "cobre", "flujo", "oxigeno"],
+   "properties": {
+    "luz": {"type": "integer", "minimum": 0}, "biomasa": {"type": "integer", "minimum": 0},
+    "cobre": {"type": "integer", "minimum": 0}, "flujo": {"type": "integer", "minimum": 0},
+    "oxigeno": {"type": "integer", "minimum": 0}
+   }
+  }
+ }
+}

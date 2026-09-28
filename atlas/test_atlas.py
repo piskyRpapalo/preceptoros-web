@@ -1059,6 +1059,66 @@ class RutasMedidas(unittest.TestCase):
                     r = ids.get(a.get("ruta_medida"))
                     self.assertTrue(r and r["acuse_verificado"], "anuncio de recompensa sin camino de pago medido")
 
+class MeritoTesoro(unittest.TestCase):
+    """Enmienda del Soberano (2026-09-29): el merito que ya se cuenta se puede gastar. `atlas.merito/1` (lo que
+    se gana: paquetes firmados y aceptados, de origen humano, sin transferir) y `atlas.tesoro/1` (lo que se
+    paga: una bolsa de recursos que abre una firma humana con testigo que no cobra). El verificador es de
+    laboratorio (`atlas/verifica_tesoro.mjs`); abrir una bolsa de verdad espera §7.4 y §7.5."""
+
+    def test_los_casos_del_merito_y_del_tesoro(self):
+        r = subprocess.run(["node", str(RAIZ / "tesoro_casos.mjs")], capture_output=True, text=True, timeout=120)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        casos = json.loads(r.stdout)
+        self.assertGreaterEqual(len(casos), 13)
+        for c in casos:
+            with self.subTest(caso=c["caso"]):
+                self.assertTrue(c["ok"], c["detalle"])
+
+    def test_contratos_del_merito_y_del_tesoro(self):
+        try:
+            import jsonschema
+        except ImportError:
+            self.skipTest("NO_DATA · jsonschema no instalado")
+        r = subprocess.run(["node", str(RAIZ / "tesoro_casos.mjs"), "--muestras"], capture_output=True, text=True, timeout=120)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        m = json.loads(r.stdout)
+        def con(b, **c):
+            d = json.loads(json.dumps(b)); d.update(c); return d
+        def paquete(b, **c):
+            d = json.loads(json.dumps(b)); d["por_paquete"][0].update(c); return d
+        def reclamo(b, **c):
+            d = json.loads(json.dumps(b)); d["reclamos"][0].update(c); return d
+        casos = {
+            "atlas_merito_schema.json": (m["merito"], [
+                paquete(m["merito"], procedencia="piloto_base"), con(m["merito"], meritos=1.5), con(m["merito"], para="otra_clave"),
+                con(m["merito"], clave_hash="ana"), paquete(m["merito"], hash_ficha=7), con(m["merito"], medido_el="ayer")]),
+            "atlas_tesoro_schema.json": (m["tesoro"], [
+                con(m["tesoro"], bolsa_total={"cobre": 100}), con(m["tesoro"], firma_testigo="x"), con(m["tesoro"], moneda="nueva"),
+                reclamo(m["tesoro"], bolsa_entregada={"cobre": 1.1, "luz": 0, "biomasa": 0, "flujo": 0, "oxigeno": 0}),
+                reclamo(m["tesoro"], caduca_el="2026-12-31"), reclamo(m["tesoro"], meritos_presentados=0)]),
+        }
+        for nombre, (bueno, malos) in casos.items():
+            v = jsonschema.Draft202012Validator(json.loads((DATOS / nombre).read_text(encoding="utf-8")))
+            with self.subTest(contrato=nombre):
+                self.assertEqual([e.message for e in v.iter_errors(bueno)], [])
+                self.assertEqual(len(malos), 6)
+            for i, malo in enumerate(malos):
+                with self.subTest(contrato=nombre, violacion=i):
+                    self.assertFalse(v.is_valid(malo))
+
+    def test_nadie_es_vecino_por_geolocalizacion(self):
+        """§10.7: «cerca» es el mismo sector, la misma temporada y saltos en el grafo firmado; nunca tu direccion."""
+        for f in sorted(list(ASSETS.glob("*.js")) + list((PUBLICO / "game").glob("*.js"))):
+            with self.subTest(fichero=f.name):
+                self.assertNotIn("geolocation", sin_comentarios(f.read_text(encoding="utf-8")))
+
+    def test_el_merito_no_entra_en_el_precache(self):
+        """§10.8: un balance es una MEDIDA, y una medida no se cachea (regla del arnes)."""
+        listas = (PUBLICO / "sw.js").read_text(encoding="utf-8") + (PUBLICO / "sw-listas.js").read_text(encoding="utf-8")
+        for palabra in ("merito", "tesoro", "rutas-medidas"):
+            with self.subTest(palabra=palabra):
+                self.assertNotIn(palabra, sin_comentarios(listas))
+
 class Opiniones(unittest.TestCase):
     """Enviar las opiniones firmadas (Soberano, 2026-09-28: «quiero enviar ya los feedback mios y de
     otros users»): lo envia la PERSONA con el menu de compartir del sistema, con un clic propio y
