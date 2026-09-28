@@ -2,7 +2,7 @@
  "$schema": "https://json-schema.org/draft/2020-12/schema",
  "$id": "preceptoros:atlas.oferta/1",
  "title": "Oferta entre personas (A2A preparado)",
- "description": "Solo recursos del motor, enteros; caduca por ciclo de juego, nunca por reloj; un borrador de agente no se liquida sin firma humana. Sin dinero real, sin cripto, sin moneda nueva. Vive fuera de `public/`: es el contrato, no se sirve. Lo valida en JS `public/game/mercado.js` con la misma forma.",
+ "description": "Solo recursos del motor, enteros; caduca por ciclo de juego, nunca por reloj; un borrador de agente no se liquida sin firma humana. Sin dinero real y sin moneda nueva: solo recursos del juego. Vive fuera de `public/`: es el contrato, no se sirve. Lo valida en JS `public/game/mercado.js` con la misma forma.",
  "type": "object",
  "additionalProperties": false,
  "required": [

@@ -102,8 +102,8 @@
   },
   {
    "regla": "R5",
-   "persona": "¿Puedo minar algo con mi máquina en el Bosque?",
-   "preceptor": "No. Aquí no se queman ciclos para demostrar que se tienen. El trabajo que cuenta es el útil: medir, firmar y que otro lo pueda repetir."
+   "persona": "¿El Bosque usa mi máquina para algo que no sea el juego?",
+   "preceptor": "No. Aquí no se queman ciclos para demostrar que se tienen: tu máquina corre el juego y lo que tú firmas, nada más. El trabajo que cuenta es el útil: medir, firmar y que otro lo pueda repetir."
   },
   {
    "regla": "R6",

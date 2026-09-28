@@ -88,7 +88,7 @@
     var pie = document.createElement('p');
     pie.className = 'tenue';
     var a = document.createElement('a');
-    a.href = '/assets/ledger.jsonl'; a.textContent = 'ledger.jsonl';
+    a.href = '/assets/libro-pruebas.jsonl'; a.textContent = 'libro-pruebas.jsonl';
     pie.appendChild(document.createTextNode(T.bmFuente + ' '));
     pie.appendChild(a);
     pie.appendChild(document.createTextNode(' · ' + T.bmLlevatelo));
@@ -99,20 +99,20 @@
   // seguir sirviendo — esta tabla es una vista suya, no su casa.
   /* LA TRADUCCION VA ENCIMA DEL REGISTRO FIRMADO, nunca dentro.
 
-     `ledger.jsonl` es el libro: cada linea lleva su sha256 y su firma Ed25519,
+     `libro-pruebas.jsonl` es el libro: cada linea lleva su sha256 y su firma Ed25519,
      y esta hecho para separarse de esta web y seguir sirviendo. Meterle ocho
      lenguas dentro cambiaria los bytes que alguien firmo, o sea que romperia
      justo lo que hace que la tabla valga algo.
 
-     Asi que `ledger-<idioma>.json` trae el veredicto, el uso y la cabecera, y
+     Asi que `libro-pruebas-<idioma>.json` trae el veredicto, el uso y la cabecera, y
      se SUPERPONE al pintar. Los HECHOS --modelo, sha256, tok/s, hardware,
      firma-- no se tocan jamas: un nombre de modelo traducido deja de nombrar
      nada. Si el fichero de la lengua falta, se ve el castellano de origen. */
   var lang = (document.documentElement.lang || 'es').slice(0, 2);
   Promise.all([
-    fetch('/assets/ledger.jsonl').then(function (r) { return r.text(); }),
+    fetch('/assets/libro-pruebas.jsonl').then(function (r) { return r.text(); }),
     lang === 'es' ? Promise.resolve(null)
-      : fetch('/ledger-' + lang + '.json').then(function (r) {
+      : fetch('/libro-pruebas-' + lang + '.json').then(function (r) {
           return r.ok ? r.json() : null;
         }).catch(function () { return null; })
   ])
@@ -131,7 +131,7 @@
           d.filas.push(o);
         }
       });
-      d.fuente = 'ledger.jsonl';
+      d.fuente = 'libro-pruebas.jsonl';
       (window.fluido || function (f) { f(); })(function () { pinta(d); });
     })
     .catch(function (e) {

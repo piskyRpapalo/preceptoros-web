@@ -5525,7 +5525,7 @@ class LoQueNoSeVeConElGateVerde(unittest.TestCase):
     HUECOS_DECLARADOS = {
         # familia: lenguas que faltan, con el motivo. Se vacia traduciendo.
         "cerebros": {"fr", "pt", "it", "de", "ru", "el", "ar"},  # pendiente de traducir
-        "ledger": {"es"},                                          # es usa ledger.json base
+        "libro-pruebas": {"es"},                                   # es usa el .jsonl base
         # theGame habla solo ingles (LENGUAS de thegame.js, 2026-09-28): opinar carga siempre `en`.
         "atlas-opina": {"es", "fr", "pt", "it", "de", "ru", "el", "ar"},
         # La Arena (2026-09-28), con el mismo criterio: el juego habla solo ingles y sus textos se

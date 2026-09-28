@@ -2,7 +2,7 @@
  "$schema": "https://json-schema.org/draft/2020-12/schema",
  "$id": "preceptoros:atlas.sobre/1",
  "title": "Sobre firmado del multijugador de theGame",
- "description": "Lo unico que viaja entre dos aparatos: firmado con Ed25519 sobre su JSON canonico sin el campo `firma` (`canon.js`). `seq` monotono por autor y sesion, `prev` = huella del anterior (o `genesis` en el primero): dos sobres con el mismo `seq` y distinto cuerpo son una prueba de fraude. Sin hora de reloj, sin PII: clave publica y pseudonimo. Vive fuera de `public/`: es el contrato, no se sirve. Lo valida en JS `public/game/sobres.js` con la misma forma.",
+ "description": "Lo unico que viaja entre dos aparatos: firmado con Ed25519 sobre su JSON canonico sin el campo `firma` (`canon.js`). `seq` monotono por autor y sesion, `prev` = huella del anterior (o `genesis` en el primero): dos sobres con el mismo `seq` y distinto cuerpo son una prueba de trampa (dos firmas del mismo autor que se contradicen). Sin hora de reloj, sin PII: clave publica y pseudonimo. Vive fuera de `public/`: es el contrato, no se sirve. Lo valida en JS `public/game/sobres.js` con la misma forma.",
  "type": "object",
  "additionalProperties": false,
  "required": [

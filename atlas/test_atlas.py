@@ -843,38 +843,99 @@ class Juez(unittest.TestCase):
                                     .read_text(encoding="utf-8"))["ui"]["juez_humano"], f"{l} lleva el texto en castellano")
 
 
-# Regla de oro del Soberano (2026-09-27): la web publica es educacion, comunidad y soberania
-# tecnica. Lo financiero/DePIN vive en el rack privado. En `public/`, `atlas/`, `data/` y
-# `partidas/` no se nombra NEAR, mainnet, testnet, el Alquimista ni cuentas o unidades de cadena.
-# `near` en minuscula es ingles corriente y no se mira; `NEAR` en mayusculas y las cuentas si.
-CRIPTO = re.compile(r"\bNEAR\b|near_tx|hexelion\.near|\b[a-z0-9_-]+\.near\b|\byocto|(?i:mainnet|testnet|alquimista)")
-TEXTO = (".html", ".js", ".mjs", ".json", ".css", ".md", ".py", ".txt", ".svg", ".xml", ".webmanifest")
+# JUEGO JUSTO, SIN JERGA DE MONEDAS (Soberano, 2026-09-27 y 2026-09-28). Usamos CRIPTOGRAFIA para que
+# el juego sea justo --firmas Ed25519, huellas SHA-256, commit-reveal--: con ella la niebla del mapa y
+# las probabilidades de cada combate son las mismas para quien juega con una IA pequena y para quien
+# lleva a Claude y una IA local de 24 GB, y lo que el rack recoge vale como fuente de un benchmark.
+# NADA en el repositorio puede sonar a monedas: no tiene nada que ver con el juego y asusta a la gente.
+# La lista vetada va en base64 para que el propio repositorio no nombre lo que prohibe. Cada linea es
+# «patron<TAB>ejemplo»; `cs:` delante = distingue mayusculas. Verla: `python3 atlas/test_atlas.py --vetadas`.
+VETADAS_B64 = (
+    "XGJibG9jayA/Y2hhaW5zP1xiCWxhIGJsb2NrY2hhaW4gZGVsIGp1ZWdvClxiY2FkZW5hcz8gZGUgYmxvcXVlcz9cYgl1bmEg"
+    "Y2FkZW5hIGRlIGJsb3F1ZXMKXGIob258b2ZmKS0/Y2hhaW5cYgl0b2RvIHF1ZWRhIG9uLWNoYWluClxiY3JpcHRvKG1vbmVk"
+    "YXM/fGRpdmlzYXM/fGFjdGl2b3M/KT9cYglwcmVtaW9zIGVuIGNyaXB0bwpcYmNyeXB0by0/Y3VycmVuYyh5fGllcylcYglw"
+    "YXkgd2l0aCBjcnlwdG9jdXJyZW5jeQooPzwhWy5cd10pY3J5cHRvXGIoPyFbLiciYFx3XSkJZWFybiBjcnlwdG8gd2hpbGUg"
+    "eW91IHBsYXkKXGJ3YWxsZXRzP1xiCWNvbm5lY3QgeW91ciB3YWxsZXQKXGJiaWxsZXRlcmFzP1xiCWNvbmVjdGEgdHUgYmls"
+    "bGV0ZXJhClxibmZ0cz9cYgljYWRhIHRyb3BhIGVzIHVuIE5GVApcYndlYjNcYgl1biBqdWVnbyB3ZWIzClxiZGVmaVxiCXJl"
+    "bmRpbWllbnRvcyBEZUZpClxiYWlyZHJvcHM/XGIJaGFicmEgYWlyZHJvcApcYnN0YWsoZXxlc3xlZHxpbmcpXGIJc3Rha2lu"
+    "ZyBkZSB0cm9wYXMKXGJ0b2tlbm9taWNzXGIJbGEgdG9rZW5vbWljcyBkZWwgYm9zcXVlClxiKHN0YWJsZXxhbHQpY29pbnM/"
+    "XGIJcGFnYXIgZW4gc3RhYmxlY29pbnMKXGJiaXRjb2lucz9cYgl2YWxlIHVuIGJpdGNvaW4KXGJldGhlcmV1bVxiCWRlc3Bs"
+    "ZWdhZG8gZW4gRXRoZXJldW0KXGJzb2xhbmFcYgljb3JyZSBzb2JyZSBTb2xhbmEKXGJzYXRvc2hpcz9cYgljaWVuIHNhdG9z"
+    "aGlzClxiaGFsdmluZ1xiCWFudGVzIGRlbCBoYWx2aW5nClxiaGFzaCA/cmF0ZVxiCXN1YmUgdHUgaGFzaHJhdGUKXGIobWFp"
+    "bnx0ZXN0fGRldiluZXRcYgl2YWxvcmVzIGRlIFRlc3RuZXQKXGJ5b2N0bwkxZTI0IHlvY3RvTkVBUgpcYmFscXVpbWlzdGFc"
+    "YglFbCBBbHF1aW1pc3RhIGRpY2UKXGJzbWFydCBjb250cmFjdHM/XGIJYSBzbWFydCBjb250cmFjdCBzZXR0bGVzIGl0Clxi"
+    "Y29udHJhdG9zPyBpbnRlbGlnZW50ZXM/XGIJbG8gbGlxdWlkYSB1biBjb250cmF0byBpbnRlbGlnZW50ZQpcYm1pbnQoZWR8"
+    "aW5nfHMpP1xiCW1pbnQgeW91ciB0cm9vcApcYm1pbmluZ1xiCW1pbmluZyByZXdhcmRzClxibWluYXJcYglwdWVkZXMgbWlu"
+    "YXIgZW4gZWwgYm9zcXVlClxibWluYWRvXGIJZWwgbWluYWRvIGRlIGx1egpcYmxlZGdlcnM/XGIJZWwgbGVkZ2VyIGZpcm1h"
+    "ZG8KXGJwcnVlYmEgZGUgZnJhdWRlXGIJcXVlZGEgY29tbyBwcnVlYmEgZGUgZnJhdWRlClxiZnJhdWQgcHJvb2ZzP1xiCWEg"
+    "ZnJhdWQgcHJvb2YKXGJkb2JsZSBnYXN0b1xiCXVuIGRvYmxlIGdhc3RvClxiZG91YmxlWy0gXXNwZW5kXHcqCW5vIGRvdWJs"
+    "ZS1zcGVuZGluZwpcYmdhcyBmZWVzP1xiCXNpbiBnYXMgZmVlcwpcYnByb29mWy0gXW9mWy0gXSh3b3JrfHN0YWtlKVxiCXBy"
+    "b29mIG9mIHdvcmsKXGJwcnVlYmEgZGUgKHRyYWJham98cGFydGljaXBhY2lbb8OzXW4pXGIJcHJ1ZWJhIGRlIHBhcnRpY2lw"
+    "YWNpw7NuClxibW9uZWRhcz8gKGRpZ2l0YWx8dmlydHVhbCkoZXMpP1xiCXVuYSBtb25lZGEgZGlnaXRhbCBwcm9waWEKXGJk"
+    "ZXBpblxiCWxvIERlUElOIHZpdmUgYXBhcnRlCmNzOlxiTkVBUlxiCXNhbGRvIGVuIE5FQVIKY3M6bmVhcl90eAlpbXBvcnQg"
+    "bmVhcl90eApjczpcYlthLXowLTlfLV0rXC5uZWFyXGIJaGV4ZWxpb24ubmVhcgo="
+)
+TEXTO = (".html", ".js", ".mjs", ".json", ".jsonl", ".css", ".md", ".py", ".txt", ".svg", ".xml",
+         ".webmanifest", ".yml", ".yaml", ".sh", ".toml")
 
 
-def menciones_cripto(texto):
-    return [m.group(0) for m in CRIPTO.finditer(texto)]
+def vetadas():
+    import base64
+    filas = []
+    for linea in base64.b64decode("".join(VETADAS_B64)).decode("utf-8").splitlines():
+        patron, ejemplo = linea.split("\t")
+        cs = patron.startswith("cs:")
+        filas.append((re.compile(patron[3:] if cs else patron, 0 if cs else re.I), ejemplo))
+    return filas
 
 
-class SinCripto(unittest.TestCase):
-    def test_la_web_publica_no_nombra_cripto(self):
+VETO = vetadas()
+
+
+def menciones_vetadas(texto):
+    return [m.group(0) for r, _ in VETO for m in r.finditer(texto)]
+
+
+def ficheros_del_repo(raiz):
+    """Lo que git sigue (el repositorio entero); sin git, todo menos lo que git ignora siempre."""
+    try:
+        salida = subprocess.run(["git", "-C", str(raiz), "ls-files", "-z"], capture_output=True, check=True).stdout
+        return [raiz / x for x in salida.decode("utf-8").split("\0") if x]
+    except (OSError, subprocess.CalledProcessError):
+        return [f for f in raiz.rglob("*") if ".git" not in f.parts and "__pycache__" not in f.parts]
+
+
+class JuegoJusto(unittest.TestCase):
+    def test_nada_suena_a_monedas(self):
         raiz = RAIZ.parent
         vistos, hallados = 0, []
-        for carpeta in ("public", "atlas", "data", "partidas"):
-            for f in sorted((raiz / carpeta).rglob("*")):
-                if not f.is_file() or f.suffix not in TEXTO or f == Path(__file__).resolve():
-                    continue
-                vistos += 1
-                for n, linea in enumerate(f.read_text(encoding="utf-8", errors="replace").splitlines(), 1):
-                    hallados += [f"{f.relative_to(raiz)}:{n}: {m}" for m in menciones_cripto(linea)]
-        self.assertGreater(vistos, 100, "la guarda no ha mirado casi nada: falla cerrado")
+        for f in sorted(ficheros_del_repo(raiz)):
+            rel = str(f.relative_to(raiz))
+            hallados += [f"{rel} (nombre): {m}" for m in menciones_vetadas(rel)]
+            if not f.is_file() or f.suffix not in TEXTO:
+                continue
+            vistos += 1
+            for n, linea in enumerate(f.read_text(encoding="utf-8", errors="replace").splitlines(), 1):
+                hallados += [f"{rel}:{n}: {m}" for m in menciones_vetadas(linea)]
+        self.assertGreater(vistos, 300, "la guarda no ha mirado casi nada: falla cerrado")
         self.assertEqual(hallados, [], "\n".join(hallados[:20]))
 
     def test_la_guarda_caza_lo_que_debe(self):
-        for sembrado in ("saldo en NEAR", "hexelion.near", "red: mainnet", "valores de Testnet",
-                         "El Alquimista dice", "1e24 yoctoNEAR", "import near_tx"):
-            with self.subTest(sembrado=sembrado):
-                self.assertTrue(menciones_cripto(sembrado))
-        self.assertEqual(menciones_cripto("the cave is near the core"), [])
+        self.assertGreater(len(VETO), 30)
+        for r, ejemplo in VETO:
+            with self.subTest(patron=r.pattern):
+                self.assertTrue(r.search(ejemplo), ejemplo)
+
+    def test_la_criptografia_si_se_nombra(self):
+        """Lo que hace justo el juego no se veta: la API del navegador, node, las firmas y el ingles corriente."""
+        for limpio in ("the cave is near the core", "criptografía para que el juego sea justo",
+                       "window.crypto.getRandomValues(b)", "var s = raiz.crypto && raiz.crypto.subtle;",
+                       "import { createHash } from 'node:crypto';", "WebCrypto en la pestana, `crypto` en node",
+                       "tokens per second", "depuis le coin de l'en-tête", "you swap signed packages",
+                       "Dredging", "el libro de pruebas firmado", "commit-reveal y firma Ed25519"):
+            with self.subTest(limpio=limpio):
+                self.assertEqual(menciones_vetadas(limpio), [])
+
 
 class Opiniones(unittest.TestCase):
     """Enviar las opiniones firmadas (Soberano, 2026-09-28: «quiero enviar ya los feedback mios y de
@@ -1156,7 +1217,7 @@ class Multijugador(unittest.TestCase):
                 con(m["resultado"], en_juego={"cobre": 1, "luz": 0, "eur": 5})]),
             "atlas_oferta_schema.json": (m["oferta"], [
                 con(m["oferta"], da={"eur": 5}), con(m["oferta"], da={"cobre": 1.5}), con(m["oferta"], da={}),
-                con(m["oferta"], expira_ciclo=-1), con(m["oferta"], procedencia="bot"), con(m["oferta"], wallet="x")]),
+                con(m["oferta"], expira_ciclo=-1), con(m["oferta"], procedencia="bot"), con(m["oferta"], saldo_real="x")]),
             "atlas_contraoferta_schema.json": (contra, [
                 con(contra, oferta="x"), sin(contra, "oferta"), con(contra, da={"usd": 1}), con(contra, nonce="12"),
                 con(contra, precio_real=3), con(contra, procedencia="agente")]),

@@ -10,7 +10,7 @@
    - `armonicos`: terminos por rareza, amplitud y fase maximas, simetria por rareza.
 
    PUERTAS DURAS (`puertas`): lo que tumba un paquete aunque todo lo demas mejore. Invocar o adoptar
-   sin persona, reloj de pared, decimales con autoridad, odds sin declarar, dinero real o cripto,
+   sin persona, reloj de pared, decimales con autoridad, odds sin declarar, dinero real,
    tiradas de pago, FOMO, rachas que se pierden, cuentas atras enganosas, codigo o contenido remoto,
    costes del motor. Se buscan por NOMBRE de campo y por FORMA de valor, en todo el arbol.
 
@@ -30,7 +30,7 @@
   /* Nombres que ningun paquete puede llevar (addendum §5 y §9), y formas de valor prohibidas. */
   var NOMBRE_PROHIBIDO = new RegExp('invoca|invocation|human_only|adopt|auto_|reloj|clock|timer|timestamp|fecha|date|' +
     'segundos|seconds|_ms$|wall|countdown|cuenta_atras|streak|racha|fomo|reroll|pago|paid|payment|precio_real|dinero|money|' +
-    'eur|usd|cripto|crypto|wallet|token|url|http|host|ip$|ruta_privada|private_path|codigo|code|script|payload|coste|cost|' +
+    'eur|usd|url|http|host|ip$|ruta_privada|private_path|codigo|code|script|payload|coste|cost|' +
     'probabilidad_float|float|motor|firma|signature|red$|network|precache|indexeddb|persist', 'i');
   var VALOR_PROHIBIDO = /https?:|javascript:|<script|=>|\bfunction\b|\{\{/i;
 

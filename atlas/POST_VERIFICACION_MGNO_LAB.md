@@ -71,8 +71,8 @@ estado: PENDIENTE DE FIRMA para lo marcado REQUIERE_FIRMA · la rebanada pura mu
 - **Laboratorio local** (cuando se firme): se confía en él solo porque es de la persona. La web no supone que sea honesto: solo le entrega el sobre firmado, nunca más. LAN = exposición a la red local → firma explícita.
 - **Privacidad:** los sobres llevan clave pública y pseudónimo, nunca PII ni hora de reloj (solo ciclos). Sin puntero, tecleo, latencia ni huella de navegador. Las preferencias `P_i` son declaradas o firmadas; lo heurístico, EMULADO y local.
 - **Reproducibilidad:** misma ley, semilla, instantánea y versión → mismos bytes canónicos. Sin `Math.random`, `Date` ni floats con autoridad.
-- **Frontera A2A:** sin dinero real, cripto ni pagos automáticos. Un borrador de agente no es final hasta que el carbono firma. Ofertas con caducidad en ciclos.
-- **Fraude P2P:** doble gasto = mismo `seq` con otro cuerpo, que queda como prueba de fraude verificable por cualquiera. Réplica de otra sesión → rechazada por `sesion`. Sobre alterado → la firma no verifica.
+- **Frontera A2A:** sin dinero real ni pagos automáticos. Un borrador de agente no es final hasta que el carbono firma. Ofertas con caducidad en ciclos.
+- **Trampa P2P:** dos jugadas firmadas con el mismo `seq` y otro cuerpo, que quedan como prueba de trampa verificable por cualquiera. Réplica de otra sesión → rechazada por `sesion`. Sobre alterado → la firma no verifica.
 - **Inyección narrativa:** los nodos son datos. Texto de 280 como máximo, sin `<`, `>`, URL, `javascript:` ni plantillas. Nunca se evalúan ni se pasan a un modelo en la web.
 - **Commit-reveal:** nadie elige la semilla a solas. El último en revelar puede abortar; eso queda como deuda visible, no como resultado.
 
@@ -100,7 +100,7 @@ estado: PENDIENTE DE FIRMA para lo marcado REQUIERE_FIRMA · la rebanada pura mu
 - **Casos en node** (`atlas/mp_casos.mjs`): **48/48**. Cubren:
   - canónico, huella (el SHA-256 puro coincide con el de node) y PRNG (el primer valor queda fijado y coincide con el de mulberry32 de referencia);
   - lotería con frecuencias y odds en puntos básicos;
-  - forma, firma y libro del sobre: duplicado, hueco, `prev` roto, réplica, par ajeno, topes y fork con prueba de fraude;
+  - forma, firma y libro del sobre: duplicado, hueco, `prev` roto, réplica, par ajeno, topes y la prueba de trampa (mismo `seq`, otro cuerpo);
   - commit-reveal: orden de llegada, revelación que falta, revelación falsa, compromiso duplicado, compromiso tardío, 50 intentos del último en revelar y quórum;
   - arena: pack, determinismo, duelo completo verificado, resultado trucado, tropas con cifras propias, patrulla y Elo entero;
   - mercado: asiento, caducidad, doble liquidación, nonce reutilizado, borrador de agente, valor real, lo propio, destinatario y cadena trucada;

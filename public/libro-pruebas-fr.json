@@ -1,7 +1,7 @@
 {
  "esquema": 1,
  "idioma": "fr",
- "nota_fichero": "El Libro de Pruebas en esta lengua. Se SUPERPONE sobre `assets/ledger.jsonl`, que es el registro firmado y viene en castellano: si aqui falta una entrada, ahi se ve la de origen. Los HECHOS --modelo, sha256, tok/s, hardware, firma-- no se traducen jamas: un nombre de modelo traducido deja de nombrar nada.",
+ "nota_fichero": "El Libro de Pruebas en esta lengua. Se SUPERPONE sobre `assets/libro-pruebas.jsonl`, que es el registro firmado y viene en castellano: si aqui falta una entrada, ahi se ve la de origen. Los HECHOS --modelo, sha256, tok/s, hardware, firma-- no se traducen jamas: un nombre de modelo traducido deja de nombrar nada.",
  "cabecera": "Mesuré sur le nœud souverain le 2026-09-13. Chaque ligne porte le sha256 du fichier du modèle et la signature Ed25519 de celui qui a mesuré. `ttft_ms` est NO_DATA parce qu'il n'a pas été mesuré : le remplir avec un nombre plausible serait le contraire de ce que fait ce tableau.",
  "veredictos": {
   "usable en bucle": "utilisable en boucle",

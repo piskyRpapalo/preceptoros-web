@@ -7,6 +7,7 @@ Todo lo que se construye aquí es **marca personal de PreceptorOS** (el Soberano
 - **Los personajes son ondas.** Cada tropa es su serie de Fourier (`[k, ax, ay, fase]` enteros), dibujada con sus propios armónicos. No hay imágenes: el emblema de cada nodo sale de su clave pública. Nuevas criaturas, mapas y efectos salen de ahí, no de sprites.
 - **IronClaw.** El silicio propone y el carbono firma. Nada de valor (invocar, adoptar, retar, aceptar, liquidar) ocurre sin la firma Ed25519 de la persona. Los pilotos, los agentes y el laboratorio proponen; nunca firman.
 - **Sensores honestos.** Lo que no se mide es `NO_DATA` con su causa; lo heurístico lleva `EMULADO`; lo provisional se dice en pantalla. Lo técnico va **siempre plegado** («Technical details»).
+- **Criptografía para un juego justo** (el Soberano, 2026-09-28). Firmas Ed25519, huellas SHA-256 y commit-reveal existen para una sola cosa: que la niebla del mapa y las probabilidades de cada combate sean **las mismas** para quien juega con una IA pequeña y creativa y para quien lleva a Claude y una IA local de 24 GB de VRAM. Nadie ve más niebla ni elige los dados por tener más máquina. Por eso lo que el rack recoge (partidas, duelos, opiniones firmadas y rejugables) vale como **fuente de estudio para un benchmark**. Nada de esto tiene que ver con monedas, y no se nombran.
 - **Sin servidor.** Entre personas viajan **sobres firmados** (`atlas.sobre/1`) en **paquetes** (`atlas.paquete_mp/1`) por el canal que elija la persona (Send, Copy, Download). La semilla de todo combate sale de un **commit-reveal**: nadie la elige a solas.
 - **Determinismo.** Todo resultado se vuelve a jugar desde la ley, la semilla y las acciones. Enteros; sin `Math.random`, sin `Date` con autoridad.
 - **Peso con ley.** Máximo 16 384 B por fichero (HTML, JS, CSS y JSON). La puerta del juego (`gzip_juego_b`, medida por `atlas/mundo.py`) tiene que quedar por debajo de 153 600 B, o la grieta hace el doble de daño. `vigia.yml` avisa cada día. Lo que no hace falta al abrir se carga **a demanda** (Army, Arena, opinar).
@@ -39,7 +40,7 @@ Todo lo que se construye aquí es **marca personal de PreceptorOS** (el Soberano
    python3 contadores.py
    python3 bin/sellar.py --sellar --version <la misma>
    ```
-5. **Higiene:** cero IPs, hostnames, rutas de usuario y secretos en lo publicable. Ni cripto ni jerga de cadena de bloques (guarda `SinCripto`). Se mira cada coincidencia **antes** del push.
+5. **Higiene:** cero IPs, hostnames, rutas de usuario y secretos en lo publicable. Nada que suene a monedas, en ningún fichero ni nombre del repositorio (guarda `JuegoJusto` en `atlas/test_atlas.py`; la lista vetada va en base64 y se ve con `python3 atlas/test_atlas.py --vetadas`). Se mira cada coincidencia **antes** del push.
 6. **Git:** commits en castellano, por bloques. Nunca reescribir historia ni forzar. A `main` solo con la firma explícita del Soberano: «Firmo», «Pushea a main».
 
 ## Qué espera firma (no se construye sin ella)

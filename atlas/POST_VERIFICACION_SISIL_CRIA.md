@@ -59,7 +59,7 @@ estado: PENDIENTE DE FIRMA para lo marcado REQUIERE_FIRMA · validadores puros d
   - decimales con autoridad y odds ocultas;
   - cualquier reloj de pared;
   - adoptar o invocar solo;
-  - dinero real o cripto, repetir tiradas de pago, FOMO, rachas que se pierden o cuentas atrás engañosas;
+  - dinero real, repetir tiradas de pago, FOMO, rachas que se pierden o cuentas atrás engañosas;
   - URL, rutas, hosts o IP.
 
 ## §5 · Modelos de amenaza de la cría

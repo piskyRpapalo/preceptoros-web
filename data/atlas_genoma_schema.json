@@ -2,7 +2,7 @@
  "$schema": "https://json-schema.org/draft/2020-12/schema",
  "$id": "preceptoros:atlas.genoma/1",
  "title": "Genoma de SISIL (lo unico que el laboratorio puede proponer cambiar)",
- "description": "Parametros ENTEROS con bandas declaradas, por dominio permitido (addendum §4). Un parametro o dominio que no esta aqui no existe; los prohibidos (invocar, lo solo-humano, motor, firma, red, persistencia, precache, peso, reloj, odds ocultas, adoptar o invocar solo, dinero, cripto, rutas, hosts, IPs, datos personales) no caben. Espejo de `public/game/genoma.js › LIMITES`. Vive fuera de `public/`.",
+ "description": "Parametros ENTEROS con bandas declaradas, por dominio permitido (addendum §4). Un parametro o dominio que no esta aqui no existe; los prohibidos (invocar, lo solo-humano, motor, firma, red, persistencia, precache, peso, reloj, odds ocultas, adoptar o invocar solo, dinero, rutas, hosts, IPs, datos personales) no caben. Espejo de `public/game/genoma.js › LIMITES`. Vive fuera de `public/`.",
  "type": "object",
  "additionalProperties": false,
  "required": [
