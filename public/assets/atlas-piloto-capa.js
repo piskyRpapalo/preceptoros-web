@@ -231,6 +231,7 @@
     R.caja = el('div', 'thegame-piloto');
     R.piloto = boton(T('piloto')); R.soltar = boton(T('piloto_soltar'));
     R.exporta = boton(T('partida_exportar')); R.exporta.title = T('partida_nota');
+    R.exporta.classList.add('thegame-exporta'); /* thegame.js la lleva a la pestana Game */
     R.sugerir = boton(T('sugerir')); R.sugerir.title = T('sugerir_t');
     R.sugerir.setAttribute('aria-pressed', 'false');
     R.soltar.hidden = true;

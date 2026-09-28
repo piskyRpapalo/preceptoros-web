@@ -244,6 +244,14 @@
   "st_inercia": "Thermal inertia",
   "st_profundidad": "Depth",
   "st_aura": "Aura",
-  "provisional": "Test values ({v}): provisional, to be tuned."
+  "provisional": "Test values ({v}): provisional, to be tuned.",
+  "pes_aria": "theGame sections",
+  "pes_nucleo": "Core",
+  "pes_mapa": "Map",
+  "pes_oficios": "Crafts",
+  "pes_army": "Army",
+  "pes_partida": "Game",
+  "tecnico": "Technical details",
+  "army_carga": "Opening the Forest Incubator…"
  }
 }

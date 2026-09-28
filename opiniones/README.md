@@ -25,6 +25,10 @@ una opinión la regenera en el mismo PR y el CI comprueba que está al día:
 
 Solo cuentan las que verifican y no son de ejemplo; las rechazadas salen aparte con su motivo.
 
+**El corpus.** `node atlas/tabla_opiniones.mjs --json` saca por la salida las mismas opiniones verificadas
+(lo que se leyó, la respuesta, la huella del estado): el primer «dónde discrepa la persona» para el
+LoRA mini. No se escribe en ningún sitio: guardarlo es un gesto aparte.
+
 **Lo que lleva un fichero:** tu pseudónimo y tu clave pública (públicos por definición), el ciclo
 de juego, la huella del estado que veías, la línea que leíste, tu respuesta y tu nota. Sin fechas
 de reloj ni nada del navegador. Subirlo aquí es publicarlo: el repositorio es público.

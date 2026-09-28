@@ -3,11 +3,16 @@
 //     node atlas/tabla_opiniones.mjs              # la escribe por la salida
 //     node atlas/tabla_opiniones.mjs --escribe    # la guarda en opiniones/TABLA.md
 //     node atlas/tabla_opiniones.mjs --comprueba  # sale con 1 si TABLA.md no esta al dia
+//     node atlas/tabla_opiniones.mjs --json       # el corpus para el piloto, por la salida
 //
 // DETERMINISTA: los ficheros por nombre, sin fecha de reloj, sin red, sin LLM. Cada opinion pasa por
 // `verificaOpinion` (forma, nota y firma). La que no verifica NO entra en la cuenta y sale aparte con
 // su motivo: un rechazo que se calla es un sensor que miente. Los `ejemplo-*.json` verifican pero
 // tampoco cuentan: los firmo una maquina para probar la cadena, no una persona.
+//
+// EL CORPUS (`--json`, sugerencia firmada por el Soberano, 2026-09-28): las opiniones de personas que
+// verifican, con lo que se leyo, la respuesta y la huella del estado; es el primer «donde discrepa
+// la persona» para el LoRA mini. Sale por la salida y no se escribe: guardarlo es un gesto aparte.
 //
 // Es lo que el piloto puede leer: donde la persona dijo Right / Wrong / Not sure, sobre que y en que
 // ciclo. La huella del estado sigue siendo NO_DATA hasta casarla con la partida exportada.
@@ -64,7 +69,11 @@ export function tabla(carpeta = CARPETA) {
   L.push('', '## Rechazadas', '');
   if (!fuera.length) { L.push('Ninguna.'); }
   for (const { n, r } of fuera) { L.push(`- ${celda(n)}: ${celda(r.motivo)}`); }
-  return { texto: L.join('\n') + '\n', entran: entran.length, ejemplos: ejemplos.length, fuera: fuera.length };
+  const corpus = entran.map(({ n, s }) => ({ fichero: n, pseudonimo: s.pseudonimo, clave_publica: s.clave_publica,
+    contenido_v: s.opinion.contenido_v, sobre: s.opinion.sobre, ciclo: s.opinion.ciclo,
+    estado_sha256: s.opinion.estado_sha256, mostrado: s.opinion.mostrado, eleccion: s.opinion.eleccion,
+    nota: s.opinion.nota }));
+  return { texto: L.join('\n') + '\n', entran: entran.length, ejemplos: ejemplos.length, fuera: fuera.length, corpus };
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
@@ -78,6 +87,8 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     console.log(ok ? 'opiniones/TABLA.md al dia · ' + cuenta
       : 'opiniones/TABLA.md NO esta al dia: node atlas/tabla_opiniones.mjs --escribe');
     process.exit(ok ? 0 : 1);
+  } else if (modo === '--json') {
+    process.stdout.write(JSON.stringify({ esquema: 'atlas.opiniones.corpus/1', entran: t.entran, opiniones: t.corpus }, null, 1) + '\n');
   } else if (!modo) { process.stdout.write(t.texto); }
-  else { console.error('uso: node atlas/tabla_opiniones.mjs [--escribe | --comprueba]'); process.exit(2); }
+  else { console.error('uso: node atlas/tabla_opiniones.mjs [--escribe | --comprueba | --json]'); process.exit(2); }
 }

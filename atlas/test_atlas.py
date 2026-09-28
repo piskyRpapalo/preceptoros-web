@@ -25,7 +25,7 @@ PUBLICO = RAIZ.parent / "public"
 ASSETS = PUBLICO / "assets"
 PISO = ASSETS  # los guiones, la hoja y la tira viven en public/assets/
 CODIGO = ("atlas-arte.js", "atlas-coord.js", "atlas-carta.js", "atlas-ondas.js", "atlas-obra.js", "atlas-gesto.js", "atlas-mapa.js", "atlas-dialogo.js", "atlas-motor.js",
-          "atlas-piso.js", "atlas.css", "preceptor-pixel.png", "thegame.js",
+          "atlas-piso.js", "atlas.css", "preceptor-pixel.png", "thegame.js", "thegame.css",
           "atlas-piloto.js", "atlas-partida.js", "atlas-piloto-capa.js", "atlas-guardado.js", "atlas-hud.js", "atlas-mapa.css")
 PILOTO = ("atlas-piloto.js", "atlas-partida.js", "atlas-piloto-capa.js")
 DATOS = RAIZ.parent / "data"
@@ -944,6 +944,12 @@ class Opiniones(unittest.TestCase):
         self.assertEqual((t["entran"], t["ejemplos"], t["fuera"]), (1, 1, 1))
         self.assertIn("| **total** | 0 | 1 | 0 | 1 |", t["texto"])
         self.assertIn("- c.json: firma: no verifica", t["texto"])
+        self.assertEqual([o["fichero"] for o in t["corpus"]], ["b.json"], "el corpus lleva ejemplos o rechazos")
+        self.assertEqual(set(t["corpus"][0]), {"fichero", "pseudonimo", "clave_publica", "contenido_v", "sobre",
+                                               "ciclo", "estado_sha256", "mostrado", "eleccion", "nota"})
+        r = subprocess.run(["node", str(RAIZ / "tabla_opiniones.mjs"), "--json"], capture_output=True, text=True, timeout=60)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        self.assertEqual(json.loads(r.stdout)["esquema"], "atlas.opiniones.corpus/1")
 
 
 class Vigia(unittest.TestCase):
@@ -986,6 +992,90 @@ class Vigia(unittest.TestCase):
         for orden in ("python test_web.py", "python atlas/test_atlas.py", "node atlas/vigia.mjs"):
             with self.subTest(orden=orden):
                 self.assertIn(orden, vivo)
+
+
+
+class Pestanas(unittest.TestCase):
+    """La capa en cinco pestanas (Soberano, 2026-09-28: «adaptado a telefono, con pestanas y cabecero
+    bien estructurado»; «los JSON son textos que asustan: ocultarlos en desplegables siempre»)."""
+
+    CAPA = ASSETS / "thegame.js"
+    HOJA = ASSETS / "thegame.css"
+    IDS = ("nucleo", "mapa", "oficios", "army", "partida")
+    ARMY = ("valores.js", "gacha.js", "db.js", "core.js", "ui.js")
+
+    def _capa(self):
+        return sin_comentarios(self.CAPA.read_text(encoding="utf-8"))
+
+    def test_cinco_pestanas_accesibles_que_mueven_y_no_rehacen(self):
+        c = self._capa()
+        ids = re.findall(r"\['(\w+)', '\\u[0-9A-F]{4}", c)
+        self.assertEqual(tuple(ids), self.IDS)
+        for pieza in ("setAttribute('role', 'tablist')", "setAttribute('role', 'tab')",
+                      "setAttribute('role', 'tabpanel')", "'aria-selected'", "'aria-controls'",
+                      "piso.appendChild(d)", "ArrowRight", "ArrowLeft", "ordena();"):
+            with self.subTest(pieza=pieza):
+                self.assertIn(pieza, c)
+        self.assertNotIn("innerHTML", c)
+        lista = c[c.index("var PESTANAS"):c.index("var TECNICO")]
+        for freno in ("thegame-piloto", "thegame-sugerencia", "thegame-juez", "thegame-cerrar"):
+            with self.subTest(freno=freno):
+                self.assertNotIn(freno, lista, "el piloto y su freno salen del cabecero")
+        for l in LENGUAS_JUEGO:
+            ui = json.loads((PUBLICO / f"atlas-{l}.json").read_text(encoding="utf-8"))["ui"]
+            for k in ["pes_" + i for i in self.IDS] + ["pes_aria", "tecnico", "army_carga"]:
+                with self.subTest(lengua=l, clave=k):
+                    self.assertTrue(ui.get(k, "").strip())
+
+    def test_lo_tecnico_va_siempre_plegado(self):
+        c = self._capa()
+        tecnico = c[c.index("var TECNICO"):c.index("var PANEL")]
+        for sel in (".atlas-carta-json", ".atlas-nucleo > .atlas-medido", ".atlas-incubadora > .atlas-medido",
+                    ".atlas-incubadora > .atlas-casa", ".atlas-nucleo > .atlas-nota"):
+            with self.subTest(selector=sel):
+                self.assertIn(sel, tecnico)
+        self.assertIn("el('details', 'thegame-tecnico')", c)
+        self.assertNotIn(".open = true", c, "lo tecnico se abre a proposito, nunca solo")
+        self.assertNotIn("setAttribute('open'", c)
+
+    def test_el_army_se_carga_con_su_pestana_y_no_pesa_en_la_puerta(self):
+        c = self._capa()
+        guiones = c[c.index("var GUIONES"):c.index("var ARMY")]
+        army = c[c.index("var ARMY"):c.index("function el(")]
+        for m in self.ARMY:
+            with self.subTest(modulo=m):
+                self.assertNotIn(m, guiones, f"{m} vuelve a la puerta")
+                self.assertIn(f"['/game/{m}']", army)
+        self.assertIn("['/game/juez.js']", guiones, "el juez escucha desde el primer ciclo")
+        self.assertIn("if (id === 'army') { cargaArmy(); }", c)
+        self.assertIn("army: cargaArmy", c)
+        sys.path.insert(0, str(RAIZ))
+        import mundo
+        for m in self.ARMY:
+            self.assertNotIn(f"../game/{m}", mundo.PIEZAS)
+        for q in ("../game/juez.js", "thegame.css"):
+            self.assertIn(q, mundo.PIEZAS, f"{q} baja al abrir y no se cuenta")
+        g = sin_comentarios((ASSETS / "atlas-guardado.js").read_text(encoding="utf-8"))
+        self.assertLess(g.index("TG.army()"), g.index("A.verificaWeb("),
+                        "la firma importada se mira antes de tener su verificador")
+
+    def test_la_hoja_de_la_capa(self):
+        css = self.HOJA.read_text(encoding="utf-8")
+        self.assertLessEqual(len(css.encode("utf-8")), 16 * 1024)
+        self.assertIn("'thegame.css'", self._capa())
+        vivo = re.sub(r"/\*.*?\*/", "", css, flags=re.S)
+        self.assertEqual(re.findall(r"#[0-9a-fA-F]{3,8}\b", vivo), [], "un color fuera de los tokens")
+        for regla in (".thegame-panel[hidden]{display:none}", "env(safe-area-inset-bottom)",
+                      "@media (min-width:48rem)", ".thegame-piloto{display:contents}"):
+            with self.subTest(regla=regla):
+                self.assertIn(regla, vivo)
+        for prohibido in ("gradient", "blur(", "@keyframes"):
+            with self.subTest(prohibido=prohibido):
+                self.assertNotIn(prohibido, vivo)
+        listas = (PUBLICO / "sw.js").read_text(encoding="utf-8") + (PUBLICO / "sw-listas.js").read_text(encoding="utf-8")
+        self.assertNotIn("thegame.css", listas, "la hoja de la capa entra en el precache")
+        for h in PUBLICO.rglob("*.html"):
+            self.assertNotIn("thegame.css", h.read_text(encoding="utf-8"))
 
 
 if __name__ == "__main__":

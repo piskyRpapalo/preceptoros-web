@@ -7,8 +7,13 @@
    puerta.
 
    A DEMANDA. Este fichero lo inyecta `cabezal-rotulos.js` al pulsar la puerta.
-   Aqui se piden la hoja y los guiones del juego (cinco del piso y tres del piloto), en orden
-   (`async = false`); nada de esto esta en ninguna pagina ni en el precache.
+   Aqui se piden las hojas y los guiones del juego, en orden (`async = false`); nada de esto
+   esta en ninguna pagina ni en el precache. La incubadora y su Army se piden al abrir SU
+   pestana: su peso no va en la puerta, que es una ley del mundo (`gzip_juego_b`).
+
+   CINCO PESTANAS (Soberano, 2026-09-28: «adaptado a telefono, con pestanas y cabecero bien
+   estructurado»): Core, Map, Crafts, Army y Game. En el telefono van abajo, al alcance del
+   pulgar; en escritorio, bajo el cabecero. Maqueta: `thegame.css`.
 
    CERRAR NO BORRA LA PARTIDA. La capa se oculta y el reloj del juego se para;
    al volver a abrir sigue donde estaba. Cerrar la PESTANA si la borra: v1 no
@@ -18,12 +23,15 @@
   if (window.TheGame) { return; }
 
   /* El piloto va detras del piso: la partida envuelve al motor ya cargado y
-     la capa del piloto necesita los textos que pide el piso. Los de `/game/`
-     son theGame v1.5: gacha, army, sintesis e incubadora. */
+     la capa del piloto necesita los textos que pide el piso. El juez (`/game/`, v1.5) va en la
+     puerta: escucha cada jugada y da voz al Preceptor desde el primer ciclo. */
   var GUIONES = [['atlas-arte.js'], ['atlas-coord.js'], ['atlas-carta.js'], ['atlas-ondas.js'], ['atlas-obra.js'], ['atlas-gesto.js'], ['atlas-mapa.js'],
     ['atlas-dialogo.js', '/assets/'], ['atlas-motor.js'], ['atlas-piso.js', '/'],
     ['atlas-piloto.js'], ['atlas-partida.js'], ['atlas-piloto-capa.js'],
-    ['/game/valores.js'], ['/game/gacha.js'], ['/game/db.js'], ['/game/core.js'], ['/game/ui.js'], ['/game/juez.js'], ['atlas-guardado.js']];
+    ['/game/juez.js'], ['atlas-guardado.js']];
+  /* EL ARMY, A DEMANDA (theGame v1.5: valores, gacha, army, sintesis e incubadora): al abrir su
+     pestana, o al importar una partida firmada, cuya firma comprueba el verificador del Army. */
+  var ARMY = [['/game/valores.js'], ['/game/gacha.js'], ['/game/db.js'], ['/game/core.js'], ['/game/ui.js']];
   /* LAS LENGUAS DEL JUEGO (2026-09-28, el Soberano: «hoy, solo inglés; un mismo enlace»). La
      UNICA lista de lenguas en las que el juego esta COMPLETO. Cualquier portada abre el juego en
      una de ellas: la de la pagina si esta aqui; si no, la primera. Anadir una lengua es traducir
@@ -42,28 +50,129 @@
     return n;
   }
 
-  function carga() {
-    if (cargado) { return cargado; }
-    cargado = new Promise(function (listo, falla) {
-      var hoja = document.createElement('link');
-      hoja.rel = 'stylesheet'; hoja.href = '/assets/atlas.css';
-      document.head.appendChild(hoja);
-      var hm = document.createElement('link');
-      hm.rel = 'stylesheet'; hm.href = '/assets/atlas-mapa.css';
-      document.head.appendChild(hm);
-      GUIONES.forEach(function (g, i) {
+  /* Los guiones de una lista, en orden; la promesa se cumple con el ultimo. */
+  function pide(lista) {
+    return new Promise(function (listo, falla) {
+      lista.forEach(function (g, i) {
         var s = document.createElement('script');
         s.src = g[0].charAt(0) === '/' ? g[0] : '/assets/' + g[0];
         s.async = false;
         if (g[1]) { s.dataset.base = g[1]; }
-        if (i === GUIONES.length - 1) {
-          s.onload = function () { listo(); };
-          s.onerror = function () { falla(new Error(g[0])); };
-        }
+        if (i === lista.length - 1) { s.onload = function () { listo(); }; }
+        s.onerror = function () { falla(new Error(g[0])); };
         document.head.appendChild(s);
       });
     });
+  }
+
+  function carga() {
+    if (cargado) { return cargado; }
+    ['atlas.css', 'atlas-mapa.css', 'thegame.css'].forEach(function (n) {
+      var h = document.createElement('link');
+      h.rel = 'stylesheet'; h.href = '/assets/' + n;
+      document.head.appendChild(h);
+    });
+    cargado = pide(GUIONES);
     return cargado;
+  }
+
+  /* LAS PESTANAS. NO SE REHACE NADA: cada pieza que ya pintan el piso, el piloto y el guardado se
+     MUEVE, con sus referencias vivas, a su panel DENTRO de `#atlas-piso` (los `#atlas-piso ...` de
+     los demas guiones siguen valiendo). El orden de cada lista es el orden en pantalla. El piloto,
+     su freno (Soltar), la sugerencia y el veredicto del juez se quedan en el cabecero: se ven desde
+     cualquier pestana. */
+  var PESTANAS = [
+    ['nucleo', '\u25C9', '.atlas-alerta|.atlas-cab|.atlas-recursos|#atlas-piso > .atlas-vivo|.atlas-dormias|.atlas-nucleo'],
+    ['mapa', '\u25C8', '.atlas-lema|.atlas-mapa|.atlas-izq'],
+    ['oficios', '\u2692\uFE0E', '.atlas-hud > .panel:not(.atlas-dormias)'],
+    ['army', '\u2726', ''],
+    ['partida', '\u2261', '.atlas-guardado|.thegame-exporta|.thegame-opina|.atlas-hud-farmeo|#atlas-juego > .no-data|.atlas-pie']];
+  /* LO TECNICO, SIEMPRE PLEGADO (Soberano: «son textos que asustan a usuarios no tecnicos»): el
+     JSON de la carta, las leyes medidas, la semilla que no es VRF, los valores provisionales y el
+     pie. No se borran, porque son la prueba: se ven al abrir «Technical details». */
+  var TECNICO = '.atlas-carta-json, .atlas-nucleo > .atlas-nota, .atlas-nucleo > .atlas-medido, ' +
+    '.atlas-incubadora > .atlas-medido, .atlas-incubadora > .atlas-casa, .atlas-pie';
+  var PANEL = {}, BOTON = {}, actual = 'nucleo', army = null;
+
+  function T(k) { return (window.AtlasJuego && window.AtlasJuego.texto(k)) || k; }
+  function cada(lista, f) { Array.prototype.forEach.call(lista, f); }
+
+  function tecnico(p) {
+    var ns = p.querySelectorAll(TECNICO);
+    if (!ns.length) { return; }
+    var d = p.querySelector('.thegame-tecnico');
+    if (!d) { d = el('details', 'thegame-tecnico'); d.appendChild(el('summary', null, T('tecnico'))); }
+    cada(ns, function (n) { d.appendChild(n); });
+    p.appendChild(d);
+  }
+
+  /* Cambiar de pestana vuelve arriba; el foco solo se mueve con las flechas (con el dedo o el raton
+     ya esta en el boton pulsado, y moverlo a mano pintaria el anillo del teclado). */
+  function muestra(id, foco) {
+    if (id !== actual) { capa.scrollTop = 0; }
+    actual = id;
+    Object.keys(PANEL).forEach(function (k) {
+      PANEL[k].hidden = k !== id;
+      BOTON[k].setAttribute('aria-selected', String(k === id));
+      BOTON[k].tabIndex = k === id ? 0 : -1;
+    });
+    if (foco) { BOTON[id].focus(); }
+    if (id === 'army') { cargaArmy(); }
+  }
+
+  function ordena() {
+    var piso = capa.querySelector('#atlas-piso'), barra = capa.querySelector('.thegame-barra');
+    if (!piso || !barra || barra.querySelector('.thegame-pestanas')) { return; }
+    var nav = el('nav', 'thegame-pestanas'), fila = el('div'), ids = PESTANAS.map(function (p) { return p[0]; });
+    nav.setAttribute('aria-label', T('pes_aria'));
+    fila.setAttribute('role', 'tablist');
+    PESTANAS.forEach(function (p) {
+      var id = p[0], d = el('section', 'thegame-panel'), b = el('button'), ico = el('span', 'thegame-ico', p[1]);
+      d.id = 'thegame-p-' + id; d.setAttribute('role', 'tabpanel'); d.setAttribute('aria-labelledby', 'thegame-b-' + id);
+      b.type = 'button'; b.id = 'thegame-b-' + id; b.setAttribute('role', 'tab'); b.setAttribute('aria-controls', d.id);
+      ico.setAttribute('aria-hidden', 'true');
+      b.appendChild(ico); b.appendChild(el('span', null, T('pes_' + id)));
+      b.addEventListener('click', function () { muestra(id); });
+      p[2].split('|').forEach(function (s) { if (s) { cada(capa.querySelectorAll(s), function (n) { d.appendChild(n); }); } });
+      tecnico(d);
+      piso.appendChild(d); fila.appendChild(b);
+      PANEL[id] = d; BOTON[id] = b;
+    });
+    /* Lo que queda vacio al repartir (la rejilla de la pagina larga) sobra. */
+    cada(piso.querySelectorAll(':scope > .atlas-rejilla'), function (n) { n.remove(); });
+    /* Flechas entre pestanas, como pide el patron de ARIA (al reves en una capa RTL). */
+    fila.addEventListener('keydown', function (e) {
+      var d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+      if (!d) { return; }
+      e.preventDefault();
+      if (capa.dir === 'rtl') { d = -d; }
+      muestra(ids[(ids.indexOf(actual) + d + ids.length) % ids.length], true);
+    });
+    nav.appendChild(fila); barra.appendChild(nav);
+    /* Con la grieta abierta, la pestana Core lleva un punto: el aviso llega desde cualquier vista. */
+    var a = piso.querySelector('.atlas-alerta');
+    if (a) {
+      var marca = function () { BOTON.nucleo.classList.toggle('con-aviso', !a.classList.contains('sellada')); };
+      new MutationObserver(marca).observe(a, { attributes: true, attributeFilter: ['class'] });
+      marca();
+    }
+    muestra('nucleo');
+  }
+
+  /* El Army se pide una vez; si falla, NO_DATA en su panel y el siguiente intento vuelve a pedir. */
+  function cargaArmy() {
+    if (army) { return army; }
+    var p = PANEL.army;
+    if (p && !p.firstChild) { p.appendChild(el('p', 'atlas-nota', T('army_carga'))); }
+    army = pide(ARMY).then(function () {
+      if (window.AtlasIncubadora) { window.AtlasIncubadora.monta(capa); }
+      var s = capa.querySelector('.atlas-incubadora');
+      if (p && s) { p.textContent = ''; p.appendChild(s); tecnico(p); }
+    }).catch(function (e) {
+      army = null;
+      if (p) { p.textContent = ''; p.appendChild(el('p', 'no-data', 'NO_DATA · ' + (e && e.message))); }
+    });
+    return army;
   }
 
   /* UN <dialog> NATIVO, abierto con showModal(). La trampa de foco no la
@@ -117,7 +226,6 @@
         construye();
         window.AtlasJuego.monta(document.getElementById('atlas-juego'), capa).then(function () {
           if (window.AtlasPilotoCapa) { window.AtlasPilotoCapa.monta(capa); }
-          if (window.AtlasIncubadora) { window.AtlasIncubadora.monta(capa); }
           if (window.AtlasGuardado) { window.AtlasGuardado.monta(capa); }
           /* El contador de farmeo se carga AL ABRIRLO: su peso no va en la puerta del juego, que es
              una ley del mundo (gzip_juego_b). Plegado es solo su rotulo; abierto, `atlas-hud.js`. */
@@ -131,7 +239,7 @@
               document.head.appendChild(s);
             });
             /* Opinar FIRMADO (sugerencia, veredicto, grieta): `atlas-opina.js`, al pulsar. */
-            var bo = el('button', 'boton-sec', window.AtlasJuego.texto('opina'));
+            var bo = el('button', 'boton-sec thegame-opina', window.AtlasJuego.texto('opina'));
             bo.addEventListener('click', function () {
               var s = document.createElement('script'); s.src = '/assets/atlas-opina.js';
               s.onload = function () { window.AtlasOpina.abre(capa); };
@@ -139,6 +247,7 @@
             });
             sm.appendChild(bo);
           }
+          ordena();
         });
       }
       if (!capa.open) { capa.showModal(); }
@@ -164,5 +273,5 @@
     avisa();
   }
 
-  window.TheGame = { abre: abre, cierra: cierra };
+  window.TheGame = { abre: abre, cierra: cierra, army: cargaArmy };
 })();

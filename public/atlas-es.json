@@ -201,6 +201,14 @@
   "st_inercia": "Inercia térmica",
   "st_profundidad": "Profundidad",
   "st_aura": "Aura",
-  "provisional": "Valores de prueba ({v}): provisionales, se ajustarán."
+  "provisional": "Valores de prueba ({v}): provisionales, se ajustarán.",
+  "pes_aria": "Secciones de theGame",
+  "pes_nucleo": "Núcleo",
+  "pes_mapa": "Mapa",
+  "pes_oficios": "Oficios",
+  "pes_army": "Army",
+  "pes_partida": "Partida",
+  "tecnico": "Detalles técnicos",
+  "army_carga": "Abriendo la Incubadora del Bosque…"
  }
 }

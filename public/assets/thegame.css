@@ -1,0 +1,93 @@
+/* THEGAME · la capa: cabecero, pestanas y telefono (Soberano, 2026-09-28: «adaptado a telefono,
+   con pestanas y cabecero bien estructurado»).
+
+   La inyecta `thegame.js` junto a `atlas.css`, al pulsar la puerta. Solo maquetacion: los colores
+   son `var(--...)` de `soberano.css`, los radios los del token, sin gradientes, sin desenfoque y
+   sin animaciones.
+
+   TELEFONO PRIMERO. El cabecero es una sola fila pegada arriba: el titulo, el piloto con su freno
+   (Soltar) y cerrar. Las cinco pestanas van ABAJO, fijas, al alcance del pulgar y con el margen
+   seguro del aparato. Desde 48rem suben bajo el cabecero y el panel se centra. */
+
+/* --- la capa a pantalla completa ------------------------------------------- */
+/* Opaca y por encima de todo; la pagina de debajo se oculta mientras esta
+   abierta: no se pinta, no recibe el foco y el lector no la recorre. */
+body.en-thegame{overflow:hidden}
+body.en-thegame > :not(#thegame){visibility:hidden}
+.thegame-capa{position:fixed;inset:0;z-index:70;width:100%;height:100%;max-width:none;
+  max-height:none;margin:0;border:0;overflow:auto;overscroll-behavior:contain;color:var(--text-main);
+  background:var(--bg-primary);padding:0 1rem calc(4.5rem + env(safe-area-inset-bottom))}
+.thegame-capa::backdrop{background:var(--bg-primary)}
+.thegame-capa:focus{outline:none}
+.thegame-juego{max-width:64rem;margin:0 auto}
+
+/* --- el cabecero ------------------------------------------------------------ */
+.thegame-barra{position:sticky;top:0;z-index:3;display:flex;flex-wrap:wrap;align-items:center;
+  gap:.5rem .75rem;margin:0 -1rem 1rem;padding:.55rem 1rem;background:var(--bg-primary);
+  border-bottom:1px solid var(--edge-sov)}
+.thegame-t{order:0;margin:0 auto 0 0;font:700 1.05rem/1 var(--mono);letter-spacing:.08em;color:var(--accent-copper-claro)}
+[dir="rtl"] .thegame-t{margin:0 0 0 auto}
+.thegame-cerrar{display:grid;place-items:center;width:2.5rem;height:2.5rem;padding:0;font-size:1.3rem;
+  line-height:1;color:var(--text-main);background:transparent;border:1px solid var(--accent-copper);
+  border-radius:999px}
+/* LA FILA NO SE ROMPE. La caja del piloto se disuelve en el cabecero (`display:contents`) y cada
+   pieza tiene su sitio: titulo, botones del piloto y cerrar en la primera fila; el estado, la
+   sugerencia (Hacer / Ignorar) y el veredicto del juez, cada uno en su fila debajo. */
+.thegame-piloto{display:contents}
+.thegame-piloto > .boton{order:1;padding:.45rem .9rem;font-size:.82rem}
+.thegame-cerrar{order:2}
+.thegame-piloto > p{order:3;flex-basis:100%;margin:0;font:.72rem/1.4 var(--mono);color:var(--accent-copper-claro)}
+.thegame-piloto > p:empty{display:none}
+/* La sugerencia como una ficha corta: lo que propone arriba, Hacer / Ignorar juntos debajo. */
+.thegame-piloto > .thegame-sugerencia > span{flex-basis:100%}
+.thegame-piloto > .thegame-sugerencia .boton{padding:.35rem .9rem;font-size:.8rem}
+
+/* --- las pestanas: abajo en el telefono ------------------------------------- */
+.thegame-pestanas{position:fixed;inset:auto 0 0;z-index:3;padding:0 0 env(safe-area-inset-bottom);
+  background:var(--bg-secondary);border-top:1px solid var(--edge-sov)}
+.thegame-pestanas > div{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));max-width:40rem;margin:0 auto}
+.thegame-pestanas button{position:relative;display:grid;justify-items:center;align-content:center;gap:.2rem;
+  min-height:3.75rem;padding:.4rem .15rem;font:600 .64rem/1.1 var(--mono);letter-spacing:.06em;
+  text-transform:uppercase;color:var(--text-muted);background:transparent;border:0;border-radius:0}
+.thegame-ico{font-size:1.2rem;line-height:1}
+/* Sin el relleno violeta de `base.css` ni el halo de `soberano.css` que todo boton lleva con foco o
+   bajo el raton (en tactil el hover se queda pegado tras el toque): la pestana activa se dice con
+   color, raya y `aria-selected`, no con una pildora encendida. */
+#thegame .thegame-pestanas button:is(:focus,:hover){background:transparent;box-shadow:none;transform:none}
+.thegame-pestanas [aria-selected="true"]{color:var(--accent-copper-claro)}
+.thegame-pestanas [aria-selected="true"]::before{content:"";position:absolute;inset:0 25% auto;height:2px;
+  background:var(--accent-copper)}
+.thegame-pestanas .con-aviso::after{content:"";position:absolute;top:.45rem;inset-inline-end:30%;
+  width:.5rem;height:.5rem;border-radius:50%;background:var(--accent-copper)}
+.thegame-pestanas button:focus-visible{outline:2px solid var(--accent-copper-claro);outline-offset:-3px}
+
+/* --- los paneles ------------------------------------------------------------ */
+.thegame-panel{display:grid;gap:1rem;align-content:start;min-width:0}
+.thegame-panel[hidden]{display:none}
+.thegame-panel > :is(.boton,.boton-sec){justify-self:start}
+/* Todo desplegable de un panel con la misma figura: una ficha que se abre a proposito. */
+.thegame-panel > details{padding:.55rem .8rem;font-size:.8rem;color:var(--text-muted);
+  border:1px solid var(--edge-sov);border-radius:var(--radius)}
+.thegame-panel > details > summary{cursor:pointer;font:600 .7rem/1.6 var(--mono);letter-spacing:.06em;
+  text-transform:uppercase}
+.thegame-panel > details > :not(summary){margin:.5rem 0 0}
+/* Los recursos, en fichas: rotulo arriba, cifra debajo y sin partirse. */
+.thegame-panel .atlas-recursos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+.thegame-panel .atlas-recursos li{flex-direction:column;align-items:flex-start;justify-content:flex-start;gap:.35rem;min-width:0}
+.thegame-panel .atlas-recursos data{white-space:nowrap}
+.thegame-panel .atlas-recursos li:last-child:nth-child(odd){grid-column:1/-1}
+
+/* --- escritorio: las pestanas bajo el cabecero --------------------------------- */
+@media (min-width:48rem){
+  .thegame-capa{padding:0 clamp(1rem,3vw,2rem) 2rem}
+  /* El cabecero alinea su contenido con el del panel (64rem centrados), y su fondo sigue a lo ancho. */
+  .thegame-barra{margin-inline:calc(-1 * clamp(1rem,3vw,2rem));padding:.6rem 0 0;
+    padding-inline:calc(clamp(1rem,3vw,2rem) + max(0px, 50% - 32rem))}
+  .thegame-pestanas{position:static;flex-basis:100%;order:9;padding:0;background:transparent;border:0}
+  .thegame-pestanas > div{display:flex;gap:.25rem;max-width:none;margin:0}
+  .thegame-pestanas button{display:flex;gap:.45rem;min-height:2.75rem;padding:.55rem 1rem;font-size:.72rem}
+  .thegame-pestanas [aria-selected="true"]::before{inset:auto 0 0}
+  .thegame-pestanas .con-aviso::after{top:.5rem;inset-inline-end:.35rem}
+  .thegame-panel .atlas-recursos{grid-template-columns:repeat(5,minmax(0,1fr))}
+  .thegame-panel .atlas-recursos li:last-child:nth-child(odd){grid-column:auto}
+}
