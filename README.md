@@ -95,7 +95,8 @@ date it was taken and the machine it ran on.
   requests on load. No trackers, no fonts pulled from elsewhere, no analytics.
 - **It works with no network.** The site installs as an app and keeps working
   offline.
-- **Eight languages**, each one complete. Not a machine pass over one.
+- **Nine languages** (Arabic since 2026-09-23). Not a machine pass over one: what is still untranslated
+  is declared, family by family, and the gate checks it.
 - **Every file under 16 KB.** No build step, no framework, no bundle. What is
   in this repository is what your browser receives.
 - **A gap is named a gap.** Where a number is missing, the page says so and

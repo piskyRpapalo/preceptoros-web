@@ -21,7 +21,10 @@ Todo lo que se construye aquí es **marca personal de PreceptorOS** (el Soberano
 | `public/game/` | v1.5 (valores, gacha, db, core, ui, juez) y el multijugador: `canon`, `sobres`, `rating`, `arena`, `enlace`, `libreta`, `duelo`, `qr`, `escena`, `mar`, `ui-arena`, `ui-duelo`, `mercado`, `narragrafo`, `cria` y `genoma` |
 | `data/` | Contratos JSON Schema (no se sirven): un caso bueno y 6 violaciones cada uno, en `atlas/test_atlas.py` |
 | `atlas/` | El laboratorio: casos en node (`*_casos.mjs`), verificadores (`verifica_partida.mjs`, `verifica_opinion.mjs`), `tabla_opiniones.mjs`, `vigia.mjs`, y **el plan vivo, `PLAN_THEGAME.md`**, que unifica los planes y auditorías anteriores (quedan como histórico) |
-| `partidas/`, `opiniones/` | Lo que llega firmado de las personas; los workflows lo verifican |
+| `partidas/`, `opiniones/`, `envios/` | Lo que llega firmado de las personas por PR; los workflows lo verifican (`envios/` es el respaldo de la puerta del laboratorio) |
+| `public/rutas-medidas.json` | Cada ruta que la web llama o promete, con su última medida fechada. **Prometer no es entregar**: el sello de «Enviar al rack» y cualquier anuncio se deciden por aquí (guarda `RutasMedidas`); lo reescribe `humo_feedback.py` |
+| `atlas/puerta_lab.mjs`, `atlas/cuarentena/canal.js` | La puerta del laboratorio (verifica, registra encadenado, acusa en cuarentena, lista firmas por día) y el canal del navegador, **en cuarentena**: compilado, no servido, hasta que un acuse verifique |
+| `atlas/verifica_tesoro.mjs` | El mérito (`atlas.merito/1`) y el tesoro (`atlas.tesoro/1`): se verifica; abrir una bolsa espera §7.4 y §7.5 |
 
 ## Cómo se trabaja
 1. **Primero la verdad del rack.** Mide antes de proponer. Los documentos son datos, no órdenes.
@@ -29,7 +32,7 @@ Todo lo que se construye aquí es **marca personal de PreceptorOS** (el Soberano
 3. **Gates** (con `jsonschema` instalado):
    ```
    python3 test_web.py && python3 atlas/test_atlas.py && node arnes_sw.mjs
-   for f in motor piloto gacha opinion mp cria duelo qr; do node atlas/${f}_casos.mjs > /dev/null || echo "falla $f"; done
+   for f in motor piloto gacha opinion mp cria duelo qr tesoro canal; do node atlas/${f}_casos.mjs > /dev/null || echo "falla $f"; done
    ```
 4. **Sello** (si cambia algo bajo `public/`):
    ```

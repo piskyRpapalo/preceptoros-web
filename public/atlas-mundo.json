@@ -1,12 +1,12 @@
 {
  "esquema": "atlas.mundo/1",
  "procedencia": "medido en local por atlas/mundo.py; sin rutas, sin nombres",
- "medido_el": "2026-09-28T20:25Z",
+ "medido_el": "2026-09-28T21:22Z",
  "maquina": "nube · contenedor de la sesión de Claude · Linux x86_64 · Python 3.11.15",
  "pruebas_web": 171,
  "lenguas": 9,
  "techo_fichero_b": 16384,
  "gzip_juego_b": 146618,
- "version_sw": "preceptoros-2026-17-abca",
+ "version_sw": "preceptoros-2026-17-abcb",
  "arnes_sw": "24/24"
 }

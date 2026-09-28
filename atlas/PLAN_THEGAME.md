@@ -44,6 +44,9 @@ Cifras de peso y de cada suite: en el informe del cierre y en el mensaje del com
 | 2026-09-28 (cierre) | Push de los commits del cierre a la **rama de trabajo**, no a `main` | `main` sigue pidiendo «Firmo, pushea a main» |
 | 2026-09-28 (cierre) | Modelos locales en el laboratorio y el orquestador: resumir, clasificar, proponer parches, revisar logs, ayudar en benchmarks | no firman, no deciden canon, nada en la web pública. Una medida no es oficial hasta llevar fecha, máquina, hash, versión y procedencia |
 | 2026-09-28 (cierre) | **Techos térmicos provisionales** para corridas locales del rack | 85 °C de CPU y 40 °C de batería; cambiarlos o relajarlos pide firma |
+| 2026-09-29 | **Destino del canal del feedback (§9.3)** | `api.preceptoros.org` con gesto explícito, el informe de la Aduana a la vista antes de salir y el PR al repositorio público (`envios/`) como respaldo obligatorio mientras no haya acuse verificado. `canal.js` en cuarentena (compilado, no servido) |
+| 2026-09-29 | **Prometer no es entregar** | el sello de «Enviar al rack» mide la ruta de entrega (`rutas-medidas.json`), no `/salud`; ninguna recompensa se anuncia sin camino de pago medido; el humo del feedback se pone rojo con 404 y 405 |
+| 2026-09-29 | **Mérito y tesoro** (sin cambiar §5.17, §5.18 ni §6.6 del addendum) | `atlas.merito/1` = paquetes firmados y aceptados de origen humano, sin transferir, bajo un techo publicado; `atlas.tesoro/1` = bolsa en recursos del Bosque. Verificador y contratos hechos; la criptografía aquí quiere decir verificable, no negociable |
 
 ## §3 · REQUIERE_FIRMA (no se construye sin ella)
 - Puente al laboratorio con `fetch` (choca con «la web nunca hace fetch a IPs locales»), LAN, WebRTC, STUN/TURN y relevos.
@@ -51,12 +54,17 @@ Cifras de peso y de cada suite: en el informe del cierre y en el mensaje del com
 - La acción de transferencia en el motor; la pérdida definitiva y el botín; cambiar la tirada (el sesgo del módulo).
 - Un VRF para competir; una clasificación entre nodos; mandatos y auto-adopción; packs de terceros activos.
 - Un `/health` público en `api.preceptoros.org` o cualquier endpoint nuevo.
+- **§7.4** (CANON-C, redacción nueva: «el sistema acredita; la bolsa la abre una firma humana, con testigo que no es el beneficiario») y **§7.5** (el mercado entre personas: recursos existentes, caducidad en ciclos, liquidan dos firmas humanas). Sin esas dos iniciales no se escriben `tesoro.js`, `asientos.js` ni `ui-tesoro.js`.
+- **El testigo del tesoro:** ¿sale de la lista de editores de §9.2 (N claves por persona, sin recuperación, con altas)? Si sí, §9.2 se firma con ese uso añadido.
+- **La lista de editores** (§9.2): hasta su firma, la puerta del laboratorio acepta, verifica, registra y acusa, pero todo queda en cuarentena.
+- **El correo personal publicado** en `public/loratelier.json` (canal `mailto` del taller, que sí llega) frente a «cero datos personales»: se queda o se retira.
 
 ## §4 · PROPUESTA
 - Banco de benchmark (BB) y piloto denso (DDAP) sobre las partidas y duelos firmados: son rejugables y la criptografía los hace comparables entre IAs de distinto tamaño.
 - El bucle SISIL completo y `atlas.brood_evidencia/1`.
 - Escáner QR dentro de la web (`BarcodeDetector`) donde el sistema lo tenga; hoy basta la cámara del teléfono, porque el QR lleva un enlace.
 - Rutas, enclaves y mercado con UI (E5); packs y editor de Fourier (E6); laboratorio didáctico (E8).
+- `atlas.manifiesto/1` (plug & play sin espalda: un toque por fichero, con su hash delante; el motor de inferencia se NOMBRA, no se descarga) y el laboratorio por turnos con `atlas.lab_acuse/1` (su salida es siempre PROPUESTA; lo inferido, EMULADO).
 
 ## §5 · El rack: lo que la nube no puede medir (traspaso)
 La sesión de la nube no llega al rack ni a su directorio de usuario: estos puntos son **NO_DATA** y los mide el rack, en solo lectura, con la salida literal:
