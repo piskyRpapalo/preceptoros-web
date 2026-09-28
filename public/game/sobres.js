@@ -9,8 +9,9 @@
    - quien lo manda es par de la sesion;
    - su `seq` es el siguiente y su `prev` enlaza con la huella del anterior del mismo autor;
    - no lo habia visto ya y no pasa de los bytes ni de las operaciones de la politica.
-   Dos sobres del mismo autor con el mismo `seq` y distinto cuerpo son una PRUEBA DE FRAUDE (doble
-   gasto): se guardan las dos huellas, que cualquiera puede verificar, y ese autor queda fuera.
+   Dos sobres del mismo autor con el mismo `seq` y distinto cuerpo son una PRUEBA DE TRAMPA (dos
+   firmas suyas que se contradicen): se guardan las dos huellas, que cualquiera puede verificar, y
+   ese autor queda fuera.
    La firma la verifica quien llama ANTES de anotar (`verifica`, con la plataforma que haya:
    WebCrypto en la pestana, `crypto` en node). Este fichero no elige plataforma.
 
@@ -105,7 +106,7 @@
 
   /* --- el libro de la sesion ------------------------------------------------------------------ */
   function libro(politica) {
-    return { sesion: sesion(politica), politica: politica, cabeza: {}, vistos: {}, orden: [], fraudes: [], fuera: {} };
+    return { sesion: sesion(politica), politica: politica, cabeza: {}, vistos: {}, orden: [], trampas: [], fuera: {} };
   }
 
   function anota(L, s) {
@@ -113,15 +114,15 @@
     if (m) { return m; }
     if (s.sesion !== L.sesion) { return 'sesion ajena: replica de otra sesion'; }
     if (L.politica.pares.indexOf(s.de) < 0) { return 'no es par de la sesion'; }
-    if (L.fuera[s.de]) { return 'par con fraude probado'; }
+    if (L.fuera[s.de]) { return 'par con trampa probada'; }
     if (K.canon(s).length > L.politica.max_bytes) { return 'pasa de los bytes de la politica'; }
     var h = huella(s);
     if (L.vistos[h]) { return 'duplicado'; }
     var cab = L.cabeza[s.de] || (L.cabeza[s.de] = { seq: 0, huella: 'genesis', porSeq: {} });
     if (cab.porSeq[s.seq] && cab.porSeq[s.seq] !== h) {
-      L.fraudes.push({ de: s.de, seq: s.seq, a: cab.porSeq[s.seq], b: h });
+      L.trampas.push({ de: s.de, seq: s.seq, a: cab.porSeq[s.seq], b: h });
       L.fuera[s.de] = true;
-      return 'fork: mismo seq con otro cuerpo (prueba de fraude)';
+      return 'trampa: mismo seq con otro cuerpo (dos firmas que se contradicen)';
     }
     if (s.seq <= cab.seq) { return 'seq viejo'; }
     if (s.seq !== cab.seq + 1) { return 'falta el seq ' + (cab.seq + 1); }

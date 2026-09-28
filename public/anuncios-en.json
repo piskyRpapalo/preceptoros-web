@@ -6,9 +6,9 @@
   "feedback": {
    "titulo": "Give me your feedback",
    "cuerpo": "What broke, what you did not understand, what you expected to find and was not there. One concrete sentence beats any praise.",
-   "publico": "Public: sign a thread below. It is signed with your key, on your device.",
+   "publico": "Public: a signed thread in the Agora. Writing is closed today: the measurement is below.",
    "privado": "Private: open an issue on the public repository. It is the only channel that actually arrives today.",
-   "pero": "NO_DATA — the Agora answers now, but it does not accept writing yet: POST /api/v1/threads returns 405, and the server says so in its own words: «writing closed: the Agora does not moderate yet» (measured 2026-09-08). It is signed and stays on your device until it opens.",
+   "pero": "NO_DATA — the Agora answers now, but it does not accept writing yet: POST /api/v1/threads returns 405, and the server says so in its own words: «writing closed: the Agora does not moderate yet» (measured 2026-09-08). Today nothing reaches anyone from here: what arrives is an issue or a PR to the public repository.",
    "enlaceTexto": "Open an issue"
   },
   "entrenar": {

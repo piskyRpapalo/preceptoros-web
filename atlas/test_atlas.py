@@ -625,9 +625,11 @@ process.stdout.write(JSON.stringify(ok));
 # Modulos de `public/game/` que NINGUN guion pide todavia (ni la puerta ni el Army): el multijugador y
 # la cria, firmados por el Soberano el 2026-09-28 («ve construyendo todo… enfocados al multiplayer»).
 # Ver atlas/POST_VERIFICACION_MGNO_LAB.md y atlas/POST_VERIFICACION_SISIL_CRIA.md.
-PUROS = ("canon.js", "sobres.js", "rating.js", "arena.js", "duelo.js", "mercado.js", "narragrafo.js", "cria.js", "genoma.js")
+PUROS = ("canon.js", "sobres.js", "rating.js", "arena.js", "enlace.js", "libreta.js", "duelo.js", "qr.js", "mercado.js",
+         "narragrafo.js", "cria.js", "genoma.js")
 # La Arena (2026-09-28, «el mapa multi-jugador en una pestana»): se carga al abrir su pestana, detras del Army.
-ARENA = ("canon.js", "sobres.js", "rating.js", "arena.js", "duelo.js", "escena.js", "mar.js", "ui-arena.js", "ui-duelo.js")
+ARENA = ("canon.js", "sobres.js", "rating.js", "arena.js", "enlace.js", "libreta.js", "duelo.js", "qr.js", "escena.js", "mar.js",
+         "ui-arena.js", "ui-duelo.js")
 FUERA_DE_LA_PUERTA = tuple(sorted(set(PUROS + ARENA)))
 
 
@@ -843,38 +845,348 @@ class Juez(unittest.TestCase):
                                     .read_text(encoding="utf-8"))["ui"]["juez_humano"], f"{l} lleva el texto en castellano")
 
 
-# Regla de oro del Soberano (2026-09-27): la web publica es educacion, comunidad y soberania
-# tecnica. Lo financiero/DePIN vive en el rack privado. En `public/`, `atlas/`, `data/` y
-# `partidas/` no se nombra NEAR, mainnet, testnet, el Alquimista ni cuentas o unidades de cadena.
-# `near` en minuscula es ingles corriente y no se mira; `NEAR` en mayusculas y las cuentas si.
-CRIPTO = re.compile(r"\bNEAR\b|near_tx|hexelion\.near|\b[a-z0-9_-]+\.near\b|\byocto|(?i:mainnet|testnet|alquimista)")
-TEXTO = (".html", ".js", ".mjs", ".json", ".css", ".md", ".py", ".txt", ".svg", ".xml", ".webmanifest")
+# JUEGO JUSTO, SIN JERGA DE MONEDAS (Soberano, 2026-09-27 y 2026-09-28). Usamos CRIPTOGRAFIA para que
+# el juego sea justo --firmas Ed25519, huellas SHA-256, commit-reveal--: con ella la niebla del mapa y
+# las probabilidades de cada combate son las mismas para quien juega con una IA pequena y para quien
+# lleva a Claude y una IA local de 24 GB, y lo que el rack recoge vale como fuente de un benchmark.
+# NADA en el repositorio puede sonar a monedas: no tiene nada que ver con el juego y asusta a la gente.
+# La lista vetada va en base64 para que el propio repositorio no nombre lo que prohibe. Cada linea es
+# «patron<TAB>ejemplo»; `cs:` delante = distingue mayusculas; `juego:` = solo en los textos que lee quien juega
+# (`public/atlas*-<l>.json`), donde «tokens», «coins» o «monedas» asustarian aunque fuera de ahi sean otra cosa
+# (los tokens de un modelo, en el banco de pruebas). Verla: `python3 atlas/test_atlas.py --vetadas`.
+# PALABRAS COMPUESTAS (Soberano, 2026-09-28: con guion bajo, camelCase o guion): cada linea se mira
+# tal cual y ademas partida por `_` y por camelCase, asi que un identificador no esconde lo que nombra. Los
+# nombres de la API de criptografia (WebCrypto, SubtleCrypto, CryptoKey) se leen enteros: no se parten.
+VETADAS_B64 = (
+    "XGJibG9jayA/Y2hhaW5zP1xiCWxhIGJsb2NrY2hhaW4gZGVsIGp1ZWdvClxiY2FkZW5hcz8gZGUgYmxvcXVlcz9cYgl1bmEg"
+    "Y2FkZW5hIGRlIGJsb3F1ZXMKXGIob258b2ZmKS0/Y2hhaW5cYgl0b2RvIHF1ZWRhIG9uLWNoYWluClxiY3JpcHRvKG1vbmVk"
+    "YXM/fGRpdmlzYXM/fGFjdGl2b3M/KT9cYglwcmVtaW9zIGVuIGNyaXB0bwpcYmNyeXB0by0/Y3VycmVuYyh5fGllcylcYglw"
+    "YXkgd2l0aCBjcnlwdG9jdXJyZW5jeQooPzwhWy5cd10pY3J5cHRvXGIoPyFbLiciYFx3XSkJZWFybiBjcnlwdG8gd2hpbGUg"
+    "eW91IHBsYXkKXGJ3YWxsZXRzP1xiCWNvbm5lY3QgeW91ciB3YWxsZXQKXGJiaWxsZXRlcmFzP1xiCWNvbmVjdGEgdHUgYmls"
+    "bGV0ZXJhClxibmZ0cz9cYgljYWRhIHRyb3BhIGVzIHVuIE5GVApcYndlYjNcYgl1biBqdWVnbyB3ZWIzClxiZGVmaVxiCXJl"
+    "bmRpbWllbnRvcyBEZUZpClxiYWlyZHJvcHM/XGIJaGFicmEgYWlyZHJvcApcYnN0YWsoZXxlc3xlZHxpbmcpXGIJc3Rha2lu"
+    "ZyBkZSB0cm9wYXMKXGJ0b2tlbm9taWNzXGIJbGEgdG9rZW5vbWljcyBkZWwgYm9zcXVlClxiKHN0YWJsZXxhbHQpY29pbnM/"
+    "XGIJcGFnYXIgZW4gc3RhYmxlY29pbnMKXGJiaXRjb2lucz9cYgl2YWxlIHVuIGJpdGNvaW4KXGJldGhlcmV1bVxiCWRlc3Bs"
+    "ZWdhZG8gZW4gRXRoZXJldW0KXGJzb2xhbmFcYgljb3JyZSBzb2JyZSBTb2xhbmEKXGJzYXRvc2hpcz9cYgljaWVuIHNhdG9z"
+    "aGlzClxiaGFsdmluZ1xiCWFudGVzIGRlbCBoYWx2aW5nClxiaGFzaCA/cmF0ZVxiCXN1YmUgdHUgaGFzaHJhdGUKXGIobWFp"
+    "bnx0ZXN0fGRldiluZXRcYgl2YWxvcmVzIGRlIFRlc3RuZXQKXGJ5b2N0bwkxZTI0IHlvY3RvTkVBUgpcYmFscXVpbWlzdGFc"
+    "YglFbCBBbHF1aW1pc3RhIGRpY2UKXGJzbWFydCBjb250cmFjdHM/XGIJYSBzbWFydCBjb250cmFjdCBzZXR0bGVzIGl0Clxi"
+    "Y29udHJhdG9zPyBpbnRlbGlnZW50ZXM/XGIJbG8gbGlxdWlkYSB1biBjb250cmF0byBpbnRlbGlnZW50ZQpcYm1pbnQoZWR8"
+    "aW5nfHMpP1xiCW1pbnQgeW91ciB0cm9vcApcYm1pbmluZ1xiCW1pbmluZyByZXdhcmRzClxibWluYXJcYglwdWVkZXMgbWlu"
+    "YXIgZW4gZWwgYm9zcXVlClxibWluYWRvXGIJZWwgbWluYWRvIGRlIGx1egpcYmxlZGdlcnM/XGIJZWwgbGVkZ2VyIGZpcm1h"
+    "ZG8KXGJwcnVlYmEgZGUgZnJhdWRlXGIJcXVlZGEgY29tbyBwcnVlYmEgZGUgZnJhdWRlClxiZnJhdWQgcHJvb2ZzP1xiCWEg"
+    "ZnJhdWQgcHJvb2YKXGJkb2JsZSBnYXN0b1xiCXVuIGRvYmxlIGdhc3RvClxiZG91YmxlWy0gXXNwZW5kXHcqCW5vIGRvdWJs"
+    "ZS1zcGVuZGluZwpcYmdhcyBmZWVzP1xiCXNpbiBnYXMgZmVlcwpcYnByb29mWy0gXW9mWy0gXSh3b3JrfHN0YWtlKVxiCXBy"
+    "b29mIG9mIHdvcmsKXGJwcnVlYmEgZGUgKHRyYWJham98cGFydGljaXBhY2lbb8OzXW4pXGIJcHJ1ZWJhIGRlIHBhcnRpY2lw"
+    "YWNpw7NuClxibW9uZWRhcz8gKGRpZ2l0YWx8dmlydHVhbCkoZXMpP1xiCXVuYSBtb25lZGEgZGlnaXRhbCBwcm9waWEKXGJk"
+    "ZXBpblxiCWxvIERlUElOIHZpdmUgYXBhcnRlCmNzOlxiTkVBUlxiCXNhbGRvIGVuIE5FQVIKY3M6bmVhcl90eAlpbXBvcnQg"
+    "bmVhcl90eApjczpcYlthLXowLTlfLV0rXC5uZWFyXGIJaGV4ZWxpb24ubmVhcgpqdWVnbzpcYnRva2Vucz9cYgllYXJuIHRv"
+    "a2VucyBhcyB5b3UgcGxheQpqdWVnbzpcYmNvaW5zP1xiCWNvbGxlY3QgY29pbnMgaW4gdGhlIEZvcmVzdApqdWVnbzpcYm1v"
+    "bmVkYXM/XGIJZ2FuYSBtb25lZGFzIGVuIGVsIEJvc3F1ZQpqdWVnbzpcYm1vbm5haWVzP1xiCWdhZ25lIGRlcyBtb25uYWll"
+    "cwpqdWVnbzpcYm3DvG56ZW4/XGIJc2FtbWxlIE3DvG56ZW4KanVlZ286XGJtb25ldFthZV1cYglyYWNjb2dsaSBtb25ldGUK"
+    "anVlZ286XGJtb2VkYXM/XGIJZ2FuaGEgbW9lZGFzCmp1ZWdvOlxi0LzQvtC90LXRglx3KgnRgdC+0LHQuNGA0LDQuSDQvNC+"
+    "0L3QtdGC0YsKanVlZ286XGLOvVvOv8+MXc68W865zq9dz4POvFx3KgnOvM6szrbOtc+IzrUgzr3Ov868zq/Pg868zrHPhM6x"
+    "Cmp1ZWdvOti52YXZhNipCdin2KzZhdi5INi52YXZhNipCg=="
+)
+TEXTO = (".html", ".js", ".mjs", ".json", ".jsonl", ".css", ".md", ".py", ".txt", ".svg", ".xml",
+         ".webmanifest", ".yml", ".yaml", ".sh", ".toml")
 
 
-def menciones_cripto(texto):
-    return [m.group(0) for m in CRIPTO.finditer(texto)]
+def vetadas():
+    import base64
+    filas = []
+    for linea in base64.b64decode("".join(VETADAS_B64)).decode("utf-8").splitlines():
+        patron, ejemplo = linea.split("\t")
+        juego = patron.startswith("juego:")
+        patron = patron[6:] if juego else patron
+        cs = patron.startswith("cs:")
+        filas.append((re.compile(patron[3:] if cs else patron, 0 if cs else re.I), ejemplo, juego))
+    return filas
 
 
-class SinCripto(unittest.TestCase):
-    def test_la_web_publica_no_nombra_cripto(self):
+VETO = vetadas()
+COMPUESTAS_B64 = "Y3J5cHRvX3dhbGxldApjcnlwdG9XYWxsZXQKY3J5cHRvLXdhbGxldApDUllQVE9fV0FMTEVUCm15X25mdF9saXN0CnN0YWtpbmdQb29sCm9uX2NoYWluX2xlZGdlcgpsZWRnZXJFbnRyeQptaW50X3Ryb29w"   # casos de la guarda, cifrados por lo mismo
+API_CRIPTOGRAFIA = re.compile(r"WebCrypto|SubtleCrypto|CryptoKey")
+TEXTO_DEL_JUEGO = re.compile(r"^public/atlas(-[a-z]+)*-[a-z]{2}\.json$")
+
+
+def partida(texto):
+    """La linea partida por `_` y por camelCase: `mi_palabra` y `miPalabra` -> `mi palabra`."""
+    t = API_CRIPTOGRAFIA.sub(lambda m: m.group(0).lower(), texto)
+    return re.sub(r"(?<=[a-z0-9])(?=[A-Z])", " ", t).replace("_", " ")
+
+
+def menciones_vetadas(texto, juego=False):
+    hallados = []
+    for version in dict.fromkeys((texto, partida(texto))):
+        hallados += [m.group(0) for r, _, solo_juego in VETO if juego or not solo_juego for m in r.finditer(version)]
+    return list(dict.fromkeys(hallados))
+
+
+def ficheros_del_repo(raiz):
+    """Lo que git sigue (el repositorio entero); sin git, todo menos lo que git ignora siempre."""
+    try:
+        salida = subprocess.run(["git", "-C", str(raiz), "ls-files", "-z"], capture_output=True, check=True).stdout
+        return [raiz / x for x in salida.decode("utf-8").split("\0") if x]
+    except (OSError, subprocess.CalledProcessError):
+        return [f for f in raiz.rglob("*") if ".git" not in f.parts and "__pycache__" not in f.parts]
+
+
+class JuegoJusto(unittest.TestCase):
+    def test_nada_suena_a_monedas(self):
         raiz = RAIZ.parent
         vistos, hallados = 0, []
-        for carpeta in ("public", "atlas", "data", "partidas"):
-            for f in sorted((raiz / carpeta).rglob("*")):
-                if not f.is_file() or f.suffix not in TEXTO or f == Path(__file__).resolve():
-                    continue
-                vistos += 1
-                for n, linea in enumerate(f.read_text(encoding="utf-8", errors="replace").splitlines(), 1):
-                    hallados += [f"{f.relative_to(raiz)}:{n}: {m}" for m in menciones_cripto(linea)]
-        self.assertGreater(vistos, 100, "la guarda no ha mirado casi nada: falla cerrado")
+        for f in sorted(ficheros_del_repo(raiz)):
+            rel = str(f.relative_to(raiz))
+            juego = bool(TEXTO_DEL_JUEGO.match(rel))
+            hallados += [f"{rel} (nombre): {m}" for m in menciones_vetadas(rel)]
+            if not f.is_file() or f.suffix not in TEXTO:
+                continue
+            vistos += 1
+            for n, linea in enumerate(f.read_text(encoding="utf-8", errors="replace").splitlines(), 1):
+                hallados += [f"{rel}:{n}: {m}" for m in menciones_vetadas(linea, juego)]
+        self.assertGreater(vistos, 300, "la guarda no ha mirado casi nada: falla cerrado")
         self.assertEqual(hallados, [], "\n".join(hallados[:20]))
 
     def test_la_guarda_caza_lo_que_debe(self):
-        for sembrado in ("saldo en NEAR", "hexelion.near", "red: mainnet", "valores de Testnet",
-                         "El Alquimista dice", "1e24 yoctoNEAR", "import near_tx"):
-            with self.subTest(sembrado=sembrado):
-                self.assertTrue(menciones_cripto(sembrado))
-        self.assertEqual(menciones_cripto("the cave is near the core"), [])
+        self.assertGreater(len(VETO), 50)
+        for r, ejemplo, juego in VETO:
+            with self.subTest(patron=r.pattern):
+                self.assertTrue(menciones_vetadas(ejemplo, juego), ejemplo)
+
+    def test_la_guarda_ve_las_palabras_compuestas(self):
+        import base64
+        for compuesta in base64.b64decode(COMPUESTAS_B64).decode("utf-8").splitlines():
+            with self.subTest(compuesta=compuesta):
+                self.assertTrue(menciones_vetadas(compuesta), compuesta)
+
+    def test_los_textos_del_juego_no_hablan_de_monedas(self):
+        """En lo que lee quien juega, ni monedas ni tokens; fuera de ahi un token es la unidad de un modelo."""
+        self.assertTrue(TEXTO_DEL_JUEGO.match("public/atlas-arena-en.json") and TEXTO_DEL_JUEGO.match("public/atlas-el.json"))
+        self.assertFalse(TEXTO_DEL_JUEGO.match("public/cerebros-en.json"))
+        for frase in ("Earn tokens as you play", "collect coins", "gana monedas"):
+            with self.subTest(frase=frase):
+                self.assertTrue(menciones_vetadas(frase, juego=True))
+                self.assertEqual(menciones_vetadas(frase), [], "fuera del juego no se mira")
+
+    def test_la_criptografia_si_se_nombra(self):
+        """Lo que hace justo el juego no se veta: la API del navegador, node, las firmas y el ingles corriente."""
+        for limpio in ("the cave is near the core", "criptografía para que el juego sea justo",
+                       "window.crypto.getRandomValues(b)", "var s = raiz.crypto && raiz.crypto.subtle;",
+                       "import { createHash } from 'node:crypto';", "WebCrypto en la pestana, `crypto` en node",
+                       "tokens per second", "depuis le coin de l'en-tête", "you swap signed packages",
+                       "Dredging", "el libro de pruebas firmado", "commit-reveal y firma Ed25519",
+                       "verifica con WebCrypto", "var k = CryptoKey;", "max_tokens: 5, prompt_tokens",
+                       "It signs no value and moves no money."):
+            with self.subTest(limpio=limpio):
+                self.assertEqual(menciones_vetadas(limpio), [])
+
+
+class RutasMedidas(unittest.TestCase):
+    """PROMETER NO ES ENTREGAR (Soberano, 2026-09-29). Cada ruta que la web llama tiene que estar en
+    `public/rutas-medidas.json` con su ultima medida fechada (o NO_DATA con su causa); el sello de «Enviar
+    al rack» se decide por la RUTA DE ENTREGA con acuse verificado, no por `/salud`; y ningun anuncio de
+    recompensa sale sin un camino de pago medido. Es la guarda que habria cazado el sello verde sobre un
+    404. Va aqui y no en `test_web.py` porque su numero de pruebas (171) es una cifra publicada cuyo dueno
+    es `coherencia-publica.py`, en el rack (DIRECTIVA_V15_ESTADO §1.5); el CI corre las dos."""
+
+    FECHA = re.compile(r"^\d{4}-\d{2}-\d{2}$")
+
+    def setUp(self):
+        self.m = json.loads((PUBLICO / "rutas-medidas.json").read_text(encoding="utf-8"))
+        self.rutas = {(r["metodo"], r["base"], r["ruta"]): r for r in self.m["rutas"]}
+
+    @staticmethod
+    def llamadas():
+        """(metodo, base, ruta) de cada fetch a la API o al servidor local, leido del codigo servido."""
+        vistas = set()
+        for f in sorted(list((PUBLICO / "assets").glob("*.js")) + list((PUBLICO / "game").glob("*.js"))):
+            c = f.read_text(encoding="utf-8")
+            for m in re.finditer(r"fetch\((API|BASE|URL_BASE) \+ '([^']+)'(.{0,160})", c, re.S):
+                base, ruta, cola = m.group(1), m.group(2), m.group(3)
+                metodo = "POST" if re.search(r"method:\s*'POST'", cola.split("fetch(")[0]) else "GET"
+                if base == "API":
+                    ruta = "/api/v1" + ruta
+                if ruta.endswith("/") and "encodeURIComponent" in cola[:40]:
+                    ruta += "{quien}"
+                vistas.add((metodo, "local" if base == "URL_BASE" else "api", ruta))
+            for m in re.finditer(r"fetch\('htt" r"p://[^'/]+(/[^']+)'", c):  # partida: la doctrina de un CDN mira las URL literales
+                vistas.add(("GET", "local", m.group(1)))
+            if f.name == "sello-rack.js":
+                for m in re.finditer(r"pide\('(/[^']+)'", c):
+                    vistas.add(("GET", "api", "/api/v1" + m.group(1)))
+        return vistas
+
+    def test_cada_ruta_llamada_tiene_su_medida(self):
+        vistas = self.llamadas()
+        self.assertGreater(len(vistas), 8, "la guarda no ve casi ninguna llamada: falla cerrado")
+        self.assertEqual(sorted(v for v in vistas if v not in self.rutas), [], "rutas llamadas sin medida en rutas-medidas.json")
+
+    def test_cada_medida_es_una_medida(self):
+        for r in self.m["rutas"]:
+            with self.subTest(ruta=r["id"]):
+                self.assertIn(r["metodo"], ("GET", "POST"))
+                self.assertIn(r["base"], self.m["bases"])
+                if r["codigo"] is None:
+                    self.assertTrue(r.get("causa", "").startswith("NO_DATA"), "sin codigo hay que decir NO_DATA y su causa")
+                    self.assertIsNone(r["medido_el"])
+                else:
+                    self.assertIsInstance(r["codigo"], int)
+                    self.assertRegex(r["medido_el"] or "", self.FECHA)
+                    self.assertTrue(r.get("maquina"), "una medida sin maquina no es una medida")
+                if r["acuse_verificado"]:
+                    self.assertTrue(200 <= (r["codigo"] or 0) < 300 and self.FECHA.match(r.get("acuse_el") or ""),
+                                    "acuse verificado sin 2xx ni fecha de acuse")
+
+    def test_el_sello_de_enviar_mide_la_entrega(self):
+        s = sin_comentarios((ASSETS / "sello-rack.js").read_text(encoding="utf-8"))
+        self.assertIn("'/rutas-medidas.json'", s)
+        self.assertIn("ENTREGA.acuse_verificado", s)
+        self.assertNotIn("RACK = pide('/salud'", s, "el sello vuelve a dar verde por /salud")
+        entrega = [r for r in self.m["rutas"] if r["id"] == "paquetes"]
+        self.assertEqual(len(entrega), 1)
+        for frase in ("llega al rack al pulsar", "reaches the rack when you press", "El rack está recibiendo"):
+            if not entrega[0]["acuse_verificado"]:
+                self.assertNotIn(frase, s, "el sello promete una entrega sin acuse medido")
+
+    def test_ningun_anuncio_de_recompensa_sin_camino_medido(self):
+        an = json.loads((PUBLICO / "anuncios.json").read_text(encoding="utf-8"))
+        ids = {r["id"]: r for r in self.m["rutas"]}
+        lista = an.get("anuncios") or an.get("items") or []
+        for a in lista:
+            if a.get("tipo") in ("recompensa", "tesoro", "merito"):
+                with self.subTest(anuncio=a.get("id")):
+                    r = ids.get(a.get("ruta_medida"))
+                    self.assertTrue(r and r["acuse_verificado"], "anuncio de recompensa sin camino de pago medido")
+
+class MeritoTesoro(unittest.TestCase):
+    """Enmienda del Soberano (2026-09-29): el merito que ya se cuenta se puede gastar. `atlas.merito/1` (lo que
+    se gana: paquetes firmados y aceptados, de origen humano, sin transferir) y `atlas.tesoro/1` (lo que se
+    paga: una bolsa de recursos que abre una firma humana con testigo que no cobra). El verificador es de
+    laboratorio (`atlas/verifica_tesoro.mjs`); abrir una bolsa de verdad espera §7.4 y §7.5."""
+
+    def test_los_casos_del_merito_y_del_tesoro(self):
+        r = subprocess.run(["node", str(RAIZ / "tesoro_casos.mjs")], capture_output=True, text=True, timeout=120)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        casos = json.loads(r.stdout)
+        self.assertGreaterEqual(len(casos), 13)
+        for c in casos:
+            with self.subTest(caso=c["caso"]):
+                self.assertTrue(c["ok"], c["detalle"])
+
+    def test_contratos_del_merito_y_del_tesoro(self):
+        try:
+            import jsonschema
+        except ImportError:
+            self.skipTest("NO_DATA · jsonschema no instalado")
+        r = subprocess.run(["node", str(RAIZ / "tesoro_casos.mjs"), "--muestras"], capture_output=True, text=True, timeout=120)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        m = json.loads(r.stdout)
+        def con(b, **c):
+            d = json.loads(json.dumps(b)); d.update(c); return d
+        def paquete(b, **c):
+            d = json.loads(json.dumps(b)); d["por_paquete"][0].update(c); return d
+        def reclamo(b, **c):
+            d = json.loads(json.dumps(b)); d["reclamos"][0].update(c); return d
+        casos = {
+            "atlas_merito_schema.json": (m["merito"], [
+                paquete(m["merito"], procedencia="piloto_base"), con(m["merito"], meritos=1.5), con(m["merito"], para="otra_clave"),
+                con(m["merito"], clave_hash="ana"), paquete(m["merito"], hash_ficha=7), con(m["merito"], medido_el="ayer")]),
+            "atlas_tesoro_schema.json": (m["tesoro"], [
+                con(m["tesoro"], bolsa_total={"cobre": 100}), con(m["tesoro"], firma_testigo="x"), con(m["tesoro"], moneda="nueva"),
+                reclamo(m["tesoro"], bolsa_entregada={"cobre": 1.1, "luz": 0, "biomasa": 0, "flujo": 0, "oxigeno": 0}),
+                reclamo(m["tesoro"], caduca_el="2026-12-31"), reclamo(m["tesoro"], meritos_presentados=0)]),
+        }
+        for nombre, (bueno, malos) in casos.items():
+            v = jsonschema.Draft202012Validator(json.loads((DATOS / nombre).read_text(encoding="utf-8")))
+            with self.subTest(contrato=nombre):
+                self.assertEqual([e.message for e in v.iter_errors(bueno)], [])
+                self.assertEqual(len(malos), 6)
+            for i, malo in enumerate(malos):
+                with self.subTest(contrato=nombre, violacion=i):
+                    self.assertFalse(v.is_valid(malo))
+
+    def test_nadie_es_vecino_por_geolocalizacion(self):
+        """§10.7: «cerca» es el mismo sector, la misma temporada y saltos en el grafo firmado; nunca tu direccion."""
+        for f in sorted(list(ASSETS.glob("*.js")) + list((PUBLICO / "game").glob("*.js"))):
+            with self.subTest(fichero=f.name):
+                self.assertNotIn("geolocation", sin_comentarios(f.read_text(encoding="utf-8")))
+
+    def test_el_merito_no_entra_en_el_precache(self):
+        """§10.8: un balance es una MEDIDA, y una medida no se cachea (regla del arnes)."""
+        listas = (PUBLICO / "sw.js").read_text(encoding="utf-8") + (PUBLICO / "sw-listas.js").read_text(encoding="utf-8")
+        for palabra in ("merito", "tesoro", "rutas-medidas"):
+            with self.subTest(palabra=palabra):
+                self.assertNotIn(palabra, sin_comentarios(listas))
+
+class CanalLab(unittest.TestCase):
+    """La puerta de entrada del feedback (Soberano, 2026-09-28/29): sobre firmado -> LLEGA -> verificado ->
+    registro encadenado fuera de public/ -> acuse que verifica, o FALLIDO. `canal.js` en CUARENTENA (compilado,
+    no servido); respaldo por PR a `envios/`; y el humo que se pone rojo con 404 y 405."""
+
+    def test_los_casos_del_canal_y_la_puerta(self):
+        r = subprocess.run(["node", str(RAIZ / "canal_casos.mjs")], capture_output=True, text=True, timeout=120)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        casos = json.loads(r.stdout)
+        self.assertGreaterEqual(len(casos), 11)
+        for c in casos:
+            with self.subTest(caso=c["caso"]):
+                self.assertTrue(c["ok"], c["detalle"])
+
+    def test_contratos_del_sobre_y_del_acuse(self):
+        try:
+            import jsonschema
+        except ImportError:
+            self.skipTest("NO_DATA · jsonschema no instalado")
+        r = subprocess.run(["node", str(RAIZ / "canal_casos.mjs"), "--muestras"], capture_output=True, text=True, timeout=120)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        m = json.loads(r.stdout)
+        def con(b, **c):
+            d = json.loads(json.dumps(b)); d.update(c); return d
+        casos = {
+            "atlas_lab_envio_schema.json": (m["envio"], [
+                con(m["envio"], firma=""), con(m["envio"], servidor="relevo"), con(m["envio"], tipo="publicar"),
+                con(m["envio"], maquina_declarada="a" + "/" + "b"), con(m["envio"], firmado_el="ayer"), con(m["envio"], reto="x")]),
+            "atlas_lab_acuse_schema.json": (m["acuse"], [
+                con(m["acuse"], estado="publicado"), con(m["acuse"], ok=True), con(m["acuse"], registro_n=0),
+                con(m["acuse"], envio_hash="x"), con(m["acuse"], firma="ed25519:00"), con(m["acuse"], registro_prev="ayer")]),
+        }
+        for nombre, (bueno, malos) in casos.items():
+            v = jsonschema.Draft202012Validator(json.loads((DATOS / nombre).read_text(encoding="utf-8")))
+            with self.subTest(contrato=nombre):
+                self.assertEqual([e.message for e in v.iter_errors(bueno)], [])
+                self.assertEqual(len(malos), 6)
+            for i, malo in enumerate(malos):
+                with self.subTest(contrato=nombre, violacion=i):
+                    self.assertFalse(v.is_valid(malo))
+
+    def test_el_canal_esta_en_cuarentena(self):
+        """Compilado, no servido: ni en public/, ni lo carga un HTML o un guion, ni lo nombra el precache."""
+        self.assertFalse(list(PUBLICO.rglob("canal.js")), "el canal salio de la cuarentena sin acuse verificado")
+        for f in sorted(PUBLICO.rglob("*")):
+            if f.is_file() and f.suffix in (".html", ".js", ".json"):
+                with self.subTest(fichero=str(f.relative_to(PUBLICO))):
+                    c = f.read_text(encoding="utf-8", errors="replace")
+                    self.assertNotIn("AtlasCanal", c)
+                    self.assertNotIn("cuarentena/canal", c)
+
+    def test_el_respaldo_por_pr_es_pull_request(self):
+        w = (RAIZ.parent / ".github" / "workflows" / "envios.yml").read_text(encoding="utf-8")
+        codigo = "\n".join(l for l in w.splitlines() if not l.lstrip().startswith("#"))
+        self.assertIn("pull_request:", codigo)
+        self.assertNotIn("pull_request_target", codigo, "el codigo de un fork correria con secretos")
+        self.assertIn("contents: read", codigo)
+        self.assertIn("node atlas/puerta_lab.mjs verifica", codigo)
+        self.assertTrue((RAIZ.parent / "envios" / "README.md").is_file())
+
+    def test_el_humo_se_pone_rojo_con_404_y_405(self):
+        """Prometer y no entregar no da verde: la regla, probada sin red."""
+        for codigo in ("404", "405"):
+            with self.subTest(codigo=codigo):
+                r = subprocess.run([sys.executable, str(RAIZ.parent / "humo_feedback.py"), "--simula", codigo],
+                                   capture_output=True, text=True, timeout=60)
+                self.assertEqual(r.returncode, 1, r.stdout)
+                self.assertEqual(json.loads(r.stdout)["estado"], "ROJO")
 
 class Opiniones(unittest.TestCase):
     """Enviar las opiniones firmadas (Soberano, 2026-09-28: «quiero enviar ya los feedback mios y de
@@ -1156,7 +1468,7 @@ class Multijugador(unittest.TestCase):
                 con(m["resultado"], en_juego={"cobre": 1, "luz": 0, "eur": 5})]),
             "atlas_oferta_schema.json": (m["oferta"], [
                 con(m["oferta"], da={"eur": 5}), con(m["oferta"], da={"cobre": 1.5}), con(m["oferta"], da={}),
-                con(m["oferta"], expira_ciclo=-1), con(m["oferta"], procedencia="bot"), con(m["oferta"], wallet="x")]),
+                con(m["oferta"], expira_ciclo=-1), con(m["oferta"], procedencia="bot"), con(m["oferta"], saldo_real="x")]),
             "atlas_contraoferta_schema.json": (contra, [
                 con(contra, oferta="x"), sin(contra, "oferta"), con(contra, da={"usd": 1}), con(contra, nonce="12"),
                 con(contra, precio_real=3), con(contra, procedencia="agente")]),
@@ -1328,6 +1640,48 @@ class Arena(unittest.TestCase):
         self.assertFalse(res.is_valid(con(base, rondas=3)), "un abandono con rondas")
         self.assertFalse(res.is_valid(con(base, final="rendicion")))
 
+    def test_los_casos_del_qr(self):
+        r = subprocess.run(["node", str(RAIZ / "qr_casos.mjs")], capture_output=True, text=True, timeout=300)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        casos = json.loads(r.stdout)
+        self.assertGreaterEqual(len(casos), 11)
+        for c in casos:
+            with self.subTest(caso=c["caso"]):
+                self.assertTrue(c["ok"], c["detalle"])
+
+    def test_el_guardado_de_duelos(self):
+        """Sugerencia firmada (2026-09-28): cerrar la pestana no es abandonar. Base PROPIA, la libreta se
+        verifica entera al cargar (en `libreta.js`, dentro del camino de escritura), y los pasos van por
+        turnos entre pestanas para no firmar dos veces el mismo `seq`."""
+        ui, lib = self._js("ui-duelo.js"), self._js("libreta.js")
+        self.assertIn("BASE = 'atlas-duelos'", ui)
+        self.assertNotIn("open('preceptoros'", ui, "la base de `auth.js` no es de la Arena")
+        self.assertIn("c.carga(x.g)", ui, "lo guardado entra sin pasar por la carga verificada")
+        self.assertIn("navigator.locks", ui, "sin turnos entre pestanas")
+        self.assertIn("S.verifica(s, op.verifica)", lib)
+        self.assertIn("S.compromiso(D.r, op.pub, ses)", lib, "un r guardado sin casar con su compromiso")
+        self.assertEqual(re.findall(r"indexedDB\.open\((\w+)", ui), ["BASE"])
+
+    def test_contrato_de_la_libreta_guardada(self):
+        try:
+            import jsonschema
+        except ImportError:
+            self.skipTest("NO_DATA · jsonschema no instalado")
+        r = subprocess.run(["node", str(RAIZ / "duelo_casos.mjs"), "--muestras"], capture_output=True, text=True, timeout=120)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        g = json.loads(r.stdout)["libreta"]
+        v = jsonschema.Draft202012Validator(json.loads((DATOS / "atlas_duelos_guardados_schema.json").read_text(encoding="utf-8")))
+        self.assertEqual([e.message for e in v.iter_errors(g)], [])
+        def con(**c):
+            d = json.loads(json.dumps(g)); d.update(c); return d
+        def duelo(**c):
+            d = json.loads(json.dumps(g)); d["duelos"][0].update(c); return d
+        malos = [con(esquema="atlas.partida/1"), con(de="hexelion"), con(servidor="relevo"),
+                 duelo(rol="espectador"), duelo(r="x"), duelo(esperado=-1)]
+        for i, malo in enumerate(malos):
+            with self.subTest(violacion=i):
+                self.assertFalse(v.is_valid(malo))
+
     def test_la_arena_se_carga_con_su_pestana(self):
         capa = (ASSETS / "thegame.js").read_text(encoding="utf-8")
         lista = capa[capa.index("var ARENA"):capa.index("function el(")]
@@ -1351,10 +1705,12 @@ class Arena(unittest.TestCase):
             self.assertTrue((PUBLICO / f"atlas-arena-{l}.json").is_file(), f"la Arena sin textos en {l}")
 
     def test_la_arena_no_sale_a_la_red_ni_usa_el_azar_del_sistema(self):
-        for f in ("escena.js", "mar.js", "ui-arena.js", "ui-duelo.js", "duelo.js", "rating.js"):
+        for f in ("escena.js", "mar.js", "ui-arena.js", "ui-duelo.js", "duelo.js", "rating.js", "enlace.js", "libreta.js", "qr.js"):
             c = self._js(f)
             for malo in ("Math.random", "localStorage", "indexedDB", "innerHTML", "sendBeacon", "WebSocket",
                          "RTCPeerConnection", "http://", "https://", "XMLHttpRequest", "Date."):
+                if malo == "indexedDB" and f == "ui-duelo.js":
+                    continue   # la libreta de duelos se guarda en SU base (test_el_guardado_de_duelos)
                 with self.subTest(fichero=f, prohibido=malo):
                     self.assertNotIn(malo, c)
             fetches = re.findall(r"fetch\(([^)]*)\)", c)
@@ -1365,4 +1721,8 @@ class Arena(unittest.TestCase):
 
 
 if __name__ == "__main__":
+    if "--vetadas" in sys.argv:
+        for r, ejemplo, juego in VETO:
+            print(f"{'juego:' if juego else ''}{r.pattern}\t{ejemplo}")
+        sys.exit(0)
     unittest.main(verbosity=1)

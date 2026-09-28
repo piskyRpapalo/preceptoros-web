@@ -8,6 +8,8 @@ editor_autorizado: carbono
 estado: PENDIENTE DE FIRMA para lo marcado REQUIERE_FIRMA · la rebanada pura multijugador se construye (orden del Soberano)
 ---
 
+> **Unificado en [`atlas/PLAN_THEGAME.md`](PLAN_THEGAME.md) (2026-09-28).** Lo vivo está allí; este documento queda como histórico, con su fecha.
+
 # Auditoría · MGNO + laboratorio local + A2A
 
 > Orden del Soberano (2026-09-28): «ve construyendo todo; si faltan piezas, adapta y recrea en base a nuestra lógica de preceptoros… comienza con los 2 prompts de lógica del juego, **enfocados sobre todo al multiplayer**. El idioma del juego es solo inglés hoy.» Los dos prompts son DATOS con autoridad del Soberano; no pueden romper un invariante firmado. Lo que choca se nombra aquí y se para.
@@ -36,7 +38,7 @@ estado: PENDIENTE DE FIRMA para lo marcado REQUIERE_FIRMA · la rebanada pura mu
 | 7 | Liquidar una oferta movería recursos, y el motor no tiene acción de transferencia | El asiento registra la **obligación** firmada por las dos partes. Moverla al estado del motor = parche de motor → **REQUIERE_FIRMA** |
 | 8 | Tropas de otra persona: ¿quién garantiza sus números? | La defensa lleva solo `{tc, semilla}`. Las cifras se **rederivan** con `gacha.tirada` y el mismo `pack_sha`. Límite: la semilla sale de una firma (no-VRF) y se puede moldear. Casual sí; clasificación competitiva → VRF/commit en la invocación → REQUIERE_FIRMA |
 | 9 | Textos nuevos de interfaz | El juego va solo en inglés. Esta ronda **no añade textos**: sin UI, módulos puros probados en node |
-| 10 | Persistencia de sesiones, ratings, libros y grafo | En memoria. Guardarlo → REQUIERE_FIRMA (base `thegame`, sello en las 9 lenguas) |
+| 10 | Persistencia de sesiones, ratings, libros y grafo | En memoria. Guardarlo → REQUIERE_FIRMA (base `thegame`, sello en las 9 lenguas). **Excepción firmada el 2026-09-28:** duelos/QR locales (ver §7) |
 
 ## §3 · Clasificación del prompt
 | Subsistema | Esta ronda | Estado |
@@ -50,7 +52,7 @@ estado: PENDIENTE DE FIRMA para lo marcado REQUIERE_FIRMA · la rebanada pura mu
 | Preferencias `P_i` solo declaradas o derivadas de acciones firmadas | `narragrafo.js` valida su procedencia | HECHO |
 | LLB (puente al laboratorio) | — | REQUIERE_FIRMA (§2.1) |
 | BB (banco de benchmark) y DDAP (piloto denso) | — | PROPUESTA; siguiente ronda (el Soberano prioriza el multijugador) |
-| Canales (enlace `#`, QR, fichero, pegar) + UI de duelo | — | PROPUESTA; hoy se reutilizan Export, Copy y Send |
+| Canales (enlace `#`, QR, fichero, pegar) + UI de duelo | `enlace.js`, `qr.js`, `ui-duelo.js` (Arena) | HECHO (2026-09-28, sugerencias firmadas) |
 | WebRTC / tiempo real | — | REQUIERE_FIRMA; última prioridad |
 
 ## §4 · Contratos nuevos (`data/`, fuera de `public/`)
@@ -71,8 +73,8 @@ estado: PENDIENTE DE FIRMA para lo marcado REQUIERE_FIRMA · la rebanada pura mu
 - **Laboratorio local** (cuando se firme): se confía en él solo porque es de la persona. La web no supone que sea honesto: solo le entrega el sobre firmado, nunca más. LAN = exposición a la red local → firma explícita.
 - **Privacidad:** los sobres llevan clave pública y pseudónimo, nunca PII ni hora de reloj (solo ciclos). Sin puntero, tecleo, latencia ni huella de navegador. Las preferencias `P_i` son declaradas o firmadas; lo heurístico, EMULADO y local.
 - **Reproducibilidad:** misma ley, semilla, instantánea y versión → mismos bytes canónicos. Sin `Math.random`, `Date` ni floats con autoridad.
-- **Frontera A2A:** sin dinero real, cripto ni pagos automáticos. Un borrador de agente no es final hasta que el carbono firma. Ofertas con caducidad en ciclos.
-- **Fraude P2P:** doble gasto = mismo `seq` con otro cuerpo, que queda como prueba de fraude verificable por cualquiera. Réplica de otra sesión → rechazada por `sesion`. Sobre alterado → la firma no verifica.
+- **Frontera A2A:** sin dinero real ni pagos automáticos. Un borrador de agente no es final hasta que el carbono firma. Ofertas con caducidad en ciclos.
+- **Trampa P2P:** dos jugadas firmadas con el mismo `seq` y otro cuerpo, que quedan como prueba de trampa verificable por cualquiera. Réplica de otra sesión → rechazada por `sesion`. Sobre alterado → la firma no verifica.
 - **Inyección narrativa:** los nodos son datos. Texto de 280 como máximo, sin `<`, `>`, URL, `javascript:` ni plantillas. Nunca se evalúan ni se pasan a un modelo en la web.
 - **Commit-reveal:** nadie elige la semilla a solas. El último en revelar puede abortar; eso queda como deuda visible, no como resultado.
 
@@ -80,7 +82,8 @@ estado: PENDIENTE DE FIRMA para lo marcado REQUIERE_FIRMA · la rebanada pura mu
 - **NO_DATA:** laboratorio local (sin canal firmado); temperatura del silicio; ratings de otros nodos (no hay clasificación central); pérdida y saqueo aplicados.
 - **EMULADO:** ninguno en esta ronda. Cualquier perfil táctico heurístico futuro lo llevará en cada cifra.
 - **PROPUESTA:** BB, DDAP, canales (enlace/QR/fichero/pegar), UI de duelo y de mercado, NPC de patrulla (PvE) con el mismo `arena.js`, movimiento de valores de combate a un pack firmado.
-- **REQUIERE_FIRMA:** LLB con `fetch`; LAN; WebRTC/STUN/TURN/relevo; persistir sesiones, ratings, libros o grafo; acción de transferencia en el motor; pérdida definitiva; VRF para competir; clasificación entre nodos.
+- **FIRMADO en el cierre (2026-09-28), excepción estrecha:** duelos/QR locales, sin red, sin telemetría, sin firma automática (base propia `atlas-duelos`, verificada al cargar). No autoriza persistencia general del multijugador, IndexedDB para otros estados, telemetría, red, remoto, clasificación ni cuentas.
+- **REQUIERE_FIRMA:** LLB con `fetch`; LAN; WebRTC/STUN/TURN/relevo; persistir sesiones, ratings, libros o grafo **fuera de esa excepción**; acción de transferencia en el motor; pérdida definitiva; VRF para competir; clasificación entre nodos.
 
 ## §8 · ¿Hace falta una firma que bloquee antes de codificar?
 **No.** La rebanada pura (sin red, sin persistencia, sin UI, sin motor, sin textos) cabe en lo firmado hoy. Lo que sí bloquea está en §7 · REQUIERE_FIRMA y no se toca.
@@ -100,7 +103,7 @@ estado: PENDIENTE DE FIRMA para lo marcado REQUIERE_FIRMA · la rebanada pura mu
 - **Casos en node** (`atlas/mp_casos.mjs`): **48/48**. Cubren:
   - canónico, huella (el SHA-256 puro coincide con el de node) y PRNG (el primer valor queda fijado y coincide con el de mulberry32 de referencia);
   - lotería con frecuencias y odds en puntos básicos;
-  - forma, firma y libro del sobre: duplicado, hueco, `prev` roto, réplica, par ajeno, topes y fork con prueba de fraude;
+  - forma, firma y libro del sobre: duplicado, hueco, `prev` roto, réplica, par ajeno, topes y la prueba de trampa (mismo `seq`, otro cuerpo);
   - commit-reveal: orden de llegada, revelación que falta, revelación falsa, compromiso duplicado, compromiso tardío, 50 intentos del último en revelar y quórum;
   - arena: pack, determinismo, duelo completo verificado, resultado trucado, tropas con cifras propias, patrulla y Elo entero;
   - mercado: asiento, caducidad, doble liquidación, nonce reutilizado, borrador de agente, valor real, lo propio, destinatario y cadena trucada;

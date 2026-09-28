@@ -2522,7 +2522,11 @@ class Hub(unittest.TestCase):
     # dia que alguien traduzca una familia nueva antes de pintarla, la declara
     # aqui y la prueba la protege del barrido de huerfanos. Borrar la prueba
     # con la ultima familia habria dejado a la siguiente sin red.
-    ESPERAN_RENDERIZADOR = {}
+    ESPERAN_RENDERIZADOR = {
+        # El merito y el tesoro (Soberano, 2026-09-29, §11): nueve lenguas escritas; su vista,
+        # `ui-tesoro.js`, espera las iniciales de §7.4 y §7.5 de la nota.
+        "tesoro": "su vista es ui-tesoro.js, que no se escribe hasta las iniciales de §7.4 y §7.5: sin camino de pago medido, la web no anuncia recompensa",
+    }
 
     def test_lo_traducido_y_sin_pintar_no_se_pierde(self):
         """Una familia traducida y sin pintar NO es basura, y hay que decirlo.
@@ -5525,7 +5529,7 @@ class LoQueNoSeVeConElGateVerde(unittest.TestCase):
     HUECOS_DECLARADOS = {
         # familia: lenguas que faltan, con el motivo. Se vacia traduciendo.
         "cerebros": {"fr", "pt", "it", "de", "ru", "el", "ar"},  # pendiente de traducir
-        "ledger": {"es"},                                          # es usa ledger.json base
+        "libro-pruebas": {"es"},                                   # es usa el .jsonl base
         # theGame habla solo ingles (LENGUAS de thegame.js, 2026-09-28): opinar carga siempre `en`.
         "atlas-opina": {"es", "fr", "pt", "it", "de", "ru", "el", "ar"},
         # La Arena (2026-09-28), con el mismo criterio: el juego habla solo ingles y sus textos se

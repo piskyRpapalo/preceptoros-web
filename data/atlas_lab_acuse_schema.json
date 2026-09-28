@@ -1,0 +1,20 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "preceptoros:atlas.lab_acuse/1",
+ "title": "Acuse de la puerta del laboratorio",
+ "description": "Lo que la puerta devuelve por cada `atlas.lab_envio/1` que ENTRA: el hash del sobre, su lugar en el registro encadenado (fuera de public/), el estado y la firma del receptor sobre el JSON canonico sin `firma`. La web lo verifica con la clave del receptor, cuya huella fija `public/rutas-medidas.json`: sin acuse que verifique, el envio es FALLIDO, nunca «pendiente» ni «enviado». `estado` es `cuarentena` mientras no se firme la lista de editores (N claves por persona, sin recuperacion, con altas): la puerta acepta, verifica, registra y acusa, pero no da por bueno nada, no publica nada y no alimenta ningun corpus. El receptor se ensena por la huella de su clave, no por su nombre (propuesta §9.4). Vive fuera de `public/`.",
+ "type": "object",
+ "additionalProperties": false,
+ "required": ["esquema", "envio_hash", "recibido_el", "registro_n", "registro_prev", "registro_hash", "estado", "receptor_clave", "firma"],
+ "properties": {
+  "esquema": {"const": "atlas.lab_acuse/1"},
+  "envio_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+  "recibido_el": {"type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"},
+  "registro_n": {"type": "integer", "minimum": 1},
+  "registro_prev": {"type": "string", "pattern": "^(genesis|[0-9a-f]{64})$"},
+  "registro_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+  "estado": {"const": "cuarentena"},
+  "receptor_clave": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+  "firma": {"type": "string", "pattern": "^ed25519:[0-9a-f]{128}$"}
+ }
+}

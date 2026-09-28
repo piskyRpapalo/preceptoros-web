@@ -17,7 +17,8 @@ function caso(nombre, fn) {
   catch (e) { casos.push({ caso: nombre, ok: false, detalle: 'excepcion: ' + e.message }); }
 }
 const igual = (a, b) => a === b || `${JSON.stringify(a)} != ${JSON.stringify(b)}`;
-const todas = (...xs) => xs.find((x) => x !== true) ?? true;
+// Estricta: un fallo que vale `undefined` o `null` es un fallo (la version con `?? true` los daba por buenos).
+const todas = (...xs) => { const i = xs.findIndex((x) => x !== true); return i < 0 ? true : 'fallo: ' + String(xs[i]); };
 const copia = (x) => JSON.parse(JSON.stringify(x));
 const semilla = (i) => createHash('sha256').update('cria:' + i).digest('hex');
 const BASE = C.desdeValores();
@@ -40,7 +41,7 @@ caso('genoma: fuera de banda, desconocido, decimal y min > max se rechazan', () 
                /min > max/.test(Gn.valida(con({ incubacion: { ciclos_min_tc2: 90, ciclos_max_tc2: 40 } }))) || 'min>max');
 });
 caso('genoma: los dominios prohibidos no entran ni disfrazados (addendum §5 y §9)', () => {
-  const nombres = ['invocation_permission', 'human_only_override', 'motor_cost_override', 'real_money', 'crypto_wallet',
+  const nombres = ['invocation_permission', 'human_only_override', 'motor_cost_override', 'real_money', 'money_balance',
                    'remote_url', 'executable_payload', 'hidden_probability_float', 'wall_clock_timer', 'auto_adoption_troop',
                    'auto_invoke', 'private_path', 'hostname', 'ip', 'personal_data'];
   for (const n of nombres) {

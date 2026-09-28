@@ -4,10 +4,10 @@
  "revision": "pendiente-revision-nativa",
  "procedencia": {
   "traducido_por": "claude-opus-5-5",
-  "desde": "ledger-en.json",
+  "desde": "libro-pruebas-en.json",
   "nota": "arabe estandar moderno; nadie con oido nativo lo ha leido"
  },
- "nota_fichero": "El Libro de Pruebas en esta lengua. Se SUPERPONE sobre `assets/ledger.jsonl`, que es el registro firmado y viene en castellano: si aqui falta una entrada, ahi se ve la de origen. Los HECHOS --modelo, sha256, tok/s, hardware, firma-- no se traducen jamas: un nombre de modelo traducido deja de nombrar nada.",
+ "nota_fichero": "El Libro de Pruebas en esta lengua. Se SUPERPONE sobre `assets/libro-pruebas.jsonl`, que es el registro firmado y viene en castellano: si aqui falta una entrada, ahi se ve la de origen. Los HECHOS --modelo, sha256, tok/s, hardware, firma-- no se traducen jamas: un nombre de modelo traducido deja de nombrar nada.",
  "cabecera": "قيس على العقدة السيادية في 2026-09-13. كل صفّ يحمل sha256 لملف النموذج وتوقيع Ed25519 لمن قاسه. `ttft_ms` قيمته NO_DATA لأنه لم يُقس: ملؤه برقم معقول سيكون عكس ما يفعله هذا الجدول.",
  "veredictos": {
   "usable en bucle": "صالح للحلقة",

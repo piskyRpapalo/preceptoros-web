@@ -1,0 +1,15 @@
+{
+ "esquema": "tesoro_textos/1",
+ "idioma": "fr",
+ "nota": "Textos del merito y del tesoro (enmienda del Soberano, 2026-09-29, §11). Los HECHOS van en su medida (`agora.json › actividad.paquetes_firmados`, medido el 2026-09-23); aqui solo lo que se lee. Esperan su renderizador, `ui-tesoro.js`, que espera las iniciales de §7.4 y §7.5: hasta entonces no se pintan.",
+ "ui": {
+  "tesoro_titulo": "Ton mérite est un nombre que tu peux vérifier",
+  "tesoro_que_es": "Chaque paquet que tu signes et qui est accepté compte 1. On compte des signatures, pas des personnes : on ne sait pas qui tu es et on ne veut pas le savoir.",
+  "tesoro_no_es": "Ce n’est pas de l’argent. Ce n’est pas sur une chaîne. On ne peut ni l’acheter, ni le vendre, ni le transférer. Personne ne peut l’émettre pour toi : ni un pilote, ni un modèle, ni moi.",
+  "tesoro_pago": "Le mérite ouvre une bourse. C’est moi qui l’ouvre, avec une signature, et cette signature exige un témoin qui n’est pas toi. Le système crédite ; il ne paie pas tout seul.",
+  "tesoro_mercado": "Ce qui sort de la bourse, ce sont des ressources de la Forêt —cuivre, biomasse, lumière— échangées avec une autre personne en deux signatures et une enveloppe. Sans horloge : les offres expirent en cycles.",
+  "tesoro_cerca": "« Près » n’est pas ton adresse. C’est le même secteur, la même saison, et des enveloppes que vous avez déjà échangées.",
+  "tesoro_hoy": "Mesuré le 2026-09-23 : 5 paquets sur 8 avec une signature vérifiée à la porte. Le chemin de paiement est en NO_DATA tant que la porte du serveur ne renvoie pas d’accusé vérifié ; en attendant, le recours est une PR au dépôt public, et c’est la seule chose qui arrive vraiment aujourd’hui.",
+  "tesoro_bajar": "Ça tient sur un téléphone de 8 Go, sans carte graphique. Un geste par fichier, avec son hash devant. Rien n’entre dans ton dos."
+ }
+}

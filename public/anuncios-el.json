@@ -1,14 +1,14 @@
 {
  "esquema": 1,
  "idioma": "el",
- "nota": "Los textos de los anuncios del Agora en esta lengua. Salieron de `anuncios.json` el 2026-09-23: con nueve lenguas dentro le quedaban 344 B del tope de 16 KB y el siguiente anuncio ya no cabia. `anuncios.json` se queda con los HECHOS (id, tipo, autor, fecha, enlace, estado); esto trae lo que se lee, por id. Mismo corte que el taller, los paneles y el Agora.",
+ "nota": "Los textos de los anuncios del Agora en esta lengua. Salieron de `anuncios.json` el 2026-09-23: con nueve lenguas dentro le quedaban 344 B del tope de 16 KB y el siguiente anuncio ya no cabia. `anuncios.json` se queda con los HECHOS (id, tipo, autor, fecha, enlace, estado); esto trae lo que se lee, por id. Mismo corte que el taller, los paneles y el Agora. · pendiente-revision-nativa (2026-09-29): el Soberano no puede revisar esta lengua.",
  "textos": {
   "feedback": {
    "titulo": "Δώσε μου την ανατροφοδότησή σου",
    "cuerpo": "Τι χάλασε, τι δεν κατάλαβες, τι περίμενες να βρεις και δεν ήταν εκεί. Μια συγκεκριμένη φράση αξίζει περισσότερο από έναν έπαινο.",
-   "publico": "Δημόσια: υπόγραψε ένα νήμα εδώ κάτω. Υπογράφεται με το κλειδί σου, στη συσκευή σου.",
+   "publico": "Δημόσια: ένα υπογεγραμμένο νήμα στην Αγορά. Σήμερα η εγγραφή είναι κλειστή: η μέτρηση είναι παρακάτω.",
    "privado": "Ιδιωτικά: άνοιξε ένα issue στο δημόσιο αποθετήριο. Είναι το μόνο κανάλι που σήμερα φτάνει πραγματικά.",
-   "pero": "NO_DATA — η Αγορά απαντά πλέον, αλλά δεν δέχεται ακόμη εγγραφή: το POST /api/v1/threads επιστρέφει 405, και ο ίδιος ο διακομιστής το λέει: «η εγγραφή είναι κλειστή: η Αγορά δεν συντονίζει ακόμη» (μετρήθηκε 2026-09-08). Υπογράφεται και παραμένει στη συσκευή σου μέχρι να ανοίξει.",
+   "pero": "NO_DATA — η Αγορά απαντά πλέον, αλλά δεν δέχεται ακόμη εγγραφή: το POST /api/v1/threads επιστρέφει 405, και ο ίδιος ο διακομιστής το λέει: «η εγγραφή είναι κλειστή: η Αγορά δεν συντονίζει ακόμη» (μετρήθηκε 2026-09-08). Σήμερα από εδώ δεν φτάνει σε κανέναν: φτάνει ένα issue ή ένα PR στο δημόσιο αποθετήριο.",
    "enlaceTexto": "Άνοιξε ένα issue"
   },
   "entrenar": {

@@ -1,0 +1,32 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "preceptoros:atlas.merito/1",
+ "title": "El merito de una clave en una temporada",
+ "description": "Lo que se GANA (enmienda del Soberano, 2026-09-29): 1 merito = 1 paquete firmado Y ACEPTADO, de origen humano. Es el contador que ya existe (`agora.json › paquetes_firmados`) con nombre: se cuentan firmas, no personas. No se transfiere (no hay campo de destino y un merito dentro de una oferta o un asiento tumba el gate), no lo acuna el silicio (la procedencia solo puede ser `humano`), no pasa del techo publicado ANTES de la temporada, y un merito retirado deja su hueco y su motivo. Sin decimales, sin reloj salvo la fecha de la medida. Lo verifica `atlas/verifica_tesoro.mjs`. Vive fuera de `public/`: es el contrato, no se sirve.",
+ "type": "object",
+ "additionalProperties": false,
+ "required": ["esquema", "clave_hash", "temporada", "meritos", "por_paquete", "techo_temporada", "medido_el"],
+ "properties": {
+  "esquema": {"const": "atlas.merito/1"},
+  "clave_hash": {"type": "string", "pattern": "^[0-9a-f]{16}$"},
+  "temporada": {"type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}\\.\\d+$"},
+  "meritos": {"type": "integer", "minimum": 0},
+  "techo_temporada": {"type": "integer", "minimum": 0},
+  "medido_el": {"type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$"},
+  "por_paquete": {
+   "type": "array",
+   "maxItems": 10000,
+   "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["hash_ficha", "aceptado", "ciclo", "procedencia"],
+    "properties": {
+     "hash_ficha": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+     "aceptado": {"type": "boolean"},
+     "ciclo": {"type": "integer", "minimum": 0},
+     "procedencia": {"const": "humano"}
+    }
+   }
+  }
+ }
+}

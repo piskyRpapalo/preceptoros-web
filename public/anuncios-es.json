@@ -6,9 +6,9 @@
   "feedback": {
    "titulo": "Dame tu feedback",
    "cuerpo": "Qué se rompió, qué no entendiste, qué esperabas encontrar y no estaba. Sirve más una frase concreta que un elogio.",
-   "publico": "Público: firma un hilo aquí abajo. Se firma con tu clave, en tu aparato.",
+   "publico": "Público: un hilo firmado del Ágora. Hoy la escritura está cerrada: abajo, la medida.",
    "privado": "Privado: abre un issue en el repositorio público. Es el único canal que hoy llega de verdad.",
-   "pero": "NO_DATA — el Ágora ya contesta, pero todavía no acepta escritura: POST /api/v1/threads responde 405, y el servidor lo dice con sus palabras: «escritura cerrada: el Ágora todavía no modera» (medido el 2026-09-08). Se firma y se queda en tu aparato hasta que abra.",
+   "pero": "NO_DATA — el Ágora ya contesta, pero todavía no acepta escritura: POST /api/v1/threads responde 405, y el servidor lo dice con sus palabras: «escritura cerrada: el Ágora todavía no modera» (medido el 2026-09-08). Hoy no llega a nadie desde aquí: lo que llega es un issue o un PR al repositorio público.",
    "enlaceTexto": "Abrir un issue"
   },
   "entrenar": {

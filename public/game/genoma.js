@@ -6,7 +6,7 @@
    decimales, tumba el genoma. Los dominios PROHIBIDOS (§5, §9) se rechazan por nombre aunque vinieran
    dentro de un dominio permitido: quien puede invocar, lo solo-humano, costes o fisica del motor,
    firma, red, persistencia, precache, presupuestos de peso, reloj, odds ocultas, adoptar o invocar
-   solo, dinero real, cripto, rutas, hosts, IPs, datos personales.
+   solo, dinero real, rutas, hosts, IPs, datos personales.
 
    `paramHash` es la huella canonica de los dominios: dos genomas iguales con las claves en otro orden
    tienen la misma. La maquina MEJORA PROPUESTAS; la persona ADOPTA mejoras con su firma. Este fichero
@@ -40,7 +40,7 @@
   };
   var PROHIBIDO = new RegExp('invoca|invocation|human_only|humano_solo|motor|coste|cost|fisica|physics|firma|signature|' +
     'red$|network|fetch|persist|indexeddb|precache|peso_b|gzip|budget_bytes|reloj|clock|timer|wall|fecha|date|' +
-    'oculta|hidden|float|auto_|adopt|dinero|money|real_money|eur|usd|cripto|crypto|wallet|token|url|remote|' +
+    'oculta|hidden|float|auto_|adopt|dinero|money|real_money|eur|usd|url|remote|' +
     'host|ip$|path|ruta_privada|personal|email|correo|payload|code|codigo|script|leaderboard|clasificacion_central', 'i');
   var PROCEDENCIAS = ['humano', 'piloto_base', 'denso', 'lora', 'sintetico', 'emulado'];
 

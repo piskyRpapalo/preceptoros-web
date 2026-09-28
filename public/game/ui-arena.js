@@ -193,6 +193,10 @@
     var s = el('section', 'panel atlas-arena');
     s.appendChild(el('h4', null, T('arena_h')));
     s.appendChild(el('p', 'atlas-nota', T('arena_nota')));
+    var justo = el('details', 'atlas-justo');
+    justo.appendChild(el('summary', null, T('arena_justo')));
+    justo.appendChild(el('p', 'atlas-nota', T('arena_justo_nota')));
+    s.appendChild(justo);
     R.mapa = el('canvas', 'atlas-arena-mapa');
     R.mapa.setAttribute('role', 'img'); R.mapa.setAttribute('aria-label', T('arena_mapa_aria'));
     s.appendChild(R.mapa);

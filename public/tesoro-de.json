@@ -1,0 +1,15 @@
+{
+ "esquema": "tesoro_textos/1",
+ "idioma": "de",
+ "nota": "Textos del merito y del tesoro (enmienda del Soberano, 2026-09-29, §11). Los HECHOS van en su medida (`agora.json › actividad.paquetes_firmados`, medido el 2026-09-23); aqui solo lo que se lee. Esperan su renderizador, `ui-tesoro.js`, que espera las iniciales de §7.4 y §7.5: hasta entonces no se pintan.",
+ "ui": {
+  "tesoro_titulo": "Dein Verdienst ist eine Zahl, die du prüfen kannst",
+  "tesoro_que_es": "Jedes Paket, das du signierst und das angenommen wird, zählt 1. Gezählt werden Signaturen, keine Personen: Wir wissen nicht, wer du bist, und wollen es nicht wissen.",
+  "tesoro_no_es": "Es ist kein Geld. Es liegt auf keiner Kette. Man kann es weder kaufen noch verkaufen noch übertragen. Niemand kann es für dich ausgeben: kein Pilot, kein Modell, nicht ich.",
+  "tesoro_pago": "Verdienst öffnet einen Topf. Den Topf öffne ich, mit einer Signatur, und diese Signatur braucht einen Zeugen, der nicht du bist. Das System schreibt gut; es zahlt nicht von selbst.",
+  "tesoro_mercado": "Aus dem Topf kommen Ressourcen des Waldes —Kupfer, Biomasse, Licht—, getauscht mit einer anderen Person in zwei Signaturen und einem Umschlag. Ohne Uhr: Angebote laufen in Zyklen ab.",
+  "tesoro_cerca": "„Nah“ ist nicht deine Adresse. Es ist derselbe Sektor, dieselbe Saison und Umschläge, die ihr schon getauscht habt.",
+  "tesoro_hoy": "Gemessen am 2026-09-23: 5 von 8 Paketen mit an der Tür geprüfter Signatur. Der Zahlungsweg ist NO_DATA, bis die Tür des Servers eine geprüfte Quittung zurückgibt; bis dahin ist der Ausweg ein PR ins öffentliche Repository, und das ist heute das Einzige, was wirklich ankommt.",
+  "tesoro_bajar": "Passt auf ein Telefon mit 8 GB, ohne Grafikkarte. Ein Tippen pro Datei, mit ihrem Hash davor. Nichts kommt hinter deinem Rücken herein."
+ }
+}

@@ -1,5 +1,7 @@
 # Estado técnico de la web · 2026-09-08, cifras al 2026-09-22
 
+> **2026-09-28 · traspaso.** theGame tiene su estado vivo en `atlas/PLAN_THEGAME.md`. Lo que aquí se dice del backend (`api.preceptoros.org`, §7) **no se pudo volver a medir desde la nube**: el proxy del contenedor corta el host, así que hoy es NO_DATA y lo mide el rack (`PLAN_THEGAME.md` §5).
+
 Escrito para que una sesión nueva pueda trabajar el GitHub de los dos
 proyectos sin volver a medir nada. Todas las cifras de aquí salen de contar
 los ficheros, no de recordarlos.
@@ -8,7 +10,7 @@ los ficheros, no de recordarlos.
 
 ## 1 · Qué es esto, en una frase
 
-Un sitio estático de siete páginas por idioma, ocho idiomas, sin build, sin
+Un sitio estático de siete páginas por idioma, nueve idiomas (el árabe entró el 2026-09-23), sin build, sin
 framework y sin dependencias. Lo que hay en `public/` es exactamente lo que
 recibe el navegador. Se despliega empujando a `main`.
 
@@ -24,7 +26,7 @@ recibe el navegador. Se despliega empujando a `main`.
 | Peso que se despliega | **4,4 MB de `assets/`**, de los que 2,2 MB son `assets/caras/` |
 | Peso en disco | los `public/downloads/*.gguf` siguen **ignorados por git** |
 | Tope por fichero | **16 KiB**, vigilado por el gate |
-| Pruebas | `test_web.py` **153** (cero saltadas) · `arnes_sw.mjs` **23/23** |
+| Pruebas | `test_web.py` **171** (1 saltada) · `atlas/test_atlas.py` **87** · `arnes_sw.mjs` **24/24** (medido en la nube el 2026-09-29; el 2026-09-22 eran 153 y 23/23) |
 
 **El fichero que menos margen tiene YA NO es `sw.js`** --- se partió en
 `sw.js` + `sw-listas.js` y hoy deja 5.150 B libres. Medido el 2026-09-22, los
@@ -250,3 +252,5 @@ Hay tres salidas y la elección es del Soberano, no de la sesión:
 ---
 
 *Gate al 2026-09-22: `test_web.py` **153/153**, cero saltadas · `arnes_sw.mjs` **23/23** · worker `preceptoros-2026-17-aaw` (desplegado: `aav`).*
+
+*Gate al 2026-09-29 (nube, rama de trabajo): `test_web.py` **171** (1 saltada) · `atlas/test_atlas.py` **87** · `arnes_sw.mjs` **24/24**. Lo publicado es lo que hay en `main`.*

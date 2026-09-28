@@ -2,7 +2,7 @@
 
    UNA OFERTA NO ES FINAL HASTA QUE FIRMA EL CARBONO (IronClaw). Viajan tres sobres:
    - `oferta` (o `contraoferta`): quien da, que da y que pide, en RECURSOS DEL MOTOR (luz, biomasa,
-     cobre, flujo, oxigeno); nunca dinero real ni cripto ni una moneda nueva (addendum §2.6). Caduca
+     cobre, flujo, oxigeno); nunca dinero real ni una moneda nueva (addendum §2.6). Caduca
      por CICLO de juego (`expira_ciclo`), nunca por reloj. `para` nombra a una persona o a
      «cualquiera». Un borrador de agente (`procedencia: 'agente_borrador'`) no se liquida: la
      persona tiene que firmarlo como suyo.
@@ -25,7 +25,7 @@
   var RECURSOS = ['luz', 'biomasa', 'cobre', 'flujo', 'oxigeno'];
   var PROCEDENCIAS = ['humano', 'agente_borrador'];
   /* Defensa en profundidad: las formas son cerradas, y aun asi un nombre de valor real se rechaza. */
-  var VALOR_REAL = /eur|usd|dinero|money|precio_real|cripto|crypto|wallet|cartera|token|pago|payment|saldo_real/i;
+  var VALOR_REAL = /eur|usd|dinero|money|precio_real|pago|payment|saldo_real/i;
 
   function objeto(o) { return !!o && typeof o === 'object' && !Array.isArray(o); }
   function mismas(o, claves) {

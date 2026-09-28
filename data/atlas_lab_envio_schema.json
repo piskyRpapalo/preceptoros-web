@@ -1,0 +1,31 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "preceptoros:atlas.lab_envio/1",
+ "title": "Sobre firmado que la web entrega al laboratorio",
+ "description": "La puerta de entrada del feedback (Soberano, 2026-09-28/29): firma humana en el navegador -> este sobre -> LLEGA -> se verifica en la puerta -> queda en un registro encadenado fuera de public/ -> vuelve un acuse (`atlas.lab_acuse/1`). Destino firmado: `api.preceptoros.org` con gesto explicito, el informe de la Aduana a la vista antes de salir, y el PR al repositorio publico como respaldo mientras no haya acuse verificado. La firma va en el SOBRE (sobre el JSON canonico sin `firma`), no en el cuerpo. `hash` = sha256 del JSON canonico sin `hash` ni `firma`. `reto` = el nonce de un solo uso de `GET /api/v1/reto`: sin el, una firma capturada valdria para siempre. `maquina_declarada` la escribe la persona: nunca se lee del aparato. `aduana` dice CUANTO se tacho y de que clase, nunca lo tachado. Cero rutas, hostnames, IPs, claves privadas ni datos personales: lo comprueba la puerta, no solo este esquema. Vive fuera de `public/`.",
+ "type": "object",
+ "additionalProperties": false,
+ "required": ["esquema", "tipo", "contenido_v", "clave_publica", "pseudonimo", "firmado_el", "maquina_declarada", "reto", "cuerpo", "aduana", "hash", "firma"],
+ "properties": {
+  "esquema": {"const": "atlas.lab_envio/1"},
+  "tipo": {"enum": ["valoracion", "correccion", "reescritura", "paso_torre", "duelo_loratelier", "resena", "opinion"]},
+  "contenido_v": {"type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}\\.\\d+$"},
+  "clave_publica": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+  "pseudonimo": {"type": "string", "minLength": 1, "maxLength": 40, "pattern": "^[^<>/@]*$"},
+  "firmado_el": {"type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"},
+  "maquina_declarada": {"type": "string", "maxLength": 60, "pattern": "^[^<>/@:]*$"},
+  "reto": {"type": "string", "pattern": "^[0-9a-f]{32}$"},
+  "cuerpo": {"type": "object", "maxProperties": 16},
+  "aduana": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": ["ruta", "host", "ip", "correo", "clave"],
+   "properties": {
+    "ruta": {"type": "integer", "minimum": 0}, "host": {"type": "integer", "minimum": 0}, "ip": {"type": "integer", "minimum": 0},
+    "correo": {"type": "integer", "minimum": 0}, "clave": {"type": "integer", "minimum": 0}
+   }
+  },
+  "hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+  "firma": {"type": "string", "pattern": "^ed25519:[0-9a-f]{128}$"}
+ }
+}

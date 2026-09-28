@@ -10,6 +10,8 @@ unifica: DIRECTIVA v1.5 (Soberano) · MAPA_THEGAME_LORA_JUEGO · PLAN_APP_PILOTO
 estado: PROPUESTA · sin firmar · la construye Claude Code en el rack, fase a fase, después de una ronda de preguntas
 ---
 
+> **Unificado en [`atlas/PLAN_THEGAME.md`](PLAN_THEGAME.md) (2026-09-28).** Lo vivo está allí; este documento queda como histórico, con su fecha.
+
 # PLAN · theGame, estructura primero
 
 > Lo que pidió el Soberano (2026-09-27): «No te preocupes por recursos, habilidades ni niveles. Haz la **estructura**. Los valores y los LoRAs los adherimos después; ahora, valores [**provisionales**]. Un juego brutalmente **personalizable**, **sencillo**, **didáctico**, que la persona **quiera continuar**, y que disfrute de las **rutas y los combates entre usuarios**.»
@@ -39,7 +41,7 @@ estado: PROPUESTA · sin firmar · la construye Claude Code en el rack, fase a f
 ## §2 · La idea que lo une todo: **SOBRES FIRMADOS + RESOLUCIÓN DETERMINISTA**
 Sin servidor, dos personas no comparten estado: **comparten pruebas**. Cada interacción es un **sobre** (`atlas.sobre/1`) con esta forma: `{tipo, de, para?, cuerpo, pack_sha, contenido_v, seq, firma}`.
 - **Tipos:** `defensa`, `desafio`, `aceptacion`, `revelacion`, `resultado`, `oferta`, `envio`, `recibo`, `captura`, `pack`.
-- **`seq`:** contador monótono por nodo. Dos sobres del mismo nodo con el mismo `seq` y distinto cuerpo son una **prueba de fraude** que cualquiera puede verificar. Así se detecta el doble gasto sin servidor.
+- **`seq`:** contador monótono por nodo. Dos sobres del mismo nodo con el mismo `seq` y distinto cuerpo son una **prueba de trampa** que cualquiera puede verificar. Así se detecta a quien firma dos versiones de la misma jugada, sin servidor.
 - **`pack_sha`:** ambos jugadores deben jugar con el mismo paquete de valores, o el combate no se resuelve. Evita la trampa de «mis tropas con mis números».
 - **Canales**, todos opcionales e intercambiables, porque el sobre es el mismo en todos:
   1. enlace con `#fragmento`: el fragmento **nunca llega a ningún servidor**;
@@ -113,10 +115,10 @@ A no puede probar asaltos sin que B vuelva a aceptar, y B no conoce el asalto al
 | `game/combate.js` | defensas, asaltos, rondas, NPC | a2a_routes (guerra) |
 | `game/mapa.js` | sectores de Fourier, vecinos XOR, enclaves, niebla | a2a_routes (topografía) |
 | `game/rutas.js` | ofertas, envíos, recibos, mercado honesto | a2a_routes (comercio) |
-| `game/sobres.js` | construir y verificar sobres, commit-reveal, pruebas de fraude | (nuevo: la columna vertebral) |
+| `game/sobres.js` | construir y verificar sobres, commit-reveal, pruebas de trampa | (nuevo: la columna vertebral) |
 | `game/nodo.js` | Trinidad HW/SW/Carbono (EMULADO), orquestador, calor | city_node.js |
 | `game/cartas.js` | Loop Cards (JSON → decisión), autopiloto | a2a_routes (autopilot) |
-| `game/db.js` | Army, persistencia (tras firma), ledger | igual |
+| `game/db.js` | Army, persistencia (tras firma), libro de jugadas | igual |
 | `game/core.js` | sonido FM | igual |
 | `game/canal.js` | enlace `#`, QR, fichero, pegar; WebRTC manual (tras firma) | (nuevo) |
 | `game/ui-*.js` | vistas partidas en ficheros de < 16 KB (incubadora, mapa, combate, editor, laboratorio) | ui.js |
@@ -128,7 +130,7 @@ La tipografía en canvas **no sustituye** al texto del DOM, por accesibilidad: l
 |---|---|---|
 | **E0** | Verdad del rack y de la web + unificar documentos (este plan manda; lo demás se enlaza) | Una tabla medida y una lista de duplicados resueltos |
 | **E1** | Contratos: `atlas.sobre/1`, `atlas.defensa/1`, `atlas.asalto/1`, `atlas.oferta/1`, `atlas.pack/1` | Un caso bueno y 6 violaciones por esquema |
-| **E2** | `sobres.js`: firma, verificación, `seq`, prueba de fraude, commit-reveal | Casos en node: fraude detectado, semilla no elegible a solas |
+| **E2** | `sobres.js`: firma, verificación, `seq`, prueba de trampa, commit-reveal | Casos en node: trampa detectada, semilla no elegible a solas |
 | **E3** | `combate.js` + NPC (PvE offline) + repetición en el lienzo | Mismo combate, mismo registro; un NPC jugable sin red |
 | **E4** | `canal.js` (enlace, QR, fichero, pegar) + PvP asíncrono de principio a fin | Dos pestañas con dos identidades: desafío → combate → verificado |
 | **E5** | `mapa.js` + `rutas.js` + enclaves + mercado | Rutas firmadas; enclave capturado y mantenido |

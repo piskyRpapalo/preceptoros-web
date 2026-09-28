@@ -1,14 +1,14 @@
 {
  "esquema": 1,
  "idioma": "ar",
- "nota": "Los textos de los anuncios del Agora en esta lengua. Salieron de `anuncios.json` el 2026-09-23: con nueve lenguas dentro le quedaban 344 B del tope de 16 KB y el siguiente anuncio ya no cabia. `anuncios.json` se queda con los HECHOS (id, tipo, autor, fecha, enlace, estado); esto trae lo que se lee, por id. Mismo corte que el taller, los paneles y el Agora.",
+ "nota": "Los textos de los anuncios del Agora en esta lengua. Salieron de `anuncios.json` el 2026-09-23: con nueve lenguas dentro le quedaban 344 B del tope de 16 KB y el siguiente anuncio ya no cabia. `anuncios.json` se queda con los HECHOS (id, tipo, autor, fecha, enlace, estado); esto trae lo que se lee, por id. Mismo corte que el taller, los paneles y el Agora. · pendiente-revision-nativa (2026-09-29): el Soberano no puede revisar esta lengua.",
  "textos": {
   "feedback": {
    "titulo": "أعطني رأيك",
    "cuerpo": "ما الذي تعطّل، وما الذي لم تفهمه، وما الذي توقّعت أن تجده ولم يكن موجودًا. جملة واحدة محدّدة خير من أي مديح.",
-   "publico": "علنًا: وقّع موضوعًا في الأسفل. يُوقَّع بمفتاحك، على جهازك.",
+   "publico": "علني: خيط موقّع في الأغورا. الكتابة مغلقة اليوم: القياس أدناه.",
    "privado": "سرًّا: افتح issue في المستودع العام. إنها القناة الوحيدة التي تصل فعلًا اليوم.",
-   "pero": "NO_DATA — الأغورا تُجيب الآن، لكنها لا تقبل الكتابة بعد: POST /api/v1/threads يُعيد 405، والخادم يقولها بكلماته: «writing closed: the Agora does not moderate yet» (قيس في 2026-09-08). يُوقَّع ويبقى على جهازك حتى تُفتح.",
+   "pero": "NO_DATA — الأغورا تُجيب الآن، لكنها لا تقبل الكتابة بعد: POST /api/v1/threads يُعيد 405، والخادم يقولها بكلماته: «writing closed: the Agora does not moderate yet» (قيس في 2026-09-08). اليوم لا يصل شيء من هنا إلى أحد: ما يصل هو issue أو طلب دمج (PR) إلى المستودع العام.",
    "enlaceTexto": "افتح issue"
   },
   "entrenar": {

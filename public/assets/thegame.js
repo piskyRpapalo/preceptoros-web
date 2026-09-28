@@ -35,8 +35,9 @@
   /* LA ARENA, A DEMANDA (Soberano, 2026-09-28: «el mapa multi-jugador en una pestana… las formas
      invocadas luchando en live con los NPCs»): el mar, los lugares NPC, el combate en vivo y los duelos
      entre personas por paquetes firmados. Detras del Army, cuyas tropas y verificador usa. */
-  var ARENA = [['/game/canon.js'], ['/game/sobres.js'], ['/game/rating.js'], ['/game/arena.js'], ['/game/duelo.js'],
-    ['/game/escena.js'], ['/game/mar.js'], ['/game/ui-arena.js'], ['/game/ui-duelo.js']];
+  var ARENA = [['/game/canon.js'], ['/game/sobres.js'], ['/game/rating.js'], ['/game/arena.js'], ['/game/enlace.js'],
+    ['/game/libreta.js'], ['/game/duelo.js'], ['/game/qr.js'], ['/game/escena.js'], ['/game/mar.js'], ['/game/ui-arena.js'],
+    ['/game/ui-duelo.js']];
   /* LAS LENGUAS DEL JUEGO (2026-09-28, el Soberano: «hoy, solo inglés; un mismo enlace»). La
      UNICA lista de lenguas en las que el juego esta COMPLETO. Cualquier portada abre el juego en
      una de ellas: la de la pagina si esta aqui; si no, la primera. Anadir una lengua es traducir
@@ -240,6 +241,10 @@
     setTimeout(function () { n.remove(); }, 6000);
   }
 
+  /* Un enlace de duelo (`#thegame/duelo=…`, por QR) abre la Arena, que lo importa (`ui-duelo.js`). Solo
+     cuando ya hay pestanas: `ordena()` las construye tras montar el juego, y despues vuelve a Core. */
+  function alEnlace() { if (PANEL.arena && /^#thegame\//.test(location.hash)) { muestra('arena'); } }
+
   function abre(desde) {
     origen = desde || document.querySelector('#cab-nav a.thegame');
     carga().then(function () {
@@ -268,10 +273,11 @@
             });
             sm.appendChild(bo);
           }
-          ordena();
+          ordena(); alEnlace();
         });
       }
       if (!capa.open) { capa.showModal(); }
+      alEnlace();
       document.body.classList.add('en-thegame');
       window.AtlasJuego.sigue();
     }).catch(function (err) {
@@ -287,7 +293,7 @@
     if (window.AtlasJuego) { window.AtlasJuego.pausa(); }
     capa.close();
     document.body.classList.remove('en-thegame');
-    if (location.hash === '#thegame' && history.replaceState) {
+    if (/^#thegame(\/|$)/.test(location.hash) && history.replaceState) {
       history.replaceState(null, '', location.pathname + location.search);
     }
     if (origen && origen.focus) { origen.focus(); }

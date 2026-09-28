@@ -22,7 +22,8 @@ async function caso(nombre, fn) {
 }
 const igual = (a, b) => a === b || `${JSON.stringify(a)} != ${JSON.stringify(b)}`;
 const lanza = (fn) => { try { fn(); return 'no lanzo'; } catch (e) { return true; } };
-const todas = (...xs) => xs.find((x) => x !== true) ?? true;
+// Estricta: un fallo que vale `undefined` o `null` es un fallo (la version con `?? true` los daba por buenos).
+const todas = (...xs) => { const i = xs.findIndex((x) => x !== true); return i < 0 ? true : 'fallo: ' + String(xs[i]); };
 const copia = (x) => JSON.parse(JSON.stringify(x));
 
 const ANA = identidad('ana'), BEA = identidad('bea'), CRIS = identidad('cris');
@@ -107,15 +108,15 @@ await caso('libro: replica de otra sesion y quien no es par, fuera', () => {
   const x = cadena(S, CRIS, SD)('compromiso', { esquema: 'atlas.compromiso/1', c: 'a'.repeat(64) });
   return todas(igual(S.anota(L, r), 'sesion ajena: replica de otra sesion'), igual(S.anota(L, x), 'no es par de la sesion'));
 });
-await caso('libro: doble gasto (mismo seq, otro cuerpo) = prueba de fraude y el par queda fuera', () => {
+await caso('libro: mismo seq con otro cuerpo = prueba de trampa y el par queda fuera', () => {
   const L = S.libro(PD);
   const a = cadena(S, ANA, SD)('compromiso', { esquema: 'atlas.compromiso/1', c: 'a'.repeat(64) });
   const b = cadena(S, ANA, SD)('compromiso', { esquema: 'atlas.compromiso/1', c: 'e'.repeat(64) });
   S.anota(L, a); S.anota(L, b);
   const tras = cadena(S, ANA, SD); tras('compromiso', { esquema: 'atlas.compromiso/1', c: 'a'.repeat(64) });
   const s2 = tras('revelacion', { esquema: 'atlas.revelacion/1', r: 'b'.repeat(64), compromisos: 'c'.repeat(64) });
-  return todas(igual(L.fraudes.length, 1), igual(L.fraudes[0].a, S.huella(a)), igual(L.fraudes[0].b, S.huella(b)),
-               igual(S.anota(L, s2), 'par con fraude probado'));
+  return todas(igual(L.trampas.length, 1), igual(L.trampas[0].a, S.huella(a)), igual(L.trampas[0].b, S.huella(b)),
+               igual(S.anota(L, s2), 'par con trampa probada'));
 });
 await caso('libro: topes de bytes y de operaciones de la politica', () => {
   const P = politica('duelo', [ANA, BEA], { max_ops: 1, max_bytes: 512 }), s = S.sesion(P), L = S.libro(P), c = cadena(S, ANA, s);
@@ -302,8 +303,8 @@ await caso('mercado: un borrador de agente no es final sin firma humana', () => 
   const { so, sa } = trato(oferta({ procedencia: 'agente_borrador' }));
   return igual(M.liquida(M.libro(), so, sa).motivo, 'borrador de agente: no es final sin firma humana');
 });
-await caso('mercado: sin dinero real ni cripto (campo o recurso)', () =>
-  todas(/valor real/.test(M.formaOferta(oferta({ wallet: 'x' }))) || M.formaOferta(oferta({ wallet: 'x' })),
+await caso('mercado: solo recursos del juego, nunca dinero real (campo o recurso)', () =>
+  todas(/valor real/.test(M.formaOferta(oferta({ saldo_real: 'x' }))) || M.formaOferta(oferta({ saldo_real: 'x' })),
         M.formaOferta(oferta({ da: { eur: 5 } })) ? true : 'pasa eur',
         M.formaOferta(oferta({ da: { cobre: 1.5 } })) ? true : 'pasa un decimal'));
 await caso('mercado: nadie acepta lo suyo, ni una oferta que era para otra persona', () => {

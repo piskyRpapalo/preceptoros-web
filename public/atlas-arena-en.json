@@ -5,6 +5,8 @@
  "ui": {
   "arena_h": "Arena · the multiplayer sea",
   "arena_nota": "Your node sits at the center. NPC patrols guard the depths: pick one and fight with your wave troops. People appear on this sea when you import their signed defense.",
+  "arena_justo": "Fair play: same fog, same dice, whatever AI you bring",
+  "arena_justo_nota": "The fog on your map follows one fixed law, worked out from your own game. In a duel, the dice come from two sealed numbers, one from each side, opened only once both are locked in: nobody can pick them. Against a patrol, they come from the place and your squad, so anyone can replay the fight. Signatures prove who played what. A small, creative AI and a big one see the same fog and face the same odds, which is also what makes these games a fair benchmark for the lab.",
   "arena_mapa_aria": "The multiplayer sea: your node at the center, NPC places and people around it. The same places are listed below as buttons.",
   "arena_escena_aria": "The fight, live: your troops and theirs, drawn as their own waves. The result and the full log are written below.",
   "arena_tu": "You",
@@ -38,7 +40,7 @@
   "arena_log_ellos": "foe",
   "arena_semilla": "Seed {s}… · log {h}… Same seed, same fight: anyone can replay it.",
   "duelo_h": "Duels between people",
-  "duelo_nota": "No server: you swap signed packages through any channel you choose. The seed of each duel is committed and revealed by both sides, so nobody picks it alone. If your rival commits and does not reveal within 900 game cycles, you can claim the duel by abandonment.",
+  "duelo_nota": "No server: you swap signed packages through any channel you choose, a QR face to face included. The seed of each duel is committed and revealed by both sides, so nobody picks it alone. If your rival commits and does not reveal within 900 game cycles, you can claim the duel by abandonment.",
   "duelo_publica": "Sign and share my defense",
   "duelo_publicada": "Your defense is signed ({f}). Share it: whoever imports it sees you on their sea and can challenge you.",
   "duelo_importa": "Import a package",
@@ -65,7 +67,7 @@
   "duelo_fase_revelar": "{p} answered: ready to fight",
   "duelo_fase_hecho": "Duel with {p}: resolved",
   "duelo_plazo": "{c} cycles left before abandonment",
-  "duelo_rating": "Your local rating: {r}{prov} · {n} verified duels in this tab. No central leaderboard.",
+  "duelo_rating": "Your local rating: {r}{prov} · {n} verified duels on this device. No central leaderboard.",
   "duelo_prov": " (provisional)",
   "duelo_enviar": "Send…",
   "duelo_enviado": "Shared.",
@@ -74,6 +76,17 @@
   "duelo_nd_copiar": "NO_DATA · this browser does not let the page write to the clipboard: use Download.",
   "duelo_bajar": "Download",
   "duelo_nd_id": "NO_DATA · no identity on this device: create your key to sign duels.",
-  "duelo_con_id": "Key created: you can sign now."
+  "duelo_con_id": "Key created: you can sign now.",
+  "duelo_qr": "QR",
+  "duelo_qr_nota": "Show this to the other phone: its camera opens theGame with this package inside. The package rides in the link after #, and browsers never send that part to any server.",
+  "duelo_qr_aria": "QR code with the link that carries this package",
+  "duelo_enlace": "Copy link",
+  "duelo_enlace_ok": "Link copied. Anyone who opens it gets this package, and checks every signature before using it.",
+  "duelo_nd_enlace": "NO_DATA · this browser cannot open a compressed link. Remedy: ask for the file (Download) and open it in Import.",
+  "duelo_guardados": "Open duels are kept on this device: only the signed packages and your sealed number. Closing the tab is not giving up.",
+  "duelo_olvida": "Forget saved duels",
+  "duelo_olvidados": "Saved duels forgotten on this device.",
+  "duelo_nd_guardado": "NO_DATA · some saved duels were not restored ({m}). Remedy: forget them, or keep playing and they are replaced.",
+  "duelo_nd_idb": "NO_DATA · this browser keeps nothing (no IndexedDB): closing the tab still gives up your open duels."
  }
 }

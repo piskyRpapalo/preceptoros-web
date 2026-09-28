@@ -1,3 +1,5 @@
+> **Unificado en [`atlas/PLAN_THEGAME.md`](PLAN_THEGAME.md) (2026-09-28).** Lo vivo está allí; este documento queda como histórico, con su fecha.
+
 # Mensaje para Claude Code en el rack (copiar tal cual)
 
 > **Marca personal de PreceptorOS.** Todo lo de theGame y esta web es marca personal del Soberano: tropas que son ondas, sobres firmados, commit-reveal, sensores honestos, IronClaw. Antes de nada, lee `CLAUDE.md` en la raíz del repositorio: son las reglas de la casa para todas las sesiones.
