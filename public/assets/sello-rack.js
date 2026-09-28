@@ -10,17 +10,20 @@
  * que el sello PREGUNTA al abrir la pagina, una vez:
  *   · puertas que salen por «Enviar al rack» (valorar, corregir, reescrituras,
  *     firmar un paso de la Torre, firmar un duelo del LoRAtelier, reseñar una
- *     mision de Comunidad, y el propio boton): `GET /api/v1/salud` tiene
- *     que decir `estado: OK` y `firmas_verificadas: true`;
+ *     mision de Comunidad, y el propio boton): desde el 2026-09-29 manda la
+ *     MEDIDA FECHADA de la ruta de entrega (`POST /api/v1/paquetes`, en
+ *     `/rutas-medidas.json`), no `GET /api/v1/salud`. Verde solo con acuse
+ *     verificado y el rack vivo; si no, gris con el codigo y la fecha;
  *   · el foro de Comunidad: `GET /api/v1/comentarios`. Medido el 2026-09-24: 404,
  *     la ruta no existe en el rack. Ese cartel sale GRIS con su causa, y se
  *     pondra verde solo el dia que la ruta conteste.
  * Si la pregunta no llega (sin red, el tunel caido), el sello dice «sin
  * comprobar» y no verde: un NO_DATA no es un aprobado con suerte.
  *
- * Las capturas se guardan firmadas en el aparato y viajan cuando se pulsa
- * «Enviar al rack»; el titulo del sello lo dice, para que nadie crea que un
- * «Si» ya llego al rack por el mero hecho de pulsarlo.
+ * Las capturas se guardan firmadas en el aparato. Mientras la ruta de entrega
+ * no devuelva acuse, NO viajan al pulsar «Enviar al rack»: el titulo del sello
+ * dice el codigo y la fecha de la medida, y lo que si llega (exportar y subir
+ * por PR al repositorio publico).
  */
 (function () {
   'use strict';
@@ -31,61 +34,81 @@
 
   var TX = {
     es: ['Disponible', 'No disponible', 'Sin comprobar',
-         'El rack está recibiendo: comprobado al abrir esta página.',
-         'Se guarda firmado en tu aparato y llega al rack al pulsar «Enviar al rack».',
+         'El rack recibe y devuelve acuse: entrega verificada el {f}.',
+         'Se guarda firmado en tu aparato. Hoy no llega al rack: la ruta de entrega respondió {c} (medido el {f}). Lo que sí llega es exportarlo y subirlo por PR al repositorio público.',
          'El foro todavía no tiene puerta en el rack: no se puede publicar.',
          'No se pudo comprobar el rack desde aquí.',
          'Valora o corrige una respuesta y aquí aparecerá «Enviar al rack».'],
     en: ['Available', 'Not available', 'Not checked',
-         'The rack is receiving: checked when this page opened.',
-         'Saved signed on your device; it reaches the rack when you press «Send to the rack».',
+         'The rack receives and returns a receipt: delivery verified on {f}.',
+         'Saved signed on your device. Today it does not reach the rack: the delivery route answered {c} (measured on {f}). What does arrive is exporting it and sending it as a PR to the public repository.',
          'The forum has no door in the rack yet: posting is not possible.',
          'The rack could not be checked from here.',
          'Rate or correct an answer and «Send to the rack» will appear here.'],
     fr: ['Disponible', 'Indisponible', 'Non vérifié',
-         'Le rack reçoit : vérifié à l’ouverture de cette page.',
-         'Enregistré signé sur votre appareil ; il arrive au rack quand vous appuyez sur « Envoyer au rack ».',
+         'Le rack reçoit et renvoie un accusé : livraison vérifiée le {f}.',
+         'Enregistré signé sur votre appareil. Aujourd’hui il n’arrive pas au rack : la route de livraison a répondu {c} (mesuré le {f}). Ce qui arrive, c’est de l’exporter et de l’envoyer en PR au dépôt public.',
          'Le forum n’a pas encore de porte dans le rack : impossible de publier.',
          'Impossible de vérifier le rack d’ici.',
          'Évaluez ou corrigez une réponse et « Envoyer au rack » apparaîtra ici.'],
     pt: ['Disponível', 'Indisponível', 'Por verificar',
-         'O rack está a receber: verificado ao abrir esta página.',
-         'Guarda-se assinado no teu aparelho e chega ao rack ao carregares em «Enviar para o rack».',
+         'O rack recebe e devolve recibo: entrega verificada a {f}.',
+         'Guarda-se assinado no teu aparelho. Hoje não chega ao rack: a rota de entrega respondeu {c} (medido a {f}). O que chega é exportá-lo e enviá-lo por PR ao repositório público.',
          'O fórum ainda não tem porta no rack: não é possível publicar.',
          'Não foi possível verificar o rack daqui.',
          'Avalia ou corrige uma resposta e aqui aparecerá «Enviar para o rack».'],
     it: ['Disponibile', 'Non disponibile', 'Non verificato',
-         'Il rack sta ricevendo: verificato all’apertura di questa pagina.',
-         'Si salva firmato sul tuo dispositivo e arriva al rack quando premi «Invia al rack».',
+         'Il rack riceve e restituisce una ricevuta: consegna verificata il {f}.',
+         'Si salva firmato sul tuo dispositivo. Oggi non arriva al rack: la rotta di consegna ha risposto {c} (misurato il {f}). Ciò che arriva è esportarlo e inviarlo come PR al repository pubblico.',
          'Il forum non ha ancora una porta nel rack: non si può pubblicare.',
          'Non è stato possibile verificare il rack da qui.',
          'Valuta o correggi una risposta e qui apparirà «Invia al rack».'],
     de: ['Verfügbar', 'Nicht verfügbar', 'Nicht geprüft',
-         'Das Rack empfängt: beim Öffnen dieser Seite geprüft.',
-         'Wird signiert auf deinem Gerät gespeichert und erreicht das Rack, wenn du «An das Rack senden» drückst.',
+         'Das Rack empfängt und gibt eine Quittung zurück: Zustellung geprüft am {f}.',
+         'Wird signiert auf deinem Gerät gespeichert. Heute erreicht es das Rack nicht: die Zustellroute antwortete {c} (gemessen am {f}). Was ankommt: exportieren und als PR ins öffentliche Repository senden.',
          'Das Forum hat noch keine Tür im Rack: Posten ist nicht möglich.',
          'Das Rack konnte von hier aus nicht geprüft werden.',
          'Bewerte oder korrigiere eine Antwort, dann erscheint hier «An das Rack senden».'],
     ru: ['Доступно', 'Недоступно', 'Не проверено',
-         'Стойка принимает данные: проверено при открытии страницы.',
-         'Сохраняется с подписью на вашем устройстве и попадает в стойку, когда вы нажимаете «Отправить в стойку».',
+         'Стойка принимает и возвращает квитанцию: доставка проверена {f}.',
+         'Сохраняется с подписью на вашем устройстве. Сегодня не доходит до стойки: маршрут доставки ответил {c} (измерено {f}). Доходит другое: экспортировать и отправить PR в публичный репозиторий.',
          'У форума пока нет входа в стойке: публиковать нельзя.',
          'Не удалось проверить стойку отсюда.',
          'Оцените или исправьте ответ, и здесь появится «Отправить в стойку».'],
     el: ['Διαθέσιμο', 'Μη διαθέσιμο', 'Χωρίς έλεγχο',
-         'Το rack λαμβάνει: ελέγχθηκε όταν άνοιξε η σελίδα.',
-         'Αποθηκεύεται υπογεγραμμένο στη συσκευή σου και φτάνει στο rack όταν πατήσεις «Αποστολή στο rack».',
+         'Το rack λαμβάνει και επιστρέφει απόδειξη: η παράδοση επαληθεύτηκε στις {f}.',
+         'Αποθηκεύεται υπογεγραμμένο στη συσκευή σου. Σήμερα δεν φτάνει στο rack: η διαδρομή παράδοσης απάντησε {c} (μέτρηση {f}). Φτάνει η εξαγωγή και η αποστολή ως PR στο δημόσιο αποθετήριο.',
          'Το φόρουμ δεν έχει ακόμη πόρτα στο rack: δεν γίνεται δημοσίευση.',
          'Δεν ήταν δυνατός ο έλεγχος του rack από εδώ.',
          'Αξιολόγησε ή διόρθωσε μια απάντηση και εδώ θα εμφανιστεί «Αποστολή στο rack».'],
     ar: ['متاح', 'غير متاح', 'لم يُتحقَّق',
-         'الرف يستقبل: تم التحقق عند فتح هذه الصفحة.',
-         'يُحفظ موقّعًا على جهازك ويصل إلى الرف عندما تضغط «أرسل إلى الرف».',
+         'الرف يستقبل ويعيد إيصالًا: تم التحقق من التسليم في {f}.',
+         'يُحفظ موقّعًا على جهازك. اليوم لا يصل إلى الرف: أجاب مسار التسليم بـ {c} (قيس في {f}). ما يصل هو تصديره وإرساله كطلب دمج (PR) إلى المستودع العام.',
          'لا يملك المنتدى بابًا في الرف بعد: لا يمكن النشر.',
          'تعذّر التحقق من الرف من هنا.',
          'قيّم إجابة أو صحّحها وسيظهر هنا «أرسل إلى الرف».']
   };
-  var t = TX[lang] || TX.en;
+  /* pendiente-revision-nativa: ru, el, ar (2026-09-29). El Soberano no las puede revisar; las demas, si. */
+  var t = TX[lang] || TX.en, ENTREGA = null;
+  /* LA PROMESA SE MIDE EN LA RUTA DE ENTREGA, NO EN /salud (Soberano, 2026-09-29). Hasta ese dia el sello
+     preguntaba a `GET /salud` y pintaba verde las puertas de «Enviar al rack» mientras `POST /paquetes`
+     devolvia 404 (medido el 2026-09-13): una promesa falsa con buen color. Ahora lee la medida fechada
+     de la ruta (`/rutas-medidas.json`, que reescribe el humo del rack): verde solo con acuse verificado
+     y el rack vivo ahora; gris con el codigo y la fecha; sin medida, «sin comprobar». */
+  function titulo(e) {
+    var f = { c: ENTREGA && ENTREGA.codigo, f: ENTREGA && (ENTREGA.acuse_el || ENTREGA.medido_el) };
+    var x = e === 'si' ? t[3] : e === 'no' ? t[4] : t[6];
+    return x.replace(/\{(\w)\}/g, function (m, k) { return f[k] == null ? m : f[k]; });
+  }
+  function entrega() {
+    return fetch('/rutas-medidas.json', { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (m) {
+        ENTREGA = ((m && m.rutas) || []).filter(function (x) { return x.id === 'paquetes'; })[0] || null;
+        if (!ENTREGA || ENTREGA.codigo == null) return 'nd';
+        if (!ENTREGA.acuse_verificado) return 'no';
+        return pide('/salud', function (d) { return d && d.estado === 'OK' && d.firmas_verificadas; });
+      }, function () { return 'nd'; });
+  }
 
   function pide(ruta, ok) {
     var c = window.AbortController ? new AbortController() : null;
@@ -143,20 +166,20 @@
     }
     if (!RACK) return;
     RACK.then(function (e) {
-      var tit = e === 'si' ? t[3] + ' ' + t[4] : t[6];
+      var tit = titulo(e);
       CAPTURAS.forEach(function (sel) {
         Array.prototype.forEach.call(document.querySelectorAll(sel), function (n) {
           pon(n, e, tit);
         });
       });
       var fila = document.getElementById('enviar-rack');
-      if (fila) pon(fila, e, e === 'si' ? t[3] : t[6]);
+      if (fila) pon(fila, e, tit);
       var panel = document.getElementById('panel-ajustes');
       var guia = document.getElementById('sello-guia');
       if (panel && !fila && !guia) {
         guia = document.createElement('p');
         guia.id = 'sello-guia'; guia.className = 'sello-guia';
-        guia.appendChild(sello(e, e === 'si' ? t[3] : t[6]));
+        guia.appendChild(sello(e, tit));
         guia.appendChild(document.createTextNode(t[7]));
         panel.appendChild(guia);
       } else if (fila && guia) {
@@ -169,7 +192,7 @@
     estilo();
     if (document.getElementById('foro')) FORO = pide('/comentarios', function () { return true; });
     if (document.getElementById('panel-ajustes') || document.getElementById('chat')) {
-      RACK = pide('/salud', function (d) { return d && d.estado === 'OK' && d.firmas_verificadas; });
+      RACK = entrega();
     }
     if (FORO || RACK) {
       siembra();

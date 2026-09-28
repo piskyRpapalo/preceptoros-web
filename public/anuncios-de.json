@@ -6,9 +6,9 @@
   "feedback": {
    "titulo": "Gib mir deine Rückmeldung",
    "cuerpo": "Was kaputtging, was du nicht verstanden hast, was du erwartet hast und nicht da war. Ein konkreter Satz nützt mehr als ein Lob.",
-   "publico": "Öffentlich: signiere hier unten einen Beitrag. Signiert wird mit deinem Schlüssel, auf deinem Gerät.",
+   "publico": "Öffentlich: ein signierter Faden in der Agora. Das Schreiben ist heute geschlossen: die Messung steht unten.",
    "privado": "Privat: öffne ein Issue im öffentlichen Repository. Das ist heute der einzige Kanal, der wirklich ankommt.",
-   "pero": "NO_DATA — die Agora antwortet inzwischen, akzeptiert aber noch keine Schreibzugriffe: POST /api/v1/threads liefert 405, und der Server sagt es selbst: «Schreiben geschlossen: die Agora moderiert noch nicht» (gemessen am 2026-09-08). Er wird signiert und bleibt auf deinem Gerät, bis sie öffnet.",
+   "pero": "NO_DATA — die Agora antwortet inzwischen, akzeptiert aber noch keine Schreibzugriffe: POST /api/v1/threads liefert 405, und der Server sagt es selbst: «Schreiben geschlossen: die Agora moderiert noch nicht» (gemessen am 2026-09-08). Heute kommt von hier nichts an: was ankommt, ist ein Issue oder ein PR im öffentlichen Repository.",
    "enlaceTexto": "Ein Issue öffnen"
   },
   "entrenar": {

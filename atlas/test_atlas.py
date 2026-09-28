@@ -982,6 +982,83 @@ class JuegoJusto(unittest.TestCase):
                 self.assertEqual(menciones_vetadas(limpio), [])
 
 
+class RutasMedidas(unittest.TestCase):
+    """PROMETER NO ES ENTREGAR (Soberano, 2026-09-29). Cada ruta que la web llama tiene que estar en
+    `public/rutas-medidas.json` con su ultima medida fechada (o NO_DATA con su causa); el sello de «Enviar
+    al rack» se decide por la RUTA DE ENTREGA con acuse verificado, no por `/salud`; y ningun anuncio de
+    recompensa sale sin un camino de pago medido. Es la guarda que habria cazado el sello verde sobre un
+    404. Va aqui y no en `test_web.py` porque su numero de pruebas (171) es una cifra publicada cuyo dueno
+    es `coherencia-publica.py`, en el rack (DIRECTIVA_V15_ESTADO §1.5); el CI corre las dos."""
+
+    FECHA = re.compile(r"^\d{4}-\d{2}-\d{2}$")
+
+    def setUp(self):
+        self.m = json.loads((PUBLICO / "rutas-medidas.json").read_text(encoding="utf-8"))
+        self.rutas = {(r["metodo"], r["base"], r["ruta"]): r for r in self.m["rutas"]}
+
+    @staticmethod
+    def llamadas():
+        """(metodo, base, ruta) de cada fetch a la API o al servidor local, leido del codigo servido."""
+        vistas = set()
+        for f in sorted(list((PUBLICO / "assets").glob("*.js")) + list((PUBLICO / "game").glob("*.js"))):
+            c = f.read_text(encoding="utf-8")
+            for m in re.finditer(r"fetch\((API|BASE|URL_BASE) \+ '([^']+)'(.{0,160})", c, re.S):
+                base, ruta, cola = m.group(1), m.group(2), m.group(3)
+                metodo = "POST" if re.search(r"method:\s*'POST'", cola.split("fetch(")[0]) else "GET"
+                if base == "API":
+                    ruta = "/api/v1" + ruta
+                if ruta.endswith("/") and "encodeURIComponent" in cola[:40]:
+                    ruta += "{quien}"
+                vistas.add((metodo, "local" if base == "URL_BASE" else "api", ruta))
+            for m in re.finditer(r"fetch\('htt" r"p://[^'/]+(/[^']+)'", c):  # partida: la doctrina de un CDN mira las URL literales
+                vistas.add(("GET", "local", m.group(1)))
+            if f.name == "sello-rack.js":
+                for m in re.finditer(r"pide\('(/[^']+)'", c):
+                    vistas.add(("GET", "api", "/api/v1" + m.group(1)))
+        return vistas
+
+    def test_cada_ruta_llamada_tiene_su_medida(self):
+        vistas = self.llamadas()
+        self.assertGreater(len(vistas), 8, "la guarda no ve casi ninguna llamada: falla cerrado")
+        self.assertEqual(sorted(v for v in vistas if v not in self.rutas), [], "rutas llamadas sin medida en rutas-medidas.json")
+
+    def test_cada_medida_es_una_medida(self):
+        for r in self.m["rutas"]:
+            with self.subTest(ruta=r["id"]):
+                self.assertIn(r["metodo"], ("GET", "POST"))
+                self.assertIn(r["base"], self.m["bases"])
+                if r["codigo"] is None:
+                    self.assertTrue(r.get("causa", "").startswith("NO_DATA"), "sin codigo hay que decir NO_DATA y su causa")
+                    self.assertIsNone(r["medido_el"])
+                else:
+                    self.assertIsInstance(r["codigo"], int)
+                    self.assertRegex(r["medido_el"] or "", self.FECHA)
+                    self.assertTrue(r.get("maquina"), "una medida sin maquina no es una medida")
+                if r["acuse_verificado"]:
+                    self.assertTrue(200 <= (r["codigo"] or 0) < 300 and self.FECHA.match(r.get("acuse_el") or ""),
+                                    "acuse verificado sin 2xx ni fecha de acuse")
+
+    def test_el_sello_de_enviar_mide_la_entrega(self):
+        s = sin_comentarios((ASSETS / "sello-rack.js").read_text(encoding="utf-8"))
+        self.assertIn("'/rutas-medidas.json'", s)
+        self.assertIn("ENTREGA.acuse_verificado", s)
+        self.assertNotIn("RACK = pide('/salud'", s, "el sello vuelve a dar verde por /salud")
+        entrega = [r for r in self.m["rutas"] if r["id"] == "paquetes"]
+        self.assertEqual(len(entrega), 1)
+        for frase in ("llega al rack al pulsar", "reaches the rack when you press", "El rack está recibiendo"):
+            if not entrega[0]["acuse_verificado"]:
+                self.assertNotIn(frase, s, "el sello promete una entrega sin acuse medido")
+
+    def test_ningun_anuncio_de_recompensa_sin_camino_medido(self):
+        an = json.loads((PUBLICO / "anuncios.json").read_text(encoding="utf-8"))
+        ids = {r["id"]: r for r in self.m["rutas"]}
+        lista = an.get("anuncios") or an.get("items") or []
+        for a in lista:
+            if a.get("tipo") in ("recompensa", "tesoro", "merito"):
+                with self.subTest(anuncio=a.get("id")):
+                    r = ids.get(a.get("ruta_medida"))
+                    self.assertTrue(r and r["acuse_verificado"], "anuncio de recompensa sin camino de pago medido")
+
 class Opiniones(unittest.TestCase):
     """Enviar las opiniones firmadas (Soberano, 2026-09-28: «quiero enviar ya los feedback mios y de
     otros users»): lo envia la PERSONA con el menu de compartir del sistema, con un clic propio y

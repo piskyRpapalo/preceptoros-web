@@ -1,0 +1,21 @@
+{
+ "esquema": "rutas_medidas/1",
+ "nota": "Cada ruta que la web llama o promete, con su ultima medida fechada. Orden del Soberano (2026-09-29): el sello de «Enviar al rack» mide la RUTA DE ENTREGA, no /salud, y la web no anuncia un canal ni una recompensa sin una medida con fecha. Una ruta sin medida es NO_DATA con su causa; verde solo con acuse verificado. Lo reescribe quien mide (el humo del rack: humo_feedback.py y humo_lenguas.py); la guarda RutasMedidas de atlas/test_atlas.py cruza cada fetch de public/ contra esta lista. Es una MEDIDA: no se cachea.",
+ "bases": {
+  "api": "https://api.preceptoros.org",
+  "local": "el servidor de modelos de la propia persona, en su aparato (no lo mide la casa)"
+ },
+ "rutas": [
+  {"id": "paquetes", "metodo": "POST", "base": "api", "ruta": "/api/v1/paquetes", "llaman": ["enviar.js"], "promete": "«Enviar al rack»: valorar, corregir, reescrituras, paso de la Torre, duelo del LoRAtelier, reseña de mision y el propio boton", "codigo": 404, "medido_el": "2026-09-13", "maquina": "navegador de la web (registrado en la cabecera de enviar.js)", "acuse_verificado": false},
+  {"id": "reto", "metodo": "GET", "base": "api", "ruta": "/api/v1/reto", "llaman": ["enviar.js", "foro.js", "perfil-rack.js"], "promete": "el nonce de un solo uso que se firma antes de enviar", "codigo": 200, "medido_el": "2026-09-13", "maquina": "navegador de la web (registrado en la cabecera de enviar.js)", "acuse_verificado": false},
+  {"id": "salud", "metodo": "GET", "base": "api", "ruta": "/api/v1/salud", "llaman": ["sello-rack.js"], "promete": "que el rack esta vivo (no que reciba)", "codigo": 200, "medido_el": "2026-09-20", "maquina": "navegador de la web (registrado en la cabecera de perfil-rack.js)", "acuse_verificado": false},
+  {"id": "perfiles", "metodo": "POST", "base": "api", "ruta": "/api/v1/profiles", "llaman": ["perfil-rack.js"], "promete": "registrar la clave publica en el Agora", "codigo": 201, "medido_el": "2026-09-20", "maquina": "navegador de la web (registrado en la cabecera de perfil-rack.js)", "acuse_verificado": false},
+  {"id": "perfil", "metodo": "GET", "base": "api", "ruta": "/api/v1/profiles/{quien}", "llaman": ["perfil-rack.js"], "promete": "leer el perfil registrado", "codigo": null, "medido_el": null, "maquina": null, "acuse_verificado": false, "causa": "NO_DATA · no hay medida registrada de esta ruta"},
+  {"id": "comentarios_leer", "metodo": "GET", "base": "api", "ruta": "/api/v1/comentarios", "llaman": ["foro.js", "sello-rack.js"], "promete": "leer el foro de Comunidad", "codigo": 404, "medido_el": "2026-09-24", "maquina": "navegador de la web (registrado en la cabecera de sello-rack.js)", "acuse_verificado": false},
+  {"id": "comentarios", "metodo": "POST", "base": "api", "ruta": "/api/v1/comentarios", "llaman": ["foro.js"], "promete": "firmar un comentario en el foro", "codigo": null, "medido_el": null, "maquina": null, "acuse_verificado": false, "causa": "NO_DATA · el POST no se ha medido; la misma ruta da 404 al leerla (2026-09-24)"},
+  {"id": "hilos", "metodo": "POST", "base": "api", "ruta": "/api/v1/threads", "llaman": [], "promete": "el anuncio de feedback: «firma un hilo aqui abajo»", "codigo": 405, "medido_el": "2026-09-08", "maquina": "navegador de la web (registrado en anuncios-<l>.json)", "acuse_verificado": false},
+  {"id": "generar_rack", "metodo": "POST", "base": "api", "ruta": "/api/generate", "llaman": ["rack.js"], "promete": "hablar con el modelo del rack (inferencia, no envio)", "codigo": null, "medido_el": null, "maquina": null, "acuse_verificado": false, "causa": "NO_DATA · lo mide humo_lenguas.py en el rack; su ultima salida no esta en este repositorio"},
+  {"id": "modelos_local", "metodo": "GET", "base": "local", "ruta": "/api/tags", "llaman": ["localai.js", "comparar.js"], "promete": "ver los modelos del servidor de la propia persona", "codigo": null, "medido_el": null, "maquina": null, "acuse_verificado": false, "causa": "NO_DATA · permanente: es el aparato de cada persona, la casa no lo mide"},
+  {"id": "generar_local", "metodo": "POST", "base": "local", "ruta": "/api/generate", "llaman": ["localai.js"], "promete": "hablar con el modelo de la propia persona", "codigo": null, "medido_el": null, "maquina": null, "acuse_verificado": false, "causa": "NO_DATA · permanente: es el aparato de cada persona, la casa no lo mide"}
+ ]
+}

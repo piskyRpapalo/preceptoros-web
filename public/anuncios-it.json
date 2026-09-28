@@ -6,9 +6,9 @@
   "feedback": {
    "titulo": "Dammi il tuo riscontro",
    "cuerpo": "Cosa si è rotto, cosa non hai capito, cosa ti aspettavi di trovare e non c'era. Serve più una frase concreta di un elogio.",
-   "publico": "Pubblico: firma una discussione qui sotto. Si firma con la tua chiave, sul tuo apparecchio.",
+   "publico": "Pubblico: un filo firmato nell'Agorà. Oggi la scrittura è chiusa: la misura è qui sotto.",
    "privado": "Privato: apri un issue nel repository pubblico. È l'unico canale che oggi arriva davvero.",
-   "pero": "NO_DATA — l'Agorà ora risponde, ma non accetta ancora la scrittura: POST /api/v1/threads restituisce 405, e il server lo dice da sé: «scrittura chiusa: l'Agorà non modera ancora» (misurato il 2026-09-08). Si firma e resta sul tuo apparecchio finché non apre.",
+   "pero": "NO_DATA — l'Agorà ora risponde, ma non accetta ancora la scrittura: POST /api/v1/threads restituisce 405, e il server lo dice da sé: «scrittura chiusa: l'Agorà non modera ancora» (misurato il 2026-09-08). Oggi da qui non arriva a nessuno: arriva una issue o una PR al repository pubblico.",
    "enlaceTexto": "Apri un issue"
   },
   "entrenar": {

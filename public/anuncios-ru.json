@@ -1,14 +1,14 @@
 {
  "esquema": 1,
  "idioma": "ru",
- "nota": "Los textos de los anuncios del Agora en esta lengua. Salieron de `anuncios.json` el 2026-09-23: con nueve lenguas dentro le quedaban 344 B del tope de 16 KB y el siguiente anuncio ya no cabia. `anuncios.json` se queda con los HECHOS (id, tipo, autor, fecha, enlace, estado); esto trae lo que se lee, por id. Mismo corte que el taller, los paneles y el Agora.",
+ "nota": "Los textos de los anuncios del Agora en esta lengua. Salieron de `anuncios.json` el 2026-09-23: con nueve lenguas dentro le quedaban 344 B del tope de 16 KB y el siguiente anuncio ya no cabia. `anuncios.json` se queda con los HECHOS (id, tipo, autor, fecha, enlace, estado); esto trae lo que se lee, por id. Mismo corte que el taller, los paneles y el Agora. · pendiente-revision-nativa (2026-09-29): el Soberano no puede revisar esta lengua.",
  "textos": {
   "feedback": {
    "titulo": "Дай мне обратную связь",
    "cuerpo": "Что сломалось, что ты не понял, что рассчитывал найти и не нашёл. Одна конкретная фраза полезнее похвалы.",
-   "publico": "Публично: подпиши ветку здесь ниже. Подписывается твоим ключом, на твоём устройстве.",
+   "publico": "Публично: подписанная ветка в Агоре. Сегодня запись закрыта: измерение ниже.",
    "privado": "Приватно: открой issue в публичном репозитории. Сегодня это единственный канал, который действительно доходит.",
-   "pero": "NO_DATA — Агора уже отвечает, но пока не принимает запись: POST /api/v1/threads возвращает 405, и сервер говорит это сам: «запись закрыта: Агора ещё не модерирует» (измерено 2026-09-08). Она подписывается и остаётся на твоём устройстве, пока не откроется.",
+   "pero": "NO_DATA — Агора уже отвечает, но пока не принимает запись: POST /api/v1/threads возвращает 405, и сервер говорит это сам: «запись закрыта: Агора ещё не модерирует» (измерено 2026-09-08). Сегодня отсюда ничего не доходит: доходит issue или PR в публичный репозиторий.",
    "enlaceTexto": "Открыть issue"
   },
   "entrenar": {
