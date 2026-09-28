@@ -10,6 +10,8 @@ base_medida: PreceptorOS@7287d39 · preceptoros-web (rama claude/lora-juego-nodo
 estado: PROPUESTA · sin firmar · para ejecutar con Claude Code en el rack, fase a fase
 ---
 
+> **Unificado en [`atlas/PLAN_THEGAME.md`](PLAN_THEGAME.md) (2026-09-28).** Lo vivo está allí; este documento queda como histórico, con su fecha.
+
 # PLAN · la app Preceptor y el LoRA mini del juego
 
 ## §0 · Lo que firmó el Soberano (2026-09-27)

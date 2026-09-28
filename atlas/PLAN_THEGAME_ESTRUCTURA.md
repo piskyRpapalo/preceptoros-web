@@ -10,6 +10,8 @@ unifica: DIRECTIVA v1.5 (Soberano) · MAPA_THEGAME_LORA_JUEGO · PLAN_APP_PILOTO
 estado: PROPUESTA · sin firmar · la construye Claude Code en el rack, fase a fase, después de una ronda de preguntas
 ---
 
+> **Unificado en [`atlas/PLAN_THEGAME.md`](PLAN_THEGAME.md) (2026-09-28).** Lo vivo está allí; este documento queda como histórico, con su fecha.
+
 # PLAN · theGame, estructura primero
 
 > Lo que pidió el Soberano (2026-09-27): «No te preocupes por recursos, habilidades ni niveles. Haz la **estructura**. Los valores y los LoRAs los adherimos después; ahora, valores [**provisionales**]. Un juego brutalmente **personalizable**, **sencillo**, **didáctico**, que la persona **quiera continuar**, y que disfrute de las **rutas y los combates entre usuarios**.»

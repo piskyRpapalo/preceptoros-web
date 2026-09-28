@@ -8,6 +8,8 @@ editor_autorizado: carbono
 estado: PENDIENTE DE FIRMA para lo marcado REQUIERE_FIRMA · la rebanada pura multijugador se construye (orden del Soberano)
 ---
 
+> **Unificado en [`atlas/PLAN_THEGAME.md`](PLAN_THEGAME.md) (2026-09-28).** Lo vivo está allí; este documento queda como histórico, con su fecha.
+
 # Auditoría · MGNO + laboratorio local + A2A
 
 > Orden del Soberano (2026-09-28): «ve construyendo todo; si faltan piezas, adapta y recrea en base a nuestra lógica de preceptoros… comienza con los 2 prompts de lógica del juego, **enfocados sobre todo al multiplayer**. El idioma del juego es solo inglés hoy.» Los dos prompts son DATOS con autoridad del Soberano; no pueden romper un invariante firmado. Lo que choca se nombra aquí y se para.
@@ -36,7 +38,7 @@ estado: PENDIENTE DE FIRMA para lo marcado REQUIERE_FIRMA · la rebanada pura mu
 | 7 | Liquidar una oferta movería recursos, y el motor no tiene acción de transferencia | El asiento registra la **obligación** firmada por las dos partes. Moverla al estado del motor = parche de motor → **REQUIERE_FIRMA** |
 | 8 | Tropas de otra persona: ¿quién garantiza sus números? | La defensa lleva solo `{tc, semilla}`. Las cifras se **rederivan** con `gacha.tirada` y el mismo `pack_sha`. Límite: la semilla sale de una firma (no-VRF) y se puede moldear. Casual sí; clasificación competitiva → VRF/commit en la invocación → REQUIERE_FIRMA |
 | 9 | Textos nuevos de interfaz | El juego va solo en inglés. Esta ronda **no añade textos**: sin UI, módulos puros probados en node |
-| 10 | Persistencia de sesiones, ratings, libros y grafo | En memoria. Guardarlo → REQUIERE_FIRMA (base `thegame`, sello en las 9 lenguas) |
+| 10 | Persistencia de sesiones, ratings, libros y grafo | En memoria. Guardarlo → REQUIERE_FIRMA (base `thegame`, sello en las 9 lenguas). **Excepción firmada el 2026-09-28:** duelos/QR locales (ver §7) |
 
 ## §3 · Clasificación del prompt
 | Subsistema | Esta ronda | Estado |
@@ -50,7 +52,7 @@ estado: PENDIENTE DE FIRMA para lo marcado REQUIERE_FIRMA · la rebanada pura mu
 | Preferencias `P_i` solo declaradas o derivadas de acciones firmadas | `narragrafo.js` valida su procedencia | HECHO |
 | LLB (puente al laboratorio) | — | REQUIERE_FIRMA (§2.1) |
 | BB (banco de benchmark) y DDAP (piloto denso) | — | PROPUESTA; siguiente ronda (el Soberano prioriza el multijugador) |
-| Canales (enlace `#`, QR, fichero, pegar) + UI de duelo | — | PROPUESTA; hoy se reutilizan Export, Copy y Send |
+| Canales (enlace `#`, QR, fichero, pegar) + UI de duelo | `enlace.js`, `qr.js`, `ui-duelo.js` (Arena) | HECHO (2026-09-28, sugerencias firmadas) |
 | WebRTC / tiempo real | — | REQUIERE_FIRMA; última prioridad |
 
 ## §4 · Contratos nuevos (`data/`, fuera de `public/`)
@@ -80,7 +82,8 @@ estado: PENDIENTE DE FIRMA para lo marcado REQUIERE_FIRMA · la rebanada pura mu
 - **NO_DATA:** laboratorio local (sin canal firmado); temperatura del silicio; ratings de otros nodos (no hay clasificación central); pérdida y saqueo aplicados.
 - **EMULADO:** ninguno en esta ronda. Cualquier perfil táctico heurístico futuro lo llevará en cada cifra.
 - **PROPUESTA:** BB, DDAP, canales (enlace/QR/fichero/pegar), UI de duelo y de mercado, NPC de patrulla (PvE) con el mismo `arena.js`, movimiento de valores de combate a un pack firmado.
-- **REQUIERE_FIRMA:** LLB con `fetch`; LAN; WebRTC/STUN/TURN/relevo; persistir sesiones, ratings, libros o grafo; acción de transferencia en el motor; pérdida definitiva; VRF para competir; clasificación entre nodos.
+- **FIRMADO en el cierre (2026-09-28), excepción estrecha:** duelos/QR locales, sin red, sin telemetría, sin firma automática (base propia `atlas-duelos`, verificada al cargar). No autoriza persistencia general del multijugador, IndexedDB para otros estados, telemetría, red, remoto, clasificación ni cuentas.
+- **REQUIERE_FIRMA:** LLB con `fetch`; LAN; WebRTC/STUN/TURN/relevo; persistir sesiones, ratings, libros o grafo **fuera de esa excepción**; acción de transferencia en el motor; pérdida definitiva; VRF para competir; clasificación entre nodos.
 
 ## §8 · ¿Hace falta una firma que bloquee antes de codificar?
 **No.** La rebanada pura (sin red, sin persistencia, sin UI, sin motor, sin textos) cabe en lo firmado hoy. Lo que sí bloquea está en §7 · REQUIERE_FIRMA y no se toca.

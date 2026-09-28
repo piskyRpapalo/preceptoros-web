@@ -11,6 +11,8 @@ base_medida: preceptoros-web@e61d482 (PR #3, theGame v1) · espejo público p0x@
 estado: PROPUESTA · sin firmar · no es canon hasta el commit del Soberano
 ---
 
+> **Unificado en [`atlas/PLAN_THEGAME.md`](PLAN_THEGAME.md) (2026-09-28).** Lo vivo está allí; este documento queda como histórico, con su fecha.
+
 # MAPA · theGame + el LoRA del juego
 
 **Cómo se usa.** El Soberano copia este fichero a `~/p0x/Cuarentena/salida/` y le dice a Claude Code:

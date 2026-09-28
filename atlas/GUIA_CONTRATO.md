@@ -1,3 +1,5 @@
+> **Unificado en [`atlas/PLAN_THEGAME.md`](PLAN_THEGAME.md) (2026-09-28).** Lo vivo está allí; este documento queda como histórico, con su fecha.
+
 # Contrato de la guía de theGame · PROPUESTA (sin firmar, sin código)
 
 Estado: propuesta del silicio, RATLAS15, 2026-09-26. Nada de esto se enchufa ni

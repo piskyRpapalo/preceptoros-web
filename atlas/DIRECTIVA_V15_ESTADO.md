@@ -7,6 +7,8 @@ fecha: 2026-09-27
 estado: PENDIENTE_DE_FIRMA
 ---
 
+> **Unificado en [`atlas/PLAN_THEGAME.md`](PLAN_THEGAME.md) (2026-09-28).** Lo vivo está allí; este documento queda como histórico, con su fecha.
+
 # Directiva v1.5 · estado punto por punto
 
 La directiva la escribió el Soberano el 2026-09-27. Aquí se construye lo que **no choca con nada ya firmado**. Lo que sí choca **no se ejecuta**: se nombra el choque y se pide firma (contrato §4: ante ambigüedad real, se para y se pregunta una cosa). Los nombres de los nodos que cita la directiva no se copian a este repositorio público (higiene, contrato §3.5).

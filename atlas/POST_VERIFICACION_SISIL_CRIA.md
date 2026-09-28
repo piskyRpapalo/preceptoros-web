@@ -8,6 +8,8 @@ editor_autorizado: carbono
 estado: PENDIENTE DE FIRMA para lo marcado REQUIERE_FIRMA · validadores puros de cría y genoma se construyen (orden del Soberano)
 ---
 
+> **Unificado en [`atlas/PLAN_THEGAME.md`](PLAN_THEGAME.md) (2026-09-28).** Lo vivo está allí; este documento queda como histórico, con su fecha.
+
 # Auditoría · SISIL + la cría soberana
 
 > El addendum amplía el prompt principal y no revoca ningún invariante. Regla por defecto: **la máquina mejora propuestas, la persona adopta mejoras, la persona invoca y adopta tropas, y el silicio no firma**. «Do not automate creation; automate understanding.»

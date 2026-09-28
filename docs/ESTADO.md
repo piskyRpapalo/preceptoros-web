@@ -1,5 +1,7 @@
 # Estado técnico de la web · 2026-09-08, cifras al 2026-09-22
 
+> **2026-09-28 · traspaso.** theGame tiene su estado vivo en `atlas/PLAN_THEGAME.md`. Lo que aquí se dice del backend (`api.preceptoros.org`, §7) **no se pudo volver a medir desde la nube**: el proxy del contenedor corta el host, así que hoy es NO_DATA y lo mide el rack (`PLAN_THEGAME.md` §5).
+
 Escrito para que una sesión nueva pueda trabajar el GitHub de los dos
 proyectos sin volver a medir nada. Todas las cifras de aquí salen de contar
 los ficheros, no de recordarlos.
