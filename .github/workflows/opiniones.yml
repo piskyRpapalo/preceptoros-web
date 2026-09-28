@@ -2,11 +2,13 @@
 # por el canal que elige; quien la recibe la sube aqui por PR y este check mira forma, nota y firma
 # Ed25519 (`atlas/verifica_opinion.mjs`). Determinista y sin LLM. `pull_request`, no
 # `pull_request_target`: el codigo de un fork corre sin secretos y con permiso de solo lectura.
+# Despues, `opiniones/TABLA.md` tiene que estar al dia (`atlas/tabla_opiniones.mjs`): la cuenta
+# de Right / Wrong / Not sure que lee el piloto no se edita a mano.
 name: opiniones
 
 on:
   pull_request:
-    paths: ["opiniones/**", "atlas/verifica_opinion.mjs"]
+    paths: ["opiniones/**", "atlas/verifica_opinion.mjs", "atlas/tabla_opiniones.mjs"]
   workflow_dispatch:
 
 permissions:
@@ -31,3 +33,8 @@ jobs:
           echo "opiniones: $total · rechazadas: $fallos"
           [ "$total" -gt 0 ] || echo "NO_DATA · no hay opiniones en opiniones/ todavia"
           [ "$fallos" -eq 0 ]
+      - name: La tabla de opiniones esta al dia
+        if: ${{ !cancelled() }}
+        run: |
+          node atlas/tabla_opiniones.mjs >> "$GITHUB_STEP_SUMMARY"
+          node atlas/tabla_opiniones.mjs --comprueba

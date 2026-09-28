@@ -909,6 +909,83 @@ class Opiniones(unittest.TestCase):
                 r = subprocess.run(["node", str(RAIZ / "verifica_opinion.mjs"), str(f)], capture_output=True,
                                    text=True, timeout=60)
                 self.assertEqual(r.returncode, 0, r.stdout)
+        self.assertIn("node atlas/tabla_opiniones.mjs --comprueba", vivo)
+
+    def test_copiar_es_un_gesto_de_la_persona(self):
+        """El portapapeles solo se escribe dentro del clic de «Copy», y una sola vez en el guion."""
+        cod = sin_comentarios((ASSETS / "atlas-opina.js").read_text(encoding="utf-8"))
+        self.assertEqual(cod.count("navigator.clipboard.writeText("), 1)
+        self.assertIn("c.addEventListener('click', function () {\n        navigator.clipboard.writeText(", cod)
+        d = json.loads((PUBLICO / "atlas-opina-en.json").read_text(encoding="utf-8"))
+        for k in ("copiar", "copiado", "copiar_no", "enviar_copia"):
+            with self.subTest(clave=k):
+                self.assertTrue(d.get(k, "").strip())
+
+    def test_la_tabla_esta_al_dia(self):
+        r = subprocess.run(["node", str(RAIZ / "tabla_opiniones.mjs"), "--comprueba"], capture_output=True,
+                           text=True, timeout=60)
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+
+    def test_la_tabla_no_cuenta_ejemplos_ni_rechazos(self):
+        """Una opinion de persona cuenta; la de ejemplo y la manipulada no, y la manipulada sale con su
+        motivo. La celda escapa lo que abriria formato o HTML."""
+        import tempfile
+        buena = json.loads((RAIZ.parent / "opiniones" / "ejemplo-navegador-sin-cabeza.json").read_text(encoding="utf-8"))
+        mala = json.loads(json.dumps(buena))
+        mala["opinion"]["eleccion"] = "de_acuerdo"
+        with tempfile.TemporaryDirectory() as d:
+            for n, o in (("ejemplo-a.json", buena), ("b.json", buena), ("c.json", mala)):
+                (Path(d) / n).write_text(json.dumps(o), encoding="utf-8")
+            js = ("import { tabla } from " + json.dumps((RAIZ / "tabla_opiniones.mjs").as_uri()) +
+                  "; process.stdout.write(JSON.stringify(tabla(process.argv[1])));")
+            r = subprocess.run(["node", "--input-type=module", "-e", js, d], capture_output=True, text=True, timeout=60)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        t = json.loads(r.stdout)
+        self.assertEqual((t["entran"], t["ejemplos"], t["fuera"]), (1, 1, 1))
+        self.assertIn("| **total** | 0 | 1 | 0 | 1 |", t["texto"])
+        self.assertIn("- c.json: firma: no verifica", t["texto"])
+
+
+class Vigia(unittest.TestCase):
+    """El vigia diario de `main` (sugerencia firmada por el Soberano, 2026-09-28): el umbral del peso
+    lo da el motor, no una cifra copiada; avisa en el run diario y no bloquea ningun PR."""
+
+    def corre(self, mundo=None):
+        orden = ["node", str(RAIZ / "vigia.mjs")] + ([str(mundo)] if mundo else [])
+        r = subprocess.run(orden, capture_output=True, text=True, timeout=60)
+        return r.returncode, json.loads(r.stdout.splitlines()[0])
+
+    def test_el_mundo_de_hoy_no_dana_de_mas(self):
+        cod, v = self.corre()
+        self.assertEqual(cod, 0, v)
+        m = json.loads((PUBLICO / "atlas-mundo.json").read_text(encoding="utf-8"))
+        self.assertEqual(v["gzip_juego_b"], m["gzip_juego_b"])
+        self.assertEqual(v["margen_b"], v["umbral_b"] - 1 - m["gzip_juego_b"])
+
+    def test_pasar_el_umbral_o_romper_el_arnes_sale_en_rojo(self):
+        import tempfile
+        _, v = self.corre()
+        m = json.loads((PUBLICO / "atlas-mundo.json").read_text(encoding="utf-8"))
+        casos = (("justo", {"gzip_juego_b": v["umbral_b"] - 1}, 0),
+                 ("pesado", {"gzip_juego_b": v["umbral_b"]}, 1),
+                 ("arnes", {"arnes_sw": "23/24"}, 1))
+        with tempfile.TemporaryDirectory() as d:
+            for nombre, cambio, esperado in casos:
+                with self.subTest(caso=nombre):
+                    f = Path(d) / (nombre + ".json")
+                    f.write_text(json.dumps(dict(m, **cambio)), encoding="utf-8")
+                    cod, r = self.corre(f)
+                    self.assertEqual(cod, esperado, r)
+
+    def test_el_vigia_corre_cada_dia_y_no_en_los_pr(self):
+        wf = (RAIZ.parent / ".github" / "workflows" / "vigia.yml").read_text(encoding="utf-8")
+        vivo = "\n".join(l for l in wf.splitlines() if not l.lstrip().startswith("#"))
+        self.assertRegex(vivo, r'schedule:\s*\n\s*- cron: "[0-9]+ [0-9]+ \* \* \*"')
+        self.assertNotIn("pull_request", vivo)
+        self.assertIn("contents: read", vivo)
+        for orden in ("python test_web.py", "python atlas/test_atlas.py", "node atlas/vigia.mjs"):
+            with self.subTest(orden=orden):
+                self.assertIn(orden, vivo)
 
 
 if __name__ == "__main__":

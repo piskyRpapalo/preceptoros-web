@@ -19,5 +19,9 @@
  "enviar": "Send…",
  "enviado": "Shared. Whoever receives it can check it: the signature proves who wrote it and that nothing changed.",
  "enviar_no": "Not shared ({m}). The file is still saved: you can send it by hand.",
- "enviar_nd": "Signed with your key and saved as {f}. NO_DATA · this browser cannot share files: send that file by hand."
+ "enviar_nd": "Signed with your key and saved as {f}. NO_DATA · this browser cannot share files: send that file by hand.",
+ "copiar": "Copy",
+ "copiado": "Copied. Paste it into your message: the text alone is enough to check the signature.",
+ "copiar_no": "Not copied ({m}). The file is still saved: you can send it by hand.",
+ "enviar_copia": "Signed with your key and saved as {f}. This browser cannot share files: press Copy and paste the text into your message, or send the file by hand."
 }

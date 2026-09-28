@@ -15,7 +15,9 @@
    los feedback mios y de otros users»): tras firmar aparece «Send», que abre el menu de compartir DEL
    SISTEMA (Web Share) con el fichero firmado; la persona elige el canal (mensajeria, correo) y a
    quien. Ni servidor ni direccion escrita aqui. Quien lo recibe lo verifica con
-   `atlas/verifica_opinion.mjs`: la firma dice quien lo escribio y que no cambio. Sin Web Share, el
+   `atlas/verifica_opinion.mjs`: la firma dice quien lo escribio y que no cambio. «Copy» (tambien
+   con un clic propio) deja el mismo texto en el portapapeles para pegarlo en el mensaje: es la
+   salida del escritorio, donde Web Share de ficheros suele faltar. Sin ninguno de los dos, el
    fichero ya guardado se lleva a mano, y se dice. Los textos viven en `atlas-opina-<lengua>.json`. */
 (function () {
   'use strict';
@@ -80,21 +82,30 @@
   }
 
   /* ENVIAR, con un clic propio: el menu de compartir exige un gesto reciente de la persona, y la
-     firma es asincrona. Sin Web Share de ficheros (escritorio antiguo), NO_DATA con la salida: el
-     fichero ya esta guardado. */
+     firma es asincrona. COPIAR, igual: el portapapeles solo se escribe dentro del clic. Sin Web
+     Share de ficheros ni portapapeles, NO_DATA con la salida: el fichero ya esta guardado. */
   function ofreceEnvio(texto, nombre) {
     if (!panel) { return; }
-    var viejo = panel.querySelector('.atlas-opina-envia'); if (viejo) { viejo.remove(); }
+    Array.prototype.forEach.call(panel.querySelectorAll('.atlas-opina-envia'), function (v) { v.remove(); });
+    var st = panel.querySelector('.atlas-opina-estado');
+    var copia = navigator.clipboard && typeof navigator.clipboard.writeText === 'function';
+    if (copia) {
+      var c = el('button', 'boton atlas-opina-envia', T('copiar')); c.type = 'button';
+      c.addEventListener('click', function () {
+        navigator.clipboard.writeText(texto).then(function () { dice(T('copiado')); },
+          function (x) { dice(T('copiar_no').replace('{m}', (x && x.name) || '')); });
+      });
+      panel.insertBefore(c, st);
+    }
     var f = typeof File === 'function' ? new File([texto], nombre, { type: 'application/json' }) : null;
     var puede = f && navigator.canShare && navigator.canShare({ files: [f] });
-    if (!puede) { dice(T('enviar_nd').replace('{f}', nombre)); return; }
+    if (!puede) { dice(T(copia ? 'enviar_copia' : 'enviar_nd').replace('{f}', nombre)); return; }
     var b = el('button', 'boton atlas-opina-envia', T('enviar')); b.type = 'button';
     b.addEventListener('click', function () {
       navigator.share({ files: [f], title: T('t') }).then(function () { dice(T('enviado')); b.remove(); },
         function (x) { dice(T('enviar_no').replace('{m}', (x && x.name) || '')); });
     });
-    var st = panel.querySelector('.atlas-opina-estado');
-    panel.insertBefore(b, st);
+    panel.insertBefore(b, c || st);
   }
 
   function formulario(capa, pre) {

@@ -1,6 +1,7 @@
 // preceptoros.org · theGame · VERIFICA una opinion firmada (`atlas.opinion.firmada/1`).
 //
 //     node atlas/verifica_opinion.mjs atlas-opinion-120-veredicto.json
+//     node atlas/verifica_opinion.mjs - < texto-pegado.json   (lo copiado con «Copy»)
 //
 // Quien recibe una opinion (por mensajeria, correo o un PR a `opiniones/`) no tiene que creerse
 // nada: aqui se mira la FORMA (el contrato `data/atlas_opinion_schema.json`, en node y sin
@@ -65,7 +66,7 @@ export function verificaOpinion(s) {
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const ruta = process.argv[2];
   let r;
-  try { r = ruta ? verificaOpinion(JSON.parse(readFileSync(ruta, 'utf8'))) : { ok: false, motivo: 'uso: fichero' }; }
+  try { r = ruta ? verificaOpinion(JSON.parse(readFileSync(ruta === '-' ? 0 : ruta, 'utf8'))) : { ok: false, motivo: 'uso: fichero o -' }; }
   catch (x) { r = { ok: false, motivo: 'lectura: ' + x.message }; }
   process.stdout.write(JSON.stringify(r) + '\n');
   process.exit(r.ok ? 0 : 1);
