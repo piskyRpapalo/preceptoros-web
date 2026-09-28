@@ -370,6 +370,7 @@ process.stdout.write(JSON.stringify({
             with self.subTest(lengua=l):
                 self.assertIn(l, dentro)
         self.assertIn("...ATLAS", listas)
+        self.assertIn("'/atlas-opina-' + l + '.json'", listas, "los textos de opinar no abren sin red")
         for medida in ("atlas-mundo.json", "atlas-record.json"):
             self.assertNotIn(medida, listas, f"{medida} es una medida: fresca o no se sirve")
 
@@ -416,6 +417,48 @@ process.stdout.write(JSON.stringify(ok));
 """
         r = subprocess.run(["node", "-e", js], cwd=RAIZ.parent, capture_output=True, text=True, timeout=60)
         self.assertEqual(r.stdout, "true", r.stderr)
+
+    def test_opinar_firmado_se_carga_al_pulsar_y_su_contrato_es_cerrado(self):
+        """`atlas-opina.js` (2026-09-28): fuera de la puerta del juego y del precache; solo pide su
+        texto al propio origen; sus claves estan en cada lengua del juego; el contrato
+        `atlas.opinion/1` acepta una opinion buena y rechaza la mala (ruta, correo, fuera del enum,
+        campo de mas)."""
+        capa = (ASSETS / "thegame.js").read_text(encoding="utf-8")
+        self.assertNotIn("['atlas-opina.js']", capa, "opinar pesa en la puerta del juego")
+        self.assertIn("s.src = '/assets/atlas-opina.js'", capa)
+        self.assertNotIn("atlas-opina.js", sin_comentarios((PUBLICO / "sw-listas.js").read_text(encoding="utf-8")))
+        cod = sin_comentarios((ASSETS / "atlas-opina.js").read_text(encoding="utf-8"))
+        self.assertEqual(re.findall(r"fetch\(([^)]*)\)", cod), ["'/atlas-opina-' + lang + '.json'"])
+        for salida in ("http://", "https://", "XMLHttpRequest", "sendBeacon", "WebSocket", "localStorage",
+                       "indexedDB", "innerHTML"):
+            with self.subTest(salida=salida):
+                self.assertNotIn(salida, cod)
+        usadas = set(re.findall(r"T\('(\w+)'\)", cod)) | {"sobre_sugerencia", "sobre_veredicto", "sobre_grieta",
+                                                            "de_acuerdo", "en_desacuerdo", "no_se"}
+        for l in LENGUAS_JUEGO:
+            with self.subTest(lengua=l):
+                d = json.loads((PUBLICO / f"atlas-opina-{l}.json").read_text(encoding="utf-8"))
+                self.assertEqual(usadas - set(d), set(), f"atlas-opina-{l}.json sin claves")
+        try:
+            import jsonschema
+        except ImportError:
+            self.skipTest("NO_DATA · sin jsonschema. Remedio: pip install jsonschema")
+        esq = json.loads((DATOS / "atlas_opinion_schema.json").read_text(encoding="utf-8"))
+        jsonschema.Draft202012Validator.check_schema(esq)
+        val = jsonschema.Draft202012Validator(esq)
+        op = {"esquema": "atlas.opinion/1", "contenido_v": "2026-09-27.1", "sobre": "veredicto", "ciclo": 120,
+              "estado_sha256": "a" * 64, "mostrado": "Structural tie", "eleccion": "de_acuerdo", "nota": "the pilot was right"}
+        bueno = {"esquema": "atlas.opinion.firmada/1", "opinion": op, "firma": "ed25519:" + "b" * 128,
+                 "algoritmo": "Ed25519", "pseudonimo": "Atlante-7F3A", "clave_publica": "c" * 64}
+        self.assertEqual([e.message for e in val.iter_errors(bueno)], [])
+        # Los ejemplos malos se construyen por partes: escritos enteros, la doctrina de test_web
+        # (cero rutas, cero IPs, un solo CDN) los caza en ESTE fichero, que es lo que debe hacer.
+        ruta, url, ip = "/" + "home/x", "https" + "://x", ".".join(["10", "0", "0", "1"])
+        for nombre, malo in (("ruta", dict(op, nota="see " + ruta)), ("correo", dict(op, nota="me" + "@x.org")),
+                             ("url", dict(op, nota=url)), ("ip", dict(op, nota="at " + ip)),
+                             ("enum", dict(op, eleccion="quizas")), ("campo", dict(op, pc="mio"))):
+            with self.subTest(malo=nombre):
+                self.assertTrue(list(val.iter_errors(dict(bueno, opinion=malo))), f"el contrato acepta {nombre}")
 
     def test_casos_del_piloto_y_la_partida(self):
         """Casos en node: la regla, la grabadora, la reproduccion y la firma.

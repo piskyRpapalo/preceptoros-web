@@ -146,7 +146,9 @@ const CAMINOS = ['ar', 'de', 'el', 'en', 'es', 'fr', 'it', 'pt', 'ru']
    no medida. `atlas-mundo.json` y `atlas-record.json` SI son medidas y siguen fuera: sin red, la
    ley del mundo se dice NO_DATA en vez de servir una cifra vieja con cara de fresca. */
 const ATLAS = ['ar', 'de', 'el', 'en', 'es', 'fr', 'it', 'pt', 'ru']
-  .map(function (l) { return '/atlas-' + l + '.json'; });
+  .map(function (l) { return '/atlas-' + l + '.json'; })
+  /* Y los textos de opinar firmado (su guion se carga al pulsar), por el mismo criterio. */
+  .concat(['ar', 'de', 'el', 'en', 'es', 'fr', 'it', 'pt', 'ru'].map(function (l) { return '/atlas-opina-' + l + '.json'; }));
 
 const CONTENIDO_JSON = [...AGENTES, ...CAMINOS, ...ATLAS, ...DUELOS, ...HERRAMIENTAS, '/hub.json', '/hub-textos.json', '/medidas.json', '/nav.json', '/modelos.json', '/servicios.json', '/instalar.json'];
 

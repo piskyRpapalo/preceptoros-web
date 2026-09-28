@@ -1,0 +1,34 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "preceptoros:atlas.opinion/1",
+ "title": "Opinion firmada desde theGame",
+ "description": "Lo que una persona dice, firmado, sobre una sugerencia del piloto, un veredicto del juez o la grieta, en el estado exacto en que lo vio (su huella). Enum cerrado de respuestas; la nota es corta y no admite rutas, correos, URLs ni IPs. No se envia sola: se guarda como fichero. Vive fuera de `public/`: es el contrato, no se sirve.",
+ "$defs": {
+  "opinion": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": ["esquema", "contenido_v", "sobre", "ciclo", "estado_sha256", "mostrado", "eleccion", "nota"],
+   "properties": {
+    "esquema": {"const": "atlas.opinion/1"},
+    "contenido_v": {"type": "string", "minLength": 1, "maxLength": 40},
+    "sobre": {"enum": ["sugerencia", "veredicto", "grieta"]},
+    "ciclo": {"type": "integer", "minimum": 0},
+    "estado_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "mostrado": {"type": "string", "maxLength": 400},
+    "eleccion": {"enum": ["de_acuerdo", "en_desacuerdo", "no_se"]},
+    "nota": {"type": "string", "maxLength": 280, "not": {"pattern": "(^|[^0-9])/[a-z]|@|https?:|\\b[0-9]{1,3}(\\.[0-9]{1,3}){3}\\b"}}
+   }
+  }
+ },
+ "type": "object",
+ "additionalProperties": false,
+ "required": ["esquema", "opinion", "firma", "algoritmo", "pseudonimo", "clave_publica"],
+ "properties": {
+  "esquema": {"const": "atlas.opinion.firmada/1"},
+  "opinion": {"$ref": "#/$defs/opinion"},
+  "firma": {"type": "string", "pattern": "^ed25519:[0-9a-f]{128}$"},
+  "algoritmo": {"const": "Ed25519"},
+  "pseudonimo": {"type": "string", "minLength": 1, "maxLength": 64},
+  "clave_publica": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+ }
+}

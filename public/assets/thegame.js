@@ -130,6 +130,14 @@
               s.onload = function () { window.AtlasHud.monta(capa, d); };
               document.head.appendChild(s);
             });
+            /* Opinar FIRMADO (sugerencia, veredicto, grieta): `atlas-opina.js`, al pulsar. */
+            var bo = el('button', 'boton-sec', window.AtlasJuego.texto('opina'));
+            bo.addEventListener('click', function () {
+              var s = document.createElement('script'); s.src = '/assets/atlas-opina.js';
+              s.onload = function () { window.AtlasOpina.abre(capa); };
+              if (window.AtlasOpina) { window.AtlasOpina.abre(capa); } else { document.head.appendChild(s); }
+            });
+            sm.appendChild(bo);
           }
         });
       }

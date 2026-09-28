@@ -1,0 +1,19 @@
+{
+  "t": "Signed feedback",
+  "que": "About what?",
+  "sobre_sugerencia": "The pilot's suggestion",
+  "sobre_veredicto": "The judge's verdict",
+  "sobre_grieta": "The rift",
+  "ninguno": "NO_DATA · nothing to give feedback on right now: no suggestion, no verdict and no rift on screen.",
+  "eleccion": "Your answer",
+  "de_acuerdo": "Right",
+  "en_desacuerdo": "Wrong",
+  "no_se": "Not sure",
+  "nota": "Note (optional, 280 characters, no paths, emails, links or IPs)",
+  "nota_mal": "The note looks like a path, email, link or IP: remove it to sign.",
+  "firmar": "Sign and save as a file",
+  "ok": "Signed with your key and saved as {f}. It is NOT sent: bring it to the lab, or keep it with your exported game.",
+  "nd_id": "NO_DATA · no identity on this device: create one in your profile to sign.",
+  "nd": "NO_DATA · not signed: {m}",
+  "cerrar": "Close"
+}
