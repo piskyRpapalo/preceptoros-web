@@ -460,6 +460,27 @@ process.stdout.write(JSON.stringify(ok));
             with self.subTest(malo=nombre):
                 self.assertTrue(list(val.iter_errors(dict(bueno, opinion=malo))), f"el contrato acepta {nombre}")
 
+    def test_lo_comun_de_lab_y_app_vive_una_vez(self):
+        """`atlas/juego_comun.mjs` (2026-09-28): `legales`, `forma` y `huella`, que usan el laboratorio y
+        la app. Fuera de `public/` (no pesa en la puerta). Si su regla cambia, cambia para los dos."""
+        js = r"""
+const M = require('./public/assets/atlas-motor.js'), Pa = require('./public/assets/atlas-partida.js'), J = require('./public/game/juez.js');
+import('./atlas/juego_comun.mjs').then((C) => {
+  const ley = { nd: false, integridad_max: 117, dano: 1 }, e = M.inicial(ley);
+  process.stdout.write(JSON.stringify({ legales: C.legales(M, Pa, J, e), invocar: C.forma({ accion: 'invocar' }),
+    luna: C.forma({ accion: 'bajar_a', banda: 'luna' }), bien: C.forma({ accion: 'bajar_a', banda: 'arrecife' }),
+    huella: C.huella(Pa, M, e) }));
+});
+"""
+        r = subprocess.run(["node", "-e", js], cwd=RAIZ.parent, capture_output=True, text=True, timeout=60)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        o = json.loads(r.stdout)
+        self.assertEqual(o["legales"][0], {"accion": "esperar"})
+        self.assertNotIn({"accion": "invocar"}, o["legales"], "lo legal para un modelo incluye gastar")
+        self.assertEqual((o["invocar"], o["luna"], o["bien"]), ("accion fuera del enum", "banda fuera del enum", ""))
+        self.assertRegex(o["huella"], r"^[0-9a-f]{64}$")
+        self.assertFalse((PUBLICO / "atlas" / "juego_comun.mjs").exists())
+
     def test_casos_del_piloto_y_la_partida(self):
         """Casos en node: la regla, la grabadora, la reproduccion y la firma.
         Incluye la partida INVENTADA y bien firmada que solo caza la
