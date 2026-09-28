@@ -40,7 +40,7 @@ caso('genoma: fuera de banda, desconocido, decimal y min > max se rechazan', () 
                /min > max/.test(Gn.valida(con({ incubacion: { ciclos_min_tc2: 90, ciclos_max_tc2: 40 } }))) || 'min>max');
 });
 caso('genoma: los dominios prohibidos no entran ni disfrazados (addendum §5 y §9)', () => {
-  const nombres = ['invocation_permission', 'human_only_override', 'motor_cost_override', 'real_money', 'crypto_wallet',
+  const nombres = ['invocation_permission', 'human_only_override', 'motor_cost_override', 'real_money', 'money_balance',
                    'remote_url', 'executable_payload', 'hidden_probability_float', 'wall_clock_timer', 'auto_adoption_troop',
                    'auto_invoke', 'private_path', 'hostname', 'ip', 'personal_data'];
   for (const n of nombres) {

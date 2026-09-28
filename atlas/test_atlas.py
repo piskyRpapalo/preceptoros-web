@@ -851,7 +851,12 @@ class Juez(unittest.TestCase):
 # lleva a Claude y una IA local de 24 GB, y lo que el rack recoge vale como fuente de un benchmark.
 # NADA en el repositorio puede sonar a monedas: no tiene nada que ver con el juego y asusta a la gente.
 # La lista vetada va en base64 para que el propio repositorio no nombre lo que prohibe. Cada linea es
-# «patron<TAB>ejemplo»; `cs:` delante = distingue mayusculas. Verla: `python3 atlas/test_atlas.py --vetadas`.
+# «patron<TAB>ejemplo»; `cs:` delante = distingue mayusculas; `juego:` = solo en los textos que lee quien juega
+# (`public/atlas*-<l>.json`), donde «tokens», «coins» o «monedas» asustarian aunque fuera de ahi sean otra cosa
+# (los tokens de un modelo, en el banco de pruebas). Verla: `python3 atlas/test_atlas.py --vetadas`.
+# PALABRAS COMPUESTAS (Soberano, 2026-09-28: con guion bajo, camelCase o guion): cada linea se mira
+# tal cual y ademas partida por `_` y por camelCase, asi que un identificador no esconde lo que nombra. Los
+# nombres de la API de criptografia (WebCrypto, SubtleCrypto, CryptoKey) se leen enteros: no se parten.
 VETADAS_B64 = (
     "XGJibG9jayA/Y2hhaW5zP1xiCWxhIGJsb2NrY2hhaW4gZGVsIGp1ZWdvClxiY2FkZW5hcz8gZGUgYmxvcXVlcz9cYgl1bmEg"
     "Y2FkZW5hIGRlIGJsb3F1ZXMKXGIob258b2ZmKS0/Y2hhaW5cYgl0b2RvIHF1ZWRhIG9uLWNoYWluClxiY3JpcHRvKG1vbmVk"
@@ -875,7 +880,13 @@ VETADAS_B64 = (
     "b29mIG9mIHdvcmsKXGJwcnVlYmEgZGUgKHRyYWJham98cGFydGljaXBhY2lbb8OzXW4pXGIJcHJ1ZWJhIGRlIHBhcnRpY2lw"
     "YWNpw7NuClxibW9uZWRhcz8gKGRpZ2l0YWx8dmlydHVhbCkoZXMpP1xiCXVuYSBtb25lZGEgZGlnaXRhbCBwcm9waWEKXGJk"
     "ZXBpblxiCWxvIERlUElOIHZpdmUgYXBhcnRlCmNzOlxiTkVBUlxiCXNhbGRvIGVuIE5FQVIKY3M6bmVhcl90eAlpbXBvcnQg"
-    "bmVhcl90eApjczpcYlthLXowLTlfLV0rXC5uZWFyXGIJaGV4ZWxpb24ubmVhcgo="
+    "bmVhcl90eApjczpcYlthLXowLTlfLV0rXC5uZWFyXGIJaGV4ZWxpb24ubmVhcgpqdWVnbzpcYnRva2Vucz9cYgllYXJuIHRv"
+    "a2VucyBhcyB5b3UgcGxheQpqdWVnbzpcYmNvaW5zP1xiCWNvbGxlY3QgY29pbnMgaW4gdGhlIEZvcmVzdApqdWVnbzpcYm1v"
+    "bmVkYXM/XGIJZ2FuYSBtb25lZGFzIGVuIGVsIEJvc3F1ZQpqdWVnbzpcYm1vbm5haWVzP1xiCWdhZ25lIGRlcyBtb25uYWll"
+    "cwpqdWVnbzpcYm3DvG56ZW4/XGIJc2FtbWxlIE3DvG56ZW4KanVlZ286XGJtb25ldFthZV1cYglyYWNjb2dsaSBtb25ldGUK"
+    "anVlZ286XGJtb2VkYXM/XGIJZ2FuaGEgbW9lZGFzCmp1ZWdvOlxi0LzQvtC90LXRglx3KgnRgdC+0LHQuNGA0LDQuSDQvNC+"
+    "0L3QtdGC0YsKanVlZ286XGLOvVvOv8+MXc68W865zq9dz4POvFx3KgnOvM6szrbOtc+IzrUgzr3Ov868zq/Pg868zrHPhM6x"
+    "Cmp1ZWdvOti52YXZhNipCdin2KzZhdi5INi52YXZhNipCg=="
 )
 TEXTO = (".html", ".js", ".mjs", ".json", ".jsonl", ".css", ".md", ".py", ".txt", ".svg", ".xml",
          ".webmanifest", ".yml", ".yaml", ".sh", ".toml")
@@ -886,16 +897,30 @@ def vetadas():
     filas = []
     for linea in base64.b64decode("".join(VETADAS_B64)).decode("utf-8").splitlines():
         patron, ejemplo = linea.split("\t")
+        juego = patron.startswith("juego:")
+        patron = patron[6:] if juego else patron
         cs = patron.startswith("cs:")
-        filas.append((re.compile(patron[3:] if cs else patron, 0 if cs else re.I), ejemplo))
+        filas.append((re.compile(patron[3:] if cs else patron, 0 if cs else re.I), ejemplo, juego))
     return filas
 
 
 VETO = vetadas()
+COMPUESTAS_B64 = "Y3J5cHRvX3dhbGxldApjcnlwdG9XYWxsZXQKY3J5cHRvLXdhbGxldApDUllQVE9fV0FMTEVUCm15X25mdF9saXN0CnN0YWtpbmdQb29sCm9uX2NoYWluX2xlZGdlcgpsZWRnZXJFbnRyeQptaW50X3Ryb29w"   # casos de la guarda, cifrados por lo mismo
+API_CRIPTOGRAFIA = re.compile(r"WebCrypto|SubtleCrypto|CryptoKey")
+TEXTO_DEL_JUEGO = re.compile(r"^public/atlas(-[a-z]+)*-[a-z]{2}\.json$")
 
 
-def menciones_vetadas(texto):
-    return [m.group(0) for r, _ in VETO for m in r.finditer(texto)]
+def partida(texto):
+    """La linea partida por `_` y por camelCase: `mi_palabra` y `miPalabra` -> `mi palabra`."""
+    t = API_CRIPTOGRAFIA.sub(lambda m: m.group(0).lower(), texto)
+    return re.sub(r"(?<=[a-z0-9])(?=[A-Z])", " ", t).replace("_", " ")
+
+
+def menciones_vetadas(texto, juego=False):
+    hallados = []
+    for version in dict.fromkeys((texto, partida(texto))):
+        hallados += [m.group(0) for r, _, solo_juego in VETO if juego or not solo_juego for m in r.finditer(version)]
+    return list(dict.fromkeys(hallados))
 
 
 def ficheros_del_repo(raiz):
@@ -913,20 +938,36 @@ class JuegoJusto(unittest.TestCase):
         vistos, hallados = 0, []
         for f in sorted(ficheros_del_repo(raiz)):
             rel = str(f.relative_to(raiz))
+            juego = bool(TEXTO_DEL_JUEGO.match(rel))
             hallados += [f"{rel} (nombre): {m}" for m in menciones_vetadas(rel)]
             if not f.is_file() or f.suffix not in TEXTO:
                 continue
             vistos += 1
             for n, linea in enumerate(f.read_text(encoding="utf-8", errors="replace").splitlines(), 1):
-                hallados += [f"{rel}:{n}: {m}" for m in menciones_vetadas(linea)]
+                hallados += [f"{rel}:{n}: {m}" for m in menciones_vetadas(linea, juego)]
         self.assertGreater(vistos, 300, "la guarda no ha mirado casi nada: falla cerrado")
         self.assertEqual(hallados, [], "\n".join(hallados[:20]))
 
     def test_la_guarda_caza_lo_que_debe(self):
-        self.assertGreater(len(VETO), 30)
-        for r, ejemplo in VETO:
+        self.assertGreater(len(VETO), 50)
+        for r, ejemplo, juego in VETO:
             with self.subTest(patron=r.pattern):
-                self.assertTrue(r.search(ejemplo), ejemplo)
+                self.assertTrue(menciones_vetadas(ejemplo, juego), ejemplo)
+
+    def test_la_guarda_ve_las_palabras_compuestas(self):
+        import base64
+        for compuesta in base64.b64decode(COMPUESTAS_B64).decode("utf-8").splitlines():
+            with self.subTest(compuesta=compuesta):
+                self.assertTrue(menciones_vetadas(compuesta), compuesta)
+
+    def test_los_textos_del_juego_no_hablan_de_monedas(self):
+        """En lo que lee quien juega, ni monedas ni tokens; fuera de ahi un token es la unidad de un modelo."""
+        self.assertTrue(TEXTO_DEL_JUEGO.match("public/atlas-arena-en.json") and TEXTO_DEL_JUEGO.match("public/atlas-el.json"))
+        self.assertFalse(TEXTO_DEL_JUEGO.match("public/cerebros-en.json"))
+        for frase in ("Earn tokens as you play", "collect coins", "gana monedas"):
+            with self.subTest(frase=frase):
+                self.assertTrue(menciones_vetadas(frase, juego=True))
+                self.assertEqual(menciones_vetadas(frase), [], "fuera del juego no se mira")
 
     def test_la_criptografia_si_se_nombra(self):
         """Lo que hace justo el juego no se veta: la API del navegador, node, las firmas y el ingles corriente."""
@@ -934,7 +975,9 @@ class JuegoJusto(unittest.TestCase):
                        "window.crypto.getRandomValues(b)", "var s = raiz.crypto && raiz.crypto.subtle;",
                        "import { createHash } from 'node:crypto';", "WebCrypto en la pestana, `crypto` en node",
                        "tokens per second", "depuis le coin de l'en-tête", "you swap signed packages",
-                       "Dredging", "el libro de pruebas firmado", "commit-reveal y firma Ed25519"):
+                       "Dredging", "el libro de pruebas firmado", "commit-reveal y firma Ed25519",
+                       "verifica con WebCrypto", "var k = CryptoKey;", "max_tokens: 5, prompt_tokens",
+                       "It signs no value and moves no money."):
             with self.subTest(limpio=limpio):
                 self.assertEqual(menciones_vetadas(limpio), [])
 
@@ -1473,7 +1516,7 @@ class Arena(unittest.TestCase):
 
 if __name__ == "__main__":
     if "--vetadas" in sys.argv:
-        for r, ejemplo in VETO:
-            print(f"{r.pattern}\t{ejemplo}")
+        for r, ejemplo, juego in VETO:
+            print(f"{'juego:' if juego else ''}{r.pattern}\t{ejemplo}")
         sys.exit(0)
     unittest.main(verbosity=1)

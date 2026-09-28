@@ -46,7 +46,7 @@ estado: PENDIENTE DE FIRMA para lo marcado REQUIERE_FIRMA · validadores puros d
   - curvas de incubación (solo ciclos, ningún campo de reloj);
   - restricciones de armónicos.
   
-  Además rechaza `invocation_permission`, `auto_invoke`, `auto_adoption_troop`, `wall_clock_timer`, `real_money`, `crypto_wallet`, `paid_reroll`, `fomo_timer`, `hidden_probability_float` y similares.
+  Además rechaza `invocation_permission`, `auto_invoke`, `auto_adoption_troop`, `wall_clock_timer`, `real_money`, `money_balance`, `paid_reroll`, `fomo_timer`, `hidden_probability_float` y similares.
 - **Odds visibles:** la incubadora muestra, bajo cada tesoro, las odds exactas en puntos básicos, sacadas de los mismos enteros que usa la tirada.
 - Casos deterministas en node, con sabotaje en rojo antes del verde.
 
