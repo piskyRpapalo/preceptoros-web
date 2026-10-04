@@ -222,6 +222,8 @@
     s.appendChild(R.escena);
     R.nodos = el('div'); s.insertBefore(R.nodos, R.mapa);
     if (window.AtlasNodosUI) { window.AtlasNodosUI.monta(R.nodos, T); }
+    R.rack = el('div'); s.insertBefore(R.rack, R.mapa);
+    if (window.AtlasRackUI) { window.AtlasRackUI.monta(R.rack, T); }
     R.duelo = el('div', 'atlas-arena-duelo'); s.appendChild(R.duelo);
     panel.textContent = ''; panel.appendChild(s);
     var I = window.Identity;

@@ -116,3 +116,30 @@ body.en-thegame > :not(#thegame){visibility:hidden}
   .thegame-panel .atlas-recursos{grid-template-columns:repeat(5,minmax(0,1fr))}
   .thegame-panel .atlas-recursos li:last-child:nth-child(odd){grid-column:auto}
 }
+
+/* --- Arena · rediseno tras el Doogee (2026-10-04) ------------------------------------------------ */
+/* Dos firmas, dos pasos que no se parecen: el 1 en violeta (la partida), el 2 en cobre (el envio). */
+.atlas-pasos{list-style:none;margin:.8rem 0 0;padding:0;display:grid;gap:.7rem}
+.atlas-paso{padding:.7rem .9rem;border-radius:var(--radius);background:var(--bg-secondary)}
+.atlas-paso h6{margin:0 0 .3rem;font:600 .8rem/1.3 var(--mono);letter-spacing:.05em;text-transform:uppercase}
+.atlas-paso-1{border:2px solid var(--edge-sov)}
+.atlas-paso-1 h6{color:var(--accent-violet-text,var(--text-main))}
+.atlas-paso-1.hecho h6::after{content:" \2713"}
+.atlas-paso-2{border:2px dashed var(--accent-copper)}
+.atlas-paso-2 h6{color:var(--accent-copper-claro)}
+.atlas-paso-2 .consiento-et{display:flex;gap:.5rem;align-items:flex-start;margin:.4rem 0;font-size:.95rem}
+.atlas-paso-2 .consiento-et input{width:1.4rem;height:1.4rem;flex:none;accent-color:var(--accent-copper)}
+.atlas-porque{margin:.35rem 0 0;font:.8rem/1.4 var(--mono);color:var(--accent-copper-claro)}
+.atlas-porque.listo{color:var(--text-muted)}
+.atlas-huella{overflow-wrap:anywhere}
+.atlas-nodos-cedulas{margin-top:.8rem}
+.atlas-nodos-cedulas>summary{cursor:pointer;font:.85rem/1.4 var(--mono);color:var(--text-muted)}
+/* El mapa global: un punto por nodo; el que esta activo DECLARADO late, y quien pide quietud lo ve fijo. */
+.atlas-rack{margin:1rem 0}
+.atlas-rack-mapa{list-style:none;margin:.5rem 0;padding:0;display:grid;gap:.6rem;grid-template-columns:repeat(auto-fit,minmax(14rem,1fr))}
+.atlas-rack-nodo{display:grid;gap:.15rem;padding:.6rem .8rem .6rem 2.2rem;position:relative;border:1px solid var(--edge-sov);border-radius:var(--radius);font-size:.85rem;overflow-wrap:anywhere}
+.atlas-rack-nodo.maestro{border-width:2px}
+.atlas-rack-pin{position:absolute;inset-inline-start:.75rem;top:.85rem;width:.7rem;height:.7rem;border-radius:50%;background:var(--text-muted)}
+.atlas-rack-nodo.activo .atlas-rack-pin{background:var(--accent-copper);animation:atlas-pulso 1.6s var(--curva,ease) infinite}
+.atlas-cuenta-une{margin:.4rem 0;padding-inline-start:1.1rem;display:grid;gap:.3rem;font-size:.85rem;overflow-wrap:anywhere}
+@media (prefers-reduced-motion:reduce){.atlas-rack-nodo.activo .atlas-rack-pin{animation:none}}

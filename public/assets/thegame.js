@@ -36,8 +36,8 @@
      invocadas luchando en live con los NPCs»): el mar, los lugares NPC, el combate en vivo y los duelos
      entre personas por paquetes firmados. Detras del Army, cuyas tropas y verificador usa. */
   var ARENA = [['/game/canon.js'], ['/game/sobres.js'], ['/game/rating.js'], ['/game/arena.js'], ['/game/duelo.js'],
-    ['/game/escena.js'], ['/game/mar.js'], ['/game/nodos-pesos.js'], ['/game/nodos-cedulas.js'], ['/game/nodos.js'],
-    ['/game/ui-nodos.js'], ['/game/ui-arena.js'], ['/game/ui-duelo.js']];
+    ['/game/escena.js'], ['/game/mar.js'], ['/game/nodos-pesos.js'], ['/game/nodos-cedulas.js'], ['/game/nodos.js'], ['/game/cuenta.js'],
+    ['/game/ui-nodos.js'], ['/game/ui-rack.js'], ['/game/ui-arena.js'], ['/game/ui-duelo.js']];
   /* LAS LENGUAS DEL JUEGO (2026-09-28, el Soberano: «hoy, solo inglés; un mismo enlace»). La
      UNICA lista de lenguas en las que el juego esta COMPLETO. Cualquier portada abre el juego en
      una de ellas: la de la pagina si esta aqui; si no, la primera. Anadir una lengua es traducir
@@ -47,7 +47,7 @@
   var pagina = (document.documentElement.lang || 'en').slice(0, 2);
   var lengua = LENGUAS.indexOf(pagina) >= 0 ? pagina : LENGUAS[0];
   window.AtlasLengua = { lenguas: LENGUAS, actual: lengua, pagina: pagina };
-  var capa = null, origen = null, cargado = null;
+  var capa = null, origen = null, cargado = null, RUTA = /^#thegame(?:\/\w+)?$/;
 
   function el(tag, clase, texto) {
     var n = document.createElement(tag);
@@ -241,7 +241,7 @@
     setTimeout(function () { n.remove(); }, 6000);
   }
 
-  function abre(desde) {
+  function abre(desde, pes) {
     origen = desde || document.querySelector('#cab-nav a.thegame');
     carga().then(function () {
       if (!capa) {
@@ -270,8 +270,9 @@
             sm.appendChild(bo);
           }
           ordena();
+          if (pes && PANEL[pes]) { muestra(pes); }
         });
-      }
+      } else if (pes && PANEL[pes]) { muestra(pes); }
       if (!capa.open) { capa.showModal(); }
       document.body.classList.add('en-thegame');
       window.AtlasJuego.sigue();
@@ -288,7 +289,7 @@
     if (window.AtlasJuego) { window.AtlasJuego.pausa(); }
     capa.close();
     document.body.classList.remove('en-thegame');
-    if (location.hash === '#thegame' && history.replaceState) {
+    if (RUTA.test(location.hash) && history.replaceState) {
       history.replaceState(null, '', location.pathname + location.search);
     }
     if (origen && origen.focus) { origen.focus(); }

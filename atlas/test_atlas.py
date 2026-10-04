@@ -628,7 +628,7 @@ process.stdout.write(JSON.stringify(ok));
 PUROS = ("canon.js", "sobres.js", "rating.js", "arena.js", "duelo.js", "mercado.js", "narragrafo.js", "cria.js", "genoma.js")
 # La Arena (2026-09-28, «el mapa multi-jugador en una pestana»): se carga al abrir su pestana, detras del Army.
 ARENA = ("canon.js", "sobres.js", "rating.js", "arena.js", "duelo.js", "escena.js", "mar.js", "nodos-pesos.js",
-         "nodos-cedulas.js", "nodos.js", "ui-nodos.js", "ui-arena.js", "ui-duelo.js")
+         "nodos-cedulas.js", "nodos.js", "cuenta.js", "ui-nodos.js", "ui-rack.js", "ui-arena.js", "ui-duelo.js")
 FUERA_DE_LA_PUERTA = tuple(sorted(set(PUROS + ARENA)))
 
 
@@ -1437,6 +1437,159 @@ class NodosComoCuenta(unittest.TestCase):
             with self.subTest(clave=k):
                 self.assertTrue(tx.get(k), f"falta {k} en atlas-arena-en.json")
         self.assertIn("window.AtlasNodosUI.monta(R.nodos, T)", (PUBLICO / "game" / "ui-arena.js").read_text(encoding="utf-8"))
+
+
+class RedisenoDoogee(unittest.TestCase):
+    """El rediseno grafico que sale de la constatacion en el Doogee real (2026-10-04,
+    `propuestas/2026-10-04_constatacion_web_en_el_doogee.md`). Cada guarda tiene su sabotaje: se
+    ensenaron en rojo antes que en verde. La LOGICA no cambia: `nodos.js`, el contrato del envio y
+    las dos firmas siguen como estaban; esto vigila la pantalla."""
+
+    def _js(self, nombre, carpeta="game"):
+        return sin_comentarios((PUBLICO / carpeta / nombre).read_text(encoding="utf-8"))
+
+    def _tx(self):
+        return json.loads((PUBLICO / "atlas-arena-en.json").read_text(encoding="utf-8"))["ui"]
+
+    def _node(self, codigo):
+        r = subprocess.run(["node", "-e", codigo], cwd=str(RAIZ.parent), capture_output=True, text=True, timeout=60)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        return json.loads(r.stdout)
+
+    def test_el_boton_gris_dice_por_que(self):
+        """Hallazgo 1: «Sign consent and send» gris sin decir por que hizo fallar el primer envio.
+        Toda escritura de `R.enviar.disabled` vive en `cerrojo()`, que escribe a la vez el porque."""
+        ui = self._js("ui-nodos.js")
+        self.assertIn("R.enviar.setAttribute('aria-describedby', R.porque.id)", ui, "el porque no esta ligado al boton")
+        fuera = re.sub(r"function cerrojo\(\w*\) \{.*?\n  \}", "", ui, flags=re.S)
+        self.assertNotIn("R.enviar.disabled =", fuera, "se desactiva el boton fuera de cerrojo(), sin decir por que")
+        cuerpo = re.search(r"function cerrojo\(\w*\) \{(.*?)\n  \}", ui, re.S)
+        self.assertTrue(cuerpo, "falta cerrojo()")
+        for k in ("R.enviar.disabled =", "R.porque.textContent =", "T('nodos_porque')", "T('nodos_porque_firma')"):
+            with self.subTest(pieza=k):
+                self.assertIn(k, cuerpo.group(1))
+        tx = self._tx()
+        self.assertIn("Tick the box above", tx["nodos_porque"])
+        self.assertIn("step 1", tx["nodos_porque_firma"].lower())
+
+    def test_las_dos_firmas_son_dos_pasos_numerados(self):
+        """Hallazgo 4: la firma de la partida y la del consentimiento se parecian. Dos pasos con su
+        numero, cada boton en el suyo, y la hoja los pinta distintos."""
+        ui, tx = self._js("ui-nodos.js"), self._tx()
+        self.assertTrue(tx["nodos_paso1_h"].startswith("Step 1 of 2"))
+        self.assertTrue(tx["nodos_paso2_h"].startswith("Step 2 of 2"))
+        self.assertIn("R.paso1.appendChild(R.firma)", ui)
+        self.assertIn("R.envio.appendChild(R.enviar)", ui)
+        self.assertIn("'atlas-paso atlas-paso-1'", ui)
+        self.assertIn("'atlas-paso atlas-paso-2'", ui)
+        css = (ASSETS / "thegame.css").read_text(encoding="utf-8")
+        uno = re.search(r"\.atlas-paso-1\{([^}]*)\}", css)
+        dos = re.search(r"\.atlas-paso-2\{([^}]*)\}", css)
+        self.assertTrue(uno and dos, "los pasos sin estilo propio")
+        self.assertNotEqual(uno.group(1), dos.group(1), "los dos pasos se pintan igual")
+        self.assertNotEqual(tx["nodos_firmar"], tx["nodos_enviar"])
+
+    def test_el_combate_arriba_y_las_cedulas_plegadas(self):
+        """Hallazgo 3: las cedulas ocupaban mas de una pantalla antes de «Fight live»."""
+        ui = self._js("ui-nodos.js")
+        self.assertIn("R.cedulas = el('details'", ui)
+        self.assertIn("fila.appendChild(ficha(0)); fila.appendChild(ficha(1)); R.cedulas.appendChild(fila);", ui)
+        self.assertLess(ui.index("s.appendChild(m);"), ui.index("s.appendChild(R.cedulas);"), "las cedulas antes del combate")
+        self.assertLess(ui.index("s.appendChild(R.escena);"), ui.index("s.appendChild(R.cedulas);"))
+
+    def test_hay_un_acceso_directo_a_la_arena_y_thegame_sigue_valiendo(self):
+        """Hallazgo 2: «entrar y jugar» costaba dos toques de mas. `#thegame/arena` abre la Arena;
+        `#thegame` sigue abriendo el juego como siempre."""
+        cab = self._js("cabezal-rotulos.js", "assets")
+        rx = re.search(r"var RUTA = /(.+?)/;", cab)
+        self.assertTrue(rx, "falta la ruta del juego")
+        ruta = re.compile(rx.group(1).replace("\\/", "/"))
+        self.assertTrue(ruta.match("#thegame"), "#thegame ya no abre el juego")
+        self.assertEqual(ruta.match("#thegame/arena").group(1), "arena")
+        self.assertFalse(ruta.match("#thegamex"))
+        self.assertIn("'#thegame/arena'", cab, "sin puerta visible a la Arena")
+        tg = self._js("thegame.js", "assets")
+        self.assertIn("function abre(desde, pes)", tg)
+        self.assertIn("if (pes && PANEL[pes]) { muestra(pes); }", tg)
+        self.assertIn("RUTA", tg, "cerrar no reconoce la ruta nueva")
+
+    def test_la_alerta_de_core_se_lee_como_juego(self):
+        """Hallazgo 5: «RED ALERT» al entrar asustaba; es lore, no un error del sistema."""
+        u = json.loads((PUBLICO / "atlas-en.json").read_text(encoding="utf-8"))["ui"]
+        self.assertTrue(u["alerta"].startswith("IN-GAME EVENT"), u["alerta"])
+        self.assertNotIn("RED ALERT", u["alerta"])
+        self.assertIn("not an error", u["alerta_p"])
+
+    def test_los_rechazos_del_envio_salen_en_ingles(self):
+        """Hallazgo 6: la pantalla en ingles y el rechazo en castellano. Cada causa que lanza
+        `AtlasNodos.envio` tiene su texto ingles, y el recibo no ensena el mensaje crudo."""
+        nodos = (PUBLICO / "game" / "nodos.js").read_text(encoding="utf-8")
+        env = nodos[nodos.index("function envio(o)"):nodos.index("var AtlasNodos =")]
+        causas = re.findall(r"throw new Error\('([^']+)'\)", env)
+        self.assertGreaterEqual(len(causas), 4)
+        ui, tx = self._js("ui-nodos.js"), self._tx()
+        mapa = re.search(r"var RECHAZOS = \{(.*?)\};", ui, re.S)
+        self.assertTrue(mapa, "sin tabla de rechazos")
+        for c in causas:
+            with self.subTest(causa=c):
+                m = re.search(r"'" + re.escape(c) + r"': '(nodos_\w+)'", mapa.group(1))
+                self.assertTrue(m, f"«{c}» sale en castellano")
+                self.assertTrue(tx.get(m.group(1)), m.group(1))
+        for k in ("nodos_rech_canal", "nodos_rech_http", "nodos_rech_red", "nodos_rech_otro"):
+            self.assertTrue(tx.get(k), k)
+        for k, v in tx.items():
+            if k.startswith("nodos_"):
+                with self.subTest(clave=k):
+                    self.assertFalse(re.search(r"[ñáíóú¿¡]| sin | la partida", v), f"{k} no esta en ingles: {v}")
+        self.assertNotIn("{ c: (e && e.message)", ui, "el recibo ensena el mensaje crudo")
+
+    def test_hexelion_activo_sale_de_la_cedula_y_el_latido_es_NO_DATA(self):
+        """Mapa global: «activo» no es decoracion. Sale de una medida MEDIDA con fecha en la cedula;
+        sin latido que leer sin red, el latido es NO_DATA. Doogee, que no tiene medidas, no esta activo."""
+        e = self._node("const C=require('./public/game/nodos-cedulas.js'),Q=require('./public/game/cuenta.js');"
+                       "process.stdout.write(JSON.stringify(C.nodos.map(Q.estadoNodo)))")
+        hexe, doo = e
+        self.assertEqual(hexe["nodo"], "nodo.0.hexelion")
+        self.assertEqual(hexe["activo"], "DECLARADO")
+        self.assertEqual(hexe["latido"], "NO_DATA")
+        self.assertTrue(hexe["desde"])
+        self.assertTrue(hexe["medidas"] >= 1)
+        self.assertEqual(doo["activo"], "NO_DATA", "un nodo sin medidas sale activo")
+        tx = self._tx()
+        self.assertIn("heartbeat NO_DATA", tx["rack_latido"])
+        self.assertIn("window.AtlasRackUI.monta(", self._js("ui-arena.js"))
+        for k in set(re.findall(r"T\('(\w+)'\)", self._js("ui-rack.js"))):
+            with self.subTest(clave=k):
+                self.assertTrue(tx.get(k, "").strip(), f"{k} sin texto")
+
+    def test_la_cuenta_maestra_es_PROPUESTA_y_solo_lleva_lo_publico(self):
+        try:
+            import jsonschema
+        except ImportError:
+            self.skipTest("NO_DATA · jsonschema no instalado")
+        m = self._node("const C=require('./public/game/nodos-cedulas.js'),Q=require('./public/game/cuenta.js');"
+                       "let r={ok:Q.cuentaMaestra(C,'ab'.repeat(32))};"
+                       "for (const p of ['xyz', '', null, 'ab'.repeat(31)]) { try { Q.cuentaMaestra(C,p); r.malo=p; } catch(e) {} }"
+                       "process.stdout.write(JSON.stringify(r))")
+        self.assertNotIn("malo", m, "acepta una clave publica que no lo es")
+        ok = m["ok"]
+        v = jsonschema.Draft202012Validator(json.loads((DATOS / "preceptoros_cuenta_maestra_schema.json").read_text(encoding="utf-8")))
+        self.assertTrue(v.is_valid(ok), list(v.iter_errors(ok)))
+        self.assertEqual((ok["estado"], ok["firma"], ok["nodo"]), ("PROPUESTA", None, "nodo.0.hexelion"))
+
+        def con(**c):
+            d = json.loads(json.dumps(ok)); d.update(c); return d
+        sin_nodo = json.loads(json.dumps(ok)); sin_nodo.pop("nodo")
+        for i, malo in enumerate([con(estado="FIRMADA"), con(firma="a" * 128), con(privada="a" * 64),
+                                  con(publica="ZZ" * 32), sin_nodo, con(une=["app-local", "lab", "web", "mainnet"])]):
+            with self.subTest(violacion=i):
+                self.assertFalse(v.is_valid(malo))
+        for f in ("cuenta.js", "ui-rack.js"):
+            c = self._js(f)
+            for impuro in ("fetch", "XMLHttpRequest", "localStorage", "sessionStorage", "indexedDB", "Math.random",
+                           "Date", "innerHTML", "http://", "https://", "privad", "passphrase", "100.", "tailnet"):
+                with self.subTest(fichero=f, impuro=impuro):
+                    self.assertNotIn(impuro, c)
 
 
 if __name__ == "__main__":
