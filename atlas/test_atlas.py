@@ -627,7 +627,8 @@ process.stdout.write(JSON.stringify(ok));
 # Ver atlas/POST_VERIFICACION_MGNO_LAB.md y atlas/POST_VERIFICACION_SISIL_CRIA.md.
 PUROS = ("canon.js", "sobres.js", "rating.js", "arena.js", "duelo.js", "mercado.js", "narragrafo.js", "cria.js", "genoma.js")
 # La Arena (2026-09-28, «el mapa multi-jugador en una pestana»): se carga al abrir su pestana, detras del Army.
-ARENA = ("canon.js", "sobres.js", "rating.js", "arena.js", "duelo.js", "escena.js", "mar.js", "ui-arena.js", "ui-duelo.js")
+ARENA = ("canon.js", "sobres.js", "rating.js", "arena.js", "duelo.js", "escena.js", "mar.js", "nodos-pesos.js",
+         "nodos-cedulas.js", "nodos.js", "ui-nodos.js", "ui-arena.js", "ui-duelo.js")
 FUERA_DE_LA_PUERTA = tuple(sorted(set(PUROS + ARENA)))
 
 
@@ -1362,6 +1363,80 @@ class Arena(unittest.TestCase):
         self.assertIn("window.crypto.getRandomValues(b)", self._js("ui-duelo.js"), "el r del commit-reveal sin azar real")
         self.assertIn("I.firmarTexto(t)", self._js("ui-duelo.js"))
         self.assertIn("window.AtlasArmy.verificaWeb", self._js("ui-duelo.js"))
+
+
+class NodosComoCuenta(unittest.TestCase):
+    """Una cuenta = un nodo con su cedula (`preceptoros.cedula-nodo/1`), y Hexelion contra Doogee en
+    vivo (orquestador, 2026-10-04). El combate sale de una semilla y el render reproduce su log; el
+    equilibrio es una PROPUESTA en datos (`nodos-pesos.js`) y se MIDE simulando; lo que no se midio
+    lucha con su niebla. Jugar sin firma no saca nada del navegador; enviar exige gesto, la firma
+    de la partida y una SEGUNDA firma de consentimiento (consent 1)."""
+
+    NODOS = ("nodos-pesos.js", "nodos-cedulas.js", "nodos.js", "ui-nodos.js")
+
+    def _js(self, nombre):
+        return sin_comentarios((PUBLICO / "game" / nombre).read_text(encoding="utf-8"))
+
+    def _node(self, codigo):
+        r = subprocess.run(["node", "-e", codigo], cwd=str(RAIZ.parent), capture_output=True, text=True, timeout=60)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        return json.loads(r.stdout)
+
+    def test_los_casos_de_los_nodos(self):
+        r = subprocess.run(["node", str(RAIZ / "nodos_casos.mjs")], capture_output=True, text=True, timeout=300)
+        casos = json.loads(r.stdout) if r.stdout.strip() else []
+        self.assertGreaterEqual(len(casos), 19, r.stderr)
+        for c in casos:
+            with self.subTest(caso=c["caso"]):
+                self.assertTrue(c["ok"], c["detalle"])
+        self.assertEqual(r.returncode, 0, r.stderr)
+
+    def test_ni_red_ni_reloj_ni_azar_en_los_nodos(self):
+        """Cero peticiones al cargar: ningun modulo de los nodos sale a la red ni guarda nada. La
+        unica salida es `Enviar.paquete`, que vive en `enviar.js` y se pide al pulsar."""
+        for m in self.NODOS:
+            codigo = self._js(m)
+            for impuro in ("fetch", "XMLHttpRequest", "sendBeacon", "WebSocket", "EventSource", "importScripts",
+                           "localStorage", "sessionStorage", "indexedDB", "Math.random", "Date", "performance.now",
+                           "innerHTML", "http://", "https://"):
+                with self.subTest(modulo=m, impuro=impuro):
+                    self.assertNotIn(impuro, codigo)
+
+    def test_enviar_solo_tras_gesto_y_por_la_puerta_que_ya_existe(self):
+        ui = self._js("ui-nodos.js")
+        self.assertEqual(ui.count("Enviar.paquete("), 1, "otro camino de salida")
+        self.assertEqual(ui.count("N.envio("), 1)
+        self.assertIn("gesto: ev.isTrusted === true", ui, "el envio no exige un gesto de verdad")
+        self.assertLess(ui.index("N.envio("), ui.index("Enviar.paquete("), "se manda antes de pasar la puerta")
+        env = sin_comentarios((ASSETS / "enviar.js").read_text(encoding="utf-8"))
+        self.assertEqual(env.count("fetch("), 2, "enviar.js abre otra salida")
+        self.assertEqual(re.findall(r"fetch\((API \+ '/\w+')", env), ["API + '/reto'", "API + '/paquetes'"])
+        self.assertIn("paquete: paquete", env, "la puerta de la partida no reutiliza la del rack")
+
+    def test_los_pesos_son_PROPUESTA_y_el_Beelink_sale_de_cerebros_json(self):
+        p = self._node("process.stdout.write(JSON.stringify(require('./public/game/nodos-pesos.js')))")
+        self.assertEqual(p["estado"], "PROPUESTA")
+        self.assertIsNone(p["firma"])
+        c = self._node("process.stdout.write(JSON.stringify(require('./public/game/nodos-cedulas.js')))")
+        cer = json.loads((PUBLICO / "cerebros.json").read_text(encoding="utf-8"))
+        mini = next(x for x in cer["cerebros"] if x["id"] == "mini")
+        hex_ = next(n for n in c["nodos"] if n["nodo"] == c["cuentas"][0]["nodo"])
+        g = hex_["aparato"]["medidas"]["gen_cps"]
+        self.assertEqual(g["estado"], "MEDIDO")
+        self.assertEqual(g["valor"], round(mini["generacion"] * 100), "la cifra no es la de cerebros.json")
+        self.assertIn("cerebros.json", g["fuente"])
+        self.assertEqual(g["fecha"], cer["medido"])
+
+    def test_los_textos_de_los_nodos_existen(self):
+        ui = self._js("ui-nodos.js")
+        usadas = set(re.findall(r"T\('(nodos_\w+)'\)", ui))
+        usadas |= {"nodos_ram_mib", "nodos_gen_cps", "nodos_est_MEDIDO", "nodos_est_EMULADO", "nodos_est_NO_DATA"}
+        self.assertGreater(len(usadas), 10)
+        tx = json.loads((PUBLICO / "atlas-arena-en.json").read_text(encoding="utf-8"))["ui"]
+        for k in sorted(usadas):
+            with self.subTest(clave=k):
+                self.assertTrue(tx.get(k), f"falta {k} en atlas-arena-en.json")
+        self.assertIn("window.AtlasNodosUI.monta(R.nodos, T)", (PUBLICO / "game" / "ui-arena.js").read_text(encoding="utf-8"))
 
 
 if __name__ == "__main__":

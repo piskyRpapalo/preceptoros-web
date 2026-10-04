@@ -68,11 +68,12 @@
       });
   }
 
-  function enviar(caja, pares) {
-    caja.innerHTML = '';
-    caja.appendChild(el('p', 'cola-nota', T('envEnviando', 'Pidiendo el reto…')));
-
-    window.Identity.publica().then(function (pub) {
+  /* UNA SOLA SALIDA, DOS CARGAS (2026-10-04). Las correcciones y las partidas de theGame firmadas
+     salen por el MISMO reto y el MISMO POST; solo cambia el `esquema`. Dos caminos hacia el rack
+     divergen el dia que cambie el protocolo. Devuelve lo que contesta el rack, o lanza con el
+     estado HTTP en `e.estado` y el cuerpo en `e.datos`, para que quien llama diga la causa. */
+  function paquete(esquema, pares) {
+    return window.Identity.publica().then(function (pub) {
       return conReto(pub, window.Identity.quien()).then(function (r) {
         if (!r.firma) {
           /* `auth.js` firma OBJETOS, no cadenas sueltas. Mientras no exponga
@@ -86,18 +87,26 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             pseudonimo: window.Identity.quien(), clave_publica: pub,
-            reto: r.reto, firma: r.firma,
-            esquema: 'preceptoros/correcciones/1', pares: pares })
+            reto: r.reto, firma: r.firma, esquema: esquema, pares: pares })
         });
       });
     }).then(function (resp) {
-      if (resp.status === 404 || resp.status === 405) {
-        throw new Error(T('envSinCanal',
-          'el rack todavía no tiene dónde recibirlos (' + resp.status + ')'));
-      }
-      if (!resp.ok) { throw new Error('HTTP ' + resp.status); }
-      return resp.json();
-    }).then(function (d) {
+      return resp.json().catch(function () { return null; }).then(function (d) {
+        if (resp.ok) { return d; }
+        var e = new Error(resp.status === 404 || resp.status === 405
+          ? T('envSinCanal', 'el rack todavía no tiene dónde recibirlos (' + resp.status + ')')
+          : 'HTTP ' + resp.status);
+        e.estado = resp.status; e.datos = d;
+        throw e;
+      });
+    });
+  }
+
+  function enviar(caja, pares) {
+    caja.innerHTML = '';
+    caja.appendChild(el('p', 'cola-nota', T('envEnviando', 'Pidiendo el reto…')));
+
+    paquete('preceptoros/correcciones/1', pares).then(function (d) {
       caja.innerHTML = '';
       caja.appendChild(el('p', 'cola-nota', T('envEncolado',
         'Enviados y en cola de revisión. El rack no publica nada sin que una ' +
@@ -176,7 +185,8 @@
       return window.Bronce.leerTodo().then(function (r) { return r.length; })
         .catch(function () { return 0; });
     },
-    rotulo: function (clave, respaldo) { return T(clave, respaldo); }
+    rotulo: function (clave, respaldo) { return T(clave, respaldo); },
+    paquete: paquete
   };
 
   document.addEventListener('preceptor:identity', montar);

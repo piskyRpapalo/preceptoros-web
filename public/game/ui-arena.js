@@ -220,6 +220,8 @@
     R.log = el('pre', 'atlas-arena-log'); R.tec.appendChild(R.log);
     R.escena.appendChild(R.tec);
     s.appendChild(R.escena);
+    R.nodos = el('div'); s.insertBefore(R.nodos, R.mapa);
+    if (window.AtlasNodosUI) { window.AtlasNodosUI.monta(R.nodos, T); }
     R.duelo = el('div', 'atlas-arena-duelo'); s.appendChild(R.duelo);
     panel.textContent = ''; panel.appendChild(s);
     var I = window.Identity;
