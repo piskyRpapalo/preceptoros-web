@@ -88,7 +88,8 @@
      su freno (Soltar), la sugerencia y el veredicto del juez se quedan en el cabecero: se ven desde
      cualquier pestana. */
   var PESTANAS = [
-    ['nucleo', '\u25C9', '.atlas-alerta|.atlas-cab|.atlas-recursos|#atlas-piso > .atlas-vivo|.atlas-dormias|.atlas-nucleo'],
+    /* El aviso «solo ingles» va PRIMERO en Core: en la pestana Game nadie de /es/ o /ar/ lo veia. */
+    ['nucleo', '\u25C9', '#atlas-juego > .no-data:first-child|.atlas-alerta|.atlas-cab|.atlas-recursos|#atlas-piso > .atlas-vivo|.atlas-dormias|.atlas-nucleo'],
     ['mapa', '\u25C8', '.atlas-lema|.atlas-mapa|.atlas-izq'],
     ['oficios', '\u2692\uFE0E', '.atlas-hud > .panel:not(.atlas-dormias)'],
     ['army', '\u2726', ''],

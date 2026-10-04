@@ -1,7 +1,7 @@
 {
   "esquema": 1,
   "fecha": "2026-10-04",
-  "ultima_lectura": "2026-10-04T16:54:52+00:00",
+  "ultima_lectura": "2026-10-04T21:33:32+00:00",
   "nota": "Solo hay cifras medidas. Lo que no se midio sale como NO_DATA con su causa. Aqui no se cuenta a nadie.",
   "metricas": [
     {
@@ -21,7 +21,7 @@
     {
       "clave": "peso_sitio",
       "estado": "MEDIDO",
-      "valor": 6356653,
+      "valor": 6354881,
       "unidad": "bytes",
       "como": "todo lo que hay en public/ menos downloads/, counters.json e historial/: es lo que pesa visitar. Los adaptadores no se descargan por visitar; y un contador que se cuenta a si mismo nunca acierta, porque escribir la cifra cambia el fichero"
     },
@@ -56,16 +56,16 @@
     {
       "clave": "pruebas_app",
       "estado": "MEDIDO",
-      "valor": 812,
+      "valor": 924,
       "unidad": "pruebas",
       "como": "bash bin/pruebas --rapido en el repo del MVP, cifra 'N/N pruebas'. Es la fuente unica declarada: pytest solo corre parte de la suite"
     },
     {
       "clave": "pruebas_web",
-      "estado": "MEDIDO",
-      "valor": 171,
+      "estado": "NO_DATA",
+      "valor": null,
       "unidad": "pruebas",
-      "como": "python3 test_web.py en este repo, cifra 'Ran N tests'"
+      "causa": "gate de la web: el gate termino en ROJO, no se publica su cifra"
     },
     {
       "clave": "peso_descargas",

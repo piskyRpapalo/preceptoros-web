@@ -5837,5 +5837,97 @@ class LaColaDelRack(unittest.TestCase):
         self.assertNotIn("TODO: tunel", self._js("rack.js"))
 
 
+class ElJuegoEnInglesEnLasNueve(unittest.TestCase):
+    """theGame habla solo ingles y se presenta en las nueve lenguas de la web (Soberano,
+    2026-10-04). Medido jugando en headless: el juego se abria bien en las nueve, pero el aviso
+    «This game speaks English for now» caia en la pestana GAME y nadie de /es/ o /ar/ lo veia."""
+
+    def _js(self, n):
+        return sin_comentarios((PUBLICO / "assets" / n).read_text(encoding="utf-8"))
+
+    def test_las_lenguas_del_juego_son_solo_ingles(self):
+        self.assertIn("var LENGUAS = ['en']", self._js("thegame.js"))
+        for n in ("atlas-opina.js",):
+            self.assertIn("window.AtlasLengua.actual) || 'en'", self._js(n), n)
+        self.assertIn("window.AtlasLengua.actual) || 'en'",
+                      sin_comentarios((PUBLICO / "game" / "ui-arena.js").read_text(encoding="utf-8")))
+
+    def test_el_aviso_de_solo_ingles_va_primero_en_core(self):
+        js = self._js("thegame.js")
+        nucleo = re.search(r"\['nucleo', '[^']*', '([^']*)'\]", js)
+        self.assertTrue(nucleo, "no encuentro la pestana Core")
+        self.assertTrue(nucleo.group(1).startswith("#atlas-juego > .no-data:first-child|"),
+                        "el aviso de lengua no va el primero en Core: cae en Game y no se ve")
+        self.assertLess(js.index("['nucleo'"), js.index("['partida'"),
+                        "Core tiene que repartir antes que Game, o Game se lleva el aviso")
+        piso = self._js("atlas-piso.js")
+        self.assertIn("zona.insertBefore(el('p', 'no-data', U('lengua_nd')", piso)
+        self.assertIn("{l}", json.loads((PUBLICO / "atlas-en.json").read_text(encoding="utf-8"))["ui"]["lengua_nd"])
+
+    def test_las_nueve_portadas_llevan_la_puerta(self):
+        for l in ("ar", "de", "el", "en", "es", "fr", "it", "pt", "ru"):
+            p = (PUBLICO / l / "index.html").read_text(encoding="utf-8")
+            self.assertIn("/assets/cabezal-rotulos.js", p, f"/{l}/ no lleva la puerta del juego")
+
+
+class WebLimpia(unittest.TestCase):
+    """Inventario determinista de public/ (2026-10-04). Lo dudoso NO se borra: queda congelado en
+    `config/limpieza-propuesta.json` (PROPUESTA, espera firma). Lo que vigila este gate es que no
+    nazca basura NUEVA: un fichero que nada nombra, un duplicado exacto o un enlace interno roto."""
+
+    TEXTO = (".html", ".js", ".css", ".json", ".webmanifest", ".xml", ".txt", ".mjs", ".py", ".yml",
+             ".md", ".jsonc", ".toml")
+
+    @classmethod
+    def setUpClass(cls):
+        cls.prop = json.loads((RAIZ / "config" / "limpieza-propuesta.json").read_text(encoding="utf-8"))
+        cls.ficheros = sorted(p.relative_to(PUBLICO).as_posix() for p in PUBLICO.rglob("*") if p.is_file())
+        corpus = []
+        for p in RAIZ.rglob("*"):
+            if p.is_file() and p.suffix in cls.TEXTO and ".git" not in p.parts and "__pycache__" not in p.parts:
+                corpus.append((p, p.read_text(encoding="utf-8", errors="ignore")))
+        cls.corpus = corpus
+
+    def _nombrado(self, rel):
+        base = rel.rsplit("/", 1)[-1]
+        plantilla = re.sub(r"-(ar|de|el|en|es|fr|it|pt|ru)\.json$", "-", base)
+        yo = PUBLICO / rel
+        return any((base in t or (plantilla != base and plantilla in t)) for p, t in self.corpus if p != yo)
+
+    def test_ningun_huerfano_nuevo(self):
+        huerfanos = {f for f in self.ficheros if not f.endswith("index.html") and not self._nombrado(f)}
+        nuevos = sorted(huerfanos - set(self.prop["huerfanos"]))
+        self.assertEqual(nuevos, [], "ficheros en public/ que nada nombra (o se usan, o van a la PROPUESTA)")
+
+    def test_la_propuesta_no_lista_ficheros_que_ya_no_existen(self):
+        self.assertEqual(sorted(set(self.prop["huerfanos"]) - set(self.ficheros)), [],
+                         "la PROPUESTA nombra ficheros borrados: quitalos de la lista")
+
+    def test_ningun_duplicado_exacto_nuevo(self):
+        por_hash = {}
+        for f in self.ficheros:
+            por_hash.setdefault(hashlib.sha256((PUBLICO / f).read_bytes()).hexdigest(), []).append(f)
+        conocidos = {tuple(sorted(g)) for g in self.prop["duplicados"]}
+        nuevos = [g for g in por_hash.values() if len(g) > 1 and tuple(sorted(g)) not in conocidos]
+        self.assertEqual(nuevos, [], "ficheros identicos byte a byte en public/")
+
+    def test_ningun_enlace_interno_roto(self):
+        rotos = []
+        for f in self.ficheros:
+            if not f.endswith((".html", ".css", ".webmanifest")):
+                continue
+            t = (PUBLICO / f).read_text(encoding="utf-8", errors="ignore")
+            for u in re.findall(r"""(?:href|src)\s*=\s*["']([^"'#?]+)""", t) + re.findall(r"url\(\s*['\"]?([^'\")#?]+)", t):
+                if re.match(r"^(https?:|//|data:|mailto:|javascript:|tel:)", u) or "{" in u or "+" in u:
+                    continue
+                d = (PUBLICO / u.lstrip("/")) if u.startswith("/") else ((PUBLICO / f).parent / u)
+                d = d.resolve()
+                if d.is_dir():
+                    d = d / "index.html"
+                if not d.exists():
+                    rotos.append(f + " -> " + u)
+        self.assertEqual(rotos, [])
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
