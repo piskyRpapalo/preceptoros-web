@@ -1374,6 +1374,23 @@ class Arena(unittest.TestCase):
         self.assertIn("window.AtlasArmy.verificaWeb", self._js("ui-duelo.js"))
 
 
+class CabezalCajas(unittest.TestCase):
+    """El cabezal medido en un navegador de verdad (Soberano, 2026-10-05: «thegame es solo 1 boton»; el
+    busto se montaba encima de los botones y del panel; la fila se cortaba). `cabezal_cajas.mjs` mide
+    las cajas por CDP con y sin sesion de tester, a 412, 1024 y 1280 px. Sin Chrome: NO_DATA, que se
+    dice como salto y no como verde."""
+
+    def test_el_busto_no_pisa_nada_y_hay_una_sola_puerta_de_juego(self):
+        r = subprocess.run(["node", str(RAIZ / "cabezal_cajas.mjs")], capture_output=True, text=True, timeout=240)
+        if r.returncode == 3:
+            self.skipTest("NO_DATA · sin Chrome para medir las cajas del cabezal")
+        casos = json.loads(r.stdout)
+        self.assertGreaterEqual(len(casos), 12, r.stderr)
+        for c in casos:
+            with self.subTest(caso=c["caso"]):
+                self.assertTrue(c["ok"], c["detalle"])
+
+
 class EsteticaMedida(unittest.TestCase):
     """La estetica PINTA LO MEDIDO (directiva del Soberano, 2026-10-04): el dano se ve como desafinacion
     de la ecuacion, no como barra de vida; la niebla es tramado Atkinson de un bit (sin alfas); el
@@ -1536,7 +1553,7 @@ class RedisenoDoogee(unittest.TestCase):
         self.assertLess(ui.index("s.appendChild(m);"), ui.index("s.appendChild(R.cedulas);"), "las cedulas antes del combate")
         self.assertLess(ui.index("s.appendChild(R.escena);"), ui.index("s.appendChild(R.cedulas);"))
 
-    def test_hay_un_acceso_directo_a_la_arena_y_thegame_sigue_valiendo(self):
+    def test_un_solo_boton_de_juego_y_la_ruta_a_la_arena_sigue_valiendo(self):
         """Hallazgo 2: «entrar y jugar» costaba dos toques de mas. `#thegame/arena` abre la Arena;
         `#thegame` sigue abriendo el juego como siempre."""
         cab = self._js("cabezal-rotulos.js", "assets")
@@ -1546,7 +1563,12 @@ class RedisenoDoogee(unittest.TestCase):
         self.assertTrue(ruta.match("#thegame"), "#thegame ya no abre el juego")
         self.assertEqual(ruta.match("#thegame/arena").group(1), "arena")
         self.assertFalse(ruta.match("#thegamex"))
-        self.assertIn("'#thegame/arena'", cab, "sin puerta visible a la Arena")
+        # 2026-10-05, el Soberano: «thegame es solo 1 boton». La Arena vive DENTRO (pestana Battle);
+        # `#thegame/arena` sigue valiendo como ruta, pero el cabezal lleva UNA sola puerta de juego.
+        puertas = re.findall(r"\['cab-boton thegame[^']*', [^\]]*\]", cab)
+        self.assertEqual(len(puertas), 1, f"vuelven a ser dos botones de juego: {puertas}")
+        self.assertIn("'#thegame'", puertas[0])
+        self.assertNotIn("'#thegame/arena'", cab, "la Arena vuelve al cabezal como boton propio")
         tg = self._js("thegame.js", "assets")
         self.assertIn("function abre(desde, pes)", tg)
         self.assertIn("if (pes && PANEL[pes]) { muestra(pes); }", tg)

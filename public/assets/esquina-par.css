@@ -164,3 +164,14 @@
    reglas que miran el ancho. Las cuatro puertas no: comparten franja con la
    cara siempre, en las dos caras y en todas las paginas. */
 #cabezal #cab-nav{padding-right:calc(var(--esfera) + .5rem)}
+
+/* EL BUSTO TIENE SU PROPIO SITIO (Soberano, 2026-10-05: «se monta encima de la fila de botones y del
+   panel del bosque»). Medido por CDP (`atlas/cabezal_cajas.mjs`): en escritorio la cara, anclada por
+   su `top` (`40px + 1.5rem`, en esquina-cuenta.css), salia 93 px por debajo del cabezal y pisaba el
+   panel de abajo. Dos cosas: la cara baja a 136 px, la talla que el Soberano dio por buena en el
+   Doogee, y el cabezal reserva SIEMPRE su alto (`top` + `--esfera` + aire), asi que aunque alguien
+   vuelva a subir la talla, empuja al panel en vez de pisarlo. En el telefono ya cabia (medido). */
+@media (min-width:1024px){
+  :root{--esfera:136px}
+  #cabezal{position:relative;min-height:calc(var(--esfera) + 40px + 2.4rem)}
+}
