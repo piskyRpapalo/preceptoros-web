@@ -148,6 +148,20 @@
   "mapa_casa": "Back to my home",
   "mapa_niebla": "Fog: not measured yet.",
   "mapa_en_casa": "Centered on your home.",
-  "mapa_sin_casa": "No key yet: centered on Hexelion. Create your key to have a home on the map."
+  "mapa_sin_casa": "No key yet: centered on Hexelion. Create your key to have a home on the map.",
+  "rp_play": "Play",
+  "rp_pausa": "Pause",
+  "rp_tiempo": "Replay timeline",
+  "rp_forma": "Formation: {f}",
+  "rp_f_agresiva": "Aggressive",
+  "rp_f_defensiva": "Defensive",
+  "rp_f_flanqueo": "Flank",
+  "rp_claves": "Key moments",
+  "rp_marcha": "Both armies march out of their bases.",
+  "rp_choque": "First clash!",
+  "rp_cae": "{q} #{n} falls.",
+  "rp_fin": "{r}.",
+  "rp_vivos": "You {a} · Them {b}",
+  "rp_aria": "Battle replay on a map: your waves (circle marks) and theirs (diamond marks) march, clash and fall. Each wave color is its speed; a hurt wave looks out of tune. Key moments are read out below."
  }
 }

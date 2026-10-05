@@ -56,3 +56,10 @@
 .mapa-aviso{margin:0;min-height:1.2em;font:600 .78rem/1.3 var(--mono,ui-monospace,monospace);color:#f2cf98;text-align:center}
 .atlas-arena-mapa{touch-action:none;cursor:grab}
 .atlas-arena-mapa:focus-visible{outline:2px solid #fff;outline-offset:2px}
+.rp-mandos{display:flex;flex-wrap:wrap;gap:.45rem;align-items:center}
+#thegame .rp-play{min-width:3.4rem;min-height:3rem;font-size:1.3rem}
+#thegame .rp-vel,#thegame .rp-forma{min-height:3rem;font-weight:700}
+.rp-tiempo{flex:1 1 100%;min-height:2.2rem;accent-color:var(--accent-copper,#c98a4b)}
+.rp-narra{margin:0;min-height:1.3em;font:600 .82rem/1.35 var(--mono,ui-monospace,monospace);color:#f2cf98}
+.rp-claves{font-size:.8rem}
+.rp-claves ol{margin:.3rem 0 0;padding-inline-start:1.3rem}

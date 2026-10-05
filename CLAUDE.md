@@ -15,7 +15,10 @@ Todo lo que se construye aquí es **marca personal de PreceptorOS** (el Soberano
 ## Mapa
 | Dónde | Qué |
 |---|---|
-| `public/assets/thegame.js` | La puerta y las cuatro pestañas grandes (Map, Battle, My node, Help; Crafts, Army y el Bosque son pliegos de My node). Las listas `GUIONES` (puerta), `ARMY` y `ARENA` (a demanda; la Arena pinta Map y Battle) |
+| `public/assets/thegame.js` | La puerta y las cuatro pestañas (Home, Map, Battle, Help). Las listas `GUIONES` (puerta), `ARMY`, `CASA` y `ARENA` (a demanda; la Arena pinta Map y Battle) |
+| `public/game/home_*.js`, `wave_render.js`, `summon_reveal.js` | Tu casa (ciudad sumergida en corte, edificios = botones con su cifra MEDIDA, personalización sin ventaja), el trazo de las ondas y la revelación de la gacha |
+| `public/game/fog_of_war.js`, `world_camera.js`, `mar.js` | El mapa global que se arrastra hasta la niebla (la niebla sale de lo MEDIDO) |
+| `public/game/battle_choreography.js`, `battle_replay.js` | La repetición tipo RTS: coreografía determinista del registro de `arena.combate`; nunca decide |
 | `public/assets/atlas-*.js` | El piso, el motor puro (`atlas-motor.js`, **no se toca** sin firma), el piloto, la partida, el mapa y las ondas |
 | `public/game/` | v1.5 (valores, gacha, db, core, ui, juez) y el multijugador: `canon`, `sobres`, `rating`, `arena`, `duelo`, `escena`, `mar`, `ui-arena`, `ui-duelo`, `mercado`, `narragrafo`, `cria` y `genoma` |
 | `data/` | Contratos JSON Schema (no se sirven): un caso bueno y 6 violaciones cada uno, en `atlas/test_atlas.py` |

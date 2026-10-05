@@ -154,7 +154,9 @@
     R.titulo.textContent = info.titulo || ''; R.titulo.hidden = !info.titulo || info.pve;
     var vel = 1;
     R.vel.textContent = rellena(T('arena_x'), { v: 1 });
-    actual = E.escena(R.lienzo, def, asa, c, {
+    /* La repeticion tipo RTS (battle_replay.js) si esta; si no, la escena de siempre. Misma firma. */
+    R.vel.hidden = !!window.AtlasReplay;
+    actual = (window.AtlasReplay || E).escena(R.lienzo, def, asa, c, { semilla: info.semilla, texto: T,
       quieto: quieto(), colores: colores(), yo: info.yo, fallo: T('arena_fallo'), ronda: T('arena_ronda'), sonido: sonido,
       letrero: function (x) {
         var mia = info.yo ? x.gana === 'asalto' : x.gana === 'defensa', c = colores();

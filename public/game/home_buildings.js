@@ -19,9 +19,10 @@
 
   var ESQUEMA = 'atlas.casa/1';
   var OPCIONES = { paleta: ['abismo', 'coral', 'kelp', 'perla'], estilo: ['cupula', 'aguja', 'concha'], emblema: [0, 1, 2],
-                   alianzas: ['abiertas', 'cerradas'], comercio: [true, false] };
+                   alianzas: ['abiertas', 'cerradas'], comercio: [true, false],
+                   formacion: ['agresiva', 'defensiva', 'flanqueo'] };
   var PROHIBIDO = /(^|[^0-9])\/[a-z]|@|https?:|www\.|\b\d{1,3}(\.\d{1,3}){3}\b|\d{6,}/i;
-  function base() { return { esquema: ESQUEMA, paleta: 'abismo', estilo: 'cupula', emblema: 0, alianzas: 'abiertas', comercio: true, lema: '' }; }
+  function base() { return { esquema: ESQUEMA, paleta: 'abismo', estilo: 'cupula', emblema: 0, alianzas: 'abiertas', comercio: true, formacion: 'agresiva', lema: '' }; }
   /* La forma de una casa: '' si vale, o la causa. Pura: la usan la web y los casos de node. */
   function forma(c) {
     if (!c || typeof c !== 'object' || c.esquema !== ESQUEMA) { return 'esquema'; }
@@ -128,6 +129,7 @@
     fo.appendChild(grupo('paleta', OPCIONES.paleta)); fo.appendChild(grupo('estilo', OPCIONES.estilo));
     fo.appendChild(grupo('emblema', OPCIONES.emblema, function (v) { return T('emblema_n').replace('{n}', v + 1); }));
     fo.appendChild(grupo('alianzas', OPCIONES.alianzas)); fo.appendChild(grupo('comercio', OPCIONES.comercio));
+    fo.appendChild(grupo('formacion', OPCIONES.formacion));
     var l = el('label', 'casa-lema', T('p_lema') + ' '), i = el('input'); i.maxLength = 32; i.value = casa.lema; l.appendChild(i); fo.appendChild(l);
     var nota = el('p', 'casa-nota', T('p_nota')); nota.setAttribute('role', 'status'); fo.appendChild(nota);
     i.addEventListener('change', function () {
@@ -195,6 +197,8 @@
                                 estado: estado, edificios: medidas });
   }
 
-  raiz.AtlasCasa = { monta: monta, forma: forma, casa: function () { return casa; }, fps: function () { return escena && escena.fps(); },
+  /* Cambiar UNA opcion desde fuera (la formacion, desde la repeticion de la batalla). */
+  function pon(k, v) { if (OPCIONES[k] && OPCIONES[k].indexOf(v) >= 0) { casa[k] = v; guarda(); } }
+  raiz.AtlasCasa = { pon: pon, monta: monta, forma: forma, casa: function () { return casa; }, fps: function () { return escena && escena.fps(); },
                      calidad: function () { return escena && escena.calidad(); }, entra: entra, sale: sale };
 })(this);

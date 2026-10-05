@@ -628,7 +628,8 @@ process.stdout.write(JSON.stringify(ok));
 PUROS = ("canon.js", "sobres.js", "rating.js", "arena.js", "duelo.js", "mercado.js", "narragrafo.js", "cria.js", "genoma.js")
 # La Arena (2026-09-28, «el mapa multi-jugador en una pestana»): se carga al abrir su pestana, detras del Army.
 ARENA = ("sobres.js", "rating.js", "arena.js", "duelo.js", "fog_of_war.js", "world_camera.js", "mar.js", "nodos-pesos.js",
-         "nodos-cedulas.js", "nodos.js", "cuenta.js", "ui-nodos.js", "ui-rack.js", "ui-arena.js", "ui-duelo.js")
+         "nodos-cedulas.js", "nodos.js", "cuenta.js", "ui-nodos.js", "ui-rack.js",
+         "battle_choreography.js", "battle_replay.js", "ui-arena.js", "ui-duelo.js")
 # La CASA (2026-10-05): la primera pantalla, detras del Army. Lleva canon y escena, que la Arena reutiliza.
 CASA = ("canon.js", "escena.js", "wave_render.js", "home_base_scene.js", "home_buildings.js", "summon_reveal.js")
 FUERA_DE_LA_PUERTA = tuple(sorted(set(PUROS + ARENA + CASA)))
@@ -1469,6 +1470,47 @@ class MapaMovible(unittest.TestCase):
                     self.assertNotIn(malo, c)
         self.assertIn("function tesela(i, j)", self._js("mar.js"))
         self.assertIn("if (nt > 90)", self._js("mar.js"), "la cache de teselas no esta acotada")
+
+
+class BatallaRTS(unittest.TestCase):
+    """La batalla se repite como una partida de estrategia (Soberano, 2026-10-05: «unidades en movimiento
+    por el mapa… no solo el combate por turnos»). Es una COREOGRAFIA del registro de `arena.combate`:
+    sembrada con la semilla de la partida, determinista, y nunca ensena ganar a quien pierde. Las
+    formaciones cambian la coreografia, nunca el registro."""
+
+    def _js(self, n):
+        return sin_comentarios((PUBLICO / "game" / n).read_text(encoding="utf-8"))
+
+    def test_casos_de_la_repeticion(self):
+        r = subprocess.run(["node", str(RAIZ / "replay_casos.mjs")], capture_output=True, text=True, timeout=120)
+        casos = json.loads(r.stdout)
+        self.assertGreaterEqual(len(casos), 12, r.stderr)
+        for c in casos:
+            with self.subTest(caso=c["caso"]):
+                self.assertTrue(c["ok"], c["detalle"])
+
+    def test_sin_azar_ni_reloj_ni_red(self):
+        for f in ("battle_choreography.js", "battle_replay.js"):
+            c = self._js(f)
+            for malo in ("Math.random", "Date.", "performance.now", "fetch(", "localStorage", "innerHTML"):
+                with self.subTest(fichero=f, prohibido=malo):
+                    self.assertNotIn(malo, c)
+        self.assertNotIn("arena.combate", self._js("battle_replay.js"), "la repeticion vuelve a decidir el combate")
+
+    def test_mandos_de_nino_y_accesible(self):
+        r = self._js("battle_replay.js")
+        for pieza in ("R.tiempo.type = 'range'", "R.tiempo.setAttribute('aria-label', T('rp_tiempo'))",
+                      "R.narra.setAttribute('aria-live', 'polite')", "vel = vel >= 4 ? 1 : vel * 2",
+                      "lienzo.setAttribute('aria-label', T('rp_aria'))", "var claves = [0, 3000, Math.round(k.fin / 2), k.total];",
+                      "desafina: Math.min(1, (1 - p[2] / k.max[j])", "color: velColor(k.vel[j])"):
+            with self.subTest(pieza=pieza):
+                self.assertIn(pieza, r)
+        self.assertIn("actual = (window.AtlasReplay || E).escena(R.lienzo, def, asa, c, { semilla: info.semilla, texto: T,",
+                      self._js("ui-arena.js"))
+        tx = json.loads((PUBLICO / "atlas-arena-en.json").read_text(encoding="utf-8"))["ui"]
+        for k in set(re.findall(r"T\('(\w+)'\)", r)) | {"rp_marcha", "rp_choque", "rp_f_agresiva", "rp_f_defensiva", "rp_f_flanqueo"}:
+            with self.subTest(clave=k):
+                self.assertTrue(tx.get(k), k)
 
 
 class CabezalCajas(unittest.TestCase):

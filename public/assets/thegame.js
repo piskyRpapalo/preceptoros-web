@@ -32,7 +32,7 @@
      entre personas por paquetes firmados. Detras del Army, cuyas tropas y verificador usa. */
   var ARENA = [['/game/sobres.js'], ['/game/rating.js'], ['/game/arena.js'], ['/game/duelo.js'],
     ['/game/fog_of_war.js'], ['/game/world_camera.js'], ['/game/mar.js'], ['/game/nodos-pesos.js'], ['/game/nodos-cedulas.js'], ['/game/nodos.js'], ['/game/cuenta.js'],
-    ['/game/ui-nodos.js'], ['/game/ui-rack.js'], ['/game/ui-arena.js'], ['/game/ui-duelo.js']];
+    ['/game/ui-nodos.js'], ['/game/ui-rack.js'], ['/game/battle_choreography.js'], ['/game/battle_replay.js'], ['/game/ui-arena.js'], ['/game/ui-duelo.js']];
   /* LAS LENGUAS DEL JUEGO (2026-09-28, el Soberano: «hoy, solo inglés; un mismo enlace»). La
      UNICA lista de lenguas en las que el juego esta COMPLETO. Cualquier portada abre el juego en
      una de ellas: la de la pagina si esta aqui; si no, la primera. Anadir una lengua es traducir

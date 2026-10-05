@@ -40,10 +40,14 @@
   "alianzas_cerradas": "Closed",
   "comercio_true": "Yes",
   "comercio_false": "No",
-  "p_nota": "Saved on this device. Looks only: it never changes a fight.",
+  "p_nota": "Saved on this device. Looks and replay formation only: they never change a fight.",
   "lema_no": "Motto not saved: no emails, links, paths, IPs or phone numbers (32 letters max).",
   "comparte": "Copy my house, signed",
   "comparte_ok": "Copied, signed with your key.",
-  "comparte_sin": "Create your key first (top of the page) to sign it."
+  "comparte_sin": "Create your key first (top of the page) to sign it.",
+  "p_formacion": "Battle formation (replay only)",
+  "formacion_agresiva": "Aggressive",
+  "formacion_defensiva": "Defensive",
+  "formacion_flanqueo": "Flank"
  }
 }
