@@ -5,7 +5,7 @@
  "ui": {
   "arena_h": "Arena · the multiplayer sea",
   "arena_nota": "Your node sits at the center. NPC patrols guard the depths: pick one and fight with your wave troops. People appear on this sea when you import their signed defense.",
-  "arena_mapa_aria": "World map: Hexelion in the center, measured; Doogee in fog, not measured; NPC places and you around them. The same places are buttons below.",
+  "arena_mapa_aria": "World map, centered on your home. Hexelion is measured; Doogee sits in fog, not measured. Drag, use the arrows, or the buttons below to move. The same places are buttons below.",
   "arena_escena_aria": "The fight, live: your troops and theirs, drawn as their own waves. The result and the full log are written below.",
   "arena_tu": "You",
   "arena_crear_id": "Create my key",
@@ -138,8 +138,16 @@
   "cuenta_lab": "Lab (the rack): link NO_DATA until the Sovereign signs it.",
   "cuenta_formato": "Format: preceptoros.cuenta-maestra/1",
   "cuenta_sin_formato": "NO_DATA · the format needs this browser's public key.",
-  "mapa_leyenda": "◉ clear = measured · ▒ fog = emulated · ◌ dashed = NO_DATA (not measured)",
+  "mapa_leyenda": "Drag to explore. Clear = measured · fog = not measured yet · dashed ring = NO_DATA",
   "arena_vs": "Your squad vs {n}",
-  "mapa_medido": "MEASURED"
+  "mapa_medido": "MEASURED",
+  "mapa_izq": "Move left",
+  "mapa_der": "Move right",
+  "mapa_arr": "Move up",
+  "mapa_aba": "Move down",
+  "mapa_casa": "Back to my home",
+  "mapa_niebla": "Fog: not measured yet.",
+  "mapa_en_casa": "Centered on your home.",
+  "mapa_sin_casa": "No key yet: centered on Hexelion. Create your key to have a home on the map."
  }
 }

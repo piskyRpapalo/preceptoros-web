@@ -627,7 +627,7 @@ process.stdout.write(JSON.stringify(ok));
 # Ver atlas/POST_VERIFICACION_MGNO_LAB.md y atlas/POST_VERIFICACION_SISIL_CRIA.md.
 PUROS = ("canon.js", "sobres.js", "rating.js", "arena.js", "duelo.js", "mercado.js", "narragrafo.js", "cria.js", "genoma.js")
 # La Arena (2026-09-28, «el mapa multi-jugador en una pestana»): se carga al abrir su pestana, detras del Army.
-ARENA = ("sobres.js", "rating.js", "arena.js", "duelo.js", "mar.js", "nodos-pesos.js",
+ARENA = ("sobres.js", "rating.js", "arena.js", "duelo.js", "fog_of_war.js", "world_camera.js", "mar.js", "nodos-pesos.js",
          "nodos-cedulas.js", "nodos.js", "cuenta.js", "ui-nodos.js", "ui-rack.js", "ui-arena.js", "ui-duelo.js")
 # La CASA (2026-10-05): la primera pantalla, detras del Army. Lleva canon y escena, que la Arena reutiliza.
 CASA = ("canon.js", "escena.js", "wave_render.js", "home_base_scene.js", "home_buildings.js", "summon_reveal.js")
@@ -1432,6 +1432,45 @@ class CasaGranja(unittest.TestCase):
         self.assertIn("prefers-reduced-motion: reduce", self._js("summon_reveal.js"))
 
 
+class MapaMovible(unittest.TestCase):
+    """El mapa global se arrastra hasta chocar con la niebla (Soberano, 2026-10-05): empieza en tu casa,
+    se mueve con el dedo, el raton, las flechas y botones grandes; la niebla sale de lo MEDIDO y es el
+    limite fisico de la camara. Terreno por teselas, sin azar ni red."""
+
+    def _js(self, n):
+        return sin_comentarios((PUBLICO / "game" / n).read_text(encoding="utf-8"))
+
+    def test_casos_de_la_camara_y_la_niebla(self):
+        r = subprocess.run(["node", str(RAIZ / "camara_casos.mjs")], capture_output=True, text=True, timeout=120)
+        casos = json.loads(r.stdout)
+        self.assertGreaterEqual(len(casos), 7, r.stderr)
+        for c in casos:
+            with self.subTest(caso=c["caso"]):
+                self.assertTrue(c["ok"], c["detalle"])
+
+    def test_se_mueve_con_dedo_teclado_y_botones_y_dice_el_choque(self):
+        m = self._js("mar.js")
+        for pieza in ("addEventListener('pointerdown'", "setPointerCapture", "addEventListener('keydown'", "ArrowLeft",
+                      "x.setAttribute('aria-label', f.texto(b[0]))", "aviso.setAttribute('role', 'status')",
+                      "f.texto('mapa_niebla')", "f.texto(casa ? 'mapa_en_casa' : 'mapa_sin_casa')", "C.arrastra(cam,", "quieto()"):
+            with self.subTest(pieza=pieza):
+                self.assertIn(pieza, m)
+        tx = json.loads((PUBLICO / "atlas-arena-en.json").read_text(encoding="utf-8"))["ui"]
+        for k in re.findall(r"\['(mapa_\w+)', '", m) + ["mapa_niebla", "mapa_en_casa", "mapa_sin_casa", "mapa_medido"]:
+            with self.subTest(clave=k):
+                self.assertTrue(tx.get(k), k)
+        self.assertIn("Fog", tx["mapa_niebla"])
+
+    def test_sin_azar_ni_red_y_por_teselas(self):
+        for f in ("fog_of_war.js", "world_camera.js", "mar.js"):
+            c = self._js(f)
+            for malo in ("Math.random", "localStorage", "fetch(", "Date."):
+                with self.subTest(fichero=f, prohibido=malo):
+                    self.assertNotIn(malo, c)
+        self.assertIn("function tesela(i, j)", self._js("mar.js"))
+        self.assertIn("if (nt > 90)", self._js("mar.js"), "la cache de teselas no esta acotada")
+
+
 class CabezalCajas(unittest.TestCase):
     """El cabezal medido en un navegador de verdad (Soberano, 2026-10-05: «thegame es solo 1 boton»; el
     busto se montaba encima de los botones y del panel; la fila se cortaba). `cabezal_cajas.mjs` mide
@@ -1468,7 +1507,7 @@ class EsteticaMedida(unittest.TestCase):
     def test_el_mapa_pinta_el_origen_de_cada_cifra(self):
         m = self._js("mar.js")
         self.assertIn("var NIEBLA = [null, ", m, "la niebla no es de un bit")
-        self.assertIn("estado !== 'EMULADO'", m, "la niebla no sale de lo EMULADO")
+        self.assertIn("N.niebla(i * TESELA + x * RES, j * TESELA + y * RES, circ)", m, "la niebla no sale de lo despejado (fog_of_war.js)")
         self.assertIn("n.gen.estado === 'NO_DATA'", m, "NO_DATA no se pinta como ausencia")
         self.assertIn("prefers-reduced-motion: reduce", m)
         tx = json.loads((PUBLICO / "atlas-arena-en.json").read_text(encoding="utf-8"))["ui"]

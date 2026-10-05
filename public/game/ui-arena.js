@@ -249,7 +249,8 @@
     });
     if (mar) { mar.para(); }
     mar = window.AtlasMar.crea(R.mapa, { lugares: todosLugares, sel: function () { return sel; }, emblema: function () { return emblema; },
-                                         pub: function () { return pub; }, nombre: nombreLugar, texto: T, colores: colores, elige: elige });
+                                         pub: function () { return pub; }, nombre: nombreLugar, texto: T, colores: colores, elige: elige,
+                                         luchados: function () { return record; } });
   }
 
   /* Las personas del mar: las pone `ui-duelo.js` al importar defensas verificadas. */
