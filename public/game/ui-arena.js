@@ -1,11 +1,8 @@
 /* preceptoros.org · theGame · la ARENA: el mar multijugador, los lugares NPC y el combate en vivo.
 
-   EL MAPA MULTIJUGADOR (firmado por el Soberano, 2026-09-28: «que el usuario vea el mapa multi-jugador
-   en una pestana… las formas originales invocadas luchando en live con los NPCs»). Tu nodo en el
-   centro, con su emblema (una figura de Fourier que sale de tu clave publica). Alrededor, por anillos
-   de profundidad, los LUGARES NPC (`arena.lugares`, iguales en todos los aparatos) y las PERSONAS cuya
-   defensa firmada importaste (`ui-duelo.js`): su angulo sale del hash de su clave y su radio de la
-   distancia XOR a la tuya, como en Kademlia. Sin servidor y sin censo: el mar lo dibuja tu aparato.
+   DOS PESTANAS (2026-10-04): el MAPA global (`mar.js`, en la pestana Map, con la lista de lugares y
+   el boton grande) y la BATALLA (rival, escena y escuadra; duelos y casas plegados). Los lugares NPC
+   son `arena.lugares`, iguales en todos los aparatos; las personas, defensas firmadas importadas.
 
    LUCHAR: eliges escuadra (tu Army; si aun no tienes tropas, una escuadra de PRACTICA sintetica que se
    dice) y un lugar. `arena.combate` decide con enteros y una semilla; `escena.js` lo reproduce en vivo.
@@ -92,38 +89,45 @@
     R.practica.hidden = !d.practica;
   }
 
-  /* --- los lugares ---------------------------------------------------------------------------- */
+  /* --- los lugares: botones en el MAPA; el rival elegido, en el mapa y en la BATALLA ----------- */
   function todosLugares() { return lugares.concat(jugadores); }
   function pintaLista() {
     R.lista.textContent = '';
     todosLugares().forEach(function (l) {
       var li = el('li'), rc = record[l.clave] || { g: 0, p: 0 };
-      var b = boton(nombreLugar(l) + ' · ' + (l.npc ? rellena(T('arena_tier'), { n: l.tc.slice(2), k: l.n }) :
-                    rellena(T('arena_jugador'), { k: l.defensa.tropas.length })) + (rc.g + rc.p ? ' · ✓' + rc.g + ' ✗' + rc.p : ''),
-                    'boton-sec atlas-arena-lugar');
+      var b = boton(nombreLugar(l) + (rc.g + rc.p ? ' · ✓' + rc.g + ' ✗' + rc.p : ''), 'boton-sec atlas-arena-lugar');
+      b.setAttribute('aria-label', nombreLugar(l) + ' · ' + (l.npc ? rellena(T('arena_tier'), { n: l.tc.slice(2), k: l.n }) :
+                     rellena(T('arena_jugador'), { k: l.defensa.tropas.length })));
       b.setAttribute('aria-pressed', String(sel === l));
       b.addEventListener('click', function () { elige(l); });
       li.appendChild(b); R.lista.appendChild(li);
     });
+    pintaRival();
   }
-  function elige(l) {
-    sel = l;
-    pintaLista();
-    R.ficha.textContent = '';
-    R.ficha.hidden = false;
-    R.ficha.appendChild(el('h5', null, nombreLugar(l)));
-    var fila = el('div', 'atlas-arena-fila');
-    l.defensa.tropas.forEach(function (x) { fila.appendChild(miniLienzo(G.tirada(x.semilla, x.tc), 44)); });
-    R.ficha.appendChild(fila);
-    var rc = record[l.clave];
-    if (rc) { R.ficha.appendChild(el('p', 'atlas-nota', rellena(T('arena_record'), { g: rc.g, p: rc.p }))); }
-    var b = boton(l.npc ? T('arena_luchar') : T('duelo_reta'));
-    b.addEventListener('click', function () {
-      var sq = escuadra();
-      if (!sq.length) { R.aviso.textContent = T('arena_vacia'); return; }
-      if (l.npc) { lucha(l, sq); } else if (window.AtlasDueloUI) { window.AtlasDueloUI.reta(l.huella, sq); }
+  function elige(l) { sel = l; pintaLista(); }
+  /* Una accion por pantalla: el boton grande. En el mapa lleva a la Batalla y lucha. */
+  function pintaRival() {
+    [R.ficha, R.rival].forEach(function (z, i) {
+      z.textContent = '';
+      if (!sel) { return; }
+      z.appendChild(el('h5', null, i ? rellena(T('arena_vs'), { n: nombreLugar(sel) }) : nombreLugar(sel)));
+      var fila = el('div', 'atlas-arena-fila');
+      sel.defensa.tropas.forEach(function (x) { fila.appendChild(miniLienzo(G.tirada(x.semilla, x.tc), 40)); });
+      var rc = record[sel.clave];
+      if (rc) { fila.appendChild(el('span', 'atlas-nota', rellena(T('arena_record'), { g: rc.g, p: rc.p }))); }
+      z.appendChild(fila);
+      var b = boton('\u2694\uFE0E ' + (sel.npc ? T('arena_luchar') : T('duelo_reta')), 'boton atlas-gran');
+      b.addEventListener('click', function () {
+        if (!i && window.TheGame && window.TheGame.ve) { window.TheGame.ve('arena'); }
+        pelea();
+      });
+      z.appendChild(b);
     });
-    R.ficha.appendChild(b);
+  }
+  function pelea() {
+    var sq = escuadra();
+    if (!sq.length) { R.aviso.textContent = T('arena_vacia'); return; }
+    if (sel.npc) { lucha(sel, sq); } else if (window.AtlasDueloUI) { window.AtlasDueloUI.reta(sel.huella, sq); }
   }
 
   /* --- el combate ----------------------------------------------------------------------------- */
@@ -147,7 +151,7 @@
   function juega(def, asa, c, info) {
     if (actual) { actual.para(); }
     R.escena.hidden = false; R.res.textContent = ''; R.resNota.textContent = ''; R.tec.hidden = true;
-    R.titulo.textContent = info.titulo || '';
+    R.titulo.textContent = info.titulo || ''; R.titulo.hidden = !info.titulo || info.pve;
     var vel = 1;
     R.vel.textContent = rellena(T('arena_x'), { v: 1 });
     actual = E.escena(R.lienzo, def, asa, c, {
@@ -178,54 +182,64 @@
     R.escena.scrollIntoView({ block: 'nearest' });
   }
 
-  /* --- montar ------------------------------------------------------------------------------------ */
-  function monta(capa, panel) {
+  /* --- montar: el MAPA en su pestana (`zona`), la BATALLA en la suya ------------------------- */
+  function monta(capa, panel, zona) {
     if (!panel || panel.querySelector('.atlas-arena')) { return Promise.resolve(); }
-    return textos().then(function () { construye(panel); }, function (e) {
+    return textos().then(function () { construye(panel, zona); }, function (e) {
       panel.textContent = ''; panel.appendChild(el('p', 'no-data', 'NO_DATA · ' + e.message));
     });
   }
-  function construye(panel) {
+  function pliego(titulo, z) {
+    var d = el('details', 'thegame-pliego');
+    d.name = 'atlas-pliego';
+    d.appendChild(el('summary', null, titulo)); d.appendChild(z);
+    return d;
+  }
+  function construye(panel, zona) {
     lugares = A.lugares().map(function (l, i) {
       return { npc: true, id: l.id, clave: 'npc:' + l.id, orden: i, tc: l.tc, n: l.n, defensa: l.defensa,
                lider: G.tirada(l.defensa.tropas[0].semilla, l.defensa.tropas[0].tc) };
     });
-    var s = el('section', 'panel atlas-arena');
-    s.appendChild(el('h4', null, T('arena_h')));
-    s.appendChild(el('p', 'atlas-nota', T('arena_nota')));
+    sel = lugares[0];
+    var m = el('section', 'atlas-mundo');
     R.mapa = el('canvas', 'atlas-arena-mapa');
     R.mapa.setAttribute('role', 'img'); R.mapa.setAttribute('aria-label', T('arena_mapa_aria'));
-    s.appendChild(R.mapa);
-    R.lista = el('ul', 'atlas-arena-lugares'); s.appendChild(R.lista);
-    R.ficha = el('div', 'atlas-arena-lugar-ficha'); R.ficha.hidden = true; s.appendChild(R.ficha);
-    s.appendChild(el('h5', null, T('arena_escuadra_h')));
-    s.appendChild(el('p', 'atlas-nota', rellena(T('arena_escuadra_nota'), { n: V.combate.tropas_max })));
-    R.practica = el('p', 'atlas-casa', T('arena_practica')); s.appendChild(R.practica);
-    R.escuadra = el('div', 'atlas-arena-escuadra'); s.appendChild(R.escuadra);
+    m.appendChild(R.mapa);
+    m.appendChild(el('p', 'atlas-mundo-leyenda', T('mapa_leyenda')));
+    R.ficha = el('div', 'atlas-arena-lugar-ficha'); m.appendChild(R.ficha);
+    R.lista = el('ul', 'atlas-arena-lugares'); m.appendChild(R.lista);
+    R.rack = el('div'); m.appendChild(pliego(T('rack_h'), R.rack));
+    if (window.AtlasRackUI) { window.AtlasRackUI.monta(R.rack, T); }
+    var s = el('section', 'panel atlas-arena');
+    R.rival = el('div', 'atlas-arena-lugar-ficha'); s.appendChild(R.rival);
     R.aviso = el('p', 'atlas-vivo'); R.aviso.setAttribute('role', 'status'); s.appendChild(R.aviso);
     R.escena = el('div', 'atlas-arena-escena'); R.escena.hidden = true;
-    R.titulo = el('h5'); R.escena.appendChild(R.titulo);
+    R.titulo = el('h5'); R.titulo.hidden = true; R.escena.appendChild(R.titulo);
     R.lienzo = el('canvas', 'atlas-arena-lienzo');
     R.lienzo.setAttribute('role', 'img'); R.lienzo.setAttribute('aria-label', T('arena_escena_aria'));
     R.escena.appendChild(R.lienzo);
-    var m = el('div', 'atlas-arena-mandos');
+    var mm = el('div', 'atlas-arena-mandos');
     R.vel = boton('', 'boton-sec'); R.salta = boton(T('arena_saltar'), 'boton-sec'); R.otra = boton(T('arena_otra'), 'boton-sec');
-    [R.vel, R.salta, R.otra].forEach(function (b) { m.appendChild(b); });
-    R.escena.appendChild(m);
+    [R.vel, R.salta, R.otra].forEach(function (b) { mm.appendChild(b); });
+    R.escena.appendChild(mm);
     R.res = el('p', 'atlas-arena-res'); R.res.setAttribute('role', 'status'); R.escena.appendChild(R.res);
-    R.resNota = el('p', 'atlas-nota'); R.escena.appendChild(R.resNota);
     R.tec = el('details', 'thegame-tecnico'); R.tec.hidden = true;
     R.tec.appendChild(el('summary', null, T('tecnico')));
+    R.resNota = el('p', 'atlas-nota'); R.tec.appendChild(R.resNota);
     R.semilla = el('p', 'atlas-medido'); R.tec.appendChild(R.semilla);
     R.log = el('pre', 'atlas-arena-log'); R.tec.appendChild(R.log);
     R.escena.appendChild(R.tec);
     s.appendChild(R.escena);
-    R.nodos = el('div'); s.insertBefore(R.nodos, R.mapa);
+    var eq = el('div');
+    eq.appendChild(el('p', 'atlas-nota', rellena(T('arena_escuadra_nota'), { n: V.combate.tropas_max })));
+    R.practica = el('p', 'atlas-casa', T('arena_practica')); eq.appendChild(R.practica);
+    R.escuadra = el('div', 'atlas-arena-escuadra'); eq.appendChild(R.escuadra);
+    s.appendChild(pliego(T('arena_escuadra_h'), eq));
+    R.duelo = el('div', 'atlas-arena-duelo'); s.appendChild(pliego(T('duelo_h'), R.duelo));
+    R.nodos = el('div'); s.appendChild(pliego(T('nodos_h'), R.nodos));
     if (window.AtlasNodosUI) { window.AtlasNodosUI.monta(R.nodos, T); }
-    R.rack = el('div'); s.insertBefore(R.rack, R.mapa);
-    if (window.AtlasRackUI) { window.AtlasRackUI.monta(R.rack, T); }
-    R.duelo = el('div', 'atlas-arena-duelo'); s.appendChild(R.duelo);
     panel.textContent = ''; panel.appendChild(s);
+    if (zona) { zona.appendChild(m); } else { s.insertBefore(m, s.firstChild); }
     var I = window.Identity;
     var listo = I && I.quien && I.quien() ? I.publica().then(function (k) { pub = k; }, function () { pub = null; }) : Promise.resolve();
     listo.then(function () {

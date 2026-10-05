@@ -47,9 +47,9 @@ body.en-thegame > :not(#thegame){visibility:hidden}
   background:var(--bg-secondary);border-top:1px solid var(--edge-sov)}
 .thegame-pestanas > div{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);max-width:40rem;margin:0 auto}
 .thegame-pestanas button{position:relative;display:grid;justify-items:center;align-content:center;gap:.2rem;
-  min-height:3.75rem;padding:.4rem .15rem;font:600 .64rem/1.1 var(--mono);letter-spacing:.06em;
+  min-height:4.25rem;padding:.4rem .15rem;font:700 .74rem/1.1 var(--mono);letter-spacing:.06em;
   text-transform:uppercase;color:var(--text-muted);background:transparent;border:0;border-radius:0}
-.thegame-ico{font-size:1.2rem;line-height:1}
+.thegame-ico{font-size:1.55rem;line-height:1}
 /* Sin el relleno violeta de `base.css` ni el halo de `soberano.css` que todo boton lleva con foco o
    bajo el raton (en tactil el hover se queda pegado tras el toque): la pestana activa se dice con
    color, raya y `aria-selected`, no con una pildora encendida. */
@@ -81,7 +81,7 @@ body.en-thegame > :not(#thegame){visibility:hidden}
 .atlas-arena{display:grid;gap:.75rem}
 .atlas-arena-mapa,.atlas-arena-lienzo{display:block;width:100%;border:1px solid var(--edge-sov);border-radius:var(--radius);
   background:var(--bg-primary);touch-action:manipulation}
-.atlas-arena-lugares{display:grid;grid-template-columns:repeat(auto-fill,minmax(10.5rem,1fr));gap:.4rem;margin:0;padding:0;list-style:none}
+.atlas-arena-lugares{display:grid;grid-template-columns:repeat(auto-fill,minmax(9rem,1fr));gap:.4rem;margin:0;padding:0;list-style:none}
 /* Lugares y tropas de la escuadra: fichas ligeras, no pildoras llenas; la elegida se enciende en cobre. */
 #thegame :is(.atlas-arena-lugar,.atlas-arena-ficha-tropa){width:100%;text-align:start;font-size:.76rem;padding:.4rem .7rem;
   color:var(--text-main);background:transparent;border:1px solid var(--edge-sov);border-radius:var(--radius)}
@@ -143,3 +143,17 @@ body.en-thegame > :not(#thegame){visibility:hidden}
 .atlas-rack-nodo.activo .atlas-rack-pin{background:var(--accent-copper);animation:atlas-pulso 1.6s var(--curva,ease) infinite}
 .atlas-cuenta-une{margin:.4rem 0;padding-inline-start:1.1rem;display:grid;gap:.3rem;font-size:.85rem;overflow-wrap:anywhere}
 @media (prefers-reduced-motion:reduce){.atlas-rack-nodo.activo .atlas-rack-pin{animation:none}}
+
+/* --- cuatro pestanas grandes (2026-10-04): mapa, batalla, pliegos, ayuda ------------------------ */
+.atlas-mundo{display:grid;gap:.6rem}
+.atlas-mundo-leyenda{margin:0;font:600 .72rem/1.5 var(--mono);color:var(--text-main)}
+#thegame .atlas-gran{justify-self:stretch;min-height:3.5rem;font-size:1.15rem;font-weight:700;letter-spacing:.04em}
+.atlas-arena-lugar-ficha > h5{margin:0;font-size:1rem}
+.atlas-arena-lienzo,.atlas-arena-mapa{image-rendering:pixelated}
+#thegame .thegame-pliego{padding:0;font-size:.9rem;color:var(--text-main);border:1px solid var(--edge-sov);border-radius:var(--radius)}
+#thegame .thegame-pliego > summary{display:flex;align-items:center;min-height:3rem;padding:0 .9rem;cursor:pointer;
+  font:700 .85rem/1.2 var(--mono);letter-spacing:.05em;text-transform:uppercase;color:var(--text-main)}
+#thegame .thegame-pliego > div{margin:0;display:grid;gap:.75rem;padding:0 .75rem .75rem}
+.thegame-ayuda{display:grid;gap:.6rem;margin:0;padding-inline-start:1.4rem;font-size:1rem;line-height:1.45}
+@media (min-width:48rem){.atlas-mundo{grid-template-columns:2fr 1fr;align-items:start}
+  .atlas-mundo > .atlas-arena-mapa{grid-row:span 4}}

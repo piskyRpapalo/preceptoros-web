@@ -6,18 +6,14 @@
    donde estes, que se cierra con su boton o con Escape y devuelve el foco a la
    puerta.
 
-   A DEMANDA. Este fichero lo inyecta `cabezal-rotulos.js` al pulsar la puerta.
-   Aqui se piden las hojas y los guiones del juego, en orden (`async = false`); nada de esto
-   esta en ninguna pagina ni en el precache. La incubadora y su Army se piden al abrir SU
-   pestana: su peso no va en la puerta, que es una ley del mundo (`gzip_juego_b`).
+   A DEMANDA. Lo inyecta `cabezal-rotulos.js` al pulsar la puerta; pide hojas y guiones en orden.
+   El Army y la Arena se piden al abrir: su peso no va en la puerta (`gzip_juego_b`).
 
-   CINCO PESTANAS (Soberano, 2026-09-28: «adaptado a telefono, con pestanas y cabecero bien
-   estructurado»): Core, Map, Crafts, Army y Game. En el telefono van abajo, al alcance del
-   pulgar; en escritorio, bajo el cabecero. Maqueta: `thegame.css`.
+   CUATRO PESTANAS GRANDES (Soberano, 2026-10-04: «pestanas faciles y limpias», «NO hacer paginas
+   largas», «un nino debe poder jugarlo»): Map, Battle, My node y Help. Cada una cabe en una pantalla
+   de movil; lo que no cabe se PLIEGA (`PLIEGOS`) dentro de My node. Abajo, al alcance del pulgar.
 
-   CERRAR NO BORRA LA PARTIDA. La capa se oculta y el reloj del juego se para;
-   al volver a abrir sigue donde estaba. Cerrar la PESTANA si la borra: v1 no
-   guarda nada, y el sello del juego lo dice. */
+   CERRAR NO BORRA LA PARTIDA; cerrar la PESTANA del navegador si. */
 (function () {
   'use strict';
   if (window.TheGame) { return; }
@@ -83,24 +79,21 @@
   }
 
   /* LAS PESTANAS. NO SE REHACE NADA: cada pieza que ya pintan el piso, el piloto y el guardado se
-     MUEVE, con sus referencias vivas, a su panel DENTRO de `#atlas-piso` (los `#atlas-piso ...` de
-     los demas guiones siguen valiendo). El orden de cada lista es el orden en pantalla. El piloto,
-     su freno (Soltar), la sugerencia y el veredicto del juez se quedan en el cabecero: se ven desde
-     cualquier pestana. */
+     MUEVE, con sus referencias vivas, a su panel. El aviso «solo ingles» va PRIMERO en la primera
+     pestana, la que se ve al abrir. El Map y la Battle los pinta la Arena (`ui-arena.js`). */
   var PESTANAS = [
-    /* El aviso «solo ingles» va PRIMERO en Core: en la pestana Game nadie de /es/ o /ar/ lo veia. */
-    ['nucleo', '\u25C9', '#atlas-juego > .no-data:first-child|.atlas-alerta|.atlas-cab|.atlas-recursos|#atlas-piso > .atlas-vivo|.atlas-dormias|.atlas-nucleo'],
-    ['mapa', '\u25C8', '.atlas-lema|.atlas-mapa|.atlas-izq'],
-    ['oficios', '\u2692\uFE0E', '.atlas-hud > .panel:not(.atlas-dormias)'],
-    ['army', '\u2726', ''],
+    ['mapa', '\u25C8', '#atlas-juego > .no-data:first-child'],
     ['arena', '\u2694\uFE0E', ''],
-    ['partida', '\u2261', '.atlas-guardado|.thegame-exporta|.thegame-opina|.atlas-hud-farmeo|#atlas-juego > .no-data|.atlas-pie']];
+    ['nucleo', '\u25C9', '.atlas-alerta|.atlas-cab|.atlas-recursos|#atlas-piso > .atlas-vivo'],
+    ['partida', '\u2139\uFE0E', '.atlas-guardado|.thegame-exporta|.thegame-opina|.atlas-hud-farmeo|#atlas-juego > .no-data|.atlas-pie']];
+  /* My node pliega lo demas: la expedicion del Bosque, los oficios y el Army. Uno abierto cada vez. */
+  var PLIEGOS = [['pl_bosque', '.atlas-dormias|.atlas-lema|.atlas-mapa|.atlas-izq'], ['pes_oficios', '.atlas-nucleo|.atlas-hud > .panel'], ['pes_army', '']];
   /* LO TECNICO, SIEMPRE PLEGADO (Soberano: «son textos que asustan a usuarios no tecnicos»): el
      JSON de la carta, las leyes medidas, la semilla que no es VRF, los valores provisionales y el
      pie. No se borran, porque son la prueba: se ven al abrir «Technical details». */
   var TECNICO = '.atlas-carta-json, .atlas-nucleo > .atlas-nota, .atlas-nucleo > .atlas-medido, ' +
     '.atlas-incubadora > .atlas-medido, .atlas-incubadora > .atlas-casa, .atlas-pie';
-  var PANEL = {}, BOTON = {}, actual = 'nucleo', army = null, arena = null;
+  var PANEL = {}, BOTON = {}, actual = 'mapa', army = null, arena = null, ARMYZ = null;
 
   function T(k) { return (window.AtlasJuego && window.AtlasJuego.texto(k)) || k; }
   function cada(lista, f) { Array.prototype.forEach.call(lista, f); }
@@ -125,8 +118,8 @@
       BOTON[k].tabIndex = k === id ? 0 : -1;
     });
     if (foco) { BOTON[id].focus(); }
-    if (id === 'army') { cargaArmy(); }
     if (id === 'arena') { cargaArena(); }
+    if (id === 'mapa') { cargaArena(); }
   }
 
   function ordena() {
@@ -147,6 +140,17 @@
       piso.appendChild(d); fila.appendChild(b);
       PANEL[id] = d; BOTON[id] = b;
     });
+    PLIEGOS.forEach(function (q) {
+      var d = el('details', 'thegame-pliego'), z = el('div');
+      d.name = 'thegame-pliego';
+      d.appendChild(el('summary', null, T(q[0]))); d.appendChild(z);
+      q[1].split('|').forEach(function (s) { if (s) { cada(capa.querySelectorAll(s), function (n) { z.appendChild(n); }); } });
+      if (!q[1]) { ARMYZ = z; }
+      tecnico(z); PANEL.nucleo.appendChild(d);
+    });
+    var ay = el('ol', 'thegame-ayuda');
+    [1, 2, 3, 4].forEach(function (i) { ay.appendChild(el('li', null, T('ayuda_' + i))); });
+    PANEL.partida.insertBefore(ay, PANEL.partida.firstChild);
     /* Lo que queda vacio al repartir (la rejilla de la pagina larga) sobra. */
     cada(piso.querySelectorAll(':scope > .atlas-rejilla'), function (n) { n.remove(); });
     /* Flechas entre pestanas, como pide el patron de ARIA (al reves en una capa RTL). */
@@ -165,13 +169,13 @@
       new MutationObserver(marca).observe(a, { attributes: true, attributeFilter: ['class'] });
       marca();
     }
-    muestra('nucleo');
+    muestra('mapa');
   }
 
   /* El Army se pide una vez; si falla, NO_DATA en su panel y el siguiente intento vuelve a pedir. */
   function cargaArmy() {
     if (army) { return army; }
-    var p = PANEL.army;
+    var p = ARMYZ;
     if (p && !p.firstChild) { p.appendChild(el('p', 'atlas-nota', T('army_carga'))); }
     army = pide(ARMY).then(function () {
       if (window.AtlasIncubadora) { window.AtlasIncubadora.monta(capa); }
@@ -190,7 +194,7 @@
     var p = PANEL.arena;
     if (p && !p.firstChild) { p.appendChild(el('p', 'atlas-nota', T('arena_carga'))); }
     arena = cargaArmy().then(function () { return pide(ARENA); }).then(function () {
-      if (window.AtlasArenaUI) { window.AtlasArenaUI.monta(capa, p); }
+      if (window.AtlasArenaUI) { window.AtlasArenaUI.monta(capa, p, PANEL.mapa); }
     }).catch(function (e) {
       arena = null;
       if (p) { p.textContent = ''; p.appendChild(el('p', 'no-data', 'NO_DATA · ' + (e && e.message))); }
@@ -297,5 +301,5 @@
     avisa();
   }
 
-  window.TheGame = { abre: abre, cierra: cierra, army: cargaArmy };
+  window.TheGame = { abre: abre, cierra: cierra, army: cargaArmy, ve: function (id) { if (PANEL[id]) { muestra(id); } } };
 })();

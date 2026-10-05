@@ -5852,14 +5852,16 @@ class ElJuegoEnInglesEnLasNueve(unittest.TestCase):
         self.assertIn("window.AtlasLengua.actual) || 'en'",
                       sin_comentarios((PUBLICO / "game" / "ui-arena.js").read_text(encoding="utf-8")))
 
-    def test_el_aviso_de_solo_ingles_va_primero_en_core(self):
+    def test_el_aviso_de_solo_ingles_va_primero_en_la_pestana_de_entrada(self):
+        # Desde 2026-10-04 la pestana de entrada es Map (cuatro pestanas: Map, Battle, My node, Help).
         js = self._js("thegame.js")
-        nucleo = re.search(r"\['nucleo', '[^']*', '([^']*)'\]", js)
-        self.assertTrue(nucleo, "no encuentro la pestana Core")
-        self.assertTrue(nucleo.group(1).startswith("#atlas-juego > .no-data:first-child|"),
-                        "el aviso de lengua no va el primero en Core: cae en Game y no se ve")
-        self.assertLess(js.index("['nucleo'"), js.index("['partida'"),
-                        "Core tiene que repartir antes que Game, o Game se lleva el aviso")
+        primera = re.search(r"var PESTANAS = \[\s*\['(\w+)', '[^']*', '([^']*)'\]", js)
+        self.assertTrue(primera, "no encuentro la primera pestana")
+        self.assertTrue(primera.group(2).startswith("#atlas-juego > .no-data:first-child"),
+                        "el aviso de lengua no va el primero en la pestana de entrada: cae en Help y no se ve")
+        self.assertIn(f"muestra('{primera.group(1)}');\n  }}", js, "la capa no abre en la pestana del aviso")
+        self.assertLess(js.index(f"['{primera.group(1)}'"), js.index("['partida'"),
+                        "la entrada tiene que repartir antes que Help, o Help se lleva el aviso")
         piso = self._js("atlas-piso.js")
         self.assertIn("zona.insertBefore(el('p', 'no-data', U('lengua_nd')", piso)
         self.assertIn("{l}", json.loads((PUBLICO / "atlas-en.json").read_text(encoding="utf-8"))["ui"]["lengua_nd"])

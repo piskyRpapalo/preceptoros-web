@@ -5,7 +5,7 @@
  "ui": {
   "arena_h": "Arena · the multiplayer sea",
   "arena_nota": "Your node sits at the center. NPC patrols guard the depths: pick one and fight with your wave troops. People appear on this sea when you import their signed defense.",
-  "arena_mapa_aria": "The multiplayer sea: your node at the center, NPC places and people around it. The same places are listed below as buttons.",
+  "arena_mapa_aria": "World map: Hexelion in the center, measured; Doogee in fog, not measured; NPC places and you around them. The same places are buttons below.",
   "arena_escena_aria": "The fight, live: your troops and theirs, drawn as their own waves. The result and the full log are written below.",
   "arena_tu": "You",
   "arena_crear_id": "Create my key",
@@ -21,7 +21,7 @@
   "arena_luchar": "Fight",
   "arena_escuadra_h": "Your squad",
   "arena_escuadra_nota": "Pick up to {n} troops. Their numbers are rebuilt from their seed: nobody brings forged stats.",
-  "arena_practica": "Practice squad (synthetic, not yours): invoke and adopt troops in the Army tab to fight with your own.",
+  "arena_practica": "Practice squad (not yours yet): summon waves in My node › Army to fight with your own.",
   "arena_tope": "A squad holds {n} troops at most.",
   "arena_vacia": "Pick at least one troop for your squad.",
   "arena_ronda": "Round {r}",
@@ -137,6 +137,9 @@
   "cuenta_app": "Local app on the Beelink: link NO_DATA until the Sovereign signs it.",
   "cuenta_lab": "Lab (the rack): link NO_DATA until the Sovereign signs it.",
   "cuenta_formato": "Format: preceptoros.cuenta-maestra/1",
-  "cuenta_sin_formato": "NO_DATA · the format needs this browser's public key."
+  "cuenta_sin_formato": "NO_DATA · the format needs this browser's public key.",
+  "mapa_leyenda": "◉ clear = measured · ▒ fog = emulated · ◌ dashed = NO_DATA (not measured)",
+  "arena_vs": "Your squad vs {n}",
+  "mapa_medido": "MEASURED"
  }
 }

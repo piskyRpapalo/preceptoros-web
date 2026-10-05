@@ -1006,18 +1006,21 @@ class Vigia(unittest.TestCase):
 
 
 class Pestanas(unittest.TestCase):
-    """La capa en cinco pestanas (Soberano, 2026-09-28: «adaptado a telefono, con pestanas y cabecero
-    bien estructurado»; «los JSON son textos que asustan: ocultarlos en desplegables siempre»)."""
+    """La capa en CUATRO pestanas grandes (Soberano, 2026-10-04: «pestanas faciles y limpias», «NO hacer
+    paginas largas», «un nino debe poder jugarlo»): Map, Battle, My node y Help. Lo que antes eran las
+    pestanas Crafts y Army, y la expedicion del Bosque, son PLIEGOS dentro de My node (uno abierto a
+    la vez). Sigue en pie lo de 2026-09-28: «los JSON son textos que asustan: ocultarlos siempre»."""
 
     CAPA = ASSETS / "thegame.js"
     HOJA = ASSETS / "thegame.css"
-    IDS = ("nucleo", "mapa", "oficios", "army", "arena", "partida")
+    IDS = ("mapa", "arena", "nucleo", "partida")
+    PLIEGOS = ("pl_bosque", "pes_oficios", "pes_army")
     ARMY = ("valores.js", "gacha.js", "db.js", "core.js", "ui.js")
 
     def _capa(self):
         return sin_comentarios(self.CAPA.read_text(encoding="utf-8"))
 
-    def test_cinco_pestanas_accesibles_que_mueven_y_no_rehacen(self):
+    def test_cuatro_pestanas_accesibles_que_mueven_y_no_rehacen(self):
         c = self._capa()
         ids = re.findall(r"\['(\w+)', '\\u[0-9A-F]{4}", c)
         self.assertEqual(tuple(ids), self.IDS)
@@ -1033,7 +1036,8 @@ class Pestanas(unittest.TestCase):
                 self.assertNotIn(freno, lista, "el piloto y su freno salen del cabecero")
         for l in LENGUAS_JUEGO:
             ui = json.loads((PUBLICO / f"atlas-{l}.json").read_text(encoding="utf-8"))["ui"]
-            for k in ["pes_" + i for i in self.IDS] + ["pes_aria", "tecnico", "army_carga"]:
+            for k in ["pes_" + i for i in self.IDS] + list(self.PLIEGOS) + ["pes_aria", "tecnico", "army_carga"] + \
+                     [f"ayuda_{i}" for i in range(1, 5)]:
                 with self.subTest(lengua=l, clave=k):
                     self.assertTrue(ui.get(k, "").strip())
 
@@ -1057,7 +1061,12 @@ class Pestanas(unittest.TestCase):
                 self.assertNotIn(m, guiones, f"{m} vuelve a la puerta")
                 self.assertIn(f"['/game/{m}']", army)
         self.assertIn("['/game/juez.js']", guiones, "el juez escucha desde el primer ciclo")
-        self.assertIn("if (id === 'army') { cargaArmy(); }", c)
+        # Sin pestana Army: el Army se pide con la Arena, que pinta el Map (la pestana de entrada), y se
+        # coloca en su pliego de My node. Su peso sigue fuera de la puerta.
+        self.assertIn("if (id === 'mapa') { cargaArena(); }", c)
+        self.assertIn("['pes_army', '']", c[c.index("var PLIEGOS"):c.index("var TECNICO")])
+        self.assertIn("if (!q[1]) { ARMYZ = z; }", c)
+        self.assertIn("d.name = 'thegame-pliego';", c, "los pliegos de My node se abren de uno en uno")
         self.assertIn("army: cargaArmy", c)
         sys.path.insert(0, str(RAIZ))
         import mundo
@@ -1363,6 +1372,36 @@ class Arena(unittest.TestCase):
         self.assertIn("window.crypto.getRandomValues(b)", self._js("ui-duelo.js"), "el r del commit-reveal sin azar real")
         self.assertIn("I.firmarTexto(t)", self._js("ui-duelo.js"))
         self.assertIn("window.AtlasArmy.verificaWeb", self._js("ui-duelo.js"))
+
+
+class EsteticaMedida(unittest.TestCase):
+    """La estetica PINTA LO MEDIDO (directiva del Soberano, 2026-10-04): el dano se ve como desafinacion
+    de la ecuacion, no como barra de vida; la niebla es tramado Atkinson de un bit (sin alfas); el
+    origen medido | emulado | NO_DATA se ve en el mapa y se dice en texto; movimiento reducido manda."""
+
+    def _js(self, n):
+        return sin_comentarios((PUBLICO / "game" / n).read_text(encoding="utf-8"))
+
+    def test_el_dano_es_desafinacion_y_no_barra(self):
+        e = self._js("escena.js")
+        self.assertIn("function afina(arm, d, t)", e)
+        self.assertIn("desafina: Math.min(1, (1 - u.vida / u.max)", e, "la vida no desafina la figura")
+        self.assertNotIn("function barra(", e, "vuelve la barra de vida")
+        self.assertIn("[[1, 0], [2, 0], [-1, 1], [0, 1], [1, 1], [0, 2]]", e, "el tramado no es Atkinson")
+        self.assertIn("(v - q) / 8", e, "Atkinson reparte 1/8 a cada vecino")
+
+    def test_el_mapa_pinta_el_origen_de_cada_cifra(self):
+        m = self._js("mar.js")
+        self.assertIn("var NIEBLA = [null, ", m, "la niebla no es de un bit")
+        self.assertIn("estado !== 'EMULADO'", m, "la niebla no sale de lo EMULADO")
+        self.assertIn("n.gen.estado === 'NO_DATA'", m, "NO_DATA no se pinta como ausencia")
+        self.assertIn("prefers-reduced-motion: reduce", m)
+        tx = json.loads((PUBLICO / "atlas-arena-en.json").read_text(encoding="utf-8"))["ui"]
+        for k in ("mapa_leyenda", "mapa_medido", "arena_vs"):
+            with self.subTest(clave=k):
+                self.assertTrue(tx.get(k), k)
+        self.assertIn("NO_DATA", tx["mapa_leyenda"], "la leyenda no dice NO_DATA en texto")
+        self.assertIn("T('mapa_leyenda')", self._js("ui-arena.js"), "la leyenda no se pinta en el DOM")
 
 
 class NodosComoCuenta(unittest.TestCase):
