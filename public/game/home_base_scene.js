@@ -20,8 +20,8 @@
   /* Donde va cada edificio: x y ancho en fraccion del lienzo; el suelo esta en SUELO. */
   var SUELO = 0.74;
   var PARCELAS = {
-    faro: { x: 0.12, w: 0.14 }, army: { x: 0.31, w: 0.2 }, taller: { x: 0.7, w: 0.18 },
-    bosque: { x: 0.89, w: 0.18 }, arena: { x: 0.5, w: 0.34, y: 0.95 }
+    faro: { x: 0.12, w: 0.14, by: 0.4 }, army: { x: 0.31, w: 0.2 }, taller: { x: 0.7, w: 0.18, by: 0.5 },
+    bosque: { x: 0.89, w: 0.18 }, arena: { x: 0.5, w: 0.34, y: 0.92 }
   };
   var PALETAS = {
     abismo: { agua: [[4, 6, 18], [8, 14, 34], [14, 26, 56], [22, 44, 82], [40, 74, 112]], acento: [272, 75, 70], vidrio: [200, 80, 75] },

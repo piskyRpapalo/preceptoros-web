@@ -88,7 +88,7 @@
     var ed = medidas();
     EDIF.forEach(function (e) {
       var b = R.b[e[0]], m = ed[e[0]], p = S.PARCELAS[e[0]];
-      b.style.left = (p.x * 100) + '%'; b.style.top = ((p.y || S.SUELO) * 100) + '%';
+      b.style.left = (p.x * 100) + '%'; b.style.top = ((p.by || p.y || S.SUELO) * 100) + '%';
       b.querySelector('.casa-st').textContent = m ? m.txt : 'NO_DATA';
       b.classList.toggle('sin-medida', !m);
       b.setAttribute('aria-label', T('ed_' + e[0]) + ' · ' + (m ? m.txt : T('nd_' + e[0])));
