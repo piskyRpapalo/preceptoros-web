@@ -96,6 +96,9 @@
    rejilla de dos del telefono se quedaria sola a media fila. Ocupa la fila
    entera y la figura sigue siendo una rejilla. */
 #cab-nav .cab-boton.thegame{grid-column:1/-1;background:var(--violeta);border-color:var(--oro)}
+/* LA SEXTA, ARENA (2026-10-04): con ella la cuenta vuelve a ser par, y theGame y Arena comparten la
+   tercera fila del telefono. Un toque desde cualquier pagina hasta el combate. */
+#cab-nav .cab-boton.thegame:has(~ .arena),#cab-nav .cab-boton.arena{grid-column:auto}
 /* SOLIDO Y SIN TOKENS QUE GIREN. Con el violeta transparente el fondo del
    boton cambiaba con el tema --#5546AA en oscuro, #9485E7 en claro-- y NINGUN
    dorado llegaba a 4,5:1 en los dos a la vez: el mejor daba 4,98 en uno y 2,09

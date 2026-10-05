@@ -1,0 +1,19 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "preceptoros:preceptoros.cuenta-maestra/1",
+ "title": "Master account of the Sovereign: one node, three places (local app, lab, web), only public data",
+ "description": "Built by the web (public/game/cuenta.js) as a PROPOSAL. It is signed only in the rack's registry, by the Sovereign; the web never emits a signed one. Closed: no private key, no passphrase, no rack address fits here.",
+ "type": "object",
+ "additionalProperties": false,
+ "required": ["esquema", "cuenta", "nodo", "cedula_sha", "une", "publica", "estado", "firma"],
+ "properties": {
+  "esquema": {"const": "preceptoros.cuenta-maestra/1"},
+  "cuenta": {"const": "casa-hexelion"},
+  "nodo": {"const": "nodo.0.hexelion"},
+  "cedula_sha": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+  "une": {"const": ["app-local", "lab", "web"]},
+  "publica": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+  "estado": {"const": "PROPUESTA"},
+  "firma": {"type": "null"}
+ }
+}

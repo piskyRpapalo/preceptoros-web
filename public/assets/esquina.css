@@ -72,7 +72,7 @@
    natural y la que ya tienen en la cabeza quien ha visto cualquier sitio web.
    La rejilla de dos se queda donde nacio -- en el telefono, donde la midieron. */
 @media (min-width:1024px){
-  #cab-nav{grid-template-columns:repeat(5,1fr)}
+  #cab-nav{grid-template-columns:repeat(6,1fr)}
   #cab-nav .cab-boton.thegame{grid-column:auto}
 }
 

@@ -11,7 +11,11 @@
    el registro (que ata la huella del log) con la identidad que ya vive en el navegador
    (`Identity.firmar`). ENVIAR: solo con un clic de verdad, la casilla marcada y una SEGUNDA firma,
    la del consentimiento; `AtlasNodos.envio` es la puerta y `Enviar.paquete` (de `enviar.js`, que se
-   pide al pulsar) la unica salida. Sin red, ni reloj, ni azar en este fichero. */
+   pide al pulsar) la unica salida. Sin red, ni reloj, ni azar en este fichero.
+
+   REDISENO TRAS EL DOOGEE (2026-10-04): el combate arriba y las cedulas plegadas; las dos firmas
+   son dos PASOS numerados; el boton de enviar dice siempre por que esta gris (`cerrojo`), y los
+   rechazos se dicen en la lengua de la pantalla (`RECHAZOS`), no con el mensaje crudo. */
 (function () {
   'use strict';
 
@@ -90,17 +94,18 @@
     var u = estados[estados.length - 1];
     clearTimeout(paso); paso = null; pinta(u);
     R.res.textContent = cuenta(u) + ' · ' + rellena(T('nodos_tick'), { t: u.tick });
-    R.n0.hidden = false; R.firma.hidden = false; R.salta.hidden = true;
+    R.n0.hidden = false; R.pasos.hidden = false; R.salta.hidden = true; R.consiento.checked = false; cerrojo();
   }
   function lucha() {
     var n = parseInt(R.n.value, 10);
     if (!(n >= 0 && n <= 999999)) { n = 0; R.n.value = '0'; }
-    clearTimeout(paso); firmado = null; R.envio.hidden = true; R.recibo.textContent = ''; R.firmaNota.textContent = '';
+    clearTimeout(paso); firmado = null; R.pasos.hidden = true; R.recibo.textContent = ''; R.firmaNota.textContent = '';
+    R.paso1.classList.remove('hecho'); R.crudo.hidden = true;
     actual = N.partida(C, P, C.cuentas[0].cuenta, C.cuentas[1].cuenta, n);
     var estados = N.reproduce(actual.log), r = actual.registro, i = 0, tick = 0;
     R.semilla.textContent = 'seed ' + r.semilla + ' · log sha256 ' + r.log_sha + ' · ' + r.pesos + ' · cedulas ' + r.cedulas_sha;
     R.log.textContent = estados.map(function (e) { return rellena(T('nodos_tick'), { t: e.tick }) + ' · ' + cuenta(e); }).join('\n');
-    R.escena.hidden = false; R.salta.hidden = false; R.n0.hidden = true; R.firma.hidden = true;
+    R.escena.hidden = false; R.salta.hidden = false; R.n0.hidden = true;
     if (quieto()) { final(estados); return; }
     (function avanza() {
       while (i < estados.length - 1 && estados[i + 1].tick <= tick) { i += 1; }
@@ -109,6 +114,29 @@
       tick += 1; paso = setTimeout(avanza, 45);
     })();
     R.salta.onclick = function () { final(estados); };
+  }
+
+  /* EL BOTON GRIS DICE POR QUE (hallazgo 1). Solo aqui se toca `R.enviar.disabled`. */
+  function cerrojo(cual) {
+    var listo = !!firmado && R.consiento.checked && !cual;
+    R.consiento.disabled = !firmado || !!cual;
+    R.enviar.disabled = !listo;
+    R.porque.textContent = cual ? T(cual) : !firmado ? T('nodos_porque_firma') : listo ? T('nodos_listo') : T('nodos_porque');
+    R.porque.className = listo ? 'atlas-porque listo' : 'atlas-porque';
+  }
+  /* Las causas de `AtlasNodos.envio` van en castellano (el contrato no se toca): aqui, su texto. */
+  var RECHAZOS = {
+    'sin gesto no sale nada': 'nodos_rech_gesto',
+    'sin la firma de la partida': 'nodos_rech_firma',
+    'sin consent 1 firmado': 'nodos_rech_consent',
+    'sin clave publica': 'nodos_rech_clave'
+  };
+  function ingles(e) {
+    var m = e && e.message, h = e && e.estado;
+    if (m && RECHAZOS[m]) { return T(RECHAZOS[m]); }
+    if (h === 404 || h === 405) { return rellena(T('nodos_rech_canal'), { h: h }); }
+    if (h) { return rellena(T('nodos_rech_http'), { h: h }); }
+    return e instanceof TypeError ? T('nodos_rech_red') : T('nodos_rech_otro');
   }
 
   /* --- N1 y el envio ---------------------------------------------------------------------------- */
@@ -125,7 +153,7 @@
         if (actual.registro !== reg) { return; }
         firmado = { firma: f.firma, autor: f.autor, publica: pub };
         R.firmaNota.textContent = rellena(T('nodos_firmado'), { q: f.autor }) + ' ' + f.firma.slice(0, 24) + '…';
-        R.envio.hidden = false; R.consiento.checked = false; R.enviar.disabled = true;
+        R.paso1.classList.add('hecho'); R.consiento.checked = false; cerrojo();
       });
     }, function (e) { R.firmaNota.textContent = rellena(T('nodos_fallo'), { c: e && e.message }); });
   }
@@ -142,20 +170,21 @@
   function envia(ev) {
     var o = { gesto: ev.isTrusted === true }, reg = actual && actual.registro;
     if (!firmado || !reg || !R.consiento.checked) { return; }
-    R.enviar.disabled = true; R.recibo.className = 'atlas-nota'; R.recibo.textContent = T('nodos_enviando');
+    cerrojo('nodos_enviando'); R.recibo.className = 'atlas-nota'; R.recibo.textContent = ''; R.crudo.hidden = true;
     var cs = N.consentimiento(reg);
     window.Identity.firmar(cs).then(function (fc) {
       o.partida = reg; o.firma = firmado.firma; o.consentimiento = cs; o.firma_consent = fc.firma; o.publica = firmado.publica;
       var pares = N.envio(o);
       return puerta().then(function () { return window.Enviar.paquete(N.ESQUEMA_ENVIO, pares); });
     }).then(function (d) {
-      R.recibo.className = 'atlas-medido';
+      R.recibo.className = 'atlas-medido'; cerrojo('nodos_enviado');
       R.recibo.textContent = rellena(T('nodos_recibo'), { e: (d && d.estado) || 'NO_DATA', f: (d && d.fichero) || 'NO_DATA' });
     }, function (e) {
       var causa = e && e.datos && e.datos.detail && e.datos.detail.causa;
       R.recibo.className = 'no-data';
-      R.recibo.textContent = rellena(T('nodos_fallo'), { c: (e && e.message) + (causa ? ' · ' + causa : '') });
-      R.enviar.disabled = !R.consiento.checked;
+      R.recibo.textContent = rellena(T('nodos_fallo'), { c: ingles(e) });
+      R.crudo.lastChild.textContent = (e && e.message) + (causa ? ' · ' + causa : ''); R.crudo.hidden = false;
+      cerrojo();
     });
   }
 
@@ -168,9 +197,12 @@
     s.appendChild(el('p', 'atlas-nota', T('nodos_nota')));
     var e = N.validaCedulas(C) || N.validaPesos(P);
     if (e) { s.appendChild(el('p', 'no-data', 'NO_DATA · ' + e)); cont.appendChild(s); return; }
-    s.appendChild(el('p', 'atlas-casa', rellena(T('nodos_pesos'), { v: P.version })));
+    /* Las cedulas, PLEGADAS y debajo del combate (hallazgo 3). */
+    R.cedulas = el('details', 'atlas-nodos-cedulas');
+    R.cedulas.appendChild(el('summary', null, T('nodos_cedulas_h')));
+    R.cedulas.appendChild(el('p', 'atlas-casa', rellena(T('nodos_pesos'), { v: P.version })));
     var fila = el('div', 'atlas-nodos-fichas');
-    fila.appendChild(ficha(0)); fila.appendChild(ficha(1)); s.appendChild(fila);
+    fila.appendChild(ficha(0)); fila.appendChild(ficha(1)); R.cedulas.appendChild(fila);
     var m = el('div', 'atlas-arena-mandos'), et = el('label', null, T('nodos_combate_n') + ' ');
     R.n = el('input'); R.n.type = 'number'; R.n.min = '0'; R.n.max = '999999'; R.n.value = '0'; R.n.inputMode = 'numeric';
     et.appendChild(R.n); m.appendChild(et);
@@ -183,25 +215,37 @@
     R.escena.appendChild(R.lienzo);
     R.res = el('p', 'atlas-arena-res'); R.res.setAttribute('role', 'status'); R.escena.appendChild(R.res);
     R.n0 = el('p', 'atlas-nota', T('nodos_n0')); R.n0.hidden = true; R.escena.appendChild(R.n0);
-    R.firma = boton(T('nodos_firmar'), 'boton-sec'); R.firma.hidden = true; R.firma.addEventListener('click', firma);
-    R.escena.appendChild(R.firma);
-    R.firmaNota = el('p', 'atlas-nota'); R.firmaNota.setAttribute('role', 'status'); R.escena.appendChild(R.firmaNota);
+    /* DOS FIRMAS, DOS PASOS (hallazgo 4): la de la partida y la del consentimiento. */
+    R.pasos = el('ol', 'atlas-pasos'); R.pasos.hidden = true;
+    R.paso1 = el('li', 'atlas-paso atlas-paso-1');
+    R.paso1.appendChild(el('h6', null, T('nodos_paso1_h'))); R.paso1.appendChild(el('p', 'atlas-nota', T('nodos_paso1_p')));
+    R.firma = boton(T('nodos_firmar'), 'boton-sec'); R.firma.addEventListener('click', firma);
+    R.paso1.appendChild(R.firma);
+    R.firmaNota = el('p', 'atlas-nota atlas-huella'); R.firmaNota.setAttribute('role', 'status'); R.paso1.appendChild(R.firmaNota);
     R.crear = boton(T('nodos_crear_id'), 'boton-sec');
     R.crear.addEventListener('click', function () { window.Identity.crear().then(firma, function () {}); });
-    R.envio = el('div', 'atlas-nodos-envio'); R.envio.hidden = true;
+    R.envio = el('li', 'atlas-paso atlas-paso-2');
+    R.envio.appendChild(el('h6', null, T('nodos_paso2_h'))); R.envio.appendChild(el('p', 'atlas-nota', T('nodos_paso2_p')));
     var lab = el('label', 'consiento-et'); R.consiento = el('input'); R.consiento.type = 'checkbox'; R.consiento.checked = false;
     lab.appendChild(R.consiento); lab.appendChild(document.createTextNode(' ' + T('nodos_consent')));
     R.envio.appendChild(lab);
-    R.enviar = boton(T('nodos_enviar')); R.enviar.disabled = true; R.envio.appendChild(R.enviar);
-    R.consiento.addEventListener('change', function () { R.enviar.disabled = !R.consiento.checked; });
+    R.enviar = boton(T('nodos_enviar')); R.envio.appendChild(R.enviar);
+    R.porque = el('p', 'atlas-porque'); R.porque.id = 'atlas-nodos-porque'; R.porque.setAttribute('aria-live', 'polite');
+    R.enviar.setAttribute('aria-describedby', R.porque.id); R.envio.appendChild(R.porque);
+    R.consiento.addEventListener('change', function () { cerrojo(); });
     R.enviar.addEventListener('click', envia);
     R.recibo = el('p', 'atlas-nota'); R.recibo.setAttribute('role', 'status'); R.envio.appendChild(R.recibo);
-    R.escena.appendChild(R.envio);
+    R.crudo = el('details', 'thegame-tecnico'); R.crudo.hidden = true;
+    R.crudo.appendChild(el('summary', null, T('nodos_crudo'))); R.crudo.appendChild(el('p', 'atlas-medido'));
+    R.envio.appendChild(R.crudo);
+    R.pasos.appendChild(R.paso1); R.pasos.appendChild(R.envio); R.escena.appendChild(R.pasos);
+    cerrojo();
     var tec = el('details', 'thegame-tecnico'); tec.appendChild(el('summary', null, T('tecnico')));
     R.semilla = el('p', 'atlas-medido'); tec.appendChild(R.semilla);
     R.log = el('pre', 'atlas-arena-log'); tec.appendChild(R.log);
     R.escena.appendChild(tec);
     s.appendChild(R.escena);
+    s.appendChild(R.cedulas);
     cont.appendChild(s);
   }
 

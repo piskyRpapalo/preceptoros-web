@@ -40,21 +40,25 @@
      Nada del juego baja con la pagina. Pulsar la puerta (o llegar con
      `#thegame` en la direccion) inyecta `thegame.js`, que monta la capa y pide
      el resto. Un solo cargador para las nueve portadas y las interiores. */
-  function juego(e) {
+  /* `#thegame/<pestana>` abre el juego EN esa pestana (2026-10-04, tras el Doogee: «entrar y jugar»
+     costaba dos toques de mas). `#thegame` a secas sigue abriendo el juego como siempre. */
+  var RUTA = /^#thegame(?:\/(\w+))?$/;
+  function juego(e, pes) {
     if (e) { e.preventDefault(); }
     var origen = e && e.currentTarget;
-    if (window.TheGame) { window.TheGame.abre(origen); return; }
+    if (origen && !pes) { pes = (RUTA.exec(origen.getAttribute('href') || '') || [])[1]; }
+    if (window.TheGame) { window.TheGame.abre(origen, pes); return; }
     if (document.getElementById('thegame-js')) { return; }
     var s = document.createElement('script');
     s.id = 'thegame-js'; s.src = '/assets/thegame.js';
-    s.onload = function () { if (window.TheGame) { window.TheGame.abre(origen); } };
+    s.onload = function () { if (window.TheGame) { window.TheGame.abre(origen, pes); } };
     document.head.appendChild(s);
   }
   document.addEventListener('click', function (e) {
     var a = e.target.closest && e.target.closest('#cab-nav a.thegame');
     if (a) { juego({ preventDefault: function () { e.preventDefault(); }, currentTarget: a }); }
   });
-  function porDireccion() { if (location.hash === '#thegame') { juego(null); } }
+  function porDireccion() { var m = RUTA.exec(location.hash); if (m) { juego(null, m[1]); } }
   window.addEventListener('hashchange', porDireccion);
   porDireccion();
 
@@ -132,7 +136,10 @@
          SOLO vive aqui, fuera de la Torre). No es una pagina: abre el juego
          en una capa sobre la pagina donde estes (`#thegame`), y por eso nunca
          se marca como actual. Es MARCA, igual en las nueve lenguas. */
-      ['cab-boton thegame', T.cabGame || 'theGame', '#thegame', false]
+      ['cab-boton thegame', T.cabGame || 'theGame', '#thegame', false],
+      /* LA SEXTA, ARENA (2026-10-04): un toque desde cualquier pagina hasta el combate. Marca,
+         como theGame: el juego habla ingles en las nueve portadas. */
+      ['cab-boton thegame arena', '\u2694\uFE0E Arena', '#thegame/arena', false]
     ];
     puertas.forEach(function (p) {
       var clase = p[0], rotulo = p[1], hoja = p[2], partida = p[3];
