@@ -1,0 +1,28 @@
+/* preceptoros.org · comentar esta pagina (page-comment.js). Una pestana fina en el canto izquierdo
+   --abajo viven el chat y las barras fijas de cada pagina, y la tapaban-- y un <dialog> nativo centrado. Contraste AA sobre el violeta. */
+.pc-boton{position:fixed;inset-inline-start:0;top:42%;bottom:auto;height:auto;z-index:60;writing-mode:vertical-rl;transform:rotate(180deg);
+  padding:.7rem .3rem;font:600 .72rem/1.2 var(--mono,ui-monospace,monospace);letter-spacing:.06em;
+  color:#fff;background:#4c2a99;border:1px solid var(--oro,#d9a441);border-inline-start:0;
+  border-radius:0 var(--radius,14px) var(--radius,14px) 0;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.4)}
+[dir="rtl"] .pc-boton{border-radius:var(--radius,14px) 0 0 var(--radius,14px)}
+.pc-boton:hover,.pc-boton:focus-visible{background:#5b33b8}
+.pc-boton:focus-visible{outline:2px solid #fff;outline-offset:2px}
+body.en-thegame .pc-boton{display:none}
+.pc-dlg{position:fixed;inset:0;margin:auto;height:fit-content;max-height:calc(100dvh - 2rem);overflow:auto;width:min(34rem,calc(100vw - 1.5rem));padding:0;color:#eee;background:#16122a;
+  border:1px solid var(--oro,#d9a441);border-radius:var(--radius,14px)}
+.pc-dlg::backdrop{background:rgba(5,4,12,.7)}
+.pc-form{display:grid;gap:.7rem;margin:0;padding:1rem}
+.pc-t{margin:0;font-size:1.05rem}
+.pc-texto{width:100%;box-sizing:border-box;padding:.6rem;font:inherit;font-size:1rem;color:#fff;background:#0d0a1c;
+  border:1px solid #6b5aa6;border-radius:calc(var(--radius,14px) - 6px);resize:vertical}
+.pc-que{margin:0;font-size:.8rem;line-height:1.45;color:#cfc8e8}
+.pc-acepto{display:flex;gap:.5rem;align-items:center;font-size:.9rem}
+.pc-acepto input{width:1.2rem;height:1.2rem}
+.pc-fila{display:flex;flex-wrap:wrap;gap:.5rem}
+.pc-enviar,.pc-sec{min-height:2.6rem;padding:.4rem 1rem;font:inherit;font-weight:700;border-radius:999px;cursor:pointer}
+.pc-enviar{color:#fff;background:#6d3fe0;border:1px solid var(--oro,#d9a441)}
+.pc-enviar[disabled]{opacity:.6;cursor:wait}
+.pc-sec{color:#eee;background:transparent;border:1px solid #6b5aa6}
+.pc-sec[hidden]{display:none}
+.pc-estado{margin:0;min-height:1.2em;font-size:.85rem;color:#f0c27a}
+@media (prefers-reduced-motion:reduce){.pc-boton{transition:none}}
