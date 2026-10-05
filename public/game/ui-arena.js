@@ -264,5 +264,7 @@
   /* Al volver a la pestana: el Army pudo crecer (nuevas adopciones). */
   function refresca() { if (R.escuadra) { pintaEscuadra(); } }
 
-  window.AtlasArenaUI = { monta: monta, juega: juega, escuadra: escuadra, ponJugadores: ponJugadores, refresca: refresca, texto: T };
+  /* El record de esta pestana, sumado: lo lee la Arena de la casa (`home_buildings.js`). */
+  function recordTotal() { var t = { g: 0, p: 0 }; Object.keys(record).forEach(function (k) { t.g += record[k].g; t.p += record[k].p; }); return t; }
+  window.AtlasArenaUI = { record: recordTotal, monta: monta, juega: juega, escuadra: escuadra, ponJugadores: ponJugadores, refresca: refresca, texto: T };
 })();

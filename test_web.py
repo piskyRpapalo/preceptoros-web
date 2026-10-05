@@ -5532,6 +5532,8 @@ class LoQueNoSeVeConElGateVerde(unittest.TestCase):
         # La Arena (2026-09-28), con el mismo criterio: el juego habla solo ingles y sus textos se
         # cargan al abrir la pestana.
         "atlas-arena": {"es", "fr", "pt", "it", "de", "ru", "el", "ar"},
+        # La casa (2026-10-05), con el mismo criterio: el juego habla solo ingles.
+        "atlas-casa": {"es", "fr", "pt", "it", "de", "ru", "el", "ar"},
     }
 
     def test_lo_que_depende_de_bronce_se_carga_despues(self):

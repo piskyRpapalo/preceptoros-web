@@ -9,9 +9,8 @@
    A DEMANDA. Lo inyecta `cabezal-rotulos.js` al pulsar la puerta; pide hojas y guiones en orden.
    El Army y la Arena se piden al abrir: su peso no va en la puerta (`gzip_juego_b`).
 
-   CUATRO PESTANAS GRANDES (Soberano, 2026-10-04: «pestanas faciles y limpias», «NO hacer paginas
-   largas», «un nino debe poder jugarlo»): Map, Battle, My node y Help. Cada una cabe en una pantalla
-   de movil; lo que no cabe se PLIEGA (`PLIEGOS`) dentro de My node. Abajo, al alcance del pulgar.
+   CUATRO PESTANAS (Soberano, 2026-10-05: «un juego COMPACTO»; «la primera pantalla de tu nodo debe ser
+   TU CASA»): Home, Map, Battle y Help. Cada escena ocupa el centro; los mandos van en los bordes.
 
    CERRAR NO BORRA LA PARTIDA; cerrar la PESTANA del navegador si. */
 (function () {
@@ -31,8 +30,8 @@
   /* LA ARENA, A DEMANDA (Soberano, 2026-09-28: «el mapa multi-jugador en una pestana… las formas
      invocadas luchando en live con los NPCs»): el mar, los lugares NPC, el combate en vivo y los duelos
      entre personas por paquetes firmados. Detras del Army, cuyas tropas y verificador usa. */
-  var ARENA = [['/game/canon.js'], ['/game/sobres.js'], ['/game/rating.js'], ['/game/arena.js'], ['/game/duelo.js'],
-    ['/game/escena.js'], ['/game/mar.js'], ['/game/nodos-pesos.js'], ['/game/nodos-cedulas.js'], ['/game/nodos.js'], ['/game/cuenta.js'],
+  var ARENA = [['/game/sobres.js'], ['/game/rating.js'], ['/game/arena.js'], ['/game/duelo.js'],
+    ['/game/mar.js'], ['/game/nodos-pesos.js'], ['/game/nodos-cedulas.js'], ['/game/nodos.js'], ['/game/cuenta.js'],
     ['/game/ui-nodos.js'], ['/game/ui-rack.js'], ['/game/ui-arena.js'], ['/game/ui-duelo.js']];
   /* LAS LENGUAS DEL JUEGO (2026-09-28, el Soberano: «hoy, solo inglés; un mismo enlace»). La
      UNICA lista de lenguas en las que el juego esta COMPLETO. Cualquier portada abre el juego en
@@ -78,22 +77,22 @@
     return cargado;
   }
 
-  /* LAS PESTANAS. NO SE REHACE NADA: cada pieza que ya pintan el piso, el piloto y el guardado se
-     MUEVE, con sus referencias vivas, a su panel. El aviso «solo ingles» va PRIMERO en la primera
-     pestana, la que se ve al abrir. El Map y la Battle los pinta la Arena (`ui-arena.js`). */
+  /* LAS PESTANAS (2026-10-05): Home, Map, Battle y Help. HOME ES TU CASA (`home_buildings.js`): las
+     piezas del piso se MUEVEN a su panel y la casa las reparte en sus edificios. El aviso «solo
+     ingles» va PRIMERO en la pestana de entrada. Map y Battle los pinta la Arena (`ui-arena.js`). */
   var PESTANAS = [
-    ['mapa', '\u25C8', '#atlas-juego > .no-data:first-child'],
+    ['casa', '\u2302', '#atlas-juego > .no-data:first-child|.atlas-alerta|.atlas-cab|.atlas-recursos|#atlas-piso > .atlas-vivo|.atlas-dormias|.atlas-lema|.atlas-mapa|.atlas-izq|.atlas-nucleo|.atlas-hud > .panel'],
+    ['mapa', '\u25C8', ''],
     ['arena', '\u2694\uFE0E', ''],
-    ['nucleo', '\u25C9', '.atlas-alerta|.atlas-cab|.atlas-recursos|#atlas-piso > .atlas-vivo'],
     ['partida', '\u2139\uFE0E', '.atlas-guardado|.thegame-exporta|.thegame-opina|.atlas-hud-farmeo|#atlas-juego > .no-data|.atlas-pie']];
-  /* My node pliega lo demas: la expedicion del Bosque, los oficios y el Army. Uno abierto cada vez. */
-  var PLIEGOS = [['pl_bosque', '.atlas-dormias|.atlas-lema|.atlas-mapa|.atlas-izq'], ['pes_oficios', '.atlas-nucleo|.atlas-hud > .panel'], ['pes_army', '']];
+  /* LA CASA, a demanda y detras del Army (usa la gacha para tu emblema). */
+  var CASA = [['/game/canon.js'], ['/game/escena.js'], ['/game/wave_render.js'], ['/game/home_base_scene.js'], ['/game/home_buildings.js'], ['/game/summon_reveal.js']];
   /* LO TECNICO, SIEMPRE PLEGADO (Soberano: «son textos que asustan a usuarios no tecnicos»): el
      JSON de la carta, las leyes medidas, la semilla que no es VRF, los valores provisionales y el
      pie. No se borran, porque son la prueba: se ven al abrir «Technical details». */
   var TECNICO = '.atlas-carta-json, .atlas-nucleo > .atlas-nota, .atlas-nucleo > .atlas-medido, ' +
     '.atlas-incubadora > .atlas-medido, .atlas-incubadora > .atlas-casa, .atlas-pie';
-  var PANEL = {}, BOTON = {}, actual = 'mapa', army = null, arena = null, ARMYZ = null;
+  var PANEL = {}, BOTON = {}, actual = 'casa', army = null, arena = null, casa = null, ARMYZ = null;
 
   function T(k) { return (window.AtlasJuego && window.AtlasJuego.texto(k)) || k; }
   function cada(lista, f) { Array.prototype.forEach.call(lista, f); }
@@ -120,6 +119,7 @@
     if (foco) { BOTON[id].focus(); }
     if (id === 'arena') { cargaArena(); }
     if (id === 'mapa') { cargaArena(); }
+    if (id === 'casa') { cargaCasa(); }
   }
 
   function ordena() {
@@ -140,14 +140,7 @@
       piso.appendChild(d); fila.appendChild(b);
       PANEL[id] = d; BOTON[id] = b;
     });
-    PLIEGOS.forEach(function (q) {
-      var d = el('details', 'thegame-pliego'), z = el('div');
-      d.name = 'thegame-pliego';
-      d.appendChild(el('summary', null, T(q[0]))); d.appendChild(z);
-      q[1].split('|').forEach(function (s) { if (s) { cada(capa.querySelectorAll(s), function (n) { z.appendChild(n); }); } });
-      if (!q[1]) { ARMYZ = z; }
-      tecnico(z); PANEL.nucleo.appendChild(d);
-    });
+    ARMYZ = el('div', 'casa-army'); PANEL.casa.appendChild(ARMYZ);
     var ay = el('ol', 'thegame-ayuda');
     [1, 2, 3, 4].forEach(function (i) { ay.appendChild(el('li', null, T('ayuda_' + i))); });
     PANEL.partida.insertBefore(ay, PANEL.partida.firstChild);
@@ -165,11 +158,11 @@
     /* Con la grieta abierta, la pestana Core lleva un punto: el aviso llega desde cualquier vista. */
     var a = piso.querySelector('.atlas-alerta');
     if (a) {
-      var marca = function () { BOTON.nucleo.classList.toggle('con-aviso', !a.classList.contains('sellada')); };
+      var marca = function () { BOTON.casa.classList.toggle('con-aviso', !a.classList.contains('sellada')); };
       new MutationObserver(marca).observe(a, { attributes: true, attributeFilter: ['class'] });
       marca();
     }
-    muestra('mapa');
+    muestra('casa');
   }
 
   /* El Army se pide una vez; si falla, NO_DATA en su panel y el siguiente intento vuelve a pedir. */
@@ -188,12 +181,20 @@
     return army;
   }
 
+  function cargaCasa() {
+    if (casa) { return casa; }
+    casa = cargaArmy().then(function () { return pide(CASA); }).then(function () {
+      if (window.AtlasCasa) { return window.AtlasCasa.monta(PANEL.casa); }
+    }).then(function () { setTimeout(cargaArena, 0); }).catch(function (e) { casa = null; PANEL.casa.appendChild(el('p', 'no-data', 'NO_DATA · ' + (e && e.message))); });
+    return casa;
+  }
+
   /* La Arena se pide una vez, detras del Army; al volver a ella se refresca la escuadra. */
   function cargaArena() {
     if (arena) { if (window.AtlasArenaUI) { window.AtlasArenaUI.refresca(); } return arena; }
     var p = PANEL.arena;
     if (p && !p.firstChild) { p.appendChild(el('p', 'atlas-nota', T('arena_carga'))); }
-    arena = cargaArmy().then(function () { return pide(ARENA); }).then(function () {
+    arena = cargaCasa().then(function () { return pide(ARENA); }).then(function () {
       if (window.AtlasArenaUI) { window.AtlasArenaUI.monta(capa, p, PANEL.mapa); }
     }).catch(function (e) {
       arena = null;

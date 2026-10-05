@@ -173,6 +173,8 @@
     var m = el('p', 'atlas-dlg-mandos'); m.appendChild(no); m.appendChild(si);
     R.eclosion.appendChild(m);
     S.suena('eclosion', calor());
+    /* La revelacion a pantalla central (summon_reveal.js), si la casa la cargo. */
+    if (window.AtlasRevela) { window.AtlasRevela.muestra(t); }
     if (quieto()) { return; }
     var k = 0;
     (function morfa() {
