@@ -15,7 +15,7 @@ Todo lo que se construye aquí es **marca personal de PreceptorOS** (el Soberano
 ## Mapa
 | Dónde | Qué |
 |---|---|
-| `public/assets/thegame.js` | La puerta y las seis pestañas (Core, Map, Crafts, Army, **Arena**, Game). Las listas `GUIONES` (puerta), `ARMY` y `ARENA` (a demanda) |
+| `public/assets/thegame.js` | La puerta y las cuatro pestañas grandes (Map, Battle, My node, Help; Crafts, Army y el Bosque son pliegos de My node). Las listas `GUIONES` (puerta), `ARMY` y `ARENA` (a demanda; la Arena pinta Map y Battle) |
 | `public/assets/atlas-*.js` | El piso, el motor puro (`atlas-motor.js`, **no se toca** sin firma), el piloto, la partida, el mapa y las ondas |
 | `public/game/` | v1.5 (valores, gacha, db, core, ui, juez) y el multijugador: `canon`, `sobres`, `rating`, `arena`, `duelo`, `escena`, `mar`, `ui-arena`, `ui-duelo`, `mercado`, `narragrafo`, `cria` y `genoma` |
 | `data/` | Contratos JSON Schema (no se sirven): un caso bueno y 6 violaciones cada uno, en `atlas/test_atlas.py` |
@@ -30,11 +30,15 @@ Todo lo que se construye aquí es **marca personal de PreceptorOS** (el Soberano
    python3 test_web.py && python3 atlas/test_atlas.py && node arnes_sw.mjs
    for f in motor piloto gacha opinion mp cria duelo; do node atlas/${f}_casos.mjs > /dev/null || echo "falla $f"; done
    ```
-4. **Sello** (si cambia algo bajo `public/`):
+4. **Sello** (si cambia algo bajo `public/`). El orden es un PUNTO FIJO, medido el 2026-10-04: la huella
+   incluye `counters.json` y `atlas-mundo.json`, y `coherencia-publica.py` corre el gate, que publica
+   `pruebas_web=NO_DATA` si la huella esta roja en ese instante. Por eso se sella ANTES de medir:
    ```
-   python3 bin/sellar.py --sellar
-   python3 contadores.py
-   python3 atlas/mundo.py
+   python3 bin/sellar.py --sellar                    # sube VERSION
+   python3 contadores.py                             # peso_sitio con el sw.js nuevo
+   python3 bin/sellar.py --sellar --version <la misma>   # huella verde antes de medir
+   python3 ~/p0x/bin/coherencia-publica.py --si      # en un worktree: importalo y apunta WEB/PUBLICO/CONTADORES aqui
+   python3 atlas/mundo.py                            # lee pruebas_web y version_sw
    node atlas/arnes_piloto.mjs
    python3 contadores.py
    python3 bin/sellar.py --sellar --version <la misma>
