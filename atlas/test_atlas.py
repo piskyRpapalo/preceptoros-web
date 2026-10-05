@@ -627,9 +627,12 @@ process.stdout.write(JSON.stringify(ok));
 # Ver atlas/POST_VERIFICACION_MGNO_LAB.md y atlas/POST_VERIFICACION_SISIL_CRIA.md.
 PUROS = ("canon.js", "sobres.js", "rating.js", "arena.js", "duelo.js", "mercado.js", "narragrafo.js", "cria.js", "genoma.js")
 # La Arena (2026-09-28, «el mapa multi-jugador en una pestana»): se carga al abrir su pestana, detras del Army.
-ARENA = ("canon.js", "sobres.js", "rating.js", "arena.js", "duelo.js", "escena.js", "mar.js", "nodos-pesos.js",
-         "nodos-cedulas.js", "nodos.js", "cuenta.js", "ui-nodos.js", "ui-rack.js", "ui-arena.js", "ui-duelo.js")
-FUERA_DE_LA_PUERTA = tuple(sorted(set(PUROS + ARENA)))
+ARENA = ("sobres.js", "rating.js", "arena.js", "duelo.js", "fog_of_war.js", "world_camera.js", "mar.js", "nodos-pesos.js",
+         "nodos-cedulas.js", "nodos.js", "cuenta.js", "ui-nodos.js", "ui-rack.js",
+         "battle_choreography.js", "battle_replay.js", "ui-arena.js", "ui-duelo.js")
+# La CASA (2026-10-05): la primera pantalla, detras del Army. Lleva canon y escena, que la Arena reutiliza.
+CASA = ("canon.js", "escena.js", "wave_render.js", "home_base_scene.js", "home_buildings.js", "summon_reveal.js")
+FUERA_DE_LA_PUERTA = tuple(sorted(set(PUROS + ARENA + CASA)))
 
 
 class TheGameV15(unittest.TestCase):
@@ -1013,8 +1016,8 @@ class Pestanas(unittest.TestCase):
 
     CAPA = ASSETS / "thegame.js"
     HOJA = ASSETS / "thegame.css"
-    IDS = ("mapa", "arena", "nucleo", "partida")
-    PLIEGOS = ("pl_bosque", "pes_oficios", "pes_army")
+    IDS = ("casa", "mapa", "arena", "partida")
+    PLIEGOS = ()
     ARMY = ("valores.js", "gacha.js", "db.js", "core.js", "ui.js")
 
     def _capa(self):
@@ -1061,12 +1064,12 @@ class Pestanas(unittest.TestCase):
                 self.assertNotIn(m, guiones, f"{m} vuelve a la puerta")
                 self.assertIn(f"['/game/{m}']", army)
         self.assertIn("['/game/juez.js']", guiones, "el juez escucha desde el primer ciclo")
-        # Sin pestana Army: el Army se pide con la Arena, que pinta el Map (la pestana de entrada), y se
-        # coloca en su pliego de My node. Su peso sigue fuera de la puerta.
-        self.assertIn("if (id === 'mapa') { cargaArena(); }", c)
-        self.assertIn("['pes_army', '']", c[c.index("var PLIEGOS"):c.index("var TECNICO")])
-        self.assertIn("if (!q[1]) { ARMYZ = z; }", c)
-        self.assertIn("d.name = 'thegame-pliego';", c, "los pliegos de My node se abren de uno en uno")
+        # Sin pestana Army (2026-10-05): el Army se pide con la CASA, la pestana de entrada, y vive en su
+        # edificio (`.casa-army`, que reparte home_buildings.js). Su peso sigue fuera de la puerta.
+        self.assertIn("if (id === 'casa') { cargaCasa(); }", c)
+        self.assertIn("casa = cargaArmy().then(function () { return pide(CASA); })", c)
+        self.assertIn("ARMYZ = el('div', 'casa-army'); PANEL.casa.appendChild(ARMYZ);", c)
+        self.assertIn("army: '.casa-army'", (PUBLICO / "game" / "home_buildings.js").read_text(encoding="utf-8"))
         self.assertIn("army: cargaArmy", c)
         sys.path.insert(0, str(RAIZ))
         import mundo
@@ -1345,7 +1348,11 @@ class Arena(unittest.TestCase):
             with self.subTest(modulo=m):
                 self.assertIn(f"['/game/{m}']", lista)
         self.assertIn("if (id === 'arena') { cargaArena(); }", capa)
-        self.assertIn("cargaArmy().then(function () { return pide(ARENA); })", capa, "la Arena sin su Army")
+        self.assertIn("arena = cargaCasa().then(function () { return pide(ARENA); })", capa, "la Arena sin su Army ni su casa")
+        casa = capa[capa.index("var CASA"):capa.index("var TECNICO")]
+        for m in CASA:
+            with self.subTest(casa=m):
+                self.assertIn(f"['/game/{m}']", casa)
 
     def test_los_textos_de_la_arena_existen_y_van_aparte(self):
         ar = json.loads((PUBLICO / "atlas-arena-en.json").read_text(encoding="utf-8"))["ui"]
@@ -1374,6 +1381,155 @@ class Arena(unittest.TestCase):
         self.assertIn("window.AtlasArmy.verificaWeb", self._js("ui-duelo.js"))
 
 
+class CasaGranja(unittest.TestCase):
+    """La primera pantalla es TU CASA (Soberano, 2026-10-05): una ciudad sumergida en corte con cinco
+    edificios que son botones del DOM, cada uno con su cifra MEDIDA o NO_DATA en niebla; personalizar
+    (paleta, estilo, emblema, postura) se guarda en el aparato, sin datos personales, y no da ventaja;
+    la invocacion se revela armonico a armonico. Las ondas se trazan fieles a sus armonicos."""
+
+    def _js(self, n):
+        return sin_comentarios((PUBLICO / "game" / n).read_text(encoding="utf-8"))
+
+    def test_casos_de_la_casa(self):
+        r = subprocess.run(["node", str(RAIZ / "casa_casos.mjs")], capture_output=True, text=True, timeout=120)
+        casos = json.loads(r.stdout)
+        self.assertGreaterEqual(len(casos), 6, r.stderr)
+        for c in casos:
+            with self.subTest(caso=c["caso"]):
+                self.assertTrue(c["ok"], c["detalle"])
+
+    def test_la_casa_no_sale_a_la_red_ni_usa_el_azar(self):
+        for f in CASA:
+            c = self._js(f)
+            for malo in ("Math.random", "localStorage", "innerHTML", "sendBeacon", "XMLHttpRequest", "http://", "https://", "Date."):
+                with self.subTest(fichero=f, prohibido=malo):
+                    self.assertNotIn(malo, c)
+            fetches = re.findall(r"fetch\(([^)]*)\)", c)
+            self.assertEqual(fetches, ["'/atlas-casa-' + l + '.json'"] if f == "home_buildings.js" else [], f)
+
+    def test_los_edificios_son_botones_con_su_medida_o_no_data(self):
+        b = self._js("home_buildings.js")
+        self.assertIn("var b = boton('', 'casa-edificio')", b, "un edificio que no es un boton")
+        self.assertIn("b.setAttribute('aria-label', T('ed_' + e[0])", b)
+        self.assertIn("m ? m.txt : 'NO_DATA'", b, "lo no medido se inventa un numero")
+        self.assertIn("J.instantanea()", b, "la cifra no sale del estado del juego")
+        e = self._js("home_base_scene.js")
+        self.assertIn("if (!e || !e.medido) { enNiebla(", e, "lo no medido no va en niebla")
+        self.assertIn("prefers-reduced-motion: reduce", e)
+        self.assertIn("med.nivel(2)", e, "la calidad no baja sola cuando caen los fps")
+        tx = json.loads((PUBLICO / "atlas-casa-en.json").read_text(encoding="utf-8"))["ui"]
+        for k in re.findall(r"T\('(\w+)'\)", b):
+            with self.subTest(clave=k):
+                self.assertTrue(tx.get(k), f"{k} sin texto")
+        for i in ("faro", "army", "taller", "bosque", "arena"):
+            self.assertTrue(tx.get("ed_" + i) and tx.get("nd_" + i), i)
+
+    def test_la_onda_se_traza_fiel_y_la_invocacion_se_revela(self):
+        o = self._js("wave_render.js")
+        self.assertIn("G.punto(arm, i / n * TAU)", o, "la figura no sale de los armonicos de la gacha")
+        self.assertIn("globalCompositeOperation = 'lighter'", o)
+        self.assertIn("var peso = Math.max(0, Math.min(1, c * n - j))", o, "no nace armonico a armonico")
+        self.assertIn("if (window.AtlasRevela) { window.AtlasRevela.muestra(t); }", self._js("ui.js"))
+        self.assertIn("prefers-reduced-motion: reduce", self._js("summon_reveal.js"))
+
+
+class MapaMovible(unittest.TestCase):
+    """El mapa global se arrastra hasta chocar con la niebla (Soberano, 2026-10-05): empieza en tu casa,
+    se mueve con el dedo, el raton, las flechas y botones grandes; la niebla sale de lo MEDIDO y es el
+    limite fisico de la camara. Terreno por teselas, sin azar ni red."""
+
+    def _js(self, n):
+        return sin_comentarios((PUBLICO / "game" / n).read_text(encoding="utf-8"))
+
+    def test_casos_de_la_camara_y_la_niebla(self):
+        r = subprocess.run(["node", str(RAIZ / "camara_casos.mjs")], capture_output=True, text=True, timeout=120)
+        casos = json.loads(r.stdout)
+        self.assertGreaterEqual(len(casos), 7, r.stderr)
+        for c in casos:
+            with self.subTest(caso=c["caso"]):
+                self.assertTrue(c["ok"], c["detalle"])
+
+    def test_se_mueve_con_dedo_teclado_y_botones_y_dice_el_choque(self):
+        m = self._js("mar.js")
+        for pieza in ("addEventListener('pointerdown'", "setPointerCapture", "addEventListener('keydown'", "ArrowLeft",
+                      "x.setAttribute('aria-label', f.texto(b[0]))", "aviso.setAttribute('role', 'status')",
+                      "f.texto('mapa_niebla')", "f.texto(casa ? 'mapa_en_casa' : 'mapa_sin_casa')", "C.arrastra(cam,", "quieto()"):
+            with self.subTest(pieza=pieza):
+                self.assertIn(pieza, m)
+        tx = json.loads((PUBLICO / "atlas-arena-en.json").read_text(encoding="utf-8"))["ui"]
+        for k in re.findall(r"\['(mapa_\w+)', '", m) + ["mapa_niebla", "mapa_en_casa", "mapa_sin_casa", "mapa_medido"]:
+            with self.subTest(clave=k):
+                self.assertTrue(tx.get(k), k)
+        self.assertIn("Fog", tx["mapa_niebla"])
+
+    def test_sin_azar_ni_red_y_por_teselas(self):
+        for f in ("fog_of_war.js", "world_camera.js", "mar.js"):
+            c = self._js(f)
+            for malo in ("Math.random", "localStorage", "fetch(", "Date."):
+                with self.subTest(fichero=f, prohibido=malo):
+                    self.assertNotIn(malo, c)
+        self.assertIn("function tesela(i, j)", self._js("mar.js"))
+        self.assertIn("if (nt > 90)", self._js("mar.js"), "la cache de teselas no esta acotada")
+
+
+class BatallaRTS(unittest.TestCase):
+    """La batalla se repite como una partida de estrategia (Soberano, 2026-10-05: «unidades en movimiento
+    por el mapa… no solo el combate por turnos»). Es una COREOGRAFIA del registro de `arena.combate`:
+    sembrada con la semilla de la partida, determinista, y nunca ensena ganar a quien pierde. Las
+    formaciones cambian la coreografia, nunca el registro."""
+
+    def _js(self, n):
+        return sin_comentarios((PUBLICO / "game" / n).read_text(encoding="utf-8"))
+
+    def test_casos_de_la_repeticion(self):
+        r = subprocess.run(["node", str(RAIZ / "replay_casos.mjs")], capture_output=True, text=True, timeout=120)
+        casos = json.loads(r.stdout)
+        self.assertGreaterEqual(len(casos), 12, r.stderr)
+        for c in casos:
+            with self.subTest(caso=c["caso"]):
+                self.assertTrue(c["ok"], c["detalle"])
+
+    def test_sin_azar_ni_reloj_ni_red(self):
+        for f in ("battle_choreography.js", "battle_replay.js"):
+            c = self._js(f)
+            for malo in ("Math.random", "Date.", "performance.now", "fetch(", "localStorage", "innerHTML"):
+                with self.subTest(fichero=f, prohibido=malo):
+                    self.assertNotIn(malo, c)
+        self.assertNotIn("arena.combate", self._js("battle_replay.js"), "la repeticion vuelve a decidir el combate")
+
+    def test_mandos_de_nino_y_accesible(self):
+        r = self._js("battle_replay.js")
+        for pieza in ("R.tiempo.type = 'range'", "R.tiempo.setAttribute('aria-label', T('rp_tiempo'))",
+                      "R.narra.setAttribute('aria-live', 'polite')", "vel = vel >= 4 ? 1 : vel * 2",
+                      "lienzo.setAttribute('aria-label', T('rp_aria'))", "var claves = [0, 3000, Math.round(k.fin / 2), k.total];",
+                      "desafina: Math.min(1, (1 - p[2] / k.max[j])", "color: velColor(k.vel[j])"):
+            with self.subTest(pieza=pieza):
+                self.assertIn(pieza, r)
+        self.assertIn("actual = (window.AtlasReplay || E).escena(R.lienzo, def, asa, c, { semilla: info.semilla, texto: T,",
+                      self._js("ui-arena.js"))
+        tx = json.loads((PUBLICO / "atlas-arena-en.json").read_text(encoding="utf-8"))["ui"]
+        for k in set(re.findall(r"T\('(\w+)'\)", r)) | {"rp_marcha", "rp_choque", "rp_f_agresiva", "rp_f_defensiva", "rp_f_flanqueo"}:
+            with self.subTest(clave=k):
+                self.assertTrue(tx.get(k), k)
+
+
+class CabezalCajas(unittest.TestCase):
+    """El cabezal medido en un navegador de verdad (Soberano, 2026-10-05: «thegame es solo 1 boton»; el
+    busto se montaba encima de los botones y del panel; la fila se cortaba). `cabezal_cajas.mjs` mide
+    las cajas por CDP con y sin sesion de tester, a 412, 1024 y 1280 px. Sin Chrome: NO_DATA, que se
+    dice como salto y no como verde."""
+
+    def test_el_busto_no_pisa_nada_y_hay_una_sola_puerta_de_juego(self):
+        r = subprocess.run(["node", str(RAIZ / "cabezal_cajas.mjs")], capture_output=True, text=True, timeout=240)
+        if r.returncode == 3:
+            self.skipTest("NO_DATA · sin Chrome para medir las cajas del cabezal")
+        casos = json.loads(r.stdout)
+        self.assertGreaterEqual(len(casos), 12, r.stderr)
+        for c in casos:
+            with self.subTest(caso=c["caso"]):
+                self.assertTrue(c["ok"], c["detalle"])
+
+
 class EsteticaMedida(unittest.TestCase):
     """La estetica PINTA LO MEDIDO (directiva del Soberano, 2026-10-04): el dano se ve como desafinacion
     de la ecuacion, no como barra de vida; la niebla es tramado Atkinson de un bit (sin alfas); el
@@ -1393,7 +1549,7 @@ class EsteticaMedida(unittest.TestCase):
     def test_el_mapa_pinta_el_origen_de_cada_cifra(self):
         m = self._js("mar.js")
         self.assertIn("var NIEBLA = [null, ", m, "la niebla no es de un bit")
-        self.assertIn("estado !== 'EMULADO'", m, "la niebla no sale de lo EMULADO")
+        self.assertIn("N.niebla(i * TESELA + x * RES, j * TESELA + y * RES, circ)", m, "la niebla no sale de lo despejado (fog_of_war.js)")
         self.assertIn("n.gen.estado === 'NO_DATA'", m, "NO_DATA no se pinta como ausencia")
         self.assertIn("prefers-reduced-motion: reduce", m)
         tx = json.loads((PUBLICO / "atlas-arena-en.json").read_text(encoding="utf-8"))["ui"]
@@ -1536,7 +1692,7 @@ class RedisenoDoogee(unittest.TestCase):
         self.assertLess(ui.index("s.appendChild(m);"), ui.index("s.appendChild(R.cedulas);"), "las cedulas antes del combate")
         self.assertLess(ui.index("s.appendChild(R.escena);"), ui.index("s.appendChild(R.cedulas);"))
 
-    def test_hay_un_acceso_directo_a_la_arena_y_thegame_sigue_valiendo(self):
+    def test_un_solo_boton_de_juego_y_la_ruta_a_la_arena_sigue_valiendo(self):
         """Hallazgo 2: «entrar y jugar» costaba dos toques de mas. `#thegame/arena` abre la Arena;
         `#thegame` sigue abriendo el juego como siempre."""
         cab = self._js("cabezal-rotulos.js", "assets")
@@ -1546,7 +1702,12 @@ class RedisenoDoogee(unittest.TestCase):
         self.assertTrue(ruta.match("#thegame"), "#thegame ya no abre el juego")
         self.assertEqual(ruta.match("#thegame/arena").group(1), "arena")
         self.assertFalse(ruta.match("#thegamex"))
-        self.assertIn("'#thegame/arena'", cab, "sin puerta visible a la Arena")
+        # 2026-10-05, el Soberano: «thegame es solo 1 boton». La Arena vive DENTRO (pestana Battle);
+        # `#thegame/arena` sigue valiendo como ruta, pero el cabezal lleva UNA sola puerta de juego.
+        puertas = re.findall(r"\['cab-boton thegame[^']*', [^\]]*\]", cab)
+        self.assertEqual(len(puertas), 1, f"vuelven a ser dos botones de juego: {puertas}")
+        self.assertIn("'#thegame'", puertas[0])
+        self.assertNotIn("'#thegame/arena'", cab, "la Arena vuelve al cabezal como boton propio")
         tg = self._js("thegame.js", "assets")
         self.assertIn("function abre(desde, pes)", tg)
         self.assertIn("if (pes && PANEL[pes]) { muestra(pes); }", tg)

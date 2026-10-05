@@ -4765,6 +4765,7 @@ class Traducciones(unittest.TestCase):
         "consiento.js": "las ocho del consentimiento de analisis",
         "sello-rack.js": "TX, las nueve del sello «disponible» de las puertas al rack",
         "medidas-turno.js": "TX, the nine languages of the per-answer measurements tag",
+        "page-comment.js": "TX, las nueve del «comentar esta pagina» (que se envia y que no)",
     }
 
     def test_NINGUN_guion_lleva_CASTELLANO_suelto(self):
@@ -5531,6 +5532,8 @@ class LoQueNoSeVeConElGateVerde(unittest.TestCase):
         # La Arena (2026-09-28), con el mismo criterio: el juego habla solo ingles y sus textos se
         # cargan al abrir la pestana.
         "atlas-arena": {"es", "fr", "pt", "it", "de", "ru", "el", "ar"},
+        # La casa (2026-10-05), con el mismo criterio: el juego habla solo ingles.
+        "atlas-casa": {"es", "fr", "pt", "it", "de", "ru", "el", "ar"},
     }
 
     def test_lo_que_depende_de_bronce_se_carga_despues(self):
@@ -5835,6 +5838,47 @@ class LaColaDelRack(unittest.TestCase):
         que miente sobre el estado es peor que ninguno: la siguiente sesion lo
         cree y persigue una averia que no existe."""
         self.assertNotIn("TODO: tunel", self._js("rack.js"))
+
+
+class ComentarEnTodasLasPaginas(unittest.TestCase):
+    """Comentar cualquier pagina, en las nueve lenguas, por el canal que YA llega al rack (Soberano,
+    2026-10-05): `Enviar.paquete` -> POST /api/v1/paquetes con `preceptoros/correcciones/1`, firmado
+    con la identidad del navegador. Un solo modulo compartido, ningun endpoint nuevo; dice que se envia
+    y que no; consentimiento por acto; el texto viaja tal cual."""
+
+    JS = PUBLICO / "assets" / "page-comment.js"
+
+    def test_cada_pagina_de_las_nueve_lenguas_lleva_el_comentario(self):
+        paginas = sorted(p for l in IDIOMAS for p in (PUBLICO / l).glob("*.html"))
+        self.assertGreaterEqual(len(paginas), 9 * 7)
+        for p in paginas:
+            with self.subTest(pagina=str(p.relative_to(PUBLICO))):
+                self.assertIn('<script src="/assets/page-comment.js" defer></script>', p.read_text(encoding="utf-8"))
+
+    def test_el_modulo_usa_la_puerta_que_ya_existe_y_no_abre_otra(self):
+        self.assertTrue(self.JS.is_file(), "falta public/assets/page-comment.js")
+        js = sin_comentarios(self.JS.read_text(encoding="utf-8"))
+        self.assertLessEqual(self.JS.stat().st_size, 16 * 1024)
+        for malo in ("fetch(", "XMLHttpRequest", "sendBeacon", "WebSocket", "EventSource", "innerHTML", "localStorage"):
+            with self.subTest(prohibido=malo):
+                self.assertNotIn(malo, js, "el comentario sale por enviar.js y por nada mas")
+        self.assertEqual(js.count(".paquete('preceptoros/correcciones/1'"), 1)
+        self.assertIn("s.src = '/assets/enviar.js'", js)
+        self.assertIn("correccion: texto", js, "el texto no viaja tal cual")
+        self.assertNotIn(".trim()", js, "el texto se recorta antes de viajar")
+        self.assertIn("tipo: 'comentario'", js, "un comentario entraria en el dataset de correcciones")
+        self.assertIn("R.casilla.checked = false; R.estado.textContent = ''", js, "el consentimiento no es por acto")
+        env = sin_comentarios((PUBLICO / "assets" / "enviar.js").read_text(encoding="utf-8"))
+        self.assertEqual(re.findall(r"fetch\((API \+ '/\w+')", env), ["API + '/reto'", "API + '/paquetes'"])
+
+    def test_dice_que_se_envia_en_las_nueve_lenguas(self):
+        js = self.JS.read_text(encoding="utf-8")
+        for l in IDIOMAS:
+            with self.subTest(lengua=l):
+                m = re.search(r"\n    " + l + r": \[(.*?)\]", js, re.S)
+                self.assertTrue(m, f"sin textos en {l}")
+                self.assertEqual(len(re.findall(r"'(?:[^'\\]|\\.)*'", m.group(1))), 14, l)
+                self.assertIn("{p}", m.group(1), f"{l}: no dice que pagina se envia")
 
 
 class ElJuegoEnInglesEnLasNueve(unittest.TestCase):

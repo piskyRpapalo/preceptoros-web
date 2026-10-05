@@ -251,4 +251,7 @@ body.con-teclado #pregunta::placeholder{font-size:.64rem;line-height:1.3}
    que queda en esa franja es el texto ya desvanecido por la mascara -- el que
    por diseno no se lee. Se reserva donde estorba y solo en el ancho donde
    estorba: en el telefono la cara termina muy por encima de la placa. */
-@media (min-width:1024px){ #chat{padding-top:5.5rem} }
+/* 2026-10-05: la cara ya vive DENTRO del cabezal (esquina-par.css), asi que esta banda sobra. Y sin
+   conversacion no se reserva hueco: era el «rectangulo oscuro sin contenido» de la captura. */
+#chat:has(#dialogo:empty){min-height:0}
+#chat #dialogo:empty{min-height:0}

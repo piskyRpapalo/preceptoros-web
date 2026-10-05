@@ -257,9 +257,10 @@
   "pes_arena": "Battle",
   "arena_carga": "Opening the Arena…",
   "pl_bosque": "Forest expedition",
-  "ayuda_1": "Map: tap a place. The bright wave in the middle is Hexelion, a real machine we measured.",
-  "ayuda_2": "Battle: press Fight. Your waves and theirs clash; every hit bends a wave out of tune.",
-  "ayuda_3": "My node: repair the Core, explore the Forest, summon new waves in Army.",
-  "ayuda_4": "Clear line = measured. Fog = emulated. Dashed empty ring = NO_DATA, not measured yet."
+  "ayuda_1": "Home: your undersea city. Tap a building to go in. The Lighthouse opens the Map; the Arena opens Battle.",
+  "ayuda_2": "Map: tap a place. The bright wave in the middle is Hexelion, a real machine we measured.",
+  "ayuda_3": "Battle: press Fight. Your waves and theirs clash; every hit bends a wave out of tune.",
+  "ayuda_4": "Clear line = measured. Fog = emulated. Dashed empty ring = NO_DATA, not measured yet.",
+  "pes_casa": "Home"
  }
 }

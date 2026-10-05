@@ -136,10 +136,9 @@
          SOLO vive aqui, fuera de la Torre). No es una pagina: abre el juego
          en una capa sobre la pagina donde estes (`#thegame`), y por eso nunca
          se marca como actual. Es MARCA, igual en las nueve lenguas. */
-      ['cab-boton thegame', T.cabGame || 'theGame', '#thegame', false],
-      /* LA SEXTA, ARENA (2026-10-04): un toque desde cualquier pagina hasta el combate. Marca,
-         como theGame: el juego habla ingles en las nueve portadas. */
-      ['cab-boton thegame arena', '\u2694\uFE0E Arena', '#thegame/arena', false]
+      /* UNA SOLA PUERTA DE JUEGO (Soberano, 2026-10-05: «thegame es solo 1 boton»). La Arena vive
+         dentro, en la pestana Battle; `#thegame/arena` sigue valiendo como ruta. */
+      ['cab-boton thegame', T.cabGame || 'theGame', '#thegame', false]
     ];
     puertas.forEach(function (p) {
       var clase = p[0], rotulo = p[1], hoja = p[2], partida = p[3];

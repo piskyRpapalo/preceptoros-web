@@ -154,7 +154,9 @@
     R.titulo.textContent = info.titulo || ''; R.titulo.hidden = !info.titulo || info.pve;
     var vel = 1;
     R.vel.textContent = rellena(T('arena_x'), { v: 1 });
-    actual = E.escena(R.lienzo, def, asa, c, {
+    /* La repeticion tipo RTS (battle_replay.js) si esta; si no, la escena de siempre. Misma firma. */
+    R.vel.hidden = !!window.AtlasReplay;
+    actual = (window.AtlasReplay || E).escena(R.lienzo, def, asa, c, { semilla: info.semilla, texto: T,
       quieto: quieto(), colores: colores(), yo: info.yo, fallo: T('arena_fallo'), ronda: T('arena_ronda'), sonido: sonido,
       letrero: function (x) {
         var mia = info.yo ? x.gana === 'asalto' : x.gana === 'defensa', c = colores();
@@ -249,9 +251,14 @@
     });
     if (mar) { mar.para(); }
     mar = window.AtlasMar.crea(R.mapa, { lugares: todosLugares, sel: function () { return sel; }, emblema: function () { return emblema; },
-                                         pub: function () { return pub; }, nombre: nombreLugar, texto: T, colores: colores, elige: elige });
+                                         pub: function () { return pub; }, nombre: nombreLugar, texto: T, colores: colores, elige: elige,
+                                         luchados: function () { return record; } });
   }
 
+  document.addEventListener('preceptor:identity', function () {
+    var I = window.Identity;
+    if (I && I.quien && I.quien()) { I.publica().then(function (k) { pub = k; emblema = G.tirada(K.sha('atlas.emblema/1:' + k), 'tc3'); }); }
+  });
   /* Las personas del mar: las pone `ui-duelo.js` al importar defensas verificadas. */
   function ponJugadores(lista) {
     jugadores = lista.map(function (d) {
@@ -264,5 +271,7 @@
   /* Al volver a la pestana: el Army pudo crecer (nuevas adopciones). */
   function refresca() { if (R.escuadra) { pintaEscuadra(); } }
 
-  window.AtlasArenaUI = { monta: monta, juega: juega, escuadra: escuadra, ponJugadores: ponJugadores, refresca: refresca, texto: T };
+  /* El record de esta pestana, sumado: lo lee la Arena de la casa (`home_buildings.js`). */
+  function recordTotal() { var t = { g: 0, p: 0 }; Object.keys(record).forEach(function (k) { t.g += record[k].g; t.p += record[k].p; }); return t; }
+  window.AtlasArenaUI = { record: recordTotal, monta: monta, juega: juega, escuadra: escuadra, ponJugadores: ponJugadores, refresca: refresca, texto: T };
 })();
