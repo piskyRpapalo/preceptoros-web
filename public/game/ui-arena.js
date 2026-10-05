@@ -255,6 +255,10 @@
                                          luchados: function () { return record; } });
   }
 
+  document.addEventListener('preceptor:identity', function () {
+    var I = window.Identity;
+    if (I && I.quien && I.quien()) { I.publica().then(function (k) { pub = k; emblema = G.tirada(K.sha('atlas.emblema/1:' + k), 'tc3'); }); }
+  });
   /* Las personas del mar: las pone `ui-duelo.js` al importar defensas verificadas. */
   function ponJugadores(lista) {
     jugadores = lista.map(function (d) {

@@ -140,7 +140,7 @@
       var g = c.getContext('2d'), W = c.width, H = c.height, q = quieto(), t = q ? 0 : ts, z = W / VE * (w < 600 ? 1.15 : 1);
       col = col || f.colores();
       /* La clave llega despues (promesa): si aun no te has movido, la camara va a tu casa en cuanto se sabe. */
-      if (!cam || (!movido && centro === N.HEX && f.pub())) { aCasa(false); }
+      if (!cam || (!movido && centro === N.HEX && f.pub())) { aCasa(!!cam); }
       if (!(cuadros++ % 30)) { despeja(); }
       var k = ultimo === null ? 1 : Math.min(6, (ts - ultimo) / 16); ultimo = ts;
       if (!arrastre && !q && C.paso(cam, k, circ)) { choca(); }
@@ -195,7 +195,9 @@
         if (!med) { g.strokeStyle = col.texto; g.lineWidth = 1.5 * dpr; g.setLineDash([3 * dpr, 4 * dpr]); g.beginPath(); g.arc(p[0], p[1], 39 * dpr, 0, 2 * Math.PI); g.stroke(); g.setLineDash([]); }
         rotulo(g, n.nodo.split('.').pop() + ' · ' + (med ? f.texto('mapa_medido') : 'NO_DATA'), p[0], p[1] + 58 * dpr);
       });
-      if (yo) { rotulo(g, f.texto('arena_tu'), yo[0], yo[1] + 40 * dpr); }
+      /* La postura de tu casa (home_buildings.js) se VE en el mapa: lema y alianzas cerradas. Solo aspecto. */
+      var ca = window.AtlasCasa && window.AtlasCasa.casa ? window.AtlasCasa.casa() : null;
+      if (yo) { rotulo(g, f.texto('arena_tu') + (ca && ca.lema ? ' \u00B7 \u201C' + ca.lema + '\u201D' : '') + (ca && ca.alianzas === 'cerradas' ? ' \u00B7 \u26E8' : ''), yo[0], yo[1] + 40 * dpr); }
     }
 
     /* --- arrastrar, tocar y teclas ------------------------------------------------------------------ */
