@@ -375,8 +375,10 @@ process.stdout.write(JSON.stringify({
             self.assertNotIn(medida, listas, f"{medida} es una medida: fresca o no se sirve")
 
     def test_guardar_solo_al_pulsar_y_retomar_reproduce(self):
-        """`atlas-guardado.js`: el unico sitio del juego con almacen; escribe y borra SOLO desde los
-        botones; lo que retoma se vuelve a jugar y una partida tocada no vuelve a entrar."""
+        """`atlas-guardado.js`: el unico sitio de la puerta con almacen; escribe por DOS caminos
+        (Guardar, que tambien usa el autoguardado de la capa C1, y Olvidar); lo que retoma se vuelve a
+        jugar y una partida tocada no vuelve a entrar. Desde el 2026-10-05 (plan firmado, C1) se guarda
+        solo, pero NUNCA antes de haber leido lo guardado, y «Olvidar» apaga el autoguardado."""
         for nombre in CODIGO:
             if not nombre.endswith(".js") or nombre == "atlas-guardado.js":
                 continue
@@ -386,6 +388,12 @@ process.stdout.write(JSON.stringify({
         self.assertEqual(g.count("'readwrite'"), 2, "se escribe desde algo que no es Guardar u Olvidar")
         self.assertIn("boton(T('guardar'), guarda)", g)
         self.assertIn("boton(T('olvidar'), olvida)", g)
+        for pieza in ("if (callado === true && !auto) { return; }", "function olvida() {\n    auto = false;",
+                      "document.addEventListener('visibilitychange'", "window.addEventListener('pagehide'"):
+            with self.subTest(autoguardado=pieza):
+                self.assertIn(pieza, g)
+        lee = g.index("op('readonly', function (s) { return s.get(CLAVE); }).then(function (p) {\n      if (p && p.final && !retoma(")
+        self.assertLess(lee, g.index("      auto = true;\n    }).catch"), "el autoguardado se enciende antes de leer lo guardado")
         for salida in ("fetch", "XMLHttpRequest", "sendBeacon", "WebSocket", "localStorage", "http://", "https://"):
             with self.subTest(salida=salida):
                 self.assertNotIn(salida, g)
@@ -1511,6 +1519,21 @@ class BatallaRTS(unittest.TestCase):
         for k in set(re.findall(r"T\('(\w+)'\)", r)) | {"rp_marcha", "rp_choque", "rp_f_agresiva", "rp_f_defensiva", "rp_f_flanqueo"}:
             with self.subTest(clave=k):
                 self.assertTrue(tx.get(k), k)
+
+
+class Persistencia(unittest.TestCase):
+    """C1 (plan firmado 2026-10-05): recargar conserva recursos y army. La partida se REPRODUCE y cada
+    tropa vuelve POR `adopta`, re-verificada; un almacen tocado no mete nada (`persiste_casos.mjs`)."""
+    def test_casos_de_la_persistencia(self):
+        r = subprocess.run(["node", str(RAIZ / "persiste_casos.mjs")], capture_output=True, text=True, timeout=120)
+        casos = json.loads(r.stdout)
+        self.assertGreaterEqual(len(casos), 7, r.stderr)
+        for c in casos:
+            with self.subTest(caso=c["caso"]):
+                self.assertTrue(c["ok"], c["detalle"])
+        db = sin_comentarios((PUBLICO / "game" / "db.js").read_text(encoding="utf-8"))
+        self.assertIn("return yo.adopta(u && u.adopcion, u && u.firma)", db, "lo guardado entra sin pasar por adopta")
+        self.assertIn("army.restaura()", sin_comentarios((PUBLICO / "game" / "ui.js").read_text(encoding="utf-8")))
 
 
 class CabezalCajas(unittest.TestCase):

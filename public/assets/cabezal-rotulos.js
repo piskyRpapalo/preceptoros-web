@@ -58,7 +58,13 @@
     var a = e.target.closest && e.target.closest('#cab-nav a.thegame');
     if (a) { juego({ preventDefault: function () { e.preventDefault(); }, currentTarget: a }); }
   });
-  function porDireccion() { var m = RUTA.exec(location.hash); if (m) { juego(null, m[1]); } }
+  /* LA PORTADA ES EL JUEGO (plan firmado 2026-10-05, capa C1). En `/<lengua>/` sin direccion
+     interna el juego se abre solo, en tu casa. `#about` es la salida a lo de antes: ahi no se abre. */
+  var PORTADA = /^\/(ar|de|el|en|es|fr|it|pt|ru)\/(index\.html)?$/;
+  function porDireccion() {
+    var m = RUTA.exec(location.hash);
+    if (m) { juego(null, m[1]); } else if (!location.hash && PORTADA.test(location.pathname)) { juego(null, 'casa'); }
+  }
   window.addEventListener('hashchange', porDireccion);
   porDireccion();
 
@@ -165,6 +171,15 @@
       }
       nav.appendChild(n);
     });
+    /* ABOUT (C1, 2026-10-05: «la web es SOLO el juego»). theGame va primero; las cuatro puertas de
+       antes siguen vivas, en su orden, plegadas en un «About» discreto. No se borra ninguna pagina. */
+    var juegoP = nav.querySelector('.thegame');
+    if (juegoP) {
+      var about = el('details', 'cab-about'), caja = el('div', 'cab-about-puertas');
+      about.appendChild(el('summary', null, 'About'));
+      Array.prototype.slice.call(nav.children).forEach(function (n) { if (n !== juegoP) { caja.appendChild(n); } });
+      about.appendChild(caja); nav.insertBefore(juegoP, nav.firstChild); nav.appendChild(about);
+    }
 
     /* --- LA RUEDA: los idiomas ---------------------------------------------
        SE DESCUBREN DE LA PROPIA PAGINA. La lista estaba a mano --es, en, fr--

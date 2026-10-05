@@ -10,10 +10,11 @@
    LA FORMA DE VERIFICAR SE INYECTA: en la pestana es WebCrypto, en node es
    `crypto`. El fichero no elige plataforma y se prueba igual en las dos.
 
-   HOY EL ARMY VIVE EN LA PESTANA, como toda la v1. La directiva v1.5 pide
-   IndexedDB; guardar la partida es una decision distinta de «v1 no guarda
-   nada» (sello de las nueve lenguas) y queda PENDIENTE DE FIRMA. Cuando se
-   firme, la persistencia entra aqui, detras de esta misma puerta. */
+   EL ARMY SE GUARDA EN ESTE APARATO desde el plan firmado del 2026-10-05 (capa C1: «salir del
+   juego hace perder recursos y army: eso se arregla»). La persistencia entra AQUI, detras de esta
+   misma puerta, como se dejo dicho: se guardan solo los pares {adopcion, firma} y al volver cada uno
+   ENTRA OTRA VEZ POR `adopta`, que re-verifica la firma. Un almacen tocado no mete ni una tropa.
+   El almacen se inyecta (`{lee, pon}`): IndexedDB en la pestana, memoria en node. */
 (function (raiz) {
   'use strict';
 
@@ -33,9 +34,12 @@
   }
 
   /* `verifica(texto, firmaHex, claveHex) -> Promise<bool>`. */
-  function crea(verifica) {
+  function crea(verifica, almacen) {
     var army = [];
-    return {
+    function guarda() {
+      if (almacen) { almacen.pon(army.map(function (u) { return { adopcion: u.adopcion, firma: u.firma }; })); }
+    }
+    var yo = {
       lista: function () { return army.slice(); },
       /* La unica forma de meter una tropa. Rechaza con su motivo; nunca
          devuelve un «vale» a medias. */
@@ -54,8 +58,51 @@
           if (!ok) { throw new Error('firma: no verifica'); }
           var u = { adopcion: ad, firma: firma };
           army.push(u);
+          guarda();
           return u;
         });
+      },
+      /* Lo guardado vuelve POR `adopta`, en orden: lo que no verifica se queda fuera con su causa,
+         y el almacen se reescribe con lo que si entro. */
+      restaura: function () {
+        if (!almacen) { return Promise.resolve({ entran: 0, fuera: [] }); }
+        return Promise.resolve(almacen.lee()).then(function (l) {
+          var fuera = [], cadena = Promise.resolve();
+          (Array.isArray(l) ? l : []).forEach(function (u) {
+            cadena = cadena.then(function () {
+              return yo.adopta(u && u.adopcion, u && u.firma).catch(function (e) { fuera.push(e.message); });
+            });
+          });
+          return cadena.then(function () { if (fuera.length) { guarda(); } return { entran: army.length, fuera: fuera }; });
+        });
+      }
+    };
+    return yo;
+  }
+
+  /* El almacen de la pestana: una base propia `atlas-army` con un unico registro. */
+  function almacenWeb() {
+    function db() {
+      return new Promise(function (ok, mal) {
+        var r = raiz.indexedDB.open('atlas-army', 1);
+        r.onupgradeneeded = function () { r.result.createObjectStore('army'); };
+        r.onsuccess = function () { ok(r.result); }; r.onerror = function () { mal(r.error); };
+      });
+    }
+    return {
+      lee: function () {
+        return db().then(function (d) {
+          return new Promise(function (ok) {
+            var q = d.transaction('army').objectStore('army').get('mia');
+            q.onsuccess = function () { d.close(); ok(q.result || []); }; q.onerror = function () { d.close(); ok([]); };
+          });
+        }).catch(function () { return []; });
+      },
+      pon: function (l) {
+        db().then(function (d) {
+          var tx = d.transaction('army', 'readwrite'); tx.objectStore('army').put(l, 'mia');
+          tx.oncomplete = function () { d.close(); };
+        }).catch(function () {});
       }
     };
   }
@@ -77,7 +124,7 @@
     return raiz.crypto.subtle.digest('SHA-256', new TextEncoder().encode(firma)).then(hex);
   }
 
-  var AtlasArmy = { TOPE: TOPE, adopcion: adopcion, crea: crea, verificaWeb: verificaWeb, semillaWeb: semillaWeb };
+  var AtlasArmy = { TOPE: TOPE, adopcion: adopcion, crea: crea, almacenWeb: almacenWeb, verificaWeb: verificaWeb, semillaWeb: semillaWeb };
   if (typeof module === 'object' && module.exports) { module.exports = AtlasArmy; }
   else { raiz.AtlasArmy = AtlasArmy; }
 })(this);

@@ -5915,6 +5915,23 @@ class ElJuegoEnInglesEnLasNueve(unittest.TestCase):
             p = (PUBLICO / l / "index.html").read_text(encoding="utf-8")
             self.assertIn("/assets/cabezal-rotulos.js", p, f"/{l}/ no lleva la puerta del juego")
 
+    def test_la_portada_es_el_juego_y_lo_de_antes_va_en_about(self):
+        """C1 (plan firmado 2026-10-05: «la web es SOLO el juego»). Las nueve portadas abren el juego
+        solas, en tu casa; `#about` es la salida a lo de antes y no reabre. La navegacion pone theGame
+        primero y pliega las cuatro puertas de antes en un «About» discreto, sin borrar ninguna pagina."""
+        rot = sin_comentarios((PUBLICO / "assets" / "cabezal-rotulos.js").read_text(encoding="utf-8"))
+        self.assertIn(r"var PORTADA = /^\/(ar|de|el|en|es|fr|it|pt|ru)\/(index\.html)?$/;", rot)
+        self.assertIn("else if (!location.hash && PORTADA.test(location.pathname)) { juego(null, 'casa'); }", rot,
+                      "la portada no abre el juego")
+        self.assertIn("el('details', 'cab-about')", rot, "lo de antes no se pliega en About")
+        self.assertIn("nav.insertBefore(juegoP, nav.firstChild)", rot, "theGame no va primero")
+        capa = sin_comentarios((PUBLICO / "assets" / "thegame.js").read_text(encoding="utf-8"))
+        self.assertIn("ab.href = '#about'; ab.addEventListener('click', cierra);", capa, "el juego no lleva su About")
+        for l in ("ar", "de", "el", "en", "es", "fr", "it", "pt", "ru"):
+            for hoja in ("index.html", "benchmark.html", "community.html", "instalar.html"):
+                with self.subTest(lengua=l, hoja=hoja):
+                    self.assertTrue((PUBLICO / l / hoja).is_file(), f"/{l}/{hoja} se borro: About pliega, no borra")
+
 
 class WebLimpia(unittest.TestCase):
     """Inventario determinista de public/ (2026-10-04). Lo dudoso NO se borra: queda congelado en

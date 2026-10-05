@@ -36,6 +36,9 @@ body.en-thegame > :not(#thegame){visibility:hidden}
 .thegame-piloto{display:contents}
 .thegame-piloto > .boton{order:1;padding:.45rem .9rem;font-size:.82rem}
 .thegame-cerrar{order:2}
+/* ABOUT (C1): discreto, junto a la X; cierra la capa y deja ver lo de antes. */
+.thegame-about{order:2;margin-inline:.6rem;font:.78rem/1 var(--mono);color:var(--text-main);opacity:.75;text-decoration:underline}
+.thegame-about:hover,.thegame-about:focus-visible{opacity:1}
 .thegame-piloto > p{order:3;flex-basis:100%;margin:0;font:.72rem/1.4 var(--mono);color:var(--accent-copper-claro)}
 .thegame-piloto > p:empty{display:none}
 /* La sugerencia como una ficha corta: lo que propone arriba, Hacer / Ignorar juntos debajo. */

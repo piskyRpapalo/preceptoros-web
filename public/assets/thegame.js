@@ -203,10 +203,9 @@
     return arena;
   }
 
-  /* UN <dialog> NATIVO, abierto con showModal(). La trampa de foco no la
-     escribe este fichero: la pone el navegador, que deja la pagina de debajo
-     inerte, y es la que respetan los lectores de pantalla moviles. Un trap en
-     JS se comporta distinto bajo TalkBack y VoiceOver; este no. */
+  /* UN <dialog> NATIVO con showModal(): la trampa de foco la pone el navegador (pagina inerte
+     debajo), la que respetan TalkBack y VoiceOver; un trap en JS no. ABOUT (C1, 2026-10-05): la web
+     es el juego; «About» cierra la capa y deja ver lo de antes, en `#about`, que no reabre. */
   function construye() {
     capa = el('dialog', 'thegame-capa'); capa.id = 'thegame';
     /* La capa habla la lengua del juego, no la de la portada: sin esto, una pagina arabe
@@ -218,7 +217,8 @@
     var x = el('button', 'thegame-cerrar', '×'); x.type = 'button';
     x.setAttribute('aria-label', 'theGame ×');
     x.addEventListener('click', cierra);
-    barra.appendChild(x);
+    var ab = el('a', 'thegame-about', 'About'); ab.href = '#about'; ab.addEventListener('click', cierra);
+    barra.appendChild(ab); barra.appendChild(x);
     capa.appendChild(barra);
     var juego = el('div', 'thegame-juego'); juego.id = 'atlas-juego';
     capa.appendChild(juego);
@@ -233,9 +233,7 @@
     if (!document.querySelector('.atlas-dlg-capa')) { cierra(); }
   }
 
-  /* SIN GUARDAR TAMBIEN AL CERRAR: cerrar la capa, por boton o por Escape, no
-     borra la partida, pero cerrar la pestana si. Se dice un momento junto a la
-     puerta, sin tapar nada. */
+  /* Al cerrar se dice, un momento y sin tapar nada, que la partida queda en el aparato. */
   function avisa() {
     var t = window.AtlasJuego && window.AtlasJuego.texto('cierre_aviso');
     if (!t || !origen || !origen.parentNode) { return; }

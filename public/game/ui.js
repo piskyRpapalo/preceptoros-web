@@ -227,7 +227,7 @@
     G = window.AtlasGacha; A = window.AtlasArmy; S = window.AtlasSintesis;
     var zona = document.getElementById('atlas-juego');
     if (!G || !A || !S || !zona || zona.querySelector('.atlas-incubadora')) { return; }
-    capa = c; army = A.crea(A.verificaWeb);
+    capa = c; army = A.crea(A.verificaWeb, A.almacenWeb ? A.almacenWeb() : null);
     var s = el('section', 'panel atlas-incubadora');
     s.appendChild(el('h4', null, T('inc_h')));
     s.appendChild(el('p', 'atlas-nota', T('inc_nota')));
@@ -268,6 +268,13 @@
     R.army = el('ul', 'atlas-army'); s.appendChild(R.army);
     zona.appendChild(s);
     pinta(); pintaArmy();
+    /* El army guardado en este aparato vuelve re-verificado (C1); lo que no verifica se dice. */
+    if (army.restaura) {
+      army.restaura().then(function (r) {
+        pintaArmy();
+        if (r.fuera.length) { dice(rellena(T('army_fuera'), { n: r.fuera.length, m: r.fuera[0] })); }
+      });
+    }
     reloj = setInterval(tic, window.AtlasMotor.CICLO_MS);
   }
 
