@@ -63,7 +63,42 @@
     patrullas: [
       { id: 'arrecife', tc: 'tc1', n: 2 }, { id: 'algas', tc: 'tc1', n: 3 }, { id: 'ruinas', tc: 'tc2', n: 3 },
       { id: 'limo', tc: 'tc3', n: 3 }, { id: 'abismo', tc: 'tc4', n: 4 }, { id: 'nucleo', tc: 'tc4', n: 6 }
-    ]
+    ],
+    /* MOVIMIENTO 5 - M17: FLUIDEZ PS1 - Tunables como datos (corpus ideas6oct-2:785)
+       Todos los parametros de la capa PS1 en un solo objeto declarativo.
+       Nivel 0 = calidad minima (PS1 puro), 1 = media, 2 = maxima (fluida).
+       PROVISIONAL - ajustar segun bench en el Beelink. */
+    fluidez: {
+      /* Melt de batalla (MOVIMIENTO 1): persistencia canvas offscreen */
+      melt_alfa: 0.93,
+      melt_zoom: 1.0005,
+      melt_rotacion: 0.0001,
+      /* Color = Vida (MOVIMIENTO 2): Hue deriva a cobre, Lightness = escudo */
+      vida_hue_base: 270,
+      vida_hue_cobre: 30,
+      escudo_lightness_base: 72,
+      /* Respira al beat (MOVIMIENTO 3): pulso de brillo/grosor */
+      pulso_brillo_max: 0.3,
+      pulso_grosor_max: 1.5,
+      /* Buffer PS1 (MOVIMIENTO 6): resoluciones por nivel */
+      buffer_escala: [1.0, 0.5, 0.25],
+      buffer_ancho_max: 320,
+      /* Dither PS1 (MOVIMIENTO 6): patron 4x4 ordenado */
+      dither_on: true,
+      dither_patron: [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 13, 5, 15, 7],
+      /* Wobble PS1 (MOVIMIENTO 6): grid para temblor de vertices */
+      paso_grid: [1.0, 2.0, 4.0],
+      /* Niebla de Omen (MOVIMIENTO 7): vignette y niebla */
+      niebla_alfa: 0.4,
+      vignette_alfa: 0.3,
+      /* Sprites chunky (MOVIMIENTO 8): NPCs a 1/4 escala */
+      npc_chunk: true,
+      npc_escala: 0.25,
+      /* Estela (MOVIMIENTO 1-2): longitud maxima */
+      estela_max: 8,
+      /* Burbujas por calidad (MOVIMIENTO 4): mar respira */
+      burbujas_por_calidad: [0, 2, 5]
+    }
   };
 
   if (typeof module === 'object' && module.exports) { module.exports = VALORES; }

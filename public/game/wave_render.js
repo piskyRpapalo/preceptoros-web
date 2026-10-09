@@ -1,4 +1,4 @@
-/* preceptoros.org · theGame · EL TRAZO DE LAS ONDAS, a la maxima calidad que caben 16 KiB.
+/* preceptoros.org · theGame · EL TRAZO DE LAS ONDAS + CAPA PS1 (M17)
 
    «Lo unico que requiere atencion extra es la FORMA DE LAS ONDAS» (Soberano, 2026-10-05). Una tropa,
    un emblema o una casa son su serie de Fourier `[k, ax, ay, fase]` (de `gacha.js`), y aqui se
@@ -10,12 +10,183 @@
    - NACIMIENTO armonico a armonico (`crece`, 0..1): la base de la revelacion de la gacha.
    SPRITES precompuestos: una figura quieta se pinta una vez en un lienzo aparte y se pega.
    `calidad` 0..2 lo baja con elegancia cuando los fps no llegan (lo decide quien llama).
+
+   MOVIMIENTO 6 - M17: BUFFER PS1 (la lente, no la logica)
+   - O.buffer(g) devuelve contexto segun nivel: Maxima(2) = canvas directo, Media(1) = interno 1/2, Luz(0) = interno 1/4
+   - Dither PS1: patron 4x4 ordenado (corpus 6 planes:296-299), aplicado solo en Media/Luz
+   - Wobble PS1: redondear coordenadas a grid (paso_grid) en niveles bajos
+   - Al final del cuadro: UN drawImage del interno al real con imageSmoothingEnabled=false
+
    Sin azar y sin red: todo sale de los armonicos y del tiempo de pantalla. */
 (function (raiz) {
   'use strict';
 
   var G = raiz.AtlasGacha, CACHE = {}, NCACHE = 0;
+  var V = raiz.AtlasValores || {};
+  var F = V.fluidez || {};
   var TAU = Math.PI * 2;
+
+  /* MOVIMIENTO 1: Melt de batalla - canvas offscreen para persistencia */
+  var MELT_CANVAS = null;
+  var MELT_CTX = null;
+
+  /* MOVIMIENTO 1: Inicializar canvas offscreen para melt */
+  function initMeltCanvas(w, h) {
+    if (MELT_CANVAS && MELT_CANVAS.width === w && MELT_CANVAS.height === h) {
+      return;
+    }
+    var cv = raiz.document.createElement('canvas');
+    cv.width = w; cv.height = h;
+    MELT_CANVAS = cv;
+    MELT_CTX = cv.getContext('2d');
+  }
+
+  /* MOVIMIENTO 1: Aplicar melt al contexto actual */
+  function applyMelt(g, semilla) {
+    if (!F.melt_alfa) return;
+    
+    var w = g.canvas.width;
+    var h = g.canvas.height;
+    initMeltCanvas(w, h);
+    
+    // Guardar estado actual
+    MELT_CTX.save();
+    MELT_CTX.globalAlpha = F.melt_alfa || 0.93;
+    
+    // Aplicar micro-zoom y rotacion deterministas basadas en semilla
+    var zoom = F.melt_zoom || 1.0005;
+    var rot = F.melt_rotacion || 0.0001;
+    var t = semilla ? (semilla % 10000) / 10000 : 0;
+    
+    MELT_CTX.translate(w/2, h/2);
+    MELT_CTX.scale(1 + Math.sin(t * Math.PI * 2) * 0.0001, 1 + Math.sin(t * Math.PI * 2) * 0.0001);
+    MELT_CTX.rotate(Math.sin(t * Math.PI * 2) * rot);
+    MELT_CTX.translate(-w/2, -h/2);
+    
+    // Dibujar el canvas actual en el melt canvas
+    MELT_CTX.drawImage(g.canvas, 0, 0);
+    MELT_CTX.restore();
+    
+    // Copiar melt canvas de vuelta al contexto actual
+    g.drawImage(MELT_CANVAS, 0, 0);
+  }
+
+  /* MOVIMIENTO 2: Color = Vida - derivar color segun fraccion de vida */
+  function colorVida(fraccion, base) {
+    if (fraccion == null) fraccion = 1;
+    if (base == null) base = F.vida_hue_base || 270;
+    
+    var hueBase = F.vida_hue_base || 270;
+    var hueCobre = F.vida_hue_cobre || 30;
+    var lightnessBase = F.escudo_lightness_base || 72;
+    
+    // Hue: de base a cobre segun fraccion de vida (0 = muerto, 1 = vivo)
+    var hue = hueBase + (hueCobre - hueBase) * (1 - fraccion);
+    
+    // Saturation: constante
+    var saturation = 70;
+    
+    // Lightness: portador del escudo (fraccion de vida)
+    var lightness = lightnessBase * fraccion;
+    
+    return [Math.round(hue) % 360, saturation, Math.round(lightness)];
+  }
+
+  /* MOVIMIENTO 6: Buffer PS1 - canvas internos por nivel de calidad */
+  var BUFFERS = {};
+  var BUFFER_CONFIG = {
+    2: { escala: 1.0, anchoMax: null },
+    1: { escala: 0.5, anchoMax: null },
+    0: { escala: 0.25, anchoMax: 320 }
+  };
+
+  /* MOVIMIENTO 6: Dither PS1 - patron 4x4 ordenado (16 valores 0-15) */
+  var DITHER_PATTERN = F.dither_patron || [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 13, 5, 15, 7];
+  var DITHER_CANVAS = null;
+  var DITHER_READY = false;
+
+  function initDither() {
+    if (DITHER_READY || !F.dither_on) return;
+    var cv = raiz.document.createElement('canvas');
+    cv.width = 4; cv.height = 4;
+    var g = cv.getContext('2d');
+    var imgData = g.createImageData(4, 4);
+    for (var i = 0; i < 16; i++) {
+      var val = DITHER_PATTERN[i] / 15;
+      var idx = i * 4;
+      imgData.data[idx] = imgData.data[idx+1] = imgData.data[idx+2] = Math.round(val * 255);
+      imgData.data[idx+3] = 255;
+    }
+    g.putImageData(imgData, 0, 0);
+    DITHER_CANVAS = cv;
+    DITHER_READY = true;
+  }
+
+  /* MOVIMIENTO 6: O.buffer(g) - devuelve contexto segun nivel de calidad */
+  function getBuffer(g, nivel) {
+    nivel = nivel == null ? 2 : Math.max(0, Math.min(2, Math.floor(nivel)));
+    var config = BUFFER_CONFIG[nivel];
+    
+    if (nivel === 2) {
+      return g; // Maxima: canvas directo
+    }
+    
+    var key = 'buffer_' + nivel;
+    if (!BUFFERS[key]) {
+      var ancho = g.canvas.width;
+      var alto = g.canvas.height;
+      var escala = config.escala;
+      var anchoBuffer = Math.min(config.anchoMax || ancho, Math.ceil(ancho * escala));
+      var altoBuffer = Math.ceil(alto * escala);
+      
+      var cv = raiz.document.createElement('canvas');
+      cv.width = anchoBuffer;
+      cv.height = altoBuffer;
+      BUFFERS[key] = cv.getContext('2d');
+    }
+    
+    return BUFFERS[key];
+  }
+
+  /* MOVIMIENTO 6: Aplicar dither a un contexto */
+  function applyDither(g, nivel) {
+    if (!F.dither_on || nivel >= 2) return;
+    initDither();
+    if (!DITHER_READY) return;
+    
+    var w = g.canvas.width;
+    var h = g.canvas.height;
+    var pattern = g.createPattern(DITHER_CANVAS, 'repeat');
+    g.globalCompositeOperation = 'source-in';
+    g.fillStyle = pattern;
+    g.fillRect(0, 0, w, h);
+    g.globalCompositeOperation = 'source-over';
+  }
+
+  /* MOVIMIENTO 6: Wobble PS1 - redondear coordenadas a grid */
+  function wobble(x, y, nivel) {
+    if (nivel >= 2) return { x: x, y: y };
+    var paso = F.paso_grid ? F.paso_grid[nivel] : [1, 2, 4][nivel];
+    return { x: Math.round(x / paso) * paso, y: Math.round(y / paso) * paso };
+  }
+
+  /* MOVIMIENTO 6: Render final al canvas real */
+  function renderToReal(g, bufferG, nivel) {
+    if (nivel >= 2) return; // Ya es el canvas real
+    
+    var bufferCanvas = bufferG.canvas;
+    var realCanvas = g.canvas;
+    
+    // Aplicar dither si corresponde
+    if (F.dither_on && nivel < 2) {
+      applyDither(bufferG, nivel);
+    }
+    
+    // Dibujar buffer al canvas real con nearest-neighbor
+    g.imageSmoothingEnabled = false;
+    g.drawImage(bufferCanvas, 0, 0, realCanvas.width, realCanvas.height);
+    g.imageSmoothingEnabled = true;
+  }
 
   function limite(arm) {
     var l = 0;
@@ -58,32 +229,53 @@
     }
   }
   /* LA FIGURA. `o`: { t, color ([h,s,l] o css), giro, escala, grosor, brillo 0..1, estela n, crece,
-     desafina, alfa, calidad 0..2, respira }. */
+     desafina, alfa, calidad 0..2, respira }. 
+     MOVIMIENTO 6: Si nivel < 2, usa buffer PS1 y wobble. */
   function dibuja(g, arm, x, y, r, o) {
     o = o || {};
-    var q = o.calidad == null ? 2 : o.calidad, A = vivos(arm, o), k = r / limite(arm) * (o.escala == null ? 1 : o.escala);
+    var q = o.calidad == null ? 2 : o.calidad;
+    var nivel = Math.max(0, Math.min(2, Math.floor(q)));
+    
+    // MOVIMIENTO 6: Obtener buffer segun nivel
+    var bufferG = getBuffer(g, nivel);
+    var isBuffer = bufferG !== g;
+    
+    // Si usamos buffer, dibujar en el buffer
+    var targetG = isBuffer ? bufferG : g;
+    
+    var A = vivos(arm, o), k = r / limite(arm) * (o.escala == null ? 1 : o.escala);
     var n = q >= 2 ? 220 : q >= 1 ? 140 : 80, P = puntos(A, n), giro = o.giro || 0, gr = o.grosor || 2, alfa = o.alfa == null ? 1 : o.alfa;
     var c = o.color || [270, 70, 72], brillo = o.brillo == null ? 0.8 : o.brillo;
-    g.save(); g.lineJoin = 'round'; g.lineCap = 'round';
-    g.globalCompositeOperation = 'lighter';
+    
+    // MOVIMIENTO 6: Aplicar wobble a las coordenadas en niveles bajos
+    var pos = wobble(x, y, nivel);
+    x = pos.x; y = pos.y;
+    
+    targetG.save(); targetG.lineJoin = 'round'; targetG.lineCap = 'round';
+    targetG.globalCompositeOperation = 'lighter';
     /* La estela: la misma figura en giros anteriores. */
     var est = q >= 1 ? (o.estela || 0) : 0;
     for (var e = est; e >= 1; e--) {
       var ge = giro - e * (o.pasoEstela || 0.06);
-      g.strokeStyle = color(c, alfa * 0.18 * (1 - e / (est + 1)));
-      trazo(g, P, x, y, k, Math.cos(ge), Math.sin(ge), gr * 0.8, false);
+      targetG.strokeStyle = color(c, alfa * 0.18 * (1 - e / (est + 1)));
+      trazo(targetG, P, x, y, k, Math.cos(ge), Math.sin(ge), gr * 0.8, false);
     }
     var cs = Math.cos(giro), sn = Math.sin(giro);
     if (brillo > 0 && q >= 1) {
-      g.strokeStyle = color(c, alfa * 0.07 * brillo); trazo(g, P, x, y, k, cs, sn, gr * 7, false);
-      g.strokeStyle = color(c, alfa * 0.16 * brillo); trazo(g, P, x, y, k, cs, sn, gr * 3.2, false);
+      targetG.strokeStyle = color(c, alfa * 0.07 * brillo); trazo(targetG, P, x, y, k, cs, sn, gr * 7, false);
+      targetG.strokeStyle = color(c, alfa * 0.16 * brillo); trazo(targetG, P, x, y, k, cs, sn, gr * 3.2, false);
     }
-    g.strokeStyle = color(c, alfa); trazo(g, P, x, y, k, cs, sn, gr, q >= 2);
+    targetG.strokeStyle = color(c, alfa); trazo(targetG, P, x, y, k, cs, sn, gr, q >= 2);
     if (q >= 1) {
       var blanco = typeof c === 'string' ? 'rgba(255,255,255,' + 0.35 * alfa + ')' : color([c[0], c[1] * 0.4, 92], 0.35 * alfa);
-      g.strokeStyle = blanco; trazo(g, P, x, y, k, cs, sn, Math.max(0.6, gr * 0.35), false);
+      targetG.strokeStyle = blanco; trazo(targetG, P, x, y, k, cs, sn, Math.max(0.6, gr * 0.35), false);
     }
-    g.restore();
+    targetG.restore();
+    
+    // MOVIMIENTO 6: Si usamos buffer, renderizar al canvas real
+    if (isBuffer) {
+      renderToReal(g, bufferG, nivel);
+    }
   }
   /* UN SPRITE: la figura quieta, con su brillo, pintada una vez. Se reutiliza por clave. */
   function sprite(arm, r, c, clave, dpr) {
@@ -113,5 +305,17 @@
     };
   }
 
-  raiz.AtlasOnda = { dibuja: dibuja, sprite: sprite, pegaSprite: pegaSprite, tono: tono, riqueza: riqueza, medidor: medidor, limite: limite };
+  raiz.AtlasOnda = {
+    dibuja: dibuja, sprite: sprite, pegaSprite: pegaSprite, tono: tono, riqueza: riqueza, medidor: medidor, limite: limite,
+    /* MOVIMIENTO 1: Melt de batalla */
+    applyMelt: applyMelt,
+    /* MOVIMIENTO 2: Color = Vida */
+    colorVida: colorVida,
+    /* MOVIMIENTO 6: Buffer PS1 */
+    buffer: getBuffer,
+    getBuffer: getBuffer,
+    applyDither: applyDither,
+    wobble: wobble,
+    renderToReal: renderToReal
+  };
 })(this);
