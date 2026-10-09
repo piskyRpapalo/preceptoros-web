@@ -189,6 +189,14 @@
         if (em) { E.figura(g, em.armonicos, yo[0], yo[1], er, { color: col.tuya, giro: t * 0.0003, grosor: 2.2 * dpr, brillo: 14 * dpr }); }
       }
       capas(g, W, H, z, bruma);
+      /* MOVIMIENTO 7 - M17: Vignette barato - gradiente radial cacheado */
+      if (!quieto() && F.vignette_alfa) {
+        var grad = g.createRadialGradient(W/2, H/2, 0, W/2, H/2, Math.max(W, H)/2);
+        grad.addColorStop(0, 'rgba(0,0,0,' + F.vignette_alfa + ')');
+        grad.addColorStop(1, 'rgba(0,0,0,0)');
+        g.fillStyle = grad;
+        g.fillRect(0, 0, W, H);
+      }
       /* Lo que esta en la niebla tambien se DECLARA: su anillo vacio y su rotulo, por encima. */
       H0.forEach(function (n) {
         var p = P(n.x, n.y), med = n.gen.estado === 'MEDIDO';
