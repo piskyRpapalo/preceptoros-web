@@ -176,8 +176,15 @@
           g.beginPath(); g.arc(p[0], p[1], r * 1.7, 0, 2 * Math.PI); g.stroke(); g.globalAlpha = 1; g.lineWidth = dpr;
         }
         var dx = q ? 0 : Math.sin(t * 0.0006 + i) * 3 * dpr;
-        E.figura(g, t0.armonicos, p[0] + dx, p[1], r, { color: l.npc ? E.tono(t0) : col.suya, giro: t * 0.0004 * (l.npc ? -1 : 1),
-                                                       grosor: 1.5 * dpr, brillo: (E.BRILLO[t0.rareza] + (l.npc ? 0 : 8)) * dpr });
+        /* MOVIMIENTO 8 - M17: Sprites chunky para NPCs */
+        if (l.npc && F.npc_chunk) {
+          var clave = 'npc_' + l.id + '_' + r;
+          var cv = O.sprite(t0.armonicos, r * 4, l.npc ? E.tono(t0) : col.suya, clave, dpr);
+          g.drawImage(cv, p[0] + dx - cv.width / 2, p[1] - cv.height / 2);
+        } else {
+          E.figura(g, t0.armonicos, p[0] + dx, p[1], r, { color: l.npc ? E.tono(t0) : col.suya, giro: t * 0.0004 * (l.npc ? -1 : 1),
+                                                         grosor: 1.5 * dpr, brillo: (E.BRILLO[t0.rareza] + (l.npc ? 0 : 8)) * dpr });
+        }
         rotulo(g, f.nombre(l), p[0], p[1] + r + 15 * dpr);
       });
       H0.forEach(function (n) {
