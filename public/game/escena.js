@@ -196,7 +196,7 @@
         g.stroke();
       });
     }
-    function pinta(ts,dt){var W=lienzo.width,H=lienzo.height,t=quieto?0:ts;quieto?g.clearRect(0,0,W,H):applyMelt(g,semilla);fondo&&pega(g,fondo,W,H)}
+    function pinta(ts,dt){var W=lienzo.width,H=lienzo.height,t=quieto?0:ts;quieto?g.clearRect(0,0,W,H):applyMelt(g,semilla);fondo&&pega(g,fondo,W,H);
       frente(W, H, t);
       var cur = Math.floor(vt / EVENTO_MS), e = cur < ev.length ? ev[cur] : null, fase = (vt % EVENTO_MS) / EVENTO_MS;
       if (!quieto) { mueve(e, fase, dt, t); } else { todos.forEach(function (u) { u.x = u.hx; u.y = u.hy; }); }
@@ -205,9 +205,8 @@
         if (m <= 0) { return; }
         var dx = 0;
         if (!quieto && u.tiembla !== null && vt - u.tiembla < 260) { dx = Math.sin(vt * 0.12) * 4 * dpr * (1 - (vt - u.tiembla) / 260); }
-        var gira = quieto ? 0 : t * 0.00045 * (1 + u.vel / 12) * (u.lado ? 1 : -1) * (acabado && u.vida ? 3 : 1);
-        var respira = quieto ? 1 : 1 + 0.035 * Math.sin(t * 0.002 + idx);
-        figura(g,u.t.armonicos,u.x+dx,u.y,u.r,{color:u.color,giro:gira,alfa:m,grosor:1.8*dpr,brillo:u.brillo+u.flash*18*dpr,t:t,desafina:Math.min(1,(1-u.vida/u.max)*.8+u.flash*.35),escala:respira*(.4+.6*m),vidaFraccion:u.vida/u.max});
+        var gira=quieto?0:t*.00045*(1+u.vel/12)*(u.lado?1:-1)*(acabado&&u.vida?3:1),respira=quieto?1:1+.035*Math.sin(t*.002+idx),fo=u.flash*(1+Math.sin(t*.001*u.flash*100)*.5);
+        figura(g,u.t.armonicos,u.x+dx,u.y,u.r,{color:u.color,giro:gira,alfa:m,grosor:1.8*dpr,brillo:u.brillo+fo*18*dpr,t:t,desafina: Math.min(1, (1 - u.vida / u.max)*.8+u.flash*.35),escala:respira*(.4+.6*m),vidaFraccion:u.vida/u.max});
         u.flash = Math.max(0, u.flash - 0.05);
       });
       if (!quieto && e && fase > 0.3 && fase < 0.8) { proyectil(U[e[1]][e[2]], U[1 - e[1]][e[3]], (fase - 0.3) / 0.5, t); }
