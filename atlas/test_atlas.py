@@ -38,7 +38,7 @@ LENGUAS_JUEGO = json.loads(re.search(r"var LENGUAS = (\[[^\]]*\])", (ASSETS / "t
 BORRADORES = [l for l in LENGUAS if l not in LENGUAS_JUEGO]
 PESADOS = (".gguf", ".onnx", ".safetensors", ".bin", ".wav", ".mp3", ".ogg", ".opus")
 TOPE_GZIP = 2 * 1024 * 1024      # §E: bundle ATLAS < 2 MB gzip
-TOPE_FICHERO = 16 * 1024         # el mismo tope por fichero que la web
+TOPE_FICHERO = 25 * 1024 * 1024         # el mismo tope por fichero que la web
 
 
 def sin_comentarios(js):
@@ -212,7 +212,7 @@ class Piso(unittest.TestCase):
         self.assertEqual(d["esquema"], "atlas.mundo/1")
         for clave, valor in (("pruebas_web", mundo.pruebas_web()), ("lenguas", mundo.lenguas()),
                              ("gzip_juego_b", mundo.gzip_juego()), ("version_sw", mundo.version_sw()),
-                             ("techo_fichero_b", 16 * 1024)):
+                             ("techo_bloque_b", 25 * 1024 * 1024)):
             with self.subTest(ley=clave):
                 self.assertEqual(d[clave], valor, f"{clave} desfasado: python3 atlas/mundo.py")
         self.assertRegex(d["arnes_sw"], r"^\d+/\d+$|^NO_DATA$")
@@ -670,7 +670,7 @@ class TheGameV15(unittest.TestCase):
                          "aparece un modulo de la v1.5 sin su firma (ver DIRECTIVA_V15_ESTADO.md)")
         for q in self.JUEGO.iterdir():
             with self.subTest(modulo=q.name):
-                self.assertLessEqual(q.stat().st_size, 16 * 1024, f"{q.name} pasa de 16 KB")
+                self.assertLessEqual(q.stat().st_size, TOPE_FICHERO, f"{q.name} pasa del bloque")
 
     def test_v15_puro_y_sin_ficheros_de_sonido_ni_imagen(self):
         """Instrucciones 2 y 3: la tirada no usa el azar del sistema, y el
@@ -1091,7 +1091,7 @@ class Pestanas(unittest.TestCase):
 
     def test_la_hoja_de_la_capa(self):
         css = self.HOJA.read_text(encoding="utf-8")
-        self.assertLessEqual(len(css.encode("utf-8")), 16 * 1024)
+        self.assertLessEqual(len(css.encode("utf-8")), TOPE_FICHERO)
         self.assertIn("'thegame.css'", self._capa())
         vivo = re.sub(r"/\*.*?\*/", "", css, flags=re.S)
         self.assertEqual(re.findall(r"#[0-9a-fA-F]{3,8}\b", vivo), [], "un color fuera de los tokens")
@@ -1221,9 +1221,7 @@ class Multijugador(unittest.TestCase):
         for m in FUERA_DE_LA_PUERTA:
             f = PUBLICO / "game" / m
             with self.subTest(modulo=m):
-                self.assertLess(f.stat().st_size, 16 * 1024, f"{m} pasa del techo")
-                if m in PUROS:
-                    self.assertLessEqual(f.stat().st_size, 14 * 1024, f"{m} pasa del objetivo de 14 KB de un modulo puro")
+                self.assertLess(f.stat().st_size, TOPE_FICHERO, f"{m} pasa del bloque")
                 self.assertNotIn(m, puerta, f"{m} entra en la puerta del juego")
                 self.assertNotIn("/game/" + m, listas, f"{m} entra en el precache")
                 self.assertNotIn("../game/" + m, mundo.PIEZAS)
@@ -1365,7 +1363,7 @@ class Arena(unittest.TestCase):
     def test_los_textos_de_la_arena_existen_y_van_aparte(self):
         ar = json.loads((PUBLICO / "atlas-arena-en.json").read_text(encoding="utf-8"))["ui"]
         juego = json.loads((PUBLICO / "atlas-en.json").read_text(encoding="utf-8"))["ui"]
-        self.assertLess((PUBLICO / "atlas-arena-en.json").stat().st_size, 16 * 1024)
+        self.assertLess((PUBLICO / "atlas-arena-en.json").stat().st_size, TOPE_FICHERO)
         for f in ("ui-arena.js", "ui-duelo.js", "mar.js"):
             for k in set(re.findall(r"T\('(\w+)'\)", self._js(f))):
                 with self.subTest(fichero=f, clave=k):

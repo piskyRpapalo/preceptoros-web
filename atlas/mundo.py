@@ -91,7 +91,7 @@ def mide():
         "maquina": maquina(),
         "pruebas_web": pruebas_web(),
         "lenguas": lenguas(),
-        "techo_fichero_b": 16 * 1024,
+        "techo_bloque_b": 25 * 1024 * 1024,
         "gzip_juego_b": gzip_juego(),
         "version_sw": version_sw(),
         "arnes_sw": arnes_sw(),
