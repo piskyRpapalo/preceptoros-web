@@ -21,14 +21,12 @@
 (function (raiz) {
   'use strict';
 
-  var G = raiz.AtlasGacha;
-  var TONOS = ['hsl(35 75% 58%)', 'hsl(140 45% 55%)', 'hsl(275 55% 68%)', 'hsl(210 12% 68%)'];
-  var BRILLO = { normal: 0, magico: 5, raro: 10, unico: 16 };
-  var EVENTO_MS = 560;
-  var HONDO = [[7, 12, 24], [12, 24, 44], [20, 42, 70], [34, 70, 104]];
-
-  /* --- ruido y tramado: deterministas ------------------------------------------------------------ */
-  function hash(x, y, s) {
+  var G=raiz.AtlasGacha,O=raiz.AtlasOnda||{},F=(raiz.AtlasValores&&raiz.AtlasValores.fluidez)||{};
+  var TONOS=['hsl(35 75% 58%)','hsl(140 45% 55%)','hsl(275 55% 68%)','hsl(210 12% 68%)'];
+  var BRILLO={normal:0,magico:5,raro:10,unico:16},EVENTO_MS=560,HONDO=[[7,12,24],[12,24,44],[20,42,70],[34,70,104]],MC=null,MCX=null;
+  function initMC(w,h){if(!MC||MC.width!==w||MC.height!==h){var c=raiz.document.createElement('canvas');c.width=w;c.height=h;MC=c;MCX=c.getContext('2d')}}
+  function applyMelt(g,s){if(quieto||!F.melt_alfa)return;initMC(g.canvas.width,g.canvas.height);MCX.save();MCX.globalAlpha=F.melt_alfa||.93;var t=s?s%10000/10000:0,r=F.melt_rotacion||.0001,w=g.canvas.width/2,h=g.canvas.height/2;MCX.translate(w,h);MCX.scale(1+Math.sin(t*6.2832)*.0001,1+Math.sin(t*6.2832)*.0001);MCX.rotate(Math.sin(t*6.2832)*r);MCX.translate(-w,-h);MCX.drawImage(g.canvas,0,0);MCX.restore();g.drawImage(MC,0,0)}
+  function hash(x,y,s){
     var h = Math.imul(x, 374761393) + Math.imul(y, 668265263) + Math.imul(s, 974634719);
     h = Math.imul(h ^ (h >>> 13), 1274126177);
     return ((h ^ (h >>> 16)) >>> 0) / 4294967296;
@@ -75,23 +73,7 @@
       return [h[0], h[1] * estira, h[2] * (2 - estira), h[3] + d * tuerce * 14 + Math.sin(t * 0.004 + j) * d * 3];
     });
   }
-  /* Una figura de Fourier: centro, radio, giro, escala, color, alfa, brillo, grosor y desafinacion. */
-  function figura(g, arm, x, y, r, o) {
-    var k = r / limite(arm) * (o.escala == null ? 1 : o.escala), c = Math.cos(o.giro || 0), s = Math.sin(o.giro || 0);
-    var n = o.puntos || 120, d = o.desafina || 0, a = afina(arm, d, o.t || 0), zum = d * r * 0.07;
-    g.save();
-    g.globalAlpha = o.alfa == null ? 1 : o.alfa;
-    g.strokeStyle = o.color; g.lineWidth = o.grosor || 2; g.lineJoin = 'round';
-    if (o.brillo) { g.shadowColor = o.color; g.shadowBlur = o.brillo; }
-    g.beginPath();
-    for (var i = 0; i <= n; i++) {
-      var u = i / n * 2 * Math.PI, p = G.punto(a, u), z = zum * Math.sin(u * 13 + (o.t || 0) * 0.01);
-      var px = p[0] * k + z * Math.cos(u), py = p[1] * k + z * Math.sin(u);
-      g[i ? 'lineTo' : 'moveTo'](x + px * c - py * s, y - (px * s + py * c));
-    }
-    g.stroke();
-    g.restore();
-  }
+  function figura(g,a,x,y,r,o){var k=r/limite(a)*(o.escala==null?1:o.escala),c=Math.cos(o.giro||0),s=Math.sin(o.giro||0),n=o.puntos||120,d=o.desafina||0,A=afina(a,d,o.t||0),z=d*r*.07,f=o.color;if(o.vidaFraccion!=null&&O.colorVida)f=O.colorVida(o.vidaFraccion,o.color);g.save();g.globalAlpha=o.alfa==null?1:o.alfa;g.strokeStyle=f;g.lineWidth=o.grosor||2;g.lineJoin='round';o.brillo&&(g.shadowColor=f,g.shadowBlur=o.brillo);g.beginPath();for(var i=0;i<=n;i++){var u=i/n*6.2832,p=G.punto(A,u),Z=z*Math.sin(u*13+(o.t||0)*.01),px=p[0]*k+Z*Math.cos(u),py=p[1]*k+Z*Math.sin(u);g[i?'lineTo':'moveTo'](x+px*c-py*s,y-(px*s+py*c))}g.stroke();g.restore()}
   function tono(t) { return TONOS[G.caracter(t).color]; }
   /* Color = velocidad: 3 (lento, azul) a 13 (rapido, cobre). */
   function rapidez(v) { return 'hsl(' + Math.round(210 - Math.max(0, Math.min(1, (v - 3) / 10)) * 185) + ' 80% 62%)'; }
@@ -214,10 +196,7 @@
         g.stroke();
       });
     }
-    function pinta(ts, dt) {
-      var W = lienzo.width, H = lienzo.height, t = quieto ? 0 : ts;
-      g.clearRect(0, 0, W, H);
-      if (fondo) { pega(g, fondo, W, H); }
+    function pinta(ts,dt){var W=lienzo.width,H=lienzo.height,t=quieto?0:ts;quieto?g.clearRect(0,0,W,H):applyMelt(g,semilla);fondo&&pega(g,fondo,W,H)}
       frente(W, H, t);
       var cur = Math.floor(vt / EVENTO_MS), e = cur < ev.length ? ev[cur] : null, fase = (vt % EVENTO_MS) / EVENTO_MS;
       if (!quieto) { mueve(e, fase, dt, t); } else { todos.forEach(function (u) { u.x = u.hx; u.y = u.hy; }); }
@@ -228,10 +207,7 @@
         if (!quieto && u.tiembla !== null && vt - u.tiembla < 260) { dx = Math.sin(vt * 0.12) * 4 * dpr * (1 - (vt - u.tiembla) / 260); }
         var gira = quieto ? 0 : t * 0.00045 * (1 + u.vel / 12) * (u.lado ? 1 : -1) * (acabado && u.vida ? 3 : 1);
         var respira = quieto ? 1 : 1 + 0.035 * Math.sin(t * 0.002 + idx);
-        figura(g, u.t.armonicos, u.x + dx, u.y, u.r, {
-          color: u.color, giro: gira, alfa: m, grosor: 1.8 * dpr, brillo: (u.brillo + u.flash * 18) * dpr, t: t,
-          desafina: Math.min(1, (1 - u.vida / u.max) * 0.8 + u.flash * 0.35), escala: respira * (0.4 + 0.6 * m)
-        });
+        figura(g,u.t.armonicos,u.x+dx,u.y,u.r,{color:u.color,giro:gira,alfa:m,grosor:1.8*dpr,brillo:u.brillo+u.flash*18*dpr,t:t,desafina:Math.min(1,(1-u.vida/u.max)*.8+u.flash*.35),escala:respira*(.4+.6*m),vidaFraccion:u.vida/u.max});
         u.flash = Math.max(0, u.flash - 0.05);
       });
       if (!quieto && e && fase > 0.3 && fase < 0.8) { proyectil(U[e[1]][e[2]], U[1 - e[1]][e[3]], (fase - 0.3) / 0.5, t); }
