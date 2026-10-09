@@ -74,13 +74,18 @@
     function mueve(dx, dy) { movido = true; if (C.empuja(cam, dx, dy, circ, quieto())) { choca(); } }
 
     /* --- el terreno y la niebla, por teselas ------------------------------------------------------ */
+    /* MOVIMIENTO 4 - M17: Mar respira - offset temporal determinista */
+    var offsetTemporal = 0;
     function tesela(i, j) {
       var k = i + ',' + j;
       if (tierra[k]) { return tierra[k]; }
       if (nt > 90) { tierra = {}; nt = 0; }
       var n = TESELA / RES;
+      /* MOVIMIENTO 4: offset temporal para deriva lenta */
+      var offsetX = Math.sin(offsetTemporal * 0.0001) * 10;
+      var offsetY = Math.cos(offsetTemporal * 0.0001) * 10;
       tierra[k] = E.textura(n, n, function (x, y) {
-        var wx = i * TESELA + x * RES, wy = j * TESELA + y * RES;
+        var wx = i * TESELA + x * RES + offsetX, wy = j * TESELA + y * RES + offsetY;
         return Math.max(0, Math.min(1, E.fbm(wx / 210, wy / 210, 11) * 1.15 - 0.12 + E.fbm(wx / 60, wy / 60, 4) * 0.12));
       }, TIERRA);
       nt++;
@@ -139,6 +144,8 @@
       if (c.height !== Math.round(h * dpr)) { c.height = Math.round(h * dpr); c.style.height = h + 'px'; }
       var g = c.getContext('2d'), W = c.width, H = c.height, q = quieto(), t = q ? 0 : ts, z = W / VE * (w < 600 ? 1.15 : 1);
       col = col || f.colores();
+      /* MOVIMIENTO 4: actualizar offset temporal */
+      offsetTemporal = t;
       /* La clave llega despues (promesa): si aun no te has movido, la camara va a tu casa en cuanto se sabe. */
       if (!cam || (!movido && centro === N.HEX && f.pub())) { aCasa(!!cam); }
       if (!(cuadros++ % 30)) { despeja(); }
