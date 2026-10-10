@@ -107,6 +107,34 @@
     };
   }
 
+  /* La calidad elegida (M17): su propia base `atlas-calidad`. Vive aqui porque db.js es la unica
+     puerta de almacenamiento del juego; ui.js no toca IndexedDB (test_v15). */
+  function calidadWeb() {
+    function db() {
+      return new Promise(function (ok, mal) {
+        var r = raiz.indexedDB.open('atlas-calidad', 1);
+        r.onupgradeneeded = function () { r.result.createObjectStore('calidad'); };
+        r.onsuccess = function () { ok(r.result); }; r.onerror = function () { mal(r.error); };
+      });
+    }
+    return {
+      lee: function () {
+        return db().then(function (d) {
+          return new Promise(function (ok) {
+            var q = d.transaction('calidad').objectStore('calidad').get('modo');
+            q.onsuccess = function () { d.close(); ok(q.result || null); }; q.onerror = function () { d.close(); ok(null); };
+          });
+        }).catch(function () { return null; });
+      },
+      pon: function (m) {
+        db().then(function (d) {
+          var tx = d.transaction('calidad', 'readwrite'); tx.objectStore('calidad').put(m, 'modo');
+          tx.oncomplete = function () { d.close(); };
+        }).catch(function () {});
+      }
+    };
+  }
+
   /* El verificador de la pestana: WebCrypto Ed25519 con la clave publica en
      crudo (la misma que da `Identity.publica`). */
   function verificaWeb(texto, firmaHex, claveHex) {
@@ -124,7 +152,7 @@
     return raiz.crypto.subtle.digest('SHA-256', new TextEncoder().encode(firma)).then(hex);
   }
 
-  var AtlasArmy = { TOPE: TOPE, adopcion: adopcion, crea: crea, almacenWeb: almacenWeb, verificaWeb: verificaWeb, semillaWeb: semillaWeb };
+  var AtlasArmy = { TOPE: TOPE, adopcion: adopcion, crea: crea, almacenWeb: almacenWeb, calidadWeb: calidadWeb, verificaWeb: verificaWeb, semillaWeb: semillaWeb };
   if (typeof module === 'object' && module.exports) { module.exports = AtlasArmy; }
   else { raiz.AtlasArmy = AtlasArmy; }
 })(this);

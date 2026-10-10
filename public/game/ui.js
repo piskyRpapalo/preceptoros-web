@@ -251,8 +251,10 @@
     R.caja.appendChild(R.calidadBoton);
     function getCalidadModo(){return window.AtlasCalidad?window.AtlasCalidad.modo:'auto'}
     function getCalidadNivel(){var m=getCalidadModo();if(m==='manual')return window.AtlasCalidad?window.AtlasCalidad.nivel:2;if(m==='maxima')return 2;if(m==='media')return 1;if(m==='luz')return 0;if(window.AtlasOnda&&window.AtlasOnda.medidor){var med=window.AtlasOnda.medidor();return med.nivel(2)}return 2}
-    function initCalidad(){var db=window.indexedDB||window.mozIndexedDB||window.webkitIndexedDB||window.msIndexedDB;if(!db){setCalidadModo('auto');actualizaBotonCalidad();return}var r=db.open('atlas',1);r.onerror=function(){setCalidadModo(navigator.hardwareConcurrency>=8&&navigator.deviceMemory>=8?'maxima':'auto');actualizaBotonCalidad()};r.onsuccess=function(e){var db=e.target.result,tx=db.transaction(['calidad'],'readonly'),s=tx.objectStore('calidad'),g=s.get('config');g.onerror=function(){setCalidadModo('auto');actualizaBotonCalidad()};g.onsuccess=function(e){var d=e.target.result;setCalidadModo(d?d.modo:'auto');actualizaBotonCalidad()}};r.onupgradeneeded=function(e){var db=e.target.result;if(!db.objectStoreNames.contains('calidad'))db.createObjectStore('calidad')}}
-    function setCalidadModo(m){if(!window.AtlasCalidad)window.AtlasCalidad={modo:m,nivel:2};else window.AtlasCalidad.modo=m;try{var db=window.indexedDB||window.mozIndexedDB||window.webkitIndexedDB||window.msIndexedDB;if(db){var r=db.open('atlas',1);r.onerror=function(){};r.onsuccess=function(e){var db=e.target.result,tx=db.transaction(['calidad'],'readwrite'),s=tx.objectStore('calidad');s.put({id:'config',modo:m,nivel:2})}}}catch(e){}}
+    var CAL=A&&A.calidadWeb?A.calidadWeb():null;
+    function initCalidad(){var hw=navigator.hardwareConcurrency>=8&&navigator.deviceMemory>=8?'maxima':'auto';(CAL?CAL.lee():Promise.resolve(null)).then(function(m){fijaModo(MODOS_CALIDAD.indexOf(m)>=0?m:hw);actualizaBotonCalidad()})}
+    function fijaModo(m){if(!window.AtlasCalidad)window.AtlasCalidad={modo:m,nivel:2};else window.AtlasCalidad.modo=m}
+    function setCalidadModo(m){fijaModo(m);if(CAL)CAL.pon(m)}
     function actualizaBotonCalidad(){var m=getCalidadModo();R.calidadBoton.textContent=T('calidad_'+m);R.calidadBoton.setAttribute('aria-pressed',m!=='auto'?'true':'false')}
     R.tcs = Object.keys(G.TCS).map(function (tc) {
       var co = G.TCS[tc].coste;
