@@ -101,6 +101,39 @@
       estela_max: 8,
       /* Burbujas por calidad (MOVIMIENTO 4): mar respira */
       burbujas_por_calidad: [0, 2, 5]
+    },
+    /* M17-bis 5 (firma F-A, 2026-10-10): LA TABLA DE DERIVADOS SEMANTICOS. Cada parametro visual y
+       sonoro con [formula, de que sale, clase, quien lo lee]. Clases: ESTADO (sale del estado del
+       juego), CALIDAD (proyeccion por el medidor de fps; jamas decide), CONSTANTE (declarada) y
+       SIN_LECTOR (declarado y nadie lo lee: deuda visible, no decoracion escondida). La prueba exige
+       una fila por cada clave de `fluidez` y de las recetas, y que el lector nombrado la lea de verdad. */
+    semantica: {
+      melt_alfa: ['cuadro previo * alfa', 'calidad', 'CALIDAD', 'wave_render.js'],
+      melt_zoom: ['escala del cuadro previo', 'calidad', 'CALIDAD', 'wave_render.js'],
+      melt_rotacion: ['giro del cuadro previo', 'calidad', 'CALIDAD', 'wave_render.js'],
+      vida_hue_base: ['H = base + (cobre - base) * (1 - vida)', 'vida restante', 'ESTADO', 'wave_render.js'],
+      vida_hue_cobre: ['H con vida 0', 'vida restante', 'ESTADO', 'wave_render.js'],
+      escudo_lightness_base: ['L = min + (base - min) * escudo', 'armadura', 'ESTADO', 'wave_render.js'],
+      escudo_lightness_min: ['L sin escudo', 'armadura', 'ESTADO', 'wave_render.js'],
+      escudo_ref: ['escudo = armadura / ref (ref = maximo medido)', 'armadura', 'ESTADO', 'wave_render.js'],
+      pulso_brillo_max: ['max * rampa de ganancia del pop', 'golpe que suena', 'ESTADO', 'wave_render.js'],
+      pulso_grosor_max: ['-', '-', 'SIN_LECTOR', null],
+      buffer_escala: ['-', '-', 'SIN_LECTOR', null],
+      buffer_ancho_max: ['-', '-', 'SIN_LECTOR', null],
+      dither_on: ['tramado 4x4', 'calidad', 'CALIDAD', 'wave_render.js'],
+      dither_patron: ['umbral por pixel (patron)', 'calidad', 'CALIDAD', 'wave_render.js'],
+      paso_grid: ['vertice redondeado a la rejilla', 'calidad', 'CALIDAD', 'wave_render.js'],
+      niebla_alfa: ['-', '-', 'SIN_LECTOR', null],
+      vignette_alfa: ['oscurecido de bordes', 'lo no explorado', 'ESTADO', 'mar.js'],
+      npc_chunk: ['NPC a resolucion baja', 'calidad', 'CALIDAD', 'mar.js'],
+      npc_escala: ['-', '-', 'SIN_LECTOR', null],
+      estela_max: ['-', '-', 'SIN_LECTOR', null],
+      burbujas_por_calidad: ['-', '-', 'SIN_LECTOR', null],
+      f: ['portadora = f * (1 - 0,25 * calor)', 'evento (golpe/cae/gana/pierde) y calor del Nucleo', 'ESTADO', 'core.js'],
+      m: ['moduladora = f * m', 'evento', 'ESTADO', 'core.js'],
+      indice: ['indice * (1 + 2 * calor)', 'calor del Nucleo', 'ESTADO', 'core.js'],
+      dur: ['duracion; tambien la del pulso visual', 'evento', 'ESTADO', 'core.js'],
+      gan: ['ganancia inicial de la rampa (sonido y pulso)', 'evento', 'ESTADO', 'core.js']
     }
   };
 

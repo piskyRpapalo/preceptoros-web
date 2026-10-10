@@ -198,4 +198,31 @@ await caso('M17-bis 1: coherencia, la curva visual es la rampa de ganancia del s
   return Math.abs(O.pulso(t) / max - sonido / pop.gan) < 1e-12 || { visual: O.pulso(t) / max, sonido: sonido / pop.gan };
 });
 
+// M17-bis 5: una fila de la tabla semantica por cada parametro visual y sonoro, y el lector existe.
+await caso('M17-bis 5: cada clave de fluidez y de las recetas tiene su fila semantica', () => {
+  const { V } = ONDA, tabla = V.semantica || {};
+  const claves = Object.keys(V.fluidez).concat(Object.keys(V.sonidos.pop));
+  const faltan = claves.filter((k) => !tabla[k]);
+  const sobran = Object.keys(tabla).filter((k) => !claves.includes(k));
+  return (!faltan.length && !sobran.length) || { faltan, sobran };
+});
+await caso('M17-bis 5: el lector nombrado lee de verdad su parametro', () => {
+  const { V } = ONDA, mal = [];
+  Object.entries(V.semantica).forEach(([k, [, , clase, lector]]) => {
+    if (clase === 'SIN_LECTOR') { return; }
+    const t = readFileSync(join(RAIZ, 'public/game', lector), 'utf-8');
+    const lee = lector === 'core.js' ? /\b[br]\.(f|m|indice|dur|gan)\b/.test(t) && t.includes(k) : t.includes(k);
+    if (!lee) { mal.push(k + ' -> ' + lector); }
+  });
+  return !mal.length || mal;
+});
+await caso('M17-bis 5: la deuda SIN_LECTOR es exactamente la medida (nadie mas la lee)', () => {
+  const { V } = ONDA;
+  const deuda = Object.entries(V.semantica).filter(([, f]) => f[2] === 'SIN_LECTOR').map(([k]) => k).sort();
+  const fuentes = ['wave_render.js', 'escena.js', 'mar.js', 'home_base_scene.js', 'summon_reveal.js', 'battle_replay.js']
+    .map((f) => readFileSync(join(RAIZ, 'public/game', f), 'utf-8')).join('\n');
+  const leidos = deuda.filter((k) => fuentes.includes(k));
+  return (!leidos.length && deuda.length === 7) || { deuda, leidos_aunque_dice_sin_lector: leidos };
+});
+
 process.stdout.write(JSON.stringify(casos));
