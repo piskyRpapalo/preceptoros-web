@@ -90,7 +90,10 @@
      Su curva es LA MISMA rampa de ganancia del sonido del golpe (receta 'pop' de valores.sonidos, que
      suena en ui-arena.js:148): de gan a 0,0001 en dur. Lo que se oye y lo que se ve se apagan juntos. */
   function pulso(ms) {
-    var p = (V.sonidos || {}).pop, max = F.pulso_brillo_max;
+    var S = raiz.AtlasSintesis, max = F.pulso_brillo_max;
+    /* M17-bis 3: si la sintesis esta cargada, la curva ES su envolvente (fm2 o fm3_adsr): una curva, dos sentidos. */
+    if (S && S.envolvente && S.receta) { var r = S.receta('pop', 0); return max && r ? max * S.envolvente(r, ms / 1000) / r.gan : 0; }
+    var p = (V.sonidos || {}).pop;
     if (!p || !max || ms < 0 || ms >= p.dur * 1000) { return 0; }
     return max * Math.pow(0.0001 / p.gan, ms / (p.dur * 1000));
   }

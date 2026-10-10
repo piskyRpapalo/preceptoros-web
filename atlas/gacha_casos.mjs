@@ -201,7 +201,7 @@ await caso('M17-bis 1: coherencia, la curva visual es la rampa de ganancia del s
 // M17-bis 5: una fila de la tabla semantica por cada parametro visual y sonoro, y el lector existe.
 await caso('M17-bis 5: cada clave de fluidez y de las recetas tiene su fila semantica', () => {
   const { V } = ONDA, tabla = V.semantica || {};
-  const claves = Object.keys(V.fluidez).concat(Object.keys(V.sonidos.pop));
+  const claves = Object.keys(V.fluidez).concat(Object.keys(V.sonidos.pop), Object.keys(V.sintesis));
   const faltan = claves.filter((k) => !tabla[k]);
   const sobran = Object.keys(tabla).filter((k) => !claves.includes(k));
   return (!faltan.length && !sobran.length) || { faltan, sobran };
@@ -223,6 +223,46 @@ await caso('M17-bis 5: la deuda SIN_LECTOR es exactamente la medida (nadie mas l
     .map((f) => readFileSync(join(RAIZ, 'public/game', f), 'utf-8')).join('\n');
   const leidos = deuda.filter((k) => fuentes.includes(k));
   return (!leidos.length && deuda.length === 7) || { deuda, leidos_aunque_dice_sin_lector: leidos };
+});
+
+// M17-bis 3 (EN_CURSO_hasta_escucha): ADSR + FM de tres senos detras de valores.sintesis.modo.
+function cargaSintesis(modo) {
+  const V = JSON.parse(JSON.stringify(require(join(RAIZ, 'public/game/valores.js'))));
+  V.sintesis.modo = modo;
+  const conexiones = [];
+  class Nodo { constructor(n) { this.n = n; this.frequency = { value: 0, n: n + '.frequency' };
+    this.gain = { value: 0, setValueAtTime() {}, linearRampToValueAtTime() {}, exponentialRampToValueAtTime() {} }; }
+    connect(d) { conexiones.push([this.n, d.n || d]); } start() {} stop() {} }
+  let k = 0;
+  class Ctx { constructor() { this.currentTime = 0; this.destination = 'destino'; this.state = 'running'; }
+    createOscillator() { return new Nodo('osc' + (k++)); } createGain() { return new Nodo('gan' + (k++)); } }
+  const ctx = { AtlasValores: V, AudioContext: Ctx, Math };
+  vm.runInNewContext(readFileSync(join(RAIZ, 'public/game/core.js'), 'utf-8'), ctx);
+  ctx.AtlasGacha = require(join(RAIZ, 'public/game/gacha.js'));
+  vm.runInNewContext(readFileSync(join(RAIZ, 'public/game/wave_render.js'), 'utf-8'), ctx);
+  return { S: ctx.AtlasSintesis, O: ctx.AtlasOnda, V, conexiones };
+}
+await caso('M17-bis 3: en modo fm2 (el de siempre) la receta y la envolvente no cambian', () => {
+  const { S } = cargaSintesis('fm2'), r = S.receta('pop', 0);
+  const exp = r.gan * Math.pow(0.0001 / r.gan, 0.4);
+  return (!r.adsr && !r.moduladora2 && Math.abs(S.envolvente(r, r.dur * 0.4) - exp) < 1e-12) || r;
+});
+await caso('M17-bis 3: en modo fm3_adsr la envolvente es ataque-caida-sostenido-relajacion', () => {
+  const { S } = cargaSintesis('fm3_adsr'), r = S.receta('pop', 0), [a, d, s] = r.adsr;
+  const e0 = S.envolvente(r, 0), ea = S.envolvente(r, a), es = S.envolvente(r, a + d + 0.001), efin = S.envolvente(r, r.dur);
+  return (e0 === 0 && Math.abs(ea - r.gan) < 1e-12 && Math.abs(es - r.gan * s) < 1e-12 && efin === 0) || { e0, ea, es, efin };
+});
+await caso('M17-bis 3: las DOS moduladoras quedan conectadas a la portadora (la joya rota, reparada)', () => {
+  const { S, conexiones } = cargaSintesis('fm3_adsr');
+  S.activa(true); S.suena('pop', 0);
+  const a_frecuencia = conexiones.filter(([, d]) => String(d).endsWith('.frequency'));
+  return a_frecuencia.length === 2 || conexiones;
+});
+await caso('M17-bis 3: coherencia en fm3_adsr, el pulso del golpe es la envolvente del sonido', () => {
+  const { S, O, V } = cargaSintesis('fm3_adsr'), r = S.receta('pop', 0), max = V.fluidez.pulso_brillo_max;
+  const ts = [0, 0.002, 0.01, 0.05, 0.1];
+  const mal = ts.filter((t) => Math.abs(O.pulso(t * 1000) - max * S.envolvente(r, t) / r.gan) > 1e-12);
+  return !mal.length || mal;
 });
 
 process.stdout.write(JSON.stringify(casos));

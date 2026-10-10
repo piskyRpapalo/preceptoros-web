@@ -44,6 +44,12 @@
       eclosion: { f: 440, m: 3, indice: 260, dur: 0.6, gan: 0.2 },
       adopcion: { f: 523, m: 1.5, indice: 80, dur: 0.45, gan: 0.18 }
     },
+    /* M17-bis 3 (firma F-A, EN_CURSO_hasta_escucha del Soberano): ADSR + FM de tres senos (portadora y
+       DOS moduladoras, ambas conectadas: la joya del mockup no las conectaba). `modo` decide; 'fm2' es el
+       sonido de siempre y sigue por defecto hasta la escucha A/B. adsr = [ataque s, caida s, sostenido
+       0-1, relajacion s]; m2 = moduladora2 / portadora; indice2 = fraccion del indice. PROVISIONALES:
+       los fija el oido del Soberano, que es la medida que falta. */
+    sintesis: { modo: 'fm2', adsr: [0.005, 0.03, 0.55, 0.06], m2: 0.5, indice2: 0.5 },
     army_tope: 60,
     /* Combate entre personas y patrullas (`arena.js`): rondas ENTERAS y todo PROVISIONAL. `ataque`
        pondera los stats de la tropa; `esquiva` va por mil por punto de sigilo, con tope; la armadura
@@ -133,7 +139,11 @@
       m: ['moduladora = f * m', 'evento', 'ESTADO', 'core.js'],
       indice: ['indice * (1 + 2 * calor)', 'calor del Nucleo', 'ESTADO', 'core.js'],
       dur: ['duracion; tambien la del pulso visual', 'evento', 'ESTADO', 'core.js'],
-      gan: ['ganancia inicial de la rampa (sonido y pulso)', 'evento', 'ESTADO', 'core.js']
+      gan: ['ganancia inicial de la rampa (sonido y pulso)', 'evento', 'ESTADO', 'core.js'],
+      modo: ['fm2 (siempre) o fm3_adsr (EN_CURSO_hasta_escucha)', 'decision del Soberano', 'CONSTANTE', 'core.js'],
+      adsr: ['envolvente del sonido y del pulso', 'evento', 'ESTADO', 'core.js'],
+      m2: ['moduladora2 = portadora * m2', 'evento', 'ESTADO', 'core.js'],
+      indice2: ['indice2 = indice * indice2', 'calor del Nucleo', 'ESTADO', 'core.js']
     }
   };
 
