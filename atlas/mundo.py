@@ -32,7 +32,7 @@ ASSETS = PUBLICO / "assets"
 # La incubadora y su Army (`ARMY` en `thegame.js`) se piden al abrir su pestana y no cuentan, como
 # `atlas-hud.js` y `atlas-opina.js`: lo que no baja al abrir no pesa en la puerta.
 PIEZAS = ["atlas-arte.js", "atlas-coord.js", "atlas-carta.js", "atlas-ondas.js", "atlas-obra.js", "atlas-gesto.js", "atlas-mapa.js", "atlas-dialogo.js", "atlas-motor.js",
-          "atlas-piso.js", "atlas.css", "thegame.js", "thegame.css", "preceptor-pixel.png",
+          "atlas-piso.js", "atlas.css", "thegame.js", "thegame.css",
           "atlas-piloto.js", "atlas-partida.js", "atlas-piloto-capa.js", "atlas-guardado.js", "atlas-mapa.css",
           "../game/juez.js"]
 

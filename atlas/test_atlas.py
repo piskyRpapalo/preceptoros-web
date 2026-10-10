@@ -25,7 +25,7 @@ PUBLICO = RAIZ.parent / "public"
 ASSETS = PUBLICO / "assets"
 PISO = ASSETS  # los guiones, la hoja y la tira viven en public/assets/
 CODIGO = ("atlas-arte.js", "atlas-coord.js", "atlas-carta.js", "atlas-ondas.js", "atlas-obra.js", "atlas-gesto.js", "atlas-mapa.js", "atlas-dialogo.js", "atlas-motor.js",
-          "atlas-piso.js", "atlas.css", "preceptor-pixel.png", "thegame.js", "thegame.css",
+          "atlas-piso.js", "atlas.css", "thegame.js", "thegame.css",
           "atlas-piloto.js", "atlas-partida.js", "atlas-piloto-capa.js", "atlas-guardado.js", "atlas-hud.js", "atlas-mapa.css")
 PILOTO = ("atlas-piloto.js", "atlas-partida.js", "atlas-piloto-capa.js")
 DATOS = RAIZ.parent / "data"
@@ -87,24 +87,25 @@ class Piso(unittest.TestCase):
             with self.subTest(lengua=l):
                 self.assertFalse(pedidas - set(d["ui"]), f"faltan {pedidas - set(d['ui'])}")
 
-    def test_el_sprite_es_el_unico_raster_y_no_va_al_precache(self):
-        """La tira del Preceptor se pide al abrir el dialogo, nunca de salida."""
+    def test_el_retrato_es_la_onda_del_emblema_sin_raster(self):
+        """Firma F2 del Soberano, 2026-10-10: identidad pura, cero imagenes. El guia
+        ya no es una tira PNG (firma del 2026-09-25, superada): es la onda del
+        emblema del sitio, y su espectro literal tiene que ser el que tira el motor."""
         codigo = sin_comentarios((PISO / "atlas-dialogo.js").read_text(encoding="utf-8"))
-        self.assertEqual(re.findall(r"\.src\s*=\s*([^;]+);", codigo), ["BASE + TIRA"])
-        self.assertIn("var TIRA = 'preceptor-pixel.png';", codigo)
-        for nombre in ("atlas-piso.js", "atlas-arte.js", "atlas-mapa.js"):
+        for nombre in ("atlas-dialogo.js", "atlas-piso.js", "atlas-arte.js", "atlas-mapa.js"):
             with self.subTest(fichero=nombre):
                 self.assertNotIn(".src", sin_comentarios(
                     (PISO / nombre).read_text(encoding="utf-8")), f"{nombre} pide un raster")
-        for f in ("sw.js", "sw-listas.js"):
-            ruta = PUBLICO / f
-            if ruta.exists():
-                with self.subTest(fichero=f):
-                    self.assertNotIn("preceptor-pixel", ruta.read_text(encoding="utf-8"),
-                                     "el sprite no se precachea: se carga a demanda")
-        tira = PISO / "preceptor-pixel.png"
-        self.assertTrue(tira.read_bytes().startswith(b"\x89PNG"))
-        self.assertLess(tira.stat().st_size, 96 * 1024, "la tira engorda")
+        self.assertFalse((PISO / "preceptor-pixel.png").exists(), "vuelve la tira PNG")
+        m = re.search(r"var EMBLEMA = (\[\[.*?\]\]);", codigo)
+        self.assertTrue(m, "sin espectro del emblema")
+        r = subprocess.run(["node", "-e", "const c=require('crypto'),G=require('./public/game/gacha.js');"
+                            "const s=c.createHash('sha256').update('atlas.emblema/1:preceptoros.org').digest('hex');"
+                            "process.stdout.write(JSON.stringify(G.tirada(s,'tc3').armonicos))"],
+                           cwd=RAIZ.parent, capture_output=True, text=True, timeout=60)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        self.assertEqual(json.loads(m.group(1)), json.loads(r.stdout),
+                         "el retrato no es el emblema que tira el motor")
 
     def test_celda_por_estado_es_determinista(self):
         """reposo 0, habla 1-2, revelar 3, alerta 4: el mapa congelado y el CSS
@@ -115,11 +116,8 @@ class Piso(unittest.TestCase):
         mapa = {k: [int(n) for n in re.findall(r"\d", v)]
                 for k, v in re.findall(r"(\w+):\s*(\[[^\]]*\]|\d)", m.group(1))}
         self.assertEqual(mapa, {"reposo": [0], "habla": [1, 2], "revelar": [3], "alerta": [4]})
-        css = (PISO / "atlas.css").read_text(encoding="utf-8")
-        for n in range(1, 5):
-            with self.subTest(celda=n):
-                self.assertIn(f'.atlas-pre[data-celda="{n}"] .atlas-pre-tira'
-                              f'{{transform:translateX(-{n * 20}%)}}', css)
+        # La celda ya no mueve una tira por CSS: repinta la onda (habla, revelar, alerta).
+        self.assertRegex(codigo, r"celda: function \(n\) \{[^}]*pinta\(\)", "la celda no repinta la onda")
         self.assertIn("CELDAS.habla[(paso >> 2) % 2]", codigo, "el habla no alterna por paso")
         self.assertIn("CELDAS.revelar", codigo)
         self.assertIn("alerta ? CELDAS.alerta : CELDAS.reposo", codigo)
