@@ -161,3 +161,16 @@
   background:#F2D08A;color:#2f2757;border-color:#F2D08A;cursor:default}
 #cab-nav .cab-boton[aria-current] .lor,
 #cab-nav .cab-boton[aria-current] .atelier{color:#2f2757}
+
+/* --- ABOUT (C1, 2026-10-05) -------------------------------------------------
+   La web es el juego: theGame va primero y lo de antes se pliega aqui, en una
+   linea discreta que ocupa la fila entera. Abierto, las cuatro puertas vuelven
+   a su rejilla de dos en dos. */
+#cab-nav .cab-about{grid-column:1/-1;font-size:.82rem;opacity:.8;text-align:center}
+#cab-nav .cab-about>summary{cursor:pointer;padding:.2rem;list-style-position:inside}
+#cab-nav .cab-about[open]{opacity:1}
+#cab-nav .cab-about-puertas{display:grid;grid-template-columns:repeat(2,1fr);gap:.4rem;margin-top:.4rem}
+/* Con las puertas plegadas la fila ya no empuja el cabezal hacia abajo, y en el telefono el busto
+   (anclado a `top:8.4rem`, esquina-cuenta.css) salia 21 px por debajo (medido, cabezal_cajas.mjs).
+   El cabezal reserva su alto como ya hacia en escritorio: `top` + `--esfera` + aire. */
+@media (max-width:1023px){#cabezal{position:relative;min-height:calc(8.4rem + var(--esfera) + .6rem)}}

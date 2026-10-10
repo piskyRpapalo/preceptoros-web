@@ -8,7 +8,7 @@ comprobacion que detecta y no bloquea no es una comprobacion: aqui no hay avisos
 solo verde o rojo.
 """
 import gzip
-import hashlib, html, json, re, unittest
+import hashlib, html, json, re, subprocess, sys, unittest
 from pathlib import Path
 
 RAIZ = Path(__file__).resolve().parent
@@ -168,8 +168,6 @@ LICENCIAS = {"LICENSE", "LICENSE-PROSE"}
 #     linea de precache son sitio para ~270 ficheros mas: la razon por la que un
 #     `capas.css` no cabia el 2026-09-05 deja de existir.
 TOPE_FICHERO = 16 * 1024
-TOPE_SPRITE = 50 * 1024
-TOPE_LAMINA = 30 * 1024
 
 
 def textos():
@@ -2400,8 +2398,16 @@ class Hub(unittest.TestCase):
                 self.assertIsInstance(p.get(campo), (int, float),
                                       f"la puerta {p['id']} no declara {campo}")
 
-    def test_cada_cerebro_declara_su_pais_y_la_bandera_existe(self):
-        """Una bandera que falta no falla: `onerror` la retira y no se ve.
+    def test_cada_cerebro_declara_su_pais_sin_bandera_raster(self):
+        """El pais se declara y se NOMBRA por lengua; ya no se dibuja con una bandera.
+
+        Enmendado el 2026-10-10 por la firma F2 del Soberano («identidad pura,
+        cero imagenes»): las tres banderas SVG no las pintaba nadie (censo de la
+        capa visual, plata OK) y este test era lo unico que las mantenia vivas.
+        Lo que se conserva es la regla de abajo: el pais va por lengua. Historia
+        del test original (por que el pais es el del modelo base):
+
+        Una bandera que falta no falla: `onerror` la retira y no se ve.
 
         Ese es el problema. La tarjeta sale entera, nadie ve un error, y el
         dibujo desaparece sin que nadie se entere -- la misma familia que el
@@ -2418,11 +2424,9 @@ class Hub(unittest.TestCase):
         for c in reg["cerebros"]:
             with self.subTest(cerebro=c["id"]):
                 self.assertIn("pais", c, f"{c['id']} no declara pais")
-                bandera = PUBLICO / "assets" / "banderas" / f"{c['pais']}.svg"
-                self.assertTrue(
-                    bandera.is_file(),
-                    f"{c['id']} ondea `{c['pais']}` y no hay {bandera.name}")
                 usados.add(c["pais"])
+        self.assertFalse((PUBLICO / "assets" / "banderas").exists(),
+                         "vuelven las banderas raster: la identidad es sin imagenes")
 
         # El NOMBRE del pais va por lengua: un `alt` en castellano en la
         # portada rusa es exactamente lo que este repo lleva meses corrigiendo.
@@ -3104,7 +3108,7 @@ class Hub(unittest.TestCase):
                          "la Torre vuelve a cargar el juego")
         self.assertFalse((A / "camino-atlas.js").exists(), "vuelve el cargador de la Torre")
         piezas = ("atlas-arte.js", "atlas-coord.js", "atlas-carta.js", "atlas-ondas.js", "atlas-mapa.js", "atlas-dialogo.js", "atlas-motor.js",
-                  "atlas-piso.js", "atlas.css", "preceptor-pixel.png", "thegame.js", "atlas-guardado.js", "atlas-opina.js", "atlas-hud.js", "atlas-obra.js", "atlas-gesto.js", "atlas-mapa.css")
+                  "atlas-piso.js", "atlas.css", "thegame.js", "atlas-guardado.js", "atlas-opina.js", "atlas-hud.js", "atlas-obra.js", "atlas-gesto.js", "atlas-mapa.css")
         listas = texto_del_worker()
         for q in piezas:
             with self.subTest(pieza=q):
@@ -4206,6 +4210,19 @@ class PWA(unittest.TestCase):
         self.assertIn("192x192", tam, "sin icono de 192 no hay instalacion")
         self.assertIn("512x512", tam, "sin icono de 512 no hay pantalla de arranque")
 
+    def test_iconos_y_tarjeta_salen_del_emblema(self):
+        """Firma F2-8 del Soberano, 2026-10-10: favicon, iconos PWA y og:image siguen
+        existiendo, pero CAMBIA SU ORIGEN: los genera bin/iconos_desde_emblema.py con la
+        onda del emblema del sitio. Lo publicado tiene que ser exactamente lo que el
+        generador produce hoy: un icono retocado a mano o un PNG pintado no pasa."""
+        try:
+            import PIL  # noqa: F401
+        except ImportError:
+            self.skipTest("NO_DATA · sin Pillow no se puede regenerar. Remedio: instalar Pillow")
+        r = subprocess.run([sys.executable, str(RAIZ / "bin" / "iconos_desde_emblema.py"), "--comprobar"],
+                           cwd=RAIZ, capture_output=True, text=True, timeout=120)
+        self.assertEqual(r.returncode, 0, "lo publicado no es lo que genera el emblema:\n" + r.stdout)
+
     def test_el_maskable_cabe_de_verdad_en_su_circulo(self):
         """No que lo diga el manifiesto: que lo diga el fichero.
 
@@ -4863,10 +4880,18 @@ class Traducciones(unittest.TestCase):
 
 class Imagenes(unittest.TestCase):
 
-    def test_el_sprite_pesa_menos_de_50_kb(self):
+    def test_no_vuelven_los_raster_retirados(self):
+        """Firma F2 del Soberano, 2026-10-10: identidad pura, cero imagenes.
+
+        Antes aqui se pesaban el sprite (despierta + habla < 50 KiB) y las cinco
+        laminas (< 30 KiB cada una). Ninguna pagina las pintaba (censo de la capa
+        visual); los tests eran lo unico que las mantenia vivas. Ahora se exige
+        lo contrario: que no vuelvan."""
         a = PUBLICO / "assets"
-        total = (a / "despierta.webp").stat().st_size + (a / "habla.webp").stat().st_size
-        self.assertLess(total, TOPE_SPRITE, f"el sprite pesa {total} B")
+        for nombre in ("despierta.webp", "habla.webp", "preceptor-pixel.png"):
+            with self.subTest(fichero=nombre):
+                self.assertFalse((a / nombre).exists(), f"vuelve {nombre}")
+        self.assertEqual(sorted(p.name for p in a.glob("lamina-*")), [], "vuelven las laminas")
 
     def test_ningun_asset_precacheado_esta_muerto(self):
         """Todo lo que `sw.js` mete en la cache lo pinta alguien.
@@ -4916,14 +4941,6 @@ class Imagenes(unittest.TestCase):
             muertos,
             "estos assets se precachean y no los pinta nadie -- peso que todos "
             "descargan y nadie ve: " + ", ".join(muertos))
-
-    def test_cada_lamina_pesa_menos_de_30_kb(self):
-        for p in sorted((PUBLICO / "assets").glob("lamina-*.webp")):
-            with self.subTest(lamina=p.name):
-                self.assertLess(p.stat().st_size, TOPE_LAMINA, f"{p.name}: {p.stat().st_size} B")
-
-    def test_hay_cinco_laminas(self):
-        self.assertEqual(len(list((PUBLICO / "assets").glob("lamina-*.webp"))), 5)
 
 
 class Contadores(unittest.TestCase):
@@ -5914,6 +5931,23 @@ class ElJuegoEnInglesEnLasNueve(unittest.TestCase):
         for l in ("ar", "de", "el", "en", "es", "fr", "it", "pt", "ru"):
             p = (PUBLICO / l / "index.html").read_text(encoding="utf-8")
             self.assertIn("/assets/cabezal-rotulos.js", p, f"/{l}/ no lleva la puerta del juego")
+
+    def test_la_portada_es_el_juego_y_lo_de_antes_va_en_about(self):
+        """C1 (plan firmado 2026-10-05: «la web es SOLO el juego»). Las nueve portadas abren el juego
+        solas, en tu casa; `#about` es la salida a lo de antes y no reabre. La navegacion pone theGame
+        primero y pliega las cuatro puertas de antes en un «About» discreto, sin borrar ninguna pagina."""
+        rot = sin_comentarios((PUBLICO / "assets" / "cabezal-rotulos.js").read_text(encoding="utf-8"))
+        self.assertIn(r"var PORTADA = /^\/(ar|de|el|en|es|fr|it|pt|ru)\/(index\.html)?$/;", rot)
+        self.assertIn("else if (!location.hash && PORTADA.test(location.pathname)) { juego(null, 'casa'); }", rot,
+                      "la portada no abre el juego")
+        self.assertIn("el('details', 'cab-about')", rot, "lo de antes no se pliega en About")
+        self.assertIn("nav.insertBefore(juegoP, nav.firstChild)", rot, "theGame no va primero")
+        capa = sin_comentarios((PUBLICO / "assets" / "thegame.js").read_text(encoding="utf-8"))
+        self.assertIn("ab.href = '#about'; ab.addEventListener('click', cierra);", capa, "el juego no lleva su About")
+        for l in ("ar", "de", "el", "en", "es", "fr", "it", "pt", "ru"):
+            for hoja in ("index.html", "benchmark.html", "community.html", "instalar.html"):
+                with self.subTest(lengua=l, hoja=hoja):
+                    self.assertTrue((PUBLICO / l / hoja).is_file(), f"/{l}/{hoja} se borro: About pliega, no borra")
 
 
 class WebLimpia(unittest.TestCase):

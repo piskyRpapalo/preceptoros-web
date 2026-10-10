@@ -89,8 +89,23 @@
     if (rareza === 'unico') { STATS.forEach(function (k) { stats[k] += nivel; }); }
     return {
       esquema: 'atlas.tropa/1', tc: tc, base: T.base, rareza: rareza,
-      prefijo: pre, sufijo: suf, stats: stats, armonicos: armonicos(rareza, g), semilla: semilla
+      prefijo: pre, sufijo: suf, stats: stats, armonicos: armonicos(rareza, g), semilla: semilla, campo_origen: 'medido'
     };
+  }
+
+  /* CAMPO_ORIGEN (M18-bis): de donde salio el espectro que se pinta. 'medido' = lo tiro el motor con
+     su semilla, se dibuja entero. 'emulado' = prestado o regenerado sin motor: se dibujan enteros solo
+     los dos primeros terminos y los altos se desvanecen (cada uno a la mitad del anterior), que es la
+     niebla honesta: se ve que esa onda no tiene detalle medido. Una tropa sin el campo es de antes de
+     M18 y salio de `tirada`, asi que es medida. Un valor que no esta aqui no se adivina: lanza. */
+  var ORIGENES = ['medido', 'emulado'];
+  function espectro(t) {
+    var o = t.campo_origen || 'medido';
+    if (ORIGENES.indexOf(o) < 0) { throw new Error('campo_origen'); }
+    if (o === 'medido') { return t.armonicos; }
+    return t.armonicos.map(function (h, i) {
+      return i < 2 ? h : [h[0], h[1] >> (i - 1), h[2] >> (i - 1), h[3]];
+    });
   }
 
   /* El huevo tambien es una onda: un ovalo con un latido. */
@@ -145,7 +160,7 @@
 
   var AtlasGacha = {
     ESTADO: V.estado, VERSION_VALORES: V.version, TCS: TCS, RAREZAS: RAREZAS, PREFIJOS: PREFIJOS, SUFIJOS: SUFIJOS, STATS: STATS, HUEVO: HUEVO,
-    generador: generador, tirada: tirada, mezcla: mezcla, punto: punto, compacta: compacta, caracter: caracter, odds: odds
+    ORIGENES: ORIGENES, generador: generador, tirada: tirada, espectro: espectro, mezcla: mezcla, punto: punto, compacta: compacta, caracter: caracter, odds: odds
   };
   if (typeof module === 'object' && module.exports) { module.exports = AtlasGacha; }
   else { raiz.AtlasGacha = AtlasGacha; }

@@ -27,13 +27,36 @@
     var b = BASE[tipo];
     if (!b) { return null; }
     var c = Math.max(0, Math.min(1, Number(calor) || 0));
-    return {
+    var r = {
       tipo: tipo,
       portadora: Math.round(b.f * (1 - 0.25 * c)),
       moduladora: Math.round(b.f * b.m * (1 - 0.25 * c)),
       indice: Math.round(b.indice * (1 + 2 * c)),
       dur: b.dur, gan: b.gan
-    };
+    }, I = V.sintesis;
+    /* M17-bis 3: en modo 'fm3_adsr' la receta lleva su envolvente y una SEGUNDA moduladora. */
+    if (I && I.modo === 'fm3_adsr') {
+      r.adsr = I.adsr.slice();
+      r.moduladora2 = Math.round(r.portadora * I.m2);
+      r.indice2 = Math.round(r.indice * I.indice2);
+    }
+    /* M17-bis 4: la urgencia sale del SELLO del evento, no de un capricho del sonido. */
+    var u = I && I.sello && I.urgencia ? (I.urgencia[I.sello[tipo]] || 0) : 0;
+    if (u > 0) { r.vibrato = { hz: I.vibrato_hz, prof: Math.round(r.portadora * I.vibrato_prof * u) }; }
+    return r;
+  }
+
+  /* LA ENVOLVENTE, pura: la ganancia del sonido en el segundo t. La usa `suena` para programar el
+     volumen y la usa el pulso del golpe (wave_render) para dibujarse: una curva, dos sentidos.
+     Sin adsr es la rampa de siempre (gan -> 0,0001 en dur); con adsr, ataque-caida-sostenido-relajacion. */
+  function envolvente(r, t) {
+    if (!r || t < 0 || t >= r.dur) { return 0; }
+    if (!r.adsr) { return r.gan * Math.pow(0.0001 / r.gan, t / r.dur); }
+    var a = r.adsr[0], d = r.adsr[1], s = r.adsr[2], rel = r.adsr[3], fin = r.dur - rel;
+    if (t < a) { return r.gan * t / a; }
+    if (t < a + d) { return r.gan * (1 - (1 - s) * (t - a) / d); }
+    if (t < fin) { return r.gan * s; }
+    return r.gan * s * (1 - (t - fin) / rel);
   }
 
   /* El calor que si se puede medir: la presion del Nucleo en la instantanea. */
@@ -75,9 +98,31 @@
     car.type = 'sine'; mod.type = 'sine';
     car.frequency.value = r.portadora; mod.frequency.value = r.moduladora;
     prof.gain.value = r.indice;
-    sal.gain.setValueAtTime(r.gan, t);
-    sal.gain.exponentialRampToValueAtTime(0.0001, t + r.dur);
+    if (r.adsr) {
+      var A = r.adsr, fin = t + r.dur - A[3];
+      sal.gain.setValueAtTime(0, t);
+      sal.gain.linearRampToValueAtTime(r.gan, t + A[0]);
+      sal.gain.linearRampToValueAtTime(r.gan * A[2], t + A[0] + A[1]);
+      sal.gain.setValueAtTime(r.gan * A[2], fin);
+      sal.gain.linearRampToValueAtTime(0, t + r.dur);
+    } else {
+      sal.gain.setValueAtTime(r.gan, t);
+      sal.gain.exponentialRampToValueAtTime(0.0001, t + r.dur);
+    }
     mod.connect(prof); prof.connect(car.frequency);
+    if (r.moduladora2) {
+      /* La segunda moduladora, CONECTADA (la joya del mockup creaba dos y no conectaba ninguna). */
+      var mod2 = ctx.createOscillator(), prof2 = ctx.createGain();
+      mod2.type = 'sine'; mod2.frequency.value = r.moduladora2; prof2.gain.value = r.indice2;
+      mod2.connect(prof2); prof2.connect(car.frequency);
+      mod2.start(t); mod2.stop(t + r.dur);
+    }
+    if (r.vibrato) {
+      var lfo = ctx.createOscillator(), vib = ctx.createGain();
+      lfo.type = 'sine'; lfo.frequency.value = r.vibrato.hz; vib.gain.value = r.vibrato.prof;
+      lfo.connect(vib); vib.connect(car.frequency);
+      lfo.start(t); lfo.stop(t + r.dur);
+    }
     car.connect(sal); sal.connect(ctx.destination);
     car.start(t); mod.start(t); car.stop(t + r.dur); mod.stop(t + r.dur);
     return r;
@@ -85,7 +130,7 @@
 
   /* El contexto abierto por el interruptor, para la voz exacta (`atlas-voz.js`); apagado, null. */
   function contexto() { return activo ? ctx : null; }
-  var AtlasSintesis = { BASE: BASE, receta: receta, calorDe: calorDe, activa: activa, suena: suena, vozDe: vozDe,
+  var AtlasSintesis = { BASE: BASE, receta: receta, envolvente: envolvente, calorDe: calorDe, activa: activa, suena: suena, vozDe: vozDe,
                         contexto: contexto };
   if (typeof module === 'object' && module.exports) { module.exports = AtlasSintesis; }
   else { raiz.AtlasSintesis = AtlasSintesis; }

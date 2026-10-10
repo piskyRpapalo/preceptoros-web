@@ -17,10 +17,13 @@
   'use strict';
 
   var E = window.AtlasEscena, K = window.AtlasCanon, N = window.AtlasNiebla, C = window.AtlasCamara;
+  var F = (window.AtlasValores && window.AtlasValores.fluidez) || {}, O = window.AtlasOnda || {};
   var TIERRA = [[5, 8, 18], [8, 16, 34], [12, 28, 52], [16, 42, 68], [22, 62, 84], [40, 92, 100], [96, 118, 104]];
   var NIEBLA = [null, [64, 72, 96]], TESELA = 240, RES = 4, VE = 820, PASO = 90;
   var ANILLO = N.ANILLO;
 
+  /* npc_chunk es de clase CALIDAD (valores.semantica): solo cuando la calidad elegida baja de Maxima. */
+  function baja() { var q = window.AtlasCalidad; return !!q && (q.modo === 'media' || q.modo === 'luz'); }
   function quieto() { return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches; }
   function el(tag, clase, texto) { var n = document.createElement(tag); if (clase) { n.className = clase; } if (texto != null) { n.textContent = texto; } return n; }
 
@@ -74,13 +77,18 @@
     function mueve(dx, dy) { movido = true; if (C.empuja(cam, dx, dy, circ, quieto())) { choca(); } }
 
     /* --- el terreno y la niebla, por teselas ------------------------------------------------------ */
+    /* MOVIMIENTO 4 - M17: Mar respira - offset temporal determinista */
+    var offsetTemporal = 0;
     function tesela(i, j) {
       var k = i + ',' + j;
       if (tierra[k]) { return tierra[k]; }
       if (nt > 90) { tierra = {}; nt = 0; }
       var n = TESELA / RES;
+      /* MOVIMIENTO 4: offset temporal para deriva lenta */
+      var offsetX = Math.sin(offsetTemporal * 0.0001) * 10;
+      var offsetY = Math.cos(offsetTemporal * 0.0001) * 10;
       tierra[k] = E.textura(n, n, function (x, y) {
-        var wx = i * TESELA + x * RES, wy = j * TESELA + y * RES;
+        var wx = i * TESELA + x * RES + offsetX, wy = j * TESELA + y * RES + offsetY;
         return Math.max(0, Math.min(1, E.fbm(wx / 210, wy / 210, 11) * 1.15 - 0.12 + E.fbm(wx / 60, wy / 60, 4) * 0.12));
       }, TIERRA);
       nt++;
@@ -139,6 +147,8 @@
       if (c.height !== Math.round(h * dpr)) { c.height = Math.round(h * dpr); c.style.height = h + 'px'; }
       var g = c.getContext('2d'), W = c.width, H = c.height, q = quieto(), t = q ? 0 : ts, z = W / VE * (w < 600 ? 1.15 : 1);
       col = col || f.colores();
+      /* MOVIMIENTO 4: actualizar offset temporal */
+      offsetTemporal = t;
       /* La clave llega despues (promesa): si aun no te has movido, la camara va a tu casa en cuanto se sabe. */
       if (!cam || (!movido && centro === N.HEX && f.pub())) { aCasa(!!cam); }
       if (!(cuadros++ % 30)) { despeja(); }
@@ -161,6 +171,7 @@
         g.lineWidth = 1.6 * dpr; pulso(g, cen, d.p, s, E.rapidez(3 + Math.min(10, hx.gen.valor / 800)), 5 * dpr); g.lineWidth = dpr;
       });
       var sel = f.sel();
+      var rec = (f.luchados && f.luchados()) || {};
       f.lugares().forEach(function (l, i) {
         var s = sitio(l), p = P(s.x, s.y), t0 = l.lider, r = 18 * dpr;
         if (sel === l) {
@@ -169,9 +180,25 @@
           g.beginPath(); g.arc(p[0], p[1], r * 1.7, 0, 2 * Math.PI); g.stroke(); g.globalAlpha = 1; g.lineWidth = dpr;
         }
         var dx = q ? 0 : Math.sin(t * 0.0006 + i) * 3 * dpr;
-        E.figura(g, t0.armonicos, p[0] + dx, p[1], r, { color: l.npc ? E.tono(t0) : col.suya, giro: t * 0.0004 * (l.npc ? -1 : 1),
-                                                       grosor: 1.5 * dpr, brillo: (E.BRILLO[t0.rareza] + (l.npc ? 0 : 8)) * dpr });
+        /* MOVIMIENTO 8 - M17: Sprites chunky para NPCs */
+        if (l.npc && F.npc_chunk && baja()) {
+          var clave = 'npc_' + l.id + '_' + r;
+          /* 1/4 de escala y ampliado x4 sin suavizar: el pixel gordo que declara 75c7ad0 (pintaba x4). */
+          var cv = O.sprite(t0.armonicos, r / 4, l.npc ? E.tono(t0) : col.suya, clave, dpr);
+          g.imageSmoothingEnabled = false;
+          g.drawImage(cv, p[0] + dx - cv.width * 2, p[1] - cv.height * 2, cv.width * 4, cv.height * 4);
+          g.imageSmoothingEnabled = true;
+        } else {
+          E.figura(g, t0.armonicos, p[0] + dx, p[1], r, { color: l.npc ? E.tono(t0) : col.suya, giro: t * 0.0004 * (l.npc ? -1 : 1),
+                                                         grosor: 1.5 * dpr, brillo: (E.BRILLO[t0.rareza] + (l.npc ? 0 : 8)) * dpr });
+        }
         rotulo(g, f.nombre(l), p[0], p[1] + r + 15 * dpr);
+        /* Conquistado: ganado en ESTE aparato (FIRMO 2026-10-10). */
+        var rl = rec[l.clave], em = f.emblema();
+        if (rl && rl.g) {
+          rotulo(g, f.texto('arena_conquistado_mapa'), p[0], p[1] + r + 31 * dpr);
+          if (em) { E.figura(g, em.armonicos, p[0] + r * 1.5, p[1] - r * 1.2, r * 0.45, { color: col.tuya, grosor: 1.4 * dpr, brillo: 6 * dpr }); }
+        }
       });
       H0.forEach(function (n) {
         var p = P(n.x, n.y), r = 26 * dpr, med = n.gen.estado === 'MEDIDO';
@@ -189,6 +216,14 @@
         if (em) { E.figura(g, em.armonicos, yo[0], yo[1], er, { color: col.tuya, giro: t * 0.0003, grosor: 2.2 * dpr, brillo: 14 * dpr }); }
       }
       capas(g, W, H, z, bruma);
+      /* MOVIMIENTO 7 - M17: Vignette barato - gradiente radial cacheado */
+      if (!quieto() && F.vignette_alfa) {
+        var grad = g.createRadialGradient(W/2, H/2, 0, W/2, H/2, Math.max(W, H)/2);
+        grad.addColorStop(0, 'rgba(0,0,0,' + F.vignette_alfa + ')');
+        grad.addColorStop(1, 'rgba(0,0,0,0)');
+        g.fillStyle = grad;
+        g.fillRect(0, 0, W, H);
+      }
       /* Lo que esta en la niebla tambien se DECLARA: su anillo vacio y su rotulo, por encima. */
       H0.forEach(function (n) {
         var p = P(n.x, n.y), med = n.gen.estado === 'MEDIDO';

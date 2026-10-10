@@ -227,7 +227,7 @@
     G = window.AtlasGacha; A = window.AtlasArmy; S = window.AtlasSintesis;
     var zona = document.getElementById('atlas-juego');
     if (!G || !A || !S || !zona || zona.querySelector('.atlas-incubadora')) { return; }
-    capa = c; army = A.crea(A.verificaWeb);
+    capa = c; army = A.crea(A.verificaWeb, A.almacenWeb ? A.almacenWeb() : null);
     var s = el('section', 'panel atlas-incubadora');
     s.appendChild(el('h4', null, T('inc_h')));
     s.appendChild(el('p', 'atlas-nota', T('inc_nota')));
@@ -241,6 +241,21 @@
       if (on) { S.suena('huevo', calor()); } else { dice(T('sonido_nd')); }
     });
     R.caja.appendChild(R.sonido);
+
+    /* MOVIMIENTO 0 - M17: Interruptor calidad Auto/Max/Med/Luz */
+    var MODOS_CALIDAD = ['auto','maxima','media','luz'];
+    R.calidadBoton = boton(T('calidad_auto'));
+    R.calidadBoton.setAttribute('aria-pressed','false');
+    R.calidadBoton.setAttribute('aria-label',T('calidad_desc'));
+    R.calidadBoton.addEventListener('click',function(){var m=getCalidadModo(),i=(MODOS_CALIDAD.indexOf(m)+1)%4;setCalidadModo(MODOS_CALIDAD[i]);actualizaBotonCalidad();dice(rellena(T('calidad_cambiada'),{modo:T('calidad_'+MODOS_CALIDAD[i])}))});
+    R.caja.appendChild(R.calidadBoton);
+    function getCalidadModo(){return window.AtlasCalidad?window.AtlasCalidad.modo:'auto'}
+    function getCalidadNivel(){var m=getCalidadModo();if(m==='manual')return window.AtlasCalidad?window.AtlasCalidad.nivel:2;if(m==='maxima')return 2;if(m==='media')return 1;if(m==='luz')return 0;if(window.AtlasOnda&&window.AtlasOnda.medidor){var med=window.AtlasOnda.medidor();return med.nivel(2)}return 2}
+    var CAL=A&&A.calidadWeb?A.calidadWeb():null;
+    function initCalidad(){var hw=navigator.hardwareConcurrency>=8&&navigator.deviceMemory>=8?'maxima':'auto';(CAL?CAL.lee():Promise.resolve(null)).then(function(m){fijaModo(MODOS_CALIDAD.indexOf(m)>=0?m:hw);actualizaBotonCalidad()})}
+    function fijaModo(m){if(!window.AtlasCalidad)window.AtlasCalidad={modo:m,nivel:2};else window.AtlasCalidad.modo=m}
+    function setCalidadModo(m){fijaModo(m);if(CAL)CAL.pon(m)}
+    function actualizaBotonCalidad(){var m=getCalidadModo();R.calidadBoton.textContent=T('calidad_'+m);R.calidadBoton.setAttribute('aria-pressed',m!=='auto'?'true':'false')}
     R.tcs = Object.keys(G.TCS).map(function (tc) {
       var co = G.TCS[tc].coste;
       var b = boton(T(tc) + ' · ' + rellena(T('inc_coste'), { cobre: co.cobre, luz: co.luz }));
@@ -268,6 +283,15 @@
     R.army = el('ul', 'atlas-army'); s.appendChild(R.army);
     zona.appendChild(s);
     pinta(); pintaArmy();
+    /* MOVIMIENTO 0 - M17: Inicializar calidad */
+    initCalidad();
+    /* El army guardado en este aparato vuelve re-verificado (C1); lo que no verifica se dice. */
+    if (army.restaura) {
+      army.restaura().then(function (r) {
+        pintaArmy();
+        if (r.fuera.length) { dice(rellena(T('army_fuera'), { n: r.fuera.length, m: r.fuera[0] })); }
+      });
+    }
     reloj = setInterval(tic, window.AtlasMotor.CICLO_MS);
   }
 

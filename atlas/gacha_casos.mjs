@@ -169,4 +169,123 @@ await caso('sintesis: el calor del Nucleo hace el sonido mas grave y aspero', ()
 await caso('sintesis: el calor sale de la instantanea (presion del Nucleo), no se inventa', () =>
   S.calorDe({ integridad: 50, integridad_max: 100 }) === 0.5 && S.calorDe(null) === 0);
 
+// M17-bis (firma F-A, 2026-10-10): el color dice vida (H) y escudo (L); el pulso del golpe sigue la
+// MISMA curva que el sonido del golpe. Se carga wave_render.js en un contexto sin DOM (no dibuja).
+const ONDA = (() => {
+  const V = require(join(RAIZ, 'public/game/valores.js'));
+  const ctx = { AtlasValores: V, AtlasGacha: require(join(RAIZ, 'public/game/gacha.js')), Math };
+  vm.runInNewContext(readFileSync(join(RAIZ, 'public/game/wave_render.js'), 'utf-8'), ctx);
+  return { O: ctx.AtlasOnda, V };
+})();
+await caso('M17-bis 2: L sale del escudo, no de la vida', () => {
+  const { O } = ONDA;
+  const sana = O.colorVida(1, null, 24), herida = O.colorVida(0.2, null, 24), sinEscudo = O.colorVida(1, null, 2);
+  return (sana[2] === herida[2] && sana[0] !== herida[0] && sinEscudo[2] < sana[2]) ||
+    { sana, herida, sinEscudo };
+});
+await caso('M17-bis 2: el escudo medido mas alto (24) da la L maxima', () => {
+  const { O, V } = ONDA;
+  return O.colorVida(1, null, 24)[2] === V.fluidez.escudo_lightness_base || O.colorVida(1, null, 24);
+});
+await caso('M17-bis 1: el pulso del golpe dura lo que suena el pop y nace en pulso_brillo_max', () => {
+  const { O, V } = ONDA, pop = V.sonidos.pop, max = V.fluidez.pulso_brillo_max;
+  const ini = O.pulso(0), fin = O.pulso(pop.dur * 1000), medio = O.pulso(pop.dur * 500);
+  return (Math.abs(ini - max) < 1e-12 && fin === 0 && medio > 0 && medio < ini) || { ini, medio, fin };
+});
+await caso('M17-bis 1: coherencia, la curva visual es la rampa de ganancia del sonido', () => {
+  const { O, V } = ONDA, pop = V.sonidos.pop, max = V.fluidez.pulso_brillo_max, t = pop.dur * 1000 * 0.37;
+  const sonido = pop.gan * Math.pow(0.0001 / pop.gan, 0.37);
+  return Math.abs(O.pulso(t) / max - sonido / pop.gan) < 1e-12 || { visual: O.pulso(t) / max, sonido: sonido / pop.gan };
+});
+
+// M17-bis 5: una fila de la tabla semantica por cada parametro visual y sonoro, y el lector existe.
+await caso('M17-bis 5: cada clave de fluidez y de las recetas tiene su fila semantica', () => {
+  const { V } = ONDA, tabla = V.semantica || {};
+  const claves = Object.keys(V.fluidez).concat(Object.keys(V.sonidos.pop), Object.keys(V.sintesis));
+  const faltan = claves.filter((k) => !tabla[k]);
+  const sobran = Object.keys(tabla).filter((k) => !claves.includes(k));
+  return (!faltan.length && !sobran.length) || { faltan, sobran };
+});
+await caso('M17-bis 5: el lector nombrado lee de verdad su parametro', () => {
+  const { V } = ONDA, mal = [];
+  Object.entries(V.semantica).forEach(([k, [, , clase, lector]]) => {
+    if (clase === 'SIN_LECTOR') { return; }
+    const t = readFileSync(join(RAIZ, 'public/game', lector), 'utf-8');
+    const lee = lector === 'core.js' ? /\b[br]\.(f|m|indice|dur|gan)\b/.test(t) && t.includes(k) : t.includes(k);
+    if (!lee) { mal.push(k + ' -> ' + lector); }
+  });
+  return !mal.length || mal;
+});
+await caso('M17-bis 5: el lector declara el objeto del que lee (F sin declarar rompio el MAP)', () => {
+  const { V } = ONDA, mal = [];
+  Object.entries(V.semantica).forEach(([k, [, , clase, lector]]) => {
+    if (clase === 'SIN_LECTOR' || lector === 'core.js') { return; }
+    const t = readFileSync(join(RAIZ, 'public/game', lector), 'utf-8');
+    for (const m of t.matchAll(new RegExp('\\b([A-Za-z_$][\\w$]*)\\.' + k + '\\b', 'g'))) {
+      if (!new RegExp('(^|[\\s,(;])' + m[1].replace('$', '\\$') + '\\s*=[^=]', 'm').test(t)) { mal.push(k + ' -> ' + lector + ' lee ' + m[1] + ' sin declararlo'); }
+    }
+  });
+  return !mal.length || [...new Set(mal)];
+});
+await caso('M17-bis 5: la deuda SIN_LECTOR es exactamente la medida (nadie mas la lee)', () => {
+  const { V } = ONDA;
+  const deuda = Object.entries(V.semantica).filter(([, f]) => f[2] === 'SIN_LECTOR').map(([k]) => k).sort();
+  const fuentes = ['wave_render.js', 'escena.js', 'mar.js', 'home_base_scene.js', 'summon_reveal.js', 'battle_replay.js']
+    .map((f) => readFileSync(join(RAIZ, 'public/game', f), 'utf-8')).join('\n');
+  const leidos = deuda.filter((k) => fuentes.includes(k));
+  return (!leidos.length && deuda.length === 7) || { deuda, leidos_aunque_dice_sin_lector: leidos };
+});
+
+// M17-bis 3 (EN_CURSO_hasta_escucha): ADSR + FM de tres senos detras de valores.sintesis.modo.
+function cargaSintesis(modo) {
+  const V = JSON.parse(JSON.stringify(require(join(RAIZ, 'public/game/valores.js'))));
+  V.sintesis.modo = modo;
+  const conexiones = [];
+  class Nodo { constructor(n) { this.n = n; this.frequency = { value: 0, n: n + '.frequency' };
+    this.gain = { value: 0, setValueAtTime() {}, linearRampToValueAtTime() {}, exponentialRampToValueAtTime() {} }; }
+    connect(d) { conexiones.push([this.n, d.n || d]); } start() {} stop() {} }
+  let k = 0;
+  class Ctx { constructor() { this.currentTime = 0; this.destination = 'destino'; this.state = 'running'; }
+    createOscillator() { return new Nodo('osc' + (k++)); } createGain() { return new Nodo('gan' + (k++)); } }
+  const ctx = { AtlasValores: V, AudioContext: Ctx, Math };
+  vm.runInNewContext(readFileSync(join(RAIZ, 'public/game/core.js'), 'utf-8'), ctx);
+  ctx.AtlasGacha = require(join(RAIZ, 'public/game/gacha.js'));
+  vm.runInNewContext(readFileSync(join(RAIZ, 'public/game/wave_render.js'), 'utf-8'), ctx);
+  return { S: ctx.AtlasSintesis, O: ctx.AtlasOnda, V, conexiones };
+}
+await caso('M17-bis 3: en modo fm2 (el de siempre) la receta y la envolvente no cambian', () => {
+  const { S } = cargaSintesis('fm2'), r = S.receta('pop', 0);
+  const exp = r.gan * Math.pow(0.0001 / r.gan, 0.4);
+  return (!r.adsr && !r.moduladora2 && Math.abs(S.envolvente(r, r.dur * 0.4) - exp) < 1e-12) || r;
+});
+await caso('M17-bis 3: en modo fm3_adsr la envolvente es ataque-caida-sostenido-relajacion', () => {
+  const { S } = cargaSintesis('fm3_adsr'), r = S.receta('pop', 0), [a, d, s] = r.adsr;
+  const e0 = S.envolvente(r, 0), ea = S.envolvente(r, a), es = S.envolvente(r, a + d + 0.001), efin = S.envolvente(r, r.dur);
+  return (e0 === 0 && Math.abs(ea - r.gan) < 1e-12 && Math.abs(es - r.gan * s) < 1e-12 && efin === 0) || { e0, ea, es, efin };
+});
+await caso('M17-bis 3: las DOS moduladoras quedan conectadas a la portadora (la joya rota, reparada)', () => {
+  const { S, conexiones } = cargaSintesis('fm3_adsr');
+  S.activa(true); S.suena('pop', 0);
+  const a_frecuencia = conexiones.filter(([, d]) => String(d).endsWith('.frequency'));
+  return a_frecuencia.length === 2 || conexiones;
+});
+await caso('M17-bis 3: coherencia en fm3_adsr, el pulso del golpe es la envolvente del sonido', () => {
+  const { S, O, V } = cargaSintesis('fm3_adsr'), r = S.receta('pop', 0), max = V.fluidez.pulso_brillo_max;
+  const ts = [0, 0.002, 0.01, 0.05, 0.1];
+  const mal = ts.filter((t) => Math.abs(O.pulso(t * 1000) - max * S.envolvente(r, t) / r.gan) > 1e-12);
+  return !mal.length || mal;
+});
+
+// M17-bis 4: lo que espera firma vibra; lo firmado suena quieto. La urgencia sale del sello.
+await caso('M17-bis 4: la eclosion (espera firma) vibra; la adopcion (firmada) y el golpe no', () => {
+  const { S } = cargaSintesis('fm2'), e = S.receta('eclosion', 0), a = S.receta('adopcion', 0), p = S.receta('pop', 0);
+  return (e.vibrato && e.vibrato.prof > 0 && !a.vibrato && !p.vibrato) || { e: e.vibrato, a: a.vibrato, p: p.vibrato };
+});
+await caso('M17-bis 4: el vibrato llega de verdad a la portadora solo cuando hay urgencia', () => {
+  const uno = cargaSintesis('fm2'); uno.S.activa(true); uno.S.suena('eclosion', 0);
+  const dos = cargaSintesis('fm2'); dos.S.activa(true); dos.S.suena('adopcion', 0);
+  const n = (c) => c.conexiones.filter(([, d]) => String(d).endsWith('.frequency')).length;
+  return (n(uno) === 2 && n(dos) === 1) || { eclosion: uno.conexiones, adopcion: dos.conexiones };
+});
+
 process.stdout.write(JSON.stringify(casos));

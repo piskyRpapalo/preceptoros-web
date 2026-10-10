@@ -5,16 +5,14 @@
    respuestas. Es el lexico canonico de §A llevado a su forma natural: el
    fallo es un peligro del mundo, y quien lo explica es alguien.
 
-   EL GUIA ES PRECEPTOR EN PIXEL ART (firmado por el Soberano, 2026-09-25).
-   Choca con el render pulido del cabezal A PROPOSITO: fuera del juego el guia
-   es marmol pulido; dentro del Bosque Sumergido es un recuerdo de Atlantida,
-   y un recuerdo se ve a baja fidelidad. No se unifican los dos estilos.
-   Una sola tira de cinco celdas (`preceptor-pixel.png`, 69 KB), pedida al
-   abrir el primer dialogo y nunca precacheada:
-     celda 0 reposo · 1-2 habla (ciclan al ritmo del texto) · 3 revelar ·
-     4 alerta. El estado del Nucleo se lee en el OJO sin una palabra: en
-     ALERTA ROJA se tine de cobre con una capa estatica (`mix-blend-mode`),
-     sin filtros ni animacion que cuesten fotogramas.
+   EL GUIA ES SU ONDA (firma del Soberano del 2026-10-10, F2: «identidad
+   pura, cero imagenes»; supera a la del 2026-09-25, que lo hacia pixel art con
+   una tira PNG de 69 KB). El retrato es el EMBLEMA DEL SITIO: la tropa de la
+   semilla sha256('atlas.emblema/1:preceptoros.org') en tc3, fijada aqui como
+   literal (test_atlas la recalcula con el motor). Las cinco celdas siguen:
+     0 reposo · 1-2 habla (ciclan al ritmo del texto: la onda late) · 3 revelar
+     (trazo grueso) · 4 alerta (cobre). Sin bucle de animacion: se repinta solo
+     cuando cambia la celda.
 
    NEREA QUEDA COMO VOZ SECUNDARIA. Su retrato SVG sigue aqui
    (`retratoNerea`), construido nodo a nodo, para cuando haya mas de una voz.
@@ -47,25 +45,34 @@
   /* EL MAPA CELDA <-> ESTADO, en un solo sitio y congelado: lo lee la prueba
      de determinismo de `test_atlas.py`. */
   var CELDAS = Object.freeze({ reposo: 0, habla: [1, 2], revelar: 3, alerta: 4 });
-  var TIRA = 'preceptor-pixel.png';
-  var yo = document.currentScript;
-  var BASE = (yo && yo.dataset.base) || '/';
+  var EMBLEMA = [[1, 24, 24, 0], [-1, 9, 8, 17], [5, 8, 9, 55]];
+  /* Tono del caracter del emblema (TONOS[3], gris) y cobre de alerta (TONOS[0]). */
+  var TONO = 'hsl(205 30% 74%)', COBRE = 'hsl(35 80% 62%)';
 
-  /* El retrato de Preceptor: una ventana de una celda sobre la tira. */
+  /* El retrato de Preceptor: la onda del emblema, x = suma ax cos(k u + f), y = suma ay sin(k u + f). */
   function retratoPreceptor(ui, decorativo) {
-    var marco = el('div', 'atlas-pre');
-    var img = document.createElement('img');
-    img.className = 'atlas-pre-tira';
-    /* El alt sale del JSON de cada lengua; de adorno, calla. */
-    img.alt = decorativo ? '' : (ui.atlas_retrato_alt || '');
+    var marco = el('div', 'atlas-pre'), cv = document.createElement('canvas'), celda = 0, alerta = false;
+    cv.className = 'atlas-pre-onda'; cv.width = 167; cv.height = 248;
+    /* El nombre sale del JSON de cada lengua; de adorno, calla. */
     if (decorativo) { marco.setAttribute('aria-hidden', 'true'); }
-    img.decoding = 'async'; img.src = BASE + TIRA;
-    var ojo = el('span', 'atlas-pre-ojo'); ojo.setAttribute('aria-hidden', 'true');
-    marco.appendChild(img); marco.appendChild(ojo);
+    else { cv.setAttribute('role', 'img'); cv.setAttribute('aria-label', ui.atlas_retrato_alt || ''); }
+    function pinta() {
+      var g = cv.getContext && cv.getContext('2d');
+      if (!g) { return; }
+      var e = celda === 2 ? 2.6 : 2.8, i, u, x, y;
+      g.clearRect(0, 0, 167, 248); g.beginPath();
+      for (i = 0; i <= 120; i++) {
+        u = i / 120 * 2 * Math.PI; x = 0; y = 0;
+        EMBLEMA.forEach(function (h) { var f = h[0] * u + h[3] * Math.PI / 32; x += h[1] * Math.cos(f); y += h[2] * Math.sin(f); });
+        g[i ? 'lineTo' : 'moveTo'](83.5 + x * e, 124 + y * e);
+      }
+      g.lineWidth = celda === 3 ? 5 : 2.5; g.strokeStyle = alerta || celda === 4 ? COBRE : TONO; g.stroke();
+    }
+    marco.appendChild(cv); pinta();
     return {
       nodo: marco,
-      celda: function (n) { marco.dataset.celda = String(n); },
-      alerta: function (si) { marco.classList.toggle('en-alerta', !!si); }
+      celda: function (n) { marco.dataset.celda = String(n); celda = n; pinta(); },
+      alerta: function (si) { marco.classList.toggle('en-alerta', !!si); alerta = !!si; pinta(); }
     };
   }
 

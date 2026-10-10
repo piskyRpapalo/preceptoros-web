@@ -7,13 +7,13 @@
    LUCHAR: eliges escuadra (tu Army; si aun no tienes tropas, una escuadra de PRACTICA sintetica que se
    dice) y un lugar. `arena.combate` decide con enteros y una semilla; `escena.js` lo reproduce en vivo.
    Contra NPCs es PRACTICA: sintetica, sin rating y sin botin (el botin es NO_DATA hasta firmar su
-   regla). Todo en la pestana; nada se guarda. Lo que se pulsa es DOM (lista y botones): el lienzo es
+   regla). Ganarle CONQUISTA el lugar en este aparato (db.js). Lo que se pulsa es DOM (lista y botones): el lienzo es
    el mar, no el mando. */
 (function () {
   'use strict';
 
   var K = window.AtlasCanon, A = window.AtlasArena, E = window.AtlasEscena, G = window.AtlasGacha, V = window.AtlasValores;
-  var R = {}, lugares = [], jugadores = [], sel = null, pub = null, emblema = null, record = {}, intentos = {};
+  var CQ = null, R = {}, lugares = [], jugadores = [], sel = null, pub = null, emblema = null, record = {}, intentos = {};
   var escuadraSel = null, actual = null, mar = null, TX = null, dpr = window.devicePixelRatio || 1;
 
   /* Los textos de la Arena viven en `atlas-arena-<lengua>.json` (a demanda); los comunes, en el juego. */
@@ -53,7 +53,7 @@
   }
   function nombreLugar(l) { return l.npc ? T('npc_' + l.id) : l.pseudo; }
 
-  /* --- la escuadra -------------------------------------------------------------------------- */
+  /* --- la escuadra */
   function propias() {
     var inc = window.AtlasIncubadora, l = null;
     try { l = inc && inc.army ? inc.army() : null; } catch (x) { l = null; }
@@ -89,13 +89,13 @@
     R.practica.hidden = !d.practica;
   }
 
-  /* --- los lugares: botones en el MAPA; el rival elegido, en el mapa y en la BATALLA ----------- */
+  /* --- los lugares: botones en el MAPA; el rival elegido, en el mapa y en la BATALLA */
   function todosLugares() { return lugares.concat(jugadores); }
   function pintaLista() {
     R.lista.textContent = '';
     todosLugares().forEach(function (l) {
       var li = el('li'), rc = record[l.clave] || { g: 0, p: 0 };
-      var b = boton(nombreLugar(l) + (rc.g + rc.p ? ' · ✓' + rc.g + ' ✗' + rc.p : ''), 'boton-sec atlas-arena-lugar');
+      var b = boton((rc.g ? '⚑ ' : '') + nombreLugar(l) + (rc.g + rc.p ? ' · ✓' + rc.g + ' ✗' + rc.p : ''), 'boton-sec atlas-arena-lugar');
       b.setAttribute('aria-label', nombreLugar(l) + ' · ' + (l.npc ? rellena(T('arena_tier'), { n: l.tc.slice(2), k: l.n }) :
                      rellena(T('arena_jugador'), { k: l.defensa.tropas.length })));
       b.setAttribute('aria-pressed', String(sel === l));
@@ -114,7 +114,7 @@
       var fila = el('div', 'atlas-arena-fila');
       sel.defensa.tropas.forEach(function (x) { fila.appendChild(miniLienzo(G.tirada(x.semilla, x.tc), 40)); });
       var rc = record[sel.clave];
-      if (rc) { fila.appendChild(el('span', 'atlas-nota', rellena(T('arena_record'), { g: rc.g, p: rc.p }))); }
+      if (rc) { fila.appendChild(el('span', 'atlas-nota', rellena(T('arena_record'), { g: rc.g, p: rc.p }) + (rc.g ? ' ' + T('arena_conquistado') : ''))); }
       z.appendChild(fila);
       var b = boton('\u2694\uFE0E ' + (sel.npc ? T('arena_luchar') : T('duelo_reta')), 'boton atlas-gran');
       b.addEventListener('click', function () {
@@ -130,7 +130,7 @@
     if (sel.npc) { lucha(sel, sq); } else if (window.AtlasDueloUI) { window.AtlasDueloUI.reta(sel.huella, sq); }
   }
 
-  /* --- el combate ----------------------------------------------------------------------------- */
+  /* --- el combate */
   function lucha(l, sq) {
     var n = intentos[l.id] = (intentos[l.id] || 0) + 1;
     var semilla = K.sha(['atlas.pve/1', l.id, K.huella(sq), n].join(':'));
@@ -139,6 +139,7 @@
       alFin: function (x) {
         var rc = record[l.clave] = record[l.clave] || { g: 0, p: 0 };
         if (x.gana === 'asalto') { rc.g++; } else if (x.gana === 'defensa') { rc.p++; }
+        if (CQ) { CQ.pon(record); }
         pintaLista();
       } });
   }
@@ -184,7 +185,7 @@
     R.escena.scrollIntoView({ block: 'nearest' });
   }
 
-  /* --- montar: el MAPA en su pestana (`zona`), la BATALLA en la suya ------------------------- */
+  /* --- montar: el MAPA en su pestana (`zona`), la BATALLA en la suya */
   function monta(capa, panel, zona) {
     if (!panel || panel.querySelector('.atlas-arena')) { return Promise.resolve(); }
     return textos().then(function () { construye(panel, zona); }, function (e) {
@@ -247,6 +248,7 @@
     listo.then(function () {
       if (pub) { emblema = G.tirada(K.sha('atlas.emblema/1:' + pub), 'tc3'); }
       pintaEscuadra(); pintaLista();
+      if (!CQ && window.AtlasArmy) { CQ = window.AtlasArmy.conquistasWeb(record, lugares, pintaLista); }
       if (window.AtlasDueloUI) { window.AtlasDueloUI.monta(R.duelo, { pub: pub }); }
     });
     if (mar) { mar.para(); }
@@ -271,7 +273,7 @@
   /* Al volver a la pestana: el Army pudo crecer (nuevas adopciones). */
   function refresca() { if (R.escuadra) { pintaEscuadra(); } }
 
-  /* El record de esta pestana, sumado: lo lee la Arena de la casa (`home_buildings.js`). */
+  /* El record de este aparato, sumado: lo lee la casa (`home_buildings.js`). */
   function recordTotal() { var t = { g: 0, p: 0 }; Object.keys(record).forEach(function (k) { t.g += record[k].g; t.p += record[k].p; }); return t; }
   window.AtlasArenaUI = { record: recordTotal, monta: monta, juega: juega, escuadra: escuadra, ponJugadores: ponJugadores, refresca: refresca, texto: T };
 })();

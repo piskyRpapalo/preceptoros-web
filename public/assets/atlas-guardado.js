@@ -6,8 +6,11 @@
    no sale el mismo final o la version de contenido no es esta, se dice la causa y no se carga.
    Un guardado manipulado no vuelve a entrar, por construccion.
 
-   NADA SIN PULSAR. Guardar, olvidar, retomar e importar son botones. Sin pulsar, el juego sigue
-   como siempre: vive en la pestana y el sello lo dice. Se guarda en ESTE dispositivo (IndexedDB,
+   SE GUARDA SOLO (plan firmado 2026-10-05, capa C1: «salir del juego hace perder recursos y army:
+   eso se arregla»). Al abrir, lo guardado se RETOMA (reproducido, como siempre); despues se guarda al
+   ocultarse la pestana, al salir y cada AUTO_MS si hubo pasos nuevos. Nunca antes de haber leido lo
+   guardado: una partida nueva no pisa la vieja. «Olvidar» apaga el autoguardado hasta pulsar Guardar.
+   Importar sigue siendo un boton. Se guarda en ESTE dispositivo (IndexedDB,
    una base propia `atlas-guardado` con un unico registro): `auth.js` sigue siendo el unico dueno
    de la base `preceptoros`. Nada sale del aparato; para llevarlo a otro, se exporta firmado.
 
@@ -17,7 +20,7 @@
 (function () {
   'use strict';
 
-  var BASE = 'atlas-guardado', ALM = 'partidas', CLAVE = 'actual';
+  var BASE = 'atlas-guardado', ALM = 'partidas', CLAVE = 'actual', AUTO_MS = 4000, auto = false, hechos = -1;
   /* La guarda del esquema: lo que parezca ruta, correo, URL o IP no se guarda (joya: el dato que
      sale de la partida no lleva nada de la maquina ni de la persona). */
   var PROHIBIDO = /(^|[^0-9])\/[a-z]|@|https?:|\b\d{1,3}(\.\d{1,3}){3}\b/i;
@@ -68,16 +71,22 @@
     }
   }
 
-  function guarda() {
+  /* `callado`: el autoguardado. Solo escribe si esta encendido y hubo pasos nuevos, y no habla. */
+  function guarda(callado) {
     var p;
-    try { p = limpia(J.partida()); } catch (x) { dice(rellena(T('guardado_nd'), { m: x.message })); return; }
+    if (callado === true && !auto) { return; }
+    try { p = limpia(J.partida()); } catch (x) { if (callado !== true) { dice(rellena(T('guardado_nd'), { m: x.message })); } return; }
+    if (callado === true && p.pasos.length === hechos) { return; }
+    auto = true; hechos = p.pasos.length;
     op('readwrite', function (s) { return s.put(p, CLAVE); }).then(function () {
+      if (callado === true) { sello(rellena(T('sello_guardado'), { c: p.final.ciclo })); return; }
       dice(rellena(T('guardado_ok'), { c: p.final.ciclo, n: p.pasos.length }));
       sello(rellena(T('sello_guardado'), { c: p.final.ciclo }));
       R.retomar.hidden = true;
     }).catch(function (x) { dice(rellena(T('guardado_nd'), { m: x && x.message })); });
   }
   function olvida() {
+    auto = false;
     op('readwrite', function (s) { return s.delete(CLAVE); }).then(function () {
       dice(T('guardado_olvidado')); sello(T('sello')); R.retomar.hidden = true;
     }).catch(function (x) { dice(rellena(T('guardado_nd'), { m: x && x.message })); });
@@ -115,10 +124,17 @@
     R.estado = el('p', 'atlas-nota'); R.estado.setAttribute('role', 'status');
     caja.appendChild(R.estado);
     cab.parentNode.insertBefore(caja, cab.nextSibling);
-    /* Leer lo guardado no saca nada del aparato; solo ofrece el boton. Retomar sigue siendo pulsar. */
+    /* Leer lo guardado no saca nada del aparato. Si hay partida, se retoma sola; si no se puede, se
+       dice la causa y queda el boton. Solo despues se enciende el autoguardado. */
     op('readonly', function (s) { return s.get(CLAVE); }).then(function (p) {
-      if (p && p.final) { R.retomar.textContent = rellena(T('retomar'), { c: p.final.ciclo }); R.retomar.hidden = false; }
+      if (p && p.final && !retoma(p, T('guardado_de_aqui'))) {
+        R.retomar.textContent = rellena(T('retomar'), { c: p.final.ciclo }); R.retomar.hidden = false; return;
+      }
+      auto = true;
     }).catch(function () {});
+    document.addEventListener('visibilitychange', function () { if (document.hidden) { guarda(true); } });
+    window.addEventListener('pagehide', function () { guarda(true); });
+    setInterval(function () { guarda(true); }, AUTO_MS);
   }
 
   window.AtlasGuardado = { monta: monta, limpia: limpia };

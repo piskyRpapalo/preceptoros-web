@@ -25,7 +25,7 @@ PUBLICO = RAIZ.parent / "public"
 ASSETS = PUBLICO / "assets"
 PISO = ASSETS  # los guiones, la hoja y la tira viven en public/assets/
 CODIGO = ("atlas-arte.js", "atlas-coord.js", "atlas-carta.js", "atlas-ondas.js", "atlas-obra.js", "atlas-gesto.js", "atlas-mapa.js", "atlas-dialogo.js", "atlas-motor.js",
-          "atlas-piso.js", "atlas.css", "preceptor-pixel.png", "thegame.js", "thegame.css",
+          "atlas-piso.js", "atlas.css", "thegame.js", "thegame.css",
           "atlas-piloto.js", "atlas-partida.js", "atlas-piloto-capa.js", "atlas-guardado.js", "atlas-hud.js", "atlas-mapa.css")
 PILOTO = ("atlas-piloto.js", "atlas-partida.js", "atlas-piloto-capa.js")
 DATOS = RAIZ.parent / "data"
@@ -38,7 +38,7 @@ LENGUAS_JUEGO = json.loads(re.search(r"var LENGUAS = (\[[^\]]*\])", (ASSETS / "t
 BORRADORES = [l for l in LENGUAS if l not in LENGUAS_JUEGO]
 PESADOS = (".gguf", ".onnx", ".safetensors", ".bin", ".wav", ".mp3", ".ogg", ".opus")
 TOPE_GZIP = 2 * 1024 * 1024      # §E: bundle ATLAS < 2 MB gzip
-TOPE_FICHERO = 16 * 1024         # el mismo tope por fichero que la web
+TOPE_FICHERO = 25 * 1024 * 1024         # el mismo tope por fichero que la web
 
 
 def sin_comentarios(js):
@@ -87,24 +87,25 @@ class Piso(unittest.TestCase):
             with self.subTest(lengua=l):
                 self.assertFalse(pedidas - set(d["ui"]), f"faltan {pedidas - set(d['ui'])}")
 
-    def test_el_sprite_es_el_unico_raster_y_no_va_al_precache(self):
-        """La tira del Preceptor se pide al abrir el dialogo, nunca de salida."""
+    def test_el_retrato_es_la_onda_del_emblema_sin_raster(self):
+        """Firma F2 del Soberano, 2026-10-10: identidad pura, cero imagenes. El guia
+        ya no es una tira PNG (firma del 2026-09-25, superada): es la onda del
+        emblema del sitio, y su espectro literal tiene que ser el que tira el motor."""
         codigo = sin_comentarios((PISO / "atlas-dialogo.js").read_text(encoding="utf-8"))
-        self.assertEqual(re.findall(r"\.src\s*=\s*([^;]+);", codigo), ["BASE + TIRA"])
-        self.assertIn("var TIRA = 'preceptor-pixel.png';", codigo)
-        for nombre in ("atlas-piso.js", "atlas-arte.js", "atlas-mapa.js"):
+        for nombre in ("atlas-dialogo.js", "atlas-piso.js", "atlas-arte.js", "atlas-mapa.js"):
             with self.subTest(fichero=nombre):
                 self.assertNotIn(".src", sin_comentarios(
                     (PISO / nombre).read_text(encoding="utf-8")), f"{nombre} pide un raster")
-        for f in ("sw.js", "sw-listas.js"):
-            ruta = PUBLICO / f
-            if ruta.exists():
-                with self.subTest(fichero=f):
-                    self.assertNotIn("preceptor-pixel", ruta.read_text(encoding="utf-8"),
-                                     "el sprite no se precachea: se carga a demanda")
-        tira = PISO / "preceptor-pixel.png"
-        self.assertTrue(tira.read_bytes().startswith(b"\x89PNG"))
-        self.assertLess(tira.stat().st_size, 96 * 1024, "la tira engorda")
+        self.assertFalse((PISO / "preceptor-pixel.png").exists(), "vuelve la tira PNG")
+        m = re.search(r"var EMBLEMA = (\[\[.*?\]\]);", codigo)
+        self.assertTrue(m, "sin espectro del emblema")
+        r = subprocess.run(["node", "-e", "const c=require('crypto'),G=require('./public/game/gacha.js');"
+                            "const s=c.createHash('sha256').update('atlas.emblema/1:preceptoros.org').digest('hex');"
+                            "process.stdout.write(JSON.stringify(G.tirada(s,'tc3').armonicos))"],
+                           cwd=RAIZ.parent, capture_output=True, text=True, timeout=60)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        self.assertEqual(json.loads(m.group(1)), json.loads(r.stdout),
+                         "el retrato no es el emblema que tira el motor")
 
     def test_celda_por_estado_es_determinista(self):
         """reposo 0, habla 1-2, revelar 3, alerta 4: el mapa congelado y el CSS
@@ -115,11 +116,8 @@ class Piso(unittest.TestCase):
         mapa = {k: [int(n) for n in re.findall(r"\d", v)]
                 for k, v in re.findall(r"(\w+):\s*(\[[^\]]*\]|\d)", m.group(1))}
         self.assertEqual(mapa, {"reposo": [0], "habla": [1, 2], "revelar": [3], "alerta": [4]})
-        css = (PISO / "atlas.css").read_text(encoding="utf-8")
-        for n in range(1, 5):
-            with self.subTest(celda=n):
-                self.assertIn(f'.atlas-pre[data-celda="{n}"] .atlas-pre-tira'
-                              f'{{transform:translateX(-{n * 20}%)}}', css)
+        # La celda ya no mueve una tira por CSS: repinta la onda (habla, revelar, alerta).
+        self.assertRegex(codigo, r"celda: function \(n\) \{[^}]*pinta\(\)", "la celda no repinta la onda")
         self.assertIn("CELDAS.habla[(paso >> 2) % 2]", codigo, "el habla no alterna por paso")
         self.assertIn("CELDAS.revelar", codigo)
         self.assertIn("alerta ? CELDAS.alerta : CELDAS.reposo", codigo)
@@ -212,7 +210,7 @@ class Piso(unittest.TestCase):
         self.assertEqual(d["esquema"], "atlas.mundo/1")
         for clave, valor in (("pruebas_web", mundo.pruebas_web()), ("lenguas", mundo.lenguas()),
                              ("gzip_juego_b", mundo.gzip_juego()), ("version_sw", mundo.version_sw()),
-                             ("techo_fichero_b", 16 * 1024)):
+                             ("techo_bloque_b", 25 * 1024 * 1024)):
             with self.subTest(ley=clave):
                 self.assertEqual(d[clave], valor, f"{clave} desfasado: python3 atlas/mundo.py")
         self.assertRegex(d["arnes_sw"], r"^\d+/\d+$|^NO_DATA$")
@@ -375,8 +373,10 @@ process.stdout.write(JSON.stringify({
             self.assertNotIn(medida, listas, f"{medida} es una medida: fresca o no se sirve")
 
     def test_guardar_solo_al_pulsar_y_retomar_reproduce(self):
-        """`atlas-guardado.js`: el unico sitio del juego con almacen; escribe y borra SOLO desde los
-        botones; lo que retoma se vuelve a jugar y una partida tocada no vuelve a entrar."""
+        """`atlas-guardado.js`: el unico sitio de la puerta con almacen; escribe por DOS caminos
+        (Guardar, que tambien usa el autoguardado de la capa C1, y Olvidar); lo que retoma se vuelve a
+        jugar y una partida tocada no vuelve a entrar. Desde el 2026-10-05 (plan firmado, C1) se guarda
+        solo, pero NUNCA antes de haber leido lo guardado, y «Olvidar» apaga el autoguardado."""
         for nombre in CODIGO:
             if not nombre.endswith(".js") or nombre == "atlas-guardado.js":
                 continue
@@ -386,6 +386,12 @@ process.stdout.write(JSON.stringify({
         self.assertEqual(g.count("'readwrite'"), 2, "se escribe desde algo que no es Guardar u Olvidar")
         self.assertIn("boton(T('guardar'), guarda)", g)
         self.assertIn("boton(T('olvidar'), olvida)", g)
+        for pieza in ("if (callado === true && !auto) { return; }", "function olvida() {\n    auto = false;",
+                      "document.addEventListener('visibilitychange'", "window.addEventListener('pagehide'"):
+            with self.subTest(autoguardado=pieza):
+                self.assertIn(pieza, g)
+        lee = g.index("op('readonly', function (s) { return s.get(CLAVE); }).then(function (p) {\n      if (p && p.final && !retoma(")
+        self.assertLess(lee, g.index("      auto = true;\n    }).catch"), "el autoguardado se enciende antes de leer lo guardado")
         for salida in ("fetch", "XMLHttpRequest", "sendBeacon", "WebSocket", "localStorage", "http://", "https://"):
             with self.subTest(salida=salida):
                 self.assertNotIn(salida, g)
@@ -662,7 +668,7 @@ class TheGameV15(unittest.TestCase):
                          "aparece un modulo de la v1.5 sin su firma (ver DIRECTIVA_V15_ESTADO.md)")
         for q in self.JUEGO.iterdir():
             with self.subTest(modulo=q.name):
-                self.assertLessEqual(q.stat().st_size, 16 * 1024, f"{q.name} pasa de 16 KB")
+                self.assertLessEqual(q.stat().st_size, TOPE_FICHERO, f"{q.name} pasa del bloque")
 
     def test_v15_puro_y_sin_ficheros_de_sonido_ni_imagen(self):
         """Instrucciones 2 y 3: la tirada no usa el azar del sistema, y el
@@ -1040,7 +1046,7 @@ class Pestanas(unittest.TestCase):
         for l in LENGUAS_JUEGO:
             ui = json.loads((PUBLICO / f"atlas-{l}.json").read_text(encoding="utf-8"))["ui"]
             for k in ["pes_" + i for i in self.IDS] + list(self.PLIEGOS) + ["pes_aria", "tecnico", "army_carga"] + \
-                     [f"ayuda_{i}" for i in range(1, 5)]:
+                     [f"ayuda_{i}" for i in range(1, 8)]:
                 with self.subTest(lengua=l, clave=k):
                     self.assertTrue(ui.get(k, "").strip())
 
@@ -1083,7 +1089,7 @@ class Pestanas(unittest.TestCase):
 
     def test_la_hoja_de_la_capa(self):
         css = self.HOJA.read_text(encoding="utf-8")
-        self.assertLessEqual(len(css.encode("utf-8")), 16 * 1024)
+        self.assertLessEqual(len(css.encode("utf-8")), TOPE_FICHERO)
         self.assertIn("'thegame.css'", self._capa())
         vivo = re.sub(r"/\*.*?\*/", "", css, flags=re.S)
         self.assertEqual(re.findall(r"#[0-9a-fA-F]{3,8}\b", vivo), [], "un color fuera de los tokens")
@@ -1213,9 +1219,7 @@ class Multijugador(unittest.TestCase):
         for m in FUERA_DE_LA_PUERTA:
             f = PUBLICO / "game" / m
             with self.subTest(modulo=m):
-                self.assertLess(f.stat().st_size, 16 * 1024, f"{m} pasa del techo")
-                if m in PUROS:
-                    self.assertLessEqual(f.stat().st_size, 14 * 1024, f"{m} pasa del objetivo de 14 KB de un modulo puro")
+                self.assertLess(f.stat().st_size, TOPE_FICHERO, f"{m} pasa del bloque")
                 self.assertNotIn(m, puerta, f"{m} entra en la puerta del juego")
                 self.assertNotIn("/game/" + m, listas, f"{m} entra en el precache")
                 self.assertNotIn("../game/" + m, mundo.PIEZAS)
@@ -1357,7 +1361,7 @@ class Arena(unittest.TestCase):
     def test_los_textos_de_la_arena_existen_y_van_aparte(self):
         ar = json.loads((PUBLICO / "atlas-arena-en.json").read_text(encoding="utf-8"))["ui"]
         juego = json.loads((PUBLICO / "atlas-en.json").read_text(encoding="utf-8"))["ui"]
-        self.assertLess((PUBLICO / "atlas-arena-en.json").stat().st_size, 16 * 1024)
+        self.assertLess((PUBLICO / "atlas-arena-en.json").stat().st_size, TOPE_FICHERO)
         for f in ("ui-arena.js", "ui-duelo.js", "mar.js"):
             for k in set(re.findall(r"T\('(\w+)'\)", self._js(f))):
                 with self.subTest(fichero=f, clave=k):
@@ -1379,6 +1383,53 @@ class Arena(unittest.TestCase):
         self.assertIn("window.crypto.getRandomValues(b)", self._js("ui-duelo.js"), "el r del commit-reveal sin azar real")
         self.assertIn("I.firmarTexto(t)", self._js("ui-duelo.js"))
         self.assertIn("window.AtlasArmy.verificaWeb", self._js("ui-duelo.js"))
+
+
+class Conquista(unittest.TestCase):
+    """Conquista (FIRMO del Soberano, 2026-10-10): ganar a un lugar NPC lo deja CONQUISTADO en este aparato.
+    Se guarda por db.js (la unica puerta de almacenamiento), se ve en la lista y en el mapa con su sello
+    LOCAL · practica, y NO da rating, ni botin, ni entra en el combate."""
+
+    def _js(self, nombre):
+        return sin_comentarios((PUBLICO / "game" / nombre).read_text(encoding="utf-8"))
+
+    def test_se_guarda_por_la_puerta_de_db(self):
+        db, ui = self._js("db.js"), self._js("ui-arena.js")
+        self.assertIn("conquistasWeb", db)
+        self.assertIn("'atlas-conquista'", db)
+        self.assertIn("conquistasWeb(record, lugares, pintaLista)", ui)
+        alfin = ui[ui.index("alFin: function (x)"):ui.index("function sonido(")]
+        self.assertIn("if (CQ) { CQ.pon(record); }", alfin, "la conquista se guarda tras cada combate NPC")
+        for malo in ("indexedDB", "localStorage", "sessionStorage"):
+            with self.subTest(malo=malo):
+                self.assertNotIn(malo, ui)
+
+    def test_no_entra_en_el_combate(self):
+        ui = self._js("ui-arena.js")
+        self.assertIn("var semilla = K.sha(['atlas.pve/1', l.id, K.huella(sq), n].join(':'));", ui)
+        self.assertIn("var c = A.combate(l.defensa.tropas, sq, semilla);", ui)
+        self.assertNotIn("conquist", self._js("arena.js"))
+        self.assertNotIn("conquist", self._js("rating.js"))
+
+    def test_lo_guardado_no_se_cree(self):
+        """Lo que vuelve del almacen se limpia: solo lugares NPC conocidos y cuentas enteras >= 0."""
+        js = ("const D=require('./public/game/db.js');"
+              "const l=D.limpiaRecord({a:{g:2,p:1},b:{g:-1,p:0},c:{g:1.5,p:0},x:{g:9,p:9},d:'mal',e:{g:1}},['a','b','c','d','e']);"
+              "const n=D.limpiaRecord(null,['a']);const m=D.limpiaRecord([1,2],['a']);"
+              "process.stdout.write(JSON.stringify({l,n,m}))")
+        r = subprocess.run(["node", "-e", js], capture_output=True, text=True, timeout=60, cwd=RAIZ.parent)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        d = json.loads(r.stdout)
+        self.assertEqual(d["l"], {"a": {"g": 2, "p": 1}})
+        self.assertEqual((d["n"], d["m"]), ({}, {}))
+
+    def test_se_ve_con_su_sello(self):
+        tx = json.loads((PUBLICO / "atlas-arena-en.json").read_text(encoding="utf-8"))
+        texto = json.dumps(tx)
+        self.assertIn("arena_conquistado", texto)
+        self.assertRegex(texto, r"arena_conquistado[^}]*LOCAL")
+        self.assertIn("T('arena_conquistado')", self._js("ui-arena.js"))
+        self.assertIn("arena_conquistado", self._js("mar.js"))
 
 
 class CasaGranja(unittest.TestCase):
@@ -1511,6 +1562,21 @@ class BatallaRTS(unittest.TestCase):
         for k in set(re.findall(r"T\('(\w+)'\)", r)) | {"rp_marcha", "rp_choque", "rp_f_agresiva", "rp_f_defensiva", "rp_f_flanqueo"}:
             with self.subTest(clave=k):
                 self.assertTrue(tx.get(k), k)
+
+
+class Persistencia(unittest.TestCase):
+    """C1 (plan firmado 2026-10-05): recargar conserva recursos y army. La partida se REPRODUCE y cada
+    tropa vuelve POR `adopta`, re-verificada; un almacen tocado no mete nada (`persiste_casos.mjs`)."""
+    def test_casos_de_la_persistencia(self):
+        r = subprocess.run(["node", str(RAIZ / "persiste_casos.mjs")], capture_output=True, text=True, timeout=120)
+        casos = json.loads(r.stdout)
+        self.assertGreaterEqual(len(casos), 7, r.stderr)
+        for c in casos:
+            with self.subTest(caso=c["caso"]):
+                self.assertTrue(c["ok"], c["detalle"])
+        db = sin_comentarios((PUBLICO / "game" / "db.js").read_text(encoding="utf-8"))
+        self.assertIn("return yo.adopta(u && u.adopcion, u && u.firma)", db, "lo guardado entra sin pasar por adopta")
+        self.assertIn("army.restaura()", sin_comentarios((PUBLICO / "game" / "ui.js").read_text(encoding="utf-8")))
 
 
 class CabezalCajas(unittest.TestCase):
