@@ -159,6 +159,7 @@
   "rp_f_defensiva": "Defensive",
   "rp_f_flanqueo": "Flank",
   "rp_claves": "Key moments",
+  "rp_ahorro": "Power-saving mode (measured fps): fewer points, no glow; same fight, same result. Tap for Max.",
   "rp_marcha": "Both armies march out of their bases.",
   "rp_choque": "First clash!",
   "rp_cae": "{q} #{n} falls.",

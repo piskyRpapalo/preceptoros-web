@@ -177,6 +177,25 @@ const ONDA = (() => {
   vm.runInNewContext(readFileSync(join(RAIZ, 'public/game/wave_render.js'), 'utf-8'), ctx);
   return { O: ctx.AtlasOnda, V };
 })();
+// Combate limpio (2026-10-10, visto por el Soberano en el Doogee): la batalla dibuja SIEMPRE con calidad
+// 1 o 0 (battle_replay.js:193). El Buffer PS1 de M17 mov. 6 pintaba esas ondas en un buffer de pantalla
+// entera que nunca se limpiaba, con coordenadas sin escalar, y lo pegaba tramado encima del combate:
+// la «niebla desde el sur». La figura se pinta en el lienzo que se le da, en el sitio que se le pide.
+await caso('combate limpio: con calidad 1 y 0 la onda va directa al lienzo, sin buffer ni pegado encima', () => {
+  const { O } = ONDA, mal = [];
+  for (const calidad of [0, 1, 2]) {
+    const llam = [], xs = [];
+    const g = new Proxy({ canvas: { width: 800, height: 600 } }, { get(t, k) {
+      if (k in t) { return t[k]; }
+      return (...a) => { llam.push(k); if (k === 'moveTo' || k === 'lineTo') { xs.push(a[0]); } };
+    }, set(t, k, v) { t[k] = v; return true; } });
+    try { O.dibuja(g, [[1, 30, 0, 0], [3, 8, 4, 0.5]], 101.3, 77.7, 20, { calidad, color: [200, 60, 60] }); }
+    catch (e) { mal.push('calidad ' + calidad + ': ' + e.message); continue; }
+    if (llam.includes('drawImage')) { mal.push('calidad ' + calidad + ': pega un buffer encima'); }
+    if (!xs.length || Math.min(...xs) > 101.3 || Math.max(...xs) < 101.3) { mal.push('calidad ' + calidad + ': la onda no rodea su centro'); }
+  }
+  return !mal.length || mal;
+});
 await caso('M17-bis 2: L sale del escudo, no de la vida', () => {
   const { O } = ONDA;
   const sana = O.colorVida(1, null, 24), herida = O.colorVida(0.2, null, 24), sinEscudo = O.colorVida(1, null, 2);

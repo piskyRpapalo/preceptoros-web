@@ -253,7 +253,7 @@
     function getCalidadNivel(){var m=getCalidadModo();if(m==='manual')return window.AtlasCalidad?window.AtlasCalidad.nivel:2;if(m==='maxima')return 2;if(m==='media')return 1;if(m==='luz')return 0;if(window.AtlasOnda&&window.AtlasOnda.medidor){var med=window.AtlasOnda.medidor();return med.nivel(2)}return 2}
     var CAL=A&&A.calidadWeb?A.calidadWeb():null;
     function initCalidad(){var hw=navigator.hardwareConcurrency>=8&&navigator.deviceMemory>=8?'maxima':'auto';(CAL?CAL.lee():Promise.resolve(null)).then(function(m){fijaModo(MODOS_CALIDAD.indexOf(m)>=0?m:hw);actualizaBotonCalidad()})}
-    function fijaModo(m){if(!window.AtlasCalidad)window.AtlasCalidad={modo:m,nivel:2};else window.AtlasCalidad.modo=m}
+    function fijaModo(m){if(!window.AtlasCalidad)window.AtlasCalidad={modo:m,nivel:2};else window.AtlasCalidad.modo=m;window.AtlasCalidad.pon=function(x){setCalidadModo(x);actualizaBotonCalidad()}}
     function setCalidadModo(m){fijaModo(m);if(CAL)CAL.pon(m)}
     function actualizaBotonCalidad(){var m=getCalidadModo();R.calidadBoton.textContent=T('calidad_'+m);R.calidadBoton.setAttribute('aria-pressed',m!=='auto'?'true':'false')}
     R.tcs = Object.keys(G.TCS).map(function (tc) {
