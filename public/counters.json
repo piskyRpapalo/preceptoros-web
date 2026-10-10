@@ -1,7 +1,7 @@
 {
   "esquema": 1,
   "fecha": "2026-10-10",
-  "ultima_lectura": "2026-10-09T23:51:08+00:00",
+  "ultima_lectura": "2026-10-10T00:30:26+00:00",
   "nota": "Solo hay cifras medidas. Lo que no se midio sale como NO_DATA con su causa. Aqui no se cuenta a nadie.",
   "metricas": [
     {
