@@ -242,9 +242,12 @@
     var q = o.calidad == null ? 2 : o.calidad;
     var nivel = Math.max(0, Math.min(2, Math.floor(q)));
     
-    // MOVIMIENTO 6: Obtener buffer segun nivel
-    var bufferG = getBuffer(g, nivel);
-    var isBuffer = bufferG !== g;
+    /* Buffer PS1 y wobble (M17 mov. 6) SUSPENDIDOS el 2026-10-10: la batalla pide siempre calidad 1 o 0
+       (battle_replay.js:193) y el buffer, de pantalla entera, ni se limpiaba ni escalaba las coordenadas:
+       se acumulaba, se tramaba y se pegaba encima del combate («niebla desde el sur»). La degradacion
+       honesta es la de antes: menos puntos, sin brillo ni estela. Volver a usarlo pide rehacerlo por
+       fotograma (limpiar, escalar, pegar una vez) y medirlo en el Doogee. */
+    var bufferG = g, isBuffer = false;
     
     // Si usamos buffer, dibujar en el buffer
     var targetG = isBuffer ? bufferG : g;
@@ -253,9 +256,6 @@
     var n = q >= 2 ? 220 : q >= 1 ? 140 : 80, P = puntos(A, n), giro = o.giro || 0, gr = o.grosor || 2, alfa = o.alfa == null ? 1 : o.alfa;
     var c = o.color || [270, 70, 72], brillo = o.brillo == null ? 0.8 : o.brillo;
     
-    // MOVIMIENTO 6: Aplicar wobble a las coordenadas en niveles bajos
-    var pos = wobble(x, y, nivel);
-    x = pos.x; y = pos.y;
     
     targetG.save(); targetG.lineJoin = 'round'; targetG.lineCap = 'round';
     targetG.globalCompositeOperation = 'lighter';

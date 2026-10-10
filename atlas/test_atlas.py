@@ -1432,6 +1432,31 @@ class Conquista(unittest.TestCase):
         self.assertIn("arena_conquistado", self._js("mar.js"))
 
 
+class CombateLimpio(unittest.TestCase):
+    """2026-10-10 (Soberano, captura del Doogee): el combate se ve entero y su calidad la manda el jugador.
+    El automatico solo baja tras medir fps, lo dice en pantalla y volver a Maxima es un toque."""
+
+    def test_la_eleccion_del_jugador_manda_y_la_bajada_se_dice(self):
+        rp = sin_comentarios((PUBLICO / "game" / "battle_replay.js").read_text(encoding="utf-8"))
+        self.assertIn("m === 'luz' ? 0 : m && m !== 'auto' ? 1 : med.nivel(", rp)
+        self.assertIn("R.ahorro.hidden = cal !== 0;", rp)
+        self.assertIn("dibuja(t, 0, 0, W, H, cal);", rp)
+        self.assertIn("C.pon('maxima')", rp)
+        tx = json.loads((PUBLICO / "atlas-arena-en.json").read_text(encoding="utf-8"))["ui"]
+        self.assertIn("same result", tx["rp_ahorro"])
+
+    def test_el_medidor_no_baja_sin_medir(self):
+        """Con menos de 60 cuadros medidos el medidor no degrada: si no puede medir, no toca."""
+        import subprocess
+        js = ("const vm=require('vm'),fs=require('fs');const c={AtlasValores:require('./public/game/valores.js'),"
+              "AtlasGacha:require('./public/game/gacha.js'),Math};vm.runInNewContext(fs.readFileSync('./public/game/wave_render.js','utf-8'),c);"
+              "const m=c.AtlasOnda.medidor();let t=0;for(let i=0;i<30;i++){m.cuadro(t);t+=100;}"
+              "const pocos=m.nivel(2);for(let i=0;i<80;i++){m.cuadro(t);t+=100;}process.stdout.write(JSON.stringify([pocos,m.nivel(2)]))")
+        r = subprocess.run(["node", "-e", js], capture_output=True, text=True, timeout=60, cwd=RAIZ.parent)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        self.assertEqual(json.loads(r.stdout), [2, 0], "a 10 fps: sin medir no baja; medido, baja")
+
+
 class CasaGranja(unittest.TestCase):
     """La primera pantalla es TU CASA (Soberano, 2026-10-05): una ciudad sumergida en corte con cinco
     edificios que son botones del DOM, cada uno con su cifra MEDIDA o NO_DATA en niebla; personalizar

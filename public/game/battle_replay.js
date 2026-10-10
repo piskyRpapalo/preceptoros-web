@@ -65,7 +65,15 @@
     R.narra = el('p', 'rp-narra'); R.narra.setAttribute('aria-live', 'polite');
     R.claves = el('details', 'rp-claves'); R.claves.appendChild(el('summary', null, T('rp_claves')));
     R.lista = el('ol'); R.claves.appendChild(R.lista);
-    [R.play, R.vel, R.forma].forEach(function (b) { caja.appendChild(b); });
+    /* Degradacion honesta (B.6.1, ideas6oct:804): si el automatico baja la calidad tras MEDIR fps, se dice,
+       y volver a Maxima es un toque. Lo que el jugador elige manda sobre el automatico. */
+    R.ahorro = el('button', 'boton-sec rp-ahorro'); R.ahorro.type = 'button'; R.ahorro.hidden = true;
+    R.ahorro.textContent = T('rp_ahorro');
+    R.ahorro.addEventListener('click', function () {
+      var C = raiz.AtlasCalidad;
+      if (C && C.pon) { C.pon('maxima'); } else { raiz.AtlasCalidad = { modo: 'maxima', nivel: 2 }; }
+    });
+    [R.play, R.vel, R.forma, R.ahorro].forEach(function (b) { caja.appendChild(b); });
     caja.appendChild(R.tiempo);
     var ref = lienzo.nextSibling;
     [caja, R.narra, R.claves].forEach(function (n) { lienzo.parentNode.insertBefore(n, ref); });
@@ -190,7 +198,9 @@
       R.tiempo.setAttribute('aria-valuetext', Math.floor(t / 60000) + ':' + ('0' + Math.floor(t / 1000) % 60).slice(-2));
       while (dicho < k.momentos.length && k.momentos[dicho].t <= t) { R.narra.textContent = momento(k.momentos[dicho]); dicho++; }
       if (dicho && k.momentos[dicho - 1].t > t) { dicho = 0; }
-      dibuja(t, 0, 0, W, H, med.nivel(k.max.length > 8 ? 1 : 2) ? 1 : 0);
+      var m = raiz.AtlasCalidad && raiz.AtlasCalidad.modo, cal = m === 'luz' ? 0 : m && m !== 'auto' ? 1 : med.nivel(k.max.length > 8 ? 1 : 2) ? 1 : 0;
+      R.ahorro.hidden = cal !== 0;
+      dibuja(t, 0, 0, W, H, cal);
       if (!acabo && t >= k.fin + 600) {
         acabo = true;
         if (op.sonido) { op.sonido(combate.gana === 'asalto' ? 'gana' : 'pierde'); }
