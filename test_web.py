@@ -8,7 +8,7 @@ comprobacion que detecta y no bloquea no es una comprobacion: aqui no hay avisos
 solo verde o rojo.
 """
 import gzip
-import hashlib, html, json, re, unittest
+import hashlib, html, json, re, subprocess, sys, unittest
 from pathlib import Path
 
 RAIZ = Path(__file__).resolve().parent
@@ -4209,6 +4209,19 @@ class PWA(unittest.TestCase):
         tam = {i["sizes"] for i in m["icons"]}
         self.assertIn("192x192", tam, "sin icono de 192 no hay instalacion")
         self.assertIn("512x512", tam, "sin icono de 512 no hay pantalla de arranque")
+
+    def test_iconos_y_tarjeta_salen_del_emblema(self):
+        """Firma F2-8 del Soberano, 2026-10-10: favicon, iconos PWA y og:image siguen
+        existiendo, pero CAMBIA SU ORIGEN: los genera bin/iconos_desde_emblema.py con la
+        onda del emblema del sitio. Lo publicado tiene que ser exactamente lo que el
+        generador produce hoy: un icono retocado a mano o un PNG pintado no pasa."""
+        try:
+            import PIL  # noqa: F401
+        except ImportError:
+            self.skipTest("NO_DATA · sin Pillow no se puede regenerar. Remedio: instalar Pillow")
+        r = subprocess.run([sys.executable, str(RAIZ / "bin" / "iconos_desde_emblema.py"), "--comprobar"],
+                           cwd=RAIZ, capture_output=True, text=True, timeout=120)
+        self.assertEqual(r.returncode, 0, "lo publicado no es lo que genera el emblema:\n" + r.stdout)
 
     def test_el_maskable_cabe_de_verdad_en_su_circulo(self):
         """No que lo diga el manifiesto: que lo diga el fichero.
