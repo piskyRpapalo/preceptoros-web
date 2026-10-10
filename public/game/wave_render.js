@@ -72,24 +72,27 @@
   }
 
   /* MOVIMIENTO 2: Color = Vida - derivar color segun fraccion de vida */
-  function colorVida(fraccion, base) {
+  /* M17-bis 2 (firma 2026-10-10): H = vida, L = ESCUDO (ideas6oct:855). Antes L salia de la vida y la
+     herida apagaba el color dos veces. La armadura del combate es fija (arena.js:87): L dice cuanto
+     escudo TIENE la tropa. escudo_ref = 24 es la armadura maxima medida en 16.000 tiradas (tc1-tc4). */
+  function colorVida(fraccion, base, armadura) {
     if (fraccion == null) fraccion = 1;
-    if (base == null) base = F.vida_hue_base || 270;
-    
     var hueBase = F.vida_hue_base || 270;
     var hueCobre = F.vida_hue_cobre || 30;
-    var lightnessBase = F.escudo_lightness_base || 72;
-    
-    // Hue: de base a cobre segun fraccion de vida (0 = muerto, 1 = vivo)
+    var lMax = F.escudo_lightness_base || 72, lMin = F.escudo_lightness_min || 40;
     var hue = hueBase + (hueCobre - hueBase) * (1 - fraccion);
-    
-    // Saturation: constante
-    var saturation = 70;
-    
-    // Lightness: portador del escudo (fraccion de vida)
-    var lightness = lightnessBase * fraccion;
-    
-    return [Math.round(hue) % 360, saturation, Math.round(lightness)];
+    var escudo = armadura == null ? 1 : Math.max(0, Math.min(1, armadura / (F.escudo_ref || 24)));
+    var lightness = lMin + (lMax - lMin) * escudo;
+    return [Math.round(hue) % 360, 70, Math.round(lightness)];
+  }
+
+  /* M17-bis 1 (firma 2026-10-10): el pulso del golpe. pulso_brillo_max estaba declarado y nadie lo leia.
+     Su curva es LA MISMA rampa de ganancia del sonido del golpe (receta 'pop' de valores.sonidos, que
+     suena en ui-arena.js:148): de gan a 0,0001 en dur. Lo que se oye y lo que se ve se apagan juntos. */
+  function pulso(ms) {
+    var p = (V.sonidos || {}).pop, max = F.pulso_brillo_max;
+    if (!p || !max || ms < 0 || ms >= p.dur * 1000) { return 0; }
+    return max * Math.pow(0.0001 / p.gan, ms / (p.dur * 1000));
   }
 
   /* MOVIMIENTO 6: Buffer PS1 - canvas internos por nivel de calidad */
@@ -311,6 +314,7 @@
     applyMelt: applyMelt,
     /* MOVIMIENTO 2: Color = Vida */
     colorVida: colorVida,
+    pulso: pulso,
     /* MOVIMIENTO 6: Buffer PS1 */
     buffer: getBuffer,
     getBuffer: getBuffer,

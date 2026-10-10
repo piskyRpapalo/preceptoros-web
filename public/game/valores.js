@@ -77,6 +77,9 @@
       vida_hue_base: 270,
       vida_hue_cobre: 30,
       escudo_lightness_base: 72,
+      /* M17-bis 2: L va de min (sin escudo) a base (escudo_ref); escudo_ref = armadura maxima medida. */
+      escudo_lightness_min: 40,
+      escudo_ref: 24,
       /* Respira al beat (MOVIMIENTO 3): pulso de brillo/grosor */
       pulso_brillo_max: 0.3,
       pulso_grosor_max: 1.5,

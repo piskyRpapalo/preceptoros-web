@@ -169,4 +169,33 @@ await caso('sintesis: el calor del Nucleo hace el sonido mas grave y aspero', ()
 await caso('sintesis: el calor sale de la instantanea (presion del Nucleo), no se inventa', () =>
   S.calorDe({ integridad: 50, integridad_max: 100 }) === 0.5 && S.calorDe(null) === 0);
 
+// M17-bis (firma F-A, 2026-10-10): el color dice vida (H) y escudo (L); el pulso del golpe sigue la
+// MISMA curva que el sonido del golpe. Se carga wave_render.js en un contexto sin DOM (no dibuja).
+const ONDA = (() => {
+  const V = require(join(RAIZ, 'public/game/valores.js'));
+  const ctx = { AtlasValores: V, AtlasGacha: require(join(RAIZ, 'public/game/gacha.js')), Math };
+  vm.runInNewContext(readFileSync(join(RAIZ, 'public/game/wave_render.js'), 'utf-8'), ctx);
+  return { O: ctx.AtlasOnda, V };
+})();
+await caso('M17-bis 2: L sale del escudo, no de la vida', () => {
+  const { O } = ONDA;
+  const sana = O.colorVida(1, null, 24), herida = O.colorVida(0.2, null, 24), sinEscudo = O.colorVida(1, null, 2);
+  return (sana[2] === herida[2] && sana[0] !== herida[0] && sinEscudo[2] < sana[2]) ||
+    { sana, herida, sinEscudo };
+});
+await caso('M17-bis 2: el escudo medido mas alto (24) da la L maxima', () => {
+  const { O, V } = ONDA;
+  return O.colorVida(1, null, 24)[2] === V.fluidez.escudo_lightness_base || O.colorVida(1, null, 24);
+});
+await caso('M17-bis 1: el pulso del golpe dura lo que suena el pop y nace en pulso_brillo_max', () => {
+  const { O, V } = ONDA, pop = V.sonidos.pop, max = V.fluidez.pulso_brillo_max;
+  const ini = O.pulso(0), fin = O.pulso(pop.dur * 1000), medio = O.pulso(pop.dur * 500);
+  return (Math.abs(ini - max) < 1e-12 && fin === 0 && medio > 0 && medio < ini) || { ini, medio, fin };
+});
+await caso('M17-bis 1: coherencia, la curva visual es la rampa de ganancia del sonido', () => {
+  const { O, V } = ONDA, pop = V.sonidos.pop, max = V.fluidez.pulso_brillo_max, t = pop.dur * 1000 * 0.37;
+  const sonido = pop.gan * Math.pow(0.0001 / pop.gan, 0.37);
+  return Math.abs(O.pulso(t) / max - sonido / pop.gan) < 1e-12 || { visual: O.pulso(t) / max, sonido: sonido / pop.gan };
+});
+
 process.stdout.write(JSON.stringify(casos));
