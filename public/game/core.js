@@ -40,6 +40,9 @@
       r.moduladora2 = Math.round(r.portadora * I.m2);
       r.indice2 = Math.round(r.indice * I.indice2);
     }
+    /* M17-bis 4: la urgencia sale del SELLO del evento, no de un capricho del sonido. */
+    var u = I && I.sello && I.urgencia ? (I.urgencia[I.sello[tipo]] || 0) : 0;
+    if (u > 0) { r.vibrato = { hz: I.vibrato_hz, prof: Math.round(r.portadora * I.vibrato_prof * u) }; }
     return r;
   }
 
@@ -113,6 +116,12 @@
       mod2.type = 'sine'; mod2.frequency.value = r.moduladora2; prof2.gain.value = r.indice2;
       mod2.connect(prof2); prof2.connect(car.frequency);
       mod2.start(t); mod2.stop(t + r.dur);
+    }
+    if (r.vibrato) {
+      var lfo = ctx.createOscillator(), vib = ctx.createGain();
+      lfo.type = 'sine'; lfo.frequency.value = r.vibrato.hz; vib.gain.value = r.vibrato.prof;
+      lfo.connect(vib); vib.connect(car.frequency);
+      lfo.start(t); lfo.stop(t + r.dur);
     }
     car.connect(sal); sal.connect(ctx.destination);
     car.start(t); mod.start(t); car.stop(t + r.dur); mod.stop(t + r.dur);

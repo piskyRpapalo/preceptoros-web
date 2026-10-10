@@ -21,6 +21,13 @@ El código está en el árbol, pero el sonido de siempre (`fm2`) sigue por defec
 4. Opcional, en una batalla: con el modo B puesto, mirar el anillo de cada golpe. Su grosor debe latir con el mismo ataque y la misma caída que se oyen.
 5. Parar el servidor con Ctrl+C.
 
+## Movimiento 4 · vibrato por urgencia (activo en A y en B)
+Lo que espera firma vibra; lo firmado suena quieto:
+- `eclosion` (la tropa nacida espera tu firma) vibra;
+- `adopcion` (firmada) y el golpe no.
+
+Se escucha con `AtlasSintesis.suena('eclosion')` frente a `AtlasSintesis.suena('adopcion')`. `vibrato_hz = 6` y `vibrato_prof = 0.02` son provisionales: se fijan en esta misma escucha.
+
 ## La decisión (la escribe el Soberano)
 - **Gana A:** se deja `modo: 'fm2'`. El código B queda dormido y probado, o se revierte entero con `git revert <commit del movimiento 3>`.
 - **Gana B:** se cambia `modo: 'fm3_adsr'` en `valores.js`, se sella y el movimiento 3 se cierra en su propio commit.

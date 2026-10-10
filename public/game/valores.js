@@ -49,7 +49,14 @@
        sonido de siempre y sigue por defecto hasta la escucha A/B. adsr = [ataque s, caida s, sostenido
        0-1, relajacion s]; m2 = moduladora2 / portadora; indice2 = fraccion del indice. PROVISIONALES:
        los fija el oido del Soberano, que es la medida que falta. */
-    sintesis: { modo: 'fm2', adsr: [0.005, 0.03, 0.55, 0.06], m2: 0.5, indice2: 0.5 },
+    sintesis: { modo: 'fm2', adsr: [0.005, 0.03, 0.55, 0.06], m2: 0.5, indice2: 0.5,
+      /* M17-bis 4 (firma F-A): VIBRATO POR URGENCIA DEL SELLO. Lo que espera firma vibra; lo firmado
+         suena quieto. eclosion = la tropa nacida espera tu firma para adoptarla (ui.js:175);
+         adopcion = ya firmada (ui.js:191). vibrato_hz y vibrato_prof (fraccion de la portadora) son
+         PROVISIONALES: se fijan en la misma escucha que el movimiento 3. */
+      sello: { eclosion: 'PROPUESTA_PENDIENTE_FIRMA', adopcion: 'FIRMADO' },
+      urgencia: { PROPUESTA_PENDIENTE_FIRMA: 1, FIRMADO: 0 },
+      vibrato_hz: 6, vibrato_prof: 0.02 },
     army_tope: 60,
     /* Combate entre personas y patrullas (`arena.js`): rondas ENTERAS y todo PROVISIONAL. `ataque`
        pondera los stats de la tropa; `esquiva` va por mil por punto de sigilo, con tope; la armadura
@@ -143,7 +150,11 @@
       modo: ['fm2 (siempre) o fm3_adsr (EN_CURSO_hasta_escucha)', 'decision del Soberano', 'CONSTANTE', 'core.js'],
       adsr: ['envolvente del sonido y del pulso', 'evento', 'ESTADO', 'core.js'],
       m2: ['moduladora2 = portadora * m2', 'evento', 'ESTADO', 'core.js'],
-      indice2: ['indice2 = indice * indice2', 'calor del Nucleo', 'ESTADO', 'core.js']
+      indice2: ['indice2 = indice * indice2', 'calor del Nucleo', 'ESTADO', 'core.js'],
+      sello: ['sello del evento sonoro', 'que espera firma / que esta firmado', 'ESTADO', 'core.js'],
+      urgencia: ['urgencia del sello (0 quieto, 1 vibra)', 'sello', 'ESTADO', 'core.js'],
+      vibrato_hz: ['frecuencia del vibrato', 'sello', 'ESTADO', 'core.js'],
+      vibrato_prof: ['profundidad = portadora * prof * urgencia', 'sello', 'ESTADO', 'core.js']
     }
   };
 

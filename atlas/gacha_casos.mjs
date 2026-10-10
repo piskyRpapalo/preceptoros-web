@@ -265,4 +265,16 @@ await caso('M17-bis 3: coherencia en fm3_adsr, el pulso del golpe es la envolven
   return !mal.length || mal;
 });
 
+// M17-bis 4: lo que espera firma vibra; lo firmado suena quieto. La urgencia sale del sello.
+await caso('M17-bis 4: la eclosion (espera firma) vibra; la adopcion (firmada) y el golpe no', () => {
+  const { S } = cargaSintesis('fm2'), e = S.receta('eclosion', 0), a = S.receta('adopcion', 0), p = S.receta('pop', 0);
+  return (e.vibrato && e.vibrato.prof > 0 && !a.vibrato && !p.vibrato) || { e: e.vibrato, a: a.vibrato, p: p.vibrato };
+});
+await caso('M17-bis 4: el vibrato llega de verdad a la portadora solo cuando hay urgencia', () => {
+  const uno = cargaSintesis('fm2'); uno.S.activa(true); uno.S.suena('eclosion', 0);
+  const dos = cargaSintesis('fm2'); dos.S.activa(true); dos.S.suena('adopcion', 0);
+  const n = (c) => c.conexiones.filter(([, d]) => String(d).endsWith('.frequency')).length;
+  return (n(uno) === 2 && n(dos) === 1) || { eclosion: uno.conexiones, adopcion: dos.conexiones };
+});
+
 process.stdout.write(JSON.stringify(casos));
