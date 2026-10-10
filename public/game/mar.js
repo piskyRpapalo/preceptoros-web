@@ -17,10 +17,13 @@
   'use strict';
 
   var E = window.AtlasEscena, K = window.AtlasCanon, N = window.AtlasNiebla, C = window.AtlasCamara;
+  var F = (window.AtlasValores && window.AtlasValores.fluidez) || {}, O = window.AtlasOnda || {};
   var TIERRA = [[5, 8, 18], [8, 16, 34], [12, 28, 52], [16, 42, 68], [22, 62, 84], [40, 92, 100], [96, 118, 104]];
   var NIEBLA = [null, [64, 72, 96]], TESELA = 240, RES = 4, VE = 820, PASO = 90;
   var ANILLO = N.ANILLO;
 
+  /* npc_chunk es de clase CALIDAD (valores.semantica): solo cuando la calidad elegida baja de Maxima. */
+  function baja() { var q = window.AtlasCalidad; return !!q && (q.modo === 'media' || q.modo === 'luz'); }
   function quieto() { return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches; }
   function el(tag, clase, texto) { var n = document.createElement(tag); if (clase) { n.className = clase; } if (texto != null) { n.textContent = texto; } return n; }
 
@@ -177,10 +180,13 @@
         }
         var dx = q ? 0 : Math.sin(t * 0.0006 + i) * 3 * dpr;
         /* MOVIMIENTO 8 - M17: Sprites chunky para NPCs */
-        if (l.npc && F.npc_chunk) {
+        if (l.npc && F.npc_chunk && baja()) {
           var clave = 'npc_' + l.id + '_' + r;
-          var cv = O.sprite(t0.armonicos, r * 4, l.npc ? E.tono(t0) : col.suya, clave, dpr);
-          g.drawImage(cv, p[0] + dx - cv.width / 2, p[1] - cv.height / 2);
+          /* 1/4 de escala y ampliado x4 sin suavizar: el pixel gordo que declara 75c7ad0 (pintaba x4). */
+          var cv = O.sprite(t0.armonicos, r / 4, l.npc ? E.tono(t0) : col.suya, clave, dpr);
+          g.imageSmoothingEnabled = false;
+          g.drawImage(cv, p[0] + dx - cv.width * 2, p[1] - cv.height * 2, cv.width * 4, cv.height * 4);
+          g.imageSmoothingEnabled = true;
         } else {
           E.figura(g, t0.armonicos, p[0] + dx, p[1], r, { color: l.npc ? E.tono(t0) : col.suya, giro: t * 0.0004 * (l.npc ? -1 : 1),
                                                          grosor: 1.5 * dpr, brillo: (E.BRILLO[t0.rareza] + (l.npc ? 0 : 8)) * dpr });

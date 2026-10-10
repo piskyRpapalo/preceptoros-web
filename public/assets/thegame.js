@@ -142,7 +142,7 @@
     });
     ARMYZ = el('div', 'casa-army'); PANEL.casa.appendChild(ARMYZ);
     var ay = el('ol', 'thegame-ayuda');
-    [1, 2, 3, 4].forEach(function (i) { ay.appendChild(el('li', null, T('ayuda_' + i))); });
+    for (var nq = 1; nq < 8; nq++) { ay.appendChild(el('li', null, T('ayuda_' + nq))); }
     PANEL.partida.insertBefore(ay, PANEL.partida.firstChild);
     /* Lo que queda vacio al repartir (la rejilla de la pagina larga) sobra. */
     cada(piso.querySelectorAll(':scope > .atlas-rejilla'), function (n) { n.remove(); });

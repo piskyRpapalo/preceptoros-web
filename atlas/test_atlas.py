@@ -1046,7 +1046,7 @@ class Pestanas(unittest.TestCase):
         for l in LENGUAS_JUEGO:
             ui = json.loads((PUBLICO / f"atlas-{l}.json").read_text(encoding="utf-8"))["ui"]
             for k in ["pes_" + i for i in self.IDS] + list(self.PLIEGOS) + ["pes_aria", "tecnico", "army_carga"] + \
-                     [f"ayuda_{i}" for i in range(1, 5)]:
+                     [f"ayuda_{i}" for i in range(1, 8)]:
                 with self.subTest(lengua=l, clave=k):
                     self.assertTrue(ui.get(k, "").strip())
 

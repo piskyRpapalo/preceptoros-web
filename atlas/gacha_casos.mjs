@@ -216,6 +216,17 @@ await caso('M17-bis 5: el lector nombrado lee de verdad su parametro', () => {
   });
   return !mal.length || mal;
 });
+await caso('M17-bis 5: el lector declara el objeto del que lee (F sin declarar rompio el MAP)', () => {
+  const { V } = ONDA, mal = [];
+  Object.entries(V.semantica).forEach(([k, [, , clase, lector]]) => {
+    if (clase === 'SIN_LECTOR' || lector === 'core.js') { return; }
+    const t = readFileSync(join(RAIZ, 'public/game', lector), 'utf-8');
+    for (const m of t.matchAll(new RegExp('\\b([A-Za-z_$][\\w$]*)\\.' + k + '\\b', 'g'))) {
+      if (!new RegExp('(^|[\\s,(;])' + m[1].replace('$', '\\$') + '\\s*=[^=]', 'm').test(t)) { mal.push(k + ' -> ' + lector + ' lee ' + m[1] + ' sin declararlo'); }
+    }
+  });
+  return !mal.length || [...new Set(mal)];
+});
 await caso('M17-bis 5: la deuda SIN_LECTOR es exactamente la medida (nadie mas la lee)', () => {
   const { V } = ONDA;
   const deuda = Object.entries(V.semantica).filter(([, f]) => f[2] === 'SIN_LECTOR').map(([k]) => k).sort();
