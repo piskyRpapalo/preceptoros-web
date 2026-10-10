@@ -171,6 +171,7 @@
         g.lineWidth = 1.6 * dpr; pulso(g, cen, d.p, s, E.rapidez(3 + Math.min(10, hx.gen.valor / 800)), 5 * dpr); g.lineWidth = dpr;
       });
       var sel = f.sel();
+      var rec = (f.luchados && f.luchados()) || {};
       f.lugares().forEach(function (l, i) {
         var s = sitio(l), p = P(s.x, s.y), t0 = l.lider, r = 18 * dpr;
         if (sel === l) {
@@ -192,6 +193,12 @@
                                                          grosor: 1.5 * dpr, brillo: (E.BRILLO[t0.rareza] + (l.npc ? 0 : 8)) * dpr });
         }
         rotulo(g, f.nombre(l), p[0], p[1] + r + 15 * dpr);
+        /* Conquistado: ganado en ESTE aparato (FIRMO 2026-10-10). */
+        var rl = rec[l.clave], em = f.emblema();
+        if (rl && rl.g) {
+          rotulo(g, f.texto('arena_conquistado_mapa'), p[0], p[1] + r + 31 * dpr);
+          if (em) { E.figura(g, em.armonicos, p[0] + r * 1.5, p[1] - r * 1.2, r * 0.45, { color: col.tuya, grosor: 1.4 * dpr, brillo: 6 * dpr }); }
+        }
       });
       H0.forEach(function (n) {
         var p = P(n.x, n.y), r = 26 * dpr, med = n.gen.estado === 'MEDIDO';

@@ -1385,6 +1385,53 @@ class Arena(unittest.TestCase):
         self.assertIn("window.AtlasArmy.verificaWeb", self._js("ui-duelo.js"))
 
 
+class Conquista(unittest.TestCase):
+    """Conquista (FIRMO del Soberano, 2026-10-10): ganar a un lugar NPC lo deja CONQUISTADO en este aparato.
+    Se guarda por db.js (la unica puerta de almacenamiento), se ve en la lista y en el mapa con su sello
+    LOCAL · practica, y NO da rating, ni botin, ni entra en el combate."""
+
+    def _js(self, nombre):
+        return sin_comentarios((PUBLICO / "game" / nombre).read_text(encoding="utf-8"))
+
+    def test_se_guarda_por_la_puerta_de_db(self):
+        db, ui = self._js("db.js"), self._js("ui-arena.js")
+        self.assertIn("conquistasWeb", db)
+        self.assertIn("'atlas-conquista'", db)
+        self.assertIn("conquistasWeb(record, lugares, pintaLista)", ui)
+        alfin = ui[ui.index("alFin: function (x)"):ui.index("function sonido(")]
+        self.assertIn("if (CQ) { CQ.pon(record); }", alfin, "la conquista se guarda tras cada combate NPC")
+        for malo in ("indexedDB", "localStorage", "sessionStorage"):
+            with self.subTest(malo=malo):
+                self.assertNotIn(malo, ui)
+
+    def test_no_entra_en_el_combate(self):
+        ui = self._js("ui-arena.js")
+        self.assertIn("var semilla = K.sha(['atlas.pve/1', l.id, K.huella(sq), n].join(':'));", ui)
+        self.assertIn("var c = A.combate(l.defensa.tropas, sq, semilla);", ui)
+        self.assertNotIn("conquist", self._js("arena.js"))
+        self.assertNotIn("conquist", self._js("rating.js"))
+
+    def test_lo_guardado_no_se_cree(self):
+        """Lo que vuelve del almacen se limpia: solo lugares NPC conocidos y cuentas enteras >= 0."""
+        js = ("const D=require('./public/game/db.js');"
+              "const l=D.limpiaRecord({a:{g:2,p:1},b:{g:-1,p:0},c:{g:1.5,p:0},x:{g:9,p:9},d:'mal',e:{g:1}},['a','b','c','d','e']);"
+              "const n=D.limpiaRecord(null,['a']);const m=D.limpiaRecord([1,2],['a']);"
+              "process.stdout.write(JSON.stringify({l,n,m}))")
+        r = subprocess.run(["node", "-e", js], capture_output=True, text=True, timeout=60, cwd=RAIZ.parent)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        d = json.loads(r.stdout)
+        self.assertEqual(d["l"], {"a": {"g": 2, "p": 1}})
+        self.assertEqual((d["n"], d["m"]), ({}, {}))
+
+    def test_se_ve_con_su_sello(self):
+        tx = json.loads((PUBLICO / "atlas-arena-en.json").read_text(encoding="utf-8"))
+        texto = json.dumps(tx)
+        self.assertIn("arena_conquistado", texto)
+        self.assertRegex(texto, r"arena_conquistado[^}]*LOCAL")
+        self.assertIn("T('arena_conquistado')", self._js("ui-arena.js"))
+        self.assertIn("arena_conquistado", self._js("mar.js"))
+
+
 class CasaGranja(unittest.TestCase):
     """La primera pantalla es TU CASA (Soberano, 2026-10-05): una ciudad sumergida en corte con cinco
     edificios que son botones del DOM, cada uno con su cifra MEDIDA o NO_DATA en niebla; personalizar

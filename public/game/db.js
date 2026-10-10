@@ -107,13 +107,13 @@
     };
   }
 
-  /* La calidad elegida (M17): su propia base `atlas-calidad`. Vive aqui porque db.js es la unica
-     puerta de almacenamiento del juego; ui.js no toca IndexedDB (test_v15). */
-  function calidadWeb() {
+  /* Una caja de la pestana: su propia base con un unico registro. db.js es la unica puerta de
+     almacenamiento del juego; ui.js y ui-arena.js no tocan IndexedDB (test_v15, Conquista). */
+  function caja(base, almacen, clave) {
     function db() {
       return new Promise(function (ok, mal) {
-        var r = raiz.indexedDB.open('atlas-calidad', 1);
-        r.onupgradeneeded = function () { r.result.createObjectStore('calidad'); };
+        var r = raiz.indexedDB.open(base, 1);
+        r.onupgradeneeded = function () { r.result.createObjectStore(almacen); };
         r.onsuccess = function () { ok(r.result); }; r.onerror = function () { mal(r.error); };
       });
     }
@@ -121,18 +121,43 @@
       lee: function () {
         return db().then(function (d) {
           return new Promise(function (ok) {
-            var q = d.transaction('calidad').objectStore('calidad').get('modo');
+            var q = d.transaction(almacen).objectStore(almacen).get(clave);
             q.onsuccess = function () { d.close(); ok(q.result || null); }; q.onerror = function () { d.close(); ok(null); };
           });
         }).catch(function () { return null; });
       },
-      pon: function (m) {
+      pon: function (v) {
         db().then(function (d) {
-          var tx = d.transaction('calidad', 'readwrite'); tx.objectStore('calidad').put(m, 'modo');
+          var tx = d.transaction(almacen, 'readwrite'); tx.objectStore(almacen).put(v, clave);
           tx.oncomplete = function () { d.close(); };
         }).catch(function () {});
       }
     };
+  }
+  /* La calidad elegida (M17). */
+  function calidadWeb() { return caja('atlas-calidad', 'calidad', 'modo'); }
+  /* La conquista (FIRMO del Soberano, 2026-10-10): el record de los lugares NPC de ESTE aparato. Ganar
+     una vez conquista. No da rating ni botin y no entra en el combate. Lee, limpia, suma lo que la
+     pestana no tenga y repinta; devuelve la caja para guardar (`pon`) tras cada combate. */
+  function conquistasWeb(record, lugares, pinta) {
+    var c = caja('atlas-conquista', 'conquista', 'record');
+    c.lee().then(function (r) {
+      var l = limpiaRecord(r, lugares.map(function (x) { return x.clave; }));
+      Object.keys(l).forEach(function (k) { if (!record[k]) { record[k] = l[k]; } });
+      pinta();
+    });
+    return c;
+  }
+  /* Lo que vuelve del almacen no se cree: solo lugares conocidos y cuentas enteras >= 0. */
+  function limpiaRecord(r, claves) {
+    var o = {};
+    function ok(n) { return Number.isInteger(n) && n >= 0; }
+    if (!r || typeof r !== 'object' || Array.isArray(r)) { return o; }
+    claves.forEach(function (k) {
+      var x = r[k];
+      if (x && typeof x === 'object' && ok(x.g) && ok(x.p)) { o[k] = { g: x.g, p: x.p }; }
+    });
+    return o;
   }
 
   /* El verificador de la pestana: WebCrypto Ed25519 con la clave publica en
@@ -152,7 +177,7 @@
     return raiz.crypto.subtle.digest('SHA-256', new TextEncoder().encode(firma)).then(hex);
   }
 
-  var AtlasArmy = { TOPE: TOPE, adopcion: adopcion, crea: crea, almacenWeb: almacenWeb, calidadWeb: calidadWeb, verificaWeb: verificaWeb, semillaWeb: semillaWeb };
+  var AtlasArmy = { TOPE: TOPE, adopcion: adopcion, crea: crea, almacenWeb: almacenWeb, calidadWeb: calidadWeb, conquistasWeb: conquistasWeb, limpiaRecord: limpiaRecord, verificaWeb: verificaWeb, semillaWeb: semillaWeb };
   if (typeof module === 'object' && module.exports) { module.exports = AtlasArmy; }
   else { raiz.AtlasArmy = AtlasArmy; }
 })(this);
