@@ -80,7 +80,7 @@
   function mini(lienzo, t, color) {
     var g = lienzo.getContext('2d'), w = lienzo.width;
     g.clearRect(0, 0, w, lienzo.height);
-    figura(g, t.armonicos, w / 2, lienzo.height / 2, w * 0.42, { color: color || tono(t), grosor: Math.max(1.2, w / 60),
+    figura(g, G.espectro(t), w / 2, lienzo.height / 2, w * 0.42, { color: color || tono(t), grosor: Math.max(1.2, w / 60),
                                                                brillo: BRILLO[t.rareza] * w / 120 });
   }
   function unidades(tropas, lado) {
@@ -206,7 +206,7 @@
         var dx = 0;
         if (!quieto && u.tiembla !== null && vt - u.tiembla < 260) { dx = Math.sin(vt * 0.12) * 4 * dpr * (1 - (vt - u.tiembla) / 260); }
         var gira=quieto?0:t*.00045*(1+u.vel/12)*(u.lado?1:-1)*(acabado&&u.vida?3:1),respira=quieto?1:1+.035*Math.sin(t*.002+idx),fo=u.flash*(1+Math.sin(t*.001*u.flash*100)*.5);
-        figura(g,u.t.armonicos,u.x+dx,u.y,u.r,{color:u.color,giro:gira,alfa:m,grosor:1.8*dpr,brillo:u.brillo+fo*18*dpr,t:t,desafina: Math.min(1, (1 - u.vida / u.max)*.8+u.flash*.35),escala:respira*(.4+.6*m),vidaFraccion:u.vida/u.max});
+        figura(g,G.espectro(u.t),u.x+dx,u.y,u.r,{color:u.color,giro:gira,alfa:m,grosor:1.8*dpr,brillo:u.brillo+fo*18*dpr,t:t,desafina: Math.min(1, (1 - u.vida / u.max)*.8+u.flash*.35),escala:respira*(.4+.6*m),vidaFraccion:u.vida/u.max});
         u.flash = Math.max(0, u.flash - 0.05);
       });
       if (!quieto && e && fase > 0.3 && fase < 0.8) { proyectil(U[e[1]][e[2]], U[1 - e[1]][e[3]], (fase - 0.3) / 0.5, t); }

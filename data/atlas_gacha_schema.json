@@ -140,6 +140,10 @@
     "semilla": {
      "type": "string",
      "pattern": "^[0-9a-f]{64}$"
+    },
+    "campo_origen": {
+     "description": "M18-bis: de donde salio el espectro. medido = lo tiro el motor (se pinta entero); emulado = prestado o regenerado (armonicos altos desvanecidos, niebla honesta). Opcional: las tropas anteriores a M18 no lo llevan y cuentan como medidas.",
+     "enum": ["medido", "emulado"]
     }
    }
   },
