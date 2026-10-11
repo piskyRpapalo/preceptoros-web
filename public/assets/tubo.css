@@ -17,7 +17,7 @@
   --tubo-sombra:rgba(0,0,0,.42); --tubo-borde:color-mix(in srgb,var(--bio-teal) 32%,transparent);
   --tubo-tapa:color-mix(in srgb,var(--bio-teal) 26%,transparent); --tubo-fosforo:var(--bio-teal);
 }
-#thegame :is(.thegame-pliego,.casa-interior,.entrada-cangrejo,.atlas-arena-lugar-ficha),
+#thegame :is(.thegame-pliego,.casa-interior,.entrada-cangrejo,.atlas-arena-lugar-ficha,.eco),
 .revela-pie,.casa-pers{
   position:relative;isolation:isolate;
   background:

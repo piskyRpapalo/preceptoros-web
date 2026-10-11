@@ -221,3 +221,11 @@ span.atlas-sector{pointer-events:none}
 /* `hidden` tiene que ganar a los display de arriba: si no, lo oculto se ve. */
 .thegame-sugerencia[hidden],.atlas-eclosion[hidden]{display:none}.atlas-tropa figcaption{display:grid;gap:.1rem}
 .atlas-lienzo .atlas-sector{font-size:.6rem;padding:.12rem .45rem;opacity:.88}
+/* P11 · «El Primer Eco»: el Navegante (su retrato es la onda del guia), sus ondas sucias y los mandos. */
+.eco{display:grid;gap:.6rem;padding:.8rem 1rem}
+.eco-navegante{display:flex;gap:.6rem;align-items:center}
+.eco-navegante > :first-child{width:3.5rem;height:3.5rem;flex:none;overflow:hidden}
+.eco-navegante > :first-child :is(svg,canvas),.eco-navegante > svg{width:100%;height:100%;display:block}
+.eco-texto{margin:0;font-size:.95rem;line-height:1.45}
+.eco-ondas,.eco-mandos{display:flex;flex-wrap:wrap;gap:.6rem;align-items:flex-end}
+.eco-onda{margin:0;display:grid;justify-items:center;gap:.25rem;font:.72rem var(--mono)}
