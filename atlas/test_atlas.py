@@ -355,7 +355,7 @@ process.stdout.write(JSON.stringify({
         self.assertNotIn("atlas-voz.js", capa, "la voz exacta pesa en la puerta del juego")
         # D7 (mudanza bloque 2, FIRMO 2026-10-11): el juego ENTRA en el precache: offline tras la primera visita.
         self.assertIn("/assets/atlas-voz.js", (PUBLICO / "sw-listas.js").read_text(encoding="utf-8"), "la voz no esta en el precache")
-        self.assertIn("s.src = '/assets/atlas-voz.js'", (PUBLICO / "game" / "ui.js").read_text(encoding="utf-8"))
+        self.assertIn("s.src = '/assets/atlas-voz.js'", (PUBLICO / "game" / "ui-ficha.js").read_text(encoding="utf-8"))  # T
 
     def test_el_juego_abre_sin_red_y_la_ley_sin_red_es_no_data(self):
         """Los textos de las lenguas del juego son CONTENIDO para el SW (se guardan y abren sin red);
@@ -666,7 +666,7 @@ class TheGameV15(unittest.TestCase):
     las dos guardas en el mismo job; moverla es un paso del rack."""
 
     JUEGO = PUBLICO / "game"
-    MODULOS = ("valores.js", "gacha.js", "db.js", "core.js", "ui.js", "juez.js")
+    MODULOS = ("valores.js", "gacha.js", "db.js", "core.js", "ui-ficha.js", "ui.js", "juez.js")  # T: ui-ficha sale de ui
 
     def _js(self, nombre):
         return sin_comentarios((self.JUEGO / nombre).read_text(encoding="utf-8"))
@@ -1034,7 +1034,7 @@ class Pestanas(unittest.TestCase):
     HOJA = ASSETS / "thegame.css"
     IDS = ("casa", "mapa", "taller")
     PLIEGOS = ()
-    ARMY = ("valores.js", "gacha.js", "db.js", "core.js", "ui.js")
+    ARMY = ("valores.js", "gacha.js", "db.js", "core.js", "ui-ficha.js", "ui.js")
 
     def _capa(self):
         return sin_comentarios(self.CAPA.read_text(encoding="utf-8"))
@@ -1744,6 +1744,19 @@ class MapaMovible(unittest.TestCase):
         self.assertIn("window.AtlasTallerUI.monta(PANEL.taller)", tg)
         self.assertIn("var TL = enNode ? require('./taller.js') : raiz.AtlasTaller;", (PUBLICO / "game" / "arena.js").read_text(encoding="utf-8"))
 
+    def test_t_la_ficha_sale_de_ui_sin_gemelos(self):
+        """T (troceo, PROPUESTA pendiente de FIRMO: ui.js es intocable): la ficha de la tropa (lienzo, traza, nombre,
+        ficha, voz) vive SOLO en `ui-ficha.js`; `ui.js` la ata en `monta` y deja sitio a G0. Sin gemelos."""
+        u, f = self._js("ui.js"), self._js("ui-ficha.js")
+        for fn in ("function lienzo(", "function traza(", "function nombre(", "function ficha(", "function oye("):
+            with self.subTest(funcion=fn):
+                self.assertIn(fn, f)
+                self.assertNotIn(fn, u, "gemelo en ui.js")
+        self.assertIn("var F = window.AtlasFicha.crea({ G: G, S: S, T: T, el: el, boton: boton, rellena: rellena, dice: dice });", u)
+        self.assertLess(len((PUBLICO / "game" / "ui.js").read_bytes()), 13500, "ui.js no gano sitio para G0")
+        c = (PUBLICO / "assets" / "thegame.js").read_text(encoding="utf-8")
+        self.assertLess(c.index("['/game/ui-ficha.js']"), c.index("['/game/ui.js']"), "la ficha carga despues de quien la usa")
+
     def test_u2_los_cangrejos_viven_en_el_mapa_y_vibran_con_el_estado(self):
         """U2 (contrato «el mapa unico» + projectM: «aqui el PCM es el estado»): tu cangrejo vive EN el mapa, con el
         paseo de J1 (no uno propio) proyectado bajo la casa (x = casa.x + (paseo.x - 0.5)*2*R, R = 140); el emblema
@@ -1892,7 +1905,7 @@ class MapaMovible(unittest.TestCase):
         self.assertLessEqual(ant, 1500, "la anticipacion retiene a la persona demasiado")
         self.assertIn("if (!q && ts - t0 < ANT)", r, "la anticipacion no respeta el movimiento reducido")
         self.assertIn("tiembla = q ? 0 : ts", r, "el temblor no respeta el movimiento reducido")
-        u = sin_comentarios((PUBLICO / "game" / "ui.js").read_text(encoding="utf-8"))
+        u = sin_comentarios((PUBLICO / "game" / "ui-ficha.js").read_text(encoding="utf-8"))  # T: la ficha salio de ui.js
         self.assertIn("el('small', 'atlas-stats', G.STATS.filter(function (k) { return t.stats[k]; })", u)
         css = (PUBLICO / "assets" / "atlas.css").read_text(encoding="utf-8")
         self.assertIn("@keyframes atlas-respira", css)

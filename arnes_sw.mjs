@@ -172,7 +172,8 @@ const rutas = await shell.keys();
 // 101 desde U0 («el mapa unico»): `casa-medidas.js`, `casa-personaliza.js` y `ui-arena-comun.js` (troceos).
 // U1 cambia uno por otro (entra `casa-lateral.js`, sale `home_base_scene.js`): siguen 101.
 // 102 desde U2: `mar-cangrejos.js`, los cangrejos en el mapa.
-ok('precachea las portadas, su superficie y el juego', rutas.length === 102, rutas.length+' rutas');
+// 103 desde T: `ui-ficha.js` (la ficha de la tropa sale de `ui.js`).
+ok('precachea las portadas, su superficie y el juego', rutas.length === 103, rutas.length+' rutas');
 ok('el shell trae el juego (D7): la puerta, el cangrejo y la arena',
    ['/assets/thegame.js', '/game/gdpr-art25-ephemeral-crab.js', '/game/ui-arena.js', '/assets/atlas-motor.js'].every(r => rutas.includes(r)));
 ok('el shell trae la portada de cada lengua', ['/es/', '/fr/', '/ar/'].every(r => rutas.includes(r)));
