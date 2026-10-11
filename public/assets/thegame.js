@@ -84,7 +84,7 @@
     ['arena', '\u2694\uFE0E', ''],
     ['partida', '\u2139\uFE0E', '.atlas-guardado|.thegame-exporta|.thegame-opina|.atlas-hud-farmeo|#atlas-juego > .no-data|.atlas-pie']];
   /* LA CASA, a demanda y detras del Army (usa la gacha para tu emblema). */
-  var CASA = [['/game/canon.js'], ['/game/wave_render.js'], ['/game/escena.js'], ['/game/gdpr-art25-ephemeral-crab.js'], ['/game/home_base_scene.js'], ['/game/home_buildings.js'], ['/game/summon_reveal.js']];
+  var CASA = [['/game/canon.js'], ['/game/wave_render.js'], ['/game/escena.js'], ['/game/gdpr-art25-ephemeral-crab.js'], ['/game/aiact-art50-crab-terminal.js'], ['/game/home_base_scene.js'], ['/game/home_buildings.js'], ['/game/summon_reveal.js']];
   /* LO TECNICO, SIEMPRE PLEGADO (Soberano: «son textos que asustan a usuarios no tecnicos»): el
      JSON de la carta, las leyes medidas, la semilla que no es VRF, los valores provisionales y el
      pie. No se borran, porque son la prueba: se ven al abrir «Technical details». */
@@ -126,6 +126,8 @@
     if (id === 'arena') { cargaArena(); }
     if (id === 'mapa') { cargaArena(); }
     if (id === 'casa') { cargaCasa(); }
+    /* J7: el terminal del cangrejo vive en Help; se monta al abrirla (una vez). */
+    if (id === 'partida' && window.AtlasTerminal) { window.AtlasTerminal.monta(PANEL.partida, function (k, r) { var t = T(k); return t === k ? r : t; }); }
   }
 
   function ordena() {

@@ -640,7 +640,7 @@ ARENA = ("sobres.js", "rating.js", "arena.js", "duelo.js", "fog_of_war.js", "wor
          "nodos-cedulas.js", "nodos.js", "cuenta.js", "ui-nodos.js", "ui-rack.js",
          "battle_choreography.js", "battle_replay.js", "ui-arena.js", "ui-duelo.js")
 # La CASA (2026-10-05): la primera pantalla, detras del Army. Lleva canon y escena, que la Arena reutiliza.
-CASA = ("canon.js", "escena.js", "wave_render.js", "gdpr-art25-ephemeral-crab.js", "home_base_scene.js", "home_buildings.js", "summon_reveal.js")
+CASA = ("canon.js", "escena.js", "wave_render.js", "gdpr-art25-ephemeral-crab.js", "aiact-art50-crab-terminal.js", "home_base_scene.js", "home_buildings.js", "summon_reveal.js")
 FUERA_DE_LA_PUERTA = tuple(sorted(set(PUROS + ARENA + CASA)))
 
 
@@ -1418,6 +1418,38 @@ class PrecacheDelJuego(unittest.TestCase):
         for medida in ("/atlas-mundo.json", "/atlas-record.json"):
             with self.subTest(medida=medida):
                 self.assertNotIn(medida, listas[listas.index("const JUEGO"):])
+
+
+class TerminalCangrejo(unittest.TestCase):
+    """J7 (plan de ronda 2026-10-11): el cangrejo toca SOLO las acciones del enum y el MOTOR decide.
+    Una sola puerta (AtlasJuego.aplica); ni una regla de juego en el terminal; nada sale de la pestana."""
+
+    def _js(self):
+        return sin_comentarios((PUBLICO / "game" / "aiact-art50-crab-terminal.js").read_text(encoding="utf-8"))
+
+    def test_una_sola_puerta_y_ninguna_regla(self):
+        t = self._js()
+        self.assertIn("J.aplica(a)", t)
+        for malo in ("AtlasMotor", "M.reparar", "M.recoger", "M.ciclo", ".cobre -", "fetch", "localStorage", "indexedDB",
+                     "Math.random", "Date", "sendBeacon", "XMLHttpRequest", "innerHTML"):
+            with self.subTest(malo=malo):
+                self.assertNotIn(malo, t)
+
+    def test_el_enum_es_el_del_piloto(self):
+        tp = (PUBLICO / "assets" / "atlas-piloto.js").read_text(encoding="utf-8")
+        enum = re.search(r"var ACCIONES = (\[[^\]]*\])", tp).group(1)
+        self.assertIn("var ACCIONES = " + enum + ";", self._js(), "el terminal y el piloto no comparten el enum")
+
+    def test_la_linea_dice_lo_que_respondio_el_motor(self):
+        js = ("const T=require('./public/game/aiact-art50-crab-terminal.js');"
+              "const a=T.accion('reparar');const b=T.accion('bajar_a','ruinas');"
+              "process.stdout.write(JSON.stringify({f:T.linea(a,{resultado:'fallo',tipo:'reparar',mision:'grieta-120',profundidad:'50-150'}),"
+              "n:T.linea(a,null),b:b,v:T.variables(null)}))")
+        r = subprocess.run(["node", "-e", js], capture_output=True, text=True, timeout=60, cwd=RAIZ.parent)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        d = json.loads(r.stdout)
+        self.assertIn('"resultado":"fallo"', d["f"]); self.assertIn("NO_DATA", d["n"]); self.assertIn("NO_DATA", d["v"])
+        self.assertEqual(d["b"], {"esquema": "atlas.accion/1", "accion": "bajar_a", "origen": "humano", "banda": "ruinas"})
 
 
 class Conquista(unittest.TestCase):

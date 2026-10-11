@@ -163,7 +163,8 @@ const rutas = await shell.keys();
 // 200 desde el 2026-10-11 (mudanza bloque 2, firma D7): entra EL JUEGO, 54 rutas (`JUEGO` en
 // sw-listas.js: la puerta, los modulos de game/ y lo que se pide a demanda). La portada ya es el juego
 // y sin el en el shell no se jugaba sin red. Bajara cuando el bloque 3 retire las piezas del Hub.
-ok('precachea paginas, piezas del Hub y el juego', rutas.length === 200, rutas.length+' rutas');
+// 201 el mismo dia: entra el TERMINAL DEL CANGREJO (J7, game/aiact-art50-crab-terminal.js).
+ok('precachea paginas, piezas del Hub y el juego', rutas.length === 201, rutas.length+' rutas');
 ok('el shell trae el juego (D7): la puerta, el cangrejo y la arena',
    ['/assets/thegame.js', '/game/gdpr-art25-ephemeral-crab.js', '/game/ui-arena.js', '/assets/atlas-motor.js'].every(r => rutas.includes(r)));
 ok('el shell trae las tres tiras de la cara',
