@@ -2385,8 +2385,9 @@ class ElJuegoEnInglesEnLasNueve(unittest.TestCase):
         self.assertTrue(primera.group(2).startswith("#atlas-juego > .no-data:first-child"),
                         "el aviso de lengua no va el primero en la pestana de entrada: cae en Help y no se ve")
         self.assertIn(f"muestra('{primera.group(1)}');\n  }}", js, "la capa no abre en la pestana del aviso")
-        self.assertLess(js.index(f"['{primera.group(1)}'"), js.index("['partida'"),
-                        "la entrada tiene que repartir antes que Help, o Help se lleva el aviso")
+        # R2 (plan «el refresco»): Help desaparece; el aviso generico (`#atlas-juego > .no-data`) lo reparte MAP.
+        self.assertLess(js.index(f"['{primera.group(1)}'"), js.index("['mapa'"),
+                        "la entrada tiene que repartir antes que MAP, o MAP se lleva el aviso")
         piso = self._js("atlas-piso.js")
         self.assertIn("zona.insertBefore(el('p', 'no-data', U('lengua_nd')", piso)
         self.assertIn("{l}", json.loads((PUBLICO / "atlas-en.json").read_text(encoding="utf-8"))["ui"]["lengua_nd"])

@@ -52,10 +52,10 @@ function reparto(tc, n) {
   for (let i = 0; i < n; i++) { r[G.tirada(sha(tc + i), tc).rareza]++; }
   return r;
 }
-await caso('gacha: el reparto de rareza sigue la tabla de la TC (10 000 tiradas)', () => {
-  const r = reparto('tc1', 10000), q = G.TCS.tc1.calidad;
+await caso('gacha: el reparto de rareza sigue las odds publicadas de la TC (10 000 tiradas)', () => {
+  const r = reparto('tc1', 10000), o = G.odds('tc1');
   const cerca = (x, esperado) => Math.abs(x - esperado * 10) <= Math.max(25, esperado * 10 * 0.15);
-  return (cerca(r.unico, q[0]) && cerca(r.raro, q[1]) && cerca(r.magico, q[2])) || r;
+  return (G.RAREZAS.every((k, i) => cerca(r[k], o[i]))) || { r, o };
 });
 await caso('gacha: el Abismo da mejor loot que el Arrecife', () => {
   const a = reparto('tc1', 4000), b = reparto('tc4', 4000);
@@ -66,11 +66,49 @@ await caso('gacha: cada tropa cabe en menos de 200 B', () => {
   for (let i = 0; i < 3000; i++) { peor = Math.max(peor, G.compacta(G.tirada(sha('b' + i), 'tc' + (1 + i % 4))).length); }
   return peor < 200 || peor;
 });
-await caso('gacha: la rareza pone la simetria (k = 1 mod s)', () => {
-  const s = { normal: 2, magico: 3, raro: 5, unico: 7 };
+await caso('gacha: las ARISTAS ponen la simetria (k = 1 mod aristas) y la rareza (M18-B)', () => {
   for (let i = 0; i < 400; i++) {
-    const t = G.tirada(sha('c' + i), 'tc4');
-    if (!t.armonicos.every((h) => (((h[0] - 1) % s[t.rareza]) + s[t.rareza]) % s[t.rareza] === 0)) { return t; }
+    const t = G.tirada(sha('c' + i), 'tc4'), n = t.aristas;
+    if (!t.armonicos.every((h) => (((h[0] - 1) % n) + n) % n === 0)) { return t; }
+    if (t.rareza !== G.rarezaDe(n)) { return { n, rareza: t.rareza }; }
+  }
+  return true;
+});
+// M18-B · EL TEST DE LA GAUSS contra la meta FIRMADA: >= 60 % con 3-4 aristas y <= 5 % con mas de 12, en cada
+// TC, sobre 4 000 tiradas con las semillas de la propuesta M18 (sha256('m18:<tc>:<i>')). Dos corridas identicas.
+function gauss(tc) {
+  let b = 0, j = 0, mal = 0;
+  for (let i = 0; i < 4000; i++) {
+    const t = G.tirada(sha('m18:' + tc + ':' + i), tc);
+    if (t.aristas <= 4) { b++; } if (t.aristas > 12) { j++; } if (G.aristas(t) !== t.aristas) { mal++; }
+  }
+  return { b, j, mal };
+}
+await caso('M18-B: la Gauss de aristas cumple la meta firmada en las 4 TC (n=2)', () => {
+  const fuera = {};
+  for (const tc of Object.keys(G.TCS)) {
+    const a = gauss(tc), b = gauss(tc);
+    if (JSON.stringify(a) !== JSON.stringify(b) || a.b < 2400 || a.j > 200) { fuera[tc] = a; }
+  }
+  return !Object.keys(fuera).length || fuera;
+});
+await caso('M18-B: lo que se promete es lo que se dibuja (aristas medidas = aristas tiradas, 16 000 de 16 000)', () => {
+  const mal = Object.keys(G.TCS).map((tc) => gauss(tc).mal);
+  return mal.every((m) => m === 0) || mal;
+});
+await caso('M18-B: las odds publicadas salen de la tabla (suman 1 000 y son las de las aristas)', () => {
+  const mal = Object.keys(G.TCS).filter((tc) => {
+    const t = G.oddsAristas(tc), s = t.reduce((a, x) => a + x[1], 0), o = G.odds(tc);
+    const b = t.filter((x) => x[0] <= 4).reduce((a, x) => a + x[1], 0), lev = t.filter((x) => x[0] > 12).reduce((a, x) => a + x[1], 0);
+    return s !== 1000 || o.reduce((a, x) => a + x, 0) !== 1000 || o[0] !== b || o[3] !== lev || b < 600 || lev > 50;
+  });
+  return !mal.length || mal;
+});
+await caso('M18-B: las dos caras son LOD de los mismos datos (combate = prefijo del taller)', () => {
+  for (let i = 0; i < 200; i++) {
+    const t = G.tirada(sha('lod' + i), 'tc' + (1 + i % 4)), c = G.lod(t, 'combate'), w = G.lod(t, 'taller');
+    if (c.length !== 2 || JSON.stringify(w.slice(0, 2)) !== JSON.stringify(c) || JSON.stringify(w) !== JSON.stringify(G.espectro(t))) { return t; }
+    if (G.aristas(c) !== t.aristas) { return { cara: 'combate', n: t.aristas, medidas: G.aristas(c) }; }
   }
   return true;
 });
@@ -160,6 +198,25 @@ await caso('army: la misma tropa no entra dos veces', async () => {
 });
 
 /* --- sintesis --------------------------------------------------------------- */
+// R6 (plan «el refresco»): SU ESPECTRO MANDA EL TIMBRE. Antes 500 tropas daban una sola portadora (205 Hz,
+// medido): salia del armonico base, que es k = 1 en todas. Ahora la nota sale de las aristas (pentatonica sobre
+// 110 Hz), el color de a1, la aspereza del detalle, y el Leviatan lleva segunda moduladora. Una receta, no dos.
+await caso('R6: el espectro manda el timbre (misma tropa, misma receta; las aristas ponen la nota)', () => {
+  const ts = Array.from({ length: 500 }, (_, i) => G.tirada(sha('v' + i), 'tc' + (1 + i % 4)));
+  const fs = new Set(ts.map((t) => S.vozDe(t).portadora)), mal = [];
+  if (fs.size < 10) { mal.push('portadoras distintas: ' + fs.size); }
+  ts.forEach((t) => {
+    if (JSON.stringify(S.vozDe(t)) !== JSON.stringify(S.vozDe(JSON.parse(JSON.stringify(t))))) { mal.push('no determinista'); }
+    const otra = ts.find((u) => u.aristas !== t.aristas);
+    if (otra && S.vozDe(otra).portadora === S.vozDe(t).portadora) { mal.push('dos aristas, una nota: ' + t.aristas + '/' + otra.aristas); }
+    if ((t.aristas > 12) !== ('moduladora2' in S.vozDe(t))) { mal.push('leviatan sin segunda moduladora: ' + t.aristas); }
+  });
+  return !mal.length || [...new Set(mal)].slice(0, 4);
+});
+await caso('R6: la voz exacta usa la MISMA receta (atlas-voz.js no copia la formula)', () => {
+  const v = readFileSync(join(RAIZ, 'public/assets/atlas-voz.js'), 'utf-8');
+  return (v.includes('S.vozDe(t)') && !v.includes('160 + 45')) || 'atlas-voz copia la receta';
+});
 await caso('sintesis: receta determinista y sin ficheros', () =>
   JSON.stringify(S.receta('pop', 0.3)) === JSON.stringify(S.receta('pop', 0.3)) && S.receta('mp3', 0) === null);
 await caso('sintesis: el calor del Nucleo hace el sonido mas grave y aspero', () => {
@@ -268,7 +325,7 @@ await caso('M17-bis 5: el lector declara el objeto del que lee (F sin declarar r
 await caso('M17-bis 5: la deuda SIN_LECTOR es exactamente la medida (nadie mas la lee)', () => {
   const { V } = ONDA;
   const deuda = Object.entries(V.semantica).filter(([, f]) => f[2] === 'SIN_LECTOR').map(([k]) => k).sort();
-  const fuentes = ['wave_render.js', 'escena.js', 'mar.js', 'home_base_scene.js', 'summon_reveal.js', 'battle_replay.js']
+  const fuentes = ['wave_render.js', 'escena.js', 'mar.js', 'mar-fondo.js', 'home_base_scene.js', 'summon_reveal.js', 'battle_replay.js']
     .map((f) => readFileSync(join(RAIZ, 'public/game', f), 'utf-8')).join('\n');
   const leidos = deuda.filter((k) => fuentes.includes(k));
   return (!leidos.length && deuda.length === 7) || { deuda, leidos_aunque_dice_sin_lector: leidos };

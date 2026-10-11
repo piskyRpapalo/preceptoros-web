@@ -39,7 +39,7 @@ const PAGINAS = [''];
    sigue fuera: sin red, NO_DATA, nunca una cifra vieja. Los textos del juego (atlas-*.json, tambien los
    de la casa) van en CONTENIDO_JSON, abajo. */
 const JUEGO = [
-  '/assets/thegame.js', '/assets/thegame.css', '/assets/atlas.css', '/assets/atlas-mapa.css',
+  '/assets/thegame.js', '/assets/thegame.css', '/assets/tubo.css', '/assets/atlas.css', '/assets/atlas-mapa.css',
   '/assets/atlas-arte.js', '/assets/atlas-coord.js', '/assets/atlas-carta.js', '/assets/atlas-ondas.js',
   '/assets/atlas-obra.js', '/assets/atlas-gesto.js', '/assets/atlas-mapa.js', '/assets/atlas-dialogo.js',
   '/assets/atlas-motor.js', '/assets/atlas-piso.js', '/assets/atlas-piloto.js', '/assets/atlas-partida.js',
@@ -48,7 +48,7 @@ const JUEGO = [
   '/game/db.js', '/game/core.js', '/game/ui.js', '/game/canon.js', '/game/wave_render.js', '/game/escena.js',
   '/game/gdpr-art25-ephemeral-crab.js', '/game/aiact-art50-crab-terminal.js', '/game/gdpr-art7-entry-choice.js', '/game/aiact-art50-state-radio.js', '/game/home_base_scene.js', '/game/home_buildings.js',
   '/game/summon_reveal.js', '/game/home.css', '/game/sobres.js', '/game/rating.js', '/game/arena.js',
-  '/game/duelo.js', '/game/fog_of_war.js', '/game/world_camera.js', '/game/mar.js', '/game/nodos-pesos.js',
+  '/game/duelo.js', '/game/fog_of_war.js', '/game/world_camera.js', '/game/mar.js', '/game/mar-fondo.js', '/game/nodos-pesos.js',
   '/game/nodos-cedulas.js', '/game/nodos.js', '/game/cuenta.js', '/game/ui-nodos.js', '/game/ui-rack.js',
   '/game/battle_choreography.js', '/game/battle_replay.js', '/game/ui-arena.js', '/game/ui-duelo.js',
   '/assets/eaa-art12-local-first-surface.js', '/assets/eaa-art12-local-first-surface.css'

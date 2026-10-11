@@ -108,18 +108,19 @@ caso('fases: 1 al empezar, 5 con el Nucleo a 70', () => {
   return igual(`${a}|${M.fase(e)}`, '1|5');
 });
 
-// 6 · M18-bis: la onda de 7 aristas. «7» es la SIMETRIA del unico (valores.js), no su numero de
-// armonicos: el unico lleva 6 terminos y todos sus k cumplen k = 1 (mod 7), 7 ejes de giro.
-// Semilla medida el 2026-10-10: sha256('m18bis-28'), la primera de esa serie que da unico en tc4.
+// 6 · M18-B (opcion B firmada el 2026-10-11; los casos M18-bis que fijaban el espectro viejo se rompen A
+// PROPOSITO y se reescriben). La puerta de M18: una onda de 7 ARISTAS (7 lobulos medidos), todos sus k
+// cumplen k = 1 (mod 7). Semilla medida el 2026-10-11: sha256('m18b-14'), la primera de esa serie que da 7
+// aristas en tc4 con todos sus armonicos de detalle vivos (amplitud > 0).
 const G = require('../public/game/gacha.js');
-const SEM7 = '226c06b336ab80d5f81e9a9474f8d182ace96d96ab53a36053a2a64fb9f68bd0';
-const ARM7 = '[[1,24,24,0],[-6,9,8,56],[15,7,8,51],[-20,7,8,42],[29,5,6,50],[-34,6,6,36]]';
+const SEM7 = 'f8f7efb6a1b32b0878d0a7bb5a588a3d20844971bdd7aa0f157c1a822e9597e0';
+const ARM7 = '[[1,24,24,0],[-6,16,16,44],[15,4,4,40],[-20,1,1,4]]';
 const huella = (x) => require('crypto').createHash('sha256').update(JSON.stringify(x)).digest('hex');
-caso('M18: la semilla medida da unico en tc4 con 6 terminos', () => {
+caso('M18-B: la semilla medida da 7 aristas (magico, 4 terminos) y se dibujan 7 lobulos', () => {
   const t = G.tirada(SEM7, 'tc4');
-  return igual(`${t.rareza}|${t.armonicos.length}`, 'unico|6');
+  return igual(`${t.aristas}|${t.rareza}|${t.armonicos.length}|${G.aristas(t)}`, '7|magico|4|7');
 });
-caso('M18: 7 ejes de giro, todo k del unico = 1 (mod 7)', () => {
+caso('M18-B: 7 ejes de giro, todo k = 1 (mod 7)', () => {
   const ks = G.tirada(SEM7, 'tc4').armonicos.map((h) => h[0]);
   return ks.every((k) => ((k % 7) + 7) % 7 === 1) || `k fuera de la simetria: ${ks}`;
 });

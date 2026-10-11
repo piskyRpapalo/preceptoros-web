@@ -18,7 +18,10 @@
   'use strict';
 
   var RATE = 8000, DUR = 9600, PARTE = 16384, Q = 32767;
-  var H = typeof module === 'object' && module.exports ? require('./atlas-coord.js') : raiz.AtlasCoord;
+  var EN_NODE = typeof module === 'object' && module.exports;
+  var H = EN_NODE ? require('./atlas-coord.js') : raiz.AtlasCoord;
+  /* La receta del timbre es UNA: `vozDe` de core.js (R6). Aqui solo se pasa a enteros. */
+  var S = EN_NODE ? require('../game/core.js') : raiz.AtlasSintesis;
 
   /* Seno de Bhaskara I en enteros, 1024 pasos por vuelta: 16x(N-x) / (5N^2 - 4x(N-x)), N=512. */
   var SENO = new Int16Array(1024);
@@ -29,14 +32,13 @@
   }
   function inc(f) { return Math.floor(f * 4294967296 / RATE); }
 
-  /* La receta entera, la misma idea que `vozDe` en core.js: portadora por el primer armonico,
-     moduladora por cuantos tiene, indice por su amplitud. Y ademas, un parcial por armonico. */
+  /* La receta entera: portadora, moduladora e indice son los de `vozDe` (core.js), la MISMA receta,
+     no una copia (R6). Y ademas, un parcial por armonico. Sin `vozDe` cargada no hay voz: null. */
   function receta(t) {
-    var a = (t && t.armonicos) || [], amp = 0;
-    if (!a.length) { return null; }
+    var a = (t && t.armonicos) || [], amp = 0, v = S && S.vozDe ? S.vozDe(t) : null;
+    if (!a.length || !v) { return null; }
     a.forEach(function (h) { amp += Math.abs(h[1]) + Math.abs(h[2]); });
-    var fc = 160 + 45 * (Math.abs(a[0][0]) % 12), fm = Math.round(fc * (1 + a.length / 4));
-    var ind = Math.min(400, 20 + amp * 6);
+    var fc = v.portadora, fm = v.moduladora, ind = v.indice;
     return { fc: fc, fm: fm,
              /* Desviacion de fase en unidades de 2^32 por unidad de la tabla: I/(2 pi) con pi = 355/113. */
              dev: Math.floor(Math.floor(ind / fm * 1000) * 4294967296 * 113 / (1000 * 2 * 355 * Q)),

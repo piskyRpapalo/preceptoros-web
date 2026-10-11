@@ -206,6 +206,14 @@ span.atlas-sector{pointer-events:none}
 .atlas-onda{--onda:var(--accent-copper-claro);display:block}
 .atlas-tropa{margin:0;display:grid;justify-items:center;gap:.2rem;text-align:center}
 .atlas-tropa small{font:.7rem var(--mono);color:var(--text-muted)}
+/* R8 · LA VITRINA: tu Army se presume, sus ondas respiran (un 4 %, despacio) y los botones aplastan y
+   estiran al pulsar (squash & stretch). Con movimiento reducido, quietas. */
+.atlas-army .atlas-onda{animation:atlas-respira 3.4s ease-in-out infinite}
+.atlas-army li:nth-child(2n) .atlas-onda{animation-delay:-1.7s}
+@keyframes atlas-respira{50%{transform:scale(1.04)}}
+#thegame :is(.boton,.boton-sec){transition:transform .12s cubic-bezier(.34,1.56,.64,1)}
+#thegame :is(.boton,.boton-sec):active{transform:scale(1.06,.92)}
+@media (prefers-reduced-motion:reduce){.atlas-army .atlas-onda{animation:none}#thegame :is(.boton,.boton-sec){transition:none}#thegame :is(.boton,.boton-sec):active{transform:none}}
 .rar-magico .atlas-onda{--onda:#7ea6ff}.rar-magico b{color:#7ea6ff}.rar-raro .atlas-onda{--onda:#f2d04a}.rar-raro b{color:#f2d04a}
 .rar-unico .atlas-onda{--onda:#e8b64c}.rar-unico b{color:#e8b64c}
 .atlas-eclosion{margin-top:.6rem;padding:.8rem;border:1px solid var(--accent-copper);border-radius:var(--radius)}

@@ -2,18 +2,99 @@
  "$schema": "https://json-schema.org/draft/2020-12/schema",
  "$id": "preceptoros:atlas.accion/1",
  "title": "Accion de theGame",
- "description": "Lo UNICO que un piloto (regla fija o LoRA) puede proponer. Enum cerrado: son las mismas acciones que tiene la persona, y ninguna toca valor, claves ni red. El motor decide si se puede; esto solo decide la forma. Vive fuera de `public/`: es el contrato, no se sirve.",
+ "description": "Lo UNICO que un piloto (regla fija o LoRA) puede proponer. Enum cerrado: son las mismas acciones que tiene la persona, y ninguna toca valor, claves ni red. El motor decide si se puede; esto solo decide la forma. `mover` (R2c, 2026-10-11) es la flecha del mapa: la decide la camara, que choca con la niebla, y no entra en la partida. Vive fuera de `public/`: es el contrato, no se sirve.",
  "type": "object",
  "additionalProperties": false,
- "required": ["esquema", "accion", "origen"],
+ "required": [
+  "esquema",
+  "accion",
+  "origen"
+ ],
  "properties": {
-  "esquema": {"const": "atlas.accion/1"},
-  "accion": {"enum": ["esperar", "recoger", "reparar", "aplazar", "bajar_a"]},
-  "banda": {"enum": ["arrecife", "ruinas", "bosque", "nucleo"]},
-  "origen": {"enum": ["humano", "piloto_base", "lora"]},
-  "ciclo": {"type": "integer", "minimum": 0}
+  "esquema": {
+   "const": "atlas.accion/1"
+  },
+  "accion": {
+   "enum": [
+    "esperar",
+    "recoger",
+    "reparar",
+    "aplazar",
+    "bajar_a",
+    "mover"
+   ]
+  },
+  "banda": {
+   "enum": [
+    "arrecife",
+    "ruinas",
+    "bosque",
+    "nucleo"
+   ]
+  },
+  "dir": {
+   "enum": [
+    "izq",
+    "arr",
+    "aba",
+    "der",
+    "casa"
+   ]
+  },
+  "origen": {
+   "enum": [
+    "humano",
+    "piloto_base",
+    "lora"
+   ]
+  },
+  "ciclo": {
+   "type": "integer",
+   "minimum": 0
+  }
  },
- "if": {"properties": {"accion": {"const": "bajar_a"}}},
- "then": {"required": ["banda"]},
- "else": {"not": {"required": ["banda"]}}
+ "allOf": [
+  {
+   "if": {
+    "properties": {
+     "accion": {
+      "const": "bajar_a"
+     }
+    }
+   },
+   "then": {
+    "required": [
+     "banda"
+    ]
+   },
+   "else": {
+    "not": {
+     "required": [
+      "banda"
+     ]
+    }
+   }
+  },
+  {
+   "if": {
+    "properties": {
+     "accion": {
+      "const": "mover"
+     }
+    }
+   },
+   "then": {
+    "required": [
+     "dir"
+    ]
+   },
+   "else": {
+    "not": {
+     "required": [
+      "dir"
+     ]
+    }
+   }
+  }
+ ]
 }

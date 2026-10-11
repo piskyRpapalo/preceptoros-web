@@ -58,7 +58,27 @@
   }
   function huella(circ) { return circ.map(function (c) { return c.x + ',' + c.y + ',' + c.r; }).join(';'); }
 
+  /* LAS ANCLAS DE LO QUE VIENE (R7, plan «el refresco»): SOLO vocabulario y sitio, nada se construye aqui.
+     Cada nodo de las cedulas lleva su TUBO AL RACK (enlace-rack, hacia Hexelion, que es el rack); tu casa
+     ancla las PARTES DEL CUERPO (la pipeline de edificios -> mapa) y el PRISMA DE BANDERA (P10, propuesta);
+     la boya de Hexelion ancla los ECOS DE SUPERFICIE (EV_SURFACE_ECHO, «6 planes.txt»:175-207: feedback
+     cifrado hacia el rack, que esta ronda NO envia). Puras: { id, clase, x, y, a } con `a` = hacia donde. */
+  var CLASES_ANCLA = ['enlace-rack', 'parte-cuerpo', 'prisma', 'eco-superficie'];
+  function anclas(e) {
+    var out = [], casa = sitioCasa(e.pub, e.sha);
+    (e.nodos || []).forEach(function (n) {
+      if (n.nodo === 'nodo.0.hexelion') { return; }
+      var s = sitioNodo(n.nodo); out.push({ id: 'rack:' + n.nodo, clase: 'enlace-rack', x: s.x, y: s.y, a: { x: HEX.x, y: HEX.y } });
+    });
+    if (casa) {
+      out.push({ id: 'cuerpo:casa', clase: 'parte-cuerpo', x: casa.x, y: casa.y - 60, a: null });
+      out.push({ id: 'prisma:casa', clase: 'prisma', x: casa.x + 60, y: casa.y, a: null });
+    }
+    out.push({ id: 'eco:hexelion', clase: 'eco-superficie', x: HEX.x, y: HEX.y - 90, a: null });
+    return out;
+  }
+
   var AtlasNiebla = { despejado: despejado, niebla: niebla, huella: huella, sitioLugar: sitioLugar, sitioCasa: sitioCasa,
-                      sitioNodo: sitioNodo, HEX: HEX, DOOGEE: DOOGEE, ANILLO: ANILLO };
+                      sitioNodo: sitioNodo, HEX: HEX, DOOGEE: DOOGEE, ANILLO: ANILLO, anclas: anclas, CLASES_ANCLA: CLASES_ANCLA };
   if (typeof module === 'object' && module.exports) { module.exports = AtlasNiebla; } else { raiz.AtlasNiebla = AtlasNiebla; }
 })(this);

@@ -76,5 +76,22 @@ caso('luchar en un lugar lo despeja', () => {
   return (despues.length === antes + 1 && despues.some((c) => c.que === l.clave)) || 'el lugar luchado sigue en niebla';
 });
 
+// R7 (plan «el refresco»): LAS ANCLAS de lo que viene. Solo datos y sitio: cada nodo (menos Hexelion, que es el
+// rack) lleva su tubo al rack; tu casa ancla las partes del cuerpo y el prisma; la boya de Hexelion, los ecos.
+caso('R7: anclas puras y deterministas, de clases cerradas', () => {
+  const a = N.anclas({ pub: PUB, sha: K.sha, nodos: Ce.nodos }), b = N.anclas({ pub: PUB, sha: K.sha, nodos: Ce.nodos });
+  if (JSON.stringify(a) !== JSON.stringify(b)) { return 'no determinista'; }
+  const fuera = a.filter((x) => !N.CLASES_ANCLA.includes(x.clase));
+  return !fuera.length || JSON.stringify(fuera);
+});
+caso('R7: cada nodo con su tubo al rack (Hexelion); sin clave no hay anclas de casa', () => {
+  const a = N.anclas({ pub: PUB, sha: K.sha, nodos: Ce.nodos }), sin = N.anclas({ pub: null, sha: K.sha, nodos: Ce.nodos });
+  const tubos = a.filter((x) => x.clase === 'enlace-rack');
+  const ok = tubos.length === Ce.nodos.filter((n) => n.nodo !== 'nodo.0.hexelion').length &&
+    tubos.every((x) => x.a.x === N.HEX.x && x.a.y === N.HEX.y) &&
+    a.some((x) => x.clase === 'parte-cuerpo') && a.some((x) => x.clase === 'prisma') && a.some((x) => x.clase === 'eco-superficie') &&
+    !sin.some((x) => x.clase === 'parte-cuerpo' || x.clase === 'prisma');
+  return ok || JSON.stringify({ a, sin });
+});
 console.log(JSON.stringify(casos, null, 1));
 process.exitCode = casos.every((c) => c.ok) ? 0 : 1;

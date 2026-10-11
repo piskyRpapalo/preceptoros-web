@@ -14,8 +14,13 @@
    UNA TROPA SON SUS ARMONICOS: [k, ax, ay, fase] enteros pequenos. La figura
    es x(t) = sum ax*cos(k t + f), y(t) = sum ay*sin(k t + f): circulos que giran
    dentro de circulos (Fourier). Cabe en menos de 200 B y no hay imagen.
-   La rareza pone la SIMETRIA: frecuencias k = 1 + s*j dan una figura con s
-   ejes de giro. */
+   LAS ARISTAS PONEN LA FORMA (M18-B, firmado 2026-10-11). Primero se tira
+   cuantas aristas tiene la onda (`valores.aristas`, por mil); la rareza sale
+   de ahi. El armonico que pone las aristas es k = 1 - n: con la base k = 1, el
+   radio |24 + a1 e^(-i n u)| tiene EXACTAMENTE n maximos (n lobulos). Los demas
+   van en multiplos de n (k = 1 +/- n j), con amplitud a1 / (div j^2) y la fase
+   ALINEADA con la del primero, asi que no inventan lobulos: `aristas(t)` lo
+   MIDE y la prueba lo exige. */
 (function (raiz) {
   'use strict';
 
@@ -25,7 +30,7 @@
   var TCS = V.tcs, PREFIJOS = V.prefijos, SUFIJOS = V.sufijos;
   var RAREZAS = ['normal', 'magico', 'raro', 'unico'];
   var STATS = ['vida', 'armadura', 'velocidad', 'sigilo', 'inercia', 'profundidad', 'aura'];
-  var SIMETRIA = V.simetria, TERMINOS = V.terminos;
+  var TERMINOS = V.terminos, ARISTAS = V.aristas, RA = V.rareza_aristas, FORMA = V.forma;
 
   /* Una variante de sfc32 sembrada con los 128 primeros bits de la semilla. Enteros de 32
      bits y nada mas: da lo mismo en cualquier navegador y en node. */
@@ -51,23 +56,39 @@
     Object.keys(mods).forEach(function (k) { stats[k] += g.entre(mods[k]); });
   }
 
-  function armonicos(rareza, g) {
-    var s = SIMETRIA[rareza], n = TERMINOS[rareza], out = [[1, 24, 24, 0]];
-    for (var j = 1; j < n; j++) {
-      var amp = Math.max(1, Math.floor(18 / (j + 1)) + g.entre([0, 3]));
-      out.push([1 + s * j * (j % 2 ? -1 : 1), amp, amp + g.entre([-1, 1]), g.entre([0, 63])]);
+  /* La onda de n aristas: base, el armonico de las aristas y los de detalle en multiplos de n, con su
+     fase alineada (la cresta de todos en el mismo angulo: la del primero). */
+  function armonicos(n, rareza, g) {
+    var a1 = g.entre(FORMA.a1), f1 = g.entre([0, 63]), out = [[1, 24, 24, 0], [1 - n, a1, a1, f1]];
+    for (var j = 2; j < TERMINOS[rareza]; j++) {
+      var s = j % 2 ? -1 : 1, amp = Math.floor(a1 / (FORMA.div * j * j));
+      out.push([1 + s * n * j, amp, amp, ((-s * j * f1) % 64 + 64) % 64]);
     }
     return out;
   }
+  /* Cuantas aristas salen de un sorteo por mil `q` en una TC (la tabla, en orden). */
+  function aristasDe(q, tc) {
+    var t = ARISTAS[tc], acc = 0;
+    for (var i = 0; i < t.length; i++) { acc += t[i][1]; if (q < acc) { return t[i][0]; } }
+    return t[t.length - 1][0];
+  }
+  function rarezaDe(n) { return n <= RA.normal ? 'normal' : n <= RA.magico ? 'magico' : n <= RA.raro ? 'raro' : 'unico'; }
+  /* LAS ARISTAS MEDIDAS: los maximos locales del radio de la figura, sobre 720 puntos de `punto`. Pura;
+     es la misma medida de la propuesta M18. La tirada promete n y esto comprueba que se dibuja n. */
+  function aristas(t) {
+    var a = (t && t.armonicos) || t, N = 720, r = [], c = 0;
+    for (var i = 0; i < N; i++) { var p = punto(a, i / N * 2 * Math.PI); r.push(Math.sqrt(p[0] * p[0] + p[1] * p[1])); }
+    for (var k = 0; k < N; k++) { var b = r[k]; if (b > r[(k + N - 1) % N] && b >= r[(k + 1) % N]) { c++; } }
+    return c;
+  }
 
-  /* LA TIRADA: TC + semilla -> tropa. Rareza por umbrales por mil; magico
-     lleva prefijo O sufijo (a veces los dos), raro los dos y una tirada mas,
-     unico es el Atlante Legendario con los dos afijos fijos. */
+  /* LA TIRADA: TC + semilla -> tropa. Primero las ARISTAS (por mil, de su TC) y de ahi la rareza; magico
+     lleva prefijo O sufijo (a veces los dos), raro los dos y una tirada mas, unico (el Leviatan, mas de 12
+     aristas) es el Atlante Legendario con los dos afijos fijos. */
   function tirada(semilla, tc) {
     var T = TCS[tc];
     if (!T) { throw new Error('tc'); }
-    var g = generador(semilla), q = g.mil(), c = T.calidad;
-    var rareza = q < c[0] ? 'unico' : q < c[0] + c[1] ? 'raro' : q < c[0] + c[1] + c[2] ? 'magico' : 'normal';
+    var g = generador(semilla), n = aristasDe(g.mil(), tc), rareza = rarezaDe(n);
     var nivel = Number(tc.slice(2));
     var stats = {};
     STATS.forEach(function (k) { stats[k] = 0; });
@@ -89,7 +110,7 @@
     if (rareza === 'unico') { STATS.forEach(function (k) { stats[k] += nivel; }); }
     return {
       esquema: 'atlas.tropa/1', tc: tc, base: T.base, rareza: rareza,
-      prefijo: pre, sufijo: suf, stats: stats, armonicos: armonicos(rareza, g), semilla: semilla, campo_origen: 'medido'
+      prefijo: pre, sufijo: suf, stats: stats, aristas: n, armonicos: armonicos(n, rareza, g), semilla: semilla, campo_origen: 'medido'
     };
   }
 
@@ -107,6 +128,11 @@
       return i < 2 ? h : [h[0], h[1] >> (i - 1), h[2] >> (i - 1), h[3]];
     });
   }
+
+  /* LAS DOS CARAS DE LA ONDA (punto 5 del plan «el refresco»): la tropa guarda SIEMPRE su espectro; en
+     COMBATE se dibuja la cara sencilla (la base y el armonico de las aristas: los mismos n lobulos, legible
+     a escala) y en el TALLER la cara total. Es un LOD de los MISMOS datos: la de combate es un prefijo. */
+  function lod(t, cara) { var e = espectro(t); return cara === 'taller' ? e : e.slice(0, 2); }
 
   /* El huevo tambien es una onda: un ovalo con un latido. */
   var HUEVO = [[1, 16, 22, 0], [2, 0, 3, 16]];
@@ -150,17 +176,20 @@
   }
 
   /* LAS ODDS QUE SE ENSENAN SON LAS QUE SE TIRAN (addendum de la cria: sin odds ocultas). Por mil y en
-     el orden de `RAREZAS` (normal, magico, raro, unico), de los MISMOS umbrales que usa `tirada`. El
-     sorteo por mil (`sig() % 1000`) lleva un sesgo de modulo medido de 296/2^32 por resultado, unos
-     7e-8: se dice aqui y no se cambia, porque cambiar la tirada cambia las tropas ya adoptadas. */
+     el orden de `RAREZAS` (normal, magico, raro, unico), sumadas de la MISMA tabla de aristas que usa
+     `tirada`; `oddsAristas` da la tabla entera. El sorteo por mil (`sig() % 1000`) lleva un sesgo de
+     modulo medido de 296/2^32 por resultado, unos 7e-8: se dice aqui. */
   function odds(tc) {
-    var c = TCS[tc].calidad;
-    return [1000 - c[0] - c[1] - c[2], c[2], c[1], c[0]];
+    var o = [0, 0, 0, 0];
+    ARISTAS[tc].forEach(function (x) { o[RAREZAS.indexOf(rarezaDe(x[0]))] += x[1]; });
+    return o;
   }
+  function oddsAristas(tc) { return ARISTAS[tc].map(function (x) { return x.slice(); }); }
 
   var AtlasGacha = {
     ESTADO: V.estado, VERSION_VALORES: V.version, TCS: TCS, RAREZAS: RAREZAS, PREFIJOS: PREFIJOS, SUFIJOS: SUFIJOS, STATS: STATS, HUEVO: HUEVO,
-    ORIGENES: ORIGENES, generador: generador, tirada: tirada, espectro: espectro, mezcla: mezcla, punto: punto, compacta: compacta, caracter: caracter, odds: odds
+    ORIGENES: ORIGENES, generador: generador, tirada: tirada, espectro: espectro, lod: lod, aristas: aristas, rarezaDe: rarezaDe,
+    mezcla: mezcla, punto: punto, compacta: compacta, caracter: caracter, odds: odds, oddsAristas: oddsAristas
   };
   if (typeof module === 'object' && module.exports) { module.exports = AtlasGacha; }
   else { raiz.AtlasGacha = AtlasGacha; }

@@ -25,6 +25,10 @@
   --accent-violet:#7c3aed; --accent-copper:#d97706;
   --text-main:#e2e8f0; --text-muted:#94a3b8;
   --accent-violet-text:#a78bfa; --accent-copper-claro:#f59e0b;
+  /* R4 (plan «el refresco», 2026-10-11): ACENTOS BIOLUMINISCENTES sobre el mar profundo, la paleta natural
+     del fenomeno (escuela: Abzu; DECLARADO, el corpus no lo nombra): teal, ambar calido, azul hielo y
+     violeta. Son ACENTOS: los colores-senal del juego (sellos, vida) no salen de aqui y no cambian. */
+  --bio-teal:#2ee6c8; --bio-ambar:#ffb547; --bio-hielo:#9be3ff; --bio-violeta:#b07cff;
   --code-bg:#1e1e2e;
   --glass-sov:rgba(26,21,42,.7); --edge-sov:rgba(255,255,255,.1);
   --curva:cubic-bezier(.4,0,.2,1);

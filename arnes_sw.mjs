@@ -163,7 +163,9 @@ const rutas = await shell.keys();
 // 91 desde la mudanza bloque 3 (2026-10-11): la web es SOLO el juego. Cayeron las paginas del hub,
 // sus familias de JSON y sus piezas (archivadas con su sha256 en no-publicar/). Quedan: la raiz, el
 // manifiesto, las 9 portadas, la portada (identidad, canal, PWA, hojas) y el juego entero.
-ok('precachea las portadas, su superficie y el juego', rutas.length === 91, rutas.length+' rutas');
+// 92 desde J6 (plan «el refresco», 2026-10-11): `mar-fondo.js`, el pintor de teselas del mapa y del fondo.
+// 93 desde R3: `tubo.css`, los tubos del juego.
+ok('precachea las portadas, su superficie y el juego', rutas.length === 93, rutas.length+' rutas');
 ok('el shell trae el juego (D7): la puerta, el cangrejo y la arena',
    ['/assets/thegame.js', '/game/gdpr-art25-ephemeral-crab.js', '/game/ui-arena.js', '/assets/atlas-motor.js'].every(r => rutas.includes(r)));
 ok('el shell trae la portada de cada lengua', ['/es/', '/fr/', '/ar/'].every(r => rutas.includes(r)));

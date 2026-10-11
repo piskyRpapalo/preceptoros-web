@@ -41,7 +41,8 @@
   function packSha(v) {
     v = v || V;
     return K.huella({ version: v.version, tcs: v.tcs, prefijos: v.prefijos, sufijos: v.sufijos, base: v.base,
-                      simetria: v.simetria, terminos: v.terminos, army_tope: v.army_tope, combate: v.combate,
+                      simetria: v.simetria, terminos: v.terminos, aristas: v.aristas, rareza_aristas: v.rareza_aristas, forma: v.forma,
+                      army_tope: v.army_tope, combate: v.combate,
                       patrullas: v.patrullas });
   }
 
