@@ -1711,6 +1711,25 @@ class MapaMovible(unittest.TestCase):
         self.assertIn("function tesela(i, j)", self._js("mar-fondo.js"))
         self.assertIn("if (nt > 90)", self._js("mar-fondo.js"), "la cache de teselas no esta acotada")
 
+    def test_r3_los_tubos_son_css_puro_quieto_y_dentro_del_techo(self):
+        """R3 (plan «el refresco»): terminal, popups y paneles son TUBOS. Una hoja con una puerta (la lista de
+        hojas de thegame.js), cero imagenes y cero importaciones, sin animar (quieta con movimiento reducido),
+        sin desenfoque, bajo 16 KiB, con fondo solido debajo del cristal y el fosforo solo en el terminal."""
+        css = (PUBLICO / "assets" / "tubo.css").read_text(encoding="utf-8")
+        vivo = re.sub(r"/\*.*?\*/", "", css, flags=re.S)
+        self.assertLessEqual(len(css.encode("utf-8")), 16384)
+        for malo in ("url(", "@import", "image-set(", "@keyframes", "animation", "blur(", "backdrop-filter"):
+            with self.subTest(prohibido=malo):
+                self.assertNotIn(malo, vivo)
+        self.assertIn("var(--bg-secondary);", vivo, "el cristal sin fondo solido debajo no se lee a pleno sol")
+        self.assertIn("border-radius:50%", vivo, "sin extremos elipticos no es un tubo")
+        self.assertIn("pointer-events:none", vivo, "las tapas se comen los clics")
+        self.assertEqual(re.findall(r"text-shadow[^;}]*", vivo.split(".terminal-log)")[0]), [], "fosforo fuera del terminal")
+        self.assertIn("'tubo.css'].forEach", (PUBLICO / "assets" / "thegame.js").read_text(encoding="utf-8"))
+        sys.path.insert(0, str(RAIZ))
+        import mundo
+        self.assertIn("tubo.css", mundo.PIEZAS, "la hoja baja al abrir y no se cuenta en la puerta")
+
     def test_j6_una_sola_fuente_de_teselas_y_el_mar_de_fondo_en_la_portada(self):
         """J6 (plan «el refresco»): el mapa y la portada piden el MISMO pintor de teselas (T0-D: sin
         gemelos); la deriva es global y no se hornea en cada tesela (las costuras de M4); el fondo

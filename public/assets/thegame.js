@@ -56,7 +56,7 @@
 
   function carga() {
     if (cargado) { return cargado; }
-    ['atlas.css', 'atlas-mapa.css', 'thegame.css'].forEach(function (n) {
+    ['atlas.css', 'atlas-mapa.css', 'thegame.css', 'tubo.css'].forEach(function (n) {
       var h = document.createElement('link');
       h.rel = 'stylesheet'; h.href = '/assets/' + n;
       document.head.appendChild(h);
