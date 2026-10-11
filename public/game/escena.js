@@ -1,7 +1,6 @@
 /* preceptoros.org · theGame · la ESCENA: las tropas de onda, vivas, y el combate que se ve.
 
-   UN PERSONAJE ES SU ONDA. Cada tropa se dibuja con sus propios armonicos (`gacha.punto`): circulos
-   que giran dentro de circulos.
+   UN PERSONAJE ES SU ONDA (`gacha.punto`). P6: en combate, cada tropa lleva su ESCUADRON (`escuadron.js`).
 
    EL DANO SE VE COMO DESAFINACION, NO COMO BARRA (2026-10-04: «la estetica pinta lo medido»): la vida
    que le queda tuerce las fases y amplitudes de SUS armonicos; sana, su ecuacion limpia; herida, la
@@ -11,9 +10,8 @@
    muelle. Fondo: ruido con tramado Atkinson a cuatro tonos, sin ficheros de imagen. En COMBATE cada
    tropa se dibuja con su cara SENCILLA (`G.lod`, M18-B): sus aristas, legibles a escala.
 
-   EL FRENTE: dos ondas entre los ejercitos, que se corren hacia quien pierde vida, del estado
-   reproducido. El combate NO se inventa aqui: `arena.combate` ya lo decidio con enteros y una
-   semilla; la escena solo pone el tiempo de pantalla.
+   EL FRENTE se corre hacia quien pierde vida. El combate NO se inventa aqui: lo decidio `arena.combate`
+   (enteros, semilla); la escena solo pone el tiempo de pantalla.
 
    Movimiento reducido: el final quieto y el registro en el DOM. Sin red, sin reloj con autoridad, sin
    azar: el «ruido» es un hash. */
@@ -206,6 +204,7 @@
         if (!quieto && u.tiembla !== null && vt - u.tiembla < 260) { dx = Math.sin(vt * 0.12) * 4 * dpr * (1 - (vt - u.tiembla) / 260); }
         var gira=quieto?0:t*.00045*(1+u.vel/12)*(u.lado?1:-1)*(acabado&&u.vida?3:1),respira=quieto?1:1+.035*Math.sin(t*.002+idx),fo=u.flash*(1+Math.sin(t*.002*Math.PI*(O.pulsoNota?O.pulsoNota((((raiz.AtlasValores||{}).sonidos||{}).pop||{}).f||660):4))*.5);
         figura(g,G.lod(u.t),u.x+dx,u.y,u.r,{color:u.color,giro:gira,alfa:m,grosor:1.8*dpr,brillo:u.brillo+fo*18*dpr,t:t,desafina: Math.min(1, (1 - u.vida / u.max)*.8+u.flash*.35),escala:respira*(.4+.6*m),vidaFraccion:u.vida/u.max,arm:u.arm});
+        if (raiz.AtlasEscuadron) { raiz.AtlasEscuadron.pinta(g, u, { r: u.r, dpr: dpr, giro: gira, alfa: m, t: t, quieto: quieto }); }
         u.flash = Math.max(0, u.flash - 0.05);
       });
       if (!quieto && e && fase > 0.3 && fase < 0.8) { proyectil(U[e[1]][e[2]], U[1 - e[1]][e[3]], (fase - 0.3) / 0.5, t); }

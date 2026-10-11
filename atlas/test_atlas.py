@@ -646,7 +646,7 @@ PUROS = ("canon.js", "sobres.js", "rating.js", "arena.js", "duelo.js", "mercado.
 # La Arena (2026-09-28, «el mapa multi-jugador en una pestana»): se carga al abrir su pestana, detras del Army.
 ARENA = ("sobres.js", "rating.js", "arena.js", "duelo.js", "mar-anclas.js", "mar.js", "nodos-pesos.js",
          "nodos.js", "cuenta.js", "ui-nodos.js", "ui-rack.js",
-         "battle_choreography.js", "battle_replay.js", "ui-arena.js", "ui-duelo.js")
+         "escuadron.js", "battle_choreography.js", "battle_replay.js", "ui-arena.js", "ui-duelo.js")
 # La CASA (2026-10-05): la primera pantalla, detras del Army. Lleva canon y escena, que la Arena reutiliza.
 CASA = ("canon.js", "escena.js", "wave_render.js", "gdpr-art25-ephemeral-crab.js", "aiact-art50-crab-terminal.js", "nodos-cedulas.js", "fog_of_war.js", "world_camera.js", "mar-fondo.js", "gdpr-art7-entry-choice.js", "aiact-art50-state-radio.js", "home_base_scene.js", "home_buildings.js", "summon_reveal.js", "taller.js", "ui-taller.js")
 FUERA_DE_LA_PUERTA = tuple(sorted(set(PUROS + ARENA + CASA)))
@@ -1749,6 +1749,16 @@ class MapaMovible(unittest.TestCase):
         r = subprocess.run([sys.executable, str(RAIZ.parent / "local_first_surface_build.py"), "--comprueba"],
                            cwd=RAIZ.parent, capture_output=True, text=True, timeout=60)
         self.assertEqual(r.returncode, 0, r.stdout)
+
+    def test_p6_casos_del_escuadron(self):
+        """P6 (firmado 2026-10-11): combate a escala por escuadrones; el combate sigue por tropa."""
+        r = subprocess.run(["node", str(RAIZ / "escuadron_casos.mjs")], capture_output=True, text=True, timeout=120)
+        casos = json.loads(r.stdout)
+        self.assertGreaterEqual(len(casos), 5, r.stderr)
+        for c in casos:
+            with self.subTest(caso=c["caso"]):
+                self.assertTrue(c["ok"], c["detalle"])
+        self.assertIn("raiz.AtlasEscuadron.pinta(g, u,", (PUBLICO / "game" / "escena.js").read_text(encoding="utf-8"))
 
     def test_r8_la_ceremonia_es_real_no_decide_y_se_queda_quieta(self):
         """R8 (plan «el refresco»): la diversion esta en la CEREMONIA, no en el azar, y la ceremonia es real:
