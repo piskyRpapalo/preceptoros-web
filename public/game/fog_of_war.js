@@ -61,8 +61,9 @@
   /* LAS ANCLAS DE LO QUE VIENE (R7, plan «el refresco»): SOLO vocabulario y sitio, nada se construye aqui.
      Cada nodo de las cedulas lleva su TUBO AL RACK (enlace-rack, hacia Hexelion, que es el rack); tu casa
      ancla las PARTES DEL CUERPO (la pipeline de edificios -> mapa) y el PRISMA DE BANDERA (P10, propuesta);
-     la boya de Hexelion ancla los ECOS DE SUPERFICIE (EV_SURFACE_ECHO, «6 planes.txt»:175-207: feedback
-     cifrado hacia el rack, que esta ronda NO envia). Puras: { id, clase, x, y, a } con `a` = hacia donde. */
+     la boya de Hexelion ancla los ECOS DE SUPERFICIE (EV_SURFACE_ECHO, «6 planes.txt»:175-207; esta ronda
+     NO envia). FIRMADO por el Soberano (2026-10-11): cuando se construya sera telemetria DECLARADA, jamas
+     camuflada; el corpus («camuflado como telemetria») queda corregido aqui: gana la doctrina. Puras: { id, clase, x, y, a } con `a` = hacia donde. */
   var CLASES_ANCLA = ['enlace-rack', 'parte-cuerpo', 'prisma', 'eco-superficie'];
   function anclas(e) {
     var out = [], casa = sitioCasa(e.pub, e.sha);
