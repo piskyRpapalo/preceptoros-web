@@ -637,10 +637,10 @@ process.stdout.write(JSON.stringify(ok));
 PUROS = ("canon.js", "sobres.js", "rating.js", "arena.js", "duelo.js", "mercado.js", "narragrafo.js", "cria.js", "genoma.js")
 # La Arena (2026-09-28, «el mapa multi-jugador en una pestana»): se carga al abrir su pestana, detras del Army.
 ARENA = ("sobres.js", "rating.js", "arena.js", "duelo.js", "fog_of_war.js", "world_camera.js", "mar.js", "nodos-pesos.js",
-         "nodos-cedulas.js", "nodos.js", "cuenta.js", "ui-nodos.js", "ui-rack.js",
+         "nodos.js", "cuenta.js", "ui-nodos.js", "ui-rack.js",
          "battle_choreography.js", "battle_replay.js", "ui-arena.js", "ui-duelo.js")
 # La CASA (2026-10-05): la primera pantalla, detras del Army. Lleva canon y escena, que la Arena reutiliza.
-CASA = ("canon.js", "escena.js", "wave_render.js", "gdpr-art25-ephemeral-crab.js", "aiact-art50-crab-terminal.js", "home_base_scene.js", "home_buildings.js", "summon_reveal.js")
+CASA = ("canon.js", "escena.js", "wave_render.js", "gdpr-art25-ephemeral-crab.js", "aiact-art50-crab-terminal.js", "nodos-cedulas.js", "gdpr-art7-entry-choice.js", "home_base_scene.js", "home_buildings.js", "summon_reveal.js")
 FUERA_DE_LA_PUERTA = tuple(sorted(set(PUROS + ARENA + CASA)))
 
 
@@ -1450,6 +1450,34 @@ class TerminalCangrejo(unittest.TestCase):
         d = json.loads(r.stdout)
         self.assertIn('"resultado":"fallo"', d["f"]); self.assertIn("NO_DATA", d["n"]); self.assertIn("NO_DATA", d["v"])
         self.assertEqual(d["b"], {"esquema": "atlas.accion/1", "accion": "bajar_a", "origen": "humano", "banda": "ruinas"})
+
+
+class EntradaCangrejo(unittest.TestCase):
+    """J8 (joya firmada 2026-10-11): al entrar se elige mar abierto o un nodo y se VEN sus reglas, que
+    salen de las cedulas (lo medido), no de un texto a mano. Sin ventaja: ni motor ni combate."""
+
+    def _js(self):
+        return sin_comentarios((PUBLICO / "game" / "gdpr-art7-entry-choice.js").read_text(encoding="utf-8"))
+
+    def test_sin_ventaja_y_sin_salida(self):
+        t = self._js()
+        for malo in ("AtlasArena", "combate", "AtlasMotor", "aplica", "fetch", "localStorage", "indexedDB", "Math.random", "Date", "innerHTML"):
+            with self.subTest(malo=malo):
+                self.assertNotIn(malo, t)
+        self.assertIn("Y.cajaWeb('atlas-entrada'", t, "la eleccion se guarda por db.js, la unica puerta")
+
+    def test_las_reglas_salen_de_las_cedulas(self):
+        js = ("const C=require('./public/game/nodos-cedulas.js');const E=require('./public/game/gdpr-art7-entry-choice.js');"
+              "const ced=C.CEDULAS||C;process.stdout.write(JSON.stringify({t:E.territorios(ced),h:E.reglas('nodo.0.hexelion',ced),"
+              "m:E.reglas(E.MAR,ced),x:E.reglas('nodo.9.nadie',ced)}))")
+        r = subprocess.run(["node", "-e", js], capture_output=True, text=True, timeout=60, cwd=RAIZ.parent)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        d = json.loads(r.stdout)
+        self.assertEqual(d["t"][0], "mar-abierto")
+        self.assertIn("nodo.0.hexelion", d["t"])
+        self.assertIn("no admin", d["h"]["no_puedes"][0], "sin admin nadie acepta: se dice")
+        self.assertTrue(any(m.startswith("ram_mib: 58980") for m in d["h"]["medidas"]))
+        self.assertIsNone(d["x"], "un nodo que no esta en las cedulas no se inventa")
 
 
 class Conquista(unittest.TestCase):

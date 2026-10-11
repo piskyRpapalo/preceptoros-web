@@ -29,7 +29,7 @@
      invocadas luchando en live con los NPCs»): el mar, los lugares NPC, el combate en vivo y los duelos
      entre personas por paquetes firmados. Detras del Army, cuyas tropas y verificador usa. */
   var ARENA = [['/game/sobres.js'], ['/game/rating.js'], ['/game/arena.js'], ['/game/duelo.js'],
-    ['/game/fog_of_war.js'], ['/game/world_camera.js'], ['/game/mar.js'], ['/game/nodos-pesos.js'], ['/game/nodos-cedulas.js'], ['/game/nodos.js'], ['/game/cuenta.js'],
+    ['/game/fog_of_war.js'], ['/game/world_camera.js'], ['/game/mar.js'], ['/game/nodos-pesos.js'], ['/game/nodos.js'], ['/game/cuenta.js'],
     ['/game/ui-nodos.js'], ['/game/ui-rack.js'], ['/game/battle_choreography.js'], ['/game/battle_replay.js'], ['/game/ui-arena.js'], ['/game/ui-duelo.js']];
   /* LAS LENGUAS DEL JUEGO (2026-09-28, el Soberano: «hoy, solo inglés; un mismo enlace»). La
      UNICA lista de lenguas en las que el juego esta COMPLETO. Cualquier portada abre el juego en
@@ -84,7 +84,7 @@
     ['arena', '\u2694\uFE0E', ''],
     ['partida', '\u2139\uFE0E', '.atlas-guardado|.thegame-exporta|.thegame-opina|.atlas-hud-farmeo|#atlas-juego > .no-data|.atlas-pie']];
   /* LA CASA, a demanda y detras del Army (usa la gacha para tu emblema). */
-  var CASA = [['/game/canon.js'], ['/game/wave_render.js'], ['/game/escena.js'], ['/game/gdpr-art25-ephemeral-crab.js'], ['/game/aiact-art50-crab-terminal.js'], ['/game/home_base_scene.js'], ['/game/home_buildings.js'], ['/game/summon_reveal.js']];
+  var CASA = [['/game/canon.js'], ['/game/wave_render.js'], ['/game/escena.js'], ['/game/gdpr-art25-ephemeral-crab.js'], ['/game/aiact-art50-crab-terminal.js'], ['/game/nodos-cedulas.js'], ['/game/gdpr-art7-entry-choice.js'], ['/game/home_base_scene.js'], ['/game/home_buildings.js'], ['/game/summon_reveal.js']];
   /* LO TECNICO, SIEMPRE PLEGADO (Soberano: «son textos que asustan a usuarios no tecnicos»): el
      JSON de la carta, las leyes medidas, la semilla que no es VRF, los valores provisionales y el
      pie. No se borran, porque son la prueba: se ven al abrir «Technical details». */
@@ -193,7 +193,11 @@
     if (casa) { return casa; }
     casa = cargaArmy().then(function () { return pide(CASA); }).then(function () {
       if (window.AtlasCasa) { return window.AtlasCasa.monta(PANEL.casa); }
-    }).then(function () { setTimeout(cargaArena, 0); }).catch(function (e) { casa = null; PANEL.casa.appendChild(el('p', 'no-data', 'NO_DATA · ' + (e && e.message))); });
+    }).then(function () {
+      /* J8: la entrada (zona o nodo, con sus reglas a la vista) va encima de la casa. */
+      if (window.AtlasEntrada) { window.AtlasEntrada.monta(PANEL.casa); }
+      setTimeout(cargaArena, 0);
+    }).catch(function (e) { casa = null; PANEL.casa.appendChild(el('p', 'no-data', 'NO_DATA · ' + (e && e.message))); });
     return casa;
   }
 
