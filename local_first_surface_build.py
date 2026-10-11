@@ -60,6 +60,7 @@ def portada(l, raiz=False):
 <header class="cab-juego">
 <a class="cab-marca" href="/{l}/">PreceptorOS · <b>theGame</b></a>
 <nav class="cab-lenguas" aria-label="Language · {NOMBRE[l]}">{lenguas}</nav>
+<div id="identity" class="fila identity"></div>
 </header>
 <main id="juego-panel" class="juego-panel" aria-label="theGame">
 <p class="juego-carga">theGame · loading on this device. No account, no cloud.</p>
