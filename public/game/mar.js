@@ -4,15 +4,13 @@
    pueda moverse hasta chocarse con la niebla» (Soberano, 2026-10-05).
    - Al abrir, la camara se centra en TU CASA (su sitio sale de tu clave publica). Sin clave, en
      Hexelion, y se dice por que.
-   - Se mueve con el dedo o el raton (pointer events), con las flechas y con botones grandes; tiene
-     inercia (`world_camera.js`) y, con movimiento reducido, salta sin inercia.
+   - Se mueve con el dedo, el raton, las flechas y botones grandes (accion `mover`, R2c); inercia en
+     `world_camera.js`; con movimiento reducido, salta.
    - LA NIEBLA ES EL LIMITE (`fog_of_war.js`): lo despejado sale de lo MEDIDO y de lo ya jugado; la
      camara no entra en lo demas: rebota y lo dice en texto.
-   - El terreno es ruido entero con tramado Atkinson, generado por TESELAS y solo las visibles (cache
-     acotada). Cero imagenes y cero peticiones.
+   - El terreno: teselas de ruido entero con tramado Atkinson (`mar-fondo.js`). Cero imagenes ni red.
    EL ORIGEN SE VE: Hexelion MEDIDO, nitido; un nodo sin medidas, en niebla y con su anillo NO_DATA.
-   PINTA; NO DECIDE: los lugares, la seleccion y los textos se los da `ui-arena.js`; el mando de verdad
-   sigue siendo la lista de botones del DOM. */
+   PINTA; NO DECIDE: lugares, seleccion y textos los da `ui-arena.js`; el mando es la lista de botones. */
 (function () {
   'use strict';
 
@@ -115,6 +113,19 @@
       g.fillStyle = col.texto; g.fillText(txt, x, y);
     }
     function sitio(l) { return N.sitioLugar(l, K.sha, f.pub()); }
+    /* R7 · LAS ANCLAS (solo vocabulario visual; lo que anclan se construye con su propio FIRMO): el tubo
+       de cada nodo al rack es una linea DOBLE teal; las anclas futuras, un rombo hueco en trazos (PROPUESTA,
+       ideas6oct:1748: discontinuidad = lo que aun no es) con su nombre corto. */
+    function anclas(g, P) {
+      N.anclas({ pub: f.pub(), sha: K.sha, nodos: Ce ? Ce.nodos : [] }).forEach(function (a) {
+        var p = P(a.x, a.y);
+        g.strokeStyle = 'rgba(46,230,200,.55)';
+        if (a.a) { var q = P(a.a.x, a.a.y); [-3, 3].forEach(function (o) { g.beginPath(); g.moveTo(p[0] + o * dpr, p[1] + o * dpr); g.lineTo(q[0] + o * dpr, q[1] + o * dpr); g.stroke(); }); return; }
+        var r = 7 * dpr; g.setLineDash([2 * dpr, 2 * dpr]); g.beginPath();
+        g.moveTo(p[0], p[1] - r); g.lineTo(p[0] + r, p[1]); g.lineTo(p[0], p[1] + r); g.lineTo(p[0] - r, p[1]); g.closePath(); g.stroke(); g.setLineDash([]);
+        g.fillStyle = 'rgba(155,227,255,.75)'; g.fillText(a.clase, p[0], p[1] - r - 3 * dpr);
+      });
+    }
 
     function pinta(ts) {
       raf = requestAnimationFrame(pinta);
@@ -190,6 +201,7 @@
         var em = f.emblema(), er = 22 * dpr;
         if (em) { E.figura(g, em.armonicos, yo[0], yo[1], er, { color: col.tuya, giro: t * 0.0003, grosor: 2.2 * dpr, brillo: 14 * dpr }); }
       }
+      anclas(g, P);
       TS.niebla(g, cam, W, H, z);
       /* MOVIMIENTO 7 - M17: Vignette barato - gradiente radial cacheado */
       if (!quieto() && F.vignette_alfa) {

@@ -185,8 +185,8 @@
     }).then(function () {
       /* J8: la entrada (zona o nodo, con sus reglas a la vista) va encima de la casa. */
       if (window.AtlasEntrada) { window.AtlasEntrada.monta(PANEL.casa); }
-      /* J2+J9: la radio del estado, al pie de la casa (suena solo tras el gesto). */
-      if (window.AtlasRadio) { window.AtlasRadio.monta(PANEL.casa); }
+      /* J2+J9: la radio del estado, al pie de la casa y, desde R7, tambien en el mapa (solo tras el gesto). */
+      if (window.AtlasRadio) { window.AtlasRadio.monta(PANEL.casa); window.AtlasRadio.monta(PANEL.mapa); }
       /* J6: el mar de fondo, solo en la portada (mar-fondo.js). */
       if (window.AtlasMarFondo) { window.AtlasMarFondo.portada(); }
       setTimeout(cargaArena, 0);

@@ -1713,6 +1713,27 @@ class MapaMovible(unittest.TestCase):
         self.assertIn("function tesela(i, j)", self._js("mar-fondo.js"))
         self.assertIn("if (nt > 90)", self._js("mar-fondo.js"), "la cache de teselas no esta acotada")
 
+    def test_r7_la_radio_suena_en_el_mapa_y_las_anclas_no_envian_nada(self):
+        """R7 (plan «el refresco»): la radio se monta tambien en el MAPA (misma sintesis, misma instantanea: el
+        mismo modulo, no un gemelo); el mapa dibuja las ANCLAS (N.anclas) y nada de esto envia: ni fetch, ni
+        sendBeacon, ni cifrado (EV_SURFACE_ECHO se construye con su propio FIRMO)."""
+        tg = (PUBLICO / "assets" / "thegame.js").read_text(encoding="utf-8")
+        self.assertIn("window.AtlasRadio.monta(PANEL.casa); window.AtlasRadio.monta(PANEL.mapa);", tg)
+        m = (PUBLICO / "game" / "mar.js").read_text(encoding="utf-8")
+        self.assertIn("N.anclas({ pub: f.pub(), sha: K.sha, nodos: Ce ? Ce.nodos : [] })", m)
+        for f in ("mar.js", "fog_of_war.js"):
+            c = sin_comentarios((PUBLICO / "game" / f).read_text(encoding="utf-8"))
+            for malo in ("fetch(", "sendBeacon", "crypto.subtle", "XMLHttpRequest", "WebSocket"):
+                with self.subTest(fichero=f, prohibido=malo):
+                    self.assertNotIn(malo, c)
+        r = subprocess.run(["node", str(RAIZ / "camara_casos.mjs")], capture_output=True, text=True, timeout=120)
+        casos = {c["caso"]: c for c in json.loads(r.stdout)}
+        r7 = [k for k in casos if k.startswith("R7:")]
+        self.assertGreaterEqual(len(r7), 2, "faltan los casos R7")
+        for k in r7:
+            with self.subTest(caso=k):
+                self.assertTrue(casos[k]["ok"], casos[k]["detalle"])
+
     def test_r4_acentos_bioluminiscentes_sin_tocar_los_colores_senal(self):
         """R4 (plan «el refresco»): cuatro acentos (teal, ambar, hielo, violeta) como TOKENS, usados por el mapa,
         los tubos y las partes del cangrejo. Los colores-senal no cambian: la vida (tono por vida y luz por
