@@ -643,7 +643,7 @@ process.stdout.write(JSON.stringify(ok));
 # Ver atlas/POST_VERIFICACION_MGNO_LAB.md y atlas/POST_VERIFICACION_SISIL_CRIA.md.
 PUROS = ("canon.js", "sobres.js", "rating.js", "arena.js", "duelo.js", "mercado.js", "narragrafo.js", "cria.js", "genoma.js")
 # La Arena (2026-09-28, «el mapa multi-jugador en una pestana»): se carga al abrir su pestana, detras del Army.
-ARENA = ("sobres.js", "rating.js", "arena.js", "duelo.js", "mar-anclas.js", "mar.js", "nodos-pesos.js",
+ARENA = ("sobres.js", "rating.js", "arena.js", "duelo.js", "mar-anclas.js", "mar-cangrejos.js", "mar.js", "nodos-pesos.js",
          "nodos.js", "cuenta.js", "ui-nodos.js", "ui-rack.js",
          "escuadron.js", "battle_choreography.js", "battle_replay.js", "ui-arena-comun.js", "ui-arena.js", "ui-duelo.js")
 # La CASA (2026-10-05): la primera pantalla, detras del Army. Lleva canon y escena, que la Arena reutiliza.
@@ -1744,6 +1744,38 @@ class MapaMovible(unittest.TestCase):
         self.assertIn("window.AtlasTallerUI.monta(PANEL.taller)", tg)
         self.assertIn("var TL = enNode ? require('./taller.js') : raiz.AtlasTaller;", (PUBLICO / "game" / "arena.js").read_text(encoding="utf-8"))
 
+    def test_u2_los_cangrejos_viven_en_el_mapa_y_vibran_con_el_estado(self):
+        """U2 (contrato «el mapa unico» + projectM: «aqui el PCM es el estado»): tu cangrejo vive EN el mapa, con el
+        paseo de J1 (no uno propio) proyectado bajo la casa (x = casa.x + (paseo.x - 0.5)*2*R, R = 140); el emblema
+        suelto se retira. Vibra con la nota de su radio y, sin senal, NO baila. Los otros, con lo que se sabe de
+        ellos: quietos (ciclo 0) y con el cuerpo en niebla, solo en lo despejado. Sin red ni azar."""
+        r = subprocess.run(["node", "-e", """
+          const M = require('./public/game/mar-cangrejos.js');
+          const s = M.sitio({ x: 1000, y: 500 }, 0.75);
+          const v = [0, 137, 300, 777].map((ms) => M.vibra([220, 330, 440], ms));
+          console.log(JSON.stringify({ R: M.R, s, nulo: M.vibra(null, 500), vacio: M.vibra([], 500), v, otra: M.vibra([220, 330, 440], 137) }));
+        """], cwd=RAIZ.parent, capture_output=True, text=True, timeout=60)
+        d = json.loads(r.stdout)
+        self.assertEqual(d["R"], 140)
+        self.assertEqual(d["s"], {"x": 1070, "y": 534}, "la linea bajo la casa no es la del contrato")
+        self.assertEqual((d["nulo"], d["vacio"]), (0, 0), "sin senal del estado el cangrejo baila igual")
+        self.assertEqual(d["v"][1], d["otra"], "el temblor no es determinista")
+        self.assertTrue(any(abs(x) > 0.1 for x in d["v"]), "con senal no vibra")
+        c = self._js("mar-cangrejos.js")
+        for pieza in ("CJ.paseo(cj.semilla, cj.ciclo", "C.cangrejo()", "Ra.guion(J.instantanea())",
+                      "{ semilla: j.de, ciclo: 0,", "cuerpo: CJ.cuerpo(null) }", "N.niebla(c.x, c.y, o.circ || []) > 0.5",
+                      "g.ellipse(", "N.HEX.y + MAR_ABIERTO"):
+            with self.subTest(pieza=pieza):
+                self.assertIn(pieza, c)
+        for malo in ("Math.random", "Date.now", "fetch(", "shadowBlur", "function paseo("):
+            with self.subTest(prohibido=malo):
+                self.assertNotIn(malo, c)
+        m = self._js("mar.js")
+        self.assertIn("window.AtlasMarCangrejos.pinta(g, P,", m)
+        self.assertNotIn("E.figura(g, em.armonicos, yo[0], yo[1]", m, "vuelve el emblema suelto sobre la casa")
+        cj = self._js("gdpr-art25-ephemeral-crab.js")
+        self.assertIn("function paseo(semilla, ciclo, f)", cj, "J1: el paseo cambia de firma")
+
     def test_u1_el_faro_es_un_destino_y_hay_un_solo_fight(self):
         """U1 (contrato «el mapa unico»): UNA lista de destinos de camara. Los ojos llevan al Faro (Hexelion) y ese
         destino existe igual en el piloto, en la terminal del cangrejo, en el esquema y en la camara del mapa:
@@ -1947,7 +1979,10 @@ class MapaMovible(unittest.TestCase):
         self.assertEqual(orden, sorted(orden), "mar-fondo.js se carga antes que lo que usa")
         css = (PUBLICO / "assets" / "thegame.css").read_text(encoding="utf-8")
         self.assertNotIn(".mar-fondo", css)
-        self.assertIn(".thegame-mapa{position:fixed;inset:0;", css)
+        # U2: en el telefono el mapa es la franja de encima de la terminal (si no, su centro cae detras de la hoja).
+        self.assertIn(".thegame-mapa{position:fixed;inset:0 0 46dvh 0;", css)
+        self.assertIn("max-height:46dvh", css.split(".thegame-terminal{")[1].split("}")[0], "la franja y la hoja no casan")
+        self.assertIn(".thegame-mapa{inset:0}", css.split("@media (min-width:48rem){")[-1], "en escritorio el mapa no es la pantalla")
 
     def _js(self, n):
         return sin_comentarios((PUBLICO / "game" / n).read_text(encoding="utf-8"))

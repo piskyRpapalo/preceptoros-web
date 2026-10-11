@@ -117,7 +117,9 @@
 body.portada-juego main#juego-panel{background:transparent;padding:0;border-radius:0}
 .juego-panel .thegame-capa,#atlas-juego,#atlas-piso{pointer-events:none}
 .thegame-barra,.thegame-terminal,.thegame-hoja,.thegame-mapa,.mapa-mandos,.mapa-aviso{pointer-events:auto}
-.thegame-mapa{position:fixed;inset:0;z-index:0}
+/* En el telefono el mapa es la franja de ENCIMA de la terminal: su centro (casa, Faro, tu cangrejo) queda a la
+   vista; con el lienzo entero, la camara centraba detras de la hoja (medido en captura 412 px, U2). */
+.thegame-mapa{position:fixed;inset:0 0 46dvh 0;z-index:0}
 #thegame .thegame-mapa .atlas-arena-mapa{position:absolute;inset:0;width:100%;height:100%;border:0;border-radius:0;background:var(--bg-primary)}
 /* La barra (Workshop, piloto) queda fija bajo la cabecera sticky del sitio (medida: 88 px escritorio, 110 telefono). */
 :root{--thegame-tope:7.2rem}
@@ -152,6 +154,7 @@ body.portada-juego main#juego-panel{background:transparent;padding:0;border-radi
   :root{--thegame-tope:5.9rem}
   .thegame-terminal{inset:calc(var(--thegame-tope) + 3.6rem) .6rem .6rem auto;width:min(26rem,38vw);max-height:none}
   .thegame-hoja{inset:calc(var(--thegame-tope) + 3.6rem) calc(min(26rem,38vw) + 1.2rem) .6rem .6rem}
+  .thegame-mapa{inset:0}
   .mapa-mandos{bottom:.6rem}
   .mapa-aviso{right:calc(min(26rem,38vw) + 1.2rem)}
 }
