@@ -12,8 +12,10 @@
    abajo, una banda de brillo a un quinto del alto: la luz que resbala por un cilindro tumbado), los bordes
    laterales tenidos y, encima, los dos extremos elipticos, que son las tapas del tubo. */
 :root{
-  --tubo-cristal:rgba(94,234,212,.10); --tubo-brillo:rgba(220,250,255,.13); --tubo-sombra:rgba(0,0,0,.42);
-  --tubo-borde:rgba(94,234,212,.30); --tubo-tapa:rgba(94,234,212,.24); --tubo-fosforo:#7ff5df;
+  /* El cristal se tine con los acentos bioluminiscentes (R4, soberano.css): teal en el cuerpo, hielo en el brillo. */
+  --tubo-cristal:color-mix(in srgb,var(--bio-teal) 10%,transparent); --tubo-brillo:color-mix(in srgb,var(--bio-hielo) 14%,transparent);
+  --tubo-sombra:rgba(0,0,0,.42); --tubo-borde:color-mix(in srgb,var(--bio-teal) 32%,transparent);
+  --tubo-tapa:color-mix(in srgb,var(--bio-teal) 26%,transparent); --tubo-fosforo:var(--bio-teal);
 }
 #thegame :is(.thegame-pliego,.casa-interior,.entrada-cangrejo,.atlas-arena-lugar-ficha),
 .revela-pie,.casa-pers{
@@ -35,5 +37,5 @@
 /* Lo que lleva su propia caja dentro de un tubo no la duplica. */
 #thegame .thegame-pliego :is(.entrada-cangrejo,.atlas-arena-lugar-ficha){box-shadow:none}
 /* EL FOSFORO solo en lo que el motor escribe ahora (el terminal J7): */
-#thegame :is(.terminal-vars,.terminal-log){color:var(--tubo-fosforo);background:rgba(2,12,14,.85);text-shadow:0 0 .35em rgba(94,234,212,.5)} /* halo de fosforo: cifras vivas del motor */
+#thegame :is(.terminal-vars,.terminal-log){color:var(--tubo-fosforo);background:rgba(2,12,14,.85);text-shadow:0 0 .35em color-mix(in srgb,var(--bio-teal) 55%,transparent)} /* halo de fosforo: cifras vivas del motor */
 #thegame .thegame-pliego > summary{letter-spacing:.06em}

@@ -17,7 +17,9 @@
 (function (raiz) {
   'use strict';
 
-  var TIERRA = [[5, 8, 18], [8, 16, 34], [12, 28, 52], [16, 42, 68], [22, 62, 84], [40, 92, 100], [96, 118, 104]];
+  /* El lecho, de lo hondo a lo alto. R4: las crestas brillan en teal (la bioluminiscencia del fondo), sin
+     tocar los colores-senal: esto es terreno, no dato. */
+  var TIERRA = [[4, 7, 18], [7, 15, 34], [9, 28, 54], [11, 46, 74], [14, 74, 94], [26, 132, 134], [70, 214, 196]];
   var NIEBLA = [null, [64, 72, 96]], TESELA = 240, RES = 4;
 
   function quieto() { return raiz.matchMedia && raiz.matchMedia('(prefers-reduced-motion: reduce)').matches; }

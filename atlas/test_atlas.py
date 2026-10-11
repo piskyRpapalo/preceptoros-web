@@ -1711,6 +1711,24 @@ class MapaMovible(unittest.TestCase):
         self.assertIn("function tesela(i, j)", self._js("mar-fondo.js"))
         self.assertIn("if (nt > 90)", self._js("mar-fondo.js"), "la cache de teselas no esta acotada")
 
+    def test_r4_acentos_bioluminiscentes_sin_tocar_los_colores_senal(self):
+        """R4 (plan «el refresco»): cuatro acentos (teal, ambar, hielo, violeta) como TOKENS, usados por el mapa,
+        los tubos y las partes del cangrejo. Los colores-senal no cambian: la vida (tono por vida y luz por
+        escudo, valores.fluidez) y los tonos de caracter de las ondas quedan fijados aqui."""
+        tok = (PUBLICO / "assets" / "soberano.css").read_text(encoding="utf-8")
+        for t in ("--bio-teal:", "--bio-ambar:", "--bio-hielo:", "--bio-violeta:"):
+            with self.subTest(token=t):
+                self.assertIn(t, tok)
+        self.assertIn("css('--bio-ambar'", (PUBLICO / "game" / "ui-arena.js").read_text(encoding="utf-8"))
+        self.assertIn("var(--bio-teal)", (PUBLICO / "assets" / "tubo.css").read_text(encoding="utf-8"))
+        r = subprocess.run(["node", "-e", "const V=require('./public/game/valores.js').fluidez;"
+                            "process.stdout.write(JSON.stringify([V.vida_hue_base,V.vida_hue_cobre,V.escudo_lightness_base,V.escudo_lightness_min]))"],
+                           cwd=RAIZ.parent, capture_output=True, text=True, timeout=60)
+        self.assertEqual(json.loads(r.stdout), [270, 30, 72, 40], "un color-senal (la vida) cambio")
+        e = (PUBLICO / "game" / "escena.js").read_text(encoding="utf-8")
+        self.assertIn("var TONOS=['hsl(35 75% 58%)','hsl(140 45% 55%)','hsl(275 55% 68%)','hsl(210 12% 68%)'];", e,
+                      "los tonos de caracter de las ondas cambiaron")
+
     def test_r3_los_tubos_son_css_puro_quieto_y_dentro_del_techo(self):
         """R3 (plan «el refresco»): terminal, popups y paneles son TUBOS. Una hoja con una puerta (la lista de
         hojas de thegame.js), cero imagenes y cero importaciones, sin animar (quieta con movimiento reducido),

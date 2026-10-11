@@ -36,8 +36,8 @@
   function quieto() { return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches; }
   function css(v, x) { return getComputedStyle(document.documentElement).getPropertyValue(v).trim() || x; }
   function colores() {
-    return { dano: css('--accent-copper-claro', '#e0a060'), fallo: css('--text-muted', '#9aa'), tuya: css('--accent-copper', '#c98a4b'),
-             suya: css('--accent-violet', '#8b5cf6'), texto: css('--text-main', '#ddd'), mar: 'rgba(120,170,220,.09)' };
+    return { dano: css('--accent-copper-claro', '#e0a060'), fallo: css('--text-muted', '#9aa'), tuya: css('--bio-ambar', '#ffb547'),
+             suya: css('--bio-violeta', '#b07cff'), texto: css('--text-main', '#ddd'), mar: 'rgba(120,170,220,.09)' };
   }
   function nombre(t) {
     if (t.rareza === 'unico') { return T('unico_nombre'); }
