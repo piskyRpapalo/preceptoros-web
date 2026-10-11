@@ -87,7 +87,30 @@ const DUELOS = ['ar', 'de', 'el', 'en', 'es', 'fr', 'it', 'pt', 'ru']
 const HERRAMIENTAS = ['ar', 'de', 'el', 'en', 'es', 'fr', 'it', 'pt', 'ru']
   .map(function (l) { return '/herramientas-' + l + '.json'; });
 
-const HUB = [...AGENTES, ...DUELOS, ...HERRAMIENTAS, '/hub.json', '/hub-textos.json',
+/* EL JUEGO, AL PRECACHE (mudanza firmada, bloque 2, firma D7 del 2026-10-11). Hasta hoy theGame iba
+   FUERA del precache (firma del 2026-09-26: la puerta no pesaba en la primera visita). La mudanza lo
+   invierte porque la portada YA ES el juego: sin el en el shell, sin red no se juega. La lista es TODO
+   lo que `thegame.js` carga (sus listas y lo que pide a demanda); `atlas/test_atlas.py` la compara con
+   la puerta, asi que no puede quedarse atras. Lo que es MEDIDA (`atlas-mundo.json`, `atlas-record.json`)
+   sigue fuera: sin red, NO_DATA, nunca una cifra vieja. Los textos del juego (atlas-*.json, tambien los
+   de la casa) van en CONTENIDO_JSON, abajo. */
+const JUEGO = [
+  '/assets/thegame.js', '/assets/thegame.css', '/assets/atlas.css', '/assets/atlas-mapa.css',
+  '/assets/atlas-arte.js', '/assets/atlas-coord.js', '/assets/atlas-carta.js', '/assets/atlas-ondas.js',
+  '/assets/atlas-obra.js', '/assets/atlas-gesto.js', '/assets/atlas-mapa.js', '/assets/atlas-dialogo.js',
+  '/assets/atlas-motor.js', '/assets/atlas-piso.js', '/assets/atlas-piloto.js', '/assets/atlas-partida.js',
+  '/assets/atlas-piloto-capa.js', '/assets/atlas-guardado.js', '/assets/atlas-hud.js',
+  '/assets/atlas-opina.js', '/assets/atlas-voz.js', '/game/juez.js', '/game/valores.js', '/game/gacha.js',
+  '/game/db.js', '/game/core.js', '/game/ui.js', '/game/canon.js', '/game/wave_render.js', '/game/escena.js',
+  '/game/gdpr-art25-ephemeral-crab.js', '/game/home_base_scene.js', '/game/home_buildings.js',
+  '/game/summon_reveal.js', '/game/home.css', '/game/sobres.js', '/game/rating.js', '/game/arena.js',
+  '/game/duelo.js', '/game/fog_of_war.js', '/game/world_camera.js', '/game/mar.js', '/game/nodos-pesos.js',
+  '/game/nodos-cedulas.js', '/game/nodos.js', '/game/cuenta.js', '/game/ui-nodos.js', '/game/ui-rack.js',
+  '/game/battle_choreography.js', '/game/battle_replay.js', '/game/ui-arena.js', '/game/ui-duelo.js',
+  '/assets/eaa-art12-local-first-surface.js', '/assets/eaa-art12-local-first-surface.css'
+];
+
+const HUB = [...JUEGO, ...AGENTES, ...DUELOS, ...HERRAMIENTAS, '/hub.json', '/hub-textos.json',
              '/assets/marble-violet.webp', '/assets/marble-violet-oscuro.webp', '/modelos.json', '/servicios.json', '/instalar.json',
              '/assets/instalar-descargas.js', '/assets/widget.css', '/assets/puertas.css', '/assets/escribir.css', '/assets/placa.css', '/medidas.json', '/assets/medidas.js', '/nav.json', '/assets/cabezal.js', '/assets/cabezal-rotulos.js', '/assets/selector-modelo.js', '/assets/consiento.js', '/cerebros.json', '/docente.json', '/cerebros-en.json', '/cerebros-es.json', '/assets/logos-models/preceptor.svg', '/assets/logos-models/qwen.svg', '/assets/logos-models/mistral.svg', '/assets/cabezal.css', '/assets/esquina.css', '/assets/esquina-cuenta.css', '/assets/esquina-par.css', '/assets/mandos.css', '/assets/panel.css', '/assets/nubes.css', '/assets/consiento.css', '/assets/senal.css', '/assets/senal.js',
              '/assets/hub.js',
@@ -150,7 +173,9 @@ const ATLAS = ['ar', 'de', 'el', 'en', 'es', 'fr', 'it', 'pt', 'ru']
   /* Y los textos de opinar firmado (su guion se carga al pulsar), por el mismo criterio. */
   .concat(['ar', 'de', 'el', 'en', 'es', 'fr', 'it', 'pt', 'ru'].map(function (l) { return '/atlas-opina-' + l + '.json'; }))
   /* Y los de la Arena (2026-09-28): rotulos, no medidas; sin ellos la Arena no abre sin red. */
-  .concat(['ar', 'de', 'el', 'en', 'es', 'fr', 'it', 'pt', 'ru'].map(function (l) { return '/atlas-arena-' + l + '.json'; }));
+  .concat(['ar', 'de', 'el', 'en', 'es', 'fr', 'it', 'pt', 'ru'].map(function (l) { return '/atlas-arena-' + l + '.json'; }))
+  /* D7: los textos de la casa faltaban; sin ellos la casa abria sin rotulos sin red. */
+  .concat(['/atlas-casa-en.json']);   // solo existe en ingles: el juego habla ingles (CLAUDE.md)
 
 const CONTENIDO_JSON = [...AGENTES, ...CAMINOS, ...ATLAS, ...DUELOS, ...HERRAMIENTAS, '/hub.json', '/hub-textos.json', '/medidas.json', '/nav.json', '/modelos.json', '/servicios.json', '/instalar.json'];
 

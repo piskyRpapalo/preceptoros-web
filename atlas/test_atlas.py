@@ -354,7 +354,8 @@ process.stdout.write(JSON.stringify({
             self.assertTrue(all(0 < n <= 16 * 1024 for n in partes), partes)
         capa = (ASSETS / "thegame.js").read_text(encoding="utf-8")
         self.assertNotIn("atlas-voz.js", capa, "la voz exacta pesa en la puerta del juego")
-        self.assertNotIn("atlas-voz", (PUBLICO / "sw-listas.js").read_text(encoding="utf-8"), "la voz entra en el precache")
+        # D7 (mudanza bloque 2, FIRMO 2026-10-11): el juego ENTRA en el precache: offline tras la primera visita.
+        self.assertIn("/assets/atlas-voz.js", (PUBLICO / "sw-listas.js").read_text(encoding="utf-8"), "la voz no esta en el precache")
         self.assertIn("s.src = '/assets/atlas-voz.js'", (PUBLICO / "game" / "ui.js").read_text(encoding="utf-8"))
 
     def test_el_juego_abre_sin_red_y_la_ley_sin_red_es_no_data(self):
@@ -433,7 +434,8 @@ process.stdout.write(JSON.stringify(ok));
         capa = (ASSETS / "thegame.js").read_text(encoding="utf-8")
         self.assertNotIn("['atlas-opina.js']", capa, "opinar pesa en la puerta del juego")
         self.assertIn("s.src = '/assets/atlas-opina.js'", capa)
-        self.assertNotIn("atlas-opina.js", sin_comentarios((PUBLICO / "sw-listas.js").read_text(encoding="utf-8")))
+        # D7 (mudanza bloque 2, FIRMO 2026-10-11): el juego ENTRA en el precache: offline tras la primera visita.
+        self.assertIn("/assets/atlas-opina.js", sin_comentarios((PUBLICO / "sw-listas.js").read_text(encoding="utf-8")))
         cod = sin_comentarios((ASSETS / "atlas-opina.js").read_text(encoding="utf-8"))
         self.assertEqual(re.findall(r"fetch\(([^)]*)\)", cod), ["'/atlas-opina-' + lang + '.json'"])
         for salida in ("http://", "https://", "XMLHttpRequest", "sendBeacon", "WebSocket", "localStorage",
@@ -723,11 +725,11 @@ class TheGameV15(unittest.TestCase):
             with self.subTest(salida=salida):
                 self.assertNotIn(salida, ui)
         capa = (PUBLICO / "assets" / "thegame.js").read_text(encoding="utf-8")
-        listas = (PUBLICO / "sw.js").read_text(encoding="utf-8")
+        listas = (PUBLICO / "sw-listas.js").read_text(encoding="utf-8")   # D7 (mudanza bloque 2, FIRMO 2026-10-11): el juego ENTRA en el precache: offline tras la primera visita.
         for m in self.MODULOS:
             with self.subTest(modulo=m):
                 self.assertIn(f"['/game/{m}']", capa, f"la puerta no carga {m}")
-                self.assertNotIn(f"game/{m}", listas, f"{m} entra en el precache")
+                self.assertIn(f"/game/{m}", listas, f"{m} no esta en el precache")
                 for h in PUBLICO.rglob("*.html"):
                     self.assertNotIn(f"game/{m}", h.read_text(encoding="utf-8"))
 
@@ -1102,7 +1104,8 @@ class Pestanas(unittest.TestCase):
             with self.subTest(prohibido=prohibido):
                 self.assertNotIn(prohibido, vivo)
         listas = (PUBLICO / "sw.js").read_text(encoding="utf-8") + (PUBLICO / "sw-listas.js").read_text(encoding="utf-8")
-        self.assertNotIn("thegame.css", listas, "la hoja de la capa entra en el precache")
+        # D7 (mudanza bloque 2, FIRMO 2026-10-11): el juego ENTRA en el precache: offline tras la primera visita.
+        self.assertIn("/assets/thegame.css", listas, "la hoja de la capa no esta en el precache")
         for h in PUBLICO.rglob("*.html"):
             self.assertNotIn("thegame.css", h.read_text(encoding="utf-8"))
 
@@ -1222,7 +1225,10 @@ class Multijugador(unittest.TestCase):
             with self.subTest(modulo=m):
                 self.assertLess(f.stat().st_size, TOPE_FICHERO, f"{m} pasa del bloque")
                 self.assertNotIn(m, puerta, f"{m} entra en la puerta del juego")
-                self.assertNotIn("/game/" + m, listas, f"{m} entra en el precache")
+                if m in ARENA + CASA:   # D7: lo que la puerta carga entra en el precache
+                    self.assertIn("/game/" + m, listas, f"{m} no esta en el precache")
+                else:                   # los puros que nadie pide, tampoco al precache
+                    self.assertNotIn("/game/" + m, listas, f"{m} entra en el precache sin que nadie lo pida")
                 self.assertNotIn("../game/" + m, mundo.PIEZAS)
                 for h in PUBLICO.rglob("*.html"):
                     self.assertNotIn("game/" + m, h.read_text(encoding="utf-8"))
@@ -1384,6 +1390,34 @@ class Arena(unittest.TestCase):
         self.assertIn("window.crypto.getRandomValues(b)", self._js("ui-duelo.js"), "el r del commit-reveal sin azar real")
         self.assertIn("I.firmarTexto(t)", self._js("ui-duelo.js"))
         self.assertIn("window.AtlasArmy.verificaWeb", self._js("ui-duelo.js"))
+
+
+class PrecacheDelJuego(unittest.TestCase):
+    """D7 (mudanza bloque 2, FIRMO 2026-10-11): el juego entra en el precache y se juega SIN RED tras la
+    primera visita. El oraculo: la lista JUEGO de sw-listas.js contiene TODO lo que thegame.js carga (sus
+    listas y lo que pide a demanda), y todo existe. Lo que es MEDIDA (atlas-mundo, atlas-record) sigue
+    fuera: sin red se dice NO_DATA, no una cifra vieja con cara de fresca."""
+
+    def test_juego_contiene_todo_lo_que_la_puerta_carga(self):
+        tg = (PUBLICO / "assets" / "thegame.js").read_text(encoding="utf-8")
+        pide = set()
+        for m in re.finditer(r"\['([^']+\.js)'(?:,\s*'[^']*')?\]", tg):
+            r = m.group(1); pide.add(r if r.startswith("/") else "/assets/" + r)
+        for c in re.findall(r"'([\w.-]+\.css)'", tg):
+            pide.add("/assets/" + c)
+        pide |= {"/assets/atlas-hud.js", "/assets/atlas-opina.js", "/assets/atlas-voz.js", "/game/home.css"}
+        listas = (PUBLICO / "sw-listas.js").read_text(encoding="utf-8")
+        juego = set(re.findall(r"'(/(?:game|assets)/[\w.-]+)'", listas[listas.index("const JUEGO"):listas.index("];", listas.index("const JUEGO"))]))
+        self.assertEqual(sorted(pide - juego), [], "lo que la puerta carga y el precache no guarda")
+        for r in juego:
+            with self.subTest(ruta=r):
+                self.assertTrue((PUBLICO / r.lstrip("/")).is_file(), f"{r} no existe")
+
+    def test_lo_que_es_medida_sigue_fuera(self):
+        listas = (PUBLICO / "sw-listas.js").read_text(encoding="utf-8")
+        for medida in ("/atlas-mundo.json", "/atlas-record.json"):
+            with self.subTest(medida=medida):
+                self.assertNotIn(medida, listas[listas.index("const JUEGO"):])
 
 
 class Conquista(unittest.TestCase):
