@@ -1,6 +1,11 @@
 # PARA_LA_MESA · Ronda «el mapa único y la terminal» · 2026-10-11 · Claude (Opus 5.5)
 Contrato FIRMADO + addendum visual v2 (Ruswick + Zanzlanz + PS1). Rama `claude/mapa-unico` sobre `main` `b63ddec`. **Sin push**: cada pieza espera tu FIRMO. Lo de las rondas anteriores sigue debajo.
 
+## ESTÁ LIVE · 2026-10-11 21:40:21Z (FIRMO del Soberano: «firmo push completo»)
+- PR #27 → merge `70c26a0` en `main` (fast-forward de `b63ddec` + U0, U1, U2, T y sus mesas; HEAD `99ac6d6`). CI `test_web`: pass. preceptoros.org sirve `preceptoros-2026-17-abeo` (medido con curl).
+- En vivo (MEDIDO, Chrome headless contra preceptoros.org, `/en/` 1280 y `/es/` 412): SW activo · 4 partes por id · mapa con el cangrejo · un solo Fight · `AtlasFicha` cargada · 0 errores. En `/es/` el aviso «solo inglés» sale el primero. Capturas: `~/p0x/no-publicar/auditoria-mapa-unico-20261011/live/`.
+- **NO va en este push:** G0 (a medias en el árbol local, sin commit). **Defecto que ya estaba en producción, medido:** los huevos NO eclosionan. `tic()` en `ui.js` sale si `!capa.open`, y la capa es una `<section>` (viene de v1.5 `c7d98c8`, cuando era un `<dialog>`). Se arregla dentro de G0.
+
 | Pieza | Qué cambia | Commit | Gates | Sello |
 |---|---|---|---|---|
 | U0 · troceos + camino muerto | Nada visible. `home_buildings` → `casa-medidas.js` (pura: partes y cifras) + `casa-personaliza.js`; `ui-arena` → `ui-arena-comun.js`; `thegame.js` pierde el camino del `<dialog>`, que nunca corría (X, About, Escape, `showModal`, `cierre_aviso` en 9 lenguas, `en-thegame`) | `6eddbb1` | n=2 verdes · test nuevo · sabotaje (un gemelo vuelve) rojo→verde · navegador: Customize 7 grupos, mapa 6 lugares, 4 partes con aria-label | MEDIDO · `abel` |
