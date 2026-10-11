@@ -542,6 +542,22 @@ process.stdout.write(JSON.stringify(ok));
         a = self._js("ui-arena.js") if hasattr(self, "_js") else sin_comentarios((PUBLICO / "game" / "ui-arena.js").read_text(encoding="utf-8"))
         self.assertIn("var p = document.getElementById('pliego-lugares');\n    if (p && !p.open) { p.open = true; }", a)
 
+    def test_la_escuadra_propia_no_lleva_undefined(self):
+        """Medido en el Doogee (2026-10-11), con tropas adoptadas de verdad: `lucha` hacia K.huella(escuadra) y una tropa
+        sin lijar iba como {lija: undefined}: «canon: tipo undefined» y la batalla con tropas propias NO arrancaba.
+        El canon tiene razon al rechazarlo: lo que se arregla es la escuadra."""
+        r = subprocess.run(["node", "-e", """
+          const K = require('./public/game/canon.js');
+          let roto = ''; try { K.huella([{ tc: 'tc1', semilla: 'a', lija: undefined }]); } catch (e) { roto = e.message; }
+          console.log(JSON.stringify({ roto, sano: K.huella([{ tc: 'tc1', semilla: 'a' }]).length }));
+        """], cwd=RAIZ.parent, capture_output=True, text=True, timeout=60)
+        d = json.loads(r.stdout)
+        self.assertIn("undefined", d["roto"], "el canon deberia rechazar undefined (si no, la prueba no prueba nada)")
+        self.assertGreater(d["sano"], 0)
+        a = sin_comentarios((PUBLICO / "game" / "ui-arena.js").read_text(encoding="utf-8"))
+        self.assertNotIn("lija: L[s] }", a, "vuelve la tropa con lija: undefined")
+        self.assertIn("if (L[s]) { t.lija = L[s]; }", a)
+
     def test_lo_que_flota_recibe_el_dedo(self):
         """U1 puso pointer-events:none en la capa para que el mapa reciba el dedo, y eso se HEREDA: la revelacion,
         Customize y los dialogos solo se cerraban con Escape (medido en vivo). Toda clase `position:fixed` del juego
