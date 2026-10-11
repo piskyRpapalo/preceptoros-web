@@ -2375,7 +2375,7 @@ class ElJuegoEnInglesEnLasNueve(unittest.TestCase):
         for n in ("atlas-opina.js",):
             self.assertIn("window.AtlasLengua.actual) || 'en'", self._js(n), n)
         self.assertIn("window.AtlasLengua.actual) || 'en'",
-                      sin_comentarios((PUBLICO / "game" / "ui-arena.js").read_text(encoding="utf-8")))
+                      sin_comentarios((PUBLICO / "game" / "ui-arena-comun.js").read_text(encoding="utf-8")))  # U0: los textos de la Arena
 
     def test_el_aviso_de_solo_ingles_va_primero_en_la_pestana_de_entrada(self):
         # Desde 2026-10-04 la pestana de entrada es Map (cuatro pestanas: Map, Battle, My node, Help).
@@ -2501,8 +2501,9 @@ class Portada(unittest.TestCase):
     def test_el_juego_se_monta_en_el_panel_no_encima(self):
         tg = (PUBLICO / "assets" / "thegame.js").read_text(encoding="utf-8")
         self.assertIn("var P = document.getElementById('juego-panel');", tg)
-        self.assertIn("(P || document.body).appendChild(capa);", tg)
-        self.assertIn("if (capa.showModal && !capa.open)", tg)
+        # U0 («el mapa unico»): todas las paginas son portadas; el camino del <dialog> se retiro (nunca corria).
+        self.assertIn("P.textContent = ''; P.appendChild(capa);", tg)
+        self.assertNotIn("showModal", sin_comentarios(tg))
         self.assertIn("window.TheGame.abre(null", (PUBLICO / "assets" / "eaa-art12-local-first-surface.js").read_text(encoding="utf-8"))
 
 

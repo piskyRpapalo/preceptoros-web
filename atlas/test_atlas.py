@@ -148,13 +148,12 @@ class Piso(unittest.TestCase):
             with self.subTest(resto=torre):
                 self.assertNotIn(torre, piso, "el juego vuelve a depender de la Torre")
         capa = sin_comentarios((PISO / "thegame.js").read_text(encoding="utf-8"))
-        # <dialog> nativo con showModal(): el navegador deja inerte la pagina de
-        # debajo (trampa de foco real, la que respetan TalkBack y VoiceOver) y
-        # Escape llega como `cancel`.
-        # En la portada (mudanza b1, 2026-10-11) es una <section> dentro del panel; fuera, el <dialog>.
-        for pieza in ("P ? 'section' : 'dialog'", "showModal()", "'cancel'", "s.async = false",
-                      "window.AtlasJuego.monta", "window.AtlasJuego.pausa", "origen.focus",
-                      "cierre_aviso"):
+        # La capa ES la portada (mudanza b1): una <section> dentro de #juego-panel. U0 («el mapa unico»,
+        # 2026-10-11) retiro el camino del <dialog> (X, About, Escape, aviso de cierre): nunca corria.
+        for muerto in ("showModal", "'cancel'", "cierre_aviso", "thegame-cerrar", "en-thegame"):
+            with self.subTest(retirado=muerto):
+                self.assertNotIn(muerto, capa, "vuelve el camino muerto del <dialog>")
+        for pieza in ("capa = el('section', 'thegame-capa')", "s.async = false", "window.AtlasJuego.monta"):
             with self.subTest(pieza=pieza):
                 self.assertIn(pieza, capa)
         for g in ("atlas-arte.js", "atlas-coord.js", "atlas-carta.js", "atlas-ondas.js", "atlas-mapa.js", "atlas-dialogo.js", "atlas-motor.js", "atlas-piso.js"):
@@ -233,7 +232,7 @@ class Piso(unittest.TestCase):
         pedidas = set(re.findall(r"\bU\('([a-z0-9_]+)'\)", codigo))
         pedidas |= {x + "n" for x in re.findall(r"'(b[1-4])'", codigo)}
         # Claves que el panel compone (las cinco fases) y la que pide la capa.
-        pedidas |= {f"f{n}" for n in range(1, 6)} | {"cierre_aviso"}
+        pedidas |= {f"f{n}" for n in range(1, 6)}
         # Y las que pide la capa del piloto.
         capa = (PISO / "atlas-piloto-capa.js").read_text(encoding="utf-8")
         pedidas |= set(re.findall(r"\bT\('([a-z0-9_]+)'\)", capa))
@@ -646,9 +645,9 @@ PUROS = ("canon.js", "sobres.js", "rating.js", "arena.js", "duelo.js", "mercado.
 # La Arena (2026-09-28, «el mapa multi-jugador en una pestana»): se carga al abrir su pestana, detras del Army.
 ARENA = ("sobres.js", "rating.js", "arena.js", "duelo.js", "mar-anclas.js", "mar.js", "nodos-pesos.js",
          "nodos.js", "cuenta.js", "ui-nodos.js", "ui-rack.js",
-         "escuadron.js", "battle_choreography.js", "battle_replay.js", "ui-arena.js", "ui-duelo.js")
+         "escuadron.js", "battle_choreography.js", "battle_replay.js", "ui-arena-comun.js", "ui-arena.js", "ui-duelo.js")
 # La CASA (2026-10-05): la primera pantalla, detras del Army. Lleva canon y escena, que la Arena reutiliza.
-CASA = ("canon.js", "escena.js", "wave_render.js", "gdpr-art25-ephemeral-crab.js", "aiact-art50-crab-terminal.js", "nodos-cedulas.js", "fog_of_war.js", "world_camera.js", "mar-fondo.js", "gdpr-art7-entry-choice.js", "aiact-art50-state-radio.js", "home_base_scene.js", "home_buildings.js", "summon_reveal.js", "taller.js", "ui-taller.js", "primer_eco.js")
+CASA = ("canon.js", "escena.js", "wave_render.js", "gdpr-art25-ephemeral-crab.js", "aiact-art50-crab-terminal.js", "nodos-cedulas.js", "fog_of_war.js", "world_camera.js", "mar-fondo.js", "gdpr-art7-entry-choice.js", "aiact-art50-state-radio.js", "home_base_scene.js", "casa-medidas.js", "casa-personaliza.js", "home_buildings.js", "summon_reveal.js", "taller.js", "ui-taller.js", "primer_eco.js")
 FUERA_DE_LA_PUERTA = tuple(sorted(set(PUROS + ARENA + CASA)))
 
 
@@ -1382,7 +1381,7 @@ class Arena(unittest.TestCase):
         ar = json.loads((PUBLICO / "atlas-arena-en.json").read_text(encoding="utf-8"))["ui"]
         juego = json.loads((PUBLICO / "atlas-en.json").read_text(encoding="utf-8"))["ui"]
         self.assertLess((PUBLICO / "atlas-arena-en.json").stat().st_size, TOPE_FICHERO)
-        for f in ("ui-arena.js", "ui-duelo.js", "mar.js"):
+        for f in ("ui-arena.js", "ui-arena-comun.js", "ui-duelo.js", "mar.js"):
             for k in set(re.findall(r"T\('(\w+)'\)", self._js(f))):
                 with self.subTest(fichero=f, clave=k):
                     self.assertTrue((ar.get(k) or juego.get(k) or "").strip(), f"{k} sin texto")
@@ -1392,14 +1391,15 @@ class Arena(unittest.TestCase):
             self.assertTrue((PUBLICO / f"atlas-arena-{l}.json").is_file(), f"la Arena sin textos en {l}")
 
     def test_la_arena_no_sale_a_la_red_ni_usa_el_azar_del_sistema(self):
-        for f in ("escena.js", "mar.js", "ui-arena.js", "ui-duelo.js", "duelo.js", "rating.js"):
+        for f in ("escena.js", "mar.js", "ui-arena.js", "ui-arena-comun.js", "ui-duelo.js", "duelo.js", "rating.js"):
             c = self._js(f)
             for malo in ("Math.random", "localStorage", "indexedDB", "innerHTML", "sendBeacon", "WebSocket",
                          "RTCPeerConnection", "http://", "https://", "XMLHttpRequest", "Date."):
                 with self.subTest(fichero=f, prohibido=malo):
                     self.assertNotIn(malo, c)
             fetches = re.findall(r"fetch\(([^)]*)\)", c)
-            self.assertEqual(fetches, ["'/atlas-arena-' + l + '.json'"] if f == "ui-arena.js" else [], f)
+            # U0: los textos de la Arena se piden desde `ui-arena-comun.js` (lo comun), y solo desde ahi.
+            self.assertEqual(fetches, ["'/atlas-arena-' + l + '.json'"] if f == "ui-arena-comun.js" else [], f)
         self.assertIn("window.crypto.getRandomValues(b)", self._js("ui-duelo.js"), "el r del commit-reveal sin azar real")
         self.assertIn("I.firmarTexto(t)", self._js("ui-duelo.js"))
         self.assertIn("window.AtlasArmy.verificaWeb", self._js("ui-duelo.js"))
@@ -1734,6 +1734,28 @@ class MapaMovible(unittest.TestCase):
         self.assertIn("window.AtlasTallerUI.monta(PANEL.taller)", tg)
         self.assertIn("var TL = enNode ? require('./taller.js') : raiz.AtlasTaller;", (PUBLICO / "game" / "arena.js").read_text(encoding="utf-8"))
 
+    def test_u0_los_troceos_son_una_puerta_sin_gemelos(self):
+        """U0 («el mapa unico»): home_buildings, ui-arena y thegame se parten ANTES de tocarlos. Lo que sale vive en
+        UN sitio: la lista de partes en casa-medidas.js (pura), «Customize» en casa-personaliza.js, lo comun de la
+        Arena en ui-arena-comun.js; y el camino muerto del <dialog> no vuelve. Ningun fichero del juego pasa de 16 KiB."""
+        g = lambda n: sin_comentarios((PUBLICO / "game" / n).read_text(encoding="utf-8"))
+        hb, ua = g("home_buildings.js"), g("ui-arena.js")
+        for gemelo, f in (("['caparazon', '", hb), ("function grupo(", hb), ("function personaliza() {\n    var d", hb),
+                          ("function miniLienzo(", ua), ("function textos(", ua), ("function colores(", ua)):
+            with self.subTest(gemelo=gemelo[:24]):
+                self.assertNotIn(gemelo, f, "el troceo dejo un gemelo")
+        self.assertIn("var CM = raiz.AtlasCasaMedidas, PARTES = CM.PARTES, DENTRO = CM.DENTRO;", hb)
+        self.assertIn("raiz.AtlasCasaPersonaliza.abre(", hb)
+        self.assertIn("var AC = window.AtlasArenaComun", ua)
+        r = subprocess.run(["node", "-e", "const M=require('./public/game/casa-medidas.js');const T=k=>k+'{n}';"
+                            "const s={nivel_nucleo:3,recursos:{biomasa:5,oxigeno:9}};const a=M.medidas(s,2,null,T),b=M.medidas(null,null,null,T);"
+                            "process.stdout.write(JSON.stringify([M.PARTES.map(p=>p[0]),a.nucleo.nivel,a.bosque.nivel,a.army.nivel,a.faro,b.nucleo,b.army]))"],
+                           cwd=RAIZ.parent, capture_output=True, text=True, timeout=60)
+        self.assertEqual(json.loads(r.stdout), [["caparazon", "pinzas", "patas", "ojos"], 3, 2, 2, None, None, None], r.stderr)
+        for f in sorted((PUBLICO / "game").glob("*.js")) + sorted((PUBLICO / "assets").glob("thegame*")):
+            with self.subTest(techo=f.name):
+                self.assertLessEqual(f.stat().st_size, 16384)
+
     def test_la_portada_lleva_la_zona_de_identidad_sin_ella_nadie_firma(self):
         """Defecto MEDIDO en vivo el 2026-10-11 (preceptoros.org/en/: «Identity is not defined»): la mudanza b1
         (3e4c9a7) genero las 10 portadas sin `<div id="identity">`, y `auth.js` se va sin definir `Identity` si
@@ -1834,7 +1856,7 @@ class MapaMovible(unittest.TestCase):
         for t in ("--bio-teal:", "--bio-ambar:", "--bio-hielo:", "--bio-violeta:"):
             with self.subTest(token=t):
                 self.assertIn(t, tok)
-        self.assertIn("css('--bio-ambar'", (PUBLICO / "game" / "ui-arena.js").read_text(encoding="utf-8"))
+        self.assertIn("css('--bio-ambar'", (PUBLICO / "game" / "ui-arena-comun.js").read_text(encoding="utf-8"))
         self.assertIn("var(--bio-teal)", (PUBLICO / "assets" / "tubo.css").read_text(encoding="utf-8"))
         r = subprocess.run(["node", "-e", "const V=require('./public/game/valores.js').fluidez;"
                             "process.stdout.write(JSON.stringify([V.vida_hue_base,V.vida_hue_cobre,V.escudo_lightness_base,V.escudo_lightness_min]))"],

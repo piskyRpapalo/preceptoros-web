@@ -1,0 +1,48 @@
+/* preceptoros.org · theGame · LO COMUN DE LA ARENA (sale de `ui-arena.js` en U0, «el mapa unico», 2026-10-11, para
+   que la Arena quepa bajo su techo de 16 KiB): sus textos (`atlas-arena-<lengua>.json`, a demanda), los nombres de
+   tropas y lugares, las miniaturas de onda y los colores (de los tokens bioluminiscentes). Sin estado de combate:
+   solo lo que la Arena, el mapa y los duelos leen igual. La puerta es `AtlasArenaComun`. */
+(function () {
+  'use strict';
+  var E = window.AtlasEscena, TX = null, dpr = window.devicePixelRatio || 1;
+  /* Los textos de la Arena viven en `atlas-arena-<lengua>.json` (a demanda); los comunes, en el juego. */
+  function T(k) { return (TX && TX[k]) || (window.AtlasJuego && window.AtlasJuego.texto(k)) || ''; }
+  function textos() {
+    var l = (window.AtlasLengua && window.AtlasLengua.actual) || 'en';
+    return fetch('/atlas-arena-' + l + '.json').then(function (r) {
+      if (!r.ok) { throw new Error('atlas-arena-' + l + '.json ' + r.status); }
+      return r.json();
+    }).then(function (d) { TX = d.ui; });
+  }
+  function el(tag, clase, texto) {
+    var x = document.createElement(tag);
+    if (clase) { x.className = clase; }
+    if (texto != null) { x.textContent = String(texto); }
+    return x;
+  }
+  function boton(texto, clase) { var b = el('button', clase || 'boton', texto); b.type = 'button'; return b; }
+  function rellena(p, v) { return String(p).replace(/\{(\w+)\}/g, function (m, k) { return k in v ? v[k] : m; }); }
+  function quieto() { return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches; }
+  function css(v, x) { return getComputedStyle(document.documentElement).getPropertyValue(v).trim() || x; }
+  function colores() {
+    return { dano: css('--accent-copper-claro', '#e0a060'), fallo: css('--text-muted', '#9aa'), tuya: css('--bio-ambar', '#ffb547'),
+             suya: css('--bio-violeta', '#b07cff'), texto: css('--text-main', '#ddd'), mar: 'rgba(120,170,220,.09)' };
+  }
+  function nombre(t) {
+    if (t.rareza === 'unico') { return T('unico_nombre'); }
+    return rellena(T('nombre_tropa'), { base: T('base_' + t.base), pre: t.prefijo ? T('af_' + t.prefijo) : '',
+                                        suf: t.sufijo ? T('af_' + t.sufijo) : '' }).replace(/\s+/g, ' ').trim();
+  }
+  function miniLienzo(t, lado) {
+    var c = el('canvas', 'atlas-arena-mini');
+    c.width = c.height = Math.round(lado * dpr); c.style.width = c.style.height = lado + 'px';
+    c.setAttribute('role', 'img'); c.setAttribute('aria-label', nombre(t) + ' · ' + T('rar_' + t.rareza));
+    requestAnimationFrame(function () { E.mini(c, t); });
+    return c;
+  }
+  function nombreLugar(l) { return l.npc ? T('npc_' + l.id) : l.pseudo; }
+
+
+  window.AtlasArenaComun = { T: T, textos: textos, el: el, boton: boton, rellena: rellena, quieto: quieto, css: css, colores: colores,
+                             nombre: nombre, miniLienzo: miniLienzo, nombreLugar: nombreLugar };
+})();

@@ -67,8 +67,7 @@
 .atlas-lienzo{position:relative;width:100%;margin-top:.75rem;min-height:12rem}
 /* EL CRISTAL SE APAGA MIENTRAS EL BOSQUE SE MUEVE. Medido en Chromium: un
    `backdrop-filter` por encima de un lienzo animado cae de 60 a 14 fotogramas.
-   La capa de theGame es opaca y la pagina de debajo se oculta mientras esta
-   abierta (ver `.en-thegame`), asi que aqui solo queda el panel del mapa. */
+   Aqui solo queda el panel del mapa, opaco. */
 #atlas-piso .atlas-mapa{background:var(--bg-secondary)}
 @supports (backdrop-filter:none) or (-webkit-backdrop-filter:none){
   #atlas-piso .atlas-mapa{-webkit-backdrop-filter:none;backdrop-filter:none}}
@@ -189,7 +188,6 @@
 span.atlas-sector{pointer-events:none}
 .atlas-casa{margin:0;font:600 .8rem/1.4 var(--mono);color:var(--accent-copper-claro)}
 .atlas-medido{margin:0;font:.68rem/1.4 var(--mono);color:var(--text-muted)}
-.thegame-aviso{flex-basis:100%;margin:.35rem 0 0;font:.72rem/1.4 var(--mono);color:var(--accent-copper-claro)}
 
 /* --- el piloto: su «Acepto» con las dos listas al mismo peso (la barra, en thegame.css) -- */
 .atlas-piloto-listas{display:grid;grid-template-columns:repeat(auto-fit,minmax(13rem,1fr));gap:.75rem}

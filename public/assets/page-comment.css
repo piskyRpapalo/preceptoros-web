@@ -7,7 +7,6 @@
 [dir="rtl"] .pc-boton{border-radius:var(--radius,14px) 0 0 var(--radius,14px)}
 .pc-boton:hover,.pc-boton:focus-visible{background:#5b33b8}
 .pc-boton:focus-visible{outline:2px solid #fff;outline-offset:2px}
-body.en-thegame .pc-boton{display:none}
 .pc-dlg{position:fixed;inset:0;margin:auto;height:fit-content;max-height:calc(100dvh - 2rem);overflow:auto;width:min(34rem,calc(100vw - 1.5rem));padding:0;color:#eee;background:#16122a;
   border:1px solid var(--oro,#d9a441);border-radius:var(--radius,14px)}
 .pc-dlg::backdrop{background:rgba(5,4,12,.7)}

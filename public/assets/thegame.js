@@ -1,11 +1,8 @@
 /* preceptoros.org · theGame · la capa del juego y su cargador.
 
-   EL JUEGO SOLO VIVE AQUI (2026-09-26): en la portada ES la pagina (`#juego-panel`); en otra, una capa
-   a pantalla completa (boton o Escape). A DEMANDA: hojas y guiones en orden; Army, Casa y Arena al
-   abrir, fuera de la puerta (`gzip_juego_b`). «Un juego COMPACTO» (2026-10-05): cada escena al centro,
-   los mandos en los bordes.
-
-   CERRAR NO BORRA LA PARTIDA; cerrar la PESTANA del navegador si. */
+   EL JUEGO SOLO VIVE AQUI (2026-09-26) y ES la portada (`#juego-panel`). A DEMANDA: hojas y guiones en
+   orden; Army, Casa y Arena al abrir, fuera de la puerta (`gzip_juego_b`). «Un juego COMPACTO» (2026-10-05):
+   cada escena al centro, los mandos en los bordes. Cerrar la PESTANA del navegador borra la partida. */
 (function () {
   'use strict';
   if (window.TheGame) { return; }
@@ -22,7 +19,7 @@
      paquetes firmados. Detras del Army, cuyas tropas y verificador usa. */
   var ARENA = [['/game/sobres.js'], ['/game/rating.js'], ['/game/arena.js'], ['/game/duelo.js'],
     ['/game/mar-anclas.js'], ['/game/mar.js'], ['/game/nodos-pesos.js'], ['/game/nodos.js'], ['/game/cuenta.js'],
-    ['/game/ui-nodos.js'], ['/game/ui-rack.js'], ['/game/escuadron.js'], ['/game/battle_choreography.js'], ['/game/battle_replay.js'], ['/game/ui-arena.js'], ['/game/ui-duelo.js']];
+    ['/game/ui-nodos.js'], ['/game/ui-rack.js'], ['/game/escuadron.js'], ['/game/battle_choreography.js'], ['/game/battle_replay.js'], ['/game/ui-arena-comun.js'], ['/game/ui-arena.js'], ['/game/ui-duelo.js']];
   /* LAS LENGUAS DEL JUEGO (2026-09-28: «hoy, solo inglés; un mismo enlace»): la UNICA lista de las
      COMPLETAS. La portada abre la suya si esta aqui; si no, la primera. Anadir una = traducir su
      `atlas-<l>.json` hasta que el gate la de completa y escribirla aqui. Las demas son borradores. */
@@ -30,7 +27,7 @@
   var pagina = (document.documentElement.lang || 'en').slice(0, 2);
   var lengua = LENGUAS.indexOf(pagina) >= 0 ? pagina : LENGUAS[0];
   window.AtlasLengua = { lenguas: LENGUAS, actual: lengua, pagina: pagina };
-  var capa = null, origen = null, cargado = null, RUTA = /^#thegame(?:\/\w+)?$/;
+  var capa = null, cargado = null;
 
   function el(tag, clase, texto) {
     var n = document.createElement(tag);
@@ -73,7 +70,7 @@
     ['mapa', '\u25C8', '.atlas-guardado|.thegame-exporta|.thegame-opina|.atlas-hud-farmeo|#atlas-juego > .no-data|.atlas-pie'],
     ['taller', '\u2692\uFE0E', '.atlas-nucleo|.atlas-hud > .panel']];
   /* LA CASA, a demanda y detras del Army (usa la gacha para tu emblema). */
-  var CASA = [['/game/canon.js'], ['/game/wave_render.js'], ['/game/escena.js'], ['/game/gdpr-art25-ephemeral-crab.js'], ['/game/aiact-art50-crab-terminal.js'], ['/game/nodos-cedulas.js'], ['/game/fog_of_war.js'], ['/game/world_camera.js'], ['/game/mar-fondo.js'], ['/game/gdpr-art7-entry-choice.js'], ['/game/aiact-art50-state-radio.js'], ['/game/home_base_scene.js'], ['/game/home_buildings.js'], ['/game/summon_reveal.js'], ['/game/taller.js'], ['/game/ui-taller.js'], ['/game/primer_eco.js']];
+  var CASA = [['/game/canon.js'], ['/game/wave_render.js'], ['/game/escena.js'], ['/game/gdpr-art25-ephemeral-crab.js'], ['/game/aiact-art50-crab-terminal.js'], ['/game/nodos-cedulas.js'], ['/game/fog_of_war.js'], ['/game/world_camera.js'], ['/game/mar-fondo.js'], ['/game/gdpr-art7-entry-choice.js'], ['/game/aiact-art50-state-radio.js'], ['/game/home_base_scene.js'], ['/game/casa-medidas.js'], ['/game/casa-personaliza.js'], ['/game/home_buildings.js'], ['/game/summon_reveal.js'], ['/game/taller.js'], ['/game/ui-taller.js'], ['/game/primer_eco.js']];
   /* LO TECNICO, SIEMPRE PLEGADO («textos que asustan a usuarios no tecnicos»): no se borran, son la
      prueba; se ven al abrir «Technical details». */
   var TECNICO = '.atlas-carta-json, .atlas-nucleo > .atlas-nota, .atlas-nucleo > .atlas-medido, ' +
@@ -212,49 +209,25 @@
     return arena;
   }
 
-  /* EN LA PORTADA (mudanza 2026-10-11) el juego ES la pagina (`#juego-panel`, sin X ni About); fuera,
-     un <dialog> con showModal(), cuya trampa de foco pone el navegador. */
+  /* EL JUEGO ES LA PAGINA (`#juego-panel`, mudanza 2026-10-11). U0 («el mapa unico», 2026-10-11): el camino del
+     <dialog> (X, About, Escape, showModal, aviso de cierre) se RETIRA: todas las paginas son portadas y nunca
+     corria (medido: la capa siempre es una <section>). */
   function construye() {
     var P = document.getElementById('juego-panel');
-    capa = el(P ? 'section' : 'dialog', 'thegame-capa'); capa.id = 'thegame';
+    capa = el('section', 'thegame-capa'); capa.id = 'thegame';
     /* La lengua del juego, no la de la portada (una pagina arabe no voltea un juego en ingles). */
     capa.lang = lengua; capa.dir = RTL.indexOf(lengua) >= 0 ? 'rtl' : 'ltr';
     capa.setAttribute('aria-labelledby', 'thegame-t');
     var barra = el('div', 'thegame-barra');
     barra.appendChild(el('h2', 'thegame-t', 'theGame')).id = 'thegame-t';
-    var x = el('button', 'thegame-cerrar', '×'); x.type = 'button';
-    x.setAttribute('aria-label', 'theGame ×');
-    x.addEventListener('click', cierra);
-    var ab = el('a', 'thegame-about', 'About'); ab.href = '#about'; ab.addEventListener('click', cierra);
-    if (!P) { barra.appendChild(ab); barra.appendChild(x); }
     capa.appendChild(barra);
     var juego = el('div', 'thegame-juego'); juego.id = 'atlas-juego';
     capa.appendChild(juego);
-    capa.addEventListener('cancel', cancela);
-    if (P) { P.textContent = ''; }
-    (P || document.body).appendChild(capa);
-  }
-
-  /* Escape llega como `cancel`; si hay un dialogo del juego encima, se cierra ese y la capa se queda. */
-  function cancela(e) {
-    e.preventDefault();
-    if (!document.querySelector('.atlas-dlg-capa')) { cierra(); }
-  }
-
-  /* Al cerrar se dice, un momento y sin tapar nada, que la partida queda en el aparato. */
-  function avisa() {
-    var t = window.AtlasJuego && window.AtlasJuego.texto('cierre_aviso');
-    if (!t || !origen || !origen.parentNode) { return; }
-    var viejo = document.getElementById('thegame-aviso');
-    if (viejo) { viejo.remove(); }
-    var n = el('p', 'thegame-aviso', t); n.id = 'thegame-aviso';
-    n.setAttribute('role', 'status');
-    origen.parentNode.appendChild(n);
-    setTimeout(function () { n.remove(); }, 6000);
+    P.textContent = ''; P.appendChild(capa);
   }
 
   function abre(desde, pes) {
-    origen = desde || document.querySelector('#cab-nav a.thegame');
+    if (!document.getElementById('juego-panel')) { return; }
     carga().then(function () {
       if (!capa) {
         construye();
@@ -265,7 +238,6 @@
           if (pes && PANEL[pes]) { muestra(pes); }
         });
       } else if (pes && PANEL[pes]) { muestra(pes); }
-      if (capa.showModal && !capa.open) { capa.showModal(); document.body.classList.add('en-thegame'); }
       window.AtlasJuego.sigue();
     }).catch(function (err) {
       /* Sin juego no hay capa a medias: se dice en la consola y la pagina sigue tal cual. */
@@ -274,17 +246,5 @@
     });
   }
 
-  function cierra() {
-    if (!capa || !capa.open) { return; }
-    if (window.AtlasJuego) { window.AtlasJuego.pausa(); }
-    capa.close();
-    document.body.classList.remove('en-thegame');
-    if (RUTA.test(location.hash) && history.replaceState) {
-      history.replaceState(null, '', location.pathname + location.search);
-    }
-    if (origen && origen.focus) { origen.focus(); }
-    avisa();
-  }
-
-  window.TheGame = { abre: abre, cierra: cierra, army: cargaArmy, ve: function (id) { if (PANEL[id]) { muestra(id); } } };
+  window.TheGame = { abre: abre, army: cargaArmy, ve: function (id) { if (PANEL[id]) { muestra(id); } } };
 })();
