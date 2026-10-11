@@ -192,7 +192,54 @@
     return raiz.crypto.subtle.digest('SHA-256', new TextEncoder().encode(firma)).then(hex);
   }
 
-  var AtlasArmy = { TOPE: TOPE, adopcion: adopcion, crea: crea, almacenWeb: almacenWeb, cajaWeb: caja, calidadWeb: calidadWeb, conquistasWeb: conquistasWeb, limpiaRecord: limpiaRecord, verificaWeb: verificaWeb, semillaWeb: semillaWeb };
+  /* G0 · LA CADENA DE INVOCACIONES (aceptada por el Soberano el 2026-10-11). Cada invocacion es un ESLABON firmado:
+     {esquema, tc, seq, prev, clave_publica}, con seq monotono por clave y prev = la semilla del anterior (sha256 de
+     su firma). Solo se firma lo que fija la semilla: ni pseudonimo ni ciclo (con ellos, renombrarse o esperar daba
+     otra semilla: pesca). Se guarda en el aparato con sus huevos (desde/hasta, datos de pantalla, no firmados), asi
+     recargar ya no pierde el huevo con el cobre gastado. Un hueco o una firma que no cuadra: NO_DATA con causa. */
+  function eslabon(cadena, tc, clave) {
+    var u = cadena[cadena.length - 1];
+    return { esquema: 'atlas.invocacion/2', tc: tc, seq: u ? u.obj.seq + 1 : 1, prev: u ? u.semilla : 'genesis', clave_publica: clave };
+  }
+  function compruebaCadena(cadena) {
+    for (var i = 0; i < cadena.length; i++) {
+      var e = cadena[i], o = e && e.obj;
+      if (!o || o.esquema !== 'atlas.invocacion/2') { return 'eslabon ' + (i + 1) + ': esquema'; }
+      if (o.seq !== i + 1) { return 'hueco: se esperaba seq ' + (i + 1) + ' y llega ' + o.seq; }
+      if (o.prev !== (i ? cadena[i - 1].semilla : 'genesis')) { return 'eslabon ' + o.seq + ': prev no enlaza'; }
+      if (i && o.clave_publica !== cadena[0].obj.clave_publica) { return 'eslabon ' + o.seq + ': otra clave'; }
+    }
+    return '';
+  }
+  function anexa(cadena, obj, firma, semilla, desde, hasta) {
+    var c = cadena.concat([{ obj: obj, firma: firma, semilla: semilla, desde: desde, hasta: hasta, abierto: false }]), causa = compruebaCadena(c);
+    if (causa) { throw new Error('cadena: ' + causa); }
+    return c;
+  }
+  function huevos(cadena) {
+    return cadena.filter(function (e) { return !e.abierto; }).map(function (e) { return { tc: e.obj.tc, semilla: e.semilla, desde: e.desde, hasta: e.hasta, seq: e.obj.seq }; });
+  }
+  function abre(cadena, seq) { return cadena.map(function (e) { return e.obj.seq === seq ? Object.assign({}, e, { abierto: true }) : e; }); }
+  /* Al volver: cada firma con su clave y cada semilla con su firma. `verifica` y `sha` se inyectan (web o node). */
+  function verificaCadena(cadena, clave, verifica, sha) {
+    var causa = compruebaCadena(cadena);
+    if (causa) { return Promise.resolve(causa); }
+    return cadena.reduce(function (p, e) {
+      return p.then(function (c) {
+        if (c) { return c; }
+        var m = /^ed25519:([0-9a-f]{128})$/.exec(e.firma || '');
+        if (!m || e.obj.clave_publica !== clave) { return 'eslabon ' + e.obj.seq + ': firma'; }
+        return Promise.resolve(verifica(JSON.stringify(e.obj), m[1], clave)).then(function (ok) {
+          if (!ok) { return 'eslabon ' + e.obj.seq + ': firma'; }
+          return Promise.resolve(sha(e.firma)).then(function (s) { return s === e.semilla ? '' : 'eslabon ' + e.obj.seq + ': semilla'; });
+        });
+      });
+    }, Promise.resolve(''));
+  }
+  function cadenaWeb(clave) { return caja('atlas-invocaciones', 'cadena', clave); }
+
+  var AtlasArmy = { TOPE: TOPE, adopcion: adopcion, crea: crea, almacenWeb: almacenWeb, cajaWeb: caja, calidadWeb: calidadWeb, conquistasWeb: conquistasWeb, limpiaRecord: limpiaRecord, verificaWeb: verificaWeb, semillaWeb: semillaWeb,
+    eslabon: eslabon, compruebaCadena: compruebaCadena, anexa: anexa, huevos: huevos, abre: abre, verificaCadena: verificaCadena, cadenaWeb: cadenaWeb };
   if (typeof module === 'object' && module.exports) { module.exports = AtlasArmy; }
   else { raiz.AtlasArmy = AtlasArmy; }
 })(this);

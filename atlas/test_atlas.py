@@ -567,7 +567,12 @@ process.stdout.write(JSON.stringify(ok));
             d = json.loads(json.dumps(base)); d.pop(clave); return d
         ok_tal = {"esquema": "atlas.taller/1", "op": "desintegra", "prev": "0" * 64, "clave_publica": pub, "semilla": "b" * 64,
                   "tc": "tc4", "aristas": 13, "gramos": 39, "saldo": 39}
+        ok_inv = {"esquema": "atlas.invocacion/2", "tc": "tc2", "seq": 3, "prev": "c" * 64, "clave_publica": pub}
         casos = {
+            # G0: el eslabon solo firma lo que fija la semilla (ni pseudonimo ni ciclo: eso era pesca de semilla).
+            "atlas_invocacion_schema.json": (ok_inv, [
+                con(ok_inv, seq=0), con(ok_inv, prev="genesis2"), con(ok_inv, tc="tc9"),
+                con(ok_inv, pseudonimo="x"), con(ok_inv, ciclo=4), sin(ok_inv, "prev")]),
             "atlas_taller_schema.json": (ok_tal, [
                 con(ok_tal, op="regalar"), con(ok_tal, saldo=-1), con(ok_tal, stat="velocidad"),
                 con(ok_tal, gramos=-4), con(ok_tal, aristas=2), con(ok_tal, bandera="teal")]),
@@ -726,7 +731,8 @@ class TheGameV15(unittest.TestCase):
         """Se firma la invocacion y SOLO DESPUES se paga por el motor; y los
         modulos entran por la puerta theGame, fuera del precache y de todo HTML."""
         ui = self._js("ui.js")
-        self.assertLess(ui.index("firma({ esquema: 'atlas.invocacion/1'"), ui.index("window.AtlasJuego.invoca(TC.coste)"))
+        # G0: se firma el ESLABON de la cadena (atlas.invocacion/2) y solo despues paga el motor.
+        self.assertLess(ui.index("window.Identity.firmar(o)"), ui.index("window.AtlasJuego.invoca(TC.coste)"))
         for salida in ("fetch", "XMLHttpRequest", "sendBeacon", "WebSocket", "localStorage",
                        "sessionStorage", "indexedDB", "innerHTML", "http://", "https://"):
             with self.subTest(salida=salida):
@@ -1744,6 +1750,38 @@ class MapaMovible(unittest.TestCase):
         self.assertIn("window.AtlasTallerUI.monta(PANEL.taller)", tg)
         self.assertIn("var TL = enNode ? require('./taller.js') : raiz.AtlasTaller;", (PUBLICO / "game" / "arena.js").read_text(encoding="utf-8"))
 
+    def test_g0_la_cadena_de_invocaciones_y_el_huevo_que_vuelve(self):
+        """G0 (aceptada por el Soberano, 2026-10-11): cada invocacion es un eslabon firmado (seq + prev), guardado en el
+        aparato con sus huevos. Dos bugs medidos dentro: recargar cobraba el cobre y devolvia 0 huevos (vivian en
+        memoria), y `tic()` salia siempre con `!capa.open` (la capa dejo de ser un <dialog>): nada eclosionaba."""
+        r = subprocess.run(["node", str(RAIZ / "g0_casos.mjs")], capture_output=True, text=True, timeout=120)
+        casos = json.loads(r.stdout)
+        self.assertGreaterEqual(len(casos), 8)
+        for c in casos:
+            with self.subTest(caso=c["caso"]):
+                self.assertTrue(c["ok"], c["detalle"])
+        e = json.loads(subprocess.run(["node", "-e", "console.log(JSON.stringify(require('./public/game/db.js').eslabon([], 'tc1', 'a'.repeat(64))))"],
+                                      cwd=RAIZ.parent, capture_output=True, text=True, timeout=60).stdout)
+        try:
+            import jsonschema
+            v = jsonschema.Draft202012Validator(json.loads((DATOS / "atlas_invocacion_schema.json").read_text(encoding="utf-8")))
+            self.assertEqual([x.message for x in v.iter_errors(e)], [], "el eslabon que se firma no cumple su contrato")
+        except ImportError:
+            pass
+        u = self._js("ui.js")
+        for pieza in ("var o = A.eslabon(c, tc, clave);", "window.Identity.firmar(o)", "A.cadenaWeb(clave).pon(cadena);",
+                      "cadena = A.anexa(cadena, o, f.firma, semilla, i.ciclo, i.ciclo + TC.incuba);",
+                      "A.verificaCadena(c, pub, A.verificaWeb, A.semillaWeb)", "huevos = cadena ? A.huevos(cadena) : [];",
+                      "cadena = A.abre(cadena, h.seq)", "if (!capa || !capa.isConnected || document.hidden) { return; }"):
+            with self.subTest(pieza=pieza):
+                self.assertIn(pieza, u)
+        # Al invocar se GUARDA la cadena antes de poner el huevo en el nido (sabotaje medido: quitar ese guardado
+        # pasaba en verde porque `eclosiona` tambien guarda; ahora se exige el orden exacto).
+        self.assertIn("A.cadenaWeb(clave).pon(cadena);\n          huevos.push({ tc: tc, semilla: semilla,", u, "invocar no guarda la cadena")
+        for viejo in ("capa.open", "atlas.invocacion/1", "n += 1"):
+            with self.subTest(retirado=viejo):
+                self.assertNotIn(viejo, u)
+
     def test_t_la_ficha_sale_de_ui_sin_gemelos(self):
         """T (troceo, PROPUESTA pendiente de FIRMO: ui.js es intocable): la ficha de la tropa (lienzo, traza, nombre,
         ficha, voz) vive SOLO en `ui-ficha.js`; `ui.js` la ata en `monta` y deja sitio a G0. Sin gemelos."""
@@ -1753,7 +1791,8 @@ class MapaMovible(unittest.TestCase):
                 self.assertIn(fn, f)
                 self.assertNotIn(fn, u, "gemelo en ui.js")
         self.assertIn("var F = window.AtlasFicha.crea({ G: G, S: S, T: T, el: el, boton: boton, rellena: rellena, dice: dice });", u)
-        self.assertLess(len((PUBLICO / "game" / "ui.js").read_bytes()), 13500, "ui.js no gano sitio para G0")
+        # G0 uso el sitio que gano T (16.355 -> 12.947 -> 14.623 B): queda al menos 1 KiB de margen bajo el techo.
+        self.assertLess(len((PUBLICO / "game" / "ui.js").read_bytes()), 16384 - 1024, "ui.js vuelve a rozar su techo")
         c = (PUBLICO / "assets" / "thegame.js").read_text(encoding="utf-8")
         self.assertLess(c.index("['/game/ui-ficha.js']"), c.index("['/game/ui.js']"), "la ficha carga despues de quien la usa")
 

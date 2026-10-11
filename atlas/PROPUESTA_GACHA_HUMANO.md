@@ -70,3 +70,14 @@ vid 10 · arm 2 · vel 6 · Sound» y 0 errores. Test nuevo + sabotaje (un gemel
 | A3 | **Crónica en filotaxis** | `escuadron.js` ya usa la espiral áurea (`AUREO`) | La vitrina coloca cada cápsula en espiral de girasol (137,5°) con la MISMA función: sin gemelo | S | ☐ |
 | A4 | **Redención → Tip Jar y reputación** | El Tip Jar es PROPUESTA sin firmar (ideas11oct §9), con pagos | **CONTRADICCIÓN_ABIERTA**: llevar al Tip Jar el mérito de la mala suerte convierte la suerte en prioridad de pago, y esa es la línea del casino. Además lo pisa tu decisión 5(a). Propongo que el mérito se vea, sea intransferible y no entre en el Tip Jar hasta que lo firmes | 0 | ☐ |
 | A5 | **Tabla R5/M18** | `valores.js` lleva la tabla PROPUESTA de R5 (meta: ≥60 % con 3-4 aristas) | Nada que construir: espera tu FIRMO con tus cifras. **Discrepancia a la vista:** tu sonar dice 5 % con más de 12 aristas, y la tabla de R5 midió 1,4-3,6 % de Leviatanes. Al fijarlo, la tabla cambia (y con ella el `packSha`) | 0 | ☐ |
+
+## Decisiones del Soberano · ronda del addendum (2026-10-11)
+1. **Ficha V3.0: firmada** con su frase; el check del juego quieto queda como está.
+2. **T: aplicado** con su FIRMO (`7cf707a`, fusión `99ac6d6`), n=2 en verde. `thegame.js` queda a 21 B del techo: **no
+   se toca sin una entrada en `EXCEPCIONES.md`.**
+3. **Ilustración:** en la web el huevo es su onda (cero ráster; la web no llama al rack). La ilustración del rack vive en la app.
+4. **Mérito del fallo → Tip Jar: NO.** La mala suerte nunca compra prioridad de pago. El mérito alimenta la garantía
+   visible y la reputación. Se mantiene 5(a).
+5. **R5:** gana la cifra medida, 1,4-3,6 % de Leviatanes, en la interfaz. El 5 % del sonar sería un reajuste de
+   `valores.aristas`, con su firma aparte.
+6. **Siguiente: G0**, con el bug del huevo dentro.
