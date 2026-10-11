@@ -1,10 +1,8 @@
 /* preceptoros.org · theGame · la capa del juego y su cargador.
 
-   EL JUEGO SOLO VIVE AQUI (Soberano, 2026-09-26): salio de la Torre y se
-   entra por la puerta theGame del cabezal, desde cualquier pagina. No hay
-   pagina nueva ni URL propia: una capa a pantalla completa sobre la pagina
-   donde estes, que se cierra con su boton o con Escape y devuelve el foco a la
-   puerta.
+   EL JUEGO SOLO VIVE AQUI (Soberano, 2026-09-26). En la portada ES la pagina
+   (`#juego-panel`); en cualquier otra, una capa a pantalla completa que se
+   cierra con su boton o con Escape.
 
    A DEMANDA. Lo inyecta `cabezal-rotulos.js` al pulsar la puerta; pide hojas y guiones en orden.
    El Army y la Arena se piden al abrir: su peso no va en la puerta (`gzip_juego_b`).
@@ -31,7 +29,7 @@
      invocadas luchando en live con los NPCs»): el mar, los lugares NPC, el combate en vivo y los duelos
      entre personas por paquetes firmados. Detras del Army, cuyas tropas y verificador usa. */
   var ARENA = [['/game/sobres.js'], ['/game/rating.js'], ['/game/arena.js'], ['/game/duelo.js'],
-    ['/game/fog_of_war.js'], ['/game/world_camera.js'], ['/game/mar.js'], ['/game/nodos-pesos.js'], ['/game/nodos-cedulas.js'], ['/game/nodos.js'], ['/game/cuenta.js'],
+    ['/game/fog_of_war.js'], ['/game/world_camera.js'], ['/game/mar.js'], ['/game/nodos-pesos.js'], ['/game/nodos.js'], ['/game/cuenta.js'],
     ['/game/ui-nodos.js'], ['/game/ui-rack.js'], ['/game/battle_choreography.js'], ['/game/battle_replay.js'], ['/game/ui-arena.js'], ['/game/ui-duelo.js']];
   /* LAS LENGUAS DEL JUEGO (2026-09-28, el Soberano: «hoy, solo inglés; un mismo enlace»). La
      UNICA lista de lenguas en las que el juego esta COMPLETO. Cualquier portada abre el juego en
@@ -86,7 +84,7 @@
     ['arena', '\u2694\uFE0E', ''],
     ['partida', '\u2139\uFE0E', '.atlas-guardado|.thegame-exporta|.thegame-opina|.atlas-hud-farmeo|#atlas-juego > .no-data|.atlas-pie']];
   /* LA CASA, a demanda y detras del Army (usa la gacha para tu emblema). */
-  var CASA = [['/game/canon.js'], ['/game/escena.js'], ['/game/wave_render.js'], ['/game/home_base_scene.js'], ['/game/home_buildings.js'], ['/game/summon_reveal.js']];
+  var CASA = [['/game/canon.js'], ['/game/wave_render.js'], ['/game/escena.js'], ['/game/gdpr-art25-ephemeral-crab.js'], ['/game/aiact-art50-crab-terminal.js'], ['/game/nodos-cedulas.js'], ['/game/gdpr-art7-entry-choice.js'], ['/game/aiact-art50-state-radio.js'], ['/game/home_base_scene.js'], ['/game/home_buildings.js'], ['/game/summon_reveal.js']];
   /* LO TECNICO, SIEMPRE PLEGADO (Soberano: «son textos que asustan a usuarios no tecnicos»): el
      JSON de la carta, las leyes medidas, la semilla que no es VRF, los valores provisionales y el
      pie. No se borran, porque son la prueba: se ven al abrir «Technical details». */
@@ -108,7 +106,15 @@
 
   /* Cambiar de pestana vuelve arriba; el foco solo se mueve con las flechas (con el dedo o el raton
      ya esta en el boton pulsado, y moverlo a mano pintaria el anillo del teclado). */
+  /* LA PAGINA SE REORDENA, NO CARGA (J10, plan de ronda firmado): cambiar de pestana va dentro de
+     document.startViewTransition, que fotografia el antes y el despues y los morfea. Donde no existe,
+     o con movimiento reducido, el cambio es el de siempre, inmediato. El DOM final es EL MISMO. */
   function muestra(id, foco) {
+    var d = document, rm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (id !== actual && d.startViewTransition && !rm && capa && capa.isConnected) { d.startViewTransition(function () { muestraYa(id, foco); }); }
+    else { muestraYa(id, foco); }
+  }
+  function muestraYa(id, foco) {
     if (id !== actual) { capa.scrollTop = 0; }
     actual = id;
     Object.keys(PANEL).forEach(function (k) {
@@ -120,6 +126,8 @@
     if (id === 'arena') { cargaArena(); }
     if (id === 'mapa') { cargaArena(); }
     if (id === 'casa') { cargaCasa(); }
+    /* J7: el terminal del cangrejo vive en Help; se monta al abrirla (una vez). */
+    if (id === 'partida' && window.AtlasTerminal) { window.AtlasTerminal.monta(PANEL.partida, function (k, r) { var t = T(k); return t === k ? r : t; }); }
   }
 
   function ordena() {
@@ -185,7 +193,13 @@
     if (casa) { return casa; }
     casa = cargaArmy().then(function () { return pide(CASA); }).then(function () {
       if (window.AtlasCasa) { return window.AtlasCasa.monta(PANEL.casa); }
-    }).then(function () { setTimeout(cargaArena, 0); }).catch(function (e) { casa = null; PANEL.casa.appendChild(el('p', 'no-data', 'NO_DATA · ' + (e && e.message))); });
+    }).then(function () {
+      /* J8: la entrada (zona o nodo, con sus reglas a la vista) va encima de la casa. */
+      if (window.AtlasEntrada) { window.AtlasEntrada.monta(PANEL.casa); }
+      /* J2+J9: la radio del estado, al pie de la casa (suena solo tras el gesto). */
+      if (window.AtlasRadio) { window.AtlasRadio.monta(PANEL.casa); }
+      setTimeout(cargaArena, 0);
+    }).catch(function (e) { casa = null; PANEL.casa.appendChild(el('p', 'no-data', 'NO_DATA · ' + (e && e.message))); });
     return casa;
   }
 
@@ -203,11 +217,11 @@
     return arena;
   }
 
-  /* UN <dialog> NATIVO con showModal(): la trampa de foco la pone el navegador (pagina inerte
-     debajo), la que respetan TalkBack y VoiceOver; un trap en JS no. ABOUT (C1, 2026-10-05): la web
-     es el juego; «About» cierra la capa y deja ver lo de antes, en `#about`, que no reabre. */
+  /* EN LA PORTADA (mudanza 2026-10-11) el juego ES la pagina: se monta en `#juego-panel`, sin X ni
+     About. FUERA de ella, un <dialog> con showModal(): la trampa de foco la pone el navegador. */
   function construye() {
-    capa = el('dialog', 'thegame-capa'); capa.id = 'thegame';
+    var P = document.getElementById('juego-panel');
+    capa = el(P ? 'section' : 'dialog', 'thegame-capa'); capa.id = 'thegame';
     /* La capa habla la lengua del juego, no la de la portada: sin esto, una pagina arabe
        voltearia un juego escrito en ingles. */
     capa.lang = lengua; capa.dir = RTL.indexOf(lengua) >= 0 ? 'rtl' : 'ltr';
@@ -218,12 +232,13 @@
     x.setAttribute('aria-label', 'theGame ×');
     x.addEventListener('click', cierra);
     var ab = el('a', 'thegame-about', 'About'); ab.href = '#about'; ab.addEventListener('click', cierra);
-    barra.appendChild(ab); barra.appendChild(x);
+    if (!P) { barra.appendChild(ab); barra.appendChild(x); }
     capa.appendChild(barra);
     var juego = el('div', 'thegame-juego'); juego.id = 'atlas-juego';
     capa.appendChild(juego);
     capa.addEventListener('cancel', cancela);
-    document.body.appendChild(capa);
+    if (P) { P.textContent = ''; }
+    (P || document.body).appendChild(capa);
   }
 
   /* Escape llega como `cancel` del <dialog>. Si hay un dialogo del juego
@@ -277,8 +292,7 @@
           if (pes && PANEL[pes]) { muestra(pes); }
         });
       } else if (pes && PANEL[pes]) { muestra(pes); }
-      if (!capa.open) { capa.showModal(); }
-      document.body.classList.add('en-thegame');
+      if (capa.showModal && !capa.open) { capa.showModal(); document.body.classList.add('en-thegame'); }
       window.AtlasJuego.sigue();
     }).catch(function (err) {
       /* Sin juego no hay capa a medias: se dice en la consola y la pagina

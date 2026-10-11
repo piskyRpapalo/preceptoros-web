@@ -151,7 +151,8 @@ class Piso(unittest.TestCase):
         # <dialog> nativo con showModal(): el navegador deja inerte la pagina de
         # debajo (trampa de foco real, la que respetan TalkBack y VoiceOver) y
         # Escape llega como `cancel`.
-        for pieza in ("el('dialog'", "showModal()", "'cancel'", "s.async = false",
+        # En la portada (mudanza b1, 2026-10-11) es una <section> dentro del panel; fuera, el <dialog>.
+        for pieza in ("P ? 'section' : 'dialog'", "showModal()", "'cancel'", "s.async = false",
                       "window.AtlasJuego.monta", "window.AtlasJuego.pausa", "origen.focus",
                       "cierre_aviso"):
             with self.subTest(pieza=pieza):
@@ -353,7 +354,8 @@ process.stdout.write(JSON.stringify({
             self.assertTrue(all(0 < n <= 16 * 1024 for n in partes), partes)
         capa = (ASSETS / "thegame.js").read_text(encoding="utf-8")
         self.assertNotIn("atlas-voz.js", capa, "la voz exacta pesa en la puerta del juego")
-        self.assertNotIn("atlas-voz", (PUBLICO / "sw-listas.js").read_text(encoding="utf-8"), "la voz entra en el precache")
+        # D7 (mudanza bloque 2, FIRMO 2026-10-11): el juego ENTRA en el precache: offline tras la primera visita.
+        self.assertIn("/assets/atlas-voz.js", (PUBLICO / "sw-listas.js").read_text(encoding="utf-8"), "la voz no esta en el precache")
         self.assertIn("s.src = '/assets/atlas-voz.js'", (PUBLICO / "game" / "ui.js").read_text(encoding="utf-8"))
 
     def test_el_juego_abre_sin_red_y_la_ley_sin_red_es_no_data(self):
@@ -432,7 +434,8 @@ process.stdout.write(JSON.stringify(ok));
         capa = (ASSETS / "thegame.js").read_text(encoding="utf-8")
         self.assertNotIn("['atlas-opina.js']", capa, "opinar pesa en la puerta del juego")
         self.assertIn("s.src = '/assets/atlas-opina.js'", capa)
-        self.assertNotIn("atlas-opina.js", sin_comentarios((PUBLICO / "sw-listas.js").read_text(encoding="utf-8")))
+        # D7 (mudanza bloque 2, FIRMO 2026-10-11): el juego ENTRA en el precache: offline tras la primera visita.
+        self.assertIn("/assets/atlas-opina.js", sin_comentarios((PUBLICO / "sw-listas.js").read_text(encoding="utf-8")))
         cod = sin_comentarios((ASSETS / "atlas-opina.js").read_text(encoding="utf-8"))
         self.assertEqual(re.findall(r"fetch\(([^)]*)\)", cod), ["'/atlas-opina-' + lang + '.json'"])
         for salida in ("http://", "https://", "XMLHttpRequest", "sendBeacon", "WebSocket", "localStorage",
@@ -634,10 +637,10 @@ process.stdout.write(JSON.stringify(ok));
 PUROS = ("canon.js", "sobres.js", "rating.js", "arena.js", "duelo.js", "mercado.js", "narragrafo.js", "cria.js", "genoma.js")
 # La Arena (2026-09-28, «el mapa multi-jugador en una pestana»): se carga al abrir su pestana, detras del Army.
 ARENA = ("sobres.js", "rating.js", "arena.js", "duelo.js", "fog_of_war.js", "world_camera.js", "mar.js", "nodos-pesos.js",
-         "nodos-cedulas.js", "nodos.js", "cuenta.js", "ui-nodos.js", "ui-rack.js",
+         "nodos.js", "cuenta.js", "ui-nodos.js", "ui-rack.js",
          "battle_choreography.js", "battle_replay.js", "ui-arena.js", "ui-duelo.js")
 # La CASA (2026-10-05): la primera pantalla, detras del Army. Lleva canon y escena, que la Arena reutiliza.
-CASA = ("canon.js", "escena.js", "wave_render.js", "home_base_scene.js", "home_buildings.js", "summon_reveal.js")
+CASA = ("canon.js", "escena.js", "wave_render.js", "gdpr-art25-ephemeral-crab.js", "aiact-art50-crab-terminal.js", "nodos-cedulas.js", "gdpr-art7-entry-choice.js", "aiact-art50-state-radio.js", "home_base_scene.js", "home_buildings.js", "summon_reveal.js")
 FUERA_DE_LA_PUERTA = tuple(sorted(set(PUROS + ARENA + CASA)))
 
 
@@ -722,11 +725,11 @@ class TheGameV15(unittest.TestCase):
             with self.subTest(salida=salida):
                 self.assertNotIn(salida, ui)
         capa = (PUBLICO / "assets" / "thegame.js").read_text(encoding="utf-8")
-        listas = (PUBLICO / "sw.js").read_text(encoding="utf-8")
+        listas = (PUBLICO / "sw-listas.js").read_text(encoding="utf-8")   # D7 (mudanza bloque 2, FIRMO 2026-10-11): el juego ENTRA en el precache: offline tras la primera visita.
         for m in self.MODULOS:
             with self.subTest(modulo=m):
                 self.assertIn(f"['/game/{m}']", capa, f"la puerta no carga {m}")
-                self.assertNotIn(f"game/{m}", listas, f"{m} entra en el precache")
+                self.assertIn(f"/game/{m}", listas, f"{m} no esta en el precache")
                 for h in PUBLICO.rglob("*.html"):
                     self.assertNotIn(f"game/{m}", h.read_text(encoding="utf-8"))
 
@@ -1101,7 +1104,8 @@ class Pestanas(unittest.TestCase):
             with self.subTest(prohibido=prohibido):
                 self.assertNotIn(prohibido, vivo)
         listas = (PUBLICO / "sw.js").read_text(encoding="utf-8") + (PUBLICO / "sw-listas.js").read_text(encoding="utf-8")
-        self.assertNotIn("thegame.css", listas, "la hoja de la capa entra en el precache")
+        # D7 (mudanza bloque 2, FIRMO 2026-10-11): el juego ENTRA en el precache: offline tras la primera visita.
+        self.assertIn("/assets/thegame.css", listas, "la hoja de la capa no esta en el precache")
         for h in PUBLICO.rglob("*.html"):
             self.assertNotIn("thegame.css", h.read_text(encoding="utf-8"))
 
@@ -1221,7 +1225,10 @@ class Multijugador(unittest.TestCase):
             with self.subTest(modulo=m):
                 self.assertLess(f.stat().st_size, TOPE_FICHERO, f"{m} pasa del bloque")
                 self.assertNotIn(m, puerta, f"{m} entra en la puerta del juego")
-                self.assertNotIn("/game/" + m, listas, f"{m} entra en el precache")
+                if m in ARENA + CASA:   # D7: lo que la puerta carga entra en el precache
+                    self.assertIn("/game/" + m, listas, f"{m} no esta en el precache")
+                else:                   # los puros que nadie pide, tampoco al precache
+                    self.assertNotIn("/game/" + m, listas, f"{m} entra en el precache sin que nadie lo pida")
                 self.assertNotIn("../game/" + m, mundo.PIEZAS)
                 for h in PUBLICO.rglob("*.html"):
                     self.assertNotIn("game/" + m, h.read_text(encoding="utf-8"))
@@ -1385,6 +1392,135 @@ class Arena(unittest.TestCase):
         self.assertIn("window.AtlasArmy.verificaWeb", self._js("ui-duelo.js"))
 
 
+class PrecacheDelJuego(unittest.TestCase):
+    """D7 (mudanza bloque 2, FIRMO 2026-10-11): el juego entra en el precache y se juega SIN RED tras la
+    primera visita. El oraculo: la lista JUEGO de sw-listas.js contiene TODO lo que thegame.js carga (sus
+    listas y lo que pide a demanda), y todo existe. Lo que es MEDIDA (atlas-mundo, atlas-record) sigue
+    fuera: sin red se dice NO_DATA, no una cifra vieja con cara de fresca."""
+
+    def test_juego_contiene_todo_lo_que_la_puerta_carga(self):
+        tg = (PUBLICO / "assets" / "thegame.js").read_text(encoding="utf-8")
+        pide = set()
+        for m in re.finditer(r"\['([^']+\.js)'(?:,\s*'[^']*')?\]", tg):
+            r = m.group(1); pide.add(r if r.startswith("/") else "/assets/" + r)
+        for c in re.findall(r"'([\w.-]+\.css)'", tg):
+            pide.add("/assets/" + c)
+        pide |= {"/assets/atlas-hud.js", "/assets/atlas-opina.js", "/assets/atlas-voz.js", "/game/home.css"}
+        listas = (PUBLICO / "sw-listas.js").read_text(encoding="utf-8")
+        juego = set(re.findall(r"'(/(?:game|assets)/[\w.-]+)'", listas[listas.index("const JUEGO"):listas.index("];", listas.index("const JUEGO"))]))
+        self.assertEqual(sorted(pide - juego), [], "lo que la puerta carga y el precache no guarda")
+        for r in juego:
+            with self.subTest(ruta=r):
+                self.assertTrue((PUBLICO / r.lstrip("/")).is_file(), f"{r} no existe")
+
+    def test_lo_que_es_medida_sigue_fuera(self):
+        listas = (PUBLICO / "sw-listas.js").read_text(encoding="utf-8")
+        for medida in ("/atlas-mundo.json", "/atlas-record.json"):
+            with self.subTest(medida=medida):
+                self.assertNotIn(medida, listas[listas.index("const JUEGO"):])
+
+
+class TerminalCangrejo(unittest.TestCase):
+    """J7 (plan de ronda 2026-10-11): el cangrejo toca SOLO las acciones del enum y el MOTOR decide.
+    Una sola puerta (AtlasJuego.aplica); ni una regla de juego en el terminal; nada sale de la pestana."""
+
+    def _js(self):
+        return sin_comentarios((PUBLICO / "game" / "aiact-art50-crab-terminal.js").read_text(encoding="utf-8"))
+
+    def test_una_sola_puerta_y_ninguna_regla(self):
+        t = self._js()
+        self.assertIn("J.aplica(a)", t)
+        for malo in ("AtlasMotor", "M.reparar", "M.recoger", "M.ciclo", ".cobre -", "fetch", "localStorage", "indexedDB",
+                     "Math.random", "Date", "sendBeacon", "XMLHttpRequest", "innerHTML"):
+            with self.subTest(malo=malo):
+                self.assertNotIn(malo, t)
+
+    def test_el_enum_es_el_del_piloto(self):
+        tp = (PUBLICO / "assets" / "atlas-piloto.js").read_text(encoding="utf-8")
+        enum = re.search(r"var ACCIONES = (\[[^\]]*\])", tp).group(1)
+        self.assertIn("var ACCIONES = " + enum + ";", self._js(), "el terminal y el piloto no comparten el enum")
+
+    def test_la_linea_dice_lo_que_respondio_el_motor(self):
+        js = ("const T=require('./public/game/aiact-art50-crab-terminal.js');"
+              "const a=T.accion('reparar');const b=T.accion('bajar_a','ruinas');"
+              "process.stdout.write(JSON.stringify({f:T.linea(a,{resultado:'fallo',tipo:'reparar',mision:'grieta-120',profundidad:'50-150'}),"
+              "n:T.linea(a,null),b:b,v:T.variables(null)}))")
+        r = subprocess.run(["node", "-e", js], capture_output=True, text=True, timeout=60, cwd=RAIZ.parent)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        d = json.loads(r.stdout)
+        self.assertIn('"resultado":"fallo"', d["f"]); self.assertIn("NO_DATA", d["n"]); self.assertIn("NO_DATA", d["v"])
+        self.assertEqual(d["b"], {"esquema": "atlas.accion/1", "accion": "bajar_a", "origen": "humano", "banda": "ruinas"})
+
+
+class EntradaCangrejo(unittest.TestCase):
+    """J8 (joya firmada 2026-10-11): al entrar se elige mar abierto o un nodo y se VEN sus reglas, que
+    salen de las cedulas (lo medido), no de un texto a mano. Sin ventaja: ni motor ni combate."""
+
+    def _js(self):
+        return sin_comentarios((PUBLICO / "game" / "gdpr-art7-entry-choice.js").read_text(encoding="utf-8"))
+
+    def test_sin_ventaja_y_sin_salida(self):
+        t = self._js()
+        for malo in ("AtlasArena", "combate", "AtlasMotor", "aplica", "fetch", "localStorage", "indexedDB", "Math.random", "Date", "innerHTML"):
+            with self.subTest(malo=malo):
+                self.assertNotIn(malo, t)
+        self.assertIn("Y.cajaWeb('atlas-entrada'", t, "la eleccion se guarda por db.js, la unica puerta")
+
+    def test_las_reglas_salen_de_las_cedulas(self):
+        js = ("const C=require('./public/game/nodos-cedulas.js');const E=require('./public/game/gdpr-art7-entry-choice.js');"
+              "const ced=C.CEDULAS||C;process.stdout.write(JSON.stringify({t:E.territorios(ced),h:E.reglas('nodo.0.hexelion',ced),"
+              "m:E.reglas(E.MAR,ced),x:E.reglas('nodo.9.nadie',ced)}))")
+        r = subprocess.run(["node", "-e", js], capture_output=True, text=True, timeout=60, cwd=RAIZ.parent)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        d = json.loads(r.stdout)
+        self.assertEqual(d["t"][0], "mar-abierto")
+        self.assertIn("nodo.0.hexelion", d["t"])
+        self.assertIn("no admin", d["h"]["no_puedes"][0], "sin admin nadie acepta: se dice")
+        self.assertTrue(any(m.startswith("ram_mib: 58980") for m in d["h"]["medidas"]))
+        self.assertIsNone(d["x"], "un nodo que no esta en las cedulas no se inventa")
+
+
+class RadioDelEstado(unittest.TestCase):
+    """J2+J9 (plan de ronda 2026-10-11): la melodia ES el estado (pentatonica, determinista, con huella);
+    el boletin sale SOLO de la instantanea; suena por la sintesis de core.js; voces solo locales."""
+
+    def _js(self):
+        return sin_comentarios((PUBLICO / "game" / "aiact-art50-state-radio.js").read_text(encoding="utf-8"))
+
+    def test_pureza_y_una_sola_sintesis(self):
+        t = self._js()
+        for malo in ("fetch", "localStorage", "indexedDB", "Math.random", "Date", "new AudioContext", "createOscillator", "innerHTML", "AtlasMotor", "aplica"):
+            with self.subTest(malo=malo):
+                self.assertNotIn(malo, t)
+        self.assertIn("S.suena({", t)
+        self.assertIn("v.localService", t, "el locutor solo con voces locales")
+
+    def test_ni_un_fichero_de_audio_en_public(self):
+        """Cero assets binarios de sonido: todo es sintesis (sabotaje: un .mp3 aqui da rojo)."""
+        malos = [str(p.relative_to(PUBLICO)) for p in PUBLICO.rglob("*") if p.suffix.lower() in (".mp3", ".wav", ".ogg", ".m4a", ".flac", ".aac", ".opus")]
+        self.assertEqual(malos, [])
+
+    def test_misma_instantanea_misma_melodia_y_mismo_boletin(self):
+        js = ("const R=require('./public/game/aiact-art50-state-radio.js');"
+              "const i={esquema:'atlas.instantanea/1',ciclo:12,fase:1,nivel_nucleo:3,profundidad:'50-150',"
+              "recursos:{luz:4,biomasa:3,cobre:2,flujo:0,oxigeno:290},integridad:110,integridad_max:117,grieta:{abierta:true,cierre:0}};"
+              "const sin={esquema:'atlas.instantanea/1',recursos:{cobre:1}};"
+              "process.stdout.write(JSON.stringify({g:R.guion(i),g2:R.guion(JSON.parse(JSON.stringify(i))),b:R.boletin(i),h:R.huella(i),"
+              "nada:R.boletin(null),falta:R.boletin(sin),penta:R.PENTA,base:R.BASE_HZ}))")
+        r = subprocess.run(["node", "-e", js], capture_output=True, text=True, timeout=60, cwd=RAIZ.parent)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        d = json.loads(r.stdout)
+        self.assertEqual(d["g"], d["g2"])
+        self.assertEqual(len(d["g"]), 8)
+        import math
+        for f in d["g"]:
+            semis = round(12 * math.log2(f / d["base"])) % 12
+            self.assertIn(semis, d["penta"], f"{f} Hz no es de la pentatonica")
+        self.assertIn("Copper 2", d["b"]); self.assertIn("The rift is open.", d["b"])
+        self.assertIn("NO_DATA", d["nada"]); self.assertIn("NO_DATA", d["falta"], "lo que falta no se inventa")
+        self.assertEqual(d["h"], "76981b830a406795853ff727256f2fe0be0c89624292e0233caa3eb2dccb6444", "la huella de la melodia y el boletin cambio: el estado suena distinto")
+
+
 class Conquista(unittest.TestCase):
     """Conquista (FIRMO del Soberano, 2026-10-10): ganar a un lugar NPC lo deja CONQUISTADO en este aparato.
     Se guarda por db.js (la unica puerta de almacenamiento), se ve en la lista y en el mapa con su sello
@@ -1465,6 +1601,15 @@ class CasaGranja(unittest.TestCase):
 
     def _js(self, n):
         return sin_comentarios((PUBLICO / "game" / n).read_text(encoding="utf-8"))
+
+    def test_casos_del_cangrejo(self):
+        """J1 (plan de ronda 2026-10-11): misma semilla, mismo paseo (huella fijada); tamano y clase son dato."""
+        r = subprocess.run(["node", str(RAIZ / "gdpr-art25-ephemeral-crab_casos.mjs")], capture_output=True, text=True, timeout=120)
+        casos = json.loads(r.stdout)
+        self.assertGreaterEqual(len(casos), 10, r.stderr)
+        for c in casos:
+            with self.subTest(caso=c["caso"]):
+                self.assertTrue(c["ok"], c["detalle"])
 
     def test_casos_de_la_casa(self):
         r = subprocess.run(["node", str(RAIZ / "casa_casos.mjs")], capture_output=True, text=True, timeout=120)
@@ -1602,23 +1747,6 @@ class Persistencia(unittest.TestCase):
         db = sin_comentarios((PUBLICO / "game" / "db.js").read_text(encoding="utf-8"))
         self.assertIn("return yo.adopta(u && u.adopcion, u && u.firma)", db, "lo guardado entra sin pasar por adopta")
         self.assertIn("army.restaura()", sin_comentarios((PUBLICO / "game" / "ui.js").read_text(encoding="utf-8")))
-
-
-class CabezalCajas(unittest.TestCase):
-    """El cabezal medido en un navegador de verdad (Soberano, 2026-10-05: «thegame es solo 1 boton»; el
-    busto se montaba encima de los botones y del panel; la fila se cortaba). `cabezal_cajas.mjs` mide
-    las cajas por CDP con y sin sesion de tester, a 412, 1024 y 1280 px. Sin Chrome: NO_DATA, que se
-    dice como salto y no como verde."""
-
-    def test_el_busto_no_pisa_nada_y_hay_una_sola_puerta_de_juego(self):
-        r = subprocess.run(["node", str(RAIZ / "cabezal_cajas.mjs")], capture_output=True, text=True, timeout=240)
-        if r.returncode == 3:
-            self.skipTest("NO_DATA · sin Chrome para medir las cajas del cabezal")
-        casos = json.loads(r.stdout)
-        self.assertGreaterEqual(len(casos), 12, r.stderr)
-        for c in casos:
-            with self.subTest(caso=c["caso"]):
-                self.assertTrue(c["ok"], c["detalle"])
 
 
 class EsteticaMedida(unittest.TestCase):

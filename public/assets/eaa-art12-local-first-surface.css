@@ -1,0 +1,28 @@
+/* preceptoros.org · LA PORTADA ES EL JUEGO: cabezal + UN panel a la maxima anchura util (canon de UI,
+   ideas6oct:1711: los edificios son zonas de esta pantalla, no paginas). Las variables vienen de
+   soberano.css; aqui solo el marco. */
+html,body{margin:0;min-height:100%;background:var(--bg-primary);color:var(--text-main)}
+.cab-juego{position:sticky;top:0;z-index:5;display:flex;flex-wrap:wrap;align-items:center;gap:.35rem 1rem;
+  padding:.5rem clamp(.75rem,2vw,1.5rem);background:var(--bg-primary);border-bottom:1px solid var(--edge-sov)}
+.cab-marca{margin-inline-end:auto;font:700 1rem/1 var(--mono);letter-spacing:.08em;color:var(--accent-copper-claro);text-decoration:none}
+.cab-marca b{color:var(--text-main);font-weight:700}
+.cab-lenguas{display:flex;flex-wrap:wrap;gap:.1rem}
+.cab-lenguas a{padding:.4rem .45rem;font:.72rem/1 var(--mono);color:var(--text-muted);text-decoration:none;border-radius:var(--radius)}
+.cab-lenguas a[aria-current]{color:var(--text-main);background:var(--bg-secondary)}
+/* base.css pone main{max-width:46rem} para las paginas de lectura; el juego quiere todo el ancho. */
+main.juego-panel{max-width:none;width:auto;margin:0;padding:0;background:none;border:0;box-shadow:none;border-radius:0;min-height:calc(100dvh - 3.2rem)}
+.juego-carga{margin:0;padding:2rem clamp(.75rem,2vw,1.5rem);font:.9rem/1.5 var(--mono);color:var(--text-muted)}
+.juego-panel .thegame-capa{position:relative;inset:auto;z-index:auto;width:auto;height:auto;min-height:inherit;
+  overflow:visible;padding:0 clamp(.5rem,2vw,1.5rem) calc(4.5rem + env(safe-area-inset-bottom))}
+.juego-panel .thegame-juego{max-width:none}
+.juego-panel .thegame-barra{top:3.2rem;margin-inline:calc(-1 * clamp(.5rem,2vw,1.5rem))}
+.juego-panel .thegame-t{display:none}
+/* J10 · la pagina se reordena: el cabezal y las pestanas no se mueven (nombre propio); el panel se
+   desliza con el resorte del canon. Movimiento reducido: ni se pide la transicion (thegame.js). */
+.cab-juego{view-transition-name:cabezal-juego}
+.juego-panel .thegame-pestanas{view-transition-name:pestanas-juego}
+::view-transition-old(root){animation:.22s ease-in both salida-zona}
+::view-transition-new(root){animation:.42s cubic-bezier(.34,1.56,.64,1) both entrada-zona}
+@keyframes salida-zona{to{opacity:0;transform:translateX(-6%) scale(.98)}}
+@keyframes entrada-zona{from{opacity:0;transform:translateX(8%) scale(.98)}}
+@media (prefers-reduced-motion:reduce){::view-transition-old(root),::view-transition-new(root){animation:none}}

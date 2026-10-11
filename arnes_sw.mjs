@@ -160,7 +160,15 @@ const rutas = await shell.keys();
 // 145 desde el 2026-09-23: entra el arabe, la novena lengua. Seis paginas
 // suyas en el shell y sus cuatro familias precacheadas (agentes, duelos,
 // herramientas, caminos): seis y cuatro, diez.
-ok('precachea paginas y piezas del Hub', rutas.length === 146, rutas.length+' rutas');
+// 200 desde el 2026-10-11 (mudanza bloque 2, firma D7): entra EL JUEGO, 54 rutas (`JUEGO` en
+// sw-listas.js: la puerta, los modulos de game/ y lo que se pide a demanda). La portada ya es el juego
+// y sin el en el shell no se jugaba sin red. Bajara cuando el bloque 3 retire las piezas del Hub.
+// 201 el mismo dia: entra el TERMINAL DEL CANGREJO (J7, game/aiact-art50-crab-terminal.js).
+// 202: entra LA ENTRADA (J8, game/gdpr-art7-entry-choice.js).
+// 203: entra LA RADIO DEL ESTADO (J2+J9, game/aiact-art50-state-radio.js).
+ok('precachea paginas, piezas del Hub y el juego', rutas.length === 203, rutas.length+' rutas');
+ok('el shell trae el juego (D7): la puerta, el cangrejo y la arena',
+   ['/assets/thegame.js', '/game/gdpr-art25-ephemeral-crab.js', '/game/ui-arena.js', '/assets/atlas-motor.js'].every(r => rutas.includes(r)));
 ok('el shell trae las tres tiras de la cara',
    ['apertura', 'reposo', 'habla']
      .every(s => rutas.includes('/assets/caras/secuencia-' + s + '-256.webp')));

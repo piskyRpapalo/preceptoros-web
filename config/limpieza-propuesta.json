@@ -19,7 +19,9 @@
   "assets/torre/piso-8.webp": "falso huérfano: piso-chat.js y torre-visuales.js la piden por plantilla (piso-<n>)",
   "downloads/entorno-estudio-v1.tar.gz.sha256": "huella de un paquete que sí se sirve; se queda junto a él",
   "lore/coder-adapter.json": "LORE: no se borra sin firma; ningún fichero lo pide por su nombre",
-  "lore/killswitch-apocalypse.json": "LORE: no se borra sin firma; ningún fichero lo pide por su nombre"
+  "lore/killswitch-apocalypse.json": "LORE: no se borra sin firma; ningún fichero lo pide por su nombre",
+  "assets/acceso.js": "solo lo cargaba la portada del hub; cae en el bloque 3 de la mudanza (LISTA_CAE)",
+  "assets/showman.js": "solo lo cargaba la portada del hub; cae en el bloque 3 de la mudanza (LISTA_CAE)"
  },
  "duplicados": [
   [

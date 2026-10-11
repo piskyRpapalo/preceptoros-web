@@ -1,252 +1,53 @@
 <!doctype html>
-<html lang="en" data-tema="oscuro">
+<html lang="en" dir="ltr" data-tema="oscuro">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>PreceptorOS · Choose your local AI</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PreceptorOS · theGame</title>
+<meta name="description" content="theGame: a game of waves that runs on your own device. No account, no cloud, no tracking. Build your undersea city, summon wave troops, conquer the reef.">
 <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
-<meta property="og:title" content="PreceptorOS">
-<meta property="og:description" content="Your AI, your memory, your machine. A guide that installs and then stays with you. Persistent memory on your own disk. No accounts, no telemetry, no cloud required.">
-<meta property="og:image" content="https://preceptoros.org/assets/preceptor-og.png">
+<link rel="canonical" href="https://preceptoros.org/">
+<meta property="og:title" content="PreceptorOS · theGame">
+<meta property="og:description" content="theGame: a game of waves that runs on your own device. No account, no cloud, no tracking. Build your undersea city, summon wave troops, conquer the reef.">
 <meta property="og:url" content="https://preceptoros.org/">
 <meta property="og:type" content="website">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="description" content="Choose your local AI and become sovereign. Your AI on your machine, no cloud.">
-<style>
-  /* LA PUERTA ES EL DESPERTAR (2026-09-05). Habia dos pantallas antes de la
-     primera frase: esta, con un selector de idiomas sobre marmol claro, y
-     despues el telon de la lengua elegida, con el busto abriendose. Dos
-     pantallas para lo mismo -- decidir en que idioma se entra -- y la bonita
-     era la segunda.
-
-     Se fusionan: el despertar ocurre AQUI, y cuando termina no cae ninguna
-     cortina. La pantalla se queda quieta y espera. Las ocho lenguas son lo
-     unico que se mueve, para que sea evidente que la decision es lo unico que
-     falta.
-
-     RUTEO PURO, sin `base.css` ni `tema.css`: la puerta tiene que cargar sola,
-     antes que nada, y por eso repite aqui los pocos tokens que usa. Son los
-     valores OSCUROS del canon, escritos en crudo, porque esta pagina no carga
-     el fichero que los gira y una variable que no existe se lleva por delante
-     la declaracion entera donde aparece.
-
-     LOS OCHO OJOS SE FUERON CON LA PANTALLA VIEJA. Los pintaba solo esto; hoy
-     no los pinta nadie, asi que salen tambien del precacheo del worker -- eran
-     48.410 B que se descargaban en cada instalacion sin que los viera nunca
-     nadie, que es exactamente el motivo por el que se trajeron aqui en su dia.
-     Los ficheros siguen en `assets/`: dejan de viajar, no se borran. */
-  :root { --fondo:#1e1929; --tinta:#ece9f5; --tenue:#a79fbe;
-          --violeta:#6D5AE0; --violeta-texto:#b3a4ff;
-          --bronce:#c9a227; --indigo:#a9a0f0; --jardin:#6fd39b;
-          --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"DejaVu Sans Mono",monospace;
-          --spring:cubic-bezier(.34,1.56,.64,1); }
-  /* Morfosis entre documentos: la puerta no se corta, se transforma en el chat. */
-  @view-transition { navigation: auto; }
-  * { box-sizing:border-box; margin:0; padding:0 }
-  /* EL MARMOL, QUE ESTA PUERTA PERDIO AL REESCRIBIRSE. La portada vieja lo
-     traia y la nueva salio con un color plano: era la unica pagina del sitio
-     sin las vetas, y es justo la primera que se ve. Aqui va cosido a mano
-     --esta pagina no carga `tema.css`, que es lo que gira el token-- y va la
-     lamina OSCURA porque esta puerta es oscura siempre. */
-  body { font:400 15px/1.6 var(--mono); color:var(--tinta);
-    background:var(--fondo) url(/assets/marble-violet-oscuro.webp) repeat;
-    background-size:340px;
-    min-height:100dvh; display:flex; align-items:center; justify-content:center;
-    padding:1.5rem }
-  .gate { text-align:center; max-width:32rem;
-    display:flex; flex-direction:column; align-items:center; gap:1.3rem }
-
-  /* LAS MISMAS CIFRAS QUE EL TELON DE LA APP, que es donde se firmaron: la
-     tira recorrida en 1,2 s con `steps(7, jump-none)` --siete fotogramas, no
-     ocho-- y el encuadre en `0.746% 50% / 770%`. La ventana va en c = 0,536
-     porque el criterio no es el ojo sino la boca en el centro del circulo.
-
-     Lo que NO se copia es la cortina cayendo a los 1,8 s: aqui no hay nada
-     detras que descubrir. Termina de despertar y se queda. */
-  .busto { width:min(58vw,300px); aspect-ratio:1; border-radius:50%;
-    background:#2a2140 url("/assets/caras/cara-secuencia-apertura-256-telon.webp")
-               0.746% 50%/770% auto no-repeat;
-    border:3px solid var(--violeta);
-    box-shadow:0 10px 34px rgba(109,90,224,.4);
-    animation:despertar 1.2s steps(7,jump-none) 1 both }
-  @keyframes despertar {
-    from { background-position:0.746% 50% }
-    to   { background-position:99.254% 50% } }
-  h1 { font-size:clamp(1.4rem,7vw,2.4rem); font-weight:800; letter-spacing:.02em;
-       color:var(--tinta); line-height:1.1 }
-  h1 b { color:var(--violeta-texto); font-size:1.28em }
-
-  /* LAS LENGUAS ENTRAN CUANDO EL BUSTO TERMINA, no antes: ofrecer la decision
-     mientras algo se sigue moviendo es pedir dos cosas a la vez. 1,2 s de
-     espera --lo que dura el despertar-- y despues se quedan flotando, que es
-     lo unico que se mueve en esta pantalla. */
-  .bubbles { display:flex; gap:.7rem; justify-content:center; flex-wrap:wrap;
-    animation:asoman .5s ease-out 1.2s both }
-  @keyframes asoman { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:none} }
-  /* OCHO NUBES VIOLETA, TODAS IGUALES (2026-09-05). Cada lengua llevaba un
-     color distinto --bronce, violeta, indigo, verde, repartidos por posicion--
-     y la puerta parecia un semaforo: cuatro familias de boton para ocho cosas
-     que hacen exactamente lo mismo. Un color distinto promete una diferencia
-     que no existe; quien mira busca que significa el verde y no significa
-     nada.
-
-     Violeta con canto dorado, que es la figura que TODO lo pulsable lleva ya
-     en esta casa: las cuatro puertas del cabezal, los dos mandos, los atajos y
-     las nubes de companeros. La puerta deja de tener su propio dialecto.
-
-     LO QUE SE QUEDA es el compas repartido por `nth-child`: las ocho flotan
-     desfasadas, y si flotaran a la vez se leerian como un bloque que respira
-     en vez de como ocho pastillas sueltas. El comentario viejo tenia razon en
-     lo suyo -- se reparte por POSICION y no por lengua, asi que la novena ya
-     trae su retardo el dia que se escriba. */
-  .bubble { position:relative; text-decoration:none; font-weight:700;
-    padding:.6rem 1rem; color:#fff; background:var(--violeta);
-    border:1px solid var(--oro); border-radius:999px;
-    box-shadow:0 2px 12px rgba(36,26,53,.34);
-    animation:float 4.2s ease-in-out infinite;
-    transition:transform .2s var(--spring) }
-  /* El bocadillo pierde su pico. Apuntaba hacia arriba, a nada -- venia de
-     cuando la burbuja era una nube de comic-- y con la pastilla redonda se
-     leia como un defecto de dibujo. */
-  .bubble:hover, .bubble:focus { transform:translateY(-3px) scale(1.03); outline:0;
-    background:var(--violeta-texto) }
-  .bubble:focus-visible { outline:2px solid var(--oro); outline-offset:2px }
-  /* LA TUYA SE MARCA, no se elige por ti. Es lo que queda del atajo que hasta
-     hoy saltaba esta pantalla: volver a la lengua de siempre es un toque, y
-     aun asi la puerta se ve. Se dice con ORO y con anillo, no solo con color:
-     quien no distingue el dorado se queda sin saber cual era la suya. */
-  .bubble.tuya { box-shadow:0 0 0 2px var(--oro), 0 10px 26px rgba(36,26,53,.35) }
-  .bubble.tuya::after { content:'\2022'; position:absolute; top:.25rem; right:.5rem;
-    color:var(--oro); font-size:1.1rem; line-height:1 }
-  .bubble:nth-child(4n+1){animation-delay:0s}
-  .bubble:nth-child(4n+2){animation-delay:-1.4s}
-  .bubble:nth-child(4n+3){animation-delay:-2.8s}
-  .bubble:nth-child(4n+4){animation-delay:-4.2s}
-  @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
-  /* LA FORMULA DE LA CASA, EN VERDE Y EN UNA SOLA LENGUA (2026-09-05).
-     Iba en tres --castellano, ingles, frances-- con las dos primeras palabras
-     en gris y la tercera en bronce. Tres motivos para deshacerlo:
-
-     · Tres lenguas de ocho no es multilingue, es arbitrario. Cuando la puerta
-       tenia tres, la frase repetida ERA el mensaje: «esta pagina habla lo
-       tuyo». Con ocho nubes debajo, eso ya lo dicen las nubes -- y las nubes lo
-       dicen mejor, porque ademas se pulsan. La frase repetida pasa a ser
-       ruido, y encima incompleto: quien lee ruso o griego ve tres lenguas que
-       no son la suya.
-     · El gris era `--tenue` sobre marmol violeta: la parte que sostiene la
-       frase se leia peor que la palabra destacada.
-     · Y en ingles porque es la lengua franca de quien llega sin saber que hay
-       detras. La suya esta a un toque, justo encima.
-
-     Verde entero, sin palabra destacada: si las tres pesan lo mismo, la frase
-     se lee como una formula y no como una con dos acompanantes. `--jardin` es
-     el verde medido de la casa (4,66:1 sobre marmol claro). */
-  .claim { font-size:.82rem; color:var(--jardin); font-weight:700;
-           letter-spacing:.02em }
-  /* QUIEN PIDIO QUIETUD NO ESPERA UN SEGUNDO Y MEDIO A UNA DECISION. No se le
-     deja la pantalla quieta a medio despertar: se le da entera y de golpe. */
-  @media (prefers-reduced-motion:reduce) {
-    .busto { animation:none; background-position:99.254% 50% }
-    .bubbles { animation:none }
-    .bubble { animation:none; transition:none } .bubble:hover { transform:none }
-  }
-</style>
+<meta property="og:image" content="https://preceptoros.org/assets/preceptor-og.png">
+<!-- hreflang -->
+<link rel="alternate" hreflang="ar" href="https://preceptoros.org/ar/">
+<link rel="alternate" hreflang="de" href="https://preceptoros.org/de/">
+<link rel="alternate" hreflang="el" href="https://preceptoros.org/el/">
+<link rel="alternate" hreflang="en" href="https://preceptoros.org/en/">
+<link rel="alternate" hreflang="es" href="https://preceptoros.org/es/">
+<link rel="alternate" hreflang="fr" href="https://preceptoros.org/fr/">
+<link rel="alternate" hreflang="it" href="https://preceptoros.org/it/">
+<link rel="alternate" hreflang="pt" href="https://preceptoros.org/pt/">
+<link rel="alternate" hreflang="ru" href="https://preceptoros.org/ru/">
+<link rel="alternate" hreflang="x-default" href="https://preceptoros.org/">
+<!-- hreflang -->
 <link rel="manifest" href="/manifest.webmanifest">
-<link rel="apple-touch-icon" href="/assets/icon-pwa-192.png">
 <meta name="theme-color" content="#17131F">
-<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="stylesheet" href="/assets/base.css">
+<link rel="stylesheet" href="/assets/canon.css">
+<link rel="stylesheet" href="/assets/soberano.css">
+<link rel="stylesheet" href="/assets/consiento.css">
+<link rel="stylesheet" href="/assets/eaa-art12-local-first-surface.css">
 </head>
-<body>
-  <div class="gate">
-    <div class="busto" role="img" aria-label="Preceptor waking up"></div>
-    <h1>Preceptor<b>OS</b></h1>
-    <nav class="bubbles" aria-label="Language">
-      <a class="bubble" href="/en/" hreflang="en">English</a>
-      <a class="bubble" href="/es/" hreflang="es">Español</a>
-      <a class="bubble" href="/fr/" hreflang="fr">Français</a>
-      <a class="bubble" href="/pt/" hreflang="pt">Português</a>
-      <a class="bubble" href="/it/" hreflang="it">Italiano</a>
-      <a class="bubble" href="/de/" hreflang="de">Deutsch</a>
-      <a class="bubble" href="/ru/" hreflang="ru">Русский</a>
-      <a class="bubble" href="/el/" hreflang="el">Ελληνικά</a>
-      <a class="bubble" href="/ar/" hreflang="ar" lang="ar" dir="rtl">العربية</a>
-    </nav>
-    <p class="claim">Knowledge + Tools + Sovereignty</p>
-  </div>
-<script>
-/* --- UN SOLO DESPERTAR, Y UNA SOLA PREGUNTA (2026-09-05) -------------------
-   Quejа del Soberano abriendo la app instalada en el Doogee: «hace la intro
-   dos veces, una para el idioma y otra normal». Tres cosas se veian seguidas
-   al arrancar, y solo dos son nuestras -- la primera es el chapoteo que
-   Android dibuja solo con el icono del manifiesto mientras carga la pagina, y
-   no se puede quitar desde aqui.
-
-   De las dos nuestras sobraba una, pero el defecto de fondo era otro: la app
-   instalada arranca en `/`, asi que preguntaba el idioma CADA VEZ que se
-   abria. Una puerta se cruza una vez; preguntar de nuevo lo que ya
-   contestaste no es una bienvenida, es un peaje.
-
-   Asi que dos cosas, y la segunda solo existe por la primera:
-
-   1 · LA ELECCION SE RECUERDA. Al pulsar una lengua se guarda. En la app
-       instalada --y SOLO alli-- la siguiente apertura salta derecha a esa
-       lengua. En el navegador no se redirige nunca: quien escribe la
-       direccion de la raiz quiere la raiz, y ademas es como se cambia de
-       idioma.
-
-   2 · SE DESPIERTA UNA VEZ POR SESION. El busto de aqui y el telon de la
-       portada son el mismo gesto contado dos veces cuando se cruzan seguidos.
-       Con una marca de sesion, el primero que llega la pone y el segundo se
-       la encuentra puesta y se retira. Da igual por donde entres -- raiz o
-       portada directa--: ves exactamente un despertar. Y de paso deja de
-       repetirse al volver a Inicio desde una pagina interior, que era la
-       misma molestia sin que nadie la hubiera nombrado.
-
-   `try/catch` en los dos almacenes: en una ventana privada lanzan, y una
-   puerta que revienta por no poder recordar un idioma es peor que una que no
-   recuerda. */
-(function () {
-  var LENGUA = 'preceptoros-lengua', DESPIERTO = 'preceptoros-despierto';
-  function guardado(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
-  var instalada = matchMedia('(display-mode: standalone)').matches ||
-                  matchMedia('(display-mode: fullscreen)').matches ||
-                  navigator.standalone === true;
-
-  /* 2026-09-07 · YA NO SE SALTA LA PUERTA, tampoco en la app instalada.
-     Hasta hoy, la PWA con idioma guardado hacia `location.replace` y nadie
-     volvia a ver esta pantalla. Se retira por decision del Soberano: todos
-     entran por aqui -- web, PWA y app.
-
-     No es un capricho de maqueta. Esta pantalla es lo primero que dice de que
-     va esto, y en un producto de ocho lenguas la eleccion no es un ajuste, es
-     la primera frase. Ademas la que se salta la puerta es justo la persona que
-     mas la usa, que es a quien menos conviene esconderle el cambio de lengua.
-
-     LO QUE SE CONSERVA ES EL RECUERDO, que era la mitad util del atajo: la
-     lengua guardada se marca, asi que volver a la de siempre es UN toque en
-     vez de buscarla entre ocho. Se recuerda sin decidir por ti, que es la
-     diferencia entre una comodidad y una puerta cerrada.
-
-     `instalada` se queda declarado aunque ya no redirija: lo lee el aviso de
-     mas abajo, y borrarlo aqui obligaria a redescubrir como se detecta la PWA. */
-  var suya = guardado(LENGUA);
-  if (suya && /^[a-z]{2}$/.test(suya)) {
-    var mia = document.querySelector('.bubble[hreflang="' + suya + '"]');
-    if (mia) { mia.setAttribute('aria-current', 'true'); mia.classList.add('tuya'); }
-  }
-
-  /* La eleccion se guarda al pulsar. Y tambien se guarda sola en cada portada
-     --ver `senal.js`--, asi que cambiar de lengua por la rueda de ajustes
-     actualiza la memoria sin que nadie tenga que acordarse de esta linea. */
-  [].forEach.call(document.querySelectorAll('.bubble'), function (a) {
-    a.addEventListener('click', function () {
-      try { localStorage.setItem(LENGUA, a.getAttribute('hreflang')); } catch (e) {}
-    });
-  });
-
-  // La marca de sesion la pone quien despierta primero.
-  try { sessionStorage.setItem(DESPIERTO, '1'); } catch (e) {}
-})();
-</script>
+<body class="portada-juego">
+<header class="cab-juego">
+<a class="cab-marca" href="/en/">PreceptorOS · <b>theGame</b></a>
+<nav class="cab-lenguas" aria-label="Language · English"><a href="/ar/" hreflang="ar" lang="ar">AR</a><a href="/de/" hreflang="de" lang="de">DE</a><a href="/el/" hreflang="el" lang="el">EL</a><a href="/en/" hreflang="en" lang="en">EN</a><a href="/es/" hreflang="es" lang="es">ES</a><a href="/fr/" hreflang="fr" lang="fr">FR</a><a href="/it/" hreflang="it" lang="it">IT</a><a href="/pt/" hreflang="pt" lang="pt">PT</a><a href="/ru/" hreflang="ru" lang="ru">RU</a></nav>
+</header>
+<main id="juego-panel" class="juego-panel" aria-label="theGame">
+<p class="juego-carga">theGame · loading on this device. No account, no cloud.</p>
+<noscript><p class="juego-carga">theGame needs JavaScript: it runs entirely on this device.</p></noscript>
+</main>
+<script src="/assets/auth.js"></script>
+<script src="/assets/consiento.js"></script>
+<script src="/assets/enviar-en.js"></script>
+<script src="/assets/enviar.js"></script>
+<script src="/assets/pwa.js"></script>
+<script src="/assets/page-comment.js" defer></script>
+<script src="/assets/thegame.js"></script>
+<script src="/assets/eaa-art12-local-first-surface.js"></script>
 </body>
 </html>

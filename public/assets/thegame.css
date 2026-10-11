@@ -160,3 +160,20 @@ body.en-thegame > :not(#thegame){visibility:hidden}
 .thegame-ayuda{display:grid;gap:.6rem;margin:0;padding-inline-start:1.4rem;font-size:1rem;line-height:1.45}
 @media (min-width:48rem){.atlas-mundo{grid-template-columns:2fr 1fr;align-items:start}
   .atlas-mundo > .atlas-arena-mapa{grid-row:span 4}}
+/* J7 · el terminal del cangrejo: el JSON se parte en lineas; sin esto un <pre> ensanchaba la pestana
+   entera y Help se salia de la pantalla del telefono (medido en captura 412 px). */
+.terminal-cangrejo{max-width:100%;overflow:hidden}
+.terminal-fila{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin:.6rem 0}
+.terminal-fila select{min-width:0;max-width:100%;flex:1 1 9rem}
+.terminal-vars,.terminal-log{max-width:100%;margin:.4rem 0;padding:.5rem .6rem;white-space:pre-wrap;overflow-wrap:anywhere;
+  font:.76rem/1.45 var(--mono);background:var(--bg-secondary);border-radius:var(--radius)}
+.terminal-log{max-height:16rem;overflow-y:auto}
+/* J8 · la entrada: elegir mar abierto o nodo con sus reglas a la vista; la ficha de donde juegas. */
+.entrada-cangrejo{margin:0 0 1rem;padding:.8rem 1rem;background:var(--bg-secondary);border:1px solid var(--edge-sov);border-radius:var(--radius)}
+.entrada-cangrejo h3{margin:0 0 .3rem;font:700 1rem/1.3 var(--sans)}
+.entrada-lista{display:grid;gap:.7rem;grid-template-columns:repeat(auto-fit,minmax(15rem,1fr));margin:.7rem 0 0;padding:0;list-style:none}
+.entrada-territorio{padding:.7rem .8rem;border:1px solid var(--edge-sov);border-radius:var(--radius)}
+.entrada-territorio h4{margin:0 0 .3rem;font:700 .85rem/1.3 var(--mono);letter-spacing:.04em}
+.entrada-territorio p{margin:.25rem 0;font-size:.86rem;line-height:1.45}
+.entrada-ficha{margin:0;font-size:.88rem;line-height:1.5}
+.entrada-cambia{margin-inline-start:.4rem}

@@ -177,7 +177,7 @@
     return raiz.crypto.subtle.digest('SHA-256', new TextEncoder().encode(firma)).then(hex);
   }
 
-  var AtlasArmy = { TOPE: TOPE, adopcion: adopcion, crea: crea, almacenWeb: almacenWeb, calidadWeb: calidadWeb, conquistasWeb: conquistasWeb, limpiaRecord: limpiaRecord, verificaWeb: verificaWeb, semillaWeb: semillaWeb };
+  var AtlasArmy = { TOPE: TOPE, adopcion: adopcion, crea: crea, almacenWeb: almacenWeb, cajaWeb: caja, calidadWeb: calidadWeb, conquistasWeb: conquistasWeb, limpiaRecord: limpiaRecord, verificaWeb: verificaWeb, semillaWeb: semillaWeb };
   if (typeof module === 'object' && module.exports) { module.exports = AtlasArmy; }
   else { raiz.AtlasArmy = AtlasArmy; }
 })(this);

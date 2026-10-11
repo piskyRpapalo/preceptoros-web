@@ -196,6 +196,25 @@ await caso('combate limpio: con calidad 1 y 0 la onda va directa al lienzo, sin 
   }
   return !mal.length || mal;
 });
+// M17 M3 «respira al beat» (plan de ronda 2026-10-11): el destello del golpe late en la MISMA nota que
+// suena, bajada por octavas hasta lo que el ojo ve (2-6 Hz): misma clase de altura, otra octava.
+await caso('M17 M3: el pulso de luz es la nota de la receta bajada por octavas a 2-6 Hz', () => {
+  const { O, V } = ONDA, mal = [];
+  if (typeof O.pulsoNota !== 'function') { return 'falta O.pulsoNota'; }
+  for (const [n, r] of Object.entries(V.sonidos)) {
+    const hz = O.pulsoNota(r.f), oct = Math.log2(r.f / hz);
+    if (!(hz >= 2 && hz < 6) || Math.abs(oct - Math.round(oct)) > 1e-9) { mal.push(n + ': ' + r.f + ' -> ' + hz); }
+  }
+  return !mal.length || mal;
+});
+await caso('M17 M3: escena.js destella con el pulso de la nota del golpe (pop), no con una frecuencia inventada', () => {
+  const t = readFileSync(join(RAIZ, 'public/game/escena.js'), 'utf-8');
+  return (t.includes('O.pulsoNota(') && !t.includes('u.flash*100')) || 'escena no lee pulsoNota';
+});
+await caso('carga: wave_render.js va ANTES que escena.js (escena captura AtlasOnda al cargar; al reves era {})', () => {
+  const t = readFileSync(join(RAIZ, 'public/assets/thegame.js'), 'utf-8'), c = t.slice(t.indexOf('var CASA'));
+  return c.indexOf("'/game/wave_render.js'") < c.indexOf("'/game/escena.js'") || 'escena antes que wave_render';
+});
 await caso('M17-bis 2: L sale del escudo, no de la vida', () => {
   const { O } = ONDA;
   const sana = O.colorVida(1, null, 24), herida = O.colorVida(0.2, null, 24), sinEscudo = O.colorVida(1, null, 2);

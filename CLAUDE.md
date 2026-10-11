@@ -9,7 +9,7 @@ Todo lo que se construye aquí es **marca personal de PreceptorOS** (el Soberano
 - **Sensores honestos.** Lo que no se mide es `NO_DATA` con su causa; lo heurístico lleva `EMULADO`; lo provisional se dice en pantalla. Lo técnico va **siempre plegado** («Technical details»).
 - **Sin servidor.** Entre personas viajan **sobres firmados** (`atlas.sobre/1`) en **paquetes** (`atlas.paquete_mp/1`) por el canal que elija la persona (Send, Copy, Download). La semilla de todo combate sale de un **commit-reveal**: nadie la elige a solas.
 - **Determinismo.** Todo resultado se vuelve a jugar desde la ley, la semilla y las acciones. Enteros; sin `Math.random`, sin `Date` con autoridad.
-- **Peso con ley.** Máximo 16 384 B por fichero (HTML, JS, CSS y JSON). La puerta del juego (`gzip_juego_b`, medida por `atlas/mundo.py`) tiene que quedar por debajo de 153 600 B, o la grieta hace el doble de daño. `vigia.yml` avisa cada día. Lo que no hace falta al abrir se carga **a demanda** (Army, Arena, opinar).
+- **Peso con ley.** Máximo 25 MiB por bloque (revocado el tope de 16 KiB el 2026-10-11, firma D2; solo sube por excepción firmada en `EXCEPCIONES.md`). La vara de rendimiento son los fps medidos en el Doogee. La puerta del juego (`gzip_juego_b`, medida por `atlas/mundo.py`) tiene que quedar por debajo de 153 600 B, o la grieta hace el doble de daño. `vigia.yml` avisa cada día. Lo que no hace falta al abrir se carga **a demanda** (Army, Arena, opinar).
 - **El juego habla solo inglés hoy.** Los textos van a `public/atlas-en.json` o a su familia a demanda (`atlas-opina-en.json`, `atlas-arena-en.json`). No se traduce sin orden.
 
 ## Mapa
@@ -40,7 +40,7 @@ Todo lo que se construye aquí es **marca personal de PreceptorOS** (el Soberano
    python3 bin/sellar.py --sellar                    # sube VERSION
    python3 contadores.py                             # peso_sitio con el sw.js nuevo
    python3 bin/sellar.py --sellar --version <la misma>   # huella verde antes de medir
-   python3 ~/p0x/bin/coherencia-publica.py --si      # en un worktree: importalo y apunta WEB/PUBLICO/CONTADORES aqui
+   python3 ~/p0x/bin/coherencia-publica.py --arbol <este repo> --si   # --arbol obligatorio (B1, 2026-10-11)
    python3 atlas/mundo.py                            # lee pruebas_web y version_sw
    node atlas/arnes_piloto.mjs
    python3 contadores.py
