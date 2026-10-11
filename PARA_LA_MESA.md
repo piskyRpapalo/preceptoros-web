@@ -1,29 +1,30 @@
-# PARA_LA_MESA · Cosecha de M17 — la respiración del juego
+# PARA_LA_MESA · Ronda «el refresco» · theGame con gráficos renovados · 2026-10-11
 
-Rama: claude/web-solo-juego · Worktree: preceptoros-web-juego · Cosecha: 2026-10-09
-Sello: MEDIDO (git log --stat + wc -c + node --check, 2026-10-09)
+Preceptor: Claude (Opus 5.5) · rama `claude/refresco` (ramas por pieza: `claude/refresco-rN-*`) · **nada empujado**: cada pieza espera tu FIRMO.
+Plan: `PLAN_RONDA_REFRESCO.md` (commit `3803653`). La mesa anterior (cosecha M17) está en el historial de git.
+Sellos: MEDIDO (ancla) > DECLARADO > PROPUESTA. Se actualiza tras CADA pieza.
 
-| Mov | Qué hace | Ficheros | Bytes hoy | Corpus | Sello |
-|---|---|---|---|---|---|
-| M0 Calidad modificable | Interruptor Auto, Máxima, Media o Luz según hardware; degradación honesta en 9 lenguas | ui.js (+15) | 16172 | ideas6oct-2:804 | MEDIDO · commit b03b21a |
-| M1-2 Melt + Color=Vida | Melt determinista por semilla; el color porta la vida (∇H legible por SLM) | escena.js (+9, −33) | 16359 | ideas7oct:41, ideas6oct:855, ideas6oct:1150-1152 | MEDIDO · commit b098f3d |
-| M3 Respira al beat | El flash decae OSCILANDO (seno interno en fo), sin portadora 660Hz invisible a 60fps | escena.js | 16359 | ideas6oct:1975 | MEDIDO en disco · SIN COMMIT |
-| M4 Mar respira | Deriva lenta determinista del fondo (offset temporal en teselas) | mar.js (+8, −1) | 15385 | ideas7oct:41 | MEDIDO · commit 1307a79 |
-| M5-6 Tunables + Buffer PS1 | La fluidez es DATO (valores.js); O.buffer() niveles 0-2, dither 4x4, wobble | valores.js (+37), wave_render.js (+230) | 5409, 13275 | ideas6oct-2:785, ideas6oct:893 | MEDIDO · commit 14aa847 |
-| M7 Niebla de Omen + Vignette | Vignette radial cacheado; reutiliza fog_of_war.js; apagado en quieto() y calidad 0 | mar.js (+8) | 15385 | ideas6oct:893, planes:240-246, planes:296-299 | MEDIDO · commit 5d20477 |
-| M8 Sprites chunky | NPCs procedurales a offscreen 1/4 escala, cache O.sprite(), pixel gordo PS1, cero assets | mar.js (+9, −2) | 15385 | ideas6oct:1975 | MEDIDO · commit 75c7ad0 |
+## Delegación root (9 h)
+**NO ACTIVADA.** Ninguna pieza ha necesitado sudo. El reloj de 9 h empieza con el primer comando sudo y no ha habido ninguno: no hay hora de inicio ni de caducidad que sellar. Si se activa, la hora irá aquí.
 
-Notas honestas:
-- escena.js 16.359 B y sintaxis VERDE (node --check). HALLAZGO: escena.js nació ROTO
-  en el commit M1-2 (b098f3d) — una llave de más cerraba pinta() antes de frente().
-  Los gates de test_atlas solo buscan subcadenas, nunca parsean JS: el roto pasó el
-  gate. Reparado a mano en disco (pega(g,fondo,W,H) cerraba de más); M1-2 queda
-  como hallazgo, no como deuda oculta. PROPUESTA al guardián: añadir node --check
-  al pre-commit como sensor, no como techo.
-- Gates al cosechar (test_atlas, 95 tests): desafinación VERDE tras el retoque.
-  Quedan 2 rojos que son SENSORES, no techos: claves calidad_* en las 9 lenguas
-  e indexedDB fuera de la incubadora (carga a demanda). Deuda registrada en
-  HUELLA_TECHOS_F80.md.
-- Techo 16 KiB por pieza: DEROGADO por el Soberano (F80). Techos vigentes: 8 GB
-  Android, 25 MB Cloudflare, 14 MB app. Los bytes de la tabla son registro,
-  no límite.
+## Hecho antes de las piezas
+| Paso | Resultado | Sello |
+|---|---|---|
+| Doctrina `juez_fuga` del stash | copiada a la nota del juez antes de tirar el stash | MEDIDO |
+| Git | stash tirado · regeneraciones del 10-03 descartadas · `main` en fast-forward a `5b82c31` | MEDIDO |
+| Regeneración de contadores en el árbol nuevo | n=2 idéntica a lo commiteado (sha16 `e6fc4890a1d77feb`); solo cambia la hora → **no se sella** (subir el SW por una hora fuerza recarga a todos sin cambio) | MEDIDO |
+| `modelos.json` · papel `redactor` | +6 líneas, JSON válido, todas las fichas con `modelo` (lo exige `auditor.py`); **sin commit**, esperando tu vista | MEDIDO |
+
+## Piezas
+| Pieza | Qué ves | Commit | Gates | Sello |
+|---|---|---|---|---|
+| R1 · J6 mar de fondo | La portada es el mar: el lecho y la niebla del mapa detrás de todo, centrado en tu casa o en Hexelion; la caja del juego al 80 % deja verlo | `aeae759` (`claude/refresco-r1-j6`) | n=2: test_web 75 OK · test_atlas 111 OK · arnes_sw 22/22 · 13 `*_casos` · sabotaje rojo→verde | MEDIDO · `abdv` · gzip_juego_b 80.553 |
+
+Capturas: `~/p0x/no-publicar/capturas-refresco-20261011/` (`j6_pc.png`, `j6_movil2.png`), Chrome headless contra el servidor local.
+Fps en el Doogee: **NO_DATA** (no lo he medido esta ronda; Acurast sigue en primer plano y no se toca).
+
+## Contradicciones abiertas (detalle en el plan, §1)
+C1 techo 16 KiB contra la revocación D2 · C2 «ES modules» contra el patrón UMD del juego · C3 `web/bin` no existe · **C4 `contenido_v` contra `valores.version`/`packSha` (necesito tu sí o tu no antes de R5)** · C5 la mitad del lore está en `6 planes.txt`, no en ideas6oct/7oct.
+
+## Lo que queda (en orden)
+R2 3 pestañas (a: pestañas + retirar la rejilla · b: cuerpo del cangrejo · c: enum `mover`) → R3 tubos → R4 bioluminiscencia → R5 M18-B aristas + LOD → R6 voz por tropa (pide FIRMO expreso: toca `core.js`) → R7 radio en el mapa + anclas → R8 ceremonia. Las propuestas P9/P10/P11/P6/P-ESM/P-CHUNKS no se construyen sin tu firma.
