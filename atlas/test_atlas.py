@@ -1731,6 +1731,24 @@ class MapaMovible(unittest.TestCase):
         self.assertIn("window.AtlasTallerUI.monta(PANEL.taller)", tg)
         self.assertIn("var TL = enNode ? require('./taller.js') : raiz.AtlasTaller;", (PUBLICO / "game" / "arena.js").read_text(encoding="utf-8"))
 
+    def test_la_portada_lleva_la_zona_de_identidad_sin_ella_nadie_firma(self):
+        """Defecto MEDIDO en vivo el 2026-10-11 (preceptoros.org/en/: «Identity is not defined»): la mudanza b1
+        (3e4c9a7) genero las 10 portadas sin `<div id="identity">`, y `auth.js` se va sin definir `Identity` si
+        no hay zona. Sin Identity nadie crea su clave ni firma nada: invocar, adoptar, el Taller, duelos. La
+        plantilla la lleva y las 10 portadas son la plantilla; y auth.js sigue dependiendo de esa zona."""
+        plantilla = (RAIZ.parent / "local_first_surface_build.py").read_text(encoding="utf-8")
+        self.assertIn('<div id="identity" class="fila identity"></div>', plantilla)
+        self.assertIn("if (!zona) return;", (PUBLICO / "assets" / "auth.js").read_text(encoding="utf-8"))
+        for h in [PUBLICO / "index.html"] + sorted(PUBLICO.glob("*/index.html")):
+            html = h.read_text(encoding="utf-8")
+            if "/assets/auth.js" not in html:
+                continue
+            with self.subTest(portada=str(h.relative_to(PUBLICO))):
+                self.assertIn('id="identity"', html, "una portada carga auth.js sin su zona: Identity no existe")
+        r = subprocess.run([sys.executable, str(RAIZ.parent / "local_first_surface_build.py"), "--comprueba"],
+                           cwd=RAIZ.parent, capture_output=True, text=True, timeout=60)
+        self.assertEqual(r.returncode, 0, r.stdout)
+
     def test_r8_la_ceremonia_es_real_no_decide_y_se_queda_quieta(self):
         """R8 (plan «el refresco»): la diversion esta en la CEREMONIA, no en el azar, y la ceremonia es real:
         la revelacion no tira ni decide (no llama a la tirada ni al generador, sin azar ni reloj con autoridad),
