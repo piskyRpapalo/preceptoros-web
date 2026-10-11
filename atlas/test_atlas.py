@@ -1713,6 +1713,25 @@ class MapaMovible(unittest.TestCase):
         self.assertIn("function tesela(i, j)", self._js("mar-fondo.js"))
         self.assertIn("if (nt > 90)", self._js("mar-fondo.js"), "la cache de teselas no esta acotada")
 
+    def test_r8_la_ceremonia_es_real_no_decide_y_se_queda_quieta(self):
+        """R8 (plan «el refresco»): la diversion esta en la CEREMONIA, no en el azar, y la ceremonia es real:
+        la revelacion no tira ni decide (no llama a la tirada ni al generador, sin azar ni reloj con autoridad),
+        su anticipacion es corta (<= 1,5 s) y con movimiento reducido no hay ni anticipacion ni temblor. La
+        vitrina del Army ensena los stats REALES de la tropa; las ondas respiran y se paran con quietud."""
+        r = sin_comentarios((PUBLICO / "game" / "summon_reveal.js").read_text(encoding="utf-8"))
+        for malo in ("tirada(", "generador(", "Math.random", "Date.", "fetch("):
+            with self.subTest(prohibido=malo):
+                self.assertNotIn(malo, r)
+        ant = int(re.search(r"ANT = (\d+)", r).group(1))
+        self.assertLessEqual(ant, 1500, "la anticipacion retiene a la persona demasiado")
+        self.assertIn("if (!q && ts - t0 < ANT)", r, "la anticipacion no respeta el movimiento reducido")
+        self.assertIn("tiembla = q ? 0 : ts", r, "el temblor no respeta el movimiento reducido")
+        u = sin_comentarios((PUBLICO / "game" / "ui.js").read_text(encoding="utf-8"))
+        self.assertIn("el('small', 'atlas-stats', G.STATS.filter(function (k) { return t.stats[k]; })", u)
+        css = (PUBLICO / "assets" / "atlas.css").read_text(encoding="utf-8")
+        self.assertIn("@keyframes atlas-respira", css)
+        self.assertIn(".atlas-army .atlas-onda{animation:none}", css.split("prefers-reduced-motion:reduce){.atlas-army")[0] + "prefers-reduced-motion:reduce){.atlas-army" + css.split("prefers-reduced-motion:reduce){.atlas-army")[1][:60])
+
     def test_r7_la_radio_suena_en_el_mapa_y_las_anclas_no_envian_nada(self):
         """R7 (plan «el refresco»): la radio se monta tambien en el MAPA (misma sintesis, misma instantanea: el
         mismo modulo, no un gemelo); el mapa dibuja las ANCLAS (N.anclas) y nada de esto envia: ni fetch, ni

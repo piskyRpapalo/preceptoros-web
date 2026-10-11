@@ -77,10 +77,9 @@
     /* M18-B: sus aristas; una tropa firmada antes no las lleva y se dice de otra version (en combate se
        vuelve a tirar de su semilla con las reglas de hoy: cambia de forma, y se avisa aqui). */
     cap.appendChild(el('small', 'atlas-aristas', t.aristas ? rellena(T('aristas_n'), { n: t.aristas }) : T('version_previa')));
-    /* SU CARACTER Y SU VOZ, sin texto nuevo: el griego no tiene sitio para doce claves mas
-       (tope de 16 KiB), asi que el epiteto escrito es NO_DATA en las nueve y se dice aqui. Queda
-       la identidad que no necesita palabras: el color de la traza sale de su caracter, y el
-       boton usa la palabra `sonido`, que ya existe en las nueve. Respeta el interruptor. */
+    /* R8 · LA VITRINA: sus stats reales a la vista (las mismas que usa el combate), sin barras. */
+    cap.appendChild(el('small', 'atlas-stats', G.STATS.filter(function (k) { return t.stats[k]; }).map(function (k) { return k.slice(0, 3) + ' ' + t.stats[k]; }).join(' · ')));
+    /* SU CARACTER Y SU VOZ: el color de la traza sale de su caracter; el boton suena su timbre. */
     var k = G.caracter(t);
     c.style.setProperty('--onda', ['hsl(35 75% 58%)', 'hsl(140 45% 55%)', 'hsl(275 55% 68%)', 'hsl(210 12% 68%)'][k.color]);
     c.dataset.caracter = k.color + '-' + k.pulso + '-' + k.tendencia;

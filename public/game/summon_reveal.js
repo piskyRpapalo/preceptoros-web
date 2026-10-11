@@ -18,7 +18,13 @@
 (function (raiz) {
   'use strict';
 
-  var O = raiz.AtlasOnda, E = raiz.AtlasEscena, DURA = 3600;
+  /* LA CEREMONIA (R8, plan «el refresco»): la diversion no esta en el azar, esta en la ceremonia, y la
+     ceremonia es REAL: no decide nada (la tropa ya salio de su semilla firmada) ni la retrasa en el motor.
+     (a) ANTICIPACION, ANT ms: la capsula cae y el ruido se SINTONIZA («6 planes.txt»:131: «sintoniza
+     frecuencias en el ruido»): estatica que se ordena hacia la frecuencia de la onda. (b) el PING y la onda
+     armonico a armonico. Al asentarse, un micro-temblor (juice) y su primer timbre. Con movimiento reducido,
+     ni anticipacion ni temblor: la forma final, quieta. */
+  var O = raiz.AtlasOnda, E = raiz.AtlasEscena, DURA = 3600, ANT = 1100;
 
   function quieto() { return raiz.matchMedia && raiz.matchMedia('(prefers-reduced-motion: reduce)').matches; }
   function el(tag, clase, texto) { var n = document.createElement(tag); if (clase) { n.className = clase; } if (texto != null) { n.textContent = String(texto); } return n; }
@@ -48,6 +54,21 @@
       if (antes && antes.focus) { antes.focus(); }
     }
     function tecla(e) { if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); cierra(); } }
+    var sonado = false, tiembla = 0;
+    /* (a) La capsula cae del techo al centro (rebote suave) mientras la estatica se ordena: cada raya es
+       un hash del cuadro (sin azar), y su desorden baja con `k` hasta casi una linea: la frecuencia. */
+    function anticipa(W, H, cx, cy, k) {
+      g.globalCompositeOperation = 'source-over'; g.fillStyle = 'rgba(4,4,14,.55)'; g.fillRect(0, 0, W, H);
+      var fr = Math.floor(k * 40);
+      g.strokeStyle = 'hsla(171 78% 54% / .5)'; g.lineWidth = dpr;
+      for (var i = 0; i < 26; i++) {
+        var y = H * (0.18 + 0.64 * i / 26), d = (1 - k) * H * 0.05 * (E.hash(i, fr, sem) - 0.5);
+        g.beginPath(); g.moveTo(W * 0.08, y + d); g.lineTo(W * 0.92, y - d); g.stroke();
+      }
+      var u = Math.min(1, k * 1.25), cae = 1 - Math.pow(1 - u, 3) + (u >= 1 ? Math.sin((k - 0.8) * 30) * 0.02 * (1 - k) : 0);
+      var y0 = -H * 0.1 + (cy + H * 0.1) * cae, rx = Math.min(W, H) * 0.05;
+      g.fillStyle = 'hsl(' + col[0] + ' ' + col[1] + '% 62%)'; g.beginPath(); g.ellipse(cx, y0, rx * (u >= 1 ? 1.12 : 0.9), rx * 1.5 * (u >= 1 ? 0.88 : 1.1), 0, 0, Math.PI * 2); g.fill();
+    }
     function cuadro(ts) {
       if (!vivo) { return; }
       raf = raiz.requestAnimationFrame(cuadro);
@@ -55,7 +76,9 @@
       var w = cv.clientWidth, h = cv.clientHeight;
       if (cv.width !== Math.round(w * dpr) || cv.height !== Math.round(h * dpr)) { cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr); }
       var W = cv.width, H = cv.height, cx = W / 2, cy = H * 0.44, R = Math.min(W, H) * 0.3;
-      var p = q ? 1 : Math.min(1, (ts - t0) / DURA), crece = q ? 1 : Math.max(0, Math.min(1, (p - 0.18) / 0.6));
+      if (!q && ts - t0 < ANT) { anticipa(W, H, cx, cy, (ts - t0) / ANT); return; }
+      if (!sonado) { sonado = true; if (!q && S && S.suena) { S.suena({ tipo: 'sonar', portadora: 1320, moduladora: 660, indice: 90, dur: 0.6, gan: 0.06 }); } }
+      var p = q ? 1 : Math.min(1, (ts - t0 - ANT) / DURA), crece = q ? 1 : Math.max(0, Math.min(1, (p - 0.18) / 0.6));
       g.globalCompositeOperation = 'source-over'; g.fillStyle = 'rgba(4,4,14,' + (q ? 1 : 0.35) + ')'; g.fillRect(0, 0, W, H);
       g.globalCompositeOperation = 'lighter';
       /* EL PING: un anillo teal que sale del centro en el primer cuarto (con movimiento reducido, no). */
@@ -85,15 +108,17 @@
         O.dibuja(g, t.armonicos, cx, cy, R * (0.6 + 0.4 * crece), { t: ts, crece: crece, giro: q ? 0 : (ts - t0) * 0.00035,
           color: col, grosor: 2.6 * dpr, brillo: 0.6 + 0.4 * crece, estela: q ? 0 : 6, respira: !q, calidad: 2 });
       }
-      if (p >= 1 && !txt.textContent) { txt.textContent = rar + ' · ' + cuenta; b.focus(); if (S && S.vozDe) { S.suena(S.vozDe(t)); } }
+      if (p >= 1 && !txt.textContent) { txt.textContent = rar + ' · ' + cuenta; b.focus(); tiembla = q ? 0 : ts; if (S && S.vozDe) { S.suena(S.vozDe(t)); } }
+      /* Juice: al asentarse, un micro-temblor de 220 ms que se apaga (determinista: un seno). */
+      var dt = ts - tiembla;
+      cv.style.transform = tiembla && dt < 220 ? 'translate(' + (Math.sin(dt * 0.25) * 3 * (1 - dt / 220)).toFixed(1) + 'px,0)' : '';
     }
     b.addEventListener('click', cierra);
     fondo.addEventListener('click', function (e) { if (e.target === cv && (q || t0 !== null)) { cierra(); } });
     document.addEventListener('keydown', tecla, true);
-    if (S && S.suena) { S.suena({ tipo: 'sonar', portadora: 1320, moduladora: 660, indice: 90, dur: 0.6, gan: 0.06 }); }
     raf = raiz.requestAnimationFrame(cuadro);
     return { cierra: cierra };
   }
 
-  raiz.AtlasRevela = { muestra: muestra, DURA: DURA };
+  raiz.AtlasRevela = { muestra: muestra, DURA: DURA, ANT: ANT };
 })(this);
