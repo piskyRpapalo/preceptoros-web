@@ -3,21 +3,20 @@
    UN PERSONAJE ES SU ONDA. Cada tropa se dibuja con sus propios armonicos (`gacha.punto`): circulos
    que giran dentro de circulos.
 
-   EL DANO SE VE COMO DESAFINACION, NO COMO BARRA (Soberano, 2026-10-04: «la estetica pinta lo
-   medido»). La vida que le queda a una tropa tuerce las fases y las amplitudes de SUS armonicos: una
-   onda sana es su ecuacion limpia; una herida, la misma ecuacion fuera de tono. El numero exacto
-   sigue en el DOM (resultado y registro), para quien no ve el lienzo.
+   EL DANO SE VE COMO DESAFINACION, NO COMO BARRA (2026-10-04: «la estetica pinta lo medido»): la vida
+   que le queda tuerce las fases y amplitudes de SUS armonicos; sana, su ecuacion limpia; herida, la
+   misma fuera de tono. El numero exacto sigue en el DOM, para quien no ve el lienzo.
 
-   COLOR = VELOCIDAD en los proyectiles (azul lento, cobre rapido), y el PESO es inercia: cada tropa
-   es un muelle con su `inercia`. El mar del fondo es ruido con
-   tramado Atkinson a cuatro tonos: sin alfas caras, sin ficheros de imagen.
+   COLOR = VELOCIDAD en los proyectiles (azul lento, cobre rapido); el PESO es la `inercia` de cada
+   muelle. Fondo: ruido con tramado Atkinson a cuatro tonos, sin ficheros de imagen. En COMBATE cada
+   tropa se dibuja con su cara SENCILLA (`G.lod`, M18-B): sus aristas, legibles a escala.
 
-   EL FRENTE: dos ondas entre los ejercitos; se corre hacia el bando que va perdiendo vida. Sale del
-   estado reproducido, no de un azar. El combate NO se inventa aqui: `arena.combate` ya lo decidio
-   con enteros y una semilla; la escena solo pone el tiempo de pantalla.
+   EL FRENTE: dos ondas entre los ejercitos, que se corren hacia quien pierde vida, del estado
+   reproducido. El combate NO se inventa aqui: `arena.combate` ya lo decidio con enteros y una
+   semilla; la escena solo pone el tiempo de pantalla.
 
-   `prefers-reduced-motion`: sin saltos, sin temblores, sin particulas: el final se pinta quieto y el
-   registro queda en el DOM. Sin red, sin reloj con autoridad, sin azar: el «ruido» es un hash. */
+   Movimiento reducido: el final quieto y el registro en el DOM. Sin red, sin reloj con autoridad, sin
+   azar: el «ruido» es un hash. */
 (function (raiz) {
   'use strict';
 
@@ -206,7 +205,7 @@
         var dx = 0;
         if (!quieto && u.tiembla !== null && vt - u.tiembla < 260) { dx = Math.sin(vt * 0.12) * 4 * dpr * (1 - (vt - u.tiembla) / 260); }
         var gira=quieto?0:t*.00045*(1+u.vel/12)*(u.lado?1:-1)*(acabado&&u.vida?3:1),respira=quieto?1:1+.035*Math.sin(t*.002+idx),fo=u.flash*(1+Math.sin(t*.002*Math.PI*(O.pulsoNota?O.pulsoNota((((raiz.AtlasValores||{}).sonidos||{}).pop||{}).f||660):4))*.5);
-        figura(g,G.espectro(u.t),u.x+dx,u.y,u.r,{color:u.color,giro:gira,alfa:m,grosor:1.8*dpr,brillo:u.brillo+fo*18*dpr,t:t,desafina: Math.min(1, (1 - u.vida / u.max)*.8+u.flash*.35),escala:respira*(.4+.6*m),vidaFraccion:u.vida/u.max,arm:u.arm});
+        figura(g,G.lod(u.t),u.x+dx,u.y,u.r,{color:u.color,giro:gira,alfa:m,grosor:1.8*dpr,brillo:u.brillo+fo*18*dpr,t:t,desafina: Math.min(1, (1 - u.vida / u.max)*.8+u.flash*.35),escala:respira*(.4+.6*m),vidaFraccion:u.vida/u.max,arm:u.arm});
         u.flash = Math.max(0, u.flash - 0.05);
       });
       if (!quieto && e && fase > 0.3 && fase < 0.8) { proyectil(U[e[1]][e[2]], U[1 - e[1]][e[3]], (fase - 0.3) / 0.5, t); }

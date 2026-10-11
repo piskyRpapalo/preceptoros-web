@@ -15,16 +15,40 @@
 
   var VALORES = {
     estado: 'provisional',
-    version: 'provisional-2026-09-27.1',
+    /* M18-B (opcion B firmada por el Soberano, 2026-10-11): la version sube porque la tirada cambia. Las
+       tropas de antes (sin `aristas`) se dicen de otra version; un duelo entre versiones distintas no se
+       resuelve (`arena.packSha`). */
+    version: 'provisional-2026-10-11.aristas',
     /* Treasure Classes. Coste en Cobre y Luz: medido con el piloto base, la
-       Biomasa nunca pasa de 2. `incuba` en ciclos de juego; `calidad` por mil
-       (unico, raro, magico). */
+       Biomasa nunca pasa de 2. `incuba` en ciclos de juego. La rareza ya no se
+       tira aparte: sale de las ARISTAS (abajo). */
     tcs: {
-      tc1: { coste: { cobre: 50, luz: 0 }, incuba: 20, calidad: [5, 40, 250], base: 'pez' },
-      tc2: { coste: { cobre: 200, luz: 100 }, incuba: 40, calidad: [10, 70, 320], base: 'centinela' },
-      tc3: { coste: { cobre: 600, luz: 300 }, incuba: 60, calidad: [20, 110, 380], base: 'leviatan' },
-      tc4: { coste: { cobre: 1500, luz: 500 }, incuba: 90, calidad: [45, 160, 420], base: 'heraldo' }
+      tc1: { coste: { cobre: 50, luz: 0 }, incuba: 20, base: 'pez' },
+      tc2: { coste: { cobre: 200, luz: 100 }, incuba: 40, base: 'centinela' },
+      tc3: { coste: { cobre: 600, luz: 300 }, incuba: 60, base: 'leviatan' },
+      tc4: { coste: { cobre: 1500, luz: 500 }, incuba: 90, base: 'heraldo' }
     },
+    /* EL SONAR DE ARISTAS (M18-B; corpus: «6 planes.txt»:134-142, ideas6oct:1724 «rareza por aristas»).
+       La rareza es COMPLEJIDAD GEOMETRICA: cada tirada saca primero cuantas aristas (lobulos) tiene su
+       onda, de esta tabla ENTERA por mil y por TC: [aristas, por mil]. Meta firmada: >= 60 % con 3-4
+       aristas y <= 5 % con mas de 12 (LEVIATANES, el jackpot), en TODAS las TC; las TC altas solo
+       engordan la cola. Con margen de ~3 sigmas (n = 4 000): 3-4 >= 62,5 % y > 12 <= 3,5 %, para que la
+       meta se cumpla tambien en lo TIRADO, no solo en la tabla (medido: con 60,0 % exacto, tc2 daba 59,3 %). PROPUESTA de Claude: la tabla exacta la fija el Soberano. Estas son las ODDS que
+       se publican: las mismas que se tiran. */
+    aristas: {
+      tc1: [[3, 340], [4, 300], [5, 110], [6, 85], [7, 50], [8, 35], [9, 25], [10, 15], [11, 15], [12, 10], [13, 10], [14, 5]],
+      tc2: [[3, 330], [4, 300], [5, 105], [6, 80], [7, 55], [8, 35], [9, 25], [10, 20], [11, 15], [12, 10], [13, 10], [14, 10], [15, 5]],
+      tc3: [[3, 325], [4, 300], [5, 100], [6, 75], [7, 55], [8, 35], [9, 30], [10, 20], [11, 15], [12, 15], [13, 15], [14, 10], [15, 5]],
+      tc4: [[3, 325], [4, 300], [5, 95], [6, 70], [7, 50], [8, 35], [9, 30], [10, 25], [11, 20], [12, 15], [13, 15], [14, 10], [15, 5], [16, 5]]
+    },
+    /* La rareza por aristas: hasta 4 normal, hasta 8 magico, hasta 12 raro; mas, unico (Leviatan). */
+    rareza_aristas: { normal: 4, magico: 8, raro: 12 },
+    /* La forma de la onda (no es equilibrio, es dibujo): la amplitud del armonico que pone las aristas
+       sale de `a1`; los demas, de a1 / (div * j^2), con su fase ALINEADA a la del primero (todos tienen su
+       cresta en el mismo angulo: por la desigualdad de Fejer-Jackson eso deja UN maximo por periodo).
+       Medido el 2026-10-11 sobre 7 000 ondas de 3 a 16 aristas: div = 1 da 0 lobulos de mas (con div =
+       0,75 fallan 532); con fases al azar hacia falta div = 3 y los armonicos altos salian casi todos a 0. */
+    forma: { a1: [6, 16], div: 1 },
     prefijos: {
       atlante: { vida: [4, 9] }, cuprico: { armadura: [3, 7] },
       termico: { inercia: [3, 8] }, solar: { vida: [2, 4], armadura: [1, 3] }
@@ -35,6 +59,7 @@
     },
     /* Base de una tropa por nivel de TC: vida = vida[0]*nivel + [0..vida[1]]. */
     base: { vida: [10, 4], armadura: [2, 2], velocidad: [3, 3] },
+    /* Solo para LEER las tropas de la version anterior (sin `aristas`): su simetria iba por rareza. */
     simetria: { normal: 2, magico: 3, raro: 5, unico: 7 },
     terminos: { normal: 3, magico: 4, raro: 5, unico: 6 },
     /* Recetas de sonido FM: Hz, segundos, indice en Hz. */

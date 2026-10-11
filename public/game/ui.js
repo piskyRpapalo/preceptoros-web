@@ -74,6 +74,9 @@
     var cap = el('figcaption');
     cap.appendChild(el('b', null, nombre(t)));
     cap.appendChild(el('small', null, T('rar_' + t.rareza)));
+    /* M18-B: sus aristas; una tropa firmada antes no las lleva y se dice de otra version (en combate se
+       vuelve a tirar de su semilla con las reglas de hoy: cambia de forma, y se avisa aqui). */
+    cap.appendChild(el('small', 'atlas-aristas', t.aristas ? rellena(T('aristas_n'), { n: t.aristas }) : T('version_previa')));
     /* SU CARACTER Y SU VOZ, sin texto nuevo: el griego no tiene sitio para doce claves mas
        (tope de 16 KiB), asi que el epiteto escrito es NO_DATA en las nueve y se dice aqui. Queda
        la identidad que no necesita palabras: el color de la traza sale de su caracter, y el
@@ -275,6 +278,15 @@
     });
     s.appendChild(el('h5', null, T('odds_h')));
     s.appendChild(od);
+    /* Y la tabla entera de ARISTAS por TC (M18-B), de la que salen las de arriba: la misma que se tira. */
+    var oa = el('details', 'atlas-odds-aristas');
+    oa.appendChild(el('summary', null, T('odds_aristas_h')));
+    Object.keys(G.TCS).forEach(function (tc) {
+      oa.appendChild(el('p', null, T(tc) + ' · ' + G.oddsAristas(tc).map(function (x) {
+        return x[0] + ': ' + Math.floor(x[1] / 10) + '.' + (x[1] % 10) + '0%';
+      }).join(' · ')));
+    });
+    s.appendChild(oa);
     R.estado = el('p', 'atlas-vivo'); R.estado.setAttribute('role', 'status'); s.appendChild(R.estado);
     s.appendChild(el('h5', null, T('nido_h')));
     R.nido = el('ul', 'atlas-nido'); s.appendChild(R.nido);

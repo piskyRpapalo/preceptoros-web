@@ -45,7 +45,7 @@
   /* EL MAPA CELDA <-> ESTADO, en un solo sitio y congelado: lo lee la prueba
      de determinismo de `test_atlas.py`. */
   var CELDAS = Object.freeze({ reposo: 0, habla: [1, 2], revelar: 3, alerta: 4 });
-  var EMBLEMA = [[1, 24, 24, 0], [-1, 9, 8, 17], [5, 8, 9, 55]];
+  var EMBLEMA = [[1, 24, 24, 0], [-3, 13, 13, 44], [9, 3, 3, 40]];
   /* Tono del caracter del emblema (TONOS[3], gris) y cobre de alerta (TONOS[0]). */
   var TONO = 'hsl(205 30% 74%)', COBRE = 'hsl(35 80% 62%)';
 

@@ -7,6 +7,11 @@
    `gacha.js` que entran uno a uno -- cada uno con su destello --, y la figura que respira ya entera.
    Una onda comun tiene pocos armonicos con peso; una unica, muchos: se VE.
 
+   EL PING DE SONAR (M18-B, «6 planes.txt»:136: «tu hardware emite un Ping; lo que vuelve es una forma»):
+   al empezar, un anillo sale del centro y se expande; al asentarse, la onda dice sus ARISTAS («N edges»).
+   Si el sonido esta encendido, el ping y despues su primer timbre suenan por la MISMA sintesis FM
+   (`AtlasSintesis.suena`); apagado, no suena nada.
+
    El resultado no se decide aqui: la tropa ya salio de su semilla firmada. Esto es solo su escena.
    Con movimiento reducido se pinta la forma final, quieta, con el mismo texto. Se cierra con un
    toque, con Escape o con su boton; el foco vuelve a donde estaba. */
@@ -24,9 +29,10 @@
     if (!t || !t.armonicos) { return; }
     var capa = document.getElementById('thegame') || document.body, antes = document.activeElement;
     var fondo = el('div', 'revela'), cv = el('canvas', 'revela-lienzo'), n = O.riqueza(t.armonicos);
-    var rar = T('rar_' + t.rareza, t.rareza);
+    var rar = T('rar_' + t.rareza, t.rareza), S = raiz.AtlasSintesis;
+    var cuenta = t.aristas ? T('aristas_n', '{n} edges').replace('{n}', t.aristas) : n + ' ' + T('revela_arm', 'harmonics');
     cv.setAttribute('role', 'img');
-    cv.setAttribute('aria-label', rar + ' · ' + n + ' ' + T('revela_arm', 'harmonics') + ' · ' + T('revela_aria', 'a new wave is born, harmonic by harmonic'));
+    cv.setAttribute('aria-label', rar + ' · ' + cuenta + ' · ' + T('revela_aria', 'a new wave is born, harmonic by harmonic'));
     var pie = el('div', 'revela-pie'), txt = el('p', 'revela-txt'), b = el('button', 'boton revela-ok', T('revela_ok', 'Continue'));
     b.type = 'button'; txt.setAttribute('role', 'status');
     pie.appendChild(txt); pie.appendChild(b); fondo.appendChild(cv); fondo.appendChild(pie);
@@ -52,6 +58,12 @@
       var p = q ? 1 : Math.min(1, (ts - t0) / DURA), crece = q ? 1 : Math.max(0, Math.min(1, (p - 0.18) / 0.6));
       g.globalCompositeOperation = 'source-over'; g.fillStyle = 'rgba(4,4,14,' + (q ? 1 : 0.35) + ')'; g.fillRect(0, 0, W, H);
       g.globalCompositeOperation = 'lighter';
+      /* EL PING: un anillo teal que sale del centro en el primer cuarto (con movimiento reducido, no). */
+      if (!q && p < 0.28) {
+        var pr = p / 0.28;
+        g.strokeStyle = 'hsla(171 78% 54% / ' + (1 - pr) * 0.8 + ')'; g.lineWidth = 3 * dpr;
+        g.beginPath(); g.arc(cx, cy, Math.max(W, H) * 0.62 * pr, 0, Math.PI * 2); g.stroke();
+      }
       /* Las chispas convergen hacia el centro en el primer tramo. */
       if (p < 0.4) {
         var k = Math.min(1, p / 0.3);
@@ -73,11 +85,12 @@
         O.dibuja(g, t.armonicos, cx, cy, R * (0.6 + 0.4 * crece), { t: ts, crece: crece, giro: q ? 0 : (ts - t0) * 0.00035,
           color: col, grosor: 2.6 * dpr, brillo: 0.6 + 0.4 * crece, estela: q ? 0 : 6, respira: !q, calidad: 2 });
       }
-      if (p >= 1 && !txt.textContent) { txt.textContent = rar + ' · ' + n + ' ' + T('revela_arm', 'harmonics'); b.focus(); }
+      if (p >= 1 && !txt.textContent) { txt.textContent = rar + ' · ' + cuenta; b.focus(); if (S && S.vozDe) { S.suena(S.vozDe(t)); } }
     }
     b.addEventListener('click', cierra);
     fondo.addEventListener('click', function (e) { if (e.target === cv && (q || t0 !== null)) { cierra(); } });
     document.addEventListener('keydown', tecla, true);
+    if (S && S.suena) { S.suena({ tipo: 'sonar', portadora: 1320, moduladora: 660, indice: 90, dur: 0.6, gan: 0.06 }); }
     raf = raiz.requestAnimationFrame(cuadro);
     return { cierra: cierra };
   }

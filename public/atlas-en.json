@@ -237,7 +237,7 @@
     "rar_normal": "Normal",
     "rar_magico": "Magic",
     "rar_raro": "Rare",
-    "rar_unico": "Unique",
+    "rar_unico": "Leviathan",
     "st_vida": "Life",
     "st_armadura": "Armour",
     "st_velocidad": "Speed",
@@ -273,6 +273,9 @@
     "calidad_luz": "Light",
     "calidad_cambiada": "Quality set to {modo}.",
     "calidad_desc": "Render quality: Auto follows the machine; Max, Medium and Light are set by hand.",
-    "pes_taller": "Workshop"
+    "pes_taller": "Workshop",
+    "aristas_n": "{n} edges",
+    "version_previa": "Previous version: shown as you signed it. In battle it is re-rolled from its seed with edges, so its shape changes.",
+    "odds_aristas_h": "Edges per summon, by class (exact: the roll uses these same numbers). More than 12 edges is a Leviathan."
   }
 }

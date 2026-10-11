@@ -1304,7 +1304,9 @@ class Cria(unittest.TestCase):
         gacha = sin_comentarios((PUBLICO / "game" / "gacha.js").read_text(encoding="utf-8"))
         self.assertIn("G.odds(tc)", ui)
         self.assertIn("T('odds_h')", ui)
-        self.assertIn("return [1000 - c[0] - c[1] - c[2], c[2], c[1], c[0]];", gacha)
+        # M18-B: las odds por rareza se SUMAN de la tabla de aristas que tira `tirada`, y la tabla entera se ensena.
+        self.assertIn("ARISTAS[tc].forEach(function (x) { o[RAREZAS.indexOf(rarezaDe(x[0]))] += x[1]; });", gacha)
+        self.assertIn("G.oddsAristas(tc)", ui)
         for l in LENGUAS_JUEGO:
             ui_t = json.loads((PUBLICO / f"atlas-{l}.json").read_text(encoding="utf-8"))["ui"]
             self.assertTrue(ui_t.get("odds_h", "").strip(), f"{l} sin el rotulo de las odds")

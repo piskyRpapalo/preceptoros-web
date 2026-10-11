@@ -128,7 +128,9 @@
       suma += v;
     }
     if (suma > p.presupuesto.suma[t.rareza]) { return 'tropa: pasa el presupuesto (' + suma + ')'; }
-    var a = t.armonicos, h = p.armonicos, tb = h.terminos[t.rareza], s = h.simetria[t.rareza];
+    /* M18-B: la simetria de una tropa son sus ARISTAS (k = 1 mod n); una tropa de la version anterior (sin
+       `aristas`) se lee con la simetria por rareza del paquete. */
+    var a = t.armonicos, h = p.armonicos, tb = h.terminos[t.rareza], s = t.aristas || h.simetria[t.rareza];
     if (!Array.isArray(a) || a.length < tb[0] || a.length > tb[1]) { return 'tropa: numero de terminos'; }
     for (var j = 0; j < a.length; j++) {
       var x = a[j];
