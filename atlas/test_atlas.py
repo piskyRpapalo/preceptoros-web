@@ -370,7 +370,7 @@ process.stdout.write(JSON.stringify({
             with self.subTest(lengua=l):
                 self.assertIn(l, dentro)
         self.assertIn("...ATLAS", listas)
-        self.assertIn("'/atlas-opina-' + l + '.json'", listas, "los textos de opinar no abren sin red")
+        self.assertIn("'/atlas-opina-en.json'", listas, "los textos de opinar no abren sin red")   # solo existe en ingles (mudanza b3)
         for medida in ("atlas-mundo.json", "atlas-record.json"):
             self.assertNotIn(medida, listas, f"{medida} es una medida: fresca o no se sirve")
 
@@ -1911,26 +1911,6 @@ class RedisenoDoogee(unittest.TestCase):
         self.assertLess(ui.index("s.appendChild(m);"), ui.index("s.appendChild(R.cedulas);"), "las cedulas antes del combate")
         self.assertLess(ui.index("s.appendChild(R.escena);"), ui.index("s.appendChild(R.cedulas);"))
 
-    def test_un_solo_boton_de_juego_y_la_ruta_a_la_arena_sigue_valiendo(self):
-        """Hallazgo 2: «entrar y jugar» costaba dos toques de mas. `#thegame/arena` abre la Arena;
-        `#thegame` sigue abriendo el juego como siempre."""
-        cab = self._js("cabezal-rotulos.js", "assets")
-        rx = re.search(r"var RUTA = /(.+?)/;", cab)
-        self.assertTrue(rx, "falta la ruta del juego")
-        ruta = re.compile(rx.group(1).replace("\\/", "/"))
-        self.assertTrue(ruta.match("#thegame"), "#thegame ya no abre el juego")
-        self.assertEqual(ruta.match("#thegame/arena").group(1), "arena")
-        self.assertFalse(ruta.match("#thegamex"))
-        # 2026-10-05, el Soberano: «thegame es solo 1 boton». La Arena vive DENTRO (pestana Battle);
-        # `#thegame/arena` sigue valiendo como ruta, pero el cabezal lleva UNA sola puerta de juego.
-        puertas = re.findall(r"\['cab-boton thegame[^']*', [^\]]*\]", cab)
-        self.assertEqual(len(puertas), 1, f"vuelven a ser dos botones de juego: {puertas}")
-        self.assertIn("'#thegame'", puertas[0])
-        self.assertNotIn("'#thegame/arena'", cab, "la Arena vuelve al cabezal como boton propio")
-        tg = self._js("thegame.js", "assets")
-        self.assertIn("function abre(desde, pes)", tg)
-        self.assertIn("if (pes && PANEL[pes]) { muestra(pes); }", tg)
-        self.assertIn("RUTA", tg, "cerrar no reconoce la ruta nueva")
 
     def test_la_alerta_de_core_se_lee_como_juego(self):
         """Hallazgo 5: «RED ALERT» al entrar asustaba; es lore, no un error del sistema."""

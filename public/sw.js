@@ -30,7 +30,7 @@
  * tambien puede faltar del cache justo el dia que hace falta.
  */
 /* Subir VERSION o el cambio NO llega: ver `config/sw-huella.txt`. */
-const VERSION = 'preceptoros-2026-17-abds';
+const VERSION = 'preceptoros-2026-17-abdu';
 const SHELL = 'shell-' + VERSION;
 const OBRA = 'obra-' + VERSION;
 
@@ -40,7 +40,7 @@ const OBRA = 'obra-' + VERSION;
 importScripts('/sw-listas.js?v=' + VERSION);
 
 function rutasDelShell() {
-  const r = ['/', '/hitos.html', '/manifest.webmanifest'].concat(HUB);
+  const r = ['/', '/manifest.webmanifest'].concat(HUB);   // hitos.html cayo con el hub (mudanza b3)
   for (const l of IDIOMAS) for (const p of PAGINAS) r.push('/' + l + '/' + p);
   return r;
 }

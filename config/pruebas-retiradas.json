@@ -76,6 +76,221 @@
   {
    "prueba": "atlas/test_atlas.Piso.test_solo_se_entra_por_thegame",
    "cambio": "pide «P ? 'section' : 'dialog'» en vez de «el('dialog'»: en la portada el juego es una section del panel"
+  },
+  {
+   "prueba": "atlas/test_atlas.Piloto.test_el_juego_abre_sin_red_y_la_ley_sin_red_es_no_data",
+   "cambio": "pide /atlas-opina-en.json (el unico que existe) en vez de la plantilla de 9 lenguas"
+  },
+  {
+   "prueba": "PWA.test_sw_cachea_los_nuevos_assets",
+   "cambio": "pide las piezas de la portada-juego en vez de las del hub; el contenido declarado es ...ATLAS"
+  }
+ ],
+ "bloque_3": [
+  {
+   "prueba": "Estructura.test_el_codigo_de_vinculo_es_determinista",
+   "causa": "leia o exigia un fichero del hub que cayo en el bloque 3",
+   "archivo": "docs/pruebas-retiradas/mudanza-b3.py"
+  },
+  {
+   "prueba": "Estructura.test_el_agora_pide_claves_que_existen",
+   "causa": "leia o exigia un fichero del hub que cayo en el bloque 3",
+   "archivo": "docs/pruebas-retiradas/mudanza-b3.py"
+  },
+  {
+   "prueba": "Estructura.test_el_loratelier_compara_base_contra_adaptador",
+   "causa": "leia o exigia un fichero del hub que cayo en el bloque 3",
+   "archivo": "docs/pruebas-retiradas/mudanza-b3.py"
+  },
+  {
+   "prueba": "Estructura.test_el_perfil_se_registra_en_el_agora_y_no_manda_de_mas",
+   "causa": "leia o exigia un fichero del hub que cayo en el bloque 3",
+   "archivo": "docs/pruebas-retiradas/mudanza-b3.py"
+  },
+  {
+   "prueba": "Estructura.test_el_killswitch_vive_en_la_torre",
+   "causa": "leia o exigia un fichero del hub que cayo en el bloque 3",
+   "archivo": "docs/pruebas-retiradas/mudanza-b3.py"
+  },
+  {
+   "prueba": "Estructura.test_el_juego_de_puertos_no_sale_a_ninguna_red",
+   "causa": "leia o exigia un fichero del hub que cayo en el bloque 3",
+   "archivo": "docs/pruebas-retiradas/mudanza-b3.py"
+  },
+  {
+   "prueba": "Estructura.test_la_plaza_tiene_dos_pestanas_y_el_killswitch_abre",
+   "causa": "leia o exigia un fichero del hub que cayo en el bloque 3",
+   "archivo": "docs/pruebas-retiradas/mudanza-b3.py"
+  },
+  {
+   "prueba": "Estructura.test_debajo_del_cabecero_va_la_ACCION",
+   "causa": "leia o exigia un fichero del hub que cayo en el bloque 3",
+   "archivo": "docs/pruebas-retiradas/mudanza-b3.py"
+  },
+  {
+   "prueba": "Estructura.test_la_vitrina_abre_la_pagina_y_el_NO_DATA_no",
+   "causa": "leia o exigia un fichero del hub que cayo en el bloque 3",
+   "archivo": "docs/pruebas-retiradas/mudanza-b3.py"
+  },
+  {
+   "prueba": "ElTaller",
+   "causa": "clase entera: protegia una pagina o un registro del hub (ElTaller) que cayo en el bloque 3",
+   "archivo": "docs/pruebas-retiradas/mudanza-b3.py"
+  },
+  {
+   "prueba": "Doctrina.test_lo_que_el_modelo_devuelve_pasa_por_el_filtro",
+   "causa": "leia o exigia un fichero del hub que cayo en el bloque 3",
+   "archivo": "docs/pruebas-retiradas/mudanza-b3.py"
+  },
+  {
+   "prueba": "Doctrina.test_la_esquina_no_puede_bajarse_de_la_linea_del_logo",
+   "causa": "leia o exigia un fichero del hub que cayo en el bloque 3",
+   "archivo": "docs/pruebas-retiradas/mudanza-b3.py"
+  },
+  {
+   "prueba": "Doctrina.test_el_boton_de_cuenta_tiene_de_donde_sacar_su_rotulo",
+   "causa": "leia o exigia un fichero del hub que cayo en el bloque 3",
+   "archivo": "docs/pruebas-retiradas/mudanza-b3.py"
+  },
+  {
+   "prueba": "Foro",
+   "causa": "clase entera: protegia una pagina o un registro del hub (Foro) que cayo en el bloque 3",
+   "archivo": "docs/pruebas-retiradas/mudanza-b3.py"
+  },
+  {
+   "prueba": "Hub",
+   "causa": "clase entera: protegia una pagina o un registro del hub (Hub) que cayo en el bloque 3",
+   "archivo": "docs/pruebas-retiradas/mudanza-b3.py"
+  },
+  {
+   "prueba": "Cabezal.test_enlaces_identidad_publica",
+   "causa": "leia o exigia un fichero del hub que cayo en el bloque 3",
+   "archivo": "docs/pruebas-retiradas/mudanza-b3.py"
+  },
+  {
+   "prueba": "Cabezal.test_los_comandos_publicados_existen_en_el_repo_del_producto",
+   "causa": "leia o exigia un fichero del hub que cayo en el bloque 3",
+   "archivo": "docs/pruebas-retiradas/mudanza-b3.py"
+  },
+  {
+   "prueba": "Cabezal.test_la_correccion_firmada_no_sale_del_aparato",
+   "causa": "leia o exigia un fichero del hub que cayo en el bloque 3",
+   "archivo": "docs/pruebas-retiradas/mudanza-b3.py"
+  },
+  {
+   "prueba": "Cabezal.test_la_transferencia_respeta_el_movimiento_reducido",
+   "causa": "leia o exigia un fichero del hub que cayo en el bloque 3",
+   "archivo": "docs/pruebas-retiradas/mudanza-b3.py"
+  },
+  {
+   "prueba": "Cabezal.test_motor_prioriza_languagemodel",
+   "causa": "leia o exigia un fichero del hub que cayo en el bloque 3",
+   "archivo": "docs/pruebas-retiradas/mudanza-b3.py"
+  },
+  {
+   "prueba": "Traducciones.test_el_bloque_de_estado_va_DESPUES_de_la_pregunta",
+   "causa": "leia o exigia un fichero del hub que cayo en el bloque 3",
+   "archivo": "docs/pruebas-retiradas/mudanza-b3.py"
+  },
+  {
+   "prueba": "Traducciones.test_un_turno_que_el_antidoto_deja_VACIO_se_cuenta",
+   "causa": "leia o exigia un fichero del hub que cayo en el bloque 3",
+   "archivo": "docs/pruebas-retiradas/mudanza-b3.py"
+  },
+  {
+   "prueba": "Traducciones.test_los_rotulos_de_FIRMAR_dicen_lo_mismo_que_su_fuente",
+   "causa": "leia o exigia un fichero del hub que cayo en el bloque 3",
+   "archivo": "docs/pruebas-retiradas/mudanza-b3.py"
+  },
+  {
+   "prueba": "Traducciones.test_la_cadena_de_FEEDBACK_esta_en_las_ocho",
+   "causa": "leia o exigia un fichero del hub que cayo en el bloque 3",
+   "archivo": "docs/pruebas-retiradas/mudanza-b3.py"
+  },
+  {
+   "prueba": "Comunidad",
+   "causa": "clase entera: protegia una pagina o un registro del hub (Comunidad) que cayo en el bloque 3",
+   "archivo": "docs/pruebas-retiradas/mudanza-b3.py"
+  },
+  {
+   "prueba": "Perfil",
+   "causa": "clase entera: protegia una pagina o un registro del hub (Perfil) que cayo en el bloque 3",
+   "archivo": "docs/pruebas-retiradas/mudanza-b3.py"
+  },
+  {
+   "prueba": "Reescrituras.test_los_campos_nuevos_van_al_final",
+   "causa": "leia o exigia un fichero del hub que cayo en el bloque 3",
+   "archivo": "docs/pruebas-retiradas/mudanza-b3.py"
+  },
+  {
+   "prueba": "Reescrituras.test_lo_capturado_se_dice_y_se_puede_apagar",
+   "causa": "leia o exigia un fichero del hub que cayo en el bloque 3",
+   "archivo": "docs/pruebas-retiradas/mudanza-b3.py"
+  },
+  {
+   "prueba": "Reescrituras.test_habla_las_ocho_lenguas_del_sitio",
+   "causa": "leia o exigia un fichero del hub que cayo en el bloque 3",
+   "archivo": "docs/pruebas-retiradas/mudanza-b3.py"
+  },
+  {
+   "prueba": "LoQueNoSeVeConElGateVerde.test_ningun_modelo_publicado_esta_fuera_del_inventario_sellado",
+   "causa": "leia o exigia un fichero del hub que cayo en el bloque 3",
+   "archivo": "docs/pruebas-retiradas/mudanza-b3.py"
+  },
+  {
+   "prueba": "LoQueNoSeVeConElGateVerde.test_los_medios_no_se_piden_al_cargar",
+   "causa": "leia o exigia un fichero del hub que cayo en el bloque 3",
+   "archivo": "docs/pruebas-retiradas/mudanza-b3.py"
+  },
+  {
+   "prueba": "LaAppAUnClic",
+   "causa": "clase entera: protegia una pagina o un registro del hub (LaAppAUnClic) que cayo en el bloque 3",
+   "archivo": "docs/pruebas-retiradas/mudanza-b3.py"
+  },
+  {
+   "prueba": "LaColaDelRack",
+   "causa": "clase entera: protegia una pagina o un registro del hub (LaColaDelRack) que cayo en el bloque 3",
+   "archivo": "docs/pruebas-retiradas/mudanza-b3.py"
+  },
+  {
+   "prueba": "ComentarEnTodasLasPaginas.test_cada_pagina_de_las_nueve_lenguas_lleva_el_comentario",
+   "causa": "leia o exigia un fichero del hub que cayo en el bloque 3",
+   "archivo": "docs/pruebas-retiradas/mudanza-b3.py"
+  },
+  {
+   "prueba": "Estructura.test_el_onboarding_es_alcanzable_y_completo",
+   "causa": "protegia el hub (chat webllm, onboarding, familias de JSON del hub o sus claves i18n), que cayo en el bloque 3",
+   "archivo": "docs/pruebas-retiradas/mudanza-b3.py"
+  },
+  {
+   "prueba": "Doctrina.test_solo_un_cdn_y_es_webllm",
+   "causa": "protegia el hub (chat webllm, onboarding, familias de JSON del hub o sus claves i18n), que cayo en el bloque 3",
+   "archivo": "docs/pruebas-retiradas/mudanza-b3.py"
+  },
+  {
+   "prueba": "Traducciones.test_las_claves_mudadas_estan_donde_dicen_estar",
+   "causa": "protegia el hub (chat webllm, onboarding, familias de JSON del hub o sus claves i18n), que cayo en el bloque 3",
+   "archivo": "docs/pruebas-retiradas/mudanza-b3.py"
+  },
+  {
+   "prueba": "LoQueNoSeVeConElGateVerde.test_cada_pagina_con_modelo_ensena_las_medidas_del_turno",
+   "causa": "protegia el hub (chat webllm, onboarding, familias de JSON del hub o sus claves i18n), que cayo en el bloque 3",
+   "archivo": "docs/pruebas-retiradas/mudanza-b3.py"
+  },
+  {
+   "prueba": "LasTresFamilias.test_las_tres_familias_estan_en_las_ocho_lenguas",
+   "causa": "protegia el hub (chat webllm, onboarding, familias de JSON del hub o sus claves i18n), que cayo en el bloque 3",
+   "archivo": "docs/pruebas-retiradas/mudanza-b3.py"
+  },
+  {
+   "prueba": "LasTresFamilias.test_las_seis_lenguas_no_respondidas_lo_declaran",
+   "causa": "protegia el hub (chat webllm, onboarding, familias de JSON del hub o sus claves i18n), que cayo en el bloque 3",
+   "archivo": "docs/pruebas-retiradas/mudanza-b3.py"
+  },
+  {
+   "prueba": "atlas/test_atlas.RedisenoDoogee.test_un_solo_boton_de_juego_y_la_ruta_a_la_arena_sigue_valiendo",
+   "causa": "protegia el boton de juego del cabezal del hub (cabezal-rotulos.js); la portada ya es el juego",
+   "archivo": "docs/pruebas-retiradas/mudanza-b3.py"
   }
  ]
 }
