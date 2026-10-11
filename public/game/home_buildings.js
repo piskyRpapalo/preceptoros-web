@@ -21,9 +21,13 @@
   var ESQUEMA = 'atlas.casa/1';
   var OPCIONES = { paleta: ['abismo', 'coral', 'kelp', 'perla'], estilo: ['cupula', 'aguja', 'concha'], emblema: [0, 1, 2],
                    alianzas: ['abiertas', 'cerradas'], comercio: [true, false],
-                   formacion: ['agresiva', 'defensiva', 'flanqueo'] };
+                   formacion: ['agresiva', 'defensiva', 'flanqueo'],
+                   /* P10: la bandera, de la paleta cerrada de `valores.banderas` (null = sin bandera). */
+                   bandera: [null, 'teal', 'ambar', 'hielo', 'violeta', 'coral', 'kelp', 'oro', 'rosa'] };
   var PROHIBIDO = /(^|[^0-9])\/[a-z]|@|https?:|www\.|\b\d{1,3}(\.\d{1,3}){3}\b|\d{6,}/i;
-  function base() { return { esquema: ESQUEMA, paleta: 'abismo', estilo: 'cupula', emblema: 0, alianzas: 'abiertas', comercio: true, formacion: 'agresiva', lema: '' }; }
+  function base() { return { esquema: ESQUEMA, paleta: 'abismo', estilo: 'cupula', emblema: 0, alianzas: 'abiertas', comercio: true, formacion: 'agresiva', lema: '', bandera: null }; }
+  /* Una casa guardada antes de P10 no tiene bandera: entra con null (sin bandera), no se pierde. */
+  function migra(c) { if (c && typeof c === 'object' && !('bandera' in c)) { c.bandera = null; } return c; }
   /* La forma de una casa: '' si vale, o la causa. Pura: la usan la web y los casos de node. */
   function forma(c) {
     if (!c || typeof c !== 'object' || c.esquema !== ESQUEMA) { return 'esquema'; }
@@ -34,7 +38,7 @@
     if (PROHIBIDO.test(c.lema)) { return 'lema: sin datos personales (correo, URL, ruta, IP o telefono)'; }
     return '';
   }
-  if (typeof module === 'object' && module.exports) { module.exports = { forma: forma, base: base, OPCIONES: OPCIONES, ESQUEMA: ESQUEMA }; return; }
+  if (typeof module === 'object' && module.exports) { module.exports = { forma: forma, base: base, migra: migra, OPCIONES: OPCIONES, ESQUEMA: ESQUEMA }; return; }
 
   var K = raiz.AtlasCanon, G = raiz.AtlasGacha, S = raiz.AtlasCasaEscena, TX = null, R = {}, casa = base(), pub = null, escena = null;
   /* Las partes: [id, icono, a donde lleva, la cifra de `medidas()` que la explica]. */
@@ -155,6 +159,7 @@
     fo.appendChild(grupo('emblema', OPCIONES.emblema, function (v) { return T('emblema_n').replace('{n}', v + 1); }));
     fo.appendChild(grupo('alianzas', OPCIONES.alianzas)); fo.appendChild(grupo('comercio', OPCIONES.comercio));
     fo.appendChild(grupo('formacion', OPCIONES.formacion));
+    fo.appendChild(grupo('bandera', OPCIONES.bandera, function (v) { return T('bandera_' + (v || 'ninguna')); }));
     var l = el('label', 'casa-lema', T('p_lema') + ' '), i = el('input'); i.maxLength = 32; i.value = casa.lema; l.appendChild(i); fo.appendChild(l);
     var nota = el('p', 'casa-nota', T('p_nota')); nota.setAttribute('role', 'status'); fo.appendChild(nota);
     i.addEventListener('change', function () {
@@ -216,7 +221,7 @@
     pintaPartes(); setInterval(pintaPartes, 1500);
     var I = raiz.Identity;
     (I && I.quien && I.quien() ? I.publica().then(function (k) { pub = k; }, function () {}) : Promise.resolve())
-      .then(lee).then(function (g) { if (g && !forma(g)) { casa = g; } });
+      .then(lee).then(function (g) { g = migra(g); if (g && !forma(g)) { casa = g; } });
     escena = S.crea(R.lienzo, { casa: function () { return { paleta: casa.paleta, estilo: casa.estilo, emblema: emblema() }; },
                                 estado: estado, cangrejo: cangrejo, anclas: anclas });
   }

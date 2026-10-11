@@ -21,7 +21,7 @@
   var V = EN_NODE ? require('./valores.js') : raiz.AtlasValores;
   var G = EN_NODE ? require('./gacha.js') : raiz.AtlasGacha;
   var K = EN_NODE ? require('./canon.js') : raiz.AtlasCanon;
-  var TA = V.taller, LI = TA.lija, CERO = new Array(65).join('0');
+  var TA = V.taller, LI = TA.lija, BA = V.banderas, CERO = new Array(65).join('0');
 
   /* Las aristas de una tropa: las suyas, o MEDIDAS si es de la version anterior (sin el campo). */
   function aristasDe(t) { return t.aristas || G.aristas(t); }
@@ -52,6 +52,13 @@
       if (nv > LI.max) { throw new Error('tope'); }
       if (estado.saldo < coste(nv)) { throw new Error('sin residuo'); }
       r.semilla = op.semilla; r.stat = op.stat; r.nivel = nv; r.gramos = -coste(nv);
+    } else if (op.op === 'tinte') {
+      /* P10 · PRISMA DE BANDERA: tenir una onda al color de tu bandera (de la paleta cerrada). Solo aspecto. */
+      if (!(op.bandera in BA)) { throw new Error('bandera'); }
+      if (estado.disueltas[op.semilla]) { throw new Error('desintegrada'); }
+      if (estado.tintes[op.semilla] === op.bandera) { throw new Error('ya tenida'); }
+      if (estado.saldo < TA.tinte.coste) { throw new Error('sin residuo'); }
+      r.semilla = op.semilla; r.bandera = op.bandera; r.gramos = -TA.tinte.coste;
     } else { throw new Error('op'); }
     r.saldo = estado.saldo + r.gramos;
     return r;
@@ -61,17 +68,18 @@
      Comprueba el enlace (prev = sha256 del recibo anterior), la regla de cada operacion, el saldo y que la
      clave sea siempre la misma. Las FIRMAS las comprueba quien tiene el verificador (`verificaFirmas`). */
   function estado(cadena) {
-    var e = { saldo: 0, lijas: {}, disueltas: {}, ultimo: CERO, clave: null, n: 0 };
+    var e = { saldo: 0, lijas: {}, disueltas: {}, tintes: {}, ultimo: CERO, clave: null, n: 0 };
     for (var i = 0; i < (cadena || []).length; i++) {
       var r = cadena[i] && cadena[i].recibo, esperado;
       if (!r || r.esquema !== 'atlas.taller/1' || r.prev !== e.ultimo) { return { error: 'eslabon ' + i + ': enlace' }; }
       if (e.clave && r.clave_publica !== e.clave) { return { error: 'eslabon ' + i + ': otra clave' }; }
       try {
         esperado = recibo(e, r.op === 'desintegra' ? { op: r.op, tropa: { semilla: r.semilla, tc: r.tc, aristas: r.aristas, armonicos: [] } }
-          : { op: r.op, semilla: r.semilla, stat: r.stat }, r.clave_publica);
+          : { op: r.op, semilla: r.semilla, stat: r.stat, bandera: r.bandera }, r.clave_publica);
       } catch (x) { return { error: 'eslabon ' + i + ': ' + x.message }; }
       if (JSON.stringify(esperado) !== JSON.stringify(r)) { return { error: 'eslabon ' + i + ': cuentas' }; }
       if (r.op === 'desintegra') { e.disueltas[r.semilla] = true; }
+      else if (r.op === 'tinte') { e.tintes[r.semilla] = r.bandera; }
       else { e.lijas[r.semilla] = e.lijas[r.semilla] || {}; e.lijas[r.semilla][r.stat] = r.nivel; }
       e.saldo = r.saldo; e.clave = r.clave_publica; e.ultimo = K.sha(JSON.stringify(r)); e.n++;
     }

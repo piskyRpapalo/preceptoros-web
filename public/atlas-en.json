@@ -291,6 +291,10 @@
     "taller_h": "Workshop dust",
     "taller_nota": "Dissolving a wave gives static residue: 1 g per edge, three times as much for a Leviathan. Sanding raises one stat and costs more at each level; it never adds edges (that is a new summon). Nothing is bought. Sanded stats count in practice against the NPC places; in duels between people they do not count yet.",
     "taller_cadena": "Receipt chain (atlas.taller/1)",
-    "taller_firma_rota": "a saved receipt does not verify"
+    "taller_firma_rota": "a saved receipt does not verify",
+    "taller_hecho_t": "Tinted to your flag.",
+    "taller_tinte": "Tint to my flag · −{c} g",
+    "taller_sin_bandera": "Pick a flag in Customize to tint",
+    "bandera_mapa": "your flag"
   }
 }

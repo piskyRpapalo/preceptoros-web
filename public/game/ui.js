@@ -73,7 +73,9 @@
     cap.appendChild(el('small', 'atlas-stats', G.STATS.filter(function (k) { return t.stats[k]; }).map(function (k) { return k.slice(0, 3) + ' ' + t.stats[k]; }).join(' · ')));
     /* SU CARACTER Y SU VOZ: el color de la traza sale de su caracter; el boton suena su timbre. */
     var k = G.caracter(t);
-    c.style.setProperty('--onda', ['hsl(35 75% 58%)', 'hsl(140 45% 55%)', 'hsl(275 55% 68%)', 'hsl(210 12% 68%)'][k.color]);
+    /* P10: tenida a tu bandera, se pinta de su tono (lo eligio la persona); si no, el de su caracter. */
+    var tn = window.AtlasTallerUI && window.AtlasTallerUI.tono(t.semilla);
+    c.style.setProperty('--onda', tn != null ? 'hsl(' + tn + ' 85% 62%)' : ['hsl(35 75% 58%)', 'hsl(140 45% 55%)', 'hsl(275 55% 68%)', 'hsl(210 12% 68%)'][k.color]);
     c.dataset.caracter = k.color + '-' + k.pulso + '-' + k.tendencia;
     var oir = boton(T('sonido'));
     oir.addEventListener('click', function () { oye(t); });
@@ -83,9 +85,7 @@
     return f;
   }
 
-  /* LA VOZ EXACTA (2026-09-28): `atlas-voz.js` calcula con enteros los mismos bytes en cada
-     aparato. Se carga al pulsar (no pesa en la puerta del juego) y el SW la guarda para el modo
-     sin red. Si no llega (sin red la primera vez), suena el oscilador y se dice que es aproximada. */
+  /* LA VOZ EXACTA: `atlas-voz.js`, mismos bytes en cada aparato; baja al pulsar. Sin ella, oscilador. */
   function oye(t) {
     var V = window.AtlasVoz;
     if (V) {
@@ -299,6 +299,6 @@
   }
 
   /* P9: el Taller retira una tropa SOLO con su recibo firmado (lo verifica `army.retira`). */
-  window.AtlasIncubadora = { monta: monta, army: function () { return army && army.lista(); },
+  window.AtlasIncubadora = { monta: monta, army: function () { return army && army.lista(); }, repinta: function () { if (R.army) { pintaArmy(); } },
     retira: function (rec, f) { return army.retira(rec, f).then(function (x) { pintaArmy(); return x; }); } };
 })();
