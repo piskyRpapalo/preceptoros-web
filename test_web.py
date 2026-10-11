@@ -5490,6 +5490,18 @@ class Portada(unittest.TestCase):
                 self.assertEqual(sobran, set(), f"{l} carga lo que el juego no pide")
                 self.assertIn("/assets/thegame.js", guiones)
 
+    def test_la_pagina_se_reordena_no_carga(self):
+        """J10: cambiar de pestana va en startViewTransition, con el cambio de siempre como reserva y SIN
+        animacion con movimiento reducido; el contenido final lo pone muestraYa, el mismo de antes."""
+        tg = (PUBLICO / "assets" / "thegame.js").read_text(encoding="utf-8")
+        self.assertIn("d.startViewTransition && !rm", tg)
+        self.assertIn("else { muestraYa(id, foco); }", tg)
+        self.assertIn("prefers-reduced-motion: reduce", tg[tg.index("function muestra(id"):tg.index("function muestraYa")])
+        css = (PUBLICO / "assets" / "eaa-art12-local-first-surface.css").read_text(encoding="utf-8")
+        self.assertIn("@media (prefers-reduced-motion:reduce){::view-transition-old(root),::view-transition-new(root){animation:none}}", css)
+        for red in ("fetch(", "XMLHttpRequest"):
+            self.assertNotIn(red, tg[tg.index("function muestra(id"):tg.index("function muestraYa")])
+
     def test_el_juego_se_monta_en_el_panel_no_encima(self):
         tg = (PUBLICO / "assets" / "thegame.js").read_text(encoding="utf-8")
         self.assertIn("var P = document.getElementById('juego-panel');", tg)

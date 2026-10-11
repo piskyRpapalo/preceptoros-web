@@ -205,7 +205,7 @@
         if (m <= 0) { return; }
         var dx = 0;
         if (!quieto && u.tiembla !== null && vt - u.tiembla < 260) { dx = Math.sin(vt * 0.12) * 4 * dpr * (1 - (vt - u.tiembla) / 260); }
-        var gira=quieto?0:t*.00045*(1+u.vel/12)*(u.lado?1:-1)*(acabado&&u.vida?3:1),respira=quieto?1:1+.035*Math.sin(t*.002+idx),fo=u.flash*(1+Math.sin(t*.001*u.flash*100)*.5);
+        var gira=quieto?0:t*.00045*(1+u.vel/12)*(u.lado?1:-1)*(acabado&&u.vida?3:1),respira=quieto?1:1+.035*Math.sin(t*.002+idx),fo=u.flash*(1+Math.sin(t*.002*Math.PI*(O.pulsoNota?O.pulsoNota((((raiz.AtlasValores||{}).sonidos||{}).pop||{}).f||660):4))*.5);
         figura(g,G.espectro(u.t),u.x+dx,u.y,u.r,{color:u.color,giro:gira,alfa:m,grosor:1.8*dpr,brillo:u.brillo+fo*18*dpr,t:t,desafina: Math.min(1, (1 - u.vida / u.max)*.8+u.flash*.35),escala:respira*(.4+.6*m),vidaFraccion:u.vida/u.max,arm:u.arm});
         u.flash = Math.max(0, u.flash - 0.05);
       });

@@ -194,6 +194,14 @@
     g.imageSmoothingEnabled = true;
   }
 
+  /* M17 M3 «respira al beat»: la nota de una receta FM bajada por OCTAVAS hasta lo que el ojo ve
+     (2-6 Hz). El destello del golpe late en la misma clase de altura que suena (pop 660 -> 5,16 Hz). */
+  function pulsoNota(f) {
+    var hz = Math.abs(f) || 4;
+    while (hz >= 6) { hz /= 2; }
+    while (hz < 2) { hz *= 2; }
+    return hz;
+  }
   function limite(arm) {
     var l = 0;
     arm.forEach(function (h) { l += Math.max(Math.abs(h[1]), Math.abs(h[2])); });
@@ -312,7 +320,7 @@
   }
 
   raiz.AtlasOnda = {
-    dibuja: dibuja, sprite: sprite, pegaSprite: pegaSprite, tono: tono, riqueza: riqueza, medidor: medidor, limite: limite,
+    dibuja: dibuja, pulsoNota: pulsoNota, sprite: sprite, pegaSprite: pegaSprite, tono: tono, riqueza: riqueza, medidor: medidor, limite: limite,
     /* MOVIMIENTO 1: Melt de batalla */
     applyMelt: applyMelt,
     /* MOVIMIENTO 2: Color = Vida */

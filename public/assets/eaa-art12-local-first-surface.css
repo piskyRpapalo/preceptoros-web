@@ -17,3 +17,12 @@ main.juego-panel{max-width:none;width:auto;margin:0;padding:0;background:none;bo
 .juego-panel .thegame-juego{max-width:none}
 .juego-panel .thegame-barra{top:3.2rem;margin-inline:calc(-1 * clamp(.5rem,2vw,1.5rem))}
 .juego-panel .thegame-t{display:none}
+/* J10 · la pagina se reordena: el cabezal y las pestanas no se mueven (nombre propio); el panel se
+   desliza con el resorte del canon. Movimiento reducido: ni se pide la transicion (thegame.js). */
+.cab-juego{view-transition-name:cabezal-juego}
+.juego-panel .thegame-pestanas{view-transition-name:pestanas-juego}
+::view-transition-old(root){animation:.22s ease-in both salida-zona}
+::view-transition-new(root){animation:.42s cubic-bezier(.34,1.56,.64,1) both entrada-zona}
+@keyframes salida-zona{to{opacity:0;transform:translateX(-6%) scale(.98)}}
+@keyframes entrada-zona{from{opacity:0;transform:translateX(8%) scale(.98)}}
+@media (prefers-reduced-motion:reduce){::view-transition-old(root),::view-transition-new(root){animation:none}}

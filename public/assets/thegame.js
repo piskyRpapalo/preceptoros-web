@@ -84,7 +84,7 @@
     ['arena', '\u2694\uFE0E', ''],
     ['partida', '\u2139\uFE0E', '.atlas-guardado|.thegame-exporta|.thegame-opina|.atlas-hud-farmeo|#atlas-juego > .no-data|.atlas-pie']];
   /* LA CASA, a demanda y detras del Army (usa la gacha para tu emblema). */
-  var CASA = [['/game/canon.js'], ['/game/escena.js'], ['/game/wave_render.js'], ['/game/gdpr-art25-ephemeral-crab.js'], ['/game/home_base_scene.js'], ['/game/home_buildings.js'], ['/game/summon_reveal.js']];
+  var CASA = [['/game/canon.js'], ['/game/wave_render.js'], ['/game/escena.js'], ['/game/gdpr-art25-ephemeral-crab.js'], ['/game/home_base_scene.js'], ['/game/home_buildings.js'], ['/game/summon_reveal.js']];
   /* LO TECNICO, SIEMPRE PLEGADO (Soberano: «son textos que asustan a usuarios no tecnicos»): el
      JSON de la carta, las leyes medidas, la semilla que no es VRF, los valores provisionales y el
      pie. No se borran, porque son la prueba: se ven al abrir «Technical details». */
@@ -106,7 +106,15 @@
 
   /* Cambiar de pestana vuelve arriba; el foco solo se mueve con las flechas (con el dedo o el raton
      ya esta en el boton pulsado, y moverlo a mano pintaria el anillo del teclado). */
+  /* LA PAGINA SE REORDENA, NO CARGA (J10, plan de ronda firmado): cambiar de pestana va dentro de
+     document.startViewTransition, que fotografia el antes y el despues y los morfea. Donde no existe,
+     o con movimiento reducido, el cambio es el de siempre, inmediato. El DOM final es EL MISMO. */
   function muestra(id, foco) {
+    var d = document, rm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (id !== actual && d.startViewTransition && !rm && capa && capa.isConnected) { d.startViewTransition(function () { muestraYa(id, foco); }); }
+    else { muestraYa(id, foco); }
+  }
+  function muestraYa(id, foco) {
     if (id !== actual) { capa.scrollTop = 0; }
     actual = id;
     Object.keys(PANEL).forEach(function (k) {
