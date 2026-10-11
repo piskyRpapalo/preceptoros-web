@@ -23,7 +23,9 @@
     var inc = window.AtlasIncubadora, l = null;
     try { l = inc && inc.army ? inc.army() : null; } catch (x) { l = null; }
     var L = window.AtlasTallerUI ? window.AtlasTallerUI.lijas() : {};  /* P9: lo lijado, solo en practica */
-    return (l || []).map(function (u) { var s = u.adopcion.tropa.semilla; return { tc: u.adopcion.tropa.tc, semilla: s, lija: L[s] }; });
+    /* Una tropa sin lijar NO lleva `lija` (antes iba `lija: undefined`, el canon lo rechaza y la batalla con tropas
+       propias no arrancaba: medido en el Doogee, 2026-10-11). El combate ya lee la ausencia como «sin lijar». */
+    return (l || []).map(function (u) { var s = u.adopcion.tropa.semilla, t = { tc: u.adopcion.tropa.tc, semilla: s }; if (L[s]) { t.lija = L[s]; } return t; });
   }
   function practica() {
     return [0, 1, 2].map(function (i) { return { tc: 'tc1', semilla: K.sha('atlas.practica/1:' + (pub || 'anon') + ':' + i) }; });
