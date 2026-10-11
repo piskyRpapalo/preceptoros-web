@@ -295,6 +295,8 @@
      traduce a las MISMAS llamadas que hacen los botones. Devuelve el evento
      del motor (ok/fallo), o null si no hay partida en marcha. */
   function aplica(a) {
+    /* `mover` es la flecha del mapa (R2c): la camara la decide, no el motor, y no entra en la partida. */
+    if (a && a.accion === 'mover') { return window.AtlasMar && window.AtlasMar.mueve ? window.AtlasMar.mueve(a.dir) : null; }
     if (!E || !activo) { return null; }
     var f = { recoger: M.recoger, reparar: M.reparar, aplazar: M.aplazar }[a.accion];
     if (f) { actua(f(E)); } else if (a.accion === 'bajar_a') { baja(a.banda); } else { return a.accion === 'esperar' ? {} : null; }

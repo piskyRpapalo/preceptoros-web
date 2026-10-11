@@ -19,7 +19,21 @@
   var E = window.AtlasEscena, K = window.AtlasCanon, N = window.AtlasNiebla, C = window.AtlasCamara;
   var F = (window.AtlasValores && window.AtlasValores.fluidez) || {}, O = window.AtlasOnda || {};
   /* Las teselas (terreno y niebla) las pinta `mar-fondo.js`: una sola fuente para el mapa y la portada. */
-  var MF = window.AtlasMarFondo, VE = 820, PASO = 90;
+  var MF = window.AtlasMarFondo, VE = 820, PASO = 90, VIVO = null;
+  /* LAS FLECHAS SON ACCIONES DEL PILOTO (R2c): `mover <dir>` del enum `atlas.accion/1`, una lista, no dos.
+     Aqui solo su vector y su icono; la lista de direcciones es la del piloto (`AtlasPiloto.DIRS`). */
+  var VEC = { izq: [-1, 0], arr: [0, -1], aba: [0, 1], der: [1, 0], casa: [0, 0] }, ICO = { izq: '◀', arr: '▲', aba: '▼', der: '▶', casa: '⌂' };
+  function dirs() { return (window.AtlasPiloto && window.AtlasPiloto.DIRS) || ['izq', 'arr', 'aba', 'der', 'casa']; }
+  /* La flecha de la persona entra por la MISMA puerta que la de la IA: `AtlasJuego.aplica`. */
+  function flecha(dir) {
+    var a = { esquema: 'atlas.accion/1', accion: 'mover', dir: dir, origen: 'humano' }, J = window.AtlasJuego;
+    return J && J.aplica ? J.aplica(a) : mueve(dir);
+  }
+  /* Lo que ejecuta `aplica` para `mover`: un salto de la camara del mapa vivo; si choca, `fallo`. */
+  function mueve(dir) {
+    if (!VIVO || !VEC[dir]) { return null; }
+    return { tipo: 'mover', dir: dir, resultado: VIVO.mueveDir(dir) ? 'fallo' : 'ok' };
+  }
   var ANILLO = N.ANILLO;
 
   /* npc_chunk es de clase CALIDAD (valores.semantica): solo cuando la calidad elegida baja de Maxima. */
@@ -47,12 +61,11 @@
     /* --- los mandos: flechas grandes, volver a casa y el aviso ------------------------------------ */
     var mandos = el('div', 'mapa-mandos'), aviso = el('p', 'mapa-aviso');
     aviso.setAttribute('role', 'status');
-    [['mapa_izq', '◀', -1, 0], ['mapa_arr', '▲', 0, -1], ['mapa_aba', '▼', 0, 1], ['mapa_der', '▶', 1, 0], ['mapa_casa', '⌂', 0, 0]]
-      .forEach(function (b) {
-        var x = el('button', 'boton-sec mapa-mando', b[1]); x.type = 'button'; x.setAttribute('aria-label', f.texto(b[0]));
-        x.addEventListener('click', function () { if (b[0] === 'mapa_casa') { aCasa(true); } else { mueve(b[2] * PASO * 2.2, b[3] * PASO * 2.2); } });
-        mandos.appendChild(x);
-      });
+    dirs().forEach(function (d) {
+      var x = el('button', 'boton-sec mapa-mando', ICO[d]); x.type = 'button'; x.setAttribute('aria-label', f.texto('mapa_' + d));
+      x.addEventListener('click', function () { flecha(d); });
+      mandos.appendChild(x);
+    });
     c.parentNode.insertBefore(mandos, c.nextSibling); c.parentNode.insertBefore(aviso, mandos.nextSibling);
     c.tabIndex = 0;
 
@@ -73,7 +86,13 @@
       var t = performance.now();
       if (t - avisado > 1500) { avisado = t; aviso.textContent = f.texto('mapa_niebla'); }
     }
-    function mueve(dx, dy) { movido = true; if (C.empuja(cam, dx, dy, circ, quieto())) { choca(); } }
+    /* Un salto por accion `mover`: devuelve true si choco con la niebla. */
+    function mueveDir(d) {
+      if (d === 'casa') { aCasa(true); return false; }
+      movido = true; var v = VEC[d], c = C.empuja(cam, v[0] * PASO * 2.2, v[1] * PASO * 2.2, circ, quieto());
+      if (c) { choca(); }
+      return c;
+    }
 
     /* --- dibujo ------------------------------------------------------------------------------------ */
     function curva(a, b, s) {
@@ -219,13 +238,14 @@
     c.addEventListener('pointerup', suelta);
     c.addEventListener('pointercancel', function () { arrastre = null; });
     c.addEventListener('keydown', function (ev) {
-      var d = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] }[ev.key];
+      var d = { ArrowLeft: 'izq', ArrowRight: 'der', ArrowUp: 'arr', ArrowDown: 'aba', Home: 'casa' }[ev.key];
       if (!d) { return; }
-      ev.preventDefault(); mueve(d[0] * PASO, d[1] * PASO);
+      ev.preventDefault(); flecha(d);
     });
     raf = requestAnimationFrame(pinta);
-    return { para: function () { cancelAnimationFrame(raf); }, camara: function () { return cam; }, despejado: function () { return circ; } };
+    VIVO = { mueveDir: mueveDir };
+    return { para: function () { cancelAnimationFrame(raf); VIVO = null; }, camara: function () { return cam; }, despejado: function () { return circ; } };
   }
 
-  window.AtlasMar = { ANILLO: ANILLO, crea: crea, casas: casas };
+  window.AtlasMar = { ANILLO: ANILLO, crea: crea, casas: casas, mueve: mueve, flecha: flecha };
 })();

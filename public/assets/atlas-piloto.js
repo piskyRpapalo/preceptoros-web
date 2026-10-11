@@ -2,9 +2,15 @@
 
    UNA REGLA FIJA, NO UN MODELO. Lee la instantanea (`atlas.instantanea/1`,
    la misma puerta que tendra la guia) y propone UNA accion del enum cerrado
-   `atlas.accion/1`: esperar, recoger, reparar, aplazar o bajar_a <banda>. Son
-   las mismas acciones que tiene la persona; ninguna toca valor, claves ni
-   red. Proponer no es hacer: quien decide si se puede es el motor.
+   `atlas.accion/1`: esperar, recoger, reparar, aplazar, bajar_a <banda> o
+   mover <dir>. Son las mismas acciones que tiene la persona; ninguna toca
+   valor, claves ni red. Proponer no es hacer: quien decide si se puede es el
+   motor (y, para `mover`, la camara del mapa, que choca con la niebla).
+
+   MOVER (R2c, plan «el refresco», 2026-10-11): las flechas del mapa SON esta
+   accion, «una lista, no dos»: la misma flecha mueve a la persona y a la IA
+   del laboratorio (ideas6oct:1756, flechas tamano-AI). La regla base nunca
+   la propone: moverse no cambia la partida.
 
    ES LA LINEA BASE. Un LoRA del juego solo entra si le gana a esta regla en
    el arnes (`atlas/arnes_piloto.mjs`), con las mismas leyes y el mismo
@@ -15,8 +21,9 @@
 (function (raiz) {
   'use strict';
 
-  var ACCIONES = ['esperar', 'recoger', 'reparar', 'aplazar', 'bajar_a'];
+  var ACCIONES = ['esperar', 'recoger', 'reparar', 'aplazar', 'bajar_a', 'mover'];
   var BANDAS = ['arrecife', 'ruinas', 'bosque', 'nucleo'];
+  var DIRS = ['izq', 'arr', 'aba', 'der', 'casa'];
   /* Las etiquetas de profundidad de la instantanea, en el orden de BANDAS. */
   var ETIQUETAS = ['0-50', '50-150', '150-300', '300+'];
 
@@ -60,11 +67,12 @@
   function valida(a) {
     if (!a || a.esquema !== 'atlas.accion/1') { return false; }
     if (ACCIONES.indexOf(a.accion) < 0) { return false; }
-    if (a.accion === 'bajar_a') { return BANDAS.indexOf(a.banda) >= 0; }
-    return !('banda' in a);
+    if (a.accion === 'bajar_a') { return BANDAS.indexOf(a.banda) >= 0 && !('dir' in a); }
+    if (a.accion === 'mover') { return DIRS.indexOf(a.dir) >= 0 && !('banda' in a); }
+    return !('banda' in a) && !('dir' in a);
   }
 
-  var AtlasPiloto = { ACCIONES: ACCIONES, BANDAS: BANDAS, decide: decide, valida: valida };
+  var AtlasPiloto = { ACCIONES: ACCIONES, BANDAS: BANDAS, DIRS: DIRS, decide: decide, valida: valida };
   if (typeof module === 'object' && module.exports) { module.exports = AtlasPiloto; }
   else { raiz.AtlasPiloto = AtlasPiloto; }
 })(this);

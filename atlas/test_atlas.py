@@ -1689,12 +1689,15 @@ class MapaMovible(unittest.TestCase):
     def test_se_mueve_con_dedo_teclado_y_botones_y_dice_el_choque(self):
         m = self._js("mar.js")
         for pieza in ("addEventListener('pointerdown'", "setPointerCapture", "addEventListener('keydown'", "ArrowLeft",
-                      "x.setAttribute('aria-label', f.texto(b[0]))", "aviso.setAttribute('role', 'status')",
+                      "x.setAttribute('aria-label', f.texto('mapa_' + d))", "aviso.setAttribute('role', 'status')",
+                      "J.aplica(a)", "accion: 'mover'", "window.AtlasPiloto.DIRS",
                       "f.texto('mapa_niebla')", "f.texto(casa ? 'mapa_en_casa' : 'mapa_sin_casa')", "C.arrastra(cam,", "quieto()"):
             with self.subTest(pieza=pieza):
                 self.assertIn(pieza, m)
         tx = json.loads((PUBLICO / "atlas-arena-en.json").read_text(encoding="utf-8"))["ui"]
-        for k in re.findall(r"\['(mapa_\w+)', '", m) + ["mapa_niebla", "mapa_en_casa", "mapa_sin_casa", "mapa_medido"]:
+        piloto = (PUBLICO / "assets" / "atlas-piloto.js").read_text(encoding="utf-8")
+        dirs = json.loads(re.search(r"var DIRS = (\[[^\]]*\])", piloto).group(1).replace("'", '"'))
+        for k in ["mapa_" + d for d in dirs] + ["mapa_niebla", "mapa_en_casa", "mapa_sin_casa", "mapa_medido"]:
             with self.subTest(clave=k):
                 self.assertTrue(tx.get(k), k)
         self.assertIn("Fog", tx["mapa_niebla"])

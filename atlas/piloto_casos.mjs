@@ -63,6 +63,20 @@ caso('piloto: valida rechaza lo que no es del enum', () =>
   !P.valida({ esquema: 'atlas.accion/1', accion: 'bajar_a', origen: 'piloto_base' }) &&
   !P.valida({ esquema: 'atlas.accion/1', accion: 'reparar', banda: 'nucleo', origen: 'piloto_base' }) &&
   !P.valida({ accion: 'reparar' }) && P.valida({ esquema: 'atlas.accion/1', accion: 'esperar', origen: 'piloto_base' }));
+// R2c (plan «el refresco»): las flechas del mapa son `mover <dir>`, del MISMO enum. Forma cerrada, y la regla base
+// nunca la propone (moverse no cambia la partida, asi que el arnes del LoRA no cambia).
+caso('piloto: mover tiene forma cerrada (dir del enum; ni banda ni dir donde no tocan)', () =>
+  P.ACCIONES.includes('mover') && P.DIRS.length === 5 &&
+  P.valida({ esquema: 'atlas.accion/1', accion: 'mover', dir: 'izq', origen: 'lora' }) &&
+  !P.valida({ esquema: 'atlas.accion/1', accion: 'mover', origen: 'lora' }) &&
+  !P.valida({ esquema: 'atlas.accion/1', accion: 'mover', dir: 'arriba-del-todo', origen: 'lora' }) &&
+  !P.valida({ esquema: 'atlas.accion/1', accion: 'mover', dir: 'izq', banda: 'nucleo', origen: 'lora' }) &&
+  !P.valida({ esquema: 'atlas.accion/1', accion: 'esperar', dir: 'izq', origen: 'lora' }) &&
+  !P.valida({ esquema: 'atlas.accion/1', accion: 'bajar_a', banda: 'ruinas', dir: 'izq', origen: 'lora' }));
+caso('piloto: la regla base nunca propone mover (5000 ciclos del arnes)', () => {
+  const r = juega(LEY, true, 5000);
+  return (!('mover' in r.acciones) && r.invalidas === 0) || r.acciones;
+});
 caso('piloto: 5000 ciclos jugando, cero invalidas y cero fallos', () => {
   const r = juega(LEY, true, 5000);
   return (r.invalidas === 0 && r.fallos === 0) || r;
