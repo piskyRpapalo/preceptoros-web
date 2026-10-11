@@ -116,7 +116,7 @@
     "juez_piloto": "Judge · the suggestion was better at {h} cycles: Core {np}, minimum integrity {ip} (you: {nh}, {ih}).",
     "juez_empate": "Judge · tie at {h} cycles: Core {np}, minimum integrity {ip}.",
     "juez_nulo": "Judge · the suggestion changed nothing: there is no branch to compare.",
-    "lengua_nd": "This game speaks English for now. Your page language ({l}): translation NO_DATA, on its way.",
+    "lengua_nd": "This game speaks English for now. Your language ({l}) is not translated yet: it is on its way.",
     "guardar": "Save on this device",
     "retomar": "Resume saved game · cycle {c}",
     "olvidar": "Forget saved game",

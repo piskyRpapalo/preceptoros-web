@@ -35,7 +35,7 @@
 
   function crea(lienzo, f) {
     var g = lienzo.getContext('2d'), dpr = Math.min(2, raiz.devicePixelRatio || 1), raf = 0, vivo = true;
-    var capas = null, clave = '', med = O.medidor(), calidad = 2, niebla = null;
+    var capas = null, clave = '', med = O.medidor(), calidad = 2, niebla = null, cic = -1, t0 = 0;
 
     function prepara(W, H, pal) {
       var w = Math.ceil(W / (3 * dpr)), h = Math.ceil(H / (3 * dpr)), P = PALETAS[pal] || PALETAS.abismo;
@@ -180,6 +180,13 @@
       cupula(W, H, s, casa, t, P);
       var ed = f.edificios();
       Object.keys(PARCELAS).forEach(function (id) { edificio(id, W, H, ed[id], casa, t, P); });
+      /* EL CANGREJO anda por el lecho: posicion del ciclo de juego; el reloj solo rellena ENTRE ciclos. */
+      var CJ = raiz.AtlasCangrejo, cj = CJ && f.cangrejo ? f.cangrejo() : null;
+      if (cj) {
+        if (cj.ciclo !== cic) { cic = cj.ciclo; t0 = ts; }
+        var pc = CJ.paseo(cj.semilla, cj.ciclo, q ? 0 : (ts - t0) / 1000);
+        CJ.pinta(g, pc.x * W, SUELO * H + 0.045 * H, 28 * dpr, { forma: CJ.forma(cj.army, cj.nodo, cj.latido), t: t, dir: pc.dir, dpr: dpr, quieto: q });
+      }
       if (!q) { burbujas(W, H, t, calidad >= 2 ? 26 : calidad ? 14 : 6); }
     }
     raf = raiz.requestAnimationFrame(pinta);

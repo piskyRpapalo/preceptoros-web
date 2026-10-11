@@ -71,6 +71,16 @@
     var J = raiz.AtlasJuego, i = J && J.instantanea ? J.instantanea() : null;
     return i ? { nucleo: i.nivel_nucleo, grieta: i.grieta && i.grieta.abierta, i: i } : { nucleo: 1, grieta: false, i: null };
   }
+  /* EL CANGREJO (J1): tu semilla (tu clave publica; sin ella, la del visitante), el ciclo de juego,
+     tu army y si un nodo te tiene LINKEADO en su cedula (coral) o no (cangrejo de mar). El latido del
+     nodo no llega a la web: el brillo es NO_DATA (null), nunca un numero inventado. */
+  function cangrejo() {
+    var i = estado().i, C = raiz.AtlasNodosCedulas, m = medidas(), nodo = false;
+    if (pub && C) {
+      nodo = C.nodos.some(function (n) { return (n.dispositivos || []).some(function (d) { return d.clave_publica === pub && d.estado === 'linkeado'; }); });
+    }
+    return { semilla: pub || 'visitante', ciclo: i ? i.ciclo : 0, army: m.army ? m.army.nivel : 0, nodo: nodo, latido: null };
+  }
   function medidas() {
     var s = estado().i, ed = {}, inc = raiz.AtlasIncubadora, C = raiz.AtlasNodosCedulas, A = raiz.AtlasArenaUI;
     var oficios = s ? Object.keys(s.niveles).reduce(function (a, k) { return a + s.niveles[k]; }, 0) : null, army = null;
@@ -194,11 +204,11 @@
     (I && I.quien && I.quien() ? I.publica().then(function (k) { pub = k; }, function () {}) : Promise.resolve())
       .then(lee).then(function (g) { if (g && !forma(g)) { casa = g; } });
     escena = S.crea(R.lienzo, { casa: function () { return { paleta: casa.paleta, estilo: casa.estilo, emblema: emblema() }; },
-                                estado: estado, edificios: medidas });
+                                estado: estado, edificios: medidas, cangrejo: cangrejo });
   }
 
   /* Cambiar UNA opcion desde fuera (la formacion, desde la repeticion de la batalla). */
   function pon(k, v) { if (OPCIONES[k] && OPCIONES[k].indexOf(v) >= 0) { casa[k] = v; guarda(); } }
   raiz.AtlasCasa = { pon: pon, monta: monta, forma: forma, casa: function () { return casa; }, fps: function () { return escena && escena.fps(); },
-                     calidad: function () { return escena && escena.calidad(); }, entra: entra, sale: sale };
+                     calidad: function () { return escena && escena.calidad(); }, entra: entra, sale: sale, cangrejo: cangrejo };
 })(this);

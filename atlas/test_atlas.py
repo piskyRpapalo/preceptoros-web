@@ -638,7 +638,7 @@ ARENA = ("sobres.js", "rating.js", "arena.js", "duelo.js", "fog_of_war.js", "wor
          "nodos-cedulas.js", "nodos.js", "cuenta.js", "ui-nodos.js", "ui-rack.js",
          "battle_choreography.js", "battle_replay.js", "ui-arena.js", "ui-duelo.js")
 # La CASA (2026-10-05): la primera pantalla, detras del Army. Lleva canon y escena, que la Arena reutiliza.
-CASA = ("canon.js", "escena.js", "wave_render.js", "home_base_scene.js", "home_buildings.js", "summon_reveal.js")
+CASA = ("canon.js", "escena.js", "wave_render.js", "gdpr-art25-ephemeral-crab.js", "home_base_scene.js", "home_buildings.js", "summon_reveal.js")
 FUERA_DE_LA_PUERTA = tuple(sorted(set(PUROS + ARENA + CASA)))
 
 
@@ -1466,6 +1466,15 @@ class CasaGranja(unittest.TestCase):
 
     def _js(self, n):
         return sin_comentarios((PUBLICO / "game" / n).read_text(encoding="utf-8"))
+
+    def test_casos_del_cangrejo(self):
+        """J1 (plan de ronda 2026-10-11): misma semilla, mismo paseo (huella fijada); tamano y clase son dato."""
+        r = subprocess.run(["node", str(RAIZ / "gdpr-art25-ephemeral-crab_casos.mjs")], capture_output=True, text=True, timeout=120)
+        casos = json.loads(r.stdout)
+        self.assertGreaterEqual(len(casos), 10, r.stderr)
+        for c in casos:
+            with self.subTest(caso=c["caso"]):
+                self.assertTrue(c["ok"], c["detalle"])
 
     def test_casos_de_la_casa(self):
         r = subprocess.run(["node", str(RAIZ / "casa_casos.mjs")], capture_output=True, text=True, timeout=120)
