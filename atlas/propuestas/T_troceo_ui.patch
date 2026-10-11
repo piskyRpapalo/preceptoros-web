@@ -1,0 +1,389 @@
+From 7cf707a5d4168bf89e92f2fe6e7ea96d3d7a9cab Mon Sep 17 00:00:00 2001
+From: David <284823701+piskyRpapalo@users.noreply.github.com>
+Date: Sun, 11 Oct 2026 22:24:52 +0100
+Subject: [PATCH] =?UTF-8?q?T=20(PREPARADO,=20sin=20aplicar:=20ui.js=20es?=
+ =?UTF-8?q?=20intocable)=20=C2=B7=20la=20ficha=20de=20la=20tropa=20sale=20?=
+ =?UTF-8?q?de=20ui.js=20a=20ui-ficha.js?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+- lienzo, traza, nombre, ficha y voz, movidos tal cual; ui.js los ata en monta. ui.js 16.355 -> 12.947 B:
+  sitio para G0 (cadena de invocaciones) y la piedad. Cambio visible: ninguno.
+- Navegador: la ficha movida pinta «Lanternfish · Normal · 4 edges · vid 10 · arm 2 · vel 6 · Sound», 0 errores.
+- Test nuevo (sin gemelos) + sabotaje rojo->verde; R8, voz y v1.5 apuntan al modulo nuevo.
+- Gates n=2: test_web 75, test_atlas 123, arnes_sw 22/22 (103 rutas), 16 suites. Sello abeo, pruebas_web 75.
+- Coste lateral: thegame.js a 21 B de su techo.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+---
+ arnes_sw.mjs             |  3 +-
+ atlas/test_atlas.py      | 21 ++++++++--
+ config/sw-huella.txt     |  4 +-
+ public/assets/thegame.js |  2 +-
+ public/atlas-mundo.json  |  6 +--
+ public/counters.json     |  4 +-
+ public/game/ui-ficha.js  | 87 ++++++++++++++++++++++++++++++++++++++++
+ public/game/ui.js        | 78 +++--------------------------------
+ public/sw-listas.js      |  2 +-
+ public/sw.js             |  2 +-
+ 10 files changed, 121 insertions(+), 88 deletions(-)
+ create mode 100644 public/game/ui-ficha.js
+
+diff --git a/arnes_sw.mjs b/arnes_sw.mjs
+index fe0d85d..6d14326 100644
+--- a/arnes_sw.mjs
++++ b/arnes_sw.mjs
+@@ -172,7 +172,8 @@ const rutas = await shell.keys();
+ // 101 desde U0 («el mapa unico»): `casa-medidas.js`, `casa-personaliza.js` y `ui-arena-comun.js` (troceos).
+ // U1 cambia uno por otro (entra `casa-lateral.js`, sale `home_base_scene.js`): siguen 101.
+ // 102 desde U2: `mar-cangrejos.js`, los cangrejos en el mapa.
+-ok('precachea las portadas, su superficie y el juego', rutas.length === 102, rutas.length+' rutas');
++// 103 desde T: `ui-ficha.js` (la ficha de la tropa sale de `ui.js`).
++ok('precachea las portadas, su superficie y el juego', rutas.length === 103, rutas.length+' rutas');
+ ok('el shell trae el juego (D7): la puerta, el cangrejo y la arena',
+    ['/assets/thegame.js', '/game/gdpr-art25-ephemeral-crab.js', '/game/ui-arena.js', '/assets/atlas-motor.js'].every(r => rutas.includes(r)));
+ ok('el shell trae la portada de cada lengua', ['/es/', '/fr/', '/ar/'].every(r => rutas.includes(r)));
+diff --git a/atlas/test_atlas.py b/atlas/test_atlas.py
+index cef5a73..5686efd 100644
+--- a/atlas/test_atlas.py
++++ b/atlas/test_atlas.py
+@@ -355,7 +355,7 @@ process.stdout.write(JSON.stringify({
+         self.assertNotIn("atlas-voz.js", capa, "la voz exacta pesa en la puerta del juego")
+         # D7 (mudanza bloque 2, FIRMO 2026-10-11): el juego ENTRA en el precache: offline tras la primera visita.
+         self.assertIn("/assets/atlas-voz.js", (PUBLICO / "sw-listas.js").read_text(encoding="utf-8"), "la voz no esta en el precache")
+-        self.assertIn("s.src = '/assets/atlas-voz.js'", (PUBLICO / "game" / "ui.js").read_text(encoding="utf-8"))
++        self.assertIn("s.src = '/assets/atlas-voz.js'", (PUBLICO / "game" / "ui-ficha.js").read_text(encoding="utf-8"))  # T
+ 
+     def test_el_juego_abre_sin_red_y_la_ley_sin_red_es_no_data(self):
+         """Los textos de las lenguas del juego son CONTENIDO para el SW (se guardan y abren sin red);
+@@ -666,7 +666,7 @@ class TheGameV15(unittest.TestCase):
+     las dos guardas en el mismo job; moverla es un paso del rack."""
+ 
+     JUEGO = PUBLICO / "game"
+-    MODULOS = ("valores.js", "gacha.js", "db.js", "core.js", "ui.js", "juez.js")
++    MODULOS = ("valores.js", "gacha.js", "db.js", "core.js", "ui-ficha.js", "ui.js", "juez.js")  # T: ui-ficha sale de ui
+ 
+     def _js(self, nombre):
+         return sin_comentarios((self.JUEGO / nombre).read_text(encoding="utf-8"))
+@@ -1034,7 +1034,7 @@ class Pestanas(unittest.TestCase):
+     HOJA = ASSETS / "thegame.css"
+     IDS = ("casa", "mapa", "taller")
+     PLIEGOS = ()
+-    ARMY = ("valores.js", "gacha.js", "db.js", "core.js", "ui.js")
++    ARMY = ("valores.js", "gacha.js", "db.js", "core.js", "ui-ficha.js", "ui.js")
+ 
+     def _capa(self):
+         return sin_comentarios(self.CAPA.read_text(encoding="utf-8"))
+@@ -1744,6 +1744,19 @@ class MapaMovible(unittest.TestCase):
+         self.assertIn("window.AtlasTallerUI.monta(PANEL.taller)", tg)
+         self.assertIn("var TL = enNode ? require('./taller.js') : raiz.AtlasTaller;", (PUBLICO / "game" / "arena.js").read_text(encoding="utf-8"))
+ 
++    def test_t_la_ficha_sale_de_ui_sin_gemelos(self):
++        """T (troceo, PROPUESTA pendiente de FIRMO: ui.js es intocable): la ficha de la tropa (lienzo, traza, nombre,
++        ficha, voz) vive SOLO en `ui-ficha.js`; `ui.js` la ata en `monta` y deja sitio a G0. Sin gemelos."""
++        u, f = self._js("ui.js"), self._js("ui-ficha.js")
++        for fn in ("function lienzo(", "function traza(", "function nombre(", "function ficha(", "function oye("):
++            with self.subTest(funcion=fn):
++                self.assertIn(fn, f)
++                self.assertNotIn(fn, u, "gemelo en ui.js")
++        self.assertIn("var F = window.AtlasFicha.crea({ G: G, S: S, T: T, el: el, boton: boton, rellena: rellena, dice: dice });", u)
++        self.assertLess(len((PUBLICO / "game" / "ui.js").read_bytes()), 13500, "ui.js no gano sitio para G0")
++        c = (PUBLICO / "assets" / "thegame.js").read_text(encoding="utf-8")
++        self.assertLess(c.index("['/game/ui-ficha.js']"), c.index("['/game/ui.js']"), "la ficha carga despues de quien la usa")
++
+     def test_u2_los_cangrejos_viven_en_el_mapa_y_vibran_con_el_estado(self):
+         """U2 (contrato «el mapa unico» + projectM: «aqui el PCM es el estado»): tu cangrejo vive EN el mapa, con el
+         paseo de J1 (no uno propio) proyectado bajo la casa (x = casa.x + (paseo.x - 0.5)*2*R, R = 140); el emblema
+@@ -1892,7 +1905,7 @@ class MapaMovible(unittest.TestCase):
+         self.assertLessEqual(ant, 1500, "la anticipacion retiene a la persona demasiado")
+         self.assertIn("if (!q && ts - t0 < ANT)", r, "la anticipacion no respeta el movimiento reducido")
+         self.assertIn("tiembla = q ? 0 : ts", r, "el temblor no respeta el movimiento reducido")
+-        u = sin_comentarios((PUBLICO / "game" / "ui.js").read_text(encoding="utf-8"))
++        u = sin_comentarios((PUBLICO / "game" / "ui-ficha.js").read_text(encoding="utf-8"))  # T: la ficha salio de ui.js
+         self.assertIn("el('small', 'atlas-stats', G.STATS.filter(function (k) { return t.stats[k]; })", u)
+         css = (PUBLICO / "assets" / "atlas.css").read_text(encoding="utf-8")
+         self.assertIn("@keyframes atlas-respira", css)
+diff --git a/config/sw-huella.txt b/config/sw-huella.txt
+index adcacd3..0bf4879 100644
+--- a/config/sw-huella.txt
++++ b/config/sw-huella.txt
+@@ -1,3 +1,3 @@
+ 
+-huella=4f87d1ac1ea52096
+-version=preceptoros-2026-17-aben
++huella=b40ab220ee342cff
++version=preceptoros-2026-17-abeo
+diff --git a/public/assets/thegame.js b/public/assets/thegame.js
+index d6b14b3..7e805e7 100644
+--- a/public/assets/thegame.js
++++ b/public/assets/thegame.js
+@@ -14,7 +14,7 @@
+     ['atlas-piloto.js'], ['atlas-partida.js'], ['atlas-piloto-capa.js'],
+     ['/game/juez.js'], ['atlas-guardado.js']];
+   /* EL ARMY, A DEMANDA (v1.5): al abrir su pestana o al importar una partida firmada. */
+-  var ARMY = [['/game/valores.js'], ['/game/gacha.js'], ['/game/db.js'], ['/game/core.js'], ['/game/ui.js']];
++  var ARMY = [['/game/valores.js'], ['/game/gacha.js'], ['/game/db.js'], ['/game/core.js'], ['/game/ui-ficha.js'], ['/game/ui.js']];
+   /* LA ARENA, A DEMANDA (2026-09-28): el mar, los lugares NPC, el combate en vivo y los duelos por
+      paquetes firmados. Detras del Army, cuyas tropas y verificador usa. */
+   var ARENA = [['/game/sobres.js'], ['/game/rating.js'], ['/game/arena.js'], ['/game/duelo.js'],
+diff --git a/public/atlas-mundo.json b/public/atlas-mundo.json
+index 99194ad..8c6ed90 100644
+--- a/public/atlas-mundo.json
++++ b/public/atlas-mundo.json
+@@ -1,12 +1,12 @@
+ {
+  "esquema": "atlas.mundo/1",
+  "procedencia": "medido en local por atlas/mundo.py; sin rutas, sin nombres",
+- "medido_el": "2026-10-11T20:43Z",
++ "medido_el": "2026-10-11T21:21Z",
+  "maquina": "Linux x86_64 · Python 3.14.4",
+  "pruebas_web": 75,
+  "lenguas": 9,
+  "techo_bloque_b": 26214400,
+- "gzip_juego_b": 82859,
+- "version_sw": "preceptoros-2026-17-aben",
++ "gzip_juego_b": 82864,
++ "version_sw": "preceptoros-2026-17-abeo",
+  "arnes_sw": "22/22"
+ }
+diff --git a/public/counters.json b/public/counters.json
+index c462e49..0e296a6 100644
+--- a/public/counters.json
++++ b/public/counters.json
+@@ -1,7 +1,7 @@
+ {
+   "esquema": 1,
+   "fecha": "2026-10-11",
+-  "ultima_lectura": "2026-10-11T20:43:13+00:00",
++  "ultima_lectura": "2026-10-11T21:22:04+00:00",
+   "nota": "Solo hay cifras medidas. Lo que no se midio sale como NO_DATA con su causa. Aqui no se cuenta a nadie.",
+   "metricas": [
+     {
+@@ -21,7 +21,7 @@
+     {
+       "clave": "peso_sitio",
+       "estado": "MEDIDO",
+-      "valor": 1055831,
++      "valor": 1056953,
+       "unidad": "bytes",
+       "como": "todo lo que hay en public/ menos downloads/, counters.json e historial/: es lo que pesa visitar. Los adaptadores no se descargan por visitar; y un contador que se cuenta a si mismo nunca acierta, porque escribir la cifra cambia el fichero"
+     },
+diff --git a/public/game/ui-ficha.js b/public/game/ui-ficha.js
+new file mode 100644
+index 0000000..afc5ca0
+--- /dev/null
++++ b/public/game/ui-ficha.js
+@@ -0,0 +1,87 @@
++/* preceptoros.org · theGame v1.5 · LA FICHA de una tropa: su lienzo de Fourier, su nombre, su carta y su voz.
++
++   Troceo T (2026-10-11, PROPUESTA pendiente de FIRMO: `ui.js` es intocable): sale de `ui.js` SIN CAMBIO VISIBLE,
++   para que la cadena de invocaciones (G0) y la piedad quepan alli. El mismo codigo, movido: `crea(ctx)` lo ata a
++   lo que `ui.js` ya tenia (gacha, sintesis, textos y su linea de estado). Sin red, sin azar. */
++(function () {
++  'use strict';
++  function crea(ctx) {
++    var G = ctx.G, S = ctx.S, T = ctx.T, el = ctx.el, boton = ctx.boton, rellena = ctx.rellena, dice = ctx.dice;
++
++  /* --- el lienzo: una figura de Fourier ---------------------------------- */
++  function lienzo(lado, etiqueta) {
++    var c = el('canvas', 'atlas-onda'), r = window.devicePixelRatio || 1;
++    c.width = lado * r; c.height = lado * r;
++    c.style.width = lado + 'px'; c.style.height = lado + 'px';
++    c.setAttribute('role', 'img'); c.setAttribute('aria-label', etiqueta || '');
++    return c;
++  }
++  function traza(c, arm, clase, latido) {
++    var g = c.getContext('2d'), w = c.width, lim = 0;
++    arm.forEach(function (h) { lim += Math.max(Math.abs(h[1]), Math.abs(h[2])); });
++    var k = (w / 2 - 6) / Math.max(1, lim) * (latido || 1);
++    g.clearRect(0, 0, w, w);
++    g.lineWidth = Math.max(1.5, w / 90);
++    g.strokeStyle = getComputedStyle(c).getPropertyValue('--onda').trim() || '#c98a4b';
++    g.beginPath();
++    for (var i = 0; i <= 256; i++) {
++      var p = G.punto(arm, i / 256 * 2 * Math.PI);
++      g[i ? 'lineTo' : 'moveTo'](w / 2 + p[0] * k, w / 2 - p[1] * k);
++    }
++    g.stroke();
++    c.dataset.rareza = clase || '';
++  }
++
++  /* --- nombres, desde el texto de la lengua ------------------------------ */
++  function nombre(t) {
++    if (t.rareza === 'unico') { return T('unico_nombre'); }
++    return rellena(T('nombre_tropa'), {
++      base: T('base_' + t.base), pre: t.prefijo ? T('af_' + t.prefijo) : '',
++      suf: t.sufijo ? T('af_' + t.sufijo) : ''
++    }).replace(/\s+/g, ' ').trim();
++  }
++  function ficha(t, lado) {
++    var f = el('figure', 'atlas-tropa rar-' + t.rareza);
++    var c = lienzo(lado, nombre(t) + ' · ' + T('rar_' + t.rareza));
++    f.appendChild(c);
++    var cap = el('figcaption');
++    cap.appendChild(el('b', null, nombre(t)));
++    cap.appendChild(el('small', null, T('rar_' + t.rareza)));
++    /* M18-B: sus aristas; una tropa firmada antes no las lleva y se dice de otra version (en combate se
++       vuelve a tirar de su semilla con las reglas de hoy: cambia de forma, y se avisa aqui). */
++    cap.appendChild(el('small', 'atlas-aristas', t.aristas ? rellena(T('aristas_n'), { n: t.aristas }) : T('version_previa')));
++    /* R8 · LA VITRINA: sus stats reales a la vista (las mismas que usa el combate), sin barras. */
++    cap.appendChild(el('small', 'atlas-stats', G.STATS.filter(function (k) { return t.stats[k]; }).map(function (k) { return k.slice(0, 3) + ' ' + t.stats[k]; }).join(' · ')));
++    /* SU CARACTER Y SU VOZ: el color de la traza sale de su caracter; el boton suena su timbre. */
++    var k = G.caracter(t);
++    /* P10: tenida a tu bandera, se pinta de su tono (lo eligio la persona); si no, el de su caracter. */
++    var tn = window.AtlasTallerUI && window.AtlasTallerUI.tono(t.semilla);
++    c.style.setProperty('--onda', tn != null ? 'hsl(' + tn + ' 85% 62%)' : ['hsl(35 75% 58%)', 'hsl(140 45% 55%)', 'hsl(275 55% 68%)', 'hsl(210 12% 68%)'][k.color]);
++    c.dataset.caracter = k.color + '-' + k.pulso + '-' + k.tendencia;
++    var oir = boton(T('sonido'));
++    oir.addEventListener('click', function () { oye(t); });
++    cap.appendChild(oir);
++    f.appendChild(cap);
++    requestAnimationFrame(function () { traza(c, t.armonicos, t.rareza); });
++    return f;
++  }
++
++  /* LA VOZ EXACTA: `atlas-voz.js`, mismos bytes en cada aparato; baja al pulsar. Sin ella, oscilador. */
++  function oye(t) {
++    var V = window.AtlasVoz;
++    if (V) {
++      var v = V.oye(t, S.contexto());
++      dice(v ? rellena(T('voz_exacta'), { h: v.huella.corta, n: v.partes.length }) : T('sonido_nd'));
++      return;
++    }
++    var s = document.createElement('script');
++    s.src = '/assets/atlas-voz.js';
++    s.onload = function () { if (window.AtlasVoz) { oye(t); } else { s.onerror(); } };
++    s.onerror = function () { dice(S.suena(S.vozDe(t)) ? T('voz_exacta_nd') : T('sonido_nd')); };
++    document.head.appendChild(s);
++  }
++
++    return { lienzo: lienzo, traza: traza, nombre: nombre, ficha: ficha, oye: oye };
++  }
++  window.AtlasFicha = { crea: crea };
++})();
+diff --git a/public/game/ui.js b/public/game/ui.js
+index 79cd43c..32a3e42 100644
+--- a/public/game/ui.js
++++ b/public/game/ui.js
+@@ -27,78 +27,8 @@
+   function ins() { return window.AtlasJuego && window.AtlasJuego.instantanea(); }
+   function calor() { return S.calorDe(ins()); }
+ 
+-  /* --- el lienzo: una figura de Fourier ---------------------------------- */
+-  function lienzo(lado, etiqueta) {
+-    var c = el('canvas', 'atlas-onda'), r = window.devicePixelRatio || 1;
+-    c.width = lado * r; c.height = lado * r;
+-    c.style.width = lado + 'px'; c.style.height = lado + 'px';
+-    c.setAttribute('role', 'img'); c.setAttribute('aria-label', etiqueta || '');
+-    return c;
+-  }
+-  function traza(c, arm, clase, latido) {
+-    var g = c.getContext('2d'), w = c.width, lim = 0;
+-    arm.forEach(function (h) { lim += Math.max(Math.abs(h[1]), Math.abs(h[2])); });
+-    var k = (w / 2 - 6) / Math.max(1, lim) * (latido || 1);
+-    g.clearRect(0, 0, w, w);
+-    g.lineWidth = Math.max(1.5, w / 90);
+-    g.strokeStyle = getComputedStyle(c).getPropertyValue('--onda').trim() || '#c98a4b';
+-    g.beginPath();
+-    for (var i = 0; i <= 256; i++) {
+-      var p = G.punto(arm, i / 256 * 2 * Math.PI);
+-      g[i ? 'lineTo' : 'moveTo'](w / 2 + p[0] * k, w / 2 - p[1] * k);
+-    }
+-    g.stroke();
+-    c.dataset.rareza = clase || '';
+-  }
+-
+-  /* --- nombres, desde el texto de la lengua ------------------------------ */
+-  function nombre(t) {
+-    if (t.rareza === 'unico') { return T('unico_nombre'); }
+-    return rellena(T('nombre_tropa'), {
+-      base: T('base_' + t.base), pre: t.prefijo ? T('af_' + t.prefijo) : '',
+-      suf: t.sufijo ? T('af_' + t.sufijo) : ''
+-    }).replace(/\s+/g, ' ').trim();
+-  }
+-  function ficha(t, lado) {
+-    var f = el('figure', 'atlas-tropa rar-' + t.rareza);
+-    var c = lienzo(lado, nombre(t) + ' · ' + T('rar_' + t.rareza));
+-    f.appendChild(c);
+-    var cap = el('figcaption');
+-    cap.appendChild(el('b', null, nombre(t)));
+-    cap.appendChild(el('small', null, T('rar_' + t.rareza)));
+-    /* M18-B: sus aristas; una tropa firmada antes no las lleva y se dice de otra version (en combate se
+-       vuelve a tirar de su semilla con las reglas de hoy: cambia de forma, y se avisa aqui). */
+-    cap.appendChild(el('small', 'atlas-aristas', t.aristas ? rellena(T('aristas_n'), { n: t.aristas }) : T('version_previa')));
+-    /* R8 · LA VITRINA: sus stats reales a la vista (las mismas que usa el combate), sin barras. */
+-    cap.appendChild(el('small', 'atlas-stats', G.STATS.filter(function (k) { return t.stats[k]; }).map(function (k) { return k.slice(0, 3) + ' ' + t.stats[k]; }).join(' · ')));
+-    /* SU CARACTER Y SU VOZ: el color de la traza sale de su caracter; el boton suena su timbre. */
+-    var k = G.caracter(t);
+-    /* P10: tenida a tu bandera, se pinta de su tono (lo eligio la persona); si no, el de su caracter. */
+-    var tn = window.AtlasTallerUI && window.AtlasTallerUI.tono(t.semilla);
+-    c.style.setProperty('--onda', tn != null ? 'hsl(' + tn + ' 85% 62%)' : ['hsl(35 75% 58%)', 'hsl(140 45% 55%)', 'hsl(275 55% 68%)', 'hsl(210 12% 68%)'][k.color]);
+-    c.dataset.caracter = k.color + '-' + k.pulso + '-' + k.tendencia;
+-    var oir = boton(T('sonido'));
+-    oir.addEventListener('click', function () { oye(t); });
+-    cap.appendChild(oir);
+-    f.appendChild(cap);
+-    requestAnimationFrame(function () { traza(c, t.armonicos, t.rareza); });
+-    return f;
+-  }
+-
+-  /* LA VOZ EXACTA: `atlas-voz.js`, mismos bytes en cada aparato; baja al pulsar. Sin ella, oscilador. */
+-  function oye(t) {
+-    var V = window.AtlasVoz;
+-    if (V) {
+-      var v = V.oye(t, S.contexto());
+-      dice(v ? rellena(T('voz_exacta'), { h: v.huella.corta, n: v.partes.length }) : T('sonido_nd'));
+-      return;
+-    }
+-    var s = document.createElement('script');
+-    s.src = '/assets/atlas-voz.js';
+-    s.onload = function () { if (window.AtlasVoz) { oye(t); } else { s.onerror(); } };
+-    s.onerror = function () { dice(S.suena(S.vozDe(t)) ? T('voz_exacta_nd') : T('sonido_nd')); };
+-    document.head.appendChild(s);
+-  }
++  /* --- la ficha de la tropa (lienzo, nombre, carta y voz): `ui-ficha.js` (troceo T) --- */
++  var lienzo, traza, nombre, ficha;
+ 
+   /* --- invocar ------------------------------------------------------------ */
+   function firma(obj) {
+@@ -220,7 +150,9 @@
+   function monta(c) {
+     G = window.AtlasGacha; A = window.AtlasArmy; S = window.AtlasSintesis;
+     var zona = document.getElementById('atlas-juego');
+-    if (!G || !A || !S || !zona || zona.querySelector('.atlas-incubadora')) { return; }
++    if (!G || !A || !S || !window.AtlasFicha || !zona || zona.querySelector('.atlas-incubadora')) { return; }
++    var F = window.AtlasFicha.crea({ G: G, S: S, T: T, el: el, boton: boton, rellena: rellena, dice: dice });
++    lienzo = F.lienzo; traza = F.traza; nombre = F.nombre; ficha = F.ficha;
+     capa = c; army = A.crea(A.verificaWeb, A.almacenWeb ? A.almacenWeb() : null);
+     var s = el('section', 'panel atlas-incubadora');
+     s.appendChild(el('h4', null, T('inc_h')));
+diff --git a/public/sw-listas.js b/public/sw-listas.js
+index bd2cf00..1a83d51 100644
+--- a/public/sw-listas.js
++++ b/public/sw-listas.js
+@@ -45,7 +45,7 @@ const JUEGO = [
+   '/assets/atlas-motor.js', '/assets/atlas-piso.js', '/assets/atlas-piloto.js', '/assets/atlas-partida.js',
+   '/assets/atlas-piloto-capa.js', '/assets/atlas-guardado.js', '/assets/atlas-hud.js',
+   '/assets/atlas-opina.js', '/assets/atlas-voz.js', '/game/juez.js', '/game/valores.js', '/game/gacha.js',
+-  '/game/db.js', '/game/core.js', '/game/ui.js', '/game/canon.js', '/game/wave_render.js', '/game/escena.js',
++  '/game/db.js', '/game/core.js', '/game/ui-ficha.js', '/game/ui.js', '/game/canon.js', '/game/wave_render.js', '/game/escena.js',
+   '/game/gdpr-art25-ephemeral-crab.js', '/game/aiact-art50-crab-terminal.js', '/game/gdpr-art7-entry-choice.js', '/game/aiact-art50-state-radio.js', '/game/casa-medidas.js', '/game/casa-personaliza.js', '/game/casa-lateral.js', '/game/home_buildings.js',
+   '/game/summon_reveal.js', '/game/taller.js', '/game/ui-taller.js', '/game/primer_eco.js', '/game/home.css', '/game/sobres.js', '/game/rating.js', '/game/arena.js',
+   '/game/duelo.js', '/game/fog_of_war.js', '/game/world_camera.js', '/game/mar.js', '/game/mar-anclas.js', '/game/mar-cangrejos.js', '/game/mar-fondo.js', '/game/nodos-pesos.js',
+diff --git a/public/sw.js b/public/sw.js
+index a6aea60..247030d 100644
+--- a/public/sw.js
++++ b/public/sw.js
+@@ -30,7 +30,7 @@
+  * tambien puede faltar del cache justo el dia que hace falta.
+  */
+ /* Subir VERSION o el cambio NO llega: ver `config/sw-huella.txt`. */
+-const VERSION = 'preceptoros-2026-17-aben';
++const VERSION = 'preceptoros-2026-17-abeo';
+ const SHELL = 'shell-' + VERSION;
+ const OBRA = 'obra-' + VERSION;
+ 
+-- 
+2.53.0
+

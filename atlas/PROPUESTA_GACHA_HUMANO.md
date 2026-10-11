@@ -39,3 +39,34 @@ cualquier pieza: trocear `ui.js`** (la invocación y el nido a su módulo), con 
 
 ## Orden que propongo
 T → G0 → 4 → 1+2 (con tus cifras) → 3 → 6a → (6b, 7, 5b según decidas).
+
+---
+
+## Decisiones del Soberano (2026-10-11, mensaje extra) · registradas
+- **G0 ACEPTADO**: cadena con `seq` y `prev`, guardada en el aparato. Cierra el hueco del huevo. **Rojo MEDIDO**
+  (motor y guardado reales, en node): 125 ciclos para juntar 50 de cobre → invocar → recargar con `retoma`. El
+  cobre se vuelve a cobrar (50 → 0) y vuelven **0 huevos**, porque viven en `ui.js: var huevos = []`. En el navegador:
+  NO_DATA (headless no tiene una cuenta con 50 de cobre). Evidencia: `~/p0x/no-publicar/g0-huevo-20261011/`.
+- **No hay 50/50 y así se queda.** La pieza 5 va por la vía (a): se funde con la piedad, coste 0. **5b: NO.**
+- **V3.0 DECLARADO-por-Soberano**: «La Army no cobra por dormir. Lo que se gana se firma por acción. La cosecha
+  pasiva es veneno.» Registrado en `mente/firmas/firmas_recibidas.jsonl`. Ficha propuesta en
+  `mente/doctrina/VENENO_COSECHA_PASIVA.md`, pendiente de tu firma. La contradicción con `M.dormir` queda
+  REGISTRADA y la resuelve 6b (FIRMO aparte, después).
+- **Orden: T → G0 → 4 → 1+2 → 3 → 6a.** T está PREPARADO y no aplicado (ver abajo). En 4, la cifra de la tabla la fijas tú.
+
+## T preparado, no aplicado
+Rama `claude/T-troceo-ui`, sin fusionar ni empujar; parche en `atlas/propuestas/T_troceo_ui.patch`. La ficha de la
+tropa (lienzo, traza, nombre, ficha, voz) pasa a `ui-ficha.js`. `ui.js` baja de 16.355 a 12.947 B (sitio para
+G0). Cambio visible: ninguno. Medido en el navegador: la ficha movida pinta «Lanternfish · Normal · 4 edges ·
+vid 10 · arm 2 · vel 6 · Sound» y 0 errores. Test nuevo + sabotaje (un gemelo vuelve a `ui.js`) en rojo.
+**Coste lateral:** `thegame.js` queda a 21 B de su techo.
+
+## Addendum «joyas gacha» · cómo encaja con lo firmado
+| # | Pieza | Lo que ya hay | Propuesta | Coste | FIRMO |
+|---|---|---|---|---|---|
+| A0 | **Atadura de semilla (salvaguarda 5)** | La semilla ya es sha256 de la firma Ed25519 (`db.js:190`). Ojo: técnicamente no es un VRF, es una firma determinista | Con G0, el mensaje firmado lleva `seq` y `prev`: una semilla por puesto de la cadena. Así **se acaba el «grinding»** (hoy basta esperar ciclos para cambiar de semilla). La PWA recalcula, y si no cuadra: descarte y NO_DATA | dentro de G0 | ☐ |
+| A1 | **Huevo Atlante con afijos** | **Los afijos ya existen**: `t.prefijo` / `t.sufijo` («af_*», `ui.js:56-60`) | Calidad del afijo por semilla y a la vista en la vitrina R8, extendiéndola. **CONTRADICCIÓN_ABIERTA**: la «ilustración 2D por GPU del rack» choca con «la web nunca hace fetch al rack», «los personajes son ondas» y «cero ráster» (addendum v2). Propongo que en la web el huevo sea su onda y que la ilustración del rack viva en la app. Lo decides tú | M | ☐ + decisión |
+| A2 | **Piedad visible y AUDIBLE** | La radio ya toca la pentatónica sobre 220 Hz (`aiact-art50-state-radio.js`) | Cada estado, con su timbre: desafinación = grieta, pentatónica = biomasa, trémolo = integridad. **Siempre con su equivalente en texto** (WCAG 1.1.1). Nada parpadea más de 3 veces por segundo (WCAG 2.3.1). Con movimiento reducido: quieto | M | ☐ |
+| A3 | **Crónica en filotaxis** | `escuadron.js` ya usa la espiral áurea (`AUREO`) | La vitrina coloca cada cápsula en espiral de girasol (137,5°) con la MISMA función: sin gemelo | S | ☐ |
+| A4 | **Redención → Tip Jar y reputación** | El Tip Jar es PROPUESTA sin firmar (ideas11oct §9), con pagos | **CONTRADICCIÓN_ABIERTA**: llevar al Tip Jar el mérito de la mala suerte convierte la suerte en prioridad de pago, y esa es la línea del casino. Además lo pisa tu decisión 5(a). Propongo que el mérito se vea, sea intransferible y no entre en el Tip Jar hasta que lo firmes | 0 | ☐ |
+| A5 | **Tabla R5/M18** | `valores.js` lleva la tabla PROPUESTA de R5 (meta: ≥60 % con 3-4 aristas) | Nada que construir: espera tu FIRMO con tus cifras. **Discrepancia a la vista:** tu sonar dice 5 % con más de 12 aristas, y la tabla de R5 midió 1,4-3,6 % de Leviatanes. Al fijarlo, la tabla cambia (y con ella el `packSha`) | 0 | ☐ |
