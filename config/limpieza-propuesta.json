@@ -4,7 +4,8 @@
  "fecha": "2026-10-04",
  "como_se_mide": "test_web.py › WebLimpia: un fichero de public/ es huérfano si su nombre no aparece en ningún texto del repo",
  "huerfanos": {
-  "downloads/entorno-estudio-v1.tar.gz.sha256": "huella de un paquete que sí se sirve; se queda junto a él"
+  "downloads/entorno-estudio-v1.tar.gz.sha256": "huella de un paquete que sí se sirve; se queda junto a él",
+  "game/isometric_floor_projection.js": "LEY DEL SUELO, paso 1 (prueba de concepto, firmada 2026-10-12): la usan atlas/isometric_floor_prueba.html y atlas/isometric_floor_casos.mjs. CADUCA en el paso 2, cuando el mapa la cargue: entonces sale de esta lista."
  },
  "duplicados": [
   [

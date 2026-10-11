@@ -569,6 +569,22 @@ process.stdout.write(JSON.stringify(ok));
         for reloj in ("setInterval", "setTimeout"):
             self.assertNotIn(reloj, r.split("function muestra(t)")[1].split("var g = cv.getContext")[0], "la espera usa reloj")
 
+    def test_ley_del_suelo_paso_1_el_rombo_es_la_ley(self):
+        """LEY DEL SUELO (firmada 2026-10-12), paso 1: rombo 2:1, (col,fila) -> x=(col-fila)*W/2, y=(col+fila)*H/2, anclaje al
+        CENTRO del rombo, orden de pintor por (col+fila). Sin parallax ni sombras. Sabotaje medido: la rejilla cuadrada
+        tumba 3 de 9 casos. La prueba visual vive en el lab (atlas/isometric_floor_prueba.html)."""
+        r = subprocess.run(["node", str(RAIZ / "isometric_floor_casos.mjs")], capture_output=True, text=True, timeout=60)
+        casos = json.loads(r.stdout)
+        self.assertGreaterEqual(len(casos), 9)
+        for c in casos:
+            with self.subTest(caso=c["caso"]):
+                self.assertTrue(c["ok"], c["detalle"])
+        f = sin_comentarios((PUBLICO / "game" / "isometric_floor_projection.js").read_text(encoding="utf-8"))
+        for prohibido in ("parallax", "shadow", "Math.random", "Date.now", "fetch("):
+            with self.subTest(prohibido=prohibido):
+                self.assertNotIn(prohibido, f)
+        self.assertLess(len(f.encode()), 16384)
+
     def test_lo_que_flota_recibe_el_dedo(self):
         """U1 puso pointer-events:none en la capa para que el mapa reciba el dedo, y eso se HEREDA: la revelacion,
         Customize y los dialogos solo se cerraban con Escape (medido en vivo). Toda clase `position:fixed` del juego
@@ -694,7 +710,8 @@ process.stdout.write(JSON.stringify(ok));
 # Modulos de `public/game/` que NINGUN guion pide todavia (ni la puerta ni el Army): el multijugador y
 # la cria, firmados por el Soberano el 2026-09-28 («ve construyendo todo… enfocados al multiplayer»).
 # Ver atlas/POST_VERIFICACION_MGNO_LAB.md y atlas/POST_VERIFICACION_SISIL_CRIA.md.
-PUROS = ("canon.js", "sobres.js", "rating.js", "arena.js", "duelo.js", "mercado.js", "narragrafo.js", "cria.js", "genoma.js")
+PUROS = ("canon.js", "sobres.js", "rating.js", "arena.js", "duelo.js", "mercado.js", "narragrafo.js", "cria.js", "genoma.js",
+         "isometric_floor_projection.js")  # LEY DEL SUELO, paso 1: la carga el mapa en el paso 2
 # La Arena (2026-09-28, «el mapa multi-jugador en una pestana»): se carga al abrir su pestana, detras del Army.
 ARENA = ("sobres.js", "rating.js", "arena.js", "duelo.js", "mar-anclas.js", "mar-cangrejos.js", "mar.js", "nodos-pesos.js",
          "nodos.js", "cuenta.js", "ui-nodos.js", "ui-rack.js",
