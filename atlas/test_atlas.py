@@ -648,7 +648,7 @@ ARENA = ("sobres.js", "rating.js", "arena.js", "duelo.js", "mar-anclas.js", "mar
          "nodos.js", "cuenta.js", "ui-nodos.js", "ui-rack.js",
          "escuadron.js", "battle_choreography.js", "battle_replay.js", "ui-arena.js", "ui-duelo.js")
 # La CASA (2026-10-05): la primera pantalla, detras del Army. Lleva canon y escena, que la Arena reutiliza.
-CASA = ("canon.js", "escena.js", "wave_render.js", "gdpr-art25-ephemeral-crab.js", "aiact-art50-crab-terminal.js", "nodos-cedulas.js", "fog_of_war.js", "world_camera.js", "mar-fondo.js", "gdpr-art7-entry-choice.js", "aiact-art50-state-radio.js", "home_base_scene.js", "home_buildings.js", "summon_reveal.js", "taller.js", "ui-taller.js")
+CASA = ("canon.js", "escena.js", "wave_render.js", "gdpr-art25-ephemeral-crab.js", "aiact-art50-crab-terminal.js", "nodos-cedulas.js", "fog_of_war.js", "world_camera.js", "mar-fondo.js", "gdpr-art7-entry-choice.js", "aiact-art50-state-radio.js", "home_base_scene.js", "home_buildings.js", "summon_reveal.js", "taller.js", "ui-taller.js", "primer_eco.js")
 FUERA_DE_LA_PUERTA = tuple(sorted(set(PUROS + ARENA + CASA)))
 
 
@@ -1759,6 +1759,16 @@ class MapaMovible(unittest.TestCase):
             with self.subTest(caso=c["caso"]):
                 self.assertTrue(c["ok"], c["detalle"])
         self.assertIn("raiz.AtlasEscuadron.pinta(g, u,", (PUBLICO / "game" / "escena.js").read_text(encoding="utf-8"))
+
+    def test_p11_casos_del_primer_eco(self):
+        """P11 (firmado 2026-10-11): el capitulo 1.5 ensena el Taller con sus reglas de verdad, en simulacro."""
+        r = subprocess.run(["node", str(RAIZ / "eco_casos.mjs")], capture_output=True, text=True, timeout=120)
+        casos = json.loads(r.stdout)
+        self.assertGreaterEqual(len(casos), 4, r.stderr)
+        for c in casos:
+            with self.subTest(caso=c["caso"]):
+                self.assertTrue(c["ok"], c["detalle"])
+        self.assertIn("window.AtlasPrimerEco.monta(PANEL.taller)", (PUBLICO / "assets" / "thegame.js").read_text(encoding="utf-8"))
 
     def test_r8_la_ceremonia_es_real_no_decide_y_se_queda_quieta(self):
         """R8 (plan «el refresco»): la diversion esta en la CEREMONIA, no en el azar, y la ceremonia es real:

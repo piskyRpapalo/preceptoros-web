@@ -13,7 +13,7 @@
   var TL = window.AtlasTaller, A = window.AtlasArmy, V = window.AtlasValores, G = window.AtlasGacha;
   var R = {}, cadena = [], est = null, roto = '', caja = null;
 
-  function T(k, d) { var J = window.AtlasJuego, t = J && J.texto(k); return t && t !== k ? t : d; }
+  function T(k, d) { var C = window.AtlasCasa, J = window.AtlasJuego, t = (C && C.texto && C.texto(k)) || (J && J.texto(k)); return t && t !== k ? t : d; }
   function el(tag, clase, texto) { var n = document.createElement(tag); if (clase) { n.className = clase; } if (texto != null) { n.textContent = String(texto); } return n; }
   function boton(texto, clase) { var b = el('button', clase || 'boton-sec', texto); b.type = 'button'; return b; }
   function dice(t) { R.estado.textContent = t; }
