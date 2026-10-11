@@ -640,7 +640,7 @@ ARENA = ("sobres.js", "rating.js", "arena.js", "duelo.js", "fog_of_war.js", "wor
          "nodos.js", "cuenta.js", "ui-nodos.js", "ui-rack.js",
          "battle_choreography.js", "battle_replay.js", "ui-arena.js", "ui-duelo.js")
 # La CASA (2026-10-05): la primera pantalla, detras del Army. Lleva canon y escena, que la Arena reutiliza.
-CASA = ("canon.js", "escena.js", "wave_render.js", "gdpr-art25-ephemeral-crab.js", "aiact-art50-crab-terminal.js", "nodos-cedulas.js", "gdpr-art7-entry-choice.js", "home_base_scene.js", "home_buildings.js", "summon_reveal.js")
+CASA = ("canon.js", "escena.js", "wave_render.js", "gdpr-art25-ephemeral-crab.js", "aiact-art50-crab-terminal.js", "nodos-cedulas.js", "gdpr-art7-entry-choice.js", "aiact-art50-state-radio.js", "home_base_scene.js", "home_buildings.js", "summon_reveal.js")
 FUERA_DE_LA_PUERTA = tuple(sorted(set(PUROS + ARENA + CASA)))
 
 
@@ -1478,6 +1478,47 @@ class EntradaCangrejo(unittest.TestCase):
         self.assertIn("no admin", d["h"]["no_puedes"][0], "sin admin nadie acepta: se dice")
         self.assertTrue(any(m.startswith("ram_mib: 58980") for m in d["h"]["medidas"]))
         self.assertIsNone(d["x"], "un nodo que no esta en las cedulas no se inventa")
+
+
+class RadioDelEstado(unittest.TestCase):
+    """J2+J9 (plan de ronda 2026-10-11): la melodia ES el estado (pentatonica, determinista, con huella);
+    el boletin sale SOLO de la instantanea; suena por la sintesis de core.js; voces solo locales."""
+
+    def _js(self):
+        return sin_comentarios((PUBLICO / "game" / "aiact-art50-state-radio.js").read_text(encoding="utf-8"))
+
+    def test_pureza_y_una_sola_sintesis(self):
+        t = self._js()
+        for malo in ("fetch", "localStorage", "indexedDB", "Math.random", "Date", "new AudioContext", "createOscillator", "innerHTML", "AtlasMotor", "aplica"):
+            with self.subTest(malo=malo):
+                self.assertNotIn(malo, t)
+        self.assertIn("S.suena({", t)
+        self.assertIn("v.localService", t, "el locutor solo con voces locales")
+
+    def test_ni_un_fichero_de_audio_en_public(self):
+        """Cero assets binarios de sonido: todo es sintesis (sabotaje: un .mp3 aqui da rojo)."""
+        malos = [str(p.relative_to(PUBLICO)) for p in PUBLICO.rglob("*") if p.suffix.lower() in (".mp3", ".wav", ".ogg", ".m4a", ".flac", ".aac", ".opus")]
+        self.assertEqual(malos, [])
+
+    def test_misma_instantanea_misma_melodia_y_mismo_boletin(self):
+        js = ("const R=require('./public/game/aiact-art50-state-radio.js');"
+              "const i={esquema:'atlas.instantanea/1',ciclo:12,fase:1,nivel_nucleo:3,profundidad:'50-150',"
+              "recursos:{luz:4,biomasa:3,cobre:2,flujo:0,oxigeno:290},integridad:110,integridad_max:117,grieta:{abierta:true,cierre:0}};"
+              "const sin={esquema:'atlas.instantanea/1',recursos:{cobre:1}};"
+              "process.stdout.write(JSON.stringify({g:R.guion(i),g2:R.guion(JSON.parse(JSON.stringify(i))),b:R.boletin(i),h:R.huella(i),"
+              "nada:R.boletin(null),falta:R.boletin(sin),penta:R.PENTA,base:R.BASE_HZ}))")
+        r = subprocess.run(["node", "-e", js], capture_output=True, text=True, timeout=60, cwd=RAIZ.parent)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        d = json.loads(r.stdout)
+        self.assertEqual(d["g"], d["g2"])
+        self.assertEqual(len(d["g"]), 8)
+        import math
+        for f in d["g"]:
+            semis = round(12 * math.log2(f / d["base"])) % 12
+            self.assertIn(semis, d["penta"], f"{f} Hz no es de la pentatonica")
+        self.assertIn("Copper 2", d["b"]); self.assertIn("The rift is open.", d["b"])
+        self.assertIn("NO_DATA", d["nada"]); self.assertIn("NO_DATA", d["falta"], "lo que falta no se inventa")
+        self.assertEqual(d["h"], "76981b830a406795853ff727256f2fe0be0c89624292e0233caa3eb2dccb6444", "la huella de la melodia y el boletin cambio: el estado suena distinto")
 
 
 class Conquista(unittest.TestCase):

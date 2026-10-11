@@ -84,7 +84,7 @@
     ['arena', '\u2694\uFE0E', ''],
     ['partida', '\u2139\uFE0E', '.atlas-guardado|.thegame-exporta|.thegame-opina|.atlas-hud-farmeo|#atlas-juego > .no-data|.atlas-pie']];
   /* LA CASA, a demanda y detras del Army (usa la gacha para tu emblema). */
-  var CASA = [['/game/canon.js'], ['/game/wave_render.js'], ['/game/escena.js'], ['/game/gdpr-art25-ephemeral-crab.js'], ['/game/aiact-art50-crab-terminal.js'], ['/game/nodos-cedulas.js'], ['/game/gdpr-art7-entry-choice.js'], ['/game/home_base_scene.js'], ['/game/home_buildings.js'], ['/game/summon_reveal.js']];
+  var CASA = [['/game/canon.js'], ['/game/wave_render.js'], ['/game/escena.js'], ['/game/gdpr-art25-ephemeral-crab.js'], ['/game/aiact-art50-crab-terminal.js'], ['/game/nodos-cedulas.js'], ['/game/gdpr-art7-entry-choice.js'], ['/game/aiact-art50-state-radio.js'], ['/game/home_base_scene.js'], ['/game/home_buildings.js'], ['/game/summon_reveal.js']];
   /* LO TECNICO, SIEMPRE PLEGADO (Soberano: «son textos que asustan a usuarios no tecnicos»): el
      JSON de la carta, las leyes medidas, la semilla que no es VRF, los valores provisionales y el
      pie. No se borran, porque son la prueba: se ven al abrir «Technical details». */
@@ -196,6 +196,8 @@
     }).then(function () {
       /* J8: la entrada (zona o nodo, con sus reglas a la vista) va encima de la casa. */
       if (window.AtlasEntrada) { window.AtlasEntrada.monta(PANEL.casa); }
+      /* J2+J9: la radio del estado, al pie de la casa (suena solo tras el gesto). */
+      if (window.AtlasRadio) { window.AtlasRadio.monta(PANEL.casa); }
       setTimeout(cargaArena, 0);
     }).catch(function (e) { casa = null; PANEL.casa.appendChild(el('p', 'no-data', 'NO_DATA · ' + (e && e.message))); });
     return casa;

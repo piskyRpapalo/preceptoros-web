@@ -165,7 +165,8 @@ const rutas = await shell.keys();
 // y sin el en el shell no se jugaba sin red. Bajara cuando el bloque 3 retire las piezas del Hub.
 // 201 el mismo dia: entra el TERMINAL DEL CANGREJO (J7, game/aiact-art50-crab-terminal.js).
 // 202: entra LA ENTRADA (J8, game/gdpr-art7-entry-choice.js).
-ok('precachea paginas, piezas del Hub y el juego', rutas.length === 202, rutas.length+' rutas');
+// 203: entra LA RADIO DEL ESTADO (J2+J9, game/aiact-art50-state-radio.js).
+ok('precachea paginas, piezas del Hub y el juego', rutas.length === 203, rutas.length+' rutas');
 ok('el shell trae el juego (D7): la puerta, el cangrejo y la arena',
    ['/assets/thegame.js', '/game/gdpr-art25-ephemeral-crab.js', '/game/ui-arena.js', '/assets/atlas-motor.js'].every(r => rutas.includes(r)));
 ok('el shell trae las tres tiras de la cara',
