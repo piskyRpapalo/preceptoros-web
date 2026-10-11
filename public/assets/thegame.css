@@ -127,7 +127,10 @@ body.portada-juego main#juego-panel{background:transparent;padding:0;border-radi
 #thegame .thegame-mapa .atlas-arena-mapa{position:absolute;inset:0;width:100%;height:100%;border:0;border-radius:0;background:var(--bg-primary)}
 /* La barra (Workshop, piloto) queda fija bajo la cabecera sticky del sitio (medida: 88 px escritorio, 110 telefono). */
 :root{--thegame-tope:7.2rem}
-.thegame-barra{position:fixed;z-index:3;top:var(--thegame-tope);inset-inline-end:.6rem;margin:0;padding:0;background:transparent;border:0;flex-wrap:nowrap}
+/* Telefono estrecho: la cabecera crece a dos lineas (medido en el Doogee, 360 px: termina en 147 px) y tapaba la barra
+   (el toque REAL en Workshop lo recibia la cabecera). Con 412 px termina en 110: vale el tope de arriba. */
+@media (max-width:25rem){:root{--thegame-tope:9.5rem}}
+.thegame-barra{position:fixed;z-index:6;top:var(--thegame-tope);inset-inline-end:.6rem;margin:0;padding:0;background:transparent;border:0;flex-wrap:nowrap}
 .juego-panel .thegame-barra{background:transparent}
 .thegame-pestanas{margin-inline-start:auto}
 #thegame .thegame-b-taller{display:flex;align-items:center;gap:.45rem;min-height:3rem;padding:.4rem 1rem;font:700 .74rem/1 var(--mono);
@@ -154,8 +157,10 @@ body.portada-juego main#juego-panel{background:transparent;padding:0;border-radi
 /* Los mandos del mapa, a mano y por encima de la terminal; el aviso, arriba. */
 .mapa-mandos{position:fixed;z-index:1;left:.6rem;bottom:calc(46dvh + .6rem)}
 .mapa-aviso{position:fixed;z-index:1;top:calc(var(--thegame-tope) + 3.6rem);left:.6rem;right:.6rem;pointer-events:none}
-@media (min-width:48rem){
-  :root{--thegame-tope:5.9rem}
+@media (min-width:48rem){:root{--thegame-tope:5.9rem}}
+/* Escritorio = ancho Y alto. Un telefono apaisado (Doogee: 772x280 CSS px, medido 2026-10-11) pasaba de 48rem de ancho
+   y recibia la terminal a la derecha con 128 px de hoja: los botones quedaban bajo otras capas. */
+@media (min-width:48rem) and (min-height:34rem){
   .thegame-terminal{inset:calc(var(--thegame-tope) + 3.6rem) .6rem .6rem auto;width:min(26rem,38vw);max-height:none}
   .thegame-hoja{inset:calc(var(--thegame-tope) + 3.6rem) calc(min(26rem,38vw) + 1.2rem) .6rem .6rem}
   .thegame-mapa{inset:0}
