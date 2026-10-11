@@ -498,34 +498,42 @@ process.stdout.write(JSON.stringify(ok));
         self.assertEqual(d["piloto_base"]["invalidas"], 0, "la regla propone acciones fuera del enum")
         self.assertEqual(d["ley"], {k: d["ley"][k] for k in ("nd", "integridad_max", "dano")})
 
-    def test_la_capa_del_piloto_solo_pide_el_record(self):
-        """Una salida de red, al propio origen: el record de la casa. Ni la
-        partida ni la aceptacion salen solas; exportar es un fichero."""
+    def test_limpieza_sin_puertas_muertas_una_puerta_una_cerradura(self):
+        """Limpieza (orden del Soberano, 2026-10-11): PILOT y SUGGEST se retiran (medido: su freno `capa.open` era siempre
+        falso, el piloto nunca actuaba, y su ventana solo cerraba con Escape). REPAIR deja de ser una ventana modal: el
+        boton y la grieta llaman a UNA funcion que repara. Queda la partida firmada que te llevas (L-076), sin red."""
         codigo = sin_comentarios((PISO / "atlas-piloto-capa.js").read_text(encoding="utf-8"))
-        self.assertEqual(re.findall(r"fetch\(([^)]*)\)", codigo), ["'/atlas-record.json'"])
-        for salida in ("http://", "https://", "XMLHttpRequest", "sendBeacon", "WebSocket",
-                       "EventSource", "importScripts", "innerHTML", "localStorage",
-                       "sessionStorage", "indexedDB", "Enviar"):
-            with self.subTest(salida=salida):
-                self.assertNotIn(salida, codigo)
+        for muerta in ("T('piloto')", "T('sugerir')", "piloto_soltar", "capa.open", "fetch(", "sugiere", "dialogo(", "setInterval"):
+            with self.subTest(retirada=muerta):
+                self.assertNotIn(muerta, codigo, "vuelve una puerta muerta")
+        self.assertIn("window.Identity.firmar(p)", codigo, "la partida exportada ya no va firmada")
+        self.assertIn("esquema: 'atlas.partida.firmada/1'", codigo)
+        self.assertIn("R.exporta.id = 'thegame-exporta';", codigo)
+        piso = sin_comentarios((PISO / "atlas-piso.js").read_text(encoding="utf-8"))
+        self.assertIn("function repara() { if (E && E.abierta) { actua(M.reparar(E)); } }", piso)
+        self.assertEqual(piso.count("addEventListener('click', repara)"), 2, "reparar y la grieta no van por la MISMA funcion")
+        self.assertNotIn("function dialogo(", piso, "vuelve la ventana modal de reparar")
+        for f in list((PUBLICO / "game").glob("*.js")) + list((PUBLICO / "assets").glob("*.js")):
+            if f.name == "atlas-dialogo.js":
+                continue
+            with self.subTest(fichero=f.name):
+                self.assertNotIn("AtlasDialogo.abre(", f.read_text(encoding="utf-8"), "alguien vuelve a abrir la ventana modal")
 
-    def test_acepto_firma_y_declara_lo_que_no_hace(self):
-        """Sin firma no arranca: `arranca()` solo se llama tras `Identity.firmar`
-        de una `atlas.aceptacion/1` que lleva las cuatro negaciones. Y las
-        cuatro se DICEN en las nueve lenguas, con el mismo peso que lo que hace."""
-        codigo = sin_comentarios((PISO / "atlas-piloto-capa.js").read_text(encoding="utf-8"))
-        llamadas = re.findall(r"(?<!function )\barranca\(\)", codigo)
-        self.assertEqual(len(llamadas), 1, "el piloto arranca por otro camino")
-        self.assertIn("firma = f.firma; cierra(); arranca();", codigo)
-        self.assertIn("window.Identity.firmar(obj)", codigo)
-        self.assertIn("que_no_hace: ['valor', 'credenciales', 'red', 'guardado']", codigo)
-        self.assertIn("'piloto_hace'", codigo); self.assertIn("'piloto_no'", codigo)
-        for l in LENGUAS_JUEGO:
-            ui = json.loads((PUBLICO / f"atlas-{l}.json").read_text(encoding="utf-8"))["ui"]
-            for k in ("piloto_acepto", "piloto_n1", "piloto_n2", "piloto_n3", "piloto_n4",
-                      "piloto_modelo", "piloto_firma", "piloto_soltar", "piloto_fusible"):
-                with self.subTest(lengua=l, clave=k):
-                    self.assertTrue(ui.get(k, "").strip(), f"{l} no dice {k}")
+    def test_lo_que_flota_recibe_el_dedo(self):
+        """U1 puso pointer-events:none en la capa para que el mapa reciba el dedo, y eso se HEREDA: la revelacion,
+        Customize y los dialogos solo se cerraban con Escape (medido en vivo). Toda clase `position:fixed` del juego
+        tiene que estar en una regla pointer-events:auto (salvo el aviso del mapa, que no es pulsable a proposito)."""
+        hojas = [PUBLICO / "assets" / n for n in ("thegame.css", "atlas.css", "atlas-mapa.css")] + [PUBLICO / "game" / "home.css"]
+        vivo = "".join(re.sub(r"/\*.*?\*/", "", h.read_text(encoding="utf-8"), flags=re.S) for h in hojas)
+        fijas = set(re.findall(r"\.([a-z][a-z0-9-]*)\{position:fixed", vivo)) - {"mapa-aviso"}
+        auto = set()
+        for sel, cuerpo in re.findall(r"([^{}]+)\{([^{}]*)\}", vivo):
+            if "pointer-events:auto" in cuerpo:
+                auto |= set(re.findall(r"\.([a-z][a-z0-9-]*)", sel))
+        self.assertGreaterEqual(len(fijas), 8)
+        for c in sorted(fijas):
+            with self.subTest(capa=c):
+                self.assertIn(c, auto, f".{c} flota y no recibe el dedo: solo se cerraria con Escape")
 
     def test_el_piloto_se_carga_con_el_juego_y_no_antes(self):
         """A demanda, detras del piso, fuera del precache y de todo HTML."""
@@ -631,16 +639,6 @@ process.stdout.write(JSON.stringify(ok));
         for clase in ("thegame-sugerencia", "atlas-eclosion"):
             with self.subTest(clase=clase):
                 self.assertIn(f".{clase}[hidden]", css)
-
-    def test_sugerir_no_juega_por_la_persona(self):
-        """Humano + piloto: la regla propone y la accion solo se aplica al
-        pulsar Hacer; lo propuesto y lo respondido quedan en la partida."""
-        codigo = sin_comentarios((PISO / "atlas-piloto-capa.js").read_text(encoding="utf-8"))
-        self.assertIn("if (modo === 'sugerir') { return sugiere(); }", codigo)
-        self.assertIn("window.AtlasPartida.anota(a, hacer ? 'hecha' : 'ignorada');", codigo)
-        self.assertEqual(codigo.count("window.AtlasJuego.aplica(a)"), 1,
-                         "sugerir aplica la accion sin que la persona la pulse")
-        self.assertIn("if (hacer) { window.AtlasJuego.aplica(a); return; }", codigo)
 
 
 # Modulos de `public/game/` que NINGUN guion pide todavia (ni la puerta ni el Army): el multijugador y
