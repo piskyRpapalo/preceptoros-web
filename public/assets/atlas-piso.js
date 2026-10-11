@@ -92,7 +92,10 @@
     R.alertaT = el('strong', null, U('alerta'));
     R.alertaP = el('p', null, U('alerta_p'));
     R.reparar = boton(U('reparar'));
-    R.reparar.addEventListener('click', function () { dialogo(R.reparar); });
+    R.reparar.id = 'atlas-reparar';
+    /* LIMPIEZA (2026-10-11): reparar es UN clic y UNA funcion (el motor); la ventana modal que lo envolvia se
+       retira (heredaba pointer-events:none y solo se cerraba con Escape: bloqueaba el juego). */
+    R.reparar.addEventListener('click', repara);
     R.alerta.appendChild(R.alertaT); R.alerta.appendChild(R.alertaP); R.alerta.appendChild(R.reparar);
     raiz.appendChild(R.alerta);
     raiz.appendChild(R.vivo);
@@ -108,7 +111,7 @@
         lienzo.appendChild(s);
       });
     R.grieta = boton('⚠ ' + U('s_grieta'), 'atlas-sector'); R.grieta.dataset.sector = 'grieta';
-    R.grieta.addEventListener('click', function () { dialogo(R.grieta); });
+    R.grieta.addEventListener('click', repara);  /* la misma funcion que «reparar»: una puerta, una cerradura */
     lienzo.appendChild(R.grieta);
     /* El mundo va PRIMERO, bajo el lema: se entra a un mundo, no a un formulario (Doogee, 2026-09-28). */
     sm.appendChild(lienzo); raiz.insertBefore(sm, raiz.children[1] || null);
@@ -253,15 +256,7 @@
     pinta();
   }
 
-  function dialogo(origen) {
-    if (!window.AtlasDialogo || !E.abierta) { return; }
-    window.AtlasDialogo.abre(TXT.ui, zona, origen, {
-      alerta: true,
-      alSellar: function () { actua(M.reparar(E)); },
-      alAplazar: function () { actua(M.aplazar(E)); }
-    });
-  }
-
+  function repara() { if (E && E.abierta) { actua(M.reparar(E)); } }
   function baja(prof) {
     actua(M.bajarA(E, prof));
     if (E.prof !== prof) { dice(U(prof === 'nucleo' ? 'b4n_no' : 'ascenso')); }

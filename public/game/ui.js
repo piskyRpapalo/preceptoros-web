@@ -11,7 +11,7 @@
   'use strict';
 
   var G = null, A = null, S = null, army = null;
-  var R = {}, reloj = 0, huevos = [], eclosionada = null, n = 0, capa = null;
+  var R = {}, reloj = 0, huevos = [], eclosionada = null, capa = null, cadena = null, clave = null, causa = '';
 
   function T(k) { return (window.AtlasJuego && window.AtlasJuego.texto(k)) || ''; }
   function el(tag, clase, texto) {
@@ -49,18 +49,42 @@
     });
     R.caja.appendChild(b);
   }
+  /* G0 · LA CADENA DE INVOCACIONES (`db.js`): se carga y se re-verifica (firma y semilla) al tener clave, y con ella
+     VUELVEN los huevos pagados (antes vivian solo en memoria: recargar cobraba el cobre y devolvia 0 huevos). */
+  function cadenaLista() {
+    var I = window.Identity;
+    if (!I || !I.quien || !I.quien()) { return Promise.reject(new Error('sin identidad')); }
+    return I.publica().then(function (pub) {
+      if (pub === clave && cadena) { return cadena; }
+      return A.cadenaWeb(pub).lee().then(function (c) {
+        c = c || [];
+        return A.verificaCadena(c, pub, A.verificaWeb, A.semillaWeb).then(function (x) {
+          clave = pub; causa = x; cadena = x ? null : c;
+          huevos = cadena ? A.huevos(cadena) : [];
+          if (x) { dice('NO_DATA · ' + x); }
+          pinta();
+          return cadena;
+        });
+      });
+    });
+  }
   function invoca(tc) {
     var i = ins(), TC = G.TCS[tc];
     if (!i || i.recursos.cobre < TC.coste.cobre || i.recursos.luz < TC.coste.luz) { dice(T('inc_falta')); return; }
-    n += 1;
-    firma({ esquema: 'atlas.invocacion/1', tc: tc, ciclo: i.ciclo, n: n }).then(function (r) {
-      return A.semillaWeb(r.firma).then(function (semilla) {
-        var ev = window.AtlasJuego.invoca(TC.coste);
-        if (!ev || ev.resultado !== 'ok') { dice(T('inc_falta')); return; }
-        huevos.push({ tc: tc, semilla: semilla, desde: i.ciclo, hasta: i.ciclo + TC.incuba });
-        S.suena('pop', calor());
-        dice(rellena(T('inc_hecha'), { tc: T(tc) }));
-        pinta();
+    cadenaLista().then(function (c) {
+      if (!c) { dice('NO_DATA · ' + causa); return; }
+      var o = A.eslabon(c, tc, clave);
+      return window.Identity.firmar(o).then(function (f) {
+        return A.semillaWeb(f.firma).then(function (semilla) {
+          var ev = window.AtlasJuego.invoca(TC.coste);
+          if (!ev || ev.resultado !== 'ok') { dice(T('inc_falta')); return; }
+          cadena = A.anexa(cadena, o, f.firma, semilla, i.ciclo, i.ciclo + TC.incuba);
+          A.cadenaWeb(clave).pon(cadena);
+          huevos.push({ tc: tc, semilla: semilla, desde: i.ciclo, hasta: i.ciclo + TC.incuba, seq: o.seq });
+          S.suena('pop', calor());
+          dice(rellena(T('inc_hecha'), { tc: T(tc) }));
+          pinta();
+        });
       });
     }).catch(function (e) { sinIdentidad(e, function () { invoca(tc); }); });
   }
@@ -81,6 +105,7 @@
   }
   function eclosiona(h) {
     var t = G.tirada(h.semilla, h.tc);
+    if (cadena && h.seq) { cadena = A.abre(cadena, h.seq); A.cadenaWeb(clave).pon(cadena); }  /* G0: abierto, no borrado */
     eclosionada = t;
     while (R.eclosion.firstChild) { R.eclosion.removeChild(R.eclosion.firstChild); }
     R.eclosion.hidden = false;
@@ -138,7 +163,8 @@
     pintaNido();
   }
   function tic() {
-    if (!capa || !capa.open || document.hidden) { return; }
+    /* G0 · la capa dejo de ser un <dialog> (sin `open`): con `!capa.open` esto salia SIEMPRE y nada eclosionaba. */
+    if (!capa || !capa.isConnected || document.hidden) { return; }
     var i = ins(), c = i ? i.ciclo : 0;
     if (!eclosionada) {
       var listo = huevos.filter(function (h) { return c >= h.hasta; })[0];
@@ -228,6 +254,9 @@
       });
     }
     reloj = setInterval(tic, window.AtlasMotor.CICLO_MS);
+    /* G0: al abrir (y al crear o cambiar de clave) vuelven los huevos de la cadena del aparato. */
+    cadenaLista().catch(function () {});
+    document.addEventListener('preceptor:identity', function () { cadena = null; cadenaLista().catch(function () {}); });
   }
 
   /* P9: el Taller retira una tropa SOLO con su recibo firmado (lo verifica `army.retira`). */

@@ -117,6 +117,10 @@
 body.portada-juego main#juego-panel{background:transparent;padding:0;border-radius:0}
 .juego-panel .thegame-capa,#atlas-juego,#atlas-piso{pointer-events:none}
 .thegame-barra,.thegame-terminal,.thegame-hoja,.thegame-mapa,.mapa-mandos,.mapa-aviso{pointer-events:auto}
+/* LO QUE FLOTA TAMBIEN RECIBE EL DEDO. `pointer-events` se HEREDA: la revelacion, Customize y los dialogos colgaban
+   de la capa (none) y solo se cerraban con Escape (medido en vivo, 2026-10-11: el clic de «Continue» caia en otro
+   nodo). Toda capa flotante del juego va en esta lista; un test lo exige para cada `position:fixed`. */
+.revela,.atlas-dlg-capa,.casa-pers,.atlas-hud-farmeo{pointer-events:auto}
 /* En el telefono el mapa es la franja de ENCIMA de la terminal: su centro (casa, Faro, tu cangrejo) queda a la
    vista; con el lienzo entero, la camara centraba detras de la hoja (medido en captura 412 px, U2). */
 .thegame-mapa{position:fixed;inset:0 0 46dvh 0;z-index:0}
