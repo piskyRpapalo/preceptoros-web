@@ -167,7 +167,12 @@ LICENCIAS = {"LICENSE", "LICENSE-PROSE"}
 #     ninguno estrena el tope ya gastado. Y `sw.js` gana 6,1 KB, que a ~22 B por
 #     linea de precache son sitio para ~270 ficheros mas: la razon por la que un
 #     `capas.css` no cabia el 2026-09-05 deja de existir.
-TOPE_FICHERO = 16 * 1024
+#
+# 5 · REVOCADO EL 2026-10-11 por el Soberano (firma D2 del plan de ronda): el tope de 16 KiB por fichero
+#     deja de existir. La ley nueva es 25 MiB por bloque sintetico, y solo sube por excepcion firmada en
+#     EXCEPCIONES.md. La vara de rendimiento ya no es el byte: son los fps MEDIDOS en el Doogee
+#     (ideas6oct:785) y la puerta del juego, gzip_juego_b < 153.600 B, que sigue intacta en mundo.py.
+TOPE_FICHERO = 25 * 1024 * 1024
 
 
 def textos():
