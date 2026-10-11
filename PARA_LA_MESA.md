@@ -38,6 +38,8 @@ Coste: ~600 k tokens de sesión · delegadas 0 / hechas por Opus 8 piezas · tie
 
 | P10 · Prisma de Bandera | Eliges tu bandera en «Customize» (8 tonos cerrados: no es una huella). En el TALLER, cada onda se tiñe a tu bandera (2 g, firmado); el Army la pinta de ese tono. En el mapa, el prisma de tu casa va del color de TU bandera. Solo aspecto: el combate no lo lee | `8ee8b6f` (`claude/refresco2-p10-prisma`) | n=2 verdes · 12 casos · sabotaje (cualquier color) 11/12→12/12 | MEDIDO · `abeg` · gzip 83.176 |
 
+| P6 · combate por escuadrones | Cada tropa lleva su **escuadrón**: pocas aristas, muchas unidades; el Leviatán es un coloso. Las unidades caen con la vida y se colocan según tu formación. El combate sigue resolviéndose por tropa (el contrato no cambia) | `08d2230` (`claude/refresco2-p6-escuadron`) | n=2 verdes · 5 casos · **96,6 % de escuadras completas pasan de 100 unidades (mediana 138)** · **198 unidades a 60 cps en headless** (Doogee NO_DATA) · sabotaje 3/5→5/5 | MEDIDO · `abeh` |
+
 NO_DATA (P9): ciclo completo en el navegador con una tropa firmada (pide incubar un huevo: 50 de cobre y ciclos de juego); lo cubren los casos de node con firmas Ed25519 reales.
 Nota: `valores.taller` entra en `packSha`, así que los duelos exportados antes de P9 se rechazan con la causa `pack_sha` (valores PROVISIONALES).
 
@@ -65,7 +67,7 @@ Nota: `valores.taller` entra en `packSha`, así que los duelos exportados antes 
 | R7 · el mapa es el mundo | La radio suena también en MAP (mismo módulo). **Anclas**, solo vocabulario: tubo de cada nodo al rack (línea doble teal), y rombos en trazos (PROPUESTA) para partes del cuerpo, prisma y ecos de superficie. Nada envía | `b052006` (`claude/refresco-r7-mapa`) | n=2 verdes · 2 casos de anclas · sabotaje (`fetch` en anclas) rojo→verde | MEDIDO · `abec` |
 | R8 · la ceremonia del gacha | Anticipación (la cápsula cae mientras la estática se sintoniza), ping, onda armónico a armónico, micro-temblor y primer timbre; vitrina del Army con stats reales y ondas que respiran; botones con squash & stretch. Todo quieto con movimiento reducido; la ceremonia no decide nada | `796e190` (`claude/refresco-r8-ceremonia`) | n=2 verdes · sabotaje (anticipación de 4 s) rojo→verde | MEDIDO · `abed` · gzip 82.697 |
 
-Capturas: `~/p0x/no-publicar/capturas-refresco-20261011/` (`j6_pc.png`, `j6_movil2.png`, `r2c-1.png` cangrejo en el teléfono, `r2d-1.png` en PC, `r2e-1.png` MAP, `r3_terminal_tubo.png`, `r4-*.png`, `r5_leviatan_13_aristas.png`, `r5_odds_aristas.png`, `r7_anclas_tubo_rack.png`, `r8_anticipacion_capsula.png`, `live_es_cangrejo.png`, `p10_bandera_en_el_mapa.png`), Chrome headless contra el servidor local.
+Capturas: `~/p0x/no-publicar/capturas-refresco-20261011/` (`j6_pc.png`, `j6_movil2.png`, `r2c-1.png` cangrejo en el teléfono, `r2d-1.png` en PC, `r2e-1.png` MAP, `r3_terminal_tubo.png`, `r4-*.png`, `r5_leviatan_13_aristas.png`, `r5_odds_aristas.png`, `r7_anclas_tubo_rack.png`, `r8_anticipacion_capsula.png`, `live_es_cangrejo.png`, `p10_bandera_en_el_mapa.png`, `p6_escuadrones.png`), Chrome headless contra el servidor local.
 Fps en el Doogee: **NO_DATA** (no lo he medido esta ronda; Acurast sigue en primer plano y no se toca).
 
 **Desviación declarada (R2):** R2a y R2b se fundieron en una sola pieza. Retirar la rejilla sin poner el cuerpo dejaba el Bosque sin puerta. El estilo (cúpula/aguja/concha), que vestía los tejados, ahora es el festón del caparazón: es lo único que le queda, y así no sobra código muerto ni hay que migrar la casa guardada (`atlas.casa/1` no cambia).
