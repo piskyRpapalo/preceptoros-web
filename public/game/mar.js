@@ -20,7 +20,7 @@
   var MF = window.AtlasMarFondo, VE = 820, PASO = 90, VIVO = null;
   /* LAS FLECHAS SON ACCIONES DEL PILOTO (R2c): `mover <dir>` del enum `atlas.accion/1`, una lista, no dos.
      Aqui solo su vector y su icono; la lista de direcciones es la del piloto (`AtlasPiloto.DIRS`). */
-  var VEC = { izq: [-1, 0], arr: [0, -1], aba: [0, 1], der: [1, 0], casa: [0, 0] }, ICO = { izq: '◀', arr: '▲', aba: '▼', der: '▶', casa: '⌂' };
+  var VEC = { izq: [-1, 0], arr: [0, -1], aba: [0, 1], der: [1, 0], casa: [0, 0], faro: [0, 0] }, ICO = { izq: '◀', arr: '▲', aba: '▼', der: '▶', casa: '⌂', faro: '◈' };
   function dirs() { return (window.AtlasPiloto && window.AtlasPiloto.DIRS) || ['izq', 'arr', 'aba', 'der', 'casa']; }
   /* La flecha de la persona entra por la MISMA puerta que la de la IA: `AtlasJuego.aplica`. */
   function flecha(dir) {
@@ -87,6 +87,7 @@
     /* Un salto por accion `mover`: devuelve true si choco con la niebla. */
     function mueveDir(d) {
       if (d === 'casa') { aCasa(true); return false; }
+      if (d === 'faro') { cam.x = N.HEX.x; cam.y = N.HEX.y; cam.vx = 0; cam.vy = 0; movido = true; aviso.textContent = f.texto('mapa_en_faro'); return false; }
       movido = true; var v = VEC[d], c = C.empuja(cam, v[0] * PASO * 2.2, v[1] * PASO * 2.2, circ, quieto());
       if (c) { choca(); }
       return c;
@@ -115,10 +116,11 @@
     function sitio(l) { return N.sitioLugar(l, K.sha, f.pub()); }
     function pinta(ts) {
       raf = requestAnimationFrame(pinta);
-      if (c.offsetParent === null || document.hidden) { ultimo = null; return; }
-      var w = Math.max(240, c.clientWidth), h = Math.round(Math.max(260, Math.min(w * 1.05, (window.innerHeight || 800) * 0.6)));
+      /* U1: el mapa ES la pantalla (lienzo fijo); se PAUSA bajo una hoja (`con-hoja`) o con la pestana oculta. */
+      if (!c.isConnected || document.hidden || document.documentElement.classList.contains('con-hoja')) { ultimo = null; return; }
+      var w = Math.max(240, c.clientWidth), h = Math.max(260, c.clientHeight);
       if (c.width !== Math.round(w * dpr)) { c.width = Math.round(w * dpr); }
-      if (c.height !== Math.round(h * dpr)) { c.height = Math.round(h * dpr); c.style.height = h + 'px'; }
+      if (c.height !== Math.round(h * dpr)) { c.height = Math.round(h * dpr); }
       var g = c.getContext('2d'), W = c.width, H = c.height, q = quieto(), t = q ? 0 : ts, z = W / VE * (w < 600 ? 1.15 : 1);
       col = col || f.colores();
       /* La clave llega despues (promesa): si aun no te has movido, la camara va a tu casa en cuanto se sabe. */

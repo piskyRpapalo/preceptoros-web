@@ -647,7 +647,7 @@ ARENA = ("sobres.js", "rating.js", "arena.js", "duelo.js", "mar-anclas.js", "mar
          "nodos.js", "cuenta.js", "ui-nodos.js", "ui-rack.js",
          "escuadron.js", "battle_choreography.js", "battle_replay.js", "ui-arena-comun.js", "ui-arena.js", "ui-duelo.js")
 # La CASA (2026-10-05): la primera pantalla, detras del Army. Lleva canon y escena, que la Arena reutiliza.
-CASA = ("canon.js", "escena.js", "wave_render.js", "gdpr-art25-ephemeral-crab.js", "aiact-art50-crab-terminal.js", "nodos-cedulas.js", "fog_of_war.js", "world_camera.js", "mar-fondo.js", "gdpr-art7-entry-choice.js", "aiact-art50-state-radio.js", "home_base_scene.js", "casa-medidas.js", "casa-personaliza.js", "home_buildings.js", "summon_reveal.js", "taller.js", "ui-taller.js", "primer_eco.js")
+CASA = ("canon.js", "escena.js", "wave_render.js", "gdpr-art25-ephemeral-crab.js", "aiact-art50-crab-terminal.js", "nodos-cedulas.js", "fog_of_war.js", "world_camera.js", "mar-fondo.js", "gdpr-art7-entry-choice.js", "aiact-art50-state-radio.js", "casa-medidas.js", "casa-personaliza.js", "casa-lateral.js", "home_buildings.js", "summon_reveal.js", "taller.js", "ui-taller.js", "primer_eco.js")
 FUERA_DE_LA_PUERTA = tuple(sorted(set(PUROS + ARENA + CASA)))
 
 
@@ -1039,16 +1039,22 @@ class Pestanas(unittest.TestCase):
     def _capa(self):
         return sin_comentarios(self.CAPA.read_text(encoding="utf-8"))
 
-    def test_tres_pestanas_accesibles_que_mueven_y_no_rehacen(self):
-        """R2 (plan «el refresco»): HOME · MAP · TALLER, siempre en ese orden."""
+    def test_u1_un_mapa_una_terminal_y_dos_hojas(self):
+        """U1 («el mapa unico», contrato FIRMADO 2026-10-11): sin pestanas. El MAPA es la pantalla; la TERMINAL es
+        UN tubo con pliegos (Estado abierto, Lugares plegado); TALLER y BATALLA son hojas sobre el mapa. HOME
+        muere como lugar. Las zonas siguen repartiendo lo que pinta el motor (casa, mapa, taller), en ese orden."""
         c = self._capa()
         ids = re.findall(r"\['(\w+)', '\\u[0-9A-F]{4}", c)
         self.assertEqual(tuple(ids), self.IDS)
-        for pieza in ("setAttribute('role', 'tablist')", "setAttribute('role', 'tab')",
-                      "setAttribute('role', 'tabpanel')", "'aria-selected'", "'aria-controls'",
-                      "piso.appendChild(d)", "ArrowRight", "ArrowLeft", "ordena();"):
+        for pieza in ("el('aside', 'thegame-terminal')", "'pliego-estado', true", "'pliego-lugares', false",
+                      "hoja('taller', T('pes_taller'))", "ZB = hoja('batalla', T('hoja_batalla'))", "'aria-expanded'",
+                      "BT.setAttribute('aria-controls', 'thegame-taller')", "classList.toggle('con-hoja', !!actual)",
+                      "e.key === 'Escape'", "c.id = 'thegame-' + id + '-cierra'", "ordena();"):
             with self.subTest(pieza=pieza):
                 self.assertIn(pieza, c)
+        for viejo in ("role', 'tab'", "aria-selected", "ArrowRight", "pes_casa", "pes_mapa"):
+            with self.subTest(retirado=viejo):
+                self.assertNotIn(viejo, c, "las pestanas vuelven")
         self.assertNotIn("innerHTML", c)
         lista = c[c.index("var PESTANAS"):c.index("var TECNICO")]
         for freno in ("thegame-piloto", "thegame-sugerencia", "thegame-juez", "thegame-cerrar"):
@@ -1056,8 +1062,8 @@ class Pestanas(unittest.TestCase):
                 self.assertNotIn(freno, lista, "el piloto y su freno salen del cabecero")
         for l in LENGUAS_JUEGO:
             ui = json.loads((PUBLICO / f"atlas-{l}.json").read_text(encoding="utf-8"))["ui"]
-            for k in ["pes_" + i for i in self.IDS] + list(self.PLIEGOS) + ["pes_aria", "tecnico", "army_carga"] + \
-                     [f"ayuda_{i}" for i in range(1, 8)]:
+            for k in ["pes_taller", "pes_aria", "hoja_mapa", "hoja_batalla", "pl_estado", "pl_lugares", "pl_entrada",
+                      "terminal_aria", "tecnico", "army_carga"] + [f"ayuda_{i}" for i in range(1, 8)]:
                 with self.subTest(lengua=l, clave=k):
                     self.assertTrue(ui.get(k, "").strip())
 
@@ -1081,12 +1087,12 @@ class Pestanas(unittest.TestCase):
                 self.assertNotIn(m, guiones, f"{m} vuelve a la puerta")
                 self.assertIn(f"['/game/{m}']", army)
         self.assertIn("['/game/juez.js']", guiones, "el juez escucha desde el primer ciclo")
-        # R2 (plan «el refresco»): el Army vive en el TALLER y se pide con la CASA (la pestana de entrada) o al
-        # abrir el Taller. Su peso sigue fuera de la puerta.
-        self.assertIn("if (id === 'casa') { cargaCasa(); }", c)
-        self.assertIn("if (id === 'taller') { cargaArmy(); }", c)
+        # U1: el Army vive en la hoja del TALLER y se pide con la CASA (que se monta al ordenar) o al abrir el
+        # Taller. Su peso sigue fuera de la puerta.
+        self.assertIn("muestraYa(null); cargaCasa();", c)
+        self.assertIn("if (actual === 'taller') { cargaArmy(); }", c)
         self.assertIn("casa = cargaArmy().then(function () { return pide(CASA); })", c)
-        self.assertIn("ARMYZ = el('div', 'casa-army'); PANEL.taller.appendChild(ARMYZ);", c)
+        self.assertIn("ARMYZ = el('div', 'casa-army'); tal.appendChild(ARMYZ);", c)
         self.assertIn("army: cargaArmy", c)
         sys.path.insert(0, str(RAIZ))
         import mundo
@@ -1104,7 +1110,7 @@ class Pestanas(unittest.TestCase):
         self.assertIn("'thegame.css'", self._capa())
         vivo = re.sub(r"/\*.*?\*/", "", css, flags=re.S)
         self.assertEqual(re.findall(r"#[0-9a-fA-F]{3,8}\b", vivo), [], "un color fuera de los tokens")
-        for regla in (".thegame-panel[hidden]{display:none}", "env(safe-area-inset-bottom)",
+        for regla in (".thegame-hoja[hidden]{display:none}", "env(safe-area-inset-bottom)",
                       "@media (min-width:48rem)", ".thegame-piloto{display:contents}"):
             with self.subTest(regla=regla):
                 self.assertIn(regla, vivo)
@@ -1368,8 +1374,9 @@ class Arena(unittest.TestCase):
         for m in ARENA:
             with self.subTest(modulo=m):
                 self.assertIn(f"['/game/{m}']", lista)
-        # R2: la batalla vive dentro de MAP; la Arena se pide al abrir MAP (y despues de la casa).
-        self.assertIn("if (id === 'mapa') { cargaArena(); }", capa)
+        # U1: el mapa ES la pantalla: la Arena se pide en cuanto esta la casa, y su lienzo y mandos pasan al MAPA.
+        self.assertIn("setTimeout(cargaArena, 0);", capa)
+        self.assertIn("cada(ZM.querySelectorAll('.atlas-arena-mapa,.mapa-mandos,.mapa-aviso'), function (n) { MAPA.appendChild(n); });", capa)
         self.assertNotIn("'arena', '\\u2694", capa, "vuelve la pestana Battle")
         self.assertIn("arena = cargaCasa().then(function () { return pide(ARENA); })", capa, "la Arena sin su Army ni su casa")
         casa = capa[capa.index("var CASA"):capa.index("var TECNICO")]
@@ -1385,7 +1392,7 @@ class Arena(unittest.TestCase):
             for k in set(re.findall(r"T\('(\w+)'\)", self._js(f))):
                 with self.subTest(fichero=f, clave=k):
                     self.assertTrue((ar.get(k) or juego.get(k) or "").strip(), f"{k} sin texto")
-        for k in ("pes_mapa", "arena_carga"):
+        for k in ("hoja_batalla", "arena_carga"):
             self.assertTrue(juego.get(k, "").strip())
         for l in LENGUAS_JUEGO:
             self.assertTrue((PUBLICO / f"atlas-arena-{l}.json").is_file(), f"la Arena sin textos en {l}")
@@ -1641,26 +1648,29 @@ class CasaGranja(unittest.TestCase):
             fetches = re.findall(r"fetch\(([^)]*)\)", c)
             self.assertEqual(fetches, ["'/atlas-casa-' + l + '.json'"] if f == "home_buildings.js" else [], f)
 
-    def test_las_partes_del_cangrejo_son_botones_con_su_medida_o_no_data(self):
-        """R2 (plan «el refresco»): la rejilla de edificios se RETIRA en el mismo cambio (sin codigo muerto);
-        los edificios son partes del cangrejo, botones del DOM en sus anclas, con su cifra o NO_DATA."""
+    def test_las_partes_del_cangrejo_son_un_riel_con_su_medida_o_no_data(self):
+        """U1 (contrato «el mapa unico»): las partes dejan de flotar sobre el cuerpo (la escena lateral se RETIRA
+        ENTERA) y son un RIEL de botones al borde de la terminal: `#parte-<id>`, `.casa-lateral-parte`,
+        `data-parte`, nombre en texto y su cifra MEDIDA o NO_DATA, aria-label real, foco itinerante con flechas."""
+        r = self._js("casa-lateral.js")
+        for pieza in ("b.id = 'parte-' + e[0]", "b.dataset.parte = e[0]", "el('button', 'casa-lateral-parte')",
+                      "b.setAttribute('aria-label', ctx.T('parte_' + e[0]) + ' \u00b7 '", "m ? m.txt : 'NO_DATA'",
+                      "ArrowDown: 1, ArrowUp: -1", "R.b[e[0]].tabIndex = k === i ? 0 : -1", "c.entra(e[0])"):
+            with self.subTest(pieza=pieza):
+                self.assertIn(pieza, r)
         b = self._js("home_buildings.js")
-        self.assertIn("var b = boton('', 'casa-parte')", b, "una parte que no es un boton")
-        self.assertIn("b.setAttribute('aria-label', T('parte_' + e[0])", b)
-        self.assertIn("m ? m.txt : 'NO_DATA'", b, "lo no medido se inventa un numero")
         self.assertIn("J.instantanea()", b, "la cifra no sale del estado del juego")
-        self.assertIn("anclas: anclas", b, "los botones no siguen al cangrejo")
-        e = self._js("home_base_scene.js")
-        self.assertIn("an = CJ.pinta(", e, "las anclas no salen del dibujo")
-        self.assertIn("prefers-reduced-motion: reduce", e)
-        self.assertIn("med.nivel(2)", e, "la calidad no baja sola cuando caen los fps")
-        for viejo, f in (("PARCELAS", e), ("function edificio(", e), ("function cupula(", e), ("enNiebla", e),
-                         ("casa-edificio", b), ("EDIF", b), ("pintaBotones", b)):
+        self.assertIn("AtlasCasaLateral.monta(R.est, { T: T, medidas: medidas, entra: entra })", b)
+        self.assertFalse((PUBLICO / "game" / "home_base_scene.js").exists(), "la escena lateral vuelve")
+        for viejo in ("anclas", "pintaPartes", "'casa-parte'", "paleta: ["):
             with self.subTest(retirado=viejo):
-                self.assertNotIn(viejo, f, "la rejilla de edificios vuelve como codigo muerto")
-        self.assertNotIn("casa-edificio", (PUBLICO / "game" / "home.css").read_text(encoding="utf-8"))
+                self.assertNotIn(viejo, sin_comentarios(b), "la escena lateral vuelve como codigo muerto")
+        css = (PUBLICO / "game" / "home.css").read_text(encoding="utf-8")
+        for viejo in ("casa-escena", "casa-edificio", ".casa-parte{"):
+            self.assertNotIn(viejo, css)
+        self.assertIn("min-height:3rem", css.split("#thegame .casa-lateral-parte{")[1].split("}")[0], "parte de menos de 48 px")
         tx = json.loads((PUBLICO / "atlas-casa-en.json").read_text(encoding="utf-8"))["ui"]
-        for k in re.findall(r"T\('(\w+)'\)", b):
+        for k in set(re.findall(r"T\('(\w+)'\)", b + r)):
             with self.subTest(clave=k):
                 self.assertTrue(tx.get(k), f"{k} sin texto")
         for i in ("caparazon", "pinzas", "patas", "ojos"):
@@ -1733,6 +1743,36 @@ class MapaMovible(unittest.TestCase):
         tg = (PUBLICO / "assets" / "thegame.js").read_text(encoding="utf-8")
         self.assertIn("window.AtlasTallerUI.monta(PANEL.taller)", tg)
         self.assertIn("var TL = enNode ? require('./taller.js') : raiz.AtlasTaller;", (PUBLICO / "game" / "arena.js").read_text(encoding="utf-8"))
+
+    def test_u1_el_faro_es_un_destino_y_hay_un_solo_fight(self):
+        """U1 (contrato «el mapa unico»): UNA lista de destinos de camara. Los ojos llevan al Faro (Hexelion) y ese
+        destino existe igual en el piloto, en la terminal del cangrejo, en el esquema y en la camara del mapa:
+        si falta en uno, el humano y el silicio ya no ven el mismo juego. Y «Fight» es UNA via (estaba en la
+        ficha del lugar y en la del rival): un solo boton, con id estable, que abre la hoja de batalla."""
+        dirs = []
+        for f in (ASSETS / "atlas-piloto.js", PUBLICO / "game" / "aiact-art50-crab-terminal.js"):
+            m = re.search(r"var DIRS = \[([^\]]*)\]", f.read_text(encoding="utf-8"))
+            dirs.append(tuple(re.findall(r"'(\w+)'", m.group(1))))
+        esq = json.loads((RAIZ.parent / "data" / "atlas_accion_schema.json").read_text(encoding="utf-8"))
+        dirs.append(tuple(esq["properties"]["dir"]["enum"]))
+        self.assertEqual(len(set(dirs)), 1, f"los destinos no coinciden: {dirs}")
+        self.assertIn("faro", dirs[0])
+        mar = self._js("mar.js")
+        self.assertIn("if (d === 'faro') { cam.x = N.HEX.x; cam.y = N.HEX.y;", mar, "la camara no sabe ir al Faro")
+        self.assertIn("faro: '\u25c8'", mar, "el mando del Faro sin icono")
+        med = self._js("casa-medidas.js")
+        self.assertIn("['ojos', '\u25c8', 'faro', 'faro']", med, "los ojos no abren la puerta del Faro")
+        hb = self._js("home_buildings.js")
+        self.assertIn("accion: 'mover', dir: 'faro', origen: 'humano'", hb, "los ojos no mueven la camara por la via del piloto")
+        ar = self._js("ui-arena.js")
+        self.assertEqual(ar.count("T('arena_luchar')"), 1, "«Fight» vuelve a salir en dos sitios")
+        self.assertIn("b.id = 'arena-lucha';", ar)
+        # El boton sale de un bucle sobre DOS fichas (lugar y rival): una sola aparicion en la fuente no basta; el
+        # corte de la ficha del rival (i = 1) tiene que ir justo antes del boton (sabotaje medido: sin el, verde).
+        self.assertIn("      if (i) { return; }\n      var b = boton('\\u2694\\uFE0E ' + (sel.npc ? T('arena_luchar')", ar,
+                      "«Fight» vuelve a pintarse en la ficha del rival")
+        self.assertIn("window.TheGame.ve('batalla'); } pelea();", ar)
+        self.assertIn("if (actual) { actual.para(); }\n    if (window.TheGame && window.TheGame.ve) { window.TheGame.ve('batalla'); }", ar)
 
     def test_u0_los_troceos_son_una_puerta_sin_gemelos(self):
         """U0 («el mapa unico»): home_buildings, ui-arena y thegame se parten ANTES de tocarlos. Lo que sale vive en
@@ -1831,7 +1871,9 @@ class MapaMovible(unittest.TestCase):
         mismo modulo, no un gemelo); el mapa dibuja las ANCLAS (N.anclas) y nada de esto envia: ni fetch, ni
         sendBeacon, ni cifrado (EV_SURFACE_ECHO se construye con su propio FIRMO)."""
         tg = (PUBLICO / "assets" / "thegame.js").read_text(encoding="utf-8")
-        self.assertIn("window.AtlasRadio.monta(PANEL.casa); window.AtlasRadio.monta(PANEL.mapa);", tg)
+        # U1: «Play the state» salia DOS veces (casa y mapa): ahora la radio se monta UNA vez, en la terminal.
+        self.assertIn("if (window.AtlasRadio) { window.AtlasRadio.monta(PANEL.casa); }", tg)
+        self.assertEqual(tg.count("AtlasRadio.monta("), 1, "la radio vuelve a salir en dos sitios")
         m = (PUBLICO / "game" / "mar-anclas.js").read_text(encoding="utf-8")
         self.assertIn("N.anclas({ pub: o.pub, sha: o.sha, nodos: o.nodos || [] })", m)
         self.assertIn("window.AtlasMarAnclas.pinta(g, P,", (PUBLICO / "game" / "mar.js").read_text(encoding="utf-8"))
@@ -1885,34 +1927,27 @@ class MapaMovible(unittest.TestCase):
         import mundo
         self.assertIn("tubo.css", mundo.PIEZAS, "la hoja baja al abrir y no se cuenta en la puerta")
 
-    def test_j6_una_sola_fuente_de_teselas_y_el_mar_de_fondo_en_la_portada(self):
-        """J6 (plan «el refresco»): el mapa y la portada piden el MISMO pintor de teselas (T0-D: sin
-        gemelos); la deriva es global y no se hornea en cada tesela (las costuras de M4); el fondo
-        se monta solo en la portada, como decorado, y quieto con movimiento reducido."""
+    def test_j6_una_sola_fuente_de_teselas_y_el_mapa_es_el_fondo(self):
+        """J6 (plan «el refresco») y U1: el mapa pide el pintor UNICO de teselas (T0-D: sin gemelos); la deriva es
+        global y no se hornea en cada tesela (las costuras de M4). Desde U1 el fondo de la portada ES el mapa:
+        el lienzo de fondo propio (monta, portada, .mar-fondo) se RETIRA; el mapa se pausa bajo una hoja."""
         m, f = self._js("mar.js"), self._js("mar-fondo.js")
         for gemelo in ("function tesela(", "function bruma(", "E.textura(", "offsetTemporal"):
             with self.subTest(gemelo=gemelo):
                 self.assertNotIn(gemelo, m, "mar.js vuelve a tener teselas propias")
         self.assertIn("MF.pintor()", m)
         self.assertNotIn("offset", f.split("function tesela(")[1].split("function bruma(")[0], "la deriva vuelve a hornearse en la tesela")
-        for pieza in ("getElementById('juego-panel')", "setAttribute('aria-hidden', 'true')", "prefers-reduced-motion: reduce",
-                      "raiz.document.hidden", "(q && hecho)"):
-            with self.subTest(pieza=pieza):
-                self.assertIn(pieza, f)
+        for viejo in ("function monta(", "function portada(", "juego-panel"):
+            with self.subTest(retirado=viejo):
+                self.assertNotIn(viejo, f, "vuelve el segundo lienzo de fondo")
+        self.assertIn("document.documentElement.classList.contains('con-hoja')", m, "el mapa no se pausa bajo una hoja")
         tg = (PUBLICO / "assets" / "thegame.js").read_text(encoding="utf-8")
-        self.assertIn("window.AtlasMarFondo.portada()", tg)
+        self.assertNotIn("AtlasMarFondo.portada", tg)
         orden = [tg.index("'/game/" + n + "'") for n in ("escena.js", "fog_of_war.js", "world_camera.js", "mar-fondo.js")]
         self.assertEqual(orden, sorted(orden), "mar-fondo.js se carga antes que lo que usa")
         css = (PUBLICO / "assets" / "thegame.css").read_text(encoding="utf-8")
-        self.assertIn(".mar-fondo{position:fixed;inset:0;", css)
-        self.assertIn("pointer-events:none", css.split(".mar-fondo{")[1].split("}")[0])
-
-
-class BatallaRTS(unittest.TestCase):
-    """La batalla se repite como una partida de estrategia (Soberano, 2026-10-05: «unidades en movimiento
-    por el mapa… no solo el combate por turnos»). Es una COREOGRAFIA del registro de `arena.combate`:
-    sembrada con la semilla de la partida, determinista, y nunca ensena ganar a quien pierde. Las
-    formaciones cambian la coreografia, nunca el registro."""
+        self.assertNotIn(".mar-fondo", css)
+        self.assertIn(".thegame-mapa{position:fixed;inset:0;", css)
 
     def _js(self, n):
         return sin_comentarios((PUBLICO / "game" / n).read_text(encoding="utf-8"))

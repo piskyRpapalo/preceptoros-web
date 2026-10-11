@@ -165,6 +165,8 @@
   "rp_cae": "{q} #{n} falls.",
   "rp_fin": "{r}.",
   "rp_vivos": "You {a} · Them {b}",
-  "rp_aria": "Battle replay on a map: your waves (circle marks) and theirs (diamond marks) march, clash and fall. Each wave color is its speed; a hurt wave looks out of tune. Key moments are read out below."
+  "rp_aria": "Battle replay on a map: your waves (circle marks) and theirs (diamond marks) march, clash and fall. Each wave color is its speed; a hurt wave looks out of tune. Key moments are read out below.",
+  "mapa_faro": "Go to the Lighthouse: Hexelion, the rack we measured.",
+  "mapa_en_faro": "Centered on the Lighthouse: Hexelion, the rack we measured."
  }
 }

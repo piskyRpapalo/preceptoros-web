@@ -2378,13 +2378,17 @@ class ElJuegoEnInglesEnLasNueve(unittest.TestCase):
                       sin_comentarios((PUBLICO / "game" / "ui-arena-comun.js").read_text(encoding="utf-8")))  # U0: los textos de la Arena
 
     def test_el_aviso_de_solo_ingles_va_primero_en_la_pestana_de_entrada(self):
-        # Desde 2026-10-04 la pestana de entrada es Map (cuatro pestanas: Map, Battle, My node, Help).
+        # Desde U1 («el mapa unico», 2026-10-11) no hay pestanas: la primera zona es el pliego «Estado» de la
+        # terminal, ABIERTO de salida, y ahi tiene que caer el aviso (si no, cae plegado y no se ve).
         js = self._js("thegame.js")
         primera = re.search(r"var PESTANAS = \[\s*\['(\w+)', '[^']*', '([^']*)'\]", js)
         self.assertTrue(primera, "no encuentro la primera pestana")
         self.assertTrue(primera.group(2).startswith("#atlas-juego > .no-data:first-child"),
                         "el aviso de lengua no va el primero en la pestana de entrada: cae en Help y no se ve")
-        self.assertIn(f"muestra('{primera.group(1)}');\n  }}", js, "la capa no abre en la pestana del aviso")
+        self.assertEqual(primera.group(1), "casa", "la primera zona ya no es la del Estado")
+        self.assertIn("var est = PANEL.casa;", js)
+        self.assertIn("pliego(T('pl_estado'), 'pliego-estado', true, [est])", js,
+                      "el pliego del aviso no abre de salida")
         # R2 (plan «el refresco»): Help desaparece; el aviso generico (`#atlas-juego > .no-data`) lo reparte MAP.
         self.assertLess(js.index(f"['{primera.group(1)}'"), js.index("['mapa'"),
                         "la entrada tiene que repartir antes que MAP, o MAP se lleva el aviso")

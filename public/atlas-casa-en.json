@@ -3,7 +3,6 @@
  "idioma": "en",
  "nota": "Texts of the Home (your undersea city), loaded when the game opens.",
  "ui": {
-  "aria": "Your home is your crab, on the sea floor. Its body parts are your buildings: they grow as you play and shrink if you lose ground. Your wave is on its shell.",
   "nd_faro": "map not loaded yet: NO_DATA",
   "nd_army": "army not loaded yet: NO_DATA",
   "nd_bosque": "no game state yet: NO_DATA",
@@ -13,16 +12,11 @@
   "volver": "Home",
   "personaliza": "Customize",
   "cerrar": "Done",
-  "p_paleta": "Colors",
   "p_estilo": "Shell",
   "p_emblema": "Emblem",
   "p_alianzas": "Alliances",
   "p_comercio": "Trade",
   "p_lema": "Motto",
-  "paleta_abismo": "Abyss",
-  "paleta_coral": "Coral",
-  "paleta_kelp": "Kelp",
-  "paleta_perla": "Pearl",
   "estilo_cupula": "Dome",
   "estilo_aguja": "Spikes",
   "estilo_concha": "Scallops",
@@ -85,6 +79,8 @@
   "eco_2": "Three echoes came back, and they are dirty: blurred, unstable. Dissolve the worst one. Its static becomes residue.",
   "eco_3": "Now sand your favourite with that residue. Sanding raises one stat. It never adds edges: that would be a new summon.",
   "eco_4": "Last: paint it with your frequency. Pick your flag. It is yours: nobody else picks your colour.",
-  "eco_5": "This is your Insignia. You learned the Workshop: dissolve, sand, paint. Now, the open sea."
+  "eco_5": "This is your Insignia. You learned the Workshop: dissolve, sand, paint. Now, the open sea.",
+  "visitante": "Visitor (no key yet)",
+  "lateral_aria": "Your crab: its parts"
  }
 }

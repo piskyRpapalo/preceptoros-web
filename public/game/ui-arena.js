@@ -82,11 +82,11 @@
       var rc = record[sel.clave];
       if (rc) { fila.appendChild(el('span', 'atlas-nota', rellena(T('arena_record'), { g: rc.g, p: rc.p }) + (rc.g ? ' ' + T('arena_conquistado') : ''))); }
       z.appendChild(fila);
+      /* U1: UN solo «Fight» (antes estaba tambien en la ficha del rival): en la ficha del lugar; abre la hoja. */
+      if (i) { return; }
       var b = boton('\u2694\uFE0E ' + (sel.npc ? T('arena_luchar') : T('duelo_reta')), 'boton atlas-gran');
-      b.addEventListener('click', function () {
-        if (!i && window.TheGame && window.TheGame.ve) { window.TheGame.ve('arena'); }
-        pelea();
-      });
+      b.id = 'arena-lucha';
+      b.addEventListener('click', function () { if (window.TheGame && window.TheGame.ve) { window.TheGame.ve('batalla'); } pelea(); });
       z.appendChild(b);
     });
   }
@@ -117,6 +117,7 @@
   /* Reproduce un combate ya resuelto. `info.yo`: el lado de quien mira (1 asalta, 0 defiende). */
   function juega(def, asa, c, info) {
     if (actual) { actual.para(); }
+    if (window.TheGame && window.TheGame.ve) { window.TheGame.ve('batalla'); }  /* U1: toda batalla, en su hoja */
     R.escena.hidden = false; R.res.textContent = ''; R.resNota.textContent = ''; R.tec.hidden = true;
     R.titulo.textContent = info.titulo || ''; R.titulo.hidden = !info.titulo || info.pve;
     var vel = 1;

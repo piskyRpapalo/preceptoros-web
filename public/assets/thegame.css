@@ -9,14 +9,8 @@
    (Soltar) y cerrar. Las cinco pestanas van ABAJO, fijas, al alcance del pulgar y con el margen
    seguro del aparato. Desde 48rem suben bajo el cabecero y el panel se centra. */
 
-/* --- la capa a pantalla completa ------------------------------------------- */
-/* Opaca y por encima de todo; la pagina de debajo se oculta mientras esta
-   abierta: no se pinta, no recibe el foco y el lector no la recorre. */
-.thegame-capa{position:fixed;inset:0;z-index:70;width:100%;height:100%;max-width:none;
-  max-height:none;margin:0;border:0;overflow:auto;overscroll-behavior:contain;color:var(--text-main);
-  background:var(--bg-primary);padding:0 1rem calc(4.5rem + env(safe-area-inset-bottom))}
-.thegame-capa::backdrop{background:var(--bg-primary)}
-.thegame-capa:focus{outline:none}
+/* --- la capa: la portada misma (U0 retiro el <dialog>, que nunca corria) --------------------- */
+.thegame-capa{color:var(--text-main)}
 .thegame-juego{max-width:64rem;margin:0 auto}
 
 /* --- el cabecero ------------------------------------------------------------ */
@@ -36,41 +30,6 @@
 /* La sugerencia como una ficha corta: lo que propone arriba, Hacer / Ignorar juntos debajo. */
 .thegame-piloto > .thegame-sugerencia > span{flex-basis:100%}
 .thegame-piloto > .thegame-sugerencia .boton{padding:.35rem .9rem;font-size:.8rem}
-
-/* --- las pestanas: abajo en el telefono ------------------------------------- */
-.thegame-pestanas{position:fixed;inset:auto 0 0;z-index:3;padding:0 0 env(safe-area-inset-bottom);
-  background:var(--bg-secondary);border-top:1px solid var(--edge-sov)}
-.thegame-pestanas > div{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);max-width:40rem;margin:0 auto}
-.thegame-pestanas button{position:relative;display:grid;justify-items:center;align-content:center;gap:.2rem;
-  min-height:4.25rem;padding:.4rem .15rem;font:700 .74rem/1.1 var(--mono);letter-spacing:.06em;
-  text-transform:uppercase;color:var(--text-muted);background:transparent;border:0;border-radius:0}
-.thegame-ico{font-size:1.55rem;line-height:1}
-/* Sin el relleno violeta de `base.css` ni el halo de `soberano.css` que todo boton lleva con foco o
-   bajo el raton (en tactil el hover se queda pegado tras el toque): la pestana activa se dice con
-   color, raya y `aria-selected`, no con una pildora encendida. */
-#thegame .thegame-pestanas button:is(:focus,:hover){background:transparent;box-shadow:none;transform:none}
-.thegame-pestanas [aria-selected="true"]{color:var(--accent-copper-claro)}
-.thegame-pestanas [aria-selected="true"]::before{content:"";position:absolute;inset:0 25% auto;height:2px;
-  background:var(--accent-copper)}
-.thegame-pestanas .con-aviso::after{content:"";position:absolute;top:.45rem;inset-inline-end:30%;
-  width:.5rem;height:.5rem;border-radius:50%;background:var(--accent-copper)}
-.thegame-pestanas button:focus-visible{outline:2px solid var(--accent-copper-claro);outline-offset:-3px}
-
-/* --- los paneles ------------------------------------------------------------ */
-.thegame-panel{display:grid;gap:1rem;align-content:start;min-width:0}
-.thegame-panel[hidden]{display:none}
-.thegame-panel > :is(.boton,.boton-sec){justify-self:start}
-/* Todo desplegable de un panel con la misma figura: una ficha que se abre a proposito. */
-.thegame-panel > details{padding:.55rem .8rem;font-size:.8rem;color:var(--text-muted);
-  border:1px solid var(--edge-sov);border-radius:var(--radius)}
-.thegame-panel > details > summary{cursor:pointer;font:600 .7rem/1.6 var(--mono);letter-spacing:.06em;
-  text-transform:uppercase}
-.thegame-panel > details > :not(summary){margin:.5rem 0 0}
-/* Los recursos, en fichas: rotulo arriba, cifra debajo y sin partirse. */
-.thegame-panel .atlas-recursos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
-.thegame-panel .atlas-recursos li{flex-direction:column;align-items:flex-start;justify-content:flex-start;gap:.35rem;min-width:0}
-.thegame-panel .atlas-recursos data{white-space:nowrap}
-.thegame-panel .atlas-recursos li:last-child:nth-child(odd){grid-column:1/-1}
 
 /* --- la Arena: el mar multijugador y el combate en vivo ------------------------ */
 .atlas-arena{display:grid;gap:.75rem}
@@ -97,20 +56,6 @@
 .atlas-duelo-lista{display:grid;gap:.4rem;margin:0;padding:0;list-style:none;font-size:.8rem}
 .atlas-duelo-lista li{display:flex;flex-wrap:wrap;gap:.4rem;align-items:center;justify-content:space-between}
 
-/* --- escritorio: las pestanas bajo el cabecero --------------------------------- */
-@media (min-width:48rem){
-  .thegame-capa{padding:0 clamp(1rem,3vw,2rem) 2rem}
-  /* El cabecero alinea su contenido con el del panel (64rem centrados), y su fondo sigue a lo ancho. */
-  .thegame-barra{margin-inline:calc(-1 * clamp(1rem,3vw,2rem));padding:.6rem 0 0;
-    padding-inline:calc(clamp(1rem,3vw,2rem) + max(0px, 50% - 32rem))}
-  .thegame-pestanas{position:static;flex-basis:100%;order:9;padding:0;background:transparent;border:0}
-  .thegame-pestanas > div{display:flex;gap:.25rem;max-width:none;margin:0}
-  .thegame-pestanas button{display:flex;gap:.45rem;min-height:2.75rem;padding:.55rem 1rem;font-size:.72rem}
-  .thegame-pestanas [aria-selected="true"]::before{inset:auto 0 0}
-  .thegame-pestanas .con-aviso::after{top:.5rem;inset-inline-end:.35rem}
-  .thegame-panel .atlas-recursos{grid-template-columns:repeat(5,minmax(0,1fr))}
-  .thegame-panel .atlas-recursos li:last-child:nth-child(odd){grid-column:auto}
-}
 
 /* --- Arena · rediseno tras el Doogee (2026-10-04) ------------------------------------------------ */
 /* Dos firmas, dos pasos que no se parecen: el 1 en violeta (la partida), el 2 en cobre (el envio). */
@@ -148,10 +93,8 @@
 #thegame .thegame-pliego{padding:0;font-size:.9rem;color:var(--text-main);border:1px solid var(--edge-sov);border-radius:var(--radius)}
 #thegame .thegame-pliego > summary{display:flex;align-items:center;min-height:3rem;padding:0 .9rem;cursor:pointer;
   font:700 .85rem/1.2 var(--mono);letter-spacing:.05em;text-transform:uppercase;color:var(--text-main)}
-#thegame .thegame-pliego > div{margin:0;display:grid;gap:.75rem;padding:0 .75rem .75rem}
+#thegame .thegame-pliego > :not(summary){margin:0;display:grid;gap:.75rem;padding:0 .75rem .75rem}
 .thegame-ayuda{display:grid;gap:.6rem;margin:0;padding-inline-start:1.4rem;font-size:1rem;line-height:1.45}
-@media (min-width:48rem){.atlas-mundo{grid-template-columns:2fr 1fr;align-items:start}
-  .atlas-mundo > .atlas-arena-mapa{grid-row:span 4}}
 /* J7 · el terminal del cangrejo: el JSON se parte en lineas; sin esto un <pre> ensanchaba la pestana
    entera y Help se salia de la pantalla del telefono (medido en captura 412 px). */
 .terminal-cangrejo{max-width:100%;overflow:hidden}
@@ -169,12 +112,46 @@
 .entrada-territorio p{margin:.25rem 0;font-size:.86rem;line-height:1.45}
 .entrada-ficha{margin:0;font-size:.88rem;line-height:1.5}
 .entrada-cambia{margin-inline-start:.4rem}
-/* J6 · el MAR DE FONDO (mar-fondo.js): detras de todo y solo en la portada. El cuerpo y la capa dejan
-   de tapar; las barras quedan casi opacas (sin blur: la hoja de la capa no lo admite) y se leen. */
-.mar-fondo{position:fixed;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none;image-rendering:pixelated}
-:root:not([data-tema="claro"]) body.portada-juego,body.portada-juego{background:transparent}
-.juego-panel .thegame-capa{background:transparent}
-/* canon.css pone la caja del main OPACA (legible a pleno sol en el Doogee): aqui queda al 80 %, el mar se
-   adivina detras y el texto sigue sobre fondo casi solido. */
-body.portada-juego main#juego-panel{background:color-mix(in srgb,var(--panel-bg) 80%,transparent)}
-.juego-panel .thegame-barra,.portada-juego .cab-juego{background:color-mix(in srgb,var(--bg-primary) 86%,transparent)}
+/* --- U1 · EL MAPA UNICO: el mapa es la pantalla; encima, tubos del arrecife -------------------------- */
+:root:not([data-tema="claro"]) body.portada-juego,body.portada-juego{background:var(--bg-primary)}
+body.portada-juego main#juego-panel{background:transparent;padding:0;border-radius:0}
+.juego-panel .thegame-capa,#atlas-juego,#atlas-piso{pointer-events:none}
+.thegame-barra,.thegame-terminal,.thegame-hoja,.thegame-mapa,.mapa-mandos,.mapa-aviso{pointer-events:auto}
+.thegame-mapa{position:fixed;inset:0;z-index:0}
+#thegame .thegame-mapa .atlas-arena-mapa{position:absolute;inset:0;width:100%;height:100%;border:0;border-radius:0;background:var(--bg-primary)}
+/* La barra (Workshop, piloto) queda fija bajo la cabecera sticky del sitio (medida: 88 px escritorio, 110 telefono). */
+:root{--thegame-tope:7.2rem}
+.thegame-barra{position:fixed;z-index:3;top:var(--thegame-tope);inset-inline-end:.6rem;margin:0;padding:0;background:transparent;border:0;flex-wrap:nowrap}
+.juego-panel .thegame-barra{background:transparent}
+.thegame-pestanas{margin-inline-start:auto}
+#thegame .thegame-b-taller{display:flex;align-items:center;gap:.45rem;min-height:3rem;padding:.4rem 1rem;font:700 .74rem/1 var(--mono);
+  letter-spacing:.06em;text-transform:uppercase;color:var(--text-main);background:var(--bg-secondary);border:1px solid var(--edge-sov);border-radius:var(--radius)}
+#thegame .thegame-b-taller[aria-expanded="true"]{color:var(--accent-copper-claro);border-color:var(--accent-copper)}
+.thegame-ico{font-size:1.2rem;line-height:1}
+/* LA TERMINAL: hoja de abajo en el telefono; tubo derecho en el escritorio. Una columna de lectura. */
+.thegame-terminal{position:fixed;z-index:2;inset:auto 0 0 0;max-height:46dvh;overflow:auto;overscroll-behavior:contain;
+  display:grid;gap:.5rem;align-content:start;padding:.5rem .6rem calc(.6rem + env(safe-area-inset-bottom))}
+.thegame-terminal.con-aviso #pliego-estado > summary::after{content:" \25CF";color:var(--accent-copper)}
+.thegame-estado{display:grid;gap:.6rem;min-width:0}
+/* Dentro del tubo nada fuerza anchura: lo medido (integridad nowrap, el p de la alerta a 18rem, el h3 a 1.6rem). */
+.thegame-terminal{overflow-x:hidden}
+.thegame-terminal :is(.casa-tira,.casa-tira > *){min-width:0;max-width:100%}
+#thegame .thegame-terminal .atlas-integridad{white-space:normal}
+#thegame .thegame-terminal .atlas-alerta p{flex-basis:100%}
+#thegame .thegame-terminal .atlas-cab h3{font-size:1rem}
+/* LAS HOJAS (Taller, Batalla): sobre el mapa, con su cabecera fija. */
+.thegame-hoja{position:fixed;z-index:4;inset:calc(var(--thegame-tope) + 3.6rem) .4rem .4rem;overflow:auto;overscroll-behavior:contain;padding:0 .8rem 1rem}
+.thegame-hoja[hidden]{display:none}
+.thegame-hoja-cab{position:sticky;top:0;z-index:1;display:flex;gap:.7rem;align-items:center;padding:.6rem 0;background:var(--bg-secondary)}
+.thegame-hoja-cab h3{margin:0;font:700 .85rem/1.2 var(--mono);letter-spacing:.06em;text-transform:uppercase}
+.thegame-hoja-cuerpo{display:grid;gap:1rem;min-width:0}
+/* Los mandos del mapa, a mano y por encima de la terminal; el aviso, arriba. */
+.mapa-mandos{position:fixed;z-index:1;left:.6rem;bottom:calc(46dvh + .6rem)}
+.mapa-aviso{position:fixed;z-index:1;top:calc(var(--thegame-tope) + 3.6rem);left:.6rem;right:.6rem;pointer-events:none}
+@media (min-width:48rem){
+  :root{--thegame-tope:5.9rem}
+  .thegame-terminal{inset:calc(var(--thegame-tope) + 3.6rem) .6rem .6rem auto;width:min(26rem,38vw);max-height:none}
+  .thegame-hoja{inset:calc(var(--thegame-tope) + 3.6rem) calc(min(26rem,38vw) + 1.2rem) .6rem .6rem}
+  .mapa-mandos{bottom:.6rem}
+  .mapa-aviso{right:calc(min(26rem,38vw) + 1.2rem)}
+}

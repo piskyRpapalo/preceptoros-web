@@ -12,10 +12,8 @@ html,body{margin:0;min-height:100%;background:var(--bg-primary);color:var(--text
 /* base.css pone main{max-width:46rem} para las paginas de lectura; el juego quiere todo el ancho. */
 main.juego-panel{max-width:none;width:auto;margin:0;padding:0;background:none;border:0;box-shadow:none;border-radius:0;min-height:calc(100dvh - 3.2rem)}
 .juego-carga{margin:0;padding:2rem clamp(.75rem,2vw,1.5rem);font:.9rem/1.5 var(--mono);color:var(--text-muted)}
-.juego-panel .thegame-capa{position:relative;inset:auto;z-index:auto;width:auto;height:auto;min-height:inherit;
-  overflow:visible;padding:0 clamp(.5rem,2vw,1.5rem) calc(4.5rem + env(safe-area-inset-bottom))}
+.juego-panel .thegame-capa{position:relative;inset:auto;z-index:auto;width:auto;height:auto;min-height:inherit;overflow:visible;padding:0}
 .juego-panel .thegame-juego{max-width:none}
-.juego-panel .thegame-barra{top:3.2rem;margin-inline:calc(-1 * clamp(.5rem,2vw,1.5rem))}
 .juego-panel .thegame-t{display:none}
 /* J10 · la pagina se reordena: el cabezal y las pestanas no se mueven (nombre propio); el panel se
    desliza con el resorte del canon. Movimiento reducido: ni se pide la transicion (thegame.js). */
