@@ -50,7 +50,7 @@ const JUEGO = [
   '/game/summon_reveal.js', '/game/taller.js', '/game/ui-taller.js', '/game/home.css', '/game/sobres.js', '/game/rating.js', '/game/arena.js',
   '/game/duelo.js', '/game/fog_of_war.js', '/game/world_camera.js', '/game/mar.js', '/game/mar-anclas.js', '/game/mar-fondo.js', '/game/nodos-pesos.js',
   '/game/nodos-cedulas.js', '/game/nodos.js', '/game/cuenta.js', '/game/ui-nodos.js', '/game/ui-rack.js',
-  '/game/battle_choreography.js', '/game/battle_replay.js', '/game/ui-arena.js', '/game/ui-duelo.js',
+  '/game/escuadron.js', '/game/battle_choreography.js', '/game/battle_replay.js', '/game/ui-arena.js', '/game/ui-duelo.js',
   '/assets/eaa-art12-local-first-surface.js', '/assets/eaa-art12-local-first-surface.css'
 ];
 

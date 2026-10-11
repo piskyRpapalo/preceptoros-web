@@ -143,6 +143,9 @@
         if (p[2] > 0) {
           O.dibuja(g, tr.armonicos, s[0], s[1], r, { t: ti, giro: ti * 0.0006 * (l ? 1 : -1), color: velColor(k.vel[j]), grosor: 1.6 * dpr,
             brillo: calidad ? 0.7 : 0, desafina: Math.min(1, (1 - p[2] / k.max[j]) * 0.85), calidad: calidad, estela: 0 });
+          /* P6: su ESCUADRON alrededor (escuadron.js), que cae con su vida. Solo coreografia: no decide. */
+          if (raiz.AtlasEscuadron) { raiz.AtlasEscuadron.pinta(g, { t: tr, x: s[0], y: s[1], vida: p[2], max: k.max[j], lado: l, color: hsla(velColor(k.vel[j]), 0.9) },
+                                                              { r: r, dpr: dpr, giro: ti * 0.0006 * (l ? 1 : -1), alfa: 1, t: ti, quieto: q }); }
         } else {
           g.strokeStyle = 'rgba(200,200,220,.45)'; g.lineWidth = dpr; g.beginPath();
           g.moveTo(s[0] - r * 0.4, s[1] - r * 0.4); g.lineTo(s[0] + r * 0.4, s[1] + r * 0.4); g.moveTo(s[0] + r * 0.4, s[1] - r * 0.4); g.lineTo(s[0] - r * 0.4, s[1] + r * 0.4); g.stroke();

@@ -22,7 +22,7 @@
      paquetes firmados. Detras del Army, cuyas tropas y verificador usa. */
   var ARENA = [['/game/sobres.js'], ['/game/rating.js'], ['/game/arena.js'], ['/game/duelo.js'],
     ['/game/mar-anclas.js'], ['/game/mar.js'], ['/game/nodos-pesos.js'], ['/game/nodos.js'], ['/game/cuenta.js'],
-    ['/game/ui-nodos.js'], ['/game/ui-rack.js'], ['/game/battle_choreography.js'], ['/game/battle_replay.js'], ['/game/ui-arena.js'], ['/game/ui-duelo.js']];
+    ['/game/ui-nodos.js'], ['/game/ui-rack.js'], ['/game/escuadron.js'], ['/game/battle_choreography.js'], ['/game/battle_replay.js'], ['/game/ui-arena.js'], ['/game/ui-duelo.js']];
   /* LAS LENGUAS DEL JUEGO (2026-09-28: «hoy, solo inglés; un mismo enlace»): la UNICA lista de las
      COMPLETAS. La portada abre la suya si esta aqui; si no, la primera. Anadir una = traducir su
      `atlas-<l>.json` hasta que el gate la de completa y escribirla aqui. Las demas son borradores. */

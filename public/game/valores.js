@@ -66,6 +66,10 @@
        compra. PROVISIONAL, como todo este fichero. */
     taller: { gramos_por_arista: 1, leviatan_x: 3, lija: { base: 4, max: 5, paso: 1, stats: ['velocidad', 'armadura', 'vida', 'sigilo'] },
       tinte: { coste: 2 } },
+    /* P6 · EL ESCUADRON (combate a escala): una tropa despliega round(por_aristas / aristas) unidades (tope
+       `tope`), el Leviatan `coloso`; `radio` y `unidad` son dibujo, en radios de la tropa. NO es equilibrio
+       (el combate sigue por tropa) y por eso no entra en `packSha`. PROVISIONAL. */
+    escuadron: { por_aristas: 96, coloso: 1, tope: 32, radio: 2.4, unidad: 0.3 },
     /* P10 · PRISMA DE BANDERA («6 planes.txt»:156-163; LEEME:1159-1161): tu color de capitan, de una paleta
        CERRADA de ocho tonos bioluminiscentes (un tono hsl cada uno). Cerrada a proposito: un color libre seria
        una huella silenciosa (LEEME: «identidad visual sin huella silenciosa»). TENIR una onda a tu bandera

@@ -167,7 +167,8 @@ const rutas = await shell.keys();
 // 93 desde R3: `tubo.css`, los tubos del juego.
 // 95 desde P9: `taller.js` y `ui-taller.js`, el Polvo de Taller.
 // 96 desde P10: `mar-anclas.js` (las anclas salen de `mar.js`, que estaba en su techo).
-ok('precachea las portadas, su superficie y el juego', rutas.length === 96, rutas.length+' rutas');
+// 97 desde P6: `escuadron.js`.
+ok('precachea las portadas, su superficie y el juego', rutas.length === 97, rutas.length+' rutas');
 ok('el shell trae el juego (D7): la puerta, el cangrejo y la arena',
    ['/assets/thegame.js', '/game/gdpr-art25-ephemeral-crab.js', '/game/ui-arena.js', '/assets/atlas-motor.js'].every(r => rutas.includes(r)));
 ok('el shell trae la portada de cada lengua', ['/es/', '/fr/', '/ar/'].every(r => rutas.includes(r)));
