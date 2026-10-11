@@ -1819,6 +1819,28 @@ class MapaMovible(unittest.TestCase):
             with self.subTest(retirado=viejo):
                 self.assertNotIn(viejo, u)
 
+    def test_gacha_honesto_odds_piedad_y_cronica(self):
+        """Piezas 4, 1+2 y 3 (FIRMO): el leviatan de cada capsula, junto al boton y ANTES del gesto, sale de la MISMA tabla
+        que tira (R5 medida: 1,4-3,6 %); la piedad sale de TU cadena G0 (hueco = NO_DATA) y su garantia, sin numero
+        firmado, es NO_DATA; la cronica reutiliza la espiral de los escuadrones (la misma funcion, sin copiarla)."""
+        u, f = self._js("ui.js"), self._js("ui-ficha.js")
+        self.assertIn("var lev = G.oddsAristas(tc).reduce(function (a, x) { return a + (x[0] > 12 ? x[1] : 0); }, 0);", u)
+        self.assertIn("b.id = 'invoca-' + tc;", u)
+        self.assertIn("if (R.cron) { cronica(R.cron, cadena, causa); }", u)
+        self.assertIn("A.piedad(cadena, function (e) { return G.tirada(e.semilla, e.obj.tc).rareza; })", f)
+        self.assertIn("E.sitios(l.length, 'atlas.cronica', null)", f)
+        for gemelo in ("Math.sqrt(5)", "137.5", "AUREO"):
+            with self.subTest(gemelo=gemelo):
+                self.assertNotIn(gemelo, f, "la cronica copia la espiral en vez de reutilizarla")
+        r = subprocess.run(["node", "-e", "const G=require('./public/game/gacha.js');console.log(JSON.stringify(Object.keys(G.TCS).map(t=>G.oddsAristas(t).reduce((a,x)=>a+(x[0]>12?x[1]:0),0))))"],
+                           cwd=RAIZ.parent, capture_output=True, text=True, timeout=60)
+        for por_mil in json.loads(r.stdout):
+            self.assertTrue(14 <= por_mil <= 36, f"leviatan {por_mil} por mil fuera de la cifra medida y firmada (1,4-3,6 %)")
+        ui = json.loads((PUBLICO / "atlas-en.json").read_text(encoding="utf-8"))["ui"]
+        self.assertIn("NO_DATA", ui["garantia_nd"], "la garantia sin cifra firmada se inventa un numero")
+        for k in ("inc_leviatan", "piedad_t", "cronica_h", "cronica_item"):
+            self.assertTrue(ui.get(k, "").strip(), k)
+
     def test_t_la_ficha_sale_de_ui_sin_gemelos(self):
         """T (troceo, PROPUESTA pendiente de FIRMO: ui.js es intocable): la ficha de la tropa (lienzo, traza, nombre,
         ficha, voz) vive SOLO en `ui-ficha.js`; `ui.js` la ata en `monta` y deja sitio a G0. Sin gemelos."""
@@ -1827,7 +1849,7 @@ class MapaMovible(unittest.TestCase):
             with self.subTest(funcion=fn):
                 self.assertIn(fn, f)
                 self.assertNotIn(fn, u, "gemelo en ui.js")
-        self.assertIn("var F = window.AtlasFicha.crea({ G: G, S: S, T: T, el: el, boton: boton, rellena: rellena, dice: dice });", u)
+        self.assertIn("var F = window.AtlasFicha.crea({ G: G, A: A, S: S, T: T, el: el, boton: boton, rellena: rellena, dice: dice });", u)  # piezas 1+2/3: A para la piedad
         # G0 uso el sitio que gano T (16.355 -> 12.947 -> 14.623 B): queda al menos 1 KiB de margen bajo el techo.
         self.assertLess(len((PUBLICO / "game" / "ui.js").read_bytes()), 16384 - 1024, "ui.js vuelve a rozar su techo")
         c = (PUBLICO / "assets" / "thegame.js").read_text(encoding="utf-8")

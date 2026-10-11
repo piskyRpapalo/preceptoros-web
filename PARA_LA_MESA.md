@@ -1,6 +1,39 @@
 # PARA_LA_MESA · Ronda «el mapa único y la terminal» · 2026-10-11 · Claude (Opus 5.5)
 Contrato FIRMADO + addendum visual v2 (Ruswick + Zanzlanz + PS1). Rama `claude/mapa-unico` sobre `main` `b63ddec`. **Sin push**: cada pieza espera tu FIRMO. Lo de las rondas anteriores sigue debajo.
 
+## CIERRE DEL MANDATO «juego completo, testeado en el Doogee» · 2026-10-11/12 · MEDIDO / EN_CURSO
+**Publicado** (cada uno con PR, CI verde, merge y versión viva medida con curl): #28 G0 + limpieza (`abeq`) · #29 arreglos del Doogee (`aber`) · #30 la batalla con tropas propias (`abes`) · y el gacha honesto, ver el pie.
+
+**Probado en el DOOGEE (S110, Chrome 154, Android 10), contra preceptoros.org, con toques REALES (`adb input tap`) — MEDIDO:**
+| Paso | Resultado |
+|---|---|
+| Cargar · service worker activo · riel de 4 partes a 48 px · mapa con el cangrejo | ✅ |
+| Caminar: riel «ojos» → Faro (toque real) | ✅ «Centered on the Lighthouse» |
+| Invocar (toque real) · cobre −50 · huevo en el nido | ✅ |
+| **Recargar SIN perder el huevo pagado** | ✅ 1 huevo antes, 1 huevo después (antes de G0: 0) |
+| Eclosión · «Continue» cerrado con un toque real (antes, solo con Escape) | ✅ |
+| Escuchar la Radio (gesto real) | ✅ `AudioContext: running` |
+| Pelear con tropas propias (toque real en el único Fight) | ✅ «Victory in 2 rounds · life left: you 88% · them 0%» |
+| Offline tras la primera visita (emulación de red del navegador; el wifi NO se toca: Acurast vive en él) | ✅ juego, mapa y riel sin red |
+| Errores de consola | ✅ 0 en la última pasada |
+
+**Defectos que solo salieron en el teléfono, arreglados y publicados:** la cabecera tapaba Workshop (360 px) · el Fight vivía en un pliego cerrado · `/nav.json` daba 404 en cada carga · **la batalla con tropas propias NO arrancaba** (`lija: undefined` → el canon la rechazaba; también los duelos) · el apaisado recibía la terminal de escritorio.
+**Regresión mía (U1), medida en vivo y arreglada:** `pointer-events:none` heredado dejaba la revelación, Customize y los diálogos solo con Escape.
+
+**EN_CURSO, con causa:**
+- **6a** («lo que pasó mientras no estabas», sin ganancias): sin hacer. La pantalla «while you slept» sigue cobrando por `M.dormir` (motor). Resolverlo es la 6b, con su FIRMO.
+- **Piezas de amor** (nombre, cicatriz, edad en ciclos, lápida): sin hacer. Faltan la lista de nombres del Soberano (NO_DATA) y una ficha de tropa persistente con su ciclo de adopción.
+- **Mapa vivo 3D con zoom que cambia lo pintado + decorados**: sin hacer (pieza M-L). El cangrejo ya vive en el mapa (U2).
+- **Paneles en su único hogar**: a medias. El riel abre Taller, Bosque y Faro; el inventario y las ondas siguen dentro de la hoja del Taller.
+- **Canon de luchas** (combate ondulatorio, daño = desafinación, carta nombrada…), **NPCs de la Estrella de Mar**, **tercer canal y convoys**: firmados y registrados, sin construir (los propios textos los ponen detrás del mandato).
+- **La Radio tiene `locutor`** (speechSynthesis): choca con la Biblia («instrumental, sin locutor»). Retirarlo es una pieza S, propuesta.
+- **El juez queda sin disparador** (vivía de Suggest) y **la parte modal de `atlas-dialogo.js` está muerta**: los dos están en la puerta del juego; se retiran o se recablean con su FIRMO.
+- **Los mandos ◈ y ⌂ saltan la cámara** («nada teletransporta»): deberían deslizar.
+- **Apaisado bajo (280 px)**: coherente pero apretado. Hoy, el juego en el teléfono es en vertical.
+- **Una revelación de huevo puede aparecer encima de una batalla en curso**: debería esperar.
+
+**Techos:** `thegame.js` 16.363 B (sin tocar esta noche: no hizo falta EXCEPCIONES.md) · `ui.js` 15.299 B (61 B bajo el margen de 1 KiB que exige el test de T: la siguiente pieza que lo toque, trocea antes).
+
 ## ESTÁ LIVE · 2026-10-11 21:40:21Z (FIRMO del Soberano: «firmo push completo»)
 - PR #27 → merge `70c26a0` en `main` (fast-forward de `b63ddec` + U0, U1, U2, T y sus mesas; HEAD `99ac6d6`). CI `test_web`: pass. preceptoros.org sirve `preceptoros-2026-17-abeo` (medido con curl).
 - En vivo (MEDIDO, Chrome headless contra preceptoros.org, `/en/` 1280 y `/es/` 412): SW activo · 4 partes por id · mapa con el cangrejo · un solo Fight · `AtlasFicha` cargada · 0 errores. En `/es/` el aviso «solo inglés» sale el primero. Capturas: `~/p0x/no-publicar/auditoria-mapa-unico-20261011/live/`.

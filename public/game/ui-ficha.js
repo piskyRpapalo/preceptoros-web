@@ -81,7 +81,38 @@
     document.head.appendChild(s);
   }
 
-    return { lienzo: lienzo, traza: traza, nombre: nombre, ficha: ficha, oye: oye };
+    /* PIEDAD VISIBLE Y CRONICA DE DESEOS (piezas 1+2 y 3, firmadas). La cifra sale de TU cadena (`db.js`), aqui solo
+       se pinta. La garantia no tiene numero firmado: NO_DATA, nunca uno inventado. La cronica se coloca en la espiral
+       de girasol de los escuadrones (`AtlasEscuadron.sitios`, la MISMA funcion); sin ella, queda la lista. Lo vivo en
+       color (raro, unico, leviatan) y lo comun en gris; la lista es el equivalente en texto del dibujo. */
+    var TONO = { normal: 'hsl(210 10% 55%)', magico: 'hsl(195 80% 70%)', raro: 'hsl(38 95% 60%)', unico: 'hsl(270 85% 72%)' };
+    function cronica(zona, cadena, causa) {
+      zona.textContent = '';
+      if (!cadena) { if (causa) { zona.appendChild(el('p', 'no-data', 'NO_DATA · ' + causa)); } return; }
+      var A = ctx.A, p = A.piedad(cadena, function (e) { return G.tirada(e.semilla, e.obj.tc).rareza; });
+      if (p.nd) { zona.appendChild(el('p', 'no-data', 'NO_DATA · ' + p.nd)); return; }
+      var l = A.cronica(cadena, G.tirada), E = window.AtlasEscuadron, V = window.AtlasValores;
+      var resumen = rellena(T('piedad_t'), { n: p.desde_raro, a: p.abiertos, i: p.incubando });
+      zona.appendChild(el('p', 'atlas-piedad', resumen));
+      zona.appendChild(el('p', 'atlas-nota', T('garantia_nd')));
+      if (!l.length) { return; }
+      if (E && E.sitios && V && V.escuadron) {
+        var c = lienzo(168, resumen), g = c.getContext('2d'), w = c.width, S = E.sitios(l.length, 'atlas.cronica', null), k = (w / 2 - 10) / V.escuadron.radio;
+        S.forEach(function (q, i) {
+          var t = l[i], lev = t.aristas > 12;
+          g.fillStyle = lev ? 'hsl(14 100% 67%)' : TONO[t.rareza] || TONO.normal;
+          g.beginPath(); g.arc(w / 2 + q[0] * k, w / 2 + q[1] * k, (lev ? 5 : 3) * (window.devicePixelRatio || 1), 0, 2 * Math.PI); g.fill();
+        });
+        zona.appendChild(c);
+      }
+      var ol = el('ol', 'atlas-cronica');
+      l.slice(-12).reverse().forEach(function (t) {
+        ol.appendChild(el('li', null, rellena(T('cronica_item'), { s: t.seq, c: t.ciclo, tc: T(t.tc), n: t.aristas, r: T('rar_' + t.rareza), h: t.sello })));
+      });
+      zona.appendChild(ol);
+    }
+
+    return { lienzo: lienzo, traza: traza, nombre: nombre, ficha: ficha, oye: oye, cronica: cronica };
   }
   window.AtlasFicha = { crea: crea };
 })();
