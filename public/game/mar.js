@@ -18,8 +18,8 @@
 
   var E = window.AtlasEscena, K = window.AtlasCanon, N = window.AtlasNiebla, C = window.AtlasCamara;
   var F = (window.AtlasValores && window.AtlasValores.fluidez) || {}, O = window.AtlasOnda || {};
-  var TIERRA = [[5, 8, 18], [8, 16, 34], [12, 28, 52], [16, 42, 68], [22, 62, 84], [40, 92, 100], [96, 118, 104]];
-  var NIEBLA = [null, [64, 72, 96]], TESELA = 240, RES = 4, VE = 820, PASO = 90;
+  /* Las teselas (terreno y niebla) las pinta `mar-fondo.js`: una sola fuente para el mapa y la portada. */
+  var MF = window.AtlasMarFondo, VE = 820, PASO = 90;
   var ANILLO = N.ANILLO;
 
   /* npc_chunk es de clase CALIDAD (valores.semantica): solo cuando la calidad elegida baja de Maxima. */
@@ -40,8 +40,8 @@
 
   /* `f`: { lugares(), sel(), emblema(), pub(), nombre(l), texto(k), colores(), elige(l), luchados() }. */
   function crea(c, f) {
-    var dpr = Math.min(2, window.devicePixelRatio || 1), raf = 0, col = null, H0 = casas(), circ = [], huella = '';
-    var tierra = {}, nt = 0, nieblas = {}, nn = 0, cam = null, arrastre = null, ultimo = null, avisado = 0, centro = null;
+    var dpr = Math.min(2, window.devicePixelRatio || 1), raf = 0, col = null, H0 = casas(), circ = [];
+    var TS = MF.pintor(), cam = null, arrastre = null, ultimo = null, avisado = 0, centro = null;
     var Ce = window.AtlasNodosCedulas, cuadros = 0, movido = false;
 
     /* --- los mandos: flechas grandes, volver a casa y el aviso ------------------------------------ */
@@ -60,8 +60,7 @@
       var luchados = {}, r = f.luchados ? f.luchados() : {};
       Object.keys(r || {}).forEach(function (k) { if (r[k].g + r[k].p) { luchados[k] = true; } });
       circ = N.despejado({ pub: f.pub(), sha: K.sha, nodos: Ce ? Ce.nodos : [], lugares: f.lugares(), luchados: luchados });
-      var h = N.huella(circ);
-      if (h !== huella) { huella = h; nieblas = {}; nn = 0; }
+      TS.despejado(circ);
     }
     function aCasa(dilo) {
       despeja();
@@ -75,47 +74,6 @@
       if (t - avisado > 1500) { avisado = t; aviso.textContent = f.texto('mapa_niebla'); }
     }
     function mueve(dx, dy) { movido = true; if (C.empuja(cam, dx, dy, circ, quieto())) { choca(); } }
-
-    /* --- el terreno y la niebla, por teselas ------------------------------------------------------ */
-    /* MOVIMIENTO 4 - M17: Mar respira - offset temporal determinista */
-    var offsetTemporal = 0;
-    function tesela(i, j) {
-      var k = i + ',' + j;
-      if (tierra[k]) { return tierra[k]; }
-      if (nt > 90) { tierra = {}; nt = 0; }
-      var n = TESELA / RES;
-      /* MOVIMIENTO 4: offset temporal para deriva lenta */
-      var offsetX = Math.sin(offsetTemporal * 0.0001) * 10;
-      var offsetY = Math.cos(offsetTemporal * 0.0001) * 10;
-      tierra[k] = E.textura(n, n, function (x, y) {
-        var wx = i * TESELA + x * RES + offsetX, wy = j * TESELA + y * RES + offsetY;
-        return Math.max(0, Math.min(1, E.fbm(wx / 210, wy / 210, 11) * 1.15 - 0.12 + E.fbm(wx / 60, wy / 60, 4) * 0.12));
-      }, TIERRA);
-      nt++;
-      return tierra[k];
-    }
-    function bruma(i, j) {
-      var k = i + ',' + j;
-      if (nieblas[k] !== undefined) { return nieblas[k]; }
-      if (nn > 90) { nieblas = {}; nn = 0; }
-      var n = TESELA / RES, algo = false;
-      var t = E.textura(n, n, function (x, y) {
-        var v = N.niebla(i * TESELA + x * RES, j * TESELA + y * RES, circ) * 0.78;
-        if (v > 0.05) { algo = true; }
-        return v;
-      }, NIEBLA);
-      nieblas[k] = algo ? t : null; nn++;
-      return nieblas[k];
-    }
-    function capas(g, W, H, z, que) {
-      var v = C.vista(cam, W, H, z), lado = TESELA * z;
-      for (var i = Math.floor(v.x0 / TESELA); i <= Math.floor(v.x1 / TESELA); i++) {
-        for (var j = Math.floor(v.y0 / TESELA); j <= Math.floor(v.y1 / TESELA); j++) {
-          var p = C.aPantalla(cam, W, H, z, i * TESELA, j * TESELA), t = que(i, j);
-          if (t) { g.drawImage(t, Math.floor(p[0]), Math.floor(p[1]), Math.ceil(lado) + 1, Math.ceil(lado) + 1); }
-        }
-      }
-    }
 
     /* --- dibujo ------------------------------------------------------------------------------------ */
     function curva(a, b, s) {
@@ -147,8 +105,6 @@
       if (c.height !== Math.round(h * dpr)) { c.height = Math.round(h * dpr); c.style.height = h + 'px'; }
       var g = c.getContext('2d'), W = c.width, H = c.height, q = quieto(), t = q ? 0 : ts, z = W / VE * (w < 600 ? 1.15 : 1);
       col = col || f.colores();
-      /* MOVIMIENTO 4: actualizar offset temporal */
-      offsetTemporal = t;
       /* La clave llega despues (promesa): si aun no te has movido, la camara va a tu casa en cuanto se sabe. */
       if (!cam || (!movido && centro === N.HEX && f.pub())) { aCasa(!!cam); }
       if (!(cuadros++ % 30)) { despeja(); }
@@ -156,7 +112,7 @@
       if (!arrastre && !q && C.paso(cam, k, circ)) { choca(); }
       g.imageSmoothingEnabled = false;
       g.fillStyle = 'rgb(5,8,18)'; g.fillRect(0, 0, W, H);
-      capas(g, W, H, z, tesela);
+      TS.tierra(g, cam, W, H, z, q ? null : MF.deriva(t));
       g.font = '600 ' + Math.round(11 * dpr) + 'px ui-monospace, monospace'; g.textAlign = 'center'; g.lineWidth = dpr;
       var P = function (x, y) { return C.aPantalla(cam, W, H, z, x, y); }, hx = null;
       H0.forEach(function (n) { if (n.gen.estado === 'MEDIDO' && !hx) { hx = n; } });
@@ -215,7 +171,7 @@
         var em = f.emblema(), er = 22 * dpr;
         if (em) { E.figura(g, em.armonicos, yo[0], yo[1], er, { color: col.tuya, giro: t * 0.0003, grosor: 2.2 * dpr, brillo: 14 * dpr }); }
       }
-      capas(g, W, H, z, bruma);
+      TS.niebla(g, cam, W, H, z);
       /* MOVIMIENTO 7 - M17: Vignette barato - gradiente radial cacheado */
       if (!quieto() && F.vignette_alfa) {
         var grad = g.createRadialGradient(W/2, H/2, 0, W/2, H/2, Math.max(W, H)/2);

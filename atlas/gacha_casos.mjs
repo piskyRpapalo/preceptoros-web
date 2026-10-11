@@ -268,7 +268,7 @@ await caso('M17-bis 5: el lector declara el objeto del que lee (F sin declarar r
 await caso('M17-bis 5: la deuda SIN_LECTOR es exactamente la medida (nadie mas la lee)', () => {
   const { V } = ONDA;
   const deuda = Object.entries(V.semantica).filter(([, f]) => f[2] === 'SIN_LECTOR').map(([k]) => k).sort();
-  const fuentes = ['wave_render.js', 'escena.js', 'mar.js', 'home_base_scene.js', 'summon_reveal.js', 'battle_replay.js']
+  const fuentes = ['wave_render.js', 'escena.js', 'mar.js', 'mar-fondo.js', 'home_base_scene.js', 'summon_reveal.js', 'battle_replay.js']
     .map((f) => readFileSync(join(RAIZ, 'public/game', f), 'utf-8')).join('\n');
   const leidos = deuda.filter((k) => fuentes.includes(k));
   return (!leidos.length && deuda.length === 7) || { deuda, leidos_aunque_dice_sin_lector: leidos };

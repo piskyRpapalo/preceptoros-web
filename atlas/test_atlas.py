@@ -636,11 +636,11 @@ process.stdout.write(JSON.stringify(ok));
 # Ver atlas/POST_VERIFICACION_MGNO_LAB.md y atlas/POST_VERIFICACION_SISIL_CRIA.md.
 PUROS = ("canon.js", "sobres.js", "rating.js", "arena.js", "duelo.js", "mercado.js", "narragrafo.js", "cria.js", "genoma.js")
 # La Arena (2026-09-28, «el mapa multi-jugador en una pestana»): se carga al abrir su pestana, detras del Army.
-ARENA = ("sobres.js", "rating.js", "arena.js", "duelo.js", "fog_of_war.js", "world_camera.js", "mar.js", "nodos-pesos.js",
+ARENA = ("sobres.js", "rating.js", "arena.js", "duelo.js", "mar.js", "nodos-pesos.js",
          "nodos.js", "cuenta.js", "ui-nodos.js", "ui-rack.js",
          "battle_choreography.js", "battle_replay.js", "ui-arena.js", "ui-duelo.js")
 # La CASA (2026-10-05): la primera pantalla, detras del Army. Lleva canon y escena, que la Arena reutiliza.
-CASA = ("canon.js", "escena.js", "wave_render.js", "gdpr-art25-ephemeral-crab.js", "aiact-art50-crab-terminal.js", "nodos-cedulas.js", "gdpr-art7-entry-choice.js", "aiact-art50-state-radio.js", "home_base_scene.js", "home_buildings.js", "summon_reveal.js")
+CASA = ("canon.js", "escena.js", "wave_render.js", "gdpr-art25-ephemeral-crab.js", "aiact-art50-crab-terminal.js", "nodos-cedulas.js", "fog_of_war.js", "world_camera.js", "mar-fondo.js", "gdpr-art7-entry-choice.js", "aiact-art50-state-radio.js", "home_base_scene.js", "home_buildings.js", "summon_reveal.js")
 FUERA_DE_LA_PUERTA = tuple(sorted(set(PUROS + ARENA + CASA)))
 
 
@@ -1684,13 +1684,35 @@ class MapaMovible(unittest.TestCase):
         self.assertIn("Fog", tx["mapa_niebla"])
 
     def test_sin_azar_ni_red_y_por_teselas(self):
-        for f in ("fog_of_war.js", "world_camera.js", "mar.js"):
+        for f in ("fog_of_war.js", "world_camera.js", "mar.js", "mar-fondo.js"):
             c = self._js(f)
             for malo in ("Math.random", "localStorage", "fetch(", "Date."):
                 with self.subTest(fichero=f, prohibido=malo):
                     self.assertNotIn(malo, c)
-        self.assertIn("function tesela(i, j)", self._js("mar.js"))
-        self.assertIn("if (nt > 90)", self._js("mar.js"), "la cache de teselas no esta acotada")
+        self.assertIn("function tesela(i, j)", self._js("mar-fondo.js"))
+        self.assertIn("if (nt > 90)", self._js("mar-fondo.js"), "la cache de teselas no esta acotada")
+
+    def test_j6_una_sola_fuente_de_teselas_y_el_mar_de_fondo_en_la_portada(self):
+        """J6 (plan «el refresco»): el mapa y la portada piden el MISMO pintor de teselas (T0-D: sin
+        gemelos); la deriva es global y no se hornea en cada tesela (las costuras de M4); el fondo
+        se monta solo en la portada, como decorado, y quieto con movimiento reducido."""
+        m, f = self._js("mar.js"), self._js("mar-fondo.js")
+        for gemelo in ("function tesela(", "function bruma(", "E.textura(", "offsetTemporal"):
+            with self.subTest(gemelo=gemelo):
+                self.assertNotIn(gemelo, m, "mar.js vuelve a tener teselas propias")
+        self.assertIn("MF.pintor()", m)
+        self.assertNotIn("offset", f.split("function tesela(")[1].split("function bruma(")[0], "la deriva vuelve a hornearse en la tesela")
+        for pieza in ("getElementById('juego-panel')", "setAttribute('aria-hidden', 'true')", "prefers-reduced-motion: reduce",
+                      "raiz.document.hidden", "(q && hecho)"):
+            with self.subTest(pieza=pieza):
+                self.assertIn(pieza, f)
+        tg = (PUBLICO / "assets" / "thegame.js").read_text(encoding="utf-8")
+        self.assertIn("window.AtlasMarFondo.portada()", tg)
+        orden = [tg.index("'/game/" + n + "'") for n in ("escena.js", "fog_of_war.js", "world_camera.js", "mar-fondo.js")]
+        self.assertEqual(orden, sorted(orden), "mar-fondo.js se carga antes que lo que usa")
+        css = (PUBLICO / "assets" / "thegame.css").read_text(encoding="utf-8")
+        self.assertIn(".mar-fondo{position:fixed;inset:0;", css)
+        self.assertIn("pointer-events:none", css.split(".mar-fondo{")[1].split("}")[0])
 
 
 class BatallaRTS(unittest.TestCase):
@@ -1766,9 +1788,9 @@ class EsteticaMedida(unittest.TestCase):
         self.assertIn("(v - q) / 8", e, "Atkinson reparte 1/8 a cada vecino")
 
     def test_el_mapa_pinta_el_origen_de_cada_cifra(self):
-        m = self._js("mar.js")
-        self.assertIn("var NIEBLA = [null, ", m, "la niebla no es de un bit")
-        self.assertIn("N.niebla(i * TESELA + x * RES, j * TESELA + y * RES, circ)", m, "la niebla no sale de lo despejado (fog_of_war.js)")
+        m, mf = self._js("mar.js"), self._js("mar-fondo.js")
+        self.assertIn("var NIEBLA = [null, ", mf, "la niebla no es de un bit")
+        self.assertIn("N.niebla(i * TESELA + x * RES, j * TESELA + y * RES, circ)", mf, "la niebla no sale de lo despejado (fog_of_war.js)")
         self.assertIn("n.gen.estado === 'NO_DATA'", m, "NO_DATA no se pinta como ausencia")
         self.assertIn("prefers-reduced-motion: reduce", m)
         tx = json.loads((PUBLICO / "atlas-arena-en.json").read_text(encoding="utf-8"))["ui"]
