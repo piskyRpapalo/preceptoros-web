@@ -65,20 +65,20 @@
     return cargado;
   }
 
-  /* LAS PESTANAS (2026-10-05): HOME ES TU CASA (`home_buildings.js`, que reparte las piezas del piso;
-     el aviso «solo ingles» va PRIMERO). Map y Battle los pinta la Arena (`ui-arena.js`). */
+  /* TRES PESTANAS, SIEMPRE EN ESTE ORDEN (R2, plan «el refresco»): HOME ES TU CANGREJO (`home_buildings.js`;
+     el aviso «solo ingles» va PRIMERO); MAP lleva el mapa, la batalla debajo (`ui-arena.js`) y el terminal
+     J7 con lo de la partida plegado dentro; TALLER junta el Nucleo, los oficios y el Army (incubadora). */
   var PESTANAS = [
-    ['casa', '\u2302', '#atlas-juego > .no-data:first-child|.atlas-alerta|.atlas-cab|.atlas-recursos|#atlas-piso > .atlas-vivo|.atlas-dormias|.atlas-lema|.atlas-mapa|.atlas-izq|.atlas-nucleo|.atlas-hud > .panel'],
-    ['mapa', '\u25C8', ''],
-    ['arena', '\u2694\uFE0E', ''],
-    ['partida', '\u2139\uFE0E', '.atlas-guardado|.thegame-exporta|.thegame-opina|.atlas-hud-farmeo|#atlas-juego > .no-data|.atlas-pie']];
+    ['casa', '\u2302', '#atlas-juego > .no-data:first-child|.atlas-alerta|.atlas-cab|.atlas-recursos|#atlas-piso > .atlas-vivo|.atlas-dormias|.atlas-lema|.atlas-mapa|.atlas-izq'],
+    ['mapa', '\u25C8', '.atlas-guardado|.thegame-exporta|.thegame-opina|.atlas-hud-farmeo|#atlas-juego > .no-data|.atlas-pie'],
+    ['taller', '\u2692\uFE0E', '.atlas-nucleo|.atlas-hud > .panel']];
   /* LA CASA, a demanda y detras del Army (usa la gacha para tu emblema). */
   var CASA = [['/game/canon.js'], ['/game/wave_render.js'], ['/game/escena.js'], ['/game/gdpr-art25-ephemeral-crab.js'], ['/game/aiact-art50-crab-terminal.js'], ['/game/nodos-cedulas.js'], ['/game/fog_of_war.js'], ['/game/world_camera.js'], ['/game/mar-fondo.js'], ['/game/gdpr-art7-entry-choice.js'], ['/game/aiact-art50-state-radio.js'], ['/game/home_base_scene.js'], ['/game/home_buildings.js'], ['/game/summon_reveal.js']];
   /* LO TECNICO, SIEMPRE PLEGADO («textos que asustan a usuarios no tecnicos»): no se borran, son la
      prueba; se ven al abrir «Technical details». */
   var TECNICO = '.atlas-carta-json, .atlas-nucleo > .atlas-nota, .atlas-nucleo > .atlas-medido, ' +
     '.atlas-incubadora > .atlas-medido, .atlas-incubadora > .atlas-casa, .atlas-pie';
-  var PANEL = {}, BOTON = {}, actual = 'casa', army = null, arena = null, casa = null, ARMYZ = null;
+  var PANEL = {}, BOTON = {}, actual = 'casa', army = null, arena = null, casa = null, ARMYZ = null, ZM = null, ZB = null, PARTIDA = null;
 
   function T(k) { return (window.AtlasJuego && window.AtlasJuego.texto(k)) || k; }
   function cada(lista, f) { Array.prototype.forEach.call(lista, f); }
@@ -109,11 +109,11 @@
       BOTON[k].tabIndex = k === id ? 0 : -1;
     });
     if (foco) { BOTON[id].focus(); }
-    if (id === 'arena') { cargaArena(); }
     if (id === 'mapa') { cargaArena(); }
     if (id === 'casa') { cargaCasa(); }
-    /* J7: el terminal del cangrejo vive en Help; se monta al abrirla (una vez). */
-    if (id === 'partida' && window.AtlasTerminal) { window.AtlasTerminal.monta(PANEL.partida, function (k, r) { var t = T(k); return t === k ? r : t; }); }
+    if (id === 'taller') { cargaArmy(); }
+    /* J7: el terminal del cangrejo vive en MAP, con lo de la partida plegado dentro (una vez). */
+    if (id === 'mapa' && window.AtlasTerminal) { window.AtlasTerminal.monta(PANEL.mapa, function (k, r) { var t = T(k); return t === k ? r : t; }, PARTIDA); }
   }
 
   function ordena() {
@@ -134,10 +134,13 @@
       piso.appendChild(d); fila.appendChild(b);
       PANEL[id] = d; BOTON[id] = b;
     });
-    ARMYZ = el('div', 'casa-army'); PANEL.casa.appendChild(ARMYZ);
+    ARMYZ = el('div', 'casa-army'); PANEL.taller.appendChild(ARMYZ);
+    ZM = el('div', 'thegame-mundo'); ZB = el('div', 'thegame-batalla'); PARTIDA = el('div', 'thegame-partida');
+    cada([].slice.call(PANEL.mapa.children), function (n) { PARTIDA.appendChild(n); });
+    [ZM, ZB, PARTIDA].forEach(function (n) { PANEL.mapa.appendChild(n); });
     var ay = el('ol', 'thegame-ayuda');
     for (var nq = 1; nq < 8; nq++) { ay.appendChild(el('li', null, T('ayuda_' + nq))); }
-    PANEL.partida.insertBefore(ay, PANEL.partida.firstChild);
+    PARTIDA.insertBefore(ay, PARTIDA.firstChild);
     /* Lo que queda vacio al repartir (la rejilla de la pagina larga) sobra. */
     cada(piso.querySelectorAll(':scope > .atlas-rejilla'), function (n) { n.remove(); });
     /* Flechas entre pestanas, como pide el patron de ARIA (al reves en una capa RTL). */
@@ -194,10 +197,10 @@
   /* La Arena se pide una vez, detras del Army; al volver a ella se refresca la escuadra. */
   function cargaArena() {
     if (arena) { if (window.AtlasArenaUI) { window.AtlasArenaUI.refresca(); } return arena; }
-    var p = PANEL.arena;
+    var p = ZB;
     if (p && !p.firstChild) { p.appendChild(el('p', 'atlas-nota', T('arena_carga'))); }
     arena = cargaCasa().then(function () { return pide(ARENA); }).then(function () {
-      if (window.AtlasArenaUI) { window.AtlasArenaUI.monta(capa, p, PANEL.mapa); }
+      if (window.AtlasArenaUI) { window.AtlasArenaUI.monta(capa, p, ZM); }
     }).catch(function (e) {
       arena = null;
       if (p) { p.textContent = ''; p.appendChild(el('p', 'no-data', 'NO_DATA · ' + (e && e.message))); }
@@ -254,25 +257,6 @@
         window.AtlasJuego.monta(document.getElementById('atlas-juego'), capa).then(function () {
           if (window.AtlasPilotoCapa) { window.AtlasPilotoCapa.monta(capa); }
           if (window.AtlasGuardado) { window.AtlasGuardado.monta(capa); }
-          /* El contador de farmeo se carga AL ABRIRLO (`atlas-hud.js`): su peso no va en la puerta. */
-          var sm = capa.querySelector('#atlas-piso .atlas-mapa'), th = window.AtlasJuego.texto('hud_t');
-          if (sm && th) {
-            var d = el('details', 'atlas-hud-farmeo'); d.appendChild(el('summary', null, th)); sm.appendChild(d);
-            d.addEventListener('toggle', function () {
-              if (!d.open || window.AtlasHud) { return; }
-              var s = document.createElement('script'); s.src = '/assets/atlas-hud.js';
-              s.onload = function () { window.AtlasHud.monta(capa, d); };
-              document.head.appendChild(s);
-            });
-            /* Opinar FIRMADO (sugerencia, veredicto, grieta): `atlas-opina.js`, al pulsar. */
-            var bo = el('button', 'boton-sec thegame-opina', window.AtlasJuego.texto('opina'));
-            bo.addEventListener('click', function () {
-              var s = document.createElement('script'); s.src = '/assets/atlas-opina.js';
-              s.onload = function () { window.AtlasOpina.abre(capa); };
-              if (window.AtlasOpina) { window.AtlasOpina.abre(capa); } else { document.head.appendChild(s); }
-            });
-            sm.appendChild(bo);
-          }
           ordena();
           if (pes && PANEL[pes]) { muestra(pes); }
         });

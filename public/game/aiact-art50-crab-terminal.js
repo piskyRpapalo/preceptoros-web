@@ -13,6 +13,10 @@
    maquina, en JSON, el dialecto pequeno y tipado que leen igual una persona y una IA (J12). Lo que se
    puede tocar (recursos, profundidad, grieta) sale de la instantanea, no de una copia.
 
+   LO DE LA PARTIDA VA PLEGADO AQUI (R2, plan «el refresco»: la pestana Help desaparece). `monta` recibe la
+   caja de la partida (guardar/exportar, la ayuda, el pie) y la mete dentro; el contador de farmeo y opinar
+   firmado se crean aqui y su codigo baja AL PULSAR (`atlas-hud.js`, `atlas-opina.js`), fuera de la puerta.
+
    Nada sale de la pestana: ni red, ni almacen, ni reloj, ni azar. */
 (function (raiz) {
   'use strict';
@@ -44,7 +48,21 @@
   }
 
   function el(tag, clase, texto) { var n = raiz.document.createElement(tag); if (clase) { n.className = clase; } if (texto != null) { n.textContent = texto; } return n; }
-  function monta(panel, T) {
+  /* El contador de farmeo y opinar firmado, en la caja de la partida; su guion se pide al pulsar. */
+  function partida(caja) {
+    var d = raiz.document, capa = d.getElementById('thegame'), J = raiz.AtlasJuego, th = J && J.texto('hud_t');
+    function pide(src, listo) { var s = d.createElement('script'); s.src = src; s.onload = listo; d.head.appendChild(s); }
+    if (th) {
+      var h = el('details', 'atlas-hud-farmeo'); h.appendChild(el('summary', null, th)); caja.appendChild(h);
+      h.addEventListener('toggle', function () { if (h.open && !raiz.AtlasHud) { pide('/assets/atlas-hud.js', function () { raiz.AtlasHud.monta(capa, h); }); } });
+    }
+    var bo = el('button', 'boton-sec thegame-opina', J ? J.texto('opina') : 'Opinion'); bo.type = 'button';
+    bo.addEventListener('click', function () {
+      if (raiz.AtlasOpina) { raiz.AtlasOpina.abre(capa); } else { pide('/assets/atlas-opina.js', function () { raiz.AtlasOpina.abre(capa); }); }
+    });
+    caja.appendChild(bo);
+  }
+  function monta(panel, T, caja) {
     if (!panel || panel.querySelector('.terminal-cangrejo')) { return; }
     T = T || function (k, r) { return r; };
     var d = el('details', 'terminal-cangrejo thegame-pliego');
@@ -68,6 +86,7 @@
     });
     d.addEventListener('toggle', pintaVars);
     [f, vars, log].forEach(function (n) { d.appendChild(n); });
+    if (caja) { partida(caja); d.appendChild(caja); }
     panel.appendChild(d);
   }
 

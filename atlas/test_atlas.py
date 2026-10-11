@@ -433,7 +433,10 @@ process.stdout.write(JSON.stringify(ok));
         campo de mas)."""
         capa = (ASSETS / "thegame.js").read_text(encoding="utf-8")
         self.assertNotIn("['atlas-opina.js']", capa, "opinar pesa en la puerta del juego")
-        self.assertIn("s.src = '/assets/atlas-opina.js'", capa)
+        # R2: opinar vive en la caja de la partida, plegada en el terminal J7; baja al pulsar.
+        term = (PUBLICO / "game" / "aiact-art50-crab-terminal.js").read_text(encoding="utf-8")
+        self.assertIn("pide('/assets/atlas-opina.js'", term)
+        self.assertIn("pide('/assets/atlas-hud.js'", term)
         # D7 (mudanza bloque 2, FIRMO 2026-10-11): el juego ENTRA en el precache: offline tras la primera visita.
         self.assertIn("/assets/atlas-opina.js", sin_comentarios((PUBLICO / "sw-listas.js").read_text(encoding="utf-8")))
         cod = sin_comentarios((ASSETS / "atlas-opina.js").read_text(encoding="utf-8"))
@@ -1025,14 +1028,15 @@ class Pestanas(unittest.TestCase):
 
     CAPA = ASSETS / "thegame.js"
     HOJA = ASSETS / "thegame.css"
-    IDS = ("casa", "mapa", "arena", "partida")
+    IDS = ("casa", "mapa", "taller")
     PLIEGOS = ()
     ARMY = ("valores.js", "gacha.js", "db.js", "core.js", "ui.js")
 
     def _capa(self):
         return sin_comentarios(self.CAPA.read_text(encoding="utf-8"))
 
-    def test_cuatro_pestanas_accesibles_que_mueven_y_no_rehacen(self):
+    def test_tres_pestanas_accesibles_que_mueven_y_no_rehacen(self):
+        """R2 (plan «el refresco»): HOME · MAP · TALLER, siempre en ese orden."""
         c = self._capa()
         ids = re.findall(r"\['(\w+)', '\\u[0-9A-F]{4}", c)
         self.assertEqual(tuple(ids), self.IDS)
@@ -1073,12 +1077,12 @@ class Pestanas(unittest.TestCase):
                 self.assertNotIn(m, guiones, f"{m} vuelve a la puerta")
                 self.assertIn(f"['/game/{m}']", army)
         self.assertIn("['/game/juez.js']", guiones, "el juez escucha desde el primer ciclo")
-        # Sin pestana Army (2026-10-05): el Army se pide con la CASA, la pestana de entrada, y vive en su
-        # edificio (`.casa-army`, que reparte home_buildings.js). Su peso sigue fuera de la puerta.
+        # R2 (plan «el refresco»): el Army vive en el TALLER y se pide con la CASA (la pestana de entrada) o al
+        # abrir el Taller. Su peso sigue fuera de la puerta.
         self.assertIn("if (id === 'casa') { cargaCasa(); }", c)
+        self.assertIn("if (id === 'taller') { cargaArmy(); }", c)
         self.assertIn("casa = cargaArmy().then(function () { return pide(CASA); })", c)
-        self.assertIn("ARMYZ = el('div', 'casa-army'); PANEL.casa.appendChild(ARMYZ);", c)
-        self.assertIn("army: '.casa-army'", (PUBLICO / "game" / "home_buildings.js").read_text(encoding="utf-8"))
+        self.assertIn("ARMYZ = el('div', 'casa-army'); PANEL.taller.appendChild(ARMYZ);", c)
         self.assertIn("army: cargaArmy", c)
         sys.path.insert(0, str(RAIZ))
         import mundo
@@ -1358,7 +1362,9 @@ class Arena(unittest.TestCase):
         for m in ARENA:
             with self.subTest(modulo=m):
                 self.assertIn(f"['/game/{m}']", lista)
-        self.assertIn("if (id === 'arena') { cargaArena(); }", capa)
+        # R2: la batalla vive dentro de MAP; la Arena se pide al abrir MAP (y despues de la casa).
+        self.assertIn("if (id === 'mapa') { cargaArena(); }", capa)
+        self.assertNotIn("'arena', '\\u2694", capa, "vuelve la pestana Battle")
         self.assertIn("arena = cargaCasa().then(function () { return pide(ARENA); })", capa, "la Arena sin su Army ni su casa")
         casa = capa[capa.index("var CASA"):capa.index("var TECNICO")]
         for m in CASA:
@@ -1373,7 +1379,7 @@ class Arena(unittest.TestCase):
             for k in set(re.findall(r"T\('(\w+)'\)", self._js(f))):
                 with self.subTest(fichero=f, clave=k):
                     self.assertTrue((ar.get(k) or juego.get(k) or "").strip(), f"{k} sin texto")
-        for k in ("pes_arena", "arena_carga"):
+        for k in ("pes_mapa", "arena_carga"):
             self.assertTrue(juego.get(k, "").strip())
         for l in LENGUAS_JUEGO:
             self.assertTrue((PUBLICO / f"atlas-arena-{l}.json").is_file(), f"la Arena sin textos en {l}")
@@ -1628,22 +1634,32 @@ class CasaGranja(unittest.TestCase):
             fetches = re.findall(r"fetch\(([^)]*)\)", c)
             self.assertEqual(fetches, ["'/atlas-casa-' + l + '.json'"] if f == "home_buildings.js" else [], f)
 
-    def test_los_edificios_son_botones_con_su_medida_o_no_data(self):
+    def test_las_partes_del_cangrejo_son_botones_con_su_medida_o_no_data(self):
+        """R2 (plan «el refresco»): la rejilla de edificios se RETIRA en el mismo cambio (sin codigo muerto);
+        los edificios son partes del cangrejo, botones del DOM en sus anclas, con su cifra o NO_DATA."""
         b = self._js("home_buildings.js")
-        self.assertIn("var b = boton('', 'casa-edificio')", b, "un edificio que no es un boton")
-        self.assertIn("b.setAttribute('aria-label', T('ed_' + e[0])", b)
+        self.assertIn("var b = boton('', 'casa-parte')", b, "una parte que no es un boton")
+        self.assertIn("b.setAttribute('aria-label', T('parte_' + e[0])", b)
         self.assertIn("m ? m.txt : 'NO_DATA'", b, "lo no medido se inventa un numero")
         self.assertIn("J.instantanea()", b, "la cifra no sale del estado del juego")
+        self.assertIn("anclas: anclas", b, "los botones no siguen al cangrejo")
         e = self._js("home_base_scene.js")
-        self.assertIn("if (!e || !e.medido) { enNiebla(", e, "lo no medido no va en niebla")
+        self.assertIn("an = CJ.pinta(", e, "las anclas no salen del dibujo")
         self.assertIn("prefers-reduced-motion: reduce", e)
         self.assertIn("med.nivel(2)", e, "la calidad no baja sola cuando caen los fps")
+        for viejo, f in (("PARCELAS", e), ("function edificio(", e), ("function cupula(", e), ("enNiebla", e),
+                         ("casa-edificio", b), ("EDIF", b), ("pintaBotones", b)):
+            with self.subTest(retirado=viejo):
+                self.assertNotIn(viejo, f, "la rejilla de edificios vuelve como codigo muerto")
+        self.assertNotIn("casa-edificio", (PUBLICO / "game" / "home.css").read_text(encoding="utf-8"))
         tx = json.loads((PUBLICO / "atlas-casa-en.json").read_text(encoding="utf-8"))["ui"]
         for k in re.findall(r"T\('(\w+)'\)", b):
             with self.subTest(clave=k):
                 self.assertTrue(tx.get(k), f"{k} sin texto")
-        for i in ("faro", "army", "taller", "bosque", "arena"):
-            self.assertTrue(tx.get("ed_" + i) and tx.get("nd_" + i), i)
+        for i in ("caparazon", "pinzas", "patas", "ojos"):
+            self.assertTrue(tx.get("parte_" + i), i)
+        for i in ("nucleo", "army", "bosque", "faro"):
+            self.assertTrue(tx.get("nd_" + i), i)
 
     def test_la_onda_se_traza_fiel_y_la_invocacion_se_revela(self):
         o = self._js("wave_render.js")

@@ -53,5 +53,21 @@ caso('no toca la decision: ni motor, ni combate, ni juez', () => {
 });
 caso('espejo: andar al otro lado es el mismo sprite con la x negada (sin onda nueva)', () =>
   (FUENTE.includes('g.scale(-1, 1)') && JSON.stringify(C.onda(1)) === JSON.stringify(C.onda(1))) || 'espejo');
+// R2 (plan «el refresco»): EL CUERPO ES LA CASA. Cada parte sale de su cifra medida, crece y BAJA con ella;
+// lo que falta es null (NO_DATA), nunca un cero inventado.
+caso('cuerpo: sin cifra, la parte es NO_DATA (null), no cero', () => {
+  const c = C.cuerpo({ nucleo: null, army: 3, bosque: undefined, faro: 0 });
+  return (c.caparazon === null && c.patas === null && c.ojos === 0 && c.pinzas > 0) || c;
+});
+caso('cuerpo: crece al jugar y baja si la cifra baja (y tiene tope)', () => {
+  const a = C.cuerpo({ nucleo: 2, army: 4, bosque: 1, faro: 1 }), b = C.cuerpo({ nucleo: 5, army: 9, bosque: 4, faro: 2 });
+  const sube = C.PARTES.every((p) => b[p] > a[p]), baja = C.PARTES.every((p) => C.cuerpo({ nucleo: 1, army: 2, bosque: 0, faro: 0 })[p] < a[p]);
+  const tope = C.PARTES.every((p) => C.cuerpo({ nucleo: 999, army: 999, bosque: 999, faro: 999 })[p] === 1);
+  return (sube && baja && tope) || { a, b };
+});
+caso('cuerpo: las pinzas de la onda crecen con la army; sin cuerpo, la onda de siempre', () => {
+  const p0 = C.onda(1, C.cuerpo({ army: 0 }))[2][1], p1 = C.onda(1, C.cuerpo({ army: 12 }))[2][1];
+  return (p1 > p0 && JSON.stringify(C.onda(1)) === JSON.stringify([[1, 50, 36, 0], [6, 7, 7, 0], [2, 9, 4, 1]])) || { p0, p1, o: C.onda(1) };
+});
 console.log(JSON.stringify(casos));
 process.exitCode = casos.every((c) => c.ok) ? 0 : 1;

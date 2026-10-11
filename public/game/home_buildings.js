@@ -1,16 +1,17 @@
-/* preceptoros.org · theGame · LOS EDIFICIOS DE TU CASA: botones grandes, con su estado MEDIDO.
+/* preceptoros.org · theGame · TU CASA ES TU CANGREJO: sus partes son botones, con su estado MEDIDO.
 
-   LA CASA ES LA PRIMERA PANTALLA (Soberano, 2026-10-05: «la primera pantalla de tu nodo debe ser
-   visualmente TU CASA… y los EDIFICIOS deben ser accesos directos»). Cinco edificios en sus parcelas:
-   Lighthouse (lleva al mapa), Army, Workshop, Forest y Arena (lleva a la batalla). Cada uno es un
-   BOTON del DOM encima de su dibujo (`home_base_scene.js`): con nombre, foco de teclado y lector de
-   pantalla. Su cifra sale del ESTADO del juego (`AtlasJuego.instantanea`, el Army de la incubadora,
-   las cedulas medidas); lo que no se ha medido dice NO_DATA y su edificio se pinta en niebla.
+   LA CASA ES LA PRIMERA PANTALLA (Soberano, 2026-10-05). Desde R2 (plan «el refresco», 2026-10-11) la
+   rejilla de edificios DESAPARECE: los edificios son el CUERPO del cangrejo, que crece con el tiempo de
+   partida y las unidades (y baja si bajan). Caparazon = Nucleo y pinzas = Army (abren el TALLER, con tus
+   ondas y sus stats), patas = Bosque (abre la expedicion aqui mismo) y ojos = Faro (abren el MAPA). Cada
+   parte es un BOTON del DOM puesto en el ancla que devuelve su dibujo (`home_base_scene.js`): nombre, foco
+   de teclado y lector de pantalla. Su cifra sale del ESTADO del juego (`AtlasJuego.instantanea`, el Army
+   de la incubadora, las cedulas medidas); lo no medido dice NO_DATA y esa parte se dibuja en niebla.
 
-   DENTRO DE CADA EDIFICIO van las piezas que ya existian (la expedicion del Bosque, los oficios, la
-   incubadora), MOVIDAS con sus referencias vivas: no se rehace la logica, se le da sitio.
+   DENTRO de las patas va la expedicion del Bosque, MOVIDA con sus referencias vivas: no se rehace la
+   logica, se le da sitio.
 
-   PERSONALIZAR (paleta, estilo de los edificios, variante del emblema; y la POSTURA de la casa:
+   PERSONALIZAR (paleta, estilo del caparazon, variante del emblema; y la POSTURA de la casa:
    alianzas, comercio y lema) se guarda en ESTE aparato (IndexedDB `atlas-casa`) y, si se comparte,
    viaja FIRMADO. Sin datos personales: el lema rechaza lo que parezca correo, URL, ruta, IP o
    telefono. Y NO DA VENTAJA: nada de esto entra en `arena.combate` (`atlas/casa_casos.mjs`). */
@@ -36,8 +37,9 @@
   if (typeof module === 'object' && module.exports) { module.exports = { forma: forma, base: base, OPCIONES: OPCIONES, ESQUEMA: ESQUEMA }; return; }
 
   var K = raiz.AtlasCanon, G = raiz.AtlasGacha, S = raiz.AtlasCasaEscena, TX = null, R = {}, casa = base(), pub = null, escena = null;
-  var EDIF = [['faro', '▲'], ['army', '✦'], ['taller', '⚒︎'], ['bosque', '⸙'], ['arena', '⚔︎']];
-  var DENTRO = { bosque: '.atlas-dormias|.atlas-lema|.atlas-mapa|.atlas-izq', taller: '.casa-oficios|.atlas-nucleo|.thegame-tecnico', army: '.casa-army' };
+  /* Las partes: [id, icono, a donde lleva, la cifra de `medidas()` que la explica]. */
+  var PARTES = [['caparazon', '\u25C9', 'taller', 'nucleo'], ['pinzas', '\u2726', 'taller', 'army'], ['patas', '\u2E19', '', 'bosque'], ['ojos', '\u25C8', 'mapa', 'faro']];
+  var DENTRO = { patas: '.atlas-dormias|.atlas-lema|.atlas-mapa|.atlas-izq' };
 
   function T(k) { return (TX && TX[k]) || k; }
   function el(tag, clase, texto) { var n = document.createElement(tag); if (clase) { n.className = clase; } if (texto != null) { n.textContent = String(texto); } return n; }
@@ -62,7 +64,7 @@
     db().then(function (d) { d.transaction('casa', 'readwrite').objectStore('casa').put(casa, 'mia'); }).catch(function () {});
   }
 
-  /* --- el estado medido de cada edificio -------------------------------------------------------- */
+  /* --- el estado medido de cada parte ----------------------------------------------------------- */
   function emblema() {
     if (!G || !K) { return null; }
     return G.tirada(K.sha('atlas.emblema/1:' + (pub || 'invitado') + (casa.emblema ? ':' + casa.emblema : '')), 'tc3').armonicos;
@@ -75,40 +77,53 @@
      tu army y si un nodo te tiene LINKEADO en su cedula (coral) o no (cangrejo de mar). El latido del
      nodo no llega a la web: el brillo es NO_DATA (null), nunca un numero inventado. */
   function cangrejo() {
-    var i = estado().i, C = raiz.AtlasNodosCedulas, m = medidas(), nodo = false;
+    var i = estado().i, C = raiz.AtlasNodosCedulas, m = medidas(), nodo = false, CJ = raiz.AtlasCangrejo;
     if (pub && C) {
       nodo = C.nodos.some(function (n) { return (n.dispositivos || []).some(function (d) { return d.clave_publica === pub && d.estado === 'linkeado'; }); });
     }
-    return { semilla: pub || 'visitante', ciclo: i ? i.ciclo : 0, army: m.army ? m.army.nivel : 0, nodo: nodo, latido: null };
+    function nv(k) { return m[k] ? m[k].nivel : null; }
+    return { semilla: pub || 'visitante', ciclo: i ? i.ciclo : 0, army: m.army ? m.army.nivel : 0, nodo: nodo, latido: null,
+             cuerpo: CJ ? CJ.cuerpo({ nucleo: nv('nucleo'), army: nv('army'), bosque: nv('bosque'), faro: nv('faro') }) : null };
   }
   function medidas() {
-    var s = estado().i, ed = {}, inc = raiz.AtlasIncubadora, C = raiz.AtlasNodosCedulas, A = raiz.AtlasArenaUI;
-    var oficios = s ? Object.keys(s.niveles).reduce(function (a, k) { return a + s.niveles[k]; }, 0) : null, army = null;
+    var s = estado().i, ed = {}, inc = raiz.AtlasIncubadora, C = raiz.AtlasNodosCedulas, army = null;
     try { army = inc && inc.army ? (inc.army() || []).length : null; } catch (x) { army = null; }
     var nodos = C ? C.nodos.filter(function (n) { var m = n.aparato.medidas; return Object.keys(m).some(function (k) { return m[k].estado === 'MEDIDO'; }); }).length : null;
-    var rc = A && A.record ? A.record() : null;
+    ed.nucleo = s ? { nivel: s.nivel_nucleo, medido: true, txt: rellena(T('st_nucleo'), { n: s.nivel_nucleo }) } : null;
     ed.bosque = s ? { nivel: Math.floor(s.recursos.biomasa / 2), medido: true, txt: rellena(T('st_bosque'), { b: s.recursos.biomasa, o: s.recursos.oxigeno }) } : null;
-    ed.taller = s ? { nivel: oficios, medido: true, txt: rellena(T('st_taller'), { n: oficios }) } : null;
     ed.army = army != null ? { nivel: army, medido: true, txt: rellena(T('st_army'), { n: army }) } : null;
     ed.faro = nodos != null ? { nivel: nodos, medido: true, txt: rellena(T('st_faro'), { n: nodos }) } : null;
-    ed.arena = rc ? { nivel: rc.g, medido: true, txt: rellena(T('st_arena'), { g: rc.g, p: rc.p }) } : null;
     return ed;
   }
-  function pintaBotones() {
+  function pintaPartes() {
     var ed = medidas();
-    EDIF.forEach(function (e) {
-      var b = R.b[e[0]], m = ed[e[0]], p = S.PARCELAS[e[0]];
-      b.style.left = (p.x * 100) + '%'; b.style.top = ((p.by || p.y || S.SUELO) * 100) + '%';
+    PARTES.forEach(function (e) {
+      var b = R.b[e[0]], m = ed[e[3]];
       b.querySelector('.casa-st').textContent = m ? m.txt : 'NO_DATA';
       b.classList.toggle('sin-medida', !m);
-      b.setAttribute('aria-label', T('ed_' + e[0]) + ' · ' + (m ? m.txt : T('nd_' + e[0])));
+      b.setAttribute('aria-label', T('parte_' + e[0]) + ' · ' + (m ? m.txt : T('nd_' + e[3])));
+    });
+  }
+  /* Cada cuadro, la escena dice donde quedo cada parte (pixeles del lienzo). El boton va FUERA del cuerpo, en
+     la direccion de su parte (el caparazon, encima): asi no tapa al cangrejo. `HACIA`: [dx, dy] en radios. */
+  var HACIA = { caparazon: [0, -1.5], ojos: [1, -0.7], pinzas: [1.1, 0.35], patas: [-1.1, 0.35] };
+  function anclas(an, W, H) {
+    var cx = an ? an.caparazon[0] : 0, lado = an && an.pinzas[0] < cx ? -1 : 1, k = an ? Math.max(an.radio, 52) : 0;
+    PARTES.forEach(function (e) {
+      var b = R.b[e[0]], p = an && an[e[0]], h = HACIA[e[0]];
+      b.hidden = !p;
+      if (!p) { return; }
+      var x = e[0] === 'caparazon' ? cx : cx + lado * h[0] * k, y = p[1] + h[1] * k * (e[0] === 'caparazon' ? 1 : 0.6);
+      b.style.left = (Math.max(0.08, Math.min(0.92, x / W)) * 100).toFixed(1) + '%';
+      b.style.top = (Math.max(0.1, Math.min(0.92, y / H)) * 100).toFixed(1) + '%';
     });
   }
 
-  /* --- dentro de un edificio --------------------------------------------------------------------- */
+  /* --- dentro de una parte ----------------------------------------------------------------------- */
   function entra(id) {
-    if (id === 'faro' || id === 'arena') { if (raiz.TheGame && raiz.TheGame.ve) { raiz.TheGame.ve(id === 'faro' ? 'mapa' : 'arena'); } return; }
-    R.titulo.textContent = T('ed_' + id); R.cuerpo.textContent = '';
+    var a = PARTES.filter(function (e) { return e[0] === id; })[0];
+    if (a && a[2]) { if (raiz.TheGame && raiz.TheGame.ve) { raiz.TheGame.ve(a[2]); } return; }
+    R.titulo.textContent = T('parte_' + id); R.cuerpo.textContent = '';
     DENTRO[id].split('|').forEach(function (s) { Array.prototype.forEach.call(R.alm.querySelectorAll(s), function (n) { R.cuerpo.appendChild(n); }); });
     R.dentro = id; R.int.hidden = false; R.esc.hidden = true; R.volver.focus();
   }
@@ -178,17 +193,16 @@
     R.alm = el('div', 'casa-almacen'); R.alm.hidden = true;
     var tira = el('div', 'casa-tira');
     Array.prototype.slice.call(panel.children).forEach(function (n) {
-      if (n.className === 'panel') { n.classList.add('casa-oficios'); }
       if (/atlas-cab|atlas-recursos|atlas-vivo|no-data/.test(n.className)) { tira.appendChild(n); } else { R.alm.appendChild(n); }
     });
     R.esc = el('div', 'casa-escena');
     R.lienzo = el('canvas', 'casa-lienzo'); R.lienzo.setAttribute('role', 'img'); R.lienzo.setAttribute('aria-label', T('aria'));
     R.esc.appendChild(R.lienzo);
     var al = R.alm.querySelector('.atlas-alerta'); if (al) { al.classList.add('casa-alerta'); R.esc.appendChild(al); }
-    EDIF.forEach(function (e) {
-      var b = boton('', 'casa-edificio'); b.dataset.id = e[0];
+    PARTES.forEach(function (e) {
+      var b = boton('', 'casa-parte'); b.dataset.id = e[0];
       var ico = el('span', 'casa-ico', e[1]); ico.setAttribute('aria-hidden', 'true');
-      b.appendChild(ico); b.appendChild(el('span', 'casa-nom', T('ed_' + e[0]))); b.appendChild(el('span', 'casa-st'));
+      b.appendChild(ico); b.appendChild(el('span', 'casa-nom', T('parte_' + e[0]))); b.appendChild(el('span', 'casa-st'));
       b.addEventListener('click', function () { entra(e[0]); });
       R.b[e[0]] = b; R.esc.appendChild(b);
     });
@@ -199,12 +213,12 @@
     R.cuerpo = el('div', 'casa-int-cuerpo'); R.int.appendChild(R.cuerpo);
     R.raiz.appendChild(tira); R.raiz.appendChild(R.esc); R.raiz.appendChild(R.int); R.raiz.appendChild(R.alm);
     panel.appendChild(R.raiz);
-    pintaBotones(); setInterval(pintaBotones, 1500);
+    pintaPartes(); setInterval(pintaPartes, 1500);
     var I = raiz.Identity;
     (I && I.quien && I.quien() ? I.publica().then(function (k) { pub = k; }, function () {}) : Promise.resolve())
       .then(lee).then(function (g) { if (g && !forma(g)) { casa = g; } });
     escena = S.crea(R.lienzo, { casa: function () { return { paleta: casa.paleta, estilo: casa.estilo, emblema: emblema() }; },
-                                estado: estado, edificios: medidas, cangrejo: cangrejo });
+                                estado: estado, cangrejo: cangrejo, anclas: anclas });
   }
 
   /* Cambiar UNA opcion desde fuera (la formacion, desde la repeticion de la batalla). */

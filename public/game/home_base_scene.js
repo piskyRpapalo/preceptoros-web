@@ -2,27 +2,25 @@
 
    POR QUE DE LADO (decision de diseno, 2026-10-05). El Soberano pidio «TU CASA (vista lateral de
    Atlantis o superior)». Se elige el CORTE LATERAL: en un movil en vertical las capas de agua caben de
-   arriba abajo, la luz baja como baja en el mar y un nino reconoce «mi casa» en una cupula sobre el
-   fondo, sin leer nada. La vista superior obligaba a explicar que un circulo es un edificio.
+   arriba abajo, la luz baja como baja en el mar y un nino reconoce «mi casa» (entonces una cupula, hoy
+   su cangrejo) sin leer nada. La vista superior obligaba a explicar que un circulo es un edificio.
 
    CAPAS, de atras adelante, en lienzos aparte (se rehacen solo al cambiar el tamano o la paleta):
    el agua (gradiente con tramado Atkinson), las ruinas lejanas (parallax lento) y el lecho. Encima,
-   cada cuadro: rayos de luz aditivos, burbujas deterministas, los edificios y la gran CUPULA del
-   Nucleo con tu emblema dentro (tu onda, de tus armonicos). Lo no medido de un edificio es NIEBLA.
+   cada cuadro: rayos de luz aditivos, burbujas deterministas y TU CANGREJO.
 
-   LOS EDIFICIOS SON BOTONES DEL DOM (`home_buildings.js`): aqui solo se pinta su forma, en el sitio
-   que dice `PARCELAS`, y con el tamano que sale del ESTADO MEDIDO del juego. Sin azar, sin red, sin
-   imagenes. Con movimiento reducido, todo quieto. Si los fps bajan de 50, la calidad baja sola. */
+   LA CASA ES EL CANGREJO (R2, plan «el refresco», 2026-10-11): la rejilla de edificios se retiro. Los
+   edificios son PARTES de su cuerpo (gdpr-art25-ephemeral-crab.js), que crecen con lo MEDIDO y bajan si
+   baja; lo no medido va en niebla. Tu emblema (tu onda) va en el caparazon, que es el Nucleo, y la grieta
+   lo raja. Los botones del DOM (`home_buildings.js`) se ponen en las ANCLAS que devuelve el dibujo. Sin
+   azar, sin red, sin imagenes. Con movimiento reducido, todo quieto. Si los fps bajan de 50, la calidad
+   baja sola. */
 (function (raiz) {
   'use strict';
 
   var E = raiz.AtlasEscena, O = raiz.AtlasOnda;
-  /* Donde va cada edificio: x y ancho en fraccion del lienzo; el suelo esta en SUELO. */
-  var SUELO = 0.74;
-  var PARCELAS = {
-    faro: { x: 0.12, w: 0.14, by: 0.4 }, army: { x: 0.31, w: 0.2 }, taller: { x: 0.7, w: 0.18, by: 0.5 },
-    bosque: { x: 0.89, w: 0.18 }, arena: { x: 0.5, w: 0.34, y: 0.92 }
-  };
+  /* El suelo, en fraccion del alto; el cangrejo anda por la franja central (FRANJA del ancho). */
+  var SUELO = 0.74, FRANJA = 0.35;
   var PALETAS = {
     abismo: { agua: [[4, 6, 18], [8, 14, 34], [14, 26, 56], [22, 44, 82], [40, 74, 112]], acento: [272, 75, 70], vidrio: [200, 80, 75] },
     coral: { agua: [[10, 4, 14], [26, 10, 30], [52, 18, 46], [86, 34, 60], [130, 62, 78]], acento: [18, 85, 66], vidrio: [340, 70, 78] },
@@ -35,7 +33,7 @@
 
   function crea(lienzo, f) {
     var g = lienzo.getContext('2d'), dpr = Math.min(2, raiz.devicePixelRatio || 1), raf = 0, vivo = true;
-    var capas = null, clave = '', med = O.medidor(), calidad = 2, niebla = null, cic = -1, t0 = 0;
+    var capas = null, clave = '', med = O.medidor(), calidad = 2, cic = -1, t0 = 0;
 
     function prepara(W, H, pal) {
       var w = Math.ceil(W / (3 * dpr)), h = Math.ceil(H / (3 * dpr)), P = PALETAS[pal] || PALETAS.abismo;
@@ -50,7 +48,6 @@
         var s = SUELO + Math.sin(x / w * 9) * 0.015 + E.fbm(x / 14, 3, 2) * 0.03;
         return y / h < s ? 0 : 0.45 + E.fbm(x / 5, y / 5, 9) * 0.55;
       }, [null, [30, 26, 34], [52, 44, 50], [86, 74, 70]]);
-      niebla = E.textura(32, 32, function (x, y) { return 0.3 + E.fbm(x / 5, y / 5, 31) * 0.3; }, [null, [150, 160, 182]]);
       capas = { agua: agua, lejos: lejos, lecho: lecho, P: P };
     }
     /* Rayos de luz que bajan, en suma aditiva. */
@@ -76,90 +73,14 @@
       }
       g.restore();
     }
-    function enNiebla(x, y, w, h) {
-      g.save(); g.imageSmoothingEnabled = false; g.beginPath(); g.rect(x, y, w, h); g.clip();
-      var L = 64 * dpr; for (var i = x; i < x + w; i += L) { for (var j = y; j < y + h; j += L) { g.drawImage(niebla, i, j, L, L); } }
-      g.restore();
-    }
-    /* Las formas: una torre, cupulas, un faro, un jardin, un anfiteatro. Todo con el estilo elegido. */
-    function techo(x, y, w, estilo) {
-      g.beginPath();
-      if (estilo === 'aguja') { g.moveTo(x - w / 2, y); g.lineTo(x, y - w * 0.9); g.lineTo(x + w / 2, y); }
-      else if (estilo === 'concha') { for (var i = 0; i <= 12; i++) { var u = i / 12 * Math.PI; g.lineTo(x - Math.cos(u) * w / 2, y - Math.sin(u) * w * 0.45 * (1 + 0.12 * Math.sin(u * 7))); } }
-      else { g.ellipse(x, y, w / 2, w * 0.45, 0, Math.PI, 2 * Math.PI); }
-      g.closePath();
-    }
-    function ventanas(x, y, w, h, n, P, t) {
-      g.save(); g.globalCompositeOperation = 'lighter';
-      for (var i = 0; i < n; i++) {
-        var a = 0.5 + 0.3 * Math.sin(t * 0.001 + i * 1.3);
-        g.fillStyle = hsl(P.acento, a); g.fillRect(x - w * 0.3 + (i % 3) * w * 0.25, y + h * 0.2 + Math.floor(i / 3) * h * 0.22, w * 0.1, h * 0.1);
-      }
-      g.restore();
-    }
-    function edificio(id, W, H, e, casa, t, P) {
-      var p = PARCELAS[id], x = p.x * W, base = (p.y || SUELO) * H, w = p.w * W, cuerpo = hsl([P.vidrio[0], 18, 22]), borde = hsl(P.acento, 0.9);
-      g.save(); g.lineWidth = 1.5 * dpr; g.strokeStyle = borde; g.fillStyle = cuerpo;
-      var nivel = e && e.nivel != null ? e.nivel : 0, h;
-      if (id === 'faro') {
-        h = H * (0.32 + Math.min(0.12, nivel * 0.02));
-        g.beginPath(); g.moveTo(x - w * 0.25, base); g.lineTo(x - w * 0.12, base - h); g.lineTo(x + w * 0.12, base - h); g.lineTo(x + w * 0.25, base); g.closePath(); g.fill(); g.stroke();
-        var ang = quieto() ? -0.4 : Math.sin(t * 0.0009) * 0.9 - 0.3;
-        g.globalCompositeOperation = 'lighter';
-        var gr = g.createRadialGradient(x, base - h, 0, x, base - h, W * 0.5);
-        gr.addColorStop(0, hsl(P.acento, 0.35)); gr.addColorStop(1, hsl(P.acento, 0));
-        g.fillStyle = gr; g.beginPath(); g.moveTo(x, base - h);
-        g.arc(x, base - h, W * 0.5, ang - 0.12, ang + 0.12); g.closePath(); g.fill();
-        g.fillStyle = hsl(P.acento, 0.9); g.beginPath(); g.arc(x, base - h, 4 * dpr, 0, 7); g.fill();
-      } else if (id === 'army') {
-        var n = Math.max(1, Math.min(5, nivel || 1));
-        for (var i = 0; i < n; i++) {
-          var cx = x + (i - (n - 1) / 2) * w * 0.22, cw = w * (i % 2 ? 0.26 : 0.32);
-          g.fillRect(cx - cw / 2, base - cw * 0.35, cw, cw * 0.35); techo(cx, base - cw * 0.35, cw, casa.estilo); g.fill(); g.stroke();
-        }
-        if (!nivel) { g.setLineDash([4 * dpr, 4 * dpr]); g.strokeRect(x - w * 0.4, base - w * 0.3, w * 0.8, w * 0.3); g.setLineDash([]); }
-      } else if (id === 'taller') {
-        h = H * (0.14 + Math.min(0.16, nivel * 0.008));
-        g.fillRect(x - w * 0.3, base - h, w * 0.6, h); g.strokeRect(x - w * 0.3, base - h, w * 0.6, h);
-        techo(x, base - h, w * 0.7, casa.estilo); g.fill(); g.stroke();
-        ventanas(x, base - h, w, h, Math.min(9, 2 + Math.floor(nivel / 3)), P, t);
-        g.globalCompositeOperation = 'lighter'; g.fillStyle = hsl([28, 90, 60], 0.25 + 0.15 * Math.sin(t * 0.004));
-        g.beginPath(); g.arc(x, base - h * 0.2, w * 0.12, 0, 7); g.fill();
-      } else if (id === 'bosque') {
-        var k = Math.max(2, Math.min(9, 2 + Math.floor(nivel / 2)));
-        g.strokeStyle = hsl([130, 55, 48], 0.9); g.lineWidth = 2.4 * dpr;
-        for (var j = 0; j < k; j++) {
-          var kx = x + (j - (k - 1) / 2) * w * 0.11, kh = H * (0.12 + E.hash(j, 4, 3) * 0.12);
-          g.beginPath(); g.moveTo(kx, base);
-          for (var s = 1; s <= 10; s++) { g.lineTo(kx + Math.sin(s * 0.9 + t * 0.0015 + j) * 5 * dpr * s / 10, base - kh * s / 10); }
-          g.stroke();
-        }
-      } else if (id === 'arena') {
-        g.beginPath(); g.ellipse(x, base, w / 2, H * 0.04, 0, 0, 2 * Math.PI); g.fill(); g.stroke();
-        g.beginPath(); g.ellipse(x, base, w * 0.32, H * 0.024, 0, 0, 2 * Math.PI); g.stroke();
-      }
-      g.restore();
-      if (!e || !e.medido) { enNiebla(x - w / 2, base - H * 0.3, w, H * 0.3); }
-    }
-    /* La gran cupula del Nucleo: su tamano sale del nivel; su vidrio se raja si la grieta esta abierta. */
-    function cupula(W, H, s, casa, t, P) {
-      var x = W * 0.5, base = SUELO * H, rx = Math.min(W * (0.165 + Math.min(0.05, (s.nucleo || 1) * 0.005)), H * 0.26), ry = Math.min(H * 0.36, rx * 1.55);
-      g.save(); g.lineWidth = 2 * dpr;
-      var gr = g.createLinearGradient(0, base - ry, 0, base);
-      gr.addColorStop(0, hsl(P.vidrio, 0.18)); gr.addColorStop(1, hsl(P.vidrio, 0.04));
-      g.fillStyle = gr; g.strokeStyle = hsl(P.vidrio, 0.8);
-      g.beginPath(); g.ellipse(x, base, rx, ry, 0, Math.PI, 2 * Math.PI); g.fill(); g.stroke();
-      g.strokeStyle = hsl(P.vidrio, 0.25); g.lineWidth = dpr;
-      for (var i = 1; i < 6; i++) { g.beginPath(); g.ellipse(x, base, rx * i / 6, ry, 0, Math.PI, 2 * Math.PI); g.stroke(); }
-      if (s.grieta) {
-        g.strokeStyle = 'rgba(255,120,90,.9)'; g.lineWidth = 1.6 * dpr; g.beginPath();
-        var cx = x + rx * 0.45, cy = base - ry * 0.55; g.moveTo(cx, cy);
-        for (var k = 1; k <= 6; k++) { g.lineTo(cx + (E.hash(k, 9, 1) - 0.5) * rx * 0.3, cy + k * ry * 0.06); }
-        g.stroke();
-      }
-      g.restore();
-      var em = casa.emblema;
-      if (em) { O.dibuja(g, em, x, base - ry * 0.5, Math.min(rx, ry) * 0.62, { t: t, giro: t * 0.00025, color: P.acento, grosor: 2.2 * dpr, estela: 4, brillo: 1, calidad: calidad }); }
+    /* El caparazon ES el Nucleo: tu emblema (tu onda, de tus armonicos) va dentro, y la grieta lo raja. */
+    function caparazon(an, s, casa, t, P) {
+      var x = an.caparazon[0], y = an.caparazon[1], rr = an.radio, em = casa.emblema;
+      if (em) { O.dibuja(g, em, x, y, rr * 0.26, { t: t, giro: t * 0.00025, color: P.acento, grosor: 1.8 * dpr, estela: 3, brillo: 1, calidad: calidad }); }
+      if (!s.grieta) { return; }
+      g.save(); g.strokeStyle = 'rgba(255,120,90,.9)'; g.lineWidth = 1.6 * dpr; g.beginPath(); g.moveTo(x + rr * 0.3, y - rr * 0.25);
+      for (var k = 1; k <= 6; k++) { g.lineTo(x + rr * 0.3 + (E.hash(k, 9, 1) - 0.5) * rr * 0.2, y - rr * 0.25 + k * rr * 0.07); }
+      g.stroke(); g.restore();
     }
     function pinta(ts) {
       if (!vivo) { return; }
@@ -177,21 +98,22 @@
       g.drawImage(capas.lejos, -off, 0, W * 2, H); g.drawImage(capas.lejos, W * 2 - off, 0, W * 2, H);
       if (calidad > 0) { rayos(W, H, t, P); }
       g.drawImage(capas.lecho, 0, 0, W, H);
-      cupula(W, H, s, casa, t, P);
-      var ed = f.edificios();
-      Object.keys(PARCELAS).forEach(function (id) { edificio(id, W, H, ed[id], casa, t, P); });
-      /* EL CANGREJO anda por el lecho: posicion del ciclo de juego; el reloj solo rellena ENTRE ciclos. */
-      var CJ = raiz.AtlasCangrejo, cj = CJ && f.cangrejo ? f.cangrejo() : null;
+      /* EL CANGREJO, grande y al centro: el mismo paseo del ciclo de juego (J1), proyectado a la franja
+         central; el reloj solo rellena ENTRE ciclos. Devuelve las anclas de sus partes. */
+      var CJ = raiz.AtlasCangrejo, cj = CJ && f.cangrejo ? f.cangrejo() : null, an = null;
       if (cj) {
         if (cj.ciclo !== cic) { cic = cj.ciclo; t0 = ts; }
-        var pc = CJ.paseo(cj.semilla, cj.ciclo, q ? 0 : (ts - t0) / 1000);
-        CJ.pinta(g, pc.x * W, SUELO * H + 0.045 * H, 28 * dpr, { forma: CJ.forma(cj.army, cj.nodo, cj.latido), t: t, dir: pc.dir, dpr: dpr, quieto: q });
+        var pc = CJ.paseo(cj.semilla, cj.ciclo, q ? 0 : (ts - t0) / 1000), r = Math.min(W * 0.16, H * 0.2);
+        an = CJ.pinta(g, (0.5 + (pc.x - 0.5) * FRANJA) * W, SUELO * H + 0.02 * H, r,
+                      { forma: CJ.forma(cj.army, cj.nodo, cj.latido), cuerpo: cj.cuerpo, estilo: casa.estilo, t: t, dir: pc.dir, dpr: dpr, quieto: q });
+        if (an) { caparazon(an, s, casa, t, P); }
       }
       if (!q) { burbujas(W, H, t, calidad >= 2 ? 26 : calidad ? 14 : 6); }
+      if (f.anclas) { f.anclas(an, W, H); }
     }
     raf = raiz.requestAnimationFrame(pinta);
     return { para: function () { vivo = false; raiz.cancelAnimationFrame(raf); }, fps: function () { return med.fps(); }, calidad: function () { return calidad; } };
   }
 
-  raiz.AtlasCasaEscena = { crea: crea, PARCELAS: PARCELAS, PALETAS: PALETAS, SUELO: SUELO };
+  raiz.AtlasCasaEscena = { crea: crea, PALETAS: PALETAS, SUELO: SUELO, FRANJA: FRANJA };
 })(this);
