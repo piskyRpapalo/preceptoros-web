@@ -1,6 +1,12 @@
 # PARA_LA_MESA · Ronda «el mapa único y la terminal» · 2026-10-11 · Claude (Opus 5.5)
 Contrato FIRMADO + addendum visual v2 (Ruswick + Zanzlanz + PS1). Rama `claude/mapa-unico` sobre `main` `b63ddec`. **Sin push**: cada pieza espera tu FIRMO. Lo de las rondas anteriores sigue debajo.
 
+## RONDA «los 4 hallazgos + push a tope» · 2026-10-12 · MEDIDO
+- **LIVE `abeu`** (PR #32, 23:08:49Z), verificado en el Doogee con toques reales: invocar, Faro, Fight («Victory in 2 rounds»), cerrar batalla a la primera, **0 errores**.
+- Cámara que **planea** (F357), con su caso y su guarda · la revelación **espera** a la batalla · **juez**: queda lo puro (lo usa la Aduana), fuera la mitad que solo despertaba con Suggest · **`atlas-dialogo.js` 16.186 → 3.637 B** (queda el retrato del Navegante) · narrador sellado **SIMULATED** · la puerta: **gzip 81.372 → 75.908 B**.
+- Rack: `lab.py` commiteado en la app (`fa5aa64`; sus 3 rojos de `test_pwa.py` son ajenos, medido con y sin el cambio) · propuesta de MCPs y del duplicado en `~/p0x/propuestas/2026-10-12_mcp-canon-y-duplicado.md` (canon = constructor, 6/8 MEDIDO con su venv; **0/8 con stdlib**: choca con «stdlib en MCPs») · **v10 preparada** (entrada 22) para tu firma.
+- **6b, AMBIGUA:** «ya puede pagar honesto por M.dormir» choca con la ficha V3.0 firmada. No se construye hasta que digas si 6b acota o retira.
+
 ## CIERRE DEL MANDATO «juego completo, testeado en el Doogee» · 2026-10-11/12 · MEDIDO / EN_CURSO
 **Publicado** (cada uno con PR, CI verde, merge y versión viva medida con curl): #28 G0 + limpieza (`abeq`) · #29 arreglos del Doogee (`aber`) · #30 la batalla con tropas propias (`abes`) · y el gacha honesto, ver el pie.
 

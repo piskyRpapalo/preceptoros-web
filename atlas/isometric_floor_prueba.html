@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Isometric floor · step 1 (lab, not published)</title>
+<style>html,body{margin:0;height:100%;background:#050812;overflow:hidden}canvas{display:block;width:100%;height:100%;image-rendering:pixelated;touch-action:none}</style>
+</head><body>
+<canvas id="c" role="img" aria-label="Step 1 of the isometric floor: diamond cells, one crab anchored to the centre of its cell, a tree behind it and a tree in front"></canvas>
+<script src="../public/game/canon.js"></script>
+<script src="../public/game/valores.js"></script>
+<script src="../public/game/gacha.js"></script>
+<script src="../public/game/gdpr-art25-ephemeral-crab.js"></script>
+<script src="../public/game/world_camera.js"></script>
+<script src="../public/game/isometric_floor_projection.js"></script>
+<script>
+/* PASO 1 · prueba de concepto de la LEY DEL SUELO (lab, no se publica). Rombos 2:1, el cangrejo anclado al CENTRO de su
+   rombo, un arbol detras y otro delante (orden de pintor por col+fila), camara que se arrastra y PLANEA (la misma fisica
+   de world_camera.js). Mundo pintado a 1/4 en un lienzo aparte y escalado sin suavizar: chunky, cero assets. */
+(function () {
+  var I = window.IsometricFloor, C = window.AtlasCamara, CJ = window.AtlasCangrejo;
+  var c = document.getElementById('c'), g = c.getContext('2d'), off = document.createElement('canvas'), o = off.getContext('2d');
+  var ESC = 4, W = 32, cam = C.crea(window.IsometricFloor.proyecta(3, 3, 32)), todo = [{ x: 0, y: 0, r: 1e6 }], arr = null, t0 = 0;
+  /* Arbol (addendum v2): palo + circulo oscuro + circulo claro. Crece hacia arriba desde el centro de su rombo. */
+  function arbol(p, alto) {
+    o.fillStyle = 'hsl(30 35% 28%)'; o.fillRect(Math.round(p.x) - 1, Math.round(p.y - alto), 2, alto);
+    o.fillStyle = 'hsl(150 45% 22%)'; o.beginPath(); o.arc(p.x, p.y - alto, alto * 0.45, 0, 7); o.fill();
+    o.fillStyle = 'hsl(150 55% 38%)'; o.beginPath(); o.arc(p.x - alto * 0.12, p.y - alto * 1.1, alto * 0.28, 0, 7); o.fill();
+  }
+  function rombo(col, fila, tono) {
+    var v = I.vertices(col, fila, W);
+    o.beginPath(); v.forEach(function (q, i) { o[i ? 'lineTo' : 'moveTo'](q[0], q[1]); }); o.closePath();
+    o.fillStyle = tono; o.fill(); o.strokeStyle = 'rgba(46,230,200,0.25)'; o.lineWidth = 1; o.stroke();
+  }
+  var mundo = [{ t: 'arbol', col: 1, fila: 2, alto: 14 }, { t: 'cangrejo', col: 3, fila: 3, capa: 1 }, { t: 'arbol', col: 4, fila: 3, alto: 18 }];
+  function pinta(ts) {
+    var w = Math.ceil(c.clientWidth / ESC), h = Math.ceil(c.clientHeight / ESC);
+    if (off.width !== w || off.height !== h) { off.width = w; off.height = h; c.width = c.clientWidth; c.height = c.clientHeight; }
+    if (!arr) { C.paso(cam, 1, todo); }
+    o.setTransform(1, 0, 0, 1, 0, 0); o.fillStyle = '#050812'; o.fillRect(0, 0, w, h);
+    o.setTransform(1, 0, 0, 1, Math.round(w / 2 - cam.x), Math.round(h / 2 - cam.y));   /* camara en unidades del lienzo 1/4 */
+    /* EL SUELO: rombos de atras a delante (en el suelo el orden no tapa nada, pero es el mismo eje). */
+    for (var s = 0; s <= 12; s++) for (var col = 0; col <= s; col++) {
+      var fila = s - col; if (fila > 6 || col > 6) { continue; }
+      rombo(col, fila, (col + fila) % 2 ? 'hsl(200 45% 14%)' : 'hsl(200 45% 17%)');
+    }
+    /* LO DE ENCIMA, en ORDEN DE PINTOR: lo de delante tapa lo de atras. */
+    I.ordena(mundo).forEach(function (m) {
+      var p = I.ancla(m.col, m.fila, 1, W);
+      if (m.t === 'arbol') { arbol(p, m.alto); return; }
+      o.fillStyle = 'rgba(255,255,255,0.9)'; o.fillRect(Math.round(p.x) - 1, Math.round(p.y) - 1, 2, 2); /* el CENTRO del rombo */
+      CJ.pinta(o, p.x, p.y, 11, { forma: CJ.forma(0, false, null), cuerpo: CJ.cuerpo({ nucleo: 3, army: 2, bosque: 2, faro: 1 }), estilo: 'cupula', t: ts, dir: 1, dpr: 1, quieto: false });
+    });
+    g.imageSmoothingEnabled = false; g.clearRect(0, 0, c.width, c.height); g.drawImage(off, 0, 0, w * ESC, h * ESC);
+    requestAnimationFrame(pinta);
+  }
+  c.addEventListener('pointerdown', function (e) { arr = { x: e.clientX, y: e.clientY }; c.setPointerCapture(e.pointerId); });
+  c.addEventListener('pointermove', function (e) { if (!arr) { return; } C.arrastra(cam, (e.clientX - arr.x) / ESC, (e.clientY - arr.y) / ESC, todo, false); arr = { x: e.clientX, y: e.clientY }; });
+  c.addEventListener('pointerup', function () { arr = null; });
+  window.__iso = { cam: cam, planea: function (col, fila) { var p = I.proyecta(col, fila, W); C.planea(cam, p.x, p.y, todo, false); } };
+  requestAnimationFrame(pinta);
+})();
+</script>
+</body></html>
