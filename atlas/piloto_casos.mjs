@@ -66,7 +66,7 @@ caso('piloto: valida rechaza lo que no es del enum', () =>
 // R2c (plan «el refresco»): las flechas del mapa son `mover <dir>`, del MISMO enum. Forma cerrada, y la regla base
 // nunca la propone (moverse no cambia la partida, asi que el arnes del LoRA no cambia).
 caso('piloto: mover tiene forma cerrada (dir del enum; ni banda ni dir donde no tocan)', () =>
-  P.ACCIONES.includes('mover') && P.DIRS.length === 5 &&
+  P.ACCIONES.includes('mover') && P.DIRS.length === 6 && P.DIRS.includes('faro') &&
   P.valida({ esquema: 'atlas.accion/1', accion: 'mover', dir: 'izq', origen: 'lora' }) &&
   !P.valida({ esquema: 'atlas.accion/1', accion: 'mover', origen: 'lora' }) &&
   !P.valida({ esquema: 'atlas.accion/1', accion: 'mover', dir: 'arriba-del-todo', origen: 'lora' }) &&

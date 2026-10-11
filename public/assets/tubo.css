@@ -17,15 +17,18 @@
   --tubo-sombra:rgba(0,0,0,.42); --tubo-borde:color-mix(in srgb,var(--bio-teal) 32%,transparent);
   --tubo-tapa:color-mix(in srgb,var(--bio-teal) 26%,transparent); --tubo-fosforo:var(--bio-teal);
 }
-#thegame :is(.thegame-pliego,.casa-interior,.entrada-cangrejo,.atlas-arena-lugar-ficha,.eco),
+#thegame :is(.thegame-terminal,.thegame-hoja,.thegame-pliego,.casa-interior,.entrada-cangrejo,.atlas-arena-lugar-ficha,.eco),
 .revela-pie,.casa-pers{
-  position:relative;isolation:isolate;
+  isolation:isolate;
   background:
     linear-gradient(180deg,var(--tubo-sombra) 0,transparent 13%,var(--tubo-brillo) 21%,transparent 33%,transparent 72%,var(--tubo-sombra) 100%),
     linear-gradient(90deg,var(--tubo-cristal),transparent 9%,transparent 91%,var(--tubo-cristal)),
     var(--bg-secondary);
   border:1px solid var(--tubo-borde);border-radius:var(--radius);
   box-shadow:inset 0 1px 0 rgba(255,255,255,.12),inset 0 -3px 8px rgba(0,0,0,.5),0 0 0 1px rgba(0,0,0,.35),0 10px 26px rgba(0,0,0,.32)}
+/* El tubo no decide donde vive: los que van en el flujo son `relative` (para sus tapas); la terminal y las hojas,
+   `fixed` (thegame.css), que tambien sostiene las tapas. */
+#thegame :is(.thegame-pliego,.casa-interior,.entrada-cangrejo,.atlas-arena-lugar-ficha,.eco),.revela-pie{position:relative}
 /* Las tapas: dos elipses en los extremos, por detras del contenido (no tapan ni un clic). */
 #thegame :is(.thegame-pliego,.casa-interior,.entrada-cangrejo,.atlas-arena-lugar-ficha)::before,
 #thegame :is(.thegame-pliego,.casa-interior,.entrada-cangrejo,.atlas-arena-lugar-ficha)::after,
@@ -34,8 +37,14 @@
   background:radial-gradient(closest-side,var(--tubo-tapa),transparent)}
 #thegame :is(.thegame-pliego,.casa-interior,.entrada-cangrejo,.atlas-arena-lugar-ficha)::before,.revela-pie::before{inset-inline-start:-.4rem}
 #thegame :is(.thegame-pliego,.casa-interior,.entrada-cangrejo,.atlas-arena-lugar-ficha)::after,.revela-pie::after{inset-inline-end:-.4rem}
-/* Lo que lleva su propia caja dentro de un tubo no la duplica. */
+/* Lo que lleva su propia caja dentro de un tubo no la duplica: dentro de la terminal y de las hojas, los pliegos
+   y fichas son filas del MISMO tubo (fondo y sombra fuera), no tubos dentro de tubos. */
 #thegame .thegame-pliego :is(.entrada-cangrejo,.atlas-arena-lugar-ficha){box-shadow:none}
+#thegame :is(.thegame-terminal,.thegame-hoja) :is(.thegame-pliego,.entrada-cangrejo,.atlas-arena-lugar-ficha,.eco){background:transparent;box-shadow:none}
+#thegame :is(.thegame-terminal,.thegame-hoja) :is(.thegame-pliego,.entrada-cangrejo,.atlas-arena-lugar-ficha,.eco)::before,
+#thegame :is(.thegame-terminal,.thegame-hoja) :is(.thegame-pliego,.entrada-cangrejo,.atlas-arena-lugar-ficha,.eco)::after{display:none}
+/* EL FOCO: anillo coral, dibujado con la paleta (nunca el azul del navegador), solo en lo interactivo. */
+#thegame :is(button,a,summary,select,input,textarea,canvas[tabindex]):focus-visible{outline:2px solid var(--bio-coral);outline-offset:2px;box-shadow:none}
 /* EL FOSFORO solo en lo que el motor escribe ahora (el terminal J7): */
 #thegame :is(.terminal-vars,.terminal-log){color:var(--tubo-fosforo);background:rgba(2,12,14,.85);text-shadow:0 0 .35em color-mix(in srgb,var(--bio-teal) 55%,transparent)} /* halo de fosforo: cifras vivas del motor */
 #thegame .thegame-pliego > summary{letter-spacing:.06em}

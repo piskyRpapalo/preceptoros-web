@@ -23,7 +23,7 @@
   var Pi = (typeof module === 'object' && module.exports) ? null : raiz.AtlasPiloto;
   var ACCIONES = ['esperar', 'recoger', 'reparar', 'aplazar', 'bajar_a', 'mover'];
   var BANDAS = ['arrecife', 'ruinas', 'bosque', 'nucleo'];
-  var DIRS = ['izq', 'arr', 'aba', 'der', 'casa'];
+  var DIRS = ['izq', 'arr', 'aba', 'der', 'casa', 'faro'];
 
   /* `extra` es la banda de `bajar_a` o la direccion de `mover` (la flecha del mapa, R2c). */
   function accion(nombre, extra) {

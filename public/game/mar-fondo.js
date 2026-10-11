@@ -1,19 +1,10 @@
-/* preceptoros.org · theGame · EL MAR DE FONDO (J6, plan de ronda «el refresco», 2026-10-11).
+/* preceptoros.org · theGame · EL PINTOR DEL MAR: las teselas del lecho y de la niebla (J6, sacado de `mar.js`).
 
-   «J6 PRIMERO: el mar de fondo en la portada» (Soberano). Antes de que pulses nada, la portada ya es el
-   mar: el mismo lecho y la misma niebla que el mapa global, quietos en tu casa (o en Hexelion), detras
-   de todo. SENSACION (el mar como placer de los sentidos) y DESCUBRIMIENTO (la niebla es lo que aun no
-   se ha medido: se ve desde el primer segundo).
-
-   UNA SOLA FUENTE DE TESELAS. Esto NO es un gemelo de `mar.js`: es su pintor de teselas, sacado de el
-   (T0-D, sin torres paralelas). El mapa y el fondo piden aqui el mismo terreno y la misma niebla.
-
-   LA RESPIRACION, ARREGLADA. La deriva M4 se horneaba DENTRO de cada tesela con el instante en que se
-   generaba: dos teselas hechas en momentos distintos quedaban desplazadas (costuras) y nada respiraba.
-   Ahora la deriva es UN desplazamiento global del terreno por cuadro: las teselas no cambian, el mar si.
-
-   Puro de azar y de red: ruido entero (escena.js), niebla de lo MEDIDO (fog_of_war.js). El reloj de la
-   pantalla solo mueve la deriva (proyeccion, no decision). Movimiento reducido: un cuadro quieto. */
+   Desde U1 («el mapa unico», 2026-10-11) el fondo de la portada ES el mapa global, interactivo y siempre detras:
+   el lienzo de fondo propio de J6 (`monta`, `portada`) se RETIRA y queda lo que lo hacia posible, el pintor UNICO
+   de teselas que pide el mapa (T0-D: sin gemelos). La deriva es UN desplazamiento global por cuadro (las teselas
+   no cambian, el mar si: la respiracion que M4 horneaba mal). Ruido entero (escena.js), niebla de lo MEDIDO
+   (fog_of_war.js); el reloj de pantalla solo mueve la deriva. */
 (function (raiz) {
   'use strict';
 
@@ -22,7 +13,6 @@
   var TIERRA = [[4, 7, 18], [7, 15, 34], [9, 28, 54], [11, 46, 74], [14, 74, 94], [26, 132, 134], [70, 214, 196]];
   var NIEBLA = [null, [64, 72, 96]], TESELA = 240, RES = 4;
 
-  function quieto() { return raiz.matchMedia && raiz.matchMedia('(prefers-reduced-motion: reduce)').matches; }
 
   /* La deriva del mar en el instante t (ms de pantalla): dos senos lentos, en unidades de mundo. */
   function deriva(t) { return [Math.sin(t * 0.00011) * 10, Math.cos(t * 0.00009) * 10]; }
@@ -74,49 +64,7 @@
     };
   }
 
-  /* EL FONDO DE LA PORTADA. `f`: { pub() -> clave publica o null }. Pinta a 1x (es fondo: el pixel gordo
-     es el estilo y ahorra GPU), a ~20 cuadros por segundo, y se para si la pestana no se ve. */
-  function monta(lienzo, f) {
-    var K = raiz.AtlasCanon, N = raiz.AtlasNiebla, C = raiz.AtlasCamara, Ce = raiz.AtlasNodosCedulas;
-    var P = pintor(), raf = 0, ultimo = -1e9, cam = null, centro = null, hecho = false;
-    function enfoca() {
-      var pub = f && f.pub ? f.pub() : null, casa = N.sitioCasa(pub, K.sha);
-      P.despejado(N.despejado({ pub: pub, sha: K.sha, nodos: Ce ? Ce.nodos : [], lugares: [] }));
-      centro = casa || N.HEX;
-      cam = C.crea(centro);
-    }
-    function cuadro(ts) {
-      raf = raiz.requestAnimationFrame(cuadro);
-      var q = quieto();
-      if (raiz.document.hidden || (q && hecho) || ts - ultimo < 48) { return; }
-      ultimo = ts;
-      var w = lienzo.clientWidth || raiz.innerWidth, h = lienzo.clientHeight || raiz.innerHeight;
-      if (lienzo.width !== w || lienzo.height !== h) { lienzo.width = w; lienzo.height = h; hecho = false; }
-      var g = lienzo.getContext('2d'), z = w / 820 * (w < 600 ? 1.15 : 1);
-      if (!cam || (centro === N.HEX && f && f.pub && f.pub())) { enfoca(); }
-      g.imageSmoothingEnabled = false;
-      g.fillStyle = 'rgb(5,8,18)'; g.fillRect(0, 0, w, h);
-      P.tierra(g, cam, w, h, z, q ? null : deriva(ts));
-      P.niebla(g, cam, w, h, z);
-      hecho = true;
-    }
-    raiz.addEventListener('resize', function () { hecho = false; });
-    raf = raiz.requestAnimationFrame(cuadro);
-    return { para: function () { raiz.cancelAnimationFrame(raf); }, camara: function () { return cam; } };
-  }
-
-  /* En la portada (`#juego-panel`), una vez: el lienzo va el PRIMERO del body, detras de todo; es
-     decorado (aria-hidden, sin puntero). La camara va a tu casa en cuanto se sabe tu clave. */
-  function portada() {
-    var d = raiz.document, I = raiz.Identity, pub = null;
-    if (!d.getElementById('juego-panel') || d.querySelector('.mar-fondo')) { return null; }
-    var c = d.createElement('canvas'); c.className = 'mar-fondo'; c.setAttribute('aria-hidden', 'true');
-    d.body.insertBefore(c, d.body.firstChild);
-    if (I && I.quien && I.quien()) { I.publica().then(function (k) { pub = k; }, function () {}); }
-    return monta(c, { pub: function () { return pub; } });
-  }
-
-  var AtlasMarFondo = { TESELA: TESELA, RES: RES, deriva: deriva, pintor: pintor, monta: monta, portada: portada };
+  var AtlasMarFondo = { TESELA: TESELA, RES: RES, deriva: deriva, pintor: pintor };
   if (typeof module === 'object' && module.exports) { module.exports = AtlasMarFondo; }
   else { raiz.AtlasMarFondo = AtlasMarFondo; }
 })(this);

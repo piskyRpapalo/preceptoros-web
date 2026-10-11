@@ -12,44 +12,11 @@
 
   var K = window.AtlasCanon, A = window.AtlasArena, E = window.AtlasEscena, G = window.AtlasGacha, V = window.AtlasValores;
   var CQ = null, R = {}, lugares = [], jugadores = [], sel = null, pub = null, emblema = null, record = {}, intentos = {};
-  var escuadraSel = null, actual = null, mar = null, TX = null, dpr = window.devicePixelRatio || 1;
+  var escuadraSel = null, actual = null, mar = null;
 
-  /* Los textos de la Arena viven en `atlas-arena-<lengua>.json` (a demanda); los comunes, en el juego. */
-  function T(k) { return (TX && TX[k]) || (window.AtlasJuego && window.AtlasJuego.texto(k)) || ''; }
-  function textos() {
-    var l = (window.AtlasLengua && window.AtlasLengua.actual) || 'en';
-    return fetch('/atlas-arena-' + l + '.json').then(function (r) {
-      if (!r.ok) { throw new Error('atlas-arena-' + l + '.json ' + r.status); }
-      return r.json();
-    }).then(function (d) { TX = d.ui; });
-  }
-  function el(tag, clase, texto) {
-    var x = document.createElement(tag);
-    if (clase) { x.className = clase; }
-    if (texto != null) { x.textContent = String(texto); }
-    return x;
-  }
-  function boton(texto, clase) { var b = el('button', clase || 'boton', texto); b.type = 'button'; return b; }
-  function rellena(p, v) { return String(p).replace(/\{(\w+)\}/g, function (m, k) { return k in v ? v[k] : m; }); }
-  function quieto() { return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches; }
-  function css(v, x) { return getComputedStyle(document.documentElement).getPropertyValue(v).trim() || x; }
-  function colores() {
-    return { dano: css('--accent-copper-claro', '#e0a060'), fallo: css('--text-muted', '#9aa'), tuya: css('--bio-ambar', '#ffb547'),
-             suya: css('--bio-violeta', '#b07cff'), texto: css('--text-main', '#ddd'), mar: 'rgba(120,170,220,.09)' };
-  }
-  function nombre(t) {
-    if (t.rareza === 'unico') { return T('unico_nombre'); }
-    return rellena(T('nombre_tropa'), { base: T('base_' + t.base), pre: t.prefijo ? T('af_' + t.prefijo) : '',
-                                        suf: t.sufijo ? T('af_' + t.sufijo) : '' }).replace(/\s+/g, ' ').trim();
-  }
-  function miniLienzo(t, lado) {
-    var c = el('canvas', 'atlas-arena-mini');
-    c.width = c.height = Math.round(lado * dpr); c.style.width = c.style.height = lado + 'px';
-    c.setAttribute('role', 'img'); c.setAttribute('aria-label', nombre(t) + ' · ' + T('rar_' + t.rareza));
-    requestAnimationFrame(function () { E.mini(c, t); });
-    return c;
-  }
-  function nombreLugar(l) { return l.npc ? T('npc_' + l.id) : l.pseudo; }
+  /* Textos, nombres, miniaturas y colores: lo comun de la Arena, en `ui-arena-comun.js` (U0). */
+  var AC = window.AtlasArenaComun, T = AC.T, textos = AC.textos, el = AC.el, boton = AC.boton, rellena = AC.rellena, quieto = AC.quieto;
+  var colores = AC.colores, nombre = AC.nombre, miniLienzo = AC.miniLienzo, nombreLugar = AC.nombreLugar;
 
   /* --- la escuadra */
   function propias() {
@@ -115,11 +82,11 @@
       var rc = record[sel.clave];
       if (rc) { fila.appendChild(el('span', 'atlas-nota', rellena(T('arena_record'), { g: rc.g, p: rc.p }) + (rc.g ? ' ' + T('arena_conquistado') : ''))); }
       z.appendChild(fila);
+      /* U1: UN solo «Fight» (antes estaba tambien en la ficha del rival): en la ficha del lugar; abre la hoja. */
+      if (i) { return; }
       var b = boton('\u2694\uFE0E ' + (sel.npc ? T('arena_luchar') : T('duelo_reta')), 'boton atlas-gran');
-      b.addEventListener('click', function () {
-        if (!i && window.TheGame && window.TheGame.ve) { window.TheGame.ve('arena'); }
-        pelea();
-      });
+      b.id = 'arena-lucha';
+      b.addEventListener('click', function () { if (window.TheGame && window.TheGame.ve) { window.TheGame.ve('batalla'); } pelea(); });
       z.appendChild(b);
     });
   }
@@ -150,6 +117,7 @@
   /* Reproduce un combate ya resuelto. `info.yo`: el lado de quien mira (1 asalta, 0 defiende). */
   function juega(def, asa, c, info) {
     if (actual) { actual.para(); }
+    if (window.TheGame && window.TheGame.ve) { window.TheGame.ve('batalla'); }  /* U1: toda batalla, en su hoja */
     R.escena.hidden = false; R.res.textContent = ''; R.resNota.textContent = ''; R.tec.hidden = true;
     R.titulo.textContent = info.titulo || ''; R.titulo.hidden = !info.titulo || info.pve;
     var vel = 1;

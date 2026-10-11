@@ -1,33 +1,32 @@
-/* preceptoros.org · theGame · TU CASA ES TU CANGREJO: sus partes son botones, con su estado MEDIDO.
+/* preceptoros.org · theGame · TU CASA ES TU CANGREJO, y su estado vive en la TERMINAL (U1, «el mapa unico»).
 
-   LA CASA ES LA PRIMERA PANTALLA (Soberano, 2026-10-05). Desde R2 (plan «el refresco», 2026-10-11) la
-   rejilla de edificios DESAPARECE: los edificios son el CUERPO del cangrejo, que crece con el tiempo de
-   partida y las unidades (y baja si bajan). Caparazon = Nucleo y pinzas = Army (abren el TALLER, con tus
-   ondas y sus stats), patas = Bosque (abre la expedicion aqui mismo) y ojos = Faro (abren el MAPA). Cada
-   parte es un BOTON del DOM puesto en el ancla que devuelve su dibujo (`home_base_scene.js`): nombre, foco
-   de teclado y lector de pantalla. Su cifra sale del ESTADO del juego (`AtlasJuego.instantanea`, el Army
-   de la incubadora, las cedulas medidas); lo no medido dice NO_DATA y esa parte se dibuja en niebla.
+   Desde U1 la pantalla es el MAPA GLOBAL y HOME deja de ser un lugar: la escena lateral de la casa (2026-10-05) y
+   las partes flotando sobre el cuerpo se RETIRAN. Aqui se monta el pliego «Estado» de la terminal: la fila de
+   identidad (tu nombre y tu bandera, y «Customize»), el RIEL de las partes (`casa-lateral.js`), la tira de estado
+   del juego y, dentro de las patas, la expedicion del Bosque (MUDADA con sus referencias vivas: no se rehace la
+   logica, se le da sitio). Las partes y su cifra: `casa-medidas.js` (la lista UNA).
 
-   DENTRO de las patas va la expedicion del Bosque, MOVIDA con sus referencias vivas: no se rehace la
-   logica, se le da sitio.
-
-   PERSONALIZAR (paleta, estilo del caparazon, variante del emblema; y la POSTURA de la casa:
-   alianzas, comercio y lema) se guarda en ESTE aparato (IndexedDB `atlas-casa`) y, si se comparte,
-   viaja FIRMADO. Sin datos personales: el lema rechaza lo que parezca correo, URL, ruta, IP o
-   telefono. Y NO DA VENTAJA: nada de esto entra en `arena.combate` (`atlas/casa_casos.mjs`). */
+   PERSONALIZAR (estilo del caparazon, variante del emblema, POSTURA de la casa, BANDERA y lema) se guarda en ESTE
+   aparato (IndexedDB `atlas-casa`) y, si se comparte, viaja FIRMADO. Sin datos personales: el lema rechaza lo que
+   parezca correo, URL, ruta, IP o telefono. Y NO DA VENTAJA: nada de esto entra en `arena.combate`. */
 (function (raiz) {
   'use strict';
 
   var ESQUEMA = 'atlas.casa/1';
-  var OPCIONES = { paleta: ['abismo', 'coral', 'kelp', 'perla'], estilo: ['cupula', 'aguja', 'concha'], emblema: [0, 1, 2],
+  /* U1: la PALETA del agua de la escena lateral se retira con ella (seria un boton muerto). */
+  var OPCIONES = { estilo: ['cupula', 'aguja', 'concha'], emblema: [0, 1, 2],
                    alianzas: ['abiertas', 'cerradas'], comercio: [true, false],
                    formacion: ['agresiva', 'defensiva', 'flanqueo'],
                    /* P10: la bandera, de la paleta cerrada de `valores.banderas` (null = sin bandera). */
                    bandera: [null, 'teal', 'ambar', 'hielo', 'violeta', 'coral', 'kelp', 'oro', 'rosa'] };
   var PROHIBIDO = /(^|[^0-9])\/[a-z]|@|https?:|www\.|\b\d{1,3}(\.\d{1,3}){3}\b|\d{6,}/i;
-  function base() { return { esquema: ESQUEMA, paleta: 'abismo', estilo: 'cupula', emblema: 0, alianzas: 'abiertas', comercio: true, formacion: 'agresiva', lema: '', bandera: null }; }
-  /* Una casa guardada antes de P10 no tiene bandera: entra con null (sin bandera), no se pierde. */
-  function migra(c) { if (c && typeof c === 'object' && !('bandera' in c)) { c.bandera = null; } return c; }
+  function base() { return { esquema: ESQUEMA, estilo: 'cupula', emblema: 0, alianzas: 'abiertas', comercio: true, formacion: 'agresiva', lema: '', bandera: null }; }
+  /* Una casa guardada antes de P10 no tiene bandera: entra con null (sin bandera); la de antes de U1 suelta su
+     paleta (ya no hay agua que pintar). No se pierde. */
+  function migra(c) {
+    if (c && typeof c === 'object') { if (!('bandera' in c)) { c.bandera = null; } delete c.paleta; }
+    return c;
+  }
   /* La forma de una casa: '' si vale, o la causa. Pura: la usan la web y los casos de node. */
   function forma(c) {
     if (!c || typeof c !== 'object' || c.esquema !== ESQUEMA) { return 'esquema'; }
@@ -40,15 +39,13 @@
   }
   if (typeof module === 'object' && module.exports) { module.exports = { forma: forma, base: base, migra: migra, OPCIONES: OPCIONES, ESQUEMA: ESQUEMA }; return; }
 
-  var K = raiz.AtlasCanon, G = raiz.AtlasGacha, S = raiz.AtlasCasaEscena, TX = null, R = {}, casa = base(), pub = null, escena = null;
-  /* Las partes: [id, icono, a donde lleva, la cifra de `medidas()` que la explica]. */
-  var PARTES = [['caparazon', '\u25C9', 'taller', 'nucleo'], ['pinzas', '\u2726', 'taller', 'army'], ['patas', '\u2E19', '', 'bosque'], ['ojos', '\u25C8', 'mapa', 'faro']];
-  var DENTRO = { patas: '.atlas-dormias|.atlas-lema|.atlas-mapa|.atlas-izq' };
+  var TX = null, R = {}, casa = base(), pub = null;
+  /* Las partes y sus puertas: UNA lista, en `casa-medidas.js` (U0). */
+  var CM = raiz.AtlasCasaMedidas, PARTES = CM.PARTES, DENTRO = CM.DENTRO;
 
   function T(k) { return (TX && TX[k]) || k; }
   function el(tag, clase, texto) { var n = document.createElement(tag); if (clase) { n.className = clase; } if (texto != null) { n.textContent = String(texto); } return n; }
   function boton(texto, clase) { var b = el('button', clase, texto); b.type = 'button'; return b; }
-  function rellena(p, v) { return String(p).replace(/\{(\w+)\}/g, function (m, k) { return k in v ? v[k] : m; }); }
 
   /* --- guardar en este aparato ------------------------------------------------------------------ */
   function db() {
@@ -68,11 +65,6 @@
     db().then(function (d) { d.transaction('casa', 'readwrite').objectStore('casa').put(casa, 'mia'); }).catch(function () {});
   }
 
-  /* --- el estado medido de cada parte ----------------------------------------------------------- */
-  function emblema() {
-    if (!G || !K) { return null; }
-    return G.tirada(K.sha('atlas.emblema/1:' + (pub || 'invitado') + (casa.emblema ? ':' + casa.emblema : '')), 'tc3').armonicos;
-  }
   function estado() {
     var J = raiz.AtlasJuego, i = J && J.instantanea ? J.instantanea() : null;
     return i ? { nucleo: i.nivel_nucleo, grieta: i.grieta && i.grieta.abierta, i: i } : { nucleo: 1, grieta: false, i: null };
@@ -89,95 +81,33 @@
     return { semilla: pub || 'visitante', ciclo: i ? i.ciclo : 0, army: m.army ? m.army.nivel : 0, nodo: nodo, latido: null,
              cuerpo: CJ ? CJ.cuerpo({ nucleo: nv('nucleo'), army: nv('army'), bosque: nv('bosque'), faro: nv('faro') }) : null };
   }
+  /* La cifra de cada parte: se recoge aqui (la pestana) y se calcula en `casa-medidas.js` (puro). */
   function medidas() {
-    var s = estado().i, ed = {}, inc = raiz.AtlasIncubadora, C = raiz.AtlasNodosCedulas, army = null;
+    var inc = raiz.AtlasIncubadora, C = raiz.AtlasNodosCedulas, army = null;
     try { army = inc && inc.army ? (inc.army() || []).length : null; } catch (x) { army = null; }
     var nodos = C ? C.nodos.filter(function (n) { var m = n.aparato.medidas; return Object.keys(m).some(function (k) { return m[k].estado === 'MEDIDO'; }); }).length : null;
-    ed.nucleo = s ? { nivel: s.nivel_nucleo, medido: true, txt: rellena(T('st_nucleo'), { n: s.nivel_nucleo }) } : null;
-    ed.bosque = s ? { nivel: Math.floor(s.recursos.biomasa / 2), medido: true, txt: rellena(T('st_bosque'), { b: s.recursos.biomasa, o: s.recursos.oxigeno }) } : null;
-    ed.army = army != null ? { nivel: army, medido: true, txt: rellena(T('st_army'), { n: army }) } : null;
-    ed.faro = nodos != null ? { nivel: nodos, medido: true, txt: rellena(T('st_faro'), { n: nodos }) } : null;
-    return ed;
+    return CM.medidas(estado().i, army, nodos, T);
   }
-  function pintaPartes() {
-    var ed = medidas();
-    PARTES.forEach(function (e) {
-      var b = R.b[e[0]], m = ed[e[3]];
-      b.querySelector('.casa-st').textContent = m ? m.txt : 'NO_DATA';
-      b.classList.toggle('sin-medida', !m);
-      b.setAttribute('aria-label', T('parte_' + e[0]) + ' · ' + (m ? m.txt : T('nd_' + e[3])));
-    });
-  }
-  /* Cada cuadro, la escena dice donde quedo cada parte (pixeles del lienzo). El boton va FUERA del cuerpo, en
-     la direccion de su parte (el caparazon, encima): asi no tapa al cangrejo. `HACIA`: [dx, dy] en radios. */
-  var HACIA = { caparazon: [0, -1.5], ojos: [1, -0.7], pinzas: [1.1, 0.35], patas: [-1.1, 0.35] };
-  function anclas(an, W, H) {
-    var cx = an ? an.caparazon[0] : 0, lado = an && an.pinzas[0] < cx ? -1 : 1, k = an ? Math.max(an.radio, 52) : 0;
-    PARTES.forEach(function (e) {
-      var b = R.b[e[0]], p = an && an[e[0]], h = HACIA[e[0]];
-      b.hidden = !p;
-      if (!p) { return; }
-      var x = e[0] === 'caparazon' ? cx : cx + lado * h[0] * k, y = p[1] + h[1] * k * (e[0] === 'caparazon' ? 1 : 0.6);
-      b.style.left = (Math.max(0.08, Math.min(0.92, x / W)) * 100).toFixed(1) + '%';
-      b.style.top = (Math.max(0.1, Math.min(0.92, y / H)) * 100).toFixed(1) + '%';
-    });
-  }
-
   /* --- dentro de una parte ----------------------------------------------------------------------- */
   function entra(id) {
     var a = PARTES.filter(function (e) { return e[0] === id; })[0];
+    if (a && a[2] === 'faro') { var J = raiz.AtlasJuego; if (J && J.aplica) { J.aplica({ esquema: 'atlas.accion/1', accion: 'mover', dir: 'faro', origen: 'humano' }); } return; }
     if (a && a[2]) { if (raiz.TheGame && raiz.TheGame.ve) { raiz.TheGame.ve(a[2]); } return; }
     R.titulo.textContent = T('parte_' + id); R.cuerpo.textContent = '';
     DENTRO[id].split('|').forEach(function (s) { Array.prototype.forEach.call(R.alm.querySelectorAll(s), function (n) { R.cuerpo.appendChild(n); }); });
-    R.dentro = id; R.int.hidden = false; R.esc.hidden = true; R.volver.focus();
+    R.dentro = id; R.int.hidden = false; R.est.hidden = true; R.volver.focus();
   }
   function sale() {
     if (!R.dentro) { return; }
     Array.prototype.slice.call(R.cuerpo.children).forEach(function (n) { R.alm.appendChild(n); });
-    var id = R.dentro; R.dentro = null; R.int.hidden = true; R.esc.hidden = false; R.b[id].focus();
+    var id = R.dentro; R.dentro = null; R.int.hidden = true; R.est.hidden = false;
+    var b = document.getElementById('parte-' + id); if (b) { b.focus(); }
   }
 
   /* --- personalizar ------------------------------------------------------------------------------ */
-  function grupo(clave, valores, etiqueta) {
-    var f = el('fieldset', 'casa-grupo'); f.appendChild(el('legend', null, T('p_' + clave)));
-    valores.forEach(function (v) {
-      var b = boton(etiqueta ? etiqueta(v) : T(clave + '_' + v), 'casa-op');
-      b.setAttribute('aria-pressed', String(casa[clave] === v));
-      b.addEventListener('click', function () {
-        casa[clave] = v; guarda();
-        Array.prototype.forEach.call(f.querySelectorAll('.casa-op'), function (o, i) { o.setAttribute('aria-pressed', String(valores[i] === v)); });
-      });
-      f.appendChild(b);
-    });
-    return f;
-  }
+  /* «Customize» vive en `casa-personaliza.js` (U0): aqui solo se le pasa la casa y como guardarla. */
   function personaliza() {
-    var d = el('dialog', 'casa-pers'); d.setAttribute('aria-label', T('personaliza'));
-    var fo = el('form'); fo.method = 'dialog';
-    fo.appendChild(el('h3', null, T('personaliza')));
-    fo.appendChild(grupo('paleta', OPCIONES.paleta)); fo.appendChild(grupo('estilo', OPCIONES.estilo));
-    fo.appendChild(grupo('emblema', OPCIONES.emblema, function (v) { return T('emblema_n').replace('{n}', v + 1); }));
-    fo.appendChild(grupo('alianzas', OPCIONES.alianzas)); fo.appendChild(grupo('comercio', OPCIONES.comercio));
-    fo.appendChild(grupo('formacion', OPCIONES.formacion));
-    fo.appendChild(grupo('bandera', OPCIONES.bandera, function (v) { return T('bandera_' + (v || 'ninguna')); }));
-    var l = el('label', 'casa-lema', T('p_lema') + ' '), i = el('input'); i.maxLength = 32; i.value = casa.lema; l.appendChild(i); fo.appendChild(l);
-    var nota = el('p', 'casa-nota', T('p_nota')); nota.setAttribute('role', 'status'); fo.appendChild(nota);
-    i.addEventListener('change', function () {
-      var viejo = casa.lema; casa.lema = i.value; var e = forma(casa);
-      if (e) { casa.lema = viejo; nota.textContent = T('lema_no'); } else { nota.textContent = T('p_nota'); guarda(); }
-    });
-    var fila = el('div', 'casa-fila'), comp = boton(T('comparte'), 'boton-sec');
-    comp.addEventListener('click', function () {
-      var I = raiz.Identity;
-      if (!I || !I.quien || !I.quien()) { nota.textContent = T('comparte_sin'); return; }
-      I.firmar(casa).then(function (fz) { return I.publica().then(function (p) { return { casa: casa, firma: fz.firma, publica: p }; }); })
-        .then(function (s) { return navigator.clipboard.writeText(JSON.stringify(s)); })
-        .then(function () { nota.textContent = T('comparte_ok'); }, function (x) { nota.textContent = 'NO_DATA · ' + (x && x.message); });
-    });
-    var x = boton(T('cerrar'), 'boton'); x.type = 'submit';
-    fila.appendChild(comp); fila.appendChild(x); fo.appendChild(fila); d.appendChild(fo);
-    d.addEventListener('close', function () { d.remove(); });
-    R.raiz.appendChild(d); d.showModal();
+    raiz.AtlasCasaPersonaliza.abre({ casa: casa, opciones: OPCIONES, T: T, forma: forma, guarda: guarda, raiz: R.raiz });
   }
 
   /* --- montar ------------------------------------------------------------------------------------ */
@@ -190,46 +120,45 @@
     if (!panel || panel.querySelector('.casa')) { return Promise.resolve(); }
     return textos().then(function () { construye(panel); }, function (e) { panel.appendChild(el('p', 'no-data', 'NO_DATA · ' + e.message)); });
   }
+  /* La fila de identidad: tu nombre (el pseudonimo de tu clave, o visitante) y el color de TU bandera. */
+  function identidad() {
+    var I = raiz.Identity, B = raiz.AtlasValores && raiz.AtlasValores.banderas, n = I && I.quien && I.quien();
+    R.quien.textContent = n || T('visitante');
+    R.color.style.background = casa.bandera && B ? 'hsl(' + B[casa.bandera] + ' 85% 60%)' : 'transparent';
+    R.color.setAttribute('aria-label', T('p_bandera') + ' · ' + T('bandera_' + (casa.bandera || 'ninguna')));
+  }
   function construye(panel) {
     if (!document.getElementById('casa-hoja')) {
       var h = document.createElement('link'); h.id = 'casa-hoja'; h.rel = 'stylesheet'; h.href = '/game/home.css'; document.head.appendChild(h);
     }
-    R.raiz = el('div', 'casa'); R.b = {};
+    R.raiz = el('div', 'casa'); R.raiz.id = 'casa-estado';
     R.alm = el('div', 'casa-almacen'); R.alm.hidden = true;
+    var fila = el('div', 'casa-identidad'); R.quien = el('b', 'casa-quien'); R.color = el('span', 'casa-color');
+    var pers = boton('✦ ' + T('personaliza'), 'boton-sec casa-pers-b'); pers.id = 'casa-personaliza'; pers.addEventListener('click', personaliza);
+    fila.appendChild(R.quien); fila.appendChild(R.color); fila.appendChild(pers);
+    R.est = el('div', 'casa-cuerpo');
+    raiz.AtlasCasaLateral.monta(R.est, { T: T, medidas: medidas, entra: entra });
     var tira = el('div', 'casa-tira');
     Array.prototype.slice.call(panel.children).forEach(function (n) {
-      if (/atlas-cab|atlas-recursos|atlas-vivo|no-data/.test(n.className)) { tira.appendChild(n); } else { R.alm.appendChild(n); }
+      if (/atlas-cab|atlas-recursos|atlas-vivo|atlas-alerta|no-data/.test(n.className)) { tira.appendChild(n); } else { R.alm.appendChild(n); }
     });
-    R.esc = el('div', 'casa-escena');
-    R.lienzo = el('canvas', 'casa-lienzo'); R.lienzo.setAttribute('role', 'img'); R.lienzo.setAttribute('aria-label', T('aria'));
-    R.esc.appendChild(R.lienzo);
-    var al = R.alm.querySelector('.atlas-alerta'); if (al) { al.classList.add('casa-alerta'); R.esc.appendChild(al); }
-    PARTES.forEach(function (e) {
-      var b = boton('', 'casa-parte'); b.dataset.id = e[0];
-      var ico = el('span', 'casa-ico', e[1]); ico.setAttribute('aria-hidden', 'true');
-      b.appendChild(ico); b.appendChild(el('span', 'casa-nom', T('parte_' + e[0]))); b.appendChild(el('span', 'casa-st'));
-      b.addEventListener('click', function () { entra(e[0]); });
-      R.b[e[0]] = b; R.esc.appendChild(b);
-    });
-    var pers = boton('✦ ' + T('personaliza'), 'casa-pers-b'); pers.addEventListener('click', personaliza); R.esc.appendChild(pers);
+    R.est.appendChild(tira);
     R.int = el('section', 'casa-interior'); R.int.hidden = true;
-    var cab = el('div', 'casa-int-cab'); R.volver = boton('← ' + T('volver'), 'boton-sec'); R.volver.addEventListener('click', sale);
+    var cab = el('div', 'casa-int-cab'); R.volver = boton('← ' + T('volver'), 'boton-sec'); R.volver.id = 'casa-volver'; R.volver.addEventListener('click', sale);
     R.titulo = el('h3'); cab.appendChild(R.volver); cab.appendChild(R.titulo); R.int.appendChild(cab);
     R.cuerpo = el('div', 'casa-int-cuerpo'); R.int.appendChild(R.cuerpo);
-    R.raiz.appendChild(tira); R.raiz.appendChild(R.esc); R.raiz.appendChild(R.int); R.raiz.appendChild(R.alm);
+    R.raiz.appendChild(fila); R.raiz.appendChild(R.est); R.raiz.appendChild(R.int); R.raiz.appendChild(R.alm);
     panel.appendChild(R.raiz);
-    pintaPartes(); setInterval(pintaPartes, 1500);
     var I = raiz.Identity;
     (I && I.quien && I.quien() ? I.publica().then(function (k) { pub = k; }, function () {}) : Promise.resolve())
-      .then(lee).then(function (g) { g = migra(g); if (g && !forma(g)) { casa = g; } });
-    escena = S.crea(R.lienzo, { casa: function () { return { paleta: casa.paleta, estilo: casa.estilo, emblema: emblema() }; },
-                                estado: estado, cangrejo: cangrejo, anclas: anclas });
+      .then(lee).then(function (g) { g = migra(g); if (g && !forma(g)) { casa = g; } identidad(); });
+    identidad(); document.addEventListener('preceptor:identity', identidad);
   }
 
   /* Cambiar UNA opcion desde fuera (la formacion, desde la repeticion de la batalla). */
-  function pon(k, v) { if (OPCIONES[k] && OPCIONES[k].indexOf(v) >= 0) { casa[k] = v; guarda(); } }
+  function pon(k, v) { if (OPCIONES[k] && OPCIONES[k].indexOf(v) >= 0) { casa[k] = v; guarda(); if (R.quien) { identidad(); } } }
   /* Los textos de la familia de la casa (`atlas-casa-<l>.json`): tambien los del Taller y del Primer Eco, que
      viajan con ella para no engordar la puerta del juego (P9-P11). '' si aun no han llegado. */
-  raiz.AtlasCasa = { texto: function (k) { return (TX && TX[k]) || ''; }, pon: pon, monta: monta, forma: forma, casa: function () { return casa; }, fps: function () { return escena && escena.fps(); },
-                     calidad: function () { return escena && escena.calidad(); }, entra: entra, sale: sale, cangrejo: cangrejo };
+  raiz.AtlasCasa = { texto: function (k) { return (TX && TX[k]) || ''; }, pon: pon, monta: monta, forma: forma, casa: function () { return casa; },
+                     medidas: medidas, entra: entra, sale: sale, cangrejo: cangrejo };
 })(this);

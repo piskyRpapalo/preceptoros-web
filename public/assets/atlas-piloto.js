@@ -10,7 +10,8 @@
    MOVER (R2c, plan «el refresco», 2026-10-11): las flechas del mapa SON esta
    accion, «una lista, no dos»: la misma flecha mueve a la persona y a la IA
    del laboratorio (ideas6oct:1756, flechas tamano-AI). La regla base nunca
-   la propone: moverse no cambia la partida.
+   la propone: moverse no cambia la partida. `faro` (U1, «el mapa unico») lleva
+   la camara a Hexelion: es la puerta de los OJOS del cangrejo.
 
    ES LA LINEA BASE. Un LoRA del juego solo entra si le gana a esta regla en
    el arnes (`atlas/arnes_piloto.mjs`), con las mismas leyes y el mismo
@@ -23,7 +24,7 @@
 
   var ACCIONES = ['esperar', 'recoger', 'reparar', 'aplazar', 'bajar_a', 'mover'];
   var BANDAS = ['arrecife', 'ruinas', 'bosque', 'nucleo'];
-  var DIRS = ['izq', 'arr', 'aba', 'der', 'casa'];
+  var DIRS = ['izq', 'arr', 'aba', 'der', 'casa', 'faro'];
   /* Las etiquetas de profundidad de la instantanea, en el orden de BANDAS. */
   var ETIQUETAS = ['0-50', '50-150', '150-300', '300+'];
 

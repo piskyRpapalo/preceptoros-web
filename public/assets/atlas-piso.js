@@ -322,8 +322,6 @@
         json('atlas-mundo.json').catch(function () { return null; })])
         .then(function (d) {
           TXT = d[0]; MUNDO = d[1]; LEY = M.leyes(MUNDO); E = E || M.inicial(LEY);
-          var x = capa && capa.querySelector('.thegame-cerrar');
-          if (x) { x.setAttribute('aria-label', U('dlg_cerrar')); }
           panel(); pinta(); arranca();
           /* Si la portada habla otra lengua, se dice: el juego no finge estar traducido. */
           if (AL && AL.pagina !== lang && U('lengua_nd')) { zona.insertBefore(el('p', 'no-data', U('lengua_nd').replace('{l}', AL.pagina)), zona.firstChild); }

@@ -250,7 +250,7 @@
     });
     R.exporta.addEventListener('click', exporta);
     [R.piloto, R.soltar, R.sugerir, R.exporta, R.estado, R.sug].forEach(function (n) { R.caja.appendChild(n); });
-    barra.insertBefore(R.caja, barra.querySelector('.thegame-cerrar'));
+    barra.appendChild(R.caja);
   }
 
   window.AtlasPilotoCapa = { monta: monta, suelta: suelta };
