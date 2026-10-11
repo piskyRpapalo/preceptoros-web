@@ -77,7 +77,7 @@
       despeja();
       var casa = N.sitioCasa(f.pub(), K.sha);
       centro = casa || N.HEX;
-      if (!cam) { cam = C.crea(centro); } else { cam.x = centro.x; cam.y = centro.y; cam.vx = 0; cam.vy = 0; }
+      if (!cam) { cam = C.crea(centro); } else { C.planea(cam, centro.x, centro.y, circ, quieto()); }  /* F357: planea */
       if (dilo || !casa) { aviso.textContent = f.texto(casa ? 'mapa_en_casa' : 'mapa_sin_casa'); }
     }
     function choca() {
@@ -87,7 +87,7 @@
     /* Un salto por accion `mover`: devuelve true si choco con la niebla. */
     function mueveDir(d) {
       if (d === 'casa') { aCasa(true); return false; }
-      if (d === 'faro') { cam.x = N.HEX.x; cam.y = N.HEX.y; cam.vx = 0; cam.vy = 0; movido = true; aviso.textContent = f.texto('mapa_en_faro'); return false; }
+      if (d === 'faro') { C.planea(cam, N.HEX.x, N.HEX.y, circ, quieto()); movido = true; aviso.textContent = f.texto('mapa_en_faro'); return false; }
       movido = true; var v = VEC[d], c = C.empuja(cam, v[0] * PASO * 2.2, v[1] * PASO * 2.2, circ, quieto());
       if (c) { choca(); }
       return c;

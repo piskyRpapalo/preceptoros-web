@@ -31,8 +31,18 @@
   function T(k, d) { return (raiz.AtlasJuego && raiz.AtlasJuego.texto(k)) || d; }
   function semillaInt(t) { return parseInt(String(t.semilla || '0').slice(0, 8), 16) || 7; }
 
+  /* NUNCA TAPA UNA BATALLA EN CURSO (FIRMO 2026-10-12; medido en el Doogee: un huevo eclosiono a mitad de pelea y
+     su revelacion cubrio la hoja). Si la hoja de Batalla esta abierta, la revelacion ESPERA a que se cierre (sin
+     reloj: observa su `hidden`) y entonces se muestra. Nada se pierde: solo llega despues. */
+  function batalla() { var b = document.getElementById('thegame-batalla'); return b && !b.hidden ? b : null; }
   function muestra(t) {
     if (!t || !t.armonicos) { return; }
+    var enCurso = batalla();
+    if (enCurso && raiz.MutationObserver) {
+      var ob = new raiz.MutationObserver(function () { if (enCurso.hidden) { ob.disconnect(); muestra(t); } });
+      ob.observe(enCurso, { attributes: true, attributeFilter: ['hidden'] });
+      return null;
+    }
     var capa = document.getElementById('thegame') || document.body, antes = document.activeElement;
     var fondo = el('div', 'revela'), cv = el('canvas', 'revela-lienzo'), n = O.riqueza(t.armonicos);
     var rar = T('rar_' + t.rareza, t.rareza), S = raiz.AtlasSintesis;

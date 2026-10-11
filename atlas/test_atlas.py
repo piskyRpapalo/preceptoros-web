@@ -81,7 +81,7 @@ class Piso(unittest.TestCase):
         codigo = (PISO / "atlas-dialogo.js").read_text(encoding="utf-8")
         pedidas = set(re.findall(r"ui\.(dlg_[a-z0-9]+)", codigo))
         pedidas |= set(re.findall(r"'(dlg_[a-z0-9]+)'", codigo))
-        self.assertTrue(pedidas, "el dialogo no pide ningun texto")
+        # Desde la limpieza (2026-10-12) puede no pedir ninguno: la ventana y su voz se retiraron. Lo que pida, existe.
         for l in LENGUAS_JUEGO:
             d = json.loads((PUBLICO / f"atlas-{l}.json").read_text(encoding="utf-8"))
             with self.subTest(lengua=l):
@@ -116,11 +116,12 @@ class Piso(unittest.TestCase):
         mapa = {k: [int(n) for n in re.findall(r"\d", v)]
                 for k, v in re.findall(r"(\w+):\s*(\[[^\]]*\]|\d)", m.group(1))}
         self.assertEqual(mapa, {"reposo": [0], "habla": [1, 2], "revelar": [3], "alerta": [4]})
-        # La celda ya no mueve una tira por CSS: repinta la onda (habla, revelar, alerta).
+        # La celda repinta la onda (el retrato sigue vivo en el Primer Eco y el piso).
         self.assertRegex(codigo, r"celda: function \(n\) \{[^}]*pinta\(\)", "la celda no repinta la onda")
-        self.assertIn("CELDAS.habla[(paso >> 2) % 2]", codigo, "el habla no alterna por paso")
-        self.assertIn("CELDAS.revelar", codigo)
-        self.assertIn("alerta ? CELDAS.alerta : CELDAS.reposo", codigo)
+        # Limpieza 2026-10-12 (firmada): la ventana modal que alternaba «habla» se retiro; nadie la abria.
+        for retirado in ("function abre(", "function cierra(", "function voz(", "aria-modal"):
+            with self.subTest(retirado=retirado):
+                self.assertNotIn(retirado, codigo, "vuelve la ventana muerta del dialogo")
 
     def test_el_alt_del_retrato_sale_del_json(self):
         codigo = sin_comentarios((PISO / "atlas-dialogo.js").read_text(encoding="utf-8"))
@@ -558,6 +559,16 @@ process.stdout.write(JSON.stringify(ok));
         self.assertNotIn("lija: L[s] }", a, "vuelve la tropa con lija: undefined")
         self.assertIn("if (L[s]) { t.lija = L[s]; }", a)
 
+    def test_la_revelacion_nunca_tapa_una_batalla(self):
+        """FIRMO 2026-10-12 (medido en el Doogee: un huevo eclosiono a mitad de pelea y su revelacion cubrio la hoja). Con
+        la hoja de Batalla abierta, la revelacion espera a que se cierre (observa `hidden`, sin reloj) y despues sale."""
+        r = sin_comentarios((PUBLICO / "game" / "summon_reveal.js").read_text(encoding="utf-8"))
+        self.assertIn("function batalla() { var b = document.getElementById('thegame-batalla'); return b && !b.hidden ? b : null; }", r)
+        self.assertIn("if (enCurso.hidden) { ob.disconnect(); muestra(t); }", r)
+        self.assertLess(r.index("var enCurso = batalla();"), r.index("capa.appendChild(fondo)"), "la revelacion se pinta antes de mirar si hay batalla")
+        for reloj in ("setInterval", "setTimeout"):
+            self.assertNotIn(reloj, r.split("function muestra(t)")[1].split("var g = cv.getContext")[0], "la espera usa reloj")
+
     def test_lo_que_flota_recibe_el_dedo(self):
         """U1 puso pointer-events:none en la capa para que el mapa reciba el dedo, y eso se HEREDA: la revelacion,
         Customize y los dialogos solo se cerraban con Escape (medido en vivo). Toda clase `position:fixed` del juego
@@ -883,7 +894,12 @@ class Juez(unittest.TestCase):
         for red in ("fetch(", "XMLHttpRequest", "sendBeacon", "WebSocket", "EventSource"):
             with self.subTest(red=red):
                 self.assertNotIn(red, j)
-        self.assertIn("puro = Pa.puro", j, "en la pestaña el juez tiene que simular con el motor SIN grabadora")
+        # Limpieza 2026-10-12 (firmada): la mitad de la pestaña se retiro (solo despertaba con Suggest y envolvia
+        # CADA funcion del motor). Queda lo puro: que no vuelva a envolver el motor ni a escuchar respuestas.
+        for envoltura in ("Pa.anota = function", "M[k] = function", "MutationObserver"):
+            with self.subTest(retirado=envoltura):
+                self.assertNotIn(envoltura, j, "vuelve la mitad muerta del juez")
+        self.assertIn("module.exports = AtlasJuez", j)
         partida = (RAIZ.parent / "public" / "assets" / "atlas-partida.js").read_text(encoding="utf-8")
         self.assertIn("AtlasPartida.puro = graba(", partida)
         self.assertIn("'/game/juez.js'", (RAIZ.parent / "public" / "assets" / "thegame.js").read_text(encoding="utf-8"))
@@ -1901,7 +1917,8 @@ class MapaMovible(unittest.TestCase):
         self.assertEqual(len(set(dirs)), 1, f"los destinos no coinciden: {dirs}")
         self.assertIn("faro", dirs[0])
         mar = self._js("mar.js")
-        self.assertIn("if (d === 'faro') { cam.x = N.HEX.x; cam.y = N.HEX.y;", mar, "la camara no sabe ir al Faro")
+        self.assertIn("if (d === 'faro') { C.planea(cam, N.HEX.x, N.HEX.y, circ, quieto());", mar, "la camara no PLANEA al Faro (F357)")
+        self.assertNotRegex(mar, r"cam\.[xy] = ", "la camara vuelve a teletransportarse (F357)")
         self.assertIn("faro: '\u25c8'", mar, "el mando del Faro sin icono")
         med = self._js("casa-medidas.js")
         self.assertIn("['ojos', '\u25c8', 'faro', 'faro']", med, "los ojos no abren la puerta del Faro")

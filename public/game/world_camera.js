@@ -42,6 +42,10 @@
     cam.vx += dx * (1 - FRENO); cam.vy += dy * (1 - FRENO);
     return false;
   }
+  /* PLANEA hasta un punto (F357, firmado: «NADA teletransporta, la camara GLIDE»). Con la MISMA fisica del arrastre:
+     con frenado geometrico, un empujon de d recorre exactamente d y se para (medido: 999,91 de 1000 en 88 pasos de
+     16 ms). Con movimiento reducido, inmediato: la excepcion de accesibilidad (WCAG 2.3.3), declarada. */
+  function planea(cam, x, y, circ, quieto) { cam.vx = 0; cam.vy = 0; return empuja(cam, x - cam.x, y - cam.y, circ, quieto); }
   /* Un paso de tiempo: la inercia lleva y frena. `k` = dt / 16. */
   function paso(cam, k, circ) {
     if (Math.abs(cam.vx) < 0.01 && Math.abs(cam.vy) < 0.01) { cam.vx = 0; cam.vy = 0; return false; }
@@ -54,7 +58,7 @@
   function aPantalla(cam, W, H, z, x, y) { return [(x - cam.x) * z + W / 2, (y - cam.y) * z + H / 2]; }
   function aMundo(cam, W, H, z, sx, sy) { return [(sx - W / 2) / z + cam.x, (sy - H / 2) / z + cam.y]; }
 
-  var AtlasCamara = { crea: crea, arrastra: arrastra, empuja: empuja, paso: paso, limita: limita, dentro: dentro,
+  var AtlasCamara = { crea: crea, arrastra: arrastra, empuja: empuja, planea: planea, paso: paso, limita: limita, dentro: dentro,
                       vista: vista, aPantalla: aPantalla, aMundo: aMundo, MARGEN: MARGEN };
   if (typeof module === 'object' && module.exports) { module.exports = AtlasCamara; } else { raiz.AtlasCamara = AtlasCamara; }
 })(this);

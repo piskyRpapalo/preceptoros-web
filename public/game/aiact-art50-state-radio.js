@@ -60,7 +60,9 @@
     var u = new raiz.SpeechSynthesisUtterance(texto);
     u.voice = locales[0]; u.pitch = 0.8; u.rate = 0.88;
     sy.cancel(); sy.speak(u);
-    return 'voice: ' + locales[0].name + ' (local)';
+    /* SIMULADO (rectificacion firmada 2026-10-12): es la voz del NAVEGADOR, no los vectores de voz del rack (camino
+       canonico, EN_CURSO). Jamas LIVE falso. */
+    return 'SIMULATED voice: ' + locales[0].name + ' (this device, not the rack\'s voice)';
   }
 
   function el(tag, clase, texto) { var n = raiz.document.createElement(tag); if (clase) { n.className = clase; } if (texto != null) { n.textContent = texto; } return n; }
