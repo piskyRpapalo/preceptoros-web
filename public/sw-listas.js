@@ -47,7 +47,7 @@ const JUEGO = [
   '/assets/atlas-opina.js', '/assets/atlas-voz.js', '/game/juez.js', '/game/valores.js', '/game/gacha.js',
   '/game/db.js', '/game/core.js', '/game/ui.js', '/game/canon.js', '/game/wave_render.js', '/game/escena.js',
   '/game/gdpr-art25-ephemeral-crab.js', '/game/aiact-art50-crab-terminal.js', '/game/gdpr-art7-entry-choice.js', '/game/aiact-art50-state-radio.js', '/game/home_base_scene.js', '/game/home_buildings.js',
-  '/game/summon_reveal.js', '/game/taller.js', '/game/ui-taller.js', '/game/home.css', '/game/sobres.js', '/game/rating.js', '/game/arena.js',
+  '/game/summon_reveal.js', '/game/taller.js', '/game/ui-taller.js', '/game/primer_eco.js', '/game/home.css', '/game/sobres.js', '/game/rating.js', '/game/arena.js',
   '/game/duelo.js', '/game/fog_of_war.js', '/game/world_camera.js', '/game/mar.js', '/game/mar-anclas.js', '/game/mar-fondo.js', '/game/nodos-pesos.js',
   '/game/nodos-cedulas.js', '/game/nodos.js', '/game/cuenta.js', '/game/ui-nodos.js', '/game/ui-rack.js',
   '/game/escuadron.js', '/game/battle_choreography.js', '/game/battle_replay.js', '/game/ui-arena.js', '/game/ui-duelo.js',

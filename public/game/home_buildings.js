@@ -228,6 +228,8 @@
 
   /* Cambiar UNA opcion desde fuera (la formacion, desde la repeticion de la batalla). */
   function pon(k, v) { if (OPCIONES[k] && OPCIONES[k].indexOf(v) >= 0) { casa[k] = v; guarda(); } }
-  raiz.AtlasCasa = { pon: pon, monta: monta, forma: forma, casa: function () { return casa; }, fps: function () { return escena && escena.fps(); },
+  /* Los textos de la familia de la casa (`atlas-casa-<l>.json`): tambien los del Taller y del Primer Eco, que
+     viajan con ella para no engordar la puerta del juego (P9-P11). '' si aun no han llegado. */
+  raiz.AtlasCasa = { texto: function (k) { return (TX && TX[k]) || ''; }, pon: pon, monta: monta, forma: forma, casa: function () { return casa; }, fps: function () { return escena && escena.fps(); },
                      calidad: function () { return escena && escena.calidad(); }, entra: entra, sale: sale, cangrejo: cangrejo };
 })(this);
