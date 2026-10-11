@@ -519,6 +519,29 @@ process.stdout.write(JSON.stringify(ok));
             with self.subTest(fichero=f.name):
                 self.assertNotIn("AtlasDialogo.abre(", f.read_text(encoding="utf-8"), "alguien vuelve a abrir la ventana modal")
 
+    def test_ninguna_peticion_apunta_a_un_fichero_que_no_existe(self):
+        """Medido en el Doogee (2026-10-11): `auth.js` pedia `/nav.json` en CADA carga, un 404 desde que la mudanza b3
+        lo retiro. Una peticion literal a un fichero propio que no existe es una puerta muerta: se caza aqui. Las
+        rutas compuestas (`'/atlas-arena-' + lengua + '.json'`) no son literales y no entran."""
+        for f in list((PUBLICO / "assets").glob("*.js")) + list((PUBLICO / "game").glob("*.js")) + [PUBLICO / "sw.js"]:
+            codigo = sin_comentarios(f.read_text(encoding="utf-8"))
+            for ruta in re.findall(r"fetch\('(/[^'?]+)'", codigo):
+                if ruta.endswith("-") or ruta.endswith("/"):
+                    continue
+                with self.subTest(fichero=f.name, ruta=ruta):
+                    self.assertTrue((PUBLICO / ruta.lstrip("/")).exists(), f"{f.name} pide {ruta}, que no existe")
+
+    def test_en_el_telefono_el_dedo_llega_a_workshop_y_a_fight(self):
+        """Medido en el Doogee con toques REALES (adb input tap, 2026-10-11): la cabecera del sitio (dos lineas a 360 px,
+        hasta 147 px) recibia el toque de Workshop, y el unico Fight vivia en un pliego cerrado. La barra va por
+        encima de la cabecera y baja en telefonos estrechos; elegir un lugar abre su pliego y deja el Fight a la vista."""
+        css = re.sub(r"/\*.*?\*/", "", (PUBLICO / "assets" / "thegame.css").read_text(encoding="utf-8"), flags=re.S)
+        barra = re.search(r"\.thegame-barra\{position:fixed;z-index:(\d+);", css)
+        self.assertTrue(barra and int(barra.group(1)) > 5, "la barra queda bajo la cabecera (z-index 5)")
+        self.assertIn("@media (max-width:25rem){:root{--thegame-tope:9.5rem}}", css)
+        a = self._js("ui-arena.js") if hasattr(self, "_js") else sin_comentarios((PUBLICO / "game" / "ui-arena.js").read_text(encoding="utf-8"))
+        self.assertIn("var p = document.getElementById('pliego-lugares');\n    if (p && !p.open) { p.open = true; }", a)
+
     def test_lo_que_flota_recibe_el_dedo(self):
         """U1 puso pointer-events:none en la capa para que el mapa reciba el dedo, y eso se HEREDA: la revelacion,
         Customize y los dialogos solo se cerraban con Escape (medido en vivo). Toda clase `position:fixed` del juego
@@ -2032,7 +2055,7 @@ class MapaMovible(unittest.TestCase):
         # U2: en el telefono el mapa es la franja de encima de la terminal (si no, su centro cae detras de la hoja).
         self.assertIn(".thegame-mapa{position:fixed;inset:0 0 46dvh 0;", css)
         self.assertIn("max-height:46dvh", css.split(".thegame-terminal{")[1].split("}")[0], "la franja y la hoja no casan")
-        self.assertIn(".thegame-mapa{inset:0}", css.split("@media (min-width:48rem){")[-1], "en escritorio el mapa no es la pantalla")
+        self.assertIn(".thegame-mapa{inset:0}", css.split("@media (min-width:48rem) and (min-height:34rem){")[-1], "en escritorio el mapa no es la pantalla")
 
     def _js(self, n):
         return sin_comentarios((PUBLICO / "game" / n).read_text(encoding="utf-8"))

@@ -300,13 +300,10 @@
         if (propio && propio.idPerfil) return Promise.resolve(propio);
       } catch (err) { /* bloque roto: se sigue al catalogo */ }
     }
-    var lengua = (document.documentElement.lang || 'en').slice(0, 2);
-    return fetch('/nav.json', { cache: 'no-store' })
-      .then(function (r) { return r.json(); })
-      .then(function (d) { return (d.textos && d.textos[lengua]) || {}; })
-      /* Si el catalogo no llega, se pinta IGUAL con lo que haya. Un boton sin
-         rotulo se puede tocar; un boton que no existe, no. */
-      .catch(function () { return {}; });
+    /* `nav.json` cayo con la mudanza b3 (el hub se fue): pedirlo daba un 404 en CADA carga (medido en el Doogee,
+       2026-10-11) y devolvia lo mismo que esto. Sin bloque, se pinta IGUAL con lo que haya: un boton sin rotulo se
+       puede tocar; un boton que no existe, no. */
+    return Promise.resolve({});
   }
 
   rotulos().then(function (t) { T = t; return arranca(); });

@@ -70,7 +70,14 @@
     });
     pintaRival();
   }
-  function elige(l) { sel = l; pintaLista(); }
+  /* Elegir un lugar (en el mapa o en la lista) deja a la vista su ficha con el UNICO «Fight»: si el pliego de
+     Lugares estaba cerrado, se abre (medido en el Doogee: el Fight vivia en un pliego cerrado y el dedo no lo veia). */
+  function elige(l) {
+    sel = l; pintaLista();
+    var p = document.getElementById('pliego-lugares');
+    if (p && !p.open) { p.open = true; }
+    if (R.ficha && R.ficha.scrollIntoView) { R.ficha.scrollIntoView({ block: 'nearest' }); }
+  }
   /* Una accion por pantalla: el boton grande. En el mapa lleva a la Batalla y lucha. */
   function pintaRival() {
     [R.ficha, R.rival].forEach(function (z, i) {
