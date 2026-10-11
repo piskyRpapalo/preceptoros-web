@@ -160,28 +160,15 @@ const rutas = await shell.keys();
 // 145 desde el 2026-09-23: entra el arabe, la novena lengua. Seis paginas
 // suyas en el shell y sus cuatro familias precacheadas (agentes, duelos,
 // herramientas, caminos): seis y cuatro, diez.
-// 200 desde el 2026-10-11 (mudanza bloque 2, firma D7): entra EL JUEGO, 54 rutas (`JUEGO` en
-// sw-listas.js: la puerta, los modulos de game/ y lo que se pide a demanda). La portada ya es el juego
-// y sin el en el shell no se jugaba sin red. Bajara cuando el bloque 3 retire las piezas del Hub.
-// 201 el mismo dia: entra el TERMINAL DEL CANGREJO (J7, game/aiact-art50-crab-terminal.js).
-// 202: entra LA ENTRADA (J8, game/gdpr-art7-entry-choice.js).
-// 203: entra LA RADIO DEL ESTADO (J2+J9, game/aiact-art50-state-radio.js).
-ok('precachea paginas, piezas del Hub y el juego', rutas.length === 203, rutas.length+' rutas');
+// 91 desde la mudanza bloque 3 (2026-10-11): la web es SOLO el juego. Cayeron las paginas del hub,
+// sus familias de JSON y sus piezas (archivadas con su sha256 en no-publicar/). Quedan: la raiz, el
+// manifiesto, las 9 portadas, la portada (identidad, canal, PWA, hojas) y el juego entero.
+ok('precachea las portadas, su superficie y el juego', rutas.length === 91, rutas.length+' rutas');
 ok('el shell trae el juego (D7): la puerta, el cangrejo y la arena',
    ['/assets/thegame.js', '/game/gdpr-art25-ephemeral-crab.js', '/game/ui-arena.js', '/assets/atlas-motor.js'].every(r => rutas.includes(r)));
-ok('el shell trae las tres tiras de la cara',
-   ['apertura', 'reposo', 'habla']
-     .every(s => rutas.includes('/assets/caras/secuencia-' + s + '-256.webp')));
-ok('el shell trae /fr/community.html', rutas.includes('/fr/community.html'));
-ok('el shell trae hub.json', rutas.includes('/hub.json'));
-// El catalogo de modelos viaja con el sitio igual que el de companeros: sin el,
-// la app instalada abre y no sabe decir sobre que se entreno nada.
-ok('el shell trae modelos.json', rutas.includes('/modelos.json'));
-// The Tower's teaching layer left cerebros.json on 2026-09-25: it travels too.
-ok('el shell trae docente.json', rutas.includes('/docente.json'));
-ok('el shell trae las cinco piezas del Hub',
-   ['/assets/widget.css','/assets/panel.css','/assets/hub.js','/assets/hub-cola.js','/assets/chat-router.js']
-     .every(r => rutas.includes(r)));
+ok('el shell trae la portada de cada lengua', ['/es/', '/fr/', '/ar/'].every(r => rutas.includes(r)));
+ok('el shell trae la identidad y el canal', ['/assets/auth.js', '/assets/enviar.js', '/assets/page-comment.js', '/assets/pwa.js'].every(r => rutas.includes(r)));
+ok('el shell YA NO trae nada del hub', !rutas.some(r => /community|benchmark|playground|onboarding|profile|instalar|hub\.json|hitos|chat|caras\//.test(r)));
 // NINGUNA DE LAS DOS FAMILIAS VIAJA YA, y la segunda cayo el 2026-09-20.
 //
 // Los ojos se fueron el 2026-09-05 --los pintaba solo la portada de la raiz,
@@ -213,8 +200,8 @@ ok('la API del Agora pasa de largo',
 // regla 2: una MEDIDA no se cachea; el CONTENIDO declarado si.
 ok('counters.json no se cachea (es una medida)',
    await pedir(ORIGEN+'/counters.json','cors') === 'PASA_DE_LARGO');
-ok('hub.json SI se sirve del cache (es contenido)',
-   await pedir(ORIGEN+'/hub.json','cors') !== 'PASA_DE_LARGO');
+ok('atlas-en.json SI se sirve del cache (es contenido del juego)',
+   await pedir(ORIGEN+'/atlas-en.json','cors') !== 'PASA_DE_LARGO');
 {
   // El manifiesto va a red primero: con red responde la red, no el cache.
   const r = await pedir(ORIGEN+'/manifest.webmanifest','cors');
@@ -226,9 +213,9 @@ ok('hub.json SI se sirve del cache (es contenido)',
 // regla 3: navegacion cacheada, comprobada SIN RED para que no haya duda de
 // que sale del shell y no de la red.
 entorno.SIN_RED = true;
-const r1 = await pedir(ORIGEN+'/es/community.html','navigate');
+const r1 = await pedir(ORIGEN+'/es/','navigate');
 ok('navegacion sale del shell aun sin red',
-   r1 !== 'PASA_DE_LARGO' && r1.status === 200 && String(r1.cuerpo).includes('/es/community.html'),
+   r1 !== 'PASA_DE_LARGO' && r1.status === 200 && String(r1.cuerpo).includes('/es/'),
    'status '+(r1 && r1.status));
 const r2 = await pedir(ORIGEN+'/fr/nueva.html','navigate');
 const txt = await r2.text();

@@ -4,24 +4,7 @@
  "fecha": "2026-10-04",
  "como_se_mide": "test_web.py › WebLimpia: un fichero de public/ es huérfano si su nombre no aparece en ningún texto del repo",
  "huerfanos": {
-  "assets/caras/secuencia-apertura-180.webp": "arte de marca compartido con la app (calibrar_caras.py); la web no lo pinta",
-  "assets/caras/secuencia-apertura-256.webp": "falso huérfano: sw-listas.js la precachea por plantilla, pero ninguna hoja la pinta",
-  "assets/caras/secuencia-habla-180.webp": "arte de marca compartido con la app (calibrar_caras.py); la web no lo pinta",
-  "assets/caras/secuencia-reposo-180.webp": "arte de marca compartido con la app (calibrar_caras.py); la web no lo pinta",
-  "assets/caras/secuencia-reposo-256.webp": "falso huérfano: sw-listas.js la precachea por plantilla, pero ninguna hoja la pinta",
-  "assets/torre/piso-1.webp": "falso huérfano: piso-chat.js y torre-visuales.js la piden por plantilla (piso-<n>)",
-  "assets/torre/piso-2.webp": "falso huérfano: piso-chat.js y torre-visuales.js la piden por plantilla (piso-<n>)",
-  "assets/torre/piso-3.webp": "falso huérfano: piso-chat.js y torre-visuales.js la piden por plantilla (piso-<n>)",
-  "assets/torre/piso-4.webp": "falso huérfano: piso-chat.js y torre-visuales.js la piden por plantilla (piso-<n>)",
-  "assets/torre/piso-5.webp": "falso huérfano: piso-chat.js y torre-visuales.js la piden por plantilla (piso-<n>)",
-  "assets/torre/piso-6.webp": "falso huérfano: piso-chat.js y torre-visuales.js la piden por plantilla (piso-<n>)",
-  "assets/torre/piso-7.webp": "falso huérfano: piso-chat.js y torre-visuales.js la piden por plantilla (piso-<n>)",
-  "assets/torre/piso-8.webp": "falso huérfano: piso-chat.js y torre-visuales.js la piden por plantilla (piso-<n>)",
-  "downloads/entorno-estudio-v1.tar.gz.sha256": "huella de un paquete que sí se sirve; se queda junto a él",
-  "lore/coder-adapter.json": "LORE: no se borra sin firma; ningún fichero lo pide por su nombre",
-  "lore/killswitch-apocalypse.json": "LORE: no se borra sin firma; ningún fichero lo pide por su nombre",
-  "assets/acceso.js": "solo lo cargaba la portada del hub; cae en el bloque 3 de la mudanza (LISTA_CAE)",
-  "assets/showman.js": "solo lo cargaba la portada del hub; cae en el bloque 3 de la mudanza (LISTA_CAE)"
+  "downloads/entorno-estudio-v1.tar.gz.sha256": "huella de un paquete que sí se sirve; se queda junto a él"
  },
  "duplicados": [
   [
@@ -67,7 +50,5 @@
   "game/mercado.js": "igual",
   "game/narragrafo.js": "igual"
  },
- "borradores_del_juego": {
-  "atlas-<ar|de|el|es|fr|it|pt|ru>.json": "traducciones a medias del juego; thegame.js no las pide (LENGUAS=['en']). Se quedan: el gate mide su cobertura y son el camino para traducir"
- }
+ "borradores_del_juego": {}
 }

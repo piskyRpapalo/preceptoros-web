@@ -33,7 +33,7 @@ html{-webkit-text-size-adjust:100%}
 body{
   /* Marmol con vetas violeta, generado para este canon y periodico por
      construccion: costura medida de 2,2/255, invisible. */
-  background:var(--marmol) url(marble-violet.webp) repeat;
+  background:var(--marmol);   /* la textura de marmol cayo con el hub (mudanza b3): queda el color */
   background-size:340px;
   color:var(--tinta);font:400 16px/1.65 var(--mono);
   padding:1.5rem 1.1rem 4rem;
