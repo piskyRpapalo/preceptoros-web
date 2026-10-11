@@ -1,8 +1,18 @@
-# PARA_LA_MESA · Ronda «el refresco» · theGame con gráficos renovados · 2026-10-11
+# PARA_LA_MESA · Ronda «el refresco» · theGame con gráficos renovados · 2026-10-11 · Claude (Opus 5.5)
+Sello: MEDIDO (salvo lo marcado PROPUESTA) · rama `claude/refresco` (`3803653`..`HEAD`), una rama por pieza · **sin push**: cada pieza espera tu FIRMO.
+1. R1 J6: el mar de fondo en la portada, con un único pintor de teselas (`mar-fondo.js`) · `aeae759`
+2. R2: HOME es tu cangrejo (la rejilla de edificios se retiró), con 3 pestañas HOME · MAP · TALLER · `ddc4559`
+3. R2c: las flechas del mapa son la acción `mover` del piloto (una lista, una puerta) · `c02aee3`
+4. R3: tubos en CSS puro (`tubo.css`) · `e4c8644` · R4: acentos bioluminiscentes; colores-señal intactos · `0c499ea`
+5. R5 M18-B: todas las TC pasan a aristas; cara de combate y cara total; ping de sonar · `c2f54d6` · 3-4 aristas 62,4-64,6 %, Leviatanes 1,4-3,6 %
+6. R6: voz por tropa. **Defecto medido**: 500 tropas daban 1 sola nota; ahora 14. **Toca `core.js`: pide tu FIRMO expreso** · `885429f`
+7. R7: la radio también en MAP, con anclas (tubo al rack, partes, prisma, ecos), solo vocabulario · `b052006` · R8: la ceremonia del gacha · `796e190`
+Gates (último commit, n=2): test_web 75 OK (1 skip) · test_atlas 115 OK · arnes_sw 22/22 · 13 `*_casos` verdes · `node --check` 71/71 · gzip_juego_b 82.697 < 153.600 · ningún fichero > 16 KiB.
+NO_DATA: fps en el Doogee (no medido: Acurast en primer plano, no se toca) · voces del navegador fuera de headless · el Army con tropas firmadas en el navegador (sin clave en headless: la vitrina se vio solo vacía).
+Desvíos: R2a+R2b fundidas · `contenido_v` leído como `valores.version`/`packSha` (C4, espera tu sí o tu no) · iconos y tarjeta regenerados por M18-B · `~/p0x` sin commit (está en la rama ajena `feature/legal-map-schema-v1`).
+Coste: ~600 k tokens de sesión · delegadas 0 / hechas por Opus 8 piezas · tiempo de fase ~3 h 10 min (03:50Z-07:00Z, medido por los sellos de contadores).
 
-Preceptor: Claude (Opus 5.5) · rama `claude/refresco` (ramas por pieza: `claude/refresco-rN-*`) · **nada empujado**: cada pieza espera tu FIRMO.
-Plan: `PLAN_RONDA_REFRESCO.md` (commit `3803653`). La mesa anterior (cosecha M17) está en el historial de git.
-Sellos: MEDIDO (ancla) > DECLARADO > PROPUESTA. Se actualiza tras CADA pieza.
+---
 
 ## Delegación root (9 h)
 **NO ACTIVADA.** Ninguna pieza ha necesitado sudo. El reloj de 9 h empieza con el primer comando sudo y no ha habido ninguno: no hay hora de inicio ni de caducidad que sellar. Si se activa, la hora irá aquí.
