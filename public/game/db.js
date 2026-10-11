@@ -62,6 +62,21 @@
           return u;
         });
       },
+      /* P9 · POLVO DE TALLER: la UNICA forma de sacar una tropa. Exige el recibo `atlas.taller/1` de
+         desintegrar, firmado por la MISMA clave que la adopto; verifica la firma aqui dentro, como `adopta`. */
+      retira: function (rec, firma) {
+        var m = /^ed25519:([0-9a-f]{128})$/.exec(firma || '');
+        if (!rec || rec.esquema !== 'atlas.taller/1' || rec.op !== 'desintegra' || !m) { return Promise.reject(new Error('forma: recibo')); }
+        var i = army.map(function (u) { return u.adopcion.tropa.semilla; }).indexOf(rec.semilla);
+        if (i < 0) { return Promise.reject(new Error('no esta en el army')); }
+        if (army[i].adopcion.clave_publica !== rec.clave_publica) { return Promise.reject(new Error('otra clave')); }
+        return Promise.resolve(verifica(JSON.stringify(rec), m[1], rec.clave_publica)).then(function (ok) {
+          if (!ok) { throw new Error('firma: no verifica'); }
+          var u = army.splice(i, 1)[0];
+          guarda();
+          return u;
+        });
+      },
       /* Lo guardado vuelve POR `adopta`, en orden: lo que no verifica se queda fuera con su causa,
          y el almacen se reescribe con lo que si entro. */
       restaura: function () {

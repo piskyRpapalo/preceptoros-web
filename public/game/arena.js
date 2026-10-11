@@ -26,6 +26,7 @@
   var K = enNode ? require('./canon.js') : raiz.AtlasCanon;
   var S = enNode ? require('./sobres.js') : raiz.AtlasSobres;
   var Rt = enNode ? require('./rating.js') : raiz.AtlasRating;
+  var TL = enNode ? require('./taller.js') : raiz.AtlasTaller;
   var HEX64 = K.HEX64;
   var PROCEDENCIAS = ['humano', 'piloto_base', 'denso', 'lora', 'sintetico'];
   var GANA = ['defensa', 'asalto', 'empate'], FINALES = ['combate', 'abandono'];
@@ -42,7 +43,7 @@
     v = v || V;
     return K.huella({ version: v.version, tcs: v.tcs, prefijos: v.prefijos, sufijos: v.sufijos, base: v.base,
                       simetria: v.simetria, terminos: v.terminos, aristas: v.aristas, rareza_aristas: v.rareza_aristas, forma: v.forma,
-                      army_tope: v.army_tope, combate: v.combate,
+                      army_tope: v.army_tope, combate: v.combate, taller: v.taller,
                       patrullas: v.patrullas });
   }
 
@@ -84,7 +85,9 @@
   function unidades(ts, lado, v) {
     var A = v.combate.ataque;
     return ts.map(function (t, i) {
-      var s = G.tirada(t.semilla, t.tc).stats;
+      /* P9: lo LIJADO cuenta aqui (practica contra NPC). Un duelo no puede traer `lija`: formaTropas solo
+         acepta {tc, semilla} hasta que la cadena del Taller viaje en el sobre. */
+      var b = G.tirada(t.semilla, t.tc), s = t.lija && TL ? TL.aplica(b, t.lija).stats : b.stats;
       return { lado: lado, i: i, vida: s.vida, max: s.vida, arm: s.armadura, vel: s.velocidad, sig: s.sigilo,
                atk: A.base + A.aura * s.aura + A.inercia * s.inercia + A.profundidad * s.profundidad };
     });
