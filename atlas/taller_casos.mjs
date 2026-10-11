@@ -95,9 +95,34 @@ await caso('combate: lo lijado cuenta en la practica; un duelo NO puede traer li
   const limpia = def([{ tc: t.tc, semilla: t.semilla }]), lijada = def([{ tc: t.tc, semilla: t.semilla, lija: { vida: 1 } }]);
   return (JSON.stringify(sin.registro) !== JSON.stringify(con.registro) && limpia === '' && /tropa/.test(lijada)) || { limpia, lijada };
 });
+// P10 · PRISMA DE BANDERA: tenir es otra operacion de la MISMA cadena, de una paleta CERRADA, solo aspecto.
+const C = require('../public/game/home_buildings.js');
+await caso('P10: tenir cuesta residuo, solo con colores de la paleta cerrada, y no se tine lo desintegrado ni dos veces igual', () => {
+  const c = [], a = tropaDe(13), b = tropaDe(4), m = [];
+  eslabon(c, { op: 'desintegra', tropa: a }, ANA);
+  const r = eslabon(c, { op: 'tinte', semilla: b.semilla, bandera: 'teal' }, ANA), e = T.estado(c);
+  if (r.gramos !== -V.taller.tinte.coste || e.tintes[b.semilla] !== 'teal' || e.saldo !== 39 - V.taller.tinte.coste) { m.push('cuentas'); }
+  for (const [op, que] of [[{ op: 'tinte', semilla: b.semilla, bandera: '#39ff14' }, 'color libre'], [{ op: 'tinte', semilla: b.semilla, bandera: 'teal' }, 'mismo color'],
+                           [{ op: 'tinte', semilla: a.semilla, bandera: 'oro' }, 'desintegrada']]) {
+    try { T.recibo(e, op, ANA.pub); m.push('paso: ' + que); } catch (x) { /* bien */ }
+  }
+  try { T.recibo(T.estado([]), { op: 'tinte', semilla: b.semilla, bandera: 'oro' }, ANA.pub); m.push('tino sin residuo'); } catch (x) { /* bien */ }
+  return !m.length || m;
+});
+await caso('P10: la paleta es UNA (la casa ofrece exactamente los colores de valores) y el tinte no toca el combate', () => {
+  const casa = C.OPCIONES.bandera.filter(Boolean).join(), val = Object.keys(V.banderas).join();
+  const t = tropaDe(5, 'tc1'), lt = T.aplica(t, { bandera: 'teal' });
+  const ciego = !/bandera|tinte|tintes/.test(sin('arena.js')) && JSON.stringify(lt.stats) === JSON.stringify(t.stats);
+  return (casa === val && ciego) || { casa, val, ciego };
+});
+await caso('P10: una casa guardada antes de P10 entra sin bandera (null), no se pierde; un color libre no entra', () => {
+  const vieja = C.base(); delete vieja.bandera;
+  const migrada = C.migra(JSON.parse(JSON.stringify(vieja))), libre = Object.assign(C.base(), { bandera: '#39ff14' });
+  return (C.forma(vieja) !== '' && C.forma(migrada) === '' && migrada.bandera === null && C.forma(libre) === 'bandera') || { v: C.forma(vieja), m: C.forma(migrada), l: C.forma(libre) };
+});
 await caso('pureza: el Taller no usa azar, reloj, red ni almacen directo (la caja es db.js)', () => {
   const malos = [];
-  for (const f of ['taller.js', 'ui-taller.js']) {
+  for (const f of ['taller.js', 'ui-taller.js', 'mar-anclas.js']) {
     for (const m of ['Math.random', 'Date.', 'fetch(', 'localStorage', 'indexedDB', 'XMLHttpRequest', 'sendBeacon']) { if (sin(f).includes(m)) { malos.push(f + ': ' + m); } }
   }
   return !malos.length || malos;

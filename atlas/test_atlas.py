@@ -571,7 +571,7 @@ process.stdout.write(JSON.stringify(ok));
         casos = {
             "atlas_taller_schema.json": (ok_tal, [
                 con(ok_tal, op="regalar"), con(ok_tal, saldo=-1), con(ok_tal, stat="velocidad"),
-                con(ok_tal, gramos=-4), con(ok_tal, aristas=2), con(ok_tal, comprado=True)]),
+                con(ok_tal, gramos=-4), con(ok_tal, aristas=2), con(ok_tal, bandera="teal")]),
             "atlas_accion_schema.json": (ok_acc, [
                 con(ok_acc, accion="firmar"), sin(ok_acc, "banda"), con(ok_acc, banda="abismo"),
                 con(ok_acc, origen="gemini"), con(ok_acc, firma_valor="x"), con(ok_acc, ciclo=-1)]),
@@ -644,7 +644,7 @@ process.stdout.write(JSON.stringify(ok));
 # Ver atlas/POST_VERIFICACION_MGNO_LAB.md y atlas/POST_VERIFICACION_SISIL_CRIA.md.
 PUROS = ("canon.js", "sobres.js", "rating.js", "arena.js", "duelo.js", "mercado.js", "narragrafo.js", "cria.js", "genoma.js")
 # La Arena (2026-09-28, «el mapa multi-jugador en una pestana»): se carga al abrir su pestana, detras del Army.
-ARENA = ("sobres.js", "rating.js", "arena.js", "duelo.js", "mar.js", "nodos-pesos.js",
+ARENA = ("sobres.js", "rating.js", "arena.js", "duelo.js", "mar-anclas.js", "mar.js", "nodos-pesos.js",
          "nodos.js", "cuenta.js", "ui-nodos.js", "ui-rack.js",
          "battle_choreography.js", "battle_replay.js", "ui-arena.js", "ui-duelo.js")
 # La CASA (2026-10-05): la primera pantalla, detras del Army. Lleva canon y escena, que la Arena reutiliza.
@@ -1720,10 +1720,11 @@ class MapaMovible(unittest.TestCase):
 
     def test_p9_casos_del_polvo_de_taller(self):
         """P9 (firmado 2026-10-11): residuo por aristas, lijar sin tocar aristas, cadena de recibos que se comprueba
-        entera, el Army solo suelta con recibo firmado por quien adopto, y lo lijado solo cuenta en practica."""
+        entera, el Army solo suelta con recibo firmado por quien adopto, y lo lijado solo cuenta en practica.
+        P10: tenir a la bandera es otra operacion de la cadena, de la paleta CERRADA, y no toca el combate."""
         r = subprocess.run(["node", str(RAIZ / "taller_casos.mjs")], capture_output=True, text=True, timeout=120)
         casos = json.loads(r.stdout)
-        self.assertGreaterEqual(len(casos), 9, r.stderr)
+        self.assertGreaterEqual(len(casos), 12, r.stderr)
         for c in casos:
             with self.subTest(caso=c["caso"]):
                 self.assertTrue(c["ok"], c["detalle"])
@@ -1774,9 +1775,10 @@ class MapaMovible(unittest.TestCase):
         sendBeacon, ni cifrado (EV_SURFACE_ECHO se construye con su propio FIRMO)."""
         tg = (PUBLICO / "assets" / "thegame.js").read_text(encoding="utf-8")
         self.assertIn("window.AtlasRadio.monta(PANEL.casa); window.AtlasRadio.monta(PANEL.mapa);", tg)
-        m = (PUBLICO / "game" / "mar.js").read_text(encoding="utf-8")
-        self.assertIn("N.anclas({ pub: f.pub(), sha: K.sha, nodos: Ce ? Ce.nodos : [] })", m)
-        for f in ("mar.js", "fog_of_war.js"):
+        m = (PUBLICO / "game" / "mar-anclas.js").read_text(encoding="utf-8")
+        self.assertIn("N.anclas({ pub: o.pub, sha: o.sha, nodos: o.nodos || [] })", m)
+        self.assertIn("window.AtlasMarAnclas.pinta(g, P,", (PUBLICO / "game" / "mar.js").read_text(encoding="utf-8"))
+        for f in ("mar.js", "mar-anclas.js", "fog_of_war.js"):
             c = sin_comentarios((PUBLICO / "game" / f).read_text(encoding="utf-8"))
             for malo in ("fetch(", "sendBeacon", "crypto.subtle", "XMLHttpRequest", "WebSocket"):
                 with self.subTest(fichero=f, prohibido=malo):

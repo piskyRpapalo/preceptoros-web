@@ -45,6 +45,16 @@
   "parte_patas": "Legs · Forest",
   "parte_ojos": "Eyes · Lighthouse",
   "st_nucleo": "Lv {n}",
-  "nd_nucleo": "no game state yet: NO_DATA"
+  "nd_nucleo": "no game state yet: NO_DATA",
+  "p_bandera": "Flag (your colour on the map; only looks)",
+  "bandera_ninguna": "None",
+  "bandera_teal": "Teal",
+  "bandera_ambar": "Amber",
+  "bandera_hielo": "Ice",
+  "bandera_violeta": "Violet",
+  "bandera_coral": "Coral",
+  "bandera_kelp": "Kelp",
+  "bandera_oro": "Gold",
+  "bandera_rosa": "Rose"
  }
 }

@@ -43,6 +43,16 @@
       });
     });
   }
+  /* P10 · tenir una onda al color de TU bandera (la de «Customize»). */
+  function tine(t, b) {
+    opera({ op: 'tinte', semilla: t.semilla, bandera: b }, function (rec, f) {
+      cadena.push({ recibo: rec, firma: f }); est = TL.estado(cadena); guarda();
+      dice(T('taller_hecho_t', 'Tinted to your flag.')); pinta();
+      var I = window.AtlasIncubadora; if (I && I.repinta) { I.repinta(); }
+      return Promise.resolve();
+    });
+  }
+  function bandera() { var C = window.AtlasCasa, c = C && C.casa ? C.casa() : null; return c && c.bandera; }
   function lija(t, stat) {
     opera({ op: 'lija', semilla: t.semilla, stat: stat }, function (rec, f) {
       cadena.push({ recibo: rec, firma: f }); est = TL.estado(cadena); guarda();
@@ -72,7 +82,11 @@
         b.disabled = !est || !!roto || nv > L.max || est.saldo < TL.coste(nv);
       }
       s.addEventListener('change', rotula); b.addEventListener('click', function () { lija(t, s.value); });
-      rotula(); li.appendChild(s); li.appendChild(b); R.lista.appendChild(li);
+      rotula(); li.appendChild(s); li.appendChild(b);
+      var bd = bandera(), tb = boton(bd ? T('taller_tinte', 'Tint to my flag · −{c} g').replace('{c}', V.taller.tinte.coste) : T('taller_sin_bandera', 'Pick a flag in Customize to tint'));
+      tb.disabled = !bd || !est || !!roto || (est.tintes[t.semilla] === bd) || est.saldo < V.taller.tinte.coste;
+      tb.addEventListener('click', function () { tine(t, bd); });
+      li.appendChild(tb); R.lista.appendChild(li);
     });
     R.cola.textContent = est && est.n ? '#' + est.ultimo.slice(0, 8) + '… · ' + est.n + ' ' + T('taller_eslabones', 'receipts') : T('taller_vacia', 'No receipts yet.');
   }
@@ -95,12 +109,15 @@
       return TL.verificaFirmas(cadena, A.verificaWeb).then(function (ok) {
         if (!ok) { roto = T('taller_firma_rota', 'a saved receipt does not verify'); est = null; dice('NO_DATA · ' + roto); }
         pinta();
+        var I = window.AtlasIncubadora; if (I && I.repinta) { I.repinta(); }
       });
     });
     document.addEventListener('atlas:tropa', pinta);
   }
   /* Lo lijado de cada tropa, para la escuadra de PRACTICA (ui-arena.js). Una cadena rota no presta nada. */
   function lijas() { return est && !roto ? est.lijas : {}; }
+  /* P10: el tono de la bandera a la que se tino una onda, o null (nunca un color decidido por otro). */
+  function tono(semilla) { var b = est && !roto ? est.tintes[semilla] : null; return b ? V.banderas[b] : null; }
 
-  window.AtlasTallerUI = { monta: monta, lijas: lijas, pinta: pinta };
+  window.AtlasTallerUI = { monta: monta, lijas: lijas, tono: tono, pinta: pinta };
 })();
