@@ -1,10 +1,8 @@
 /* preceptoros.org · theGame · la capa del juego y su cargador.
 
-   EL JUEGO SOLO VIVE AQUI (Soberano, 2026-09-26): salio de la Torre y se
-   entra por la puerta theGame del cabezal, desde cualquier pagina. No hay
-   pagina nueva ni URL propia: una capa a pantalla completa sobre la pagina
-   donde estes, que se cierra con su boton o con Escape y devuelve el foco a la
-   puerta.
+   EL JUEGO SOLO VIVE AQUI (Soberano, 2026-09-26). En la portada ES la pagina
+   (`#juego-panel`); en cualquier otra, una capa a pantalla completa que se
+   cierra con su boton o con Escape.
 
    A DEMANDA. Lo inyecta `cabezal-rotulos.js` al pulsar la puerta; pide hojas y guiones en orden.
    El Army y la Arena se piden al abrir: su peso no va en la puerta (`gzip_juego_b`).
@@ -203,11 +201,11 @@
     return arena;
   }
 
-  /* UN <dialog> NATIVO con showModal(): la trampa de foco la pone el navegador (pagina inerte
-     debajo), la que respetan TalkBack y VoiceOver; un trap en JS no. ABOUT (C1, 2026-10-05): la web
-     es el juego; «About» cierra la capa y deja ver lo de antes, en `#about`, que no reabre. */
+  /* EN LA PORTADA (mudanza 2026-10-11) el juego ES la pagina: se monta en `#juego-panel`, sin X ni
+     About. FUERA de ella, un <dialog> con showModal(): la trampa de foco la pone el navegador. */
   function construye() {
-    capa = el('dialog', 'thegame-capa'); capa.id = 'thegame';
+    var P = document.getElementById('juego-panel');
+    capa = el(P ? 'section' : 'dialog', 'thegame-capa'); capa.id = 'thegame';
     /* La capa habla la lengua del juego, no la de la portada: sin esto, una pagina arabe
        voltearia un juego escrito en ingles. */
     capa.lang = lengua; capa.dir = RTL.indexOf(lengua) >= 0 ? 'rtl' : 'ltr';
@@ -218,12 +216,13 @@
     x.setAttribute('aria-label', 'theGame ×');
     x.addEventListener('click', cierra);
     var ab = el('a', 'thegame-about', 'About'); ab.href = '#about'; ab.addEventListener('click', cierra);
-    barra.appendChild(ab); barra.appendChild(x);
+    if (!P) { barra.appendChild(ab); barra.appendChild(x); }
     capa.appendChild(barra);
     var juego = el('div', 'thegame-juego'); juego.id = 'atlas-juego';
     capa.appendChild(juego);
     capa.addEventListener('cancel', cancela);
-    document.body.appendChild(capa);
+    if (P) { P.textContent = ''; }
+    (P || document.body).appendChild(capa);
   }
 
   /* Escape llega como `cancel` del <dialog>. Si hay un dialogo del juego
@@ -277,8 +276,7 @@
           if (pes && PANEL[pes]) { muestra(pes); }
         });
       } else if (pes && PANEL[pes]) { muestra(pes); }
-      if (!capa.open) { capa.showModal(); }
-      document.body.classList.add('en-thegame');
+      if (capa.showModal && !capa.open) { capa.showModal(); document.body.classList.add('en-thegame'); }
       window.AtlasJuego.sigue();
     }).catch(function (err) {
       /* Sin juego no hay capa a medias: se dice en la consola y la pagina

@@ -1,0 +1,81 @@
+{
+ "esquema": "preceptoros.pruebas-retiradas/1",
+ "mudanza": "propuestas/mudanza-20261011 (FIRMO del Soberano)",
+ "bloque_1": [
+  {
+   "prueba": "Estructura.test_la_portada_publica_lo_que_los_gates_miden",
+   "causa": "la linea de credenciales del hub en las portadas; counters.json sigue publicado y vigilado por sus pruebas",
+   "archivo": "docs/pruebas-retiradas/mudanza-b1.py"
+  },
+  {
+   "prueba": "Estructura.test_ninguna_portada_muestra_el_idioma_de_otra",
+   "causa": "vigilaba el i18n del pie del hub en las portadas; la portada nueva no tiene texto por lengua fuera del juego",
+   "archivo": "docs/pruebas-retiradas/mudanza-b1.py"
+  },
+  {
+   "prueba": "Estructura.test_el_pie_honesto_no_lleva_texto_escrito_a_mano",
+   "causa": "el pie honesto del hub en las portadas; los sellos honestos viven ahora dentro del juego (LIVE/STALE/NO_DATA)",
+   "archivo": "docs/pruebas-retiradas/mudanza-b1.py"
+  },
+  {
+   "prueba": "Hub.test_thegame_se_carga_a_demanda_y_solo_pide_lo_suyo",
+   "causa": "la puerta theGame del cabezal ya no existe en la portada: el juego ES la pagina y thegame.js se carga en ella",
+   "archivo": "docs/pruebas-retiradas/mudanza-b1.py"
+  },
+  {
+   "prueba": "Cabezal.test_cabezal_limpio_y_sus_ids",
+   "causa": "el cabezal del hub (#cabezal y sus ids) ya no esta en las portadas: la portada es cabezal-juego + panel unico",
+   "archivo": "docs/pruebas-retiradas/mudanza-b1.py"
+  },
+  {
+   "prueba": "Cabezal.test_las_cinco_puertas_y_su_orden",
+   "causa": "las cinco puertas de navegacion del hub; en la portada solo hay juego y selector de lengua",
+   "archivo": "docs/pruebas-retiradas/mudanza-b1.py"
+  },
+  {
+   "prueba": "Cabezal.test_panel_modelos_existe_y_desliza",
+   "causa": "#panel-modelos era el selector de companeros del hub; la portada ya no lo lleva",
+   "archivo": "docs/pruebas-retiradas/mudanza-b1.py"
+  },
+  {
+   "prueba": "Cabezal.test_la_capa_3_se_repliega_y_no_deja_hueco",
+   "causa": "el desplegable de companeros (capa 3) es del hub; la portada ya no lo lleva",
+   "archivo": "docs/pruebas-retiradas/mudanza-b1.py"
+  },
+  {
+   "prueba": "Cabezal.test_el_cabezal_no_se_corta_en_el_telefono",
+   "causa": "protegia la esquina de mandos del cabezal del hub (widget.css); el cabezal nuevo es una fila flexible",
+   "archivo": "docs/pruebas-retiradas/mudanza-b1.py"
+  },
+  {
+   "prueba": "Traducciones.test_los_tres_idiomas_tienen_las_mismas_claves",
+   "causa": "el bloque i18n de las portadas era del hub; el juego trae sus textos en atlas-<l>.json, que tiene sus propias pruebas",
+   "archivo": "docs/pruebas-retiradas/mudanza-b1.py"
+  },
+  {
+   "prueba": "ElJuegoEnInglesEnLasNueve.test_las_nueve_portadas_llevan_la_puerta",
+   "causa": "la puerta (cabezal-rotulos.js) se sustituye por el panel del juego; la reemplaza Portada.test_las_diez_son_la_plantilla",
+   "archivo": "docs/pruebas-retiradas/mudanza-b1.py"
+  },
+  {
+   "prueba": "ElJuegoEnInglesEnLasNueve.test_la_portada_es_el_juego_y_lo_de_antes_va_en_about",
+   "causa": "C1 por capa sobre el hub; ahora la portada ES el juego sin hub debajo; la reemplaza la clase Portada",
+   "archivo": "docs/pruebas-retiradas/mudanza-b1.py"
+  },
+  {
+   "prueba": "atlas/test_atlas.CabezalCajas.test_el_busto_no_pisa_nada_y_hay_una_sola_puerta_de_juego",
+   "causa": "media las cajas del cabezal del hub en Chrome; la portada ya no lo lleva",
+   "archivo": "docs/pruebas-retiradas/mudanza-b1.py + docs/pruebas-retiradas/cabezal_cajas.mjs"
+  }
+ ],
+ "enmendadas": [
+  {
+   "prueba": "Paginas.test_todas_las_paginas_tienen_pie_honesto",
+   "cambio": "ya no exige pie honesto en en/ y fr/ index.html: las portadas son el juego"
+  },
+  {
+   "prueba": "atlas/test_atlas.Piso.test_solo_se_entra_por_thegame",
+   "cambio": "pide «P ? 'section' : 'dialog'» en vez de «el('dialog'»: en la portada el juego es una section del panel"
+  }
+ ]
+}

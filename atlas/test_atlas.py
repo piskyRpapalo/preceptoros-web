@@ -151,7 +151,8 @@ class Piso(unittest.TestCase):
         # <dialog> nativo con showModal(): el navegador deja inerte la pagina de
         # debajo (trampa de foco real, la que respetan TalkBack y VoiceOver) y
         # Escape llega como `cancel`.
-        for pieza in ("el('dialog'", "showModal()", "'cancel'", "s.async = false",
+        # En la portada (mudanza b1, 2026-10-11) es una <section> dentro del panel; fuera, el <dialog>.
+        for pieza in ("P ? 'section' : 'dialog'", "showModal()", "'cancel'", "s.async = false",
                       "window.AtlasJuego.monta", "window.AtlasJuego.pausa", "origen.focus",
                       "cierre_aviso"):
             with self.subTest(pieza=pieza):
@@ -1602,23 +1603,6 @@ class Persistencia(unittest.TestCase):
         db = sin_comentarios((PUBLICO / "game" / "db.js").read_text(encoding="utf-8"))
         self.assertIn("return yo.adopta(u && u.adopcion, u && u.firma)", db, "lo guardado entra sin pasar por adopta")
         self.assertIn("army.restaura()", sin_comentarios((PUBLICO / "game" / "ui.js").read_text(encoding="utf-8")))
-
-
-class CabezalCajas(unittest.TestCase):
-    """El cabezal medido en un navegador de verdad (Soberano, 2026-10-05: «thegame es solo 1 boton»; el
-    busto se montaba encima de los botones y del panel; la fila se cortaba). `cabezal_cajas.mjs` mide
-    las cajas por CDP con y sin sesion de tester, a 412, 1024 y 1280 px. Sin Chrome: NO_DATA, que se
-    dice como salto y no como verde."""
-
-    def test_el_busto_no_pisa_nada_y_hay_una_sola_puerta_de_juego(self):
-        r = subprocess.run(["node", str(RAIZ / "cabezal_cajas.mjs")], capture_output=True, text=True, timeout=240)
-        if r.returncode == 3:
-            self.skipTest("NO_DATA · sin Chrome para medir las cajas del cabezal")
-        casos = json.loads(r.stdout)
-        self.assertGreaterEqual(len(casos), 12, r.stderr)
-        for c in casos:
-            with self.subTest(caso=c["caso"]):
-                self.assertTrue(c["ok"], c["detalle"])
 
 
 class EsteticaMedida(unittest.TestCase):

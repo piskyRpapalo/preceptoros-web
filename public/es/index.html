@@ -1,38 +1,17 @@
 <!doctype html>
-<html lang="es" data-tema="oscuro">
+<html lang="es" dir="ltr" data-tema="oscuro">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>PreceptorOS · Tu compañero soberano</title>
-<meta name="description" content="PreceptorOS · Tu compañero de IA soberano. Instálalo en tu máquina, sin nube, sin telemetría. Servido desde un rack que declara 99% solar (sin medir). Tu memoria, tu identidad, tu privacidad.">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PreceptorOS · theGame</title>
+<meta name="description" content="theGame: a game of waves that runs on your own device. No account, no cloud, no tracking. Build your undersea city, summon wave troops, conquer the reef.">
 <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
-<meta property="og:title" content="PreceptorOS">
-<meta property="og:description" content="Your AI, your memory, your machine. A guide that installs and then stays with you. Persistent memory on your own disk. No accounts, no telemetry, no cloud required.">
-<meta property="og:image" content="https://preceptoros.org/assets/preceptor-og.png">
+<link rel="canonical" href="https://preceptoros.org/es/">
+<meta property="og:title" content="PreceptorOS · theGame">
+<meta property="og:description" content="theGame: a game of waves that runs on your own device. No account, no cloud, no tracking. Build your undersea city, summon wave troops, conquer the reef.">
 <meta property="og:url" content="https://preceptoros.org/es/">
 <meta property="og:type" content="website">
-<meta name="twitter:card" content="summary_large_image">
-<link rel="stylesheet" href="/assets/base.css">
-<link rel="stylesheet" href="/assets/movil.css">
-<link rel="stylesheet" href="/assets/canon.css">
-<link rel="stylesheet" href="/assets/sistema.css">
-<link rel="stylesheet" href="/assets/movimiento.css">
-<link rel="stylesheet" href="/assets/chat.css">
-<link rel="stylesheet" href="/assets/escribir.css">
-<link rel="stylesheet" href="/assets/placa.css">
-<link rel="stylesheet" href="/assets/cara.css">
-<link rel="stylesheet" href="/assets/senal.css">
-<link rel="stylesheet" href="/assets/widget.css">
-<link rel="stylesheet" href="/assets/puertas.css">
-<link rel="stylesheet" href="/assets/cabezal.css">
-<link rel="stylesheet" href="/assets/esquina.css"><link rel="stylesheet" href="/assets/esquina-cuenta.css">
-<link rel="stylesheet" href="/assets/esquina-par.css">
-<link rel="stylesheet" href="/assets/acceso.css">
-<link rel="stylesheet" href="/assets/mandos.css">
-<link rel="stylesheet" href="/assets/panel.css">
-<link rel="stylesheet" href="/assets/nubes.css"><link rel="stylesheet" href="/assets/consiento.css">
-<link rel="stylesheet" href="/assets/tema.css">
-<link rel="stylesheet" href="/assets/soberano.css">
+<meta property="og:image" content="https://preceptoros.org/assets/preceptor-og.png">
 <!-- hreflang -->
 <link rel="alternate" hreflang="ar" href="https://preceptoros.org/ar/">
 <link rel="alternate" hreflang="de" href="https://preceptoros.org/de/">
@@ -47,105 +26,28 @@
 <!-- hreflang -->
 <link rel="manifest" href="/manifest.webmanifest">
 <meta name="theme-color" content="#17131F">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"PreceptorOS","applicationCategory":"AI Companion","operatingSystem":"Linux, Windows, macOS, Android"}</script>
+<link rel="stylesheet" href="/assets/base.css">
+<link rel="stylesheet" href="/assets/canon.css">
+<link rel="stylesheet" href="/assets/soberano.css">
+<link rel="stylesheet" href="/assets/consiento.css">
+<link rel="stylesheet" href="/assets/eaa-art12-local-first-surface.css">
 </head>
-<body>
-<svg style="display:none"><symbol id="icon-key" viewBox="0 0 24 24"><path d="M7 14c-1.66 0-3 1.34-3 3 0 1.31 1.16 2.5 2.5 2.8.41.09.83.2 1.25.2.75 0 1.46-.21 2.08-.58l3.46 3.46 1.41-1.41-3.46-3.46c.37-.62.58-1.33.58-2.08 0-1.66-1.34-3-3-3zm0 4c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm13.71-9.37l-1.34-1.34-2.12 2.12 1.34 1.34 2.12-2.12zm-3.54 3.54l-1.34-1.34-4.95 4.95 1.34 1.34 4.95-4.95z"/></symbol></svg>
-<!-- El telon: el despertar del producto. Va PRIMERO en el cuerpo porque es
-     lo primero que se ve, y `aria-hidden` porque no dice nada que no diga
-     la pagina que hay debajo -- quien lee con los oidos no espera a una
-     cortina. -->
-<div class="telon" id="telon" aria-hidden="true">
-  <div class="telon-busto"></div>
-  <p class="telon-marca">Preceptor<b>OS</b></p>
-</div>
-<canvas id="ambient" aria-hidden="true"></canvas>
-<main>
-  <header id="cabezal">
-    <div class="cab-fila">
-      <div class="lateral-zona">
-        <button class="lateral-boton rueda" id="rueda" type="button"
-                aria-expanded="false" aria-controls="panel-ajustes">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
-               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <circle cx="12" cy="12" r="3"></circle>
-            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-          </svg>
-          <span class="sr" data-rotulo="ajustes"></span>
-        </button>
-        <section id="panel-ajustes" class="cerrado"></section>
-      </div>
-      <div class="marca"><h1>Preceptor<b>OS</b></h1><span id="cab-ident" class="cab-ident"></span></div>
-      <p class="cab-solar" id="cab-solar"></p>
-      <div id="identity" class="fila identity"></div>
-    </div>
-    <nav id="cab-nav"></nav>
-    <div class="presentacion"><div class="esfera" role="img"
-         aria-label="Preceptor"></div></div>
-  </header>
-  <section id="hub"></section>
-<div id="hub-layout"><div id="chat" class="panel">
-    <div id="dialogo"></div>
-    <div class="chat-abajo">
-    <textarea id="pregunta" class="chat-input" placeholder="Habla o escribe..." rows="3"></textarea>
-    <div class="fila chat-acciones"><button id="enviar" type="button" class="boton enviar" aria-label="Enviar"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M3 20.5v-6l8-2.5-8-2.5v-6L22 12z"/></svg><span class="rotulo">Enviar</span></button>
-      <div id="voice" class="fila"></div></div>
-    </div>
-  </div>
-    <div class="atajos" id="atajos" hidden></div>
-    <!-- EL CUADRO DE ESPECIFICACIONES · una caja, no tres cosas sueltas.
-         Aqui vive lo que describe el aparato: que motor contesta, a que
-         velocidad, y QUE HERRAMIENTA esta puesta. Las nubes de companeros
-         bajaron aqui el 2026-09-05 desde el desplegable de Herramientas, y ese
-         movimiento es lo que dejo sin trabajo al boton que lo abria: un mando
-         que abre algo que ya se ve es un mando de mas. -->
-    <div id="especificaciones">
-      <div id="motor"></div>
-      <p id="brain" class="brain"></p>
-      <section id="panel-modelos"></section>
-    </div>
-  </div>
-  <!-- LAS TRES PUERTAS GRANDES. Los mismos destinos y los mismos
-     rotulos que el cabezal, leidos de `nav.json`: el cabezal es para
-     quien ya sabe donde va, esto para quien acaba de llegar. -->
-
-<footer class="honest-footer">
-      <p class="proof"><b>924</b> pruebas en verde en la app · <b>181</b> en esta web · <b>cero</b> peticiones externas al cargar · <b>16 KB</b> máximo por fichero</p>
-    </footer>
+<body class="portada-juego">
+<header class="cab-juego">
+<a class="cab-marca" href="/es/">PreceptorOS · <b>theGame</b></a>
+<nav class="cab-lenguas" aria-label="Language · Español"><a href="/ar/" hreflang="ar" lang="ar">AR</a><a href="/de/" hreflang="de" lang="de">DE</a><a href="/el/" hreflang="el" lang="el">EL</a><a href="/en/" hreflang="en" lang="en">EN</a><a href="/es/" hreflang="es" lang="es" aria-current="page">ES</a><a href="/fr/" hreflang="fr" lang="fr">FR</a><a href="/it/" hreflang="it" lang="it">IT</a><a href="/pt/" hreflang="pt" lang="pt">PT</a><a href="/ru/" hreflang="ru" lang="ru">RU</a></nav>
+</header>
+<main id="juego-panel" class="juego-panel" aria-label="theGame">
+<p class="juego-carga">theGame · loading on this device. No account, no cloud.</p>
+<noscript><p class="juego-carga">theGame needs JavaScript: it runs entirely on this device.</p></noscript>
 </main>
-<script type="application/json" id="i18n">{"ajustes": "Ajustes", "brainAsleep": "Todavía no hay motor arrancado", "brainBrowser": "IA del navegador (Edge)", "brainLabel": "Modelo:", "brainLive": "Vivo en tu máquina", "brainNone": "ninguno", "cabBenchmark": "LORATELIER", "cabCola": "FIRMA", "cabComunidad": "COMUNIDAD", "cabGame": "theGame", "cabHome": "INICIO", "cabIdioma": "IDIOMA", "cabInstala": "HERRAMIENTAS", "cabSolar": "99% solar (declarado, sin medir), excepto el proveedor web", "caraPensando": "Activando modelo", "causaDesconocida": "Causa desconocida.", "causaElegida": "Causa: elegiste el JSON.", "causaEnBenchmark": "Causa: el motor se elige y se mide en el Benchmark.", "copiaManual": "Selecciona y Ctrl+C", "copiado": "Copiado OK", "copiarPara": "Copiar para", "destinos": ["Gemini", "ChatGPT", "Claude", "mi IA local"], "etiquetaJson": "Texto para copiar a tu IA", "falloRecitado": "NO_DATA — el modelo recitó sus instrucciones en vez de contestar. Se tacharon, y de su turno no quedaba nada.", "falloRespuesta": "NO_DATA · fallo al generar respuesta", "falloVacio": "NO_DATA — el motor terminó sin emitir ni un carácter. No es una respuesta vacía: es un turno que no llegó a existir.", "hubSinCatalogo": "NO_DATA · el catálogo no llegó", "idAviso": "Se genera una clave en tu navegador. No se puede exportar ni copiar a otro aparato: si borras los datos del sitio, esta identidad se pierde y no hay forma de recuperarla. No hay contraseña que olvidar ni servidor que la guarde.", "idClave": "Ver mi huella", "idEntrar": "Crear identidad", "idFallo": "NO_DATA — no se pudo crear la identidad:", "idPerfil": "Mi perfil", "idPublica": "Clave pública:", "laiListo": "Hablarás con", "llevate": "Llévate este texto a la IA que ya uses.", "micCerrarAviso": "Cerrar el aviso", "micEnAparato": "Dictado en tu aparato. El audio no sale de aquí.", "micEnNube": "Dictando por servidor externo. Tu voz sale de este aparato.", "micEscuchando": "Escuchando… toca para parar", "micFallo": "NO_DATA — el dictado local falló:", "micHablar": "Hablar", "micNubeSi": "Acepto: usar el servidor externo", "micNubeTrato": "Para dictar aquí hay que pasar por un servidor externo: tu navegador no sabe hacerlo dentro del aparato, y la única vía que queda manda tu voz a Google. Nada de eso ocurre si no lo aceptas ahora, y el permiso dura solo esta sesión: al recargar vuelve a preguntarse.", "micSinLocal": "Sin voz, y es una decisión. Tu navegador no sabe dictar DENTRO del aparato, y la única alternativa sería mandar tu audio a un servidor externo. Mientras esta web prometa que nada de lo que dices sale de tu máquina, ese camino no se toma: preferimos no tener micrófono a tener uno que filtra. El día que se acepte ese trato, se dirá aquí.", "mismoTexto": "El mismo texto sirve para cualquier IA. Esa es la idea: no depender de una sola.", "pleno": "Pantalla completa", "plenoSalir": "Salir de pantalla completa", "prefieroJson": "Prefiero el JSON", "rackCausa": "Causa: el rack no contesto; el tunel publico aun no esta levantado.", "rackFallo": "NO_DATA — el rack no contesto.", "rackSinAdaptador": "NO_DATA — este companero todavia no tiene modelo servido en el rack.", "sinMotor": "NO_DATA · no hay motor de IA disponible en este navegador.", "smFalla": "Y esto se le da mal: ", "smMedido": " tok/s · medido con la máquina a ", "smNadaP": "No hay motor elegido. La página te dará un texto para llevar a la IA que ya uses.", "smNadaT": "Sin molino", "smNavP": "Corre dentro del navegador. No sale nada.", "smNavT": "En tu aparato", "smRackP": "Tu pregunta sube al rack y vuelve. Sale de tu aparato.", "smRackT": "En el cerro", "tu": "Tú"}</script>
-<script src="/assets/prompts-es.js"></script>
-<script src="/assets/fallback.js"></script>
-<script src="/assets/state.js"></script>
-<script src="/assets/rack.js"></script>
-<script src="/assets/engine.js"></script>
-<script src="/assets/chat.js"></script>
-<script src="/assets/showman.js"></script><script src="/assets/ficha-cerebro.js" defer></script>
-<script src="/assets/selector-modelo.js"></script><script src="/assets/consiento.js"></script>
-<script src="/assets/voice.js"></script>
-<script src="/assets/acceso.js"></script>
-<script src="/assets/copiar.js"></script>
-<script src="/assets/ambient.js"></script>
-<script src="/assets/cabezal.js"></script>
-<script src="/assets/cabezal-rotulos.js"></script>
 <script src="/assets/auth.js"></script>
-<script src="/assets/hub.js"></script>
-<script src="/assets/hub-cola.js"></script>
-<script src="/assets/comandos.js"></script>
-<script src="/assets/bronce.js"></script>
-<script src="/assets/corregir-es.js"></script>
-<script src="/assets/corregir.js"></script>
-<script src="/assets/aprender.js"></script>
-<script src="/assets/elegir.js"></script>
+<script src="/assets/consiento.js"></script>
 <script src="/assets/enviar-es.js"></script>
 <script src="/assets/enviar.js"></script>
-<script src="/assets/sello-rack.js"></script>
-<script src="/assets/medidas-turno.js"></script>
-<script src="/assets/chat-panel.js"></script>
-<script src="/assets/senal.js"></script>
-<script src="/assets/chat-router.js"></script>
-<script src="/assets/medidas.js"></script>
 <script src="/assets/pwa.js"></script>
 <script src="/assets/page-comment.js" defer></script>
+<script src="/assets/thegame.js"></script>
+<script src="/assets/eaa-art12-local-first-surface.js"></script>
 </body>
 </html>
