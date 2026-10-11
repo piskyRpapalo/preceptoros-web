@@ -237,9 +237,27 @@
     }, Promise.resolve(''));
   }
   function cadenaWeb(clave) { return caja('atlas-invocaciones', 'cadena', clave); }
+  /* PIEDAD VISIBLE (piezas 1+2, firmadas): se calcula AQUI, en el cliente, desde TU cadena; el rack no lleva la
+     cuenta de la suerte de nadie. Solo cuentan los huevos ABIERTOS (lo que aun incuba no se destripa). Cadena con
+     hueco: NO_DATA con causa, nunca un numero inventado. `rareza(eslabon)` se inyecta (la gacha decide, aqui no). */
+  function piedad(cadena, rareza) {
+    var causa = cadena ? compruebaCadena(cadena) : 'sin cadena';
+    if (causa) { return { nd: causa }; }
+    var abiertos = cadena.filter(function (e) { return e.abierto; }), n = 0;
+    for (var i = abiertos.length - 1; i >= 0; i--) { var r = rareza(abiertos[i]); if (r === 'raro' || r === 'unico') { break; } n++; }
+    return { desde_raro: n, abiertos: abiertos.length, incubando: cadena.length - abiertos.length };
+  }
+  /* CRONICA DE DESEOS (pieza 3): cada capsula ABIERTA con su puesto, su ciclo, su sello y lo que salio. */
+  function cronica(cadena, tirada) {
+    return (cadena || []).filter(function (e) { return e.abierto; }).map(function (e) {
+      var t = tirada(e.semilla, e.obj.tc);
+      return { seq: e.obj.seq, tc: e.obj.tc, ciclo: e.desde, sello: e.semilla.slice(0, 8), aristas: t.aristas, rareza: t.rareza };
+    });
+  }
 
   var AtlasArmy = { TOPE: TOPE, adopcion: adopcion, crea: crea, almacenWeb: almacenWeb, cajaWeb: caja, calidadWeb: calidadWeb, conquistasWeb: conquistasWeb, limpiaRecord: limpiaRecord, verificaWeb: verificaWeb, semillaWeb: semillaWeb,
-    eslabon: eslabon, compruebaCadena: compruebaCadena, anexa: anexa, huevos: huevos, abre: abre, verificaCadena: verificaCadena, cadenaWeb: cadenaWeb };
+    eslabon: eslabon, compruebaCadena: compruebaCadena, anexa: anexa, huevos: huevos, abre: abre, verificaCadena: verificaCadena, cadenaWeb: cadenaWeb,
+    piedad: piedad, cronica: cronica };
   if (typeof module === 'object' && module.exports) { module.exports = AtlasArmy; }
   else { raiz.AtlasArmy = AtlasArmy; }
 })(this);

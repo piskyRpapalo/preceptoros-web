@@ -28,7 +28,7 @@
   function calor() { return S.calorDe(ins()); }
 
   /* --- la ficha de la tropa (lienzo, nombre, carta y voz): `ui-ficha.js` (troceo T) --- */
-  var lienzo, traza, nombre, ficha;
+  var lienzo, traza, nombre, ficha, cronica;
 
   /* --- invocar ------------------------------------------------------------ */
   function firma(obj) {
@@ -161,6 +161,7 @@
       x.b.disabled = !i || i.recursos.cobre < x.c.cobre || i.recursos.luz < x.c.luz;
     });
     pintaNido();
+    if (R.cron) { cronica(R.cron, cadena, causa); }  /* piezas 1+2 y 3: piedad y cronica, de TU cadena */
   }
   function tic() {
     /* G0 · la capa dejo de ser un <dialog> (sin `open`): con `!capa.open` esto salia SIEMPRE y nada eclosionaba. */
@@ -177,8 +178,8 @@
     G = window.AtlasGacha; A = window.AtlasArmy; S = window.AtlasSintesis;
     var zona = document.getElementById('atlas-juego');
     if (!G || !A || !S || !window.AtlasFicha || !zona || zona.querySelector('.atlas-incubadora')) { return; }
-    var F = window.AtlasFicha.crea({ G: G, S: S, T: T, el: el, boton: boton, rellena: rellena, dice: dice });
-    lienzo = F.lienzo; traza = F.traza; nombre = F.nombre; ficha = F.ficha;
+    var F = window.AtlasFicha.crea({ G: G, A: A, S: S, T: T, el: el, boton: boton, rellena: rellena, dice: dice });
+    lienzo = F.lienzo; traza = F.traza; nombre = F.nombre; ficha = F.ficha; cronica = F.cronica;
     capa = c; army = A.crea(A.verificaWeb, A.almacenWeb ? A.almacenWeb() : null);
     var s = el('section', 'panel atlas-incubadora');
     s.appendChild(el('h4', null, T('inc_h')));
@@ -211,6 +212,10 @@
     R.tcs = Object.keys(G.TCS).map(function (tc) {
       var co = G.TCS[tc].coste;
       var b = boton(T(tc) + ' · ' + rellena(T('inc_coste'), { cobre: co.cobre, luz: co.luz }));
+      /* Pieza 4: las odds ANTES del gesto. El leviatan (> 12 aristas) sale de la MISMA tabla que tira (R5, medida). */
+      var lev = G.oddsAristas(tc).reduce(function (a, x) { return a + (x[0] > 12 ? x[1] : 0); }, 0);
+      b.appendChild(el('small', 'atlas-leviatan', ' · ' + rellena(T('inc_leviatan'), { p: Math.floor(lev / 10) + '.' + (lev % 10) })));
+      b.id = 'invoca-' + tc;
       b.addEventListener('click', function () { invoca(tc); });
       R.caja.appendChild(b);
       return { b: b, c: co };
@@ -239,6 +244,7 @@
     R.estado = el('p', 'atlas-vivo'); R.estado.setAttribute('role', 'status'); s.appendChild(R.estado);
     s.appendChild(el('h5', null, T('nido_h')));
     R.nido = el('ul', 'atlas-nido'); s.appendChild(R.nido);
+    R.cron = el('section', 'atlas-deseos'); R.cron.id = 'atlas-cronica'; R.cron.setAttribute('aria-label', T('cronica_h')); s.appendChild(R.cron);
     R.eclosion = el('div', 'atlas-eclosion'); R.eclosion.hidden = true; s.appendChild(R.eclosion);
     s.appendChild(el('h5', null, T('army_h')));
     R.army = el('ul', 'atlas-army'); s.appendChild(R.army);

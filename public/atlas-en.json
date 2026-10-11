@@ -280,6 +280,11 @@
     "pl_estado": "Your crab · state",
     "pl_lugares": "Places on the map",
     "terminal_aria": "Terminal: your crab, the places and what your crab can touch",
-    "pl_entrada": "Where you play (open sea or a node)"
+    "pl_entrada": "Where you play (open sea or a node)",
+    "inc_leviatan": "Leviathan (more than 12 edges) {p}%",
+    "piedad_t": "Since your last Rare or better: {n} opened · {a} opened in all · {i} still incubating",
+    "garantia_nd": "Guarantee: NO_DATA · its number is not signed yet. No hidden pity here: what you see is all there is.",
+    "cronica_h": "Chronicle of wishes",
+    "cronica_item": "#{s} · cycle {c} · {tc} · {n} edges · {r} · seal {h}"
   }
 }

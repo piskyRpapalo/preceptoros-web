@@ -72,5 +72,20 @@ await caso('G0: abrir un huevo lo marca en la cadena (no se borra: la cronica lo
   return d.length === 2 && A.huevos(d).length === 1 && A.huevos(d)[0].seq === 2 && d[0].abierto === true && A.compruebaCadena(d) === '';
 });
 
+await caso('1+2 · PIEDAD: cuenta desde el ultimo raro o mejor, solo lo ABIERTO; con hueco, NO_DATA', () => {
+  let c = []; for (let i = 0; i < 6; i++) { c = invoca(c, 'tc1', i * 30); }
+  const rz = (e) => G.tirada(e.semilla, e.obj.tc).rareza;
+  let abierta = c; for (const e of c.slice(0, 4)) { abierta = A.abre(abierta, e.obj.seq); }
+  const p = A.piedad(abierta, rz), r = abierta.filter(e => e.abierto).map(rz);
+  let esperado = 0; for (let i = r.length - 1; i >= 0 && r[i] !== 'raro' && r[i] !== 'unico'; i--) { esperado++; }
+  const hueco = A.piedad([abierta[0], abierta[2]], rz);
+  return p.desde_raro === esperado && p.abiertos === 4 && p.incubando === 2 && !!hueco.nd && !('desde_raro' in hueco) || { p, r, hueco };
+});
+await caso('3 · CRONICA: cada capsula ABIERTA con su puesto, ciclo, sello y lo que salio (lo que incuba no se destripa)', () => {
+  let c = invoca([], 'tc2', 10); c = invoca(c, 'tc1', 40); c = A.abre(c, 1);
+  const k = A.cronica(c, G.tirada), t = G.tirada(c[0].semilla, 'tc2');
+  return k.length === 1 && k[0].seq === 1 && k[0].ciclo === 10 && k[0].aristas === t.aristas && k[0].rareza === t.rareza && k[0].sello === c[0].semilla.slice(0, 8) || k;
+});
+
 console.log(JSON.stringify(casos, null, 1));
 process.exitCode = casos.every(c => c.ok) ? 0 : 1;
