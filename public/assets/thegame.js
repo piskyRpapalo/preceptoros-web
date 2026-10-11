@@ -14,7 +14,7 @@
     ['atlas-piloto.js'], ['atlas-partida.js'], ['atlas-piloto-capa.js'],
     ['/game/juez.js'], ['atlas-guardado.js']];
   /* EL ARMY, A DEMANDA (v1.5): al abrir su pestana o al importar una partida firmada. */
-  var ARMY = [['/game/valores.js'], ['/game/gacha.js'], ['/game/db.js'], ['/game/core.js'], ['/game/ui.js']];
+  var ARMY = [['/game/valores.js'], ['/game/gacha.js'], ['/game/db.js'], ['/game/core.js'], ['/game/ui-ficha.js'], ['/game/ui.js']];
   /* LA ARENA, A DEMANDA (2026-09-28): el mar, los lugares NPC, el combate en vivo y los duelos por
      paquetes firmados. Detras del Army, cuyas tropas y verificador usa. */
   var ARENA = [['/game/sobres.js'], ['/game/rating.js'], ['/game/arena.js'], ['/game/duelo.js'],

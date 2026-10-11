@@ -45,7 +45,7 @@ const JUEGO = [
   '/assets/atlas-motor.js', '/assets/atlas-piso.js', '/assets/atlas-piloto.js', '/assets/atlas-partida.js',
   '/assets/atlas-piloto-capa.js', '/assets/atlas-guardado.js', '/assets/atlas-hud.js',
   '/assets/atlas-opina.js', '/assets/atlas-voz.js', '/game/juez.js', '/game/valores.js', '/game/gacha.js',
-  '/game/db.js', '/game/core.js', '/game/ui.js', '/game/canon.js', '/game/wave_render.js', '/game/escena.js',
+  '/game/db.js', '/game/core.js', '/game/ui-ficha.js', '/game/ui.js', '/game/canon.js', '/game/wave_render.js', '/game/escena.js',
   '/game/gdpr-art25-ephemeral-crab.js', '/game/aiact-art50-crab-terminal.js', '/game/gdpr-art7-entry-choice.js', '/game/aiact-art50-state-radio.js', '/game/casa-medidas.js', '/game/casa-personaliza.js', '/game/casa-lateral.js', '/game/home_buildings.js',
   '/game/summon_reveal.js', '/game/taller.js', '/game/ui-taller.js', '/game/primer_eco.js', '/game/home.css', '/game/sobres.js', '/game/rating.js', '/game/arena.js',
   '/game/duelo.js', '/game/fog_of_war.js', '/game/world_camera.js', '/game/mar.js', '/game/mar-anclas.js', '/game/mar-cangrejos.js', '/game/mar-fondo.js', '/game/nodos-pesos.js',
