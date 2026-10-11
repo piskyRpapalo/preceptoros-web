@@ -1,0 +1,41 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "preceptoros:atlas.invocacion/2",
+ "title": "Eslabon de la cadena de invocaciones (G0)",
+ "description": "Lo que la persona firma al invocar. Solo lo que fija la semilla: la TC, el puesto en la cadena (seq monotono por clave, desde 1) y prev (la semilla del eslabon anterior = sha256 de su firma; 'genesis' el primero). Ni pseudonimo ni ciclo: con ellos, renombrarse o esperar daba otra semilla. La semilla es sha256 de la firma Ed25519. `db.js` lo comprueba (huecos, enlaces, firma, semilla) al volver; un fallo es NO_DATA con causa. Vive fuera de `public/`: es el contrato.",
+ "type": "object",
+ "additionalProperties": false,
+ "required": [
+  "esquema",
+  "tc",
+  "seq",
+  "prev",
+  "clave_publica"
+ ],
+ "properties": {
+  "esquema": {
+   "const": "atlas.invocacion/2"
+  },
+  "tc": {
+   "enum": [
+    "tc1",
+    "tc2",
+    "tc3",
+    "tc4"
+   ]
+  },
+  "seq": {
+   "type": "integer",
+   "minimum": 1,
+   "maximum": 1000000
+  },
+  "prev": {
+   "type": "string",
+   "pattern": "^(genesis|[0-9a-f]{64})$"
+  },
+  "clave_publica": {
+   "type": "string",
+   "pattern": "^[0-9a-f]{64}$"
+  }
+ }
+}
