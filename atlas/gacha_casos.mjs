@@ -198,6 +198,25 @@ await caso('army: la misma tropa no entra dos veces', async () => {
 });
 
 /* --- sintesis --------------------------------------------------------------- */
+// R6 (plan «el refresco»): SU ESPECTRO MANDA EL TIMBRE. Antes 500 tropas daban una sola portadora (205 Hz,
+// medido): salia del armonico base, que es k = 1 en todas. Ahora la nota sale de las aristas (pentatonica sobre
+// 110 Hz), el color de a1, la aspereza del detalle, y el Leviatan lleva segunda moduladora. Una receta, no dos.
+await caso('R6: el espectro manda el timbre (misma tropa, misma receta; las aristas ponen la nota)', () => {
+  const ts = Array.from({ length: 500 }, (_, i) => G.tirada(sha('v' + i), 'tc' + (1 + i % 4)));
+  const fs = new Set(ts.map((t) => S.vozDe(t).portadora)), mal = [];
+  if (fs.size < 10) { mal.push('portadoras distintas: ' + fs.size); }
+  ts.forEach((t) => {
+    if (JSON.stringify(S.vozDe(t)) !== JSON.stringify(S.vozDe(JSON.parse(JSON.stringify(t))))) { mal.push('no determinista'); }
+    const otra = ts.find((u) => u.aristas !== t.aristas);
+    if (otra && S.vozDe(otra).portadora === S.vozDe(t).portadora) { mal.push('dos aristas, una nota: ' + t.aristas + '/' + otra.aristas); }
+    if ((t.aristas > 12) !== ('moduladora2' in S.vozDe(t))) { mal.push('leviatan sin segunda moduladora: ' + t.aristas); }
+  });
+  return !mal.length || [...new Set(mal)].slice(0, 4);
+});
+await caso('R6: la voz exacta usa la MISMA receta (atlas-voz.js no copia la formula)', () => {
+  const v = readFileSync(join(RAIZ, 'public/assets/atlas-voz.js'), 'utf-8');
+  return (v.includes('S.vozDe(t)') && !v.includes('160 + 45')) || 'atlas-voz copia la receta';
+});
 await caso('sintesis: receta determinista y sin ficheros', () =>
   JSON.stringify(S.receta('pop', 0.3)) === JSON.stringify(S.receta('pop', 0.3)) && S.receta('mp3', 0) === null);
 await caso('sintesis: el calor del Nucleo hace el sonido mas grave y aspero', () => {

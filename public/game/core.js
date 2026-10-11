@@ -77,17 +77,27 @@
     return activo;
   }
 
-  /* LA VOZ DE UNA ONDA (2026-09-28): cada tropa suena distinta y siempre igual. La receta sale de
-     sus armonicos, que ya salen de la semilla firmada: sin azar, dos ondas se distinguen de oido y
-     la misma onda suena igual en cada carga. Portadora por el primer armonico, moduladora por
-     cuantos tiene, profundidad por su amplitud. Corto y bajo: identidad, no musica. */
+  /* LA VOZ DE UNA ONDA: cada tropa suena distinta y siempre igual, y SU ESPECTRO MANDA EL TIMBRE (R6,
+     plan «el refresco», 2026-10-11). Antes la portadora salia del primer armonico, que en TODAS las
+     tropas es la base k = 1: medido, 500 tropas daban UNA sola portadora (205 Hz). Ahora, de su espectro:
+     - las ARISTAS (n = |k2 - 1|, el armonico que las pone) dan la NOTA, en la pentatonica sobre 110 Hz
+       (la de la radio): 3 aristas, 110 Hz; cada arista, un grado mas; un Leviatan suena agudo;
+     - la amplitud de ese armonico (a1) da la RAZON de la moduladora (8 + a1) / 8: el color;
+     - el detalle (los armonicos altos) da el INDICE: mas detalle, mas aspero;
+     - el Leviatan (mas de 12 aristas) lleva una SEGUNDA moduladora: inestable, como su forma.
+     Pura y entera: la misma receta la usa la voz exacta (`atlas-voz.js`), no una copia. Corto y bajo:
+     identidad, no musica. */
+  var PENTA_V = [0, 2, 4, 7, 9];
   function vozDe(t) {
-    var a = (t && t.armonicos) || [], amp = 0;
+    var a = (t && t.armonicos) || [], det = 0;
     if (!a.length) { return null; }
-    a.forEach(function (h) { amp += Math.abs(h[1]) + Math.abs(h[2]); });
-    var f = 160 + 45 * (Math.abs(a[0][0]) % 12);
-    return { tipo: 'onda', portadora: f, moduladora: Math.round(f * (1 + a.length / 4)),
-             indice: Math.min(400, 20 + amp * 6), dur: 0.5, gan: 0.07 };
+    var n = a.length > 1 ? Math.max(2, Math.abs(a[1][0] - 1)) : 2, a1 = a.length > 1 ? Math.abs(a[1][1]) : 0, g = Math.max(0, n - 3);
+    a.slice(2).forEach(function (h) { det += Math.abs(h[1]) + Math.abs(h[2]); });
+    var f = Math.round(110 * Math.pow(2, (PENTA_V[g % 5] + 12 * Math.floor(g / 5)) / 12));
+    var r = { tipo: 'onda', portadora: f, moduladora: Math.round(f * (8 + a1) / 8),
+              indice: Math.min(400, 20 + a1 * 4 + det * 6), dur: 0.5, gan: 0.07 };
+    if (n > 12) { r.moduladora2 = Math.round(f * 7 / 5); r.indice2 = Math.round(r.indice / 2); }
+    return r;
   }
   function suena(tipo, calor) {
     var r = typeof tipo === 'object' ? tipo : receta(tipo, calor);
