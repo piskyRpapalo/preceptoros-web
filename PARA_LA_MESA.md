@@ -1,3 +1,14 @@
+# PARA_LA_MESA · Ronda «el mapa único y la terminal» · 2026-10-11 · Claude (Opus 5.5)
+Contrato FIRMADO + addendum visual v2 (Ruswick + Zanzlanz + PS1). Rama `claude/mapa-unico` sobre `main` `b63ddec`. **Sin push**: cada pieza espera tu FIRMO. Lo de las rondas anteriores sigue debajo.
+
+| Pieza | Qué cambia | Commit | Gates | Sello |
+|---|---|---|---|---|
+| U0 · troceos + camino muerto | Nada visible. `home_buildings` → `casa-medidas.js` (pura: partes y cifras) + `casa-personaliza.js`; `ui-arena` → `ui-arena-comun.js`; `thegame.js` pierde el camino del `<dialog>`, que nunca corría (X, About, Escape, `showModal`, `cierre_aviso` en 9 lenguas, `en-thegame`) | `6eddbb1` | n=2 verdes · test nuevo · sabotaje (un gemelo vuelve) rojo→verde · navegador: Customize 7 grupos, mapa 6 lugares, 4 partes con aria-label | MEDIDO · `abel` |
+
+**Auditoría de acciones (punto 1), primera pasada, MEDIDO por CDP** (`~/p0x/no-publicar/auditoria-mapa-unico-20261011/`): 115 controles · ninguno visible sin nombre accesible · **24 de 28 visibles sin `id`** (se corrigen en esta ronda) · duplicados: «Play the state» (HOME+MAP), «⚔ Fight» (ficha del lugar + ficha del rival) y Feedback por dos vías · botones muertos confirmados: 0 (los 4 sin handler lo reciben al empezar la batalla) · código muerto retirado en U0: el camino del `<dialog>`.
+
+---
+
 # PARA_LA_MESA · Ronda «el refresco» · theGame con gráficos renovados · 2026-10-11 · Claude (Opus 5.5)
 Sello: MEDIDO (salvo lo marcado PROPUESTA) · rama `claude/refresco` (`3803653`..`HEAD`), una rama por pieza · **sin push**: cada pieza espera tu FIRMO.
 1. R1 J6: el mar de fondo en la portada, con un único pintor de teselas (`mar-fondo.js`) · `aeae759`
