@@ -14,6 +14,22 @@ Coste: ~600 k tokens de sesión · delegadas 0 / hechas por Opus 8 piezas · tie
 
 ---
 
+## ESTÁ LIVE · 2026-10-11 15:31Z (FIRMO del Soberano: «FIRMO LA RONDA COMPLETA»)
+- PR #20 → merge `365146d` en `main`. CI `test_web`: pass. preceptoros.org sirve `preceptoros-2026-17-abed` desde las 15:31:31Z (medido con curl). Huella del SW: `520754fde9626c8e`.
+- En vivo (MEDIDO): `/es/` 200 · `/en/` 200 · `mar-fondo.js`, `gacha.js`, `tubo.css` y `thegame.js` con el mismo sha256 que `main` · Chrome headless contra preceptoros.org/es/: SW activo, mar de fondo, pestañas Home|Map|Workshop, 4 partes del cangrejo, valores `provisional-2026-10-11.aristas`, cero errores de consola. Captura `live_es_cangrejo.png`.
+- Regeneración (contadores/huella): `coherencia-publica.py --arbol` dice «la web publica exactamente lo que los gates miden», así que no hay diff que commitear. Los iconos ya se regeneraron dentro de R5.
+
+## Decisiones firmadas (2026-10-11)
+- **C4:** la versión del gacha es `valores.version` + `packSha`; `contenido_v` del motor solo cuando el motor cambie.
+- **Tabla de aristas:** FIRMADA la cifra de R5 (con 3σ), anclada en las 16.000 tiradas.
+- **Chat con el rack:** la web sigue SIN fetch y nada viaja sin la pipeline firmada; las anclas se quedan como están.
+- **Ecos de superficie:** CONTRADICCIÓN declarada y **gana la doctrina**: será telemetría DECLARADA, jamás camuflada. La corrección vale contra «6 planes.txt»:175-207.
+- **Techo 16 KiB** y **patrón UMD:** confirmados.
+- **Dónde viven los gates (lo que el 9-oct se llamó `web/bin`):** `test_web.py` y `arnes_sw.mjs` en la raíz del repo web, `atlas/test_atlas.py`, `bin/sellar.py` (sustituye a `sw-huella.py`); `doctor.py`, `sw-huella.py` y `coherencia-publica.py` en `~/p0x/bin/`; `gate.sh` en `~/p0x/deploy/soberano/hooks/`.
+- **P6, P9, P10 y P11:** FIRMADA su construcción, cada uno su PR, su test y su sabotaje, esperando FIRMO por pieza. Orden: P9 → P10 (Taller) → P6 (arena) → P11.
+
+---
+
 ## Delegación root (9 h)
 **NO ACTIVADA.** Ninguna pieza ha necesitado sudo. El reloj de 9 h empieza con el primer comando sudo y no ha habido ninguno: no hay hora de inicio ni de caducidad que sellar. Si se activa, la hora irá aquí.
 
