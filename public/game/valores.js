@@ -64,7 +64,13 @@
        LIJAR sube UN stat en `paso` por nivel, hasta `max`, y cuesta base * nivel gramos: cada nivel mas
        caro. JAMAS anade aristas (eso es un Summon nuevo). Un reciclador, no una tienda: el residuo no se
        compra. PROVISIONAL, como todo este fichero. */
-    taller: { gramos_por_arista: 1, leviatan_x: 3, lija: { base: 4, max: 5, paso: 1, stats: ['velocidad', 'armadura', 'vida', 'sigilo'] } },
+    taller: { gramos_por_arista: 1, leviatan_x: 3, lija: { base: 4, max: 5, paso: 1, stats: ['velocidad', 'armadura', 'vida', 'sigilo'] },
+      tinte: { coste: 2 } },
+    /* P10 · PRISMA DE BANDERA («6 planes.txt»:156-163; LEEME:1159-1161): tu color de capitan, de una paleta
+       CERRADA de ocho tonos bioluminiscentes (un tono hsl cada uno). Cerrada a proposito: un color libre seria
+       una huella silenciosa (LEEME: «identidad visual sin huella silenciosa»). TENIR una onda a tu bandera
+       gasta residuo (`taller.tinte`). Solo aspecto: no entra en el combate. Nada decide color por otro. */
+    banderas: { teal: 171, ambar: 37, hielo: 197, violeta: 265, coral: 12, kelp: 140, oro: 50, rosa: 320 },
     /* Solo para LEER las tropas de la version anterior (sin `aristas`): su simetria iba por rareza. */
     simetria: { normal: 2, magico: 3, raro: 5, unico: 7 },
     terminos: { normal: 3, magico: 4, raro: 5, unico: 6 },

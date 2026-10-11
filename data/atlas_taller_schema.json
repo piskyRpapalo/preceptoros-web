@@ -2,26 +2,208 @@
  "$schema": "https://json-schema.org/draft/2020-12/schema",
  "$id": "preceptoros:atlas.taller/1",
  "title": "Recibo del Polvo de Taller (P9)",
- "description": "Un eslabon de la cadena del Taller: desintegrar (gramos > 0, con las aristas que lo valen) o lijar un stat (gramos < 0, un nivel). `prev` es el sha256 del recibo anterior (64 ceros el primero) y `saldo` lo que deja. Lo firma la persona; `taller.js` comprueba las cuentas y `db.js` la firma antes de sacar una tropa. Vive fuera de `public/`: es el contrato.",
+ "description": "Un eslabon de la cadena del Taller: desintegrar (gramos > 0, con las aristas que lo valen) lijar un stat (gramos < 0, un nivel) o tenir una onda al color de tu bandera (P10, gramos < 0). `prev` es el sha256 del recibo anterior (64 ceros el primero) y `saldo` lo que deja. Lo firma la persona; `taller.js` comprueba las cuentas y `db.js` la firma antes de sacar una tropa. Vive fuera de `public/`: es el contrato.",
  "type": "object",
  "additionalProperties": false,
- "required": ["esquema", "op", "prev", "clave_publica", "semilla", "gramos", "saldo"],
+ "required": [
+  "esquema",
+  "op",
+  "prev",
+  "clave_publica",
+  "semilla",
+  "gramos",
+  "saldo"
+ ],
  "properties": {
-  "esquema": {"const": "atlas.taller/1"},
-  "op": {"enum": ["desintegra", "lija"]},
-  "prev": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
-  "clave_publica": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
-  "semilla": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
-  "tc": {"enum": ["tc1", "tc2", "tc3", "tc4"]},
-  "aristas": {"type": "integer", "minimum": 3, "maximum": 24},
-  "stat": {"enum": ["velocidad", "armadura", "vida", "sigilo"]},
-  "nivel": {"type": "integer", "minimum": 1, "maximum": 5},
-  "gramos": {"type": "integer"},
-  "saldo": {"type": "integer", "minimum": 0}
+  "esquema": {
+   "const": "atlas.taller/1"
+  },
+  "op": {
+   "enum": [
+    "desintegra",
+    "lija",
+    "tinte"
+   ]
+  },
+  "prev": {
+   "type": "string",
+   "pattern": "^[0-9a-f]{64}$"
+  },
+  "clave_publica": {
+   "type": "string",
+   "pattern": "^[0-9a-f]{64}$"
+  },
+  "semilla": {
+   "type": "string",
+   "pattern": "^[0-9a-f]{64}$"
+  },
+  "tc": {
+   "enum": [
+    "tc1",
+    "tc2",
+    "tc3",
+    "tc4"
+   ]
+  },
+  "aristas": {
+   "type": "integer",
+   "minimum": 3,
+   "maximum": 24
+  },
+  "stat": {
+   "enum": [
+    "velocidad",
+    "armadura",
+    "vida",
+    "sigilo"
+   ]
+  },
+  "nivel": {
+   "type": "integer",
+   "minimum": 1,
+   "maximum": 5
+  },
+  "gramos": {
+   "type": "integer"
+  },
+  "saldo": {
+   "type": "integer",
+   "minimum": 0
+  },
+  "bandera": {
+   "enum": [
+    "teal",
+    "ambar",
+    "hielo",
+    "violeta",
+    "coral",
+    "kelp",
+    "oro",
+    "rosa"
+   ]
+  }
  },
  "allOf": [
-  {"if": {"properties": {"op": {"const": "desintegra"}}},
-   "then": {"required": ["tc", "aristas"], "properties": {"gramos": {"minimum": 1}}, "not": {"anyOf": [{"required": ["stat"]}, {"required": ["nivel"]}]}},
-   "else": {"required": ["stat", "nivel"], "properties": {"gramos": {"maximum": -1}}, "not": {"anyOf": [{"required": ["tc"]}, {"required": ["aristas"]}]}}}
+  {
+   "if": {
+    "properties": {
+     "op": {
+      "const": "desintegra"
+     }
+    }
+   },
+   "then": {
+    "required": [
+     "tc",
+     "aristas"
+    ],
+    "properties": {
+     "gramos": {
+      "minimum": 1
+     }
+    },
+    "not": {
+     "anyOf": [
+      {
+       "required": [
+        "stat"
+       ]
+      },
+      {
+       "required": [
+        "nivel"
+       ]
+      },
+      {
+       "required": [
+        "bandera"
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "if": {
+    "properties": {
+     "op": {
+      "const": "lija"
+     }
+    }
+   },
+   "then": {
+    "required": [
+     "stat",
+     "nivel"
+    ],
+    "properties": {
+     "gramos": {
+      "maximum": -1
+     }
+    },
+    "not": {
+     "anyOf": [
+      {
+       "required": [
+        "tc"
+       ]
+      },
+      {
+       "required": [
+        "aristas"
+       ]
+      },
+      {
+       "required": [
+        "bandera"
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "if": {
+    "properties": {
+     "op": {
+      "const": "tinte"
+     }
+    }
+   },
+   "then": {
+    "required": [
+     "bandera"
+    ],
+    "properties": {
+     "gramos": {
+      "maximum": -1
+     }
+    },
+    "not": {
+     "anyOf": [
+      {
+       "required": [
+        "tc"
+       ]
+      },
+      {
+       "required": [
+        "aristas"
+       ]
+      },
+      {
+       "required": [
+        "stat"
+       ]
+      },
+      {
+       "required": [
+        "nivel"
+       ]
+      }
+     ]
+    }
+   }
+  }
  ]
 }
