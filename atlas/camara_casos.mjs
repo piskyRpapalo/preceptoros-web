@@ -93,5 +93,15 @@ caso('R7: cada nodo con su tubo al rack (Hexelion); sin clave no hay anclas de c
     !sin.some((x) => x.clase === 'parte-cuerpo' || x.clase === 'prisma');
   return ok || JSON.stringify({ a, sin });
 });
+caso('F357: los mandos PLANEAN, nada teletransporta (ni un salto en el primer paso, y llega)', () => {
+  const circ = [{ x: 0, y: 0, r: 1e6 }], cam = C.crea({ x: 0, y: 0 });
+  cam.vx = 7; cam.vy = -3;                                  // la camara venia moviendose: planea anula ese resto
+  C.planea(cam, 600, -400, circ, false);
+  const x0 = cam.x, y0 = cam.y; C.paso(cam, 1, circ);
+  const primero = Math.hypot(cam.x - x0, cam.y - y0), total = Math.hypot(600, 400);
+  let n = 0; while ((cam.vx || cam.vy) && n < 5000) { C.paso(cam, 1, circ); n++; }
+  const llega = Math.hypot(cam.x - 600, cam.y + 400), q = C.crea({ x: 0, y: 0 }); C.planea(q, 50, 50, circ, true);
+  return primero < total * 0.15 && llega < 1 && n > 20 && q.x === 50 && q.y === 50 || JSON.stringify({ primero, total, llega, n, q });
+});
 console.log(JSON.stringify(casos, null, 1));
 process.exitCode = casos.every((c) => c.ok) ? 0 : 1;
