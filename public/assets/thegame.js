@@ -73,7 +73,7 @@
     ['mapa', '\u25C8', '.atlas-guardado|.thegame-exporta|.thegame-opina|.atlas-hud-farmeo|#atlas-juego > .no-data|.atlas-pie'],
     ['taller', '\u2692\uFE0E', '.atlas-nucleo|.atlas-hud > .panel']];
   /* LA CASA, a demanda y detras del Army (usa la gacha para tu emblema). */
-  var CASA = [['/game/canon.js'], ['/game/wave_render.js'], ['/game/escena.js'], ['/game/gdpr-art25-ephemeral-crab.js'], ['/game/aiact-art50-crab-terminal.js'], ['/game/nodos-cedulas.js'], ['/game/fog_of_war.js'], ['/game/world_camera.js'], ['/game/mar-fondo.js'], ['/game/gdpr-art7-entry-choice.js'], ['/game/aiact-art50-state-radio.js'], ['/game/home_base_scene.js'], ['/game/home_buildings.js'], ['/game/summon_reveal.js']];
+  var CASA = [['/game/canon.js'], ['/game/wave_render.js'], ['/game/escena.js'], ['/game/gdpr-art25-ephemeral-crab.js'], ['/game/aiact-art50-crab-terminal.js'], ['/game/nodos-cedulas.js'], ['/game/fog_of_war.js'], ['/game/world_camera.js'], ['/game/mar-fondo.js'], ['/game/gdpr-art7-entry-choice.js'], ['/game/aiact-art50-state-radio.js'], ['/game/home_base_scene.js'], ['/game/home_buildings.js'], ['/game/summon_reveal.js'], ['/game/taller.js'], ['/game/ui-taller.js']];
   /* LO TECNICO, SIEMPRE PLEGADO («textos que asustan a usuarios no tecnicos»): no se borran, son la
      prueba; se ven al abrir «Technical details». */
   var TECNICO = '.atlas-carta-json, .atlas-nucleo > .atlas-nota, .atlas-nucleo > .atlas-medido, ' +
@@ -187,6 +187,8 @@
       if (window.AtlasEntrada) { window.AtlasEntrada.monta(PANEL.casa); }
       /* J2+J9: la radio del estado, al pie de la casa y, desde R7, tambien en el mapa (solo tras el gesto). */
       if (window.AtlasRadio) { window.AtlasRadio.monta(PANEL.casa); window.AtlasRadio.monta(PANEL.mapa); }
+      /* P9: el Polvo de Taller, en el TALLER, debajo del Army. */
+      if (window.AtlasTallerUI) { window.AtlasTallerUI.monta(PANEL.taller); }
       /* J6: el mar de fondo, solo en la portada (mar-fondo.js). */
       if (window.AtlasMarFondo) { window.AtlasMarFondo.portada(); }
       setTimeout(cargaArena, 0);

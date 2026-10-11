@@ -1,18 +1,10 @@
 /* preceptoros.org · theGame v1.5 · la INCUBADORA y el ARMY en la capa.
 
-   INVOCAR ES UN ACTO FIRMADO. Se firma la invocacion con la identidad
-   Ed25519 de siempre, su sha256 es la semilla de la tirada, y SOLO DESPUES se
-   pagan el Cobre y la Luz por el motor (`AtlasJuego.invoca`). Si la firma
-   falla, no se gasta nada.
-
-   EL HUEVO NO BLOQUEA EL JUEGO. Incuba en ciclos de juego mientras el Bosque
-   sigue; late en su lienzo y dice cuanto le queda. La carta 2D que forjaria
-   el rack (SD/LoRA) es NO_DATA: esta web no tiene canal al rack, y se dice.
-
-   ECLOSION: el huevo se abre en la tropa mezclando sus ondas (morfismo), sin
-   una sola imagen. «El silicio ha forjado esta criatura»: la persona mira sus
-   afijos y FIRMA para adoptarla; `AtlasArmy.adopta` verifica esa firma antes
-   de escribir. Sin firma, la tropa se queda fuera.
+   INVOCAR ES UN ACTO FIRMADO: la firma Ed25519 de la invocacion da (su sha256) la semilla de la tirada, y
+   SOLO DESPUES el motor cobra Cobre y Luz (`AtlasJuego.invoca`); si la firma falla, no se gasta nada.
+   EL HUEVO NO BLOQUEA EL JUEGO: incuba en ciclos mientras el Bosque sigue. La carta 2D del rack es NO_DATA.
+   ECLOSION: el huevo se abre en la tropa (morfismo, sin imagenes) y la persona FIRMA para adoptarla;
+   `AtlasArmy.adopta` verifica esa firma antes de escribir. Sin firma, la tropa se queda fuera.
 
    UNA SOLA SALIDA DE RED: ninguna. Todo sale de la semilla y de las ondas. */
 (function () {
@@ -306,5 +298,7 @@
     reloj = setInterval(tic, window.AtlasMotor.CICLO_MS);
   }
 
-  window.AtlasIncubadora = { monta: monta, army: function () { return army && army.lista(); } };
+  /* P9: el Taller retira una tropa SOLO con su recibo firmado (lo verifica `army.retira`). */
+  window.AtlasIncubadora = { monta: monta, army: function () { return army && army.lista(); },
+    retira: function (rec, f) { return army.retira(rec, f).then(function (x) { pintaArmy(); return x; }); } };
 })();

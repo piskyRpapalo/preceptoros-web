@@ -59,6 +59,12 @@
     },
     /* Base de una tropa por nivel de TC: vida = vida[0]*nivel + [0..vida[1]]. */
     base: { vida: [10, 4], armadura: [2, 2], velocidad: [3, 3] },
+    /* P9 · POLVO DE TALLER («6 planes.txt»:144-155; LEEME:1155). Desintegrar una onda da RESIDUO
+       ESTATICO: un gramo por arista (una cuadrada, 4 g); un Leviatan fallido, `leviatan_x` veces mas.
+       LIJAR sube UN stat en `paso` por nivel, hasta `max`, y cuesta base * nivel gramos: cada nivel mas
+       caro. JAMAS anade aristas (eso es un Summon nuevo). Un reciclador, no una tienda: el residuo no se
+       compra. PROVISIONAL, como todo este fichero. */
+    taller: { gramos_por_arista: 1, leviatan_x: 3, lija: { base: 4, max: 5, paso: 1, stats: ['velocidad', 'armadura', 'vida', 'sigilo'] } },
     /* Solo para LEER las tropas de la version anterior (sin `aristas`): su simetria iba por rareza. */
     simetria: { normal: 2, magico: 3, raro: 5, unico: 7 },
     terminos: { normal: 3, magico: 4, raro: 5, unico: 6 },

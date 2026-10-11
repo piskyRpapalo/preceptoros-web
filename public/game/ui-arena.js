@@ -1,14 +1,12 @@
 /* preceptoros.org · theGame · la ARENA: el mar multijugador, los lugares NPC y el combate en vivo.
 
-   DOS PESTANAS (2026-10-04): el MAPA global (`mar.js`, en la pestana Map, con la lista de lugares y
-   el boton grande) y la BATALLA (rival, escena y escuadra; duelos y casas plegados). Los lugares NPC
-   son `arena.lugares`, iguales en todos los aparatos; las personas, defensas firmadas importadas.
+   El MAPA global (`mar.js`, lugares y boton grande) y debajo la BATALLA (rival, escena, escuadra; duelos y
+   casas plegados), en MAP (R2). Lugares NPC = `arena.lugares`; personas = defensas firmadas importadas.
 
    LUCHAR: eliges escuadra (tu Army; si aun no tienes tropas, una escuadra de PRACTICA sintetica que se
    dice) y un lugar. `arena.combate` decide con enteros y una semilla; `escena.js` lo reproduce en vivo.
    Contra NPCs es PRACTICA: sintetica, sin rating y sin botin (el botin es NO_DATA hasta firmar su
-   regla). Ganarle CONQUISTA el lugar en este aparato (db.js). Lo que se pulsa es DOM (lista y botones): el lienzo es
-   el mar, no el mando. */
+   regla). Ganarle CONQUISTA el lugar en este aparato (db.js). Se pulsa DOM; el lienzo es el mar. */
 (function () {
   'use strict';
 
@@ -57,7 +55,8 @@
   function propias() {
     var inc = window.AtlasIncubadora, l = null;
     try { l = inc && inc.army ? inc.army() : null; } catch (x) { l = null; }
-    return (l || []).map(function (u) { return { tc: u.adopcion.tropa.tc, semilla: u.adopcion.tropa.semilla }; });
+    var L = window.AtlasTallerUI ? window.AtlasTallerUI.lijas() : {};  /* P9: lo lijado, solo en practica */
+    return (l || []).map(function (u) { var s = u.adopcion.tropa.semilla; return { tc: u.adopcion.tropa.tc, semilla: s, lija: L[s] }; });
   }
   function practica() {
     return [0, 1, 2].map(function (i) { return { tc: 'tc1', semilla: K.sha('atlas.practica/1:' + (pub || 'anon') + ':' + i) }; });
