@@ -14,6 +14,54 @@ Coste: ~600 k tokens de sesión · delegadas 0 / hechas por Opus 8 piezas · tie
 
 ---
 
+## ESTÁ LIVE · 2026-10-11 15:31Z (FIRMO del Soberano: «FIRMO LA RONDA COMPLETA»)
+- PR #20 → merge `365146d` en `main`. CI `test_web`: pass. preceptoros.org sirve `preceptoros-2026-17-abed` desde las 15:31:31Z (medido con curl). Huella del SW: `520754fde9626c8e`.
+- En vivo (MEDIDO): `/es/` 200 · `/en/` 200 · `mar-fondo.js`, `gacha.js`, `tubo.css` y `thegame.js` con el mismo sha256 que `main` · Chrome headless contra preceptoros.org/es/: SW activo, mar de fondo, pestañas Home|Map|Workshop, 4 partes del cangrejo, valores `provisional-2026-10-11.aristas`, cero errores de consola. Captura `live_es_cangrejo.png`.
+- Regeneración (contadores/huella): `coherencia-publica.py --arbol` dice «la web publica exactamente lo que los gates miden», así que no hay diff que commitear. Los iconos ya se regeneraron dentro de R5.
+
+## Decisiones firmadas (2026-10-11)
+- **C4:** la versión del gacha es `valores.version` + `packSha`; `contenido_v` del motor solo cuando el motor cambie.
+- **Tabla de aristas:** FIRMADA la cifra de R5 (con 3σ), anclada en las 16.000 tiradas.
+- **Chat con el rack:** la web sigue SIN fetch y nada viaja sin la pipeline firmada; las anclas se quedan como están.
+- **Ecos de superficie:** CONTRADICCIÓN declarada y **gana la doctrina**: será telemetría DECLARADA, jamás camuflada. La corrección vale contra «6 planes.txt»:175-207.
+- **Techo 16 KiB** y **patrón UMD:** confirmados.
+- **Dónde viven los gates (lo que el 9-oct se llamó `web/bin`):** `test_web.py` y `arnes_sw.mjs` en la raíz del repo web, `atlas/test_atlas.py`, `bin/sellar.py` (sustituye a `sw-huella.py`); `doctor.py`, `sw-huella.py` y `coherencia-publica.py` en `~/p0x/bin/`; `gate.sh` en `~/p0x/deploy/soberano/hooks/`.
+- **P6, P9, P10 y P11:** FIRMADA su construcción, cada uno su PR, su test y su sabotaje, esperando FIRMO por pieza. Orden: P9 → P10 (Taller) → P6 (arena) → P11.
+
+---
+
+## SEGUNDA TANDA LIVE · 2026-10-11 (FIRMO del Soberano: «FIRMO LA PUBLICACIÓN DE LA SEGUNDA TANDA»)
+Cada pieza se rehizo sobre el `main` vivo (sin arrastrar las otras), se reselló, pasó los gates n=2 y tuvo su PR, su CI verde y su merge; después se comprobó con curl que preceptoros.org servía su versión.
+| Orden | Pieza | PR → merge | Commit | Live (versión · hora) |
+|---|---|---|---|---|
+| 1 | 🔴 Identidad en la portada | #21 → `6ac4e90` | `3da1545` | `abee` · **16:13:13Z** · `/es/` `/en/` `/ar/` con `id="identity"` = 1; en vivo `Identity.crear()` → clave `637e135f…` (Tester-CABA) |
+| 2 | P9 Polvo de Taller | #22 → `61dc96f` | `71ebd49` | `abef` · 16:18:51Z |
+| 3 | P10 Prisma de Bandera | #23 → `8a2b027` | `e851c2c` | `abeh` · 16:22:52Z |
+| 4 | P6 Escuadrones | #24 → `eb105af` | `18cdcc7` | `abei` · 16:27:08Z |
+| 5 | P11 El Primer Eco | #25 → `dfab2b8` | `12ead63` | `abej` · 16:31:11Z |
+| 6 | Ecos de superficie (decisión firmada) + esta mesa | ver el pie | | |
+
+- **R6 (voz por tropa):** tu FIRMO expreso queda anotado. Ya estaba publicada dentro de la ronda R1-R8 (PR #20, `365146d`, commit original `885429f`), con el cambio de `core.js` limitado a `vozDe`; no hace falta otro PR.
+- **Huella local `abej` contra live `abed`:** no era una discrepancia del sello. `abej` era la versión de mi rama sin publicar (`claude/refresco2`) y `abed` la última publicada. Cada sello sube la letra; al publicar las piezas, live recorre las mismas letras. Se cierra en el pie de esta mesa: live = `main`.
+- **Micro-tarea `modelos.json`:** commiteada en `~/p0x` (ver el informe).
+
+## Segunda tanda (tras la publicación) · rama `claude/refresco2` · sin push, esperando FIRMO por pieza
+| Pieza | Qué ves | Commit | Gates | Sello |
+|---|---|---|---|---|
+| 🔴 **Arreglo: identidad en la portada** | **Defecto medido en vivo:** desde la mudanza b1, preceptoros.org no define `Identity` (falta la zona `#identity` en la plantilla de portadas) y **nadie puede crear su clave ni firmar** (invocar, adoptar, Taller, duelos). Arreglado en la plantilla y en las 10 portadas; la clave se crea y el pseudónimo sale en el cabezal. **Es lo primero que pido publicar** | `8cd0866` (`claude/refresco2-identidad`) | n=2 verdes · guarda nueva · sabotaje (quitar la zona de /es/) rojo→verde | MEDIDO · `abef` |
+| P9 · Polvo de Taller | En el TALLER, cada onda dice cuánto residuo daría (1 g por arista; el Leviatán, ×3). **Desintegrar** la saca del Army solo con recibo firmado por quien la adoptó; **lijar** sube un stat, cada nivel más caro, y nunca toca las aristas. Cadena de recibos `atlas.taller/1` re-verificada al volver. Lo lijado cuenta en la práctica contra NPC; en duelos todavía no (se dice) | `6c509c7` (`claude/refresco2-p9-polvo`) | n=2 verdes · 9 casos (Ed25519 real) + contrato 1/6 · sabotaje (lijar añade aristas) 8/9→9/9 | MEDIDO · `abee` · gzip 83.112 |
+
+| P10 · Prisma de Bandera | Eliges tu bandera en «Customize» (8 tonos cerrados: no es una huella). En el TALLER, cada onda se tiñe a tu bandera (2 g, firmado); el Army la pinta de ese tono. En el mapa, el prisma de tu casa va del color de TU bandera. Solo aspecto: el combate no lo lee | `8ee8b6f` (`claude/refresco2-p10-prisma`) | n=2 verdes · 12 casos · sabotaje (cualquier color) 11/12→12/12 | MEDIDO · `abeg` · gzip 83.176 |
+
+| P6 · combate por escuadrones | Cada tropa lleva su **escuadrón**: pocas aristas, muchas unidades; el Leviatán es un coloso. Las unidades caen con la vida y se colocan según tu formación. El combate sigue resolviéndose por tropa (el contrato no cambia) | `08d2230` (`claude/refresco2-p6-escuadron`) | n=2 verdes · 5 casos · **96,6 % de escuadras completas pasan de 100 unidades (mediana 138)** · **198 unidades a 60 cps en headless** (Doogee NO_DATA) · sabotaje 3/5→5/5 | MEDIDO · `abeh` |
+
+| P11 · «El Primer Eco» | Capítulo 1.5 arriba del TALLER: ping obligatorio, 3 ondas sucias, **el Navegante** enseña a desintegrar, pulir y pintar con las reglas de verdad (simulacro: nada se firma ni se guarda) y sales con tu **Insignia** (un distintivo) y tu bandera | `baed571` (`claude/refresco2-p11-eco`) | n=2 verdes · 4 casos · sabotaje (ondas limpias) 3/4→4/4 · recorrido completo en el navegador | MEDIDO · `abei` · gzip 83.009 |
+
+**Desvío declarado (P11):** la Insignia es un **distintivo, no una tropa**. Una tropa gratis rompería la economía firmada. Si la quieres tropa, es una línea tuya.
+
+NO_DATA (P9): ciclo completo en el navegador con una tropa firmada (pide incubar un huevo: 50 de cobre y ciclos de juego); lo cubren los casos de node con firmas Ed25519 reales.
+Nota: `valores.taller` entra en `packSha`, así que los duelos exportados antes de P9 se rechazan con la causa `pack_sha` (valores PROVISIONALES).
+
 ## Delegación root (9 h)
 **NO ACTIVADA.** Ninguna pieza ha necesitado sudo. El reloj de 9 h empieza con el primer comando sudo y no ha habido ninguno: no hay hora de inicio ni de caducidad que sellar. Si se activa, la hora irá aquí.
 
@@ -38,7 +86,7 @@ Coste: ~600 k tokens de sesión · delegadas 0 / hechas por Opus 8 piezas · tie
 | R7 · el mapa es el mundo | La radio suena también en MAP (mismo módulo). **Anclas**, solo vocabulario: tubo de cada nodo al rack (línea doble teal), y rombos en trazos (PROPUESTA) para partes del cuerpo, prisma y ecos de superficie. Nada envía | `b052006` (`claude/refresco-r7-mapa`) | n=2 verdes · 2 casos de anclas · sabotaje (`fetch` en anclas) rojo→verde | MEDIDO · `abec` |
 | R8 · la ceremonia del gacha | Anticipación (la cápsula cae mientras la estática se sintoniza), ping, onda armónico a armónico, micro-temblor y primer timbre; vitrina del Army con stats reales y ondas que respiran; botones con squash & stretch. Todo quieto con movimiento reducido; la ceremonia no decide nada | `796e190` (`claude/refresco-r8-ceremonia`) | n=2 verdes · sabotaje (anticipación de 4 s) rojo→verde | MEDIDO · `abed` · gzip 82.697 |
 
-Capturas: `~/p0x/no-publicar/capturas-refresco-20261011/` (`j6_pc.png`, `j6_movil2.png`, `r2c-1.png` cangrejo en el teléfono, `r2d-1.png` en PC, `r2e-1.png` MAP, `r3_terminal_tubo.png`, `r4-*.png`, `r5_leviatan_13_aristas.png`, `r5_odds_aristas.png`, `r7_anclas_tubo_rack.png`, `r8_anticipacion_capsula.png`), Chrome headless contra el servidor local.
+Capturas: `~/p0x/no-publicar/capturas-refresco-20261011/` (`j6_pc.png`, `j6_movil2.png`, `r2c-1.png` cangrejo en el teléfono, `r2d-1.png` en PC, `r2e-1.png` MAP, `r3_terminal_tubo.png`, `r4-*.png`, `r5_leviatan_13_aristas.png`, `r5_odds_aristas.png`, `r7_anclas_tubo_rack.png`, `r8_anticipacion_capsula.png`, `live_es_cangrejo.png`, `p10_bandera_en_el_mapa.png`, `p6_escuadrones.png`, `p11_insignia.png`), Chrome headless contra el servidor local.
 Fps en el Doogee: **NO_DATA** (no lo he medido esta ronda; Acurast sigue en primer plano y no se toca).
 
 **Desviación declarada (R2):** R2a y R2b se fundieron en una sola pieza. Retirar la rejilla sin poner el cuerpo dejaba el Bosque sin puerta. El estilo (cúpula/aguja/concha), que vestía los tejados, ahora es el festón del caparazón: es lo único que le queda, y así no sobra código muerto ni hay que migrar la casa guardada (`atlas.casa/1` no cambia).
