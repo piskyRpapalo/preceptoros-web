@@ -12,7 +12,7 @@
   var GUIONES = [['atlas-arte.js'], ['atlas-coord.js'], ['atlas-carta.js'], ['atlas-ondas.js'], ['atlas-obra.js'], ['atlas-gesto.js'], ['atlas-mapa.js'],
     ['atlas-dialogo.js', '/assets/'], ['atlas-motor.js'], ['atlas-piso.js', '/'],
     ['atlas-piloto.js'], ['atlas-partida.js'], ['atlas-piloto-capa.js'],
-    ['/game/juez.js'], ['atlas-guardado.js'], ['radio_message_log.js'], ['terminal_menu_shell.js']];
+    ['/game/juez.js'], ['atlas-guardado.js'], ['radio_message_log.js'], ['terminal_menu_shell.js'], ['terminal_window_frame.js']];
   /* EL ARMY, A DEMANDA (v1.5): al abrir su pestana o al importar una partida firmada. */
   var ARMY = [['/game/valores.js'], ['/game/gacha.js'], ['/game/db.js'], ['/game/core.js'], ['/game/ui-ficha.js'], ['/game/ui.js']];
   /* LA ARENA, A DEMANDA (2026-09-28): el mar, los lugares NPC, el combate en vivo y los duelos por

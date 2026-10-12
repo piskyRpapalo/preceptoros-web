@@ -25,7 +25,7 @@
 .thegame-menu-ico{flex:none;width:1.5rem;font-size:1.15rem;text-align:center;line-height:1}
 .thegame-menu{overflow-x:hidden}
 #thegame :is(.thegame-menu-ancho,.thegame-menu-item){overflow:hidden}
-.thegame-menu-rotulo{display:none;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.thegame-menu-rotulo{display:none;min-width:0;white-space:normal;overflow-wrap:anywhere;line-height:1.2;text-align:start}  /* PR-1: rotulos COMPLETOS (medido: 4 se cortaban) */
 /* La pestana vertical de opinar se oculta DENTRO del juego: su hogar es el menu («Feedback»), no un borde que pisa el menu. */
 body.portada-juego .pc-boton{display:none}
 .thegame-menu.expandido .thegame-menu-rotulo{display:inline}
@@ -74,3 +74,11 @@ body.portada-juego .pc-boton{display:none}
 .meta-ahora{color:var(--accent-copper-claro)}
 /* El aviso del mapa vive DENTRO del bloque del objetivo, como tercera fila (medido: sueltos se pisaban). */
 .tutorial-meta .mapa-aviso{position:static;margin:.15rem 0 0;text-align:start}
+/* PR-1 · la ventana como UNA entidad: marco cerrado, cabecero con titulo, sello, fuente y edad en ciclos; cierre de 46 px. */
+.terminal-enmarcado{border:2px solid var(--edge-sov);border-radius:var(--radius);display:flex;flex-direction:column}
+.terminal-cab{position:sticky;top:0;z-index:1;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:.2rem .6rem;align-items:center;padding:.5rem .6rem;background:var(--bg-secondary);border-bottom:2px solid var(--edge-sov)}
+.terminal-cab-titulo{margin:0;font-size:1rem;overflow-wrap:anywhere}
+.terminal-cab-meta{grid-column:1;margin:0;display:flex;flex-wrap:wrap;gap:.35rem;font:.72rem/1.3 var(--mono);color:var(--text-muted)}
+.terminal-cab-sello{padding:0 .35rem;border:1px solid var(--edge-sov);border-radius:var(--radius);color:var(--text-main)}
+.terminal-cab-cierra{grid-column:2;grid-row:1 / span 2}
+.terminal-enmarcado > details > summary{display:none}
