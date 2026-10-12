@@ -88,7 +88,8 @@
     function mueveDir(d) {
       if (d === 'casa') { aCasa(true); return false; }
       if (d === 'faro') { C.planea(cam, N.HEX.x, N.HEX.y, circ, quieto()); movido = true; aviso.textContent = f.texto('mapa_en_faro'); return false; }
-      movido = true; var v = VEC[d], c = C.empuja(cam, v[0] * PASO * 2.2, v[1] * PASO * 2.2, circ, quieto());
+      /* En rombo, la flecha es de PANTALLA (derecha se ve a la derecha): se pasa a mundo con la inversa. */
+      movido = true; var v = C.aMundoDelta(VEC[d][0] * PASO * 2.2, VEC[d][1] * PASO * 2.2, 1), c = C.empuja(cam, v[0], v[1], circ, quieto());
       if (c) { choca(); }
       return c;
     }
@@ -212,38 +213,10 @@
       if (yo) { rotulo(g, f.texto('arena_tu') + (ca && ca.lema ? ' \u00B7 \u201C' + ca.lema + '\u201D' : '') + (ca && ca.alianzas === 'cerradas' ? ' \u00B7 \u26E8' : ''), yo[0], yo[1] + 40 * dpr); }
     }
 
-    /* --- arrastrar, tocar y teclas ------------------------------------------------------------------ */
-    c.addEventListener('pointerdown', function (ev) {
-      movido = true; arrastre = { id: ev.pointerId, x: ev.clientX, y: ev.clientY, x0: ev.clientX, y0: ev.clientY };
-      c.setPointerCapture(ev.pointerId);
-    });
-    c.addEventListener('pointermove', function (ev) {
-      if (!arrastre || ev.pointerId !== arrastre.id) { return; }
-      var z = c.width / VE * (c.clientWidth < 600 ? 1.15 : 1) / dpr;
-      if (C.arrastra(cam, (ev.clientX - arrastre.x) / z, (ev.clientY - arrastre.y) / z, circ, quieto())) { choca(); }
-      arrastre.x = ev.clientX; arrastre.y = ev.clientY;
-    });
-    function suelta(ev) {
-      if (!arrastre) { return; }
-      var corto = Math.abs(ev.clientX - arrastre.x0) + Math.abs(ev.clientY - arrastre.y0) < 8;
-      arrastre = null;
-      if (!corto) { return; }
-      cam.vx = 0; cam.vy = 0;
-      var r = c.getBoundingClientRect(), x = (ev.clientX - r.left) * dpr, y = (ev.clientY - r.top) * dpr, z = c.width / VE * (c.clientWidth < 600 ? 1.15 : 1);
-      var mejor = null, dist = 44 * dpr;
-      f.lugares().forEach(function (l) {
-        var s = sitio(l), p = C.aPantalla(cam, c.width, c.height, z, s.x, s.y), d = Math.hypot(p[0] - x, p[1] - y);
-        if (d < dist) { dist = d; mejor = l; }
-      });
-      if (mejor) { f.elige(mejor); }
-    }
-    c.addEventListener('pointerup', suelta);
-    c.addEventListener('pointercancel', function () { arrastre = null; });
-    c.addEventListener('keydown', function (ev) {
-      var d = { ArrowLeft: 'izq', ArrowRight: 'der', ArrowUp: 'arr', ArrowDown: 'aba', Home: 'casa' }[ev.key];
-      if (!d) { return; }
-      ev.preventDefault(); flecha(d);
-    });
+    /* --- el dedo: `map_pointer_input.js` (salio de aqui al migrar a la LEY DEL SUELO, 2026-10-12) ------------------ */
+    window.AtlasMapaDedo.monta({ c: c, C: C, dpr: dpr, z: function () { return c.width / VE * (c.clientWidth < 600 ? 1.15 : 1); },
+      cam: function () { return cam; }, circ: function () { return circ; }, quieto: quieto, choca: choca, marca: function () { movido = true; },
+      lugares: f.lugares, sitio: sitio, elige: f.elige, flecha: flecha });
     raf = requestAnimationFrame(pinta);
     VIVO = { mueveDir: mueveDir };
     return { para: function () { cancelAnimationFrame(raf); VIVO = null; }, camara: function () { return cam; }, despejado: function () { return circ; } };

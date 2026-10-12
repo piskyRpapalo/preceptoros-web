@@ -7,6 +7,11 @@
    misma vista (`atlas/camara_casos.mjs`). Sin DOM, sin reloj; el `dt` lo pone quien llama. */
 (function (raiz) {
   'use strict';
+  /* LA LEY DEL SUELO (firmada 2026-10-12): la camara proyecta en ROMBO 2:1 con la MISMA formula que el suelo
+     (`isometric_floor_projection.js`, sin gemelos). Una unidad de mundo es una «celda» de ancho sqrt(2)*z pixeles:
+     asi la escala en pantalla no cambia de golpe al pasar del cuadrado al rombo. */
+  var I = (typeof module === 'object' && module.exports) ? require('./isometric_floor_projection.js') : raiz.IsometricFloor;
+  var R2 = Math.SQRT2;
 
   var MARGEN = 70, FRENO = 0.9, REBOTE = 0.35;
 
@@ -54,11 +59,21 @@
     return limita(cam, circ);
   }
   /* Lo que se ve: el rectangulo de mundo para un lienzo de W x H con `z` pixeles por unidad. */
-  function vista(cam, W, H, z) { return { x0: cam.x - W / 2 / z, y0: cam.y - H / 2 / z, x1: cam.x + W / 2 / z, y1: cam.y + H / 2 / z, z: z }; }
-  function aPantalla(cam, W, H, z, x, y) { return [(x - cam.x) * z + W / 2, (y - cam.y) * z + H / 2]; }
-  function aMundo(cam, W, H, z, sx, sy) { return [(sx - W / 2) / z + cam.x, (sy - H / 2) / z + cam.y]; }
+  /* Del mundo a la pantalla y vuelta, en rombo. `aMundoDelta`: un movimiento de PANTALLA (el dedo, una flecha) en mundo. */
+  function aPantalla(cam, W, H, z, x, y) { var p = I.proyecta(x - cam.x, y - cam.y, R2 * z); return [p.x + W / 2, p.y + H / 2]; }
+  function aMundoDelta(dx, dy, z) { var q = I.aCelda(dx, dy, R2 * z); return [q.col, q.fila]; }
+  function aMundo(cam, W, H, z, sx, sy) { var d = aMundoDelta(sx - W / 2, sy - H / 2, z); return [d[0] + cam.x, d[1] + cam.y]; }
+  /* Lo que se ve: la caja de MUNDO que contiene las cuatro esquinas del lienzo (en rombo, la vista es un rombo). */
+  function vista(cam, W, H, z) {
+    var e = [aMundo(cam, W, H, z, 0, 0), aMundo(cam, W, H, z, W, 0), aMundo(cam, W, H, z, 0, H), aMundo(cam, W, H, z, W, H)];
+    var xs = e.map(function (q) { return q[0]; }), ys = e.map(function (q) { return q[1]; });
+    return { x0: Math.min.apply(null, xs), y0: Math.min.apply(null, ys), x1: Math.max.apply(null, xs), y1: Math.max.apply(null, ys), z: z };
+  }
+  /* La matriz del rombo (pixeles por unidad de mundo): para dibujar una tesela cuadrada como rombo con setTransform. */
+  function matriz(z) { var k = z / R2; return [k, k / 2, -k, k / 2]; }
 
   var AtlasCamara = { crea: crea, arrastra: arrastra, empuja: empuja, planea: planea, paso: paso, limita: limita, dentro: dentro,
+                      aMundoDelta: aMundoDelta, matriz: matriz,
                       vista: vista, aPantalla: aPantalla, aMundo: aMundo, MARGEN: MARGEN };
   if (typeof module === 'object' && module.exports) { module.exports = AtlasCamara; } else { raiz.AtlasCamara = AtlasCamara; }
 })(this);
