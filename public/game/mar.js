@@ -17,7 +17,7 @@
   var E = window.AtlasEscena, K = window.AtlasCanon, N = window.AtlasNiebla, C = window.AtlasCamara;
   var F = (window.AtlasValores && window.AtlasValores.fluidez) || {}, O = window.AtlasOnda || {};
   /* Las teselas (terreno y niebla) las pinta `mar-fondo.js`: una sola fuente para el mapa y la portada. */
-  var MF = window.AtlasMarFondo, VE = 820, PASO = 90, VIVO = null;
+  var MF = window.AtlasMarFondo, VE = 620, PASO = 90, VIVO = null;
   /* LAS FLECHAS SON ACCIONES DEL PILOTO (R2c): `mover <dir>` del enum `atlas.accion/1`, una lista, no dos.
      Aqui solo su vector y su icono; la lista de direcciones es la del piloto (`AtlasPiloto.DIRS`). */
   var VEC = { izq: [-1, 0], arr: [0, -1], aba: [0, 1], der: [1, 0], casa: [0, 0], faro: [0, 0] }, ICO = { izq: '◀', arr: '▲', aba: '▼', der: '▶', casa: '⌂', faro: '◈' };

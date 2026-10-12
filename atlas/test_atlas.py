@@ -627,10 +627,12 @@ process.stdout.write(JSON.stringify(ok));
         """B: el manejo libre va ENCIMA del paseo J1 (paseo intocado), la niebla no se pisa, y las skills salen solo de lo
         que el cangrejo hace (Swim, Reach). E: el tutorial es el esquema de acciones renderizado, bajo el teaching kernel
         (dry-run en lo irreversible, fallo como ramificacion, objetivo siempre a la vista, ayuda que decae, saltable)."""
-        for casos in ("cangrejo_libre_casos.mjs", "tutorial_casos.mjs"):
+        for casos in ("cangrejo_libre_casos.mjs", "tutorial_casos.mjs", "corales_casos.mjs"):
             with self.subTest(casos=casos):
                 r = subprocess.run(["node", str(RAIZ / casos)], capture_output=True, text=True, timeout=60)
                 self.assertEqual(r.returncode, 0, r.stdout[-1200:] + r.stderr[-400:])
+        self.assertIn("VE = 620,", (PUBLICO / "game" / "mar.js").read_text(encoding="utf-8"), "A: el mapa, mas grande a la vista")
+        self.assertIn("if (av) { meta.appendChild(av); }", (PUBLICO / "game" / "genesis_tutorial.js").read_text(encoding="utf-8"), "el aviso y el objetivo se pisaban")
         mc = (PUBLICO / "game" / "mar-cangrejos.js").read_text(encoding="utf-8")
         self.assertIn("pc = CJ.paseo(cj.semilla, cj.ciclo,", mc, "el paseo J1 sigue mandando debajo")
         self.assertIn("if (L) { var d = L.paso(s, o.circ); s = { x: s.x + d.x, y: s.y + d.y }; }", mc)
@@ -861,7 +863,7 @@ process.stdout.write(JSON.stringify(ok));
 # Ver atlas/POST_VERIFICACION_MGNO_LAB.md y atlas/POST_VERIFICACION_SISIL_CRIA.md.
 PUROS = ("canon.js", "sobres.js", "rating.js", "arena.js", "duelo.js", "mercado.js", "narragrafo.js", "cria.js", "genoma.js")
 # La Arena (2026-09-28, «el mapa multi-jugador en una pestana»): se carga al abrir su pestana, detras del Army.
-ARENA = ("sobres.js", "rating.js", "arena.js", "duelo.js", "mar-anclas.js", "crab_free_move.js", "genesis_tutorial.js", "latency_crystal.js", "reef_buildings_layer.js", "mar-cangrejos.js", "map_pointer_input.js", "piece_inspector.js", "place_telemetry.js", "mar.js", "nodos-pesos.js",
+ARENA = ("sobres.js", "rating.js", "arena.js", "duelo.js", "mar-anclas.js", "crab_free_move.js", "genesis_tutorial.js", "latency_crystal.js", "reef_corals.js", "reef_buildings_layer.js", "mar-cangrejos.js", "map_pointer_input.js", "piece_inspector.js", "place_telemetry.js", "mar.js", "nodos-pesos.js",
          "nodos.js", "cuenta.js", "ui-nodos.js", "ui-rack.js",
          "escuadron.js", "battle_choreography.js", "battle_replay.js", "ui-arena-comun.js", "ui-arena.js", "ui-duelo.js")
 # La CASA (2026-10-05): la primera pantalla, detras del Army. Lleva canon y escena, que la Arena reutiliza.
