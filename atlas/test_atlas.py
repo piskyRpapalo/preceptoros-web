@@ -585,6 +585,26 @@ process.stdout.write(JSON.stringify(ok));
                 self.assertNotIn(prohibido, f)
         self.assertLess(len(f.encode()), 16384)
 
+    def test_6b_el_ejercito_no_cobra_por_dormir(self):
+        """6b+6a (FIRMO 2026-10-12, manda la ficha V3.0 «la cosecha pasiva es veneno»): volver a la pestana NO paga; la
+        pantalla «while you were away» narra, en ciclos (sin reloj de pared). Medido en el navegador: pestana oculta y 8 h
+        de reloj adelantado -> los mismos recursos y el mismo ciclo. Las partidas guardadas con pasos `dormir_ms` siguen
+        reproduciendose (el motor conserva `dormir` SOLO para rehacer la historia: quitarlo romperia esas partidas)."""
+        piso = sin_comentarios((PISO / "atlas-piso.js").read_text(encoding="utf-8"))
+        for veneno in ("M.dormir(", "Date.now", "M.recoger(E)", "U('recoger')"):
+            with self.subTest(veneno=veneno):
+                self.assertNotIn(veneno, piso, "vuelve el pago por dormir (V3.0)")
+        r = subprocess.run(["node", "-e", """
+          const M = require('./public/assets/atlas-motor.js'), Pa = require('./public/assets/atlas-partida.js');
+          const ley = { nd: false, integridad_max: 100, dano: 1 };
+          const p = { esquema: 'atlas.partida/1', contenido_v: M.CATALOGO.contenido_v, ley, truncada: false,
+                      pasos: [{ ciclos: 5 }, { dormir_ms: 60000 }, { accion: 'recoger', origen: 'humano' }] };
+          console.log(JSON.stringify({ ciclo: Pa.instantanea(Pa.reproduce(p, M), M).ciclo }));
+        """], cwd=RAIZ.parent, capture_output=True, text=True, timeout=60)
+        self.assertEqual(json.loads(r.stdout)["ciclo"], 5, "una partida vieja con dormir_ms ya no se reproduce")
+        ui = json.loads((PUBLICO / "atlas-en.json").read_text(encoding="utf-8"))["ui"]
+        self.assertNotIn("produces while this tab is hidden", ui["dormias_vacio"], "el texto vuelve a prometer pago por dormir")
+
     def test_lo_que_flota_recibe_el_dedo(self):
         """U1 puso pointer-events:none en la capa para que el mapa reciba el dedo, y eso se HEREDA: la revelacion,
         Customize y los dialogos solo se cerraban con Escape (medido en vivo). Toda clase `position:fixed` del juego
