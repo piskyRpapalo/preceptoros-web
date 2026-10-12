@@ -63,10 +63,10 @@ caso('con clave, el mapa empieza en TU casa; sin clave, en Hexelion', () => {
   return (tieneCasa && dentro(C.crea(casa), cs) && N.sitioCasa(null, K.sha) === null && !sin.some((c) => c.que === 'casa') &&
           dentro(C.crea(N.HEX), sin)) || 'la casa no es el punto de partida';
 });
-caso('la niebla sale de lo medido: Hexelion despejado, Doogee (sin medidas) en niebla', () => {
-  const cs = circ(PUB);
-  return (N.niebla(N.HEX.x, N.HEX.y, cs) === 0 && N.niebla(N.DOOGEE.x, N.DOOGEE.y, cs) === 1 &&
-          !cs.some((c) => c.que === 'nodo.1.doogee')) || 'la niebla no sigue a las medidas';
+caso('en el mapa solo queda Hexelion (FIRMO 2026-10-12): despejado; el Doogee sin punto, ni circulo ni ancla', () => {
+  const cs = circ(PUB), an = N.anclas({ pub: PUB, sha: K.sha, nodos: Ce.nodos });
+  return (N.niebla(N.HEX.x, N.HEX.y, cs) === 0 && N.sitioNodo('nodo.1.doogee') === null && N.DOOGEE === undefined &&
+          !cs.some((c) => c.que === 'nodo.1.doogee') && !an.some((a) => /doogee/.test(a.id))) || 'queda una referencia huerfana al Doogee en la niebla';
 });
 caso('misma cuenta, misma niebla; otra cuenta, otra casa', () => {
   return (N.huella(circ(PUB)) === N.huella(circ(PUB)) && N.huella(circ(PUB)) !== N.huella(circ(OTRA))) || 'la niebla no depende solo de la cuenta y lo medido';
@@ -87,7 +87,7 @@ caso('R7: anclas puras y deterministas, de clases cerradas', () => {
 caso('R7: cada nodo con su tubo al rack (Hexelion); sin clave no hay anclas de casa', () => {
   const a = N.anclas({ pub: PUB, sha: K.sha, nodos: Ce.nodos }), sin = N.anclas({ pub: null, sha: K.sha, nodos: Ce.nodos });
   const tubos = a.filter((x) => x.clase === 'enlace-rack');
-  const ok = tubos.length === Ce.nodos.filter((n) => n.nodo !== 'nodo.0.hexelion').length &&
+  const ok = tubos.length === Ce.nodos.filter((n) => n.nodo !== 'nodo.0.hexelion' && N.sitioNodo(n.nodo)).length &&  // solo los que tienen punto en el mapa
     tubos.every((x) => x.a.x === N.HEX.x && x.a.y === N.HEX.y) &&
     a.some((x) => x.clase === 'parte-cuerpo') && a.some((x) => x.clase === 'prisma') && a.some((x) => x.clase === 'eco-superficie') &&
     !sin.some((x) => x.clase === 'parte-cuerpo' || x.clase === 'prisma');

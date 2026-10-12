@@ -37,7 +37,9 @@
     var Ce = raiz.AtlasNodosCedulas, N = raiz.AtlasNiebla, pon = o.pon || function (x, y, d) { d(); }, dpr = o.dpr || 1;
     if (!Ce || !N || !N.sitioNodo) { return; }
     Ce.nodos.forEach(function (n) {
-      var s = N.sitioNodo(n.nodo), k = coral(n), x = s.x + DX, y = s.y + DY;
+      var s = N.sitioNodo(n.nodo);
+      if (!s) { return; }   /* sin punto en el mapa, sin coral */
+      var k = coral(n), x = s.x + DX, y = s.y + DY;
       pon(x, y, function () { pintaUno(g, P(x, y), k, dpr); }, function () {
         return { que: 'Coral · ' + k.nodo, estado: k.nd ? 'NO_DATA (no measure of this node is MEASURED' + (k.emuladas ? '; ' + k.emuladas + ' EMULATED do not count' : '') + ')'
                  : k.medidas + ' of ' + k.total + ' measures MEASURED' };

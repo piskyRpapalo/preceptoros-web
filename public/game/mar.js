@@ -43,7 +43,7 @@
   function casas() {
     var Ce = window.AtlasNodosCedulas, Q = window.AtlasCuenta, G = window.AtlasGacha;
     if (!Ce || !G) { return []; }
-    return Ce.nodos.map(function (c) {
+    return Ce.nodos.filter(function (c) { return N.sitioNodo(c.nodo); }).map(function (c) {
       var m = c.aparato.medidas, s = N.sitioNodo(c.nodo);
       return { nodo: c.nodo, x: s.x, y: s.y, ram: m.ram_mib || {}, gen: m.gen_cps || {},
                estado: Q ? Q.estadoNodo(c) : { activo: 'NO_DATA' }, t: G.tirada(K.sha('atlas.emblema/1:' + c.nodo), 'tc3') };
@@ -197,7 +197,6 @@
       var cs = window.AtlasCasa && window.AtlasCasa.casa ? window.AtlasCasa.casa() : null, BV = window.AtlasValores.banderas;
       window.AtlasMarAnclas.pinta(g, P, { pub: f.pub(), sha: K.sha, nodos: Ce ? Ce.nodos : [], dpr: dpr, texto: f.texto, pon: pon,
                                           bandera: cs && cs.bandera && BV ? BV[cs.bandera] : null });
-      /* Los 9 objetos (2026-10-12): su capa, aparte (`reef_buildings_layer.js`). */
       if (window.AtlasArrecife) { window.AtlasArrecife.pinta(g, P, { pub: f.pub(), sha: K.sha, dpr: dpr, t: t, quieto: q, texto: f.texto, cam: cam, ts: ts, pon: pon }); }
       window.IsometricFloor.ordena(cola).forEach(function (x) { x.f(); });
       if (window.AtlasInspector) { window.AtlasInspector.registra(cola, P, f.texto); }  /* 0d */
