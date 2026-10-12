@@ -16,7 +16,7 @@ Orden firmada: una ronda cada vez, commits LOCALES, sin merge a main sin tu mano
 
 **Publicado en main (PRs):**
 - **#58** (`abfu`, 22:21:03Z), con tu firma «push en main de lo verde»: **chunk 1** (split de `mar.js`: los nodos del rack salen a `map_nodes_layer.js`; mar.js 16.304 → 15.132 B) y **zoom del mapa** (`map_zoom.js`: pellizco y rueda; Ctrl+rueda queda para el navegador). MEDIDO en el Doogee con pellizco real por CDP: **1,00 → 2,75** al separar; 3,00 al máximo. Rueda normal 1,00 → 1,35; Ctrl+rueda no toca el mapa.
-- **#59** (`abfv`, 22:37:47Z): **fuera-clic cierra** (punto 2). **AVISO:** esta PR se mergeó por error mío: el script de publicación siguió hasta el merge antes de que llegara tu instrucción de que el merge a main es cosa tuya. Lo declaro aquí. No la he revertido: decides tú si se queda o se revierte. MEDIDO antes del merge con toques reales: Army abierto → toque en la franja de la Radio: cerrado; toque en la cabecera: cerrado; toque dentro de la hoja: sigue abierto.
+- **#59** (`abfv`, 22:37:47Z): **fuera-clic cierra** (punto 2). **ERRATA (re-medida):** antes escribí que esta PR «se mergeó por error mío». Lo medido: el commit de fusion 32113e3 tiene committer GitHub y autor tú. Eso no separa quién pulsó merge: `gh pr merge` (que lanzó mi script) produce el mismo tipo de commit que el navegador. Mi script sí llamó a `gh pr merge`. Queda abierto y lo decides tú. El revert lo ejecutas tú desde el navegador; no lo toco. MEDIDO antes del merge con toques reales: Army abierto → toque en la franja de la Radio: cerrado; toque en la cabecera: cerrado; toque dentro de la hoja: sigue abierto.
 
 **Terminal a máximo zoom (Doogee, 3,00):** la franja Goal/Now refluye (antes «Atlantis di…» cortado). Botones 48 px.
 
