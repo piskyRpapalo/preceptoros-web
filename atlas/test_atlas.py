@@ -13,6 +13,7 @@ mismas claves, (d) presupuesto de peso, (e) ningun binario pesado. Las de motor
 --curva XP, combate, red multi-recurso, Nivel del Nucleo-- llegan con el motor.
 """
 import gzip
+import hashlib
 import json
 import re
 import subprocess
@@ -730,14 +731,13 @@ process.stdout.write(JSON.stringify(ok));
 # Modulos de `public/game/` que NINGUN guion pide todavia (ni la puerta ni el Army): el multijugador y
 # la cria, firmados por el Soberano el 2026-09-28 («ve construyendo todo… enfocados al multiplayer»).
 # Ver atlas/POST_VERIFICACION_MGNO_LAB.md y atlas/POST_VERIFICACION_SISIL_CRIA.md.
-PUROS = ("canon.js", "sobres.js", "rating.js", "arena.js", "duelo.js", "mercado.js", "narragrafo.js", "cria.js", "genoma.js",
-         "isometric_floor_projection.js")  # LEY DEL SUELO, paso 1: la carga el mapa en el paso 2
+PUROS = ("canon.js", "sobres.js", "rating.js", "arena.js", "duelo.js", "mercado.js", "narragrafo.js", "cria.js", "genoma.js")
 # La Arena (2026-09-28, «el mapa multi-jugador en una pestana»): se carga al abrir su pestana, detras del Army.
-ARENA = ("sobres.js", "rating.js", "arena.js", "duelo.js", "mar-anclas.js", "mar-cangrejos.js", "mar.js", "nodos-pesos.js",
+ARENA = ("sobres.js", "rating.js", "arena.js", "duelo.js", "mar-anclas.js", "mar-cangrejos.js", "map_pointer_input.js", "mar.js", "nodos-pesos.js",
          "nodos.js", "cuenta.js", "ui-nodos.js", "ui-rack.js",
          "escuadron.js", "battle_choreography.js", "battle_replay.js", "ui-arena-comun.js", "ui-arena.js", "ui-duelo.js")
 # La CASA (2026-10-05): la primera pantalla, detras del Army. Lleva canon y escena, que la Arena reutiliza.
-CASA = ("canon.js", "escena.js", "wave_render.js", "gdpr-art25-ephemeral-crab.js", "aiact-art50-crab-terminal.js", "nodos-cedulas.js", "fog_of_war.js", "world_camera.js", "mar-fondo.js", "gdpr-art7-entry-choice.js", "aiact-art50-state-radio.js", "casa-medidas.js", "casa-personaliza.js", "casa-lateral.js", "home_buildings.js", "summon_reveal.js", "taller.js", "ui-taller.js", "primer_eco.js")
+CASA = ("canon.js", "escena.js", "wave_render.js", "gdpr-art25-ephemeral-crab.js", "aiact-art50-crab-terminal.js", "nodos-cedulas.js", "fog_of_war.js", "isometric_floor_projection.js", "world_camera.js", "mar-fondo.js", "gdpr-art7-entry-choice.js", "aiact-art50-state-radio.js", "casa-medidas.js", "casa-personaliza.js", "casa-lateral.js", "home_buildings.js", "summon_reveal.js", "taller.js", "ui-taller.js", "primer_eco.js")
 FUERA_DE_LA_PUERTA = tuple(sorted(set(PUROS + ARENA + CASA)))
 
 
@@ -1800,11 +1800,13 @@ class MapaMovible(unittest.TestCase):
                 self.assertTrue(c["ok"], c["detalle"])
 
     def test_se_mueve_con_dedo_teclado_y_botones_y_dice_el_choque(self):
-        m = self._js("mar.js")
+        # LEY DEL SUELO, paso 2 (2026-10-12): el dedo y las teclas salieron a `map_pointer_input.js`; el mapa lo monta.
+        m = self._js("mar.js") + self._js("map_pointer_input.js")
         for pieza in ("addEventListener('pointerdown'", "setPointerCapture", "addEventListener('keydown'", "ArrowLeft",
                       "x.setAttribute('aria-label', f.texto('mapa_' + d))", "aviso.setAttribute('role', 'status')",
                       "J.aplica(a)", "accion: 'mover'", "window.AtlasPiloto.DIRS",
-                      "f.texto('mapa_niebla')", "f.texto(casa ? 'mapa_en_casa' : 'mapa_sin_casa')", "C.arrastra(cam,", "quieto()"):
+                      "f.texto('mapa_niebla')", "f.texto(casa ? 'mapa_en_casa' : 'mapa_sin_casa')", "C.arrastra(x.cam(),", "quieto()",
+                      "window.AtlasMapaDedo.monta(", "C.aMundoDelta("):
             with self.subTest(pieza=pieza):
                 self.assertIn(pieza, m)
         tx = json.loads((PUBLICO / "atlas-arena-en.json").read_text(encoding="utf-8"))["ui"]
@@ -1816,7 +1818,7 @@ class MapaMovible(unittest.TestCase):
         self.assertIn("Fog", tx["mapa_niebla"])
 
     def test_sin_azar_ni_red_y_por_teselas(self):
-        for f in ("fog_of_war.js", "world_camera.js", "mar.js", "mar-fondo.js"):
+        for f in ("fog_of_war.js", "world_camera.js", "mar.js", "mar-fondo.js", "map_pointer_input.js", "isometric_floor_projection.js"):
             c = self._js(f)
             for malo in ("Math.random", "localStorage", "fetch(", "Date."):
                 with self.subTest(fichero=f, prohibido=malo):
@@ -1989,9 +1991,18 @@ class MapaMovible(unittest.TestCase):
                             "process.stdout.write(JSON.stringify([M.PARTES.map(p=>p[0]),a.nucleo.nivel,a.bosque.nivel,a.army.nivel,a.faro,b.nucleo,b.army]))"],
                            cwd=RAIZ.parent, capture_output=True, text=True, timeout=60)
         self.assertEqual(json.loads(r.stdout), [["caparazon", "pinzas", "patas", "ojos"], 3, 2, 2, None, None, None], r.stderr)
+        # El techo de 16 KiB por fichero manda, salvo una entrada en EXCEPCIONES.md cuya HUELLA coincida con el fichero
+        # de hoy (regla del Soberano, 2026-10-12: «si cruza, EXCEPCIONES.md con huella y causa, no silencio»). Si el
+        # fichero cambia, la huella deja de coincidir y vuelve el rojo hasta renovar la entrada o trocearlo.
+        exc = (RAIZ.parent / "EXCEPCIONES.md")
+        exc = exc.read_text(encoding="utf-8") if exc.exists() else ""
         for f in sorted((PUBLICO / "game").glob("*.js")) + sorted((PUBLICO / "assets").glob("thegame*")):
             with self.subTest(techo=f.name):
-                self.assertLessEqual(f.stat().st_size, 16384)
+                if f.stat().st_size > 16384:
+                    h = hashlib.sha256(f.read_bytes()).hexdigest()
+                    self.assertIn(h, exc, f"{f.name} cruza 16 KiB sin entrada (con su huella) en EXCEPCIONES.md")
+                else:
+                    self.assertLessEqual(f.stat().st_size, 16384)
 
     def test_la_portada_lleva_la_zona_de_identidad_sin_ella_nadie_firma(self):
         """Defecto MEDIDO en vivo el 2026-10-11 (preceptoros.org/en/: «Identity is not defined»): la mudanza b1

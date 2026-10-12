@@ -46,15 +46,19 @@
       nieblas[k] = algo ? t : null; nn++;
       return nieblas[k];
     }
-    /* Pega las teselas visibles; (dx, dy) desplaza el terreno en unidades de mundo (la deriva). */
+    /* Pega las teselas visibles; (dx, dy) desplaza el terreno en unidades de mundo (la deriva). LEY DEL SUELO (2026-10-12):
+       cada tesela cuadrada se dibuja como ROMBO con la matriz de la camara (`AtlasCamara.matriz`, la misma proyeccion
+       que todo lo demas): mismas teselas, misma cache, misma respiracion; un pelo de solape para que no se vean costuras. */
     function capas(g, cam, W, H, z, que, dx, dy) {
-      var v = C.vista(cam, W, H, z), lado = TESELA * z;
+      var v = C.vista(cam, W, H, z), m = C.matriz(z), n = TESELA / RES;
+      g.save();
       for (var i = Math.floor((v.x0 - dx) / TESELA); i <= Math.floor((v.x1 - dx) / TESELA); i++) {
         for (var j = Math.floor((v.y0 - dy) / TESELA); j <= Math.floor((v.y1 - dy) / TESELA); j++) {
           var p = C.aPantalla(cam, W, H, z, i * TESELA + dx, j * TESELA + dy), t = que(i, j);
-          if (t) { g.drawImage(t, Math.floor(p[0]), Math.floor(p[1]), Math.ceil(lado) + 1, Math.ceil(lado) + 1); }
+          if (t) { g.setTransform(m[0] * RES, m[1] * RES, m[2] * RES, m[3] * RES, p[0], p[1]); g.drawImage(t, 0, 0, n + 0.6, n + 0.6); }
         }
       }
+      g.restore();
     }
     return {
       /* Lo despejado manda en la niebla: si cambia su huella, la cache de niebla se vacia. */

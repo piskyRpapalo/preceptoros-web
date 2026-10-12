@@ -103,5 +103,22 @@ caso('F357: los mandos PLANEAN, nada teletransporta (ni un salto en el primer pa
   const llega = Math.hypot(cam.x - 600, cam.y + 400), q = C.crea({ x: 0, y: 0 }); C.planea(q, 50, 50, circ, true);
   return primero < total * 0.15 && llega < 1 && n > 20 && q.x === 50 && q.y === 50 || JSON.stringify({ primero, total, llega, n, q });
 });
+caso('LEY DEL SUELO: el dedo arrastra el mundo con el dedo (100 px a la derecha = 100 px en pantalla, sin deriva vertical)', () => {
+  const circ = [{ x: 0, y: 0, r: 1e6 }], cam = C.crea({ x: 50, y: 20 }), z = 1.7, W = 900, H = 600;
+  const antes = C.aPantalla(cam, W, H, z, 80, 40);
+  const d = C.aMundoDelta(100, 0, z); C.arrastra(cam, d[0], d[1], circ, true);
+  const despues = C.aPantalla(cam, W, H, z, 80, 40);
+  return Math.abs(despues[0] - antes[0] - 100) < 1e-6 && Math.abs(despues[1] - antes[1]) < 1e-6 || JSON.stringify({ antes, despues });
+});
+caso('LEY DEL SUELO: la flecha «derecha» mueve la vista solo en horizontal; «arriba», solo en vertical', () => {
+  const W = 900, H = 600, z = 1, o = C.crea({ x: 0, y: 0 });
+  const der = C.aMundoDelta(180, 0, z), arr = C.aMundoDelta(0, -180, z);
+  const pd = C.aPantalla(o, W, H, z, der[0], der[1]), pa = C.aPantalla(o, W, H, z, arr[0], arr[1]);
+  return Math.abs(pd[1] - H / 2) < 1e-6 && pd[0] > W / 2 && Math.abs(pa[0] - W / 2) < 1e-6 && pa[1] < H / 2 || JSON.stringify({ pd, pa });
+});
+caso('LEY DEL SUELO: la camara proyecta en rombo 2:1 (un paso de mundo en x baja a la derecha el doble de ancho que de alto)', () => {
+  const p = C.aPantalla(C.crea({ x: 0, y: 0 }), 0, 0, 2, 10, 0), q = C.aPantalla(C.crea({ x: 0, y: 0 }), 0, 0, 2, 0, 10);
+  return Math.abs(p[0] / p[1] - 2) < 1e-9 && Math.abs(-q[0] / q[1] - 2) < 1e-9 && p[1] > 0 && q[1] > 0 || JSON.stringify({ p, q });
+});
 console.log(JSON.stringify(casos, null, 1));
 process.exitCode = casos.every((c) => c.ok) ? 0 : 1;
