@@ -49,7 +49,7 @@
     "b3": "150–300 m · Sunken Forest",
     "b3n": "Oxygen ×4 · forgotten technology",
     "b4": "300 m+ · The Core",
-    "b4n": "Requires {ing} 60 · you have {n}",
+    "b4n": "Locked by an engine rule pending review · {n}/60",
     "nucleo_h": "CORE LEVEL · {n}",
     "nucleo_aria": "Core level: {a} of {b} community XP",
     "nucleo_p": "{a} XP · the sum of your seven crafts",

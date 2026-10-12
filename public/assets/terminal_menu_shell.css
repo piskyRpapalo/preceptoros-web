@@ -30,7 +30,7 @@
 body.portada-juego .pc-boton{display:none}
 .thegame-menu.expandido .thegame-menu-rotulo{display:inline}
 /* EL CAJON: un panel cada vez, junto al menu; cerrado no ocupa nada. */
-.thegame-terminal{position:fixed;z-index:4;left:var(--menu);top:var(--thegame-tope);bottom:var(--pie);width:min(24rem,calc(100vw - var(--menu)));
+.thegame-terminal{position:fixed;z-index:4;left:var(--menu);top:var(--thegame-tope);bottom:var(--pie);right:0;  /* C: los paneles ocupan TODA la pantalla junto al menu */
   overflow:auto;overflow-x:hidden;overscroll-behavior:contain;display:grid;gap:.5rem;align-content:start;padding:.5rem .6rem}
 .thegame-terminal[hidden],.thegame-terminal > details[hidden]{display:none}
 .thegame-estado{display:grid;gap:.6rem;min-width:0}
@@ -64,3 +64,7 @@ body.portada-juego .pc-boton{display:none}
 /* Los mandos del mapa y su aviso: tras el menu, encima del chat; el centro, limpio. */
 .mapa-mandos{position:fixed;z-index:1;left:calc(var(--menu) + .6rem);bottom:calc(var(--pie) + .6rem)}
 .mapa-aviso{position:fixed;z-index:1;top:calc(var(--thegame-tope) + 3.6rem);left:calc(var(--menu) + .6rem);right:.6rem;pointer-events:none}
+
+/* C: todo lo tactil >= 44 px (medido: los «Technical details» median 26 px). */
+#thegame summary{min-height:2.75rem;display:flex;align-items:center;gap:.4rem;cursor:pointer}
+#thegame :is(.boton,.boton-sec){min-height:2.875rem;min-width:2.875rem}  /* C: 46 px, con margen sobre los 44 (medidos al filo: 43,9) */

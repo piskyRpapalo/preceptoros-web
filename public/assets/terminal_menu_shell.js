@@ -36,7 +36,7 @@
       Object.keys(S.HOJA).forEach(function (k) { S.HOJA[k].hidden = k !== actual; });
       if (R.items.taller) { R.items.taller.setAttribute('aria-expanded', String(actual === 'taller')); }
       document.documentElement.classList.toggle('con-hoja', !!actual);
-      if (actual === 'taller') { x.alTaller(); }
+      if (actual === 'taller' || actual === 'ondas') { Promise.resolve(x.alTaller()).then(mueveArmy); }
       if (actual && foco !== false) { var c = S.HOJA[actual].querySelector('.thegame-hoja-cierra'); if (c) { c.focus(); } }
       else if (foco && R.items.taller) { R.items.taller.focus(); }
     }
@@ -71,6 +71,16 @@
     S.PANEL.casa = cajon; S.PANEL.mapa = cajon;
     /* El MAPA: su lienzo vive en su capa fija, detras de todo. */
     S.MAPA = el('div', 'thegame-mapa'); S.MAPA.id = 'thegame-mapa';
+    /* PANELES AMABLES (FIRMO 2026-10-12, C): primero el INVENTARIO de ondas (cada tropa con su ficha), luego el Taller.
+       El Army lo pinta ui.js en su seccion; aqui se MUEVE su lista a esta hoja (ui.js sigue pintando en el mismo nodo). */
+    var ond = hoja('ondas', T('army_h'));
+    function mueveArmy() {
+      var ul = capa.querySelector('.atlas-army');
+      if (!ul || ond.contains(ul)) { return; }
+      var h = ul.previousElementSibling;
+      if (h && h.tagName === 'H5') { ond.appendChild(h); }
+      ond.appendChild(ul);
+    }
     var tal = hoja('taller', T('pes_taller')); tal.appendChild(S.PANEL.taller); S.PANEL.taller = tal;
     S.ARMYZ = el('div', 'casa-army'); tal.appendChild(S.ARMYZ);
     S.ZB = hoja('batalla', T('hoja_batalla'));
@@ -114,13 +124,14 @@
         d.hidden = d.id !== abierto;
       });
     }
+    entrada('ondas', '\u223F', T('army_h'), function () { muestra(actual === 'ondas' ? null : 'ondas'); }).setAttribute('aria-controls', 'thegame-ondas');
     entrada('taller', '⚒︎', T('pes_taller'), function () { muestra(actual === 'taller' ? null : 'taller'); }).setAttribute('aria-controls', 'thegame-taller');
     /* Opinar sobre la pagina: su unico hogar es el menu (la pestana vertical lateral se oculta dentro del juego). */
     if (raiz.PageComment && raiz.PageComment.abre) { entrada('opinar', '\u270E', T('menu_opinar'), function () { raiz.PageComment.abre(); }); }
     sincroniza();
     new MutationObserver(sincroniza).observe(cajon, { childList: true });
 
-    [S.MAPA, menu, cajon, S.HOJA.taller, S.HOJA.batalla].forEach(function (n) { piso.appendChild(n); });
+    [S.MAPA, menu, cajon, S.HOJA.ondas, S.HOJA.taller, S.HOJA.batalla].forEach(function (n) { piso.appendChild(n); });
     cada(piso.querySelectorAll(':scope > .atlas-rejilla'), function (n) { n.remove(); });
     document.addEventListener('keydown', function (e) {
       if (e.altKey && (e.key === 'm' || e.key === 'M')) { e.preventDefault(); expande(); ancho.focus(); return; }

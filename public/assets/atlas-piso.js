@@ -58,7 +58,6 @@
 
   /* --- el panel: se construye una vez y luego solo se actualiza ----------- */
   function panel() {
-    var sk = TXT.skills || [];
     var raiz = el('div', 'atlas-panel atlas-piso'); raiz.id = 'atlas-piso';
     raiz.appendChild(el('p', 'atlas-lema', U('lema')));
     R.vivo = el('p', 'atlas-vivo'); R.vivo.setAttribute('aria-live', 'polite');
@@ -142,26 +141,13 @@
     dor.appendChild(el('p', 'atlas-nota', U('dormias_nota')));
     hud.appendChild(dor);
 
-    var yoS = el('section', 'panel');
-    yoS.appendChild(el('h4', null, 'Atlante-7F3A'));
-    var ol = el('ol', 'atlas-skills');
-    R.sk = sk.map(function (nombre) {
-      var li = el('li'), s = { nombre: nombre };
-      li.appendChild(el('span', null, nombre));
-      s.nivel = el('b', 'nivel'); li.appendChild(s.nivel);
-      s.pr = el('progress'); li.appendChild(s.pr);
-      s.cifra = el('small'); s.cifra.dir = 'ltr'; li.appendChild(s.cifra);
-      ol.appendChild(li); return s;
-    });
-    yoS.appendChild(ol); hud.appendChild(yoS);
+    /* B1 (FIRMO 2026-10-12): FUERA las skills de relleno (siete oficios con barras de XP) y el Core Level: el cangrejo no
+       podia hacer nada de eso. Las skills vuelven UNA A UNA cuando exista la accion real. El motor no se toca (sigue
+       contando su xp, que ya no se ensena). */
     rej.appendChild(hud); raiz.appendChild(rej);
 
     var nu = el('section', 'panel atlas-nucleo');
-    R.nucleoH = el('h4'); nu.appendChild(R.nucleoH);
     R.fase = el('p', 'atlas-fase'); nu.appendChild(R.fase);
-    R.nucleoPr = el('progress'); nu.appendChild(R.nucleoPr);
-    R.nucleoP = el('p'); nu.appendChild(R.nucleoP);
-    R.desb = el('p', 'atlas-desbloqueo'); nu.appendChild(R.desb);
     nu.appendChild(el('p', 'atlas-nota', LEY.nd ? U('mundo_nd') : rellena(U('nucleo_nota'), {
       pruebas: num(MUNDO.pruebas_web), lenguas: num(MUNDO.lenguas),
       kb: num(Math.round(MUNDO.gzip_juego_b / 1024)) })));
@@ -182,10 +168,6 @@
     if (window.AtlasMapa) { mapa = window.AtlasMapa.monta(lienzo); }
   }
 
-  function nivelTexto(xp) {
-    var n = M.nivelDesdeXp(xp);
-    return { n: n, desde: M.xpParaNivel(n), hasta: n < 99 ? M.xpParaNivel(n + 1) : xp };
-  }
 
   function pinta() {
     R.meter.max = E.integridad_max; R.meter.value = E.integridad;
@@ -204,30 +186,15 @@
       var r = R.radios[k];
       r.inp.checked = E.prof === k;
       r.inp.disabled = !!M.puedeBajar(E, k) && E.prof !== k;
-      pon(r.nota, rellena(U(r.clave), { ing: (TXT.skills || [])[6] || '', n: num(ing) }));
+      pon(r.nota, rellena(U(r.clave), { n: num(ing) }));
     });
 
     /* 6b+6a (FIRMO 2026-10-12, manda la ficha V3.0): ausente NO se cobra; la pantalla NARRA, en ciclos (sin reloj). */
     pon(R.dormH, U('dormias_h'));
     if (!R.dormUl.firstChild) { R.dormUl.appendChild(el('li', 'atlas-nota', rellena(U('dormias_vacio'), { c: num(E.t) }))); }
 
-    R.sk.forEach(function (s, i) {
-      var t = nivelTexto(E.xp[i]);
-      pon(s.nivel, t.n);
-      s.pr.max = Math.max(1, t.hasta - t.desde); s.pr.value = E.xp[i] - t.desde;
-      s.pr.setAttribute('aria-label', s.nombre + ': ' + num(E.xp[i]) + ' ' + U('de') + ' ' + num(t.hasta) + ' XP');
-      pon(s.cifra, num(E.xp[i]) + ' / ' + num(t.hasta) + ' XP');
-    });
-
-    var total = 0; E.xp.forEach(function (x) { total += x; });
-    var nn = M.nivelNucleo(E), f = M.fase(E), sig = M.siguienteFase(E);
-    pon(R.nucleoH, rellena(U('nucleo_h'), { n: nn }));
+    var f = M.fase(E);
     pon(R.fase, rellena(U('fase_h'), { n: f, fase: U('f' + f) }));
-    var tn = nivelTexto(Math.min(total, M.XP[98]));
-    R.nucleoPr.max = Math.max(1, tn.hasta - tn.desde); R.nucleoPr.value = Math.min(total, M.XP[98]) - tn.desde;
-    R.nucleoPr.setAttribute('aria-label', rellena(U('nucleo_h'), { n: nn }));
-    pon(R.nucleoP, rellena(U('nucleo_p'), { a: num(total) }));
-    pon(R.desb, sig ? rellena(U('desbloqueo'), { n: sig.nivel, fase: U('f' + sig.fase) }) : U('fase_fin'));
     if (mapa) { mapa.fase(f); }
   }
 
@@ -238,9 +205,6 @@
     if (ev && ev.resultado === 'fallo' && ev.tipo === 'reparar' && E.abierta) {
       dice(rellena(U('falta_cobre'), { n: num(Math.max(0, M.COBRE_REPARAR - E.cobre)) }));
     }
-    E.subidas.forEach(function (s) {
-      dice(rellena(U('sube'), { oficio: (TXT.skills || [])[M.OFICIOS.indexOf(s.oficio)] || s.oficio, n: s.nivel }));
-    });
     E.avisos.forEach(function (a) { dice(U(a === 'ascenso' ? 'ascenso' : 'reabre')); });
     E.subidas = []; E.avisos = [];
     pinta();

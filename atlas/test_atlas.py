@@ -623,6 +623,30 @@ process.stdout.write(JSON.stringify(ok));
             with self.subTest(capa=f):
                 self.assertIn("o.pon || function (x, y, d) { d(); }", (PUBLICO / "game" / f).read_text(encoding="utf-8"))
 
+    def test_b1_sin_skills_de_relleno(self):
+        """B1 (FIRMO 2026-10-12): el panel no pinta oficios que el cangrejo no puede ejercer (Descent, Fishing, Mining,
+        Smithing, Herbalism, Restoration, Engineering), ni sus barras de XP, ni el Core Level. El motor no se toca."""
+        p = sin_comentarios((ASSETS / "atlas-piso.js").read_text(encoding="utf-8"))
+        for malo in ("atlas-skills", "TXT.skills", "'nucleo_h'", "'nucleo_p'", "'desbloqueo'", "'sube'", "Atlante-7F3A", "nivelTexto"):
+            with self.subTest(fuera=malo):
+                self.assertNotIn(malo, p)
+        self.assertIn("pon(R.fase, rellena(U('fase_h')", p, "la fase se queda: mueve el mapa")
+
+    def test_c_paneles_amables_y_grandes(self):
+        """C (FIRMO 2026-10-12): lo mas amable primero (el INVENTARIO de ondas antes que el Taller), los paneles ocupan
+        TODA la pantalla junto al menu, todo lo tactil >= 44 px (medido 0 por debajo con Army y Taller abiertos), y
+        ninguna ventana persistente: segunda pulsacion cierra, Escape cierra."""
+        sh = (ASSETS / "terminal_menu_shell.js").read_text(encoding="utf-8")
+        self.assertLess(sh.index("entrada('ondas',"), sh.index("entrada('taller',"), "el inventario va antes que el Taller")
+        for pieza in ("muestra(actual === 'ondas' ? null : 'ondas')", "S.HOJA.ondas, S.HOJA.taller", "function mueveArmy()",
+                      "Promise.resolve(x.alTaller()).then(mueveArmy)", "e.key !== 'Escape'"):
+            with self.subTest(pieza=pieza):
+                self.assertIn(pieza, sh)
+        css = (ASSETS / "terminal_menu_shell.css").read_text(encoding="utf-8")
+        self.assertIn("right:0;", css.split(".thegame-terminal{")[1].split("}")[0], "el cajon no ocupa la pantalla")
+        self.assertIn("#thegame summary{min-height:2.75rem;", css)
+        self.assertIn("#thegame :is(.boton,.boton-sec){min-height:2.875rem;min-width:2.875rem}", css)
+
     def test_a1b8_un_estado_y_lo_ausente_es_no_data(self):
         """A1B8 (lote 0): la carta del mapa lee el MISMO Army que el Taller (adopciones desenvueltas), sin Army es NO_DATA;
         el INSPECTOR (0d) da de cada pieza que es, estado, coordenada y sonido, y formatea lo ausente como NO_DATA con
@@ -1274,7 +1298,7 @@ class Pestanas(unittest.TestCase):
         # Taller. Su peso sigue fuera de la puerta.
         c = c + (ASSETS / "terminal_menu_shell.js").read_text(encoding="utf-8")  # la terminal (hojas incluidas) salio a su modulo
         self.assertIn("PARTIDA = S.PARTIDA; MAPA = S.MAPA; muestra = S.muestra; pliego = S.pliego;\n    cargaCasa();", c)
-        self.assertIn("if (actual === 'taller') { x.alTaller(); }", c)
+        self.assertIn("if (actual === 'taller' || actual === 'ondas') { Promise.resolve(x.alTaller()).then(mueveArmy); }", c)
         self.assertIn("casa = cargaArmy().then(function () { return pide(CASA); })", c)
         self.assertIn("S.ARMYZ = el('div', 'casa-army'); tal.appendChild(S.ARMYZ);", c)
         self.assertIn("army: cargaArmy", c)
