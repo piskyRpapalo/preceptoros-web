@@ -615,10 +615,13 @@ process.stdout.write(JSON.stringify(ok));
         self.assertLess(vacia, m.index("TS.niebla(g, cam, W, H, z);"), "la niebla debe tapar lo pintado, no al reves")
         for pieza in ("var cola = [], pon = function (x, y, d, fi) { cola.push({ col: x, fila: y, f: d, ficha: fi }); };",
                       "f.lugares().forEach(function (l, i) { var s = sitio(l),", "cz = v === 0 ? 0 : Z.color(v); pon(s.x, s.y, function () {",
-                      "H0.forEach(function (n) { pon(n.x, n.y, function () {"):
+                      "window.AtlasMapNodes.pinta(g, P, { H0: H0, col: col, t: t, dpr: dpr, pon: pon });"):  # los nodos: su modulo
             with self.subTest(pieza=pieza):
                 self.assertIn(pieza, m)
-        self.assertEqual(m.count("pon: pon"), 3, "cangrejos, anclas y edificios reciben la cola")
+        self.assertEqual(m.count("pon: pon"), 4, "nodos, cangrejos, anclas y edificios reciben la cola")
+        nodos = (PUBLICO / "game" / "map_nodes_layer.js").read_text(encoding="utf-8")
+        self.assertIn("H0.forEach(function (n) { pon(n.x, n.y, function () {", nodos, "los nodos pintan por la cola desde su modulo")
+        self.assertLess(len((PUBLICO / "game" / "mar.js").read_bytes()), 16000, "mar.js vuelve a engordar: split primero")
         for f in ("mar-cangrejos.js", "mar-anclas.js", "reef_buildings_layer.js", "latency_crystal.js"):
             with self.subTest(capa=f):
                 self.assertIn("o.pon || function (x, y, d) { d(); }", (PUBLICO / "game" / f).read_text(encoding="utf-8"))
@@ -904,7 +907,7 @@ process.stdout.write(JSON.stringify(ok));
 # Ver atlas/POST_VERIFICACION_MGNO_LAB.md y atlas/POST_VERIFICACION_SISIL_CRIA.md.
 PUROS = ("canon.js", "sobres.js", "rating.js", "arena.js", "duelo.js", "mercado.js", "narragrafo.js", "cria.js", "genoma.js")
 # La Arena (2026-09-28, «el mapa multi-jugador en una pestana»): se carga al abrir su pestana, detras del Army.
-ARENA = ("sobres.js", "rating.js", "arena.js", "duelo.js", "mar-anclas.js", "crab_render_hd.js", "crab_free_move.js", "genesis_tutorial.js", "latency_crystal.js", "reef_corals.js", "reef_buildings_layer.js", "mar-cangrejos.js", "map_pointer_input.js", "piece_inspector.js", "state_vector.js", "place_telemetry.js", "mar.js", "nodos-pesos.js",
+ARENA = ("sobres.js", "rating.js", "arena.js", "duelo.js", "mar-anclas.js", "crab_render_hd.js", "crab_free_move.js", "genesis_tutorial.js", "latency_crystal.js", "reef_corals.js", "reef_buildings_layer.js", "mar-cangrejos.js", "map_pointer_input.js", "map_nodes_layer.js", "piece_inspector.js", "state_vector.js", "place_telemetry.js", "mar.js", "nodos-pesos.js",
          "nodos.js", "cuenta.js", "ui-nodos.js", "ui-rack.js",
          "escuadron.js", "battle_choreography.js", "battle_replay.js", "ui-arena-comun.js", "ui-arena.js", "ui-duelo.js")
 # La CASA (2026-10-05): la primera pantalla, detras del Army. Lleva canon y escena, que la Arena reutiliza.

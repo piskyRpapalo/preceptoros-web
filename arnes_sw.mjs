@@ -185,7 +185,8 @@ const rutas = await shell.keys();
 // 117 con `crab_render_hd.js` (R1: el cangrejo toon).
 // 118 con `terminal_window_frame.js` (PR-1: la ventana como una conversacion).
 // 120 con `worm_transition.js` (PR-2) y `state_vector.js` (el vector del juego).
-ok('precachea las portadas, su superficie y el juego', rutas.length === 120, rutas.length+' rutas');
+// 121 con `map_nodes_layer.js` (split de mar.js: los nodos del rack salen del mapa).
+ok('precachea las portadas, su superficie y el juego', rutas.length === 121, rutas.length+' rutas');
 ok('el shell trae el juego (D7): la puerta, el cangrejo y la arena',
    ['/assets/thegame.js', '/game/gdpr-art25-ephemeral-crab.js', '/game/ui-arena.js', '/assets/atlas-motor.js'].every(r => rutas.includes(r)));
 ok('el shell trae la portada de cada lengua', ['/es/', '/fr/', '/ar/'].every(r => rutas.includes(r)));
