@@ -1,3 +1,13 @@
+## RONDA 1 · REPARTO DE CASAS · CERRADA CON CAUSAS · 2026-10-13 (local, sin push)
+- **Hecho (commit 777cd95):** el montaje de la invocacion va a la hoja ARMY. ANTES (medido): Forest Incubator, Odds y Edges en #thegame-taller. DESPUES (medido, textContent): Forest Incubator, Odds, Edges, Nest, los 4 tesoros (Reef, Ruins, Forest, Abyss), Technical details y la lista del Army, todo en #thegame-ondas. El Taller ya no contiene la incubadora; conserva Workshop dust, Sanding y Static residue.
+- **Guarantee:** no esta en el bloque; vive en la ficha de cada onda («garantia_nd»: NO_DATA, sin piedad oculta), que se abre desde el inventario del Army. Cubierto por la ficha.
+- **Recibos de tuneo:** la cadena atlas.taller/1 (desintegra, lija) se queda en el Taller, como pide el comunicado.
+- **NO_DATA con causa:** no encontre un recibo de INVOCACION separado en el DOM; los resultados aparecen en Nest y Edges. Si quieres recibo de invocacion propio, es un chunk nuevo.
+- **Fuera de orden, verde:** el chunk de edificios toon (buildings_toon.js: boya y cristal con bandas del hue de su vector, 3/3 casos, sabotaje de hue inventado rojo). Queda para la ronda de embellecimiento; no se publica aun.
+
+## RONDA 2 · TUTORIAL COMO RUTA · EN MARCHA
+- Chunk 0 (medida guia de la summon): en curso. Se mide el tiempo del boton al fin de la revelacion, en el navegador, y se escribe en el paso.
+
 # PARA_LA_MESA · Ronda «el mapa único y la terminal» · 2026-10-11 · Claude (Opus 5.5)
 Contrato FIRMADO + addendum visual v2 (Ruswick + Zanzlanz + PS1). Rama `claude/mapa-unico` sobre `main` `b63ddec`. **Sin push**: cada pieza espera tu FIRMO. Lo de las rondas anteriores sigue debajo.
 
