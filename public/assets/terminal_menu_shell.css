@@ -82,3 +82,5 @@ body.portada-juego .pc-boton{display:none}
 .terminal-cab-sello{padding:0 .35rem;border:1px solid var(--edge-sov);border-radius:var(--radius);color:var(--text-main)}
 .terminal-cab-cierra{grid-column:2;grid-row:1 / span 2}
 .terminal-enmarcado > details > summary{display:none}
+/* PR-2: el lienzo del gusano, encima de todo y sin recibir el dedo (revela, no decide). */
+.gusano-lienzo{position:fixed;inset:0;width:100vw;height:100vh;z-index:20;pointer-events:none}

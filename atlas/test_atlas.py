@@ -623,6 +623,18 @@ process.stdout.write(JSON.stringify(ok));
             with self.subTest(capa=f):
                 self.assertIn("o.pon || function (x, y, d) { d(); }", (PUBLICO / "game" / f).read_text(encoding="utf-8"))
 
+    def test_pr2_gusanos_y_pr3_vector(self):
+        """PR-2 (FIRMO 2026-10-12): la trayectoria del gusano ES el dato (pura de S_t; revela, no decide; color del sello).
+        PR-3: cada transicion se narra en la Radio y se lee en el inspector; y TODO el estado visible cabe en un vector
+        < 1 KB (`AtlasVector.leer()`), leible de una llamada por un LLM pequeno («piensa vectorialmente»)."""
+        for casos in ("gusano_casos.mjs", "vector_casos.mjs"):
+            with self.subTest(casos=casos):
+                r = subprocess.run(["node", str(RAIZ / casos)], capture_output=True, text=True, timeout=60)
+                self.assertEqual(r.returncode, 0, r.stdout[-1200:] + r.stderr[-400:])
+        w = (ASSETS / "worm_transition.js").read_text(encoding="utf-8")
+        self.assertIn("R.dice({ quien: 'Terminal', fuente: 'gusano',", w, "una transicion que no se narra no entra")
+        self.assertIn("['worm_transition.js']", (ASSETS / "thegame.js").read_text(encoding="utf-8"))
+
     def test_pr1_la_ventana_como_conversacion(self):
         """PR-1 (FIRMO 2026-10-12): el cajon es UNA ventana: cabecero con titulo, sello, fuente y edad en ciclos; cierre
         de 46 px; rotulos del menu COMPLETOS (medido: 4 se cortaban). Plug&play: observa el cajon, no toca el shell."""
@@ -768,7 +780,10 @@ process.stdout.write(JSON.stringify(ok));
         tiene que estar en una regla pointer-events:auto (salvo el aviso del mapa, que no es pulsable a proposito)."""
         hojas = [PUBLICO / "assets" / n for n in ("thegame.css", "terminal_menu_shell.css", "atlas.css", "atlas-mapa.css")] + [PUBLICO / "game" / "home.css"]
         vivo = "".join(re.sub(r"/\*.*?\*/", "", h.read_text(encoding="utf-8"), flags=re.S) for h in hojas)
-        fijas = set(re.findall(r"\.([a-z][a-z0-9-]*)\{position:fixed", vivo)) - {"mapa-aviso"}
+        # Excepciones, NO pulsables a proposito: el aviso del mapa y el lienzo del gusano (PR-2: revela, no decide; si
+        # recibiera el dedo, taparia el juego durante la transicion). Y se exige que el gusano lo deje pasar.
+        fijas = set(re.findall(r"\.([a-z][a-z0-9-]*)\{position:fixed", vivo)) - {"mapa-aviso", "gusano-lienzo"}
+        self.assertIn("pointer-events:none", vivo.split(".gusano-lienzo{")[1].split("}")[0], "el gusano no puede recibir el dedo")
         auto = set()
         for sel, cuerpo in re.findall(r"([^{}]+)\{([^{}]*)\}", vivo):
             if "pointer-events:auto" in cuerpo:
@@ -889,7 +904,7 @@ process.stdout.write(JSON.stringify(ok));
 # Ver atlas/POST_VERIFICACION_MGNO_LAB.md y atlas/POST_VERIFICACION_SISIL_CRIA.md.
 PUROS = ("canon.js", "sobres.js", "rating.js", "arena.js", "duelo.js", "mercado.js", "narragrafo.js", "cria.js", "genoma.js")
 # La Arena (2026-09-28, «el mapa multi-jugador en una pestana»): se carga al abrir su pestana, detras del Army.
-ARENA = ("sobres.js", "rating.js", "arena.js", "duelo.js", "mar-anclas.js", "crab_render_hd.js", "crab_free_move.js", "genesis_tutorial.js", "latency_crystal.js", "reef_corals.js", "reef_buildings_layer.js", "mar-cangrejos.js", "map_pointer_input.js", "piece_inspector.js", "place_telemetry.js", "mar.js", "nodos-pesos.js",
+ARENA = ("sobres.js", "rating.js", "arena.js", "duelo.js", "mar-anclas.js", "crab_render_hd.js", "crab_free_move.js", "genesis_tutorial.js", "latency_crystal.js", "reef_corals.js", "reef_buildings_layer.js", "mar-cangrejos.js", "map_pointer_input.js", "piece_inspector.js", "state_vector.js", "place_telemetry.js", "mar.js", "nodos-pesos.js",
          "nodos.js", "cuenta.js", "ui-nodos.js", "ui-rack.js",
          "escuadron.js", "battle_choreography.js", "battle_replay.js", "ui-arena-comun.js", "ui-arena.js", "ui-duelo.js")
 # La CASA (2026-10-05): la primera pantalla, detras del Army. Lleva canon y escena, que la Arena reutiliza.
