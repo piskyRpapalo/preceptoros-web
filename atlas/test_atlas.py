@@ -537,7 +537,7 @@ process.stdout.write(JSON.stringify(ok));
         """Medido en el Doogee con toques REALES (adb input tap, 2026-10-11): la cabecera del sitio (dos lineas a 360 px,
         hasta 147 px) recibia el toque de Workshop, y el unico Fight vivia en un pliego cerrado. La barra va por
         encima de la cabecera y baja en telefonos estrechos; elegir un lugar abre su pliego y deja el Fight a la vista."""
-        css = re.sub(r"/\*.*?\*/", "", (PUBLICO / "assets" / "thegame.css").read_text(encoding="utf-8"), flags=re.S)
+        css = re.sub(r"/\*.*?\*/", "", (PUBLICO / "assets" / "terminal_menu_shell.css").read_text(encoding="utf-8"), flags=re.S)
         barra = re.search(r"\.thegame-barra\{position:fixed;z-index:(\d+);", css)
         self.assertTrue(barra and int(barra.group(1)) > 5, "la barra queda bajo la cabecera (z-index 5)")
         self.assertIn("@media (max-width:25rem){:root{--thegame-tope:9.5rem}}", css)
@@ -606,11 +606,36 @@ process.stdout.write(JSON.stringify(ok));
         ui = json.loads((PUBLICO / "atlas-en.json").read_text(encoding="utf-8"))["ui"]
         self.assertNotIn("produces while this tab is hidden", ui["dormias_vacio"], "el texto vuelve a prometer pago por dormir")
 
+    def test_la_terminal_chatbot_y_el_chat_de_la_radio(self):
+        """LA TERMINAL (FIRMO 2026-10-12): menu a la izquierda (64 px iconos / 220 px expandido), el chat de la Radio abajo,
+        PLEGADO de salida (una linea: jamas se come el mundo). Cada burbuja dice quien, sello (LIVE/STALE/SIMULATED/
+        NO_DATA), fuente y edad EN CICLOS, y lo lleva en data-* (el lab lee el chat, no pixeles). El chat se alimenta de
+        las lineas de estado que el juego YA escribe: no inventa mensajes. Opinar tiene su hogar en el menu."""
+        r = sin_comentarios((ASSETS / "radio_message_log.js").read_text(encoding="utf-8"))
+        for pieza in ("R.lista.setAttribute('role', 'log')", "R.lista.setAttribute('aria-live', 'polite')",
+                      "li.dataset.quien = m.quien; li.dataset.sello = s; li.dataset.fuente = m.fuente; li.dataset.ciclo = String(m.ciclo);",
+                      "if (/^\\s*NO_DATA/.test(texto)) { return 'NO_DATA'; }", "return m.sello === 'LIVE' && ciclo() - m.ciclo > VIEJO ? 'STALE' : m.sello;",
+                      "closest('[role=\"status\"],[aria-live]')", "el('section', 'radio-chat plegado')", "function registro()"):
+            with self.subTest(pieza=pieza):
+                self.assertIn(pieza, r)
+        for malo in ("Date.now", "fetch(", "localStorage", "innerHTML", "Math.random"):
+            with self.subTest(prohibido=malo):
+                self.assertNotIn(malo, r)
+        css = (ASSETS / "terminal_menu_shell.css").read_text(encoding="utf-8")
+        for regla in (":root{--thegame-tope:7.2rem;--menu:4rem;--chat:3rem}", ":root:has(.thegame-menu.expandido){--menu:13.75rem}",
+                      "body.portada-juego .pc-boton{display:none}", "grid-template-columns:minmax(0,1fr)", "min-height:3rem"):
+            with self.subTest(regla=regla):
+                self.assertIn(regla, css)
+        sh = sin_comentarios((ASSETS / "terminal_menu_shell.js").read_text(encoding="utf-8"))
+        self.assertIn("entrada('opinar',", sh, "opinar se queda sin hogar en el menu")
+        for f in ("radio_message_log.js", "terminal_menu_shell.js"):
+            self.assertLess(len((ASSETS / f).read_bytes()), 16384, f)
+
     def test_lo_que_flota_recibe_el_dedo(self):
         """U1 puso pointer-events:none en la capa para que el mapa reciba el dedo, y eso se HEREDA: la revelacion,
         Customize y los dialogos solo se cerraban con Escape (medido en vivo). Toda clase `position:fixed` del juego
         tiene que estar en una regla pointer-events:auto (salvo el aviso del mapa, que no es pulsable a proposito)."""
-        hojas = [PUBLICO / "assets" / n for n in ("thegame.css", "atlas.css", "atlas-mapa.css")] + [PUBLICO / "game" / "home.css"]
+        hojas = [PUBLICO / "assets" / n for n in ("thegame.css", "terminal_menu_shell.css", "atlas.css", "atlas-mapa.css")] + [PUBLICO / "game" / "home.css"]
         vivo = "".join(re.sub(r"/\*.*?\*/", "", h.read_text(encoding="utf-8"), flags=re.S) for h in hojas)
         fijas = set(re.findall(r"\.([a-z][a-z0-9-]*)\{position:fixed", vivo)) - {"mapa-aviso"}
         auto = set()
@@ -1136,16 +1161,18 @@ class Pestanas(unittest.TestCase):
         return sin_comentarios(self.CAPA.read_text(encoding="utf-8"))
 
     def test_u1_un_mapa_una_terminal_y_dos_hojas(self):
-        """U1 («el mapa unico», contrato FIRMADO 2026-10-11): sin pestanas. El MAPA es la pantalla; la TERMINAL es
-        UN tubo con pliegos (Estado abierto, Lugares plegado); TALLER y BATALLA son hojas sobre el mapa. HOME
-        muere como lugar. Las zonas siguen repartiendo lo que pinta el motor (casa, mapa, taller), en ese orden."""
-        c = self._capa()
+        """U1 + LA TERMINAL CHATBOT (FIRMO 2026-10-12): el MAPA es la pantalla; la interfaz vive en los bordes. Menu a la
+        IZQUIERDA (unico hogar de cada panel, entradas sacadas de los paneles que existen), un CAJON que abre un panel cada
+        vez (cerrado de salida: el centro limpio), TALLER y BATALLA como hojas sobre el mapa, Escape y Alt+M. Las zonas
+        siguen repartiendo lo que pinta el motor (casa, mapa, taller), en ese orden."""
+        c = self._capa() + (ASSETS / "terminal_menu_shell.js").read_text(encoding="utf-8")
         ids = re.findall(r"\['(\w+)', '\\u[0-9A-F]{4}", c)
         self.assertEqual(tuple(ids), self.IDS)
-        for pieza in ("el('aside', 'thegame-terminal')", "'pliego-estado', true", "'pliego-lugares', false",
-                      "hoja('taller', T('pes_taller'))", "ZB = hoja('batalla', T('hoja_batalla'))", "'aria-expanded'",
-                      "BT.setAttribute('aria-controls', 'thegame-taller')", "classList.toggle('con-hoja', !!actual)",
-                      "e.key === 'Escape'", "c.id = 'thegame-' + id + '-cierra'", "ordena();"):
+        for pieza in ("el('aside', 'thegame-terminal')", "cajon.hidden = true", "'pliego-estado', true", "el('nav', 'thegame-menu')",
+                      "hoja('taller', T('pes_taller'))", "S.ZB = hoja('batalla', T('hoja_batalla'))", "'aria-expanded'",
+                      ".setAttribute('aria-controls', 'thegame-taller')", "classList.toggle('con-hoja', !!actual)",
+                      "abierto = abierto === id ? null : id;", "e.key !== 'Escape'", "e.altKey && (e.key === 'm'",
+                      "c.id = 'thegame-' + id + '-cierra'", "new MutationObserver(sincroniza)", "ordena();"):
             with self.subTest(pieza=pieza):
                 self.assertIn(pieza, c)
         for viejo in ("role', 'tab'", "aria-selected", "ArrowRight", "pes_casa", "pes_mapa"):
@@ -1158,8 +1185,8 @@ class Pestanas(unittest.TestCase):
                 self.assertNotIn(freno, lista, "el piloto y su freno salen del cabecero")
         for l in LENGUAS_JUEGO:
             ui = json.loads((PUBLICO / f"atlas-{l}.json").read_text(encoding="utf-8"))["ui"]
-            for k in ["pes_taller", "pes_aria", "hoja_mapa", "hoja_batalla", "pl_estado", "pl_lugares", "pl_entrada",
-                      "terminal_aria", "tecnico", "army_carga"] + [f"ayuda_{i}" for i in range(1, 8)]:
+            for k in ["pes_taller", "hoja_mapa", "hoja_batalla", "pl_estado", "pl_lugares", "pl_entrada", "menu_aria", "menu_ancho",
+                      "menu_opinar", "chat_aria", "chat_edad", "chat_vacio", "terminal_aria", "tecnico", "army_carga"] + [f"ayuda_{i}" for i in range(1, 8)]:
                 with self.subTest(lengua=l, clave=k):
                     self.assertTrue(ui.get(k, "").strip())
 
@@ -1185,10 +1212,11 @@ class Pestanas(unittest.TestCase):
         self.assertIn("['/game/juez.js']", guiones, "el juez escucha desde el primer ciclo")
         # U1: el Army vive en la hoja del TALLER y se pide con la CASA (que se monta al ordenar) o al abrir el
         # Taller. Su peso sigue fuera de la puerta.
-        self.assertIn("muestraYa(null); cargaCasa();", c)
-        self.assertIn("if (actual === 'taller') { cargaArmy(); }", c)
+        c = c + (ASSETS / "terminal_menu_shell.js").read_text(encoding="utf-8")  # la terminal (hojas incluidas) salio a su modulo
+        self.assertIn("PARTIDA = S.PARTIDA; MAPA = S.MAPA; muestra = S.muestra; pliego = S.pliego;\n    cargaCasa();", c)
+        self.assertIn("if (actual === 'taller') { x.alTaller(); }", c)
         self.assertIn("casa = cargaArmy().then(function () { return pide(CASA); })", c)
-        self.assertIn("ARMYZ = el('div', 'casa-army'); tal.appendChild(ARMYZ);", c)
+        self.assertIn("S.ARMYZ = el('div', 'casa-army'); tal.appendChild(S.ARMYZ);", c)
         self.assertIn("army: cargaArmy", c)
         sys.path.insert(0, str(RAIZ))
         import mundo
@@ -1201,9 +1229,12 @@ class Pestanas(unittest.TestCase):
                         "la firma importada se mira antes de tener su verificador")
 
     def test_la_hoja_de_la_capa(self):
-        css = self.HOJA.read_text(encoding="utf-8")
+        # Desde la terminal chatbot (2026-10-12) la capa tiene DOS hojas: thegame.css y terminal_menu_shell.css. La doctrina
+        # (tokens sin hex, sin degradados ni desenfoques ni keyframes) vale para las dos.
+        css = self.HOJA.read_text(encoding="utf-8") + (ASSETS / "terminal_menu_shell.css").read_text(encoding="utf-8")
         self.assertLessEqual(len(css.encode("utf-8")), TOPE_FICHERO)
         self.assertIn("'thegame.css'", self._capa())
+        self.assertIn("'terminal_menu_shell.css'", self._capa())
         vivo = re.sub(r"/\*.*?\*/", "", css, flags=re.S)
         self.assertEqual(re.findall(r"#[0-9a-fA-F]{3,8}\b", vivo), [], "un color fuera de los tokens")
         for regla in (".thegame-hoja[hidden]{display:none}", "env(safe-area-inset-bottom)",
@@ -2156,9 +2187,11 @@ class MapaMovible(unittest.TestCase):
         css = (PUBLICO / "assets" / "thegame.css").read_text(encoding="utf-8")
         self.assertNotIn(".mar-fondo", css)
         # U2: en el telefono el mapa es la franja de encima de la terminal (si no, su centro cae detras de la hoja).
-        self.assertIn(".thegame-mapa{position:fixed;inset:0 0 46dvh 0;", css)
-        self.assertIn("max-height:46dvh", css.split(".thegame-terminal{")[1].split("}")[0], "la franja y la hoja no casan")
-        self.assertIn(".thegame-mapa{inset:0}", css.split("@media (min-width:48rem) and (min-height:34rem){")[-1], "en escritorio el mapa no es la pantalla")
+        # La terminal chatbot (2026-10-12): el mapa es TODA la pantalla; los bordes (menu, chat plegado) no le comen el centro.
+        css = (PUBLICO / "assets" / "terminal_menu_shell.css").read_text(encoding="utf-8")
+        self.assertIn(".thegame-mapa{position:fixed;inset:0;z-index:0}", css)
+        self.assertIn(".radio-chat.plegado .radio-chat-lista{display:none}", css, "el chat plegado se come el mundo")
+        self.assertIn("max-height:40dvh", css.split(".radio-chat{position:fixed")[1].split("}")[0], "el chat desplegado pasa del 40 % del alto")
 
     def _js(self, n):
         return sin_comentarios((PUBLICO / "game" / n).read_text(encoding="utf-8"))

@@ -1,6 +1,11 @@
 # PARA_LA_MESA · Ronda «el mapa único y la terminal» · 2026-10-11 · Claude (Opus 5.5)
 Contrato FIRMADO + addendum visual v2 (Ruswick + Zanzlanz + PS1). Rama `claude/mapa-unico` sobre `main` `b63ddec`. **Sin push**: cada pieza espera tu FIRMO. Lo de las rondas anteriores sigue debajo.
 
+## REGISTRO · 2026-10-13
+- **v10 aplicada** (entrada 22, firmada con la v2, hash `f2521314…`). La rotación de la entrada 16 SÍ se hizo: las entradas 17-21 están firmadas con la v2 (`iqao…`) y la cadena las verifica. Mi informe anterior decía lo contrario: era un error de mi comprobación (leía solo la primera línea de `allowed_signers`), corregido.
+- **DESVIACIÓN DELIBERADA, decidida y firmada por el Soberano hoy:** la clave vieja (`0OIN…`) sigue autorizada hasta el 2027-10-10 en `allowed_signers`, contra lo que declaraba la entrada 16 (caducidad 2026-10-06). **No se corrige.** Causa: la clave solo es usable mientras el agente la retenga (la frase se perdió) y queda como respaldo de emergencia.
+- **Entrada 23** (renovación de `hexelion-lectura` hasta el 2026-10-25): preparada contra la cadena en 22, pendiente de su firma.
+
 ## RONDA «6b + LEY DEL SUELO + MCPs» · 2026-10-13 · MEDIDO / EN_CURSO
 - **6b+6a LIVE** (`abew`, #34): volver ya no paga; la pantalla narra en ciclos. Medido: pestaña oculta + 8 h de reloj → recursos y ciclo idénticos. El motor conserva `dormir` SOLO para reproducir partidas guardadas.
 - **LEY DEL SUELO, paso 1 LIVE** (`abev`, #33): `isometric_floor_projection.js` (rombo 2:1, ancla al centro, orden de pintor), 9 casos + sabotaje; prueba visual en el lab. **Paso 2 LIVE** (`abex`, #35): la cámara proyecta en rombo con la misma fórmula; mar y niebla en teselas rombo; el dedo en `map_pointer_input.js`. **Medido en el Doogee con dedo real:** el recorrido entero en verde (0 errores) y un arrastre horizontal mueve el mundo SOLO en horizontal (36 pasos, (263,7; 0)).

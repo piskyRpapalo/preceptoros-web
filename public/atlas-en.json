@@ -285,6 +285,12 @@
     "piedad_t": "Since your last Rare or better: {n} opened · {a} opened in all · {i} still incubating",
     "garantia_nd": "Guarantee: NO_DATA · its number is not signed yet. No hidden pity here: what you see is all there is.",
     "cronica_h": "Chronicle of wishes",
-    "cronica_item": "#{s} · cycle {c} · {tc} · {n} edges · {r} · seal {h}"
+    "cronica_item": "#{s} · cycle {c} · {tc} · {n} edges · {r} · seal {h}",
+    "menu_aria": "Game menu: every panel has one home here",
+    "menu_ancho": "Expand or collapse the menu (Alt+M)",
+    "menu_opinar": "Feedback on this page",
+    "chat_aria": "Radio chat: what the reef says, with who, seal, source and age (Alt+R)",
+    "chat_edad": "Δ {n} cycles",
+    "chat_vacio": "The Radio is listening."
   }
 }

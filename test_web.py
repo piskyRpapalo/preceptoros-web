@@ -2386,9 +2386,12 @@ class ElJuegoEnInglesEnLasNueve(unittest.TestCase):
         self.assertTrue(primera.group(2).startswith("#atlas-juego > .no-data:first-child"),
                         "el aviso de lengua no va el primero en la pestana de entrada: cae en Help y no se ve")
         self.assertEqual(primera.group(1), "casa", "la primera zona ya no es la del Estado")
-        self.assertIn("var est = PANEL.casa;", js)
-        self.assertIn("pliego(T('pl_estado'), 'pliego-estado', true, [est])", js,
-                      "el pliego del aviso no abre de salida")
+        # Desde la terminal chatbot (FIRMO 2026-10-12) el mapa queda limpio y el cajon cerrado: el aviso de lengua va,
+        # ademas, como PRIMER mensaje del chat de la Radio, que se ve aun plegado (su ultima linea).
+        shell = self._js("terminal_menu_shell.js")
+        self.assertIn("var est = S.PANEL.casa;", shell)
+        self.assertIn("raiz.AtlasRadioChat.dice({ quien: 'Radio', fuente: 'lengua', texto: aviso.textContent, sello: 'NO_DATA' })", shell,
+                      "el aviso de lengua no llega al chat de la Radio")
         # R2 (plan «el refresco»): Help desaparece; el aviso generico (`#atlas-juego > .no-data`) lo reparte MAP.
         self.assertLess(js.index(f"['{primera.group(1)}'"), js.index("['mapa'"),
                         "la entrada tiene que repartir antes que MAP, o MAP se lleva el aviso")
@@ -2493,7 +2496,8 @@ class Portada(unittest.TestCase):
     def test_la_pagina_se_reordena_no_carga(self):
         """J10: cambiar de pestana va en startViewTransition, con el cambio de siempre como reserva y SIN
         animacion con movimiento reducido; el contenido final lo pone muestraYa, el mismo de antes."""
-        tg = (PUBLICO / "assets" / "thegame.js").read_text(encoding="utf-8")
+        # La terminal (menu, cajon, hojas) salio de thegame.js a terminal_menu_shell.js (FIRMO 2026-10-12): se miran los dos.
+        tg = (PUBLICO / "assets" / "thegame.js").read_text(encoding="utf-8") + (PUBLICO / "assets" / "terminal_menu_shell.js").read_text(encoding="utf-8")
         self.assertIn("d.startViewTransition && !rm", tg)
         self.assertIn("else { muestraYa(id, foco); }", tg)
         self.assertIn("prefers-reduced-motion: reduce", tg[tg.index("function muestra(id"):tg.index("function muestraYa")])

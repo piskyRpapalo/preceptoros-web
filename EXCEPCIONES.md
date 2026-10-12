@@ -12,3 +12,8 @@ Cada entrada caduca: o se trocea el fichero, o se firma de nuevo.
 - **Lo que NO se hizo para no cruzar:** recortar comentarios (es documentacion para quien hereda el fichero).
 - **Salida (caducidad 2026-10-19):** trocear `thegame.js`: las listas GUIONES/ARMY/ARENA/CASA a un modulo de datos propio, o las
   hojas y la terminal (`hoja`, `pliego`, `muestra`) a su modulo. Al trocear, esta entrada se cierra.
+
+### CERRADA el 2026-10-13: troceada
+La terminal (menu, cajon, hojas y chat de la Radio) salio de `thegame.js` a `terminal_menu_shell.js` (+ `.css`) y
+`radio_message_log.js`, con la interfaz chatbot firmada. `thegame.js` vuelve bajo el techo (16.436 -> ~11,8 KB): la huella de
+arriba ya no coincide con ningun fichero y el test del techo vuelve a medir 16 KiB a secas.
