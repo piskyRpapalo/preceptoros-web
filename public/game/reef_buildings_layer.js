@@ -22,10 +22,12 @@
   var COSTE = 8, DESGASTE_VISTA = 6, MAX_VISTAS = 3;
   var ultima = null, vistos = [], vistas = [], centro = null, boton = null, rotuloBoton = '', nVistas = 0;
 
-  /* El manifiesto de la boya: anclado a tu casa (entero, determinista). Sin casa medida, no hay boya. */
+  /* El manifiesto de la boya: anclado a tu casa (entero, determinista). Sin casa medida, no hay boya. Boya en (+100, -100) y
+     observatorio en (-100, +100): en el rombo caen a la MISMA altura que la casa, a cada lado, lejos de las anclas
+     (cuerpo y prisma, a +60 en pantalla). Medido en el Doogee: a (+70, -50) los rotulos se pisaban. */
   function manifiestoBoya(casa) {
     if (!casa) { return null; }
-    return { esquema: ESQ, id: 'boya-estado', tipo: 'boya', col: Math.round(casa.x + 70), fila: Math.round(casa.y - 50),
+    return { esquema: ESQ, id: 'boya-estado', tipo: 'boya', col: Math.round(casa.x + 100), fila: Math.round(casa.y - 100),
              huella: 1, nace_tic: 0, madura_tics: 3, desgaste_por_tic: DESGASTE, carga: 300, escudo: 0, emboscable: false };
   }
   /* El ultimo ciclo con una noticia LIVE (o que lo fue y ya es STALE) en la Radio. Sin ninguna: null (no se inventa). */
@@ -119,7 +121,7 @@
       g.fillText(t('boya_estado'), p[0], y - r - 4 * dpr);
     }
     /* El observatorio (una cupula) y lo que mira: la mirada en curso es una linea de trazos hasta el punto. */
-    var oc = casa ? P(casa.x - 80, casa.y + 60) : null, F = (t('obs_fases') || '').split('|');
+    var oc = casa ? P(casa.x - 100, casa.y + 100) : null, F = (t('obs_fases') || '').split('|');
     vistas = vistas.filter(function (w) {
       var e = L.estado(w, tic), vw = L.vector(w, tic), q = P(w.col, w.fila);
       vistos.push(vw);

@@ -641,7 +641,7 @@ process.stdout.write(JSON.stringify(ok));
             with self.subTest(prohibido=malo):
                 self.assertNotIn(malo, r)
         css = (ASSETS / "terminal_menu_shell.css").read_text(encoding="utf-8")
-        for regla in (":root{--thegame-tope:7.2rem;--menu:4rem;--chat:3rem}", ":root:has(.thegame-menu.expandido){--menu:13.75rem}",
+        for regla in (":root{--thegame-tope:7.2rem;--menu:4rem;--chat:3rem;--pie:calc(var(--chat) + 1px + env(safe-area-inset-bottom,0px))}", ".mapa-mandos{position:fixed;z-index:1;left:calc(var(--menu) + .6rem);bottom:calc(var(--pie) + .6rem)}", ":root:has(.thegame-menu.expandido){--menu:13.75rem}",
                       "body.portada-juego .pc-boton{display:none}", "grid-template-columns:minmax(0,1fr)", "min-height:3rem"):
             with self.subTest(regla=regla):
                 self.assertIn(regla, css)

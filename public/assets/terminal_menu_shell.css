@@ -1,7 +1,9 @@
 /* --- LA TERMINAL CHATBOT (FIRMO 2026-10-12): la regla 5 de la LEY DEL SUELO concretada. Menu a la IZQUIERDA (solo iconos en
    el telefono, expandido en escritorio), el cajon de paneles junto a el, el chat de la Radio ABAJO (plegado: una linea), y el
    CENTRO LIMPIO para el mundo isometrico. Una variable por borde: los cuatro trozos casan siempre. ------------------------ */
-:root{--thegame-tope:7.2rem;--menu:4rem;--chat:3rem}
+:root{--thegame-tope:7.2rem;--menu:4rem;--chat:3rem;--pie:calc(var(--chat) + 1px + env(safe-area-inset-bottom,0px))}
+/* --pie = lo que OCUPA el chat plegado: su linea, su borde y la barra de gestos. MEDIDO en el Doogee: 48 + 1 + 24 = 73 px;
+   reservar solo --chat dejaba la segunda fila de mandos (◈, 👁) medio tapada. */
 /* Telefono estrecho: la cabecera crece a dos lineas (medido en el Doogee, 360 px: termina en 147 px). Con 412 px, 110. */
 @media (max-width:25rem){:root{--thegame-tope:9.5rem}}
 @media (min-width:48rem){:root{--thegame-tope:5.9rem}}
@@ -28,7 +30,7 @@
 body.portada-juego .pc-boton{display:none}
 .thegame-menu.expandido .thegame-menu-rotulo{display:inline}
 /* EL CAJON: un panel cada vez, junto al menu; cerrado no ocupa nada. */
-.thegame-terminal{position:fixed;z-index:4;left:var(--menu);top:var(--thegame-tope);bottom:var(--chat);width:min(24rem,calc(100vw - var(--menu)));
+.thegame-terminal{position:fixed;z-index:4;left:var(--menu);top:var(--thegame-tope);bottom:var(--pie);width:min(24rem,calc(100vw - var(--menu)));
   overflow:auto;overflow-x:hidden;overscroll-behavior:contain;display:grid;gap:.5rem;align-content:start;padding:.5rem .6rem}
 .thegame-terminal[hidden],.thegame-terminal > details[hidden]{display:none}
 .thegame-estado{display:grid;gap:.6rem;min-width:0}
@@ -38,7 +40,7 @@ body.portada-juego .pc-boton{display:none}
 #thegame .thegame-terminal .atlas-alerta p{flex-basis:100%}
 #thegame .thegame-terminal .atlas-cab h3{font-size:1rem}
 /* LAS HOJAS (Taller, Batalla): sobre el mapa, entre el menu y el borde, encima del chat. */
-.thegame-hoja{position:fixed;z-index:4;top:var(--thegame-tope);left:var(--menu);right:.4rem;bottom:var(--chat);overflow:auto;overscroll-behavior:contain;padding:0 .8rem 1rem}
+.thegame-hoja{position:fixed;z-index:4;top:var(--thegame-tope);left:var(--menu);right:.4rem;bottom:var(--pie);overflow:auto;overscroll-behavior:contain;padding:0 .8rem 1rem}
 .thegame-hoja[hidden]{display:none}
 .thegame-hoja-cab{position:sticky;top:0;z-index:1;display:flex;gap:.7rem;align-items:center;padding:.6rem 0;background:var(--bg-secondary)}
 .thegame-hoja-cab h3{margin:0;font:700 .85rem/1.2 var(--mono);letter-spacing:.06em;text-transform:uppercase}
@@ -60,5 +62,5 @@ body.portada-juego .pc-boton{display:none}
 .radio-msg-sello{padding:0 .35rem;border:1px solid var(--edge-sov);border-radius:var(--radius);color:var(--accent-copper-claro)}
 .radio-msg-texto{margin:.25rem 0 0;font-size:.86rem;line-height:1.4;overflow-wrap:anywhere}
 /* Los mandos del mapa y su aviso: tras el menu, encima del chat; el centro, limpio. */
-.mapa-mandos{position:fixed;z-index:1;left:calc(var(--menu) + .6rem);bottom:calc(var(--chat) + .6rem)}
+.mapa-mandos{position:fixed;z-index:1;left:calc(var(--menu) + .6rem);bottom:calc(var(--pie) + .6rem)}
 .mapa-aviso{position:fixed;z-index:1;top:calc(var(--thegame-tope) + 3.6rem);left:calc(var(--menu) + .6rem);right:.6rem;pointer-events:none}
