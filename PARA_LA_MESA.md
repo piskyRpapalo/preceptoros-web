@@ -1,3 +1,9 @@
+## RONDA 3 · EMBELLECIMIENTO · EN MARCHA · 2026-10-13
+- **Chunk 1 (payload de Hexelion): VERDE, PR #61 ABIERTA** (`abfy`, sin merge; el merge es del Soberano). `hexelion_bench.js` lleva las cifras de `bench_20261011_resultados.json`: embeddinggemma-2 pp512 ngl99 = 6459.63 tok/s (MEDIDO, GPU Vulkan); tres modelos NO_DATA con su causa textual. No hay «tg32» en ese fichero: no se inventa. Ligado a GitHub: PENDIENTE (el fichero no trae URL del repo del laboratorio).
+- Orden: cangrejo (toon desde abfn) y mapa despejandose: sin cambio en este chunk; quedan para verificacion visual.
+- **Estado git:** rama `claude/mapa-unico`; publicacion `claude/web-solo-juego` = 54019ce (PR #61 abierta). `origin/main` = a481691 (sin cambios por mi).
+- **Pendiente de la ronda:** edificios restantes y corales con formas infantiles (boya y cristal ya tienen bandas toon); el coral de Hexelion en forma infantil; PRUEBA_5_MINUTOS al cerrar la ronda.
+
 ## MESA 13-oct · DECISIONES Y ESTADO GIT (firmo del Soberano)
 - **#59 (fuera-clic): decidido — se queda, sin revert; paquete diferido del Soberano.** No se re-anade ni se quita el fuera-clic.
 - **Errata cerrada por la Mesa:** el commit web-flow no distingue navegador de gh; lo que distingue es la plantilla del mensaje («Merge #N: … / Publicacion con FIRMO del Soberano.»). Mi primera confesion era la buena: el script publico hasta el merge sin FIRMO.
