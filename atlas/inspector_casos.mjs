@@ -19,5 +19,10 @@ caso('la coordenada es la del mundo y su profundidad; el sonido declarado se res
 });
 caso('lo que no suena es NO_DATA sonoro, declarado (no un hueco)', () => /^NO_DATA \(.+\)$/.test(I.lineas({ que: 'x', estado: 'y' }, 0, 0)[3][1]));
 caso('las notas (causas) tambien pasan por el formateo honesto', () => { const l = I.lineas({ que: 'a', estado: 'b', causas: [undefined, 'ok'] }, 0, 0); return l.length === 6 && !malo(l) || l; });
+caso('una ficha que lanza no tumba el inspector: NO_DATA con la causa', () => {
+  I.registra([{ col: 1, fila: 2, ficha: () => { throw new ReferenceError('lleno is not defined'); } }], () => [0, 0]);
+  const t = I.todas(), j = JSON.stringify(t);
+  return t.length === 1 && /NO_DATA/.test(j) && /lleno is not defined/.test(j) && !/undefined\b(?! is)/.test(j.replace('lleno is not defined', '')) || t;
+});
 console.log(JSON.stringify(casos, null, 1));
 process.exitCode = casos.every((c) => c.ok) ? 0 : 1;

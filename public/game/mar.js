@@ -71,7 +71,7 @@
       var luchados = {}, r = f.luchados ? f.luchados() : {};
       Object.keys(r || {}).forEach(function (k) { if (r[k].g + r[k].p) { luchados[k] = true; } });
       circ = N.despejado({ pub: f.pub(), sha: K.sha, nodos: Ce ? Ce.nodos : [], lugares: f.lugares(), luchados: luchados });
-      if (window.AtlasArrecife) { circ = circ.concat(window.AtlasArrecife.circulos()); }  /* lo que mira el observatorio */
+      if (window.AtlasArrecife) { circ = circ.concat(window.AtlasArrecife.circulos()); }
       TS.despejado(circ);
     }
     function aCasa(dilo) {
@@ -151,7 +151,7 @@
          pintan de atras a delante por profundidad (col + fila, `IsometricFloor.ordena`): lo de delante tapa lo de detras. */
       var cola = [], pon = function (x, y, d, fi) { cola.push({ col: x, fila: y, f: d, ficha: fi }); };
       var rec = (f.luchados && f.luchados()) || {};
-      f.lugares().forEach(function (l, i) { var s = sitio(l); pon(s.x, s.y, function () {
+      f.lugares().forEach(function (l, i) { var s = sitio(l), Z = window.AtlasLugarNablaC, v = Z && l.npc ? Z.vector(rec[l.clave], l.lider) : 0, cz = v === 0 ? 0 : Z.color(v); pon(s.x, s.y, function () {
         var p = P(s.x, s.y), t0 = l.lider, r = 18 * dpr;
         if (sel === l) {
           if (yo) { g.strokeStyle = col.tuya; g.lineWidth = 2 * dpr; enlace(g, yo, p, false); }
@@ -163,12 +163,12 @@
         if (l.npc && F.npc_chunk && baja()) {
           var clave = 'npc_' + l.id + '_' + r;
           /* 1/4 de escala y ampliado x4 sin suavizar: el pixel gordo que declara 75c7ad0 (pintaba x4). */
-          var cv = O.sprite(t0.armonicos, r / 4, l.npc ? E.tono(t0) : col.suya, clave, dpr);
+          var cv = O.sprite(t0.armonicos, r / 4, cz ? cz.css : l.npc ? E.tono(t0) : col.suya, clave, dpr);
           g.imageSmoothingEnabled = false;
           g.drawImage(cv, p[0] + dx - cv.width * 2, p[1] - cv.height * 2, cv.width * 4, cv.height * 4);
           g.imageSmoothingEnabled = true;
         } else {
-          E.figura(g, t0.armonicos, p[0] + dx, p[1], r, { color: l.npc ? E.tono(t0) : col.suya, giro: t * 0.0004 * (l.npc ? -1 : 1),
+          E.figura(g, t0.armonicos, p[0] + dx, p[1], r, { color: cz ? cz.css : l.npc ? E.tono(t0) : col.suya, giro: t * 0.0004 * (l.npc ? -1 : 1),
                                                          grosor: 1.5 * dpr, brillo: (E.BRILLO[t0.rareza] + (l.npc ? 0 : 8)) * dpr });
         }
         rotulo(g, f.nombre(l), p[0], p[1] + r + 15 * dpr);
@@ -178,7 +178,7 @@
           rotulo(g, f.texto('arena_conquistado_mapa'), p[0], p[1] + r + 31 * dpr);
           if (em) { E.figura(g, em.armonicos, p[0] + r * 1.5, p[1] - r * 1.2, r * 0.45, { color: col.tuya, grosor: 1.4 * dpr, brillo: 6 * dpr }); }
         }
-      }, function () { return { que: f.nombre(l), estado: l.npc ? 'NPC' : 'player', tropa: l.lider }; }); });
+      }, function () { return { que: f.nombre(l), estado: cz ? Z.estado(v) : l.npc ? 'NPC' : 'player', tropa: l.lider }; }); });
       H0.forEach(function (n) { pon(n.x, n.y, function () {
         var p = P(n.x, n.y), r = 26 * dpr, med = n.gen.estado === 'MEDIDO';
         if (med) {

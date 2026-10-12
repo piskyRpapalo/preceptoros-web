@@ -82,7 +82,7 @@ async function main() {
     actual.step = 'inspector';  /* 0d: la ficha de cada pieza del mapa, mas un toque real al centro de la primera */
     const fichas = (await evalua("window.AtlasInspector ? JSON.stringify(AtlasInspector.todas()) : 'NO_INSPECTOR'")) ?? '';
     pasos++;
-    if (fichas === 'NO_INSPECTOR' || fichas === '[]') { fallos.push({ path: p, step: 'inspector', snippet: 'sin fichas: ' + fichas }); }
+    if (!fichas || fichas === 'NO_INSPECTOR' || fichas === '[]' || /inspector: /.test(fichas)) { fallos.push({ path: p, step: 'inspector', snippet: 'sin fichas: ' + fichas }); }
     for (const m of fichas.matchAll(/\bundefined\b|\bNaN\b/g)) { fallos.push({ path: p, step: 'inspector', snippet: fichas.slice(Math.max(0, m.index - 30), m.index + 30) }); }
 
     actual.step = 'identidad';

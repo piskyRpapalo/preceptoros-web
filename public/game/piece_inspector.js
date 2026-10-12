@@ -23,6 +23,8 @@
     if (f.tropa && S && S.vozDe) { var r = S.vozDe(f.tropa); if (r && r.portadora) { return 'FM voice · carrier ' + r.portadora + ' Hz'; } }
     return nd(null, f.tropa ? 'sound engine not loaded' : (T('ins_sin_sonido') || 'this piece declares no sound'));
   }
+  /* Una ficha que falla no tumba la pantalla: su linea dice NO_DATA con la causa (medido: un ReferenceError en las anclas). */
+  function lee(q) { try { return q.ficha(); } catch (e) { return { que: null, estado: null, causas: ['inspector: ' + (e && e.message)] }; } }
   /* Las lineas de la ficha, puras: el lab y el test las leen igual que la persona. */
   function lineas(f, x, y) {
     f = f || {};
@@ -57,13 +59,13 @@
     var mejor = null, d0 = radio || 44;
     piezas.forEach(function (q) { var d = Math.hypot(q.x - px, q.y - py); if (d < d0) { d0 = d; mejor = q; } });
     if (!mejor) { return null; }
-    ultima = lineas(mejor.ficha(), mejor.col, mejor.fila);
+    ultima = lineas(lee(mejor), mejor.col, mejor.fila);
     abre(ultima);
     return ultima;
   }
   function vista() { return ultima ? ultima.slice() : null; }
   /* Todas las fichas del ultimo cuadro (el lab y el arnes sin_undefined las leen sin tocar la pantalla). */
-  function todas() { return piezas.map(function (q) { return lineas(q.ficha(), q.col, q.fila); }); }
+  function todas() { return piezas.map(function (q) { return lineas(lee(q), q.col, q.fila); }); }
 
   var AtlasInspector = { nd: nd, lineas: lineas, registra: registra, toca: toca, vista: vista, todas: todas };
   if (typeof module === 'object' && module.exports) { module.exports = AtlasInspector; } else { raiz.AtlasInspector = AtlasInspector; }
