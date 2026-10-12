@@ -287,8 +287,6 @@
     "cronica_h": "Chronicle of wishes",
     "cronica_item": "#{s} · cycle {c} · {tc} · {n} edges · {r} · seal {h}",
     "menu_aria": "Game menu: every panel has one home here",
-    "boya_estado": "State buoy",
-    "boya_fases": "born|alive: measured|fading: no news",
     "menu_ancho": "Expand or collapse the menu (Alt+M)",
     "menu_opinar": "Feedback on this page",
     "chat_aria": "Radio chat: what the reef says, with who, seal, source and age (Alt+R)",
