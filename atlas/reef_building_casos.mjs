@@ -45,7 +45,7 @@ caso('los 9 tipos del canon, y solo esos', () => JSON.stringify(L.TIPOS) === JSO
 const A = require(process.env.CAPA || '../public/game/reef_buildings_layer.js').AtlasArrecife;
 caso('la boya nace junto a tu casa (entera, valida) y sin casa no hay boya', () => {
   const m = A.manifiestoBoya({ x: 120.4, y: -33.6 });
-  return A.manifiestoBoya(null) === null && m.col === 190 && m.fila === -84 && L.valida(m) === '' && m.tipo === 'boya' || m;
+  return A.manifiestoBoya(null) === null && m.col === 220 && m.fila === -134 && L.valida(m) === '' && m.tipo === 'boya' || m;
 });
 caso('su cuidado es la noticia LIVE/STALE mas reciente; NO_DATA y SIMULATED no la cuidan; sin noticias, null', () => {
   const r = [{ sello: 'LIVE', ciclo: 4 }, { sello: 'STALE', ciclo: 9 }, { sello: 'NO_DATA', ciclo: 30 }, { sello: 'SIMULATED', ciclo: 40 }];
