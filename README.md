@@ -9,6 +9,7 @@
 > benchmarks). The architect's profile is
 > [piskyRpapalo](https://github.com/piskyRpapalo). The companion's contract
 > for contributors lives in `PRECEPTOR.md` in the APP repository.
+
 This repository holds a small public website. It has one job: to lower the
 wall between a person and their own AI.
 
