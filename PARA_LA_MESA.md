@@ -1,6 +1,15 @@
 # PARA_LA_MESA · Ronda «el mapa único y la terminal» · 2026-10-11 · Claude (Opus 5.5)
 Contrato FIRMADO + addendum visual v2 (Ruswick + Zanzlanz + PS1). Rama `claude/mapa-unico` sobre `main` `b63ddec`. **Sin push**: cada pieza espera tu FIRMO. Lo de las rondas anteriores sigue debajo.
 
+## PAQUETE PRIMEROS PASOS + TUTORIAL · 2026-10-12 noche · LIVE `abfm` (PRs #50-#52) · MEDIDO / NO_DATA con causa
+- **C** ✅ (`abfk`, #50): hoja **Army** primera del menú (el inventario de ondas, movido desde ui.js sin tocarlo); cajón a pantalla completa; todo lo táctil ≥ 44 px (medido 0 por debajo); segunda pulsación cierra.
+- **B1** ✅ (#50): fuera del panel los 7 oficios, sus barras y el Core Level. Motor intacto. El candado de profundidad 4 dice la verdad («engine rule pending review»).
+- **B** ✅ (`abfl`, #51): tocar mar vacío (o W A S D) mueve al cangrejo ENCIMA del paseo J1 (intocado); la niebla no se pisa. Skills reales: **Swim** y **Reach**; sin eventos, NO_DATA.
+- **E** ✅ (#51): el tutorial ES el esquema de acciones (6 pasos medidos por eventos reales), bajo el teaching kernel: dry-run en invocar/disolver con cifras medidas, fallo como ramificación (medido: la biomasa da cobre, +8/20 ciclos), objetivo siempre visible, ayuda que decae, saltable. Lo abre el primer Reach (B3). Probado con **clics reales** por CDP hasta el paso 4.
+- **A** ✅ (`abfm`, #52): mapa un 32 % más grande (VE 820→620, 61 fps, 0 texturas rehechas); **corales del rack** (Hexelion 2/2 medidas; Doogee NO_DATA: lo emulado no cuenta). Objetivo y aviso del mapa se pisaban en la captura: ahora en un bloque.
+- **NO_DATA con causa:** Preceptor hundido y zona térmica (ideas6 Anexo 7 no está aquí; solo un .bak de 370 líneas) · edificios 5-9 (sin canon) · persistir skills/tutorial (ESPERA-FIRMO) · Doogee hoy (Acurast en primer plano).
+- **Para mañana:** `PRUEBA_5_MINUTOS.md` actualizada a `abfm`.
+
 ## RONDA «LO IMPRESCINDIBLE» · 2026-10-12 · LIVE `abfj` (PRs #46-#48) · MEDIDO / NO_DATA con causa
 - **Lote P** ✅ re-mapeo F0-F6 en PLAN_BASE (`p0x 338245d`).
 - **Lote 0** ✅ (`abfh`, #46): 0a el Army del mapa era el del Taller SIN desenvolver (unidades con tc undefined) · 0b los rótulos de identidad eran **undefined siempre** (ninguna página trae #i18n), incluido el aviso de que la clave no se recupera y los aria-label · 0c arnés `sin_undefined.mjs` (Haiku escribió, Opus auditó; sabotaje 44 fallos → 0) · 0d **inspector honesto** (tocar pieza → qué es, estado, coordenada, sonido; NO_DATA con causa).
