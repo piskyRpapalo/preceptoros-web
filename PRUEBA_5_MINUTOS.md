@@ -13,7 +13,7 @@ Antes (10 s): abre https://preceptoros.org/en/ y **recarga dos veces** (el servi
 | 6 | Menú **⌖ Places** → **Fight** → ← Map | Batalla; el lugar cambia de color; el Tutorial pasa a «Summon» con **«Dry run: … You have N»** (si no te llega el cobre: «Not yet, and why» con la cifra y qué hacer) | si dice «failed» |
 | 7 | Menú **∿ Army** (el primero) | Tu inventario de ondas, cada una con su ficha; se cierra pulsando otra vez el mismo icono | — |
 | 8 | Toca cualquier botón del juego | Todos grandes (≥ 44 px); ningún panel se queda abierto si vuelves a pulsar su icono | el pequeño |
-| 9 | Toca la línea de la Radio abajo | Burbujas con quién, sello, fuente y edad en ciclos; el Tutorial cuenta ese paso | — |
+| 9 | Toca la línea de la Radio abajo | Burbujas con quién, sello, fuente y edad en ciclos (el Tutorial solo lo cuenta cuando llega a su paso 6) | — |
 | 10 | Mapa quieto 5 s | Fluido. Medido hoy en el navegador: 61 fps. Doogee: 58 fps la última vez (`abfa`) | si va a tirones |
 
 No está hoy, a propósito: edificios 5-9 (sin canon) · Preceptor hundido y zona térmica (sin su texto aquí) · edad de las
