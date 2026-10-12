@@ -82,7 +82,7 @@
       ond.appendChild(ul);
     }
     var tal = hoja('taller', T('pes_taller')); tal.appendChild(S.PANEL.taller); S.PANEL.taller = tal;
-    S.ARMYZ = el('div', 'casa-army'); tal.appendChild(S.ARMYZ);
+    S.ARMYZ = el('div', 'casa-army'); ond.appendChild(S.ARMYZ);  /* RONDA 1 (13-oct): la invocacion vive en el ARMY; el Taller queda para el tuneo */
     S.ZB = hoja('batalla', T('hoja_batalla'));
 
     var menu = el('nav', 'thegame-menu'); menu.id = 'thegame-menu'; menu.setAttribute('aria-label', T('menu_aria'));

@@ -652,6 +652,7 @@ process.stdout.write(JSON.stringify(ok));
         sh = (ASSETS / "terminal_menu_shell.js").read_text(encoding="utf-8")
         self.assertIn("document.addEventListener('pointerdown', function (e) {", sh, "fuera-clic cierra: un solo handler para el cajon y las hojas")
         self.assertIn("if (abierto) { abre(abierto, false); }", sh, "el fuera-clic cierra el cajon sin destruir lo ganado")
+        self.assertIn("S.ARMYZ = el('div', 'casa-army'); ond.appendChild(S.ARMYZ);", sh, "RONDA 1: la invocacion (incubadora, odds, nido) vive en el ARMY, no en el Taller")
         f = (ASSETS / "terminal_window_frame.js").read_text(encoding="utf-8")
         self.assertIn("if (cab.dataset.c === clave) { return; }", f, "sin esto, el cabecero se observa a si mismo en bucle")
         self.assertIn("['terminal_window_frame.js']", (ASSETS / "thegame.js").read_text(encoding="utf-8"))
@@ -1371,7 +1372,7 @@ class Pestanas(unittest.TestCase):
         self.assertIn("PARTIDA = S.PARTIDA; MAPA = S.MAPA; muestra = S.muestra; pliego = S.pliego;\n    cargaCasa();", c)
         self.assertIn("if (actual === 'taller' || actual === 'ondas') { Promise.resolve(x.alTaller()).then(mueveArmy); }", c)
         self.assertIn("casa = cargaArmy().then(function () { return pide(CASA); })", c)
-        self.assertIn("S.ARMYZ = el('div', 'casa-army'); tal.appendChild(S.ARMYZ);", c)
+        self.assertIn("S.ARMYZ = el('div', 'casa-army'); ond.appendChild(S.ARMYZ);", c)  # RONDA 1: el ARMY, no el Taller
         self.assertIn("army: cargaArmy", c)
         sys.path.insert(0, str(RAIZ))
         import mundo
