@@ -1866,7 +1866,12 @@ class MapaMovible(unittest.TestCase):
                 with self.subTest(fichero=f, prohibido=malo):
                     self.assertNotIn(malo, c)
         self.assertIn("function tesela(i, j)", self._js("mar-fondo.js"))
-        self.assertIn("if (nt > 90)", self._js("mar-fondo.js"), "la cache de teselas no esta acotada")
+        self.assertIn("if (nt >= TOPE) { suelta(tierra); nt--; }", self._js("mar-fondo.js"), "la cache de teselas no esta acotada")
+        # MEDIDO en el Doogee (2026-10-13): la caja visible del rombo son 132 teselas; un tope por debajo, o vaciar la cache
+        # entera, la rehace cada cuadro (2,7 fps). El tope cubre lo visible con holgura y el rombo fuera de pantalla no se pide.
+        tope = int(re.search(r"var TOPE = (\d+);", self._js("mar-fondo.js")).group(1))
+        self.assertGreaterEqual(tope, 2 * 132 * 3 // 4, "la cache no cabe lo que se ve: se rehace cada cuadro")
+        self.assertIn("{ continue; }", self._js("mar-fondo.js"), "las teselas fuera de pantalla vuelven a pedirse")
 
 
 

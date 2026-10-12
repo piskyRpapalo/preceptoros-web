@@ -17,14 +17,19 @@
   /* La deriva del mar en el instante t (ms de pantalla): dos senos lentos, en unidades de mundo. */
   function deriva(t) { return [Math.sin(t * 0.00011) * 10, Math.cos(t * 0.00009) * 10]; }
 
-  /* Un pintor de teselas con sus caches acotadas (90 teselas de cada clase). */
+  /* Un pintor de teselas con sus caches acotadas (TOPE teselas de cada clase). MEDIDO en el Doogee (2026-10-13): con el
+     rombo, la caja del mundo visible tiene 12x11 = 132 teselas; con un tope de 90 que se VACIABA entero, la cache se
+     rehacia cada cuadro (2.277 texturas en 3 s, el mapa a 2,7 fps). Ahora: se descartan las teselas cuyo rombo no toca la
+     pantalla y la cache suelta la MAS VIEJA, una a una, con sitio de sobra para lo visible. */
+  var TOPE = 220;
+  function suelta(c) { for (var k in c) { delete c[k]; return; } }
   function pintor() {
     var E = raiz.AtlasEscena, N = raiz.AtlasNiebla, C = raiz.AtlasCamara;
     var tierra = {}, nt = 0, nieblas = {}, nn = 0, huella = '', circ = [];
     function tesela(i, j) {
       var k = i + ',' + j;
       if (tierra[k]) { return tierra[k]; }
-      if (nt > 90) { tierra = {}; nt = 0; }
+      if (nt >= TOPE) { suelta(tierra); nt--; }
       var n = TESELA / RES;
       tierra[k] = E.textura(n, n, function (x, y) {
         var wx = i * TESELA + x * RES, wy = j * TESELA + y * RES;
@@ -36,7 +41,7 @@
     function bruma(i, j) {
       var k = i + ',' + j;
       if (nieblas[k] !== undefined) { return nieblas[k]; }
-      if (nn > 90) { nieblas = {}; nn = 0; }
+      if (nn >= TOPE) { suelta(nieblas); nn--; }
       var n = TESELA / RES, algo = false;
       var t = E.textura(n, n, function (x, y) {
         var v = N.niebla(i * TESELA + x * RES, j * TESELA + y * RES, circ) * 0.78;
@@ -54,7 +59,10 @@
       g.save();
       for (var i = Math.floor((v.x0 - dx) / TESELA); i <= Math.floor((v.x1 - dx) / TESELA); i++) {
         for (var j = Math.floor((v.y0 - dy) / TESELA); j <= Math.floor((v.y1 - dy) / TESELA); j++) {
-          var p = C.aPantalla(cam, W, H, z, i * TESELA + dx, j * TESELA + dy), t = que(i, j);
+          var p = C.aPantalla(cam, W, H, z, i * TESELA + dx, j * TESELA + dy), lado = TESELA * m[0], alto = TESELA * m[1];
+          /* El rombo de la tesela va de p hacia abajo: x en [p0 - lado, p0 + lado], y en [p1, p1 + 2 alto]. Fuera, ni se pide. */
+          if (p[0] + lado < 0 || p[0] - lado > W || p[1] > H || p[1] + 2 * alto < 0) { continue; }
+          var t = que(i, j);
           if (t) { g.setTransform(m[0] * RES, m[1] * RES, m[2] * RES, m[3] * RES, p[0], p[1]); g.drawImage(t, 0, 0, n + 0.6, n + 0.6); }
         }
       }
