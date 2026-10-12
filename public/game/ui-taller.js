@@ -39,6 +39,7 @@
     opera({ op: 'desintegra', tropa: t }, function (rec, f) {
       return window.AtlasIncubadora.retira(rec, f).then(function () {
         cadena.push({ recibo: rec, firma: f }); est = TL.estado(cadena); guarda();
+        if (window.AtlasArrecife && window.AtlasArrecife.entierraTropa) { window.AtlasArrecife.entierraTropa(rec); }  /* amor 4: su lapida */
         dice(T('taller_hecho_d', 'Dissolved: +{g} g of static residue.').replace('{g}', rec.gramos)); pinta();
       });
     });

@@ -84,6 +84,13 @@ caso('la huella CAMBIA si cambia el ultimo vector (no es decorativa)', () => {
   const v = A.manifiestoVista(0, 0, 10, 3);
   return A.recibo(v, 177, 'x', L.vector(v, 150)).huella !== A.recibo(v, 177, 'x', L.vector(v, 151)).huella;
 });
+// PIEZA DE AMOR 4: la tropa disuelta en el Taller deja su lapida con el recibo firmado; su nacimiento es NO_DATA.
+caso('disolver deja lapida: id de la semilla, recibo con huella, «born» NO_DATA (no se inventa); otra op no entierra', () => {
+  const rec = { esquema: 'atlas.taller/1', op: 'desintegra', semilla: 'abcdef0123456789', tc: 'tc2', aristas: 5, gramos: 7, prev: null };
+  const n0 = A.lapidas().length, r = A.entierraTropa(rec), nada = A.entierraTropa({ op: 'lija', semilla: 'x' });
+  return r.id === 'troop-abcdef01' && r.nace === null && r.edad === null && /dissolved/.test(r.causa) && r.huella === A.fnv(JSON.stringify(rec))
+    && nada === null && A.lapidas().length === n0 + 1 || { r, nada };
+});
 // EL CRISTAL DE LATENCIA: mide tu hierro con los cuadros del mapa; NO_DATA sin cuadros, nunca «0 fps».
 const K = require(process.env.CRISTAL || '../public/game/latency_crystal.js');
 caso('sin cuadros suficientes no hay medida (NO_DATA, no «0»): con menos de MIN, null', () => K.resume(new Array(K.MIN - 1).fill(16.7)) === null && K.sello(null, 50) === 'NO_DATA');
