@@ -1,7 +1,7 @@
-# PRUEBA DE 5 MINUTOS · theGame · para la mano del Soberano · versión `preceptoros-2026-17-abfq`
+# PRUEBA DE 5 MINUTOS · theGame · para la mano del Soberano · versión `preceptoros-2026-17-abfx`
 
 Antes (10 s): abre https://preceptoros.org/en/ y **recarga dos veces** (el service worker nuevo entra en la segunda).
-`preceptoros.org/sw.js` debe decir `abfq`. En el Doogee: Chrome **delante** (con Acurast delante, el mapa se pausa).
+`preceptoros.org/sw.js` debe decir `abfx`. En el Doogee: Chrome **delante** (con Acurast delante, el mapa se pausa).
 
 | # | Haz esto | Debes ver | Si no, anota |
 |---|---|---|---|

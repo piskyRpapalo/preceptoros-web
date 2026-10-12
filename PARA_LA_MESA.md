@@ -5,8 +5,8 @@
 - **NO_DATA con causa:** no encontre un recibo de INVOCACION separado en el DOM; los resultados aparecen en Nest y Edges. Si quieres recibo de invocacion propio, es un chunk nuevo.
 - **Fuera de orden, verde:** el chunk de edificios toon (buildings_toon.js: boya y cristal con bandas del hue de su vector, 3/3 casos, sabotaje de hue inventado rojo). Queda para la ronda de embellecimiento; no se publica aun.
 
-## RONDA 2 · TUTORIAL COMO RUTA · EN MARCHA
-- Chunk 0 (medida guia de la summon): en curso. Se mide el tiempo del boton al fin de la revelacion, en el navegador, y se escribe en el paso.
+## RONDA 2 · TUTORIAL COMO RUTA · EN MARCHA (chunk 0 pendiente de medida; ver arriba)
+- **Chunk 0 (medida guia de la summon): NO_DATA, con causa.** La medida se lanzo en el navegador (script `cdp/medida_invoca.mjs`), pero el cobre de la sesion nueva (5 al arrancar, 50 para invocar) no llego a 50 dentro de la ventana de 10 minutos del propio script, y el timeout lo mato antes de imprimir. No se escribe ningun numero inventado. Para medirla: partir de una partida con 50 cobre (o aumentar la ventana), y leer `ciclo` al pulsar y al aparecer `.atlas-eclosion`. La invocacion de tc1 incuba 20 ciclos (valores.js), asi que el presupuesto de cada paso se expresara en ciclos y se pasara a segundos con la medida.
 
 # PARA_LA_MESA · Ronda «el mapa único y la terminal» · 2026-10-11 · Claude (Opus 5.5)
 Contrato FIRMADO + addendum visual v2 (Ruswick + Zanzlanz + PS1). Rama `claude/mapa-unico` sobre `main` `b63ddec`. **Sin push**: cada pieza espera tu FIRMO. Lo de las rondas anteriores sigue debajo.
