@@ -1,6 +1,16 @@
 # PARA_LA_MESA · Ronda «el mapa único y la terminal» · 2026-10-11 · Claude (Opus 5.5)
 Contrato FIRMADO + addendum visual v2 (Ruswick + Zanzlanz + PS1). Rama `claude/mapa-unico` sobre `main` `b63ddec`. **Sin push**: cada pieza espera tu FIRMO. Lo de las rondas anteriores sigue debajo.
 
+## RONDA «LO IMPRESCINDIBLE» · 2026-10-12 · LIVE `abfj` (PRs #46-#48) · MEDIDO / NO_DATA con causa
+- **Lote P** ✅ re-mapeo F0-F6 en PLAN_BASE (`p0x 338245d`).
+- **Lote 0** ✅ (`abfh`, #46): 0a el Army del mapa era el del Taller SIN desenvolver (unidades con tc undefined) · 0b los rótulos de identidad eran **undefined siempre** (ninguna página trae #i18n), incluido el aviso de que la clave no se recupera y los aria-label · 0c arnés `sin_undefined.mjs` (Haiku escribió, Opus auditó; sabotaje 44 fallos → 0) · 0d **inspector honesto** (tocar pieza → qué es, estado, coordenada, sonido; NO_DATA con causa).
+- **Lote 1** ✅ cámara: **ya deslizaba** (41 cuadros, ≤10 %/cuadro). El «salto» venía de los 2,7 fps. Dos casos lo fijan.
+- **Lote 3** ⚠️ parcial: pieza 4 ✅ (`abfi`, #47: tropa disuelta → lápida con recibo, «born» NO_DATA). Piezas 1-3 NO_DATA: lista de nombres pendiente · «cicatriz» no existe en el código con ese nombre (señálala) · edad en ciclos = persistencia (ESPERA-FIRMO).
+- **∇C opción A** ✅ (`abfj`, #48): lugares coloreados por su registro {g,p}; sin combate gris translúcido. La «vida restante» NO se guarda: Hue = cuota de victorias, declarado. **Arreglo** de 0d: la ficha de las anclas lanzaba ReferenceError (vivo en abfh/abfi); el arnés no lo vio porque trataba la excepción como texto vacío → endurecido.
+- **Cortados y declarados:** 2a/2b (Monumento, Vivero y Nombres sin canon; Botella y Baliza, una mención) · 4 CORE LEVEL (la sección 17 no tiene aquí su fórmula → sería PROPUESTA).
+- **Doogee: NO_DATA hoy** — Acurast en primer plano (Chrome detrás, rAF pausado); no se toca. Medido en navegador: 60 fps, 0 errores, sin_undefined 24/0.
+- **Para mañana:** `PRUEBA_5_MINUTOS.md` (10 pasos con la mano).
+
 ## GUARDIA · tres frentes · 2026-10-13 · MEDIDO en el Doogee / EN_CURSO
 Todo con PR, CI verde, merge, versión viva medida con curl y prueba en el Doogee (S110) con dedo real y **0 errores de consola**.
 - **VERDE · Frente 1, la TERMINAL chatbot** (`abey`, #36): menú izquierdo (64 px móvil / 220 px escritorio, sin desborde, botones ≥ 48 px), cajón de un panel, chat de la Radio abajo plegado con sello/fuente/edad en ciclos. `thegame.js` 16.436 → 11.817 B: **excepción CERRADA**. Ficheros sin «chat» en el nombre (la guarda del hub viejo lo prohíbe; no se afloja). Arreglo `abfc` (#40): el chat plegado ocupa 73 px (48 + borde + barra de gestos) y tapaba la 2.ª fila de mandos.
