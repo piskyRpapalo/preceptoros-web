@@ -1,6 +1,23 @@
 # PARA_LA_MESA · Ronda «el mapa único y la terminal» · 2026-10-11 · Claude (Opus 5.5)
 Contrato FIRMADO + addendum visual v2 (Ruswick + Zanzlanz + PS1). Rama `claude/mapa-unico` sobre `main` `b63ddec`. **Sin push**: cada pieza espera tu FIRMO. Lo de las rondas anteriores sigue debajo.
 
+## CIERRE 2026-10-13 NOCHE · MESA AL DIA · MEDIDO / NO_DATA con causa
+Orden firmada: una ronda cada vez, commits LOCALES, sin merge a main sin tu mano. Lo que sigue es lo que hay.
+
+**Publicado en main (PRs):**
+- **#58** (`abfu`, 22:21:03Z), con tu firma «push en main de lo verde»: **chunk 1** (split de `mar.js`: los nodos del rack salen a `map_nodes_layer.js`; mar.js 16.304 → 15.132 B) y **zoom del mapa** (`map_zoom.js`: pellizco y rueda; Ctrl+rueda queda para el navegador). MEDIDO en el Doogee con pellizco real por CDP: **1,00 → 2,75** al separar; 3,00 al máximo. Rueda normal 1,00 → 1,35; Ctrl+rueda no toca el mapa.
+- **#59** (`abfv`, 22:37:47Z): **fuera-clic cierra** (punto 2). **AVISO:** esta PR se mergeó por error mío: el script de publicación siguió hasta el merge antes de que llegara tu instrucción de que el merge a main es cosa tuya. Lo declaro aquí. No la he revertido: decides tú si se queda o se revierte. MEDIDO antes del merge con toques reales: Army abierto → toque en la franja de la Radio: cerrado; toque en la cabecera: cerrado; toque dentro de la hoja: sigue abierto.
+
+**Terminal a máximo zoom (Doogee, 3,00):** la franja Goal/Now refluye (antes «Atlantis di…» cortado). Botones 48 px.
+
+**NO MEDIDO / NO HECHO, declarado:**
+- Ctrl+rueda en PC: el navegador hace su zoom de página, pero headless no lo mide aquí.
+- Línea de entrada del teclado en la terminal: no existe todavía (no hay línea que tape).
+- Punto 3 del comunicado (reparto de casas): **RONDA 1 en ejecución** (ver siguiente).
+
+**Siguiente, en el orden firmado:** R1 reparto de casas → R2 chunk 3 edificios toon → R3 chunk 7 parallax (fps ≥ 55 en Doogee) → R4 chunk 4 batalla toon → mapa vivo → chunk 6 color cycling → chunk 5 espejos.
+Piezas de amor: siguen esperando tu lista de nombres (NO_DATA). Estrella de Mar: espera canon (k=5).
+
 ## REALISMO ANIME + TERMINAL COMO CHAT + DOOGEE FUERA · 2026-10-12 cierre · LIVE `abfq` (PRs #54-#57) · MEDIDO / NO_DATA
 - ✅ **R1** cangrejo toon (`abfn`, #54): bandas duras del hue de su clase, contorno grueso, morf armónico 2 s, parpadeo del ciclo; sabotaje estrella rojo. **Doogee: 59 fps, 0 errores.**
 - ✅ **PR-1** ventana con marco (`abfo`, #55): cabecero título · sello · fuente · edad en ciclos; ✕ 46 px; rótulos completos (4 se cortaban).
