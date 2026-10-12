@@ -57,6 +57,7 @@
       nivelVisto = nuevo.nivel;
     }
     if (!casa) { return; }
+    (o.pon || function (x, y, d) { d(); })(casa.x + 200, casa.y + 40, function () {
     var p = P(casa.x + 200, casa.y + 40), lado = (ev ? 6 + Math.min(60, ev.p50) / 10 : 8) * dpr, niv = ev ? nivel(ev.p50) : null;
     g.beginPath(); g.moveTo(p[0], p[1] - lado * 1.4); g.lineTo(p[0] + lado, p[1]); g.lineTo(p[0], p[1] + lado * 1.4); g.lineTo(p[0] - lado, p[1]); g.closePath();
     if (s === 'NO_DATA') { g.setLineDash([2 * dpr, 2 * dpr]); g.strokeStyle = 'rgba(150,160,180,.45)'; g.stroke(); g.setLineDash([]); }
@@ -64,7 +65,9 @@
     else { g.save(); g.clip(); g.fillStyle = 'rgb(220,220,220)'; for (var j = 0; j * dpr < lado * 2.8; j++) { for (var i = j % 2; i * dpr < lado * 2; i += 2) { g.fillRect(p[0] - lado + i * dpr, p[1] - lado * 1.4 + j * dpr, dpr, dpr); } } g.restore(); }
     g.strokeStyle = 'rgba(155,227,255,.7)'; g.lineWidth = dpr; g.stroke();
     g.fillStyle = 'rgba(155,227,255,.75)';
-    g.fillText(t('cri_nombre') + ' · ' + (ev ? ev.p50 + ' fps (p10 ' + ev.p10 + ')' + (s === 'STALE' ? ' · STALE' : '') : 'NO_DATA'), p[0], p[1] + lado * 1.4 + 12 * dpr);
+    /* Rotulo corto (en el Doogee el largo pisaba la casa): la cifra y su banda; el nombre lo dice el chat. */
+    g.fillText(ev ? ev.p50 + ' fps · p10 ' + ev.p10 + (s === 'STALE' ? ' · STALE' : '') : 'NO_DATA', p[0], p[1] + lado * 1.4 + 12 * dpr);
+    });
   }
   function lista() { return eventos.slice(); }
   function enVentana() { return deltas.length; }
