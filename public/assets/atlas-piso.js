@@ -140,9 +140,7 @@
     R.dormH = el('span'); dh.appendChild(R.dormH); dor.appendChild(dh);
     R.dormUl = el('ul'); dor.appendChild(R.dormUl);
     dor.appendChild(el('p', 'atlas-nota', U('dormias_nota')));
-    R.recoger = boton(U('recoger'));
-    R.recoger.addEventListener('click', function () { actua(M.recoger(E)); });
-    dor.appendChild(R.recoger); hud.appendChild(dor);
+    hud.appendChild(dor);
 
     var yoS = el('section', 'panel');
     yoS.appendChild(el('h4', null, 'Atlante-7F3A'));
@@ -209,17 +207,9 @@
       pon(r.nota, rellena(U(r.clave), { ing: (TXT.skills || [])[6] || '', n: num(ing) }));
     });
 
-    var p = E.pendiente;
-    pon(R.dormH, rellena(U('dormias_h'), { t: duracion(p ? p.ciclos : 0) }));
-    while (R.dormUl.firstChild) { R.dormUl.removeChild(R.dormUl.firstChild); }
-    if (p && p.ciclos) {
-      R.dormUl.appendChild(el('li', null, '+' + num(p.biomasa) + ' 🌿 ' + U('bio')));
-      R.dormUl.appendChild(el('li', null, '+' + num(p.cobre) + ' 🟠 ' + U('cobre')));
-      R.dormUl.appendChild(el('li', null, '+' + num(p.xp) + ' XP'));
-    } else {
-      R.dormUl.appendChild(el('li', 'atlas-nota', U('dormias_vacio')));
-    }
-    R.recoger.disabled = !(p && p.ciclos);
+    /* 6b+6a (FIRMO 2026-10-12, manda la ficha V3.0): ausente NO se cobra; la pantalla NARRA, en ciclos (sin reloj). */
+    pon(R.dormH, U('dormias_h'));
+    if (!R.dormUl.firstChild) { R.dormUl.appendChild(el('li', 'atlas-nota', rellena(U('dormias_vacio'), { c: num(E.t) }))); }
 
     R.sk.forEach(function (s, i) {
       var t = nivelTexto(E.xp[i]);
@@ -270,8 +260,8 @@
 
   document.addEventListener('visibilitychange', function () {
     if (!activo || !E) { return; }
-    if (document.hidden) { oculto = Date.now(); para(); return; }
-    if (oculto) { actua(M.dormir(E, Math.max(0, Date.now() - oculto))); oculto = 0; }
+    if (document.hidden) { oculto = 1; para(); return; }  /* solo una marca: sin reloj de pared */
+    if (oculto) { oculto = 0; R.dormUl.textContent = ''; pinta(); }  /* 6b: volver no paga (V3.0); M.dormir solo rehace partidas viejas */
     arranca();
   });
 
