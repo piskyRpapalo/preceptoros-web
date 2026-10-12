@@ -655,6 +655,9 @@ process.stdout.write(JSON.stringify(ok));
         self.assertIn("S.ARMYZ = el('div', 'casa-army'); ond.appendChild(S.ARMYZ);", sh, "RONDA 1: la invocacion (incubadora, odds, nido) vive en el ARMY, no en el Taller")
         # RONDA 3 · payload de Hexelion: la ficha del coral cita el fichero con su sha256; cero red.
         self.assertIn("var HB = raiz.AtlasHexBench;", (PUBLICO / "game" / "reef_corals.js").read_text(encoding="utf-8"))
+        cor = (PUBLICO / "game" / "reef_corals.js").read_text(encoding="utf-8")
+        self.assertIn("var CORAL_C = { h: 12, s: 82, l: 62 };", cor, "el coral en el hue de la clase coral (12), no uno inventado")
+        self.assertIn("f.causas.push('lab: ' + B.fuente.enlace);", cor, "la ficha de Hexelion enlaza el benchmark del lab")
         r3 = subprocess.run(["node", str(RAIZ / "hexelion_bench_casos.mjs")], capture_output=True, text=True, timeout=60)
         self.assertEqual(r3.returncode, 0, r3.stdout[-1200:] + r3.stderr[-400:])
         # RONDA 2 · chunk 3: boya y cristal en toon desde su vector (hue del propio edificio, sin inventar).
