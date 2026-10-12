@@ -1,6 +1,7 @@
 ## RONDA 3 · EMBELLECIMIENTO · EN MARCHA · 2026-10-13
 - **Chunk 1 (payload de Hexelion): VERDE, PR #61 ABIERTA** (`abfy`, sin merge; el merge es del Soberano). `hexelion_bench.js` lleva las cifras de `bench_20261011_resultados.json`: embeddinggemma-2 pp512 ngl99 = 6459.63 tok/s (MEDIDO, GPU Vulkan); tres modelos NO_DATA con su causa textual. No hay «tg32» en ese fichero: no se inventa. Ligado a GitHub: PENDIENTE (el fichero no trae URL del repo del laboratorio).
-- Orden: cangrejo (toon desde abfn) y mapa despejandose: sin cambio en este chunk; quedan para verificacion visual.
+- **Chunk 2 (coral de Hexelion infantil + enlace del lab): VERDE, PR #62 ABIERTA** (`abfz`, sin merge). Coral = racimo de burbujas toon con ojos solo con medidas; sin medidas, contorno punteado y sin cara. Ficha con el enlace `benchmarks/bench_20261011` (medido por la Mesa) y el sha256 local. Visual medido por captura CDP (360 px): el coral y el cangrejo se ven juntos en toon.
+- **Verificacion visual pendiente, declarada para los ojos del Soberano:** el mapa despejandose (necesita mirar con el Observatorio; la captura de la vista inicial no lo muestra).
 - **Estado git:** rama `claude/mapa-unico`; publicacion `claude/web-solo-juego` = 54019ce (PR #61 abierta). `origin/main` = a481691 (sin cambios por mi).
 - **Pendiente de la ronda:** edificios restantes y corales con formas infantiles (boya y cristal ya tienen bandas toon); el coral de Hexelion en forma infantil; PRUEBA_5_MINUTOS al cerrar la ronda.
 
