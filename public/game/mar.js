@@ -193,6 +193,8 @@
       var cs = window.AtlasCasa && window.AtlasCasa.casa ? window.AtlasCasa.casa() : null, BV = window.AtlasValores.banderas;
       window.AtlasMarAnclas.pinta(g, P, { pub: f.pub(), sha: K.sha, nodos: Ce ? Ce.nodos : [], dpr: dpr, texto: f.texto,
                                           bandera: cs && cs.bandera && BV ? BV[cs.bandera] : null });
+      /* Los 9 objetos (2026-10-12): su capa, aparte (`reef_buildings_layer.js`). */
+      if (window.AtlasArrecife) { window.AtlasArrecife.pinta(g, P, { pub: f.pub(), sha: K.sha, dpr: dpr, t: t, quieto: q, texto: f.texto }); }
       TS.niebla(g, cam, W, H, z);
       /* MOVIMIENTO 7 - M17: Vignette barato - gradiente radial cacheado */
       if (!quieto() && F.vignette_alfa) {

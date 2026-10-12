@@ -606,6 +606,17 @@ process.stdout.write(JSON.stringify(ok));
         ui = json.loads((PUBLICO / "atlas-en.json").read_text(encoding="utf-8"))["ui"]
         self.assertNotIn("produces while this tab is hidden", ui["dormias_vacio"], "el texto vuelve a prometer pago por dormir")
 
+    def test_los_9_objetos_nacen_con_tiempo(self):
+        """LOS 9 OBJETOS (FIRMO 2026-10-12): el estado de un edificio es funcion PURA de (manifiesto, tic). Desgaste en tics,
+        NO_DATA con causa (nunca «0»), ∇C como telemetria (Hue vida, Sat carga, Light escudo). 9/9 casos; el sabotaje que
+        deja vivir para siempre lo desatendido tumba 2."""
+        r = subprocess.run(["node", str(RAIZ / "reef_building_casos.mjs")], capture_output=True, text=True, timeout=60)
+        self.assertEqual(r.returncode, 0, r.stdout[-1500:] + r.stderr[-500:])
+        f = sin_comentarios((PUBLICO / "game" / "reef_building_lifecycle.js").read_text(encoding="utf-8"))
+        for malo in ("Date", "Math.random", "fetch(", "localStorage", "innerHTML"):
+            with self.subTest(prohibido=malo):
+                self.assertNotIn(malo, f)
+
     def test_la_terminal_chatbot_y_el_chat_de_la_radio(self):
         """LA TERMINAL (FIRMO 2026-10-12): menu a la izquierda (64 px iconos / 220 px expandido), el chat de la Radio abajo,
         PLEGADO de salida (una linea: jamas se come el mundo). Cada burbuja dice quien, sello (LIVE/STALE/SIMULATED/
@@ -758,11 +769,11 @@ process.stdout.write(JSON.stringify(ok));
 # Ver atlas/POST_VERIFICACION_MGNO_LAB.md y atlas/POST_VERIFICACION_SISIL_CRIA.md.
 PUROS = ("canon.js", "sobres.js", "rating.js", "arena.js", "duelo.js", "mercado.js", "narragrafo.js", "cria.js", "genoma.js")
 # La Arena (2026-09-28, «el mapa multi-jugador en una pestana»): se carga al abrir su pestana, detras del Army.
-ARENA = ("sobres.js", "rating.js", "arena.js", "duelo.js", "mar-anclas.js", "mar-cangrejos.js", "map_pointer_input.js", "mar.js", "nodos-pesos.js",
+ARENA = ("sobres.js", "rating.js", "arena.js", "duelo.js", "mar-anclas.js", "reef_buildings_layer.js", "mar-cangrejos.js", "map_pointer_input.js", "mar.js", "nodos-pesos.js",
          "nodos.js", "cuenta.js", "ui-nodos.js", "ui-rack.js",
          "escuadron.js", "battle_choreography.js", "battle_replay.js", "ui-arena-comun.js", "ui-arena.js", "ui-duelo.js")
 # La CASA (2026-10-05): la primera pantalla, detras del Army. Lleva canon y escena, que la Arena reutiliza.
-CASA = ("canon.js", "escena.js", "wave_render.js", "gdpr-art25-ephemeral-crab.js", "aiact-art50-crab-terminal.js", "nodos-cedulas.js", "fog_of_war.js", "isometric_floor_projection.js", "world_camera.js", "mar-fondo.js", "gdpr-art7-entry-choice.js", "aiact-art50-state-radio.js", "casa-medidas.js", "casa-personaliza.js", "casa-lateral.js", "home_buildings.js", "summon_reveal.js", "taller.js", "ui-taller.js", "primer_eco.js")
+CASA = ("canon.js", "escena.js", "wave_render.js", "gdpr-art25-ephemeral-crab.js", "aiact-art50-crab-terminal.js", "nodos-cedulas.js", "fog_of_war.js", "isometric_floor_projection.js", "world_camera.js", "mar-fondo.js", "gdpr-art7-entry-choice.js", "aiact-art50-state-radio.js", "casa-medidas.js", "casa-personaliza.js", "casa-lateral.js", "reef_building_lifecycle.js", "home_buildings.js", "summon_reveal.js", "taller.js", "ui-taller.js", "primer_eco.js")
 FUERA_DE_LA_PUERTA = tuple(sorted(set(PUROS + ARENA + CASA)))
 
 
