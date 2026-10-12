@@ -120,5 +120,17 @@ caso('LEY DEL SUELO: la camara proyecta en rombo 2:1 (un paso de mundo en x baja
   const p = C.aPantalla(C.crea({ x: 0, y: 0 }), 0, 0, 2, 10, 0), q = C.aPantalla(C.crea({ x: 0, y: 0 }), 0, 0, 2, 0, 10);
   return Math.abs(p[0] / p[1] - 2) < 1e-9 && Math.abs(-q[0] / q[1] - 2) < 1e-9 && p[1] > 0 && q[1] > 0 || JSON.stringify({ p, q });
 });
+// LOTE 1 (2026-10-12): ◈ y ⌂ DESLIZAN, no saltan. Medido en el navegador: 41 cuadros, maximo 10 % del viaje por cuadro.
+// (El «salto» que se vio venia de los 2,7 fps: con k = 6 cada cuadro daba seis pasos. Arreglado en abfa.)
+caso('ir al Faro desliza: mas de 20 cuadros en movimiento y ningun cuadro pasa del 15 % del viaje', () => {
+  const cam = C.crea({ x: 0, y: 0 }); C.planea(cam, 900, -600, [], false);
+  let x = cam.x, y = cam.y, n = 0, max = 0, tot = 0;
+  for (let i = 0; i < 400; i++) { C.paso(cam, 1, []); const d = Math.hypot(cam.x - x, cam.y - y); if (d > 0.5) { n++; } max = Math.max(max, d); tot += d; x = cam.x; y = cam.y; }
+  return n > 20 && max / tot <= 0.15 || { n, max: Math.round(max), tot: Math.round(tot) };
+});
+caso('con movimiento reducido NO se anima: llega en el acto (prefers-reduced-motion)', () => {
+  const cam = C.crea({ x: 0, y: 0 }); C.planea(cam, 900, -600, [], true);
+  return Math.round(cam.x) === 900 && Math.round(cam.y) === -600 || { x: cam.x, y: cam.y };
+});
 console.log(JSON.stringify(casos, null, 1));
 process.exitCode = casos.every((c) => c.ok) ? 0 : 1;
