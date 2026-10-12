@@ -33,6 +33,7 @@ ASSETS = PUBLICO / "assets"
 # `atlas-hud.js` y `atlas-opina.js`: lo que no baja al abrir no pesa en la puerta.
 PIEZAS = ["atlas-arte.js", "atlas-coord.js", "atlas-carta.js", "atlas-ondas.js", "atlas-obra.js", "atlas-gesto.js", "atlas-mapa.js", "atlas-dialogo.js", "atlas-motor.js",
           "atlas-piso.js", "atlas.css", "thegame.js", "thegame.css", "tubo.css",
+          "radio_message_log.js", "terminal_menu_shell.js", "terminal_menu_shell.css",  # la terminal chatbot (2026-10-12), en la puerta
           "atlas-piloto.js", "atlas-partida.js", "atlas-piloto-capa.js", "atlas-guardado.js", "atlas-mapa.css",
           "../game/juez.js"]
 

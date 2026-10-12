@@ -174,7 +174,8 @@ const rutas = await shell.keys();
 // 102 desde U2: `mar-cangrejos.js`, los cangrejos en el mapa.
 // 103 desde T: `ui-ficha.js` (la ficha de la tropa sale de `ui.js`).
 // 105 desde la LEY DEL SUELO, paso 2: `isometric_floor_projection.js` y `map_pointer_input.js`.
-ok('precachea las portadas, su superficie y el juego', rutas.length === 105, rutas.length+' rutas');
+// 108 desde la TERMINAL CHATBOT: `radio_message_log.js`, `terminal_menu_shell.js` y `terminal_menu_shell.css` (en la puerta).
+ok('precachea las portadas, su superficie y el juego', rutas.length === 108, rutas.length+' rutas');
 ok('el shell trae el juego (D7): la puerta, el cangrejo y la arena',
    ['/assets/thegame.js', '/game/gdpr-art25-ephemeral-crab.js', '/game/ui-arena.js', '/assets/atlas-motor.js'].every(r => rutas.includes(r)));
 ok('el shell trae la portada de cada lengua', ['/es/', '/fr/', '/ar/'].every(r => rutas.includes(r)));

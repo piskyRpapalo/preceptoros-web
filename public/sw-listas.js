@@ -43,7 +43,7 @@ const JUEGO = [
   '/assets/atlas-arte.js', '/assets/atlas-coord.js', '/assets/atlas-carta.js', '/assets/atlas-ondas.js',
   '/assets/atlas-obra.js', '/assets/atlas-gesto.js', '/assets/atlas-mapa.js', '/assets/atlas-dialogo.js',
   '/assets/atlas-motor.js', '/assets/atlas-piso.js', '/assets/atlas-piloto.js', '/assets/atlas-partida.js',
-  '/assets/atlas-piloto-capa.js', '/assets/atlas-guardado.js', '/assets/atlas-hud.js',
+  '/assets/atlas-piloto-capa.js', '/assets/atlas-guardado.js', '/assets/radio_message_log.js', '/assets/terminal_menu_shell.js', '/assets/terminal_menu_shell.css', '/assets/atlas-hud.js',
   '/assets/atlas-opina.js', '/assets/atlas-voz.js', '/game/juez.js', '/game/valores.js', '/game/gacha.js',
   '/game/db.js', '/game/core.js', '/game/ui-ficha.js', '/game/ui.js', '/game/canon.js', '/game/wave_render.js', '/game/escena.js',
   '/game/gdpr-art25-ephemeral-crab.js', '/game/aiact-art50-crab-terminal.js', '/game/gdpr-art7-entry-choice.js', '/game/aiact-art50-state-radio.js', '/game/casa-medidas.js', '/game/casa-personaliza.js', '/game/casa-lateral.js', '/game/home_buildings.js',

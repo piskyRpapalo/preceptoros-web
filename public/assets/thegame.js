@@ -12,7 +12,7 @@
   var GUIONES = [['atlas-arte.js'], ['atlas-coord.js'], ['atlas-carta.js'], ['atlas-ondas.js'], ['atlas-obra.js'], ['atlas-gesto.js'], ['atlas-mapa.js'],
     ['atlas-dialogo.js', '/assets/'], ['atlas-motor.js'], ['atlas-piso.js', '/'],
     ['atlas-piloto.js'], ['atlas-partida.js'], ['atlas-piloto-capa.js'],
-    ['/game/juez.js'], ['atlas-guardado.js']];
+    ['/game/juez.js'], ['atlas-guardado.js'], ['radio_message_log.js'], ['terminal_menu_shell.js']];
   /* EL ARMY, A DEMANDA (v1.5): al abrir su pestana o al importar una partida firmada. */
   var ARMY = [['/game/valores.js'], ['/game/gacha.js'], ['/game/db.js'], ['/game/core.js'], ['/game/ui-ficha.js'], ['/game/ui.js']];
   /* LA ARENA, A DEMANDA (2026-09-28): el mar, los lugares NPC, el combate en vivo y los duelos por
@@ -53,7 +53,7 @@
 
   function carga() {
     if (cargado) { return cargado; }
-    ['atlas.css', 'atlas-mapa.css', 'thegame.css', 'tubo.css'].forEach(function (n) {
+    ['atlas.css', 'atlas-mapa.css', 'thegame.css', 'terminal_menu_shell.css', 'tubo.css'].forEach(function (n) {
       var h = document.createElement('link');
       h.rel = 'stylesheet'; h.href = '/assets/' + n;
       document.head.appendChild(h);
@@ -76,7 +76,8 @@
      prueba; se ven al abrir «Technical details». */
   var TECNICO = '.atlas-carta-json, .atlas-nucleo > .atlas-nota, .atlas-nucleo > .atlas-medido, ' +
     '.atlas-incubadora > .atlas-medido, .atlas-incubadora > .atlas-casa, .atlas-pie';
-  var PANEL = {}, HOJA = {}, actual = null, destino = null, army = null, arena = null, casa = null, ARMYZ = null, ZM = null, ZB = null, PARTIDA = null, BT = null, MAPA = null;
+  var PANEL = {}, HOJA = {}, army = null, arena = null, casa = null, ARMYZ = null, ZM = null, ZB = null, PARTIDA = null, MAPA = null;
+  var muestra = function () {}, pliego = null;  /* los pone la terminal (`terminal_menu_shell.js`) */
 
   function T(k) { return (window.AtlasJuego && window.AtlasJuego.texto(k)) || k; }
   function cada(lista, f) { Array.prototype.forEach.call(lista, f); }
@@ -90,80 +91,13 @@
     p.appendChild(d);
   }
 
-  /* LAS HOJAS (Taller, Batalla) se abren sobre el mapa y se cierran con su boton o Escape; abierta una, el mapa se
-     PAUSA (`con-hoja`). J10: el cambio va dentro de document.startViewTransition; sin ella o con movimiento
-     reducido, inmediato. El DOM final es EL MISMO. `id` null = ninguna hoja: solo el mapa y la terminal. */
-  function muestra(id, foco) {
-    if (HOJA[id] ? id === destino : destino === null) { return; }  /* ya pedida: una segunda transicion abortaria la primera */
-    destino = HOJA[id] ? id : null;
-    var d = document, rm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (id !== actual && d.startViewTransition && !rm && capa && capa.isConnected) { d.startViewTransition(function () { muestraYa(id, foco); }); }
-    else { muestraYa(id, foco); }
-  }
-  function muestraYa(id, foco) {
-    actual = destino = HOJA[id] ? id : null;
-    Object.keys(HOJA).forEach(function (k) { HOJA[k].hidden = k !== actual; });
-    BT.setAttribute('aria-expanded', String(actual === 'taller'));
-    document.documentElement.classList.toggle('con-hoja', !!actual);
-    if (actual === 'taller') { cargaArmy(); }
-    if (actual && foco !== false) { var c = HOJA[actual].querySelector('.thegame-hoja-cierra'); if (c) { c.focus(); } } else if (foco) { BT.focus(); }
-  }
-  /* Una hoja: su cabecera fija (volver al mapa y titulo) y su cuerpo, que es donde montan los modulos. */
-  function hoja(id, titulo) {
-    var d = el('section', 'thegame-hoja'), cab = el('div', 'thegame-hoja-cab'), cu = el('div', 'thegame-hoja-cuerpo');
-    d.id = 'thegame-' + id; d.hidden = true; d.setAttribute('role', 'region'); d.setAttribute('aria-label', titulo);
-    var c = el('button', 'boton-sec thegame-hoja-cierra', '\u2190 ' + T('hoja_mapa')); c.type = 'button'; c.id = 'thegame-' + id + '-cierra';
-    c.addEventListener('click', function () { muestra(null, true); });
-    cab.appendChild(c); cab.appendChild(el('h3', null, titulo)); d.appendChild(cab); d.appendChild(cu); HOJA[id] = d;
-    return cu;
-  }
-  function pliego(titulo, id, abierto, hijos) {
-    var d = el('details', 'thegame-pliego'); d.id = id; d.open = !!abierto;
-    d.appendChild(el('summary', null, titulo)); hijos.forEach(function (n) { d.appendChild(n); });
-    return d;
-  }
-
+  /* LA TERMINAL (FIRMO 2026-10-12): menu a la izquierda + cajon de paneles + hojas + el chat de la Radio abajo viven en
+     `terminal_menu_shell.js` (y `radio_message_log.js`); aqui solo se recogen los paneles que monta para los modulos. */
   function ordena() {
-    var piso = capa.querySelector('#atlas-piso'), barra = capa.querySelector('.thegame-barra');
-    if (!piso || !barra || barra.querySelector('#thegame-b-taller')) { return; }
-    PESTANAS.forEach(function (p) {
-      var d = el('section'); p[2].split('|').forEach(function (q) { if (q) { cada(capa.querySelectorAll(q), function (n) { d.appendChild(n); }); } });
-      tecnico(d); PANEL[p[0]] = d;
-    });
-    /* La TERMINAL: el Estado (lo monta la casa), los Lugares (el mapa en el DOM: lista, ficha y Fight) y lo de la
-       partida, que va plegado dentro del Terminal J7. */
-    var term = el('aside', 'thegame-terminal'); term.id = 'thegame-terminal'; term.setAttribute('aria-label', T('terminal_aria'));
-    var est = PANEL.casa; est.className = 'thegame-estado'; est.id = 'thegame-estado';
-    ZM = el('div', 'thegame-mundo'); PARTIDA = el('div', 'thegame-partida');
-    cada([].slice.call(PANEL.mapa.children), function (n) { PARTIDA.appendChild(n); });
-    var ay = el('ol', 'thegame-ayuda');
-    for (var nq = 1; nq < 8; nq++) { ay.appendChild(el('li', null, T('ayuda_' + nq))); }
-    PARTIDA.insertBefore(ay, PARTIDA.firstChild);
-    term.appendChild(pliego(T('pl_estado'), 'pliego-estado', true, [est]));
-    term.appendChild(pliego(T('pl_lugares'), 'pliego-lugares', false, [ZM]));
-    PANEL.casa = term; PANEL.mapa = term;
-    /* El MAPA: su lienzo vive en su capa fija, detras de todo (nunca dentro de un pliego cerrado). */
-    MAPA = el('div', 'thegame-mapa'); MAPA.id = 'thegame-mapa';
-    var tal = hoja('taller', T('pes_taller')); tal.appendChild(PANEL.taller); PANEL.taller = tal;
-    ARMYZ = el('div', 'casa-army'); tal.appendChild(ARMYZ);
-    ZB = hoja('batalla', T('hoja_batalla'));
-    [MAPA, term, HOJA.taller, HOJA.batalla].forEach(function (n) { piso.appendChild(n); });
-    cada(piso.querySelectorAll(':scope > .atlas-rejilla'), function (n) { n.remove(); });
-    /* La barra: UN boton, el Taller. */
-    BT = el('button', 'thegame-b-taller'); BT.type = 'button'; BT.id = 'thegame-b-taller'; BT.setAttribute('aria-controls', 'thegame-taller');
-    var ico = el('span', 'thegame-ico', '\u2692\uFE0E'); ico.setAttribute('aria-hidden', 'true');
-    BT.appendChild(ico); BT.appendChild(el('span', null, T('pes_taller')));
-    BT.addEventListener('click', function () { muestra(actual === 'taller' ? null : 'taller'); });
-    var nav = el('nav', 'thegame-pestanas'); nav.setAttribute('aria-label', T('pes_aria')); nav.appendChild(BT); barra.appendChild(nav);
-    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && actual && !document.querySelector('.atlas-dlg-capa,dialog[open]')) { muestra(null, true); } });
-    /* Con la grieta abierta, el Estado lleva un punto: el aviso llega aunque haya una hoja encima. */
-    var a = est.querySelector('.atlas-alerta');
-    if (a) {
-      var marca = function () { term.classList.toggle('con-aviso', !a.classList.contains('sellada')); };
-      new MutationObserver(marca).observe(a, { attributes: true, attributeFilter: ['class'] });
-      marca();
-    }
-    muestraYa(null); cargaCasa();
+    var S = window.AtlasChatTerminal && window.AtlasChatTerminal.monta({ capa: capa, T: T, el: el, cada: cada, tecnico: tecnico, PESTANAS: PESTANAS, alTaller: cargaArmy });
+    if (!S) { return; }
+    PANEL = S.PANEL; HOJA = S.HOJA; ARMYZ = S.ARMYZ; ZM = S.ZM; ZB = S.ZB; PARTIDA = S.PARTIDA; MAPA = S.MAPA; muestra = S.muestra; pliego = S.pliego;
+    cargaCasa();
   }
 
   /* El Army se pide una vez; si falla, NO_DATA y el siguiente intento vuelve a pedir. */
