@@ -26,7 +26,7 @@
   var ESQ = 'preceptoros.edificio/1', DESGASTE = 8, PITO = { vivo: 880, naciendo: 880, gastado: 660, NO_DATA: 440 };
   var COSTE = 8, DESGASTE_VISTA = 6, MAX_VISTAS = 3;
   var ultima = null, vistos = [], vistas = [], centro = null, boton = null, rotuloBoton = '', nVistas = 0;
-  var MAX_LAPIDAS = 20, lapidas = [], panel = null, pintadas = -1, ultVec = {};
+  var MAX_LAPIDAS = 20, lapidas = [], panel = null, pintadas = -1, ultVec = {}, tUlt = function (k) { return k; };
 
   /* FNV-1a de 32 bits sobre el texto: la misma entrada, la misma huella, en cualquier aparato. */
   function fnv(s) { var h = 0x811c9dc5; for (var i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; } return ('0000000' + h.toString(16)).slice(-8); }
@@ -37,6 +37,16 @@
   function entierra(r, t) {
     lapidas.push(r); if (lapidas.length > MAX_LAPIDAS) { lapidas.shift(); }
     di(t, 'lap_nombre', 'lapidas', 'NO_DATA · ' + r.id + ' · ↻' + r.muere + ' · ' + r.huella, 'NO_DATA');
+  }
+  /* PIEZA DE AMOR 4 (lote 3): la tropa DISUELTA en el Taller deja su lapida con el recibo `atlas.taller/1` que ya se
+     firmo. La adopcion no guarda su ciclo de nacimiento (db.js no lo firma, a proposito): «born» es NO_DATA, no se inventa. */
+  function entierraTropa(rec) {
+    var tic = ciclo();
+    if (!rec || rec.op !== 'desintegra') { return null; }
+    var r = { id: 'troop-' + String(rec.semilla).slice(0, 8), tipo: 'troop ' + rec.tc, nace: null, muere: tic, edad: null,
+              causa: 'dissolved in the workshop · +' + rec.gramos + ' g', huella: fnv(JSON.stringify(rec)) };
+    entierra(r, tUlt); pintadas = -1;
+    return r;
   }
   /* El panel del cajon: lo crea una vez; el menu (terminal_menu_shell.js) lo descubre y le da su entrada. */
   function lee(t) {
@@ -52,7 +62,7 @@
     if (!lapidas.length) { var v = D.createElement('li'); v.textContent = t('lap_vacio'); ol.appendChild(v); return; }
     lapidas.slice().reverse().forEach(function (r) {
       var li = D.createElement('li'); li.className = 'lapida';
-      li.textContent = (t('lap_recibo') || '').replace(/\{(\w+)\}/g, function (x, k) { return k in r ? r[k] : x; });
+      li.textContent = (t('lap_recibo') || '').replace(/\{(\w+)\}/g, function (x, k) { return !(k in r) ? x : (r[k] === null ? 'NO_DATA' : r[k]); });
       li.dataset.id = r.id; li.dataset.tipo = r.tipo; li.dataset.nace = r.nace; li.dataset.muere = r.muere; li.dataset.huella = r.huella;
       ol.appendChild(li);
     });
@@ -134,6 +144,7 @@
   function pinta(g, P, o) {
     var L = raiz.ReefBuildingLifecycle, N = raiz.AtlasNiebla, R = raiz.AtlasRadioChat, tic = ciclo();
     var t = o.texto || function (k) { return k; };
+    tUlt = t;
     if (o.cam) { centro = { x: o.cam.x, y: o.cam.y }; }
     if (!L || !N || tic === null) { vistos = []; return; }
     mandos(t, L, tic); lee(t);
@@ -201,6 +212,6 @@
   function vectores() { return vistos.slice(); }
   function registroLapidas() { return lapidas.slice(); }
 
-  raiz.AtlasArrecife = { pinta: pinta, vectores: vectores, lapidas: registroLapidas, recibo: recibo, fnv: fnv, circulos: circulos, mira: mira, manifiestoBoya: manifiestoBoya, cuidadoDe: cuidadoDe,
+  raiz.AtlasArrecife = { pinta: pinta, vectores: vectores, lapidas: registroLapidas, recibo: recibo, entierraTropa: entierraTropa, fnv: fnv, circulos: circulos, mira: mira, manifiestoBoya: manifiestoBoya, cuidadoDe: cuidadoDe,
                          manifiestoVista: manifiestoVista, radioDe: radioDe, circulosDe: circulosDe, DESGASTE: DESGASTE, COSTE: COSTE };
 })(this);
