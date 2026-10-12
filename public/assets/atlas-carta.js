@@ -238,7 +238,8 @@
     return out;
   }
   function unidades(tropas) {
-    return (tropas || []).map(function (t) {
+    if (!tropas) { return { valor: null, causa: 'army not loaded' }; }
+    return tropas.map(function (t) {
       return { tc: t.tc, rareza: t.rareza, semilla: String(t.semilla || '').slice(0, 8), en: 'base' };
     });
   }

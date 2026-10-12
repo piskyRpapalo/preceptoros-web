@@ -34,6 +34,7 @@
         if (d < dist) { dist = d; mejor = l; }
       });
       if (mejor) { x.elige(mejor); }
+      if (raiz.AtlasInspector) { raiz.AtlasInspector.toca(px, py, 44 * x.dpr); }  /* 0d: la ficha de la pieza tocada */
     }
     c.addEventListener('pointerup', suelta);
     c.addEventListener('pointercancel', function () { arrastre = null; });

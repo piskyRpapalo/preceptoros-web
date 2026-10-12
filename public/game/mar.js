@@ -149,7 +149,7 @@
       var sel = f.sel();
       /* LEY DEL SUELO, paso 3: ORDEN DE PINTOR. Lugares, nodos, cangrejos, anclas y edificios se ENCOLAN con su sitio y se
          pintan de atras a delante por profundidad (col + fila, `IsometricFloor.ordena`): lo de delante tapa lo de detras. */
-      var cola = [], pon = function (x, y, d) { cola.push({ col: x, fila: y, f: d }); };
+      var cola = [], pon = function (x, y, d, fi) { cola.push({ col: x, fila: y, f: d, ficha: fi }); };
       var rec = (f.luchados && f.luchados()) || {};
       f.lugares().forEach(function (l, i) { var s = sitio(l); pon(s.x, s.y, function () {
         var p = P(s.x, s.y), t0 = l.lider, r = 18 * dpr;
@@ -178,7 +178,7 @@
           rotulo(g, f.texto('arena_conquistado_mapa'), p[0], p[1] + r + 31 * dpr);
           if (em) { E.figura(g, em.armonicos, p[0] + r * 1.5, p[1] - r * 1.2, r * 0.45, { color: col.tuya, grosor: 1.4 * dpr, brillo: 6 * dpr }); }
         }
-      }); });
+      }, function () { return { que: f.nombre(l), estado: l.npc ? 'NPC' : 'player', tropa: l.lider }; }); });
       H0.forEach(function (n) { pon(n.x, n.y, function () {
         var p = P(n.x, n.y), r = 26 * dpr, med = n.gen.estado === 'MEDIDO';
         if (med) {
@@ -189,7 +189,7 @@
           E.figura(g, n.t.armonicos, p[0], p[1], r, { color: 'rgb(150,160,180)', giro: t * 0.0002, grosor: 1.2 * dpr, desafina: 0.5, t: t });
         }
         g.lineWidth = dpr;
-      }); });
+      }, function () { return { que: n.nodo, estado: n.gen.estado }; }); });
       /* U2: tu cangrejo (y el de los jugadores llegados, en lo despejado), donde flotaba el emblema suelto. */
       window.AtlasMarCangrejos.pinta(g, P, { pub: f.pub(), sha: K.sha, t: t, dpr: dpr, quieto: q, circ: circ, pon: pon,
         otros: f.lugares().filter(function (l) { return !l.npc; }).map(function (l) { return { de: l.de, n: l.defensa.tropas.length }; }) });
@@ -200,6 +200,7 @@
       /* Los 9 objetos (2026-10-12): su capa, aparte (`reef_buildings_layer.js`). */
       if (window.AtlasArrecife) { window.AtlasArrecife.pinta(g, P, { pub: f.pub(), sha: K.sha, dpr: dpr, t: t, quieto: q, texto: f.texto, cam: cam, ts: ts, pon: pon }); }
       window.IsometricFloor.ordena(cola).forEach(function (x) { x.f(); });
+      if (window.AtlasInspector) { window.AtlasInspector.registra(cola, P, f.texto); }  /* 0d */
       TS.niebla(g, cam, W, H, z);
       /* MOVIMIENTO 7 - M17: Vignette barato - gradiente radial cacheado */
       if (!quieto() && F.vignette_alfa) {

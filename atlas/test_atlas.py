@@ -613,7 +613,7 @@ process.stdout.write(JSON.stringify(ok));
         m = sin_comentarios((PUBLICO / "game" / "mar.js").read_text(encoding="utf-8"))
         vacia = m.index("window.IsometricFloor.ordena(cola).forEach(function (x) { x.f(); });")
         self.assertLess(vacia, m.index("TS.niebla(g, cam, W, H, z);"), "la niebla debe tapar lo pintado, no al reves")
-        for pieza in ("var cola = [], pon = function (x, y, d) { cola.push({ col: x, fila: y, f: d }); };",
+        for pieza in ("var cola = [], pon = function (x, y, d, fi) { cola.push({ col: x, fila: y, f: d, ficha: fi }); };",
                       "f.lugares().forEach(function (l, i) { var s = sitio(l); pon(s.x, s.y, function () {",
                       "H0.forEach(function (n) { pon(n.x, n.y, function () {"):
             with self.subTest(pieza=pieza):
@@ -622,6 +622,23 @@ process.stdout.write(JSON.stringify(ok));
         for f in ("mar-cangrejos.js", "mar-anclas.js", "reef_buildings_layer.js", "latency_crystal.js"):
             with self.subTest(capa=f):
                 self.assertIn("o.pon || function (x, y, d) { d(); }", (PUBLICO / "game" / f).read_text(encoding="utf-8"))
+
+    def test_a1b8_un_estado_y_lo_ausente_es_no_data(self):
+        """A1B8 (lote 0): la carta del mapa lee el MISMO Army que el Taller (adopciones desenvueltas), sin Army es NO_DATA;
+        el INSPECTOR (0d) da de cada pieza que es, estado, coordenada y sonido, y formatea lo ausente como NO_DATA con
+        causa (tambien dentro de un texto ya armado). El arnes conductual `sin_undefined.mjs` (Chrome) va aparte."""
+        for casos in ("ejercito_mapa_casos.mjs", "inspector_casos.mjs"):
+            with self.subTest(casos=casos):
+                r = subprocess.run(["node", str(RAIZ / casos)], capture_output=True, text=True, timeout=60)
+                self.assertEqual(r.returncode, 0, r.stdout[-1200:] + r.stderr[-400:])
+        self.assertIn("u && u.adopcion ? u.adopcion.tropa : u", (ASSETS / "atlas-mapa.js").read_text(encoding="utf-8"))
+        m = (PUBLICO / "game" / "mar.js").read_text(encoding="utf-8")
+        self.assertIn("window.AtlasInspector.registra(cola, P, f.texto);", m)
+        self.assertIn("raiz.AtlasInspector.toca(px, py, 44 * x.dpr);", (PUBLICO / "game" / "map_pointer_input.js").read_text(encoding="utf-8"))
+        a = (ASSETS / "auth.js").read_text(encoding="utf-8")
+        for k in ("idClave", "idPublica", "idEntrar", "idAviso", "idFallo"):
+            with self.subTest(rotulo=k):
+                self.assertRegex(a, k + r": '[^']+'", "sin bloque i18n el rotulo seria undefined")
 
     def test_los_9_objetos_nacen_con_tiempo(self):
         """LOS 9 OBJETOS (FIRMO 2026-10-12): el estado de un edificio es funcion PURA de (manifiesto, tic). Desgaste en tics,
@@ -800,7 +817,7 @@ process.stdout.write(JSON.stringify(ok));
 # Ver atlas/POST_VERIFICACION_MGNO_LAB.md y atlas/POST_VERIFICACION_SISIL_CRIA.md.
 PUROS = ("canon.js", "sobres.js", "rating.js", "arena.js", "duelo.js", "mercado.js", "narragrafo.js", "cria.js", "genoma.js")
 # La Arena (2026-09-28, «el mapa multi-jugador en una pestana»): se carga al abrir su pestana, detras del Army.
-ARENA = ("sobres.js", "rating.js", "arena.js", "duelo.js", "mar-anclas.js", "latency_crystal.js", "reef_buildings_layer.js", "mar-cangrejos.js", "map_pointer_input.js", "mar.js", "nodos-pesos.js",
+ARENA = ("sobres.js", "rating.js", "arena.js", "duelo.js", "mar-anclas.js", "latency_crystal.js", "reef_buildings_layer.js", "mar-cangrejos.js", "map_pointer_input.js", "piece_inspector.js", "mar.js", "nodos-pesos.js",
          "nodos.js", "cuenta.js", "ui-nodos.js", "ui-rack.js",
          "escuadron.js", "battle_choreography.js", "battle_replay.js", "ui-arena-comun.js", "ui-arena.js", "ui-duelo.js")
 # La CASA (2026-10-05): la primera pantalla, detras del Army. Lleva canon y escena, que la Arena reutiliza.

@@ -177,6 +177,9 @@
   "lap_vacio": "Nothing has faded yet. Whatever reaches NO_DATA leaves its receipt here.",
   "cri_nombre": "Latency crystal",
   "cri_niveles": "gold|silver|bronze|dithering",
+  "ins_nombre": "Inspector",
+  "ins_campos": "What|State|Coordinate|Sound|Note",
+  "ins_sin_sonido": "silent by design",
   "lap_recibo": "{id} ({tipo}) · born ↻{nace} · NO_DATA ↻{muere} · lived {edad} cycles · {causa} · checksum {huella}"
  }
 }

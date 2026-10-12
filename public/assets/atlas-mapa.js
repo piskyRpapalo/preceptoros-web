@@ -233,7 +233,7 @@
     function tropas() {
       var inc = window.AtlasIncubadora, l = null;
       try { l = inc && inc.army ? inc.army() : null; } catch (x) { l = null; }
-      return Array.isArray(l) ? l : null;
+      return Array.isArray(l) ? l.map(function (u) { return u && u.adopcion ? u.adopcion.tropa : u; }) : null;  /* A1B8: el Army guarda adopciones */
     }
     function estado(ins) {
       if (ins) { S.ins = ins; S.fase = ins.fase || S.fase; S.vis[C.visita(ins)] = 1; }

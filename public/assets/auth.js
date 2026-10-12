@@ -300,10 +300,9 @@
         if (propio && propio.idPerfil) return Promise.resolve(propio);
       } catch (err) { /* bloque roto: se sigue al catalogo */ }
     }
-    /* `nav.json` cayo con la mudanza b3 (el hub se fue): pedirlo daba un 404 en CADA carga (medido en el Doogee,
-       2026-10-11) y devolvia lo mismo que esto. Sin bloque, se pinta IGUAL con lo que haya: un boton sin rotulo se
-       puede tocar; un boton que no existe, no. */
-    return Promise.resolve({});
+    /* Sin bloque (nav.json cayo en b3): rotulos en ingles. A1B8: con {} se pintaba «undefined», el aviso incluido. */
+    return Promise.resolve({ idClave: 'Your key', idPublica: 'Public key:', idEntrar: 'Create my key',
+      idAviso: 'Your key is born in this browser. It cannot be exported or recovered.', idFallo: 'Could not create the key:' });
   }
 
   rotulos().then(function (t) { T = t; return arranca(); });

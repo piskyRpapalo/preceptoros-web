@@ -177,7 +177,8 @@ const rutas = await shell.keys();
 // 108 desde la TERMINAL CHATBOT: `radio_message_log.js`, `terminal_menu_shell.js` y `terminal_menu_shell.css` (en la puerta).
 // 110 desde LOS 9 OBJETOS: `reef_building_lifecycle.js` (con la casa) y `reef_buildings_layer.js` (con la arena), a demanda.
 // 111 con `latency_crystal.js` (el cuarto objeto, con la arena).
-ok('precachea las portadas, su superficie y el juego', rutas.length === 111, rutas.length+' rutas');
+// 112 con `piece_inspector.js` (lote 0d, el inspector honesto).
+ok('precachea las portadas, su superficie y el juego', rutas.length === 112, rutas.length+' rutas');
 ok('el shell trae el juego (D7): la puerta, el cangrejo y la arena',
    ['/assets/thegame.js', '/game/gdpr-art25-ephemeral-crab.js', '/game/ui-arena.js', '/assets/atlas-motor.js'].every(r => rutas.includes(r)));
 ok('el shell trae la portada de cada lengua', ['/es/', '/fr/', '/ar/'].every(r => rutas.includes(r)));
