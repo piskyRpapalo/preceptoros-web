@@ -84,5 +84,19 @@ caso('la huella CAMBIA si cambia el ultimo vector (no es decorativa)', () => {
   const v = A.manifiestoVista(0, 0, 10, 3);
   return A.recibo(v, 177, 'x', L.vector(v, 150)).huella !== A.recibo(v, 177, 'x', L.vector(v, 151)).huella;
 });
+// EL CRISTAL DE LATENCIA: mide tu hierro con los cuadros del mapa; NO_DATA sin cuadros, nunca «0 fps».
+const K = require(process.env.CRISTAL || '../public/game/latency_crystal.js');
+caso('sin cuadros suficientes no hay medida (NO_DATA, no «0»): con menos de MIN, null', () => K.resume(new Array(K.MIN - 1).fill(16.7)) === null && K.sello(null, 50) === 'NO_DATA');
+caso('p50 y p10 (la banda): 90 % de cuadros a 60 fps y 10 % a 20 fps -> p50 60, p10 20', () => {
+  const ds = new Array(90).fill(1000 / 60).concat(new Array(10).fill(50)), r = K.resume(ds);
+  return r.cuadros === 100 && r.p50 === 60 && r.p10 === 20 || r;
+});
+caso('los niveles salen del p50: oro >= 55, plata >= 40, bronce >= 25, y dithering por debajo', () =>
+  [58, 55, 54, 40, 39, 25, 24, 3].map((f) => K.nivel(f)[0]).join() === 'oro,oro,plata,plata,bronce,bronce,dithering,dithering' || [58, 55, 54, 40, 39, 25, 24, 3].map((f) => K.nivel(f)[0]));
+caso('un hueco (pestana oculta, mapa en pausa) NO es un cuadro: no entra en la ventana', () => {
+  const n0 = K.enVentana(); K.anota(1000); K.anota(1016); K.anota(1032); K.anota(5032); K.anota(5048);
+  return K.enVentana() - n0 === 3 || K.enVentana() - n0;
+});
+caso('el evento envejece: LIVE hasta VIEJO ciclos, luego STALE', () => K.sello({ ciclo: 10 }, 10 + K.VIEJO) === 'LIVE' && K.sello({ ciclo: 10 }, 11 + K.VIEJO) === 'STALE');
 console.log(JSON.stringify(casos, null, 1));
 process.exitCode = casos.every((c) => c.ok) ? 0 : 1;

@@ -175,6 +175,8 @@
   "obs_fases": "looking|seen|seen, getting old|what was seen expired: the fog returns",
   "lap_nombre": "Reef of tombstones",
   "lap_vacio": "Nothing has faded yet. Whatever reaches NO_DATA leaves its receipt here.",
+  "cri_nombre": "Latency crystal",
+  "cri_niveles": "gold|silver|bronze|dithering",
   "lap_recibo": "{id} ({tipo}) · born ↻{nace} · NO_DATA ↻{muere} · lived {edad} cycles · {causa} · checksum {huella}"
  }
 }
