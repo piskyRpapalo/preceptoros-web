@@ -167,6 +167,11 @@
   "rp_vivos": "You {a} · Them {b}",
   "rp_aria": "Battle replay on a map: your waves (circle marks) and theirs (diamond marks) march, clash and fall. Each wave color is its speed; a hurt wave looks out of tune. Key moments are read out below.",
   "mapa_faro": "Go to the Lighthouse: Hexelion, the rack we measured.",
-  "mapa_en_faro": "Centered on the Lighthouse: Hexelion, the rack we measured."
+  "mapa_en_faro": "Centered on the Lighthouse: Hexelion, the rack we measured.",
+  "boya_estado": "State buoy",
+  "boya_fases": "born|alive: your world is measured|fading: no fresh news",
+  "obs_nombre": "Observatory",
+  "obs_mirar": "Look at the centre of the map (costs {n} cycles)",
+  "obs_fases": "looking|seen|seen, getting old|what was seen expired: the fog returns"
  }
 }

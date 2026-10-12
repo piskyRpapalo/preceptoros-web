@@ -71,6 +71,7 @@
       var luchados = {}, r = f.luchados ? f.luchados() : {};
       Object.keys(r || {}).forEach(function (k) { if (r[k].g + r[k].p) { luchados[k] = true; } });
       circ = N.despejado({ pub: f.pub(), sha: K.sha, nodos: Ce ? Ce.nodos : [], lugares: f.lugares(), luchados: luchados });
+      if (window.AtlasArrecife) { circ = circ.concat(window.AtlasArrecife.circulos()); }  /* lo que mira el observatorio */
       TS.despejado(circ);
     }
     function aCasa(dilo) {
@@ -194,7 +195,7 @@
       window.AtlasMarAnclas.pinta(g, P, { pub: f.pub(), sha: K.sha, nodos: Ce ? Ce.nodos : [], dpr: dpr, texto: f.texto,
                                           bandera: cs && cs.bandera && BV ? BV[cs.bandera] : null });
       /* Los 9 objetos (2026-10-12): su capa, aparte (`reef_buildings_layer.js`). */
-      if (window.AtlasArrecife) { window.AtlasArrecife.pinta(g, P, { pub: f.pub(), sha: K.sha, dpr: dpr, t: t, quieto: q, texto: f.texto }); }
+      if (window.AtlasArrecife) { window.AtlasArrecife.pinta(g, P, { pub: f.pub(), sha: K.sha, dpr: dpr, t: t, quieto: q, texto: f.texto, cam: cam }); }
       TS.niebla(g, cam, W, H, z);
       /* MOVIMIENTO 7 - M17: Vignette barato - gradiente radial cacheado */
       if (!quieto() && F.vignette_alfa) {

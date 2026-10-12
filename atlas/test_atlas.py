@@ -616,6 +616,14 @@ process.stdout.write(JSON.stringify(ok));
         for malo in ("Date", "Math.random", "fetch(", "localStorage", "innerHTML"):
             with self.subTest(prohibido=malo):
                 self.assertNotIn(malo, f)
+        # El OBSERVATORIO despeja con los MISMOS circulos que lo medido (fog_of_war), y sus textos viajan con el mapa.
+        m = (PUBLICO / "game" / "mar.js").read_text(encoding="utf-8")
+        self.assertIn("circ = circ.concat(window.AtlasArrecife.circulos());", m, "lo que mira el observatorio no despeja")
+        ui = json.loads((PUBLICO / "atlas-arena-en.json").read_text(encoding="utf-8"))["ui"]
+        for k in ("boya_estado", "boya_fases", "obs_nombre", "obs_mirar", "obs_fases"):
+            with self.subTest(texto=k):
+                self.assertTrue(ui.get(k, "").strip())
+        self.assertEqual(len(ui["obs_fases"].split("|")), 4, "las cuatro fases de lo visto")
 
     def test_la_terminal_chatbot_y_el_chat_de_la_radio(self):
         """LA TERMINAL (FIRMO 2026-10-12): menu a la izquierda (64 px iconos / 220 px expandido), el chat de la Radio abajo,

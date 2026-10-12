@@ -55,5 +55,24 @@ caso('un solo reloj: la boya cae a NO_DATA justo despues del STALE del chat (120
   const m = Object.assign(A.manifiestoBoya({ x: 0, y: 0 }), { cuidado_tic: 100 });
   return L.estado(m, 100 + 120).fase !== 'NO_DATA' && L.estado(m, 100 + 125).fase === 'NO_DATA' || [L.estado(m, 220), L.estado(m, 225)];
 });
+// EL OBSERVATORIO: mirar cuesta tics, lo visto envejece por tramos y al NO_DATA la niebla vuelve.
+caso('mirar CUESTA tics: durante COSTE ciclos no se despeja nada; al ciclo COSTE, si', () => {
+  const v = A.manifiestoVista(500, -200, 40, 1), n = A.COSTE;
+  const antes = A.circulosDe([v], 40 + n - 1, L), despues = A.circulosDe([v], 40 + n, L);
+  return L.valida(v) === '' && antes.length === 0 && despues.length === 1 && despues[0].x === 500 && despues[0].r > 0 || { antes, despues };
+});
+caso('lo visto ENVEJECE por tramos: el radio no sube nunca y la huella de niebla cambia <= 5 veces en toda su vida', () => {
+  const v = A.manifiestoVista(0, 0, 0, 1); let previo = Infinity, cambios = 0, huella = null;
+  for (let t = A.COSTE; t < 400; t++) {
+    const c = A.circulosDe([v], t, L), r = c.length ? c[0].r : 0, h = JSON.stringify(c);
+    if (r > previo) { return 'el radio subio en el tic ' + t; }
+    if (h !== huella) { cambios++; huella = h; } previo = r;
+  }
+  return cambios <= 5 || 'la niebla se rehace ' + cambios + ' veces';
+});
+caso('al NO_DATA la niebla vuelve (sin circulo) y lo gastado sigue despejado pero mas pequeno', () => {
+  const v = A.manifiestoVista(0, 0, 0, 1), e1 = L.estado(v, 120), e2 = L.estado(v, 200);
+  return e1.fase === 'gastado' && A.circulosDe([v], 120, L)[0].r < A.circulosDe([v], A.COSTE, L)[0].r && e2.fase === 'NO_DATA' && A.circulosDe([v], 200, L).length === 0 || { e1, e2 };
+});
 console.log(JSON.stringify(casos, null, 1));
 process.exitCode = casos.every((c) => c.ok) ? 0 : 1;
