@@ -20,7 +20,7 @@
       if (lleno) { g.fillStyle = 'hsl(' + o.bandera + ' 85% 60%)'; g.fill(); }
       g.stroke(); g.setLineDash([]);
       g.fillStyle = 'rgba(155,227,255,.75)'; g.fillText(lleno && o.texto ? o.texto('bandera_mapa') : a.clase, p[0], p[1] - r - 3 * dpr);
-    }); });
+    }, function () { return { que: a.clase, estado: lleno ? 'your flag' : 'PROPOSAL · not built yet' }; }); });
   }
   raiz.AtlasMarAnclas = { pinta: pinta };
 })(this);

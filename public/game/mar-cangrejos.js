@@ -63,7 +63,7 @@
     var casa = N.sitioCasa(o.pub, o.sha) || { x: N.HEX.x, y: N.HEX.y + MAR_ABIERTO }, cj = C.cangrejo(), J = raiz.AtlasJuego, Ra = raiz.AtlasRadio, ca = C.casa ? C.casa() : {};
     if (cj.ciclo !== ciclo) { ciclo = cj.ciclo; t0 = o.t; }
     o.guion = Ra && J && J.instantanea ? Ra.guion(J.instantanea()) : null;
-    pon(casa.x, casa.y + BAJO, function () { uno(g, P, casa, cj, o, ca.estilo, true); });
+    pon(casa.x, casa.y + BAJO, function () { uno(g, P, casa, cj, o, ca.estilo, true); }, function () { return { que: 'Your crab', estado: 'army ' + cj.army + ' · cycle ' + cj.ciclo }; });
     return null;
   }
   AtlasMarCangrejos.pinta = pinta;

@@ -67,7 +67,8 @@
     g.fillStyle = 'rgba(155,227,255,.75)';
     /* Rotulo corto (en el Doogee el largo pisaba la casa): la cifra y su banda; el nombre lo dice el chat. */
     g.fillText(ev ? ev.p50 + ' fps · p10 ' + ev.p10 + (s === 'STALE' ? ' · STALE' : '') : 'NO_DATA', p[0], p[1] - lado * 1.4 - 4 * dpr);  /* ENCIMA: debajo lo tapaba tu cangrejo, que va delante */
-    });
+    }, function () { return { que: t('cri_nombre'), estado: ev ? s + ' · ' + ev.p50 + ' fps (p10 ' + ev.p10 + ') · ' + ev.cuadros + ' frames · cycle ' + ev.ciclo : null,
+      causas: ev ? [] : ['fewer than ' + MIN + ' frames measured yet'] }; });
   }
   function lista() { return eventos.slice(); }
   function enVentana() { return deltas.length; }
