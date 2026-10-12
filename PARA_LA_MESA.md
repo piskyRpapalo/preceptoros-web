@@ -1,6 +1,13 @@
 # PARA_LA_MESA · Ronda «el mapa único y la terminal» · 2026-10-11 · Claude (Opus 5.5)
 Contrato FIRMADO + addendum visual v2 (Ruswick + Zanzlanz + PS1). Rama `claude/mapa-unico` sobre `main` `b63ddec`. **Sin push**: cada pieza espera tu FIRMO. Lo de las rondas anteriores sigue debajo.
 
+## RONDA «6b + LEY DEL SUELO + MCPs» · 2026-10-13 · MEDIDO / EN_CURSO
+- **6b+6a LIVE** (`abew`, #34): volver ya no paga; la pantalla narra en ciclos. Medido: pestaña oculta + 8 h de reloj → recursos y ciclo idénticos. El motor conserva `dormir` SOLO para reproducir partidas guardadas.
+- **LEY DEL SUELO, paso 1 LIVE** (`abev`, #33): `isometric_floor_projection.js` (rombo 2:1, ancla al centro, orden de pintor), 9 casos + sabotaje; prueba visual en el lab. **Paso 2 LIVE** (`abex`, #35): la cámara proyecta en rombo con la misma fórmula; mar y niebla en teselas rombo; el dedo en `map_pointer_input.js`. **Medido en el Doogee con dedo real:** el recorrido entero en verde (0 errores) y un arrastre horizontal mueve el mundo SOLO en horizontal (36 pasos, (263,7; 0)).
+- **thegame.js cruza 16 KiB por 52 B** → `EXCEPCIONES.md` con su huella y su causa (caduca 2026-10-19: trocear). El test del techo solo la acepta si la huella coincide.
+- **MCPs**: 6 de 8 partidos en `_logic.py` (stdlib) + envoltorio fastmcp: 6/6 tests con `python3` pelado (antes 0/8), las mismas 26 herramientas. **Duplicado**: alias runpy que caduca el 2026-10-26; los scripts usan el nombre normativo.
+- **EN_CURSO, con causa:** paso 3 (unidades y edificios con orden de pintor por profundidad y tamaños de la Escala Viva: hoy el mapa pinta por capas, no por profundidad) · los 2 MCPs rojos (fastmcp mezclado en la lógica) · `tramo2.py` rojo de antes (no lo causó la migración) · la renovación de `hexelion-lectura` se regenera TRAS firmar v10 (los dos borradores salieron con n=22).
+
 ## RONDA «los 4 hallazgos + push a tope» · 2026-10-12 · MEDIDO
 - **LIVE `abeu`** (PR #32, 23:08:49Z), verificado en el Doogee con toques reales: invocar, Faro, Fight («Victory in 2 rounds»), cerrar batalla a la primera, **0 errores**.
 - Cámara que **planea** (F357), con su caso y su guarda · la revelación **espera** a la batalla · **juez**: queda lo puro (lo usa la Aduana), fuera la mitad que solo despertaba con Suggest · **`atlas-dialogo.js` 16.186 → 3.637 B** (queda el retrato del Navegante) · narrador sellado **SIMULATED** · la puerta: **gzip 81.372 → 75.908 B**.
