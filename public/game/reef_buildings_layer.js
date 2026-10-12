@@ -177,6 +177,7 @@
       g.fillStyle = 'rgba(155,227,255,.75)'; g.fillText('Δ ' + e.edad, q[0], q[1] - 9 * dpr);
       return true;
     });
+    if (raiz.AtlasCristal) { raiz.AtlasCristal.pinta(g, P, o, casa, tic); }  /* el cuarto: `latency_crystal.js` */
     /* Las lapidas, como piedras sobre tu casa (una por recibo, hasta nueve a la vista). */
     if (casa && lapidas.length) {
       var lp = P(casa.x - 160, casa.y - 160), k = Math.min(9, lapidas.length);

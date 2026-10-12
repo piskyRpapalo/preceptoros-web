@@ -612,8 +612,9 @@ process.stdout.write(JSON.stringify(ok));
         deja vivir para siempre lo desatendido tumba 2."""
         r = subprocess.run(["node", str(RAIZ / "reef_building_casos.mjs")], capture_output=True, text=True, timeout=60)
         self.assertEqual(r.returncode, 0, r.stdout[-1500:] + r.stderr[-500:])
-        f = sin_comentarios((PUBLICO / "game" / "reef_building_lifecycle.js").read_text(encoding="utf-8"))
-        for malo in ("Date", "Math.random", "fetch(", "localStorage", "innerHTML"):
+        f = "".join(sin_comentarios((PUBLICO / "game" / n).read_text(encoding="utf-8"))
+                    for n in ("reef_building_lifecycle.js", "reef_buildings_layer.js", "latency_crystal.js"))
+        for malo in ("Date", "Math.random", "fetch(", "localStorage", "innerHTML", "performance.now"):
             with self.subTest(prohibido=malo):
                 self.assertNotIn(malo, f)
         # El OBSERVATORIO despeja con los MISMOS circulos que lo medido (fog_of_war), y sus textos viajan con el mapa.
@@ -782,7 +783,7 @@ process.stdout.write(JSON.stringify(ok));
 # Ver atlas/POST_VERIFICACION_MGNO_LAB.md y atlas/POST_VERIFICACION_SISIL_CRIA.md.
 PUROS = ("canon.js", "sobres.js", "rating.js", "arena.js", "duelo.js", "mercado.js", "narragrafo.js", "cria.js", "genoma.js")
 # La Arena (2026-09-28, «el mapa multi-jugador en una pestana»): se carga al abrir su pestana, detras del Army.
-ARENA = ("sobres.js", "rating.js", "arena.js", "duelo.js", "mar-anclas.js", "reef_buildings_layer.js", "mar-cangrejos.js", "map_pointer_input.js", "mar.js", "nodos-pesos.js",
+ARENA = ("sobres.js", "rating.js", "arena.js", "duelo.js", "mar-anclas.js", "latency_crystal.js", "reef_buildings_layer.js", "mar-cangrejos.js", "map_pointer_input.js", "mar.js", "nodos-pesos.js",
          "nodos.js", "cuenta.js", "ui-nodos.js", "ui-rack.js",
          "escuadron.js", "battle_choreography.js", "battle_replay.js", "ui-arena-comun.js", "ui-arena.js", "ui-duelo.js")
 # La CASA (2026-10-05): la primera pantalla, detras del Army. Lleva canon y escena, que la Arena reutiliza.
