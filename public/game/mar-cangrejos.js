@@ -44,7 +44,9 @@
   }
   function uno(g, P, casa, cj, o, estilo, vivo) {
     var CJ = raiz.AtlasCangrejo, pc = CJ.paseo(cj.semilla, cj.ciclo, vivo && !o.quieto ? (o.t - t0) / 1000 : 0);
-    var s = sitio(casa, pc.x), p = P(s.x, s.y), r = 22 * o.dpr, fo = CJ.forma(cj.army, cj.nodo, cj.latido);
+    var s = sitio(casa, pc.x), L = vivo && raiz.AtlasCangrejoLibre;
+    if (L) { var d = L.paso(s, o.circ); s = { x: s.x + d.x, y: s.y + d.y }; }  /* B: el manejo libre, ENCIMA del paseo J1 */
+    var p = P(s.x, s.y), r = 22 * o.dpr, fo = CJ.forma(cj.army, cj.nodo, cj.latido);
     var dy = vivo && !o.quieto ? vibra(o.guion, o.t) * r * 0.08 : 0;
     sombra(g, p[0], p[1], r * fo.escala, o.dpr);
     CJ.pinta(g, p[0], p[1] + dy, r, { forma: fo, cuerpo: cj.cuerpo, estilo: estilo, t: vivo ? o.t : 0, dir: pc.dir, dpr: o.dpr, quieto: o.quieto || !vivo });
@@ -63,7 +65,8 @@
     var casa = N.sitioCasa(o.pub, o.sha) || { x: N.HEX.x, y: N.HEX.y + MAR_ABIERTO }, cj = C.cangrejo(), J = raiz.AtlasJuego, Ra = raiz.AtlasRadio, ca = C.casa ? C.casa() : {};
     if (cj.ciclo !== ciclo) { ciclo = cj.ciclo; t0 = o.t; }
     o.guion = Ra && J && J.instantanea ? Ra.guion(J.instantanea()) : null;
-    pon(casa.x, casa.y + BAJO, function () { uno(g, P, casa, cj, o, ca.estilo, true); }, function () { return { que: 'Your crab', estado: 'army ' + cj.army + ' · cycle ' + cj.ciclo }; });
+    var dl = raiz.AtlasCangrejoLibre ? raiz.AtlasCangrejoLibre.desplazamiento() : { x: 0, y: 0 };
+    pon(casa.x + dl.x, casa.y + BAJO + dl.y, function () { uno(g, P, casa, cj, o, ca.estilo, true); }, function () { return { que: 'Your crab', estado: 'army ' + cj.army + ' · cycle ' + cj.ciclo }; });
     return null;
   }
   AtlasMarCangrejos.pinta = pinta;

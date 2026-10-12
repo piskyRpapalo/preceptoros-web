@@ -15,7 +15,7 @@
 (function (raiz) {
   'use strict';
   /* Icono por panel (texto, cero assets). Lo que no esta aqui lleva un punto. */
-  var ICONO = { 'pliego-estado': '◉', 'pliego-lugares': '⌖', 'pliego-entrada': '⚑', 'terminal-cangrejo': '⌨', 'radio-estado': '♪', 'pliego-lapidas': '▤' };
+  var ICONO = { 'pliego-estado': '◉', 'pliego-lugares': '⌖', 'pliego-entrada': '⚑', 'terminal-cangrejo': '⌨', 'radio-estado': '♪', 'pliego-lapidas': '▤', 'pliego-skills': '★', 'pliego-ficha': '⌕', 'pliego-tutorial': '?' };
 
   function monta(x) {
     var capa = x.capa, T = x.T, el = x.el, cada = x.cada;
