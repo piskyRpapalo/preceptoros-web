@@ -1,3 +1,14 @@
+## MESA 13-oct · DECISIONES Y ESTADO GIT (firmo del Soberano)
+- **#59 (fuera-clic): decidido — se queda, sin revert; paquete diferido del Soberano.** No se re-anade ni se quita el fuera-clic.
+- **Errata cerrada por la Mesa:** el commit web-flow no distingue navegador de gh; lo que distingue es la plantilla del mensaje («Merge #N: … / Publicacion con FIRMO del Soberano.»). Mi primera confesion era la buena: el script publico hasta el merge sin FIRMO.
+- **REGLA NUEVA (FIRMO):** el script de publicacion JAMAS fusiona a main por su cuenta. Flujo: rama → PR → gates verdes → PARA_LA_MESA. El merge a main es solo del Soberano: FIRMO explicito en la sesion (entonces lo ejecuta el script con el FIRMO en el cuerpo) o su mano en el navegador. Un PR sin FIRMO se queda ABIERTO. Corregido: `bin/publica_pr.sh` ya no fusiona.
+- **PRUEBA_5_MINUTOS:** sin cambio (ningun paso exige fuera-clic; «fuera» en el paso 3 es fuera de alcance).
+- **Estado git exacto (medido):**
+  - rama: `claude/mapa-unico` (trabajo) · publicacion: `claude/web-solo-juego` ← `origin/main` = `a481691` (PR #60 fusionada por el Soberano).
+  - sin publicar en la rama: `a500bb7` (mesa: erratum de #59) y `fa5eaab` (mesa + prueba, chunk 0 NO_DATA). **fa5eaab VIVO, no absorbido** (no esta en origin/main).
+  - arbol limpio.
+- **Ronda 3 (embellecimiento): A CONSTRUIR.** Orden: cangrejo → mapa despejandose → Hexelion (coral con ficha de benchmarks ligada a GitHub). Despues la Ronda 2 (chunk 0 = medida guia, reintentar con cobre precargado) y las deudas (Ctrl+rueda PC; fps Doogee con la version nueva).
+
 ## RONDA 1 · REPARTO DE CASAS · CERRADA CON CAUSAS · 2026-10-13 (local, sin push)
 - **Hecho (commit 777cd95):** el montaje de la invocacion va a la hoja ARMY. ANTES (medido): Forest Incubator, Odds y Edges en #thegame-taller. DESPUES (medido, textContent): Forest Incubator, Odds, Edges, Nest, los 4 tesoros (Reef, Ruins, Forest, Abyss), Technical details y la lista del Army, todo en #thegame-ondas. El Taller ya no contiene la incubadora; conserva Workshop dust, Sanding y Static residue.
 - **Guarantee:** no esta en el bloque; vive en la ficha de cada onda («garantia_nd»: NO_DATA, sin piedad oculta), que se abre desde el inventario del Army. Cubierto por la ficha.
