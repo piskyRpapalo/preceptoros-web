@@ -623,6 +623,20 @@ process.stdout.write(JSON.stringify(ok));
             with self.subTest(capa=f):
                 self.assertIn("o.pon || function (x, y, d) { d(); }", (PUBLICO / "game" / f).read_text(encoding="utf-8"))
 
+    def test_r1_cangrejo_toon(self):
+        """REALISMO ANIME HONESTO, R1 (FIRMO 2026-10-12): el cangrejo en cel shading desde SU onda. Bandas del mismo hue
+        (sabotaje estrella: un hue inventado -> rojo), sellos de una sola tabla, morf armonico de 2 s, parpadeo del ciclo;
+        el paseo J1 sin tocar; sin raster, sin azar, sin red."""
+        r = subprocess.run(["node", str(RAIZ / "toon_casos.mjs")], capture_output=True, text=True, timeout=60)
+        self.assertEqual(r.returncode, 0, r.stdout[-1200:] + r.stderr[-400:])
+        t = sin_comentarios((PUBLICO / "game" / "crab_render_hd.js").read_text(encoding="utf-8"))
+        for malo in ("Date", "Math.random", "fetch(", "localStorage", "innerHTML", "createLinearGradient", "createRadialGradient", "shadowBlur", "drawImage", "Image("):
+            with self.subTest(prohibido=malo):
+                self.assertNotIn(malo, t)
+        mc = (PUBLICO / "game" / "mar-cangrejos.js").read_text(encoding="utf-8")
+        self.assertIn("(Tn ? Tn.cangrejo : CJ.pinta)(g, p[0], p[1] + dy, r,", mc)
+        self.assertIn("pc = CJ.paseo(cj.semilla, cj.ciclo,", mc, "el paseo J1 sigue mandando")
+
     def test_b_cangrejo_funcional_y_e_tutorial_de_genesis(self):
         """B: el manejo libre va ENCIMA del paseo J1 (paseo intocado), la niebla no se pisa, y las skills salen solo de lo
         que el cangrejo hace (Swim, Reach). E: el tutorial es el esquema de acciones renderizado, bajo el teaching kernel
@@ -863,7 +877,7 @@ process.stdout.write(JSON.stringify(ok));
 # Ver atlas/POST_VERIFICACION_MGNO_LAB.md y atlas/POST_VERIFICACION_SISIL_CRIA.md.
 PUROS = ("canon.js", "sobres.js", "rating.js", "arena.js", "duelo.js", "mercado.js", "narragrafo.js", "cria.js", "genoma.js")
 # La Arena (2026-09-28, «el mapa multi-jugador en una pestana»): se carga al abrir su pestana, detras del Army.
-ARENA = ("sobres.js", "rating.js", "arena.js", "duelo.js", "mar-anclas.js", "crab_free_move.js", "genesis_tutorial.js", "latency_crystal.js", "reef_corals.js", "reef_buildings_layer.js", "mar-cangrejos.js", "map_pointer_input.js", "piece_inspector.js", "place_telemetry.js", "mar.js", "nodos-pesos.js",
+ARENA = ("sobres.js", "rating.js", "arena.js", "duelo.js", "mar-anclas.js", "crab_render_hd.js", "crab_free_move.js", "genesis_tutorial.js", "latency_crystal.js", "reef_corals.js", "reef_buildings_layer.js", "mar-cangrejos.js", "map_pointer_input.js", "piece_inspector.js", "place_telemetry.js", "mar.js", "nodos-pesos.js",
          "nodos.js", "cuenta.js", "ui-nodos.js", "ui-rack.js",
          "escuadron.js", "battle_choreography.js", "battle_replay.js", "ui-arena-comun.js", "ui-arena.js", "ui-duelo.js")
 # La CASA (2026-10-05): la primera pantalla, detras del Army. Lleva canon y escena, que la Arena reutiliza.
