@@ -41,8 +41,17 @@
       if (!s) { return; }   /* sin punto en el mapa, sin coral */
       var k = coral(n), x = s.x + DX, y = s.y + DY;
       pon(x, y, function () { pintaUno(g, P(x, y), k, dpr); }, function () {
-        return { que: 'Coral · ' + k.nodo, estado: k.nd ? 'NO_DATA (no measure of this node is MEASURED' + (k.emuladas ? '; ' + k.emuladas + ' EMULATED do not count' : '') + ')'
-                 : k.medidas + ' of ' + k.total + ' measures MEASURED' };
+        var f = { que: 'Coral · ' + k.nodo, estado: k.nd ? 'NO_DATA (no measure of this node is MEASURED' + (k.emuladas ? '; ' + k.emuladas + ' EMULATED do not count' : '') + ')'
+                 : k.medidas + ' of ' + k.total + ' measures MEASURED', causas: [] };
+        /* El payload de Hexelion (hexelion_bench.js): sus cifras medidas con su fuente. Cero fetch. */
+        var HB = raiz.AtlasHexBench;
+        if (n.nodo === 'nodo.0.hexelion' && HB) {
+          var B = HB.BENCH, mm = B.modelos.filter(function (m) { return m.estado === 'MEDIDO'; })[0];
+          f.causas.push('bench ' + B.fuente.fecha + ' · ' + B.fuente.archivo + ' · sha256 ' + B.fuente.sha256.slice(0, 16));
+          f.causas.push(mm ? mm.modelo + ': pp512 ' + mm.pp512_tok_s + ' tok/s (' + mm.medido_en + ')' : 'NO_DATA (no model measured)');
+          f.causas.push(HB.BENCH.modelos.length - HB.medidos() + ' models NO_DATA with their causes in the file');
+        }
+        return f;
       });
     });
   }
