@@ -7,7 +7,7 @@ Antes (10 s): abre https://preceptoros.org/en/ y **recarga dos veces** (el servi
 |---|---|---|---|
 | 1 | Abre y mira | Mapa isométrico grande en el centro; menú de iconos a la izquierda; arriba del mapa una franja **«Goal · …»** y debajo **«Now: …»** (lo que toca hacer); la Radio abajo | qué tapa qué |
 | 2 | Busca «undefined» o «NaN» en cualquier sitio (también al pasar el dedo por los iconos) | **Nunca**. Lo que falta dice `NO_DATA (causa)` | dónde |
-| 3 | Toca una pieza **junto a tu cangrejo** (la boya, un coral, el nodo) | Se abre el **Tutorial** (paso 2 de 6) | si se abre otra cosa |
+| 3 | Toca la **cúpula del Observatorio** o el **rombo del Cristal**, junto a tu casa (a menos de 160 del cangrejo; la boya queda justo fuera: si no abre, nada antes hacia la pieza) | Se abre el **Tutorial** (paso 2 de 6) | si se abre otra cosa |
 | 4 | Pulsa **← Map** y toca **mar vacío** | Tu cangrejo **nada** hasta allí (también W A S D). La franja pasa a «Now: Open the menu ⌖…». Contra la niebla se para y la Radio dice por qué | si salta o entra en la niebla |
 | 5 | Menú **★ Skills** | `Swim · level 1 · N actions` y `Reach · level 1`. Nada de Fishing, Mining, Core Level | — |
 | 6 | Menú **⌖ Places** → **Fight** → ← Map | Batalla; el lugar cambia de color; el Tutorial pasa a «Summon» con **«Dry run: … You have N»** (si no te llega el cobre: «Not yet, and why» con la cifra y qué hacer) | si dice «failed» |
