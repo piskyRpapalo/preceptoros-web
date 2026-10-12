@@ -66,7 +66,7 @@
     g.strokeStyle = 'rgba(155,227,255,.7)'; g.lineWidth = dpr; g.stroke();
     g.fillStyle = 'rgba(155,227,255,.75)';
     /* Rotulo corto (en el Doogee el largo pisaba la casa): la cifra y su banda; el nombre lo dice el chat. */
-    g.fillText(ev ? ev.p50 + ' fps · p10 ' + ev.p10 + (s === 'STALE' ? ' · STALE' : '') : 'NO_DATA', p[0], p[1] + lado * 1.4 + 12 * dpr);
+    g.fillText(ev ? ev.p50 + ' fps · p10 ' + ev.p10 + (s === 'STALE' ? ' · STALE' : '') : 'NO_DATA', p[0], p[1] - lado * 1.4 - 4 * dpr);  /* ENCIMA: debajo lo tapaba tu cangrejo, que va delante */
     });
   }
   function lista() { return eventos.slice(); }
