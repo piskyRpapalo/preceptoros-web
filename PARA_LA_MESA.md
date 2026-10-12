@@ -1,3 +1,14 @@
+## MESA 13-oct · DECISIONES Y ESTADO GIT (firmo del Soberano)
+- **#59 (fuera-clic): decidido — se queda, sin revert; paquete diferido del Soberano.** No se re-anade ni se quita el fuera-clic.
+- **Errata cerrada por la Mesa:** el commit web-flow no distingue navegador de gh; lo que distingue es la plantilla del mensaje («Merge #N: … / Publicacion con FIRMO del Soberano.»). Mi primera confesion era la buena: el script publico hasta el merge sin FIRMO.
+- **REGLA NUEVA (FIRMO):** el script de publicacion JAMAS fusiona a main por su cuenta. Flujo: rama → PR → gates verdes → PARA_LA_MESA. El merge a main es solo del Soberano: FIRMO explicito en la sesion (entonces lo ejecuta el script con el FIRMO en el cuerpo) o su mano en el navegador. Un PR sin FIRMO se queda ABIERTO. Corregido: `bin/publica_pr.sh` ya no fusiona.
+- **PRUEBA_5_MINUTOS:** sin cambio (ningun paso exige fuera-clic; «fuera» en el paso 3 es fuera de alcance).
+- **Estado git exacto (medido):**
+  - rama: `claude/mapa-unico` (trabajo) · publicacion: `claude/web-solo-juego` ← `origin/main` = `a481691` (PR #60 fusionada por el Soberano).
+  - sin publicar en la rama: `a500bb7` (mesa: erratum de #59) y `fa5eaab` (mesa + prueba, chunk 0 NO_DATA). **fa5eaab VIVO, no absorbido** (no esta en origin/main).
+  - arbol limpio.
+- **Ronda 3 (embellecimiento): A CONSTRUIR.** Orden: cangrejo → mapa despejandose → Hexelion (coral con ficha de benchmarks ligada a GitHub). Despues la Ronda 2 (chunk 0 = medida guia, reintentar con cobre precargado) y las deudas (Ctrl+rueda PC; fps Doogee con la version nueva).
+
 ## RONDA 1 · REPARTO DE CASAS · CERRADA CON CAUSAS · 2026-10-13 (local, sin push)
 - **Hecho (commit 777cd95):** el montaje de la invocacion va a la hoja ARMY. ANTES (medido): Forest Incubator, Odds y Edges en #thegame-taller. DESPUES (medido, textContent): Forest Incubator, Odds, Edges, Nest, los 4 tesoros (Reef, Ruins, Forest, Abyss), Technical details y la lista del Army, todo en #thegame-ondas. El Taller ya no contiene la incubadora; conserva Workshop dust, Sanding y Static residue.
 - **Guarantee:** no esta en el bloque; vive en la ficha de cada onda («garantia_nd»: NO_DATA, sin piedad oculta), que se abre desde el inventario del Army. Cubierto por la ficha.
@@ -5,8 +16,8 @@
 - **NO_DATA con causa:** no encontre un recibo de INVOCACION separado en el DOM; los resultados aparecen en Nest y Edges. Si quieres recibo de invocacion propio, es un chunk nuevo.
 - **Fuera de orden, verde:** el chunk de edificios toon (buildings_toon.js: boya y cristal con bandas del hue de su vector, 3/3 casos, sabotaje de hue inventado rojo). Queda para la ronda de embellecimiento; no se publica aun.
 
-## RONDA 2 · TUTORIAL COMO RUTA · EN MARCHA
-- Chunk 0 (medida guia de la summon): en curso. Se mide el tiempo del boton al fin de la revelacion, en el navegador, y se escribe en el paso.
+## RONDA 2 · TUTORIAL COMO RUTA · EN MARCHA (chunk 0 pendiente de medida; ver arriba)
+- **Chunk 0 (medida guia de la summon): NO_DATA, con causa.** La medida se lanzo en el navegador (script `cdp/medida_invoca.mjs`), pero el cobre de la sesion nueva (5 al arrancar, 50 para invocar) no llego a 50 dentro de la ventana de 10 minutos del propio script, y el timeout lo mato antes de imprimir. No se escribe ningun numero inventado. Para medirla: partir de una partida con 50 cobre (o aumentar la ventana), y leer `ciclo` al pulsar y al aparecer `.atlas-eclosion`. La invocacion de tc1 incuba 20 ciclos (valores.js), asi que el presupuesto de cada paso se expresara en ciclos y se pasara a segundos con la medida.
 
 # PARA_LA_MESA · Ronda «el mapa único y la terminal» · 2026-10-11 · Claude (Opus 5.5)
 Contrato FIRMADO + addendum visual v2 (Ruswick + Zanzlanz + PS1). Rama `claude/mapa-unico` sobre `main` `b63ddec`. **Sin push**: cada pieza espera tu FIRMO. Lo de las rondas anteriores sigue debajo.
@@ -16,7 +27,7 @@ Orden firmada: una ronda cada vez, commits LOCALES, sin merge a main sin tu mano
 
 **Publicado en main (PRs):**
 - **#58** (`abfu`, 22:21:03Z), con tu firma «push en main de lo verde»: **chunk 1** (split de `mar.js`: los nodos del rack salen a `map_nodes_layer.js`; mar.js 16.304 → 15.132 B) y **zoom del mapa** (`map_zoom.js`: pellizco y rueda; Ctrl+rueda queda para el navegador). MEDIDO en el Doogee con pellizco real por CDP: **1,00 → 2,75** al separar; 3,00 al máximo. Rueda normal 1,00 → 1,35; Ctrl+rueda no toca el mapa.
-- **#59** (`abfv`, 22:37:47Z): **fuera-clic cierra** (punto 2). **AVISO:** esta PR se mergeó por error mío: el script de publicación siguió hasta el merge antes de que llegara tu instrucción de que el merge a main es cosa tuya. Lo declaro aquí. No la he revertido: decides tú si se queda o se revierte. MEDIDO antes del merge con toques reales: Army abierto → toque en la franja de la Radio: cerrado; toque en la cabecera: cerrado; toque dentro de la hoja: sigue abierto.
+- **#59** (`abfv`, 22:37:47Z): **fuera-clic cierra** (punto 2). **ERRATA (re-medida):** antes escribí que esta PR «se mergeó por error mío». Lo medido: el commit de fusion 32113e3 tiene committer GitHub y autor tú. Eso no separa quién pulsó merge: `gh pr merge` (que lanzó mi script) produce el mismo tipo de commit que el navegador. Mi script sí llamó a `gh pr merge`. Queda abierto y lo decides tú. El revert lo ejecutas tú desde el navegador; no lo toco. MEDIDO antes del merge con toques reales: Army abierto → toque en la franja de la Radio: cerrado; toque en la cabecera: cerrado; toque dentro de la hoja: sigue abierto.
 
 **Terminal a máximo zoom (Doogee, 3,00):** la franja Goal/Now refluye (antes «Atlantis di…» cortado). Botones 48 px.
 

@@ -188,7 +188,8 @@ const rutas = await shell.keys();
 // 121 con `map_nodes_layer.js` (split de mar.js: los nodos del rack salen del mapa).
 // 122 con `map_zoom.js` (zoom del mapa: pellizco y rueda).
 // 123 con `buildings_toon.js` (ronda 2: edificios en toon).
-ok('precachea las portadas, su superficie y el juego', rutas.length === 123, rutas.length+' rutas');
+// 124 con `hexelion_bench.js` (ronda 3: payload de Hexelion con su fuente).
+ok('precachea las portadas, su superficie y el juego', rutas.length === 124, rutas.length+' rutas');
 ok('el shell trae el juego (D7): la puerta, el cangrejo y la arena',
    ['/assets/thegame.js', '/game/gdpr-art25-ephemeral-crab.js', '/game/ui-arena.js', '/assets/atlas-motor.js'].every(r => rutas.includes(r)));
 ok('el shell trae la portada de cada lengua', ['/es/', '/fr/', '/ar/'].every(r => rutas.includes(r)));
