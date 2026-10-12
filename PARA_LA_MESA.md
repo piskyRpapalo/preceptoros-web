@@ -1,6 +1,14 @@
 # PARA_LA_MESA · Ronda «el mapa único y la terminal» · 2026-10-11 · Claude (Opus 5.5)
 Contrato FIRMADO + addendum visual v2 (Ruswick + Zanzlanz + PS1). Rama `claude/mapa-unico` sobre `main` `b63ddec`. **Sin push**: cada pieza espera tu FIRMO. Lo de las rondas anteriores sigue debajo.
 
+## REALISMO ANIME + TERMINAL COMO CHAT + DOOGEE FUERA · 2026-10-12 cierre · LIVE `abfq` (PRs #54-#57) · MEDIDO / NO_DATA
+- ✅ **R1** cangrejo toon (`abfn`, #54): bandas duras del hue de su clase, contorno grueso, morf armónico 2 s, parpadeo del ciclo; sabotaje estrella rojo. **Doogee: 59 fps, 0 errores.**
+- ✅ **PR-1** ventana con marco (`abfo`, #55): cabecero título · sello · fuente · edad en ciclos; ✕ 46 px; rótulos completos (4 se cortaban).
+- ✅ **PR-2 + PR-3** (`abfp`, #56): gusanos puros de S_t (revelan, no deciden; sabotajes 1 y 2 rojos), narrados en la Radio; **vector del juego** `AtlasVector.leer()` en 426 B.
+- ✅ **Doogee fuera del mapa** (`abfq`, #57): solo Hexelion; mar.js 16.304 B; su split es el primer lote siguiente.
+- ⛔ **Cortado con causa:** R2, R3, R-ZOOM, color cycling, parallax, espejos (presupuesto: cierre ordenado) · nodo real Hexelion (no empezado; credencial: lo hace el Soberano, protocolo en el plan).
+- **Plan por chunks para modelos locales:** `~/p0x/propuestas/2026-10-12_plan_por_chunks_modelos_locales.md` (8 chunks de menor a mayor coste + 5 joyas registradas).
+
 ## PAQUETE PRIMEROS PASOS + TUTORIAL · 2026-10-12 noche · LIVE `abfm` (PRs #50-#52) · MEDIDO / NO_DATA con causa
 - **C** ✅ (`abfk`, #50): hoja **Army** primera del menú (el inventario de ondas, movido desde ui.js sin tocarlo); cajón a pantalla completa; todo lo táctil ≥ 44 px (medido 0 por debajo); segunda pulsación cierra.
 - **B1** ✅ (#50): fuera del panel los 7 oficios, sus barras y el Core Level. Motor intacto. El candado de profundidad 4 dice la verdad («engine rule pending review»).
