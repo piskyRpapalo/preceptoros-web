@@ -54,15 +54,17 @@
   function pinta(g, P, o) {
     var CJ = raiz.AtlasCangrejo, N = raiz.AtlasNiebla, C = raiz.AtlasCasa;
     if (!CJ || !N || !C || !C.cangrejo) { return null; }
+    var pon = o.pon || function (x, y, d) { d(); };  /* paso 3: con cola, cada cangrejo se pinta a su profundidad */
     (o.otros || []).forEach(function (j) {
       var c = N.sitioCasa(j.de, o.sha);
       if (!c || N.niebla(c.x, c.y, o.circ || []) > 0.5) { return; }
-      uno(g, P, c, { semilla: j.de, ciclo: 0, army: j.n, nodo: false, latido: null, cuerpo: CJ.cuerpo(null) }, o, null, false);
+      pon(c.x, c.y + BAJO, function () { uno(g, P, c, { semilla: j.de, ciclo: 0, army: j.n, nodo: false, latido: null, cuerpo: CJ.cuerpo(null) }, o, null, false); });
     });
     var casa = N.sitioCasa(o.pub, o.sha) || { x: N.HEX.x, y: N.HEX.y + MAR_ABIERTO }, cj = C.cangrejo(), J = raiz.AtlasJuego, Ra = raiz.AtlasRadio, ca = C.casa ? C.casa() : {};
     if (cj.ciclo !== ciclo) { ciclo = cj.ciclo; t0 = o.t; }
     o.guion = Ra && J && J.instantanea ? Ra.guion(J.instantanea()) : null;
-    return uno(g, P, casa, cj, o, ca.estilo, true);
+    pon(casa.x, casa.y + BAJO, function () { uno(g, P, casa, cj, o, ca.estilo, true); });
+    return null;
   }
   AtlasMarCangrejos.pinta = pinta;
   raiz.AtlasMarCangrejos = AtlasMarCangrejos;

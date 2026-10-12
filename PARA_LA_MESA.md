@@ -1,6 +1,19 @@
 # PARA_LA_MESA · Ronda «el mapa único y la terminal» · 2026-10-11 · Claude (Opus 5.5)
 Contrato FIRMADO + addendum visual v2 (Ruswick + Zanzlanz + PS1). Rama `claude/mapa-unico` sobre `main` `b63ddec`. **Sin push**: cada pieza espera tu FIRMO. Lo de las rondas anteriores sigue debajo.
 
+## GUARDIA · tres frentes · 2026-10-13 · MEDIDO en el Doogee / EN_CURSO
+Todo con PR, CI verde, merge, versión viva medida con curl y prueba en el Doogee (S110) con dedo real y **0 errores de consola**.
+- **VERDE · Frente 1, la TERMINAL chatbot** (`abey`, #36): menú izquierdo (64 px móvil / 220 px escritorio, sin desborde, botones ≥ 48 px), cajón de un panel, chat de la Radio abajo plegado con sello/fuente/edad en ciclos. `thegame.js` 16.436 → 11.817 B: **excepción CERRADA**. Ficheros sin «chat» en el nombre (la guarda del hub viejo lo prohíbe; no se afloja). Arreglo `abfc` (#40): el chat plegado ocupa 73 px (48 + borde + barra de gestos) y tapaba la 2.ª fila de mandos.
+- **VERDE · Frente 2, LOS EDIFICIOS (4 de 9)**: tiempo en tics, puro (manifiesto `preceptoros.edificio/1` + tic), NO_DATA con causa, ∇C como telemetría.
+  · **Boya del Estado** (`abez`, #37): vive mientras la Radio trae noticias LIVE; pitido ADSR (J-SN-14) al cambiar de fase.
+  · **Observatorio** (`abfb`, #39): «👁» mira al centro y **cuesta 8 ciclos**; despeja niebla con los círculos de `fog_of_war.js`; lo visto envejece por tramos → STALE → NO_DATA y la niebla vuelve.
+  · **Arrecife de las Lápidas** (`abfd`, #41): lo que cae a NO_DATA deja recibo legible (nació/murió en ciclos, causa, suma FNV-1a — NO firma). Doogee, 167 ciclos reales: «vista-1 … checksum dd51eb00», abierto con el dedo desde el menú.
+  · **Cristal de Latencia** (`abfe`, #42): mide tu hierro con los cuadros del mapa; eventos append-only (p50, p10). Doogee: **oro · 58 fps (p10 29)**. Los cortes oro/plata/bronce/dithering son **INTERPRETACIÓN mía** (el corpus no los fija): a confirmar.
+- **HALLAZGO GRAVE, arreglado** (`abfa`, #38): el mapa iba a **2,7 fps en el Doogee** desde el rombo (paso 2, #35, error mío: lo verifiqué con el dedo, no con fps). Perfil de CPU: caché de teselas de 90 vaciada entera con 132 visibles → 2.277 texturas/3 s. Poda + desalojo de una en una: **A/B 2,8 → 57,8 fps**.
+- **Barrido del canon (Haiku, verificado):** J-SN-14 es la envolvente ADSR (no una boya); «Observatorio» y los niveles del Cristal **no aparecen en ningún documento**: su única fuente es tu orden de guardia.
+- **EN_CURSO, con causa:** Frente 3 (orden de pintor por profundidad = paso 3; la capa de edificios ya pinta ∇C y Escala Viva, el resto del mapa no) · edificios 5-9 (Botella, Monumento, Vivero, Baliza, Nombres) · lo visto y las lápidas **no persisten** (persistir espera firma) · `atlas-en.json` a 27 B de su techo de transporte: los textos nuevos ya van a `atlas-arena-en.json`.
+- **Entrada 23 lista** en `pendientes/` (caduca 2026-10-25T20:44:43Z), esperando tu firma v2.
+
 ## REGISTRO · 2026-10-13
 - **v10 aplicada** (entrada 22, firmada con la v2, hash `f2521314…`). La rotación de la entrada 16 SÍ se hizo: las entradas 17-21 están firmadas con la v2 (`iqao…`) y la cadena las verifica. Mi informe anterior decía lo contrario: era un error de mi comprobación (leía solo la primera línea de `allowed_signers`), corregido.
 - **DESVIACIÓN DELIBERADA, decidida y firmada por el Soberano hoy:** la clave vieja (`0OIN…`) sigue autorizada hasta el 2027-10-10 en `allowed_signers`, contra lo que declaraba la entrada 16 (caducidad 2026-10-06). **No se corrige.** Causa: la clave solo es usable mientras el agente la retenga (la frase se perdió) y queda como respaldo de emergencia.

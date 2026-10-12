@@ -606,6 +606,23 @@ process.stdout.write(JSON.stringify(ok));
         ui = json.loads((PUBLICO / "atlas-en.json").read_text(encoding="utf-8"))["ui"]
         self.assertNotIn("produces while this tab is hidden", ui["dormias_vacio"], "el texto vuelve a prometer pago por dormir")
 
+    def test_ley_del_suelo_paso3_orden_de_pintor(self):
+        """LEY DEL SUELO, paso 3: lo que se pinta en el mapa se ENCOLA con su sitio y se pinta de atras a delante por
+        profundidad (`IsometricFloor.ordena`), ANTES de la niebla. Cada capa (cangrejos, anclas, edificios, cristal)
+        encola si le dan cola y pinta directo si no. Medido en el navegador: 11 piezas, ordenadas, 60 veces por segundo."""
+        m = sin_comentarios((PUBLICO / "game" / "mar.js").read_text(encoding="utf-8"))
+        vacia = m.index("window.IsometricFloor.ordena(cola).forEach(function (x) { x.f(); });")
+        self.assertLess(vacia, m.index("TS.niebla(g, cam, W, H, z);"), "la niebla debe tapar lo pintado, no al reves")
+        for pieza in ("var cola = [], pon = function (x, y, d) { cola.push({ col: x, fila: y, f: d }); };",
+                      "f.lugares().forEach(function (l, i) { var s = sitio(l); pon(s.x, s.y, function () {",
+                      "H0.forEach(function (n) { pon(n.x, n.y, function () {"):
+            with self.subTest(pieza=pieza):
+                self.assertIn(pieza, m)
+        self.assertEqual(m.count("pon: pon"), 3, "cangrejos, anclas y edificios reciben la cola")
+        for f in ("mar-cangrejos.js", "mar-anclas.js", "reef_buildings_layer.js", "latency_crystal.js"):
+            with self.subTest(capa=f):
+                self.assertIn("o.pon || function (x, y, d) { d(); }", (PUBLICO / "game" / f).read_text(encoding="utf-8"))
+
     def test_los_9_objetos_nacen_con_tiempo(self):
         """LOS 9 OBJETOS (FIRMO 2026-10-12): el estado de un edificio es funcion PURA de (manifiesto, tic). Desgaste en tics,
         NO_DATA con causa (nunca «0»), ∇C como telemetria (Hue vida, Sat carga, Light escudo). 9/9 casos; el sabotaje que
