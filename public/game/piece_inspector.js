@@ -59,8 +59,11 @@
     var mejor = null, d0 = radio || 44;
     piezas.forEach(function (q) { var d = Math.hypot(q.x - px, q.y - py); if (d < d0) { d0 = d; mejor = q; } });
     if (!mejor) { return null; }
-    ultima = lineas(lee(mejor), mejor.col, mejor.fila);
-    abre(ultima);
+    var fi = lee(mejor);
+    /* B3: si la pieza esta al ALCANCE del cangrejo, es una accion real (skill REACH; la primera abre el tutorial). */
+    var al = raiz.AtlasCangrejoLibre ? raiz.AtlasCangrejoLibre.alcanza(mejor.col, mejor.fila, fi && fi.que) : false;
+    ultima = lineas(fi, mejor.col, mejor.fila);
+    if (al !== 'tutorial') { abre(ultima); }  /* la PRIMERA vez manda el tutorial (B3); la ficha queda en `vista()` */
     return ultima;
   }
   function vista() { return ultima ? ultima.slice() : null; }

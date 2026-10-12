@@ -34,11 +34,16 @@
         if (d < dist) { dist = d; mejor = l; }
       });
       if (mejor) { x.elige(mejor); }
-      if (raiz.AtlasInspector) { raiz.AtlasInspector.toca(px, py, 44 * x.dpr); }  /* 0d: la ficha de la pieza tocada */
+      var ficha = raiz.AtlasInspector ? raiz.AtlasInspector.toca(px, py, 44 * x.dpr) : null;  /* 0d: la ficha de la pieza tocada */
+      /* B: tocar MAR VACIO (ni lugar ni pieza) manda a tu cangrejo alli: pantalla -> mundo con la inversa del rombo. */
+      var Lb = raiz.AtlasCangrejoLibre;
+      if (!mejor && !ficha && Lb && Lb.base()) { var w = C.aMundoDelta(px - c.width / 2, py - c.height / 2, x.z()); Lb.va(Lb.base(), cam.x + w[0], cam.y + w[1]); }
     }
     c.addEventListener('pointerup', suelta);
     c.addEventListener('pointercancel', function () { arrastre = null; });
     c.addEventListener('keydown', function (ev) {
+      var k = String(ev.key).toLowerCase(), Lk = raiz.AtlasCangrejoLibre;
+      if (Lk && 'wasd'.indexOf(k) >= 0 && k.length === 1 && !ev.altKey && !ev.ctrlKey) { ev.preventDefault(); Lk.empuja(k); return; }  /* B: W/A/S/D mueven al cangrejo */
       var d = { ArrowLeft: 'izq', ArrowRight: 'der', ArrowUp: 'arr', ArrowDown: 'aba', Home: 'casa' }[ev.key];
       if (!d) { return; }
       ev.preventDefault(); x.flecha(d);

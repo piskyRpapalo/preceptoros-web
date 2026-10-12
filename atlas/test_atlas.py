@@ -623,6 +623,25 @@ process.stdout.write(JSON.stringify(ok));
             with self.subTest(capa=f):
                 self.assertIn("o.pon || function (x, y, d) { d(); }", (PUBLICO / "game" / f).read_text(encoding="utf-8"))
 
+    def test_b_cangrejo_funcional_y_e_tutorial_de_genesis(self):
+        """B: el manejo libre va ENCIMA del paseo J1 (paseo intocado), la niebla no se pisa, y las skills salen solo de lo
+        que el cangrejo hace (Swim, Reach). E: el tutorial es el esquema de acciones renderizado, bajo el teaching kernel
+        (dry-run en lo irreversible, fallo como ramificacion, objetivo siempre a la vista, ayuda que decae, saltable)."""
+        for casos in ("cangrejo_libre_casos.mjs", "tutorial_casos.mjs"):
+            with self.subTest(casos=casos):
+                r = subprocess.run(["node", str(RAIZ / casos)], capture_output=True, text=True, timeout=60)
+                self.assertEqual(r.returncode, 0, r.stdout[-1200:] + r.stderr[-400:])
+        mc = (PUBLICO / "game" / "mar-cangrejos.js").read_text(encoding="utf-8")
+        self.assertIn("pc = CJ.paseo(cj.semilla, cj.ciclo,", mc, "el paseo J1 sigue mandando debajo")
+        self.assertIn("if (L) { var d = L.paso(s, o.circ); s = { x: s.x + d.x, y: s.y + d.y }; }", mc)
+        t = sin_comentarios((PUBLICO / "game" / "genesis_tutorial.js").read_text(encoding="utf-8"))
+        for pieza in ("id = 'tutorial-salta'", "'Goal · '", "' · Now: '", "function verbosidad()", "'Not yet, and why'", "c >= k ?"):
+            with self.subTest(tutorial=pieza):
+                self.assertIn(pieza, t)
+        for malo in ("Date", "Math.random", "fetch(", "localStorage", "innerHTML"):
+            with self.subTest(prohibido=malo):
+                self.assertNotIn(malo, t + sin_comentarios((PUBLICO / "game" / "crab_free_move.js").read_text(encoding="utf-8")))
+
     def test_b1_sin_skills_de_relleno(self):
         """B1 (FIRMO 2026-10-12): el panel no pinta oficios que el cangrejo no puede ejercer (Descent, Fishing, Mining,
         Smithing, Herbalism, Restoration, Engineering), ni sus barras de XP, ni el Core Level. El motor no se toca."""
@@ -659,7 +678,7 @@ process.stdout.write(JSON.stringify(ok));
         m = (PUBLICO / "game" / "mar.js").read_text(encoding="utf-8")
         self.assertIn("window.AtlasInspector.registra(cola, P, f.texto);", m)
         self.assertIn("v = Z && l.npc ? Z.vector(rec[l.clave], l.lider) : 0, cz = v === 0 ? 0 : Z.color(v);", m, "∇C opcion A: el lugar pinta su registro de combate")
-        self.assertIn("raiz.AtlasInspector.toca(px, py, 44 * x.dpr);", (PUBLICO / "game" / "map_pointer_input.js").read_text(encoding="utf-8"))
+        self.assertIn("raiz.AtlasInspector.toca(px, py, 44 * x.dpr)", (PUBLICO / "game" / "map_pointer_input.js").read_text(encoding="utf-8"))
         a = (ASSETS / "auth.js").read_text(encoding="utf-8")
         for k in ("idClave", "idPublica", "idEntrar", "idAviso", "idFallo"):
             with self.subTest(rotulo=k):
@@ -842,7 +861,7 @@ process.stdout.write(JSON.stringify(ok));
 # Ver atlas/POST_VERIFICACION_MGNO_LAB.md y atlas/POST_VERIFICACION_SISIL_CRIA.md.
 PUROS = ("canon.js", "sobres.js", "rating.js", "arena.js", "duelo.js", "mercado.js", "narragrafo.js", "cria.js", "genoma.js")
 # La Arena (2026-09-28, «el mapa multi-jugador en una pestana»): se carga al abrir su pestana, detras del Army.
-ARENA = ("sobres.js", "rating.js", "arena.js", "duelo.js", "mar-anclas.js", "latency_crystal.js", "reef_buildings_layer.js", "mar-cangrejos.js", "map_pointer_input.js", "piece_inspector.js", "place_telemetry.js", "mar.js", "nodos-pesos.js",
+ARENA = ("sobres.js", "rating.js", "arena.js", "duelo.js", "mar-anclas.js", "crab_free_move.js", "genesis_tutorial.js", "latency_crystal.js", "reef_buildings_layer.js", "mar-cangrejos.js", "map_pointer_input.js", "piece_inspector.js", "place_telemetry.js", "mar.js", "nodos-pesos.js",
          "nodos.js", "cuenta.js", "ui-nodos.js", "ui-rack.js",
          "escuadron.js", "battle_choreography.js", "battle_replay.js", "ui-arena-comun.js", "ui-arena.js", "ui-duelo.js")
 # La CASA (2026-10-05): la primera pantalla, detras del Army. Lleva canon y escena, que la Arena reutiliza.
