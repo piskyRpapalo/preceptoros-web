@@ -1,0 +1,28 @@
+// EL VECTOR DEL JUEGO (FIRMO 2026-10-12, «piensa vectorialmente»): todo el estado visible en < 1 KB, leible por un LLM pequeno.
+import { createRequire } from 'node:module';
+const require = createRequire(import.meta.url);
+const V = require(process.env.VECTOR || '../public/game/state_vector.js');
+const casos = [];
+const caso = (n, f) => { let r; try { r = f(); } catch (e) { r = String(e); } casos.push({ caso: n, ok: r === true, detalle: r === true ? '' : JSON.stringify(r) }); };
+const lleno = {
+  instantanea: { ciclo: 1234, recursos: { cobre: 22, luz: 0, biomasa: 1, oxigeno: 244 } },
+  cangrejo: { dx: -94.4, dy: -355.2, army: 2, swim: 1, reach: null },
+  panel: { id: 'pliego-estado', sello: 'LIVE', edadN: 3 }, tutorial: { paso: 'summon', competencia: 3 },
+  edificios: [{ id: 'boya-estado', fase: 'vivo', vida: 936 }, { id: 'vista-1', fase: 'NO_DATA', vida: null }],
+  lugares: [{ nombre: 'Reef Patrol', g: 1, p: 0 }], nodos: [{ id: 'nodo.0.hexelion', med: 2, tot: 2 }], lapidas: 1,
+  radio: [{ quien: 'Map', sello: 'LIVE', ciclo: 1230 }, { quien: 'Radio', sello: 'NO_DATA', ciclo: 0 }, { quien: 'Your crab', sello: 'LIVE', ciclo: 1233 }, { quien: 'Battle', sello: 'LIVE', ciclo: 1234 }]
+};
+caso('cabe en el TOPE (1 KB) con un estado completo', () => { const s = JSON.stringify(V.arma(lleno)); return s.length < V.TOPE || s.length; });
+caso('lee lo que hay: ciclo, recursos, cangrejo (desplazamiento redondeado), panel, tutorial, edificios, lugares, nodos', () => {
+  const v = V.arma(lleno);
+  return v.c === 1234 && v.r.join() === '22,0,1,244' && v.k.join() === '-94,-355,2,1,' && v.p.join() === 'pliego-estado,LIVE,3' && v.t.join() === 'summon,3'
+    && v.e.length === 2 && v.l[0].join() === 'Reef Patrol,1,0' && v.n[0].join() === 'nodo.0.hexelion,2/2' && v.z === 1 && v.q.length === 3 || v;
+});
+caso('vacio: cada hueco va a nd CON SU CAUSA (nunca un cero inventado, nunca undefined)', () => {
+  const v = V.arma({}), j = JSON.stringify(v);
+  return v.c === null && v.r === null && v.k === null && v.z === null && ['c', 'r', 'k', 't', 'z', 'e', 'l'].every((k) => typeof v.nd[k] === 'string' && v.nd[k].length > 5) && !/undefined|NaN/.test(j) || v;
+});
+caso('el esquema explica cada clave del vector (lo que lee un LLM pequeno)', () => { const e = V.esquema(), v = V.arma(lleno); return Object.keys(v).every((k) => e[k]) || Object.keys(v).filter((k) => !e[k]); });
+caso('solo LEE: armar dos veces el mismo estado da el mismo vector (determinista, sin reloj)', () => JSON.stringify(V.arma(lleno)) === JSON.stringify(V.arma(lleno)));
+console.log(JSON.stringify(casos, null, 1));
+process.exitCode = casos.every((c) => c.ok) ? 0 : 1;

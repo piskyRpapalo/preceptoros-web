@@ -6,7 +6,8 @@
 
    Plug&play: no toca el shell. OBSERVA el cajon (#thegame-terminal) que ya existe: que panel esta a la vista y cuando
    cambio su contenido. Lo que no sabe, lo dice: un panel sin fuente declarada es «NO_DATA (source not declared)».
-   - Edad: ciclos desde el ultimo cambio del contenido del panel (MutationObserver), contados en el ciclo del juego.
+   - Edad: ciclos desde el ultimo cambio VISTO del contenido (MutationObserver) o, si no cambio, desde que el marco lo vio
+     por primera vez (declarado en el rotulo: «since last change seen»). Contados en el ciclo del juego.
    - Sello: LIVE si cambio hace <= VIEJO ciclos; STALE si mas; NO_DATA si aun no hay ciclo medido.
    El color del sello sale de la TABLA_SEMANTICA de crab_render_hd.js (unica fuente). Sin red, sin azar. */
 (function (raiz) {
@@ -27,7 +28,7 @@
   function cabecera(id, titulo, ultimo, ahora) {
     var edad = ultimo === null || ultimo === undefined || ahora === null ? null : Math.max(0, ahora - ultimo);
     return { id: id, titulo: titulo || 'NO_DATA (untitled panel)', sello: sello(edad),
-             fuente: FUENTES[id] || 'NO_DATA (source not declared)', edad: edad === null ? 'NO_DATA (no cycle measured yet)' : 'Δ ' + edad + ' cycles' };
+             fuente: FUENTES[id] || 'NO_DATA (source not declared)', edad: edad === null ? 'NO_DATA (no cycle measured yet)' : 'Δ ' + edad + ' cycles since last change seen' };
   }
   function abierto(caja) {
     var a = null;
@@ -68,6 +69,7 @@
     var a = abierto(caja);
     if (!a) { visto = null; return; }
     if (!a.open) { a.open = true; }   // el marco manda: el panel abierto se ve entero
+    if (cambio[a.id] === undefined && ciclo() !== null) { cambio[a.id] = ciclo(); }   // primera vez visto: la edad cuenta desde aqui
     var s = a.querySelector('summary'), c = cabecera(a.id, s ? s.textContent.trim() : null, cambio[a.id] === undefined ? null : cambio[a.id], ciclo());
     visto = c;
     /* Solo se escribe lo que CAMBIA: el cabecero vive dentro del cajon que observa (sin esto, un bucle de mutaciones). */

@@ -6,7 +6,7 @@ const casos = [];
 const caso = (n, f) => { let r; try { r = f(); } catch (e) { r = String(e); } casos.push({ caso: n, ok: r === true, detalle: r === true ? '' : JSON.stringify(r) }); };
 caso('LIVE si el panel cambio hace <= 120 ciclos; STALE si mas (lo viejo no se pinta como fresco)', () => {
   const a = V.cabecera('pliego-estado', 'Your crab', 100, 220), b = V.cabecera('pliego-estado', 'Your crab', 100, 221);
-  return a.sello === 'LIVE' && a.edad === 'Δ 120 cycles' && b.sello === 'STALE' || { a, b };
+  return a.sello === 'LIVE' && a.edad === 'Δ 120 cycles since last change seen' && b.sello === 'STALE' || { a, b };
 });
 caso('sin ciclo medido: NO_DATA con causa, en sello y edad', () => { const c = V.cabecera('pliego-estado', 'x', null, null); return c.sello === 'NO_DATA' && /NO_DATA \(/.test(c.edad) || c; });
 caso('panel sin fuente declarada o sin titulo: NO_DATA con causa (jamas undefined)', () => {

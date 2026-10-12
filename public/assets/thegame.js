@@ -12,13 +12,13 @@
   var GUIONES = [['atlas-arte.js'], ['atlas-coord.js'], ['atlas-carta.js'], ['atlas-ondas.js'], ['atlas-obra.js'], ['atlas-gesto.js'], ['atlas-mapa.js'],
     ['atlas-dialogo.js', '/assets/'], ['atlas-motor.js'], ['atlas-piso.js', '/'],
     ['atlas-piloto.js'], ['atlas-partida.js'], ['atlas-piloto-capa.js'],
-    ['/game/juez.js'], ['atlas-guardado.js'], ['radio_message_log.js'], ['terminal_menu_shell.js'], ['terminal_window_frame.js']];
+    ['/game/juez.js'], ['atlas-guardado.js'], ['radio_message_log.js'], ['terminal_menu_shell.js'], ['terminal_window_frame.js'], ['worm_transition.js']];
   /* EL ARMY, A DEMANDA (v1.5): al abrir su pestana o al importar una partida firmada. */
   var ARMY = [['/game/valores.js'], ['/game/gacha.js'], ['/game/db.js'], ['/game/core.js'], ['/game/ui-ficha.js'], ['/game/ui.js']];
   /* LA ARENA, A DEMANDA (2026-09-28): el mar, los lugares NPC, el combate en vivo y los duelos por
      paquetes firmados. Detras del Army, cuyas tropas y verificador usa. */
   var ARENA = [['/game/sobres.js'], ['/game/rating.js'], ['/game/arena.js'], ['/game/duelo.js'],
-    ['/game/mar-anclas.js'], ['/game/crab_render_hd.js'], ['/game/crab_free_move.js'], ['/game/genesis_tutorial.js'], ['/game/latency_crystal.js'], ['/game/reef_corals.js'], ['/game/reef_buildings_layer.js'], ['/game/mar-cangrejos.js'], ['/game/map_pointer_input.js'], ['/game/piece_inspector.js'], ['/game/place_telemetry.js'], ['/game/mar.js'], ['/game/nodos-pesos.js'], ['/game/nodos.js'], ['/game/cuenta.js'],
+    ['/game/mar-anclas.js'], ['/game/crab_render_hd.js'], ['/game/crab_free_move.js'], ['/game/genesis_tutorial.js'], ['/game/latency_crystal.js'], ['/game/reef_corals.js'], ['/game/reef_buildings_layer.js'], ['/game/mar-cangrejos.js'], ['/game/map_pointer_input.js'], ['/game/piece_inspector.js'], ['/game/state_vector.js'], ['/game/place_telemetry.js'], ['/game/mar.js'], ['/game/nodos-pesos.js'], ['/game/nodos.js'], ['/game/cuenta.js'],
     ['/game/ui-nodos.js'], ['/game/ui-rack.js'], ['/game/escuadron.js'], ['/game/battle_choreography.js'], ['/game/battle_replay.js'], ['/game/ui-arena-comun.js'], ['/game/ui-arena.js'], ['/game/ui-duelo.js']];
   /* LAS LENGUAS DEL JUEGO (2026-09-28: «hoy, solo inglés; un mismo enlace»): la UNICA lista de las
      COMPLETAS. La portada abre la suya si esta aqui; si no, la primera. Anadir una = traducir su
