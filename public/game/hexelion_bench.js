@@ -6,6 +6,7 @@
   var BENCH = {
  "fuente": {
   "archivo": "bench_20261011_resultados.json",
+    "enlace": "https://github.com/piskyRpapalo/lab/tree/main/benchmarks/bench_20261011",
   "sha256": "26e61fb7f56d9da3d6820ea71b39cf43c1b7454ee75d79f08e314004a74c707b",
   "fecha": "2026-10-11",
   "maquina": "soberano · Ryzen 7 255 + Radeon 780M",

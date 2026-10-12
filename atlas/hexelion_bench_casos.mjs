@@ -21,6 +21,6 @@ caso('la cifra que se pinta es la del fichero (embeddinggemma-2 pp512 ngl99 = 64
   const m = HB.BENCH.modelos.find((x) => x.estado === 'MEDIDO');
   return m.modelo === 'embeddinggemma-2 Q8_0' && m.pp512_tok_s === 6459.63 || m;
 });
-caso('el payload no pide nada a la red: sin fetch, sin XMLHttpRequest', () => !/fetch\(|XMLHttpRequest|https?:\/\//.test(readFileSync(new URL('../public/game/hexelion_bench.js', import.meta.url), 'utf8').replace(/\/\*[\s\S]*?\*\//, '')));
+caso('el payload no pide nada a la red (el enlace es texto, no una peticion): sin fetch, sin XHR, sin WebSocket', () => !/fetch\(|XMLHttpRequest|new WebSocket|sendBeacon|navigator\.sendBeacon/.test(readFileSync(new URL('../public/game/hexelion_bench.js', import.meta.url), 'utf8').replace(/\/\*[\s\S]*?\*\//, '')));
 console.log(JSON.stringify(casos, null, 1));
 process.exitCode = casos.every((c) => c.ok) ? 0 : 1;
