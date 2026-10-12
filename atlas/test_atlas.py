@@ -623,6 +623,18 @@ process.stdout.write(JSON.stringify(ok));
             with self.subTest(capa=f):
                 self.assertIn("o.pon || function (x, y, d) { d(); }", (PUBLICO / "game" / f).read_text(encoding="utf-8"))
 
+    def test_pr1_la_ventana_como_conversacion(self):
+        """PR-1 (FIRMO 2026-10-12): el cajon es UNA ventana: cabecero con titulo, sello, fuente y edad en ciclos; cierre
+        de 46 px; rotulos del menu COMPLETOS (medido: 4 se cortaban). Plug&play: observa el cajon, no toca el shell."""
+        r = subprocess.run(["node", str(RAIZ / "ventana_casos.mjs")], capture_output=True, text=True, timeout=60)
+        self.assertEqual(r.returncode, 0, r.stdout[-1200:] + r.stderr[-400:])
+        css = (ASSETS / "terminal_menu_shell.css").read_text(encoding="utf-8")
+        self.assertNotIn("text-overflow:ellipsis;white-space:nowrap}", css.split(".thegame-menu-rotulo{")[1].split("\n")[0], "los rotulos vuelven a cortarse")
+        self.assertIn(".terminal-enmarcado{", css)
+        f = (ASSETS / "terminal_window_frame.js").read_text(encoding="utf-8")
+        self.assertIn("if (cab.dataset.c === clave) { return; }", f, "sin esto, el cabecero se observa a si mismo en bucle")
+        self.assertIn("['terminal_window_frame.js']", (ASSETS / "thegame.js").read_text(encoding="utf-8"))
+
     def test_r1_cangrejo_toon(self):
         """REALISMO ANIME HONESTO, R1 (FIRMO 2026-10-12): el cangrejo en cel shading desde SU onda. Bandas del mismo hue
         (sabotaje estrella: un hue inventado -> rojo), sellos de una sola tabla, morf armonico de 2 s, parpadeo del ciclo;

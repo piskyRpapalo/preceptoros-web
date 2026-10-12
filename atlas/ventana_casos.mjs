@@ -1,0 +1,18 @@
+// PR-1 (FIRMO 2026-10-12): la ventana como UNA entidad; el sello y la edad salen de lo MEDIDO (ciclos), nunca del reloj.
+import { createRequire } from 'node:module';
+const require = createRequire(import.meta.url);
+const V = require(process.env.VENTANA || '../public/assets/terminal_window_frame.js');
+const casos = [];
+const caso = (n, f) => { let r; try { r = f(); } catch (e) { r = String(e); } casos.push({ caso: n, ok: r === true, detalle: r === true ? '' : JSON.stringify(r) }); };
+caso('LIVE si el panel cambio hace <= 120 ciclos; STALE si mas (lo viejo no se pinta como fresco)', () => {
+  const a = V.cabecera('pliego-estado', 'Your crab', 100, 220), b = V.cabecera('pliego-estado', 'Your crab', 100, 221);
+  return a.sello === 'LIVE' && a.edad === 'Δ 120 cycles' && b.sello === 'STALE' || { a, b };
+});
+caso('sin ciclo medido: NO_DATA con causa, en sello y edad', () => { const c = V.cabecera('pliego-estado', 'x', null, null); return c.sello === 'NO_DATA' && /NO_DATA \(/.test(c.edad) || c; });
+caso('panel sin fuente declarada o sin titulo: NO_DATA con causa (jamas undefined)', () => {
+  const c = V.cabecera('panel-raro', '', 5, 6), j = JSON.stringify(c);
+  return /NO_DATA \(source not declared\)/.test(c.fuente) && /NO_DATA \(untitled/.test(c.titulo) && !/undefined|NaN/.test(j) || c;
+});
+caso('cada panel conocido del cajon declara su fuente', () => ['pliego-estado', 'pliego-lugares', 'pliego-entrada', 'terminal-cangrejo', 'radio-estado', 'pliego-lapidas', 'pliego-skills', 'pliego-ficha', 'pliego-tutorial'].every((k) => V.FUENTES[k]));
+console.log(JSON.stringify(casos, null, 1));
+process.exitCode = casos.every((c) => c.ok) ? 0 : 1;

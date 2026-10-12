@@ -183,7 +183,8 @@ const rutas = await shell.keys();
 // 115 con `genesis_tutorial.js` (E: el tutorial es el contrato de genesis).
 // 116 con `reef_corals.js` (A: los corales del rack).
 // 117 con `crab_render_hd.js` (R1: el cangrejo toon).
-ok('precachea las portadas, su superficie y el juego', rutas.length === 117, rutas.length+' rutas');
+// 118 con `terminal_window_frame.js` (PR-1: la ventana como una conversacion).
+ok('precachea las portadas, su superficie y el juego', rutas.length === 118, rutas.length+' rutas');
 ok('el shell trae el juego (D7): la puerta, el cangrejo y la arena',
    ['/assets/thegame.js', '/game/gdpr-art25-ephemeral-crab.js', '/game/ui-arena.js', '/assets/atlas-motor.js'].every(r => rutas.includes(r)));
 ok('el shell trae la portada de cada lengua', ['/es/', '/fr/', '/ar/'].every(r => rutas.includes(r)));
