@@ -10,11 +10,11 @@ function caso(nombre, f) {
 const base = { esquema: 'preceptoros.edificio/1', id: 'boya-1', tipo: 'boya', col: 3, fila: 2, huella: 1, nace_tic: 100, madura_tics: 10, desgaste_por_tic: 5, carga: 400, escudo: 200 };
 caso('nace en ciclos: antes de nacer es NO_DATA con causa; luego «naciendo» y despues «vivo»', () => {
   const a = L.estado(base, 50), b = L.estado(base, 105), c = L.estado(base, 115);
-  return a.fase === 'NO_DATA' && /nacido/.test(a.causa) && b.fase === 'naciendo' && b.edad === 5 && c.fase === 'vivo' || { a, b, c };
+  return a.fase === 'NO_DATA' && /not born yet/.test(a.causa) && b.fase === 'naciendo' && b.edad === 5 && c.fase === 'vivo' || { a, b, c };
 });
 caso('lo desatendido se DESPINTA hasta NO_DATA con causa (nunca «0»)', () => {
   const g = L.estado(base, 100 + 130), m = L.estado(base, 100 + 200);
-  return g.fase === 'gastado' && g.desgaste === 650 && m.fase === 'NO_DATA' && /desatendido 200 tics/.test(m.causa) && m.vida === 0 || { g, m };
+  return g.fase === 'gastado' && g.desgaste === 650 && m.fase === 'NO_DATA' && /unattended 200 cycles/.test(m.causa) && m.vida === 0 || { g, m };
 });
 caso('cuidar devuelve la vida (manifiesto nuevo, puro: el viejo no cambia)', () => {
   const c = L.cuida(base, 250), e = L.estado(c, 260);
@@ -22,7 +22,7 @@ caso('cuidar devuelve la vida (manifiesto nuevo, puro: el viejo no cambia)', () 
 });
 caso('lo caducado es NO_DATA «caducado», no un edificio vacio', () => {
   const e = L.estado(Object.assign({}, base, { caduca_tic: 120 }), 130);
-  return e.fase === 'NO_DATA' && /caducado en el tic 120/.test(e.causa) || e;
+  return e.fase === 'NO_DATA' && /expired at cycle 120/.test(e.causa) || e;
 });
 caso('replay: el mismo tic da el mismo vector en cualquier aparato', () => {
   return JSON.stringify(L.vector(base, 140)) === JSON.stringify(L.vector(JSON.parse(JSON.stringify(base)), 140));
@@ -38,7 +38,7 @@ caso('lo NO_DATA no tiene color de dato: gris translucido', () => {
 });
 caso('el manifiesto se valida: tipo, celda, huella y tiempos enteros; si no, NO_DATA con la causa', () => {
   const malos = [Object.assign({}, base, { tipo: 'casino' }), Object.assign({}, base, { huella: 9 }), Object.assign({}, base, { nace_tic: 1.5 }), Object.assign({}, base, { id: 'Con Espacios' })];
-  return malos.every((m) => L.estado(m, 200).fase === 'NO_DATA' && /manifiesto/.test(L.estado(m, 200).causa)) || malos.map((m) => L.estado(m, 200));
+  return malos.every((m) => L.estado(m, 200).fase === 'NO_DATA' && /manifest/.test(L.estado(m, 200).causa)) || malos.map((m) => L.estado(m, 200));
 });
 caso('los 9 tipos del canon, y solo esos', () => JSON.stringify(L.TIPOS) === JSON.stringify(['boya', 'observatorio', 'lapidas', 'cristal', 'botella', 'monumento', 'vivero', 'baliza', 'nombres']));
 // La capa: la boya se ancla a tu casa y su cuidado es la ultima noticia LIVE (o ya STALE) de la Radio.
@@ -73,6 +73,16 @@ caso('lo visto ENVEJECE por tramos: el radio no sube nunca y la huella de niebla
 caso('al NO_DATA la niebla vuelve (sin circulo) y lo gastado sigue despejado pero mas pequeno', () => {
   const v = A.manifiestoVista(0, 0, 0, 1), e1 = L.estado(v, 120), e2 = L.estado(v, 200);
   return e1.fase === 'gastado' && A.circulosDe([v], 120, L)[0].r < A.circulosDe([v], A.COSTE, L)[0].r && e2.fase === 'NO_DATA' && A.circulosDe([v], 200, L).length === 0 || { e1, e2 };
+});
+// EL ARRECIFE DE LAS LAPIDAS: lo desintegrado deja un recibo legible y determinista.
+caso('FNV-1a de 32 bits con sus vectores conocidos ("" y "a")', () => A.fnv('') === '811c9dc5' && A.fnv('a') === 'e40c292c' || [A.fnv(''), A.fnv('a')]);
+caso('el recibo dice que era, cuando nacio y murio, cuanto vivio, por que, y su huella (la misma en cualquier aparato)', () => {
+  const v = A.manifiestoVista(0, 0, 10, 3), ult = L.vector(v, 150), r = A.recibo(v, 177, 'unattended 167 cycles', ult), r2 = A.recibo(JSON.parse(JSON.stringify(v)), 177, 'unattended 167 cycles', JSON.parse(JSON.stringify(ult)));
+  return r.id === 'vista-3' && r.tipo === 'observatorio' && r.nace === 10 && r.muere === 177 && r.edad === 167 && /unattended/.test(r.causa) && /^[0-9a-f]{8}$/.test(r.huella) && JSON.stringify(r) === JSON.stringify(r2) || r;
+});
+caso('la huella CAMBIA si cambia el ultimo vector (no es decorativa)', () => {
+  const v = A.manifiestoVista(0, 0, 10, 3);
+  return A.recibo(v, 177, 'x', L.vector(v, 150)).huella !== A.recibo(v, 177, 'x', L.vector(v, 151)).huella;
 });
 console.log(JSON.stringify(casos, null, 1));
 process.exitCode = casos.every((c) => c.ok) ? 0 : 1;
