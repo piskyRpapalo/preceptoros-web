@@ -193,7 +193,8 @@
       }, function () { return { que: t('obs_nombre') + ' · ' + w.id, estado: e.fase + ' · Δ ' + e.edad + ' cycles', sonido: 'ADSR beep on phase change' }; });
       return true;
     });
-    if (raiz.AtlasCristal) { raiz.AtlasCristal.pinta(g, P, o, casa, tic); }  /* el cuarto: `latency_crystal.js` */
+    if (raiz.AtlasCristal) { raiz.AtlasCristal.pinta(g, P, o, casa, tic); }
+    if (raiz.AtlasCorales) { raiz.AtlasCorales.pinta(g, P, o); }  /* A: los corales del rack (reef_corals.js) */  /* el cuarto: `latency_crystal.js` */
     /* Las lapidas, como piedras sobre tu casa (una por recibo, hasta nueve a la vista). */
     if (casa && lapidas.length) { pon(casa.x - 160, casa.y - 160, function () {
       var lp = P(casa.x - 160, casa.y - 160), k = Math.min(9, lapidas.length);

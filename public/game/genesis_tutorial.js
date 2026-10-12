@@ -89,7 +89,15 @@
   function rotulaMeta() {
     if (!meta) { return; }
     var p = paso(), t = 'Goal · ' + meta.dataset.lema + (p ? ' · Now: ' + p.haz : '');
-    if (meta.textContent !== t) { meta.textContent = t; }
+    if (meta.dataset.t === t) { return; }
+    meta.dataset.t = t; meta.textContent = '';
+    /* Dos lineas: el objetivo (una linea) y la accion en curso. Medido en 360 px: en una sola tira ocupaba 4 lineas. */
+    var a = raiz.document.createElement('span'), b = raiz.document.createElement('span');
+    a.className = 'meta-objetivo'; a.textContent = 'Goal · ' + meta.dataset.lema; meta.appendChild(a);
+    if (p) { b.className = 'meta-ahora'; b.textContent = 'Now: ' + p.haz; meta.appendChild(b); }
+    /* El aviso del mapa (role=status) va DEBAJO, en el mismo bloque: medido, sueltos se pisaban. mar.js conserva su nodo. */
+    var av = raiz.document.querySelector('.mapa-aviso');
+    if (av) { meta.appendChild(av); }
   }
   function competencia() { return hechos.length; }
   /* Fading: 0-1 pasos demostrados, todo; 2-3, sin el porque; 4 o mas, solo la accion. */
