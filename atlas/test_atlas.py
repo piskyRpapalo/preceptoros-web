@@ -646,6 +646,9 @@ process.stdout.write(JSON.stringify(ok));
         css = (ASSETS / "terminal_menu_shell.css").read_text(encoding="utf-8")
         self.assertNotIn("text-overflow:ellipsis;white-space:nowrap}", css.split(".thegame-menu-rotulo{")[1].split("\n")[0], "los rotulos vuelven a cortarse")
         self.assertIn(".terminal-enmarcado{", css)
+        self.assertIn(".meta-objetivo{white-space:normal", css, "el objetivo no puede cortarse con puntos suspensivos a zoom")
+        self.assertIn("c.dataset.zoom = '1.00';", (PUBLICO / "game" / "map_zoom.js").read_text(encoding="utf-8"), "zoom del mapa: pellizco y rueda")
+        self.assertIn("if (ev.ctrlKey) { return; }", (PUBLICO / "game" / "map_zoom.js").read_text(encoding="utf-8"), "Ctrl+rueda es del navegador, no del mapa")
         f = (ASSETS / "terminal_window_frame.js").read_text(encoding="utf-8")
         self.assertIn("if (cab.dataset.c === clave) { return; }", f, "sin esto, el cabecero se observa a si mismo en bucle")
         self.assertIn("['terminal_window_frame.js']", (ASSETS / "thegame.js").read_text(encoding="utf-8"))
@@ -907,7 +910,7 @@ process.stdout.write(JSON.stringify(ok));
 # Ver atlas/POST_VERIFICACION_MGNO_LAB.md y atlas/POST_VERIFICACION_SISIL_CRIA.md.
 PUROS = ("canon.js", "sobres.js", "rating.js", "arena.js", "duelo.js", "mercado.js", "narragrafo.js", "cria.js", "genoma.js")
 # La Arena (2026-09-28, «el mapa multi-jugador en una pestana»): se carga al abrir su pestana, detras del Army.
-ARENA = ("sobres.js", "rating.js", "arena.js", "duelo.js", "mar-anclas.js", "crab_render_hd.js", "crab_free_move.js", "genesis_tutorial.js", "latency_crystal.js", "reef_corals.js", "reef_buildings_layer.js", "mar-cangrejos.js", "map_pointer_input.js", "map_nodes_layer.js", "piece_inspector.js", "state_vector.js", "place_telemetry.js", "mar.js", "nodos-pesos.js",
+ARENA = ("sobres.js", "rating.js", "arena.js", "duelo.js", "mar-anclas.js", "crab_render_hd.js", "crab_free_move.js", "genesis_tutorial.js", "latency_crystal.js", "reef_corals.js", "reef_buildings_layer.js", "mar-cangrejos.js", "map_pointer_input.js", "map_nodes_layer.js", "map_zoom.js", "piece_inspector.js", "state_vector.js", "place_telemetry.js", "mar.js", "nodos-pesos.js",
          "nodos.js", "cuenta.js", "ui-nodos.js", "ui-rack.js",
          "escuadron.js", "battle_choreography.js", "battle_replay.js", "ui-arena-comun.js", "ui-arena.js", "ui-duelo.js")
 # La CASA (2026-10-05): la primera pantalla, detras del Army. Lleva canon y escena, que la Arena reutiliza.

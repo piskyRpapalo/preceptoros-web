@@ -70,7 +70,7 @@ body.portada-juego .pc-boton{display:none}
 #thegame :is(.boton,.boton-sec){min-height:2.875rem;min-width:2.875rem}  /* C: 46 px, con margen sobre los 44 (medidos al filo: 43,9) */
 /* E: el objetivo macro, SIEMPRE a la vista (teaching_kernel: ancla_objetivo_macro). Una linea; el dedo pasa. */
 .tutorial-meta{position:absolute;z-index:1;left:calc(var(--menu) + .5rem);right:.5rem;top:calc(var(--thegame-tope) + .2rem);margin:0;padding:.2rem .5rem;font:.72rem/1.3 var(--mono);color:var(--text-main);background:color-mix(in srgb,var(--bg-primary) 70%,transparent);border-radius:var(--radius);pointer-events:none;display:grid;gap:.1rem}
-.meta-objetivo{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;opacity:.85}
+.meta-objetivo{white-space:normal;overflow-wrap:anywhere;opacity:.85}  /* zoom 13-oct: el objetivo REFLUYE, no se corta (medido: «Atlantis di…» a 3x) */
 .meta-ahora{color:var(--accent-copper-claro)}
 /* El aviso del mapa vive DENTRO del bloque del objetivo, como tercera fila (medido: sueltos se pisaban). */
 .tutorial-meta .mapa-aviso{position:static;margin:.15rem 0 0;text-align:start}

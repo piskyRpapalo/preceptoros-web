@@ -56,6 +56,7 @@
     });
     c.parentNode.insertBefore(mandos, c.nextSibling); c.parentNode.insertBefore(aviso, mandos.nextSibling);
     c.tabIndex = 0;
+    var zoom = window.AtlasMapZoom.crea(c);   /* zoom del mapa (pellizco y rueda): map_zoom.js */
 
     function despeja() {
       var luchados = {}, r = f.luchados ? f.luchados() : {};
@@ -113,7 +114,7 @@
       var w = Math.max(240, c.clientWidth), h = Math.max(260, c.clientHeight);
       if (c.width !== Math.round(w * dpr)) { c.width = Math.round(w * dpr); }
       if (c.height !== Math.round(h * dpr)) { c.height = Math.round(h * dpr); }
-      var g = c.getContext('2d'), W = c.width, H = c.height, q = quieto(), t = q ? 0 : ts, z = W / VE * (w < 600 ? 1.15 : 1);
+      var g = c.getContext('2d'), W = c.width, H = c.height, q = quieto(), t = q ? 0 : ts, z = W / VE * (w < 600 ? 1.15 : 1) * zoom.factor();
       col = col || f.colores();
       /* La clave llega despues (promesa): si aun no te has movido, la camara va a tu casa en cuanto se sabe. */
       if (!cam || (!movido && centro === N.HEX && f.pub())) { aCasa(!!cam); }
@@ -201,7 +202,7 @@
     }
 
     /* --- el dedo: `map_pointer_input.js` (salio de aqui al migrar a la LEY DEL SUELO, 2026-10-12) ------------------ */
-    window.AtlasMapaDedo.monta({ c: c, C: C, dpr: dpr, z: function () { return c.width / VE * (c.clientWidth < 600 ? 1.15 : 1); },
+    window.AtlasMapaDedo.monta({ c: c, C: C, dpr: dpr, z: function () { return c.width / VE * (c.clientWidth < 600 ? 1.15 : 1) * zoom.factor(); },
       cam: function () { return cam; }, circ: function () { return circ; }, quieto: quieto, choca: choca, marca: function () { movido = true; },
       lugares: f.lugares, sitio: sitio, elige: f.elige, flecha: flecha });
     raf = requestAnimationFrame(pinta);
