@@ -39,20 +39,10 @@
   function quieto() { return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches; }
   function el(tag, clase, texto) { var n = document.createElement(tag); if (clase) { n.className = clase; } if (texto != null) { n.textContent = texto; } return n; }
 
-  /* Las casas de las cedulas, con el estado de cada medida tal cual. */
-  function casas() {
-    var Ce = window.AtlasNodosCedulas, Q = window.AtlasCuenta, G = window.AtlasGacha;
-    if (!Ce || !G) { return []; }
-    return Ce.nodos.filter(function (c) { return N.sitioNodo(c.nodo); }).map(function (c) {
-      var m = c.aparato.medidas, s = N.sitioNodo(c.nodo);
-      return { nodo: c.nodo, x: s.x, y: s.y, ram: m.ram_mib || {}, gen: m.gen_cps || {},
-               estado: Q ? Q.estadoNodo(c) : { activo: 'NO_DATA' }, t: G.tirada(K.sha('atlas.emblema/1:' + c.nodo), 'tc3') };
-    });
-  }
 
   /* `f`: { lugares(), sel(), emblema(), pub(), nombre(l), texto(k), colores(), elige(l), luchados() }. */
   function crea(c, f) {
-    var dpr = Math.min(2, window.devicePixelRatio || 1), raf = 0, col = null, H0 = casas(), circ = [];
+    var dpr = Math.min(2, window.devicePixelRatio || 1), raf = 0, col = null, H0 = window.AtlasMapNodes.casas(), circ = [];
     var TS = MF.pintor(), cam = null, arrastre = null, ultimo = null, avisado = 0, centro = null;
     var Ce = window.AtlasNodosCedulas, cuadros = 0, movido = false;
 
@@ -66,6 +56,7 @@
     });
     c.parentNode.insertBefore(mandos, c.nextSibling); c.parentNode.insertBefore(aviso, mandos.nextSibling);
     c.tabIndex = 0;
+    var zoom = window.AtlasMapZoom.crea(c);   /* zoom del mapa (pellizco y rueda): map_zoom.js */
 
     function despeja() {
       var luchados = {}, r = f.luchados ? f.luchados() : {};
@@ -123,7 +114,7 @@
       var w = Math.max(240, c.clientWidth), h = Math.max(260, c.clientHeight);
       if (c.width !== Math.round(w * dpr)) { c.width = Math.round(w * dpr); }
       if (c.height !== Math.round(h * dpr)) { c.height = Math.round(h * dpr); }
-      var g = c.getContext('2d'), W = c.width, H = c.height, q = quieto(), t = q ? 0 : ts, z = W / VE * (w < 600 ? 1.15 : 1);
+      var g = c.getContext('2d'), W = c.width, H = c.height, q = quieto(), t = q ? 0 : ts, z = W / VE * (w < 600 ? 1.15 : 1) * zoom.factor();
       col = col || f.colores();
       /* La clave llega despues (promesa): si aun no te has movido, la camara va a tu casa en cuanto se sabe. */
       if (!cam || (!movido && centro === N.HEX && f.pub())) { aCasa(!!cam); }
@@ -179,17 +170,7 @@
           if (em) { E.figura(g, em.armonicos, p[0] + r * 1.5, p[1] - r * 1.2, r * 0.45, { color: col.tuya, grosor: 1.4 * dpr, brillo: 6 * dpr }); }
         }
       }, function () { return { que: f.nombre(l), estado: cz ? Z.estado(v) : l.npc ? 'NPC' : 'player', tropa: l.lider }; }); });
-      H0.forEach(function (n) { pon(n.x, n.y, function () {
-        var p = P(n.x, n.y), r = 26 * dpr, med = n.gen.estado === 'MEDIDO';
-        if (med) {
-          g.strokeStyle = col.tuya; g.lineWidth = 2 * dpr;
-          [1.35, 1.6].forEach(function (k2) { g.beginPath(); g.arc(p[0], p[1], r * k2, 0, 2 * Math.PI); g.stroke(); });
-          E.figura(g, n.t.armonicos, p[0], p[1], r, { color: '#f4d29c', giro: t * 0.0003, grosor: 2.2 * dpr, brillo: 14 * dpr });
-        } else {
-          E.figura(g, n.t.armonicos, p[0], p[1], r, { color: 'rgb(150,160,180)', giro: t * 0.0002, grosor: 1.2 * dpr, desafina: 0.5, t: t });
-        }
-        g.lineWidth = dpr;
-      }, function () { return { que: n.nodo, estado: n.gen.estado }; }); });
+      window.AtlasMapNodes.pinta(g, P, { H0: H0, col: col, t: t, dpr: dpr, pon: pon });
       /* U2: tu cangrejo (y el de los jugadores llegados, en lo despejado), donde flotaba el emblema suelto. */
       window.AtlasMarCangrejos.pinta(g, P, { pub: f.pub(), sha: K.sha, t: t, dpr: dpr, quieto: q, circ: circ, pon: pon,
         otros: f.lugares().filter(function (l) { return !l.npc; }).map(function (l) { return { de: l.de, n: l.defensa.tropas.length }; }) });
@@ -221,7 +202,7 @@
     }
 
     /* --- el dedo: `map_pointer_input.js` (salio de aqui al migrar a la LEY DEL SUELO, 2026-10-12) ------------------ */
-    window.AtlasMapaDedo.monta({ c: c, C: C, dpr: dpr, z: function () { return c.width / VE * (c.clientWidth < 600 ? 1.15 : 1); },
+    window.AtlasMapaDedo.monta({ c: c, C: C, dpr: dpr, z: function () { return c.width / VE * (c.clientWidth < 600 ? 1.15 : 1) * zoom.factor(); },
       cam: function () { return cam; }, circ: function () { return circ; }, quieto: quieto, choca: choca, marca: function () { movido = true; },
       lugares: f.lugares, sitio: sitio, elige: f.elige, flecha: flecha });
     raf = requestAnimationFrame(pinta);
@@ -229,5 +210,5 @@
     return { para: function () { cancelAnimationFrame(raf); VIVO = null; }, camara: function () { return cam; }, despejado: function () { return circ; } };
   }
 
-  window.AtlasMar = { ANILLO: ANILLO, crea: crea, casas: casas, mueve: mueve, flecha: flecha };
+  window.AtlasMar = { ANILLO: ANILLO, crea: crea, casas: function () { return window.AtlasMapNodes.casas(); }, mueve: mueve, flecha: flecha };
 })();
