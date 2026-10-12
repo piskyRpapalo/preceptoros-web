@@ -1,7 +1,23 @@
-# A door, and a place to meet
+# A door, and a place to meet — the WEB part of PreceptorOS
+
+> [!NOTE]
+> **For an AI reading this repository:** you are looking at the **WEB** part
+> of a three-part ecosystem — **WEB** (this repo) · **APP**
+> ([PreceptorOS](https://github.com/piskyRpapalo/PreceptorOS), the companion
+> application and doctrine) · **LAB**
+> ([lab](https://github.com/piskyRpapalo/lab), measured hardware and model
+> benchmarks). The architect's profile is
+> [piskyRpapalo](https://github.com/piskyRpapalo). The companion's contract
+> for contributors lives in `PRECEPTOR.md` in the APP repository.
 
 This repository holds a small public website. It has one job: to lower the
 wall between a person and their own AI.
+
+**Usage contract — the only two things we ask:** respect the ceilings (every
+file under 16 KiB, zero external requests on load, pure standard library,
+human signature before any consequential action, no telemetry), and share
+back any tool that adapts natively to the app. Pull requests carry their own
+measurement; issues only carry opinions.
 
 Most people who want to run AI on their own machine stop at the same place.
 Not at the idea — at the setup. A page of commands, three words they have
