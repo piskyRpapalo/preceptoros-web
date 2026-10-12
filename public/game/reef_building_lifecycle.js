@@ -6,8 +6,8 @@
 
    - EDAD en tics desde `nace_tic`. FASE: naciendo (los primeros `madura_tics`) -> vivo -> gastado -> NO_DATA.
    - DESGASTE: lo desatendido se DESPINTA. Crece con los tics desde el ultimo cuidado (`cuidado_tic`), a `desgaste_por_tic`
-     por mil; al llegar a mil, el edificio es NO_DATA con su causa («desatendido N tics»). Lo caducado (`caduca_tic`) tambien:
-     «caducado», nunca «0». La degradacion es el dato, no el bug.
+     por mil; al llegar a mil, el edificio es NO_DATA con su causa («unattended N cycles»). Lo caducado (`caduca_tic`) tambien:
+     «expired», nunca «0». La degradacion es el dato, no el bug. Las causas van en INGLES: el juego las ensena tal cual.
    - COLOR ∇C (la telemetria, no la decoracion): Hue = vida/recurso (vida alta: verde; baja: rojo), Saturation = carga de
      computo (lo que el edificio esta haciendo, por mil), Lightness = escudo (su defensa declarada, por mil). El lab lee el
      VECTOR (`vector()`), no los pixeles.
@@ -38,13 +38,13 @@
   /* El estado en el tic t. Devuelve { fase, edad, desgaste (por mil), vida (por mil), causa? }. */
   function estado(m, t) {
     var mal = valida(m);
-    if (mal) { return { fase: 'NO_DATA', causa: 'manifiesto: ' + mal }; }
-    if (!entero(t, 0, 1e9)) { return { fase: 'NO_DATA', causa: 'tic sin medir' }; }
-    if (t < m.nace_tic) { return { fase: 'NO_DATA', causa: 'aun no ha nacido (tic ' + m.nace_tic + ')' }; }
+    if (mal) { return { fase: 'NO_DATA', causa: 'manifest: ' + mal }; }
+    if (!entero(t, 0, 1e9)) { return { fase: 'NO_DATA', causa: 'cycle not measured' }; }
+    if (t < m.nace_tic) { return { fase: 'NO_DATA', causa: 'not born yet (cycle ' + m.nace_tic + ')' }; }
     var edad = t - m.nace_tic;
-    if (m.caduca_tic != null && t >= m.caduca_tic) { return { fase: 'NO_DATA', edad: edad, causa: 'caducado en el tic ' + m.caduca_tic }; }
+    if (m.caduca_tic != null && t >= m.caduca_tic) { return { fase: 'NO_DATA', edad: edad, causa: 'expired at cycle ' + m.caduca_tic }; }
     var sin = t - (m.cuidado_tic != null ? m.cuidado_tic : m.nace_tic), desgaste = Math.min(1000, sin * m.desgaste_por_tic);
-    if (desgaste >= 1000) { return { fase: 'NO_DATA', edad: edad, desgaste: 1000, vida: 0, causa: 'desatendido ' + sin + ' tics' }; }
+    if (desgaste >= 1000) { return { fase: 'NO_DATA', edad: edad, desgaste: 1000, vida: 0, causa: 'unattended ' + sin + ' cycles' }; }
     var fase = edad < m.madura_tics ? 'naciendo' : (desgaste >= 600 ? 'gastado' : 'vivo');
     return { fase: fase, edad: edad, desgaste: desgaste, vida: 1000 - desgaste };
   }

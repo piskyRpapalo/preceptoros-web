@@ -620,10 +620,15 @@ process.stdout.write(JSON.stringify(ok));
         m = (PUBLICO / "game" / "mar.js").read_text(encoding="utf-8")
         self.assertIn("circ = circ.concat(window.AtlasArrecife.circulos());", m, "lo que mira el observatorio no despeja")
         ui = json.loads((PUBLICO / "atlas-arena-en.json").read_text(encoding="utf-8"))["ui"]
-        for k in ("boya_estado", "boya_fases", "obs_nombre", "obs_mirar", "obs_fases"):
+        for k in ("boya_estado", "boya_fases", "obs_nombre", "obs_mirar", "obs_fases", "lap_nombre", "lap_vacio", "lap_recibo"):
             with self.subTest(texto=k):
                 self.assertTrue(ui.get(k, "").strip())
         self.assertEqual(len(ui["obs_fases"].split("|")), 4, "las cuatro fases de lo visto")
+        # Las LAPIDAS: el recibo nombra lo que cayo, cuando, por que y su huella; su panel tiene hogar (icono) en el menu.
+        for campo in ("{id}", "{nace}", "{muere}", "{causa}", "{huella}"):
+            with self.subTest(recibo=campo):
+                self.assertIn(campo, ui["lap_recibo"])
+        self.assertIn("'pliego-lapidas': '", (ASSETS / "terminal_menu_shell.js").read_text(encoding="utf-8"))
 
     def test_la_terminal_chatbot_y_el_chat_de_la_radio(self):
         """LA TERMINAL (FIRMO 2026-10-12): menu a la izquierda (64 px iconos / 220 px expandido), el chat de la Radio abajo,

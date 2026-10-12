@@ -15,12 +15,48 @@
    (no en continuo: cada tramo vacia la cache de niebla una vez, no cada cuadro), STALE al gastarse, y al llegar
    a NO_DATA la niebla vuelve. Lo visto vive en esta pestana: se olvida al recargar (no se persiste sin firma).
 
-   El lab lee `vectores()`, no los pixeles. Sin red, sin azar, sin reloj de pared. */
+   3 · EL ARRECIFE DE LAS LAPIDAS («lo desintegrado se recuerda», BIBLIA_THEGAME:57,60): todo edificio o mirada que cae
+   a NO_DATA deja un RECIBO LEGIBLE: que era, cuando nacio y murio (en ciclos), por que, y la huella FNV-1a de su ultimo
+   vector (una suma de comprobacion determinista, NO una firma). Se leen en su panel del cajon (el menu lo descubre
+   solo) y se ven como piedras sobre tu casa. Como lo visto, viven en la pestana: persistirlas espera firma.
+
+   El lab lee `vectores()` y `lapidas()`, no los pixeles. Sin red, sin azar, sin reloj de pared. */
 (function (raiz) {
   'use strict';
   var ESQ = 'preceptoros.edificio/1', DESGASTE = 8, PITO = { vivo: 880, naciendo: 880, gastado: 660, NO_DATA: 440 };
   var COSTE = 8, DESGASTE_VISTA = 6, MAX_VISTAS = 3;
   var ultima = null, vistos = [], vistas = [], centro = null, boton = null, rotuloBoton = '', nVistas = 0;
+  var MAX_LAPIDAS = 20, lapidas = [], panel = null, pintadas = -1, ultVec = {};
+
+  /* FNV-1a de 32 bits sobre el texto: la misma entrada, la misma huella, en cualquier aparato. */
+  function fnv(s) { var h = 0x811c9dc5; for (var i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; } return ('0000000' + h.toString(16)).slice(-8); }
+  /* El recibo de lo que cayo: puro (manifiesto, tic de la caida, causa, ultimo vector vivo). */
+  function recibo(m, tic, causa, ultimo) {
+    return { id: m.id, tipo: m.tipo, nace: m.nace_tic, muere: tic, edad: tic - m.nace_tic, causa: causa || 'NO_DATA', huella: fnv(JSON.stringify(ultimo || null)) };
+  }
+  function entierra(r, t) {
+    lapidas.push(r); if (lapidas.length > MAX_LAPIDAS) { lapidas.shift(); }
+    di(t, 'lap_nombre', 'lapidas', 'NO_DATA · ' + r.id + ' · ↻' + r.muere + ' · ' + r.huella, 'NO_DATA');
+  }
+  /* El panel del cajon: lo crea una vez; el menu (terminal_menu_shell.js) lo descubre y le da su entrada. */
+  function lee(t) {
+    var D = raiz.document, caja = D && D.getElementById('thegame-terminal');
+    if (!caja) { return; }
+    if (!panel || !panel.isConnected) {
+      panel = D.createElement('details'); panel.className = 'thegame-pliego'; panel.id = 'pliego-lapidas'; panel.open = true;
+      var s = D.createElement('summary'); s.textContent = t('lap_nombre'); panel.appendChild(s);
+      panel.appendChild(D.createElement('ol')); caja.appendChild(panel); pintadas = -1;
+    }
+    if (pintadas === lapidas.length) { return; }
+    var ol = panel.querySelector('ol'); ol.textContent = ''; pintadas = lapidas.length;
+    if (!lapidas.length) { var v = D.createElement('li'); v.textContent = t('lap_vacio'); ol.appendChild(v); return; }
+    lapidas.slice().reverse().forEach(function (r) {
+      var li = D.createElement('li'); li.className = 'lapida';
+      li.textContent = (t('lap_recibo') || '').replace(/\{(\w+)\}/g, function (x, k) { return k in r ? r[k] : x; });
+      li.dataset.id = r.id; li.dataset.tipo = r.tipo; li.dataset.nace = r.nace; li.dataset.muere = r.muere; li.dataset.huella = r.huella;
+      ol.appendChild(li);
+    });
+  }
 
   /* El manifiesto de la boya: anclado a tu casa (entero, determinista). Sin casa medida, no hay boya. Boya en (+100, -100) y
      observatorio en (-100, +100): en el rombo caen a la MISMA altura que la casa, a cada lado, lejos de las anclas
@@ -100,7 +136,7 @@
     var t = o.texto || function (k) { return k; };
     if (o.cam) { centro = { x: o.cam.x, y: o.cam.y }; }
     if (!L || !N || tic === null) { vistos = []; return; }
-    mandos(t, L, tic);
+    mandos(t, L, tic); lee(t);
     var casa = N.sitioCasa(o.pub, o.sha), m = manifiestoBoya(casa), dpr = o.dpr || 1;
     vistos = [];
     if (m) {
@@ -108,7 +144,8 @@
       if (cu !== null) { m.cuidado_tic = Math.max(cu, m.nace_tic); }
       var v = L.vector(m, tic), c = L.color(m, tic);
       vistos.push(v);
-      if (ultima !== null && ultima !== v.fase) { avisa(v.fase, v, t); }
+      if (ultima !== null && ultima !== v.fase) { avisa(v.fase, v, t); if (v.fase === 'NO_DATA') { entierra(recibo(m, tic, v.causa, ultVec[m.id]), t); } }
+      if (v.fase !== 'NO_DATA') { ultVec[m.id] = v; }
       ultima = v.fase;
       var p = P(m.col, m.fila), y = p[1] + (o.quieto ? 0 : Math.sin((o.t || 0) * 0.002) * 2 * dpr);
       var r = (5 + (v.vida === null ? 3 : v.vida * 4 / 1000)) * dpr;
@@ -131,7 +168,8 @@
         di(t, 'obs_nombre', 'observatorio', e.fase === 'NO_DATA' ? 'NO_DATA · ' + (F[3] || e.causa) : (F[i] || e.fase) + ' · Δ ' + e.edad + ' ↻', e.fase === 'gastado' ? 'STALE' : (e.fase === 'NO_DATA' ? 'NO_DATA' : 'LIVE'));
         w.fase0 = e.fase;
       }
-      if (e.fase === 'NO_DATA') { return false; }
+      if (e.fase === 'NO_DATA') { entierra(recibo(w, tic, e.causa, ultVec[w.id]), t); delete ultVec[w.id]; return false; }
+      ultVec[w.id] = vw;
       g.strokeStyle = e.fase === 'naciendo' ? 'rgba(255,181,71,.8)' : 'rgba(155,227,255,.55)';
       if (oc && e.fase === 'naciendo') { g.setLineDash([4 * dpr, 4 * dpr]); g.beginPath(); g.moveTo(oc[0], oc[1]); g.lineTo(q[0], q[1]); g.stroke(); g.setLineDash([]); }
       if (e.fase === 'gastado') { g.setLineDash([2 * dpr, 3 * dpr]); }
@@ -139,6 +177,13 @@
       g.fillStyle = 'rgba(155,227,255,.75)'; g.fillText('Δ ' + e.edad, q[0], q[1] - 9 * dpr);
       return true;
     });
+    /* Las lapidas, como piedras sobre tu casa (una por recibo, hasta nueve a la vista). */
+    if (casa && lapidas.length) {
+      var lp = P(casa.x - 160, casa.y - 160), k = Math.min(9, lapidas.length);
+      g.fillStyle = 'rgba(150,160,180,.7)';
+      for (var s = 0; s < k; s++) { g.fillRect(lp[0] + (s - (k - 1) / 2) * 7 * dpr - 2.5 * dpr, lp[1] - (s % 2) * 3 * dpr - 5 * dpr, 5 * dpr, 7 * dpr); }
+      g.fillStyle = 'rgba(155,227,255,.75)'; g.fillText(t('lap_nombre') + ' · ' + lapidas.length, lp[0], lp[1] + 14 * dpr);
+    }
     if (oc) {
       var ult = vistas.length ? L.color(vistas[vistas.length - 1], tic) : null, rr = 9 * dpr;
       g.beginPath(); g.arc(oc[0], oc[1], rr, Math.PI, 2 * Math.PI); g.closePath();
@@ -148,7 +193,8 @@
     }
   }
   function vectores() { return vistos.slice(); }
+  function registroLapidas() { return lapidas.slice(); }
 
-  raiz.AtlasArrecife = { pinta: pinta, vectores: vectores, circulos: circulos, mira: mira, manifiestoBoya: manifiestoBoya, cuidadoDe: cuidadoDe,
+  raiz.AtlasArrecife = { pinta: pinta, vectores: vectores, lapidas: registroLapidas, recibo: recibo, fnv: fnv, circulos: circulos, mira: mira, manifiestoBoya: manifiestoBoya, cuidadoDe: cuidadoDe,
                          manifiestoVista: manifiestoVista, radioDe: radioDe, circulosDe: circulosDe, DESGASTE: DESGASTE, COSTE: COSTE };
 })(this);
