@@ -9,9 +9,8 @@
    `fallo`, el terminal lo ensena tal cual: una accion ilegal la rechaza el motor, no un texto. El enum
    es el del piloto (`atlas-piloto.js`): una lista, no dos.
 
-   TRANSPARENCIA (AI Act art. 50, por eso el nombre): cada linea dice que se pidio y que respondio la
-   maquina, en JSON, el dialecto pequeno y tipado que leen igual una persona y una IA (J12). Lo que se
-   puede tocar (recursos, profundidad, grieta) sale de la instantanea, no de una copia.
+   TRANSPARENCIA (AI Act art. 50, por eso el nombre): cada linea dice en texto que se pidio y que respondio
+   la maquina. Lo que se puede tocar (recursos, profundidad, grieta) sale de la instantanea, no de una copia.
 
    LO DE LA PARTIDA VA PLEGADO AQUI (R2, plan «el refresco»: la pestana Help desaparece). `monta` recibe la
    caja de la partida (guardar/exportar, la ayuda, el pie) y la mete dentro; el contador de farmeo y opinar
@@ -34,18 +33,18 @@
   }
   /* Una linea del terminal: lo pedido y lo que contesto el motor (o NO_DATA si no hay partida). */
   function linea(a, ev) {
-    var pedido = { accion: a.accion };
-    if (a.banda) { pedido.banda = a.banda; }
-    if (a.dir) { pedido.dir = a.dir; }
-    var resp = ev === null || ev === undefined ? { estado: 'NO_DATA', causa: 'no game running in this tab' }
-      : (ev.tipo === 'mover' ? { resultado: ev.resultado, tipo: 'mover', dir: ev.dir }
-        : ev.tipo ? { resultado: ev.resultado, tipo: ev.tipo, mision: ev.mision, profundidad: ev.profundidad } : { resultado: 'ok', nota: 'waited' });
-    return '> ' + JSON.stringify(pedido) + '\n  ' + JSON.stringify(resp);
+    var pedido = a.accion + (a.banda ? ' · ' + a.banda : '') + (a.dir ? ' · ' + a.dir : '');
+    if (ev === null || ev === undefined) { return 'Action: ' + pedido + '\nResult: NO_DATA · no game running in this tab'; }
+    var resultado = ev.resultado || 'ok', detalle = ev.mision || ev.profundidad || ev.dir || 'engine replied';
+    return 'Action: ' + pedido + '\nResult: ' + resultado + (ev.tipo ? ' · ' + ev.tipo : '') + ' · ' + detalle;
   }
-  /* Lo tocable ahora, de la instantanea: recursos, profundidad, grieta. */
+  /* Lo tocable ahora, en texto humano desde la misma instantanea. */
   function variables(i) {
-    if (!i) { return '{"estado":"NO_DATA","causa":"no snapshot yet"}'; }
-    return JSON.stringify({ recursos: i.recursos, profundidad: i.profundidad, grieta: i.grieta, integridad: i.integridad, ciclo: i.ciclo });
+    if (!i) { return 'NO_DATA · no snapshot yet'; }
+    var r = i.recursos || {}, d = function (v) { return v === undefined || v === null ? 'NO_DATA' : v; };
+    return 'Cycle: ' + d(i.ciclo) + '\nCore integrity: ' + d(i.integridad) + '\nDepth: ' + d(i.profundidad) +
+      '\nRift: ' + (i.grieta ? (i.grieta.abierta ? 'open' : 'sealed · ' + d(i.grieta.cierre) + ' cycles') : 'NO_DATA') +
+      '\nFiltered sunlight: ' + d(r.luz) + '\nBiomass: ' + d(r.biomasa) + '\nFlow: ' + d(r.flujo) + '\nCopper: ' + d(r.cobre);
   }
   function ejecuta(a) {
     var J = raiz.AtlasJuego;

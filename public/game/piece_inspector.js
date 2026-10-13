@@ -48,6 +48,7 @@
       panel = D.createElement('details'); panel.className = 'thegame-pliego'; panel.id = 'pliego-ficha'; panel.open = true;
       var s = D.createElement('summary'); s.textContent = T('ins_nombre') || 'Inspector'; panel.appendChild(s);
       panel.appendChild(D.createElement('dl')); caja.appendChild(panel);
+      if (raiz.AtlasGuardado && raiz.AtlasGuardado.montaInspector) { raiz.AtlasGuardado.montaInspector(panel); }
     }
     var dl = panel.querySelector('dl'); dl.textContent = '';
     lin.forEach(function (l) { var dt = D.createElement('dt'), dd = D.createElement('dd'); dt.textContent = l[0]; dd.textContent = l[1]; dl.appendChild(dt); dl.appendChild(dd); });

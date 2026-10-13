@@ -123,7 +123,9 @@
   /* La fila de identidad: tu nombre (el pseudonimo de tu clave, o visitante) y el color de TU bandera. */
   function identidad() {
     var I = raiz.Identity, B = raiz.AtlasValores && raiz.AtlasValores.banderas, n = I && I.quien && I.quien();
+    var c = cangrejo();
     R.quien.textContent = n || T('visitante');
+    R.clase.textContent = T(c.nodo ? 'state_class_coral' : 'state_class_mar') || (c.nodo ? 'coral' : 'sea crab');
     R.color.style.background = casa.bandera && B ? 'hsl(' + B[casa.bandera] + ' 85% 60%)' : 'transparent';
     R.color.setAttribute('aria-label', T('p_bandera') + ' · ' + T('bandera_' + (casa.bandera || 'ninguna')));
   }
@@ -133,9 +135,10 @@
     }
     R.raiz = el('div', 'casa'); R.raiz.id = 'casa-estado';
     R.alm = el('div', 'casa-almacen'); R.alm.hidden = true;
-    var fila = el('div', 'casa-identidad'); R.quien = el('b', 'casa-quien'); R.color = el('span', 'casa-color'); R.color.setAttribute('role', 'img');
+    var fila = el('div', 'casa-identidad'); R.quien = el('b', 'casa-quien'); R.clase = el('span', 'casa-clase'); R.clase.id = 'casa-clase';
+    R.color = el('span', 'casa-color'); R.color.setAttribute('role', 'img');
     var pers = boton('✦ ' + T('personaliza'), 'boton-sec casa-pers-b'); pers.id = 'casa-personaliza'; pers.addEventListener('click', personaliza);
-    fila.appendChild(R.quien); fila.appendChild(R.color); fila.appendChild(pers);
+    fila.appendChild(R.quien); fila.appendChild(R.clase); fila.appendChild(R.color); fila.appendChild(pers);
     R.est = el('div', 'casa-cuerpo');
     raiz.AtlasCasaLateral.monta(R.est, { T: T, medidas: medidas, entra: entra });
     var tira = el('div', 'casa-tira');
@@ -149,6 +152,7 @@
     R.cuerpo = el('div', 'casa-int-cuerpo'); R.int.appendChild(R.cuerpo);
     R.raiz.appendChild(fila); R.raiz.appendChild(R.est); R.raiz.appendChild(R.int); R.raiz.appendChild(R.alm);
     panel.appendChild(R.raiz);
+    if (raiz.AtlasCrabStateScreen) { raiz.AtlasCrabStateScreen.monta(R.raiz, { T: T }); }
     var I = raiz.Identity;
     (I && I.quien && I.quien() ? I.publica().then(function (k) { pub = k; }, function () {}) : Promise.resolve())
       .then(lee).then(function (g) { g = migra(g); if (g && !forma(g)) { casa = g; } identidad(); });

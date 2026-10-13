@@ -77,7 +77,7 @@
   "fase_fin": "Letzte Phase erreicht: der Kern ist souverän.",
   "oxigeno": "SAUERSTOFF",
   "cobre": "KUPFER",
-  "sellada": "RISS VERSIEGELT · öffnet sich wieder in {s} s",
+  "sellada": "RISS VERSIEGELT · öffnet sich wieder in {c} Zyklen",
   "falta_cobre": "Es fehlen {n} Kupfer: die Schmiede hat noch nicht genug erzeugt.",
   "b4n_no": "Der Kern bleibt verschlossen: es braucht mehr Ingenieurwesen.",
   "dormias_vacio": "Noch nichts: der Wald produziert, solange dieser Tab verborgen ist, bis zu 24 h.",

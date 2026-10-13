@@ -77,7 +77,7 @@
   "fase_fin": "Fase final alcanzada: el Núcleo es soberano.",
   "oxigeno": "OXÍGENO",
   "cobre": "COBRE",
-  "sellada": "GRIETA SELLADA · vuelve a abrirse en {s} s",
+  "sellada": "GRIETA SELLADA · vuelve a abrirse en {c} ciclos",
   "falta_cobre": "Faltan {n} de cobre: la Forja aún no ha producido bastante.",
   "b4n_no": "El Núcleo sigue cerrado: hace falta más Ingeniería.",
   "dormias_vacio": "Nada todavía: el Bosque produce mientras esta pestaña está oculta, hasta 24 h.",

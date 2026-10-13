@@ -45,17 +45,6 @@
   }
   function pon(nodo, texto) { if (nodo.textContent !== String(texto)) { nodo.textContent = texto; } }
   function dice(texto) { if (texto) { pon(R.vivo, texto); } }
-  /* Horas, minutos o segundos, con la unidad en la lengua de la pagina. */
-  function unidad(n, u) {
-    try { return new Intl.NumberFormat(lang, { style: 'unit', unit: u, unitDisplay: 'short' }).format(n); }
-    catch (e) { return n + ' ' + u; }
-  }
-  function duracion(ciclos) {
-    if (ciclos < 60) { return unidad(ciclos, 'second'); }
-    var h = Math.floor(ciclos / 3600), m = Math.floor(ciclos % 3600 / 60);
-    return (h ? unidad(h, 'hour') + ' ' : '') + unidad(m, 'minute');
-  }
-
   /* --- el panel: se construye una vez y luego solo se actualiza ----------- */
   function panel() {
     var raiz = el('div', 'atlas-panel atlas-piso'); raiz.id = 'atlas-piso';
@@ -178,7 +167,7 @@
     pon(R.rec.cobre, num(E.cobre)); pon(R.rec.o2, num(E.o2) + ' / ' + num(M.O2_MAX));
 
     R.alerta.classList.toggle('sellada', !E.abierta);
-    pon(R.alertaT, E.abierta ? U('alerta') : rellena(U('sellada'), { s: num(E.cierre) }));
+    pon(R.alertaT, E.abierta ? U('alerta') : rellena(U('sellada'), { c: num(E.cierre) }));
     R.alertaP.hidden = !E.abierta; R.reparar.hidden = !E.abierta; R.grieta.hidden = !E.abierta;
 
     var ing = M.nivelDesdeXp(E.xp[M.OFICIOS.indexOf('ingenieria')]);

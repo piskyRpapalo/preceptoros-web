@@ -49,12 +49,15 @@
     return JSON.parse(s);
   }
 
-  var J = null, T = function (k) { return (J && J.texto(k)) || ''; }, R = {};
+  var J = null, T = function (k) { return (J && J.texto(k)) || ''; }, R = {}, pendiente = null;
   function el(t, c, x) { var n = document.createElement(t); if (c) { n.className = c; } if (x) { n.textContent = x; } return n; }
   function boton(x, f) { var b = el('button', 'boton-sec', x); b.type = 'button'; b.addEventListener('click', f); return b; }
   function rellena(t, v) { return String(t).replace(/\{(\w+)\}/g, function (_, k) { return k in v ? v[k] : ''; }); }
   function dice(t) { R.estado.textContent = t; }
-  function sello(t) { var s = document.querySelector('#atlas-piso .atlas-sello'); if (s && t) { s.textContent = t; } }
+  function preparaRetomar() {
+    if (!R.retomar || !pendiente || !pendiente.final) { return; }
+    R.retomar.textContent = rellena(T('retomar'), { c: pendiente.final.ciclo }); R.retomar.hidden = false;
+  }
 
   /* Retomar: se reproduce la partida y, de paso, se recogen las visitas para la niebla real. */
   function retoma(p, como) {
@@ -63,7 +66,6 @@
       var e = J.retoma(limpia(p), function (s) { if (C) { vis[C.visita(P.instantanea(s, M))] = 1; } });
       if (window.AtlasMapa && window.AtlasMapa.visitas) { window.AtlasMapa.visitas(Object.keys(vis)); }
       dice(rellena(T('guardado_retomado'), { c: e.t, n: p.pasos.length, f: como }));
-      sello(rellena(T('sello_guardado'), { c: e.t }));
       return true;
     } catch (x) {
       dice(rellena(T('guardado_nd'), { m: x.message }));
@@ -79,16 +81,15 @@
     if (callado === true && p.pasos.length === hechos) { return; }
     auto = true; hechos = p.pasos.length;
     op('readwrite', function (s) { return s.put(p, CLAVE); }).then(function () {
-      if (callado === true) { sello(rellena(T('sello_guardado'), { c: p.final.ciclo })); return; }
+      if (callado === true) { return; }
       dice(rellena(T('guardado_ok'), { c: p.final.ciclo, n: p.pasos.length }));
-      sello(rellena(T('sello_guardado'), { c: p.final.ciclo }));
-      R.retomar.hidden = true;
+      pendiente = null; if (R.retomar) { R.retomar.hidden = true; }
     }).catch(function (x) { dice(rellena(T('guardado_nd'), { m: x && x.message })); });
   }
   function olvida() {
     auto = false;
     op('readwrite', function (s) { return s.delete(CLAVE); }).then(function () {
-      dice(T('guardado_olvidado')); sello(T('sello')); R.retomar.hidden = true;
+      pendiente = null; dice(T('guardado_olvidado')); if (R.retomar) { R.retomar.hidden = true; }
     }).catch(function (x) { dice(rellena(T('guardado_nd'), { m: x && x.message })); });
   }
   function importa(f) {
@@ -109,26 +110,14 @@
     var cab = capa && capa.querySelector('#atlas-piso .atlas-sello');
     if (!J || !J.retoma || !cab || !window.indexedDB || !T('guardar')) { return; }
     var caja = el('div', 'atlas-guardado');
-    caja.appendChild(boton(T('guardar'), guarda));
-    R.retomar = boton('', function () {
-      op('readonly', function (s) { return s.get(CLAVE); }).then(function (p) {
-        if (p && retoma(p, T('guardado_de_aqui'))) { R.retomar.hidden = true; }
-      });
-    });
-    R.retomar.hidden = true; caja.appendChild(R.retomar);
-    caja.appendChild(boton(T('olvidar'), olvida));
-    var fi = el('input'); fi.type = 'file'; fi.accept = 'application/json,.json'; fi.hidden = true;
-    fi.addEventListener('change', function () { if (fi.files[0]) { importa(fi.files[0]); } fi.value = ''; });
-    caja.appendChild(fi);
-    caja.appendChild(boton(T('importar'), function () { fi.click(); }));
     R.estado = el('p', 'atlas-nota'); R.estado.setAttribute('role', 'status');
-    caja.appendChild(R.estado);
+    R.estado.classList.add('atlas-guardado-recibo'); caja.appendChild(R.estado);
     cab.parentNode.insertBefore(caja, cab.nextSibling);
     /* Leer lo guardado no saca nada del aparato. Si hay partida, se retoma sola; si no se puede, se
        dice la causa y queda el boton. Solo despues se enciende el autoguardado. */
     op('readonly', function (s) { return s.get(CLAVE); }).then(function (p) {
       if (p && p.final && !retoma(p, T('guardado_de_aqui'))) {
-        R.retomar.textContent = rellena(T('retomar'), { c: p.final.ciclo }); R.retomar.hidden = false; return;
+        pendiente = p; preparaRetomar(); return;
       }
       auto = true;
     }).catch(function () {});
@@ -137,5 +126,23 @@
     setInterval(function () { guarda(true); }, AUTO_MS);
   }
 
-  window.AtlasGuardado = { monta: monta, limpia: limpia };
+  /* La vista de máquina se abre desde el Inspector honesto; los recibos permanecen en el pliego humano. */
+  function montaInspector(panel) {
+    if (!panel || panel.querySelector('.atlas-guardado-controls') || !R.estado) { return; }
+    var caja = el('div', 'atlas-guardado-controls'); caja.appendChild(el('h5', null, T('guardado_maquina') || 'Local save controls'));
+    caja.appendChild(boton(T('guardar'), guarda));
+    R.retomar = boton('', function () {
+      op('readonly', function (s) { return s.get(CLAVE); }).then(function (p) {
+        if (p && retoma(p, T('guardado_de_aqui'))) { pendiente = null; R.retomar.hidden = true; }
+      });
+    });
+    R.retomar.hidden = true; caja.appendChild(R.retomar); preparaRetomar();
+    caja.appendChild(boton(T('olvidar'), olvida));
+    var fi = el('input'); fi.type = 'file'; fi.accept = 'application/json,.json'; fi.hidden = true;
+    fi.addEventListener('change', function () { if (fi.files[0]) { importa(fi.files[0]); } fi.value = ''; });
+    caja.appendChild(fi); caja.appendChild(boton(T('importar'), function () { fi.click(); }));
+    panel.appendChild(caja);
+  }
+
+  window.AtlasGuardado = { monta: monta, montaInspector: montaInspector, limpia: limpia };
 })();

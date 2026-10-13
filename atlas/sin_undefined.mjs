@@ -62,6 +62,30 @@ async function main() {
 
     actual.step = 'abre'; await espera(1500); await revisa('abre');
 
+    actual.step = 'startup';
+    const stateEntry = await evalua("document.getElementById('menu-pliego-estado')");
+    if (!stateEntry) { fallos.push({ path: p, step: 'startup', snippet: 'theGame state entry did not mount' }); }
+    await evalua("document.getElementById('menu-pliego-estado')?.click()");
+    await espera(1500);
+    const stateBoot = await evalua("JSON.stringify({ready:Boolean(document.querySelector('#crab-state-screen') && document.querySelector('#thegame-estado'))," +
+      "sections:[...document.querySelectorAll('#crab-state-screen [data-section]')].map(e=>e.dataset.section)," +
+      "text:document.querySelector('#crab-state-screen')?.innerText||''," +
+      "controls:[...document.querySelectorAll('#crab-state-screen button')].map(e=>e.innerText)," +
+      "summon:document.querySelector('#crab-state-screen a[href=\\\"#thegame-ondas\\\"]')!==null})");
+    let screen = null; try { screen = JSON.parse(stateBoot); } catch {}
+    if (!screen?.ready || JSON.stringify(screen.sections) !== JSON.stringify(['who', 'body', 'core', 'budget', 'receipts', 'actions']) || !screen.summon) {
+      fallos.push({ path: p, step: 'startup', snippet: 'crab state screen structure/order/action missing' });
+    }
+    if (/\{"|\bSave on this device\b|\bForget saved game\b|\bImport game\b/.test(screen?.text || '')) {
+      fallos.push({ path: p, step: 'startup', snippet: 'machine data or controls leaked into the crab screen' });
+    }
+    if (!/WHO YOU ARE[\s\S]*YOUR BODY[\s\S]*CORE AND RIFT[\s\S]*YOUR BUDGET[\s\S]*RECEIPTS[\s\S]*WHAT YOU CAN DO/.test(screen?.text || '')) {
+      fallos.push({ path: p, step: 'startup', snippet: 'state titles did not render in the fixed order' });
+    }
+    await revisa('startup');
+    await evalua("document.getElementById('menu-pliego-estado')?.click()");
+    await espera(300);
+
     const n = (await evalua("document.querySelectorAll('.thegame-menu-item').length")) ?? 0;
     const ids = (await evalua("[...document.querySelectorAll('.thegame-menu-item')].map((e,i)=>e.id||('item-'+i))")) ?? [];
     for (let i = 0; i < n; i++) {

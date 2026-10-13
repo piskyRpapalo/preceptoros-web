@@ -754,6 +754,33 @@ process.stdout.write(JSON.stringify(ok));
             with self.subTest(rotulo=k):
                 self.assertRegex(a, k + r": '[^']+'", "sin bloque i18n el rotulo seria undefined")
 
+    def test_5c_guion_unico_del_cangrejo_y_arranque(self):
+        """5C: una sola fuente de estado, seis secciones en orden fijo, recibos en su lugar, sin JSON humano ni
+        relojes paralelos. El contrato incluye la carga inicial real en Chrome, no solo que el panel exista."""
+        r = subprocess.run(["node", str(RAIZ / "crab_state_screen_casos.mjs")], capture_output=True, text=True, timeout=60)
+        self.assertEqual(r.returncode, 0, r.stdout[-1400:] + r.stderr[-500:])
+        guion = (PUBLICO / "game" / "crab_state_screen.js").read_text(encoding="utf-8")
+        casa = (PUBLICO / "game" / "home_buildings.js").read_text(encoding="utf-8")
+        frame = (ASSETS / "terminal_window_frame.js").read_text(encoding="utf-8")
+        save = (ASSETS / "atlas-guardado.js").read_text(encoding="utf-8")
+        inspector = (PUBLICO / "game" / "piece_inspector.js").read_text(encoding="utf-8")
+        term = (PUBLICO / "game" / "aiact-art50-crab-terminal.js").read_text(encoding="utf-8")
+        for title in ("who", "body", "core", "budget", "receipts", "actions"):
+            with self.subTest(section=title):
+                self.assertIn("'" + title + "'", guion)
+        self.assertIn("function cangrejo()", casa, "el panel lee la fuente única del cuerpo")
+        self.assertIn("AtlasCasa.cangrejo()", (PUBLICO / "game" / "mar-cangrejos.js").read_text(encoding="utf-8"))
+        self.assertIn("function ficha()", frame, "la ventana entrega un único sello de frescura")
+        self.assertIn("montaInspector", inspector + save, "los controles del aparato viven en Inspector")
+        self.assertNotIn("LIVE", guion, "la frescura se pinta una vez en el marco del canal")
+        self.assertIn("slots.receipts.appendChild(saveReceipt)", guion)
+        self.assertNotIn("boton(T('guardar')", save[save.index("function monta(capa)"):save.index("function montaInspector")])
+        self.assertNotIn("JSON.stringify(pedido)", term, "el terminal humano no debe mostrar JSON crudo")
+        self.assertNotIn("application/json", (PUBLICO / "game" / "crab_state_screen.js").read_text(encoding="utf-8"))
+        self.assertNotIn("reopens in {s} s", (PUBLICO / "atlas-en.json").read_text(encoding="utf-8"))
+        self.assertIn("startup", (RAIZ / "sin_undefined.mjs").read_text(encoding="utf-8"),
+                      "la regresión de arranque debe ejecutarse en Chrome")
+
     def test_los_9_objetos_nacen_con_tiempo(self):
         """LOS 9 OBJETOS (FIRMO 2026-10-12): el estado de un edificio es funcion PURA de (manifiesto, tic). Desgaste en tics,
         NO_DATA con causa (nunca «0»), ∇C como telemetria (Hue vida, Sat carga, Light escudo). 9/9 casos; el sabotaje que
@@ -938,7 +965,7 @@ ARENA = ("sobres.js", "rating.js", "arena.js", "duelo.js", "mar-anclas.js", "cra
          "nodos.js", "cuenta.js", "ui-nodos.js", "ui-rack.js",
          "escuadron.js", "battle_choreography.js", "battle_replay.js", "ui-arena-comun.js", "ui-arena.js", "ui-duelo.js")
 # La CASA (2026-10-05): la primera pantalla, detras del Army. Lleva canon y escena, que la Arena reutiliza.
-CASA = ("canon.js", "escena.js", "wave_render.js", "gdpr-art25-ephemeral-crab.js", "aiact-art50-crab-terminal.js", "nodos-cedulas.js", "fog_of_war.js", "isometric_floor_projection.js", "world_camera.js", "mar-fondo.js", "gdpr-art7-entry-choice.js", "aiact-art50-state-radio.js", "casa-medidas.js", "casa-personaliza.js", "casa-lateral.js", "reef_building_lifecycle.js", "home_buildings.js", "summon_reveal.js", "taller.js", "ui-taller.js", "primer_eco.js")
+CASA = ("canon.js", "escena.js", "wave_render.js", "gdpr-art25-ephemeral-crab.js", "aiact-art50-crab-terminal.js", "nodos-cedulas.js", "fog_of_war.js", "isometric_floor_projection.js", "world_camera.js", "mar-fondo.js", "gdpr-art7-entry-choice.js", "aiact-art50-state-radio.js", "casa-medidas.js", "casa-personaliza.js", "casa-lateral.js", "crab_state_screen.js", "reef_building_lifecycle.js", "home_buildings.js", "summon_reveal.js", "taller.js", "ui-taller.js", "primer_eco.js")
 FUERA_DE_LA_PUERTA = tuple(sorted(set(PUROS + ARENA + CASA)))
 
 
@@ -1767,11 +1794,13 @@ class TerminalCangrejo(unittest.TestCase):
         js = ("const T=require('./public/game/aiact-art50-crab-terminal.js');"
               "const a=T.accion('reparar');const b=T.accion('bajar_a','ruinas');"
               "process.stdout.write(JSON.stringify({f:T.linea(a,{resultado:'fallo',tipo:'reparar',mision:'grieta-120',profundidad:'50-150'}),"
-              "n:T.linea(a,null),b:b,v:T.variables(null)}))")
+              "n:T.linea(a,null),b:b,v:T.variables(null),m:T.variables({ciclo:204,integridad:80,profundidad:'50-150',"
+              "grieta:{abierta:false,cierre:110},recursos:{luz:9,biomasa:7,flujo:2,cobre:3}})}))")
         r = subprocess.run(["node", "-e", js], capture_output=True, text=True, timeout=60, cwd=RAIZ.parent)
         self.assertEqual(r.returncode, 0, r.stderr)
         d = json.loads(r.stdout)
-        self.assertIn('"resultado":"fallo"', d["f"]); self.assertIn("NO_DATA", d["n"]); self.assertIn("NO_DATA", d["v"])
+        self.assertIn("Result: fallo", d["f"]); self.assertIn("NO_DATA", d["n"]); self.assertIn("NO_DATA", d["v"])
+        self.assertIn("110 cycles", d["m"]); self.assertNotIn('{"', d["m"]); self.assertNotIn('{"', d["f"])
         self.assertEqual(d["b"], {"esquema": "atlas.accion/1", "accion": "bajar_a", "origen": "humano", "banda": "ruinas"})
 
 

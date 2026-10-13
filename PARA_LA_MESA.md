@@ -1,3 +1,9 @@
+## OCEANO · PASO 0 · RE-SELLO Y LECTURA · 2026-10-13
+- Rama local `oceano-2026-10-13`, basada en `origin/main` / `a5417e8` (PR #71); árbol limpio al iniciar. La rama ya existía en ese mismo commit y se activó tras autorización de escritura de `.git`.
+- Relectura de `ideas6oct.txt` y `ideas7oct.txt` (papeles del rack): gobiernan los sellos MEDIDO/DECLARADO/PROPUESTA/NO_DATA, NO_DATA siempre con causa, una pieza cada vez, propuestas sin adelantarse y firma humana para publicación/acciones irreversibles.
+- Cadena declarada: `abgl → abgm`. Huella medida tras regeneración: `config/sw-huella.txt` = `2b8137ae035942d4`; versión `preceptoros-2026-17-abgm`. `atlas-mundo.json`: `gzip_juego_b=89810`, `arnes_sw=22/22`, `pruebas_web=75`, 9 lenguas. La regeneración de mundo registró `2026-10-13T19:58Z` y Linux x86_64 / Python 3.14.4.
+- Ningún push, firma criptográfica ni merge realizado. Paso 0 cerrado; siguiente trabajo autorizado: Pieza 1 · 5C.
+
 ## RONDA 3 · EMBELLECIMIENTO · EN MARCHA · 2026-10-13
 - **Chunk 1 (payload de Hexelion): VERDE, PR #61 ABIERTA** (`abfy`, sin merge; el merge es del Soberano). `hexelion_bench.js` lleva las cifras de `bench_20261011_resultados.json`: embeddinggemma-2 pp512 ngl99 = 6459.63 tok/s (MEDIDO, GPU Vulkan); tres modelos NO_DATA con su causa textual. No hay «tg32» en ese fichero: no se inventa. Ligado a GitHub: PENDIENTE (el fichero no trae URL del repo del laboratorio).
 - **Chunk 2 (coral de Hexelion infantil + enlace del lab): VERDE, PR #62 ABIERTA** (`abfz`, sin merge). Coral = racimo de burbujas toon con ojos solo con medidas; sin medidas, contorno punteado y sin cara. Ficha con el enlace `benchmarks/bench_20261011` (medido por la Mesa) y el sha256 local. Visual medido por captura CDP (360 px): el coral y el cangrejo se ven juntos en toon.
@@ -298,3 +304,12 @@ R4 bioluminiscencia → Todas las piezas construibles están hechas. Las propues
 - **PRUEBA_5_MINUTOS:** actualizada a `abgb`. Pasos nuevos: 6b (crear identidad antes de invocar) y 9d (las cuatro siluetas de los edificios).
 - **Gates al cerrar (sello `abgb`):** test_web OK (75), test_atlas 140, arnes_sw 22/22, sin_undefined 28/0.
 - **FUERA DE MIS MANOS (quieto, NO_DATA con causa):** mapa despejandose (vuestros ojos, con el Observatorio) · fps Doogee (vuestras manos) · Ctrl+rueda en PC real (vuestras manos; en headless no se aplica el zoom de pagina: medido 1 → 1). Parallax (chunk 7): solo con vuestra orden explicita.
+
+## ORDEN OCEANO · PIEZA 1 · 5C · 2026-10-13 · CERRADA LOCAL
+- **Rama:** `oceano-2026-10-13`, creada desde `origin/main` (`a5417e8`). Paso 0 releído: `ideas6oct` y `ideas7oct`; cadena re-sellada `abgl → abgm` en commit local `b4f4c27`. Pieza 1 sella `abgm → abgn`; huella SW `f71d7a9324cc771f`, versión `preceptoros-2026-17-abgn`.
+- **Guion estado (21):** seis secciones ordenadas y con título: Who you are, Your body, Core and crack, Your budget, Receipts, What you can do. Reutiliza el estado de `AtlasCangrejo`; no crea estado de medidas. La ficha muestra nombre/clase, las cuatro partes medidas, integridad/presión y reapertura por ciclos, presupuesto, recibos y enlace directo a Summoning. Las reservas futuras siguen sin implementar.
+- **Sustituciones:** JSON y controles Save/Forget/Import salen de la vista humana y pasan al Inspector; un solo sello de frescura del canal `thegame-estado`; el pliego quita el reloj de pared de la Grieta; terminal de cangrejo legible, sin volcado JSON. Persistencia y economía intactas.
+- **Pruebas rojas antes del verde:** se añadió caso determinista y falló antes de crear el módulo; luego quedó verde. Chrome de arranque real: 30 pasos, `fallos=[]` (repetido sobre el estado final). Guion/terminal: 2 pruebas dirigidas OK.
+- **Gates n=2, ambos pases verdes:** `test_atlas.py` 167; `test_web.py` 75 (1 omitida por no haber panel publicado); `arnes_sw.mjs` 22/22; guardia de higiene sin hallazgos. `git diff --check` limpio.
+- **Medidas:** `atlas-mundo.json` declara gzip_juego 89.779 B, SW 22/22, 9 lenguas; el peso publicado del sitio mide 1.183.606 B. La referencia de 79 KB/visita de la orden no coincide con la métrica gzip_juego actual; queda declarada, sin alterar su definición. Ningún fichero tocado supera 16.384 B; satélite `crab_state_screen.js` 3.204 B, `home_buildings.js` 11.672 B, `atlas-piso.js` 13.505 B, `atlas-guardado.js` 8.413 B.
+- **Cierre:** commit local de 5C registrado en esta rama; no push, firma ni merge. Pieza 2 no iniciada.

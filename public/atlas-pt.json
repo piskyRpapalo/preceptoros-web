@@ -77,7 +77,7 @@
   "fase_fin": "Fase final alcançada: o Núcleo é soberano.",
   "oxigeno": "OXIGÉNIO",
   "cobre": "COBRE",
-  "sellada": "FENDA SELADA · volta a abrir em {s} s",
+  "sellada": "FENDA SELADA · volta a abrir em {c} ciclos",
   "falta_cobre": "Faltam {n} de cobre: a Forja ainda não produziu o suficiente.",
   "b4n_no": "O Núcleo continua fechado: é preciso mais Engenharia.",
   "dormias_vacio": "Nada ainda: a Floresta produz enquanto este separador está oculto, até 24 h.",

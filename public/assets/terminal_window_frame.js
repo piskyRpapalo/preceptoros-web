@@ -15,7 +15,7 @@
   var VIEJO = 120;
   /* La fuente de cada panel: de donde sale lo que muestra. Lo que no esta aqui se declara NO_DATA. */
   var FUENTES = {
-    'pliego-estado': 'game state (engine snapshot)', 'pliego-lugares': 'arena record on this device', 'pliego-entrada': 'your entry choice',
+    'pliego-estado': 'thegame-estado (game state bus)', 'pliego-lugares': 'arena record on this device', 'pliego-entrada': 'your entry choice',
     'terminal-cangrejo': 'crab terminal (rules it can touch)', 'radio-estado': 'radio of the state', 'pliego-lapidas': 'reef receipts (this tab)',
     'pliego-skills': 'crab events (this tab)', 'pliego-ficha': 'inspector (the touched piece)', 'pliego-tutorial': 'tutorial schema (measured events)'
   };
