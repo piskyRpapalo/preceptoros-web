@@ -1,0 +1,23 @@
+# PreceptorOS
+
+> PreceptorOS: WEB · APP · LAB — a local-first AI ecosystem. Local memory,
+> local inference, zero cloud. Every figure it publishes was measured;
+> anything not measured is NO_DATA with its cause.
+
+## The ecosystem
+
+- [WEB: preceptoros-web README](https://github.com/piskyRpapalo/preceptoros-web/blob/main/README.md): this repository — the public gateway and the game. Zero external requests on load.
+- [APP: PreceptorOS README](https://github.com/piskyRpapalo/PreceptorOS/blob/main/README.md): the local-first companion application — local memory, local inference, zero cloud.
+- [STATE.md (APP)](https://github.com/piskyRpapalo/PreceptorOS/blob/main/STATE.md): the ecosystem's state card — measured figures with their source, NO_DATA with cause. Written to be read in one pass and handed to another AI.
+- [STATE.md (LAB)](https://github.com/piskyRpapalo/lab/blob/main/STATE.md): the same state card, published from the measured record.
+- [PRECEPTOR.md](https://github.com/piskyRpapalo/PreceptorOS/blob/main/PRECEPTOR.md): the contributor contract, signed by the architect. What an AI may do here, and how it must report what it measures.
+- [RACK.md](https://github.com/piskyRpapalo/PreceptorOS/blob/main/RACK.md): the rack's public card — the machines, what runs on them, what was measured. No addresses, no ports, no keys.
+
+## The measured record
+
+- [LAB benchmarks: bench 2026-10-11 README](https://github.com/piskyRpapalo/lab/blob/main/benchmarks/bench_20261011/README.md): embedding and reading benchmarks, measured on the node.
+- [LAB benchmarks: raw JSON](https://github.com/piskyRpapalo/lab/blob/main/benchmarks/bench_20261011/bench_20261011_resultados.json): the raw measured results behind the README (sha256 26e61fb7…).
+
+## Live site
+
+- [preceptoros.org](https://preceptoros.org): the served site. Nine languages, zero external requests on load, 75 web tests passing (measured; see the LAB counters).
