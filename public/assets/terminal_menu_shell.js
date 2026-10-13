@@ -34,9 +34,9 @@
     function muestraYa(id, foco) {
       actual = destino = S.HOJA[id] ? id : null;
       Object.keys(S.HOJA).forEach(function (k) { S.HOJA[k].hidden = k !== actual; });
-      if (R.items.taller) { R.items.taller.setAttribute('aria-expanded', String(actual === 'taller')); }
+      if (R.items.taller) { R.items.taller.setAttribute('aria-expanded', String(actual === 'ondas')); }
       document.documentElement.classList.toggle('con-hoja', !!actual);
-      if (actual === 'taller' || actual === 'ondas') { Promise.resolve(x.alTaller()).then(mueveArmy); }
+      if (actual === 'ondas') { Promise.resolve(x.alTaller()).then(mueveArmy); }
       if (actual && foco !== false) { var c = S.HOJA[actual].querySelector('.thegame-hoja-cierra'); if (c) { c.focus(); } }
       else if (foco && R.items.taller) { R.items.taller.focus(); }
     }
@@ -81,8 +81,9 @@
       if (h && h.tagName === 'H5') { ond.appendChild(h); }
       ond.appendChild(ul);
     }
-    var tal = hoja('taller', T('pes_taller')); tal.appendChild(S.PANEL.taller); S.PANEL.taller = tal;
     S.ARMYZ = el('div', 'casa-army'); ond.appendChild(S.ARMYZ);  /* RONDA 1 (13-oct): la invocacion vive en el ARMY; el Taller queda para el tuneo */
+    /* FIRMO 13-oct (unificacion): Army y Taller en UNA hoja; el Taller va DEBAJO del Army. */
+    var tal = el('div', 'taller-unido'); tal.appendChild(S.PANEL.taller); ond.appendChild(tal); S.PANEL.taller = tal;
     S.ZB = hoja('batalla', T('hoja_batalla'));
 
     var menu = el('nav', 'thegame-menu'); menu.id = 'thegame-menu'; menu.setAttribute('aria-label', T('menu_aria'));
@@ -125,13 +126,13 @@
       });
     }
     entrada('ondas', '\u223F', T('army_h'), function () { muestra(actual === 'ondas' ? null : 'ondas'); }).setAttribute('aria-controls', 'thegame-ondas');
-    entrada('taller', '⚒︎', T('pes_taller'), function () { muestra(actual === 'taller' ? null : 'taller'); }).setAttribute('aria-controls', 'thegame-taller');
+    entrada('taller', '⚒︎', T('pes_taller'), function () { if (actual === 'ondas') { muestra(null); return; } muestra('ondas'); S.PANEL.taller.scrollIntoView({ block: 'start' }); }).setAttribute('aria-controls', 'thegame-ondas');
     /* Opinar sobre la pagina: su unico hogar es el menu (la pestana vertical lateral se oculta dentro del juego). */
     if (raiz.PageComment && raiz.PageComment.abre) { entrada('opinar', '\u270E', T('menu_opinar'), function () { raiz.PageComment.abre(); }); }
     sincroniza();
     new MutationObserver(sincroniza).observe(cajon, { childList: true });
 
-    [S.MAPA, menu, cajon, S.HOJA.ondas, S.HOJA.taller, S.HOJA.batalla].forEach(function (n) { piso.appendChild(n); });
+    [S.MAPA, menu, cajon, S.HOJA.ondas, S.HOJA.batalla].forEach(function (n) { piso.appendChild(n); });
     cada(piso.querySelectorAll(':scope > .atlas-rejilla'), function (n) { n.remove(); });
     document.addEventListener('keydown', function (e) {
       if (e.altKey && (e.key === 'm' || e.key === 'M')) { e.preventDefault(); expande(); ancho.focus(); return; }

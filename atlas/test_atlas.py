@@ -25,6 +25,13 @@ from pathlib import Path
 RAIZ = Path(__file__).resolve().parent
 PUBLICO = RAIZ.parent / "public"
 ASSETS = PUBLICO / "assets"
+
+# FIRMO M1 (2026-10-13): la familia de ui.js es ui.js + su satelite ui-invoca.js (la invocacion sale de ui.js).
+def _fam(nombre, texto):
+    """Texto de un modulo; si es ui.js, con su satelite pegado: las pruebas leen la familia, no el fichero suelto."""
+    if nombre == "ui.js":
+        return texto + "\n" + (PUBLICO / "game" / "ui-invoca.js").read_text(encoding="utf-8")
+    return texto
 PISO = ASSETS  # los guiones, la hoja y la tira viven en public/assets/
 CODIGO = ("atlas-arte.js", "atlas-coord.js", "atlas-carta.js", "atlas-ondas.js", "atlas-obra.js", "atlas-gesto.js", "atlas-mapa.js", "atlas-dialogo.js", "atlas-motor.js",
           "atlas-piso.js", "atlas.css", "thegame.js", "thegame.css",
@@ -720,7 +727,7 @@ process.stdout.write(JSON.stringify(ok));
         ninguna ventana persistente: segunda pulsacion cierra, Escape cierra."""
         sh = (ASSETS / "terminal_menu_shell.js").read_text(encoding="utf-8")
         self.assertLess(sh.index("entrada('ondas',"), sh.index("entrada('taller',"), "el inventario va antes que el Taller")
-        for pieza in ("muestra(actual === 'ondas' ? null : 'ondas')", "S.HOJA.ondas, S.HOJA.taller", "function mueveArmy()",
+        for pieza in ("muestra(actual === 'ondas' ? null : 'ondas')", "S.HOJA.ondas", "function mueveArmy()",
                       "Promise.resolve(x.alTaller()).then(mueveArmy)", "e.key !== 'Escape'"):
             with self.subTest(pieza=pieza):
                 self.assertIn(pieza, sh)
@@ -950,10 +957,10 @@ class TheGameV15(unittest.TestCase):
     las dos guardas en el mismo job; moverla es un paso del rack."""
 
     JUEGO = PUBLICO / "game"
-    MODULOS = ("valores.js", "gacha.js", "db.js", "core.js", "ui-ficha.js", "ui.js", "juez.js")  # T: ui-ficha sale de ui
+    MODULOS = ("valores.js", "gacha.js", "db.js", "core.js", "ui-ficha.js", "ui-invoca.js", "ui.js", "juez.js")  # T: ui-ficha sale de ui
 
     def _js(self, nombre):
-        return sin_comentarios((self.JUEGO / nombre).read_text(encoding="utf-8"))
+        return sin_comentarios(_fam(nombre, (self.JUEGO / nombre).read_text(encoding="utf-8")))
 
     def test_v15_cada_modulo_cabe_en_16_kb(self):
         """Instruccion 1 de la directiva: ningun modulo pasa de 16 KB."""
@@ -1324,7 +1331,7 @@ class Pestanas(unittest.TestCase):
     HOJA = ASSETS / "thegame.css"
     IDS = ("casa", "mapa", "taller")
     PLIEGOS = ()
-    ARMY = ("valores.js", "gacha.js", "db.js", "core.js", "ui-ficha.js", "ui.js")
+    ARMY = ("valores.js", "gacha.js", "db.js", "core.js", "ui-ficha.js", "ui-invoca.js", "ui.js")
 
     def _capa(self):
         return sin_comentarios(self.CAPA.read_text(encoding="utf-8"))
@@ -1338,8 +1345,8 @@ class Pestanas(unittest.TestCase):
         ids = re.findall(r"\['(\w+)', '\\u[0-9A-F]{4}", c)
         self.assertEqual(tuple(ids), self.IDS)
         for pieza in ("el('aside', 'thegame-terminal')", "cajon.hidden = true", "'pliego-estado', true", "el('nav', 'thegame-menu')",
-                      "hoja('taller', T('pes_taller'))", "S.ZB = hoja('batalla', T('hoja_batalla'))", "'aria-expanded'",
-                      ".setAttribute('aria-controls', 'thegame-taller')", "classList.toggle('con-hoja', !!actual)",
+                      "el('div', 'taller-unido')", "S.ZB = hoja('batalla', T('hoja_batalla'))", "'aria-expanded'",
+                      ".setAttribute('aria-controls', 'thegame-ondas')", "classList.toggle('con-hoja', !!actual)",
                       "abierto = abierto === id ? null : id;", "e.key !== 'Escape'", "e.altKey && (e.key === 'm'",
                       "c.id = 'thegame-' + id + '-cierra'", "new MutationObserver(sincroniza)", "ordena();"):
             with self.subTest(pieza=pieza):
@@ -1383,7 +1390,7 @@ class Pestanas(unittest.TestCase):
         # Taller. Su peso sigue fuera de la puerta.
         c = c + (ASSETS / "terminal_menu_shell.js").read_text(encoding="utf-8")  # la terminal (hojas incluidas) salio a su modulo
         self.assertIn("PARTIDA = S.PARTIDA; MAPA = S.MAPA; muestra = S.muestra; pliego = S.pliego;\n    cargaCasa();", c)
-        self.assertIn("if (actual === 'taller' || actual === 'ondas') { Promise.resolve(x.alTaller()).then(mueveArmy); }", c)
+        self.assertIn("if (actual === 'ondas') { Promise.resolve(x.alTaller()).then(mueveArmy); }", c)
         self.assertIn("casa = cargaArmy().then(function () { return pide(CASA); })", c)
         self.assertIn("S.ARMYZ = el('div', 'casa-army'); ond.appendChild(S.ARMYZ);", c)  # RONDA 1: el ARMY, no el Taller
         self.assertIn("army: cargaArmy", c)
@@ -1624,7 +1631,7 @@ class Arena(unittest.TestCase):
     entre personas por paquetes firmados, con la regla de abandono (Soberano, 2026-09-28)."""
 
     def _js(self, nombre):
-        return sin_comentarios((PUBLICO / "game" / nombre).read_text(encoding="utf-8"))
+        return sin_comentarios(_fam(nombre, (PUBLICO / "game" / nombre).read_text(encoding="utf-8")))
 
     def test_los_casos_del_duelo(self):
         r = subprocess.run(["node", str(RAIZ / "duelo_casos.mjs")], capture_output=True, text=True, timeout=300)
@@ -1843,7 +1850,7 @@ class Conquista(unittest.TestCase):
     LOCAL · practica, y NO da rating, ni botin, ni entra en el combate."""
 
     def _js(self, nombre):
-        return sin_comentarios((PUBLICO / "game" / nombre).read_text(encoding="utf-8"))
+        return sin_comentarios(_fam(nombre, (PUBLICO / "game" / nombre).read_text(encoding="utf-8")))
 
     def test_se_guarda_por_la_puerta_de_db(self):
         db, ui = self._js("db.js"), self._js("ui-arena.js")
@@ -1916,7 +1923,7 @@ class CasaGranja(unittest.TestCase):
     la invocacion se revela armonico a armonico. Las ondas se trazan fieles a sus armonicos."""
 
     def _js(self, n):
-        return sin_comentarios((PUBLICO / "game" / n).read_text(encoding="utf-8"))
+        return sin_comentarios(_fam(n, (PUBLICO / "game" / n).read_text(encoding="utf-8")))
 
     def test_casos_del_cangrejo(self):
         """J1 (plan de ronda 2026-10-11): misma semilla, mismo paseo (huella fijada); tamano y clase son dato."""
@@ -1989,7 +1996,7 @@ class MapaMovible(unittest.TestCase):
     limite fisico de la camara. Terreno por teselas, sin azar ni red."""
 
     def _js(self, n):
-        return sin_comentarios((PUBLICO / "game" / n).read_text(encoding="utf-8"))
+        return sin_comentarios(_fam(n, (PUBLICO / "game" / n).read_text(encoding="utf-8")))
 
     def test_casos_de_la_camara_y_la_niebla(self):
         r = subprocess.run(["node", str(RAIZ / "camara_casos.mjs")], capture_output=True, text=True, timeout=120)
@@ -2066,15 +2073,15 @@ class MapaMovible(unittest.TestCase):
         except ImportError:
             pass
         u = self._js("ui.js")
-        for pieza in ("var o = A.eslabon(c, tc, clave);", "window.Identity.firmar(o)", "A.cadenaWeb(clave).pon(cadena);",
-                      "cadena = A.anexa(cadena, o, f.firma, semilla, i.ciclo, i.ciclo + TC.incuba);",
-                      "A.verificaCadena(c, pub, A.verificaWeb, A.semillaWeb)", "huevos = cadena ? A.huevos(cadena) : [];",
-                      "cadena = A.abre(cadena, h.seq)", "if (!capa || !capa.isConnected || document.hidden) { return; }"):
+        for pieza in ("var o = A.eslabon(c, tc, Z.clave);", "window.Identity.firmar(o)", "A.cadenaWeb(Z.clave).pon(Z.cadena);",
+                      "Z.cadena = A.anexa(Z.cadena, o, f.firma, semilla, i.ciclo, i.ciclo + TC.incuba);",
+                      "A.verificaCadena(c, pub, A.verificaWeb, A.semillaWeb)", "Z.huevos = Z.cadena ? A.huevos(Z.cadena) : [];",
+                      "Z.cadena = A.abre(Z.cadena, h.seq)", "if (!capa || !capa.isConnected || document.hidden) { return; }"):
             with self.subTest(pieza=pieza):
                 self.assertIn(pieza, u)
         # Al invocar se GUARDA la cadena antes de poner el huevo en el nido (sabotaje medido: quitar ese guardado
         # pasaba en verde porque `eclosiona` tambien guarda; ahora se exige el orden exacto).
-        self.assertIn("A.cadenaWeb(clave).pon(cadena);\n          huevos.push({ tc: tc, semilla: semilla,", u, "invocar no guarda la cadena")
+        self.assertIn("A.cadenaWeb(Z.clave).pon(Z.cadena);\n          Z.huevos.push({ tc: tc, semilla: semilla,", u, "invocar no guarda la cadena")
         for viejo in ("capa.open", "atlas.invocacion/1", "n += 1"):
             with self.subTest(retirado=viejo):
                 self.assertNotIn(viejo, u)
@@ -2086,7 +2093,7 @@ class MapaMovible(unittest.TestCase):
         u, f = self._js("ui.js"), self._js("ui-ficha.js")
         self.assertIn("var lev = G.oddsAristas(tc).reduce(function (a, x) { return a + (x[0] > 12 ? x[1] : 0); }, 0);", u)
         self.assertIn("b.id = 'invoca-' + tc;", u)
-        self.assertIn("if (R.cron) { cronica(R.cron, cadena, causa); }", u)
+        self.assertIn("if (R.cron) { cronica(R.cron, Z.cadena, Z.causa); }", u)
         self.assertIn("A.piedad(cadena, function (e) { return G.tirada(e.semilla, e.obj.tc).rareza; })", f)
         self.assertIn("E.sitios(l.length, 'atlas.cronica', null)", f)
         for gemelo in ("Math.sqrt(5)", "137.5", "AUREO"):
@@ -2368,7 +2375,7 @@ class MapaMovible(unittest.TestCase):
         self.assertIn("max-height:40dvh", css.split(".radio-chat{position:fixed")[1].split("}")[0], "el chat desplegado pasa del 40 % del alto")
 
     def _js(self, n):
-        return sin_comentarios((PUBLICO / "game" / n).read_text(encoding="utf-8"))
+        return sin_comentarios(_fam(n, (PUBLICO / "game" / n).read_text(encoding="utf-8")))
 
     def test_casos_de_la_repeticion(self):
         r = subprocess.run(["node", str(RAIZ / "replay_casos.mjs")], capture_output=True, text=True, timeout=120)
@@ -2423,7 +2430,7 @@ class EsteticaMedida(unittest.TestCase):
     origen medido | emulado | NO_DATA se ve en el mapa y se dice en texto; movimiento reducido manda."""
 
     def _js(self, n):
-        return sin_comentarios((PUBLICO / "game" / n).read_text(encoding="utf-8"))
+        return sin_comentarios(_fam(n, (PUBLICO / "game" / n).read_text(encoding="utf-8")))
 
     def test_el_dano_es_desafinacion_y_no_barra(self):
         e = self._js("escena.js")
@@ -2457,7 +2464,7 @@ class NodosComoCuenta(unittest.TestCase):
     NODOS = ("nodos-pesos.js", "nodos-cedulas.js", "nodos.js", "ui-nodos.js")
 
     def _js(self, nombre):
-        return sin_comentarios((PUBLICO / "game" / nombre).read_text(encoding="utf-8"))
+        return sin_comentarios(_fam(nombre, (PUBLICO / "game" / nombre).read_text(encoding="utf-8")))
 
     def _node(self, codigo):
         r = subprocess.run(["node", "-e", codigo], cwd=str(RAIZ.parent), capture_output=True, text=True, timeout=60)
@@ -2528,7 +2535,7 @@ class RedisenoDoogee(unittest.TestCase):
     las dos firmas siguen como estaban; esto vigila la pantalla."""
 
     def _js(self, nombre, carpeta="game"):
-        return sin_comentarios((PUBLICO / carpeta / nombre).read_text(encoding="utf-8"))
+        return sin_comentarios(_fam(nombre, (PUBLICO / carpeta / nombre).read_text(encoding="utf-8")))
 
     def _tx(self):
         return json.loads((PUBLICO / "atlas-arena-en.json").read_text(encoding="utf-8"))["ui"]
@@ -2725,6 +2732,89 @@ class EclosionDirecta(unittest.TestCase):
         cuerpo = tal[tal.index("function aterriza(panel)"):][:300]
         self.assertIn("atlas-dlg-mandos", cuerpo, "aterriza no lleva el foco a la eleccion")
         self.assertIn("b.focus()", cuerpo)
+
+
+class TrozoInvoca(unittest.TestCase):
+    """FIRMO M1 (2026-10-13, dividir ui.js): la invocacion (identidad, cadena, invocar) sale de ui.js a
+    `ui-invoca.js`, como `ui-ficha.js`. Cirugia de estructura: mismo comportamiento, mismas pruebas.
+    El estado compartido vive en `Z` (lo crea ui.js). Rojo antes del movimiento."""
+
+    def test_el_satelite_existe_y_se_registra_antes_que_ui(self):
+        self.assertTrue((PUBLICO / "game" / "ui-invoca.js").exists(), "falta ui-invoca.js")
+        th = (PUBLICO / "assets" / "thegame.js").read_text(encoding="utf-8")
+        self.assertIn("['/game/ui-invoca.js']", th, "thegame.js no carga el satelite")
+        self.assertLess(th.index("['/game/ui-invoca.js']"), th.index("['/game/ui.js']"), "el satelite debe cargar antes que ui.js")
+        self.assertIn("'/game/ui-invoca.js'", (PUBLICO / "sw-listas.js").read_text(encoding="utf-8"), "no esta en el precache")
+
+    def test_ui_ya_no_define_el_invocar_y_lo_crea_desde_el_satelite(self):
+        ui = (PUBLICO / "game" / "ui.js").read_text(encoding="utf-8")
+        for f in ("function invoca(", "function cadenaLista(", "function sinIdentidad(", "function firma("):
+            self.assertNotIn(f, ui, f"ui.js sigue definiendo {f}")
+        self.assertIn("window.AtlasInvoca.crea(", ui)
+        self.assertIn("var Z = {", ui, "el estado compartido no vive en Z")
+
+    def test_el_satelite_no_usa_azar_ni_reloj(self):
+        sat = (PUBLICO / "game" / "ui-invoca.js").read_text(encoding="utf-8")
+        for impuro in ("Math.random", "Date.now", "new Date("):
+            self.assertNotIn(impuro, sat)
+
+    def test_el_tamano_baja_y_cada_fichero_tiene_holgura(self):
+        ui = (PUBLICO / "game" / "ui.js").read_bytes()
+        sat = (PUBLICO / "game" / "ui-invoca.js").read_bytes()
+        # Umbral fijado tras medir (12.624 B tras el corte): holgura de ~2,5 KB bajo el techo de 15.360 B.
+        self.assertLess(len(ui), 12800, f"ui.js sigue en {len(ui)} B (umbral < 12800)")
+        self.assertLess(len(sat), 8192, f"ui-invoca.js en {len(sat)} B")
+
+
+class CasillerosDelArmy(unittest.TestCase):
+    """Mision 2026-10-13, paso 4 (el Army como grid de casilleros). Cada tropa en su casillero (dibujado con
+    su ficha, sin imagenes), con aria-label, 44 px y foco visible. Elegir un casillero muestra en la MISMA
+    hoja su ficha, TODAS sus stats y los controles de lija y desintegrar, que ya existen en ui-taller.js."""
+
+    def test_ui_pinta_el_army_como_casilleros_del_taller(self):
+        """ROJO hasta el cambio: ui.js pintaba un li con la ficha, sin casillero ni eleccion."""
+        ui = (PUBLICO / "game" / "ui.js").read_text(encoding="utf-8")
+        self.assertIn("window.AtlasTallerUI.casilleros(R.army, l, ficha)", ui)
+        self.assertNotIn("li.appendChild(ficha(u.adopcion.tropa, 64))", ui, "queda el pintado antiguo")
+
+    def test_cada_casillero_tiene_nombre_y_se_marca_al_elegirlo(self):
+        tal = (PUBLICO / "game" / "ui-taller.js").read_text(encoding="utf-8")
+        self.assertIn("function casilleros(", tal)
+        self.assertIn("el('button', 'army-casillero')", tal)
+        self.assertIn("b.setAttribute('aria-label'", tal, "el casillero no tiene nombre accesible")
+        self.assertIn("aria-pressed", tal, "el casillero elegido no se marca")
+
+    def test_el_detalle_muestra_todas_las_stats_y_reusa_lija_y_polvo(self):
+        tal = (PUBLICO / "game" / "ui-taller.js").read_text(encoding="utf-8")
+        self.assertIn("G.STATS.forEach(", tal, "no enseña todas las stats")
+        self.assertIn("TL.coste(nv)", tal, "la lija no reusa el coste de taller.js")
+        self.assertIn("TL.residuo(t)", tal, "el polvo no reusa residuo(t)")
+        self.assertIn("lija(t, s.value)", tal)
+
+    def test_el_casillero_mide_44_px_y_tiene_foco_visible(self):
+        css = (PUBLICO / "assets" / "thegame.css").read_text(encoding="utf-8")
+        self.assertRegex(css, r"\.army-casillero\{[^}]*min-width:2\.75rem[^}]*min-height:2\.75rem")
+        base = (PUBLICO / "assets" / "soberano.css").read_text(encoding="utf-8")
+        self.assertRegex(base, r":focus-visible\{outline:2px solid")
+
+
+class ArmyYTallerEnUnaHoja(unittest.TestCase):
+    """Decision del Soberano (2026-10-13, FIRMO nuevo: unificacion Army+Taller). El Taller vive DENTRO de la
+    hoja `ondas`, debajo del Army; ya no hay hoja propia. `PANEL.taller` sigue siendo su contenedor."""
+
+    def test_el_taller_cuelga_de_la_hoja_ondas_debajo_del_army(self):
+        sh = (ASSETS / "terminal_menu_shell.js").read_text(encoding="utf-8")
+        self.assertIn("ond.appendChild(tal)", sh, "el Taller no cuelga de la hoja ondas")
+        self.assertLess(sh.index("S.ARMYZ = el('div', 'casa-army'); ond.appendChild(S.ARMYZ);"),
+                        sh.index("ond.appendChild(tal)"), "el Taller debe ir debajo del Army")
+        self.assertNotIn("hoja('taller'", sh, "sigue existiendo una hoja propia del Taller")
+
+    def test_la_entrada_del_taller_abre_la_hoja_unica_y_baja_a_el(self):
+        sh = (ASSETS / "terminal_menu_shell.js").read_text(encoding="utf-8")
+        i = sh.index("entrada('taller',")
+        bloque = sh[i:i + 400]
+        self.assertIn("'thegame-ondas'", bloque, "la entrada del Taller no apunta a la hoja unica")
+        self.assertIn("S.PANEL.taller.scrollIntoView", bloque, "la entrada no lleva la vista al Taller")
 
 
 class EclosionEspera(unittest.TestCase):

@@ -11,7 +11,8 @@
   'use strict';
 
   var G = null, A = null, S = null, army = null;
-  var R = {}, reloj = 0, huevos = [], eclosionada = null, capa = null, cadena = null, clave = null, causa = '';
+  var R = {}, reloj = 0, eclosionada = null, capa = null, INV = null;
+  var Z = { huevos: [], cadena: null, clave: null, causa: '' };  /* estado de la invocacion, compartido con ui-invoca.js */
 
   function T(k) { return (window.AtlasJuego && window.AtlasJuego.texto(k)) || ''; }
   function el(tag, clase, texto) {
@@ -30,71 +31,12 @@
   /* --- la ficha de la tropa (lienzo, nombre, carta y voz): `ui-ficha.js` (troceo T) --- */
   var lienzo, traza, nombre, ficha, cronica;
 
-  /* --- invocar ------------------------------------------------------------ */
-  function firma(obj) {
-    if (!window.Identity) { return Promise.reject(new Error('sin identidad')); }
-    return window.Identity.publica().then(function (pub) {
-      obj.pseudonimo = window.Identity.quien(); obj.clave_publica = pub;
-      return window.Identity.firmar(obj).then(function (f) { return { obj: obj, firma: f.firma }; });
-    });
-  }
-  function sinIdentidad(e, reintenta) {
-    var msg = String((e && e.message) || e || '');
-    dice(/sin identidad/.test(msg) ? T('piloto_sin_id') : msg);
-    if (!/sin identidad/.test(msg) || !window.Identity || !window.Identity.crear || R.caja.querySelector('.crear-id')) { return; }
-    var b = boton(T('piloto_crear_id')); b.classList.add('crear-id');
-    b.addEventListener('click', function () {
-      b.disabled = true;
-      window.Identity.crear().then(function () { b.remove(); reintenta(); }, function (x) { b.disabled = false; dice(String(x && x.message || x)); });
-    });
-    R.caja.appendChild(b);
-  }
-  /* G0 · LA CADENA DE INVOCACIONES (`db.js`): se carga y se re-verifica (firma y semilla) al tener clave, y con ella
-     VUELVEN los huevos pagados (antes vivian solo en memoria: recargar cobraba el cobre y devolvia 0 huevos). */
-  function cadenaLista() {
-    var I = window.Identity;
-    if (!I || !I.quien || !I.quien()) { return Promise.reject(new Error('sin identidad')); }
-    return I.publica().then(function (pub) {
-      if (pub === clave && cadena) { return cadena; }
-      return A.cadenaWeb(pub).lee().then(function (c) {
-        c = c || [];
-        return A.verificaCadena(c, pub, A.verificaWeb, A.semillaWeb).then(function (x) {
-          clave = pub; causa = x; cadena = x ? null : c;
-          huevos = cadena ? A.huevos(cadena) : [];
-          if (x) { dice('NO_DATA · ' + x); }
-          pinta();
-          return cadena;
-        });
-      });
-    });
-  }
-  function invoca(tc) {
-    var i = ins(), TC = G.TCS[tc];
-    if (!i || i.recursos.cobre < TC.coste.cobre || i.recursos.luz < TC.coste.luz) { dice(T('inc_falta')); return; }
-    cadenaLista().then(function (c) {
-      if (!c) { dice('NO_DATA · ' + causa); return; }
-      var o = A.eslabon(c, tc, clave);
-      return window.Identity.firmar(o).then(function (f) {
-        return A.semillaWeb(f.firma).then(function (semilla) {
-          var ev = window.AtlasJuego.invoca(TC.coste);
-          if (!ev || ev.resultado !== 'ok') { dice(T('inc_falta')); return; }
-          cadena = A.anexa(cadena, o, f.firma, semilla, i.ciclo, i.ciclo + TC.incuba);
-          A.cadenaWeb(clave).pon(cadena);
-          huevos.push({ tc: tc, semilla: semilla, desde: i.ciclo, hasta: i.ciclo + TC.incuba, seq: o.seq });
-          S.suena('pop', calor());
-          dice(rellena(T('inc_hecha'), { tc: T(tc) }));
-          pinta();
-        });
-      });
-    }).catch(function (e) { sinIdentidad(e, function () { invoca(tc); }); });
-  }
-
   /* --- el nido, la eclosion y el army ------------------------------------ */
   function pintaNido() {
     var i = ins(), c = i ? i.ciclo : 0;
     while (R.nido.firstChild) { R.nido.removeChild(R.nido.firstChild); }
-    if (!huevos.length) { R.nido.appendChild(el('li', 'atlas-nota', T('nido_vacio'))); return; }
-    huevos.forEach(function (h) {
+    if (!Z.huevos.length) { R.nido.appendChild(el('li', 'atlas-nota', T('nido_vacio'))); return; }
+    Z.huevos.forEach(function (h) {
       var li = el('li'), p = Math.min(100, Math.floor((c - h.desde) * 100 / (h.hasta - h.desde)));
       var cv = lienzo(72, T('huevo_aria'));
       li.appendChild(cv);
@@ -105,7 +47,7 @@
   }
   function eclosiona(h) {
     var t = G.tirada(h.semilla, h.tc);
-    if (cadena && h.seq) { cadena = A.abre(cadena, h.seq); A.cadenaWeb(clave).pon(cadena); }  /* G0: abierto, no borrado */
+    if (Z.cadena && h.seq) { Z.cadena = A.abre(Z.cadena, h.seq); A.cadenaWeb(Z.clave).pon(Z.cadena); }  /* G0: abierto, no borrado */
     eclosionada = t;
     while (R.eclosion.firstChild) { R.eclosion.removeChild(R.eclosion.firstChild); }
     R.eclosion.hidden = false;
@@ -134,7 +76,7 @@
   }
   function adopta(t, b) {
     b.disabled = true;
-    firma(A.adopcion(t, '', '')).then(function (r) {
+    INV.firma(A.adopcion(t, '', '')).then(function (r) {
       return army.adopta(r.obj, r.firma).then(function (u) {
         eclosionada = null; R.eclosion.hidden = true;
         S.suena('adopcion', calor());
@@ -145,7 +87,7 @@
       });
     }).catch(function (e) {
       b.disabled = false;
-      if (/sin identidad/.test(String(e && e.message))) { sinIdentidad(e, function () { adopta(t, b); }); }
+      if (/sin identidad/.test(String(e && e.message))) { INV.sinIdentidad(e, function () { adopta(t, b); }); }
       else { dice(T('adopcion_no') + ' ' + (e && e.message)); }
     });
   }
@@ -153,7 +95,7 @@
     while (R.army.firstChild) { R.army.removeChild(R.army.firstChild); }
     var l = army.lista();
     if (!l.length) { R.army.appendChild(el('li', 'atlas-nota', T('army_vacio'))); return; }
-    l.forEach(function (u) { var li = el('li'); li.appendChild(ficha(u.adopcion.tropa, 64)); R.army.appendChild(li); });
+    window.AtlasTallerUI.casilleros(R.army, l, ficha);
   }
   function pinta() {
     var i = ins();
@@ -161,15 +103,15 @@
       x.b.disabled = !i || i.recursos.cobre < x.c.cobre || i.recursos.luz < x.c.luz;
     });
     pintaNido();
-    if (R.cron) { cronica(R.cron, cadena, causa); }  /* piezas 1+2 y 3: piedad y cronica, de TU cadena */
+    if (R.cron) { cronica(R.cron, Z.cadena, Z.causa); }  /* piezas 1+2 y 3: piedad y cronica, de TU cadena */
   }
   function tic() {
     /* G0 · la capa dejo de ser un <dialog> (sin `open`): con `!capa.open` esto salia SIEMPRE y nada eclosionaba. */
     if (!capa || !capa.isConnected || document.hidden) { return; }
     var i = ins(), c = i ? i.ciclo : 0;
     if (R.eclosion.hidden) {
-      var listo = huevos.filter(function (h) { return c >= h.hasta; })[0];
-      if (listo) { huevos.splice(huevos.indexOf(listo), 1); eclosiona(listo); }
+      var listo = Z.huevos.filter(function (h) { return c >= h.hasta; })[0];
+      if (listo) { Z.huevos.splice(Z.huevos.indexOf(listo), 1); eclosiona(listo); }
     }
     pinta();
   }
@@ -181,6 +123,7 @@
     var F = window.AtlasFicha.crea({ G: G, A: A, S: S, T: T, el: el, boton: boton, rellena: rellena, dice: dice });
     lienzo = F.lienzo; traza = F.traza; nombre = F.nombre; ficha = F.ficha; cronica = F.cronica;
     capa = c; army = A.crea(A.verificaWeb, A.almacenWeb ? A.almacenWeb() : null);
+    INV = window.AtlasInvoca.crea({ G: G, A: A, S: S, T: T, boton: boton, rellena: rellena, dice: dice, ins: ins, calor: calor, R: R, Z: Z, pinta: pinta });
     var s = el('section', 'panel atlas-incubadora');
     s.appendChild(el('h4', null, T('inc_h')));
     s.appendChild(el('p', 'atlas-nota', T('inc_nota')));
@@ -216,7 +159,7 @@
       var lev = G.oddsAristas(tc).reduce(function (a, x) { return a + (x[0] > 12 ? x[1] : 0); }, 0);
       b.appendChild(el('small', 'atlas-leviatan', ' · ' + rellena(T('inc_leviatan'), { p: Math.floor(lev / 10) + '.' + (lev % 10) })));
       b.id = 'invoca-' + tc;
-      b.addEventListener('click', function () { invoca(tc); });
+      b.addEventListener('click', function () { INV.invoca(tc); });
       R.caja.appendChild(b);
       return { b: b, c: co };
     });
@@ -261,8 +204,8 @@
     }
     reloj = setInterval(tic, window.AtlasMotor.CICLO_MS);
     /* G0: al abrir (y al crear o cambiar de clave) vuelven los huevos de la cadena del aparato. */
-    cadenaLista().catch(function () {});
-    document.addEventListener('preceptor:identity', function () { cadena = null; cadenaLista().catch(function () {}); });
+    INV.cadenaLista().catch(function () {});
+    document.addEventListener('preceptor:identity', function () { Z.cadena = null; INV.cadenaLista().catch(function () {}); });
   }
 
   /* P9: el Taller retira una tropa SOLO con su recibo firmado (lo verifica `army.retira`). */
