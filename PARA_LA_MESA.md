@@ -274,3 +274,12 @@ C1 techo 16 KiB contra la revocación D2 · C2 «ES modules» contra el patrón 
 
 ## Lo que queda (en orden)
 R4 bioluminiscencia → Todas las piezas construibles están hechas. Las propuestas P9/P10/P11/P6/P-ESM/P-CHUNKS no se construyen sin tu firma.
+
+## ERRATA Y AVANCE · RONDA 3 · 2026-10-13 (append, sin reescribir lo anterior)
+- **ERRATA:** en las lineas de «Estado git» escribi `origin/main = a481691`. Medido: `origin/main` = `cc4fd44` (PR #61 fusionada por el Soberano; los tres commits viajeros ya estan en main). Y «Ligado a GitHub: PENDIENTE» queda superado: el enlace del lab (`benchmarks/bench_20261011`, medido 200) vive en la ficha del coral desde el chunk 2 (`abfz`, PR #62).
+- **Chunk 3 · formas infantiles de los edificios (sello abf*, en curso):** boya (burbuja con antena), observatorio (cupula con ventana), cristal (gema facetada) y lapidas (losa de punta redondeada). Cada silueta lleva las tres bandas toon del hue de su vector; las lapidas van en gris fijo (no tienen vector vivo). Medido en captura: las cuatro se distinguen. Sabotaje: hue inventado en la sombra → 3 de 7 casos en rojo.
+- **Corales restantes:** ninguno en el mapa aparte de Hexelion (el punto del Doogee se quito en #57). El racimo sirve para todos los nodos que tengan punto; hoy es uno. Declarado.
+- **Debida declarada:** `reef_buildings_layer.js` pasa de 15.924 a 16.322 B (techo 16.384, 62 B libres). Se mantiene: la frugalidad es meta, no recorte.
+- **Ctrl+rueda en PC (medido con CDP, headless):** escala de pagina 1 → 1; el mapa no la toma (zoom_mapa 1.00 → 1.00). El zoom del navegador NO se aplica en headless: NO_DATA aqui; lo mide el Soberano en un PC real.
+- **Cangrejo:** toon (abfn) visible junto al coral en captura. **Mapa despejandose:** no medido (necesita mirar con el Observatorio): declarado para los ojos del Soberano.
+- **Summon (medida guia):** reintento con ventana de 20 min en curso al redactar esta linea; se registra su resultado cuando termine, con su ciclo y su tiempo medidos, o como NO_DATA con causa.
