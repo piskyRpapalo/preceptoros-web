@@ -1,6 +1,7 @@
 ## RONDA 3 · EMBELLECIMIENTO · EN MARCHA · 2026-10-13
 - **Chunk 1 (payload de Hexelion): VERDE, PR #61 ABIERTA** (`abfy`, sin merge; el merge es del Soberano). `hexelion_bench.js` lleva las cifras de `bench_20261011_resultados.json`: embeddinggemma-2 pp512 ngl99 = 6459.63 tok/s (MEDIDO, GPU Vulkan); tres modelos NO_DATA con su causa textual. No hay «tg32» en ese fichero: no se inventa. Ligado a GitHub: PENDIENTE (el fichero no trae URL del repo del laboratorio).
-- Orden: cangrejo (toon desde abfn) y mapa despejandose: sin cambio en este chunk; quedan para verificacion visual.
+- **Chunk 2 (coral de Hexelion infantil + enlace del lab): VERDE, PR #62 ABIERTA** (`abfz`, sin merge). Coral = racimo de burbujas toon con ojos solo con medidas; sin medidas, contorno punteado y sin cara. Ficha con el enlace `benchmarks/bench_20261011` (medido por la Mesa) y el sha256 local. Visual medido por captura CDP (360 px): el coral y el cangrejo se ven juntos en toon.
+- **Verificacion visual pendiente, declarada para los ojos del Soberano:** el mapa despejandose (necesita mirar con el Observatorio; la captura de la vista inicial no lo muestra).
 - **Estado git:** rama `claude/mapa-unico`; publicacion `claude/web-solo-juego` = 54019ce (PR #61 abierta). `origin/main` = a481691 (sin cambios por mi).
 - **Pendiente de la ronda:** edificios restantes y corales con formas infantiles (boya y cristal ya tienen bandas toon); el coral de Hexelion en forma infantil; PRUEBA_5_MINUTOS al cerrar la ronda.
 
@@ -273,3 +274,15 @@ C1 techo 16 KiB contra la revocación D2 · C2 «ES modules» contra el patrón 
 
 ## Lo que queda (en orden)
 R4 bioluminiscencia → Todas las piezas construibles están hechas. Las propuestas P9/P10/P11/P6/P-ESM/P-CHUNKS no se construyen sin tu firma.
+
+## ERRATA Y AVANCE · RONDA 3 · 2026-10-13 (append, sin reescribir lo anterior)
+- **ERRATA:** en las lineas de «Estado git» escribi `origin/main = a481691`. Medido: `origin/main` = `cc4fd44` (PR #61 fusionada por el Soberano; los tres commits viajeros ya estan en main). Y «Ligado a GitHub: PENDIENTE» queda superado: el enlace del lab (`benchmarks/bench_20261011`, medido 200) vive en la ficha del coral desde el chunk 2 (`abfz`, PR #62).
+- **Chunk 3 · formas infantiles de los edificios (sello abf*, en curso):** boya (burbuja con antena), observatorio (cupula con ventana), cristal (gema facetada) y lapidas (losa de punta redondeada). Cada silueta lleva las tres bandas toon del hue de su vector; las lapidas van en gris fijo (no tienen vector vivo). Medido en captura: las cuatro se distinguen. Sabotaje: hue inventado en la sombra → 3 de 7 casos en rojo.
+- **Corales restantes:** ninguno en el mapa aparte de Hexelion (el punto del Doogee se quito en #57). El racimo sirve para todos los nodos que tengan punto; hoy es uno. Declarado.
+- **Debida declarada:** `reef_buildings_layer.js` pasa de 15.924 a 16.322 B (techo 16.384, 62 B libres). Se mantiene: la frugalidad es meta, no recorte.
+- **Ctrl+rueda en PC (medido con CDP, headless):** escala de pagina 1 → 1; el mapa no la toma (zoom_mapa 1.00 → 1.00). El zoom del navegador NO se aplica en headless: NO_DATA aqui; lo mide el Soberano en un PC real.
+- **Cangrejo:** toon (abfn) visible junto al coral en captura. **Mapa despejandose:** no medido (necesita mirar con el Observatorio): declarado para los ojos del Soberano.
+- **Summon (medida guia):** reintento con ventana de 20 min en curso al redactar esta linea; se registra su resultado cuando termine, con su ciclo y su tiempo medidos, o como NO_DATA con causa.
+- **Summon (medida guia) · reintento con ventana de 20 min: NO_DATA, con causa observada.** Cobre 530 al pulsar (la compuerta de 50 se paso), invocacion de Reef Treasure en el ciclo 125, y la revelacion (`.atlas-eclosion`) NO aparecio en la ventana. No determinado por que: el huevo de tc1 incuba 20 ciclos, y el ciclo avanzo lo suficiente en la ventana. Hipotesis a revisar: el tick de eclosion en ui.js o el conteo de ciclos del nido. Corto aqui, como manda la regla; no se inventa tiempo.
+- **Chunk 3 (formas infantiles de los edificios): VERDE, commit local `b37045a`, sello `abga`.** PR pendiente de abrir.
+- **Estado del arbol:** `memory.db` (0 bytes, creado 00:57, sin referencia en el repo) queda SIN COMMITEAR; no lo he creado a proposito. Decide tu si se borra.

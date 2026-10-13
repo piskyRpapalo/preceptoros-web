@@ -661,8 +661,8 @@ process.stdout.write(JSON.stringify(ok));
         r3 = subprocess.run(["node", str(RAIZ / "hexelion_bench_casos.mjs")], capture_output=True, text=True, timeout=60)
         self.assertEqual(r3.returncode, 0, r3.stdout[-1200:] + r3.stderr[-400:])
         # RONDA 2 · chunk 3: boya y cristal en toon desde su vector (hue del propio edificio, sin inventar).
-        self.assertIn("raiz.AtlasBuildingsToon.disco(g, p[0], y, r, c, dpr, c.a)", (PUBLICO / "game" / "reef_buildings_layer.js").read_text(encoding="utf-8"))
-        self.assertIn("TB.disco(g, p[0], p[1], lado, { h: niv[2][0], s: niv[2][1], l: niv[2][2] }", (PUBLICO / "game" / "latency_crystal.js").read_text(encoding="utf-8"))
+        self.assertIn("raiz.AtlasBuildingsToon.forma(g, 'boya', p[0], y, r, c, dpr, c.a)", (PUBLICO / "game" / "reef_buildings_layer.js").read_text(encoding="utf-8"))  # ronda 3: la boya tiene su silueta
+        self.assertIn("TB.forma(g, 'cristal', p[0], p[1], lado, { h: niv[2][0], s: niv[2][1], l: niv[2][2] }", (PUBLICO / "game" / "latency_crystal.js").read_text(encoding="utf-8"))
         r2 = subprocess.run(["node", str(RAIZ / "buildings_toon_casos.mjs")], capture_output=True, text=True, timeout=60)
         self.assertEqual(r2.returncode, 0, r2.stdout[-1200:] + r2.stderr[-400:])
         f = (ASSETS / "terminal_window_frame.js").read_text(encoding="utf-8")
