@@ -720,7 +720,7 @@ process.stdout.write(JSON.stringify(ok));
         ninguna ventana persistente: segunda pulsacion cierra, Escape cierra."""
         sh = (ASSETS / "terminal_menu_shell.js").read_text(encoding="utf-8")
         self.assertLess(sh.index("entrada('ondas',"), sh.index("entrada('taller',"), "el inventario va antes que el Taller")
-        for pieza in ("muestra(actual === 'ondas' ? null : 'ondas')", "S.HOJA.ondas, S.HOJA.taller", "function mueveArmy()",
+        for pieza in ("muestra(actual === 'ondas' ? null : 'ondas')", "S.HOJA.ondas", "function mueveArmy()",
                       "Promise.resolve(x.alTaller()).then(mueveArmy)", "e.key !== 'Escape'"):
             with self.subTest(pieza=pieza):
                 self.assertIn(pieza, sh)
@@ -1338,8 +1338,8 @@ class Pestanas(unittest.TestCase):
         ids = re.findall(r"\['(\w+)', '\\u[0-9A-F]{4}", c)
         self.assertEqual(tuple(ids), self.IDS)
         for pieza in ("el('aside', 'thegame-terminal')", "cajon.hidden = true", "'pliego-estado', true", "el('nav', 'thegame-menu')",
-                      "hoja('taller', T('pes_taller'))", "S.ZB = hoja('batalla', T('hoja_batalla'))", "'aria-expanded'",
-                      ".setAttribute('aria-controls', 'thegame-taller')", "classList.toggle('con-hoja', !!actual)",
+                      "el('div', 'taller-unido')", "S.ZB = hoja('batalla', T('hoja_batalla'))", "'aria-expanded'",
+                      ".setAttribute('aria-controls', 'thegame-ondas')", "classList.toggle('con-hoja', !!actual)",
                       "abierto = abierto === id ? null : id;", "e.key !== 'Escape'", "e.altKey && (e.key === 'm'",
                       "c.id = 'thegame-' + id + '-cierra'", "new MutationObserver(sincroniza)", "ordena();"):
             with self.subTest(pieza=pieza):
@@ -1383,7 +1383,7 @@ class Pestanas(unittest.TestCase):
         # Taller. Su peso sigue fuera de la puerta.
         c = c + (ASSETS / "terminal_menu_shell.js").read_text(encoding="utf-8")  # la terminal (hojas incluidas) salio a su modulo
         self.assertIn("PARTIDA = S.PARTIDA; MAPA = S.MAPA; muestra = S.muestra; pliego = S.pliego;\n    cargaCasa();", c)
-        self.assertIn("if (actual === 'taller' || actual === 'ondas') { Promise.resolve(x.alTaller()).then(mueveArmy); }", c)
+        self.assertIn("if (actual === 'ondas') { Promise.resolve(x.alTaller()).then(mueveArmy); }", c)
         self.assertIn("casa = cargaArmy().then(function () { return pide(CASA); })", c)
         self.assertIn("S.ARMYZ = el('div', 'casa-army'); ond.appendChild(S.ARMYZ);", c)  # RONDA 1: el ARMY, no el Taller
         self.assertIn("army: cargaArmy", c)
@@ -2725,6 +2725,57 @@ class EclosionDirecta(unittest.TestCase):
         cuerpo = tal[tal.index("function aterriza(panel)"):][:300]
         self.assertIn("atlas-dlg-mandos", cuerpo, "aterriza no lleva el foco a la eleccion")
         self.assertIn("b.focus()", cuerpo)
+
+
+class CasillerosDelArmy(unittest.TestCase):
+    """Mision 2026-10-13, paso 4 (el Army como grid de casilleros). Cada tropa en su casillero (dibujado con
+    su ficha, sin imagenes), con aria-label, 44 px y foco visible. Elegir un casillero muestra en la MISMA
+    hoja su ficha, TODAS sus stats y los controles de lija y desintegrar, que ya existen en ui-taller.js."""
+
+    def test_ui_pinta_el_army_como_casilleros_del_taller(self):
+        """ROJO hasta el cambio: ui.js pintaba un li con la ficha, sin casillero ni eleccion."""
+        ui = (PUBLICO / "game" / "ui.js").read_text(encoding="utf-8")
+        self.assertIn("window.AtlasTallerUI.casilleros(R.army, l, ficha)", ui)
+        self.assertNotIn("li.appendChild(ficha(u.adopcion.tropa, 64))", ui, "queda el pintado antiguo")
+
+    def test_cada_casillero_tiene_nombre_y_se_marca_al_elegirlo(self):
+        tal = (PUBLICO / "game" / "ui-taller.js").read_text(encoding="utf-8")
+        self.assertIn("function casilleros(", tal)
+        self.assertIn("el('button', 'army-casillero')", tal)
+        self.assertIn("b.setAttribute('aria-label'", tal, "el casillero no tiene nombre accesible")
+        self.assertIn("aria-pressed", tal, "el casillero elegido no se marca")
+
+    def test_el_detalle_muestra_todas_las_stats_y_reusa_lija_y_polvo(self):
+        tal = (PUBLICO / "game" / "ui-taller.js").read_text(encoding="utf-8")
+        self.assertIn("G.STATS.forEach(", tal, "no enseña todas las stats")
+        self.assertIn("TL.coste(nv)", tal, "la lija no reusa el coste de taller.js")
+        self.assertIn("TL.residuo(t)", tal, "el polvo no reusa residuo(t)")
+        self.assertIn("lija(t, s.value)", tal)
+
+    def test_el_casillero_mide_44_px_y_tiene_foco_visible(self):
+        css = (PUBLICO / "assets" / "thegame.css").read_text(encoding="utf-8")
+        self.assertRegex(css, r"\.army-casillero\{[^}]*min-width:2\.75rem[^}]*min-height:2\.75rem")
+        base = (PUBLICO / "assets" / "soberano.css").read_text(encoding="utf-8")
+        self.assertRegex(base, r":focus-visible\{outline:2px solid")
+
+
+class ArmyYTallerEnUnaHoja(unittest.TestCase):
+    """Decision del Soberano (2026-10-13, FIRMO nuevo: unificacion Army+Taller). El Taller vive DENTRO de la
+    hoja `ondas`, debajo del Army; ya no hay hoja propia. `PANEL.taller` sigue siendo su contenedor."""
+
+    def test_el_taller_cuelga_de_la_hoja_ondas_debajo_del_army(self):
+        sh = (ASSETS / "terminal_menu_shell.js").read_text(encoding="utf-8")
+        self.assertIn("ond.appendChild(tal)", sh, "el Taller no cuelga de la hoja ondas")
+        self.assertLess(sh.index("S.ARMYZ = el('div', 'casa-army'); ond.appendChild(S.ARMYZ);"),
+                        sh.index("ond.appendChild(tal)"), "el Taller debe ir debajo del Army")
+        self.assertNotIn("hoja('taller'", sh, "sigue existiendo una hoja propia del Taller")
+
+    def test_la_entrada_del_taller_abre_la_hoja_unica_y_baja_a_el(self):
+        sh = (ASSETS / "terminal_menu_shell.js").read_text(encoding="utf-8")
+        i = sh.index("entrada('taller',")
+        bloque = sh[i:i + 400]
+        self.assertIn("'thegame-ondas'", bloque, "la entrada del Taller no apunta a la hoja unica")
+        self.assertIn("S.PANEL.taller.scrollIntoView", bloque, "la entrada no lleva la vista al Taller")
 
 
 class EclosionEspera(unittest.TestCase):

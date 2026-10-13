@@ -153,7 +153,7 @@
     while (R.army.firstChild) { R.army.removeChild(R.army.firstChild); }
     var l = army.lista();
     if (!l.length) { R.army.appendChild(el('li', 'atlas-nota', T('army_vacio'))); return; }
-    l.forEach(function (u) { var li = el('li'); li.appendChild(ficha(u.adopcion.tropa, 64)); R.army.appendChild(li); });
+    window.AtlasTallerUI.casilleros(R.army, l, ficha);
   }
   function pinta() {
     var i = ins();

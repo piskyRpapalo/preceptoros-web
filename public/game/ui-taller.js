@@ -11,7 +11,7 @@
 (function () {
   'use strict';
   var TL = window.AtlasTaller, A = window.AtlasArmy, V = window.AtlasValores, G = window.AtlasGacha;
-  var R = {}, cadena = [], est = null, roto = '', caja = null;
+  var R = {}, cadena = [], est = null, roto = '', caja = null, elegida = null, fichaDe = null;
 
   function T(k, d) { var C = window.AtlasCasa, J = window.AtlasJuego, t = (C && C.texto && C.texto(k)) || (J && J.texto(k)); return t && t !== k ? t : d; }
   function el(tag, clase, texto) { var n = document.createElement(tag); if (clase) { n.className = clase; } if (texto != null) { n.textContent = String(texto); } return n; }
@@ -79,14 +79,34 @@
     });
   }
 
+  /* El Army como casilleros: cada tropa con su ficha (dibujada, sin imagen) y su nombre. Elegir una marca el
+     casillero y pinta su detalle (abajo, en esta misma hoja). Sustituye al pintado antiguo de ui.js. */
+  function casilleros(ul, lista, ficha) {
+    fichaDe = ficha; ul.textContent = '';
+    lista.forEach(function (u) {
+      var t = u.adopcion.tropa, li = el('li'), b = el('button', 'army-casillero'), n = t.aristas || G.aristas(t);
+      b.type = 'button';
+      b.setAttribute('aria-label', T('rar_' + t.rareza, t.rareza) + ' · ' + n + ' ' + T('taller_aristas', 'edges') + ' · ' + TL.residuo(t) + ' g');
+      b.setAttribute('aria-pressed', String(elegida === t.semilla));
+      b.appendChild(ficha(t, 64));
+      b.addEventListener('click', function () { elegida = t.semilla; casilleros(ul, lista, ficha); pinta(); });
+      li.appendChild(b); ul.appendChild(li);
+    });
+  }
   function pinta() {
     if (!R.lista) { return; }
     R.saldo.textContent = T('taller_saldo', 'Static residue: {g} g').replace('{g}', est ? est.saldo : 'NO_DATA');
     R.lista.textContent = '';
-    var L = V.taller.lija, us = army();
-    if (!us.length) { R.lista.appendChild(el('li', 'atlas-nota', T('army_vacio', 'Your Army is empty.'))); }
+    var L = V.taller.lija, todas = army(), us = todas.filter(function (u) { return u.adopcion.tropa.semilla === elegida; });
+    if (!todas.length) { R.lista.appendChild(el('li', 'atlas-nota', T('army_vacio', 'Your Army is empty.'))); }
+    else if (!us.length) { R.lista.appendChild(el('li', 'atlas-nota', T('taller_elige', 'Pick a unit in your Army to sand or dissolve it.'))); }
     us.forEach(function (u) {
       var t = u.adopcion.tropa, li = el('li', 'taller-fila'), lj = (est && est.lijas[t.semilla]) || {};
+      /* El detalle: su ficha grande y TODAS sus stats (las de la tropa, sin lijar; el saldo sale arriba). */
+      var det = el('li', 'taller-detalle');
+      if (fichaDe) { det.appendChild(fichaDe(t, 168)); }
+      var sts = el('ul', 'taller-stats'); G.STATS.forEach(function (k) { sts.appendChild(el('li', null, k + ' ' + t.stats[k])); });
+      det.appendChild(sts); R.lista.appendChild(det);
       li.appendChild(el('b', null, (t.aristas || G.aristas(t)) + ' ' + T('taller_aristas', 'edges') + ' · ' + T('rar_' + t.rareza, t.rareza)));
       var d = boton(T('taller_desintegra', 'Dissolve · +{g} g').replace('{g}', TL.residuo(t)));
       d.addEventListener('click', function () { desintegra(t); });
@@ -137,5 +157,5 @@
   /* P10: el tono de la bandera a la que se tino una onda, o null (nunca un color decidido por otro). */
   function tono(semilla) { var b = est && !roto ? est.tintes[semilla] : null; return b ? V.banderas[b] : null; }
 
-  window.AtlasTallerUI = { monta: monta, lijas: lijas, tono: tono, pinta: pinta, desintegraSuelta: desintegraSuelta, aterriza: aterriza };
+  window.AtlasTallerUI = { monta: monta, lijas: lijas, tono: tono, pinta: pinta, desintegraSuelta: desintegraSuelta, aterriza: aterriza, casilleros: casilleros };
 })();
