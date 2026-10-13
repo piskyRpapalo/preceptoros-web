@@ -125,7 +125,8 @@ caso('adoptar e invocar: solo ui.js, tras la firma de la persona; ningun modulo 
     const c = lee(f);
     if (/\.adopta\(|\.invoca\(|Identity\.firmar|firmarTexto/.test(c)) { return f + ' adopta, invoca o firma'; }
   }
-  const ui = lee('ui.js');
+  // FIRMO M1: la firma vive en ui-invoca.js (antes que ui.js en la familia).
+  const ui = lee('ui-invoca.js') + '\n' + lee('ui.js');
   return todas(ui.indexOf('window.Identity.firmar(obj)') >= 0 || 'ui sin firma humana',
                ui.indexOf('army.adopta(r.obj, r.firma)') > ui.indexOf('window.Identity.firmar(obj)') || 'adopta antes de firmar');
 });
