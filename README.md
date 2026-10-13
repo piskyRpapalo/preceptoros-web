@@ -10,27 +10,19 @@
 > [piskyRpapalo](https://github.com/piskyRpapalo). The companion's contract
 > for contributors lives in `PRECEPTOR.md` in the APP repository.
 
-This repository holds a small public website. It has one job: to lower the
-wall between a person and their own AI.
+This repository holds the public website of PreceptorOS. Its home page is the
+game **theGame**: an isometric world that runs in the browser, in nine
+languages.
 
 **Usage contract — the only two things we ask:** respect the ceilings (every
-file under 16 KiB, zero external requests on load, pure standard library,
+file under 25 MiB, zero external requests on load, pure standard library,
 human signature before any consequential action, no telemetry), and share
 back any tool that adapts natively to the app. Pull requests carry their own
 measurement; issues only carry opinions.
 
-Most people who want to run AI on their own machine stop at the same place.
-Not at the idea — at the setup. A page of commands, three words they have
-never seen, and a download that may or may not be the right one. The wall is
-not intelligence. It is vocabulary.
-
-So this site is a guide first and a showcase second. You arrive, you talk to
-it, and it walks you through the steps for the machine you actually have.
-When the steps are done, you no longer need this site.
-
-The second job is slower: to gather the people who made it through. A tool
-you run alone teaches you one thing. A hundred people running it teach each
-other.
+What the site serves today, measured: the game on the home page, the same game in
+nine languages, and the project's numbers with their date. Nothing beyond the
+list below is promised.
 
 ## Why this exists, in my own words
 
@@ -92,48 +84,40 @@ you are going to train on data that cannot leave the building, every number
 you publish about the result has to be one you measured yourself, with the
 date it was taken and the machine it ran on.
 
-![Asking about installation](docs/img/chat.webp)
-
 ## What you can do here
 
-- **Ask.** A chat panel answers with a model served from a home rack. Choose
-  who you talk to: each helper is tuned for one job.
-- **Install.** A page that gives you the steps, the download, and the list of
-  models — including the smallest one that fits an 8 GB phone.
-- **Read the numbers.** Speed, file sizes and test counts are published as
-  measurements, with the date they were taken.
-
-![Choosing a language](docs/img/puerta.webp)
+- **Play.** The home page is theGame: a map you can drag, zoom with a pinch or
+  the wheel, and a crab that swims. Panels open from the menu on the left.
+- **Read the numbers.** Site weight, languages and test counts are in
+  `public/counters.json`, each with the date it was taken.
+- **Install it.** The site is an installable app (`manifest.webmanifest`) and
+  keeps working with no network; `arnes_sw.mjs` checks the offline path.
 
 ## What this site promises
 
-- **Nothing leaves your browser until you press something.** Zero external
-  requests on load. No trackers, no fonts pulled from elsewhere, no analytics.
+- **Nothing leaves your browser until you press something.** Measured: a page
+  load asks only for `preceptoros.org`. No trackers, no fonts from elsewhere,
+  no analytics. The one other host, `api.preceptoros.org`, is called only when
+  a visitor presses send on a signed packet; if the rack does not answer, the
+  page says so.
 - **It works with no network.** The site installs as an app and keeps working
   offline.
 - **Nine languages**, each one complete. Not a machine pass over one.
-- **Every file under 16 KB.** No build step, no framework, no bundle. What is
-  in this repository is what your browser receives.
+- **Every file under 25 MiB** (the ceiling `test_web.py` enforces), and the
+  game's first load under 153,600 bytes gzip (`atlas/mundo.py`). No framework,
+  no bundler: what is in this repository is what your browser receives.
 - **A gap is named a gap.** Where a number is missing, the page says so and
   says why, instead of showing a stale one.
 
-![Install](docs/img/install.webp)
+## What the site serves, and how to take part
 
-## Two ways to take part, and both count
-
-**Use the tools.** Install it, run it on your own machine, and say what
-happened — what was slow, what broke, what your hardware measured. That is
-already a contribution: the numbers here mean more the more machines they
-come from, and there is no way to get them without people running this on
-hardware nobody here owns.
-
-**Build tools.** The helpers are small and specialised on purpose, so adding
-one is a normal amount of work rather than a project. If you build something
-that fits — a helper for a trade nobody has covered, an adapter trained on a
-dataset you know well — it belongs here next to the rest.
-
-Neither one is the price of the other. Somebody who only ever uses this is not
-a lesser participant; they are the reason the tools get better.
+- **Read and check the numbers.** Site weight, languages and test counts are in
+  `public/counters.json`, each with the date it was taken.
+- **Install it and use it offline.** The site is an installable app
+  (`manifest.webmanifest`); `arnes_sw.mjs` checks the offline path.
+- **Comment on a page.** The ✎ entry in the game menu opens a box. Nothing is
+  sent until you tick the consent box and press Send. The comment then goes to
+  a human review queue, signed with your pseudonym and your key.
 
 The reason any of it is public is simple. This was built because it was
 needed, and it is shared because knowledge should be democratised — available
@@ -159,8 +143,6 @@ These are not unit tests of functions. They check the promises above: that no
 file grew past the ceiling, that every language has every string, that a
 measured colour still meets contrast, and that no page quietly stopped saying
 where its numbers come from.
-
-![On a phone](docs/img/phone.webp)
 
 ## Licence
 
