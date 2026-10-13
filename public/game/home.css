@@ -3,6 +3,12 @@
 /* U1 («el mapa unico»): la casa YA NO es una escena; es el pliego «Estado» de la terminal. Fila de identidad,
    RIEL de las partes (`casa-lateral.js`) al borde, y la tira de estado al lado. Botones de 48 px, texto nitido. */
 .casa{display:grid;gap:.6rem;min-width:0}
+.crab-state-screen{display:grid;gap:.55rem;min-width:0}
+.crab-state-section{display:grid;gap:.3rem;min-width:0;padding:.45rem;border:1px solid var(--edge-sov,#3a2f63);border-radius:var(--radius,14px)}
+.crab-state-title{margin:0;font:700 .72rem/1.2 var(--mono,ui-monospace,monospace);letter-spacing:.04em}
+.crab-state-content{display:grid;gap:.35rem;min-width:0}
+.crab-state-section[data-section="body"] .crab-state-content{display:block}
+.crab-state-summon{display:inline-flex;align-items:center;justify-content:center;min-height:3rem;padding:.35rem .8rem}
 .casa-identidad{display:flex;align-items:center;gap:.6rem;min-width:0}
 .casa-quien{font:700 .9rem/1.2 var(--mono,ui-monospace,monospace);overflow-wrap:anywhere}
 .casa-color{width:1.1rem;height:1.1rem;flex:none;border-radius:50%;border:1px solid var(--edge-sov,#3a2f63)}

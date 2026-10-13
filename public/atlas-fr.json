@@ -77,7 +77,7 @@
   "fase_fin": "Phase finale atteinte : le Noyau est souverain.",
   "oxigeno": "OXYGÈNE",
   "cobre": "CUIVRE",
-  "sellada": "FAILLE SCELLÉE · se rouvre dans {s} s",
+  "sellada": "FAILLE SCELLÉE · se rouvre dans {c} cycles",
   "falta_cobre": "Il manque {n} de cuivre : la Forge n’en a pas encore assez produit.",
   "b4n_no": "Le Noyau reste fermé : il faut plus d’Ingénierie.",
   "dormias_vacio": "Rien pour l’instant : la Forêt produit tant que cet onglet est caché, jusqu’à 24 h.",

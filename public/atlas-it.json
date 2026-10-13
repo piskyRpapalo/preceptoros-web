@@ -77,7 +77,7 @@
   "fase_fin": "Fase finale raggiunta: il Nucleo è sovrano.",
   "oxigeno": "OSSIGENO",
   "cobre": "RAME",
-  "sellada": "FRATTURA SIGILLATA · si riapre tra {s} s",
+  "sellada": "FRATTURA SIGILLATA · si riapre tra {c} cicli",
   "falta_cobre": "Mancano {n} di rame: la Forgia non ne ha ancora prodotto abbastanza.",
   "b4n_no": "Il Nucleo resta chiuso: serve più Ingegneria.",
   "dormias_vacio": "Ancora niente: la Foresta produce mentre questa scheda è nascosta, fino a 24 h.",

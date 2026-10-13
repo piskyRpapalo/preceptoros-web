@@ -81,6 +81,15 @@
   "eco_4": "Last: paint it with your frequency. Pick your flag. It is yours: nobody else picks your colour.",
   "eco_5": "This is your Insignia. You learned the Workshop: dissolve, sand, paint. Now, the open sea.",
   "visitante": "Visitor (no key yet)",
-  "lateral_aria": "Your crab: its parts"
+  "lateral_aria": "Your crab: its parts",
+  "state_class_mar": "Sea crab",
+  "state_class_coral": "Coral",
+  "state_who": "WHO YOU ARE",
+  "state_body": "YOUR BODY",
+  "state_core": "CORE AND RIFT",
+  "state_budget": "YOUR BUDGET",
+  "state_receipts": "RECEIPTS",
+  "state_actions": "WHAT YOU CAN DO",
+  "state_summon": "Go to Summoning"
  }
 }
