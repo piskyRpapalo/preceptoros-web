@@ -1,12 +1,13 @@
-# PRUEBA DE 5 MINUTOS · theGame · para la mano del Soberano · versión `preceptoros-2026-17-abgb`
+# PRUEBA DE 5 MINUTOS · theGame · para la mano del Soberano · versión `preceptoros-2026-17-abgn`
 
 Antes (10 s): abre https://preceptoros.org/en/ y **recarga dos veces** (el service worker nuevo entra en la segunda).
-`preceptoros.org/sw.js` debe decir `abgb`. En el Doogee: Chrome **delante** (con Acurast delante, el mapa se pausa).
+`preceptoros.org/sw.js` debe decir `abgn`. En el Doogee: Chrome **delante** (con Acurast delante, el mapa se pausa).
 
 | # | Haz esto | Debes ver | Si no, anota |
 |---|---|---|---|
 | 1 | Abre y mira | Mapa isométrico grande en el centro; menú de iconos a la izquierda; arriba del mapa una franja **«Goal · …»** y debajo **«Now: …»** (lo que toca hacer); la Radio abajo | qué tapa qué |
 | 2 | Busca «undefined» o «NaN» en cualquier sitio (también al pasar el dedo por los iconos) | **Nunca**. Lo que falta dice `NO_DATA (causa)` | dónde |
+| 2b | Abre **Your crab - state** y lee el pliego | Secciones, una vez y en este orden: **Who you are → Your body → Core and crack → Your budget → Receipts → What you can do**. Un solo sello `LIVE`/`STALE` con delta del canal de estado; la Grieta se expresa en ciclos. Sin JSON ni Save/Forget/Import en la vista humana; esos controles están en el Inspector. El enlace final abre Summoning | orden, duplicados, reloj de pared, JSON o controles visibles |
 | 3 | Toca la **cúpula del Observatorio** o el **rombo del Cristal**, junto a tu casa (a menos de 160 del cangrejo; la boya queda justo fuera: si no abre, nada antes hacia la pieza) | Se abre el **Tutorial** (paso 2 de 6) | si se abre otra cosa |
 | 4 | Pulsa **← Map** y toca **mar vacío** | Tu cangrejo **nada** hasta allí (también W A S D). La franja pasa a «Now: Open the menu ⌖…». Contra la niebla se para y la Radio dice por qué | si salta o entra en la niebla |
 | 5 | Menú **★ Skills** | `Swim · level 1 · N actions` y `Reach · level 1`. Nada de Fishing, Mining, Core Level | — |
@@ -14,6 +15,7 @@ Antes (10 s): abre https://preceptoros.org/en/ y **recarga dos veces** (el servi
 | 6b | **Antes de invocar:** pulsa **Create identity** si aparece (sin identidad no hay firma y la invocación no empieza) | Tras crearla, el botón de invocar sigue su curso: huevo en el nido, y al terminar de incubar, la revelación `.atlas-eclosion` | si el huevo no aparece, anota el texto que dice el recuadro |
 | 7 | Menú **∿ Army** (el primero) | Tu inventario de ondas, cada una con su ficha; se cierra pulsando otra vez el mismo icono | — |
 | 8 | Toca cualquier botón del juego | Todos grandes (≥ 44 px); ningún panel se queda abierto si vuelves a pulsar su icono | el pequeño |
+| 8a | Abre una hoja (Army o Battle) y toca una entrada del menú lateral; luego abre un panel lateral y toca Army | Solo queda una pantalla abierta cada vez; todos los destinos internos de la web responden HTTP 200 | pantalla superpuesta o enlace que no abre |
 | 9 | Toca la línea de la Radio abajo | Burbujas con quién, sello, fuente y edad en ciclos (el Tutorial solo lo cuenta cuando llega a su paso 6) | — |
 | 9b | Abre dos paneles seguidos desde el menú | La ventana tiene **cabecero** (título · sello · fuente · edad en ciclos) y ✕; un **gusano** viaja de una entrada a la otra y la Radio lo narra | — |
 | 9c | Mira tu cangrejo y el mapa | Cangrejo **toon** (contorno grueso, bandas, ojos que parpadean); en el mapa solo **Hexelion** (el Doogee ya no está) | — |

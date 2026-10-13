@@ -9,7 +9,11 @@ solo verde o rojo.
 """
 import gzip
 import hashlib, html, json, re, subprocess, sys, unittest
+from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
+from threading import Thread
+from urllib.error import HTTPError
+from urllib.request import urlopen
 
 RAIZ = Path(__file__).resolve().parent
 PUBLICO = RAIZ / "public"
@@ -2441,7 +2445,7 @@ class WebLimpia(unittest.TestCase):
         self.assertEqual(nuevos, [], "ficheros identicos byte a byte en public/")
 
     def test_ningun_enlace_interno_roto(self):
-        rotos = []
+        rutas = set()
         for f in self.ficheros:
             if not f.endswith((".html", ".css", ".webmanifest")):
                 continue
@@ -2454,8 +2458,39 @@ class WebLimpia(unittest.TestCase):
                 if d.is_dir():
                     d = d / "index.html"
                 if not d.exists():
-                    rotos.append(f + " -> " + u)
-        self.assertEqual(rotos, [])
+                    self.fail(f"enlace interno sin destino: {f} -> {u}")
+                rutas.add("/" + d.relative_to(PUBLICO.resolve()).as_posix())
+
+        class Silencioso(SimpleHTTPRequestHandler):
+            def log_message(self, *_args):
+                pass
+
+        servidor = ThreadingHTTPServer(("127.0.0.1", 0), lambda *a, **kw: Silencioso(*a, directory=str(PUBLICO), **kw))
+        hilo = Thread(target=servidor.serve_forever, daemon=True)
+        hilo.start()
+        base = "http://127.0.0.1:" + str(servidor.server_port)
+        try:
+            try:
+                with urlopen(base + "/__sabotaje_enlace_interno_inexistente__", timeout=3):
+                    pass
+            except HTTPError as e:
+                self.assertEqual(e.code, 404, "el control negativo debe distinguir un destino inexistente")
+                e.close()
+            else:
+                self.fail("el control negativo del gate no produjo 404")
+            rotos = []
+            for ruta in sorted(rutas):
+                try:
+                    with urlopen(base + ruta, timeout=3) as respuesta:
+                        if respuesta.status != 200:
+                            rotos.append(f"{ruta}: HTTP {respuesta.status}")
+                except Exception as e:
+                    rotos.append(f"{ruta}: {e}")
+            self.assertEqual(rotos, [], "destinos internos que no responden HTTP 200")
+        finally:
+            servidor.shutdown()
+            servidor.server_close()
+            hilo.join(timeout=3)
 
 
 class Portada(unittest.TestCase):
@@ -2505,6 +2540,15 @@ class Portada(unittest.TestCase):
         self.assertIn("@media (prefers-reduced-motion:reduce){::view-transition-old(root),::view-transition-new(root){animation:none}}", css)
         for red in ("fetch(", "XMLHttpRequest"):
             self.assertNotIn(red, tg[tg.index("function muestra(id"):tg.index("function muestraYa")])
+
+    def test_menu_y_hoja_nunca_quedan_abiertos_a_la_vez(self):
+        shell = sin_comentarios((PUBLICO / "assets" / "terminal_menu_shell.js").read_text(encoding="utf-8"))
+        muestra = shell[shell.index("function muestraYa"):shell.index("function hoja(")]
+        abre = shell[shell.index("function abre("):shell.index("function entrada(")]
+        self.assertRegex(muestra, r"if\s*\(actual\)[\s\S]*?(?:cierraCajon|cajon\.hidden\s*=\s*true)",
+                         "abrir hoja debe cerrar el panel lateral antes de mostrarla")
+        self.assertRegex(abre, r"if\s*\(siguiente[\s\S]*?cierraHoja\(\)",
+                         "abrir panel lateral debe cerrar la hoja abierta")
 
     def test_el_juego_se_monta_en_el_panel_no_encima(self):
         tg = (PUBLICO / "assets" / "thegame.js").read_text(encoding="utf-8")

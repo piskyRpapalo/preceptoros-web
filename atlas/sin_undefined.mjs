@@ -97,6 +97,16 @@ async function main() {
       await espera(1500);
     }
 
+    actual.step = 'exclusion-panel-hoja';
+    await evalua("document.getElementById('menu-ondas')?.click()"); await espera(1500);
+    let superficies = await evalua("JSON.stringify({panel:!document.getElementById('thegame-terminal')?.hidden,hoja:[...document.querySelectorAll('.thegame-hoja')].some(e=>!e.hidden)})");
+    if (JSON.parse(superficies || '{}').panel) { fallos.push({ path: p, step: actual.step, snippet: 'Army hoja left the side panel open' }); }
+    await evalua("document.getElementById('menu-pliego-estado')?.click()"); await espera(1500);
+    superficies = await evalua("JSON.stringify({panel:!document.getElementById('thegame-terminal')?.hidden,hoja:[...document.querySelectorAll('.thegame-hoja')].some(e=>!e.hidden)})");
+    const exclusivas = JSON.parse(superficies || '{}');
+    if (exclusivas.hoja) { fallos.push({ path: p, step: actual.step, snippet: 'side panel left an Army or Battle sheet open' }); }
+    await evalua("document.getElementById('menu-pliego-estado')?.click()"); await espera(300);
+
     actual.step = 'chat';
     await evalua("document.getElementById('radio-chat-alterna')?.click()");
     await espera(1500); await revisa('chat');
