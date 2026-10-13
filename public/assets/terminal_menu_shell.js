@@ -19,21 +19,23 @@
 
   function monta(x) {
     var capa = x.capa, T = x.T, el = x.el, cada = x.cada;
-    var S = { PANEL: {}, HOJA: {} }, actual = null, destino = null, abierto = null, R = { items: {} };
+    var S = { PANEL: {}, HOJA: {} }, actual = null, destino = null, abierto = null, transicion = 0, R = { items: {} };
     var piso = capa.querySelector('#atlas-piso'), barra = capa.querySelector('.thegame-barra');
     if (!piso || !barra || capa.querySelector('#thegame-menu')) { return null; }
 
     /* --- las hojas: una funcion las abre y la misma las cierra ----------------------------------------------- */
     function muestra(id, foco) {
       if (S.HOJA[id] ? id === destino : destino === null) { return; }  /* ya pedida: una segunda transicion abortaria la primera */
+      var turno = ++transicion;
       destino = S.HOJA[id] ? id : null;
       var d = document, rm = raiz.matchMedia && raiz.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if (id !== actual && d.startViewTransition && !rm && capa.isConnected) { d.startViewTransition(function () { muestraYa(id, foco); }); }
+      if (id !== actual && d.startViewTransition && !rm && capa.isConnected) { d.startViewTransition(function () { if (turno === transicion) { muestraYa(id, foco); } }); }
       else { muestraYa(id, foco); }
     }
     function muestraYa(id, foco) {
       actual = destino = S.HOJA[id] ? id : null;
       Object.keys(S.HOJA).forEach(function (k) { S.HOJA[k].hidden = k !== actual; });
+      if (actual) { cierraCajon(); }
       if (R.items.taller) { R.items.taller.setAttribute('aria-expanded', String(actual === 'ondas')); }
       document.documentElement.classList.toggle('con-hoja', !!actual);
       if (actual === 'ondas') { Promise.resolve(x.alTaller()).then(mueveArmy); }
@@ -52,6 +54,17 @@
       var d = el('details', 'thegame-pliego'); d.id = id; d.open = !!abre;
       d.appendChild(el('summary', null, titulo)); hijos.forEach(function (n) { d.appendChild(n); });
       return d;
+    }
+
+    function cierraCajon() {
+      abierto = null; cajon.hidden = true;
+      cada(cajon.children, function (n) { if (n.tagName === 'DETAILS') { n.hidden = true; } });
+      Object.keys(R.items).forEach(function (k) { if (k !== 'taller') { R.items[k].setAttribute('aria-expanded', 'false'); } });
+      document.documentElement.classList.remove('con-cajon');
+    }
+    function cierraHoja() {
+      if (!actual && !destino) { return; }
+      transicion++; muestraYa(null, false);
     }
 
     /* --- el cajon (los paneles) y el menu que los abre ------------------------------------------------------- */
@@ -94,12 +107,14 @@
       var a = si == null ? !menu.classList.contains('expandido') : si;
       menu.classList.toggle('expandido', a); ancho.setAttribute('aria-expanded', String(a));
     }
-    ancho.addEventListener('click', function () { expande(); });
+    ancho.addEventListener('click', function () { cierraHoja(); expande(); });
     if (raiz.matchMedia && raiz.matchMedia('(min-width: 64rem)').matches) { expande(true); }
 
     /* Abrir un panel: el cajon se ve con ESE panel; pulsarlo otra vez lo cierra (panel vacio = cerrado). */
     function abre(id, foco) {
-      abierto = abierto === id ? null : id;
+      var siguiente = abierto === id ? null : id;
+      if (siguiente && (actual || destino)) { cierraHoja(); }
+      abierto = siguiente;
       cajon.hidden = !abierto;
       cada(cajon.children, function (n) { if (n.tagName === 'DETAILS') { n.hidden = n.id !== abierto; if (n.id === abierto) { n.open = true; } } });
       Object.keys(R.items).forEach(function (k) { if (k !== 'taller') { R.items[k].setAttribute('aria-expanded', String(k === abierto)); } });
@@ -128,7 +143,7 @@
     entrada('ondas', '\u223F', T('army_h'), function () { muestra(actual === 'ondas' ? null : 'ondas'); }).setAttribute('aria-controls', 'thegame-ondas');
     entrada('taller', '⚒︎', T('pes_taller'), function () { if (actual === 'ondas') { muestra(null); return; } muestra('ondas'); S.PANEL.taller.scrollIntoView({ block: 'start' }); }).setAttribute('aria-controls', 'thegame-ondas');
     /* Opinar sobre la pagina: su unico hogar es el menu (la pestana vertical lateral se oculta dentro del juego). */
-    if (raiz.PageComment && raiz.PageComment.abre) { entrada('opinar', '\u270E', T('menu_opinar'), function () { raiz.PageComment.abre(); }); }
+    if (raiz.PageComment && raiz.PageComment.abre) { entrada('opinar', '\u270E', T('menu_opinar'), function () { cierraHoja(); raiz.PageComment.abre(); }); }
     sincroniza();
     new MutationObserver(sincroniza).observe(cajon, { childList: true });
 

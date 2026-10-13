@@ -1374,7 +1374,7 @@ class Pestanas(unittest.TestCase):
         for pieza in ("el('aside', 'thegame-terminal')", "cajon.hidden = true", "'pliego-estado', true", "el('nav', 'thegame-menu')",
                       "el('div', 'taller-unido')", "S.ZB = hoja('batalla', T('hoja_batalla'))", "'aria-expanded'",
                       ".setAttribute('aria-controls', 'thegame-ondas')", "classList.toggle('con-hoja', !!actual)",
-                      "abierto = abierto === id ? null : id;", "e.key !== 'Escape'", "e.altKey && (e.key === 'm'",
+                      "var siguiente = abierto === id ? null : id;", "e.key !== 'Escape'", "e.altKey && (e.key === 'm'",
                       "c.id = 'thegame-' + id + '-cierra'", "new MutationObserver(sincroniza)", "ordena();"):
             with self.subTest(pieza=pieza):
                 self.assertIn(pieza, c)

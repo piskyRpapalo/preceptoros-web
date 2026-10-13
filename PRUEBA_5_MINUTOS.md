@@ -15,6 +15,7 @@ Antes (10 s): abre https://preceptoros.org/en/ y **recarga dos veces** (el servi
 | 6b | **Antes de invocar:** pulsa **Create identity** si aparece (sin identidad no hay firma y la invocación no empieza) | Tras crearla, el botón de invocar sigue su curso: huevo en el nido, y al terminar de incubar, la revelación `.atlas-eclosion` | si el huevo no aparece, anota el texto que dice el recuadro |
 | 7 | Menú **∿ Army** (el primero) | Tu inventario de ondas, cada una con su ficha; se cierra pulsando otra vez el mismo icono | — |
 | 8 | Toca cualquier botón del juego | Todos grandes (≥ 44 px); ningún panel se queda abierto si vuelves a pulsar su icono | el pequeño |
+| 8a | Abre una hoja (Army o Battle) y toca una entrada del menú lateral; luego abre un panel lateral y toca Army | Solo queda una pantalla abierta cada vez; todos los destinos internos de la web responden HTTP 200 | pantalla superpuesta o enlace que no abre |
 | 9 | Toca la línea de la Radio abajo | Burbujas con quién, sello, fuente y edad en ciclos (el Tutorial solo lo cuenta cuando llega a su paso 6) | — |
 | 9b | Abre dos paneles seguidos desde el menú | La ventana tiene **cabecero** (título · sello · fuente · edad en ciclos) y ✕; un **gusano** viaja de una entrada a la otra y la Radio lo narra | — |
 | 9c | Mira tu cangrejo y el mapa | Cangrejo **toon** (contorno grueso, bandas, ojos que parpadean); en el mapa solo **Hexelion** (el Doogee ya no está) | — |
