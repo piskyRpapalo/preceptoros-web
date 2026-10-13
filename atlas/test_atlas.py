@@ -669,7 +669,7 @@ process.stdout.write(JSON.stringify(ok));
         r3 = subprocess.run(["node", str(RAIZ / "hexelion_bench_casos.mjs")], capture_output=True, text=True, timeout=60)
         self.assertEqual(r3.returncode, 0, r3.stdout[-1200:] + r3.stderr[-400:])
         # RONDA 2 · chunk 3: boya y cristal en toon desde su vector (hue del propio edificio, sin inventar).
-        self.assertIn("raiz.AtlasBuildingsToon.forma(g, 'boya', p[0], y, r, c, dpr, c.a)", (PUBLICO / "game" / "reef_buildings_layer.js").read_text(encoding="utf-8"))  # ronda 3: la boya tiene su silueta
+        self.assertIn("raiz.AtlasBuildingsToon.forma(g, 'boya', p[0], y, r, c, dpr, c.a)", (PUBLICO / "game" / "reef_buildings_paint.js").read_text(encoding="utf-8"))  # M1: el pintor conserva las siluetas
         self.assertIn("TB.forma(g, 'cristal', p[0], p[1], lado, { h: niv[2][0], s: niv[2][1], l: niv[2][2] }", (PUBLICO / "game" / "latency_crystal.js").read_text(encoding="utf-8"))
         r2 = subprocess.run(["node", str(RAIZ / "buildings_toon_casos.mjs")], capture_output=True, text=True, timeout=60)
         self.assertEqual(r2.returncode, 0, r2.stdout[-1200:] + r2.stderr[-400:])
@@ -748,7 +748,11 @@ process.stdout.write(JSON.stringify(ok));
         m = (PUBLICO / "game" / "mar.js").read_text(encoding="utf-8")
         self.assertIn("window.AtlasInspector.registra(cola, P, f.texto);", m)
         self.assertIn("v = Z && l.npc ? Z.vector(rec[l.clave], l.lider) : 0, cz = v === 0 ? 0 : Z.color(v);", m, "∇C opcion A: el lugar pinta su registro de combate")
-        self.assertIn("raiz.AtlasInspector.toca(px, py, 44 * x.dpr)", (PUBLICO / "game" / "map_pointer_input.js").read_text(encoding="utf-8"))
+        self.assertIn("raiz.AtlasInspector.toca(px, py, 44 * x.dpr, tocado, lugar)", (PUBLICO / "game" / "map_pointer_input.js").read_text(encoding="utf-8"))
+
+    def test_los_lugares_informan_antes_de_actuar(self):
+        r = subprocess.run(["node", str(RAIZ / "place_card_casos.mjs")], capture_output=True, text=True, timeout=60)
+        self.assertEqual(r.returncode, 0, r.stdout[-1800:] + r.stderr[-500:])
         a = (ASSETS / "auth.js").read_text(encoding="utf-8")
         for k in ("idClave", "idPublica", "idEntrar", "idAviso", "idFallo"):
             with self.subTest(rotulo=k):
@@ -961,7 +965,7 @@ process.stdout.write(JSON.stringify(ok));
 # Ver atlas/POST_VERIFICACION_MGNO_LAB.md y atlas/POST_VERIFICACION_SISIL_CRIA.md.
 PUROS = ("canon.js", "sobres.js", "rating.js", "arena.js", "duelo.js", "mercado.js", "narragrafo.js", "cria.js", "genoma.js")
 # La Arena (2026-09-28, «el mapa multi-jugador en una pestana»): se carga al abrir su pestana, detras del Army.
-ARENA = ("sobres.js", "rating.js", "arena.js", "duelo.js", "mar-anclas.js", "crab_render_hd.js", "crab_free_move.js", "genesis_tutorial.js", "buildings_toon.js", "latency_crystal.js", "hexelion_bench.js", "reef_corals.js", "reef_buildings_layer.js", "mar-cangrejos.js", "map_pointer_input.js", "map_nodes_layer.js", "map_zoom.js", "piece_inspector.js", "state_vector.js", "place_telemetry.js", "mar.js", "nodos-pesos.js",
+ARENA = ("sobres.js", "rating.js", "arena.js", "duelo.js", "mar-anclas.js", "crab_render_hd.js", "crab_free_move.js", "genesis_tutorial.js", "buildings_toon.js", "reef_place_cards.js", "reef_buildings_paint.js", "latency_crystal.js", "hexelion_bench.js", "reef_corals.js", "reef_buildings_layer.js", "mar-cangrejos.js", "map_pointer_input.js", "map_nodes_layer.js", "map_zoom.js", "piece_inspector.js", "state_vector.js", "place_telemetry.js", "mar.js", "nodos-pesos.js",
          "nodos.js", "cuenta.js", "ui-nodos.js", "ui-rack.js",
          "escuadron.js", "battle_choreography.js", "battle_replay.js", "ui-arena-comun.js", "ui-arena.js", "ui-duelo.js")
 # La CASA (2026-10-05): la primera pantalla, detras del Army. Lleva canon y escena, que la Arena reutiliza.

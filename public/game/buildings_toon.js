@@ -48,6 +48,6 @@
     if (kind === 'cristal') { g.beginPath(); g.moveTo(x, y - r * 1.1); g.lineTo(x, y + r * 1.1); g.strokeStyle = B.contorno; g.lineWidth = 1 * (dpr || 1); g.stroke(); }
     g.globalAlpha = 1;
   }
-  var AtlasBuildingsToon = { disco: disco, forma: forma };
+  var AtlasBuildingsToon = { disco: disco, forma: forma, silueta: sendero };
   if (typeof module === 'object' && module.exports) { module.exports = AtlasBuildingsToon; } else { raiz.AtlasBuildingsToon = AtlasBuildingsToon; }
 })(this);

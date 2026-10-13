@@ -113,11 +113,12 @@
     di(t, 'boya_estado', 'boya', fase === 'NO_DATA' ? 'NO_DATA · ' + (v.causa || '') : (F[i] || fase) + ' · ∇C ' + (v.hsl || []).join('/'), fase === 'NO_DATA' ? 'NO_DATA' : 'LIVE');
   }
   /* Mirar: al centro de la pantalla, si no se esta mirando ya. Devuelve la vista o la causa por la que no. */
-  function mira(t) {
+  function mira(t, objetivo) {
     var tic = ciclo(), L = raiz.ReefBuildingLifecycle;
-    if (!L || tic === null || !centro) { return 'NO_DATA'; }
+    var sitio = objetivo || centro;
+    if (!L || tic === null || !sitio || !Number.isFinite(sitio.x) || !Number.isFinite(sitio.y)) { return 'NO_DATA'; }
     if (vistas.some(function (m) { return L.estado(m, tic).fase === 'naciendo'; })) { return 'mirando'; }
-    var m = manifiestoVista(centro.x, centro.y, tic, ++nVistas);
+    var m = manifiestoVista(sitio.x, sitio.y, tic, ++nVistas);
     m.fase0 = 'naciendo'; vistas.push(m);
     if (vistas.length > MAX_VISTAS) { vistas.shift(); }
     di(t, 'obs_nombre', 'observatorio', (t('obs_fases') || '').split('|')[0] + ' · ' + COSTE + ' ↻', 'LIVE');
@@ -160,16 +161,8 @@
       if (v.fase !== 'NO_DATA') { ultVec[m.id] = v; }
       ultima = v.fase;
       pon(m.col, m.fila, function () {
-      var p = P(m.col, m.fila), y = p[1] + (o.quieto ? 0 : Math.sin((o.t || 0) * 0.002) * 2 * dpr);
-      var r = (5 + (v.vida === null ? 3 : v.vida * 4 / 1000)) * dpr;
-      g.strokeStyle = 'rgba(155,227,255,.6)'; g.lineWidth = 1.5 * dpr;
-      g.beginPath(); g.moveTo(p[0], y + r); g.lineTo(p[0], y + r + 7 * dpr); g.stroke();
-      g.beginPath(); g.arc(p[0], y, r, 0, 2 * Math.PI);
-      if (c.nd) { g.setLineDash([2 * dpr, 2 * dpr]); g.strokeStyle = 'rgba(150,160,180,' + c.a + ')'; g.stroke(); g.setLineDash([]); }
-      else { raiz.AtlasBuildingsToon ? raiz.AtlasBuildingsToon.forma(g, 'boya', p[0], y, r, c, dpr, c.a) : (g.globalAlpha = c.a, g.fillStyle = 'hsl(' + c.h + ' ' + c.s + '% ' + c.l + '%)', g.fill(), g.globalAlpha = 1, g.stroke()); }
-      g.lineWidth = dpr; g.fillStyle = 'rgba(155,227,255,.75)';
-      g.fillText(t('boya_estado'), p[0], y - r - 4 * dpr);
-      }, function () { return { que: t('boya_estado'), estado: v.fase + (v.vida === null ? '' : ' · life ' + v.vida + '/1000'), sonido: 'ADSR beep 880/660/440 Hz on phase change', causas: v.causa ? [v.causa] : [] }; });
+      raiz.AtlasReefPaint.boya(g,P,o,m,v,c,t,dpr);
+      }, function () { return raiz.AtlasPlaceCards.ficha('boya', { que: t('boya_estado'), estado: v.fase + (v.vida === null ? '' : ' · life ' + v.vida + '/1000'), sonido: 'ADSR beep 880/660/440 Hz on phase change', causas: v.causa ? [v.causa] : [] }); });
     }
     /* El observatorio (una cupula) y lo que mira: la mirada en curso es una linea de trazos hasta el punto. */
     var oc = casa ? P(casa.x - 100, casa.y + 100) : null, F = (t('obs_fases') || '').split('|');
@@ -196,19 +189,12 @@
     if (raiz.AtlasCristal) { raiz.AtlasCristal.pinta(g, P, o, casa, tic); }
     if (raiz.AtlasCorales) { raiz.AtlasCorales.pinta(g, P, o); }  /* A: los corales del rack (reef_corals.js) */  /* el cuarto: `latency_crystal.js` */
     /* Las lapidas, como piedras sobre tu casa (una por recibo, hasta nueve a la vista). */
-    if (casa && lapidas.length) { pon(casa.x - 160, casa.y - 160, function () {
-      var lp = P(casa.x - 160, casa.y - 160), k = Math.min(9, lapidas.length);
-      g.fillStyle = 'rgba(150,160,180,.7)';
-      for (var s = 0; s < k; s++) { var sx = lp[0] + (s - (k - 1) / 2) * 7 * dpr, sy = lp[1] - (s % 2) * 3 * dpr; if (raiz.AtlasBuildingsToon) { raiz.AtlasBuildingsToon.forma(g, 'lapidas', sx, sy, 3.2 * dpr, { h: 220, s: 12, l: 58 }, dpr, 0.8); } else { g.fillRect(sx - 2.5 * dpr, sy - 5 * dpr, 5 * dpr, 7 * dpr); } }  /* gris fijo: las lapidas no tienen vector vivo */
-      g.fillStyle = 'rgba(155,227,255,.75)'; g.fillText(t('lap_nombre') + ' · ' + lapidas.length, lp[0], lp[1] + 14 * dpr);
-    }, function () { return { que: t('lap_nombre'), estado: lapidas.length + ' receipts', causas: lapidas.slice(-3).map(function (r) { return r.id + ' · ' + r.causa + ' · ' + r.huella; }) }; }); }
+    if (casa) { pon(casa.x - 160, casa.y - 160, function () {
+      raiz.AtlasReefPaint.lapidas(g,P,casa,lapidas,t,dpr);
+    }, function () { return raiz.AtlasPlaceCards.ficha('lapidas', { que: t('lap_nombre'), estado: lapidas.length + ' receipts', causas: lapidas.slice(-3).map(function (r) { return r.id + ' · ' + r.causa + ' · ' + r.huella; }) }); }); }
     if (oc) { pon(casa.x - 100, casa.y + 100, function () {
-      var ult = vistas.length ? L.color(vistas[vistas.length - 1], tic) : null, rr = 9 * dpr;
-      g.beginPath(); g.arc(oc[0], oc[1], rr, Math.PI, 2 * Math.PI); g.closePath();
-      if (ult && !ult.nd && raiz.AtlasBuildingsToon) { raiz.AtlasBuildingsToon.forma(g, 'observatorio', oc[0], oc[1], rr, { h: ult.h, s: ult.s, l: ult.l }, dpr, ult.a); }
-      else { if (ult && !ult.nd) { g.globalAlpha = ult.a; g.fillStyle = 'hsl(' + ult.h + ' ' + ult.s + '% ' + ult.l + '%)'; g.fill(); g.globalAlpha = 1; } g.strokeStyle = 'rgba(155,227,255,.7)'; g.lineWidth = 1.5 * dpr; g.stroke(); g.lineWidth = dpr; }
-      g.fillStyle = 'rgba(155,227,255,.75)'; g.fillText(t('obs_nombre'), oc[0], oc[1] + 14 * dpr);
-    }, function () { return { que: t('obs_nombre'), estado: vistas.length ? vistas.length + ' looks alive' : null, causas: vistas.length ? [] : ['nothing being looked at'] }; }); }
+      raiz.AtlasReefPaint.observatorio(g,P,o,casa,vistas,L,tic,t,dpr,oc);
+    }, function () { return raiz.AtlasPlaceCards.ficha('observatorio', { que: t('obs_nombre'), estado: vistas.length ? vistas.length + ' looks alive' : null, causas: vistas.length ? [] : ['nothing being looked at'] }, { centro: centro, coste: COSTE, mirando: vistas.some(function (w) { return L.estado(w, tic).fase === 'naciendo'; }) }); }); }
   }
   function vectores() { return vistos.slice(); }
   function registroLapidas() { return lapidas.slice(); }
