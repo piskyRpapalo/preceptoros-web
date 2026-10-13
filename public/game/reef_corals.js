@@ -66,6 +66,7 @@
           f.causas.push(mm ? mm.modelo + ': pp512 ' + mm.pp512_tok_s + ' tok/s (' + mm.medido_en + ')' : 'NO_DATA (no model measured)');
           f.causas.push(HB.BENCH.modelos.length - HB.medidos() + ' models NO_DATA with their causes in the file');
           f.causas.push('lab: ' + B.fuente.enlace);
+          f.causas.push('raw figures published at the lab: ' + B.fuente.archivo + ' · sha256 ' + B.fuente.sha256.slice(0, 16));
         }
         return f;
       });
