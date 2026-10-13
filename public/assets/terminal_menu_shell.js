@@ -82,7 +82,7 @@
       ond.appendChild(ul);
     }
     var tal = hoja('taller', T('pes_taller')); tal.appendChild(S.PANEL.taller); S.PANEL.taller = tal;
-    S.ARMYZ = el('div', 'casa-army'); tal.appendChild(S.ARMYZ);
+    S.ARMYZ = el('div', 'casa-army'); ond.appendChild(S.ARMYZ);  /* RONDA 1 (13-oct): la invocacion vive en el ARMY; el Taller queda para el tuneo */
     S.ZB = hoja('batalla', T('hoja_batalla'));
 
     var menu = el('nav', 'thegame-menu'); menu.id = 'thegame-menu'; menu.setAttribute('aria-label', T('menu_aria'));
@@ -137,6 +137,16 @@
       if (e.altKey && (e.key === 'm' || e.key === 'M')) { e.preventDefault(); expande(); ancho.focus(); return; }
       if (e.key !== 'Escape' || document.querySelector('.atlas-dlg-capa,dialog[open]')) { return; }
       if (actual) { muestra(null, true); } else if (abierto) { var b = R.items[abierto]; abre(abierto); if (b) { b.focus(); } }
+    });
+    /* FUERA-CLIC CIERRA (comunicado 13-oct, punto 2): cualquier toque fuera de la ventana cierra lo abierto. Un solo
+       handler para todo el cajon y las hojas. Cerrar solo esconde: lo ganado (el Army, sus fichas) no se toca. Los
+       toques en el menu, en el cajon o en una hoja los atiende cada uno. */
+    document.addEventListener('pointerdown', function (e) {
+      if (!(actual || abierto) || document.querySelector('.atlas-dlg-capa,dialog[open]')) { return; }
+      var t = e.target;
+      if (t.closest && t.closest('#thegame-terminal,.thegame-hoja,#thegame-menu,#identity-menu,.thegame-menu-item')) { return; }
+      if (actual) { muestra(null, false); }
+      if (abierto) { abre(abierto, false); }
     });
     /* Con la grieta abierta, «Tu cangrejo» lleva un punto: el aviso llega aunque el cajon este cerrado. */
     var a = est.querySelector('.atlas-alerta');

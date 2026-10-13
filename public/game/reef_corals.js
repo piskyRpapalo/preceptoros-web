@@ -17,19 +17,34 @@
     var med = ks.filter(function (k) { return m[k] && m[k].estado === 'MEDIDO'; }).length, emu = ks.filter(function (k) { return m[k] && m[k].estado === 'EMULADO'; }).length;
     var h = 0, c = String(n && n.nodo || '');
     for (var i = 0; i < c.length; i++) { h = (h * 31 + c.charCodeAt(i)) >>> 0; }
-    return { nodo: c, medidas: med, emuladas: emu, total: ks.length, nd: med === 0, altura: 10 + 8 * med, ladeo: (h % 7) - 3 };
+    return { nodo: c, medidas: med, emuladas: emu, total: ks.length, nd: med === 0, altura: 10 + 8 * med, ladeo: (h % 7) - 3, lobulos: 2 + (h % 3) };
   }
+  /* FORMA INFANTIL (ronda 3): un manojo de burbujas redondas sobre un tallo corto. El numero de burbujas (2 a 4) y su
+     altura salen del nombre del nodo: cada coral es distinto y siempre el mismo. Las burbujas van en bandas toon del
+     hue del coral (AtlasBuildingsToon.disco). Con medidas, dos ojos; sin medidas (NO_DATA), contorno punteado y SIN cara:
+     nada medido no sonrie. Sin rotulo dentro: el circulo-con-rotulo queda prohibido como pintado final. */
+  var CORAL_C = { h: 12, s: 82, l: 62 };
   function pintaUno(g, p, k, dpr) {
-    var a = k.altura * dpr, x = p[0], y = p[1], top = y - a, r = (5 + 2 * k.medidas) * dpr;
+    var a = k.altura * dpr, x = p[0], y = p[1], top = y - a, r = (5 + 2 * k.medidas) * dpr, cx = x + k.ladeo * dpr;
+    var BT = raiz.AtlasBuildingsToon;
     g.save();
     g.fillStyle = PAL.sombra; g.beginPath(); g.ellipse(x, y + 1.5 * dpr, r * 1.2, r * 0.35, 0, 0, 2 * Math.PI); g.fill();
     if (k.nd) { g.globalAlpha = 0.45; g.setLineDash([2 * dpr, 2 * dpr]); }
     g.strokeStyle = k.nd ? PAL.nd : PAL.palo; g.lineWidth = 2.2 * dpr;
-    g.beginPath(); g.moveTo(x, y); g.lineTo(x + k.ladeo * dpr, top); g.stroke();
+    g.beginPath(); g.moveTo(x, y); g.lineTo(cx, top); g.stroke();
     g.setLineDash([]);
-    if (k.nd) { g.beginPath(); g.arc(x + k.ladeo * dpr, top, r, 0, 2 * Math.PI); g.stroke(); g.restore(); return; }
-    g.fillStyle = PAL.oscuro; g.beginPath(); g.arc(x + k.ladeo * dpr, top, r, 0, 2 * Math.PI); g.fill();
-    g.fillStyle = PAL.claro; g.beginPath(); g.arc(x + k.ladeo * dpr - r * 0.3, top - r * 0.3, r * 0.55, 0, 2 * Math.PI); g.fill();
+    for (var i = 0; i < k.lobulos; i++) {
+      var lx = cx + (i - (k.lobulos - 1) / 2) * r * 1.05, ly = top - (i % 2) * r * 0.55, lr = r * (0.95 - 0.1 * i);
+      if (k.nd) { g.beginPath(); g.arc(lx, ly, lr, 0, 2 * Math.PI); g.stroke(); continue; }
+      if (BT) { BT.disco(g, lx, ly, lr, CORAL_C, dpr, 1); }
+      else { g.fillStyle = PAL.oscuro; g.beginPath(); g.arc(lx, ly, lr, 0, 2 * Math.PI); g.fill(); }
+      if (i === 0) {   // cara solo con medidas: dos ojos
+        g.fillStyle = '#f2f4f8'; g.beginPath(); g.arc(lx - lr * 0.35, ly - lr * 0.1, lr * 0.22, 0, 2 * Math.PI); g.fill();
+        g.beginPath(); g.arc(lx + lr * 0.25, ly - lr * 0.1, lr * 0.22, 0, 2 * Math.PI); g.fill();
+        g.fillStyle = PAL.palo; g.beginPath(); g.arc(lx - lr * 0.33, ly - lr * 0.08, lr * 0.09, 0, 2 * Math.PI); g.fill();
+        g.beginPath(); g.arc(lx + lr * 0.27, ly - lr * 0.08, lr * 0.09, 0, 2 * Math.PI); g.fill();
+      }
+    }
     g.restore();
   }
   /* g, P como las demas capas; o: { dpr, pon }. */
@@ -41,8 +56,18 @@
       if (!s) { return; }   /* sin punto en el mapa, sin coral */
       var k = coral(n), x = s.x + DX, y = s.y + DY;
       pon(x, y, function () { pintaUno(g, P(x, y), k, dpr); }, function () {
-        return { que: 'Coral · ' + k.nodo, estado: k.nd ? 'NO_DATA (no measure of this node is MEASURED' + (k.emuladas ? '; ' + k.emuladas + ' EMULATED do not count' : '') + ')'
-                 : k.medidas + ' of ' + k.total + ' measures MEASURED' };
+        var f = { que: 'Coral · ' + k.nodo, estado: k.nd ? 'NO_DATA (no measure of this node is MEASURED' + (k.emuladas ? '; ' + k.emuladas + ' EMULATED do not count' : '') + ')'
+                 : k.medidas + ' of ' + k.total + ' measures MEASURED', causas: [] };
+        /* El payload de Hexelion (hexelion_bench.js): sus cifras medidas con su fuente. Cero fetch. */
+        var HB = raiz.AtlasHexBench;
+        if (n.nodo === 'nodo.0.hexelion' && HB) {
+          var B = HB.BENCH, mm = B.modelos.filter(function (m) { return m.estado === 'MEDIDO'; })[0];
+          f.causas.push('bench ' + B.fuente.fecha + ' · ' + B.fuente.archivo + ' · sha256 ' + B.fuente.sha256.slice(0, 16));
+          f.causas.push(mm ? mm.modelo + ': pp512 ' + mm.pp512_tok_s + ' tok/s (' + mm.medido_en + ')' : 'NO_DATA (no model measured)');
+          f.causas.push(HB.BENCH.modelos.length - HB.medidos() + ' models NO_DATA with their causes in the file');
+          f.causas.push('lab: ' + B.fuente.enlace);
+        }
+        return f;
       });
     });
   }

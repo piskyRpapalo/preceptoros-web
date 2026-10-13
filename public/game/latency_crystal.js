@@ -61,7 +61,7 @@
     var p = P(casa.x + 200, casa.y + 40), lado = (ev ? 6 + Math.min(60, ev.p50) / 10 : 8) * dpr, niv = ev ? nivel(ev.p50) : null;
     g.beginPath(); g.moveTo(p[0], p[1] - lado * 1.4); g.lineTo(p[0] + lado, p[1]); g.lineTo(p[0], p[1] + lado * 1.4); g.lineTo(p[0] - lado, p[1]); g.closePath();
     if (s === 'NO_DATA') { g.setLineDash([2 * dpr, 2 * dpr]); g.strokeStyle = 'rgba(150,160,180,.45)'; g.stroke(); g.setLineDash([]); }
-    else if (niv[2]) { g.globalAlpha = s === 'STALE' ? 0.5 : 1; g.fillStyle = 'hsl(' + niv[2][0] + ' ' + niv[2][1] + '% ' + niv[2][2] + '%)'; g.fill(); g.globalAlpha = 1; }
+    else if (niv[2]) { var TB = raiz.AtlasBuildingsToon; if (TB) { TB.forma(g, 'cristal', p[0], p[1], lado, { h: niv[2][0], s: niv[2][1], l: niv[2][2] }, dpr, s === 'STALE' ? 0.5 : 1); } else { g.globalAlpha = s === 'STALE' ? 0.5 : 1; g.fillStyle = 'hsl(' + niv[2][0] + ' ' + niv[2][1] + '% ' + niv[2][2] + '%)'; g.fill(); g.globalAlpha = 1; } }
     else { g.save(); g.clip(); g.fillStyle = 'rgb(220,220,220)'; for (var j = 0; j * dpr < lado * 2.8; j++) { for (var i = j % 2; i * dpr < lado * 2; i += 2) { g.fillRect(p[0] - lado + i * dpr, p[1] - lado * 1.4 + j * dpr, dpr, dpr); } } g.restore(); }
     g.strokeStyle = 'rgba(155,227,255,.7)'; g.lineWidth = dpr; g.stroke();
     g.fillStyle = 'rgba(155,227,255,.75)';

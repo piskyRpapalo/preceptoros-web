@@ -1,5 +1,50 @@
+## RONDA 3 · EMBELLECIMIENTO · EN MARCHA · 2026-10-13
+- **Chunk 1 (payload de Hexelion): VERDE, PR #61 ABIERTA** (`abfy`, sin merge; el merge es del Soberano). `hexelion_bench.js` lleva las cifras de `bench_20261011_resultados.json`: embeddinggemma-2 pp512 ngl99 = 6459.63 tok/s (MEDIDO, GPU Vulkan); tres modelos NO_DATA con su causa textual. No hay «tg32» en ese fichero: no se inventa. Ligado a GitHub: PENDIENTE (el fichero no trae URL del repo del laboratorio).
+- **Chunk 2 (coral de Hexelion infantil + enlace del lab): VERDE, PR #62 ABIERTA** (`abfz`, sin merge). Coral = racimo de burbujas toon con ojos solo con medidas; sin medidas, contorno punteado y sin cara. Ficha con el enlace `benchmarks/bench_20261011` (medido por la Mesa) y el sha256 local. Visual medido por captura CDP (360 px): el coral y el cangrejo se ven juntos en toon.
+- **Verificacion visual pendiente, declarada para los ojos del Soberano:** el mapa despejandose (necesita mirar con el Observatorio; la captura de la vista inicial no lo muestra).
+- **Estado git:** rama `claude/mapa-unico`; publicacion `claude/web-solo-juego` = 54019ce (PR #61 abierta). `origin/main` = a481691 (sin cambios por mi).
+- **Pendiente de la ronda:** edificios restantes y corales con formas infantiles (boya y cristal ya tienen bandas toon); el coral de Hexelion en forma infantil; PRUEBA_5_MINUTOS al cerrar la ronda.
+
+## MESA 13-oct · DECISIONES Y ESTADO GIT (firmo del Soberano)
+- **#59 (fuera-clic): decidido — se queda, sin revert; paquete diferido del Soberano.** No se re-anade ni se quita el fuera-clic.
+- **Errata cerrada por la Mesa:** el commit web-flow no distingue navegador de gh; lo que distingue es la plantilla del mensaje («Merge #N: … / Publicacion con FIRMO del Soberano.»). Mi primera confesion era la buena: el script publico hasta el merge sin FIRMO.
+- **REGLA NUEVA (FIRMO):** el script de publicacion JAMAS fusiona a main por su cuenta. Flujo: rama → PR → gates verdes → PARA_LA_MESA. El merge a main es solo del Soberano: FIRMO explicito en la sesion (entonces lo ejecuta el script con el FIRMO en el cuerpo) o su mano en el navegador. Un PR sin FIRMO se queda ABIERTO. Corregido: `bin/publica_pr.sh` ya no fusiona.
+- **PRUEBA_5_MINUTOS:** sin cambio (ningun paso exige fuera-clic; «fuera» en el paso 3 es fuera de alcance).
+- **Estado git exacto (medido):**
+  - rama: `claude/mapa-unico` (trabajo) · publicacion: `claude/web-solo-juego` ← `origin/main` = `a481691` (PR #60 fusionada por el Soberano).
+  - sin publicar en la rama: `a500bb7` (mesa: erratum de #59) y `fa5eaab` (mesa + prueba, chunk 0 NO_DATA). **fa5eaab VIVO, no absorbido** (no esta en origin/main).
+  - arbol limpio.
+- **Ronda 3 (embellecimiento): A CONSTRUIR.** Orden: cangrejo → mapa despejandose → Hexelion (coral con ficha de benchmarks ligada a GitHub). Despues la Ronda 2 (chunk 0 = medida guia, reintentar con cobre precargado) y las deudas (Ctrl+rueda PC; fps Doogee con la version nueva).
+
+## RONDA 1 · REPARTO DE CASAS · CERRADA CON CAUSAS · 2026-10-13 (local, sin push)
+- **Hecho (commit 777cd95):** el montaje de la invocacion va a la hoja ARMY. ANTES (medido): Forest Incubator, Odds y Edges en #thegame-taller. DESPUES (medido, textContent): Forest Incubator, Odds, Edges, Nest, los 4 tesoros (Reef, Ruins, Forest, Abyss), Technical details y la lista del Army, todo en #thegame-ondas. El Taller ya no contiene la incubadora; conserva Workshop dust, Sanding y Static residue.
+- **Guarantee:** no esta en el bloque; vive en la ficha de cada onda («garantia_nd»: NO_DATA, sin piedad oculta), que se abre desde el inventario del Army. Cubierto por la ficha.
+- **Recibos de tuneo:** la cadena atlas.taller/1 (desintegra, lija) se queda en el Taller, como pide el comunicado.
+- **NO_DATA con causa:** no encontre un recibo de INVOCACION separado en el DOM; los resultados aparecen en Nest y Edges. Si quieres recibo de invocacion propio, es un chunk nuevo.
+- **Fuera de orden, verde:** el chunk de edificios toon (buildings_toon.js: boya y cristal con bandas del hue de su vector, 3/3 casos, sabotaje de hue inventado rojo). Queda para la ronda de embellecimiento; no se publica aun.
+
+## RONDA 2 · TUTORIAL COMO RUTA · EN MARCHA (chunk 0 pendiente de medida; ver arriba)
+- **Chunk 0 (medida guia de la summon): NO_DATA, con causa.** La medida se lanzo en el navegador (script `cdp/medida_invoca.mjs`), pero el cobre de la sesion nueva (5 al arrancar, 50 para invocar) no llego a 50 dentro de la ventana de 10 minutos del propio script, y el timeout lo mato antes de imprimir. No se escribe ningun numero inventado. Para medirla: partir de una partida con 50 cobre (o aumentar la ventana), y leer `ciclo` al pulsar y al aparecer `.atlas-eclosion`. La invocacion de tc1 incuba 20 ciclos (valores.js), asi que el presupuesto de cada paso se expresara en ciclos y se pasara a segundos con la medida.
+
 # PARA_LA_MESA · Ronda «el mapa único y la terminal» · 2026-10-11 · Claude (Opus 5.5)
 Contrato FIRMADO + addendum visual v2 (Ruswick + Zanzlanz + PS1). Rama `claude/mapa-unico` sobre `main` `b63ddec`. **Sin push**: cada pieza espera tu FIRMO. Lo de las rondas anteriores sigue debajo.
+
+## CIERRE 2026-10-13 NOCHE · MESA AL DIA · MEDIDO / NO_DATA con causa
+Orden firmada: una ronda cada vez, commits LOCALES, sin merge a main sin tu mano. Lo que sigue es lo que hay.
+
+**Publicado en main (PRs):**
+- **#58** (`abfu`, 22:21:03Z), con tu firma «push en main de lo verde»: **chunk 1** (split de `mar.js`: los nodos del rack salen a `map_nodes_layer.js`; mar.js 16.304 → 15.132 B) y **zoom del mapa** (`map_zoom.js`: pellizco y rueda; Ctrl+rueda queda para el navegador). MEDIDO en el Doogee con pellizco real por CDP: **1,00 → 2,75** al separar; 3,00 al máximo. Rueda normal 1,00 → 1,35; Ctrl+rueda no toca el mapa.
+- **#59** (`abfv`, 22:37:47Z): **fuera-clic cierra** (punto 2). **ERRATA (re-medida):** antes escribí que esta PR «se mergeó por error mío». Lo medido: el commit de fusion 32113e3 tiene committer GitHub y autor tú. Eso no separa quién pulsó merge: `gh pr merge` (que lanzó mi script) produce el mismo tipo de commit que el navegador. Mi script sí llamó a `gh pr merge`. Queda abierto y lo decides tú. El revert lo ejecutas tú desde el navegador; no lo toco. MEDIDO antes del merge con toques reales: Army abierto → toque en la franja de la Radio: cerrado; toque en la cabecera: cerrado; toque dentro de la hoja: sigue abierto.
+
+**Terminal a máximo zoom (Doogee, 3,00):** la franja Goal/Now refluye (antes «Atlantis di…» cortado). Botones 48 px.
+
+**NO MEDIDO / NO HECHO, declarado:**
+- Ctrl+rueda en PC: el navegador hace su zoom de página, pero headless no lo mide aquí.
+- Línea de entrada del teclado en la terminal: no existe todavía (no hay línea que tape).
+- Punto 3 del comunicado (reparto de casas): **RONDA 1 en ejecución** (ver siguiente).
+
+**Siguiente, en el orden firmado:** R1 reparto de casas → R2 chunk 3 edificios toon → R3 chunk 7 parallax (fps ≥ 55 en Doogee) → R4 chunk 4 batalla toon → mapa vivo → chunk 6 color cycling → chunk 5 espejos.
+Piezas de amor: siguen esperando tu lista de nombres (NO_DATA). Estrella de Mar: espera canon (k=5).
 
 ## REALISMO ANIME + TERMINAL COMO CHAT + DOOGEE FUERA · 2026-10-12 cierre · LIVE `abfq` (PRs #54-#57) · MEDIDO / NO_DATA
 - ✅ **R1** cangrejo toon (`abfn`, #54): bandas duras del hue de su clase, contorno grueso, morf armónico 2 s, parpadeo del ciclo; sabotaje estrella rojo. **Doogee: 59 fps, 0 errores.**
@@ -229,3 +274,15 @@ C1 techo 16 KiB contra la revocación D2 · C2 «ES modules» contra el patrón 
 
 ## Lo que queda (en orden)
 R4 bioluminiscencia → Todas las piezas construibles están hechas. Las propuestas P9/P10/P11/P6/P-ESM/P-CHUNKS no se construyen sin tu firma.
+
+## ERRATA Y AVANCE · RONDA 3 · 2026-10-13 (append, sin reescribir lo anterior)
+- **ERRATA:** en las lineas de «Estado git» escribi `origin/main = a481691`. Medido: `origin/main` = `cc4fd44` (PR #61 fusionada por el Soberano; los tres commits viajeros ya estan en main). Y «Ligado a GitHub: PENDIENTE» queda superado: el enlace del lab (`benchmarks/bench_20261011`, medido 200) vive en la ficha del coral desde el chunk 2 (`abfz`, PR #62).
+- **Chunk 3 · formas infantiles de los edificios (sello abf*, en curso):** boya (burbuja con antena), observatorio (cupula con ventana), cristal (gema facetada) y lapidas (losa de punta redondeada). Cada silueta lleva las tres bandas toon del hue de su vector; las lapidas van en gris fijo (no tienen vector vivo). Medido en captura: las cuatro se distinguen. Sabotaje: hue inventado en la sombra → 3 de 7 casos en rojo.
+- **Corales restantes:** ninguno en el mapa aparte de Hexelion (el punto del Doogee se quito en #57). El racimo sirve para todos los nodos que tengan punto; hoy es uno. Declarado.
+- **Debida declarada:** `reef_buildings_layer.js` pasa de 15.924 a 16.322 B (techo 16.384, 62 B libres). Se mantiene: la frugalidad es meta, no recorte.
+- **Ctrl+rueda en PC (medido con CDP, headless):** escala de pagina 1 → 1; el mapa no la toma (zoom_mapa 1.00 → 1.00). El zoom del navegador NO se aplica en headless: NO_DATA aqui; lo mide el Soberano en un PC real.
+- **Cangrejo:** toon (abfn) visible junto al coral en captura. **Mapa despejandose:** no medido (necesita mirar con el Observatorio): declarado para los ojos del Soberano.
+- **Summon (medida guia):** reintento con ventana de 20 min en curso al redactar esta linea; se registra su resultado cuando termine, con su ciclo y su tiempo medidos, o como NO_DATA con causa.
+- **Summon (medida guia) · reintento con ventana de 20 min: NO_DATA, con causa observada.** Cobre 530 al pulsar (la compuerta de 50 se paso), invocacion de Reef Treasure en el ciclo 125, y la revelacion (`.atlas-eclosion`) NO aparecio en la ventana. No determinado por que: el huevo de tc1 incuba 20 ciclos, y el ciclo avanzo lo suficiente en la ventana. Hipotesis a revisar: el tick de eclosion en ui.js o el conteo de ciclos del nido. Corto aqui, como manda la regla; no se inventa tiempo.
+- **Chunk 3 (formas infantiles de los edificios): VERDE, commit local `b37045a`, sello `abga`.** PR pendiente de abrir.
+- **Estado del arbol:** `memory.db` (0 bytes, creado 00:57, sin referencia en el repo) queda SIN COMMITEAR; no lo he creado a proposito. Decide tu si se borra.
