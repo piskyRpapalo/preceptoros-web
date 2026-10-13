@@ -15,6 +15,7 @@ mismas claves, (d) presupuesto de peso, (e) ningun binario pesado. Las de motor
 import gzip
 import hashlib
 import json
+import os
 import re
 import subprocess
 import sys
@@ -2656,6 +2657,56 @@ class RedisenoDoogee(unittest.TestCase):
                            "Date", "innerHTML", "http://", "https://", "privad", "passphrase", "100.", "tailnet"):
                 with self.subTest(fichero=f, impuro=impuro):
                     self.assertNotIn(impuro, c)
+
+
+class AccesoTactilYPanel(unittest.TestCase):
+    """Lote 3-4 (botones, 2026-10-13): los controles de la web llegan a 44 px, el foco se ve con el
+    teclado y los controles del panel del cangrejo tienen nombre. Lee `ATLAS_FUENTE` (por defecto el
+    `public/` del repo): apuntarlo al arbol anterior es el rojo que demuestra que la prueba muerde."""
+    FUENTE = Path(os.environ.get("ATLAS_FUENTE", PUBLICO))
+
+    def _lee(self, rel):
+        return (self.FUENTE / rel).read_text(encoding="utf-8")
+
+    def test_selector_del_panel_del_cangrejo_llega_a_44(self):
+        """thegame.css: el select de acciones mide 41 px sin esto (medido en vivo)."""
+        self.assertRegex(self._lee("assets/thegame.css"), r"\.terminal-fila select\{[^}]*min-height:2\.75rem")
+
+    def test_etiqueta_de_consentimiento_llega_a_44(self):
+        """page-comment.css: la etiqueta de la casilla media 24 px de alto; es lo que se toca."""
+        self.assertRegex(self._lee("assets/page-comment.css"), r"\.pc-acepto\{[^}]*min-height:2\.75rem")
+
+    def test_boton_enviar_del_comentario_llega_a_44(self):
+        self.assertRegex(self._lee("assets/page-comment.css"), r"\.pc-enviar,\.pc-sec\{min-height:2\.75rem")
+
+    def test_icono_de_identidad_llega_a_44(self):
+        self.assertIn("var(--talla-par,44px)", self._lee("assets/canon.css"))
+
+    def test_idioma_y_marca_tienen_area_tactil_de_44_sin_mover_el_dibujo(self):
+        """eaa-art12: el area tactil es un ::before que no cambia el alto de la cabecera (116 -> 217 px
+        si se subia el alto real). Ambas reglas tienen que estar."""
+        css = self._lee("assets/eaa-art12-local-first-surface.css")
+        self.assertRegex(css, r"\.cab-lenguas a::before\{[^}]*inset:-10px -8px")
+        self.assertRegex(css, r"\.cab-marca::before\{[^}]*inset:-14px 0")
+
+    def test_el_foco_visible_cubre_todo_el_teclado(self):
+        """soberano.css: un `:focus-visible` global; sin el, un control nuevo queda sin contorno."""
+        self.assertRegex(self._lee("assets/soberano.css"), r":focus-visible\{outline:2px solid")
+
+    def test_el_panel_del_cangrejo_nombra_sus_controles_y_su_boton(self):
+        """aiact-art50-crab-terminal.js: action, depth y direction con nombre; el boton «Run» con texto."""
+        js = self._lee("game/aiact-art50-crab-terminal.js")
+        for nombre in ("action", "depth", "direction"):
+            self.assertIn(f"setAttribute('aria-label', '{nombre}')", js, nombre)
+        self.assertIn("T('term_run', 'Run')", js, "el boton de accion no tiene texto propio")
+
+    def test_la_bandera_de_la_casa_es_una_imagen_con_nombre(self):
+        """home_buildings.js: un span con aria-label y sin rol lo ignoran muchos lectores."""
+        self.assertIn("R.color.setAttribute('role', 'img')", self._lee("game/home_buildings.js"))
+
+    def test_la_repeticion_de_batalla_es_una_imagen_con_nombre(self):
+        """battle_replay.js: el canvas lleva aria-label; sin rol no tiene nombre para muchos lectores."""
+        self.assertIn("lienzo.setAttribute('role', 'img')", self._lee("game/battle_replay.js"))
 
 
 if __name__ == "__main__":
