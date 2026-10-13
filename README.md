@@ -109,21 +109,15 @@ date it was taken and the machine it ran on.
 - **A gap is named a gap.** Where a number is missing, the page says so and
   says why, instead of showing a stale one.
 
-## Two ways to take part, and both count
+## What the site serves, and how to take part
 
-**Use the tools.** Install it, run it on your own machine, and say what
-happened — what was slow, what broke, what your hardware measured. That is
-already a contribution: the numbers here mean more the more machines they
-come from, and there is no way to get them without people running this on
-hardware nobody here owns.
-
-**Build tools.** The helpers are small and specialised on purpose, so adding
-one is a normal amount of work rather than a project. If you build something
-that fits — a helper for a trade nobody has covered, an adapter trained on a
-dataset you know well — it belongs here next to the rest.
-
-Neither one is the price of the other. Somebody who only ever uses this is not
-a lesser participant; they are the reason the tools get better.
+- **Read and check the numbers.** Site weight, languages and test counts are in
+  `public/counters.json`, each with the date it was taken.
+- **Install it and use it offline.** The site is an installable app
+  (`manifest.webmanifest`); `arnes_sw.mjs` checks the offline path.
+- **Comment on a page.** The ✎ entry in the game menu opens a box. Nothing is
+  sent until you tick the consent box and press Send. The comment then goes to
+  a human review queue, signed with your pseudonym and your key.
 
 The reason any of it is public is simple. This was built because it was
 needed, and it is shared because knowledge should be democratised — available
