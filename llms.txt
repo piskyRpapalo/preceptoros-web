@@ -1,12 +1,13 @@
 # PreceptorOS
 
-> PreceptorOS: WEB · APP · LAB — a local-first AI ecosystem. Local memory,
-> local inference, zero cloud. Every figure it publishes was measured;
-> anything not measured is NO_DATA with its cause.
+> PreceptorOS: WEB · APP · LAB — a local-first AI ecosystem. Local memory and
+> local inference are the APP's claim (see its README). The WEB makes no external
+> request on load, and calls api.preceptoros.org only when a visitor presses send.
+> Every figure it publishes was measured; anything not measured is NO_DATA with its cause.
 
 ## The ecosystem
 
-- [WEB: preceptoros-web README](https://github.com/piskyRpapalo/preceptoros-web/blob/main/README.md): this repository — the public gateway and the game. Zero external requests on load.
+- [WEB: preceptoros-web README](https://github.com/piskyRpapalo/preceptoros-web/blob/main/README.md): this repository — the public website; its home page is the game theGame, in nine languages. Measured: zero external requests on load.
 - [APP: PreceptorOS README](https://github.com/piskyRpapalo/PreceptorOS/blob/main/README.md): the local-first companion application — local memory, local inference, zero cloud.
 - [STATE.md (APP)](https://github.com/piskyRpapalo/PreceptorOS/blob/main/STATE.md): the ecosystem's state card — measured figures with their source, NO_DATA with cause. Written to be read in one pass and handed to another AI.
 - [STATE.md (LAB)](https://github.com/piskyRpapalo/lab/blob/main/STATE.md): the same state card, published from the measured record.
@@ -20,4 +21,4 @@
 
 ## Live site
 
-- [preceptoros.org](https://preceptoros.org): the served site. Nine languages, zero external requests on load, 75 web tests passing (measured; see the LAB counters).
+- [preceptoros.org](https://preceptoros.org): the served site. Nine languages, zero external requests on load, 75 web tests: 74 passing and 1 skipped (measured; see the LAB counters).
