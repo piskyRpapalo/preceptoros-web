@@ -57,14 +57,14 @@
     return dest;
   }
   /* ¿Esta (x, y) al alcance del cangrejo (donde lo puso el paseo en el ultimo cuadro + off)? Si si, evento REACH. */
-  function alcanza(x, y, que, base) {
+  function alcanza(x, y, que, base, guia) {
     base = base || base0;
     if (!base) { return false; }
     var cx = base.x + off.x, cy = base.y + off.y, d = Math.sqrt((x - cx) * (x - cx) + (y - cy) * (y - cy));
     if (d > ALCANCE) { return false; }
     var primera = nivel(eventos, 'alcance') === null;
     anota({ tipo: 'alcance', ciclo: ciclo(), que: String(que || 'piece') });
-    if (primera && raiz.AtlasTutorial && raiz.AtlasTutorial.abre) { raiz.AtlasTutorial.abre('reach'); return 'tutorial'; }
+    if (primera && guia !== false && raiz.AtlasTutorial && raiz.AtlasTutorial.abre) { raiz.AtlasTutorial.abre('reach'); return 'tutorial'; }
     return true;
   }
   /* Las skills, legibles (para su panel y para el lab). */

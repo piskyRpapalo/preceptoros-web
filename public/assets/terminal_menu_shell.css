@@ -84,3 +84,6 @@ body.portada-juego .pc-boton{display:none}
 .terminal-enmarcado > details > summary{display:none}
 /* PR-2: el lienzo del gusano, encima de todo y sin recibir el dedo (revela, no decide). */
 .gusano-lienzo{position:fixed;inset:0;width:100vw;height:100vh;z-index:20;pointer-events:none}
+/* 6B-1: segundo gesto sobre una accion medida; enlaces tambien tactiles. */
+.place-actions{display:grid;gap:.5rem}
+.place-actions>.boton-sec{display:flex;align-items:center;min-height:2.875rem}

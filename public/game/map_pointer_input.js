@@ -33,11 +33,16 @@
         var s = x.sitio(l), p = C.aPantalla(cam, c.width, c.height, z, s.x, s.y), d = Math.hypot(p[0] - px, p[1] - py);
         if (d < dist) { dist = d; mejor = l; }
       });
-      if (mejor) { x.elige(mejor); }
-      var ficha = raiz.AtlasInspector ? raiz.AtlasInspector.toca(px, py, 44 * x.dpr) : null;  /* 0d: la ficha de la pieza tocada */
+      var w = C.aMundoDelta(px - c.width / 2, py - c.height / 2, x.z()), tocado = { x: cam.x + w[0], y: cam.y + w[1] };
+      var lugar = mejor ? { sitio: x.sitio(mejor), action: { id: 'fight', label: mejor.npc ? 'Fight' : 'Challenge', run: function () {
+        x.elige(mejor); var D = raiz.document, b = D && D.getElementById('arena-lucha');
+        if (!b) { return { cause: 'NO_DATA (the fight action is not loaded)' }; }
+        b.click(); return { ok: true };
+      } } } : null;
+      var ficha = raiz.AtlasInspector ? raiz.AtlasInspector.toca(px, py, 44 * x.dpr, tocado, lugar) : null;
       /* B: tocar MAR VACIO (ni lugar ni pieza) manda a tu cangrejo alli: pantalla -> mundo con la inversa del rombo. */
       var Lb = raiz.AtlasCangrejoLibre;
-      if (!mejor && !ficha && Lb && Lb.base()) { var w = C.aMundoDelta(px - c.width / 2, py - c.height / 2, x.z()); Lb.va(Lb.base(), cam.x + w[0], cam.y + w[1]); }
+      if (!mejor && !ficha && Lb && Lb.base()) { Lb.va(Lb.base(), tocado.x, tocado.y); }
     }
     c.addEventListener('pointerup', suelta);
     c.addEventListener('pointercancel', function () { arrastre = null; });

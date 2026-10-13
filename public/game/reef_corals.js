@@ -56,7 +56,7 @@
       if (!s) { return; }   /* sin punto en el mapa, sin coral */
       var k = coral(n), x = s.x + DX, y = s.y + DY;
       pon(x, y, function () { pintaUno(g, P(x, y), k, dpr); }, function () {
-        var f = { que: 'Coral · ' + k.nodo, estado: k.nd ? 'NO_DATA (no measure of this node is MEASURED' + (k.emuladas ? '; ' + k.emuladas + ' EMULATED do not count' : '') + ')'
+        var f = { que: 'Coral · ' + k.nodo, hit: { dx: k.ladeo * dpr, dy: -k.altura * dpr, radius: (5 + 2 * k.medidas) * dpr * (k.lobulos + 1) / 2 }, estado: k.nd ? 'NO_DATA (no measure of this node is MEASURED' + (k.emuladas ? '; ' + k.emuladas + ' EMULATED do not count' : '') + ')'
                  : k.medidas + ' of ' + k.total + ' measures MEASURED', causas: [] };
         /* El payload de Hexelion (hexelion_bench.js): sus cifras medidas con su fuente. Cero fetch. */
         var HB = raiz.AtlasHexBench;
@@ -68,7 +68,7 @@
           f.causas.push('lab: ' + B.fuente.enlace);
           f.causas.push('raw figures published at the lab: ' + B.fuente.archivo + ' · sha256 ' + B.fuente.sha256.slice(0, 16));
         }
-        return f;
+        return raiz.AtlasPlaceCards.ficha('coral', f, { enlace: n.nodo === 'nodo.0.hexelion' && HB ? HB.BENCH.fuente.enlace : null });
       });
     });
   }

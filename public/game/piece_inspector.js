@@ -33,15 +33,16 @@
                [R[2], isFinite(x) && isFinite(y) ? 'world (' + Math.round(x) + ', ' + Math.round(y) + ') · depth ' + Math.round(x + y) : nd(null, 'no position')],
                [R[3], sonidoDe(f)]];
     (f.causas || []).forEach(function (c) { lin.push([R[4], nd(c, 'empty note')]); });
+    if (f.actions) { lin.push(['Available actions', f.actions.length ? f.actions.map(function (a) { return a.label; }).join(' · ') : f.actionCause || nd(null, 'no action has been declared')]); }
     return lin;
   }
   /* mar.js, tras ordenar la cola: guarda donde quedo cada pieza con ficha (pixeles del lienzo). */
   function registra(cola, P, texto) {
     if (texto) { T = texto; }
     piezas = [];
-    cola.forEach(function (it) { if (it.ficha) { var p = P(it.col, it.fila); piezas.push({ x: p[0], y: p[1], col: it.col, fila: it.fila, ficha: it.ficha }); } });
+    cola.forEach(function (it) { if (it.ficha) { var p = P(it.col, it.fila), f = lee(it); piezas.push({ x: p[0], y: p[1], hit: f.hit, col: it.col, fila: it.fila, ficha: it.ficha }); } });
   }
-  function abre(lin) {
+  function abre(lin, ficha) {
     var D = raiz.document, caja = D && D.getElementById('thegame-terminal');
     if (!caja) { return; }
     if (!panel || !panel.isConnected) {
@@ -51,20 +52,33 @@
       if (raiz.AtlasGuardado && raiz.AtlasGuardado.montaInspector) { raiz.AtlasGuardado.montaInspector(panel); }
     }
     var dl = panel.querySelector('dl'); dl.textContent = '';
+    panel.dataset.place = ficha && ficha.kind || 'piece';
     lin.forEach(function (l) { var dt = D.createElement('dt'), dd = D.createElement('dd'); dt.textContent = l[0]; dd.textContent = l[1]; dl.appendChild(dt); dl.appendChild(dd); });
+    if (raiz.AtlasPlaceCards) { raiz.AtlasPlaceCards.monta(panel, ficha || {}, function (r) {
+      var dt = D.createElement('dt'), dd = D.createElement('dd'); dt.textContent = 'Action result';
+      dd.textContent = r.cause || (r.receipt ? 'Look started at world (' + r.receipt.col + ', ' + r.receipt.fila + ') · cycle ' + r.receipt.nace_tic : (r.ok ? 'Opened' : 'Measured receipts'));
+      dl.appendChild(dt); dl.appendChild(dd);
+      (r.lines || []).forEach(function (l) { var a = D.createElement('dt'), b = D.createElement('dd'); a.textContent = l[0]; b.textContent = l[1]; dl.appendChild(a); dl.appendChild(b); });
+    }); }
     /* El menu descubre el panel con un MutationObserver (microtarea): se abre DESPUES de que exista su entrada. */
     Promise.resolve().then(function () { var b = D.getElementById('menu-pliego-ficha'); if (b && panel.hidden) { b.click(); } });
   }
   /* El toque corto (pixeles del lienzo): la pieza mas cercana a menos de `radio`. Devuelve sus lineas o null. */
-  function toca(px, py, radio) {
-    var mejor = null, d0 = radio || 44;
-    piezas.forEach(function (q) { var d = Math.hypot(q.x - px, q.y - py); if (d < d0) { d0 = d; mejor = q; } });
+  function toca(px, py, radio, tocado, lugar) {
+    var mejor = null, d0 = Infinity, r = radio || 44;
+    piezas.forEach(function (q) {
+      var d = Math.hypot(q.x - px, q.y - py), h = q.hit;
+      if (h) { d = Math.min(d, Math.hypot(q.x + h.dx - px, q.y + h.dy - py)); }
+      if (d < Math.max(r, h && h.radius || 0) && d < d0) { d0 = d; mejor = q; }
+    });
     if (!mejor) { return null; }
     var fi = lee(mejor);
+    if (lugar && lugar.sitio && mejor.col === lugar.sitio.x && mejor.fila === lugar.sitio.y) { fi.actions = [lugar.action]; }
     /* B3: si la pieza esta al ALCANCE del cangrejo, es una accion real (skill REACH; la primera abre el tutorial). */
-    var al = raiz.AtlasCangrejoLibre ? raiz.AtlasCangrejoLibre.alcanza(mejor.col, mejor.fila, fi && fi.que) : false;
+    if (raiz.AtlasCangrejoLibre) { raiz.AtlasCangrejoLibre.alcanza(mejor.col, mejor.fila, fi && fi.que, null, false); }
     ultima = lineas(fi, mejor.col, mejor.fila);
-    if (al !== 'tutorial') { abre(ultima); }  /* la PRIMERA vez manda el tutorial (B3); la ficha queda en `vista()` */
+    if (tocado && Number.isFinite(tocado.x) && Number.isFinite(tocado.y)) { ultima.unshift(['Touched', 'world (' + Math.round(tocado.x) + ', ' + Math.round(tocado.y) + ')']); }
+    abre(ultima, fi);
     return ultima;
   }
   function vista() { return ultima ? ultima.slice() : null; }
