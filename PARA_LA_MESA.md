@@ -1,3 +1,9 @@
+## OCEANO · PASO 0 · RE-SELLO Y LECTURA · 2026-10-13
+- Rama local `oceano-2026-10-13`, basada en `origin/main` / `a5417e8` (PR #71); árbol limpio al iniciar. La rama ya existía en ese mismo commit y se activó tras autorización de escritura de `.git`.
+- Relectura de `ideas6oct.txt` y `ideas7oct.txt` (papeles del rack): gobiernan los sellos MEDIDO/DECLARADO/PROPUESTA/NO_DATA, NO_DATA siempre con causa, una pieza cada vez, propuestas sin adelantarse y firma humana para publicación/acciones irreversibles.
+- Cadena declarada: `abgl → abgm`. Huella medida tras regeneración: `config/sw-huella.txt` = `2b8137ae035942d4`; versión `preceptoros-2026-17-abgm`. `atlas-mundo.json`: `gzip_juego_b=89810`, `arnes_sw=22/22`, `pruebas_web=75`, 9 lenguas. La regeneración de mundo registró `2026-10-13T19:58Z` y Linux x86_64 / Python 3.14.4.
+- Ningún push, firma criptográfica ni merge realizado. Paso 0 cerrado; siguiente trabajo autorizado: Pieza 1 · 5C.
+
 ## RONDA 3 · EMBELLECIMIENTO · EN MARCHA · 2026-10-13
 - **Chunk 1 (payload de Hexelion): VERDE, PR #61 ABIERTA** (`abfy`, sin merge; el merge es del Soberano). `hexelion_bench.js` lleva las cifras de `bench_20261011_resultados.json`: embeddinggemma-2 pp512 ngl99 = 6459.63 tok/s (MEDIDO, GPU Vulkan); tres modelos NO_DATA con su causa textual. No hay «tg32» en ese fichero: no se inventa. Ligado a GitHub: PENDIENTE (el fichero no trae URL del repo del laboratorio).
 - **Chunk 2 (coral de Hexelion infantil + enlace del lab): VERDE, PR #62 ABIERTA** (`abfz`, sin merge). Coral = racimo de burbujas toon con ojos solo con medidas; sin medidas, contorno punteado y sin cara. Ficha con el enlace `benchmarks/bench_20261011` (medido por la Mesa) y el sha256 local. Visual medido por captura CDP (360 px): el coral y el cangrejo se ven juntos en toon.
