@@ -35,11 +35,13 @@
      su revelacion cubrio la hoja). Si la hoja de Batalla esta abierta, la revelacion ESPERA a que se cierre (sin
      reloj: observa su `hidden`) y entonces se muestra. Nada se pierde: solo llega despues. */
   function batalla() { var b = document.getElementById('thegame-batalla'); return b && !b.hidden ? b : null; }
-  function muestra(t) {
+  /* `alCerrar` (opcional): lo que hace quien la llamo al cerrarse (p. ej. llevar el foco a su eleccion). Si
+     no se pasa, la revelacion devuelve el foco a quien la abrio, como antes. */
+  function muestra(t, alCerrar) {
     if (!t || !t.armonicos) { return; }
     var enCurso = batalla();
     if (enCurso && raiz.MutationObserver) {
-      var ob = new raiz.MutationObserver(function () { if (enCurso.hidden) { ob.disconnect(); muestra(t); } });
+      var ob = new raiz.MutationObserver(function () { if (enCurso.hidden) { ob.disconnect(); muestra(t, alCerrar); } });
       ob.observe(enCurso, { attributes: true, attributeFilter: ['hidden'] });
       return null;
     }
@@ -61,7 +63,7 @@
       if (!vivo) { return; }
       vivo = false; raiz.cancelAnimationFrame(raf); fondo.remove();
       document.removeEventListener('keydown', tecla, true);
-      if (antes && antes.focus) { antes.focus(); }
+      if (alCerrar) { alCerrar(); } else if (antes && antes.focus) { antes.focus(); }
     }
     function tecla(e) { if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); cierra(); } }
     var sonado = false, tiembla = 0;
