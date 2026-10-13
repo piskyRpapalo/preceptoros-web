@@ -118,12 +118,12 @@
     R.eclosion.appendChild(el('p', 'atlas-medido', T('huevo_rack')));
     var si = boton(T('adoptar')), no = boton(T('soltar_tropa'));
     si.addEventListener('click', function () { adopta(t, si); });
-    no.addEventListener('click', function () { eclosionada = null; R.eclosion.hidden = true; dice(T('tropa_suelta')); });
+    no.addEventListener('click', function () { window.AtlasTallerUI.desintegraSuelta(t, R.eclosion); });
     var m = el('p', 'atlas-dlg-mandos'); m.appendChild(no); m.appendChild(si);
     R.eclosion.appendChild(m);
     S.suena('eclosion', calor());
-    /* La revelacion a pantalla central (summon_reveal.js), si la casa la cargo. */
-    if (window.AtlasRevela) { window.AtlasRevela.muestra(t); }
+    /* La revelacion a pantalla central (summon_reveal.js): al cerrarse, el foco va a la eleccion. */
+    if (window.AtlasRevela) { window.AtlasRevela.muestra(t, window.AtlasTallerUI.aterriza(R.eclosion)); }
     if (quieto()) { return; }
     var k = 0;
     (function morfa() {
@@ -167,7 +167,7 @@
     /* G0 · la capa dejo de ser un <dialog> (sin `open`): con `!capa.open` esto salia SIEMPRE y nada eclosionaba. */
     if (!capa || !capa.isConnected || document.hidden) { return; }
     var i = ins(), c = i ? i.ciclo : 0;
-    if (!eclosionada) {
+    if (R.eclosion.hidden) {
       var listo = huevos.filter(function (h) { return c >= h.hasta; })[0];
       if (listo) { huevos.splice(huevos.indexOf(listo), 1); eclosiona(listo); }
     }

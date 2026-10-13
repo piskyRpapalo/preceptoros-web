@@ -15,10 +15,10 @@
 .pc-texto{width:100%;box-sizing:border-box;padding:.6rem;font:inherit;font-size:1rem;color:#fff;background:#0d0a1c;
   border:1px solid #6b5aa6;border-radius:calc(var(--radius,14px) - 6px);resize:vertical}
 .pc-que{margin:0;font-size:.8rem;line-height:1.45;color:#cfc8e8}
-.pc-acepto{display:flex;gap:.5rem;align-items:center;font-size:.9rem}
+.pc-acepto{display:flex;gap:.5rem;align-items:center;font-size:.9rem;min-height:2.75rem}
 .pc-acepto input{width:1.2rem;height:1.2rem}
 .pc-fila{display:flex;flex-wrap:wrap;gap:.5rem}
-.pc-enviar,.pc-sec{min-height:2.6rem;padding:.4rem 1rem;font:inherit;font-weight:700;border-radius:999px;cursor:pointer}
+.pc-enviar,.pc-sec{min-height:2.75rem;padding:.4rem 1rem;font:inherit;font-weight:700;border-radius:999px;cursor:pointer}
 .pc-enviar{color:#fff;background:#6d3fe0;border:1px solid var(--oro,#d9a441)}
 .pc-enviar[disabled]{opacity:.6;cursor:wait}
 .pc-sec{color:#eee;background:transparent;border:1px solid #6b5aa6}

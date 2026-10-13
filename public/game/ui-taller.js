@@ -35,6 +35,23 @@
       return firma(rec).then(function (f) { return despues(rec, f); });
     }).catch(function (e) { dice(String((e && e.message) || e)); });
   }
+  /* La suelta de la eclosion: MISMO recibo `atlas.taller/1`, MISMO residuo y MISMO mensaje que desintegrar, pero
+     sin `retira` (la tropa nunca entro al Army). `panel` (la eleccion) se cierra solo si el recibo queda firmado. */
+  function desintegraSuelta(t, panel) {
+    if (roto) { dice('NO_DATA · ' + roto); return false; }
+    if (!(window.Identity && window.Identity.quien && window.Identity.quien())) { dice(T('taller_sin_id', 'Create your key first (top of the page): every Workshop act is signed.')); return false; }
+    opera({ op: 'desintegra', tropa: t }, function (rec, f) {
+      cadena.push({ recibo: rec, firma: f }); est = TL.estado(cadena); guarda();
+      if (window.AtlasArrecife && window.AtlasArrecife.entierraTropa) { window.AtlasArrecife.entierraTropa(rec); }
+      dice(T('taller_hecho_d', 'Dissolved: +{g} g of static residue.').replace('{g}', rec.gramos)); pinta();
+      if (panel) { panel.hidden = true; }
+    });
+    return true;
+  }
+  /* Al cerrarse la revelacion de una eclosion, el foco y la vista van a la eleccion (quedarse / soltar). */
+  function aterriza(panel) {
+    return function () { var b = panel.querySelector('.atlas-dlg-mandos button'); if (!panel.hidden && b) { panel.scrollIntoView({ block: 'center' }); b.focus(); } };
+  }
   function desintegra(t) {
     opera({ op: 'desintegra', tropa: t }, function (rec, f) {
       return window.AtlasIncubadora.retira(rec, f).then(function () {
@@ -120,5 +137,5 @@
   /* P10: el tono de la bandera a la que se tino una onda, o null (nunca un color decidido por otro). */
   function tono(semilla) { var b = est && !roto ? est.tintes[semilla] : null; return b ? V.banderas[b] : null; }
 
-  window.AtlasTallerUI = { monta: monta, lijas: lijas, tono: tono, pinta: pinta };
+  window.AtlasTallerUI = { monta: monta, lijas: lijas, tono: tono, pinta: pinta, desintegraSuelta: desintegraSuelta, aterriza: aterriza };
 })();

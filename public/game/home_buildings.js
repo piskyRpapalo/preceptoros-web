@@ -133,7 +133,7 @@
     }
     R.raiz = el('div', 'casa'); R.raiz.id = 'casa-estado';
     R.alm = el('div', 'casa-almacen'); R.alm.hidden = true;
-    var fila = el('div', 'casa-identidad'); R.quien = el('b', 'casa-quien'); R.color = el('span', 'casa-color');
+    var fila = el('div', 'casa-identidad'); R.quien = el('b', 'casa-quien'); R.color = el('span', 'casa-color'); R.color.setAttribute('role', 'img');
     var pers = boton('✦ ' + T('personaliza'), 'boton-sec casa-pers-b'); pers.id = 'casa-personaliza'; pers.addEventListener('click', personaliza);
     fila.appendChild(R.quien); fila.appendChild(R.color); fila.appendChild(pers);
     R.est = el('div', 'casa-cuerpo');

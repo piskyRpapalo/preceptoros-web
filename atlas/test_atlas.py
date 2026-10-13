@@ -15,6 +15,7 @@ mismas claves, (d) presupuesto de peso, (e) ningun binario pesado. Las de motor
 import gzip
 import hashlib
 import json
+import os
 import re
 import subprocess
 import sys
@@ -565,10 +566,10 @@ process.stdout.write(JSON.stringify(ok));
         la hoja de Batalla abierta, la revelacion espera a que se cierre (observa `hidden`, sin reloj) y despues sale."""
         r = sin_comentarios((PUBLICO / "game" / "summon_reveal.js").read_text(encoding="utf-8"))
         self.assertIn("function batalla() { var b = document.getElementById('thegame-batalla'); return b && !b.hidden ? b : null; }", r)
-        self.assertIn("if (enCurso.hidden) { ob.disconnect(); muestra(t); }", r)
+        self.assertIn("if (enCurso.hidden) { ob.disconnect(); muestra(t, alCerrar); }", r)
         self.assertLess(r.index("var enCurso = batalla();"), r.index("capa.appendChild(fondo)"), "la revelacion se pinta antes de mirar si hay batalla")
         for reloj in ("setInterval", "setTimeout"):
-            self.assertNotIn(reloj, r.split("function muestra(t)")[1].split("var g = cv.getContext")[0], "la espera usa reloj")
+            self.assertNotIn(reloj, r.split("function muestra(t, alCerrar)")[1].split("var g = cv.getContext")[0], "la espera usa reloj")
 
     def test_ley_del_suelo_paso_1_el_rombo_es_la_ley(self):
         """LEY DEL SUELO (firmada 2026-10-12), paso 1: rombo 2:1, (col,fila) -> x=(col-fila)*W/2, y=(col+fila)*H/2, anclaje al
@@ -1978,7 +1979,7 @@ class CasaGranja(unittest.TestCase):
         self.assertIn("G.punto(arm, i / n * TAU)", o, "la figura no sale de los armonicos de la gacha")
         self.assertIn("globalCompositeOperation = 'lighter'", o)
         self.assertIn("var peso = Math.max(0, Math.min(1, c * n - j))", o, "no nace armonico a armonico")
-        self.assertIn("if (window.AtlasRevela) { window.AtlasRevela.muestra(t); }", self._js("ui.js"))
+        self.assertIn("if (window.AtlasRevela) { window.AtlasRevela.muestra(t, window.AtlasTallerUI.aterriza(R.eclosion)); }", self._js("ui.js"))
         self.assertIn("prefers-reduced-motion: reduce", self._js("summon_reveal.js"))
 
 
@@ -2656,6 +2657,133 @@ class RedisenoDoogee(unittest.TestCase):
                            "Date", "innerHTML", "http://", "https://", "privad", "passphrase", "100.", "tailnet"):
                 with self.subTest(fichero=f, impuro=impuro):
                     self.assertNotIn(impuro, c)
+
+
+class PolvoDeEclosion(unittest.TestCase):
+    """Mision 2026-10-13, paso 3. Rechazar en la eclosion y aceptar-y-desintegrar tienen que dar el MISMO
+    residuo y el MISMO recibo atlas.taller/1. Medido antes del cambio (node, 15 tropas): las cifras de
+    residuo ya coinciden (0 de 15 distintas); lo que no coincide es el camino: «soltar» daba 0 g y ningun
+    recibo, mientras que desintegrar da residuo(t) g (6-9 g en la muestra) con recibo firmado."""
+
+    def _node(self, codigo):
+        r = subprocess.run(["node", "-e", codigo], cwd=RAIZ.parent, capture_output=True, text=True, timeout=120)
+        self.assertEqual(r.returncode, 0, r.stderr[-400:])
+        return json.loads(r.stdout)
+
+    def test_las_cifras_del_residuo_coinciden_entre_caminos(self):
+        """Guarda: la tropa de la eclosion y la copia que queda en el Army dan el mismo residuo (15 casos)."""
+        out = self._node(
+            "const G=require('./public/game/gacha.js'),TL=require('./public/game/taller.js'),C=require('crypto');"
+            "const r=[];for(const tc of ['tc1','tc2','tc3'])for(const x of ['a1','b2','c3','d4','e5']){"
+            "const t=G.tirada(C.createHash('sha256').update(x).digest('hex'),tc);"
+            "r.push([TL.residuo(t),TL.residuo(JSON.parse(JSON.stringify(t)))]);}"
+            "console.log(JSON.stringify(r));")
+        self.assertEqual(len(out), 15)
+        self.assertTrue(all(a == b for a, b in out), out)
+
+    def test_el_recibo_de_eclosion_es_el_de_desintegrar(self):
+        """Guarda: el recibo `atlas.taller/1` se arma igual desde la eclosion que desde el Army."""
+        out = self._node(
+            "const G=require('./public/game/gacha.js'),TL=require('./public/game/taller.js'),C=require('crypto');"
+            "const t=G.tirada(C.createHash('sha256').update('a1').digest('hex'),'tc1');"
+            "const e={saldo:0,lijas:{},disueltas:{},tintes:{},ultimo:'0'.repeat(64),clave:null,n:0};"
+            "const k='ab'.repeat(32);"
+            "console.log(JSON.stringify([TL.recibo(e,{op:'desintegra',tropa:t},k),"
+            "TL.recibo(e,{op:'desintegra',tropa:JSON.parse(JSON.stringify(t))},k)]));")
+        self.assertEqual(out[0], out[1])
+        self.assertEqual(out[0]["esquema"], "atlas.taller/1")
+
+    def test_rechazar_en_la_eclosion_llama_al_mismo_camino_de_desintegrar(self):
+        """ROJO hasta el cambio: el boton «no» de la eclosion solo ocultaba el panel (ui.js:121)."""
+        self.assertIn("window.AtlasTallerUI.desintegraSuelta(t, R.eclosion)", (PUBLICO / "game" / "ui.js").read_text(encoding="utf-8"))
+
+    def test_desintegrar_suelta_firma_el_recibo_sin_sacarla_del_army(self):
+        """ROJO hasta el cambio: la suelta firma `desintegra` con la misma `opera` y NO llama a `retira`
+        (la tropa nunca entro al Army)."""
+        ui = (PUBLICO / "game" / "ui-taller.js").read_text(encoding="utf-8")
+        m = re.search(r"function desintegraSuelta\(t, panel\)\s*\{(.*?)\n  \}", ui, re.S)
+        self.assertTrue(m, "no existe desintegraSuelta")
+        cuerpo = m.group(1)
+        self.assertIn("opera({ op: 'desintegra', tropa: t }", cuerpo)
+        self.assertNotIn("retira", cuerpo, "la suelta no debe sacar del Army una tropa que nunca entro")
+        self.assertIn("AtlasTallerUI", ui)
+
+
+class EclosionDirecta(unittest.TestCase):
+    """Mision 2026-10-13, paso 2. Al cerrarse la revelacion de una eclosion, el foco y la vista aterrizan en
+    quedarse / no quedarse. La revelacion en si no se quita (es la de 2026-10-05): solo se cierra en su sitio."""
+
+    def test_la_revelacion_acepta_una_funcion_al_cerrar(self):
+        """ROJO hasta el cambio: summon_reveal.js no tenia `alCerrar`."""
+        self.assertIn("function muestra(t, alCerrar)", (PUBLICO / "game" / "summon_reveal.js").read_text(encoding="utf-8"))
+
+    def test_la_eclosion_pasa_su_eleccion_al_cerrar_la_revelacion(self):
+        """ROJO hasta el cambio: ui.js llamaba `muestra(t)` sin nada al cerrar."""
+        ui = (PUBLICO / "game" / "ui.js").read_text(encoding="utf-8")
+        self.assertIn("AtlasRevela.muestra(t, window.AtlasTallerUI.aterriza(R.eclosion))", ui)
+        tal = (PUBLICO / "game" / "ui-taller.js").read_text(encoding="utf-8")
+        cuerpo = tal[tal.index("function aterriza(panel)"):][:300]
+        self.assertIn("atlas-dlg-mandos", cuerpo, "aterriza no lleva el foco a la eleccion")
+        self.assertIn("b.focus()", cuerpo)
+
+
+class EclosionEspera(unittest.TestCase):
+    def test_no_nace_otro_huevo_mientras_la_eleccion_esta_abierta(self):
+        """ui.js: `tic` espera a que el panel de la eleccion este cerrado (no a un flag que un cierre desde
+        fuera dejaria pegado). `R.eclosion` nace oculto (ui.js: `R.eclosion.hidden = true`)."""
+        ui = (PUBLICO / "game" / "ui.js").read_text(encoding="utf-8")
+        self.assertIn("if (R.eclosion.hidden) {", ui)
+        self.assertIn("R.eclosion = el('div', 'atlas-eclosion'); R.eclosion.hidden = true;", ui)
+
+
+class AccesoTactilYPanel(unittest.TestCase):
+    """Lote 3-4 (botones, 2026-10-13): los controles de la web llegan a 44 px, el foco se ve con el
+    teclado y los controles del panel del cangrejo tienen nombre. Lee `ATLAS_FUENTE` (por defecto el
+    `public/` del repo): apuntarlo al arbol anterior es el rojo que demuestra que la prueba muerde."""
+    FUENTE = Path(os.environ.get("ATLAS_FUENTE", PUBLICO))
+
+    def _lee(self, rel):
+        return (self.FUENTE / rel).read_text(encoding="utf-8")
+
+    def test_selector_del_panel_del_cangrejo_llega_a_44(self):
+        """thegame.css: el select de acciones mide 41 px sin esto (medido en vivo)."""
+        self.assertRegex(self._lee("assets/thegame.css"), r"\.terminal-fila select\{[^}]*min-height:2\.75rem")
+
+    def test_etiqueta_de_consentimiento_llega_a_44(self):
+        """page-comment.css: la etiqueta de la casilla media 24 px de alto; es lo que se toca."""
+        self.assertRegex(self._lee("assets/page-comment.css"), r"\.pc-acepto\{[^}]*min-height:2\.75rem")
+
+    def test_boton_enviar_del_comentario_llega_a_44(self):
+        self.assertRegex(self._lee("assets/page-comment.css"), r"\.pc-enviar,\.pc-sec\{min-height:2\.75rem")
+
+    def test_icono_de_identidad_llega_a_44(self):
+        self.assertIn("var(--talla-par,44px)", self._lee("assets/canon.css"))
+
+    def test_idioma_y_marca_tienen_area_tactil_de_44_sin_mover_el_dibujo(self):
+        """eaa-art12: el area tactil es un ::before que no cambia el alto de la cabecera (116 -> 217 px
+        si se subia el alto real). Ambas reglas tienen que estar."""
+        css = self._lee("assets/eaa-art12-local-first-surface.css")
+        self.assertRegex(css, r"\.cab-lenguas a::before\{[^}]*inset:-10px -8px")
+        self.assertRegex(css, r"\.cab-marca::before\{[^}]*inset:-14px 0")
+
+    def test_el_foco_visible_cubre_todo_el_teclado(self):
+        """soberano.css: un `:focus-visible` global; sin el, un control nuevo queda sin contorno."""
+        self.assertRegex(self._lee("assets/soberano.css"), r":focus-visible\{outline:2px solid")
+
+    def test_el_panel_del_cangrejo_nombra_sus_controles_y_su_boton(self):
+        """aiact-art50-crab-terminal.js: action, depth y direction con nombre; el boton «Run» con texto."""
+        js = self._lee("game/aiact-art50-crab-terminal.js")
+        for nombre in ("action", "depth", "direction"):
+            self.assertIn(f"setAttribute('aria-label', '{nombre}')", js, nombre)
+        self.assertIn("T('term_run', 'Run')", js, "el boton de accion no tiene texto propio")
+
+    def test_la_bandera_de_la_casa_es_una_imagen_con_nombre(self):
+        """home_buildings.js: un span con aria-label y sin rol lo ignoran muchos lectores."""
+        self.assertIn("R.color.setAttribute('role', 'img')", self._lee("game/home_buildings.js"))
+
+    def test_la_repeticion_de_batalla_es_una_imagen_con_nombre(self):
+        """battle_replay.js: el canvas lleva aria-label; sin rol no tiene nombre para muchos lectores."""
+        self.assertIn("lienzo.setAttribute('role', 'img')", self._lee("game/battle_replay.js"))
 
 
 if __name__ == "__main__":

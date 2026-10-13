@@ -90,7 +90,7 @@
       arma(); rotulos();
     });
     R.tiempo.addEventListener('input', function () { t = +R.tiempo.value; juega = false; rotulos(); });
-    lienzo.setAttribute('aria-label', T('rp_aria'));
+    lienzo.setAttribute('role', 'img'); lienzo.setAttribute('aria-label', T('rp_aria'));
 
     /* --- la camara: encuadra a los vivos, suavizada sobre varios fotogramas (pura) ---------------- */
     function caja2(ti) {
