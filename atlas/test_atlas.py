@@ -188,7 +188,7 @@ class Piso(unittest.TestCase):
                 self.assertTrue(c["ok"], c["detalle"])
 
     def test_q4_recurso_x2_se_mide_en_ciclos_del_motor(self):
-        """Q4 doubles the measured cycle production without a second economy state."""
+        """Q4 measures sealed-rift production; Q5 supplies the open-rift modifier."""
         r = subprocess.run(["node", str(RAIZ / "recurso_x2_casos.mjs")], capture_output=True,
                            text=True, timeout=60)
         self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
@@ -196,6 +196,17 @@ class Piso(unittest.TestCase):
         self.assertEqual((d["ciclos"], d["segundos"], d["cobre"], d["cobre_por_ciclo"],
                           d["ciclos_para_50_cobre"], d["segundos_por_cobre"]),
                          (1000, 1000, 800, 0.8, 63, 1.26))
+
+    def test_q5_grieta_modifica_recursos_y_reabre_por_ciclos(self):
+        """Open rift restores base yield; sealed doubles it, visible to the Radio."""
+        r = subprocess.run(["node", str(RAIZ / "grieta_casos.mjs")], capture_output=True,
+                           text=True, timeout=60)
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        d = json.loads(r.stdout)
+        self.assertEqual((d["abierta_cobre_1000"], d["sellada_cobre_1000"],
+                          d["estado_final_abierta"]), (400, 800, True))
+        self.assertIn("Resource gain: base (1x)", d["radio_abierta"])
+        self.assertIn("Resource gain: doubled (2x)", d["radio_sellada"])
 
     def test_la_curva_es_la_canonica_osrs_y_se_recalcula(self):
         """PROCEDENCIA DE LA CURVA: la formula publica de RuneScape (Jagex),
@@ -431,7 +442,7 @@ process.stdout.write(JSON.stringify(out));
         r = subprocess.run(["node", "-e", js], cwd=RAIZ.parent, capture_output=True, text=True, timeout=60)
         self.assertEqual(r.returncode, 0, r.stderr)
         o = json.loads(r.stdout)
-        self.assertTrue(o["version_motor"].startswith("contenido_v 2026-09-27.1 != 2026-10-14.1"), o["version_motor"])
+        self.assertTrue(o["version_motor"].startswith("contenido_v 2026-09-27.1 != 2026-10-14.2"), o["version_motor"])
         self.assertEqual(o["tocada"], "final")
         self.assertTrue(o["version"].startswith("contenido_v otra"), o["version"])
 
@@ -478,7 +489,7 @@ process.stdout.write(JSON.stringify(ok));
         esq = json.loads((DATOS / "atlas_opinion_schema.json").read_text(encoding="utf-8"))
         jsonschema.Draft202012Validator.check_schema(esq)
         val = jsonschema.Draft202012Validator(esq)
-        op = {"esquema": "atlas.opinion/1", "contenido_v": "2026-10-14.1", "sobre": "veredicto", "ciclo": 120,
+        op = {"esquema": "atlas.opinion/1", "contenido_v": "2026-10-14.2", "sobre": "veredicto", "ciclo": 120,
               "estado_sha256": "a" * 64, "mostrado": "Structural tie", "eleccion": "de_acuerdo", "nota": "the pilot was right"}
         bueno = {"esquema": "atlas.opinion.firmada/1", "opinion": op, "firma": "ed25519:" + "b" * 128,
                  "algoritmo": "Ed25519", "pseudonimo": "Atlante-7F3A", "clave_publica": "c" * 64}
@@ -1925,7 +1936,7 @@ class RadioDelEstado(unittest.TestCase):
             self.assertIn(semis, d["penta"], f"{f} Hz no es de la pentatonica")
         self.assertIn("Copper 2", d["b"]); self.assertIn("The rift is open.", d["b"])
         self.assertIn("NO_DATA", d["nada"]); self.assertIn("NO_DATA", d["falta"], "lo que falta no se inventa")
-        self.assertEqual(d["h"], "76981b830a406795853ff727256f2fe0be0c89624292e0233caa3eb2dccb6444", "la huella de la melodia y el boletin cambio: el estado suena distinto")
+        self.assertEqual(d["h"], "a2ba1cd90687f786286735323da3a3aecb5d4885c5d2e4edce92d9bab45c7786", "la huella de la melodia y el boletin cambio: el estado suena distinto")
 
 
 class Conquista(unittest.TestCase):

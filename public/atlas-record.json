@@ -1,7 +1,7 @@
 {
  "esquema": "atlas.record/1",
  "procedencia": "medido por atlas/arnes_piloto.mjs; determinista; atlas/test_atlas.py lo recalcula",
- "contenido_v": "2026-10-14.1",
+ "contenido_v": "2026-10-14.2",
  "politica": "piloto_base",
  "horizonte_ciclos": 20000,
  "ley": {
@@ -13,17 +13,17 @@
   "fase_final": 4,
   "nivel_nucleo": 54,
   "ciclos_hasta_fase": {
-   "2": 168,
-   "3": 1035,
-   "4": 8111
+   "2": 180,
+   "3": 1048,
+   "4": 8123
   },
-  "integridad_min": 95,
+  "integridad_min": 83,
   "integridad_final": 107,
   "integridad_max": 107,
   "acciones": {
-   "esperar": 19653,
+   "esperar": 19654,
    "recoger": 0,
-   "reparar": 127,
+   "reparar": 126,
    "aplazar": 0,
    "bajar_a": 220
   },
@@ -32,11 +32,11 @@
  },
  "sin_piloto": {
   "fase_final": 4,
-  "nivel_nucleo": 52,
+  "nivel_nucleo": 45,
   "ciclos_hasta_fase": {
-   "2": 158,
-   "3": 1203,
-   "4": 9588
+   "2": 315,
+   "3": 2405,
+   "4": 19176
   },
   "integridad_min": 0,
   "integridad_final": 0,
@@ -56,17 +56,17 @@
     "fase_final": 4,
     "nivel_nucleo": 54,
     "ciclos_hasta_fase": {
-     "2": 168,
-     "3": 1035,
-     "4": 8111
+     "2": 180,
+     "3": 1048,
+     "4": 8123
     },
-    "integridad_min": 83,
+    "integridad_min": 59,
     "integridad_final": 107,
     "integridad_max": 107,
     "acciones": {
-     "esperar": 19653,
+     "esperar": 19654,
      "recoger": 0,
-     "reparar": 127,
+     "reparar": 126,
      "aplazar": 0,
      "bajar_a": 220
     },
@@ -75,11 +75,11 @@
    },
    "sin_piloto": {
     "fase_final": 4,
-    "nivel_nucleo": 52,
+    "nivel_nucleo": 45,
     "ciclos_hasta_fase": {
-     "2": 158,
-     "3": 1203,
-     "4": 9588
+     "2": 315,
+     "3": 2405,
+     "4": 19176
     },
     "integridad_min": 0,
     "integridad_final": 0,
@@ -99,17 +99,17 @@
     "fase_final": 4,
     "nivel_nucleo": 54,
     "ciclos_hasta_fase": {
-     "2": 168,
-     "3": 1035,
-     "4": 8111
+     "2": 180,
+     "3": 1048,
+     "4": 8123
     },
-    "integridad_min": 88,
+    "integridad_min": 76,
     "integridad_final": 100,
     "integridad_max": 100,
     "acciones": {
-     "esperar": 19653,
+     "esperar": 19654,
      "recoger": 0,
-     "reparar": 127,
+     "reparar": 126,
      "aplazar": 0,
      "bajar_a": 220
     },
@@ -118,11 +118,11 @@
    },
    "sin_piloto": {
     "fase_final": 4,
-    "nivel_nucleo": 52,
+    "nivel_nucleo": 45,
     "ciclos_hasta_fase": {
-     "2": 158,
-     "3": 1203,
-     "4": 9588
+     "2": 315,
+     "3": 2405,
+     "4": 19176
     },
     "integridad_min": 0,
     "integridad_final": 0,

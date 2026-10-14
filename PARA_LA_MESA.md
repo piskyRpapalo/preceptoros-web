@@ -328,6 +328,17 @@ Si: la version del gacha es valores.version + packSha; contenido_v del motor sol
 - **PRUEBA_5_MINUTOS:** pasa a `abgt`; paso 6e comprueba 50 copper en 63 ciclos en Ruins.
 - **Cierre:** cambio preparado para commit local Q4 en `lote-rapido-20261013`; no push, PR ni merge en este cierre.
 
+## LOTE RÁPIDO · Q5 · AUTOPLAY DE LA GRIETA · 2026-10-14 · CERRADA LOCAL
+- **Historial e inventario:** la rama antigua conserva el texto `RIFT SEALED · reopens in {s} s`, pero no un bucle independiente de cinco segundos. La ley activa ya automatizaba la reapertura en `atlas-motor.js`: `cierre` decrece con cada `ciclo`, el HUD lo muestra en ciclos, y al llegar a cero el motor abre la Grieta. Los umbrales medidos por fase son 180/240/300/120/600 ciclos; `CICLO_MS=1000`. Se conserva esta ley del motor y no se inventa una regla global de cinco ciclos.
+- **Cierre/reapertura:** confirmado por prueba determinista; en fase inicial, reparar inicia 180 ciclos, el contador llega a 1, y el ciclo siguiente reabre la Grieta y emite el aviso. El daño del Core continúa a cargo del ciclo del motor. No usa rAF ni timestamp para gobernar el estado.
+- **Economía FIRMO:** Grieta abierta = tasa base 1×; sellada = tasa duplicada 2× de Q4. Esto hace explícita una reducción del 50% frente al estado sellado y recupera la tasa base medida antes de Q4. La misma causa aparece en el boletín textual de la Radio; si falta el estado de Grieta, la Radio declara NO_DATA con causa.
+- **Sabotaje rojo primero:** `atlas/grieta_casos.mjs` falló antes del cambio porque ambos estados producían 800 cobres/1.000 ciclos y el boletín no publicaba la tasa. Verde después: abierta 400, sellada 800; reapertura exacta por ciclos; Radio en ambos estados.
+- **Gates n=2:** Atlas 173/173 ×2; web 76 (1 omitida) ×2; SW 22/22, 131 rutas ×2; Chrome 30 pasos, cero fallos ×2; motor 48/48 y caso específico Q5 verde dentro de Atlas. `git diff --check` limpio.
+- **Medidas/sellos:** SW `preceptoros-2026-17-abgu`, huella `bc23e06dd6b0a081`; `gzip_juego_b=90.499 B`; `atlas-record.json` regenerado para motor `contenido_v=2026-10-14.2`. `atlas-motor.js` 11.253 B; `aiact-art50-state-radio.js` 6.094 B; todos los ficheros públicos tocados siguen bajo 16.384 B.
+- **PRUEBA_5_MINUTOS:** pasa a `abgu`; pasos 6e-6f miden la ganancia sellada, la tasa abierta, la Radio y el contador de ciclos.
+- **Límites/pendientes:** la frase histórica “5 s” solo se encontró como plantilla de texto; el sistema actual medido tiene umbrales por fase en ciclos. Se deja constancia y no se añade una espera de cinco ciclos. El rendimiento en Doogee no se volvió a medir en Q5.
+- **Cierre:** listo para commit local Q5 en `lote-rapido-20261013`; no push, PR ni merge en este cierre.
+
 ## ORDEN OCEANO · CIERRE 5C EN PR · 2026-10-13
 - PR #72 abierto desde `oceano-2026-10-13` hacia `main`, punta publicada `ca155706dddef298b1db0dc815fb493bc7ec554d`; CI `test_web` verde. Merge observado el 2026-10-13 20:42Z, hecho por el Soberano (no por Codex).
 - Gates repetidos sobre esa punta: `atlas/test_atlas.py` 167/167 ×2; `test_web.py` 75, 1 omitida ×2; `arnes_sw.mjs` 22/22 ×2; Chrome `atlas/sin_undefined.mjs` 30 pasos, cero fallos (dos ejecuciones sobre el mismo commit). Sin cambios de código tras esas medidas.

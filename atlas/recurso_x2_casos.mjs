@@ -6,8 +6,10 @@ const require = createRequire(import.meta.url);
 const M = require('../public/assets/atlas-motor.js');
 const ley = M.leyes({ pruebas_web: 171, arnes_sw: '22/22', gzip_juego_b: 90385 });
 let e = M.inicial(ley);
+e.abierta = false; e.cierre = 1001;
 for (let i = 0; i < 1000; i++) e = M.ciclo(e, ley);
 let tirada = M.inicial(ley);
+tirada.abierta = false; tirada.cierre = 1001;
 while (tirada.cobre < 50 && tirada.t < 10000) tirada = M.ciclo(tirada, ley);
 const ok = e.t === 1000 && e.cobre === 800 && tirada.t === 63;
 console.log(JSON.stringify({ ciclos: e.t, segundos: e.t * M.CICLO_MS / 1000, cobre: e.cobre,

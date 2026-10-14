@@ -22,7 +22,7 @@ const viaja = (p) => JSON.stringify(p);   // lo que cruza: texto, como por Send 
 
 function aparato(nombre) {
   const id = identidad(nombre); let n = 0; const reloj = { ciclo: 100 };
-  const c = Du.crea({ pub: id.pub, pseudonimo: id.pseudonimo, contenido_v: '2026-10-14.1',
+  const c = Du.crea({ pub: id.pub, pseudonimo: id.pseudonimo, contenido_v: '2026-10-14.2',
     firma: (t) => Promise.resolve(id.firma(t)), verifica: (t, f, k) => Promise.resolve(verificador(t, f, k)),
     azar: () => azar(nombre + ':' + (n++)), azar32: () => azar(nombre + ':n:' + (n++)).slice(0, 32), ciclo: () => reloj.ciclo });
   return { id, c, reloj };

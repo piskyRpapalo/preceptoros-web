@@ -52,7 +52,7 @@
   var REABRE = [180, 240, 300, 120, 600];
 
   var CATALOGO = {
-    contenido_v: '2026-10-14.1',
+    contenido_v: '2026-10-14.2',
     misiones: ['grieta-120', 'expedicion', 'cosecha', 'incubacion'],
     sectores: ['nucleo', 'forja', 'aguja', 'ojo', 'grieta'],
     profundidades: ['0-50', '50-150', '150-300', '300+']
@@ -140,8 +140,10 @@
 
   /* Q4: doble luz captada y doble capacidad de conversión por ciclo. Oxígeno conserva su ley. */
   function produce(e, prof) {
-    e.luz = Math.min(LUZ_MAX, e.luz + BANDAS[prof].luz * PRODUCCION_X);
-    var g = Math.min(e.luz, 2 * PRODUCCION_X);
+    /* Q5: the open rift suspends the Q4 bonus; sealed retains the measured 2x rate. */
+    var factor = e.abierta === true ? 1 : PRODUCCION_X;
+    e.luz = Math.min(LUZ_MAX, e.luz + BANDAS[prof].luz * factor);
+    var g = Math.min(e.luz, 2 * factor);
     e.luz -= g; e.biomasa += g; gana(e, 'herboristeria', g);
     e.flujo = Math.floor(e.luz * 100 / LUZ_MAX);
     var k = Math.min(e.flujo >= 50 ? 2 : 1, Math.floor(e.biomasa / 5));

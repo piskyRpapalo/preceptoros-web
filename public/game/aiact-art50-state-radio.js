@@ -37,7 +37,9 @@
     var pct = i.integridad_max ? Math.round(i.integridad * 100 / i.integridad_max) + ' percent' : 'NO_DATA';
     return 'Radio Atlantis, cycle ' + d(i.ciclo) + '. Core integrity ' + pct + ', phase ' + d(i.fase) + ', depth ' + d(i.profundidad) + ' meters. ' +
       'Copper ' + d(r.cobre) + ', light ' + d(r.luz) + ', biomass ' + d(r.biomasa) + ', oxygen ' + d(r.oxigeno) + '. ' +
-      (i.grieta ? (i.grieta.abierta ? 'The rift is open.' : 'The rift is sealed.') : 'Rift: NO_DATA.');
+      (i.grieta ? (i.grieta.abierta ? 'The rift is open. Resource gain: base (1x); sealed rate: doubled (2x).' :
+        'The rift is sealed. Resource gain: doubled (2x); open rate: base (1x).') :
+        'Rift: NO_DATA. Resource gain: NO_DATA (rift state not measured).');
   }
   function huella(i) { var g = guion(i); return g ? K.sha(JSON.stringify({ g: g, b: boletin(i) })) : null; }
 

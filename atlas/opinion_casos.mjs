@@ -10,7 +10,7 @@ function caso(nombre, f) {
 }
 const { publicKey, privateKey } = generateKeyPairSync('ed25519');
 const pub = publicKey.export({ format: 'der', type: 'spki' }).subarray(12).toString('hex');
-const op = () => ({ esquema: 'atlas.opinion/1', contenido_v: '2026-10-14.1', sobre: 'veredicto', ciclo: 120,
+const op = () => ({ esquema: 'atlas.opinion/1', contenido_v: '2026-10-14.2', sobre: 'veredicto', ciclo: 120,
   estado_sha256: 'a'.repeat(64), mostrado: 'Structural tie', eleccion: 'de_acuerdo', nota: 'the pilot was right' });
 function sobre(o, clave = privateKey) {
   return { esquema: 'atlas.opinion.firmada/1', opinion: o,
