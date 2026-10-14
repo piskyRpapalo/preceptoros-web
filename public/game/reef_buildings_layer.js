@@ -162,7 +162,7 @@
       ultima = v.fase;
       pon(m.col, m.fila, function () {
       raiz.AtlasReefPaint.boya(g,P,o,m,v,c,t,dpr);
-      }, function () { return raiz.AtlasPlaceCards.ficha('boya', { que: t('boya_estado'), estado: v.fase + (v.vida === null ? '' : ' · life ' + v.vida + '/1000'), sonido: 'ADSR beep 880/660/440 Hz on phase change', causas: v.causa ? [v.causa] : [] }); });
+      }, function () { return raiz.AtlasPlaceCards.ficha('boya', { que: t('boya_estado'), estado: v.fase + (v.vida === null ? '' : ' · life ' + v.vida + '/1000'), sonido: 'ADSR beep 880/660/440 Hz on phase change', causas: v.causa ? [v.causa] : [], shellManifest: m }); });
     }
     /* El observatorio (una cupula) y lo que mira: la mirada en curso es una linea de trazos hasta el punto. */
     var oc = casa ? P(casa.x - 100, casa.y + 100) : null, F = (t('obs_fases') || '').split('|');

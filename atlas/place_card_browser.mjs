@@ -120,6 +120,15 @@ try {
       open:[...document.querySelectorAll('#thegame-menu [aria-expanded=true]')].map(e=>e.id),boxHidden:document.getElementById('thegame-terminal')?.hidden};})()`);
     report.taps.push({expected:tipo,point:p,debug,...f});
     if(f.kind!==tipo||f.hidden||!f.lines?.some(l=>l[0]==='Touched')||!f.actions.length) report.failures.push('tap did not report its place/coordinate/actions: '+tipo);
+    if (tipo === 'boya' && f.kind === 'boya') {
+      const panel = await valor(`(() => {const s=document.querySelector('.shell-schematics');return s&&{text:s.innerText,buttons:[...s.querySelectorAll('button')].map(b=>({text:b.textContent,height:b.getBoundingClientRect().height})),input:!!s.querySelector('input[type=file]')};})()`);
+      if (!panel || !panel.text.includes('Shell Schematics') || !panel.text.includes('not changed') || !panel.input || panel.buttons.length !== 2 || panel.buttons.some(b=>b.height<44)) report.failures.push('Shell Schematics controls or touch targets missing');
+      const imported = await valor(`(async()=>{const s=document.querySelector('.shell-schematics'),i=s.querySelector('input[type=file]'),m=AtlasArrecife.manifiestoBoya({x:20,y:30}),dt=new DataTransfer();dt.items.add(new File([JSON.stringify(m)],'measured.json',{type:'application/json'}));Object.defineProperty(i,'files',{configurable:true,value:dt.files});i.dispatchEvent(new Event('change'));await new Promise(r=>setTimeout(r,50));return s.querySelector('[role=status]').textContent;})()`);
+      if (!imported.includes('Imported structure preview') || !imported.includes('not applied or saved') || imported.includes('{')) report.failures.push('valid import did not show a text-only preview');
+      const rejected = await valor(`(async()=>{const s=document.querySelector('.shell-schematics'),i=s.querySelector('input[type=file]'),dt=new DataTransfer();dt.items.add(new File(['{}'],'empty.json',{type:'application/json'}));Object.defineProperty(i,'files',{configurable:true,value:dt.files});i.dispatchEvent(new Event('change'));await new Promise(r=>setTimeout(r,50));return s.querySelector('[role=status]').textContent;})()`);
+      if (!rejected.includes('NO_DATA') || !rejected.includes('missing a required field')) report.failures.push('invalid import did not report its cause');
+      report.taps.at(-1).shellSchematics = { controls: panel, imported, rejected };
+    }
     if (f.kind!==tipo && !report.screenshot) { const pic=await page.cmd('Page.captureScreenshot'); const file=path.join(tmpdir(),'tocables-debug.png'); writeFileSync(file,Buffer.from(pic.data,'base64')); report.screenshot=file; }
     if (f.kind===tipo && !f.hidden && tipo!=='coral') {
       await valor('document.querySelector("#pliego-ficha [data-action]")?.click()'); await pausa(200);
