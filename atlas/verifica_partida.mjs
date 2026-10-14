@@ -25,7 +25,9 @@ import { fileURLToPath } from 'node:url';
 const require = createRequire(import.meta.url);
 const RAIZ = join(dirname(fileURLToPath(import.meta.url)), '..');
 const M = require(join(RAIZ, 'public/assets/atlas-motor.js'));
+const M_20260927 = require(join(RAIZ, 'atlas/legacy/atlas-motor-2026-09-27.js'));
 const Pa = require(join(RAIZ, 'public/assets/atlas-partida.js'));
+const MOTORES = { [M.CATALOGO.contenido_v]: M, [M_20260927.CATALOGO.contenido_v]: M_20260927 };
 
 // Cabecera DER de una clave publica Ed25519 (SPKI): 12 bytes fijos + 32 de clave.
 const SPKI_ED25519 = Buffer.from('302a300506032b6570032100', 'hex');
@@ -55,12 +57,13 @@ export function verifica(sobre) {
   if (p.truncada) { return { ok: false, motivo: 'reproduccion: partida truncada' }; }
   // Una partida se juega con SU version del contenido. Si el motor cambio de
   // reglas, se dice cual y cual, en vez de un «final no coincide» sin causa.
-  if (p.contenido_v !== M.CATALOGO.contenido_v) {
-    return { ok: false, motivo: `reproduccion: contenido_v distinto (motor ${M.CATALOGO.contenido_v}, partida ${p.contenido_v})` };
+  const motor = MOTORES[p.contenido_v];
+  if (!motor) {
+    return { ok: false, motivo: `reproduccion: contenido_v sin motor conservado (actual ${M.CATALOGO.contenido_v}, partida ${p.contenido_v})` };
   }
   let e;
-  try { e = Pa.reproduce(p, M); } catch (x) { return { ok: false, motivo: 'reproduccion: ' + x.message }; }
-  const f = Pa.final(e, M);
+  try { e = Pa.reproduce(p, motor); } catch (x) { return { ok: false, motivo: 'reproduccion: ' + x.message }; }
+  const f = Pa.final(e, motor);
   if (!igual(f, p.final)) { return { ok: false, motivo: 'reproduccion: el final no coincide' }; }
   return { ok: true, pasos: p.pasos.length, ciclo: f.ciclo, fase: f.fase };
 }

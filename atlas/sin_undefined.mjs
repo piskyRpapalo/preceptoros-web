@@ -82,6 +82,11 @@ async function main() {
     if (!/WHO YOU ARE[\s\S]*YOUR BODY[\s\S]*CORE AND RIFT[\s\S]*YOUR BUDGET[\s\S]*RECEIPTS[\s\S]*WHAT YOU CAN DO/.test(screen?.text || '')) {
       fallos.push({ path: p, step: 'startup', snippet: 'state titles did not render in the fixed order' });
     }
+    const summon = await evalua("JSON.stringify((() => { const base=document.getElementById('casa-estado'), card=base?.querySelector('#summon-access'), buttons=[...(card?.querySelectorAll('.summon-access-button')||[])]; return {top:base?.firstElementChild?.id==='summon-access',symbol:card?.querySelector('.summon-access-symbol')?.textContent,cap:card?.querySelector('.summon-access-cap')?.textContent,ids:buttons.map(b=>b.id),labels:buttons.map(b=>b.getAttribute('aria-label')),height:buttons.length?Math.min(...buttons.map(b=>parseFloat(getComputedStyle(b).minHeight))):0}; })())");
+    let access = null; try { access = JSON.parse(summon); } catch {}
+    if (!access?.top || access.symbol !== '∿' || access.cap !== 'Team limit: 10 waves' || access.ids.length !== 4 || access.height < 44 || !access.labels.every(x => /Cost: [0-9]+ copper · [0-9]+ light/.test(x || ''))) {
+      fallos.push({ path: p, step: 'startup', snippet: 'Base summon card is not first, measured, priced or touch sized: ' + JSON.stringify(access) });
+    }
     await revisa('startup');
     await evalua("document.getElementById('menu-pliego-estado')?.click()");
     await espera(300);

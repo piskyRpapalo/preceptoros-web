@@ -15,7 +15,7 @@ function caso(nombre, fn) {
   try { const d = fn(); casos.push({ caso: nombre, ok: d === true, detalle: d === true ? '' : JSON.stringify(d) }); }
   catch (e) { casos.push({ caso: nombre, ok: false, detalle: 'excepcion: ' + e.message }); }
 }
-caso('escala: con la escuadra entera (6 tropas), mas de 100 unidades por persona en al menos el 90 % (2 000 escuadras, n=2)', () => {
+caso('escala: con la escuadra entera (10 tropas), mas de 100 unidades por persona en al menos el 90 % (2 000 escuadras, n=2)', () => {
   const mide = () => { const t = []; for (let k = 0; k < 2000; k++) { let s = 0; for (let i = 0; i < V.combate.tropas_max; i++) { s += E.cuantas(G.tirada(K.sha('esq' + k + ':' + i), 'tc' + (1 + k % 4)).aristas); } t.push(s); } return t; };
   const a = mide(), b = mide(), pct = a.filter((x) => x >= 100).length / a.length;
   return (JSON.stringify(a) === JSON.stringify(b) && pct >= 0.9) || { pct };

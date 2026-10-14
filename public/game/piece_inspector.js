@@ -34,6 +34,7 @@
                [R[3], sonidoDe(f)]];
     (f.causas || []).forEach(function (c) { lin.push([R[4], nd(c, 'empty note')]); });
     if (f.actions) { lin.push(['Available actions', f.actions.length ? f.actions.map(function (a) { return a.label; }).join(' · ') : f.actionCause || nd(null, 'no action has been declared')]); }
+    if (f.defenses) { lin.push(['Declared defenses', f.defenses]); }
     return lin;
   }
   /* mar.js, tras ordenar la cola: guarda donde quedo cada pieza con ficha (pixeles del lienzo). */
@@ -60,6 +61,7 @@
       dl.appendChild(dt); dl.appendChild(dd);
       (r.lines || []).forEach(function (l) { var a = D.createElement('dt'), b = D.createElement('dd'); a.textContent = l[0]; b.textContent = l[1]; dl.appendChild(a); dl.appendChild(b); });
     }); }
+    if (ficha && ficha.npcId && raiz.AtlasNpcWalls) { raiz.AtlasNpcWalls.monta(panel, ficha); }
     /* El menu descubre el panel con un MutationObserver (microtarea): se abre DESPUES de que exista su entrada. */
     Promise.resolve().then(function () { var b = D.getElementById('menu-pliego-ficha'); if (b && panel.hidden) { b.click(); } });
   }

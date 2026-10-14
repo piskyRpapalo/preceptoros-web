@@ -44,7 +44,7 @@
   function crea(c, f) {
     var dpr = Math.min(2, window.devicePixelRatio || 1), raf = 0, col = null, H0 = window.AtlasMapNodes.casas(), circ = [];
     var TS = MF.pintor(), cam = null, arrastre = null, ultimo = null, avisado = 0, centro = null;
-    var Ce = window.AtlasNodosCedulas, cuadros = 0, movido = false;
+    var Ce = window.AtlasNodosCedulas, cuadros = 0, movido = false, mapaOcupacion = window.AtlasNpcTerritoryMap.crea();
 
     /* --- los mandos: flechas grandes, volver a casa y el aviso ------------------------------------ */
     var mandos = el('div', 'mapa-mandos'), aviso = el('p', 'mapa-aviso');
@@ -59,8 +59,7 @@
     var zoom = window.AtlasMapZoom.crea(c);   /* zoom del mapa (pellizco y rueda): map_zoom.js */
 
     function despeja() {
-      var luchados = {}, r = f.luchados ? f.luchados() : {};
-      Object.keys(r || {}).forEach(function (k) { if (r[k].g + r[k].p) { luchados[k] = true; } });
+      var r = f.luchados ? f.luchados() : {}, luchados = mapaOcupacion.explorados(r, f.ocupacion);
       circ = N.despejado({ pub: f.pub(), sha: K.sha, nodos: Ce ? Ce.nodos : [], lugares: f.lugares(), luchados: luchados });
       if (window.AtlasArrecife) { circ = circ.concat(window.AtlasArrecife.circulos()); }
       TS.despejado(circ);
@@ -118,6 +117,8 @@
       col = col || f.colores();
       /* La clave llega despues (promesa): si aun no te has movido, la camara va a tu casa en cuanto se sabe. */
       if (!cam || (!movido && centro === N.HEX && f.pub())) { aCasa(!!cam); }
+      var snap = window.AtlasJuego && window.AtlasJuego.instantanea ? window.AtlasJuego.instantanea() : null;
+      if (snap && mapaOcupacion.cambiaCiclo(snap.ciclo)) { despeja(); }
       if (!(cuadros++ % 30)) { despeja(); }
       var k = ultimo === null ? 1 : Math.min(6, (ts - ultimo) / 16); ultimo = ts;
       if (!arrastre && !q && C.paso(cam, k, circ)) { choca(); }
@@ -169,7 +170,8 @@
           rotulo(g, f.texto('arena_conquistado_mapa'), p[0], p[1] + r + 31 * dpr);
           if (em) { E.figura(g, em.armonicos, p[0] + r * 1.5, p[1] - r * 1.2, r * 0.45, { color: col.tuya, grosor: 1.4 * dpr, brillo: 6 * dpr }); }
         }
-      }, function () { return { que: f.nombre(l), estado: cz ? Z.estado(v) : l.npc ? 'NPC' : 'player', tropa: l.lider }; }); });
+        mapaOcupacion.mensaje(g, l, f, rotulo, p, r, dpr);
+      }, function () { return mapaOcupacion.ficha(l, f.nombre(l), cz ? Z.estado(v) : l.npc ? 'NPC' : 'player', l.lider); }); });
       window.AtlasMapNodes.pinta(g, P, { H0: H0, col: col, t: t, dpr: dpr, pon: pon });
       /* U2: tu cangrejo (y el de los jugadores llegados, en lo despejado), donde flotaba el emblema suelto. */
       window.AtlasMarCangrejos.pinta(g, P, { pub: f.pub(), sha: K.sha, t: t, dpr: dpr, quieto: q, circ: circ, pon: pon,

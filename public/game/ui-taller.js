@@ -28,12 +28,15 @@
   function clave() { var I = window.Identity; return I && I.quien && I.quien() ? I.publica() : Promise.reject(new Error('sin identidad')); }
 
   function guarda() { if (caja) { caja.pon(cadena); } }
+  function cambioOnda(semilla, stat, causa) {
+    document.dispatchEvent(new CustomEvent('atlas:onda-taller', { detail: { semilla: semilla, stat: stat, causa: causa || null } }));
+  }
   function opera(op, despues) {
     if (roto) { dice('NO_DATA · ' + roto); return; }
     clave().then(function (k) {
       var rec = TL.recibo(est, op, k);
       return firma(rec).then(function (f) { return despues(rec, f); });
-    }).catch(function (e) { dice(String((e && e.message) || e)); });
+    }).catch(function (e) { var causa = String((e && e.message) || e); dice(causa); if (op.op === 'lija') { cambioOnda(op.semilla, op.stat, causa); } });
   }
   /* La suelta de la eclosion: MISMO recibo `atlas.taller/1`, MISMO residuo y MISMO mensaje que desintegrar, pero
      sin `retira` (la tropa nunca entro al Army). `panel` (la eleccion) se cierra solo si el recibo queda firmado. */
@@ -74,7 +77,7 @@
   function lija(t, stat) {
     opera({ op: 'lija', semilla: t.semilla, stat: stat }, function (rec, f) {
       cadena.push({ recibo: rec, firma: f }); est = TL.estado(cadena); guarda();
-      dice(T('taller_hecho_l', 'Sanded: {s} to level {n}. The edges stay the same.').replace('{s}', stat).replace('{n}', rec.nivel)); pinta();
+      dice(T('taller_hecho_l', 'Sanded: {s} to level {n}. The edges stay the same.').replace('{s}', stat).replace('{n}', rec.nivel)); pinta(); cambioOnda(t.semilla, stat);
       return Promise.resolve();
     });
   }
@@ -89,7 +92,11 @@
       b.setAttribute('aria-label', T('rar_' + t.rareza, t.rareza) + ' · ' + n + ' ' + T('taller_aristas', 'edges') + ' · ' + TL.residuo(t) + ' g');
       b.setAttribute('aria-pressed', String(elegida === t.semilla));
       b.appendChild(ficha(t, 64));
-      b.addEventListener('click', function () { elegida = t.semilla; casilleros(ul, lista, ficha); pinta(); });
+      b.addEventListener('click', function () {
+        elegida = t.semilla;
+        if (window.AtlasArmyWavePanel && window.AtlasArmyWavePanel.alToque(t, fichaDe)) { return; }
+        casilleros(ul, lista, ficha); pinta();
+      });
       li.appendChild(b); ul.appendChild(li);
     });
   }
@@ -105,7 +112,7 @@
       /* El detalle: su ficha grande y TODAS sus stats (las de la tropa, sin lijar; el saldo sale arriba). */
       var det = el('li', 'taller-detalle');
       if (fichaDe) { det.appendChild(fichaDe(t, 168)); }
-      var sts = el('ul', 'taller-stats'); G.STATS.forEach(function (k) { sts.appendChild(el('li', null, k + ' ' + t.stats[k])); });
+      var sts = el('ul', 'taller-stats'); G.STATS.forEach(function (k) { var sem = V.semantica[k]; sts.appendChild(el('li', null, k + ' ' + t.stats[k] + (sem ? ' · ' + sem[2] : ' · NO_DATA (semantic row missing)'))); });
       det.appendChild(sts); R.lista.appendChild(det);
       li.appendChild(el('b', null, (t.aristas || G.aristas(t)) + ' ' + T('taller_aristas', 'edges') + ' · ' + T('rar_' + t.rareza, t.rareza)));
       var d = boton(T('taller_desintegra', 'Dissolve · +{g} g').replace('{g}', TL.residuo(t)));
@@ -157,5 +164,29 @@
   /* P10: el tono de la bandera a la que se tino una onda, o null (nunca un color decidido por otro). */
   function tono(semilla) { var b = est && !roto ? est.tintes[semilla] : null; return b ? V.banderas[b] : null; }
 
-  window.AtlasTallerUI = { monta: monta, lijas: lijas, tono: tono, pinta: pinta, desintegraSuelta: desintegraSuelta, aterriza: aterriza, casilleros: casilleros };
+  /* Q1: lee el mismo recibo verificado y el Army compartido; no guarda otra copia de la tropa. */
+  function detalleStat(semilla, stat) {
+    var l = V.taller.lija, u = army().filter(function (x) { return x.adopcion && x.adopcion.tropa && x.adopcion.tropa.semilla === semilla; })[0];
+    var permitida = l.stats.indexOf(stat) >= 0, nivel = est ? (est.lijas && est.lijas[semilla] ? est.lijas[semilla][stat] || 0 : 0) : null;
+    var coste = permitida ? TL.coste(nivel + 1) : null, causa = null;
+    if (!u) { causa = 'wave is not present in the shared Army'; }
+    else if (roto) { causa = 'NO_DATA (Workshop receipt chain: ' + roto + ')'; }
+    else if (!est) { causa = 'NO_DATA (Workshop receipt chain has not been verified yet)'; }
+    else if (!permitida) { causa = 'this stat is not eligible under the signed Workshop rule'; }
+    else if (nivel !== null && nivel >= l.max) { causa = 'maximum Workshop level reached'; }
+    else if (est && est.saldo < coste) { causa = 'not enough measured residue: ' + est.saldo + ' of ' + coste + ' g'; }
+    return { nivel: nivel, max: permitida ? l.max : 0, coste: coste, saldo: est ? est.saldo : null,
+      disponible: !causa, causa: causa, permitida: permitida, paso: l.paso, semantica: V.semantica[stat] || null };
+  }
+  function lijaSemilla(semilla, stat) {
+    var u = army().filter(function (x) { return x.adopcion && x.adopcion.tropa && x.adopcion.tropa.semilla === semilla; })[0];
+    if (!u) { return { causa: 'NO_DATA (wave is not present in the shared Army)' }; }
+    var d = detalleStat(semilla, stat);
+    if (!d.disponible) { return { causa: 'NO_DATA (' + d.causa + ')' }; }
+    if (!(window.Identity && window.Identity.quien && window.Identity.quien())) { return { causa: 'NO_DATA (create identity first; Workshop action needs a signature)' }; }
+    lija(u.adopcion.tropa, stat); return { ok: true };
+  }
+
+  window.AtlasTallerUI = { monta: monta, lijas: lijas, tono: tono, pinta: pinta, desintegraSuelta: desintegraSuelta, aterriza: aterriza,
+    casilleros: casilleros, detalleStat: detalleStat, lijaSemilla: lijaSemilla };
 })();

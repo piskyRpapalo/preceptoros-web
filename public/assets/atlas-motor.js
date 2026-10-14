@@ -42,7 +42,7 @@
     bosque: { luz: 1, o2: 4, lab: '150-300' },
     nucleo: { luz: 0, o2: 8, lab: '300+' }
   };
-  var LUZ_MAX = 600, O2_MAX = 300, O2_RECARGA = 3;
+  var LUZ_MAX = 600, O2_MAX = 300, O2_RECARGA = 3, PRODUCCION_X = 2;
   var COBRE_REPARAR = 10, REPARA = 25, INGENIERIA_NUCLEO = 60;
   var DIA_MS = 86400000, CICLO_MS = 1000;
 
@@ -52,7 +52,7 @@
   var REABRE = [180, 240, 300, 120, 600];
 
   var CATALOGO = {
-    contenido_v: '2026-09-27.1',
+    contenido_v: '2026-10-14.2',
     misiones: ['grieta-120', 'expedicion', 'cosecha', 'incubacion'],
     sectores: ['nucleo', 'forja', 'aguja', 'ojo', 'grieta'],
     profundidades: ['0-50', '50-150', '150-300', '300+']
@@ -138,10 +138,12 @@
     return ev;
   }
 
-  /* Produccion de un ciclo: luz -> biomasa -> la Forja la hace cobre. */
+  /* Q4: doble luz captada y doble capacidad de conversión por ciclo. Oxígeno conserva su ley. */
   function produce(e, prof) {
-    e.luz = Math.min(LUZ_MAX, e.luz + BANDAS[prof].luz);
-    var g = Math.min(e.luz, 2);
+    /* Q5: the open rift suspends the Q4 bonus; sealed retains the measured 2x rate. */
+    var factor = e.abierta === true ? 1 : PRODUCCION_X;
+    e.luz = Math.min(LUZ_MAX, e.luz + BANDAS[prof].luz * factor);
+    var g = Math.min(e.luz, 2 * factor);
     e.luz -= g; e.biomasa += g; gana(e, 'herboristeria', g);
     e.flujo = Math.floor(e.luz * 100 / LUZ_MAX);
     var k = Math.min(e.flujo >= 50 ? 2 : 1, Math.floor(e.biomasa / 5));

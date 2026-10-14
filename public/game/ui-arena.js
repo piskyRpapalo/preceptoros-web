@@ -59,6 +59,7 @@
 
   /* --- los lugares: botones en el MAPA; el rival elegido, en el mapa y en la BATALLA */
   function todosLugares() { return lugares.concat(jugadores); }
+  function cicloJuego() { var j = window.AtlasJuego, s = j && j.instantanea ? j.instantanea() : null; return s && s.ciclo; }
   function pintaLista() {
     R.lista.textContent = '';
     todosLugares().forEach(function (l) {
@@ -113,7 +114,12 @@
     juega(l.defensa.tropas, sq, c, { titulo: nombreLugar(l), yo: 1, semilla: semilla, pve: true,
       alFin: function (x) {
         var rc = record[l.clave] = record[l.clave] || { g: 0, p: 0 };
-        if (x.gana === 'asalto') { rc.g++; } else if (x.gana === 'defensa') { rc.p++; }
+        if (x.gana === 'asalto') {
+          rc.g++;
+          if (window.AtlasNpcWalls) { window.AtlasNpcWalls.captura(l.id, cicloJuego()).then(function (r) {
+            if (!r.ok) { R.aviso.textContent = r.causa || 'NO_DATA (local occupation was not signed)'; }
+          }); }
+        } else if (x.gana === 'defensa') { rc.p++; }
         if (CQ) { CQ.pon(record); }
         pintaLista();
       } });
@@ -225,12 +231,15 @@
       if (pub) { emblema = G.tirada(K.sha('atlas.emblema/1:' + pub), 'tc3'); }
       pintaEscuadra(); pintaLista();
       if (!CQ && window.AtlasArmy) { CQ = window.AtlasArmy.conquistasWeb(record, lugares, pintaLista); }
+      if (window.AtlasNpcWalls) { window.AtlasNpcWalls.inicia(lugares, function () { return pub; }); }
       if (window.AtlasDueloUI) { window.AtlasDueloUI.monta(R.duelo, { pub: pub }); }
     });
     if (mar) { mar.para(); }
     mar = window.AtlasMar.crea(R.mapa, { lugares: todosLugares, sel: function () { return sel; }, emblema: function () { return emblema; },
                                          pub: function () { return pub; }, nombre: nombreLugar, texto: T, colores: colores, elige: elige,
-                                         luchados: function () { return record; } });
+                                         luchados: function () { return record; },
+                                         ocupacion: function (id) { return window.AtlasNpcWalls.estado(id, cicloJuego(), pub); },
+                                         mural: function (id) { return window.AtlasNpcWalls.mural(id, cicloJuego(), pub); } });
   }
 
   document.addEventListener('preceptor:identity', function () {

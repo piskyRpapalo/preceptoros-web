@@ -187,6 +187,27 @@ class Piso(unittest.TestCase):
             with self.subTest(caso=c["caso"]):
                 self.assertTrue(c["ok"], c["detalle"])
 
+    def test_q4_recurso_x2_se_mide_en_ciclos_del_motor(self):
+        """Q4 measures sealed-rift production; Q5 supplies the open-rift modifier."""
+        r = subprocess.run(["node", str(RAIZ / "recurso_x2_casos.mjs")], capture_output=True,
+                           text=True, timeout=60)
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        d = json.loads(r.stdout)
+        self.assertEqual((d["ciclos"], d["segundos"], d["cobre"], d["cobre_por_ciclo"],
+                          d["ciclos_para_50_cobre"], d["segundos_por_cobre"]),
+                         (1000, 1000, 800, 0.8, 63, 1.26))
+
+    def test_q5_grieta_modifica_recursos_y_reabre_por_ciclos(self):
+        """Open rift restores base yield; sealed doubles it, visible to the Radio."""
+        r = subprocess.run(["node", str(RAIZ / "grieta_casos.mjs")], capture_output=True,
+                           text=True, timeout=60)
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        d = json.loads(r.stdout)
+        self.assertEqual((d["abierta_cobre_1000"], d["sellada_cobre_1000"],
+                          d["estado_final_abierta"]), (400, 800, True))
+        self.assertIn("Resource gain: base (1x)", d["radio_abierta"])
+        self.assertIn("Resource gain: doubled (2x)", d["radio_sellada"])
+
     def test_la_curva_es_la_canonica_osrs_y_se_recalcula(self):
         """PROCEDENCIA DE LA CURVA: la formula publica de RuneScape (Jagex),
         la misma de Old School RuneScape: XP(L) = floor(1/4 * sum_{n=1}^{L-1}
@@ -383,11 +404,12 @@ process.stdout.write(JSON.stringify({
         for medida in ("atlas-mundo.json", "atlas-record.json"):
             self.assertNotIn(medida, listas, f"{medida} es una medida: fresca o no se sirve")
 
-    def test_guardar_solo_al_pulsar_y_retomar_reproduce(self):
+    def test_guardar_solo_al_pulsar_y_retomar_exige_motor_de_la_version(self):
         """`atlas-guardado.js`: el unico sitio de la puerta con almacen; escribe por DOS caminos
         (Guardar, que tambien usa el autoguardado de la capa C1, y Olvidar); lo que retoma se vuelve a
         jugar y una partida tocada no vuelve a entrar. Desde el 2026-10-05 (plan firmado, C1) se guarda
-        solo, pero NUNCA antes de haber leido lo guardado, y «Olvidar» apaga el autoguardado."""
+        solo, pero NUNCA antes de haber leido lo guardado; el motor cambiado rechaza una partida
+        antigua con su version y causa, mientras la Aduana conserva el verificador historico."""
         for nombre in CODIGO:
             if not nombre.endswith(".js") or nombre == "atlas-guardado.js":
                 continue
@@ -410,8 +432,8 @@ process.stdout.write(JSON.stringify({
 const M = require('./public/assets/atlas-motor.js'), P = require('./public/assets/atlas-partida.js');
 const f = require('fs'), o = JSON.parse(f.readFileSync('partidas/ejemplo-navegador-sin-cabeza.json', 'utf8'));
 const p = o.partida || o, out = {};
-out.ok = P.retoma(p, M).t === p.final.ciclo;
-const t = JSON.parse(JSON.stringify(p)); t.final.ciclo += 1;
+try { P.retoma(p, M); out.version_motor = 'aceptada'; } catch (x) { out.version_motor = x.message; }
+const t = JSON.parse(JSON.stringify(p)); t.contenido_v = M.CATALOGO.contenido_v; t.final.contenido_v = M.CATALOGO.contenido_v; t.final.ciclo += 1;
 try { P.retoma(t, M); out.tocada = 'aceptada'; } catch (x) { out.tocada = x.message; }
 const v = JSON.parse(JSON.stringify(p)); v.contenido_v = 'otra';
 try { P.retoma(v, M); out.version = 'aceptada'; } catch (x) { out.version = x.message; }
@@ -420,7 +442,7 @@ process.stdout.write(JSON.stringify(out));
         r = subprocess.run(["node", "-e", js], cwd=RAIZ.parent, capture_output=True, text=True, timeout=60)
         self.assertEqual(r.returncode, 0, r.stderr)
         o = json.loads(r.stdout)
-        self.assertTrue(o["ok"])
+        self.assertTrue(o["version_motor"].startswith("contenido_v 2026-09-27.1 != 2026-10-14.2"), o["version_motor"])
         self.assertEqual(o["tocada"], "final")
         self.assertTrue(o["version"].startswith("contenido_v otra"), o["version"])
 
@@ -467,7 +489,7 @@ process.stdout.write(JSON.stringify(ok));
         esq = json.loads((DATOS / "atlas_opinion_schema.json").read_text(encoding="utf-8"))
         jsonschema.Draft202012Validator.check_schema(esq)
         val = jsonschema.Draft202012Validator(esq)
-        op = {"esquema": "atlas.opinion/1", "contenido_v": "2026-09-27.1", "sobre": "veredicto", "ciclo": 120,
+        op = {"esquema": "atlas.opinion/1", "contenido_v": "2026-10-14.2", "sobre": "veredicto", "ciclo": 120,
               "estado_sha256": "a" * 64, "mostrado": "Structural tie", "eleccion": "de_acuerdo", "nota": "the pilot was right"}
         bueno = {"esquema": "atlas.opinion.firmada/1", "opinion": op, "firma": "ed25519:" + "b" * 128,
                  "algoritmo": "Ed25519", "pseudonimo": "Atlante-7F3A", "clave_publica": "c" * 64}
@@ -965,11 +987,11 @@ process.stdout.write(JSON.stringify(ok));
 # Ver atlas/POST_VERIFICACION_MGNO_LAB.md y atlas/POST_VERIFICACION_SISIL_CRIA.md.
 PUROS = ("canon.js", "sobres.js", "rating.js", "arena.js", "duelo.js", "mercado.js", "narragrafo.js", "cria.js", "genoma.js")
 # La Arena (2026-09-28, «el mapa multi-jugador en una pestana»): se carga al abrir su pestana, detras del Army.
-ARENA = ("sobres.js", "rating.js", "arena.js", "duelo.js", "mar-anclas.js", "crab_render_hd.js", "crab_free_move.js", "genesis_tutorial.js", "buildings_toon.js", "reef_place_cards.js", "reef_buildings_paint.js", "latency_crystal.js", "hexelion_bench.js", "reef_corals.js", "reef_buildings_layer.js", "mar-cangrejos.js", "map_pointer_input.js", "map_nodes_layer.js", "map_zoom.js", "piece_inspector.js", "state_vector.js", "place_telemetry.js", "mar.js", "nodos-pesos.js",
+ARENA = ("sobres.js", "rating.js", "arena.js", "duelo.js", "mar-anclas.js", "crab_render_hd.js", "crab_free_move.js", "genesis_tutorial.js", "buildings_toon.js", "reef_place_cards.js", "reef_buildings_paint.js", "latency_crystal.js", "hexelion_bench.js", "reef_corals.js", "reef_buildings_layer.js", "mar-cangrejos.js", "map_pointer_input.js", "map_nodes_layer.js", "map_zoom.js", "piece_inspector.js", "state_vector.js", "place_telemetry.js", "npc_territory_map.js", "mar.js", "nodos-pesos.js",
          "nodos.js", "cuenta.js", "ui-nodos.js", "ui-rack.js",
-         "escuadron.js", "battle_choreography.js", "battle_replay.js", "ui-arena-comun.js", "ui-arena.js", "ui-duelo.js")
+         "escuadron.js", "battle_choreography.js", "battle_replay.js", "npc_occupancy.js", "npc_walls.js", "ui-arena-comun.js", "ui-arena.js", "ui-duelo.js")
 # La CASA (2026-10-05): la primera pantalla, detras del Army. Lleva canon y escena, que la Arena reutiliza.
-CASA = ("canon.js", "escena.js", "wave_render.js", "gdpr-art25-ephemeral-crab.js", "aiact-art50-crab-terminal.js", "nodos-cedulas.js", "fog_of_war.js", "isometric_floor_projection.js", "world_camera.js", "mar-fondo.js", "gdpr-art7-entry-choice.js", "aiact-art50-state-radio.js", "casa-medidas.js", "casa-personaliza.js", "casa-lateral.js", "crab_state_screen.js", "reef_building_lifecycle.js", "home_buildings.js", "summon_reveal.js", "taller.js", "ui-taller.js", "primer_eco.js")
+CASA = ("canon.js", "escena.js", "wave_render.js", "gdpr-art25-ephemeral-crab.js", "aiact-art50-crab-terminal.js", "nodos-cedulas.js", "fog_of_war.js", "isometric_floor_projection.js", "world_camera.js", "mar-fondo.js", "gdpr-art7-entry-choice.js", "aiact-art50-state-radio.js", "casa-medidas.js", "casa-personaliza.js", "casa-lateral.js", "crab_state_screen.js", "reef_building_lifecycle.js", "home_buildings.js", "summon-wave-card.js", "summon_reveal.js", "taller.js", "army-wave-panel.js", "ui-taller.js", "primer_eco.js", "summon-access.js")
 FUERA_DE_LA_PUERTA = tuple(sorted(set(PUROS + ARENA + CASA)))
 
 
@@ -1030,6 +1052,46 @@ class TheGameV15(unittest.TestCase):
         for c in casos:
             with self.subTest(caso=c["caso"]):
                 self.assertTrue(c["ok"], c["detalle"])
+
+    def test_q1_wave_panel_contract_and_direct_tap(self):
+        """Q1 reads the shared wave and verified Workshop receipt in one tap."""
+        import subprocess
+        r = subprocess.run(["node", str(RAIZ / "army_wave_casos.mjs")], capture_output=True,
+                           text=True, timeout=60)
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        ui = (PUBLICO / "game" / "ui-taller.js").read_text(encoding="utf-8")
+        self.assertIn("AtlasArmyWavePanel.alToque(t, fichaDe)", ui)
+        self.assertIn("AtlasIncubadora", ui)
+        module = (PUBLICO / "game" / "army-wave-panel.js").read_text(encoding="utf-8")
+        self.assertIn("I.army()", module)
+        self.assertIn("V.semantica[k]", module)
+
+    def test_q2_reveal_card_uses_wave_and_game_cycles(self):
+        """Q2 exposes the exact spectrum at the reveal peak and routes to the existing Workshop."""
+        import subprocess
+        r = subprocess.run(["node", str(RAIZ / "summon_wave_card_casos.mjs")], capture_output=True,
+                           text=True, timeout=60)
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        reveal = (PUBLICO / "game" / "summon_reveal.js").read_text(encoding="utf-8")
+        self.assertIn("cicloActual()", reveal)
+        self.assertIn("transcurrido", reveal)
+        self.assertNotRegex(reveal, r"\bDate\b|performance\.now|function cuadro\(ts\)")
+        self.assertIn("AtlasRevelaFicha.personaliza()", reveal)
+        card = (PUBLICO / "game" / "summon-wave-card.js").read_text(encoding="utf-8")
+        self.assertIn("root.TheGame.ve('ondas')", card)
+        self.assertIn(".taller-unido", card)
+
+    def test_q3_summon_access_in_base_reuses_existing_buttons(self):
+        """Q3 moves the existing summon controls to Base and exposes only measured costs/cap."""
+        import subprocess
+        r = subprocess.run(["node", str(RAIZ / "summon_access_casos.mjs")], capture_output=True,
+                           text=True, timeout=60)
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        source = (PUBLICO / "game" / "summon-access.js").read_text(encoding="utf-8")
+        self.assertIn("getElementById('casa-estado')", source)
+        self.assertIn("querySelector('#invoca-' + o.tc)", source)
+        self.assertIn("insertBefore(card, target.firstChild)", source)
+        self.assertIn("V.combate.tropas_max", source)
 
     def test_v15_el_army_solo_admite_firma_verificada(self):
         """Instruccion 4: sumar una tropa exige la firma Ed25519, y no basta
@@ -1515,7 +1577,7 @@ class Multijugador(unittest.TestCase):
                 con(m["mp_sesion"], pares=[h, h]), con(m["mp_sesion"], nonce="xyz"), con(m["mp_sesion"], servidor="relevo")]),
             "atlas_defensa_schema.json": (m["defensa"], [
                 con(m["defensa"], tropas=[dict(tropa, stats={"vida": 9999})]), con(m["defensa"], tropas=[]),
-                con(m["defensa"], tropas=[tropa] * 7), con(m["defensa"], tropas=[dict(tropa, tc="tc9")]),
+                con(m["defensa"], tropas=[tropa] * 11), con(m["defensa"], tropas=[dict(tropa, tc="tc9")]),
                 con(m["defensa"], en_juego={"cobre": -1, "luz": 0}), con(m["defensa"], pack_sha="x")]),
             "atlas_asalto_schema.json": (m["asalto"], [
                 con(m["asalto"], defensa="x"), con(m["asalto"], tropas=[]), con(m["asalto"], stats={}),
@@ -1874,7 +1936,7 @@ class RadioDelEstado(unittest.TestCase):
             self.assertIn(semis, d["penta"], f"{f} Hz no es de la pentatonica")
         self.assertIn("Copper 2", d["b"]); self.assertIn("The rift is open.", d["b"])
         self.assertIn("NO_DATA", d["nada"]); self.assertIn("NO_DATA", d["falta"], "lo que falta no se inventa")
-        self.assertEqual(d["h"], "76981b830a406795853ff727256f2fe0be0c89624292e0233caa3eb2dccb6444", "la huella de la melodia y el boletin cambio: el estado suena distinto")
+        self.assertEqual(d["h"], "a2ba1cd90687f786286735323da3a3aecb5d4885c5d2e4edce92d9bab45c7786", "la huella de la melodia y el boletin cambio: el estado suena distinto")
 
 
 class Conquista(unittest.TestCase):
@@ -1922,6 +1984,35 @@ class Conquista(unittest.TestCase):
         self.assertRegex(texto, r"arena_conquistado[^}]*LOCAL")
         self.assertIn("T('arena_conquistado')", self._js("ui-arena.js"))
         self.assertIn("arena_conquistado", self._js("mar.js"))
+
+    def test_q6_mensajes_y_mantenimiento_firmados_con_decaimiento_ciclico(self):
+        r = subprocess.run(["node", str(RAIZ / "npc_occupancy_cases.mjs")], capture_output=True,
+                           text=True, timeout=60)
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        d = json.loads(r.stdout)
+        self.assertEqual(d["ciclos_mantenimiento"], 900)
+        self.assertEqual(d["fallos"], [])
+        ui = self._js("ui-arena.js")
+        mar = self._js("mar.js")
+        self.assertIn("AtlasNpcTerritoryMap", self._js("npc_territory_map.js"))
+        inspector = self._js("piece_inspector.js")
+        self.assertIn("AtlasNpcWalls.captura(l.id, cicloJuego())", ui)
+        self.assertIn("Declared defenses", inspector)
+        self.assertIn("mapaOcupacion.mensaje(g, l, f, rotulo, p, r, dpr)", mar)
+        self.assertIn("AtlasNpcWalls.estado(id, cicloJuego(), pub)", ui)
+        self.assertIn("/game/npc_occupancy.js", (PUBLICO / "sw-listas.js").read_text(encoding="utf-8"))
+        self.assertIn("/game/npc_walls.js", (PUBLICO / "sw-listas.js").read_text(encoding="utf-8"))
+        self.assertIn("/game/npc_territory_map.js", (PUBLICO / "sw-listas.js").read_text(encoding="utf-8"))
+
+
+class TopeEquipo(unittest.TestCase):
+    def test_q7_tope_de_diez_esquemas_tutorial_y_pruebas_de_render(self):
+        r = subprocess.run(["node", str(RAIZ / "team_cap_casos.mjs")], capture_output=True,
+                           text=True, timeout=60)
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        d = json.loads(r.stdout)
+        self.assertEqual((d["cap"], d["schemas"], d["tutorial"], d["fallos"]), (10, 2, True, []))
+        self.assertIn("tropas_max: 10", (PUBLICO / "game" / "valores.js").read_text(encoding="utf-8"))
 
 
 class CombateLimpio(unittest.TestCase):
@@ -2302,7 +2393,7 @@ class MapaMovible(unittest.TestCase):
 
     def test_r8_la_ceremonia_es_real_no_decide_y_se_queda_quieta(self):
         """R8 (plan «el refresco»): la diversion esta en la CEREMONIA, no en el azar, y la ceremonia es real:
-        la revelacion no tira ni decide (no llama a la tirada ni al generador, sin azar ni reloj con autoridad),
+        la revelacion no tira ni decide (no llama a la tirada ni al generador, sin azar ni reloj de pared),
         su anticipacion es corta (<= 1,5 s) y con movimiento reducido no hay ni anticipacion ni temblor. La
         vitrina del Army ensena los stats REALES de la tropa; las ondas respiran y se paran con quietud."""
         r = sin_comentarios((PUBLICO / "game" / "summon_reveal.js").read_text(encoding="utf-8"))
@@ -2311,8 +2402,10 @@ class MapaMovible(unittest.TestCase):
                 self.assertNotIn(malo, r)
         ant = int(re.search(r"ANT = (\d+)", r).group(1))
         self.assertLessEqual(ant, 1500, "la anticipacion retiene a la persona demasiado")
-        self.assertIn("if (!q && ts - t0 < ANT)", r, "la anticipacion no respeta el movimiento reducido")
-        self.assertIn("tiembla = q ? 0 : ts", r, "el temblor no respeta el movimiento reducido")
+        self.assertIn("if (!q && transcurrido < ANT)", r, "la anticipacion no respeta el movimiento reducido")
+        self.assertIn("tiembla === null || q ? 0", r, "el temblor no respeta el movimiento reducido")
+        self.assertIn("cicloActual()", r, "la ceremonia no lee el reloj de ciclos")
+        self.assertNotRegex(r, r"\bDate\b|performance\.now|function cuadro\(ts\)", "la ceremonia depende del reloj de pared")
         u = sin_comentarios((PUBLICO / "game" / "ui-ficha.js").read_text(encoding="utf-8"))  # T: la ficha salio de ui.js
         self.assertIn("el('small', 'atlas-stats', G.STATS.filter(function (k) { return t.stats[k]; })", u)
         css = (PUBLICO / "assets" / "atlas.css").read_text(encoding="utf-8")
