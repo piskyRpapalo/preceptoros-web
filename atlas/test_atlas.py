@@ -969,7 +969,7 @@ ARENA = ("sobres.js", "rating.js", "arena.js", "duelo.js", "mar-anclas.js", "cra
          "nodos.js", "cuenta.js", "ui-nodos.js", "ui-rack.js",
          "escuadron.js", "battle_choreography.js", "battle_replay.js", "ui-arena-comun.js", "ui-arena.js", "ui-duelo.js")
 # La CASA (2026-10-05): la primera pantalla, detras del Army. Lleva canon y escena, que la Arena reutiliza.
-CASA = ("canon.js", "escena.js", "wave_render.js", "gdpr-art25-ephemeral-crab.js", "aiact-art50-crab-terminal.js", "nodos-cedulas.js", "fog_of_war.js", "isometric_floor_projection.js", "world_camera.js", "mar-fondo.js", "gdpr-art7-entry-choice.js", "aiact-art50-state-radio.js", "casa-medidas.js", "casa-personaliza.js", "casa-lateral.js", "crab_state_screen.js", "reef_building_lifecycle.js", "home_buildings.js", "summon_reveal.js", "taller.js", "army-wave-panel.js", "ui-taller.js", "primer_eco.js")
+CASA = ("canon.js", "escena.js", "wave_render.js", "gdpr-art25-ephemeral-crab.js", "aiact-art50-crab-terminal.js", "nodos-cedulas.js", "fog_of_war.js", "isometric_floor_projection.js", "world_camera.js", "mar-fondo.js", "gdpr-art7-entry-choice.js", "aiact-art50-state-radio.js", "casa-medidas.js", "casa-personaliza.js", "casa-lateral.js", "crab_state_screen.js", "reef_building_lifecycle.js", "home_buildings.js", "summon-wave-card.js", "summon_reveal.js", "taller.js", "army-wave-panel.js", "ui-taller.js", "primer_eco.js")
 FUERA_DE_LA_PUERTA = tuple(sorted(set(PUROS + ARENA + CASA)))
 
 
@@ -1043,6 +1043,21 @@ class TheGameV15(unittest.TestCase):
         module = (PUBLICO / "game" / "army-wave-panel.js").read_text(encoding="utf-8")
         self.assertIn("I.army()", module)
         self.assertIn("V.semantica[k]", module)
+
+    def test_q2_reveal_card_uses_wave_and_game_cycles(self):
+        """Q2 exposes the exact spectrum at the reveal peak and routes to the existing Workshop."""
+        import subprocess
+        r = subprocess.run(["node", str(RAIZ / "summon_wave_card_casos.mjs")], capture_output=True,
+                           text=True, timeout=60)
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        reveal = (PUBLICO / "game" / "summon_reveal.js").read_text(encoding="utf-8")
+        self.assertIn("cicloActual()", reveal)
+        self.assertIn("transcurrido", reveal)
+        self.assertNotRegex(reveal, r"\bDate\b|performance\.now|function cuadro\(ts\)")
+        self.assertIn("AtlasRevelaFicha.personaliza()", reveal)
+        card = (PUBLICO / "game" / "summon-wave-card.js").read_text(encoding="utf-8")
+        self.assertIn("root.TheGame.ve('ondas')", card)
+        self.assertIn(".taller-unido", card)
 
     def test_v15_el_army_solo_admite_firma_verificada(self):
         """Instruccion 4: sumar una tropa exige la firma Ed25519, y no basta
@@ -2315,7 +2330,7 @@ class MapaMovible(unittest.TestCase):
 
     def test_r8_la_ceremonia_es_real_no_decide_y_se_queda_quieta(self):
         """R8 (plan «el refresco»): la diversion esta en la CEREMONIA, no en el azar, y la ceremonia es real:
-        la revelacion no tira ni decide (no llama a la tirada ni al generador, sin azar ni reloj con autoridad),
+        la revelacion no tira ni decide (no llama a la tirada ni al generador, sin azar ni reloj de pared),
         su anticipacion es corta (<= 1,5 s) y con movimiento reducido no hay ni anticipacion ni temblor. La
         vitrina del Army ensena los stats REALES de la tropa; las ondas respiran y se paran con quietud."""
         r = sin_comentarios((PUBLICO / "game" / "summon_reveal.js").read_text(encoding="utf-8"))
@@ -2324,8 +2339,10 @@ class MapaMovible(unittest.TestCase):
                 self.assertNotIn(malo, r)
         ant = int(re.search(r"ANT = (\d+)", r).group(1))
         self.assertLessEqual(ant, 1500, "la anticipacion retiene a la persona demasiado")
-        self.assertIn("if (!q && ts - t0 < ANT)", r, "la anticipacion no respeta el movimiento reducido")
-        self.assertIn("tiembla = q ? 0 : ts", r, "el temblor no respeta el movimiento reducido")
+        self.assertIn("if (!q && transcurrido < ANT)", r, "la anticipacion no respeta el movimiento reducido")
+        self.assertIn("tiembla === null || q ? 0", r, "el temblor no respeta el movimiento reducido")
+        self.assertIn("cicloActual()", r, "la ceremonia no lee el reloj de ciclos")
+        self.assertNotRegex(r, r"\bDate\b|performance\.now|function cuadro\(ts\)", "la ceremonia depende del reloj de pared")
         u = sin_comentarios((PUBLICO / "game" / "ui-ficha.js").read_text(encoding="utf-8"))  # T: la ficha salio de ui.js
         self.assertIn("el('small', 'atlas-stats', G.STATS.filter(function (k) { return t.stats[k]; })", u)
         css = (PUBLICO / "assets" / "atlas.css").read_text(encoding="utf-8")
