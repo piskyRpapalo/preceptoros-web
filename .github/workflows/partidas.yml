@@ -10,9 +10,8 @@
 name: partidas
 
 on:
+  # The explicit verification gate is required on every mergeable PR.
   pull_request:
-    paths: ["partidas/**", "atlas/verifica_partida.mjs", "public/assets/atlas-motor.js",
-            "public/assets/atlas-partida.js"]
   workflow_dispatch:
 
 permissions:
