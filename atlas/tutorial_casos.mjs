@@ -4,7 +4,7 @@ const require = createRequire(import.meta.url);
 const T = require(process.env.TUTO || '../public/game/genesis_tutorial.js');
 const casos = [];
 const caso = (n, f) => { let r; try { r = f(); } catch (e) { r = String(e); } casos.push({ caso: n, ok: r === true, detalle: r === true ? '' : JSON.stringify(r) }); };
-const ACCIONES = ['reach', 'swim', 'fight', 'invocar', 'desintegra', 'radio'];
+const ACCIONES = ['reach', 'swim', 'fight', 'invocar', 'desintegra', 'radio', 'inspect-place', 'open-panel'];
 caso('cada paso es una ACCION que existe hoy, y solo esas (sin adelantos)', () => T.esquema().every((p) => ACCIONES.includes(p.accion)) || T.esquema().map((p) => p.accion));
 caso('cada paso cita su canon, declara su sonido y su coordenada (un tip sin canon es una opinion)', () =>
   T.PASOS.every((p) => p.haz && p.canon && p.canon.length > 10 && p.sonido && p.coord && typeof p.mide === 'function' && typeof p.hecho === 'function') || T.PASOS.map((p) => p.id));

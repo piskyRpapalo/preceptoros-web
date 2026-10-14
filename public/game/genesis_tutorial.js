@@ -76,6 +76,19 @@
   ];
 
   var i = 0, base = null, hechos = [], saltado = false, panel = null, cuerpo = null, meta = null, ultimo = '';
+  var primeraApertura = false;
+  var Tour = raiz.AtlasTour || (typeof module === 'object' && module.exports ? require('./genesis-tour.js') : null);
+  function demostradas(id) { return hechos.filter(function (h) { return h.paso === id; }).length; }
+  function extiende() { if (Tour) { Tour.extiende(PASOS, demostradas); } }
+  function objetivo() { var t = raiz.AtlasJuego && raiz.AtlasJuego.texto ? raiz.AtlasJuego.texto('lema') : null; return 'Goal · ' + (t || 'NO_DATA (motto not loaded)'); }
+  function demuestra(id, r) {
+    var p = paso();
+    if (!p || !p.tour || p.id !== id || !r || r.cause || !(r.ok || r.receipt || r.lines) || demostradas(id)) { return false; }
+    hechos.push({ paso: id, ciclo: (J() || {}).ciclo === undefined ? null : J().ciclo, accion: p.accion });
+    return true;
+  }
+  function salta() { saltado = true; ultimo = ''; if (raiz.AtlasTourDialog) { raiz.AtlasTourDialog.cierra(); } pinta(); rotulaMeta(); }
+  function saltaPaso() { if (paso()) { i++; base = null; ultimo = ''; } if (raiz.AtlasTourDialog) { raiz.AtlasTourDialog.cierra(); } rotulaMeta(); if (panel) { pinta(); } }
 
   /* El objetivo macro: una linea fija, toda la sesion (ancla_objetivo_macro). El lema del juego, sin texto nuevo. */
   function ancla() {
@@ -107,6 +120,14 @@
   function lineas() {
     var p = paso();
     if (!p) { return [['Tutorial', saltado ? 'skipped · open it again from the menu' : 'done: ' + competencia() + ' actions demonstrated. The help steps back.']]; }
+    if (p.tour) {
+      var s = p.lee(), filas = [['Step ' + (i + 1) + ' of ' + PASOS.length, s.titulo]].concat(s.lineas);
+      /* El fading retira explicaciones; nunca cifras, causas, preview ni accion real del guion. */
+      if (verbosidad() >= 1) { filas.push(['Do', p.haz]); }
+      (s.actions || []).slice(0, 1).forEach(function (a) { if (a.preview) { filas.push(['Before you do it', a.preview]); } });
+      if (!(s.actions || []).length || s.actions[0].disabled) { filas.push(['Not yet, and why', s.next]); }
+      return filas;
+    }
     var v = verbosidad(), l = [['Step ' + (i + 1) + ' of ' + PASOS.length, p.titulo], ['Do', p.haz]];
     if (v >= 2) { l.push(['Why', p.porque]); }
     if (p.ensayo) { l.push(['Before you do it', p.ensayo()]); }
@@ -125,7 +146,9 @@
       cuerpo = D.createElement('dl'); panel.appendChild(cuerpo);
       var sk = D.createElement('button'); sk.type = 'button'; sk.className = 'boton-sec'; sk.id = 'tutorial-salta'; sk.textContent = 'Skip tutorial';
       sk.dataset.sonido = 'NO_DATA (silent by design)';
-      sk.addEventListener('click', function () { saltado = true; ultimo = ''; pinta(); rotulaMeta(); });
+      sk.addEventListener('click', salta);
+      var sp = D.createElement('button'); sp.type = 'button'; sp.className = 'boton-sec'; sp.id = 'tutorial-salta-paso'; sp.textContent = 'Skip this step';
+      sp.addEventListener('click', saltaPaso); panel.appendChild(sp);
       /* «← Map»: cierra el cajon para hacer la accion (el paso sigue escrito en la linea del objetivo). */
       var vu = D.createElement('button'); vu.type = 'button'; vu.className = 'boton'; vu.id = 'tutorial-al-mapa'; vu.textContent = '← Map';
       vu.dataset.sonido = 'NO_DATA (silent by design)';
@@ -140,30 +163,40 @@
   }
   /* Cada tic: ¿se demostro el paso? (medido); si si, al siguiente, con su propia linea base. */
   function tic() {
+    extiende();
     ancla();
     var p = paso();
     if (p) {
       var v = p.mide();
       if (base === null) { base = v; }
       if (p.hecho(base, v)) {
-        hechos.push({ paso: p.id, ciclo: (J() || {}).ciclo === undefined ? null : J().ciclo });
+        if (!p.tour) { hechos.push({ paso: p.id, ciclo: (J() || {}).ciclo === undefined ? null : J().ciclo }); }
         var R = raiz.AtlasRadioChat; if (R && R.dice) { R.dice({ quien: 'Tutorial', fuente: 'tutorial', texto: 'done · ' + p.titulo, sello: 'LIVE' }); }
         i++; base = null;
       }
     }
     rotulaMeta();
-    if (panel) { pinta(); }
+    pinta(); /* Siempre disponible en menu, aunque aun no se haya demostrado REACH. */
+    /* B3: abrir tras el primer alcance, dejando terminar la lectura de su ficha (6B-1). */
+    var D = raiz.document, caja = D && D.getElementById('thegame-terminal');
+    var fichaAbierta = D && D.getElementById('pliego-ficha');
+    if (!primeraApertura && !saltado && i < 6 && skill('reach') > 0 && caja && caja.hidden && fichaAbierta && fichaAbierta.hidden && !D.documentElement.classList.contains('con-hoja') && !D.querySelector('dialog[open]')) { abre('reach'); }
+    if (raiz.AtlasTourDialog) { raiz.AtlasTourDialog.pinta(paso(), ficha()); }
   }
   /* Abrir: desde la primera accion de alcance (B3) o desde el menu. Abre el panel en el cajon. */
   function abre(motivo) {
+    primeraApertura = true;
+    extiende();
     saltado = false; pinta();
+    if (raiz.AtlasTourDialog && paso() && paso().tour) { raiz.AtlasTourDialog.reanuda(); raiz.AtlasTourDialog.pinta(paso(), ficha()); return motivo || 'menu'; }
     raiz.Promise.resolve().then(function () { var b = raiz.document.getElementById('menu-pliego-tutorial'); if (b && panel.hidden) { b.click(); } });
     return motivo || 'menu';
   }
-  function esquema() { return PASOS.map(function (p) { return { id: p.id, accion: p.accion, irreversible: !!p.irreversible, canon: p.canon, sonido: p.sonido, coord: p.coord }; }); }
+  function esquema() { extiende(); return PASOS.map(function (p) { return { id: p.id, accion: p.accion, irreversible: !!p.irreversible, canon: p.canon, sonido: p.sonido, coord: p.coord }; }); }
   function ficha() { return { paso: paso() ? paso().id : null, competencia: competencia(), verbosidad: verbosidad(), lineas: lineas() }; }
 
   if (raiz.setInterval) { raiz.setInterval(tic, 1000); }
-  var AtlasTutorial = { abre: abre, tic: tic, esquema: esquema, ficha: ficha, PASOS: PASOS, nd: nd };
+  extiende();
+  var AtlasTutorial = { abre: abre, tic: tic, esquema: esquema, ficha: ficha, PASOS: PASOS, nd: nd, demuestra: demuestra, demostradas: demostradas, salta: salta, saltaPaso: saltaPaso, objetivo: objetivo };
   if (typeof module === 'object' && module.exports) { module.exports = AtlasTutorial; } else { raiz.AtlasTutorial = AtlasTutorial; }
 })(this);

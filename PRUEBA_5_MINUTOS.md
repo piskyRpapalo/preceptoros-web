@@ -1,7 +1,7 @@
-# PRUEBA DE 5 MINUTOS · WEB · para la mano del Soberano · versión `preceptoros-2026-17-abgp`
+# PRUEBA DE 5 MINUTOS · WEB · para la mano del Soberano · versión `preceptoros-2026-17-abgr`
 
 Antes (10 s): abre https://preceptoros.org/en/ y **recarga dos veces** (el service worker nuevo entra en la segunda).
-`preceptoros.org/sw.js` debe decir `abgp`. En el Doogee: Chrome **delante** (con Acurast delante, el mapa se pausa).
+`preceptoros.org/sw.js` debe decir `abgr`. En el Doogee: Chrome **delante** (con Acurast delante, el mapa se pausa).
 
 | # | Haz esto | Debes ver | Si no, anota |
 |---|---|---|---|
@@ -17,6 +17,7 @@ Antes (10 s): abre https://preceptoros.org/en/ y **recarga dos veces** (el servi
 | 8 | Toca cualquier botón del juego | Todos grandes (≥ 44 px); ningún panel se queda abierto si vuelves a pulsar su icono | el pequeño |
 | 8a | Abre una hoja (Army o Battle) y toca una entrada del menú lateral; luego abre un panel lateral y toca Army | Solo queda una pantalla abierta cada vez; todos los destinos internos de la web responden HTTP 200 | pantalla superpuesta o enlace que no abre |
 | 9 | Toca la línea de la Radio abajo | Burbujas con quién, sello, fuente y edad en ciclos (el Tutorial solo lo cuenta cuando llega a su paso 6) | — |
+| 9a | Menú **? Tutorial**; completa los seis pasos medidos y recorre después el TOUR (puedes saltar cada parada) | 22 pasos en el mismo esquema: los seis originales, cinco lugares y las opciones reales del menú. Un popup por parada, guía-onda, el mismo guion/cifras de la pantalla y una acción real. Goal y Skip siempre visibles; Escape devuelve el foco. Tras leer recibos o iniciar una mirada, el Inspector conserva el resultado; Tutorial reanuda desde el menú | texto duplicado, foco perdido, resultado invisible o salto contado como competencia |
 | 9b | Abre dos paneles seguidos desde el menú | La ventana tiene **cabecero** (título · sello · fuente · edad en ciclos) y ✕; un **gusano** viaja de una entrada a la otra y la Radio lo narra | — |
 | 9c | Mira tu cangrejo y el mapa | Cangrejo **toon** (contorno grueso, bandas, ojos que parpadean); en el mapa solo **Hexelion** (el Doogee ya no está) | — |
 | 9d | Mira la **boya** (burbuja con antena), el **observatorio** (cúpula con ventana), el **cristal** (gema facetada) y las **lápidas** (losa redonda) | Cada uno con su silueta y sus bandas de color de su vector; las lápidas en gris fijo (no tienen vector vivo) | si dos se parecen |
