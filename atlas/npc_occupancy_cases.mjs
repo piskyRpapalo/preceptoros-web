@@ -1,0 +1,34 @@
+// Q6 sabotage: capture, message and upkeep must be signed, bounded and cycle-driven.
+import { createRequire } from 'node:module';
+import { createHash } from 'node:crypto';
+const require = createRequire(import.meta.url);
+const O = require('../public/game/npc_occupancy.js');
+const pub = 'a'.repeat(64), other = 'b'.repeat(64), records = {};
+const store = { lee: async () => records.value || null, pon: async (v) => { records.value = v; } };
+const firma = async (body) => {
+  const h = createHash('sha256').update(JSON.stringify(body)).digest('hex');
+  return { firma: 'ed25519:' + h + h };
+};
+const verifica = async (texto, sig) => sig === createHash('sha256').update(texto).digest('hex').repeat(2);
+const o = O.crea({ ids: ['arrecife'], ciclos: 900, almacen: store, publica: async () => pub, firma, verifica });
+const fallos = [];
+await o.cargar();
+let r = await o.captura('arrecife', 10);
+if (!r.ok || o.estado('arrecife', 910, pub).fase !== 'sostenido') fallos.push('signed capture did not sustain its NPC site');
+r = await o.escribe('arrecife', 'A quiet harbor.', 910, pub);
+if (!r.ok || o.mural('arrecife', 910, pub) !== 'A quiet harbor.') fallos.push('signed wall message did not appear');
+const once = await o.escribe('arrecife', 'A replacement message.', 910, pub);
+if (once.ok || o.mural('arrecife', 910, pub) !== 'A quiet harbor.') fallos.push('one-message-per-account rule was bypassed');
+if (O.saneaMensaje('x'.repeat(161)).ok) fallos.push('message limit sabotage passed');
+if (O.saneaMensaje('<script>alert(1)</script>').ok) fallos.push('markup sabotage passed');
+if (o.estado('arrecife', 911, pub).fase !== 'aviso') fallos.push('missed upkeep produced no warning');
+r = await o.sostener('arrecife', 911, pub);
+if (!r.ok || o.estado('arrecife', 1811, pub).fase !== 'sostenido') fallos.push('signed upkeep did not reset cycle decay');
+if (o.estado('arrecife', 2711, pub).fase !== 'niebla' || o.mural('arrecife', 2711, pub) !== null) fallos.push('abandoned wall did not return to fog');
+if (o.estado('arrecife', 911, other).fase !== 'niebla') fallos.push('another account inherited the local occupation');
+records.value.registros[0].firma = 'ed25519:' + '0'.repeat(128);
+const tampered = O.crea({ ids: ['arrecife'], ciclos: 900, almacen: store, publica: async () => pub, firma, verifica });
+await tampered.cargar();
+if (tampered.estado('arrecife', 911, pub).fase !== 'niebla') fallos.push('tampered stored receipt was trusted');
+console.log(JSON.stringify({ ciclos_mantenimiento: O.CICLOS, firma_red: 'red-first', fallos, ok: !fallos.length }));
+process.exitCode = fallos.length ? 1 : 0;

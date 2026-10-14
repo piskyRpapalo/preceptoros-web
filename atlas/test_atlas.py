@@ -987,9 +987,9 @@ process.stdout.write(JSON.stringify(ok));
 # Ver atlas/POST_VERIFICACION_MGNO_LAB.md y atlas/POST_VERIFICACION_SISIL_CRIA.md.
 PUROS = ("canon.js", "sobres.js", "rating.js", "arena.js", "duelo.js", "mercado.js", "narragrafo.js", "cria.js", "genoma.js")
 # La Arena (2026-09-28, «el mapa multi-jugador en una pestana»): se carga al abrir su pestana, detras del Army.
-ARENA = ("sobres.js", "rating.js", "arena.js", "duelo.js", "mar-anclas.js", "crab_render_hd.js", "crab_free_move.js", "genesis_tutorial.js", "buildings_toon.js", "reef_place_cards.js", "reef_buildings_paint.js", "latency_crystal.js", "hexelion_bench.js", "reef_corals.js", "reef_buildings_layer.js", "mar-cangrejos.js", "map_pointer_input.js", "map_nodes_layer.js", "map_zoom.js", "piece_inspector.js", "state_vector.js", "place_telemetry.js", "mar.js", "nodos-pesos.js",
+ARENA = ("sobres.js", "rating.js", "arena.js", "duelo.js", "mar-anclas.js", "crab_render_hd.js", "crab_free_move.js", "genesis_tutorial.js", "buildings_toon.js", "reef_place_cards.js", "reef_buildings_paint.js", "latency_crystal.js", "hexelion_bench.js", "reef_corals.js", "reef_buildings_layer.js", "mar-cangrejos.js", "map_pointer_input.js", "map_nodes_layer.js", "map_zoom.js", "piece_inspector.js", "state_vector.js", "place_telemetry.js", "npc_territory_map.js", "mar.js", "nodos-pesos.js",
          "nodos.js", "cuenta.js", "ui-nodos.js", "ui-rack.js",
-         "escuadron.js", "battle_choreography.js", "battle_replay.js", "ui-arena-comun.js", "ui-arena.js", "ui-duelo.js")
+         "escuadron.js", "battle_choreography.js", "battle_replay.js", "npc_occupancy.js", "npc_walls.js", "ui-arena-comun.js", "ui-arena.js", "ui-duelo.js")
 # La CASA (2026-10-05): la primera pantalla, detras del Army. Lleva canon y escena, que la Arena reutiliza.
 CASA = ("canon.js", "escena.js", "wave_render.js", "gdpr-art25-ephemeral-crab.js", "aiact-art50-crab-terminal.js", "nodos-cedulas.js", "fog_of_war.js", "isometric_floor_projection.js", "world_camera.js", "mar-fondo.js", "gdpr-art7-entry-choice.js", "aiact-art50-state-radio.js", "casa-medidas.js", "casa-personaliza.js", "casa-lateral.js", "crab_state_screen.js", "reef_building_lifecycle.js", "home_buildings.js", "summon-wave-card.js", "summon_reveal.js", "taller.js", "army-wave-panel.js", "ui-taller.js", "primer_eco.js", "summon-access.js")
 FUERA_DE_LA_PUERTA = tuple(sorted(set(PUROS + ARENA + CASA)))
@@ -1984,6 +1984,25 @@ class Conquista(unittest.TestCase):
         self.assertRegex(texto, r"arena_conquistado[^}]*LOCAL")
         self.assertIn("T('arena_conquistado')", self._js("ui-arena.js"))
         self.assertIn("arena_conquistado", self._js("mar.js"))
+
+    def test_q6_mensajes_y_mantenimiento_firmados_con_decaimiento_ciclico(self):
+        r = subprocess.run(["node", str(RAIZ / "npc_occupancy_cases.mjs")], capture_output=True,
+                           text=True, timeout=60)
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        d = json.loads(r.stdout)
+        self.assertEqual(d["ciclos_mantenimiento"], 900)
+        self.assertEqual(d["fallos"], [])
+        ui = self._js("ui-arena.js")
+        mar = self._js("mar.js")
+        self.assertIn("AtlasNpcTerritoryMap", self._js("npc_territory_map.js"))
+        inspector = self._js("piece_inspector.js")
+        self.assertIn("AtlasNpcWalls.captura(l.id, cicloJuego())", ui)
+        self.assertIn("Declared defenses", inspector)
+        self.assertIn("mapaOcupacion.mensaje(g, l, f, rotulo, p, r, dpr)", mar)
+        self.assertIn("AtlasNpcWalls.estado(id, cicloJuego(), pub)", ui)
+        self.assertIn("/game/npc_occupancy.js", (PUBLICO / "sw-listas.js").read_text(encoding="utf-8"))
+        self.assertIn("/game/npc_walls.js", (PUBLICO / "sw-listas.js").read_text(encoding="utf-8"))
+        self.assertIn("/game/npc_territory_map.js", (PUBLICO / "sw-listas.js").read_text(encoding="utf-8"))
 
 
 class CombateLimpio(unittest.TestCase):

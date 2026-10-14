@@ -193,7 +193,8 @@ const rutas = await shell.keys();
 // 129 con `army-wave-panel.js` (Q1: la ficha grande del Army se precachea sin red).
 // 130 con `summon-wave-card.js` (Q2: el espectro medido llega al reveal sin red).
 // 131 con `summon-access.js` (Q3: la puerta de summon en Base también queda offline).
-ok('precachea las portadas, su superficie y el juego', rutas.length === 131, rutas.length+' rutas');
+// 132-134 con los tres modulos de ocupacion NPC (Q6: territorio y ficha offline).
+ok('precachea las portadas, su superficie y el juego', rutas.length === 134, rutas.length+' rutas');
 ok('el shell trae el juego (D7): la puerta, el cangrejo y la arena',
    ['/assets/thegame.js', '/game/gdpr-art25-ephemeral-crab.js', '/game/ui-arena.js', '/assets/atlas-motor.js'].every(r => rutas.includes(r)));
 ok('el shell trae la portada de cada lengua', ['/es/', '/fr/', '/ar/'].every(r => rutas.includes(r)));

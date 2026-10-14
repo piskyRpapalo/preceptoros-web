@@ -142,10 +142,13 @@
         }).catch(function () { return null; });
       },
       pon: function (v) {
-        db().then(function (d) {
-          var tx = d.transaction(almacen, 'readwrite'); tx.objectStore(almacen).put(v, clave);
-          tx.oncomplete = function () { d.close(); };
-        }).catch(function () {});
+        return db().then(function (d) {
+          return new Promise(function (ok, mal) {
+            var tx = d.transaction(almacen, 'readwrite'); tx.objectStore(almacen).put(v, clave);
+            tx.oncomplete = function () { d.close(); ok(true); };
+            tx.onerror = function () { d.close(); mal(tx.error); };
+          });
+        });
       }
     };
   }
