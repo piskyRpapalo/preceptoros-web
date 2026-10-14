@@ -8,7 +8,7 @@ const G = require(join(root, 'public/game/gacha.js'));
 const A = require(join(root, 'public/game/summon-access.js'));
 const m = A.modelo(V, G), fail = [];
 if (process.argv.includes('--sabotage')) m.opciones[0].cobre++;
-if (!m || m.limiteEquipo !== V.combate.tropas_max || m.limiteEquipo !== 6) fail.push('team cap does not match the measured combat rule');
+if (!m || m.limiteEquipo !== V.combate.tropas_max || m.limiteEquipo !== 10) fail.push('team cap does not match the measured combat rule');
 if (!m || m.opciones.length !== Object.keys(G.TCS).length) fail.push('one visible summon option per measured TC');
 for (const [tc, def] of Object.entries(G.TCS)) {
   const x = m.opciones.find(y => y.tc === tc);

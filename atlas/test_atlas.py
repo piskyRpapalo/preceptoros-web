@@ -1577,7 +1577,7 @@ class Multijugador(unittest.TestCase):
                 con(m["mp_sesion"], pares=[h, h]), con(m["mp_sesion"], nonce="xyz"), con(m["mp_sesion"], servidor="relevo")]),
             "atlas_defensa_schema.json": (m["defensa"], [
                 con(m["defensa"], tropas=[dict(tropa, stats={"vida": 9999})]), con(m["defensa"], tropas=[]),
-                con(m["defensa"], tropas=[tropa] * 7), con(m["defensa"], tropas=[dict(tropa, tc="tc9")]),
+                con(m["defensa"], tropas=[tropa] * 11), con(m["defensa"], tropas=[dict(tropa, tc="tc9")]),
                 con(m["defensa"], en_juego={"cobre": -1, "luz": 0}), con(m["defensa"], pack_sha="x")]),
             "atlas_asalto_schema.json": (m["asalto"], [
                 con(m["asalto"], defensa="x"), con(m["asalto"], tropas=[]), con(m["asalto"], stats={}),
@@ -2003,6 +2003,16 @@ class Conquista(unittest.TestCase):
         self.assertIn("/game/npc_occupancy.js", (PUBLICO / "sw-listas.js").read_text(encoding="utf-8"))
         self.assertIn("/game/npc_walls.js", (PUBLICO / "sw-listas.js").read_text(encoding="utf-8"))
         self.assertIn("/game/npc_territory_map.js", (PUBLICO / "sw-listas.js").read_text(encoding="utf-8"))
+
+
+class TopeEquipo(unittest.TestCase):
+    def test_q7_tope_de_diez_esquemas_tutorial_y_pruebas_de_render(self):
+        r = subprocess.run(["node", str(RAIZ / "team_cap_casos.mjs")], capture_output=True,
+                           text=True, timeout=60)
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        d = json.loads(r.stdout)
+        self.assertEqual((d["cap"], d["schemas"], d["tutorial"], d["fallos"]), (10, 2, True, []))
+        self.assertIn("tropas_max: 10", (PUBLICO / "game" / "valores.js").read_text(encoding="utf-8"))
 
 
 class CombateLimpio(unittest.TestCase):

@@ -15,6 +15,10 @@
 (function (raiz) {
   'use strict';
   function J() { var j = raiz.AtlasJuego; return j && j.instantanea ? j.instantanea() : null; }
+  function hazPaso(p) {
+    var V = raiz.AtlasValores, n = V && V.combate && Number.isSafeInteger(V.combate.tropas_max) ? V.combate.tropas_max : null;
+    return p ? String(p.haz).replace('{n}', n === null ? 'NO_DATA (team limit not measured)' : n) : '';
+  }
   function skill(id) { var L = raiz.AtlasCangrejoLibre, k = L ? L.skills().filter(function (s) { return s.id === id; })[0] : null; return k ? k.eventos : 0; }
   function army() { var I = raiz.AtlasIncubadora, l = null; try { l = I && I.army ? I.army() : null; } catch (e) { l = null; } return Array.isArray(l) ? l.length : null; }
   function combates() { var A = raiz.AtlasArenaUI, r = A && A.record ? A.record() : null; return r ? r.g + r.p : null; }
@@ -37,7 +41,7 @@
       canon: 'FIRMO 2026-10-12 · B (free movement over the J1 walk)', sonido: 'NO_DATA (silent by design)', coord: 'empty sea, outside the fog',
       mide: function () { return skill('swim'); }, hecho: function (b, v) { return v > b; } },
     { id: 'fight', accion: 'fight', titulo: 'Fight a place',
-      haz: 'Open the menu ⌖ (Places) and press Fight.',
+      haz: 'Open the menu ⌖ (Places), choose up to {n} waves for one squad, then press Fight.',
       porque: 'The fight replays from the law, the seed and the actions: nobody picks the result. After it, the place shows its colour from your record.',
       canon: 'Determinism (CLAUDE.md of the web) · ∇C option A, FIRMO 2026-10-12', sonido: 'FM voices of both armies (the battle)', coord: 'menu ⌖ · Places',
       mide: combates, hecho: function (b, v) { return v !== null && v > (b || 0); },
@@ -88,13 +92,13 @@
   /* La linea del objetivo lleva tambien la ACCION del paso en curso: se lee con el panel cerrado, sobre el mapa. */
   function rotulaMeta() {
     if (!meta) { return; }
-    var p = paso(), t = 'Goal · ' + meta.dataset.lema + (p ? ' · Now: ' + p.haz : '');
+    var p = paso(), t = 'Goal · ' + meta.dataset.lema + (p ? ' · Now: ' + hazPaso(p) : '');
     if (meta.dataset.t === t) { return; }
     meta.dataset.t = t; meta.textContent = '';
     /* Dos lineas: el objetivo (una linea) y la accion en curso. Medido en 360 px: en una sola tira ocupaba 4 lineas. */
     var a = raiz.document.createElement('span'), b = raiz.document.createElement('span');
     a.className = 'meta-objetivo'; a.textContent = 'Goal · ' + meta.dataset.lema; meta.appendChild(a);
-    if (p) { b.className = 'meta-ahora'; b.textContent = 'Now: ' + p.haz; meta.appendChild(b); }
+    if (p) { b.className = 'meta-ahora'; b.textContent = 'Now: ' + hazPaso(p); meta.appendChild(b); }
     /* El aviso del mapa (role=status) va DEBAJO, en el mismo bloque: medido, sueltos se pisaban. mar.js conserva su nodo. */
     var av = raiz.document.querySelector('.mapa-aviso');
     if (av) { meta.appendChild(av); }
@@ -107,7 +111,7 @@
   function lineas() {
     var p = paso();
     if (!p) { return [['Tutorial', saltado ? 'skipped · open it again from the menu' : 'done: ' + competencia() + ' actions demonstrated. The help steps back.']]; }
-    var v = verbosidad(), l = [['Step ' + (i + 1) + ' of ' + PASOS.length, p.titulo], ['Do', p.haz]];
+    var v = verbosidad(), l = [['Step ' + (i + 1) + ' of ' + PASOS.length, p.titulo], ['Do', hazPaso(p)]];
     if (v >= 2) { l.push(['Why', p.porque]); }
     if (p.ensayo) { l.push(['Before you do it', p.ensayo()]); }
     var f = p.fallo ? p.fallo() : '';
@@ -164,6 +168,6 @@
   function ficha() { return { paso: paso() ? paso().id : null, competencia: competencia(), verbosidad: verbosidad(), lineas: lineas() }; }
 
   if (raiz.setInterval) { raiz.setInterval(tic, 1000); }
-  var AtlasTutorial = { abre: abre, tic: tic, esquema: esquema, ficha: ficha, PASOS: PASOS, nd: nd };
+  var AtlasTutorial = { abre: abre, tic: tic, esquema: esquema, ficha: ficha, PASOS: PASOS, nd: nd, hazPaso: hazPaso };
   if (typeof module === 'object' && module.exports) { module.exports = AtlasTutorial; } else { raiz.AtlasTutorial = AtlasTutorial; }
 })(this);

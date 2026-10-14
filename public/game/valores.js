@@ -104,7 +104,7 @@
        resta su mitad (`armadura_div`). El rating es un Elo entero LOCAL (no hay clasificacion
        central): `k` y `k_provisional` para las primeras `provisional_hasta` partidas. */
     combate: {
-      rondas: 40, tropas_max: 6, armadura_div: 2,
+      rondas: 40, tropas_max: 10, armadura_div: 2,
       ataque: { base: 3, aura: 2, inercia: 1, profundidad: 1 },
       esquiva: { por_sigilo: 12, tope: 300 },
       rating_inicial: 1000, k: 32, k_provisional: 48, provisional_hasta: 10,
