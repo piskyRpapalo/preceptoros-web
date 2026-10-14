@@ -1,29 +1,29 @@
 {
  "esquema": "atlas.record/1",
  "procedencia": "medido por atlas/arnes_piloto.mjs; determinista; atlas/test_atlas.py lo recalcula",
- "contenido_v": "2026-09-27.1",
+ "contenido_v": "2026-10-14.1",
  "politica": "piloto_base",
  "horizonte_ciclos": 20000,
  "ley": {
   "nd": false,
-  "integridad_max": 100,
+  "integridad_max": 107,
   "dano": 1
  },
  "piloto_base": {
   "fase_final": 4,
-  "nivel_nucleo": 48,
+  "nivel_nucleo": 54,
   "ciclos_hasta_fase": {
-   "2": 251,
-   "3": 1757,
-   "4": 13997
+   "2": 168,
+   "3": 1035,
+   "4": 8111
   },
-  "integridad_min": 76,
-  "integridad_final": 100,
-  "integridad_max": 100,
+  "integridad_min": 95,
+  "integridad_final": 107,
+  "integridad_max": 107,
   "acciones": {
-   "esperar": 19682,
+   "esperar": 19653,
    "recoger": 0,
-   "reparar": 98,
+   "reparar": 127,
    "aplazar": 0,
    "bajar_a": 220
   },
@@ -32,15 +32,15 @@
  },
  "sin_piloto": {
   "fase_final": 4,
-  "nivel_nucleo": 45,
+  "nivel_nucleo": 52,
   "ciclos_hasta_fase": {
-   "2": 315,
-   "3": 2405,
-   "4": 19176
+   "2": 158,
+   "3": 1203,
+   "4": 9588
   },
   "integridad_min": 0,
   "integridad_final": 0,
-  "integridad_max": 100,
+  "integridad_max": 107,
   "acciones": null,
   "fallos": null,
   "invalidas": null
@@ -49,24 +49,24 @@
   "arnes_rojo": {
    "ley": {
     "nd": false,
-    "integridad_max": 100,
+    "integridad_max": 107,
     "dano": 2
    },
    "piloto_base": {
     "fase_final": 4,
-    "nivel_nucleo": 48,
+    "nivel_nucleo": 54,
     "ciclos_hasta_fase": {
-     "2": 251,
-     "3": 1757,
-     "4": 13997
+     "2": 168,
+     "3": 1035,
+     "4": 8111
     },
-    "integridad_min": 52,
-    "integridad_final": 100,
-    "integridad_max": 100,
+    "integridad_min": 83,
+    "integridad_final": 107,
+    "integridad_max": 107,
     "acciones": {
-     "esperar": 19682,
+     "esperar": 19653,
      "recoger": 0,
-     "reparar": 98,
+     "reparar": 127,
      "aplazar": 0,
      "bajar_a": 220
     },
@@ -75,15 +75,15 @@
    },
    "sin_piloto": {
     "fase_final": 4,
-    "nivel_nucleo": 45,
+    "nivel_nucleo": 52,
     "ciclos_hasta_fase": {
-     "2": 315,
-     "3": 2405,
-     "4": 19176
+     "2": 158,
+     "3": 1203,
+     "4": 9588
     },
     "integridad_min": 0,
     "integridad_final": 0,
-    "integridad_max": 100,
+    "integridad_max": 107,
     "acciones": null,
     "fallos": null,
     "invalidas": null
@@ -97,19 +97,19 @@
    },
    "piloto_base": {
     "fase_final": 4,
-    "nivel_nucleo": 48,
+    "nivel_nucleo": 54,
     "ciclos_hasta_fase": {
-     "2": 251,
-     "3": 1757,
-     "4": 13997
+     "2": 168,
+     "3": 1035,
+     "4": 8111
     },
-    "integridad_min": 76,
+    "integridad_min": 88,
     "integridad_final": 100,
     "integridad_max": 100,
     "acciones": {
-     "esperar": 19682,
+     "esperar": 19653,
      "recoger": 0,
-     "reparar": 98,
+     "reparar": 127,
      "aplazar": 0,
      "bajar_a": 220
     },
@@ -118,11 +118,11 @@
    },
    "sin_piloto": {
     "fase_final": 4,
-    "nivel_nucleo": 45,
+    "nivel_nucleo": 52,
     "ciclos_hasta_fase": {
-     "2": 315,
-     "3": 2405,
-     "4": 19176
+     "2": 158,
+     "3": 1203,
+     "4": 9588
     },
     "integridad_min": 0,
     "integridad_final": 0,

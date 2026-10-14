@@ -317,6 +317,17 @@ R4 bioluminiscencia → Todas las piezas construibles están hechas. Las propues
 ## FIRMO DEL SOBERANO · C4 · 2026-10-13
 Si: la version del gacha es valores.version + packSha; contenido_v del motor solo cuando cambie el motor. R5 puede correr.
 
+## LOTE RÁPIDO · Q4 · RECURSOS ×2 · 2026-10-14 · CERRADA LOCAL
+- **Medida antes:** motor `2026-09-27.1`, Ruins determinista: 400 copper/1.000 ciclos = 0,4/ciclo; 50 copper en 125 ciclos (125 s al ciclo medido de 1 s), equivalente a 2,5 s/copper.
+- **Cambio medido:** producción base duplicada en el motor, sin variar la ley de supervivencia. En el mismo escenario y 1.000 ciclos: 800 copper = 0,8/ciclo; 50 copper en 63 ciclos (63 s), ≈1,26 s/copper por granularidad de ciclo. `genesis_tutorial.js` comunica el ritmo medido. Motor `contenido_v=2026-10-14.1`, por FIRMO C4.
+- **Sabotaje rojo primero:** el caso determinista esperaba 800 y falló contra la producción anterior con 400; tras el cambio pasa. `atlas/recurso_x2_casos.mjs` mide total, tasa y ciclos hasta 50.
+- **Compatibilidad de recibos:** la partida histórica firmada conserva sus bytes y se verifica con el motor exacto `atlas/legacy/atlas-motor-2026-09-27.js`; la importación al motor actual rechaza explícitamente una versión anterior. No se reescribió la partida firmada.
+- **Gates n=2:** Atlas 172/172 ×2; web 76 (1 omitida) ×2; SW 22/22, 131 rutas ×2; Chrome 30 pasos, cero fallos ×2. Caso específico Q4 verde; `git diff --check` limpio.
+- **Medidas de salida:** gzip del juego 90.432 B; SW `preceptoros-2026-17-abgt`, huella `58d26e36f365e24e`; `atlas-mundo.json` registra 76 pruebas web. Los archivos nuevos/modificados bajo `public/` quedan por debajo de 16.384 B; motor 11.121 B y tutorial 13.113 B. Ficheros no públicos: motor legado 11.047 B, caso Q4 955 B.
+- **Límites:** la equivalencia de 1 copper cada 1,26 s es una medición del escenario Ruins; el rendimiento del teléfono no se volvió a medir en Q4. Las lenguas adicionales siguen con borradores incompletos; el juego de hoy habla inglés.
+- **PRUEBA_5_MINUTOS:** pasa a `abgt`; paso 6e comprueba 50 copper en 63 ciclos en Ruins.
+- **Cierre:** cambio preparado para commit local Q4 en `lote-rapido-20261013`; no push, PR ni merge en este cierre.
+
 ## ORDEN OCEANO · CIERRE 5C EN PR · 2026-10-13
 - PR #72 abierto desde `oceano-2026-10-13` hacia `main`, punta publicada `ca155706dddef298b1db0dc815fb493bc7ec554d`; CI `test_web` verde. Merge observado el 2026-10-13 20:42Z, hecho por el Soberano (no por Codex).
 - Gates repetidos sobre esa punta: `atlas/test_atlas.py` 167/167 ×2; `test_web.py` 75, 1 omitida ×2; `arnes_sw.mjs` 22/22 ×2; Chrome `atlas/sin_undefined.mjs` 30 pasos, cero fallos (dos ejecuciones sobre el mismo commit). Sin cambios de código tras esas medidas.

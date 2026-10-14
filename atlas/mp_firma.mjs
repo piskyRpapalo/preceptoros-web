@@ -24,7 +24,7 @@ export function verificador(texto, firmaHex, claveHex) {
 }
 
 // Una cadena de sobres de una identidad en una sesion: cada llamada es el siguiente `seq`.
-export function cadena(S, id, sesion, contenido_v = '2026-09-27.1') {
+export function cadena(S, id, sesion, contenido_v = '2026-10-14.1') {
   let seq = 0, prev = 'genesis';
   return (tipo, cuerpo) => {
     seq += 1;

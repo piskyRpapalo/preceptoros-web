@@ -30,7 +30,7 @@ const pares = (...ids) => ids.map((i) => i.pub).sort();
 const politica = (modo, ids, extra = {}) => ({
   esquema: 'atlas.mp_sesion/1', modo, pares: pares(...ids), quorum: extra.quorum ?? ids.length,
   max_bytes: extra.max_bytes ?? 8192, max_ops: extra.max_ops ?? 200, semilla: 'commit_reveal',
-  conflicto: 'poda_gana', contenido_v: '2026-09-27.1', nonce: extra.nonce ?? '0'.repeat(31) + '1'
+  conflicto: 'poda_gana', contenido_v: '2026-10-14.1', nonce: extra.nonce ?? '0'.repeat(31) + '1'
 });
 const muestras = {};
 
@@ -95,7 +95,7 @@ await caso('libro: en orden entra; el viejo repetido, el hueco y el prev roto no
   const s2 = c('revelacion', { esquema: 'atlas.revelacion/1', r: 'b'.repeat(64), compromisos: 'c'.repeat(64) });
   const s3 = c('revelacion', { esquema: 'atlas.revelacion/1', r: 'd'.repeat(64), compromisos: 'c'.repeat(64) });
   const roto = { esquema: 'atlas.sobre/1', tipo: 'revelacion', sesion: SD, de: ANA.pub, pseudonimo: ANA.pseudonimo, seq: 3,
-                 prev: 'f'.repeat(64), contenido_v: '2026-09-27.1', cuerpo: s3.cuerpo };
+                 prev: 'f'.repeat(64), contenido_v: '2026-10-14.1', cuerpo: s3.cuerpo };
   roto.firma = 'ed25519:' + ANA.firma(S.mensaje(roto));
   return todas(igual(S.anota(L, s1), ''), igual(S.anota(L, s1), 'duplicado'), igual(S.anota(L, s3), 'falta el seq 2'),
                igual(S.anota(L, s2), ''), igual(S.anota(L, roto), 'prev no enlaza'), igual(S.anota(L, s3), ''));

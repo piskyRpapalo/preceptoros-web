@@ -44,7 +44,7 @@
       fallo: function () { return combates() === null ? 'The arena has not loaded yet: open the map once (it loads with it), then come back.' : ''; } },
     { id: 'summon', accion: 'invocar', titulo: 'Summon a wave', irreversible: true,
       haz: 'Open the menu ⚒ (Workshop) and summon with copper.',
-      porque: 'Summoning spends copper and cannot be undone. The odds are on the button before you press it.',
+      porque: 'Summoning spends copper and cannot be undone. The odds are on the button before you press it. Current measured pace: about one copper per 1.26 game cycles.',
       canon: 'IronClaw: the silicon proposes, the carbon signs · teaching_kernel: dry_run_obligatorio',
       sonido: 'the egg hatches with its own voice', coord: 'menu ⚒ · Workshop',
       ensayo: function () {
@@ -55,7 +55,7 @@
       mide: army, hecho: function (b, v) { return v !== null && v > (b || 0); },
       fallo: function () {
         var c = cobre(), k = costeTc1();
-        /* Medido (atlas-motor.js:149): la biomasa se vuelve cobre con los ciclos (+8 en 20 ciclos en una partida nueva). */
+        /* Q4 medido: la produccion duplicada da +16 cobre en 20 ciclos en una partida nueva. */
         if (c !== null && k !== null && c < k) { return 'Not enough copper yet (' + c + ' of ' + k + '). Next: keep playing: biomass turns into copper as cycles pass. This step waits for you.'; }
         return '';
       } },

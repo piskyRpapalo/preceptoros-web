@@ -187,6 +187,16 @@ class Piso(unittest.TestCase):
             with self.subTest(caso=c["caso"]):
                 self.assertTrue(c["ok"], c["detalle"])
 
+    def test_q4_recurso_x2_se_mide_en_ciclos_del_motor(self):
+        """Q4 doubles the measured cycle production without a second economy state."""
+        r = subprocess.run(["node", str(RAIZ / "recurso_x2_casos.mjs")], capture_output=True,
+                           text=True, timeout=60)
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        d = json.loads(r.stdout)
+        self.assertEqual((d["ciclos"], d["segundos"], d["cobre"], d["cobre_por_ciclo"],
+                          d["ciclos_para_50_cobre"], d["segundos_por_cobre"]),
+                         (1000, 1000, 800, 0.8, 63, 1.26))
+
     def test_la_curva_es_la_canonica_osrs_y_se_recalcula(self):
         """PROCEDENCIA DE LA CURVA: la formula publica de RuneScape (Jagex),
         la misma de Old School RuneScape: XP(L) = floor(1/4 * sum_{n=1}^{L-1}
@@ -383,11 +393,12 @@ process.stdout.write(JSON.stringify({
         for medida in ("atlas-mundo.json", "atlas-record.json"):
             self.assertNotIn(medida, listas, f"{medida} es una medida: fresca o no se sirve")
 
-    def test_guardar_solo_al_pulsar_y_retomar_reproduce(self):
+    def test_guardar_solo_al_pulsar_y_retomar_exige_motor_de_la_version(self):
         """`atlas-guardado.js`: el unico sitio de la puerta con almacen; escribe por DOS caminos
         (Guardar, que tambien usa el autoguardado de la capa C1, y Olvidar); lo que retoma se vuelve a
         jugar y una partida tocada no vuelve a entrar. Desde el 2026-10-05 (plan firmado, C1) se guarda
-        solo, pero NUNCA antes de haber leido lo guardado, y «Olvidar» apaga el autoguardado."""
+        solo, pero NUNCA antes de haber leido lo guardado; el motor cambiado rechaza una partida
+        antigua con su version y causa, mientras la Aduana conserva el verificador historico."""
         for nombre in CODIGO:
             if not nombre.endswith(".js") or nombre == "atlas-guardado.js":
                 continue
@@ -410,8 +421,8 @@ process.stdout.write(JSON.stringify({
 const M = require('./public/assets/atlas-motor.js'), P = require('./public/assets/atlas-partida.js');
 const f = require('fs'), o = JSON.parse(f.readFileSync('partidas/ejemplo-navegador-sin-cabeza.json', 'utf8'));
 const p = o.partida || o, out = {};
-out.ok = P.retoma(p, M).t === p.final.ciclo;
-const t = JSON.parse(JSON.stringify(p)); t.final.ciclo += 1;
+try { P.retoma(p, M); out.version_motor = 'aceptada'; } catch (x) { out.version_motor = x.message; }
+const t = JSON.parse(JSON.stringify(p)); t.contenido_v = M.CATALOGO.contenido_v; t.final.contenido_v = M.CATALOGO.contenido_v; t.final.ciclo += 1;
 try { P.retoma(t, M); out.tocada = 'aceptada'; } catch (x) { out.tocada = x.message; }
 const v = JSON.parse(JSON.stringify(p)); v.contenido_v = 'otra';
 try { P.retoma(v, M); out.version = 'aceptada'; } catch (x) { out.version = x.message; }
@@ -420,7 +431,7 @@ process.stdout.write(JSON.stringify(out));
         r = subprocess.run(["node", "-e", js], cwd=RAIZ.parent, capture_output=True, text=True, timeout=60)
         self.assertEqual(r.returncode, 0, r.stderr)
         o = json.loads(r.stdout)
-        self.assertTrue(o["ok"])
+        self.assertTrue(o["version_motor"].startswith("contenido_v 2026-09-27.1 != 2026-10-14.1"), o["version_motor"])
         self.assertEqual(o["tocada"], "final")
         self.assertTrue(o["version"].startswith("contenido_v otra"), o["version"])
 
@@ -467,7 +478,7 @@ process.stdout.write(JSON.stringify(ok));
         esq = json.loads((DATOS / "atlas_opinion_schema.json").read_text(encoding="utf-8"))
         jsonschema.Draft202012Validator.check_schema(esq)
         val = jsonschema.Draft202012Validator(esq)
-        op = {"esquema": "atlas.opinion/1", "contenido_v": "2026-09-27.1", "sobre": "veredicto", "ciclo": 120,
+        op = {"esquema": "atlas.opinion/1", "contenido_v": "2026-10-14.1", "sobre": "veredicto", "ciclo": 120,
               "estado_sha256": "a" * 64, "mostrado": "Structural tie", "eleccion": "de_acuerdo", "nota": "the pilot was right"}
         bueno = {"esquema": "atlas.opinion.firmada/1", "opinion": op, "firma": "ed25519:" + "b" * 128,
                  "algoritmo": "Ed25519", "pseudonimo": "Atlante-7F3A", "clave_publica": "c" * 64}
