@@ -56,6 +56,21 @@
 .atlas-duelo-lista{display:grid;gap:.4rem;margin:0;padding:0;list-style:none;font-size:.8rem}
 .atlas-duelo-lista li{display:flex;flex-wrap:wrap;gap:.4rem;align-items:center;justify-content:space-between}
 
+/* Q1 · the wave sheet is a direct, phone-readable view of the selected Army record. */
+#army-wave-dialog{width:min(94vw,48rem);max-width:48rem;max-height:88dvh;padding:1rem;color:var(--text-main);background:var(--bg-primary);border:1px solid var(--edge-sov);border-radius:var(--radius);overflow:auto}
+#army-wave-dialog::backdrop{background:var(--bg-primary);opacity:.82}
+.army-wave-head{display:flex;align-items:center;justify-content:space-between;gap:.75rem;position:sticky;top:-1rem;padding:.4rem 0;background:var(--bg-primary);z-index:1}
+.army-wave-head h2{margin:0;font-size:1.25rem}
+.army-wave-head button,.army-wave-plus{min-width:44px;min-height:44px}
+.army-wave-body{display:grid;gap:.8rem}
+.army-wave-section{padding:.7rem;border:1px solid var(--edge-sov);border-radius:var(--radius)}
+.army-wave-section h3,.army-wave-stat h4{margin:.1rem 0 .45rem}
+.army-wave-stat{display:grid;grid-template-columns:1fr auto;gap:.25rem .65rem;padding:.6rem 0;border-top:1px solid var(--edge-sov)}
+.army-wave-stat h4,.army-wave-value,.army-wave-source,.army-wave-stat .no-data,.army-wave-stat small{grid-column:1/-1;margin:0;overflow-wrap:anywhere}
+.army-wave-level{width:100%;height:1rem;accent-color:var(--accent-copper)}
+.army-wave-status{min-height:1.5em;color:var(--accent-copper-claro)}
+@media(min-width:38rem){.army-wave-stat{grid-template-columns:minmax(10rem,1fr) minmax(8rem,1fr) 3rem;align-items:center}.army-wave-stat h4,.army-wave-value,.army-wave-source,.army-wave-stat .no-data,.army-wave-stat small{grid-column:1/-1}}
+
 
 /* --- Arena · rediseno tras el Doogee (2026-10-04) ------------------------------------------------ */
 /* Dos firmas, dos pasos que no se parecen: el 1 en violeta (la partida), el 2 en cobre (el envio). */

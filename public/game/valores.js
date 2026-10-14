@@ -195,7 +195,14 @@
       sello: ['sello del evento sonoro', 'que espera firma / que esta firmado', 'ESTADO', 'core.js'],
       urgencia: ['urgencia del sello (0 quieto, 1 vibra)', 'sello', 'ESTADO', 'core.js'],
       vibrato_hz: ['frecuencia del vibrato', 'sello', 'ESTADO', 'core.js'],
-      vibrato_prof: ['profundidad = portadora * prof * urgencia', 'sello', 'ESTADO', 'core.js']
+      vibrato_prof: ['profundidad = portadora * prof * urgencia', 'sello', 'ESTADO', 'core.js'],
+      vida: ['base.vida[0]*tcLevel + seedInt(0..base.vida[1]) + affixMods + (unique ? tcLevel : 0) + Workshop sanding', 'signed seed, TC, edge-derived rarity, verified Workshop receipt', 'ESTADO', 'ui-taller.js'],
+      armadura: ['base.armadura[0]*tcLevel + seedInt(0..base.armadura[1]) + affixMods + (unique ? tcLevel : 0) + Workshop sanding', 'signed seed, TC, edge-derived rarity, verified Workshop receipt', 'ESTADO', 'ui-taller.js'],
+      velocidad: ['base.velocidad[0] + seedInt(0..base.velocidad[1]) + affixMods + (unique ? tcLevel : 0) + Workshop sanding', 'signed seed, TC, edge-derived rarity, verified Workshop receipt', 'ESTADO', 'ui-taller.js'],
+      sigilo: ['affixMods + (unique ? tcLevel : 0) + Workshop sanding', 'edge-derived rarity, verified Workshop receipt', 'ESTADO', 'ui-taller.js'],
+      inercia: ['affixMods + (unique ? tcLevel : 0)', 'edge-derived rarity; Workshop sanding is ineligible', 'ESTADO', 'ui-taller.js'],
+      profundidad: ['affixMods + (unique ? tcLevel : 0)', 'edge-derived rarity; Workshop sanding is ineligible', 'ESTADO', 'ui-taller.js'],
+      aura: ['affixMods + (unique ? tcLevel : 0)', 'edge-derived rarity; Workshop sanding is ineligible', 'ESTADO', 'ui-taller.js']
     }
   };
 

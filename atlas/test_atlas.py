@@ -969,7 +969,7 @@ ARENA = ("sobres.js", "rating.js", "arena.js", "duelo.js", "mar-anclas.js", "cra
          "nodos.js", "cuenta.js", "ui-nodos.js", "ui-rack.js",
          "escuadron.js", "battle_choreography.js", "battle_replay.js", "ui-arena-comun.js", "ui-arena.js", "ui-duelo.js")
 # La CASA (2026-10-05): la primera pantalla, detras del Army. Lleva canon y escena, que la Arena reutiliza.
-CASA = ("canon.js", "escena.js", "wave_render.js", "gdpr-art25-ephemeral-crab.js", "aiact-art50-crab-terminal.js", "nodos-cedulas.js", "fog_of_war.js", "isometric_floor_projection.js", "world_camera.js", "mar-fondo.js", "gdpr-art7-entry-choice.js", "aiact-art50-state-radio.js", "casa-medidas.js", "casa-personaliza.js", "casa-lateral.js", "crab_state_screen.js", "reef_building_lifecycle.js", "home_buildings.js", "summon_reveal.js", "taller.js", "ui-taller.js", "primer_eco.js")
+CASA = ("canon.js", "escena.js", "wave_render.js", "gdpr-art25-ephemeral-crab.js", "aiact-art50-crab-terminal.js", "nodos-cedulas.js", "fog_of_war.js", "isometric_floor_projection.js", "world_camera.js", "mar-fondo.js", "gdpr-art7-entry-choice.js", "aiact-art50-state-radio.js", "casa-medidas.js", "casa-personaliza.js", "casa-lateral.js", "crab_state_screen.js", "reef_building_lifecycle.js", "home_buildings.js", "summon_reveal.js", "taller.js", "army-wave-panel.js", "ui-taller.js", "primer_eco.js")
 FUERA_DE_LA_PUERTA = tuple(sorted(set(PUROS + ARENA + CASA)))
 
 
@@ -1030,6 +1030,19 @@ class TheGameV15(unittest.TestCase):
         for c in casos:
             with self.subTest(caso=c["caso"]):
                 self.assertTrue(c["ok"], c["detalle"])
+
+    def test_q1_wave_panel_contract_and_direct_tap(self):
+        """Q1 reads the shared wave and verified Workshop receipt in one tap."""
+        import subprocess
+        r = subprocess.run(["node", str(RAIZ / "army_wave_casos.mjs")], capture_output=True,
+                           text=True, timeout=60)
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        ui = (PUBLICO / "game" / "ui-taller.js").read_text(encoding="utf-8")
+        self.assertIn("AtlasArmyWavePanel.alToque(t, fichaDe)", ui)
+        self.assertIn("AtlasIncubadora", ui)
+        module = (PUBLICO / "game" / "army-wave-panel.js").read_text(encoding="utf-8")
+        self.assertIn("I.army()", module)
+        self.assertIn("V.semantica[k]", module)
 
     def test_v15_el_army_solo_admite_firma_verificada(self):
         """Instruccion 4: sumar una tropa exige la firma Ed25519, y no basta

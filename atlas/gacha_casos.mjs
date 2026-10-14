@@ -296,7 +296,7 @@ await caso('M17-bis 1: coherencia, la curva visual es la rampa de ganancia del s
 // M17-bis 5: una fila de la tabla semantica por cada parametro visual y sonoro, y el lector existe.
 await caso('M17-bis 5: cada clave de fluidez y de las recetas tiene su fila semantica', () => {
   const { V } = ONDA, tabla = V.semantica || {};
-  const claves = Object.keys(V.fluidez).concat(Object.keys(V.sonidos.pop), Object.keys(V.sintesis));
+  const claves = Object.keys(V.fluidez).concat(Object.keys(V.sonidos.pop), Object.keys(V.sintesis), G.STATS);
   const faltan = claves.filter((k) => !tabla[k]);
   const sobran = Object.keys(tabla).filter((k) => !claves.includes(k));
   return (!faltan.length && !sobran.length) || { faltan, sobran };
@@ -306,7 +306,9 @@ await caso('M17-bis 5: el lector nombrado lee de verdad su parametro', () => {
   Object.entries(V.semantica).forEach(([k, [, , clase, lector]]) => {
     if (clase === 'SIN_LECTOR') { return; }
     const t = readFileSync(join(RAIZ, 'public/game', lector), 'utf-8');
-    const lee = lector === 'core.js' ? /\b[br]\.(f|m|indice|dur|gan)\b/.test(t) && t.includes(k) : t.includes(k);
+    const lee = lector === 'core.js' ? /\b[br]\.(f|m|indice|dur|gan)\b/.test(t) && t.includes(k)
+      : lector === 'ui-taller.js' ? /\bV\.semantica\[k\]/.test(t) && /\bG\.STATS\b/.test(t) && /t\.stats\[k\]/.test(t)
+      : t.includes(k);
     if (!lee) { mal.push(k + ' -> ' + lector); }
   });
   return !mal.length || mal;
