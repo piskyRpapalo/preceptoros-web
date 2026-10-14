@@ -136,7 +136,7 @@
         if (!d.id) { d.id = (d.className.split(' ').filter(function (c) { return c !== 'thegame-pliego'; })[0] || 'panel') ; }
         if (R.items[d.id]) { return; }
         var s = d.querySelector('summary'), rot = s ? s.textContent.trim() : d.id;
-        entrada(d.id, ICONO[d.id] || '•', rot, function () { abre(d.id); });
+        entrada(d.id, ICONO[d.id] || '•', rot, function () { abre(d.id); if (d.id === 'pliego-tutorial' && !d.hidden && raiz.AtlasTutorial) { raiz.AtlasTutorial.abre('menu'); } });
         d.hidden = d.id !== abierto;
       });
     }

@@ -780,6 +780,14 @@ process.stdout.write(JSON.stringify(ok));
             with self.subTest(rotulo=k):
                 self.assertRegex(a, k + r": '[^']+'", "sin bloque i18n el rotulo seria undefined")
 
+    def test_tour_hereda_guiones_y_el_mismo_esquema(self):
+        r = subprocess.run(["node", str(RAIZ / "tour_casos.mjs")], capture_output=True, text=True, timeout=60)
+        self.assertEqual(r.returncode, 0, r.stdout[-2000:] + r.stderr[-500:])
+
+    def test_tour_arranque_popup_y_navegacion_reales(self):
+        r = subprocess.run(["node", str(RAIZ / "place_card_browser.mjs"), "--tour"], capture_output=True, text=True, timeout=180)
+        self.assertEqual(r.returncode, 0, r.stdout[-2500:] + r.stderr[-500:])
+
     def test_5c_guion_unico_del_cangrejo_y_arranque(self):
         """5C: una sola fuente de estado, seis secciones en orden fijo, recibos en su lugar, sin JSON humano ni
         relojes paralelos. El contrato incluye la carga inicial real en Chrome, no solo que el panel exista."""
@@ -987,7 +995,7 @@ process.stdout.write(JSON.stringify(ok));
 # Ver atlas/POST_VERIFICACION_MGNO_LAB.md y atlas/POST_VERIFICACION_SISIL_CRIA.md.
 PUROS = ("canon.js", "sobres.js", "rating.js", "arena.js", "duelo.js", "mercado.js", "narragrafo.js", "cria.js", "genoma.js")
 # La Arena (2026-09-28, «el mapa multi-jugador en una pestana»): se carga al abrir su pestana, detras del Army.
-ARENA = ("sobres.js", "rating.js", "arena.js", "duelo.js", "mar-anclas.js", "crab_render_hd.js", "crab_free_move.js", "genesis_tutorial.js", "buildings_toon.js", "reef_place_cards.js", "shell_schematics.js", "reef_buildings_paint.js", "latency_crystal.js", "hexelion_bench.js", "reef_corals.js", "reef_buildings_layer.js", "mar-cangrejos.js", "map_pointer_input.js", "map_nodes_layer.js", "map_zoom.js", "piece_inspector.js", "state_vector.js", "place_telemetry.js", "npc_territory_map.js", "mar.js", "nodos-pesos.js",
+ARENA = ("sobres.js", "rating.js", "arena.js", "duelo.js", "mar-anclas.js", "crab_render_hd.js", "crab_free_move.js", "screen-script.js", "genesis-tour.js", "genesis-tour-dialog.js", "genesis_tutorial.js", "buildings_toon.js", "reef_place_cards.js", "shell_schematics.js", "reef_buildings_paint.js", "latency_crystal.js", "hexelion_bench.js", "reef_corals.js", "reef_buildings_layer.js", "mar-cangrejos.js", "map_pointer_input.js", "map_nodes_layer.js", "map_zoom.js", "piece_inspector.js", "state_vector.js", "place_telemetry.js", "npc_territory_map.js", "mar.js", "nodos-pesos.js",
          "nodos.js", "cuenta.js", "ui-nodos.js", "ui-rack.js",
          "escuadron.js", "battle_choreography.js", "battle_replay.js", "npc_occupancy.js", "npc_walls.js", "ui-arena-comun.js", "ui-arena.js", "ui-duelo.js")
 # La CASA (2026-10-05): la primera pantalla, detras del Army. Lleva canon y escena, que la Arena reutiliza.

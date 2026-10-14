@@ -1,7 +1,7 @@
-# PRUEBA DE 5 MINUTOS · WEB · para la mano del Soberano · versión `preceptoros-2026-17-abgu`
+# PRUEBA DE 5 MINUTOS · WEB · para la mano del Soberano · versión `preceptoros-2026-17-abgy`
 
 Antes (10 s): abre https://preceptoros.org/en/ y **recarga dos veces** (el service worker nuevo entra en la segunda).
-`preceptoros.org/sw.js` debe decir `abgu`. En el Doogee: Chrome **delante** (con Acurast delante, el mapa se pausa).
+`preceptoros.org/sw.js` debe decir `abgy`. En el Doogee: Chrome **delante** (con Acurast delante, el mapa se pausa).
 
 | # | Haz esto | Debes ver | Si no, anota |
 |---|---|---|---|
@@ -24,6 +24,7 @@ Antes (10 s): abre https://preceptoros.org/en/ y **recarga dos veces** (el servi
 | 8 | Toca cualquier botón del juego | Todos grandes (≥ 44 px); ningún panel se queda abierto si vuelves a pulsar su icono | el pequeño |
 | 8a | Abre una hoja (Army o Battle) y toca una entrada del menú lateral; luego abre un panel lateral y toca Army | Solo queda una pantalla abierta cada vez; todos los destinos internos de la web responden HTTP 200 | pantalla superpuesta o enlace que no abre |
 | 9 | Toca la línea de la Radio abajo | Burbujas con quién, sello, fuente y edad en ciclos (el Tutorial solo lo cuenta cuando llega a su paso 6) | — |
+| 9a | Menú **? Tutorial**; completa los seis pasos medidos y recorre después el TOUR (puedes saltar cada parada) | 22 pasos en el mismo esquema: seis acciones originales, cinco lugares y opciones reales del menú. Un popup por parada, guion y cifras leídos de la pantalla correspondiente, sonido declarado, NO_DATA con causa y acción disponible. Skip stop y Skip tour permanecen accesibles; Escape cierra y devuelve el foco | texto duplicado, parada no disponible sin causa, foco perdido o acción adelantada |
 | 9b | Abre dos paneles seguidos desde el menú | La ventana tiene **cabecero** (título · sello · fuente · edad en ciclos) y ✕; un **gusano** viaja de una entrada a la otra y la Radio lo narra | — |
 | 9c | Mira tu cangrejo y el mapa | Cangrejo **toon** (contorno grueso, bandas, ojos que parpadean); en el mapa solo **Hexelion** (el Doogee ya no está) | — |
 | 9d | Mira la **boya** (burbuja con antena), el **observatorio** (cúpula con ventana), el **cristal** (gema facetada) y las **lápidas** (losa redonda) | Cada uno con su silueta y sus bandas de color de su vector; las lápidas en gris fijo (no tienen vector vivo) | si dos se parecen |

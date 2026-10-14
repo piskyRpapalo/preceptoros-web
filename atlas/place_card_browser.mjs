@@ -1,6 +1,7 @@
 // 6B-1 · arranque y taps reales. Fixture EMULATED aislado; no identidad, firma ni datos del usuario.
 // node atlas/place_card_browser.mjs [--doogee] (ADB/CDP/reverse ya existentes en modo Doogee).
 import { createServer } from 'node:http';
+import { runTour } from './genesis-tour-browser.mjs';
 import { readFileSync, statSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { spawn, execFileSync } from 'node:child_process';
 import { tmpdir } from 'node:os';
@@ -9,6 +10,7 @@ import { fileURLToPath } from 'node:url';
 const publico = fileURLToPath(new URL('../public/', import.meta.url));
 const telefono = process.argv.includes('--doogee'), port = telefono ? 8802 : 8803, cdpPort = telefono ? 9223 : 9400 + process.pid % 300;
 const quick = process.argv.includes('--quick');
+const tour = process.argv.includes('--tour');
 const pausa = ms => new Promise(r => setTimeout(r, ms));
 const tipos = ['boya', 'observatorio', 'lapidas', 'cristal', 'coral'];
 const report = { fixture: 'EMULATED house coordinates; real game layers; no signing or storage changes', device: telefono ? 'Doogee S110' : 'Chrome headless', quick, taps: [], samples: [], failures: [] };
@@ -66,6 +68,8 @@ try {
   await page.cmd('Page.navigate', { url: 'http://localhost:' + port + '/en/' });
   for (let i = 0; i < 80; i++) { if (await valor('Boolean(window.AtlasArrecife && window.AtlasInspector && window.AtlasPlaceCards)')) break; await pausa(250); }
   if (!(await valor('Boolean(window.AtlasPlaceCards)'))) throw Error('place cards did not boot');
+  /* El gate de fichas usa un gesto por prueba; aparca el tutorial hasta haber cerrado ese bloque. runTour lo abre desde su ruta real. */
+  if (tour) await valor('AtlasTutorial.salta()');
   await valor(`(() => {
     const base = { x: AtlasNiebla.HEX.x, y: AtlasNiebla.HEX.y };
     window.__tocables = { base, pieces: [], times: [] };
@@ -140,6 +144,7 @@ try {
     }
     await valor('document.querySelector("#thegame-menu .thegame-menu-item[aria-expanded=true]")?.click()'); await pausa(200);
   }
+  if (tour) { await runTour({valor,page,pausa,report}); }
 } catch(e) { report.failures.push(e.stack); }
 finally {
   if (target && browser) try { await browser.cmd('Target.closeTarget',{targetId:target}); } catch {}
