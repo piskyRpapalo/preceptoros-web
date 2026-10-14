@@ -51,6 +51,7 @@
     var D = raiz.document, z = caja.querySelector('.place-actions');
     if (!z) { z = D.createElement('div'); z.className = 'place-actions'; caja.appendChild(z); }
     z.textContent = '';
+    if (f.kind === 'boya' && f.shellManifest && raiz.AtlasShellSchematics) { raiz.AtlasShellSchematics.monta(z, f.shellManifest); }
     if (!(f.actions || []).length) { var n = D.createElement('p'); n.className = 'no-data'; n.textContent = f.actionCause || nd('this piece has no action'); z.appendChild(n); }
     (f.actions || []).forEach(function (a) {
       if (a.preview) { var p = D.createElement('p'); p.textContent = a.preview; z.appendChild(p); }
