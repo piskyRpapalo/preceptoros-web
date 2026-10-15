@@ -12,7 +12,7 @@
   var GUIONES = [['atlas-arte.js'], ['atlas-coord.js'], ['atlas-carta.js'], ['atlas-ondas.js'], ['atlas-obra.js'], ['atlas-gesto.js'], ['atlas-mapa.js'],
     ['atlas-dialogo.js', '/assets/'], ['atlas-motor.js'], ['atlas-piso.js', '/'],
     ['atlas-piloto.js'], ['atlas-partida.js'], ['atlas-piloto-capa.js'],
-    ['/game/juez.js'], ['atlas-guardado.js'], ['radio_message_log.js'], ['terminal_menu_shell.js'], ['terminal_window_frame.js'], ['worm_transition.js'], ['/game/deep_links.js']];
+    ['/game/juez.js'], ['atlas-guardado.js'], ['radio_message_log.js'], ['terminal_menu_shell.js'], ['terminal_window_frame.js'], ['worm_transition.js']];
   /* EL ARMY, A DEMANDA (v1.5): al abrir su pestana o al importar una partida firmada. */
   var ARMY = [['/game/valores.js'], ['/game/gacha.js'], ['/game/db.js'], ['/game/core.js'], ['/game/ui-ficha.js'], ['/game/ui-invoca.js'], ['/game/ui.js']];
   /* LA ARENA, A DEMANDA (2026-09-28): el mar, los lugares NPC, el combate en vivo y los duelos por
@@ -71,7 +71,7 @@
     ['mapa', '\u25C8', '.thegame-exporta|.thegame-opina|.atlas-hud-farmeo|#atlas-juego > .no-data|.atlas-pie'],
     ['taller', '\u2692\uFE0E', '.atlas-nucleo|.atlas-hud > .panel']];
   /* LA CASA, a demanda y detras del Army (usa la gacha para tu emblema). */
-  var CASA = [['/game/canon.js'], ['/game/wave_render.js'], ['/game/escena.js'], ['/game/gdpr-art25-ephemeral-crab.js'], ['/game/aiact-art50-crab-terminal.js'], ['/game/nodos-cedulas.js'], ['/game/fog_of_war.js'], ['/game/isometric_floor_projection.js'], ['/game/world_camera.js'], ['/game/mar-fondo.js'], ['/game/gdpr-art7-entry-choice.js'], ['/game/aiact-art50-state-radio.js'], ['/game/casa-medidas.js'], ['/game/casa-personaliza.js'], ['/game/casa-lateral.js'], ['/game/crab_state_screen.js'], ['/game/reef_building_lifecycle.js'], ['/game/home_buildings.js'], ['/game/summon-wave-card.js'], ['/game/summon_reveal.js'], ['/game/taller.js'], ['/game/army-wave-panel.js'], ['/game/ui-taller.js'], ['/game/primer_eco.js'], ['/game/summon-access.js']];
+  var CASA = [['/game/canon.js'], ['/game/wave_render.js'], ['/game/escena.js'], ['/game/gdpr-art25-ephemeral-crab.js'], ['/game/aiact-art50-crab-terminal.js'], ['/game/nodos-cedulas.js'], ['/game/fog_of_war.js'], ['/game/isometric_floor_projection.js'], ['/game/world_camera.js'], ['/game/mar-fondo.js'], ['/game/gdpr-art7-entry-choice.js'], ['/game/aiact-art50-state-radio.js'], ['/game/casa-medidas.js'], ['/game/casa-personaliza.js'], ['/game/casa-lateral.js'], ['/game/crab_state_screen.js'], ['/game/reef_building_lifecycle.js'], ['/game/home_buildings.js'], ['/game/summon-wave-card.js'], ['/game/summon_reveal.js'], ['/game/taller.js'], ['/game/army-wave-panel.js'], ['/game/ui-taller.js'], ['/game/primer_eco.js'], ['/game/summon-access.js'], ['/game/deep_links.js']];
   /* LO TECNICO, SIEMPRE PLEGADO («textos que asustan a usuarios no tecnicos»): no se borran, son la
      prueba; se ven al abrir «Technical details». */
   var TECNICO = '.atlas-carta-json, .atlas-nucleo > .atlas-nota, .atlas-nucleo > .atlas-medido, ' +
