@@ -25,6 +25,8 @@ jobs:
           set -euo pipefail
           google-chrome --version
           for pass in 1 2; do
+            node atlas/phase_T3_cases.mjs
+            node atlas/phase_T3_cases.mjs --sabotages
             node atlas/chrome_launch_cases.mjs
             node atlas/phase_M0_cases.mjs
             if node atlas/phase_M0_cases.mjs --sabotage; then

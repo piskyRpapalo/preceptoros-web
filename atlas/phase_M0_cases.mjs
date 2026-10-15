@@ -2,7 +2,7 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
-const raw = readFileSync(new URL('../public/atlas-en.json', import.meta.url));
+const raw = readFileSync(new URL('./fixtures/m0-en.json', import.meta.url));
 const baseline = 'b81b02c25f594d885bd1a06ad8ac9df1c01bd4d4159b8f3d9b07fecb3c880939';
 const digest = value => createHash('sha256').update(JSON.stringify(value)).digest('hex');
 function validate(value) {

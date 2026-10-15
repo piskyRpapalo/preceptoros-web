@@ -597,3 +597,2204 @@ Si: la version del gacha es valores.version + packSha; contenido_v del motor sol
 - Merge de esa main en la rama propia M0, sin modificar main ni implementar piezas G. Tres conflictos exclusivamente generados: config/sw-huella.txt, atlas-mundo.json y counters.json. Se preservaron las métricas ajenas de main, se regeneraron las propias y se comprobó igualdad de pruebas_app/pruebas_web con esa fuente. Runtime/precache de main preservados byte por byte, incluidos sus nuevos módulos; sin intervención en #89 ni raíz congelada.
 - Artefacto final para esta sincronización: EN 15.994 B y objeto b81b02c2… intactos; fase 161 ficheros, 26 iniciales, gzip 92.101 B. Sello nuevo preceptoros-2026-17-abhq, huella c4315655300436fe; seco NADA QUE SELLAR tras sello/contadores/mundo/contadores/sello final con la misma versión. Las cifras anteriores 159/92.085 B corresponden al head previo, no a este árbol con main incorporada.
 - Se repiten gates completos n=2 sobre estos bytes públicos finales, además de los casos heredados de main, antes del push de la resolución. CI sobre nuevo head pendiente; el resultado y los IDs de ambas ejecuciones se registrarán en comentario de #104. No se afirma CI verde todavía.
+
+
+## T3 · TRAZA HISTÓRICA CONSERVADA, NO VÁLIDA PARA EL HEAD NUEVO
+
+El bloque siguiente fue medido sobre base 9e4bdd8 y publicado en head 1718e3f4101cf038af31fe850fb723b20ebd6487, árbol 580db29ec3152b4b4069db9e6aafece8510a4fce, público 286d63391d687cd8ec4f647569dd4aa5f60baa11. CI de ese head NO_DATA: main avanzó a 42cd4ab y GitHub lo declaró CONFLICTING antes de iniciar jobs. Se conservan íntegros comandos/salidas por trazabilidad, NO como aprobación del nuevo árbol. El recibo vigente está DESPUÉS de este bloque.
+
+
+## T3 · DIRIMENCIA Y RECONSTRUCCIÓN ABHT · RECIBO CRUDO · 2026-10-15
+
+Autoridad: DIRIMENCIA de la Mesa en PR #110 y orden posterior del Soberano: solo T3, reconstruir desde main vigente, letra ASIGNADA abht, gates n=2, CI doble ×2, PR borrador SIN FUSIÓN y PARA al entregar. No M1, SENSOR HONESTO, plan ni ADENDA 2 en esta sesión. El silicio no firma. Este append al archivo responde a la orden explícita del Soberano que pide recibo aquí; entradas heredadas de main intactas.
+
+### Heads y procedencia medidos al retomar
+
+- Head antiguo de #110: 3a812a724af46bd6ac81bcbbc7eae16a98de7b34, base antigua 3f975c3e2a9785acc73871a6b384224b68825078. Su abhs / 49ceec4a829cece0 colisiona con el abhs de main. Sus verdes, incluido phase intento 2 que al retomar figuraba success, son HISTÓRICOS y NO cubren este árbol.
+- Mesa reportó main 813b3be. Medida propia al retomar: origin/main 9e4bdd87f96a9c5dcfc1ac5ca62cd25496a1afaf, merge #111; respecto a 813b3be solo añade AGENTS.md. Misma superficie pública abhs / ece78b601f6d072c. Leídos DIRIMENCIA, AGENTS.md y CLAUDE.md antes de reconstruir.
+- git merge --no-commit --no-ff origin/main dio salida 1, tres conflictos: config/sw-huella.txt, public/atlas-mundo.json y public/counters.json. A continuación git restore --source=origin/main --staged --worktree -- . estableció TODO el árbol desde main vigente. git diff --stat origin/main quedó vacío ANTES de reaplicar T3. Así se conserva la historia sin force-push ni importar el árbol viejo.
+- Se reaplicaron exclusivamente las pruebas T3/browser/histórico M0/gates propias. El fixture EN se copió NUEVAMENTE de main actual, no del borrador. Cada hash protegido se recalculó contra esa base. Delta del producto: SOLO ui.inc_h Forest Incubator → WavesCraft y ui.army_carga Opening the Forest Incubator… → Opening WavesCraft…. Runtime visual, cargador y precache actuales intactos. Artefactos generados desde cero con letra abht.
+
+Árbol público estabilizado MEDIDO: `286d63391d687cd8ec4f647569dd4aa5f60baa11`. El SHA del head final se leerá tras crear el commit y figurará en el recibo final del PR #110; no se presume un SHA antes de existir. Este recibo fija bytes, comandos y resultados anteriores al commit.
+
+### Hashes antes/después (SHA-256), recalculados
+
+- public/atlas-en.json: 15994 → 15978 B; d24c03bb91b0c0da4f6087a15083d5511cd1d1b1ba8eba16530c926a706da1df → 5cc41650b10112ad39d2485242e9b6fb961c8586a692a278db5d782f742e7a81.
+- public/atlas-mundo.json: 344 → 343 B; f6b3919dce24b53c5038bdfdc7c81ae3a310707b18c5e5ba8d753c87209e39e2 → 37afd1cd394a6525f83f71fa4fc64023f8a339d87ef006223020dc6ac5343387.
+- public/counters.json: 2764 → 2764 B; 6fe8a0b84402a5c3e4ed16aec576bba5347d994dd9a3c6b24958f5152b5eafdd → f8e7d2b0e316cf910a97e2f3de5fc3245cbf29af577736663ce3bf0d7eb73d5e.
+- public/sw.js: 11591 → 11591 B; 94b4411d632e173d1679f15bccc4991ebbd340603bba3f42444cea0c72d7249e → 7e97f6b574b9c23606b1e511de35e484a6fce984e785748fc9c94f93d2b31031.
+- config/sw-huella.txt: 58 → 58 B; bbead27f82f767d6485287939df2925130d33d665b35b3dedeb5626d36ba550b → 21577634449163864065805939691365cc21d1d1d6b70e2c8f4e6eea94dcc3a9.
+
+Hashes protegidos antes=después (igualdad directa con main vigente):
+
+- public/game/valores.js: 8892267206e4328ae9873b016c3c1d07eacab776bbb6614ed1df1d8c254a2e29.
+- public/assets/atlas-motor.js: 16e50ed537c5d6898815a2711a22dc3d7497d4e0a3cd6a0bae013241822e11c9.
+- public/game/gacha.js: b2a2d0e134576d913b3a30ccaf539532e4377d423c4211aceb1bc211081d11cc.
+- public/game/core.js: 1141d77af50dbdce03bbbddef11549683929685dee3de711b6434a7a5ffe8430.
+- public/game/ui-invoca.js: da62b8197243d464e54ca3e966af2e98bf6ba137548ba78c340176a5ee729295.
+- public/game/onda_profunda.js: d56d54957606ead50de7e99731e93f080cb1110ad4ebc397fab0aafb4059eb34.
+- public/game/tarjeta_cantada.js: 6d91727ea8590526ab6e08942a77c1efa50e4c9aeb6fd41e4025e74f1bbcfdac.
+- public/assets/thegame.js: 90a94b3498a4ee540bd74431c5b005a9005656f58afa93c4588cc74595782582.
+- public/sw-listas.js: 40332b1278de0cf883306d993dd0aa3b920220ecd4b06a39a54d37cb45084226.
+
+Oráculo re-verificado: objeto EN actual cd6d33ee6780780189482bfa031aa36f00d0c2b2709e3112f08b203b7676ee9a; invertir SOLO ambas etiquetas recupera b81b02c25f594d885bd1a06ad8ac9df1c01bd4d4159b8f3d9b07fecb3c880939. Fixture M0 15.994 B, bytes d24c03bb91b0c0da4f6087a15083d5511cd1d1b1ba8eba16530c926a706da1df. Digest histórico no sustituido. Ningún sabotaje escribe producto/cuenta: cada hijo debe salir 1 por el código de su propia invariante.
+
+### Comandos de preparación ejecutados
+
+Lectura/medida: gh pr view 110 --json state,headRefOid,comments; git status --short --branch; git log -3 --oneline; git ls-remote origin refs/heads/main; git fetch origin main; git show -s --format de origin/main; git show origin/main:config/sw-huella.txt; git diff 813b3be origin/main --stat; git show origin/main:public/atlas-en.json | sha256sum; git show origin/main:AGENTS.md; git diff 3f975c3 origin/main --stat; git show origin/main:public/game/valores.js | sha256sum; gh run view 38803986531 --json attempt,status,conclusion,headSha; git show origin/main:CLAUDE.md.
+
+Reconstrucción: git merge --no-commit --no-ff origin/main (1); git restore --source=origin/main --staged --worktree -- . (0); git diff --stat origin/main (salida vacía); git status --short --branch. Python stdlib ejecutó git show para recuperar solo seis fuentes propias de pruebas/gates de 3a812a7, copió EN de la nueva base al fixture, comprobó su objeto b81b02c2, cambió SOLO las dos etiquetas y recalculó los hashes de cinco protegidos desde origin/main. Se midió también un rojo explícito de M0 con node --stack-trace-limit=0 atlas/phase_M0_cases.mjs --sabotage (1). El flag limita la pila impresa, no la aserción ni el resultado. Python stdlib cotejó además los nueve hashes protegidos/visuales anteriores y pruebas_app/pruebas_web exactamente contra la nueva main; sin cifras APP nuevas.
+
+Las salidas completas de sellado y de CADA gate medido siguen abajo, sin recortes. stdout y stderr se capturaron juntos. Ausencia de texto se muestra como salida vacía, sin inventar salida del comando. Al final se ejecutarán git diff --check, git add, git commit y git push de esta rama propia, con ganchos intactos; sus resultados y el head real se registran después en #110. CI del head final queda PENDIENTE en este commit: se medirán sus dos intentos y se pegarán sus logs crudos por permalink en el recibo final del PR sin cambiar el SHA probado.
+
+### Salidas crudas de sellado y gates locales
+
+#### main-before-seal · salida 0 (esperada 0)
+
+Comando: `git ls-remote origin refs/heads/main`
+
+~~~~text
+9e4bdd87f96a9c5dcfc1ac5ca62cd25496a1afaf	refs/heads/main
+~~~~
+
+#### seal-1 · salida 0 (esperada 0)
+
+Comando: `python3 bin/sellar.py --sellar --version preceptoros-2026-17-abht`
+
+~~~~text
+version   preceptoros-2026-17-abhs  ->  preceptoros-2026-17-abht
+huella    ece78b601f6d072c  ->  (se recalcula al escribir)
+
+SELLADO · version=preceptoros-2026-17-abht huella=e5888764d9a90c81
+~~~~
+
+#### counters-1 · salida 0 (esperada 0)
+
+Comando: `python3 contadores.py`
+
+~~~~text
+escrito public/counters.json · 8 medidas, 2 NO_DATA
+~~~~
+
+#### world · salida 0 (esperada 0)
+
+Comando: `python3 atlas/mundo.py`
+
+~~~~text
+atlas-mundo.json · medido_el=2026-10-15T21:41Z, maquina=Linux x86_64 · Python 3.14.4, pruebas_web=78, lenguas=9, techo_bloque_b=26214400, gzip_juego_b=92124, version_sw=preceptoros-2026-17-abht, arnes_sw=22/22
+~~~~
+
+#### counters-2 · salida 0 (esperada 0)
+
+Comando: `python3 contadores.py`
+
+~~~~text
+escrito public/counters.json · 8 medidas, 2 NO_DATA
+~~~~
+
+#### seal-final · salida 0 (esperada 0)
+
+Comando: `python3 bin/sellar.py --sellar --version preceptoros-2026-17-abht`
+
+~~~~text
+version   preceptoros-2026-17-abht  ->  preceptoros-2026-17-abht
+huella    e5888764d9a90c81  ->  (se recalcula al escribir)
+
+SELLADO · version=preceptoros-2026-17-abht huella=973598d4d6980fe2
+~~~~
+
+#### seal-dry · salida 0 (esperada 0)
+
+Comando: `python3 bin/sellar.py`
+
+~~~~text
+NADA QUE SELLAR · lo publicado no ha cambiado desde preceptoros-2026-17-abht
+~~~~
+
+#### phase-before-gates · salida 0 (esperada 0)
+
+Comando: `node atlas/phase_gate.mjs`
+
+~~~~text
+{"gate":"phase","public_text_files":163,"initial_files":26,"gzip_initial_b":92124}
+~~~~
+
+#### local-1-00 · salida 0 (esperada 0)
+
+Comando: `node atlas/phase_T3_cases.mjs`
+
+~~~~text
+{"piece":"T3","bytes":15978,"object_sha256":"cd6d33ee6780780189482bfa031aa36f00d0c2b2709e3112f08b203b7676ee9a","bytes_sha256":"5cc41650b10112ad39d2485242e9b6fb961c8586a692a278db5d782f742e7a81","reverted_object_sha256":"b81b02c25f594d885bd1a06ad8ac9df1c01bd4d4159b8f3d9b07fecb3c880939"}
+~~~~
+
+#### local-1-01 · salida 0 (esperada 0)
+
+Comando: `node atlas/phase_T3_cases.mjs --sabotages`
+
+~~~~text
+{"attack":"inc_h","red":true,"invariant":"T3_LABEL_INC_H"}
+{"attack":"army","red":true,"invariant":"T3_LABEL_ARMY"}
+{"attack":"third","red":true,"invariant":"T3_DELTA"}
+{"attack":"compact","red":true,"invariant":"T3_COMPACT"}
+{"attack":"size","red":true,"invariant":"T3_SIZE"}
+{"attack":"protected-0","red":true,"invariant":"T3_PROTECTED:public/game/valores.js"}
+{"attack":"protected-1","red":true,"invariant":"T3_PROTECTED:public/assets/atlas-motor.js"}
+{"attack":"protected-2","red":true,"invariant":"T3_PROTECTED:public/game/gacha.js"}
+{"attack":"protected-3","red":true,"invariant":"T3_PROTECTED:public/game/core.js"}
+{"attack":"protected-4","red":true,"invariant":"T3_PROTECTED:public/game/ui-invoca.js"}
+~~~~
+
+#### local-1-02 · salida 0 (esperada 0)
+
+Comando: `node atlas/chrome_launch_cases.mjs`
+
+~~~~text
+Chrome unavailable: exit 1, zero steps, NO_DATA with cause; rejection verified.
+~~~~
+
+#### local-1-03 · salida 0 (esperada 0)
+
+Comando: `node atlas/phase_M0_cases.mjs`
+
+~~~~text
+{"piece":"M0","bytes":15994,"object_sha256":"b81b02c25f594d885bd1a06ad8ac9df1c01bd4d4159b8f3d9b07fecb3c880939","equal":true}
+~~~~
+
+#### local-1-04 · salida 1 (esperada 1)
+
+Comando: `node --stack-trace-limit=0 atlas/phase_M0_cases.mjs --sabotage`
+
+~~~~text
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+[AssertionError [ERR_ASSERTION]: English object changed
++ actual - expected
+
++ '65b83e6502bd59655c8e1e9ee470f759764bee2249d3e637bb4963c41c7a7d7c'
+- 'b81b02c25f594d885bd1a06ad8ac9df1c01bd4d4159b8f3d9b07fecb3c880939'
+] {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: '65b83e6502bd59655c8e1e9ee470f759764bee2249d3e637bb4963c41c7a7d7c',
+  expected: 'b81b02c25f594d885bd1a06ad8ac9df1c01bd4d4159b8f3d9b07fecb3c880939',
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v22.22.1
+~~~~
+
+#### local-1-05 · salida 0 (esperada 0)
+
+Comando: `python3 test_web.py`
+
+~~~~text
+test_la_version_del_service_worker_sigue_a_lo_publicado (__main__.Cabezal.test_la_version_del_service_worker_sigue_a_lo_publicado)
+Desplegar no es publicar. Medido en produccion, no deducido. ... ok
+test_ninguna_pagina_ofrece_un_enlace_y_lo_desmiente (__main__.Cabezal.test_ninguna_pagina_ofrece_un_enlace_y_lo_desmiente)
+No se puede poner un boton y decir al lado que no funciona. ... ok
+test_todo_panel_publicado_dice_lo_que_falla (__main__.Cabezal.test_todo_panel_publicado_dice_lo_que_falla)
+Una ficha que solo cuenta virtudes es publicidad, no una medida. ... skipped 'no hay paneles publicados todavia'
+test_dice_que_se_envia_en_las_nueve_lenguas (__main__.ComentarEnTodasLasPaginas.test_dice_que_se_envia_en_las_nueve_lenguas) ... ok
+test_el_modulo_usa_la_puerta_que_ya_existe_y_no_abre_otra (__main__.ComentarEnTodasLasPaginas.test_el_modulo_usa_la_puerta_que_ya_existe_y_no_abre_otra) ... ok
+test_ningun_cero_decorativo (__main__.Contadores.test_ningun_cero_decorativo)
+Un 0 solo vale si `como` NOMBRA la lectura de la que salio. ... ok
+test_toda_metrica_esta_medida_o_declara_su_causa (__main__.Contadores.test_toda_metrica_esta_medida_o_declara_su_causa) ... ok
+test_cero_frameworks (__main__.Doctrina.test_cero_frameworks) ... ok
+test_cero_rutas_absolutas_ni_ips (__main__.Doctrina.test_cero_rutas_absolutas_ni_ips)
+Lo que protege: que una IP de la tailnet no acabe en la web publica. ... ok
+test_el_cristal_degrada_y_se_puede_apagar (__main__.Doctrina.test_el_cristal_degrada_y_se_puede_apagar)
+Canon v3.0 «Liquid Glass», firmado el 2026-08-29. ... ok
+test_el_head_entero_no_mezcla_los_dos_estilos (__main__.Doctrina.test_el_head_entero_no_mezcla_los_dos_estilos)
+El de arriba solo mira `assets/`. La regla es del `<head>` entero. ... ok
+test_la_guia_clona_donde_el_instalador_instala (__main__.Doctrina.test_la_guia_clona_donde_el_instalador_instala)
+La web decia `~/aurelius`; `install.sh` usa `~/preceptoros`. ... ok
+test_ninguna_hoja_esta_rota_por_dentro (__main__.Doctrina.test_ninguna_hoja_esta_rota_por_dentro)
+Una hoja que el navegador no sabe leer pasaba este gate en verde. ... ok
+test_una_pagina_no_mezcla_rutas_absolutas_y_relativas (__main__.Doctrina.test_una_pagina_no_mezcla_rutas_absolutas_y_relativas)
+Dos estilos de ruta en el mismo `<head>` es una averia latente. ... ok
+test_el_aviso_de_solo_ingles_va_primero_en_la_pestana_de_entrada (__main__.ElJuegoEnInglesEnLasNueve.test_el_aviso_de_solo_ingles_va_primero_en_la_pestana_de_entrada) ... ok
+test_las_lenguas_del_juego_son_solo_ingles (__main__.ElJuegoEnInglesEnLasNueve.test_las_lenguas_del_juego_son_solo_ingles) ... ok
+test_cada_fichero_bajo_el_tope (__main__.Estructura.test_cada_fichero_bajo_el_tope)
+El tope rige TAMBIEN los datos, y desde el 2026-08-31. ... ok
+test_cero_html_en_la_raiz (__main__.Estructura.test_cero_html_en_la_raiz) ... ok
+test_counters_no_se_queda_atras_de_este_mismo_gate (__main__.Estructura.test_counters_no_se_queda_atras_de_este_mismo_gate)
+La puerta trasera que dejo pasar 19 cuando el gate ya media 25. ... ok
+test_counters_tiene_dos_duenos_y_ninguno_pisa_al_otro (__main__.Estructura.test_counters_tiene_dos_duenos_y_ninguno_pisa_al_otro)
+Dos guiones escriben este fichero. Ninguno puede borrar al otro. ... ok
+test_la_capa_soberana_va_la_ultima_y_no_pide_nada_fuera (__main__.Estructura.test_la_capa_soberana_va_la_ultima_y_no_pide_nada_fuera)
+Soberania Violeta-Cobre, 2026-09-25. Una capa ENCIMA del tema. ... ok
+test_la_prosa_del_pie_va_PLEGADA (__main__.Estructura.test_la_prosa_del_pie_va_PLEGADA)
+Una pagina limpia: el que entra evalua, el que quiere leer abre. ... ok
+test_la_tarjeta_social_apunta_a_algo_que_existe (__main__.Estructura.test_la_tarjeta_social_apunta_a_algo_que_existe)
+og:image, og:url y el favicon, comprobados contra el disco. ... ok
+test_las_portadas_declaran_hreflang (__main__.Estructura.test_las_portadas_declaran_hreflang)
+Tres traducciones sin hreflang son tres paginas sueltas para un ... ok
+test_maximo_ocho_paginas (__main__.Estructura.test_maximo_ocho_paginas) ... ok
+test_ningun_fichero_gasta_medio_viaje_de_red (__main__.Estructura.test_ningun_fichero_gasta_medio_viaje_de_red)
+El tope de disco es un PROXY; esto mide la cosa de verdad. ... ok
+test_r_widget_y_r_tipografia (__main__.Estructura.test_r_widget_y_r_tipografia)
+El anexo visual, comprobado y no confiado. ... ok
+test_toda_pagina_ofrece_LAS_LENGUAS_QUE_EXISTEN (__main__.Estructura.test_toda_pagina_ofrece_LAS_LENGUAS_QUE_EXISTEN)
+La rueda de idiomas sale de aqui, y por eso ofrecia tres de ocho. ... ok
+test_wrangler_apunta_a_public (__main__.Estructura.test_wrangler_apunta_a_public) ... ok
+test_glifo_es_accesible_local_y_acotado (__main__.GlifoSemantico.test_glifo_es_accesible_local_y_acotado) ... ok
+test_palette_vectorial_contrasta_con_el_panel (__main__.GlifoSemantico.test_palette_vectorial_contrasta_con_el_panel) ... ok
+test_la_api_no_se_pide_al_cargar (__main__.Identidad.test_la_api_no_se_pide_al_cargar)
+El tunel esta admitido como enlace, no como subrecurso. ... ok
+test_la_firma_va_entera (__main__.Identidad.test_la_firma_va_entera)
+`firmar()` devolvia `ed25519:` + 16 caracteres + puntos suspensivos. ... ok
+test_ningun_asset_precacheado_esta_muerto (__main__.Imagenes.test_ningun_asset_precacheado_esta_muerto)
+Todo lo que `sw.js` mete en la cache lo pinta alguien. ... ok
+test_no_vuelven_los_raster_retirados (__main__.Imagenes.test_no_vuelven_los_raster_retirados)
+Firma F2 del Soberano, 2026-10-10: identidad pura, cero imagenes. ... ok
+test_la_identidad_no_cambia_ni_un_byte (__main__.LasTraduccionesSeSacanYSeMeten.test_la_identidad_no_cambia_ni_un_byte) ... ok
+test_ninguna_familia_lleva_un_rotulo_vacio (__main__.LasTraduccionesSeSacanYSeMeten.test_ninguna_familia_lleva_un_rotulo_vacio)
+El pie de Instalar salio como un triangulo SIN rotulo en ocho de nueve ... ok
+test_cada_familia_dice_exactamente_sus_claves_firmadas (__main__.LasTresFamilias.test_cada_familia_dice_exactamente_sus_claves_firmadas) ... ok
+test_cada_lengua_dice_de_donde_salio (__main__.LasTresFamilias.test_cada_lengua_dice_de_donde_salio)
+Quien lea esto tiene que poder separar la salida CRUDA del modelo de ... ok
+test_el_ruso_y_el_griego_estan_en_su_alfabeto (__main__.LasTresFamilias.test_el_ruso_y_el_griego_estan_en_su_alfabeto)
+El fallo que ya esta medido en el canon: un modelo pequeno se pasa ... ok
+test_ninguna_traduccion_llega_vacia (__main__.LasTresFamilias.test_ninguna_traduccion_llega_vacia)
+Una cadena vacia pasa la paridad de claves y sale en blanco. ... ok
+test_cada_familia_por_lengua_esta_completa_o_su_hueco_declarado (__main__.LoQueNoSeVeConElGateVerde.test_cada_familia_por_lengua_esta_completa_o_su_hueco_declarado) ... ok
+test_cada_pagina_que_captura_tiene_su_puerta_de_salida_y_su_sello (__main__.LoQueNoSeVeConElGateVerde.test_cada_pagina_que_captura_tiene_su_puerta_de_salida_y_su_sello)
+Pedido por el Soberano el 2026-09-24: que cada sitio desde el que un ... ok
+test_lo_que_depende_de_bronce_se_carga_despues (__main__.LoQueNoSeVeConElGateVerde.test_lo_que_depende_de_bronce_se_carga_despues) ... ok
+test_el_manifiesto_dice_lo_que_la_pagina_pinta (__main__.PWA.test_el_manifiesto_dice_lo_que_la_pagina_pinta) ... ok
+test_el_maskable_cabe_de_verdad_en_su_circulo (__main__.PWA.test_el_maskable_cabe_de_verdad_en_su_circulo)
+No que lo diga el manifiesto: que lo diga el fichero. ... ok
+test_el_service_worker_esta_enchufado (__main__.PWA.test_el_service_worker_esta_enchufado)
+Un worker que nadie registra es un fichero, no un PWA. ... ok
+test_el_worker_no_guarda_lo_ajeno_ni_los_datos (__main__.PWA.test_el_worker_no_guarda_lo_ajeno_ni_los_datos)
+Las dos reglas que el worker anterior rompia. ... ok
+test_el_worker_pasa_su_arnes (__main__.PWA.test_el_worker_pasa_su_arnes)
+Las reglas de enrutado, ejecutadas de verdad. ... ok
+test_iconos_y_tarjeta_salen_del_emblema (__main__.PWA.test_iconos_y_tarjeta_salen_del_emblema)
+Firma F2-8 del Soberano, 2026-10-10: favicon, iconos PWA y og:image siguen ... ok
+test_los_iconos_no_engordan_sin_permiso (__main__.PWA.test_los_iconos_no_engordan_sin_permiso)
+Los iconos pasaron de 12 KB a 180 KB al cambiar de arte. ... ok
+test_manifest_es_minimo (__main__.PWA.test_manifest_es_minimo)
+Lo que hace falta para instalar, y nada de adorno. ... ok
+test_sin_conexion_hay_algo_que_leer (__main__.PWA.test_sin_conexion_hay_algo_que_leer)
+Y en los tres idiomas: quien instala desde /fr/ no merece un ... ok
+test_sw_cachea_los_nuevos_assets (__main__.PWA.test_sw_cachea_los_nuevos_assets)
+El worker tiene que conocer TODO lo que la portada necesita. ... ok
+test_un_icono_maskable_no_puede_ser_el_mismo_que_el_normal (__main__.PWA.test_un_icono_maskable_no_puede_ser_el_mismo_que_el_normal)
+Medido el 2026-08-30 sobre icon-512.png y por eso existe. ... ok
+test_un_solo_manifiesto (__main__.PWA.test_un_solo_manifiesto)
+Habia `manifest.json` y `manifest.webmanifest` identicos byte a ... ok
+test_los_enlaces_internos_existen (__main__.Paginas.test_los_enlaces_internos_existen)
+Ningun enlace relativo apunta a una pagina que no esta. ... ok
+test_selector_de_idioma_por_path (__main__.Paginas.test_selector_de_idioma_por_path) ... ok
+test_todas_las_paginas_tienen_pie_honesto (__main__.Paginas.test_todas_las_paginas_tienen_pie_honesto) ... ok
+test_el_juego_se_monta_en_el_panel_no_encima (__main__.Portada.test_el_juego_se_monta_en_el_panel_no_encima) ... ok
+test_la_pagina_se_reordena_no_carga (__main__.Portada.test_la_pagina_se_reordena_no_carga)
+J10: cambiar de pestana va en startViewTransition, con el cambio de siempre como reserva y SIN ... ok
+test_las_diez_son_la_plantilla (__main__.Portada.test_las_diez_son_la_plantilla) ... ok
+test_menu_y_hoja_nunca_quedan_abiertos_a_la_vez (__main__.Portada.test_menu_y_hoja_nunca_quedan_abiertos_a_la_vez) ... ok
+test_solo_carga_lo_que_el_juego_necesita (__main__.Portada.test_solo_carga_lo_que_el_juego_necesita)
+Medido (propuestas/mudanza-20261011/pide.js): Identity, el canal, la PWA y el juego. ... ok
+test_un_solo_panel_y_nada_del_hub (__main__.Portada.test_un_solo_panel_y_nada_del_hub) ... ok
+test_va_donde_va_la_otra_puerta (__main__.Reescrituras.test_va_donde_va_la_otra_puerta)
+Las dos puertas se cargan juntas o la nueva no existe. ... ok
+test_el_sitemap_no_anuncia_paginas_que_no_estan (__main__.Sitemap.test_el_sitemap_no_anuncia_paginas_que_no_estan)
+Un sitemap rancio manda al buscador a un 404 que no ve ningun humano. ... ok
+test_robots_apunta_al_sitemap (__main__.Sitemap.test_robots_apunta_al_sitemap) ... ok
+test_toda_pagina_de_contenido_esta_en_el_sitemap (__main__.Sitemap.test_toda_pagina_de_contenido_esta_en_el_sitemap)
+La averia simetrica: la pagina existe y el buscador no la ve. ... ok
+test_NINGUNA_pagina_cae_al_respaldo_en_castellano (__main__.Traducciones.test_NINGUNA_pagina_cae_al_respaldo_en_castellano)
+La regla entera, y contra TODOS los guiones que carga cada pagina. ... ok
+test_NINGUNA_pagina_repite_LA_PROSA_DE_OTRA_LENGUA (__main__.Traducciones.test_NINGUNA_pagina_repite_LA_PROSA_DE_OTRA_LENGUA)
+El hueco que ni el respaldo ni las claves ausentes podian ver. ... ok
+test_NINGUN_guion_lleva_CASTELLANO_suelto (__main__.Traducciones.test_NINGUN_guion_lleva_CASTELLANO_suelto)
+El hueco por donde se colo el Showman, y que el otro guardian no ve. ... ok
+test_cada_pagina_declara_SU_lengua_en_el_bloque (__main__.Traducciones.test_cada_pagina_declara_SU_lengua_en_el_bloque)
+`lang` dentro del bloque no es decorativo: se lo lleva el modelo. ... ok
+test_los_rotulos_del_ENVIO_viven_en_las_ocho (__main__.Traducciones.test_los_rotulos_del_ENVIO_viven_en_las_ocho)
+`enviar.js` esta perdonado arriba, asi que aqui se paga el perdon. ... ok
+test_la_propuesta_no_lista_ficheros_que_ya_no_existen (__main__.WebLimpia.test_la_propuesta_no_lista_ficheros_que_ya_no_existen) ... ok
+test_ningun_duplicado_exacto_nuevo (__main__.WebLimpia.test_ningun_duplicado_exacto_nuevo) ... ok
+test_ningun_enlace_interno_roto (__main__.WebLimpia.test_ningun_enlace_interno_roto) ... ok
+test_ningun_huerfano_nuevo (__main__.WebLimpia.test_ningun_huerfano_nuevo) ... ok
+
+----------------------------------------------------------------------
+Ran 78 tests in 1.717s
+
+OK (skipped=1)
+~~~~
+
+#### local-1-06 · salida 0 (esperada 0)
+
+Comando: `python3 atlas/test_atlas.py`
+
+~~~~text
+.................................................................................................................................................................................
+----------------------------------------------------------------------
+Ran 177 tests in 26.350s
+
+OK
+  borrador ar: 184/275 claves
+  borrador de: 184/275 claves
+  borrador el: 184/275 claves
+  borrador es: 184/275 claves
+  borrador fr: 184/275 claves
+  borrador it: 184/275 claves
+  borrador pt: 184/275 claves
+  borrador ru: 184/275 claves
+~~~~
+
+#### local-1-07 · salida 0 (esperada 0)
+
+Comando: `node arnes_sw.mjs`
+
+~~~~text
+  ok  precachea las portadas, su superficie y el juego  (143 rutas)
+  ok  el shell trae el juego (D7): la puerta, el cangrejo y la arena
+  ok  el shell trae la portada de cada lengua
+  ok  el shell trae la identidad y el canal
+  ok  el shell YA NO trae nada del hub
+  ok  el shell NO trae ninguna de las dos familias de iconos de companero
+  ok  otro origen pasa de largo
+  ok  la API del Agora pasa de largo
+  ok  counters.json no se cachea (es una medida)
+  ok  atlas-en.json SI se sirve del cache (es contenido del juego)
+  ok  el manifiesto va a red primero  (cuerpo red:https://preceptoros.org/manifest.webmanifest)
+  ok  navegacion sale del shell aun sin red  (status 200)
+  ok  sin red sintetiza pagina  (status 503)
+  ok  la respeta el idioma de la ruta
+  ok  la pagina sin red mete el texto en un panel
+  ok  declara --panel-bg y --panel-fg
+  ok  un POST pasa de largo
+  ok  install no deja al worker nuevo esperando a que cierren las pestanas  (1 llamadas a skipWaiting)
+  ok  activate borra el cache de la version anterior
+  ok  el precache no guarda respuestas redirigidas  (0 de 143 marcadas)
+  ok  la navegacion no devuelve una respuesta redirigida  (redirected=false)
+  ok  el refresco por detras tampoco guarda la marca
+
+22/22 en verde
+~~~~
+
+#### local-1-08 · salida 0 (esperada 0)
+
+Comando: `node atlas/sin_undefined.mjs`
+
+~~~~text
+{
+  "fallos": [],
+  "pasos": 24
+}
+~~~~
+
+#### local-1-09 · salida 0 (esperada 0)
+
+Comando: `node atlas/vector_casos.mjs`
+
+~~~~text
+[
+ {
+  "caso": "cabe en el TOPE (1 KB) con un estado completo",
+  "ok": true,
+  "detalle": ""
+ },
+ {
+  "caso": "lee lo que hay: ciclo, recursos, cangrejo (desplazamiento redondeado), panel, tutorial, edificios, lugares, nodos",
+  "ok": true,
+  "detalle": ""
+ },
+ {
+  "caso": "vacio: cada hueco va a nd CON SU CAUSA (nunca un cero inventado, nunca undefined)",
+  "ok": true,
+  "detalle": ""
+ },
+ {
+  "caso": "el esquema explica cada clave del vector (lo que lee un LLM pequeno)",
+  "ok": true,
+  "detalle": ""
+ },
+ {
+  "caso": "solo LEE: armar dos veces el mismo estado da el mismo vector (determinista, sin reloj)",
+  "ok": true,
+  "detalle": ""
+ },
+ {
+  "caso": "acota por bytes UTF-8 reales y vuelve a medir tras el recorte (unicode)",
+  "ok": true,
+  "detalle": ""
+ },
+ {
+  "caso": "si el recorte normal no basta, fail-closed conserva contrato y causa",
+  "ok": true,
+  "detalle": ""
+ },
+ {
+  "caso": "el contrato cerrado admite el vector medido y rechaza claves o ausencias sin causa",
+  "ok": true,
+  "detalle": ""
+ }
+]
+~~~~
+
+#### local-1-10 · salida 0 (esperada 0)
+
+Comando: `node atlas/phase_gate.mjs`
+
+~~~~text
+{"gate":"phase","public_text_files":163,"initial_files":26,"gzip_initial_b":92124}
+~~~~
+
+#### local-1-11 · salida 0 (esperada 0)
+
+Comando: `node --test tests/map_zoom.test.mjs tests/onda_profunda.test.mjs tests/tarjeta_cantada.test.mjs`
+
+~~~~text
+TAP version 13
+# Subtest: contrato del repo: MIN 0.6, MAX 3, y data-zoom anotado
+ok 1 - contrato del repo: MIN 0.6, MAX 3, y data-zoom anotado
+  ---
+  duration_ms: 1.079801
+  type: 'test'
+  ...
+# Subtest: clamp del protocolo: fuera de rango queda en 0.6 / 3.0
+ok 2 - clamp del protocolo: fuera de rango queda en 0.6 / 3.0
+  ---
+  duration_ms: 0.312609
+  type: 'test'
+  ...
+# Subtest: monotonía: separar sube, juntar baja (zm0·d/d0)
+ok 3 - monotonía: separar sube, juntar baja (zm0·d/d0)
+  ---
+  duration_ms: 0.128509
+  type: 'test'
+  ...
+# Subtest: rueda: exp(-deltaY·0.0015), clamp final
+ok 4 - rueda: exp(-deltaY·0.0015), clamp final
+  ---
+  duration_ms: 0.113981
+  type: 'test'
+  ...
+# Subtest: la fuente lleva el clamp real (Math.max/Math.min): sin el, la suite cae
+ok 5 - la fuente lleva el clamp real (Math.max/Math.min): sin el, la suite cae
+  ---
+  duration_ms: 0.116205
+  type: 'test'
+  ...
+# Subtest: la ley del suelo manda: usa proyecta/ancla/profundidad de IsometricFloor, sin geometría propia
+ok 6 - la ley del suelo manda: usa proyecta/ancla/profundidad de IsometricFloor, sin geometría propia
+  ---
+  duration_ms: 1.35438
+  type: 'test'
+  ...
+# Subtest: pieza <16 KiB, vanilla, cero red
+ok 7 - pieza <16 KiB, vanilla, cero red
+  ---
+  duration_ms: 0.419728
+  type: 'test'
+  ...
+# Subtest: planifica: ancla y profundidad según la ley (huella incluida)
+ok 8 - planifica: ancla y profundidad según la ley (huella incluida)
+  ---
+  duration_ms: 0.315235
+  type: 'test'
+  ...
+# Subtest: escala viva: función pura del eje, clamp [0.75, 1.35], determinista
+ok 9 - escala viva: función pura del eje, clamp [0.75, 1.35], determinista
+  ---
+  duration_ms: 0.191655
+  type: 'test'
+  ...
+# Subtest: PUERTA DE LA (b) — orden del pintor: delante (mayor col+fila) pinta DESPUÉS y tapa
+ok 10 - PUERTA DE LA (b) — orden del pintor: delante (mayor col+fila) pinta DESPUÉS y tapa
+  ---
+  duration_ms: 0.28035
+  type: 'test'
+  ...
+# Subtest: SABOTAJE (la suite cae si encola ignora la ley): profundidad propia != profundidad de la ley
+ok 11 - SABOTAJE (la suite cae si encola ignora la ley): profundidad propia != profundidad de la ley
+  ---
+  duration_ms: 0.240636
+  type: 'test'
+  ...
+# Subtest: W3: Web Audio pura — cero archivos de audio, cero red, pieza <16 KiB
+ok 12 - W3: Web Audio pura — cero archivos de audio, cero red, pieza <16 KiB
+  ---
+  duration_ms: 1.784788
+  type: 'test'
+  ...
+# Subtest: tabla semántica MEDIDA usada, no reinventada: los números viven en AtlasToon.SELLOS
+ok 13 - tabla semántica MEDIDA usada, no reinventada: los números viven en AtlasToon.SELLOS
+  ---
+  duration_ms: 0.468578
+  type: 'test'
+  ...
+# Subtest: W1: FNV-1a determinista → base 220–660 Hz; mismo id = misma frecuencia
+ok 14 - W1: FNV-1a determinista → base 220–660 Hz; mismo id = misma frecuencia
+  ---
+  duration_ms: 0.245054
+  type: 'test'
+  ...
+# Subtest: VOZ=FORMA (M14): f_base = 220 + (hue/360)·660, medido contra la fórmula
+ok 15 - VOZ=FORMA (M14): f_base = 220 + (hue/360)·660, medido contra la fórmula
+  ---
+  duration_ms: 0.218375
+  type: 'test'
+  ...
+# Subtest: melodía determinista: mismo término y sello = mismas notas; sello desconocido = NO_DATA con causa
+ok 16 - melodía determinista: mismo término y sello = mismas notas; sello desconocido = NO_DATA con causa
+  ---
+  duration_ms: 2.810819
+  type: 'test'
+  ...
+# Subtest: SIN GESTO NO SUENA (reduced-motion: corte limpio): canta sin melodía/no medida = NO_DATA, nunca sonido
+ok 17 - SIN GESTO NO SUENA (reduced-motion: corte limpio): canta sin melodía/no medida = NO_DATA, nunca sonido
+  ---
+  duration_ms: 0.594542
+  type: 'test'
+  ...
+# Subtest: SABOTAJE: si la tabla semántica se corrompe (LIVE≠120), la melodía deriva y debe romper el gate
+ok 18 - SABOTAJE: si la tabla semántica se corrompe (LIVE≠120), la melodía deriva y debe romper el gate
+  ---
+  duration_ms: 0.346292
+  type: 'test'
+  ...
+1..18
+# tests 18
+# suites 0
+# pass 18
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 142.057355
+~~~~
+
+#### local-1-12 · salida 0 (esperada 0)
+
+Comando: `git diff --check`
+
+~~~~text
+~~~~
+
+#### local-2-00 · salida 0 (esperada 0)
+
+Comando: `node atlas/phase_T3_cases.mjs`
+
+~~~~text
+{"piece":"T3","bytes":15978,"object_sha256":"cd6d33ee6780780189482bfa031aa36f00d0c2b2709e3112f08b203b7676ee9a","bytes_sha256":"5cc41650b10112ad39d2485242e9b6fb961c8586a692a278db5d782f742e7a81","reverted_object_sha256":"b81b02c25f594d885bd1a06ad8ac9df1c01bd4d4159b8f3d9b07fecb3c880939"}
+~~~~
+
+#### local-2-01 · salida 0 (esperada 0)
+
+Comando: `node atlas/phase_T3_cases.mjs --sabotages`
+
+~~~~text
+{"attack":"inc_h","red":true,"invariant":"T3_LABEL_INC_H"}
+{"attack":"army","red":true,"invariant":"T3_LABEL_ARMY"}
+{"attack":"third","red":true,"invariant":"T3_DELTA"}
+{"attack":"compact","red":true,"invariant":"T3_COMPACT"}
+{"attack":"size","red":true,"invariant":"T3_SIZE"}
+{"attack":"protected-0","red":true,"invariant":"T3_PROTECTED:public/game/valores.js"}
+{"attack":"protected-1","red":true,"invariant":"T3_PROTECTED:public/assets/atlas-motor.js"}
+{"attack":"protected-2","red":true,"invariant":"T3_PROTECTED:public/game/gacha.js"}
+{"attack":"protected-3","red":true,"invariant":"T3_PROTECTED:public/game/core.js"}
+{"attack":"protected-4","red":true,"invariant":"T3_PROTECTED:public/game/ui-invoca.js"}
+~~~~
+
+#### local-2-02 · salida 0 (esperada 0)
+
+Comando: `node atlas/chrome_launch_cases.mjs`
+
+~~~~text
+Chrome unavailable: exit 1, zero steps, NO_DATA with cause; rejection verified.
+~~~~
+
+#### local-2-03 · salida 0 (esperada 0)
+
+Comando: `node atlas/phase_M0_cases.mjs`
+
+~~~~text
+{"piece":"M0","bytes":15994,"object_sha256":"b81b02c25f594d885bd1a06ad8ac9df1c01bd4d4159b8f3d9b07fecb3c880939","equal":true}
+~~~~
+
+#### local-2-04 · salida 1 (esperada 1)
+
+Comando: `node --stack-trace-limit=0 atlas/phase_M0_cases.mjs --sabotage`
+
+~~~~text
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+[AssertionError [ERR_ASSERTION]: English object changed
++ actual - expected
+
++ '65b83e6502bd59655c8e1e9ee470f759764bee2249d3e637bb4963c41c7a7d7c'
+- 'b81b02c25f594d885bd1a06ad8ac9df1c01bd4d4159b8f3d9b07fecb3c880939'
+] {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: '65b83e6502bd59655c8e1e9ee470f759764bee2249d3e637bb4963c41c7a7d7c',
+  expected: 'b81b02c25f594d885bd1a06ad8ac9df1c01bd4d4159b8f3d9b07fecb3c880939',
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v22.22.1
+~~~~
+
+#### local-2-05 · salida 0 (esperada 0)
+
+Comando: `python3 test_web.py`
+
+~~~~text
+test_la_version_del_service_worker_sigue_a_lo_publicado (__main__.Cabezal.test_la_version_del_service_worker_sigue_a_lo_publicado)
+Desplegar no es publicar. Medido en produccion, no deducido. ... ok
+test_ninguna_pagina_ofrece_un_enlace_y_lo_desmiente (__main__.Cabezal.test_ninguna_pagina_ofrece_un_enlace_y_lo_desmiente)
+No se puede poner un boton y decir al lado que no funciona. ... ok
+test_todo_panel_publicado_dice_lo_que_falla (__main__.Cabezal.test_todo_panel_publicado_dice_lo_que_falla)
+Una ficha que solo cuenta virtudes es publicidad, no una medida. ... skipped 'no hay paneles publicados todavia'
+test_dice_que_se_envia_en_las_nueve_lenguas (__main__.ComentarEnTodasLasPaginas.test_dice_que_se_envia_en_las_nueve_lenguas) ... ok
+test_el_modulo_usa_la_puerta_que_ya_existe_y_no_abre_otra (__main__.ComentarEnTodasLasPaginas.test_el_modulo_usa_la_puerta_que_ya_existe_y_no_abre_otra) ... ok
+test_ningun_cero_decorativo (__main__.Contadores.test_ningun_cero_decorativo)
+Un 0 solo vale si `como` NOMBRA la lectura de la que salio. ... ok
+test_toda_metrica_esta_medida_o_declara_su_causa (__main__.Contadores.test_toda_metrica_esta_medida_o_declara_su_causa) ... ok
+test_cero_frameworks (__main__.Doctrina.test_cero_frameworks) ... ok
+test_cero_rutas_absolutas_ni_ips (__main__.Doctrina.test_cero_rutas_absolutas_ni_ips)
+Lo que protege: que una IP de la tailnet no acabe en la web publica. ... ok
+test_el_cristal_degrada_y_se_puede_apagar (__main__.Doctrina.test_el_cristal_degrada_y_se_puede_apagar)
+Canon v3.0 «Liquid Glass», firmado el 2026-08-29. ... ok
+test_el_head_entero_no_mezcla_los_dos_estilos (__main__.Doctrina.test_el_head_entero_no_mezcla_los_dos_estilos)
+El de arriba solo mira `assets/`. La regla es del `<head>` entero. ... ok
+test_la_guia_clona_donde_el_instalador_instala (__main__.Doctrina.test_la_guia_clona_donde_el_instalador_instala)
+La web decia `~/aurelius`; `install.sh` usa `~/preceptoros`. ... ok
+test_ninguna_hoja_esta_rota_por_dentro (__main__.Doctrina.test_ninguna_hoja_esta_rota_por_dentro)
+Una hoja que el navegador no sabe leer pasaba este gate en verde. ... ok
+test_una_pagina_no_mezcla_rutas_absolutas_y_relativas (__main__.Doctrina.test_una_pagina_no_mezcla_rutas_absolutas_y_relativas)
+Dos estilos de ruta en el mismo `<head>` es una averia latente. ... ok
+test_el_aviso_de_solo_ingles_va_primero_en_la_pestana_de_entrada (__main__.ElJuegoEnInglesEnLasNueve.test_el_aviso_de_solo_ingles_va_primero_en_la_pestana_de_entrada) ... ok
+test_las_lenguas_del_juego_son_solo_ingles (__main__.ElJuegoEnInglesEnLasNueve.test_las_lenguas_del_juego_son_solo_ingles) ... ok
+test_cada_fichero_bajo_el_tope (__main__.Estructura.test_cada_fichero_bajo_el_tope)
+El tope rige TAMBIEN los datos, y desde el 2026-08-31. ... ok
+test_cero_html_en_la_raiz (__main__.Estructura.test_cero_html_en_la_raiz) ... ok
+test_counters_no_se_queda_atras_de_este_mismo_gate (__main__.Estructura.test_counters_no_se_queda_atras_de_este_mismo_gate)
+La puerta trasera que dejo pasar 19 cuando el gate ya media 25. ... ok
+test_counters_tiene_dos_duenos_y_ninguno_pisa_al_otro (__main__.Estructura.test_counters_tiene_dos_duenos_y_ninguno_pisa_al_otro)
+Dos guiones escriben este fichero. Ninguno puede borrar al otro. ... ok
+test_la_capa_soberana_va_la_ultima_y_no_pide_nada_fuera (__main__.Estructura.test_la_capa_soberana_va_la_ultima_y_no_pide_nada_fuera)
+Soberania Violeta-Cobre, 2026-09-25. Una capa ENCIMA del tema. ... ok
+test_la_prosa_del_pie_va_PLEGADA (__main__.Estructura.test_la_prosa_del_pie_va_PLEGADA)
+Una pagina limpia: el que entra evalua, el que quiere leer abre. ... ok
+test_la_tarjeta_social_apunta_a_algo_que_existe (__main__.Estructura.test_la_tarjeta_social_apunta_a_algo_que_existe)
+og:image, og:url y el favicon, comprobados contra el disco. ... ok
+test_las_portadas_declaran_hreflang (__main__.Estructura.test_las_portadas_declaran_hreflang)
+Tres traducciones sin hreflang son tres paginas sueltas para un ... ok
+test_maximo_ocho_paginas (__main__.Estructura.test_maximo_ocho_paginas) ... ok
+test_ningun_fichero_gasta_medio_viaje_de_red (__main__.Estructura.test_ningun_fichero_gasta_medio_viaje_de_red)
+El tope de disco es un PROXY; esto mide la cosa de verdad. ... ok
+test_r_widget_y_r_tipografia (__main__.Estructura.test_r_widget_y_r_tipografia)
+El anexo visual, comprobado y no confiado. ... ok
+test_toda_pagina_ofrece_LAS_LENGUAS_QUE_EXISTEN (__main__.Estructura.test_toda_pagina_ofrece_LAS_LENGUAS_QUE_EXISTEN)
+La rueda de idiomas sale de aqui, y por eso ofrecia tres de ocho. ... ok
+test_wrangler_apunta_a_public (__main__.Estructura.test_wrangler_apunta_a_public) ... ok
+test_glifo_es_accesible_local_y_acotado (__main__.GlifoSemantico.test_glifo_es_accesible_local_y_acotado) ... ok
+test_palette_vectorial_contrasta_con_el_panel (__main__.GlifoSemantico.test_palette_vectorial_contrasta_con_el_panel) ... ok
+test_la_api_no_se_pide_al_cargar (__main__.Identidad.test_la_api_no_se_pide_al_cargar)
+El tunel esta admitido como enlace, no como subrecurso. ... ok
+test_la_firma_va_entera (__main__.Identidad.test_la_firma_va_entera)
+`firmar()` devolvia `ed25519:` + 16 caracteres + puntos suspensivos. ... ok
+test_ningun_asset_precacheado_esta_muerto (__main__.Imagenes.test_ningun_asset_precacheado_esta_muerto)
+Todo lo que `sw.js` mete en la cache lo pinta alguien. ... ok
+test_no_vuelven_los_raster_retirados (__main__.Imagenes.test_no_vuelven_los_raster_retirados)
+Firma F2 del Soberano, 2026-10-10: identidad pura, cero imagenes. ... ok
+test_la_identidad_no_cambia_ni_un_byte (__main__.LasTraduccionesSeSacanYSeMeten.test_la_identidad_no_cambia_ni_un_byte) ... ok
+test_ninguna_familia_lleva_un_rotulo_vacio (__main__.LasTraduccionesSeSacanYSeMeten.test_ninguna_familia_lleva_un_rotulo_vacio)
+El pie de Instalar salio como un triangulo SIN rotulo en ocho de nueve ... ok
+test_cada_familia_dice_exactamente_sus_claves_firmadas (__main__.LasTresFamilias.test_cada_familia_dice_exactamente_sus_claves_firmadas) ... ok
+test_cada_lengua_dice_de_donde_salio (__main__.LasTresFamilias.test_cada_lengua_dice_de_donde_salio)
+Quien lea esto tiene que poder separar la salida CRUDA del modelo de ... ok
+test_el_ruso_y_el_griego_estan_en_su_alfabeto (__main__.LasTresFamilias.test_el_ruso_y_el_griego_estan_en_su_alfabeto)
+El fallo que ya esta medido en el canon: un modelo pequeno se pasa ... ok
+test_ninguna_traduccion_llega_vacia (__main__.LasTresFamilias.test_ninguna_traduccion_llega_vacia)
+Una cadena vacia pasa la paridad de claves y sale en blanco. ... ok
+test_cada_familia_por_lengua_esta_completa_o_su_hueco_declarado (__main__.LoQueNoSeVeConElGateVerde.test_cada_familia_por_lengua_esta_completa_o_su_hueco_declarado) ... ok
+test_cada_pagina_que_captura_tiene_su_puerta_de_salida_y_su_sello (__main__.LoQueNoSeVeConElGateVerde.test_cada_pagina_que_captura_tiene_su_puerta_de_salida_y_su_sello)
+Pedido por el Soberano el 2026-09-24: que cada sitio desde el que un ... ok
+test_lo_que_depende_de_bronce_se_carga_despues (__main__.LoQueNoSeVeConElGateVerde.test_lo_que_depende_de_bronce_se_carga_despues) ... ok
+test_el_manifiesto_dice_lo_que_la_pagina_pinta (__main__.PWA.test_el_manifiesto_dice_lo_que_la_pagina_pinta) ... ok
+test_el_maskable_cabe_de_verdad_en_su_circulo (__main__.PWA.test_el_maskable_cabe_de_verdad_en_su_circulo)
+No que lo diga el manifiesto: que lo diga el fichero. ... ok
+test_el_service_worker_esta_enchufado (__main__.PWA.test_el_service_worker_esta_enchufado)
+Un worker que nadie registra es un fichero, no un PWA. ... ok
+test_el_worker_no_guarda_lo_ajeno_ni_los_datos (__main__.PWA.test_el_worker_no_guarda_lo_ajeno_ni_los_datos)
+Las dos reglas que el worker anterior rompia. ... ok
+test_el_worker_pasa_su_arnes (__main__.PWA.test_el_worker_pasa_su_arnes)
+Las reglas de enrutado, ejecutadas de verdad. ... ok
+test_iconos_y_tarjeta_salen_del_emblema (__main__.PWA.test_iconos_y_tarjeta_salen_del_emblema)
+Firma F2-8 del Soberano, 2026-10-10: favicon, iconos PWA y og:image siguen ... ok
+test_los_iconos_no_engordan_sin_permiso (__main__.PWA.test_los_iconos_no_engordan_sin_permiso)
+Los iconos pasaron de 12 KB a 180 KB al cambiar de arte. ... ok
+test_manifest_es_minimo (__main__.PWA.test_manifest_es_minimo)
+Lo que hace falta para instalar, y nada de adorno. ... ok
+test_sin_conexion_hay_algo_que_leer (__main__.PWA.test_sin_conexion_hay_algo_que_leer)
+Y en los tres idiomas: quien instala desde /fr/ no merece un ... ok
+test_sw_cachea_los_nuevos_assets (__main__.PWA.test_sw_cachea_los_nuevos_assets)
+El worker tiene que conocer TODO lo que la portada necesita. ... ok
+test_un_icono_maskable_no_puede_ser_el_mismo_que_el_normal (__main__.PWA.test_un_icono_maskable_no_puede_ser_el_mismo_que_el_normal)
+Medido el 2026-08-30 sobre icon-512.png y por eso existe. ... ok
+test_un_solo_manifiesto (__main__.PWA.test_un_solo_manifiesto)
+Habia `manifest.json` y `manifest.webmanifest` identicos byte a ... ok
+test_los_enlaces_internos_existen (__main__.Paginas.test_los_enlaces_internos_existen)
+Ningun enlace relativo apunta a una pagina que no esta. ... ok
+test_selector_de_idioma_por_path (__main__.Paginas.test_selector_de_idioma_por_path) ... ok
+test_todas_las_paginas_tienen_pie_honesto (__main__.Paginas.test_todas_las_paginas_tienen_pie_honesto) ... ok
+test_el_juego_se_monta_en_el_panel_no_encima (__main__.Portada.test_el_juego_se_monta_en_el_panel_no_encima) ... ok
+test_la_pagina_se_reordena_no_carga (__main__.Portada.test_la_pagina_se_reordena_no_carga)
+J10: cambiar de pestana va en startViewTransition, con el cambio de siempre como reserva y SIN ... ok
+test_las_diez_son_la_plantilla (__main__.Portada.test_las_diez_son_la_plantilla) ... ok
+test_menu_y_hoja_nunca_quedan_abiertos_a_la_vez (__main__.Portada.test_menu_y_hoja_nunca_quedan_abiertos_a_la_vez) ... ok
+test_solo_carga_lo_que_el_juego_necesita (__main__.Portada.test_solo_carga_lo_que_el_juego_necesita)
+Medido (propuestas/mudanza-20261011/pide.js): Identity, el canal, la PWA y el juego. ... ok
+test_un_solo_panel_y_nada_del_hub (__main__.Portada.test_un_solo_panel_y_nada_del_hub) ... ok
+test_va_donde_va_la_otra_puerta (__main__.Reescrituras.test_va_donde_va_la_otra_puerta)
+Las dos puertas se cargan juntas o la nueva no existe. ... ok
+test_el_sitemap_no_anuncia_paginas_que_no_estan (__main__.Sitemap.test_el_sitemap_no_anuncia_paginas_que_no_estan)
+Un sitemap rancio manda al buscador a un 404 que no ve ningun humano. ... ok
+test_robots_apunta_al_sitemap (__main__.Sitemap.test_robots_apunta_al_sitemap) ... ok
+test_toda_pagina_de_contenido_esta_en_el_sitemap (__main__.Sitemap.test_toda_pagina_de_contenido_esta_en_el_sitemap)
+La averia simetrica: la pagina existe y el buscador no la ve. ... ok
+test_NINGUNA_pagina_cae_al_respaldo_en_castellano (__main__.Traducciones.test_NINGUNA_pagina_cae_al_respaldo_en_castellano)
+La regla entera, y contra TODOS los guiones que carga cada pagina. ... ok
+test_NINGUNA_pagina_repite_LA_PROSA_DE_OTRA_LENGUA (__main__.Traducciones.test_NINGUNA_pagina_repite_LA_PROSA_DE_OTRA_LENGUA)
+El hueco que ni el respaldo ni las claves ausentes podian ver. ... ok
+test_NINGUN_guion_lleva_CASTELLANO_suelto (__main__.Traducciones.test_NINGUN_guion_lleva_CASTELLANO_suelto)
+El hueco por donde se colo el Showman, y que el otro guardian no ve. ... ok
+test_cada_pagina_declara_SU_lengua_en_el_bloque (__main__.Traducciones.test_cada_pagina_declara_SU_lengua_en_el_bloque)
+`lang` dentro del bloque no es decorativo: se lo lleva el modelo. ... ok
+test_los_rotulos_del_ENVIO_viven_en_las_ocho (__main__.Traducciones.test_los_rotulos_del_ENVIO_viven_en_las_ocho)
+`enviar.js` esta perdonado arriba, asi que aqui se paga el perdon. ... ok
+test_la_propuesta_no_lista_ficheros_que_ya_no_existen (__main__.WebLimpia.test_la_propuesta_no_lista_ficheros_que_ya_no_existen) ... ok
+test_ningun_duplicado_exacto_nuevo (__main__.WebLimpia.test_ningun_duplicado_exacto_nuevo) ... ok
+test_ningun_enlace_interno_roto (__main__.WebLimpia.test_ningun_enlace_interno_roto) ... ok
+test_ningun_huerfano_nuevo (__main__.WebLimpia.test_ningun_huerfano_nuevo) ... ok
+
+----------------------------------------------------------------------
+Ran 78 tests in 1.678s
+
+OK (skipped=1)
+~~~~
+
+#### local-2-06 · salida 0 (esperada 0)
+
+Comando: `python3 atlas/test_atlas.py`
+
+~~~~text
+.................................................................................................................................................................................
+----------------------------------------------------------------------
+Ran 177 tests in 26.120s
+
+OK
+  borrador ar: 184/275 claves
+  borrador de: 184/275 claves
+  borrador el: 184/275 claves
+  borrador es: 184/275 claves
+  borrador fr: 184/275 claves
+  borrador it: 184/275 claves
+  borrador pt: 184/275 claves
+  borrador ru: 184/275 claves
+~~~~
+
+#### local-2-07 · salida 0 (esperada 0)
+
+Comando: `node arnes_sw.mjs`
+
+~~~~text
+  ok  precachea las portadas, su superficie y el juego  (143 rutas)
+  ok  el shell trae el juego (D7): la puerta, el cangrejo y la arena
+  ok  el shell trae la portada de cada lengua
+  ok  el shell trae la identidad y el canal
+  ok  el shell YA NO trae nada del hub
+  ok  el shell NO trae ninguna de las dos familias de iconos de companero
+  ok  otro origen pasa de largo
+  ok  la API del Agora pasa de largo
+  ok  counters.json no se cachea (es una medida)
+  ok  atlas-en.json SI se sirve del cache (es contenido del juego)
+  ok  el manifiesto va a red primero  (cuerpo red:https://preceptoros.org/manifest.webmanifest)
+  ok  navegacion sale del shell aun sin red  (status 200)
+  ok  sin red sintetiza pagina  (status 503)
+  ok  la respeta el idioma de la ruta
+  ok  la pagina sin red mete el texto en un panel
+  ok  declara --panel-bg y --panel-fg
+  ok  un POST pasa de largo
+  ok  install no deja al worker nuevo esperando a que cierren las pestanas  (1 llamadas a skipWaiting)
+  ok  activate borra el cache de la version anterior
+  ok  el precache no guarda respuestas redirigidas  (0 de 143 marcadas)
+  ok  la navegacion no devuelve una respuesta redirigida  (redirected=false)
+  ok  el refresco por detras tampoco guarda la marca
+
+22/22 en verde
+~~~~
+
+#### local-2-08 · salida 0 (esperada 0)
+
+Comando: `node atlas/sin_undefined.mjs`
+
+~~~~text
+{
+  "fallos": [],
+  "pasos": 24
+}
+~~~~
+
+#### local-2-09 · salida 0 (esperada 0)
+
+Comando: `node atlas/vector_casos.mjs`
+
+~~~~text
+[
+ {
+  "caso": "cabe en el TOPE (1 KB) con un estado completo",
+  "ok": true,
+  "detalle": ""
+ },
+ {
+  "caso": "lee lo que hay: ciclo, recursos, cangrejo (desplazamiento redondeado), panel, tutorial, edificios, lugares, nodos",
+  "ok": true,
+  "detalle": ""
+ },
+ {
+  "caso": "vacio: cada hueco va a nd CON SU CAUSA (nunca un cero inventado, nunca undefined)",
+  "ok": true,
+  "detalle": ""
+ },
+ {
+  "caso": "el esquema explica cada clave del vector (lo que lee un LLM pequeno)",
+  "ok": true,
+  "detalle": ""
+ },
+ {
+  "caso": "solo LEE: armar dos veces el mismo estado da el mismo vector (determinista, sin reloj)",
+  "ok": true,
+  "detalle": ""
+ },
+ {
+  "caso": "acota por bytes UTF-8 reales y vuelve a medir tras el recorte (unicode)",
+  "ok": true,
+  "detalle": ""
+ },
+ {
+  "caso": "si el recorte normal no basta, fail-closed conserva contrato y causa",
+  "ok": true,
+  "detalle": ""
+ },
+ {
+  "caso": "el contrato cerrado admite el vector medido y rechaza claves o ausencias sin causa",
+  "ok": true,
+  "detalle": ""
+ }
+]
+~~~~
+
+#### local-2-10 · salida 0 (esperada 0)
+
+Comando: `node atlas/phase_gate.mjs`
+
+~~~~text
+{"gate":"phase","public_text_files":163,"initial_files":26,"gzip_initial_b":92124}
+~~~~
+
+#### local-2-11 · salida 0 (esperada 0)
+
+Comando: `node --test tests/map_zoom.test.mjs tests/onda_profunda.test.mjs tests/tarjeta_cantada.test.mjs`
+
+~~~~text
+TAP version 13
+# Subtest: contrato del repo: MIN 0.6, MAX 3, y data-zoom anotado
+ok 1 - contrato del repo: MIN 0.6, MAX 3, y data-zoom anotado
+  ---
+  duration_ms: 1.226964
+  type: 'test'
+  ...
+# Subtest: clamp del protocolo: fuera de rango queda en 0.6 / 3.0
+ok 2 - clamp del protocolo: fuera de rango queda en 0.6 / 3.0
+  ---
+  duration_ms: 0.259761
+  type: 'test'
+  ...
+# Subtest: monotonía: separar sube, juntar baja (zm0·d/d0)
+ok 3 - monotonía: separar sube, juntar baja (zm0·d/d0)
+  ---
+  duration_ms: 0.112208
+  type: 'test'
+  ...
+# Subtest: rueda: exp(-deltaY·0.0015), clamp final
+ok 4 - rueda: exp(-deltaY·0.0015), clamp final
+  ---
+  duration_ms: 0.122968
+  type: 'test'
+  ...
+# Subtest: la fuente lleva el clamp real (Math.max/Math.min): sin el, la suite cae
+ok 5 - la fuente lleva el clamp real (Math.max/Math.min): sin el, la suite cae
+  ---
+  duration_ms: 0.122908
+  type: 'test'
+  ...
+# Subtest: la ley del suelo manda: usa proyecta/ancla/profundidad de IsometricFloor, sin geometría propia
+ok 6 - la ley del suelo manda: usa proyecta/ancla/profundidad de IsometricFloor, sin geometría propia
+  ---
+  duration_ms: 1.427807
+  type: 'test'
+  ...
+# Subtest: pieza <16 KiB, vanilla, cero red
+ok 7 - pieza <16 KiB, vanilla, cero red
+  ---
+  duration_ms: 0.353325
+  type: 'test'
+  ...
+# Subtest: planifica: ancla y profundidad según la ley (huella incluida)
+ok 8 - planifica: ancla y profundidad según la ley (huella incluida)
+  ---
+  duration_ms: 0.272725
+  type: 'test'
+  ...
+# Subtest: escala viva: función pura del eje, clamp [0.75, 1.35], determinista
+ok 9 - escala viva: función pura del eje, clamp [0.75, 1.35], determinista
+  ---
+  duration_ms: 0.205331
+  type: 'test'
+  ...
+# Subtest: PUERTA DE LA (b) — orden del pintor: delante (mayor col+fila) pinta DESPUÉS y tapa
+ok 10 - PUERTA DE LA (b) — orden del pintor: delante (mayor col+fila) pinta DESPUÉS y tapa
+  ---
+  duration_ms: 0.309343
+  type: 'test'
+  ...
+# Subtest: SABOTAJE (la suite cae si encola ignora la ley): profundidad propia != profundidad de la ley
+ok 11 - SABOTAJE (la suite cae si encola ignora la ley): profundidad propia != profundidad de la ley
+  ---
+  duration_ms: 0.374143
+  type: 'test'
+  ...
+# Subtest: W3: Web Audio pura — cero archivos de audio, cero red, pieza <16 KiB
+ok 12 - W3: Web Audio pura — cero archivos de audio, cero red, pieza <16 KiB
+  ---
+  duration_ms: 1.555363
+  type: 'test'
+  ...
+# Subtest: tabla semántica MEDIDA usada, no reinventada: los números viven en AtlasToon.SELLOS
+ok 13 - tabla semántica MEDIDA usada, no reinventada: los números viven en AtlasToon.SELLOS
+  ---
+  duration_ms: 0.212073
+  type: 'test'
+  ...
+# Subtest: W1: FNV-1a determinista → base 220–660 Hz; mismo id = misma frecuencia
+ok 14 - W1: FNV-1a determinista → base 220–660 Hz; mismo id = misma frecuencia
+  ---
+  duration_ms: 0.177489
+  type: 'test'
+  ...
+# Subtest: VOZ=FORMA (M14): f_base = 220 + (hue/360)·660, medido contra la fórmula
+ok 15 - VOZ=FORMA (M14): f_base = 220 + (hue/360)·660, medido contra la fórmula
+  ---
+  duration_ms: 0.144648
+  type: 'test'
+  ...
+# Subtest: melodía determinista: mismo término y sello = mismas notas; sello desconocido = NO_DATA con causa
+ok 16 - melodía determinista: mismo término y sello = mismas notas; sello desconocido = NO_DATA con causa
+  ---
+  duration_ms: 1.734324
+  type: 'test'
+  ...
+# Subtest: SIN GESTO NO SUENA (reduced-motion: corte limpio): canta sin melodía/no medida = NO_DATA, nunca sonido
+ok 17 - SIN GESTO NO SUENA (reduced-motion: corte limpio): canta sin melodía/no medida = NO_DATA, nunca sonido
+  ---
+  duration_ms: 0.334691
+  type: 'test'
+  ...
+# Subtest: SABOTAJE: si la tabla semántica se corrompe (LIVE≠120), la melodía deriva y debe romper el gate
+ok 18 - SABOTAJE: si la tabla semántica se corrompe (LIVE≠120), la melodía deriva y debe romper el gate
+  ---
+  duration_ms: 0.257537
+  type: 'test'
+  ...
+1..18
+# tests 18
+# suites 0
+# pass 18
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 136.25488
+~~~~
+
+#### local-2-12 · salida 0 (esperada 0)
+
+Comando: `git diff --check`
+
+~~~~text
+~~~~
+
+### Estado de entrega antes de CI final
+
+MEDIDO local n=2 sobre el árbol público fijado: T3 limpio; diez ataques rojos por invariante por pasada; histórico M0 y borrado rojo; Chrome ausente rechazado; web 78 pruebas/1 skip (no hay paneles publicados); Atlas 177/177; SW 22/22/143 rutas; Chrome 24 pasos/0 fallos con encabezado y carga T3 comprobados; vector 8/8; fase 163 ficheros/26 iniciales/gzip local 92.124 B; visuales heredados 18/18; diff limpio. Sello ASIGNADO preceptoros-2026-17-abht / 973598d4d6980fe2, seco NADA QUE SELLAR.
+
+NO_DATA con causa: CI doble ×2 del futuro head todavía no ejecutado al crear este recibo; se declarará por SHA en #110 cuando exista y terminen sus jobs. FPS físico y A11Y física de esta revisión no medidos porque no se abrió nueva sesión física; Chrome no los sustituye. Gastos CLI NO_DATA, contador verificable no expuesto. Sin modelos locales ni nueva delegación. No se afirma despliegue, merge, aprendizaje humano ni ejecución de piezas ajenas. No main directo/jetson/ramas claude o mistral/#89/raíz congelada/destinos del triaje. Después de T3, PARA según orden vigente.
+
+Salida cruda del push histórico de 1718e3f (exit 0):
+
+~~~~text
+=== GUARDIA DE HIGIENE · pre-push ===
+· HEAD: revisando 15 commit(s) del rango
+✅ GUARDIA OK
+To https://github.com/piskyRpapalo/preceptoros-web.git
+   3a812a7..1718e3f  HEAD -> codex/wavescraft-name-20261015
+~~~~
+
+
+## T3 · RECIBO VIGENTE SOBRE 42CD4AB · LETRA ASIGNADA ABHT · 2026-10-15
+
+Orden humana vigente: DIRIMENCIA de #110 y confirmación de la Mesa: «la letra se MANTIENE: abht. La letra identifica el encargo, no la base». Solo T3; PR borrador SIN FUSIÓN. El silicio no firma. Después de entregar T3, PARA; SENSOR HONESTO/plan/ADENDA 2/M1 ajenos a esta sesión. Este append al archivo se hace por la instrucción explícita del Soberano que exige recibo aquí; se conservan las entradas heredadas de main.
+
+### Heads y reconstrucción real
+
+- Borrador inicial 3a812a724af46bd6ac81bcbbc7eae16a98de7b34 sobre 3f975c3; su abhs 49ceec4a829cece0 queda invalidado por main visual.
+- Main reportada por Mesa 813b3be; medida propia inicial 9e4bdd87f96a9c5dcfc1ac5ca62cd25496a1afaf (solo AGENTS.md añadido sobre 813b3be). Head intermedio 1718e3f4101cf038af31fe850fb723b20ebd6487 sobre esa base, con sus logs anteriores preservados y NO usados para cerrar ahora.
+- Main volvió a avanzar durante gates: 42cd4abfbc74c15c705f54381579b4b1648ee9ea, merge #112; origen abhu / 6a57db1466e20a9a. Re-medida antes de sellar y tras reinicio del servidor: sigue exactamente 42cd4ab. Esta es la base VIGENTE de la reconstrucción actual.
+- git merge --no-commit --no-ff origin/main volvió a dar 1 por artefactos generados (sello, mundo, counters, sw). git restore --source=origin/main --staged --worktree -- . volvió a establecer TODO desde la main nueva antes de aplicar el delta. Historia conservada, sin reset ni force-push. Se re-aplicaron únicamente fuentes propias de fixture/pruebas/gates; JSON y cifras NO se trasladaron. Fixture M0 copiado de la EN actual y b81b02c2 re-verificado. Los cinco protegidos se cotejaron con esa main.
+- Solo delta de producto: ui.inc_h Forest Incubator → WavesCraft; ui.army_carga Opening the Forest Incubator… → Opening WavesCraft…. Fuera de EN y generados mundo/counters/sw, el diff público contra la base es vacío: tabla_semantica, ondas, tarjeta, cargador, precache y todos los demás módulos preservados. Los archivos propios nuevos son de laboratorio, no recursos públicos.
+
+Árbol público estabilizado MEDIDO: `c3852abeb3f5ee7973bed70ffb7022f17e4a7296`. El SHA exacto del commit final se mide tras crearlo y se registra en el recibo final de #110 junto a sus dos intentos de CI. No se presupone el hash de un commit futuro.
+
+### Hashes actuales antes/después, SHA-256
+
+- public/atlas-en.json: 15994 → 15978 B; d24c03bb91b0c0da4f6087a15083d5511cd1d1b1ba8eba16530c926a706da1df → 5cc41650b10112ad39d2485242e9b6fb961c8586a692a278db5d782f742e7a81.
+- public/atlas-mundo.json: 344 → 343 B; daa1363f2bb10582473dfda71e752c94278b40ca4fb34780fb1fbc738edaa487 → 16ea19019f49fb168e6cefd5df3d12d6f05ed2494df5a16e099df805c58a7ac8.
+- public/counters.json: 2764 → 2764 B; 70c0f88cab77915d9e61ddbd18dac8ffee48f31ebf6b326fcacee917f458af6c → b1ac2966f38ab0f5daa652ead0f534ef011f8437229b14f4d49a6bbd5cd3c9cf.
+- public/sw.js: 11591 → 11591 B; afdbfaa2d62d2b7fa750740df1a7be70bab0a59747026b009bccc2304e9222b2 → 7e97f6b574b9c23606b1e511de35e484a6fce984e785748fc9c94f93d2b31031.
+- config/sw-huella.txt: 58 → 58 B; 57e3669f246cc92c0fb82b119385d68d471fda344e1fbb766409c86b18e3aa8b → 7810ca963da5589c7818472a27df4c8d35f09af15ede4baa79df279db8243930.
+
+Protegidos antes=después, verificados contra base 42cd4ab:
+
+- public/game/valores.js: 8892267206e4328ae9873b016c3c1d07eacab776bbb6614ed1df1d8c254a2e29.
+- public/assets/atlas-motor.js: 16e50ed537c5d6898815a2711a22dc3d7497d4e0a3cd6a0bae013241822e11c9.
+- public/game/gacha.js: b2a2d0e134576d913b3a30ccaf539532e4377d423c4211aceb1bc211081d11cc.
+- public/game/core.js: 1141d77af50dbdce03bbbddef11549683929685dee3de711b6434a7a5ffe8430.
+- public/game/ui-invoca.js: da62b8197243d464e54ca3e966af2e98bf6ba137548ba78c340176a5ee729295.
+- public/game/onda_profunda.js: d56d54957606ead50de7e99731e93f080cb1110ad4ebc397fab0aafb4059eb34.
+- public/game/tarjeta_cantada.js: 300e51de5f70e2a795276c3b6ab5f64f439aad21d7e5edc86df70058081031ec.
+- public/game/tabla_semantica.js: 43c9175e504fbe2728098f66583ec5f44057d01d7ed475be6b70a17769c24ef5.
+- public/assets/thegame.js: 34917710b4f09793f96f26dfacec9fa19a42417eb9287fac40c9a782cb0cac46.
+- public/sw-listas.js: 4a7e1f0fd8a742923adf91e8143a62195711c8f3977e707de0a16b36dcdfb36d.
+
+Oráculo actual: EN 15.978 B; bytes 5cc41650b10112ad39d2485242e9b6fb961c8586a692a278db5d782f742e7a81; objeto cd6d33ee6780780189482bfa031aa36f00d0c2b2709e3112f08b203b7676ee9a. Solo invertir las dos etiquetas recupera b81b02c25f594d885bd1a06ad8ac9df1c01bd4d4159b8f3d9b07fecb3c880939. Fixture histórico 15.994 B, bytes d24c03bb91b0c0da4f6087a15083d5511cd1d1b1ba8eba16530c926a706da1df. Hash histórico no sustituido. T3 exige salida 1 y código de invariante exacto para cada uno de los diez sabotajes; ningún ataque escribe en producto/cuenta.
+
+### Comandos de esta reconstrucción y recuperación
+
+Además de las lecturas/commands del bloque histórico: git ls-remote origin refs/heads/main; gh api repos/piskyRpapalo/preceptoros-web/pulls/110 (base/head/mergeable); git fetch origin main; git show -s de origin/main; git diff 9e4bdd8 origin/main --stat; git show origin/main:config/sw-huella.txt; git merge-tree --write-tree HEAD origin/main; git merge --no-commit --no-ff origin/main (1); git restore --source=origin/main --staged --worktree -- . (0). Python stdlib re-aplicó solo seis fuentes propias de tests/gates de 1718e3f, copió el fixture desde main actual, comprobó b81b02c2, asignó SOLO las dos etiquetas y re-midió protegidos; node atlas/phase_T3_cases.mjs; node atlas/phase_T3_cases.mjs --sabotages; node atlas/phase_M0_cases.mjs; node --test tests/tabla_semantica.test.mjs tests/tarjeta_cantada.test.mjs (15/15 en preparación); git diff origin/main --stat; hashes SHA-256 de AGENTS.md y CLAUDE.md. Se pidió reconfirmación de letra; era innecesaria por existir asignación explícita y se continuó con ella; la Mesa confirmó después abht. Ninguna letra nueva elegida por el agente.
+
+Un reinicio del servidor interrumpió el segundo Chrome antes de producir resultado. Ese intento no se declara medido: NO_DATA por interrupción del proceso. Recuperación: git status --short --branch; git log -2 --oneline; git rev-parse origin/main; cat config/sw-huella.txt; inventario de logs y tail de commands.jsonl; gh pr view 110 --json headRefOid,state,isDraft,mergeable; inventario de procesos, sin runner/Chrome pendiente; git ls-remote origin refs/heads/main (42cd4ab); cat AGENTS.md; python3 bin/sellar.py (NADA QUE SELLAR); git rev-parse MERGE_HEAD (42cd4ab). No había commit/push nuevo. Se conservaron los gates concluidos de ambas pasadas y se relanzó Chrome segundo completo, después vector/fase/visuales/diff. El nuevo Chrome sí produjo su propio resultado crudo, no se sustituyó el intento interrumpido por cero fallos.
+
+Las salidas completas, sin recorte, de sellado y CADA gate concluido siguen abajo. stdout y stderr capturados juntos; exit 1 solo donde corresponde al sabotaje esperado. Tras este append se ejecutan git diff --check, git add, git commit y git push de la rama propia con ganchos intactos. Sus salidas y el head realmente publicado, junto con TODOS los resultados CI, se registrarán en #110; CI está todavía PENDIENTE en el momento de crear el commit, sin fingir que ya se midió.
+
+### Salidas crudas del árbol vigente
+
+#### main-before-seal · salida 0 (esperada 0)
+
+Comando: `git ls-remote origin refs/heads/main`
+
+~~~~text
+42cd4abfbc74c15c705f54381579b4b1648ee9ea	refs/heads/main
+~~~~
+
+#### seal-1 · salida 0 (esperada 0)
+
+Comando: `python3 bin/sellar.py --sellar --version preceptoros-2026-17-abht`
+
+~~~~text
+version   preceptoros-2026-17-abhu  ->  preceptoros-2026-17-abht
+huella    6a57db1466e20a9a  ->  (se recalcula al escribir)
+
+SELLADO · version=preceptoros-2026-17-abht huella=d7fa71fc85e5dff0
+~~~~
+
+#### counters-1 · salida 0 (esperada 0)
+
+Comando: `python3 contadores.py`
+
+~~~~text
+escrito public/counters.json · 8 medidas, 2 NO_DATA
+~~~~
+
+#### world · salida 0 (esperada 0)
+
+Comando: `python3 atlas/mundo.py`
+
+~~~~text
+atlas-mundo.json · medido_el=2026-10-15T21:49Z, maquina=Linux x86_64 · Python 3.14.4, pruebas_web=78, lenguas=9, techo_bloque_b=26214400, gzip_juego_b=92156, version_sw=preceptoros-2026-17-abht, arnes_sw=22/22
+~~~~
+
+#### counters-2 · salida 0 (esperada 0)
+
+Comando: `python3 contadores.py`
+
+~~~~text
+escrito public/counters.json · 8 medidas, 2 NO_DATA
+~~~~
+
+#### seal-final · salida 0 (esperada 0)
+
+Comando: `python3 bin/sellar.py --sellar --version preceptoros-2026-17-abht`
+
+~~~~text
+version   preceptoros-2026-17-abht  ->  preceptoros-2026-17-abht
+huella    d7fa71fc85e5dff0  ->  (se recalcula al escribir)
+
+SELLADO · version=preceptoros-2026-17-abht huella=897e9e9ecc559910
+~~~~
+
+#### seal-dry · salida 0 (esperada 0)
+
+Comando: `python3 bin/sellar.py`
+
+~~~~text
+NADA QUE SELLAR · lo publicado no ha cambiado desde preceptoros-2026-17-abht
+~~~~
+
+#### phase-before-gates · salida 0 (esperada 0)
+
+Comando: `node atlas/phase_gate.mjs`
+
+~~~~text
+{"gate":"phase","public_text_files":164,"initial_files":26,"gzip_initial_b":92156}
+~~~~
+
+#### local-1-00 · salida 0 (esperada 0)
+
+Comando: `node atlas/phase_T3_cases.mjs`
+
+~~~~text
+{"piece":"T3","bytes":15978,"object_sha256":"cd6d33ee6780780189482bfa031aa36f00d0c2b2709e3112f08b203b7676ee9a","bytes_sha256":"5cc41650b10112ad39d2485242e9b6fb961c8586a692a278db5d782f742e7a81","reverted_object_sha256":"b81b02c25f594d885bd1a06ad8ac9df1c01bd4d4159b8f3d9b07fecb3c880939"}
+~~~~
+
+#### local-1-01 · salida 0 (esperada 0)
+
+Comando: `node atlas/phase_T3_cases.mjs --sabotages`
+
+~~~~text
+{"attack":"inc_h","red":true,"invariant":"T3_LABEL_INC_H"}
+{"attack":"army","red":true,"invariant":"T3_LABEL_ARMY"}
+{"attack":"third","red":true,"invariant":"T3_DELTA"}
+{"attack":"compact","red":true,"invariant":"T3_COMPACT"}
+{"attack":"size","red":true,"invariant":"T3_SIZE"}
+{"attack":"protected-0","red":true,"invariant":"T3_PROTECTED:public/game/valores.js"}
+{"attack":"protected-1","red":true,"invariant":"T3_PROTECTED:public/assets/atlas-motor.js"}
+{"attack":"protected-2","red":true,"invariant":"T3_PROTECTED:public/game/gacha.js"}
+{"attack":"protected-3","red":true,"invariant":"T3_PROTECTED:public/game/core.js"}
+{"attack":"protected-4","red":true,"invariant":"T3_PROTECTED:public/game/ui-invoca.js"}
+~~~~
+
+#### local-1-02 · salida 0 (esperada 0)
+
+Comando: `node atlas/chrome_launch_cases.mjs`
+
+~~~~text
+Chrome unavailable: exit 1, zero steps, NO_DATA with cause; rejection verified.
+~~~~
+
+#### local-1-03 · salida 0 (esperada 0)
+
+Comando: `node atlas/phase_M0_cases.mjs`
+
+~~~~text
+{"piece":"M0","bytes":15994,"object_sha256":"b81b02c25f594d885bd1a06ad8ac9df1c01bd4d4159b8f3d9b07fecb3c880939","equal":true}
+~~~~
+
+#### local-1-04 · salida 1 (esperada 1)
+
+Comando: `node --stack-trace-limit=0 atlas/phase_M0_cases.mjs --sabotage`
+
+~~~~text
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+[AssertionError [ERR_ASSERTION]: English object changed
++ actual - expected
+
++ '65b83e6502bd59655c8e1e9ee470f759764bee2249d3e637bb4963c41c7a7d7c'
+- 'b81b02c25f594d885bd1a06ad8ac9df1c01bd4d4159b8f3d9b07fecb3c880939'
+] {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: '65b83e6502bd59655c8e1e9ee470f759764bee2249d3e637bb4963c41c7a7d7c',
+  expected: 'b81b02c25f594d885bd1a06ad8ac9df1c01bd4d4159b8f3d9b07fecb3c880939',
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v22.22.1
+~~~~
+
+#### local-1-05 · salida 0 (esperada 0)
+
+Comando: `python3 test_web.py`
+
+~~~~text
+test_la_version_del_service_worker_sigue_a_lo_publicado (__main__.Cabezal.test_la_version_del_service_worker_sigue_a_lo_publicado)
+Desplegar no es publicar. Medido en produccion, no deducido. ... ok
+test_ninguna_pagina_ofrece_un_enlace_y_lo_desmiente (__main__.Cabezal.test_ninguna_pagina_ofrece_un_enlace_y_lo_desmiente)
+No se puede poner un boton y decir al lado que no funciona. ... ok
+test_todo_panel_publicado_dice_lo_que_falla (__main__.Cabezal.test_todo_panel_publicado_dice_lo_que_falla)
+Una ficha que solo cuenta virtudes es publicidad, no una medida. ... skipped 'no hay paneles publicados todavia'
+test_dice_que_se_envia_en_las_nueve_lenguas (__main__.ComentarEnTodasLasPaginas.test_dice_que_se_envia_en_las_nueve_lenguas) ... ok
+test_el_modulo_usa_la_puerta_que_ya_existe_y_no_abre_otra (__main__.ComentarEnTodasLasPaginas.test_el_modulo_usa_la_puerta_que_ya_existe_y_no_abre_otra) ... ok
+test_ningun_cero_decorativo (__main__.Contadores.test_ningun_cero_decorativo)
+Un 0 solo vale si `como` NOMBRA la lectura de la que salio. ... ok
+test_toda_metrica_esta_medida_o_declara_su_causa (__main__.Contadores.test_toda_metrica_esta_medida_o_declara_su_causa) ... ok
+test_cero_frameworks (__main__.Doctrina.test_cero_frameworks) ... ok
+test_cero_rutas_absolutas_ni_ips (__main__.Doctrina.test_cero_rutas_absolutas_ni_ips)
+Lo que protege: que una IP de la tailnet no acabe en la web publica. ... ok
+test_el_cristal_degrada_y_se_puede_apagar (__main__.Doctrina.test_el_cristal_degrada_y_se_puede_apagar)
+Canon v3.0 «Liquid Glass», firmado el 2026-08-29. ... ok
+test_el_head_entero_no_mezcla_los_dos_estilos (__main__.Doctrina.test_el_head_entero_no_mezcla_los_dos_estilos)
+El de arriba solo mira `assets/`. La regla es del `<head>` entero. ... ok
+test_la_guia_clona_donde_el_instalador_instala (__main__.Doctrina.test_la_guia_clona_donde_el_instalador_instala)
+La web decia `~/aurelius`; `install.sh` usa `~/preceptoros`. ... ok
+test_ninguna_hoja_esta_rota_por_dentro (__main__.Doctrina.test_ninguna_hoja_esta_rota_por_dentro)
+Una hoja que el navegador no sabe leer pasaba este gate en verde. ... ok
+test_una_pagina_no_mezcla_rutas_absolutas_y_relativas (__main__.Doctrina.test_una_pagina_no_mezcla_rutas_absolutas_y_relativas)
+Dos estilos de ruta en el mismo `<head>` es una averia latente. ... ok
+test_el_aviso_de_solo_ingles_va_primero_en_la_pestana_de_entrada (__main__.ElJuegoEnInglesEnLasNueve.test_el_aviso_de_solo_ingles_va_primero_en_la_pestana_de_entrada) ... ok
+test_las_lenguas_del_juego_son_solo_ingles (__main__.ElJuegoEnInglesEnLasNueve.test_las_lenguas_del_juego_son_solo_ingles) ... ok
+test_cada_fichero_bajo_el_tope (__main__.Estructura.test_cada_fichero_bajo_el_tope)
+El tope rige TAMBIEN los datos, y desde el 2026-08-31. ... ok
+test_cero_html_en_la_raiz (__main__.Estructura.test_cero_html_en_la_raiz) ... ok
+test_counters_no_se_queda_atras_de_este_mismo_gate (__main__.Estructura.test_counters_no_se_queda_atras_de_este_mismo_gate)
+La puerta trasera que dejo pasar 19 cuando el gate ya media 25. ... ok
+test_counters_tiene_dos_duenos_y_ninguno_pisa_al_otro (__main__.Estructura.test_counters_tiene_dos_duenos_y_ninguno_pisa_al_otro)
+Dos guiones escriben este fichero. Ninguno puede borrar al otro. ... ok
+test_la_capa_soberana_va_la_ultima_y_no_pide_nada_fuera (__main__.Estructura.test_la_capa_soberana_va_la_ultima_y_no_pide_nada_fuera)
+Soberania Violeta-Cobre, 2026-09-25. Una capa ENCIMA del tema. ... ok
+test_la_prosa_del_pie_va_PLEGADA (__main__.Estructura.test_la_prosa_del_pie_va_PLEGADA)
+Una pagina limpia: el que entra evalua, el que quiere leer abre. ... ok
+test_la_tarjeta_social_apunta_a_algo_que_existe (__main__.Estructura.test_la_tarjeta_social_apunta_a_algo_que_existe)
+og:image, og:url y el favicon, comprobados contra el disco. ... ok
+test_las_portadas_declaran_hreflang (__main__.Estructura.test_las_portadas_declaran_hreflang)
+Tres traducciones sin hreflang son tres paginas sueltas para un ... ok
+test_maximo_ocho_paginas (__main__.Estructura.test_maximo_ocho_paginas) ... ok
+test_ningun_fichero_gasta_medio_viaje_de_red (__main__.Estructura.test_ningun_fichero_gasta_medio_viaje_de_red)
+El tope de disco es un PROXY; esto mide la cosa de verdad. ... ok
+test_r_widget_y_r_tipografia (__main__.Estructura.test_r_widget_y_r_tipografia)
+El anexo visual, comprobado y no confiado. ... ok
+test_toda_pagina_ofrece_LAS_LENGUAS_QUE_EXISTEN (__main__.Estructura.test_toda_pagina_ofrece_LAS_LENGUAS_QUE_EXISTEN)
+La rueda de idiomas sale de aqui, y por eso ofrecia tres de ocho. ... ok
+test_wrangler_apunta_a_public (__main__.Estructura.test_wrangler_apunta_a_public) ... ok
+test_glifo_es_accesible_local_y_acotado (__main__.GlifoSemantico.test_glifo_es_accesible_local_y_acotado) ... ok
+test_palette_vectorial_contrasta_con_el_panel (__main__.GlifoSemantico.test_palette_vectorial_contrasta_con_el_panel) ... ok
+test_la_api_no_se_pide_al_cargar (__main__.Identidad.test_la_api_no_se_pide_al_cargar)
+El tunel esta admitido como enlace, no como subrecurso. ... ok
+test_la_firma_va_entera (__main__.Identidad.test_la_firma_va_entera)
+`firmar()` devolvia `ed25519:` + 16 caracteres + puntos suspensivos. ... ok
+test_ningun_asset_precacheado_esta_muerto (__main__.Imagenes.test_ningun_asset_precacheado_esta_muerto)
+Todo lo que `sw.js` mete en la cache lo pinta alguien. ... ok
+test_no_vuelven_los_raster_retirados (__main__.Imagenes.test_no_vuelven_los_raster_retirados)
+Firma F2 del Soberano, 2026-10-10: identidad pura, cero imagenes. ... ok
+test_la_identidad_no_cambia_ni_un_byte (__main__.LasTraduccionesSeSacanYSeMeten.test_la_identidad_no_cambia_ni_un_byte) ... ok
+test_ninguna_familia_lleva_un_rotulo_vacio (__main__.LasTraduccionesSeSacanYSeMeten.test_ninguna_familia_lleva_un_rotulo_vacio)
+El pie de Instalar salio como un triangulo SIN rotulo en ocho de nueve ... ok
+test_cada_familia_dice_exactamente_sus_claves_firmadas (__main__.LasTresFamilias.test_cada_familia_dice_exactamente_sus_claves_firmadas) ... ok
+test_cada_lengua_dice_de_donde_salio (__main__.LasTresFamilias.test_cada_lengua_dice_de_donde_salio)
+Quien lea esto tiene que poder separar la salida CRUDA del modelo de ... ok
+test_el_ruso_y_el_griego_estan_en_su_alfabeto (__main__.LasTresFamilias.test_el_ruso_y_el_griego_estan_en_su_alfabeto)
+El fallo que ya esta medido en el canon: un modelo pequeno se pasa ... ok
+test_ninguna_traduccion_llega_vacia (__main__.LasTresFamilias.test_ninguna_traduccion_llega_vacia)
+Una cadena vacia pasa la paridad de claves y sale en blanco. ... ok
+test_cada_familia_por_lengua_esta_completa_o_su_hueco_declarado (__main__.LoQueNoSeVeConElGateVerde.test_cada_familia_por_lengua_esta_completa_o_su_hueco_declarado) ... ok
+test_cada_pagina_que_captura_tiene_su_puerta_de_salida_y_su_sello (__main__.LoQueNoSeVeConElGateVerde.test_cada_pagina_que_captura_tiene_su_puerta_de_salida_y_su_sello)
+Pedido por el Soberano el 2026-09-24: que cada sitio desde el que un ... ok
+test_lo_que_depende_de_bronce_se_carga_despues (__main__.LoQueNoSeVeConElGateVerde.test_lo_que_depende_de_bronce_se_carga_despues) ... ok
+test_el_manifiesto_dice_lo_que_la_pagina_pinta (__main__.PWA.test_el_manifiesto_dice_lo_que_la_pagina_pinta) ... ok
+test_el_maskable_cabe_de_verdad_en_su_circulo (__main__.PWA.test_el_maskable_cabe_de_verdad_en_su_circulo)
+No que lo diga el manifiesto: que lo diga el fichero. ... ok
+test_el_service_worker_esta_enchufado (__main__.PWA.test_el_service_worker_esta_enchufado)
+Un worker que nadie registra es un fichero, no un PWA. ... ok
+test_el_worker_no_guarda_lo_ajeno_ni_los_datos (__main__.PWA.test_el_worker_no_guarda_lo_ajeno_ni_los_datos)
+Las dos reglas que el worker anterior rompia. ... ok
+test_el_worker_pasa_su_arnes (__main__.PWA.test_el_worker_pasa_su_arnes)
+Las reglas de enrutado, ejecutadas de verdad. ... ok
+test_iconos_y_tarjeta_salen_del_emblema (__main__.PWA.test_iconos_y_tarjeta_salen_del_emblema)
+Firma F2-8 del Soberano, 2026-10-10: favicon, iconos PWA y og:image siguen ... ok
+test_los_iconos_no_engordan_sin_permiso (__main__.PWA.test_los_iconos_no_engordan_sin_permiso)
+Los iconos pasaron de 12 KB a 180 KB al cambiar de arte. ... ok
+test_manifest_es_minimo (__main__.PWA.test_manifest_es_minimo)
+Lo que hace falta para instalar, y nada de adorno. ... ok
+test_sin_conexion_hay_algo_que_leer (__main__.PWA.test_sin_conexion_hay_algo_que_leer)
+Y en los tres idiomas: quien instala desde /fr/ no merece un ... ok
+test_sw_cachea_los_nuevos_assets (__main__.PWA.test_sw_cachea_los_nuevos_assets)
+El worker tiene que conocer TODO lo que la portada necesita. ... ok
+test_un_icono_maskable_no_puede_ser_el_mismo_que_el_normal (__main__.PWA.test_un_icono_maskable_no_puede_ser_el_mismo_que_el_normal)
+Medido el 2026-08-30 sobre icon-512.png y por eso existe. ... ok
+test_un_solo_manifiesto (__main__.PWA.test_un_solo_manifiesto)
+Habia `manifest.json` y `manifest.webmanifest` identicos byte a ... ok
+test_los_enlaces_internos_existen (__main__.Paginas.test_los_enlaces_internos_existen)
+Ningun enlace relativo apunta a una pagina que no esta. ... ok
+test_selector_de_idioma_por_path (__main__.Paginas.test_selector_de_idioma_por_path) ... ok
+test_todas_las_paginas_tienen_pie_honesto (__main__.Paginas.test_todas_las_paginas_tienen_pie_honesto) ... ok
+test_el_juego_se_monta_en_el_panel_no_encima (__main__.Portada.test_el_juego_se_monta_en_el_panel_no_encima) ... ok
+test_la_pagina_se_reordena_no_carga (__main__.Portada.test_la_pagina_se_reordena_no_carga)
+J10: cambiar de pestana va en startViewTransition, con el cambio de siempre como reserva y SIN ... ok
+test_las_diez_son_la_plantilla (__main__.Portada.test_las_diez_son_la_plantilla) ... ok
+test_menu_y_hoja_nunca_quedan_abiertos_a_la_vez (__main__.Portada.test_menu_y_hoja_nunca_quedan_abiertos_a_la_vez) ... ok
+test_solo_carga_lo_que_el_juego_necesita (__main__.Portada.test_solo_carga_lo_que_el_juego_necesita)
+Medido (propuestas/mudanza-20261011/pide.js): Identity, el canal, la PWA y el juego. ... ok
+test_un_solo_panel_y_nada_del_hub (__main__.Portada.test_un_solo_panel_y_nada_del_hub) ... ok
+test_va_donde_va_la_otra_puerta (__main__.Reescrituras.test_va_donde_va_la_otra_puerta)
+Las dos puertas se cargan juntas o la nueva no existe. ... ok
+test_el_sitemap_no_anuncia_paginas_que_no_estan (__main__.Sitemap.test_el_sitemap_no_anuncia_paginas_que_no_estan)
+Un sitemap rancio manda al buscador a un 404 que no ve ningun humano. ... ok
+test_robots_apunta_al_sitemap (__main__.Sitemap.test_robots_apunta_al_sitemap) ... ok
+test_toda_pagina_de_contenido_esta_en_el_sitemap (__main__.Sitemap.test_toda_pagina_de_contenido_esta_en_el_sitemap)
+La averia simetrica: la pagina existe y el buscador no la ve. ... ok
+test_NINGUNA_pagina_cae_al_respaldo_en_castellano (__main__.Traducciones.test_NINGUNA_pagina_cae_al_respaldo_en_castellano)
+La regla entera, y contra TODOS los guiones que carga cada pagina. ... ok
+test_NINGUNA_pagina_repite_LA_PROSA_DE_OTRA_LENGUA (__main__.Traducciones.test_NINGUNA_pagina_repite_LA_PROSA_DE_OTRA_LENGUA)
+El hueco que ni el respaldo ni las claves ausentes podian ver. ... ok
+test_NINGUN_guion_lleva_CASTELLANO_suelto (__main__.Traducciones.test_NINGUN_guion_lleva_CASTELLANO_suelto)
+El hueco por donde se colo el Showman, y que el otro guardian no ve. ... ok
+test_cada_pagina_declara_SU_lengua_en_el_bloque (__main__.Traducciones.test_cada_pagina_declara_SU_lengua_en_el_bloque)
+`lang` dentro del bloque no es decorativo: se lo lleva el modelo. ... ok
+test_los_rotulos_del_ENVIO_viven_en_las_ocho (__main__.Traducciones.test_los_rotulos_del_ENVIO_viven_en_las_ocho)
+`enviar.js` esta perdonado arriba, asi que aqui se paga el perdon. ... ok
+test_la_propuesta_no_lista_ficheros_que_ya_no_existen (__main__.WebLimpia.test_la_propuesta_no_lista_ficheros_que_ya_no_existen) ... ok
+test_ningun_duplicado_exacto_nuevo (__main__.WebLimpia.test_ningun_duplicado_exacto_nuevo) ... ok
+test_ningun_enlace_interno_roto (__main__.WebLimpia.test_ningun_enlace_interno_roto) ... ok
+test_ningun_huerfano_nuevo (__main__.WebLimpia.test_ningun_huerfano_nuevo) ... ok
+
+----------------------------------------------------------------------
+Ran 78 tests in 1.655s
+
+OK (skipped=1)
+~~~~
+
+#### local-1-06 · salida 0 (esperada 0)
+
+Comando: `python3 atlas/test_atlas.py`
+
+~~~~text
+.................................................................................................................................................................................
+----------------------------------------------------------------------
+Ran 177 tests in 25.907s
+
+OK
+  borrador ar: 184/275 claves
+  borrador de: 184/275 claves
+  borrador el: 184/275 claves
+  borrador es: 184/275 claves
+  borrador fr: 184/275 claves
+  borrador it: 184/275 claves
+  borrador pt: 184/275 claves
+  borrador ru: 184/275 claves
+~~~~
+
+#### local-1-07 · salida 0 (esperada 0)
+
+Comando: `node arnes_sw.mjs`
+
+~~~~text
+  ok  precachea las portadas, su superficie y el juego  (144 rutas)
+  ok  el shell trae el juego (D7): la puerta, el cangrejo y la arena
+  ok  el shell trae la portada de cada lengua
+  ok  el shell trae la identidad y el canal
+  ok  el shell YA NO trae nada del hub
+  ok  el shell NO trae ninguna de las dos familias de iconos de companero
+  ok  otro origen pasa de largo
+  ok  la API del Agora pasa de largo
+  ok  counters.json no se cachea (es una medida)
+  ok  atlas-en.json SI se sirve del cache (es contenido del juego)
+  ok  el manifiesto va a red primero  (cuerpo red:https://preceptoros.org/manifest.webmanifest)
+  ok  navegacion sale del shell aun sin red  (status 200)
+  ok  sin red sintetiza pagina  (status 503)
+  ok  la respeta el idioma de la ruta
+  ok  la pagina sin red mete el texto en un panel
+  ok  declara --panel-bg y --panel-fg
+  ok  un POST pasa de largo
+  ok  install no deja al worker nuevo esperando a que cierren las pestanas  (1 llamadas a skipWaiting)
+  ok  activate borra el cache de la version anterior
+  ok  el precache no guarda respuestas redirigidas  (0 de 144 marcadas)
+  ok  la navegacion no devuelve una respuesta redirigida  (redirected=false)
+  ok  el refresco por detras tampoco guarda la marca
+
+22/22 en verde
+~~~~
+
+#### local-1-08 · salida 0 (esperada 0)
+
+Comando: `node atlas/sin_undefined.mjs`
+
+~~~~text
+{
+  "fallos": [],
+  "pasos": 24
+}
+~~~~
+
+#### local-1-09 · salida 0 (esperada 0)
+
+Comando: `node atlas/vector_casos.mjs`
+
+~~~~text
+[
+ {
+  "caso": "cabe en el TOPE (1 KB) con un estado completo",
+  "ok": true,
+  "detalle": ""
+ },
+ {
+  "caso": "lee lo que hay: ciclo, recursos, cangrejo (desplazamiento redondeado), panel, tutorial, edificios, lugares, nodos",
+  "ok": true,
+  "detalle": ""
+ },
+ {
+  "caso": "vacio: cada hueco va a nd CON SU CAUSA (nunca un cero inventado, nunca undefined)",
+  "ok": true,
+  "detalle": ""
+ },
+ {
+  "caso": "el esquema explica cada clave del vector (lo que lee un LLM pequeno)",
+  "ok": true,
+  "detalle": ""
+ },
+ {
+  "caso": "solo LEE: armar dos veces el mismo estado da el mismo vector (determinista, sin reloj)",
+  "ok": true,
+  "detalle": ""
+ },
+ {
+  "caso": "acota por bytes UTF-8 reales y vuelve a medir tras el recorte (unicode)",
+  "ok": true,
+  "detalle": ""
+ },
+ {
+  "caso": "si el recorte normal no basta, fail-closed conserva contrato y causa",
+  "ok": true,
+  "detalle": ""
+ },
+ {
+  "caso": "el contrato cerrado admite el vector medido y rechaza claves o ausencias sin causa",
+  "ok": true,
+  "detalle": ""
+ }
+]
+~~~~
+
+#### local-1-10 · salida 0 (esperada 0)
+
+Comando: `node atlas/phase_gate.mjs`
+
+~~~~text
+{"gate":"phase","public_text_files":164,"initial_files":26,"gzip_initial_b":92156}
+~~~~
+
+#### local-1-11 · salida 0 (esperada 0)
+
+Comando: `node --test tests/map_zoom.test.mjs tests/onda_profunda.test.mjs tests/tarjeta_cantada.test.mjs tests/tabla_semantica.test.mjs`
+
+~~~~text
+TAP version 13
+# Subtest: contrato del repo: MIN 0.6, MAX 3, y data-zoom anotado
+ok 1 - contrato del repo: MIN 0.6, MAX 3, y data-zoom anotado
+  ---
+  duration_ms: 1.026052
+  type: 'test'
+  ...
+# Subtest: clamp del protocolo: fuera de rango queda en 0.6 / 3.0
+ok 2 - clamp del protocolo: fuera de rango queda en 0.6 / 3.0
+  ---
+  duration_ms: 0.235787
+  type: 'test'
+  ...
+# Subtest: monotonía: separar sube, juntar baja (zm0·d/d0)
+ok 3 - monotonía: separar sube, juntar baja (zm0·d/d0)
+  ---
+  duration_ms: 0.139579
+  type: 'test'
+  ...
+# Subtest: rueda: exp(-deltaY·0.0015), clamp final
+ok 4 - rueda: exp(-deltaY·0.0015), clamp final
+  ---
+  duration_ms: 0.171257
+  type: 'test'
+  ...
+# Subtest: la fuente lleva el clamp real (Math.max/Math.min): sin el, la suite cae
+ok 5 - la fuente lleva el clamp real (Math.max/Math.min): sin el, la suite cae
+  ---
+  duration_ms: 0.173091
+  type: 'test'
+  ...
+# Subtest: la ley del suelo manda: usa proyecta/ancla/profundidad de IsometricFloor, sin geometría propia
+ok 6 - la ley del suelo manda: usa proyecta/ancla/profundidad de IsometricFloor, sin geometría propia
+  ---
+  duration_ms: 1.205113
+  type: 'test'
+  ...
+# Subtest: pieza <16 KiB, vanilla, cero red
+ok 7 - pieza <16 KiB, vanilla, cero red
+  ---
+  duration_ms: 0.337315
+  type: 'test'
+  ...
+# Subtest: planifica: ancla y profundidad según la ley (huella incluida)
+ok 8 - planifica: ancla y profundidad según la ley (huella incluida)
+  ---
+  duration_ms: 0.246828
+  type: 'test'
+  ...
+# Subtest: escala viva: función pura del eje, clamp [0.75, 1.35], determinista
+ok 9 - escala viva: función pura del eje, clamp [0.75, 1.35], determinista
+  ---
+  duration_ms: 0.218034
+  type: 'test'
+  ...
+# Subtest: PUERTA DE LA (b) — orden del pintor: delante (mayor col+fila) pinta DESPUÉS y tapa
+ok 10 - PUERTA DE LA (b) — orden del pintor: delante (mayor col+fila) pinta DESPUÉS y tapa
+  ---
+  duration_ms: 0.269189
+  type: 'test'
+  ...
+# Subtest: SABOTAJE (la suite cae si encola ignora la ley): profundidad propia != profundidad de la ley
+ok 11 - SABOTAJE (la suite cae si encola ignora la ley): profundidad propia != profundidad de la ley
+  ---
+  duration_ms: 0.22145
+  type: 'test'
+  ...
+# Subtest: TABLA CONGELADA: los 7 sellos medidos, ni uno más ni uno menos
+ok 12 - TABLA CONGELADA: los 7 sellos medidos, ni uno más ni uno menos
+  ---
+  duration_ms: 1.205073
+  type: 'test'
+  ...
+# Subtest: CONSOLIDACIÓN (F305): una sola fuente física — crab_render_hd lee de la tabla y coincide
+ok 13 - CONSOLIDACIÓN (F305): una sola fuente física — crab_render_hd lee de la tabla y coincide
+  ---
+  duration_ms: 0.362832
+  type: 'test'
+  ...
+# Subtest: DERIVADOS del spec, por sello: flujo/pulso/escala/feedback; NO_DATA = silencio visual
+ok 14 - DERIVADOS del spec, por sello: flujo/pulso/escala/feedback; NO_DATA = silencio visual
+  ---
+  duration_ms: 0.261405
+  type: 'test'
+  ...
+# Subtest: sello desconocido = null: no se inventa NI color NI derivado (tabla congelada)
+ok 15 - sello desconocido = null: no se inventa NI color NI derivado (tabla congelada)
+  ---
+  duration_ms: 0.128397
+  type: 'test'
+  ...
+# Subtest: W2: el color nunca es el único canal — cada derivado lleva su sello textual
+ok 16 - W2: el color nunca es el único canal — cada derivado lleva su sello textual
+  ---
+  duration_ms: 0.200682
+  type: 'test'
+  ...
+# Subtest: determinista (gate maestro): mismo sello = mismos derivados, llamada a llamada
+ok 17 - determinista (gate maestro): mismo sello = mismos derivados, llamada a llamada
+  ---
+  duration_ms: 0.153815
+  type: 'test'
+  ...
+# Subtest: pieza <16 KiB, vanilla, cero red, cero assets
+ok 18 - pieza <16 KiB, vanilla, cero red, cero assets
+  ---
+  duration_ms: 0.444234
+  type: 'test'
+  ...
+# Subtest: SABOTAJE: tabla corrupta = suite ROJA (como en la (c))
+ok 19 - SABOTAJE: tabla corrupta = suite ROJA (como en la (c))
+  ---
+  duration_ms: 0.139518
+  type: 'test'
+  ...
+# Subtest: W3: Web Audio pura — cero archivos de audio, cero red, pieza <16 KiB
+ok 20 - W3: Web Audio pura — cero archivos de audio, cero red, pieza <16 KiB
+  ---
+  duration_ms: 1.326819
+  type: 'test'
+  ...
+# Subtest: tabla semántica MEDIDA usada, no reinventada: los números viven en AtlasToon.SELLOS
+ok 21 - tabla semántica MEDIDA usada, no reinventada: los números viven en AtlasToon.SELLOS
+  ---
+  duration_ms: 0.198358
+  type: 'test'
+  ...
+# Subtest: W1: FNV-1a determinista → base 220–660 Hz; mismo id = misma frecuencia
+ok 22 - W1: FNV-1a determinista → base 220–660 Hz; mismo id = misma frecuencia
+  ---
+  duration_ms: 0.168012
+  type: 'test'
+  ...
+# Subtest: VOZ=FORMA (M14): f_base = 220 + (hue/360)·660, medido contra la fórmula
+ok 23 - VOZ=FORMA (M14): f_base = 220 + (hue/360)·660, medido contra la fórmula
+  ---
+  duration_ms: 0.150409
+  type: 'test'
+  ...
+# Subtest: melodía determinista: mismo término y sello = mismas notas; sello desconocido = NO_DATA con causa
+ok 24 - melodía determinista: mismo término y sello = mismas notas; sello desconocido = NO_DATA con causa
+  ---
+  duration_ms: 1.502004
+  type: 'test'
+  ...
+# Subtest: SIN GESTO NO SUENA (reduced-motion: corte limpio): canta sin melodía/no medida = NO_DATA, nunca sonido
+ok 25 - SIN GESTO NO SUENA (reduced-motion: corte limpio): canta sin melodía/no medida = NO_DATA, nunca sonido
+  ---
+  duration_ms: 0.295067
+  type: 'test'
+  ...
+# Subtest: SABOTAJE OLA1-P1: la tabla congelada resiste la corrupcion; si se dejara corromper, la melodía deriva
+ok 26 - SABOTAJE OLA1-P1: la tabla congelada resiste la corrupcion; si se dejara corromper, la melodía deriva
+  ---
+  duration_ms: 0.141202
+  type: 'test'
+  ...
+1..26
+# tests 26
+# suites 0
+# pass 26
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 138.878868
+~~~~
+
+#### local-1-12 · salida 0 (esperada 0)
+
+Comando: `git diff --check`
+
+~~~~text
+~~~~
+
+#### local-2-00 · salida 0 (esperada 0)
+
+Comando: `node atlas/phase_T3_cases.mjs`
+
+~~~~text
+{"piece":"T3","bytes":15978,"object_sha256":"cd6d33ee6780780189482bfa031aa36f00d0c2b2709e3112f08b203b7676ee9a","bytes_sha256":"5cc41650b10112ad39d2485242e9b6fb961c8586a692a278db5d782f742e7a81","reverted_object_sha256":"b81b02c25f594d885bd1a06ad8ac9df1c01bd4d4159b8f3d9b07fecb3c880939"}
+~~~~
+
+#### local-2-01 · salida 0 (esperada 0)
+
+Comando: `node atlas/phase_T3_cases.mjs --sabotages`
+
+~~~~text
+{"attack":"inc_h","red":true,"invariant":"T3_LABEL_INC_H"}
+{"attack":"army","red":true,"invariant":"T3_LABEL_ARMY"}
+{"attack":"third","red":true,"invariant":"T3_DELTA"}
+{"attack":"compact","red":true,"invariant":"T3_COMPACT"}
+{"attack":"size","red":true,"invariant":"T3_SIZE"}
+{"attack":"protected-0","red":true,"invariant":"T3_PROTECTED:public/game/valores.js"}
+{"attack":"protected-1","red":true,"invariant":"T3_PROTECTED:public/assets/atlas-motor.js"}
+{"attack":"protected-2","red":true,"invariant":"T3_PROTECTED:public/game/gacha.js"}
+{"attack":"protected-3","red":true,"invariant":"T3_PROTECTED:public/game/core.js"}
+{"attack":"protected-4","red":true,"invariant":"T3_PROTECTED:public/game/ui-invoca.js"}
+~~~~
+
+#### local-2-02 · salida 0 (esperada 0)
+
+Comando: `node atlas/chrome_launch_cases.mjs`
+
+~~~~text
+Chrome unavailable: exit 1, zero steps, NO_DATA with cause; rejection verified.
+~~~~
+
+#### local-2-03 · salida 0 (esperada 0)
+
+Comando: `node atlas/phase_M0_cases.mjs`
+
+~~~~text
+{"piece":"M0","bytes":15994,"object_sha256":"b81b02c25f594d885bd1a06ad8ac9df1c01bd4d4159b8f3d9b07fecb3c880939","equal":true}
+~~~~
+
+#### local-2-04 · salida 1 (esperada 1)
+
+Comando: `node --stack-trace-limit=0 atlas/phase_M0_cases.mjs --sabotage`
+
+~~~~text
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+[AssertionError [ERR_ASSERTION]: English object changed
++ actual - expected
+
++ '65b83e6502bd59655c8e1e9ee470f759764bee2249d3e637bb4963c41c7a7d7c'
+- 'b81b02c25f594d885bd1a06ad8ac9df1c01bd4d4159b8f3d9b07fecb3c880939'
+] {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: '65b83e6502bd59655c8e1e9ee470f759764bee2249d3e637bb4963c41c7a7d7c',
+  expected: 'b81b02c25f594d885bd1a06ad8ac9df1c01bd4d4159b8f3d9b07fecb3c880939',
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v22.22.1
+~~~~
+
+#### local-2-05 · salida 0 (esperada 0)
+
+Comando: `python3 test_web.py`
+
+~~~~text
+test_la_version_del_service_worker_sigue_a_lo_publicado (__main__.Cabezal.test_la_version_del_service_worker_sigue_a_lo_publicado)
+Desplegar no es publicar. Medido en produccion, no deducido. ... ok
+test_ninguna_pagina_ofrece_un_enlace_y_lo_desmiente (__main__.Cabezal.test_ninguna_pagina_ofrece_un_enlace_y_lo_desmiente)
+No se puede poner un boton y decir al lado que no funciona. ... ok
+test_todo_panel_publicado_dice_lo_que_falla (__main__.Cabezal.test_todo_panel_publicado_dice_lo_que_falla)
+Una ficha que solo cuenta virtudes es publicidad, no una medida. ... skipped 'no hay paneles publicados todavia'
+test_dice_que_se_envia_en_las_nueve_lenguas (__main__.ComentarEnTodasLasPaginas.test_dice_que_se_envia_en_las_nueve_lenguas) ... ok
+test_el_modulo_usa_la_puerta_que_ya_existe_y_no_abre_otra (__main__.ComentarEnTodasLasPaginas.test_el_modulo_usa_la_puerta_que_ya_existe_y_no_abre_otra) ... ok
+test_ningun_cero_decorativo (__main__.Contadores.test_ningun_cero_decorativo)
+Un 0 solo vale si `como` NOMBRA la lectura de la que salio. ... ok
+test_toda_metrica_esta_medida_o_declara_su_causa (__main__.Contadores.test_toda_metrica_esta_medida_o_declara_su_causa) ... ok
+test_cero_frameworks (__main__.Doctrina.test_cero_frameworks) ... ok
+test_cero_rutas_absolutas_ni_ips (__main__.Doctrina.test_cero_rutas_absolutas_ni_ips)
+Lo que protege: que una IP de la tailnet no acabe en la web publica. ... ok
+test_el_cristal_degrada_y_se_puede_apagar (__main__.Doctrina.test_el_cristal_degrada_y_se_puede_apagar)
+Canon v3.0 «Liquid Glass», firmado el 2026-08-29. ... ok
+test_el_head_entero_no_mezcla_los_dos_estilos (__main__.Doctrina.test_el_head_entero_no_mezcla_los_dos_estilos)
+El de arriba solo mira `assets/`. La regla es del `<head>` entero. ... ok
+test_la_guia_clona_donde_el_instalador_instala (__main__.Doctrina.test_la_guia_clona_donde_el_instalador_instala)
+La web decia `~/aurelius`; `install.sh` usa `~/preceptoros`. ... ok
+test_ninguna_hoja_esta_rota_por_dentro (__main__.Doctrina.test_ninguna_hoja_esta_rota_por_dentro)
+Una hoja que el navegador no sabe leer pasaba este gate en verde. ... ok
+test_una_pagina_no_mezcla_rutas_absolutas_y_relativas (__main__.Doctrina.test_una_pagina_no_mezcla_rutas_absolutas_y_relativas)
+Dos estilos de ruta en el mismo `<head>` es una averia latente. ... ok
+test_el_aviso_de_solo_ingles_va_primero_en_la_pestana_de_entrada (__main__.ElJuegoEnInglesEnLasNueve.test_el_aviso_de_solo_ingles_va_primero_en_la_pestana_de_entrada) ... ok
+test_las_lenguas_del_juego_son_solo_ingles (__main__.ElJuegoEnInglesEnLasNueve.test_las_lenguas_del_juego_son_solo_ingles) ... ok
+test_cada_fichero_bajo_el_tope (__main__.Estructura.test_cada_fichero_bajo_el_tope)
+El tope rige TAMBIEN los datos, y desde el 2026-08-31. ... ok
+test_cero_html_en_la_raiz (__main__.Estructura.test_cero_html_en_la_raiz) ... ok
+test_counters_no_se_queda_atras_de_este_mismo_gate (__main__.Estructura.test_counters_no_se_queda_atras_de_este_mismo_gate)
+La puerta trasera que dejo pasar 19 cuando el gate ya media 25. ... ok
+test_counters_tiene_dos_duenos_y_ninguno_pisa_al_otro (__main__.Estructura.test_counters_tiene_dos_duenos_y_ninguno_pisa_al_otro)
+Dos guiones escriben este fichero. Ninguno puede borrar al otro. ... ok
+test_la_capa_soberana_va_la_ultima_y_no_pide_nada_fuera (__main__.Estructura.test_la_capa_soberana_va_la_ultima_y_no_pide_nada_fuera)
+Soberania Violeta-Cobre, 2026-09-25. Una capa ENCIMA del tema. ... ok
+test_la_prosa_del_pie_va_PLEGADA (__main__.Estructura.test_la_prosa_del_pie_va_PLEGADA)
+Una pagina limpia: el que entra evalua, el que quiere leer abre. ... ok
+test_la_tarjeta_social_apunta_a_algo_que_existe (__main__.Estructura.test_la_tarjeta_social_apunta_a_algo_que_existe)
+og:image, og:url y el favicon, comprobados contra el disco. ... ok
+test_las_portadas_declaran_hreflang (__main__.Estructura.test_las_portadas_declaran_hreflang)
+Tres traducciones sin hreflang son tres paginas sueltas para un ... ok
+test_maximo_ocho_paginas (__main__.Estructura.test_maximo_ocho_paginas) ... ok
+test_ningun_fichero_gasta_medio_viaje_de_red (__main__.Estructura.test_ningun_fichero_gasta_medio_viaje_de_red)
+El tope de disco es un PROXY; esto mide la cosa de verdad. ... ok
+test_r_widget_y_r_tipografia (__main__.Estructura.test_r_widget_y_r_tipografia)
+El anexo visual, comprobado y no confiado. ... ok
+test_toda_pagina_ofrece_LAS_LENGUAS_QUE_EXISTEN (__main__.Estructura.test_toda_pagina_ofrece_LAS_LENGUAS_QUE_EXISTEN)
+La rueda de idiomas sale de aqui, y por eso ofrecia tres de ocho. ... ok
+test_wrangler_apunta_a_public (__main__.Estructura.test_wrangler_apunta_a_public) ... ok
+test_glifo_es_accesible_local_y_acotado (__main__.GlifoSemantico.test_glifo_es_accesible_local_y_acotado) ... ok
+test_palette_vectorial_contrasta_con_el_panel (__main__.GlifoSemantico.test_palette_vectorial_contrasta_con_el_panel) ... ok
+test_la_api_no_se_pide_al_cargar (__main__.Identidad.test_la_api_no_se_pide_al_cargar)
+El tunel esta admitido como enlace, no como subrecurso. ... ok
+test_la_firma_va_entera (__main__.Identidad.test_la_firma_va_entera)
+`firmar()` devolvia `ed25519:` + 16 caracteres + puntos suspensivos. ... ok
+test_ningun_asset_precacheado_esta_muerto (__main__.Imagenes.test_ningun_asset_precacheado_esta_muerto)
+Todo lo que `sw.js` mete en la cache lo pinta alguien. ... ok
+test_no_vuelven_los_raster_retirados (__main__.Imagenes.test_no_vuelven_los_raster_retirados)
+Firma F2 del Soberano, 2026-10-10: identidad pura, cero imagenes. ... ok
+test_la_identidad_no_cambia_ni_un_byte (__main__.LasTraduccionesSeSacanYSeMeten.test_la_identidad_no_cambia_ni_un_byte) ... ok
+test_ninguna_familia_lleva_un_rotulo_vacio (__main__.LasTraduccionesSeSacanYSeMeten.test_ninguna_familia_lleva_un_rotulo_vacio)
+El pie de Instalar salio como un triangulo SIN rotulo en ocho de nueve ... ok
+test_cada_familia_dice_exactamente_sus_claves_firmadas (__main__.LasTresFamilias.test_cada_familia_dice_exactamente_sus_claves_firmadas) ... ok
+test_cada_lengua_dice_de_donde_salio (__main__.LasTresFamilias.test_cada_lengua_dice_de_donde_salio)
+Quien lea esto tiene que poder separar la salida CRUDA del modelo de ... ok
+test_el_ruso_y_el_griego_estan_en_su_alfabeto (__main__.LasTresFamilias.test_el_ruso_y_el_griego_estan_en_su_alfabeto)
+El fallo que ya esta medido en el canon: un modelo pequeno se pasa ... ok
+test_ninguna_traduccion_llega_vacia (__main__.LasTresFamilias.test_ninguna_traduccion_llega_vacia)
+Una cadena vacia pasa la paridad de claves y sale en blanco. ... ok
+test_cada_familia_por_lengua_esta_completa_o_su_hueco_declarado (__main__.LoQueNoSeVeConElGateVerde.test_cada_familia_por_lengua_esta_completa_o_su_hueco_declarado) ... ok
+test_cada_pagina_que_captura_tiene_su_puerta_de_salida_y_su_sello (__main__.LoQueNoSeVeConElGateVerde.test_cada_pagina_que_captura_tiene_su_puerta_de_salida_y_su_sello)
+Pedido por el Soberano el 2026-09-24: que cada sitio desde el que un ... ok
+test_lo_que_depende_de_bronce_se_carga_despues (__main__.LoQueNoSeVeConElGateVerde.test_lo_que_depende_de_bronce_se_carga_despues) ... ok
+test_el_manifiesto_dice_lo_que_la_pagina_pinta (__main__.PWA.test_el_manifiesto_dice_lo_que_la_pagina_pinta) ... ok
+test_el_maskable_cabe_de_verdad_en_su_circulo (__main__.PWA.test_el_maskable_cabe_de_verdad_en_su_circulo)
+No que lo diga el manifiesto: que lo diga el fichero. ... ok
+test_el_service_worker_esta_enchufado (__main__.PWA.test_el_service_worker_esta_enchufado)
+Un worker que nadie registra es un fichero, no un PWA. ... ok
+test_el_worker_no_guarda_lo_ajeno_ni_los_datos (__main__.PWA.test_el_worker_no_guarda_lo_ajeno_ni_los_datos)
+Las dos reglas que el worker anterior rompia. ... ok
+test_el_worker_pasa_su_arnes (__main__.PWA.test_el_worker_pasa_su_arnes)
+Las reglas de enrutado, ejecutadas de verdad. ... ok
+test_iconos_y_tarjeta_salen_del_emblema (__main__.PWA.test_iconos_y_tarjeta_salen_del_emblema)
+Firma F2-8 del Soberano, 2026-10-10: favicon, iconos PWA y og:image siguen ... ok
+test_los_iconos_no_engordan_sin_permiso (__main__.PWA.test_los_iconos_no_engordan_sin_permiso)
+Los iconos pasaron de 12 KB a 180 KB al cambiar de arte. ... ok
+test_manifest_es_minimo (__main__.PWA.test_manifest_es_minimo)
+Lo que hace falta para instalar, y nada de adorno. ... ok
+test_sin_conexion_hay_algo_que_leer (__main__.PWA.test_sin_conexion_hay_algo_que_leer)
+Y en los tres idiomas: quien instala desde /fr/ no merece un ... ok
+test_sw_cachea_los_nuevos_assets (__main__.PWA.test_sw_cachea_los_nuevos_assets)
+El worker tiene que conocer TODO lo que la portada necesita. ... ok
+test_un_icono_maskable_no_puede_ser_el_mismo_que_el_normal (__main__.PWA.test_un_icono_maskable_no_puede_ser_el_mismo_que_el_normal)
+Medido el 2026-08-30 sobre icon-512.png y por eso existe. ... ok
+test_un_solo_manifiesto (__main__.PWA.test_un_solo_manifiesto)
+Habia `manifest.json` y `manifest.webmanifest` identicos byte a ... ok
+test_los_enlaces_internos_existen (__main__.Paginas.test_los_enlaces_internos_existen)
+Ningun enlace relativo apunta a una pagina que no esta. ... ok
+test_selector_de_idioma_por_path (__main__.Paginas.test_selector_de_idioma_por_path) ... ok
+test_todas_las_paginas_tienen_pie_honesto (__main__.Paginas.test_todas_las_paginas_tienen_pie_honesto) ... ok
+test_el_juego_se_monta_en_el_panel_no_encima (__main__.Portada.test_el_juego_se_monta_en_el_panel_no_encima) ... ok
+test_la_pagina_se_reordena_no_carga (__main__.Portada.test_la_pagina_se_reordena_no_carga)
+J10: cambiar de pestana va en startViewTransition, con el cambio de siempre como reserva y SIN ... ok
+test_las_diez_son_la_plantilla (__main__.Portada.test_las_diez_son_la_plantilla) ... ok
+test_menu_y_hoja_nunca_quedan_abiertos_a_la_vez (__main__.Portada.test_menu_y_hoja_nunca_quedan_abiertos_a_la_vez) ... ok
+test_solo_carga_lo_que_el_juego_necesita (__main__.Portada.test_solo_carga_lo_que_el_juego_necesita)
+Medido (propuestas/mudanza-20261011/pide.js): Identity, el canal, la PWA y el juego. ... ok
+test_un_solo_panel_y_nada_del_hub (__main__.Portada.test_un_solo_panel_y_nada_del_hub) ... ok
+test_va_donde_va_la_otra_puerta (__main__.Reescrituras.test_va_donde_va_la_otra_puerta)
+Las dos puertas se cargan juntas o la nueva no existe. ... ok
+test_el_sitemap_no_anuncia_paginas_que_no_estan (__main__.Sitemap.test_el_sitemap_no_anuncia_paginas_que_no_estan)
+Un sitemap rancio manda al buscador a un 404 que no ve ningun humano. ... ok
+test_robots_apunta_al_sitemap (__main__.Sitemap.test_robots_apunta_al_sitemap) ... ok
+test_toda_pagina_de_contenido_esta_en_el_sitemap (__main__.Sitemap.test_toda_pagina_de_contenido_esta_en_el_sitemap)
+La averia simetrica: la pagina existe y el buscador no la ve. ... ok
+test_NINGUNA_pagina_cae_al_respaldo_en_castellano (__main__.Traducciones.test_NINGUNA_pagina_cae_al_respaldo_en_castellano)
+La regla entera, y contra TODOS los guiones que carga cada pagina. ... ok
+test_NINGUNA_pagina_repite_LA_PROSA_DE_OTRA_LENGUA (__main__.Traducciones.test_NINGUNA_pagina_repite_LA_PROSA_DE_OTRA_LENGUA)
+El hueco que ni el respaldo ni las claves ausentes podian ver. ... ok
+test_NINGUN_guion_lleva_CASTELLANO_suelto (__main__.Traducciones.test_NINGUN_guion_lleva_CASTELLANO_suelto)
+El hueco por donde se colo el Showman, y que el otro guardian no ve. ... ok
+test_cada_pagina_declara_SU_lengua_en_el_bloque (__main__.Traducciones.test_cada_pagina_declara_SU_lengua_en_el_bloque)
+`lang` dentro del bloque no es decorativo: se lo lleva el modelo. ... ok
+test_los_rotulos_del_ENVIO_viven_en_las_ocho (__main__.Traducciones.test_los_rotulos_del_ENVIO_viven_en_las_ocho)
+`enviar.js` esta perdonado arriba, asi que aqui se paga el perdon. ... ok
+test_la_propuesta_no_lista_ficheros_que_ya_no_existen (__main__.WebLimpia.test_la_propuesta_no_lista_ficheros_que_ya_no_existen) ... ok
+test_ningun_duplicado_exacto_nuevo (__main__.WebLimpia.test_ningun_duplicado_exacto_nuevo) ... ok
+test_ningun_enlace_interno_roto (__main__.WebLimpia.test_ningun_enlace_interno_roto) ... ok
+test_ningun_huerfano_nuevo (__main__.WebLimpia.test_ningun_huerfano_nuevo) ... ok
+
+----------------------------------------------------------------------
+Ran 78 tests in 1.653s
+
+OK (skipped=1)
+~~~~
+
+#### local-2-06 · salida 0 (esperada 0)
+
+Comando: `python3 atlas/test_atlas.py`
+
+~~~~text
+.................................................................................................................................................................................
+----------------------------------------------------------------------
+Ran 177 tests in 25.582s
+
+OK
+  borrador ar: 184/275 claves
+  borrador de: 184/275 claves
+  borrador el: 184/275 claves
+  borrador es: 184/275 claves
+  borrador fr: 184/275 claves
+  borrador it: 184/275 claves
+  borrador pt: 184/275 claves
+  borrador ru: 184/275 claves
+~~~~
+
+#### local-2-07 · salida 0 (esperada 0)
+
+Comando: `node arnes_sw.mjs`
+
+~~~~text
+  ok  precachea las portadas, su superficie y el juego  (144 rutas)
+  ok  el shell trae el juego (D7): la puerta, el cangrejo y la arena
+  ok  el shell trae la portada de cada lengua
+  ok  el shell trae la identidad y el canal
+  ok  el shell YA NO trae nada del hub
+  ok  el shell NO trae ninguna de las dos familias de iconos de companero
+  ok  otro origen pasa de largo
+  ok  la API del Agora pasa de largo
+  ok  counters.json no se cachea (es una medida)
+  ok  atlas-en.json SI se sirve del cache (es contenido del juego)
+  ok  el manifiesto va a red primero  (cuerpo red:https://preceptoros.org/manifest.webmanifest)
+  ok  navegacion sale del shell aun sin red  (status 200)
+  ok  sin red sintetiza pagina  (status 503)
+  ok  la respeta el idioma de la ruta
+  ok  la pagina sin red mete el texto en un panel
+  ok  declara --panel-bg y --panel-fg
+  ok  un POST pasa de largo
+  ok  install no deja al worker nuevo esperando a que cierren las pestanas  (1 llamadas a skipWaiting)
+  ok  activate borra el cache de la version anterior
+  ok  el precache no guarda respuestas redirigidas  (0 de 144 marcadas)
+  ok  la navegacion no devuelve una respuesta redirigida  (redirected=false)
+  ok  el refresco por detras tampoco guarda la marca
+
+22/22 en verde
+~~~~
+
+#### seal-after-restart · salida 0 (esperada 0)
+
+Comando: `python3 bin/sellar.py`
+
+~~~~text
+NADA QUE SELLAR · lo publicado no ha cambiado desde preceptoros-2026-17-abht
+~~~~
+
+#### local-2-08 · salida 0 (esperada 0)
+
+Comando: `node atlas/sin_undefined.mjs`
+
+~~~~text
+{
+  "fallos": [],
+  "pasos": 24
+}
+~~~~
+
+#### local-2-09 · salida 0 (esperada 0)
+
+Comando: `node atlas/vector_casos.mjs`
+
+~~~~text
+[
+ {
+  "caso": "cabe en el TOPE (1 KB) con un estado completo",
+  "ok": true,
+  "detalle": ""
+ },
+ {
+  "caso": "lee lo que hay: ciclo, recursos, cangrejo (desplazamiento redondeado), panel, tutorial, edificios, lugares, nodos",
+  "ok": true,
+  "detalle": ""
+ },
+ {
+  "caso": "vacio: cada hueco va a nd CON SU CAUSA (nunca un cero inventado, nunca undefined)",
+  "ok": true,
+  "detalle": ""
+ },
+ {
+  "caso": "el esquema explica cada clave del vector (lo que lee un LLM pequeno)",
+  "ok": true,
+  "detalle": ""
+ },
+ {
+  "caso": "solo LEE: armar dos veces el mismo estado da el mismo vector (determinista, sin reloj)",
+  "ok": true,
+  "detalle": ""
+ },
+ {
+  "caso": "acota por bytes UTF-8 reales y vuelve a medir tras el recorte (unicode)",
+  "ok": true,
+  "detalle": ""
+ },
+ {
+  "caso": "si el recorte normal no basta, fail-closed conserva contrato y causa",
+  "ok": true,
+  "detalle": ""
+ },
+ {
+  "caso": "el contrato cerrado admite el vector medido y rechaza claves o ausencias sin causa",
+  "ok": true,
+  "detalle": ""
+ }
+]
+~~~~
+
+#### local-2-10 · salida 0 (esperada 0)
+
+Comando: `node atlas/phase_gate.mjs`
+
+~~~~text
+{"gate":"phase","public_text_files":164,"initial_files":26,"gzip_initial_b":92156}
+~~~~
+
+#### local-2-11 · salida 0 (esperada 0)
+
+Comando: `node --test tests/map_zoom.test.mjs tests/onda_profunda.test.mjs tests/tarjeta_cantada.test.mjs tests/tabla_semantica.test.mjs`
+
+~~~~text
+TAP version 13
+# Subtest: contrato del repo: MIN 0.6, MAX 3, y data-zoom anotado
+ok 1 - contrato del repo: MIN 0.6, MAX 3, y data-zoom anotado
+  ---
+  duration_ms: 1.030139
+  type: 'test'
+  ...
+# Subtest: clamp del protocolo: fuera de rango queda en 0.6 / 3.0
+ok 2 - clamp del protocolo: fuera de rango queda en 0.6 / 3.0
+  ---
+  duration_ms: 0.195934
+  type: 'test'
+  ...
+# Subtest: monotonía: separar sube, juntar baja (zm0·d/d0)
+ok 3 - monotonía: separar sube, juntar baja (zm0·d/d0)
+  ---
+  duration_ms: 0.121726
+  type: 'test'
+  ...
+# Subtest: rueda: exp(-deltaY·0.0015), clamp final
+ok 4 - rueda: exp(-deltaY·0.0015), clamp final
+  ---
+  duration_ms: 0.122317
+  type: 'test'
+  ...
+# Subtest: la fuente lleva el clamp real (Math.max/Math.min): sin el, la suite cae
+ok 5 - la fuente lleva el clamp real (Math.max/Math.min): sin el, la suite cae
+  ---
+  duration_ms: 0.162612
+  type: 'test'
+  ...
+# Subtest: la ley del suelo manda: usa proyecta/ancla/profundidad de IsometricFloor, sin geometría propia
+ok 6 - la ley del suelo manda: usa proyecta/ancla/profundidad de IsometricFloor, sin geometría propia
+  ---
+  duration_ms: 1.833047
+  type: 'test'
+  ...
+# Subtest: pieza <16 KiB, vanilla, cero red
+ok 7 - pieza <16 KiB, vanilla, cero red
+  ---
+  duration_ms: 0.459151
+  type: 'test'
+  ...
+# Subtest: planifica: ancla y profundidad según la ley (huella incluida)
+ok 8 - planifica: ancla y profundidad según la ley (huella incluida)
+  ---
+  duration_ms: 0.369325
+  type: 'test'
+  ...
+# Subtest: escala viva: función pura del eje, clamp [0.75, 1.35], determinista
+ok 9 - escala viva: función pura del eje, clamp [0.75, 1.35], determinista
+  ---
+  duration_ms: 0.274489
+  type: 'test'
+  ...
+# Subtest: PUERTA DE LA (b) — orden del pintor: delante (mayor col+fila) pinta DESPUÉS y tapa
+ok 10 - PUERTA DE LA (b) — orden del pintor: delante (mayor col+fila) pinta DESPUÉS y tapa
+  ---
+  duration_ms: 0.383741
+  type: 'test'
+  ...
+# Subtest: SABOTAJE (la suite cae si encola ignora la ley): profundidad propia != profundidad de la ley
+ok 11 - SABOTAJE (la suite cae si encola ignora la ley): profundidad propia != profundidad de la ley
+  ---
+  duration_ms: 0.303633
+  type: 'test'
+  ...
+# Subtest: TABLA CONGELADA: los 7 sellos medidos, ni uno más ni uno menos
+ok 12 - TABLA CONGELADA: los 7 sellos medidos, ni uno más ni uno menos
+  ---
+  duration_ms: 1.451931
+  type: 'test'
+  ...
+# Subtest: CONSOLIDACIÓN (F305): una sola fuente física — crab_render_hd lee de la tabla y coincide
+ok 13 - CONSOLIDACIÓN (F305): una sola fuente física — crab_render_hd lee de la tabla y coincide
+  ---
+  duration_ms: 0.386206
+  type: 'test'
+  ...
+# Subtest: DERIVADOS del spec, por sello: flujo/pulso/escala/feedback; NO_DATA = silencio visual
+ok 14 - DERIVADOS del spec, por sello: flujo/pulso/escala/feedback; NO_DATA = silencio visual
+  ---
+  duration_ms: 0.270221
+  type: 'test'
+  ...
+# Subtest: sello desconocido = null: no se inventa NI color NI derivado (tabla congelada)
+ok 15 - sello desconocido = null: no se inventa NI color NI derivado (tabla congelada)
+  ---
+  duration_ms: 0.121996
+  type: 'test'
+  ...
+# Subtest: W2: el color nunca es el único canal — cada derivado lleva su sello textual
+ok 16 - W2: el color nunca es el único canal — cada derivado lleva su sello textual
+  ---
+  duration_ms: 0.196103
+  type: 'test'
+  ...
+# Subtest: determinista (gate maestro): mismo sello = mismos derivados, llamada a llamada
+ok 17 - determinista (gate maestro): mismo sello = mismos derivados, llamada a llamada
+  ---
+  duration_ms: 0.140009
+  type: 'test'
+  ...
+# Subtest: pieza <16 KiB, vanilla, cero red, cero assets
+ok 18 - pieza <16 KiB, vanilla, cero red, cero assets
+  ---
+  duration_ms: 0.385535
+  type: 'test'
+  ...
+# Subtest: SABOTAJE: tabla corrupta = suite ROJA (como en la (c))
+ok 19 - SABOTAJE: tabla corrupta = suite ROJA (como en la (c))
+  ---
+  duration_ms: 0.139389
+  type: 'test'
+  ...
+# Subtest: W3: Web Audio pura — cero archivos de audio, cero red, pieza <16 KiB
+ok 20 - W3: Web Audio pura — cero archivos de audio, cero red, pieza <16 KiB
+  ---
+  duration_ms: 1.427255
+  type: 'test'
+  ...
+# Subtest: tabla semántica MEDIDA usada, no reinventada: los números viven en AtlasToon.SELLOS
+ok 21 - tabla semántica MEDIDA usada, no reinventada: los números viven en AtlasToon.SELLOS
+  ---
+  duration_ms: 0.228483
+  type: 'test'
+  ...
+# Subtest: W1: FNV-1a determinista → base 220–660 Hz; mismo id = misma frecuencia
+ok 22 - W1: FNV-1a determinista → base 220–660 Hz; mismo id = misma frecuencia
+  ---
+  duration_ms: 0.17252
+  type: 'test'
+  ...
+# Subtest: VOZ=FORMA (M14): f_base = 220 + (hue/360)·660, medido contra la fórmula
+ok 23 - VOZ=FORMA (M14): f_base = 220 + (hue/360)·660, medido contra la fórmula
+  ---
+  duration_ms: 0.134129
+  type: 'test'
+  ...
+# Subtest: melodía determinista: mismo término y sello = mismas notas; sello desconocido = NO_DATA con causa
+ok 24 - melodía determinista: mismo término y sello = mismas notas; sello desconocido = NO_DATA con causa
+  ---
+  duration_ms: 1.698818
+  type: 'test'
+  ...
+# Subtest: SIN GESTO NO SUENA (reduced-motion: corte limpio): canta sin melodía/no medida = NO_DATA, nunca sonido
+ok 25 - SIN GESTO NO SUENA (reduced-motion: corte limpio): canta sin melodía/no medida = NO_DATA, nunca sonido
+  ---
+  duration_ms: 0.298443
+  type: 'test'
+  ...
+# Subtest: SABOTAJE OLA1-P1: la tabla congelada resiste la corrupcion; si se dejara corromper, la melodía deriva
+ok 26 - SABOTAJE OLA1-P1: la tabla congelada resiste la corrupcion; si se dejara corromper, la melodía deriva
+  ---
+  duration_ms: 0.138456
+  type: 'test'
+  ...
+1..26
+# tests 26
+# suites 0
+# pass 26
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 136.540164
+~~~~
+
+#### local-2-12 · salida 0 (esperada 0)
+
+Comando: `git diff --check`
+
+~~~~text
+~~~~
+
+### Resumen medido del árbol vigente antes de CI
+
+Local n=2 verde: T3 y diez sabotajes por invariante; histórico M0 + rojo por borrado; rechazo de Chrome ausente; web 78 pruebas/1 skip (sin paneles publicados); Atlas 177/177; SW 22/22/144 rutas; Chrome 24 pasos/0 fallos con rótulos T3 observados; vector 8/8; fase 164 ficheros/26 iniciales/gzip 92.156 B; visuales heredados 26/26; diff limpio. Todo sobre los mismos bytes públicos. Sello ASIGNADO abht / 897e9e9ecc559910; seco NADA QUE SELLAR. Los artefactos propios comprobados por fase son menores de 16.384 B. Métricas ajenas pruebas_app/pruebas_web exactamente preservadas; no cifras APP nuevas.
+
+NO_DATA con causa: CI doble ×2 sobre el commit todavía no creado/publicado no se ha ejecutado; se medirá y pegará por SHA exacto en #110. FPS físico/A11Y física de esta revisión no medidos por no abrir nueva sesión de dispositivo; Chrome no los sustituye. Gastos CLI NO_DATA, contador verificable no expuesto. Sin modelos locales ni nueva delegación. Sin firma humana emitida por el agente, sin merge ni despliegue afirmados. Sin main directo, jetson, ramas claude/mistral, #89, raíz congelada ni destinos del triaje. Al cerrar T3, PARA.
