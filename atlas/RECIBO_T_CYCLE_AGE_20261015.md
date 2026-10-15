@@ -45,3 +45,13 @@ La corrida local aislada lo detectó rojo en dos aserciones. Se conserva la guar
 de atributos data-* y se añade al mismo caso la ejecución de los 13 casos de
 radio contra el módulo real, incluidos los límites LIVE/STALE y los ciclos
 no medidos. No se elimina ni omite el caso; se verifica el comportamiento nuevo.
+
+## Cierre publicado y fusionado
+
+PR #83: https://github.com/piskyRpapalo/preceptoros-web/pull/83
+Head publicado cf5e4a70135ca1ae2f539795f75fa0058fd56bbb.
+CI gate 38720797954, job 116374554579: dos pasadas completas verdes.
+Por pasada: web 76 casos, 3 omisiones en Python 3.11 de CI; Atlas 175;
+SW 22/22; privacidad de ocupación 17; ventana 14; radio 13. Verifica verde.
+Merge ejecutado con FIRMO: bcaf2fd7ee23a7e81025ad99e93480e1c480818a.
+Cierre anterior al inicio de la reparación del contador de recursos.
