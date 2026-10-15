@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "preceptoros.audio-feedback-manager.input/1",
+  "title": "AudioFeedbackManager input",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["habilidad", "eventos"],
+  "properties": {
+    "habilidad": {"enum": ["swim", "reach"]},
+    "eventos": {"type": "integer", "minimum": 1, "maximum": 400}
+  }
+}

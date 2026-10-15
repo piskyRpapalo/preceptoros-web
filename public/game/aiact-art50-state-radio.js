@@ -23,6 +23,13 @@
     var g = ((grado % 5) + 5) % 5, o = Math.max(0, Math.min(2, octava));
     return Math.round(BASE_HZ * Math.pow(2, o + PENTA[g] / 12) * 100) / 100;
   }
+  /* Una nota discreta para feedback opt-in; usa la misma receta local que la Radio. */
+  function tocaNota(grado, octava) {
+    if (!Number.isInteger(grado) || !Number.isInteger(octava)) { return null; }
+    var f = nota(grado, octava), S = raiz.AtlasSintesis;
+    if (!S || typeof S.suena !== 'function') { return null; }
+    return S.suena({ tipo: 'radio', portadora: f, moduladora: Math.round(f * 2), indice: 35, dur: 0.28, gan: 0.07 });
+  }
   /* El guion sonoro de una instantanea: ocho notas, cada una de una cifra. Puro. */
   function guion(i) {
     if (!i || i.esquema !== 'atlas.instantanea/1' || !i.recursos) { return null; }
@@ -85,7 +92,7 @@
     panel.appendChild(d);
   }
 
-  var AtlasRadio = { BASE_HZ: BASE_HZ, PENTA: PENTA, nota: nota, guion: guion, boletin: boletin, huella: huella, toca: toca, locutor: locutor, monta: monta };
+  var AtlasRadio = { BASE_HZ: BASE_HZ, PENTA: PENTA, nota: nota, tocaNota: tocaNota, guion: guion, boletin: boletin, huella: huella, toca: toca, locutor: locutor, monta: monta };
   if (typeof module === 'object' && module.exports) { module.exports = AtlasRadio; }
   else { raiz.AtlasRadio = AtlasRadio; }
 })(this);
