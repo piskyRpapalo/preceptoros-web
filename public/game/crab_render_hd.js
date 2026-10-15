@@ -15,7 +15,10 @@
 (function (raiz) {
   'use strict';
   /* La tabla de sellos de la ronda: hue por sello. Lo que no esta aqui no tiene color (NO_DATA). */
-  var SELLOS = { LIVE: 120, PROPUESTA: 45, FIRMADO: 270, ERROR: 0, NO_DATA: 240, SIMULATED: 30, STALE: 60 };
+  /* OLA 1 P1 (F305, consolidacion): la tabla vive AHORA en tabla_semantica.js — la UNICA fuente fisica. Este modulo la lee; no la duplica. */
+  var SEM = (typeof module === 'object' && module.exports) ? require('./tabla_semantica.js') : raiz.AtlasSemantica;
+  if (!SEM || !SEM.SELLOS) { throw new Error('NO_DATA · tabla_semantica.js no cargada: la tabla semantica manda, no se duplica'); }
+  var SELLOS = SEM.SELLOS;
   var LUZ = { x: -0.6, y: -0.8 }, MORF_MS = 2000;
   var morfos = {}, narrado = {};
 

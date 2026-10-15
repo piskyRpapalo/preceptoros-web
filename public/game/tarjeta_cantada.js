@@ -39,7 +39,7 @@
      (AtlasToon.SELLOS, medido) y la base FNV/hue. DETERMINISTA: mismo
      término y sello = mismas frecuencias, en el mismo orden. */
   function melodía(termino) {
-    var T = (typeof module === 'object' && module.exports) ? require('./crab_render_hd.js') : raiz.AtlasToon;
+    var T = (typeof module === 'object' && module.exports) ? require('./tabla_semantica.js') : (raiz.AtlasSemantica || raiz.AtlasToon);
     if (!T || !T.SELLOS) { return { estado: 'NO_DATA', causa: 'AtlasToon.SELLOS no disponible: la tabla semántica manda, no se reinventa' }; }
     var sello = termino && termino.sello;
     if (sello == null || !T.SELLOS.hasOwnProperty(sello)) {

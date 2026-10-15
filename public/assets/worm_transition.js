@@ -14,7 +14,7 @@
   var TOPE_SEG = 9, BASE_MS = 360, POR_SEG = 20;
   var intentos = {}, visible = null, textoDe = {}, ultimo = null, lienzo = null;
 
-  function hueDe(sello) { var T = raiz.AtlasToon; return T && T.SELLOS && T.SELLOS.hasOwnProperty(sello) ? T.SELLOS[sello] : null; }
+  function hueDe(sello) { var T = raiz.AtlasSemantica || raiz.AtlasToon; return T && T.SELLOS && T.SELLOS.hasOwnProperty(sello) ? T.SELLOS[sello] : null; }
   function cicloValido(c) { return Number.isSafeInteger(c) && c >= 0 && c <= 1000000000; }
   function cicloActual() {
     try {

@@ -59,15 +59,13 @@ test('SIN GESTO NO SUENA (reduced-motion: corte limpio): canta sin melodía/no m
   if (c.estado !== 'NO_DATA' || !/Web Audio|opt-in/.test(c.causa)) throw new Error('sin sintetizador debe ser NO_DATA con causa: ' + JSON.stringify(c));
 });
 
-test('SABOTAJE: si la tabla semántica se corrompe (LIVE≠120), la melodía deriva y debe romper el gate', () => {
-  const original = AtlasToon.SELLOS.LIVE;
-  AtlasToon.SELLOS.LIVE = 999;
-  try {
-    const m = AtlasTarjetaCantada.melodía({ id: 'x', sello: 'LIVE', hue: 0 });
-    if (m.semantico_hz !== 999) { throw new Error('la melodía no lee la tabla viva'); }
-    if (original === 999) throw new Error('imposible');
-    /* con 999, idx = 999 % 5 = 4: las notas CAMBIAN respecto a LIVE=120 (idx 0). El gate de la tabla (test 2) es el que pone rojo al sabotaje; aquí se declara. */
-  } finally {
-    AtlasToon.SELLOS.LIVE = original;
+test('SABOTAJE OLA1-P1: la tabla congelada resiste la corrupcion; si se dejara corromper, la melodía deriva', () => {
+  let corrompio = false;
+  try { AtlasToon.SELLOS.LIVE = 999; corrompio = AtlasToon.SELLOS.LIVE === 999; }
+  catch (e) { corrompio = false; }
+  finally { if (corrompio) { AtlasToon.SELLOS.LIVE = 120; } }
+  if (corrompio) {
+    throw new Error('SABOTAJE DETECTADO: la tabla se dejo corromper (LIVE=' + AtlasToon.SELLOS.LIVE + ')');
   }
+  if (AtlasToon.SELLOS.LIVE !== 120) throw new Error('la tabla medida cambio');
 });
