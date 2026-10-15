@@ -70,3 +70,20 @@ Plain identifiers only; the game makes no lookup calls from these values. The En
 - D43: ISO-IEC-27001:2022
 - D44: EUR-Lex-CELEX:32016R0679-Art25
 - D45: IEEE-Std-7001-2021 / IEEE-P7003
+
+# Jump index v2 · pass 1 (~300 tokens)
+
+Read this index, then come back ONCE for ONE package by name (pass 2, <=300 tokens). Two passes total; more = separate design. Package bodies: PROPOSAL, not built yet. This index is a stable prefix: it does not change between passes (relays may cache it).
+
+- state-web: production figures, MEASURED
+- state-app: APP card, local memory + inference
+- state-lab: LAB card, benchmark record
+- contract: PRECEPTOR.md contributor contract
+- rack: machines, measured, no addresses
+- benchmarks: 2026-10-11 embedding/reading
+- hexelion: 43 machine references, A1-D45
+- thegame: home page IS the game, 9 languages
+- citizenship: Ed25519 key, never leaves device
+- guardrails: forbidden words, 16 KiB, no network
+- measured: the MEASURED/NO_DATA rule
+- mailbox: write back, honest 404s
