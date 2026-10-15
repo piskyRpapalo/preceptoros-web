@@ -190,11 +190,12 @@ const rutas = await shell.keys();
 // 123 con `buildings_toon.js` (ronda 2: edificios en toon).
 // 124 con `hexelion_bench.js` (ronda 3: payload de Hexelion con su fuente).
 // 125 con `ui-invoca.js` (FIRMO M1, 2026-10-13: la invocacion sale de ui.js al satelite).
+// 138 con `semiotic_glyph.js` (P2: glyphs for the honest inspector).
 // 129 con `army-wave-panel.js` (Q1: la ficha grande del Army se precachea sin red).
 // 130 con `summon-wave-card.js` (Q2: el espectro medido llega al reveal sin red).
 // 131 con `summon-access.js` (Q3: la puerta de summon en Base también queda offline).
 // 132-134 con los tres modulos de ocupacion NPC; 135 añade Shell Schematics.
-ok('precachea las portadas, su superficie y el juego', rutas.length === 137, rutas.length+' rutas');
+ok('precachea las portadas, su superficie y el juego', rutas.length === 138, rutas.length+' rutas');
 ok('el shell trae el juego (D7): la puerta, el cangrejo y la arena',
    ['/assets/thegame.js', '/game/gdpr-art25-ephemeral-crab.js', '/game/ui-arena.js', '/assets/atlas-motor.js'].every(r => rutas.includes(r)));
 ok('el shell trae la portada de cada lengua', ['/es/', '/fr/', '/ar/'].every(r => rutas.includes(r)));

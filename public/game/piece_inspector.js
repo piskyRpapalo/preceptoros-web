@@ -54,6 +54,13 @@
     }
     var dl = panel.querySelector('dl'); dl.textContent = '';
     panel.dataset.place = ficha && ficha.kind || 'piece';
+    var previo = panel.querySelector('.semiotic-slot');
+    if (previo) { previo.remove(); }
+    if (ficha && Array.isArray(ficha.glyph) && raiz.AtlasGlyph) {
+      var slot = D.createElement('div'); slot.className = 'semiotic-slot';
+      panel.insertBefore(slot, dl.nextSibling);
+      raiz.AtlasGlyph.monta(slot, ficha.glyph, ficha.explanation || ficha.que || 'Shared vocabulary glyph');
+    }
     lin.forEach(function (l) { var dt = D.createElement('dt'), dd = D.createElement('dd'); dt.textContent = l[0]; dd.textContent = l[1]; dl.appendChild(dt); dl.appendChild(dd); });
     if (raiz.AtlasPlaceCards) { raiz.AtlasPlaceCards.monta(panel, ficha || {}, function (r) {
       var dt = D.createElement('dt'), dd = D.createElement('dd'); dt.textContent = 'Action result';
