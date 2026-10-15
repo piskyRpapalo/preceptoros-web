@@ -88,7 +88,7 @@
     cab.dataset.c = clave; tit.textContent = c.titulo;
     sel.textContent = c.sello; sel.dataset.sello = c.sello; fue.textContent = c.fuente; eda.textContent = c.edad;
     cab.dataset.panel = a.id;
-    var T = raiz.AtlasToon, h = T && T.SELLOS ? T.SELLOS[c.sello] : null;
+    var T = raiz.AtlasSemantica || raiz.AtlasToon, h = T && T.SELLOS ? T.SELLOS[c.sello] : null;
     sel.style.borderColor = h === null || h === undefined ? '' : 'hsl(' + h + ' 70% 55%)';
   }
   function ficha() { return visto ? JSON.parse(JSON.stringify(visto)) : null; }
