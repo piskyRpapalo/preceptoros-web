@@ -1,9 +1,9 @@
 // TOUR: prueba del popup sobre el mismo navegador y fixture del arnes de lugares.
 export async function runTour({valor,page,pausa,report}) {
     report.tour = [];
-    if(!await valor('!!document.getElementById("menu-pliego-tutorial")')) report.failures.push('tutorial is not always in the real menu');
+    if(!await valor('!!document.getElementById("menu-start") && !!document.getElementById("pliego-tutorial")')) report.failures.push('tutorial is not mounted inside How to start?');
     // El fixture de UI SALTA los seis pasos; los eventos de los seis se prueban en tour_casos, sin firmas.
-    await valor(`(() => {const T=AtlasTutorial; T.abre('menu'); let n=0; while(T.ficha().paso && !T.PASOS.find(p=>p.id===T.ficha().paso)?.tour && n++<6) T.saltaPaso(); T.tic(); document.getElementById('menu-pliego-tutorial')?.focus();})()`);
+    await valor(`(() => {const T=AtlasTutorial; T.abre('menu'); let n=0; while(T.ficha().paso && !T.PASOS.find(p=>p.id===T.ficha().paso)?.tour && n++<6) T.saltaPaso(); T.tic(); document.getElementById('menu-start')?.focus();})()`);
     const competence=await valor('AtlasTutorial.ficha().competencia');
     const focusLive=await valor(`(() => {const b=document.querySelector('#genesis-tour [data-action]'),id=b.dataset.action,real=AtlasScreenScript.lugar; b.focus();
       AtlasScreenScript.lugar=(...args)=>{const s=real(...args);return {...s,lineas:s.lineas.concat([['State','EMULATED focus probe']])};};
@@ -12,13 +12,13 @@ export async function runTour({valor,page,pausa,report}) {
     await page.cmd('Input.dispatchKeyEvent',{type:'keyDown',key:'Escape',code:'Escape',windowsVirtualKeyCode:27});
     await page.cmd('Input.dispatchKeyEvent',{type:'keyUp',key:'Escape',code:'Escape',windowsVirtualKeyCode:27}); await pausa(100);
     const escaped=await valor('({step:AtlasTutorial.ficha().paso,competence:AtlasTutorial.ficha().competencia,open:document.getElementById("genesis-tour").open,focus:document.activeElement.id})');
-    if(escaped.step!==null||escaped.open||escaped.competence!==competence||escaped.focus!=='menu-pliego-tutorial') report.failures.push('Escape/skip/focus failed: '+JSON.stringify(escaped));
+    if(escaped.step!==null||escaped.open||escaped.competence!==competence||escaped.focus!=='menu-start') report.failures.push('Escape/skip/focus failed: '+JSON.stringify(escaped));
     await valor("AtlasTutorial.abre('menu')");
     let espera=0;
     for (let n=0;n<40;n++) {
       await valor('AtlasTutorial.tic()');
       if(await valor('AtlasTutorial.ficha().paso && !document.getElementById("genesis-tour").open')) {
-        await valor("document.getElementById('menu-pliego-tutorial').click()");
+        await valor("AtlasTutorial.abre('menu')");
       }
       const f=await valor(`(() => {const T=AtlasTutorial,p=T.PASOS.find(p=>p.id===T.ficha().paso),d=document.getElementById('genesis-tour');
         if(!p) return null; const a=d.querySelector('[data-action]'),s=d.querySelector('#tour-skip');

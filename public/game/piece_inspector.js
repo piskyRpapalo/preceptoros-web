@@ -54,11 +54,18 @@
     }
     var dl = panel.querySelector('dl'); dl.textContent = '';
     panel.dataset.place = ficha && ficha.kind || 'piece';
+    var previo = panel.querySelector('.semiotic-slot');
+    if (previo) { previo.remove(); }
+    if (ficha && Array.isArray(ficha.glyph) && raiz.AtlasGlyph) {
+      var slot = D.createElement('div'); slot.className = 'semiotic-slot';
+      panel.insertBefore(slot, dl.nextSibling);
+      raiz.AtlasGlyph.monta(slot, ficha.glyph, ficha.explanation || ficha.que || 'Shared vocabulary glyph');
+    }
     lin.forEach(function (l) { var dt = D.createElement('dt'), dd = D.createElement('dd'); dt.textContent = l[0]; dd.textContent = l[1]; dl.appendChild(dt); dl.appendChild(dd); });
     if (raiz.AtlasPlaceCards) { raiz.AtlasPlaceCards.monta(panel, ficha || {}, function (r) { escribeResultado(dl, r); }); }
     if (ficha && ficha.npcId && raiz.AtlasNpcWalls) { raiz.AtlasNpcWalls.monta(panel, ficha); }
     /* El menu descubre el panel con un MutationObserver (microtarea): se abre DESPUES de que exista su entrada. */
-    Promise.resolve().then(function () { var b = D.getElementById('menu-pliego-ficha'); if (b && panel.hidden) { b.click(); } });
+    Promise.resolve().then(function () { var b = D.getElementById('menu-pliego-ficha') || D.getElementById('menu-buildings'); if (b && panel.hidden) { b.click(); } });
   }
   function escribeResultado(dl, r) {
       var D = raiz.document;

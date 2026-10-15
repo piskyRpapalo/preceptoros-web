@@ -14,7 +14,7 @@
   var CQ = null, R = {}, lugares = [], jugadores = [], sel = null, pub = null, emblema = null, record = {}, intentos = {};
   var escuadraSel = null, actual = null, mar = null;
 
-  /* Textos, nombres, miniaturas y colores: lo comun de la Arena, en `ui-arena-comun.js` (U0). */
+  /* Shared Arena labels and rendering live in ui-arena-comun.js. */
   var AC = window.AtlasArenaComun, T = AC.T, textos = AC.textos, el = AC.el, boton = AC.boton, rellena = AC.rellena, quieto = AC.quieto;
   var colores = AC.colores, nombre = AC.nombre, miniLienzo = AC.miniLienzo, nombreLugar = AC.nombreLugar;
 
@@ -57,7 +57,7 @@
     R.practica.hidden = !d.practica;
   }
 
-  /* --- los lugares: botones en el MAPA; el rival elegido, en el mapa y en la BATALLA */
+  /* Locations: map buttons and the selected rival. */
   function todosLugares() { return lugares.concat(jugadores); }
   function cicloJuego() { var j = window.AtlasJuego, s = j && j.instantanea ? j.instantanea() : null; return s && s.ciclo; }
   function pintaLista() {
@@ -193,7 +193,10 @@
     m.appendChild(el('p', 'atlas-mundo-leyenda', T('mapa_leyenda')));
     R.ficha = el('div', 'atlas-arena-lugar-ficha'); m.appendChild(R.ficha);
     R.lista = el('ul', 'atlas-arena-lugares'); m.appendChild(R.lista);
-    R.rack = el('div'); m.appendChild(pliego(T('rack_h'), R.rack));
+    R.rack = el('div');
+    var nodosCasa = pliego('Node roster', R.rack); nodosCasa.id = 'pliego-nodos'; nodosCasa.open = true;
+    var terminal = document.getElementById('thegame-terminal');
+    if (terminal) { terminal.appendChild(nodosCasa); } else { m.appendChild(nodosCasa); }
     if (window.AtlasRackUI) { window.AtlasRackUI.monta(R.rack, T); }
     var s = el('section', 'panel atlas-arena');
     R.rival = el('div', 'atlas-arena-lugar-ficha'); s.appendChild(R.rival);

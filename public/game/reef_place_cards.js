@@ -24,7 +24,10 @@
     return f;
   }
   function abrePanel(id) {
-    var D = raiz.document, b = D && D.getElementById('menu-' + id), p = D && D.getElementById(id);
+    var D = raiz.document, grupo = { 'radio-estado': 'nodes', 'pliego-lapidas': 'history', 'pliego-estado': 'history',
+      'pliego-ficha': 'buildings', 'pliego-lugares': 'buildings', 'pliego-nodos': 'nodes', 'pliego-skills': 'nodes',
+      'pliego-tutorial': 'start', 'pliego-entrada': 'start' }[id];
+    var b = D && (D.getElementById('menu-' + id) || (grupo && D.getElementById('menu-' + grupo))), p = D && D.getElementById(id);
     if (!b || !p) { return { cause: nd('the destination panel is not loaded') }; }
     if (p.hidden) { b.click(); }
     return { ok: true };

@@ -6,6 +6,7 @@
   var CICLOS = V && V.combate ? V.combate.abandono_ciclos : null;
   var REGISTRO = 'atlas.local-occupancy.registry/1', SOBRE = 'atlas.local-occupancy/1';
   var HEX = /^[0-9a-f]{64}$/;
+  var CAUSA_LOCAL = 'NO_DATA (signed occupancy could not be saved locally)';
 
   function saneaMensaje(valor) {
     if (typeof valor !== 'string') { return { ok: false, causa: 'message is not text' }; }
@@ -53,7 +54,7 @@
     function quien() { return Promise.resolve().then(function () { return publica ? publica() : null; }); }
     function sella(body) {
       if (!firma || !verifica) { return Promise.reject(new Error('NO_DATA (signing or verification is not available)')); }
-      return Promise.resolve(firma(body)).then(function (r) {
+      return Promise.resolve().then(function () { return firma(body); }).then(function (r) {
         var sig = r && r.firma;
         if (!/^ed25519:[0-9a-f]{128}$/.test(sig || '')) { throw new Error('NO_DATA (complete Ed25519 signature unavailable)'); }
         var e = { cuerpo: body, firma: sig };
@@ -75,14 +76,14 @@
       if (s.fase === 'niebla') { return Promise.resolve({ ok: false, causa: 'NO_DATA (' + s.causa + ')' }); }
       var nuevo = Object.assign({}, previo, { sequence: previo.sequence + 1 });
       edit(nuevo);
-      return sella(nuevo).then(function (e) { cuerpos[id] = e; return publicaRegistro().then(function () { return { ok: true, cuerpo: nuevo }; }); },
-        function (x) { return { ok: false, causa: x.message }; });
+      return sella(nuevo).then(function (e) { cuerpos[id] = e; return publicaRegistro().then(function () { return { ok: true, cuerpo: nuevo }; }); })
+        .catch(function () { return { ok: false, causa: CAUSA_LOCAL }; });
     }
     function api() {
       return {
         cargar: function () {
-          if (!almacen || !almacen.lee) { return Promise.resolve({ ok: false, causa: 'NO_DATA (db.js storage gate unavailable)' }); }
-          return Promise.resolve(almacen.lee()).then(function (v) {
+          if (!almacen || !almacen.lee) { return Promise.resolve({ ok: false, causa: 'NO_DATA (local occupancy reader unavailable)' }); }
+          return Promise.resolve().then(function () { return almacen.lee(); }).then(function (v) {
             cuerpos = {};
             if (v && v.esquema === REGISTRO && Array.isArray(v.registros)) {
               return v.registros.reduce(function (p, e) {
@@ -94,7 +95,7 @@
               }, Promise.resolve()).then(function () { cargada = true; avisa(); return { ok: true, count: Object.keys(cuerpos).length }; });
             }
             cargada = true; avisa(); return { ok: true, count: 0 };
-          }).catch(function (x) { cargada = true; return { ok: false, causa: 'NO_DATA (db.js: ' + (x && x.message || 'read failed') + ')' }; });
+          }).catch(function () { cargada = true; return { ok: false, causa: 'NO_DATA (local occupancy could not be loaded)' }; });
         },
         captura: function (id, ciclo) {
           if (ids.indexOf(id) < 0) { return Promise.resolve({ ok: false, causa: 'NO_DATA (unknown NPC site)' }); }
@@ -110,8 +111,8 @@
             }
             var body = { schema: SOBRE, id: id, owner_pub: pub, captured_cycle: ciclo, maintained_cycle: ciclo, sequence: previo ? previo.sequence + 1 : 1, message: '' };
             return sella(body).then(function (e) { cuerpos[id] = e; return publicaRegistro().then(function () { return { ok: true, cuerpo: body }; }); },
-              function (x) { return { ok: false, causa: x.message }; });
-          }).catch(function (x) { return { ok: false, causa: 'NO_DATA (' + (x && x.message || 'account key unavailable') + ')' }; });
+              function () { return { ok: false, causa: CAUSA_LOCAL }; });
+          }).catch(function () { return { ok: false, causa: 'NO_DATA (local account, signature, or storage unavailable)' }; });
         },
         escribe: function (id, valor, ciclo, pub) {
           var m = saneaMensaje(valor);

@@ -55,7 +55,7 @@
         }); }
         controles.appendChild(b);
       }
-      if (nuevo) { var activo = raiz.document.activeElement; anterior = activo && activo.id === 'menu-pliego-tutorial' ? activo : (raiz.document.getElementById('menu-pliego-tutorial') || activo); if (dialogo.open) { dialogo.close(); } dialogo.showModal(); (controles.querySelector('button,a') || dialogo.querySelector('#tour-skip-stop')).focus(); }
+      if (nuevo) { var activo = raiz.document.activeElement; anterior = activo && (activo.id === 'menu-pliego-tutorial' || activo.id === 'menu-start') ? activo : (raiz.document.getElementById('menu-pliego-tutorial') || raiz.document.getElementById('menu-start') || activo); if (dialogo.open) { dialogo.close(); } dialogo.showModal(); (controles.querySelector('button,a') || dialogo.querySelector('#tour-skip-stop')).focus(); }
       else if (foco) { (controles.querySelector('[data-action]') || dialogo.querySelector('#tour-skip-stop')).focus(); }
     }
   }

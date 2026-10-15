@@ -660,10 +660,26 @@ process.stdout.write(JSON.stringify(ok));
         """PR-2 (FIRMO 2026-10-12): la trayectoria del gusano ES el dato (pura de S_t; revela, no decide; color del sello).
         PR-3: cada transicion se narra en la Radio y se lee en el inspector; y TODO el estado visible cabe en un vector
         < 1 KB (`AtlasVector.leer()`), leible de una llamada por un LLM pequeno («piensa vectorialmente»)."""
+        import jsonschema
         for casos in ("gusano_casos.mjs", "vector_casos.mjs"):
             with self.subTest(casos=casos):
                 r = subprocess.run(["node", str(RAIZ / casos)], capture_output=True, text=True, timeout=60)
                 self.assertEqual(r.returncode, 0, r.stdout[-1200:] + r.stderr[-400:])
+        contrato = json.loads((DATOS / "atlas_vector_schema.json").read_text(encoding="utf-8"))
+        jsonschema.Draft202012Validator.check_schema(contrato)
+        validador = jsonschema.Draft202012Validator(contrato)
+        vector = {"v": "preceptoros.vector/1", "c": 1, "r": [1, 2, 3, 4], "k": [0, 0, 0, 0, 0],
+                  "p": ["panel", "LIVE", 0], "t": None, "e": [["buoy", "alive", 1]],
+                  "l": [["reef", 1, 0]], "n": [["node", "1/1"]], "z": 0,
+                  "q": [["Map", "LIVE", 1]], "g": [None, "panel", 0, 1], "nd": {}}
+        self.assertTrue(validador.is_valid(vector), list(validador.iter_errors(vector)))
+        for malo in ({**vector, "extra": True}, {**vector, "c": None},
+                     {**vector, "e": []}, {**vector, "r": [1, None, 3, 4]}):
+            with self.subTest(vector=malo):
+                self.assertFalse(validador.is_valid(malo), "el contrato deja pasar una forma incompleta o abierta")
+        puerta = (ASSETS / "thegame.js").read_text(encoding="utf-8")
+        self.assertLess(puerta.index("['/game/vector_contract.js']"), puerta.index("['/game/state_vector.js']"))
+        self.assertIn("'/game/vector_contract.js'", (PUBLICO / "sw-listas.js").read_text(encoding="utf-8"))
         w = (ASSETS / "worm_transition.js").read_text(encoding="utf-8")
         self.assertIn("R.dice({ quien: 'Terminal', fuente: 'gusano',", w, "una transicion que no se narra no entra")
         self.assertIn("['worm_transition.js']", (ASSETS / "thegame.js").read_text(encoding="utf-8"))
@@ -717,7 +733,7 @@ process.stdout.write(JSON.stringify(ok));
         """B: el manejo libre va ENCIMA del paseo J1 (paseo intocado), la niebla no se pisa, y las skills salen solo de lo
         que el cangrejo hace (Swim, Reach). E: el tutorial es el esquema de acciones renderizado, bajo el teaching kernel
         (dry-run en lo irreversible, fallo como ramificacion, objetivo siempre a la vista, ayuda que decae, saltable)."""
-        for casos in ("cangrejo_libre_casos.mjs", "tutorial_casos.mjs", "corales_casos.mjs"):
+        for casos in ("cangrejo_libre_casos.mjs", "audio_feedback_manager_casos.mjs", "tutorial_casos.mjs", "corales_casos.mjs"):
             with self.subTest(casos=casos):
                 r = subprocess.run(["node", str(RAIZ / casos)], capture_output=True, text=True, timeout=60)
                 self.assertEqual(r.returncode, 0, r.stdout[-1200:] + r.stderr[-400:])
@@ -744,17 +760,16 @@ process.stdout.write(JSON.stringify(ok));
         self.assertIn("pon(R.fase, rellena(U('fase_h')", p, "la fase se queda: mueve el mapa")
 
     def test_c_paneles_amables_y_grandes(self):
-        """C (FIRMO 2026-10-12): lo mas amable primero (el INVENTARIO de ondas antes que el Taller), los paneles ocupan
-        TODA la pantalla junto al menu, todo lo tactil >= 44 px (medido 0 por debajo con Army y Taller abiertos), y
-        ninguna ventana persistente: segunda pulsacion cierra, Escape cierra."""
+        """The signed shell keeps five stable routes, a visible map margin, and one combined Waves/Army sheet."""
         sh = (ASSETS / "terminal_menu_shell.js").read_text(encoding="utf-8")
-        self.assertLess(sh.index("entrada('ondas',"), sh.index("entrada('taller',"), "el inventario va antes que el Taller")
+        self.assertLess(sh.index("entrada('waves',"), sh.index("entrada('buildings',"), "Waves Army precedes other routes")
         for pieza in ("muestra(actual === 'ondas' ? null : 'ondas')", "S.HOJA.ondas", "function mueveArmy()",
                       "Promise.resolve(x.alTaller()).then(mueveArmy)", "e.key !== 'Escape'"):
             with self.subTest(pieza=pieza):
                 self.assertIn(pieza, sh)
         css = (ASSETS / "terminal_menu_shell.css").read_text(encoding="utf-8")
-        self.assertIn("right:0;", css.split(".thegame-terminal{")[1].split("}")[0], "el cajon no ocupa la pantalla")
+        self.assertIn("width:min(24rem,calc(100vw - var(--menu) - 1.5rem))", css)
+        self.assertIn("left:calc(var(--menu) + .5rem)", css.split(".thegame-terminal{")[1].split("}")[0])
         self.assertIn("#thegame summary{min-height:2.75rem;", css)
         self.assertIn("#thegame :is(.boton,.boton-sec){min-height:2.875rem;min-width:2.875rem}", css)
 
@@ -838,7 +853,7 @@ process.stdout.write(JSON.stringify(ok));
         for campo in ("{id}", "{nace}", "{muere}", "{causa}", "{huella}"):
             with self.subTest(recibo=campo):
                 self.assertIn(campo, ui["lap_recibo"])
-        self.assertIn("'pliego-lapidas': '", (ASSETS / "terminal_menu_shell.js").read_text(encoding="utf-8"))
+        self.assertIn("history: ['pliego-estado', 'pliego-lapidas']", (ASSETS / "terminal_menu_shell.js").read_text(encoding="utf-8"))
 
     def test_la_terminal_chatbot_y_el_chat_de_la_radio(self):
         """LA TERMINAL (FIRMO 2026-10-12): menu a la izquierda (64 px iconos / 220 px expandido), el chat de la Radio abajo,
@@ -847,11 +862,19 @@ process.stdout.write(JSON.stringify(ok));
         las lineas de estado que el juego YA escribe: no inventa mensajes. Opinar tiene su hogar en el menu."""
         r = sin_comentarios((ASSETS / "radio_message_log.js").read_text(encoding="utf-8"))
         for pieza in ("R.lista.setAttribute('role', 'log')", "R.lista.setAttribute('aria-live', 'polite')",
-                      "li.dataset.quien = m.quien; li.dataset.sello = s; li.dataset.fuente = m.fuente; li.dataset.ciclo = String(m.ciclo);",
-                      "if (/^\\s*NO_DATA/.test(texto)) { return 'NO_DATA'; }", "return m.sello === 'LIVE' && ciclo() - m.ciclo > VIEJO ? 'STALE' : m.sello;",
+                      "li.dataset.quien = m.quien; li.dataset.sello = s; li.dataset.fuente = m.fuente;",
+                      "if (/^\\s*NO_DATA/.test(texto)) { return 'NO_DATA'; }", "li.dataset.ciclo = cicloValido(m.ciclo) ? String(m.ciclo) : 'NO_DATA';",
                       "closest('[role=\"status\"],[aria-live]')", "el('section', 'radio-chat plegado')", "function registro()"):
             with self.subTest(pieza=pieza):
                 self.assertIn(pieza, r)
+        # Measure age behavior against the actual module, including missing cycles and resets.
+        measured = subprocess.run(["node", str(RAIZ / "radio_age_cases.mjs")],
+                                  capture_output=True, text=True, timeout=60)
+        self.assertEqual(measured.returncode, 0, measured.stdout + measured.stderr)
+        self.assertEqual(json.loads(measured.stdout)["cases"], 14)
+        self.assertIn("R.tabs.setAttribute('role', 'tablist')", r)
+        self.assertIn("global chat has no tested repository channel", r)
+        self.assertIn("function registro() { return lista.map(function (m) { return { quien: m.quien, sello: sello(m), fuente: m.fuente, ciclo: m.ciclo, texto: m.texto }; }); }", r)
         for malo in ("Date.now", "fetch(", "localStorage", "innerHTML", "Math.random"):
             with self.subTest(prohibido=malo):
                 self.assertNotIn(malo, r)
@@ -861,7 +884,15 @@ process.stdout.write(JSON.stringify(ok));
             with self.subTest(regla=regla):
                 self.assertIn(regla, css)
         sh = sin_comentarios((ASSETS / "terminal_menu_shell.js").read_text(encoding="utf-8"))
-        self.assertIn("entrada('opinar',", sh, "opinar se queda sin hogar en el menu")
+        for destino in ("history", "waves", "buildings", "nodes", "start"):
+            self.assertIn("entrada('" + destino + "'", sh, "falta un destino principal del sidebar")
+        self.assertIn("'pliego-nodos'", sh, "Nodes & Events debe exponer el roster publicado")
+        self.assertIn("'pliego-opinar'", sh, "feedback conserva su acceso dentro de Nodes & Events")
+        for vista in (".thegame-terminal{position:fixed;z-index:4;left:calc(var(--menu) + .5rem)",
+                      ".thegame-hoja{position:fixed;z-index:4;top:calc(var(--thegame-tope) + .5rem)",
+                      ".radio-chat-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))",
+                      "@media(max-width:47.999rem)", "prefers-reduced-motion:reduce"):
+            self.assertIn(vista, css, vista)
         for f in ("radio_message_log.js", "terminal_menu_shell.js"):
             self.assertLess(len((ASSETS / f).read_bytes()), 16384, f)
 
@@ -995,9 +1026,7 @@ process.stdout.write(JSON.stringify(ok));
 # Ver atlas/POST_VERIFICACION_MGNO_LAB.md y atlas/POST_VERIFICACION_SISIL_CRIA.md.
 PUROS = ("canon.js", "sobres.js", "rating.js", "arena.js", "duelo.js", "mercado.js", "narragrafo.js", "cria.js", "genoma.js")
 # La Arena (2026-09-28, «el mapa multi-jugador en una pestana»): se carga al abrir su pestana, detras del Army.
-ARENA = ("sobres.js", "rating.js", "arena.js", "duelo.js", "mar-anclas.js", "crab_render_hd.js", "crab_free_move.js", "screen-script.js", "genesis-tour.js", "genesis-tour-dialog.js", "genesis_tutorial.js", "buildings_toon.js", "reef_place_cards.js", "shell_schematics.js", "reef_buildings_paint.js", "latency_crystal.js", "hexelion_bench.js", "reef_corals.js", "reef_buildings_layer.js", "mar-cangrejos.js", "map_pointer_input.js", "map_nodes_layer.js", "map_zoom.js", "piece_inspector.js", "state_vector.js", "place_telemetry.js", "npc_territory_map.js", "mar.js", "nodos-pesos.js",
-         "nodos.js", "cuenta.js", "ui-nodos.js", "ui-rack.js",
-         "escuadron.js", "battle_choreography.js", "battle_replay.js", "npc_occupancy.js", "npc_walls.js", "ui-arena-comun.js", "ui-arena.js", "ui-duelo.js")
+ARENA = ('sobres.js', 'rating.js', 'arena.js', 'duelo.js', 'mar-anclas.js', 'crab_render_hd.js', 'audio_feedback_manager.js', 'crab_free_move.js', 'screen-script.js', 'genesis-tour.js', 'genesis-tour-dialog.js', 'genesis_tutorial.js', 'buildings_toon.js', 'reef_place_cards.js', 'shell_schematics.js', 'reef_buildings_paint.js', 'latency_crystal.js', 'hexelion_bench.js', 'reef_corals.js', 'reef_buildings_layer.js', 'mar-cangrejos.js', 'map_pointer_input.js', 'semiotic_glyph.js', 'map_nodes_layer.js', 'map_zoom.js', 'piece_inspector.js', 'vector_contract.js', 'state_vector.js', 'place_telemetry.js', 'npc_territory_map.js', 'mar.js', 'nodos-pesos.js', 'nodos.js', 'cuenta.js', 'ui-nodos.js', 'ui-rack.js', 'escuadron.js', 'battle_choreography.js', 'battle_replay.js', 'npc_occupancy.js', 'npc_walls.js', 'ui-arena-comun.js', 'ui-arena.js', 'ui-duelo.js')
 # La CASA (2026-10-05): la primera pantalla, detras del Army. Lleva canon y escena, que la Arena reutiliza.
 CASA = ("canon.js", "escena.js", "wave_render.js", "gdpr-art25-ephemeral-crab.js", "aiact-art50-crab-terminal.js", "nodos-cedulas.js", "fog_of_war.js", "isometric_floor_projection.js", "world_camera.js", "mar-fondo.js", "gdpr-art7-entry-choice.js", "aiact-art50-state-radio.js", "casa-medidas.js", "casa-personaliza.js", "casa-lateral.js", "crab_state_screen.js", "reef_building_lifecycle.js", "home_buildings.js", "summon-wave-card.js", "summon_reveal.js", "taller.js", "army-wave-panel.js", "ui-taller.js", "primer_eco.js", "summon-access.js")
 FUERA_DE_LA_PUERTA = tuple(sorted(set(PUROS + ARENA + CASA)))
@@ -2148,6 +2177,12 @@ class MapaMovible(unittest.TestCase):
                       "window.AtlasMapaDedo.monta(", "C.aMundoDelta("):
             with self.subTest(pieza=pieza):
                 self.assertIn(pieza, m)
+        dedo = self._js("map_pointer_input.js")
+        libre = self._js("crab_free_move.js")
+        self.assertNotIn("wasd", dedo.lower())
+        self.assertIn("north: [0, -1]", libre)
+        self.assertIn("west: [-1, 0]", libre)
+        self.assertIn("data-voice-control", libre)
         tx = json.loads((PUBLICO / "atlas-arena-en.json").read_text(encoding="utf-8"))["ui"]
         piloto = (PUBLICO / "assets" / "atlas-piloto.js").read_text(encoding="utf-8")
         dirs = json.loads(re.search(r"var DIRS = (\[[^\]]*\])", piloto).group(1).replace("'", '"'))
@@ -2206,7 +2241,7 @@ class MapaMovible(unittest.TestCase):
             pass
         u = self._js("ui.js")
         for pieza in ("var o = A.eslabon(c, tc, Z.clave);", "window.Identity.firmar(o)", "A.cadenaWeb(Z.clave).pon(Z.cadena);",
-                      "Z.cadena = A.anexa(Z.cadena, o, f.firma, semilla, i.ciclo, i.ciclo + TC.incuba);",
+                      "Z.cadena = A.anexa(Z.cadena, o, f.firma, semilla, desde, desde + TC.incuba);",
                       "A.verificaCadena(c, pub, A.verificaWeb, A.semillaWeb)", "Z.huevos = Z.cadena ? A.huevos(Z.cadena) : [];",
                       "Z.cadena = A.abre(Z.cadena, h.seq)", "if (!capa || !capa.isConnected || document.hidden) { return; }"):
             with self.subTest(pieza=pieza):
@@ -2505,8 +2540,8 @@ class MapaMovible(unittest.TestCase):
         # La terminal chatbot (2026-10-12): el mapa es TODA la pantalla; los bordes (menu, chat plegado) no le comen el centro.
         css = (PUBLICO / "assets" / "terminal_menu_shell.css").read_text(encoding="utf-8")
         self.assertIn(".thegame-mapa{position:fixed;inset:0;z-index:0}", css)
-        self.assertIn(".radio-chat.plegado .radio-chat-lista{display:none}", css, "el chat plegado se come el mundo")
-        self.assertIn("max-height:40dvh", css.split(".radio-chat{position:fixed")[1].split("}")[0], "el chat desplegado pasa del 40 % del alto")
+        self.assertIn(".radio-chat.plegado :is(.radio-chat-tabs,.radio-chat-lista,.radio-chat-no-data){display:none}", css, "the folded channels must leave the map clear")
+        self.assertIn("max-height:44dvh", css.split(".radio-chat{position:fixed")[1].split("}")[0], "the open comms panel exceeds its height limit")
 
     def _js(self, n):
         return sin_comentarios(_fam(n, (PUBLICO / "game" / n).read_text(encoding="utf-8")))
@@ -2766,6 +2801,8 @@ class RedisenoDoogee(unittest.TestCase):
         tx = self._tx()
         self.assertIn("heartbeat NO_DATA", tx["rack_latido"])
         self.assertIn("window.AtlasRackUI.monta(", self._js("ui-arena.js"))
+        self.assertIn("nodosCasa.id = 'pliego-nodos'", self._js("ui-arena.js"))
+        self.assertIn("terminal.appendChild(nodosCasa)", self._js("ui-arena.js"))
         for k in set(re.findall(r"T\('(\w+)'\)", self._js("ui-rack.js"))):
             with self.subTest(clave=k):
                 self.assertTrue(tx.get(k, "").strip(), f"{k} sin texto")
@@ -2887,6 +2924,20 @@ class TrozoInvoca(unittest.TestCase):
         self.assertIn("window.AtlasInvoca.crea(", ui)
         self.assertIn("var Z = {", ui, "el estado compartido no vive en Z")
 
+    def test_nido_solo_muestra_progreso_con_ciclos_medidos(self):
+        r = subprocess.run(["node", str(RAIZ / "incubator_cases.mjs")], capture_output=True,
+                           text=True, timeout=60)
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        self.assertEqual(json.loads(r.stdout), {"cases": 8, "state": "MEDIDO", "provenance": "SYNTHETIC"})
+        ui = (PUBLICO / "game" / "ui.js").read_text(encoding="utf-8")
+        sat = (PUBLICO / "game" / "ui-invoca.js").read_text(encoding="utf-8")
+        self.assertNotIn("function pintaNido(", ui)
+        self.assertIn("function pintaNido(", sat)
+        self.assertIn("INV.pintaNido()", ui)
+        self.assertIn("x.b.disabled = !i || ciclo === null", ui)
+        self.assertIn("if (ciclo === null) { dice(T('inc_ciclo_nd')); }", ui)
+        self.assertIn("if (c === null) { pinta(); return; }", ui)
+
     def test_el_satelite_no_usa_azar_ni_reloj(self):
         sat = (PUBLICO / "game" / "ui-invoca.js").read_text(encoding="utf-8")
         for impuro in ("Math.random", "Date.now", "new Date("):
@@ -2945,10 +2996,11 @@ class ArmyYTallerEnUnaHoja(unittest.TestCase):
 
     def test_la_entrada_del_taller_abre_la_hoja_unica_y_baja_a_el(self):
         sh = (ASSETS / "terminal_menu_shell.js").read_text(encoding="utf-8")
-        i = sh.index("entrada('taller',")
+        i = sh.index("entrada('waves',")
         bloque = sh[i:i + 400]
         self.assertIn("'thegame-ondas'", bloque, "la entrada del Taller no apunta a la hoja unica")
-        self.assertIn("S.PANEL.taller.scrollIntoView", bloque, "la entrada no lleva la vista al Taller")
+        self.assertIn("muestra(actual === 'ondas' ? null : 'ondas')", bloque, "Waves Army no abre su hoja compartida")
+        self.assertIn("ond.appendChild(tal)", sh, "Workshop no comparte la hoja Waves Army")
 
 
 class EclosionEspera(unittest.TestCase):

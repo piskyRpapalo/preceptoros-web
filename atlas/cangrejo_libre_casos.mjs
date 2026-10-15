@@ -22,7 +22,11 @@ caso('la niebla NO se pisa: se para en el borde de lo medido', () => {
   const d = L.desplazamiento();
   return d.x <= 100 && d.x >= 93 || d;
 });
-caso('W/A/S/D empujan PASO unidades desde donde va', () => { const a = L.empuja('s'); return a.y === L.desplazamiento().y + L.PASO || a; });
+caso('los botones direccionales empujan PASO unidades de forma determinista', () => {
+  const a = L.empuja('south'), b = L.empuja('east');
+  const d = L.desplazamiento();
+  return a.x === d.x && a.y === d.y + L.PASO && b.x === a.x + L.PASO && b.y === a.y || { a, b, d };
+});
 caso('REACH: tocar una pieza a su alcance es un evento; fuera de alcance, no', () => {
   const b = { x: 0, y: 0 }, d = L.desplazamiento(), cerca = L.alcanza(d.x + 10, d.y, 'buoy', b), lejos = L.alcanza(d.x + L.ALCANCE + 50, d.y, 'far', b);
   const r = L.skills().find((k) => k.id === 'reach');

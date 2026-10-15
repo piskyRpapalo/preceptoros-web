@@ -36,7 +36,7 @@
       sonido: 'NO_DATA (silent by design)', coord: 'any piece within 160 world units of your crab',
       mide: function () { return skill('reach'); }, hecho: function (b, v) { return v >= 1; } },
     { id: 'swim', accion: 'swim', titulo: 'Swim',
-      haz: 'Tap empty sea. Your crab swims there (W A S D work too).',
+      haz: 'Tap empty sea or use the directional buttons. Your crab swims there.',
       porque: 'Free movement sits on top of the automatic walk. Fog is unmeasured: the crab will not swim into it.',
       canon: 'FIRMO 2026-10-12 · B (free movement over the J1 walk)', sonido: 'NO_DATA (silent by design)', coord: 'empty sea, outside the fog',
       mide: function () { return skill('swim'); }, hecho: function (b, v) { return v > b; } },
@@ -91,6 +91,7 @@
     hechos.push({ paso: id, ciclo: (J() || {}).ciclo === undefined ? null : J().ciclo, accion: p.accion });
     return true;
   }
+  function botonTutorial() { var D = raiz.document; return D && (D.getElementById('menu-pliego-tutorial') || D.getElementById('menu-start')); }
   function salta() { saltado = true; ultimo = ''; if (raiz.AtlasTourDialog) { raiz.AtlasTourDialog.cierra(); } pinta(); rotulaMeta(); }
   function saltaPaso() { if (paso()) { i++; base = null; ultimo = ''; } if (raiz.AtlasTourDialog) { raiz.AtlasTourDialog.cierra(); } rotulaMeta(); if (panel) { pinta(); } }
 
@@ -155,7 +156,7 @@
       /* «← Map»: cierra el cajon para hacer la accion (el paso sigue escrito en la linea del objetivo). */
       var vu = D.createElement('button'); vu.type = 'button'; vu.className = 'boton'; vu.id = 'tutorial-al-mapa'; vu.textContent = '← Map';
       vu.dataset.sonido = 'NO_DATA (silent by design)';
-      vu.addEventListener('click', function () { var b = D.getElementById('menu-pliego-tutorial'); if (b && !panel.hidden) { b.click(); } });
+      vu.addEventListener('click', function () { var b = botonTutorial(); if (b && !panel.hidden) { b.click(); } });
       panel.appendChild(vu); panel.appendChild(sk); caja.appendChild(panel); ultimo = '';
     }
     var l = lineas(), txt = JSON.stringify(l);
@@ -190,7 +191,7 @@
     extiende();
     saltado = false; pinta();
     if (raiz.AtlasTourDialog && paso() && paso().tour) { raiz.AtlasTourDialog.reanuda(); raiz.AtlasTourDialog.pinta(paso(), ficha()); return motivo || 'menu'; }
-    raiz.Promise.resolve().then(function () { var b = raiz.document.getElementById('menu-pliego-tutorial'); if (b && panel.hidden) { b.click(); } });
+    raiz.Promise.resolve().then(function () { var b = botonTutorial(); if (b && panel.hidden) { b.click(); } });
     return motivo || 'menu';
   }
   function esquema() { extiende(); return PASOS.map(function (p) { return { id: p.id, accion: p.accion, irreversible: !!p.irreversible, canon: p.canon, sonido: p.sonido, coord: p.coord }; }); }

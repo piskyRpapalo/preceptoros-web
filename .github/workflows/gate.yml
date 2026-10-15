@@ -22,6 +22,18 @@ jobs:
         with:
           python-version: "3.11"
       - run: python -m pip install --disable-pip-version-check jsonschema
-      - run: python test_web.py
-      # La guarda de theGame: motor (casos en node), leyes del mundo, sprite y textos.
-      - run: python atlas/test_atlas.py
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Gates completos n=2
+        run: |
+          for pasada in 1 2; do
+            echo "Gate pass $pasada/2"
+            python test_web.py
+            python atlas/test_atlas.py
+            node arnes_sw.mjs
+            node atlas/npc_occupancy_cases.mjs
+            node atlas/ventana_casos.mjs
+            node atlas/radio_age_cases.mjs
+            node atlas/hud_readings_cases.mjs
+          done

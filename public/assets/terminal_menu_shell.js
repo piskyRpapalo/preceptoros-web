@@ -14,11 +14,13 @@
    ARMYZ, muestra(id, foco), pliego(titulo, id, abierto, hijos), actual() }. Sin red, sin azar, sin reloj. */
 (function (raiz) {
   'use strict';
-  /* Icono por panel (texto, cero assets). Lo que no esta aqui lleva un punto. */
-  var ICONO = { 'pliego-estado': '◉', 'pliego-lugares': '⌖', 'pliego-entrada': '⚑', 'terminal-cangrejo': '⌨', 'radio-estado': '♪', 'pliego-lapidas': '▤', 'pliego-skills': '★', 'pliego-ficha': '⌕', 'pliego-tutorial': '?' };
+  /* Cinco destinos estables; los paneles dinamicos se agrupan dentro de ellos. */
+  var GRUPOS = { history: ['pliego-estado', 'pliego-lapidas'], buildings: ['pliego-lugares', 'pliego-ficha'],
+    nodes: ['pliego-nodos', 'terminal-cangrejo', 'radio-estado', 'pliego-skills', 'pliego-opinar'], start: ['pliego-entrada', 'pliego-tutorial'] };
 
   function monta(x) {
     var capa = x.capa, T = x.T, el = x.el, cada = x.cada;
+    function texto(k, d) { var t = T(k); return t && t !== k ? t : d; }
     var S = { PANEL: {}, HOJA: {} }, actual = null, destino = null, abierto = null, transicion = 0, R = { items: {} };
     var piso = capa.querySelector('#atlas-piso'), barra = capa.querySelector('.thegame-barra');
     if (!piso || !barra || capa.querySelector('#thegame-menu')) { return null; }
@@ -36,7 +38,7 @@
       actual = destino = S.HOJA[id] ? id : null;
       Object.keys(S.HOJA).forEach(function (k) { S.HOJA[k].hidden = k !== actual; });
       if (actual) { cierraCajon(); }
-      if (R.items.taller) { R.items.taller.setAttribute('aria-expanded', String(actual === 'ondas')); }
+      if (R.items.waves) { R.items.waves.setAttribute('aria-expanded', String(actual === 'ondas')); }
       document.documentElement.classList.toggle('con-hoja', !!actual);
       if (actual === 'ondas') { Promise.resolve(x.alTaller()).then(mueveArmy); }
       if (actual && foco !== false) { var c = S.HOJA[actual].querySelector('.thegame-hoja-cierra'); if (c) { c.focus(); } }
@@ -114,12 +116,16 @@
     function abre(id, foco) {
       var siguiente = abierto === id ? null : id;
       if (siguiente && (actual || destino)) { cierraHoja(); }
-      abierto = siguiente;
-      cajon.hidden = !abierto;
-      cada(cajon.children, function (n) { if (n.tagName === 'DETAILS') { n.hidden = n.id !== abierto; if (n.id === abierto) { n.open = true; } } });
-      Object.keys(R.items).forEach(function (k) { if (k !== 'taller') { R.items[k].setAttribute('aria-expanded', String(k === abierto)); } });
-      document.documentElement.classList.toggle('con-cajon', !!abierto);
-      if (abierto && foco !== false) { var s = cajon.querySelector('#' + abierto + ' > summary'); if (s) { s.focus(); } }
+      var turno = ++transicion, rm = raiz.matchMedia && raiz.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      function cambia() {
+        if (turno !== transicion) { return; }
+        abierto = siguiente; cajon.hidden = !abierto;
+        cada(cajon.children, function (n) { if (n.tagName === 'DETAILS') { n.hidden = !abierto || GRUPOS[abierto].indexOf(n.id) < 0; if (!n.hidden) { n.open = true; } } });
+        Object.keys(R.items).forEach(function (k) { R.items[k].setAttribute('aria-expanded', String(k === abierto)); });
+        document.documentElement.classList.toggle('con-cajon', !!abierto);
+        if (abierto && foco !== false) { var s = cajon.querySelector('#' + GRUPOS[abierto][0] + ' > summary'); if (s) { s.focus(); } }
+      }
+      if (document.startViewTransition && !rm && capa.isConnected) { document.startViewTransition(cambia); } else { cambia(); }
     }
     function entrada(id, icono, rotulo, accion) {
       var li = el('li'), b = el('button', 'thegame-menu-item'); b.type = 'button'; b.id = 'menu-' + id; b.dataset.panel = id;
@@ -129,21 +135,25 @@
       li.appendChild(b); ul.appendChild(li); R.items[id] = b;
       return b;
     }
-    /* Las entradas salen de los paneles que EXISTEN en el cajon (y de los que se monten despues). */
+    /* Un panel nuevo debe pertenecer a uno de los cinco grupos o queda oculto, nunca suelto en el menu. */
     function sincroniza() {
       cada(cajon.children, function (d) {
         if (d.tagName !== 'DETAILS') { return; }
         if (!d.id) { d.id = (d.className.split(' ').filter(function (c) { return c !== 'thegame-pliego'; })[0] || 'panel') ; }
-        if (R.items[d.id]) { return; }
-        var s = d.querySelector('summary'), rot = s ? s.textContent.trim() : d.id;
-        entrada(d.id, ICONO[d.id] || '•', rot, function () { abre(d.id); if (d.id === 'pliego-tutorial' && !d.hidden && raiz.AtlasTutorial) { raiz.AtlasTutorial.abre('menu'); } });
-        d.hidden = d.id !== abierto;
+        var grupo = Object.keys(GRUPOS).filter(function (k) { return GRUPOS[k].indexOf(d.id) >= 0; })[0];
+        d.hidden = !grupo || grupo !== abierto;
       });
     }
-    entrada('ondas', '\u223F', T('army_h'), function () { muestra(actual === 'ondas' ? null : 'ondas'); }).setAttribute('aria-controls', 'thegame-ondas');
-    entrada('taller', '⚒︎', T('pes_taller'), function () { if (actual === 'ondas') { muestra(null); return; } muestra('ondas'); S.PANEL.taller.scrollIntoView({ block: 'start' }); }).setAttribute('aria-controls', 'thegame-ondas');
-    /* Opinar sobre la pagina: su unico hogar es el menu (la pestana vertical lateral se oculta dentro del juego). */
-    if (raiz.PageComment && raiz.PageComment.abre) { entrada('opinar', '\u270E', T('menu_opinar'), function () { cierraHoja(); raiz.PageComment.abre(); }); }
+    entrada('history', '◷', texto('nav_history', 'History mode'), function () { abre('history'); }).setAttribute('aria-controls', 'thegame-terminal');
+    entrada('waves', '\u223F', texto('nav_waves', 'Waves Army'), function () { muestra(actual === 'ondas' ? null : 'ondas'); }).setAttribute('aria-controls', 'thegame-ondas');
+    entrada('buildings', '⌂', texto('nav_buildings', 'Buildings'), function () { abre('buildings'); }).setAttribute('aria-controls', 'thegame-terminal');
+    entrada('nodes', '⌘', texto('nav_nodes', 'Nodes & Events'), function () { abre('nodes'); }).setAttribute('aria-controls', 'thegame-terminal');
+    entrada('start', '?', texto('nav_start', 'How to start?'), function () { abre('start'); }).setAttribute('aria-controls', 'thegame-terminal');
+    /* El feedback de pagina sigue accesible dentro de Nodes & Events, no como sexto destino. */
+    if (raiz.PageComment && raiz.PageComment.abre) {
+      var pf = pliego(texto('menu_opinar', 'Feedback on this page'), 'pliego-opinar', false, []), fb = el('button', 'boton-sec', texto('menu_opinar', 'Feedback on this page'));
+      fb.type = 'button'; fb.addEventListener('click', function () { cierraHoja(); raiz.PageComment.abre(); }); pf.appendChild(fb); cajon.appendChild(pf);
+    }
     sincroniza();
     new MutationObserver(sincroniza).observe(cajon, { childList: true });
 
@@ -167,7 +177,7 @@
     /* Con la grieta abierta, «Tu cangrejo» lleva un punto: el aviso llega aunque el cajon este cerrado. */
     var a = est.querySelector('.atlas-alerta');
     if (a) {
-      var marca = function () { var b = R.items['pliego-estado']; if (b) { b.classList.toggle('con-aviso', !a.classList.contains('sellada')); } };
+      var marca = function () { var b = R.items.history; if (b) { b.classList.toggle('con-aviso', !a.classList.contains('sellada')); b.setAttribute('aria-label', texto('nav_history', 'History mode') + (!a.classList.contains('sellada') ? ' · alert' : '')); } };
       new MutationObserver(marca).observe(a, { attributes: true, attributeFilter: ['class'] });
       marca();
     }

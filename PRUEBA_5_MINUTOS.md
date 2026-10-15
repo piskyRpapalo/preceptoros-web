@@ -1,34 +1,69 @@
-# PRUEBA DE 5 MINUTOS · WEB · para la mano del Soberano · versión `preceptoros-2026-17-abgy`
+# Five-minute visitor check · English web
 
-Antes (10 s): abre https://preceptoros.org/en/ y **recarga dos veces** (el service worker nuevo entra en la segunda).
-`preceptoros.org/sw.js` debe decir `abgy`. En el Doogee: Chrome **delante** (con Acurast delante, el mapa se pausa).
+Open https://preceptoros.org/en/. After a release, use a new tab or a second
+visit: the service worker may serve its previous cache on the first visit.
+This checklist covers the published #82–#90 baseline. PR #90 is merged, and
+its service worker and game modules were measured at the public origin with
+HTTP 200 and exact byte matches. After a release, use a new tab or a second
+visit: the service worker may serve its previous cache on the first visit.
 
-| # | Haz esto | Debes ver | Si no, anota |
-|---|---|---|---|
-| 1 | Abre y mira | Mapa isométrico grande en el centro; menú de iconos a la izquierda; arriba del mapa una franja **«Goal · …»** y debajo **«Now: …»** (lo que toca hacer); la Radio abajo | qué tapa qué |
-| 2 | Busca «undefined» o «NaN» en cualquier sitio (también al pasar el dedo por los iconos) | **Nunca**. Lo que falta dice `NO_DATA (causa)` | dónde |
-| 2b | Abre **Your crab - state** y lee el pliego | Secciones, una vez y en este orden: **Who you are → Your body → Core and crack → Your budget → Receipts → What you can do**. Un solo sello `LIVE`/`STALE` con delta del canal de estado; la Grieta se expresa en ciclos. Sin JSON ni Save/Forget/Import en la vista humana; esos controles están en el Inspector. El enlace final abre Summoning | orden, duplicados, reloj de pared, JSON o controles visibles |
-| 3 | Toca **Boya**, **Observatorio**, **Lápidas**, **Cristal** y el **Coral** | Cada uno abre su ficha: lugar, coordenada tocada, coordenada del edificio, cifras y causa de NO_DATA. Ninguna acción ocurre con ese toque. El Observatorio ofrece **Look** con objetivo y coste; Lápidas ofrece sus recibos incluso vacío; Cristal sus mediciones; el coral de Hexelion enlaza la evidencia del lab | coordenada ausente, acción anticipada o ficha de otra pieza |
-| 3a | En la ficha de Boya, abre **Shell Schematics**; exporta y vuelve a importar el archivo | El mismo manifiesto medido se descarga y se muestra como vista previa textual con coordenadas/ciclo; no se aplica ni guarda. Un JSON vacío muestra `NO_DATA` con causa. Los dos controles miden ≥44 px. Si el despliegue acaba de actualizarse, abre una pestaña nueva o haz una segunda visita para que el service worker entregue la versión nueva | cambio de estado tras importar, JSON crudo, falta de causa o control pequeño |
-| 4 | Pulsa **← Map** y toca **mar vacío** | Tu cangrejo **nada** hasta allí (también W A S D). La franja pasa a «Now: Open the menu ⌖…». Contra la niebla se para y la Radio dice por qué | si salta o entra en la niebla |
-| 5 | Menú **★ Skills** | `Swim · level 1 · N actions` y `Reach · level 1`. Nada de Fishing, Mining, Core Level | — |
-| 6 | Menú **⌖ Places** → **Fight** → ← Map | Batalla; el lugar cambia de color; el Tutorial pasa a «Summon» con **«Dry run: … You have N»** (si no te llega el cobre: «Not yet, and why» con la cifra y qué hacer) | si dice «failed» |
-| 6b | **Antes de invocar:** pulsa **Create identity** si aparece (sin identidad no hay firma y la invocación no empieza) | Tras crearla, el botón de invocar sigue su curso: huevo en el nido, y al terminar de incubar, la revelación `.atlas-eclosion`. En el pico aparece `Your new wave`, el vector armónico completo y los siete stats | si el huevo no aparece o la ficha difiere de la onda |
-| 6c | En la revelación, pulsa **Personalize** | La ceremonia se cierra y la misma hoja del Army enfoca directamente el Workshop; **Continue** sigue llevando a la elección de adoptar o soltar | pantalla intermedia o destino distinto del Workshop |
-| 6d | En **Base**, mira la parte superior y pulsa cada opción de invocación | Símbolo `∿`, límite del equipo `10 waves`, costes exactos por tirada (`TC1 50 copper`, `TC2 200 copper + 100 sunlight`, `TC3 600 copper + 300 sunlight`, `TC4 1,500 copper + 500 sunlight`); botones ≥44 px que conservan el flujo real de invocación | cifra distinta, botón sin respuesta o acción antes de invocar |
-| 6e | En Ruins, observa el cobre durante 63 ciclos con la Grieta sellada | 50 copper llegan en 63 ciclos (≈63 s al ciclo medido de 1 s); es 0.8 copper/cycle, el doble de la medida anterior de 0.4 | cifra distinta; anota sello, ciclo y cobre |
-| 6f | Repara la Grieta y lee la Radio y su contador | Sellada: `RIFT SEALED · reopens in N cycles`, baja una unidad por ciclo y la Radio declara 2x. Abierta: la Radio declara base 1x; al llegar a cero se reabre sola y daña el Core | el contador usa pared, cambia sin ciclo, la Radio calla o la integridad no baja al reabrir |
-| 6g | Gana una batalla local contra un edificio NPC, abre su ficha y ocupa; escribe un mensaje y vuelve a tocar “Write message” | La ficha muestra su defensa medida; la ocupación requiere firma local; un mensaje de hasta 160 caracteres queda visible en ficha y mapa; el segundo mensaje se rechaza. Sin clave o ciclo medido aparece NO_DATA con causa | una conquista da rating o botín, una firma inválida se acepta, el texto no se sanea, el segundo mensaje reemplaza al primero, o una ocupación vencida sigue despejada |
-| 6h | En Chrome del Doogee, abre un combate local de 10 ondas contra 10 y deja la escena visible durante dos intervalos de 15 s | Límite `10 waves` en el tutorial; cada intervalo sostiene al menos 58 fps en el teléfono | fps inferior a 58, escena oculta, combate no determinista o menos de 10 ondas por equipo |
-| 7 | Menú **∿ Army** (el primero); toca una onda una sola vez | Se abre una ficha emergente amplia con descripción matemática, lore, siete stats con su fuente semántica, odds exactas de gacha y niveles del Workshop. Las cuatro stats lijables muestran barra actual/máximo y «+» solo cuando recibo, saldo y firma permiten la acción; las otras tres declaran NO_DATA con la causa de que la regla vigente no las admite. No hay pantalla intermedia | dato ausente, fuente distinta de `valores.js`, odds distintas de `gacha.js` o más de un toque |
-| 8 | Toca cualquier botón del juego | Todos grandes (≥ 44 px); ningún panel se queda abierto si vuelves a pulsar su icono | el pequeño |
-| 8a | Abre una hoja (Army o Battle) y toca una entrada del menú lateral; luego abre un panel lateral y toca Army | Solo queda una pantalla abierta cada vez; todos los destinos internos de la web responden HTTP 200 | pantalla superpuesta o enlace que no abre |
-| 9 | Toca la línea de la Radio abajo | Burbujas con quién, sello, fuente y edad en ciclos (el Tutorial solo lo cuenta cuando llega a su paso 6) | — |
+## Published baseline (#82–#88)
+
+1. Open **Buildings** and choose an NPC place. If an occupancy or maintenance
+   action reports a failure, it should show a short safe cause, never an
+   exception, stack or internal path (#82). Do not claim an action is available
+   if the page shows no signed authority.
+2. Open a terminal or Radio message with a cycle age. A valid cycle shows its
+   age; missing, invalid, future or reset cycle data must say `NO_DATA` with a
+   cause rather than inventing freshness (#83).
+3. Open the resource panel. If a reading is unavailable or invalid, it must
+   clear the old value and show `NO_DATA` with a cause; it must not leave a
+   stale number or show `NaN` (#84).
+4. Open a side panel, then another, and open/close a game sheet. The interface
+   should move between panels without stacking stale panels; reduced-motion
+   preference should suppress animated transitions (#85).
+5. State-vector details are internal technical data. A vector being emitted
+   does not prove that an AI understood it (#86).
+6. In **Base**, inspect the incubator. Progress requires a measured game cycle;
+   if it is unavailable, the UI must show the cause and disable summoning (#87).
+7. Open **Nodes & Events → Skills** and click **Enable audio feedback**.
+   Audio is opt-in and local; use **Turn off audio feedback** to stop it (#88).
+
+## Published W: panels, channels and crab entry (#90)
+
+1. Confirm the map remains visible behind one open side drawer; the five
+   destinations are **History mode**, **Waves Army**, **Buildings**,
+   **Nodes & Events**, and **How to start?**. Open one, then another: only one
+   panel or game sheet should remain open. The notification light belongs to
+   **History mode**.
+2. In **Nodes & Events**, inspect the roster. Beelink is identified as
+   `nodo.0.hexelion`; Doogee S110 is `nodo.1.doogee`. These are declared node
+   cards, not proof of a live connection. An unmeasured heartbeat must read
+   `NO_DATA`.
+3. Open **How to start?** and choose the Doogee node as the territory for the
+   crab. This choice records the local territory selection only; it does not
+   connect devices or grant node access.
+4. In **Nodes & Events → Skills**, tap an arrow on the crab movement pad, then
+   tap empty sea. Movement should be deterministic and stop at unmeasured fog.
+   Voice movement is `NO_DATA`: speech recognition is not enabled or measured.
+5. Open the bottom communication panel and select **Echoes**, **Chat**, and
+   **Radio**. Radio contains the measured local message log. Echoes and Chat
+   must show their own `NO_DATA` cause until their sources are verified.
+6. Check the center map/window at a narrow phone width and at desktop width.
+   Respect the reduced-motion setting; buttons and channel tabs should be easy
+   to tap.
+
+## `NO_DATA` limits
+
+- Physical Doogee FPS: not measured in this release check.
+- Global chat: no tested repository-backed channel was found.
+- Echoes as a separate feed: no measured source was found.
+- Live Doogee–Beelink link or rack heartbeat: not queried; do not infer one
+  from the node roster.
+- AI comprehension of the state vector: not measured.
+- Internal house/rack details: not exposed to the game (D67).
+
+Report the page, control, visible text, browser/device, and whether this was a
+first visit or a second visit/new tab. Do not report a local browser fixture as
+a physical-device or production measurement.
 | 9a | Menú **? Tutorial**; completa los seis pasos medidos y recorre después el TOUR (puedes saltar cada parada) | 22 pasos en el mismo esquema: seis acciones originales, cinco lugares y opciones reales del menú. Un popup por parada, guion y cifras leídos de la pantalla correspondiente, sonido declarado, NO_DATA con causa y acción disponible. Skip stop y Skip tour permanecen accesibles; Escape cierra y devuelve el foco | texto duplicado, parada no disponible sin causa, foco perdido o acción adelantada |
-| 9b | Abre dos paneles seguidos desde el menú | La ventana tiene **cabecero** (título · sello · fuente · edad en ciclos) y ✕; un **gusano** viaja de una entrada a la otra y la Radio lo narra | — |
-| 9c | Mira tu cangrejo y el mapa | Cangrejo **toon** (contorno grueso, bandas, ojos que parpadean); en el mapa solo **Hexelion** (el Doogee ya no está) | — |
-| 9d | Mira la **boya** (burbuja con antena), el **observatorio** (cúpula con ventana), el **cristal** (gema facetada) y las **lápidas** (losa redonda) | Cada uno con su silueta y sus bandas de color de su vector; las lápidas en gris fijo (no tienen vector vivo) | si dos se parecen |
-| 10 | Mapa quieto 5 s | Fluido. Medido: 61 fps en el navegador; Doogee 59 fps con `abfn` | si va a tirones |
-
-No está hoy, a propósito: edificios 5-9 (sin canon) · Preceptor hundido y zona térmica (sin su texto aquí) · edad de las
-tropas en ciclos y guardar skills/tutorial al recargar (persistencia: espera tu firma) · Core Level real (sección 17).

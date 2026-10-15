@@ -83,3 +83,21 @@
 .rp-narra{margin:0;min-height:1.3em;font:600 .82rem/1.35 var(--mono,ui-monospace,monospace);color:#f2cf98}
 .rp-claves{font-size:.8rem}
 .rp-claves ol{margin:.3rem 0 0;padding-inline-start:1.3rem}
+
+/* P2 · Shared vocabulary glyphs: the drawing carries shape, tone and motion; words keep the same meaning. */
+.semiotic-slot{display:grid;gap:.35rem;margin:.5rem 0;padding:.55rem;border:1px solid var(--edge-sov,#3a2f63);border-radius:var(--radius,14px);background:var(--bg-secondary,#111827)}
+.semiotic-glyph{display:grid;grid-template-columns:4rem minmax(0,1fr);gap:.5rem;align-items:center}
+.semiotic-glyph svg{width:4rem;height:4rem;overflow:visible}
+.semiotic-description,.semiotic-status{margin:0;color:var(--text-main,#e7edf5);font-size:.78rem;line-height:1.35;overflow-wrap:anywhere}
+#thegame .semiotic-sound{min-height:2.75rem;min-width:2.75rem;justify-self:start}
+#thegame .semiotic-sound:focus-visible{outline:2px solid #fff;outline-offset:2px}
+.semio-motion-0{transform-box:view-box;transform-origin:50% 50%;animation:semio-orbit 5s linear infinite}
+.semio-motion-1{animation:semio-vibrate .18s steps(2,end) infinite}
+.semio-motion-2{animation:semio-transport 1.4s ease-in-out infinite alternate}
+.semio-package{animation:semio-bounce .6s steps(2,end) infinite alternate}
+.semio-package-two{animation-delay:.3s}
+@keyframes semio-orbit{to{transform:rotate(360deg)}}
+@keyframes semio-vibrate{to{transform:translateX(2px)}}
+@keyframes semio-transport{to{transform:translateX(8px)}}
+@keyframes semio-bounce{to{transform:translateY(-5px)}}
+@media(prefers-reduced-motion:reduce){.semio-motion-0,.semio-motion-1,.semio-motion-2,.semio-package{animation:none!important}}
