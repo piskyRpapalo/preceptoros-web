@@ -107,7 +107,7 @@
     if (!panel || !panel.isConnected) {
       panel = D.createElement('details'); panel.className = 'thegame-pliego'; panel.id = 'pliego-skills'; panel.open = true;
       var s = D.createElement('summary'); s.textContent = 'Skills'; panel.appendChild(s);
-      panel.appendChild(D.createElement('ul'));
+      var listaSkills = D.createElement('ul'); listaSkills.setAttribute('aria-live', 'polite'); panel.appendChild(listaSkills);
       var nota = D.createElement('p'); nota.className = 'atlas-nota';
       nota.textContent = 'Only what your crab really does. Tap empty sea or use the directional buttons to swim. Events stay in this tab; saving waits for a signature. Totals last for this tab; recent detail keeps 400 events (older rows roll off).';
       panel.appendChild(nota);

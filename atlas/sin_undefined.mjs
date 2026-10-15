@@ -149,10 +149,11 @@ async function main() {
     if (!rosterData.visible || !/nodo\.0\.hexelion/.test(rosterData.text) || !/nodo\.1\.doogee/.test(rosterData.text) || !/Beelink/.test(rosterData.text) || !/Doogee S110/.test(rosterData.text) || !/heartbeat.*NO_DATA/i.test(rosterData.text)) {
       fallos.push({ path: p, step: actual.step, snippet: 'node roster missing a declared device or honest heartbeat state: ' + JSON.stringify(rosterData) });
     }
-    const mando = await evalua("JSON.stringify({panel:!document.getElementById('pliego-skills')?.hidden,buttons:[...document.querySelectorAll('#pliego-skills .crab-joystick button')].map(b=>({label:b.getAttribute('aria-label'),height:getComputedStyle(b).minHeight})),voice:document.querySelector('[data-voice-control]')?.textContent||''})");
+    if (process.env.SABOTAGE_SKILL_LIVE === '1') { await evalua("document.querySelector('#pliego-skills ul')?.removeAttribute('aria-live')"); }
+    const mando = await evalua("JSON.stringify({panel:!document.getElementById('pliego-skills')?.hidden,skillsLive:document.querySelector('#pliego-skills ul')?.getAttribute('aria-live'),buttons:[...document.querySelectorAll('#pliego-skills .crab-joystick button')].map(b=>({label:b.getAttribute('aria-label'),height:getComputedStyle(b).minHeight})),voice:document.querySelector('[data-voice-control]')?.textContent||''})");
     const mandoData = JSON.parse(mando || '{}');
-    if (mandoData.buttons?.length !== 4 || !mandoData.buttons.every(b => parseFloat(b.height) >= 44 && /^Move (north|south|east|west)$/.test(b.label || '')) || !/Voice movement: NO_DATA.*speech recognition/i.test(mandoData.voice)) {
-      fallos.push({ path: p, step: 'crab-controls', snippet: 'directional touch controls or honest voice-control status missing' });
+    if (mandoData.skillsLive !== 'polite' || mandoData.buttons?.length !== 4 || !mandoData.buttons.every(b => parseFloat(b.height) >= 44 && /^Move (north|south|east|west)$/.test(b.label || '')) || !/Voice movement: NO_DATA.*speech recognition/i.test(mandoData.voice)) {
+      fallos.push({ path: p, step: 'crab-controls', snippet: 'live skill announcements, directional controls, or honest voice-control status missing' });
     }
     await evalua("document.getElementById('menu-start')?.click()"); await espera(1200);
     const entry = await evalua("document.getElementById('pliego-entrada')?.innerText||''");
