@@ -2,6 +2,7 @@
 // Uso: node atlas/sin_undefined.mjs  (Chrome headless por CDP y python3 sirviendo public/; sin dependencias)
 import { spawn } from 'node:child_process';
 import { launchChrome } from './chrome_launch.mjs';
+import { installWavesCraft, checkWavesCraft } from './wavescraft_browser.mjs';
 import { fileURLToPath } from 'node:url';
 
 const PUBLIC = fileURLToPath(new URL('../public/', import.meta.url));
@@ -38,6 +39,7 @@ async function main() {
   const cmd = (method, params = {}) => new Promise((r) => { const i = ++id; pend.set(i, r); ws.send(JSON.stringify({ id: i, method, params })); });
   const evalua = async (expression) => (await cmd('Runtime.evaluate', { expression, awaitPromise: true, returnByValue: true })).result?.result?.value ?? null;
   await cmd('Runtime.enable'); await cmd('Page.enable');
+  await installWavesCraft(cmd);
 
   async function revisa(paso) {
     pasos++;
@@ -57,6 +59,7 @@ async function main() {
     await espera(7000);
 
     actual.step = 'abre'; await espera(1500); await revisa('abre');
+    await checkWavesCraft(evalua, fallos, p);
     actual.step = 'glyph-accessibility';
     const glyph = await evalua(`(() => {
       if (!window.AtlasGlyph) return JSON.stringify({ready:false});
