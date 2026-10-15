@@ -3,7 +3,7 @@
 ## Resultado construido
 
 Las cabeceras de terminal y las burbujas de radio usan ciclos enteros de
-0 a 1.000.000.000. La ausencia, formato inválido, fallo del lector o reinicio
+0 a 1000000000. La ausencia, formato inválido, fallo del lector o reinicio
 del ciclo devuelve NO_DATA con causa en inglés; no se fabrica cero ni frescura.
 El ciclo cero válido sigue siendo medido. LIVE/STALE conserva el umbral de 120.
 
