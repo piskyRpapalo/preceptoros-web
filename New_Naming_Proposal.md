@@ -24,7 +24,7 @@ Mi recomendación: renombrar la **pestaña** y conservar «Echoes & Residue» pa
 
 ## 1 · Inventario de nombres con propuesta (uno a uno, para FIRMO individual)
 
-### 1.1 Pestaña «Echoes» → «Transparency Log» (canal del panel de comunicación)
+### 1.1 Pestaña «Echoes» → «Transparency Log» (canal del panel de comunicación) · **FIRMADA 2026-10-15 (noche) por el Soberano — pendiente de ejecución por Codex. J11 «Echoes & Residue» queda intacto.**
 - **Actual:** `Echoes` — `public/assets/radio_message_log.js:117` (etiqueta) y `:100` (NO_DATA del canal).
 - **Propuesto:** `Transparency Log` (UI en inglés; castellano del canal: «Registro de transparencia»).
 - **Anclaje:** EU AI Act, CELEX 32024R1689, Art. 70.2 (obligación de documentación y transparencia para sistemas de IA de riesgo limitado) + W3C PROV (trazabilidad de datos).
@@ -75,6 +75,8 @@ Mi recomendación: renombrar la **pestaña** y conservar «Echoes & Residue» pa
 ---
 
 ## 2 · Resumen para la firma (uno a uno)
+
+**FIRMADA:** 1.1 (15-oct, noche). **Pendientes de FIRMO individual:** 1.2–1.8.
 
 | # | Cambio | Fichero/línea | Riesgo | Mi recomendación |
 |---|---|---|---|---|
