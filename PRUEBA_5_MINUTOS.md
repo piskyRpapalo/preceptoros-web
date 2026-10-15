@@ -47,6 +47,9 @@ visit: the service worker may serve its previous cache on the first visit.
 4. In **Nodes & Events → Skills**, tap an arrow on the crab movement pad, then
    tap empty sea. Movement should be deterministic and stop at unmeasured fog.
    Voice movement is `NO_DATA`: speech recognition is not enabled or measured.
+   With a screen reader active, the Swim/Reach list should politely announce
+   an updated level after a completed action; without events it reads `NO_DATA`
+   with its cause.
 5. Open the bottom communication panel and select **Echoes**, **Chat**, and
    **Radio**. Radio contains the measured local message log. Echoes and Chat
    must show their own `NO_DATA` cause until their sources are verified.
