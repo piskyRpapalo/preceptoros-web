@@ -2,9 +2,10 @@
 
 Open https://preceptoros.org/en/. After a release, use a new tab or a second
 visit: the service worker may serve its previous cache on the first visit.
-This checklist describes the published #82–#88 baseline plus the current
-panel-and-communication candidate. Candidate changes are not public until
-their branch passes CI and is merged.
+This checklist covers the published #82–#90 baseline. PR #90 is merged, and
+its service worker and game modules were measured at the public origin with
+HTTP 200 and exact byte matches. After a release, use a new tab or a second
+visit: the service worker may serve its previous cache on the first visit.
 
 ## Published baseline (#82–#88)
 
@@ -28,7 +29,7 @@ their branch passes CI and is merged.
 7. Open **Nodes & Events → Skills** and click **Enable audio feedback**.
    Audio is opt-in and local; use **Turn off audio feedback** to stop it (#88).
 
-## Current W candidate: panels, channels and crab entry
+## Published W: panels, channels and crab entry (#90)
 
 1. Confirm the map remains visible behind one open side drawer; the five
    destinations are **History mode**, **Waves Army**, **Buildings**,
