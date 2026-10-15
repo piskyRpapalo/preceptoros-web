@@ -70,12 +70,15 @@
         recibo.textContent = 'NO_DATA · game cycle or world coordinate unavailable (state vector not ready). Nothing was signed.';
         return;
       }
-      var mensaje = 'hitl/1|' + accionId() + '|' + k[0] + ',' + k[1] + '|' + c;
+      /* FIRMO del Soberano (15-oct): hora UTC dentro del JSON del recibo (matasellos declarativo, SIN autoridad) + ciclos de juego en la vista. El ciclo sigue siendo la única vara temporal con autoridad sobre el juego. */
+      var utc = new Date().toISOString().replace(/\.\d+Z$/, 'Z');
+      var mensaje = 'hitl/1|' + accionId() + '|' + k[0] + ',' + k[1] + '|' + c + '|' + utc;
       window.Identity.publica().then(function (pub) {
         return window.Identity.firmarTexto(mensaje).then(function (h) { return { pub: pub, h: h }; });
       }).then(function (r) {
         recibo.textContent = 'Attestation Receipt · action: ' + accionId() +
           ' · world coordinate: [' + k[0] + ', ' + k[1] + '] · cycle: ' + c +
+          ' · utc (declared, no authority): ' + utc +
           ' · public key: ' + r.pub + ' · signature: ed25519:' + r.h.slice(0, 16) + '… (' + r.h.length + ' hex chars)';
       }).catch(function (e) {
         recibo.textContent = 'NO_DATA · signature failed: ' + (e && e.message ? e.message : e) + '. Nothing was signed.';
@@ -85,8 +88,8 @@
     document.body.appendChild(box);
     firma.focus();
   }
-  window.AtlasHitlFirma = { monta: monta };
-  if (window.AtlasDeepLinks && window.AtlasDeepLinks.monta) {
-    /* The deep link is the door of G3: after landing, the sign panel can be opened by the host page. */
-  }
+  /* ENTRY POINT (declared, decision (a)): deliberate until G4 — no manifest action opens
+     this panel today; the receipt wiring lands with G4. Until then the receipt UI is
+     NO_DATA with cause: waiting G4 wiring. */
+  window.AtlasHitlFirma = { monta: monta, estado: function () { return 'NO_DATA: waiting G4 wiring'; } };
 })();
