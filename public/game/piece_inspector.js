@@ -62,15 +62,17 @@
       raiz.AtlasGlyph.monta(slot, ficha.glyph, ficha.explanation || ficha.que || 'Shared vocabulary glyph');
     }
     lin.forEach(function (l) { var dt = D.createElement('dt'), dd = D.createElement('dd'); dt.textContent = l[0]; dd.textContent = l[1]; dl.appendChild(dt); dl.appendChild(dd); });
-    if (raiz.AtlasPlaceCards) { raiz.AtlasPlaceCards.monta(panel, ficha || {}, function (r) {
+    if (raiz.AtlasPlaceCards) { raiz.AtlasPlaceCards.monta(panel, ficha || {}, function (r) { escribeResultado(dl, r); }); }
+    if (ficha && ficha.npcId && raiz.AtlasNpcWalls) { raiz.AtlasNpcWalls.monta(panel, ficha); }
+    /* El menu descubre el panel con un MutationObserver (microtarea): se abre DESPUES de que exista su entrada. */
+    Promise.resolve().then(function () { var b = D.getElementById('menu-pliego-ficha') || D.getElementById('menu-buildings'); if (b && panel.hidden) { b.click(); } });
+  }
+  function escribeResultado(dl, r) {
+      var D = raiz.document;
       var dt = D.createElement('dt'), dd = D.createElement('dd'); dt.textContent = 'Action result';
       dd.textContent = r.cause || (r.receipt ? 'Look started at world (' + r.receipt.col + ', ' + r.receipt.fila + ') · cycle ' + r.receipt.nace_tic : (r.ok ? 'Opened' : 'Measured receipts'));
       dl.appendChild(dt); dl.appendChild(dd);
       (r.lines || []).forEach(function (l) { var a = D.createElement('dt'), b = D.createElement('dd'); a.textContent = l[0]; b.textContent = l[1]; dl.appendChild(a); dl.appendChild(b); });
-    }); }
-    if (ficha && ficha.npcId && raiz.AtlasNpcWalls) { raiz.AtlasNpcWalls.monta(panel, ficha); }
-    /* El menu descubre el panel con un MutationObserver (microtarea): se abre DESPUES de que exista su entrada. */
-    Promise.resolve().then(function () { var b = D.getElementById('menu-pliego-ficha'); if (b && panel.hidden) { b.click(); } });
   }
   /* El toque corto (pixeles del lienzo): la pieza mas cercana a menos de `radio`. Devuelve sus lineas o null. */
   function toca(px, py, radio, tocado, lugar) {
@@ -93,7 +95,21 @@
   function vista() { return ultima ? ultima.slice() : null; }
   /* Todas las fichas del ultimo cuadro (el lab y el arnes sin_undefined las leen sin tocar la pantalla). */
   function todas() { return piezas.map(function (q) { return lineas(lee(q), q.col, q.fila); }); }
+  function registro(tipo) {
+    for (var i = 0; i < piezas.length; i++) { var f = lee(piezas[i]); if (f.kind === tipo) { return { ficha: f, x: piezas[i].col, y: piezas[i].fila }; } }
+    return null;
+  }
+  function muestraResultado(tipo, r) {
+    var f = registro(tipo); if (!f) { return false; }
+    ultima = lineas(f.ficha, f.x, f.y); abre(ultima, f.ficha);
+    if (panel) {
+      escribeResultado(panel.querySelector('dl'), r);
+      var dt = raiz.document.createElement('dt'), dd = raiz.document.createElement('dd'); dt.textContent = 'Next'; dd.textContent = 'Open Tutorial in the left menu when you are ready to continue the tour.';
+      panel.querySelector('dl').appendChild(dt); panel.querySelector('dl').appendChild(dd);
+    }
+    return true;
+  }
 
-  var AtlasInspector = { nd: nd, lineas: lineas, registra: registra, toca: toca, vista: vista, todas: todas };
+  var AtlasInspector = { nd: nd, lineas: lineas, registra: registra, toca: toca, vista: vista, todas: todas, registro: registro, muestraResultado: muestraResultado };
   if (typeof module === 'object' && module.exports) { module.exports = AtlasInspector; } else { raiz.AtlasInspector = AtlasInspector; }
 })(this);

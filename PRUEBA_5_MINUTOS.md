@@ -66,3 +66,4 @@ visit: the service worker may serve its previous cache on the first visit.
 Report the page, control, visible text, browser/device, and whether this was a
 first visit or a second visit/new tab. Do not report a local browser fixture as
 a physical-device or production measurement.
+| 9a | Menú **? Tutorial**; completa los seis pasos medidos y recorre después el TOUR (puedes saltar cada parada) | 22 pasos en el mismo esquema: seis acciones originales, cinco lugares y opciones reales del menú. Un popup por parada, guion y cifras leídos de la pantalla correspondiente, sonido declarado, NO_DATA con causa y acción disponible. Skip stop y Skip tour permanecen accesibles; Escape cierra y devuelve el foco | texto duplicado, parada no disponible sin causa, foco perdido o acción adelantada |

@@ -108,3 +108,17 @@ body.portada-juego .pc-boton{display:none}
   .thegame-hoja{top:calc(var(--thegame-tope) + .4rem);bottom:calc(var(--pie) + .4rem);width:calc(100vw - var(--menu) - 1rem);padding-inline:.55rem}
 }
 @media(prefers-reduced-motion:reduce){.thegame-terminal,.thegame-hoja{transition:none;scroll-behavior:auto}}
+
+/* TOUR: una parada, una accion real. Objetivo y skip permanecen fuera del contenido desplazable. */
+.genesis-tour{color:var(--text-main);background:var(--bg-secondary);border:2px solid var(--edge-sov);border-radius:var(--radius);width:min(32rem,calc(100vw - 1rem));max-height:calc(100dvh - 1rem);padding:.7rem}
+.genesis-tour[open]{display:grid;grid-template-rows:auto auto auto minmax(0,1fr) auto auto auto auto;gap:.35rem}
+.genesis-tour::backdrop{background:color-mix(in srgb,var(--bg-primary) 75%,transparent)}
+.genesis-tour h3,.genesis-tour p{margin:0}
+.genesis-tour .atlas-pre{height:3rem;justify-self:center}
+.genesis-tour .atlas-pre-onda{width:2rem;height:3rem}
+.genesis-tour dl{margin:0;overflow-y:auto;overscroll-behavior:contain;min-height:0;font-size:.86rem}
+.genesis-tour dd{margin:0 0 .35rem;overflow-wrap:anywhere}
+.genesis-tour dt{font-weight:600}
+.genesis-tour .boton,.genesis-tour .boton-sec{min-height:2.875rem}
+.genesis-tour-action{display:grid;gap:.25rem}
+.genesis-tour-action>a{display:flex;align-items:center}
