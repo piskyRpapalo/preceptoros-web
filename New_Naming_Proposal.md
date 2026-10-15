@@ -95,3 +95,23 @@ Los J1–J15 del mapa firmado no se tocan ni se renumeran aquí.
 
 - No encontré «Echoes & Residue» como fichero ni función: vive solo como entrada del mapa de nombres J11 en PARA_LA_MESA.md:449. La pieza real son `taller.js`/`ui-taller.js`/`primer_eco.js`. Si el Soberano quiere renombrar la pieza J11, es decisión nueva, no de esta propuesta.
 - No pude medir si `preceptoros-2026-17-abho` está ya en el repo: el espejo dice `abgm` (PARA_LA_MESA.md, cierre OCEANO). Si `abho` está desplegado, su recibo vive en el rack: NO_DATA aquí, confirmado por la Mesa como en producción.
+
+---
+
+## 4 · Anchored Naming · capa de gobernanza sobre la Estrella Hexelion (canon ideas13oct)
+
+La Estrella — el Diccionario Soberano Vivo (`public/dictionary.json`, esquema `preceptoros.dictionary/1`, 43 entradas públicas, anclajes abiertos, D67 filtrado) — es el vocabulario; esta sección es su capa de gobernanza para los nombres de mi ronda. No decido adopción: alineo cada entrada 1.2–1.8 con su TÉRMINO ESTÁNDAR y su ANCLAJE ABIERTO tal como vive en el diccionario. Lo que no tiene anclaje se declara NO_DATA con causa; no se inventa.
+
+| Entrada | Nombre propuesto | Término estándar (Estrella) | Anclaje abierto | Estado |
+|---|---|---|---|---|
+| 1.2 | Deterministic Summon | Hidden Seed ya cubre el VRF; el gacha determinista se alinea con **Deterministic State Machine** (A7 Steady Current) | IETF-RFC-9381-ECVRF, IEEE-1516-HLA-Lockstep, Lamport-State-Machine-Replication | PROPUESTA |
+| 1.3 | Replay Verdict | **Empirical Ablation Loop** (C26 Question Loop) + Human Hand (D33) | Popperian-Falsifiability, EUR-Lex-CELEX:32024R1689-Art14 | PROPUESTA |
+| 1.4 | Signed Envelopes | **Cryptographically Signed Ingress Packet** (B19 Signed Note) | IETF-RFC-9421, detached-Ed25519-payload | PROPUESTA |
+| 1.5 | (recogido en J3) | **Data Governance** (D37 Root Garden) | EUR-Lex-CELEX:32024R1689-Art10 | ya cubierto |
+| 1.6 | Latency Crystal (ficha sin «token») | **Automatic Logging** (D35 Memory Log) + Data Protection by Design (D44) | EUR-Lex-CELEX:32024R1689-Art12, EUR-Lex-CELEX:32016R0679-Art25 | PROPUESTA |
+| 1.7 | verificador (ex-oraculo) | **Measurable Explainability** (D45 Explainable Star): verifica, no profetiza | IEEE-Std-7001-2021, IEEE-P7003 | PROPUESTA |
+| 1.8 | WavesCraft (firmado) | NO_DATA (con causa): no existe aún entrada de la Estrella para la incubadora; su anclaje propio (AI fluency + C23 Symbiotic Agency) queda propuesto para una futura entrada, decisión del Soberano | — | FIRMADO, anclaje abierto |
+
+G2/G3 ya usan este vocabulario: firma = **Cryptographic HITL** (B13 Human Key, IETF-RFC-8032, NIST-SP-800-63B); recibo = **Attestation Receipt** (B17 Proof Pebble, IETF-RFC-9334-RATS); cerco D67 = **DLP Air-Gap** (B14 Blue Shield, NIST-SP-800-53-SC-7); NO_DATA = **Epistemic Humility** (C24 Honest Fog, Kleene-Three-Valued-Logic); la Mesa = **Multi-Agent Debate** (C25 Council Circle, arXiv:2305.14325).
+
+**NO_DATA (causa):** las entradas 1.2–1.7 citan anclajes que ya viven en `public/dictionary.json` (verificado hoy en el repo); cualquier anclaje adicional no presente en la Estrella no se inventa aquí.
