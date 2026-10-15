@@ -660,10 +660,26 @@ process.stdout.write(JSON.stringify(ok));
         """PR-2 (FIRMO 2026-10-12): la trayectoria del gusano ES el dato (pura de S_t; revela, no decide; color del sello).
         PR-3: cada transicion se narra en la Radio y se lee en el inspector; y TODO el estado visible cabe en un vector
         < 1 KB (`AtlasVector.leer()`), leible de una llamada por un LLM pequeno («piensa vectorialmente»)."""
+        import jsonschema
         for casos in ("gusano_casos.mjs", "vector_casos.mjs"):
             with self.subTest(casos=casos):
                 r = subprocess.run(["node", str(RAIZ / casos)], capture_output=True, text=True, timeout=60)
                 self.assertEqual(r.returncode, 0, r.stdout[-1200:] + r.stderr[-400:])
+        contrato = json.loads((DATOS / "atlas_vector_schema.json").read_text(encoding="utf-8"))
+        jsonschema.Draft202012Validator.check_schema(contrato)
+        validador = jsonschema.Draft202012Validator(contrato)
+        vector = {"v": "preceptoros.vector/1", "c": 1, "r": [1, 2, 3, 4], "k": [0, 0, 0, 0, 0],
+                  "p": ["panel", "LIVE", 0], "t": None, "e": [["buoy", "alive", 1]],
+                  "l": [["reef", 1, 0]], "n": [["node", "1/1"]], "z": 0,
+                  "q": [["Map", "LIVE", 1]], "g": [None, "panel", 0, 1], "nd": {}}
+        self.assertTrue(validador.is_valid(vector), list(validador.iter_errors(vector)))
+        for malo in ({**vector, "extra": True}, {**vector, "c": None},
+                     {**vector, "e": []}, {**vector, "r": [1, None, 3, 4]}):
+            with self.subTest(vector=malo):
+                self.assertFalse(validador.is_valid(malo), "el contrato deja pasar una forma incompleta o abierta")
+        puerta = (ASSETS / "thegame.js").read_text(encoding="utf-8")
+        self.assertLess(puerta.index("['/game/vector_contract.js']"), puerta.index("['/game/state_vector.js']"))
+        self.assertIn("'/game/vector_contract.js'", (PUBLICO / "sw-listas.js").read_text(encoding="utf-8"))
         w = (ASSETS / "worm_transition.js").read_text(encoding="utf-8")
         self.assertIn("R.dice({ quien: 'Terminal', fuente: 'gusano',", w, "una transicion que no se narra no entra")
         self.assertIn("['worm_transition.js']", (ASSETS / "thegame.js").read_text(encoding="utf-8"))
@@ -992,7 +1008,7 @@ process.stdout.write(JSON.stringify(ok));
 # Ver atlas/POST_VERIFICACION_MGNO_LAB.md y atlas/POST_VERIFICACION_SISIL_CRIA.md.
 PUROS = ("canon.js", "sobres.js", "rating.js", "arena.js", "duelo.js", "mercado.js", "narragrafo.js", "cria.js", "genoma.js")
 # La Arena (2026-09-28, «el mapa multi-jugador en una pestana»): se carga al abrir su pestana, detras del Army.
-ARENA = ("sobres.js", "rating.js", "arena.js", "duelo.js", "mar-anclas.js", "crab_render_hd.js", "crab_free_move.js", "genesis_tutorial.js", "buildings_toon.js", "reef_place_cards.js", "shell_schematics.js", "reef_buildings_paint.js", "latency_crystal.js", "hexelion_bench.js", "reef_corals.js", "reef_buildings_layer.js", "mar-cangrejos.js", "map_pointer_input.js", "map_nodes_layer.js", "map_zoom.js", "piece_inspector.js", "state_vector.js", "place_telemetry.js", "npc_territory_map.js", "mar.js", "nodos-pesos.js",
+ARENA = ("sobres.js", "rating.js", "arena.js", "duelo.js", "mar-anclas.js", "crab_render_hd.js", "crab_free_move.js", "genesis_tutorial.js", "buildings_toon.js", "reef_place_cards.js", "shell_schematics.js", "reef_buildings_paint.js", "latency_crystal.js", "hexelion_bench.js", "reef_corals.js", "reef_buildings_layer.js", "mar-cangrejos.js", "map_pointer_input.js", "map_nodes_layer.js", "map_zoom.js", "piece_inspector.js", "vector_contract.js", "state_vector.js", "place_telemetry.js", "npc_territory_map.js", "mar.js", "nodos-pesos.js",
          "nodos.js", "cuenta.js", "ui-nodos.js", "ui-rack.js",
          "escuadron.js", "battle_choreography.js", "battle_replay.js", "npc_occupancy.js", "npc_walls.js", "ui-arena-comun.js", "ui-arena.js", "ui-duelo.js")
 # La CASA (2026-10-05): la primera pantalla, detras del Army. Lleva canon y escena, que la Arena reutiliza.
