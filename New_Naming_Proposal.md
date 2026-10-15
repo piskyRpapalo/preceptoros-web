@@ -30,19 +30,19 @@ Mi recomendación: renombrar la **pestaña** y conservar «Echoes & Residue» pa
 - **Anclaje:** EU AI Act, CELEX 32024R1689, Art. 70.2 (obligación de documentación y transparencia para sistemas de IA de riesgo limitado) + W3C PROV (trazabilidad de datos).
 - **Por qué mejora la doble lectura:** humano: dice exactamente qué es (lo que el arrecife ya dijo, con sello y fuente, visible para todos). Silicio: es el término literal del artículo 70.2; un auditor de la AI Act lo encuentra sin diccionario. Y desactiva el choque con J11 sin tocar el mapa firmado.
 
-### 1.2 «GACHA ARMONICO» → «Deterministic Summon» (encabezado y semilla)
+### 1.2 «GACHA ARMONICO» → «Deterministic Summon» (encabezado y semilla) · **FIRMADA 2026-10-15 (noche) por el Soberano — pendiente de ejecución por Codex.**
 - **Actual:** `el GACHA ARMONICO` — `public/game/gacha.js:1` (cabecera del módulo; la pestaña usa sus reglas).
 - **Propuesto:** `Deterministic Summon` (UI); el módulo en código puede pasar a `deterministic_summon.js` cuando Codex lo ejecute.
 - **Anclaje:** concepto matemático: función determinista (misma semilla e input = mismo resultado) + AI Act Art. 50 (interacción con sistemas de IA: sin engaño). «Gacha» arrastra la lectura de FOMO/loot-box que los cercos prohíben.
 - **Por qué:** humano: invocas lo que ves, sin ruleta oculta. Silicio: «deterministic» es el término técnico que ya usan los recibos de la casa; «gacha» en cambio es vocabulario de azar comercial, justo lo que la AI Art. 50 y los cercos quieren evitar. Nota: el propio gacha.js ya declara «NO ES UN VRF, y se dice» — la honestidad ya está; el nombre debería decirla también.
 
-### 1.3 «juez» (pestaña/módulo) → «Replay Verdict» / mantener `juez.js` en código
+### 1.3 «juez» (pestaña/módulo) → «Replay Verdict» / mantener `juez.js` en código · **FIRMADA 2026-10-15 (noche) por el Soberano — pendiente de ejecución por Codex.**
 - **Actual:** `el JUEZ` — `public/game/juez.js:1`.
 - **Propuesto:** UI: `Replay Verdict`; el fichero puede seguir como `juez.js` (castellano, ya citado en recibos) — solo cambia la etiqueta visible.
 - **Anclaje:** concepto matemático: verificación por repetición (reproducibilidad determinista, cf. ISO/IEC 25010 fiabilidad) + AI Act Art. 86 (derecho a explicación de decisiones individuales: el veredicto no es opinión, se reejecuta).
 - **Por qué:** humano: explica qué hace (vuelve a jugar la partida y compara). Silicio: «replay» + «verdict» son términos auditables; «juez» en inglés no existe y obliga a traducir. Riesgo bajo: es etiqueta, no contrato.
 
-### 1.4 «sobres» → mantener en castellano, UI: «Signed Envelopes»
+### 1.4 «sobres» → mantener en castellano, UI: «Signed Envelopes» · **FIRMADA 2026-10-15 (noche) por el Soberano — pendiente de ejecución por Codex.**
 - **Actual:** `los SOBRES firmados` — `public/game/sobres.js:1`; la UI ya los firma con Ed25519.
 - **Propuesto:** UI: `Signed Envelopes`; `sobres.js` se queda (castellano del contrato `atlas.sobre/1`, ya citado en recibos).
 - **Anclaje:** RFC 9582 Ed25519 (firma de los sobres) + AI Act Art. 70.2. «Envelope» es el término de correo/interoperabilidad desde RFC 822.
@@ -53,13 +53,13 @@ Mi recomendación: renombrar la **pestaña** y conservar «Echoes & Residue» pa
 - **Propuesto:** ninguno nuevo. Recojo solo que **J3 ya ancla esta pieza** y que `mercado.js:5` ya dice «nunca dinero real ni cripto ni una moneda nueva» — el cerco del vocabulario ya está en el contrato.
 - **Por qué:** no duplico lo firmado. Lo marco como «recogido, sin acción».
 
-### 1.6 «latency_crystal» → «Latency Crystal» mantiene ficha, cambia el lore a «fósil de medidas»
+### 1.6 «latency_crystal» → «Latency Crystal» mantiene ficha, cambia el lore a «fósil de medidas» · **FIRMADA 2026-10-15 (noche) por el Soberano — pendiente de ejecución por Codex.**
 - **Actual:** `public/game/latency_crystal.js:3` — ya dice «Registros fósiles de como se comporta el render (...) no moneda: evidencia» (J-TG-10).
 - **Propuesto:** mantener el nombre del fichero; en UI, traducir la ficha como «Latency Crystal (fossil evidence)» y NO usar «token» en la descripción visible.
 - **Anclaje:** AI Act Art. 70.2 + concepto matemático de medida (evidencia vs. valor). ISO/IEC 25010 de nuevo.
 - **Por qué:** el nombre ya es bueno; solo pido que la UI nunca diga «token» (palabra prohibida por cercos) cuando muestre tok/s medidos — «measured tokens/second» o «words/second» en su lugar. Este es el único ajuste.
 
-### 1.7 «oraculo» (comentario interno) → «verificador» / «comparador»
+### 1.7 «oraculo» (comentario interno) → «verificador» / «comparador» · **FIRMADA 2026-10-15 (noche) por el Soberano — pendiente de ejecución por Codex.**
 - **Actual:** `public/game/gdpr-art25-ephemeral-crab.js:70` — comentario: «Huella de un paseo: lo que el oraculo compara entre aparatos».
 - **Propuesto:** comentario → «lo que el comparador de huellas verifica entre aparatos»; y en cualquier UI futura, el mismo cambio.
 - **Anclaje:** GDPR (Reglamento UE 2016/679, Art. 25 privacidad desde el diseño — ya en el nombre del fichero) + concepto matemático: verificación de igualdad (el término «oráculo» en computación es legítimo, pero el cerco prohíbe la palabra en código y UI).
@@ -76,7 +76,7 @@ Mi recomendación: renombrar la **pestaña** y conservar «Echoes & Residue» pa
 
 ## 2 · Resumen para la firma (uno a uno)
 
-**FIRMADA:** 1.1 (15-oct, noche). **Pendientes de FIRMO individual:** 1.2–1.8.
+**FIRMADAS 2026-10-15 (noche):** 1.1–1.8 (FIRMO total del Soberano). 1.5 y 1.8 ya estaban recogidas sin acción. Todas pendientes de ejecución por Codex; ninguna aplicada.
 
 | # | Cambio | Fichero/línea | Riesgo | Mi recomendación |
 |---|---|---|---|---|
