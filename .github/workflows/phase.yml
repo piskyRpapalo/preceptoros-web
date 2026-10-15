@@ -1,0 +1,38 @@
+name: phase
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  phase:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: python -m pip install --disable-pip-version-check jsonschema
+      - name: Same tree, two complete passes
+        shell: bash
+        run: |
+          set -euo pipefail
+          for pass in 1 2; do
+            node atlas/phase_M0_cases.mjs
+            if node atlas/phase_M0_cases.mjs --sabotage; then
+              echo 'Deletion sabotage escaped validation'
+              exit 1
+            fi
+            python3 test_web.py
+            python3 atlas/test_atlas.py
+            node arnes_sw.mjs
+            node atlas/sin_undefined.mjs
+            node atlas/vector_casos.mjs
+            node atlas/phase_gate.mjs
+            git diff --check
+          done
