@@ -94,18 +94,39 @@
     document.documentElement.classList.toggle('con-chat', a);
     if (a) { pinta(); }
   }
+  function canal(id) {
+    R.canal = id;
+    Object.keys(R.canales).forEach(function (k) { R.canales[k].setAttribute('aria-selected', String(k === id)); R.canales[k].tabIndex = k === id ? 0 : -1; });
+    var nd = id === 'echoes' ? T('channel_echoes_nd', 'NO_DATA · no separate Echoes feed is measured here') :
+      T('channel_chat_nd', 'NO_DATA · global chat has no tested repository channel');
+    R.lista.hidden = id !== 'radio'; R.noData.hidden = id === 'radio';
+    R.noData.textContent = nd;
+  }
   function monta(capa, c) {
     if (R.caja || !capa) { return; }
     ctx = c || {};
     R.caja = el('section', 'radio-chat plegado'); R.caja.id = 'radio-chat'; R.caja.setAttribute('aria-label', T('chat_aria', 'Radio chat: what the reef says, with its seal and source'));
     R.boton = el('button', 'radio-chat-alterna'); R.boton.type = 'button'; R.boton.id = 'radio-chat-alterna';
-    R.boton.setAttribute('aria-controls', 'radio-chat-lista'); R.boton.setAttribute('aria-expanded', 'false');
+    R.boton.setAttribute('aria-controls', 'radio-chat-lista radio-chat-no-data'); R.boton.setAttribute('aria-expanded', 'false');
     var ico = el('span', 'radio-chat-ico', '♪'); ico.setAttribute('aria-hidden', 'true');
     R.ultimo = el('span', 'radio-chat-ultimo');
     R.boton.appendChild(ico); R.boton.appendChild(R.ultimo);
     R.boton.addEventListener('click', function () { alterna(); });
+    R.tabs = el('div', 'radio-chat-tabs'); R.tabs.setAttribute('role', 'tablist'); R.tabs.setAttribute('aria-label', T('channel_aria', 'Communication channels'));
+    R.canales = {};
+    [['echoes', T('channel_echoes', 'Echoes')], ['chat', T('channel_chat', 'Chat')], ['radio', T('channel_radio', 'Radio')]].forEach(function (x) {
+      var b = el('button', 'radio-chat-tab', x[1]); b.type = 'button'; b.setAttribute('role', 'tab'); b.setAttribute('aria-selected', 'false');
+      b.setAttribute('aria-controls', 'radio-chat-lista radio-chat-no-data'); b.addEventListener('click', function () { canal(x[0]); });
+      b.addEventListener('keydown', function (e) {
+        if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') { return; }
+        e.preventDefault(); var ids = Object.keys(R.canales), at = ids.indexOf(x[0]), step = e.key === 'ArrowRight' ? 1 : -1;
+        var next = ids[(at + step + ids.length) % ids.length]; R.canales[next].focus(); canal(next);
+      });
+      R.tabs.appendChild(b); R.canales[x[0]] = b;
+    });
     R.lista = el('ol', 'radio-chat-lista'); R.lista.id = 'radio-chat-lista'; R.lista.setAttribute('role', 'log'); R.lista.setAttribute('aria-live', 'polite');
-    R.caja.appendChild(R.boton); R.caja.appendChild(R.lista);
+    R.noData = el('p', 'radio-chat-no-data'); R.noData.id = 'radio-chat-no-data'; R.noData.setAttribute('role', 'status');
+    R.caja.appendChild(R.boton); R.caja.appendChild(R.tabs); R.caja.appendChild(R.noData); R.caja.appendChild(R.lista); canal('radio');
     capa.appendChild(R.caja);
     document.addEventListener('keydown', function (e) { if (e.altKey && (e.key === 'r' || e.key === 'R')) { e.preventDefault(); alterna(); R.boton.focus(); } });
     observa(capa);

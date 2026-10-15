@@ -2534,6 +2534,8 @@ class Portada(unittest.TestCase):
         # La terminal (menu, cajon, hojas) salio de thegame.js a terminal_menu_shell.js (FIRMO 2026-10-12): se miran los dos.
         tg = (PUBLICO / "assets" / "thegame.js").read_text(encoding="utf-8") + (PUBLICO / "assets" / "terminal_menu_shell.js").read_text(encoding="utf-8")
         self.assertIn("d.startViewTransition && !rm", tg)
+        self.assertIn(".thegame-menu-item.con-aviso::after", (PUBLICO / "assets" / "terminal_menu_shell.css").read_text(encoding="utf-8"),
+                      "History mode must show a visible notification light")
         self.assertIn("else { muestraYa(id, foco); }", tg)
         self.assertIn("prefers-reduced-motion: reduce", tg[tg.index("function muestra(id"):tg.index("function muestraYa")])
         css = (PUBLICO / "assets" / "eaa-art12-local-first-surface.css").read_text(encoding="utf-8")

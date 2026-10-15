@@ -1,7 +1,8 @@
 /* preceptoros.org · theGame · EL CANGREJO FUNCIONAL (B, FIRMO 2026-10-12): manejo libre ENCIMA del paseo J1.
 
    El paseo automatico (`AtlasCangrejo.paseo`) sigue siendo suyo e INTOCABLE: esto suma un DESPLAZAMIENTO libre a donde
-   el paseo lo pone. Tocar mar vacio lo manda alli (desliza, VEL unidades por cuadro); W/A/S/D lo empujan PASO unidades.
+   el paseo lo pone. Tocar mar vacio lo manda alli (desliza, VEL unidades por cuadro); los botones direccionales lo
+   empujan PASO unidades. El control por voz sigue NO_DATA: reconocimiento local no habilitado ni medido.
    La NIEBLA es honesta: lo no medido no se pisa. Si el siguiente paso cae en niebla (>= 0,5), se para y la Radio dice
    por que (NO_DATA: no medido).
 
@@ -68,7 +69,7 @@
   /* Ir a un punto del MUNDO (base = donde esta el paseo ahora). */
   function va(base, x, y) { dest = { x: Math.round(x - base.x), y: Math.round(y - base.y) }; avisado = ''; return dest; }
   function empuja(dir) {
-    var v = { w: [0, -1], a: [-1, 0], s: [0, 1], d: [1, 0] }[dir];
+    var v = { north: [0, -1], west: [-1, 0], south: [0, 1], east: [1, 0] }[dir];
     if (!v) { return null; }
     dest = { x: Math.round((dest || off).x + v[0] * PASO), y: Math.round((dest || off).y + v[1] * PASO) }; avisado = '';
     return dest;
@@ -108,8 +109,16 @@
       var s = D.createElement('summary'); s.textContent = 'Skills'; panel.appendChild(s);
       panel.appendChild(D.createElement('ul'));
       var nota = D.createElement('p'); nota.className = 'atlas-nota';
-      nota.textContent = 'Only what your crab really does. Tap empty sea to swim; W A S D also work. Events stay in this tab; saving waits for a signature. Totals last for this tab; recent detail keeps 400 events (older rows roll off).';
+      nota.textContent = 'Only what your crab really does. Tap empty sea or use the directional buttons to swim. Events stay in this tab; saving waits for a signature. Totals last for this tab; recent detail keeps 400 events (older rows roll off).';
       panel.appendChild(nota);
+      var mandos = D.createElement('div'); mandos.className = 'crab-joystick'; mandos.setAttribute('role', 'group'); mandos.setAttribute('aria-label', 'Crab movement');
+      [['north', '↑', 'Move north'], ['west', '←', 'Move west'], ['south', '↓', 'Move south'], ['east', '→', 'Move east']].forEach(function (d) {
+        var b = D.createElement('button'); b.type = 'button'; b.className = 'boton-sec'; b.textContent = d[1]; b.setAttribute('aria-label', d[2]);
+        b.addEventListener('click', function () { empuja(d[0]); }); mandos.appendChild(b);
+      });
+      panel.appendChild(mandos);
+      var voz = D.createElement('p'); voz.className = 'atlas-nota'; voz.setAttribute('data-voice-control', 'NO_DATA');
+      voz.textContent = 'Voice movement: NO_DATA (speech recognition is not enabled or measured here).'; panel.appendChild(voz);
       var botonAudio = D.createElement('button'); botonAudio.type = 'button'; botonAudio.textContent = 'Enable audio feedback'; botonAudio.setAttribute('aria-pressed', 'false');
       var estadoAudio = D.createElement('p'); estadoAudio.setAttribute('data-audio-status', ''); estadoAudio.setAttribute('role', 'status'); estadoAudio.textContent = 'Audio feedback is off.';
       botonAudio.addEventListener('click', function () {

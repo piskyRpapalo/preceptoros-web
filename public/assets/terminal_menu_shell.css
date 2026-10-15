@@ -21,7 +21,9 @@
   font:700 .74rem/1.1 var(--mono);letter-spacing:.04em;text-align:start;color:var(--text-main);background:var(--bg-secondary);
   border:1px solid var(--edge-sov);border-radius:var(--radius);cursor:pointer}
 #thegame .thegame-menu-item[aria-expanded="true"]{color:var(--accent-copper-claro);border-color:var(--accent-copper)}
-#thegame .thegame-menu-item.con-aviso{border-color:var(--accent-copper)}
+#thegame .thegame-menu-item.con-aviso{position:relative;border-color:var(--accent-copper)}
+#thegame .thegame-menu-item.con-aviso::after{content:"";position:absolute;top:.28rem;right:.3rem;width:.48rem;height:.48rem;border-radius:50%;
+  background:var(--accent-copper-claro);box-shadow:0 0 .45rem var(--accent-copper);pointer-events:none}
 .thegame-menu-ico{flex:none;width:1.5rem;font-size:1.15rem;text-align:center;line-height:1}
 .thegame-menu{overflow-x:hidden}
 #thegame :is(.thegame-menu-ancho,.thegame-menu-item){overflow:hidden}
@@ -30,8 +32,9 @@
 body.portada-juego .pc-boton{display:none}
 .thegame-menu.expandido .thegame-menu-rotulo{display:inline}
 /* EL CAJON: un panel cada vez, junto al menu; cerrado no ocupa nada. */
-.thegame-terminal{position:fixed;z-index:4;left:var(--menu);top:var(--thegame-tope);bottom:var(--pie);right:0;  /* C: los paneles ocupan TODA la pantalla junto al menu */
-  overflow:auto;overflow-x:hidden;overscroll-behavior:contain;display:grid;gap:.5rem;align-content:start;padding:.5rem .6rem}
+.thegame-terminal{position:fixed;z-index:4;left:calc(var(--menu) + .5rem);top:calc(var(--thegame-tope) + .5rem);bottom:calc(var(--pie) + .5rem);
+  width:min(24rem,calc(100vw - var(--menu) - 1.5rem));overflow:auto;overflow-x:hidden;overscroll-behavior:contain;display:grid;gap:.5rem;
+  align-content:start;padding:.65rem;background:color-mix(in srgb,var(--bg-primary) 96%,transparent);border:1px solid var(--edge-sov);border-radius:var(--radius)}
 .thegame-terminal[hidden],.thegame-terminal > details[hidden]{display:none}
 .thegame-estado{display:grid;gap:.6rem;min-width:0}
 /* Dentro del cajon nada fuerza anchura: lo medido (integridad nowrap, el p de la alerta a 18rem, el h3 a 1.6rem). */
@@ -40,20 +43,28 @@ body.portada-juego .pc-boton{display:none}
 #thegame .thegame-terminal .atlas-alerta p{flex-basis:100%}
 #thegame .thegame-terminal .atlas-cab h3{font-size:1rem}
 /* LAS HOJAS (Taller, Batalla): sobre el mapa, entre el menu y el borde, encima del chat. */
-.thegame-hoja{position:fixed;z-index:4;top:var(--thegame-tope);left:var(--menu);right:.4rem;bottom:var(--pie);overflow:auto;overscroll-behavior:contain;padding:0 .8rem 1rem}
+.thegame-hoja{position:fixed;z-index:4;top:calc(var(--thegame-tope) + .5rem);bottom:calc(var(--pie) + .5rem);
+  left:calc(var(--menu) + (100vw - var(--menu))/2);width:min(60rem,calc(100vw - var(--menu) - 1.5rem));transform:translateX(-50%);
+  overflow:auto;overscroll-behavior:contain;padding:0 .8rem 1rem;background:color-mix(in srgb,var(--bg-primary) 97%,transparent);
+  border:1px solid var(--edge-sov);border-radius:var(--radius)}
 .thegame-hoja[hidden]{display:none}
 .thegame-hoja-cab{position:sticky;top:0;z-index:1;display:flex;gap:.7rem;align-items:center;padding:.6rem 0;background:var(--bg-secondary)}
 .thegame-hoja-cab h3{margin:0;font:700 .85rem/1.2 var(--mono);letter-spacing:.06em;text-transform:uppercase}
 .thegame-hoja-cuerpo{display:grid;gap:1rem;min-width:0}
 /* EL CHAT DE LA RADIO: abajo; plegado es UNA linea (el ultimo mensaje), desplegado no pasa del 40 % del alto. */
-.radio-chat{position:fixed;z-index:5;left:var(--menu);right:0;bottom:0;max-height:40dvh;display:grid;grid-template-rows:auto minmax(0,1fr);
+.radio-chat{position:fixed;z-index:5;left:var(--menu);right:0;bottom:0;max-height:44dvh;display:grid;grid-template-rows:auto auto minmax(0,1fr);
   background:color-mix(in srgb,var(--bg-primary) 94%,transparent);border-top:1px solid var(--edge-sov);padding-bottom:env(safe-area-inset-bottom)}
-.radio-chat.plegado .radio-chat-lista{display:none}
+.radio-chat.plegado :is(.radio-chat-tabs,.radio-chat-lista,.radio-chat-no-data){display:none}
 #thegame .radio-chat-alterna{display:flex;align-items:center;gap:.6rem;width:100%;min-height:var(--chat);padding:.3rem .8rem;text-align:start;color:var(--text-main);
   background:transparent;border:0;border-radius:0;cursor:pointer;overflow:hidden}
 .radio-chat-ico{flex:none;font-size:1.1rem;color:var(--accent-copper-claro)}
 .radio-chat-ultimo{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:.78rem/1.3 var(--mono)}
 .radio-chat-lista{margin:0;padding:.3rem .7rem .7rem;list-style:none;overflow-y:auto;overscroll-behavior:contain;display:grid;gap:.4rem;align-content:start}
+.radio-chat-lista[hidden],.radio-chat-no-data[hidden]{display:none}
+.radio-chat-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.35rem;padding:.35rem .65rem 0}
+#thegame .radio-chat-tab{min-width:44px;min-height:44px;padding:.3rem .5rem;color:var(--text-muted);background:var(--bg-secondary);border:1px solid var(--edge-sov);border-radius:var(--radius);font:700 .72rem/1.2 var(--mono)}
+#thegame .radio-chat-tab[aria-selected="true"]{color:var(--accent-copper-claro);border-color:var(--accent-copper);background:var(--glass-sov)}
+.radio-chat-no-data{margin:.35rem .7rem;padding:.6rem;border:1px dashed var(--edge-sov);font:.76rem/1.4 var(--mono);color:var(--text-muted)}
 .radio-msg{max-width:46rem;padding:.45rem .65rem;background:var(--bg-secondary);border:1px solid var(--edge-sov);border-radius:var(--radius)}
 .radio-msg[data-sello="NO_DATA"]{border-style:dashed}
 .radio-msg[data-sello="STALE"]{opacity:.7}
@@ -61,6 +72,11 @@ body.portada-juego .pc-boton{display:none}
 .radio-msg-cab b{color:var(--text-main)}
 .radio-msg-sello{padding:0 .35rem;border:1px solid var(--edge-sov);border-radius:var(--radius);color:var(--accent-copper-claro)}
 .radio-msg-texto{margin:.25rem 0 0;font-size:.86rem;line-height:1.4;overflow-wrap:anywhere}
+.crab-joystick{display:grid;grid-template-columns:repeat(3,minmax(2.875rem,3.5rem));grid-template-rows:repeat(2,minmax(2.875rem,3.5rem));gap:.35rem;justify-content:center}
+.crab-joystick button{grid-column:2;min-width:2.875rem;min-height:2.875rem;font-size:1.2rem}
+.crab-joystick button:nth-child(2){grid-column:1;grid-row:2}
+.crab-joystick button:nth-child(3){grid-column:2;grid-row:2}
+.crab-joystick button:nth-child(4){grid-column:3;grid-row:2}
 /* Los mandos del mapa y su aviso: tras el menu, encima del chat; el centro, limpio. */
 .mapa-mandos{position:fixed;z-index:1;left:calc(var(--menu) + .6rem);bottom:calc(var(--pie) + .6rem)}
 .mapa-aviso{position:fixed;z-index:1;top:calc(var(--thegame-tope) + 3.6rem);left:calc(var(--menu) + .6rem);right:.6rem;pointer-events:none}
@@ -87,3 +103,8 @@ body.portada-juego .pc-boton{display:none}
 /* 6B-1: segundo gesto sobre una accion medida; enlaces tambien tactiles. */
 .place-actions{display:grid;gap:.5rem}
 .place-actions>.boton-sec{display:flex;align-items:center;min-height:2.875rem}
+@media(max-width:47.999rem){
+  .thegame-terminal{top:auto;right:.45rem;bottom:calc(var(--pie) + .45rem);left:calc(var(--menu) + .45rem);width:auto;max-height:56dvh}
+  .thegame-hoja{top:calc(var(--thegame-tope) + .4rem);bottom:calc(var(--pie) + .4rem);width:calc(100vw - var(--menu) - 1rem);padding-inline:.55rem}
+}
+@media(prefers-reduced-motion:reduce){.thegame-terminal,.thegame-hoja{transition:none;scroll-behavior:auto}}

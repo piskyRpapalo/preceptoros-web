@@ -760,17 +760,16 @@ process.stdout.write(JSON.stringify(ok));
         self.assertIn("pon(R.fase, rellena(U('fase_h')", p, "la fase se queda: mueve el mapa")
 
     def test_c_paneles_amables_y_grandes(self):
-        """C (FIRMO 2026-10-12): lo mas amable primero (el INVENTARIO de ondas antes que el Taller), los paneles ocupan
-        TODA la pantalla junto al menu, todo lo tactil >= 44 px (medido 0 por debajo con Army y Taller abiertos), y
-        ninguna ventana persistente: segunda pulsacion cierra, Escape cierra."""
+        """The signed shell keeps five stable routes, a visible map margin, and one combined Waves/Army sheet."""
         sh = (ASSETS / "terminal_menu_shell.js").read_text(encoding="utf-8")
-        self.assertLess(sh.index("entrada('ondas',"), sh.index("entrada('taller',"), "el inventario va antes que el Taller")
+        self.assertLess(sh.index("entrada('waves',"), sh.index("entrada('buildings',"), "Waves Army precedes other routes")
         for pieza in ("muestra(actual === 'ondas' ? null : 'ondas')", "S.HOJA.ondas", "function mueveArmy()",
                       "Promise.resolve(x.alTaller()).then(mueveArmy)", "e.key !== 'Escape'"):
             with self.subTest(pieza=pieza):
                 self.assertIn(pieza, sh)
         css = (ASSETS / "terminal_menu_shell.css").read_text(encoding="utf-8")
-        self.assertIn("right:0;", css.split(".thegame-terminal{")[1].split("}")[0], "el cajon no ocupa la pantalla")
+        self.assertIn("width:min(24rem,calc(100vw - var(--menu) - 1.5rem))", css)
+        self.assertIn("left:calc(var(--menu) + .5rem)", css.split(".thegame-terminal{")[1].split("}")[0])
         self.assertIn("#thegame summary{min-height:2.75rem;", css)
         self.assertIn("#thegame :is(.boton,.boton-sec){min-height:2.875rem;min-width:2.875rem}", css)
 
@@ -846,7 +845,7 @@ process.stdout.write(JSON.stringify(ok));
         for campo in ("{id}", "{nace}", "{muere}", "{causa}", "{huella}"):
             with self.subTest(recibo=campo):
                 self.assertIn(campo, ui["lap_recibo"])
-        self.assertIn("'pliego-lapidas': '", (ASSETS / "terminal_menu_shell.js").read_text(encoding="utf-8"))
+        self.assertIn("history: ['pliego-estado', 'pliego-lapidas']", (ASSETS / "terminal_menu_shell.js").read_text(encoding="utf-8"))
 
     def test_la_terminal_chatbot_y_el_chat_de_la_radio(self):
         """LA TERMINAL (FIRMO 2026-10-12): menu a la izquierda (64 px iconos / 220 px expandido), el chat de la Radio abajo,
@@ -864,7 +863,10 @@ process.stdout.write(JSON.stringify(ok));
         measured = subprocess.run(["node", str(RAIZ / "radio_age_cases.mjs")],
                                   capture_output=True, text=True, timeout=60)
         self.assertEqual(measured.returncode, 0, measured.stdout + measured.stderr)
-        self.assertEqual(json.loads(measured.stdout)["cases"], 13)
+        self.assertEqual(json.loads(measured.stdout)["cases"], 14)
+        self.assertIn("R.tabs.setAttribute('role', 'tablist')", r)
+        self.assertIn("global chat has no tested repository channel", r)
+        self.assertIn("function registro() { return lista.map(function (m) { return { quien: m.quien, sello: sello(m), fuente: m.fuente, ciclo: m.ciclo, texto: m.texto }; }); }", r)
         for malo in ("Date.now", "fetch(", "localStorage", "innerHTML", "Math.random"):
             with self.subTest(prohibido=malo):
                 self.assertNotIn(malo, r)
@@ -874,7 +876,15 @@ process.stdout.write(JSON.stringify(ok));
             with self.subTest(regla=regla):
                 self.assertIn(regla, css)
         sh = sin_comentarios((ASSETS / "terminal_menu_shell.js").read_text(encoding="utf-8"))
-        self.assertIn("entrada('opinar',", sh, "opinar se queda sin hogar en el menu")
+        for destino in ("history", "waves", "buildings", "nodes", "start"):
+            self.assertIn("entrada('" + destino + "'", sh, "falta un destino principal del sidebar")
+        self.assertIn("'pliego-nodos'", sh, "Nodes & Events debe exponer el roster publicado")
+        self.assertIn("'pliego-opinar'", sh, "feedback conserva su acceso dentro de Nodes & Events")
+        for vista in (".thegame-terminal{position:fixed;z-index:4;left:calc(var(--menu) + .5rem)",
+                      ".thegame-hoja{position:fixed;z-index:4;top:calc(var(--thegame-tope) + .5rem)",
+                      ".radio-chat-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))",
+                      "@media(max-width:47.999rem)", "prefers-reduced-motion:reduce"):
+            self.assertIn(vista, css, vista)
         for f in ("radio_message_log.js", "terminal_menu_shell.js"):
             self.assertLess(len((ASSETS / f).read_bytes()), 16384, f)
 
@@ -2161,6 +2171,12 @@ class MapaMovible(unittest.TestCase):
                       "window.AtlasMapaDedo.monta(", "C.aMundoDelta("):
             with self.subTest(pieza=pieza):
                 self.assertIn(pieza, m)
+        dedo = self._js("map_pointer_input.js")
+        libre = self._js("crab_free_move.js")
+        self.assertNotIn("wasd", dedo.lower())
+        self.assertIn("north: [0, -1]", libre)
+        self.assertIn("west: [-1, 0]", libre)
+        self.assertIn("data-voice-control", libre)
         tx = json.loads((PUBLICO / "atlas-arena-en.json").read_text(encoding="utf-8"))["ui"]
         piloto = (PUBLICO / "assets" / "atlas-piloto.js").read_text(encoding="utf-8")
         dirs = json.loads(re.search(r"var DIRS = (\[[^\]]*\])", piloto).group(1).replace("'", '"'))
@@ -2518,8 +2534,8 @@ class MapaMovible(unittest.TestCase):
         # La terminal chatbot (2026-10-12): el mapa es TODA la pantalla; los bordes (menu, chat plegado) no le comen el centro.
         css = (PUBLICO / "assets" / "terminal_menu_shell.css").read_text(encoding="utf-8")
         self.assertIn(".thegame-mapa{position:fixed;inset:0;z-index:0}", css)
-        self.assertIn(".radio-chat.plegado .radio-chat-lista{display:none}", css, "el chat plegado se come el mundo")
-        self.assertIn("max-height:40dvh", css.split(".radio-chat{position:fixed")[1].split("}")[0], "el chat desplegado pasa del 40 % del alto")
+        self.assertIn(".radio-chat.plegado :is(.radio-chat-tabs,.radio-chat-lista,.radio-chat-no-data){display:none}", css, "the folded channels must leave the map clear")
+        self.assertIn("max-height:44dvh", css.split(".radio-chat{position:fixed")[1].split("}")[0], "the open comms panel exceeds its height limit")
 
     def _js(self, n):
         return sin_comentarios(_fam(n, (PUBLICO / "game" / n).read_text(encoding="utf-8")))
@@ -2779,6 +2795,8 @@ class RedisenoDoogee(unittest.TestCase):
         tx = self._tx()
         self.assertIn("heartbeat NO_DATA", tx["rack_latido"])
         self.assertIn("window.AtlasRackUI.monta(", self._js("ui-arena.js"))
+        self.assertIn("nodosCasa.id = 'pliego-nodos'", self._js("ui-arena.js"))
+        self.assertIn("terminal.appendChild(nodosCasa)", self._js("ui-arena.js"))
         for k in set(re.findall(r"T\('(\w+)'\)", self._js("ui-rack.js"))):
             with self.subTest(clave=k):
                 self.assertTrue(tx.get(k, "").strip(), f"{k} sin texto")
@@ -2972,10 +2990,11 @@ class ArmyYTallerEnUnaHoja(unittest.TestCase):
 
     def test_la_entrada_del_taller_abre_la_hoja_unica_y_baja_a_el(self):
         sh = (ASSETS / "terminal_menu_shell.js").read_text(encoding="utf-8")
-        i = sh.index("entrada('taller',")
+        i = sh.index("entrada('waves',")
         bloque = sh[i:i + 400]
         self.assertIn("'thegame-ondas'", bloque, "la entrada del Taller no apunta a la hoja unica")
-        self.assertIn("S.PANEL.taller.scrollIntoView", bloque, "la entrada no lleva la vista al Taller")
+        self.assertIn("muestra(actual === 'ondas' ? null : 'ondas')", bloque, "Waves Army no abre su hoja compartida")
+        self.assertIn("ond.appendChild(tal)", sh, "Workshop no comparte la hoja Waves Army")
 
 
 class EclosionEspera(unittest.TestCase):

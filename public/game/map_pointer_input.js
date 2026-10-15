@@ -47,8 +47,6 @@
     c.addEventListener('pointerup', suelta);
     c.addEventListener('pointercancel', function () { arrastre = null; });
     c.addEventListener('keydown', function (ev) {
-      var k = String(ev.key).toLowerCase(), Lk = raiz.AtlasCangrejoLibre;
-      if (Lk && 'wasd'.indexOf(k) >= 0 && k.length === 1 && !ev.altKey && !ev.ctrlKey) { ev.preventDefault(); Lk.empuja(k); return; }  /* B: W/A/S/D mueven al cangrejo */
       var d = { ArrowLeft: 'izq', ArrowRight: 'der', ArrowUp: 'arr', ArrowDown: 'aba', Home: 'casa' }[ev.key];
       if (!d) { return; }
       ev.preventDefault(); x.flecha(d);

@@ -1,12 +1,12 @@
 // Guarda A1B8: lo ausente es NO_DATA con causa; jamas undefined ni NaN visibles en theGame.
 // Uso: node atlas/sin_undefined.mjs  (Chrome headless por CDP y python3 sirviendo public/; sin dependencias)
 import { spawn } from 'node:child_process';
-import { mkdtempSync, rmSync } from 'node:fs';
-import { tmpdir } from 'node:os';
+import { mkdirSync, mkdtempSync, rmSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const PUBLIC = fileURLToPath(new URL('../public/', import.meta.url));
+const REPO = fileURLToPath(new URL('../', import.meta.url));
 const espera = (ms) => new Promise((r) => setTimeout(r, ms));
 const ATTR_EXPR = "[...document.querySelectorAll('[aria-label],[title]')].map(e=>(e.getAttribute('aria-label')||'')+' '+(e.title||'')).join('\\n')";
 const fallos = [];
@@ -19,7 +19,8 @@ let ws = null, ch = null, srv = null, dir = null;
 async function main() {
   const port = 8900 + (process.pid % 90);
   const cdpPort = 9300 + (process.pid % 500);
-  dir = mkdtempSync(path.join(tmpdir(), 'sinundef-'));
+  mkdirSync(path.join(REPO, '.scratch'), { recursive: true });
+  dir = mkdtempSync(path.join(REPO, '.scratch', 'sinundef-'));
   srv = spawn('python3', ['-m', 'http.server', String(port), '--bind', '127.0.0.1'], { cwd: PUBLIC, stdio: 'ignore' });
   for (let i = 0; i < 40; i++) { await espera(250); try { await fetch(`http://127.0.0.1:${port}/`); break; } catch {} }
 
@@ -63,9 +64,9 @@ async function main() {
     actual.step = 'abre'; await espera(1500); await revisa('abre');
 
     actual.step = 'startup';
-    const stateEntry = await evalua("document.getElementById('menu-pliego-estado')");
+    const stateEntry = await evalua("document.getElementById('menu-history')");
     if (!stateEntry) { fallos.push({ path: p, step: 'startup', snippet: 'theGame state entry did not mount' }); }
-    await evalua("document.getElementById('menu-pliego-estado')?.click()");
+    await evalua("document.getElementById('menu-history')?.click()");
     await espera(1500);
     const stateBoot = await evalua("JSON.stringify({ready:Boolean(document.querySelector('#crab-state-screen') && document.querySelector('#thegame-estado'))," +
       "sections:[...document.querySelectorAll('#crab-state-screen [data-section]')].map(e=>e.dataset.section)," +
@@ -88,11 +89,16 @@ async function main() {
       fallos.push({ path: p, step: 'startup', snippet: 'Base summon card is not first, measured, priced or touch sized: ' + JSON.stringify(access) });
     }
     await revisa('startup');
-    await evalua("document.getElementById('menu-pliego-estado')?.click()");
+    await evalua("document.getElementById('menu-history')?.click()");
     await espera(300);
 
     const n = (await evalua("document.querySelectorAll('.thegame-menu-item').length")) ?? 0;
     const ids = (await evalua("[...document.querySelectorAll('.thegame-menu-item')].map((e,i)=>e.id||('item-'+i))")) ?? [];
+    const labels = await evalua("JSON.stringify([...document.querySelectorAll('.thegame-menu-item')].map(e=>e.getAttribute('aria-label')))");
+    const routeLabels = JSON.parse(labels || '[]').map(x => x.replace(/ · alert$/, ''));
+    if (n !== 5 || JSON.stringify(routeLabels) !== JSON.stringify(['History mode','Waves Army','Buildings','Nodes & Events','How to start?'])) {
+      fallos.push({ path: p, step: 'sidebar', snippet: 'expected the five English routes: ' + String(labels) });
+    }
     for (let i = 0; i < n; i++) {
       const paso = ids[i] || `item-${i}`;
       actual.step = paso;
@@ -102,19 +108,43 @@ async function main() {
       await espera(1500);
     }
 
-    actual.step = 'exclusion-panel-hoja';
-    await evalua("document.getElementById('menu-ondas')?.click()"); await espera(1500);
+    actual.step = 'nodes-roster';
+    await evalua("document.getElementById('menu-nodes')?.click()"); await espera(1500);
+    const roster = await evalua("JSON.stringify({visible:!document.getElementById('pliego-nodos')?.hidden,text:document.getElementById('pliego-nodos')?.innerText||''})");
+    const rosterData = JSON.parse(roster || '{}');
+    if (!rosterData.visible || !/nodo\.0\.hexelion/.test(rosterData.text) || !/nodo\.1\.doogee/.test(rosterData.text) || !/Beelink/.test(rosterData.text) || !/Doogee S110/.test(rosterData.text) || !/heartbeat.*NO_DATA/i.test(rosterData.text)) {
+      fallos.push({ path: p, step: actual.step, snippet: 'node roster missing a declared device or honest heartbeat state: ' + JSON.stringify(rosterData) });
+    }
+    const mando = await evalua("JSON.stringify({panel:!document.getElementById('pliego-skills')?.hidden,buttons:[...document.querySelectorAll('#pliego-skills .crab-joystick button')].map(b=>({label:b.getAttribute('aria-label'),height:getComputedStyle(b).minHeight})),voice:document.querySelector('[data-voice-control]')?.textContent||''})");
+    const mandoData = JSON.parse(mando || '{}');
+    if (mandoData.buttons?.length !== 4 || !mandoData.buttons.every(b => parseFloat(b.height) >= 44 && /^Move (north|south|east|west)$/.test(b.label || '')) || !/Voice movement: NO_DATA.*speech recognition/i.test(mandoData.voice)) {
+      fallos.push({ path: p, step: 'crab-controls', snippet: 'directional touch controls or honest voice-control status missing' });
+    }
+    await evalua("document.getElementById('menu-start')?.click()"); await espera(1200);
+    const entry = await evalua("document.getElementById('pliego-entrada')?.innerText||''");
+    if (!/Enter as a crab/.test(entry) || !/nodo\.1\.doogee/.test(entry)) { fallos.push({ path: p, step: 'entry', snippet: 'the visitor cannot choose the Doogee node as a crab' }); }
+    await evalua("document.getElementById('menu-waves')?.click()"); await espera(1500);
     let superficies = await evalua("JSON.stringify({panel:!document.getElementById('thegame-terminal')?.hidden,hoja:[...document.querySelectorAll('.thegame-hoja')].some(e=>!e.hidden)})");
     if (JSON.parse(superficies || '{}').panel) { fallos.push({ path: p, step: actual.step, snippet: 'Army hoja left the side panel open' }); }
-    await evalua("document.getElementById('menu-pliego-estado')?.click()"); await espera(1500);
+    await evalua("document.getElementById('menu-history')?.click()"); await espera(1500);
     superficies = await evalua("JSON.stringify({panel:!document.getElementById('thegame-terminal')?.hidden,hoja:[...document.querySelectorAll('.thegame-hoja')].some(e=>!e.hidden)})");
     const exclusivas = JSON.parse(superficies || '{}');
     if (exclusivas.hoja) { fallos.push({ path: p, step: actual.step, snippet: 'side panel left an Army or Battle sheet open' }); }
-    await evalua("document.getElementById('menu-pliego-estado')?.click()"); await espera(300);
+    await evalua("document.getElementById('menu-history')?.click()"); await espera(300);
 
     actual.step = 'chat';
     await evalua("document.getElementById('radio-chat-alterna')?.click()");
     await espera(1500); await revisa('chat');
+    const channelCount = await evalua("document.querySelectorAll('#radio-chat [role=tab]').length");
+    if (channelCount !== 3) { fallos.push({ path: p, step: 'chat', snippet: 'three communication channels did not render' }); }
+    await evalua("[...document.querySelectorAll('#radio-chat [role=tab]')].find(b=>b.textContent==='Chat')?.click()"); await espera(200);
+    const noData = await evalua("document.getElementById('radio-chat-no-data')?.innerText||''");
+    if (!/NO_DATA.*global chat.*tested repository channel/i.test(noData)) { fallos.push({ path: p, step: 'chat', snippet: 'global chat does not declare its repository-data cause' }); }
+    const records = await evalua("JSON.stringify((()=>{const r=window.AtlasRadioChat;if(r)r.dice({quien:'Browser test',texto:'synthetic message for schema check',fuente:'browser-test',sello:'SIMULATED'});return r?.registro().slice(-1).map(x=>Object.keys(x));})())");
+    if (!records || !/quien/.test(records) || !/sello/.test(records) || !/fuente/.test(records) || !/ciclo/.test(records) || !/texto/.test(records)) {
+      fallos.push({ path: p, step: 'ai-fluency', snippet: 'Radio does not expose structured, sourced messages to the agent interface' });
+    }
+    await evalua("[...document.querySelectorAll('#radio-chat [role=tab]')].find(b=>b.textContent==='Radio')?.click()");
     await evalua("document.getElementById('radio-chat-alterna')?.click()");
     await espera(1500);
 
