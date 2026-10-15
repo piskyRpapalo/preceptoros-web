@@ -21,14 +21,20 @@
   };
   var cambio = {}, cab = null, tit = null, sel = null, fue = null, eda = null, visto = null;
 
-  function ciclo() { var J = raiz.AtlasJuego, i = J && J.instantanea ? J.instantanea() : null; return i && typeof i.ciclo === 'number' ? i.ciclo : null; }
+  function cicloValido(c) { return Number.isSafeInteger(c) && c >= 0 && c <= 1000000000; }
+  function ciclo() {
+    try {
+      var J = raiz.AtlasJuego, i = J && J.instantanea ? J.instantanea() : null, c = i && i.ciclo;
+      return cicloValido(c) ? c : null;
+    } catch (_) { return null; }
+  }
   /* Puro: el sello de un panel por su edad. */
-  function sello(edad) { return edad === null ? 'NO_DATA' : (edad > VIEJO ? 'STALE' : 'LIVE'); }
+  function sello(edad) { return !Number.isSafeInteger(edad) || edad < 0 ? 'NO_DATA' : (edad > VIEJO ? 'STALE' : 'LIVE'); }
   /* Puro: la cabecera de un panel (lo que se pinta y lo que lee el lab). */
   function cabecera(id, titulo, ultimo, ahora) {
-    var edad = ultimo === null || ultimo === undefined || ahora === null ? null : Math.max(0, ahora - ultimo);
+    var edad = !cicloValido(ultimo) || !cicloValido(ahora) || ahora < ultimo ? null : ahora - ultimo;
     return { id: id, titulo: titulo || 'NO_DATA (untitled panel)', sello: sello(edad),
-             fuente: FUENTES[id] || 'NO_DATA (source not declared)', edad: edad === null ? 'NO_DATA (no cycle measured yet)' : 'Δ ' + edad + ' cycles since last change seen' };
+             fuente: FUENTES[id] || 'NO_DATA (source not declared)', edad: edad === null ? 'NO_DATA (game cycle unavailable or reset)' : 'Δ ' + edad + ' cycles since last change seen' };
   }
   function abierto(caja) {
     var a = null;
@@ -55,7 +61,10 @@
     new MutationObserver(function (ms) {
       ms.forEach(function (m) {
         var d = m.target.nodeType === 1 ? m.target.closest('#thegame-terminal > details') : (m.target.parentElement && m.target.parentElement.closest('#thegame-terminal > details'));
-        if (d && d.id && m.attributeName !== 'hidden') { cambio[d.id] = ciclo(); }
+        if (d && d.id && m.attributeName !== 'hidden') {
+          var c = ciclo();
+          if (c !== null) { cambio[d.id] = c; } else { delete cambio[d.id]; }
+        }
       });
       pinta();
     }).observe(caja, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: ['hidden'] });
@@ -69,8 +78,9 @@
     var a = abierto(caja);
     if (!a) { visto = null; return; }
     if (!a.open) { a.open = true; }   // el marco manda: el panel abierto se ve entero
-    if (cambio[a.id] === undefined && ciclo() !== null) { cambio[a.id] = ciclo(); }   // primera vez visto: la edad cuenta desde aqui
-    var s = a.querySelector('summary'), c = cabecera(a.id, s ? s.textContent.trim() : null, cambio[a.id] === undefined ? null : cambio[a.id], ciclo());
+    var ahora = ciclo();
+    if (cambio[a.id] === undefined && ahora !== null) { cambio[a.id] = ahora; }   // primera vez medido: la edad cuenta desde aqui
+    var s = a.querySelector('summary'), c = cabecera(a.id, s ? s.textContent.trim() : null, cambio[a.id] === undefined ? null : cambio[a.id], ahora);
     visto = c;
     /* Solo se escribe lo que CAMBIA: el cabecero vive dentro del cajon que observa (sin esto, un bucle de mutaciones). */
     var clave = JSON.stringify(c);

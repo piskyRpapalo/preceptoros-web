@@ -839,11 +839,16 @@ process.stdout.write(JSON.stringify(ok));
         las lineas de estado que el juego YA escribe: no inventa mensajes. Opinar tiene su hogar en el menu."""
         r = sin_comentarios((ASSETS / "radio_message_log.js").read_text(encoding="utf-8"))
         for pieza in ("R.lista.setAttribute('role', 'log')", "R.lista.setAttribute('aria-live', 'polite')",
-                      "li.dataset.quien = m.quien; li.dataset.sello = s; li.dataset.fuente = m.fuente; li.dataset.ciclo = String(m.ciclo);",
-                      "if (/^\\s*NO_DATA/.test(texto)) { return 'NO_DATA'; }", "return m.sello === 'LIVE' && ciclo() - m.ciclo > VIEJO ? 'STALE' : m.sello;",
+                      "li.dataset.quien = m.quien; li.dataset.sello = s; li.dataset.fuente = m.fuente;",
+                      "if (/^\\s*NO_DATA/.test(texto)) { return 'NO_DATA'; }", "li.dataset.ciclo = cicloValido(m.ciclo) ? String(m.ciclo) : 'NO_DATA';",
                       "closest('[role=\"status\"],[aria-live]')", "el('section', 'radio-chat plegado')", "function registro()"):
             with self.subTest(pieza=pieza):
                 self.assertIn(pieza, r)
+        # Measure age behavior against the actual module, including missing cycles and resets.
+        measured = subprocess.run(["node", str(RAIZ / "radio_age_cases.mjs")],
+                                  capture_output=True, text=True, timeout=60)
+        self.assertEqual(measured.returncode, 0, measured.stdout + measured.stderr)
+        self.assertEqual(json.loads(measured.stdout)["cases"], 13)
         for malo in ("Date.now", "fetch(", "localStorage", "innerHTML", "Math.random"):
             with self.subTest(prohibido=malo):
                 self.assertNotIn(malo, r)
