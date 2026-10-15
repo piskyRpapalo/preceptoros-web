@@ -25,26 +25,15 @@
   function rellena(p, v) { return p.replace(/\{(\w+)\}/g, function (m, k) { return k in v ? v[k] : m; }); }
   function dice(t) { R.estado.textContent = t; }
   function quieto() { return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches; }
-  function ins() { return window.AtlasJuego && window.AtlasJuego.instantanea(); }
+  function ins() { try { return window.AtlasJuego && window.AtlasJuego.instantanea(); } catch (_) { return null; } }
+  /* Same measured cycle contract as buildings and NPCs. */
+  function cicloMedido(i) { var c = i && i.ciclo; return Number.isSafeInteger(c) && c >= 0 && c <= 1000000000 ? c : null; }
   function calor() { return S.calorDe(ins()); }
 
   /* --- la ficha de la tropa (lienzo, nombre, carta y voz): `ui-ficha.js` (troceo T) --- */
   var lienzo, traza, nombre, ficha, cronica;
 
   /* --- el nido, la eclosion y el army ------------------------------------ */
-  function pintaNido() {
-    var i = ins(), c = i ? i.ciclo : 0;
-    while (R.nido.firstChild) { R.nido.removeChild(R.nido.firstChild); }
-    if (!Z.huevos.length) { R.nido.appendChild(el('li', 'atlas-nota', T('nido_vacio'))); return; }
-    Z.huevos.forEach(function (h) {
-      var li = el('li'), p = Math.min(100, Math.floor((c - h.desde) * 100 / (h.hasta - h.desde)));
-      var cv = lienzo(72, T('huevo_aria'));
-      li.appendChild(cv);
-      li.appendChild(el('span', null, rellena(T('huevo'), { tc: T(h.tc), p: Math.max(0, p) })));
-      R.nido.appendChild(li);
-      traza(cv, G.HUEVO, 'huevo', quieto() ? 1 : 1 + 0.06 * Math.sin(c));
-    });
-  }
   function eclosiona(h) {
     var t = G.tirada(h.semilla, h.tc);
     if (Z.cadena && h.seq) { Z.cadena = A.abre(Z.cadena, h.seq); A.cadenaWeb(Z.clave).pon(Z.cadena); }  /* G0: abierto, no borrado */
@@ -98,17 +87,20 @@
     window.AtlasTallerUI.casilleros(R.army, l, ficha);
   }
   function pinta() {
-    var i = ins();
+    var i = ins(), ciclo = cicloMedido(i), recursos = i && i.recursos;
+    if (ciclo === null) { dice(T('inc_ciclo_nd')); }
     R.tcs.forEach(function (x) {
-      x.b.disabled = !i || i.recursos.cobre < x.c.cobre || i.recursos.luz < x.c.luz;
+      x.b.disabled = !i || ciclo === null || !recursos || !Number.isFinite(recursos.cobre) || !Number.isFinite(recursos.luz)
+        || recursos.cobre < x.c.cobre || recursos.luz < x.c.luz;
     });
-    pintaNido();
+    INV.pintaNido();
     if (R.cron) { cronica(R.cron, Z.cadena, Z.causa); }  /* piezas 1+2 y 3: piedad y cronica, de TU cadena */
   }
   function tic() {
     /* G0 · la capa dejo de ser un <dialog> (sin `open`): con `!capa.open` esto salia SIEMPRE y nada eclosionaba. */
     if (!capa || !capa.isConnected || document.hidden) { return; }
-    var i = ins(), c = i ? i.ciclo : 0;
+    var i = ins(), c = cicloMedido(i);
+    if (c === null) { pinta(); return; }
     if (R.eclosion.hidden) {
       var listo = Z.huevos.filter(function (h) { return c >= h.hasta; })[0];
       if (listo) { Z.huevos.splice(Z.huevos.indexOf(listo), 1); eclosiona(listo); }
@@ -123,7 +115,8 @@
     var F = window.AtlasFicha.crea({ G: G, A: A, S: S, T: T, el: el, boton: boton, rellena: rellena, dice: dice });
     lienzo = F.lienzo; traza = F.traza; nombre = F.nombre; ficha = F.ficha; cronica = F.cronica;
     capa = c; army = A.crea(A.verificaWeb, A.almacenWeb ? A.almacenWeb() : null);
-    INV = window.AtlasInvoca.crea({ G: G, A: A, S: S, T: T, boton: boton, rellena: rellena, dice: dice, ins: ins, calor: calor, R: R, Z: Z, pinta: pinta });
+    INV = window.AtlasInvoca.crea({ G: G, A: A, S: S, T: T, el: el, lienzo: lienzo, traza: traza, quieto: quieto,
+      boton: boton, rellena: rellena, dice: dice, ins: ins, cicloMedido: cicloMedido, calor: calor, R: R, Z: Z, pinta: pinta });
     var s = el('section', 'panel atlas-incubadora');
     s.appendChild(el('h4', null, T('inc_h')));
     s.appendChild(el('p', 'atlas-nota', T('inc_nota')));

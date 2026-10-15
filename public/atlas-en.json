@@ -203,6 +203,7 @@
     "tc4": "Abyss Treasure",
     "inc_coste": "{cobre} copper · {luz} light",
     "inc_falta": "Not enough resources for that summoning.",
+    "inc_ciclo_nd": "NO_DATA · game cycle unavailable",
     "inc_hecha": "Summoning signed: {tc}. The egg is incubating.",
     "nido_h": "Nest",
     "nido_vacio": "No egg incubating.",
