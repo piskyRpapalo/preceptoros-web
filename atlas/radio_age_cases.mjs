@@ -6,9 +6,9 @@ const source = readFileSync(new URL('../public/assets/radio_message_log.js', imp
 function radio() {
   const nodes = [];
   function element(tag) {
-    const n = { tagName: tag, dataset: {}, children: [], style: {}, _text: '',
+    const n = { tagName: tag, dataset: {}, children: [], style: {}, attrs: {}, events: {}, _text: '', hidden: false,
       classList: { contains() { return true; }, toggle() {} },
-      setAttribute() {}, addEventListener() {}, contains() { return false; },
+      setAttribute(k, v) { this.attrs[k] = String(v); }, addEventListener(k, f) { this.events[k] = f; }, focus() { this.focused = true; }, contains() { return false; },
       appendChild(child) { this.children.push(child); return child; },
       get textContent() { return this._text + this.children.map((x) => x.textContent).join(''); },
       set textContent(v) { this._text = String(v); this.children = []; }
@@ -66,5 +66,17 @@ check('synthetic and unavailable source seals are preserved', () => {
   r.api.dice({ texto: 'NO_DATA (observation unavailable)', fuente: 'state' });
   assert.equal(r.api.registro()[0].sello, 'SIMULATED');
   assert.equal(r.api.registro()[1].sello, 'NO_DATA');
+});
+check('three communication tabs expose only measured Radio and explicit causes', () => {
+  const r = radio(), tabs = r.nodes.filter((n) => n.attrs.role === 'tab');
+  assert.deepEqual(tabs.map((n) => n.textContent), ['Echoes', 'Chat', 'Radio']);
+  tabs[1].events.click();
+  const list = r.nodes.find((n) => n.id === 'radio-chat-lista'), nd = r.nodes.find((n) => n.id === 'radio-chat-no-data');
+  assert.equal(list.hidden, true); assert.equal(nd.hidden, false); assert.match(nd.textContent, /NO_DATA.*global chat.*tested repository channel/);
+  assert.equal(tabs[1].attrs['aria-selected'], 'true'); assert.equal(tabs[1].tabIndex, 0);
+  tabs[0].events.click(); assert.match(nd.textContent, /NO_DATA.*Echoes.*measured/);
+  const key = { key: 'ArrowRight', preventDefault() { this.prevented = true; } }; tabs[0].events.keydown(key);
+  assert.equal(key.prevented, true); assert.equal(tabs[1].focused, true);
+  tabs[2].events.click(); assert.equal(list.hidden, false); assert.equal(nd.hidden, true);
 });
 console.log(JSON.stringify({ cases: total, ok: true, fixture: 'SYNTHETIC DOM; actual source; no browser measurement' }));

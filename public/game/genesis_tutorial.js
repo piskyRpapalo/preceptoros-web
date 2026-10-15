@@ -36,7 +36,7 @@
       sonido: 'NO_DATA (silent by design)', coord: 'any piece within 160 world units of your crab',
       mide: function () { return skill('reach'); }, hecho: function (b, v) { return v >= 1; } },
     { id: 'swim', accion: 'swim', titulo: 'Swim',
-      haz: 'Tap empty sea. Your crab swims there (W A S D work too).',
+      haz: 'Tap empty sea or use the directional buttons. Your crab swims there.',
       porque: 'Free movement sits on top of the automatic walk. Fog is unmeasured: the crab will not swim into it.',
       canon: 'FIRMO 2026-10-12 · B (free movement over the J1 walk)', sonido: 'NO_DATA (silent by design)', coord: 'empty sea, outside the fog',
       mide: function () { return skill('swim'); }, hecho: function (b, v) { return v > b; } },
