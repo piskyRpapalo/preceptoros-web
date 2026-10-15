@@ -1,5 +1,5 @@
 {
-  "$schema": "https://preceptoros.org/mcp-manifest.schema.json",
+  "$comment": "Static inventory. No external schema file is published yet (NO_DATA); the contract is validated by tests/mcp_manifest.test.mjs.",
   "version": "1.0.0",
   "title": "PreceptorOS · theGame · Full Node action manifest",
   "lang": "en",
