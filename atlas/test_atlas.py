@@ -2515,6 +2515,11 @@ class MapaMovible(unittest.TestCase):
         global y no se hornea en cada tesela (las costuras de M4). Desde U1 el fondo de la portada ES el mapa:
         el lienzo de fondo propio (monta, portada, .mar-fondo) se RETIRA; el mapa se pausa bajo una hoja."""
         m, f = self._js("mar.js"), self._js("mar-fondo.js")
+        self.assertLess(len(f.encode()), 16 * 1024, "the single sea painter stays below the piece cap")
+        self.assertIn("function texturaLecho", f, "the floor keeps a deterministic, hand-shaped palette raster")
+        for forbidden in ("Math.random", "fetch(", "XMLHttpRequest", "WebSocket", "https://", "http://"):
+            with self.subTest(forbidden=forbidden):
+                self.assertNotIn(forbidden, f, "map scenery cannot add randomness or an external asset path")
         for gemelo in ("function tesela(", "function bruma(", "E.textura(", "offsetTemporal"):
             with self.subTest(gemelo=gemelo):
                 self.assertNotIn(gemelo, m, "mar.js vuelve a tener teselas propias")

@@ -8,14 +8,38 @@
 (function (raiz) {
   'use strict';
 
-  /* El lecho, de lo hondo a lo alto. R4: las crestas brillan en teal (la bioluminiscencia del fondo), sin
-     tocar los colores-senal: esto es terreno, no dato. */
-  var TIERRA = [[4, 7, 18], [7, 15, 34], [9, 28, 54], [11, 46, 74], [14, 74, 94], [26, 132, 134], [70, 214, 196]];
+  /* One warm reef palette, shared with the coral painter: shaded teal through living mint, with a
+     small amber sunlit edge. The bed is scenery, never a signal or a measurement. */
+  var TIERRA = [[12, 51, 57], [14, 76, 82], [14, 96, 104], [32, 112, 108], [32, 124, 116], [48, 151, 128], [70, 178, 166]];
   var NIEBLA = [null, [64, 72, 96]], TESELA = 240, RES = 4;
 
 
   /* La deriva del mar en el instante t (ms de pantalla): dos senos lentos, en unidades de mundo. */
   function deriva(t) { return [Math.sin(t * 0.00011) * 10, Math.cos(t * 0.00009) * 10]; }
+
+  /* Soft, rounded reef beds replace the old evenly noisy floor. Each pebble is positioned and
+     sized from its world cell, so adjacent cached tiles agree and the same map always repeats. */
+  function lecho(x, y, E) {
+    var cx = Math.floor(x / 320), cy = Math.floor(y / 280), px = x / 320 - cx, py = y / 280 - cy;
+    var hx = E.hash(cx, cy, 71), hy = E.hash(cx, cy, 97), rx = 0.22 + E.hash(cx, cy, 131) * 0.13;
+    var ry = 0.2 + E.hash(cx, cy, 173) * 0.12, dx = (px - 0.25 - hx * 0.5) / rx, dy = (py - 0.25 - hy * 0.5) / ry;
+    var d = dx * dx + dy * dy, r = Math.max(0, Math.min(1, (1.18 - d) * 1.35));
+    return r * r * (3 - 2 * r);
+  }
+  /* Direct palette sampling keeps rounded forms readable; Atkinson error diffusion made the
+     projected floor sparkle as a checkerboard. The fixed raster is still deterministic. */
+  function texturaLecho(E, i, j, n) {
+    var c = raiz.document.createElement('canvas'); c.width = c.height = n;
+    var g = c.getContext('2d'), im = g.createImageData(n, n), k = 0;
+    for (var y = 0; y < n; y++) { for (var x = 0; x < n; x++) {
+      var wx = i * TESELA + x * RES, wy = j * TESELA + y * RES;
+      var bed = lecho(wx, wy, E), shade = lecho(wx - 38, wy - 44, E);
+      var v = Math.max(0, Math.min(1, 0.2 + E.fbm(wx / 350, wy / 350, 11) * 0.08 + bed * 0.22 + E.fbm(wx / 88, wy / 88, 4) * 0.08 - shade * 0.035));
+      var p = TIERRA[Math.round(v * (TIERRA.length - 1))];
+      im.data[k++] = p[0]; im.data[k++] = p[1]; im.data[k++] = p[2]; im.data[k++] = 255;
+    } }
+    g.putImageData(im, 0, 0); return c;
+  }
 
   /* Un pintor de teselas con sus caches acotadas (TOPE teselas de cada clase). MEDIDO en el Doogee (2026-10-13): con el
      rombo, la caja del mundo visible tiene 12x11 = 132 teselas; con un tope de 90 que se VACIABA entero, la cache se
@@ -31,10 +55,7 @@
       if (tierra[k]) { return tierra[k]; }
       if (nt >= TOPE) { suelta(tierra); nt--; }
       var n = TESELA / RES;
-      tierra[k] = E.textura(n, n, function (x, y) {
-        var wx = i * TESELA + x * RES, wy = j * TESELA + y * RES;
-        return Math.max(0, Math.min(1, E.fbm(wx / 210, wy / 210, 11) * 1.15 - 0.12 + E.fbm(wx / 60, wy / 60, 4) * 0.12));
-      }, TIERRA);
+      tierra[k] = texturaLecho(E, i, j, n);
       nt++;
       return tierra[k];
     }
@@ -63,7 +84,7 @@
           /* El rombo de la tesela va de p hacia abajo: x en [p0 - lado, p0 + lado], y en [p1, p1 + 2 alto]. Fuera, ni se pide. */
           if (p[0] + lado < 0 || p[0] - lado > W || p[1] > H || p[1] + 2 * alto < 0) { continue; }
           var t = que(i, j);
-          if (t) { g.setTransform(m[0] * RES, m[1] * RES, m[2] * RES, m[3] * RES, p[0], p[1]); g.drawImage(t, 0, 0, n + 0.6, n + 0.6); }
+          if (t) { g.imageSmoothingEnabled = true; g.setTransform(m[0] * RES, m[1] * RES, m[2] * RES, m[3] * RES, p[0], p[1]); g.drawImage(t, 0, 0, n + 0.6, n + 0.6); }
         }
       }
       g.restore();
