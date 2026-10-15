@@ -62,6 +62,21 @@ async function main() {
     await espera(7000);
 
     actual.step = 'abre'; await espera(1500); await revisa('abre');
+    actual.step = 'glyph-accessibility';
+    const glyph = await evalua(`(() => {
+      if (!window.AtlasGlyph) return JSON.stringify({ready:false});
+      const host=document.createElement('div'); host.id='semiotic-fixture';
+      (document.getElementById('thegame')||document.body).appendChild(host);
+      AtlasGlyph.monta(host,[1,0,0,2],'A cyan shield keeps red packets inside the boundary.');
+      const svg=host.querySelector('svg'), b=host.querySelector('button'), status=host.querySelector('[role=status]');
+      const result={ready:true,role:svg?.getAttribute('role'),label:svg?.getAttribute('aria-label'),height:b?parseFloat(getComputedStyle(b).minHeight):0,
+        quiet:status?.textContent,description:host.innerText}; host.remove(); return JSON.stringify(result);
+    })()`);
+    let glyphData=null; try { glyphData=JSON.parse(glyph||'{}'); } catch {}
+    if (!glyphData?.ready || glyphData.role!=='img' || !/signal cyan.*transport vector/i.test(glyphData.label||'') || glyphData.height<44 || !/Sound is off until you tap/.test(glyphData.quiet||'') || !/red packets/.test(glyphData.description||'')) {
+      fallos.push({path:p,step:actual.step,snippet:'glyph rendering/accessibility/audio opt-in mismatch: '+JSON.stringify(glyphData)});
+    }
+    await revisa(actual.step);
 
     actual.step = 'startup';
     const stateEntry = await evalua("document.getElementById('menu-history')");

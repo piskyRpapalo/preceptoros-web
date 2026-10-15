@@ -2561,5 +2561,42 @@ class Portada(unittest.TestCase):
         self.assertIn("window.TheGame.abre(null", (PUBLICO / "assets" / "eaa-art12-local-first-surface.js").read_text(encoding="utf-8"))
 
 
+class GlifoSemantico(unittest.TestCase):
+    """P2: family-friendly vector marks, WCAG non-text contrast and a compact four-value record."""
+
+    def test_palette_vectorial_contrasta_con_el_panel(self):
+        fuente = (PUBLICO / "game" / "semiotic_glyph.js").read_text(encoding="utf-8")
+        paleta = re.search(r"var COLORS = \[([^]]+)\]", fuente)
+        self.assertIsNotNone(paleta)
+        colores = re.findall(r"#[0-9A-Fa-f]{6}", paleta.group(1))
+        self.assertEqual(colores, ["#E6A817", "#00D2FF", "#2ECC71", "#9B59B6", "#7F8C8D"])
+
+        def lum(h):
+            rgb = [int(h[i:i + 2], 16) / 255 for i in (1, 3, 5)]
+            linear = [x / 12.92 if x <= .04045 else ((x + .055) / 1.055) ** 2.4 for x in rgb]
+            return .2126 * linear[0] + .7152 * linear[1] + .0722 * linear[2]
+
+        fondo = lum("#111827")
+        for color in colores:
+            with self.subTest(color=color):
+                self.assertGreaterEqual((max(lum(color), fondo) + .05) / (min(lum(color), fondo) + .05), 3.0,
+                                        "WCAG 1.4.11 non-text contrast for the glyph edge")
+
+    def test_glifo_es_accesible_local_y_acotado(self):
+        fuente = (PUBLICO / "game" / "semiotic_glyph.js").read_text(encoding="utf-8")
+        css = (PUBLICO / "game" / "home.css").read_text(encoding="utf-8")
+        self.assertLess(len(fuente.encode()), 16 * 1024)
+        self.assertLess(len(css.encode()), 16 * 1024)
+        self.assertIn("role: 'img'", fuente)
+        self.assertIn("'aria-label': describe(g, note)", fuente)
+        self.assertRegex(css, r"semiotic-sound\{[^}]*min-height:2\.75rem")
+        self.assertIn("@media(prefers-reduced-motion:reduce)", css)
+        for remote in ("fetch(", "WebSocket", "XMLHttpRequest", "sendBeacon"):
+            self.assertNotIn(remote, fuente)
+        r = subprocess.run(["node", str(RAIZ / "atlas" / "semiotic_glyph_cases.mjs")],
+                           capture_output=True, text=True, cwd=RAIZ, timeout=30)
+        self.assertEqual(r.returncode, 0, r.stderr or r.stdout)
+        self.assertIn('"casos":180', r.stdout)
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
