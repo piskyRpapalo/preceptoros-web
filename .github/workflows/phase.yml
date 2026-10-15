@@ -19,10 +19,13 @@ jobs:
           node-version: '22'
       - run: python -m pip install --disable-pip-version-check jsonschema
       - name: Same tree, two complete passes
+        id: gates
         shell: bash
         run: |
           set -euo pipefail
+          google-chrome --version
           for pass in 1 2; do
+            node atlas/chrome_launch_cases.mjs
             node atlas/phase_M0_cases.mjs
             if node atlas/phase_M0_cases.mjs --sabotage; then
               echo 'Deletion sabotage escaped validation'
@@ -31,8 +34,26 @@ jobs:
             python3 test_web.py
             python3 atlas/test_atlas.py
             node arnes_sw.mjs
-            node atlas/sin_undefined.mjs
+            node atlas/sin_undefined.mjs | tee "$RUNNER_TEMP/phase-chrome-$pass.json"
             node atlas/vector_casos.mjs
             node atlas/phase_gate.mjs
             git diff --check
           done
+      - name: Chrome measurement receipt
+        if: always()
+        shell: bash
+        run: |
+          {
+            echo '### Chrome CDP receipt'
+            echo 'Startup uses --no-sandbox and --disable-dev-shm-usage only in GitHub Actions.'
+            shopt -s nullglob
+            receipts=("$RUNNER_TEMP"/phase-chrome-*.json)
+            if [ "${#receipts[@]}" -eq 0 ]; then
+              echo 'NO_DATA: browser gate was not reached; inspect earlier failing step.'
+            fi
+            for receipt in "${receipts[@]}"; do
+              echo '```json'
+              cat "$receipt"
+              echo '```'
+            done
+          } >> "$GITHUB_STEP_SUMMARY"
