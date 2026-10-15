@@ -68,6 +68,7 @@
       dl.appendChild(dt); dl.appendChild(dd);
       (r.lines || []).forEach(function (l) { var a = D.createElement('dt'), b = D.createElement('dd'); a.textContent = l[0]; b.textContent = l[1]; dl.appendChild(a); dl.appendChild(b); });
     }); }
+    if (ficha && ficha.kind === 'hexelion-star' && raiz.AtlasHexelionDictionary) { raiz.AtlasHexelionDictionary.monta(panel); }
     if (ficha && ficha.npcId && raiz.AtlasNpcWalls) { raiz.AtlasNpcWalls.monta(panel, ficha); }
     /* El menu descubre el panel con un MutationObserver (microtarea): se abre DESPUES de que exista su entrada. */
     Promise.resolve().then(function () { var b = D.getElementById('menu-pliego-ficha'); if (b && panel.hidden) { b.click(); } });

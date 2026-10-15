@@ -2190,6 +2190,9 @@ class LoQueNoSeVeConElGateVerde(unittest.TestCase):
         "atlas-arena": {"es", "fr", "pt", "it", "de", "ru", "el", "ar"},
         # La casa (2026-10-05), con el mismo criterio: el juego habla solo ingles.
         "atlas-casa": {"es", "fr", "pt", "it", "de", "ru", "el", "ar"},
+        # Dictionary glossary is loaded by the English-only game; translations
+        # remain absent until each version is measured and reviewed.
+        "dictionary": {"es", "fr", "pt", "it", "de", "ru", "el", "ar"},
     }
 
     def test_lo_que_depende_de_bronce_se_carga_despues(self):

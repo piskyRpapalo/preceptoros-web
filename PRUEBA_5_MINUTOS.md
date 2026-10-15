@@ -2,7 +2,8 @@
 
 Open https://preceptoros.org/en/. After a release, use a new tab or a second
 visit: the service worker may serve its previous cache on the first visit.
-This checklist covers the published #82–#90 baseline. PR #90 is merged, and
+This checklist covers the published #82–#90 baseline and the P4 star when it
+is present in the release under test. PR #90 is merged, and
 its service worker and game modules were measured at the public origin with
 HTTP 200 and exact byte matches. After a release, use a new tab or a second
 visit: the service worker may serve its previous cache on the first visit.
@@ -62,6 +63,26 @@ visit: the service worker may serve its previous cache on the first visit.
   from the node roster.
 - AI comprehension of the state vector: not measured.
 - Internal house/rack details: not exposed to the game (D67).
+
+## HEXELION Star · P4 visitor check (after its release)
+
+1. Open the map and tap **HEXELION STAR**. The existing inspector should open
+   with **Vocabulary crystals** and the available English entries.
+2. Tap any crystal. Check that its game name, industry standard, simple
+   explanation, destination group and labeled four-part glyph appear. The
+   glyph's audio control is opt-in; it must remain silent until tapped.
+3. Confirm the card says the final total is `NO_DATA` because the earlier
+   42-entry table was not found for reconciliation. The public annex currently
+   contributes 43 entries; B20 and B21 are held. No Cobre/Luz reward, capture,
+   transport, or cross-node signature should occur from browsing the catalogue.
+4. The destination group is informational only: A → Workshop, B → Frontier
+   Gate, C → Forest Commons, D → Signing Table. Transport is not active.
+
+For the P4 build, only English explanations are loaded. The other eight
+language versions are `NO_DATA` because they have not been verified. Public
+anchors are machine-readable identifier text and are not navigation links.
+If the star is absent before P4 is released, report that as “not in this
+release”; do not count a local test build as production.
 
 Report the page, control, visible text, browser/device, and whether this was a
 first visit or a second visit/new tab. Do not report a local browser fixture as

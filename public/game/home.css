@@ -101,3 +101,8 @@
 @keyframes semio-transport{to{transform:translateX(8px)}}
 @keyframes semio-bounce{to{transform:translateY(-5px)}}
 @media(prefers-reduced-motion:reduce){.semio-motion-0,.semio-motion-1,.semio-motion-2,.semio-package{animation:none!important}}
+.hexelion-vocabulary{display:grid;gap:.55rem;margin-top:.8rem;padding-top:.7rem;border-top:1px solid var(--line,#64748b)}
+.hexelion-crystals{display:grid;grid-template-columns:repeat(auto-fit,minmax(9rem,1fr));gap:.4rem;max-height:16rem;overflow:auto}
+.hexelion-crystal{min-height:2.75rem;text-align:left}
+.hexelion-crystal:focus-visible{outline:3px solid #00D2FF;outline-offset:2px}
+.hexelion-crystal-detail{display:grid;gap:.35rem;padding:.65rem;border:1px solid #00D2FF;border-radius:.6rem}
