@@ -801,7 +801,13 @@ process.stdout.write(JSON.stringify(ok));
 
     def test_tour_arranque_popup_y_navegacion_reales(self):
         r = subprocess.run(["node", str(RAIZ / "place_card_browser.mjs"), "--tour"], capture_output=True, text=True, timeout=180)
-        self.assertEqual(r.returncode, 0, r.stdout[-2500:] + r.stderr[-500:])
+        try:
+            informe = json.loads(r.stdout)
+        except json.JSONDecodeError:
+            informe = {"salida_final": r.stdout[-2500:], "error_final": r.stderr[-1000:]}
+        detalle = json.dumps({"fallos": informe.get("failures"), "tour": [x.get("id") for x in informe.get("tour", [])],
+                              "muestras": informe.get("samples")}, ensure_ascii=False)
+        self.assertEqual(r.returncode, 0, detalle)
 
     def test_5c_guion_unico_del_cangrejo_y_arranque(self):
         """5C: una sola fuente de estado, seis secciones en orden fijo, recibos en su lugar, sin JSON humano ni
