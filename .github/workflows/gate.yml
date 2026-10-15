@@ -35,4 +35,5 @@ jobs:
             node atlas/npc_occupancy_cases.mjs
             node atlas/ventana_casos.mjs
             node atlas/radio_age_cases.mjs
+            node atlas/hud_readings_cases.mjs
           done
