@@ -37,3 +37,11 @@ TOUR intacto, sin escrituras fuera del repositorio y sin push directo a main.
 Siguiente tramo G1–G5: su definición operativa no se ha localizado en los planes
 consultados. Se ha solicitado la referencia o sus cinco entregables; no se
 inventan esos contratos ni se cambia al tramo W para saltarlos.
+
+## Ajuste del gate heredado
+
+El caso Atlas de radio exigía literalmente el algoritmo que fabricaba edades.
+La corrida local aislada lo detectó rojo en dos aserciones. Se conserva la guarda
+de atributos data-* y se añade al mismo caso la ejecución de los 13 casos de
+radio contra el módulo real, incluidos los límites LIVE/STALE y los ciclos
+no medidos. No se elimina ni omite el caso; se verifica el comportamiento nuevo.
