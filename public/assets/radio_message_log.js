@@ -18,21 +18,29 @@
 
   function el(tag, clase, texto) { var n = document.createElement(tag); if (clase) { n.className = clase; } if (texto != null) { n.textContent = String(texto); } return n; }
   function T(k, d) { var t = ctx && ctx.T ? ctx.T(k) : ''; return t && t !== k ? t : d; }
-  function ciclo() { var J = raiz.AtlasJuego, i = J && J.instantanea ? J.instantanea() : null; return i ? i.ciclo : 0; }
+  function cicloValido(c) { return Number.isSafeInteger(c) && c >= 0 && c <= 1000000000; }
+  function ciclo() {
+    try {
+      var J = raiz.AtlasJuego, i = J && typeof J.instantanea === 'function' ? J.instantanea() : null;
+      return i && cicloValido(i.ciclo) ? i.ciclo : null;
+    } catch (e) { return null; }
+  }
   function selloDe(texto, pedido) {
     if (pedido) { return pedido; }
     if (/^\s*NO_DATA/.test(texto)) { return 'NO_DATA'; }
     if (/SIMULATED/.test(texto)) { return 'SIMULATED'; }
     return 'LIVE';
   }
-  function sello(m) { return m.sello === 'LIVE' && ciclo() - m.ciclo > VIEJO ? 'STALE' : m.sello; }
+  function edad(m) { var actual = ciclo(); return actual === null || !cicloValido(m.ciclo) || actual < m.ciclo ? null : actual - m.ciclo; }
+  function sello(m) { var edadN = edad(m); return m.sello === 'LIVE' && edadN === null ? 'NO_DATA' : (m.sello === 'LIVE' && edadN > VIEJO ? 'STALE' : m.sello); }
 
   function burbuja(m) {
     var li = el('li', 'radio-msg'), s = sello(m), cab = el('p', 'radio-msg-cab');
-    li.dataset.quien = m.quien; li.dataset.sello = s; li.dataset.fuente = m.fuente; li.dataset.ciclo = String(m.ciclo);
+    li.dataset.quien = m.quien; li.dataset.sello = s; li.dataset.fuente = m.fuente; li.dataset.ciclo = cicloValido(m.ciclo) ? String(m.ciclo) : 'NO_DATA';
     cab.appendChild(el('b', null, m.quien));
     cab.appendChild(el('span', 'radio-msg-sello', s));
-    cab.appendChild(el('span', 'radio-msg-meta', m.fuente + ' · ' + T('chat_edad', 'Δ {n} cycles').replace('{n}', Math.max(0, ciclo() - m.ciclo))));
+    var edadN = edad(m), edadTexto = T('chat_edad', 'Δ {n} cycles').replace('{n}', edadN === null ? 'NO_DATA (game cycle unavailable or reset)' : String(edadN));
+    cab.appendChild(el('span', 'radio-msg-meta', m.fuente + ' · ' + edadTexto));
     li.appendChild(cab); li.appendChild(el('p', 'radio-msg-texto', m.texto));
     return li;
   }

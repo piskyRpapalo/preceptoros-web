@@ -33,4 +33,6 @@ jobs:
             python atlas/test_atlas.py
             node arnes_sw.mjs
             node atlas/npc_occupancy_cases.mjs
+            node atlas/ventana_casos.mjs
+            node atlas/radio_age_cases.mjs
           done
