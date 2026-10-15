@@ -78,6 +78,25 @@ async function main() {
     }
     await revisa(actual.step);
 
+    actual.step = 'hexelion-dictionary';
+    const dictionary = await evalua(`(async () => {
+      const A=window.AtlasHexelionDictionary;
+      if (!A) return JSON.stringify({ready:false});
+      await A.ready;
+      const host=document.createElement('details'); host.open=true; document.body.appendChild(host); A.monta(host);
+      await new Promise(r=>setTimeout(r,30));
+      const buttons=[...host.querySelectorAll('.hexelion-crystal')]; buttons[1]?.click();
+      const result={ready:true,count:buttons.length,nativeButtons:buttons.every(b=>b.tagName==='BUTTON'&&!b.hasAttribute('role')),state:A.state(),detail:host.querySelector('.hexelion-crystal-detail')?.innerText||'',
+        glyph:!!host.querySelector('.hexelion-crystal-detail .semiotic-glyph svg[role=img]'),anchorsVisible:/Wikidata:|EUR-Lex-CELEX:/.test(host.innerText),
+        reward:/Cobre|Coppers|Capture star/.test(host.innerText)}; host.remove(); return JSON.stringify(result);
+    })()`);
+    let dictionaryData = null; try { dictionaryData = JSON.parse(dictionary || '{}'); } catch {}
+    if (!dictionaryData?.ready || dictionaryData.count !== 43 || !dictionaryData.nativeButtons || dictionaryData.state?.total?.indexOf('NO_DATA') !== 0 ||
+        !/Clear Reef/.test(dictionaryData.detail) || !dictionaryData.glyph || dictionaryData.anchorsVisible || dictionaryData.reward) {
+      fallos.push({ path: p, step: actual.step, snippet: 'public catalogue interaction or limits mismatch: ' + JSON.stringify(dictionaryData) });
+    }
+    await revisa(actual.step);
+
     actual.step = 'startup';
     const stateEntry = await evalua("document.getElementById('menu-history')");
     if (!stateEntry) { fallos.push({ path: p, step: 'startup', snippet: 'theGame state entry did not mount' }); }
@@ -167,6 +186,7 @@ async function main() {
     const fichas = (await evalua("window.AtlasInspector ? JSON.stringify(AtlasInspector.todas()) : 'NO_INSPECTOR'")) ?? '';
     pasos++;
     if (!fichas || fichas === 'NO_INSPECTOR' || fichas === '[]' || /inspector: /.test(fichas)) { fallos.push({ path: p, step: 'inspector', snippet: 'sin fichas: ' + fichas }); }
+    if (!fichas.includes('HEXELION Star')) { fallos.push({ path: p, step: 'inspector', snippet: 'map queue has no HEXELION Star building card' }); }
     for (const m of fichas.matchAll(/\bundefined\b|\bNaN\b/g)) { fallos.push({ path: p, step: 'inspector', snippet: fichas.slice(Math.max(0, m.index - 30), m.index + 30) }); }
 
     actual.step = 'identidad';

@@ -188,6 +188,7 @@
     });
     if (raiz.AtlasCristal) { raiz.AtlasCristal.pinta(g, P, o, casa, tic); }
     if (raiz.AtlasCorales) { raiz.AtlasCorales.pinta(g, P, o); }  /* A: los corales del rack (reef_corals.js) */  /* el cuarto: `latency_crystal.js` */
+    if (raiz.AtlasHexelionDictionary) { raiz.AtlasHexelionDictionary.pinta(g, P, o); }
     /* Las lapidas, como piedras sobre tu casa (una por recibo, hasta nueve a la vista). */
     if (casa) { pon(casa.x - 160, casa.y - 160, function () {
       raiz.AtlasReefPaint.lapidas(g,P,casa,lapidas,t,dpr);

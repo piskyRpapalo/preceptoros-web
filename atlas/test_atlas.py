@@ -1018,7 +1018,7 @@ process.stdout.write(JSON.stringify(ok));
 # Ver atlas/POST_VERIFICACION_MGNO_LAB.md y atlas/POST_VERIFICACION_SISIL_CRIA.md.
 PUROS = ("canon.js", "sobres.js", "rating.js", "arena.js", "duelo.js", "mercado.js", "narragrafo.js", "cria.js", "genoma.js")
 # La Arena (2026-09-28, «el mapa multi-jugador en una pestana»): se carga al abrir su pestana, detras del Army.
-ARENA = ("sobres.js", "rating.js", "arena.js", "duelo.js", "mar-anclas.js", "crab_render_hd.js", "audio_feedback_manager.js", "crab_free_move.js", "genesis_tutorial.js", "buildings_toon.js", "reef_place_cards.js", "shell_schematics.js", "reef_buildings_paint.js", "latency_crystal.js", "hexelion_bench.js", "reef_corals.js", "reef_buildings_layer.js", "mar-cangrejos.js", "map_pointer_input.js", "semiotic_glyph.js", "map_nodes_layer.js", "map_zoom.js", "piece_inspector.js", "vector_contract.js", "state_vector.js", "place_telemetry.js", "npc_territory_map.js", "mar.js", "nodos-pesos.js",
+ARENA = ("sobres.js", "rating.js", "arena.js", "duelo.js", "mar-anclas.js", "crab_render_hd.js", "audio_feedback_manager.js", "crab_free_move.js", "genesis_tutorial.js", "buildings_toon.js", "reef_place_cards.js", "shell_schematics.js", "reef_buildings_paint.js", "latency_crystal.js", "hexelion_bench.js", "reef_corals.js", "reef_buildings_layer.js", "mar-cangrejos.js", "map_pointer_input.js", "semiotic_glyph.js", "hexelion_dictionary.js", "map_nodes_layer.js", "map_zoom.js", "piece_inspector.js", "vector_contract.js", "state_vector.js", "place_telemetry.js", "npc_territory_map.js", "mar.js", "nodos-pesos.js",
          "nodos.js", "cuenta.js", "ui-nodos.js", "ui-rack.js",
          "escuadron.js", "battle_choreography.js", "battle_replay.js", "npc_occupancy.js", "npc_walls.js", "ui-arena-comun.js", "ui-arena.js", "ui-duelo.js")
 # La CASA (2026-10-05): la primera pantalla, detras del Army. Lleva canon y escena, que la Arena reutiliza.
@@ -3054,6 +3054,20 @@ class AccesoTactilYPanel(unittest.TestCase):
     def test_la_repeticion_de_batalla_es_una_imagen_con_nombre(self):
         """battle_replay.js: el canvas lleva aria-label; sin rol no tiene nombre para muchos lectores."""
         self.assertIn("lienzo.setAttribute('role', 'img')", self._lee("game/battle_replay.js"))
+
+
+class EstrellaHexelion(unittest.TestCase):
+    def test_catalogo_publico_y_sabotaje_de_id(self):
+        """El catálogo conserva sus anclajes como texto, retiene las dos entradas con causa y rechaza IDs duplicados."""
+        r = subprocess.run(["node", str(RAIZ / "dictionary_cases.mjs")], cwd=RAIZ.parent,
+                           capture_output=True, text=True, check=False)
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        data = json.loads(r.stdout)
+        self.assertEqual((data["entries"], data["glyph_max_bytes"]), (43, 9))
+        s = subprocess.run(["node", str(RAIZ / "dictionary_cases.mjs"), "--sabotage-duplicate"], cwd=RAIZ.parent,
+                           capture_output=True, text=True, check=False)
+        self.assertNotEqual(s.returncode, 0, "duplicate catalogue ID sabotage should fail red")
+        self.assertIn("unique IDs", s.stdout)
 
 
 if __name__ == "__main__":
