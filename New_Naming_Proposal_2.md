@@ -8,7 +8,7 @@ Estado: **PROPUESTA — sin firma del Soberano; sin renombre aplicado.** Extiend
 
 ## 1 · Propuestas nuevas (para FIRMO individual, una a una)
 
-### 1.9 «Odds» (puntos básicos por 10.000) → «Outcome Distribution»
+### 1.9 «Odds» (puntos básicos por 10.000) → «Outcome Distribution» · **FIRMADA 2026-10-15 (noche) por el Soberano — pendiente de ejecución por Codex.**
 - **Actual:** `Odds` en puntos básicos — `public/game/canon.js:91` (y `cria.js:114`).
 - **Propuesto:** UI: `Outcome distribution (basis points, rounded down)`; en código el comentario puede decir «distribución, no promesa».
 - **Anclaje doble:** legislación: AI Act Art. 13 (CELEX 32024R1689, transparencia de riesgos y límites — «odds» es vocabulario de apuestas; «distribution» es vocabulario de divulgación honesta). Matemática: distribución de probabilidad discreta sobre pesos normalizados; el propio puntosBasicos es una función de masa redondeada hacia abajo «para que la suma enseñada no mienta» (canon.js:91-92).
@@ -65,7 +65,7 @@ Estado: **PROPUESTA — sin firma del Soberano; sin renombre aplicado.** Extiend
 
 | # | Cambio | Fichero:línea | Riesgo | Recomendación |
 |---|---|---|---|---|
-| 1.9 | Odds → Outcome distribution | canon.js:91, cria.js:114 | Bajo | Sí |
+| 1.9 | Odds → Outcome distribution | canon.js:91, cria.js:114 | Bajo | **FIRMADA 15-oct** |
 | 1.10 | GACHA (espectro UI) → Harmonic Spectrum | gacha.js:1 | Medio | Sí, tras 1.2 |
 | 1.11 | Narragrafo (UI) → Story Graph (CRDT) | narragrafo.js:1 | Bajo | Sí |
 | 1.12 | Escuadrón (UI) → Squad Choreography | escuadron.js:1 | Bajo | Sí |
