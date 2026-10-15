@@ -20,5 +20,12 @@ caso('REVELA, NO DECIDE: el fichero no navega (sin .click(), sin tocar hidden) n
   const src = readFileSync(new URL(RUTA, import.meta.url), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
   return !/\.click\(|\.hidden\s*=|Math\.random|Date\.|new Date/.test(src) || src.match(/\.click\(|\.hidden\s*=|Math\.random|Date\.|new Date/)[0];
 });
+caso('missing or invalid cycles use a neutral path instead of the parity of zero', () => {
+  for (const ciclo of [null, undefined, NaN, Infinity, -1, 0.5, '40', 1000000001]) {
+    const g = W.gusano({ ...S, ciclo }, A, B);
+    if (g.puntos[12].join() !== '20,200') { return { ciclo, midpoint: g.puntos[12] }; }
+  }
+  return W.gusano({ ...S, ciclo: 0 }, A, B).puntos[12][0] !== 20;
+});
 console.log(JSON.stringify(casos, null, 1));
 process.exitCode = casos.every((c) => c.ok) ? 0 : 1;

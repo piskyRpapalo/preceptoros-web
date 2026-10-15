@@ -109,9 +109,9 @@
       if (window.AtlasIncubadora) { window.AtlasIncubadora.monta(capa); }
       var s = capa.querySelector('.atlas-incubadora');
       if (p && s) { p.textContent = ''; p.appendChild(s); tecnico(p); }
-    }).catch(function (e) {
+    }).catch(function () {
       army = null;
-      if (p) { p.textContent = ''; p.appendChild(el('p', 'no-data', 'NO_DATA · ' + (e && e.message))); }
+      if (p) { p.textContent = ''; p.appendChild(el('p', 'no-data', 'NO_DATA · the Army could not be loaded')); }
     });
     return army;
   }
@@ -131,7 +131,7 @@
       /* P11: el capitulo 1.5, «El Primer Eco», arriba del TALLER hasta que tengas Insignia. */
       if (window.AtlasPrimerEco) { window.AtlasPrimerEco.monta(PANEL.taller); }
       setTimeout(cargaArena, 0);
-    }).catch(function (e) { casa = null; PANEL.casa.appendChild(el('p', 'no-data', 'NO_DATA · ' + (e && e.message))); });
+    }).catch(function () { casa = null; PANEL.casa.appendChild(el('p', 'no-data', 'NO_DATA · the game terminal could not be loaded')); });
     return casa;
   }
 
@@ -145,9 +145,9 @@
     }).then(function () {
       /* El lienzo del mapa y sus mandos salen de los Lugares a su capa fija, detras de todo. */
       cada(ZM.querySelectorAll('.atlas-arena-mapa,.mapa-mandos,.mapa-aviso'), function (n) { MAPA.appendChild(n); });
-    }).catch(function (e) {
+    }).catch(function () {
       arena = null;
-      if (p) { p.textContent = ''; p.appendChild(el('p', 'no-data', 'NO_DATA · ' + (e && e.message))); }
+      if (p) { p.textContent = ''; p.appendChild(el('p', 'no-data', 'NO_DATA · the arena could not be loaded')); }
     });
     return arena;
   }
@@ -182,9 +182,9 @@
         });
       } else if (pes && HOJA[pes]) { muestra(pes); }
       window.AtlasJuego.sigue();
-    }).catch(function (err) {
-      /* Sin juego no hay capa a medias: se dice en la consola y la pagina sigue tal cual. */
-      console.warn('NO_DATA · theGame no cargo: ' + (err && err.message));
+    }).catch(function () {
+      /* Sin juego no hay capa a medias: causa estable, sin exponer detalles internos. */
+      console.warn('NO_DATA · theGame could not be loaded');
       cargado = null;
     });
   }
