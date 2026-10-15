@@ -30,5 +30,42 @@ records.value.registros[0].firma = 'ed25519:' + '0'.repeat(128);
 const tampered = O.crea({ ids: ['arrecife'], ciclos: 900, almacen: store, publica: async () => pub, firma, verifica });
 await tampered.cargar();
 if (tampered.estado('arrecife', 911, pub).fase !== 'niebla') fallos.push('tampered stored receipt was trusted');
-console.log(JSON.stringify({ ciclos_mantenimiento: O.CICLOS, firma_red: 'red-first', fallos, ok: !fallos.length }));
+// D67: dependency failures must remain local; every public result has a safe cause.
+const privateError = () => new Error('PRIVATE_SENTINEL /private/house/storage.js');
+let privacyCases = 0;
+async function safeFailure(label, action) {
+  privacyCases++;
+  try {
+    const value = await action();
+    if (value.ok !== false || !/^NO_DATA \(.*\)$/.test(value.causa || '') ||
+        /PRIVATE_SENTINEL|storage\.js|db\.js|\/private\//.test(JSON.stringify(value))) {
+      fallos.push('D67 ' + label + ': unsafe public failure');
+    }
+  } catch (_) { fallos.push('D67 ' + label + ': dependency exception escaped'); }
+}
+const options = () => ({ ids: ['arrecife'], ciclos: 900,
+  almacen: { lee: async () => null, pon: async () => {} },
+  publica: async () => pub, firma, verifica });
+await safeFailure('missing reader', () => O.crea({}).cargar());
+for (const sync of [false, true]) {
+  const fail = sync ? () => { throw privateError(); } : async () => { throw privateError(); };
+  let opt = options(); opt.almacen.lee = fail;
+  await safeFailure('read ' + sync, () => O.crea(opt).cargar());
+  for (const field of ['publica', 'firma', 'verifica']) {
+    opt = options(); opt[field] = fail;
+    await safeFailure('capture ' + field + sync, () => O.crea(opt).captura('arrecife', 10));
+  }
+  opt = options(); const subject = O.crea(opt);
+  await subject.captura('arrecife', 10); opt.almacen.pon = fail;
+  await safeFailure('upkeep write ' + sync, () => subject.sostener('arrecife', 11, pub));
+  for (const field of ['firma', 'verifica']) {
+    opt = options(); let broken = false; const original = opt[field];
+    opt[field] = (...args) => broken ? fail() : original(...args);
+    const subject = O.crea(opt); await subject.captura('arrecife', 10); broken = true;
+    await safeFailure('upkeep ' + field + sync, () => subject.sostener('arrecife', 11, pub));
+  }
+  opt = options(); opt.almacen.pon = fail;
+  await safeFailure('capture write ' + sync, () => O.crea(opt).captura('arrecife', 10));
+}
+console.log(JSON.stringify({ privacy_cases: privacyCases, ciclos_mantenimiento: O.CICLOS, firma_red: 'red-first', fallos, ok: !fallos.length }));
 process.exitCode = fallos.length ? 1 : 0;
