@@ -2219,7 +2219,7 @@ class MapaMovible(unittest.TestCase):
             pass
         u = self._js("ui.js")
         for pieza in ("var o = A.eslabon(c, tc, Z.clave);", "window.Identity.firmar(o)", "A.cadenaWeb(Z.clave).pon(Z.cadena);",
-                      "Z.cadena = A.anexa(Z.cadena, o, f.firma, semilla, i.ciclo, i.ciclo + TC.incuba);",
+                      "Z.cadena = A.anexa(Z.cadena, o, f.firma, semilla, desde, desde + TC.incuba);",
                       "A.verificaCadena(c, pub, A.verificaWeb, A.semillaWeb)", "Z.huevos = Z.cadena ? A.huevos(Z.cadena) : [];",
                       "Z.cadena = A.abre(Z.cadena, h.seq)", "if (!capa || !capa.isConnected || document.hidden) { return; }"):
             with self.subTest(pieza=pieza):
@@ -2899,6 +2899,20 @@ class TrozoInvoca(unittest.TestCase):
             self.assertNotIn(f, ui, f"ui.js sigue definiendo {f}")
         self.assertIn("window.AtlasInvoca.crea(", ui)
         self.assertIn("var Z = {", ui, "el estado compartido no vive en Z")
+
+    def test_nido_solo_muestra_progreso_con_ciclos_medidos(self):
+        r = subprocess.run(["node", str(RAIZ / "incubator_cases.mjs")], capture_output=True,
+                           text=True, timeout=60)
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        self.assertEqual(json.loads(r.stdout), {"cases": 8, "state": "MEDIDO", "provenance": "SYNTHETIC"})
+        ui = (PUBLICO / "game" / "ui.js").read_text(encoding="utf-8")
+        sat = (PUBLICO / "game" / "ui-invoca.js").read_text(encoding="utf-8")
+        self.assertNotIn("function pintaNido(", ui)
+        self.assertIn("function pintaNido(", sat)
+        self.assertIn("INV.pintaNido()", ui)
+        self.assertIn("x.b.disabled = !i || ciclo === null", ui)
+        self.assertIn("if (ciclo === null) { dice(T('inc_ciclo_nd')); }", ui)
+        self.assertIn("if (c === null) { pinta(); return; }", ui)
 
     def test_el_satelite_no_usa_azar_ni_reloj(self):
         sat = (PUBLICO / "game" / "ui-invoca.js").read_text(encoding="utf-8")
