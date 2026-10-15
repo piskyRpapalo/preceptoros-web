@@ -2,6 +2,7 @@
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const V = require(process.env.VECTOR || '../public/game/state_vector.js');
+const C = require('../public/game/vector_contract.js');
 const casos = [];
 const caso = (n, f) => { let r; try { r = f(); } catch (e) { r = String(e); } casos.push({ caso: n, ok: r === true, detalle: r === true ? '' : JSON.stringify(r) }); };
 const lleno = {
@@ -24,5 +25,24 @@ caso('vacio: cada hueco va a nd CON SU CAUSA (nunca un cero inventado, nunca und
 });
 caso('el esquema explica cada clave del vector (lo que lee un LLM pequeno)', () => { const e = V.esquema(), v = V.arma(lleno); return Object.keys(v).every((k) => e[k]) || Object.keys(v).filter((k) => !e[k]); });
 caso('solo LEE: armar dos veces el mismo estado da el mismo vector (determinista, sin reloj)', () => JSON.stringify(V.arma(lleno)) === JSON.stringify(V.arma(lleno)));
+caso('acota por bytes UTF-8 reales y vuelve a medir tras el recorte (unicode)', () => {
+  if (typeof V.acota !== 'function') { return 'falta el contrato acota'; }
+  const input = V.arma({ ...lleno, radio: [{ quien: 'é'.repeat(400), sello: 'LIVE', ciclo: 1 }] });
+  const out = V.acota(input), bytes = Buffer.byteLength(JSON.stringify(out.vector), 'utf8');
+  return out.estado === 'recortado' && out.bytes === bytes && bytes < V.TOPE
+    && out.vector.q.length === 0 && typeof out.vector.nd.recorte === 'string' || out;
+});
+caso('si el recorte normal no basta, fail-closed conserva contrato y causa', () => {
+  if (typeof V.acota !== 'function') { return 'falta el contrato acota'; }
+  const input = V.arma({ ...lleno, edificios: Array.from({ length: 80 }, (_, n) => ({ id: 'estructura-' + n, fase: 'vivo', vida: 1000 })) });
+  const out = V.acota(input), bytes = Buffer.byteLength(JSON.stringify(out.vector), 'utf8');
+  return out.estado === 'fail-closed' && out.bytes === bytes && bytes < V.TOPE
+    && out.vector.e.length === 0 && typeof out.vector.nd.recorte === 'string' || out;
+});
+caso('el contrato cerrado admite el vector medido y rechaza claves o ausencias sin causa', () => {
+  const bueno = V.arma(lleno), extra = { ...bueno, sorpresa: true };
+  const sinCausa = { ...bueno, r: null, nd: { ...bueno.nd } }; delete sinCausa.nd.r;
+  return C.valida(bueno) && !C.valida(extra) && !C.valida(sinCausa) || { bueno: C.valida(bueno), extra: C.valida(extra), sinCausa: C.valida(sinCausa) };
+});
 console.log(JSON.stringify(casos, null, 1));
 process.exitCode = casos.every((c) => c.ok) ? 0 : 1;

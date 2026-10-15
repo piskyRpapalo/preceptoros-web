@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "preceptoros.vector/1",
+  "title": "PreceptorOS game state vector v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["v", "c", "r", "k", "p", "t", "e", "l", "n", "z", "q", "g", "nd"],
+  "properties": {
+    "v": {"const": "preceptoros.vector/1"},
+    "c": {"$ref": "#/$defs/ciclo"},
+    "r": {
+      "oneOf": [
+        {"type": "null"},
+        {"type": "array", "minItems": 4, "maxItems": 4,
+         "prefixItems": [{"$ref": "#/$defs/numero"}, {"$ref": "#/$defs/numero"}, {"$ref": "#/$defs/numero"}, {"$ref": "#/$defs/numero"}], "items": false}
+      ]
+    },
+    "k": {
+      "oneOf": [
+        {"type": "null"},
+        {"type": "array", "minItems": 5, "maxItems": 5,
+         "prefixItems": [{"$ref": "#/$defs/entero"}, {"$ref": "#/$defs/entero"}, {"$ref": "#/$defs/noNegativo"}, {"$ref": "#/$defs/noNegativo"}, {"$ref": "#/$defs/noNegativo"}], "items": false}
+      ]
+    },
+    "p": {
+      "oneOf": [
+        {"type": "null"},
+        {"type": "array", "minItems": 3, "maxItems": 3,
+         "prefixItems": [{"$ref": "#/$defs/noVacio"}, {"$ref": "#/$defs/noVacio"}, {"$ref": "#/$defs/ciclo"}], "items": false}
+      ]
+    },
+    "t": {
+      "oneOf": [
+        {"type": "null"},
+        {"type": "array", "minItems": 2, "maxItems": 2,
+         "prefixItems": [{"type": "string", "minLength": 1}, {"type": "integer", "minimum": 0, "maximum": 9007199254740991}], "items": false}
+      ]
+    },
+    "e": {"type": "array", "items": {"type": "array", "minItems": 3, "maxItems": 3,
+      "prefixItems": [{"type": "string", "minLength": 1}, {"type": "string", "minLength": 1}, {"$ref": "#/$defs/vida"}], "items": false}},
+    "l": {"type": "array", "items": {"type": "array", "minItems": 3, "maxItems": 3,
+      "prefixItems": [{"type": "string", "minLength": 1}, {"type": "integer", "minimum": 0, "maximum": 9007199254740991}, {"type": "integer", "minimum": 0, "maximum": 9007199254740991}], "items": false}},
+    "n": {"type": "array", "items": {"type": "array", "minItems": 2, "maxItems": 2,
+      "prefixItems": [{"type": "string", "minLength": 1}, {"type": "string", "pattern": "^[0-9]+/[0-9]+$"}], "items": false}},
+    "z": {"$ref": "#/$defs/noNegativo"},
+    "q": {"type": "array", "maxItems": 3, "items": {"type": "array", "minItems": 3, "maxItems": 3,
+      "prefixItems": [{"type": "string", "minLength": 1}, {"type": "string", "minLength": 1}, {"$ref": "#/$defs/ciclo"}], "items": false}},
+    "g": {
+      "oneOf": [
+        {"type": "null"},
+        {"type": "array", "minItems": 4, "maxItems": 4,
+         "prefixItems": [{"$ref": "#/$defs/noVacio"}, {"type": "string", "minLength": 1}, {"$ref": "#/$defs/entero"}, {"type": "integer", "minimum": 1, "maximum": 9007199254740991}], "items": false}
+      ]
+    },
+    "nd": {
+      "type": "object", "additionalProperties": false,
+      "properties": {
+        "c": {"$ref": "#/$defs/causa"}, "r": {"$ref": "#/$defs/causa"}, "k": {"$ref": "#/$defs/causa"},
+        "p": {"$ref": "#/$defs/causa"}, "t": {"$ref": "#/$defs/causa"}, "e": {"$ref": "#/$defs/causa"},
+        "l": {"$ref": "#/$defs/causa"}, "n": {"$ref": "#/$defs/causa"}, "z": {"$ref": "#/$defs/causa"},
+        "q": {"$ref": "#/$defs/causa"}, "g": {"$ref": "#/$defs/causa"}, "recorte": {"$ref": "#/$defs/causa"}
+      }
+    }
+  },
+  "$defs": {
+    "numero": {"type": ["number", "null"]},
+    "vida": {"type": ["number", "null"], "minimum": 0},
+    "entero": {"type": "integer", "minimum": -9007199254740991, "maximum": 9007199254740991},
+    "ciclo": {"type": ["integer", "null"], "minimum": 0, "maximum": 1000000000},
+    "noNegativo": {"type": ["integer", "null"], "minimum": 0, "maximum": 9007199254740991},
+    "texto": {"type": ["string", "null"]},
+    "noVacio": {"anyOf": [{"type": "null"}, {"type": "string", "minLength": 1}]},
+    "causa": {"type": "string", "minLength": 1}
+  },
+  "allOf": [
+    {"if": {"properties": {"c": {"type": "null"}}, "required": ["c"]}, "then": {"properties": {"nd": {"required": ["c"]}}}},
+    {"if": {"properties": {"r": {"type": "null"}}, "required": ["r"]}, "then": {"properties": {"nd": {"required": ["r"]}}}},
+    {"if": {"properties": {"r": {"type": "array", "contains": {"type": "null"}}}, "required": ["r"]}, "then": {"properties": {"nd": {"required": ["r"]}}}},
+    {"if": {"properties": {"k": {"type": "null"}}, "required": ["k"]}, "then": {"properties": {"nd": {"required": ["k"]}}}},
+    {"if": {"properties": {"k": {"type": "array", "contains": {"type": "null"}}}, "required": ["k"]}, "then": {"properties": {"nd": {"required": ["k"]}}}},
+    {"if": {"properties": {"p": {"type": "array", "contains": {"type": "null"}}}, "required": ["p"]}, "then": {"properties": {"nd": {"required": ["p"]}}}},
+    {"if": {"properties": {"q": {"contains": {"type": "array", "minItems": 3, "prefixItems": [{}, {}, {"type": "null"}]}}}, "required": ["q"]}, "then": {"properties": {"nd": {"required": ["q"]}}}},
+    {"if": {"properties": {"e": {"contains": {"type": "array", "minItems": 3, "prefixItems": [{}, {"const": "NO_DATA"}]}}}, "required": ["e"]}, "then": {"properties": {"nd": {"required": ["e"]}}}},
+    {"if": {"properties": {"e": {"contains": {"type": "array", "minItems": 3, "prefixItems": [{}, {}, {"type": "null"}]}}}, "required": ["e"]}, "then": {"properties": {"nd": {"required": ["e"]}}}},
+    {"if": {"properties": {"e": {"maxItems": 0}}, "required": ["e"]}, "then": {"properties": {"nd": {"required": ["e"]}}}},
+    {"if": {"properties": {"l": {"maxItems": 0}}, "required": ["l"]}, "then": {"properties": {"nd": {"required": ["l"]}}}},
+    {"if": {"properties": {"z": {"type": "null"}}, "required": ["z"]}, "then": {"properties": {"nd": {"required": ["z"]}}}}
+  ]
+}
