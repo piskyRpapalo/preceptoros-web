@@ -1,12 +1,10 @@
 // Guarda A1B8: lo ausente es NO_DATA con causa; jamas undefined ni NaN visibles en theGame.
 // Uso: node atlas/sin_undefined.mjs  (Chrome headless por CDP y python3 sirviendo public/; sin dependencias)
 import { spawn } from 'node:child_process';
-import { mkdirSync, mkdtempSync, rmSync } from 'node:fs';
-import path from 'node:path';
+import { launchChrome } from './chrome_launch.mjs';
 import { fileURLToPath } from 'node:url';
 
 const PUBLIC = fileURLToPath(new URL('../public/', import.meta.url));
-const REPO = fileURLToPath(new URL('../', import.meta.url));
 const espera = (ms) => new Promise((r) => setTimeout(r, ms));
 const ATTR_EXPR = "[...document.querySelectorAll('[aria-label],[title]')].map(e=>(e.getAttribute('aria-label')||'')+' '+(e.title||'')).join('\\n')";
 const fallos = [];
@@ -14,21 +12,18 @@ let pasos = 0;
 let actual = { path: '-', step: 'arranque' };
 const pend = new Map();
 let id = 0;
-let ws = null, ch = null, srv = null, dir = null;
+let ws = null, ch = null, srv = null;
 
 async function main() {
   const port = 8900 + (process.pid % 90);
   const cdpPort = 9300 + (process.pid % 500);
-  mkdirSync(path.join(REPO, '.scratch'), { recursive: true });
-  dir = mkdtempSync(path.join(REPO, '.scratch', 'sinundef-'));
   srv = spawn('python3', ['-m', 'http.server', String(port), '--bind', '127.0.0.1'], { cwd: PUBLIC, stdio: 'ignore' });
   for (let i = 0; i < 40; i++) { await espera(250); try { await fetch(`http://127.0.0.1:${port}/`); break; } catch {} }
 
-  ch = spawn('google-chrome', ['--headless=new', '--disable-gpu', '--no-first-run', `--user-data-dir=${dir}`,
-    `--remote-debugging-port=${cdpPort}`, '--window-size=360,716', 'about:blank'], { stdio: 'ignore' });
+  ch = launchChrome(cdpPort);
   let lista = null;
-  for (let i = 0; i < 60 && !lista; i++) { await espera(250); try { lista = await (await fetch(`http://127.0.0.1:${cdpPort}/json`)).json(); } catch {} }
-  if (!lista) throw new Error('Chrome no abrio el puerto de depuracion');
+  for (let i = 0; i < 60 && !lista && !ch.failure(); i++) { await espera(250); try { lista = await (await fetch(`http://127.0.0.1:${cdpPort}/json`)).json(); } catch {} }
+  if (!lista) throw new Error(ch.diagnostic());
   const pag = lista.find((t) => t.type === 'page');
   ws = new WebSocket(pag.webSocketDebuggerUrl);
   await new Promise((r, j) => { ws.addEventListener('open', r); ws.addEventListener('error', () => j(new Error('WebSocket CDP'))); });
@@ -200,12 +195,11 @@ let codigo = 0;
 try {
   await main();
 } catch (e) {
-  fallos.push({ path: actual.path, step: 'harness', snippet: String(e.message).slice(0, 60) });
+  fallos.push({ path: actual.path, step: 'harness', snippet: String(e.message) });
 } finally {
   try { ws?.close(); } catch {}
-  try { ch?.kill(); } catch {}
+  try { await ch?.close(); } catch {}
   try { srv?.kill(); } catch {}
-  try { if (dir) rmSync(dir, { recursive: true, force: true }); } catch {}
 }
 console.log(JSON.stringify({ fallos, pasos }, null, 2));
 process.exitCode = fallos.length ? 1 : 0;
