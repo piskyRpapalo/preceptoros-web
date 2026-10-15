@@ -15,10 +15,18 @@
   var intentos = {}, visible = null, textoDe = {}, ultimo = null, lienzo = null;
 
   function hueDe(sello) { var T = raiz.AtlasToon; return T && T.SELLOS && T.SELLOS.hasOwnProperty(sello) ? T.SELLOS[sello] : null; }
+  function cicloValido(c) { return Number.isSafeInteger(c) && c >= 0 && c <= 1000000000; }
+  function cicloActual() {
+    try {
+      var J = raiz.AtlasJuego, i = J && J.instantanea ? J.instantanea() : null, c = i && i.ciclo;
+      return cicloValido(c) ? c : null;
+    } catch (_) { return null; }
+  }
   /* Puro: el gusano de un S_t entre dos puntos de pantalla. Devuelve { puntos, segmentos, ms, hue }. */
   function gusano(S, A, B) {
     var segs = Math.max(1, Math.min(TOPE_SEG, S.intentos || 1)), curva = Math.min(140, 16 + Math.abs(S.delta || 0) / 12);
-    var lado = (S.ciclo || 0) % 2 === 0 ? 1 : -1, mx = (A[0] + B[0]) / 2, my = (A[1] + B[1]) / 2;
+    /* Sin ciclo medido, el desvio queda neutro: null no hereda la paridad de ciclo cero. */
+    var lado = cicloValido(S.ciclo) ? (S.ciclo % 2 === 0 ? 1 : -1) : 0, mx = (A[0] + B[0]) / 2, my = (A[1] + B[1]) / 2;
     var dx = B[0] - A[0], dy = B[1] - A[1], L = Math.sqrt(dx * dx + dy * dy) || 1, cx = mx - dy / L * curva * lado, cy = my + dx / L * curva * lado, pts = [];
     for (var i = 0; i <= 24; i++) { var u = i / 24, w = 1 - u; pts.push([Math.round(w * w * A[0] + 2 * w * u * cx + u * u * B[0]), Math.round(w * w * A[1] + 2 * w * u * cy + u * u * B[1])]); }
     return { puntos: pts, segmentos: segs, ms: BASE_MS + POR_SEG * segs, hue: hueDe(S.sello) };
@@ -55,7 +63,7 @@
   function transita() {
     var v = vistoAhora(), id = v ? v.id : null;
     if (id === visible) { return; }
-    var de = visible, D = raiz.document, J = raiz.AtlasJuego, i = J && J.instantanea ? J.instantanea() : null;
+    var de = visible, D = raiz.document;
     visible = id;
     if (!id) { return; }
     intentos[id] = (intentos[id] || 0) + 1;
@@ -64,7 +72,7 @@
     var W = raiz.AtlasVentana;
     if (W && W.pinta) { W.pinta(); }   /* el cabecero primero: el sello del destino, no el del panel anterior */
     var f = W && W.ficha ? W.ficha() : null;
-    var S = { ciclo: i && typeof i.ciclo === 'number' ? i.ciclo : null, de: de, a: id, delta: delta, intentos: intentos[id], sello: f && f.id === id ? f.sello : 'NO_DATA' };
+    var S = { ciclo: cicloActual(), de: de, a: id, delta: delta, intentos: intentos[id], sello: f && f.id === id ? f.sello : 'NO_DATA' };
     var A = centro(D.getElementById('menu-' + (de || id))) || [0, 0], B = centro(D.getElementById('menu-' + id)) || A, gu = gusano(S, A, B);
     ultimo = { S: S, segmentos: gu.segmentos, ms: gu.ms, hue: gu.hue };
     var R = raiz.AtlasRadioChat;
