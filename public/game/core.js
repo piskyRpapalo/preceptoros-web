@@ -1,26 +1,7 @@
-/* preceptoros.org · theGame v1.5 · SINTESIS: el sonido sale de ondas, no de
-   ficheros.
-
-   CERO MP3. Cada sonido son dos OscillatorNode de tipo seno: una portadora y
-   una moduladora que le cambia la frecuencia (sintesis FM). La receta de cada
-   sonido es una funcion PURA (`receta`) que se prueba en node; el navegador
-   solo la toca.
-
-   APAGADO POR DEFECTO y solo tras un gesto de la persona: un juego que suena
-   sin pedirlo es un juego que se cierra, y el navegador ademas lo bloquea.
-
-   EL CALOR MODULA EL SONIDO. La directiva habla de `nodeTemperature`, la
-   temperatura del silicio; un navegador no la puede leer y eso es NO_DATA.
-   Lo que si hay, medido por el motor, es la PRESION del Nucleo:
-   calor = 1 - integridad / integridad_max. Cuanto mas sufre el Nucleo, mas
-   aspero suena (indice FM mayor y portadora mas grave). Se dice lo que es. */
 (function (raiz) {
   'use strict';
 
-  /* Frecuencias en Hz, duraciones en segundos. `indice` es la profundidad de
-     la modulacion en Hz. Enteros y fracciones fijas: misma entrada, misma
-     receta. */
-  var V = (typeof module === 'object' && module.exports) ? require('./valores.js') : raiz.AtlasValores;
+    var V = (typeof module === 'object' && module.exports) ? require('./valores.js') : raiz.AtlasValores;
   var BASE = V.sonidos;
 
   function receta(tipo, calor) {
@@ -34,22 +15,17 @@
       indice: Math.round(b.indice * (1 + 2 * c)),
       dur: b.dur, gan: b.gan
     }, I = V.sintesis;
-    /* M17-bis 3: en modo 'fm3_adsr' la receta lleva su envolvente y una SEGUNDA moduladora. */
-    if (I && I.modo === 'fm3_adsr') {
+        if (I && I.modo === 'fm3_adsr') {
       r.adsr = I.adsr.slice();
       r.moduladora2 = Math.round(r.portadora * I.m2);
       r.indice2 = Math.round(r.indice * I.indice2);
     }
-    /* M17-bis 4: la urgencia sale del SELLO del evento, no de un capricho del sonido. */
-    var u = I && I.sello && I.urgencia ? (I.urgencia[I.sello[tipo]] || 0) : 0;
+        var u = I && I.sello && I.urgencia ? (I.urgencia[I.sello[tipo]] || 0) : 0;
     if (u > 0) { r.vibrato = { hz: I.vibrato_hz, prof: Math.round(r.portadora * I.vibrato_prof * u) }; }
     return r;
   }
 
-  /* LA ENVOLVENTE, pura: la ganancia del sonido en el segundo t. La usa `suena` para programar el
-     volumen y la usa el pulso del golpe (wave_render) para dibujarse: una curva, dos sentidos.
-     Sin adsr es la rampa de siempre (gan -> 0,0001 en dur); con adsr, ataque-caida-sostenido-relajacion. */
-  function envolvente(r, t) {
+    function envolvente(r, t) {
     if (!r || t < 0 || t >= r.dur) { return 0; }
     if (!r.adsr) { return r.gan * Math.pow(0.0001 / r.gan, t / r.dur); }
     var a = r.adsr[0], d = r.adsr[1], s = r.adsr[2], rel = r.adsr[3], fin = r.dur - rel;
@@ -59,8 +35,7 @@
     return r.gan * s * (1 - (t - fin) / rel);
   }
 
-  /* El calor que si se puede medir: la presion del Nucleo en la instantanea. */
-  function calorDe(ins) {
+    function calorDe(ins) {
     if (!ins || !ins.integridad_max) { return 0; }
     return 1 - ins.integridad / ins.integridad_max;
   }
@@ -77,17 +52,7 @@
     return activo;
   }
 
-  /* LA VOZ DE UNA ONDA: cada tropa suena distinta y siempre igual, y SU ESPECTRO MANDA EL TIMBRE (R6,
-     plan «el refresco», 2026-10-11). Antes la portadora salia del primer armonico, que en TODAS las
-     tropas es la base k = 1: medido, 500 tropas daban UNA sola portadora (205 Hz). Ahora, de su espectro:
-     - las ARISTAS (n = |k2 - 1|, el armonico que las pone) dan la NOTA, en la pentatonica sobre 110 Hz
-       (la de la radio): 3 aristas, 110 Hz; cada arista, un grado mas; un Leviatan suena agudo;
-     - la amplitud de ese armonico (a1) da la RAZON de la moduladora (8 + a1) / 8: el color;
-     - el detalle (los armonicos altos) da el INDICE: mas detalle, mas aspero;
-     - el Leviatan (mas de 12 aristas) lleva una SEGUNDA moduladora: inestable, como su forma.
-     Pura y entera: la misma receta la usa la voz exacta (`atlas-voz.js`), no una copia. Corto y bajo:
-     identidad, no musica. */
-  var PENTA_V = [0, 2, 4, 7, 9];
+    var PENTA_V = [0, 2, 4, 7, 9];
   function vozDe(t) {
     var a = (t && t.armonicos) || [], det = 0;
     if (!a.length) { return null; }
@@ -121,8 +86,7 @@
     }
     mod.connect(prof); prof.connect(car.frequency);
     if (r.moduladora2) {
-      /* La segunda moduladora, CONECTADA (la joya del mockup creaba dos y no conectaba ninguna). */
-      var mod2 = ctx.createOscillator(), prof2 = ctx.createGain();
+            var mod2 = ctx.createOscillator(), prof2 = ctx.createGain();
       mod2.type = 'sine'; mod2.frequency.value = r.moduladora2; prof2.gain.value = r.indice2;
       mod2.connect(prof2); prof2.connect(car.frequency);
       mod2.start(t); mod2.stop(t + r.dur);
@@ -138,8 +102,7 @@
     return r;
   }
 
-  /* El contexto abierto por el interruptor, para la voz exacta (`atlas-voz.js`); apagado, null. */
-  function contexto() { return activo ? ctx : null; }
+    function contexto() { return activo ? ctx : null; }
   var AtlasSintesis = { BASE: BASE, receta: receta, envolvente: envolvente, calorDe: calorDe, activa: activa, suena: suena, vozDe: vozDe,
                         contexto: contexto };
   if (typeof module === 'object' && module.exports) { module.exports = AtlasSintesis; }
