@@ -31,8 +31,10 @@
   function T(k, d) { return (raiz.AtlasJuego && raiz.AtlasJuego.texto(k)) || d; }
   function semillaInt(t) { return parseInt(String(t.semilla || '0').slice(0, 8), 16) || 7; }
   function cicloActual() {
-    var J = raiz.AtlasJuego, e = J && J.instantanea ? J.instantanea() : null;
-    return e && Number.isSafeInteger(e.ciclo) ? e.ciclo : null;
+    try {
+      var J = raiz.AtlasJuego, e = J && J.instantanea ? J.instantanea() : null, c = e && e.ciclo;
+      return Number.isSafeInteger(c) && c >= 0 && c <= 1000000000 ? c : null;
+    } catch (_) { return null; }
   }
 
   /* NUNCA TAPA UNA BATALLA EN CURSO (FIRMO 2026-10-12; medido en el Doogee: un huevo eclosiono a mitad de pelea y

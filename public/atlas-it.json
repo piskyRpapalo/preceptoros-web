@@ -161,6 +161,7 @@
   "tc4": "Tesoro dell'Abisso",
   "inc_coste": "{cobre} rame · {luz} luce",
   "inc_falta": "Risorse insufficienti per questa invocazione.",
+  "inc_ciclo_nd": "NO_DATA · ciclo di gioco non disponibile",
   "inc_hecha": "Invocazione firmata: {tc}. L'uovo sta incubando.",
   "nido_h": "Nido",
   "nido_vacio": "Nessun uovo in incubazione.",

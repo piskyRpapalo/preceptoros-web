@@ -2,6 +2,7 @@
 //     node atlas/motor_casos.mjs   -> una linea JSON: [{caso, ok, detalle}]
 // El motor es puro: sin navegador, sin reloj, sin red. Mismo estado, mismo resultado.
 import { createRequire } from 'module';
+import { readFileSync } from 'node:fs';
 const require = createRequire(import.meta.url);
 const M = require('../public/assets/atlas-motor.js');
 
@@ -113,12 +114,13 @@ caso('fases: 1 al empezar, 5 con el Nucleo a 70', () => {
 // cumplen k = 1 (mod 7). Semilla medida el 2026-10-11: sha256('m18b-14'), la primera de esa serie que da 7
 // aristas en tc4 con todos sus armonicos de detalle vivos (amplitud > 0).
 const G = require('../public/game/gacha.js');
-const SEM7 = 'f8f7efb6a1b32b0878d0a7bb5a588a3d20844971bdd7aa0f157c1a822e9597e0';
-const ARM7 = '[[1,24,24,0],[-6,16,16,44],[15,4,4,40],[-20,1,1,4]]';
+const FIXTURE = JSON.parse(readFileSync(new URL('./m18b_tropa.fixture.json', import.meta.url), 'utf8'));
+const SEM7 = FIXTURE.semilla;
+const ARM7 = JSON.stringify(FIXTURE.armónicos);
 const huella = (x) => require('crypto').createHash('sha256').update(JSON.stringify(x)).digest('hex');
 caso('M18-B: la semilla medida da 7 aristas (magico, 4 terminos) y se dibujan 7 lobulos', () => {
   const t = G.tirada(SEM7, 'tc4');
-  return igual(`${t.aristas}|${t.rareza}|${t.armonicos.length}|${G.aristas(t)}`, '7|magico|4|7');
+  return igual(`${t.aristas}|${t.rareza}|${t.armonicos.length}|${G.aristas(t)}`, `${FIXTURE.aristas}|${FIXTURE.rareza}|${FIXTURE.armónicos.length}|${FIXTURE.aristas}`);
 });
 caso('M18-B: 7 ejes de giro, todo k = 1 (mod 7)', () => {
   const ks = G.tirada(SEM7, 'tc4').armonicos.map((h) => h[0]);

@@ -223,7 +223,11 @@
     R.paso1.appendChild(R.firma);
     R.firmaNota = el('p', 'atlas-nota atlas-huella'); R.firmaNota.setAttribute('role', 'status'); R.paso1.appendChild(R.firmaNota);
     R.crear = boton(T('nodos_crear_id'), 'boton-sec');
-    R.crear.addEventListener('click', function () { window.Identity.crear().then(firma, function () {}); });
+    R.crear.addEventListener('click', function () {
+      window.Identity.crear().then(function (creada) { if (creada) { firma(); } }, function () {
+        R.firmaNota.textContent = 'NO_DATA (identity could not be created)';
+      });
+    });
     R.envio = el('li', 'atlas-paso atlas-paso-2');
     R.envio.appendChild(el('h6', null, T('nodos_paso2_h'))); R.envio.appendChild(el('p', 'atlas-nota', T('nodos_paso2_p')));
     var lab = el('label', 'consiento-et'); R.consiento = el('input'); R.consiento.type = 'checkbox'; R.consiento.checked = false;

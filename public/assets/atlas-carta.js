@@ -121,8 +121,8 @@
     (tropas || []).slice(0, 6).forEach(function (t, k) {
       var a = (t && t.armonicos) || [];
       if (!a.length) { return; }
-      voces.push({ terminos: a.slice(0, 7).map(function (h) {
-        return { k: Math.abs(h[0]) || 1, amp: (h[1] + h[2]) / 48, fase: (h[3] || 0) / 64 * 6.2832 };
+      voces.push({ terminos: a.slice(0, 8).map(function (h) {
+        return { k: h[0], amp: (h[1] + h[2]) / 48, fase: (h[3] || 0) / 64 * 6.2832 };
       }), vel: 0.4 + 0.15 * (a.length % 5) + 0.05 * k, giro: 0.6 + (a[1] ? a[1][3] % 7 : k) * 0.12,
           tono: [35, 140, 275, 190][(a.length + k) % 4] });
     });
@@ -194,33 +194,36 @@
     });
     return m;
   }
-  /* PELIGRO de una celda: 2 junto a la grieta abierta; 1 en 300 m+ sin Ingenieria 60 (el motor
-     no deja bajar); 0 en lo demas. Solo lo que el motor sabe. */
+  function ingenieria(ins) {
+    var n = ins && ins.niveles && ins.niveles.ingenieria;
+    return Number.isSafeInteger(n) && n >= 1 && n <= 99 ? n : null;
+  }
+  /* Peligro: 2 junto a grieta; 1 en profundidad sin ingenieria 60. */
   function peligro(ins, x, y) {
     if (ins && ins.grieta && ins.grieta.abierta &&
         Math.hypot(dx(SECTORES.grieta, x), y - suelo(SECTORES.grieta)) <= 10) { return 2; }
-    var ing = ins && ins.niveles ? ins.niveles.ingenieria : 0;
-    return banda(y) === 3 && ing < 60 ? 1 : 0;
+    var ing = ingenieria(ins);
+    return banda(y) === 3 ? (ing == null ? null : ing < 60 ? 1 : 0) : 0;
   }
   function celda(c, r, ins, nd, exp) {
-    var x = c * CELDA + CELDA / 2, y = r * CELDA + CELDA / 2, i = r * COLS + c;
+    var x = c * CELDA + CELDA / 2, y = r * CELDA + CELDA / 2, i = r * COLS + c, p = peligro(ins, x, y);
     return { c: c, r: r, x: x, y: y, niebla: niebla(ins, nd)[i], explorado: exp ? exp[i] > 0 : null,
              campamento: !!nd && Math.floor(nd.x / CELDA) === c && Math.floor(nd.y / CELDA) === r,
-             peligro: peligro(ins, x, y), coord: nd ? coord(nd.pub, sectorDe(x), x, y).corta : null };
+             peligro: p, peligro_causa: p === null ? 'NO_DATA: ingenieria ausente' : null,
+             coord: nd ? coord(nd.pub, sectorDe(x), x, y).corta : null };
   }
 
-  /* EDIFICIOS Y UNIDADES: primero el dato, despues el dibujo. Cada edificio dice su estado y su
-     accion LEGAL segun el motor (o null con causa); el mapa solo la ofrece, la persona la pulsa. */
+  /* Edificios: el mapa solo ofrece acciones legales; la persona las pulsa. */
   var BAJA = { forja: 'arrecife', grieta: 'ruinas', aguja: 'bosque', nucleo: 'nucleo' };
   function estructuras(ins, nd) {
-    var out = [], ing = ins && ins.niveles ? ins.niveles.ingenieria : 0, g = (ins && ins.grieta) || {};
+    var out = [], ing = ingenieria(ins), g = (ins && ins.grieta) || {};
     Object.keys(SECTORES).forEach(function (k) {
       var x = SECTORES[k], acc = null, causa = null;
-      /* Sin instantanea no se sabe nada: ni si la grieta esta abierta ni que nivel hay. NO_DATA. */
+      /* Sin instantanea, no hay accion medible. */
       if (!ins) { causa = 'sin instantanea'; }
       else if (k === 'grieta') { if (g.abierta) { acc = { accion: 'reparar' }; } else { causa = 'sellada'; } }
       else if (k === 'ojo') { causa = 'observatorio: sin accion en el motor'; }
-      else if (k === 'nucleo' && ing < 60) { causa = 'ingenieria ' + ing + ' < 60'; }
+      else if (k === 'nucleo' && (ing == null || ing < 60)) { causa = ing == null ? 'NO_DATA: ingenieria ausente' : 'ingenieria ' + ing + ' < 60'; }
       else if (ins && BANDAS[['arrecife', 'ruinas', 'bosque', 'nucleo'].indexOf(BAJA[k])][0] === ins.profundidad) {
         causa = 'ya estas aqui';
       } else { acc = { accion: 'bajar_a', banda: BAJA[k] }; }

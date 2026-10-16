@@ -69,7 +69,7 @@
     var J = raiz.AtlasJuego, i = J && J.instantanea ? J.instantanea() : null;
     return i ? { nucleo: i.nivel_nucleo, grieta: i.grieta && i.grieta.abierta, i: i } : { nucleo: 1, grieta: false, i: null };
   }
-  /* EL CANGREJO (J1): tu semilla (tu clave publica; sin ella, la del visitante), el ciclo de juego,
+  /* EL CANGREJO (J1): tu semilla (tu clave publica; sin ella, la del visitante), el ciclo medido de juego,
      tu army y si un nodo te tiene LINKEADO en su cedula (coral) o no (cangrejo de mar). El latido del
      nodo no llega a la web: el brillo es NO_DATA (null), nunca un numero inventado. */
   function cangrejo() {
@@ -78,7 +78,8 @@
       nodo = C.nodos.some(function (n) { return (n.dispositivos || []).some(function (d) { return d.clave_publica === pub && d.estado === 'linkeado'; }); });
     }
     function nv(k) { return m[k] ? m[k].nivel : null; }
-    return { semilla: pub || 'visitante', ciclo: i ? i.ciclo : 0, army: m.army ? m.army.nivel : 0, nodo: nodo, latido: null,
+    var tic = i && Number.isSafeInteger(i.ciclo) && i.ciclo >= 0 && i.ciclo <= 1000000000 ? i.ciclo : null;
+    return { semilla: pub || 'visitante', ciclo: tic, army: m.army ? m.army.nivel : 0, nodo: nodo, latido: null,
              cuerpo: CJ ? CJ.cuerpo({ nucleo: nv('nucleo'), army: nv('army'), bosque: nv('bosque'), faro: nv('faro') }) : null };
   }
   /* La cifra de cada parte: se recoge aqui (la pestana) y se calcula en `casa-medidas.js` (puro). */

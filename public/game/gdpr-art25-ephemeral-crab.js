@@ -67,7 +67,7 @@
     var e = Math.round(10 * escala), p = cu && cu.pinzas != null ? cu.pinzas : 0, f = FESTON[estilo] || FESTON.cupula;
     return [[1, 40 + e, 26 + e, 0], [f[0], f[1], f[1], 0], [2, Math.round(9 + 9 * p), Math.round(4 + 4 * p), 1]];
   }
-  /* Huella de un paseo: lo que el oraculo compara entre aparatos (sha de las x redondeadas). */
+  /* Huella de un paseo: hash de las x redondeadas para comparar aparatos. */
   function huellaPaseo(semilla, ciclos) {
     var xs = [];
     for (var c = 0; c < ciclos; c++) { xs.push(Math.round(paseo(semilla, c, 0).x * 1e6)); }

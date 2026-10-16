@@ -59,7 +59,12 @@
 
   /* --- los lugares: botones en el MAPA; el rival elegido, en el mapa y en la BATALLA */
   function todosLugares() { return lugares.concat(jugadores); }
-  function cicloJuego() { var j = window.AtlasJuego, s = j && j.instantanea ? j.instantanea() : null; return s && s.ciclo; }
+  function cicloJuego() {
+    try {
+      var j = window.AtlasJuego, s = j && j.instantanea ? j.instantanea() : null, c = s && s.ciclo;
+      return Number.isSafeInteger(c) && c >= 0 && c <= 1000000000 ? c : null;
+    } catch (_) { return null; }
+  }
   function pintaLista() {
     R.lista.textContent = '';
     todosLugares().forEach(function (l) {
@@ -170,8 +175,8 @@
   /* --- montar: el MAPA en su pestana (`zona`), la BATALLA en la suya */
   function monta(capa, panel, zona) {
     if (!panel || panel.querySelector('.atlas-arena')) { return Promise.resolve(); }
-    return textos().then(function () { construye(panel, zona); }, function (e) {
-      panel.textContent = ''; panel.appendChild(el('p', 'no-data', 'NO_DATA · ' + e.message));
+    return textos().then(function () { construye(panel, zona); }, function () {
+      panel.textContent = ''; panel.appendChild(el('p', 'no-data', 'NO_DATA · arena language data unavailable'));
     });
   }
   function pliego(titulo, z) {

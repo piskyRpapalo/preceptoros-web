@@ -18,7 +18,7 @@
   /* LA ARENA, A DEMANDA (2026-09-28): el mar, los lugares NPC, el combate en vivo y los duelos por
      paquetes firmados. Detras del Army, cuyas tropas y verificador usa. */
   var ARENA = [['/game/sobres.js'], ['/game/rating.js'], ['/game/arena.js'], ['/game/duelo.js'],
-    ['/game/mar-anclas.js'], ['/game/crab_render_hd.js'], ['/game/crab_free_move.js'], ['/game/genesis_tutorial.js'], ['/game/buildings_toon.js'], ['/game/reef_place_cards.js'], ['/game/shell_schematics.js'], ['/game/reef_buildings_paint.js'], ['/game/latency_crystal.js'], ['/game/hexelion_bench.js'], ['/game/reef_corals.js'], ['/game/reef_buildings_layer.js'], ['/game/mar-cangrejos.js'], ['/game/map_pointer_input.js'], ['/game/piece_inspector.js'], ['/game/state_vector.js'], ['/game/place_telemetry.js'], ['/game/npc_territory_map.js'], ['/game/map_nodes_layer.js'], ['/game/map_zoom.js'], ['/game/mar.js'], ['/game/nodos-pesos.js'], ['/game/nodos.js'], ['/game/cuenta.js'],
+    ['/game/mar-anclas.js'], ['/game/crab_render_hd.js'], ['/game/audio_feedback_manager.js'], ['/game/crab_free_move.js'], ['/game/genesis_tutorial.js'], ['/game/buildings_toon.js'], ['/game/reef_place_cards.js'], ['/game/shell_schematics.js'], ['/game/reef_buildings_paint.js'], ['/game/latency_crystal.js'], ['/game/hexelion_bench.js'], ['/game/reef_corals.js'], ['/game/reef_buildings_layer.js'], ['/game/mar-cangrejos.js'], ['/game/map_pointer_input.js'], ['/game/piece_inspector.js'], ['/game/vector_contract.js'], ['/game/state_vector.js'], ['/game/place_telemetry.js'], ['/game/npc_territory_map.js'], ['/game/map_nodes_layer.js'], ['/game/map_zoom.js'], ['/game/mar.js'], ['/game/nodos-pesos.js'], ['/game/nodos.js'], ['/game/cuenta.js'],
     ['/game/ui-nodos.js'], ['/game/ui-rack.js'], ['/game/escuadron.js'], ['/game/battle_choreography.js'], ['/game/battle_replay.js'], ['/game/npc_occupancy.js'], ['/game/npc_walls.js'], ['/game/ui-arena-comun.js'], ['/game/ui-arena.js'], ['/game/ui-duelo.js']];
   /* LAS LENGUAS DEL JUEGO (2026-09-28: «hoy, solo inglés; un mismo enlace»): la UNICA lista de las
      COMPLETAS. La portada abre la suya si esta aqui; si no, la primera. Anadir una = traducir su
@@ -109,9 +109,9 @@
       if (window.AtlasIncubadora) { window.AtlasIncubadora.monta(capa); }
       var s = capa.querySelector('.atlas-incubadora');
       if (p && s) { p.textContent = ''; p.appendChild(s); tecnico(p); }
-    }).catch(function (e) {
+    }).catch(function () {
       army = null;
-      if (p) { p.textContent = ''; p.appendChild(el('p', 'no-data', 'NO_DATA · ' + (e && e.message))); }
+      if (p) { p.textContent = ''; p.appendChild(el('p', 'no-data', 'NO_DATA · the Army could not be loaded')); }
     });
     return army;
   }
@@ -131,7 +131,7 @@
       /* P11: el capitulo 1.5, «El Primer Eco», arriba del TALLER hasta que tengas Insignia. */
       if (window.AtlasPrimerEco) { window.AtlasPrimerEco.monta(PANEL.taller); }
       setTimeout(cargaArena, 0);
-    }).catch(function (e) { casa = null; PANEL.casa.appendChild(el('p', 'no-data', 'NO_DATA · ' + (e && e.message))); });
+    }).catch(function () { casa = null; PANEL.casa.appendChild(el('p', 'no-data', 'NO_DATA · the game terminal could not be loaded')); });
     return casa;
   }
 
@@ -145,9 +145,9 @@
     }).then(function () {
       /* El lienzo del mapa y sus mandos salen de los Lugares a su capa fija, detras de todo. */
       cada(ZM.querySelectorAll('.atlas-arena-mapa,.mapa-mandos,.mapa-aviso'), function (n) { MAPA.appendChild(n); });
-    }).catch(function (e) {
+    }).catch(function () {
       arena = null;
-      if (p) { p.textContent = ''; p.appendChild(el('p', 'no-data', 'NO_DATA · ' + (e && e.message))); }
+      if (p) { p.textContent = ''; p.appendChild(el('p', 'no-data', 'NO_DATA · the arena could not be loaded')); }
     });
     return arena;
   }
@@ -182,9 +182,9 @@
         });
       } else if (pes && HOJA[pes]) { muestra(pes); }
       window.AtlasJuego.sigue();
-    }).catch(function (err) {
-      /* Sin juego no hay capa a medias: se dice en la consola y la pagina sigue tal cual. */
-      console.warn('NO_DATA · theGame no cargo: ' + (err && err.message));
+    }).catch(function () {
+      /* Sin juego no hay capa a medias: causa estable, sin exponer detalles internos. */
+      console.warn('NO_DATA · theGame could not be loaded');
       cargado = null;
     });
   }

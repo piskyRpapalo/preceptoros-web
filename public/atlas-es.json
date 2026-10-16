@@ -161,6 +161,7 @@
   "tc4": "Tesoro del Abismo",
   "inc_coste": "{cobre} cobre · {luz} luz",
   "inc_falta": "Faltan recursos para esa invocación.",
+  "inc_ciclo_nd": "NO_DATA · ciclo de juego no disponible",
   "inc_hecha": "Invocación firmada: {tc}. El huevo ya incuba.",
   "nido_h": "Nido",
   "nido_vacio": "Ningún huevo incubando.",

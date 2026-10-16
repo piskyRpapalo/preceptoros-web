@@ -172,7 +172,7 @@
       ok.type = 'button'; ok.className = 'boton'; ok.textContent = T.idEntrar;
       ok.addEventListener('click', function () {
         if (menu.hidePopover) menu.hidePopover();
-        registrar();
+        registrar().catch(function () {});
       });
       menu.appendChild(av); menu.appendChild(ok);
     }
@@ -193,9 +193,11 @@
       .then(function () {
         pintar();
         document.dispatchEvent(new CustomEvent('preceptor:identity', { detail: { apodo: yo.apodo } }));
-      })
-      .catch(function (e) {
-        aviso.textContent = T.idFallo + ' ' + (e && e.message ? e.message : e);
+        return true;
+      }).catch(function () {
+        var fallo = T.idFallo || 'Could not create the key';
+        aviso.textContent = fallo.replace(/[:\s]+$/, '');
+        throw new Error('NO_DATA (identity could not be created)');
       });
   }
 

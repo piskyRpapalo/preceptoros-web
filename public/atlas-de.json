@@ -161,6 +161,7 @@
   "tc4": "Schatz des Abgrunds",
   "inc_coste": "{cobre} Kupfer · {luz} Licht",
   "inc_falta": "Nicht genug Ressourcen für diese Beschwörung.",
+  "inc_ciclo_nd": "NO_DATA · Spielzyklus nicht verfügbar",
   "inc_hecha": "Beschwörung signiert: {tc}. Das Ei brütet.",
   "nido_h": "Nest",
   "nido_vacio": "Kein Ei brütet.",

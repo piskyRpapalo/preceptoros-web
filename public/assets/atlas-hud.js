@@ -14,7 +14,8 @@
 (function () {
   'use strict';
 
-  var VENTANA = 300, hist = [], R = null;
+  var VENTANA = 300, hist = [], R = null, causaEstado = null;
+  function cicloValido(c) { return Number.isSafeInteger(c) && c >= 0 && c <= 1000000000; }
 
   function monta(capa, d) {
     var J = window.AtlasJuego;
@@ -25,8 +26,8 @@
     var nd = document.createElement('p'); nd.className = 'atlas-nota'; nd.textContent = T('hud_nd');
     R.d.appendChild(nd);
     pinta();
-    var ins = J.instantanea && J.instantanea();
-    if (ins) { estado(ins); }
+    try { estado(J.instantanea && J.instantanea()); }
+    catch (_) { estado(null); }
   }
 
   function fila(k, v) {
@@ -45,7 +46,7 @@
     if (!R) { return; }
     while (R.dl.firstChild) { R.dl.removeChild(R.dl.firstChild); }
     var u = hist[hist.length - 1];
-    fila('hud_ciclo', u ? String(u.ciclo) : 'NO_DATA');
+    fila('hud_ciclo', u ? String(u.ciclo) : (causaEstado || 'NO_DATA'));
     fila('hud_luz', ritmo('luz'));
     fila('hud_bio', ritmo('biomasa'));
     fila('hud_cobre', ritmo('cobre'));
@@ -53,7 +54,18 @@
     fila('hud_energia', 'NO_DATA');
   }
   function estado(ins) {
-    if (!ins || ins.esquema !== 'atlas.instantanea/1') { return; }
+    if (!ins || ins.esquema !== 'atlas.instantanea/1') {
+      hist = []; causaEstado = 'NO_DATA (game snapshot unavailable or unsupported)'; pinta(); return;
+    }
+    if (!cicloValido(ins.ciclo)) {
+      hist = []; causaEstado = 'NO_DATA (game cycle unavailable or invalid)'; pinta(); return;
+    }
+    var recursos = ins.recursos, campos = ['luz', 'biomasa', 'cobre', 'flujo'];
+    if (!recursos || typeof recursos !== 'object' || Array.isArray(recursos)
+        || campos.some(function (k) { return typeof recursos[k] !== 'number' || !Number.isFinite(recursos[k]); })) {
+      hist = []; causaEstado = 'NO_DATA (game resource snapshot invalid)'; pinta(); return;
+    }
+    causaEstado = null;
     var u = hist[hist.length - 1];
     /* Una partida retomada o reiniciada no se mezcla con la anterior: si el ciclo vuelve atras, se empieza de cero. */
     if (u && ins.ciclo < u.ciclo) { hist = []; }

@@ -150,7 +150,8 @@
       var v = p.mide();
       if (base === null) { base = v; }
       if (p.hecho(base, v)) {
-        hechos.push({ paso: p.id, ciclo: (J() || {}).ciclo === undefined ? null : J().ciclo });
+        var instantanea = J(), ciclo = instantanea && instantanea.ciclo;
+        hechos.push({ paso: p.id, ciclo: Number.isSafeInteger(ciclo) && ciclo >= 0 && ciclo <= 1e9 ? ciclo : null });
         var R = raiz.AtlasRadioChat; if (R && R.dice) { R.dice({ quien: 'Tutorial', fuente: 'tutorial', texto: 'done · ' + p.titulo, sello: 'LIVE' }); }
         i++; base = null;
       }

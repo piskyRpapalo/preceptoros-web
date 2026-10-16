@@ -117,7 +117,19 @@
   /* Una tropa contra un paquete: rareza conocida, afijos dentro del maximo y sin exclusiones, suma y
      bandas de stats, numero de terminos, amplitud, fase y simetria (k = 1 +/- s*j). */
   function compruebaTropa(t, p) {
-    if (!t || RAREZAS.indexOf(t.rareza) < 0) { return 'tropa: rareza'; }
+    var falloPaquete = forma(p);
+    if (falloPaquete) { return 'paquete: ' + falloPaquete; }
+    var requeridas = ['esquema', 'tc', 'base', 'rareza', 'prefijo', 'sufijo', 'stats', 'armonicos', 'semilla'];
+    var opcionales = ['aristas', 'campo_origen'];
+    var claves = requeridas.concat(opcionales.filter(function (k) { return Object.prototype.hasOwnProperty.call(t || {}, k); }));
+    if (!objeto(t) || !mismas(t, claves) || t.esquema !== 'atlas.tropa/1' ||
+        !Object.prototype.hasOwnProperty.call(G.TCS, t.tc) || G.TCS[t.tc].base !== t.base || !/^[0-9a-f]{64}$/.test(t.semilla || '') ||
+        (t.prefijo !== null && !Object.prototype.hasOwnProperty.call(G.PREFIJOS, t.prefijo)) ||
+        (t.sufijo !== null && !Object.prototype.hasOwnProperty.call(G.SUFIJOS, t.sufijo)) ||
+        (t.campo_origen !== undefined && G.ORIGENES.indexOf(t.campo_origen) < 0) || !mismas(t.stats, STATS)) {
+      return 'tropa: forma';
+    }
+    if (RAREZAS.indexOf(t.rareza) < 0) { return 'tropa: rareza'; }
     var n = (t.prefijo ? 1 : 0) + (t.sufijo ? 1 : 0), ex = p.afijos.exclusiones;
     if (n > p.afijos.max[t.rareza]) { return 'tropa: afijos de mas'; }
     if (ex.some(function (e) { return e[0] === t.prefijo && e[1] === t.sufijo; })) { return 'tropa: afijos excluidos'; }
@@ -131,11 +143,12 @@
     /* M18-B: la simetria de una tropa son sus ARISTAS (k = 1 mod n); una tropa de la version anterior (sin
        `aristas`) se lee con la simetria por rareza del paquete. */
     var a = t.armonicos, h = p.armonicos, tb = h.terminos[t.rareza], s = t.aristas || h.simetria[t.rareza];
+    if (t.aristas !== undefined && !entero(t.aristas, 3, 24)) { return 'tropa: aristas'; }
     if (!Array.isArray(a) || a.length < tb[0] || a.length > tb[1]) { return 'tropa: numero de terminos'; }
     for (var j = 0; j < a.length; j++) {
       var x = a[j];
-      if (!x.every(Number.isSafeInteger)) { return 'tropa: armonico no entero'; }
-      if (Math.abs(x[1]) > h.amplitud_max || Math.abs(x[2]) > h.amplitud_max) { return 'tropa: amplitud'; }
+      if (!Array.isArray(x) || x.length !== 4 || !x.every(Number.isSafeInteger)) { return 'tropa: armonico no entero'; }
+      if (x[1] < 0 || x[1] > h.amplitud_max || x[2] < 0 || x[2] > h.amplitud_max) { return 'tropa: amplitud'; }
       if (x[3] < 0 || x[3] > h.fase_max) { return 'tropa: fase'; }
       if (j && Math.abs(x[0] - 1) % s !== 0) { return 'tropa: simetria'; }
     }

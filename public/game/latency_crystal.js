@@ -16,6 +16,7 @@
   var CADA = 30, MIN = 60, VENTANA = 240, HUECO = 250, VIEJO = 120, MAX_EVENTOS = 50;
   var NIVELES = [['oro', 55, [45, 90, 55]], ['plata', 40, [210, 12, 74]], ['bronce', 25, [28, 62, 46]], ['dithering', 0, null]];
   var deltas = [], previo = null, eventos = [], ultimoCiclo = null, nivelVisto = null;
+  function cicloValido(c) { return Number.isSafeInteger(c) && c >= 0 && c <= 1e9; }
 
   /* Puro: la mediana y el peor decil de una lista de duraciones (ms) -> fps. Con menos de MIN cuadros, null. */
   function resume(ds) {
@@ -25,7 +26,7 @@
   }
   function nivel(p50) { for (var i = 0; i < NIVELES.length; i++) { if (p50 >= NIVELES[i][1]) { return NIVELES[i]; } } return NIVELES[3]; }
   /* El sello del ultimo evento en el ciclo c: LIVE, STALE (viejo) o NO_DATA (no hay). */
-  function sello(ev, c) { return !ev ? 'NO_DATA' : (c - ev.ciclo > VIEJO ? 'STALE' : 'LIVE'); }
+  function sello(ev, c) { return !ev || !cicloValido(c) || !cicloValido(ev.ciclo) ? 'NO_DATA' : (c - ev.ciclo > VIEJO ? 'STALE' : 'LIVE'); }
 
   /* Un cuadro: `ts` es la marca de requestAnimationFrame. */
   function anota(ts) {
@@ -34,6 +35,7 @@
     previo = ts;
   }
   function registra(c, x) {
+    if (!cicloValido(c)) { return null; }
     if (ultimoCiclo !== null && c - ultimoCiclo < CADA) { return null; }
     var r = resume(deltas);
     if (!r) { return null; }
@@ -48,7 +50,7 @@
   /* g, P como las demas capas; o: { dpr, t, ts, texto, quieto }; casa: sitio de tu casa (o null); c: ciclo. */
   function pinta(g, P, o, casa, c) {
     anota(o.ts);
-    if (c === null || c === undefined) { return; }
+    if (!cicloValido(c)) { return; }
     var t = o.texto || function (k) { return k; }, dpr = o.dpr || 1, nuevo = registra(c, { dpr: dpr, lienzo: g.canvas ? g.canvas.width + 'x' + g.canvas.height : 'NO_DATA' });
     var ev = eventos.length ? eventos[eventos.length - 1] : null, s = sello(ev, c), N = (t('cri_niveles') || '').split('|');
     if (nuevo && nuevo.nivel !== nivelVisto) {

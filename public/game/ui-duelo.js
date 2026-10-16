@@ -30,7 +30,12 @@
     window.crypto.getRandomValues(b);
     return Array.prototype.map.call(b, function (x) { return ('0' + x.toString(16)).slice(-2); }).join('');
   }
-  function ciclo() { var i = window.AtlasJuego && window.AtlasJuego.instantanea(); return i ? i.ciclo : 0; }
+  function ciclo() {
+    try {
+      var J = window.AtlasJuego, i = J && typeof J.instantanea === 'function' ? J.instantanea() : null;
+      return i && Number.isSafeInteger(i.ciclo) && i.ciclo >= 0 && i.ciclo <= 1000000000 ? i.ciclo : null;
+    } catch (e) { return null; }
+  }
 
   /* El cliente nace con la identidad: sin clave no hay firma, y se dice. */
   function cliente() {
@@ -130,12 +135,13 @@
     if (!cli) { return; }
     cli.duelos().forEach(function (d) {
       var li = el('li'), txt = rellena(T('duelo_fase_' + d.fase), { p: d.de || '' });
-      if (d.fase === 'espera') { txt += ' · ' + rellena(T('duelo_plazo'), { c: cli.plazo(d.sesion) }); }
+      var plazo = d.fase === 'espera' ? cli.plazo(d.sesion) : null;
+      if (d.fase === 'espera') { txt += ' · ' + (plazo === null ? T('duelo_plazo_nd') : rellena(T('duelo_plazo'), { c: plazo })); }
       li.appendChild(el('span', null, txt));
       var k = { recibido: 'duelo_acepta', revelar: 'duelo_revela', espera: 'duelo_abandono' }[d.fase];
       if (k) {
         var b = boton(T(k), 'boton-sec');
-        if (d.fase === 'espera' && cli.plazo(d.sesion) > 0) { b.disabled = true; }
+        if (d.fase === 'espera' && (plazo === null || plazo > 0)) { b.disabled = true; }
         b.addEventListener('click', function () { accion(d); });
         li.appendChild(b);
       }
@@ -158,7 +164,10 @@
     if (!I || !I.quien || !I.quien()) {
       var nd = el('p', 'no-data', T('duelo_nd_id')), cr = boton(T('arena_crear_id'), 'boton-sec');
       cr.addEventListener('click', function () {
-        Promise.resolve(I && I.crear && I.crear()).then(function () { nd.remove(); cr.remove(); dice(T('duelo_con_id')); });
+        if (!I || !I.crear) { dice('NO_DATA (identity creation is unavailable)'); return; }
+        I.crear().then(function (creada) {
+          if (creada && I.quien && I.quien()) { nd.remove(); cr.remove(); dice(T('duelo_con_id')); }
+        }, function () { dice('NO_DATA (identity could not be created)'); });
       });
       s.appendChild(nd); s.appendChild(cr);
     }

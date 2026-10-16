@@ -1,0 +1,1424 @@
+{
+  "schema": "preceptoros.state-readability.prompt-experiment/1",
+  "provenance": "SYNTHETIC fixtures; fresh local subprocess per reading; no live user data",
+  "source_sha256": "5f481fcecc5e0a13d871baa2901f5cc5f28dd2e3afea794b5e011ff6b10d5546",
+  "runtime": "llama-completion",
+  "runtime_sha256": "7119bef261611b26f326f7c4da4dc3fdeb7bb28e2faf1ec392bda7b21215ef52",
+  "runtime_version": "version: 10068 (571d0d540)\nbuilt with GNU 11.4.0 for Linux x86_64",
+  "model": "qwen2.5-coder-1.5b.gguf",
+  "model_sha256": "29d8c98fa6b098e200069bfb88b9508dc3e85586d20cba59f8dda9a808165104",
+  "settings": {
+    "passes": 2,
+    "temperature": 0,
+    "seed": 14,
+    "threads": 1,
+    "gpu_layers": 0,
+    "context": 4096,
+    "max_generated": 512,
+    "offline": true
+  },
+  "summary": {
+    "control_without_vector_dictionary": {
+      "readings": 8,
+      "semantic_correct": 4,
+      "format_valid": 8,
+      "median_latency_ms": 4997.445022
+    },
+    "control_with_vector_dictionary": {
+      "readings": 8,
+      "semantic_correct": 0,
+      "format_valid": 8,
+      "median_latency_ms": 5690.096165
+    },
+    "explicit_map_without_vector_dictionary": {
+      "readings": 8,
+      "semantic_correct": 6,
+      "format_valid": 8,
+      "median_latency_ms": 5463.389776
+    },
+    "explicit_map_with_vector_dictionary": {
+      "readings": 8,
+      "semantic_correct": 4,
+      "format_valid": 8,
+      "median_latency_ms": 5929.167119
+    }
+  },
+  "records": [
+    {
+      "pass": 1,
+      "fixture_id": "empty",
+      "condition": "control",
+      "with_vector_dictionary": false,
+      "input_sha256": "991b895f28d2c454506240ee3f8cedc457cac59f1f161a28b755b76c53cc6031",
+      "model_input_sha256": "5b2ca892eae91685317331032621565d901f5174a987848a82779c0775566ad8",
+      "response_sha256": "3ee72e0ae8d0f53ce6590d97e12ab8861639886e199e54415d9ca3b7874eec64",
+      "response_text": "{\n  \"schema\": \"preceptoros.state-readability.response/1\",\n  \"reading\": {\n    \"cycle\": null,\n    \"copper\": null,\n    \"crab_offset\": null,\n    \"coordinate_reference\": \"NO_DATA\",\n    \"absolute_position\": null,\n    \"buoy_phase\": null\n  },\n  \"proposal\": null\n}",
+      "response": {
+        "schema": "preceptoros.state-readability.response/1",
+        "reading": {
+          "cycle": null,
+          "copper": null,
+          "crab_offset": null,
+          "coordinate_reference": "NO_DATA",
+          "absolute_position": null,
+          "buoy_phase": null
+        },
+        "proposal": null
+      },
+      "format_valid": true,
+      "semantic_correct": true,
+      "proposal": "NONE",
+      "executed": false,
+      "expected": {
+        "cycle": null,
+        "copper": null,
+        "crab_offset": null,
+        "coordinate_reference": "NO_DATA",
+        "absolute_position": null,
+        "buoy_phase": null
+      },
+      "elapsed_ms": 4593.209872,
+      "prompt_tokens": null,
+      "generated_tokens": null,
+      "token_count_cause": "This runtime exposes evaluation units, not independently verified sampled-token totals",
+      "returncode": 0,
+      "no_data": []
+    },
+    {
+      "pass": 1,
+      "fixture_id": "empty",
+      "condition": "explicit_map",
+      "with_vector_dictionary": false,
+      "input_sha256": "66ccb127926054327b66efbe89e0c1b289515369a44018c08e50bffefa7e5c55",
+      "model_input_sha256": "394a305a9336e809da9b1d7bab4199070a80feaa37e877b64d5754e502e0d40d",
+      "response_sha256": "3ee72e0ae8d0f53ce6590d97e12ab8861639886e199e54415d9ca3b7874eec64",
+      "response_text": "{\n  \"schema\": \"preceptoros.state-readability.response/1\",\n  \"reading\": {\n    \"cycle\": null,\n    \"copper\": null,\n    \"crab_offset\": null,\n    \"coordinate_reference\": \"NO_DATA\",\n    \"absolute_position\": null,\n    \"buoy_phase\": null\n  },\n  \"proposal\": null\n}",
+      "response": {
+        "schema": "preceptoros.state-readability.response/1",
+        "reading": {
+          "cycle": null,
+          "copper": null,
+          "crab_offset": null,
+          "coordinate_reference": "NO_DATA",
+          "absolute_position": null,
+          "buoy_phase": null
+        },
+        "proposal": null
+      },
+      "format_valid": true,
+      "semantic_correct": true,
+      "proposal": "NONE",
+      "executed": false,
+      "expected": {
+        "cycle": null,
+        "copper": null,
+        "crab_offset": null,
+        "coordinate_reference": "NO_DATA",
+        "absolute_position": null,
+        "buoy_phase": null
+      },
+      "elapsed_ms": 4766.601858,
+      "prompt_tokens": null,
+      "generated_tokens": null,
+      "token_count_cause": "This runtime exposes evaluation units, not independently verified sampled-token totals",
+      "returncode": 0,
+      "no_data": []
+    },
+    {
+      "pass": 1,
+      "fixture_id": "empty",
+      "condition": "control",
+      "with_vector_dictionary": true,
+      "input_sha256": "327f69f6f21d8cf25ace42a17b4495b235e5723c345b3e520ca904c9f1a6550c",
+      "model_input_sha256": "0ff5ac8d98a8b8ecbe6227a5441dad23968c3e868c4a7c7f1738732a3da6d06e",
+      "response_sha256": "422c0150a0d03f96e49ddb6f3e8c430775ba267469070bb2127e00791d21c318",
+      "response_text": "{\n  \"schema\": \"preceptoros.state-readability.response/1\",\n  \"reading\": {\n    \"cycle\": 123,\n    \"copper\": 50,\n    \"crab_offset\": [10, 20],\n    \"coordinate_reference\": \"home_offset\",\n    \"absolute_position\": [100, 200],\n    \"buoy_phase\": \"NO_DATA\"\n  },\n  \"proposal\": null\n}",
+      "response": {
+        "schema": "preceptoros.state-readability.response/1",
+        "reading": {
+          "cycle": 123,
+          "copper": 50,
+          "crab_offset": [
+            10,
+            20
+          ],
+          "coordinate_reference": "home_offset",
+          "absolute_position": [
+            100,
+            200
+          ],
+          "buoy_phase": "NO_DATA"
+        },
+        "proposal": null
+      },
+      "format_valid": true,
+      "semantic_correct": false,
+      "proposal": "NONE",
+      "executed": false,
+      "expected": {
+        "cycle": null,
+        "copper": null,
+        "crab_offset": null,
+        "coordinate_reference": "NO_DATA",
+        "absolute_position": null,
+        "buoy_phase": null
+      },
+      "elapsed_ms": 5967.012355,
+      "prompt_tokens": null,
+      "generated_tokens": null,
+      "token_count_cause": "This runtime exposes evaluation units, not independently verified sampled-token totals",
+      "returncode": 0,
+      "no_data": []
+    },
+    {
+      "pass": 1,
+      "fixture_id": "empty",
+      "condition": "explicit_map",
+      "with_vector_dictionary": true,
+      "input_sha256": "6ac71cd4fd402653b0ed40cc9dae9df38e78874838c5e3f6b2d3fe507048db71",
+      "model_input_sha256": "6ab03765995574ba241f106b0b532bed541d8d4957b689ade4a242348530675b",
+      "response_sha256": "3ee72e0ae8d0f53ce6590d97e12ab8861639886e199e54415d9ca3b7874eec64",
+      "response_text": "{\n  \"schema\": \"preceptoros.state-readability.response/1\",\n  \"reading\": {\n    \"cycle\": null,\n    \"copper\": null,\n    \"crab_offset\": null,\n    \"coordinate_reference\": \"NO_DATA\",\n    \"absolute_position\": null,\n    \"buoy_phase\": null\n  },\n  \"proposal\": null\n}",
+      "response": {
+        "schema": "preceptoros.state-readability.response/1",
+        "reading": {
+          "cycle": null,
+          "copper": null,
+          "crab_offset": null,
+          "coordinate_reference": "NO_DATA",
+          "absolute_position": null,
+          "buoy_phase": null
+        },
+        "proposal": null
+      },
+      "format_valid": true,
+      "semantic_correct": true,
+      "proposal": "NONE",
+      "executed": false,
+      "expected": {
+        "cycle": null,
+        "copper": null,
+        "crab_offset": null,
+        "coordinate_reference": "NO_DATA",
+        "absolute_position": null,
+        "buoy_phase": null
+      },
+      "elapsed_ms": 5803.251488,
+      "prompt_tokens": null,
+      "generated_tokens": null,
+      "token_count_cause": "This runtime exposes evaluation units, not independently verified sampled-token totals",
+      "returncode": 0,
+      "no_data": []
+    },
+    {
+      "pass": 1,
+      "fixture_id": "complete",
+      "condition": "control",
+      "with_vector_dictionary": false,
+      "input_sha256": "8424c22b985f0f03379161fc303c2f9c5241bc68adecef5030e48b152254471a",
+      "model_input_sha256": "316c1bfb58039723ee0de27b002a29b6971b2526aa50a8154b79d1b4d4c329f8",
+      "response_sha256": "f20c4e05532e244536249be463c49a329a34a058d20c7ac1b2713f837fb9de4f",
+      "response_text": "{\n  \"schema\": \"preceptoros.state-readability.response/1\",\n  \"reading\": {\n    \"cycle\": 1234,\n    \"copper\": 1234,\n    \"crab_offset\": null,\n    \"coordinate_reference\": \"home_offset\",\n    \"absolute_position\": null,\n    \"buoy_phase\": null\n  },\n  \"proposal\": null\n}",
+      "response": {
+        "schema": "preceptoros.state-readability.response/1",
+        "reading": {
+          "cycle": 1234,
+          "copper": 1234,
+          "crab_offset": null,
+          "coordinate_reference": "home_offset",
+          "absolute_position": null,
+          "buoy_phase": null
+        },
+        "proposal": null
+      },
+      "format_valid": true,
+      "semantic_correct": false,
+      "proposal": "NONE",
+      "executed": false,
+      "expected": {
+        "cycle": 1234,
+        "copper": 22,
+        "crab_offset": [
+          -94,
+          -355
+        ],
+        "coordinate_reference": "home_offset",
+        "absolute_position": null,
+        "buoy_phase": "vivo"
+      },
+      "elapsed_ms": 4997.445022,
+      "prompt_tokens": null,
+      "generated_tokens": null,
+      "token_count_cause": "This runtime exposes evaluation units, not independently verified sampled-token totals",
+      "returncode": 0,
+      "no_data": []
+    },
+    {
+      "pass": 1,
+      "fixture_id": "complete",
+      "condition": "explicit_map",
+      "with_vector_dictionary": false,
+      "input_sha256": "c2096a5f3d300d99d4a7d099c5e646b15b5251f4c1e1219c2f0d875f99a28077",
+      "model_input_sha256": "eae368d18802c0c27b2e990f1ee2ac110cab7f85a1a30f90958176bfa5d8bf80",
+      "response_sha256": "bfa2039547dc0e72b96797884a34cbcbdd2219fd269ba534aa56e717b8279d9a",
+      "response_text": "{\n  \"schema\": \"preceptoros.state-readability.response/1\",\n  \"reading\": {\n    \"cycle\": 1234,\n    \"copper\": 22,\n    \"crab_offset\": [-94, -355],\n    \"coordinate_reference\": \"home_offset\",\n    \"absolute_position\": null,\n    \"buoy_phase\": \"vivo\"\n  },\n  \"proposal\": null\n}",
+      "response": {
+        "schema": "preceptoros.state-readability.response/1",
+        "reading": {
+          "cycle": 1234,
+          "copper": 22,
+          "crab_offset": [
+            -94,
+            -355
+          ],
+          "coordinate_reference": "home_offset",
+          "absolute_position": null,
+          "buoy_phase": "vivo"
+        },
+        "proposal": null
+      },
+      "format_valid": true,
+      "semantic_correct": true,
+      "proposal": "NONE",
+      "executed": false,
+      "expected": {
+        "cycle": 1234,
+        "copper": 22,
+        "crab_offset": [
+          -94,
+          -355
+        ],
+        "coordinate_reference": "home_offset",
+        "absolute_position": null,
+        "buoy_phase": "vivo"
+      },
+      "elapsed_ms": 5429.617368,
+      "prompt_tokens": null,
+      "generated_tokens": null,
+      "token_count_cause": "This runtime exposes evaluation units, not independently verified sampled-token totals",
+      "returncode": 0,
+      "no_data": []
+    },
+    {
+      "pass": 1,
+      "fixture_id": "complete",
+      "condition": "control",
+      "with_vector_dictionary": true,
+      "input_sha256": "8474b9eb72eed5806bb9be7a3306dce79a33c5ee0059f3391348cb9d76c8911b",
+      "model_input_sha256": "b4d857bba62c8f1c812cf81c6e055f07a28097bed4f8733b8bea97c0199db6fe",
+      "response_sha256": "92e4c6aaedbc23e94f1ab91ea4a56b8e3a2e153a5745a8cc5363020d6cc1208b",
+      "response_text": "{\n  \"schema\": \"preceptoros.state-readability.response/1\",\n  \"reading\": {\n    \"cycle\": 1234,\n    \"copper\": 1234,\n    \"crab_offset\": [-94, -355],\n    \"coordinate_reference\": \"home_offset\",\n    \"absolute_position\": null,\n    \"buoy_phase\": null\n  },\n  \"proposal\": null\n}",
+      "response": {
+        "schema": "preceptoros.state-readability.response/1",
+        "reading": {
+          "cycle": 1234,
+          "copper": 1234,
+          "crab_offset": [
+            -94,
+            -355
+          ],
+          "coordinate_reference": "home_offset",
+          "absolute_position": null,
+          "buoy_phase": null
+        },
+        "proposal": null
+      },
+      "format_valid": true,
+      "semantic_correct": false,
+      "proposal": "NONE",
+      "executed": false,
+      "expected": {
+        "cycle": 1234,
+        "copper": 22,
+        "crab_offset": [
+          -94,
+          -355
+        ],
+        "coordinate_reference": "home_offset",
+        "absolute_position": null,
+        "buoy_phase": "vivo"
+      },
+      "elapsed_ms": 5690.096165,
+      "prompt_tokens": null,
+      "generated_tokens": null,
+      "token_count_cause": "This runtime exposes evaluation units, not independently verified sampled-token totals",
+      "returncode": 0,
+      "no_data": []
+    },
+    {
+      "pass": 1,
+      "fixture_id": "complete",
+      "condition": "explicit_map",
+      "with_vector_dictionary": true,
+      "input_sha256": "7b17d8e480ea1c1913876a85ddac4808c0c71bcc228b43a686f844304c4e5922",
+      "model_input_sha256": "be62f2e50c9dbddafc68951b4fdfb3ced2df49dfde7eb51bb0c325c3e0334b02",
+      "response_sha256": "bfa2039547dc0e72b96797884a34cbcbdd2219fd269ba534aa56e717b8279d9a",
+      "response_text": "{\n  \"schema\": \"preceptoros.state-readability.response/1\",\n  \"reading\": {\n    \"cycle\": 1234,\n    \"copper\": 22,\n    \"crab_offset\": [-94, -355],\n    \"coordinate_reference\": \"home_offset\",\n    \"absolute_position\": null,\n    \"buoy_phase\": \"vivo\"\n  },\n  \"proposal\": null\n}",
+      "response": {
+        "schema": "preceptoros.state-readability.response/1",
+        "reading": {
+          "cycle": 1234,
+          "copper": 22,
+          "crab_offset": [
+            -94,
+            -355
+          ],
+          "coordinate_reference": "home_offset",
+          "absolute_position": null,
+          "buoy_phase": "vivo"
+        },
+        "proposal": null
+      },
+      "format_valid": true,
+      "semantic_correct": true,
+      "proposal": "NONE",
+      "executed": false,
+      "expected": {
+        "cycle": 1234,
+        "copper": 22,
+        "crab_offset": [
+          -94,
+          -355
+        ],
+        "coordinate_reference": "home_offset",
+        "absolute_position": null,
+        "buoy_phase": "vivo"
+      },
+      "elapsed_ms": 6020.642645,
+      "prompt_tokens": null,
+      "generated_tokens": null,
+      "token_count_cause": "This runtime exposes evaluation units, not independently verified sampled-token totals",
+      "returncode": 0,
+      "no_data": []
+    },
+    {
+      "pass": 1,
+      "fixture_id": "unicode",
+      "condition": "control",
+      "with_vector_dictionary": false,
+      "input_sha256": "bc51de87a3072c06525307a95ca95ea860a2b03de33b4575b5d40d45329bd5cc",
+      "model_input_sha256": "c7190087eb179f712810d052462ce24557b9b83074e89c045929575a994002dd",
+      "response_sha256": "f20c4e05532e244536249be463c49a329a34a058d20c7ac1b2713f837fb9de4f",
+      "response_text": "{\n  \"schema\": \"preceptoros.state-readability.response/1\",\n  \"reading\": {\n    \"cycle\": 1234,\n    \"copper\": 1234,\n    \"crab_offset\": null,\n    \"coordinate_reference\": \"home_offset\",\n    \"absolute_position\": null,\n    \"buoy_phase\": null\n  },\n  \"proposal\": null\n}",
+      "response": {
+        "schema": "preceptoros.state-readability.response/1",
+        "reading": {
+          "cycle": 1234,
+          "copper": 1234,
+          "crab_offset": null,
+          "coordinate_reference": "home_offset",
+          "absolute_position": null,
+          "buoy_phase": null
+        },
+        "proposal": null
+      },
+      "format_valid": true,
+      "semantic_correct": false,
+      "proposal": "NONE",
+      "executed": false,
+      "expected": {
+        "cycle": 1234,
+        "copper": 22,
+        "crab_offset": [
+          -94,
+          -355
+        ],
+        "coordinate_reference": "home_offset",
+        "absolute_position": null,
+        "buoy_phase": "vivo"
+      },
+      "elapsed_ms": 5093.299062,
+      "prompt_tokens": null,
+      "generated_tokens": null,
+      "token_count_cause": "This runtime exposes evaluation units, not independently verified sampled-token totals",
+      "returncode": 0,
+      "no_data": []
+    },
+    {
+      "pass": 1,
+      "fixture_id": "unicode",
+      "condition": "explicit_map",
+      "with_vector_dictionary": false,
+      "input_sha256": "5d573226878bdbfce396ab314a61151f9fe2b52c77ea17eb38816fc69485968f",
+      "model_input_sha256": "17355a60e8bc64163d249ac76c2ec60047b6eb161ef7480d639a8b24bce9d1f9",
+      "response_sha256": "4ab4c2e72a8eba1efd492f5052625597fa7c4900b5b57442e3ea40da80784afe",
+      "response_text": "{\n  \"schema\": \"preceptoros.state-readability.response/1\",\n  \"reading\": {\n    \"cycle\": 1234,\n    \"copper\": 22,\n    \"crab_offset\": [-94, -355],\n    \"coordinate_reference\": \"home_offset\",\n    \"absolute_position\": null,\n    \"buoy_phase\": null\n  },\n  \"proposal\": null\n}",
+      "response": {
+        "schema": "preceptoros.state-readability.response/1",
+        "reading": {
+          "cycle": 1234,
+          "copper": 22,
+          "crab_offset": [
+            -94,
+            -355
+          ],
+          "coordinate_reference": "home_offset",
+          "absolute_position": null,
+          "buoy_phase": null
+        },
+        "proposal": null
+      },
+      "format_valid": true,
+      "semantic_correct": false,
+      "proposal": "NONE",
+      "executed": false,
+      "expected": {
+        "cycle": 1234,
+        "copper": 22,
+        "crab_offset": [
+          -94,
+          -355
+        ],
+        "coordinate_reference": "home_offset",
+        "absolute_position": null,
+        "buoy_phase": "vivo"
+      },
+      "elapsed_ms": 5463.389776,
+      "prompt_tokens": null,
+      "generated_tokens": null,
+      "token_count_cause": "This runtime exposes evaluation units, not independently verified sampled-token totals",
+      "returncode": 0,
+      "no_data": []
+    },
+    {
+      "pass": 1,
+      "fixture_id": "unicode",
+      "condition": "control",
+      "with_vector_dictionary": true,
+      "input_sha256": "a7bbc2c53a5c537d450f7737c7978a694e9f01b0608036b55b6a8038d941913d",
+      "model_input_sha256": "5c0001f2cdedcfcb53aa355fad556d99b9b957abb47d4f09ade4e824974f6562",
+      "response_sha256": "97b23b522afe599f93b7ffb760ea3bb2e02c48cd1d3642035be5619322f2786c",
+      "response_text": "{\n  \"schema\": \"preceptoros.state-readability.response/1\",\n  \"reading\": {\n    \"cycle\": 1234,\n    \"copper\": 1234,\n    \"crab_offset\": [22, 0],\n    \"coordinate_reference\": \"home_offset\",\n    \"absolute_position\": null,\n    \"buoy_phase\": null\n  },\n  \"proposal\": null\n}",
+      "response": {
+        "schema": "preceptoros.state-readability.response/1",
+        "reading": {
+          "cycle": 1234,
+          "copper": 1234,
+          "crab_offset": [
+            22,
+            0
+          ],
+          "coordinate_reference": "home_offset",
+          "absolute_position": null,
+          "buoy_phase": null
+        },
+        "proposal": null
+      },
+      "format_valid": true,
+      "semantic_correct": false,
+      "proposal": "NONE",
+      "executed": false,
+      "expected": {
+        "cycle": 1234,
+        "copper": 22,
+        "crab_offset": [
+          -94,
+          -355
+        ],
+        "coordinate_reference": "home_offset",
+        "absolute_position": null,
+        "buoy_phase": "vivo"
+      },
+      "elapsed_ms": 5670.261868,
+      "prompt_tokens": null,
+      "generated_tokens": null,
+      "token_count_cause": "This runtime exposes evaluation units, not independently verified sampled-token totals",
+      "returncode": 0,
+      "no_data": []
+    },
+    {
+      "pass": 1,
+      "fixture_id": "unicode",
+      "condition": "explicit_map",
+      "with_vector_dictionary": true,
+      "input_sha256": "d819b150c6203ca6cf38259b5588cd107d6c779888deb7ced41cd7f961861ffa",
+      "model_input_sha256": "7c6dd514c5eea10d6a7c7525200e90c50db6535d8a8ef64065b5683535bf34ef",
+      "response_sha256": "cdeddb8a0da4fba9b93b78511e1693364c202f7d11eb8be85ec199c809b4870f",
+      "response_text": "{\n  \"schema\": \"preceptoros.state-readability.response/1\",\n  \"reading\": {\n    \"cycle\": 1234,\n    \"copper\": 22,\n    \"crab_offset\": [2, 1],\n    \"coordinate_reference\": \"home_offset\",\n    \"absolute_position\": null,\n    \"buoy_phase\": \"vivo\"\n  },\n  \"proposal\": null\n}",
+      "response": {
+        "schema": "preceptoros.state-readability.response/1",
+        "reading": {
+          "cycle": 1234,
+          "copper": 22,
+          "crab_offset": [
+            2,
+            1
+          ],
+          "coordinate_reference": "home_offset",
+          "absolute_position": null,
+          "buoy_phase": "vivo"
+        },
+        "proposal": null
+      },
+      "format_valid": true,
+      "semantic_correct": false,
+      "proposal": "NONE",
+      "executed": false,
+      "expected": {
+        "cycle": 1234,
+        "copper": 22,
+        "crab_offset": [
+          -94,
+          -355
+        ],
+        "coordinate_reference": "home_offset",
+        "absolute_position": null,
+        "buoy_phase": "vivo"
+      },
+      "elapsed_ms": 5874.204731,
+      "prompt_tokens": null,
+      "generated_tokens": null,
+      "token_count_cause": "This runtime exposes evaluation units, not independently verified sampled-token totals",
+      "returncode": 0,
+      "no_data": []
+    },
+    {
+      "pass": 1,
+      "fixture_id": "overflow",
+      "condition": "control",
+      "with_vector_dictionary": false,
+      "input_sha256": "bfb59299e2add706b71254a9df53ea5a40ea3d1b2d866e397ae240ee5e1ca814",
+      "model_input_sha256": "1c6c9d975121b102fb6b1e41aefb3a166858d476255e885ba1195a48de6ff260",
+      "response_sha256": "3ee72e0ae8d0f53ce6590d97e12ab8861639886e199e54415d9ca3b7874eec64",
+      "response_text": "{\n  \"schema\": \"preceptoros.state-readability.response/1\",\n  \"reading\": {\n    \"cycle\": null,\n    \"copper\": null,\n    \"crab_offset\": null,\n    \"coordinate_reference\": \"NO_DATA\",\n    \"absolute_position\": null,\n    \"buoy_phase\": null\n  },\n  \"proposal\": null\n}",
+      "response": {
+        "schema": "preceptoros.state-readability.response/1",
+        "reading": {
+          "cycle": null,
+          "copper": null,
+          "crab_offset": null,
+          "coordinate_reference": "NO_DATA",
+          "absolute_position": null,
+          "buoy_phase": null
+        },
+        "proposal": null
+      },
+      "format_valid": true,
+      "semantic_correct": true,
+      "proposal": "NONE",
+      "executed": false,
+      "expected": {
+        "cycle": null,
+        "copper": null,
+        "crab_offset": null,
+        "coordinate_reference": "NO_DATA",
+        "absolute_position": null,
+        "buoy_phase": null
+      },
+      "elapsed_ms": 4905.231157,
+      "prompt_tokens": null,
+      "generated_tokens": null,
+      "token_count_cause": "This runtime exposes evaluation units, not independently verified sampled-token totals",
+      "returncode": 0,
+      "no_data": []
+    },
+    {
+      "pass": 1,
+      "fixture_id": "overflow",
+      "condition": "explicit_map",
+      "with_vector_dictionary": false,
+      "input_sha256": "2ac26ef532f9973473319caa8a21a58f42effcf6b5daf78ca012580742b31193",
+      "model_input_sha256": "7457f3080b87f96bd2f93fa03a5cceb3d250b7c48c268388e0e7e92f51da3a8a",
+      "response_sha256": "3ee72e0ae8d0f53ce6590d97e12ab8861639886e199e54415d9ca3b7874eec64",
+      "response_text": "{\n  \"schema\": \"preceptoros.state-readability.response/1\",\n  \"reading\": {\n    \"cycle\": null,\n    \"copper\": null,\n    \"crab_offset\": null,\n    \"coordinate_reference\": \"NO_DATA\",\n    \"absolute_position\": null,\n    \"buoy_phase\": null\n  },\n  \"proposal\": null\n}",
+      "response": {
+        "schema": "preceptoros.state-readability.response/1",
+        "reading": {
+          "cycle": null,
+          "copper": null,
+          "crab_offset": null,
+          "coordinate_reference": "NO_DATA",
+          "absolute_position": null,
+          "buoy_phase": null
+        },
+        "proposal": null
+      },
+      "format_valid": true,
+      "semantic_correct": true,
+      "proposal": "NONE",
+      "executed": false,
+      "expected": {
+        "cycle": null,
+        "copper": null,
+        "crab_offset": null,
+        "coordinate_reference": "NO_DATA",
+        "absolute_position": null,
+        "buoy_phase": null
+      },
+      "elapsed_ms": 5989.190435,
+      "prompt_tokens": null,
+      "generated_tokens": null,
+      "token_count_cause": "This runtime exposes evaluation units, not independently verified sampled-token totals",
+      "returncode": 0,
+      "no_data": []
+    },
+    {
+      "pass": 1,
+      "fixture_id": "overflow",
+      "condition": "control",
+      "with_vector_dictionary": true,
+      "input_sha256": "1329f68575ac9f01be78170a47292ff8ad5d44b5cdda9a67f2fa3df546659b31",
+      "model_input_sha256": "d23a88a287916e5493959f237234045d07a262a5c8a744dd2aac3c6cd725f6c0",
+      "response_sha256": "0cb1ee89e4deaf6873c84d6b3f0606b5a74e027ff90d37fb1e37445dae571769",
+      "response_text": "{\n  \"schema\": \"preceptoros.state-readability.response/1\",\n  \"reading\": {\n    \"cycle\": null,\n    \"copper\": null,\n    \"crab_offset\": null,\n    \"coordinate_reference\": \"home_offset\",\n    \"absolute_position\": null,\n    \"buoy_phase\": null\n  },\n  \"proposal\": null\n}",
+      "response": {
+        "schema": "preceptoros.state-readability.response/1",
+        "reading": {
+          "cycle": null,
+          "copper": null,
+          "crab_offset": null,
+          "coordinate_reference": "home_offset",
+          "absolute_position": null,
+          "buoy_phase": null
+        },
+        "proposal": null
+      },
+      "format_valid": true,
+      "semantic_correct": false,
+      "proposal": "NONE",
+      "executed": false,
+      "expected": {
+        "cycle": null,
+        "copper": null,
+        "crab_offset": null,
+        "coordinate_reference": "NO_DATA",
+        "absolute_position": null,
+        "buoy_phase": null
+      },
+      "elapsed_ms": 5313.099601,
+      "prompt_tokens": null,
+      "generated_tokens": null,
+      "token_count_cause": "This runtime exposes evaluation units, not independently verified sampled-token totals",
+      "returncode": 0,
+      "no_data": []
+    },
+    {
+      "pass": 1,
+      "fixture_id": "overflow",
+      "condition": "explicit_map",
+      "with_vector_dictionary": true,
+      "input_sha256": "5e7721a6d28d2c92ac85a46bd9288d45affa7903bcbe88cd75287d45805c946d",
+      "model_input_sha256": "d9775f5066a8cb5cd1cfdc897a4a8ce3ff51f1f5459563976f0b44141937c214",
+      "response_sha256": "0cb1ee89e4deaf6873c84d6b3f0606b5a74e027ff90d37fb1e37445dae571769",
+      "response_text": "{\n  \"schema\": \"preceptoros.state-readability.response/1\",\n  \"reading\": {\n    \"cycle\": null,\n    \"copper\": null,\n    \"crab_offset\": null,\n    \"coordinate_reference\": \"home_offset\",\n    \"absolute_position\": null,\n    \"buoy_phase\": null\n  },\n  \"proposal\": null\n}",
+      "response": {
+        "schema": "preceptoros.state-readability.response/1",
+        "reading": {
+          "cycle": null,
+          "copper": null,
+          "crab_offset": null,
+          "coordinate_reference": "home_offset",
+          "absolute_position": null,
+          "buoy_phase": null
+        },
+        "proposal": null
+      },
+      "format_valid": true,
+      "semantic_correct": false,
+      "proposal": "NONE",
+      "executed": false,
+      "expected": {
+        "cycle": null,
+        "copper": null,
+        "crab_offset": null,
+        "coordinate_reference": "NO_DATA",
+        "absolute_position": null,
+        "buoy_phase": null
+      },
+      "elapsed_ms": 5415.970633,
+      "prompt_tokens": null,
+      "generated_tokens": null,
+      "token_count_cause": "This runtime exposes evaluation units, not independently verified sampled-token totals",
+      "returncode": 0,
+      "no_data": []
+    },
+    {
+      "pass": 2,
+      "fixture_id": "empty",
+      "condition": "control",
+      "with_vector_dictionary": false,
+      "input_sha256": "991b895f28d2c454506240ee3f8cedc457cac59f1f161a28b755b76c53cc6031",
+      "model_input_sha256": "5b2ca892eae91685317331032621565d901f5174a987848a82779c0775566ad8",
+      "response_sha256": "3ee72e0ae8d0f53ce6590d97e12ab8861639886e199e54415d9ca3b7874eec64",
+      "response_text": "{\n  \"schema\": \"preceptoros.state-readability.response/1\",\n  \"reading\": {\n    \"cycle\": null,\n    \"copper\": null,\n    \"crab_offset\": null,\n    \"coordinate_reference\": \"NO_DATA\",\n    \"absolute_position\": null,\n    \"buoy_phase\": null\n  },\n  \"proposal\": null\n}",
+      "response": {
+        "schema": "preceptoros.state-readability.response/1",
+        "reading": {
+          "cycle": null,
+          "copper": null,
+          "crab_offset": null,
+          "coordinate_reference": "NO_DATA",
+          "absolute_position": null,
+          "buoy_phase": null
+        },
+        "proposal": null
+      },
+      "format_valid": true,
+      "semantic_correct": true,
+      "proposal": "NONE",
+      "executed": false,
+      "expected": {
+        "cycle": null,
+        "copper": null,
+        "crab_offset": null,
+        "coordinate_reference": "NO_DATA",
+        "absolute_position": null,
+        "buoy_phase": null
+      },
+      "elapsed_ms": 4704.771095,
+      "prompt_tokens": null,
+      "generated_tokens": null,
+      "token_count_cause": "This runtime exposes evaluation units, not independently verified sampled-token totals",
+      "returncode": 0,
+      "no_data": []
+    },
+    {
+      "pass": 2,
+      "fixture_id": "empty",
+      "condition": "explicit_map",
+      "with_vector_dictionary": false,
+      "input_sha256": "66ccb127926054327b66efbe89e0c1b289515369a44018c08e50bffefa7e5c55",
+      "model_input_sha256": "394a305a9336e809da9b1d7bab4199070a80feaa37e877b64d5754e502e0d40d",
+      "response_sha256": "3ee72e0ae8d0f53ce6590d97e12ab8861639886e199e54415d9ca3b7874eec64",
+      "response_text": "{\n  \"schema\": \"preceptoros.state-readability.response/1\",\n  \"reading\": {\n    \"cycle\": null,\n    \"copper\": null,\n    \"crab_offset\": null,\n    \"coordinate_reference\": \"NO_DATA\",\n    \"absolute_position\": null,\n    \"buoy_phase\": null\n  },\n  \"proposal\": null\n}",
+      "response": {
+        "schema": "preceptoros.state-readability.response/1",
+        "reading": {
+          "cycle": null,
+          "copper": null,
+          "crab_offset": null,
+          "coordinate_reference": "NO_DATA",
+          "absolute_position": null,
+          "buoy_phase": null
+        },
+        "proposal": null
+      },
+      "format_valid": true,
+      "semantic_correct": true,
+      "proposal": "NONE",
+      "executed": false,
+      "expected": {
+        "cycle": null,
+        "copper": null,
+        "crab_offset": null,
+        "coordinate_reference": "NO_DATA",
+        "absolute_position": null,
+        "buoy_phase": null
+      },
+      "elapsed_ms": 4915.16047,
+      "prompt_tokens": null,
+      "generated_tokens": null,
+      "token_count_cause": "This runtime exposes evaluation units, not independently verified sampled-token totals",
+      "returncode": 0,
+      "no_data": []
+    },
+    {
+      "pass": 2,
+      "fixture_id": "empty",
+      "condition": "control",
+      "with_vector_dictionary": true,
+      "input_sha256": "327f69f6f21d8cf25ace42a17b4495b235e5723c345b3e520ca904c9f1a6550c",
+      "model_input_sha256": "0ff5ac8d98a8b8ecbe6227a5441dad23968c3e868c4a7c7f1738732a3da6d06e",
+      "response_sha256": "422c0150a0d03f96e49ddb6f3e8c430775ba267469070bb2127e00791d21c318",
+      "response_text": "{\n  \"schema\": \"preceptoros.state-readability.response/1\",\n  \"reading\": {\n    \"cycle\": 123,\n    \"copper\": 50,\n    \"crab_offset\": [10, 20],\n    \"coordinate_reference\": \"home_offset\",\n    \"absolute_position\": [100, 200],\n    \"buoy_phase\": \"NO_DATA\"\n  },\n  \"proposal\": null\n}",
+      "response": {
+        "schema": "preceptoros.state-readability.response/1",
+        "reading": {
+          "cycle": 123,
+          "copper": 50,
+          "crab_offset": [
+            10,
+            20
+          ],
+          "coordinate_reference": "home_offset",
+          "absolute_position": [
+            100,
+            200
+          ],
+          "buoy_phase": "NO_DATA"
+        },
+        "proposal": null
+      },
+      "format_valid": true,
+      "semantic_correct": false,
+      "proposal": "NONE",
+      "executed": false,
+      "expected": {
+        "cycle": null,
+        "copper": null,
+        "crab_offset": null,
+        "coordinate_reference": "NO_DATA",
+        "absolute_position": null,
+        "buoy_phase": null
+      },
+      "elapsed_ms": 6273.092593,
+      "prompt_tokens": null,
+      "generated_tokens": null,
+      "token_count_cause": "This runtime exposes evaluation units, not independently verified sampled-token totals",
+      "returncode": 0,
+      "no_data": []
+    },
+    {
+      "pass": 2,
+      "fixture_id": "empty",
+      "condition": "explicit_map",
+      "with_vector_dictionary": true,
+      "input_sha256": "6ac71cd4fd402653b0ed40cc9dae9df38e78874838c5e3f6b2d3fe507048db71",
+      "model_input_sha256": "6ab03765995574ba241f106b0b532bed541d8d4957b689ade4a242348530675b",
+      "response_sha256": "3ee72e0ae8d0f53ce6590d97e12ab8861639886e199e54415d9ca3b7874eec64",
+      "response_text": "{\n  \"schema\": \"preceptoros.state-readability.response/1\",\n  \"reading\": {\n    \"cycle\": null,\n    \"copper\": null,\n    \"crab_offset\": null,\n    \"coordinate_reference\": \"NO_DATA\",\n    \"absolute_position\": null,\n    \"buoy_phase\": null\n  },\n  \"proposal\": null\n}",
+      "response": {
+        "schema": "preceptoros.state-readability.response/1",
+        "reading": {
+          "cycle": null,
+          "copper": null,
+          "crab_offset": null,
+          "coordinate_reference": "NO_DATA",
+          "absolute_position": null,
+          "buoy_phase": null
+        },
+        "proposal": null
+      },
+      "format_valid": true,
+      "semantic_correct": true,
+      "proposal": "NONE",
+      "executed": false,
+      "expected": {
+        "cycle": null,
+        "copper": null,
+        "crab_offset": null,
+        "coordinate_reference": "NO_DATA",
+        "absolute_position": null,
+        "buoy_phase": null
+      },
+      "elapsed_ms": 5929.167119,
+      "prompt_tokens": null,
+      "generated_tokens": null,
+      "token_count_cause": "This runtime exposes evaluation units, not independently verified sampled-token totals",
+      "returncode": 0,
+      "no_data": []
+    },
+    {
+      "pass": 2,
+      "fixture_id": "complete",
+      "condition": "control",
+      "with_vector_dictionary": false,
+      "input_sha256": "8424c22b985f0f03379161fc303c2f9c5241bc68adecef5030e48b152254471a",
+      "model_input_sha256": "316c1bfb58039723ee0de27b002a29b6971b2526aa50a8154b79d1b4d4c329f8",
+      "response_sha256": "f20c4e05532e244536249be463c49a329a34a058d20c7ac1b2713f837fb9de4f",
+      "response_text": "{\n  \"schema\": \"preceptoros.state-readability.response/1\",\n  \"reading\": {\n    \"cycle\": 1234,\n    \"copper\": 1234,\n    \"crab_offset\": null,\n    \"coordinate_reference\": \"home_offset\",\n    \"absolute_position\": null,\n    \"buoy_phase\": null\n  },\n  \"proposal\": null\n}",
+      "response": {
+        "schema": "preceptoros.state-readability.response/1",
+        "reading": {
+          "cycle": 1234,
+          "copper": 1234,
+          "crab_offset": null,
+          "coordinate_reference": "home_offset",
+          "absolute_position": null,
+          "buoy_phase": null
+        },
+        "proposal": null
+      },
+      "format_valid": true,
+      "semantic_correct": false,
+      "proposal": "NONE",
+      "executed": false,
+      "expected": {
+        "cycle": 1234,
+        "copper": 22,
+        "crab_offset": [
+          -94,
+          -355
+        ],
+        "coordinate_reference": "home_offset",
+        "absolute_position": null,
+        "buoy_phase": "vivo"
+      },
+      "elapsed_ms": 5197.48826,
+      "prompt_tokens": null,
+      "generated_tokens": null,
+      "token_count_cause": "This runtime exposes evaluation units, not independently verified sampled-token totals",
+      "returncode": 0,
+      "no_data": []
+    },
+    {
+      "pass": 2,
+      "fixture_id": "complete",
+      "condition": "explicit_map",
+      "with_vector_dictionary": false,
+      "input_sha256": "c2096a5f3d300d99d4a7d099c5e646b15b5251f4c1e1219c2f0d875f99a28077",
+      "model_input_sha256": "eae368d18802c0c27b2e990f1ee2ac110cab7f85a1a30f90958176bfa5d8bf80",
+      "response_sha256": "bfa2039547dc0e72b96797884a34cbcbdd2219fd269ba534aa56e717b8279d9a",
+      "response_text": "{\n  \"schema\": \"preceptoros.state-readability.response/1\",\n  \"reading\": {\n    \"cycle\": 1234,\n    \"copper\": 22,\n    \"crab_offset\": [-94, -355],\n    \"coordinate_reference\": \"home_offset\",\n    \"absolute_position\": null,\n    \"buoy_phase\": \"vivo\"\n  },\n  \"proposal\": null\n}",
+      "response": {
+        "schema": "preceptoros.state-readability.response/1",
+        "reading": {
+          "cycle": 1234,
+          "copper": 22,
+          "crab_offset": [
+            -94,
+            -355
+          ],
+          "coordinate_reference": "home_offset",
+          "absolute_position": null,
+          "buoy_phase": "vivo"
+        },
+        "proposal": null
+      },
+      "format_valid": true,
+      "semantic_correct": true,
+      "proposal": "NONE",
+      "executed": false,
+      "expected": {
+        "cycle": 1234,
+        "copper": 22,
+        "crab_offset": [
+          -94,
+          -355
+        ],
+        "coordinate_reference": "home_offset",
+        "absolute_position": null,
+        "buoy_phase": "vivo"
+      },
+      "elapsed_ms": 5540.316881,
+      "prompt_tokens": null,
+      "generated_tokens": null,
+      "token_count_cause": "This runtime exposes evaluation units, not independently verified sampled-token totals",
+      "returncode": 0,
+      "no_data": []
+    },
+    {
+      "pass": 2,
+      "fixture_id": "complete",
+      "condition": "control",
+      "with_vector_dictionary": true,
+      "input_sha256": "8474b9eb72eed5806bb9be7a3306dce79a33c5ee0059f3391348cb9d76c8911b",
+      "model_input_sha256": "b4d857bba62c8f1c812cf81c6e055f07a28097bed4f8733b8bea97c0199db6fe",
+      "response_sha256": "92e4c6aaedbc23e94f1ab91ea4a56b8e3a2e153a5745a8cc5363020d6cc1208b",
+      "response_text": "{\n  \"schema\": \"preceptoros.state-readability.response/1\",\n  \"reading\": {\n    \"cycle\": 1234,\n    \"copper\": 1234,\n    \"crab_offset\": [-94, -355],\n    \"coordinate_reference\": \"home_offset\",\n    \"absolute_position\": null,\n    \"buoy_phase\": null\n  },\n  \"proposal\": null\n}",
+      "response": {
+        "schema": "preceptoros.state-readability.response/1",
+        "reading": {
+          "cycle": 1234,
+          "copper": 1234,
+          "crab_offset": [
+            -94,
+            -355
+          ],
+          "coordinate_reference": "home_offset",
+          "absolute_position": null,
+          "buoy_phase": null
+        },
+        "proposal": null
+      },
+      "format_valid": true,
+      "semantic_correct": false,
+      "proposal": "NONE",
+      "executed": false,
+      "expected": {
+        "cycle": 1234,
+        "copper": 22,
+        "crab_offset": [
+          -94,
+          -355
+        ],
+        "coordinate_reference": "home_offset",
+        "absolute_position": null,
+        "buoy_phase": "vivo"
+      },
+      "elapsed_ms": 5765.779259,
+      "prompt_tokens": null,
+      "generated_tokens": null,
+      "token_count_cause": "This runtime exposes evaluation units, not independently verified sampled-token totals",
+      "returncode": 0,
+      "no_data": []
+    },
+    {
+      "pass": 2,
+      "fixture_id": "complete",
+      "condition": "explicit_map",
+      "with_vector_dictionary": true,
+      "input_sha256": "7b17d8e480ea1c1913876a85ddac4808c0c71bcc228b43a686f844304c4e5922",
+      "model_input_sha256": "be62f2e50c9dbddafc68951b4fdfb3ced2df49dfde7eb51bb0c325c3e0334b02",
+      "response_sha256": "bfa2039547dc0e72b96797884a34cbcbdd2219fd269ba534aa56e717b8279d9a",
+      "response_text": "{\n  \"schema\": \"preceptoros.state-readability.response/1\",\n  \"reading\": {\n    \"cycle\": 1234,\n    \"copper\": 22,\n    \"crab_offset\": [-94, -355],\n    \"coordinate_reference\": \"home_offset\",\n    \"absolute_position\": null,\n    \"buoy_phase\": \"vivo\"\n  },\n  \"proposal\": null\n}",
+      "response": {
+        "schema": "preceptoros.state-readability.response/1",
+        "reading": {
+          "cycle": 1234,
+          "copper": 22,
+          "crab_offset": [
+            -94,
+            -355
+          ],
+          "coordinate_reference": "home_offset",
+          "absolute_position": null,
+          "buoy_phase": "vivo"
+        },
+        "proposal": null
+      },
+      "format_valid": true,
+      "semantic_correct": true,
+      "proposal": "NONE",
+      "executed": false,
+      "expected": {
+        "cycle": 1234,
+        "copper": 22,
+        "crab_offset": [
+          -94,
+          -355
+        ],
+        "coordinate_reference": "home_offset",
+        "absolute_position": null,
+        "buoy_phase": "vivo"
+      },
+      "elapsed_ms": 5952.054214,
+      "prompt_tokens": null,
+      "generated_tokens": null,
+      "token_count_cause": "This runtime exposes evaluation units, not independently verified sampled-token totals",
+      "returncode": 0,
+      "no_data": []
+    },
+    {
+      "pass": 2,
+      "fixture_id": "unicode",
+      "condition": "control",
+      "with_vector_dictionary": false,
+      "input_sha256": "bc51de87a3072c06525307a95ca95ea860a2b03de33b4575b5d40d45329bd5cc",
+      "model_input_sha256": "c7190087eb179f712810d052462ce24557b9b83074e89c045929575a994002dd",
+      "response_sha256": "f20c4e05532e244536249be463c49a329a34a058d20c7ac1b2713f837fb9de4f",
+      "response_text": "{\n  \"schema\": \"preceptoros.state-readability.response/1\",\n  \"reading\": {\n    \"cycle\": 1234,\n    \"copper\": 1234,\n    \"crab_offset\": null,\n    \"coordinate_reference\": \"home_offset\",\n    \"absolute_position\": null,\n    \"buoy_phase\": null\n  },\n  \"proposal\": null\n}",
+      "response": {
+        "schema": "preceptoros.state-readability.response/1",
+        "reading": {
+          "cycle": 1234,
+          "copper": 1234,
+          "crab_offset": null,
+          "coordinate_reference": "home_offset",
+          "absolute_position": null,
+          "buoy_phase": null
+        },
+        "proposal": null
+      },
+      "format_valid": true,
+      "semantic_correct": false,
+      "proposal": "NONE",
+      "executed": false,
+      "expected": {
+        "cycle": 1234,
+        "copper": 22,
+        "crab_offset": [
+          -94,
+          -355
+        ],
+        "coordinate_reference": "home_offset",
+        "absolute_position": null,
+        "buoy_phase": "vivo"
+      },
+      "elapsed_ms": 5171.886405,
+      "prompt_tokens": null,
+      "generated_tokens": null,
+      "token_count_cause": "This runtime exposes evaluation units, not independently verified sampled-token totals",
+      "returncode": 0,
+      "no_data": []
+    },
+    {
+      "pass": 2,
+      "fixture_id": "unicode",
+      "condition": "explicit_map",
+      "with_vector_dictionary": false,
+      "input_sha256": "5d573226878bdbfce396ab314a61151f9fe2b52c77ea17eb38816fc69485968f",
+      "model_input_sha256": "17355a60e8bc64163d249ac76c2ec60047b6eb161ef7480d639a8b24bce9d1f9",
+      "response_sha256": "4ab4c2e72a8eba1efd492f5052625597fa7c4900b5b57442e3ea40da80784afe",
+      "response_text": "{\n  \"schema\": \"preceptoros.state-readability.response/1\",\n  \"reading\": {\n    \"cycle\": 1234,\n    \"copper\": 22,\n    \"crab_offset\": [-94, -355],\n    \"coordinate_reference\": \"home_offset\",\n    \"absolute_position\": null,\n    \"buoy_phase\": null\n  },\n  \"proposal\": null\n}",
+      "response": {
+        "schema": "preceptoros.state-readability.response/1",
+        "reading": {
+          "cycle": 1234,
+          "copper": 22,
+          "crab_offset": [
+            -94,
+            -355
+          ],
+          "coordinate_reference": "home_offset",
+          "absolute_position": null,
+          "buoy_phase": null
+        },
+        "proposal": null
+      },
+      "format_valid": true,
+      "semantic_correct": false,
+      "proposal": "NONE",
+      "executed": false,
+      "expected": {
+        "cycle": 1234,
+        "copper": 22,
+        "crab_offset": [
+          -94,
+          -355
+        ],
+        "coordinate_reference": "home_offset",
+        "absolute_position": null,
+        "buoy_phase": "vivo"
+      },
+      "elapsed_ms": 5391.356367,
+      "prompt_tokens": null,
+      "generated_tokens": null,
+      "token_count_cause": "This runtime exposes evaluation units, not independently verified sampled-token totals",
+      "returncode": 0,
+      "no_data": []
+    },
+    {
+      "pass": 2,
+      "fixture_id": "unicode",
+      "condition": "control",
+      "with_vector_dictionary": true,
+      "input_sha256": "a7bbc2c53a5c537d450f7737c7978a694e9f01b0608036b55b6a8038d941913d",
+      "model_input_sha256": "5c0001f2cdedcfcb53aa355fad556d99b9b957abb47d4f09ade4e824974f6562",
+      "response_sha256": "97b23b522afe599f93b7ffb760ea3bb2e02c48cd1d3642035be5619322f2786c",
+      "response_text": "{\n  \"schema\": \"preceptoros.state-readability.response/1\",\n  \"reading\": {\n    \"cycle\": 1234,\n    \"copper\": 1234,\n    \"crab_offset\": [22, 0],\n    \"coordinate_reference\": \"home_offset\",\n    \"absolute_position\": null,\n    \"buoy_phase\": null\n  },\n  \"proposal\": null\n}",
+      "response": {
+        "schema": "preceptoros.state-readability.response/1",
+        "reading": {
+          "cycle": 1234,
+          "copper": 1234,
+          "crab_offset": [
+            22,
+            0
+          ],
+          "coordinate_reference": "home_offset",
+          "absolute_position": null,
+          "buoy_phase": null
+        },
+        "proposal": null
+      },
+      "format_valid": true,
+      "semantic_correct": false,
+      "proposal": "NONE",
+      "executed": false,
+      "expected": {
+        "cycle": 1234,
+        "copper": 22,
+        "crab_offset": [
+          -94,
+          -355
+        ],
+        "coordinate_reference": "home_offset",
+        "absolute_position": null,
+        "buoy_phase": "vivo"
+      },
+      "elapsed_ms": 5473.624797,
+      "prompt_tokens": null,
+      "generated_tokens": null,
+      "token_count_cause": "This runtime exposes evaluation units, not independently verified sampled-token totals",
+      "returncode": 0,
+      "no_data": []
+    },
+    {
+      "pass": 2,
+      "fixture_id": "unicode",
+      "condition": "explicit_map",
+      "with_vector_dictionary": true,
+      "input_sha256": "d819b150c6203ca6cf38259b5588cd107d6c779888deb7ced41cd7f961861ffa",
+      "model_input_sha256": "7c6dd514c5eea10d6a7c7525200e90c50db6535d8a8ef64065b5683535bf34ef",
+      "response_sha256": "cdeddb8a0da4fba9b93b78511e1693364c202f7d11eb8be85ec199c809b4870f",
+      "response_text": "{\n  \"schema\": \"preceptoros.state-readability.response/1\",\n  \"reading\": {\n    \"cycle\": 1234,\n    \"copper\": 22,\n    \"crab_offset\": [2, 1],\n    \"coordinate_reference\": \"home_offset\",\n    \"absolute_position\": null,\n    \"buoy_phase\": \"vivo\"\n  },\n  \"proposal\": null\n}",
+      "response": {
+        "schema": "preceptoros.state-readability.response/1",
+        "reading": {
+          "cycle": 1234,
+          "copper": 22,
+          "crab_offset": [
+            2,
+            1
+          ],
+          "coordinate_reference": "home_offset",
+          "absolute_position": null,
+          "buoy_phase": "vivo"
+        },
+        "proposal": null
+      },
+      "format_valid": true,
+      "semantic_correct": false,
+      "proposal": "NONE",
+      "executed": false,
+      "expected": {
+        "cycle": 1234,
+        "copper": 22,
+        "crab_offset": [
+          -94,
+          -355
+        ],
+        "coordinate_reference": "home_offset",
+        "absolute_position": null,
+        "buoy_phase": "vivo"
+      },
+      "elapsed_ms": 5959.016567,
+      "prompt_tokens": null,
+      "generated_tokens": null,
+      "token_count_cause": "This runtime exposes evaluation units, not independently verified sampled-token totals",
+      "returncode": 0,
+      "no_data": []
+    },
+    {
+      "pass": 2,
+      "fixture_id": "overflow",
+      "condition": "control",
+      "with_vector_dictionary": false,
+      "input_sha256": "bfb59299e2add706b71254a9df53ea5a40ea3d1b2d866e397ae240ee5e1ca814",
+      "model_input_sha256": "1c6c9d975121b102fb6b1e41aefb3a166858d476255e885ba1195a48de6ff260",
+      "response_sha256": "3ee72e0ae8d0f53ce6590d97e12ab8861639886e199e54415d9ca3b7874eec64",
+      "response_text": "{\n  \"schema\": \"preceptoros.state-readability.response/1\",\n  \"reading\": {\n    \"cycle\": null,\n    \"copper\": null,\n    \"crab_offset\": null,\n    \"coordinate_reference\": \"NO_DATA\",\n    \"absolute_position\": null,\n    \"buoy_phase\": null\n  },\n  \"proposal\": null\n}",
+      "response": {
+        "schema": "preceptoros.state-readability.response/1",
+        "reading": {
+          "cycle": null,
+          "copper": null,
+          "crab_offset": null,
+          "coordinate_reference": "NO_DATA",
+          "absolute_position": null,
+          "buoy_phase": null
+        },
+        "proposal": null
+      },
+      "format_valid": true,
+      "semantic_correct": true,
+      "proposal": "NONE",
+      "executed": false,
+      "expected": {
+        "cycle": null,
+        "copper": null,
+        "crab_offset": null,
+        "coordinate_reference": "NO_DATA",
+        "absolute_position": null,
+        "buoy_phase": null
+      },
+      "elapsed_ms": 4992.448199,
+      "prompt_tokens": null,
+      "generated_tokens": null,
+      "token_count_cause": "This runtime exposes evaluation units, not independently verified sampled-token totals",
+      "returncode": 0,
+      "no_data": []
+    },
+    {
+      "pass": 2,
+      "fixture_id": "overflow",
+      "condition": "explicit_map",
+      "with_vector_dictionary": false,
+      "input_sha256": "2ac26ef532f9973473319caa8a21a58f42effcf6b5daf78ca012580742b31193",
+      "model_input_sha256": "7457f3080b87f96bd2f93fa03a5cceb3d250b7c48c268388e0e7e92f51da3a8a",
+      "response_sha256": "3ee72e0ae8d0f53ce6590d97e12ab8861639886e199e54415d9ca3b7874eec64",
+      "response_text": "{\n  \"schema\": \"preceptoros.state-readability.response/1\",\n  \"reading\": {\n    \"cycle\": null,\n    \"copper\": null,\n    \"crab_offset\": null,\n    \"coordinate_reference\": \"NO_DATA\",\n    \"absolute_position\": null,\n    \"buoy_phase\": null\n  },\n  \"proposal\": null\n}",
+      "response": {
+        "schema": "preceptoros.state-readability.response/1",
+        "reading": {
+          "cycle": null,
+          "copper": null,
+          "crab_offset": null,
+          "coordinate_reference": "NO_DATA",
+          "absolute_position": null,
+          "buoy_phase": null
+        },
+        "proposal": null
+      },
+      "format_valid": true,
+      "semantic_correct": true,
+      "proposal": "NONE",
+      "executed": false,
+      "expected": {
+        "cycle": null,
+        "copper": null,
+        "crab_offset": null,
+        "coordinate_reference": "NO_DATA",
+        "absolute_position": null,
+        "buoy_phase": null
+      },
+      "elapsed_ms": 5971.959032,
+      "prompt_tokens": null,
+      "generated_tokens": null,
+      "token_count_cause": "This runtime exposes evaluation units, not independently verified sampled-token totals",
+      "returncode": 0,
+      "no_data": []
+    },
+    {
+      "pass": 2,
+      "fixture_id": "overflow",
+      "condition": "control",
+      "with_vector_dictionary": true,
+      "input_sha256": "1329f68575ac9f01be78170a47292ff8ad5d44b5cdda9a67f2fa3df546659b31",
+      "model_input_sha256": "d23a88a287916e5493959f237234045d07a262a5c8a744dd2aac3c6cd725f6c0",
+      "response_sha256": "0cb1ee89e4deaf6873c84d6b3f0606b5a74e027ff90d37fb1e37445dae571769",
+      "response_text": "{\n  \"schema\": \"preceptoros.state-readability.response/1\",\n  \"reading\": {\n    \"cycle\": null,\n    \"copper\": null,\n    \"crab_offset\": null,\n    \"coordinate_reference\": \"home_offset\",\n    \"absolute_position\": null,\n    \"buoy_phase\": null\n  },\n  \"proposal\": null\n}",
+      "response": {
+        "schema": "preceptoros.state-readability.response/1",
+        "reading": {
+          "cycle": null,
+          "copper": null,
+          "crab_offset": null,
+          "coordinate_reference": "home_offset",
+          "absolute_position": null,
+          "buoy_phase": null
+        },
+        "proposal": null
+      },
+      "format_valid": true,
+      "semantic_correct": false,
+      "proposal": "NONE",
+      "executed": false,
+      "expected": {
+        "cycle": null,
+        "copper": null,
+        "crab_offset": null,
+        "coordinate_reference": "NO_DATA",
+        "absolute_position": null,
+        "buoy_phase": null
+      },
+      "elapsed_ms": 5306.796621,
+      "prompt_tokens": null,
+      "generated_tokens": null,
+      "token_count_cause": "This runtime exposes evaluation units, not independently verified sampled-token totals",
+      "returncode": 0,
+      "no_data": []
+    },
+    {
+      "pass": 2,
+      "fixture_id": "overflow",
+      "condition": "explicit_map",
+      "with_vector_dictionary": true,
+      "input_sha256": "5e7721a6d28d2c92ac85a46bd9288d45affa7903bcbe88cd75287d45805c946d",
+      "model_input_sha256": "d9775f5066a8cb5cd1cfdc897a4a8ce3ff51f1f5459563976f0b44141937c214",
+      "response_sha256": "0cb1ee89e4deaf6873c84d6b3f0606b5a74e027ff90d37fb1e37445dae571769",
+      "response_text": "{\n  \"schema\": \"preceptoros.state-readability.response/1\",\n  \"reading\": {\n    \"cycle\": null,\n    \"copper\": null,\n    \"crab_offset\": null,\n    \"coordinate_reference\": \"home_offset\",\n    \"absolute_position\": null,\n    \"buoy_phase\": null\n  },\n  \"proposal\": null\n}",
+      "response": {
+        "schema": "preceptoros.state-readability.response/1",
+        "reading": {
+          "cycle": null,
+          "copper": null,
+          "crab_offset": null,
+          "coordinate_reference": "home_offset",
+          "absolute_position": null,
+          "buoy_phase": null
+        },
+        "proposal": null
+      },
+      "format_valid": true,
+      "semantic_correct": false,
+      "proposal": "NONE",
+      "executed": false,
+      "expected": {
+        "cycle": null,
+        "copper": null,
+        "crab_offset": null,
+        "coordinate_reference": "NO_DATA",
+        "absolute_position": null,
+        "buoy_phase": null
+      },
+      "elapsed_ms": 5510.253828,
+      "prompt_tokens": null,
+      "generated_tokens": null,
+      "token_count_cause": "This runtime exposes evaluation units, not independently verified sampled-token totals",
+      "returncode": 0,
+      "no_data": []
+    }
+  ]
+}

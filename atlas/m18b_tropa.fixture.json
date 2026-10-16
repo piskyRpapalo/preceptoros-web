@@ -1,0 +1,9 @@
+{
+  "esquema": "atlas.m18b.tropa/1",
+  "semilla": "f8f7efb6a1b32b0878d0a7bb5a588a3d20844971bdd7aa0f157c1a822e9597e0",
+  "tc": "tc4",
+  "aristas": 7,
+  "rareza": "magico",
+  "armónicos": [[1, 24, 24, 0], [-6, 16, 16, 44], [15, 4, 4, 40], [-20, 1, 1, 4]],
+  "armónicos_sha256": "85edf0cf7a6766bdc34b32960d6abc011c10fe9ef9640400550ce0551ab422e6"
+}

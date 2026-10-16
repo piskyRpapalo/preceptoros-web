@@ -42,7 +42,9 @@
   function variables(i) {
     if (!i) { return 'NO_DATA · no snapshot yet'; }
     var r = i.recursos || {}, d = function (v) { return v === undefined || v === null ? 'NO_DATA' : v; };
-    return 'Cycle: ' + d(i.ciclo) + '\nCore integrity: ' + d(i.integridad) + '\nDepth: ' + d(i.profundidad) +
+    var ciclo = Number.isSafeInteger(i.ciclo) && i.ciclo >= 0 && i.ciclo <= 1000000000
+      ? String(i.ciclo) : 'NO_DATA (game cycle unavailable)';
+    return 'Cycle: ' + ciclo + '\nCore integrity: ' + d(i.integridad) + '\nDepth: ' + d(i.profundidad) +
       '\nRift: ' + (i.grieta ? (i.grieta.abierta ? 'open' : 'sealed · ' + d(i.grieta.cierre) + ' cycles') : 'NO_DATA') +
       '\nFiltered sunlight: ' + d(r.luz) + '\nBiomass: ' + d(r.biomasa) + '\nFlow: ' + d(r.flujo) + '\nCopper: ' + d(r.cobre);
   }
@@ -82,7 +84,10 @@
     [sa, sb, sd, go].forEach(function (n) { f.appendChild(n); });
     var vars = el('pre', 'terminal-vars'), log = el('pre', 'terminal-log');
     log.setAttribute('aria-live', 'polite'); log.setAttribute('role', 'log');
-    function pintaVars() { vars.textContent = variables(raiz.AtlasJuego && raiz.AtlasJuego.instantanea && raiz.AtlasJuego.instantanea()); }
+    function pintaVars() {
+      try { vars.textContent = variables(raiz.AtlasJuego && raiz.AtlasJuego.instantanea && raiz.AtlasJuego.instantanea()); }
+      catch (_) { vars.textContent = variables(null); }
+    }
     f.addEventListener('submit', function (e) {
       e.preventDefault();
       var a = accion(sa.value, sa.value === 'mover' ? sd.value : sb.value);

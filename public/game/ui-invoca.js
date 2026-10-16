@@ -6,8 +6,21 @@
 (function (raiz) {
   'use strict';
   function crea(c) {
-    var G = c.G, A = c.A, S = c.S, T = c.T, boton = c.boton, rellena = c.rellena, dice = c.dice, ins = c.ins,
+    var G = c.G, A = c.A, S = c.S, T = c.T, el = c.el, lienzo = c.lienzo, traza = c.traza, quieto = c.quieto, boton = c.boton, rellena = c.rellena, dice = c.dice, ins = c.ins, cicloMedido = c.cicloMedido,
         calor = c.calor, R = c.R, Z = c.Z, pinta = c.pinta;
+  function pintaNido() {
+    var i = ins(), ciclo = cicloMedido(i);
+    while (R.nido.firstChild) { R.nido.removeChild(R.nido.firstChild); }
+    if (!Z.huevos.length) { R.nido.appendChild(el('li', 'atlas-nota', T('nido_vacio'))); return; }
+    Z.huevos.forEach(function (h) {
+      var li = el('li'), p = ciclo === null ? null : Math.min(100, Math.floor((ciclo - h.desde) * 100 / (h.hasta - h.desde)));
+      var cv = lienzo(72, T('huevo_aria'));
+      li.appendChild(cv);
+      li.appendChild(el('span', null, p === null ? T('inc_ciclo_nd') : rellena(T('huevo'), { tc: T(h.tc), p: Math.max(0, p) })));
+      R.nido.appendChild(li);
+      traza(cv, G.HUEVO, 'huevo', ciclo === null || quieto() ? 1 : 1 + 0.06 * Math.sin(ciclo));
+    });
+  }
   /* --- invocar ------------------------------------------------------------ */
   function firma(obj) {
     if (!window.Identity) { return Promise.reject(new Error('sin identidad')); }
@@ -23,7 +36,9 @@
     var b = boton(T('piloto_crear_id')); b.classList.add('crear-id');
     b.addEventListener('click', function () {
       b.disabled = true;
-      window.Identity.crear().then(function () { b.remove(); reintenta(); }, function (x) { b.disabled = false; dice(String(x && x.message || x)); });
+      window.Identity.crear().then(function (creada) { if (creada) { b.remove(); reintenta(); } }, function () {
+        b.disabled = false; dice('NO_DATA (identity could not be created)');
+      });
     });
     R.caja.appendChild(b);
   }
@@ -48,17 +63,20 @@
   }
   function invoca(tc) {
     var i = ins(), TC = G.TCS[tc];
-    if (!i || i.recursos.cobre < TC.coste.cobre || i.recursos.luz < TC.coste.luz) { dice(T('inc_falta')); return; }
+    if (!i || !cicloMedido || cicloMedido(i) === null) { dice(T('inc_ciclo_nd')); return; }
+    if (i.recursos.cobre < TC.coste.cobre || i.recursos.luz < TC.coste.luz) { dice(T('inc_falta')); return; }
     cadenaLista().then(function (c) {
       if (!c) { dice('NO_DATA · ' + Z.causa); return; }
       var o = A.eslabon(c, tc, Z.clave);
       return window.Identity.firmar(o).then(function (f) {
         return A.semillaWeb(f.firma).then(function (semilla) {
+          var actual = ins(), desde = cicloMedido(actual);
+          if (desde === null) { dice(T('inc_ciclo_nd')); return; }
           var ev = window.AtlasJuego.invoca(TC.coste);
           if (!ev || ev.resultado !== 'ok') { dice(T('inc_falta')); return; }
-          Z.cadena = A.anexa(Z.cadena, o, f.firma, semilla, i.ciclo, i.ciclo + TC.incuba);
+          Z.cadena = A.anexa(Z.cadena, o, f.firma, semilla, desde, desde + TC.incuba);
           A.cadenaWeb(Z.clave).pon(Z.cadena);
-          Z.huevos.push({ tc: tc, semilla: semilla, desde: i.ciclo, hasta: i.ciclo + TC.incuba, seq: o.seq });
+          Z.huevos.push({ tc: tc, semilla: semilla, desde: desde, hasta: desde + TC.incuba, seq: o.seq });
           S.suena('pop', calor());
           dice(rellena(T('inc_hecha'), { tc: T(tc) }));
           pinta();
@@ -66,7 +84,7 @@
       });
     }).catch(function (e) { sinIdentidad(e, function () { invoca(tc); }); });
   }
-    return { firma: firma, sinIdentidad: sinIdentidad, cadenaLista: cadenaLista, invoca: invoca };
+    return { firma: firma, sinIdentidad: sinIdentidad, cadenaLista: cadenaLista, invoca: invoca, pintaNido: pintaNido };
   }
   raiz.AtlasInvoca = { crea: crea };
 })(this);

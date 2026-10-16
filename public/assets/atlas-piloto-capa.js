@@ -38,7 +38,7 @@
     b.addEventListener('click', function () {
       b.disabled = true;
       window.Identity.crear().then(function () { b.remove(); reintenta(); },
-        function (x) { b.disabled = false; dice(String((x && x.message) || x)); });
+        function () { b.disabled = false; dice('NO_DATA (identity could not be created)'); });
     });
     caja.appendChild(b);
   }

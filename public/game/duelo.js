@@ -54,6 +54,13 @@
   function crea(op) {
     var defensas = {}, duelos = {}, resultados = [], mia = null, cabezas = {};
 
+    function cicloActual() {
+      try {
+        var n = op.ciclo();
+        return Number.isSafeInteger(n) && n >= 0 && n <= 1000000000 ? n : null;
+      } catch (e) { return null; }
+    }
+
     function politica(modo, pares) {
       return K.ordena({ esquema: 'atlas.mp_sesion/1', modo: modo, pares: pares.slice().sort(), quorum: pares.length,
                         max_bytes: 8192, max_ops: 16, semilla: 'commit_reveal', conflicto: 'poda_gana',
@@ -169,6 +176,8 @@
     function acepta(ses) {
       var D = duelos[ses];
       if (!D || D.rol !== 'defensor' || D.r) { return falla('NO_DATA · no hay desafio pendiente'); }
+      var ahora = cicloActual();
+      if (ahora === null) { return falla('NO_DATA · ciclo de juego no medido'); }
       var r = op.azar();
       return firmaSobre(ses, 'compromiso', { esquema: 'atlas.compromiso/1', c: S.compromiso(r, op.pub, ses) }).then(function (c) {
         var m = anota(D, [c]);
@@ -177,7 +186,7 @@
         return firmaSobre(ses, 'revelacion', { esquema: 'atlas.revelacion/1', r: r, compromisos: hc }).then(function (v) {
           var m2 = anota(D, [v]);
           if (m2) { throw new Error(m2); }
-          D.r = r; D.esperando = op.ciclo();
+          D.r = r; D.esperando = ahora;
           return paquete('respuesta', D.politica, [c, v], null);
         });
       });
@@ -202,12 +211,19 @@
     /* Ciclos que le quedan al otro para revelar antes del abandono (NO_DATA si no espero nada). */
     function plazo(ses) {
       var D = duelos[ses];
-      if (!D || D.rol !== 'defensor' || D.esperando === null || D.resultado) { return null; }
-      return Math.max(0, V.combate.abandono_ciclos - (op.ciclo() - D.esperando));
+      if (!D || D.rol !== 'defensor' || !Number.isSafeInteger(D.esperando) || D.esperando < 0 || D.resultado) { return null; }
+      var ahora = cicloActual();
+      if (ahora === null) { return null; }
+      return Math.max(0, V.combate.abandono_ciclos - (ahora - D.esperando));
     }
     function abandona(ses) {
       var D = duelos[ses], q = plazo(ses);
-      if (q === null) { return falla('NO_DATA · no espero a nadie en ese duelo'); }
+      if (q === null) {
+        if (D && D.rol === 'defensor' && D.esperando !== null && !D.resultado) {
+          return falla('NO_DATA · ciclo de juego no medido');
+        }
+        return falla('NO_DATA · no espero a nadie en ese duelo');
+      }
       if (q > 0) { return falla('aun no: faltan ' + q + ' ciclos'); }
       var x = A.abandono(D.L, D.defensa, op.pub);
       if (!x.ok) { return falla(x.motivo); }

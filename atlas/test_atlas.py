@@ -668,6 +668,39 @@ process.stdout.write(JSON.stringify(ok));
         self.assertIn("R.dice({ quien: 'Terminal', fuente: 'gusano',", w, "una transicion que no se narra no entra")
         self.assertIn("['worm_transition.js']", (ASSETS / "thegame.js").read_text(encoding="utf-8"))
 
+    def test_state_readability_audit_is_measured_without_model_claims(self):
+        """The offline audit measures actual wire bytes without certifying model comprehension."""
+        for name in ("state_readability_cases.mjs", "state_readability_named_cases.mjs",
+                     "state_readability_geometry_cases.mjs", "state_readability_prompt_cases.mjs"):
+            with self.subTest(cases=name):
+                cases = subprocess.run(["node", str(RAIZ / name)],
+                                       capture_output=True, text=True, timeout=60)
+                self.assertEqual(cases.returncode, 0, cases.stdout[-1200:] + cases.stderr[-400:])
+        report = subprocess.run(["node", str(RAIZ / "state_readability_probe.mjs")],
+                                capture_output=True, text=True, timeout=60)
+        self.assertEqual(report.returncode, 0, report.stdout[-1200:] + report.stderr[-400:])
+        data = json.loads(report.stdout)
+        self.assertEqual(data["state"], "MEDIDO")
+        self.assertEqual(data["reader_evidence"]["state"], "NO_DATA")
+        self.assertEqual(data["meaning_status"], "INCOMPLETE")
+        self.assertEqual(data["executed_actions"] + data["signatures_requested"] + data["network_requests"], 0)
+        for item in data["cases"]:
+            with self.subTest(fixture=item["fixture_id"]):
+                self.assertEqual(item["provenance"], "SYNTHETIC")
+                self.assertTrue(item["deterministic"] and item["read_only"] and item["reading_projection_faithful"])
+                self.assertEqual(item["wire_bytes"], len(item["wire_text"].encode("utf-8")))
+                self.assertEqual(item["wire_within_limit"], item["wire_bytes"] < item["limit_bytes"])
+        evidence = RAIZ / "evidence" / "state-readability-20261015"
+        replay = subprocess.run(["node", str(RAIZ / "state_readability_probe.mjs"),
+                                 "--source", str(evidence / "source-baseline.json"),
+                                 "--responses", str(evidence / "responses-pass1.json")],
+                                capture_output=True, text=True, timeout=60)
+        self.assertEqual(replay.returncode, 0, replay.stdout[-1200:] + replay.stderr[-400:])
+        measured = json.loads(replay.stdout)["reader_evidence"]
+        self.assertEqual(measured["state"], "DECLARED")
+        self.assertTrue(measured["complete"])
+        self.assertEqual(len(measured["results"]), 4)
+
     def test_pr1_la_ventana_como_conversacion(self):
         """PR-1 (FIRMO 2026-10-12): el cajon es UNA ventana: cabecero con titulo, sello, fuente y edad en ciclos; cierre
         de 46 px; rotulos del menu COMPLETOS (medido: 4 se cortaban). Plug&play: observa el cajon, no toca el shell."""
@@ -711,7 +744,7 @@ process.stdout.write(JSON.stringify(ok));
                 self.assertNotIn(malo, t)
         mc = (PUBLICO / "game" / "mar-cangrejos.js").read_text(encoding="utf-8")
         self.assertIn("(Tn ? Tn.cangrejo : CJ.pinta)(g, p[0], p[1] + dy, r,", mc)
-        self.assertIn("pc = CJ.paseo(cj.semilla, cj.ciclo,", mc, "el paseo J1 sigue mandando")
+        self.assertIn("pc = cicloValido ? CJ.paseo(cj.semilla, cj.ciclo,", mc, "el paseo J1 sigue mandando con ciclo validado")
 
     def test_b_cangrejo_funcional_y_e_tutorial_de_genesis(self):
         """B: el manejo libre va ENCIMA del paseo J1 (paseo intocado), la niebla no se pisa, y las skills salen solo de lo
@@ -724,7 +757,7 @@ process.stdout.write(JSON.stringify(ok));
         self.assertIn("VE = 620,", (PUBLICO / "game" / "mar.js").read_text(encoding="utf-8"), "A: el mapa, mas grande a la vista")
         self.assertIn("if (av) { meta.appendChild(av); }", (PUBLICO / "game" / "genesis_tutorial.js").read_text(encoding="utf-8"), "el aviso y el objetivo se pisaban")
         mc = (PUBLICO / "game" / "mar-cangrejos.js").read_text(encoding="utf-8")
-        self.assertIn("pc = CJ.paseo(cj.semilla, cj.ciclo,", mc, "el paseo J1 sigue mandando debajo")
+        self.assertIn("pc = cicloValido ? CJ.paseo(cj.semilla, cj.ciclo,", mc, "el paseo J1 sigue mandando con ciclo validado")
         self.assertIn("if (L) { var d = L.paso(s, o.circ); s = { x: s.x + d.x, y: s.y + d.y }; }", mc)
         t = sin_comentarios((PUBLICO / "game" / "genesis_tutorial.js").read_text(encoding="utf-8"))
         for pieza in ("id = 'tutorial-salta'", "'Goal · '", "' · Now: '", "function verbosidad()", "'Not yet, and why'", "c >= k ?"):
@@ -839,8 +872,8 @@ process.stdout.write(JSON.stringify(ok));
         las lineas de estado que el juego YA escribe: no inventa mensajes. Opinar tiene su hogar en el menu."""
         r = sin_comentarios((ASSETS / "radio_message_log.js").read_text(encoding="utf-8"))
         for pieza in ("R.lista.setAttribute('role', 'log')", "R.lista.setAttribute('aria-live', 'polite')",
-                      "li.dataset.quien = m.quien; li.dataset.sello = s; li.dataset.fuente = m.fuente; li.dataset.ciclo = String(m.ciclo);",
-                      "if (/^\\s*NO_DATA/.test(texto)) { return 'NO_DATA'; }", "return m.sello === 'LIVE' && ciclo() - m.ciclo > VIEJO ? 'STALE' : m.sello;",
+                      "li.dataset.quien = m.quien; li.dataset.sello = s; li.dataset.fuente = m.fuente; li.dataset.ciclo = cicloValido(m.ciclo) ? String(m.ciclo) : 'NO_DATA';",
+                      "if (/^\\s*NO_DATA/.test(texto)) { return 'NO_DATA'; }", "function edad(m) { var actual = ciclo(); return actual === null || !cicloValido(m.ciclo) ? null : Math.max(0, actual - m.ciclo); }", "function sello(m) { var edadN = edad(m); return m.sello === 'LIVE' && edadN === null ? 'NO_DATA' : (m.sello === 'LIVE' && edadN > VIEJO ? 'STALE' : m.sello); }",
                       "closest('[role=\"status\"],[aria-live]')", "el('section', 'radio-chat plegado')", "function registro()"):
             with self.subTest(pieza=pieza):
                 self.assertIn(pieza, r)
@@ -987,7 +1020,7 @@ process.stdout.write(JSON.stringify(ok));
 # Ver atlas/POST_VERIFICACION_MGNO_LAB.md y atlas/POST_VERIFICACION_SISIL_CRIA.md.
 PUROS = ("canon.js", "sobres.js", "rating.js", "arena.js", "duelo.js", "mercado.js", "narragrafo.js", "cria.js", "genoma.js")
 # La Arena (2026-09-28, «el mapa multi-jugador en una pestana»): se carga al abrir su pestana, detras del Army.
-ARENA = ("sobres.js", "rating.js", "arena.js", "duelo.js", "mar-anclas.js", "crab_render_hd.js", "crab_free_move.js", "genesis_tutorial.js", "buildings_toon.js", "reef_place_cards.js", "shell_schematics.js", "reef_buildings_paint.js", "latency_crystal.js", "hexelion_bench.js", "reef_corals.js", "reef_buildings_layer.js", "mar-cangrejos.js", "map_pointer_input.js", "map_nodes_layer.js", "map_zoom.js", "piece_inspector.js", "state_vector.js", "place_telemetry.js", "npc_territory_map.js", "mar.js", "nodos-pesos.js",
+ARENA = ("sobres.js", "rating.js", "arena.js", "duelo.js", "mar-anclas.js", "crab_render_hd.js", "audio_feedback_manager.js", "crab_free_move.js", "genesis_tutorial.js", "buildings_toon.js", "reef_place_cards.js", "shell_schematics.js", "reef_buildings_paint.js", "latency_crystal.js", "hexelion_bench.js", "reef_corals.js", "reef_buildings_layer.js", "mar-cangrejos.js", "map_pointer_input.js", "map_nodes_layer.js", "map_zoom.js", "piece_inspector.js", "vector_contract.js", "state_vector.js", "place_telemetry.js", "npc_territory_map.js", "mar.js", "nodos-pesos.js",
          "nodos.js", "cuenta.js", "ui-nodos.js", "ui-rack.js",
          "escuadron.js", "battle_choreography.js", "battle_replay.js", "npc_occupancy.js", "npc_walls.js", "ui-arena-comun.js", "ui-arena.js", "ui-duelo.js")
 # La CASA (2026-10-05): la primera pantalla, detras del Army. Lleva canon y escena, que la Arena reutiliza.
@@ -1938,6 +1971,49 @@ class RadioDelEstado(unittest.TestCase):
         self.assertIn("NO_DATA", d["nada"]); self.assertIn("NO_DATA", d["falta"], "lo que falta no se inventa")
         self.assertEqual(d["h"], "a2ba1cd90687f786286735323da3a3aecb5d4885c5d2e4edce92d9bab45c7786", "la huella de la melodia y el boletin cambio: el estado suena distinto")
 
+    def test_instantanea_incompleta_no_genera_ni_emite_audio(self):
+        js = ("const R=require('./public/game/aiact-art50-state-radio.js');"
+              "const i={esquema:'atlas.instantanea/1',recursos:{cobre:1}};"
+              "const llamadas=[]; global.AtlasSintesis={activa:x=>llamadas.push('activa'),suena:x=>llamadas.push('suena')};"
+              "global.setTimeout=(f)=>{llamadas.push('timer')};"
+              "process.stdout.write(JSON.stringify({g:R.guion(i),h:R.huella(i),c:R.causaGuion(i),t:R.toca(i),llamadas}));")
+        r = subprocess.run(["node", "-e", js], capture_output=True, text=True, timeout=60, cwd=RAIZ.parent)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        d = json.loads(r.stdout)
+        self.assertIsNone(d["g"], "el guion no debe convertir campos ausentes en cero")
+        self.assertIsNone(d["h"])
+        self.assertIn("integridad", d["c"])
+        self.assertIn("oxigeno", d["c"])
+        self.assertIn("grieta.abierta", d["c"])
+        self.assertIsNone(d["t"])
+        self.assertEqual(d["llamadas"], [], "NO_DATA no activa síntesis ni agenda notas")
+
+    def test_radio_rechaza_numeros_no_finitos_y_porcentaje_desbordado(self):
+        js = ("const R=require('./public/game/aiact-art50-state-radio.js');"
+              "const base={esquema:'atlas.instantanea/1',integridad:1,integridad_max:1,fase:0,nivel_nucleo:0,"
+              "recursos:{cobre:0,biomasa:0,luz:0,oxigeno:0},grieta:{abierta:false}};"
+              "const casos=[{...base,recursos:{...base.recursos,cobre:NaN}},"
+              "{...base,integridad:1e308,integridad_max:1e-308},{...base,integridad_max:0}];"
+              "process.stdout.write(JSON.stringify(casos.map(i=>({g:R.guion(i),c:R.causaGuion(i)}))));")
+        r = subprocess.run(["node", "-e", js], capture_output=True, text=True, timeout=60, cwd=RAIZ.parent)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        d = json.loads(r.stdout)
+        self.assertEqual(len(d), 3)
+        for caso in d:
+            with self.subTest(causa=caso["c"]):
+                self.assertIsNone(caso["g"], "una cifra no finita no debe producir frecuencia")
+                self.assertIn("NO_DATA:", caso["c"])
+
+    def test_audio_feedback_manager_contrato_y_ruta_local(self):
+        r = subprocess.run(["node", str(RAIZ / "audio_feedback_manager_casos.mjs")],
+                           capture_output=True, text=True, timeout=60)
+        self.assertEqual(r.returncode, 0, r.stdout[-1200:] + r.stderr[-400:])
+        casos = json.loads(r.stdout)
+        self.assertEqual(len(casos), 6)
+        self.assertTrue(all(c["ok"] for c in casos), r.stdout)
+        puerta = (ASSETS / "thegame.js").read_text(encoding="utf-8")
+        self.assertLess(puerta.index("audio_feedback_manager.js"), puerta.index("crab_free_move.js"))
+
 
 class Conquista(unittest.TestCase):
     """Conquista (FIRMO del Soberano, 2026-10-10): ganar a un lugar NPC lo deja CONQUISTADO en este aparato.
@@ -2198,7 +2274,7 @@ class MapaMovible(unittest.TestCase):
             pass
         u = self._js("ui.js")
         for pieza in ("var o = A.eslabon(c, tc, Z.clave);", "window.Identity.firmar(o)", "A.cadenaWeb(Z.clave).pon(Z.cadena);",
-                      "Z.cadena = A.anexa(Z.cadena, o, f.firma, semilla, i.ciclo, i.ciclo + TC.incuba);",
+                      "Z.cadena = A.anexa(Z.cadena, o, f.firma, semilla, desde, desde + TC.incuba);",
                       "A.verificaCadena(c, pub, A.verificaWeb, A.semillaWeb)", "Z.huevos = Z.cadena ? A.huevos(Z.cadena) : [];",
                       "Z.cadena = A.abre(Z.cadena, h.seq)", "if (!capa || !capa.isConnected || document.hidden) { return; }"):
             with self.subTest(pieza=pieza):
@@ -2874,10 +2950,14 @@ class TrozoInvoca(unittest.TestCase):
 
     def test_ui_ya_no_define_el_invocar_y_lo_crea_desde_el_satelite(self):
         ui = (PUBLICO / "game" / "ui.js").read_text(encoding="utf-8")
+        sat = (PUBLICO / "game" / "ui-invoca.js").read_text(encoding="utf-8")
         for f in ("function invoca(", "function cadenaLista(", "function sinIdentidad(", "function firma("):
             self.assertNotIn(f, ui, f"ui.js sigue definiendo {f}")
         self.assertIn("window.AtlasInvoca.crea(", ui)
         self.assertIn("var Z = {", ui, "el estado compartido no vive en Z")
+        self.assertNotIn("function pintaNido(", ui, "el nido sigue en el archivo que el troceo debe adelgazar")
+        self.assertIn("function pintaNido(", sat, "el satelite reutilizado debe pintar el nido")
+        self.assertIn("INV.pintaNido()", ui)
 
     def test_el_satelite_no_usa_azar_ni_reloj(self):
         sat = (PUBLICO / "game" / "ui-invoca.js").read_text(encoding="utf-8")

@@ -3,8 +3,10 @@
   'use strict';
   var live = null;
   function cycle() {
-    var j = root.AtlasJuego, s = j && j.instantanea ? j.instantanea() : null;
-    return s && Number.isSafeInteger(s.ciclo) ? s.ciclo : null;
+    try {
+      var j = root.AtlasJuego, s = j && j.instantanea ? j.instantanea() : null, c = s && s.ciclo;
+      return Number.isSafeInteger(c) && c >= 0 && c <= 1000000000 ? c : null;
+    } catch (_) { return null; }
   }
   function text(tag, value) { var e = root.document.createElement(tag); e.textContent = value; return e; }
   function button(label, fn) {

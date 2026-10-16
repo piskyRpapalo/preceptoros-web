@@ -96,7 +96,13 @@
     lista.forEach(function (m) { var r = radioDe(L.estado(m, tic)); if (r) { c.push({ x: m.col, y: m.fila, r: r, que: m.id }); } });
     return c;
   }
-  function ciclo() { var J = raiz.AtlasJuego, i = J && J.instantanea ? J.instantanea() : null; return i && typeof i.ciclo === 'number' ? i.ciclo : null; }
+  /* Mismo contrato que ReefBuildingLifecycle: ciclo entero seguro en [0, 1e9]. */
+  function ciclo() {
+    try {
+      var J = raiz.AtlasJuego, i = J && J.instantanea ? J.instantanea() : null, c = i && i.ciclo;
+      return Number.isSafeInteger(c) && c >= 0 && c <= 1000000000 ? c : null;
+    } catch (_) { return null; }
+  }
   function circulos() { return circulosDe(vistas, ciclo(), raiz.ReefBuildingLifecycle); }
 
   function pita(fase) {

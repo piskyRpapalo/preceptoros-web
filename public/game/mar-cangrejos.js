@@ -43,15 +43,17 @@
     g.ellipse(x, y + 2 * dpr, r * 1.1, r * 0.28, 0, 0, 2 * Math.PI); g.fill(); g.restore();
   }
   function uno(g, P, casa, cj, o, estilo, vivo) {
-    var CJ = raiz.AtlasCangrejo, pc = CJ.paseo(cj.semilla, cj.ciclo, vivo && !o.quieto ? (o.t - t0) / 1000 : 0);
+    var CJ = raiz.AtlasCangrejo, cicloValido = Number.isSafeInteger(cj.ciclo) && cj.ciclo >= 0 && cj.ciclo <= 1000000000;
+    /* Sin reloj, queda en el ancla de casa; el paseo firmado no recibe un ciclo inventado. */
+    var pc = cicloValido ? CJ.paseo(cj.semilla, cj.ciclo, vivo && !o.quieto ? (o.t - t0) / 1000 : 0) : { x: 0.5, dir: 1, tramo: null };
     var s = sitio(casa, pc.x), L = vivo && raiz.AtlasCangrejoLibre;
     if (L) { var d = L.paso(s, o.circ); s = { x: s.x + d.x, y: s.y + d.y }; }  /* B: el manejo libre, ENCIMA del paseo J1 */
     var p = P(s.x, s.y), r = 22 * o.dpr, fo = CJ.forma(cj.army, cj.nodo, cj.latido);
-    var dy = vivo && !o.quieto ? vibra(o.guion, o.t) * r * 0.08 : 0;
+    var dy = vivo && cicloValido && !o.quieto ? vibra(o.guion, o.t) * r * 0.08 : 0;
     sombra(g, p[0], p[1], r * fo.escala, o.dpr);
     /* R1 (FIRMO 2026-10-12): el cangrejo en CEL SHADING (crab_render_hd.js), con la misma firma; sin el, el trazo de siempre. */
     var Tn = raiz.AtlasToon;
-    (Tn ? Tn.cangrejo : CJ.pinta)(g, p[0], p[1] + dy, r, { forma: fo, cuerpo: cj.cuerpo, estilo: estilo, t: vivo ? o.t : 0, dir: pc.dir, dpr: o.dpr, quieto: o.quieto || !vivo,
+    (Tn ? Tn.cangrejo : CJ.pinta)(g, p[0], p[1] + dy, r, { forma: fo, cuerpo: cj.cuerpo, estilo: estilo, t: vivo ? o.t : 0, dir: pc.dir, dpr: o.dpr, quieto: o.quieto || !vivo || !cicloValido,
       ciclo: cj.ciclo, id: vivo ? 'yo' : 'otro-' + cj.semilla });
     return p;
   }
@@ -70,7 +72,7 @@
     o.guion = Ra && J && J.instantanea ? Ra.guion(J.instantanea()) : null;
     var fo0 = raiz.AtlasCangrejo.forma(cj.army, cj.nodo, cj.latido);
     var dl = raiz.AtlasCangrejoLibre ? raiz.AtlasCangrejoLibre.desplazamiento() : { x: 0, y: 0 };
-    pon(casa.x + dl.x, casa.y + BAJO + dl.y, function () { uno(g, P, casa, cj, o, ca.estilo, true); }, function () { return { que: 'Your crab', estado: 'army ' + cj.army + ' · cycle ' + cj.ciclo, causas: raiz.AtlasToon ? [raiz.AtlasToon.ficha(fo0.clase)] : [] }; });
+    pon(casa.x + dl.x, casa.y + BAJO + dl.y, function () { uno(g, P, casa, cj, o, ca.estilo, true); }, function () { return { que: 'Your crab', estado: 'army ' + cj.army + ' · ' + (cj.ciclo === null ? 'NO_DATA (game cycle unavailable)' : 'cycle ' + cj.ciclo), causas: raiz.AtlasToon ? [raiz.AtlasToon.ficha(fo0.clase)] : [] }; });
     return null;
   }
   AtlasMarCangrejos.pinta = pinta;

@@ -14,14 +14,31 @@
 (function (raiz) {
   'use strict';
   var VEL = 7, PASO = 60, ALCANCE = 160, MAX_EVENTOS = 400;
-  var off = { x: 0, y: 0 }, dest = null, eventos = [], recorrido = 0, avisado = '', base0 = null, panel = null, pintados = -1;
+  var off = { x: 0, y: 0 }, dest = null, eventos = [], conteos = { nado: 0, alcance: 0 }, revisionEventos = 0;
+  var recorrido = 0, avisado = '', base0 = null, panel = null, pintados = -1;
+  var audioActivado = false;
 
-  function ciclo() { var J = raiz.AtlasJuego, i = J && J.instantanea ? J.instantanea() : null; return i && typeof i.ciclo === 'number' ? i.ciclo : null; }
-  function anota(e) { eventos.push(e); if (eventos.length > MAX_EVENTOS) { eventos.shift(); } }
+  /* Reusa el contrato del ciclo del arrecife/NPC: entero seguro no negativo hasta 1e9. */
+  function ciclo() {
+    try {
+      var J = raiz.AtlasJuego, i = J && J.instantanea ? J.instantanea() : null, c = i && i.ciclo;
+      return Number.isSafeInteger(c) && c >= 0 && c <= 1000000000 ? c : null;
+    } catch (_) { return null; }
+  }
+  function anota(e) {
+    eventos.push(e); if (eventos.length > MAX_EVENTOS) { eventos.shift(); }
+    if (Object.prototype.hasOwnProperty.call(conteos, e.tipo)) { conteos[e.tipo]++; }
+    revisionEventos++;
+    if (audioActivado) {
+      var A = raiz.AudioFeedbackManager, tipo = e.tipo === 'nado' ? 'swim' : (e.tipo === 'alcance' ? 'reach' : null);
+      if (A && tipo) { reflejaAudio(A.procesar({ habilidad: tipo, eventos: Math.min(MAX_EVENTOS, conteos[e.tipo]) })); }
+    }
+  }
   function di(texto, sello) { var R = raiz.AtlasRadioChat; if (R && R.dice) { R.dice({ quien: 'Your crab', fuente: 'cangrejo', texto: texto, sello: sello }); } }
 
   /* Puro: el nivel de una skill de una lista de eventos. Sin eventos, null (NO_DATA). */
   function nivel(evs, tipo) { var n = evs.filter(function (e) { return e.tipo === tipo; }).length; return n ? Math.floor(Math.sqrt(n)) : null; }
+  function nivelContado(n) { return n ? Math.floor(Math.sqrt(n)) : null; }
   /* Puro: un paso desde `a` hacia `b`, como mucho `v`. Devuelve [x, y, llego]. */
   function avanza(a, b, v) {
     var dx = b.x - a.x, dy = b.y - a.y, d = Math.sqrt(dx * dx + dy * dy);
@@ -44,7 +61,7 @@
     off = { x: s[0], y: s[1] };
     if (s[2]) {
       anota({ tipo: 'nado', ciclo: ciclo(), dist: Math.round(recorrido) }); recorrido = 0; dest = null; avisado = '';
-      di('arrived · swim level ' + nivel(eventos, 'nado') + ' (' + eventos.filter(function (e) { return e.tipo === 'nado'; }).length + ' trips this session)', 'LIVE');
+      di('arrived · swim level ' + nivelContado(conteos.nado) + ' (' + conteos.nado + ' trips this tab)', 'LIVE');
     }
     return off;
   }
@@ -62,16 +79,24 @@
     if (!base) { return false; }
     var cx = base.x + off.x, cy = base.y + off.y, d = Math.sqrt((x - cx) * (x - cx) + (y - cy) * (y - cy));
     if (d > ALCANCE) { return false; }
-    var primera = nivel(eventos, 'alcance') === null;
+    var primera = conteos.alcance === 0;
     anota({ tipo: 'alcance', ciclo: ciclo(), que: String(que || 'piece') });
     if (primera && guia !== false && raiz.AtlasTutorial && raiz.AtlasTutorial.abre) { raiz.AtlasTutorial.abre('reach'); return 'tutorial'; }
     return true;
   }
   /* Las skills, legibles (para su panel y para el lab). */
   function skills() {
-    var n = eventos.filter(function (e) { return e.tipo === 'nado'; }).length, a = eventos.filter(function (e) { return e.tipo === 'alcance'; }).length;
-    return [{ id: 'swim', nombre: 'Swim', nivel: nivel(eventos, 'nado'), eventos: n, causa: n ? null : 'the crab has not swum yet (tap empty sea)' },
-            { id: 'reach', nombre: 'Reach', nivel: nivel(eventos, 'alcance'), eventos: a, causa: a ? null : 'nothing touched within reach yet: swim close, then tap it' }];
+    var n = conteos.nado, a = conteos.alcance;
+    return [{ id: 'swim', nombre: 'Swim', nivel: nivelContado(n), eventos: n, causa: n ? null : 'the crab has not swum yet (tap empty sea)' },
+            { id: 'reach', nombre: 'Reach', nivel: nivelContado(a), eventos: a, causa: a ? null : 'nothing touched within reach yet: swim close, then tap it' }];
+  }
+
+  function reflejaAudio(r) {
+    var p = panel && panel.querySelector('[data-audio-status]');
+    if (!p) { return; }
+    p.textContent = r && r.estado === 'SONADO' ? 'Audio feedback: local synthesis scheduled.' :
+      (r && r.estado === 'HABILITADO' ? 'Audio feedback is enabled. Local synthesis is scheduled on the next Swim or Reach event.' :
+      'Audio feedback: ' + (r && r.causa ? r.causa : 'NO_DATA: audio feedback manager unavailable'));
   }
 
   /* El panel «Skills» del cajon (el menu lo descubre solo). Se repinta solo cuando llega un evento. */
@@ -83,11 +108,26 @@
       var s = D.createElement('summary'); s.textContent = 'Skills'; panel.appendChild(s);
       panel.appendChild(D.createElement('ul'));
       var nota = D.createElement('p'); nota.className = 'atlas-nota';
-      nota.textContent = 'Only what your crab really does. Tap empty sea to swim; W A S D also work. These events live in this tab (saving them waits for a signature).';
-      panel.appendChild(nota); caja.appendChild(panel); pintados = -1;
+      nota.textContent = 'Only what your crab really does. Tap empty sea to swim; W A S D also work. Events stay in this tab; saving waits for a signature. Totals last for this tab; recent detail keeps 400 events (older rows roll off).';
+      panel.appendChild(nota);
+      var botonAudio = D.createElement('button'); botonAudio.type = 'button'; botonAudio.textContent = 'Enable audio feedback'; botonAudio.setAttribute('aria-pressed', 'false');
+      var estadoAudio = D.createElement('p'); estadoAudio.setAttribute('data-audio-status', ''); estadoAudio.setAttribute('role', 'status'); estadoAudio.textContent = 'Audio feedback is off.';
+      botonAudio.addEventListener('click', function () {
+        var A = raiz.AudioFeedbackManager;
+        if (!A) { audioActivado = false; botonAudio.setAttribute('aria-pressed', 'false'); reflejaAudio(null); return; }
+        if (audioActivado) {
+          A.deshabilitar(); audioActivado = false; botonAudio.textContent = 'Enable audio feedback'; botonAudio.setAttribute('aria-pressed', 'false');
+          estadoAudio.textContent = 'Audio feedback is off.';
+        } else {
+          var r = A.habilitar(); audioActivado = r.estado === 'HABILITADO';
+          botonAudio.textContent = audioActivado ? 'Turn off audio feedback' : 'Enable audio feedback'; botonAudio.setAttribute('aria-pressed', audioActivado ? 'true' : 'false'); reflejaAudio(r);
+        }
+      });
+      panel.appendChild(botonAudio); panel.appendChild(estadoAudio);
+      caja.appendChild(panel); pintados = -1;
     }
-    if (pintados === eventos.length) { return; }
-    pintados = eventos.length;
+    if (pintados === revisionEventos) { return; }
+    pintados = revisionEventos;
     var ul = panel.querySelector('ul'); ul.textContent = '';
     skills().forEach(function (k) {
       var li = D.createElement('li'); li.dataset.skill = k.id; li.dataset.nivel = k.nivel === null ? 'NO_DATA' : String(k.nivel);

@@ -9,7 +9,7 @@ El código está en el árbol, pero el sonido de siempre (`fm2`) sigue por defec
 
 ## Cómo escuchar (5 minutos, solo loopback)
 1. Servir el worktree en local:
-   `python3 -m http.server 8811 --bind 127.0.0.1 --directory ~/preceptoros-web-juego/public`
+   `python3 -m http.server 8811 --bind 127.0.0.1 --directory ~/preceptoros-web/public`
 2. Abrir `http://127.0.0.1:8811/en/` y entrar en theGame (que cargue Army o Arena).
 3. Con auriculares, en la consola del navegador (F12), pegar línea a línea:
    ```

@@ -23,21 +23,59 @@
     var g = ((grado % 5) + 5) % 5, o = Math.max(0, Math.min(2, octava));
     return Math.round(BASE_HZ * Math.pow(2, o + PENTA[g] / 12) * 100) / 100;
   }
+  function sonarFrecuencia(f) {
+    var S = raiz.AtlasSintesis;
+    if (!S || typeof S.suena !== 'function' || !Number.isFinite(f) || f <= 0) { return null; }
+    return S.suena({ tipo: 'radio', portadora: f, moduladora: Math.round(f * 2),
+      indice: 35, dur: 0.28, gan: 0.07 });
+  }
+  function tocaNota(grado, octava) {
+    if (!Number.isInteger(grado) || !Number.isInteger(octava)) { return null; }
+    return sonarFrecuencia(nota(grado, octava));
+  }
+  /* Causa cerrada: cada cifra que alimenta la melodia debe existir y ser numerica. */
+  function causaGuion(i) {
+    var faltan = [];
+    if (!i || typeof i !== 'object') { return 'NO_DATA: snapshot missing'; }
+    if (i.esquema !== 'atlas.instantanea/1') { return 'NO_DATA: unsupported snapshot schema'; }
+    function numero(obj, campo, ruta) {
+      if (!obj || typeof obj[campo] !== 'number' || !Number.isFinite(obj[campo])) { faltan.push(ruta); }
+    }
+    numero(i, 'integridad', 'integridad'); numero(i, 'integridad_max', 'integridad_max');
+    if (typeof i.integridad_max === 'number' && i.integridad_max <= 0) { faltan.push('integridad_max (> 0)'); }
+    if (typeof i.integridad === 'number' && Number.isFinite(i.integridad)
+        && typeof i.integridad_max === 'number' && Number.isFinite(i.integridad_max) && i.integridad_max > 0
+        && !Number.isFinite(i.integridad * 100 / i.integridad_max)) { faltan.push('integridad percentage overflow'); }
+    var r = i.recursos;
+    numero(r, 'cobre', 'recursos.cobre'); numero(r, 'biomasa', 'recursos.biomasa');
+    numero(r, 'luz', 'recursos.luz'); numero(r, 'oxigeno', 'recursos.oxigeno');
+    numero(i, 'fase', 'fase'); numero(i, 'nivel_nucleo', 'nivel_nucleo');
+    if (!i.grieta || typeof i.grieta.abierta !== 'boolean') { faltan.push('grieta.abierta'); }
+    return faltan.length ? 'NO_DATA: invalid or missing ' + faltan.join(', ') : null;
+  }
   /* El guion sonoro de una instantanea: ocho notas, cada una de una cifra. Puro. */
   function guion(i) {
-    if (!i || i.esquema !== 'atlas.instantanea/1' || !i.recursos) { return null; }
-    var r = i.recursos, pct = i.integridad_max ? Math.round(i.integridad * 100 / i.integridad_max) : 0;
+    if (causaGuion(i)) { return null; }
+    var r = i.recursos, pct = Math.round(i.integridad * 100 / i.integridad_max);
     var cifras = [pct, r.cobre, r.biomasa, r.luz, r.oxigeno, i.fase, i.nivel_nucleo, i.grieta && i.grieta.abierta ? 1 : 0];
-    return cifras.map(function (v, k) { var n = Math.abs(Math.floor(Number(v) || 0)); return nota(n + k, Math.floor(n / 50) % 3); });
+    return cifras.map(function (v, k) { var n = Math.abs(Math.floor(v)); return nota(n + k, Math.floor(n / 50) % 3); });
   }
   /* El boletin: solo lo que dice la instantanea. Lo que falta, NO_DATA. Puro. */
   function boletin(i) {
     if (!i || i.esquema !== 'atlas.instantanea/1') { return 'Radio Atlantis. NO_DATA: no game is running yet.'; }
-    var r = i.recursos || {}, d = function (v) { return v === undefined || v === null ? 'NO_DATA' : v; };
-    var pct = i.integridad_max ? Math.round(i.integridad * 100 / i.integridad_max) + ' percent' : 'NO_DATA';
-    return 'Radio Atlantis, cycle ' + d(i.ciclo) + '. Core integrity ' + pct + ', phase ' + d(i.fase) + ', depth ' + d(i.profundidad) + ' meters. ' +
+    var r = i.recursos || {}, d = function (v) {
+      return (typeof v === 'number' && Number.isFinite(v)) || (typeof v === 'string' && v.length) ? v : 'NO_DATA';
+    };
+    var ciclo = Number.isSafeInteger(i.ciclo) && i.ciclo >= 0 && i.ciclo <= 1000000000
+      ? String(i.ciclo) : 'NO_DATA (game cycle unavailable)';
+    var porcentaje = typeof i.integridad === 'number' && Number.isFinite(i.integridad)
+      && typeof i.integridad_max === 'number' && Number.isFinite(i.integridad_max) && i.integridad_max > 0
+      && Number.isFinite(i.integridad * 100 / i.integridad_max)
+      ? Math.round(i.integridad * 100 / i.integridad_max) + ' percent' : 'NO_DATA';
+    var grietaValida = i.grieta && typeof i.grieta.abierta === 'boolean';
+    return 'Radio Atlantis, cycle ' + ciclo + '. Core integrity ' + porcentaje + ', phase ' + d(i.fase) + ', depth ' + d(i.profundidad) + ' meters. ' +
       'Copper ' + d(r.cobre) + ', light ' + d(r.luz) + ', biomass ' + d(r.biomasa) + ', oxygen ' + d(r.oxigeno) + '. ' +
-      (i.grieta ? (i.grieta.abierta ? 'The rift is open. Resource gain: base (1x); sealed rate: doubled (2x).' :
+      (grietaValida ? (i.grieta.abierta ? 'The rift is open. Resource gain: base (1x); sealed rate: doubled (2x).' :
         'The rift is sealed. Resource gain: doubled (2x); open rate: base (1x).') :
         'Rift: NO_DATA. Resource gain: NO_DATA (rift state not measured).');
   }
@@ -49,7 +87,7 @@
     if (!S || !g) { return null; }
     S.activa(true);
     g.forEach(function (f, k) {
-      raiz.setTimeout(function () { S.suena({ tipo: 'radio', portadora: f, moduladora: Math.round(f * 2), indice: 35, dur: 0.28, gan: 0.07 }); }, k * PASO_MS);
+      raiz.setTimeout(function () { sonarFrecuencia(f); }, k * PASO_MS);
     });
     return g;
   }
@@ -77,15 +115,16 @@
     function ins() { return raiz.AtlasJuego && raiz.AtlasJuego.instantanea ? raiz.AtlasJuego.instantanea() : null; }
     d.addEventListener('toggle', function () { if (d.open) { txt.textContent = boletin(ins()); } });
     b.addEventListener('click', function () {
-      var i = ins(), g = toca(i);
+      var i = ins(), causa = causaGuion(i), g = toca(i), voz;
       txt.textContent = boletin(i);
-      nota1.textContent = (g ? 'Notes (Hz): ' + g.join(' · ') + '. ' : 'NO_DATA: no game yet. ') + locutor(txt.textContent) + '.';
+      voz = causa ? '' : locutor(txt.textContent);
+      nota1.textContent = (g ? 'Notes (Hz): ' + g.join(' · ') + '. ' : (causa || 'NO_DATA: local synthesis unavailable') + '. ') + (voz ? voz + '.' : 'Voice stays in text because melody data is incomplete.');
     });
     [txt, b, nota1].forEach(function (n) { d.appendChild(n); });
     panel.appendChild(d);
   }
 
-  var AtlasRadio = { BASE_HZ: BASE_HZ, PENTA: PENTA, nota: nota, guion: guion, boletin: boletin, huella: huella, toca: toca, locutor: locutor, monta: monta };
+  var AtlasRadio = { BASE_HZ: BASE_HZ, PENTA: PENTA, nota: nota, tocaNota: tocaNota, causaGuion: causaGuion, guion: guion, boletin: boletin, huella: huella, toca: toca, locutor: locutor, monta: monta };
   if (typeof module === 'object' && module.exports) { module.exports = AtlasRadio; }
   else { raiz.AtlasRadio = AtlasRadio; }
 })(this);

@@ -161,6 +161,7 @@
   "tc4": "Tesouro do Abismo",
   "inc_coste": "{cobre} cobre · {luz} luz",
   "inc_falta": "Faltam recursos para essa invocação.",
+  "inc_ciclo_nd": "NO_DATA · ciclo do jogo indisponível",
   "inc_hecha": "Invocação assinada: {tc}. O ovo já incuba.",
   "nido_h": "Ninho",
   "nido_vacio": "Nenhum ovo a incubar.",

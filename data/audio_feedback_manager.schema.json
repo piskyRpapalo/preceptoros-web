@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "preceptoros.audio-feedback-manager/1",
+  "title": "AudioFeedbackManager closed output",
+  "$ref": "#/$defs/salida",
+  "$defs": {
+    "salida": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["estado", "frecuencia_hz", "causa"],
+      "properties": {
+        "estado": {"enum": ["HABILITADO", "DESHABILITADO", "SONADO", "INACTIVO", "NO_DATA", "RECHAZADO"]},
+        "frecuencia_hz": {"type": ["number", "null"], "exclusiveMinimum": 0},
+        "causa": {"type": ["string", "null"], "minLength": 1}
+      },
+      "allOf": [
+        {"if": {"properties": {"estado": {"const": "SONADO"}}, "required": ["estado"]},
+         "then": {"properties": {"frecuencia_hz": {"type": "number"}, "causa": {"type": "null"}}}},
+        {"if": {"properties": {"estado": {"enum": ["NO_DATA", "RECHAZADO", "INACTIVO"]}}, "required": ["estado"]},
+         "then": {"properties": {"frecuencia_hz": {"type": "null"}, "causa": {"type": "string"}}}},
+        {"if": {"properties": {"estado": {"enum": ["HABILITADO", "DESHABILITADO"]}}, "required": ["estado"]},
+         "then": {"properties": {"frecuencia_hz": {"type": "null"}, "causa": {"type": "null"}}}}
+      ]
+    }
+  }
+}

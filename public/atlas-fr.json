@@ -161,6 +161,7 @@
   "tc4": "Trésor de l'Abîme",
   "inc_coste": "{cobre} cuivre · {luz} lumière",
   "inc_falta": "Ressources insuffisantes pour cette invocation.",
+  "inc_ciclo_nd": "NO_DATA · cycle de jeu indisponible",
   "inc_hecha": "Invocation signée : {tc}. L'œuf incube.",
   "nido_h": "Nid",
   "nido_vacio": "Aucun œuf en incubation.",

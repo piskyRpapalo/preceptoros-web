@@ -1,0 +1,353 @@
+{
+  "schema": "preceptoros.state-readability.representation-experiment/1",
+  "provenance": "Two frozen synthetic fixtures; paired fresh local subprocesses; no live visitor state",
+  "source_sha256": "5f481fcecc5e0a13d871baa2901f5cc5f28dd2e3afea794b5e011ff6b10d5546",
+  "runtime": "llama-completion",
+  "runtime_sha256": "7119bef261611b26f326f7c4da4dc3fdeb7bb28e2faf1ec392bda7b21215ef52",
+  "runtime_version": "version: 10068 (571d0d540)\nbuilt with GNU 11.4.0 for Linux x86_64",
+  "model": "qwen2.5-coder-1.5b.gguf",
+  "model_sha256": "29d8c98fa6b098e200069bfb88b9508dc3e85586d20cba59f8dda9a808165104",
+  "settings": {
+    "passes": 2,
+    "temperature": 0,
+    "seed": 14,
+    "threads": 1,
+    "gpu_layers": 0,
+    "context": 4096,
+    "max_generated": 512,
+    "offline": true
+  },
+  "grammar_sha256": "e71ee7ad8df37cbe52ed25e1f54217a115724a635a577212bad1e65dd4d1ec8b",
+  "grammar_bytes": 926,
+  "summary": {
+    "compact_vector": {
+      "readings": 4,
+      "format_valid": 4,
+      "semantic_correct": 2,
+      "median_latency_ms": 10620.539906
+    },
+    "named_projection": {
+      "readings": 4,
+      "format_valid": 4,
+      "semantic_correct": 0,
+      "median_latency_ms": 12448.347643
+    }
+  },
+  "fixtures": [
+    {
+      "id": "empty",
+      "provenance": "SYNTHETIC",
+      "source_sha256": "5f481fcecc5e0a13d871baa2901f5cc5f28dd2e3afea794b5e011ff6b10d5546",
+      "vector_sha256": "82d8e61669a8ada57d1a6e015a971134f326a198d9da0bcc03ef24dbc247a6d6",
+      "named_sha256": "548cf507edb1adbfdeda157d452ce77df5927647a9c747b5d8f16e58cc957996",
+      "compact_bytes": 343,
+      "named_bytes": 711
+    },
+    {
+      "id": "complete",
+      "provenance": "SYNTHETIC",
+      "source_sha256": "5f481fcecc5e0a13d871baa2901f5cc5f28dd2e3afea794b5e011ff6b10d5546",
+      "vector_sha256": "57cc3cc90ec1c4ebc54ce874e361eeaee66813522fe8fd6737427533875944be",
+      "named_sha256": "2d42856188a373d03f8a86252c948435b71828bad97337e0a8b5233c13889098",
+      "compact_bytes": 268,
+      "named_bytes": 862
+    }
+  ],
+  "records": [
+    {
+      "pass": 1,
+      "fixture_id": "empty",
+      "condition": "compact_vector",
+      "source_sha256": "5f481fcecc5e0a13d871baa2901f5cc5f28dd2e3afea794b5e011ff6b10d5546",
+      "wire_sha256": "82d8e61669a8ada57d1a6e015a971134f326a198d9da0bcc03ef24dbc247a6d6",
+      "wire_bytes": 343,
+      "input_sha256": "8975759f32ebd363e7ad420663fbb8ae3381efb3fd07407bbbd1e1f94dcb7919",
+      "model_input_sha256": "0c6e78192842224cd24bd8f6f507e3d984c91b81fb6f4ba2597166057f7987f8",
+      "response_text": "{\n  \"schema\": \"preceptoros.state-readability.response/1\",\n  \"reading\": {\n    \"cycle\": null,\n    \"copper\": null,\n    \"crab_offset\": null,\n    \"coordinate_reference\": \"home_offset\",\n    \"absolute_position\": null,\n    \"buoy_phase\": null\n  },\n  \"proposal\": null\n}",
+      "response_sha256": "0cb1ee89e4deaf6873c84d6b3f0606b5a74e027ff90d37fb1e37445dae571769",
+      "response": {
+        "schema": "preceptoros.state-readability.response/1",
+        "reading": {
+          "cycle": null,
+          "copper": null,
+          "crab_offset": null,
+          "coordinate_reference": "home_offset",
+          "absolute_position": null,
+          "buoy_phase": null
+        },
+        "proposal": null
+      },
+      "format_valid": true,
+      "semantic_correct": false,
+      "proposal": "NONE",
+      "executed": false,
+      "elapsed_ms": 9798.610022,
+      "prompt_evaluation_count": null,
+      "generation_evaluation_runs": null,
+      "token_count_cause": "This llama.cpp build exposes evaluation counters on stderr; exact sampled-token count is not captured by this runner.",
+      "returncode": 0,
+      "no_data": []
+    },
+    {
+      "pass": 1,
+      "fixture_id": "empty",
+      "condition": "named_projection",
+      "source_sha256": "5f481fcecc5e0a13d871baa2901f5cc5f28dd2e3afea794b5e011ff6b10d5546",
+      "wire_sha256": "548cf507edb1adbfdeda157d452ce77df5927647a9c747b5d8f16e58cc957996",
+      "wire_bytes": 711,
+      "input_sha256": "6274d92a45d320747da9fe923d995eec074f4acd06379de00416ad24aef9e0d1",
+      "model_input_sha256": "195809aae38cfb3149a9cfdf60bbdb12710ab34d382e62811845741caa7650a6",
+      "response_text": "{\n  \"schema\": \"preceptoros.state-readability.response/1\",\n  \"reading\": {\n    \"cycle\": null,\n    \"copper\": null,\n    \"crab_offset\": null,\n    \"coordinate_reference\": \"home_offset\",\n    \"absolute_position\": null,\n    \"buoy_phase\": null\n  },\n  \"proposal\": null\n}",
+      "response_sha256": "0cb1ee89e4deaf6873c84d6b3f0606b5a74e027ff90d37fb1e37445dae571769",
+      "response": {
+        "schema": "preceptoros.state-readability.response/1",
+        "reading": {
+          "cycle": null,
+          "copper": null,
+          "crab_offset": null,
+          "coordinate_reference": "home_offset",
+          "absolute_position": null,
+          "buoy_phase": null
+        },
+        "proposal": null
+      },
+      "format_valid": true,
+      "semantic_correct": false,
+      "proposal": "NONE",
+      "executed": false,
+      "elapsed_ms": 10473.133662,
+      "prompt_evaluation_count": null,
+      "generation_evaluation_runs": null,
+      "token_count_cause": "This llama.cpp build exposes evaluation counters on stderr; exact sampled-token count is not captured by this runner.",
+      "returncode": 0,
+      "no_data": []
+    },
+    {
+      "pass": 1,
+      "fixture_id": "complete",
+      "condition": "compact_vector",
+      "source_sha256": "5f481fcecc5e0a13d871baa2901f5cc5f28dd2e3afea794b5e011ff6b10d5546",
+      "wire_sha256": "57cc3cc90ec1c4ebc54ce874e361eeaee66813522fe8fd6737427533875944be",
+      "wire_bytes": 268,
+      "input_sha256": "40ac95cebccad88302e5e2248ceb4c5265cae32e0b9d11d51dd5b877ea7bc778",
+      "model_input_sha256": "3f71ec070b3229cf1d95d9c6a695ba904ed92c098b2d4c9987aef6c3b9f8b1cf",
+      "response_text": "{\n  \"schema\": \"preceptoros.state-readability.response/1\",\n  \"reading\": {\n    \"cycle\": 1234,\n    \"copper\": 22,\n    \"crab_offset\": [-94, -355],\n    \"coordinate_reference\": \"home_offset\",\n    \"absolute_position\": null,\n    \"buoy_phase\": \"vivo\"\n  },\n  \"proposal\": null\n}",
+      "response_sha256": "bfa2039547dc0e72b96797884a34cbcbdd2219fd269ba534aa56e717b8279d9a",
+      "response": {
+        "schema": "preceptoros.state-readability.response/1",
+        "reading": {
+          "cycle": 1234,
+          "copper": 22,
+          "crab_offset": [
+            -94,
+            -355
+          ],
+          "coordinate_reference": "home_offset",
+          "absolute_position": null,
+          "buoy_phase": "vivo"
+        },
+        "proposal": null
+      },
+      "format_valid": true,
+      "semantic_correct": true,
+      "proposal": "NONE",
+      "executed": false,
+      "elapsed_ms": 10620.539906,
+      "prompt_evaluation_count": null,
+      "generation_evaluation_runs": null,
+      "token_count_cause": "This llama.cpp build exposes evaluation counters on stderr; exact sampled-token count is not captured by this runner.",
+      "returncode": 0,
+      "no_data": []
+    },
+    {
+      "pass": 1,
+      "fixture_id": "complete",
+      "condition": "named_projection",
+      "source_sha256": "5f481fcecc5e0a13d871baa2901f5cc5f28dd2e3afea794b5e011ff6b10d5546",
+      "wire_sha256": "2d42856188a373d03f8a86252c948435b71828bad97337e0a8b5233c13889098",
+      "wire_bytes": 862,
+      "input_sha256": "1957083b5820ac4b3d4762ede26b5eecd724c9babc93f9b8547696b942acce47",
+      "model_input_sha256": "933c132167725c507b583e46875d349c5681142781e819475f348702071dc7e4",
+      "response_text": "{\n  \"schema\": \"preceptoros.state-readability.response/1\",\n  \"reading\": {\n    \"cycle\": 1234,\n    \"copper\": 22,\n    \"crab_offset\": null,\n    \"coordinate_reference\": \"home_offset\",\n    \"absolute_position\": null,\n    \"buoy_phase\": null\n  },\n  \"proposal\": null\n}",
+      "response_sha256": "5df0ef34570af6bd6e0b9a4b854f8653a79629af4efe042cde59d633da184451",
+      "response": {
+        "schema": "preceptoros.state-readability.response/1",
+        "reading": {
+          "cycle": 1234,
+          "copper": 22,
+          "crab_offset": null,
+          "coordinate_reference": "home_offset",
+          "absolute_position": null,
+          "buoy_phase": null
+        },
+        "proposal": null
+      },
+      "format_valid": true,
+      "semantic_correct": false,
+      "proposal": "NONE",
+      "executed": false,
+      "elapsed_ms": 12448.347643,
+      "prompt_evaluation_count": null,
+      "generation_evaluation_runs": null,
+      "token_count_cause": "This llama.cpp build exposes evaluation counters on stderr; exact sampled-token count is not captured by this runner.",
+      "returncode": 0,
+      "no_data": []
+    },
+    {
+      "pass": 2,
+      "fixture_id": "empty",
+      "condition": "compact_vector",
+      "source_sha256": "5f481fcecc5e0a13d871baa2901f5cc5f28dd2e3afea794b5e011ff6b10d5546",
+      "wire_sha256": "82d8e61669a8ada57d1a6e015a971134f326a198d9da0bcc03ef24dbc247a6d6",
+      "wire_bytes": 343,
+      "input_sha256": "8975759f32ebd363e7ad420663fbb8ae3381efb3fd07407bbbd1e1f94dcb7919",
+      "model_input_sha256": "0c6e78192842224cd24bd8f6f507e3d984c91b81fb6f4ba2597166057f7987f8",
+      "response_text": "{\n  \"schema\": \"preceptoros.state-readability.response/1\",\n  \"reading\": {\n    \"cycle\": null,\n    \"copper\": null,\n    \"crab_offset\": null,\n    \"coordinate_reference\": \"home_offset\",\n    \"absolute_position\": null,\n    \"buoy_phase\": null\n  },\n  \"proposal\": null\n}",
+      "response_sha256": "0cb1ee89e4deaf6873c84d6b3f0606b5a74e027ff90d37fb1e37445dae571769",
+      "response": {
+        "schema": "preceptoros.state-readability.response/1",
+        "reading": {
+          "cycle": null,
+          "copper": null,
+          "crab_offset": null,
+          "coordinate_reference": "home_offset",
+          "absolute_position": null,
+          "buoy_phase": null
+        },
+        "proposal": null
+      },
+      "format_valid": true,
+      "semantic_correct": false,
+      "proposal": "NONE",
+      "executed": false,
+      "elapsed_ms": 9997.051264,
+      "prompt_evaluation_count": null,
+      "generation_evaluation_runs": null,
+      "token_count_cause": "This llama.cpp build exposes evaluation counters on stderr; exact sampled-token count is not captured by this runner.",
+      "returncode": 0,
+      "no_data": []
+    },
+    {
+      "pass": 2,
+      "fixture_id": "empty",
+      "condition": "named_projection",
+      "source_sha256": "5f481fcecc5e0a13d871baa2901f5cc5f28dd2e3afea794b5e011ff6b10d5546",
+      "wire_sha256": "548cf507edb1adbfdeda157d452ce77df5927647a9c747b5d8f16e58cc957996",
+      "wire_bytes": 711,
+      "input_sha256": "6274d92a45d320747da9fe923d995eec074f4acd06379de00416ad24aef9e0d1",
+      "model_input_sha256": "195809aae38cfb3149a9cfdf60bbdb12710ab34d382e62811845741caa7650a6",
+      "response_text": "{\n  \"schema\": \"preceptoros.state-readability.response/1\",\n  \"reading\": {\n    \"cycle\": null,\n    \"copper\": null,\n    \"crab_offset\": null,\n    \"coordinate_reference\": \"home_offset\",\n    \"absolute_position\": null,\n    \"buoy_phase\": null\n  },\n  \"proposal\": null\n}",
+      "response_sha256": "0cb1ee89e4deaf6873c84d6b3f0606b5a74e027ff90d37fb1e37445dae571769",
+      "response": {
+        "schema": "preceptoros.state-readability.response/1",
+        "reading": {
+          "cycle": null,
+          "copper": null,
+          "crab_offset": null,
+          "coordinate_reference": "home_offset",
+          "absolute_position": null,
+          "buoy_phase": null
+        },
+        "proposal": null
+      },
+      "format_valid": true,
+      "semantic_correct": false,
+      "proposal": "NONE",
+      "executed": false,
+      "elapsed_ms": 10532.511921,
+      "prompt_evaluation_count": null,
+      "generation_evaluation_runs": null,
+      "token_count_cause": "This llama.cpp build exposes evaluation counters on stderr; exact sampled-token count is not captured by this runner.",
+      "returncode": 0,
+      "no_data": []
+    },
+    {
+      "pass": 2,
+      "fixture_id": "complete",
+      "condition": "compact_vector",
+      "source_sha256": "5f481fcecc5e0a13d871baa2901f5cc5f28dd2e3afea794b5e011ff6b10d5546",
+      "wire_sha256": "57cc3cc90ec1c4ebc54ce874e361eeaee66813522fe8fd6737427533875944be",
+      "wire_bytes": 268,
+      "input_sha256": "40ac95cebccad88302e5e2248ceb4c5265cae32e0b9d11d51dd5b877ea7bc778",
+      "model_input_sha256": "3f71ec070b3229cf1d95d9c6a695ba904ed92c098b2d4c9987aef6c3b9f8b1cf",
+      "response_text": "{\n  \"schema\": \"preceptoros.state-readability.response/1\",\n  \"reading\": {\n    \"cycle\": 1234,\n    \"copper\": 22,\n    \"crab_offset\": [-94, -355],\n    \"coordinate_reference\": \"home_offset\",\n    \"absolute_position\": null,\n    \"buoy_phase\": \"vivo\"\n  },\n  \"proposal\": null\n}",
+      "response_sha256": "bfa2039547dc0e72b96797884a34cbcbdd2219fd269ba534aa56e717b8279d9a",
+      "response": {
+        "schema": "preceptoros.state-readability.response/1",
+        "reading": {
+          "cycle": 1234,
+          "copper": 22,
+          "crab_offset": [
+            -94,
+            -355
+          ],
+          "coordinate_reference": "home_offset",
+          "absolute_position": null,
+          "buoy_phase": "vivo"
+        },
+        "proposal": null
+      },
+      "format_valid": true,
+      "semantic_correct": true,
+      "proposal": "NONE",
+      "executed": false,
+      "elapsed_ms": 10754.12706,
+      "prompt_evaluation_count": null,
+      "generation_evaluation_runs": null,
+      "token_count_cause": "This llama.cpp build exposes evaluation counters on stderr; exact sampled-token count is not captured by this runner.",
+      "returncode": 0,
+      "no_data": []
+    },
+    {
+      "pass": 2,
+      "fixture_id": "complete",
+      "condition": "named_projection",
+      "source_sha256": "5f481fcecc5e0a13d871baa2901f5cc5f28dd2e3afea794b5e011ff6b10d5546",
+      "wire_sha256": "2d42856188a373d03f8a86252c948435b71828bad97337e0a8b5233c13889098",
+      "wire_bytes": 862,
+      "input_sha256": "1957083b5820ac4b3d4762ede26b5eecd724c9babc93f9b8547696b942acce47",
+      "model_input_sha256": "933c132167725c507b583e46875d349c5681142781e819475f348702071dc7e4",
+      "response_text": "{\n  \"schema\": \"preceptoros.state-readability.response/1\",\n  \"reading\": {\n    \"cycle\": 1234,\n    \"copper\": 22,\n    \"crab_offset\": null,\n    \"coordinate_reference\": \"home_offset\",\n    \"absolute_position\": null,\n    \"buoy_phase\": null\n  },\n  \"proposal\": null\n}",
+      "response_sha256": "5df0ef34570af6bd6e0b9a4b854f8653a79629af4efe042cde59d633da184451",
+      "response": {
+        "schema": "preceptoros.state-readability.response/1",
+        "reading": {
+          "cycle": 1234,
+          "copper": 22,
+          "crab_offset": null,
+          "coordinate_reference": "home_offset",
+          "absolute_position": null,
+          "buoy_phase": null
+        },
+        "proposal": null
+      },
+      "format_valid": true,
+      "semantic_correct": false,
+      "proposal": "NONE",
+      "executed": false,
+      "elapsed_ms": 12564.697212,
+      "prompt_evaluation_count": null,
+      "generation_evaluation_runs": null,
+      "token_count_cause": "This llama.cpp build exposes evaluation counters on stderr; exact sampled-token count is not captured by this runner.",
+      "returncode": 0,
+      "no_data": []
+    }
+  ],
+  "limitations": [
+    "Only empty and complete fixtures fit both representations; unicode and overflow are excluded from paired inference.",
+    "Compact and named prompts each state equivalent extraction paths; task token counts differ and remain a limitation.",
+    "Two passes over two synthetic fixtures do not establish general comprehension or live game suitability.",
+    "Energy is NO_DATA: no energy reading was collected.",
+    "Exact sampled token totals are NO_DATA: this runner does not parse or independently verify token totals."
+  ],
+  "no_data": [
+    {
+      "field": "energy",
+      "cause": "No energy reading was collected."
+    },
+    {
+      "field": "exact_sampled_tokens",
+      "cause": "Runtime counters are not captured as an independently verified sampled-token count."
+    }
+  ]
+}
