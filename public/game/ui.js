@@ -124,7 +124,7 @@
     s.appendChild(el('p', 'atlas-casa', rellena(T('provisional'), { v: G.VERSION_VALORES })));
     R.caja = el('div', 'atlas-inc-mandos');
     R.sonido = boton(T('sonido')); R.sonido.setAttribute('aria-pressed', 'false');
-    var KD = raiz.AtlasKillswitchDot; KD && KD.monta(R.sonido);
+    var KD = window.AtlasKillswitchDot; KD && KD.monta(R.sonido);
     R.sonido.addEventListener('click', function () {
       var on = R.sonido.getAttribute('aria-pressed') !== 'true';
       on = S.activa(on); R.sonido.setAttribute('aria-pressed', String(on));
@@ -132,7 +132,7 @@
       if (on) { S.suena('huevo', calor()); } else { dice(T('sonido_nd')); }
     });
     R.caja.appendChild(R.sonido);
-    var KS = raiz.AtlasKillswitchDot && raiz.AtlasKillswitchDot.crea({ boton: R.sonido, sintesis: S, T: T });
+    var KS = window.AtlasKillswitchDot && window.AtlasKillswitchDot.crea({ boton: R.sonido, sintesis: S, T: T });
     KS && KS.pinta(false);
 
     /* MOVIMIENTO 0 - M17: Interruptor calidad Auto/Max/Med/Luz */
