@@ -80,7 +80,7 @@
     var d = el('details', 'radio-estado thegame-pliego');
     d.appendChild(el('summary', null, 'Radio Atlantis · the state, as sound'));
     var txt = el('p', 'radio-boletin'), nota1 = el('p', 'atlas-nota'), b = el('button', 'boton', 'Play the state'); b.type = 'button';
-    txt.setAttribute('aria-live', 'polite');
+
     function ins() { return raiz.AtlasJuego && raiz.AtlasJuego.instantanea ? raiz.AtlasJuego.instantanea() : null; }
     d.addEventListener('toggle', function () { if (d.open) { txt.textContent = boletin(ins()); } });
     b.addEventListener('click', function () {

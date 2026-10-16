@@ -34,7 +34,6 @@
 
     /* --- la ficha --------------------------------------------------------------------- */
     var ficha = el('section', 'atlas-ficha'); ficha.hidden = true;
-    ficha.setAttribute('aria-live', 'polite');
     sec.insertBefore(ficha, caja.nextSibling);
     var abierta = null;
     function nombre(id) { return id === 'base' ? T('nodo_tuyo') : T('s_' + id); }

@@ -107,7 +107,7 @@
     if (D && D.retrato) { try { var r = D.retrato({}); r.celda(0); nav.appendChild(r.nodo); } catch (x) { } }
     nav.appendChild(el('b', null, T('eco_nombre', 'The Navigator') + ' · ' + T('eco_rol', 'your Workshop AI')));
     R.caja.appendChild(nav);
-    R.texto = el('p', 'eco-texto'); R.texto.setAttribute('aria-live', 'polite'); R.caja.appendChild(R.texto);
+    R.texto = el('p', 'eco-texto'); R.caja.appendChild(R.texto);
     R.ondas = el('div', 'eco-ondas'); R.caja.appendChild(R.ondas);
     R.saldo = el('p', 'atlas-nota'); R.caja.appendChild(R.saldo);
     R.mandos = el('div', 'eco-mandos'); R.caja.appendChild(R.mandos);

@@ -49,7 +49,7 @@
   function panel() {
     var raiz = el('div', 'atlas-panel atlas-piso'); raiz.id = 'atlas-piso';
     raiz.appendChild(el('p', 'atlas-lema', U('lema')));
-    R.vivo = el('p', 'atlas-vivo'); R.vivo.setAttribute('aria-live', 'polite');
+    R.vivo = el('p', 'atlas-vivo');
 
     var cab = el('div', 'atlas-cab');
     cab.appendChild(el('h3', null, U('cab_h')));
