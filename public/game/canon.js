@@ -1,20 +1,3 @@
-/* preceptoros.org · theGame · multijugador · lo CANONICO: los mismos bytes en cualquier aparato.
-
-   Entre personas no se comparte estado, se comparten PRUEBAS (PLAN §2). Una prueba solo vale si
-   dos aparatos sacan los mismos bytes del mismo objeto. Por eso:
-   - `canon(x)`: JSON con las claves ordenadas, sin espacios, SOLO ENTEROS seguros (un decimal no
-     tiene la misma forma en todos los motores y aqui se rechaza) y todo lo que no es ASCII
-     escapado (`\uXXXX`). Es el texto que se firma y se resume.
-   - `huella(x)`: sha256 de `canon(x)`, con el SHA-256 puro de `atlas-coord.js`: el mismo en la
-     pestana, en node y en el rack.
-   - `generador(semilla)`: PRNG entero (mulberry32 sembrado con los 32 primeros bits de una
-     semilla de 64 hex). `uniforme(n)` usa RECHAZO: sin el sesgo del modulo, las odds que se
-     ensenan son exactamente los pesos enteros.
-   - `loteria(pesos, g)`: la loteria entera acumulada del brief (§5): el primer cubo cuyo peso
-     acumulado supera el sorteo.
-
-   PURO: ni DOM, ni red, ni reloj, ni azar del sistema. La semilla la trae quien llama (commit-
-   reveal en `sobres.js`). Lo carga quien lo necesite, a demanda; la puerta del juego no. */
 (function (raiz) {
   'use strict';
 
@@ -42,9 +25,7 @@
   function sha(texto) { return C.sha256(texto); }
   function huella(x) { return sha(canon(x)); }
 
-  /* Copia con las claves en orden canonico: `JSON.stringify` de la copia == `canon` del original
-     (para quien firme con `Identity.firmar`, que firma `JSON.stringify`). */
-  function ordena(x) {
+    function ordena(x) {
     if (Array.isArray(x)) { return x.map(ordena); }
     if (x && typeof x === 'object') {
       var o = {};
@@ -65,8 +46,7 @@
       t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
       return (t ^ t >>> 14) >>> 0;
     }
-    /* Entero uniforme en [0, n) SIN sesgo: se descartan los sorteos del ultimo tramo incompleto. */
-    function uniforme(n) {
+        function uniforme(n) {
       if (!Number.isSafeInteger(n) || n < 1 || n > 4294967296) { throw new RangeError('uniforme: n ' + n); }
       var tope = 4294967296 - (4294967296 % n), x;
       do { x = u32(); } while (x >= tope);
@@ -75,8 +55,7 @@
     return { u32: u32, uniforme: uniforme };
   }
 
-  /* Pesos enteros >= 0 con suma > 0 -> indice elegido. */
-  function loteria(pesos, g) {
+    function loteria(pesos, g) {
     var total = 0;
     pesos.forEach(function (p) {
       if (!Number.isSafeInteger(p) || p < 0) { throw new RangeError('loteria: peso ' + p); }
@@ -88,16 +67,13 @@
     throw new Error('loteria: inalcanzable');
   }
 
-  /* Odds en puntos basicos (por 10 000), redondeadas hacia abajo; el resto se dice aparte para
-     que la suma ensenada no mienta. */
-  function puntosBasicos(pesos) {
+    function puntosBasicos(pesos) {
     var total = pesos.reduce(function (s, p) { return s + p; }, 0);
     var pb = pesos.map(function (p) { return Math.floor(p * 10000 / total); });
     return { pb: pb, resto: 10000 - pb.reduce(function (s, p) { return s + p; }, 0) };
   }
 
-  /* Suma saturada: un entero nunca se desborda en silencio. */
-  function satura(x, min, max) { return x < min ? min : x > max ? max : x; }
+    function satura(x, min, max) { return x < min ? min : x > max ? max : x; }
 
   var AtlasCanon = { canon: canon, huella: huella, sha: sha, ordena: ordena, generador: generador,
                      loteria: loteria, puntosBasicos: puntosBasicos, satura: satura, HEX64: HEX64 };
