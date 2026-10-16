@@ -47,3 +47,15 @@ mar.js→sea.js · cria.js→brood.js · taller.js→workshop.js · nodos.js→n
 
 - El esfuerzo exacto de D2 (número total de identificadores con tilde/ñ o español): se mide con el guardián al construirlo; aquí solo la muestra top-15 medida.
 - ¿Los nombres de módulo window.Atlas* cambian?: FIRMO aparte; son contrato público consumido por el rack y los tests.
+
+## Lista española medida (D2) — la ley por lista, no por tilde
+
+La regex de tildes dejaba VERDES falsos (monta, pinta, crea… no llevan tilde). El guardián gatera por ESTA lista (dato vivo del doc) + tildes/ñ:
+
+monta, pinta, crea, abre, cierra, lee, escribe, calcula, sirve, fija, dice, toca, precachear, rutasDelShell, sinRedireccion, navegacion, idiomaDe, paginaSinRed, fuera, accion, adopcion, peldano, grieta, cangrejo, arrecife, bandera, huella, ciclo, sobres, taller, mar, cria, nodos, cuenta, valores, juez, escena, casa, duelo, arena, niebla, tropa, nido, huevo
+
+**Cifra medida (16-oct, pre-D2): 51 de 88 ficheros contienen identificador español por lista; 88 contienen comentario /* */ y 7 además comentario // (URLs en strings excluidas por sinStrings, la excepción cableada abajo).**
+
+## Excepción de URLs (D1) — cableada, no implícita
+
+Un `//` dentro de un literal de string (`'https://…'`) es DATO (URL), no comentario: el guardián borra los strings ANTES de buscar comentarios (función sinStrings del guardián) y retira `https?://` de la línea antes de decidir. La excepción de sw.js: SUS STRINGS i18n SIN_RED son DATO y se quedan; sus COMENTARIOS migran como los de todos — cableada con un test propio que falla si SIN_RED deja de existir (doc desalineado).
