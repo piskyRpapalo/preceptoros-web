@@ -1,21 +1,3 @@
-/* preceptoros.org · theGame · G3 ONE-CLICK CRYPTOGRAPHIC HITL (PROPUESTA mistral/g3).
-   WHAT. One click signs the current action and shows the ATTESTATION RECEIPT:
-   action id, world coordinate, public key, Ed25519 signature, game cycle.
-   The private key NEVER leaves the device: `Identity` (assets/auth.js) is the
-   only owner of the key store; this piece only ASKS it to sign.
-   VOCABULARY (canon ideas13oct). This is a Cryptographic HITL (EU AI Act
-   Art. 14, CELEX 32024R1689; IETF RFC 8032 Ed25519). The receipt is an
-   Attestation Receipt. Zero Retention with Attestation Receipt: nothing is
-   sent anywhere; zero new network requests (cero red nueva).
-   CONTRACT BEFORE SIGNATURE. The dialog shows what it does, what it costs and
-   what exactly gets signed, before the button does anything. Cancel and
-   Escape sign nothing.
-   DETERMINISM. Same state + same action = same signed message, except the
-   game cycle field which is read at click time and shown in the receipt.
-   A11Y. Mouse, keyboard, touch; Escape cancels; role=dialog aria-modal;
-   focus moved and restored; buttons >= 44 px (home.css budget).
-   FIRMOs OPEN (NOT decided here): receipt date UTC vs game cycles; receipt
-   push identity (receipts branch only, never main, never jetson); stamp cost. */
 (function () {
   'use strict';
   function el(tag, cls, text) {
@@ -70,8 +52,7 @@
         recibo.textContent = 'NO_DATA · game cycle or world coordinate unavailable (state vector not ready). Nothing was signed.';
         return;
       }
-      /* FIRMO del Soberano (15-oct): hora UTC dentro del JSON del recibo (matasellos declarativo, SIN autoridad) + ciclos de juego en la vista. El ciclo sigue siendo la única vara temporal con autoridad sobre el juego. */
-      var utc = new Date().toISOString().replace(/\.\d+Z$/, 'Z');
+            var utc = new Date().toISOString().replace(/\.\d+Z$/, 'Z');
       var mensaje = 'hitl/1|' + accionId() + '|' + k[0] + ',' + k[1] + '|' + c + '|' + utc;
       window.Identity.publica().then(function (pub) {
         return window.Identity.firmarTexto(mensaje).then(function (h) { return { pub: pub, h: h }; });
@@ -88,8 +69,5 @@
     document.body.appendChild(box);
     firma.focus();
   }
-  /* ENTRY POINT (declared, decision (a)): deliberate until G4 — no manifest action opens
-     this panel today; the receipt wiring lands with G4. Until then the receipt UI is
-     NO_DATA with cause: waiting G4 wiring. */
-  window.AtlasHitlFirma = { monta: monta, estado: function () { return 'NO_DATA: waiting G4 wiring'; } };
+    window.AtlasHitlFirma = { monta: monta, estado: function () { return 'NO_DATA: waiting G4 wiring'; } };
 })();
