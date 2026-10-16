@@ -109,7 +109,7 @@ def main():
 
     nueva = a.version or siguiente(vieja)
     print(f"version   {vieja}  ->  {nueva}")
-    print(f"huella    {sello.get('huella')}  ->  (se recalcula al escribir)")
+    print(f"huella    {sello.get('huella')}  ->  {real}")
     if not a.sellar:
         print("\nSECO · nada escrito. Repite con --sellar cuando sea el momento.")
         return 0

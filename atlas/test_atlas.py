@@ -1972,6 +1972,39 @@ class RadioDelEstado(unittest.TestCase):
         self.assertIn("NO_DATA", d["nada"]); self.assertIn("NO_DATA", d["falta"], "lo que falta no se inventa")
         self.assertEqual(d["h"], "a2ba1cd90687f786286735323da3a3aecb5d4885c5d2e4edce92d9bab45c7786", "la huella de la melodia y el boletin cambio: el estado suena distinto")
 
+    def test_incomplete_snapshot_has_cause_and_schedules_no_audio(self):
+        js = ("const R=require('./public/game/aiact-art50-state-radio.js');"
+              "const i={esquema:'atlas.instantanea/1',recursos:{cobre:1}};"
+              "const calls=[]; global.AtlasSintesis={activa:x=>calls.push('active'),suena:x=>calls.push('play')};"
+              "global.setTimeout=(f)=>{calls.push('timer')};"
+              "process.stdout.write(JSON.stringify({g:R.guion(i),h:R.huella(i),c:R.causaGuion(i),t:R.toca(i),calls}));")
+        r = subprocess.run(["node", "-e", js], capture_output=True, text=True, timeout=60, cwd=RAIZ.parent)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        d = json.loads(r.stdout)
+        self.assertIsNone(d["g"])
+        self.assertIsNone(d["h"])
+        self.assertIn("integridad", d["c"])
+        self.assertIn("oxigeno", d["c"])
+        self.assertIn("grieta.abierta", d["c"])
+        self.assertIsNone(d["t"])
+        self.assertEqual(d["calls"], [])
+
+    def test_nonfinite_and_invalid_integrity_are_rejected(self):
+        js = ("const R=require('./public/game/aiact-art50-state-radio.js');"
+              "const base={esquema:'atlas.instantanea/1',integridad:1,integridad_max:1,fase:0,nivel_nucleo:0,"
+              "recursos:{cobre:0,biomasa:0,luz:0,oxigeno:0},grieta:{abierta:false}};"
+              "const cases=[{...base,recursos:{...base.recursos,cobre:NaN}},"
+              "{...base,integridad:1e308,integridad_max:1e-308},{...base,integridad_max:0}];"
+              "process.stdout.write(JSON.stringify(cases.map(i=>({g:R.guion(i),c:R.causaGuion(i)}))));")
+        r = subprocess.run(["node", "-e", js], capture_output=True, text=True, timeout=60, cwd=RAIZ.parent)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        cases = json.loads(r.stdout)
+        self.assertEqual(len(cases), 3)
+        for case in cases:
+            with self.subTest(cause=case["c"]):
+                self.assertIsNone(case["g"])
+                self.assertIn("NO_DATA:", case["c"])
+
 
 class Conquista(unittest.TestCase):
     """Conquista (FIRMO del Soberano, 2026-10-10): ganar a un lugar NPC lo deja CONQUISTADO en este aparato.
