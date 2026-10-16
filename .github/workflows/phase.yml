@@ -36,6 +36,7 @@ jobs:
             python3 test_web.py
             python3 atlas/test_atlas.py
             node arnes_sw.mjs
+            node --test tests/citations.test.mjs
             node atlas/sin_undefined.mjs | tee "$RUNNER_TEMP/phase-chrome-$pass.json"
             node atlas/vector_casos.mjs
             node atlas/phase_gate.mjs

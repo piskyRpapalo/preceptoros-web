@@ -29,4 +29,6 @@ jobs:
       - if: ${{ !cancelled() }}
         run: python atlas/test_atlas.py
       - if: ${{ !cancelled() }}
+        run: node --test tests/citations.test.mjs
+      - if: ${{ !cancelled() }}
         run: node atlas/vigia.mjs
