@@ -1,94 +1,94 @@
 /* preceptoros.org · canon visual v4.0 «Liquid Glass Solar-Punk».
-   Firmado el 2026-08-29. Marmol, bronce y violeta de siempre; lo que se queda
-   de las dos versiones oscuras del mismo dia (v2.0 «Edge Terminal» y v3.0
-   oscura, firmadas y retiradas ambas) es la MATERIA: cristal, ambiente detras
-   y morfosis. La identidad no cambia; ahora flota. Paleta MEDIDA de la app.
-   Paleta MEDIDA de la app (assets de PreceptorOS), no elegida a ojo:
-   violeta #6D5AE0 (burbuja y boton de enviar), indigo #261789 (navegacion),
-   bronce #93705C/#78624C/#5A4531 (el marco), marmol #DDE2E6-#EBEEF2.
-   El marmol es una textura real de 4 KB, no un degradado: el canon prohibe
-   gradientes CSS, y una foto de piedra no es un gradiente — es la piedra. */
+Firmado el 2026-08-29. Marmol, bronce y violeta de siempre; lo que se queda
+de las dos versiones oscuras del mismo dia (v2.0 «Edge Terminal» y v3.0
+oscura, firmadas y retiradas ambas) es la MATERIA: cristal, ambiente detras
+y morfosis. La identidad no cambia; ahora flota. Paleta MEDIDA de la app.
+Paleta MEDIDA de la app (assets de PreceptorOS), no elegida a ojo:
+violeta #6D5AE0 (burbuja y boton de enviar), indigo #261789 (navegacion),
+bronce #93705C/#78624C/#5A4531 (el marco), marmol #DDE2E6-#EBEEF2.
+El marmol es una textura real de 4 KB, no un degradado: el canon prohibe
+gradientes CSS, y una foto de piedra no es un gradiente — es la piedra. */
 :root{
-  --marmol:#E4E8EC; --marmol-claro:#F2F5F7; --tinta:#1E1826; --tenue:#5D5668;
-  --violeta:#6D5AE0; --violeta-texto:#4B37C4; --indigo:#261789;
-  --bronce:#78624C; --bronce-claro:#93705C; --bronce-hondo:#5A4531;
-  --jardin:#2C784B; --sol:#AC510B;   /* medidos 4,66:1 y 4,61:1 */
-  /* El oro de la marca. NO es `--sol`: aquel es el acento calido sobre fondo
-     claro y sobre violeta se apaga --1,38:1 medido, ilegible--. Este se midio
-     contra `--indigo`, que es donde se usa: 9,04:1. */
-  --oro:#F2D08A;
-  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"DejaVu Sans Mono",monospace;
-  /* --- el cristal, sobre la paleta de siempre --------------------------- */
-  --velo-campo:rgba(255,255,255,.75);   /* lo que se escribe: velo, no plancha */
-  --glass:rgba(242,245,247,.55);
-  --glass-solid:rgba(242,245,247,.92);   /* donde hay que LEER parrafos */
-  --edge:rgba(255,255,255,.55);          /* el filo de luz del cristal */
-  --depth:0 8px 32px rgba(30,24,38,.10);
-  --radius:14px;
-  /* Resorte: sobrepasa y vuelve. Separa «se movio» de «esta vivo». */
-  --spring:cubic-bezier(.34,1.56,.64,1);
+--marmol:#E4E8EC; --marmol-claro:#F2F5F7; --tinta:#1E1826; --tenue:#5D5668;
+--violeta:#6D5AE0; --violeta-texto:#4B37C4; --indigo:#261789;
+--bronce:#78624C; --bronce-claro:#93705C; --bronce-hondo:#5A4531;
+--jardin:#2C784B; --sol:#AC510B;   /* medidos 4,66:1 y 4,61:1 */
+/* El oro de la marca. NO es `--sol`: aquel es el acento calido sobre fondo
+claro y sobre violeta se apaga --1,38:1 medido, ilegible--. Este se midio
+contra `--indigo`, que es donde se usa: 9,04:1. */
+--oro:#F2D08A;
+--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"DejaVu Sans Mono",monospace;
+/* --- el cristal, sobre la paleta de siempre --------------------------- */
+--velo-campo:rgba(255,255,255,.75);   /* lo que se escribe: velo, no plancha */
+--glass:rgba(242,245,247,.55);
+--glass-solid:rgba(242,245,247,.92);   /* donde hay que LEER parrafos */
+--edge:rgba(255,255,255,.55);          /* el filo de luz del cristal */
+--depth:0 8px 32px rgba(30,24,38,.10);
+--radius:14px;
+/* Resorte: sobrepasa y vuelve. Separa «se movio» de «esta vivo». */
+--spring:cubic-bezier(.34,1.56,.64,1);
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
 body{
-  /* Marmol con vetas violeta, generado para este canon y periodico por
-     construccion: costura medida de 2,2/255, invisible. */
-  background:var(--marmol);   /* la textura de marmol cayo con el hub (mudanza b3): queda el color */
-  background-size:340px;
-  color:var(--tinta);font:400 16px/1.65 var(--mono);
-  padding:1.5rem 1.1rem 4rem;
+/* Marmol con vetas violeta, generado para este canon y periodico por
+construccion: costura medida de 2,2/255, invisible. */
+background:var(--marmol);   /* la textura de marmol cayo con el hub (mudanza b3): queda el color */
+background-size:340px;
+color:var(--tinta);font:400 16px/1.65 var(--mono);
+padding:1.5rem 1.1rem 4rem;
 }
 main{width:100%;max-width:46rem;margin:0 auto}
 /* El ambiente: tres orbes lentos detras del marmol. Sin algo que ver a traves,
-   un panel translucido es solo un panel gris. No intercepta un solo clic. */
+un panel translucido es solo un panel gris. No intercepta un solo clic. */
 #ambient{position:fixed;inset:0;width:100%;height:100%;z-index:-1;
-  display:block;pointer-events:none}
+display:block;pointer-events:none}
 
 /* --- paneles de cristal sobre el marmol ---------------------------------- */
 /* Respaldo OPACO delante, cristal tras @supports: sin backdrop-filter el panel
-   queda solido y legible, no un cristal sucio sobre la piedra. */
+queda solido y legible, no un cristal sucio sobre la piedra. */
 /* LOS PANELES DEJAN VER EL FONDO (2026-09-05). El opaco tapaba el ambiente
-   animado que esta pagina dibuja, asi que se veia el mismo rectangulo liso en
-   los dos temas y el fondo solo asomaba por los margenes. Con el color a media
-   opacidad se ve a traves y los botones violeta se recortan contra algo vivo.
-   El respaldo opaco sigue delante para quien no tenga `backdrop-filter`: sin
-   el, el texto se lee sobre la animacion y no se lee. */
+animado que esta pagina dibuja, asi que se veia el mismo rectangulo liso en
+los dos temas y el fondo solo asomaba por los margenes. Con el color a media
+opacidad se ve a traves y los botones violeta se recortan contra algo vivo.
+El respaldo opaco sigue delante para quien no tenga `backdrop-filter`: sin
+el, el texto se lee sobre la animacion y no se lee. */
 .panel{background:var(--marmol-claro);border:1px solid var(--bronce);
-  border-radius:var(--radius);padding:1.25rem 1.15rem;margin:0 0 1.4rem;
-  box-shadow:var(--depth)}
+border-radius:var(--radius);padding:1.25rem 1.15rem;margin:0 0 1.4rem;
+box-shadow:var(--depth)}
 /* `#chat` QUEDA FUERA. Con el fondo transparente pero el desenfoque puesto, el
-   marmol salia NITIDO fuera de la placa y difuso dentro: la veta se cortaba
-   justo en el canto. Transparente de verdad es dejar pasar la imagen, no una
-   version esmerilada de ella. El resto de paneles conserva su cristal, que es
-   lo que sostiene los parrafos largos sobre marmol. */
+marmol salia NITIDO fuera de la placa y difuso dentro: la veta se cortaba
+justo en el canto. Transparente de verdad es dejar pasar la imagen, no una
+version esmerilada de ella. El resto de paneles conserva su cristal, que es
+lo que sostiene los parrafos largos sobre marmol. */
 @supports (backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px)){
-  .panel:not(#chat){background:var(--glass);
-    -webkit-backdrop-filter:blur(16px) saturate(180%);
-    backdrop-filter:blur(16px) saturate(180%)}
+.panel:not(#chat){background:var(--glass);
+-webkit-backdrop-filter:blur(16px) saturate(180%);
+backdrop-filter:blur(16px) saturate(180%)}
 }
 /* El canto: ORO METALIZADO, en un ANILLO con mascara (2026-09-22). Era metal
-   violeta cepillado --`edge-violet.png`-- y a la vista salia como una costura
-   punteada en todos los paneles; el Soberano: «no queda bien; cambialo por
-   el borde dorado, metalizado, un poco mas grueso». Sin imagen: un barrido
-   diagonal de luces y sombras de oro hace el metal, y una trama de un pixel
-   encima hace el cepillado. Cuatro pixeles, contra la linea de uno del oro
-   plano. El PNG se retira con esto: nadie mas lo pintaba.
-   Las dos vias obvias fallan: `border-image` ignora el radio, y dos capas de
-   fondo border-box/padding-box pintan la textura por TODO el panel — con el
-   cristal al 55 % se veia a traves como una rejilla. Se probo y se vio. */
+violeta cepillado --`edge-violet.png`-- y a la vista salia como una costura
+punteada en todos los paneles; el Soberano: «no queda bien; cambialo por
+el borde dorado, metalizado, un poco mas grueso». Sin imagen: un barrido
+diagonal de luces y sombras de oro hace el metal, y una trama de un pixel
+encima hace el cepillado. Cuatro pixeles, contra la linea de uno del oro
+plano. El PNG se retira con esto: nadie mas lo pintaba.
+Las dos vias obvias fallan: `border-image` ignora el radio, y dos capas de
+fondo border-box/padding-box pintan la textura por TODO el panel — con el
+cristal al 55 % se veia a traves como una rejilla. Se probo y se vio. */
 .panel{position:relative}
 @supports ((mask-composite:exclude) or (-webkit-mask-composite:xor)){
-  .panel{border-color:transparent}
-  .panel::before{content:"";position:absolute;inset:0;pointer-events:none;
-    border-radius:inherit;padding:4px;
-    background:repeating-linear-gradient(90deg,rgba(255,250,225,.14) 0 1px,
-        transparent 1px 3px),
-      linear-gradient(135deg,#6b4c17 0%,#c99a41 14%,#fbe9b0 27%,#b3842f 41%,
-        #f2d08a 55%,#8c6526 70%,#f7df9f 85%,#7a581c 100%);
-    -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
-    -webkit-mask-composite:xor;
-    mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
-    mask-composite:exclude}
+.panel{border-color:transparent}
+.panel::before{content:"";position:absolute;inset:0;pointer-events:none;
+border-radius:inherit;padding:4px;
+background:repeating-linear-gradient(90deg,rgba(255,250,225,.14) 0 1px,
+transparent 1px 3px),
+linear-gradient(135deg,#6b4c17 0%,#c99a41 14%,#fbe9b0 27%,#b3842f 41%,
+#f2d08a 55%,#8c6526 70%,#f7df9f 85%,#7a581c 100%);
+-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+-webkit-mask-composite:xor;
+mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+mask-composite:exclude}
 }
 .panel--violeta{border-color:var(--violeta)}
 /* Lo que se lee largo sube de opacidad. */
@@ -98,20 +98,20 @@ main{width:100%;max-width:46rem;margin:0 auto}
 
 /* --- cabecera --- */
 header{display:flex;align-items:flex-end;gap:1rem;border-bottom:3px solid var(--bronce);
-  padding-bottom:.9rem;margin-bottom:1.6rem}
+padding-bottom:.9rem;margin-bottom:1.6rem}
 .marca{flex:1;min-width:0}
 .marca h1{font-size:1.05rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
-  color:var(--tinta);overflow-wrap:break-word;word-break:normal;hyphens:none}
+color:var(--tinta);overflow-wrap:break-word;word-break:normal;hyphens:none}
 .marca h1 b{font-weight:800;font-size:1.28em;color:var(--violeta-texto)}
 .marca p{color:var(--tenue);font-size:.78rem;margin-top:.2rem}
 
 /* La cara de las cabeceras interiores vive en `cara.css`, con la de la
-   portada: es la misma, y una cara con dos hojas termina siendo dos caras. */
+portada: es la misma, y una cara con dos hojas termina siendo dos caras. */
 
 /* --- tipografia --- */
 h2{font-size:.82rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
-  color:var(--bronce-hondo);margin:2.2rem 0 .8rem;
-  border-bottom:1px solid var(--bronce-claro);padding-bottom:.4rem}
+color:var(--bronce-hondo);margin:2.2rem 0 .8rem;
+border-bottom:1px solid var(--bronce-claro);padding-bottom:.4rem}
 h3{font-size:.95rem;font-weight:700;margin:0 0 .3rem;color:var(--indigo)}
 p{margin:0 0 .9rem}
 .guia{font-size:1.05rem;line-height:1.55}
@@ -125,84 +125,84 @@ strong{color:var(--indigo)}
 ol.pasos{list-style:none;counter-reset:p}
 ol.pasos li{counter-increment:p;display:flex;gap:.85rem;margin-bottom:1rem}
 ol.pasos li::before{content:counter(p);flex:0 0 2rem;height:2rem;
-  display:flex;align-items:center;justify-content:center;
-  background:var(--bronce);color:var(--marmol-claro);font-weight:700;font-size:.9rem}
+display:flex;align-items:center;justify-content:center;
+background:var(--bronce);color:var(--marmol-claro);font-weight:700;font-size:.9rem}
 ol.pasos div{flex:1;min-width:0}
 
 /* --- controles --- */
 /* TODO LO QUE SE PULSA ES UNA NUBE VIOLETA (2026-09-05). Los botones ya eran
-   violetas pero con esquinas de panel y canto del mismo violeta: se leian como
-   recuadros, no como algo que flota sobre el marmol. Radio 999 y canto DORADO,
-   que es la figura que ya tienen las nubes de Herramientas, las cuatro puertas
-   y los dos mandos del cabezal. Una sola familia para una sola accion: pulsar.
+violetas pero con esquinas de panel y canto del mismo violeta: se leian como
+recuadros, no como algo que flota sobre el marmol. Radio 999 y canto DORADO,
+que es la figura que ya tienen las nubes de Herramientas, las cuatro puertas
+y los dos mandos del cabezal. Una sola familia para una sola accion: pulsar.
 
-   Se cambia AQUI y no boton por boton -- esta regla la heredan `.boton`,
-   enviar, hablar, corregir, entrar, cerrar el pleno y lo que se escriba
-   manana. Blanco sobre `--violeta` da 5,34:1, que es la medida que ya sostenia
-   este mismo boton antes de redondearlo; el canto no toca el contraste.
+Se cambia AQUI y no boton por boton -- esta regla la heredan `.boton`,
+enviar, hablar, corregir, entrar, cerrar el pleno y lo que se escriba
+manana. Blanco sobre `--violeta` da 5,34:1, que es la medida que ya sostenia
+este mismo boton antes de redondearlo; el canto no toca el contraste.
 
-   Lo que NO se vuelve nube: `Powered` y `Modelo:`, que siguen en verde. No se
-   pulsan -- son un dato y una declaracion, y darles figura de boton seria
-   ofrecer un gesto que no existe. */
+Lo que NO se vuelve nube: `Powered` y `Modelo:`, que siguen en verde. No se
+pulsan -- son un dato y una declaracion, y darles figura de boton seria
+ofrecer un gesto que no existe. */
 button,.boton{font:inherit;font-size:.85rem;cursor:pointer;min-height:1.5rem;min-width:1.5rem;
-  background:var(--violeta);color:#fff;border:1px solid var(--oro);
-  border-radius:999px;
-  padding:.6rem .9rem;display:inline-block;text-decoration:none;
-  transition:transform .2s var(--spring),background .2s ease,border-color .2s ease}
+background:var(--violeta);color:#fff;border:1px solid var(--oro);
+border-radius:999px;
+padding:.6rem .9rem;display:inline-block;text-decoration:none;
+transition:transform .2s var(--spring),background .2s ease,border-color .2s ease}
 :is(button,.boton):focus{background:var(--violeta-texto);border-color:var(--oro);outline:0}
 /* EL FOCO SE VE EN LAS NUEVE PORTADAS (2026-09-25). El anillo vivia solo en
-   `movimiento.css`, que carga la portada castellana y ninguna otra: en ocho
-   lenguas, navegar con Tab por las cinco puertas era avanzar a ciegas. Se sube
-   aqui la misma regla, con la misma especificidad, en vez de cargar
-   `movimiento.css` en ocho portadas: esa hoja no es neutra en coste. El piso
-   ATLAS trae su propio anillo dentro de `#atlas-piso`; este es el global. */
+`movimiento.css`, que carga la portada castellana y ninguna otra: en ocho
+lenguas, navegar con Tab por las cinco puertas era avanzar a ciegas. Se sube
+aqui la misma regla, con la misma especificidad, en vez de cargar
+`movimiento.css` en ocho portadas: esa hoja no es neutra en coste. El piso
+ATLAS trae su propio anillo dentro de `#atlas-piso`; este es el global. */
 :is(a,button,.boton,.leve,summary):focus-visible{outline:2px solid var(--bronce);outline-offset:2px}
 :is(button,.boton):active{transform:scale(.98)}
 /* Hover y escala solo con raton de verdad: en tactil el navegador emula un
-   hover pegajoso que se queda encendido tras el toque. */
+hover pegajoso que se queda encendido tras el toque. */
 @media (hover:hover) and (pointer:fine){
-  :is(button,.boton):hover{background:var(--violeta-texto);border-color:var(--oro);
-    transform:scale(1.02)}
+:is(button,.boton):hover{background:var(--violeta-texto);border-color:var(--oro);
+transform:scale(1.02)}
 }
 /* Y CON TINTA OSCURA, aunque las normas de contraste perdonen a los controles
-   apagados. Aqui no perdonan: en Instalar, el «Ultima version de la app · 37h
-   45m» es un boton deshabilitado que en realidad es un MARCADOR -- lleva
-   dentro la medida de cuanto hace que se publico. Un dato que no se puede leer
-   no es un dato apagado, es un dato perdido, y blanco sobre `--tenue` daba
-   2,52:1. `#2f2757` sobre ese gris da 5,39 medido en la pagina, y el boton sigue
-   pareciendo apagado, que es lo unico que la norma pedia. */
+apagados. Aqui no perdonan: en Instalar, el «Ultima version de la app · 37h
+45m» es un boton deshabilitado que en realidad es un MARCADOR -- lleva
+dentro la medida de cuanto hace que se publico. Un dato que no se puede leer
+no es un dato apagado, es un dato perdido, y blanco sobre `--tenue` daba
+2,52:1. `#2f2757` sobre ese gris da 5,39 medido en la pagina, y el boton sigue
+pareciendo apagado, que es lo unico que la norma pedia. */
 button[disabled]{background:var(--tenue);border-color:var(--tenue);
-  color:#2f2757;cursor:progress}
+color:#2f2757;cursor:progress}
 /* `hidden` tiene que ganar, y no ganaba: el `display:inline-block` de autor de
-   aqui arriba pisa la regla del navegador que apaga los `[hidden]`. TODO boton
-   oculto se veia, en toda la web. Va aqui porque el fallo es de esta hoja. */
+aqui arriba pisa la regla del navegador que apaga los `[hidden]`. TODO boton
+oculto se veia, en toda la web. Va aqui porque el fallo es de esta hoja. */
 [hidden]{display:none}
 .leve{background:transparent;color:var(--bronce-hondo);border-color:var(--bronce);
-  font-size:.8rem;padding:.45rem .7rem}
+font-size:.8rem;padding:.45rem .7rem}
 .leve:is(:hover,:focus){background:var(--bronce);color:var(--marmol-claro)}
 
 /* La identidad es la accion PRINCIPAL: violeta lleno, como el de enviar.
-   `auth.js` la marca `.leve`; aqui recupera su peso sin tocar el JS. */
+`auth.js` la marca `.leve`; aqui recupera su peso sin tocar el JS. */
 .identity .leve{background:var(--violeta);color:#fff;border-color:var(--violeta);
-  font-weight:700;font-size:.85rem;padding:.6rem 1rem}
+font-weight:700;font-size:.85rem;padding:.6rem 1rem}
 .identity .leve:is(:hover,:focus){background:var(--indigo);border-color:var(--indigo)}
 .fila{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.7rem}
 /* EL BLANCO ESTABA COSIDO EN EL VALOR, no en un nombre, y por eso no giraba
-   con el tema: `rgba(255,255,255,.75)` en oscuro dejaba la caja de escribir
-   como una plancha clara en medio de una pagina que por lo demas deja ver el
-   marmol. Es la MISMA cicatriz que la app se quito el 2026-09-04 con sus dos
-   velos, y esta escrita alli con estas palabras: «llevaban el blanco cosido en
-   el valor y no en un nombre».
+con el tema: `rgba(255,255,255,.75)` en oscuro dejaba la caja de escribir
+como una plancha clara en medio de una pagina que por lo demas deja ver el
+marmol. Es la MISMA cicatriz que la app se quito el 2026-09-04 con sus dos
+velos, y esta escrita alli con estas palabras: «llevaban el blanco cosido en
+el valor y no en un nombre».
 
-   Con nombre, el velo se sustituye en `tema.css` como todo lo demas, y en
-   oscuro es un velo oscuro. En claro vale exactamente lo que valia -- no hay
-   cambio que mirar en ese tema. */
+Con nombre, el velo se sustituye en `tema.css` como todo lo demas, y en
+oscuro es un velo oscuro. En claro vale exactamente lo que valia -- no hay
+cambio que mirar en ese tema. */
 input,textarea,select{font:inherit;font-family:var(--mono);width:100%;
-  background:var(--velo-campo);color:var(--tinta);
-  border:1px solid var(--bronce);border-radius:calc(var(--radius) - 6px);
-  padding:.65rem .7rem;transition:border-color .2s ease,box-shadow .3s ease}
+background:var(--velo-campo);color:var(--tinta);
+border:1px solid var(--bronce);border-radius:calc(var(--radius) - 6px);
+padding:.65rem .7rem;transition:border-color .2s ease,box-shadow .3s ease}
 input:focus,textarea:focus,select:focus{outline:0;border-color:var(--violeta);
-  box-shadow:0 0 0 3px rgba(109,90,224,.18)}
+box-shadow:0 0 0 3px rgba(109,90,224,.18)}
 textarea{min-height:8rem;font-size:.78rem;line-height:1.5;resize:vertical}
 
 /* --- conversacion --- */
@@ -213,29 +213,29 @@ textarea{min-height:8rem;font-size:.78rem;line-height:1.5;resize:vertical}
 /* --- estados honestos --- */
 .nodata{color:var(--sol);font-size:.8rem;border-left:3px solid var(--sol);padding-left:.7rem;margin:.8rem 0}
 .cifra{font-variant-numeric:tabular-nums;font-weight:700;color:var(--violeta-texto);
-  text-shadow:0 0 10px rgba(109,90,224,.45)}  /* halo SOLO en cifras vivas */
+text-shadow:0 0 10px rgba(109,90,224,.45)}  /* halo SOLO en cifras vivas */
 
 /* --- pie honesto --- */
 /* EL PIE PIERDE SU CAJA (2026-09-05). Tenia borde propio, fondo propio y
-   esquinas propias, asi que se leia como un panel mas -- un tercero, debajo de
-   los dos que la pagina tiene. Lo que dice el pie es letra pequena honesta, no
-   una seccion: se queda el texto y se va el marco. */
+esquinas propias, asi que se leia como un panel mas -- un tercero, debajo de
+los dos que la pagina tiene. Lo que dice el pie es letra pequena honesta, no
+una seccion: se queda el texto y se va el marco. */
 .honest-footer{margin-top:1.5rem;padding:1rem 0 0;
-  font-size:.74rem;line-height:1.6;color:var(--tenue)}
+font-size:.74rem;line-height:1.6;color:var(--tenue)}
 .honest-footer h2{margin-top:0}
 .honest-footer li{margin:0 0 .5rem 1.1rem}
 .honest-footer strong{color:var(--bronce-hondo)}
 
 /* Las diapositivas del lore se fueron con la pagina: la web es Agora, no
-   museo. Quedaba 1,8 KB de reglas que ya no pintaban nada. */
+museo. Quedaba 1,8 KB de reglas que ya no pintaban nada. */
 .cuenta{font-size:.74rem;color:var(--tenue);letter-spacing:.14em;text-transform:uppercase}
 
 /* --- quien pide menos movimiento manda sobre todo lo anterior ------------- */
 @media (prefers-reduced-motion:reduce){
-  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;
-    transition-duration:.001ms!important}
-  #ambient{display:none}
-  button:hover,.boton:hover{transform:none}
+*,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;
+transition-duration:.001ms!important}
+#ambient{display:none}
+button:hover,.boton:hover{transform:none}
 }
 ::view-transition-old(root),::view-transition-new(root){animation-duration:.28s}
 
@@ -244,28 +244,37 @@ textarea{min-height:8rem;font-size:.78rem;line-height:1.5;resize:vertical}
 .cab-h1{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 
 @media (forced-colors:active){
-  .panel,.thegame-capa,.radio-chat,.summon-access,.deep-link,.hitl-firma,.cable-fila{background:Canvas}
-  .panel,.thegame-capa,.radio-chat{border:1px solid CanvasText;box-shadow:none}
-  .boton,.boton-sec,.radio-chat-alterna,.radio-chat-tab{border:1px solid ButtonText;forced-color-adjust:none}
-  .skip-link{background:Highlight;color:HighlightText}
+.panel,.thegame-capa,.radio-chat,.summon-access,.deep-link,.hitl-firma,.cable-fila{background:Canvas}
+.panel,.thegame-capa,.radio-chat{border:1px solid CanvasText;box-shadow:none}
+.boton,.boton-sec,.radio-chat-alterna,.radio-chat-tab{border:1px solid ButtonText;forced-color-adjust:none}
+.skip-link{background:Highlight;color:HighlightText}
 }
 @media (prefers-contrast:more){
-  .panel{background:var(--marmol-claro);backdrop-filter:none;-webkit-backdrop-filter:none}
-  .panel,.boton,.boton-sec{border-width:2px}
-  #thegame :is(.boton,.boton-sec){font-weight:600}
+.panel{background:var(--marmol-claro);backdrop-filter:none;-webkit-backdrop-filter:none}
+.panel,.boton,.boton-sec{border-width:2px}
+#thegame :is(.boton,.boton-sec){font-weight:600}
 }
 @media (prefers-reduced-transparency:reduce){
-  .panel:not(#chat){background:var(--marmol-claro);backdrop-filter:none;-webkit-backdrop-filter:none;box-shadow:none}
-  .panel{border:1px solid var(--bronce)}
+.panel:not(#chat){background:var(--marmol-claro);backdrop-filter:none;-webkit-backdrop-filter:none;box-shadow:none}
+.panel{border:1px solid var(--bronce)}
 }
 
 /* A11Y pieza 3 (ronda 110): target size. WCAG 2.2 AA 2.5.8 pide 24x24 minimo
-   en todo lo tocable; la vara de la casa son los 44px del chequeo en vivo.
-   Los botones de accion ya heredan .boton (padding .6rem .9rem >> 24px).
-   Los enlaces pequenos (lenguas, tabs) ganan area minima aqui. */
+en todo lo tocable; la vara de la casa son los 44px del chequeo en vivo.
+Los botones de accion ya heredan .boton (padding .6rem .9rem >> 24px).
+Los enlaces pequenos (lenguas, tabs) ganan area minima aqui. */
 .cab-lenguas a,.radio-chat-tab,.radio-chat-alterna,summary{min-height:1.5rem;min-width:1.5rem}
 .cab-lenguas a{display:inline-flex;align-items:center;justify-content:center;padding:.15rem .45rem}
 #thegame :is(.boton,.boton-sec){min-height:2.75rem;min-width:2.75rem}
+
+@media print{
+  #ambient,.mapa-mandos,.mapa-aviso,.radio-chat,.crab-joystick,.thegame-terminal,.skip-link{display:none}
+  .panel,.thegame-capa,.thegame-pliego,.summon-access,.deep-link,.hitl-firma,.cable-fila,.place-actions{
+    background:#fff;color:#000;border:1px solid #000;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none}
+  .thegame-pliego[open]{display:block}
+  .no-data{color:#000}
+  body{background:#fff}
+}
 .killswitch-dot{display:inline-block;width:.55rem;height:.55rem;border-radius:50%;margin-left:.4rem;vertical-align:middle;background:transparent}
 .killswitch-dot.con-anillo{box-shadow:0 0 0 2px var(--panel-bg),0 0 0 3.5px currentColor}
 .killswitch-shape{margin-left:.25rem;font-size:.7rem}
