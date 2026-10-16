@@ -19,6 +19,7 @@
 
   var enNode = typeof module === 'object' && module.exports;
   var K = enNode ? require('./canon.js') : raiz.AtlasCanon;
+  var R = enNode ? require('./node_reception_contract.js') : raiz.AtlasNodeReception;
   var ESTADOS = ['MEDIDO', 'EMULADO', 'NO_DATA'], EJES = ['ram_mib', 'gen_cps'];
   var RASGOS = ['vida', 'ataque', 'armadura', 'velocidad', 'esquiva_pm'];
   var EVENTOS = { inicio: ['t', 'tick', 'vida'], golpe: ['t', 'tick', 'de', 'dano', 'vida'],
@@ -46,7 +47,10 @@
   }
   function formaCedula(c) {
     if (!objeto(c) || c.esquema !== 'preceptoros.cedula-nodo/1' || !NOMBRE.test(c.nodo || '')) { return 'cedula: forma'; }
-    if (c.firma !== null || !/^NO_DATA/.test(c.autenticidad || '')) { return c.nodo + ': la cedula no va firmada'; }
+    if (Object.prototype.hasOwnProperty.call(c, 'firma_ssh')) {
+      var declaration = R.declaration(c);
+      if (declaration) { return c.nodo + ': ' + declaration; }
+    } else if (c.firma !== null || !/^NO_DATA/.test(c.autenticidad || '')) { return c.nodo + ': la cedula no va firmada'; }
     var cuerpo = {};
     Object.keys(c).forEach(function (k) { if (k !== 'sha256') { cuerpo[k] = c[k]; } });
     if (K.huella(cuerpo) !== c.sha256) { return 'FALLO_INTEGRIDAD ' + c.nodo; }
