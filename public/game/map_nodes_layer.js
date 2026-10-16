@@ -1,14 +1,7 @@
-/* preceptoros.org · theGame · LOS NODOS DEL RACK EN EL MAPA (chunk 1: split de mar.js, FIRMO 2026-10-13).
-
-   Sale de `mar.js` para que el mapa tenga margen (su techo es 16 KiB). Mismo comportamiento: `casas()` da las casas
-   de las cedulas que tienen punto en el mapa (hoy solo Hexelion, FIRMO 2026-10-12), y `pinta()` dibuja cada una con
-   su emblema y su estado de medida (MEDIDO en dorado; el resto, en niebla y desafinado). Sin red, sin azar, sin reloj.
-   `mar.js` la llama con su cola de pintor (`pon`), asi que el orden de profundidad no cambia. */
 (function (raiz) {
   'use strict';
 
-  /* Las casas de las cedulas, con el estado de cada medida tal cual. */
-  function casas() {
+    function casas() {
     var Ce = raiz.AtlasNodosCedulas, Q = raiz.AtlasCuenta, G = raiz.AtlasGacha, N = raiz.AtlasNiebla, K = raiz.AtlasCanon;
     if (!Ce || !G) { return []; }
     return Ce.nodos.filter(function (c) { return N.sitioNodo(c.nodo); }).map(function (c) {
@@ -18,8 +11,7 @@
     });
   }
 
-  /* o: { H0 (las casas), col (colores del mapa), t (tiempo), dpr, pon (cola de pintor de mar.js) }. */
-  function pinta(g, P, o) {
+    function pinta(g, P, o) {
     var E = raiz.AtlasEscena, H0 = o.H0, col = o.col, t = o.t, dpr = o.dpr, pon = o.pon;
     H0.forEach(function (n) { pon(n.x, n.y, function () {
       var p = P(n.x, n.y), r = 26 * dpr, med = n.gen.estado === 'MEDIDO';

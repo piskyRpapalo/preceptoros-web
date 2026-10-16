@@ -1,34 +1,20 @@
-/* preceptoros.org · theGame · EL PINTOR DEL MAR: las teselas del lecho y de la niebla (J6, sacado de `mar.js`).
-
-   Desde U1 («el mapa unico», 2026-10-11) el fondo de la portada ES el mapa global, interactivo y siempre detras:
-   el lienzo de fondo propio de J6 (`monta`, `portada`) se RETIRA y queda lo que lo hacia posible, el pintor UNICO
-   de teselas que pide el mapa (T0-D: sin gemelos). La deriva es UN desplazamiento global por cuadro (las teselas
-   no cambian, el mar si: la respiracion que M4 horneaba mal). Ruido entero (escena.js), niebla de lo MEDIDO
-   (fog_of_war.js); el reloj de pantalla solo mueve la deriva. */
 (function (raiz) {
   'use strict';
 
-  /* One warm reef palette, shared with the coral painter: shaded teal through living mint, with a
-     small amber sunlit edge. The bed is scenery, never a signal or a measurement. */
-  var TIERRA = [[12, 51, 57], [14, 76, 82], [14, 96, 104], [32, 112, 108], [32, 124, 116], [48, 151, 128], [70, 178, 166]];
+    var TIERRA = [[12, 51, 57], [14, 76, 82], [14, 96, 104], [32, 112, 108], [32, 124, 116], [48, 151, 128], [70, 178, 166]];
   var NIEBLA = [null, [64, 72, 96]], TESELA = 240, RES = 4;
 
 
-  /* La deriva del mar en el instante t (ms de pantalla): dos senos lentos, en unidades de mundo. */
-  function deriva(t) { return [Math.sin(t * 0.00011) * 10, Math.cos(t * 0.00009) * 10]; }
+    function deriva(t) { return [Math.sin(t * 0.00011) * 10, Math.cos(t * 0.00009) * 10]; }
 
-  /* Soft, rounded reef beds replace the old evenly noisy floor. Each pebble is positioned and
-     sized from its world cell, so adjacent cached tiles agree and the same map always repeats. */
-  function lecho(x, y, E) {
+    function lecho(x, y, E) {
     var cx = Math.floor(x / 320), cy = Math.floor(y / 280), px = x / 320 - cx, py = y / 280 - cy;
     var hx = E.hash(cx, cy, 71), hy = E.hash(cx, cy, 97), rx = 0.22 + E.hash(cx, cy, 131) * 0.13;
     var ry = 0.2 + E.hash(cx, cy, 173) * 0.12, dx = (px - 0.25 - hx * 0.5) / rx, dy = (py - 0.25 - hy * 0.5) / ry;
     var d = dx * dx + dy * dy, r = Math.max(0, Math.min(1, (1.18 - d) * 1.35));
     return r * r * (3 - 2 * r);
   }
-  /* Direct palette sampling keeps rounded forms readable; Atkinson error diffusion made the
-     projected floor sparkle as a checkerboard. The fixed raster is still deterministic. */
-  function texturaLecho(E, i, j, n) {
+    function texturaLecho(E, i, j, n) {
     var c = raiz.document.createElement('canvas'); c.width = c.height = n;
     var g = c.getContext('2d'), im = g.createImageData(n, n), k = 0;
     for (var y = 0; y < n; y++) { for (var x = 0; x < n; x++) {
@@ -41,11 +27,7 @@
     g.putImageData(im, 0, 0); return c;
   }
 
-  /* Un pintor de teselas con sus caches acotadas (TOPE teselas de cada clase). MEDIDO en el Doogee (2026-10-13): con el
-     rombo, la caja del mundo visible tiene 12x11 = 132 teselas; con un tope de 90 que se VACIABA entero, la cache se
-     rehacia cada cuadro (2.277 texturas en 3 s, el mapa a 2,7 fps). Ahora: se descartan las teselas cuyo rombo no toca la
-     pantalla y la cache suelta la MAS VIEJA, una a una, con sitio de sobra para lo visible. */
-  var TOPE = 220;
+    var TOPE = 220;
   function suelta(c) { for (var k in c) { delete c[k]; return; } }
   function pintor() {
     var E = raiz.AtlasEscena, N = raiz.AtlasNiebla, C = raiz.AtlasCamara;
@@ -72,17 +54,13 @@
       nieblas[k] = algo ? t : null; nn++;
       return nieblas[k];
     }
-    /* Pega las teselas visibles; (dx, dy) desplaza el terreno en unidades de mundo (la deriva). LEY DEL SUELO (2026-10-12):
-       cada tesela cuadrada se dibuja como ROMBO con la matriz de la camara (`AtlasCamara.matriz`, la misma proyeccion
-       que todo lo demas): mismas teselas, misma cache, misma respiracion; un pelo de solape para que no se vean costuras. */
-    function capas(g, cam, W, H, z, que, dx, dy) {
+        function capas(g, cam, W, H, z, que, dx, dy) {
       var v = C.vista(cam, W, H, z), m = C.matriz(z), n = TESELA / RES;
       g.save();
       for (var i = Math.floor((v.x0 - dx) / TESELA); i <= Math.floor((v.x1 - dx) / TESELA); i++) {
         for (var j = Math.floor((v.y0 - dy) / TESELA); j <= Math.floor((v.y1 - dy) / TESELA); j++) {
           var p = C.aPantalla(cam, W, H, z, i * TESELA + dx, j * TESELA + dy), lado = TESELA * m[0], alto = TESELA * m[1];
-          /* El rombo de la tesela va de p hacia abajo: x en [p0 - lado, p0 + lado], y en [p1, p1 + 2 alto]. Fuera, ni se pide. */
-          if (p[0] + lado < 0 || p[0] - lado > W || p[1] > H || p[1] + 2 * alto < 0) { continue; }
+                    if (p[0] + lado < 0 || p[0] - lado > W || p[1] > H || p[1] + 2 * alto < 0) { continue; }
           var t = que(i, j);
           if (t) { g.imageSmoothingEnabled = true; g.setTransform(m[0] * RES, m[1] * RES, m[2] * RES, m[3] * RES, p[0], p[1]); g.drawImage(t, 0, 0, n + 0.6, n + 0.6); }
         }
@@ -90,8 +68,7 @@
       g.restore();
     }
     return {
-      /* Lo despejado manda en la niebla: si cambia su huella, la cache de niebla se vacia. */
-      despejado: function (c) { var h = N.huella(c); if (h !== huella) { huella = h; nieblas = {}; nn = 0; } circ = c; },
+            despejado: function (c) { var h = N.huella(c); if (h !== huella) { huella = h; nieblas = {}; nn = 0; } circ = c; },
       tierra: function (g, cam, W, H, z, d) { capas(g, cam, W, H, z, tesela, d ? d[0] : 0, d ? d[1] : 0); },
       niebla: function (g, cam, W, H, z) { capas(g, cam, W, H, z, bruma, 0, 0); }
     };
