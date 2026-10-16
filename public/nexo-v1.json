@@ -1,0 +1,21 @@
+{
+  "esquema": "atlas.nexo/1",
+  "version": "v1",
+  "procedencia": "CIEF designed (25.8), built here as a public CONTRACT: an external AI reads this before entering. The aduana is alive and measured end to end at api.preceptoros.org; this file only DECLARES the fields the call carries.",
+  "fields": {
+    "version": "the schema version this call speaks (atlas.nexo/1)",
+    "origen": "attribution in text: who is calling, for the audit trail",
+    "accion": "CLOSED list: 'llamar' (call the lab). No free-text action",
+    "contexto": "short context string, <=512 bytes, visitor-visible",
+    "coordenada": "in-world coordinate [x, y] of the caller at call time",
+    "hash_de_estado_esperado": "sha256 of the state the caller expects the lab to see",
+    "tic": "the game cycle at call time; the game cycle is the only time authority"
+  },
+  "aduana": {
+    "viva": "measured end to end (gesto + 2 firmas -> 202 encolado -> bandeja -> comprobador -> telemetria | rechazados)",
+    "protocolo": "GET api.preceptoros.org/api/v1/reto (challenge), then POST .../paquetes with esquema 'atlas.nexo/1'",
+    "rechazo": "a rejected call answers with its cause; the web paints the cause, never invents a receipt",
+    "nota": "the rack side is NOT designed from here: if the rack needs something, it is NO_DATA with cause and the Mesa manages it"
+  },
+  "telemetria": "DECLARED, never camouflaged: the call carries pseudonimo, clave_publica, reto, firma, esquema, pares. Nothing else. No accounts, no secrets, no extra headers."
+}

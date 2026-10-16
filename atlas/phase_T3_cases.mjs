@@ -4,7 +4,7 @@ import { createHash } from 'node:crypto';
 import { spawnSync } from 'node:child_process';
 const root = new URL('../', import.meta.url);
 const digest = b => createHash('sha256').update(b).digest('hex');
-const baseline = 'b81b02c25f594d885bd1a06ad8ac9df1c01bd4d4159b8f3d9b07fecb3c880939';
+const baseline = 'bb738d29bbe2e51465bb892287afd0c5346cec595b9ff1f4471e6fe83a35c792'; /* actualizado 2026-10-16 por PIEZA C: 8 claves cable_* anadidas al atlas (cuenta: el revertido ahora incluye esas claves) */
 const protectedFiles = {
   'public/game/valores.js': '8892267206e4328ae9873b016c3c1d07eacab776bbb6614ed1df1d8c254a2e29',
   'public/assets/atlas-motor.js': '16e50ed537c5d6898815a2711a22dc3d7497d4e0a3cd6a0bae013241822e11c9',
