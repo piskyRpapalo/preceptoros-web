@@ -77,7 +77,7 @@ Read this index, then come back ONCE for ONE package by name (pass 2, <=300 toke
 
 - state-web: production figures, MEASURED
 - state-app: APP card, local memory + inference
-- state-lab: LAB card, benchmark record
+- state-lab: LAB card, local resources, benchmark record
 - contract: PRECEPTOR.md contributor contract
 - rack: machines, measured, no addresses
 - benchmarks: 2026-10-11 embedding/reading
