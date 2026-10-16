@@ -1,23 +1,3 @@
-/* preceptoros.org · theGame · multijugador · el DUELO entre personas, por PAQUETES firmados.
-
-   SIN SERVIDOR (PLAN §2-§3): dos aparatos se pasan paquetes `atlas.paquete_mp/1` por el canal que la
-   persona elija (Send, Copy, fichero). Cada paquete lleva sobres ya firmados (`sobres.js`) y la
-   politica de su sesion. El duelo fantasma en tres idas y vueltas:
-   1. DEFENSA   · B publica su defensa en su tablon (tropas `{tc, semilla}` + lo que declara en juego).
-   2. DESAFIO   · A la importa, elige escuadra y manda asalto + su COMPROMISO (su `r` no sale).
-   3. RESPUESTA · B acepta: se compromete y REVELA a la vez (A ya no puede cambiar su `r`).
-   4. REVELACION· A revela y los dos vuelven a jugar el MISMO combate con la semilla de los dos `r`.
-   Si A no revela en `combate.abandono_ciclos` ciclos de juego de B, B reclama el ABANDONO (firmado
-   por el Soberano, 2026-09-28): queda como resultado y como deuda a la vista.
-
-   IMPORTAR NO ES CREER: cada sobre se VERIFICA (firma Ed25519) y se anota en el libro de su sesion
-   (`seq`, `prev`, fork, replica). Un desafio a una defensa que no es la tuya se rechaza. El resultado
-   no se envia para que lo crean: cada lado lo vuelve a jugar.
-
-   PLATAFORMA INYECTADA: `firma(texto)`, `verifica(texto, firma, clave)` (promesas), `azar()` (64 hex)
-   y `azar32()` (32 hex) de `crypto.getRandomValues` en la pestana, deterministas en las pruebas;
-   `ciclo()` = el ciclo de juego de este aparato. Nada se guarda: vive en la pestana (guardarlo pide
-   firma). Ni DOM, ni red, ni reloj. */
 (function (raiz) {
   'use strict';
 
@@ -59,8 +39,7 @@
                         max_bytes: 8192, max_ops: 16, semilla: 'commit_reveal', conflicto: 'poda_gana',
                         contenido_v: op.contenido_v, nonce: op.azar32() });
     }
-    /* Mi siguiente sobre en una sesion: el `seq` y el `prev` los lleva este aparato. */
-    function firmaSobre(sesion, tipo, cuerpo) {
+        function firmaSobre(sesion, tipo, cuerpo) {
       var c = cabezas[sesion] || (cabezas[sesion] = { seq: 0, prev: 'genesis' });
       var s = { esquema: 'atlas.sobre/1', tipo: tipo, sesion: sesion, de: op.pub, pseudonimo: op.pseudonimo,
                 seq: c.seq + 1, prev: c.prev, contenido_v: op.contenido_v, cuerpo: K.ordena(cuerpo) };
@@ -76,8 +55,7 @@
       }
       return '';
     }
-    /* Todas las firmas del paquete, verificadas antes de tocar nada. */
-    function verificaTodo(p) {
+        function verificaTodo(p) {
       var ss = p.sobres.concat(p.defensa ? [p.defensa.sobre] : []);
       return Promise.all(ss.map(function (s) { return S.verifica(s, op.verifica); })).then(function (oks) {
         if (oks.indexOf(false) >= 0) { throw new Error('una firma no verifica'); }
@@ -199,8 +177,7 @@
       });
     }
 
-    /* Ciclos que le quedan al otro para revelar antes del abandono (NO_DATA si no espero nada). */
-    function plazo(ses) {
+        function plazo(ses) {
       var D = duelos[ses];
       if (!D || D.rol !== 'defensor' || D.esperando === null || D.resultado) { return null; }
       return Math.max(0, V.combate.abandono_ciclos - (op.ciclo() - D.esperando));

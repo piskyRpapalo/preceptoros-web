@@ -1,19 +1,3 @@
-/* preceptoros.org · theGame · LA REPETICION de una batalla, como una partida de estrategia vista otra vez.
-
-   El Soberano (2026-10-05): «busco unidades en movimiento por el mapa, como ver una partida de Age of
-   Empires repetida. No solo el combate por turnos». Las tropas salen de sus bases, cruzan el terreno
-   en formacion, rodean las rocas, chocan en el frente, disparan, retroceden, caen y se reagrupan.
-   La camara sigue la accion. Mandos grandes: play/pausa, x1/x2/x4, una linea de tiempo que se
-   arrastra y la formacion de tu bando.
-
-   NADA DE ESTO DECIDE. El resultado y cada golpe salen de `arena.combate`; `battle_choreography.js`
-   los pone en el mapa con un generador sembrado con la semilla de la partida, y este fichero solo los
-   pinta. La formacion cambia la coreografia, nunca el registro. Misma partida, misma repeticion.
-
-   LA ESTETICA MEDIDA SE QUEDA: el dano DESAFINA la figura, el color de cada onda es su VELOCIDAD, y el
-   bando se distingue por la FORMA de su marca (circulo el tuyo, rombo el otro), no solo por el color.
-   Con movimiento reducido: cuatro fotogramas clave quietos y el resumen en texto. El lienzo lleva
-   `role=img` y los momentos clave se narran en una region viva. Sin azar, sin red, sin reloj. */
 (function (raiz) {
   'use strict';
 
@@ -55,8 +39,7 @@
       return T('rp_' + m.tipo);
     }
 
-    /* --- los mandos ---------------------------------------------------------------------------------- */
-    var R = {}, caja = el('div', 'rp-mandos');
+        var R = {}, caja = el('div', 'rp-mandos');
     R.play = el('button', 'boton rp-play'); R.play.type = 'button';
     R.vel = el('button', 'boton-sec rp-vel'); R.vel.type = 'button';
     R.forma = el('button', 'boton-sec rp-forma'); R.forma.type = 'button';
@@ -65,9 +48,7 @@
     R.narra = el('p', 'rp-narra'); R.narra.setAttribute('aria-live', 'polite');
     R.claves = el('details', 'rp-claves'); R.claves.appendChild(el('summary', null, T('rp_claves')));
     R.lista = el('ol'); R.claves.appendChild(R.lista);
-    /* Degradacion honesta (B.6.1, ideas6oct:804): si el automatico baja la calidad tras MEDIR fps, se dice,
-       y volver a Maxima es un toque. Lo que el jugador elige manda sobre el automatico. */
-    R.ahorro = el('button', 'boton-sec rp-ahorro'); R.ahorro.type = 'button'; R.ahorro.hidden = true;
+        R.ahorro = el('button', 'boton-sec rp-ahorro'); R.ahorro.type = 'button'; R.ahorro.hidden = true;
     R.ahorro.textContent = T('rp_ahorro');
     R.ahorro.addEventListener('click', function () {
       var C = raiz.AtlasCalidad;
@@ -92,8 +73,7 @@
     R.tiempo.addEventListener('input', function () { t = +R.tiempo.value; juega = false; rotulos(); });
     lienzo.setAttribute('role', 'img'); lienzo.setAttribute('aria-label', T('rp_aria'));
 
-    /* --- la camara: encuadra a los vivos, suavizada sobre varios fotogramas (pura) ---------------- */
-    function caja2(ti) {
+        function caja2(ti) {
       var f = k.frames[Math.max(0, Math.min(k.frames.length - 1, ti))], x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9;
       for (var j = 0; j < f.length; j += 3) { if (f[j + 2] > 0) { x0 = Math.min(x0, f[j]); x1 = Math.max(x1, f[j]); y0 = Math.min(y0, f[j + 1]); y1 = Math.max(y1, f[j + 1]); } }
       return x0 > x1 ? [0, 0, 1000, 600] : [x0, y0, x1, y1];
@@ -112,8 +92,7 @@
       return [f0[j * 3] + (f1[j * 3] - f0[j * 3]) * a, f0[j * 3 + 1] + (f1[j * 3 + 1] - f0[j * 3 + 1]) * a, f0[j * 3 + 2]];
     }
 
-    /* --- un fotograma, en un rectangulo del lienzo (los cuatro clave lo usan con movimiento reducido) -- */
-    function dibuja(ti, rx, ry, W, H, calidad) {
+        function dibuja(ti, rx, ry, W, H, calidad) {
       var fi = Math.min(k.frames.length - 1, Math.floor(ti / k.muestra)), a = (ti % k.muestra) / k.muestra, cam = camara(fi, W, H), z = cam.z;
       function P(x, y) { return [rx + (x - cam.x) * z + W / 2, ry + (y - cam.y) * z + H / 2]; }
       g.save(); g.beginPath(); g.rect(rx, ry, W, H); g.clip();
@@ -129,8 +108,7 @@
       var n0 = k.n[0], r = Math.max(7 * dpr, 15 * z);
       for (var j = 0; j < k.max.length; j++) {
         var l = j < n0 ? 0 : 1, i = l ? j - n0 : j, p = pos(fi, j, a), s = P(p[0], p[1]), tr = U[l][i];
-        /* La estela: por donde paso en los ultimos fotogramas. */
-        if (calidad && p[2] > 0) {
+                if (calidad && p[2] > 0) {
           g.strokeStyle = hsla(velColor(k.vel[j]), 0.18); g.lineWidth = 1.5 * dpr; g.beginPath();
           for (var e = 6; e >= 0; e--) { var pe = pos(Math.max(0, fi - e), j, 0), se = P(pe[0], pe[1]); g[e === 6 ? 'moveTo' : 'lineTo'](se[0], se[1]); }
           g.stroke();
@@ -143,16 +121,14 @@
         if (p[2] > 0) {
           O.dibuja(g, tr.armonicos, s[0], s[1], r, { t: ti, giro: ti * 0.0006 * (l ? 1 : -1), color: velColor(k.vel[j]), grosor: 1.6 * dpr,
             brillo: calidad ? 0.7 : 0, desafina: Math.min(1, (1 - p[2] / k.max[j]) * 0.85), calidad: calidad, estela: 0 });
-          /* P6: su ESCUADRON alrededor (escuadron.js), que cae con su vida. Solo coreografia: no decide. */
-          if (raiz.AtlasEscuadron) { raiz.AtlasEscuadron.pinta(g, { t: tr, x: s[0], y: s[1], vida: p[2], max: k.max[j], lado: l, color: hsla(velColor(k.vel[j]), 0.9) },
+                    if (raiz.AtlasEscuadron) { raiz.AtlasEscuadron.pinta(g, { t: tr, x: s[0], y: s[1], vida: p[2], max: k.max[j], lado: l, color: hsla(velColor(k.vel[j]), 0.9) },
                                                               { r: r, dpr: dpr, giro: ti * 0.0006 * (l ? 1 : -1), alfa: 1, t: ti, quieto: q }); }
         } else {
           g.strokeStyle = 'rgba(200,200,220,.45)'; g.lineWidth = dpr; g.beginPath();
           g.moveTo(s[0] - r * 0.4, s[1] - r * 0.4); g.lineTo(s[0] + r * 0.4, s[1] + r * 0.4); g.moveTo(s[0] + r * 0.4, s[1] - r * 0.4); g.lineTo(s[0] - r * 0.4, s[1] + r * 0.4); g.stroke();
         }
       }
-      /* Los disparos en vuelo, y su impacto. */
-      g.globalCompositeOperation = 'lighter';
+            g.globalCompositeOperation = 'lighter';
       k.tiros.forEach(function (d) {
         if (ti < d.t0 || ti > d.t1 + 420) { return; }
         var a0 = P(d.x0, d.y0), a1 = P(d.x1, d.y1), cl = velColor(k.vel[d.lado ? n0 + d.de : d.de]);

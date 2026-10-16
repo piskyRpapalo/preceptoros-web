@@ -1,20 +1,3 @@
-/* preceptoros.org · theGame · el JUEZ: cuando corriges o ignoras al piloto, ¿quién tenía razón?
-
-   QUÉ HACE. Desde el estado EXACTO del momento de la sugerencia juega dos ramas con el mismo
-   motor puro: lo que sugirió el piloto y lo que hiciste tú (o esperar, si no hiciste nada).
-   Después, HORIZONTE ciclos con el piloto al mando en las dos, y compara Núcleo, fase,
-   integridad mínima y XP, en ese orden. Como el motor es puro, el veredicto no es una opinión:
-   cualquiera lo vuelve a jugar y sale igual. Eso enseña determinismo con la propia partida.
-
-   UNA FUENTE, DOS USOS. `juzga` es puro y se exporta por `module.exports`: la Aduana del rack
-   lo carga desde aquí para decidir qué correcciones entrenan al piloto. La pestaña y el rack no
-   pueden discrepar porque no hay dos jueces, hay uno.
-
-   LIMPIEZA (2026-10-12, firmada: «decide tú la solución honesta y repórtalo con causa»). La mitad de la
-   pestaña se RETIRA: solo despertaba al responder a Suggest (retirado: su freno `capa.open` nunca dejaba
-   actuar al piloto), y envolvía CADA función del motor para avisar a una voz que ya no existe. Queda lo
-   puro, en la puerta del juego, para que cualquiera audite en su pestaña el MISMO juez que usa la Aduana.
-   La voz del Preceptor vuelve por el Narrador de la Radio, contando la crónica real. */
 (function (raiz) {
   'use strict';
 
@@ -30,8 +13,7 @@
     throw new Error('accion desconocida: ' + a.accion);
   }
 
-  /* Una rama: la acción, y después `h` ciclos con el piloto decidiendo tras cada uno. */
-  function rama(M, Pa, Pi, e0, a, ley, h) {
+    function rama(M, Pa, Pi, e0, a, ley, h) {
     var e = aplicar(M, e0, a), min = e.integridad;
     for (var i = 0; i < h; i++) {
       e = M.ciclo(e, ley);
@@ -45,8 +27,7 @@
              integridad_fin: e.integridad, xp: xp };
   }
 
-  /* Lo que importa, en orden: el Núcleo, la fase, no romperse por el camino y la XP. */
-  function gana(p, h) {
+    function gana(p, h) {
     if (!h) { return 'NO_DATA'; }
     var k = ['nucleo', 'fase', 'integridad_min', 'xp'];
     for (var i = 0; i < k.length; i++) {
@@ -56,8 +37,7 @@
     return 'empate';
   }
 
-  /* Una sugerencia que no cambia nada del estado es una alucinación: no hay rama que jugar. */
-  function sinEfecto(M, Pa, e, a) {
+    function sinEfecto(M, Pa, e, a) {
     try {
       return JSON.stringify(Pa.final(aplicar(M, e, a), M)) === JSON.stringify(Pa.final(e, M));
     } catch (x) { return true; }

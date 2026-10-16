@@ -115,7 +115,16 @@
       pendiente: null, eventos: [], subidas: [], avisos: []
     };
   }
-  function copia(e) { return JSON.parse(JSON.stringify(e)); }
+  function copia(e) {
+    var c = {};
+    for (var k in e) {
+      var v = e[k];
+      if (Array.isArray(v)) { c[k] = v.slice(); }
+      else if (v && typeof v === 'object') { c[k] = copia(v); }
+      else { c[k] = v; }
+    }
+    return c;
+  }
 
   function gana(e, oficio, cantidad) {
     if (!cantidad) { return; }
