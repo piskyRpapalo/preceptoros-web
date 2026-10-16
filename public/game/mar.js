@@ -166,7 +166,11 @@
 
         window.AtlasMapaDedo.monta({ c: c, C: C, dpr: dpr, z: function () { return c.width / VE * (c.clientWidth < 600 ? 1.15 : 1) * zoom.factor(); },
       cam: function () { return cam; }, circ: function () { return circ; }, quieto: quieto, choca: choca, marca: function () { movido = true; },
-      lugares: f.lugares, sitio: sitio, elige: f.elige, flecha: flecha });
+      lugares: f.lugares, sitio: sitio, elige: f.elige, flecha: flecha, planeaTap: function (pto) {
+        if (!cam) { return; }
+        if (C.planea(cam, pto.x, pto.y, circ, quieto())) { choca(); }
+        movido = true;
+      } });
     raf = requestAnimationFrame(pinta);
     VIVO = { mueveDir: mueveDir };
     return { para: function () { cancelAnimationFrame(raf); VIVO = null; }, camara: function () { return cam; }, despejado: function () { return circ; } };
