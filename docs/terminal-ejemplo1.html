@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vitrina · Terminal Ejemplo 1 · theGame · PreceptorOS</title>
+<!--
+  VITRINA (diseno, no juego): prueba de la "Terminal Ejemplo 1" — la nueva
+  distribucion 60/40 propuesta por el Soberano (camino C: vitrina ahora,
+  integracion tras el plano 3-4). Vive en docs/ para revision: no se sirve y
+  no cuenta como pagina de contenido. Cerco medido:
+  - Cero peticiones externas: fuentes con apilado del sistema; las woff2
+    autohospedadas llegan con FIRMO aparte (peso en la puerta gzip).
+  - Toda cifra lleva sello: SIMULADO o NO_DATA con causa. Nada inventado
+    como medida.
+  - Sin reloj de pared: los tiempos son ciclos de juego.
+  - Colores-senal de la TABLA_SEMANTICA intactos: la tinta del terminal viste
+    vinetas, no invade los estados.
+  - reduced-motion quieto.
+  - Las 9 lenguas llegan con la integracion.
+-->
+<style>
+  :root {
+    --ink: #141419;
+    --paper: #FFFDF0;
+    --ocean: #071f28;
+    --red: #E63946;
+    --yellow: #fed835;
+    --cyan: #00b7d4;
+    --purple: #7924dc;
+    --green: #10b981;
+    --orange: #f97316;
+    --b: 3.5px solid var(--ink);
+    --sh: 4px 4px 0 var(--ink);
+    --sh-s: 2.5px 2.5px 0 var(--ink);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--ink); color: var(--ink);
+    font-family: 'Fredoka', 'Trebuchet MS', system-ui, sans-serif;
+    height: 100vh; display: flex; flex-direction: column; overflow: hidden;
+    user-select: none; -webkit-font-smoothing: antialiased;
+  }
+  .comic { font-family: 'Bricolage Grotesque', 'Arial Rounded MT Bold', system-ui, sans-serif; }
+  .mono { font-family: 'Courier Prime', 'Courier New', monospace; }
+
+  /* ---- Masthead ---- */
+  header.masthead {
+    background: #11151c; border-bottom: var(--b);
+    padding: 8px 16px; display: flex; align-items: center;
+    justify-content: space-between; gap: 12px; z-index: 40;
+    box-shadow: 0 4px 0 var(--ink); flex-wrap: wrap;
+  }
+  .logo-block { display: flex; align-items: center; gap: 10px; }
+  .p-tile {
+    width: 38px; height: 38px; background: var(--yellow); border: var(--b);
+    box-shadow: var(--sh-s); display: grid; place-items: center;
+    font-family: 'Bricolage Grotesque', 'Arial Rounded MT Bold', sans-serif;
+    font-weight: 900; font-size: 26px; color: var(--ink); transform: rotate(-3deg);
+  }
+  .brand-text { display: flex; flex-direction: column; line-height: 1; }
+  .brand-title {
+    font-size: 20px; color: #ffffff; font-weight: 900;
+    text-transform: uppercase; letter-spacing: 0.03em;
+  }
+  .brand-subtitle { font-size: 11px; color: var(--yellow); font-weight: 700; letter-spacing: 0.15em; }
+  .stamp-terminal {
+    background: var(--red); color: #fff; border: 2.5px solid var(--ink);
+    box-shadow: var(--sh-s); font-weight: 800; font-size: 11px;
+    padding: 3px 8px; text-transform: uppercase; transform: rotate(1.2deg); white-space: nowrap;
+  }
+  .mission-ribbon {
+    flex: 1; min-width: 240px; max-width: 620px; background: #0f2b38;
+    border: 2px solid #1e4557; border-radius: 6px; padding: 6px 12px;
+    display: flex; align-items: center; gap: 12px; color: #f1f5f9;
+  }
+  .mission-step {
+    background: var(--purple); color: #fff; font-size: 10px; font-weight: 800;
+    padding: 3px 6px; border: 1.5px solid var(--ink); box-shadow: 2px 2px 0 var(--ink);
+    white-space: nowrap; text-transform: uppercase; transform: rotate(-0.5deg);
+  }
+  .mission-text { font-size: 11.5px; font-weight: 600; color: #f8fafc; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .mission-text strong { color: var(--yellow); }
+  .progress-bar-container { width: 64px; height: 8px; background: #05141c; border: 1.5px solid #334155; border-radius: 4px; overflow: hidden; }
+  .progress-bar-fill { width: 33%; height: 100%; background: var(--cyan); }
+  .header-actions { display: flex; align-items: center; gap: 8px; }
+  .btn-how-to {
+    background: var(--yellow); color: var(--ink); border: var(--b);
+    box-shadow: var(--sh-s); font-weight: 800; font-size: 11.5px;
+    padding: 5px 10px; cursor: pointer; display: flex; align-items: center;
+    gap: 5px; transform: rotate(-0.5deg);
+    transition: transform 0.1s, box-shadow 0.1s;
+  }
+  .btn-how-to:hover { transform: translate(-1px, -1px) rotate(-0.5deg); box-shadow: 3.5px 3.5px 0 var(--ink); }
+  .btn-how-to:active { transform: translate(2px, 2px); box-shadow: 0 0 0 var(--ink); }
+  .lang-badge { background: #0284c7; color: #fff; border: 2px solid var(--ink); box-shadow: var(--sh-s); font-weight: 800; font-size: 11px; padding: 4px 8px; }
+  .tester-chip { background: #1e293b; color: #cbd5e1; border: 1.5px solid #334155; padding: 4px 8px; font-size: 11px; display: flex; align-items: center; gap: 6px; }
+  .avatar-gem { width: 22px; height: 22px; border-radius: 50%; background: var(--purple); border: 1.5px solid var(--ink); display: grid; place-items: center; font-size: 10px; color: #fff; font-weight: 900; }
+
+  /* ---- Banner de vitrina (honestidad) ---- */
+  .vitrina-banner {
+    background: var(--paper); color: var(--ink); border-bottom: var(--b);
+    padding: 3px 16px; font-size: 10.5px; font-weight: 700;
+    display: flex; align-items: center; gap: 10px; z-index: 45;
+  }
+
+  /* ---- Split 60/40 ---- */
+  main.split-screen { flex: 1; display: flex; overflow: hidden; position: relative; background: var(--ocean); }
+  section.map-stage {
+    flex: 0 0 60%; position: relative; overflow: hidden;
+    background-color: var(--ocean);
+    background-image:
+      radial-gradient(#103d4f 1.5px, transparent 1.5px),
+      radial-gradient(circle at 50% 50%, #0d3647 0%, #071f28 100%);
+    background-size: 24px 24px, 100% 100%;
+    border-right: var(--b);
+  }
+  .halftone-undersea {
+    position: absolute; inset: 0; opacity: 0.12; pointer-events: none;
+    background-image: radial-gradient(var(--ink) 20%, transparent 20%);
+    background-size: 16px 16px;
+  }
+  svg.contour-lines { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; opacity: 0.35; }
+  .map-hud-top {
+    position: absolute; top: 14px; left: 14px; right: 14px; display: flex;
+    justify-content: space-between; align-items: flex-start; pointer-events: none; z-index: 20; gap: 8px; flex-wrap: wrap;
+  }
+  .sector-ribbon, .tension-chip {
+    pointer-events: auto; background: #0f172a; color: #e2e8f0; border: var(--b);
+    box-shadow: var(--sh-s); padding: 6px 12px; font-size: 12px; font-weight: 800;
+    display: flex; align-items: center; gap: 8px; transform: rotate(-0.5deg);
+  }
+  .tension-chip { transform: rotate(0.6deg); gap: 6px; }
+  .pulse-dot { width: 8px; height: 8px; background: var(--cyan); border-radius: 50%; box-shadow: 0 0 8px var(--cyan); }
+
+  /* ---- Sellos ---- */
+  .state-stamp {
+    font-family: 'Courier Prime', 'Courier New', monospace; font-size: 9px; font-weight: 700;
+    padding: 2px 6px; border: 1.5px solid var(--ink); box-shadow: 1.5px 1.5px 0 var(--ink);
+    text-transform: uppercase; letter-spacing: 0.05em; display: inline-flex;
+    align-items: center; gap: 3px; transform: rotate(-1deg); white-space: nowrap;
+  }
+  .state-stamp.live { background: #dcfce7; color: #14532d; }
+  .state-stamp.nodata { background: #fee2e2; color: #7f1d1d; }
+  .state-stamp.sim { background: #fef08a; color: #713f12; }
+
+  /* ---- Nodos ---- */
+  .nodes-layer { position: absolute; inset: 0; z-index: 10; }
+  .node-entity { position: absolute; transform: translate(-50%, -50%); cursor: pointer; transition: transform 0.15s ease; }
+  .node-entity:hover { transform: translate(-50%, -50%) scale(1.08); }
+  .node-circle {
+    width: 48px; height: 48px; border-radius: 50%; border: 3.5px solid var(--ink);
+    box-shadow: var(--sh-s); display: grid; place-items: center; position: relative;
+    background: #1e293b; color: #fff; margin: 0 auto;
+  }
+  .node-badge {
+    position: absolute; top: 52px; left: 50%; transform: translateX(-50%);
+    white-space: nowrap; background: #0f172a; color: #e2e8f0; border: 2px solid var(--ink);
+    box-shadow: 2px 2px 0 var(--ink); font-size: 11px; font-weight: 700; padding: 2px 6px;
+  }
+  .node-eco .node-circle { background: #065f46; color: #34d399; }
+  .node-hexelion .node-circle {
+    width: 58px; height: 58px; background: #1e1b4b;
+    box-shadow: 0 0 0 3px var(--yellow), var(--sh);
+  }
+  .burst-sticker {
+    position: absolute; top: -12px; right: -16px; background: var(--yellow); color: var(--ink);
+    border: 2px solid var(--ink); box-shadow: 2px 2px 0 var(--ink);
+    font-size: 10px; font-weight: 900; padding: 2px 6px; transform: rotate(8deg); white-space: nowrap;
+  }
+  .node-guardian .node-circle { background: #1e293b; color: var(--cyan); }
+  .node-patrol .node-circle { background: #d97706; color: #fff; }
+  .node-tomb .node-circle { background: #334155; color: #94a3b8; width: 38px; height: 38px; }
+  .node-boya .node-circle { background: #059669; color: #fff; width: 36px; height: 36px; }
+  .boya-ping { position: absolute; inset: -6px; border: 2px dashed #34d399; border-radius: 50%; animation: ping-rotate 10s linear infinite; }
+  svg.sonar-tracks { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5; }
+
+  /* ---- Cangrejo ---- */
+  .crab-avatar { position: absolute; top: 56%; left: 45%; transform: translate(-50%, -50%); z-index: 15; display: flex; flex-direction: column; align-items: center; cursor: grab; }
+  .crab-figure { position: relative; width: 104px; height: 72px; animation: crab-bob 2.8s ease-in-out infinite; }
+  .crab-balloon {
+    position: absolute; top: -54px; background: #fff; border: 3px solid var(--ink);
+    box-shadow: var(--sh-s); padding: 4px 10px; border-radius: 12px;
+    font-size: 11px; font-weight: 800; color: var(--ink); white-space: nowrap; transform: rotate(-1deg);
+  }
+  .crab-id-badge {
+    margin-top: 4px; background: var(--yellow); color: var(--ink); border: 2.5px solid var(--ink);
+    box-shadow: var(--sh-s); font-weight: 900; font-size: 12px; padding: 3px 10px;
+    text-transform: uppercase; transform: rotate(0.4deg); letter-spacing: 0.04em;
+  }
+
+  /* ---- Gamepad ---- */
+  .gamepad-card {
+    position: absolute; bottom: 14px; left: 14px; background: #0f172a; border: var(--b);
+    box-shadow: var(--sh); padding: 10px 14px; display: flex; align-items: center;
+    gap: 16px; z-index: 25; transform: rotate(-0.5deg); flex-wrap: wrap; max-width: calc(100% - 28px);
+  }
+  .gamepad-header {
+    position: absolute; top: -12px; left: 10px; background: #334155; color: #e2e8f0;
+    font-size: 9px; font-weight: 800; padding: 2px 6px; border: 1.5px solid var(--ink);
+    box-shadow: 1.5px 1.5px 0 var(--ink); letter-spacing: 0.08em;
+  }
+  .d-pad-grid { display: grid; grid-template-columns: repeat(3, 30px); grid-template-rows: repeat(3, 30px); gap: 3px; background: #020617; padding: 4px; border: 2px solid var(--ink); border-radius: 8px; }
+  .d-btn {
+    background: #334155; color: #f8fafc; border: 1.5px solid var(--ink);
+    box-shadow: 1.5px 1.5px 0 var(--ink); display: flex; flex-direction: column;
+    align-items: center; justify-content: center; font-weight: 700; font-size: 10px;
+    cursor: pointer; line-height: 1; border-radius: 4px; transition: transform 0.08s, background 0.08s;
+  }
+  .d-btn:hover { background: #475569; }
+  .d-btn:active { transform: translate(1px, 1px); box-shadow: 0 0 0 var(--ink); background: var(--yellow); color: var(--ink); }
+  .d-btn.center { background: #0f172a; border-color: #1e293b; box-shadow: none; cursor: default; }
+  .d-btn .arrow { font-size: 11px; font-weight: 900; }
+  .d-btn .verb { font-size: 6.5px; color: #94a3b8; text-transform: uppercase; }
+  .action-buttons-col { display: flex; flex-direction: column; gap: 8px; }
+  .btn-comic-action {
+    border: var(--b); box-shadow: var(--sh-s); padding: 6px 12px; font-weight: 900;
+    font-size: 11.5px; cursor: pointer; display: flex; align-items: center; gap: 8px;
+    color: #fff; text-transform: uppercase; transition: transform 0.08s, box-shadow 0.08s;
+  }
+  .btn-comic-action:hover { transform: translate(-1px, -1px); box-shadow: 3.5px 3.5px 0 var(--ink); }
+  .btn-comic-action:active { transform: translate(2px, 2px); box-shadow: 0 0 0 var(--ink); }
+  .btn-action-a { background: var(--red); }
+  .btn-action-b { background: var(--cyan); color: var(--ink); }
+  .btn-badge-circle { width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--ink); display: grid; place-items: center; font-size: 11px; font-weight: 900; background: #fff; color: var(--ink); }
+
+  /* ---- Panel copiloto 40% ---- */
+  section.copilot-panel {
+    flex: 0 0 40%; background-color: var(--paper);
+    background-image: radial-gradient(#d3cbb5 1px, transparent 1px);
+    background-size: 12px 12px; border-left: var(--b);
+    display: flex; flex-direction: column; position: relative;
+    min-width: 300px;
+  }
+  .copilot-masthead { background: var(--yellow); border-bottom: var(--b); padding: 10px 14px; display: flex; align-items: center; justify-content: space-between; gap: 10px; box-shadow: 0 3px 0 var(--ink); flex-wrap: wrap; }
+  .masthead-title-wrap { display: flex; align-items: center; gap: 10px; }
+  .statue-avatar-box { width: 36px; height: 36px; background: #334155; border: 2.5px solid var(--ink); box-shadow: 2px 2px 0 var(--ink); border-radius: 6px; display: grid; place-items: center; font-size: 20px; }
+  .copilot-heading { font-size: 14px; font-weight: 900; text-transform: uppercase; letter-spacing: -0.01em; color: var(--ink); line-height: 1.1; }
+  .copilot-subheading { font-size: 10px; color: #475569; font-weight: 700; }
+  .status-chip-connected {
+    background: #dcfce7; color: #166534; border: 2px solid var(--ink);
+    box-shadow: 2px 2px 0 var(--ink); font-weight: 800; font-size: 10.5px;
+    padding: 3px 8px; display: flex; align-items: center; gap: 5px; transform: rotate(0.8deg);
+  }
+  .connected-dot { width: 7px; height: 7px; border-radius: 50%; background: #22c55e; }
+  .tab-bar { background: #f1ebd8; border-bottom: var(--b); display: flex; padding: 6px 10px 0 10px; gap: 6px; overflow-x: auto; }
+  .tab-item {
+    font-weight: 800; font-size: 12px; padding: 6px 14px; border: var(--b);
+    border-bottom: none; background: #e2d9c0; color: #475569; cursor: pointer;
+    border-radius: 6px 6px 0 0; transition: all 0.1s ease; white-space: nowrap;
+  }
+  .tab-item:hover { background: #ede3cc; }
+  .tab-item.active { background: var(--cyan); color: var(--ink); transform: translateY(-2px); box-shadow: 3px -3px 0 var(--ink); }
+  .chat-stream { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 14px; }
+  .comic-balloon { position: relative; max-width: 88%; border: 3px solid var(--ink); padding: 10px 14px; border-radius: 14px; box-shadow: var(--sh-s); font-size: 12.5px; line-height: 1.45; }
+  .balloon-sender-label { font-size: 10.5px; font-weight: 900; letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 4px; display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .balloon-left { align-self: flex-start; background: #1e293b; color: #f8fafc; border-top-left-radius: 4px; }
+  .balloon-left .balloon-sender-label { color: var(--yellow); }
+  .balloon-right { align-self: flex-end; background: var(--yellow); color: var(--ink); border-top-right-radius: 4px; }
+  .balloon-right .balloon-sender-label { color: #000; }
+  .balloon-telemetry { align-self: stretch; max-width: 100%; background: #064e3b; color: #ecfdf5; border-radius: 8px; font-size: 11px; }
+  .balloon-telemetry .balloon-sender-label { color: #6ee7b7; }
+  .balloon-telemetry p { white-space: pre-line; }
+  .quick-orders-panel { padding: 8px 14px; background: #f4ede0; border-top: 2px dashed #b5ab93; display: flex; flex-direction: column; gap: 6px; }
+  .quick-orders-label { font-size: 10px; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; display: flex; align-items: center; gap: 4px; }
+  .quick-buttons-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .btn-quick {
+    background: #fff; color: var(--ink); border: 2px solid var(--ink);
+    box-shadow: 2px 2px 0 var(--ink); padding: 6px 4px; font-weight: 700;
+    font-size: 10.5px; cursor: pointer; text-align: center; white-space: nowrap;
+    overflow: hidden; text-overflow: ellipsis; transition: transform 0.08s, box-shadow 0.08s;
+  }
+  .btn-quick:hover { background: #fef08a; transform: translate(-1px, -1px); box-shadow: 3px 3px 0 var(--ink); }
+  .btn-quick:active { transform: translate(1.5px, 1.5px); box-shadow: 0 0 0 var(--ink); }
+  .chat-input-bar { padding: 10px 14px 12px 14px; background: #ebe3cb; border-top: var(--b); display: flex; gap: 8px; align-items: center; }
+  .chat-input-field {
+    flex: 1; background: #fff; border: 2.5px solid var(--ink);
+    box-shadow: inset 2px 2px 0 rgba(20, 20, 25, 0.1); padding: 8px 12px;
+    font-family: 'Fredoka', 'Trebuchet MS', sans-serif; font-size: 12.5px;
+    color: var(--ink); outline: none; border-radius: 4px; min-width: 0;
+  }
+  .chat-input-field::placeholder { color: #94a3b8; }
+  .chat-input-field:focus { border-color: var(--cyan); box-shadow: 0 0 0 2px var(--cyan); }
+  .btn-ask {
+    background: var(--orange); color: #fff; border: var(--b); box-shadow: var(--sh-s);
+    font-weight: 900; font-size: 13px; padding: 7px 16px; cursor: pointer;
+    text-transform: uppercase; transform: rotate(-0.5deg);
+    transition: transform 0.08s, box-shadow 0.08s;
+  }
+  .btn-ask:hover { transform: translate(-1px, -1px) rotate(-0.5deg); box-shadow: 3.5px 3.5px 0 var(--ink); }
+  .btn-ask:active { transform: translate(2px, 2px); box-shadow: 0 0 0 var(--ink); }
+
+  /* ---- Pie ---- */
+  footer.broadcast-footer {
+    height: 32px; background: #090d14; border-top: var(--b); color: #94a3b8;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 16px; font-size: 11px; z-index: 50; gap: 10px; overflow: hidden;
+  }
+  .ticker-wrap { display: flex; align-items: center; gap: 12px; overflow: hidden; white-space: nowrap; }
+  .ticker-item { display: flex; align-items: center; gap: 6px; }
+  .ticker-aux { display: flex; align-items: center; gap: 10px; font-weight: 700; white-space: nowrap; }
+
+  /* ---- Animaciones ---- */
+  @keyframes crab-bob { 0%, 100% { transform: translateY(0px) rotate(0deg); } 50% { transform: translateY(-8px) rotate(1deg); } }
+  @keyframes ping-rotate { 0% { transform: scale(1) rotate(0deg); opacity: 0.8; } 50% { transform: scale(1.15) rotate(180deg); opacity: 0.3; } 100% { transform: scale(1) rotate(360deg); opacity: 0.8; } }
+  @keyframes dash-flow { to { stroke-dashoffset: -40; } }
+  .animated-flow { animation: dash-flow 2.5s linear infinite; }
+  @media (prefers-reduced-motion: reduce) {
+    *, ::before, ::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+    .crab-figure, .boya-ping, .animated-flow { animation: none !important; }
+  }
+  @media (max-width: 900px) {
+    main.split-screen { flex-direction: column; overflow-y: auto; }
+    section.map-stage { flex: none; height: 55vh; border-right: none; border-bottom: var(--b); }
+    section.copilot-panel { flex: none; min-height: 45vh; }
+  }
+</style>
+</head>
+<body>
+
+  <header class="masthead">
+    <div class="logo-block">
+      <div class="p-tile" aria-hidden="true">P</div>
+      <div class="brand-text">
+        <span class="brand-title">PreceptorOS · theGame</span>
+        <span class="brand-subtitle">SUBMARINE STRATEGY ARCADE</span>
+      </div>
+      <div class="stamp-terminal">Terminal Ejemplo 1</div>
+    </div>
+
+    <div class="mission-ribbon">
+      <span class="mission-step">PASO 1 DE 3</span>
+      <div class="mission-text">
+        <strong>MISION:</strong> acercate al artefacto <strong>Hexelion</strong> y pulsa A para emitir el eco de sintonia...
+      </div>
+      <div class="progress-bar-container" title="Progreso de sintonia: 33%">
+        <div class="progress-bar-fill"></div>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <button class="btn-how-to" onclick="howTo()" aria-label="Como se juega">
+        ¿COMO SE JUEGA?
+      </button>
+      <div class="lang-badge" title="Las 9 lenguas llegan con la integracion">ES</div>
+      <div class="tester-chip mono">
+        <span>Tester-D024</span>
+        <div class="avatar-gem">84</div>
+      </div>
+    </div>
+  </header>
+
+  <div class="vitrina-banner mono">
+    <span class="state-stamp sim">VITRINA · DISENO</span>
+    <span>Prueba de la Terminal Ejemplo 1 — distribucion 60/40. No es el juego vivo: toda cifra aqui es SIMULADA o NO_DATA con causa. Integracion tras el plano 3-4.</span>
+  </div>
+
+  <main class="split-screen">
+
+    <section class="map-stage" id="mapSection" aria-label="Mapa abisal del Sector 09">
+      <div class="halftone-undersea" aria-hidden="true"></div>
+
+      <svg class="contour-lines" viewBox="0 0 900 650" preserveAspectRatio="none" aria-hidden="true">
+        <ellipse cx="440" cy="340" rx="420" ry="260" fill="none" stroke="#00b7d4" stroke-width="2" stroke-dasharray="8 6" opacity="0.3"/>
+        <ellipse cx="430" cy="350" rx="330" ry="190" fill="none" stroke="#00b7d4" stroke-width="1.8" stroke-dasharray="6 6" opacity="0.4"/>
+        <ellipse cx="400" cy="330" rx="220" ry="120" fill="none" stroke="#fed835" stroke-width="1.5" stroke-dasharray="4 4" opacity="0.35"/>
+        <ellipse cx="380" cy="310" rx="110" ry="60" fill="none" stroke="#E63946" stroke-width="2" opacity="0.45"/>
+        <path d="M -50,480 Q 250,520 500,430 T 950,500" fill="none" stroke="#082b38" stroke-width="28"/>
+        <path d="M -50,220 Q 320,160 550,250 T 950,180" fill="none" stroke="#082b38" stroke-width="22"/>
+      </svg>
+
+      <svg class="sonar-tracks" viewBox="0 0 900 650" aria-hidden="true">
+        <path d="M 680,510 L 520,440 L 360,260" fill="none" stroke="#fed835" stroke-width="3" stroke-linecap="round" stroke-dasharray="7 7" class="animated-flow"/>
+        <path d="M 360,260 L 410,130" fill="none" stroke="#10b981" stroke-width="3" stroke-dasharray="5 5" class="animated-flow"/>
+        <path d="M 360,260 L 620,290" fill="none" stroke="#00b7d4" stroke-width="2.5" stroke-dasharray="6 6"/>
+        <path d="M 360,260 L 150,340" fill="none" stroke="#f97316" stroke-width="2.5" stroke-dasharray="6 6"/>
+        <circle cx="360" cy="260" r="70" fill="none" stroke="#fed835" stroke-width="1.5" stroke-dasharray="4 6" opacity="0.5"/>
+        <circle cx="360" cy="260" r="115" fill="none" stroke="#fed835" stroke-width="1" stroke-dasharray="3 7" opacity="0.3"/>
+      </svg>
+
+      <div class="map-hud-top">
+        <div class="sector-ribbon">
+          <div class="pulse-dot" aria-hidden="true"></div>
+          <span>SECTOR 09: Bosque Sumergido</span>
+          <span class="state-stamp nodata">NO_DATA · VITRINA</span>
+        </div>
+        <div class="tension-chip">
+          <span>TENSION: NO_DATA</span>
+          <span class="state-stamp nodata">VITRINA</span>
+        </div>
+      </div>
+
+      <div class="nodes-layer">
+
+        <div class="node-entity node-eco" style="top: 20%; left: 45.5%;" onclick="logNode('eco-surface', 'Nodo de superficie. Registra el eco y la sintonia con la atmosfera.')" role="button" tabindex="0" aria-label="Nodo eco-surface">
+          <div class="node-circle">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Brote">
+              <path d="M12 10a6 6 0 0 0 -6 -6H3v2a6 6 0 0 0 6 6h3"/>
+              <path d="M12 14a6 6 0 0 1 6 -6h3v1a6 6 0 0 1 -6 6h-3"/>
+              <path d="M12 20V10"/>
+            </svg>
+          </div>
+          <div class="node-badge">eco-surface</div>
+        </div>
+
+        <div class="node-entity node-hexelion" style="top: 40%; left: 40%;" onclick="logNode('hexelion · MEASURED', 'Artefacto central Hexelion. En la vitrina la frecuencia es SIMULADA; en el juego la sintonia llega con 3-4.')" role="button" tabindex="0" aria-label="Artefacto Hexelion">
+          <div class="node-circle">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#E63946" stroke-width="3" stroke-linecap="round" role="img" aria-label="Artefacto Hexelion">
+              <circle cx="12" cy="12" r="3" fill="#E63946"/>
+              <path d="M12 9 C 12 5, 17 5, 17 8 C 17 11, 13 11, 13 14"/>
+              <path d="M9.5 13.5 C 6 15.5, 4 11.5, 6.5 9.5 C 9 7.5, 11 11, 13.5 12.5"/>
+              <path d="M14.5 13.5 C 16 17.5, 12 19, 10.5 16.5 C 9 14, 12.5 12, 11 10"/>
+            </svg>
+            <div class="burst-sticker">¡ACTIVO!</div>
+          </div>
+          <div class="node-badge" style="background: #1e1b4b; border-color: var(--yellow); color: var(--yellow);">hexelion · MEASURED</div>
+        </div>
+
+        <div class="node-entity node-guardian" style="top: 44.5%; left: 69%;" onclick="logNode('Guardian Core', 'Nucleo guardian dormido. Requiere firma ED25519 para la apertura: presencia declarada, autoridad siempre false.')" role="button" tabindex="0" aria-label="Nucleo guardian">
+          <div class="node-circle">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" role="img" aria-label="Estrella">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+            </svg>
+          </div>
+          <div class="node-badge">Guardian Core</div>
+        </div>
+
+        <div class="node-entity node-patrol" style="top: 52%; left: 16.5%;" onclick="logNode('Reef Patrol', 'Puesto de patrulla del arrecife exterior. Sensores pasivos de corriente profunda.')" role="button" tabindex="0" aria-label="Patrulla del arrecife">
+          <div class="node-circle">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" role="img" aria-label="Ancla">
+              <circle cx="12" cy="5" r="3"/>
+              <line x1="12" y1="8" x2="12" y2="21"/>
+              <path d="M5 12H2a10 10 0 0 0 20 0h-3"/>
+            </svg>
+          </div>
+          <div class="node-badge">Reef Patrol</div>
+        </div>
+
+        <div class="node-entity node-tomb" style="top: 67.5%; left: 58%;" onclick="logNode('Reef tombstones', 'Monolitos sumergidos y vestigios basalticos del cataclismo.')" role="button" tabindex="0" aria-label="Tumbas del arrecife">
+          <div class="node-circle">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="#64748b" role="img" aria-label="Monolito">
+              <path d="M4 18 L7 6 L17 4 L21 15 L18 20 L6 20 Z"/>
+            </svg>
+          </div>
+          <div class="node-badge" style="font-size: 10px;">Reef tombstones</div>
+        </div>
+
+        <div class="node-entity node-boya" style="top: 78.5%; left: 75.5%;" onclick="logNode('Tu boya', 'Boya personal de posicionamiento anclada. Enlace telemetrico: SIMULADO en vitrina.')" role="button" tabindex="0" aria-label="Tu boya">
+          <div class="boya-ping" aria-hidden="true"></div>
+          <div class="node-circle">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" role="img" aria-label="Chinche de posicion">
+              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+            </svg>
+          </div>
+          <div class="node-badge" style="background: #064e3b; color: #a7f3d0;">Tu boya</div>
+        </div>
+
+        <div class="crab-avatar" id="playerCrab">
+          <div class="crab-balloon" id="crabBalloon">¡GLUB! ¿Rumbo al abismo?</div>
+          <div class="crab-figure">
+            <svg width="104" height="72" viewBox="0 0 104 72" role="img" aria-label="Cangrejo rojo con la cicatriz de la Grieta en el caparazon">
+              <path d="M30 46 Q 16 52 10 65" stroke="#141419" stroke-width="4" fill="none" stroke-linecap="round"/>
+              <path d="M36 50 Q 22 62 20 70" stroke="#141419" stroke-width="4" fill="none" stroke-linecap="round"/>
+              <path d="M42 54 Q 32 66 32 72" stroke="#141419" stroke-width="4" fill="none" stroke-linecap="round"/>
+              <path d="M74 46 Q 88 52 94 65" stroke="#141419" stroke-width="4" fill="none" stroke-linecap="round"/>
+              <path d="M68 50 Q 82 62 84 70" stroke="#141419" stroke-width="4" fill="none" stroke-linecap="round"/>
+              <path d="M62 54 Q 72 66 72 72" stroke="#141419" stroke-width="4" fill="none" stroke-linecap="round"/>
+              <path d="M28 36 Q 12 30 14 18" stroke="#141419" stroke-width="4.5" fill="none"/>
+              <g transform="translate(14, 16)">
+                <path d="M-6 -6 C -12 -16, 2 -18, 4 -8 C 6 -3, 0 2, -6 -6 Z" fill="#E63946" stroke="#141419" stroke-width="3"/>
+                <path d="M-8 0 C -16 6, -6 16, 0 10 C 4 6, -2 0, -8 0 Z" fill="#E63946" stroke="#141419" stroke-width="3"/>
+              </g>
+              <path d="M76 36 Q 92 30 90 18" stroke="#141419" stroke-width="4.5" fill="none"/>
+              <g transform="translate(90, 16)">
+                <path d="M6 -6 C 12 -16, -2 -18, -4 -8 C -6 -3, 0 2, 6 -6 Z" fill="#E63946" stroke="#141419" stroke-width="3"/>
+                <path d="M8 0 C 16 6, 6 16, 0 10 C -4 6, 2 0, 8 0 Z" fill="#E63946" stroke="#141419" stroke-width="3"/>
+              </g>
+              <ellipse cx="52" cy="42" rx="34" ry="22" fill="#E63946" stroke="#141419" stroke-width="4"/>
+              <path d="M 42 24 L 50 34 L 46 44 L 56 58" fill="none" stroke="#38bdf8" stroke-width="3" stroke-linecap="round"/>
+              <path d="M 42 24 L 50 34 L 46 44 L 56 58" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-dasharray="2 3"/>
+              <rect x="36" y="16" width="6" height="10" fill="#E63946" stroke="#141419" stroke-width="3"/>
+              <circle cx="39" cy="14" r="9" fill="#ffffff" stroke="#141419" stroke-width="3.5"/>
+              <circle cx="39" cy="13" r="4.5" fill="#141419"/>
+              <circle cx="37" cy="11" r="1.5" fill="#ffffff"/>
+              <rect x="62" y="16" width="6" height="10" fill="#E63946" stroke="#141419" stroke-width="3"/>
+              <circle cx="65" cy="14" r="9" fill="#ffffff" stroke="#141419" stroke-width="3.5"/>
+              <circle cx="65" cy="13" r="4.5" fill="#141419"/>
+              <circle cx="63" cy="11" r="1.5" fill="#ffffff"/>
+              <path d="M 44 48 Q 52 55 60 48" fill="none" stroke="#141419" stroke-width="3" stroke-linecap="round"/>
+              <ellipse cx="37" cy="47" rx="3.5" ry="2" fill="#fda4af" opacity="0.8"/>
+              <ellipse cx="67" cy="47" rx="3.5" ry="2" fill="#fda4af" opacity="0.8"/>
+            </svg>
+          </div>
+          <div class="crab-id-badge">TU · HEXELION-CRAB</div>
+        </div>
+
+      </div>
+
+      <div class="gamepad-card">
+        <div class="gamepad-header mono">GAMEPAD // WASD</div>
+        <div class="d-pad-grid" aria-label="Cruz de direcciones">
+          <div></div>
+          <button class="d-btn" onclick="moveCrab(0, -20)" title="Arriba / Norte (W)" aria-label="Norte">
+            <span class="arrow">▲</span>
+            <span class="verb">NORTE</span>
+          </button>
+          <div></div>
+          <button class="d-btn" onclick="moveCrab(-20, 0)" title="Izquierda / Oeste (A)" aria-label="Oeste">
+            <span class="arrow">◀</span>
+            <span class="verb">OESTE</span>
+          </button>
+          <div class="d-btn center"><span style="width:6px; height:6px; border-radius:50%; background:#475569;"></span></div>
+          <button class="d-btn" onclick="moveCrab(20, 0)" title="Derecha / Este (D)" aria-label="Este">
+            <span class="arrow">▶</span>
+            <span class="verb">ESTE</span>
+          </button>
+          <div></div>
+          <button class="d-btn" onclick="moveCrab(0, 20)" title="Abajo / Sur (S)" aria-label="Sur">
+            <span class="arrow">▼</span>
+            <span class="verb">SUR</span>
+          </button>
+          <div></div>
+        </div>
+        <div class="action-buttons-col">
+          <button class="btn-comic-action btn-action-a" onclick="triggerPincer()" aria-label="Pinzar o interactuar">
+            <div class="btn-badge-circle">A</div>
+            <span>PINZAR / INTERACTUAR</span>
+          </button>
+          <button class="btn-comic-action btn-action-b" onclick="triggerSonar()" aria-label="Sonar o eco radar">
+            <div class="btn-badge-circle">B</div>
+            <span>SONAR / ECO RADAR</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section class="copilot-panel" aria-label="Bitacora y copiloto">
+      <div class="copilot-masthead">
+        <div class="masthead-title-wrap">
+          <div class="statue-avatar-box" aria-hidden="true">🗿</div>
+          <div>
+            <div class="copilot-heading">BITACORA &amp; COPILOTO PRECEPTOR</div>
+            <div class="copilot-subheading">CANAL ABISAL · PCM COMO ESTADO</div>
+          </div>
+        </div>
+        <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 4px;">
+          <div class="status-chip-connected">
+            <div class="connected-dot" aria-hidden="true"></div>
+            <span>CONECTADO (VITRINA)</span>
+          </div>
+          <span class="state-stamp sim">SIMULADO</span>
+        </div>
+      </div>
+
+      <div class="tab-bar" role="tablist">
+        <button class="tab-item active" id="tabChat" onclick="setTab('tabChat')" role="tab">💬 Chatbot Activo</button>
+        <button class="tab-item" id="tabRules" onclick="setTab('tabRules')" role="tab">📜 Reglas Basicas</button>
+        <button class="tab-item" id="tabNode" onclick="setTab('tabNode')" role="tab">🔍 Ficha de Nodo</button>
+      </div>
+
+      <div class="chat-stream" id="chatStream">
+
+        <div class="comic-balloon balloon-left">
+          <div class="balloon-sender-label">
+            <span>🗿 ESTATUA DEL PRECEPTOR</span>
+            <span class="state-stamp sim" style="font-size:8px;">CICLO SIMULADO</span>
+          </div>
+          <p>«¡Saludos a las aguas frias, explorador de caparazon firme! Recuerda la doctrina primera: <strong>La Atlantida no se hundio: se quedo dormida. Tu la despiertas.</strong> Tu mision es aproximarte al artefacto <em>Hexelion</em> y emitir el eco de sintonia.»</p>
+        </div>
+
+        <div class="comic-balloon balloon-right">
+          <div class="balloon-sender-label">
+            <span>🦀 TU (HEXELION-CRAB)</span>
+            <span class="mono" style="font-size: 8.5px; opacity:0.8;">HACE 1 CICLO</span>
+          </div>
+          <p>¡Entendido! Mis pinzas estan calibradas, la cicatriz de la Grieta esta sellada y las corrientes se sienten calmas en el Sector 09.</p>
+        </div>
+
+        <div class="comic-balloon balloon-telemetry">
+          <div class="balloon-sender-label">
+            <span>📡 RADAR ATLANTICO // TELEMETRIA</span>
+            <span class="state-stamp nodata" style="background:#022c22; color:#fca5a5; border-color:#7f1d1d;">NO_DATA</span>
+          </div>
+          <p class="mono">&gt; SECTOR_09 BATIMETRIA: NO_DATA (VITRINA)
+&gt; HEXELION_COORDENADAS: SIMULADO [X: 360, Y: 260]
+&gt; SENSOR: 1 NODO ADYACENTE LISTO PARA PINZAR
+&gt; FIRMA LOCAL: ED25519 · PRESENCIA DECLARADA · AUTHORITY: FALSE
+&gt; PETICIONES EXTERNAS AL CARGAR: CERO</p>
+        </div>
+
+      </div>
+
+      <div class="quick-orders-panel">
+        <div class="quick-orders-label">
+          <span>⚡</span> ORDENES RAPIDAS DE UN SOLO CLIC:
+          <span class="state-stamp sim" style="margin-left:auto; font-size:7.5px;">SIN MOTOR</span>
+        </div>
+        <div class="quick-buttons-row">
+          <button class="btn-quick" onclick="quickAsk('¿Que es el arrecife?')">🌊 ¿Que es el arrecife?</button>
+          <button class="btn-quick" onclick="quickAsk('Invocar eco')">🔊 Invocar eco</button>
+          <button class="btn-quick" onclick="quickAsk('Reglas de casa')">📖 Reglas de casa</button>
+        </div>
+      </div>
+
+      <form class="chat-input-bar" onsubmit="handleSend(event)">
+        <input type="text" id="userInput" class="chat-input-field" placeholder="Hazle una pregunta al Preceptor o envia una orden..." autocomplete="off" aria-label="Pregunta o orden">
+        <button type="submit" class="btn-ask">¡PREGUNTAR!</button>
+      </form>
+    </section>
+
+  </main>
+
+  <footer class="broadcast-footer mono">
+    <div class="ticker-wrap">
+      <div class="ticker-item"><span>♪ Detalles Tecnicos</span><span class="state-stamp sim">VITRINA</span></div>
+      <span>·</span>
+      <div class="ticker-item"><span>Grieta sellada (lore)</span></div>
+      <span>·</span>
+      <div class="ticker-item"><span>PCM como estado</span></div>
+      <span>·</span>
+      <div class="ticker-item"><span style="color:#fed835;">MODO COPILOTO</span></div>
+    </div>
+    <div class="ticker-aux">
+      <span class="state-stamp live">CERO PETICIONES EXTERNAS</span>
+      <span>ED25519: PRESENCIA · AUTHORITY: FALSE</span>
+    </div>
+  </footer>
+
+  <script>
+    var crabX = 45;
+    var crabY = 56;
+    var crabEl = document.getElementById('playerCrab');
+    var crabBalloon = document.getElementById('crabBalloon');
+    var chat = document.getElementById('chatStream');
+
+    function crabSay(t) { crabBalloon.textContent = t; }
+
+    function addBalloon(kind, who, txt, sello, mono) {
+      var b = document.createElement('div');
+      b.className = 'comic-balloon balloon-' + kind;
+      var label = document.createElement('div');
+      label.className = 'balloon-sender-label';
+      var whoEl = document.createElement('span');
+      whoEl.textContent = who;
+      var stamp = document.createElement('span');
+      stamp.className = 'state-stamp ' + (sello || 'sim');
+      stamp.style.fontSize = '8px';
+      stamp.textContent = sello ? sello.toUpperCase() : 'SIMULADO';
+      label.appendChild(whoEl);
+      label.appendChild(stamp);
+      var p = document.createElement('p');
+      if (mono) { p.className = 'mono'; p.style.whiteSpace = 'pre-line'; }
+      p.textContent = txt;
+      b.appendChild(label);
+      b.appendChild(p);
+      chat.appendChild(b);
+      b.scrollIntoView({ block: 'nearest' });
+    }
+
+    function moveCrab(dx, dy) {
+      crabX = Math.max(15, Math.min(85, crabX + (dx * 0.1)));
+      crabY = Math.max(18, Math.min(82, crabY + (dy * 0.1)));
+      crabEl.style.left = crabX + '%';
+      crabEl.style.top = crabY + '%';
+      crabSay('¡Navegando a ' + Math.round(crabX) + ', ' + Math.round(crabY) + '!');
+    }
+
+    window.addEventListener('keydown', function (e) {
+      if (document.activeElement === document.getElementById('userInput')) return;
+      var k = e.key.toLowerCase();
+      if (k === 'w' || k === 'arrowup') { moveCrab(0, -20); }
+      else if (k === 's' || k === 'arrowdown') { moveCrab(0, 20); }
+      else if (k === 'a' || k === 'arrowleft') { moveCrab(-20, 0); }
+      else if (k === 'd' || k === 'arrowright') { moveCrab(20, 0); }
+      else if (k === ' ') { e.preventDefault(); triggerPincer(); }
+    });
+
+    function triggerPincer() {
+      crabSay('¡CLAC-CLAC! Pinzas listas.');
+      addBalloon('right', '🦀 TU (HEXELION-CRAB)', '¡CLAC! Pinzas sobre las coordenadas actuales.', 'sim');
+    }
+
+    function triggerSonar() {
+      crabSay('¡PIIING! Eco emitido.');
+      addBalloon('telemetry', '📡 RADAR ATLANTICO // TELEMETRIA', '> SONAR_EMITIDO
+> ECO DE VUELTA: NO_DATA (VITRINA SIN MOTOR)', 'nodata', true);
+    }
+
+    function logNode(name, desc) {
+      addBalloon('left', '🗿 ESTATUA DEL PRECEPTOR', 'Nodo ' + name + ': ' + desc, 'sim');
+    }
+
+    function howTo() {
+      addBalloon('left', '🗿 ESTATUA DEL PRECEPTOR', 'MANUAL DE LA VITRINA: mueve el Cangrejo con el D-Pad o WASD · pulsa A para PINZAR o B para SONAR · en el juego real, el Preceptor descifra firmas ED25519. Pestañas Reglas y Ficha: NO_DATA (llegan con la integracion).', 'sim');
+    }
+
+    function setTab(id) {
+      var tabs = ['tabChat', 'tabRules', 'tabNode'];
+      for (var i = 0; i < tabs.length; i++) {
+        document.getElementById(tabs[i]).className = 'tab-item' + (tabs[i] === id ? ' active' : '');
+      }
+      if (id !== 'tabChat') {
+        addBalloon('telemetry', '📡 RADAR ATLANTICO', '> PESTANA ' + id.replace('tab', '').toUpperCase() + ': NO_DATA (LLEGA CON LA INTEGRACION)', 'nodata', true);
+      }
+    }
+
+    function quickAsk(q) {
+      addBalloon('right', '🦀 TU (HEXELION-CRAB)', q, 'sim');
+      addBalloon('telemetry', '📡 RADAR ATLANTICO', '> ORDEN RECIBIDA: ' + q.toUpperCase() + '
+> RESPUESTA: NO_DATA (VITRINA SIN MOTOR)', 'nodata', true);
+    }
+
+    function handleSend(e) {
+      e.preventDefault();
+      var v = document.getElementById('userInput').value.trim();
+      if (!v) return;
+      addBalloon('right', '🦀 TU (HEXELION-CRAB)', v, 'sim');
+      addBalloon('left', '🗿 ESTATUA DEL PRECEPTOR', 'La vitrina escucha pero todavia no responde: el motor llega con la integracion (NO_DATA con causa).', 'nodata');
+      document.getElementById('userInput').value = '';
+    }
+  </script>
+</body>
+</html>
