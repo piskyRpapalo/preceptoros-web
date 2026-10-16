@@ -273,7 +273,7 @@ La onda del cangrejo: caparazon ancho (k=1) + festón (k=6, o 10 con «aguja») 
 
 ## public/game/gdpr-art25-ephemeral-crab.js:70
 
-Huella de un paseo: lo que el oraculo compara entre aparatos (sha de las x redondeadas).
+Huella de un paseo: lo que el verificador de huellas compara entre aparatos (sha de las x redondeadas).
 
 
 ## public/game/gdpr-art25-ephemeral-crab.js:77
