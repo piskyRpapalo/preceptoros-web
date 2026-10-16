@@ -32,7 +32,8 @@
       } } } : null;
       var ficha = raiz.AtlasInspector ? raiz.AtlasInspector.toca(px, py, 44 * x.dpr, tocado, lugar) : null;
             var Lb = raiz.AtlasCangrejoLibre;
-      if (!mejor && !ficha && Lb && Lb.base()) { Lb.va(Lb.base(), tocado.x, tocado.y); }
+      if (!mejor && !ficha && Lb && Lb.base()) { Lb.va(Lb.base(), tocado.x, tocado.y); return; }
+      if (!mejor && !ficha && x.planeaTap) { x.planeaTap(tocado); }
     }
     c.addEventListener('pointerup', suelta);
     c.addEventListener('pointercancel', function () { arrastre = null; });
