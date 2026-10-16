@@ -28,8 +28,8 @@
   }
   function selloConEdad(cicloDato, viejo) {
     var e = edad(cicloDato);
-    if (e === null) { return { estado: T('cable_stale', 'stale'), texto: T('cable_sin_edad', 'no reading of the game clock yet') }; }
-    if (e > viejo) { return { estado: 'STALE', texto: T('cable_stale_edad', 'stale (Δ {n} cycles)').replace('{n}', e) }; }
+    if (e === null) { return { estado: 'STALE', texto: T('cable_edad', '{s} · Δ{n}c').replace('{s}', 'stale').replace('{n}', '?') }; }
+    if (e > viejo) { return { estado: 'STALE', texto: T('cable_edad', '{s} · Δ{n}c').replace('{s}', 'stale').replace('{n}', e) }; }
     return { estado: 'LIVE', texto: T('cable_live_edad', 'live (Δ {n} cycles)').replace('{n}', e) };
   }
   /* C4: las tasas del JSON público del mapa. atlas-mundo.json no entra al
@@ -42,7 +42,7 @@
        solo se PINTA lo que llega por el recibo o lo que la hoja expone. Si
        la hoja no lo expone: estado sin lectura traducido. */
     var ley = raiz.AtlasMundo || null;
-    if (!ley || !ley.nexo) { return { causa: T('cable_metricas_nd', 'the map has not published interaction rates yet') }; }
+    if (!ley || !ley.nexo) { return { causa: T('cable_nd', 'no reading yet') }; }
     var n = ley.nexo, c = { conformidad: n.conformidad, stale: n.stale, tic: n.tic };
     var s = selloConEdad(c.tic || 0, 100);
     return { conformidad: c.conformidad, stale: c.stale, estado: s.estado, edad: s.texto };
@@ -66,13 +66,13 @@
     function pinta(r) {
       if (r.estado === 'recibo') {
         var d = r.recibo || {};
-        var huella = d.huella || d.id || T('cable_sin_huella', 'receipt without stamp (the lab answered 202)');
+        var huella = d.huella || d.id || T('cable_sin_huella', 'no stamp (202)');
         dice(T('cable_recibo', 'Receipt: the lab took the call. Stamp: {h}').replace('{h}', huella), 'cable');
         var m = metricas();
         if (m && !m.causa) {
           dice(T('cable_metricas', 'Conformity rate: {c} · stale rate: {s} · {e}')
-            .replace('{c}', m.conformidad == null ? T('cable_tasa_nd', 'no reading yet') : String(m.conformidad))
-            .replace('{s}', m.stale == null ? T('cable_tasa_nd', 'no reading yet') : String(m.stale))
+            .replace('{c}', m.conformidad == null ? T('cable_nd', 'no reading yet') : String(m.conformidad))
+            .replace('{s}', m.stale == null ? T('cable_nd', 'no reading yet') : String(m.stale))
             .replace('{e}', m.edad), 'cable');
         } else if (m && m.causa) { dice(m.causa, 'cable'); }
       } else {

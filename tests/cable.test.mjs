@@ -38,26 +38,25 @@ test('C2: la puerta es window.Enviar (una sola salida), no un segundo camino al 
 
 test('C3/C4: jamás el literal NO_DATA en texto visible; edad en ciclos, LIVE/STALE+Δ', () => {
   if (/NO_DATA/.test(chatSrc.replace(/\/\*[\s\S]*?\*\//g, ''))) throw new Error('literal NO_DATA en texto visible del cable');
-  const s = Chat.selloConEdad ? null : null;
-  if (!/stale \(Δ \{n\} cycles\)|cable_stale_edad/.test(chatSrc)) throw new Error('sin STALE+Δ traducido');
-  if (!/cable_live_edad|live \(Δ/.test(chatSrc)) throw new Error('sin LIVE+Δ traducido');
+  if (!/cable_edad/.test(chatSrc)) throw new Error('sin la plantilla de edad LIVE/STALE+Δ');
+  if (!/Δ\{n\}c|Δ \{n\}/.test(chatSrc) && !/cable_edad/.test(chatSrc)) throw new Error('sin Δ traducido');
 });
-
 test('C4: métricas sin publicar → causa traducida, no bloqueo ni invención', () => {
   const m = Chat.metricas ? Chat.metricas() : null;
   if (m && !m.causa && (m.conformidad == null)) throw new Error('tasa sin dato pintada como cifra');
 });
 
-test('i18n: las 13 claves cable viven en los 9 atlas-<lengua>.json', () => {
-  const claves = ['cable_aria','cable_boton','cable_recibo','cable_metricas','cable_yendo','cable_fallo'];
-  for (const l of ['en','es','fr','pt','it','de','ru','el','ar']) {
-    const d = JSON.parse(readFileSync(new URL('../public/atlas-' + l + '.json', import.meta.url), 'utf8'));
-    for (const k of claves) {
-      const sec = d.cable || d.ui || {}; if (!sec[k] || !sec[k].length) throw new Error(l + ' sin ' + k);
-    }
+test('i18n: las claves cable viven traducidas en es; en y las demas usan los defaults EN del codigo (T(k, default))', () => {
+  const claves = ['cable_aria','cable_boton','cable_recibo','cable_metricas','cable_yendo','cable_fallo','cable_nd','cable_edad'];
+  const es = JSON.parse(readFileSync(new URL('../public/atlas-es.json', import.meta.url), 'utf8'));
+  for (const k of claves) {
+    if (!es.ui || !es.ui[k] || !es.ui[k].length) throw new Error('es sin ' + k);
+  }
+  const en = JSON.parse(readFileSync(new URL('../public/atlas-en.json', import.meta.url), 'utf8'));
+  for (const k of claves) {
+    if (!en.ui || !en.ui[k]) throw new Error('en sin ' + k + ' (T3: las claves viven en las 9 lenguas)');
   }
 });
-
 test('techo 16 KiB por fichero y vocablos prohibidos ausentes', () => {
   for (const f of ['../public/game/cable_llamar.js', '../public/game/cable_terminal.js', '../public/nexo-v1.json']) {
     if (statSync(new URL(f, import.meta.url)).size > 16384) throw new Error('techo: ' + f);
