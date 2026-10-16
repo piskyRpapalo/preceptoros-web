@@ -1,3 +1,3 @@
 
-huella=d802b585f36e6c38
+huella=d42ca346574ee84c
 version=preceptoros-2026-17-abij
