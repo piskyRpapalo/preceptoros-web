@@ -1,4 +1,3 @@
-/* Q6 · NPC occupancy: signed local owner, one wall message, upkeep and fog by game cycle. */
 (function (root) {
   'use strict';
   var MOD = typeof module === 'object' && module.exports;

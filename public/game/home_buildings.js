@@ -1,34 +1,18 @@
-/* preceptoros.org · theGame · TU CASA ES TU CANGREJO, y su estado vive en la TERMINAL (U1, «el mapa unico»).
-
-   Desde U1 la pantalla es el MAPA GLOBAL y HOME deja de ser un lugar: la escena lateral de la casa (2026-10-05) y
-   las partes flotando sobre el cuerpo se RETIRAN. Aqui se monta el pliego «Estado» de la terminal: la fila de
-   identidad (tu nombre y tu bandera, y «Customize»), el RIEL de las partes (`casa-lateral.js`), la tira de estado
-   del juego y, dentro de las patas, la expedicion del Bosque (MUDADA con sus referencias vivas: no se rehace la
-   logica, se le da sitio). Las partes y su cifra: `casa-medidas.js` (la lista UNA).
-
-   PERSONALIZAR (estilo del caparazon, variante del emblema, POSTURA de la casa, BANDERA y lema) se guarda en ESTE
-   aparato (IndexedDB `atlas-casa`) y, si se comparte, viaja FIRMADO. Sin datos personales: el lema rechaza lo que
-   parezca correo, URL, ruta, IP o telefono. Y NO DA VENTAJA: nada de esto entra en `arena.combate`. */
 (function (raiz) {
   'use strict';
 
   var ESQUEMA = 'atlas.casa/1';
-  /* U1: la PALETA del agua de la escena lateral se retira con ella (seria un boton muerto). */
-  var OPCIONES = { estilo: ['cupula', 'aguja', 'concha'], emblema: [0, 1, 2],
+    var OPCIONES = { estilo: ['cupula', 'aguja', 'concha'], emblema: [0, 1, 2],
                    alianzas: ['abiertas', 'cerradas'], comercio: [true, false],
                    formacion: ['agresiva', 'defensiva', 'flanqueo'],
-                   /* P10: la bandera, de la paleta cerrada de `valores.banderas` (null = sin bandera). */
-                   bandera: [null, 'teal', 'ambar', 'hielo', 'violeta', 'coral', 'kelp', 'oro', 'rosa'] };
+                                      bandera: [null, 'teal', 'ambar', 'hielo', 'violeta', 'coral', 'kelp', 'oro', 'rosa'] };
   var PROHIBIDO = /(^|[^0-9])\/[a-z]|@|https?:|www\.|\b\d{1,3}(\.\d{1,3}){3}\b|\d{6,}/i;
   function base() { return { esquema: ESQUEMA, estilo: 'cupula', emblema: 0, alianzas: 'abiertas', comercio: true, formacion: 'agresiva', lema: '', bandera: null }; }
-  /* Una casa guardada antes de P10 no tiene bandera: entra con null (sin bandera); la de antes de U1 suelta su
-     paleta (ya no hay agua que pintar). No se pierde. */
-  function migra(c) {
+    function migra(c) {
     if (c && typeof c === 'object') { if (!('bandera' in c)) { c.bandera = null; } delete c.paleta; }
     return c;
   }
-  /* La forma de una casa: '' si vale, o la causa. Pura: la usan la web y los casos de node. */
-  function forma(c) {
+    function forma(c) {
     if (!c || typeof c !== 'object' || c.esquema !== ESQUEMA) { return 'esquema'; }
     var k = Object.keys(c).sort().join();
     if (k !== Object.keys(base()).sort().join()) { return 'campos'; }
@@ -40,15 +24,13 @@
   if (typeof module === 'object' && module.exports) { module.exports = { forma: forma, base: base, migra: migra, OPCIONES: OPCIONES, ESQUEMA: ESQUEMA }; return; }
 
   var TX = null, R = {}, casa = base(), pub = null;
-  /* Las partes y sus puertas: UNA lista, en `casa-medidas.js` (U0). */
-  var CM = raiz.AtlasCasaMedidas, PARTES = CM.PARTES, DENTRO = CM.DENTRO;
+    var CM = raiz.AtlasCasaMedidas, PARTES = CM.PARTES, DENTRO = CM.DENTRO;
 
   function T(k) { return (TX && TX[k]) || k; }
   function el(tag, clase, texto) { var n = document.createElement(tag); if (clase) { n.className = clase; } if (texto != null) { n.textContent = String(texto); } return n; }
   function boton(texto, clase) { var b = el('button', clase, texto); b.type = 'button'; return b; }
 
-  /* --- guardar en este aparato ------------------------------------------------------------------ */
-  function db() {
+    function db() {
     return new Promise(function (ok, mal) {
       var r = indexedDB.open('atlas-casa', 1);
       r.onupgradeneeded = function () { r.result.createObjectStore('casa'); };
@@ -69,10 +51,7 @@
     var J = raiz.AtlasJuego, i = J && J.instantanea ? J.instantanea() : null;
     return i ? { nucleo: i.nivel_nucleo, grieta: i.grieta && i.grieta.abierta, i: i } : { nucleo: 1, grieta: false, i: null };
   }
-  /* EL CANGREJO (J1): tu semilla (tu clave publica; sin ella, la del visitante), el ciclo de juego,
-     tu army y si un nodo te tiene LINKEADO en su cedula (coral) o no (cangrejo de mar). El latido del
-     nodo no llega a la web: el brillo es NO_DATA (null), nunca un numero inventado. */
-  function cangrejo() {
+    function cangrejo() {
     var i = estado().i, C = raiz.AtlasNodosCedulas, m = medidas(), nodo = false, CJ = raiz.AtlasCangrejo;
     if (pub && C) {
       nodo = C.nodos.some(function (n) { return (n.dispositivos || []).some(function (d) { return d.clave_publica === pub && d.estado === 'linkeado'; }); });
@@ -81,15 +60,13 @@
     return { semilla: pub || 'visitante', ciclo: i ? i.ciclo : 0, army: m.army ? m.army.nivel : 0, nodo: nodo, latido: null,
              cuerpo: CJ ? CJ.cuerpo({ nucleo: nv('nucleo'), army: nv('army'), bosque: nv('bosque'), faro: nv('faro') }) : null };
   }
-  /* La cifra de cada parte: se recoge aqui (la pestana) y se calcula en `casa-medidas.js` (puro). */
-  function medidas() {
+    function medidas() {
     var inc = raiz.AtlasIncubadora, C = raiz.AtlasNodosCedulas, army = null;
     try { army = inc && inc.army ? (inc.army() || []).length : null; } catch (x) { army = null; }
     var nodos = C ? C.nodos.filter(function (n) { var m = n.aparato.medidas; return Object.keys(m).some(function (k) { return m[k].estado === 'MEDIDO'; }); }).length : null;
     return CM.medidas(estado().i, army, nodos, T);
   }
-  /* --- dentro de una parte ----------------------------------------------------------------------- */
-  function entra(id) {
+    function entra(id) {
     var a = PARTES.filter(function (e) { return e[0] === id; })[0];
     if (a && a[2] === 'faro') { var J = raiz.AtlasJuego; if (J && J.aplica) { J.aplica({ esquema: 'atlas.accion/1', accion: 'mover', dir: 'faro', origen: 'humano' }); } return; }
     if (a && a[2]) { if (raiz.TheGame && raiz.TheGame.ve) { raiz.TheGame.ve(a[2]); } return; }
@@ -104,14 +81,11 @@
     var b = document.getElementById('parte-' + id); if (b) { b.focus(); }
   }
 
-  /* --- personalizar ------------------------------------------------------------------------------ */
-  /* «Customize» vive en `casa-personaliza.js` (U0): aqui solo se le pasa la casa y como guardarla. */
-  function personaliza() {
+      function personaliza() {
     raiz.AtlasCasaPersonaliza.abre({ casa: casa, opciones: OPCIONES, T: T, forma: forma, guarda: guarda, raiz: R.raiz });
   }
 
-  /* --- montar ------------------------------------------------------------------------------------ */
-  function textos() {
+    function textos() {
     var l = (raiz.AtlasLengua && raiz.AtlasLengua.actual) || 'en';
     return fetch('/atlas-casa-' + l + '.json').then(function (r) { if (!r.ok) { throw new Error('atlas-casa-' + l + '.json ' + r.status); } return r.json(); })
       .then(function (d) { TX = d.ui; });
@@ -120,8 +94,7 @@
     if (!panel || panel.querySelector('.casa')) { return Promise.resolve(); }
     return textos().then(function () { construye(panel); }, function (e) { panel.appendChild(el('p', 'no-data', 'NO_DATA · ' + e.message)); });
   }
-  /* La fila de identidad: tu nombre (el pseudonimo de tu clave, o visitante) y el color de TU bandera. */
-  function identidad() {
+    function identidad() {
     var I = raiz.Identity, B = raiz.AtlasValores && raiz.AtlasValores.banderas, n = I && I.quien && I.quien();
     var c = cangrejo();
     R.quien.textContent = n || T('visitante');
@@ -159,10 +132,7 @@
     identidad(); document.addEventListener('preceptor:identity', identidad);
   }
 
-  /* Cambiar UNA opcion desde fuera (la formacion, desde la repeticion de la batalla). */
-  function pon(k, v) { if (OPCIONES[k] && OPCIONES[k].indexOf(v) >= 0) { casa[k] = v; guarda(); if (R.quien) { identidad(); } } }
-  /* Los textos de la familia de la casa (`atlas-casa-<l>.json`): tambien los del Taller y del Primer Eco, que
-     viajan con ella para no engordar la puerta del juego (P9-P11). '' si aun no han llegado. */
-  raiz.AtlasCasa = { texto: function (k) { return (TX && TX[k]) || ''; }, pon: pon, monta: monta, forma: forma, casa: function () { return casa; },
+    function pon(k, v) { if (OPCIONES[k] && OPCIONES[k].indexOf(v) >= 0) { casa[k] = v; guarda(); if (R.quien) { identidad(); } } }
+    raiz.AtlasCasa = { texto: function (k) { return (TX && TX[k]) || ''; }, pon: pon, monta: monta, forma: forma, casa: function () { return casa; },
                      medidas: medidas, entra: entra, sale: sale, cangrejo: cangrejo };
 })(this);
