@@ -50,7 +50,7 @@
   /* Cada cuadro, desde mar-cangrejos (solo TU cangrejo): base = donde lo pone el paseo; circ = lo despejado. */
   function paso(base, circ, niebla) {
     base0 = { x: base.x, y: base.y };
-    pintaPanel();
+    if (pintados !== revisionEventos) { pintaPanel(); }
     if (!dest) { return off; }
     var N = niebla || raiz.AtlasNiebla, s = avanza(off, dest, VEL);
     if (N && N.niebla && N.niebla(base.x + s[0], base.y + s[1], circ || []) >= 0.5) {

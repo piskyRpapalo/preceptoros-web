@@ -1,10 +1,3 @@
-/* preceptoros.org · theGame · «CUSTOMIZE»: personalizar tu casa (sale de `home_buildings.js` en U0, «el mapa
-   unico», para que la casa quepa bajo su techo de 16 KiB sin perder nada).
-
-   Estilo del caparazon, variante del emblema, POSTURA (alianzas, comercio, formacion), BANDERA (P10) y lema. Se guarda
-   en ESTE aparato por la casa y, si se comparte, viaja FIRMADO. Sin datos personales: el lema que parezca
-   correo, URL, ruta, IP o telefono no entra (`forma`). Y NO DA VENTAJA. La puerta es
-   `AtlasCasaPersonaliza.abre(ctx)`: ctx = { casa, opciones, T, forma, guarda, raiz }. */
 (function () {
   'use strict';
   function el(tag, clase, texto) { var n = document.createElement(tag); if (clase) { n.className = clase; } if (texto != null) { n.textContent = String(texto); } return n; }

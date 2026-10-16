@@ -1,5 +1,3 @@
-/* theGame · pliego-estado: un guion fijo que reubica renders del estado ya medido.
-   No posee estado ni calcula cifras: AtlasCasa, AtlasCasaMedidas y atlas-piso siguen siendo las fuentes. */
 (function (raiz) {
   'use strict';
   var SECCIONES = [
