@@ -242,3 +242,19 @@ textarea{min-height:8rem;font-size:.78rem;line-height:1.5;resize:vertical}
 .skip-link{position:absolute;left:-9999px;top:0;background:#E4E8EC;color:#1E1826;padding:.6rem 1rem;z-index:99;text-decoration:underline}
 .skip-link:focus{left:0}
 .cab-h1{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+@media (forced-colors:active){
+  .panel,.thegame-capa,.radio-chat,.summon-access,.deep-link,.hitl-firma,.cable-fila{background:Canvas}
+  .panel,.thegame-capa,.radio-chat{border:1px solid CanvasText;box-shadow:none}
+  .boton,.boton-sec,.radio-chat-alterna,.radio-chat-tab{border:1px solid ButtonText;forced-color-adjust:none}
+  .skip-link{background:Highlight;color:HighlightText}
+}
+@media (prefers-contrast:more){
+  .panel{background:var(--marmol-claro);backdrop-filter:none;-webkit-backdrop-filter:none}
+  .panel,.boton,.boton-sec{border-width:2px}
+  #thegame :is(.boton,.boton-sec){font-weight:600}
+}
+@media (prefers-reduced-transparency:reduce){
+  .panel:not(#chat){background:var(--marmol-claro);backdrop-filter:none;-webkit-backdrop-filter:none;box-shadow:none}
+  .panel{border:1px solid var(--bronce)}
+}
