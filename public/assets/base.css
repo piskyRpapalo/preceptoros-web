@@ -266,3 +266,12 @@ textarea{min-height:8rem;font-size:.78rem;line-height:1.5;resize:vertical}
 .cab-lenguas a,.radio-chat-tab,.radio-chat-alterna,summary{min-height:1.5rem;min-width:1.5rem}
 .cab-lenguas a{display:inline-flex;align-items:center;justify-content:center;padding:.15rem .45rem}
 #thegame :is(.boton,.boton-sec){min-height:2.75rem;min-width:2.75rem}
+
+@media print{
+  #ambient,.mapa-mandos,.mapa-aviso,.radio-chat,.crab-joystick,.thegame-terminal,.skip-link{display:none}
+  .panel,.thegame-capa,.thegame-pliego,.summon-access,.deep-link,.hitl-firma,.cable-fila,.place-actions{
+    background:#fff;color:#000;border:1px solid #000;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none}
+  .thegame-pliego[open]{display:block}
+  .no-data{color:#000}
+  body{background:#fff}
+}
