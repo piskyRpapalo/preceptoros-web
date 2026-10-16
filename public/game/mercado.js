@@ -1,20 +1,3 @@
-/* preceptoros.org · theGame · multijugador · el MERCADO entre personas (y, mañana, entre agentes).
-
-   UNA OFERTA NO ES FINAL HASTA QUE FIRMA EL CARBONO (IronClaw). Viajan tres sobres:
-   - `oferta` (o `contraoferta`): quien da, que da y que pide, en RECURSOS DEL MOTOR (luz, biomasa,
-     cobre, flujo, oxigeno); nunca dinero real ni cripto ni una moneda nueva (addendum §2.6). Caduca
-     por CICLO de juego (`expira_ciclo`), nunca por reloj. `para` nombra a una persona o a
-     «cualquiera». Un borrador de agente (`procedencia: 'agente_borrador'`) no se liquida: la
-     persona tiene que firmarlo como suyo.
-   - `aceptacion`: la otra parte, con su ciclo.
-   - `liquida` las casa y escribe un ASIENTO encadenado por hash (`atlas.asiento/1`): nonce no
-     reutilizado, sin doble liquidacion, sin aceptar lo propio, dentro de plazo.
-
-   EL ASIENTO REGISTRA LA OBLIGACION FIRMADA POR LAS DOS PARTES; NO MUEVE RECURSOS. El motor no
-   tiene una accion de transferencia y anadirla es un parche de motor que pide firma (auditoria
-   §2.7). Sin pagos automaticos, sin agencia economica desatendida.
-
-   PURO: ni DOM, ni red, ni reloj. El libro vive en memoria; guardarlo pide firma. */
 (function (raiz) {
   'use strict';
 
@@ -24,8 +7,7 @@
   var HEX64 = K.HEX64, HEX32 = /^[0-9a-f]{32}$/;
   var RECURSOS = ['luz', 'biomasa', 'cobre', 'flujo', 'oxigeno'];
   var PROCEDENCIAS = ['humano', 'agente_borrador'];
-  /* Defensa en profundidad: las formas son cerradas, y aun asi un nombre de valor real se rechaza. */
-  var VALOR_REAL = /eur|usd|dinero|money|precio_real|cripto|crypto|wallet|cartera|token|pago|payment|saldo_real/i;
+    var VALOR_REAL = /eur|usd|dinero|money|precio_real|cripto|crypto|wallet|cartera|token|pago|payment|saldo_real/i;
 
   function objeto(o) { return !!o && typeof o === 'object' && !Array.isArray(o); }
   function mismas(o, claves) {
@@ -74,8 +56,7 @@
 
   function libro() { return { asientos: [], cabeza: 'genesis', nonces: {}, liquidadas: {} }; }
 
-  /* Las dos firmas ya verificadas por quien llama (`sobres.verifica`). */
-  function liquida(LM, propuesta, aceptacion) {
+    function liquida(LM, propuesta, aceptacion) {
     var m = S.forma(propuesta) || S.forma(aceptacion);
     if (m) { return { ok: false, motivo: m }; }
     var tipo = propuesta.tipo, o = propuesta.cuerpo, a = aceptacion.cuerpo;
@@ -98,8 +79,7 @@
     return { ok: true, asiento: asiento };
   }
 
-  /* La cadena de asientos se comprueba sola: numeros seguidos y cada `prev`, la huella del anterior. */
-  function compruebaCadena(asientos) {
+    function compruebaCadena(asientos) {
     var prev = 'genesis';
     for (var i = 0; i < asientos.length; i++) {
       var x = asientos[i];

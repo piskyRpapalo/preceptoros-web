@@ -1,46 +1,14 @@
-/* preceptoros.org · identidad soberana. Sin servidor, sin contrasena.
-   La clave privada se genera EN EL NAVEGADOR y se guarda NO EXTRAIBLE: vive en
-   IndexedDB como objeto CryptoKey, firma cuando se le pide, y ni esta pagina
-   ni ninguna otra puede leerla. Es mas fuerte que guardar los bytes.
-
-   EL PRECIO, Y SE DICE ANTES: una clave que nadie puede leer tampoco se puede
-   exportar ni copiar a otro aparato. Si borras los datos del sitio, esa
-   identidad se pierde y no hay «recuperar contrasena» porque no hay
-   contrasena. Es el mismo trato de una llave fisica, y quien firma tiene
-   derecho a saberlo antes de firmar.
-
-   localStorage queda fuera por doctrina: la soberania no vive ahi. */
 (function () {
   var BD = 'preceptoros', ALMACEN = 'identity', CLAVE = 'me';
-  // 64 bytes de firma Ed25519 -> 128 caracteres hex. Es la longitud del
-  // algoritmo, no una preferencia: si sale otra cosa, algo se rompio.
+  
+  
   var FIRMA_HEX = 128;
   var zona = document.getElementById('identity');
   if (!zona) return;
-  /* T LLEGA TARDE, Y POR ESO EMPIEZA VACIO. Antes esta linea era
-     `if (!block || !zona) return;` y ahi se acababa todo: sin bloque i18n,
-     este fichero se iba sin pintar nada. Las ocho `instalar.html` no llevan
-     bloque --sus textos viven en `/instalar.json`-- asi que en la pagina que
-     mas gente abre primero el hueco de la cuenta se creaba y se quedaba
-     VACIO. Se veia la rueda de ajustes sola en la esquina, sin su hermano.
-
-     Irse sin rotulos era la decision correcta; irse sin BOTON no. El remedio
-     no es escribir aqui seis palabras en ocho idiomas, sino leer el catalogo
-     que ya existe justo para esto y que las puertas del cabezal llevan meses
-     usando. Y por eso `T` deja de resolverse en esta linea: lo hace
-     `rotulos()`, abajo, que devuelve una promesa. */
-  var T = {};
+    var T = {};
   var yo = null;
 
-  /* EL MENU DE IDENTIDAD ES UN POPOVER NATIVO. El navegador pone la capa
-     superior, el cierre con Escape, el cierre al pulsar fuera y el foco. No
-     habia logica manual de toggle que quitar --nunca la hubo-- y aqui no se
-     escribe una: `popovertarget` en el boton y ya esta.
-
-     Se crea en JS y no en las tres portadas por una razon medida: a
-     `fr/index.html` le quedaban 533 B. Aqui cuesta CERO bytes de HTML, y
-     ademas este fichero ya construye toda su interfaz asi. */
-  var menu = document.createElement('div');
+    var menu = document.createElement('div');
   menu.id = 'identity-menu';
   menu.popover = 'auto';
   document.body.appendChild(menu);
@@ -67,8 +35,8 @@
       return ('0' + b.toString(16)).slice(-2);
     }).join('');
   }
-  // El pseudonimo sale del hash de la clave publica: corto, legible y
-  // derivado, no elegido. Nadie puede pedir un nombre que ya sea de otro.
+  
+  
   function apodo(pub) {
     return crypto.subtle.exportKey('raw', pub).then(function (raw) {
       return crypto.subtle.digest('SHA-256', raw);
@@ -82,31 +50,9 @@
     b.type = 'button'; b.className = 'leve';
     b.setAttribute('popovertarget', 'identity-menu');
     if (yo) {
-      /* EL NOMBRE ES LA PUERTA, no un rotulo al lado de la puerta. Habia tres
-         piezas apiladas --«Hola, X», «Mi perfil» y «Ver mi huella»-- y las
-         tres a tamano de boton: en el Doogee eso eran tres filas del cabezal
-         para decir quien eres. Ahora el pseudonimo ES el enlace, que ademas es
-         donde se busca: se pulsa tu nombre para ver lo tuyo.
-
-         `title` conserva lo que el rotulo decia, para quien pase por encima y
-         para quien lea con los oidos: un nombre suelto no anuncia que lleva
-         a ningun sitio. */
-      b.textContent = T.idClave;
+            b.textContent = T.idClave;
       b.setAttribute('aria-label', T.idClave);
-      /* LA PUERTA AL PERFIL VA AQUI Y NO EN EL CABEZAL. El cabezal de la
-         portada se midio en el Doogee: siete botones ocupaban tres filas, y
-         se bajo a cinco. Un sexto fijo desharia esa medida para todo el
-         mundo, incluido quien llega por primera vez y todavia no tiene ficha
-         que mirar.
-
-         Colgada de la identidad no cuesta una fila a nadie: aparece cuando
-         aparece el pseudonimo, en las cinco paginas que cargan este fichero,
-         y es ademas donde se busca -- se pulsa tu nombre para ver lo tuyo.
-
-         `T.idPerfil` puede faltar: no todas las paginas que cargan auth.js
-         tienen la clave. Sin ella no se pinta un enlace vacio, no se pinta
-         nada. Y en la propia ficha tampoco, que seria un enlace a si misma. */
-      if (T.idPerfil && !/\/profile\.html$/.test(location.pathname)) {
+            if (T.idPerfil && !/\/profile\.html$/.test(location.pathname)) {
         var mi = document.createElement('a');
         mi.className = 'leve yo-perfil';
         mi.href = './community.html#perfil';
@@ -114,59 +60,32 @@
         mi.title = T.idPerfil;
         zona.appendChild(mi);
       } else {
-        // En la propia ficha el nombre no enlaza a si misma: se dice y ya.
+        
         var p = document.createElement('span');
         p.className = 'yo'; p.textContent = yo.apodo;
         zona.appendChild(p);
       }
-      // La huella completa, para quien quiera comprobar que su firma es suya.
-      // Va al menu y no al hueco: pulsando dos veces, la version anterior
-      // apilaba un parrafo mas cada vez.
+      
+      
+      
       var n = document.createElement('p');
       n.className = 'tenue'; n.style.wordBreak = 'break-all';
       menu.appendChild(n);
       crypto.subtle.exportKey('raw', yo.claves.publicKey).then(function (raw) {
         var completa = hex(raw);
         n.textContent = T.idPublica + ' ' + completa;
-        /* LA HUELLA, CUANDO EXISTE, SE ENSENA COMO NUMERO CORTO. El boton decia
-           «Ver mi huella» y ocupaba una fila entera para no decir ninguna
-           huella. Con los seis primeros digitos se reconoce de un vistazo y
-           cabe al lado del nombre; la completa sigue estando a un toque, en el
-           menu, que es donde se comprueba de verdad.
-
-           Se pone DESPUES de exportar y no antes: si la exportacion fallara,
-           el boton se queda con su rotulo en vez de con un hueco. El nombre
-           accesible no cambia -- seis digitos no anuncian lo que hace. */
-        b.textContent = completa.slice(0, 6);
+                b.textContent = completa.slice(0, 6);
         b.classList.add('huella-corta');
       });
     } else {
-      /* SIN SESION, UN ICONO DE PERSONA Y NADA MAS (2026-09-05, firmado).
-         Decia «Crear identidad» con todas sus letras, y en frances y en aleman
-         eso es la pieza mas ancha del cabezal para ofrecer algo que la mayoria
-         no va a hacer en su primera visita. El dibujo de una persona lo dice
-         en las ocho lenguas y ocupa lo que un dedo necesita.
-
-         EL ROTULO NO DESAPARECE, cambia de sitio: va al nombre accesible y al
-         `title`, asi que quien lee con los oidos y quien pasa el cursor
-         reciben la frase entera. Un icono sin nombre accesible es un boton
-         mudo, y eso no es simplificar: es esconder.
-
-         Y el panel que abre sigue siendo el mismo popover con el aviso de que
-         la clave no se recupera. Lo que se ha encogido es la puerta, no lo que
-         hay detras. */
-      b.className = 'leve identity-icono';
+            b.className = 'leve identity-icono';
       b.setAttribute('aria-label', T.idEntrar);
       b.title = T.idEntrar;
       b.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"'
         + ' stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"'
         + ' aria-hidden="true"><circle cx="12" cy="8" r="4"></circle>'
         + '<path d="M4 21v-1a7 7 0 0 1 7-7h2a7 7 0 0 1 7 7v1"></path></svg>';
-      /* EL AVISO VA ANTES, NO DESPUES. Hasta hoy la clave se generaba al
-         pulsar y el «esto no se puede exportar ni recuperar» aparecia cuando
-         ya existia. Una identidad irreversible se acepta informado o no se
-         acepta: el popover es la unica pantalla entre el boton y la clave. */
-      var av = document.createElement('p');
+            var av = document.createElement('p');
       av.className = 'nodata'; av.textContent = T.idAviso;
       var ok = document.createElement('button');
       ok.type = 'button'; ok.className = 'boton'; ok.textContent = T.idEntrar;
@@ -179,9 +98,9 @@
     zona.appendChild(b);
   }
   function registrar() {
-    // Devuelve promesa: quien la llama desde fuera necesita saber CUANDO hay
-    // identidad para reintentar la firma.
-    // Solo para el fallo: el aviso ya se leyo en el menu, antes de pulsar.
+    
+    
+    
     var aviso = document.createElement('p');
     aviso.className = 'nodata';
     zona.appendChild(aviso);
@@ -201,39 +120,15 @@
 
   window.Identity = {
     quien: function () { return yo && yo.apodo; },
-    /* CREAR, desde fuera de este fichero y sin salirse de su dueno. La clave
-       sigue naciendo aqui --`auth.js` es el unico que abre la base
-       `preceptoros`, y una segunda pieza con su propia idea de la version es
-       como se rompen las bases de datos-- pero ahora se puede PEDIR.
-
-       Hace falta porque el callejon sin salida estaba medido: se escribe una
-       correccion entera, se pulsa Firmar, y la pagina contesta «sin identidad»
-       sin decir donde se consigue una. */
-    crear: function () { return registrar(); },
-    // La clave PUBLICA en hex. La privada sigue siendo no extraible: esto no
-    // afloja nada, solo expone lo que ya es publico por definicion. Hace falta
-    // para derivar el codigo de vinculo web<->app del onboarding.
+        crear: function () { return registrar(); },
+    
+    
+    
     publica: function () {
       if (!yo) return Promise.reject(new Error('sin identidad'));
       return crypto.subtle.exportKey('raw', yo.claves.publicKey).then(hex);
     },
-    /* OLVIDAR LA CLAVE. Vive AQUI y no en la pagina que lo ofrece, por la
-       misma razon por la que vive aqui generarla: `auth.js` es el unico dueno
-       de la base `preceptoros`. Una segunda pieza abriendo ese almacen con su
-       propia idea de la version es como se rompen las bases de datos
-       --leccion de `bronce.js`-- y aqui el dato que se rompe no se regenera.
-
-       NO ES «CERRAR SESION» Y NO HAY VUELTA. La privada se genero no
-       extraible: no existe copia en ningun sitio. Borrar el registro es
-       perder la unica prueba de autoria de todo lo que ya se firmo con ella.
-       Lo firmado sigue existiendo; lo que desaparece es que fuera tuyo. Quien
-       llama a esto tiene que haber avisado ANTES y con todas sus letras
-       --`profile.html` exige escribir una palabra-- porque aqui ya es tarde.
-
-       Se avisa con el MISMO evento que al crearla, y con `apodo: null`. Un
-       evento propio de despedida obligaria a cada oyente a escuchar dos cosas
-       para enterarse de una sola: que la identidad de la pagina cambio. */
-    olvidar: function () {
+        olvidar: function () {
       if (!yo) return Promise.reject(new Error('sin identidad'));
       return tx('readwrite', function (s) { s.delete(CLAVE); }).then(function () {
         yo = null;
@@ -242,22 +137,17 @@
                                                { detail: { apodo: null } }));
       });
     },
-    // Se firma el JSON canonico del objeto: mismo objeto, misma firma.
-    //
-    // LA FIRMA VA ENTERA. Hasta el 2026-08-30 esto devolvia los 16 primeros
-    // caracteres y unos puntos suspensivos: `ed25519:a3f9…`. Calculaba los 64
-    // bytes y tiraba 48. Se veia bien --parecia una firma-- y no lo era: con
-    // 16 nibbles no se puede verificar nada, ni aqui ni en el Agora. Una
-    // firma recortada es un adorno con nombre de garantia.
-    //
-    // Si hace falta acortarla para ENSENARLA, se acorta al pintar, que es
-    // donde el recorte no destruye nada. Aqui no.
-    /* FIRMAR UNA CADENA, no un objeto. El reto del Agora se firma sobre
-       `pseudonimo|clave_publica|reto`, que es texto plano: pasarlo por
-       `JSON.stringify` le anadiria comillas y el servidor verificaria otros
-       bytes. Son dos firmas distintas y por eso son dos funciones distintas --
-       una sola con un `if` dentro es donde un dia se firma lo que no era. */
-    firmarTexto: function (texto) {
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        firmarTexto: function (texto) {
       if (!yo) return Promise.reject(new Error('sin identidad'));
       return crypto.subtle.sign({ name: 'Ed25519' }, yo.claves.privateKey,
         new TextEncoder().encode(String(texto))).then(function (f) {
@@ -274,9 +164,9 @@
       var texto = JSON.stringify(obj);
       return crypto.subtle.sign({ name: 'Ed25519' }, yo.claves.privateKey,
         new TextEncoder().encode(texto)).then(function (f) {
-          // Ed25519 firma siempre en 64 bytes: 128 caracteres hexadecimales,
-          // ni uno mas ni uno menos. Se comprueba en vez de confiarlo -- un
-          // dia alguien cambia de curva y aqui nadie se entera.
+          
+          
+          
           var h = hex(f);
           if (h.length !== FIRMA_HEX) {
             return Promise.reject(new Error(
@@ -287,21 +177,15 @@
     }
   };
 
-  /* El bloque propio manda; el catalogo es el respaldo, no al reves. Cuando la
-     pagina trae su i18n se usa ese y no se pide nada a la red: es la misma
-     palabra, y una peticion que no hace falta es una peticion que puede
-     fallar. `nav.json` se genera desde el bloque de la portada (`nav.py`), asi
-     que las dos ramas dicen literalmente lo mismo. */
-  function rotulos() {
+    function rotulos() {
     var bloque = document.getElementById('i18n');
     if (bloque) {
       try {
         var propio = JSON.parse(bloque.textContent);
         if (propio && propio.idPerfil) return Promise.resolve(propio);
-      } catch (err) { /* bloque roto: se sigue al catalogo */ }
+      } catch (err) { }
     }
-    /* Sin bloque (nav.json cayo en b3): rotulos en ingles. A1B8: con {} se pintaba «undefined», el aviso incluido. */
-    return Promise.resolve({ idClave: 'Your key', idPublica: 'Public key:', idEntrar: 'Create my key',
+        return Promise.resolve({ idClave: 'Your key', idPublica: 'Public key:', idEntrar: 'Create my key',
       idAviso: 'Your key is born in this browser. It cannot be exported or recovered.', idFallo: 'Could not create the key:' });
   }
 
