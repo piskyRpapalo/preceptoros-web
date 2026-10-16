@@ -1,28 +1,9 @@
-/* preceptoros.org · theGame · LA COREOGRAFIA de un combate ya resuelto: el registro hecho movimiento.
-
-   EL RESULTADO NO SE TOCA (Soberano, 2026-10-05: «como ver una partida de Age of Empires repetida»).
-   `arena.combate` ya decidio cada golpe con enteros y una semilla. Aqui no se decide nada: se pone en
-   el mapa a quien ya golpeo, a quien ya cayo y cuando. La vida de cada tropa se recalcula SOLO desde
-   el registro, con la misma regla que el motor (`porMil`), y por eso el ganador que se VE es siempre
-   el que el registro dice (`ganadorVisual`, comprobado en `atlas/replay_casos.mjs`).
-
-   LO QUE SI SE INVENTA, SE SIEMBRA. Las rocas, las bases, las formaciones y los rodeos salen de un
-   generador sembrado con la semilla de la partida: misma partida, misma coreografia, en cualquier
-   aparato, y su `hash` lo demuestra. Nada de azar del sistema ni de reloj. La simulacion solo usa
-   sumas, productos, divisiones y raices (IEEE exactas): el mismo numero en cualquier motor.
-
-   EL GUION. Marcha desde las bases; cada golpe del registro es un tramo: el que ataca avanza, dispara,
-   el proyectil vuela y el golpe empuja. Los heridos retroceden, los caidos se quedan, los vivos se
-   reagrupan. Al final, el que gana toma el campo y el que pierde vuelve a su base.
-
-   Puro: sin DOM, sin red. En el navegador, `window.AtlasCoreografia`; en node, `module.exports`. */
 (function (raiz) {
   'use strict';
 
   var W = 1000, H = 600, PASO = 50, MUESTRA = 100, MARCHA = 3000, FIN = 3600;
 
-  /* El generador: mulberry32 sembrado con los primeros 32 bits de la semilla (hex). */
-  function prng(hex) {
+    function prng(hex) {
     if (!/^[0-9a-f]{16,}$/.test(hex || '')) { throw new Error('semilla: hex'); }
     var a = parseInt(hex.slice(0, 8), 16) | 0;
     return function () {
@@ -39,8 +20,7 @@
     return ('0000000' + h.toString(16)).slice(-8);
   }
 
-  /* El mapa: dos bases y unas rocas en la franja de en medio, todo sembrado. */
-  function terreno(g) {
+    function terreno(g) {
     var rocas = [], n = 4 + Math.floor(g() * 4);
     while (rocas.length < n) {
       var r = { x: 300 + g() * 400, y: 70 + g() * 460, r: 28 + g() * 42 };
@@ -49,19 +29,14 @@
     return { w: W, h: H, rocas: rocas, bases: [{ x: 915, y: 200 + g() * 200 }, { x: 85, y: 200 + g() * 200 }] };
   }
 
-  /* LAS FORMACIONES del jugador (Soberano, 2026-10-05: «preajustes de estrategia y formacion que
-     cambian la COREOGRAFIA… NO cambian el resultado del motor»). Solo mueven a SU bando en pantalla:
-     cuanto se separa del frente, cuanto se lanza al atacar y si abre las alas. */
-  var FORMAS = {
+    var FORMAS = {
     agresiva: { sep: 45, lanza: 0.5, alas: 0, abre: 1 },
     defensiva: { sep: 125, lanza: 0.2, alas: 0, abre: 0.8 },
     flanqueo: { sep: 70, lanza: 0.35, alas: 90, abre: 1.6 }
   };
   var NORMAL = { sep: 75, lanza: 0.35, alas: 0, abre: 1 };
 
-  /* `tropas`: [[{max, vel}...] defensa, [...] asalto]. `registro`: el de `arena.combate`.
-     `pre` (opcional): { lado, formacion } -- la formacion elegida para el bando `lado`. */
-  function coreografia(registro, tropas, semilla, gana, pre) {
+    function coreografia(registro, tropas, semilla, gana, pre) {
     var forma = function (l) { return pre && pre.lado === l && FORMAS[pre.formacion] || NORMAL; };
     var g = prng(semilla), mapa = terreno(g), n = registro.length;
     var EV = Math.max(260, Math.min(700, Math.floor(42000 / Math.max(1, n))));
@@ -74,8 +49,7 @@
       });
     });
     var todos = U[0].concat(U[1]), tiros = [], momentos = [{ t: 0, tipo: 'marcha' }], frames = [];
-    /* Los tramos: cuando sale el tiro y cuando llega. */
-    var tramos = registro.map(function (e, k) {
+        var tramos = registro.map(function (e, k) {
       var t0 = MARCHA + k * EV;
       return { e: e, t0: t0, sale: t0 + EV * 0.25, llega: t0 + EV * 0.6, hecho: false, salio: false };
     });
@@ -161,8 +135,7 @@
              hash: fnv(plano, 2166136261) + fnv(plano, 33554467) };
   }
 
-  /* Lo que se VE al final: vivos y vida por bando, con la regla del motor (porMil). */
-  function ganadorVisual(c) {
+    function ganadorVisual(c) {
     var f = c.frames[c.frames.length - 1], vivos = [0, 0], v = [0, 0], m = [0, 0];
     c.max.forEach(function (mx, k) {
       var l = k < c.n[0] ? 0 : 1, vida = f[k * 3 + 2];
@@ -172,8 +145,7 @@
     var pd = Math.floor(v[0] * 1000 / m[0]), pa = Math.floor(v[1] * 1000 / m[1]);
     return vivos[0] && !vivos[1] ? 'defensa' : vivos[1] && !vivos[0] ? 'asalto' : pd > pa ? 'defensa' : pa > pd ? 'asalto' : 'empate';
   }
-  /* El centro de cada bando (vivos) en un fotograma: para comprobar quien toma el campo. */
-  function centro(c, k) {
+    function centro(c, k) {
     var f = c.frames[k], s = [[0, 0], [0, 0]];
     c.max.forEach(function (mx, j) {
       var l = j < c.n[0] ? 0 : 1;

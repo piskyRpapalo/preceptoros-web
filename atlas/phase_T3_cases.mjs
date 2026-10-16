@@ -7,7 +7,7 @@ const digest = b => createHash('sha256').update(b).digest('hex');
 const baseline = 'bb738d29bbe2e51465bb892287afd0c5346cec595b9ff1f4471e6fe83a35c792'; /* actualizado 2026-10-16 por PIEZA C: 8 claves cable_* anadidas al atlas (cuenta: el revertido ahora incluye esas claves) */
 const protectedFiles = { /* hashes actualizados 2026-10-16 por D1-laws: los comentarios salieron del codigo (canon en docs/); la logica intacta */
   'public/game/valores.js': 'a6b8358b3c22363899644c7df6ffa0c2df15fb1fcd53bf2205f11d5a44ff47df',
-  'public/assets/atlas-motor.js': '16e50ed537c5d6898815a2711a22dc3d7497d4e0a3cd6a0bae013241822e11c9',
+  'public/assets/atlas-motor.js': 'c31c2b2e51df15707242bbc5d8d80bf1801fce51764d472dd4bcdb15903a0051',
   'public/game/gacha.js': 'f98302cf4f59f281b1ee2bdd90715c576a4630ec42316231191d4fba266d403c',
   'public/game/core.js': 'f7f126fde151931830f772be35aecdd84fa97f7c5be4b257f80d9674a66f6a0d',
   'public/game/ui-invoca.js': 'da62b8197243d464e54ca3e966af2e98bf6ba137548ba78c340176a5ee729295'};

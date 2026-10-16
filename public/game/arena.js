@@ -1,22 +1,3 @@
-/* preceptoros.org · theGame · multijugador · la ARENA: duelos fantasma, patrullas y rating entero.
-
-   MODELO FANTASMA (PLAN §3): se ataca una DEFENSA FIRMADA (tu Army de cara a los demas), no a la
-   persona conectada. Asi se juega entre husos horarios y con la bateria baja.
-   1. El defensor publica `defensa` en su tablon: `{tc, semilla}` de cada tropa, el `pack_sha` de
-      los valores con los que juega y lo que declara `en_juego`.
-   2. En una sesion de duelo (`modo: 'duelo'`, los dos pares) el atacante manda su `asalto`, que
-      nombra la huella de esa defensa; los dos se comprometen y revelan (`sobres.js`).
-   3. `resuelve` saca la semilla del commit-reveal y juega `combate`: rondas ENTERAS, sin decimales
-      ni reloj. Cualquiera lo vuelve a jugar y sale igual: el resultado no se cree, se comprueba.
-
-   LAS CIFRAS DE UNA TROPA NO VIAJAN: se REDERIVAN con `gacha.tirada(semilla, tc)` y los valores del
-   mismo `pack_sha`. Nadie se fabrica una tropa con sus numeros. Limite dicho: la semilla sale de
-   una firma y Ed25519 no es un VRF; para clasificar entre personas hace falta firma (auditoria §2.8).
-
-   `en_juego` SE DECLARA Y VIAJA, NO SE APLICA: la perdida definitiva y el saqueo esperan firma
-   (PLAN §11, pregunta 3). El RATING (Elo entero y LOCAL) vive en `rating.js`.
-
-   PURO: ni DOM, ni red, ni reloj, ni `Math.random`. A demanda, con el Army (valores + gacha). */
 (function (raiz) {
   'use strict';
 
@@ -37,9 +18,7 @@
   }
   function entero(x, min, max) { return Number.isSafeInteger(x) && x >= min && x <= max; }
 
-  /* La huella de la parte ENTERA de los valores: lo que decide una tirada y un combate. Dos
-     personas con distinto `pack_sha` no juegan el mismo juego y el duelo no se resuelve. */
-  function packSha(v) {
+    function packSha(v) {
     v = v || V;
     return K.huella({ version: v.version, tcs: v.tcs, prefijos: v.prefijos, sufijos: v.sufijos, base: v.base,
                       simetria: v.simetria, terminos: v.terminos, aristas: v.aristas, rareza_aristas: v.rareza_aristas, forma: v.forma,
@@ -47,8 +26,7 @@
                       patrullas: v.patrullas });
   }
 
-  /* --- formas de los cuerpos ------------------------------------------------------------------ */
-  function formaTropas(ts, v) {
+    function formaTropas(ts, v) {
     var P = (v || V).combate;
     if (!Array.isArray(ts) || ts.length < 1 || ts.length > P.tropas_max) { return 'tropas: 1 a ' + P.tropas_max; }
     for (var i = 0; i < ts.length; i++) {
@@ -81,13 +59,10 @@
     return '';
   }
 
-  /* --- el combate ----------------------------------------------------------------------------- */
-  function unidades(ts, lado, v) {
+    function unidades(ts, lado, v) {
     var A = v.combate.ataque;
     return ts.map(function (t, i) {
-      /* P9: lo LIJADO cuenta aqui (practica contra NPC). Un duelo no puede traer `lija`: formaTropas solo
-         acepta {tc, semilla} hasta que la cadena del Taller viaje en el sobre. */
-      var b = G.tirada(t.semilla, t.tc), s = t.lija && TL ? TL.aplica(b, t.lija).stats : b.stats;
+            var b = G.tirada(t.semilla, t.tc), s = t.lija && TL ? TL.aplica(b, t.lija).stats : b.stats;
       return { lado: lado, i: i, vida: s.vida, max: s.vida, arm: s.armadura, vel: s.velocidad, sig: s.sigilo,
                atk: A.base + A.aura * s.aura + A.inercia * s.inercia + A.profundidad * s.profundidad };
     });
@@ -98,16 +73,14 @@
     return m ? Math.floor(v * 1000 / m) : 0;
   }
 
-  /* `registro`: [ronda, lado (0 defensa, 1 asalto), atacante, objetivo, dano | -1 si esquiva]. */
-  function combate(def, asa, semilla, v) {
+    function combate(def, asa, semilla, v) {
     v = v || V;
     var P = v.combate, g = K.generador(semilla), U = [unidades(def, 0, v), unidades(asa, 1, v)];
     var todos = U[0].concat(U[1]), registro = [], ronda = 0;
     function vivos(l) { return U[l].filter(function (u) { return u.vida > 0; }); }
     while (ronda < P.rondas && vivos(0).length && vivos(1).length) {
       ronda++;
-      /* Iniciativa: la velocidad manda; un empate lo deshace un sorteo por ronda. */
-      var turno = todos.filter(function (u) { return u.vida > 0; })
+            var turno = todos.filter(function (u) { return u.vida > 0; })
         .map(function (u) { return { u: u, k: g.uniforme(1000000) }; })
         .sort(function (a, b) { return b.u.vel - a.u.vel || a.k - b.k || a.u.lado - b.u.lado || a.u.i - b.u.i; });
       turno.forEach(function (x) {
@@ -125,8 +98,7 @@
     return { esquema: 'atlas.combate/1', rondas: ronda, gana: gana, vida_por_mil: [pd, pa], registro: registro };
   }
 
-  /* --- el duelo, de los sobres al resultado ---------------------------------------------------- */
-  function resuelve(L, defensa, procedencia, v) {
+    function resuelve(L, defensa, procedencia, v) {
     v = v || V;
     var m = S.forma(defensa) || (defensa.tipo !== 'defensa' ? 'no es una defensa' : '') || formaDefensa(defensa.cuerpo);
     if (m) { return { ok: false, motivo: m }; }
@@ -150,11 +122,7 @@
     return { ok: true, resultado: K.ordena(r), combate: c };
   }
 
-  /* ABANDONO: quien reclama se comprometio Y revelo; el otro se comprometio y NO revelo. El plazo
-     (`combate.abandono_ciclos`) se mide en los ciclos de juego de quien espera: no hay reloj comun y
-     eso se dice. La reclamacion es verificable en su forma (un compromiso sin revelacion esta a la
-     vista de cualquiera); el plazo, no: es un contrato social con pruebas, no una imposicion. */
-  function abandono(L, defensa, quien) {
+    function abandono(L, defensa, quien) {
     var m = S.forma(defensa) || (defensa.tipo !== 'defensa' ? 'no es una defensa' : '');
     if (m) { return { ok: false, motivo: m }; }
     var hd = S.huella(defensa), as = S.aceptados(L, 'asalto').filter(function (s) { return s.cuerpo.defensa === hd; });
@@ -172,8 +140,7 @@
     return { ok: true, resultado: K.ordena(r) };
   }
 
-  /* Un resultado que llega de otro aparato no se cree: se vuelve a jugar y tiene que salir igual. */
-  function compruebaResultado(L, defensa, r, v) {
+    function compruebaResultado(L, defensa, r, v) {
     var f = formaResultado(r);
     if (f) { return f; }
     var x = r.final === 'abandono' ? abandono(L, defensa, r.gana === 'asalto' ? r.atacante : r.defensor)
@@ -182,17 +149,14 @@
     return K.canon(x.resultado) === K.canon(r) ? '' : 'el resultado no sale al volver a jugarlo';
   }
 
-  /* --- patrulla (PvE): una defensa que sale de la semilla del sector, jugable sin red ------------ */
-  function patrulla(semillaSector, n, tc) {
+    function patrulla(semillaSector, n, tc) {
     if (!HEX64.test(semillaSector) || !entero(n, 1, V.combate.tropas_max) || !G.TCS[tc]) { throw new Error('patrulla'); }
     var ts = [];
     for (var i = 0; i < n; i++) { ts.push({ tc: tc, semilla: K.sha(semillaSector + ':patrulla:' + i) }); }
     return { esquema: 'atlas.defensa/1', pack_sha: packSha(), tropas: ts, en_juego: { cobre: 0, luz: 0 } };
   }
 
-  /* Los LUGARES NPC de la Arena (`valores.patrullas`): cada uno con su semilla y su patrulla, iguales en
-     todos los aparatos. */
-  function lugares(v) {
+    function lugares(v) {
     return (v || V).patrullas.map(function (p) {
       var s = K.sha('atlas.patrulla/1:' + p.id);
       return { id: p.id, tc: p.tc, n: p.n, semilla: s, defensa: patrulla(s, p.n, p.tc) };
