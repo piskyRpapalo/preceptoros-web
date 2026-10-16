@@ -39,7 +39,7 @@
       vivo ? rellena(T('rack_activo'), { d: e.desde, n: e.medidas }) : T('rack_inactivo')));
     var cs = ['ram_mib', 'gen_cps'].map(function (k) { return cifra(c, k); }).filter(Boolean);
     if (cs.length) { li.appendChild(el('span', 'atlas-casa', cs.join(' · '))); }
-    li.appendChild(el('span', 'no-data', T('rack_latido')));
+    li.appendChild(el('span', 'no-data', T('rack_latido') + (c.position_cause ? ' · ' + c.position_cause : '')));
     return li;
   }
 
@@ -77,18 +77,22 @@
     });
   }
 
-  function monta(cont, textos) {
-    if (!cont || cont.firstChild || !C || !Q) { return; }
+  function monta(cont, textos, projection) {
+    if (!cont || cont.firstChild || !Q || (projection === undefined && !C)) { return; }
     T = textos || T;
     var s = el('section', 'atlas-rack');
     s.appendChild(el('h5', null, T('rack_h')));
     s.appendChild(el('p', 'atlas-nota', T('rack_nota')));
     var mapa = el('ol', 'atlas-rack-mapa');
     mapa.setAttribute('aria-label', T('rack_h'));
-    C.nodos.forEach(function (c) { mapa.appendChild(punto(c)); });
+    var view = window.AtlasNodeProjection;
+    var nodes = projection === undefined ? C.nodos : view ? view.select(projection, []) : [];
+    nodes.forEach(function (c) { mapa.appendChild(punto(c)); });
     s.appendChild(mapa);
-    var caja = el('div', 'panel atlas-cuenta'); s.appendChild(caja);
-    cuenta(caja);
+    if (C) {
+      var caja = el('div', 'panel atlas-cuenta'); s.appendChild(caja);
+      cuenta(caja);
+    }
     cont.appendChild(s);
   }
 

@@ -36,15 +36,17 @@
   }
     function pinta(g, P, o) {
     var Ce = raiz.AtlasNodosCedulas, N = raiz.AtlasNiebla, pon = o.pon || function (x, y, d) { d(); }, dpr = o.dpr || 1;
-    if (!Ce || !N || !N.sitioNodo) { return; }
-    Ce.nodos.forEach(function (n) {
+    if (!N || !N.sitioNodo || (o.projection === undefined && !Ce)) { return; }
+    var view = raiz.AtlasNodeProjection;
+    var nodes = o.projection === undefined ? Ce.nodos : view ? view.select(o.projection, []) : [];
+    nodes.forEach(function (n) {
       var s = N.sitioNodo(n.nodo);
       if (!s) { return; }         var k = coral(n), x = s.x + DX, y = s.y + DY;
       pon(x, y, function () { pintaUno(g, P(x, y), k, dpr); }, function () {
         var f = { que: 'Coral · ' + k.nodo, hit: { dx: k.ladeo * dpr, dy: -k.altura * dpr, radius: (5 + 2 * k.medidas) * dpr * (k.lobulos + 1) / 2 }, estado: k.nd ? 'NO_DATA (no measure of this node is MEASURED' + (k.emuladas ? '; ' + k.emuladas + ' EMULATED do not count' : '') + ')'
                  : k.medidas + ' of ' + k.total + ' measures MEASURED', causas: [] };
                 var HB = raiz.AtlasHexBench;
-        if (n.nodo === 'nodo.0.hexelion' && HB) {
+        if (o.projection === undefined && n.nodo === 'nodo.0.hexelion' && HB) {
           var B = HB.BENCH, mm = B.modelos.filter(function (m) { return m.estado === 'MEDIDO'; })[0];
           f.causas.push('bench ' + B.fuente.fecha + ' · ' + B.fuente.archivo + ' · sha256 ' + B.fuente.sha256.slice(0, 16));
           f.causas.push(mm ? mm.modelo + ': pp512 ' + mm.pp512_tok_s + ' tok/s (' + mm.medido_en + ')' : 'NO_DATA (no model measured)');
@@ -52,7 +54,7 @@
           f.causas.push('lab: ' + B.fuente.enlace);
           f.causas.push('raw figures published at the lab: ' + B.fuente.archivo + ' · sha256 ' + B.fuente.sha256.slice(0, 16));
         }
-        return raiz.AtlasPlaceCards.ficha('coral', f, { enlace: n.nodo === 'nodo.0.hexelion' && HB ? HB.BENCH.fuente.enlace : null });
+        return raiz.AtlasPlaceCards.ficha('coral', f, { enlace: o.projection === undefined && n.nodo === 'nodo.0.hexelion' && HB ? HB.BENCH.fuente.enlace : null });
       });
     });
   }
