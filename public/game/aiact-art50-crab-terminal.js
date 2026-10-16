@@ -1,22 +1,3 @@
-/* preceptoros.org · theGame · EL TERMINAL DEL CANGREJO (J7, plan de ronda firmado 2026-10-11).
-
-   «Dar a los usuarios en sus terminales web las variables que pueden TOCAR en sus partidas,
-   principalmente como cangrejos» (el Soberano). El cangrejo no programa: elige UNA accion del enum
-   cerrado `atlas.accion/1` y el MOTOR decide. Este fichero no tiene ni una regla de juego.
-
-   UNA SOLA PUERTA. Todo pasa por `AtlasJuego.aplica`, que traduce la accion a las MISMAS llamadas que
-   los botones y devuelve el evento del motor (`atlas.evento/1`, con su `resultado`). Si el motor dice
-   `fallo`, el terminal lo ensena tal cual: una accion ilegal la rechaza el motor, no un texto. El enum
-   es el del piloto (`atlas-piloto.js`): una lista, no dos.
-
-   TRANSPARENCIA (AI Act art. 50, por eso el nombre): cada linea dice en texto que se pidio y que respondio
-   la maquina. Lo que se puede tocar (recursos, profundidad, grieta) sale de la instantanea, no de una copia.
-
-   LO DE LA PARTIDA VA PLEGADO AQUI (R2, plan «el refresco»: la pestana Help desaparece). `monta` recibe la
-   caja de la partida (guardar/exportar, la ayuda, el pie) y la mete dentro; el contador de farmeo y opinar
-   firmado se crean aqui y su codigo baja AL PULSAR (`atlas-hud.js`, `atlas-opina.js`), fuera de la puerta.
-
-   Nada sale de la pestana: ni red, ni almacen, ni reloj, ni azar. */
 (function (raiz) {
   'use strict';
   var Pi = (typeof module === 'object' && module.exports) ? null : raiz.AtlasPiloto;
@@ -24,22 +5,19 @@
   var BANDAS = ['arrecife', 'ruinas', 'bosque', 'nucleo'];
   var DIRS = ['izq', 'arr', 'aba', 'der', 'casa', 'faro'];
 
-  /* `extra` es la banda de `bajar_a` o la direccion de `mover` (la flecha del mapa, R2c). */
-  function accion(nombre, extra) {
+    function accion(nombre, extra) {
     var a = { esquema: 'atlas.accion/1', accion: nombre, origen: 'humano' };
     if (nombre === 'bajar_a') { a.banda = extra; }
     if (nombre === 'mover') { a.dir = extra; }
     return a;
   }
-  /* Una linea del terminal: lo pedido y lo que contesto el motor (o NO_DATA si no hay partida). */
-  function linea(a, ev) {
+    function linea(a, ev) {
     var pedido = a.accion + (a.banda ? ' · ' + a.banda : '') + (a.dir ? ' · ' + a.dir : '');
     if (ev === null || ev === undefined) { return 'Action: ' + pedido + '\nResult: NO_DATA · no game running in this tab'; }
     var resultado = ev.resultado || 'ok', detalle = ev.mision || ev.profundidad || ev.dir || 'engine replied';
     return 'Action: ' + pedido + '\nResult: ' + resultado + (ev.tipo ? ' · ' + ev.tipo : '') + ' · ' + detalle;
   }
-  /* Lo tocable ahora, en texto humano desde la misma instantanea. */
-  function variables(i) {
+    function variables(i) {
     if (!i) { return 'NO_DATA · no snapshot yet'; }
     var r = i.recursos || {}, d = function (v) { return v === undefined || v === null ? 'NO_DATA' : v; };
     return 'Cycle: ' + d(i.ciclo) + '\nCore integrity: ' + d(i.integridad) + '\nDepth: ' + d(i.profundidad) +
@@ -52,8 +30,7 @@
   }
 
   function el(tag, clase, texto) { var n = raiz.document.createElement(tag); if (clase) { n.className = clase; } if (texto != null) { n.textContent = texto; } return n; }
-  /* El contador de farmeo y opinar firmado, en la caja de la partida; su guion se pide al pulsar. */
-  function partida(caja) {
+    function partida(caja) {
     var d = raiz.document, capa = d.getElementById('thegame'), J = raiz.AtlasJuego, th = J && J.texto('hud_t');
     function pide(src, listo) { var s = d.createElement('script'); s.src = src; s.onload = listo; d.head.appendChild(s); }
     if (th) {
