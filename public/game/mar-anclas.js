@@ -1,15 +1,6 @@
-/* preceptoros.org · theGame · LAS ANCLAS DEL MAPA, dibujadas (R7; salen de `mar.js` en P10 porque `mar.js`
-   estaba a 3 B de su techo: una pieza que crece se parte ANTES de crecer).
-
-   Solo vocabulario visual: lo que anclan se construye con su propio FIRMO. El tubo de cada nodo al rack es
-   una linea DOBLE teal; las anclas futuras, un rombo hueco en trazos (PROPUESTA, ideas6oct:1748:
-   discontinuidad = lo que aun no es) con su nombre corto. EXCEPCION, desde P10: el PRISMA DE BANDERA ya
-   existe; si la persona eligio bandera, su rombo va LLENO del color de SU bandera (lo eligio ella: nada
-   decide color por otro) y se rotula como bandera. Puro de red: los datos salen de `fog_of_war.anclas`. */
 (function (raiz) {
   'use strict';
-  /* g: contexto; P(x, y) -> pixeles; o: { pub, sha, nodos, dpr, bandera (tono hsl o null), texto(k) }. */
-  function pinta(g, P, o) {
+    function pinta(g, P, o) {
     var N = raiz.AtlasNiebla, dpr = o.dpr || 1, pon = o.pon || function (x, y, d) { d(); };
     N.anclas({ pub: o.pub, sha: o.sha, nodos: o.nodos || [] }).forEach(function (a) { pon(a.x, a.y, function () {
       var p = P(a.x, a.y), r = 7 * dpr, lleno = a.clase === 'prisma' && o.bandera != null;

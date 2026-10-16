@@ -1,12 +1,3 @@
-/* preceptoros.org · theGame · EL DEDO EN EL MAPA: arrastrar, tocar un lugar y las teclas (sacado de `mar.js`, 2026-10-12).
-
-   Se separa ANTES de migrar el mapa a la LEY DEL SUELO (isometrico 2:1): `mar.js` estaba a 198 B de su techo, y el
-   dedo es justo lo que cambia con el rombo. Arrastrar convierte el movimiento de PANTALLA en movimiento de MUNDO con
-   la inversa de la proyeccion (`AtlasCamara.aMundoDelta`); tocar elige el lugar mas cercano EN PANTALLA (lo que ve
-   el dedo). Nada teletransporta: arrastrar mueve la camara con su inercia, y soltar deja que planee.
-
-   `monta(ctx)`: ctx = { c (lienzo), C (AtlasCamara), dpr, z() (pixeles por unidad), cam(), circ(), quieto(), choca(),
-   marca() (el mapa ya se movio), lugares(), sitio(l), elige(l), flecha(d) }. Sin red, sin azar, sin reloj. */
 (function (raiz) {
   'use strict';
   function monta(x) {
@@ -40,8 +31,7 @@
         b.click(); return { ok: true };
       } } } : null;
       var ficha = raiz.AtlasInspector ? raiz.AtlasInspector.toca(px, py, 44 * x.dpr, tocado, lugar) : null;
-      /* B: tocar MAR VACIO (ni lugar ni pieza) manda a tu cangrejo alli: pantalla -> mundo con la inversa del rombo. */
-      var Lb = raiz.AtlasCangrejoLibre;
+            var Lb = raiz.AtlasCangrejoLibre;
       if (!mejor && !ficha && Lb && Lb.base()) { Lb.va(Lb.base(), tocado.x, tocado.y); }
     }
     c.addEventListener('pointerup', suelta);

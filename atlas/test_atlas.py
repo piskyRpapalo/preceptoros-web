@@ -810,7 +810,10 @@ process.stdout.write(JSON.stringify(ok));
             with self.subTest(section=title):
                 self.assertIn("'" + title + "'", guion)
         self.assertIn("function cangrejo()", casa, "el panel lee la fuente única del cuerpo")
-        self.assertIn("AtlasCasa.cangrejo()", (PUBLICO / "game" / "mar-cangrejos.js").read_text(encoding="utf-8"))
+        # D1 (2026-10-16): the citation moved from a code comment to the canon doc; the code calls C.cangrejo() directly
+        mc = (PUBLICO / "game" / "mar-cangrejos.js").read_text(encoding="utf-8")
+        self.assertTrue("C.cangrejo()" in mc or "AtlasCasa.cangrejo()" in mc,
+                        "mar-cangrejos lee la fuente unica del cuerpo")
         self.assertIn("function ficha()", frame, "la ventana entrega un único sello de frescura")
         self.assertIn("montaInspector", inspector + save, "los controles del aparato viven en Inspector")
         self.assertNotIn("LIVE", guion, "la frescura se pinta una vez en el marco del canal")

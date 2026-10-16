@@ -1,8 +1,3 @@
-/* preceptoros.org · theGame · EL ZOOM DEL MAPA (comunicado 13-oct, punto 1; sale de `mar.js` para caber en su techo).
-
-   Pellizco con dos dedos (tactil) y rueda sin Ctrl (puntero). Ctrl+rueda NO se toma: el navegador hace su zoom de
-   pagina (PC). El factor va de 0,6 a 3 (1 = el zoom de siempre). Cada cambio se anota en `data-zoom` del lienzo, que
-   es lo que leen el lab y el medidor. Sin red, sin azar, sin reloj: el gesto solo fija un numero. */
 (function (raiz) {
   'use strict';
   var MIN = 0.6, MAX = 3;
