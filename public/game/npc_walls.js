@@ -1,4 +1,3 @@
-/* Q6 · Signed local NPC occupation controls for the honest place inspector. */
 (function (root) {
   'use strict';
   var live = null;

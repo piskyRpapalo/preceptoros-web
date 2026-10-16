@@ -1,4 +1,3 @@
-/* WEB · M1: siluetas heredadas del arrecife; solo dibujo, sin otro estado. */
 (function (raiz) {
   'use strict';
   function boya(g,P,o,m,v,c,t,dpr) {
@@ -16,8 +15,7 @@
       var lp = P(casa.x - 160, casa.y - 160), k = Math.min(9, lapidas.length);
       g.fillStyle = 'rgba(150,160,180,.7)';
       if (!k && raiz.AtlasBuildingsToon) { raiz.AtlasBuildingsToon.silueta(g, 'lapidas', lp[0], lp[1], 8 * dpr); g.strokeStyle = 'rgba(150,160,180,.7)'; g.setLineDash([2 * dpr, 3 * dpr]); g.stroke(); g.setLineDash([]); }
-      for (var s = 0; s < k; s++) { var sx = lp[0] + (s - (k - 1) / 2) * 7 * dpr, sy = lp[1] - (s % 2) * 3 * dpr; if (raiz.AtlasBuildingsToon) { raiz.AtlasBuildingsToon.forma(g, 'lapidas', sx, sy, 3.2 * dpr, { h: 220, s: 12, l: 58 }, dpr, 0.8); } else { g.fillRect(sx - 2.5 * dpr, sy - 5 * dpr, 5 * dpr, 7 * dpr); } }  /* gris fijo: las lapidas no tienen vector vivo */
-      g.fillStyle = 'rgba(155,227,255,.75)'; g.fillText(t('lap_nombre') + ' · ' + lapidas.length, lp[0], lp[1] + 14 * dpr);
+      for (var s = 0; s < k; s++) { var sx = lp[0] + (s - (k - 1) / 2) * 7 * dpr, sy = lp[1] - (s % 2) * 3 * dpr; if (raiz.AtlasBuildingsToon) { raiz.AtlasBuildingsToon.forma(g, 'lapidas', sx, sy, 3.2 * dpr, { h: 220, s: 12, l: 58 }, dpr, 0.8); } else { g.fillRect(sx - 2.5 * dpr, sy - 5 * dpr, 5 * dpr, 7 * dpr); } }        g.fillStyle = 'rgba(155,227,255,.75)'; g.fillText(t('lap_nombre') + ' · ' + lapidas.length, lp[0], lp[1] + 14 * dpr);
   }
   function observatorio(g,P,o,casa,vistas,L,tic,t,dpr,oc) {
       var ult = vistas.length ? L.color(vistas[vistas.length - 1], tic) : null, rr = 9 * dpr;

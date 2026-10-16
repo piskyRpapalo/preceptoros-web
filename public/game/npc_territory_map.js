@@ -1,4 +1,3 @@
-/* Q6 · NPC occupation projection on the existing world map. */
 (function (root) {
   'use strict';
   function crea() {
