@@ -266,3 +266,6 @@ textarea{min-height:8rem;font-size:.78rem;line-height:1.5;resize:vertical}
 .cab-lenguas a,.radio-chat-tab,.radio-chat-alterna,summary{min-height:1.5rem;min-width:1.5rem}
 .cab-lenguas a{display:inline-flex;align-items:center;justify-content:center;padding:.15rem .45rem}
 #thegame :is(.boton,.boton-sec){min-height:2.75rem;min-width:2.75rem}
+.killswitch-dot{display:inline-block;width:.55rem;height:.55rem;border-radius:50%;margin-left:.4rem;vertical-align:middle;background:transparent}
+.killswitch-dot.con-anillo{box-shadow:0 0 0 2px var(--panel-bg),0 0 0 3.5px currentColor}
+.killswitch-shape{margin-left:.25rem;font-size:.7rem}
