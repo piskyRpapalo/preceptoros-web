@@ -9,7 +9,7 @@ Léelo antes de tocar nada. Vale para toda sesión de agente (rack, nube, web) j
 
 ## Cercos (sin excepciones)
 - Vocablos prohibidos en código y UI: oraculo, notario, depin, token, moneda, clearing, magia.
-- Piezas <16 KiB, vanilla JS sin build en public/ · cero red nueva · cargador solo 'en' · inglés primero.
+- Máximo 25 MiB por bloque (revocado el tope de 16 KiB el 2026-10-11, firma D2; solo sube por excepción firmada en EXCEPCIONES.md) · vanilla JS sin build en public/ · cero red nueva · cargador solo 'en' · inglés primero.
 - Sin FOMO, sin reloj de pared (ciclos de juego), sin probabilidad oculta, la casa no gana.
 - A11Y: mouse, teclado, táctil, mundo audible, ≥44 px. D67: nada del interior de la casa sale al juego.
 - Sellos MEDIDO/NO_DATA con causa, jamás inventados; la suite debe poder ponerse roja.
