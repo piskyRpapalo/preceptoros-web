@@ -230,7 +230,7 @@
     lab.appendChild(R.consiento); lab.appendChild(document.createTextNode(' ' + T('nodos_consent')));
     R.envio.appendChild(lab);
     R.enviar = boton(T('nodos_enviar')); R.envio.appendChild(R.enviar);
-    R.porque = el('p', 'atlas-porque'); R.porque.id = 'atlas-nodos-porque'; R.porque.setAttribute('aria-live', 'polite');
+    R.porque = el('p', 'atlas-porque'); R.porque.id = 'atlas-nodos-porque';
     R.enviar.setAttribute('aria-describedby', R.porque.id); R.envio.appendChild(R.porque);
     R.consiento.addEventListener('change', function () { cerrojo(); });
     R.enviar.addEventListener('click', envia);

@@ -58,7 +58,7 @@
     sa.addEventListener('change', function () { sb.hidden = sa.value !== 'bajar_a'; sd.hidden = sa.value !== 'mover'; });
     [sa, sb, sd, go].forEach(function (n) { f.appendChild(n); });
     var vars = el('pre', 'terminal-vars'), log = el('pre', 'terminal-log');
-    log.setAttribute('aria-live', 'polite'); log.setAttribute('role', 'log');
+    log.setAttribute('role', 'log');
     function pintaVars() { vars.textContent = variables(raiz.AtlasJuego && raiz.AtlasJuego.instantanea && raiz.AtlasJuego.instantanea()); }
     f.addEventListener('submit', function (e) {
       e.preventDefault();

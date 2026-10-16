@@ -238,3 +238,7 @@ textarea{min-height:8rem;font-size:.78rem;line-height:1.5;resize:vertical}
   button:hover,.boton:hover{transform:none}
 }
 ::view-transition-old(root),::view-transition-new(root){animation-duration:.28s}
+
+.skip-link{position:absolute;left:-9999px;top:0;background:#E4E8EC;color:#1E1826;padding:.6rem 1rem;z-index:99;text-decoration:underline}
+.skip-link:focus{left:0}
+.cab-h1{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}

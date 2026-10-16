@@ -45,7 +45,7 @@
     R.forma = el('button', 'boton-sec rp-forma'); R.forma.type = 'button';
     R.tiempo = el('input', 'rp-tiempo'); R.tiempo.type = 'range'; R.tiempo.min = '0'; R.tiempo.step = '100';
     R.tiempo.setAttribute('aria-label', T('rp_tiempo'));
-    R.narra = el('p', 'rp-narra'); R.narra.setAttribute('aria-live', 'polite');
+    R.narra = el('p', 'rp-narra');
     R.claves = el('details', 'rp-claves'); R.claves.appendChild(el('summary', null, T('rp_claves')));
     R.lista = el('ol'); R.claves.appendChild(R.lista);
         R.ahorro = el('button', 'boton-sec rp-ahorro'); R.ahorro.type = 'button'; R.ahorro.hidden = true;

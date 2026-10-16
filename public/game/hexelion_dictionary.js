@@ -57,7 +57,7 @@
     });
     host.appendChild(heading); host.appendChild(note); host.appendChild(buttons);
     var detail = D.createElement('section'); detail.className = 'hexelion-crystal-detail'; detail.id = 'hexelion-crystal-detail';
-    detail.setAttribute('aria-live', 'polite'); host.appendChild(detail);
+    host.appendChild(detail);
     show(host, data.entries[0]);
   }
   function show(host, e) {

@@ -2600,7 +2600,7 @@ class MapaMovible(unittest.TestCase):
     def test_mandos_de_nino_y_accesible(self):
         r = self._js("battle_replay.js")
         for pieza in ("R.tiempo.type = 'range'", "R.tiempo.setAttribute('aria-label', T('rp_tiempo'))",
-                      "R.narra.setAttribute('aria-live', 'polite')", "vel = vel >= 4 ? 1 : vel * 2",
+                      "vel = vel >= 4 ? 1 : vel * 2",
                       "lienzo.setAttribute('aria-label', T('rp_aria'))", "var claves = [0, 3000, Math.round(k.fin / 2), k.total];",
                       "desafina: Math.min(1, (1 - p[2] / k.max[j])", "color: velColor(k.vel[j])"):
             with self.subTest(pieza=pieza):

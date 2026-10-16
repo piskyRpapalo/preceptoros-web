@@ -57,12 +57,13 @@ def portada(l, raiz=False):
 <link rel="stylesheet" href="/assets/eaa-art12-local-first-surface.css">
 </head>
 <body class="portada-juego">
+<a class="skip-link" href="#juego-panel">Skip to the game panel</a>
 <header class="cab-juego">
 <a class="cab-marca" href="/{l}/">PreceptorOS · <b>theGame</b></a>
 <nav class="cab-lenguas" aria-label="Language · {NOMBRE[l]}">{lenguas}</nav>
 <div id="identity" class="fila identity"></div>
 </header>
-<main id="juego-panel" class="juego-panel" aria-label="theGame">
+<main id="juego-panel" class="juego-panel" aria-label="theGame"><h1 class="cab-h1">theGame</h1>
 <p class="juego-carga">theGame · loading on this device. No account, no cloud.</p>
 <noscript><p class="juego-carga">theGame needs JavaScript: it runs entirely on this device.</p></noscript>
 </main>
