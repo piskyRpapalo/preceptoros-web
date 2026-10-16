@@ -84,6 +84,6 @@ Read this index, then come back ONCE for ONE package by name (pass 2, <=300 toke
 - hexelion: 43 machine references, A1-D45
 - thegame: home page IS the game, 9 languages
 - citizenship: Ed25519 key, never leaves device
-- guardrails: forbidden words, 16 KiB, no network
+- guardrails: forbidden words, 25 MiB ceiling (signed exceptions in EXCEPCIONES.md), no network
 - measured: the MEASURED/NO_DATA rule
 - mailbox: write back, honest 404s
