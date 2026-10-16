@@ -1044,7 +1044,7 @@ class TheGameV15(unittest.TestCase):
     las dos guardas en el mismo job; moverla es un paso del rack."""
 
     JUEGO = PUBLICO / "game"
-    MODULOS = ("valores.js", "gacha.js", "db.js", "core.js", "ui-ficha.js", "ui-invoca.js", "ui.js", "juez.js")  # T: ui-ficha sale de ui
+    MODULOS = ("valores.js", "gacha.js", "db.js", "core.js", "killswitch_dot.js", "ui-ficha.js", "ui-invoca.js", "ui.js", "juez.js")  # T: ui-ficha sale de ui
 
     def _js(self, nombre):
         return sin_comentarios(_fam(nombre, (self.JUEGO / nombre).read_text(encoding="utf-8")))
@@ -1458,7 +1458,7 @@ class Pestanas(unittest.TestCase):
     HOJA = ASSETS / "thegame.css"
     IDS = ("casa", "mapa", "taller")
     PLIEGOS = ()
-    ARMY = ("valores.js", "gacha.js", "db.js", "core.js", "ui-ficha.js", "ui-invoca.js", "ui.js")
+    ARMY = ("valores.js", "gacha.js", "db.js", "core.js", "killswitch_dot.js", "ui-ficha.js", "ui-invoca.js", "ui.js")
 
     def _capa(self):
         return sin_comentarios(self.CAPA.read_text(encoding="utf-8"))
