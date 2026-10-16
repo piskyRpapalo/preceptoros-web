@@ -144,7 +144,7 @@ ol.pasos div{flex:1;min-width:0}
    Lo que NO se vuelve nube: `Powered` y `Modelo:`, que siguen en verde. No se
    pulsan -- son un dato y una declaracion, y darles figura de boton seria
    ofrecer un gesto que no existe. */
-button,.boton{font:inherit;font-size:.85rem;cursor:pointer;
+button,.boton{font:inherit;font-size:.85rem;cursor:pointer;min-height:1.5rem;min-width:1.5rem;
   background:var(--violeta);color:#fff;border:1px solid var(--oro);
   border-radius:999px;
   padding:.6rem .9rem;display:inline-block;text-decoration:none;
@@ -258,3 +258,11 @@ textarea{min-height:8rem;font-size:.78rem;line-height:1.5;resize:vertical}
   .panel:not(#chat){background:var(--marmol-claro);backdrop-filter:none;-webkit-backdrop-filter:none;box-shadow:none}
   .panel{border:1px solid var(--bronce)}
 }
+
+/* A11Y pieza 3 (ronda 110): target size. WCAG 2.2 AA 2.5.8 pide 24x24 minimo
+   en todo lo tocable; la vara de la casa son los 44px del chequeo en vivo.
+   Los botones de accion ya heredan .boton (padding .6rem .9rem >> 24px).
+   Los enlaces pequenos (lenguas, tabs) ganan area minima aqui. */
+.cab-lenguas a,.radio-chat-tab,.radio-chat-alterna,summary{min-height:1.5rem;min-width:1.5rem}
+.cab-lenguas a{display:inline-flex;align-items:center;justify-content:center;padding:.15rem .45rem}
+#thegame :is(.boton,.boton-sec){min-height:2.75rem;min-width:2.75rem}
