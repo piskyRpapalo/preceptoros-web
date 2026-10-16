@@ -21,7 +21,7 @@
 
 ## Live site
 
-- [preceptoros.org](https://preceptoros.org): the served site. Nine languages, zero external requests on load, 75 web tests: 74 passing and 1 skipped (measured; see the LAB counters).
+- [preceptoros.org](https://preceptoros.org): the served site. Nine languages, zero external requests on load, 78 web tests: 75 passing and 3 skipped (measured; see the LAB counters).
 
 ## HEXELION Star · public machine references
 

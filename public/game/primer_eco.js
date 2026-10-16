@@ -1,20 +1,3 @@
-/* preceptoros.org · theGame · CAPITULO 1.5: EL PRIMER ECO (P11, firmado por el Soberano el 2026-10-11).
-
-   Corpus («6 planes.txt»:165-174): «Has lanzado la boya. Ahora escuchas el oceano. Es ruidoso. El tutorial te
-   obliga a lanzar un Ping. Obtienes 3 ondas sucias. El Navegante (tu IA) te dice que son inestables; te ensena
-   a Desintegrar la peor, a Pulir tu favorita con ese Residuo y a Pintarla con tu frecuencia. Sales con tu
-   Insignia.» Despues, el mar abierto.
-
-   UN SIMULACRO CON LAS REGLAS DE VERDAD. Las tres ondas salen de TU clave (o del visitante), son de niebla
-   (`campo_origen: 'emulado'`: se ven sucias, sin detalle medido) y nunca entran en el Army. Desintegrar,
-   lijar y tenir usan `taller.js` tal cual (mismos gramos, mismos costes), sobre una cadena de ensayo que no
-   se firma ni se guarda: aqui se APRENDE la regla, no se gana valor. Lo unico real que deja: tu BANDERA (la
-   eliges tu, se guarda en tu casa) y tu INSIGNIA, un distintivo (no una tropa: una tropa gratis romperia la
-   economia firmada; se declara en la mesa).
-
-   OBLIGATORIO: el primer paso es el ping y no hay boton de saltar; el capitulo se abre solo en el TALLER hasta
-   que tienes Insignia. No bloquea el resto del juego. EL NAVEGANTE habla con el retrato del guia (la onda del
-   emblema, `AtlasDialogo.retrato`): la IA del taller con su nombre propio. Sin red, sin azar, sin reloj. */
 (function (raiz) {
   'use strict';
   var EN_NODE = typeof module === 'object' && module.exports;
@@ -23,9 +6,7 @@
   var TL = EN_NODE ? require('./taller.js') : raiz.AtlasTaller;
   var PASOS = ['ping', 'desintegra', 'pule', 'pinta', 'insignia'], MIN_ARISTAS = 6;
 
-  /* Las tres ondas sucias de una semilla de cuenta: deterministas, de niebla, y con al menos 6 aristas cada una
-     (asi la regla real alcanza para pulir y pintar con el residuo de una sola). */
-  function ondasSucias(cuenta) {
+    function ondasSucias(cuenta) {
     var out = [];
     for (var i = 0; out.length < 3; i++) {
       var t = G.tirada(K.sha('atlas.eco/1:' + (cuenta || 'visitante') + ':' + i), 'tc1');
@@ -33,15 +14,13 @@
     }
     return out;
   }
-  /* El estado del capitulo es puro: { paso, ondas, cadena (de ensayo), elegida, insignia }. */
-  function empieza(cuenta) { return { paso: 'ping', ondas: ondasSucias(cuenta), cadena: [], elegida: null, insignia: null }; }
+    function empieza(cuenta) { return { paso: 'ping', ondas: ondasSucias(cuenta), cadena: [], elegida: null, insignia: null }; }
   function ensayo(e, op) {
     var r = TL.recibo(TL.estado(e.cadena), op, TL.CERO);
     e.cadena.push({ recibo: r, firma: null });
     return r;
   }
-  /* Un paso: lanza si no toca (el orden es obligatorio). Devuelve el estado nuevo (copia). */
-  function avanza(e0, accion, dato) {
+    function avanza(e0, accion, dato) {
     var e = JSON.parse(JSON.stringify(e0));
     if (accion !== e.paso) { throw new Error('ahora toca: ' + e.paso); }
     if (accion === 'ping') { e.paso = 'desintegra'; }
@@ -60,8 +39,7 @@
   var AtlasPrimerEco = { PASOS: PASOS, ondasSucias: ondasSucias, empieza: empieza, avanza: avanza };
   if (EN_NODE) { module.exports = AtlasPrimerEco; return; }
 
-  /* --- en la pestana --------------------------------------------------------------------------------- */
-  var R = {}, est = null, caja = null, V = raiz.AtlasValores, O = raiz.AtlasOnda;
+    var R = {}, est = null, caja = null, V = raiz.AtlasValores, O = raiz.AtlasOnda;
   function T(k, d) { var C = raiz.AtlasCasa, J = raiz.AtlasJuego, t = (C && C.texto && C.texto(k)) || (J && J.texto(k)); return t && t !== k ? t : d; }
   function el(tag, clase, texto) { var n = document.createElement(tag); if (clase) { n.className = clase; } if (texto != null) { n.textContent = String(texto); } return n; }
   function boton(texto, clase) { var b = el('button', clase || 'boton', texto); b.type = 'button'; return b; }
@@ -126,7 +104,7 @@
     R.caja = el('section', 'eco');
     R.caja.appendChild(el('h5', null, T('eco_h', 'Chapter 1.5 · The First Echo')));
     var nav = el('div', 'eco-navegante'), D = raiz.AtlasDialogo;
-    if (D && D.retrato) { try { var r = D.retrato({}); r.celda(0); nav.appendChild(r.nodo); } catch (x) { /* sin retrato: queda el nombre */ } }
+    if (D && D.retrato) { try { var r = D.retrato({}); r.celda(0); nav.appendChild(r.nodo); } catch (x) { } }
     nav.appendChild(el('b', null, T('eco_nombre', 'The Navigator') + ' · ' + T('eco_rol', 'your Workshop AI')));
     R.caja.appendChild(nav);
     R.texto = el('p', 'eco-texto'); R.texto.setAttribute('aria-live', 'polite'); R.caja.appendChild(R.texto);
