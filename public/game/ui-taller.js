@@ -1,13 +1,3 @@
-/* preceptoros.org · theGame · EL POLVO DE TALLER en pantalla (P9, firmado el 2026-10-11).
-
-   La puerta es `AtlasTallerUI.monta(zona)`, en la pestana TALLER. Las reglas viven en `taller.js` (puro); aqui
-   solo se pintan, se pide la FIRMA de la persona y se guarda la cadena por `db.js` (cajaWeb, la unica puerta
-   de almacenamiento del juego).
-
-   VALOR VISIBLE ANTES DE DESTRUIR: cada onda dice cuantos gramos daria. DESINTEGRAR saca la tropa del Army
-   solo con su recibo firmado (`AtlasIncubadora.retira`); LIJAR sube un stat y cuesta mas en cada nivel. La
-   cadena guardada se COMPRUEBA al volver (enlaces, cuentas y firmas): si un eslabon falla, se dice cual y el
-   Taller no opera sobre una cadena rota. Sin red, sin azar, sin reloj. */
 (function () {
   'use strict';
   var TL = window.AtlasTaller, A = window.AtlasArmy, V = window.AtlasValores, G = window.AtlasGacha;
@@ -19,8 +9,7 @@
   function dice(t) { R.estado.textContent = t; }
   function army() { var I = window.AtlasIncubadora; return (I && I.army && I.army()) || []; }
 
-  /* Firma de la persona sobre el recibo tal cual (la cadena compara el JSON exacto). */
-  function firma(rec) {
+    function firma(rec) {
     var I = window.Identity;
     if (!I || !I.quien || !I.quien()) { return Promise.reject(new Error(T('taller_sin_id', 'Create your key first (top of the page): every Workshop act is signed.'))); }
     return I.firmar(rec).then(function (f) { return f.firma; });
@@ -38,9 +27,7 @@
       return firma(rec).then(function (f) { return despues(rec, f); });
     }).catch(function (e) { var causa = String((e && e.message) || e); dice(causa); if (op.op === 'lija') { cambioOnda(op.semilla, op.stat, causa); } });
   }
-  /* La suelta de la eclosion: MISMO recibo `atlas.taller/1`, MISMO residuo y MISMO mensaje que desintegrar, pero
-     sin `retira` (la tropa nunca entro al Army). `panel` (la eleccion) se cierra solo si el recibo queda firmado. */
-  function desintegraSuelta(t, panel) {
+    function desintegraSuelta(t, panel) {
     if (roto) { dice('NO_DATA · ' + roto); return false; }
     if (!(window.Identity && window.Identity.quien && window.Identity.quien())) { dice(T('taller_sin_id', 'Create your key first (top of the page): every Workshop act is signed.')); return false; }
     opera({ op: 'desintegra', tropa: t }, function (rec, f) {
@@ -51,21 +38,18 @@
     });
     return true;
   }
-  /* Al cerrarse la revelacion de una eclosion, el foco y la vista van a la eleccion (quedarse / soltar). */
-  function aterriza(panel) {
+    function aterriza(panel) {
     return function () { var b = panel.querySelector('.atlas-dlg-mandos button'); if (!panel.hidden && b) { panel.scrollIntoView({ block: 'center' }); b.focus(); } };
   }
   function desintegra(t) {
     opera({ op: 'desintegra', tropa: t }, function (rec, f) {
       return window.AtlasIncubadora.retira(rec, f).then(function () {
         cadena.push({ recibo: rec, firma: f }); est = TL.estado(cadena); guarda();
-        if (window.AtlasArrecife && window.AtlasArrecife.entierraTropa) { window.AtlasArrecife.entierraTropa(rec); }  /* amor 4: su lapida */
-        dice(T('taller_hecho_d', 'Dissolved: +{g} g of static residue.').replace('{g}', rec.gramos)); pinta();
+        if (window.AtlasArrecife && window.AtlasArrecife.entierraTropa) { window.AtlasArrecife.entierraTropa(rec); }          dice(T('taller_hecho_d', 'Dissolved: +{g} g of static residue.').replace('{g}', rec.gramos)); pinta();
       });
     });
   }
-  /* P10 · tenir una onda al color de TU bandera (la de «Customize»). */
-  function tine(t, b) {
+    function tine(t, b) {
     opera({ op: 'tinte', semilla: t.semilla, bandera: b }, function (rec, f) {
       cadena.push({ recibo: rec, firma: f }); est = TL.estado(cadena); guarda();
       dice(T('taller_hecho_t', 'Tinted to your flag.')); pinta();
@@ -82,9 +66,7 @@
     });
   }
 
-  /* El Army como casilleros: cada tropa con su ficha (dibujada, sin imagen) y su nombre. Elegir una marca el
-     casillero y pinta su detalle (abajo, en esta misma hoja). Sustituye al pintado antiguo de ui.js. */
-  function casilleros(ul, lista, ficha) {
+    function casilleros(ul, lista, ficha) {
     fichaDe = ficha; ul.textContent = '';
     lista.forEach(function (u) {
       var t = u.adopcion.tropa, li = el('li'), b = el('button', 'army-casillero'), n = t.aristas || G.aristas(t);
@@ -109,8 +91,7 @@
     else if (!us.length) { R.lista.appendChild(el('li', 'atlas-nota', T('taller_elige', 'Pick a unit in your Army to sand or dissolve it.'))); }
     us.forEach(function (u) {
       var t = u.adopcion.tropa, li = el('li', 'taller-fila'), lj = (est && est.lijas[t.semilla]) || {};
-      /* El detalle: su ficha grande y TODAS sus stats (las de la tropa, sin lijar; el saldo sale arriba). */
-      var det = el('li', 'taller-detalle');
+            var det = el('li', 'taller-detalle');
       if (fichaDe) { det.appendChild(fichaDe(t, 168)); }
       var sts = el('ul', 'taller-stats'); G.STATS.forEach(function (k) { var sem = V.semantica[k]; sts.appendChild(el('li', null, k + ' ' + t.stats[k] + (sem ? ' · ' + sem[2] : ' · NO_DATA (semantic row missing)'))); });
       det.appendChild(sts); R.lista.appendChild(det);
@@ -159,13 +140,10 @@
     });
     document.addEventListener('atlas:tropa', pinta);
   }
-  /* Lo lijado de cada tropa, para la escuadra de PRACTICA (ui-arena.js). Una cadena rota no presta nada. */
-  function lijas() { return est && !roto ? est.lijas : {}; }
-  /* P10: el tono de la bandera a la que se tino una onda, o null (nunca un color decidido por otro). */
-  function tono(semilla) { var b = est && !roto ? est.tintes[semilla] : null; return b ? V.banderas[b] : null; }
+    function lijas() { return est && !roto ? est.lijas : {}; }
+    function tono(semilla) { var b = est && !roto ? est.tintes[semilla] : null; return b ? V.banderas[b] : null; }
 
-  /* Q1: lee el mismo recibo verificado y el Army compartido; no guarda otra copia de la tropa. */
-  function detalleStat(semilla, stat) {
+    function detalleStat(semilla, stat) {
     var l = V.taller.lija, u = army().filter(function (x) { return x.adopcion && x.adopcion.tropa && x.adopcion.tropa.semilla === semilla; })[0];
     var permitida = l.stats.indexOf(stat) >= 0, nivel = est ? (est.lijas && est.lijas[semilla] ? est.lijas[semilla][stat] || 0 : 0) : null;
     var coste = permitida ? TL.coste(nivel + 1) : null, causa = null;
