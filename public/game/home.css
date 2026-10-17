@@ -73,6 +73,11 @@
 @media(min-width:38rem){.summon-access-row{grid-template-columns:minmax(0,1fr) minmax(10rem,.65fr)}}
 .mapa-mandos{display:flex;flex-wrap:wrap;gap:.4rem;justify-content:center}
 #thegame .mapa-mando{min-width:3rem;min-height:3rem;font-size:1.2rem;padding:.2rem .6rem}
+#thegame{--comic-ink:#1E1826;--comic-paper:#F2F5F7}
+#thegame .mapa-mando,#thegame .mapa-mando:hover,#thegame .mapa-mando:focus{background:var(--comic-paper);color:var(--comic-ink);border:3.5px solid var(--comic-ink);box-shadow:4px 4px 0 var(--comic-ink);border-radius:.5rem}
+#thegame .mapa-mando:focus-visible{outline:3px solid #00D2FF;outline-offset:2px}
+#thegame .mapa-mando:active{box-shadow:2.5px 2.5px 0 var(--comic-ink);transform:translate(1.5px,1.5px)}
+@media (prefers-reduced-motion:reduce){#thegame .mapa-mando{transition:none}}
 .mapa-aviso{margin:0;min-height:1.2em;font:600 .78rem/1.3 var(--mono,ui-monospace,monospace);color:#f2cf98;text-align:center}
 .atlas-arena-mapa{touch-action:none;cursor:grab}
 .atlas-arena-mapa:focus-visible{outline:2px solid #fff;outline-offset:2px}

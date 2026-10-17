@@ -75,6 +75,7 @@
       g.stroke();
     }
     function rotulo(g, txt, x, y) {
+      g.textAlign = 'center';
       var an = g.measureText(txt).width + 10 * dpr;
       g.fillStyle = 'rgb(6,10,22)'; g.fillRect(x - an / 2, y - 12 * dpr, an, 16 * dpr);
       g.fillStyle = col.texto; g.fillText(txt, x, y);
