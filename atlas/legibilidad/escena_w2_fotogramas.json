@@ -1,0 +1,550 @@
+{
+ "scene": "w2",
+ "source": "public/game/comic_atoms.js",
+ "target": "atlas/legibilidad/escena_w2_blanco.md",
+ "keys": {
+  "k": "kind",
+  "r": "read",
+  "i": "items",
+  "o": "op",
+  "f": "fill",
+  "s": "stroke",
+  "sh": "shadow",
+  "tx": "text",
+  "sz": "size",
+  "wt": "weight",
+  "al": "align",
+  "ra": "r"
+ },
+ "rules": [
+  "item de texto sin tx => su texto es r del atomo"
+ ],
+ "frames": [
+  {
+   "t": 0,
+   "sound": "NO_DATA",
+   "soundCause": "no audio contract yet",
+   "atoms": [
+    {
+     "k": "stamp",
+     "r": "LIVE · reef live",
+     "i": [
+      {
+       "o": "rect",
+       "x": 10,
+       "y": 10,
+       "w": 220,
+       "h": 48,
+       "f": "paper",
+       "s": "ink",
+       "lw": 3.5,
+       "sh": [
+        5.5,
+        5.5
+       ]
+      },
+      {
+       "o": "rect",
+       "x": 10,
+       "y": 10,
+       "w": 8,
+       "h": 48,
+       "f": "LIVE.base",
+       "lw": 0
+      },
+      {
+       "o": "text",
+       "x": 28,
+       "y": 34,
+       "sz": 16,
+       "wt": "bold",
+       "al": "left",
+       "f": "ink"
+      }
+     ]
+    },
+    {
+     "k": "chip",
+     "r": "STALE · 3 cycles",
+     "i": [
+      {
+       "o": "rect",
+       "x": 200,
+       "y": 150,
+       "w": 160,
+       "h": 32,
+       "f": "paper",
+       "s": "ink",
+       "lw": 2.5,
+       "sh": [
+        2.5,
+        2.5
+       ]
+      },
+      {
+       "o": "rect",
+       "x": 200,
+       "y": 150,
+       "w": 8,
+       "h": 32,
+       "f": "STALE.base",
+       "lw": 0
+      },
+      {
+       "o": "text",
+       "x": 218,
+       "y": 166,
+       "sz": 13,
+       "wt": "bold",
+       "al": "left",
+       "f": "ink"
+      }
+     ]
+    },
+    {
+     "k": "badge",
+     "r": "FIRMADO · 7",
+     "i": [
+      {
+       "o": "circle",
+       "x": 190,
+       "y": 104,
+       "ra": 24,
+       "f": "FIRMADO.base",
+       "s": "ink",
+       "lw": 3.5,
+       "sh": [
+        4,
+        4
+       ]
+      },
+      {
+       "o": "text",
+       "x": 190,
+       "y": 110,
+       "tx": "7",
+       "sz": 18,
+       "wt": "bold",
+       "al": "center",
+       "f": "ink"
+      },
+      {
+       "o": "text",
+       "x": 190,
+       "y": 144,
+       "tx": "FIRMADO",
+       "sz": 11,
+       "wt": "bold",
+       "al": "center",
+       "f": "ink"
+      }
+     ]
+    }
+   ],
+   "bands": [
+    "FIRMADO.base",
+    "LIVE.base",
+    "STALE.base",
+    "ink",
+    "paper"
+   ],
+   "change": []
+  },
+  {
+   "t": 4,
+   "sound": "NO_DATA",
+   "soundCause": "no audio contract yet",
+   "atoms": [
+    {
+     "k": "stamp",
+     "r": "LIVE · reef live",
+     "i": [
+      {
+       "o": "rect",
+       "x": 10,
+       "y": 10,
+       "w": 220,
+       "h": 48,
+       "f": "paper",
+       "s": "ink",
+       "lw": 3.5,
+       "sh": [
+        4,
+        4
+       ]
+      },
+      {
+       "o": "rect",
+       "x": 10,
+       "y": 10,
+       "w": 8,
+       "h": 48,
+       "f": "LIVE.base",
+       "lw": 0
+      },
+      {
+       "o": "text",
+       "x": 28,
+       "y": 34,
+       "sz": 16,
+       "wt": "bold",
+       "al": "left",
+       "f": "ink"
+      }
+     ]
+    },
+    {
+     "k": "chip",
+     "r": "STALE · 3 cycles",
+     "i": [
+      {
+       "o": "rect",
+       "x": 200,
+       "y": 150,
+       "w": 160,
+       "h": 32,
+       "f": "paper",
+       "s": "ink",
+       "lw": 2.5,
+       "sh": [
+        2.5,
+        2.5
+       ]
+      },
+      {
+       "o": "rect",
+       "x": 200,
+       "y": 150,
+       "w": 8,
+       "h": 32,
+       "f": "STALE.base",
+       "lw": 0
+      },
+      {
+       "o": "text",
+       "x": 218,
+       "y": 166,
+       "sz": 13,
+       "wt": "bold",
+       "al": "left",
+       "f": "ink"
+      }
+     ]
+    },
+    {
+     "k": "badge",
+     "r": "FIRMADO · 7",
+     "i": [
+      {
+       "o": "circle",
+       "x": 190,
+       "y": 104,
+       "ra": 24,
+       "f": "FIRMADO.base",
+       "s": "ink",
+       "lw": 3.5,
+       "sh": [
+        4,
+        4
+       ]
+      },
+      {
+       "o": "text",
+       "x": 190,
+       "y": 110,
+       "tx": "7",
+       "sz": 18,
+       "wt": "bold",
+       "al": "center",
+       "f": "ink"
+      },
+      {
+       "o": "text",
+       "x": 190,
+       "y": 144,
+       "tx": "FIRMADO",
+       "sz": 11,
+       "wt": "bold",
+       "al": "center",
+       "f": "ink"
+      }
+     ]
+    }
+   ],
+   "bands": [
+    "FIRMADO.base",
+    "LIVE.base",
+    "STALE.base",
+    "ink",
+    "paper"
+   ],
+   "change": [
+    "0.0.sh:[5.5,5.5]>[4,4]"
+   ]
+  },
+  {
+   "t": 8,
+   "sound": "NO_DATA",
+   "soundCause": "no audio contract yet",
+   "atoms": [
+    {
+     "k": "stamp",
+     "r": "LIVE · reef live",
+     "i": [
+      {
+       "o": "rect",
+       "x": 10,
+       "y": 10,
+       "w": 220,
+       "h": 48,
+       "f": "paper",
+       "s": "ink",
+       "lw": 3.5,
+       "sh": [
+        2.5,
+        2.5
+       ]
+      },
+      {
+       "o": "rect",
+       "x": 10,
+       "y": 10,
+       "w": 8,
+       "h": 48,
+       "f": "LIVE.base",
+       "lw": 0
+      },
+      {
+       "o": "text",
+       "x": 28,
+       "y": 34,
+       "sz": 16,
+       "wt": "bold",
+       "al": "left",
+       "f": "ink"
+      }
+     ]
+    },
+    {
+     "k": "chip",
+     "r": "STALE · 3 cycles",
+     "i": [
+      {
+       "o": "rect",
+       "x": 200,
+       "y": 150,
+       "w": 160,
+       "h": 32,
+       "f": "paper",
+       "s": "ink",
+       "lw": 2.5,
+       "sh": [
+        2.5,
+        2.5
+       ]
+      },
+      {
+       "o": "rect",
+       "x": 200,
+       "y": 150,
+       "w": 8,
+       "h": 32,
+       "f": "STALE.base",
+       "lw": 0
+      },
+      {
+       "o": "text",
+       "x": 218,
+       "y": 166,
+       "sz": 13,
+       "wt": "bold",
+       "al": "left",
+       "f": "ink"
+      }
+     ]
+    },
+    {
+     "k": "badge",
+     "r": "FIRMADO · 7",
+     "i": [
+      {
+       "o": "circle",
+       "x": 190,
+       "y": 104,
+       "ra": 24,
+       "f": "FIRMADO.base",
+       "s": "ink",
+       "lw": 3.5,
+       "sh": [
+        4,
+        4
+       ]
+      },
+      {
+       "o": "text",
+       "x": 190,
+       "y": 110,
+       "tx": "7",
+       "sz": 18,
+       "wt": "bold",
+       "al": "center",
+       "f": "ink"
+      },
+      {
+       "o": "text",
+       "x": 190,
+       "y": 144,
+       "tx": "FIRMADO",
+       "sz": 11,
+       "wt": "bold",
+       "al": "center",
+       "f": "ink"
+      }
+     ]
+    }
+   ],
+   "bands": [
+    "FIRMADO.base",
+    "LIVE.base",
+    "STALE.base",
+    "ink",
+    "paper"
+   ],
+   "change": [
+    "0.0.sh:[4,4]>[2.5,2.5]"
+   ]
+  },
+  {
+   "t": 16,
+   "sound": "NO_DATA",
+   "soundCause": "no audio contract yet",
+   "atoms": [
+    {
+     "k": "stamp",
+     "r": "LIVE · reef live",
+     "i": [
+      {
+       "o": "rect",
+       "x": 10,
+       "y": 10,
+       "w": 220,
+       "h": 48,
+       "f": "paper",
+       "s": "ink",
+       "lw": 3.5,
+       "sh": [
+        5.5,
+        5.5
+       ]
+      },
+      {
+       "o": "rect",
+       "x": 10,
+       "y": 10,
+       "w": 8,
+       "h": 48,
+       "f": "LIVE.base",
+       "lw": 0
+      },
+      {
+       "o": "text",
+       "x": 28,
+       "y": 34,
+       "sz": 16,
+       "wt": "bold",
+       "al": "left",
+       "f": "ink"
+      }
+     ]
+    },
+    {
+     "k": "chip",
+     "r": "STALE · 3 cycles",
+     "i": [
+      {
+       "o": "rect",
+       "x": 200,
+       "y": 150,
+       "w": 160,
+       "h": 32,
+       "f": "paper",
+       "s": "ink",
+       "lw": 2.5,
+       "sh": [
+        2.5,
+        2.5
+       ]
+      },
+      {
+       "o": "rect",
+       "x": 200,
+       "y": 150,
+       "w": 8,
+       "h": 32,
+       "f": "STALE.base",
+       "lw": 0
+      },
+      {
+       "o": "text",
+       "x": 218,
+       "y": 166,
+       "sz": 13,
+       "wt": "bold",
+       "al": "left",
+       "f": "ink"
+      }
+     ]
+    },
+    {
+     "k": "badge",
+     "r": "FIRMADO · 7",
+     "i": [
+      {
+       "o": "circle",
+       "x": 190,
+       "y": 104,
+       "ra": 24,
+       "f": "FIRMADO.base",
+       "s": "ink",
+       "lw": 3.5,
+       "sh": [
+        4,
+        4
+       ]
+      },
+      {
+       "o": "text",
+       "x": 190,
+       "y": 110,
+       "tx": "7",
+       "sz": 18,
+       "wt": "bold",
+       "al": "center",
+       "f": "ink"
+      },
+      {
+       "o": "text",
+       "x": 190,
+       "y": 144,
+       "tx": "FIRMADO",
+       "sz": 11,
+       "wt": "bold",
+       "al": "center",
+       "f": "ink"
+      }
+     ]
+    }
+   ],
+   "bands": [
+    "FIRMADO.base",
+    "LIVE.base",
+    "STALE.base",
+    "ink",
+    "paper"
+   ],
+   "change": [
+    "0.0.sh:[2.5,2.5]>[5.5,5.5]"
+   ]
+  }
+ ]
+}
