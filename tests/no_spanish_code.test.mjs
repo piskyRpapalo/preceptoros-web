@@ -32,17 +32,74 @@ function jsServidos() {
 function sinStrings(t) {
   return t.replace(/'(?:[^'\\\n]|\\.)*'|"(?:[^"\\\n]|\\.)*"|`(?:[^`\\]|\\.)*`/g, '""');
 }
-function comentariosBloque(t) { return sinStrings(t).match(/\/\*[\s\S]*?\*\//g) || []; }
-function comentariosLinea(t) {
-  return sinStrings(t).split('\n').filter(l => /(^|[^:'"])\/\//.test(l.replace(/https?:\/\//g, '')));
+function comentarios(t) {
+  const s = sinStrings(t), bloques = [], lineas = [];
+  let i = 0, regex = true, word = '';
+  const prefixWords = new Set(['await', 'case', 'delete', 'do', 'else', 'in', 'instanceof', 'new', 'of', 'return', 'throw', 'typeof', 'void', 'yield']);
+  while (i < s.length) {
+    const c = s[i], n = s[i + 1];
+    if (/\s/.test(c)) { i++; continue; }
+    if (c === '/' && n === '*') {
+      const end = s.indexOf('*/', i + 2);
+      const stop = end < 0 ? s.length : end + 2;
+      bloques.push(s.slice(i, stop)); i = stop; continue;
+    }
+    if (c === '/' && n === '/') {
+      const end = s.indexOf('\n', i + 2);
+      const stop = end < 0 ? s.length : end;
+      lineas.push(s.slice(i, stop)); i = stop; continue;
+    }
+    if (c === '/' && regex) {
+      i++; let escaped = false, inClass = false;
+      while (i < s.length) {
+        const x = s[i++];
+        if (escaped) { escaped = false; continue; }
+        if (x === '\\') { escaped = true; continue; }
+        if (x === '[') { inClass = true; continue; }
+        if (x === ']') { inClass = false; continue; }
+        if (x === '/' && !inClass) { while (/[a-z]/i.test(s[i] || '')) { i++; } break; }
+        if (x === '\n') { break; }
+      }
+      regex = false; word = ''; continue;
+    }
+    if (/[A-Za-z_$]/.test(c)) {
+      const start = i++;
+      while (/[\w$]/.test(s[i] || '')) { i++; }
+      word = s.slice(start, i); regex = prefixWords.has(word); continue;
+    }
+    if (/[0-9]/.test(c)) {
+      i++; while (/[\w.]/.test(s[i] || '')) { i++; }
+      regex = false; word = ''; continue;
+    }
+    if (c === '"' || c === "'") {
+      const quote = c; i++;
+      while (i < s.length && s[i] !== quote) { if (s[i] === '\\') { i++; } i++; }
+      i++; regex = false; word = ''; continue;
+    }
+    if (c === '`') {
+      i++; while (i < s.length && s[i] !== '`') { if (s[i] === '\\') { i++; } i++; }
+      i++; regex = false; word = ''; continue;
+    }
+    if (c === '(' || c === '[' || c === '{' || c === ',' || c === ';' || c === ':' || c === '?' || c === '=' || c === '!' || c === '~' || c === '+' || c === '-' || c === '*' || c === '%' || c === '&' || c === '|' || c === '^' || c === '<' || c === '>') {
+      if ((c === '+' && n === '+') || (c === '-' && n === '-')) { i += 2; regex = false; }
+      else { i++; regex = true; }
+      word = ''; continue;
+    }
+    if (c === ')' || c === ']' || c === '.') { i++; regex = false; word = ''; continue; }
+    if (c === '}') { i++; regex = true; word = ''; continue; }
+    if (c === '/') { i += n === '=' ? 2 : 1; regex = true; word = ''; continue; }
+    i++; regex = false; word = '';
+  }
+  return { bloques, lineas };
 }
 
 test('D1-ESTRICTO · SIN comentarios /* */ ni // (rojo hoy; verde tras D1)', { skip: process.env.D1_ESTRICTO !== '1' }, () => {
   const infractores = [];
   for (const f of jsServidos()) {
     const t = readFileSync(f, 'utf8');
-    const bloques = comentariosBloque(t).length;
-    const lineas = comentariosLinea(t).length;
+    const detectados = comentarios(t);
+    const bloques = detectados.bloques.length;
+    const lineas = detectados.lineas.length;
     if (bloques || lineas) { infractores.push(`${f}: ${bloques} bloque(s), ${lineas} linea(s)`); }
   }
   if (infractores.length) {
@@ -62,14 +119,14 @@ test('D2-ESTRICTO · SIN palabras españolas por LISTA y sin tildes/ñ (rojo hoy
 });
 
 test('el guardián puede ponerse ROJO (demostración viva): hoy DETECTA los comentarios — la ley no es falsa', () => {
-  let conCom = 0, conEs = 0;
+  const fixture = comentarios('const url = /https?:\\/\\//; /* block fixture */ // line fixture');
+  let conEs = 0;
   for (const f of jsServidos()) {
     const t = readFileSync(f, 'utf8');
-    if (comentariosBloque(t).length) { conCom++; }
     const ids = [...sinStrings(t).matchAll(/(?:function|var|const|let)\s+([^\s(=;]+)/g)].map(m => m[1]);
     if (ids.some(i => /[áéíóúñ]/.test(i) || PALABRAS_ES.includes(i.toLowerCase()))) { conEs++; }
   }
-  if (conCom === 0) { throw new Error('D1 no detectaría nada: el guardián no puede ponerse rojo'); }
+  if (fixture.bloques.length !== 1 || fixture.lineas.length !== 1) { throw new Error('D1 fixture must detect one block and one line comment while ignoring regex delimiters'); }
   if (conEs === 0) { throw new Error('D2 no detectaría nada: la lista no caza español vivo'); }
 });
 

@@ -1,17 +1,4 @@
-/* preceptoros.org · theGame · EL TUTORIAL ES EL CONTRATO DE GENESIS (E, FIRMO 2026-10-12).
 
-   Rosetta unificada: no hay tutorial aparte del codigo. PASOS (abajo) ES el esquema de acciones del juego que la
-   persona puede tomar HOY, renderizado: cada paso nombra su accion, la CONDICION que la da por hecha (medida en los
-   eventos reales del juego, nunca un boton «siguiente»), el canon que la habilita o la limita, su sonido y su coordenada.
-   La maquina lee `esquema()`; el humano ve el panel. Una accion por pantalla (patron A Dark Room). Todo en ingles.
-
-   Bajo el TEACHING KERNEL del rack (~/p0x/config/teaching_kernel.yaml, canon 2026-07-19):
-   1. dry_run_obligatorio: el paso de una accion IRREVERSIBLE ensena antes que pasara, con las cifras medidas.
-   2. fallo_como_ramificacion: si la accion no puede salir, el paso dice POR QUE (con cifras) y que hacer: nunca «failed».
-   3. ancla_objetivo_macro: el objetivo (el lema del juego) queda SIEMPRE a la vista, toda la sesion.
-   4. scaffolding_fading: la ayuda DECAE con la competencia DEMOSTRADA (pasos hechos de verdad), no declarada.
-   Se abre solo con la primera accion de alcance (B3, skill REACH); siempre esta en el menu; siempre se puede saltar.
-   Sin red, sin azar, sin reloj de pared; no persiste nada (el avance vive en esta pestana). */
 (function (raiz) {
   'use strict';
   function J() { var j = raiz.AtlasJuego; return j && j.instantanea ? j.instantanea() : null; }
@@ -27,7 +14,7 @@
   function lapidasDeTropa() { var A = raiz.AtlasArrecife; return A && A.lapidas ? A.lapidas().filter(function (r) { return /^troop-/.test(r.id); }).length : 0; }
   function nd(v, c) { return v === null || v === undefined ? 'NO_DATA (' + c + ')' : String(v); }
 
-  /* EL ESQUEMA. `hecho(base)` compara con lo medido al abrir el paso (base): solo cuenta lo que pasa DESPUES. */
+
   var PASOS = [
     { id: 'reach', accion: 'reach', titulo: 'You touched something within reach',
       haz: 'Tap any piece next to your crab: its sheet opens (what it is, state, coordinate, sound).',
@@ -59,7 +46,7 @@
       mide: army, hecho: function (b, v) { return v !== null && v > (b || 0); },
       fallo: function () {
         var c = cobre(), k = costeTc1();
-        /* Q4 medido: la produccion duplicada da +16 cobre en 20 ciclos en una partida nueva. */
+
         if (c !== null && k !== null && c < k) { return 'Not enough copper yet (' + c + ' of ' + k + '). Next: keep playing: biomass turns into copper as cycles pass. This step waits for you.'; }
         return '';
       } },
@@ -81,7 +68,7 @@
 
   var i = 0, base = null, hechos = [], saltado = false, panel = null, cuerpo = null, meta = null, ultimo = '';
 
-  /* El objetivo macro: una linea fija, toda la sesion (ancla_objetivo_macro). El lema del juego, sin texto nuevo. */
+
   function ancla() {
     var D = raiz.document, mapa = D && D.querySelector('.thegame-mapa');
     if (!mapa || (meta && meta.isConnected)) { return; }
@@ -89,25 +76,25 @@
     meta = D.createElement('p'); meta.className = 'tutorial-meta'; meta.id = 'tutorial-meta'; meta.dataset.lema = T('lema') || 'NO_DATA (motto not loaded)';
     mapa.appendChild(meta); rotulaMeta();
   }
-  /* La linea del objetivo lleva tambien la ACCION del paso en curso: se lee con el panel cerrado, sobre el mapa. */
+
   function rotulaMeta() {
     if (!meta) { return; }
     var p = paso(), t = 'Goal · ' + meta.dataset.lema + (p ? ' · Now: ' + hazPaso(p) : '');
     if (meta.dataset.t === t) { return; }
     meta.dataset.t = t; meta.textContent = '';
-    /* Dos lineas: el objetivo (una linea) y la accion en curso. Medido en 360 px: en una sola tira ocupaba 4 lineas. */
+
     var a = raiz.document.createElement('span'), b = raiz.document.createElement('span');
     a.className = 'meta-objetivo'; a.textContent = 'Goal · ' + meta.dataset.lema; meta.appendChild(a);
     if (p) { b.className = 'meta-ahora'; b.textContent = 'Now: ' + hazPaso(p); meta.appendChild(b); }
-    /* El aviso del mapa (role=status) va DEBAJO, en el mismo bloque: medido, sueltos se pisaban. mar.js conserva su nodo. */
+
     var av = raiz.document.querySelector('.mapa-aviso');
     if (av) { meta.appendChild(av); }
   }
   function competencia() { return hechos.length; }
-  /* Fading: 0-1 pasos demostrados, todo; 2-3, sin el porque; 4 o mas, solo la accion. */
+
   function verbosidad() { var c = competencia(); return c <= 1 ? 2 : (c <= 3 ? 1 : 0); }
   function paso() { return saltado || i >= PASOS.length ? null : PASOS[i]; }
-  /* Lo que el paso ensena, en lineas (la ficha legible: el lab lee lo mismo que la persona). */
+
   function lineas() {
     var p = paso();
     if (!p) { return [['Tutorial', saltado ? 'skipped · open it again from the menu' : 'done: ' + competencia() + ' actions demonstrated. The help steps back.']]; }
@@ -130,7 +117,7 @@
       var sk = D.createElement('button'); sk.type = 'button'; sk.className = 'boton-sec'; sk.id = 'tutorial-salta'; sk.textContent = 'Skip tutorial';
       sk.dataset.sonido = 'NO_DATA (silent by design)';
       sk.addEventListener('click', function () { saltado = true; ultimo = ''; pinta(); rotulaMeta(); });
-      /* «← Map»: cierra el cajon para hacer la accion (el paso sigue escrito en la linea del objetivo). */
+
       var vu = D.createElement('button'); vu.type = 'button'; vu.className = 'boton'; vu.id = 'tutorial-al-mapa'; vu.textContent = '← Map';
       vu.dataset.sonido = 'NO_DATA (silent by design)';
       vu.addEventListener('click', function () { var b = D.getElementById('menu-pliego-tutorial'); if (b && !panel.hidden) { b.click(); } });
@@ -142,7 +129,7 @@
     l.forEach(function (x) { var dt = D.createElement('dt'), dd = D.createElement('dd'); dt.textContent = x[0]; dd.textContent = x[1]; cuerpo.appendChild(dt); cuerpo.appendChild(dd); });
     var p = paso(); panel.dataset.paso = p ? p.id : (saltado ? 'saltado' : 'hecho');
   }
-  /* Cada tic: ¿se demostro el paso? (medido); si si, al siguiente, con su propia linea base. */
+
   function tic() {
     ancla();
     var p = paso();
@@ -158,7 +145,7 @@
     rotulaMeta();
     if (panel) { pinta(); }
   }
-  /* Abrir: desde la primera accion de alcance (B3) o desde el menu. Abre el panel en el cajon. */
+
   function abre(motivo) {
     saltado = false; pinta();
     raiz.Promise.resolve().then(function () { var b = raiz.document.getElementById('menu-pliego-tutorial'); if (b && panel.hidden) { b.click(); } });
