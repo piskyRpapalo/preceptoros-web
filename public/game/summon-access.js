@@ -1,4 +1,4 @@
-/* Q3 · Base access reuses the live summon buttons and exact rules from the existing Army. */
+
 (function (root) {
   'use strict';
   function modelo(V, G) {
