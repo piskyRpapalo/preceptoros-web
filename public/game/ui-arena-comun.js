@@ -1,11 +1,7 @@
-/* preceptoros.org · theGame · LO COMUN DE LA ARENA (sale de `ui-arena.js` en U0, «el mapa unico», 2026-10-11, para
-   que la Arena quepa bajo su techo de 16 KiB): sus textos (`atlas-arena-<lengua>.json`, a demanda), los nombres de
-   tropas y lugares, las miniaturas de onda y los colores (de los tokens bioluminiscentes). Sin estado de combate:
-   solo lo que la Arena, el mapa y los duelos leen igual. La puerta es `AtlasArenaComun`. */
 (function () {
   'use strict';
   var E = window.AtlasEscena, TX = null, dpr = window.devicePixelRatio || 1;
-  /* Los textos de la Arena viven en `atlas-arena-<lengua>.json` (a demanda); los comunes, en el juego. */
+
   function T(k) { return (TX && TX[k]) || (window.AtlasJuego && window.AtlasJuego.texto(k)) || ''; }
   function textos() {
     var l = (window.AtlasLengua && window.AtlasLengua.actual) || 'en';
@@ -41,7 +37,6 @@
     return c;
   }
   function nombreLugar(l) { return l.npc ? T('npc_' + l.id) : l.pseudo; }
-
 
   window.AtlasArenaComun = { T: T, textos: textos, el: el, boton: boton, rellena: rellena, quieto: quieto, css: css, colores: colores,
                              nombre: nombre, miniLienzo: miniLienzo, nombreLugar: nombreLugar };

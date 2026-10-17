@@ -1,8 +1,3 @@
-/* preceptoros.org · theGame v1.5 · INVOCAR (satelite de ui.js, FIRMO M1 2026-10-13: dividir ui.js).
-
-   Sale de `ui.js` SIN CAMBIO DE CONDUCTA: la identidad al invocar (firma), la cadena de invocaciones (G0) y el
-   acto de invocar. El estado compartido (`cadena`, `clave`, `causa`, `huevos`) vive en `Z`, que crea `ui.js` y
-   comparte con el nido, la eclosion y el army. `crea(c)` lo ata a lo que `ui.js` ya tenia. Sin red, sin azar. */
 (function (raiz) {
   'use strict';
   function crea(c) {
@@ -21,7 +16,7 @@
       traza(cv, G.HUEVO, 'huevo', ciclo === null || quieto() ? 1 : 1 + 0.06 * Math.sin(ciclo));
     });
   }
-  /* --- invocar ------------------------------------------------------------ */
+
   function firma(obj) {
     if (!window.Identity) { return Promise.reject(new Error('sin identidad')); }
     return window.Identity.publica().then(function (pub) {
@@ -42,8 +37,7 @@
     });
     R.caja.appendChild(b);
   }
-  /* G0 · LA CADENA DE INVOCACIONES (`db.js`): se carga y se re-verifica (firma y semilla) al tener clave, y con ella
-     VUELVEN los huevos pagados (antes vivian solo en memoria: recargar cobraba el cobre y devolvia 0 Z.huevos). */
+
   function cadenaLista() {
     var I = window.Identity;
     if (!I || !I.quien || !I.quien()) { return Promise.reject(new Error('sin identidad')); }
