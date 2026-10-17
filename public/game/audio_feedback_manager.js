@@ -1,5 +1,4 @@
-/* theGame · tonos voluntarios para las skills medidas en esta pestaña.
-   Reusa AtlasRadio y AtlasSintesis; no guarda eventos ni habla con la red. */
+
 (function (raiz) {
   'use strict';
   var CLAVES = ['eventos', 'habilidad'];
