@@ -1,14 +1,3 @@
-/* preceptoros.org · theGame · los DUELOS entre personas, en la Arena (sugerencias firmadas por el
-   Soberano, 2026-09-28: «PvP entre dos telefonos sin servidor» y «regla de abandono en ciclos»).
-
-   La logica es de `duelo.js` (pura, probada en node); aqui solo la mano que la mueve. Cada paso produce
-   un PAQUETE firmado que la persona manda por el canal que elija: «Send…» (el menu de compartir del
-   sistema), «Copy» (el portapapeles) o «Download». Quien lo recibe lo pega o lo abre en «Import»: se
-   VERIFICA cada firma antes de tocar nada. Ninguna direccion escrita aqui, ningun envio solo.
-
-   Firma con la identidad de siempre (`Identity.firmarTexto`); verifica con WebCrypto (`AtlasArmy.
-   verificaWeb`); el azar del commit-reveal sale de `crypto.getRandomValues`. Sin identidad, NO_DATA con
-   la salida (crear tu clave). Los duelos viven en la pestana: cerrarla antes de revelar es abandonar. */
 (function () {
   'use strict';
 
@@ -32,7 +21,6 @@
   }
   function ciclo() { var i = window.AtlasJuego && window.AtlasJuego.instantanea(); return i ? i.ciclo : 0; }
 
-  /* El cliente nace con la identidad: sin clave no hay firma, y se dice. */
   function cliente() {
     if (cli) { return Promise.resolve(cli); }
     var I = window.Identity;
@@ -45,7 +33,6 @@
     });
   }
 
-  /* COMPARTIR un paquete: por el canal que elija la persona, nunca solo. */
   function comparte(p, nombre, aviso) {
     var texto = JSON.stringify(p, null, 1) + '\n';
     R.salida.textContent = '';
@@ -123,7 +110,6 @@
     }).catch(falla);
   }
 
-  /* La lista de duelos y el rating local; el plazo de abandono corre en ciclos de juego. */
   function pinta() {
     if (!R.lista) { return; }
     R.lista.textContent = '';

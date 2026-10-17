@@ -1,20 +1,6 @@
-/* preceptoros.org · theGame · LA TERMINAL: la interfaz no-mapa como un chatbot estandar (FIRMO del Soberano, 2026-10-12).
-
-   La regla 5 de la LEY DEL SUELO concretada: la interfaz vive en los BORDES y el centro queda limpio para el mundo.
-   - MENU A LA IZQUIERDA, colapsable: solo iconos en el telefono (64 px), expandido en escritorio (220 px); Alt+M lo
-     abre y cierra. Es el UNICO HOGAR de cada panel: Tu cangrejo, Lugares, Donde juegas, Terminal J7, la Radio... y el
-     Taller (que deja la barra de arriba). Las entradas salen de los paneles que EXISTEN (no hay botones muertos).
-   - CADA ENTRADA abre SU panel en un cajon junto al menu, de uno en uno; pulsar otra vez lo cierra. Panel vacio = panel
-     cerrado: sin panel elegido, el mapa queda limpio. Escape cierra.
-   - EL CHAT DE LA RADIO va abajo (`radio_message_log.js`), colapsado en el telefono.
-   - Las HOJAS (Taller, Batalla) siguen como estaban: sobre el mapa, con su «← Map»; una funcion las abre y la misma las
-     cierra (sacado tal cual de `thegame.js`, que estaba por encima de 16 KiB).
-
-   `monta(x)`: x = { capa, T, el, cada, tecnico, PESTANAS, alTaller() }. Devuelve S = { PANEL, HOJA, ZM, ZB, PARTIDA, MAPA,
-   ARMYZ, muestra(id, foco), pliego(titulo, id, abierto, hijos), actual() }. Sin red, sin azar, sin reloj. */
 (function (raiz) {
   'use strict';
-  /* Cinco destinos estables; los paneles dinamicos se agrupan dentro de ellos. */
+
   var GRUPOS = { history: ['pliego-estado', 'pliego-lapidas'], buildings: ['pliego-lugares', 'pliego-ficha'],
     nodes: ['pliego-nodos', 'terminal-cangrejo', 'radio-estado', 'pliego-skills', 'pliego-opinar'], start: ['pliego-entrada', 'pliego-tutorial'] };
 
@@ -25,9 +11,8 @@
     var piso = capa.querySelector('#atlas-piso'), barra = capa.querySelector('.thegame-barra');
     if (!piso || !barra || capa.querySelector('#thegame-menu')) { return null; }
 
-    /* --- las hojas: una funcion las abre y la misma las cierra ----------------------------------------------- */
     function muestra(id, foco) {
-      if (S.HOJA[id] ? id === destino : destino === null) { return; }  /* ya pedida: una segunda transicion abortaria la primera */
+      if (S.HOJA[id] ? id === destino : destino === null) { return; }
       var turno = ++transicion;
       destino = S.HOJA[id] ? id : null;
       var d = document, rm = raiz.matchMedia && raiz.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -69,7 +54,6 @@
       transicion++; muestraYa(null, false);
     }
 
-    /* --- el cajon (los paneles) y el menu que los abre ------------------------------------------------------- */
     x.PESTANAS.forEach(function (p) {
       var d = el('section'); p[2].split('|').forEach(function (q) { if (q) { cada(capa.querySelectorAll(q), function (n) { d.appendChild(n); }); } });
       x.tecnico(d); S.PANEL[p[0]] = d;
@@ -84,10 +68,9 @@
     cajon.appendChild(pliego(T('pl_estado'), 'pliego-estado', true, [est]));
     cajon.appendChild(pliego(T('pl_lugares'), 'pliego-lugares', true, [S.ZM]));
     S.PANEL.casa = cajon; S.PANEL.mapa = cajon;
-    /* El MAPA: su lienzo vive en su capa fija, detras de todo. */
+
     S.MAPA = el('div', 'thegame-mapa'); S.MAPA.id = 'thegame-mapa';
-    /* PANELES AMABLES (FIRMO 2026-10-12, C): primero el INVENTARIO de ondas (cada tropa con su ficha), luego el Taller.
-       El Army lo pinta ui.js en su seccion; aqui se MUEVE su lista a esta hoja (ui.js sigue pintando en el mismo nodo). */
+
     var ond = hoja('ondas', T('army_h'));
     function mueveArmy() {
       var ul = capa.querySelector('.atlas-army');
@@ -96,8 +79,8 @@
       if (h && h.tagName === 'H5') { ond.appendChild(h); }
       ond.appendChild(ul);
     }
-    S.ARMYZ = el('div', 'casa-army'); ond.appendChild(S.ARMYZ);  /* RONDA 1 (13-oct): la invocacion vive en el ARMY; el Taller queda para el tuneo */
-    /* FIRMO 13-oct (unificacion): Army y Taller en UNA hoja; el Taller va DEBAJO del Army. */
+    S.ARMYZ = el('div', 'casa-army'); ond.appendChild(S.ARMYZ);
+
     var tal = el('div', 'taller-unido'); tal.appendChild(S.PANEL.taller); ond.appendChild(tal); S.PANEL.taller = tal;
     S.ZB = hoja('batalla', T('hoja_batalla'));
 
@@ -112,7 +95,6 @@
     ancho.addEventListener('click', function () { cierraHoja(); expande(); });
     if (raiz.matchMedia && raiz.matchMedia('(min-width: 64rem)').matches) { expande(true); }
 
-    /* Abrir un panel: el cajon se ve con ESE panel; pulsarlo otra vez lo cierra (panel vacio = cerrado). */
     function abre(id, foco) {
       var siguiente = abierto === id ? null : id;
       if (siguiente && (actual || destino)) { cierraHoja(); }
@@ -135,7 +117,7 @@
       li.appendChild(b); ul.appendChild(li); R.items[id] = b;
       return b;
     }
-    /* Un panel nuevo debe pertenecer a uno de los cinco grupos o queda oculto, nunca suelto en el menu. */
+
     function sincroniza() {
       cada(cajon.children, function (d) {
         if (d.tagName !== 'DETAILS') { return; }
@@ -149,7 +131,7 @@
     entrada('buildings', '⌂', texto('nav_buildings', 'Buildings'), function () { abre('buildings'); }).setAttribute('aria-controls', 'thegame-terminal');
     entrada('nodes', '⌘', texto('nav_nodes', 'Nodes & Events'), function () { abre('nodes'); }).setAttribute('aria-controls', 'thegame-terminal');
     entrada('start', '?', texto('nav_start', 'How to start?'), function () { abre('start'); }).setAttribute('aria-controls', 'thegame-terminal');
-    /* El feedback de pagina sigue accesible dentro de Nodes & Events, no como sexto destino. */
+
     if (raiz.PageComment && raiz.PageComment.abre) {
       var pf = pliego(texto('menu_opinar', 'Feedback on this page'), 'pliego-opinar', false, []), fb = el('button', 'boton-sec', texto('menu_opinar', 'Feedback on this page'));
       fb.type = 'button'; fb.addEventListener('click', function () { cierraHoja(); raiz.PageComment.abre(); }); pf.appendChild(fb); cajon.appendChild(pf);
@@ -164,9 +146,7 @@
       if (e.key !== 'Escape' || document.querySelector('.atlas-dlg-capa,dialog[open]')) { return; }
       if (actual) { muestra(null, true); } else if (abierto) { var b = R.items[abierto]; abre(abierto); if (b) { b.focus(); } }
     });
-    /* FUERA-CLIC CIERRA (comunicado 13-oct, punto 2): cualquier toque fuera de la ventana cierra lo abierto. Un solo
-       handler para todo el cajon y las hojas. Cerrar solo esconde: lo ganado (el Army, sus fichas) no se toca. Los
-       toques en el menu, en el cajon o en una hoja los atiende cada uno. */
+
     document.addEventListener('pointerdown', function (e) {
       if (!(actual || abierto) || document.querySelector('.atlas-dlg-capa,dialog[open]')) { return; }
       var t = e.target;
@@ -174,14 +154,14 @@
       if (actual) { muestra(null, false); }
       if (abierto) { abre(abierto, false); }
     });
-    /* Con la grieta abierta, «Tu cangrejo» lleva un punto: el aviso llega aunque el cajon este cerrado. */
+
     var a = est.querySelector('.atlas-alerta');
     if (a) {
       var marca = function () { var b = R.items.history; if (b) { b.classList.toggle('con-aviso', !a.classList.contains('sellada')); b.setAttribute('aria-label', texto('nav_history', 'History mode') + (!a.classList.contains('sellada') ? ' · alert' : '')); } };
       new MutationObserver(marca).observe(a, { attributes: true, attributeFilter: ['class'] });
       marca();
     }
-    /* La Radio escrita, abajo; su primer mensaje es el aviso de lengua, si lo hay (antes lo garantizaba el Estado abierto). */
+
     if (raiz.AtlasRadioChat) {
       raiz.AtlasRadioChat.monta(capa, { T: T });
       var aviso = capa.querySelector('#atlas-juego > .no-data:first-child, .thegame-estado > .no-data:first-child');

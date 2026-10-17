@@ -1,18 +1,9 @@
-/* preceptoros.org · theGame v1.5 · la INCUBADORA y el ARMY en la capa.
-
-   INVOCAR ES UN ACTO FIRMADO: la firma Ed25519 de la invocacion da (su sha256) la semilla de la tirada, y
-   SOLO DESPUES el motor cobra Cobre y Luz (`AtlasJuego.invoca`); si la firma falla, no se gasta nada.
-   EL HUEVO NO BLOQUEA EL JUEGO: incuba en ciclos mientras el Bosque sigue. La carta 2D del rack es NO_DATA.
-   ECLOSION: el huevo se abre en la tropa (morfismo, sin imagenes) y la persona FIRMA para adoptarla;
-   `AtlasArmy.adopta` verifica esa firma antes de escribir. Sin firma, la tropa se queda fuera.
-
-   UNA SOLA SALIDA DE RED: ninguna. Todo sale de la semilla y de las ondas. */
 (function () {
   'use strict';
 
   var G = null, A = null, S = null, army = null;
   var R = {}, reloj = 0, eclosionada = null, capa = null, INV = null;
-  var Z = { huevos: [], cadena: null, clave: null, causa: '' };  /* estado de la invocacion, compartido con ui-invoca.js */
+  var Z = { huevos: [], cadena: null, clave: null, causa: '' };
 
   function T(k) { return (window.AtlasJuego && window.AtlasJuego.texto(k)) || ''; }
   function el(tag, clase, texto) {
@@ -26,17 +17,15 @@
   function dice(t) { R.estado.textContent = t; }
   function quieto() { return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches; }
   function ins() { try { return window.AtlasJuego && window.AtlasJuego.instantanea(); } catch (_) { return null; } }
-  /* Same measured cycle contract as buildings and NPCs. */
+
   function cicloMedido(i) { var c = i && i.ciclo; return Number.isSafeInteger(c) && c >= 0 && c <= 1000000000 ? c : null; }
   function calor() { return S.calorDe(ins()); }
 
-  /* --- la ficha de la tropa (lienzo, nombre, carta y voz): `ui-ficha.js` (troceo T) --- */
   var lienzo, traza, nombre, ficha, cronica;
 
-  /* --- el nido, la eclosion y el army ------------------------------------ */
   function eclosiona(h) {
     var t = G.tirada(h.semilla, h.tc);
-    if (Z.cadena && h.seq) { Z.cadena = A.abre(Z.cadena, h.seq); A.cadenaWeb(Z.clave).pon(Z.cadena); }  /* G0: abierto, no borrado */
+    if (Z.cadena && h.seq) { Z.cadena = A.abre(Z.cadena, h.seq); A.cadenaWeb(Z.clave).pon(Z.cadena); }
     eclosionada = t;
     while (R.eclosion.firstChild) { R.eclosion.removeChild(R.eclosion.firstChild); }
     R.eclosion.hidden = false;
@@ -53,7 +42,7 @@
     var m = el('p', 'atlas-dlg-mandos'); m.appendChild(no); m.appendChild(si);
     R.eclosion.appendChild(m);
     S.suena('eclosion', calor());
-    /* La revelacion a pantalla central (summon_reveal.js): al cerrarse, el foco va a la eleccion. */
+
     if (window.AtlasRevela) { window.AtlasRevela.muestra(t, window.AtlasTallerUI.aterriza(R.eclosion)); }
     if (quieto()) { return; }
     var k = 0;
@@ -71,7 +60,7 @@
         S.suena('adopcion', calor());
         dice(rellena(T('adoptada'), { f: u.firma.slice(8, 20) + '…' }));
         pintaArmy();
-        /* Su voz entra en tu base del mapa ya, no a los 5 ciclos (`atlas-mapa.js` escucha). */
+
         document.dispatchEvent(new CustomEvent('atlas:tropa'));
       });
     }).catch(function (e) {
@@ -94,10 +83,10 @@
         || recursos.cobre < x.c.cobre || recursos.luz < x.c.luz;
     });
     INV.pintaNido();
-    if (R.cron) { cronica(R.cron, Z.cadena, Z.causa); }  /* piezas 1+2 y 3: piedad y cronica, de TU cadena */
+    if (R.cron) { cronica(R.cron, Z.cadena, Z.causa); }
   }
   function tic() {
-    /* G0 · la capa dejo de ser un <dialog> (sin `open`): con `!capa.open` esto salia SIEMPRE y nada eclosionaba. */
+
     if (!capa || !capa.isConnected || document.hidden) { return; }
     var i = ins(), c = cicloMedido(i);
     if (c === null) { pinta(); return; }
@@ -135,7 +124,6 @@
     var KS = window.AtlasKillswitchDot && window.AtlasKillswitchDot.crea({ boton: R.sonido, sintesis: S, T: T });
     KS && KS.pinta(false);
 
-    /* MOVIMIENTO 0 - M17: Interruptor calidad Auto/Max/Med/Luz */
     var MODOS_CALIDAD = ['auto','maxima','media','luz'];
     R.calidadBoton = boton(T('calidad_auto'));
     R.calidadBoton.setAttribute('aria-pressed','false');
@@ -152,7 +140,7 @@
     R.tcs = Object.keys(G.TCS).map(function (tc) {
       var co = G.TCS[tc].coste;
       var b = boton(T(tc) + ' · ' + rellena(T('inc_coste'), { cobre: co.cobre, luz: co.luz }));
-      /* Pieza 4: las odds ANTES del gesto. El leviatan (> 12 aristas) sale de la MISMA tabla que tira (R5, medida). */
+
       var lev = G.oddsAristas(tc).reduce(function (a, x) { return a + (x[0] > 12 ? x[1] : 0); }, 0);
       b.appendChild(el('small', 'atlas-leviatan', ' · ' + rellena(T('inc_leviatan'), { p: Math.floor(lev / 10) + '.' + (lev % 10) })));
       b.id = 'invoca-' + tc;
@@ -161,8 +149,7 @@
       return { b: b, c: co };
     });
     s.appendChild(R.caja);
-    /* LAS ODDS, A LA VISTA (addendum de la cria: sin odds ocultas): las mismas cifras enteras que usa la
-       tirada (`gacha.odds`), por mil y escritas como porcentaje exacto con dos decimales. */
+
     var od = el('ul', 'atlas-odds');
     Object.keys(G.TCS).forEach(function (tc) {
       var o = G.odds(tc);
@@ -172,7 +159,7 @@
     });
     s.appendChild(el('h5', null, T('odds_h')));
     s.appendChild(od);
-    /* Y la tabla entera de ARISTAS por TC (M18-B), de la que salen las de arriba: la misma que se tira. */
+
     var oa = el('details', 'atlas-odds-aristas');
     oa.appendChild(el('summary', null, T('odds_aristas_h')));
     Object.keys(G.TCS).forEach(function (tc) {
@@ -190,9 +177,9 @@
     R.army = el('ul', 'atlas-army'); s.appendChild(R.army);
     zona.appendChild(s);
     pinta(); pintaArmy();
-    /* MOVIMIENTO 0 - M17: Inicializar calidad */
+
     initCalidad();
-    /* El army guardado en este aparato vuelve re-verificado (C1); lo que no verifica se dice. */
+
     if (army.restaura) {
       army.restaura().then(function (r) {
         pintaArmy();
@@ -200,12 +187,11 @@
       });
     }
     reloj = setInterval(tic, window.AtlasMotor.CICLO_MS);
-    /* G0: al abrir (y al crear o cambiar de clave) vuelven los huevos de la cadena del aparato. */
+
     INV.cadenaLista().catch(function () {});
     document.addEventListener('preceptor:identity', function () { Z.cadena = null; INV.cadenaLista().catch(function () {}); });
   }
 
-  /* P9: el Taller retira una tropa SOLO con su recibo firmado (lo verifica `army.retira`). */
   window.AtlasIncubadora = { monta: monta, army: function () { return army && army.lista(); }, repinta: function () { if (R.army) { pintaArmy(); } },
     retira: function (rec, f) { return army.retira(rec, f).then(function (x) { pintaArmy(); return x; }); } };
 })();
