@@ -1,16 +1,4 @@
-/* preceptoros.org · theGame · el GENOMA de SISIL: lo unico que el laboratorio puede proponer cambiar.
 
-   UN GENOMA NO ES CODIGO: son parametros ENTEROS con limites DECLARADOS aqui, agrupados en los dominios
-   que el addendum permite (§4): incubacion, rareza, afijos, presupuesto, armonicos, combate, mercado,
-   novedad, legibilidad. Un parametro que no esta en `LIMITES` no existe; uno fuera de su banda, o con
-   decimales, tumba el genoma. Los dominios PROHIBIDOS (§5, §9) se rechazan por nombre aunque vinieran
-   dentro de un dominio permitido: quien puede invocar, lo solo-humano, costes o fisica del motor,
-   firma, red, persistencia, precache, presupuestos de peso, reloj, odds ocultas, adoptar o invocar
-   solo, dinero real, cripto, rutas, hosts, IPs, datos personales.
-
-   `paramHash` es la huella canonica de los dominios: dos genomas iguales con las claves en otro orden
-   tienen la misma. La maquina MEJORA PROPUESTAS; la persona ADOPTA mejoras con su firma. Este fichero
-   no adopta, no activa y no guarda nada. PURO: ni DOM, ni red, ni reloj, ni azar. */
 (function (raiz) {
   'use strict';
 
@@ -26,7 +14,7 @@
     Array.prototype.forEach.call(arguments, function (x) { Object.keys(x).forEach(function (k) { o[k] = x[k]; }); });
     return o;
   }
-  /* Bandas [min, max] de cada parametro permitido. Enteros; los pesos, en puntos basicos. */
+
   var LIMITES = {
     incubacion: une(tc('ciclos_min_', [1, 5000]), tc('ciclos_max_', [1, 5000])),
     rareza: une(tc('normal_', [0, 10000]), tc('magico_', [0, 10000]), tc('raro_', [0, 10000]), tc('unico_', [0, 10000])),

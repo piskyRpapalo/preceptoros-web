@@ -1,4 +1,4 @@
-/* Validador local del contrato cerrado preceptoros.vector/1. Alineado con data/atlas_vector_schema.json. */
+
 (function (raiz) {
   'use strict';
   function valida(v) {
