@@ -70,6 +70,7 @@
     for (var i = 0; i < C.nodos.length; i++) {
       var e = formaCedula(C.nodos[i]);
       if (e) { return e; }
+      if (Object.prototype.hasOwnProperty.call(vistos, C.nodos[i].nodo)) { return 'duplicate_node'; }
       vistos[C.nodos[i].nodo] = 0;
     }
     for (var j = 0; j < C.cuentas.length; j++) {

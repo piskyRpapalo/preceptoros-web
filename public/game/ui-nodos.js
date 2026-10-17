@@ -196,7 +196,11 @@
     s.appendChild(el('h5', null, T('nodos_h')));
     s.appendChild(el('p', 'atlas-nota', T('nodos_nota')));
     var e = N.validaCedulas(C) || N.validaPesos(P);
-    if (e) { s.appendChild(el('p', 'no-data', 'NO_DATA · ' + e)); cont.appendChild(s); return; }
+    if (e) {
+      var bindings = window.AtlasNodeBindings;
+      var reason = e === 'duplicate_node' && bindings ? bindings.message(e, document.documentElement.lang) : 'NO_DATA · ' + e;
+      s.appendChild(el('p', 'no-data', reason)); cont.appendChild(s); return;
+    }
     /* Las cedulas, PLEGADAS y debajo del combate (hallazgo 3). */
     R.cedulas = el('details', 'atlas-nodos-cedulas');
     R.cedulas.appendChild(el('summary', null, T('nodos_cedulas_h')));
