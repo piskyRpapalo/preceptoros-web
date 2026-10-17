@@ -226,6 +226,7 @@
     R.duelo = el('div', 'atlas-arena-duelo'); s.appendChild(pliego(T('duelo_h'), R.duelo));
     R.nodos = el('div'); s.appendChild(pliego(T('nodos_h'), R.nodos));
     if (window.AtlasNodosUI) { window.AtlasNodosUI.monta(R.nodos, T); }
+    window.AtlasNodeFileReceiver.mount(R.nodos);
     panel.textContent = ''; panel.appendChild(s);
     if (zona) { zona.appendChild(m); } else { s.insertBefore(m, s.firstChild); }
     var I = window.Identity;
