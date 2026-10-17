@@ -1,10 +1,12 @@
 (function (raiz) {
   'use strict';
 
-    function casas() {
+    function casas(projection) {
     var Ce = raiz.AtlasNodosCedulas, Q = raiz.AtlasCuenta, G = raiz.AtlasGacha, N = raiz.AtlasNiebla, K = raiz.AtlasCanon;
-    if (!Ce || !G) { return []; }
-    return Ce.nodos.filter(function (c) { return N.sitioNodo(c.nodo); }).map(function (c) {
+    if (!G || !N || !K || (projection === undefined && !Ce)) { return []; }
+    var view = raiz.AtlasNodeProjection;
+    var nodes = projection === undefined ? Ce.nodos : view ? view.select(projection, []) : [];
+    return nodes.filter(function (c) { return N.sitioNodo(c.nodo); }).map(function (c) {
       var m = c.aparato.medidas, s = N.sitioNodo(c.nodo);
       return { nodo: c.nodo, x: s.x, y: s.y, ram: m.ram_mib || {}, gen: m.gen_cps || {},
                estado: Q ? Q.estadoNodo(c) : { activo: 'NO_DATA' }, t: G.tirada(K.sha('atlas.emblema/1:' + c.nodo), 'tc3') };
