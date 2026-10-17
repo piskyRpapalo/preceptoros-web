@@ -1,4 +1,4 @@
-/* Q2 · compact measured data shown at the summit of the inherited reveal. */
+
 (function (root) {
   'use strict';
   function modelo(t, V, G) {

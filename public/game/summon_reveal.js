@@ -1,29 +1,8 @@
-/* preceptoros.org · theGame · LA REVELACION: una onda nace, armonico a armonico, y se asienta.
 
-   Pedido del Soberano (2026-10-05): «la escena de invocacion/taller es la revelacion del gacha: la
-   onda nace, se compone armonico a armonico y se asienta. La rareza se ve en la riqueza de la forma,
-   no en un numero». Cuando un huevo eclosiona (`ui.js`, `eclosiona`), esta escena ocupa el CENTRO:
-   chispas que convergen (su sitio sale de la semilla de la tropa, no del azar), los armonicos de
-   `gacha.js` que entran uno a uno -- cada uno con su destello --, y la figura que respira ya entera.
-   Una onda comun tiene pocos armonicos con peso; una unica, muchos: se VE.
-
-   EL PING DE SONAR (M18-B, «6 planes.txt»:136: «tu hardware emite un Ping; lo que vuelve es una forma»):
-   al empezar, un anillo sale del centro y se expande; al asentarse, la onda dice sus ARISTAS («N edges»).
-   Si el sonido esta encendido, el ping y despues su primer timbre suenan por la MISMA sintesis FM
-   (`AtlasSintesis.suena`); apagado, no suena nada.
-
-   El resultado no se decide aqui: la tropa ya salio de su semilla firmada. Esto es solo su escena.
-   Con movimiento reducido se pinta la forma final, quieta, con el mismo texto. Se cierra con un
-   toque, con Escape o con su boton; el foco vuelve a donde estaba. */
 (function (raiz) {
   'use strict';
 
-  /* LA CEREMONIA (R8, plan «el refresco»): la diversion no esta en el azar, esta en la ceremonia, y la
-     ceremonia es REAL: no decide nada (la tropa ya salio de su semilla firmada) ni la retrasa en el motor.
-     (a) ANTICIPACION, ANT ms: la capsula cae y el ruido se SINTONIZA («6 planes.txt»:131: «sintoniza
-     frecuencias en el ruido»): estatica que se ordena hacia la frecuencia de la onda. (b) el PING y la onda
-     armonico a armonico. Al asentarse, un micro-temblor (juice) y su primer timbre. Con movimiento reducido,
-     ni anticipacion ni temblor: la forma final, quieta. */
+
   var O = raiz.AtlasOnda, E = raiz.AtlasEscena, DURA = 3600, ANT = 1100;
 
   function quieto() { return raiz.matchMedia && raiz.matchMedia('(prefers-reduced-motion: reduce)').matches; }
@@ -35,12 +14,9 @@
     return e && Number.isSafeInteger(e.ciclo) ? e.ciclo : null;
   }
 
-  /* NUNCA TAPA UNA BATALLA EN CURSO (FIRMO 2026-10-12; medido en el Doogee: un huevo eclosiono a mitad de pelea y
-     su revelacion cubrio la hoja). Si la hoja de Batalla esta abierta, la revelacion ESPERA a que se cierre (sin
-     reloj: observa su `hidden`) y entonces se muestra. Nada se pierde: solo llega despues. */
+
   function batalla() { var b = document.getElementById('thegame-batalla'); return b && !b.hidden ? b : null; }
-  /* `alCerrar` (opcional): lo que hace quien la llamo al cerrarse (p. ej. llevar el foco a su eleccion). Si
-     no se pasa, la revelacion devuelve el foco a quien la abrio, como antes. */
+
   function muestra(t, alCerrar) {
     if (!t || !t.armonicos) { return; }
     var enCurso = batalla();
@@ -74,8 +50,7 @@
     }
     function tecla(e) { if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); cierra(); } }
     var sonado = false, tiembla = null, cicloMs = raiz.AtlasMotor && raiz.AtlasMotor.CICLO_MS || 1000;
-    /* (a) La capsula cae del techo al centro (rebote suave) mientras la estatica se ordena: cada raya es
-       un hash del cuadro (sin azar), y su desorden baja con `k` hasta casi una linea: la frecuencia. */
+
     function anticipa(W, H, cx, cy, k) {
       g.globalCompositeOperation = 'source-over'; g.fillStyle = 'rgba(4,4,14,.55)'; g.fillRect(0, 0, W, H);
       var fr = Math.floor(k * 40);
@@ -100,13 +75,13 @@
       var p = q ? 1 : Math.min(1, Math.max(0, (transcurrido - ANT) / DURA)), crece = q ? 1 : Math.max(0, Math.min(1, (p - 0.18) / 0.6));
       g.globalCompositeOperation = 'source-over'; g.fillStyle = 'rgba(4,4,14,' + (q ? 1 : 0.35) + ')'; g.fillRect(0, 0, W, H);
       g.globalCompositeOperation = 'lighter';
-      /* EL PING: un anillo teal que sale del centro en el primer cuarto (con movimiento reducido, no). */
+
       if (!q && p < 0.28) {
         var pr = p / 0.28;
         g.strokeStyle = 'hsla(171 78% 54% / ' + (1 - pr) * 0.8 + ')'; g.lineWidth = 3 * dpr;
         g.beginPath(); g.arc(cx, cy, Math.max(W, H) * 0.62 * pr, 0, Math.PI * 2); g.stroke();
       }
-      /* Las chispas convergen hacia el centro en el primer tramo. */
+
       if (p < 0.4) {
         var k = Math.min(1, p / 0.3);
         chispas.forEach(function (c) {
@@ -115,7 +90,7 @@
           g.fillRect(cx + Math.cos(a) * d, cy + Math.sin(a) * d, 2.5 * dpr, 2.5 * dpr);
         });
       }
-      /* Cada armonico que entra deja un anillo. */
+
       var entra = Math.floor(crece * t.armonicos.length);
       while (anillos.length < entra) { anillos.push(ciclo); }
       anillos.forEach(function (a0) {
@@ -129,7 +104,7 @@
       }
       if (tarjeta && p >= 1) { tarjeta.element.hidden = false; }
       if (p >= 1 && !txt.textContent) { txt.textContent = inicioCiclo === null ? 'NO_DATA (game cycle unavailable; showing the measured final frame) · ' + rar + ' · ' + cuenta : rar + ' · ' + cuenta; b.focus(); tiembla = ciclo; if (S && S.vozDe) { S.suena(S.vozDe(t)); } }
-      /* A small settle sway is sampled only from whole game cycles, never a browser timestamp. */
+
       var faseTemblor = tiembla === null || q ? 0 : Math.max(0, 3 - (ciclo - tiembla));
       cv.style.transform = faseTemblor ? 'translate(' + (Math.sin((ciclo - tiembla) * Math.PI / 2) * 3 * faseTemblor / 3).toFixed(1) + 'px,0)' : '';
     }
