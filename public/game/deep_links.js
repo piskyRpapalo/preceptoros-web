@@ -1,12 +1,4 @@
-/* preceptoros.org · theGame · G2 DEEP LINKS (PROPUESTA mistral/g2).
-   WHAT. A URL like /?action=summon.tc1 lands deterministically on the exact
-   action: same URL = same landing, no timers, no randomness, no network.
-   The action contract (title, what it does, what it needs, measured cost) is
-   shown BEFORE anything is signed or executed. Cancel does nothing at all.
-   SOURCES. The contract text is a local copy of mcp-manifest.json (MEDIDO,
-   merged at e01462b). No fetch: zero new network requests (cero red).
-   A11Y. Mouse, keyboard and touch; buttons >= 44 px; Escape cancels; focus
-   is moved, announced with role=dialog aria-modal, and restored on close. */
+
 (function () {
   'use strict';
   var CONTRACTS = {
