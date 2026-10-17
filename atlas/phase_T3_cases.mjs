@@ -10,7 +10,8 @@ const protectedFiles = { /* hashes actualizados 2026-10-16 por D1-laws: los come
   'public/assets/atlas-motor.js': 'c31c2b2e51df15707242bbc5d8d80bf1801fce51764d472dd4bcdb15903a0051',
   'public/game/gacha.js': 'f98302cf4f59f281b1ee2bdd90715c576a4630ec42316231191d4fba266d403c',
   'public/game/core.js': 'f7f126fde151931830f772be35aecdd84fa97f7c5be4b257f80d9674a66f6a0d',
-  'public/game/ui-invoca.js': 'da62b8197243d464e54ca3e966af2e98bf6ba137548ba78c340176a5ee729295'};
+  // D1 asunto 12: ui-invoca.js 4,907 -> 4,151 B (-756 B), comment-only reduction; digest measured by this gate.
+  'public/game/ui-invoca.js': 'dffdfffb5d57f579d1e4e025ca9bb9568d5d1844ab92824154b0aecbb69b4147'};
 function validate(raw, files) {
   assert(raw.length < 16384, '[T3_SIZE]');
   const v = JSON.parse(raw);
