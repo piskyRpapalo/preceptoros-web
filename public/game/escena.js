@@ -1,20 +1,4 @@
-/* preceptoros.org · theGame · la ESCENA: las tropas de onda, vivas, y el combate que se ve.
 
-   UN PERSONAJE ES SU ONDA (`gacha.punto`). P6: en combate, cada tropa lleva su ESCUADRON (`escuadron.js`).
-
-   EL DANO SE VE COMO DESAFINACION, NO COMO BARRA (2026-10-04: «la estetica pinta lo medido»): la vida
-   que le queda tuerce las fases y amplitudes de SUS armonicos; sana, su ecuacion limpia; herida, la
-   misma fuera de tono. El numero exacto sigue en el DOM, para quien no ve el lienzo.
-
-   COLOR = VELOCIDAD en los proyectiles (azul lento, cobre rapido); el PESO es la `inercia` de cada
-   muelle. Fondo: ruido con tramado Atkinson a cuatro tonos, sin ficheros de imagen. En COMBATE cada
-   tropa se dibuja con su cara SENCILLA (`G.lod`, M18-B): sus aristas, legibles a escala.
-
-   EL FRENTE se corre hacia quien pierde vida. El combate NO se inventa aqui: lo decidio `arena.combate`
-   (enteros, semilla); la escena solo pone el tiempo de pantalla.
-
-   Movimiento reducido: el final quieto y el registro en el DOM. Sin red, sin reloj con autoridad, sin
-   azar: el «ruido» es un hash. */
 (function (raiz) {
   'use strict';
 
@@ -35,8 +19,7 @@
     return a + (b - a) * fx + (c - a) * fy + (a - b - c + d) * fx * fy;
   }
   function fbm(x, y, s) { return ruido(x, y, s) * 0.55 + ruido(x * 2.1, y * 2.1, s + 7) * 0.3 + ruido(x * 4.3, y * 4.3, s + 13) * 0.15; }
-  /* ATKINSON: `f(x, y)` da 0..1 y se reparte en los tonos de `pal` ([r,g,b] o null = transparente).
-     El error se difunde a seis vecinos, 1/8 cada uno (y 2/8 se pierden: por eso contrasta). */
+
   function textura(w, h, f, pal) {
     var c = raiz.document.createElement('canvas'); c.width = w; c.height = h;
     var g = c.getContext('2d'), im = g.createImageData(w, h), n = pal.length - 1, e = new Float32Array(w * h), x, y;
@@ -61,8 +44,7 @@
     arm.forEach(function (h) { l += Math.max(Math.abs(h[1]), Math.abs(h[2])); });
     return Math.max(1, l);
   }
-  /* LA DESAFINACION de una figura: `d` en 0..1. Cada armonico se tuerce de forma distinta, pero
-     siempre igual para el mismo armonico: la herida es reconocible y no parpadea. */
+
   function afina(arm, d, t) {
     if (!d) { return arm; }
     return arm.map(function (h, j) {
@@ -72,7 +54,7 @@
   }
   function figura(g,a,x,y,r,o){var k=r/limite(a)*(o.escala==null?1:o.escala),c=Math.cos(o.giro||0),s=Math.sin(o.giro||0),n=o.puntos||120,d=o.desafina||0,A=afina(a,d,o.t||0),z=d*r*.07,f=o.color;if(o.vidaFraccion!=null&&O.colorVida)f=O.colorVida(o.vidaFraccion,o.color,o.arm);g.save();g.globalAlpha=o.alfa==null?1:o.alfa;g.strokeStyle=f;g.lineWidth=o.grosor||2;g.lineJoin='round';o.brillo&&(g.shadowColor=f,g.shadowBlur=o.brillo);g.beginPath();for(var i=0;i<=n;i++){var u=i/n*6.2832,p=G.punto(A,u),Z=z*Math.sin(u*13+(o.t||0)*.01),px=p[0]*k+Z*Math.cos(u),py=p[1]*k+Z*Math.sin(u);g[i?'lineTo':'moveTo'](x+px*c-py*s,y-(px*s+py*c))}g.stroke();g.restore()}
   function tono(t) { return TONOS[G.caracter(t).color]; }
-  /* Color = velocidad: 3 (lento, azul) a 13 (rapido, cobre). */
+
   function rapidez(v) { return 'hsl(' + Math.round(210 - Math.max(0, Math.min(1, (v - 3) / 10)) * 185) + ' 80% 62%)'; }
   function mini(lienzo, t, color) {
     var g = lienzo.getContext('2d'), w = lienzo.width;
@@ -89,8 +71,7 @@
     });
   }
 
-  /* LA ESCENA de un combate ya resuelto. `def` (lado 0, derecha) y `asa` (lado 1, izquierda) son listas
-     `{tc, semilla}`; `combate` es lo que devolvio `arena.combate`. */
+
   function escena(lienzo, def, asa, combate, op) {
     op = op || {};
     var g = lienzo.getContext('2d'), U = [unidades(def, 0), unidades(asa, 1)], ev = combate.registro;
@@ -130,7 +111,7 @@
       t.vida = Math.max(0, t.vida - e[4]);
       if (!conEfectos) { if (!t.vida) { t.muere = -1e9; } return; }
       t.flash = 1; t.tiembla = vt;
-      /* El golpe EMPUJA: un vector en la direccion del proyectil, dividido por la masa del que lo recibe. */
+
       var dx = t.x - a.x, dy = t.y - a.y, L = Math.hypot(dx, dy) || 1, f = 9 * dpr * Math.min(3, e[4] / 4) / t.masa;
       t.vx += dx / L * f; t.vy += dy / L * f;
       ondas.push({ x: t.x, y: t.y, r: t.r, c: rapidez(a.vel), v: vt });
@@ -153,7 +134,7 @@
         if (op.alFin) { op.alFin(combate); }
       }
     }
-    /* Los muelles: cada tropa vuelve a su sitio con su propio peso; el que ataca se lanza. */
+
     function mueve(e, fase, dt, t) {
       todos.forEach(function (u, idx) {
         var tx = u.hx + Math.sin(t * 0.0007 + idx * 1.7) * u.r * 0.35, ty = u.hy + Math.cos(t * 0.0009 + idx) * u.r * 0.25;
@@ -165,8 +146,7 @@
         u.x += u.vx * k; u.y += u.vy * k;
       });
     }
-    /* El proyectil: una curva de Lissajous con las frecuencias de los dos primeros armonicos del que
-       dispara, que viaja dejando estela. Su color dice la velocidad de quien lo lanza. */
+
     function proyectil(a, b, s, t) {
       var fa = Math.abs(a.t.armonicos[0][0]) % 3 + 1, fb = Math.abs((a.t.armonicos[1] || a.t.armonicos[0])[0]) % 4 + 2;
       var R = a.r * 0.32, c = rapidez(a.vel);

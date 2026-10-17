@@ -1,4 +1,4 @@
-/* WEB · Shell Schematics: imports a building manifest as a local preview. */
+
 (function (root) {
   'use strict';
   var MOD = typeof module === 'object' && module.exports;

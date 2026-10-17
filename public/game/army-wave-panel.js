@@ -1,4 +1,4 @@
-/* WEB · one tap reads one wave; all figures come from the existing Army and Workshop receipt chain. */
+
 (function (root) {
   'use strict';
   function modelo(t, niveles, V, G) {
