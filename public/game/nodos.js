@@ -1,19 +1,4 @@
-/* preceptoros.org · theGame · los NODOS COMO CUENTA y su duelo.
 
-   UNA CUENTA = UN NODO (orquestador, 2026-10-04: «Hexelion y Doogee equilibrados, con 1 nodo cada
-   uno como cuenta»). `validaCedulas` exige el 1:1, la forma heredada de `preceptoros.cedula-nodo/1`
-   y su `sha256` (cedula tocada: FALLO_INTEGRIDAD). Una cifra sin medir NO entra como numero: si su
-   estado es NO_DATA, su valor es null y el eje es NIEBLA.
-
-   EL COMBATE ES UN LOG CERRADO que sale de una semilla: `combate` escribe los eventos (`inicio`,
-   `golpe`, `esquiva`, `fin`) y nada mas. El render NO decide: `reproduce` saca de cada evento el
-   estado que se pinta, y el ultimo coincide con `fin` por construccion.
-
-   JUGAR NO SACA NADA DEL NAVEGADOR. Firmar la partida (`Identity.firmar` del registro, que ata la
-   huella del log) es la N1. Enviar pide ademas un GESTO de verdad y una SEGUNDA firma, la del
-   consentimiento (consent 1); `envio` es la puerta, y sin las tres cosas lanza.
-
-   PURO: ni DOM, ni red, ni reloj, ni azar del sistema. A demanda, con la Arena. */
 (function (raiz) {
   'use strict';
 
@@ -33,7 +18,7 @@
     return objeto(o) && Object.keys(o).sort().join() === claves.slice().sort().join();
   }
 
-  /* --- las cedulas ------------------------------------------------------------------------------ */
+
   function formaMedida(m) {
     if (!objeto(m) || ESTADOS.indexOf(m.estado) < 0) { return 'estado fuera del vocabulario'; }
     if (m.estado === 'NO_DATA') {
@@ -101,7 +86,7 @@
     return objeto(c) && entero(c.ticks) && entero(c.umbral) && entero(c.varia_div) && entero(c.dano_min) ? '' : 'combate';
   }
 
-  /* --- los rasgos ------------------------------------------------------------------------------- */
+
   function nivel(valor, escalones) {
     return escalones.filter(function (e) { return valor >= e; }).length;
   }
@@ -127,7 +112,7 @@
     return rasgosDeNiveles(n, P);
   }
 
-  /* --- el combate: un log cerrado --------------------------------------------------------------- */
+
   function combate(a, b, semilla, P) {
     var g = K.generador(semilla), c = P.combate, f = [a, b], vida = [a.vida, b.vida], carga = [0, 0];
     var ev = [{ t: 'inicio', tick: 0, vida: vida.slice() }];
@@ -165,7 +150,7 @@
     }
     return '';
   }
-  /* Lo que se pinta, evento a evento, sacado SOLO del log. */
+
   function reproduce(L) {
     var e = formaLog(L);
     if (e) { throw new Error(e); }
@@ -176,7 +161,7 @@
     });
   }
 
-  /* --- la partida, su firma y su envio ---------------------------------------------------------- */
+
   function semillaDe(a, b, n) { return K.sha('atlas.nodos/1:' + a + ':' + b + ':' + n); }
   function partida(C, P, ca, cb, n) {
     var e = validaCedulas(C) || validaPesos(P);
