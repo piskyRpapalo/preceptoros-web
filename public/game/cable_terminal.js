@@ -1,15 +1,4 @@
-/* preceptoros.org · theGame · PIEZAS C2/C3/C4 · EL CABLE EN LA TERMINAL.
-   El visitante escribe, pulsa CALL THE LAB, y el chat pinta el resultado:
-   recibo con huella (C3) o rechazo traducido con su causa. Sin respuesta:
-   estado con la EDAD DEL DATO (Δ ciclos), nunca bloqueo, nunca invención,
-   jamás el literal NO_DATA en texto visible (25.8, ley en obra).
-   C4 · MÉTRICAS VIVAS: TASA DE CONFORMIDAD y TASA DE STALE, pintadas con su
-   edad (LIVE / STALE+Δ traducido). Se leen del JSON público del mapa
-   (atlas-mundo.json, familia de medidas ya viva) y se pintan con la misma
-   fuente y edad que el resto del chat (patrón de radio_message_log.js).
-   El botón usa la puerta ÚNICA de enviar.js (window.Enviar.paquete): dos
-   caminos hacia el rack divergen el día que cambie el protocolo.
-   A11Y: botón >=44 px, focus visible, aria-live en el chat ya existe. */
+
 (function (raiz) {
   'use strict';
   function T(k, nd) { return (raiz.AtlasJuego && raiz.AtlasJuego.texto(k)) || nd || k; }
@@ -32,15 +21,11 @@
     if (e > viejo) { return { estado: 'STALE', texto: T('cable_edad', '{s} · Δ{n}c').replace('{s}', 'stale').replace('{n}', e) }; }
     return { estado: 'LIVE', texto: T('cable_live_edad', 'live (Δ {n} cycles)').replace('{n}', e) };
   }
-  /* C4: las tasas del JSON público del mapa. atlas-mundo.json no entra al
-     precache (es MEDIDA: solo red — sw.js regla 2), así que sin red la tasa
-     se pinta como estado sin lectura, JAMÁS como cifra vieja. */
+
   function metricas() {
     var m = null;
     try { m = typeof fetch === 'function' ? null : null; } catch (e) { m = null; }
-    /* La lectura de atlas-mundo.json la hace la página que ya lo mide; aqui
-       solo se PINTA lo que llega por el recibo o lo que la hoja expone. Si
-       la hoja no lo expone: estado sin lectura traducido. */
+
     var ley = raiz.AtlasMundo || null;
     if (!ley || !ley.nexo) { return { causa: T('cable_nd', 'no reading yet') }; }
     var n = ley.nexo, c = { conformidad: n.conformidad, stale: n.stale, tic: n.tic };

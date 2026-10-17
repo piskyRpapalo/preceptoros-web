@@ -1,17 +1,4 @@
-/* preceptoros.org · theGame · EL CHAT DE LA RADIO: la cara ESCRITA de la Radio, abajo, en burbujas (FIRMO 2026-10-12,
-   «la interfaz no-mapa es una terminal de chatbot»). No sustituye a la Radio que suena (melodia = estado + voz): la escribe.
 
-   CADA MENSAJE DICE QUIEN HABLA, SU SELLO, SU FUENTE Y SU EDAD (en ciclos de juego, nunca reloj de pared). Los sellos,
-   honestos y declarados aqui:
-     LIVE      el estado de TU partida en este aparato, recien dicho (el motor corre aqui; nadie lo atesta fuera);
-     STALE     lo mismo, cuando ya tiene mas de VIEJO ciclos;
-     NO_DATA   el mensaje dice que algo no se pudo medir (empieza por «NO_DATA»);
-     SIMULATED una voz o una narracion que no es dato (la voz del navegador, la zona NPC).
-   Lo mantiene la WEB (zona NPC). El NODO del Soberano sera su autoridad SOLO cuando se active: hoy, no.
-
-   SE ALIMENTA DE LO QUE YA EXISTE: escucha cada linea de estado del juego (`role="status"` / `aria-live`) y la pasa al chat;
-   no inventa mensajes. AI FLUENCY: `registro()` devuelve las burbujas como datos (quien, sello, fuente, ciclo, texto) y cada
-   burbuja los lleva en `data-*`: el lab lee el chat sin mirar pixeles. Colapsado en el telefono: jamas se come el mundo. */
 (function (raiz) {
   'use strict';
   var VIEJO = 120, TOPE = 60, R = {}, lista = [], ctx = null, ultimos = new WeakMap();
@@ -52,7 +39,7 @@
     R.ultimo.textContent = u ? u.quien + ' · ' + sello(u) + ' · ' + u.texto : T('chat_vacio', 'The Radio is listening.');
     R.lista.scrollTop = R.lista.scrollHeight;
   }
-  /* Un mensaje nuevo. m: { quien, texto, fuente, sello? }. Los repetidos seguidos de la misma fuente no se duplican. */
+
   function dice(m) {
     var texto = String(m.texto || '').trim();
     if (!texto) { return null; }
@@ -63,14 +50,14 @@
     pinta();
     return e;
   }
-  /* De donde viene una linea de estado: el panel que la contiene, con su nombre visible. */
+
   function origen(n) {
-    if (n.closest('#thegame-mapa')) { return { quien: T('hoja_mapa', 'Map'), fuente: 'mapa' }; }  /* el mapa habla con su nombre */
+    if (n.closest('#thegame-mapa')) { return { quien: T('hoja_mapa', 'Map'), fuente: 'mapa' }; }
     var p = n.closest('[aria-label],section[id],details[id],aside[id]');
     var quien = (p && (p.getAttribute('aria-label') || (p.querySelector('summary') || {}).textContent)) || 'Radio';
     return { quien: String(quien).trim().slice(0, 40), fuente: (p && p.id) || (n.className || n.tagName).toString().split(' ')[0] };
   }
-  /* Escucha las lineas de estado del juego y las lleva al chat (sin inventar ninguna). */
+
   function observa(zona) {
     function mira(n) {
       if (!n || n.nodeType !== 1 || (R.caja && R.caja.contains(n))) { return; }
