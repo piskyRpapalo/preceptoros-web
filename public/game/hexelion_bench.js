@@ -1,6 +1,4 @@
-/* preceptoros.org · theGame · EL PAYLOAD DE HEXELION (ronda 3, FIRMO 12-oct): las cifras del nodo con su fuente.
-   Generado desde bench_20261011_resultados.json (sha256 en `fuente`). Cero fetch: lo medido viaja con el juego.
-   Lo que el fichero no mide queda NO_DATA con su causa. Sin azar, sin reloj. */
+
 (function (raiz) {
   'use strict';
   var BENCH = {
