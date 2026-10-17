@@ -1,6 +1,4 @@
-/* theGame · compact glyphs for four readable signals.
-   The map already has an honest inspector, Fourier drawings and voluntary tones; this module joins those
-   routes for vocabulary entries. It is deterministic, local and quiet until the visitor taps its sound button. */
+
 (function (root) {
   'use strict';
   var NS = 'http://www.w3.org/2000/svg';
@@ -53,7 +51,7 @@
     }
     svg.appendChild(mover);
   }
-  /* Audio is <1 KB, local and only reached from a user gesture. */
+
   function sound(kind) {
     try {
       var C = root.AudioContext || root.webkitAudioContext, c = audio || (audio = new C()), t = c.currentTime, g = c.createGain();

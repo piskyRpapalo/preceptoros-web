@@ -1,23 +1,4 @@
-/* preceptoros.org · theGame · EL TRAZO DE LAS ONDAS + CAPA PS1 (M17)
 
-   «Lo unico que requiere atencion extra es la FORMA DE LAS ONDAS» (Soberano, 2026-10-05). Una tropa,
-   un emblema o una casa son su serie de Fourier `[k, ax, ay, fase]` (de `gacha.js`), y aqui se
-   dibujan FIELES a esos armonicos -- el mismo `punto` que usa la gacha, nada redondeado ni simplificado:
-   - grosor VARIABLE: el trazo engorda donde la curva va lenta y adelgaza donde corre (como una pluma);
-   - BRILLO ADITIVO (`lighter`) en tres pasadas sobre fondo oscuro;
-   - ESTELA con persistencia: la figura en giros anteriores, cada vez mas tenue;
-   - armonicos que RESPIRAN: cada uno late a su ritmo, sin cambiar la forma media;
-   - NACIMIENTO armonico a armonico (`crece`, 0..1): la base de la revelacion de la gacha.
-   SPRITES precompuestos: una figura quieta se pinta una vez en un lienzo aparte y se pega.
-   `calidad` 0..2 lo baja con elegancia cuando los fps no llegan (lo decide quien llama).
-
-   MOVIMIENTO 6 - M17: BUFFER PS1 (la lente, no la logica)
-   - O.buffer(g) devuelve contexto segun nivel: Maxima(2) = canvas directo, Media(1) = interno 1/2, Luz(0) = interno 1/4
-   - Dither PS1: patron 4x4 ordenado (corpus 6 planes:296-299), aplicado solo en Media/Luz
-   - Wobble PS1: redondear coordenadas a grid (paso_grid) en niveles bajos
-   - Al final del cuadro: UN drawImage del interno al real con imageSmoothingEnabled=false
-
-   Sin azar y sin red: todo sale de los armonicos y del tiempo de pantalla. */
 (function (raiz) {
   'use strict';
 
@@ -26,11 +7,11 @@
   var F = V.fluidez || {};
   var TAU = Math.PI * 2;
 
-  /* MOVIMIENTO 1: Melt de batalla - canvas offscreen para persistencia */
+
   var MELT_CANVAS = null;
   var MELT_CTX = null;
 
-  /* MOVIMIENTO 1: Inicializar canvas offscreen para melt */
+
   function initMeltCanvas(w, h) {
     if (MELT_CANVAS && MELT_CANVAS.width === w && MELT_CANVAS.height === h) {
       return;
@@ -41,40 +22,38 @@
     MELT_CTX = cv.getContext('2d');
   }
 
-  /* MOVIMIENTO 1: Aplicar melt al contexto actual */
+
   function applyMelt(g, semilla) {
     if (!F.melt_alfa) return;
-    
+
     var w = g.canvas.width;
     var h = g.canvas.height;
     initMeltCanvas(w, h);
-    
-    // Guardar estado actual
+
+
     MELT_CTX.save();
     MELT_CTX.globalAlpha = F.melt_alfa || 0.93;
-    
-    // Aplicar micro-zoom y rotacion deterministas basadas en semilla
+
+
     var zoom = F.melt_zoom || 1.0005;
     var rot = F.melt_rotacion || 0.0001;
     var t = semilla ? (semilla % 10000) / 10000 : 0;
-    
+
     MELT_CTX.translate(w/2, h/2);
     MELT_CTX.scale(1 + Math.sin(t * Math.PI * 2) * 0.0001, 1 + Math.sin(t * Math.PI * 2) * 0.0001);
     MELT_CTX.rotate(Math.sin(t * Math.PI * 2) * rot);
     MELT_CTX.translate(-w/2, -h/2);
-    
-    // Dibujar el canvas actual en el melt canvas
+
+
     MELT_CTX.drawImage(g.canvas, 0, 0);
     MELT_CTX.restore();
-    
-    // Copiar melt canvas de vuelta al contexto actual
+
+
     g.drawImage(MELT_CANVAS, 0, 0);
   }
 
-  /* MOVIMIENTO 2: Color = Vida - derivar color segun fraccion de vida */
-  /* M17-bis 2 (firma 2026-10-10): H = vida, L = ESCUDO (ideas6oct:855). Antes L salia de la vida y la
-     herida apagaba el color dos veces. La armadura del combate es fija (arena.js:87): L dice cuanto
-     escudo TIENE la tropa. escudo_ref = 24 es la armadura maxima medida en 16.000 tiradas (tc1-tc4). */
+
+
   function colorVida(fraccion, base, armadura) {
     if (fraccion == null) fraccion = 1;
     var hueBase = F.vida_hue_base || 270;
@@ -86,19 +65,17 @@
     return [Math.round(hue) % 360, 70, Math.round(lightness)];
   }
 
-  /* M17-bis 1 (firma 2026-10-10): el pulso del golpe. pulso_brillo_max estaba declarado y nadie lo leia.
-     Su curva es LA MISMA rampa de ganancia del sonido del golpe (receta 'pop' de valores.sonidos, que
-     suena en ui-arena.js:148): de gan a 0,0001 en dur. Lo que se oye y lo que se ve se apagan juntos. */
+
   function pulso(ms) {
     var S = raiz.AtlasSintesis, max = F.pulso_brillo_max;
-    /* M17-bis 3: si la sintesis esta cargada, la curva ES su envolvente (fm2 o fm3_adsr): una curva, dos sentidos. */
+
     if (S && S.envolvente && S.receta) { var r = S.receta('pop', 0); return max && r ? max * S.envolvente(r, ms / 1000) / r.gan : 0; }
     var p = (V.sonidos || {}).pop;
     if (!p || !max || ms < 0 || ms >= p.dur * 1000) { return 0; }
     return max * Math.pow(0.0001 / p.gan, ms / (p.dur * 1000));
   }
 
-  /* MOVIMIENTO 6: Buffer PS1 - canvas internos por nivel de calidad */
+
   var BUFFERS = {};
   var BUFFER_CONFIG = {
     2: { escala: 1.0, anchoMax: null },
@@ -106,7 +83,7 @@
     0: { escala: 0.25, anchoMax: 320 }
   };
 
-  /* MOVIMIENTO 6: Dither PS1 - patron 4x4 ordenado (16 valores 0-15) */
+
   var DITHER_PATTERN = F.dither_patron || [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 13, 5, 15, 7];
   var DITHER_CANVAS = null;
   var DITHER_READY = false;
@@ -128,15 +105,15 @@
     DITHER_READY = true;
   }
 
-  /* MOVIMIENTO 6: O.buffer(g) - devuelve contexto segun nivel de calidad */
+
   function getBuffer(g, nivel) {
     nivel = nivel == null ? 2 : Math.max(0, Math.min(2, Math.floor(nivel)));
     var config = BUFFER_CONFIG[nivel];
-    
+
     if (nivel === 2) {
-      return g; // Maxima: canvas directo
+      return g;
     }
-    
+
     var key = 'buffer_' + nivel;
     if (!BUFFERS[key]) {
       var ancho = g.canvas.width;
@@ -144,22 +121,22 @@
       var escala = config.escala;
       var anchoBuffer = Math.min(config.anchoMax || ancho, Math.ceil(ancho * escala));
       var altoBuffer = Math.ceil(alto * escala);
-      
+
       var cv = raiz.document.createElement('canvas');
       cv.width = anchoBuffer;
       cv.height = altoBuffer;
       BUFFERS[key] = cv.getContext('2d');
     }
-    
+
     return BUFFERS[key];
   }
 
-  /* MOVIMIENTO 6: Aplicar dither a un contexto */
+
   function applyDither(g, nivel) {
     if (!F.dither_on || nivel >= 2) return;
     initDither();
     if (!DITHER_READY) return;
-    
+
     var w = g.canvas.width;
     var h = g.canvas.height;
     var pattern = g.createPattern(DITHER_CANVAS, 'repeat');
@@ -169,33 +146,32 @@
     g.globalCompositeOperation = 'source-over';
   }
 
-  /* MOVIMIENTO 6: Wobble PS1 - redondear coordenadas a grid */
+
   function wobble(x, y, nivel) {
     if (nivel >= 2) return { x: x, y: y };
     var paso = F.paso_grid ? F.paso_grid[nivel] : [1, 2, 4][nivel];
     return { x: Math.round(x / paso) * paso, y: Math.round(y / paso) * paso };
   }
 
-  /* MOVIMIENTO 6: Render final al canvas real */
+
   function renderToReal(g, bufferG, nivel) {
-    if (nivel >= 2) return; // Ya es el canvas real
-    
+    if (nivel >= 2) return;
+
     var bufferCanvas = bufferG.canvas;
     var realCanvas = g.canvas;
-    
-    // Aplicar dither si corresponde
+
+
     if (F.dither_on && nivel < 2) {
       applyDither(bufferG, nivel);
     }
-    
-    // Dibujar buffer al canvas real con nearest-neighbor
+
+
     g.imageSmoothingEnabled = false;
     g.drawImage(bufferCanvas, 0, 0, realCanvas.width, realCanvas.height);
     g.imageSmoothingEnabled = true;
   }
 
-  /* M17 M3 «respira al beat»: la nota de una receta FM bajada por OCTAVAS hasta lo que el ojo ve
-     (2-6 Hz). El destello del golpe late en la misma clase de altura que suena (pop 660 -> 5,16 Hz). */
+
   function pulsoNota(f) {
     var hz = Math.abs(f) || 4;
     while (hz >= 6) { hz /= 2; }
@@ -207,7 +183,7 @@
     arm.forEach(function (h) { l += Math.max(Math.abs(h[1]), Math.abs(h[2])); });
     return Math.max(1, l);
   }
-  /* Los armonicos de este instante: respiran, crecen y se desafinan. */
+
   function vivos(arm, o) {
     var t = o.t || 0, n = arm.length, c = o.crece == null ? 1 : o.crece, d = o.desafina || 0;
     return arm.map(function (h, j) {
@@ -225,7 +201,7 @@
     if (typeof c === 'string') { return c; }
     return 'hsla(' + c[0] + ' ' + c[1] + '% ' + c[2] + '% / ' + (a == null ? 1 : a) + ')';
   }
-  /* Una pasada: el contorno entero con grosor por tramo. */
+
   function trazo(g, P, x, y, k, cs, sn, ancho, variable) {
     var n = P.length - 1, med = 0, L = [];
     for (var i = 1; i <= n; i++) { var dx = P[i][0] - P[i - 1][0], dy = P[i][1] - P[i - 1][1]; L.push(Math.sqrt(dx * dx + dy * dy)); med += L[i - 1]; }
@@ -242,32 +218,26 @@
       g.beginPath(); g.moveTo(px(P[s - 1]), py(P[s - 1])); g.lineTo(px(P[s]), py(P[s])); g.stroke();
     }
   }
-  /* LA FIGURA. `o`: { t, color ([h,s,l] o css), giro, escala, grosor, brillo 0..1, estela n, crece,
-     desafina, alfa, calidad 0..2, respira }. 
-     MOVIMIENTO 6: Si nivel < 2, usa buffer PS1 y wobble. */
+
   function dibuja(g, arm, x, y, r, o) {
     o = o || {};
     var q = o.calidad == null ? 2 : o.calidad;
     var nivel = Math.max(0, Math.min(2, Math.floor(q)));
-    
-    /* Buffer PS1 y wobble (M17 mov. 6) SUSPENDIDOS el 2026-10-10: la batalla pide siempre calidad 1 o 0
-       (battle_replay.js:193) y el buffer, de pantalla entera, ni se limpiaba ni escalaba las coordenadas:
-       se acumulaba, se tramaba y se pegaba encima del combate («niebla desde el sur»). La degradacion
-       honesta es la de antes: menos puntos, sin brillo ni estela. Volver a usarlo pide rehacerlo por
-       fotograma (limpiar, escalar, pegar una vez) y medirlo en el Doogee. */
+
+
     var bufferG = g, isBuffer = false;
-    
-    // Si usamos buffer, dibujar en el buffer
+
+
     var targetG = isBuffer ? bufferG : g;
-    
+
     var A = vivos(arm, o), k = r / limite(arm) * (o.escala == null ? 1 : o.escala);
     var n = q >= 2 ? 220 : q >= 1 ? 140 : 80, P = puntos(A, n), giro = o.giro || 0, gr = o.grosor || 2, alfa = o.alfa == null ? 1 : o.alfa;
     var c = o.color || [270, 70, 72], brillo = o.brillo == null ? 0.8 : o.brillo;
-    
-    
+
+
     targetG.save(); targetG.lineJoin = 'round'; targetG.lineCap = 'round';
     targetG.globalCompositeOperation = 'lighter';
-    /* La estela: la misma figura en giros anteriores. */
+
     var est = q >= 1 ? (o.estela || 0) : 0;
     for (var e = est; e >= 1; e--) {
       var ge = giro - e * (o.pasoEstela || 0.06);
@@ -285,13 +255,13 @@
       targetG.strokeStyle = blanco; trazo(targetG, P, x, y, k, cs, sn, Math.max(0.6, gr * 0.35), false);
     }
     targetG.restore();
-    
-    // MOVIMIENTO 6: Si usamos buffer, renderizar al canvas real
+
+
     if (isBuffer) {
       renderToReal(g, bufferG, nivel);
     }
   }
-  /* UN SPRITE: la figura quieta, con su brillo, pintada una vez. Se reutiliza por clave. */
+
   function sprite(arm, r, c, clave, dpr) {
     var key = clave + ':' + Math.round(r) + ':' + (dpr || 1);
     if (CACHE[key]) { return CACHE[key]; }
@@ -303,13 +273,13 @@
     return cv;
   }
   function pegaSprite(g, cv, x, y) { g.drawImage(cv, x - cv.width / 2, y - cv.height / 2); }
-  /* El color de un caracter (gacha.caracter) en [h, s, l], para el trazo aditivo. */
+
   var TONOS = [[35, 80, 62], [140, 55, 58], [275, 65, 72], [205, 30, 74]];
   function tono(t) { return TONOS[G.caracter(t).color]; }
-  /* Riqueza de una forma: cuantos armonicos con peso. La rareza se VE aqui, no en un numero. */
+
   function riqueza(arm) { return arm.filter(function (h) { return Math.abs(h[1]) + Math.abs(h[2]) > 0; }).length; }
 
-  /* Medidor de fps: media movil; `nivel()` propone la calidad (2, 1 o 0) segun el umbral de 50. */
+
   function medidor() {
     var ult = null, media = 16.7, n = 0;
     return {
@@ -321,12 +291,12 @@
 
   raiz.AtlasOnda = {
     dibuja: dibuja, pulsoNota: pulsoNota, sprite: sprite, pegaSprite: pegaSprite, tono: tono, riqueza: riqueza, medidor: medidor, limite: limite,
-    /* MOVIMIENTO 1: Melt de batalla */
+
     applyMelt: applyMelt,
-    /* MOVIMIENTO 2: Color = Vida */
+
     colorVida: colorVida,
     pulso: pulso,
-    /* MOVIMIENTO 6: Buffer PS1 */
+
     buffer: getBuffer,
     getBuffer: getBuffer,
     applyDither: applyDither,

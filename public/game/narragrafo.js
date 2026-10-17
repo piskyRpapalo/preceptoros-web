@@ -1,25 +1,4 @@
-/* preceptoros.org · theGame · multijugador · el NARRAGRAFO: la historia que se escribe entre varios.
 
-   UN GRAFO DE DATOS, NUNCA DE CODIGO (brief §5, MGNO). Nodos `atlas.mgno_nodo/1`: un texto corto (280
-   como mucho) sin etiquetas, enlaces, rutas, correos, IPs ni plantillas; hasta 6 etiquetas; y un
-   vector de AFINIDAD de 8 enteros 0..255 (cooperacion, competicion, exploracion, riesgo, ritmo,
-   complejidad, confianza, curiosidad). Un nodo se nombra por su huella: dos personas que escriben
-   lo mismo escriben el mismo nodo. Nada de lo que dice un nodo se ejecuta ni se pasa a un modelo.
-
-   LAS OPERACIONES VIAJAN EN SOBRES (`mgno_op`) y el estado es FUNCION DEL CONJUNTO, no del orden de
-   llegada (`funde`): los nodos se unen; un arco repetido se queda con su peso mayor; cada par tiene
-   UN voto por arco (el de su `seq` mas alto); una PODA gana siempre (tombstone: lo podado no
-   vuelve aunque llegue despues). Dos aparatos con los mismos sobres sacan el mismo grafo, byte a byte.
-
-   ELEGIR EL SIGUIENTE NODO (`elige`): cada candidato puntua con Phi, entera y saturada, sobre las
-   preferencias de los pares (`atlas.mgno_preferencia/1`: DECLARADAS o sacadas de acciones FIRMADAS;
-   nunca del puntero ni del tecleo), y sale uno por loteria entera con la semilla del commit-reveal
-   de la sesion. Nadie elige a solas el siguiente capitulo.
-   - cooperativo: mediana por dimension · afinidad · pesos;
-   - competitivo: lo cooperativo + la dimension donde un par se desvia mas de la mediana;
-   - hibrido: lo cooperativo + la mitad de esa desviacion.
-
-   PURO: ni DOM, ni red, ni reloj, ni `Math.random`. En memoria; guardarlo pide firma. */
 (function (raiz) {
   'use strict';
 
@@ -29,8 +8,7 @@
   var HEX64 = K.HEX64, DIM = 8;
   var OPS = ['nodo', 'arco', 'voto', 'poda'];
   var MODOS = ['cooperativo', 'competitivo', 'hibrido'];
-  /* Lo que un texto de nodo no puede llevar: etiquetas, enlaces, esquemas de ejecucion, plantillas,
-     codigo, rutas, correos, IPs. */
+
   var TEXTO_MALO = /[<>`]|https?:|javascript:|data:|\{\{|\}\}|=>|\bfunction\b|(^|[^0-9])\/[a-z]|@|\b\d{1,3}(\.\d{1,3}){3}\b/i;
 
   function objeto(o) { return !!o && typeof o === 'object' && !Array.isArray(o); }
@@ -68,7 +46,7 @@
     return vector(p.vector) ? '' : 'preferencia: vector';
   }
 
-  /* El estado sale del CONJUNTO de operaciones aceptadas en el libro de la sesion. */
+
   function funde(L) {
     var nodos = {}, arcos = {}, podas = {}, votos = {}, rechazos = [];
     S.ordenCanonico(S.aceptados(L, 'mgno_op')).forEach(function (s) {
@@ -99,7 +77,7 @@
 
   function mediana(xs) { var s = xs.slice().sort(function (a, b) { return a - b; }); return s[(s.length - 1) >> 1]; }
 
-  /* Phi(prefs, afinidad) entera y saturada. `pesos`: 8 enteros 0..100 de la politica. */
+
   function phi(modo, prefs, afinidad, pesos) {
     if (MODOS.indexOf(modo) < 0) { throw new Error('phi: modo ' + modo); }
     if (!prefs.length || !prefs.every(vector) || !vector(afinidad) ||
@@ -119,7 +97,7 @@
     return K.satura(base + (modo === 'competitivo' ? bono : bono >> 1), 0, 1000000000);
   }
 
-  /* El siguiente nodo desde `desde`: candidatos = arcos vivos que salen de el, en orden de huella. */
+
   function elige(estado, desde, prefs, modo, pesos, semilla) {
     var cand = estado.grafo.arcos.filter(function (a) { return a[0] === desde; });
     if (!cand.length) { return { ok: false, motivo: 'NO_DATA · no sale ningun arco de ese nodo' }; }

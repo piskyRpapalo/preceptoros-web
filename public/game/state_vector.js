@@ -1,12 +1,4 @@
-/* preceptoros.org · theGame · EL VECTOR DEL JUEGO: leer theGame de UNA llamada (FIRMO 2026-10-12: «piensa vectorialmente»).
 
-   Lo que es facil de leer para Claude es facil para un LLM pequeno en un Android de 8 GB. Aqui todo el estado VISIBLE
-   cabe en un vector compacto (< 1 KB en JSON, claves cortas y estables, `esquema()` las explica): recursos, cangrejo y sus
-   skills, el panel abierto con su sello y su edad, el paso del tutorial, los edificios, los lugares y su registro, los
-   nodos, las lapidas y lo ultimo que dijo la Radio. Las demas proyecciones (color, sonido, gusanos) salen del MISMO
-   estado: este vector las ve todas. Lo que falta va en `nd` con su causa: nunca un hueco callado, nunca un cero inventado.
-   Solo LEE (jamas escribe ni decide). Sin red, sin azar, sin reloj de pared.
-   Contrato de intercambio cerrado: data/atlas_vector_schema.json (JSON Schema 2020-12). */
 (function (raiz) {
   'use strict';
   var validaContrato = (typeof module === 'object' && module.exports) ? require('./vector_contract.js').valida :
@@ -29,7 +21,7 @@
   function lee(f, clave, fallos, defecto) {
     try { return f(); } catch (e) { agregaCausa(fallos, clave, 'reader failed'); return defecto; }
   }
-  /* Cuenta bytes UTF-8 sobre JSON ya serializado; JSON.stringify escapa sustitutos aislados. */
+
   function bytesUTF8(texto) {
     var bytes = 0;
     for (var i = 0; i < texto.length; i++) {
@@ -43,7 +35,7 @@
     return bytes;
   }
 
-  /* Puro sobre lo que recibe: construye el vector desde las lecturas (las pruebas le pasan lecturas falsas). */
+
   function arma(L) {
     L = L && typeof L === 'object' && !Array.isArray(L) ? L : {};
     var v = { v: 'preceptoros.vector/1', c: null, r: null, k: null, p: null, t: null, e: [], l: [], n: [], z: 0, q: [], g: null, nd: {} };
@@ -138,7 +130,7 @@
     if (!v.l.length && !v.nd.l) { v.nd.l = 'no place fought on this device yet'; }
     return v;
   }
-  /* Lee el juego vivo. Cada lectura falla sola (queda en nd), nunca tumba el vector. */
+
   function lecturas() {
     var fallos = {}, i = lee(function () { return J(); }, 'c', fallos, null);
     var Lb = raiz.AtlasCangrejoLibre, Ce = raiz.AtlasNodosCedulas, A = raiz.AtlasArrecife, W = raiz.AtlasVentana, Tu = raiz.AtlasTutorial, Rc = raiz.AtlasRadioChat;
@@ -206,7 +198,7 @@
     keys.forEach(function (k) { nd[k] = causa; }); nd.recorte = causa;
     return { v: 'preceptoros.vector/1', c: null, r: null, k: null, p: null, t: null, e: [], l: [], n: [], z: null, q: [], g: null, nd: nd };
   }
-  /* Contrato cerrado: vector final siempre < 1024 bytes UTF-8; si no cabe, devuelve solo NO_DATA. */
+
   function acota(vector) {
     var bytes = bytesUTF8(JSON.stringify(vector));
     if (bytes < TOPE) { return { vector: vector, bytes: bytes, estado: 'completo' }; }
