@@ -20,4 +20,5 @@ Léelo antes de tocar nada. Vale para toda sesión de agente (rack, nube, web) j
 
 ## Canales
 - Con Codex solo por GitHub: PRs PROPUESTA en ramas mistral/*, comentarios en PRs; jamás tocar codex/* ni claude/*.
+- Enjambre Haiku: ramas haiku/*; escribe y une ramas locales, jamás firma, fusiona ni empuja.
 - Lo que no esté en el repo es NO_DATA con causa: se pregunta al Soberano, jamás se infiere.
