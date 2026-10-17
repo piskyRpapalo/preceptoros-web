@@ -1,5 +1,4 @@
-/* WEB · 6B-1: fichas de lugares y acciones existentes. Leer nunca ejecuta; el segundo gesto actua.
-   Sin almacen, red, firma ni reloj. Los datos vienen de la capa que ya los mide. */
+
 (function (raiz) {
   'use strict';
   function nd(c) { return 'NO_DATA (' + c + ')'; }
@@ -46,7 +45,7 @@
     if (a.id === 'fight' && typeof a.run === 'function') { return a.run(); }
     return { cause: nd('no executable action has been declared') };
   }
-  /* Mismo modelo para Inspector y futuro tour; aqui solo se presentan los controles. */
+
   function monta(caja, f, informa) {
     var D = raiz.document, z = caja.querySelector('.place-actions');
     if (!z) { z = D.createElement('div'); z.className = 'place-actions'; caja.appendChild(z); }
