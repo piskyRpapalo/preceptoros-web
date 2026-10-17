@@ -1,20 +1,4 @@
-/* preceptoros.org · theGame v1.5 · el ARMY y su puerta de firma.
 
-   NINGUNA TROPA ENTRA SIN FIRMA VERIFICADA (IronClaw: el silicio forja, el
-   carbono firma). `adopta` no se fia de que haya un campo `firma`: VERIFICA
-   la firma Ed25519 sobre la adopcion con la clave publica, y solo entonces
-   escribe. La comprobacion vive DENTRO del camino de escritura y no en quien
-   llama (leccion D79b): un llamante nuevo que no la conozca no puede
-   saltarsela, porque no hay otro camino.
-
-   LA FORMA DE VERIFICAR SE INYECTA: en la pestana es WebCrypto, en node es
-   `crypto`. El fichero no elige plataforma y se prueba igual en las dos.
-
-   EL ARMY SE GUARDA EN ESTE APARATO desde el plan firmado del 2026-10-05 (capa C1: «salir del
-   juego hace perder recursos y army: eso se arregla»). La persistencia entra AQUI, detras de esta
-   misma puerta, como se dejo dicho: se guardan solo los pares {adopcion, firma} y al volver cada uno
-   ENTRA OTRA VEZ POR `adopta`, que re-verifica la firma. Un almacen tocado no mete ni una tropa.
-   El almacen se inyecta (`{lee, pon}`): IndexedDB en la pestana, memoria en node. */
 (function (raiz) {
   'use strict';
 
@@ -27,13 +11,12 @@
     }).join('');
   }
 
-  /* Lo que se firma al adoptar: la tropa entera (su JSON canonico, el mismo
-     que hace `Identity.firmar`) y quien la adopta. */
+
   function adopcion(tropa, pseudonimo, clave) {
     return { esquema: 'atlas.adopcion/1', tropa: tropa, pseudonimo: pseudonimo, clave_publica: clave };
   }
 
-  /* `verifica(texto, firmaHex, claveHex) -> Promise<bool>`. */
+
   function crea(verifica, almacen) {
     var army = [];
     function guarda() {
@@ -41,8 +24,7 @@
     }
     var yo = {
       lista: function () { return army.slice(); },
-      /* La unica forma de meter una tropa. Rechaza con su motivo; nunca
-         devuelve un «vale» a medias. */
+
       adopta: function (ad, firma) {
         if (!ad || ad.esquema !== 'atlas.adopcion/1' || !ad.tropa || ad.tropa.esquema !== 'atlas.tropa/1') {
           return Promise.reject(new Error('forma: adopcion'));
@@ -62,8 +44,7 @@
           return u;
         });
       },
-      /* P9 · POLVO DE TALLER: la UNICA forma de sacar una tropa. Exige el recibo `atlas.taller/1` de
-         desintegrar, firmado por la MISMA clave que la adopto; verifica la firma aqui dentro, como `adopta`. */
+
       retira: function (rec, firma) {
         var m = /^ed25519:([0-9a-f]{128})$/.exec(firma || '');
         if (!rec || rec.esquema !== 'atlas.taller/1' || rec.op !== 'desintegra' || !m) { return Promise.reject(new Error('forma: recibo')); }
@@ -77,8 +58,7 @@
           return u;
         });
       },
-      /* Lo guardado vuelve POR `adopta`, en orden: lo que no verifica se queda fuera con su causa,
-         y el almacen se reescribe con lo que si entro. */
+
       restaura: function () {
         if (!almacen) { return Promise.resolve({ entran: 0, fuera: [] }); }
         return Promise.resolve(almacen.lee()).then(function (l) {
@@ -95,7 +75,7 @@
     return yo;
   }
 
-  /* El almacen de la pestana: una base propia `atlas-army` con un unico registro. */
+
   function almacenWeb() {
     function db() {
       return new Promise(function (ok, mal) {
@@ -122,8 +102,7 @@
     };
   }
 
-  /* Una caja de la pestana: su propia base con un unico registro. db.js es la unica puerta de
-     almacenamiento del juego; ui.js y ui-arena.js no tocan IndexedDB (test_v15, Conquista). */
+
   function caja(base, almacen, clave) {
     function db() {
       return new Promise(function (ok, mal) {
@@ -152,11 +131,9 @@
       }
     };
   }
-  /* La calidad elegida (M17). */
+
   function calidadWeb() { return caja('atlas-calidad', 'calidad', 'modo'); }
-  /* La conquista (FIRMO del Soberano, 2026-10-10): el record de los lugares NPC de ESTE aparato. Ganar
-     una vez conquista. No da rating ni botin y no entra en el combate. Lee, limpia, suma lo que la
-     pestana no tenga y repinta; devuelve la caja para guardar (`pon`) tras cada combate. */
+
   function conquistasWeb(record, lugares, pinta) {
     var c = caja('atlas-conquista', 'conquista', 'record');
     c.lee().then(function (r) {
@@ -166,7 +143,7 @@
     });
     return c;
   }
-  /* Lo que vuelve del almacen no se cree: solo lugares conocidos y cuentas enteras >= 0. */
+
   function limpiaRecord(r, claves) {
     var o = {};
     function ok(n) { return Number.isInteger(n) && n >= 0; }
@@ -178,8 +155,7 @@
     return o;
   }
 
-  /* El verificador de la pestana: WebCrypto Ed25519 con la clave publica en
-     crudo (la misma que da `Identity.publica`). */
+
   function verificaWeb(texto, firmaHex, claveHex) {
     function bytes(h) { return new Uint8Array(h.match(/../g).map(function (x) { return parseInt(x, 16); })); }
     var s = raiz.crypto && raiz.crypto.subtle;
@@ -190,16 +166,12 @@
       });
   }
 
-  /* La semilla de una invocacion: sha256 de su firma. */
+
   function semillaWeb(firma) {
     return raiz.crypto.subtle.digest('SHA-256', new TextEncoder().encode(firma)).then(hex);
   }
 
-  /* G0 · LA CADENA DE INVOCACIONES (aceptada por el Soberano el 2026-10-11). Cada invocacion es un ESLABON firmado:
-     {esquema, tc, seq, prev, clave_publica}, con seq monotono por clave y prev = la semilla del anterior (sha256 de
-     su firma). Solo se firma lo que fija la semilla: ni pseudonimo ni ciclo (con ellos, renombrarse o esperar daba
-     otra semilla: pesca). Se guarda en el aparato con sus huevos (desde/hasta, datos de pantalla, no firmados), asi
-     recargar ya no pierde el huevo con el cobre gastado. Un hueco o una firma que no cuadra: NO_DATA con causa. */
+
   function eslabon(cadena, tc, clave) {
     var u = cadena[cadena.length - 1];
     return { esquema: 'atlas.invocacion/2', tc: tc, seq: u ? u.obj.seq + 1 : 1, prev: u ? u.semilla : 'genesis', clave_publica: clave };
@@ -223,7 +195,7 @@
     return cadena.filter(function (e) { return !e.abierto; }).map(function (e) { return { tc: e.obj.tc, semilla: e.semilla, desde: e.desde, hasta: e.hasta, seq: e.obj.seq }; });
   }
   function abre(cadena, seq) { return cadena.map(function (e) { return e.obj.seq === seq ? Object.assign({}, e, { abierto: true }) : e; }); }
-  /* Al volver: cada firma con su clave y cada semilla con su firma. `verifica` y `sha` se inyectan (web o node). */
+
   function verificaCadena(cadena, clave, verifica, sha) {
     var causa = compruebaCadena(cadena);
     if (causa) { return Promise.resolve(causa); }
@@ -240,9 +212,7 @@
     }, Promise.resolve(''));
   }
   function cadenaWeb(clave) { return caja('atlas-invocaciones', 'cadena', clave); }
-  /* PIEDAD VISIBLE (piezas 1+2, firmadas): se calcula AQUI, en el cliente, desde TU cadena; el rack no lleva la
-     cuenta de la suerte de nadie. Solo cuentan los huevos ABIERTOS (lo que aun incuba no se destripa). Cadena con
-     hueco: NO_DATA con causa, nunca un numero inventado. `rareza(eslabon)` se inyecta (la gacha decide, aqui no). */
+
   function piedad(cadena, rareza) {
     var causa = cadena ? compruebaCadena(cadena) : 'sin cadena';
     if (causa) { return { nd: causa }; }
@@ -250,7 +220,7 @@
     for (var i = abiertos.length - 1; i >= 0; i--) { var r = rareza(abiertos[i]); if (r === 'raro' || r === 'unico') { break; } n++; }
     return { desde_raro: n, abiertos: abiertos.length, incubando: cadena.length - abiertos.length };
   }
-  /* CRONICA DE DESEOS (pieza 3): cada capsula ABIERTA con su puesto, su ciclo, su sello y lo que salio. */
+
   function cronica(cadena, tirada) {
     return (cadena || []).filter(function (e) { return e.abierto; }).map(function (e) {
       var t = tirada(e.semilla, e.obj.tc);

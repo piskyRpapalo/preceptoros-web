@@ -1,28 +1,9 @@
-/* preceptoros.org · theGame · GUARDAR, RETOMAR, IMPORTAR: solo cuando la persona pulsa.
 
-   LO QUE SE GUARDA ES LA PARTIDA, NO UN ESTADO. `atlas.partida/1` (la ley y los pasos, con su
-   origen) es ya un esquema cerrado: sin rutas, sin hosts, sin IPs, sin claves, sin datos de la
-   persona, sin fechas de reloj. Al retomar no se cree: se vuelve a jugar con el motor puro, y si
-   no sale el mismo final o la version de contenido no es esta, se dice la causa y no se carga.
-   Un guardado manipulado no vuelve a entrar, por construccion.
-
-   SE GUARDA SOLO (plan firmado 2026-10-05, capa C1: «salir del juego hace perder recursos y army:
-   eso se arregla»). Al abrir, lo guardado se RETOMA (reproducido, como siempre); despues se guarda al
-   ocultarse la pestana, al salir y cada AUTO_MS si hubo pasos nuevos. Nunca antes de haber leido lo
-   guardado: una partida nueva no pisa la vieja. «Olvidar» apaga el autoguardado hasta pulsar Guardar.
-   Importar sigue siendo un boton. Se guarda en ESTE dispositivo (IndexedDB,
-   una base propia `atlas-guardado` con un unico registro): `auth.js` sigue siendo el unico dueno
-   de la base `preceptoros`. Nada sale del aparato; para llevarlo a otro, se exporta firmado.
-
-   Exportar ya existe (firmado, en `atlas-piloto-capa.js`). Importar acepta la partida pelada o
-   la firmada; la firma se comprueba con el verificador de la web (`AtlasArmy.verificaWeb`) y la
-   partida se reproduce siempre, firmada o no. */
 (function () {
   'use strict';
 
   var BASE = 'atlas-guardado', ALM = 'partidas', CLAVE = 'actual', AUTO_MS = 4000, auto = false, hechos = -1;
-  /* La guarda del esquema: lo que parezca ruta, correo, URL o IP no se guarda (joya: el dato que
-     sale de la partida no lleva nada de la maquina ni de la persona). */
+
   var PROHIBIDO = /(^|[^0-9])\/[a-z]|@|https?:|\b\d{1,3}(\.\d{1,3}){3}\b/i;
 
   function db() {
@@ -59,7 +40,7 @@
     R.retomar.textContent = rellena(T('retomar'), { c: pendiente.final.ciclo }); R.retomar.hidden = false;
   }
 
-  /* Retomar: se reproduce la partida y, de paso, se recogen las visitas para la niebla real. */
+
   function retoma(p, como) {
     var vis = {}, P = window.AtlasPartida, M = window.AtlasMotor, C = window.AtlasCarta;
     try {
@@ -73,7 +54,7 @@
     }
   }
 
-  /* `callado`: el autoguardado. Solo escribe si esta encendido y hubo pasos nuevos, y no habla. */
+
   function guarda(callado) {
     var p;
     if (callado === true && !auto) { return; }
@@ -93,7 +74,7 @@
     }).catch(function (x) { dice(rellena(T('guardado_nd'), { m: x && x.message })); });
   }
   function importa(f) {
-    /* El verificador de la firma vive con el Army, que se carga con su pestana: se pide antes. */
+
     var TG = window.TheGame;
     Promise.all([f.text(), TG && TG.army ? TG.army() : null]).then(function (r) {
       var txt = r[0], o = JSON.parse(txt), p = o && o.esquema === 'atlas.partida.firmada/1' ? o.partida : o;
@@ -113,8 +94,7 @@
     R.estado = el('p', 'atlas-nota'); R.estado.setAttribute('role', 'status');
     R.estado.classList.add('atlas-guardado-recibo'); caja.appendChild(R.estado);
     cab.parentNode.insertBefore(caja, cab.nextSibling);
-    /* Leer lo guardado no saca nada del aparato. Si hay partida, se retoma sola; si no se puede, se
-       dice la causa y queda el boton. Solo despues se enciende el autoguardado. */
+
     op('readonly', function (s) { return s.get(CLAVE); }).then(function (p) {
       if (p && p.final && !retoma(p, T('guardado_de_aqui'))) {
         pendiente = p; preparaRetomar(); return;
@@ -126,7 +106,7 @@
     setInterval(function () { guarda(true); }, AUTO_MS);
   }
 
-  /* La vista de máquina se abre desde el Inspector honesto; los recibos permanecen en el pliego humano. */
+
   function montaInspector(panel) {
     if (!panel || panel.querySelector('.atlas-guardado-controls') || !R.estado) { return; }
     var caja = el('div', 'atlas-guardado-controls'); caja.appendChild(el('h5', null, T('guardado_maquina') || 'Local save controls'));
