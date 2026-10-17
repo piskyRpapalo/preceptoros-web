@@ -1,30 +1,4 @@
-/* HEXELION STAR · one static, English-first catalogue. The entries below are public references from
-   the Soberano's signed 2026-10-15 annex; this module requests only the two same-origin JSON files.
-   REF_ABIERTA index (machine-readable anchors also live in /dictionary.json and llms.txt):
-   A1 W3C-CSP-Level3 / NIST-SP-800-207 / Wikidata:Q104889869; A2 ECMA-262-ESModules / SLSA-Level-3;
-   A3 ISBN:978-1491986363 / ISO-25010; A4 W3C-ServiceWorkers-1 / NDN-Content-Addressed-Storage;
-   A5 InkAndSwitch-LocalFirst-7Ideals / Chaos-Engineering-Principles; A6 Reproducible-Builds-Spec / Pure-Functional-Pipeline;
-   A7 IEEE-1516-HLA-Lockstep / Lamport-State-Machine-Replication; A8 ETSI-MEC-003 / NIST-SP-500-325-Fog;
-   A9 JEDEC-LPDDR5X-JESD209-5B / HSA-SysArch; A10 W3C-WebAssembly-Core / WASI-Object-Capability;
-   A11 IETF-RFC-6455 / POSIX-IPC-Loopback; A12 IEEE-829-Test-Stubs / Deterministic-HIL-Simulation.
-   B13 IETF-RFC-8032 / NIST-SP-800-63B; B14 NIST-SP-800-53-SC-7 / OWASP-ASVS-Data-Classification;
-   B15 ISO-IEC-20889 / HIPAA-Safe-Harbor-164.514; B16 W3C-DID-Core-1.0 / IETF-RFC-7517;
-   B17 IETF-RFC-9334-RATS / GlobalPlatform-TEE; B18 IETF-RFC-9381-ECVRF / Deterministic-Signature-Seeded-PRNG;
-   B19 IETF-RFC-9421 / detached-Ed25519-payload. B20-B21 are withheld from public data.
-   C22 Licklider-1960-Man-Computer-Symbiosis / Kasparov-Advanced-Chess;
-   C23 UNESCO-AI-Competency-Framework / Vygotsky-ZPD; C24 Kleene-Three-Valued-Logic / Explicit-Epistemic-Uncertainty;
-   C25 arXiv:2305.14325 / Constitutional-AI; C26 Popperian-Falsifiability / ML-Ablation-Methodology;
-   C27 Shadow-Mode-Deployment / Interleaved-Preference-Testing;
-   C28 Progressive-Disclosure-HCI / Self-Contained-Zero-Install-Runtime; C29 ISO-17100 / Structural-String-Parity-Verification;
-   C30 permacomputing.net-Principles / SCI-ISO-IEC-21031; C31 arXiv:2106.09685;
-   C32 W3C-WCAG-2.1-Contrast / Peirce-Triadic-Semiotics.
-   D33 EUR-Lex-CELEX:32024R1689-Art14; D34 EUR-Lex-CELEX:32024R1689-Art13;
-   D35 EUR-Lex-CELEX:32024R1689-Art12; D36 EUR-Lex-CELEX:32024R1689-Art15;
-   D37 EUR-Lex-CELEX:32024R1689-Art10; D38 EUR-Lex-CELEX:32024R1689-Art4;
-   D39 EUR-Lex-CELEX:32023R2854; D40 EUR-Lex-CELEX:32024R2847; D41 EUR-Lex-CELEX:32022R2554;
-   D42 ISO-IEC-42001:2023; D43 ISO-IEC-27001:2022; D44 EUR-Lex-CELEX:32016R0679-Art25;
-   D45 IEEE-Std-7001-2021 / IEEE-P7003.
-   No network lookups, storage, wall clock, random choice, or capture/reward are part of this piece. */
+
 (function (root) {
   'use strict';
   var data = null, words = null, cause = 'the same-origin dictionary has not loaded';

@@ -1,14 +1,4 @@
-/* preceptoros.org · theGame · el ESTADO de un nodo de la casa y la CUENTA MAESTRA. SOLO FUNCIONES PURAS.
 
-   «ACTIVO» SALE DE UN DATO (Soberano, 2026-10-04: «mapa global con nodo hexelion activo»). Un nodo
-   esta activo DECLARADO si su cedula trae al menos una medida MEDIDO con fecha; la fecha mas reciente
-   es `desde`. El LATIDO es otra cosa: un pulso vivo del rack, y la web no lo lee (sin red al cargar),
-   asi que es NO_DATA con su causa. Un nodo sin medidas no esta activo: NO_DATA.
-
-   LA CUENTA MAESTRA (`preceptoros.cuenta-maestra/1`). Liga tres cosas: la app PreceptorOS local del
-   Beelink, el lab (el rack) y esta web. Solo lleva lo PUBLICO: el nodo, el sha de su cedula y la clave
-   publica de la identidad del navegador. Nace PROPUESTA y sin firma: la firma la pone el Soberano en
-   el registro del rack, nunca esta pagina. Ninguna clave que no sea publica entra aqui. */
 (function (raiz) {
   'use strict';
 
