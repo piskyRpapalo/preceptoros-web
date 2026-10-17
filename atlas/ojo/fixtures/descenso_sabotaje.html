@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Fixture descenso SABOTAJE</title>
+<style>
+/* Sin barra de scroll visible: su desvanecimiento no forma parte del dibujo que se mide. */
+html{margin:0;background:#000;scrollbar-width:none}
+html::-webkit-scrollbar{display:none}
+body{margin:0;height:3000px}
+canvas{position:fixed;top:0;left:0;width:412px;height:915px;display:block}
+</style>
+</head>
+<body>
+<canvas id="escena" width="412" height="915"></canvas>
+<script>
+// Fixture de SABOTAJE a proposito: igual que descenso_ok.html, pero el dibujo usa performance.now().
+// El ojo debe dar ROJO (rc 1): el mismo scroll no produce el mismo fotograma tras recargar.
+(function () {
+  var ctx = document.getElementById('escena').getContext('2d');
+  var reducido = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var COLORES = ['#1d3557', '#457b9d', '#2a9d8f', '#e76f51', '#6d597a', '#264653'];
+
+  function geometria(t) {
+    var s = reducido ? 0 : t;
+    return { tramo: Math.floor(s / 500) % COLORES.length, y: 60 + ((s % 700) / 700) * 795 };
+  }
+
+  function pintar(t) {
+    var g = geometria(t);
+    // SABOTAJE: la x del circulo depende del reloj, no solo de t.
+    var x = 60 + (performance.now() % 1000) * 0.28;
+    ctx.fillStyle = COLORES[g.tramo];
+    ctx.fillRect(0, 0, 412, 915);
+    ctx.fillStyle = '#f1faee';
+    ctx.beginPath();
+    ctx.arc(x, g.y, 40, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  function redibujar() { pintar(window.scrollY); }
+
+  var pendiente = false;
+  window.addEventListener('scroll', function () {
+    if (pendiente) return;
+    pendiente = true;
+    requestAnimationFrame(function () { pendiente = false; redibujar(); });
+  }, { passive: true });
+  window.addEventListener('load', redibujar);
+  redibujar();
+
+  window.AtlasDescenso = {
+    frame: function (t) {
+      return { t: t, y: geometria(t).y, motion: reducido ? 'NO_DATA' : 'scroll' };
+    }
+  };
+})();
+</script>
+</body>
+</html>
