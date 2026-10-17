@@ -1,21 +1,4 @@
-/* preceptoros.org · theGame · HEXELION CONTRA DOOGEE, en vivo, dentro de la Arena.
 
-   Dos cuentas de la casa, un nodo cada una (`nodos-cedulas.js`). Cada nodo lucha con lo que se
-   MIDIO en su aparato; lo EMULADO se dice; lo que no se midio es NIEBLA. Los pesos son PROPUESTA
-   y se dice en pantalla.
-
-   EL LIENZO NO DECIDE. `AtlasNodos.partida` escribe el log desde la semilla; aqui solo se recorre
-   `reproduce(log)` tick a tick. Con movimiento reducido se salta al final, que es el mismo estado.
-
-   TRES PELDANOS EN LA MISMA PANTALLA. N0: se juega y se ve, y nada sale del aparato. N1: se firma
-   el registro (que ata la huella del log) con la identidad que ya vive en el navegador
-   (`Identity.firmar`). ENVIAR: solo con un clic de verdad, la casilla marcada y una SEGUNDA firma,
-   la del consentimiento; `AtlasNodos.envio` es la puerta y `Enviar.paquete` (de `enviar.js`, que se
-   pide al pulsar) la unica salida. Sin red, ni reloj, ni azar en este fichero.
-
-   REDISENO TRAS EL DOOGEE (2026-10-04): el combate arriba y las cedulas plegadas; las dos firmas
-   son dos PASOS numerados; el boton de enviar dice siempre por que esta gris (`cerrojo`), y los
-   rechazos se dicen en la lengua de la pantalla (`RECHAZOS`), no con el mensaje crudo. */
 (function () {
   'use strict';
 
@@ -34,7 +17,7 @@
   function css(v, x) { return getComputedStyle(document.documentElement).getPropertyValue(v).trim() || x; }
   function nombre(i) { return C.cuentas[i].cuenta.replace('casa-', ''); }
 
-  /* --- la ficha de un nodo ---------------------------------------------------------------------- */
+
   function ficha(i) {
     var c = C.nodos.filter(function (n) { return n.nodo === C.cuentas[i].nodo; })[0], r = N.rasgos(c, P);
     var f = el('div', 'panel atlas-nodo-ficha');
@@ -54,7 +37,7 @@
     return f;
   }
 
-  /* --- el lienzo: dos ondas, sus barras y el golpe del tick ------------------------------------- */
+
   function onda(ctx, cx, cy, rad, hex, vida, viva) {
     ctx.beginPath();
     for (var s = 0; s <= 96; s++) {
@@ -84,7 +67,7 @@
     });
   }
 
-  /* --- la pelea: recorrer el log, nada mas ------------------------------------------------------ */
+
   function cuenta(e) {
     if (e.t === 'golpe') { return rellena(T('nodos_log_golpe'), { q: nombre(e.de), d: e.dano }); }
     if (e.t === 'esquiva') { return rellena(T('nodos_log_esquiva'), { q: nombre(e.de) }); }
@@ -116,7 +99,7 @@
     R.salta.onclick = function () { final(estados); };
   }
 
-  /* EL BOTON GRIS DICE POR QUE (hallazgo 1). Solo aqui se toca `R.enviar.disabled`. */
+
   function cerrojo(cual) {
     var listo = !!firmado && R.consiento.checked && !cual;
     R.consiento.disabled = !firmado || !!cual;
@@ -124,7 +107,7 @@
     R.porque.textContent = cual ? T(cual) : !firmado ? T('nodos_porque_firma') : listo ? T('nodos_listo') : T('nodos_porque');
     R.porque.className = listo ? 'atlas-porque listo' : 'atlas-porque';
   }
-  /* Las causas de `AtlasNodos.envio` van en castellano (el contrato no se toca): aqui, su texto. */
+
   var RECHAZOS = {
     'sin gesto no sale nada': 'nodos_rech_gesto',
     'sin la firma de la partida': 'nodos_rech_firma',
@@ -139,7 +122,7 @@
     return e instanceof TypeError ? T('nodos_rech_red') : T('nodos_rech_otro');
   }
 
-  /* --- N1 y el envio ---------------------------------------------------------------------------- */
+
   function firma() {
     var I = window.Identity;
     if (!I || !I.quien || !I.quien()) {
@@ -188,7 +171,7 @@
     });
   }
 
-  /* --- montar ----------------------------------------------------------------------------------- */
+
   function monta(cont, textos) {
     if (!cont || cont.firstChild || !N || !C || !P) { return; }
     T = textos || T;
@@ -201,7 +184,7 @@
       var reason = e === 'duplicate_node' && bindings ? bindings.message(e, document.documentElement.lang) : 'NO_DATA · ' + e;
       s.appendChild(el('p', 'no-data', reason)); cont.appendChild(s); return;
     }
-    /* Las cedulas, PLEGADAS y debajo del combate (hallazgo 3). */
+
     R.cedulas = el('details', 'atlas-nodos-cedulas');
     R.cedulas.appendChild(el('summary', null, T('nodos_cedulas_h')));
     R.cedulas.appendChild(el('p', 'atlas-casa', rellena(T('nodos_pesos'), { v: P.version })));
@@ -219,7 +202,7 @@
     R.escena.appendChild(R.lienzo);
     R.res = el('p', 'atlas-arena-res'); R.res.setAttribute('role', 'status'); R.escena.appendChild(R.res);
     R.n0 = el('p', 'atlas-nota', T('nodos_n0')); R.n0.hidden = true; R.escena.appendChild(R.n0);
-    /* DOS FIRMAS, DOS PASOS (hallazgo 4): la de la partida y la del consentimiento. */
+
     R.pasos = el('ol', 'atlas-pasos'); R.pasos.hidden = true;
     R.paso1 = el('li', 'atlas-paso atlas-paso-1');
     R.paso1.appendChild(el('h6', null, T('nodos_paso1_h'))); R.paso1.appendChild(el('p', 'atlas-nota', T('nodos_paso1_p')));

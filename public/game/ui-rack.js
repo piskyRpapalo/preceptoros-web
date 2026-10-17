@@ -1,14 +1,4 @@
-/* preceptoros.org · theGame · EL MAPA GLOBAL DE LA CASA y LA CUENTA MAESTRA, dentro de la Arena.
 
-   EL MAPA (Soberano, 2026-10-04: «mapa global con nodo hexelion activo»). Cada nodo de la casa es un
-   punto; Hexelion es el centro. «Activo» lo dice `AtlasCuenta.estadoNodo` desde la cedula (medidas
-   MEDIDO con fecha) y el latido vivo es NO_DATA: la web no lee al rack al cargar. Se dice asi en
-   pantalla, sin adorno que lo disimule.
-
-   LA CUENTA MAESTRA. Se ensena la PANTALLA y el FORMATO (`preceptoros.cuenta-maestra/1`): el nodo
-   y la clave publica de la identidad de este navegador, que crea `auth.js` cuando la persona lo
-   pide. Nace PROPUESTA; el vinculo con la app local y con el lab es NO_DATA hasta que el Soberano la
-   firme en el registro del rack. Ni red, ni reloj, ni azar, ni almacen en este fichero. */
 (function () {
   'use strict';
 
@@ -28,7 +18,7 @@
     return (e === 'gen_cps' ? (m.valor / 100) + ' tok/s' : Math.floor(m.valor / 1024) + ' GiB') + ' ' + T('nodos_est_' + m.estado);
   }
 
-  /* --- el mapa: un punto por nodo, Hexelion en el centro --------------------------------------- */
+
   function punto(c) {
     var e = Q.estadoNodo(c), vivo = e.activo === 'DECLARADO';
     var li = el('li', 'atlas-rack-nodo' + (vivo ? ' activo' : '') + (c.nodo === Q.MAESTRO ? ' maestro' : ''));
@@ -43,7 +33,7 @@
     return li;
   }
 
-  /* --- la cuenta maestra -------------------------------------------------------------------------- */
+
   function cuenta(caja) {
     caja.textContent = '';
     caja.appendChild(el('h6', null, T('cuenta_h')));

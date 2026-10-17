@@ -1,13 +1,4 @@
-/* preceptoros.org · theGame · las CUENTAS DE LA CASA y la cedula de su nodo. SOLO DATOS.
 
-   UNA CUENTA = UN NODO. Cada cuenta nombra exactamente un nodo y cada nodo tiene exactamente una
-   cuenta. La cedula HEREDA `preceptoros.cedula-nodo/1` (lo que exporta `nodos.py cedula` en el
-   rack): sin firma, autenticidad NO_DATA y `sha256` del cuerpo; una cedula tocada sin re-sellar es
-   FALLO_INTEGRIDAD. Lo que se anade es `aparato`: el dispositivo y sus medidas.
-
-   CADA CIFRA DICE DE DONDE SALE. MEDIDO lleva `fuente` y `fecha`; EMULADO lleva la `base` de la
-   que se emula y su `causa`; NO_DATA lleva `valor: null` y su causa, y en combate es NIEBLA.
-   Ninguna cuenta lleva datos personales: ni serie, ni direccion, ni nombre de persona. */
 (function (raiz) {
   'use strict';
 
