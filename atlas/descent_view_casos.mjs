@@ -87,8 +87,13 @@ class Nodo {
   setAttribute(k, x) { this.attrs[k] = String(x); }
   getAttribute(k) { return k in this.attrs ? this.attrs[k] : null; }
   addEventListener(t, f) { (this.oyentes[t] ||= []).push(f); }
+  removeEventListener(t, f) { this.oyentes[t] = (this.oyentes[t] || []).filter((g) => g !== f); }
   click() { (this.oyentes.click || []).slice().forEach((f) => f({ type: 'click' })); }
-  getBoundingClientRect() { return { top: this.offsetTop - this.v.scrollY, height: 600 }; }
+  // A11Y (2026-10-18): el texto vive en su panel (descent-pane), que es quien hace scroll; el panel mide la ventana.
+  getBoundingClientRect() {
+    if (this.className === 'descent-pane') return { top: 0, height: this.v.innerHeight };
+    return { top: this.offsetTop - (this.v.panel ? this.v.panel.scrollTop || 0 : this.v.scrollY), height: 600 };
+  }
   // Contexto 2D falso.
   getContext() {
     return this.ctx ||= new Proxy({}, {
@@ -160,14 +165,16 @@ caso(2, 'css sin color, gradient, blur, backdrop-filter, opacity < 1 ni sombra c
   return { ok: h.length === 0, detalle: h.join(', ') || 'limpia' };
 });
 
-caso(3, 'skip fijo con 48 px, enter con 56 px y stage sticky', () => {
+caso(3, 'skip fijo con 48 px, enter con 56 px; capa fija y texto en panel propio (A11Y: texto y dibujo no se tapan)', () => {
   const css = leer(CSS);
   const f = [];
   if (valor(css, '.descent-skip', 'position') !== 'fixed') f.push('skip sin position fixed');
   if (!(px(valor(css, '.descent-skip', 'min-width')) >= 48) || !(px(valor(css, '.descent-skip', 'min-height')) >= 48)) f.push('skip menor de 48 px');
   if (!(px(valor(css, '.descent-enter', 'min-height')) >= 56)) f.push('enter menor de 56 px');
-  if (valor(css, '.descent-stage', 'position') !== 'sticky') f.push('stage sin sticky');
-  return { ok: f.length === 0, detalle: f.join(', ') || 'skip fijo 48 px, enter 56 px, stage sticky' };
+  if (valor(css, '.descent', 'position') !== 'fixed') f.push('la capa no es fija');
+  if (valor(css, '.descent-pane', 'overflow-y') !== 'auto') f.push('el panel de texto no hace scroll propio');
+  if (/z-index/.test(sinComentarios(css).match(/\.descent-step\s*\{[^}]*\}/)?.[0] || '')) f.push('las secciones vuelven a apilarse sobre el dibujo');
+  return { ok: f.length === 0, detalle: f.join(', ') || 'skip fijo 48 px, enter 56 px, capa fija, panel con scroll propio' };
 });
 
 caso(4, 'js sin Date, Math.random, fetch, localStorage, setTimeout, setInterval ni rAF', () => {
@@ -250,12 +257,15 @@ caso(8, 'humo en vm: escena real (A), IO e identidad (B), intros duales (C)', ()
     exige(!panel.textContent.includes(RETIRADO), 'texto retirado visible');
     // Contrato (FIRMO 2026-10-18, pulido): manda la ultima seccion cuyo borde de arriba ya cruzo el 75 % de la ventana (800 -> 600 px).
     pasos.forEach((p, i) => { p.offsetTop = i * 600; });
-    const scroll = () => (va.oyentes.scroll || []).forEach((g) => g({ type: 'scroll' }));
-    va.scrollY = 10; scroll(); scroll();
+    const hoja = conClase(raiz, 'descent-pane')[0];
+    exige(hoja && hoja.getAttribute('data-scroller') === '' && pasos.every((p) => dentroDe(hoja, p)), 'las secciones no viven en el panel');
+    va.panel = hoja;
+    const scroll = () => (hoja.oyentes.scroll || []).forEach((g) => g({ type: 'scroll' }));
+    hoja.scrollTop = 10; scroll(); scroll();
     exige(A.pinturas.length === 4 && ultimas(2) === capa(1), 'scroll 2: no repinta una vez');
-    va.scrollY = 610; scroll();
+    hoja.scrollTop = 610; scroll();
     exige(A.pinturas.length === 6 && ultimas(2) === capa(2), 'scroll 3: no repinta');
-    va.scrollY = 910; scroll();
+    hoja.scrollTop = 910; scroll();
     exige(A.pinturas.length === 7 && ultimas(1) === J(S.frente(ids[2], 12 / 24)), 'pulso: a mitad de seccion solo repinta el frente, en el paso 12');
     const f0 = va.AtlasDescenso.frame(0);
     const f1 = va.AtlasDescenso.frame(700);
@@ -277,13 +287,14 @@ caso(8, 'humo en vm: escena real (A), IO e identidad (B), intros duales (C)', ()
   B.v.AtlasDescentView.monta(panelB, () => {});
   const obs = B.v.observadores[0];
   // Contrato del capataz (2026-10-18): con IO, el scroll TAMBIEN escucha, de forma sincrona (mismo scroll, mismo fotograma).
-  exige(B.v.observadores.length === 1 && obs.observados.length === 4 && (B.v.oyentes.scroll || []).length === 1, 'IO: 4 observados y scroll sincrono');
+  exige(B.v.observadores.length === 1 && obs.observados.length === 4 && (conClase(panelB.hijos[0], 'descent-pane')[0]?.oyentes.scroll || []).length === 1, 'IO: 4 observados y scroll sincrono');
   const cuenta = conClase(panelB.hijos[0], 'descent-account')[0];
   exige(cuenta?.textContent === "Create this device's key", 'cuenta: boton mal');
   cuenta?.click();
   exige(B.v.crearLlamadas === 1, 'cuenta: una llamada');
   obs.observados.forEach((p, i) => { p.offsetTop = i * 600; });
-  B.v.scrollY = 10;
+  B.v.panel = conClase(panelB.hijos[0], 'descent-pane')[0];
+  B.v.panel.scrollTop = 10;
   obs.cb([]);
   obs.cb([]);
   exige(B.pinturas.length === 2 && B.pinturas[1] === J(['V3']), 'IO repinta mal');

@@ -74,11 +74,6 @@
     return d;
   }
 
-  function arribaEnDocumento(e) {
-    var y = 0;
-    for (var n = e; n; n = n.offsetParent) { y += n.offsetTop; }
-    return y;
-  }
 
   function monta(panel, despertar, otra) {
     escena = otra || window.AtlasDescentScene;
@@ -118,6 +113,12 @@
     var escenario = el('div', 'descent-stage');
     escenario.appendChild(lienzo);
     raiz.appendChild(escenario);
+    var hoja = el('div', 'descent-pane');
+    hoja.setAttribute('data-scroller', '');
+    hoja.setAttribute('role', 'region');
+    hoja.setAttribute('aria-label', 'The story text');
+    hoja.tabIndex = 0;
+    raiz.appendChild(hoja);
 
     var intros = [];
     if (dual) {
@@ -130,7 +131,7 @@
         selector.appendChild(b);
         intros.push({ clave: par[0], el: b });
       });
-      raiz.appendChild(selector);
+      hoja.appendChild(selector);
     }
 
     var pasos = ids.map(function (id, i) {
@@ -142,11 +143,11 @@
       caja.appendChild(copia);
       if (i === ids.length - 1) { caja.appendChild(puertas(despertar, hayCuenta)); }
       s.appendChild(caja);
-      raiz.appendChild(s);
+      hoja.appendChild(s);
       return { id: id, el: s, copia: copia };
     });
 
-    var st = { pasos: pasos, activo: ids[0], q: 0, limpia: null, vibrado: false, fondoDe: null };
+    var st = { pasos: pasos, hoja: hoja, activo: ids[0], q: 0, limpia: null, vibrado: false, fondoDe: null };
     var S = escena;
     var capas = typeof S.fondo === 'function' && typeof S.frente === 'function';
     var quieto = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
@@ -190,7 +191,7 @@
     }
 
     function activa() {
-      var linea = window.innerHeight * UMBRAL;
+      var R = hoja.getBoundingClientRect(), linea = R.top + R.height * UMBRAL;
       var elegida = pasos[0], r = null;
       pasos.forEach(function (p) {
         var b = p.el.getBoundingClientRect();
@@ -211,15 +212,15 @@
     }
 
     var io = null;
-    window.addEventListener('scroll', alMover, { passive: true });
+    hoja.addEventListener('scroll', alMover, { passive: true });
     window.addEventListener('resize', alMover, { passive: true });
     if (typeof window.IntersectionObserver === 'function') {
-      io = new window.IntersectionObserver(alMover, { rootMargin: '-75% 0px -25% 0px' });
+      io = new window.IntersectionObserver(alMover, { root: hoja, rootMargin: '-75% 0px -25% 0px' });
       pasos.forEach(function (p) { io.observe(p.el); });
     }
     st.limpia = function () {
       if (io) { io.disconnect(); }
-      window.removeEventListener('scroll', alMover);
+      hoja.removeEventListener('scroll', alMover);
       window.removeEventListener('resize', alMover);
     };
 
@@ -240,10 +241,10 @@
     if (typeof t !== 'number' || !isFinite(t)) {
       return { motion: 'NO_DATA', cause: 'scroll position is not a finite number' };
     }
-    var limite = t + window.innerHeight * UMBRAL;
+    var limite = t + montaje.hoja.getBoundingClientRect().height * UMBRAL;
     var elegida = montaje.pasos[0];
     montaje.pasos.forEach(function (p) {
-      if (arribaEnDocumento(p.el) < limite) { elegida = p; }
+      if (p.el.offsetTop < limite) { elegida = p; }
     });
     return escena.frame(elegida.id);
   }
