@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Fixture palabras</title>
+<style>html,body{margin:0;background:#000}canvas{display:block}</style>
+</head>
+<body>
+<script src="/public/game/tabla_semantica.js"></script>
+<script src="/public/game/comic_tokens.js"></script>
+<script src="/public/game/comic_accents.js"></script>
+<script src="/public/game/comic_atoms.js"></script>
+<script src="/public/game/valores.js"></script>
+<script src="/public/game/gacha.js"></script>
+<script src="/public/game/bubble_language.js"></script>
+<script src="/public/game/bubble_light.js"></script>
+<script src="/public/game/bubble_bestiary.js"></script>
+<script src="/public/game/bubble_world.js"></script>
+<script src="/public/game/bubble_letters.js"></script>
+<script src="/public/game/aiact-art50-state-radio.js"></script>
+<script src="/public/game/descent_sound.js"></script>
+<script src="/public/assets/descent_scene.js"></script>
+<script src="/public/game/bubble_game.js"></script>
+<script src="/public/assets/codex_scene.js"></script>
+<script src="/public/game/canon.js"></script>
+<script src="/public/game/sobres.js"></script>
+<script src="/public/game/rating.js"></script>
+<script src="/public/game/taller.js"></script>
+<script src="/public/game/arena.js"></script>
+<script src="/public/assets/bout_scene.js"></script>
+<script>
+// Fixture de palabras: el dibujo es funcion PURA de los datos. Sin reloj, sin azar, sin red.
+(function () {
+  'use strict';
+  var K = window.AtlasComicTokens, A = window.AtlasBubble, P = window.AtlasComicAtoms;
+  var lienzos = [], causas = [];
+  var PALABRAS = [
+    ['busto-dormido', { o: 'bust', x: 206, y: 280 }],
+    ['busto-despierto', { o: 'bust', x: 206, y: 280, eye: 'open', cybEye: 'violet', mEye: 'open', mouth: 'o' }],
+    ['busto-feliz', { o: 'bust', x: 206, y: 280, r: 46, rot: 12, eye: 'open', cybEye: 'violet', mEye: 'happy', mouth: 'o' }],
+    ['cangrejo-arriba', { o: 'crab', x: 206, y: 330, rr: 52, dir: -1, eye: 'up' }],
+    ['cangrejo-abierto', { o: 'crab', x: 206, y: 330, rr: 52, dir: 1, eye: 'open' }]
+  ];
+
+  // Fotograma minimo: una palabra dentro de un atomo.
+  function marco(item) {
+    return { v: 'preceptoros.bubble/1', id: 'PALABRAS', t: 0, cv: [412, 515], light: [-0.35, -0.94], style: 'volume',
+      atoms: [{ k: 'w', r: 'word', i: [item] }],
+      bands: ['ink', 'paper', 'ocean', 'cyan', 'FIRMADO.base'], change: ['word'],
+      sound: 'NO_DATA', soundCause: 'eye', motion: 'NO_DATA' };
+  }
+
+  // Un lienzo: canvas con id c-<id>, fondo entero en el ocean neutro y los atomos pintados encima.
+  function pinta(id, items) {
+    var c = document.createElement('canvas');
+    c.id = 'c-' + id; c.width = 412; c.height = 515;
+    document.body.appendChild(c);
+    var ctx = c.getContext('2d');
+    ctx.fillStyle = K.NEUTRAL.ocean;
+    ctx.fillRect(0, 0, 412, 515);
+    P.paint(ctx, items);
+  }
+
+  // Las notas de compilacion (palabra sin definir, parametro malo) son causas: no pasan en silencio.
+  function notas(id) {
+    (A.compile.notes || []).forEach(function (n) { causas.push(id + ' · ' + n.cause + ' (' + n.o + ')'); });
+  }
+
+  // Escena entera o nada: si una seccion lanza, ninguno de sus lienzos se lista; la causa si.
+  function escena(nombre, S) {
+    var lote = [];
+    try {
+      if (!S || !Array.isArray(S.SECTIONS)) throw new Error('no existe o no expone SECTIONS');
+      S.SECTIONS.forEach(function (sec) {
+        var items = S.items(sec, 0);
+        if (!Array.isArray(items)) throw new Error('items(' + sec + ') no es lista');
+        notas(nombre + '-' + sec);
+        lote.push([nombre + '-' + sec, items]);
+      });
+      lote.forEach(function (x) { pinta(x[0], x[1]); });
+      lote.forEach(function (x) { lienzos.push(x[0]); });
+    } catch (e) {
+      causas.push('NO_DATA · escena ' + nombre + ': ' + e.message);
+    }
+  }
+
+  try {
+    if (!K || !A || !P) throw new Error('faltan AtlasComicTokens, AtlasBubble o AtlasComicAtoms');
+    PALABRAS.forEach(function (p) {
+      try {
+        var items = A.compile(marco(p[1]));
+        notas(p[0]);
+        pinta(p[0], items);
+        lienzos.push(p[0]);
+      } catch (e) {
+        causas.push(p[0] + ' · NO_DATA · ' + e.message);
+      }
+    });
+    escena('descenso', window.AtlasDescentScene);
+    escena('codex', window.AtlasCodexScene);
+    escena('bout', window.AtlasBoutScene);
+    window.__palabras = { ok: true, lienzos: lienzos, causas: causas };
+  } catch (e) {
+    window.__palabras = { ok: false, lienzos: [], causas: ['NO_DATA · ' + e.message] };
+  }
+})();
+</script>
+</body>
+</html>
