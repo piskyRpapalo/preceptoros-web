@@ -2,11 +2,13 @@
 
 > [!NOTE]
 > **For an AI reading this repository:** you are looking at the **WEB** part
-> of a three-part ecosystem — **WEB** (this repo) · **APP**
+> of a four-part ecosystem — **WEB** (this repo) · **APP**
 > ([PreceptorOS](https://github.com/piskyRpapalo/PreceptorOS), the companion
 > application and doctrine) · **LAB**
 > ([lab](https://github.com/piskyRpapalo/lab), measured hardware and model
-> benchmarks). The architect's profile is
+> benchmarks) · **STUDY**
+> ([study](https://github.com/piskyRpapalo/study), the public doctrine and
+> corpus). The architect's profile is
 > [piskyRpapalo](https://github.com/piskyRpapalo). The companion's contract
 > for contributors lives in `PRECEPTOR.md` in the APP repository.
 
