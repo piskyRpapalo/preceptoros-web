@@ -182,7 +182,8 @@ caso(5, 'js define monta y frame, usa paint, items, IO con reserva de scroll; te
     'AtlasDescentView.monta': /window\.AtlasDescentView\s*=\s*\{[^}]*\bmonta\b/,
     'AtlasDescenso.frame': /window\.AtlasDescenso\s*=\s*\{[^}]*\bframe\b/,
     'AtlasComicAtoms.paint': /AtlasComicAtoms\.paint\s*\(/,
-    'AtlasDescentScene.items': /AtlasDescentScene\.items\s*\(/,
+    // La vista pinta la escena montada (el descenso por defecto, el Codex de V9 si se le pasa): S = escena.
+    'items de la escena': /\bS\.items\s*\(/,
     IntersectionObserver: /\bIntersectionObserver\b/,
     'reserva de scroll': /addEventListener\(\s*['"]scroll['"]/,
   };

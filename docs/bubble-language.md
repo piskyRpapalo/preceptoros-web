@@ -96,6 +96,17 @@ A syllable does not change: it is the pose at rest, and it still passes `checkFr
 
 Three rules keep it honest. **Same `p`, same picture:** the table is data and the ops are pure, so the eye that checks the page (same scroll after a reload and coming from below) keeps passing. **Reduced motion is the static-first lot:** with `prefers-reduced-motion` the view asks for no `p` and paints the syllable as it is. **Two layers:** everything before the first moving atom is the background, compiled once per section and kept as a bitmap; only the moving atoms are compiled per step (`fondo(id)` + `frente(id, p)` paint exactly `items(id, p)`, pinned by a case).
 
+## 6c · The game's words and letters (V7 and V9, 2026-10-18)
+
+- **`letters`** (`bubble_letters.js`): the house letters, 72 vector glyphs (A-Z, Ñ, a-z, ñ, 0-9, `. , ! ? - · : %`) on an 8 × 12 grid, 1.6 KB of data. Three passes: hard shadow, `comic yellow.base` contour, `paper` fill. Round caps make them bubbles. What is not in the family is named by `missing()` and skipped.
+- **`troop`** `{as | arm, x, y, r, f, rot}`: a troop is its real spectrum (the gacha's harmonics) drawn as a `wave` scaled to radius `r`. `as` names a spectrum registered with `cast(name, arm)`: the syllable says *which* troop, the registry holds the numbers (same idea as `keep`).
+- **`meter`** `{x, y, w, v, max, f}`: life, armor or speed as a row of dots, filled in proportion. Life is never a hidden number.
+- **`odds`** `{x, y, w, chances, bands}`: honest luck. 100 dots, one per 1 % (largest remainder), plus a legend with the exact figures.
+- **`clash`** `{a, b, n, amp, k, ph}`: where two waves meet, `n` lines and a row of dots ripple between them.
+- **Pulse op `morph`**: `{o: 'troop', from: 'egg', as: 'unico'}` mixes the two spectra with `AtlasGacha.mezcla` by `p`: the egg becomes the wave as you read. Without `p` (reduced motion) the wave is shown as it is. `fill` and `drain` scale a meter's `v` by `p`.
+
+The Codex (`codex_scene.js`) is the game's basic structure told in this language: REFUGE, SUMMON, ARMY, BATTLE, RIFT, built from real draws of four fixed seeds at `tc3` and the game's own `odds('tc3')`.
+
 ## 7 · Reading it (AI fluency)
 
 A reader that cannot see answers four questions from the frame alone: *which section?* (`id`, `t`), *what changed?* (`change`), *what sounds?* (`sound`, `soundCause`), *what can I do here?* (the words whose `r` names a door or a button). The frame is the lesson: a small model that reads it well reads the house.

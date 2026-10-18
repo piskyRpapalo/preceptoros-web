@@ -5,17 +5,18 @@
   var UMBRAL = 0.75;
   var PASOS = 24;
   var montaje = null;
+  var escena = null;
 
   function escala() {
     return Math.max(1, Math.min(3, Math.round(window.devicePixelRatio || 1)));
   }
 
   function secciones() {
-    return Array.isArray(AtlasDescentScene.SECTIONS) ? AtlasDescentScene.SECTIONS : AtlasDescentScene.PAGES;
+    return Array.isArray(escena.SECTIONS) ? escena.SECTIONS : escena.PAGES;
   }
 
   function textoDe(intro, id) {
-    var fuente = intro ? AtlasDescentScene.TEXT[intro] : AtlasDescentScene.TEXT;
+    var fuente = intro ? escena.TEXT[intro] : escena.TEXT;
     return (fuente && fuente[id]) || {};
   }
 
@@ -65,6 +66,9 @@
   function puertas(despertar, hayCuenta) {
     var d = el('div', 'descent-doors');
     d.appendChild(boton('descent-enter', 'Check the rift', despertar));
+    if (escena === window.AtlasDescentScene && window.TheGame && typeof window.TheGame.codex === 'function') {
+      d.appendChild(boton('descent-codex', 'See the game in pictures', function () { window.TheGame.codex(); }));
+    }
     if (hayCuenta) { d.appendChild(botonCuenta()); }
     d.appendChild(el('p', 'descent-ai', 'Connect your local AI with the app later, from the terminal.'));
     return d;
@@ -76,11 +80,12 @@
     return y;
   }
 
-  function monta(panel, despertar) {
+  function monta(panel, despertar, otra) {
+    escena = otra || window.AtlasDescentScene;
     if (montaje) { montaje.limpia(); }
     var ids = secciones();
-    var lienzoCss = AtlasDescentScene.CANVAS || LIENZO_POR_DEFECTO;
-    var dual = !!(AtlasDescentScene.TEXT.kids && AtlasDescentScene.TEXT.tech);
+    var lienzoCss = escena.CANVAS || LIENZO_POR_DEFECTO;
+    var dual = !!(escena.TEXT.kids && escena.TEXT.tech);
     var hayCuenta = !!(window.Identity && typeof window.Identity.crear === 'function');
     var N = AtlasComicTokens.NEUTRAL;
     var A = AtlasComicAccents.ACCENTS;
@@ -142,7 +147,7 @@
     });
 
     var st = { pasos: pasos, activo: ids[0], q: 0, limpia: null, vibrado: false, fondoDe: null };
-    var S = AtlasDescentScene;
+    var S = escena;
     var capas = typeof S.fondo === 'function' && typeof S.frente === 'function';
     var quieto = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
     var fondo = capas ? document.createElement('canvas') : null;
@@ -160,7 +165,7 @@
 
     function drawSection(id, q) {
       ctx.clearRect(0, 0, lienzoCss.w, lienzoCss.h);
-      if (!capas) { AtlasComicAtoms.paint(ctx, AtlasDescentScene.items(id)); return; }
+      if (!capas) { AtlasComicAtoms.paint(ctx, S.items(id)); return; }
       if (st.fondoDe !== id) {
         fctx.setTransform(d, 0, 0, d, 0, 0);
         fctx.clearRect(0, 0, lienzoCss.w, lienzoCss.h);
@@ -240,7 +245,7 @@
     montaje.pasos.forEach(function (p) {
       if (arribaEnDocumento(p.el) < limite) { elegida = p; }
     });
-    return AtlasDescentScene.frame(elegida.id);
+    return escena.frame(elegida.id);
   }
 
   window.AtlasDescentView = { monta: monta };

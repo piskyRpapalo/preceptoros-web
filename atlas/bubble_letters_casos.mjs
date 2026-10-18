@@ -44,8 +44,8 @@ caso(1, 'el modulo existe, cabe en el techo, sin comentarios ni impurezas', () =
   return { ok: statSync(MOD).size <= TECHO && impuro.length === 0, medida: { bytes: statSync(MOD).size, impuro } };
 });
 
-const JUEGO = [...'ABCDEFGHIJKLMNOPQRSTUVWXYZÑabcdefghijklmnopqrstuvwxyzñ0123456789.,!?-·:'];
-caso(2, 'la familia: A-Z, Ñ, a-z, ñ, 0-9 y . , ! ? - · :', () => {
+const JUEGO = [...'ABCDEFGHIJKLMNOPQRSTUVWXYZÑabcdefghijklmnopqrstuvwxyzñ0123456789.,!?-·:%'];
+caso(2, 'la familia: A-Z, Ñ, a-z, ñ, 0-9 y . , ! ? - · : %', () => {
   if (!L) return falta();
   const faltan = JUEGO.filter((c) => !L.GLYPHS[c]);
   return { ok: faltan.length === 0, medida: { glifos: Object.keys(L.GLYPHS).length, faltan } };

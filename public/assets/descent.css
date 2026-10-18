@@ -125,7 +125,8 @@
   cursor: pointer;
 }
 
-.descent-account {
+.descent-account,
+.descent-codex {
   min-width: 260px;
   min-height: 56px;
   background: var(--d-paper);
@@ -137,7 +138,8 @@
 }
 
 .descent-enter:active,
-.descent-account:active {
+.descent-account:active,
+.descent-codex:active {
   box-shadow: 2.5px 2.5px 0 var(--d-cyan);
   transform: translate(1.5px, 1.5px);
 }
@@ -145,7 +147,8 @@
 .descent-skip:focus-visible,
 .descent-intro button:focus-visible,
 .descent-enter:focus-visible,
-.descent-account:focus-visible {
+.descent-account:focus-visible,
+.descent-codex:focus-visible {
   outline: 3px solid var(--d-yellow);
   outline-offset: 3px;
 }

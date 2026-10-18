@@ -202,6 +202,24 @@
       .catch(function () { console.warn('NO_DATA · the descent could not be loaded'); abre(null, 'casa'); });
   }
 
+  var CODEX = [['/game/bubble_game.js'], ['codex_scene.js']];
+  function nuevos(lista) {
+    return lista.filter(function (g) { var s = g[0].charAt(0) === '/' ? g[0] : '/assets/' + g[0]; return !document.querySelector('script[src="' + s + '"]'); });
+  }
+  function codex() {
+    var P = document.getElementById('juego-panel');
+    if (!P || capa) { return false; }
+    if (!document.querySelector('link[href="/assets/descent.css"]')) {
+      var h = document.createElement('link'); h.rel = 'stylesheet'; h.href = '/assets/descent.css'; document.head.appendChild(h);
+    }
+    var falta = nuevos(DESCENSO.concat(CODEX));
+    (falta.length ? pide(falta) : Promise.resolve()).then(function () {
+      window.AtlasDescentView.monta(P, function () { abre(null, 'casa'); }, window.AtlasCodexScene);
+      window.scrollTo(0, 0);
+    }).catch(function () { console.warn('NO_DATA · the codex could not be loaded'); abre(null, 'casa'); });
+    return true;
+  }
+
   /* `ve`: abre una hoja (taller, batalla) o vuelve al mapa (cualquier otra cosa). */
-  window.TheGame = { abre: abre, army: cargaArmy, descenso: descenso, ve: function (id) { muestra(HOJA[id] ? id : null); } };
+  window.TheGame = { abre: abre, army: cargaArmy, descenso: descenso, codex: codex, ve: function (id) { muestra(HOJA[id] ? id : null); } };
 })();

@@ -1027,7 +1027,7 @@ ARENA = ("sobres.js", "rating.js", "arena.js", "duelo.js", "mar-anclas.js", "cra
 # La CASA (2026-10-05): la primera pantalla, detras del Army. Lleva canon y escena, que la Arena reutiliza.
 CASA = ("canon.js", "tabla_semantica.js", "comic_tokens.js", "comic_atoms.js", "escena.js", "wave_render.js", "gdpr-art25-ephemeral-crab.js", "aiact-art50-crab-terminal.js", "nodos-cedulas.js", "fog_of_war.js", "isometric_floor_projection.js", "world_camera.js", "mar-fondo.js", "gdpr-art7-entry-choice.js", "aiact-art50-state-radio.js", "casa-medidas.js", "casa-personaliza.js", "casa-lateral.js", "crab_state_screen.js", "reef_building_lifecycle.js", "home_buildings.js", "summon-wave-card.js", "summon_reveal.js", "taller.js", "army-wave-panel.js", "ui-taller.js", "primer_eco.js", "summon-access.js", "deep_links.js", "hitl_firma.js", "onda_profunda.js", "tarjeta_cantada.js", "cable_llamar.js", "cable_terminal.js")
 # El descenso (obra abku, 2026-10-18): los pide thegame.js por su lista DESCENSO, no con la casa.
-DESCENSO = ("comic_accents.js", "bubble_language.js", "bubble_light.js", "bubble_bestiary.js", "bubble_world.js", "bubble_letters.js")
+DESCENSO = ("comic_accents.js", "bubble_language.js", "bubble_light.js", "bubble_bestiary.js", "bubble_world.js", "bubble_letters.js", "bubble_game.js")
 FUERA_DE_LA_PUERTA = tuple(sorted(set(PUROS + ARENA + CASA + DESCENSO)))
 
 
