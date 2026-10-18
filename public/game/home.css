@@ -112,3 +112,5 @@
 .hexelion-crystal:focus-visible{outline:3px solid #00D2FF;outline-offset:2px}
 .hexelion-crystal-detail{display:grid;gap:.35rem;padding:.65rem;border:1px solid #00D2FF;border-radius:.6rem}
 #thegame .mapa-ico{display:block;width:28px;height:28px}
+.bubble-ico{display:block}
+#thegame .thegame-menu-ico .bubble-ico,#thegame-menu-ancho .bubble-ico{width:22px;height:22px}

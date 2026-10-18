@@ -233,6 +233,16 @@
     var A = vivos(arm, o), k = r / limite(arm) * (o.escala == null ? 1 : o.escala);
     var n = q >= 2 ? 220 : q >= 1 ? 140 : 80, P = puntos(A, n), giro = o.giro || 0, gr = o.grosor || 2, alfa = o.alfa == null ? 1 : o.alfa;
     var c = o.color || [270, 70, 72], brillo = o.brillo == null ? 0.8 : o.brillo;
+    var RP = raiz.AtlasRiftPaint;
+    if (RP && o.rift !== false && A.length) {
+      var hue = Array.isArray(c) ? c[0] : 196, banda = hue < 40 || hue > 340 ? 'vermilion.base' : hue < 75 ? 'comic yellow.base' : hue > 150 && hue < 230 ? 'cyan' : 'paper';
+      var armQ = A.map(function (h) { return [h[0], Math.round(h[1] * 2) / 2, Math.round(h[2] * 2) / 2, Math.round(h[3])]; });
+      var a0 = g.globalAlpha, hecho;
+      g.globalAlpha = a0 * alfa;
+      hecho = RP.word(g, { o: 'troop', arm: armQ, r: 40, f: banda, rot: Math.round(giro * 18 / Math.PI) * 10 }, x, y, r * (o.escala == null ? 1 : o.escala) / 40);
+      g.globalAlpha = a0;
+      if (hecho) { return; }
+    }
 
 
     targetG.save(); targetG.lineJoin = 'round'; targetG.lineCap = 'round';

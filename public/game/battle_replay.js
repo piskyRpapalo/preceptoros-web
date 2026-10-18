@@ -59,7 +59,8 @@
     var ref = lienzo.nextSibling;
     [caja, R.narra, R.claves].forEach(function (n) { lienzo.parentNode.insertBefore(n, ref); });
     function rotulos() {
-      R.play.textContent = juega ? '⏸' : '▶'; R.play.setAttribute('aria-label', T(juega ? 'rp_pausa' : 'rp_play'));
+      if (!(raiz.AtlasMar && raiz.AtlasMar.icono && raiz.AtlasMar.icono(R.play, juega ? 'pause' : 'play'))) { R.play.textContent = juega ? '⏸' : '▶'; }
+      R.play.setAttribute('aria-label', T(juega ? 'rp_pausa' : 'rp_play'));
       R.vel.textContent = '×' + vel; R.vel.setAttribute('aria-label', rellena(T('arena_x'), { v: vel }));
       R.forma.textContent = rellena(T('rp_forma'), { f: T('rp_f_' + forma) });
     }

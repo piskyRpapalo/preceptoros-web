@@ -45,6 +45,11 @@
     var arm = ondaVista(o.id || 'yo', CJ.onda(fo.escala, cu, o.estilo), t, q), n = 72, lim = 0, c = fo.tono, B = bandas(c[0], c[1], c[2] - 6);
     arm.forEach(function (h) { lim += Math.max(Math.abs(h[1]), Math.abs(h[2])); });
     var k = rr / lim, vaiven = q ? 0 : Math.sin(t * 0.012) * rr * 0.05, cy = suelo - rr * 0.55 + vaiven;
+    var RP = raiz.AtlasRiftPaint, dR = o.dir < 0 ? -1 : 1;
+    if (RP && RP.word(g, { o: 'crab', rr: 40, dir: dR, eye: parpadea(o.ciclo, t, q) ? 'shut' : 'up' }, x, cy, rr / 40)) {
+      return { radio: rr, caparazon: [x, cy - rr * 0.35], pinzas: [x + dR * rr * 0.95, cy - rr * 0.1],
+               patas: [x - dR * rr * 0.5, suelo + vaiven], ojos: [x + dR * rr * 0.45, cy - 0.7 * rr] };
+    }
     function niebla(p) { g.globalAlpha = cu[p] === null ? 0.35 : 1; g.setLineDash(cu[p] === null ? [3 * dpr, 3 * dpr] : []); }
     function concha(dx, dy, e) {
       g.beginPath();

@@ -1,7 +1,18 @@
 (function (raiz) {
   'use strict';
+    function banda(c) { var h = c && c.h != null ? c.h : 196; return h < 40 || h > 340 ? 'vermilion.base' : h < 75 ? 'comic yellow.base' : h > 150 && h < 230 ? 'cyan' : 'paper'; }
+    function rift(g, item, x, y, size, a) {
+    var RP = raiz.AtlasRiftPaint, a0 = g.globalAlpha, hecho;
+    if (!RP) { return false; }
+    g.globalAlpha = a == null ? 1 : a;
+    hecho = RP.word(g, item, x, y, size);
+    g.globalAlpha = a0;
+    return hecho;
+  }
+    var ICONO = { boya: 'buoy', observatorio: 'eye', cristal: 'bubble' };
     function disco(g, x, y, r, c, dpr, a) {
     var T = raiz.AtlasToon || globalThis.AtlasToon, L = T ? T.LUZ : { x: -0.6, y: -0.8 };
+    if (rift(g, { o: 'blob', rx: 40, ry: 40, rough: 0.05, seed: 'disco', f: banda(c), s: 'ink', lw: 3 }, x, y, r / 40, a)) { return; }
     g.globalAlpha = a == null ? 1 : a;
     if (!T) { g.beginPath(); g.arc(x, y, r, 0, 2 * Math.PI); g.fillStyle = 'hsl(' + c.h + ' ' + c.s + '% ' + c.l + '%)'; g.fill(); g.globalAlpha = 1; g.stroke(); return; }
     var B = T.bandas(c.h, c.s, c.l);
@@ -22,6 +33,7 @@
   }
     function forma(g, kind, x, y, r, c, dpr, a) {
     var T = raiz.AtlasToon || globalThis.AtlasToon, L = T ? T.LUZ : { x: -0.6, y: -0.8 };
+    if (rift(g, { o: 'icon', name: ICONO[kind] || 'home', r: 40, f: banda(c) }, x, y - r * 0.2, r / 34, a)) { return; }
     g.globalAlpha = a == null ? 1 : a;
     if (!T) { sendero(g, kind, x, y, r); g.fillStyle = 'hsl(' + c.h + ' ' + c.s + '% ' + c.l + '%)'; g.fill(); g.globalAlpha = 1; g.stroke(); return; }
     var B = T.bandas(c.h, c.s, c.l);

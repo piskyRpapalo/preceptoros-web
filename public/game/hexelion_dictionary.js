@@ -59,6 +59,8 @@
     return ready;
   }
   function estrella(g, p, dpr) {
+    var RP = root.AtlasRiftPaint;
+    if (RP && RP.word(g, { o: 'star', r: 22, eye: 'open' }, p[0], p[1], 15 * dpr / 22)) { return; }
     var r = 13 * dpr; g.save(); g.beginPath();
     for (var i = 0; i < 12; i++) { var a = -Math.PI / 2 + i * Math.PI / 6, q = i % 2 ? r * 0.46 : r;
       var x = p[0] + Math.cos(a) * q, y = p[1] + Math.sin(a) * q; if (!i) { g.moveTo(x, y); } else { g.lineTo(x, y); } }

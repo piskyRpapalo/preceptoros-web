@@ -35,10 +35,11 @@
 .atlas-arena{display:grid;gap:.75rem}
 .atlas-arena-mapa,.atlas-arena-lienzo{display:block;width:100%;border:1px solid var(--edge-sov);border-radius:var(--radius);
   background:var(--bg-primary);touch-action:manipulation}
-.atlas-arena-lugares{display:grid;grid-template-columns:repeat(auto-fill,minmax(9rem,1fr));gap:.4rem;margin:0;padding:0;list-style:none}
+.atlas-arena-lugares{display:flex;flex-direction:column;gap:0;margin:0;padding:0;list-style:none;border-top:2px solid var(--edge-sov)}
 /* Lugares y tropas de la escuadra: fichas ligeras, no pildoras llenas; la elegida se enciende en cobre. */
 #thegame :is(.atlas-arena-lugar,.atlas-arena-ficha-tropa){width:100%;text-align:start;font-size:.76rem;padding:.4rem .7rem;
   color:var(--text-main);background:transparent;border:1px solid var(--edge-sov);border-radius:var(--radius)}
+#thegame .atlas-arena-lugares .atlas-arena-lugar{border:0;border-bottom:2px solid var(--edge-sov);border-radius:0;font-size:.9rem;min-height:2.75rem}
 #thegame .atlas-arena-ficha-tropa{width:auto;display:flex;align-items:center;gap:.4rem;padding:.25rem .7rem .25rem .3rem}
 #thegame :is(.atlas-arena-lugar,.atlas-arena-ficha-tropa)[aria-pressed="true"]{color:var(--accent-copper-claro);
   border-color:var(--accent-copper);background:var(--glass-sov)}

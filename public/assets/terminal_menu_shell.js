@@ -85,7 +85,7 @@
     S.ZB = hoja('batalla', T('hoja_batalla'));
 
     var menu = el('nav', 'thegame-menu'); menu.id = 'thegame-menu'; menu.setAttribute('aria-label', T('menu_aria'));
-    var ancho = el('button', 'thegame-menu-ancho', '☰'); ancho.type = 'button'; ancho.id = 'thegame-menu-ancho';
+    var ancho = el('button', 'thegame-menu-ancho', '☰'); ancho.type = 'button'; ancho.id = 'thegame-menu-ancho'; ancho.setAttribute('data-icon', 'menu');
     ancho.setAttribute('aria-label', T('menu_ancho')); ancho.setAttribute('aria-expanded', 'false');
     var ul = el('ul', 'thegame-menu-lista'); menu.appendChild(ancho); menu.appendChild(ul);
     function expande(si) {
@@ -111,7 +111,7 @@
     }
     function entrada(id, icono, rotulo, accion) {
       var li = el('li'), b = el('button', 'thegame-menu-item'); b.type = 'button'; b.id = 'menu-' + id; b.dataset.panel = id;
-      var i = el('span', 'thegame-menu-ico', icono); i.setAttribute('aria-hidden', 'true');
+      var i = el('span', 'thegame-menu-ico', icono); i.setAttribute('aria-hidden', 'true'); i.setAttribute('data-icon', { history: 'history', waves: 'waves', buildings: 'home', nodes: 'nodes', start: 'help' }[id] || '');
       b.appendChild(i); b.appendChild(el('span', 'thegame-menu-rotulo', rotulo)); b.setAttribute('aria-label', rotulo); b.title = rotulo;
       b.setAttribute('aria-expanded', 'false'); b.addEventListener('click', accion);
       li.appendChild(b); ul.appendChild(li); R.items[id] = b;

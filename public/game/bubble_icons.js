@@ -1,7 +1,7 @@
 (function (root) {
   'use strict';
 
-  var NAMES = Object.freeze(['left', 'up', 'down', 'right', 'home', 'beacon', 'eye', 'terminal', 'buoy', 'bubble', 'sound-on', 'sound-off', 'comment']);
+  var NAMES = Object.freeze(['left', 'up', 'down', 'right', 'home', 'beacon', 'eye', 'terminal', 'buoy', 'bubble', 'sound-on', 'sound-off', 'comment', 'menu', 'history', 'waves', 'nodes', 'help', 'play', 'pause']);
 
   function has(o, k) { return Object.prototype.hasOwnProperty.call(o, k); }
   function num(v, d) { return typeof v === 'number' && isFinite(v) ? v : d; }
@@ -38,6 +38,11 @@
   }
   function speakerUV() {
     return [[-0.85, -0.3], [-0.4, -0.3], [0, -0.7], [0, 0.7], [-0.4, 0.3], [-0.85, 0.3]];
+  }
+  function sineUV(v0, amp) {
+    var out = [], k;
+    for (k = 0; k <= 12; k++) { out.push([-0.85 + 1.7 * k / 12, v0 + amp * Math.sin(2 * Math.PI * k / 6)]); }
+    return out;
   }
 
   var DRAW = {
@@ -96,6 +101,44 @@
         stroke(c, [[-0.5, -0.2], [0.5, -0.2]]),
         stroke(c, [[-0.5, 0.05], [0.2, 0.05]])
       ];
+    },
+    menu: function (c) {
+      return [
+        outline(c, roundedUV(-0.7, -0.66, 0.7, -0.4, 0.1), c.acc),
+        outline(c, roundedUV(-0.7, -0.12, 0.7, 0.12, 0.1), c.acc),
+        outline(c, roundedUV(-0.7, 0.4, 0.7, 0.66, 0.1), c.acc)
+      ];
+    },
+    history: function (c) {
+      return [
+        dot(c, 0, 0, 0.82, c.acc),
+        stroke(c, [[0, -0.5], [0, 0.02]]),
+        stroke(c, [[0, 0.02], [0.38, 0.22]])
+      ];
+    },
+    waves: function (c) { return [stroke(c, sineUV(-0.35, 0.2)), stroke(c, sineUV(0.35, 0.2))]; },
+    nodes: function (c) {
+      return [
+        stroke(c, [[-0.6, 0.5], [0, -0.6]]),
+        stroke(c, [[0, -0.6], [0.6, 0.5]]),
+        dot(c, -0.6, 0.5, 0.3, c.acc),
+        dot(c, 0, -0.6, 0.3, c.acc),
+        dot(c, 0.6, 0.5, 0.3, c.acc)
+      ];
+    },
+    help: function (c) {
+      return [
+        dot(c, 0, 0, 0.85, c.acc),
+        stroke(c, arcUV(0, -0.3, 0.32, 180, 360, 8).concat([[0, 0.1], [0, 0.28]])),
+        dot(c, 0, 0.5, 0.12, 'ink')
+      ];
+    },
+    play: function (c) { return [outline(c, [[-0.45, -0.7], [0.8, 0], [-0.45, 0.7]], c.acc)]; },
+    pause: function (c) {
+      return [
+        outline(c, roundedUV(-0.6, -0.7, -0.14, 0.7, 0.08), c.acc),
+        outline(c, roundedUV(0.14, -0.7, 0.6, 0.7, 0.08), c.acc)
+      ];
     }
   };
 
@@ -108,10 +151,31 @@
       lw: Math.max(2.5, 0.16 * r),
       acc: p.f === undefined || p.f === null ? 'cyan' : p.f
     };
-    return DRAW[p.name](c);
+    var items = DRAW[p.name](c);
+    if (p.halo !== true) { return items; }
+    return items.map(function (it) { return Object.assign({}, it, { s: 'paper', lw: it.lw + 3, f: null }); }).concat(items);
   }
 
   function missing(name) { return NAMES.indexOf(name) < 0; }
+
+  function canvas(doc, name, size, opts) {
+    var o = opts || {}, scale = num(o.scale, 2);
+    var AB = root.AtlasBubble || core, AC = root.AtlasComicAtoms || globalThis.AtlasComicAtoms;
+    if (!doc || typeof doc.createElement !== 'function' || !AB || !AC || missing(name) || !(typeof size === 'number' && size > 0)) { return null; }
+    var cv = doc.createElement('canvas'), g = cv.getContext('2d');
+    cv.width = size * scale;
+    cv.height = size * scale;
+    cv.className = 'bubble-ico';
+    cv.setAttribute('aria-hidden', 'true');
+    g.setTransform(scale, 0, 0, scale, 0, 0);
+    var frame = {
+      v: 'preceptoros.bubble/1', id: 'ICON', t: 0, cv: [size, size], bands: ['cyan', 'ink', 'paper'], change: ['icon'],
+      sound: 'NO_DATA', soundCause: 'icon', motion: 'NO_DATA',
+      atoms: [{ k: name, r: name, i: [{ o: 'icon', name: name, x: size / 2, y: size / 2, r: size * 0.38, halo: !!(opts && opts.halo), f: opts && opts.f }] }]
+    };
+    AC.paint(g, AB.compile(frame));
+    return cv;
+  }
 
   var WORDS = { icon: icon };
   var core = null;
@@ -122,7 +186,7 @@
   }
   if (core && typeof core.define === 'function') { core.define('icon', icon); }
 
-  var API = { NAMES: NAMES, WORDS: WORDS, missing: missing };
+  var API = { NAMES: NAMES, WORDS: WORDS, missing: missing, canvas: canvas };
   if (typeof module === 'object' && module.exports) { module.exports = API; }
   else { root.AtlasBubbleIcons = API; }
-})(typeof module === 'object' && module.exports ? this : (this || window));
+})(this);
