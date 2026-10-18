@@ -65,12 +65,36 @@
   }
 
   function figura(ctx, it, ox, oy, fill, stroke) {
+    if (it.op === 'path') { return pathFigure(ctx, it, ox, oy, fill, stroke); }
     ctx.beginPath();
     if (it.op === 'circle') { ctx.arc(it.x + ox, it.y + oy, it.r, 0, 2 * Math.PI); }
+    else if (it.op === 'ellipse') { ctx.ellipse(it.x + ox, it.y + oy, it.rx, it.ry, 0, 0, 2 * Math.PI); }
     else { ctx.rect(it.x + ox, it.y + oy, it.w, it.h); }
-    ctx.fillStyle = fill;
-    ctx.fill();
+    if (fill) { ctx.fillStyle = fill; ctx.fill(); }
     if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = it.lw; ctx.stroke(); }
+  }
+
+  function pathFigure(ctx, it, ox, oy, fill, stroke) {
+    var p = new Path2D(it.d);
+    ctx.save();
+    ctx.translate(ox, oy);
+    if (fill) { ctx.fillStyle = fill; ctx.fill(p); }
+    if (stroke) {
+      ctx.strokeStyle = stroke; ctx.lineWidth = it.lw;
+      ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+      ctx.stroke(p);
+    }
+    ctx.restore();
+  }
+
+  function groupItem(ctx, it) {
+    var s = it.s === undefined ? 1 : it.s;
+    ctx.save();
+    ctx.translate(it.x, it.y);
+    ctx.rotate((it.rot || 0) * Math.PI / 180);
+    ctx.scale(s, s);
+    paint(ctx, it.items);
+    ctx.restore();
   }
 
   function paint(ctx, items) {
@@ -82,8 +106,11 @@
         ctx.textBaseline = 'middle';
         ctx.fillStyle = it.fill;
         ctx.fillText(it.text, it.x, it.y);
+      } else if (it.op === 'group') {
+        groupItem(ctx, it);
       } else {
-        if (it.shadow) { figura(ctx, it, it.shadow[0], it.shadow[1], N.ink, null); }
+
+        if (it.shadow) { figura(ctx, it, it.shadow[0], it.shadow[1], it.shadowFill || N.ink, null); }
         figura(ctx, it, 0, 0, it.fill, it.stroke);
       }
     }

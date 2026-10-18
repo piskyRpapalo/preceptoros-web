@@ -1,14 +1,3 @@
-/* preceptoros.org · theGame · LAS TRANSICIONES DE GUSANO (PR-2, FIRMO 2026-10-12; ideas6oct §5 :1158-1160, :904, :802, :799).
-
-   Cuando un panel o una hoja cede su sitio a otro, no «cambia de pagina»: un GUSANO migra de una entrada del menu a la
-   otra, y su TRAYECTORIA ES EL DATO (:802). Todo sale de S_t, el estado de esa transicion, y de nada mas:
-     S_t = { ciclo, de, a, delta (cambio de longitud del texto visible), intentos (veces abierto en esta pestana), sello }
-   - curva: el desvio del arco crece con |delta| (cuanto cambio lo que lees); el lado lo pone la paridad del ciclo.
-   - cuerpo: tantos segmentos como intentos (tope 9): lo que mas abres deja un gusano mas largo.
-   - velocidad: duracion 360 ms + 20 ms por segmento. Color: el hue del sello de destino (TABLA_SEMANTICA, unica fuente).
-   EL GRAFICO REVELA, NO DECIDE (:799): el gusano no abre, no cierra, no navega; solo proyecta lo que ya paso. Mismo S_t,
-   mismo gusano (determinista: sin azar, sin reloj de pared; la pantalla solo anima). Movimiento reducido: sin gusano,
-   pero la Radio lo narra igual y el inspector y el vector lo leen. Plug&play: observa el cajon y las hojas. */
 (function (raiz) {
   'use strict';
   var TOPE_SEG = 9, BASE_MS = 360, POR_SEG = 20;
@@ -22,10 +11,10 @@
       return cicloValido(c) ? c : null;
     } catch (_) { return null; }
   }
-  /* Puro: el gusano de un S_t entre dos puntos de pantalla. Devuelve { puntos, segmentos, ms, hue }. */
+
   function gusano(S, A, B) {
     var segs = Math.max(1, Math.min(TOPE_SEG, S.intentos || 1)), curva = Math.min(140, 16 + Math.abs(S.delta || 0) / 12);
-    /* Sin ciclo medido, el desvio queda neutro: null no hereda la paridad de ciclo cero. */
+
     var lado = cicloValido(S.ciclo) ? (S.ciclo % 2 === 0 ? 1 : -1) : 0, mx = (A[0] + B[0]) / 2, my = (A[1] + B[1]) / 2;
     var dx = B[0] - A[0], dy = B[1] - A[1], L = Math.sqrt(dx * dx + dy * dy) || 1, cx = mx - dy / L * curva * lado, cy = my + dx / L * curva * lado, pts = [];
     for (var i = 0; i <= 24; i++) { var u = i / 24, w = 1 - u; pts.push([Math.round(w * w * A[0] + 2 * w * u * cx + u * u * B[0]), Math.round(w * w * A[1] + 2 * w * u * cy + u * u * B[1])]); }
@@ -53,7 +42,7 @@
     }
     raiz.requestAnimationFrame(cuadro);
   }
-  /* Lo que se ve ahora: el panel del cajon o la hoja abierta (id + su texto). */
+
   function vistoAhora() {
     var D = raiz.document, caja = D.getElementById('thegame-terminal'), v = null;
     D.querySelectorAll('.thegame-hoja').forEach(function (h) { if (!h.hidden) { v = { id: h.id.replace('thegame-', ''), el: h }; } });
@@ -70,7 +59,7 @@
     var largo = (v.el.innerText || '').length, delta = largo - (de && textoDe[de] !== undefined ? textoDe[de] : 0);
     textoDe[id] = largo;
     var W = raiz.AtlasVentana;
-    if (W && W.pinta) { W.pinta(); }   /* el cabecero primero: el sello del destino, no el del panel anterior */
+    if (W && W.pinta) { W.pinta(); }
     var f = W && W.ficha ? W.ficha() : null;
     var S = { ciclo: cicloActual(), de: de, a: id, delta: delta, intentos: intentos[id], sello: f && f.id === id ? f.sello : 'NO_DATA' };
     var A = centro(D.getElementById('menu-' + (de || id))) || [0, 0], B = centro(D.getElementById('menu-' + id)) || A, gu = gusano(S, A, B);
@@ -87,7 +76,7 @@
     new MutationObserver(transita).observe(piso, { subtree: true, attributes: true, attributeFilter: ['hidden'] });
   }
   if (raiz.setInterval && raiz.document) { raiz.setInterval(monta, 1000); }
-  /* El inspector y el vector leen la ultima transicion: su S_t y lo que se dibujo de el. */
+
   function ficha() { return ultimo ? JSON.parse(JSON.stringify(ultimo)) : null; }
 
   var AtlasWorm = { gusano: gusano, ficha: ficha, TOPE_SEG: TOPE_SEG };

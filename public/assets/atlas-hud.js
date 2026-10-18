@@ -1,16 +1,3 @@
-/* preceptoros.org · theGame · EL CONTADOR DE FARMEO: solo lo medido, o NO_DATA.
-
-   Lee las instantaneas que ya reparte la voz del Preceptor (via `AtlasMapa.estado`) y calcula el
-   RITMO real de tu base: cuanto subio o bajo cada recurso por cada 100 ciclos, entre la primera y
-   la ultima instantanea de una ventana de 300 ciclos. Sin dos puntos no hay ritmo: NO_DATA.
-
-   NO PROMETE LO QUE NO MIDE. La energia y la temperatura del aparato no las ve un navegador: se
-   dicen NO_DATA con su causa, no se estiman. En PC queda fijo en una esquina; en movil va en su
-   sitio. Es un `<details>`: se pliega, y plegado no molesta.
-
-   SE CARGA AL ABRIRLO (2026-09-28): `thegame.js` pone el rotulo plegado y trae esta pieza al
-   desplegarlo, porque el peso de la puerta del juego es una ley del mundo. El ritmo empieza a
-   medirse desde ahi: hasta tener dos lecturas, NO_DATA. */
 (function () {
   'use strict';
 
@@ -68,7 +55,7 @@
     }
     causaEstado = null;
     var u = hist[hist.length - 1];
-    /* Una partida retomada o reiniciada no se mezcla con la anterior: si el ciclo vuelve atras, se empieza de cero. */
+
     if (u && ins.ciclo < u.ciclo) { hist = []; }
     hist.push({ ciclo: ins.ciclo, recursos: Object.assign({}, ins.recursos) });
     while (hist.length > 2 && hist[hist.length - 1].ciclo - hist[0].ciclo > VENTANA) { hist.shift(); }

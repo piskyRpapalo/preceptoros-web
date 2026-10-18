@@ -1,14 +1,3 @@
-/* preceptoros.org · theGame · la PARTIDA FIRMADA en la barra: exportarla (L-076, «el cuerpo es tuyo»).
-
-   LIMPIEZA (orden del Soberano, 2026-10-11: «puertas muertas fuera»). Aqui vivian «Pilot» (la maquina juega si lo
-   firmas), «Soltar» y «Suggest» (la regla propone, tu decides). Medido: desde que la capa dejo de ser un <dialog>,
-   su freno `capa.open` era siempre falso y el piloto NUNCA actuaba; su ventana de «Acepto», ademas, heredaba
-   `pointer-events:none` y solo se cerraba con Escape. Una puerta que no abre es peor que ninguna: se RETIRAN,
-   con su dialogo, su fusible y su unica salida de red (`atlas-record.json`). El piloto sigue en el laboratorio y en
-   el terminal J7 (`AtlasPiloto`, la misma lista de acciones); aqui ya no tiene puerta.
-
-   QUEDA lo que si abre: EXPORTAR PARTIDA. La ley y las acciones, firmadas (Ed25519, por la persona), como FICHERO
-   que la persona se lleva. No se envia solo y no se guarda en el navegador. Sin identidad, se ofrece crearla. */
 (function () {
   'use strict';
 
@@ -25,8 +14,6 @@
   function rellena(p, v) { return p.replace(/\{(\w+)\}/g, function (m, k) { return k in v ? v[k] : m; }); }
   function dice(t) { R.estado.textContent = t; }
 
-  /* Sin identidad no hay firma. Se ofrece crearla aqui mismo (`Identity.crear`) y se reintenta lo que estaba a
-     medias; si la pagina no trae `auth.js`, se dice y no se inventa otra salida. */
   function conIdentidad(err, caja, reintenta) {
     var msg = String((err && err.message) || err || '');
     if (!/sin identidad/.test(msg) || !window.Identity || !window.Identity.crear) {
@@ -49,7 +36,6 @@
     });
   }
 
-  /* --- exportar la partida ------------------------------------------------ */
   function exporta() {
     var p = window.AtlasJuego.partida();
     if (!p) { dice(T('partida_nd')); return; }
@@ -76,7 +62,7 @@
     if (!barra || barra.querySelector('.thegame-piloto')) { return; }
     R.caja = el('div', 'thegame-piloto');
     R.exporta = boton(T('partida_exportar')); R.exporta.title = T('partida_nota'); R.exporta.id = 'thegame-exporta';
-    R.exporta.classList.add('thegame-exporta'); /* thegame.js la lleva a la terminal, plegada en «Terminal J7» */
+    R.exporta.classList.add('thegame-exporta');
     R.estado = el('p'); R.estado.setAttribute('role', 'status');
     R.exporta.addEventListener('click', exporta);
     [R.exporta, R.estado].forEach(function (n) { R.caja.appendChild(n); });

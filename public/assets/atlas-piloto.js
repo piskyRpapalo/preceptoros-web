@@ -1,31 +1,10 @@
-/* preceptoros.org · theGame · el PILOTO BASE de ATLAS.
-
-   UNA REGLA FIJA, NO UN MODELO. Lee la instantanea (`atlas.instantanea/1`,
-   la misma puerta que tendra la guia) y propone UNA accion del enum cerrado
-   `atlas.accion/1`: esperar, recoger, reparar, aplazar, bajar_a <banda> o
-   mover <dir>. Son las mismas acciones que tiene la persona; ninguna toca
-   valor, claves ni red. Proponer no es hacer: quien decide si se puede es el
-   motor (y, para `mover`, la camara del mapa, que choca con la niebla).
-
-   MOVER (R2c, plan «el refresco», 2026-10-11): las flechas del mapa SON esta
-   accion, «una lista, no dos»: la misma flecha mueve a la persona y a la IA
-   del laboratorio (ideas6oct:1756, flechas tamano-AI). La regla base nunca
-   la propone: moverse no cambia la partida. `faro` (U1, «el mapa unico») lleva
-   la camara a Hexelion: es la puerta de los OJOS del cangrejo.
-
-   ES LA LINEA BASE. Un LoRA del juego solo entra si le gana a esta regla en
-   el arnes (`atlas/arnes_piloto.mjs`), con las mismas leyes y el mismo
-   horizonte. Si no le gana, no sirve, por bonito que hable.
-
-   PURA como el motor: ni DOM, ni red, ni reloj, ni azar. Misma instantanea,
-   misma accion. Por eso corre igual en la pestana y en node. */
 (function (raiz) {
   'use strict';
 
   var ACCIONES = ['esperar', 'recoger', 'reparar', 'aplazar', 'bajar_a', 'mover'];
   var BANDAS = ['arrecife', 'ruinas', 'bosque', 'nucleo'];
   var DIRS = ['izq', 'arr', 'aba', 'der', 'casa', 'faro'];
-  /* Las etiquetas de profundidad de la instantanea, en el orden de BANDAS. */
+
   var ETIQUETAS = ['0-50', '50-150', '150-300', '300+'];
 
   function accion(a, banda) {
@@ -34,16 +13,6 @@
     return x;
   }
 
-  /* LA REGLA, en el orden en que se lee:
-     1. Grieta abierta y cobre para cerrarla: reparar.
-     2. Lo producido «mientras dormias» esperando: recoger.
-     3. Grieta abierta sin cobre: subir al arrecife, donde llega mas luz y la
-        Forja hace mas cobre.
-     4. Oxigeno por debajo del 10 %: subir antes de que el motor te suba.
-     5. En el arrecife, grieta cerrada y oxigeno casi lleno: bajar a lo mas
-        hondo permitido (el Nucleo pide Ingenieria 60), que es donde se gana
-        Descenso.
-     6. Si no, esperar. `c` son las constantes del motor (`AtlasMotor`). */
   function decide(ins, c) {
     if (!ins || ins.esquema !== 'atlas.instantanea/1' || !c) { return null; }
     var r = ins.recursos || {}, g = ins.grieta || {};
@@ -63,8 +32,6 @@
     return accion('esperar');
   }
 
-  /* La forma, no el permiso: el permiso lo da el motor. Lo que no pasa por
-     aqui no se ejecuta y cuenta como fallo del piloto. */
   function valida(a) {
     if (!a || a.esquema !== 'atlas.accion/1') { return false; }
     if (ACCIONES.indexOf(a.accion) < 0) { return false; }

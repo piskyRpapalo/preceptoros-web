@@ -38,7 +38,7 @@ def portada(l, raiz=False):
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>PreceptorOS · theGame</title>
+<title>preceptoros</title>
 <meta name="description" content="{DESCRIPCION}">
 <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
 <link rel="canonical" href="{url}">

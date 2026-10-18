@@ -1,14 +1,3 @@
-/* preceptoros.org · ATLAS · EL RETRATO DEL NAVEGANTE (lo que queda de la antigua pantalla de dialogo).
-
-   EL GUIA ES SU ONDA (firma del Soberano del 2026-10-10, F2: «identidad pura, cero imagenes»). El retrato es el
-   EMBLEMA DEL SITIO: la tropa de la semilla sha256('atlas.emblema/1:preceptoros.org') en tc3, fijada aqui como
-   literal (test_atlas la recalcula con el motor). Cinco celdas: 0 reposo · 1-2 habla · 3 revelar · 4 alerta.
-
-   LIMPIEZA (2026-10-12, firmada: «decide tu la solucion honesta y reportalo con causa»). La ventana modal
-   (`abre`/`cierra`), la voz del guia (`voz`, `observa`, `accion`) y el retrato de Nerea se RETIRAN: medido, nadie
-   los llamaba ya. La ventana la abria Repair (hoy un clic, una funcion) y la voz la disparaba el juez al
-   responder a Suggest (retirado). La voz del Preceptor vuelve por su via firmada: el NARRADOR de la Radio, que
-   cuenta la cronica real del jugador. Lo retirado queda en la historia de git (commit de esta limpieza). */
 (function () {
   'use strict';
 
@@ -30,18 +19,15 @@
     paradas.forEach(function (p) { s('stop', { offset: p[0], 'stop-color': p[1] }, g); });
   }
 
-  /* EL MAPA CELDA <-> ESTADO, en un solo sitio y congelado: lo lee la prueba
-     de determinismo de `test_atlas.py`. */
   var CELDAS = Object.freeze({ reposo: 0, habla: [1, 2], revelar: 3, alerta: 4 });
   var EMBLEMA = [[1, 24, 24, 0], [-3, 13, 13, 44], [9, 3, 3, 40]];
-  /* Tono del caracter del emblema (TONOS[3], gris) y cobre de alerta (TONOS[0]). */
+
   var TONO = 'hsl(205 30% 74%)', COBRE = 'hsl(35 80% 62%)';
 
-  /* El retrato de Preceptor: la onda del emblema, x = suma ax cos(k u + f), y = suma ay sin(k u + f). */
   function retratoPreceptor(ui, decorativo) {
     var marco = el('div', 'atlas-pre'), cv = document.createElement('canvas'), celda = 0, alerta = false;
     cv.className = 'atlas-pre-onda'; cv.width = 167; cv.height = 248;
-    /* El nombre sale del JSON de cada lengua; de adorno, calla. */
+
     if (decorativo) { marco.setAttribute('aria-hidden', 'true'); }
     else { cv.setAttribute('role', 'img'); cv.setAttribute('aria-label', ui.atlas_retrato_alt || ''); }
     function pinta() {

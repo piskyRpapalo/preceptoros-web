@@ -1,17 +1,9 @@
-/* preceptoros.org · theGame · LAS ONDAS sobre tu base, y el flujo que farmea tu nodo.
-
-   Pinta; no decide. La forma de cada voz la da `AtlasCarta.helices` desde los armonicos de tus
-   tropas (semilla firmada): misma tropa, misma trenza en cualquier pantalla. Aqui solo se pone
-   el tiempo de pantalla y la luz. Es la pieza que mas puede crecer (mas capas, mas voces) sin
-   tocar el mapa: `atlas-mapa.js` le pasa el lienzo y una vista `V` {s, sx, nd, voces, ins, A,
-   visible}, y si esta pieza falta el mapa sigue entero sin ondas. */
 (function () {
   'use strict';
 
   var C = window.AtlasCarta;
   function frac(x) { return x - Math.floor(x); }
 
-  /* EL FLUJO: lo que tu nodo farmea corre por el fondo hasta el Nucleo; la biomasa sube. */
   function flujo(e, t, V) {
     var nd = V.nd, s = V.s, sx = V.sx, P = V.A.P, al = V.A.alfa;
     if (!nd) { return; }
@@ -41,8 +33,6 @@
     e.fillStyle = c; e.beginPath(); e.arc(x, y, r, 0, 7); e.fill();
   }
 
-  /* LAS RAICES: bajan por la roca con la semilla de tu nodo, y por ellas suben pulsos hacia la
-     base. Mas flujo en tu partida, pulsos mas seguidos. Es el farmeo visto como algo que crece. */
   var cacheR = { id: null, r: [] };
   function raices(e, t, V) {
     var nd = V.nd, s = V.s, sx = V.sx;
@@ -54,13 +44,12 @@
       e.lineWidth = Math.max(0.6, s * (0.7 - g[4] * 0.12));
       e.beginPath(); e.moveTo(sx(g[0]), g[1] * s); e.lineTo(sx(g[2]), g[3] * s); e.stroke();
       var q = frac(C.h32(nd.semilla, i + 900) + t * vel * (1 + g[4] * 0.3));
-      /* El pulso va de la punta a la base: sube. */
+
       punto(e, sx(g[2] + (g[0] - g[2]) * q), (g[3] + (g[1] - g[3]) * q) * s, s * 0.45,
             'hsla(' + nd.tono + ',85%,75%,' + (0.9 * Math.sin(q * Math.PI)) + ')');
     });
   }
 
-  /* LA ANTENA: una helice triple que sube del mastil a la luz. */
   function antena(e, t, V, bx, top) {
     var s = V.s, ts = t / 1000, h = top, N = 40;
     for (var k = 0; k < 3; k++) {
@@ -77,9 +66,6 @@
           'rgba(255,240,200,' + (0.8 * (1 - q)) + ')');
   }
 
-  /* TU BASE: raices, mastil solar, antena y, a su lado, el campo de ONDAS. Cada voz trenza tres
-     hebras con su eco un instante antes (la estela); donde dos hebras se cruzan salta una chispa;
-     y la suma de todas las voces, el acorde, pasa por el medio en blanco tenue. */
   function base(e, t, V) {
     var nd = V.nd, s = V.s, sx = V.sx, P = V.A.P, al = V.A.alfa;
     if (!nd || !V.visible(nd.x, 60 * s)) { return; }
@@ -104,7 +90,7 @@
     var ts = t / 1000, N = 72, voces = V.voces, largo = 64 * s;
     var cy = Math.max(14, nd.y - 24) * s;
     voces.forEach(function (v, iv) {
-      /* NADAR: cada voz deriva y respira a su ritmo, y su envolvente viaja; la forma no cambia. */
+
       var A = (9 + iv * 2.2) * s * (0.85 + 0.15 * Math.sin(ts * 0.5 + iv)), Y = [];
       var bxv = bx + Math.sin(ts * 0.21 + iv * 1.7) * 3 * s, cyv = cy + Math.sin(ts * 0.37 + iv) * 2.5 * s;
       for (var h = 0; h < 3; h++) {
@@ -144,8 +130,6 @@
     e.globalCompositeOperation = 'source-over';
   }
 
-  /* EL TOQUE: donde tocas el agua nace un frente que viaja a 22 u/s y se apaga en 2,6 s. Es
-     tiempo de pantalla y nada mas: no entra en la partida ni en la grabadora. */
   var VEL = 22;
   function golpe(X, Y, t, V) {
     var d = 0;

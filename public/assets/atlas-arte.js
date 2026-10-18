@@ -1,20 +1,3 @@
-/* preceptoros.org · ATLAS · el arte, pintado en canvas. Sin un solo raster.
-
-   ANIME-REALISTA SOLARPUNK, A MANO Y EN CODIGO. Firmado por el Soberano el
-   2026-09-25. No hay imagenes que bajar: cada pieza es geometria, degradado
-   y luz. Pesa kilobytes, escala a cualquier pantalla sin pixelarse y no pide
-   nada a nadie -- la regla de §E («nada externo en runtime»), cumplida por
-   construccion y no por disciplina.
-
-   LA PALETA DEL ARTE NO ES LA DE LA INTERFAZ. La interfaz sale de
-   `soberano.css`; el agua, el kelp y la piel necesitan tonos que un boton no
-   usa nunca. Viven aqui, en un solo sitio (`P`), y el cobre y el violeta son
-   los mismos de la capa soberana para que mapa y panel sean un solo mundo.
-
-   LO QUICIO DEL RENDIMIENTO: el fondo estatico (degradado, ruinas, coral,
-   kelp) se pinta UNA vez por tamano en un lienzo aparte; por fotograma solo
-   se mueven la luz, el plancton, el vapor y los buzos. Quien mire otra cosa o
-   pida quietud, no paga ni eso: lo decide atlas-piso.js. */
 (function () {
   'use strict';
 
@@ -26,7 +9,6 @@
     violetaLuz: '#a78bfa', vidrio: '#bff7ff', ascua: '#ff7a3d', alerta: '#ff5a4f'
   };
 
-  /* Azar con semilla: el mismo bosque en cada carga, sin guardar nada. */
   function azar(semilla) {
     var s = semilla >>> 0;
     return function () {
@@ -51,14 +33,12 @@
     return 'rgba(' + (n >> 16) + ',' + ((n >> 8) & 255) + ',' + (n & 255) + ',' + a + ')';
   }
 
-  /* --- EL FONDO ESTATICO ------------------------------------------------- */
   function fondoEstatico(ctx, w, h) {
     var r = azar(1987);
     ctx.fillStyle = lineal(ctx, 0, 0, 0, h, [[0, P.superficie], [0.18, P.agua],
       [0.55, P.hondo], [0.85, P.abismo], [1, P.fondo]]);
     ctx.fillRect(0, 0, w, h);
 
-    /* Ruinas lejanas: arcos y cupulas en tres planos, cada uno mas azul. */
     [[0.52, 0.18, 0.9], [0.62, 0.28, 1.2], [0.72, 0.4, 1.6]].forEach(function (capa, i) {
       var base = h * capa[0], a = capa[1], esc = capa[2];
       ctx.fillStyle = alfa(i < 2 ? P.hondo : P.piedra, a + 0.12);
@@ -71,7 +51,7 @@
         var cx = r() * w, cw = (22 + r() * 34) * esc, ch = (24 + r() * 52) * esc;
         ctx.fillRect(cx - cw / 2, base - ch, cw, ch);
         ctx.beginPath(); ctx.arc(cx, base - ch, cw / 2, Math.PI, 0); ctx.fill();
-        /* Ventanas que aun guardan luz: la tecnologia dormida. */
+
         ctx.save(); ctx.fillStyle = alfa(P.kelpLuz, 0.1 + i * 0.05);
         for (var v = 0; v < 3; v++) {
           ctx.fillRect(cx - cw * 0.18, base - ch * (0.3 + v * 0.22), cw * 0.36, ch * 0.08);
@@ -80,7 +60,6 @@
       }
     });
 
-    /* Kelp: tallos curvos con hojas y bayas que brillan. */
     for (var k = 0; k < 14; k++) {
       var x0 = r() * w, alto = h * (0.35 + r() * 0.5), curva = (r() - 0.5) * 120;
       var grosor = 3 + r() * 5;
@@ -106,12 +85,11 @@
       }
     }
 
-    /* Coral en primer plano: ramas calidas contra el agua fria. */
     for (var c = 0; c < 9; c++) {
       var cx2 = r() * w, cy2 = h - r() * h * 0.06, tam = 20 + r() * 34;
       coral(ctx, cx2, cy2, tam, r);
     }
-    /* Viñeta: el abismo cierra los bordes, la mirada va al centro. */
+
     ctx.fillStyle = radial(ctx, w / 2, h * 0.45, Math.min(w, h) * 0.3, Math.max(w, h) * 0.75,
       [[0, 'rgba(0,0,0,0)'], [1, alfa(P.fondo, 0.7)]]);
     ctx.fillRect(0, 0, w, h);
@@ -131,7 +109,6 @@
     ctx.restore();
   }
 
-  /* --- LA LUZ QUE BAJA (por fotograma) ---------------------------------- */
   function rayos(ctx, w, h, t) {
     ctx.save(); ctx.globalCompositeOperation = 'lighter';
     for (var i = 0; i < 6; i++) {
@@ -160,12 +137,8 @@
     ctx.restore();
   }
 
-  /* --- LAS ESTRUCTURAS --------------------------------------------------- */
-  /* El Nucleo, la Forja, la Aguja y el Ojo (y su zocalo y hojas solares) se dibujan desde el
-     2026-09-28 en `atlas-obra.js`, con curvas parametricas y su estado a la vista. Aqui queda la
-     grieta, que no es un edificio sino una herida. */
   var ESTRUCTURA = {
-    /* La Grieta: agua fria que entra, con su resplandor de alarma. */
+
     grieta: function (ctx, x, y, s, t) {
       var a = 0.45 + 0.35 * Math.abs(Math.sin(t * 0.004));
       ctx.fillStyle = radial(ctx, x, y, 0, s * 0.5, [[0, alfa(P.alerta, a)], [1, alfa(P.alerta, 0)]]);
@@ -183,7 +156,6 @@
     }
   };
 
-  /* --- LOS BUZOS ATLANTES ------------------------------------------------ */
   function buzo(ctx, x, y, s, t, mira) {
     ctx.save(); ctx.translate(x, y); ctx.scale(mira < 0 ? -1 : 1, 1);
     var aleta = Math.sin(t * 0.012) * 0.35;

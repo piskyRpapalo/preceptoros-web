@@ -1,29 +1,8 @@
-/* preceptoros.org · theGame · la PARTIDA de ATLAS: instantanea, grabadora y
-   reproduccion.
-
-   LA PARTIDA SON LA LEY Y LAS ACCIONES, NO LOS ESTADOS (sugerencia firmada por
-   el Soberano, 2026-09-27). El motor es puro: con la ley y los pasos, cualquiera
-   --la Aduana del rack incluida-- vuelve a jugarla en node y comprueba que el
-   final sale igual. Un estado inventado no se puede reproducir, y esa es la
-   defensa contra el envenenamiento del corpus: no hay que creerse la partida,
-   se juega otra vez.
-
-   LA GRABADORA envuelve, en memoria y solo en la pestana, las funciones del
-   motor que cambian el estado. El FICHERO del motor no cambia ni sabe que lo
-   graban. Cada accion lleva su origen: `humano` si la hizo la persona,
-   `piloto_base` si la propuso la regla fija. Nada se guarda: la partida muere
-   con la pestana salvo que la persona la exporte, firmada, como fichero.
-
-   SIN FECHAS DE RELOJ. El tiempo de la partida es `ciclos` y `dormir_ms`,
-   que es tiempo de juego; el `dia` de los eventos no viaja. */
 (function (raiz) {
   'use strict';
 
   var MAX_PASOS = 5000, SIN_DIA = 'sin-dia';
 
-  /* LA INSTANTANEA (`atlas.instantanea/1`): la unica puerta entre la partida
-     y quien la lee (la guia, el piloto, el final de una partida exportada).
-     Copia serializable; no se guarda ni se envia. */
   function instantanea(E, M) {
     if (!E) { return null; }
     var niveles = {};
@@ -40,20 +19,15 @@
     }));
   }
 
-  /* El final que se compara: la instantanea sin eventos (llevan `dia`). */
   function final(E, M) {
     var i = instantanea(E, M);
     if (i) { delete i.eventos; }
     return i;
   }
 
-  /* VOLVER A JUGAR una partida con el mismo motor. Devuelve el estado final o
-     lanza con la causa. Un paso que no es de la forma conocida no se salta:
-     se rechaza, porque saltarlo seria jugar otra partida. */
   function reproduce(p, M, cada) {
     if (!p || p.esquema !== 'atlas.partida/1') { throw new Error('esquema'); }
-    /* `cada(e)`, si viene, ve cada estado por el que pasa la partida: de ahi sale la exploracion
-       REAL del mapa (lo que se vio, no lo que la fase de hoy permite). No cambia nada. */
+
     var ver = cada || function () {};
     var ley = { nd: p.ley.nd, integridad_max: p.ley.integridad_max, dano: p.ley.dano };
     var e = M.inicial(ley), f = { recoger: M.recoger, reparar: M.reparar, aplazar: M.aplazar };
@@ -70,16 +44,13 @@
     return e;
   }
 
-  /* LA GRABADORA. Solo en la pestana (en node no hay nada que grabar). */
   var G = { ley: null, pasos: [], truncada: false, origen: 'humano' };
   function empuja(s) {
     if (G.pasos.length >= MAX_PASOS) { G.truncada = true; return; }
     G.pasos.push(s);
   }
   function graba(M) {
-    /* EL MOTOR PURO, copiado ANTES de envolverlo. Quien SIMULA (el juez) usa este: el envuelto
-       graba cada llamada, y su `inicial` VACIA la partida en curso. `reproduce(p, M)` con el
-       envuelto en la pestana borraria lo jugado sin avisar. */
+
     var puro = {};
     Object.keys(M).forEach(function (k) { puro[k] = M[k]; });
     var o = {};
@@ -110,7 +81,6 @@
     return puro;
   }
 
-  /* La partida tal cual, para exportarla. `E` es el estado de la pestana. */
   function partida(E, M) {
     if (!G.ley || !E) { return null; }
     return JSON.parse(JSON.stringify({
@@ -119,10 +89,6 @@
     }));
   }
 
-  /* RETOMAR una partida guardada o importada (2026-09-28). No se cree: se vuelve a jugar con el
-     motor puro, y solo si sale el mismo final y la misma version de contenido se siembra la
-     grabadora con SU ley y SUS pasos, para que seguir jugando siga siendo la misma partida.
-     Lanza con la causa exacta; quien llama la dice como NO_DATA, no como un fallo mudo. */
   function retoma(p, M, cada) {
     if (!p || p.esquema !== 'atlas.partida/1') { throw new Error('esquema'); }
     if (p.contenido_v !== M.CATALOGO.contenido_v) {
@@ -135,18 +101,12 @@
     return e;
   }
 
-  /* HUMANO + PILOTO (sugerencia firmada por el Soberano, 2026-09-27): la
-     regla PROPONE y la persona decide. Se anota que se propuso y que se
-     respondio; si la persona la hace, la accion que sigue es suya (`humano`).
-     Es el corpus que un LoRA necesita para ganarle a la regla: donde la
-     persona discrepa. No cambia el estado: la reproduccion lo salta. */
   function anota(a, respuesta) {
     var s = { accion: a.accion };
     if (a.banda) { s.banda = a.banda; }
     empuja({ sugerencia: s, respuesta: respuesta });
   }
 
-  /* Quien actua ahora: la persona, salvo mientras el piloto aplica su accion. */
   function como(origen, hacer) {
     var antes = G.origen;
     G.origen = origen;
