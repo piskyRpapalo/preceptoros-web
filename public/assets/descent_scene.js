@@ -17,7 +17,7 @@
   var FRAMES = [
     F('OPEN', 0, B4, ['first page: the name of the house'], [
       { k: 'light', r: 'soft light dots in deep water', i: [{ o: 'field', kind: 'halftone', x: [150, 412], y: [0, 515], r: '2.5|1.2|0', step: 15, f: 'cyan' }] },
-      { k: 'logo', r: 'the word preceptoros, big, along the left edge', i: [{ o: 'text', tx: 'preceptoros', x: 96, y: 268, rot: -90, sz: 78, w: 700, f: 'paper', sh: [4, 4, 'cyan'] }] },
+      { k: 'logo', r: 'the word preceptoros in the house letters, white and gold, along the left edge', i: [{ o: 'letters', tx: 'preceptoros', x: 92, y: 268, rot: -90, sz: 56 }] },
       { k: 'cliff', r: 'the round edge of a cliff peeks in', i: [{ o: 'wall', x: [340, 412], y: [90, 515], seed: 'cliff', vein: 2, f: 'paper', s: 'ink' }] },
       { k: 'bubbles', r: 'three bubbles rise', i: [{ o: 'field', kind: 'bubbles', x: 236, y: 420, seed: 'open', r: [6, 11] }] }
     ]),

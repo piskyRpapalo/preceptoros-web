@@ -191,7 +191,7 @@
 
   var DESCENSO = [['/game/tabla_semantica.js'], ['/game/comic_tokens.js'], ['/game/comic_accents.js'],
     ['/game/comic_atoms.js'], ['/game/valores.js'], ['/game/gacha.js'], ['/game/bubble_language.js'], ['/game/bubble_light.js'],
-    ['/game/bubble_bestiary.js'], ['/game/bubble_world.js'], ['descent_scene.js'], ['descent_view.js']];
+    ['/game/bubble_bestiary.js'], ['/game/bubble_world.js'], ['/game/bubble_letters.js'], ['descent_scene.js'], ['descent_view.js']];
   function descenso() {
     var P = document.getElementById('juego-panel');
     if (!P || capa) { return; }

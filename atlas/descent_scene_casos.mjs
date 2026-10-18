@@ -20,7 +20,7 @@ const NUCLEO = ruta('../public/game/bubble_language.js');
 let A = null, causaNucleo = null;
 if (existsSync(NUCLEO)) {
   try {
-    for (const m of ['../public/game/bubble_light.js', '../public/game/bubble_bestiary.js', '../public/game/bubble_world.js']) {
+    for (const m of ['../public/game/bubble_light.js', '../public/game/bubble_bestiary.js', '../public/game/bubble_world.js', '../public/game/bubble_letters.js']) {
       if (existsSync(ruta(m))) req(ruta(m));
     }
     A = req(NUCLEO);

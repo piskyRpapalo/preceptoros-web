@@ -16,7 +16,7 @@ const JUEGO = [
   '/game/nodos-cedulas.js', '/game/node_reception_contract.js', '/game/node_trust_anchor.js', '/game/node_trust_manifest.js', '/game/node_signature_messages.js', '/game/node_signature_verify.js', '/game/node_bindings_messages.js', '/game/node_bindings.js', '/game/node_projection.js', '/game/nodos.js', '/game/cuenta.js', '/game/ui-nodos.js', '/game/ui-rack.js',
   '/game/escuadron.js', '/game/battle_choreography.js', '/game/battle_replay.js', '/game/npc_occupancy.js', '/game/npc_walls.js', '/game/node_preview.js', '/game/node_file_receiver.js', '/game/ui-arena-comun.js', '/game/ui-arena.js', '/game/ui-duelo.js', '/game/hexelion_dictionary.js',
   '/assets/eaa-art12-local-first-surface.js', '/assets/eaa-art12-local-first-surface.css',
-  '/game/comic_accents.js', '/game/bubble_language.js', '/game/bubble_light.js', '/game/bubble_bestiary.js', '/game/bubble_world.js',
+  '/game/comic_accents.js', '/game/bubble_language.js', '/game/bubble_light.js', '/game/bubble_bestiary.js', '/game/bubble_world.js', '/game/bubble_letters.js',
   '/assets/descent_scene.js', '/assets/descent_view.js', '/assets/descent.css'
 ];
 
