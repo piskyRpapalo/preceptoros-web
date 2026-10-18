@@ -26,8 +26,10 @@
     return n;
   }
 
-  function pide(lista) {
+  function pide(todas) {
+    var lista = todas.filter(function (g) { var u = g[0].charAt(0) === '/' ? g[0] : '/assets/' + g[0]; return !document.querySelector('script[src="' + u + '"]'); });
     return new Promise(function (listo, falla) {
+      if (!lista.length) { listo(); return; }
       lista.forEach(function (g, i) {
         var s = document.createElement('script');
         s.src = g[0].charAt(0) === '/' ? g[0] : '/assets/' + g[0];
@@ -56,7 +58,7 @@
     ['mapa', '\u25C8', '.thegame-exporta|.thegame-opina|.atlas-hud-farmeo|#atlas-juego > .no-data|.atlas-pie'],
     ['taller', '\u2692\uFE0E', '.atlas-nucleo|.atlas-hud > .panel']];
 
-  var CASA = [['/game/tabla_semantica.js'], ['/game/comic_tokens.js'], ['/game/comic_atoms.js'], ['/game/canon.js'], ['/game/wave_render.js'], ['/game/escena.js'], ['/game/gdpr-art25-ephemeral-crab.js'], ['/game/aiact-art50-crab-terminal.js'], ['/game/nodos-cedulas.js'], ['/game/fog_of_war.js'], ['/game/isometric_floor_projection.js'], ['/game/world_camera.js'], ['/game/mar-fondo.js'], ['/game/gdpr-art7-entry-choice.js'], ['/game/aiact-art50-state-radio.js'], ['/game/casa-medidas.js'], ['/game/casa-personaliza.js'], ['/game/casa-lateral.js'], ['/game/crab_state_screen.js'], ['/game/reef_building_lifecycle.js'], ['/game/home_buildings.js'], ['/game/summon-wave-card.js'], ['/game/summon_reveal.js'], ['/game/taller.js'], ['/game/army-wave-panel.js'], ['/game/ui-taller.js'], ['/game/primer_eco.js'], ['/game/summon-access.js'], ['/game/deep_links.js'], ['/game/hitl_firma.js'], ['/game/onda_profunda.js'], ['/game/tarjeta_cantada.js'], ['/game/cable_llamar.js'], ['/game/cable_terminal.js']];
+  var CASA = [['/game/tabla_semantica.js'], ['/game/comic_tokens.js'], ['/game/comic_atoms.js'], ['/game/canon.js'], ['/game/wave_render.js'], ['/game/escena.js'], ['/game/gdpr-art25-ephemeral-crab.js'], ['/game/aiact-art50-crab-terminal.js'], ['/game/nodos-cedulas.js'], ['/game/fog_of_war.js'], ['/game/isometric_floor_projection.js'], ['/game/world_camera.js'], ['/game/mar-fondo.js'], ['/game/mar_rift.js'], ['/game/bubble_language.js'], ['/game/bubble_icons.js'], ['/game/gdpr-art7-entry-choice.js'], ['/game/aiact-art50-state-radio.js'], ['/game/casa-medidas.js'], ['/game/casa-personaliza.js'], ['/game/casa-lateral.js'], ['/game/crab_state_screen.js'], ['/game/reef_building_lifecycle.js'], ['/game/home_buildings.js'], ['/game/summon-wave-card.js'], ['/game/summon_reveal.js'], ['/game/taller.js'], ['/game/army-wave-panel.js'], ['/game/ui-taller.js'], ['/game/primer_eco.js'], ['/game/summon-access.js'], ['/game/deep_links.js'], ['/game/hitl_firma.js'], ['/game/onda_profunda.js'], ['/game/tarjeta_cantada.js'], ['/game/cable_llamar.js'], ['/game/cable_terminal.js']];
 
   var TECNICO = '.atlas-carta-json, .atlas-nucleo > .atlas-nota, .atlas-nucleo > .atlas-medido, ' +
     '.atlas-incubadora > .atlas-medido, .atlas-incubadora > .atlas-casa, .atlas-pie';
@@ -168,7 +170,7 @@
 
   var DESCENSO = [['/game/tabla_semantica.js'], ['/game/comic_tokens.js'], ['/game/comic_accents.js'],
     ['/game/comic_atoms.js'], ['/game/valores.js'], ['/game/gacha.js'], ['/game/bubble_language.js'], ['/game/bubble_light.js'],
-    ['/game/bubble_bestiary.js'], ['/game/bubble_world.js'], ['/game/bubble_letters.js'], ['descent_scene.js'], ['descent_view.js']];
+    ['/game/bubble_bestiary.js'], ['/game/bubble_world.js'], ['/game/bubble_letters.js'], ['/game/aiact-art50-state-radio.js'], ['/game/descent_sound.js'], ['descent_scene.js'], ['descent_view.js']];
   function descenso() {
     var P = document.getElementById('juego-panel');
     if (!P || capa) { return; }
