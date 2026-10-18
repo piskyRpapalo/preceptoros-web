@@ -1,14 +1,3 @@
-/* preceptoros.org · theGame · LA OBRA: los edificios grandes, hechos de curvas.
-
-   De lejos, textura; de cerca, construccion (la leccion de la Sagrada Familia): arcos catenarios
-   anidados, vetas parabolicas, pinaculos cuya altura sale de una serie de Fourier y una banda de
-   luz que cruza la fachada, recortada a su silueta, para que respire volumen sin sombreado caro.
-   Todo son lineas, arcos y gradientes: ni un raster.
-
-   EL DETALLE SIGUE A LA ESCALA: con el edificio pequeno (Superficie, movil) se trazan pocas
-   vetas; al acercarse, mas. EL ESTADO SE VE: el Nucleo brilla en proporcion a su integridad y
-   sus pinaculos suben con su nivel, leidos de la instantanea; sin instantanea, al minimo, sin
-   inventar. Lo que no es de un edificio grande (la grieta) lo sigue pintando `atlas-arte.js`. */
 (function () {
   'use strict';
 
@@ -16,7 +5,6 @@
   if (!A) { return; }
   var P = A.P, al = A.alfa;
 
-  /* Arco catenario de ancho 2w y alto h con la base en (x, y). */
   function arco(e, x, y, w, h) {
     var c = Math.cosh(1) - 1;
     e.moveTo(x - w, y);
@@ -25,7 +13,7 @@
       e.lineTo(x + u * w, y - h * (1 - (Math.cosh(u) - 1) / c));
     }
   }
-  /* Pinaculo: tronco que se estrecha en tramos, con una perla en cada nudo. */
+
   function pinaculo(e, x, y, w, h, color) {
     e.fillStyle = color;
     e.beginPath(); e.moveTo(x - w, y); e.lineTo(x - w * 0.15, y - h); e.lineTo(x + w * 0.15, y - h); e.lineTo(x + w, y);
@@ -35,7 +23,7 @@
     }
   }
   function silueta(e, x, y, w, h) { e.beginPath(); arco(e, x, y, w, h); e.closePath(); }
-  /* Vetas: arcos anidados finos. Muchas lineas a poca opacidad = materia a distancia. */
+
   function vetas(e, x, y, w, h, n, color) {
     e.strokeStyle = color; e.lineWidth = 0.7;
     for (var i = 1; i <= n; i++) {
@@ -43,7 +31,7 @@
       e.beginPath(); arco(e, x, y, w * (1 - f * 0.85), h * (1 - f * 0.55)); e.stroke();
     }
   }
-  /* La luz que baja cruza la fachada despacio, recortada a su silueta. */
+
   function luz(e, x, y, w, h, t) {
     e.save(); silueta(e, x, y, w, h); e.clip();
     var bx = x + Math.sin(t * 0.00035 + x * 0.01) * w;
@@ -67,7 +55,7 @@
       e.fillStyle = halo; e.fillRect(x - s * 1.8, y - h * 0.6 - s * 1.8, s * 3.6, s * 3.6);
       cuerpo(e, x, y, w, h, P.piedraLuz, P.abismo);
       vetas(e, x, y, w, h, n, al(P.violetaLuz, 0.35));
-      /* Pinaculos: 5 alturas de una serie de Fourier; suben con el nivel del Nucleo. */
+
       for (var i = -2; i <= 2; i++) {
         var f = 0.55 + 0.25 * Math.cos(i * 1.3) + 0.2 * Math.cos(i * 2.9);
         pinaculo(e, x + i * w * 0.34, y - h * (0.55 + 0.1 * (2 - Math.abs(i))), w * 0.09,
@@ -89,7 +77,7 @@
       var h = s * 2.2;
       for (var i = -1; i <= 1; i++) {
         var hx = h * (i ? 0.62 : 1), bx = x + i * s * 0.32, w = s * (i ? 0.16 : 0.22);
-        /* Silueta hiperbolica: ancho w / (1 + 3u), afila hacia la punta. */
+
         e.beginPath(); e.moveTo(bx - w, y);
         for (var k = 0; k <= 12; k++) { var u = k / 12; e.lineTo(bx - w / (1 + 3 * u), y - hx * u); }
         for (var j = 12; j >= 0; j--) { var v = j / 12; e.lineTo(bx + w / (1 + 3 * v), y - hx * v); }
@@ -118,8 +106,6 @@
     }
   };
 
-  /* Misma firma que `AtlasArte.estructura`, con la instantanea al final. (x, y) es el centro que
-     usaba el arte; la obra apoya su base un poco mas abajo, en el lecho. */
   function pinta(e, k, x, y, s, t, ins) {
     if (!OBRA[k]) { A.estructura(e, k, x, y, s, t); return; }
     e.save();

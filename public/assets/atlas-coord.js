@@ -1,13 +1,6 @@
-/* preceptoros.org · theGame · LA COORDENADA: donde esta algo, para quien, sin decir quien es.
-
-   PURO y sin dependencias: SHA-256 escrito aqui (FIPS 180-4) para que la pestana, node y el rack
-   den la misma huella sin `crypto.subtle`, que es asincrono y solo de navegador. Lo usa
-   `atlas-carta.js`; se separo de ella por tamano y porque el hash es un asunto propio. */
 (function (raiz) {
   'use strict';
 
-  /* SHA-256 PURO (FIPS 180-4), para que la pestana, node y el rack saquen la misma coordenada
-     sin `crypto.subtle` (asincrono y solo de navegador). Texto ASCII; lo que no lo es, se rechaza. */
   var K = [];
   (function () {
     var n = 2, k = 0;
@@ -45,9 +38,6 @@
     return H.map(function (x) { return ('0000000' + (x >>> 0).toString(16)).slice(-8); }).join('');
   }
 
-  /* COORDENADA CRIPTOGRAFICA de un punto para una persona: sha256(clave publica · semilla del
-     mundo · sector · punto). Quien tenga tu clave publica la recalcula y comprueba; nadie saca de
-     ella quien eres, porque la clave no lleva tu nombre. Forma corta: #a7f3…9c. */
   function coord(pub, semilla, sector, x, y) {
     var h = sha256([pub, semilla, sector || 'abierto', Math.round(x) + ',' + Math.round(y)].join(':'));
     return { hex: h, corta: '#' + h.slice(0, 4) + '…' + h.slice(-2) };

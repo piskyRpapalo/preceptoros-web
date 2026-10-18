@@ -1,22 +1,8 @@
-/* preceptoros.org · ATLAS · el mapa: el MUNDO ABIERTO del Bosque Sumergido, en un lienzo.
-
-   QUE SE VE. Un corte del fondo que da la vuelta sin bordes: se arrastra de lado (el dedo en
-   vertical sigue moviendo la pagina). Arriba la luz, abajo la fosa del Nucleo; los cinco
-   sectores sobre el fondo; TU NODO anclado donde dice tu clave; y encima de tu base, las ONDAS
-   de tus tropas trenzadas en helices, con chispas donde se cruzan. Del nodo al Nucleo corre el
-   flujo que farmea tu partida. La niebla tapa lo que tu partida aun no ha visto.
-
-   QUE NO SE DECIDE AQUI. Donde esta cada cosa, que tapa la niebla y como es cada onda lo dice
-   `atlas-carta.js`, que es puro. Esta pieza solo pinta: se puede rehacer entera sin tocar un
-   dato. El movimiento es tiempo de pantalla; la FORMA de cada onda sale de su semilla.
-
-   LA ANIMACION SE DUERME SOLA. Solo corre con el mapa a la vista y la pestana abierta; con
-   `prefers-reduced-motion`, un fotograma quieto que se repinta al cambiar el estado. */
 (function () {
   'use strict';
 
   var C = window.AtlasCarta;
-  /* Los buzos van y vienen entre sectores. */
+
   var RUTAS = [['nucleo', 'forja'], ['aguja', 'ojo'], ['nucleo', 'grieta']];
   function frac(x) { return x - Math.floor(x); }
 
@@ -33,12 +19,11 @@
     var ter = document.createElement('canvas'), nie = document.createElement('canvas');
     nie.width = C.COLS; nie.height = C.FILAS;
     var quieto = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-    /* `sup` es el modo Superficie: SOLO de esta pestana, en memoria; no se recuerda (sello). */
+
     var S = { ins: null, nd: null, voces: [], sector: null, fase: 1, sup: 0, k: 0, vis: {}, toques: [], nt: 0 };
     var g = null, cam = S.nd ? S.nd.x : C.SECTORES.nucleo, meta = null, inercia = 0;
     var visible = true, pedido = 0, ultimo = 0;
 
-    /* La etiqueta de tu nodo: su id, que no es de ninguna lengua. */
     var etq = document.createElement('button');
     etq.type = 'button'; etq.className = 'atlas-sector atlas-nodo'; etq.textContent = '◈ NO_DATA';
     etq.addEventListener('click', function () { if (S.nd) { meta = S.nd.x; arranca(); } });
@@ -47,7 +32,7 @@
       caja.appendChild(b);
       b.addEventListener('focus', function () { meta = C.SECTORES[b.dataset.sector]; arranca(); });
     });
-    /* Lo que lee un agente: el mundo, tu nodo y tu niebla, en JSON cerrado (`atlas.carta/1`). */
+
     var det = document.createElement('details'), pre = document.createElement('pre');
     det.className = 'atlas-carta-json';
     var sum = document.createElement('summary'); sum.textContent = 'atlas.carta/1';
@@ -66,7 +51,6 @@
       return true;
     }
 
-    /* EL FONDO, una vez por tamano: agua por bandas, lecho con vetas y un borde que respira. */
     function terreno() {
       var s = g.s, W = g.W, H = g.alto;
       ter.width = Math.round(W * g.dpr); ter.height = Math.round(H * g.dpr);
@@ -76,7 +60,7 @@
       [[0, P.superficie], [0.12, P.agua], [0.45, P.hondo], [0.8, P.abismo], [1, P.fondo]]
         .forEach(function (p) { ag.addColorStop(p[0], p[1]); });
       t.fillStyle = ag; t.fillRect(0, 0, W, H);
-      /* Las bandas del motor, como linea de agua: se ven sin rotulos. */
+
       t.setLineDash([2, 6]); t.lineWidth = 1;
       C.BANDAS.slice(1).forEach(function (b) {
         t.strokeStyle = al(P.vidrio, 0.1);
@@ -98,7 +82,7 @@
       t.beginPath();
       for (var x = 0; x <= C.ANCHO; x += 0.5) { t.lineTo(x * s, C.suelo(x) * s); }
       t.strokeStyle = al(P.kelpLuz, 0.45); t.lineWidth = 1.2; t.stroke(); t.restore();
-      /* Coral y ruinas: puntos del mismo azar sin azar que el relieve. */
+
       for (var c = 0; c < C.ANCHO; c += 1) {
         var h = C.h32(71, c), y = C.suelo(c) * s;
         if (h > 0.9) { t.fillStyle = al(P.coral, 0.55); t.beginPath(); t.arc(c * s, y - s * 0.6, s * (0.5 + h), 0, 7); t.fill(); }
@@ -106,7 +90,6 @@
       }
     }
 
-    /* LA NIEBLA, cuando cambia el estado: 64 x 25 celdas que el lienzo suaviza al escalarlas. */
     function nubla() {
       var m = C.niebla(S.ins || { fase: S.fase }, S.nd), x = nie.getContext('2d');
       var ex = C.exploracion(Object.keys(S.vis), S.nd);
@@ -118,7 +101,6 @@
       x.putImageData(img, 0, 0);
     }
 
-    /* x de mundo a x de pantalla, por la copia mas cercana a la camara. */
     function sx(x) { return g.ancho / 2 + C.dx(cam, x) * g.sh; }
     function envuelto(ctx, img, dy, alfa) {
       var W = C.ANCHO * g.sh, o = frac((g.ancho / 2 - cam * g.sh) / W) * W - W;
@@ -169,7 +151,7 @@
         var ob = window.AtlasObra, tam = s * 9 * (1 - 0.45 * S.k);
         if (visibleX(x, 20 * s)) { (ob ? ob.pinta : A.estructura)(e, k, sx(x), (C.suelo(x) - 4) * s, tam, t, S.ins); }
       });
-      /* Un buzo por tropa tuya: sin tropas, nadie bucea (no se anima lo que el juego no conoce). */
+
       for (var i = 0; i < Math.min(S.nt, 6); i++) {
         var r = RUTAS[i % 3];
         var a = C.SECTORES[r[0]], b = C.SECTORES[r[1]], c = frac(t * 0.00004 + i * 0.17) * 2;
@@ -180,7 +162,7 @@
       }
       if (O) { O.base(e, t, V); if (O.toques) { O.toques(e, t, V); } }
       A.plancton(e, g.ancho, g.alto, t);
-      /* La niebla respira: dos pasadas que derivan despacio, y lo nunca visto sigue tapado. */
+
       var dr = quieto ? 0 : Math.sin(t * 0.0003) * s * 1.5;
       e.imageSmoothingEnabled = true;
       if (S.k < 0.99) { envuelto(e, nie, dr, 0.55 * (1 - S.k)); envuelto(e, nie, -dr, 0.55 * (1 - S.k)); }
@@ -218,9 +200,6 @@
       if (!pedido && visible && !document.hidden) { pedido = requestAnimationFrame(bucle); }
     }
 
-    /* El gesto (arrastre, toque, teclado, fichas, Superficie) vive en `atlas-gesto.js`. */
-
-    /* Tu nodo sale de tu clave publica; sin identidad, NO_DATA y el mundo sigue siendo el mismo. */
     function clave() {
       var I = window.Identity;
       if (!I || !I.publica || !(I.quien && I.quien())) { S.sinClave = true; return; }
@@ -233,7 +212,7 @@
     function tropas() {
       var inc = window.AtlasIncubadora, l = null;
       try { l = inc && inc.army ? inc.army() : null; } catch (x) { l = null; }
-      return Array.isArray(l) ? l.map(function (u) { return u && u.adopcion ? u.adopcion.tropa : u; }) : null;  /* A1B8: el Army guarda adopciones */
+      return Array.isArray(l) ? l.map(function (u) { return u && u.adopcion ? u.adopcion.tropa : u; }) : null;
     }
     function estado(ins) {
       if (ins) { S.ins = ins; S.fase = ins.fase || S.fase; S.vis[C.visita(ins)] = 1; }
@@ -250,11 +229,9 @@
     estado(null);
     arranca();
     document.addEventListener('preceptor:identity', clave);
-    /* Una tropa nueva entra en tu base al eclosionar, no a los 5 ciclos (`ui.js` avisa). */
+
     document.addEventListener('atlas:tropa', function () { estado(null); });
-    /* Se mide la CAJA, no la ventana: el dialogo termina de maquetarse despues de montar el mapa
-       y la caja cambia de ancho sin que la ventana lo haga (Doogee, 2026-09-28: lienzo pensado
-       para 297 px y estirado a 499, rotulos a 1,68x de su edificio). */
+
     if ('ResizeObserver' in window) { new ResizeObserver(function () { if (prepara()) { arranca(); } }).observe(caja); }
     else { window.addEventListener('resize', function () { if (prepara()) { arranca(); } }); }
     if ('IntersectionObserver' in window) {
@@ -269,12 +246,12 @@
       estado: estado,
       sector: function (k) { S.sector = k; if (quieto && g) { fotograma(0); } },
       carta: function () {
-        /* Lo que lee un agente es la partida de AHORA, no la ultima que llego al mapa. */
+
         var J = window.AtlasJuego, i = J && J.instantanea && J.instantanea();
         if (i) { estado(i); }
         return C.estado(S.ins, S.nd, tropas(), Object.keys(S.vis));
       },
-      /* Lo que usa `atlas-gesto.js`: la camara, el toque, la Superficie y el dato de cada sitio. */
+
       g: function () { return g; }, cam: function () { return cam; },
       mira: function (x) { meta = x; arranca(); },
       arrastra: function (c, v) { cam = C.vuelta(c); inercia = v; meta = null; if (quieto) { fotograma(0); } else { arranca(); } },
@@ -286,21 +263,18 @@
       superficie: function (on) { S.sup = on ? 1 : 0; det.open = !!on; arranca(); return !!on; },
       edificios: function () { return C.estructuras(S.ins, S.nd); },
       nodo: function () { return S.nd; }, ins: function () { return S.ins; }, caja: caja, etq: etq,
-      /* Las visitas de una partida retomada: la niebla vuelve a ser la que esa partida vio. */
+
       visitas: function (l) { S.vis = {}; (l || []).forEach(function (v) { S.vis[v] = 1; }); estado(null); }
     };
     if (window.AtlasGesto) { window.AtlasGesto.monta(vivo); }
     return vivo;
   }
 
-  /* ESTAS AQUI: la linea y el `aria-current` los escribe `atlas-gesto.js` (se movio alli el
-     2026-09-28, al pasar este fichero de 16 KiB: es texto y accesibilidad, oficio del gesto). El
-     mapa solo pinta el anillo del sector. */
   function aqui(texto, sector) {
     if (window.AtlasGesto && ultima) { window.AtlasGesto.aqui(ultima, texto, sector); }
     if (vivo) { vivo.sector(sector); }
   }
-  /* La instantanea real llega por aqui (la voz del Preceptor la reparte cada pocos ciclos). */
+
   function estado(ins) { if (vivo) { vivo.estado(ins); } }
   function carta() { return vivo ? vivo.carta() : null; }
   function visitas(l) { if (vivo) { vivo.visitas(l); } }

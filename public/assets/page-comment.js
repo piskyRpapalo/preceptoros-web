@@ -1,19 +1,3 @@
-/* preceptoros.org · COMENTAR ESTA PAGINA, en todas las paginas de las nueve lenguas.
-
-   EL CANAL ES EL QUE YA LLEGA AL RACK, no uno nuevo (Soberano, 2026-10-05). Medido hoy: tres lotes
-   llegaron por `Enviar.paquete` -> `POST /api/v1/paquetes` con el esquema `preceptoros/correcciones/1`,
-   firmado contra el reto con la identidad del navegador (el nivel 1 tambien la tiene). Este modulo
-   solo arma UN par y se lo da a esa puerta: ni endpoint nuevo ni segundo camino, porque dos caminos
-   divergen el dia que cambie el protocolo.
-
-   QUE VIAJA Y QUE NO. Viaja el texto TAL CUAL se escribio (sin recortar ni normalizar), la direccion
-   de la pagina, la lengua, el pseudonimo, la clave publica y las firmas. No viaja nada mas: ni
-   historial, ni cookies, ni el chat. Se dice ANTES de pulsar, y el consentimiento es POR ACTO: la
-   casilla nace desmarcada cada vez que se abre.
-
-   El par lleva `tipo: 'comentario'`, asi que `ingesta.py` lo guarda como comentario y `turnos.py`
-   (que filtra `tipo = 'correccion'`) no lo mete en ningun dataset. El rack no publica nada solo:
-   cola de revision humana. Sin red en este fichero: la unica salida es `enviar.js`, pedido al pulsar. */
 (function () {
   'use strict';
   if (window.PageComment) { return; }
@@ -67,7 +51,6 @@
   }
   var dlg = null, R = {};
 
-  /* La puerta de salida, pedida al pulsar: el mismo `enviar.js` que usan las correcciones. */
   function puerta() {
     if (window.Enviar && window.Enviar.paquete) { return Promise.resolve(window.Enviar); }
     return new Promise(function (ok, mal) {
@@ -82,8 +65,7 @@
     if (!I) { return Promise.reject(new Error('NO_DATA · auth.js')); }
     return I.quien && I.quien() ? Promise.resolve(I) : I.crear().then(function () { return I; });
   }
-  /* El par, con los nombres de `corregir.js` y el orden de `ingesta.py` (CAMPOS): el orden es parte
-     de los bytes firmados. El texto va SIN tocar. */
+
   function par(texto) {
     return { prompt: location.pathname, respuesta: '', correccion: texto, corregido: new Date().toISOString(),
              idioma: L, motivo: 'comentario de pagina', tarea: 'comentar-web', consent: 1, origen: 'page-comment', tipo: 'comentario' };

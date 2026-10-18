@@ -1,17 +1,3 @@
-/* preceptoros.org · theGame · el PANEL de ATLAS, el Bosque Sumergido.
-
-   SOLO SE ENTRA POR theGame (Soberano, 2026-09-26). Este fichero lo carga
-   `thegame.js` dentro de su capa y expone `window.AtlasJuego`: monta el panel,
-   lo pausa al cerrar la capa y lo reanuda al volver.
-
-   PINTA LO QUE DICE EL MOTOR. Las cifras salen de `atlas-motor.js`, puro y
-   determinista; aqui solo se dibuja y se traducen los clics en acciones.
-   Un ciclo por segundo mientras la capa esta abierta y la pestana a la vista;
-   con la pestana oculta el Bosque produce «mientras dormias», hasta 24 h.
-
-   DOS SALIDAS DE RED, las dos al propio origen y al abrir: su texto
-   (`atlas-<lengua>.json`) y las leyes medidas del mundo (`atlas-mundo.json`).
-   Nada se guarda: v1 vive en la pestana y el sello lo dice. */
 (function () {
   'use strict';
 
@@ -45,7 +31,7 @@
   }
   function pon(nodo, texto) { if (nodo.textContent !== String(texto)) { nodo.textContent = texto; } }
   function dice(texto) { if (texto) { pon(R.vivo, texto); } }
-  /* --- el panel: se construye una vez y luego solo se actualiza ----------- */
+
   function panel() {
     var raiz = el('div', 'atlas-panel atlas-piso'); raiz.id = 'atlas-piso';
     raiz.appendChild(el('p', 'atlas-lema', U('lema')));
@@ -70,7 +56,7 @@
      ['cobre', '🟠 ' + U('cobre')], ['o2', '🫧 ' + U('oxigeno')]].forEach(function (x) {
       var li = el('li'); if (x[0] === 'flujo') { li.title = U('flujo_t'); }
       li.appendChild(el('b', null, x[1])); R.rec[x[0]] = el('data');
-      /* Las fracciones se leen de izquierda a derecha tambien en arabe. */
+
       if (x[0] === 'luz' || x[0] === 'o2') { R.rec[x[0]].dir = 'ltr'; }
       li.appendChild(R.rec[x[0]]); rec.appendChild(li);
     });
@@ -81,8 +67,7 @@
     R.alertaP = el('p', null, U('alerta_p'));
     R.reparar = boton(U('reparar'));
     R.reparar.id = 'atlas-reparar';
-    /* LIMPIEZA (2026-10-11): reparar es UN clic y UNA funcion (el motor); la ventana modal que lo envolvia se
-       retira (heredaba pointer-events:none y solo se cerraba con Escape: bloqueaba el juego). */
+
     R.reparar.addEventListener('click', repara);
     R.alerta.appendChild(R.alertaT); R.alerta.appendChild(R.alertaP); R.alerta.appendChild(R.reparar);
     raiz.appendChild(R.alerta);
@@ -99,9 +84,9 @@
         lienzo.appendChild(s);
       });
     R.grieta = boton('⚠ ' + U('s_grieta'), 'atlas-sector'); R.grieta.dataset.sector = 'grieta';
-    R.grieta.addEventListener('click', repara);  /* la misma funcion que «reparar»: una puerta, una cerradura */
+    R.grieta.addEventListener('click', repara);
     lienzo.appendChild(R.grieta);
-    /* El mundo va PRIMERO, bajo el lema: se entra a un mundo, no a un formulario (Doogee, 2026-09-28). */
+
     sm.appendChild(lienzo); raiz.insertBefore(sm, raiz.children[1] || null);
 
     var fs = el('fieldset', 'atlas-profundidad');
@@ -130,9 +115,6 @@
     dor.appendChild(el('p', 'atlas-nota', U('dormias_nota')));
     hud.appendChild(dor);
 
-    /* B1 (FIRMO 2026-10-12): FUERA las skills de relleno (siete oficios con barras de XP) y el Core Level: el cangrejo no
-       podia hacer nada de eso. Las skills vuelven UNA A UNA cuando exista la accion real. El motor no se toca (sigue
-       contando su xp, que ya no se ensena). */
     rej.appendChild(hud); raiz.appendChild(rej);
 
     var nu = el('section', 'panel atlas-nucleo');
@@ -140,11 +122,7 @@
     nu.appendChild(el('p', 'atlas-nota', LEY.nd ? U('mundo_nd') : rellena(U('nucleo_nota'), {
       pruebas: num(MUNDO.pruebas_web), lenguas: num(MUNDO.lenguas),
       kb: num(Math.round(MUNDO.gzip_juego_b / 1024)) })));
-    /* SI LA CASA ESTA MAL, SE DICE. Las leyes duplican el dano de la grieta
-       cuando el arnes del service worker no esta entero o el juego pesa mas de
-       la cuenta. Ambas cifras salen de medidas locales (`atlas/mundo.py`), no
-       de un runner ajeno; y el jugador tiene que saber la causa, no creer que
-       el motor esta roto. */
+
     if (!LEY.nd && LEY.dano > 1) { nu.appendChild(el('p', 'atlas-casa', U('casa_mal'))); }
     if (!LEY.nd) {
       nu.appendChild(el('p', 'atlas-medido', rellena(U('medido'), {
@@ -156,7 +134,6 @@
     zona.appendChild(raiz);
     if (window.AtlasMapa) { mapa = window.AtlasMapa.monta(lienzo); }
   }
-
 
   function pinta() {
     R.meter.max = E.integridad_max; R.meter.value = E.integridad;
@@ -178,7 +155,6 @@
       pon(r.nota, rellena(U(r.clave), { n: num(ing) }));
     });
 
-    /* 6b+6a (FIRMO 2026-10-12, manda la ficha V3.0): ausente NO se cobra; la pantalla NARRA, en ciclos (sin reloj). */
     pon(R.dormH, U('dormias_h'));
     if (!R.dormUl.firstChild) { R.dormUl.appendChild(el('li', 'atlas-nota', rellena(U('dormias_vacio'), { c: num(E.t) }))); }
 
@@ -187,7 +163,6 @@
     if (mapa) { mapa.fase(f); }
   }
 
-  /* Los avisos del motor se dicen una vez, en la zona viva. */
   function actua(nuevo) {
     E = nuevo;
     var ev = E.eventos[E.eventos.length - 1];
@@ -213,8 +188,8 @@
 
   document.addEventListener('visibilitychange', function () {
     if (!activo || !E) { return; }
-    if (document.hidden) { oculto = 1; para(); return; }  /* solo una marca: sin reloj de pared */
-    if (oculto) { oculto = 0; R.dormUl.textContent = ''; pinta(); }  /* 6b: volver no paga (V3.0); M.dormir solo rehace partidas viejas */
+    if (document.hidden) { oculto = 1; para(); return; }
+    if (oculto) { oculto = 0; R.dormUl.textContent = ''; pinta(); }
     arranca();
   });
 
@@ -225,15 +200,10 @@
     });
   }
 
-  /* LA INSTANTANEA vive en `atlas-partida.js`, compartida con el arnes y la
-     Aduana: una sola forma de mirar la partida, en la pestana y en node. */
   function instantanea() { return window.AtlasPartida ? window.AtlasPartida.instantanea(E, M) : null; }
 
-  /* EL PILOTO NO TOCA EL ESTADO: propone una accion del enum y aqui se
-     traduce a las MISMAS llamadas que hacen los botones. Devuelve el evento
-     del motor (ok/fallo), o null si no hay partida en marcha. */
   function aplica(a) {
-    /* `mover` es la flecha del mapa (R2c): la camara la decide, no el motor, y no entra en la partida. */
+
     if (a && a.accion === 'mover') { return window.AtlasMar && window.AtlasMar.mueve ? window.AtlasMar.mueve(a.dir) : null; }
     if (!E || !activo) { return null; }
     var f = { recoger: M.recoger, reparar: M.reparar, aplazar: M.aplazar }[a.accion];
@@ -245,8 +215,7 @@
     instantanea: instantanea, aplica: aplica,
     invoca: function (c) { if (!E || !activo) { return null; } actua(M.invocar(E, c)); return E.eventos[E.eventos.length - 1]; },
     partida: function () { return window.AtlasPartida && window.AtlasPartida.partida(E, M); },
-    /* RETOMAR (2026-09-28): la partida se vuelve a jugar con el motor puro (`AtlasPartida.retoma`)
-       y sigue con SU ley, la que tenia al nacer. Lanza con la causa; quien llama la dice. */
+
     retoma: function (p, cada) {
       var P = window.AtlasPartida;
       E = P.retoma(p, P.puro || M, cada); LEY = P.partida(E, M).ley;
@@ -261,7 +230,7 @@
         .then(function (d) {
           TXT = d[0]; MUNDO = d[1]; LEY = M.leyes(MUNDO); E = E || M.inicial(LEY);
           panel(); pinta(); arranca();
-          /* Si la portada habla otra lengua, se dice: el juego no finge estar traducido. */
+
           if (AL && AL.pagina !== lang && U('lengua_nd')) { zona.insertBefore(el('p', 'no-data', U('lengua_nd').replace('{l}', AL.pagina)), zona.firstChild); }
         }).catch(function (e) {
           zona.appendChild(el('p', 'no-data', 'NO_DATA · atlas-' + lang + '.json: ' + (e && e.message)));
