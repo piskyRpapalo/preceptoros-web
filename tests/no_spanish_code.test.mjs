@@ -17,7 +17,7 @@ const PALABRAS_ES = [
 
 function jsServidos() {
   const out = [];
-  for (const d of ['public', 'public/game']) {
+  for (const d of ['public', 'public/game', 'public/assets']) {
     for (const f of readdirSync(join(RAIZ, d))) {
       if (f.endsWith('.js') && statSync(join(RAIZ, d, f)).isFile()) { out.push(join(RAIZ, d, f)); }
     }
