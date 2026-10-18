@@ -15,7 +15,9 @@ const JUEGO = [
   '/game/duelo.js', '/game/fog_of_war.js', '/game/isometric_floor_projection.js', '/game/world_camera.js', '/game/map_pointer_input.js', '/game/semiotic_glyph.js', '/game/map_nodes_layer.js', '/game/map_zoom.js', '/game/piece_inspector.js', '/game/vector_contract.js', '/game/state_vector.js', '/game/place_telemetry.js', '/game/npc_territory_map.js', '/game/mar.js', '/game/mar-anclas.js', '/game/crab_render_hd.js', '/game/audio_feedback_manager.js', '/game/crab_free_move.js', '/game/genesis_tutorial.js', '/game/buildings_toon.js', '/game/reef_place_cards.js', '/game/shell_schematics.js', '/game/reef_buildings_paint.js', '/game/latency_crystal.js', '/game/hexelion_bench.js', '/game/reef_corals.js', '/game/reef_buildings_layer.js', '/game/mar-cangrejos.js', '/game/mar-fondo.js', '/game/nodos-pesos.js',
   '/game/nodos-cedulas.js', '/game/node_reception_contract.js', '/game/node_trust_anchor.js', '/game/node_trust_manifest.js', '/game/node_signature_messages.js', '/game/node_signature_verify.js', '/game/node_bindings_messages.js', '/game/node_bindings.js', '/game/node_projection.js', '/game/nodos.js', '/game/cuenta.js', '/game/ui-nodos.js', '/game/ui-rack.js',
   '/game/escuadron.js', '/game/battle_choreography.js', '/game/battle_replay.js', '/game/npc_occupancy.js', '/game/npc_walls.js', '/game/node_preview.js', '/game/node_file_receiver.js', '/game/ui-arena-comun.js', '/game/ui-arena.js', '/game/ui-duelo.js', '/game/hexelion_dictionary.js',
-  '/assets/eaa-art12-local-first-surface.js', '/assets/eaa-art12-local-first-surface.css'
+  '/assets/eaa-art12-local-first-surface.js', '/assets/eaa-art12-local-first-surface.css',
+  '/game/comic_accents.js', '/game/bubble_language.js', '/game/bubble_light.js', '/game/bubble_bestiary.js', '/game/bubble_world.js',
+  '/assets/descent_scene.js', '/assets/descent_view.js', '/assets/descent.css'
 ];
 
 const PORTADA = ['/assets/base.css', '/assets/canon.css', '/assets/soberano.css', '/assets/consiento.css', '/assets/consiento.js',

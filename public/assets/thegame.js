@@ -189,6 +189,19 @@
     });
   }
 
+  var DESCENSO = [['/game/tabla_semantica.js'], ['/game/comic_tokens.js'], ['/game/comic_accents.js'],
+    ['/game/comic_atoms.js'], ['/game/valores.js'], ['/game/gacha.js'], ['/game/bubble_language.js'], ['/game/bubble_light.js'],
+    ['/game/bubble_bestiary.js'], ['/game/bubble_world.js'], ['descent_scene.js'], ['descent_view.js']];
+  function descenso() {
+    var P = document.getElementById('juego-panel');
+    if (!P || capa) { return; }
+    var h = document.createElement('link');
+    h.rel = 'stylesheet'; h.href = '/assets/descent.css';
+    document.head.appendChild(h);
+    pide(DESCENSO).then(function () { window.AtlasDescentView.monta(P, function () { abre(null, 'casa'); }); })
+      .catch(function () { console.warn('NO_DATA · the descent could not be loaded'); abre(null, 'casa'); });
+  }
+
   /* `ve`: abre una hoja (taller, batalla) o vuelve al mapa (cualquier otra cosa). */
-  window.TheGame = { abre: abre, army: cargaArmy, ve: function (id) { muestra(HOJA[id] ? id : null); } };
+  window.TheGame = { abre: abre, army: cargaArmy, descenso: descenso, ve: function (id) { muestra(HOJA[id] ? id : null); } };
 })();

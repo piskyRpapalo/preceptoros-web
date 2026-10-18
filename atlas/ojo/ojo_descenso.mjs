@@ -1,7 +1,7 @@
 // Ojo del descenso: comprueba que una pagina dibujada por scroll es DETERMINISTA.
 // Mismo scroll -> mismo fotograma (sha256 de los bytes PNG del viewport), tras recargar
 // (Pase 2, de arriba abajo) y viniendo desde abajo (Pase 3, de abajo arriba).
-// Uso: node atlas/ojo/ojo_descenso.mjs <url> [--t 0,300,900] [--n 6] [--reduced] [--out <dir>]
+
 // Salida: UNA linea JSON. rc=0 ok · rc=1 no determinista · rc=2 NO_DATA (Chrome, pagina o uso).
 // Chrome por launchChrome (atlas/chrome_launch.mjs); CDP por WebSocket global de Node 22; sin dependencias.
 import { createHash } from 'node:crypto';
@@ -15,7 +15,8 @@ const DOBLE_RAF = 'new Promise((r) => requestAnimationFrame(() => requestAnimati
 const GEO = '({ max: Math.max(0, document.documentElement.scrollHeight - window.innerHeight), w: window.innerWidth, h: window.innerHeight })';
 const EXPONE = '({ atlas: typeof window.AtlasDescenso !== "undefined", frame: !!window.AtlasDescenso && typeof window.AtlasDescenso.frame === "function" })';
 const FRAME = '(() => { try { return JSON.stringify(window.AtlasDescenso.frame(window.scrollY)); } catch (e) { return "ERROR: " + e.message; } })()';
-const pasoScroll = (t) => `window.scrollTo(0, ${t}), ${DOBLE_RAF}`;
+
+const pasoScroll = (t) => `window.scrollTo({ top: ${t}, left: 0, behavior: 'instant' }), ${DOBLE_RAF}`;
 
 const espera = (ms) => new Promise((r) => setTimeout(r, ms));
 const enUnaLinea = (s, n = 600) => String(s ?? '').replace(/\s+/g, ' ').trim().slice(0, n);
@@ -43,6 +44,7 @@ function leeArgs(argv) {
     else if (a === '--t') o.t = valor(++i, a).split(',').map(Number);
     else if (a === '--n') o.n = Number(valor(++i, a));
     else if (a === '--out') o.out = valor(++i, a);
+    else if (a === '--sel') o.sel = valor(++i, a);
     else if (!a.startsWith('--') && o.url === null) o.url = a;
     else throw new NoData(`NO_DATA: uso incorrecto: argumento "${enUnaLinea(a, 80)}"`);
   }
@@ -132,6 +134,11 @@ async function cargaYDobleRaf(c, lanza, que) {
   const r = await lanza();
   if (r?.errorText) throw new NoData(`NO_DATA: ${que}: ${enUnaLinea(r.errorText, 200)}`);
   await conTiempo(carga, 20000, `NO_DATA: ${que}: sin evento load en 20 s`);
+
+  await evalua(c, `(document.fonts && document.fonts.ready) ? document.fonts.ready.then(() => 1) : 1`);
+
+  await evalua(c, `new Promise((r) => { let n = 0; const f = () => { const A = window.AtlasDescenso; const fr = A && A.frame ? A.frame(0) : null;
+    if ((fr && !fr.cause) || ++n > 300) { r(1); } else { requestAnimationFrame(f); } }; f(); })`);
   await evalua(c, DOBLE_RAF);
   if (c.doc.status === null || c.doc.status >= 400) {
     throw new NoData(`NO_DATA: ${que}: documento HTTP ${c.doc.status ?? 'sin respuesta'}`);
@@ -149,7 +156,16 @@ async function pasada(c, ts, dirOut, conFrame) {
   const r = { completo: {}, hash: {}, serial: {}, motions: [] };
   for (const t of ts) {
     await evalua(c, pasoScroll(t));
-    const { data } = await c.cmd('Page.captureScreenshot', { format: 'png' });
+    let clip = null;
+    if (c.sel) {
+      const q = await evalua(c, `(function(){var e=document.querySelector(${JSON.stringify(c.sel)}); if(!e) return null; var r=e.getBoundingClientRect(); return [r.x + scrollX, r.y + scrollY, r.width, r.height];})()`);
+
+      if (!q || !(q[2] > 0 && q[3] > 0)) throw new NoData(`NO_DATA: --sel sin elemento visible: ${enUnaLinea(c.sel, 80)}`);
+      clip = { x: q[0], y: q[1], width: q[2], height: q[3], scale: 1 };
+    }
+
+    const lienzo = c.sel ? await evalua(c, `(function(){var e=document.querySelector(${JSON.stringify(c.sel)}); return e && e.tagName === 'CANVAS' ? e.toDataURL('image/png').split(',')[1] : null;})()`) : null;
+    const { data } = lienzo ? { data: lienzo } : await c.cmd('Page.captureScreenshot', clip ? { format: 'png', clip } : { format: 'png' });
     const png = Buffer.from(data, 'base64');
     const sha = createHash('sha256').update(png).digest('hex');
     r.completo[t] = sha;
@@ -168,6 +184,8 @@ async function pasada(c, ts, dirOut, conFrame) {
 // Mide: viewport movil 412x915, pase 1 (arriba abajo), recarga, pase 2 (arriba abajo), pase 3 (abajo arriba).
 async function medir(c, a) {
   await c.cmd('Emulation.setDeviceMetricsOverride', { width: VISTA.width, height: VISTA.height, deviceScaleFactor: 1, mobile: true });
+
+  await c.cmd('Emulation.setScrollbarsHidden', { hidden: true });
   await c.cmd('Network.enable');
   await c.cmd('Network.setBypassServiceWorker', { bypass: true });
   if (a.reduced) await c.cmd('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'reduce' }] });
@@ -213,6 +231,7 @@ async function principal() {
     const a = leeArgs(process.argv.slice(2));
     chrome = launchChrome(PUERTO);
     c = await abreCdp(await paginaCdp(chrome));
+    c.sel = a.sel || null;
     const salida = await conTiempo(medir(c, a), 120000, 'NO_DATA: el ojo supera 120 s');
     return { rc: salida.ok ? 0 : 1, linea: JSON.stringify(salida) };
   } catch (e) {
