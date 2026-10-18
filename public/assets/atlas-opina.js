@@ -1,24 +1,3 @@
-/* preceptoros.org · theGame · OPINAR FIRMADO sobre lo que ves: sugerencia, veredicto, grieta.
-
-   SE CARGA AL PULSAR «Sign feedback» (2026-09-28): su peso no va en la puerta del juego, que es una
-   ley del mundo. Desde ese momento pone su propio boton junto a cada sugerencia, cada veredicto del
-   juez y la alerta de la grieta, para que opinar este donde esta la cosa.
-
-   QUE SE FIRMA. `atlas.opinion/1` (contrato en `data/atlas_opinion_schema.json`): sobre que, el
-   ciclo, la HUELLA del estado exacto de la partida en ese momento (sha256 del final, con
-   `atlas-coord.js`), la linea tal como la viste, tu respuesta de un enum cerrado y una nota corta
-   opcional que no admite rutas, correos, enlaces ni IPs. Se firma con tu identidad Ed25519, la de
-   siempre (`Identity.firmar`).
-
-   NO SE ENVIA SOLA. Se guarda como fichero: la web no llama al rack y el canal de envio del Agora aun
-   no existe (lo dice `enviar.js`). ENVIAR ES DE LA PERSONA (Soberano, 2026-09-28: «quiero enviar ya
-   los feedback mios y de otros users»): tras firmar aparece «Send», que abre el menu de compartir DEL
-   SISTEMA (Web Share) con el fichero firmado; la persona elige el canal (mensajeria, correo) y a
-   quien. Ni servidor ni direccion escrita aqui. Quien lo recibe lo verifica con
-   `atlas/verifica_opinion.mjs`: la firma dice quien lo escribio y que no cambio. «Copy» (tambien
-   con un clic propio) deja el mismo texto en el portapapeles para pegarlo en el mensaje: es la
-   salida del escritorio, donde Web Share de ficheros suele faltar. Sin ninguno de los dos, el
-   fichero ya guardado se lleva a mano, y se dice. Los textos viven en `atlas-opina-<lengua>.json`. */
 (function () {
   'use strict';
 
@@ -34,17 +13,15 @@
       return r.json();
     }).then(function (d) { TX = d; return d; });
   }
-  /* Solo ASCII para el hash (lo exige el SHA-256 puro): lo que no lo es va escapado como en JSON. */
+
   function ascii(s) { return s.replace(/[^\x20-\x7e]/g, function (c) { return '\\u' + ('000' + c.charCodeAt(0).toString(16)).slice(-4); }); }
 
-  /* El texto que la persona LEYO: sin los rotulos de los botones (Hacer, Ignorar, este mismo). */
   function leido(n) {
     var c = n.cloneNode(true);
     Array.prototype.forEach.call(c.querySelectorAll('button'), function (b) { b.remove(); });
     return c.textContent.replace(/\s+/g, ' ').trim();
   }
 
-  /* Lo que hay ahora en pantalla sobre lo que se puede opinar. */
   function objetos(capa) {
     var out = {}, J = window.AtlasJuego, ins = J && J.instantanea();
     var s = capa.querySelector('.thegame-sugerencia:not(.thegame-juez)'), v = capa.querySelector('.thegame-juez');
@@ -60,7 +37,7 @@
 
   function firma(sobre, obj, eleccion, nota) {
     var J = window.AtlasJuego, H = window.AtlasCoord, I = window.Identity;
-    /* La cosa pudo irse entre abrir el panel y firmar (una sugerencia dura poco): se dice, no se rompe. */
+
     if (!obj) { dice(T('ninguno')); return; }
     if (!I || !I.quien || !I.quien()) { dice(T('nd_id')); return; }
     if (PROHIBIDO.test(nota)) { dice(T('nota_mal')); return; }
@@ -81,9 +58,6 @@
     }).catch(function (x) { dice(T('nd').replace('{m}', x && x.message)); });
   }
 
-  /* ENVIAR, con un clic propio: el menu de compartir exige un gesto reciente de la persona, y la
-     firma es asincrona. COPIAR, igual: el portapapeles solo se escribe dentro del clic. Sin Web
-     Share de ficheros ni portapapeles, NO_DATA con la salida: el fichero ya esta guardado. */
   function ofreceEnvio(texto, nombre) {
     if (!panel) { return; }
     Array.prototype.forEach.call(panel.querySelectorAll('.atlas-opina-envia'), function (v) { v.remove(); });
@@ -122,7 +96,7 @@
       claves.forEach(function (k) { var o = el('option', null, T('sobre_' + k)); o.value = k; sel.appendChild(o); });
       if (pre && obs[pre]) { sel.value = pre; }
       lab.appendChild(sel); panel.appendChild(lab);
-      /* Estilo en linea: esta pieza se carga al pulsar y su hoja no debe pesar en la puerta del juego. */
+
       var fs = el('fieldset'), eleccion = 'no_se';
       fs.style.cssText = 'display:flex;flex-wrap:wrap;gap:.35rem 1.1rem;border:1px solid var(--edge-sov);border-radius:var(--radius);padding:.5rem .8rem;margin:0';
       fs.appendChild(el('legend', null, T('eleccion')));
@@ -144,13 +118,12 @@
     var c = el('button', 'boton-sec', T('cerrar')); c.type = 'button'; c.addEventListener('click', cierra);
     c.style.justifySelf = 'start';
     panel.appendChild(c);
-    /* En la pestana que se esta viendo; sin pestanas, bajo el mapa como antes. */
+
     var sm = capa.querySelector('.thegame-panel:not([hidden])') || capa.querySelector('#atlas-piso .atlas-mapa');
     (sm || capa).appendChild(panel);
     panel.scrollIntoView({ block: 'nearest' });
   }
 
-  /* Desde que se carga, un boton junto a cada cosa sobre la que se puede opinar. */
   function siembra(capa) {
     var obs = objetos(capa);
     Object.keys(obs).forEach(function (k) {

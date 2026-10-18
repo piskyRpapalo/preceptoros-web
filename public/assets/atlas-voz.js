@@ -1,29 +1,12 @@
-/* preceptoros.org · theGame · LA VOZ EXACTA de cada tropa: los mismos bytes en cada aparato.
-
-   POR QUE EXISTE. `core.js` hace sonar la onda con OscillatorNode, y eso basta para oirla; pero
-   cada navegador sintetiza a su manera, asi que dos aparatos no dan los mismos bytes. Aqui la voz
-   se calcula a mano, SOLO CON ENTEROS: una tabla de seno de Bhaskara (sin `Math.sin`, que no esta
-   garantizado igual en cada motor), acumuladores de fase de 32 bits, FM con la receta de `vozDe`
-   mas un parcial por armonico y una envolvente en Q16. Misma tropa, mismo PCM, en la web, en la
-   app y en el rack. Por eso tiene HUELLA (sha256) y se puede verificar.
-
-   EN PARTES DE 16 KB. El PCM (16 bits, 8 kHz, 1,2 s) se empaqueta como WAV y se parte en trozos
-   de 16 KiB: el mismo tope de la casa, y el tamano que viaja o se guarda sin pedir permiso a nadie.
-
-   SIN RED Y SIN FICHEROS. Nada se descarga: los bytes salen de los armonicos, que salen de la
-   semilla firmada. En la pestana se carga al pulsar Escuchar (no en la puerta del juego: el peso
-   del juego es una ley del mundo) y el service worker la guarda para el modo sin red. En node
-   (`module.exports`) la usan la app y el rack para escribir la misma voz. */
 (function (raiz) {
   'use strict';
 
   var RATE = 8000, DUR = 9600, PARTE = 16384, Q = 32767;
   var EN_NODE = typeof module === 'object' && module.exports;
   var H = EN_NODE ? require('./atlas-coord.js') : raiz.AtlasCoord;
-  /* La receta del timbre es UNA: `vozDe` de core.js (R6). Aqui solo se pasa a enteros. */
+
   var S = EN_NODE ? require('../game/core.js') : raiz.AtlasSintesis;
 
-  /* Seno de Bhaskara I en enteros, 1024 pasos por vuelta: 16x(N-x) / (5N^2 - 4x(N-x)), N=512. */
   var SENO = new Int16Array(1024);
   for (var i = 0; i < 1024; i++) {
     var x = i % 512, p = x * (512 - x);
@@ -32,15 +15,13 @@
   }
   function inc(f) { return Math.floor(f * 4294967296 / RATE); }
 
-  /* La receta entera: portadora, moduladora e indice son los de `vozDe` (core.js), la MISMA receta,
-     no una copia (R6). Y ademas, un parcial por armonico. Sin `vozDe` cargada no hay voz: null. */
   function receta(t) {
     var a = (t && t.armonicos) || [], amp = 0, v = S && S.vozDe ? S.vozDe(t) : null;
     if (!a.length || !v) { return null; }
     a.forEach(function (h) { amp += Math.abs(h[1]) + Math.abs(h[2]); });
     var fc = v.portadora, fm = v.moduladora, ind = v.indice;
     return { fc: fc, fm: fm,
-             /* Desviacion de fase en unidades de 2^32 por unidad de la tabla: I/(2 pi) con pi = 355/113. */
+
              dev: Math.floor(Math.floor(ind / fm * 1000) * 4294967296 * 113 / (1000 * 2 * 355 * Q)),
              parciales: a.slice(1, 7).map(function (h) {
                var f = fc * Math.abs(h[0] || 1);
@@ -71,7 +52,6 @@
     return out;
   }
 
-  /* WAV mono 16 bits little-endian: 44 bytes de cabecera y el PCM. */
   function wav(m) {
     var b = new Uint8Array(44 + m.length * 2), d = new DataView(b.buffer);
     function txt(o, s) { for (var i = 0; i < s.length; i++) { b[o + i] = s.charCodeAt(i); } }
@@ -92,7 +72,7 @@
     for (var i = 0; i < b.length; i++) { s += (b[i] < 16 ? '0' : '') + b[i].toString(16); }
     return s;
   }
-  /* La huella: sha256 del WAV entero (el mismo en cada aparato), y su forma corta. */
+
   function huella(b) {
     var h = H.sha256(hex(b));
     return { hex: h, corta: '#' + h.slice(0, 4) + '…' + h.slice(-2) };
@@ -105,8 +85,6 @@
              huella: huella(b), wav: b, pcm: m };
   }
 
-  /* En la pestana: suena por el contexto de audio que ya abrio el interruptor de sonido (core.js).
-     Sin contexto (sonido apagado o sin Web Audio), no suena y lo dice quien llama. */
   function oye(t, ctx) {
     var v = voz(t);
     if (!v || !ctx) { return null; }

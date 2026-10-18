@@ -57,6 +57,10 @@ async function main() {
     actual = { path: p, step: 'carga' };
     await cmd('Page.navigate', { url: `http://127.0.0.1:${port}${p}` });
     await espera(7000);
+    actual.step = 'descenso';  /* FIRMO 2026-10-17: llegar = descenso; x = casa */
+    const d = await evalua("(q=>{const x=q('.descent-skip');if(!x||!q('canvas.descent-art'))return 0;x.click();return 'ok'})(s=>document.querySelector(s))");
+    pasos++; if (d !== 'ok') { fallos.push({ path: p, step: 'descenso', snippet: 'no descent' }); }
+    await espera(6000);
 
     actual.step = 'abre'; await espera(1500); await revisa('abre');
     await checkWavesCraft(evalua, fallos, p);

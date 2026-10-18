@@ -1,25 +1,8 @@
-/* preceptoros.org · theGame · EL GESTO: todo lo del mapa que responde a la mano.
-
-   Arrastrar, tocar, el teclado, la FICHA de cada sitio y el modo SUPERFICIE. Se separo de
-   `atlas-mapa.js` (2026-09-28) porque el mapa pinta y esto escucha: dos oficios, dos ficheros, y
-   el mapa ya rozaba los 16 KiB. El mapa le presta una vista `v` (camara, toque, dato de cada
-   sitio); esta pieza no pinta nada en el lienzo.
-
-   NADA DE ZONAS MUERTAS. Cada rotulo del mapa es un control: abre su ficha, que dice su estado
-   (leido de `atlas.carta/1`, que lo lee de la instantanea) y ofrece SOLO la accion que el motor
-   admite ahi. Si no hay accion, dice por que. La accion la pulsa la persona: es suya (`humano`).
-
-   TECLADO. Las flechas pasan de sitio en sitio en el orden del mundo (da la vuelta), Enter abre
-   la ficha y Escape lo sigue cerrando el `<dialog>` nativo, que es la trampa de foco que respetan
-   los lectores de pantalla. Cada control lleva nombre accesible sacado del texto de la lengua.
-
-   SUPERFICIE: un boton con `aria-pressed`. Vive en esta pestana y en memoria: no se recuerda al
-   volver, porque el juego no guarda nada sin que se pulse Guardar (y el boton lo dice). */
 (function () {
   'use strict';
 
   var C = window.AtlasCarta;
-  /* La causa de la carta (para agentes, en castellano interno) a su clave de texto (para la persona). */
+
   var CAUSA = { ingenieria: 'causa_ing', observatorio: 'causa_ojo', ya: 'causa_aqui', nada: 'causa_nada',
                 sellada: 'causa_sellada', sin: 'causa_nd' };
   var NB = { arrecife: 'b1', ruinas: 'b2', bosque: 'b3', nucleo: 'b4' };
@@ -32,7 +15,6 @@
     function el(t, c, x) { var n = document.createElement(t); if (c) { n.className = c; } if (x) { n.textContent = x; } return n; }
     var sec = caja.parentNode;
 
-    /* --- la ficha --------------------------------------------------------------------- */
     var ficha = el('section', 'atlas-ficha'); ficha.hidden = true;
     sec.insertBefore(ficha, caja.nextSibling);
     var abierta = null;
@@ -46,7 +28,7 @@
       return 'NO_DATA';
     }
     function abre(id) {
-      /* La ficha habla con la partida de AHORA, no con la ultima que le llego al mapa. */
+
       var ins = J.instantanea && J.instantanea();
       if (ins) { v.estado(ins); }
       var e = v.edificios().filter(function (x) { return x.id === id; })[0];
@@ -66,7 +48,7 @@
         b.type = 'button';
         b.addEventListener('click', function () {
           if (a.accion === 'reparar') {
-            /* Reparar tiene su dialogo con el Preceptor: se abre el mismo, no se salta. */
+
             var g = caja.querySelector('[data-sector="grieta"]');
             if (g && g.tagName === 'BUTTON') { g.click(); return; }
           }
@@ -79,7 +61,6 @@
       ficha.hidden = false;
     }
 
-    /* --- los controles del mapa --------------------------------------------------------- */
     function controles() {
       var l = Array.prototype.slice.call(caja.querySelectorAll('[data-sector]'));
       if (v.nodo()) { l.push(v.etq); }
@@ -89,14 +70,14 @@
     function idDe(b) { return b === v.etq ? 'base' : b.dataset.sector; }
     Array.prototype.forEach.call(caja.querySelectorAll('[data-sector]'), function (b) {
       if (b.tagName !== 'BUTTON') {
-        /* Los rotulos que eran texto pasan a ser controles: nada que parezca boton sin serlo. */
+
         b.tabIndex = 0; b.setAttribute('role', 'button'); b.style.pointerEvents = 'auto';
         b.addEventListener('click', function () { abre(b.dataset.sector); });
         b.addEventListener('keydown', function (ev) {
           if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); abre(b.dataset.sector); }
         });
       } else {
-        /* La grieta ya abre su dialogo; ademas, su ficha al enfocarla con teclado. */
+
         b.addEventListener('focus', function () { abre('grieta'); });
       }
     });
@@ -113,9 +94,6 @@
     var nota = sec.querySelector('.atlas-nota');
     if (nota && T('mapa_mover')) { nota.textContent += ' ' + T('mapa_mover'); }
 
-    /* --- arrastre y toque ---------------------------------------------------------------- */
-    /* Un toque (poco recorrido, poco tiempo) perturba el agua; un arrastre mueve la camara. La
-       inercia es determinista en fotogramas (x 0,9 cada uno): mismo gesto, misma frenada. */
     var toma = null;
     caja.addEventListener('pointerdown', function (ev) {
       if (ev.target.closest('button,[role="button"]')) { return; }
@@ -139,7 +117,6 @@
     }
     ['pointerup', 'pointercancel', 'pointerleave'].forEach(function (n) { caja.addEventListener(n, suelta); });
 
-    /* --- Superficie ---------------------------------------------------------------------- */
     if (T('superficie')) {
       var sw = el('button', 'boton-sec atlas-superficie', T('superficie'));
       sw.type = 'button'; sw.setAttribute('aria-pressed', 'false'); sw.title = T('superficie_nota');
@@ -154,9 +131,6 @@
     v.etq.setAttribute('aria-label', T('nodo_tuyo') + ' ' + v.etq.textContent);
   }
 
-  /* ESTAS AQUI (2026-09-28). Una linea bajo el lienzo dice donde estas, en que nivel, con que
-     rol y que acaba de pasar, leido de la partida real por la voz del Preceptor. El sector se
-     marca con `aria-current` y con un anillo en el lienzo, no solo con color. */
   function aqui(ultima, texto, sector) {
     if (!ultima || !ultima.parentNode) { return; }
     var p = ultima.parentNode.querySelector('.atlas-mapa-aqui');

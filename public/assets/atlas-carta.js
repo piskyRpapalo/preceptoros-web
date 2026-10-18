@@ -1,25 +1,3 @@
-/* preceptoros.org · theGame · LA CARTA: el mundo abierto, sin pintar nada.
-
-   PURO. Ni DOM, ni red, ni reloj, ni azar, ni almacen: el mismo estado da el mismo mundo, la
-   misma niebla y las mismas ondas, en la pestana, en node y en el rack. Por eso la vista
-   (`atlas-mapa.js`) puede cambiar entera sin mover un dato, y un agente puede razonar sobre el
-   mundo sin haber visto el lienzo.
-
-   UN MUNDO PARA TODOS. Corte vertical del Bosque Sumergido: el eje x da la vuelta (256
-   unidades, sin bordes), el eje y es la profundidad (0 superficie, 100 abismo), y las cuatro
-   bandas del motor son franjas de esa profundidad. El relieve sale de una semilla FIJA: todas
-   las personas bucean el mismo fondo. Lo que cambia es TU NODO, que se ancla al fondo en un
-   punto derivado de tu clave publica, y TU NIEBLA, que es una funcion de tu partida.
-
-   LA LEY DE LA NIEBLA (una sola, aqui; nadie la guarda: se recalcula de la instantanea):
-     - el poblado (los cinco sectores) alumbra un radio que crece con la fase;
-     - la profundidad visible llega a la banda que la fase permite, o a la tuya si bajaste mas;
-     - tu nodo alumbra su vecindad;
-     - desde la fase 3, el cable de tu nodo al Nucleo se entrevé; desde la 4, se ve;
-     - la grieta abierta brilla a traves de la niebla.
-   0 = nunca visto, 1 = entrevisto, 2 = a la vista. Sube con la fase y nunca baja con ella.
-
-   LOS NODOS AJENOS son NO_DATA: la web no llama a ningun servidor, asi que no sabe de nadie. */
 (function (raiz) {
   'use strict';
 
@@ -27,22 +5,20 @@
 
   var ANCHO = 256, HONDO = 100, SEMILLA = 1987, CELDA = 4;
   var COLS = ANCHO / CELDA, FILAS = HONDO / CELDA;
-  /* Las cuatro bandas del motor, como franjas [desde, hasta) de profundidad. */
+
   var BANDAS = [['0-50', 0, 22], ['50-150', 22, 48], ['150-300', 48, 76], ['300+', 76, HONDO]];
   var SECTORES = { forja: 66, grieta: 102, nucleo: 128, aguja: 154, ojo: 184 };
   var ALCANCE = [48, 76, HONDO, HONDO, HONDO];
 
-  /* Un entero a [0,1) con dos entradas: el azar sin azar. */
   function h32(a, b) {
     var t = Math.imul(a ^ 0x9E3779B9, 0x85EBCA6B) ^ Math.imul((b | 0) + 0x632BE5AB, 0xC2B2AE35);
     t ^= t >>> 15; t = Math.imul(t, 0x2C1B3C6D); t ^= t >>> 12; t = Math.imul(t, 0x297A2D39);
     return ((t ^ (t >>> 15)) >>> 0) / 4294967296;
   }
   function vuelta(x) { return ((x % ANCHO) + ANCHO) % ANCHO; }
-  /* Distancia horizontal con signo por el camino corto: el mundo da la vuelta. */
+
   function dx(a, b) { var d = vuelta(b - a); return d > ANCHO / 2 ? d - ANCHO : d; }
 
-  /* Ruido de valor periodico: cierra sobre si mismo en ANCHO, sin costura. */
   function ruido(x, per, s) {
     var i = Math.floor(x), f = x - i, u = f * f * (3 - 2 * f);
     var a = h32(s, ((i % per) + per) % per), b = h32(s, (((i + 1) % per) + per) % per);
@@ -57,8 +33,7 @@
     }
     return v / tot;
   }
-  /* La profundidad del fondo en x: una plataforma rugosa a media agua, dos arrecifes que suben
-     a la luz (Forja y Ojo) y la fosa del Nucleo. El agua ocupa el lienzo; la roca, lo justo. */
+
   function campana(x, c, w) { var d = dx(c, x) / w; return Math.exp(-d * d); }
   function suelo(x) {
     return Math.max(8, Math.min(HONDO - 4, 34 + 26 * relieve(x) + 56 * campana(x, SECTORES.nucleo, 22)
@@ -69,15 +44,13 @@
     return BANDAS.length - 1;
   }
 
-  /* TU NODO, de tu clave publica (hex). Cae fuera del poblado, en el anillo exterior, para
-     que llegar a el sea explorar. Sin clave, null: la vista lo dice, no lo inventa. */
   function nodo(pub) {
     if (typeof pub !== 'string' || !/^[0-9a-f]{16,}$/i.test(pub)) { return null; }
     var h = parseInt(pub.slice(0, 8), 16) >>> 0, desde = SECTORES.ojo + 28;
     var largo = ANCHO - (desde - SECTORES.forja) - 28;
     var x = vuelta(desde + h % largo);
     return { id: pub.slice(0, 8).toLowerCase(), pub: pub.toLowerCase(), x: x, y: suelo(x),
-             /* Solarpunk sin saturar: del oro al verde azulado, nunca un neon. */
+
              tono: 42 + (parseInt(pub.slice(8, 10), 16) % 140),
              semilla: parseInt(pub.slice(10, 18), 16) >>> 0 };
   }
@@ -106,16 +79,12 @@
     }
     return m;
   }
-  /* La niebla de una posicion del mundo (para la vista y para un agente). */
+
   function vista(m, x, y) {
     var c = Math.floor(vuelta(x) / CELDA), r = Math.min(FILAS - 1, Math.max(0, Math.floor(y / CELDA)));
     return m[r * COLS + c];
   }
 
-  /* LAS ONDAS: cada tropa es una voz; cada voz, una helice de dos hebras. Los armonicos de la
-     tropa ([frecuencia, ampX, ampY, fase/64], de la semilla firmada) fijan su forma entera: dos
-     tropas no se trenzan igual, y la misma tropa se trenza igual en cualquier pantalla. Sin
-     tropas, suena tu nodo con su semilla. Todo en unidades del mundo; el tiempo lo pone la vista. */
   function helices(nd, tropas) {
     var voces = [];
     (tropas || []).slice(0, 6).forEach(function (t, k) {
@@ -138,8 +107,7 @@
     }
     return voces;
   }
-  /* La altura (de -1 a 1, aprox.) de una voz en u (0..1 a lo largo de la base) y tiempo t (s).
-     Tres hebras por voz, a un tercio de vuelta: una helice triple, no un espejo. */
+
   function onda(v, u, t, hebra) {
     var y = 0, n = 0;
     v.terminos.forEach(function (h) {
@@ -149,8 +117,6 @@
     return (y / (n || 1)) * (0.6 + 0.4 * Math.cos(t * v.giro * 0.5 + u * 3.1416));
   }
 
-  /* LAS RAICES de tu nodo: bajan por la roca y ramifican con su semilla. Por ellas sube lo que
-     el nodo farmea. Segmentos [x0, y0, x1, y1, generacion], de la base hacia abajo. */
   function raices(nd) {
     var out = [], pila = [];
     if (!nd) { return out; }
@@ -167,8 +133,6 @@
     return out;
   }
 
-  /* La coordenada criptografica vive en `atlas-coord.js` (se partio el 2026-09-28: con SHA-256
-     dentro, esta pieza pasaba de 16 KiB; el hash es otro asunto y otro dueno puede reusarlo). */
   function coord(pub, sector, x, y) { return H.coord(pub, SEMILLA, sector, x, y); }
   function sectorDe(x) {
     var mejor = 'abierto', d = 12;
@@ -179,10 +143,6 @@
     return mejor;
   }
 
-  /* EXPLORACION REAL. Lo que la partida VIO, no lo que la fase de hoy permite: la union de la
-     niebla de cada estado por el que paso, resumido en visitas "fase|banda|grieta" (a lo sumo
-     5 x 4 x 2 = 40). Sale de reproducir la partida (`AtlasPartida.reproduce` con `cada`), asi
-     que no se guarda aparte ni puede contradecir a la partida. */
   function visita(ins) {
     return ins ? [ins.fase || 1, ins.profundidad, ins.grieta && ins.grieta.abierta ? 1 : 0].join('|') : null;
   }
@@ -194,8 +154,7 @@
     });
     return m;
   }
-  /* PELIGRO de una celda: 2 junto a la grieta abierta; 1 en 300 m+ sin Ingenieria 60 (el motor
-     no deja bajar); 0 en lo demas. Solo lo que el motor sabe. */
+
   function peligro(ins, x, y) {
     if (ins && ins.grieta && ins.grieta.abierta &&
         Math.hypot(dx(SECTORES.grieta, x), y - suelo(SECTORES.grieta)) <= 10) { return 2; }
@@ -209,14 +168,12 @@
              peligro: peligro(ins, x, y), coord: nd ? coord(nd.pub, sectorDe(x), x, y).corta : null };
   }
 
-  /* EDIFICIOS Y UNIDADES: primero el dato, despues el dibujo. Cada edificio dice su estado y su
-     accion LEGAL segun el motor (o null con causa); el mapa solo la ofrece, la persona la pulsa. */
   var BAJA = { forja: 'arrecife', grieta: 'ruinas', aguja: 'bosque', nucleo: 'nucleo' };
   function estructuras(ins, nd) {
     var out = [], ing = ins && ins.niveles ? ins.niveles.ingenieria : 0, g = (ins && ins.grieta) || {};
     Object.keys(SECTORES).forEach(function (k) {
       var x = SECTORES[k], acc = null, causa = null;
-      /* Sin instantanea no se sabe nada: ni si la grieta esta abierta ni que nivel hay. NO_DATA. */
+
       if (!ins) { causa = 'sin instantanea'; }
       else if (k === 'grieta') { if (g.abierta) { acc = { accion: 'reparar' }; } else { causa = 'sellada'; } }
       else if (k === 'ojo') { causa = 'observatorio: sin accion en el motor'; }
@@ -243,9 +200,7 @@
       return { tc: t.tc, rareza: t.rareza, semilla: String(t.semilla || '').slice(0, 8), en: 'base' };
     });
   }
-  /* VECINDAD POR XOR (estilo Kademlia): los bits en comun del prefijo de dos ids. Es la regla de
-     por que veras a unos vecinos y no a otros, el dia que exista un canal firmado y opt-in. Hoy
-     no hay de quien: NO_DATA. */
+
   function vecindad(a, b) {
     for (var i = 0; i < Math.min(a.length, b.length); i++) {
       var x = parseInt(a[i], 16) ^ parseInt(b[i], 16);
@@ -254,8 +209,6 @@
     return Math.min(a.length, b.length) * 4;
   }
 
-  /* LO QUE LEE UN AGENTE. El mundo, tu nodo y tu niebla en un JSON cerrado, y como se juega:
-     la instantanea que lee (`atlas.instantanea/1`) y las acciones que acepta el motor. */
   function estado(ins, nd, tropas, visitas) {
     var m = niebla(ins, nd), n = [0, 0, 0], ex = visitas ? exploracion(visitas, nd) : null;
     for (var i = 0; i < m.length; i++) { n[m[i]]++; }
