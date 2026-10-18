@@ -102,7 +102,9 @@ caso(8, 'en la lengua: un fotograma con letters compila sin notas y pasa checkFr
     sound: 'NO_DATA', soundCause: 'static-first: not served', motion: 'NO_DATA',
     atoms: [{ k: 'logo', r: 'the word preceptoros in the house letters', i: [{ o: 'letters', tx: 'preceptoros', x: 96, y: 268, rot: -90, sz: 44 }] }] };
   const g = checkFrame(f), out = A.compile(f);
-  return { ok: g.ok && Array.isArray(out) && out.length > 0 && !(out.notes && out.notes.length), medida: { bytes: g.bytes, grupos: out.length } };
+  // Las notas viven en compile.notes (propiedad de la funcion), no en el array devuelto.
+  const notas = A.compile.notes || [];
+  return { ok: g.ok && Array.isArray(out) && out.length > 0 && notas.length === 0, medida: { bytes: g.bytes, grupos: out.length, notas: notas.slice(0, 2) } };
 });
 
 caso(9, 'sabotaje: un color crudo en f hace lanzar a compile', () => {
