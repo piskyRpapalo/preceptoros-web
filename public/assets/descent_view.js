@@ -27,11 +27,19 @@
     return e;
   }
 
-  function llenaCopia(contenedor, T) {
+  function oidoDe(id) {
+    var D = window.AtlasDescentSound;
+    if (!D || !escena || typeof escena.frame !== 'function') { return null; }
+    try { return D.describe(D.score(escena.frame(id)).voices); } catch (e) { return null; }
+  }
+
+  function llenaCopia(contenedor, T, oido) {
     contenedor.textContent = '';
     if (T.h) { contenedor.appendChild(el('h2', null, T.h)); }
     (T.p || []).forEach(function (linea) { contenedor.appendChild(el('p', null, linea)); });
-    if (T.sound) {
+    if (oido) {
+      contenedor.appendChild(el('p', 'descent-sound', 'Sound: ' + oido + '. Tap Sound to hear it.'));
+    } else if (T.sound) {
       var s = el('p', 'descent-sound');
       s.appendChild(el('span', 'descent-stamp', 'NO_DATA'));
       s.appendChild(document.createTextNode(' Sound: not playing yet. Planned: ' + T.sound));
@@ -142,9 +150,10 @@
     hoja.tabIndex = 0;
     raiz.appendChild(hoja);
 
-    var intros = [];
+    var intros = [], conIntro = null;
     if (dual) {
       var selector = el('div', 'descent-intro');
+      conIntro = selector;
       [['kids', 'For kids'], ['tech', 'Technical']].forEach(function (par) {
         var b = el('button', null, par[1]);
         b.type = 'button';
@@ -161,7 +170,7 @@
       s.setAttribute('data-frame', id);
       var caja = el('div', 'descent-box');
       var copia = el('div', 'descent-copy');
-      llenaCopia(copia, textoDe(dual ? 'kids' : null, id));
+      llenaCopia(copia, textoDe(dual ? 'kids' : null, id), oidoDe(id));
       caja.appendChild(copia);
       caja.appendChild(espejo(id));
       if (i === ids.length - 1) { caja.appendChild(puertas(despertar, hayCuenta)); }
@@ -170,7 +179,33 @@
       return { id: id, el: s, copia: copia };
     });
 
-    var st = { pasos: pasos, hoja: hoja, activo: ids[0], q: 0, limpia: null, vibrado: false, fondoDe: null };
+    var st = { pasos: pasos, hoja: hoja, activo: ids[0], q: 0, limpia: null, vibrado: false, fondoDe: null, audio: null, oye: false };
+    var D = window.AtlasDescentSound;
+    function suena(id) {
+      if (!st.oye || !D || !st.audio) { return; }
+      var f = escena.frame(id);
+      D.play(st.audio, D.score(f).voices, st.audio.currentTime);
+      if (window.navigator && typeof window.navigator.vibrate === 'function' && !quieto) {
+        try { window.navigator.vibrate(D.haptic(f)); } catch (e) { return; }
+      }
+    }
+    if (D) {
+      var fila = conIntro || el('div', 'descent-intro');
+      var bs = el('button', 'descent-sound-toggle', 'Sound');
+      bs.type = 'button';
+      bs.setAttribute('aria-pressed', 'false');
+      bs.addEventListener('click', function () {
+        st.oye = !st.oye;
+        bs.setAttribute('aria-pressed', st.oye ? 'true' : 'false');
+        if (st.oye && !st.audio) {
+          var C = window.AudioContext || window.webkitAudioContext;
+          st.audio = C ? new C() : null;
+        }
+        suena(st.activo);
+      });
+      fila.appendChild(bs);
+      if (!conIntro) { hoja.insertBefore(fila, hoja.firstChild); }
+    }
     var S = escena;
     var capas = typeof S.fondo === 'function' && typeof S.frente === 'function';
     var quieto = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
@@ -184,7 +219,7 @@
 
     function eligeIntro(clave) {
       intros.forEach(function (b) { b.el.setAttribute('aria-pressed', b.clave === clave ? 'true' : 'false'); });
-      pasos.forEach(function (p) { llenaCopia(p.copia, textoDe(clave, p.id)); });
+      pasos.forEach(function (p) { llenaCopia(p.copia, textoDe(clave, p.id), oidoDe(p.id)); });
     }
 
     function drawSection(id, q) {
@@ -231,7 +266,7 @@
       st.activo = a.id;
       st.q = a.q;
       drawSection(a.id, a.q);
-      if (nueva) { marca(a.id); vibra(a.id); }
+      if (nueva) { marca(a.id); vibra(a.id); suena(a.id); }
     }
 
     var io = null;

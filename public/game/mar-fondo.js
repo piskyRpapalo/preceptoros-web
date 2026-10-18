@@ -30,14 +30,15 @@
     var TOPE = 220;
   function suelta(c) { for (var k in c) { delete c[k]; return; } }
   function pintor() {
-    var E = raiz.AtlasEscena, N = raiz.AtlasNiebla, C = raiz.AtlasCamara;
+    var E = raiz.AtlasEscena, N = raiz.AtlasNiebla, C = raiz.AtlasCamara, R = raiz.AtlasMarRift;
+    var estilo = R && typeof R.textura === 'function' ? R : null, paletaNiebla = estilo && estilo.niebla ? [null, estilo.niebla] : NIEBLA;
     var tierra = {}, nt = 0, nieblas = {}, nn = 0, huella = '', circ = [];
     function tesela(i, j) {
       var k = i + ',' + j;
       if (tierra[k]) { return tierra[k]; }
       if (nt >= TOPE) { suelta(tierra); nt--; }
       var n = TESELA / RES;
-      tierra[k] = texturaLecho(E, i, j, n);
+      tierra[k] = estilo ? estilo.textura(E, i, j, n, raiz.document) : texturaLecho(E, i, j, n);
       nt++;
       return tierra[k];
     }
@@ -50,7 +51,7 @@
         var v = N.niebla(i * TESELA + x * RES, j * TESELA + y * RES, circ) * 0.78;
         if (v > 0.05) { algo = true; }
         return v;
-      }, NIEBLA);
+      }, paletaNiebla);
       nieblas[k] = algo ? t : null; nn++;
       return nieblas[k];
     }
@@ -74,7 +75,7 @@
     };
   }
 
-  var AtlasMarFondo = { TESELA: TESELA, RES: RES, deriva: deriva, pintor: pintor };
+  var AtlasMarFondo = { TESELA: TESELA, RES: RES, deriva: deriva, lecho: lecho, pintor: pintor };
   if (typeof module === 'object' && module.exports) { module.exports = AtlasMarFondo; }
   else { raiz.AtlasMarFondo = AtlasMarFondo; }
 })(this);

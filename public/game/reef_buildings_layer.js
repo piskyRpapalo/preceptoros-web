@@ -99,7 +99,8 @@
     vistas.forEach(function (m) { if (L.estado(m, tic).fase === 'naciendo') { queda = m.nace_tic + COSTE - tic; } });
     var rot = queda ? '👁 ' + queda : '👁';
     if (rot !== rotuloBoton) {
-      rotuloBoton = rot; boton.textContent = rot; boton.disabled = !!queda;
+      rotuloBoton = rot; boton.disabled = !!queda;
+      if (!(raiz.AtlasMar && raiz.AtlasMar.icono && raiz.AtlasMar.icono(boton, 'eye', queda ? ' ' + queda : ''))) { boton.textContent = rot; }
       boton.setAttribute('aria-label', (t('obs_mirar') || '').replace('{n}', queda || COSTE));
     }
   }

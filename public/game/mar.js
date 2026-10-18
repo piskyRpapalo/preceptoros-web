@@ -4,6 +4,21 @@
   var E = window.AtlasEscena, K = window.AtlasCanon, N = window.AtlasNiebla, C = window.AtlasCamara;
   var F = (window.AtlasValores && window.AtlasValores.fluidez) || {}, O = window.AtlasOnda || {};
     var MF = window.AtlasMarFondo, VE = 620, PASO = 90, VIVO = null;
+    var NOMBRE = { izq: 'left', arr: 'up', aba: 'down', der: 'right', casa: 'home', faro: 'beacon' };
+    function dibujaIcono(b, d, cola) {
+      var I = window.AtlasBubbleIcons, A = window.AtlasBubble, P = window.AtlasComicAtoms, n = NOMBRE[d] || d, z = 28, s = 2;
+      if (!I || !A || !P || I.missing(n)) { return false; }
+      var c = document.createElement('canvas'), g;
+      c.width = c.height = z * s; c.className = 'mapa-ico'; c.setAttribute('aria-hidden', 'true');
+      g = c.getContext('2d'); g.setTransform(s, 0, 0, s, 0, 0);
+      try {
+        P.paint(g, A.compile({ v: 'preceptoros.bubble/1', id: 'ICON', t: 0, cv: [z, z], bands: ['cyan', 'ink', 'paper'], change: ['icon'],
+          sound: 'NO_DATA', soundCause: 'icon', motion: 'NO_DATA', atoms: [{ k: n, r: n, i: [{ o: 'icon', name: n, x: z / 2, y: z / 2, r: z * 0.38 }] }] }));
+      } catch (e) { return false; }
+      b.textContent = ''; b.appendChild(c);
+      if (cola) { b.appendChild(document.createTextNode(cola)); }
+      return true;
+    }
     var VEC = { izq: [-1, 0], arr: [0, -1], aba: [0, 1], der: [1, 0], casa: [0, 0], faro: [0, 0] }, ICO = { izq: '◀', arr: '▲', aba: '▼', der: '▶', casa: '⌂', faro: '◈' };
   function dirs() { return (window.AtlasPiloto && window.AtlasPiloto.DIRS) || ['izq', 'arr', 'aba', 'der', 'casa']; }
     function flecha(dir) {
@@ -30,6 +45,7 @@
     aviso.setAttribute('role', 'status');
     dirs().forEach(function (d) {
       var x = el('button', 'boton-sec mapa-mando', ICO[d]); x.type = 'button'; x.setAttribute('aria-label', f.texto('mapa_' + d));
+      dibujaIcono(x, d);
       x.addEventListener('click', function () { flecha(d); });
       mandos.appendChild(x);
     });
@@ -177,5 +193,5 @@
     return { para: function () { cancelAnimationFrame(raf); VIVO = null; }, camara: function () { return cam; }, despejado: function () { return circ; } };
   }
 
-  window.AtlasMar = { ANILLO: ANILLO, crea: crea, casas: function () { return window.AtlasMapNodes.casas(); }, mueve: mueve, flecha: flecha };
+  window.AtlasMar = { ANILLO: ANILLO, crea: crea, icono: dibujaIcono, casas: function () { return window.AtlasMapNodes.casas(); }, mueve: mueve, flecha: flecha };
 })();
