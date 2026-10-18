@@ -169,6 +169,23 @@
   }
 }
 
+.descent-tele {
+  margin-top: 10px;
+  font: 13px/1.4 ui-monospace, monospace;
+}
+
+.descent-tele summary {
+  min-height: 32px;
+  cursor: pointer;
+  color: var(--d-cyan);
+}
+
+.descent-tele ol {
+  margin: 6px 0 0;
+  padding-left: 20px;
+  overflow-wrap: anywhere;
+}
+
 body:has(.descent) .pc-boton {
   top: auto;
   bottom: 16px;

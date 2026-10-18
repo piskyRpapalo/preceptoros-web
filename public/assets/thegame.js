@@ -179,19 +179,23 @@
       .catch(function () { console.warn('NO_DATA · the descent could not be loaded'); abre(null, 'casa'); });
   }
 
-  var CODEX = [['/game/bubble_game.js'], ['codex_scene.js']];
+  var VISTAS = {
+    codex: [['/game/bubble_game.js'], ['codex_scene.js'], 'AtlasCodexScene'],
+    bout: [['/game/canon.js'], ['/game/sobres.js'], ['/game/rating.js'], ['/game/taller.js'], ['/game/arena.js'], ['/game/bubble_game.js'], ['bout_scene.js'], 'AtlasBoutScene']
+  };
   function nuevos(lista) {
     return lista.filter(function (g) { var s = g[0].charAt(0) === '/' ? g[0] : '/assets/' + g[0]; return !document.querySelector('script[src="' + s + '"]'); });
   }
-  function codex() {
-    var P = document.getElementById('juego-panel');
+  function codex(nombre) {
+    var P = document.getElementById('juego-panel'), V = VISTAS[nombre] || VISTAS.codex, piel = /[?&]skin=(\w+)/.exec(location.search);
     if (!P || capa) { return false; }
     if (!document.querySelector('link[href="/assets/descent.css"]')) {
       var h = document.createElement('link'); h.rel = 'stylesheet'; h.href = '/assets/descent.css'; document.head.appendChild(h);
     }
-    var falta = nuevos(DESCENSO.concat(CODEX));
+    var falta = nuevos(DESCENSO.concat(V.slice(0, -1)));
     (falta.length ? pide(falta) : Promise.resolve()).then(function () {
-      window.AtlasDescentView.monta(P, function () { abre(null, 'casa'); }, window.AtlasCodexScene);
+      if (window.AtlasBubbleGame) { window.AtlasBubbleGame.useSkin(piel ? piel[1] : (nombre === 'bout' ? 'apocalypse' : 'atlantis')); }
+      window.AtlasDescentView.monta(P, function () { abre(null, 'casa'); }, window[V[V.length - 1]]);
       window.scrollTo(0, 0);
     }).catch(function () { console.warn('NO_DATA · the codex could not be loaded'); abre(null, 'casa'); });
     return true;

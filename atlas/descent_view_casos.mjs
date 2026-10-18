@@ -257,6 +257,9 @@ caso(8, 'humo en vm: escena real (A), IO e identidad (B), intros duales (C)', ()
     exige(!panel.textContent.includes(RETIRADO), 'texto retirado visible');
     // Contrato (FIRMO 2026-10-18, pulido): manda la ultima seccion cuyo borde de arriba ya cruzo el 75 % de la ventana (800 -> 600 px).
     pasos.forEach((p, i) => { p.offsetTop = i * 600; });
+    // Distintivo telemetrico (viabilidad 2026-10-18): cada seccion lleva su espejo DOM y AtlasTelemetry lista sus objetos.
+    exige(pasos.every((p) => conClase(p, 'descent-tele').length === 1), 'falta el espejo telemetrico en alguna seccion');
+    exige(va.AtlasTelemetry && va.AtlasTelemetry.objects(ids[0]).length === S.frame(ids[0]).atoms.length, 'AtlasTelemetry no lista los objetos de la seccion');
     const hoja = conClase(raiz, 'descent-pane')[0];
     exige(hoja && hoja.getAttribute('data-scroller') === '' && pasos.every((p) => dentroDe(hoja, p)), 'las secciones no viven en el panel');
     va.panel = hoja;

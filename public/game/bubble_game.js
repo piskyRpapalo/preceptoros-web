@@ -116,6 +116,34 @@
     return out;
   }
 
+  function sleeper(p) {
+    var arm = spectrum(p);
+    if (!arm.length) { return []; }
+    var x = num(p.x, 0), y = num(p.y, 0), r = num(p.r, 60), w = clamp(num(p.awake, 0), 0, 1), up = w >= 0.5, out = [];
+    var sx = x - 0.3 * r, sy = y + 0.34 * r, sw = 0.6 * r, sh = 0.34 * r;
+    out.push({ o: 'wave', f: p.f || 'paper', s: 'ink', d: 0, lw: 3.2, x: x, y: y, sc: r2(r / reach(arm)), rot: num(p.rot, 0), h: arm });
+    [-1, 1].forEach(function (sd) {
+      var cx = x + sd * 0.24 * r, ey = y - 0.12 * r;
+      if (up) { out.push(disc(cx, ey, 0.12 * r, 'paper', 'ink', 2.5), disc(cx, ey + 0.02 * r, 0.05 * r, 'ink')); }
+      else { out.push(line([[cx - 0.11 * r, ey - 0.01 * r], [cx, ey + 0.05 * r], [cx + 0.11 * r, ey - 0.01 * r]], 'ink', 3)); }
+      out.push(line([[x + sd * 0.5 * r, y + 0.1 * r], [x + sd * 0.32 * r, sy + 0.1 * r]], 'ink', 3));
+    });
+    out.push({ o: 'ribbon', f: up ? 'cyan' : 'ink', s: 'paper', d: 0, lw: 2.5, closed: true,
+      pts: [[sx, sy], [sx + sw, sy], [sx + sw, sy + sh], [sx, sy + sh]].map(function (q) { return [r2(q[0]), r2(q[1])]; }) });
+    if (!up) { out = out.concat(label('zzz', x + 0.55 * r, y - 0.7 * r, 11, 'left')); }
+    return out;
+  }
+
+  var SKINS = Object.freeze({ atlantis: Object.freeze({}), apocalypse: Object.freeze({ troop: 'sleeper' }) });
+  var skinName = 'atlantis';
+  function useSkin(n) { skinName = Object.prototype.hasOwnProperty.call(SKINS, n) ? n : 'atlantis'; return skinName; }
+  function dress(frame) {
+    var m = SKINS[skinName];
+    frame.atoms.forEach(function (a) { a.i.forEach(function (it) { if (m[it.o]) { it.o = m[it.o]; } }); });
+    frame.skin = skinName;
+    return frame;
+  }
+
   function mix(a, b, t) {
     var G = lib('AtlasGacha', './gacha.js');
     return G ? G.mezcla(a, b, clamp(t, 0, 1)).map(function (h) { return h.map(r2); }) : b;
@@ -133,26 +161,28 @@
     if (m.morph && it.from) { it.arm = mix(CAST[it.from] || [], spectrum(it), p); delete it.from; delete it.as; }
     if (m.fill) { it.v = r2(num(it.v, 0) * clamp(p * m.fill, 0, 1)); }
     if (m.drain) { it.v = r2(num(it.v, 0) * (1 - m.drain * p)); }
+    if (m.wake) { it.awake = r2(clamp(p * m.wake, 0, 1)); }
+    if (Array.isArray(m.series) && m.series.length) { it.v = m.series[Math.min(m.series.length - 1, Math.floor(p * m.series.length))]; }
   }
 
   function pulse(frame, motion, p) {
     var mv = (motion && motion[frame.id]) || {};
     if (typeof p !== 'number' || !isFinite(p)) {
       frame.atoms.forEach(function (a) { a.i.forEach(function (it) { delete it.from; }); });
-      return frame;
+      return dress(frame);
     }
     p = clamp(p, 0, 1);
     frame.atoms.forEach(function (a) {
       var m = mv[a.k];
       a.i.forEach(function (it) { if (m && it.o !== 'keep') { moveItem(it, m, p); } delete it.from; });
     });
-    return frame;
+    return dress(frame);
   }
 
-  var WORDS = { troop: troop, meter: meter, odds: odds, clash: clash };
+  var WORDS = { troop: troop, meter: meter, odds: odds, clash: clash, sleeper: sleeper };
   var core = lib('AtlasBubble', './bubble_language.js');
   if (core && typeof core.define === 'function') { Object.keys(WORDS).forEach(function (k) { core.define(k, WORDS[k]); }); }
 
-  var API = Object.freeze({ WORDS: WORDS, pulse: pulse, reach: reach, cast: cast });
+  var API = Object.freeze({ WORDS: WORDS, pulse: pulse, reach: reach, cast: cast, SKINS: SKINS, useSkin: useSkin, skin: function () { return skinName; } });
   if (node) { module.exports = API; } else { root.AtlasBubbleGame = API; }
 })(typeof module === 'object' && module.exports ? this : (this || window));

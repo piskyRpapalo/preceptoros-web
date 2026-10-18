@@ -63,6 +63,28 @@
     return b;
   }
 
+  function telemetria(id) {
+    var f = typeof escena.frame === 'function' ? escena.frame(id) : null, st = escena.ST || 'STATIC', B = window.AtlasBubble, G = window.AtlasBubbleGame;
+    return (f && Array.isArray(f.atoms) ? f.atoms : []).map(function (a) {
+      var j = JSON.stringify(a), usa = [];
+      (a.i || []).forEach(function (it) { if (usa.indexOf(it.o) < 0) { usa.push(it.o); } });
+      return { section: id, k: a.k, what: a.r, uses: usa, stamp: st, bytes: j.length,
+        hash: B && B.hash32 ? ('0000000' + (B.hash32(j) >>> 0).toString(16)).slice(-8) : 'NO_DATA',
+        skin: G && G.skin ? G.skin() : 'atlantis' };
+    });
+  }
+
+  function espejo(id) {
+    var d = el('details', 'descent-tele');
+    d.appendChild(el('summary', null, 'What is drawn'));
+    var ol = el('ol');
+    telemetria(id).forEach(function (r) {
+      ol.appendChild(el('li', null, r.what + ' · ' + r.uses.join('+') + ' · ' + r.stamp + ' · ' + r.bytes + ' B · #' + r.hash));
+    });
+    d.appendChild(ol);
+    return d;
+  }
+
   function puertas(despertar, hayCuenta) {
     var d = el('div', 'descent-doors');
     d.appendChild(boton('descent-enter', 'Check the rift', despertar));
@@ -141,6 +163,7 @@
       var copia = el('div', 'descent-copy');
       llenaCopia(copia, textoDe(dual ? 'kids' : null, id));
       caja.appendChild(copia);
+      caja.appendChild(espejo(id));
       if (i === ids.length - 1) { caja.appendChild(puertas(despertar, hayCuenta)); }
       s.appendChild(caja);
       hoja.appendChild(s);
@@ -250,5 +273,9 @@
   }
 
   window.AtlasDescentView = { monta: monta };
+  window.AtlasTelemetry = {
+    section: function () { return montaje ? montaje.activo : null; },
+    objects: function (id) { return montaje ? telemetria(id || montaje.activo) : []; }
+  };
   window.AtlasDescenso = { frame: cuadro };
 })();
