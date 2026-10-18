@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: PreceptorOS
+authors:
+  - given-names: David
+    family-names: "piskyRpapalo"
+    alias: piskyRpapalo
+type: software
+repository-code: "https://github.com/piskyRpapalo/preceptoros-web"
+url: "https://github.com/piskyRpapalo/preceptoros-web"
+abstract: "The WEB part of PreceptorOS: a public gateway and a game that runs in the browser, in nine languages, with zero external requests on load. Local-first; no telemetry."
+keywords:
+  - local-first
+  - privacy
+  - accessibility
+  - browser-game
+license: Apache-2.0
+license-url: "https://www.apache.org/licenses/LICENSE-2.0"
