@@ -35,7 +35,7 @@ PIEZAS = ["atlas-arte.js", "atlas-coord.js", "atlas-carta.js", "atlas-ondas.js",
           "atlas-piso.js", "atlas.css", "thegame.js", "thegame.css", "tubo.css",
           "radio_message_log.js", "terminal_menu_shell.js", "terminal_menu_shell.css", "terminal_window_frame.js", "worm_transition.js",  # la terminal chatbot (2026-10-12), en la puerta
           "atlas-piloto.js", "atlas-partida.js", "atlas-piloto-capa.js", "atlas-guardado.js", "atlas-mapa.css",
-          "../game/juez.js"]
+          "../game/juez.js", "../game/z_cutoff.js"]
 
 
 def gzip_juego():

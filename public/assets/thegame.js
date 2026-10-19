@@ -5,7 +5,7 @@
   var GUIONES = [['atlas-arte.js'], ['atlas-coord.js'], ['atlas-carta.js'], ['atlas-ondas.js'], ['atlas-obra.js'], ['atlas-gesto.js'], ['atlas-mapa.js'],
     ['atlas-dialogo.js', '/assets/'], ['atlas-motor.js'], ['atlas-piso.js', '/'],
     ['atlas-piloto.js'], ['atlas-partida.js'], ['atlas-piloto-capa.js'],
-    ['/game/juez.js'], ['atlas-guardado.js'], ['radio_message_log.js'], ['terminal_menu_shell.js'], ['terminal_window_frame.js'], ['worm_transition.js']];
+    ['/game/juez.js'], ['atlas-guardado.js'], ['radio_message_log.js'], ['/game/z_cutoff.js'], ['terminal_menu_shell.js'], ['terminal_window_frame.js'], ['worm_transition.js']];
 
   var ARMY = [['/game/valores.js'], ['/game/gacha.js'], ['/game/db.js'], ['/game/core.js'], ['/game/killswitch_dot.js'], ['/game/ui-ficha.js'], ['/game/ui-invoca.js'], ['/game/ui.js']];
 

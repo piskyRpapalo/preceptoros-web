@@ -164,7 +164,7 @@
                                           bandera: cs && cs.bandera && BV ? BV[cs.bandera] : null });
       if (window.AtlasArrecife) { window.AtlasArrecife.pinta(g, P, { pub: f.pub(), sha: K.sha, dpr: dpr, t: t, quieto: q, texto: f.texto, cam: cam, ts: ts, pon: pon }); }
       window.IsometricFloor.ordena(cola).forEach(function (x) { x.f(); });
-      if (window.AtlasInspector) { window.AtlasInspector.registra(cola, P, f.texto); }        TS.niebla(g, cam, W, H, z);
+      if (window.AtlasInspector) { window.AtlasInspector.registra(cola, P, f.texto); }        if (!window.AtlasZ || window.AtlasZ.visible('EMULADO')) { TS.niebla(g, cam, W, H, z); }
             if (!quieto() && F.vignette_alfa) {
         var grad = g.createRadialGradient(W/2, H/2, 0, W/2, H/2, Math.max(W, H)/2);
         grad.addColorStop(0, 'rgba(0,0,0,' + F.vignette_alfa + ')');
@@ -174,7 +174,7 @@
       }
             H0.forEach(function (n) {
         var p = P(n.x, n.y), med = n.gen.estado === 'MEDIDO';
-        if (!med) { g.strokeStyle = col.texto; g.lineWidth = 1.5 * dpr; g.setLineDash([3 * dpr, 4 * dpr]); g.beginPath(); g.arc(p[0], p[1], 39 * dpr, 0, 2 * Math.PI); g.stroke(); g.setLineDash([]); }
+        if (!med && (!window.AtlasZ || window.AtlasZ.visible('NO_DATA'))) { g.strokeStyle = col.texto; g.lineWidth = 1.5 * dpr; g.setLineDash([3 * dpr, 4 * dpr]); g.beginPath(); g.arc(p[0], p[1], 39 * dpr, 0, 2 * Math.PI); g.stroke(); g.setLineDash([]); }
         rotulo(g, n.nodo.split('.').pop() + ' · ' + (med ? f.texto('mapa_medido') : 'NO_DATA'), p[0], p[1] + 58 * dpr);
       });
             var ca = window.AtlasCasa && window.AtlasCasa.casa ? window.AtlasCasa.casa() : null;
