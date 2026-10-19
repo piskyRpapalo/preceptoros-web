@@ -37,7 +37,7 @@ jobs:
             python test_web.py
             python atlas/test_atlas.py
             node arnes_sw.mjs
-            node --test tests/citations.test.mjs
+            node --test 'tests/*.test.mjs'
             node atlas/npc_occupancy_cases.mjs
             node atlas/ventana_casos.mjs
             node atlas/radio_age_cases.mjs
@@ -50,4 +50,5 @@ jobs:
             node atlas/bout_casos.mjs
             node atlas/descent_sound_casos.mjs
             node atlas/descent_view_casos.mjs
+            node atlas/mvp_casos.mjs
           done
