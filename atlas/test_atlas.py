@@ -729,6 +729,31 @@ process.stdout.write(JSON.stringify(ok));
         self.assertIn("(Tn ? Tn.cangrejo : CJ.pinta)(g, p[0], p[1] + dy, r,", mc)
         self.assertIn("pc = CJ.paseo(cj.semilla, cj.ciclo,", mc, "el paseo J1 sigue mandando")
 
+    def test_t_crt_gramatica_acustica_cumple_su_contrato(self):
+        """T_CRT §8.3 (FIRMO 2026-10-19, Comando #15): las 12 salidas (3 verbos x 4 estados) del gestor de audio, en sus
+        tres caminos de sonido, validan contra data/audio_feedback_manager.schema.json $defs.verbo con el validador real."""
+        guion = ("const vm=require('vm'),fs=require('fs');const out=[];"
+                 "for(const modo of ['off','on','suspended']){const r={AtlasSintesis:{activa:()=>true,contexto:()=>({state:modo==='suspended'?'suspended':'running'}),suena:x=>x}};"
+                 "vm.runInNewContext(fs.readFileSync(process.argv[1],'utf8'),r);const A=r.AudioFeedbackManager;if(modo!=='off')A.habilitar();"
+                 "for(const v of A.VERBS)for(const s of A.STATES)out.push(A.verb(v,s,s==='STALE'?'old reading':null));}"
+                 "console.log(JSON.stringify(out));")
+        r = subprocess.run(["node", "-e", guion, str(PUBLICO / "game" / "audio_feedback_manager.js")], capture_output=True, text=True, timeout=60)
+        self.assertEqual(r.returncode, 0, r.stderr[-400:])
+        try:
+            import jsonschema
+        except ImportError:
+            self.skipTest("NO_DATA · sin jsonschema. Remedio: pip install jsonschema")
+        salidas = json.loads(r.stdout)
+        esquema = json.loads((DATOS / "audio_feedback_manager.schema.json").read_text(encoding="utf-8"))
+        v = jsonschema.Draft202012Validator({**esquema, "$ref": "#/$defs/verbo"})
+        self.assertEqual(len(salidas), 36)
+        self.assertEqual({s["sonido"] for s in salidas}, {"INACTIVO", "SONADO", "NO_DATA"})
+        for s in salidas:
+            with self.subTest(verbo=s["verbo"], estado=s["estado"], sonido=s["sonido"]):
+                self.assertEqual([], [e.message for e in v.iter_errors(s)])
+        malo = dict(salidas[0], estado="NO_DATA", causa=None)
+        self.assertTrue(list(v.iter_errors(malo)), "un NO_DATA sin causa tiene que fallar el contrato")
+
     def test_b_cangrejo_funcional_y_e_tutorial_de_genesis(self):
         """B: el manejo libre va ENCIMA del paseo J1 (paseo intocado), la niebla no se pisa, y las skills salen solo de lo
         que el cangrejo hace (Swim, Reach). E: el tutorial es el esquema de acciones renderizado, bajo el teaching kernel

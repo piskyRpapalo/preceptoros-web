@@ -69,7 +69,38 @@
     }
   }
 
-  var API = { habilitar: habilitar, deshabilitar: deshabilitar, procesar: procesar,
+  var VERBS = { deploy: [0, 'Deploy'], state: [2, 'State'], rag: [4, 'Sources'] };
+  var STATES = {
+    MEASURED: [2, 20, 0.28, false, 'measured'],
+    PROPOSED: [2, 35, 0.28, true, 'proposed, waits a signature'],
+    STALE: [0.5, 60, 0.5, false, 'stale'],
+    NO_DATA: [1.4, 180, 0.4, false, 'NO_DATA']
+  };
+  var PENTA_V = [0, 2, 4, 7, 9];
+
+  function motif(v, s) {
+    var f = Math.round(220 * Math.pow(2, PENTA_V[VERBS[v][0]] / 12) * 100) / 100, e = STATES[s];
+    return { portadora: f, moduladora: Math.round(f * e[0] * 100) / 100, indice: e[1], dur: e[2], vibrato: e[3] };
+  }
+
+  function verb(v, s, cause) {
+    if (!Object.prototype.hasOwnProperty.call(VERBS, v) || !Object.prototype.hasOwnProperty.call(STATES, s)) { return null; }
+    var c = typeof cause === 'string' && cause.length ? cause.slice(0, 120) : null;
+    if (s === 'NO_DATA' && !c) { c = 'cause not declared by the caller'; }
+    var m = motif(v, s), out = { verbo: v, estado: s, sonido: 'INACTIVO', sonido_causa: 'sound is off until you turn it on', motivo: m,
+      texto: VERBS[v][1] + ': ' + STATES[s][4] + (c ? ' (' + c + ')' : ''), causa: c };
+    if (!activo) { return out; }
+    var S = raiz.AtlasSintesis, ctx = S && typeof S.contexto === 'function' ? S.contexto() : null;
+    if (!ctx || ctx.state !== 'running' || typeof S.suena !== 'function') { out.sonido = 'NO_DATA'; out.sonido_causa = 'audio context is not running'; return out; }
+    try {
+      S.suena({ tipo: 'radio', portadora: m.portadora, moduladora: m.moduladora, indice: m.indice, dur: m.dur, gan: 0.07, vibrato: m.vibrato ? { hz: 6, prof: 8 } : null });
+      out.sonido = 'SONADO'; out.sonido_causa = null;
+    } catch (e) { out.sonido = 'NO_DATA'; out.sonido_causa = 'local synthesis failed'; }
+    return out;
+  }
+
+  var API = { habilitar: habilitar, deshabilitar: deshabilitar, procesar: procesar, verb: verb,
+              VERBS: Object.keys(VERBS), STATES: Object.keys(STATES),
               activo: function () { return activo; } };
   if (typeof module === 'object' && module.exports) { module.exports = API; }
   else { raiz.AudioFeedbackManager = API; }
