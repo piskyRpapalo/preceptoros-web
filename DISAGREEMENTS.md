@@ -35,3 +35,18 @@ queda alias hist\u00f3rico por colisi\u00f3n con el rack; FIRMO 2026-10-18.)*
 - RC-06 (proposed): "Multics" paper-name collision — confirmed avoided
   (arXiv:2610.17201); design conforms to Ruling #40. NO_DATA: the full
   group-slot collision sweep — cause: not yet run.
+- RC-08 (proposed, pending Sovereign decision): `AtlasTelemetry` labels
+  `JSON.stringify(a).length` as `bytes` (`public/assets/descent_view.js:77-80`),
+  although JavaScript string length counts UTF-16 code units. `monta(..., otra)`
+  accepts a caller-supplied scene (`:108`), so the metric's contract matters
+  beyond the current bundled ASCII scene. Exact yardstick on Linux x86_64,
+  Node v22.22.1, 2026-10-19:
+
+  ```sh
+  node -e 'const fs=require("fs"); const text=fs.readFileSync("public/assets/descent_scene.js","utf8"); const nonAscii=[...new Set([...text].filter(c=>c.charCodeAt(0)>127))]; const sample=JSON.stringify({r:"é"}); console.log("scene_non_ascii_codepoints="+nonAscii.length); console.log("sample_js_length="+sample.length); console.log("sample_utf8_bytes="+Buffer.byteLength(sample,"utf8"));'
+  ```
+
+  Receipt: bundled scene has 0 non-ASCII code points; synthetic `é` sample
+  measures 9 JavaScript code units vs 10 UTF-8 bytes. No default-scene byte
+  mismatch was measured. Proposed decision: define `bytes` as UTF-8 bytes or
+  rename the field to `code_units`; do not silently change the telemetry.
