@@ -364,6 +364,37 @@ caso(9, 'Questions???: en la ultima seccion, 9 lenguas = portadas, motores con s
   return { ok: f.length === 0, detalle: f.length ? 'falla: ' + f.join(' | ') : '9 lenguas, 4 motores con sello, 44/56 px' };
 });
 
-const ok = casos.length === 9 && casos.every((c) => c.ok);
+// W5 del MVP (A11Y, 4 canales, FIRMO 2026-10-19): cada seccion dice lo mismo por los cuatro canales. Geometria = los atomos
+// que se pintan; espejo DOM = «What is drawn», uno por atomo y con texto; WebAudio = la partitura del fotograma; haptico =
+// pulsos derivados de esa partitura, nunca con movimiento reducido. Mismo fotograma, misma salida en los cuatro.
+caso(10, 'A11Y 4 canales: geometria = espejo DOM (1:1, con texto), sonido y haptico deterministas, haptico apagado con movimiento reducido', () => {
+  const f = [];
+  const exige = (c, msg) => { if (!c) f.push(msg); };
+  const V = cargaVista({ dpr: 1 }), S = V.v.AtlasCodexScene;
+  const D = runInContext(readFileSync(join(RAIZ, 'public/game/descent_sound.js'), 'utf8') + ';AtlasDescentSound', V.v);
+  const panel = V.v.document.createElement('div');
+  V.v.AtlasDescentView.monta(panel, () => {});
+  const raiz = panel.hijos[0], ids = S.SECTIONS || S.PAGES;
+  const pasos = todos(raiz).filter((x) => x.getAttribute && x.getAttribute('data-frame') != null);
+  exige(pasos.length === ids.length, 'secciones montadas ' + pasos.length + '/' + ids.length);
+  ids.forEach((id, i) => {
+    const fr = S.frame(id), atomos = Array.isArray(fr && fr.atoms) ? fr.atoms : [];
+    const espejo = etiqueta(conClase(pasos[i], 'descent-tele')[0] || pasos[i], 'LI');
+    exige(atomos.length > 0, id + ': nada dibujado');
+    exige(espejo.length === atomos.length, id + ': espejo ' + espejo.length + ' != dibujo ' + atomos.length);
+    exige(espejo.every((li) => li.textContent.trim().length > 0), id + ': espejo sin texto');
+    const voces = D.score(fr).voices, pulsos = D.haptic(fr);
+    exige(Array.isArray(voces) && voces.length > 0, id + ': sin voz');
+    exige(JSON.stringify(voces) === JSON.stringify(D.score(S.frame(id)).voices), id + ': sonido no determinista');
+    exige(Array.isArray(pulsos) && pulsos.every((n) => Number.isInteger(n) && n > 0 && n <= 1000), id + ': haptico invalido');
+    exige(JSON.stringify(pulsos) === JSON.stringify(D.haptic(S.frame(id))), id + ': haptico no determinista');
+  });
+  const js = sinComentarios(leer(JS));
+  exige(/prefers-reduced-motion: reduce/.test(js) && /typeof window\.navigator\.vibrate === 'function' && !quieto/.test(js), 'el haptico no respeta el movimiento reducido');
+  exige(!/navigator\.vibrate\(/.test(js.replace(/if \(window\.navigator && typeof window\.navigator\.vibrate === 'function' && !quieto\) \{\s*try \{ window\.navigator\.vibrate\(/, '')), 'hay otra via de vibracion sin la guarda');
+  return { ok: f.length === 0, detalle: f.length ? 'falla: ' + f.slice(0, 6).join(' | ') : ids.length + ' secciones: 4 canales en paridad' };
+});
+
+const ok = casos.length === 10 && casos.every((c) => c.ok);
 console.log(JSON.stringify({ ok, casos }));
 process.exitCode = ok ? 0 : 1;
