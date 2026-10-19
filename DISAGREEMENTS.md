@@ -55,3 +55,18 @@ queda alias hist\u00f3rico por colisi\u00f3n con el rack; FIRMO 2026-10-18.)*
   lives on the private rack)". Measured: `public/game/tabla_semantica.js`
   lives in public main (2,138 B), judged by `tests/tabla_semantica.test.mjs`
   (8 pass, 0 fail).
+- RC-20 (proposed, 2026-10-19; receipt filed in
+  `atlas/RECIBO_T_CRT_20261019.md`): the T_CRT §2/§4 depth-edge reading,
+  seal-layer mapping, open/closed map margin, and 175/173 precache count have
+  competing interpretations. Proposed code follows the signed §2 stops and
+  keeps the complete map beneath closed panels; the Sovereign decides the
+  canonical edge rules and the final precache count. Receipt: `python3
+  atlas/test_atlas.py`; `node arnes_sw.mjs`; 2026-10-19, Linux x86_64,
+  Python 3.14.4 / Node measured in the PR receipt.
+- RC-21 (proposed, 2026-10-19): `atlas/mvp_mapa.json` W7 still says the
+  Questions??? trigger is unbuilt, while merged PR #173 implements it and
+  `node atlas/descent_view_casos.mjs` measures its nine language links and
+  four engine stamps. Recommendation: split the row into the built trigger
+  and the local-app query, whose browser/device E2E remains NO_DATA until
+  exercised. Receipt: `python3 atlas/test_atlas.py` (185 tests),
+  `node arnes_sw.mjs` (22/22); 2026-10-19, Linux x86_64, Python 3.14.4.
