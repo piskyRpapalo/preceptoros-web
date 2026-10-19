@@ -1,6 +1,7 @@
 // VT5 · pantallas F0-F3: modelo de vista puro + capa DOM sin innerHTML y con toque de 44 px.
 // Se ejecuta con: node atlas/ui_tutorial_casos.mjs  -> [{caso, ok, detalle}]  (sale != 0 si alguno falla)
 import { createRequire } from 'node:module';
+import { readFileSync } from 'node:fs';
 
 const require = createRequire(import.meta.url);
 const T = require('../public/game/tutorial_fases.js');
@@ -88,7 +89,9 @@ caso('violacion: cada boton activo es un objetivo tactil de 44 px como minimo (c
   U.monta(doc, raiz, T.inicia(), {}, () => {});
   const botones = buscaBotones(raiz);
   const todos = botones.every((b) => /touch44/.test(b.className)) && U.TOQUE_MIN === 44;
-  return todos && botones.length === 2 || `botones=${botones.length} touch=${todos}`;
+  const css = readFileSync(new URL('../public/game/tutorial-fases.css', import.meta.url), 'utf8');
+  const regla = /\.tutorial-accion\.touch44\s*\{[^}]*min-width:\s*44px[^}]*min-height:\s*44px/.test(css);
+  return todos && botones.length === 2 && regla || `botones=${botones.length} touch=${todos} regla=${regla}`;
 });
 
 caso('violacion: el texto de las pantallas no lleva palabras prohibidas del canon', () => {
