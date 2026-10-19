@@ -239,6 +239,8 @@
       sec.appendChild(cont);
       function pinta(s) { U.monta(document, cont, s, {}, pinta); }
       pinta(T.inicia());
+      // Que la máquina quede a la vista al abrirse (el panel scrollea dentro de la hoja).
+      if (cont.scrollIntoView) { cont.scrollIntoView({ block: 'start' }); }
     }
     var st = { pasos: pasos, hoja: hoja, activo: ids[0], q: 0, limpia: null, fondoDe: null, audio: null, oye: false };
     var D = window.AtlasDescentSound;
