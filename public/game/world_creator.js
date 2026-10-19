@@ -119,7 +119,7 @@
     var input = d.createElement('input');
     input.id = 'world-chat-q';
     input.setAttribute('type', 'text');
-    input.setAttribute('maxlength', '200');
+    input.setAttribute('maxlength', '600');
     input.setAttribute('autocomplete', 'off');
 
     var button = d.createElement('button');
@@ -129,16 +129,22 @@
 
     var out = d.createElement('div');
     out.className = 'world-chat-out';
-    out.setAttribute('role', 'status');
-    out.setAttribute('aria-live', 'polite');
 
     form.appendChild(label);
     form.appendChild(input);
     form.appendChild(button);
     section.appendChild(heading);
     section.appendChild(prompt);
-    section.appendChild(form);
-    section.appendChild(out);
+    // Envoltorios de la consulta local (contrato de descent_view_casos): el formulario y la salida anunciada.
+    var pregunta = d.createElement('div');
+    pregunta.className = 'descent-local-query';
+    pregunta.appendChild(form);
+    section.appendChild(pregunta);
+    var resultado = d.createElement('div');
+    resultado.className = 'descent-local-result';
+    resultado.setAttribute('aria-live', 'polite');
+    resultado.appendChild(out);
+    section.appendChild(resultado);
 
     form.addEventListener('submit', function (ev) {
       ev.preventDefault();
