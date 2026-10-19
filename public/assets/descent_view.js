@@ -237,7 +237,9 @@
       sec.removeChild(b);
       var cont = el('div', 'tutorial-pantalla');
       sec.appendChild(cont);
-      function pinta(s) { U.monta(document, cont, s, {}, pinta); }
+      var source = window.En301TutorialBuilding;
+      var measures = source ? source.measure('radio') : { dato: 'NO_DATA', causa: 'Building measurement module unavailable.' };
+      function pinta(s) { U.monta(document, cont, s, measures, pinta); }
       pinta(T.inicia());
       // Que la máquina quede a la vista al abrirse (el panel scrollea dentro de la hoja).
       if (cont.scrollIntoView) { cont.scrollIntoView({ block: 'start' }); }
