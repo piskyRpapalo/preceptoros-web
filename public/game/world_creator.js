@@ -106,7 +106,8 @@
     var input = d.createElement('input');
     input.id = 'world-chat-q';
     input.setAttribute('type', 'text');
-    input.setAttribute('maxlength', '200');
+    input.setAttribute('maxlength', '600');
+    input.maxLength = 600;
     input.setAttribute('autocomplete', 'off');
 
     var button = d.createElement('button');

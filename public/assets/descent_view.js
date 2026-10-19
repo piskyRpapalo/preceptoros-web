@@ -141,7 +141,17 @@
       ul.appendChild(li);
     });
     d.appendChild(ul);
-    if (window.AtlasWorldCreator) { d.appendChild(window.AtlasWorldCreator.panel(document)); }
+    if (window.AtlasWorldCreator) {
+      var envoltorio = document.createElement('div');
+      envoltorio.className = 'descent-local-query';
+      envoltorio.appendChild(window.AtlasWorldCreator.panel(document));
+      var resultado = document.createElement('p');
+      resultado.className = 'descent-local-result';
+      resultado.setAttribute('aria-live', 'polite');
+      resultado.textContent = 'No request is made until you ask. The query stays on this device.';
+      envoltorio.appendChild(resultado);
+      d.appendChild(envoltorio);
+    }
     return d;
   }
 
