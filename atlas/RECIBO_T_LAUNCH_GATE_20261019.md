@@ -1,0 +1,21 @@
+# RECIBO · VT6 · compuerta de lanzamiento (solo forma)
+
+- Base: `origin/main` 1194fdd · rama `haiku/vt6-launch-gate` · sin commit ni push.
+- Modulo puro `public/game/launch_gate.js`: `vista(datos)` y `valida(vista)`.
+  - Carril PWA: 1 clic. Sin `beforeinstallprompt`, boton inactivo con causa.
+  - Carril APP: 2 clics, instalador preseleccionado por OS (`bin/instalar-pc` / `bin/instalar-android`). Sin recibo firmado para ese OS en release.json: `NO_DATA` con causa.
+  - Carril cerebros: 2 clics por modelo. Boton solo con sha256 y size_gb medidos. Cifra completa solo con maquina y fecha; si no, `NO_DATA`.
+  - «Saltar al Mapa» es el primer elemento enfocable.
+  - Peticiones en carga: solo del mismo origen.
+- Todos los botones llevan `tamano: 44` (minimo tactil).
+- Casos `atlas/launch_gate_casos.mjs`: 7 (1 valido, 6 violaciones: >2 clics, modelo sin sha256 con boton activo, cifra sin maquina ni fecha, GB medido no mostrado, boton <44 px, peticion externa en carga).
+- Un fallo real encontrado y corregido en el validador: la regex de GB exigia un espacio final y ocultaba la regla de maquina y fecha.
+- Rojo demostrado: quitar el limite de clics en copia desechable falla su caso.
+- Grupo `VT6` en `atlas/test_atlas.py` (fuera de la puerta).
+- PENDIENTE (requieren firma o medida del carbono, no se hacen):
+  - Carril cerebros: `public/cerebros.json` no trae sha256 ni size_gb, ni las entradas orchestrator y project_definer_lora. Los sha256 se miden en local y publicarlos pide FIRMO.
+  - Carril APP: `public/release.json` no lleva firma por OS. Hasta firmarla, cada paquete muestra NO_DATA.
+  - Cargador en la pantalla, captura en el Doogee y CSS de la compuerta: no hechos.
+- Sello: VERSION intacta `preceptoros-2026-17-abje`; huella `57d20800604b7e2d`.
+- Gates: test_web OK (78, 1 saltado) · arnes_sw 22/22 · test_atlas 186 OK.
+- Pendiente: commit y push (mano del carbono).
