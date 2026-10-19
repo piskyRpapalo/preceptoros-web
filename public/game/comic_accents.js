@@ -60,7 +60,7 @@
       bands: bandsOf(43, 100, 50, BASE_COMIC_YELLOW),
       vara: varaOf(BASE_COMIC_YELLOW, ['ink', 'ocean']),
       sound: Object.freeze({ g: 3, o: 1, words: 'one warm bell' }),
-      use: 'the statue light eye, the wake button and the waking windows'
+      use: 'the gold edge of the house letters, the Rare troops and the yellow play button'
     })
   });
 

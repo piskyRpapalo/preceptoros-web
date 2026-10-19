@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 const req = createRequire(import.meta.url);
 const ruta = (rel) => fileURLToPath(new URL(rel, import.meta.url));
 const FUENTE = ruta('../public/game/descent_sound.js');
-const SECCIONES = ['OPEN', 'CLIFF', 'START', 'TREMOR', 'SPLIT', 'FALL', 'GATE'];
+const SECCIONES = ['REFUGE', 'SUMMON', 'ARMY', 'BATTLE', 'RIFT'];
 const PROHIBIDOS = [/Math\.random/, /\bDate\b/, /\bfetch\s*\(/, /localStorage/, /setTimeout/, /requestAnimationFrame/];
 const COLOR = [/#[0-9a-fA-F]{3,8}\b/, /\brgba?\s*\(/, /\bhsla?\s*\(/];
 const COMENTARIO = [/\/\//, /\/\*/];
@@ -37,7 +37,8 @@ for (const rel of ['../public/game/tabla_semantica.js', '../public/game/comic_to
 }
 const R = cargar('../public/game/aiact-art50-state-radio.js');
 globalThis.AtlasBubble = cargar('../public/game/bubble_language.js') || undefined;
-const S = cargar('../public/assets/descent_scene.js');
+cargar('../public/game/bubble_game.js');
+const S = cargar('../public/assets/codex_scene.js');
 
 let DS = null, causaModulo = null;
 if (existsSync(FUENTE)) {
@@ -55,10 +56,10 @@ caso(1, 'existe, <= 16384 B, sin comentarios, puro, sin colores ni literales de 
 
 const framesDe = () => SECCIONES.map((id) => S.frame(id));
 
-if (!sinCausa(2, 'determinismo: score de los 7 fotogramas dos veces, mismo JSON')) {
+if (!sinCausa(2, 'determinismo: score de los 5 fotogramas dos veces, mismo JSON')) {
   const a = JSON.stringify(framesDe().map((f) => DS.score(f)));
   const b = JSON.stringify(framesDe().map((f) => DS.score(f)));
-  caso(2, 'determinismo: score de los 7 fotogramas dos veces, mismo JSON', a === b, { bytes: a.length });
+  caso(2, 'determinismo: score de los 5 fotogramas dos veces, mismo JSON', a === b, { bytes: a.length });
 }
 
 if (!sinCausa(3, 'cada hz es AtlasRadio.nota(grade, octave) de su voz')) {
@@ -90,9 +91,9 @@ if (!sinCausa(4, 'techos: gain <= 0.07, a >= 0.03, r >= 0.3, voces <= 6')) {
   caso(4, 'techos: gain <= 0.07, a >= 0.03, r >= 0.3, voces <= 6', ok, peor);
 }
 
-if (!sinCausa(5, 'fotogramas distintos dan partituras distintas (al menos 5 de 7)')) {
+if (!sinCausa(5, 'fotogramas distintos dan partituras distintas (al menos 4 de 5)')) {
   const distintas = new Set(framesDe().map((f) => JSON.stringify(DS.score(f)))).size;
-  caso(5, 'fotogramas distintos dan partituras distintas (al menos 5 de 7)', distintas >= 5, { distintas });
+  caso(5, 'fotogramas distintos dan partituras distintas (al menos 4 de 5)', distintas >= 4, { distintas });
 }
 
 if (!sinCausa(6, 'haptic: longitud par <= 6, suma <= 400, enteros >= 0, determinista')) {
@@ -139,14 +140,14 @@ if (!sinCausa(8, 'sabotaje: copia con Math.random insertado hace fallar el caso 
     { reemplazo: cambio, original_pasa: caso1Sobre(fuente), copia_pasa: caso1Sobre(copia), violaciones_copia: copia ? violaciones(copia) : null });
 }
 
-if (!sinCausa(9, 'describe: frase en ingles no vacia para los 7 fotogramas')) {
+if (!sinCausa(9, 'describe: frase en ingles no vacia para los 5 fotogramas')) {
   const frases = SECCIONES.map((id) => DS.describe(DS.score(S.frame(id)).voices));
   const ok = frases.every((t) => typeof t === 'string' && t.length > 0 && /^[\x20-\x7e]+$/.test(t));
-  caso(9, 'describe: frase en ingles no vacia para los 7 fotogramas', ok && typeof DS.describe([]) === 'string', { frases });
+  caso(9, 'describe: frase en ingles no vacia para los 5 fotogramas', ok && typeof DS.describe([]) === 'string', { frases });
 }
 
 if (!sinCausa(10, 'play sin createOscillator devuelve 0')) {
-  caso(10, 'play sin createOscillator devuelve 0', DS.play({}, DS.score(S.frame('OPEN')).voices, 0) === 0);
+  caso(10, 'play sin createOscillator devuelve 0', DS.play({}, DS.score(S.frame('REFUGE')).voices, 0) === 0);
 }
 
 const ok = casos.every((c) => c.ok);
