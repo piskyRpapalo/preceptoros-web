@@ -48,3 +48,7 @@ La directiva la escribió el Soberano el 2026-09-27. Aquí se construye lo que *
 | Módulo | Qué es | Firma |
 |---|---|---|
 | `game/juez.js` | El juez: al corregir o ignorar al piloto, juega las dos ramas con el motor puro y dice quién tenía razón. Es el mismo juez que usa la Aduana del rack para decidir qué correcciones entrenan. Sin red; simula con `AtlasPartida.puro` para no tocar la partida grabada | Soberano, tanda 7 (§3 «integración del juez») y «firmo todo» |
+
+## Tutorial: measured building label (2026-10-19)
+
+Signed mission in PLAN_CODEX, painter inheritance: en301_tutorial_building.js connects deploy_building.measurements to AtlasEtiqueta. It measures contract fields, never signed placement or device hardware; missing measures remain unavailable. The same canonical label travels through disipa and primer_edificio. Source: tests/en301_tutorial_building.test.mjs.
