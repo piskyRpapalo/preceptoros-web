@@ -1059,7 +1059,9 @@ CASA = ("canon.js", "tabla_semantica.js", "comic_tokens.js", "comic_atoms.js", "
 DESCENSO = ("comic_accents.js", "bubble_language.js", "bubble_light.js", "bubble_bestiary.js", "bubble_world.js", "bubble_letters.js", "bubble_game.js", "bubble_icons.js", "descent_sound.js", "local_app_bridge.js")
 # VT6 (compuerta de lanzamiento): modulo puro, fuera de la puerta del juego; la pantalla aun no la carga.
 VT6 = ("launch_gate.js",)
-FUERA_DE_LA_PUERTA = tuple(sorted(set(PUROS + ARENA + CASA + DESCENSO + VT6)))
+# J1 (estrella Hexelion capturable): modulo puro, fuera de la puerta; la mecanica aun no la carga el juego.
+J1 = ("estrella_captura.js",)
+FUERA_DE_LA_PUERTA = tuple(sorted(set(PUROS + ARENA + CASA + DESCENSO + VT6 + J1)))
 
 
 class TheGameV15(unittest.TestCase):
@@ -3180,6 +3182,17 @@ class LaunchGateVT6(unittest.TestCase):
 
     def test_launch_gate_casos_en_node(self):
         r = subprocess.run(["node", str(RAIZ / "launch_gate_casos.mjs")], capture_output=True, text=True, check=False)
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        casos = json.loads(r.stdout)
+        self.assertEqual(len(casos), 7)
+        self.assertTrue(all(c["ok"] for c in casos), [c for c in casos if not c["ok"]])
+
+
+class EstrellaCapturaJ1(unittest.TestCase):
+    """J1: una estrella se captura en su edificio enlazado, una vez, con semiotica medida; lo no medido es NO_DATA."""
+
+    def test_estrella_captura_casos_en_node(self):
+        r = subprocess.run(["node", str(RAIZ / "estrella_captura_casos.mjs")], capture_output=True, text=True, check=False)
         self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
         casos = json.loads(r.stdout)
         self.assertEqual(len(casos), 7)
