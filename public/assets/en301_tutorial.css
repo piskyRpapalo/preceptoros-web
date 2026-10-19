@@ -1,0 +1,33 @@
+.en301-tutorial{position:fixed;inset:0;z-index:100;box-sizing:border-box;width:100%;max-width:100%;max-height:100vh;overflow-y:auto;padding:12px;color:var(--d-ink);background:var(--d-paper);font:16px/1.4 system-ui,sans-serif;overflow-wrap:anywhere}
+.en301-tutorial *{box-sizing:border-box;max-width:100%}
+.en301-stamp{margin:0 0 8px;font-weight:700;color:var(--d-ink)}
+.en301-status{padding:12px;color:var(--d-ink);background:var(--d-paper);border:3px solid var(--d-ink);box-shadow:4px 4px 0 var(--d-cyan)}
+.en301-heading{margin:0 0 8px;font-size:1.25rem;color:var(--d-ink)}
+.en301-heading:focus{outline:3px solid var(--d-cyan);outline-offset:2px}
+.en301-instruction,.en301-next,.en301-cause,.en301-note,.en301-progress{margin:0 0 8px}
+.en301-cause{font-weight:700;padding-left:8px;border-left:4px solid var(--d-yellow)}
+.en301-note{font-weight:700}
+.en301-feedback{margin-top:8px;font-size:.9rem}
+.en301-cue{margin:4px 0}
+.en301-preview{margin:8px 0;padding:8px;color:var(--d-ink);border:2px dashed var(--d-ink)}
+.en301-practice{width:100%;min-height:240px;margin:8px 0;overflow:auto;color:var(--d-ink);border:3px solid var(--d-ink)}
+.en301-practice[hidden]{display:none}
+.en301-extras{margin:8px 0;padding:0;list-style:none}
+.en301-extra{padding:6px 0}
+.en301-form{display:grid;gap:8px;margin:8px 0}
+.en301-form[hidden]{display:none}
+.en301-field{display:grid;gap:4px;font-weight:700}
+.en301-input{width:100%;min-height:44px;padding:8px;font:inherit;color:var(--d-ink);background:var(--d-paper);border:3px solid var(--d-ink)}
+textarea.en301-input{min-height:88px}
+.en301-actions{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0;padding:0;list-style:none}
+.en301-item{display:grid;gap:4px;flex:1 1 140px;min-width:0}
+.en301-action{min-width:44px;min-height:44px;padding:8px 12px;font:inherit;font-weight:700;text-align:start;color:var(--d-ink);background:var(--d-yellow);border:3px solid var(--d-ink);box-shadow:4px 4px 0 var(--d-cyan);cursor:pointer;overflow-wrap:anywhere}
+.en301-action:disabled{background:var(--d-paper);border-style:dashed;box-shadow:none;cursor:not-allowed}
+.en301-action:focus-visible,.en301-input:focus-visible{outline:3px solid var(--d-cyan);outline-offset:2px}
+.en301-details{margin-top:8px}
+.en301-frame{max-width:100%;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere;padding:8px;font-size:.8rem;color:var(--d-ink);border:2px solid var(--d-ink)}
+
+.en301-preview:empty,.en301-cause:empty,.en301-note:empty{display:none}
+.en301-details summary{min-height:44px;padding:10px;cursor:pointer}
+.en301-tutorial pre.en301-frame{background:var(--d-paper);color:var(--d-ink);border-radius:0}
+.en301-preview h3{color:var(--d-ink)}

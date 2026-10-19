@@ -170,7 +170,7 @@
 
   var BASE = [['/game/tabla_semantica.js'], ['/game/comic_tokens.js'], ['/game/comic_accents.js'],
     ['/game/comic_atoms.js'], ['/game/valores.js'], ['/game/gacha.js'], ['/game/bubble_language.js'], ['/game/bubble_light.js'],
-    ['/game/bubble_bestiary.js'], ['/game/bubble_world.js'], ['/game/bubble_letters.js'], ['/game/aiact-art50-state-radio.js'], ['/game/descent_sound.js'], ['/game/audio_feedback_manager.js'], ['/game/world_creator.js'], ['/game/tutorial_fases.js'], ['/game/ui-tutorial-fases.js'], ['descent_view.js']];
+    ['/game/bubble_bestiary.js'], ['/game/bubble_world.js'], ['/game/bubble_letters.js'], ['/game/aiact-art50-state-radio.js'], ['/game/descent_sound.js'], ['/game/audio_feedback_manager.js'], ['/game/world_creator.js'], ['/game/tutorial_fases.js'], ['/game/reef_building_lifecycle.js'], ['/game/deploy_building.js'], ['/game/etiqueta.js'], ['/game/en301_tutorial_building.js'], ['/game/ui-tutorial-fases.js'], ['descent_view.js']];
 
   var VISTAS = {
     codex: [['/game/bubble_game.js'], ['codex_scene.js'], 'AtlasCodexScene'],
@@ -194,5 +194,35 @@
     return true;
   }
 
-  window.TheGame = { abre: abre, army: cargaArmy, codex: codex, ve: function (id) { muestra(HOJA[id] ? id : null); } };
+  var tutorialView = null;
+  function tutorial() {
+    var panel = document.getElementById('juego-panel');
+    if (!panel) { return false; }
+    var scripts = [['/game/tabla_semantica.js'], ['/game/comic_tokens.js'], ['/game/comic_accents.js'], ['/game/valores.js'], ['/game/gacha.js'], ['/game/core.js'], ['/assets/atlas-coord.js'], ['/game/canon.js'], ['/game/aiact-art50-state-radio.js'], ['/game/combate_ticks.js'], ['/game/silueta.js'], ['/game/wave_render.js'], ['/game/reef_building_lifecycle.js'], ['/game/deploy_building.js'], ['/game/etiqueta.js'], ['/game/en301_tutorial_building.js'], ['/game/audio_feedback_manager.js'], ['/game/tutorial_fases.js'], ['/game/en301_practice_model.js'], ['/game/en301_practice_arena.js'], ['/game/en301_tutorial_model.js'], ['/game/en301_tutorial_audio.js'], ['/game/en301_tutorial.js']];
+    ['/assets/en301_tutorial.css', '/assets/en301_practice.css'].forEach(function (href) {
+      if (!document.querySelector('link[href="' + href + '"]')) { var sheet = document.createElement('link'); sheet.rel = 'stylesheet'; sheet.href = href; document.head.appendChild(sheet); }
+    });
+    return pide(nuevos(scripts)).then(function () {
+      if (tutorialView) { tutorialView.destroy(); }
+      var palette = window.AtlasComicTokens.NEUTRAL;
+      ['ink', 'paper', 'ocean', 'cyan'].forEach(function (key) { panel.style.setProperty('--d-' + key, palette[key]); });
+      panel.style.setProperty('--d-yellow', window.AtlasComicAccents.ACCENTS['comic yellow'].bands.base);
+      var measures = window.En301TutorialBuilding.measure('radio');
+      tutorialView = window.AtlasTutorialGuide.mount(document, panel, {
+        label: measures.etiqueta ? { ok: true, texto: measures.etiqueta, bytes: measures.bytes } : null,
+        openPractice: function (host, done, context) {
+          return window.AtlasPracticeArena.mount(document, host, { seed: window.AtlasCanon.sha(context.seed), onFinish: done,
+            onNarrate: function (text) { if (tutorialView) { tutorialView.narrate(text); } } });
+        },
+        verifyPractice: function (packet, context) {
+          if (!packet || packet.s !== window.AtlasCanon.sha(context.seed)) { return { ok: false, reason: 'Practice seed differs from this step.' }; }
+          return window.AtlasPracticeModel.verify(packet);
+        },
+        onExit: function () { if (tutorialView) { tutorialView.destroy(); tutorialView = null; } }
+      });
+      return true;
+    }).catch(function () { console.warn('Guided practice unavailable: required local modules could not load.'); return false; });
+  }
+
+  window.TheGame = { abre: abre, army: cargaArmy, codex: codex, tutorial: tutorial, ve: function (id) { muestra(HOJA[id] ? id : null); } };
 })();

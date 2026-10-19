@@ -102,6 +102,24 @@
     return d;
   }
 
+  function epilogue() {
+    var d = el('section', 'descent-epilogue');
+    var status = el('p', 'descent-status');
+    status.setAttribute('aria-live', 'polite');
+    var b = el('button', 'descent-tutorial', 'Start the guided tutorial');
+    b.type = 'button';
+    b.addEventListener('click', function () {
+      if (window.TheGame && typeof window.TheGame.tutorial === 'function') { window.TheGame.tutorial(); return; }
+      status.textContent = 'The guided tutorial is not loaded yet.';
+    });
+    d.appendChild(el('h2', null, 'Your own place, by your choice'));
+    d.appendChild(el('p', null, 'Goal: Build a sovereign structure in an AI Safe environment: your device holds its state, AI proposes, and you review what changes.'));
+    d.appendChild(el('p', null, 'The guided tutorial helps you prepare your first beacon. You can keep playing locally. Visiting a node or deploying a structure always needs your explicit choice.'));
+    d.appendChild(b);
+    d.appendChild(status);
+    return d;
+  }
+
   var LANGS = [['ar', 'العربية'], ['de', 'Deutsch'], ['el', 'Ελληνικά'], ['en', 'English'], ['es', 'Español'],
     ['fr', 'Français'], ['it', 'Italiano'], ['pt', 'Português'], ['ru', 'Русский']];
 
@@ -141,7 +159,14 @@
       ul.appendChild(li);
     });
     d.appendChild(ul);
-    if (window.AtlasWorldCreator) { d.appendChild(window.AtlasWorldCreator.panel(document)); }
+    if (window.AtlasWorldCreator) {
+      var wrapper = el('div', 'descent-local-query');
+      wrapper.appendChild(window.AtlasWorldCreator.panel(document));
+      var result = el('p', 'descent-local-result', 'Answers from the local lore stay on this device.');
+      result.setAttribute('aria-live', 'polite');
+      wrapper.appendChild(result);
+      d.appendChild(wrapper);
+    }
     return d;
   }
 
@@ -214,34 +239,12 @@
       llenaCopia(copia, textoDe(dual ? 'kids' : null, id), oidoDe(id));
       caja.appendChild(copia);
       caja.appendChild(espejo(id));
-      if (i === ids.length - 1) { caja.appendChild(puertas(despertar, hayCuenta)); }
+      if (i === ids.length - 1) { caja.appendChild(epilogue()); caja.appendChild(puertas(despertar, hayCuenta)); }
       s.appendChild(caja);
       hoja.appendChild(s);
       return { id: id, el: s, copia: copia };
     });
 
-    // Puerta «Start in the Fog» (modo aparte del tutorial F0-F3, decisión del Soberano 2026-10-19).
-    // Va dentro del último fotograma (no es descent-step): la intro conserva sus fotogramas, su orden y su última sección.
-    var entrada = el('section', 'descent-tutorial');
-    var puertaTuto = el('button', 'descent-tutorial-door', 'Start in the Fog');
-    puertaTuto.type = 'button';
-    puertaTuto.addEventListener('click', function () { abreTutorial(entrada, puertaTuto); });
-    entrada.appendChild(puertaTuto);
-    pasos[pasos.length - 1].el.appendChild(entrada);
-    function abreTutorial(sec, b) {
-      var T = window.AtlasTutorial, U = window.AtlasUiTutorial;
-      if (!T || !U) { b.textContent = 'NO_DATA (tutorial modules not loaded)'; b.disabled = true; return; }
-      if (!document.querySelector('link[href="/game/tutorial-fases.css"]')) {
-        var h = document.createElement('link'); h.rel = 'stylesheet'; h.href = '/game/tutorial-fases.css'; document.head.appendChild(h);
-      }
-      sec.removeChild(b);
-      var cont = el('div', 'tutorial-pantalla');
-      sec.appendChild(cont);
-      function pinta(s) { U.monta(document, cont, s, {}, pinta); }
-      pinta(T.inicia());
-      // Que la máquina quede a la vista al abrirse (el panel scrollea dentro de la hoja).
-      if (cont.scrollIntoView) { cont.scrollIntoView({ block: 'start' }); }
-    }
     var st = { pasos: pasos, hoja: hoja, activo: ids[0], q: 0, limpia: null, fondoDe: null, audio: null, oye: false };
     var D = window.AtlasDescentSound;
     function suena(id) {
@@ -335,6 +338,8 @@
       if (io) { io.disconnect(); }
       hoja.removeEventListener('scroll', alMover);
       window.removeEventListener('resize', alMover);
+      if (st.audio && typeof st.audio.close === 'function') { Promise.resolve(st.audio.close()).then(null, function () {}); }
+      st.audio = null;
     };
 
     marca(ids[0]);
