@@ -38,7 +38,7 @@ function leerTextos() {
 // Jueces: CI, tests y un nivel de imports './x.mjs'.
 function leerJueces() {
  const base = new Set(['test_web.py', 'atlas/test_atlas.py', 'arnes_sw.mjs', 'atlas/matematica_casos.mjs']);
- for (const m of leer('.github/workflows/gate.yml').matchAll(/node\s+(atlas\/[\w.-]+\.mjs)/g)) base.add(m[1]);
+ for (const m of leer('.github/workflows/gate.yml').matchAll(/node\s+((?:atlas|questions)\/[\w.-]+\.mjs)/g)) base.add(m[1]);
  for (const n of readdirSync(join(RAIZ, 'tests'))) if (n.endsWith('.test.mjs')) base.add('tests/' + n);
  const todos = new Set(base);
  for (const n of base) {
