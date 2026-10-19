@@ -157,6 +157,59 @@
   transform: translate(1.5px, 1.5px);
 }
 
+.descent-ask {
+  max-width: 34rem;
+}
+
+.descent-ask-open {
+  display: flex;
+  align-items: center;
+  min-width: 260px;
+  min-height: 56px;
+  padding: 0 16px;
+  box-sizing: border-box;
+  background: var(--d-paper);
+  color: var(--d-ink);
+  border: 3.5px solid var(--d-ink);
+  box-shadow: 4px 4px 0 var(--d-cyan);
+  font: 700 20px system-ui, sans-serif;
+  cursor: pointer;
+}
+
+.descent-langs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 12px 0;
+}
+
+.descent-langs a {
+  display: inline-flex;
+  align-items: center;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0 10px;
+  box-sizing: border-box;
+  color: var(--d-paper);
+  border: 2.5px solid var(--d-paper);
+}
+
+.descent-langs a[aria-current] {
+  background: var(--d-yellow);
+  color: var(--d-ink);
+}
+
+.descent-engines {
+  padding-left: 0;
+  list-style: none;
+}
+
+.descent-engines li {
+  margin: 6px 0;
+}
+
+.descent-ask-open:focus-visible,
+.descent-langs a:focus-visible,
 .descent-skip:focus-visible,
 .descent-intro button:focus-visible,
 .descent-enter:focus-visible,

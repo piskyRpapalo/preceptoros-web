@@ -1,7 +1,7 @@
 // Casos de la vista del descenso (scroll presentation). Node: imprime {ok, casos}; rc=0 solo si
 // todos pasan. El caso 8 es humo en vm con DOM falso: A escena real, B IO e identidad, C intros
 // duales. Comentarios en espanol; no viaja al navegador.
-import { existsSync, readFileSync, statSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createContext, runInContext } from 'node:vm';
@@ -332,6 +332,38 @@ caso(8, 'humo en vm: escena real (A), IO e identidad (B), intros duales (C)', ()
   return { ok: f.length === 0, detalle: f.length ? 'falla: ' + f.join(' | ') : 'escena real, IO e identidad, intros duales: limpios' };
 });
 
-const ok = casos.length === 8 && casos.every((c) => c.ok);
+// Questions??? (F3 del MVP, 2026-10-19): la ultima puerta abre las 9 lenguas y los motores con su sello; sin red.
+caso(9, 'Questions???: en la ultima seccion, 9 lenguas = portadas, motores con sello y causa, objetivos de 44/56 px', () => {
+  const f = [];
+  const exige = (c, msg) => { if (!c) f.push(msg); };
+  const SEIS = ['LIVE', 'STALE', 'STATIC', 'SIMULATED', 'NO_DATA', 'ERROR'];
+  const portadas = readdirSync(join(RAIZ, 'public')).filter((d) => existsSync(join(RAIZ, 'public', d, 'index.html'))).sort();
+  const css = leer(CSS);
+  exige(px(valor(css, '.descent-ask-open', 'min-height')) >= 56, 'Questions??? menor de 56 px');
+  exige(px(valor(css, '.descent-langs a', 'min-height')) >= 44 && px(valor(css, '.descent-langs a', 'min-width')) >= 44, 'lengua menor de 44 px');
+  for (const conModelo of [false, true]) {
+    const V = cargaVista({ dpr: 1 });
+    if (conModelo) V.v.LanguageModel = {};
+    const panel = V.v.document.createElement('div');
+    V.v.AtlasDescentView.monta(panel, () => {});
+    const raiz = panel.hijos[0];
+    const pasos = todos(raiz).filter((x) => x.getAttribute && x.getAttribute('data-frame') != null);
+    const ask = conClase(raiz, 'descent-ask')[0];
+    exige(ask?.tagName === 'DETAILS' && dentroDe(pasos.at(-1), ask), 'Questions??? fuera de la ultima seccion');
+    exige(conClase(raiz, 'descent-ask-open')[0]?.textContent === 'Questions???', 'falta el disparador');
+    const enlaces = etiqueta(conClase(raiz, 'descent-langs')[0] || raiz, 'A');
+    exige(JSON.stringify(enlaces.map((a) => a.getAttribute('hreflang')).sort()) === JSON.stringify(portadas), 'lenguas distintas de las portadas: ' + enlaces.length);
+    exige(enlaces.every((a) => a.getAttribute('href') === '/' + a.getAttribute('hreflang') + '/' && a.getAttribute('lang') === a.getAttribute('hreflang')), 'enlace de lengua mal formado');
+    exige(enlaces.filter((a) => a.getAttribute('aria-current') === 'page').length === 1, 'sin lengua actual');
+    const motores = etiqueta(conClase(raiz, 'descent-engines')[0] || raiz, 'LI');
+    exige(motores.length === 4, 'motores: ' + motores.length);
+    exige(motores.every((m) => SEIS.includes(m.getAttribute('data-stamp'))), 'motor con sello fuera de los seis');
+    exige(motores.every((m) => m.getAttribute('data-stamp') === 'LIVE' || /: \S/.test(m.textContent)), 'motor sin causa');
+    exige(motores[0]?.getAttribute('data-stamp') === (conModelo ? 'LIVE' : 'NO_DATA'), 'el modelo del navegador no se mide en el aparato');
+  }
+  return { ok: f.length === 0, detalle: f.length ? 'falla: ' + f.join(' | ') : '9 lenguas, 4 motores con sello, 44/56 px' };
+});
+
+const ok = casos.length === 9 && casos.every((c) => c.ok);
 console.log(JSON.stringify({ ok, casos }));
 process.exitCode = ok ? 0 : 1;

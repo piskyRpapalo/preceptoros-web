@@ -97,7 +97,50 @@
     var d = el('div', 'descent-doors');
     d.appendChild(boton('descent-enter', 'Check the rift', despertar));
     if (hayCuenta) { d.appendChild(botonCuenta()); }
+    d.appendChild(questions());
     d.appendChild(el('p', 'descent-ai', 'Connect your local AI with the app later, from the terminal.'));
+    return d;
+  }
+
+  var LANGS = [['ar', 'العربية'], ['de', 'Deutsch'], ['el', 'Ελληνικά'], ['en', 'English'], ['es', 'Español'],
+    ['fr', 'Français'], ['it', 'Italiano'], ['pt', 'Português'], ['ru', 'Русский']];
+
+  function engines() {
+    var own = typeof window.LanguageModel !== 'undefined';
+    return [
+      ['Model inside this browser', own ? 'LIVE' : 'NO_DATA', own ? 'offered by this browser; it starts only when you ask' : 'this browser offers no built-in model'],
+      ['Small web model in pieces', 'NO_DATA', 'not built yet; each piece must stay under 25 MiB'],
+      ['Hexelion node', 'NO_DATA', 'reaching the node waits a signature'],
+      ['Your own local AI', 'NO_DATA', 'connect it with the app, from the terminal']
+    ];
+  }
+
+  function questions() {
+    var d = el('details', 'descent-ask');
+    d.appendChild(el('summary', 'descent-ask-open', 'Questions???'));
+    var root = document.documentElement;
+    var here = String((root && root.lang) || 'en').slice(0, 2);
+    var nav = el('nav', 'descent-langs');
+    nav.setAttribute('aria-label', 'Choose your language');
+    LANGS.forEach(function (l) {
+      var a = el('a', null, l[1]);
+      a.setAttribute('href', '/' + l[0] + '/');
+      a.setAttribute('lang', l[0]);
+      a.setAttribute('hreflang', l[0]);
+      if (l[0] === here) { a.setAttribute('aria-current', 'page'); }
+      nav.appendChild(a);
+    });
+    d.appendChild(nav);
+    d.appendChild(el('p', 'descent-ask-lead', 'Who answers you: every engine says what it is, measured on this device.'));
+    var ul = el('ul', 'descent-engines');
+    engines().forEach(function (m) {
+      var li = el('li');
+      li.setAttribute('data-stamp', m[1]);
+      li.appendChild(el('span', 'descent-stamp', m[1]));
+      li.appendChild(document.createTextNode(' ' + m[0] + ': ' + m[2]));
+      ul.appendChild(li);
+    });
+    d.appendChild(ul);
     return d;
   }
 
