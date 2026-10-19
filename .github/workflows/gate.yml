@@ -52,5 +52,4 @@ jobs:
             node atlas/descent_view_casos.mjs
             node atlas/mvp_casos.mjs
             node atlas/ficha_casos.mjs
-            node atlas/matematica_casos.mjs
           done
