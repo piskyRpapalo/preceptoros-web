@@ -7,7 +7,4 @@
 {"fichero":"public/game/genoma.js","vocablo":"token","causa":"the line itself is the law that bans the word (AGENTS.md:11)"},
 {"fichero":"public/game/mercado.js","vocablo":"token","causa":"the line itself is the law that bans the word (AGENTS.md:11)"}
 ],
-"vocablo_pendiente":[
-{"fichero":"public/assets/codex_scene.js","vocablo":"magic","causa":"rarity label coined from the ban list; renamed in lote B (touches public/, waits the seal and FIRMO)"},
-{"fichero":"public/atlas-en.json","vocablo":"magic","causa":"rarity label coined from the ban list; renamed in lote B (touches public/, waits the seal and FIRMO)"}
-]}
+"vocablo_pendiente":[]}
