@@ -42,4 +42,12 @@ jobs:
             node atlas/ventana_casos.mjs
             node atlas/radio_age_cases.mjs
             node atlas/hud_readings_cases.mjs
+            node atlas/bubble_language_casos.mjs
+            node atlas/bubble_bestiary_casos.mjs
+            node atlas/bubble_icons_casos.mjs
+            node atlas/bubble_letters_casos.mjs
+            node atlas/codex_casos.mjs
+            node atlas/bout_casos.mjs
+            node atlas/descent_sound_casos.mjs
+            node atlas/descent_view_casos.mjs
           done
