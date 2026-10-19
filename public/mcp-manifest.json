@@ -1,0 +1,83 @@
+{
+  "$comment": "Static inventory. No external schema file is published yet (NO_DATA); the contract is validated by tests/mcp_manifest.test.mjs.",
+  "version": "1.0.0",
+  "title": "PreceptorOS · theGame · Full Node action manifest",
+  "lang": "en",
+  "generated_by": "mistral/g1 (PROPUESTA, not merged)",
+  "declaration": "Static inventory only. No network, no personal data, no runtime discovery. The web receives nothing from anyone (Reglamento (UE) 2024/1689 transparency-by-design, Art. 50).",
+  "actions": [
+    {
+      "id": "summon.tc1",
+      "title": "Summon a wave (TC1)",
+      "deep_link": "/?action=summon.tc1",
+      "what": "Opens the summon sheet and preselects treasure class TC1. The act itself still needs the player's Ed25519 signature; the link only lands on the exact card.",
+      "needs": "visitor key (created on device, never leaves it)",
+      "cost_measured": "50 cobre per attempt (motor resource, game cycles; measured in values.js)",
+      "state": "LIVE",
+      "evidence": "ui-invoca.js invoca(tc); summon-access.js reuses live summon buttons"
+    },
+    {
+      "id": "workshop.dissolve",
+      "title": "Workshop · dissolve a wave into residue",
+      "deep_link": "/?action=workshop.dissolve",
+      "what": "Opens the Workshop on the dissolve step. Dissolving gives static residue (1 g per edge, three times for a Leviathan). Nothing is bought.",
+      "needs": "visitor key",
+      "cost_measured": "1 wave (measured: taller.js, ui-taller.js)",
+      "state": "LIVE",
+      "evidence": "ui-taller.js disintegra step"
+    },
+    {
+      "id": "workshop.sand",
+      "title": "Workshop · sand a stat",
+      "deep_link": "/?action=workshop.sand",
+      "what": "Opens the Workshop on the sanding step. Raises one stat, costs residue, never adds edges.",
+      "needs": "visitor key, measured residue balance",
+      "cost_measured": "residue g, rising per level (measured: taller.js)",
+      "state": "LIVE",
+      "evidence": "ui-taller.js sanding step"
+    },
+    {
+      "id": "lighthouse.move",
+      "title": "Move the lighthouse (Hexelion)",
+      "deep_link": "/?action=lighthouse.move",
+      "what": "Focuses the camera/lighthouse control on Hexelion destinations list.",
+      "needs": "visitor",
+      "cost_measured": "0 (camera move)",
+      "state": "LIVE",
+      "evidence": "casa-medidas.js accion `mover faro`"
+    },
+    {
+      "id": "transparency.log",
+      "title": "Transparency log (radio channels)",
+      "deep_link": "/?action=transparency.log",
+      "what": "Opens the communication panel on the sealed log channel. Echoes/chat subchannels are NO_DATA and say so.",
+      "needs": "visitor",
+      "cost_measured": "0",
+      "state": "LIVE",
+      "evidence": "radio_message_log.js channels with NO_DATA causes"
+    },
+    {
+      "id": "identity.create",
+      "title": "Create your visitor key",
+      "deep_link": "/?action=identity.create",
+      "what": "Scrolls focus to the key creation control at the top of the page. Private key never leaves the device.",
+      "needs": "nothing",
+      "cost_measured": "0",
+      "state": "LIVE",
+      "evidence": "Workshop acts refuse unsigned visitors: taller_sin_id message"
+    }
+  ],
+  "global_guards": {
+    "no_network": "The web performs zero new network requests; the rack pushes receipts to the repo (G4, separate piece).",
+    "no_personal_data": "No personal data in this manifest. Coordinates are in-world only.",
+    "a11y": "Mouse, keyboard, touch; world audible; controls >= 44 px.",
+    "determinism": "Same seed and input = same result; the suite can go red.",
+    "piece_budget": "Each piece < 16 KiB, vanilla JS, no build in public/.",
+    "forbidden_words_absent": ["oracle", "notary", "depin", "token", "currency", "clearing", "magic"]
+  },
+  "open_firmos": [
+    "receipt date: UTC or game cycles? (Soberano decides)",
+    "receipt push identity: receipts branch only, never main direct (Soberano decides)",
+    "imported package visible name (Soberano decides)"
+  ]
+}
