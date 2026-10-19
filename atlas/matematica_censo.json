@@ -5,6 +5,17 @@
 "vocablo_ley":[
 {"fichero":"public/game/cria.js","vocablo":"token","causa":"the line itself is the law that bans the word (AGENTS.md:11)"},
 {"fichero":"public/game/genoma.js","vocablo":"token","causa":"the line itself is the law that bans the word (AGENTS.md:11)"},
-{"fichero":"public/game/mercado.js","vocablo":"token","causa":"the line itself is the law that bans the word (AGENTS.md:11)"}
+{"fichero":"public/game/mercado.js","vocablo":"token","causa":"the line itself is the law that bans the word (AGENTS.md:11)"},
+{"fichero":"public/game/world_creator.js","vocablo":"clearing","causa":"the ban list itself: answers fail closed on it"},
+{"fichero":"public/game/world_creator.js","vocablo":"currency","causa":"the ban list itself: answers fail closed on it"},
+{"fichero":"public/game/world_creator.js","vocablo":"depin","causa":"the ban list itself: answers fail closed on it"},
+{"fichero":"public/game/world_creator.js","vocablo":"magia","causa":"the ban list itself: answers fail closed on it"},
+{"fichero":"public/game/world_creator.js","vocablo":"magic","causa":"the ban list itself: answers fail closed on it"},
+{"fichero":"public/game/world_creator.js","vocablo":"moneda","causa":"the ban list itself: answers fail closed on it"},
+{"fichero":"public/game/world_creator.js","vocablo":"notario","causa":"the ban list itself: answers fail closed on it"},
+{"fichero":"public/game/world_creator.js","vocablo":"notary","causa":"the ban list itself: answers fail closed on it"},
+{"fichero":"public/game/world_creator.js","vocablo":"oracle","causa":"the ban list itself: answers fail closed on it"},
+{"fichero":"public/game/world_creator.js","vocablo":"oraculo","causa":"the ban list itself: answers fail closed on it"},
+{"fichero":"public/game/world_creator.js","vocablo":"tokens","causa":"the ban list itself: answers fail closed on it"}
 ],
 "vocablo_pendiente":[]}

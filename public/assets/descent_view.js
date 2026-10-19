@@ -141,6 +141,7 @@
       ul.appendChild(li);
     });
     d.appendChild(ul);
+    if (window.AtlasWorldCreator) { d.appendChild(window.AtlasWorldCreator.panel(document)); }
     return d;
   }
 
