@@ -55,6 +55,7 @@ jobs:
             node atlas/matematica_casos.mjs
             node questions/ventana_casos.mjs
             node atlas/ecos_casos.mjs
+            node atlas/barrido_casos.mjs
             node atlas/bubble_bust_casos.mjs
             node atlas/bubble_crab_casos.mjs
             node atlas/chrome_launch_cases.mjs
