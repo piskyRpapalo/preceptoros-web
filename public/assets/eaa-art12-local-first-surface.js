@@ -4,7 +4,7 @@
   function abre(llegada) {
     if (!window.TheGame) { return; }
     var m = RUTA.exec(location.hash);
-    if (llegada === true && !m && window.TheGame.descenso) { window.TheGame.descenso(); return; }
+    if (llegada === true && !m && window.TheGame.codex && window.TheGame.codex()) { return; }
     if (m && (m[1] === 'codex' || m[1] === 'bout') && window.TheGame.codex && window.TheGame.codex(m[1])) { return; }
     window.TheGame.abre(null, (m && m[1]) || 'casa');
   }
