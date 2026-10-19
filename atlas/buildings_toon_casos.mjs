@@ -34,5 +34,38 @@ for (const kind of ['boya', 'observatorio', 'cristal', 'lapidas']) {
     return todas.length >= 4 && todas.every((f) => hue(f) === 40) || g.fills;
   });
 }
+// T_CRT §8.1 (FIRMO 2026-10-19, Comando #15): los 3 verbos del orquestador sobre los edificios del canon, con mesuras y voz.
+import { readFileSync as leeDB } from 'node:fs';
+import vm from 'node:vm';
+const DB = require('../public/game/deploy_building.js');
+const LC = require('../public/game/reef_building_lifecycle.js');
+const caja = {}; vm.runInNewContext(leeDB(new URL('../public/game/audio_feedback_manager.js', import.meta.url), 'utf8'), caja); DB.audio = caja.AudioFeedbackManager;
+caso('§8.1: los 3 verbos declarados', () => JSON.stringify(DB.INTENTS) === '["DEPLOY_BUILDING","QUERY_STATE","UPDATE_RAG"]' || DB.INTENTS);
+caso('§8.1: desplegar cada edificio del canon = PROPOSED, espera FIRMO DESPLIEGUE, sin efecto, manifiesto valido, < 1.024 B, con voz', () => {
+  for (const k of DB.KINDS) {
+    const p = DB.deploy(k, { col: 2, fila: -3 }, 40);
+    if (p.estado !== 'PROPOSED' || p.requiere !== 'FIRMO DESPLIEGUE' || p.efecto !== 'none until signed') return { k, p };
+    if (LC.valida(p.manifiesto) !== '' || DB.bytes(p) >= 1024 || !p.voz.motivo || !/^Deploy: proposed/.test(p.voz.texto)) return { k, bytes: DB.bytes(p), voz: p.voz };
+  }
+  return true;
+});
+caso('§8.1: Radio = boya; TV no existe en el canon -> NO_DATA con causa y su voz', () => {
+  const r = DB.deploy('radio', { col: 0, fila: 0 }, 1), t = DB.deploy('tv', { col: 0, fila: 0 }, 1);
+  return (r.manifiesto.tipo === 'boya' && t.estado === 'NO_DATA' && /no TV building/.test(t.causa) && /^Deploy: NO_DATA/.test(t.voz.texto)) || { r, t };
+});
+caso('§8.1: consultar estado = MEASURED, STALE o NO_DATA con causa, leidos del ciclo de vida real', () => {
+  const m = DB.deploy('crystal', { col: 1, fila: 1 }, 100).manifiesto;
+  const a = DB.query(m, 105), b = DB.query(m, 800), c = DB.query(m, 50), d = DB.query({ esquema: 'x' }, 105);
+  const ok = a.estado === 'MEASURED' && a.causa === null && b.estado === 'STALE' && /worn/.test(b.causa) && c.estado === 'NO_DATA' && /not born/.test(c.causa) && d.estado === 'NO_DATA' && /manifest/.test(d.causa);
+  return (ok && [a, b, c, d].every((x) => DB.bytes(x) < 1024 && x.voz.motivo)) || { a, b, c, d };
+});
+caso('§8.1: actualizar el RAG desde la web = NO_DATA con causa (vive en la app), exige firma y suena', () => {
+  const r = DB.updateRag();
+  return (r.estado === 'NO_DATA' && /app/.test(r.causa) && r.requiere === 'FIRMO' && /^Sources: NO_DATA/.test(r.voz.texto)) || r;
+});
+caso('§8.1: celda o ciclo sin medir -> NO_DATA con causa, jamas un manifiesto inventado', () => {
+  const p = DB.deploy('beacon', { col: 1 }, 5), q = DB.deploy('beacon', { col: 1, fila: 1 }, -1);
+  return (p.estado === 'NO_DATA' && !p.manifiesto && q.estado === 'NO_DATA' && !q.manifiesto) || { p, q };
+});
 console.log(JSON.stringify(casos, null, 1));
 process.exitCode = casos.every((c) => c.ok) ? 0 : 1;

@@ -63,6 +63,25 @@ placed = null;
 star.pinta(canvas, (x, y) => [x, y], { pon: (x, y, paint, ficha) => { placed = { x, y, paint, ficha }; }, dpr: 1 });
 placed.paint();
 check(label === 'HEXELION STAR', 'star painter renders its English map label');
+// T_CRT §8.2 (FIRMO 2026-10-19, Comando #15): mesuras por pieza. No caben en dictionary.json (techo 16.384 B), asi que viven
+// en el catalogo del orquestador (deploy_building.js); las pieles heredan las mesuras de su base o son NO_DATA con causa.
+const DB = require('../public/game/deploy_building.js');
+check(statSync(file('public/dictionary.json')).size <= 16384, 'dictionary.json stays under the 16,384 B piece ceiling');
+for (const k of DB.KINDS) {
+  const m = DB.measurements(k);
+  check(m.base === k && m.touch_px >= 44 && m.piece_ceiling_b === 16384 && m.packet_ceiling_b === 1024 && m.tiles[0] === 1 && m.tiles[1] === 4,
+    'measures declared for ' + k);
+  check(m.contrast.sello === 'NO_DATA' && m.contrast.causa && m.ram.sello === 'NO_DATA' && m.ram.causa, 'unmeasured measures carry a cause for ' + k);
+}
+for (const s of DB.SKINS) {
+  const m = DB.measurements(s), b = DB.measurements(m.base);
+  check(m.base === s.split(' ').pop(), 'skin ' + s + ' names its base last');
+  check(m.skin === s && JSON.stringify({ ...m, skin: null }) === JSON.stringify({ ...b, skin: null }), 'skin ' + s + ' inherits its base measures');
+}
+for (const x of ['pirate tv', 'tv', 'castle']) {
+  const m = DB.measurements(x);
+  check(m.sello === 'NO_DATA' && typeof m.causa === 'string' && m.causa.length > 0, 'missing measures are NO_DATA with cause: ' + x);
+}
 console.log(JSON.stringify({ entries: doc.entries.length, glyph_max_bytes: 9, dictionary_bytes: statSync(file('public/dictionary.json')).size,
   english_bytes: statSync(file('public/dictionary-en.json')).size, failures }, null, 2));
 if (failures.length) process.exitCode = 1;
