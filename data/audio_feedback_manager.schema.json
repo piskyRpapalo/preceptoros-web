@@ -21,6 +21,29 @@
         {"if": {"properties": {"estado": {"enum": ["HABILITADO", "DESHABILITADO"]}}, "required": ["estado"]},
          "then": {"properties": {"frecuencia_hz": {"type": "null"}, "causa": {"type": "null"}}}}
       ]
+    },
+    "verbo": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["verbo", "estado", "sonido", "sonido_causa", "motivo", "texto", "causa"],
+      "properties": {
+        "verbo": {"enum": ["deploy", "state", "rag"]},
+        "estado": {"enum": ["PROPOSED", "MEASURED", "STALE", "NO_DATA"]},
+        "sonido": {"enum": ["SONADO", "INACTIVO", "NO_DATA"]},
+        "sonido_causa": {"type": ["string", "null"], "minLength": 1},
+        "motivo": {"type": "object", "additionalProperties": false, "required": ["portadora", "moduladora", "indice", "dur", "vibrato"],
+          "properties": {"portadora": {"type": "number", "exclusiveMinimum": 0}, "moduladora": {"type": "number", "exclusiveMinimum": 0},
+            "indice": {"type": "number", "minimum": 0}, "dur": {"type": "number", "exclusiveMinimum": 0}, "vibrato": {"type": "boolean"}}},
+        "texto": {"type": "string", "minLength": 1, "maxLength": 200},
+        "causa": {"type": ["string", "null"], "minLength": 1}
+      },
+      "allOf": [
+        {"if": {"properties": {"estado": {"const": "NO_DATA"}}, "required": ["estado"]},
+         "then": {"properties": {"causa": {"type": "string"}}}},
+        {"if": {"properties": {"sonido": {"const": "SONADO"}}, "required": ["sonido"]},
+         "then": {"properties": {"sonido_causa": {"type": "null"}}},
+         "else": {"properties": {"sonido_causa": {"type": "string"}}}}
+      ]
     }
   }
 }
