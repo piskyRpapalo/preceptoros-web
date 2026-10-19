@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Fixture palabras SABOTAJE</title>
+<style>html,body{margin:0;background:#000}canvas{display:block}</style>
+</head>
+<body>
+<canvas id="c-azar" width="412" height="515"></canvas>
+<script>
+// SABOTAJE a proposito: la posicion del circulo sale de Math.random(). El ojo debe dar ROJO (rc 1):
+// cada carga pinta el circulo en otro sitio, asi que el hash cambia al recargar.
+(function () {
+  var ctx = document.getElementById('c-azar').getContext('2d');
+  ctx.fillStyle = 'rgb(5,8,18)';
+  ctx.fillRect(0, 0, 412, 515);
+  ctx.fillStyle = '#F2F5F7';
+  ctx.beginPath();
+  ctx.arc(60 + Math.random() * 292, 257, 40, 0, Math.PI * 2);
+  ctx.fill();
+  window.__palabras = { ok: true, lienzos: ['azar'], causas: [] };
+})();
+</script>
+</body>
+</html>

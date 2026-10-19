@@ -168,18 +168,9 @@
     });
   }
 
-  var DESCENSO = [['/game/tabla_semantica.js'], ['/game/comic_tokens.js'], ['/game/comic_accents.js'],
+  var BASE = [['/game/tabla_semantica.js'], ['/game/comic_tokens.js'], ['/game/comic_accents.js'],
     ['/game/comic_atoms.js'], ['/game/valores.js'], ['/game/gacha.js'], ['/game/bubble_language.js'], ['/game/bubble_light.js'],
-    ['/game/bubble_bestiary.js'], ['/game/bubble_world.js'], ['/game/bubble_letters.js'], ['/game/aiact-art50-state-radio.js'], ['/game/descent_sound.js'], ['descent_scene.js'], ['descent_view.js']];
-  function descenso() {
-    var P = document.getElementById('juego-panel');
-    if (!P || capa) { return; }
-    var h = document.createElement('link');
-    h.rel = 'stylesheet'; h.href = '/assets/descent.css';
-    document.head.appendChild(h);
-    pide(DESCENSO).then(function () { window.AtlasDescentView.monta(P, function () { abre(null, 'casa'); }); })
-      .catch(function () { console.warn('NO_DATA · the descent could not be loaded'); abre(null, 'casa'); });
-  }
+    ['/game/bubble_bestiary.js'], ['/game/bubble_world.js'], ['/game/bubble_letters.js'], ['/game/aiact-art50-state-radio.js'], ['/game/descent_sound.js'], ['descent_view.js']];
 
   var VISTAS = {
     codex: [['/game/bubble_game.js'], ['codex_scene.js'], 'AtlasCodexScene'],
@@ -194,7 +185,7 @@
     if (!document.querySelector('link[href="/assets/descent.css"]')) {
       var h = document.createElement('link'); h.rel = 'stylesheet'; h.href = '/assets/descent.css'; document.head.appendChild(h);
     }
-    var falta = nuevos(DESCENSO.concat(V.slice(0, -1)));
+    var falta = nuevos(BASE.concat(V.slice(0, -1)));
     (falta.length ? pide(falta) : Promise.resolve()).then(function () {
       if (window.AtlasBubbleGame) { window.AtlasBubbleGame.useSkin(piel ? piel[1] : (nombre === 'bout' ? 'apocalypse' : 'atlantis')); }
       window.AtlasDescentView.monta(P, function () { abre(null, 'casa'); }, window[V[V.length - 1]]);
@@ -203,5 +194,5 @@
     return true;
   }
 
-  window.TheGame = { abre: abre, army: cargaArmy, descenso: descenso, codex: codex, ve: function (id) { muestra(HOJA[id] ? id : null); } };
+  window.TheGame = { abre: abre, army: cargaArmy, codex: codex, ve: function (id) { muestra(HOJA[id] ? id : null); } };
 })();
