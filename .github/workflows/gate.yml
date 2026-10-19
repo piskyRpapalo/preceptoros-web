@@ -53,4 +53,5 @@ jobs:
             node atlas/mvp_casos.mjs
             node atlas/ficha_casos.mjs
             node atlas/matematica_casos.mjs
+            node questions/ventana_casos.mjs
           done
