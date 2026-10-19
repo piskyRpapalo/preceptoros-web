@@ -96,9 +96,6 @@
   function puertas(despertar, hayCuenta) {
     var d = el('div', 'descent-doors');
     d.appendChild(boton('descent-enter', 'Check the rift', despertar));
-    if (escena === window.AtlasDescentScene && window.TheGame && typeof window.TheGame.codex === 'function') {
-      d.appendChild(boton('descent-codex', 'See the game in pictures', function () { window.TheGame.codex(); }));
-    }
     if (hayCuenta) { d.appendChild(botonCuenta()); }
     d.appendChild(el('p', 'descent-ai', 'Connect your local AI with the app later, from the terminal.'));
     return d;
@@ -106,7 +103,7 @@
 
 
   function monta(panel, despertar, otra) {
-    escena = otra || window.AtlasDescentScene;
+    escena = otra || window.AtlasCodexScene;
     if (montaje) { montaje.limpia(); }
     var ids = secciones();
     var lienzoCss = escena.CANVAS || LIENZO_POR_DEFECTO;
@@ -117,7 +114,7 @@
 
     var raiz = document.createElement('section');
     raiz.className = 'descent';
-    raiz.setAttribute('aria-label', 'The story of the statue');
+    raiz.setAttribute('aria-label', 'The game in pictures');
     raiz.style.setProperty('--d-ink', N.ink);
     raiz.style.setProperty('--d-paper', N.paper);
     raiz.style.setProperty('--d-ocean', N.ocean);
@@ -129,7 +126,7 @@
     }
 
     var x = boton('descent-skip', 'x', despertar);
-    x.setAttribute('aria-label', 'Skip the story and check the rift');
+    x.setAttribute('aria-label', 'Skip the pictures and check the rift');
     raiz.appendChild(x);
 
     var d = escala();
@@ -146,7 +143,7 @@
     var hoja = el('div', 'descent-pane');
     hoja.setAttribute('data-scroller', '');
     hoja.setAttribute('role', 'region');
-    hoja.setAttribute('aria-label', 'The story text');
+    hoja.setAttribute('aria-label', 'The picture captions');
     hoja.tabIndex = 0;
     raiz.appendChild(hoja);
 
@@ -179,7 +176,7 @@
       return { id: id, el: s, copia: copia };
     });
 
-    var st = { pasos: pasos, hoja: hoja, activo: ids[0], q: 0, limpia: null, vibrado: false, fondoDe: null, audio: null, oye: false };
+    var st = { pasos: pasos, hoja: hoja, activo: ids[0], q: 0, limpia: null, fondoDe: null, audio: null, oye: false };
     var D = window.AtlasDescentSound;
     function suena(id) {
       if (!st.oye || !D || !st.audio) { return; }
@@ -235,14 +232,6 @@
       AtlasComicAtoms.paint(ctx, S.frente(id, quieto ? undefined : q / PASOS));
     }
 
-    function vibra(id) {
-      if (id !== 'TREMOR' || st.vibrado) { return; }
-      st.vibrado = true;
-      var n = window.navigator;
-      if (!n || typeof n.vibrate !== 'function') { return; }
-      if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) { return; }
-      try { n.vibrate([24, 60, 24, 60, 40]); } catch (e) { return; }
-    }
 
     function marca(id) {
       pasos.forEach(function (p) { p.el.setAttribute('aria-current', p.id === id ? 'step' : 'false'); });
@@ -266,7 +255,7 @@
       st.activo = a.id;
       st.q = a.q;
       drawSection(a.id, a.q);
-      if (nueva) { marca(a.id); vibra(a.id); suena(a.id); }
+      if (nueva) { marca(a.id); suena(a.id); }
     }
 
     var io = null;

@@ -20,7 +20,6 @@
 <script src="/public/game/bubble_letters.js"></script>
 <script src="/public/game/aiact-art50-state-radio.js"></script>
 <script src="/public/game/descent_sound.js"></script>
-<script src="/public/assets/descent_scene.js"></script>
 <script src="/public/game/bubble_game.js"></script>
 <script src="/public/assets/codex_scene.js"></script>
 <script src="/public/game/canon.js"></script>
@@ -97,7 +96,6 @@
         causas.push(p[0] + ' · NO_DATA · ' + e.message);
       }
     });
-    escena('descenso', window.AtlasDescentScene);
     escena('codex', window.AtlasCodexScene);
     escena('bout', window.AtlasBoutScene);
     window.__palabras = { ok: true, lienzos: lienzos, causas: causas };

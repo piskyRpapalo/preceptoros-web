@@ -1,6 +1,6 @@
 // atlas/codex_casos.mjs · V9: la estructura basica del juego en la lengua de burbuja (FIRMO 2026-10-18, ronda 346-347).
 // Uso: node atlas/codex_casos.mjs · rc 0 solo si todos los casos pasan. Node 22, ESM, sin dependencias.
-// Cinco capitulos (REFUGE, SUMMON, ARMY, BATTLE, RIFT) dibujados con datos REALES de la gacha (semillas fijas, tc3).
+// Seis capitulos (PRECEPTOR, REFUGE, SUMMON, ARMY, BATTLE, RIFT) dibujados con datos REALES de la gacha (semillas fijas, tc3).
 import { readFileSync, existsSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
@@ -9,7 +9,7 @@ import { checkFrame } from './param_gate.mjs';
 const req = createRequire(import.meta.url);
 const ruta = (rel) => fileURLToPath(new URL(rel, import.meta.url));
 const ESCENA = ruta('../public/assets/codex_scene.js'), JUEGO = ruta('../public/game/bubble_game.js');
-const ORDEN = ['REFUGE', 'SUMMON', 'ARMY', 'BATTLE', 'RIFT'];
+const ORDEN = ['PRECEPTOR', 'REFUGE', 'SUMMON', 'ARMY', 'BATTLE', 'RIFT'];
 // PEGI 3. 'magic' NO se veta aqui: «Magic» es el nombre canonico de la rareza en el juego (atlas-en.json, rar_magico).
 const VETADAS = ['death', 'dead', 'die', 'fire', 'burn', 'monster', 'teeth', 'scream', 'blood', 'kill', 'fear',
   'skull', 'fang', 'knife', 'oracle', 'notary', 'token', 'currency', 'clearing', 'casino', 'jackpot', 'bet'];
@@ -34,7 +34,7 @@ if (existsSync(ESCENA) && existsSync(JUEGO)) {
 } else { causa = 'falta codex_scene.js o bubble_game.js'; }
 const falta = () => ({ ok: false, medida: 'NO_DATA: ' + causa });
 
-caso(1, 'cinco capitulos en orden y lienzo 412x515', () => {
+caso(1, 'seis capítulos en orden y lienzo 412x515', () => {
   if (!S) return falta();
   return { ok: J(S.SECTIONS) === J(ORDEN) && S.CANVAS.w === 412 && S.CANVAS.h === 515 };
 });
@@ -155,6 +155,41 @@ caso(14, 'cada capitulo compila sin notas (ninguna palabra desconocida ni parame
   ORDEN.forEach((id) => { S.items(id, 0.5); const n = A.compile.notes || []; if (n.length) notas[id] = n.slice(0, 2); });
   const odds = S.frame('SUMMON').atoms.find((a) => a.k === 'odds').i[0];
   return { ok: Object.keys(notas).length === 0 && odds.o === 'odds', medida: notas };
+});
+
+caso(15, 'PRECEPTOR: el busto despierto abre el Codex y su violeta se explica', () => {
+  if (!S) return falta();
+  const f = S.frame('PRECEPTOR');
+  const hallado = f.atoms.find((a) => a.i.some((it) => it.o === 'bust' && it.eye === 'open' && it.cybEye === 'violet'));
+  const lee = hallado ? hallado.r : '';
+  const tech = S.TEXT.tech.PRECEPTOR.p.join(' ');
+  const ok = S.SECTIONS[0] === 'PRECEPTOR' && hallado !== undefined && f.bands.includes('FIRMADO.base')
+    && lee.includes('violet') && lee.includes('signed')
+    && S.TEXT.kids.PRECEPTOR.p.join(' ').includes('signed')
+    && tech.includes('violet') && tech.includes('signed');
+  return { ok, medida: { primero: S.SECTIONS[0], lee, bandas: f.bands } };
+});
+
+// RIFT (firmado en la encomienda P3): el busto cae desde arriba (dy y rot) y abajo estan las criaturas, quietas; nada mas.
+caso(16, 'RIFT: el busto cae desde arriba y abajo están las criaturas; nada más', () => {
+  if (!S) return falta();
+  const R = S.frame('RIFT');
+  const atomo = (f, k) => (f.atoms.find((a) => a.k === k) || { i: [] }).i;
+  const p0 = S.pose('RIFT', 0), p1 = S.pose('RIFT', 1);
+  const b0 = atomo(p0, 'bust').find((it) => it.o === 'bust'), b1 = atomo(p1, 'bust').find((it) => it.o === 'bust');
+  const claves = R.atoms.map((a) => a.k);
+  const sinLetras = R.atoms.every((a) => a.i.every((it) => it.o !== 'rift' && it.o !== 'letters'));
+  // c) el busto cae hasta y >= 400 en p=1, a la altura de las criaturas.
+  const cae = b0 !== undefined && b1 !== undefined && b0.y <= 100 && b1.y >= 400 && b0.rot !== b1.rot;
+  const criaturas = atomo(p1, 'creatures');
+  const quietas = J(atomo(p0, 'creatures')) === J(criaturas) && criaturas.length > 0 && criaturas.every((it) => it.y >= 400);
+  // f) aterriza entre las criaturas, sin caer sobre ninguna: |x busto - x criatura| >= 50 en p=1, para las cuatro.
+  const distancias = b1 !== undefined ? criaturas.map((it) => Math.abs(b1.x - it.x)) : [];
+  const aterriza = criaturas.length === 4 && distancias.length === 4 && distancias.every((d) => d >= 50);
+  const lee = (R.atoms.find((a) => a.k === 'bust') || { r: '' }).r;
+  const ok = J(claves) === J(['seabed', 'creatures', 'bust', 'doors']) && sinLetras && cae && quietas && aterriza
+    && lee.includes('violet') && lee.includes('signed') && R.bands.includes('FIRMADO.base');
+  return { ok, medida: { claves, sinLetras, bust_y_rot: [b0 ? b0.y : null, b1 ? b1.y : null, b0 ? b0.rot : null, b1 ? b1.rot : null], quietas, distancias } };
 });
 
 const ok = casos.every((c) => c.ok);

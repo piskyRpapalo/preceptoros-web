@@ -1,6 +1,6 @@
 # The bubble language · `preceptoros.bubble/1`
 
-Signed by the Sovereign on 2026-10-18: *the language of preceptoros is created by Claude, and that language makes the graphics.* This page is its specification. The renderer lives in `public/game/bubble_language.js` (primitives and light) and `public/game/bubble_bestiary.js` (composite words). The first text written in it is the story of the statue, `public/assets/descent_scene.js`.
+Signed by the Sovereign on 2026-10-18: *the language of preceptoros is created by Claude, and that language makes the graphics.* This page is its specification. The renderer lives in `public/game/bubble_language.js` (primitives and light) and `public/game/bubble_bestiary.js` (composite words). The first text written in it is the story of the statue (`public/assets/descent_scene.js`, retired 2026-10-19); its living example is now the Codex, `public/assets/codex_scene.js`.
 
 ## 1 · Why a language
 
@@ -105,7 +105,7 @@ Three rules keep it honest. **Same `p`, same picture:** the table is data and th
 - **`clash`** `{a, b, n, amp, k, ph}`: where two waves meet, `n` lines and a row of dots ripple between them.
 - **Pulse op `morph`**: `{o: 'troop', from: 'egg', as: 'unico'}` mixes the two spectra with `AtlasGacha.mezcla` by `p`: the egg becomes the wave as you read. Without `p` (reduced motion) the wave is shown as it is. `fill` and `drain` scale a meter's `v` by `p`.
 
-The Codex (`codex_scene.js`) is the game's basic structure told in this language: REFUGE, SUMMON, ARMY, BATTLE, RIFT, built from real draws of four fixed seeds at `tc3` and the game's own `odds('tc3')`.
+The Codex (`codex_scene.js`) is the game's basic structure told in this language: PRECEPTOR, REFUGE, SUMMON, ARMY, BATTLE, RIFT, built from real draws of four fixed seeds at `tc3` and the game's own `odds('tc3')`.
 
 ## 7 · Reading it (AI fluency)
 

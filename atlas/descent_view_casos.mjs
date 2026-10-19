@@ -9,10 +9,11 @@ import { createContext, runInContext } from 'node:vm';
 const RAIZ = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const CSS = join(RAIZ, 'public/assets/descent.css');
 const JS = join(RAIZ, 'public/assets/descent_view.js');
-const ESCENA = join(RAIZ, 'public/assets/descent_scene.js');
+const ESCENA = join(RAIZ, 'public/assets/codex_scene.js');
+const BUBBLE = join(RAIZ, 'public/game/bubble_game.js');
 const SOPORTE = ['tabla_semantica.js', 'comic_tokens.js', 'comic_accents.js', 'comic_atoms.js'].map((f) => join(RAIZ, 'public/game', f));
 const TECHO = 16384;
-const TEXTOS = ['Check the rift', "Create this device's key", 'Skip the story and check the rift'];
+const TEXTOS = ['Check the rift', "Create this device's key", 'Skip the pictures and check the rift'];
 const RETIRADO = 'Wake Atlantis';
 
 // Nombres de color prohibidos como valor. 'transparent' no esta: el contrato lo pide como fondo.
@@ -30,8 +31,8 @@ const leer = (ruta) => {
   if (!existsSync(ruta)) throw new Error('falta ' + ruta.slice(RAIZ.length + 1));
   return readFileSync(ruta, 'utf8');
 };
-// Lista de carga de la vista en el juego: los /game/ de DESCENSO en thegame.js, en su orden.
-const JUEGO = [...(leer(join(RAIZ, 'public/assets/thegame.js')).match(/var DESCENSO = (\[[\s\S]*?\]\]);/)?.[1] ?? '')
+// Lista de carga de la vista en el juego: los /game/ de BASE en thegame.js, en su orden.
+const JUEGO = [...(leer(join(RAIZ, 'public/assets/thegame.js')).match(/var BASE = (\[[\s\S]*?\]\]);/)?.[1] ?? '')
   .matchAll(/'\/game\/([^']+)'/g)].map((m) => join(RAIZ, 'public/game', m[1]));
 
 // Hallazgos de la hoja (color, efectos, opacidad, sombras con radio).
@@ -127,7 +128,7 @@ function cargaVista(opciones) {
     catch (e) { throw new Error(ruta.split('/').pop() + ': ' + e.message); }
   };
   (opciones.escena ? SOPORTE : JUEGO).forEach(correr);
-  if (opciones.escena) v.AtlasDescentScene = opciones.escena; else correr(ESCENA);
+  if (opciones.escena) v.AtlasCodexScene = opciones.escena; else { correr(BUBBLE); correr(ESCENA); }
   const pinturas = [];
   const atomos = v.AtlasComicAtoms;
   v.AtlasComicAtoms = { paint: (ctx, items) => { pinturas.push(JSON.stringify(items)); return atomos.paint(ctx, items); } };
@@ -189,7 +190,7 @@ caso(5, 'js define monta y frame, usa paint, items, IO con reserva de scroll; te
     'AtlasDescentView.monta': /window\.AtlasDescentView\s*=\s*\{[^}]*\bmonta\b/,
     'AtlasDescenso.frame': /window\.AtlasDescenso\s*=\s*\{[^}]*\bframe\b/,
     'AtlasComicAtoms.paint': /AtlasComicAtoms\.paint\s*\(/,
-    // La vista pinta la escena montada (el descenso por defecto, el Codex de V9 si se le pasa): S = escena.
+    // La vista pinta la escena montada (el Codex por defecto, otra si se le pasa): S = escena.
     'items de la escena': /\bS\.items\s*\(/,
     IntersectionObserver: /\bIntersectionObserver\b/,
     'reserva de scroll': /addEventListener\(\s*['"]scroll['"]/,
@@ -221,7 +222,7 @@ caso(8, 'humo en vm: escena real (A), IO e identidad (B), intros duales (C)', ()
     // A: escena real, dpr 2, sin identidad ni IO (reserva de scroll).
     const A = cargaVista({ dpr: 2 });
     const va = A.v;
-    const S = va.AtlasDescentScene;
+    const S = va.AtlasCodexScene;
     exige(va.AtlasDescenso.frame(0).cause === 'descent not mounted', 'sin montar no hay NO_DATA');
     const panel = va.document.createElement('div');
     panel.textContent = 'antes';
@@ -232,7 +233,7 @@ caso(8, 'humo en vm: escena real (A), IO e identidad (B), intros duales (C)', ()
     const pasos = conClase(raiz, 'descent-step');
     const L = S.CANVAS || { w: 380, h: 380 };
     const dual = Boolean(S.TEXT.kids && S.TEXT.tech);
-    exige(panel.hijos.length === 1 && raiz.className === 'descent' && raiz.getAttribute('aria-label') === 'The story of the statue', 'raiz mal');
+    exige(panel.hijos.length === 1 && raiz.className === 'descent' && raiz.getAttribute('aria-label') === 'The game in pictures', 'raiz mal');
     // Dos capas (pulso, 2026-10-18): por seccion nueva, fondo (una vez) y frente(p); el escena_casos 11 fija fondo + frente = items(id, p).
     const capa = (i, q = 0) => J(S.fondo(ids[i])) + '|' + J(S.frente(ids[i], q / 24));
     const ultimas = (n) => A.pinturas.slice(-n).join('|');
@@ -242,7 +243,7 @@ caso(8, 'humo en vm: escena real (A), IO e identidad (B), intros duales (C)', ()
     exige(lienzos.length === 1 && lienzos[0].className === 'descent-art' && lienzos[0].getAttribute('aria-hidden') === 'true' && lienzos[0].width === L.w * 2 && lienzos[0].height === L.h * 2, 'canvas mal');
     exige(conClase(raiz, 'descent-intro').length === (dual ? 1 : 0), 'intros mal');
     const x = conClase(raiz, 'descent-skip')[0];
-    exige(x?.type === 'button' && x.getAttribute('aria-label') === 'Skip the story and check the rift' && x.textContent === 'x', 'x mal');
+    exige(x?.type === 'button' && x.getAttribute('aria-label') === 'Skip the pictures and check the rift' && x.textContent === 'x', 'x mal');
     x?.click();
     exige(despertados === 1, 'x: una llamada a despertar');
     const puerta = conClase(raiz, 'descent-enter')[0];
