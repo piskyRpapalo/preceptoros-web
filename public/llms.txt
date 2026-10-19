@@ -22,6 +22,7 @@
 ## Live site
 
 - [preceptoros.org](https://preceptoros.org): the served site. Nine languages, zero external requests on load, 78 web tests: 77 passing and 1 skipped (measured 2026-10-16; see docs/figures-index.md).
+- [Action manifest for visiting AIs](/mcp-manifest.json): the static inventory of everything a visitor (human or AI) can do on this site, with deep links (?action=...) and each action's measured cost. An external AI reads it, proposes the exact action, and the human signs with one click. No runtime discovery, no network (Reglamento (UE) 2024/1689, Art. 50).
 
 ## HEXELION Star · public machine references
 
