@@ -208,6 +208,24 @@
   margin: 6px 0;
 }
 
+.descent-local-query label,
+.descent-local-query input {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.descent-local-query input,
+.descent-local-query button {
+  min-height: 48px;
+  margin-top: 8px;
+  padding: 8px 12px;
+  font: 16px system-ui, sans-serif;
+}
+
+.descent-local-query button { min-width: 88px; }
+.descent-local-result { overflow-wrap: anywhere; }
+
 .descent-ask-open:focus-visible,
 .descent-langs a:focus-visible,
 .descent-skip:focus-visible,

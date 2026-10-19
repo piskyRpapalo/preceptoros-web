@@ -360,8 +360,15 @@ caso(9, 'Questions???: en la ultima seccion, 9 lenguas = portadas, motores con s
     exige(motores.every((m) => SEIS.includes(m.getAttribute('data-stamp'))), 'motor con sello fuera de los seis');
     exige(motores.every((m) => m.getAttribute('data-stamp') === 'LIVE' || /: \S/.test(m.textContent)), 'motor sin causa');
     exige(motores[0]?.getAttribute('data-stamp') === (conModelo ? 'LIVE' : 'NO_DATA'), 'el modelo del navegador no se mide en el aparato');
+    const pregunta = conClase(raiz, 'descent-local-query')[0];
+    const input = etiqueta(pregunta || raiz, 'INPUT')[0], pedir = etiqueta(pregunta || raiz, 'BUTTON')[0];
+    exige(!!pregunta && input?.maxLength === 600 && pedir?.textContent === 'Ask', 'consulta local sin formulario limitado');
+    exige(conClase(raiz, 'descent-local-result')[0]?.getAttribute('aria-live') === 'polite', 'resultado sin anuncio accesible');
   }
-  return { ok: f.length === 0, detalle: f.length ? 'falla: ' + f.join(' | ') : '9 lenguas, 4 motores con sello, 44/56 px' };
+  const bridge = leer(join(RAIZ, 'public/game/local_app_bridge.js'));
+  exige(bridge.includes("var URL_LOCAL = 'http://127.0.0.1:8740/api/orquestador'"), 'ruta local no fijada al loopback');
+  exige(/function\s+consultar/.test(bridge), 'peticion local sin accion explicita');
+  return { ok: f.length === 0, detalle: f.length ? 'falla: ' + f.join(' | ') : '9 lenguas, 4 motores, formulario local explicito y 44/56 px' };
 });
 
 // W5 del MVP (A11Y, 4 canales, FIRMO 2026-10-19): cada seccion dice lo mismo por los cuatro canales. Geometria = los atomos
