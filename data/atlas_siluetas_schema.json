@@ -1,0 +1,13 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "preceptoros:atlas.silueta/1",
+ "title": "Silueta matricial (VT4 · taller de siluetas)",
+ "description": "Una silueta como texto hexadecimal: cero imagenes binarias. 64 a 256 caracteres, solo [0-9a-f]. Su contraste, su consentimiento y su correspondencia acustica NO viven aqui: se miden fuera y, sin medida, son NO_DATA con causa. Este esquema es el contrato; public/game/silueta.js lo aplica.",
+ "type": "object",
+ "additionalProperties": false,
+ "required": ["esquema", "silhouette_hex"],
+ "properties": {
+  "esquema": { "const": "preceptoros.silueta/1" },
+  "silhouette_hex": { "type": "string", "pattern": "^[0-9a-f]{64,256}$" }
+ }
+}
