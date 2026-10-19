@@ -17,7 +17,7 @@ const JUEGO = [
   '/game/escuadron.js', '/game/battle_choreography.js', '/game/battle_replay.js', '/game/npc_occupancy.js', '/game/npc_walls.js', '/game/node_preview.js', '/game/node_file_receiver.js', '/game/ui-arena-comun.js', '/game/ui-arena.js', '/game/ui-duelo.js', '/game/hexelion_dictionary.js',
   '/assets/eaa-art12-local-first-surface.js', '/assets/eaa-art12-local-first-surface.css',
   '/game/comic_accents.js', '/game/bubble_language.js', '/game/bubble_light.js', '/game/bubble_bestiary.js', '/game/bubble_world.js', '/game/bubble_letters.js', '/game/bubble_game.js', '/game/bubble_icons.js', '/game/descent_sound.js',
-  '/game/local_app_bridge.js', '/assets/descent_view.js', '/assets/descent.css', '/assets/codex_scene.js', '/assets/bout_scene.js'
+  '/game/local_app_bridge.js', '/assets/descent_view.js', '/game/world_creator.js', '/assets/descent.css', '/assets/codex_scene.js', '/assets/bout_scene.js'
 ];
 
 const PORTADA = ['/assets/base.css', '/assets/canon.css', '/assets/soberano.css', '/assets/consiento.css', '/assets/consiento.js',

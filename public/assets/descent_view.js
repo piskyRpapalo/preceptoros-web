@@ -141,44 +141,17 @@
       ul.appendChild(li);
     });
     d.appendChild(ul);
-    var form = el('form', 'descent-local-query');
-    var label = el('label', null, 'Ask your local app');
-    var input = el('input');
-    input.type = 'text';
-    input.maxLength = 600;
-    input.autocomplete = 'off';
-    input.setAttribute('aria-label', 'Ask your local app');
-    var send = el('button', null, 'Ask');
-    send.type = 'submit';
-    var result = el('p', 'descent-local-result', 'No request is made until you ask. The query stays on this device.');
-    result.setAttribute('aria-live', 'polite');
-    label.appendChild(input);
-    form.appendChild(label);
-    form.appendChild(send);
-    form.appendChild(result);
-    form.addEventListener('submit', function (event) {
-      if (event && typeof event.preventDefault === 'function') { event.preventDefault(); }
-      var B = window.AtlasLocalAppBridge;
-      if (!B || typeof B.consultar !== 'function') {
-        result.textContent = 'NO_DATA · local app bridge is not loaded';
-        return;
-      }
-      send.disabled = true;
-      result.textContent = 'Asking the local app…';
-      B.consultar(input.value).then(function (r) {
-        send.disabled = false;
-        var A = window.AudioFeedbackManager;
-        var voice = A && typeof A.verb === 'function' ? A.verb('state', r.estado, r.causa) : null;
-        var line = voice ? voice.texto : r.estado + (r.causa ? ' · ' + r.causa : '');
-        if (r.estado === 'MEASURED') { line += ' · ' + r.origen + ' · ' + r.respuesta; }
-        if (r.estado === 'STALE') { line += ' · ' + r.origen + ' · ' + JSON.stringify(r.dato); }
-        result.textContent = line;
-      }, function () {
-        send.disabled = false;
-        result.textContent = 'NO_DATA · local app request failed';
-      });
-    });
-    d.appendChild(form);
+    if (window.AtlasWorldCreator) {
+      var envoltorio = document.createElement('div');
+      envoltorio.className = 'descent-local-query';
+      envoltorio.appendChild(window.AtlasWorldCreator.panel(document));
+      var resultado = document.createElement('p');
+      resultado.className = 'descent-local-result';
+      resultado.setAttribute('aria-live', 'polite');
+      resultado.textContent = 'No request is made until you ask. The query stays on this device.';
+      envoltorio.appendChild(resultado);
+      d.appendChild(envoltorio);
+    }
     return d;
   }
 
