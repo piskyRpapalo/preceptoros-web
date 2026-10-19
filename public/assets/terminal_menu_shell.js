@@ -31,7 +31,7 @@
     }
     function hoja(id, titulo) {
       var d = el('section', 'thegame-hoja'), cab = el('div', 'thegame-hoja-cab'), cu = el('div', 'thegame-hoja-cuerpo');
-      d.id = 'thegame-' + id; d.hidden = true; d.setAttribute('role', 'region'); d.setAttribute('aria-label', titulo);
+      d.id = 'thegame-' + id; d.classList.add('surface-slot'); d.hidden = true; d.setAttribute('role', 'region'); d.setAttribute('aria-label', titulo);
       var c = el('button', 'boton-sec thegame-hoja-cierra', '← ' + T('hoja_mapa')); c.type = 'button'; c.id = 'thegame-' + id + '-cierra';
       c.addEventListener('click', function () { muestra(null, true); });
       cab.appendChild(c); cab.appendChild(el('h3', null, titulo)); d.appendChild(cab); d.appendChild(cu); S.HOJA[id] = d;
@@ -58,7 +58,7 @@
       var d = el('section'); p[2].split('|').forEach(function (q) { if (q) { cada(capa.querySelectorAll(q), function (n) { d.appendChild(n); }); } });
       x.tecnico(d); S.PANEL[p[0]] = d;
     });
-    var cajon = el('aside', 'thegame-terminal'); cajon.id = 'thegame-terminal'; cajon.setAttribute('aria-label', T('terminal_aria')); cajon.hidden = true;
+    var cajon = el('aside', 'thegame-terminal'); cajon.id = 'thegame-terminal'; cajon.classList.add('surface-slot'); cajon.setAttribute('aria-label', T('terminal_aria')); cajon.hidden = true;
     var est = S.PANEL.casa; est.className = 'thegame-estado'; est.id = 'thegame-estado';
     S.ZM = el('div', 'thegame-mundo'); S.PARTIDA = el('div', 'thegame-partida');
     cada([].slice.call(S.PANEL.mapa.children), function (n) { S.PARTIDA.appendChild(n); });
@@ -166,6 +166,29 @@
       raiz.AtlasRadioChat.monta(capa, { T: T });
       var aviso = capa.querySelector('#atlas-juego > .no-data:first-child, .thegame-estado > .no-data:first-child');
       if (aviso) { raiz.AtlasRadioChat.dice({ quien: 'Radio', fuente: 'lengua', texto: aviso.textContent, sello: 'NO_DATA' }); }
+    }
+    var Z = raiz.AtlasZ;
+    if (Z) {
+      var ctl = el('div', 'crt-controls'); ctl.id = 'crt-controls'; ctl.setAttribute('role', 'group'); ctl.setAttribute('aria-label', texto('z_group', 'Control panel'));
+      var lab = el('label', 'crt-z-label', texto('z_label', 'Depth')); lab.htmlFor = 'z-cutoff';
+      var wheel = el('input', 'crt-z'); wheel.type = 'range'; wheel.id = 'z-cutoff'; wheel.min = String(Z.MIN); wheel.max = String(Z.MAX);
+      wheel.step = String(Z.STEP); wheel.value = String(Z.value()); wheel.setAttribute('list', 'z-detents');
+      var marks = el('datalist'); marks.id = 'z-detents';
+      Z.DETENTS.forEach(function (v) { var o = el('option'); o.value = String(v); marks.appendChild(o); });
+      var out = el('output', 'crt-z-out'); out.htmlFor = 'z-cutoff'; out.setAttribute('aria-live', 'polite');
+      var apply = function (v) {
+        var h = Z.hidden(v), d = document.documentElement;
+        d.classList.toggle('z-hide-no-data', h.indexOf('no_data') >= 0); d.classList.toggle('z-hide-emulated', h.indexOf('emulated') >= 0);
+        d.setAttribute('data-z-cutoff', String(v)); out.textContent = Z.label(v); wheel.setAttribute('aria-valuetext', Z.label(v));
+      };
+      wheel.addEventListener('input', function () { apply(Z.set(wheel.value)); });
+      wheel.addEventListener('change', function () {
+        var v = Z.value(), Si = raiz.AtlasSintesis, Ra = raiz.AtlasRadio, c = Si && typeof Si.contexto === 'function' ? Si.contexto() : null;
+        if (c && c.state === 'running' && Ra && typeof Ra.tocaNota === 'function') { Ra.tocaNota(v >= 80 ? 4 : v >= 50 ? 2 : 0, 0); }
+        if (raiz.AtlasRadioChat) { raiz.AtlasRadioChat.dice({ quien: 'Depth', fuente: 'z_cutoff', texto: Z.label(v), sello: 'LIVE' }); }
+      });
+      [lab, wheel, marks, out].forEach(function (n) { ctl.appendChild(n); }); apply(Z.value());
+      piso.appendChild(ctl); S.CRT = ctl;
     }
     muestraYa(null);
     S.muestra = muestra; S.pliego = pliego; S.abre = abre; S.actual = function () { return actual; };

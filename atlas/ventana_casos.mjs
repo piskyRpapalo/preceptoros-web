@@ -29,5 +29,32 @@ caso('zero and upper cycle boundary remain measured', () => {
   const a = V.cabecera('pliego-estado', 'State', 0, 0), b = V.cabecera('pliego-estado', 'State', 1000000000, 1000000000);
   return [a, b].every((x) => x.sello === 'LIVE' && x.edad === 'Δ 0 cycles since last change seen') || { a, b };
 });
+// T_CRT (FIRMO 2026-10-19, Comando #15): el interactivo abre en la superficie entera del tubo; la rueda vive en la esquina contraria.
+import { readFileSync as leeT } from 'node:fs';
+const SH = leeT(new URL('../public/assets/terminal_menu_shell.js', import.meta.url), 'utf8');
+const CSS = leeT(new URL('../public/assets/terminal_menu_shell.css', import.meta.url), 'utf8');
+const regla = (sel) => { const i = CSS.indexOf(sel + '{'); return i < 0 ? null : CSS.slice(i + sel.length + 1, CSS.indexOf('}', i)); };
+caso('T_CRT: cajon y hojas llevan surface-slot (todo interactivo abre en la superficie del tubo)', () => {
+  const ok = SH.includes("cajon.classList.add('surface-slot')") && SH.includes("d.classList.add('surface-slot')");
+  return ok || 'falta surface-slot';
+});
+caso('T_CRT: surface-slot = 100% del interior: menu a la izquierda, borde derecho, barra arriba, chat abajo; sin tope de ancho ni traslado', () => {
+  const r = regla('.thegame-terminal.surface-slot,.thegame-hoja.surface-slot');
+  const pide = ['left:var(--menu)', 'right:0', 'top:var(--thegame-tope)', 'bottom:var(--pie)', 'width:auto', 'max-width:none', 'max-height:none', 'transform:none'];
+  return (r && pide.every((x) => r.split(';').includes(x))) || { r };
+});
+caso('T_CRT: cada boton del menu abre el cajon o una hoja, nunca un modal suelto', () => {
+  const ids = [...SH.matchAll(/entrada\('(\w+)'[^\n]*?setAttribute\('aria-controls', '([\w-]+)'\)/g)].map((m) => [m[1], m[2]]);
+  return (ids.length === 5 && ids.every(([, c]) => c === 'thegame-terminal' || c === 'thegame-ondas')) || ids;
+});
+caso('T_CRT: panel de control abajo a la derecha, rueda >= 44 px, y el chat termina antes de el', () => {
+  const c = regla('.crt-controls'), z = regla('.crt-z'), chat = CSS.includes(':root:has(#crt-controls) .radio-chat{right:var(--crt-w)}');
+  const ok = c && c.includes('right:0') && c.includes('bottom:0') && z && z.includes('min-width:2.75rem') && z.includes('min-height:2.75rem') && chat;
+  return ok || { c, z, chat };
+});
+caso('T_CRT: la rueda es un range nativo (teclado, raton y tactil) con paradas 1,00/0,50/0,25 y rotulo vivo', () => {
+  const ok = SH.includes("wheel.type = 'range'") && SH.includes("wheel.setAttribute('list', 'z-detents')") && SH.includes("out.setAttribute('aria-live', 'polite')") && SH.includes("wheel.setAttribute('aria-valuetext'");
+  return ok || 'rueda incompleta';
+});
 console.log(JSON.stringify(casos, null, 1));
 process.exitCode = casos.every((c) => c.ok) ? 0 : 1;

@@ -197,7 +197,8 @@ const rutas = await shell.keys();
 // 132-134 con los tres modulos de ocupacion NPC; 135 añade Shell Schematics.
 // 158 con `comic_tokens.js` (W1, tokens comic: neutros y tonos sobre AtlasSemantica); 159 con `comic_atoms.js` (W2, atomos comic sobre los tokens).
 // 167 con el descenso (obra abku): comic_accents, los cuatro bubble_*, descent_scene, descent_view y descent.css; 168 con bubble_letters (V7); 170 con bubble_game y codex_scene (V9, el Codex); 171 con bout_scene (viabilidad); 174 con mar_rift, bubble_icons y descent_sound (estilo rift).
-ok('precachea las portadas, su superficie y el juego', rutas.length === 174, rutas.length+' rutas');
+// 175 con z_cutoff (T_CRT, 2026-10-19): la regla de la rueda Z se pide en la puerta.
+ok('precachea las portadas, su superficie y el juego', rutas.length === 175, rutas.length+' rutas');
 ok('el shell trae el juego (D7): la puerta, el cangrejo y la arena',
    ['/assets/thegame.js', '/game/gdpr-art25-ephemeral-crab.js', '/game/ui-arena.js', '/assets/atlas-motor.js'].every(r => rutas.includes(r)));
 ok('el shell trae la portada de cada lengua', ['/es/', '/fr/', '/ar/'].every(r => rutas.includes(r)));

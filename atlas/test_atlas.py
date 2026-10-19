@@ -760,7 +760,9 @@ process.stdout.write(JSON.stringify(ok));
         self.assertIn("pon(R.fase, rellena(U('fase_h')", p, "la fase se queda: mueve el mapa")
 
     def test_c_paneles_amables_y_grandes(self):
-        """The signed shell keeps five stable routes, a visible map margin, and one combined Waves/Army sheet."""
+        """The signed shell keeps five stable routes and one combined Waves/Army sheet. T_CRT (FIRMO 2026-10-19,
+        Comando #15) supersedes the visible map margin of PR-1 for OPEN panels: the drawer and the sheets open on the
+        whole tube surface (surface-slot); closed, the map stays whole underneath (RC-20)."""
         sh = (ASSETS / "terminal_menu_shell.js").read_text(encoding="utf-8")
         self.assertLess(sh.index("entrada('waves',"), sh.index("entrada('buildings',"), "Waves Army precedes other routes")
         for pieza in ("muestra(actual === 'ondas' ? null : 'ondas')", "S.HOJA.ondas", "function mueveArmy()",
@@ -770,6 +772,7 @@ process.stdout.write(JSON.stringify(ok));
         css = (ASSETS / "terminal_menu_shell.css").read_text(encoding="utf-8")
         self.assertIn("width:min(24rem,calc(100vw - var(--menu) - 1.5rem))", css)
         self.assertIn("left:calc(var(--menu) + .5rem)", css.split(".thegame-terminal{")[1].split("}")[0])
+        self.assertIn(".thegame-terminal.surface-slot,.thegame-hoja.surface-slot{left:var(--menu);right:0;top:var(--thegame-tope);bottom:var(--pie);", css)
         self.assertIn("#thegame summary{min-height:2.75rem;", css)
         self.assertIn("#thegame :is(.boton,.boton-sec){min-height:2.875rem;min-width:2.875rem}", css)
 
@@ -1046,7 +1049,7 @@ class TheGameV15(unittest.TestCase):
     las dos guardas en el mismo job; moverla es un paso del rack."""
 
     JUEGO = PUBLICO / "game"
-    MODULOS = ("valores.js", "gacha.js", "db.js", "core.js", "killswitch_dot.js", "ui-ficha.js", "ui-invoca.js", "ui.js", "juez.js")  # T: ui-ficha sale de ui
+    MODULOS = ("valores.js", "gacha.js", "db.js", "core.js", "killswitch_dot.js", "ui-ficha.js", "ui-invoca.js", "ui.js", "juez.js", "z_cutoff.js")  # T: ui-ficha sale de ui
 
     def _js(self, nombre):
         return sin_comentarios(_fam(nombre, (self.JUEGO / nombre).read_text(encoding="utf-8")))
