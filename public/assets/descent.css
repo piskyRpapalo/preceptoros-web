@@ -31,6 +31,12 @@
   border-top: 3.5px solid var(--d-cyan);
 }
 
+.descent-pane::after {
+  content: '';
+  display: block;
+  height: 14dvh;
+}
+
 .descent-step {
   min-height: 70dvh;
   margin: 0 16px 0 36px;
@@ -134,8 +140,7 @@
   cursor: pointer;
 }
 
-.descent-account,
-.descent-codex {
+.descent-account {
   min-width: 260px;
   min-height: 56px;
   background: var(--d-paper);
@@ -147,8 +152,7 @@
 }
 
 .descent-enter:active,
-.descent-account:active,
-.descent-codex:active {
+.descent-account:active {
   box-shadow: 2.5px 2.5px 0 var(--d-cyan);
   transform: translate(1.5px, 1.5px);
 }
@@ -156,8 +160,7 @@
 .descent-skip:focus-visible,
 .descent-intro button:focus-visible,
 .descent-enter:focus-visible,
-.descent-account:focus-visible,
-.descent-codex:focus-visible {
+.descent-account:focus-visible {
   outline: 3px solid var(--d-yellow);
   outline-offset: 3px;
 }
