@@ -220,6 +220,26 @@
       return { id: id, el: s, copia: copia };
     });
 
+    // Puerta «Start in the Fog» (modo aparte del tutorial F0-F3, decisión del Soberano 2026-10-19).
+    // Va dentro del último fotograma (no es descent-step): la intro conserva sus fotogramas, su orden y su última sección.
+    var entrada = el('section', 'descent-tutorial');
+    var puertaTuto = el('button', 'descent-tutorial-door', 'Start in the Fog');
+    puertaTuto.type = 'button';
+    puertaTuto.addEventListener('click', function () { abreTutorial(entrada, puertaTuto); });
+    entrada.appendChild(puertaTuto);
+    pasos[pasos.length - 1].el.appendChild(entrada);
+    function abreTutorial(sec, b) {
+      var T = window.AtlasTutorial, U = window.AtlasUiTutorial;
+      if (!T || !U) { b.textContent = 'NO_DATA (tutorial modules not loaded)'; b.disabled = true; return; }
+      if (!document.querySelector('link[href="/game/tutorial-fases.css"]')) {
+        var h = document.createElement('link'); h.rel = 'stylesheet'; h.href = '/game/tutorial-fases.css'; document.head.appendChild(h);
+      }
+      sec.removeChild(b);
+      var cont = el('div', 'tutorial-pantalla');
+      sec.appendChild(cont);
+      function pinta(s) { U.monta(document, cont, s, {}, pinta); }
+      pinta(T.inicia());
+    }
     var st = { pasos: pasos, hoja: hoja, activo: ids[0], q: 0, limpia: null, fondoDe: null, audio: null, oye: false };
     var D = window.AtlasDescentSound;
     function suena(id) {
