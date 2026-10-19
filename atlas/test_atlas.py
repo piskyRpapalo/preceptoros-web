@@ -1058,7 +1058,7 @@ CASA = ("canon.js", "tabla_semantica.js", "comic_tokens.js", "comic_atoms.js", "
 # El descenso (obra abku, 2026-10-18): los pide thegame.js por su lista DESCENSO, no con la casa.
 DESCENSO = ("comic_accents.js", "bubble_language.js", "bubble_light.js", "bubble_bestiary.js", "bubble_world.js", "bubble_letters.js", "bubble_game.js", "bubble_icons.js", "descent_sound.js", "local_app_bridge.js")
 # VT5 (tutorial F0-F3): maquina de fases pura, fuera de la puerta; la UI del tutorial aun no la carga.
-VT5 = ("tutorial_fases.js",)
+VT5 = ("tutorial_fases.js", "ui-tutorial-fases.js")
 FUERA_DE_LA_PUERTA = tuple(sorted(set(PUROS + ARENA + CASA + DESCENSO + VT5)))
 
 
@@ -3183,6 +3183,13 @@ class TutorialVT5(unittest.TestCase):
         self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
         casos = json.loads(r.stdout)
         self.assertEqual(len(casos), 8)
+        self.assertTrue(all(c["ok"] for c in casos), [c for c in casos if not c["ok"]])
+
+    def test_pantallas_casos_en_node(self):
+        r = subprocess.run(["node", str(RAIZ / "ui_tutorial_casos.mjs")], capture_output=True, text=True, check=False)
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        casos = json.loads(r.stdout)
+        self.assertEqual(len(casos), 7)
         self.assertTrue(all(c["ok"] for c in casos), [c for c in casos if not c["ok"]])
 
 
