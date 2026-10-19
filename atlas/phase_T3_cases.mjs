@@ -4,7 +4,7 @@ import { createHash } from 'node:crypto';
 import { spawnSync } from 'node:child_process';
 const root = new URL('../', import.meta.url);
 const digest = b => createHash('sha256').update(b).digest('hex');
-const baseline = 'd7730bbc14774b14fdcb6b74df5f2e8133819a3213727e19c7948d0de7e080c4'; /* updated 2026-10-16 by P4: kill_* keys in the atlas; measured from the gate itself */
+const baseline = 'e8a92e1d4fe223929f1cf2afb5f234a6ae593282cefc8efffdfd68a5cb8a5040'; /* updated 2026-10-19: rar_magico 'Magic' -> 'Uncommon' (banned word out of the UI); measured from the gate itself */
 const protectedFiles = { /* hashes actualizados 2026-10-16 por D1-laws: los comentarios salieron del codigo (canon en docs/); la logica intacta */
   'public/game/valores.js': 'a6b8358b3c22363899644c7df6ffa0c2df15fb1fcd53bf2205f11d5a44ff47df',
   'public/assets/atlas-motor.js': 'c31c2b2e51df15707242bbc5d8d80bf1801fce51764d472dd4bcdb15903a0051',
