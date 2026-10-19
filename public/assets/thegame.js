@@ -9,7 +9,7 @@
 
   var ARMY = [['/game/valores.js'], ['/game/gacha.js'], ['/game/db.js'], ['/game/core.js'], ['/game/killswitch_dot.js'], ['/game/ui-ficha.js'], ['/game/ui-invoca.js'], ['/game/ui.js']];
 
-  var ARENA = [['/game/sobres.js'], ['/game/rating.js'], ['/game/arena.js'], ['/game/duelo.js'],
+  var ARENA = [['/game/sobres.js'], ['/game/rating.js'], ['/game/combate_ticks.js'], ['/game/arena.js'], ['/game/duelo.js'],
     ['/game/mar-anclas.js'], ['/game/crab_render_hd.js'], ['/game/audio_feedback_manager.js'], ['/game/crab_free_move.js'], ['/game/genesis_tutorial.js'], ['/game/buildings_toon.js'], ['/game/reef_place_cards.js'], ['/game/shell_schematics.js'], ['/game/reef_buildings_paint.js'], ['/game/latency_crystal.js'], ['/game/hexelion_bench.js'], ['/game/reef_corals.js'], ['/game/reef_buildings_layer.js'], ['/game/mar-cangrejos.js'], ['/game/map_pointer_input.js'], ['/game/semiotic_glyph.js'], ['/game/hexelion_dictionary.js'], ['/game/piece_inspector.js'], ['/game/vector_contract.js'], ['/game/state_vector.js'], ['/game/place_telemetry.js'], ['/game/npc_territory_map.js'], ['/game/map_nodes_layer.js'], ['/game/map_zoom.js'], ['/game/mar.js'], ['/game/nodos-pesos.js'], ['/game/node_reception_contract.js'], ['/game/node_trust_anchor.js'], ['/game/node_trust_manifest.js'], ['/game/node_signature_messages.js'], ['/game/node_signature_verify.js'], ['/game/node_bindings_messages.js'], ['/game/node_bindings.js'], ['/game/nodos.js'], ['/game/cuenta.js'], ['/game/node_projection.js'],
     ['/game/ui-nodos.js'], ['/game/ui-rack.js'], ['/game/node_preview.js'], ['/game/node_file_receiver.js'], ['/game/escuadron.js'], ['/game/battle_choreography.js'], ['/game/battle_replay.js'], ['/game/npc_occupancy.js'], ['/game/npc_walls.js'], ['/game/ui-arena-comun.js'], ['/game/ui-arena.js'], ['/game/ui-duelo.js']];
 
@@ -174,7 +174,7 @@
 
   var VISTAS = {
     codex: [['/game/bubble_game.js'], ['codex_scene.js'], 'AtlasCodexScene'],
-    bout: [['/game/canon.js'], ['/game/sobres.js'], ['/game/rating.js'], ['/game/taller.js'], ['/game/arena.js'], ['/game/bubble_game.js'], ['bout_scene.js'], 'AtlasBoutScene']
+    bout: [['/game/canon.js'], ['/game/sobres.js'], ['/game/rating.js'], ['/game/taller.js'], ['/game/combate_ticks.js'], ['/game/arena.js'], ['/game/bubble_game.js'], ['bout_scene.js'], 'AtlasBoutScene']
   };
   function nuevos(lista) {
     return lista.filter(function (g) { var s = g[0].charAt(0) === '/' ? g[0] : '/assets/' + g[0]; return !document.querySelector('script[src="' + s + '"]'); });

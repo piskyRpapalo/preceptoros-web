@@ -8,6 +8,7 @@
   var S = enNode ? require('./sobres.js') : raiz.AtlasSobres;
   var Rt = enNode ? require('./rating.js') : raiz.AtlasRating;
   var TL = enNode ? require('./taller.js') : raiz.AtlasTaller;
+  var CT = enNode ? require('./combate_ticks.js') : raiz.AtlasCombateTicks;
   var HEX64 = K.HEX64;
   var PROCEDENCIAS = ['humano', 'piloto_base', 'denso', 'lora', 'sintetico'];
   var GANA = ['defensa', 'asalto', 'empate'], FINALES = ['combate', 'abandono'];
@@ -59,44 +60,7 @@
     return '';
   }
 
-    function unidades(ts, lado, v) {
-    var A = v.combate.ataque;
-    return ts.map(function (t, i) {
-            var b = G.tirada(t.semilla, t.tc), s = t.lija && TL ? TL.aplica(b, t.lija).stats : b.stats;
-      return { lado: lado, i: i, vida: s.vida, max: s.vida, arm: s.armadura, vel: s.velocidad, sig: s.sigilo,
-               atk: A.base + A.aura * s.aura + A.inercia * s.inercia + A.profundidad * s.profundidad };
-    });
-  }
-  function porMil(us) {
-    var v = 0, m = 0;
-    us.forEach(function (u) { v += u.vida; m += u.max; });
-    return m ? Math.floor(v * 1000 / m) : 0;
-  }
-
-    function combate(def, asa, semilla, v) {
-    v = v || V;
-    var P = v.combate, g = K.generador(semilla), U = [unidades(def, 0, v), unidades(asa, 1, v)];
-    var todos = U[0].concat(U[1]), registro = [], ronda = 0;
-    function vivos(l) { return U[l].filter(function (u) { return u.vida > 0; }); }
-    while (ronda < P.rondas && vivos(0).length && vivos(1).length) {
-      ronda++;
-            var turno = todos.filter(function (u) { return u.vida > 0; })
-        .map(function (u) { return { u: u, k: g.uniforme(1000000) }; })
-        .sort(function (a, b) { return b.u.vel - a.u.vel || a.k - b.k || a.u.lado - b.u.lado || a.u.i - b.u.i; });
-      turno.forEach(function (x) {
-        var u = x.u, enemigos = vivos(1 - u.lado);
-        if (u.vida <= 0 || !enemigos.length) { return; }
-        var t = enemigos[0], esquiva = Math.min(P.esquiva.tope, t.sig * P.esquiva.por_sigilo);
-        if (g.uniforme(1000) < esquiva) { registro.push([ronda, u.lado, u.i, t.i, -1]); return; }
-        var d = Math.max(1, u.atk - Math.floor(t.arm / P.armadura_div));
-        t.vida = Math.max(0, t.vida - d);
-        registro.push([ronda, u.lado, u.i, t.i, d]);
-      });
-    }
-    var vd = vivos(0).length, va = vivos(1).length, pd = porMil(U[0]), pa = porMil(U[1]);
-    var gana = vd && !va ? 'defensa' : va && !vd ? 'asalto' : pd > pa ? 'defensa' : pa > pd ? 'asalto' : 'empate';
-    return { esquema: 'atlas.combate/1', rondas: ronda, gana: gana, vida_por_mil: [pd, pa], registro: registro };
-  }
+    function combate(def, asa, semilla, v) { return CT.combate(def, asa, semilla, v); }
 
     function resuelve(L, defensa, procedencia, v) {
     v = v || V;
