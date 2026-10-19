@@ -1057,7 +1057,9 @@ ARENA = ("sobres.js", "rating.js", "arena.js", "duelo.js", "mar-anclas.js", "cra
 CASA = ("canon.js", "tabla_semantica.js", "comic_tokens.js", "comic_atoms.js", "escena.js", "wave_render.js", "gdpr-art25-ephemeral-crab.js", "aiact-art50-crab-terminal.js", "nodos-cedulas.js", "fog_of_war.js", "isometric_floor_projection.js", "world_camera.js", "mar-fondo.js", "mar_rift.js", "gdpr-art7-entry-choice.js", "aiact-art50-state-radio.js", "casa-medidas.js", "casa-personaliza.js", "casa-lateral.js", "crab_state_screen.js", "reef_building_lifecycle.js", "home_buildings.js", "summon-wave-card.js", "summon_reveal.js", "taller.js", "army-wave-panel.js", "ui-taller.js", "primer_eco.js", "summon-access.js", "deep_links.js", "hitl_firma.js", "onda_profunda.js", "tarjeta_cantada.js", "cable_llamar.js", "cable_terminal.js")
 # El descenso (obra abku, 2026-10-18): los pide thegame.js por su lista DESCENSO, no con la casa.
 DESCENSO = ("comic_accents.js", "bubble_language.js", "bubble_light.js", "bubble_bestiary.js", "bubble_world.js", "bubble_letters.js", "bubble_game.js", "bubble_icons.js", "descent_sound.js", "local_app_bridge.js")
-FUERA_DE_LA_PUERTA = tuple(sorted(set(PUROS + ARENA + CASA + DESCENSO)))
+# VT4 (taller de siluetas): modulo puro, fuera de la puerta del juego; el esquema vive en data/.
+VT4 = ("silueta.js",)
+FUERA_DE_LA_PUERTA = tuple(sorted(set(PUROS + ARENA + CASA + DESCENSO + VT4)))
 
 
 class TheGameV15(unittest.TestCase):
@@ -3171,6 +3173,17 @@ class EstrellaHexelion(unittest.TestCase):
                            capture_output=True, text=True, check=False)
         self.assertNotEqual(s.returncode, 0, "duplicate catalogue ID sabotage should fail red")
         self.assertIn("unique IDs", s.stdout)
+
+
+class SiluetasVT4(unittest.TestCase):
+    """VT4: silhouette_hex 64..256 solo [0-9a-f], esquema preceptoros.silueta/1, NO_DATA con causa para lo no medido."""
+
+    def test_silueta_casos_en_node(self):
+        r = subprocess.run(["node", str(RAIZ / "silueta_casos.mjs")], capture_output=True, text=True, check=False)
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        casos = json.loads(r.stdout)
+        self.assertEqual(len(casos), 9)
+        self.assertTrue(all(c["ok"] for c in casos), [c for c in casos if not c["ok"]])
 
 
 if __name__ == "__main__":
