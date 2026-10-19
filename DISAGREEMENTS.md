@@ -35,3 +35,23 @@ queda alias hist\u00f3rico por colisi\u00f3n con el rack; FIRMO 2026-10-18.)*
 - RC-06 (proposed): "Multics" paper-name collision — confirmed avoided
   (arXiv:2610.17201); design conforms to Ruling #40. NO_DATA: the full
   group-slot collision sweep — cause: not yet run.
+- RC-17 (proposed, 2026-10-19): piece ceiling. The MVP mission of
+  2026-10-19 names 16,384 B per piece; `test_web.py` `TOPE_FICHERO` is 25 MiB
+  per block (D2, 2026-10-11); RC-05 names two ceilings (web 10 KiB served,
+  core 16 KiB). Measured: 0 of 207 served text files over 16,384 B (max
+  `atlas-en.json` 16,365 B). Proposal: `atlas/mvp_casos.mjs` C4 guards
+  16,384 B on served text; `TOPE_FICHERO` stays for blocks. The Sovereign
+  decides which number is the law.
+- RC-18 (proposed, 2026-10-19): three seal lists for one idea. P02: six
+  (LIVE, STALE, STATIC, SIMULATED, NO_DATA, ERROR); web
+  `public/game/tabla_semantica.js`: seven (no STATIC; PROPUESTA, FIRMADO
+  extra); app `canales.py` at `88aedec`: six (MEDIDO, EMULADO, NO_DATA,
+  PROPUESTA, REQUIERE_FIRMA, DECLARADO). The "Codex compatibility matrix"
+  named by RC-07: NO_DATA, cause: not found in web (`9a72d4d`) nor app
+  (`88aedec`). Draft in `docs/MVP.md` §8: data seals and governance states as
+  two axes.
+- RC-19 (proposed, 2026-10-19): correction beside RC-07, which is not
+  edited. RC-07's receipt reads "NO_DATA on the public side (cause: file
+  lives on the private rack)". Measured: `public/game/tabla_semantica.js`
+  lives in public main (2,138 B), judged by `tests/tabla_semantica.test.mjs`
+  (8 pass, 0 fail).
