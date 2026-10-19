@@ -85,7 +85,7 @@ class Nodo {
   get textContent() { return this.hijos.map((h) => h.textContent).join(''); }
   set textContent(x) { this.hijos = []; if (x !== '') this.appendChild(texto(x)); }
   appendChild(h) { this.hijos.push(h); return h; }
-  setAttribute(k, x) { this.attrs[k] = String(x); }
+  setAttribute(k, x) { this.attrs[k] = String(x); if (k === 'maxlength') this.maxLength = Number(x); }
   getAttribute(k) { return k in this.attrs ? this.attrs[k] : null; }
   addEventListener(t, f) { (this.oyentes[t] ||= []).push(f); }
   removeEventListener(t, f) { this.oyentes[t] = (this.oyentes[t] || []).filter((g) => g !== f); }
