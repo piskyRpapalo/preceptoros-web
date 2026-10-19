@@ -1,14 +1,11 @@
 # Descargas · adaptadores LoRA de PreceptorOS
 
-**Los pesos NO se descargan de esta carpeta.** Estan ignorados por git, asi que
-`preceptoros.org/downloads/<fichero>.gguf` responde **404** — medido. Esta
-carpeta es el area de preparacion: aqui se copian, se les calcula el hash y de
-aqui se suben. Lo que si viaja a la web publica son los `.sha256`, que son el
-dato y pesan 65 bytes.
+Los pesos GGUF no forman parte del checkout de la web. El servidor de
+descargas los lee de un almacén local persistente y publica cada fichero bajo
+esta misma ruta. Los archivos `.sha256` de esta carpeta son la referencia
+verificable para cada descarga.
 
-**Se descargan del release de GitHub**, que es el unico canal que existe hoy:
-
-    https://github.com/piskyRpapalo/PreceptorOS/releases/download/v1.3/<fichero>
+    https://downloads.preceptoros.org/downloads/<fichero>
 
 ## Lo que hay ahora mismo, contado del disco
 
@@ -20,12 +17,13 @@ dato y pesan 65 bytes.
 | `preceptor-tribune-en-v1.gguf` | 54.5 MB | `ff4f89b8cbcdb243…` |
 | `preceptor-tribune-multi-v1.gguf` | 54.5 MB | `90879b40733debf0…` |
 
-## Como comprobar lo que te has bajado
+## Cómo comprobar lo que te has bajado
 
-    sha256sum -c <fichero>.sha256
+    sha256sum <fichero>.gguf
+    cat <fichero>.gguf.sha256
 
-El hash del release y el de esta carpeta son el mismo: se comprobo al subirlos.
-Un peso sin hash no se puede verificar, y por eso los dos viajan juntos.
+Compara la primera columna del resultado con la línea del sidecar publicado.
+Si falta el fichero o su sidecar, no se declara disponible.
 
 ## Que es cada uno
 
@@ -41,6 +39,5 @@ Un peso sin hash no se puede verificar, y por eso los dos viajan juntos.
 - **`preceptor-tribune-en-v1`** y **`-multi-v1`** — la linea *reclamaciones*,
   200 muestras en dos datasets comparativos (100 EN, 100 multilingue).
 
-Todos parten de `mistral:7b-instruct-v0.3` (Apache 2.0) y se entrenaron en CPU
-en el nodo `soberano`, sin GPU. Las medidas de cada uno viven en
-`preceptor-lora/adapters/<nombre>/medida.json`.
+Todos parten de `mistral:7b-instruct-v0.3` (Apache 2.0). Las medidas de cada
+uno viven en `preceptor-lora/adapters/<nombre>/medida.json`.
