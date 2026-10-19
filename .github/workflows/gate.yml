@@ -54,4 +54,18 @@ jobs:
             node atlas/ficha_casos.mjs
             node atlas/matematica_casos.mjs
             node questions/ventana_casos.mjs
+            node atlas/ecos_casos.mjs
+            node atlas/bubble_bust_casos.mjs
+            node atlas/bubble_crab_casos.mjs
+            node atlas/chrome_launch_cases.mjs
+            node atlas/comic_accents_casos.mjs
+            node atlas/comic_atoms_casos.mjs
+            node atlas/comic_css_paridad_casos.mjs
+            node atlas/comic_tokens_casos.mjs
+            node atlas/mar_rift_casos.mjs
+            node atlas/param_gate_casos.mjs
+            node atlas/phase_M0_cases.mjs
+            node atlas/phase_T3_cases.mjs
+            node atlas/shell_schematics_casos.mjs
+            node atlas/z_cutoff_casos.mjs
           done
