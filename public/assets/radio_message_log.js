@@ -86,8 +86,27 @@
     Object.keys(R.canales).forEach(function (k) { R.canales[k].setAttribute('aria-selected', String(k === id)); R.canales[k].tabIndex = k === id ? 0 : -1; });
     var nd = id === 'echoes' ? T('channel_echoes_nd', 'NO_DATA · no separate Echoes feed is measured here') :
       T('channel_chat_nd', 'NO_DATA · global chat has no tested repository channel');
-    R.lista.hidden = id !== 'radio'; R.noData.hidden = id === 'radio';
+    var ecos = id === 'echoes' ? ecosDe() : [];
+    R.lista.hidden = id !== 'radio'; R.ecos.hidden = !ecos.length; R.noData.hidden = id === 'radio' || ecos.length > 0;
     R.noData.textContent = nd;
+    pintaEcos(ecos);
+  }
+  function ecosDe() {
+    var W = raiz.AtlasWorldCreator;
+    try { return W && typeof W.echoes === 'function' ? W.echoes() : []; } catch (e) { return []; }
+  }
+  function pintaEcos(ecos) {
+    R.ecos.textContent = '';
+    ecos.forEach(function (e) {
+      var li = el('li', 'radio-msg'), cab = el('p', 'radio-msg-cab');
+      li.dataset.sello = e.seal; li.dataset.fuente = 'world-creator';
+      cab.appendChild(el('b', null, T('echo_who', 'World creator')));
+      cab.appendChild(el('span', 'radio-msg-sello', e.seal));
+      cab.appendChild(el('span', 'radio-msg-meta', e.passage ? e.passage.source + ' · ' + e.passage.seal : e.cause));
+      li.appendChild(cab); li.appendChild(el('p', 'radio-msg-texto', e.text));
+      if (e.sound && e.sound.texto) { li.appendChild(el('p', 'radio-msg-meta', e.sound.texto)); }
+      R.ecos.appendChild(li);
+    });
   }
   function monta(capa, c) {
     if (R.caja || !capa) { return; }
@@ -103,7 +122,7 @@
     R.canales = {};
     [['echoes', T('channel_echoes', 'Echoes')], ['chat', T('channel_chat', 'Chat')], ['radio', T('channel_radio', 'Radio')]].forEach(function (x) {
       var b = el('button', 'radio-chat-tab', x[1]); b.type = 'button'; b.setAttribute('role', 'tab'); b.setAttribute('aria-selected', 'false');
-      b.setAttribute('aria-controls', 'radio-chat-lista radio-chat-no-data'); b.addEventListener('click', function () { canal(x[0]); });
+      b.setAttribute('aria-controls', 'radio-chat-lista radio-chat-ecos radio-chat-no-data'); b.addEventListener('click', function () { canal(x[0]); });
       b.addEventListener('keydown', function (e) {
         if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') { return; }
         e.preventDefault(); var ids = Object.keys(R.canales), at = ids.indexOf(x[0]), step = e.key === 'ArrowRight' ? 1 : -1;
@@ -112,8 +131,10 @@
       R.tabs.appendChild(b); R.canales[x[0]] = b;
     });
     R.lista = el('ol', 'radio-chat-lista'); R.lista.id = 'radio-chat-lista'; R.lista.setAttribute('role', 'log'); R.lista.setAttribute('aria-live', 'polite');
+    R.ecos = el('ol', 'radio-chat-lista'); R.ecos.id = 'radio-chat-ecos'; R.ecos.setAttribute('role', 'log'); R.ecos.setAttribute('aria-live', 'polite'); R.ecos.hidden = true;
     R.noData = el('p', 'radio-chat-no-data'); R.noData.id = 'radio-chat-no-data'; R.noData.setAttribute('role', 'status');
-    R.caja.appendChild(R.boton); R.caja.appendChild(R.tabs); R.caja.appendChild(R.noData); R.caja.appendChild(R.lista); canal('radio');
+    R.caja.appendChild(R.boton); R.caja.appendChild(R.tabs); R.caja.appendChild(R.noData); R.caja.appendChild(R.ecos); R.caja.appendChild(R.lista); canal('radio');
+    if (raiz.AtlasWorldCreator && typeof raiz.AtlasWorldCreator.onEcho === 'function') { raiz.AtlasWorldCreator.onEcho(function () { if (R.canal === 'echoes') { canal('echoes'); } }); }
     capa.appendChild(R.caja);
     document.addEventListener('keydown', function (e) { if (e.altKey && (e.key === 'r' || e.key === 'R')) { e.preventDefault(); alterna(); R.boton.focus(); } });
     observa(capa);

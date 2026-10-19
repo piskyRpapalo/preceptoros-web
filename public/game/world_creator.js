@@ -82,6 +82,19 @@
     return guard(event('MEDIDO', null, passage, best.text, 'MEASURED', audio), audio);
   }
 
+  var ECHOES = [], ECHO_MAX = 20, LISTENERS = [];
+
+  function echo(e) {
+    ECHOES.push(e);
+    if (ECHOES.length > ECHO_MAX) { ECHOES.shift(); }
+    LISTENERS.slice().forEach(function (f) { try { f(e); } catch (x) { } });
+    return e;
+  }
+
+  function echoes() { return ECHOES.slice(); }
+
+  function onEcho(f) { if (typeof f === 'function') { LISTENERS.push(f); } }
+
   function panel(doc) {
     var d = doc || root.document;
     var section = d.createElement('section');
@@ -129,7 +142,7 @@
 
     form.addEventListener('submit', function (ev) {
       ev.preventDefault();
-      var e = ask(input.value);
+      var e = echo(ask(input.value));
       while (out.firstChild) { out.removeChild(out.firstChild); }
 
       var stamp = d.createElement('span');
@@ -183,7 +196,7 @@
     Object.freeze({ id: 'customs-registers', title: "customs doesn't charge, it registers", text: "Doctrine: customs doesn't charge, it registers — the A2A market runs on receipts. That is why the resources never needed the prohibited names.", source: SOURCE, seal: 'DECLARADO' })
   ]);
 
-  var api = { V: V, CEILING: CEILING, TITLE: TITLE, BASE_PROMPT: BASE_PROMPT, CORPUS: CORPUS, BANNED: BANNED, ask: ask, panel: panel, bytes: bytes, corpusId: corpusId, words: words };
+  var api = { V: V, CEILING: CEILING, TITLE: TITLE, BASE_PROMPT: BASE_PROMPT, CORPUS: CORPUS, BANNED: BANNED, ask: ask, echo: echo, echoes: echoes, onEcho: onEcho, panel: panel, bytes: bytes, corpusId: corpusId, words: words };
   if (typeof module === 'object' && module.exports) { module.exports = api; }
   else { root.AtlasWorldCreator = api; }
 })(this);
