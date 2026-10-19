@@ -18,4 +18,7 @@
 {"fichero":"public/game/world_creator.js","vocablo":"oraculo","causa":"the ban list itself: answers fail closed on it"},
 {"fichero":"public/game/world_creator.js","vocablo":"tokens","causa":"the ban list itself: answers fail closed on it"}
 ],
-"vocablo_pendiente":[]}
+"vocablo_pendiente":[
+{"fichero":"public/assets/codex_scene.js","vocablo":"magic","causa":"rarity label coined from the ban list; renamed in lote B (touches public/, waits the seal and FIRMO)"},
+{"fichero":"public/atlas-en.json","vocablo":"magic","causa":"rarity label coined from the ban list; renamed in lote B (touches public/, waits the seal and FIRMO)"}
+]}
