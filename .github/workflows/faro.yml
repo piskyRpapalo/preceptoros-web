@@ -1,0 +1,35 @@
+# El FARO de la costa: en cada push a main y cada manana, compara byte a byte
+# lo servido en www.preceptoros.org contra public/ de main. El gate mira cada
+# PR, el vigia mira el estado de main; el faro mira la luz que llega de verdad.
+# Nacio de una deriva medida (2026-10-19): el cuerpo servido iba 16 rutas por
+# detras de main sin que ningun check lo viera. ROJO = alarma de deriva, no un
+# fallo del script. Determinista y sin LLM.
+name: faro
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: "29 5 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: faro
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  faro:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4.2.2
+      - uses: actions/setup-python@v5.6.0
+        with:
+          python-version: "3.11"
+      - name: Lo servido contra main, byte a byte
+        run: |
+          set -euo pipefail
+          python atlas/faro.py 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
