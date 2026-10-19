@@ -108,3 +108,14 @@ body.portada-juego .pc-boton{display:none}
   .thegame-hoja{top:calc(var(--thegame-tope) + .4rem);bottom:calc(var(--pie) + .4rem);width:calc(100vw - var(--menu) - 1rem);padding-inline:.55rem}
 }
 @media(prefers-reduced-motion:reduce){.thegame-terminal,.thegame-hoja{transition:none;scroll-behavior:auto}}
+:root{--crt-w:6.75rem}
+@media (min-width:48rem){:root{--crt-w:20rem}}
+.thegame-terminal.surface-slot,.thegame-hoja.surface-slot{left:var(--menu);right:0;top:var(--thegame-tope);bottom:var(--pie);width:auto;max-width:none;max-height:none;transform:none;border-radius:0}
+:root:has(#crt-controls) .radio-chat{right:var(--crt-w)}
+.crt-controls{position:fixed;z-index:6;right:0;bottom:0;width:var(--crt-w);min-height:var(--pie);box-sizing:border-box;display:flex;align-items:center;gap:.4rem;
+  padding:0 .5rem env(safe-area-inset-bottom,0px);background:var(--bg-secondary);border-top:1px solid var(--edge-sov);border-inline-start:1px solid var(--edge-sov);pointer-events:auto}
+.crt-z{flex:1;min-width:2.75rem;min-height:2.75rem;margin:0;accent-color:var(--accent-copper)}
+.crt-z-label,.crt-z-out{font:700 .68rem/1.1 var(--mono);color:var(--text-main)}
+@media (max-width:47.999rem){.crt-z-label,.crt-z-out{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}}
+.z-hide-no-data .radio-msg[data-sello="NO_DATA"]{display:none}
+.z-hide-emulated .radio-msg:is([data-sello="SIMULATED"],[data-sello="STALE"]){display:none}

@@ -7,7 +7,7 @@ const JUEGO = [
   '/assets/atlas-arte.js', '/assets/atlas-coord.js', '/assets/atlas-carta.js', '/assets/atlas-ondas.js',
   '/assets/atlas-obra.js', '/assets/atlas-gesto.js', '/assets/atlas-mapa.js', '/assets/atlas-dialogo.js',
   '/assets/atlas-motor.js', '/assets/atlas-piso.js', '/assets/atlas-piloto.js', '/assets/atlas-partida.js',
-  '/assets/atlas-piloto-capa.js', '/assets/atlas-guardado.js', '/assets/radio_message_log.js', '/assets/terminal_menu_shell.js', '/assets/terminal_menu_shell.css', '/assets/terminal_window_frame.js', '/assets/worm_transition.js', '/assets/atlas-hud.js',
+  '/assets/atlas-piloto-capa.js', '/assets/atlas-guardado.js', '/assets/radio_message_log.js', '/game/z_cutoff.js', '/assets/terminal_menu_shell.js', '/assets/terminal_menu_shell.css', '/assets/terminal_window_frame.js', '/assets/worm_transition.js', '/assets/atlas-hud.js',
   '/assets/atlas-opina.js', '/assets/atlas-voz.js', '/game/juez.js', '/game/valores.js', '/game/gacha.js',
   '/game/db.js', '/game/core.js', '/game/ui-ficha.js', '/game/ui-invoca.js', '/game/ui.js', '/game/canon.js', '/game/tabla_semantica.js', '/game/comic_tokens.js', '/game/comic_atoms.js', '/game/killswitch_dot.js', '/game/wave_render.js', '/game/escena.js',
   '/game/gdpr-art25-ephemeral-crab.js', '/game/aiact-art50-crab-terminal.js', '/game/gdpr-art7-entry-choice.js', '/game/aiact-art50-state-radio.js', '/game/casa-medidas.js', '/game/casa-personaliza.js', '/game/casa-lateral.js', '/game/crab_state_screen.js', '/game/reef_building_lifecycle.js', '/game/home_buildings.js',
@@ -17,7 +17,7 @@ const JUEGO = [
   '/game/escuadron.js', '/game/battle_choreography.js', '/game/battle_replay.js', '/game/npc_occupancy.js', '/game/npc_walls.js', '/game/node_preview.js', '/game/node_file_receiver.js', '/game/ui-arena-comun.js', '/game/ui-arena.js', '/game/ui-duelo.js', '/game/hexelion_dictionary.js',
   '/assets/eaa-art12-local-first-surface.js', '/assets/eaa-art12-local-first-surface.css',
   '/game/comic_accents.js', '/game/bubble_language.js', '/game/bubble_light.js', '/game/bubble_bestiary.js', '/game/bubble_world.js', '/game/bubble_letters.js', '/game/bubble_game.js', '/game/bubble_icons.js', '/game/descent_sound.js',
-  '/assets/descent_scene.js', '/assets/descent_view.js', '/assets/descent.css', '/assets/codex_scene.js', '/assets/bout_scene.js'
+  '/assets/descent_view.js', '/assets/descent.css', '/assets/codex_scene.js', '/assets/bout_scene.js'
 ];
 
 const PORTADA = ['/assets/base.css', '/assets/canon.css', '/assets/soberano.css', '/assets/consiento.css', '/assets/consiento.js',

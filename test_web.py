@@ -63,11 +63,6 @@ def guion_de_la_portada():
         for s in re.findall(r'<script src="([^"]+)"', portada))
 
 
-# La UNICA URL externa admitida en todo el repo. mlc.ai no sirve la libreria de
-# WebLLM; su distribucion oficial es esm.run. github.com aparece como ENLACE en
-# la guia de instalacion, no como subrecurso: un <a href> no pide nada hasta que
-# lo pulsas, y una guia que no puede enlazar al repositorio no es una guia.
-CDN_ADMITIDO = "https://esm.run/@mlc-ai/web-llm"
 ORIGEN_PROPIO = "https://preceptoros.org"
 ENLACES_ADMITIDOS = ("https://github.com/piskyRpapalo/PreceptorOS",
                      # 2026-09-24: download LINKS of the Tools media panels. A link

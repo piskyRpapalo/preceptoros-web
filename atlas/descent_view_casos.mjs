@@ -1,7 +1,7 @@
 // Casos de la vista del descenso (scroll presentation). Node: imprime {ok, casos}; rc=0 solo si
 // todos pasan. El caso 8 es humo en vm con DOM falso: A escena real, B IO e identidad, C intros
 // duales. Comentarios en espanol; no viaja al navegador.
-import { existsSync, readFileSync, statSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createContext, runInContext } from 'node:vm';
@@ -9,10 +9,11 @@ import { createContext, runInContext } from 'node:vm';
 const RAIZ = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const CSS = join(RAIZ, 'public/assets/descent.css');
 const JS = join(RAIZ, 'public/assets/descent_view.js');
-const ESCENA = join(RAIZ, 'public/assets/descent_scene.js');
+const ESCENA = join(RAIZ, 'public/assets/codex_scene.js');
+const BUBBLE = join(RAIZ, 'public/game/bubble_game.js');
 const SOPORTE = ['tabla_semantica.js', 'comic_tokens.js', 'comic_accents.js', 'comic_atoms.js'].map((f) => join(RAIZ, 'public/game', f));
 const TECHO = 16384;
-const TEXTOS = ['Check the rift', "Create this device's key", 'Skip the story and check the rift'];
+const TEXTOS = ['Check the rift', "Create this device's key", 'Skip the pictures and check the rift'];
 const RETIRADO = 'Wake Atlantis';
 
 // Nombres de color prohibidos como valor. 'transparent' no esta: el contrato lo pide como fondo.
@@ -30,8 +31,8 @@ const leer = (ruta) => {
   if (!existsSync(ruta)) throw new Error('falta ' + ruta.slice(RAIZ.length + 1));
   return readFileSync(ruta, 'utf8');
 };
-// Lista de carga de la vista en el juego: los /game/ de DESCENSO en thegame.js, en su orden.
-const JUEGO = [...(leer(join(RAIZ, 'public/assets/thegame.js')).match(/var DESCENSO = (\[[\s\S]*?\]\]);/)?.[1] ?? '')
+// Lista de carga de la vista en el juego: los /game/ de BASE en thegame.js, en su orden.
+const JUEGO = [...(leer(join(RAIZ, 'public/assets/thegame.js')).match(/var BASE = (\[[\s\S]*?\]\]);/)?.[1] ?? '')
   .matchAll(/'\/game\/([^']+)'/g)].map((m) => join(RAIZ, 'public/game', m[1]));
 
 // Hallazgos de la hoja (color, efectos, opacidad, sombras con radio).
@@ -127,7 +128,7 @@ function cargaVista(opciones) {
     catch (e) { throw new Error(ruta.split('/').pop() + ': ' + e.message); }
   };
   (opciones.escena ? SOPORTE : JUEGO).forEach(correr);
-  if (opciones.escena) v.AtlasDescentScene = opciones.escena; else correr(ESCENA);
+  if (opciones.escena) v.AtlasCodexScene = opciones.escena; else { correr(BUBBLE); correr(ESCENA); }
   const pinturas = [];
   const atomos = v.AtlasComicAtoms;
   v.AtlasComicAtoms = { paint: (ctx, items) => { pinturas.push(JSON.stringify(items)); return atomos.paint(ctx, items); } };
@@ -189,7 +190,7 @@ caso(5, 'js define monta y frame, usa paint, items, IO con reserva de scroll; te
     'AtlasDescentView.monta': /window\.AtlasDescentView\s*=\s*\{[^}]*\bmonta\b/,
     'AtlasDescenso.frame': /window\.AtlasDescenso\s*=\s*\{[^}]*\bframe\b/,
     'AtlasComicAtoms.paint': /AtlasComicAtoms\.paint\s*\(/,
-    // La vista pinta la escena montada (el descenso por defecto, el Codex de V9 si se le pasa): S = escena.
+    // La vista pinta la escena montada (el Codex por defecto, otra si se le pasa): S = escena.
     'items de la escena': /\bS\.items\s*\(/,
     IntersectionObserver: /\bIntersectionObserver\b/,
     'reserva de scroll': /addEventListener\(\s*['"]scroll['"]/,
@@ -221,7 +222,7 @@ caso(8, 'humo en vm: escena real (A), IO e identidad (B), intros duales (C)', ()
     // A: escena real, dpr 2, sin identidad ni IO (reserva de scroll).
     const A = cargaVista({ dpr: 2 });
     const va = A.v;
-    const S = va.AtlasDescentScene;
+    const S = va.AtlasCodexScene;
     exige(va.AtlasDescenso.frame(0).cause === 'descent not mounted', 'sin montar no hay NO_DATA');
     const panel = va.document.createElement('div');
     panel.textContent = 'antes';
@@ -232,7 +233,7 @@ caso(8, 'humo en vm: escena real (A), IO e identidad (B), intros duales (C)', ()
     const pasos = conClase(raiz, 'descent-step');
     const L = S.CANVAS || { w: 380, h: 380 };
     const dual = Boolean(S.TEXT.kids && S.TEXT.tech);
-    exige(panel.hijos.length === 1 && raiz.className === 'descent' && raiz.getAttribute('aria-label') === 'The story of the statue', 'raiz mal');
+    exige(panel.hijos.length === 1 && raiz.className === 'descent' && raiz.getAttribute('aria-label') === 'The game in pictures', 'raiz mal');
     // Dos capas (pulso, 2026-10-18): por seccion nueva, fondo (una vez) y frente(p); el escena_casos 11 fija fondo + frente = items(id, p).
     const capa = (i, q = 0) => J(S.fondo(ids[i])) + '|' + J(S.frente(ids[i], q / 24));
     const ultimas = (n) => A.pinturas.slice(-n).join('|');
@@ -242,7 +243,7 @@ caso(8, 'humo en vm: escena real (A), IO e identidad (B), intros duales (C)', ()
     exige(lienzos.length === 1 && lienzos[0].className === 'descent-art' && lienzos[0].getAttribute('aria-hidden') === 'true' && lienzos[0].width === L.w * 2 && lienzos[0].height === L.h * 2, 'canvas mal');
     exige(conClase(raiz, 'descent-intro').length === (dual ? 1 : 0), 'intros mal');
     const x = conClase(raiz, 'descent-skip')[0];
-    exige(x?.type === 'button' && x.getAttribute('aria-label') === 'Skip the story and check the rift' && x.textContent === 'x', 'x mal');
+    exige(x?.type === 'button' && x.getAttribute('aria-label') === 'Skip the pictures and check the rift' && x.textContent === 'x', 'x mal');
     x?.click();
     exige(despertados === 1, 'x: una llamada a despertar');
     const puerta = conClase(raiz, 'descent-enter')[0];
@@ -331,6 +332,69 @@ caso(8, 'humo en vm: escena real (A), IO e identidad (B), intros duales (C)', ()
   return { ok: f.length === 0, detalle: f.length ? 'falla: ' + f.join(' | ') : 'escena real, IO e identidad, intros duales: limpios' };
 });
 
-const ok = casos.length === 8 && casos.every((c) => c.ok);
+// Questions??? (F3 del MVP, 2026-10-19): la ultima puerta abre las 9 lenguas y los motores con su sello; sin red.
+caso(9, 'Questions???: en la ultima seccion, 9 lenguas = portadas, motores con sello y causa, objetivos de 44/56 px', () => {
+  const f = [];
+  const exige = (c, msg) => { if (!c) f.push(msg); };
+  const SEIS = ['LIVE', 'STALE', 'STATIC', 'SIMULATED', 'NO_DATA', 'ERROR'];
+  const portadas = readdirSync(join(RAIZ, 'public')).filter((d) => existsSync(join(RAIZ, 'public', d, 'index.html'))).sort();
+  const css = leer(CSS);
+  exige(px(valor(css, '.descent-ask-open', 'min-height')) >= 56, 'Questions??? menor de 56 px');
+  exige(px(valor(css, '.descent-langs a', 'min-height')) >= 44 && px(valor(css, '.descent-langs a', 'min-width')) >= 44, 'lengua menor de 44 px');
+  for (const conModelo of [false, true]) {
+    const V = cargaVista({ dpr: 1 });
+    if (conModelo) V.v.LanguageModel = {};
+    const panel = V.v.document.createElement('div');
+    V.v.AtlasDescentView.monta(panel, () => {});
+    const raiz = panel.hijos[0];
+    const pasos = todos(raiz).filter((x) => x.getAttribute && x.getAttribute('data-frame') != null);
+    const ask = conClase(raiz, 'descent-ask')[0];
+    exige(ask?.tagName === 'DETAILS' && dentroDe(pasos.at(-1), ask), 'Questions??? fuera de la ultima seccion');
+    exige(conClase(raiz, 'descent-ask-open')[0]?.textContent === 'Questions???', 'falta el disparador');
+    const enlaces = etiqueta(conClase(raiz, 'descent-langs')[0] || raiz, 'A');
+    exige(JSON.stringify(enlaces.map((a) => a.getAttribute('hreflang')).sort()) === JSON.stringify(portadas), 'lenguas distintas de las portadas: ' + enlaces.length);
+    exige(enlaces.every((a) => a.getAttribute('href') === '/' + a.getAttribute('hreflang') + '/' && a.getAttribute('lang') === a.getAttribute('hreflang')), 'enlace de lengua mal formado');
+    exige(enlaces.filter((a) => a.getAttribute('aria-current') === 'page').length === 1, 'sin lengua actual');
+    const motores = etiqueta(conClase(raiz, 'descent-engines')[0] || raiz, 'LI');
+    exige(motores.length === 4, 'motores: ' + motores.length);
+    exige(motores.every((m) => SEIS.includes(m.getAttribute('data-stamp'))), 'motor con sello fuera de los seis');
+    exige(motores.every((m) => m.getAttribute('data-stamp') === 'LIVE' || /: \S/.test(m.textContent)), 'motor sin causa');
+    exige(motores[0]?.getAttribute('data-stamp') === (conModelo ? 'LIVE' : 'NO_DATA'), 'el modelo del navegador no se mide en el aparato');
+  }
+  return { ok: f.length === 0, detalle: f.length ? 'falla: ' + f.join(' | ') : '9 lenguas, 4 motores con sello, 44/56 px' };
+});
+
+// W5 del MVP (A11Y, 4 canales, FIRMO 2026-10-19): cada seccion dice lo mismo por los cuatro canales. Geometria = los atomos
+// que se pintan; espejo DOM = «What is drawn», uno por atomo y con texto; WebAudio = la partitura del fotograma; haptico =
+// pulsos derivados de esa partitura, nunca con movimiento reducido. Mismo fotograma, misma salida en los cuatro.
+caso(10, 'A11Y 4 canales: geometria = espejo DOM (1:1, con texto), sonido y haptico deterministas, haptico apagado con movimiento reducido', () => {
+  const f = [];
+  const exige = (c, msg) => { if (!c) f.push(msg); };
+  const V = cargaVista({ dpr: 1 }), S = V.v.AtlasCodexScene;
+  const D = runInContext(readFileSync(join(RAIZ, 'public/game/descent_sound.js'), 'utf8') + ';AtlasDescentSound', V.v);
+  const panel = V.v.document.createElement('div');
+  V.v.AtlasDescentView.monta(panel, () => {});
+  const raiz = panel.hijos[0], ids = S.SECTIONS || S.PAGES;
+  const pasos = todos(raiz).filter((x) => x.getAttribute && x.getAttribute('data-frame') != null);
+  exige(pasos.length === ids.length, 'secciones montadas ' + pasos.length + '/' + ids.length);
+  ids.forEach((id, i) => {
+    const fr = S.frame(id), atomos = Array.isArray(fr && fr.atoms) ? fr.atoms : [];
+    const espejo = etiqueta(conClase(pasos[i], 'descent-tele')[0] || pasos[i], 'LI');
+    exige(atomos.length > 0, id + ': nada dibujado');
+    exige(espejo.length === atomos.length, id + ': espejo ' + espejo.length + ' != dibujo ' + atomos.length);
+    exige(espejo.every((li) => li.textContent.trim().length > 0), id + ': espejo sin texto');
+    const voces = D.score(fr).voices, pulsos = D.haptic(fr);
+    exige(Array.isArray(voces) && voces.length > 0, id + ': sin voz');
+    exige(JSON.stringify(voces) === JSON.stringify(D.score(S.frame(id)).voices), id + ': sonido no determinista');
+    exige(Array.isArray(pulsos) && pulsos.every((n) => Number.isInteger(n) && n > 0 && n <= 1000), id + ': haptico invalido');
+    exige(JSON.stringify(pulsos) === JSON.stringify(D.haptic(S.frame(id))), id + ': haptico no determinista');
+  });
+  const js = sinComentarios(leer(JS));
+  exige(/prefers-reduced-motion: reduce/.test(js) && /typeof window\.navigator\.vibrate === 'function' && !quieto/.test(js), 'el haptico no respeta el movimiento reducido');
+  exige(!/navigator\.vibrate\(/.test(js.replace(/if \(window\.navigator && typeof window\.navigator\.vibrate === 'function' && !quieto\) \{\s*try \{ window\.navigator\.vibrate\(/, '')), 'hay otra via de vibracion sin la guarda');
+  return { ok: f.length === 0, detalle: f.length ? 'falla: ' + f.slice(0, 6).join(' | ') : ids.length + ' secciones: 4 canales en paridad' };
+});
+
+const ok = casos.length === 10 && casos.every((c) => c.ok);
 console.log(JSON.stringify({ ok, casos }));
 process.exitCode = ok ? 0 : 1;

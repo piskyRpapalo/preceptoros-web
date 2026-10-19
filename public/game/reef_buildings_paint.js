@@ -6,7 +6,8 @@
       g.strokeStyle = 'rgba(155,227,255,.6)'; g.lineWidth = 1.5 * dpr;
       g.beginPath(); g.moveTo(p[0], y + r); g.lineTo(p[0], y + r + 7 * dpr); g.stroke();
       g.beginPath(); g.arc(p[0], y, r, 0, 2 * Math.PI);
-      if (c.nd) { g.setLineDash([2 * dpr, 2 * dpr]); g.strokeStyle = 'rgba(150,160,180,' + c.a + ')'; if (raiz.AtlasBuildingsToon) { raiz.AtlasBuildingsToon.silueta(g, 'boya', p[0], y, r); } g.stroke(); g.setLineDash([]); }
+      if (c.nd && raiz.AtlasZ && !raiz.AtlasZ.visible('NO_DATA')) { g.beginPath(); }
+      else if (c.nd) { g.setLineDash([2 * dpr, 2 * dpr]); g.strokeStyle = 'rgba(150,160,180,' + c.a + ')'; if (raiz.AtlasBuildingsToon) { raiz.AtlasBuildingsToon.silueta(g, 'boya', p[0], y, r); } g.stroke(); g.setLineDash([]); }
       else { raiz.AtlasBuildingsToon ? raiz.AtlasBuildingsToon.forma(g, 'boya', p[0], y, r, c, dpr, c.a) : (g.globalAlpha = c.a, g.fillStyle = 'hsl(' + c.h + ' ' + c.s + '% ' + c.l + '%)', g.fill(), g.globalAlpha = 1, g.stroke()); }
       g.lineWidth = dpr; g.fillStyle = 'rgba(155,227,255,.75)';
       g.fillText(t('boya_estado'), p[0], y - r - 4 * dpr);
