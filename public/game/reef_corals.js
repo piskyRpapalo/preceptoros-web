@@ -14,6 +14,7 @@
   function pintaUno(g, p, k, dpr) {
     var a = k.altura * dpr, x = p[0], y = p[1], top = y - a, r = (5 + 2 * k.medidas) * dpr, cx = x + k.ladeo * dpr;
     var BT = raiz.AtlasBuildingsToon;
+    if (k.nd && raiz.AtlasZ && !raiz.AtlasZ.visible('NO_DATA')) { return; }
     g.save();
     g.fillStyle = PAL.sombra; g.beginPath(); g.ellipse(x, y + 1.5 * dpr, r * 1.2, r * 0.35, 0, 0, 2 * Math.PI); g.fill();
     if (k.nd) { g.globalAlpha = 0.45; g.setLineDash([2 * dpr, 2 * dpr]); }

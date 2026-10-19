@@ -2,6 +2,7 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import vm from 'node:vm';
+import { createRequire } from 'node:module';
 const source = readFileSync(new URL('../public/assets/atlas-hud.js', import.meta.url), 'utf8');
 function fixture(snapshot) {
   function element(tag) {
@@ -61,5 +62,19 @@ check('arithmetic overflow produces a cause instead of Infinity', () => {
   const h = fixture(() => snapshot(0, { luz: -1e308 }));
   h.api.estado(snapshot(1, { luz: 1e308 }));
   assert.match(h.rows().hud_luz, /^NO_DATA \(/);
+});
+check('T_CRT: the Z wheel never hides a MEASURED HUD reading and hides NO_DATA below 0.80 (EMULADO below 0.50)', () => {
+  const Z = createRequire(import.meta.url)('../public/game/z_cutoff.js');
+  const h = fixture(() => snapshot(0, { luz: -1e308 }));
+  h.api.estado(snapshot(1, { luz: 1e308 }));
+  const rows = Object.values(h.rows()), sello = (v) => (/^NO_DATA/.test(v) ? 'NO_DATA' : 'MEDIDO');
+  assert.ok(rows.some((v) => sello(v) === 'NO_DATA') && rows.some((v) => sello(v) === 'MEDIDO'), 'fixture needs both seals');
+  for (const z of [20, 25, 45, 50, 79, 80, 81, 100]) {
+    for (const v of rows) {
+      const s = sello(v);
+      assert.equal(Z.visibleAt(s, z), s === 'MEDIDO' ? true : z >= 80, s + ' at ' + z);
+    }
+    assert.equal(Z.visibleAt('EMULADO', z), z >= 50, 'EMULADO at ' + z);
+  }
 });
 console.log(JSON.stringify({ cases: total, ok: true, fixture: 'SYNTHETIC DOM; actual HUD source' }));

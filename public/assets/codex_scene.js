@@ -30,7 +30,13 @@
   var BED = { o: 'blob', x: 206, y: 560, rx: 280, ry: 110, seed: 'bed', rough: 0.1, f: 'ink', s: 'cyan' };
 
   var FRAMES = [
-    F('REFUGE', 0, ['the refuge under the sea', 'your crab at home'], [
+    F('PRECEPTOR', 0, ['the Preceptor, drawn in code', 'its violet eye means signed'], [
+      title('the preceptor'),
+      { k: 'light', r: 'soft light dots in deep water', i: [DOTS] },
+      { k: 'seabed', r: 'the soft seabed', i: [BED] },
+      { k: 'bust', r: 'the Preceptor: a marble bust with curls and a beard; its violet eye means signed', i: [{ o: 'bust', x: 206, y: 300, r: 80, eye: 'open', cybEye: 'violet', mEye: 'open', mouth: 'closed' }] }
+    ], B4.concat(['FIRMADO.base'])),
+    F('REFUGE', 600, ['the refuge under the sea', 'your crab at home'], [
       title('refuge'),
       { k: 'light', r: 'soft light dots in deep water', i: [DOTS] },
       { k: 'seabed', r: 'the soft seabed', i: [BED] },
@@ -38,7 +44,7 @@
         { o: 'blob', x: 206, y: 330, rx: 34, ry: 28, seed: 'window', rough: 0.05, f: 'ocean', s: 'ink' }] },
       { k: 'crab', r: 'your crab waits by the door', i: [{ o: 'crab', x: 318, y: 452, rr: 44, dir: -1, eye: 'open' }] }
     ]),
-    F('SUMMON', 600, ['honest luck', 'egg to wave'], [
+    F('SUMMON', 1200, ['honest luck', 'egg to wave'], [
       title('summon'),
       { k: 'odds', r: 'every chance, printed', i: [{ o: 'odds', x: 36, y: 100, w: 340, chances: ODDS, bands: [BAND.normal, BAND.magico, BAND.raro, BAND.unico] }] },
       { k: 'egg', r: 'an egg becomes a wave', i: [{ o: 'troop', x: 206, y: 270, r: 92, f: BAND.unico, from: 'egg', as: 'unico' }] },
@@ -47,7 +53,7 @@
         word('armor', 70, 434), { o: 'meter', x: 120, y: 434, w: 230, v: T.unico.stats.armadura, max: 20 },
         word('speed', 70, 464), { o: 'meter', x: 120, y: 464, w: 230, v: T.unico.stats.velocidad, max: 12 }] }
     ], B6),
-    F('ARMY', 1200, ['four waves, four rarities'], [
+    F('ARMY', 1800, ['four waves, four rarities'], [
       title('army'),
       { k: 'waves', r: 'four waves: Normal, Magic, Rare, Leviathan', i: [
         { o: 'troop', x: 112, y: 180, r: 58, f: BAND.normal, as: 'normal' },
@@ -56,7 +62,7 @@
         { o: 'troop', x: 300, y: 370, r: 58, f: BAND.unico, as: 'unico' }] },
       { k: 'names', r: 'their names under them', i: [word(NAME.normal, 112, 262), word(NAME.magico, 300, 262), word(NAME.raro, 112, 452), word(NAME.unico, 300, 452)] }
     ], B6),
-    F('BATTLE', 1800, ['two waves meet', 'life you can see'], [
+    F('BATTLE', 2400, ['two waves meet', 'life you can see'], [
       title('battle'),
       { k: 'seabed', r: 'the soft seabed', i: [BED] },
       { k: 'clash', r: 'lines and dots ripple', i: [{ o: 'clash', a: [150, 250], b: [262, 250], n: 3, amp: 16, k: 2 }] },
@@ -65,22 +71,25 @@
       { k: 'life left', r: 'Rare life in dots', i: [{ o: 'meter', x: 40, y: 360, w: 120, v: T.raro.stats.vida, max: 50, f: BAND.raro }] },
       { k: 'life right', r: 'Magic life in dots', i: [{ o: 'meter', x: 252, y: 360, w: 120, v: T.magico.stats.vida, max: 50 }] }
     ], B5),
-    F('RIFT', 2400, ['the rift: what was proposed and what really happened', 'two doors'], [
-      title('the rift'),
-      { k: 'light', r: 'soft light dots in deep water', i: [DOTS] },
+    F('RIFT', 3000, ['the Preceptor falls into the abyss', 'at the bottom, the sea creatures'], [
       { k: 'seabed', r: 'the soft seabed', i: [BED] },
-      { k: 'rift', r: 'the rift: a wide smile in the seabed', i: [{ o: 'rift', x: 206, y: 470, w: 200, h: 30 }] },
-      { k: 'crab', r: 'your crab offers its back', i: [{ o: 'crab', x: 300, y: 430, rr: 48, dir: -1, eye: 'up' }] },
+      { k: 'creatures', r: 'the creatures of the bottom look up: a crab, a starfish, a snail and a little octopus', i: [
+        { o: 'crab', x: 340, y: 452, rr: 34, dir: -1, eye: 'up' },
+        { o: 'star', x: 112, y: 462, r: 20, eye: 'up' },
+        { o: 'snail', x: 262, y: 470, r: 16, eye: 'up' },
+        { o: 'octo', x: 46, y: 432, r: 18, eye: 'up' }] },
+      { k: 'bust', r: 'the Preceptor rolls down from above into the abyss; its violet eye means signed', i: [{ o: 'bust', x: 206, y: 70, r: 46, eye: 'open', cybEye: 'violet', mEye: 'happy', mouth: 'o' }] },
       { k: 'doors', r: 'two doors: Check the rift opens the game; Create this device\'s account', i: [] }
-    ])
+    ], B4.concat(['FIRMADO.base']))
   ];
 
   var MOTION = {
+    PRECEPTOR: { light: { a: 12 }, bust: { bob: [4, 2] } },
     REFUGE: { light: { a: 12 }, crab: { bob: [4, 2] } },
     SUMMON: { egg: { morph: 1, rot: 30 }, stats: { fill: 1.4 } },
     ARMY: { waves: { rot: 60 } },
     BATTLE: { clash: { ph: 720 }, left: { rot: 40, bob: [5, 2] }, right: { rot: -40, bob: [5, 2] }, 'life left': { drain: 0.2 }, 'life right': { drain: 0.6 } },
-    RIFT: { light: { a: 12 }, crab: { bob: [4, 2] } }
+    RIFT: { bust: { dy: 344, rot: 360 } }
   };
 
   var SECTIONS = FRAMES.map(function (f) { return f.id; });
@@ -107,18 +116,20 @@
 
   var TEXT = {
     kids: {
+      PRECEPTOR: { h: 'The Preceptor', p: ['This is the Preceptor, a statue of stone.', 'Its eye is purple. Purple means: signed.', 'The Preceptor proposes. You sign.'], sound: 'a soft hum' },
       REFUGE: { h: 'Your refuge', p: ['This is your home under the sea.', 'Your crab lives here. It is safe and cozy.'], sound: 'soft bubbles' },
       SUMMON: { h: 'Summon', p: ['Tap and an egg hatches into a wave.', 'Look at the bar: it shows every chance. Nothing is hidden.'], sound: 'a little pop' },
       ARMY: { h: 'Your army', p: ['Every wave has its own shape.', 'Normal, Magic, Rare and Leviathan: the rarer, the more curls.'], sound: 'four soft notes' },
       BATTLE: { h: 'Battle', p: ['Two waves meet and wiggle.', 'The dots under them are their life. You can see it go down.'], sound: 'a swish and a hum' },
-      RIFT: { h: 'Ready?', p: ['The crab is waiting for you.', 'Tap the yellow button to play!'], sound: 'a gentle call' }
+      RIFT: { h: 'Down, down', p: ['The Preceptor rolls down into the deep sea.', 'At the bottom, the sea friends look up. Hello!', 'Tap the yellow button to play!'], sound: 'a soft splash' }
     },
     tech: {
+      PRECEPTOR: { h: 'The Preceptor', p: ['The Preceptor is the model of this house, drawn in code: a marble bust with a plate on one side.', 'Its eye is violet, and in this house violet means one thing only: signed.', 'The Preceptor proposes; nothing becomes true until a person signs.'], sound: 'a soft hum' },
       REFUGE: { h: 'The refuge', p: ['The refuge is the account: it lives on this device, and nothing leaves it without your signature.', 'Your crab is the piece you move on the map.'], sound: 'soft bubbles' },
       SUMMON: { h: 'Honest luck', p: ['A summon is a seeded draw. The four chances are printed above, straight from the game\'s own table: 62.5 %, 26.5 %, 8 % and 3 % at this level.', 'The egg becomes the wave by mixing two sets of harmonics as you scroll. The house never takes a cut, and time is counted in game cycles, never on a clock.'], sound: 'a little pop' },
       ARMY: { h: 'Waves are troops', p: ['Each troop is a sum of simple waves: a few harmonics, each with its own frequency, size and phase.', 'Rarity is how many curls the outline has, measured, not declared. These four are real draws from fixed seeds.'], sound: 'four soft notes' },
       BATTLE: { h: 'Life you can see', p: ['In the arena, life is never a hidden number: here it is drawn as dots. Its sound is not playing on this page yet.', 'Here the drain is only an illustration; in a real bout every change is measured and logged.'], sound: 'a swish and a hum' },
-      RIFT: { h: 'Two doors', p: ['The rift is what gets measured: the gap between what was proposed and what really happened.', 'Check the rift opens the game. The face proposes; you sign.'], sound: 'a gentle call' }
+      RIFT: { h: 'Into the abyss', p: ['The Preceptor rolls down into the abyss; its violet eye means signed.', 'At the bottom it meets the creatures of the sea, which were there all along.', 'Check the rift opens the game. The Preceptor proposes; you sign.'], sound: 'a soft splash' }
     }
   };
 
