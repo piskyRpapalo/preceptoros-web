@@ -29,3 +29,5 @@ textarea.en301-input{min-height:88px}
 
 .en301-preview:empty,.en301-cause:empty,.en301-note:empty{display:none}
 .en301-details summary{min-height:44px;padding:10px;cursor:pointer}
+.en301-tutorial pre.en301-frame{background:var(--d-paper);color:var(--d-ink);border-radius:0}
+.en301-preview h3{color:var(--d-ink)}

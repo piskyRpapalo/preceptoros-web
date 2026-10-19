@@ -170,6 +170,10 @@
   function renderPreview(ctl, v) {
     clear(ctl.parts.preview);
     if (v.preview) { ctl.parts.preview.appendChild(make(ctl.doc, 'p', 'en301-stamp', v.preview.stamp + ': ' + v.preview.text)); }
+    if (v.step === 'primer_edificio' && ctl.measures.label) {
+      ctl.parts.preview.appendChild(make(ctl.doc, 'h3', null, 'F2 · First building label · ' + ctl.measures.label.bytes + ' B'));
+      ctl.parts.preview.appendChild(make(ctl.doc, 'pre', 'en301-frame', ctl.measures.label.texto));
+    }
   }
 
   function extraRows(v) {
