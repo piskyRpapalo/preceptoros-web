@@ -151,17 +151,16 @@ check('3 · determinismo: dos llamadas, JSON igual; no mutan sus parametros', ()
   return { ok: bad.length === 0, detail: bad.length ? bad.slice(0, 8) : 'determinista' };
 });
 
-check('4 · bust: FIRMADO.base solo en el ojo violeta; con shut no aparece', () => {
+check('4 · bust: FIRMADO.base solo en el ojo de la placa y sus circuitos (lado de la placa); con shut no aparece', () => {
   const m = missing(); if (m) return { ok: false, detail: m };
   const signed = (items) => items.filter((q) => q.f === 'FIRMADO.base' || q.s === 'FIRMADO.base');
   const violet = signed(WORDS.bust({ x: 192, y: 214, cybEye: 'violet' }));
   const shut = signed(WORDS.bust({ x: 192, y: 214, cybEye: 'shut' }));
   const shutWithOpenEye = signed(WORDS.bust({ x: 192, y: 214, eye: 'open', cybEye: 'shut' }));
-  const eye = violet[0] || {};
-  const onEye = violet.length === 1 && eye.o === 'wave' && eye.f === 'FIRMADO.base' && eye.x > 192 &&
-    Math.abs(eye.x - 192) <= 64 && Math.abs(eye.y - 214) <= 64 && Array.isArray(eye.h) && eye.h[0][1] === 9;
-  const ok = onEye && shut.length === 0 && shutWithOpenEye.length === 0;
-  return { ok, detail: { violet: violet.length, shut: shut.length, shutWithOpenEye: shutWithOpenEye.length, onEye } };
+  const side = violet.every((q) => (q.o === 'wave' ? q.x > 192 : q.pts.every((p) => p[0] > 192)));
+  const iris = violet.filter((q) => q.o === 'wave' && q.f === 'FIRMADO.base' && q.h[0][1] === 0.12 * 64);
+  const ok = violet.length === 8 && side && iris.length === 1 && shut.length === 0 && shutWithOpenEye.length === 0;
+  return { ok, detail: { violet: violet.length, side, iris: iris.length, shut: shut.length, shutWithOpenEye: shutWithOpenEye.length } };
 });
 
 check('5 · bust: sq se recorta a [0.88, 1.12] (alto y bajo)', () => {
