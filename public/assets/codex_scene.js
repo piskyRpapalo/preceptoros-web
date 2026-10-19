@@ -6,12 +6,12 @@
   var V = 'preceptoros.bubble/1', TC = 'tc3';
   var SEEDS = {
     normal: 'f7b0f1c774f54b6f3efdfd51b2b6a9600380410f45449c38907e61846e4ef729',
-    magico: 'a23d525508b2c6f0074aecea13737118b2729f9842c17a2d1161b3540a30e0e1',
+    uncommon: 'a23d525508b2c6f0074aecea13737118b2729f9842c17a2d1161b3540a30e0e1',
     raro: '1d60dc3e11deee79b2c8836e7fdee51d9ac2a59767d852d5ee55b251ee0abb8c',
     unico: '9a342ec9292ec93c7a4de5450a402e2a2d74864e2d3aeb9d0747d9cbcf57ed1b'
   };
-  var BAND = { normal: 'paper', magico: 'cyan', raro: 'comic yellow.base', unico: 'vermilion.base' };
-  var NAME = { normal: 'Normal', magico: 'Uncommon', raro: 'Rare', unico: 'Leviathan' };
+  var BAND = { normal: 'paper', uncommon: 'cyan', raro: 'comic yellow.base', unico: 'vermilion.base' };
+  var NAME = { normal: 'Normal', uncommon: 'Uncommon', raro: 'Rare', unico: 'Leviathan' };
   var T = {};
   Object.keys(SEEDS).forEach(function (k) { T[k] = G.tirada(SEEDS[k], TC); });
   var ODDS = G.odds(TC);
@@ -46,7 +46,7 @@
     ]),
     F('SUMMON', 1200, ['honest luck', 'egg to wave'], [
       title('summon'),
-      { k: 'odds', r: 'every chance, printed', i: [{ o: 'odds', x: 36, y: 100, w: 340, chances: ODDS, bands: [BAND.normal, BAND.magico, BAND.raro, BAND.unico] }] },
+      { k: 'odds', r: 'every chance, printed', i: [{ o: 'odds', x: 36, y: 100, w: 340, chances: ODDS, bands: [BAND.normal, BAND.uncommon, BAND.raro, BAND.unico] }] },
       { k: 'egg', r: 'an egg becomes a wave', i: [{ o: 'troop', x: 206, y: 270, r: 92, f: BAND.unico, from: 'egg', as: 'unico' }] },
       { k: 'stats', r: 'life, armor, speed in dots', i: [
         word('life', 70, 404), { o: 'meter', x: 120, y: 404, w: 230, v: T.unico.stats.vida, max: 50 },
@@ -57,19 +57,19 @@
       title('army'),
       { k: 'waves', r: 'four waves: Normal, Uncommon, Rare, Leviathan', i: [
         { o: 'troop', x: 112, y: 180, r: 58, f: BAND.normal, as: 'normal' },
-        { o: 'troop', x: 300, y: 180, r: 58, f: BAND.magico, as: 'magico' },
+        { o: 'troop', x: 300, y: 180, r: 58, f: BAND.uncommon, as: 'uncommon' },
         { o: 'troop', x: 112, y: 370, r: 58, f: BAND.raro, as: 'raro' },
         { o: 'troop', x: 300, y: 370, r: 58, f: BAND.unico, as: 'unico' }] },
-      { k: 'names', r: 'their names under them', i: [word(NAME.normal, 112, 262), word(NAME.magico, 300, 262), word(NAME.raro, 112, 452), word(NAME.unico, 300, 452)] }
+      { k: 'names', r: 'their names under them', i: [word(NAME.normal, 112, 262), word(NAME.uncommon, 300, 262), word(NAME.raro, 112, 452), word(NAME.unico, 300, 452)] }
     ], B6),
     F('BATTLE', 2400, ['two waves meet', 'life you can see'], [
       title('battle'),
       { k: 'seabed', r: 'the soft seabed', i: [BED] },
       { k: 'clash', r: 'lines and dots ripple', i: [{ o: 'clash', a: [150, 250], b: [262, 250], n: 3, amp: 16, k: 2 }] },
       { k: 'left', r: 'a Rare wave', i: [{ o: 'troop', x: 96, y: 250, r: 66, f: BAND.raro, as: 'raro' }] },
-      { k: 'right', r: 'an Uncommon wave', i: [{ o: 'troop', x: 316, y: 250, r: 66, f: BAND.magico, as: 'magico' }] },
+      { k: 'right', r: 'an Uncommon wave', i: [{ o: 'troop', x: 316, y: 250, r: 66, f: BAND.uncommon, as: 'uncommon' }] },
       { k: 'life left', r: 'Rare life', i: [{ o: 'meter', x: 40, y: 360, w: 120, v: T.raro.stats.vida, max: 50, f: BAND.raro }] },
-      { k: 'life right', r: 'Uncommon life', i: [{ o: 'meter', x: 252, y: 360, w: 120, v: T.magico.stats.vida, max: 50 }] }
+      { k: 'life right', r: 'Uncommon life', i: [{ o: 'meter', x: 252, y: 360, w: 120, v: T.uncommon.stats.vida, max: 50 }] }
     ], B5),
     F('RIFT', 3000, ['the Preceptor falls into the abyss', 'at the bottom, the sea creatures'], [
       { k: 'seabed', r: 'the soft seabed', i: [BED] },
