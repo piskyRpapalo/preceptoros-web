@@ -11,7 +11,7 @@
     unico: '9a342ec9292ec93c7a4de5450a402e2a2d74864e2d3aeb9d0747d9cbcf57ed1b'
   };
   var BAND = { normal: 'paper', magico: 'cyan', raro: 'comic yellow.base', unico: 'vermilion.base' };
-  var NAME = { normal: 'Normal', magico: 'Magic', raro: 'Rare', unico: 'Leviathan' };
+  var NAME = { normal: 'Normal', magico: 'Uncommon', raro: 'Rare', unico: 'Leviathan' };
   var T = {};
   Object.keys(SEEDS).forEach(function (k) { T[k] = G.tirada(SEEDS[k], TC); });
   var ODDS = G.odds(TC);
@@ -55,7 +55,7 @@
     ], B6),
     F('ARMY', 1800, ['four waves, four rarities'], [
       title('army'),
-      { k: 'waves', r: 'four waves: Normal, Magic, Rare, Leviathan', i: [
+      { k: 'waves', r: 'four waves: Normal, Uncommon, Rare, Leviathan', i: [
         { o: 'troop', x: 112, y: 180, r: 58, f: BAND.normal, as: 'normal' },
         { o: 'troop', x: 300, y: 180, r: 58, f: BAND.magico, as: 'magico' },
         { o: 'troop', x: 112, y: 370, r: 58, f: BAND.raro, as: 'raro' },
@@ -67,9 +67,9 @@
       { k: 'seabed', r: 'the soft seabed', i: [BED] },
       { k: 'clash', r: 'lines and dots ripple', i: [{ o: 'clash', a: [150, 250], b: [262, 250], n: 3, amp: 16, k: 2 }] },
       { k: 'left', r: 'a Rare wave', i: [{ o: 'troop', x: 96, y: 250, r: 66, f: BAND.raro, as: 'raro' }] },
-      { k: 'right', r: 'a Magic wave', i: [{ o: 'troop', x: 316, y: 250, r: 66, f: BAND.magico, as: 'magico' }] },
-      { k: 'life left', r: 'Rare life in dots', i: [{ o: 'meter', x: 40, y: 360, w: 120, v: T.raro.stats.vida, max: 50, f: BAND.raro }] },
-      { k: 'life right', r: 'Magic life in dots', i: [{ o: 'meter', x: 252, y: 360, w: 120, v: T.magico.stats.vida, max: 50 }] }
+      { k: 'right', r: 'an Uncommon wave', i: [{ o: 'troop', x: 316, y: 250, r: 66, f: BAND.magico, as: 'magico' }] },
+      { k: 'life left', r: 'Rare life', i: [{ o: 'meter', x: 40, y: 360, w: 120, v: T.raro.stats.vida, max: 50, f: BAND.raro }] },
+      { k: 'life right', r: 'Uncommon life', i: [{ o: 'meter', x: 252, y: 360, w: 120, v: T.magico.stats.vida, max: 50 }] }
     ], B5),
     F('RIFT', 3000, ['the Preceptor falls into the abyss', 'at the bottom, the sea creatures'], [
       { k: 'seabed', r: 'the soft seabed', i: [BED] },
@@ -119,7 +119,7 @@
       PRECEPTOR: { h: 'The Preceptor', p: ['This is the Preceptor, a statue of stone.', 'Its eye is purple. Purple means: signed.', 'The Preceptor proposes. You sign.'], sound: 'a soft hum' },
       REFUGE: { h: 'Your refuge', p: ['This is your home under the sea.', 'Your crab lives here. It is safe and cozy.'], sound: 'soft bubbles' },
       SUMMON: { h: 'Summon', p: ['Tap and an egg hatches into a wave.', 'Look at the bar: it shows every chance. Nothing is hidden.'], sound: 'a little pop' },
-      ARMY: { h: 'Your army', p: ['Every wave has its own shape.', 'Normal, Magic, Rare and Leviathan: the rarer, the more curls.'], sound: 'four soft notes' },
+      ARMY: { h: 'Your army', p: ['Every wave has its own shape.', 'Normal, Uncommon, Rare and Leviathan: the rarer, the more curls.'], sound: 'four soft notes' },
       BATTLE: { h: 'Battle', p: ['Two waves meet and wiggle.', 'The dots under them are their life. You can see it go down.'], sound: 'a swish and a hum' },
       RIFT: { h: 'Down, down', p: ['The Preceptor rolls down into the deep sea.', 'At the bottom, the sea friends look up. Hello!', 'Tap the yellow button to play!'], sound: 'a soft splash' }
     },
