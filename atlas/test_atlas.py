@@ -1050,7 +1050,7 @@ process.stdout.write(JSON.stringify(ok));
 PUROS = ("canon.js", "sobres.js", "rating.js", "arena.js", "duelo.js", "mercado.js", "narragrafo.js", "cria.js", "genoma.js",
          "deploy_building.js")  # T_CRT §8.1: el orquestador mini lo lee; ningun guion de la web lo pide aun
 # La Arena (2026-09-28, «el mapa multi-jugador en una pestana»): se carga al abrir su pestana, detras del Army.
-ARENA = ("sobres.js", "rating.js", "arena.js", "duelo.js", "mar-anclas.js", "crab_render_hd.js", "audio_feedback_manager.js", "crab_free_move.js", "genesis_tutorial.js", "buildings_toon.js", "reef_place_cards.js", "shell_schematics.js", "reef_buildings_paint.js", "latency_crystal.js", "hexelion_bench.js", "reef_corals.js", "reef_buildings_layer.js", "mar-cangrejos.js", "map_pointer_input.js", "semiotic_glyph.js", "hexelion_dictionary.js", "map_nodes_layer.js", "map_zoom.js", "piece_inspector.js", "vector_contract.js", "state_vector.js", "place_telemetry.js", "npc_territory_map.js", "mar.js", "nodos-pesos.js",
+ARENA = ("sobres.js", "rating.js", "combate_ticks.js", "arena.js", "duelo.js", "mar-anclas.js", "crab_render_hd.js", "audio_feedback_manager.js", "crab_free_move.js", "genesis_tutorial.js", "buildings_toon.js", "reef_place_cards.js", "shell_schematics.js", "reef_buildings_paint.js", "latency_crystal.js", "hexelion_bench.js", "reef_corals.js", "reef_buildings_layer.js", "mar-cangrejos.js", "map_pointer_input.js", "semiotic_glyph.js", "hexelion_dictionary.js", "map_nodes_layer.js", "map_zoom.js", "piece_inspector.js", "vector_contract.js", "state_vector.js", "place_telemetry.js", "npc_territory_map.js", "mar.js", "nodos-pesos.js",
          "node_reception_contract.js", "node_trust_anchor.js", "node_trust_manifest.js", "node_signature_messages.js", "node_signature_verify.js", "node_bindings_messages.js", "node_bindings.js", "node_projection.js", "nodos.js", "cuenta.js", "ui-nodos.js", "ui-rack.js", "node_preview.js", "node_file_receiver.js",
          "escuadron.js", "battle_choreography.js", "battle_replay.js", "npc_occupancy.js", "npc_walls.js", "ui-arena-comun.js", "ui-arena.js", "ui-duelo.js")
 # La CASA (2026-10-05): la primera pantalla, detras del Army. Lleva canon y escena, que la Arena reutiliza.
@@ -3171,6 +3171,17 @@ class EstrellaHexelion(unittest.TestCase):
                            capture_output=True, text=True, check=False)
         self.assertNotEqual(s.returncode, 0, "duplicate catalogue ID sabotage should fail red")
         self.assertIn("unique IDs", s.stdout)
+
+
+class ArenaTicksVT3(unittest.TestCase):
+    """VT3: combate por rondas extraido de arena.js (vara: huella bit a bit antes/despues) y fork por ticks con recibo < 200 B."""
+
+    def test_arena_ticks_casos_en_node(self):
+        r = subprocess.run(["node", str(RAIZ / "arena_ticks_casos.mjs")], capture_output=True, text=True, check=False)
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        casos = json.loads(r.stdout)
+        self.assertEqual(len(casos), 8)
+        self.assertTrue(all(c["ok"] for c in casos), [c for c in casos if not c["ok"]])
 
 
 if __name__ == "__main__":
