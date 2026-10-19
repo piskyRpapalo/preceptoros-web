@@ -1,0 +1,12 @@
+.en301-arena{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;padding:12px;color:var(--d-ink);background:var(--d-paper)}
+.en301-arena>h3,.en301-arena>p,.en301-arena>button,.en301-arena>details,.en301-arena>.en301-actions,.en301-arena>div:has(input){grid-column:1/-1}
+.en301-commander{min-width:0;text-align:center;border:2px solid var(--d-ink);padding:8px}
+.en301-commander canvas{max-width:100%;height:auto;image-rendering:pixelated}
+.en301-arena button,.en301-arena input,.en301-arena summary{min-width:44px;min-height:44px;font:inherit;color:var(--d-ink);background:var(--d-paper);border:2px solid var(--d-ink);padding:8px}
+.en301-arena button{cursor:pointer;background:var(--d-yellow)}
+.en301-arena button:disabled{background:var(--d-paper);border-style:dashed;cursor:not-allowed}
+.en301-arena .en301-actions{display:flex;flex-wrap:wrap;gap:8px}
+.en301-arena button:focus-visible,.en301-arena input:focus-visible,.en301-arena summary:focus-visible{outline:3px solid var(--d-cyan);outline-offset:2px}
+.en301-arena pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:.8rem}
+
+.en301-arena h3{color:var(--d-ink)}
