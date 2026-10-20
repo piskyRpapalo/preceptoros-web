@@ -250,6 +250,7 @@
       targetG.strokeStyle = color(c, alfa * 0.16 * brillo); trazo(targetG, P, x, y, k, cs, sn, gr * 3.2, false);
     }
     targetG.strokeStyle = color(c, alfa); trazo(targetG, P, x, y, k, cs, sn, gr, q >= 2);
+    if (o.face) { drawFace(g, x, y, r, o); }
     if (q >= 1) {
       var blanco = typeof c === 'string' ? 'rgba(255,255,255,' + 0.35 * alfa + ')' : color([c[0], c[1] * 0.4, 92], 0.35 * alfa);
       targetG.strokeStyle = blanco; trazo(targetG, P, x, y, k, cs, sn, Math.max(0.6, gr * 0.35), false);
@@ -260,6 +261,25 @@
     if (isBuffer) {
       renderToReal(g, bufferG, nivel);
     }
+  }
+
+
+  function drawFace(g, x, y, r, o) {
+    o = o || {};
+    var fr = Math.max(2, r * 0.16), ex = r * 0.34, ey = r * 0.1;
+    var palette = raiz.AtlasComicTokens.NEUTRAL, alpha = g.globalAlpha;
+    g.save();
+    g.strokeStyle = palette.ink;
+    g.fillStyle = palette.paper;
+    [-1, 1].forEach(function (s) {
+      g.beginPath(); g.arc(x + s * ex, y - ey, fr, 0, 2 * Math.PI);
+      g.globalAlpha = alpha * 0.9; g.fill(); g.globalAlpha = alpha * 0.85; g.stroke();
+      g.beginPath(); g.arc(x + s * ex, y - ey + fr * 0.15, fr * 0.4, 0, 2 * Math.PI);
+      g.globalAlpha = alpha * 0.95; g.fillStyle = palette.ink; g.fill(); g.fillStyle = palette.paper;
+    });
+    g.beginPath(); g.arc(x, y + r * 0.22, r * 0.3, 0.15 * Math.PI, 0.85 * Math.PI);
+    g.globalAlpha = alpha * 0.85; g.lineWidth = Math.max(1, fr * 0.5); g.stroke();
+    g.restore();
   }
 
   function sprite(arm, r, c, clave, dpr) {
@@ -290,7 +310,7 @@
   }
 
   raiz.AtlasOnda = {
-    dibuja: dibuja, pulsoNota: pulsoNota, sprite: sprite, pegaSprite: pegaSprite, tono: tono, riqueza: riqueza, medidor: medidor, limite: limite,
+    dibuja: dibuja, drawFace: drawFace, pulsoNota: pulsoNota, sprite: sprite, pegaSprite: pegaSprite, tono: tono, riqueza: riqueza, medidor: medidor, limite: limite,
 
     applyMelt: applyMelt,
 

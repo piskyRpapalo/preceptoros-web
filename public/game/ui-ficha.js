@@ -10,19 +10,25 @@
     c.setAttribute('role', 'img'); c.setAttribute('aria-label', etiqueta || '');
     return c;
   }
+  var BANDA = { normal: [35, 30, 74], magico: [205, 60, 66], raro: [45, 90, 60], unico: [275, 65, 62] };
   function traza(c, arm, clase, latido) {
     var g = c.getContext('2d'), w = c.width, lim = 0;
     arm.forEach(function (h) { lim += Math.max(Math.abs(h[1]), Math.abs(h[2])); });
-    var k = (w / 2 - 6) / Math.max(1, lim) * (latido || 1);
     g.clearRect(0, 0, w, w);
-    g.lineWidth = Math.max(1.5, w / 90);
-    g.strokeStyle = getComputedStyle(c).getPropertyValue('--onda').trim() || '#c98a4b';
-    g.beginPath();
-    for (var i = 0; i <= 256; i++) {
-      var p = G.punto(arm, i / 256 * 2 * Math.PI);
-      g[i ? 'lineTo' : 'moveTo'](w / 2 + p[0] * k, w / 2 - p[1] * k);
+    var O = window.AtlasOnda;
+    if (O && typeof O.dibuja === 'function') {
+      O.dibuja(g, arm, w / 2, w / 2, w / 2 - 6, { color: BANDA[clase] || BANDA.normal, brillo: 0.8, grosor: Math.max(1.5, w / 90), calidad: 2, respira: false, face: true });
+    } else {
+      var k = (w / 2 - 6) / Math.max(1, lim) * (latido || 1);
+      g.lineWidth = Math.max(1.5, w / 90);
+      g.strokeStyle = getComputedStyle(c).getPropertyValue('--onda').trim() || '#c98a4b';
+      g.beginPath();
+      for (var i = 0; i <= 256; i++) {
+        var p = G.punto(arm, i / 256 * 2 * Math.PI);
+        g[i ? 'lineTo' : 'moveTo'](w / 2 + p[0] * k, w / 2 - p[1] * k);
+      }
+      g.stroke();
     }
-    g.stroke();
     c.dataset.rareza = clase || '';
   }
 
