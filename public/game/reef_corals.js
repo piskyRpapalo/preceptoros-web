@@ -24,14 +24,9 @@
     for (var i = 0; i < k.lobulos; i++) {
       var lx = cx + (i - (k.lobulos - 1) / 2) * r * 1.05, ly = top - (i % 2) * r * 0.55, lr = r * (0.95 - 0.1 * i);
       if (k.nd) { g.beginPath(); g.arc(lx, ly, lr, 0, 2 * Math.PI); g.stroke(); continue; }
-      if (BT) { BT.disco(g, lx, ly, lr, CORAL_C, dpr, 1); }
-      else { g.fillStyle = PAL.oscuro; g.beginPath(); g.arc(lx, ly, lr, 0, 2 * Math.PI); g.fill(); }
-      if (i === 0) {   
-        g.fillStyle = '#f2f4f8'; g.beginPath(); g.arc(lx - lr * 0.35, ly - lr * 0.1, lr * 0.22, 0, 2 * Math.PI); g.fill();
-        g.beginPath(); g.arc(lx + lr * 0.25, ly - lr * 0.1, lr * 0.22, 0, 2 * Math.PI); g.fill();
-        g.fillStyle = PAL.palo; g.beginPath(); g.arc(lx - lr * 0.33, ly - lr * 0.08, lr * 0.09, 0, 2 * Math.PI); g.fill();
-        g.beginPath(); g.arc(lx + lr * 0.27, ly - lr * 0.08, lr * 0.09, 0, 2 * Math.PI); g.fill();
-      }
+      g.save(); if (k.nd) { g.globalAlpha = 0.45; }
+      raiz.AtlasMapBubbleFigures.draw(g, 'star', lx, ly, lr, k.nd ? 'shut' : 'open');
+      g.restore();
     }
     g.restore();
   }

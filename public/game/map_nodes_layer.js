@@ -20,9 +20,11 @@
       if (med) {
         g.strokeStyle = col.tuya; g.lineWidth = 2 * dpr;
         [1.35, 1.6].forEach(function (k2) { g.beginPath(); g.arc(p[0], p[1], r * k2, 0, 2 * Math.PI); g.stroke(); });
-        E.figura(g, n.t.armonicos, p[0], p[1], r, { color: '#f4d29c', giro: t * 0.0003, grosor: 2.2 * dpr, brillo: 14 * dpr });
+        raiz.AtlasMapBubbleFigures.draw(g, 'star', p[0], p[1], r * 0.72, 'open');
       } else {
-        E.figura(g, n.t.armonicos, p[0], p[1], r, { color: 'rgb(150,160,180)', giro: t * 0.0002, grosor: 1.2 * dpr, desafina: 0.5, t: t });
+        g.save(); g.globalAlpha = 0.45;
+        raiz.AtlasMapBubbleFigures.draw(g, 'star', p[0], p[1], r * 0.72, 'shut');
+        g.restore();
       }
       g.lineWidth = dpr;
     }, function () { return { que: n.nodo, estado: n.gen.estado }; }); });
