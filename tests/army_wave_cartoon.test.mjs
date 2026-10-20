@@ -27,3 +27,28 @@ test('both files stay under the 16 KiB ceiling', () => {
     assert.ok(bytes <= 16384, f + ' over ceiling: ' + bytes);
   }
 });
+
+test('face uses named paper and ink bands and preserves canvas state', async () => {
+  const { runInNewContext } = await import('node:vm');
+  const { createRequire } = await import('node:module');
+  const require = createRequire(import.meta.url);
+  const palette = require('../public/game/comic_tokens.js');
+  const scope = { AtlasComicTokens: palette };
+  runInNewContext(read('public/game/wave_render.js'), scope);
+  const marks = [], stack = [];
+  const g = {
+    globalAlpha: 0.5, fillStyle: 'previous', strokeStyle: 'previous', lineWidth: 2,
+    save() { stack.push([this.globalAlpha, this.fillStyle, this.strokeStyle, this.lineWidth]); },
+    restore() { [this.globalAlpha, this.fillStyle, this.strokeStyle, this.lineWidth] = stack.pop(); },
+    beginPath() {}, arc() {},
+    fill() { marks.push(['fill', this.fillStyle, this.globalAlpha]); },
+    stroke() { marks.push(['stroke', this.strokeStyle, this.globalAlpha]); }
+  };
+  scope.AtlasOnda.drawFace(g, 50, 50, 30, {});
+  assert.equal(marks.length, 7);
+  assert.deepEqual(marks.filter(m => m[0] === 'fill').map(m => m[1]),
+    [palette.NEUTRAL.paper, palette.NEUTRAL.ink, palette.NEUTRAL.paper, palette.NEUTRAL.ink]);
+  assert.ok(marks.filter(m => m[0] === 'stroke').every(m => m[1] === palette.NEUTRAL.ink));
+  assert.ok(marks.every(m => m[2] > 0 && m[2] <= 0.5));
+  assert.deepEqual([g.globalAlpha, g.fillStyle, g.strokeStyle, g.lineWidth], [0.5, 'previous', 'previous', 2]);
+});

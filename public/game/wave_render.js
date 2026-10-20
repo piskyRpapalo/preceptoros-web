@@ -267,16 +267,18 @@
   function drawFace(g, x, y, r, o) {
     o = o || {};
     var fr = Math.max(2, r * 0.16), ex = r * 0.34, ey = r * 0.1;
+    var palette = raiz.AtlasComicTokens.NEUTRAL, alpha = g.globalAlpha;
     g.save();
-    g.strokeStyle = 'rgba(30,24,38,0.85)';
-    g.fillStyle = 'rgba(244,242,238,0.9)';
+    g.strokeStyle = palette.ink;
+    g.fillStyle = palette.paper;
     [-1, 1].forEach(function (s) {
-      g.beginPath(); g.arc(x + s * ex, y - ey, fr, 0, 2 * Math.PI); g.fill(); g.stroke();
+      g.beginPath(); g.arc(x + s * ex, y - ey, fr, 0, 2 * Math.PI);
+      g.globalAlpha = alpha * 0.9; g.fill(); g.globalAlpha = alpha * 0.85; g.stroke();
       g.beginPath(); g.arc(x + s * ex, y - ey + fr * 0.15, fr * 0.4, 0, 2 * Math.PI);
-      g.fillStyle = 'rgba(30,24,38,0.95)'; g.fill(); g.fillStyle = 'rgba(244,242,238,0.9)';
+      g.globalAlpha = alpha * 0.95; g.fillStyle = palette.ink; g.fill(); g.fillStyle = palette.paper;
     });
     g.beginPath(); g.arc(x, y + r * 0.22, r * 0.3, 0.15 * Math.PI, 0.85 * Math.PI);
-    g.lineWidth = Math.max(1, fr * 0.5); g.stroke();
+    g.globalAlpha = alpha * 0.85; g.lineWidth = Math.max(1, fr * 0.5); g.stroke();
     g.restore();
   }
 
