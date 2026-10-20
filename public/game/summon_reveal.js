@@ -100,7 +100,7 @@
       });
       if (crece > 0) {
         O.dibuja(g, t.armonicos, cx, cy, R * (0.6 + 0.4 * crece), { t: transcurrido, crece: crece, giro: q ? 0 : transcurrido * 0.00035,
-          color: col, grosor: 2.6 * dpr, brillo: 0.6 + 0.4 * crece, estela: q ? 0 : 6, respira: !q, calidad: 2 });
+          color: col, grosor: 2.6 * dpr, brillo: 0.6 + 0.4 * crece, estela: q ? 0 : 6, respira: !q, calidad: 2, face: true });
       }
       if (tarjeta && p >= 1) { tarjeta.element.hidden = false; }
       if (p >= 1 && !txt.textContent) { txt.textContent = inicioCiclo === null ? 'NO_DATA (game cycle unavailable; showing the measured final frame) · ' + rar + ' · ' + cuenta : rar + ' · ' + cuenta; b.focus(); tiembla = ciclo; if (S && S.vozDe) { S.suena(S.vozDe(t)); } }

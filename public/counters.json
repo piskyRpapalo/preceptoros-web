@@ -21,7 +21,7 @@
     {
       "clave": "peso_sitio",
       "estado": "MEDIDO",
-      "valor": 1426071,
+      "valor": 1426083,
       "unidad": "bytes",
       "como": "todo lo que hay en public/ menos downloads/, counters.json e historial/: es lo que pesa visitar. Los adaptadores no se descargan por visitar; y un contador que se cuenta a si mismo nunca acierta, porque escribir la cifra cambia el fichero"
     },
