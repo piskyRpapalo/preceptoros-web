@@ -2,7 +2,7 @@
   'use strict';
   if (window.TheGame) { return; }
 
-  var GUIONES = [['atlas-arte.js'], ['atlas-coord.js'], ['atlas-carta.js'], ['atlas-ondas.js'], ['atlas-obra.js'], ['atlas-gesto.js'], ['atlas-mapa.js'],
+  var GUIONES = [['atlas-arte.js'], ['atlas-coord.js'], ['atlas-carta.js'], ['atlas-ondas.js'], ['atlas-obra.js'], ['atlas-gesto.js'],
     ['atlas-dialogo.js', '/assets/'], ['atlas-motor.js'], ['atlas-piso.js', '/'],
     ['atlas-piloto.js'], ['atlas-partida.js'], ['atlas-piloto-capa.js'],
     ['/game/juez.js'], ['atlas-guardado.js'], ['radio_message_log.js'], ['/game/z_cutoff.js'], ['terminal_menu_shell.js'], ['terminal_window_frame.js'], ['worm_transition.js']];
@@ -44,7 +44,7 @@
 
   function carga() {
     if (cargado) { return cargado; }
-    ['atlas.css', 'atlas-mapa.css', 'thegame.css', 'terminal_menu_shell.css', 'tubo.css'].forEach(function (n) {
+    ['atlas.css', 'thegame.css', 'terminal_menu_shell.css', 'tubo.css'].forEach(function (n) {
       var h = document.createElement('link');
       h.rel = 'stylesheet'; h.href = '/assets/' + n;
       document.head.appendChild(h);
@@ -54,7 +54,7 @@
   }
 
   var PESTANAS = [
-    ['casa', '\u2302', '#atlas-juego > .no-data:first-child|.atlas-alerta|.atlas-cab|.atlas-recursos|#atlas-piso > .atlas-vivo|.atlas-dormias|.atlas-lema|.atlas-mapa|.atlas-izq'],
+    ['casa', '\u2302', '#atlas-juego > .no-data:first-child|.atlas-alerta|.atlas-cab|.atlas-recursos|#atlas-piso > .atlas-vivo|.atlas-dormias|.atlas-lema|.atlas-izq'],
     ['mapa', '\u25C8', '.thegame-exporta|.thegame-opina|.atlas-hud-farmeo|#atlas-juego > .no-data|.atlas-pie'],
     ['taller', '\u2692\uFE0E', '.atlas-nucleo|.atlas-hud > .panel']];
 

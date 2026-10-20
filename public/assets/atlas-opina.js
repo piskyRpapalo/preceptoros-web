@@ -119,7 +119,7 @@
     c.style.justifySelf = 'start';
     panel.appendChild(c);
 
-    var sm = capa.querySelector('.thegame-panel:not([hidden])') || capa.querySelector('#atlas-piso .atlas-mapa');
+    var sm = capa.querySelector('.thegame-panel:not([hidden])') || capa.querySelector('#atlas-piso');
     (sm || capa).appendChild(panel);
     panel.scrollIntoView({ block: 'nearest' });
   }
@@ -145,7 +145,7 @@
       }
     }).catch(function (x) {
       var p = el('p', 'no-data', 'NO_DATA · ' + (x && x.message));
-      var sm = capa.querySelector('.thegame-panel:not([hidden])') || capa.querySelector('#atlas-piso .atlas-mapa');
+      var sm = capa.querySelector('.thegame-panel:not([hidden])') || capa.querySelector('#atlas-piso');
       (sm || capa).appendChild(p);
     });
   }

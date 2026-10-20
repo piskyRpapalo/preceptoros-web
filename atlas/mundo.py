@@ -28,13 +28,13 @@ RAIZ = Path(__file__).resolve().parent.parent
 PUBLICO = RAIZ / "public"
 ASSETS = PUBLICO / "assets"
 # Lo que baja una visita que abre theGame: los guiones de `GUIONES` en `thegame.js` (el juez incluido),
-# sus hojas (atlas, atlas-mapa, thegame y tubo, R3) y el texto de la lengua en que el juego abre hoy, que es la primera de `LENGUAS`.
+# sus hojas (atlas, thegame y tubo) y el texto de la lengua en que el juego abre hoy, que es la primera de `LENGUAS`.
 # La incubadora y su Army (`ARMY` en `thegame.js`) se piden al abrir su pestana y no cuentan, como
 # `atlas-hud.js` y `atlas-opina.js`: lo que no baja al abrir no pesa en la puerta.
-PIEZAS = ["atlas-arte.js", "atlas-coord.js", "atlas-carta.js", "atlas-ondas.js", "atlas-obra.js", "atlas-gesto.js", "atlas-mapa.js", "atlas-dialogo.js", "atlas-motor.js",
+PIEZAS = ["atlas-arte.js", "atlas-coord.js", "atlas-carta.js", "atlas-ondas.js", "atlas-obra.js", "atlas-gesto.js", "atlas-dialogo.js", "atlas-motor.js",
           "atlas-piso.js", "atlas.css", "thegame.js", "thegame.css", "tubo.css",
           "radio_message_log.js", "terminal_menu_shell.js", "terminal_menu_shell.css", "terminal_window_frame.js", "worm_transition.js",  # la terminal chatbot (2026-10-12), en la puerta
-          "atlas-piloto.js", "atlas-partida.js", "atlas-piloto-capa.js", "atlas-guardado.js", "atlas-mapa.css",
+          "atlas-piloto.js", "atlas-partida.js", "atlas-piloto-capa.js", "atlas-guardado.js",
           "../game/juez.js", "../game/z_cutoff.js"]
 
 

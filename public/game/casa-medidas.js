@@ -1,7 +1,7 @@
 (function (raiz) {
   'use strict';
   var PARTES = [['caparazon', '◉', 'taller', 'nucleo'], ['pinzas', '✦', 'taller', 'army'], ['patas', '⸙', '', 'bosque'], ['ojos', '◈', 'faro', 'faro']];
-  var DENTRO = { patas: '.atlas-dormias|.atlas-lema|.atlas-mapa|.atlas-izq' };
+  var DENTRO = { patas: '.atlas-dormias|.atlas-lema|.atlas-izq' };
   function rellena(p, v) { return String(p).replace(/\{(\w+)\}/g, function (m, k) { return k in v ? v[k] : m; }); }
     function medidas(s, army, nodos, T) {
     var ed = {};

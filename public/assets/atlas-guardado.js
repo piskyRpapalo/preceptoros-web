@@ -42,10 +42,9 @@
 
 
   function retoma(p, como) {
-    var vis = {}, P = window.AtlasPartida, M = window.AtlasMotor, C = window.AtlasCarta;
+    var P = window.AtlasPartida;
     try {
-      var e = J.retoma(limpia(p), function (s) { if (C) { vis[C.visita(P.instantanea(s, M))] = 1; } });
-      if (window.AtlasMapa && window.AtlasMapa.visitas) { window.AtlasMapa.visitas(Object.keys(vis)); }
+      var e = J.retoma(limpia(p));
       dice(rellena(T('guardado_retomado'), { c: e.t, n: p.pasos.length, f: como }));
       return true;
     } catch (x) {
