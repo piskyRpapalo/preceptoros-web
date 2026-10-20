@@ -69,4 +69,5 @@ jobs:
             node atlas/phase_T3_cases.mjs
             node atlas/shell_schematics_casos.mjs
             node atlas/z_cutoff_casos.mjs
+            node atlas/lexical_projector_casos.mjs
           done
