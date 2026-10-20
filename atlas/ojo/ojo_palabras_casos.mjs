@@ -32,7 +32,7 @@ function pngs(dir) {
 
 function cumple(caso, r, j, dir) {
   if (caso.nombre === 'sabotaje') return r.status === 1 && j?.ok === false && j?.recarga_igual === false;
-  return r.status === 0 && j?.ok === true && j?.recarga_igual === true && j?.n >= 12 && pngs(dir).length === j.n;
+  return r.status === 0 && j?.ok === true && j?.recarga_igual === true && j?.n >= 15 && j?.causas?.length === 0 && pngs(dir).length === j.n;
 }
 
 function prueba(caso, tmp) {
