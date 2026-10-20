@@ -51,38 +51,13 @@
   0%{box-shadow:0 0 0 0 var(--accent-copper)}
   70%,100%{box-shadow:0 0 0 9px transparent}}
 @media (prefers-reduced-motion:reduce){
-  .atlas-alerta,.atlas-sector[data-sector="grieta"]{animation:none}
+  .atlas-alerta{animation:none}
 }
 
-/* --- rejilla: mapa + HUD ------------------------------------------------- */
 .atlas-rejilla{display:grid;grid-template-columns:minmax(0,1fr) minmax(16rem,21rem);
   gap:1.25rem;align-items:start}
 @media (max-width:52rem){ .atlas-rejilla{grid-template-columns:minmax(0,1fr)} }
-/* La columna del mapa lleva debajo el selector de profundidad: se elige
-   adonde bajar mirando el mapa, y la columna no queda hueca frente al HUD. */
 .atlas-izq{display:grid;gap:1rem;min-width:0}
-
-/* El mapa se pinta en <canvas>; lo que se pulsa es DOM encima (accesible y
-   con hit-test gratis). La altura la fija atlas.js segun la rejilla. */
-.atlas-lienzo{position:relative;width:100%;margin-top:.75rem;min-height:12rem}
-/* EL CRISTAL SE APAGA MIENTRAS EL BOSQUE SE MUEVE. Medido en Chromium: un
-   `backdrop-filter` por encima de un lienzo animado cae de 60 a 14 fotogramas.
-   Aqui solo queda el panel del mapa, opaco. */
-#atlas-piso .atlas-mapa{background:var(--bg-secondary)}
-@supports (backdrop-filter:none) or (-webkit-backdrop-filter:none){
-  #atlas-piso .atlas-mapa{-webkit-backdrop-filter:none;backdrop-filter:none}}
-/* Arte pintado, no pixel art: suavizado, y con bordes redondeados del token. */
-.atlas-lienzo{border-radius:var(--radius);overflow:hidden}
-.atlas-lienzo canvas{position:absolute;inset:0;width:100%}
-/* `translate` y no `transform`: el `scale(1.02)` de soberano.css al pasar por
-   encima se suma a este centrado en vez de sustituirlo. */
-.atlas-sector{position:absolute;translate:-50% -50%;padding:.3rem .65rem;
-  font:600 .72rem/1.2 var(--mono);white-space:nowrap;color:var(--text-main);
-  background:var(--bg-secondary);border:1px solid var(--accent-copper);border-radius:999px}
-.atlas-sector[data-sector="nucleo"]{border-color:var(--accent-violet-text)}
-.atlas-sector[data-sector="grieta"]{color:var(--accent-copper-claro);
-  animation:atlas-pulso 1.6s var(--curva) infinite}
-@media (max-width:30rem){ .atlas-sector{padding:.2rem .45rem;font-size:.64rem} }
 
 /* --- HUD ----------------------------------------------------------------- */
 .atlas-hud{display:grid;gap:1rem}
@@ -95,7 +70,6 @@
    arabe. Sin aislarlas, el bidi pintaba «XP 7,028 / 6,747», al reves. */
 [dir="rtl"] .atlas-skills small{text-align:right}
 /* La dependencia va en su propia linea: partida a media frase no se leia. */
-.atlas-dep{display:block;font:normal .68rem/1.3 var(--mono);color:var(--text-muted)}
 
 #atlas-piso progress{grid-column:1/-1;width:100%;height:.45rem;appearance:none;
   border:0;border-radius:999px;background:var(--bg-primary);overflow:hidden}
@@ -185,7 +159,6 @@
   color:var(--accent-violet-text)}
 .atlas-alerta.sellada{animation:none;border-color:var(--edge-sov)}
 .atlas-alerta.sellada strong{color:var(--text-muted)}
-span.atlas-sector{pointer-events:none}
 .atlas-casa{margin:0;font:600 .8rem/1.4 var(--mono);color:var(--accent-copper-claro)}
 .atlas-medido{margin:0;font:.68rem/1.4 var(--mono);color:var(--text-muted)}
 
@@ -218,7 +191,6 @@ span.atlas-sector{pointer-events:none}
 .atlas-stats{display:flex;flex-wrap:wrap;gap:.2rem 1rem;margin:.4rem 0;padding:0;list-style:none;font:.78rem var(--mono)}
 /* `hidden` tiene que ganar a los display de arriba: si no, lo oculto se ve. */
 .thegame-sugerencia[hidden],.atlas-eclosion[hidden]{display:none}.atlas-tropa figcaption{display:grid;gap:.1rem}
-.atlas-lienzo .atlas-sector{font-size:.6rem;padding:.12rem .45rem;opacity:.88}
 /* P11 · «El Primer Eco»: el Navegante (su retrato es la onda del guia), sus ondas sucias y los mandos. */
 .eco{display:grid;gap:.6rem;padding:.8rem 1rem}
 .eco-navegante{display:flex;gap:.6rem;align-items:center}

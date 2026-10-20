@@ -3,9 +3,9 @@ const IDIOMAS = ['es', 'en', 'fr', 'pt', 'it', 'de', 'ru', 'el', 'ar'];
 const PAGINAS = [''];
 
 const JUEGO = [
-  '/assets/thegame.js', '/assets/thegame.css', '/assets/tubo.css', '/assets/atlas.css', '/assets/atlas-mapa.css',
+  '/assets/thegame.js', '/assets/thegame.css', '/assets/tubo.css', '/assets/atlas.css',
   '/assets/atlas-arte.js', '/assets/atlas-coord.js', '/assets/atlas-carta.js', '/assets/atlas-ondas.js',
-  '/assets/atlas-obra.js', '/assets/atlas-gesto.js', '/assets/atlas-mapa.js', '/assets/atlas-dialogo.js',
+  '/assets/atlas-obra.js', '/assets/atlas-gesto.js', '/assets/atlas-dialogo.js',
   '/assets/atlas-motor.js', '/assets/atlas-piso.js', '/assets/atlas-piloto.js', '/assets/atlas-partida.js',
   '/assets/atlas-piloto-capa.js', '/assets/atlas-guardado.js', '/assets/radio_message_log.js', '/game/z_cutoff.js', '/assets/terminal_menu_shell.js', '/assets/terminal_menu_shell.css', '/assets/terminal_window_frame.js', '/assets/worm_transition.js', '/assets/atlas-hud.js',
   '/assets/atlas-opina.js', '/assets/atlas-voz.js', '/game/juez.js', '/game/valores.js', '/game/gacha.js',

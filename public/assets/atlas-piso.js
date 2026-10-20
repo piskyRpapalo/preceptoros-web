@@ -7,7 +7,7 @@
   var M = window.AtlasMotor;
 
   var TXT = null, MUNDO = null, LEY = null, E = null;
-  var R = {}, zona = null, mapa = null, reloj = 0, activo = false, oculto = 0;
+  var R = {}, zona = null, reloj = 0, activo = false, oculto = 0;
 
   function el(tag, clase, texto) {
     var n = document.createElement(tag);
@@ -74,20 +74,6 @@
     raiz.appendChild(R.vivo);
 
     var rej = el('div', 'atlas-rejilla'), izq = el('div', 'atlas-izq');
-    var sm = el('section', 'panel atlas-mapa');
-    sm.appendChild(el('h4', null, U('mapa_h')));
-    sm.appendChild(el('p', 'atlas-nota', U('mapa_nota')));
-    var lienzo = el('div', 'atlas-lienzo');
-    [['nucleo', 's_nucleo'], ['forja', 's_forja'], ['aguja', 's_aguja'], ['ojo', 's_ojo']]
-      .forEach(function (x) {
-        var s = el('span', 'atlas-sector', U(x[1])); s.dataset.sector = x[0];
-        lienzo.appendChild(s);
-      });
-    R.grieta = boton('⚠ ' + U('s_grieta'), 'atlas-sector'); R.grieta.dataset.sector = 'grieta';
-    R.grieta.addEventListener('click', repara);
-    lienzo.appendChild(R.grieta);
-
-    sm.appendChild(lienzo); raiz.insertBefore(sm, raiz.children[1] || null);
 
     var fs = el('fieldset', 'atlas-profundidad');
     fs.appendChild(el('legend', null, U('prof_leg')));
@@ -132,7 +118,6 @@
     raiz.appendChild(el('p', 'atlas-pie', U('pie')));
 
     zona.appendChild(raiz);
-    if (window.AtlasMapa) { mapa = window.AtlasMapa.monta(lienzo); }
   }
 
   function pinta() {
@@ -145,7 +130,7 @@
 
     R.alerta.classList.toggle('sellada', !E.abierta);
     pon(R.alertaT, E.abierta ? U('alerta') : rellena(U('sellada'), { c: num(E.cierre) }));
-    R.alertaP.hidden = !E.abierta; R.reparar.hidden = !E.abierta; R.grieta.hidden = !E.abierta;
+    R.alertaP.hidden = !E.abierta; R.reparar.hidden = !E.abierta;
 
     var ing = M.nivelDesdeXp(E.xp[M.OFICIOS.indexOf('ingenieria')]);
     Object.keys(R.radios).forEach(function (k) {
@@ -160,7 +145,6 @@
 
     var f = M.fase(E);
     pon(R.fase, rellena(U('fase_h'), { n: f, fase: U('f' + f) }));
-    if (mapa) { mapa.fase(f); }
   }
 
   function actua(nuevo) {

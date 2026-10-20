@@ -199,8 +199,8 @@ const rutas = await shell.keys();
 // 167 con el descenso (obra abku): comic_accents, los cuatro bubble_*, descent_scene, descent_view y descent.css; 168 con bubble_letters (V7); 170 con bubble_game y codex_scene (V9, el Codex); 171 con bout_scene (viabilidad); 174 con mar_rift, bubble_icons y descent_sound (estilo rift); 173 sin descent_scene (2026-10-19: el descenso sale de la presentación).
 // 174 con z_cutoff (T_CRT, 2026-10-19): la regla de la rueda Z se pide en la puerta (173 tras retirar descent_scene, +1).
 // 176 con combate_ticks (VT3, 2026-10-19): el paso a paso del combate, extraido de arena.js (+1 ruta).
-// 192 = 183 building-label routes + silhouette + five guided-practice modules + two stylesheets + map bestiary adapter (2026-10-20).
-ok('precachea las portadas, su superficie y el juego', rutas.length === 192, rutas.length+' rutas');
+// 190 = 183 building-label routes + silhouette + five guided-practice modules + two stylesheets + map bestiary adapter, minus the retired map assets (2026-10-20).
+ok('precachea las portadas, su superficie y el juego', rutas.length === 190, rutas.length+' rutas');
 ok('el shell trae el juego (D7): la puerta, el cangrejo y la arena',
    ['/assets/thegame.js', '/game/gdpr-art25-ephemeral-crab.js', '/game/ui-arena.js', '/assets/atlas-motor.js'].every(r => rutas.includes(r)));
 ok('el shell trae la portada de cada lengua', ['/es/', '/fr/', '/ar/'].every(r => rutas.includes(r)));

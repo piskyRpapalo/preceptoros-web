@@ -33,9 +33,9 @@ def _fam(nombre, texto):
         return texto + "\n" + (PUBLICO / "game" / "ui-invoca.js").read_text(encoding="utf-8")
     return texto
 PISO = ASSETS  # los guiones, la hoja y la tira viven en public/assets/
-CODIGO = ("atlas-arte.js", "atlas-coord.js", "atlas-carta.js", "atlas-ondas.js", "atlas-obra.js", "atlas-gesto.js", "atlas-mapa.js", "atlas-dialogo.js", "atlas-motor.js",
+CODIGO = ("atlas-arte.js", "atlas-coord.js", "atlas-carta.js", "atlas-ondas.js", "atlas-obra.js", "atlas-gesto.js", "atlas-dialogo.js", "atlas-motor.js",
           "atlas-piso.js", "atlas.css", "thegame.js", "thegame.css",
-          "atlas-piloto.js", "atlas-partida.js", "atlas-piloto-capa.js", "atlas-guardado.js", "atlas-hud.js", "atlas-mapa.css")
+          "atlas-piloto.js", "atlas-partida.js", "atlas-piloto-capa.js", "atlas-guardado.js", "atlas-hud.js")
 PILOTO = ("atlas-piloto.js", "atlas-partida.js", "atlas-piloto-capa.js")
 DATOS = RAIZ.parent / "data"
 LENGUAS = ["ar", "de", "el", "en", "es", "fr", "it", "pt", "ru"]
@@ -166,7 +166,7 @@ class Piso(unittest.TestCase):
         for pieza in ("capa = el('section', 'thegame-capa')", "s.async = false", "window.AtlasJuego.monta"):
             with self.subTest(pieza=pieza):
                 self.assertIn(pieza, capa)
-        for g in ("atlas-arte.js", "atlas-coord.js", "atlas-carta.js", "atlas-ondas.js", "atlas-mapa.js", "atlas-dialogo.js", "atlas-motor.js", "atlas-piso.js"):
+        for g in ("atlas-arte.js", "atlas-coord.js", "atlas-carta.js", "atlas-ondas.js", "atlas-dialogo.js", "atlas-motor.js", "atlas-piso.js"):
             with self.subTest(guion=g):
                 self.assertIn(f"['{g}'", capa, f"la capa no carga {g}")
 
@@ -543,7 +543,7 @@ process.stdout.write(JSON.stringify(ok));
         self.assertIn("R.exporta.id = 'thegame-exporta';", codigo)
         piso = sin_comentarios((PISO / "atlas-piso.js").read_text(encoding="utf-8"))
         self.assertIn("function repara() { if (E && E.abierta) { actua(M.reparar(E)); } }", piso)
-        self.assertEqual(piso.count("addEventListener('click', repara)"), 2, "reparar y la grieta no van por la MISMA funcion")
+        self.assertEqual(piso.count("addEventListener('click', repara)"), 1, "solo el control de reparacion sigue conectado")
         self.assertNotIn("function dialogo(", piso, "vuelve la ventana modal de reparar")
         for f in list((PUBLICO / "game").glob("*.js")) + list((PUBLICO / "assets").glob("*.js")):
             if f.name == "atlas-dialogo.js":
