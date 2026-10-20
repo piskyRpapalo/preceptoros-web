@@ -1,3 +1,2 @@
-
-huella=693e2417ce7c2ae2
-version=preceptoros-2026-17-abji
+huella=4e0ad993ba615564
+version=preceptoros-2026-17-abjj

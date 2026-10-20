@@ -1065,7 +1065,9 @@ J1 = ("estrella_captura.js",)
 # VT2 (etiqueta 1 KB) y VT4 (silueta): modulos puros fuera de la puerta (registrados en main tras sus PR).
 VT2_ETIQUETA = ()
 VT4_SILUETA = ("silueta.js",)
-FUERA_DE_LA_PUERTA = tuple(sorted(set(PUROS + ARENA + CASA + DESCENSO + VT6 + J1 + VT2_ETIQUETA + VT4_SILUETA)))
+# Visión Léxica Determinista (Plan Mode B, FIRMO 2026-10-20): proyector léxico < 1 KB, cargado por el Codex.
+VISION_LEXICA = ("lexical_projector.js",)
+FUERA_DE_LA_PUERTA = tuple(sorted(set(PUROS + ARENA + CASA + DESCENSO + VT6 + J1 + VT2_ETIQUETA + VT4_SILUETA + VISION_LEXICA)))
 
 
 class TheGameV15(unittest.TestCase):
