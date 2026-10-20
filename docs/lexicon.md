@@ -1,6 +1,6 @@
 # THE LEXICON — Official Names of PreceptorOS
 
-**Status:** PROPOSAL by the Command Desk · REQUIRES_SIGN-OFF of the Sovereign · drafted 2026-10-18 (round 306), sources measured 2026-10-18 · destination: `docs/lexicon.md` in preceptoros-web, under the Renaming Law.
+**Status:** PROPOSAL by the Command Desk · REQUIRES_SIGN-OFF of the Sovereign · drafted 2026-10-18 (round 306), sources measured 2026-10-18 · extended 2026-10-20 (sections I–J), sources measured 2026-10-20 · destination: `docs/lexicon.md` in preceptoros-web, under the Renaming Law.
 
 **Purpose (declared by the Sovereign):** the professional and literary evolution of the Sovereign. Every term below carries his work and his voice; the names are chosen to be readable by humans and by the preceptors in a single pass.
 
@@ -101,6 +101,7 @@ oracle · notary · depin · coin · clearing · magic · token-as-a-name. No of
 - `docs/` listing of main: 30 entries, **no existing lexicon** — no duplicate created.
 - The Game Bible (canon, sign-off 2026-10-11 / chapters 2026-10-14) · the Signing Tray rule (measured close) · ruled issues #38–#42, #156–#159.
 - Byte budget: this doc lives under the one-piece discipline (≤ 16,384 B), verified at build time.
+- Rack ground truth, 13 read-only blocks measured 2026-10-20 20:23–20:53Z (recorded in the Desk's private session receipt): live Crucible / LoRA / red-team lanes, MiniCPM5 2B (2.52B params, ctx 131072, no vision capability), qwen3.5:4b VL with mmproj, 24 signed Register entries (latest: Entry 24, 2026-10-19 20:43Z).
 
 ## H · Absorbed from the rack (measured 2026-10-18 — reuse before duplicating)
 
@@ -109,3 +110,26 @@ oracle · notary · depin · coin · clearing · magic · token-as-a-name. No of
 - **The HEXELION-era lexicon pages** — the name lineage (the Forge · the Tower · the Watchman · the Synod · the Sovereign) and the Necropolis pattern (CANONIZE / GUARD / DISCARD, each with its reason). Pattern reused to judge the signed style; names of retired nodes stay historical.
 - **The scrub list** — the fail-closed private-name list in the rack; distinct from section E (see D).
 - **`GLOSSARY-FORMAT` (mattpocock skills)** — format inspiration: opinionated terms, an *Avoid* line per term, project-specific terms only, multi-context map. Used here; nothing copied as canon.
+
+---
+
+## I · Benchmarks and receipts
+
+| Official name | Replaces | Meaning | Status |
+|---|---|---|---|
+| the Crucible | crucible | The rack's live benchmark lane: scores a model against the declared suite and writes a receipt (json + md) under `~/.preceptoros/crucible/`. | in use (measured live 2026-10-20: `crucible_bench.py` running, receipts qwen3-coder:30b 21.621 B + qwen2.5-1.5b 15.708 B) |
+| rack-feedback LoRA | lora_test | The lane that tunes a LoRA from rack feedback and writes its receipt under `~/.preceptoros/lora_test/`. | in use (measured live 2026-10-20: `lora_test.py` running, 4 receipts: qwen3.5:4b ×2, qwen3-coder:30b, qwen2.5-1.5b) |
+| red-team lane | redteam | The adversarial eval lane; its receipt records what the model refused. | in use (measured 2026-10-20: 1 receipt, qwen3.5:4b, 28.273 B) |
+| eval harness | eval_harness.py | The lab yardstick scoring coverage, determinism, weight, and speed of any piece. | in use (lab#22 merged: `bin/eval_harness.py` 6.125 B + tests 4.173 B, 10/10 ×2) |
+| the receipt format | format_receipt.py | The publication layer: a measured receipt rendered as a post (telemetry-as-marketing). | in use (lab#21 merged: `bin/format_receipt.py` 3.867 B + tests 3.143 B, 7/7 ×2) |
+| declared depth | declared-depth | The guardrail: every README/AGENTS/llms.txt declares its byte budget and how it is measured. | in use (merged 2026-10-20 across web, app, lab, study, aduana, buzon, profile) |
+
+## J · The lexical screen and the voice install
+
+| Official name | Replaces | Meaning | Status |
+|---|---|---|---|
+| the lexical projector | lexical_projector.js | Projects game state into a sub-1kb lexical packet so a text-only model reads the screen. | in use (web#199 merged: 3.529 B + `atlas/lexical_projector_casos.mjs` 5.179 B, 9/9 ×2) |
+| sub-1kb invariance | state_vector + vector_contract | The contract that keeps the lexical packet under 1.024 B. | in use (measured: `state_vector.js` 140 B + `vector_contract.js` 259 B) |
+| the coordinate inspector | piece_inspector.js | Reports What · State · Coordinate · Sound per piece, NO_DATA with a cause. | in use (measured: 5.587 B) |
+| pointer-by-coordinate | map_pointer_input.js | Turns a tap into a world coordinate and resolves the piece or action under it. | in use (measured: 2.540 B) |
+| voice-guided install | instalar-pc-voz | The A11Y plug&play path: a blind user installs and configures with a voice agent on the rack. | in use (app#55 merged: `bin/instalar-pc-voz` 4.078 B + tests 2.497 B, 10/10 ×2) |
