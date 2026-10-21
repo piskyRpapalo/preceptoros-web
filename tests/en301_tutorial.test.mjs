@@ -18,7 +18,7 @@ test('a continue click cannot assert a battle result',()=>{
  assert.equal(G.advance(st,{event:'arena101'},{}).ok,false);
 });
 test('prepared labels retain source measures instead of replacing them', () => {
-  const source=require('../public/game/etiqueta.js').etiqueta({title:'First radio',rag_base_prompt:'Explain measures',mesuras:{touch_px:44},deployment:'PROPOSED',authority:false}).texto;
+  const source=require('../public/game/en301_tutorial_building.js').measure('radio').etiqueta;
   const made=G.prepareLabel({title:'My radio',rag_base_prompt:'Explain this radio'}, {ok:true,texto:source,bytes:new TextEncoder().encode(source).length});
   assert.equal(made.ok,true);
   assert.equal(JSON.parse(made.texto).mesuras.touch_px,44);
