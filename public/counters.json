@@ -1,7 +1,7 @@
 {
   "esquema": 1,
   "fecha": "2026-10-21",
-  "ultima_lectura": "2026-10-21T09:49:54+00:00",
+  "ultima_lectura": "2026-10-21T10:33:58+00:00",
   "nota": "Solo hay cifras medidas. Lo que no se midio sale como NO_DATA con su causa. Aqui no se cuenta a nadie.",
   "metricas": [
     {
@@ -21,7 +21,7 @@
     {
       "clave": "peso_sitio",
       "estado": "MEDIDO",
-      "valor": 1424821,
+      "valor": 1424836,
       "unidad": "bytes",
       "como": "todo lo que hay en public/ menos downloads/, counters.json e historial/: es lo que pesa visitar. Los adaptadores no se descargan por visitar; y un contador que se cuenta a si mismo nunca acierta, porque escribir la cifra cambia el fichero"
     },
@@ -51,7 +51,7 @@
       "estado": "NO_DATA",
       "valor": null,
       "unidad": "instalaciones",
-      "causa": "no se cuentan las instalaciones. No hay telemetria en el producto ni en esta web; contarlas exigiria justo lo que el proyecto existe para no hacer."
+      "causa": "no se cuentan las instalaciones. No hay rastreo externo en el producto ni en esta web; contarlas exigiria justo lo que el proyecto existe para no hacer."
     },
     {
       "clave": "pruebas_app",
