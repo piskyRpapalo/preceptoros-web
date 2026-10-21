@@ -1,0 +1,91 @@
+<!doctype html><meta charset="utf-8"><title>audio measurement fixture</title><pre id="result">pending</pre>
+<script>
+window.__clock = 0;
+window.AudioContext = function () {
+  var raw = new OfflineAudioContext(1, 44100 * 8, 44100);
+  window.__offline = raw;
+  return new Proxy(raw, { get: function (target, key) {
+    if (key === 'state') return 'running';
+    if (key === 'currentTime') return window.__clock;
+    var value = Reflect.get(target, key, target);
+    return typeof value === 'function' ? value.bind(target) : value;
+  } });
+};
+window.webkitAudioContext = window.AudioContext;
+</script>
+<script src="/public/game/tabla_semantica.js"></script>
+<script src="/public/game/crab_render_hd.js"></script>
+<script src="/public/game/comic_%74okens.js"></script>
+<script src="/public/game/valores.js"></script>
+<script src="/public/game/canon.js"></script>
+<script src="/public/game/gacha.js"></script>
+<script src="/public/game/bubble_language.js"></script>
+<script src="/public/game/bubble_game.js"></script>
+<script src="/public/game/aiact-art50-state-radio.js"></script>
+<script src="/public/game/core.js"></script>
+<script src="/public/game/descent_sound.js"></script>
+<script src="/public/game/tarjeta_cantada.js"></script>
+<script src="/public/game/audio_feedback_manager.js"></script>
+<script src="/public/assets/codex_scene.js"></script>
+<script>
+(async function () {
+  var rate = 44100, track = new URL(location.href).searchParams.get('track'), out;
+  function hex(bytes) { return Array.from(new Uint8Array(bytes)).map(function (x) { return x.toString(16).padStart(2, '0'); }).join(''); }
+  async function hashText(text) { return hex(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text))); }
+  async function hash(buffer) {
+    var samples = buffer.getChannelData(0);
+    return hex(await crypto.subtle.digest('SHA-256', new Uint8Array(samples.buffer, samples.byteOffset, samples.byteLength)));
+  }
+  async function render(ctx, bytes) {
+    var buffer = await ctx.startRendering();
+    return { sha256: await hash(buffer), samples: buffer.length, pcm_bytes: buffer.length * 4, channel_bytes: bytes };
+  }
+  function timer(run) {
+    var old = window.setTimeout;
+    window.__clock = 0;
+    window.setTimeout = function (callback, delay) { window.__clock = delay / 1000; callback(); return 1; };
+    try { return run(); } finally { window.setTimeout = old; }
+  }
+  try {
+    if (track === 'descent') {
+      out = { track: track, state: 'SIMULATED', timing: 'scheduled Web Audio in OfflineAudioContext' , frames: [] };
+      AtlasCodexScene.SECTIONS.forEach(function (id) {});
+      for (var i = 0; i < AtlasCodexScene.SECTIONS.length; i++) {
+        var id = AtlasCodexScene.SECTIONS[i], frame = AtlasCodexScene.frame(id), score = AtlasDescentSound.score(frame);
+        var packet = { v: 'preceptoros.sound/1', id: id, cycle: frame.t, sound: frame.sound, score: score };
+        var bytes = new TextEncoder().encode(JSON.stringify(packet)).length;
+        var ctx = new OfflineAudioContext(1, Math.ceil((score.length + 0.05) * rate), rate);
+        AtlasDescentSound.play(ctx, score.voices, 0);
+        var result = await render(ctx, bytes);
+        out.frames.push({ id: id, channel_bytes: result.channel_bytes, channel_sha256: await hashText(JSON.stringify(packet)), waveform_sha256: result.sha256, pcm_bytes: result.pcm_bytes, samples: result.samples });
+      }
+    } else if (track === 'radio') {
+      var snap = { esquema: 'atlas.instantanea/1', integridad: 80, integridad_max: 100, recursos: { cobre: 1, biomasa: 2, luz: 3, oxigeno: 4 }, fase: 1, nivel_nucleo: 1, grieta: { abierta: false }, ciclo: 7, profundidad: 4 };
+      AtlasSintesis.activa(true);
+      var notes = timer(function () { return AtlasRadio.toca(snap); });
+      var bytes = new TextEncoder().encode(JSON.stringify({ v: 'preceptoros.sound/1', cycle: snap.ciclo, notes: notes })).length;
+      var result = await render(window.__offline, bytes);
+      out = { track: track, state: 'SIMULATED', timing: 'declared 300 ms steps mapped to virtual schedule', channel_bytes: result.channel_bytes, channel_sha256: await hashText(JSON.stringify({ v: 'preceptoros.sound/1', cycle: snap.ciclo, notes: notes })), waveform_sha256: result.sha256, pcm_bytes: result.pcm_bytes, samples: result.samples, note_count: notes.length };
+    } else if (track === 'card') {
+      AtlasSintesis.activa(true);
+      var melody = AtlasTarjetaCantada.melodía({ id: 'fixture', sello: 'LIVE', hue: 196 });
+      var sung = timer(function () { return AtlasTarjetaCantada.canta(melody); });
+      var bytes = new TextEncoder().encode(JSON.stringify({ v: 'preceptoros.sound/1', melody: melody, result: sung })).length;
+      if (sung.estado === 'NO_DATA') out = { track: track, state: 'NO_DATA', result: 'NO_DATA', result_cause: sung.causa, channel_bytes: bytes, channel_sha256: await hashText(JSON.stringify({ v: 'preceptoros.sound/1', melody: melody, result: sung })), waveform_sha256: null, pcm_bytes: 0, melody_state: melody.estado };
+      else {
+        var result = await render(window.__offline, bytes);
+        out = { track: track, state: 'SIMULATED', timing: 'declared 300 ms steps mapped to virtual schedule', channel_bytes: result.channel_bytes, channel_sha256: await hashText(JSON.stringify({ v: 'preceptoros.sound/1', melody: melody, result: sung })), waveform_sha256: result.sha256, pcm_bytes: result.pcm_bytes, samples: result.samples, melody_state: melody.estado, result: sung.estado };
+      }
+    } else if (track === 'feedback') {
+      var enabled = AudioFeedbackManager.habilitar();
+      var resultState = AudioFeedbackManager.procesar({ habilidad: 'swim', eventos: 4 });
+      var bytes = new TextEncoder().encode(JSON.stringify({ v: 'preceptoros.sound/1', enabled: enabled, result: resultState })).length;
+      var result = await render(window.__offline, bytes);
+      out = { track: track, state: 'SIMULATED', timing: 'single scheduled Web Audio event', channel_bytes: result.channel_bytes, channel_sha256: await hashText(JSON.stringify({ v: 'preceptoros.sound/1', enabled: enabled, result: resultState })), waveform_sha256: result.sha256, pcm_bytes: result.pcm_bytes, samples: result.samples, result: resultState.estado };
+    } else throw new Error('unknown track');
+    out.ok = true;
+  } catch (e) { out = { ok: false, cause: String(e && e.message || e) }; }
+  document.querySelector('#result').textContent = JSON.stringify(out);
+  window.__oido = out;
+})();
+</script>
