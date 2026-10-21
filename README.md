@@ -70,8 +70,9 @@ list below is promised.
 - **It works with no network.** The site installs as an app and keeps working
   offline.
 - **Nine languages**, each one complete. Not a machine pass over one.
-- **Every file under 25 MiB** (the ceiling `test_web.py` enforces), and the
-  game's first load under 153,600 bytes gzip (`atlas/mundo.py`). No framework,
+- **Every file under 25 MiB** (the chunk ceiling `test_web.py` enforces —
+  the same limit the CDN serves per block), and the game's first load under
+  153,600 bytes gzip (`atlas/mundo.py`). No framework,
   no bundler: what is in this repository is what your browser receives.
 - **A gap is named a gap.** Where a number is missing, the page says so and
   says why, instead of showing a stale one.
