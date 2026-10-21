@@ -150,6 +150,20 @@ if (!sinCausa(10, 'play sin createOscillator devuelve 0')) {
   caso(10, 'play sin createOscillator devuelve 0', DS.play({}, DS.score(S.frame('REFUGE')).voices, 0) === 0);
 }
 
+if (!sinCausa(11, 'RIFT: cambiar la primera banda cambia su frecuencia según grado y octava')) {
+  const original = S.frame('RIFT'), changed = JSON.parse(JSON.stringify(original));
+  const beforeBand = original.bands[0], nextBand = beforeBand === 'cyan' ? 'paper' : 'cyan';
+  const grade = { cyan: 2, paper: 3 };
+  changed.bands[0] = nextBand;
+  const before = DS.score(original).voices[0], after = DS.score(changed).voices[0];
+  const expectedBefore = R.nota(grade[beforeBand], 0), expectedAfter = R.nota(grade[nextBand], 0);
+  const valid = before.band === beforeBand && after.band === nextBand && before.octave === 0 && after.octave === 0 &&
+    before.hz === expectedBefore && after.hz === expectedAfter && before.hz !== after.hz;
+  caso(11, 'RIFT: cambiar la primera banda cambia su frecuencia según grado y octava', valid,
+    { before: { band: before.band, grade: before.grade, octave: before.octave, hz: before.hz },
+      after: { band: after.band, grade: after.grade, octave: after.octave, hz: after.hz } });
+}
+
 const ok = casos.every((c) => c.ok);
 console.log(JSON.stringify({ ok, casos }));
 process.exitCode = ok ? 0 : 1;
