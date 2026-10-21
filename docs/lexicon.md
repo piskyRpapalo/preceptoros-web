@@ -133,3 +133,15 @@ oracle · notary · depin · coin · clearing · magic · token-as-a-name. No of
 | the coordinate inspector | piece_inspector.js | Reports What · State · Coordinate · Sound per piece, NO_DATA with a cause. | in use (measured: 5.587 B) |
 | pointer-by-coordinate | map_pointer_input.js | Turns a tap into a world coordinate and resolves the piece or action under it. | in use (measured: 2.540 B) |
 | voice-guided install | instalar-pc-voz | The A11Y plug&play path: a blind user installs and configures with a voice agent on the rack. | in use (app#55 merged: `bin/instalar-pc-voz` 4.078 B + tests 2.497 B, 10/10 ×2) |
+
+## K · Bubble language contract map
+
+This map is descriptive; this lexicon remains PROPOSAL and is not signed off.
+
+| Encountered form | Canonical term | Meaning | Status |
+|---|---|---|---|
+| bubble language | bubble language | Canonical language name for the shared visual and lexical form. | measured: `docs/bubble-language.md` §1 |
+| `preceptoros.bubble/1` | bubble language | Versioned frame schema, not a competing language name. | measured: `docs/bubble-language.md` §2 |
+| frame | frame | Serialized unit carried by the language. | measured: `docs/bubble-language.md` §2 |
+| syllable | frame | Explanatory metaphor for one frame, not a schema alias. | descriptive only |
+| `AtlasBubble` | bubble language renderer | Runtime API name; retained as the existing public module contract. | measured: `public/game/bubble_language.js` |
