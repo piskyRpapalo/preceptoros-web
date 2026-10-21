@@ -34,7 +34,8 @@ This repository holds the public website of PreceptorOS. Its home page is the
 game **theGame**: an isometric world that runs in the browser, in nine
 languages.
 
-**Usage contract — the only two things we ask:** respect the ceilings (every
+**Usage contract — the only 
+two things we ask:** respect the ceilings (every
 file under 25 MiB, zero external requests on load, pure standard library,
 human signature before any consequential action, no telemetry), and share
 back any tool that adapts natively to the app. Pull requests carry their own
@@ -44,7 +45,7 @@ measurement; issues only carry opinions.
 
 The human words that used to live here moved intact to
 [`THE_WORKSHOP.md`](THE_WORKSHOP.md) — nothing was softened on the way out.
-This file is now a map for agents: the note for the AI, the three
+This file is now a map for agents: the note for the AI, the four
 repositories, the contract, the promises, the measured numbers.
 
 What the site serves today, measured: the game on the home page, the same game in
@@ -59,6 +60,12 @@ list below is promised.
   `public/counters.json`, each with the date it was taken.
 - **Install it.** The site is an installable app (`manifest.webmanifest`) and
   keeps working with no network; `arnes_sw.mjs` checks the offline path.
+- **Study.** The doctrine and the corpus live in
+  [study](https://github.com/piskyRpapalo/study): governance, legislation,
+  measurement law — written to be read by a human and any AI together.
+- **Read the benchmarks.** Every hardware and model figure this ecosystem
+  claims lives in [lab](https://github.com/piskyRpapalo/lab), each with its
+  machine, date, and command; what is not measured is `NO DATA` with its cause.
 
 ## What this site promises
 
@@ -73,7 +80,8 @@ list below is promised.
 - **Every file under 25 MiB** (the chunk ceiling `test_web.py` enforces —
   the same limit the CDN serves per block), and the game's first load under
   153,600 bytes gzip (`atlas/mundo.py`). No framework,
-  no bundler: what is in this repository is what your browser receives.
+  no bundler: what is in this 
+repository is what your browser receives.
 - **A gap is named a gap.** Where a number is missing, the page says so and
   says why, instead of showing a stale one.
 
