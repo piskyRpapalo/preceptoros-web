@@ -203,7 +203,7 @@ async function medir(c, url, out) {
   const p2 = await lee(c, null);
   const ids = Object.keys(p1.completo);
   const recarga_igual = ids.length === Object.keys(p2.completo).length && ids.every((id) => p2.completo[id] === p1.completo[id]);
-  return { ok: recarga_igual && ids.length >= 1, recarga_igual, n: ids.length, hash: p1.hash, causas: p1.causas };
+  return { ok: recarga_igual && ids.length >= 1 && p1.causas.length === 0, recarga_igual, n: ids.length, hash: p1.hash, causas: p1.causas };
 }
 
 // Orquesta: argumentos, servidor, Chrome, CDP y medida. Cierra todo siempre, tambien en error.
