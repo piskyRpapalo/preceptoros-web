@@ -71,7 +71,7 @@
     return b;
   }
 
-  function telemetria(id) {
+  function reading(id) {
     var f = typeof escena.frame === 'function' ? escena.frame(id) : null, st = escena.ST || 'STATIC', B = window.AtlasBubble, G = window.AtlasBubbleGame;
     return (f && Array.isArray(f.atoms) ? f.atoms : []).map(function (a) {
       var j = JSON.stringify(a), usa = [];
@@ -86,7 +86,7 @@
     var d = el('details', 'descent-tele');
     d.appendChild(el('summary', null, 'What is drawn'));
     var ol = el('ol');
-    telemetria(id).forEach(function (r) {
+    reading(id).forEach(function (r) {
       ol.appendChild(el('li', null, r.what + ' · ' + r.uses.join('+') + ' · ' + r.stamp + ' · ' + r.bytes + ' B · #' + r.hash));
     });
     d.appendChild(ol);
@@ -368,9 +368,9 @@
   }
 
   window.AtlasDescentView = { monta: monta };
-  window.AtlasTelemetry = {
+  window.AtlasReading = {
     section: function () { return montaje ? montaje.activo : null; },
-    objects: function (id) { return montaje ? telemetria(id || montaje.activo) : []; }
+    objects: function (id) { return montaje ? reading(id || montaje.activo) : []; }
   };
   window.AtlasDescenso = { frame: cuadro };
 })();

@@ -1,7 +1,7 @@
 // ∇C de los lugares (opcion A): del registro de combate {g, p}; sin combate, NO_DATA translucido (nunca 0).
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
-const Z = require(process.env.NABLA || '../public/game/place_telemetry.js');
+const Z = require(process.env.NABLA || '../public/game/place_reading.js');
 const casos = [];
 const caso = (n, f) => { let r; try { r = f(); } catch (e) { r = String(e); } casos.push({ caso: n, ok: r === true, detalle: r === true ? '' : JSON.stringify(r) }); };
 const lider = (a) => ({ stats: { armadura: a } });
