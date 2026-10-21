@@ -4,12 +4,12 @@ Status: proposal for review; no experiment files or runtime behavior are changed
 
 ## Measured comparison
 
-- Current main: `4105e9b80a1a1f26b27009ef9c2d0fbfa62f188b`, dated 2026-10-21.
+- Current main: `7e045b770eeff4aca333670165627bfc0cdae123`, dated 2026-10-21.
 - Rescue reference: `ade52444bf1c0f92987b2f8e15d4e59de4ad3855`, dated 2026-10-16.
 - The rescue reference adds nine `atlas/state_readability_*.mjs` files (1,208 lines total).
 - Current main has three files under `atlas/legibilidad/`: `escena_w2_blanco.md`, `escena_w2_fotogramas.json`, and `fotogramas.mjs`; it has no `atlas/state_readability_*.mjs` files.
 - The probe imports `atlas/evidence/state-readability-20261015/source-baseline.json`. That path is absent from current main and present on the rescue reference. The dated evidence directory contains additional model-output and score files that are also absent from current main.
-- The rescue branch differs from current main by 440 paths overall. It is a historical snapshot, not a clean candidate branch for direct integration.
+- The rescue branch differs from current main by 443 paths overall. It is a historical snapshot, not a clean candidate branch for direct integration.
 
 ## What the nine files cover
 
