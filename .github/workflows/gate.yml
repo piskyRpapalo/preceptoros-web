@@ -71,4 +71,5 @@ jobs:
             node atlas/z_cutoff_casos.mjs
             node atlas/lexical_projector_casos.mjs
             node atlas/map_bubble_casos.mjs
+            node atlas/todos_los_casos.mjs
           done
