@@ -130,7 +130,7 @@ def medir():
                  "persistentes), asi que esta cifra solo puede venir de un reporte "
                  "voluntario y firmado. Todavia no hay ninguno.", "tokens"),
         sin_dato("instalaciones_reportadas",
-                 "no se cuentan las instalaciones. No hay telemetria en el producto "
+                 "no se cuentan las instalaciones. No hay rastreo externo en el producto "
                  "ni en esta web; contarlas exigiria justo lo que el proyecto "
                  "existe para no hacer.", "instalaciones"),
     ]

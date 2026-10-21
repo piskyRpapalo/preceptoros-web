@@ -12,10 +12,10 @@
     "tic": "the game cycle at call time; the game cycle is the only time authority"
   },
   "aduana": {
-    "viva": "measured end to end (gesto + 2 firmas -> 202 encolado -> bandeja -> comprobador -> telemetria | rechazados)",
+    "viva": "measured end to end (gesto + 2 firmas -> 202 encolado -> bandeja -> comprobador -> declaracion de llamada | rechazados)",
     "protocolo": "GET api.preceptoros.org/api/v1/reto (challenge), then POST .../paquetes with esquema 'atlas.nexo/1'",
     "rechazo": "a rejected call answers with its cause; the web paints the cause, never invents a receipt",
     "nota": "the rack side is NOT designed from here: if the rack needs something, it is NO_DATA with cause and the Mesa manages it"
   },
-  "telemetria": "DECLARED, never camouflaged: the call carries pseudonimo, clave_publica, reto, firma, esquema, pares. Nothing else. No accounts, no secrets, no extra headers."
+  "declaracion_de_llamada": "DECLARED, never camouflaged: the call carries pseudonimo, clave_publica, reto, firma, esquema, pares. Nothing else. No accounts, no secrets, no extra headers."
 }

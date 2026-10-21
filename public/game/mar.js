@@ -130,7 +130,7 @@
       var sel = f.sel();
             var cola = [], pon = function (x, y, d, fi) { cola.push({ col: x, fila: y, f: d, ficha: fi }); };
       var rec = (f.luchados && f.luchados()) || {};
-      f.lugares().forEach(function (l, i) { var s = sitio(l), Z = window.AtlasLugarNablaC, v = Z && l.npc ? Z.vector(rec[l.clave], l.lider) : 0, cz = v === 0 ? 0 : Z.color(v); pon(s.x, s.y, function () {
+      f.lugares().forEach(function (l, i) { var s = sitio(l), Z = window.AtlasPlaceReading, v = Z && l.npc ? Z.vector(rec[l.clave], l.lider) : 0, cz = v === 0 ? 0 : Z.color(v); pon(s.x, s.y, function () {
         var p = P(s.x, s.y), t0 = l.lider, r = 18 * dpr;
         if (sel === l) {
           if (yo) { g.strokeStyle = col.tuya; g.lineWidth = 2 * dpr; enlace(g, yo, p, false); }

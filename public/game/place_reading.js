@@ -23,6 +23,6 @@
     return 'win share ' + v.vida + '/1000 · ' + v.combates + ' fights · shield ' + (v.escudo === null ? 'NO_DATA (leader without armour stat)' : v.escudo + '/1000');
   }
 
-  var AtlasLugarNablaC = { vector: vector, color: color, estado: estado, TOPE_ARMADURA: TOPE_ARMADURA };
-  if (typeof module === 'object' && module.exports) { module.exports = AtlasLugarNablaC; } else { raiz.AtlasLugarNablaC = AtlasLugarNablaC; }
+  var AtlasPlaceReading = { vector: vector, color: color, estado: estado, TOPE_ARMADURA: TOPE_ARMADURA };
+  if (typeof module === 'object' && module.exports) { module.exports = AtlasPlaceReading; } else { raiz.AtlasPlaceReading = AtlasPlaceReading; }
 })(this);
