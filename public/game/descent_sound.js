@@ -97,7 +97,7 @@
         node.frequency.value = v.hz;
       } else {
         node = ctx.createBufferSource();
-        node.buffer = noiseBuffer(ctx, stop - t, v.seed);
+        node.buffer = noiseBuffer(ctx, env.a + env.d + env.r, v.seed);
       }
       var g = ctx.createGain();
       g.gain.setValueAtTime(0, t);

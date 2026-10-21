@@ -3,6 +3,7 @@
   var enNode = typeof module === 'object' && !!module.exports;
   var T = enNode ? require('./tutorial_fases.js') : raiz.AtlasTutorial;
   var E = enNode ? require('./etiqueta.js') : raiz.AtlasEtiqueta;
+  var B = enNode ? require('./en301_tutorial_building.js') : raiz.En301TutorialBuilding;
   var STAMP = 'SIMULATED';
   var FRAME_SCHEMA = 'preceptoros.tutorial-frame/1';
   var FRAME_LIMIT = 1024;
@@ -112,6 +113,7 @@
     var n = bytesOf(label.texto);
     if (label.bytes !== n) { return refuse('label byte count does not match its text'); }
     if (n >= LABEL_LIMIT) { return refuse('label of ' + n + ' B is not strictly below ' + LABEL_LIMIT + ' B'); }
+    if (!B.measured(label.texto)) { return refuse('NO_DATA: building contract measures missing or changed'); }
     return canonicalLabel(label.texto);
   }
 
