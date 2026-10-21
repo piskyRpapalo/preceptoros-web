@@ -28,5 +28,5 @@ const prepared = M.prepareLabel({title: 'My radio', rag_base_prompt: 'Explain th
 assert.equal(advance(prepared).ok, true);
 assert.ok(label.bytes < 1024);
 if (process.argv.includes('--sabotage')) assert.equal(advance(bare).ok, true, 'injected false completion');
-console.log(JSON.stringify({checks: 12, label_bytes: label.bytes,
+console.log(JSON.stringify({checks: 16, label_bytes: label.bytes,
   sha256: createHash('sha256').update(label.texto).digest('hex')}));
