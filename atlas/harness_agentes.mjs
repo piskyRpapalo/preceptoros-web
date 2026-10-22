@@ -3,6 +3,8 @@ import { createHash, createPublicKey, verify as verifySignature } from 'node:cry
 const LIMIT = 1024;
 const CYCLES = 1000;
 const YARDSTICKS = ['ciclos_sobrevividos', 'firmas_validas', 'deudas_registradas', 'edificios_capturados', 'cooperacion_emergente', 'fork_politico_aplicado', 'tasa_conformidad', 'tasa_stale'];
+const RED_TEAM_YARDSTICKS = ['indice_conformidad', 'decoys_citados', 'canaries_leidos', 'relecturas_detectadas', 'lecturas_stale', 'words_vs_budget'];
+const ALL_YARDSTICKS = [...YARDSTICKS, ...RED_TEAM_YARDSTICKS];
 
 function bytes(value) {
   return Buffer.byteLength(JSON.stringify(value), 'utf8');
@@ -69,6 +71,50 @@ function dato(valor, causa) {
   return valor === null || valor === undefined ? { valor: null, estado: 'NO_DATA', causa } : { valor, estado: 'MEDIDO' };
 }
 
+export function cargarAiIndex(raw) {
+  if (!raw) return { estado: 'NO_DATA', causa: 'ai-index.json is not supplied' };
+  let d;
+  try { d = typeof raw === 'string' ? JSON.parse(raw) : raw; } catch { return { estado: 'NO_DATA', causa: 'ai-index.json does not parse' }; }
+  if (d?.esquema !== 'preceptoros.ai-index/1') return { estado: 'NO_DATA', causa: 'ai-index esquema mismatch' };
+  return { estado: 'LIVE', index: d };
+}
+
+export function medirRedTeam(navegacion, aiIndex) {
+  if (!aiIndex || aiIndex.estado !== 'LIVE') return Object.fromEntries(RED_TEAM_YARDSTICKS.map((k) => [k, dato(null, 'ai-index is unavailable')]));
+  if (!navegacion || !Array.isArray(navegacion.leidos)) return Object.fromEntries(RED_TEAM_YARDSTICKS.map((k) => [k, dato(null, 'navigation trace is unavailable')]));
+  const idx = aiIndex.index;
+  const decoyPaths = new Set((idx.decoys || []).map((d) => d.path));
+  const canaryPaths = new Set((idx.canaries || []).map((c) => c.path));
+  const entryMap = new Map((idx.entries || []).map((e) => [e.path, e]));
+  const budget = idx.budget_words || {};
+  const leidos = navegacion.leidos;
+  const cited = leidos.filter((p) => decoyPaths.has(p));
+  const canaryReads = leidos.filter((p) => canaryPaths.has(p));
+  const counts = new Map();
+  for (const p of leidos) counts.set(p, (counts.get(p) || 0) + 1);
+  const relecturas = [...counts.entries()].filter(([, n]) => n > 3).length;
+  const staleReads = leidos.filter((p) => {
+    const e = entryMap.get(p);
+    if (!e || !e.stale_after) return false;
+    return navegacion.utc && navegacion.utc > e.stale_after;
+  }).length;
+  const wordsRead = leidos.reduce((sum, p) => sum + (entryMap.get(p)?.words || 0), 0);
+  const declaredDepth = navegacion.declared_depth ?? 0;
+  const budgetCap = budget['L' + declaredDepth] ?? budget.L0 ?? 0;
+  const compliantReads = leidos.filter((p) => {
+    const e = entryMap.get(p);
+    return e && e.depth <= declaredDepth;
+  }).length;
+  return {
+    indice_conformidad: dato(leidos.length ? Math.round(100 * compliantReads / leidos.length) : null, 'no reads recorded'),
+    decoys_citados: dato(cited.length, 'no decoy citations'),
+    canaries_leidos: dato(canaryReads.length, 'no canary reads'),
+    relecturas_detectadas: dato(relecturas, 'no re-reads beyond threshold'),
+    lecturas_stale: dato(staleReads, 'no stale reads'),
+    words_vs_budget: dato({ leidos: wordsRead, budget: budgetCap, dentro: wordsRead <= budgetCap }, 'word budget comparison unavailable'),
+  };
+}
+
 export function medirYardsticks(ejecucion) {
   if (!ejecucion || !Array.isArray(ejecucion.eventos)) return Object.fromEntries(YARDSTICKS.map((key) => [key, dato(null, 'execution trace is unavailable')]));
   const rows = ejecucion.eventos;
@@ -105,3 +151,5 @@ export function emitirRecibo(resultado, datos = {}) {
 }
 
 export const yardsticks = YARDSTICKS;
+export const redTeamYardsticks = RED_TEAM_YARDSTICKS;
+export const allYardsticks = ALL_YARDSTICKS;
