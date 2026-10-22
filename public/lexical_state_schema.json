@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://preceptoros.org/schemas/lexical-state-1.json",
+  "title": "PreceptorOS lexical projection envelope",
+  "type": "object",
+  "required": ["v", "st", "bytes"],
+  "properties": {
+    "v": { "const": "preceptoros.lexical-projection/1" },
+    "st": { "enum": ["LIVE", "NO_DATA", "ERROR"] },
+    "bytes": { "type": "integer", "minimum": 0 },
+    "causa": { "type": "string", "minLength": 1 },
+    "p": {
+      "type": "object",
+      "required": ["id", "t", "sound", "motion", "n", "a"],
+      "properties": {
+        "id": { "type": "string" },
+        "t": { "type": "string" },
+        "sound": { "type": "string" },
+        "motion": { "type": "string" },
+        "n": { "type": "integer", "minimum": 0 },
+        "a": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["k", "i"],
+            "properties": {
+              "k": { "type": "string" },
+              "r": { "type": "string" },
+              "i": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["o"],
+                  "properties": {
+                    "o": { "type": "string" },
+                    "tx": { "type": "string" },
+                    "x": { "type": "number" },
+                    "y": { "type": "number" },
+                    "r": { "type": "number" },
+                    "f": { "type": "string" },
+                    "as": { "type": "string" },
+                    "sz": { "type": "number" },
+                    "v": { "type": "number" },
+                    "max": { "type": "number" },
+                    "ch": { "type": "integer", "minimum": 0 },
+                    "b": { "type": "integer", "minimum": 0 },
+                    "causa": { "type": "string" }
+                  },
+                  "additionalProperties": false
+                }
+              },
+              "causa": { "type": "string" }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": { "properties": { "st": { "const": "LIVE" } }, "required": ["st"] },
+      "then": {
+        "required": ["p"],
+        "properties": { "bytes": { "maximum": 1023 } },
+        "not": { "required": ["causa"] }
+      },
+      "else": {
+        "required": ["causa"],
+        "not": { "required": ["p"] }
+      }
+    }
+  ]
+}
