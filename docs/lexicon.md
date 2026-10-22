@@ -20,7 +20,7 @@
 |---|---|---|---|
 | the Sovereign | el Soberano | The carbon. The only signer. Silicon never signs. | in use |
 | the Command Desk (the Desk) | la Mesa de Mando | Measures, triages, proposes; never decides for the Sovereign; surfaces one decision at a time. | in use |
-| sign-off | FIRMO | The Sovereign's decision made visible. A sign-off authorizes exactly what it names; a general one never covers future, unmeasured merges. | in use |
+| sign-off | FIRMO | The Sovereign's decision made visible; it authorizes exactly what it names, never future unmeasured merges. | in use |
 | the Ledger | el registro de rondas | The append-only round log. Rules over measured facts when sources conflict. | in use |
 | round | ronda | One sealed exchange, numbered, append-only. | in use |
 | the Register | el registro del rack | The Sovereign's cryptographic record in the rack; entries signed with the rotating key (v2). NOT the Ledger. | in use |
@@ -32,7 +32,8 @@
 | NO_DATA | NO_DATA | Declared, never invented — always with a cause. | in use |
 | stamps | sellos de estado | LIVE · STALE · STATIC · SIMULATED · NO_DATA · ERROR. | in use |
 | propose-only | proponer sin ejecutar | Silicon writes and proposes; it never merges, never signs, never pushes to jetson. | in use |
-| the Signing Tray | la bandeja de firmas | The rack's pending table. A row closes with the measure beside it; a close without a figure is a second opinion. | in use |
+| **HITL** (hitl) | REQUIERE_FIRMA · IronClaw | Human-in-the-loop: the gate AND the carbon's everyday gesture — "Say Hi" is its living example. FIRMO 2026-10-22. | in use |
+| the Signing Tray | la bandeja de firmas | The rack's pending table. A row closes with its measure; a close without a figure is a second opinion. | in use |
 | measured close | cierre con la medida | "RESOLVED" must carry a verifiable number next to it. | in use |
 
 ## B · Infrastructure and lanes
@@ -84,12 +85,14 @@
 
 ## E · Forbidden as names (standing law)
 
-oracle · notary · depin · coin · clearing · magic · token-as-a-name. No official term in this project may be coined from them, in any language.
+oracle · notary · depin · coin · clearing · magic · token-as-a-name · **cryptocurrency** (ES: criptomoneda). No official term in this project may be coined from them, in any language.
+
+*Amendment · FIRMO 2026-10-22:* `cryptocurrency`/`criptomoneda` join the list (L1 to any public example, until new request). **Approved:** `cryptography`·`cryptographic`·`criptográfica`.
 
 ## F · Open decisions (each needs its own sign-off, surfaced one at a time)
 
 1. **`window.Atlas*` public module names** (AtlasJuego, AtlasToon…) — public contract consumed by tests and the rack; unchanged without a separate sign-off. Their future official names get recorded here when decided.
-2. **Marker `REQUIRES_FIRMA` → `REQUIRES_SIGN-OFF`** — a contract marker; all consumers must move in the same piece, with the Guardian red before green.
+2. **Marker `REQUIERE_FIRMA` → `HITL`** — RESUELTO por FIRMO 2026-10-22. Ver entrada HITL en §A. `REQUIERE_FIRMA` queda como alias histórico; textos nuevos usan HITL.
 3. **systemd unit filenames** (`afinador.service`…) — English display names here only; renaming the units is a separate sign-off.
 4. **D3 file-name map** (`mar.js→sea.js`, `cria.js→brood.js`, …) — adopted as official from `INDEX_RENAMING.md`; execution still travels piece by piece under sign-off. As of main f2c0129 the Spanish filenames are still in main — D3 remains pending work, nothing here pre-empts it.
 5. **Rename the Mailbox → the Comando** — one rename, no new repo (the Sovereign's answer, 2026-10-18). GitHub keeps the redirect; the issues live on. Automatic pointer to land in `AGENTS.md`/`llms.txt`. The fate of Customs (aduana) is measured before anything moves. GitHub stays untouched until his sign-off.

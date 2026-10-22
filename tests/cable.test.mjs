@@ -61,7 +61,7 @@ test('techo 16 KiB por fichero y vocablos prohibidos ausentes', () => {
   for (const f of ['../public/game/cable_llamar.js', '../public/game/cable_terminal.js', '../public/nexo-v1.json']) {
     if (statSync(new URL(f, import.meta.url)).size > 16384) throw new Error('techo: ' + f);
     const txt = readFileSync(new URL(f, import.meta.url), 'utf8').toLowerCase();
-    for (const w of ['oraculo', 'notario', 'depin', 'clearing', 'magia']) {
+    for (const w of ['oraculo', 'notario', 'depin', 'clearing', 'magia', 'criptomoneda', 'cryptocurrency']) {
       if (txt.includes(w)) throw new Error('prohibido en ' + f + ': ' + w);
     }
   }

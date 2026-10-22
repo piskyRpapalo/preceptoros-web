@@ -10,6 +10,7 @@ const ve = (s, z) => Z.visibleAt(s, z);
 caso('§2 Z=1.00: se ve todo (MEDIDO, EMULADO, NO_DATA)', () => ['MEDIDO', 'EMULADO', 'NO_DATA', 'LIVE', 'SIMULATED'].every((s) => ve(s, 100)) || 'algo oculto');
 caso('§2 Z=0.50: fuera NO_DATA; quedan EMULADO y MEDIDO', () => (!ve('NO_DATA', 50) && ve('EMULADO', 50) && ve('MEDIDO', 50)) || 'mal');
 caso('§2 Z=0.25: solo MEDIDO y firma humana', () => (ve('MEDIDO', 25) && ve('FIRMADO', 25) && ve('REQUIERE_FIRMA', 25) && !ve('EMULADO', 25) && !ve('NO_DATA', 25) && !ve('STALE', 25)) || 'mal');
+caso('HITL (FIRMO 2026-10-22): alias de REQUIERE_FIRMA, misma profundidad en todo el rango', () => { for (let z = 0; z <= 120; z++) if (ve('HITL', z) !== ve('REQUIERE_FIRMA', z)) return { z, hitl: ve('HITL', z), rf: ve('REQUIERE_FIRMA', z) }; return true; });
 caso('§4: NO_DATA solo por encima de 0,8; EMULADO solo desde 0,5', () => {
   const nd = [79, 80, 81, 100].map((z) => ve('NO_DATA', z)), em = [49, 50, 51].map((z) => ve('SIMULATED', z));
   return (JSON.stringify(nd) === '[false,true,true,true]' && JSON.stringify(em) === '[false,true,true]') || { nd, em };

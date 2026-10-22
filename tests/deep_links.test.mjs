@@ -26,7 +26,7 @@ test('contract visible before signing: title, what, needs, cost present for ever
 
 test('manifest keeps state seals and no forbidden words in content', () => {
   const text = JSON.stringify({ ...m, global_guards: { ...m.global_guards, forbidden_words_absent: [] } }).toLowerCase();
-  for (const w of ['oracle', 'notary', 'depin', 'clearing', 'magic']) {
+  for (const w of ['oracle', 'notary', 'depin', 'clearing', 'magic', 'cryptocurrency']) {
     if (text.includes(w)) throw new Error('forbidden word: ' + w);
   }
   for (const a of m.actions) {
