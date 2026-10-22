@@ -145,3 +145,14 @@ This map is descriptive; this lexicon remains PROPOSAL and is not signed off.
 | frame | frame | Serialized unit carried by the language. | measured: `docs/bubble-language.md` §2 |
 | syllable | frame | Explanatory metaphor for one frame, not a schema alias. | descriptive only |
 | `AtlasBubble` | bubble language renderer | Runtime API name; retained as the existing public module contract. | measured: `public/game/bubble_language.js` |
+
+## L · Lexical vision (pre-signed issue #3)
+
+These entries record implementation state; adding them does not sign this document as a whole.
+
+| Official name | ES gloss | Meaning | Status |
+|---|---|---|---|
+| lexical-vision | visión léxica | Read a declared visual frame as typed text; absent fields keep their cause. | proposal: signed study#3; Web frame projector exists, coverage remains partial. |
+| isomorphic-lexical-vision | visión léxica isomórfica | One declared state shared by visual, mathematical, and audible views. | NO_DATA: no paired 1:1 visual/math/audio corpus or gate. |
+| lexicon-state | estado léxico | Bounded envelope for a lexical projection, status, byte count, and cause. | proposal: web#254, APP#86, and LAB#62 drafts. |
+| lexical-projection | proyección léxica | `preceptoros.lexical-projection/1`, a bounded description of a game frame. | in use on Web: `public/game/lexical_projector.js`; schema proposal web#254. |
