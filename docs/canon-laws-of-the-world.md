@@ -259,16 +259,7 @@ El calor que si se puede medir: la presion del Nucleo en la instantanea.
 
 ## public/game/core.js:80
 
-LA VOZ DE UNA ONDA: cada tropa suena distinta y siempre igual, y SU ESPECTRO MANDA EL TIMBRE (R6,
-     plan «el refresco», 2026-10-11). Antes la portadora salia del primer armonico, que en TODAS las
-     tropas es la base k = 1: medido, 500 tropas daban UNA sola portadora (205 Hz). Ahora, de su espectro:
-     - las ARISTAS (n = |k2 - 1|, el armonico que las pone) dan la NOTA, en la pentatonica sobre 110 Hz
-       (la de la radio): 3 aristas, 110 Hz; cada arista, un grado mas; un Leviatan suena agudo;
-     - la amplitud de ese armonico (a1) da la RAZON de la moduladora (8 + a1) / 8: el color;
-     - el detalle (los armonicos altos) da el INDICE: mas detalle, mas aspero;
-     - el Leviatan (mas de 12 aristas) lleva una SEGUNDA moduladora: inestable, como su forma.
-     Pura y entera: la misma receta la usa la voz exacta (`atlas-voz.js`), no una copia. Corto y bajo:
-     identidad, no musica.
+The exact troop voice is deterministic and spectrum-driven (R6, 2026-10-11). The troop carrier starts at 110 Hz; edge count selects its pentatonic degree, amplitude controls modulation ratio, and upper harmonics control roughness (`public/game/core.js:61`). The Radio is a separate instrument with a 220 Hz base carrier (`public/game/aiact-art50-state-radio.js:4`). The troop recipe is reused by the exact voice path; it is identity, not music.
 
 
 ## public/game/core.js:124
