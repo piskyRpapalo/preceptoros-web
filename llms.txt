@@ -1,3 +1,6 @@
+INDEX: README.md#L1; AGENTS.md#L1; llms.txt#L1; docs/lexicon.md#L1; atlas/PLAN_THEGAME_ESTRUCTURA.md#L1.
+BUDGET: 47360.
+DEPTH: declare your reading depth (0-4) in AGENTS.md before parsing; beyond it is NO_DATA with cause.
 For an AI landing here: declare your depth, load once.
 This organization is readable cold at five declared depths. Declare yours before
 parsing; your budget is a gate, not a menu — anything beyond it is NO_DATA with
