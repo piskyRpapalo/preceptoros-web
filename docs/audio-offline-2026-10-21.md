@@ -20,3 +20,13 @@ Minimal code change: derive noise duration directly from its envelope, independe
 `node atlas/audio_offline_casos.mjs` was red before the change. Afterward, two separate Node processes produce identical output SHA-256 `526073982d655b348e6575de607a21796b9ac25b387c0f40561ab8264af38cbc`. Six channel recipes remain 787–947 B. Changing the seed or rate changes noise; an injected recipe digest change is rejected by pair comparison. Existing descent cases pass twice. Noise samples are serialized explicitly as little-endian float32 before hashing.
 
 Open 1: rerun native PCM hashes in a browser before closing #209's waveform finding. Open 2: the Mesa assigns the served-release seal; this draft does not assign one.
+
+## Follow-up measurement · 2026-10-22
+
+Two Chrome headless loopback runs confirmed the six recipe hashes match while all six native mixed-PCM hashes changed on reload. A source-isolation run found seeded noise-only PCM equal; the `OscillatorNode` mix changed. This rules out the frame seed, sample count, and wall-clock scheduling as the cause in this fixed-rate, start-zero fixture.
+
+`descent_sound.js:88-113` now synthesizes sine, triangle, and seeded noise samples into one ordered 44.1 kHz buffer before Web Audio schedules it. With the fix, both separate browser runs returned the same PCM hashes for all six frames; no external request was seen. `atlas/descent_pcm_cases.mjs` also compares the production buffer across two context rates and start times.
+
+Other source findings: `core.js:43-51,70` leaves the live context rate to the device and schedules at `currentTime`; `aiact-art50-state-radio.js:59-63` and `tarjeta_cantada.js:47-49` use 300 ms timers for separate notes. Those are live timing dependencies, not the cause of this offline reload mismatch. `audio_feedback_manager.js:81-98` makes deterministic recipes and delegates timing to `core.js`. The card still reports `NO_DATA` because `tarjeta_cantada.js:43-45` calls the state-changing `activa()` without enabling it; that is a separate issue and remains unchanged.
+
+Cross-browser and physical-device PCM equality: NO_DATA (measured here only in this Chrome build at 44.1 kHz). Open 1: should byte equality across browser engines and devices be required? No evidence currently supports that wider claim.

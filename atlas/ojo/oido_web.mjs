@@ -133,10 +133,12 @@ async function main() {
       reports.push({ track, measurement_ok: valid(first) && valid(second), signal_status: status, reload_equal: equal, changed_frames: changed, result: first, ...(equal ? {} : { reloaded: second }) });
     }
     const problems = cdp.external.length ? ['external_request'] : [];
+    const descent = reports.find(x => x.track === 'descent');
+    const descentPcmStable = !!descent && descent.signal_status === 'SIMULATED' && descent.reload_equal;
     const sabotages = { unstable_wave_rejected: !sameWave('a', 'b'), channel_1024_rejected: !validChannel(1024), undeclared_clock_rejected: NO_CLOCK.test('Date.now()') };
     const measurementCompleted = reports.every(x => x.measurement_ok) && problems.length === 0 && Object.values(sabotages).every(Boolean);
-    console.log(JSON.stringify({ measurement_completed: measurementCompleted, signal_green: reports.every(x => x.signal_status === 'SIMULATED' && x.reload_equal), sabotages, base: 'origin/main', loopback_only: cdp.external.length === 0, external_request_count: cdp.external.length, tracks: reports }));
-    process.exitCode = measurementCompleted ? 0 : 1;
+    console.log(JSON.stringify({ measurement_completed: measurementCompleted, descent_pcm_stable: descentPcmStable, signal_green: reports.every(x => x.signal_status === 'SIMULATED' && x.reload_equal), sabotages, base: 'origin/main', loopback_only: cdp.external.length === 0, external_request_count: cdp.external.length, tracks: reports }));
+    process.exitCode = measurementCompleted && descentPcmStable ? 0 : 1;
   } catch (error) {
     console.log(JSON.stringify({ ok: false, cause: error instanceof NoData ? error.message : `NO_DATA: ${error.message}` }));
     process.exitCode = 2;
