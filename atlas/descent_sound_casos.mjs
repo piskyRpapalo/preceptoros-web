@@ -115,22 +115,22 @@ if (!sinCausa(7, 'play programa tantas voces como score devuelve (AudioContext f
   let ok = true;
   for (const id of SECCIONES) {
     const voces = DS.score(S.frame(id)).voices;
-    const cuenta = { osc: 0, src: 0 };
+    const cuenta = { osc: 0, src: 0, buffers: 0, rate: null };
     const param = () => ({ value: 0, setValueAtTime() {}, linearRampToValueAtTime() {}, setTargetAtTime() {} });
     const nodo = () => ({ connect() {} });
     const ctx = {
       currentTime: 0, sampleRate: 4.41e4, destination: {},
       createOscillator() { cuenta.osc++; return { ...nodo(), type: 'sine', frequency: param(), start() {}, stop() {} }; },
       createGain() { return { ...nodo(), gain: param() }; },
-      createBuffer(canales, len) { return { getChannelData() { return new Float32Array(len); } }; },
+      createBuffer(canales, len, rate) { cuenta.buffers++; cuenta.rate = rate; return { getChannelData() { return new Float32Array(len); } }; },
       createBufferSource() { cuenta.src++; return { ...nodo(), buffer: null, start() {}, stop() {} }; },
     };
     const programadas = DS.play(ctx, voces, 0);
     const osc = voces.filter((v) => v.src === 'osc').length, noise = voces.length - osc;
     resultados.push({ id, voces: voces.length, programadas, osc: cuenta.osc, src: cuenta.src });
-    if (programadas !== voces.length || cuenta.osc !== osc || cuenta.src !== noise) ok = false;
+    if (programadas !== voces.length || cuenta.osc !== 0 || cuenta.src !== 1 || cuenta.buffers !== 1 || cuenta.rate !== 4.41e4) ok = false;
   }
-  caso(7, 'play programa tantas voces como score devuelve (AudioContext falso)', ok, resultados);
+  caso(7, 'play mezcla el score en un buffer PCM 44.1 kHz sin osciladores nativos', ok, resultados);
 }
 
 if (!sinCausa(8, 'sabotaje: copia con Math.random insertado hace fallar el caso 1')) {
@@ -146,8 +146,8 @@ if (!sinCausa(9, 'describe: frase en ingles no vacia para los 5 fotogramas')) {
   caso(9, 'describe: frase en ingles no vacia para los 5 fotogramas', ok && typeof DS.describe([]) === 'string', { frases });
 }
 
-if (!sinCausa(10, 'play sin createOscillator devuelve 0')) {
-  caso(10, 'play sin createOscillator devuelve 0', DS.play({}, DS.score(S.frame('REFUGE')).voices, 0) === 0);
+if (!sinCausa(10, 'play sin createBufferSource devuelve 0')) {
+  caso(10, 'play sin createBufferSource devuelve 0', DS.play({}, DS.score(S.frame('REFUGE')).voices, 0) === 0);
 }
 
 if (!sinCausa(11, 'RIFT: cambiar la primera banda cambia su frecuencia según grado y octava')) {

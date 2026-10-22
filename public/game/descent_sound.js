@@ -7,6 +7,7 @@
   var NOTE_WORD = ['A', 'B', 'C sharp', 'E', 'F sharp'];
   var WAVE_WORD = { sine: 'a soft sine', triangle: 'a triangle' };
   var PAUSA_VOZ = 0.25, BAND_GAIN = 0.05, NOISE_GAIN = 0.03;
+  var PCM_RATE = 4.41e4;
   var PULSO_BASE = 30, PULSO_PASO = 10, PAUSA_MS = 60, MAX_PULSOS = 3;
 
   function hasOwn(o, k) { return Object.prototype.hasOwnProperty.call(o, k); }
@@ -75,42 +76,40 @@
     return out;
   }
 
-  function noiseBuffer(ctx, dur, seed) {
-    var rate = ctx.sampleRate || 4.41e4, n = Math.max(1, Math.floor(rate * dur));
-    var buf = ctx.createBuffer(1, n, rate), data = buf.getChannelData(0), x = seed || 1;
-    for (var i = 0; i < n; i++) {
-      x ^= x << 13; x ^= x >>> 17; x ^= x << 5;
-      data[i] = ((x >>> 0) / Math.pow(2, 32) * 2 - 1) * 0.5;
-    }
-    return buf;
+  function envelopeAt(env, t) {
+    if (t < env.a) { return t / env.a; }
+    if (t < env.a + env.d) { return 1 - (1 - env.s) * (t - env.a) / env.d; }
+    return env.s * (1 - (t - env.a - env.d) / env.r);
   }
-
+  function waveAt(wave, hz, t) {
+    var phase = hz * t * 2 * Math.PI;
+    return wave === 'triangle' ? 2 * Math.asin(Math.sin(phase)) / Math.PI : Math.sin(phase);
+  }
   function play(ctx, voices, t0) {
-    if (!ctx || typeof ctx.createOscillator !== 'function' || !Array.isArray(voices)) { return 0; }
-    var base = typeof t0 === 'number' && isFinite(t0) ? t0 : (ctx.currentTime || 0), programadas = 0;
-    voices.forEach(function (v) {
-      if (v.src !== 'osc' && v.src !== 'noise') { return; }
-      var t = base + v.at, env = v.env, stop = t + env.a + env.d + env.r, node;
-      if (v.src === 'osc') {
-        node = ctx.createOscillator();
-        node.type = v.wave;
-        node.frequency.value = v.hz;
-      } else {
-        node = ctx.createBufferSource();
-        node.buffer = noiseBuffer(ctx, env.a + env.d + env.r, v.seed);
-      }
-      var g = ctx.createGain();
-      g.gain.setValueAtTime(0, t);
-      g.gain.linearRampToValueAtTime(v.gain, t + env.a);
-      g.gain.linearRampToValueAtTime(v.gain * env.s, t + env.a + env.d);
-      g.gain.linearRampToValueAtTime(0, stop);
-      node.connect(g);
-      g.connect(ctx.destination);
-      node.start(t);
-      node.stop(stop);
-      programadas++;
+    if (!ctx || typeof ctx.createBuffer !== 'function' || typeof ctx.createBufferSource !== 'function' || !Array.isArray(voices)) { return 0; }
+    var valid = voices.filter(function (v) {
+      return (v.src === 'noise' || (v.src === 'osc' && Number.isFinite(v.hz))) && v.env &&
+        Number.isFinite(v.at) && Number.isFinite(v.gain) && v.env.a > 0 && v.env.d > 0 && v.env.r > 0;
     });
-    return programadas;
+    if (!valid.length) { return 0; }
+    var length = valid.reduce(function (n, v) { return Math.max(n, Math.ceil((v.at + v.env.a + v.env.d + v.env.r) * PCM_RATE)); }, 0);
+    var mix = new Float64Array(length);
+    valid.forEach(function (v) {
+      var start = Math.round(v.at * PCM_RATE), count = Math.ceil((v.env.a + v.env.d + v.env.r) * PCM_RATE), seed = v.seed || 1;
+      for (var i = 0; i < count && start + i < length; i++) {
+        var t = i / PCM_RATE, sample;
+        if (v.src === 'noise') {
+          seed ^= seed << 13; seed ^= seed >>> 17; seed ^= seed << 5;
+          sample = ((seed >>> 0) / 0x100000000 * 2 - 1) * 0.5;
+        } else { sample = waveAt(v.wave, v.hz, t); }
+        mix[start + i] += sample * v.gain * envelopeAt(v.env, t);
+      }
+    });
+    var buffer = ctx.createBuffer(1, length, PCM_RATE), data = buffer.getChannelData(0);
+    for (var k = 0; k < length; k++) { data[k] = mix[k]; }
+    var node = ctx.createBufferSource(), base = typeof t0 === 'number' && isFinite(t0) ? t0 : (ctx.currentTime || 0);
+    node.buffer = buffer; node.connect(ctx.destination); node.start(base); node.stop(base + length / PCM_RATE);
+    return valid.length;
   }
 
   var AtlasDescentSound = Object.freeze({ score: score, describe: describe, haptic: haptic, play: play });
