@@ -24,6 +24,7 @@ const CASOS = [
   { nombre: 'ok', fixture: 'descenso_ok.html', args: [], rc: 0 },
   { nombre: 'sabotaje', fixture: 'descenso_sabotaje.html', args: [], rc: 1 },
   { nombre: 'ok_reducido', fixture: 'descenso_ok.html', args: ['--reduced'], rc: 0, estatico: true },
+  { nombre: 'viewport_sensor', fixture: 'viewport_mismatch.html', args: [], rc: 0 },
 ];
 
 // Un caso cumple con el rc esperado Y con una linea JSON del ojo que lo confirme.

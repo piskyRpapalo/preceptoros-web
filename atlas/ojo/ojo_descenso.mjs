@@ -14,7 +14,7 @@ const PUERTO = 9600 + (process.pid % 300);
 const DOBLE_RAF = 'new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)))';
 // Quien hace scroll: el panel marcado [data-scroller] (A11Y, texto en panel propio) o, si no hay, el documento.
 const SC = '(document.querySelector("[data-scroller]") || document.scrollingElement)';
-const GEO = `(() => { const s = ${SC}; return { max: Math.max(0, s.scrollHeight - s.clientHeight), w: window.innerWidth, h: window.innerHeight }; })()`;
+const GEO = `(() => { const s = ${SC}, v = window.visualViewport; return { max: Math.max(0, s.scrollHeight - s.clientHeight), w: v ? v.width : window.innerWidth, h: v ? v.height : window.innerHeight }; })()`;
 const EXPONE = '({ atlas: typeof window.AtlasDescenso !== "undefined", frame: !!window.AtlasDescenso && typeof window.AtlasDescenso.frame === "function" })';
 const FRAME = `(() => { try { return JSON.stringify(window.AtlasDescenso.frame(${SC}.scrollTop)); } catch (e) { return "ERROR: " + e.message; } })()`;
 
