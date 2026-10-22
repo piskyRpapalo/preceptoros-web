@@ -34,8 +34,7 @@ This repository holds the public website of PreceptorOS. Its home page is the
 game **theGame**: an isometric world that runs in the browser, in nine
 languages.
 
-**Usage contract — the only 
-two things we ask:** respect the ceilings (every
+**Usage contract — the only two things we ask:** respect the ceilings (every
 file under 25 MiB, zero external requests on load, pure standard library,
 human signature before any consequential action, no telemetry), and share
 back any tool that adapts natively to the app. Pull requests carry their own
@@ -80,8 +79,7 @@ list below is promised.
 - **Every file under 25 MiB** (the chunk ceiling `test_web.py` enforces —
   the same limit the CDN serves per block), and the game's first load under
   153,600 bytes gzip (`atlas/mundo.py`). No framework,
-  no bundler: what is in this 
-repository is what your browser receives.
+  no bundler: what is in this repository is what your browser receives.
 - **A gap is named a gap.** Where a number is missing, the page says so and
   says why, instead of showing a stale one.
 
