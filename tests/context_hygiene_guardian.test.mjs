@@ -4,9 +4,11 @@ import { join } from 'node:path';
 
 const ROOT = new URL('../', import.meta.url).pathname;
 const AGENT_FACING = ['llms.txt', 'AGENTS.md', 'CLAUDE.md', 'README.md'];
-const FORBIDDEN = ['oracle', 'notary', 'depin', 'currency', 'clearing', 'magic'];
+const FORBIDDEN = ['oracle', 'notary', 'depin', 'currency', 'clearing', 'magic', 'cryptocurrency'];
 /* 'token' is audited separately: 'tokens' (LLM count) is a technical term; the
-   guardian reports it as a triage finding, not a hard red. */
+   guardian reports it as a triage finding, not a hard red.
+   'cryptocurrency' is banned (FIRMO 2026-10-22); 'cryptography'/'cryptographic'
+   are APPROVED and are not matched (word is longer than the ban). */
 
 function readAgentFile(f) { return readFileSync(join(ROOT, f), 'utf8'); }
 

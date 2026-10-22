@@ -36,7 +36,7 @@
     { id: 'summon', accion: 'invocar', titulo: 'Summon a wave', irreversible: true,
       haz: 'Open the menu ⚒ (Workshop) and summon with copper.',
       porque: 'Summoning spends copper and cannot be undone. The odds are on the button before you press it. Current measured pace: about one copper per 1.26 game cycles.',
-      canon: 'IronClaw: the silicon proposes, the carbon signs · teaching_kernel: dry_run_obligatorio',
+      canon: 'HITL: the silicon proposes, the carbon signs · teaching_kernel: dry_run_obligatorio',
       sonido: 'the egg hatches with its own voice', coord: 'menu ⚒ · Workshop',
       ensayo: function () {
         var c = cobre(), k = costeTc1();

@@ -13,7 +13,7 @@ function assertStaticInventory(manifest) {
   if (manifest.title !== 'PreceptorOS · theGame · Static deep-link inventory') throw new Error('misleading title');
 }
 
-const FORBIDDEN = ['oracle', 'notary', 'depin', 'token', 'currency', 'clearing', 'magic'];
+const FORBIDDEN = ['oracle', 'notary', 'depin', 'token', 'currency', 'clearing', 'magic', 'cryptocurrency'];
 const REQUIRED_ACTION = ['id', 'title', 'deep_link', 'what', 'needs', 'cost_measured', 'state', 'evidence'];
 
 test('manifest identifies a static inventory and points to the separate server', () => {
