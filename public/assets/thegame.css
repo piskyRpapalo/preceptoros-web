@@ -2,8 +2,7 @@
    con pestanas y cabecero bien estructurado»).
 
    La inyecta `thegame.js` junto a `atlas.css`, al pulsar la puerta. Solo maquetacion: los colores
-   son `var(--...)` de `soberano.css`, los radios los del token, sin gradientes, sin desenfoque y
-   sin animaciones.
+   it uses `soberano.css` variables and fixed corner radii, without gradients, blur, or animation.
 
    TELEFONO PRIMERO. El cabecero es una sola fila pegada arriba: el titulo, el piloto con su freno
    (Soltar) y cerrar. Las cinco pestanas van ABAJO, fijas, al alcance del pulgar y con el margen
@@ -109,6 +108,7 @@
 #thegame .thegame-pliego > summary{display:flex;align-items:center;min-height:3rem;padding:0 .9rem;cursor:pointer;
   font:700 .85rem/1.2 var(--mono);letter-spacing:.05em;text-transform:uppercase;color:var(--text-main)}
 #thegame .thegame-pliego > :not(summary){margin:0;display:grid;gap:.75rem;padding:0 .75rem .75rem}
+#thegame .radio-say-hi{min-width:44px;min-height:44px}
 .thegame-ayuda{display:grid;gap:.6rem;margin:0;padding-inline-start:1.4rem;font-size:1rem;line-height:1.45}
 /* J7 · el terminal del cangrejo: el JSON se parte en lineas; sin esto un <pre> ensanchaba la pestana
    entera y Help se salia de la pantalla del telefono (medido en captura 412 px). */

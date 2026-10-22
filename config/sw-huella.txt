@@ -1,2 +1,3 @@
-version=preceptoros-2026-17-abjz
-huella=10650a1049f9ca9f
+
+huella=dbe1d53f7da64cfa
+version=preceptoros-2026-17-abka

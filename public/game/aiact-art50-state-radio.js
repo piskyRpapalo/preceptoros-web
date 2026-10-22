@@ -80,6 +80,8 @@
     var d = el('details', 'radio-estado thegame-pliego');
     d.appendChild(el('summary', null, 'Radio Atlantis · the state, as sound'));
     var txt = el('p', 'radio-boletin'), nota1 = el('p', 'atlas-nota'), b = el('button', 'boton', 'Play the state'); b.type = 'button';
+    var hi = el('button', 'boton radio-say-hi', 'Say Hi'); hi.type = 'button';
+    nota1.setAttribute('aria-live', 'polite');
     function ins() { return raiz.AtlasJuego && raiz.AtlasJuego.instantanea ? raiz.AtlasJuego.instantanea() : null; }
     d.addEventListener('toggle', function () { if (d.open) { txt.textContent = boletin(ins()); } });
     b.addEventListener('click', function () {
@@ -87,7 +89,10 @@
       txt.textContent = boletin(i);
       nota1.textContent = (g ? 'Notes (Hz): ' + g.join(' · ') + '. ' : 'NO_DATA: no game yet. ') + locutor(txt.textContent) + '.';
     });
-    [txt, b, nota1].forEach(function (n) { d.appendChild(n); });
+    hi.addEventListener('click', function () {
+      nota1.textContent = 'Hello from Radio Atlantis. ' + locutor('Hello from Radio Atlantis. The state radio is ready.') + '.';
+    });
+    [txt, b, hi, nota1].forEach(function (n) { d.appendChild(n); });
     panel.appendChild(d);
   }
 
