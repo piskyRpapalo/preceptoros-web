@@ -94,6 +94,8 @@ A syllable does not change: it is the pose at rest, and it still passes `checkFr
 | `bounce [a, n]` | `x + a·\|sin(πnp)\|`, `sq` up to 1.12 × 0.88 at contact | the head bounces off the wall |
 | `contact n` | the atom is drawn only near a contact | «boing» marks |
 
+The `neck` primitive joins two `[x, y]` anchors with a pure 25-point curve. Its signed width is `k·4p(1−p)`, so the centerline is exact at both anchors and returns to the straight segment at `p=0` and `p=1`; the widest bend is at `p=0.5`. Invalid anchors, width, side or progress produce `NO_DATA` in compilation. It uses no smooth-min, so the join adds no radius to either anchor.
+
 Three rules keep it honest. **Same `p`, same picture:** the table is data and the ops are pure, so the eye that checks the page (same scroll after a reload and coming from below) keeps passing. **Reduced motion is the static-first lot:** with `prefers-reduced-motion` the view asks for no `p` and paints the syllable as it is. **Two layers:** everything before the first moving atom is the background, compiled once per section and kept as a bitmap; only the moving atoms are compiled per step (`fondo(id)` + `frente(id, p)` paint exactly `items(id, p)`, pinned by a case).
 
 ## 6c · The game's words and letters (V7 and V9, 2026-10-18)

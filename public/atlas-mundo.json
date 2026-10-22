@@ -1,12 +1,12 @@
 {
  "esquema": "atlas.mundo/1",
  "procedencia": "medido en local por atlas/mundo.py; sin rutas, sin nombres",
- "medido_el": "2026-10-22T20:00Z",
- "maquina": "Linux x86_64 · Python 3.12.15",
+ "medido_el": "2026-10-22T20:32Z",
+ "maquina": "Linux x86_64 · Python 3.14.4",
  "pruebas_web": 78,
  "lenguas": 9,
  "techo_bloque_b": 26214400,
- "gzip_juego_b": 67168,
- "version_sw": "preceptoros-2026-17-abkb",
+ "gzip_juego_b": 67219,
+ "version_sw": "preceptoros-2026-17-abkc",
  "arnes_sw": "22/22"
 }

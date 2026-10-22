@@ -3,7 +3,7 @@
 const { cos, sin, tan, exp, sqrt, hypot, floor, ceil, round, imul, min, max, PI } = Math;
 const NODE = typeof module === 'object' && !!module.exports;
 const VERSION = 'preceptoros.bubble/1', CANVAS = [412, 515], LIGHT = [-0.35, -0.94];
-const STYLES = ['volume', 'etch', 'clear'], PRIMS = ['wave', 'blob', 'ribbon', 'arcs', 'field', 'wall', 'text', 'keep'];
+const STYLES = ['volume', 'etch', 'clear'], PRIMS = ['wave', 'blob', 'ribbon', 'arcs', 'field', 'wall', 'text', 'keep', 'neck'];
 const SUBS = ['brillo', 'base', 'sombra', 'contorno'], MAX = 8, words = Object.create(null);
 const has = (o, k) => Object.prototype.hasOwnProperty.call(o, k);
 const lib = (n) => (NODE ? require('./' + { AtlasGacha: 'gacha', AtlasComicTokens: 'comic_tokens', AtlasComicAccents: 'comic_accents', AtlasSemantica: 'tabla_semantica' }[n] + '.js') : root[n]);
@@ -115,7 +115,16 @@ function finalize(sc) {
  sc.jobs = [];
 }
 
+function neck(a, b, k, p, side) {
+ if (!pair(a) || !pair(b) || !a.every(Number.isFinite) || !b.every(Number.isFinite) || !Number.isFinite(k) || k < 0 || !Number.isFinite(p) || p < 0 || p > 1 || (side !== undefined && side !== -1 && side !== 1)) throw new Error('bubble: neck');
+ const dx = b[0] - a[0], dy = b[1] - a[1], len = hypot(dx, dy) || 1, width = k * 4 * p * (1 - p) * (side || 1);
+ return Array.from({ length: 25 }, (_, i) => { const t = i / 24, q = width * sin(PI * t); return [rd(a[0] + dx * t - dy / len * q), rd(a[1] + dy * t + dx / len * q)]; });
+}
+
 const PRIM = {
+ neck: (sc, it) => (pair(it.a) && pair(it.b) && it.a.every(Number.isFinite) && it.b.every(Number.isFinite) && nums(it, 'k p') && it.k >= 0 && it.p >= 0 && it.p <= 1 && (it.side === undefined || it.side === -1 || it.side === 1)
+  ? shape(sc, 'neck', neck(it.a, it.b, it.k, it.p, it.side), false, it)
+  : bad(it)),
  wave: (sc, it) => (nums(it, 'x y') && Array.isArray(it.h) && it.h.length
   ? shape(sc, 'wave', xform(wavePoints(it.h, 96), num(it.sc, 1), num(it.rot, 0), it.x, it.y), true, it)
   : bad(it)),
@@ -305,6 +314,6 @@ function define(name, fn) {
  if (typeof name !== 'string' || PRIMS.includes(name) || typeof fn !== 'function') throw new Error('bubble: define ' + name);
  words[name] = fn;
 }
-const AtlasBubble = Object.freeze({ compile, define, words: () => Object.keys(words), hash32, rng, wavePoints, smoothPath, band });
+const AtlasBubble = Object.freeze({ compile, define, words: () => Object.keys(words), hash32, rng, wavePoints, smoothPath, neck, band });
 if (NODE) module.exports = AtlasBubble; else root.AtlasBubble = AtlasBubble;
 })(typeof module === 'object' && module.exports ? this : (this || window));
