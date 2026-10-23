@@ -10,7 +10,8 @@ los ficheros, no de recordarlos.
 
 Un sitio estático de siete páginas por idioma, ocho idiomas, sin build, sin
 framework y sin dependencias. Lo que hay en `public/` es exactamente lo que
-recibe el navegador. Se despliega empujando a `main`.
+recibe el navegador. `wrangler.jsonc` configura Workers Static Assets con
+`public/`; el despliegue es un gesto manual, no lo ejecuta un push a `main`.
 
 ## 2 · El terreno, contado
 
@@ -96,10 +97,14 @@ números y los mismos nombres que la app, a propósito.
 
 ### 🔴 La que tumbó el sitio entero el 2026-09-08 · lee esta primero
 
-**Cloudflare Pages redirige todo `.html` a su ruta sin extensión.**
-`/es/benchmark.html` responde **307** hacia `/es/benchmark`. No es
-configurable desde este repo: no hay `_redirects` ni `_headers`, es el
-comportamiento por defecto de la plataforma.
+**Cloudflare Workers Static Assets canonicaliza las rutas HTML.**
+`wrangler.jsonc` apunta `assets.directory` a `./public` y no declara
+`assets.html_handling`; el modo documentado por defecto es
+`auto-trailing-slash`. Con ese modo, `/es/benchmark.html` responde **307** hacia
+`/es/benchmark`. Se puede configurar `assets.html_handling` en el archivo
+Wrangler; no se deben describir estas rutas como comportamiento de Pages ni
+asumir que un enlace con `.html` es la URL canónica. Véase la [documentación de
+Workers Static Assets](https://developers.cloudflare.com/workers/static-assets/routing/advanced/html-handling/).
 
 Y de ahí sale la avería, que costó un día de sitio caído: `fetch` sigue el
 salto, y la respuesta que vuelve trae `redirected: true`. **Un service worker
