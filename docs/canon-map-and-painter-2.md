@@ -9,7 +9,7 @@ Blocks migrated: 57 · canon bytes: 11961
 
 preceptoros.org · theGame · LOS EDIFICIOS DEL ARRECIFE, pintados en el mapa (los 9 objetos, FIRMO 2026-10-12).
 
-   Capa aparte (como `mar-anclas.js`): `mar.js` esta a ~1 KB de su techo y solo la llama. El TIEMPO de cada
+   Capa aparte (como `sea-anchors.js`): `sea.js` esta a ~1 KB de su techo y solo la llama. El TIEMPO de cada
    edificio sale de `reef_building_lifecycle.js` (puro: manifiesto + tic); aqui solo se pinta y se avisa. Los textos
    viven en `atlas-arena-<lengua>.json` (la familia del mapa, a demanda).
 

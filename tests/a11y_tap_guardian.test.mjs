@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 
 const ROOT = new URL('../', import.meta.url).pathname;
 const pointer = readFileSync(ROOT + 'public/game/map_pointer_input.js', 'utf8');
-const mar = readFileSync(ROOT + 'public/game/mar.js', 'utf8');
+const mar = readFileSync(ROOT + 'public/game/sea.js', 'utf8');
 
 test('tap-to-move exists: short tap on open sea advances the camera through planeaTap', () => {
   if (!/x\.planeaTap\) \{ x\.planeaTap\(tocado\); \}/.test(pointer)) {
@@ -15,7 +15,7 @@ test('SINGLE DOOR: planeaTap goes through the same planea() as keyboard and ligh
   if (!/planeaTap: function \(pto\) \{[\s\S]*C\.planea\(cam, pto\.x, pto\.y, circ, quieto\(\)\)/.test(mar)) {
     throw new Error('planeaTap no usa la puerta planea() de la casa');
   }
-  // sin ventaja: planea() es la MISMA función que faro y teclado ya usan (mar.js:57 la usa para faro)
+  // sin ventaja: planea() es la MISMA función que faro y teclado ya usan (sea.js:57 la usa para faro)
   if (!/if \(d === 'faro'\) \{ C\.planea\(cam, N\.HEX\.x/.test(mar)) {
     throw new Error('el faro dejó de usar planea() — puerta rota');
   }

@@ -15,7 +15,7 @@ Ley nueva del Soberano (16-oct): en el código servido (public/*.js y public/gam
 |---|---|---|
 | docs/canon-laws-of-the-world.md | Leyes del motor y constantes con su causa | valores.js, core.js, canon.js, gacha.js |
 | docs/canon-service-worker.md | Historia y reglas del SW (instalación, 307, medidas) | sw.js, sw-listas.js, arnes comentado |
-| docs/canon-map-and-painter.md | Ley del suelo isométrica, orden de pintor, zoom | isometric_floor_projection.js, mar.js*, map_zoom.js, mar-*.js |
+| docs/canon-map-and-painter.md | Ley del suelo isométrica, orden de pintor, zoom | isometric_floor_projection.js, sea.js*, map_zoom.js, mar-*.js |
 | docs/canon-identity-and-signatures.md | Ed25519, sobres, FIRMO, identidad de visitante | auth.js, sobres.js, mercado.js, hitl_firma.js |
 | docs/canon-workflow.md | Taller: disolución, lija, residuo | taller.js, ui-taller.js, primer_eco.js |
 | docs/canon-arena-and-duels.md | Arena, duelos, juez, escuadrón | arena.js, duelo.js, juez.js, escuadron.js |
@@ -34,7 +34,7 @@ Top por frecuencia en 88 ficheros: monta (25), pinta (20), crea (9), abre/cierra
 
 ## Nombres de fichero (D3) — mapa propuesto
 
-mar.js→sea.js · cria.js→brood.js · taller.js→workshop.js · nodos.js→nodes.js · cuenta.js→account.js · valores.js→values.js · sobres.js→envelopes.js · juez.js→judge.js · escena.js→scene.js · casa-*.js→house-*.js · arnés y sw-listas alineados en la misma pieza (sw-listas.js precachea estas rutas y atlas/test_atlas.py compara la lista con la puerta — la mudanza viaja con las listas alineadas o la suite cae, y esa es la vara).
+sea.js→sea.js · cria.js→brood.js · taller.js→workshop.js · nodos.js→nodes.js · cuenta.js→account.js · valores.js→values.js · sobres.js→envelopes.js · juez.js→judge.js · escena.js→scene.js · casa-*.js→house-*.js · arnés y sw-listas alineados en la misma pieza (sw-listas.js precachea estas rutas y atlas/test_atlas.py compara la lista con la puerta — la mudanza viaja con las listas alineadas o la suite cae, y esa es la vara).
 
 ## Plan de ejecución (3 piezas, 3 PR, apiladas sobre main)
 

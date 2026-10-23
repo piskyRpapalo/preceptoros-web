@@ -4,8 +4,8 @@ Migrated from D1 subject 10 at `codex/d1-asunto-9` (`44eef002`). Source line num
 
 ## Terminal cable
 
-- The visitor submits a bounded call through the page's existing `Enviar.paquete` door. The payload follows `atlas.nexo/1` and contains the declared action, text context, game coordinate, expected-state hash and game cycle. Its private key remains in the browser. Sources: `public/game/cable_llamar.js:1-16,19-44`.
-- A missing game cycle, coordinate, vector or send channel produces a no-reading result. A response is displayed as a receipt; a rejection is rendered with its cause. A queued response does not establish publication. Sources: `public/game/cable_llamar.js:36-62`.
+- The visitor submits a bounded call through the page's existing `Enviar.paquete` door. The payload follows `atlas.nexo/1` and contains the declared action, text context, game coordinate, expected-state hash and game cycle. Its private key remains in the browser. Sources: `public/game/cable_llasea.js:1-16,19-44`.
+- A missing game cycle, coordinate, vector or send channel produces a no-reading result. A response is displayed as a receipt; a rejection is rendered with its cause. A queued response does not establish publication. Sources: `public/game/cable_llasea.js:36-62`.
 - The terminal reports age in game cycles. Public metrics are displayed only when the supplied map data contains them; absent metrics remain unavailable. A stale value is not presented as fresh. Sources: `public/game/cable_terminal.js:1-12,22-48`.
 - The chat uses the existing accessible status surface and its live region. The cable adds a large, keyboard-focusable action. Sources: `public/game/cable_terminal.js:1-12,51-52`.
 

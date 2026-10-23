@@ -640,7 +640,7 @@ process.stdout.write(JSON.stringify(ok));
         """LEY DEL SUELO, paso 3: lo que se pinta en el mapa se ENCOLA con su sitio y se pinta de atras a delante por
         profundidad (`IsometricFloor.ordena`), ANTES de la niebla. Cada capa (cangrejos, anclas, edificios, cristal)
         encola si le dan cola y pinta directo si no. Medido en el navegador: 11 piezas, ordenadas, 60 veces por segundo."""
-        m = sin_comentarios((PUBLICO / "game" / "mar.js").read_text(encoding="utf-8"))
+        m = sin_comentarios((PUBLICO / "game" / "sea.js").read_text(encoding="utf-8"))
         vacia = m.index("window.IsometricFloor.ordena(cola).forEach(function (x) { x.f(); });")
         self.assertLess(vacia, m.index("TS.niebla(g, cam, W, H, z);"), "la niebla debe tapar lo pintado, no al reves")
         for pieza in ("var cola = [], pon = function (x, y, d, fi) { cola.push({ col: x, fila: y, f: d, ficha: fi }); };",
@@ -651,8 +651,8 @@ process.stdout.write(JSON.stringify(ok));
         self.assertEqual(m.count("pon: pon"), 4, "nodos, cangrejos, anclas y edificios reciben la cola")
         nodos = (PUBLICO / "game" / "map_nodes_layer.js").read_text(encoding="utf-8")
         self.assertIn("H0.forEach(function (n) { pon(n.x, n.y, function () {", nodos, "los nodos pintan por la cola desde su modulo")
-        self.assertLess(len((PUBLICO / "game" / "mar.js").read_bytes()), 16000, "mar.js vuelve a engordar: split primero")
-        for f in ("mar-cangrejos.js", "mar-anclas.js", "reef_buildings_layer.js", "latency_crystal.js"):
+        self.assertLess(len((PUBLICO / "game" / "sea.js").read_bytes()), 16000, "sea.js vuelve a engordar: split primero")
+        for f in ("sea-crabs.js", "sea-anchors.js", "reef_buildings_layer.js", "latency_crystal.js"):
             with self.subTest(capa=f):
                 self.assertIn("o.pon || function (x, y, d) { d(); }", (PUBLICO / "game" / f).read_text(encoding="utf-8"))
 
@@ -725,7 +725,7 @@ process.stdout.write(JSON.stringify(ok));
         for malo in ("Date", "Math.random", "fetch(", "localStorage", "innerHTML", "createLinearGradient", "createRadialGradient", "shadowBlur", "drawImage", "Image("):
             with self.subTest(prohibido=malo):
                 self.assertNotIn(malo, t)
-        mc = (PUBLICO / "game" / "mar-cangrejos.js").read_text(encoding="utf-8")
+        mc = (PUBLICO / "game" / "sea-crabs.js").read_text(encoding="utf-8")
         self.assertIn("(Tn ? Tn.cangrejo : CJ.pinta)(g, p[0], p[1] + dy, r,", mc)
         self.assertIn("pc = CJ.paseo(cj.semilla, cj.ciclo,", mc, "el paseo J1 sigue mandando")
 
@@ -762,9 +762,9 @@ process.stdout.write(JSON.stringify(ok));
             with self.subTest(casos=casos):
                 r = subprocess.run(["node", str(RAIZ / casos)], capture_output=True, text=True, timeout=60)
                 self.assertEqual(r.returncode, 0, r.stdout[-1200:] + r.stderr[-400:])
-        self.assertIn("VE = 620,", (PUBLICO / "game" / "mar.js").read_text(encoding="utf-8"), "A: el mapa, mas grande a la vista")
+        self.assertIn("VE = 620,", (PUBLICO / "game" / "sea.js").read_text(encoding="utf-8"), "A: el mapa, mas grande a la vista")
         self.assertIn("if (av) { meta.appendChild(av); }", (PUBLICO / "game" / "genesis_tutorial.js").read_text(encoding="utf-8"), "el aviso y el objetivo se pisaban")
-        mc = (PUBLICO / "game" / "mar-cangrejos.js").read_text(encoding="utf-8")
+        mc = (PUBLICO / "game" / "sea-crabs.js").read_text(encoding="utf-8")
         self.assertIn("pc = CJ.paseo(cj.semilla, cj.ciclo,", mc, "el paseo J1 sigue mandando debajo")
         self.assertIn("if (L) { var d = L.paso(s, o.circ); s = { x: s.x + d.x, y: s.y + d.y }; }", mc)
         t = sin_comentarios((PUBLICO / "game" / "genesis_tutorial.js").read_text(encoding="utf-8"))
@@ -810,7 +810,7 @@ process.stdout.write(JSON.stringify(ok));
                 r = subprocess.run(["node", str(RAIZ / casos)], capture_output=True, text=True, timeout=60)
                 self.assertEqual(r.returncode, 0, r.stdout[-1200:] + r.stderr[-400:])
         self.assertIn("u && u.adopcion ? u.adopcion.tropa : u", (ASSETS / "atlas-mapa.js").read_text(encoding="utf-8"))
-        m = (PUBLICO / "game" / "mar.js").read_text(encoding="utf-8")
+        m = (PUBLICO / "game" / "sea.js").read_text(encoding="utf-8")
         self.assertIn("window.AtlasInspector.registra(cola, P, f.texto);", m)
         self.assertIn("v = Z && l.npc ? Z.vector(rec[l.clave], l.lider) : 0, cz = v === 0 ? 0 : Z.color(v);", m, "∇C opcion A: el lugar pinta su registro de combate")
         self.assertIn("raiz.AtlasInspector.toca(px, py, 44 * x.dpr, tocado, lugar)", (PUBLICO / "game" / "map_pointer_input.js").read_text(encoding="utf-8"))
@@ -839,9 +839,9 @@ process.stdout.write(JSON.stringify(ok));
                 self.assertIn("'" + title + "'", guion)
         self.assertIn("function cangrejo()", casa, "el panel lee la fuente única del cuerpo")
         # D1 (2026-10-16): the citation moved from a code comment to the canon doc; the code calls C.cangrejo() directly
-        mc = (PUBLICO / "game" / "mar-cangrejos.js").read_text(encoding="utf-8")
+        mc = (PUBLICO / "game" / "sea-crabs.js").read_text(encoding="utf-8")
         self.assertTrue("C.cangrejo()" in mc or "AtlasCasa.cangrejo()" in mc,
-                        "mar-cangrejos lee la fuente unica del cuerpo")
+                        "sea-crabs lee la fuente unica del cuerpo")
         self.assertIn("function ficha()", frame, "la ventana entrega un único sello de frescura")
         self.assertIn("montaInspector", inspector + save, "los controles del aparato viven en Inspector")
         self.assertNotIn("LIVE", guion, "la frescura se pinta una vez en el marco del canal")
@@ -865,7 +865,7 @@ process.stdout.write(JSON.stringify(ok));
             with self.subTest(prohibido=malo):
                 self.assertNotIn(malo, f)
         # El OBSERVATORIO despeja con los MISMOS circulos que lo medido (fog_of_war), y sus textos viajan con el mapa.
-        m = (PUBLICO / "game" / "mar.js").read_text(encoding="utf-8")
+        m = (PUBLICO / "game" / "sea.js").read_text(encoding="utf-8")
         self.assertIn("circ = circ.concat(window.AtlasArrecife.circulos());", m, "lo que mira el observatorio no despeja")
         ui = json.loads((PUBLICO / "atlas-arena-en.json").read_text(encoding="utf-8"))["ui"]
         for k in ("boya_estado", "boya_fases", "obs_nombre", "obs_mirar", "obs_fases", "lap_nombre", "lap_vacio", "lap_recibo"):
@@ -1049,12 +1049,12 @@ process.stdout.write(JSON.stringify(ok));
 # Ver atlas/POST_VERIFICACION_MGNO_LAB.md y atlas/POST_VERIFICACION_SISIL_CRIA.md.
 PUROS = ("canon.js", "sobres.js", "rating.js", "arena.js", "duelo.js", "mercado.js", "narragrafo.js", "cria.js", "genoma.js")  # T_CRT §8.1: el orquestador mini lo lee; ningun guion de la web lo pide aun
 # La Arena (2026-09-28, «el mapa multi-jugador en una pestana»): se carga al abrir su pestana, detras del Army.
-ARENA = ("sobres.js", "rating.js", "combate_ticks.js", "arena.js", "duelo.js", "mar-anclas.js", "crab_render_hd.js", "audio_feedback_manager.js", "crab_free_move.js", "genesis_tutorial.js", "buildings_toon.js", "reef_place_cards.js", "shell_schematics.js", "reef_buildings_paint.js", "latency_crystal.js", "hexelion_bench.js", "bubble_bestiary.js", "map_bubble_figures.js", "reef_corals.js", "reef_buildings_layer.js", "mar-cangrejos.js", "map_pointer_input.js", "semiotic_glyph.js", "hexelion_dictionary.js", "map_nodes_layer.js", "map_zoom.js", "piece_inspector.js", "vector_contract.js", "state_vector.js", "place_reading.js", "npc_territory_map.js", "mar.js", "nodos-pesos.js",
+ARENA = ("sobres.js", "rating.js", "combate_ticks.js", "arena.js", "duelo.js", "sea-anchors.js", "crab_render_hd.js", "audio_feedback_manager.js", "crab_free_move.js", "genesis_tutorial.js", "buildings_toon.js", "reef_place_cards.js", "shell_schematics.js", "reef_buildings_paint.js", "latency_crystal.js", "hexelion_bench.js", "bubble_bestiary.js", "map_bubble_figures.js", "reef_corals.js", "reef_buildings_layer.js", "sea-crabs.js", "map_pointer_input.js", "semiotic_glyph.js", "hexelion_dictionary.js", "map_nodes_layer.js", "map_zoom.js", "piece_inspector.js", "vector_contract.js", "state_vector.js", "place_reading.js", "npc_territory_map.js", "sea.js", "nodos-pesos.js",
          "node_reception_contract.js", "node_trust_anchor.js", "node_trust_manifest.js", "node_signature_messages.js", "node_signature_verify.js", "node_bindings_messages.js", "node_bindings.js", "node_projection.js", "nodos.js", "cuenta.js", "ui-nodos.js", "ui-rack.js", "node_preview.js", "node_file_receiver.js",
          "escuadron.js", "battle_choreography.js", "battle_replay.js", "npc_occupancy.js", "npc_walls.js", "ui-arena-comun.js", "ui-arena.js", "ui-duelo.js")
 # La CASA (2026-10-05): la primera pantalla, detras del Army. Lleva canon y escena, que la Arena reutiliza.
 # C1+C2 (#264, 2026-10-23): editor Bubble y Paint se cargan con la Casa; ambos son modulos v1.5 a demanda.
-CASA = ("canon.js", "tabla_semantica.js", "comic_tokens.js", "comic_atoms.js", "escena.js", "wave_render.js", "gdpr-art25-ephemeral-crab.js", "aiact-art50-crab-terminal.js", "nodos-cedulas.js", "fog_of_war.js", "isometric_floor_projection.js", "world_camera.js", "mar-fondo.js", "mar_rift.js", "bubble_editor.js", "bubble_paint.js", "gdpr-art7-entry-choice.js", "aiact-art50-state-radio.js", "casa-medidas.js", "casa-personaliza.js", "casa-lateral.js", "crab_state_screen.js", "reef_building_lifecycle.js", "home_buildings.js", "summon-wave-card.js", "summon_reveal.js", "taller.js", "army-wave-panel.js", "ui-taller.js", "primer_eco.js", "summon-access.js", "deep_links.js", "hitl_firma.js", "onda_profunda.js", "tarjeta_cantada.js", "cable_llamar.js", "cable_terminal.js")
+CASA = ("canon.js", "tabla_semantica.js", "comic_tokens.js", "comic_atoms.js", "escena.js", "wave_render.js", "gdpr-art25-ephemeral-crab.js", "aiact-art50-crab-terminal.js", "nodos-cedulas.js", "fog_of_war.js", "isometric_floor_projection.js", "world_camera.js", "sea-floor.js", "sea_rift.js", "bubble_editor.js", "bubble_paint.js", "gdpr-art7-entry-choice.js", "aiact-art50-state-radio.js", "casa-medidas.js", "casa-personaliza.js", "casa-lateral.js", "crab_state_screen.js", "reef_building_lifecycle.js", "home_buildings.js", "summon-wave-card.js", "summon_reveal.js", "taller.js", "army-wave-panel.js", "ui-taller.js", "primer_eco.js", "summon-access.js", "deep_links.js", "hitl_firma.js", "onda_profunda.js", "tarjeta_cantada.js", "cable_llamar.js", "cable_terminal.js")
 # El descenso (obra abku, 2026-10-18): los pide thegame.js por su lista DESCENSO, no con la casa.
 DESCENSO = ("silueta.js", "en301_practice_model.js", "en301_practice_arena.js", "en301_tutorial_model.js", "en301_tutorial_audio.js", "en301_tutorial.js", "deploy_building.js", "etiqueta.js", "en301_tutorial_building.js", "world_creator.js", "tutorial_fases.js", "ui-tutorial-fases.js", "comic_accents.js", "bubble_language.js", "bubble_light.js", "bubble_bestiary.js", "bubble_world.js", "bubble_letters.js", "bubble_game.js", "bubble_icons.js", "descent_sound.js", "local_app_bridge.js")
 # VT6 (compuerta de lanzamiento): modulo puro, fuera de la puerta del juego; la pantalla aun no la carga.
@@ -1860,7 +1860,7 @@ class Arena(unittest.TestCase):
         ar = json.loads((PUBLICO / "atlas-arena-en.json").read_text(encoding="utf-8"))["ui"]
         juego = json.loads((PUBLICO / "atlas-en.json").read_text(encoding="utf-8"))["ui"]
         self.assertLess((PUBLICO / "atlas-arena-en.json").stat().st_size, TOPE_FICHERO)
-        for f in ("ui-arena.js", "ui-arena-comun.js", "ui-duelo.js", "mar.js"):
+        for f in ("ui-arena.js", "ui-arena-comun.js", "ui-duelo.js", "sea.js"):
             for k in set(re.findall(r"T\('(\w+)'\)", self._js(f))):
                 with self.subTest(fichero=f, clave=k):
                     self.assertTrue((ar.get(k) or juego.get(k) or "").strip(), f"{k} sin texto")
@@ -1870,7 +1870,7 @@ class Arena(unittest.TestCase):
             self.assertTrue((PUBLICO / f"atlas-arena-{l}.json").is_file(), f"la Arena sin textos en {l}")
 
     def test_la_arena_no_sale_a_la_red_ni_usa_el_azar_del_sistema(self):
-        for f in ("escena.js", "mar.js", "ui-arena.js", "ui-arena-comun.js", "ui-duelo.js", "duelo.js", "rating.js"):
+        for f in ("escena.js", "sea.js", "ui-arena.js", "ui-arena-comun.js", "ui-duelo.js", "duelo.js", "rating.js"):
             c = self._js(f)
             for malo in ("Math.random", "localStorage", "indexedDB", "innerHTML", "sendBeacon", "WebSocket",
                          "RTCPeerConnection", "http://", "https://", "XMLHttpRequest", "Date."):
@@ -2099,7 +2099,7 @@ class Conquista(unittest.TestCase):
         self.assertIn("arena_conquistado", texto)
         self.assertRegex(texto, r"arena_conquistado[^}]*LOCAL")
         self.assertIn("T('arena_conquistado')", self._js("ui-arena.js"))
-        self.assertIn("arena_conquistado", self._js("mar.js"))
+        self.assertIn("arena_conquistado", self._js("sea.js"))
 
     def test_q6_mensajes_y_mantenimiento_firmados_con_decaimiento_ciclico(self):
         r = subprocess.run(["node", str(RAIZ / "npc_occupancy_cases.mjs")], capture_output=True,
@@ -2109,7 +2109,7 @@ class Conquista(unittest.TestCase):
         self.assertEqual(d["ciclos_mantenimiento"], 900)
         self.assertEqual(d["fallos"], [])
         ui = self._js("ui-arena.js")
-        mar = self._js("mar.js")
+        mar = self._js("sea.js")
         self.assertIn("AtlasNpcTerritoryMap", self._js("npc_territory_map.js"))
         inspector = self._js("piece_inspector.js")
         self.assertIn("AtlasNpcWalls.captura(l.id, cicloJuego())", ui)
@@ -2248,7 +2248,7 @@ class MapaMovible(unittest.TestCase):
 
     def test_se_mueve_con_dedo_teclado_y_botones_y_dice_el_choque(self):
         # LEY DEL SUELO, paso 2 (2026-10-12): el dedo y las teclas salieron a `map_pointer_input.js`; el mapa lo monta.
-        m = self._js("mar.js") + self._js("map_pointer_input.js")
+        m = self._js("sea.js") + self._js("map_pointer_input.js")
         for pieza in ("addEventListener('pointerdown'", "setPointerCapture", "addEventListener('keydown'", "ArrowLeft",
                       "x.setAttribute('aria-label', f.texto('mapa_' + d))", "aviso.setAttribute('role', 'status')",
                       "J.aplica(a)", "accion: 'mover'", "window.AtlasPiloto.DIRS",
@@ -2271,18 +2271,18 @@ class MapaMovible(unittest.TestCase):
         self.assertIn("Fog", tx["mapa_niebla"])
 
     def test_sin_azar_ni_red_y_por_teselas(self):
-        for f in ("fog_of_war.js", "world_camera.js", "mar.js", "mar-fondo.js", "map_pointer_input.js", "isometric_floor_projection.js"):
+        for f in ("fog_of_war.js", "world_camera.js", "sea.js", "sea-floor.js", "map_pointer_input.js", "isometric_floor_projection.js"):
             c = self._js(f)
             for malo in ("Math.random", "localStorage", "fetch(", "Date."):
                 with self.subTest(fichero=f, prohibido=malo):
                     self.assertNotIn(malo, c)
-        self.assertIn("function tesela(i, j)", self._js("mar-fondo.js"))
-        self.assertIn("if (nt >= TOPE) { suelta(tierra); nt--; }", self._js("mar-fondo.js"), "la cache de teselas no esta acotada")
+        self.assertIn("function tesela(i, j)", self._js("sea-floor.js"))
+        self.assertIn("if (nt >= TOPE) { suelta(tierra); nt--; }", self._js("sea-floor.js"), "la cache de teselas no esta acotada")
         # MEDIDO en el Doogee (2026-10-13): la caja visible del rombo son 132 teselas; un tope por debajo, o vaciar la cache
         # entera, la rehace cada cuadro (2,7 fps). El tope cubre lo visible con holgura y el rombo fuera de pantalla no se pide.
-        tope = int(re.search(r"var TOPE = (\d+);", self._js("mar-fondo.js")).group(1))
+        tope = int(re.search(r"var TOPE = (\d+);", self._js("sea-floor.js")).group(1))
         self.assertGreaterEqual(tope, 2 * 132 * 3 // 4, "la cache no cabe lo que se ve: se rehace cada cuadro")
-        self.assertIn("{ continue; }", self._js("mar-fondo.js"), "las teselas fuera de pantalla vuelven a pedirse")
+        self.assertIn("{ continue; }", self._js("sea-floor.js"), "las teselas fuera de pantalla vuelven a pedirse")
 
 
 
@@ -2374,7 +2374,7 @@ class MapaMovible(unittest.TestCase):
         suelto se retira. Vibra con la nota de su radio y, sin senal, NO baila. Los otros, con lo que se sabe de
         ellos: quietos (ciclo 0) y con el cuerpo en niebla, solo en lo despejado. Sin red ni azar."""
         r = subprocess.run(["node", "-e", """
-          const M = require('./public/game/mar-cangrejos.js');
+          const M = require('./public/game/sea-crabs.js');
           const s = M.sitio({ x: 1000, y: 500 }, 0.75);
           const v = [0, 137, 300, 777].map((ms) => M.vibra([220, 330, 440], ms));
           console.log(JSON.stringify({ R: M.R, s, nulo: M.vibra(null, 500), vacio: M.vibra([], 500), v, otra: M.vibra([220, 330, 440], 137) }));
@@ -2385,7 +2385,7 @@ class MapaMovible(unittest.TestCase):
         self.assertEqual((d["nulo"], d["vacio"]), (0, 0), "sin senal del estado el cangrejo baila igual")
         self.assertEqual(d["v"][1], d["otra"], "el temblor no es determinista")
         self.assertTrue(any(abs(x) > 0.1 for x in d["v"]), "con senal no vibra")
-        c = self._js("mar-cangrejos.js")
+        c = self._js("sea-crabs.js")
         for pieza in ("CJ.paseo(cj.semilla, cj.ciclo", "C.cangrejo()", "Ra.guion(J.instantanea())",
                       "{ semilla: j.de, ciclo: 0,", "cuerpo: CJ.cuerpo(null) }", "N.niebla(c.x, c.y, o.circ || []) > 0.5",
                       "g.ellipse(", "N.HEX.y + MAR_ABIERTO"):
@@ -2394,7 +2394,7 @@ class MapaMovible(unittest.TestCase):
         for malo in ("Math.random", "Date.now", "fetch(", "shadowBlur", "function paseo("):
             with self.subTest(prohibido=malo):
                 self.assertNotIn(malo, c)
-        m = self._js("mar.js")
+        m = self._js("sea.js")
         self.assertIn("window.AtlasMarCangrejos.pinta(g, P,", m)
         self.assertNotIn("E.figura(g, em.armonicos, yo[0], yo[1]", m, "vuelve el emblema suelto sobre la casa")
         cj = self._js("gdpr-art25-ephemeral-crab.js")
@@ -2413,7 +2413,7 @@ class MapaMovible(unittest.TestCase):
         dirs.append(tuple(esq["properties"]["dir"]["enum"]))
         self.assertEqual(len(set(dirs)), 1, f"los destinos no coinciden: {dirs}")
         self.assertIn("faro", dirs[0])
-        mar = self._js("mar.js")
+        mar = self._js("sea.js")
         self.assertIn("if (d === 'faro') { C.planea(cam, N.HEX.x, N.HEX.y, circ, quieto());", mar, "la camara no PLANEA al Faro (F357)")
         self.assertNotRegex(mar, r"cam\.[xy] = ", "la camara vuelve a teletransportarse (F357)")
         self.assertIn("faro: '\u25c8'", mar, "el mando del Faro sin icono")
@@ -2542,10 +2542,10 @@ class MapaMovible(unittest.TestCase):
         # U1: «Play the state» salia DOS veces (casa y mapa): ahora la radio se monta UNA vez, en la terminal.
         self.assertIn("if (window.AtlasRadio) { window.AtlasRadio.monta(PANEL.casa); }", tg)
         self.assertEqual(tg.count("AtlasRadio.monta("), 1, "la radio vuelve a salir en dos sitios")
-        m = (PUBLICO / "game" / "mar-anclas.js").read_text(encoding="utf-8")
+        m = (PUBLICO / "game" / "sea-anchors.js").read_text(encoding="utf-8")
         self.assertIn("N.anclas({ pub: o.pub, sha: o.sha, nodos: o.nodos || [] })", m)
-        self.assertIn("window.AtlasMarAnclas.pinta(g, P,", (PUBLICO / "game" / "mar.js").read_text(encoding="utf-8"))
-        for f in ("mar.js", "mar-anclas.js", "fog_of_war.js"):
+        self.assertIn("window.AtlasMarAnclas.pinta(g, P,", (PUBLICO / "game" / "sea.js").read_text(encoding="utf-8"))
+        for f in ("sea.js", "sea-anchors.js", "fog_of_war.js"):
             c = sin_comentarios((PUBLICO / "game" / f).read_text(encoding="utf-8"))
             for malo in ("fetch(", "sendBeacon", "crypto.subtle", "XMLHttpRequest", "WebSocket"):
                 with self.subTest(fichero=f, prohibido=malo):
@@ -2598,8 +2598,8 @@ class MapaMovible(unittest.TestCase):
     def test_j6_una_sola_fuente_de_teselas_y_el_mapa_es_el_fondo(self):
         """J6 (plan «el refresco») y U1: el mapa pide el pintor UNICO de teselas (T0-D: sin gemelos); la deriva es
         global y no se hornea en cada tesela (las costuras de M4). Desde U1 el fondo de la portada ES el mapa:
-        el lienzo de fondo propio (monta, portada, .mar-fondo) se RETIRA; el mapa se pausa bajo una hoja."""
-        m, f = self._js("mar.js"), self._js("mar-fondo.js")
+        el lienzo de fondo propio (monta, portada, .sea-floor) se RETIRA; el mapa se pausa bajo una hoja."""
+        m, f = self._js("sea.js"), self._js("sea-floor.js")
         self.assertLess(len(f.encode()), 16 * 1024, "the single sea painter stays below the piece cap")
         self.assertIn("function texturaLecho", f, "the floor keeps a deterministic, hand-shaped palette raster")
         for forbidden in ("Math.random", "fetch(", "XMLHttpRequest", "WebSocket", "https://", "http://"):
@@ -2607,7 +2607,7 @@ class MapaMovible(unittest.TestCase):
                 self.assertNotIn(forbidden, f, "map scenery cannot add randomness or an external asset path")
         for gemelo in ("function tesela(", "function bruma(", "E.textura(", "offsetTemporal"):
             with self.subTest(gemelo=gemelo):
-                self.assertNotIn(gemelo, m, "mar.js vuelve a tener teselas propias")
+                self.assertNotIn(gemelo, m, "sea.js vuelve a tener teselas propias")
         self.assertIn("MF.pintor()", m)
         self.assertNotIn("offset", f.split("function tesela(")[1].split("function bruma(")[0], "la deriva vuelve a hornearse en la tesela")
         for viejo in ("function monta(", "function portada(", "juego-panel"):
@@ -2616,10 +2616,10 @@ class MapaMovible(unittest.TestCase):
         self.assertIn("document.documentElement.classList.contains('con-hoja')", m, "el mapa no se pausa bajo una hoja")
         tg = (PUBLICO / "assets" / "thegame.js").read_text(encoding="utf-8")
         self.assertNotIn("AtlasMarFondo.portada", tg)
-        orden = [tg.index("'/game/" + n + "'") for n in ("escena.js", "fog_of_war.js", "world_camera.js", "mar-fondo.js")]
-        self.assertEqual(orden, sorted(orden), "mar-fondo.js se carga antes que lo que usa")
+        orden = [tg.index("'/game/" + n + "'") for n in ("escena.js", "fog_of_war.js", "world_camera.js", "sea-floor.js")]
+        self.assertEqual(orden, sorted(orden), "sea-floor.js se carga antes que lo que usa")
         css = (PUBLICO / "assets" / "thegame.css").read_text(encoding="utf-8")
-        self.assertNotIn(".mar-fondo", css)
+        self.assertNotIn(".sea-floor", css)
         # U2: en el telefono el mapa es la franja de encima de la terminal (si no, su centro cae detras de la hoja).
         # La terminal chatbot (2026-10-12): el mapa es TODA la pantalla; los bordes (menu, chat plegado) no le comen el centro.
         css = (PUBLICO / "assets" / "terminal_menu_shell.css").read_text(encoding="utf-8")
@@ -2694,7 +2694,7 @@ class EsteticaMedida(unittest.TestCase):
         self.assertIn("(v - q) / 8", e, "Atkinson reparte 1/8 a cada vecino")
 
     def test_el_mapa_pinta_el_origen_de_cada_cifra(self):
-        m, mf = self._js("mar.js"), self._js("mar-fondo.js")
+        m, mf = self._js("sea.js"), self._js("sea-floor.js")
         self.assertIn("var NIEBLA = [null, ", mf, "la niebla no es de un bit")
         self.assertIn("N.niebla(i * TESELA + x * RES, j * TESELA + y * RES, circ)", mf, "la niebla no sale de lo despejado (fog_of_war.js)")
         self.assertIn("n.gen.estado === 'NO_DATA'", m, "NO_DATA no se pinta como ausencia")

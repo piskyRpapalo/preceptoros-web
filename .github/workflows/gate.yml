@@ -67,7 +67,7 @@ jobs:
             node atlas/comic_atoms_casos.mjs
             node atlas/comic_css_paridad_casos.mjs
             node atlas/comic_tokens_casos.mjs
-            node atlas/mar_rift_casos.mjs
+            node atlas/sea_rift_casos.mjs
             node atlas/param_gate_casos.mjs
             node atlas/harness_agentes_casos.mjs
             node atlas/phase_M0_cases.mjs

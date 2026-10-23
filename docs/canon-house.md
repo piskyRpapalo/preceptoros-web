@@ -72,7 +72,7 @@ preceptoros.org · theGame · REALISMO ANIME HONESTO (R1, FIRMO 2026-10-12): el 
    3. MORF ARMONICO: si la onda cambia (army, pinzas), sus terminos [k, ax, ay, fase] se interpolan en MORF_MS (2 s);
       jamas un salto. Movimiento reducido: sin morf, sin parpadeo, sin vaiven.
    4. El LATIDO sigue siendo el brillo: un halo en BANDA (no un desenfoque) del ancho del latido.
-   El paseo J1 no se toca: esto solo pinta donde mar-cangrejos ya lo puso. Devuelve las mismas anclas que
+   El paseo J1 no se toca: esto solo pinta donde sea-crabs ya lo puso. Devuelve las mismas anclas que
    `AtlasCangrejo.pinta`. Sin red, sin azar; el reloj de pantalla solo anima (proyeccion, no decision).
 
 
@@ -192,7 +192,7 @@ Puro: un paso desde `a` hacia `b`, como mucho `v`. Devuelve [x, y, llego].
 
 ## public/game/crab_free_move.js:50
 
-Cada cuadro, desde mar-cangrejos (solo TU cangrejo): base = donde lo pone el paseo; circ = lo despejado.
+Cada cuadro, desde sea-crabs (solo TU cangrejo): base = donde lo pone el paseo; circ = lo despejado.
 
 
 ## public/game/crab_free_move.js:69

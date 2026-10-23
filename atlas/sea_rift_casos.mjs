@@ -1,10 +1,10 @@
-// mar_rift · pintor de tesela estilo rift (decision mia, sin firma): exporta solo {textura, niebla}; colores solo desde AtlasComicTokens.NEUTRAL; lecho desde AtlasMarFondo.lecho (si falta, sustituto marcado en la medida).
+// sea_rift · pintor de tesela estilo rift (decision mia, sin firma): exporta solo {textura, niebla}; colores solo desde AtlasComicTokens.NEUTRAL; lecho desde AtlasMarFondo.lecho (si falta, sustituto marcado en la medida).
 import { readFileSync } from 'node:fs';
 import { createContext, runInContext } from 'node:vm';
 import { fileURLToPath } from 'node:url';
 
 const RUTA = (p) => fileURLToPath(new URL('../public/game/' + p, import.meta.url));
-const FUENTE_RIFT = (() => { try { return readFileSync(RUTA('mar_rift.js'), 'utf8'); } catch (e) { return null; } })();
+const FUENTE_RIFT = (() => { try { return readFileSync(RUTA('sea_rift.js'), 'utf8'); } catch (e) { return null; } })();
 const CASOS = [];
 const caso = (n, nombre, f) => {
   let r;
@@ -42,7 +42,7 @@ function aRgbTest(s) {
 function cargar(sustituciones = {}, conLecho = true) {
   const ctx = { document: DOC };
   createContext(ctx);
-  const ficheros = ['tabla_semantica.js', 'comic_tokens.js', 'escena.js', 'mar-fondo.js', 'mar_rift.js'];
+  const ficheros = ['tabla_semantica.js', 'comic_tokens.js', 'escena.js', 'sea-floor.js', 'sea_rift.js'];
   for (const f of ficheros) {
     let src = readFileSync(RUTA(f), 'utf8');
     if (sustituciones[f]) {
@@ -51,7 +51,7 @@ function cargar(sustituciones = {}, conLecho = true) {
       src = src.replace(de, a);
     }
     runInContext(src, ctx, { filename: f });
-    if (f === 'mar-fondo.js' && conLecho && typeof ctx.AtlasMarFondo.lecho !== 'function') {
+    if (f === 'sea-floor.js' && conLecho && typeof ctx.AtlasMarFondo.lecho !== 'function') {
       ctx.AtlasMarFondo.lecho = LECHO_SUSTITUTO;
       ctx.__lechoSustituto = true;
     }
@@ -80,7 +80,7 @@ function pixeles(datos) {
 const TESELAS = [[0, 0], [1, 0], [0, 1], [3, -2], [-2, 5]];
 
 caso(1, 'existe, <= 16384 B, sin comentarios, sin Math.random/Date/fetch/localStorage, sin literales de color', () => {
-  if (FUENTE_RIFT === null) { return { ok: false, medida: 'mar_rift.js NO existe' }; }
+  if (FUENTE_RIFT === null) { return { ok: false, medida: 'sea_rift.js NO existe' }; }
   const bytes = Buffer.byteLength(FUENTE_RIFT, 'utf8');
   const malos = [];
   if (bytes > 16384) { malos.push('tamano ' + bytes); }
