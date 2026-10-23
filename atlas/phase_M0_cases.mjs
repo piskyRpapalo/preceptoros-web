@@ -3,9 +3,12 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 const raw = readFileSync(new URL('./fixtures/m0-en.json', import.meta.url));
-const baseline = 'b81b02c25f594d885bd1a06ad8ac9df1c01bd4d4159b8f3d9b07fecb3c880939';
+// G5a: the two incubation labels use WavesCraft; the prior object remains in Git history.
+const baseline = 'cd6d33ee6780780189482bfa031aa36f00d0c2b2709e3112f08b203b7676ee9a';
 const digest = value => createHash('sha256').update(JSON.stringify(value)).digest('hex');
 function validate(value) {
+  assert.equal(value.ui.inc_h, 'WavesCraft', 'M0 incubation name');
+  assert.equal(value.ui.army_carga, 'Opening WavesCraft…', 'M0 loading name');
   assert.equal(digest(value), baseline, 'English object changed');
 }
 const value = JSON.parse(raw);
