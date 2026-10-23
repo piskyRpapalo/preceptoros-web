@@ -200,7 +200,7 @@ const rutas = await shell.keys();
 // 174 con z_cutoff (T_CRT, 2026-10-19): la regla de la rueda Z se pide en la puerta (173 tras retirar descent_scene, +1).
 // 176 con combate_ticks (VT3, 2026-10-19): el paso a paso del combate, extraido de arena.js (+1 ruta).
 // G3 adds the front door composition, view, and stylesheet to the offline shell.
-ok('precachea las portadas, su superficie y el juego', rutas.length === 195, rutas.length+' rutas');
+ok('precachea las portadas, su superficie y el juego', rutas.length === 199, rutas.length+' rutas');
 ok('el shell trae el juego (D7): la puerta, el cangrejo y la arena',
    ['/assets/thegame.js', '/game/gdpr-art25-ephemeral-crab.js', '/game/ui-arena.js', '/assets/atlas-motor.js'].every(r => rutas.includes(r)));
 ok('el shell trae la portada de cada lengua', ['/es/', '/fr/', '/ar/'].every(r => rutas.includes(r)));

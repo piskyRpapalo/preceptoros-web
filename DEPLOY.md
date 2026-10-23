@@ -4,10 +4,10 @@ Status: proposal, draft PR only. The current `wrangler.jsonc` names `preceptoros
 
 ## Route count
 
-Measured at main `4105e9b` from `public/sw-listas.js` and the shell expansion in `public/sw.js`:
+Measured at `ebad187` (E4 branch `mistral/creation-e4-20261023`) from `public/sw-listas.js` and the shell expansion in `public/sw.js`:
 
-Rutas precargadas por el shell: 196
-Rutas distintas del shell: 195
+Rutas precargadas por el shell: 200
+Rutas distintas del shell: 199
 
 The counter preserves declared shell entries, expands the nine language paths, and reports duplicate entries separately. Run `python3 bin/contar_rutas.py` to measure; the gate runs `python3 bin/contar_rutas.py --check-doc DEPLOY.md` and fails on a missing, duplicate, or stale declaration. Historical entries in append-only `PARA_LA_MESA.md` are not rewritten or treated as current documentation.
 
