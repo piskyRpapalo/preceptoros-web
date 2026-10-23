@@ -2,6 +2,7 @@
   'use strict';
   var common = typeof module === 'object' && module.exports;
   var SVG_NS = 'http:' + '//' + 'www.w3.org/2000/svg';
+  var STROKE_CYAN = common ? require('./comic_tokens.js').FRONT_DOOR.cyan : root.AtlasComicTokens.FRONT_DOOR.cyan;
   function feedback() { return common ? require('./creation_feedback.js') : root.CreationFeedback; }
   function editor() { return common ? require('./bubble_editor.js') : root.AtlasBubbleEditor; }
   function make(doc, tag, text) {
@@ -82,7 +83,7 @@
         svg.setAttribute('aria-label', message); svg.style.width = '100%'; svg.style.height = '180px';
         var line = doc.createElementNS(SVG_NS, 'polyline');
         line.setAttribute('points', paint.points().map(function (p) { return p[0] + ',' + p[1]; }).join(' '));
-        line.setAttribute('fill', 'none'); line.setAttribute('stroke', 'currentColor'); line.setAttribute('stroke-width', '5');
+        line.setAttribute('fill', 'none'); line.setAttribute('stroke', STROKE_CYAN); line.setAttribute('stroke-width', '5');
         line.setAttribute('stroke-linecap', 'round'); line.setAttribute('stroke-linejoin', 'round');
         svg.appendChild(line); surface.appendChild(svg);
       }

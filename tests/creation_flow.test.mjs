@@ -25,16 +25,29 @@ test('signed drawing and WAV reopen in a fresh verifier', async () => {
   await assert.rejects(P.verify(JSON.stringify(broken)), /hash|signature/);
 });
 
+test('empty descriptions fail with a named package validation cause', async () => {
+  const raw = JSON.parse(Buffer.from(P.decode(fixture.files['frame.json'])).toString('utf8'));
+  const audio = P.decode(fixture.files['declaration.wav']);
+  await assert.rejects(P.prepare({author:'Browser author', description:'  ', voice_profile:'a'.repeat(64), frame:raw, audio}), /description text/);
+  const flow = readFileSync(new URL('../public/game/creation_flow.js', import.meta.url), 'utf8');
+  assert.match(flow, /Description must contain non-whitespace text/);
+  assert.match(flow, /replace\(\/\^NO_DATA/);
+});
+
 test('the creation page loads its local identity and verifier before the flow', () => {
   const html = readFileSync(new URL('../public/creation.html', import.meta.url), 'utf8');
-  const ordered = ['assets/auth.js', 'game/creation_package.js', 'game/creation_feedback.js',
+  const ordered = ['assets/auth.js', 'game/comic_tokens.js', 'game/creation_package.js', 'game/creation_feedback.js',
     'game/bubble_paint.js', 'game/creation_flow.js'].map(path => html.indexOf(path));
   assert(ordered.every(index => index >= 0));
   assert.deepEqual(ordered, ordered.slice().sort((a,b) => a-b));
   for (const id of ['voice-catalog-file','voice-declaration-file','voice-audio-file',
     'sign-creation','download-creation','creation-file','reader-description']) assert(html.includes('id="' + id + '"'));
+  assert.match(html, /<button id="download-creation" type="button">/);
   const flow = readFileSync(new URL('../public/game/creation_flow.js', import.meta.url), 'utf8');
   assert.match(flow, /Identity\.firmarTexto\(prepared\.manifest\)/);
+  assert.match(flow, /if \(!signedPackage\) \{ status\.textContent = 'NO_DATA · sign the creation first\.'; return; \}/);
+  assert.match(flow, /download\.disabled = false/);
+  assert.match(flow, /setAttribute\('stroke', strokeCyan\)/);
   assert.match(flow, /Package\.verify\(/);
   assert.match(flow, /127\.0\.0\.1.*localhost.*::1/);
 });
