@@ -1068,7 +1068,10 @@ VT2_ETIQUETA = ()
 VT4_SILUETA = ("silueta.js",)
 # Visión Léxica Determinista (Plan Mode B, FIRMO 2026-10-20): proyector léxico < 1 KB, cargado por el Codex.
 VISION_LEXICA = ("lexical_projector.js",)
-FUERA_DE_LA_PUERTA = tuple(sorted(set(PUROS + ARENA + CASA + DESCENSO + VT6 + J1 + VT2_ETIQUETA + VT4_SILUETA + VISION_LEXICA)))
+# La creacion (E1+E2, FIRMO 23-oct): paquete firmado y feedback del dibujo.
+# Puros hasta E4: la pagina que los pedira aun no existe; nadie los carga hoy.
+CREACION = ("creation_package.js", "creation_feedback.js")
+FUERA_DE_LA_PUERTA = tuple(sorted(set(PUROS + ARENA + CASA + DESCENSO + VT6 + J1 + VT2_ETIQUETA + VT4_SILUETA + VISION_LEXICA + CREACION)))
 
 
 class TheGameV15(unittest.TestCase):
