@@ -6,7 +6,7 @@ Estado: **PROPUESTA — NADA aplicado sin FIRMO individual.** Sin tocar main ni 
 
 ## PIEZA (a) · T1 · zoom de pellizco determinista — RE-MEDIR Y CERRAR
 
-- **Qué hay hoy (MEDIDO en el repo):** `public/game/map_zoom.js` — pellizco de dos dedos 0,6→3, rueda sin Ctrl, cada cambio anotado en `data-zoom`; Ctrl+rueda queda para el navegador. Sale de mar.js «para caber en su techo». La medida histórica del Doogee (1,00→2,75 al separar, 3,00 al máximo) vive en PARA_LA_MESA.md (recibo del 13-oct).
+- **Qué hay hoy (MEDIDO en el repo):** `public/game/map_zoom.js` — pellizco de dos dedos 0,6→3, rueda sin Ctrl, cada cambio anotado en `data-zoom`; Ctrl+rueda queda para el navegador. Sale de sea.js «para caber en su techo». La medida histórica del Doogee (1,00→2,75 al separar, 3,00 al máximo) vive en PARA_LA_MESA.md (recibo del 13-oct).
 - **Qué propongo:** NO un cambio de código. Una RE-MEDIDA formal para cerrar T1: protocolo de medida escrito (gesto, duración, dispositivo), tablas esperadas contra lo medido, y sello de cierre en el PR. La pieza ya es determinista por diseño: «el gesto solo fija un numero» (map_zoom.js:4).
 - **Doble lectura:** humano: el mapa responde igual en cada aparato, sin sorpresas. Silicio: `data-zoom` es un contrato medible; misma entrada = mismo factor (función clamp 0,6–3).
 - **Coste en bytes:** 0 de código nuevo; solo el protocolo en Markdown.

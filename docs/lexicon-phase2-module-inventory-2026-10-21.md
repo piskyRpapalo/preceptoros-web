@@ -23,7 +23,7 @@ Count: 128 JavaScript modules; total 727909 B. Each row is byte-measured. No mod
 | `public/game/bubble_light.js` | 6708 | NO_DATA: no isolated frame attribution |
 | `public/game/bubble_world.js` | 6249 | NO_DATA: no isolated frame attribution |
 | `public/game/buildings_toon.js` | 3234 | NO_DATA: no isolated frame attribution |
-| `public/game/cable_llamar.js` | 1998 | NO_DATA: no isolated frame attribution |
+| `public/game/cable_llasea.js` | 1998 | NO_DATA: no isolated frame attribution |
 | `public/game/cable_terminal.js` | 3804 | NO_DATA: no isolated frame attribution |
 | `public/game/canon.js` | 3149 | NO_DATA: no isolated frame attribution |
 | `public/game/casa-lateral.js` | 2310 | NO_DATA: no isolated frame attribution |
@@ -75,11 +75,11 @@ Count: 128 JavaScript modules; total 727909 B. Each row is byte-measured. No mod
 | `public/game/map_nodes_layer.js` | 1772 | NO_DATA: no isolated frame attribution |
 | `public/game/map_pointer_input.js` | 2540 | NO_DATA: no isolated frame attribution |
 | `public/game/map_zoom.js` | 1317 | NO_DATA: no isolated frame attribution |
-| `public/game/mar-anclas.js` | 1258 | NO_DATA: no isolated frame attribution |
-| `public/game/mar-cangrejos.js` | 3083 | NO_DATA: no isolated frame attribution |
-| `public/game/mar-fondo.js` | 4131 | NO_DATA: no isolated frame attribution |
-| `public/game/mar.js` | 13407 | NO_DATA: no isolated frame attribution |
-| `public/game/mar_rift.js` | 1832 | NO_DATA: no isolated frame attribution |
+| `public/game/sea-anchors.js` | 1258 | NO_DATA: no isolated frame attribution |
+| `public/game/sea-crabs.js` | 3083 | NO_DATA: no isolated frame attribution |
+| `public/game/sea-floor.js` | 4131 | NO_DATA: no isolated frame attribution |
+| `public/game/sea.js` | 13407 | NO_DATA: no isolated frame attribution |
+| `public/game/sea_rift.js` | 1832 | NO_DATA: no isolated frame attribution |
 | `public/game/mercado.js` | 5450 | NO_DATA: no isolated frame attribution |
 | `public/game/narragrafo.js` | 6192 | NO_DATA: no isolated frame attribution |
 | `public/game/node_bindings.js` | 3984 | NO_DATA: no isolated frame attribution |

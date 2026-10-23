@@ -122,7 +122,7 @@ await caso('P10: una casa guardada antes de P10 entra sin bandera (null), no se 
 });
 await caso('pureza: el Taller no usa azar, reloj, red ni almacen directo (la caja es db.js)', () => {
   const malos = [];
-  for (const f of ['taller.js', 'ui-taller.js', 'mar-anclas.js']) {
+  for (const f of ['taller.js', 'ui-taller.js', 'sea-anchors.js']) {
     for (const m of ['Math.random', 'Date.', 'fetch(', 'localStorage', 'indexedDB', 'XMLHttpRequest', 'sendBeacon']) { if (sin(f).includes(m)) { malos.push(f + ': ' + m); } }
   }
   return !malos.length || malos;

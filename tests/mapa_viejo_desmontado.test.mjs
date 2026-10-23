@@ -30,7 +30,7 @@ test('the old canvas is not mounted or called from game replay', () => {
 
 test('the new map remains the map view and painter', () => {
   assert.match(read('public/game/ui-arena.js'), /AtlasMar\.crea/);
-  assert.match(read('public/game/mar.js'), /AtlasMapNodes\.pinta/);
+  assert.match(read('public/game/sea.js'), /AtlasMapNodes\.pinta/);
 });
 
 test('obsolete map selector fallbacks are removed while the shared panel remains', () => {

@@ -110,7 +110,7 @@ oracle · notary · depin · coin · clearing · magic · token-as-a-name · **c
 1. **`window.Atlas*` public module names** (AtlasJuego, AtlasToon…) — public contract consumed by tests and the rack; unchanged without a separate sign-off. Their future official names get recorded here when decided.
 2. **Marker `REQUIERE_FIRMA` → `HITL`** — RESUELTO por FIRMO 2026-10-22. Ver entrada HITL en §A. `REQUIERE_FIRMA` queda como alias histórico; textos nuevos usan HITL.
 3. **systemd unit filenames** (`afinador.service`…) — English display names here only; renaming the units is a separate sign-off.
-4. **D3 file-name map** (`mar.js→sea.js`, `cria.js→brood.js`, …) — adopted as official from `INDEX_RENAMING.md`; execution still travels piece by piece under sign-off. As of main f2c0129 the Spanish filenames are still in main — D3 remains pending work, nothing here pre-empts it.
+4. **D3 file-name map** (`sea.js→sea.js`, `cria.js→brood.js`, …) — adopted as official from `INDEX_RENAMING.md`; execution still travels piece by piece under sign-off. As of main f2c0129 the Spanish filenames are still in main — D3 remains pending work, nothing here pre-empts it.
 5. **Rename the Mailbox → the Comando** — one rename, no new repo (the Sovereign's answer, 2026-10-18). GitHub keeps the redirect; the issues live on. Automatic pointer to land in `AGENTS.md`/`llms.txt`. The fate of Customs (aduana) is measured before anything moves. GitHub stays untouched until his sign-off.
 6. **Official name of the signed real-graphic style** — the style is signed (adoption in situ, app and web); its official English name is not coined yet. Coined here, once, when he chooses.
 
