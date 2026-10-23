@@ -194,6 +194,15 @@
     return true;
   }
 
+  function frontDoor() {
+    var panel = document.getElementById('juego-panel');
+    if (!panel || capa) { return false; }
+    pide(nuevos([['front_door_view.js']])).then(function () {
+      return window.AtlasFrontDoorView.load(pide, nuevos, panel, { explore: function () { abre(null, 'casa'); }, tutorial: tutorial });
+    }).catch(function () { console.warn('NO_DATA · the front door could not load'); abre(null, 'casa'); });
+    return true;
+  }
+
   var tutorialView = null;
   function tutorial() {
     var panel = document.getElementById('juego-panel');
@@ -224,5 +233,5 @@
     }).catch(function () { console.warn('Guided practice unavailable: required local modules could not load.'); return false; });
   }
 
-  window.TheGame = { abre: abre, army: cargaArmy, codex: codex, tutorial: tutorial, ve: function (id) { muestra(HOJA[id] ? id : null); } };
+  window.TheGame = { frontDoor: frontDoor, abre: abre, army: cargaArmy, codex: codex, tutorial: tutorial, ve: function (id) { muestra(HOJA[id] ? id : null); } };
 })();

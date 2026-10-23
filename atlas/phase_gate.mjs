@@ -27,6 +27,11 @@ for (const [, path] of scripts[1].matchAll(/\[\s*'([^']+)'/g)) {
   entry.add(path.startsWith('/') ? path.slice(1) : 'assets/' + path);
 }
 for (const [, path] of styles[1].matchAll(/'([^']+)'/g)) entry.add('assets/' + path);
+const front = readFileSync(new URL('assets/front_door_view.js', root), 'utf8');
+const frontScripts = front.match(/var SCRIPTS = (\[[\s\S]*?\]);/);
+assert(frontScripts, 'front door load set missing');
+entry.add('assets/front_door_view.js'); entry.add('assets/front_door.css');
+for (const [, path] of frontScripts[1].matchAll(/'([^']+)'/g)) entry.add(path.slice(1));
 let gzip = 0;
 for (const path of entry) {
   assert(files.includes(path), 'initial artifact missing: ' + path);
