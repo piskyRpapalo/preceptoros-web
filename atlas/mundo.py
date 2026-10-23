@@ -41,7 +41,15 @@ PIEZAS = ["atlas-arte.js", "atlas-coord.js", "atlas-carta.js", "atlas-ondas.js",
 def gzip_juego():
     total = 0
     base = re.search(r"var LENGUAS = \['(\w+)'", (ASSETS / "thegame.js").read_text(encoding="utf-8")).group(1)
-    for f in [ASSETS / n for n in PIEZAS] + [PUBLICO / f"atlas-{base}.json"]:
+    paths = {ASSETS / n for n in PIEZAS} | {PUBLICO / f"atlas-{base}.json"}
+    view = ASSETS / "front_door_view.js"
+    if view.exists():
+        paths |= {view, ASSETS / "front_door.css"}
+        scripts = re.search(r"var SCRIPTS = (\[[\s\S]*?\]);", view.read_text(encoding="utf-8"))
+        if not scripts:
+            raise ValueError("front door load set is absent")
+        paths |= {PUBLICO / name.lstrip("/") for name in re.findall(r"'([^']+)'", scripts.group(1))}
+    for f in sorted(paths):
         total += len(gzip.compress(f.read_bytes(), mtime=0))
     return total
 
