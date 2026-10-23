@@ -87,6 +87,7 @@ The Sovereign signed these names in p0x#52 and p0x#54. The English form is canon
 | the Flats | las Llanuras | Habitat parallel to the Forest. | FIRMO · p0x#52 |
 | keepsake | recuerdo | Official name of the phase 2 tutorial object. | FIRMO · p0x#54 |
 | the Trunk | el tronco | The web as one object: one served surface, one action register, and the preceptoros.bubble/1 contract. Worlds are WORLDS, never branches. | FIRMO · p0x#54 |
+| the front door | la puerta principal / portada | The direct front page drawn with bubble_editor and bubble_paint; four native actions keep tutorial, game entry, local key and Questions. | FIRMO · web#272 · G3 |
 ## D · Never confuse
 
 - **Ledger vs Register** — rounds log vs the rack's signed record.
