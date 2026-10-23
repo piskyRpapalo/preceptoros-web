@@ -43,7 +43,7 @@
             sello: { eclosion: 'PROPUESTA_PENDIENTE_FIRMA', adopcion: 'FIRMADO' },
       urgencia: { PROPUESTA_PENDIENTE_FIRMA: 1, FIRMADO: 0 },
       vibrato_hz: 6, vibrato_prof: 0.02 },
-    army_tope: 60,
+    army_tope: 30,
         combate: {
       rondas: 40, tropas_max: 10, armadura_div: 2,
       ataque: { base: 3, aura: 2, inercia: 1, profundidad: 1 },
