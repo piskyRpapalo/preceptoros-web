@@ -5,6 +5,8 @@ import { join } from 'node:path';
 const ROOT = new URL('../', import.meta.url).pathname;
 const AGENT_FACING = ['llms.txt', 'AGENTS.md', 'CLAUDE.md', 'README.md'];
 const FORBIDDEN = ['oracle', 'notary', 'depin', 'currency', 'clearing', 'magic', 'cryptocurrency'];
+const FORBIDDEN_LIST_MARKER = '<!-- H7-FORBIDDEN-LIST -->';
+const FORBIDDEN_LIST_PREFIX = '- Vocablos prohibidos en código y UI:';
 /* 'token' is audited separately: 'tokens' (LLM count) is a technical term; the
    guardian reports it as a triage finding, not a hard red.
    'cryptocurrency' is banned (FIRMO 2026-10-22); 'cryptography'/'cryptographic'
@@ -47,7 +49,7 @@ function citedCommands() {
   return cmds;
 }
 
-/* MEASURE BEFORE (permanent house rule): the guardian MEASURES and REPORTS with
+/* MEASURE (permanent house rule): the guardian MEASURES and REPORTS with
    file:line counts. Findings feed the next H pieces; this PR fixes nothing.
    The strict gates below activate with H7_ESTRICTO=1 so the Mesa can see the
    red measured today; the default mode measures without blocking. */
@@ -91,25 +93,34 @@ test('H7 measure · ZERO SECRETS: private literals read from CI env only, never 
 
 test('H7 measure · FORBIDDEN WORDS absent from agent-facing files (strict: red on presence)', { skip: process.env.H7_ESTRICTO !== '1' }, () => {
   const findings = [];
+  let markerCount = 0;
   for (const f of AGENT_FACING) {
-    const t = readAgentFile(f).toLowerCase();
-    t.split('\n').forEach((line, i) => {
+    const lines = readAgentFile(f).toLowerCase().split('\n');
+    lines.forEach((line, i) => {
+      if (line.includes(FORBIDDEN_LIST_MARKER.toLowerCase())) {
+        markerCount += 1;
+        if (f !== 'AGENTS.md' || !line.startsWith(FORBIDDEN_LIST_PREFIX.toLowerCase())) {
+          findings.push(`${f}:${i + 1}: invalid forbidden-list marker`);
+        }
+        return;
+      }
       for (const w of FORBIDDEN) {
         if (line.includes(w)) { findings.push(`${f}:${i + 1}: ${w}`); }
       }
     });
   }
+  if (markerCount !== 1) { findings.push(`forbidden-list marker count: ${markerCount}`); }
   if (findings.length) { throw new Error(`forbidden words present (${findings.length}):\n${findings.join('\n')}`); }
 });
 
-test('H7 measure before (declared counts, feeds the next H pieces; this PR fixes nothing)', () => {
+test('H7 measure current (declared counts and causes)', () => {
   const refs = citedRefs();
   const dead = refs.filter(r => !existsInTree(r.path));
   const cmds = citedCommands();
-  console.log(`MEASURE BEFORE · live refs: ${refs.length} cited, ${refs.length - dead.length} alive, ${dead.length} dead`);
+  console.log(`MEASURE CURRENT · live refs: ${refs.length} cited, ${refs.length - dead.length} alive, ${dead.length} dead`);
   dead.forEach(m => console.log(`  dead: ${m.where} -> ${m.path}`));
-  console.log(`MEASURE BEFORE · live commands: ${cmds.length} cited`);
-  console.log(`MEASURE BEFORE · forbidden words in agent-facing files: see docs/canon-context-hygiene.md for the triage table`);
-  console.log(`MEASURE BEFORE · zero secrets: ${process.env.PRIVATE_LITERALS ? 'gate armed from CI env' : 'NO_DATA with cause: PRIVATE_LITERALS not set (CI config)'}`);
+  console.log(`MEASURE CURRENT · live commands: ${cmds.length} cited`);
+  console.log(`MEASURE CURRENT · forbidden words in agent-facing files: see docs/canon-context-hygiene.md for the triage table`);
+  console.log(`MEASURE CURRENT · zero secrets: ${process.env.PRIVATE_LITERALS ? 'gate armed from CI env' : 'NO_DATA with cause: PRIVATE_LITERALS not set (CI config)'}`);
   if (!refs.length) { throw new Error('the guardian found nothing to measure: it cannot go red'); }
 });
