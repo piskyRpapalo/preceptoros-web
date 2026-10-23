@@ -10,7 +10,7 @@
 > ([study](https://github.com/piskyRpapalo/study), the public doctrine and
 > corpus). The architect's profile is
 > [piskyRpapalo](https://github.com/piskyRpapalo). The companion's contract
-> for contributors lives in `PRECEPTOR.md` in the APP repository.
+> for contributors lives in [the APP repository guide](https://github.com/piskyRpapalo/PreceptorOS/blob/main/PRECEPTOR.md).
 
 For the declared reading depths and budgets, see [the canonical Study guide](https://github.com/piskyRpapalo/study/blob/main/08-ai-fluency.md).
 

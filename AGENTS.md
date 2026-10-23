@@ -29,7 +29,7 @@ Léelo antes de tocar nada. Vale para toda sesión de agente (rack, nube, web) j
 - PARA_LA_MESA.md es un ledger append-only: solo lectura para agentes; los recibos se publican en el PR y la Mesa los appenda.
 
 ## Cercos (sin excepciones)
-- Vocablos prohibidos en código y UI: oraculo, notario, depin, token, moneda, clearing, magia.
+- Vocablos prohibidos en código y UI: oraculo, notario, depin, token, moneda, clearing, magia. <!-- H7-FORBIDDEN-LIST -->
 - Máximo 25 MiB por bloque (revocado el tope de 16 KiB el 2026-10-11, firma D2; solo sube por excepción firmada en EXCEPCIONES.md) · vanilla JS sin build en public/ · cero red nueva · cargador solo 'en' · inglés primero.
 - Sin FOMO, sin reloj de pared (ciclos de juego), sin probabilidad oculta, la casa no gana.
 - A11Y: mouse, teclado, táctil, mundo audible, ≥44 px. D67: nada del interior de la casa sale al juego.

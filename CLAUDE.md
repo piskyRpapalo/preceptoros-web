@@ -9,7 +9,7 @@ Todo lo que se construye aquí es **marca personal de PreceptorOS** (el Soberano
 - **Sensores honestos.** Lo que no se mide es `NO_DATA` con su causa; lo heurístico lleva `EMULADO`; lo provisional se dice en pantalla. Lo técnico va **siempre plegado** («Technical details»).
 - **Sin servidor.** Entre personas viajan **sobres firmados** (`atlas.sobre/1`) en **paquetes** (`atlas.paquete_mp/1`) por el canal que elija la persona (Send, Copy, Download). La semilla de todo combate sale de un **commit-reveal**: nadie la elige a solas.
 - **Determinismo.** Todo resultado se vuelve a jugar desde la ley, la semilla y las acciones. Enteros; sin `Math.random`, sin `Date` con autoridad.
-- **Peso con ley.** Máximo 25 MiB por bloque (límite técnico de despliegue). Los 16 KiB por pieza son una **regla de eficiencia**, modificable por la Mesa (D-B, FIRMO 2026-10-22); no son un límite de seguridad. La vara de rendimiento son los fps medidos en el Doogee. La puerta del juego (`gzip_juego_b`, medida por `atlas/mundo.py`) tiene que quedar por debajo de 153 600 B, o la grieta hace el doble de daño. `vigia.yml` avisa cada día. Lo que no hace falta al abrir se carga **a demanda** (Army, Arena, opinar).
+- **Peso con ley.** Máximo 25 MiB por bloque (límite técnico de despliegue). Los 16 KiB por pieza son una **regla de eficiencia**, modificable por la Mesa (D-B, FIRMO 2026-10-22); no son un límite de seguridad. La vara de rendimiento son los fps medidos en el Doogee. La puerta del juego (`gzip_juego_b`, medida por `atlas/mundo.py`) tiene que quedar por debajo de 153 600 B, o la grieta hace el doble de daño. `.github/workflows/vigia.yml` avisa cada día. Lo que no hace falta al abrir se carga **a demanda** (Army, Arena, opinar).
 - **El juego habla solo inglés hoy.** Los textos van a `public/atlas-en.json` o a su familia a demanda (`atlas-opina-en.json`, `atlas-arena-en.json`). No se traduce sin orden.
 
 ## Mapa
@@ -34,13 +34,13 @@ Todo lo que se construye aquí es **marca personal de PreceptorOS** (el Soberano
    for f in motor piloto gacha opinion mp cria duelo; do node atlas/${f}_casos.mjs > /dev/null || echo "falla $f"; done
    ```
 4. **Sello** (si cambia algo bajo `public/`). El orden es un PUNTO FIJO, medido el 2026-10-04: la huella
-   incluye `counters.json` y `atlas-mundo.json`, y `coherencia-publica.py` corre el gate, que publica
-   `pruebas_web=NO_DATA` si la huella esta roja en ese instante. Por eso se sella ANTES de medir:
+   incluye `counters.json` y `atlas-mundo.json`, y el valor `pruebas_web` depende de un productor externo; en esta copia el productor no está versionado, así que queda
+   `NO_DATA` (causa: productor ausente). Por eso se sella ANTES de medir:
    ```
    python3 bin/sellar.py --sellar                    # sube VERSION
    python3 contadores.py                             # peso_sitio con el sw.js nuevo
    python3 bin/sellar.py --sellar --version <la misma>   # huella verde antes de medir
-   python3 ~/p0x/bin/coherencia-publica.py --arbol <este repo> --si   # --arbol obligatorio (B1, 2026-10-11)
+   # NO_DATA: falta el productor externo de pruebas_web en este checkout y en p0x/master.
    python3 atlas/mundo.py                            # lee pruebas_web y version_sw
    node atlas/arnes_piloto.mjs
    python3 contadores.py
