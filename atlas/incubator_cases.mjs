@@ -48,7 +48,7 @@ const action = Invoca.crea({ G: { TCS: { tc1: { coste: { cobre: 1, luz: 1 } } } 
   T: (key) => key === 'inc_ciclo_nd' ? 'NO_DATA · game cycle unavailable' : key,
   boton: () => ({}), rellena: (x) => x, dice: (x) => messages.push(x), ins: () => ({ ciclo: null, recursos: { cobre: 10, luz: 10 } }),
   cicloMedido: () => null, calor: () => 0, R: { nido: list() }, Z: { huevos: [] }, pinta: () => {} });
-action.invoca('tc1');
+await action.invoca('tc1');
 assert.deepEqual(messages, ['NO_DATA · game cycle unavailable']);
 assert.equal(debits, 0);
 assert.equal(identityCalls, 0);

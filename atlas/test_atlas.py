@@ -2320,14 +2320,16 @@ class MapaMovible(unittest.TestCase):
             pass
         u = self._js("ui.js")
         for pieza in ("var o = A.eslabon(c, tc, Z.clave);", "window.Identity.firmar(o)", "A.cadenaWeb(Z.clave).pon(Z.cadena);",
-                      "Z.cadena = A.anexa(Z.cadena, o, f.firma, semilla, desde, desde + TC.incuba);",
+                      "var next = A.anexa(Z.cadena, o, f.firma, semilla, desde, desde + TC.incuba);",
                       "A.verificaCadena(c, pub, A.verificaWeb, A.semillaWeb)", "Z.huevos = Z.cadena ? A.huevos(Z.cadena) : [];",
                       "Z.cadena = A.abre(Z.cadena, h.seq)", "if (!capa || !capa.isConnected || document.hidden) { return; }"):
             with self.subTest(pieza=pieza):
                 self.assertIn(pieza, u)
-        # Al invocar se GUARDA la cadena antes de poner el huevo en el nido (sabotaje medido: quitar ese guardado
-        # pasaba en verde porque `eclosiona` tambien guarda; ahora se exige el orden exacto).
-        self.assertIn("A.cadenaWeb(Z.clave).pon(Z.cadena);\n          Z.huevos.push({ tc: tc, semilla: semilla,", u, "invocar no guarda la cadena")
+        # G5b measures transaction completion and rapid requests behaviorally.
+        # The former substring guard accepted fire-and-forget writes before success.
+        r = subprocess.run(["node", "--test", "tests/invocation_persistence.test.mjs"],
+                           cwd=RAIZ.parent, capture_output=True, text=True, timeout=60)
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
         for viejo in ("capa.open", "atlas.invocacion/1", "n += 1"):
             with self.subTest(retirado=viejo):
                 self.assertNotIn(viejo, u)

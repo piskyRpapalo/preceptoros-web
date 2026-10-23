@@ -103,7 +103,7 @@
   }
 
 
-  function caja(base, almacen, clave) {
+  function caja(base, almacen, clave, strict) {
     function db() {
       return new Promise(function (ok, mal) {
         var r = raiz.indexedDB.open(base, 1);
@@ -114,18 +114,18 @@
     return {
       lee: function () {
         return db().then(function (d) {
-          return new Promise(function (ok) {
+          return new Promise(function (ok, mal) {
             var q = d.transaction(almacen).objectStore(almacen).get(clave);
-            q.onsuccess = function () { d.close(); ok(q.result || null); }; q.onerror = function () { d.close(); ok(null); };
+            q.onsuccess = function () { d.close(); ok(q.result || null); }; q.onerror = function () { d.close(); if (strict) { mal(q.error); } else { ok(null); } };
           });
-        }).catch(function () { return null; });
+        }).catch(function (error) { if (strict) { throw error; } return null; });
       },
       pon: function (v) {
         return db().then(function (d) {
           return new Promise(function (ok, mal) {
             var tx = d.transaction(almacen, 'readwrite'); tx.objectStore(almacen).put(v, clave);
             tx.oncomplete = function () { d.close(); ok(true); };
-            tx.onerror = function () { d.close(); mal(tx.error); };
+            tx.onerror = tx.onabort = function () { d.close(); mal(tx.error || new Error('NO_DATA · device transaction aborted')); };
           });
         });
       }
@@ -211,7 +211,7 @@
       });
     }, Promise.resolve(''));
   }
-  function cadenaWeb(clave) { return caja('atlas-invocaciones', 'cadena', clave); }
+  function cadenaWeb(clave) { return caja('atlas-invocaciones', 'cadena', clave, true); }
 
   function piedad(cadena, rareza) {
     var causa = cadena ? compruebaCadena(cadena) : 'sin cadena';
