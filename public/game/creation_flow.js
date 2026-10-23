@@ -1,6 +1,7 @@
 (function () {
   'use strict';
   var Package = window.CreationPackage, Feedback = window.CreationFeedback;
+  var strokeCyan = window.AtlasComicTokens.FRONT_DOOR.cyan;
   var editor = document.getElementById('editor-panel'), reader = document.getElementById('reader-panel');
   var description = document.getElementById('creation-description'), status = document.getElementById('creation-status');
   var voiceStatus = document.getElementById('voice-status'), sign = document.getElementById('sign-creation');
@@ -10,7 +11,7 @@
   var objectUrls = [];
 
   function invalidate(message) {
-    prepared = null; signedPackage = null; sign.disabled = true; download.disabled = true;
+    prepared = null; signedPackage = null; sign.disabled = true; download.disabled = false;
     if (message) status.textContent = message;
   }
   function dataUrl(name, bytes, mime) {
@@ -39,7 +40,7 @@
     svg.setAttribute('aria-label', 'Verified ribbon drawing with ' + points.length + ' points');
     var line = document.createElementNS(svg.namespaceURI, 'polyline');
     line.setAttribute('points', points.map(function (p) { return p.join(','); }).join(' '));
-    line.setAttribute('fill', 'none'); line.setAttribute('stroke', 'currentColor'); line.setAttribute('stroke-width', '5');
+    line.setAttribute('fill', 'none'); line.setAttribute('stroke', strokeCyan); line.setAttribute('stroke-width', '5');
     line.setAttribute('stroke-linecap', 'round'); line.setAttribute('stroke-linejoin', 'round'); svg.appendChild(line);
     document.getElementById('creation-art').replaceChildren(svg);
     document.getElementById('creation-author').textContent = 'Author: ' + value.manifest.author;
@@ -99,6 +100,7 @@
   document.getElementById('sign-creation').addEventListener('click', async function () {
     invalidate('Signing drawing and statement…');
     try {
+      if (!description.value.trim()) throw new Error('Description must contain non-whitespace text.');
       if (!drawing || !catalog || !declaration || !audioBytes) throw new Error('A valid drawing and one voice profile are required.');
       if (!window.Identity || !Identity.quien() || !Identity.publica || !Identity.firmarTexto) throw new Error('Create or unlock your web identity first.');
       var frame = drawing.frame();
@@ -108,10 +110,13 @@
       signedPackage = await Package.finish(prepared, publicKey, signature);
       download.disabled = false; status.textContent = 'Drawing and statement signed by ' + Identity.quien() + '.';
       await sound.playClip('signed');
-    } catch (error) { invalidate('NO_DATA · ' + (error.message || String(error))); }
+    } catch (error) {
+      var cause = (error.message || String(error)).replace(/^NO_DATA\s*·\s*/, '');
+      invalidate('NO_DATA · ' + cause);
+    }
   });
   document.getElementById('download-creation').addEventListener('click', async function () {
-    if (!signedPackage) return;
+    if (!signedPackage) { status.textContent = 'NO_DATA · sign the creation first.'; return; }
     var blob = new Blob([JSON.stringify(signedPackage)], { type: 'application/json' });
     var url = URL.createObjectURL(blob); objectUrls.push(url);
     var link = document.createElement('a'); link.href = url; link.download = 'preceptoros-creation.json';

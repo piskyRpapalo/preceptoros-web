@@ -6,6 +6,7 @@ import { FakeDocument, host } from './fake_dom.mjs';
 const require = createRequire(import.meta.url);
 const P = require('../public/game/bubble_paint.js');
 const B = require('../public/game/bubble_language.js');
+const Tokens = require('../public/game/comic_tokens.js');
 
 test('Paint records points as a single frame ribbon and undo/redo is exact', () => {
   const p = P.create({ id: 'PAINT', band: 'paper' });
@@ -48,4 +49,5 @@ test('Paint mounts accessible DOM and projects points as SVG without HTML parsin
   assert.ok(target.querySelector('[data-frame]').textContent.includes('preceptoros.bubble/1'));
   assert.doesNotMatch(require('node:fs').readFileSync(new URL('../public/game/bubble_paint.js', import.meta.url), 'utf8'), /innerHTML/);
   assert.equal(surface.querySelector('polyline').getAttribute('points'), '12,18 24,30');
+  assert.equal(surface.querySelector('polyline').getAttribute('stroke'), Tokens.FRONT_DOOR.cyan);
 });
