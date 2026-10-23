@@ -43,7 +43,7 @@
     if (!I || !I.quien || !I.quien()) { return Promise.reject(new Error('sin identidad')); }
     return I.publica().then(function (pub) {
       if (pub === Z.clave && Z.cadena) { return Z.cadena; }
-      return A.cadenaWeb(pub).lee().then(function (c) {
+      return A.cadenaWeb(pub).lee().catch(function () { throw new Error('NO_DATA · invocation storage is unavailable on this device.'); }).then(function (c) {
         c = c || [];
         return A.verificaCadena(c, pub, A.verificaWeb, A.semillaWeb).then(function (x) {
           Z.clave = pub; Z.causa = x; Z.cadena = x ? null : c;
@@ -55,11 +55,27 @@
       });
     });
   }
-  function invoca(tc) {
+  function savePaid(next, tc) {
+    Z.pending = { chain: next, tc: tc };
+    return A.cadenaWeb(Z.clave).pon(next).then(function () {
+      Z.cadena = next; Z.pending = null; Z.huevos = A.huevos(next);
+      var retry = R.caja.querySelector('.invocation-retry'); if (retry) { retry.remove(); }
+      S.suena('pop', calor()); dice(rellena(T('inc_hecha'), { tc: T(tc) })); pinta();
+    }, function () {
+      if (!R.caja.querySelector('.invocation-retry')) {
+        var b = boton('Retry saving the paid egg'); b.classList.add('invocation-retry'); b.style.minHeight = '44px';
+        b.addEventListener('click', function () { invoca(tc); }); R.caja.appendChild(b);
+      }
+      throw new Error('NO_DATA · the paid egg is not confirmed in device storage. Keep this tab open and retry saving.');
+    });
+  }
+  var queue = Promise.resolve();
+  function invokeOne(tc) {
+    if (Z.pending) { return savePaid(Z.pending.chain, Z.pending.tc); }
     var i = ins(), TC = G.TCS[tc];
     if (!i || !cicloMedido || cicloMedido(i) === null) { dice(T('inc_ciclo_nd')); return; }
     if (i.recursos.cobre < TC.coste.cobre || i.recursos.luz < TC.coste.luz) { dice(T('inc_falta')); return; }
-    cadenaLista().then(function (c) {
+    return cadenaLista().then(function (c) {
       if (!c) { dice('NO_DATA · ' + Z.causa); return; }
       var o = A.eslabon(c, tc, Z.clave);
       return window.Identity.firmar(o).then(function (f) {
@@ -68,15 +84,15 @@
           if (desde === null) { dice(T('inc_ciclo_nd')); return; }
           var ev = window.AtlasJuego.invoca(TC.coste);
           if (!ev || ev.resultado !== 'ok') { dice(T('inc_falta')); return; }
-          Z.cadena = A.anexa(Z.cadena, o, f.firma, semilla, desde, desde + TC.incuba);
-          A.cadenaWeb(Z.clave).pon(Z.cadena);
-          Z.huevos.push({ tc: tc, semilla: semilla, desde: desde, hasta: desde + TC.incuba, seq: o.seq });
-          S.suena('pop', calor());
-          dice(rellena(T('inc_hecha'), { tc: T(tc) }));
-          pinta();
+          var next = A.anexa(Z.cadena, o, f.firma, semilla, desde, desde + TC.incuba);
+          return savePaid(next, tc);
         });
       });
-    }).catch(function (e) { sinIdentidad(e, function () { invoca(tc); }); });
+    });
+  }
+  function invoca(tc) {
+    queue = queue.then(function () { return invokeOne(tc); }).catch(function (e) { sinIdentidad(e, function () { invoca(tc); }); });
+    return queue;
   }
     return { firma: firma, sinIdentidad: sinIdentidad, cadenaLista: cadenaLista, invoca: invoca, pintaNido: pintaNido };
   }

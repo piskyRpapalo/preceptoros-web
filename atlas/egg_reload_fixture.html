@@ -1,0 +1,25 @@
+<!doctype html><meta charset="utf-8"><title>G5b isolated reload fixture</title>
+<main id="box"></main><p id="status" role="status"></p>
+<script src="/assets/atlas-motor.js"></script><script src="/game/valores.js"></script>
+<script src="/game/gacha.js"></script><script src="/game/db.js"></script><script src="/game/ui-invoca.js"></script>
+<script>
+// Test-only apparatus: real motor, signatures and IndexedDB; no production identity.
+var ready=false, inv, pub, Z={huevos:[],cadena:null,clave:null,causa:''}, messages=[];
+var engine=JSON.parse(sessionStorage.getItem('engine')||'null')||AtlasMotor.inicial();
+if(!sessionStorage.getItem('engine'))while(engine.cobre<100)engine=AtlasMotor.ciclo(engine);
+function hex(b){return Array.from(new Uint8Array(b),x=>x.toString(16).padStart(2,'0')).join('');}
+function bytes(h){return new Uint8Array(h.match(/../g).map(x=>parseInt(x,16)));}
+async function boot(){
+ let pair=JSON.parse(sessionStorage.getItem('keys')||'null');
+ if(!pair){const k=await crypto.subtle.generateKey('Ed25519',true,['sign','verify']);pair={priv:hex(await crypto.subtle.exportKey('pkcs8',k.privateKey)),pub:hex(await crypto.subtle.exportKey('raw',k.publicKey))};sessionStorage.setItem('keys',JSON.stringify(pair));}
+ pub=pair.pub;const privateKey=await crypto.subtle.importKey('pkcs8',bytes(pair.priv),'Ed25519',false,['sign']);
+ window.Identity={quien:()=> 'browser-fixture',publica:()=>Promise.resolve(pub),firmar:async o=>({firma:'ed25519:'+hex(await crypto.subtle.sign('Ed25519',privateKey,new TextEncoder().encode(JSON.stringify(o))))})};
+ window.AtlasJuego={invoca:cost=>{engine=AtlasMotor.invocar(engine,cost);sessionStorage.setItem('engine',JSON.stringify(engine));return engine.eventos.at(-1);}};
+ const box=document.querySelector('#box');
+ inv=AtlasInvoca.crea({A:AtlasArmy,G:AtlasGacha,S:{suena(){}},Z,R:{caja:box},T:k=>k,el:t=>document.createElement(t),boton:text=>{const b=document.createElement('button');b.textContent=text;return b;},
+  ins:()=>({ciclo:engine.t,recursos:{cobre:engine.cobre,luz:engine.luz}}),cicloMedido:i=>i.ciclo,calor:()=>0,pinta(){},dice:m=>{messages.push(m);document.querySelector('#status').textContent=m;},rellena:s=>s});
+ await inv.cadenaLista();ready=true;
+}
+async function measure(){const chain=await AtlasArmy.cadenaWeb(pub).lee();return {eggs:Z.huevos.length,paid:engine.eventos.filter(e=>e.tipo==='invocar'&&e.resultado==='ok').length,copper:engine.cobre,cause:Z.causa,seq:(chain||[]).map(e=>e.obj.seq),chain,entryBytes:(chain||[]).map(e=>new TextEncoder().encode(JSON.stringify(e)).length)};}
+boot().catch(e=>{throw e;});
+</script>
