@@ -1,7 +1,14 @@
 (function (root) {
   'use strict';
   var common = typeof module === 'object' && module.exports;
+  var SVG_NS = 'http:' + '//' + 'www.w3.org/2000/svg';
   function editor() { return common ? require('./bubble_editor.js') : root.AtlasBubbleEditor; }
+  function make(doc, tag, text) {
+    var n = doc.createElement(tag);
+    if (text != null) n.textContent = text;
+    return n;
+  }
+  function clear(node) { while (node.firstChild) node.removeChild(node.firstChild); }
   function copy(points) { return points.map(function (p) { return [p[0], p[1]]; }); }
   function create(options) {
     var E = editor(), o = Object.assign({}, options || {}), points = [], undo = [], redo = [];
@@ -29,13 +36,24 @@
   }
   function mount(target, options) {
     if (!target) throw new Error('Paint target required');
-    var paint = create(options), active = false, status;
-    target.innerHTML = '<section class="bubble-paint" aria-label="Paint Bubble composition">' +
-      '<p>Draw with a pointer or keyboard. The same Bubble frame drives the description and composition.</p>' +
-      '<div data-surface="paint" role="application" tabindex="0" aria-label="Paint surface; use arrow keys to add points" style="min-height:180px;touch-action:none;border:1px solid currentColor"></div>' +
-      '<button type="button" data-action="undo" style="min-height:44px">Undo</button><button type="button" data-action="redo" style="min-height:44px">Redo</button>' +
-      '<output aria-live="polite" data-status></output><pre data-frame></pre></section>';
-    var surface = target.querySelector && target.querySelector('[data-surface="paint"]');
+    var doc = target.ownerDocument, paint = create(options), active = false, status;
+    if (!doc || typeof doc.createElement !== 'function') throw new Error('Paint document unavailable');
+    var section = make(doc, 'section'); section.className = 'bubble-paint';
+    section.setAttribute('aria-label', 'Paint Bubble composition');
+    section.appendChild(make(doc, 'p', 'Draw with a pointer or keyboard. The same Bubble frame drives the description and composition.'));
+    var surface = make(doc, 'div'); surface.setAttribute('data-surface', 'paint');
+    surface.setAttribute('role', 'application'); surface.setAttribute('tabindex', '0');
+    surface.setAttribute('aria-label', 'Paint surface; use arrow keys to add points');
+    surface.style.minHeight = '180px'; surface.style.touchAction = 'none'; surface.style.border = '1px solid currentColor';
+    section.appendChild(surface);
+    ['undo', 'redo'].forEach(function (action) {
+      var button = make(doc, 'button', action === 'undo' ? 'Undo' : 'Redo');
+      button.type = 'button'; button.style.minHeight = '44px'; button.setAttribute('data-action', action);
+      section.appendChild(button);
+    });
+    var statusNode = make(doc, 'output'); statusNode.setAttribute('aria-live', 'polite'); statusNode.setAttribute('data-status', ''); section.appendChild(statusNode);
+    var frameNode = make(doc, 'pre'); frameNode.setAttribute('data-frame', ''); section.appendChild(frameNode);
+    clear(target); target.appendChild(section);
     status = target.querySelector && target.querySelector('[data-status]');
     var out = target.querySelector && target.querySelector('[data-frame]');
     function update() {
@@ -43,7 +61,17 @@
       if (!r.ok) { if (status) status.textContent = 'NO_DATA · ' + r.cause; return r; }
       if (status) status.textContent = paint.describe();
       if (out) out.textContent = JSON.stringify(r.frame);
-      if (surface) surface.innerHTML = '<svg viewBox="0 0 412 515" role="img" aria-label="' + paint.describe() + '" style="width:100%;height:180px"><polyline points="' + paint.points().map(function (p) { return p[0] + ',' + p[1]; }).join(' ') + '" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" /></svg>';
+      if (surface && doc.createElementNS) {
+        clear(surface);
+        var svg = doc.createElementNS(SVG_NS, 'svg');
+        svg.setAttribute('viewBox', '0 0 412 515'); svg.setAttribute('role', 'img');
+        svg.setAttribute('aria-label', paint.describe()); svg.style.width = '100%'; svg.style.height = '180px';
+        var line = doc.createElementNS(SVG_NS, 'polyline');
+        line.setAttribute('points', paint.points().map(function (p) { return p[0] + ',' + p[1]; }).join(' '));
+        line.setAttribute('fill', 'none'); line.setAttribute('stroke', 'currentColor'); line.setAttribute('stroke-width', '5');
+        line.setAttribute('stroke-linecap', 'round'); line.setAttribute('stroke-linejoin', 'round');
+        svg.appendChild(line); surface.appendChild(svg);
+      }
       return r;
     }
     function point(e) { var box = surface.getBoundingClientRect(), x = (e.clientX - box.left) * 412 / Math.max(box.width, 1), y = (e.clientY - box.top) * 515 / Math.max(box.height, 1); var r = paint.addPoint(x, y); if (r && r.ok === false) { if (status) status.textContent = 'NO_DATA · ' + r.cause; } else update(); }

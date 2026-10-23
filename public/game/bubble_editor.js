@@ -81,20 +81,55 @@
     if (B.compile.notes && B.compile.notes.length) fail(B.compile.notes[0].cause || 'Bubble compilation failed');
     return result;
   }
-  function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function clear(node) { while (node.firstChild) node.removeChild(node.firstChild); }
+  function make(doc, tag, text) {
+    var n = doc.createElement(tag);
+    if (text != null) n.textContent = text;
+    return n;
+  }
+  function field(doc, labelText, key, type, value) {
+    var label = make(doc, 'label', labelText + ' '), input = make(doc, type === 'select' ? 'select' : 'input');
+    input.setAttribute('data-field', key);
+    input.setAttribute('aria-label', labelText);
+    if (type === 'select') {
+      input.value = value;
+    } else {
+      input.type = 'number'; input.min = '0'; input.max = key === 'x' ? '412' : '515'; input.value = value;
+    }
+    label.appendChild(input);
+    return { label: label, input: input };
+  }
+  function selectField(doc, labelText, key, values, selected) {
+    var made = field(doc, labelText, key, 'select', selected), select = made.input;
+    values.forEach(function (value) {
+      var option = make(doc, 'option', value);
+      option.value = value; option.setAttribute('value', value);
+      select.appendChild(option);
+    });
+    select.value = selected;
+    return made.label;
+  }
   function mount(target, initial) {
     if (!target) fail('editor target required');
-    var opts = Object.assign({}, initial || {}), current = create(opts);
-    function choices(xs, selected) { return xs.map(function (x) { return '<option value="' + esc(x) + '"' + (x === selected ? ' selected' : '') + '>' + esc(x) + '</option>'; }).join(''); }
-    target.innerHTML = '<section class="bubble-editor" aria-label="Bubble object editor">' +
-      '<label>Primitive <select data-field="primitive" aria-label="Primitive">' + choices(PRIMITIVES, opts.primitive || 'blob') + '</select></label>' +
-      '<label>Style <select data-field="style" aria-label="Style">' + choices(STYLES, opts.style || 'volume') + '</select></label>' +
-      '<label>Band <select data-field="band" aria-label="Semantic band">' + choices(bands(), opts.band || 'cyan') + '</select></label>' +
-      '<label>X position <input data-field="x" type="number" min="0" max="412" value="' + esc(current.atoms[0].i[0].x || 206) + '" aria-label="X position"></label>' +
-      '<label>Y position <input data-field="y" type="number" min="0" max="515" value="' + esc(current.atoms[0].i[0].y || 258) + '" aria-label="Y position"></label>' +
-      '<button type="button" data-action="refresh" style="min-height:44px">Update object</button>' +
-      '<output aria-live="polite" data-output="status">preceptoros.bubble/1</output>' +
-      '<pre data-output="frame"></pre></section>';
+    var doc = target.ownerDocument, opts = Object.assign({}, initial || {}), current = create(opts);
+    if (!doc || typeof doc.createElement !== 'function') fail('editor document unavailable');
+    var section = make(doc, 'section'); section.className = 'bubble-editor';
+    section.setAttribute('aria-label', 'Bubble object editor');
+    var controls = [
+      selectField(doc, 'Primitive', 'primitive', PRIMITIVES, opts.primitive || 'blob'),
+      selectField(doc, 'Style', 'style', STYLES, opts.style || 'volume'),
+      selectField(doc, 'Band', 'band', bands(), opts.band || 'cyan'),
+      field(doc, 'X position', 'x', 'number', current.atoms[0].i[0].x || 206).label,
+      field(doc, 'Y position', 'y', 'number', current.atoms[0].i[0].y || 258).label
+    ];
+    controls.forEach(function (control) { section.appendChild(control); });
+    var refreshButton = make(doc, 'button', 'Update object');
+    refreshButton.type = 'button'; refreshButton.style.minHeight = '44px';
+    refreshButton.setAttribute('data-action', 'refresh'); section.appendChild(refreshButton);
+    var statusNode = make(doc, 'output', VERSION); statusNode.setAttribute('aria-live', 'polite');
+    statusNode.setAttribute('data-output', 'status'); section.appendChild(statusNode);
+    var frameNode = make(doc, 'pre'); frameNode.setAttribute('data-output', 'frame'); section.appendChild(frameNode);
+    clear(target); target.appendChild(section);
     var frameOut = target.querySelector && target.querySelector('[data-output="frame"]');
     var status = target.querySelector && target.querySelector('[data-output="status"]');
     function refresh() {
@@ -105,10 +140,14 @@
       if (status) status.textContent = 'Bubble frame ready · ' + BufferBytes(serialize(current)) + ' bytes';
       return current;
     }
+    function click(e) { if (e.target && e.target.getAttribute('data-action') === 'refresh') refresh(); }
     if (target.addEventListener) target.addEventListener('change', refresh);
-    if (target.addEventListener) target.addEventListener('click', function (e) { if (e.target && e.target.getAttribute('data-action') === 'refresh') refresh(); });
+    if (target.addEventListener) target.addEventListener('click', click);
     if (frameOut) frameOut.textContent = serialize(current);
-    return Object.freeze({ frame: function () { return current; }, refresh: refresh, destroy: function () { if (target.removeEventListener) target.removeEventListener('change', refresh); target.innerHTML = ''; } });
+    return Object.freeze({ frame: function () { return current; }, refresh: refresh, destroy: function () {
+      if (target.removeEventListener) { target.removeEventListener('change', refresh); target.removeEventListener('click', click); }
+      clear(target);
+    } });
   }
   var API = Object.freeze({ VERSION: VERSION, LIMIT: LIMIT, PRIMITIVES: PRIMITIVES, STYLES: STYLES, bands: bands, byteLength: BufferBytes, create: create, serialize: serialize, compile: compile, mount: mount });
   if (common) module.exports = API; else root.AtlasBubbleEditor = API;
