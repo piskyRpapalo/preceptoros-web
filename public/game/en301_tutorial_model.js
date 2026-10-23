@@ -14,7 +14,7 @@
   var PRACTICE_SEEDS = { arena101: 'practice-arena-101', campamento: 'practice-camp-202' };
   var TONE = { verb: 'state', state: 'PROPOSED', cause: 'Local practice; no signed game effect' };
   var EGGS = ['Shield', 'Pike', 'Bow'];
-  var CARDS = ['Atlantis', 'Zombis'];
+  var CARDS = ['Atlantis', 'the Risen'];
   var FORM_DEFAULT = { title: 'My beacon', rag_base_prompt: 'A local practice beacon. Proposals require human review.' };
   var TRANSFER_CAUSE = 'no signed visit card or transport exists: real node transfer is unavailable';
   var CARD_CAUSE = 'no verified local signed visit card for this node';
@@ -64,7 +64,7 @@
     },
     cartas: {
       heading: 'Visit cards',
-      instruction: 'Visit cards need verified local signed cards. None are verified here, so Atlantis and Zombis show NO_DATA.',
+      instruction: 'Visit cards need verified local signed cards. None are verified here, so Atlantis and the Risen show NO_DATA.',
       next: 'Next: press "Show crossing options" to reach the crossing step.'
     },
     salto: {
