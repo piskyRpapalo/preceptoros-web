@@ -12,6 +12,7 @@ const A = require(fileURLToPath(new URL('../public/game/tabla_semantica.js', imp
 const SAB_HEX = process.argv.includes('--sabotage-hex');
 const SAB_LABEL = process.argv.includes('--sabotage-label');
 const SAB_NEWCOLOR = process.argv.includes('--sabotage-newcolor');
+const SAB_FRONT = process.argv.includes('--sabotage-front-door');
 const fuente = SAB_HEX ? FUENTE_ORIGINAL + "\nconst colorIntruso = '#00b7d4';\n" : FUENTE_ORIGINAL;
 const tone = (s) => T.tone(s);
 const ENVOLTORIO_FIN = "})(typeof module === 'object' && module.exports ? this : (this || window));";
@@ -70,11 +71,21 @@ caso('pureza: el fuente no contiene ningun token prohibido', () => {
   return hallados.length === 0 || { hallados };
 });
 
-caso('solo cuatro literales de color, los de NEUTRAL (hex o rgb)', () => {
-  const lits = fuente.match(/#[0-9a-fA-F]{3,8}\b|rgba?\([^)]*\)/gi) || [];
+caso('NEUTRAL conserva sus cuatro colores; la paleta G3 queda aislada', () => {
+  const legacy = fuente.replace(/var FRONT_DOOR = Object\.freeze\(\{[\s\S]*?\}\);/, '');
+  const lits = legacy.match(/#[0-9a-fA-F]{3,8}\b|rgba?\([^)]*\)/gi) || [];
   const hallados = lits.map((v) => v.toLowerCase()).sort();
   const esperados = ['#00d2ff', '#1e1826', '#f2f5f7', 'rgb(5,8,18)'];
   return (lits.length === 4 && JSON.stringify(hallados) === JSON.stringify(esperados)) || { literales: lits };
+});
+
+caso('G3 solo contiene los seis colores de la paleta soberana y no altera NEUTRAL', () => {
+  const actual = { ...T.FRONT_DOOR };
+  if (SAB_FRONT) actual.ink = '#123456';
+  const expected = { ink: '#060B09', paper: '#94A3B8', 'LIVE.base': '#43F5A0',
+    'PROPUESTA.base': '#FFB454', 'FIRMADO.base': '#5C7CFF', cyan: '#7FD1E8', 'NO_DATA.base': '#94A3B8' };
+  return (Object.isFrozen(T.FRONT_DOOR) && JSON.stringify(actual) === JSON.stringify(expected) &&
+    new Set(Object.values(actual)).size === 6) || { actual };
 });
 
 caso('sin color nuevo: cada valor de NEUTRAL aparece en public/ (css/js/html) fuera de comic_tokens.js', () => {
