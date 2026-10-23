@@ -1068,10 +1068,13 @@ VT2_ETIQUETA = ()
 VT4_SILUETA = ("silueta.js",)
 # Visión Léxica Determinista (Plan Mode B, FIRMO 2026-10-20): proyector léxico < 1 KB, cargado por el Codex.
 VISION_LEXICA = ("lexical_projector.js",)
-# La creacion (E1+E2, FIRMO 23-oct): paquete firmado y feedback del dibujo.
-# Puros hasta E4: la pagina que los pedira aun no existe; nadie los carga hoy.
-CREACION = ("creation_package.js", "creation_feedback.js")
-FUERA_DE_LA_PUERTA = tuple(sorted(set(PUROS + ARENA + CASA + DESCENSO + VT6 + J1 + VT2_ETIQUETA + VT4_SILUETA + VISION_LEXICA + CREACION)))
+# La creacion (E1+E2+E4): módulos cargados por creation.html, no por theGame.
+CREACION = ("creation_package.js", "creation_feedback.js", "creation_flow.js")
+CREATION_PAGE_DEPENDENCIES = CREACION + (
+    "bubble_language.js", "comic_tokens.js", "comic_accents.js",
+    "tabla_semantica.js", "bubble_editor.js", "bubble_paint.js",
+)
+FUERA_DE_LA_PUERTA = tuple(sorted(set(PUROS + ARENA + CASA + DESCENSO + VT6 + J1 + VT2_ETIQUETA + VT4_SILUETA + VISION_LEXICA)))
 
 
 class TheGameV15(unittest.TestCase):
@@ -1097,7 +1100,7 @@ class TheGameV15(unittest.TestCase):
     def test_v15_cada_modulo_cabe_en_16_kb(self):
         """Instruccion 1 de la directiva: ningun modulo pasa de 16 KB."""
         presentes = sorted(q.name for q in self.JUEGO.glob("*.js"))
-        self.assertEqual(presentes, sorted(self.MODULOS + FUERA_DE_LA_PUERTA),
+        self.assertEqual(presentes, sorted(self.MODULOS + FUERA_DE_LA_PUERTA + CREACION),
                          "aparece un modulo de la v1.5 sin su firma (ver DIRECTIVA_V15_ESTADO.md)")
         for q in self.JUEGO.iterdir():
             with self.subTest(modulo=q.name):
@@ -1203,6 +1206,20 @@ class TheGameV15(unittest.TestCase):
                 self.assertIn(f"/game/{m}", listas, f"{m} no esta en el precache")
                 for h in PUBLICO.rglob("*.html"):
                     self.assertNotIn(f"game/{m}", h.read_text(encoding="utf-8"))
+
+    def test_creation_page_dependencies_are_precached(self):
+        page = (PUBLICO / "creation.html").read_text(encoding="utf-8")
+        lists = (PUBLICO / "sw-listas.js").read_text(encoding="utf-8")
+        self.assertIn("/creation.html", lists)
+        for module in CREACION:
+            with self.subTest(module=module):
+                self.assertIn(f"/game/{module}", page)
+                self.assertIn(f"/game/{module}", lists)
+        for module in ("bubble_language.js", "comic_tokens.js", "comic_accents.js",
+                       "tabla_semantica.js", "bubble_editor.js", "bubble_paint.js"):
+            with self.subTest(dependency=module):
+                self.assertIn(f"/game/{module}", page)
+                self.assertIn(f"/game/{module}", lists)
 
     def test_v15_el_contrato_cubre_lo_que_cae(self):
         """Contrato antes que codigo: 400 tiradas reales validan contra
@@ -1720,6 +1737,8 @@ class Multijugador(unittest.TestCase):
                     self.assertNotIn("/game/" + m, listas, f"{m} entra en el precache sin que nadie lo pida")
                 self.assertNotIn("../game/" + m, mundo.PIEZAS)
                 for h in PUBLICO.rglob("*.html"):
+                    if h.name == "creation.html" and m in CREATION_PAGE_DEPENDENCIES:
+                        continue
                     self.assertNotIn("game/" + m, h.read_text(encoding="utf-8"))
 
 

@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#17131F">
+<link rel="canonical" href="https://preceptoros.org/creation.html">
+<meta property="og:title" content="PreceptorOS · Creation studio">
+<meta property="og:description" content="Draw a Bubble ribbon, bind your statement with your web identity, and carry the signed creation as a file.">
+<meta property="og:url" content="https://preceptoros.org/creation.html">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://preceptoros.org/assets/preceptor-og.png">
+<title>Creation studio · PreceptorOS</title>
+<style>
+body{font:1rem/1.5 system-ui,sans-serif;max-width:56rem;margin:auto;padding:1rem;background:#121419;color:#f4f2ec}main,section{display:grid;gap:.75rem}button,input,textarea{font:inherit;min-height:44px;max-width:100%}button,a{padding:.5rem 1rem}a{color:#9de3ef}fieldset{border:1px solid #aaa}#paint{min-height:18rem}svg{max-width:100%;height:18rem;border:1px solid currentColor;touch-action:none}output,pre{overflow-wrap:anywhere}audio{width:100%}.row{display:flex;gap:.5rem;flex-wrap:wrap}#identity{min-height:44px}
+</style>
+</head>
+<body>
+<header><h1>Creation studio</h1><div id="identity" aria-label="Author identity"></div></header>
+<main>
+<section id="editor-panel" aria-labelledby="drawing-title">
+<h2 id="drawing-title">Draw a ribbon</h2>
+<p>Use arrow keys to add points. Pointer, keyboard and touch use the same canvas.</p>
+<label for="creation-description">Description</label><textarea id="creation-description" maxlength="4096" rows="3"></textarea>
+<label for="voice-catalog-file">Local voice catalog</label><input id="voice-catalog-file" type="file" accept="application/json,.json">
+<label for="voice-declaration-file">Author statement descriptor</label><input id="voice-declaration-file" type="file" accept="application/json,.json">
+<label for="voice-audio-file">Author statement WAV</label><input id="voice-audio-file" type="file" accept="audio/wav,.wav">
+<button id="load-voice" type="button">Load local voice files</button>
+<p id="voice-status" role="status" aria-live="polite">Voice guidance is not loaded.</p>
+<div id="paint" aria-label="Drawing controls"></div>
+<button id="listen-statement" type="button" disabled>Listen to author statement</button>
+<button id="sign-creation" type="button" disabled>Sign drawing and statement</button>
+<button id="download-creation" type="button" disabled>Download creation</button>
+<p id="creation-status" role="status" aria-live="polite">Nothing signed.</p>
+</section>
+<section id="reader-panel" aria-labelledby="reader-title" hidden>
+<h2 id="reader-title">Verified creation</h2>
+<p id="reader-status" role="status" aria-live="polite">Choose a creation file to verify.</p>
+<label for="creation-file">Creation package</label><input id="creation-file" type="file" accept="application/json,.json">
+<p id="creation-author"></p><p id="reader-description"></p><div id="creation-art"></div>
+<audio id="creation-audio" controls></audio>
+</section>
+</main>
+<footer class="honest-footer"><p>Signatures prove authorship of the supplied bytes. A page view does not prove a node is live.</p><a href="/">Home</a></footer>
+<script src="/assets/auth.js"></script>
+<script src="/game/bubble_language.js"></script>
+<script src="/game/comic_tokens.js"></script>
+<script src="/game/comic_accents.js"></script>
+<script src="/game/tabla_semantica.js"></script>
+<script src="/game/bubble_editor.js"></script>
+<script src="/game/creation_package.js"></script>
+<script src="/game/creation_feedback.js"></script>
+<script src="/game/bubble_paint.js"></script>
+<script src="/game/creation_flow.js"></script>
+<script src="/assets/pwa.js"></script>
+</body>
+</html>

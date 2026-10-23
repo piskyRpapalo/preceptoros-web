@@ -3,6 +3,7 @@ const IDIOMAS = ['es', 'en', 'fr', 'pt', 'it', 'de', 'ru', 'el', 'ar'];
 const PAGINAS = [''];
 
 const JUEGO = [
+  '/creation.html',
   '/assets/front_door_view.js', '/assets/front_door.css', '/game/front_door.js',
   '/assets/thegame.js', '/assets/thegame.css', '/assets/tubo.css', '/assets/atlas.css',
   '/assets/atlas-arte.js', '/assets/atlas-coord.js', '/assets/atlas-carta.js', '/assets/atlas-ondas.js',
@@ -17,6 +18,7 @@ const JUEGO = [
   '/game/nodos-cedulas.js', '/game/node_reception_contract.js', '/game/node_trust_anchor.js', '/game/node_trust_manifest.js', '/game/node_signature_messages.js', '/game/node_signature_verify.js', '/game/node_bindings_messages.js', '/game/node_bindings.js', '/game/node_projection.js', '/game/nodos.js', '/game/cuenta.js', '/game/ui-nodos.js', '/game/ui-rack.js',
   '/game/escuadron.js', '/game/battle_choreography.js', '/game/battle_replay.js', '/game/npc_occupancy.js', '/game/npc_walls.js', '/game/node_preview.js', '/game/node_file_receiver.js', '/game/ui-arena-comun.js', '/game/ui-arena.js', '/game/ui-duelo.js', '/game/hexelion_dictionary.js',
   '/game/bubble_editor.js', '/game/bubble_paint.js',
+  '/game/creation_package.js', '/game/creation_feedback.js', '/game/creation_flow.js',
   '/assets/eaa-art12-local-first-surface.js', '/assets/eaa-art12-local-first-surface.css',
   '/game/comic_accents.js', '/game/bubble_language.js', '/game/bubble_light.js', '/game/bubble_bestiary.js', '/game/map_bubble_figures.js', '/game/bubble_world.js', '/game/bubble_letters.js', '/game/bubble_game.js', '/game/bubble_icons.js', '/game/descent_sound.js',
   '/game/local_app_bridge.js', '/assets/descent_view.js', '/game/world_creator.js', '/assets/descent.css', '/game/tutorial_fases.js', '/game/ui-tutorial-fases.js', '/game/deploy_building.js', '/game/etiqueta.js', '/game/en301_tutorial_building.js', '/game/silueta.js', '/game/en301_practice_model.js', '/game/en301_practice_arena.js', '/game/en301_tutorial_model.js', '/game/en301_tutorial_audio.js', '/game/en301_tutorial.js', '/assets/en301_practice.css', '/assets/en301_tutorial.css', '/game/tutorial-fases.css', '/assets/codex_scene.js', '/assets/bout_scene.js'
