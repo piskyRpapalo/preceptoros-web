@@ -1,0 +1,63 @@
+{
+  "schema": "preceptoros.web-mcp-capability-map/1",
+  "source_inventory": "mcp-manifest.json",
+  "runtime_binding": "public/game/deep_links.js",
+  "actions": [
+    {
+      "id": "summon.tc1",
+      "ui_target": "#summon-access",
+      "effect": "opens the summon sheet and focuses its local control",
+      "mcp_server": null,
+      "mcp_tool": null,
+      "authorizes_effect": false,
+      "human_step": "activate the destination control; its own confirmation and signature rules apply"
+    },
+    {
+      "id": "workshop.dissolve",
+      "ui_target": ".atlas-hud",
+      "effect": "opens the Workshop at the dissolve step",
+      "mcp_server": null,
+      "mcp_tool": null,
+      "authorizes_effect": false,
+      "human_step": "activate the destination control; the link itself does not dissolve anything"
+    },
+    {
+      "id": "workshop.sand",
+      "ui_target": ".atlas-hud",
+      "effect": "opens the Workshop at the sanding step",
+      "mcp_server": null,
+      "mcp_tool": null,
+      "authorizes_effect": false,
+      "human_step": "activate the destination control; the link itself does not change a stat"
+    },
+    {
+      "id": "lighthouse.move",
+      "ui_target": "#atlas-juego",
+      "effect": "opens the house surface and focuses the destination control",
+      "mcp_server": null,
+      "mcp_tool": null,
+      "authorizes_effect": false,
+      "human_step": "choose a destination in the local interface"
+    },
+    {
+      "id": "transparency.log",
+      "ui_target": "#radio-chat-alterna",
+      "effect": "focuses the local communication panel",
+      "mcp_server": null,
+      "mcp_tool": null,
+      "authorizes_effect": false,
+      "human_step": "read the panel; the link does not request or send a message"
+    },
+    {
+      "id": "identity.create",
+      "ui_target": "#identity",
+      "effect": "focuses the local identity control",
+      "mcp_server": null,
+      "mcp_tool": null,
+      "authorizes_effect": false,
+      "human_step": "create a key only after the person activates the local control"
+    }
+  ],
+  "browser_json_rpc": "NO_DATA · no browser transport is wired",
+  "change_gate": "public inventory title hygiene needs a Mesa-assigned seal version before editing served files"
+}
