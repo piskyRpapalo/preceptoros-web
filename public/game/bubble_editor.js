@@ -18,7 +18,7 @@
   function bandName(name) {
     if (NEUTRALS.indexOf(name) >= 0) return name;
     if (typeof name !== 'string') fail('unknown semantic band');
-    var tokens = common ? require('./comic_tokens.js') : root.AtlasComicTokens;
+    var comicTokenTable = common ? require('./comic_tokens.js') : root.AtlasComicTokens;
     var accents = common ? require('./comic_accents.js').ACCENTS : root.AtlasComicAccents.ACCENTS;
     var semantics = common ? require('./tabla_semantica.js') : root.AtlasSemantica;
     var cut = name.lastIndexOf('.'), head = name.slice(0, cut), sub = name.slice(cut + 1), bands;
@@ -29,11 +29,11 @@
     return name;
   }
   function bands() {
-    var tokens = common ? require('./comic_tokens.js') : root.AtlasComicTokens;
+    var comicTokenTable = common ? require('./comic_tokens.js') : root.AtlasComicTokens;
     var accents = common ? require('./comic_accents.js').ACCENTS : root.AtlasComicAccents.ACCENTS;
     var semantics = common ? require('./tabla_semantica.js') : root.AtlasSemantica;
     var out = NEUTRALS.slice(), subs = ['brillo', 'base', 'sombra', 'contorno'];
-    tokens.SEALS.forEach(function (name) { subs.forEach(function (sub) { out.push(name + '.' + sub); }); });
+    comicTokenTable.SEALS.forEach(function (name) { subs.forEach(function (sub) { out.push(name + '.' + sub); }); });
     Object.keys(accents).forEach(function (name) { subs.forEach(function (sub) { out.push(name + '.' + sub); }); });
     Object.keys(semantics.TABLA).forEach(function (name) { subs.forEach(function (sub) { out.push(name + '.' + sub); }); });
     return Array.from(new Set(out));
