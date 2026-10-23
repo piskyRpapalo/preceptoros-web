@@ -7,7 +7,7 @@
  "ley": {
   "nd": false,
   "integridad_max": 107,
-  "dano": 1
+  "dano": 2
  },
  "piloto_base": {
   "fase_final": 4,
@@ -17,7 +17,7 @@
    "3": 1048,
    "4": 8123
   },
-  "integridad_min": 83,
+  "integridad_min": 59,
   "integridad_final": 107,
   "integridad_max": 107,
   "acciones": {

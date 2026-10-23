@@ -45,6 +45,8 @@ jobs:
             node atlas/radio_age_cases.mjs
             node atlas/hud_readings_cases.mjs
             node atlas/bubble_language_casos.mjs
+            node atlas/bubble_editor_casos.mjs
+            node atlas/bubble_paint_casos.mjs
             node atlas/bubble_bestiary_casos.mjs
             node atlas/bubble_icons_casos.mjs
             node atlas/bubble_letters_casos.mjs

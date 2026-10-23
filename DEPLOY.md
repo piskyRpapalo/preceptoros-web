@@ -6,8 +6,8 @@ Status: proposal, draft PR only. The current `wrangler.jsonc` names `preceptoros
 
 Measured at main `4105e9b` from `public/sw-listas.js` and the shell expansion in `public/sw.js`:
 
-Rutas precargadas por el shell: 191
-Rutas distintas del shell: 190
+Rutas precargadas por el shell: 193
+Rutas distintas del shell: 192
 
 The counter preserves declared shell entries, expands the nine language paths, and reports duplicate entries separately. Run `python3 bin/contar_rutas.py` to measure; the gate runs `python3 bin/contar_rutas.py --check-doc DEPLOY.md` and fails on a missing, duplicate, or stale declaration. Historical entries in append-only `PARA_LA_MESA.md` are not rewritten or treated as current documentation.
 
