@@ -1,6 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
+import { FakeDocument, host } from './fake_dom.mjs';
 
 const require = createRequire(import.meta.url);
 const P = require('../public/game/bubble_paint.js');
@@ -34,4 +35,17 @@ test('Paint rejects over-limit strokes without truncation and announces cause', 
   assert.ok(rejected, 'oversized stroke was not rejected');
   assert.match(rejected.cause, /1024/);
   assert.equal(p.tryFrame().ok, true);
+});
+
+test('Paint mounts accessible DOM and projects points as SVG without HTML parsing', () => {
+  const doc = new FakeDocument(), target = host(doc);
+  const view = P.mount(target, { id: 'PAINT_DOM' });
+  const surface = target.querySelector('[data-surface="paint"]');
+  assert.ok(surface);
+  assert.equal(target.querySelectorAll('[data-action]').length, 2);
+  view.paint.addPoint(12, 18).addPoint(24, 30); view.refresh();
+  assert.ok(surface.querySelector('svg'));
+  assert.ok(target.querySelector('[data-frame]').textContent.includes('preceptoros.bubble/1'));
+  assert.doesNotMatch(require('node:fs').readFileSync(new URL('../public/game/bubble_paint.js', import.meta.url), 'utf8'), /innerHTML/);
+  assert.equal(surface.querySelector('polyline').getAttribute('points'), '12,18 24,30');
 });

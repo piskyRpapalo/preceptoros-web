@@ -1,6 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
+import { FakeDocument, host } from './fake_dom.mjs';
 
 const require = createRequire(import.meta.url);
 const E = require('../public/game/bubble_editor.js');
@@ -18,9 +19,14 @@ test('editor creates deterministic Bubble frames and rejects oversized output wh
 });
 
 test('editor surface exposes labeled, keyboard-operable controls and text output', () => {
-  const root = { innerHTML: '', querySelectorAll: () => [] };
+  const doc = new FakeDocument();
+  const root = host(doc);
   const view = E.mount(root);
   assert.equal(typeof view.frame, 'function');
-  assert.match(root.innerHTML, /aria-label=/);
-  assert.match(root.innerHTML, /preceptoros\.bubble\/1/);
+  const controls = root.querySelectorAll('[data-field]');
+  assert.equal(controls.length, 5);
+  assert.ok(controls.every(control => control.getAttribute('aria-label')));
+  assert.equal(root.querySelector('[data-output="status"]').textContent, 'preceptoros.bubble/1');
+  assert.equal(root.querySelector('[data-output="frame"]').textContent, E.serialize(view.frame()));
+  assert.doesNotMatch(require('node:fs').readFileSync(new URL('../public/game/bubble_editor.js', import.meta.url), 'utf8'), /innerHTML/);
 });
