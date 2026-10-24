@@ -30,11 +30,11 @@ function rgb(c) {
 const lum = (c) => { const [r, g, b] = rgb(c).map((v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }); return 0.2126 * r + 0.7152 * g + 0.0722 * b; };
 const contrast = (a, b) => { const x = lum(Bubble.band(a)), y = lum(Bubble.band(b)); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); };
 
-for (const f of ['face.js', 'face_world.js', 'face_paint.js', 'face_battle.js', 'face_panel.js', 'face_fight.js', 'face.css', 'index.html', ...names.map((n) => n + '.html')]) {
+for (const f of ['face.js', 'face_world.js', 'face_paint.js', 'face_battle.js', 'face_panel.js', 'face_fight.js', 'face_hud.js', 'face.css', 'index.html', ...names.map((n) => n + '.html')]) {
   const size = statSync(join(dir, f)).size;
   assert.ok(size <= 16384, `${f} is ${size} B, over the 16,384 B piece ceiling`);
 }
-const code = ['face.js', 'face_world.js', 'face_paint.js', 'face_battle.js', 'face_panel.js', 'face_fight.js'].map((f) => readFileSync(join(dir, f), 'utf8')).join('\n');
+const code = ['face.js', 'face_world.js', 'face_paint.js', 'face_battle.js', 'face_panel.js', 'face_fight.js', 'face_hud.js'].map((f) => readFileSync(join(dir, f), 'utf8')).join('\n');
 assert.doesNotMatch(code, /Math\.random|Date\.now|new Date|performance\.now|fetch\(|localStorage|XMLHttpRequest|WebSocket/, 'face code uses a forbidden source of authority or network');
 assert.doesNotMatch(code, /\/\/ |\/\*/, 'served face code carries comments');
 const served = [code, readFileSync(join(dir, 'face.css'), 'utf8'), readFileSync(join(dir, 'tools/face.tpl.html'), 'utf8'), readFileSync(join(dir, 'index.html'), 'utf8')].join('\n');
@@ -67,6 +67,10 @@ for (let task = 0; task <= World.places.length; task++) {
 }
 const LAYOUTS = ['quiet', 'zones', 'terminal'];
 let css = readFileSync(join(dir, 'face.css'), 'utf8');
+if (sabotage === 'chat') css = css.replace('grid-template-areas:"hello" "map" "side"}', 'grid-template-areas:"hello" "side" "map"}');
+const layoutSig = {};
+const cut1 = css.indexOf('@media (max-width:760px) and (orientation:portrait)'), cut2 = css.indexOf('@media (orientation:landscape) and (max-height:560px)');
+const wideCss = css.slice(0, cut1), portraitCss = css.slice(cut1, cut2), landscapeCss = css.slice(cut2);
 if (sabotage === 'scroll') css = css.replace('html,body{height:100%;overflow:hidden;', 'html,body{height:100%;');
 assert.match(css, /html,body\{height:100%;overflow:hidden;/, 'the page can scroll: one fixed window is the decree');
 assert.match(css, /\.face\{[^}]*height:100dvh;[^}]*overflow:hidden/, 'the face is not one viewport-sized window');
@@ -121,6 +125,36 @@ for (let task = 0; task <= World.places.length; task++) for (const won of [false
 }
 assert.ok(prev > 1, 'the crab never grows along the journey');
 console.log(`crab: canon AtlasCangrejo.forma grows it (size up to ${prev}) and turns it mar -> coral when the tutorial ends; the frame says each phase; PASS`);
+let tplx = tpl;
+if (sabotage === 'joystick') tplx = tplx.replace('<div class="pad">', '</section><div class="pad">');
+if (sabotage === 'icons') tplx = tplx.replace('<span class="vh">Follow the path</span>', '<span>Follow the path</span>');
+const mapSec = tplx.slice(tplx.indexOf('<section class="map"'), tplx.indexOf('</section>', tplx.indexOf('<section class="map"')));
+assert.match(mapSec, /<div class="pad"><canvas id="joy"/, 'the joystick is not inside the map panel');
+assert.match(css, /\.pad\{position:absolute;right:\d+px;bottom:\d+px/, 'the joystick is not on the bottom-right corner of the map');
+for (const v of css.match(/--joy:[^;}]+/g)) { const px = Math.max(...(v.match(/\d+px/g) || ['999px']).map((x) => parseInt(x, 10))); assert.ok(px <= 96 && px >= 44, `joystick size ${v} is not small and thumb-usable (44..96 px)`); }
+const btns = mapSec.slice(mapSec.indexOf('<div class="mapbtns"'));
+assert.match(css, /\.mapbtns\{position:absolute;left:\d+px;bottom:\d+px/, 'the map buttons are not on the bottom-left corner');
+for (const id of ['start', 'follow', 'whole']) {
+  const m = new RegExp(`<button[^>]*id="${id}"[^>]*>(.*?)</button>`).exec(btns);
+  assert.ok(m, `#${id} is not in the map corner group`);
+  assert.equal(m[1].replace(/<canvas data-icon="[a-z]+" aria-hidden="true"><\/canvas>/, '').replace(/<span class="vh">[^<]*<\/span>/, '').trim(), '', `#${id} shows written text: it must be an icon`);
+  assert.match(m[1], /<span class="vh">[^<]+<\/span>/, `#${id} has no accessible name`);
+}
+const hud = readFileSync(join(dir, 'face_hud.js'), 'utf8');
+assert.match(tplx, /id="toast" class="toast" role="status" aria-live="polite"/, 'the transient label is not nameable by the voice channel');
+assert.match(tplx, /id="offer"[^>]*role="dialog"[\s\S]*id="offer-yes"[^>]*>Accept<[\s\S]*id="offer-no"[^>]*>Decline</, 'the task offer has no Accept and Decline');
+assert.match(hud, /if \(quiet\(\)\) \{ return; \}/, 'reduced motion must keep the label without the fade');
+assert.match(hud, /function voice\(text\) \{ if \(soundOn\(\)\) \{ say\(\[text\]\); \} \}/, 'the label is not spoken when Sound is on');
+assert.match(faceCode, /tell\('Follow the path'\)/, 'the follow icon does not say its label');
+assert.match(faceCode, /tell\(st\.whole \? 'Whole map' : 'Near view'\)/, 'the whole-map icon does not say its label');
+console.log('map HUD: joystick small on the bottom-right of the map; three icon-only buttons bottom-left that say their names (voice with Sound on), task offer with Accept and Decline; PASS');
+for (const name of names) {
+  const sk = Object.assign({ name }, SKINS[name]);
+  const all = [World.seaFrame(sk), World.islesFrame(sk, 0), World.islesFrame(sk, 1), World.islesFrame(sk, 2), World.islesFrame(sk, 3), World.standFrame(sk), World.namesFrame(sk), World.castFrame(sk, { at: World.homeAt, moves: 0 })].filter(Boolean);
+  if (sabotage === 'bust' && name === 'atlantis') all.push({ atoms: [{ i: [{ o: 'bust' }] }] });
+  for (const f of all) assert.ok(!JSON.stringify(f).includes('"o":"bust"'), `${name}: the Preceptor's head is still on the map`);
+}
+console.log("no bust on the map in any proposal (kept for later, elsewhere); PASS");
 console.log('one window: the page never scrolls, the chat scrolls inside, the map is the wallpaper; PASS');
 let worst = 0;
 const ref = {};
@@ -133,8 +167,16 @@ for (const name of names) {
   assert.ok(LAYOUTS.includes(skin.layout), `${name} has no known layout`);
   assert.ok(!seen.has(skin.layout), `${name} repeats the ${skin.layout} layout: three proposals need three distributions`);
   seen.add(skin.layout);
-  assert.match(css, new RegExp(`\\[data-layout=${skin.layout}\\] \\.face\\{grid-template-columns:[^}]*grid-template-areas:`), `face.css has no wide distribution for ${skin.layout}`);
-  assert.match(css.slice(css.indexOf('@media (max-width:760px)')), new RegExp(`\\[data-layout=${skin.layout}\\] \\.face\\{[^}]*grid-template-areas:`), `face.css has no phone distribution for ${skin.layout}`);
+  for (const [ctx, part] of [['wide', wideCss], ['portrait', portraitCss], ['landscape', landscapeCss]]) {
+    const m = new RegExp(`\\[data-layout=${skin.layout}\\] \\.face\\{[^}]*grid-template-areas:((?:"[^"]*"\\s*)+)`).exec(part);
+    assert.ok(m, `face.css has no ${ctx} distribution for ${skin.layout}`);
+    const rows = m[1].match(/"[^"]*"/g).map((r) => r.slice(1, -1).trim().split(/\s+/));
+    const mi = rows.findIndex((r) => r.includes('map')), cols = (r, k) => r.map((x, i) => (x === k ? i : -1)).filter((i) => i >= 0);
+    const under = rows[mi + 1] && cols(rows[mi + 1], 'side').some((i) => rows[mi][i] === 'map');
+    assert.ok(under || (rows[mi + 1] && rows[mi + 1].includes('map') && rows[mi + 2] && cols(rows[mi + 2], 'side').some((i) => rows[mi + 1][i] === 'map')), `${skin.layout} ${ctx}: the chat panel is not directly under the map`);
+    assert.ok(!rows.flat().some((x) => x === 'pad' || x === 'task'), `${skin.layout} ${ctx}: the joystick or the buttons still take their own row`);
+    layoutSig[skin.layout] = (layoutSig[skin.layout] || '') + ctx + m[1];
+  }
   assert.match(html, new RegExp(`<body data-layout="${skin.layout}">`), `${name}.html does not declare its layout`);
   if (sabotage === 'geometry' && name === 'zombie') World.isles[0].rx = 125;
   const frames = [['sea', World.seaFrame(skin)], ['isles0', World.islesFrame(skin, 0)], ['isles1', World.islesFrame(skin, 1)], ['isles2', World.islesFrame(skin, 2)], ['isles3', World.islesFrame(skin, 3)], ['stand', World.standFrame(skin)], ['names', World.namesFrame(skin)], ['head', World.headFrame(skin)], ['joy', World.joyFrame(skin, -40, 0)], ['joy0', World.joyFrame(skin, 0, 0)]]
@@ -159,7 +201,7 @@ for (const name of names) {
     }
     assert.equal(rift.crab.o, 'crab', 'the Codex RIFT crab is missing');
     assert.ok(JSON.stringify(World.standFrame(skin)).includes('"o":"city"'), 'the home town is not the canon city word');
-    console.log(`${name}: canon creatures are the Codex RIFT words (octo, star, snail, bust; crab as your unit), scale ${World.codexScale}; PROVENANCE PASS`);
+    console.log(`${name}: canon creatures are the Codex RIFT words (octo, star, snail), scale ${World.codexScale}; PROVENANCE PASS`);
   }
   cast.forEach((f, i) => {
     const n = bytes(f);
@@ -188,6 +230,7 @@ for (const name of names) {
   }
   console.log(`${name} (${skin.layout}): ${frames.length} shared frames + ${cast.length} cast frames < 1,024 B; map scenes identical to basic (the crab and the cast are each proposal's own); contrast fg/bg ${contrast(u.fg, u.bg).toFixed(2)}, accent ${contrast(u.onAccent, u.accent).toFixed(2)}; PASS`);
 }
+assert.equal(new Set(Object.values(layoutSig)).size, 3, 'two proposals share the same spatial distribution');
 const pal = names.map((n) => JSON.stringify(World.islesFrame(Object.assign({ name: n }, SKINS[n]), 0).bands));
 assert.equal(new Set(pal).size, 3, 'two skins share the same palette');
 const index = readFileSync(join(dir, 'index.html'), 'utf8');
@@ -197,7 +240,7 @@ console.log(`${states.length} reachable states per skin; worst frame ${worst} UT
 if (process.env.APP_DIR) {
   const app = join(process.env.APP_DIR, 'interface', 'face');
   assert.ok(existsSync(app), 'APP_DIR has no interface/face');
-  for (const f of ['face.js', 'face_world.js', 'face_paint.js', 'face_battle.js', 'face_panel.js', 'face_fight.js', 'face.css', 'skins.json']) assert.equal(readFileSync(join(app, f), 'utf8'), readFileSync(join(dir, f), 'utf8'), `app ${f} differs from web`);
+  for (const f of ['face.js', 'face_world.js', 'face_paint.js', 'face_battle.js', 'face_panel.js', 'face_fight.js', 'face_hud.js', 'face.css', 'skins.json']) assert.equal(readFileSync(join(app, f), 'utf8'), readFileSync(join(dir, f), 'utf8'), `app ${f} differs from web`);
   for (const name of names) assert.equal(readFileSync(join(app, name + '.html'), 'utf8'), page(name, APP_PREFIX, APP_BASE), `app ${name}.html differs from the shared template`);
   console.log('app parity: face.js, face_world.js, face_paint.js, face.css, skins and three pages byte-identical to the web template; PASS');
 }
