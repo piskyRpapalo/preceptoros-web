@@ -1,167 +1,90 @@
-# MVP — the minimum PreceptorOS, drawn in its own idiom
+# MVP · mapa reconciliado de PreceptorOS · 2026-10-26
 
-State: **PROPOSAL** (propose-only · the silicon writes, the Sovereign signs).
-Date: 2026-10-19 · base `eac293d` (main `9a72d4d` + the `haiku/huecos-ci` lot).
-Machine twin: `atlas/mvp_mapa.json` · judge: `node atlas/mvp_casos.mjs`.
+Estado: **PROPUESTA · REQUIERE_FIRMA**. Esta revisión reemplaza la lectura de
+aceptación de 2026-10-19; conserva aquella medición como historia, no como
+estado del producto actual.
 
-## ES · una pantalla para el carbono
+Bases de lectura: WEB `8c4eeed840757a02bf5b6cc85b67f40fdbced78a`, APP
+`7885afe88ad8a456d6af91aa08a62998818b5c9c`, LAB `8fb2b6b67746c10dc98c9bfcf70629ab816eacaa`,
+STUDY `4fbcf7e3dc142499cc6d1bcfeb30046d148dba4d`. Direction: NORTE 5 and
+STUDY `13-objectives.md`. Statuses describe only their named scope and evidence.
 
-- **Qué es:** el MVP como un mapa de 17 funciones (13 web, 4 app). Cada una
-  lleva sello (LIVE · STALE · STATIC · SIMULATED · NO_DATA · ERROR), causa si
-  no es LIVE, sus ficheros reales y el comando que la juzga.
-- **Primero la web, después la app.** Hoy: 8 LIVE, 5 NO_DATA con causa, 4 STATIC.
-- **Techos medidos, con contraprueba que se pone roja** (9 de 9 sabotajes en
-  rojo): pieza ≤ 16.384 B (máx. hoy 16.365) · canal < 1.024 B (S_t 466 B; el
-  gordo se rechaza entero) · carga inicial 71.277 B gzip < 153.600 · cero
-  peticiones externas al cargar (0) · 9 lenguas verificadas.
-- **Un mini local lo orquesta:** tres comandos, recibo < 1.024 B, sin frontera.
-- **Hallazgo grande:** CI corría 5 de 22 guardianes `tests/` (1 directo, 4 vía
-  `test_atlas`); este lote los mete todos (179 casos, 0 fallos, n=2 en 45 s).
-- **Firmas para llegar al MVP web: tres.** F1 este lote (con `huecos-ci`),
-  F2 el sello de la presentación (ya pedido), F3 el sello de «Questions???».
-  Las decisiones de fondo (abrir lenguas del juego, motor A o B) van aparte.
+## Ley de lectura
 
-## 1 · The idiom (AI-fluency of PreceptorOS)
+1. Every value wears a seal. Missing or stale evidence is `NO_DATA` with a cause.
+2. Every ceiling is a number with a judge and a source revision. Without both it
+   remains a proposal.
+3. A prior generation's `LIVE` receipt does not transfer to a new generation.
+4. `REQUIERE_FIRMA` is governance state, not a product capability.
 
-Three rules make a function legible to a human and to an 8K local model alike:
+## F1 map — historical rows re-sealed against their original base
 
-1. **Every value wears a seal.** Six canonical seals; anything not LIVE
-   carries its cause. A missing value is `NO_DATA: <cause>`, never a guess.
-2. **Every ceiling is a number with a judge.** A ceiling without a case that
-   turns red is a wish, not a law.
-3. **Every state fits the channel.** One packet < 1,024 B, rejected whole above.
+The 17 rows below belong to WEB `docs/MVP.md` at base `eac293d` / main
+`9a72d4d`, dated 2026-10-19. Every old `LIVE` value is now `STALE` as a current
+acceptance claim because its tree and receipt are historical. The old measured
+number is retained with that cause.
 
-## 2 · The ceilings, measured
-
-| Ceiling | Measured today | Judge (case) | Red shown by sabotage |
-|---|---|---|---|
-| Piece ≤ 16,384 B, every served text file | 207 files, max `atlas-en.json` 16,365 B | `mvp_casos` C4 | a 16,400 B file |
-| Channel < 1,024 B (RC-07) | S_t 466 B; oversize closes at 960 B | C5 + `vector_casos` | `TOPE` 1024 → 4096 |
-| Initial load < 153,600 B gzip | 71,277 B (`atlas/mundo.py`) | C6 | +200 KB in `thegame.css` |
-| Zero external requests at load | 0 tags, 0 `fetch`/`import` | C7 + `test_web` | one CDN `<script>`; one `fetch` |
-| Nine languages, true to the tree | 9 portals, 9 game texts, loader `en` | C8 + `LANGUAGES.md` | loader `['en','es']` |
-| Every judge runs in CI | 13 web judges, all run by CI | C3 | drop a judge line |
-| Map readable by an 8K mini | map < 8,192 B, rows < 1,024 B | C1 | a seal without cause |
-
-The 16,384 B piece ceiling is the Sovereign's 2026-10-19 mission; the gate's
-`TOPE_FICHERO` is 25 MiB per block (D2, 2026-10-11). Both stand; the gap is
-proposed as **RC-17**.
-
-## 3 · S_t, the state vector, legible
-
-`public/game/state_vector.js` (`preceptoros.vector/1`) already exists; the MVP
-joins it, it does not rebuild it. Keys:
-
-| Key | Meaning | When missing |
+| Row | Historical value | Current seal and cause |
 |---|---|---|
-| `c` | game cycle (the clock is the equation) | `nd.c` cause |
-| `r` | resources [copper, light, biomass, oxygen] | `nd.r` names the missing one |
-| `k` | crab [x, y, army, swim, reach] | `nd.k` |
-| `p` / `t` | open panel [id, seal, age] / tutorial step | null = closed / done |
-| `e` / `l` / `n` | buildings / places fought / rack nodes measured | empty list |
-| `z` / `q` / `g` | tombstones / radio last 3 / last panel transition | null or empty |
-| `nd` | `{key: cause}` for everything missing | always present |
+| W1 initial load | 71,277 B gzip | `STALE` · measured on the 2026-10-19 tree; accepted-generation build not remeasured. Old judge `atlas/mvp_casos.mjs C6`. |
+| W2 state vector | `preceptoros.vector/1`, 466 B | `STALE` · old tree; current face's task envelope is separate. Old judge C5 / `vector_casos`. |
+| W3 seal palette | seven web seals | `STALE` · old route; new face mapping is pending acceptance. Old judge `atlas/mvp_casos.mjs`. |
+| W4 Descent / Bubble | `LIVE` | `STALE` · old generation; new face is assessed by its own fixture. |
+| W5 four channels | `NO_DATA` | `PARTIAL_MEASURED` · lab#87 provides offline viewport/zoom/contrast/parity gates; lab#88 defines deterministic narration and the visible fallback. Current integrated new-face physical assistive-technology use remains `NO_DATA` · accepted web/app builds and human device reading are not supplied. |
+| W6 languages | nine old portals | `STALE` · old portal count; new-face language and voice coverage not measured. |
+| W7 end-rift questions | `NO_DATA` | `STALE` · old navigation concept superseded by the chat panel; local answer completion is `NO_DATA` · accepted local model route not demonstrated. |
+| W8 browser model | `NO_DATA` | `NO_DATA` · no accepted new-face browser model route measured. |
+| W9 node connection | `NO_DATA` | `NO_DATA` · gateway delivery and receiver remain provisional; old external route is not accepted. |
+| W10 no external requests | zero at old load | `STALE` · that load-only scope does not prove the rebuilt product or cold install. |
+| W11 piece ceiling | 16,384 B; old max 16,365 B | `STALE` · old source set. Re-run its exact judge on the accepted artifact. |
+| W12 AI/MCP visitors | `STATIC` | `STALE` · inventory presence does not prove new-face use. |
+| W13 D1 guardian | `LIVE` | `STALE` · old tree and judge receipt. |
+| A1 API guide | `STATIC` at old app snapshot | `STALE` · app was read at `88aedec`; not current app acceptance. |
+| A2 event/seal channels | `STATIC` at old app snapshot | `STALE` · old six-seal comparison; current parity not measured. |
+| A3 rack TTL | `NO_DATA` | `NO_DATA` · no current accepted TTL receipt. |
+| A4 one app / one node | `STATIC` at old app snapshot | `STALE` · old cross-repo snapshot; new node delivery remains unmeasured. |
 
-Packing: under 1,024 B → `completo`; over → radio and places trimmed →
-`recortado`; still over → `fail-closed`, a NO_DATA vector with the cause and
-no partial state.
+## Current generation · acceptance map
 
-## 4 · The map of functions (web first, then app)
+NORTE 5 defines one product face on WEB and APP: a chat panel plus one joystick.
+The three proposals — basic, atlantis, zombie — and the app face remain
+`REQUIERE_FIRMA` under the pending visual gate. Claude supplies colors and shapes
+through Bubble language; the Sovereign's visual review is the acceptance gesture.
+No half-migrated generation is accepted.
 
-| ID | Function | Seal | Cause / note |
-|---|---|---|---|
-| W1 | door, initial load under the gzip ceiling | LIVE | |
-| W2 | S_t vector, rejected whole at the channel ceiling | LIVE | |
-| W3 | seal palette | LIVE | 7 web seals, STATIC has no colour (RC-18) |
-| W4 | the Descent, bubble language | LIVE | |
-| W5 | A11Y four channels | NO_DATA | no four-channel parity case yet |
-| W6 | nine languages | LIVE | game loader `en` only, a fence |
-| W7 | «Questions???» at the end of the rift | NO_DATA | waits the sealed presentation lot |
-| W8 | Easy Start A, browser model | NO_DATA | no chunked model in any repo |
-| W9 | Easy Start B, Hexelion node | NO_DATA | fetch to the rack waits sign-off |
-| W10 | zero external requests at load | LIVE | |
-| W11 | piece ceiling | LIVE | |
-| W12 | visiting AIs (`llms.txt`, MCP manifest) | STATIC | manifest not served, 4,008 B |
-| W13 | D1 guardian | LIVE | |
-| A1 | api-guia layer 1, read-only guard | STATIC | other repo, read at `88aedec` |
-| A2 | channel events, seals and bytes | STATIC | 6 app seals differ (RC-18) |
-| A3 | `RACK.md` TTL and STALE | NO_DATA | Codex piece P08 |
-| A4 | 1 app = 1 node | STATIC | other repo, read at `88aedec` |
-
-App rows are read, never touched, from this repo: the app is its own tree
-(measured ruling, issue #38: the web does not touch the app).
-
-## 5 · How a small local model runs it
-
-No frontier model is needed to keep the MVP honest:
-
-```
-node atlas/mvp_casos.mjs            # whole map → one receipt < 1,024 B
-node atlas/mvp_casos.mjs --fila W7  # one row → one packet < 1,024 B
-<the row's "juez">                  # exit 0 = green, anything else = red
-```
-
-The mini reads a row, runs its judge, reports the exit code. It decides
-nothing: the judge is deterministic, the seal is in the file, the cause is
-written. A red goes to the Command as a receipt; the carbon signs.
-
-## 6 · The pieces joined, not rebuilt (quarry)
-
-| Need | Found | Where |
+| Objective | Seal | Judge / evidence required |
 |---|---|---|
-| state vector S_t | yes, live | `public/game/state_vector.js`, `atlas/vector_casos.mjs` |
-| seal colours | yes, live | `public/game/tabla_semantica.js` |
-| door weight | yes, live | `atlas/mundo.py` `gzip_juego()` (called, not copied) |
-| brain picker (browser GPU / browser Prompt API) | yes, archived | `public/assets/engine.js` at `84621c2^` |
-| visitor's own local model (loopback) | yes, archived | `public/assets/localai.js` at `84621c2^` |
-| chat turn and router | yes, archived | `chat.js`, `chat-router.js` at `84621c2^` |
-| measured brains and the browser mini | yes, live | `public/cerebros.json` (`navegador`, `pisos`) |
-| «Questions???» texts, chunked model < 25 MiB | NO_DATA | not in the rack nor in 7 repos (measured 2026-10-18) |
-| seal compatibility matrix (RC-07) | NO_DATA | not in web nor app; draft in §8 |
+| One identity and complete task across WEB and APP | `REQUIERE_FIRMA` · visual and task acceptance pending | Shared task fixtures compare state, messages, errors, controls and contract. Lab#91 runner reads pinned branch evidence; actual origin evidence is `NO_DATA` until those branch refs and manifests are supplied. |
+| Three family-friendly themes | `REQUIERE_FIRMA` · Sovereign visual gate pending | Same scene-geometry fixture; layouts may differ. Current accepted-source pixel/render comparison is `NO_DATA`. |
+| Four-channel access | `PARTIAL_MEASURED` | Lab#87 has 48 viewport cases (three themes × two orientations × eight heights), zoom bounds 0.60–3.00, contrast fixtures and task parity. Lab#88 defines visible narration, deterministic queue decisions and sound-off text fallback. No complete physical assistive-technology pass is claimed. |
+| Bubble frames | `PARTIAL_MEASURED` · Claude-reported fixture result | Worst frame 1,017 / 1,024 UTF-8 bytes (7 B headroom) is a dated report, not a fresh accepted-build measure. Lab#87's post-export judge must run on the pinned release. |
+| Contrast | `PARTIAL_MEASURED` · regression values only | basic 15.80/9.91, atlantis 18.27/9.61, zombie 15.11/11.93. Lab#87 checks drift. These values are not WCAG or EN 301 549 certification. |
+| Local voice | `PARTIAL_MEASURED` | App voice route exists at APP base above; lab#88 defines the auditable queue and explicit no-sound cause. New-face voice integration and physical hearing are `NO_DATA` · no accepted integrated build or listening receipt. |
+| Offline install and zero external requests | `NO_DATA` · clean install not measured | Lab#92 supplies an offline verifier and requires complete request capture across install, launch, task, offline launch, surfaces and restart. No real release receipt is attached. |
+| Signed creation and publication | `LIVE` only for the prior generation | E8-final receipt `buzon#19/6376680966` belongs to the old generation and is explicitly excluded from this generation's acceptance. A new generation requires its own signature, import, independent read and persistence evidence. |
+| Node cédula delivery | `NO_DATA` · gateway remains provisional | Prior measurement: export returned 502 twice and cédula route 404. No deployed final route/receiver receipt is present. |
+| Deployment freshness | `NO_DATA` · new-generation release absent | Require manual, approved deploy from exact WEB head and a new byte-exact FARO receipt. Historical FARO 244/244 is not reused as this generation's proof. |
 
-The archived chat carries Spanish comments and lived under the old 10 KiB
-law: it returns through the D1 scrub and the 16,384 B case, piece by piece.
+## Ceilings and judges
 
-## 7 · Landing with the fewest signatures
-
-| Sign-off | What lands | Touches `public/` | State |
-|---|---|---|---|
-| **F1** | this lot + `haiku/huecos-ci` (stacked, one reading) | no | REQUIRES_FIRMO |
-| **F2** | presentation seal `abiw` (rift: falls → finds) | yes | already asked in Command #14 |
-| **F3** | «Questions???»: trigger after RIFT, the nine-language selector, Easy Start honest panel | yes, one seal | to build after F2 |
-| D1 | open the game loader beyond `en` | yes | decision, a fence today |
-| D2 | Easy Start A: host a chunked model, or the visitor's browser Prompt API only | yes | decision |
-| D3 | Easy Start B: the Hexelion node on click, via the admitted tunnel | yes | decision |
-| D4 | RC-17, RC-18, RC-19 | no | seeds in `DISAGREEMENTS.md` |
-
-F3 is built on the quarry of §6, not from zero: the trigger reads the rift's
-final page; the selector reuses the nine portals; Easy Start shows each engine
-with its seal — the visitor's own browser model or loopback model when the
-device answers, the node only if it answers LIVE, otherwise `NO_DATA` with the
-cause. Nothing is fetched at load: every engine waits for a click.
-
-**Then the app** (after the web closes F1–F3): A1–A4 rows, and Codex's pieces
-P02 (schemas), P03 (SSHSIG), P08 (TTL), each with its own judge row added here.
-
-## 8 · Seal matrix (draft for RC-18)
-
-| Canonical (P02) | Web `tabla_semantica.js` | App `canales.py` |
+| Ceiling or measurement | Seal / source | Judge |
 |---|---|---|
-| LIVE | LIVE | MEDIDO |
-| STALE | STALE | — |
-| STATIC | — (painted neutral) | — |
-| SIMULATED | SIMULATED | EMULADO |
-| NO_DATA | NO_DATA | NO_DATA |
-| ERROR | ERROR | — |
-| *(governance axis)* | PROPUESTA, FIRMADO | PROPUESTA, REQUIERE_FIRMA, DECLARADO |
+| Served piece ≤16,384 B; old maximum 16,365 B | `STALE` · WEB tree `eac293d` | Old `atlas/mvp_casos.mjs C4`; rerun on accepted tree. |
+| State channel <1,024 B; old S_t 466 B | `STALE` · WEB tree `eac293d` | Old C5 and `atlas/vector_casos.mjs`; new creation package uses its separate frame contract. |
+| Initial compressed load <153,600 B; old 71,277 B | `STALE` · WEB tree `eac293d` | Old C6; rerun on the complete accepted artifact. |
+| Zero external requests | `STALE` · old load-only test | Old C7 plus `test_web.py`; new generation requires full cold-install capture, not just page-load inspection. |
+| Nine portal languages | `STALE` · old portals only | Old C8; new face language/voice inventory `NO_DATA`. |
+| Frame ≤1,024 UTF-8 bytes after export | `PARTIAL_MEASURED` · reported 1,017 B worst | Lab#87 post-export byte/hash judge; accepted branch evidence still required. |
+| Contrast regression pairs | `PARTIAL_MEASURED` · three dated theme pairs | Lab#87; no standards-certification claim. |
 
-Proposal: the six describe **data**; proposal, signature and declaration
-describe **governance**. Two axes, not one list of nine. Codex's matrix
-(RC-07) decides; this is a draft for it.
+The historical ceilings remain useful regression contracts where their judges
+still run. Their old measured values are not current facts about a rebuilt release.
 
-## 9 · What this lot does not do
+## Boundaries
 
-It does not touch `public/`, the service worker, the seal or the engine
-(`atlas-motor.js`, `core.js`). It does not build «Questions???» (F3). It does
-not download a model. It does not fetch the rack. It does not edit RC-07; it
-proposes RC-19 beside it.
+This map does not assert that the current proposals are installed, audible,
+accessible, offline, published or `LIVE`. Synthetic fixtures prove validator
+behavior only. A new generation closes when pinned WEB and APP artifacts pass
+their judges, the Sovereign reviews the visuals, human physical readings are
+recorded, and a new independent end-to-end receipt is sealed. Missing evidence
+stays `NO_DATA` with its cause.
