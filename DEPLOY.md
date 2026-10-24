@@ -1,51 +1,35 @@
-# Web deployment · measured proposal
+# Web deployment contract · measured 2026-10-26
 
-Status: proposal, draft PR only. The current `wrangler.jsonc` names `preceptoros-web` and serves `./public` as Workers static assets. `docs/ESTADO.md` still says Cloudflare Pages (including its historical redirect note); that record conflicts with the current Wrangler configuration. This PR records the drift and leaves `wrangler.jsonc` unchanged.
+Status: proposal for review. Deployment remains a human action. This document records the current repository contract and the Mesa's measured credential/deploy sequence; it does not claim a deployment was run by this card.
 
-## Route count
+## Source and authority
 
-Measured at `ebad187` (E4 branch `mistral/creation-e4-20261023`) from `public/sw-listas.js` and the shell expansion in `public/sw.js`:
+`wrangler.jsonc` names the Worker `preceptoros-web` and serves `./public` as static assets. `.github/workflows/deploy.yml` is `manual-worker-deploy`: `workflow_dispatch`, guarded to `refs/heads/main`, with the `production` environment. The Mesa measured that environment as requiring a reviewer; the approval policy is hosted in GitHub and is not represented in this checkout. The Sovereign triggers the workflow and supplies the human approval. Agents do not deploy.
 
-Rutas precargadas por el shell: 200
-Rutas distintas del shell: 199
-
-The counter preserves declared shell entries, expands the nine language paths, and reports duplicate entries separately. Run `python3 bin/contar_rutas.py` to measure; the gate runs `python3 bin/contar_rutas.py --check-doc DEPLOY.md` and fails on a missing, duplicate, or stale declaration. Historical entries in append-only `PARA_LA_MESA.md` are not rewritten or treated as current documentation.
-
-## Deploy command
-
-A human with the authorized deployment credential runs this from the checked-out commit to publish:
+The workflow runs exactly:
 
 ```sh
 npx --yes wrangler deploy --config wrangler.jsonc
-python3 atlas/faro.py
 ```
 
-The deployment workflow is manual-only and guarded to run on `main`. Its GitHub secret name is `CF_DEPLOY_CREDENTIAL`; Wrangler receives it through its documented authentication environment. The non-secret repository variable `CF_ACCOUNT_ID` must also be set because the config has no account identifier. Neither value belongs in this file. The workflow is not run by this draft PR.
+It maps GitHub secret `CF_DEPLOY_CREDENTIAL` to Wrangler's `CLOUDFLARE_API_TOKEN`, and repository variable `CF_ACCOUNT_ID` to `CLOUDFLARE_ACCOUNT_ID`. These are names only; values must never be copied to a document, log, command transcript, or PR.
 
-## Successful faro result
+## Credential setup measurement
 
-At measured main `4105e9b` there are 234 files under `public/`. After a successful deployment of that exact tree, `faro.yml` should report:
+Mesa's 2026-10-26 receipt for the first green deployment records this sequence: empty secret/variable values → invalid credential value → valid token → successful manual deployment, workflow run `40100263650`. This is a historical setup trace, not an instruction to expose or repeat any credential value. If deployment authentication fails, stop at the workflow result and have the Sovereign correct the protected setting; do not probe or print secrets.
 
-```text
-ficheros comparados: 234
-LIVE iguales: 234
-DRIFT distintos: 0
-DRIFT ausentes: 0
-ERRORES de red: 0
-```
+## Post-deploy measurement
 
-Expected process exit: `0`. These are acceptance values, not a claim about the currently served edge; the live comparison must be run after deployment.
+1. The Sovereign dispatches `manual-worker-deploy` from `main` and approves the `production` environment.
+2. If measured HTML drift remains after the deploy, the Sovereign purges the affected zone cache using the authorized Cloudflare control. The exact purge command/endpoint is **NO_DATA**, cause: no purge procedure is versioned in this repository; do not infer a zone identifier or API call.
+3. After any required purge, the Sovereign dispatches the `faro` workflow (`workflow_dispatch`). It runs `python atlas/faro.py`, comparing served files byte-for-byte with `public/` from main. A green reading is exit 0 with all files equal and zero distinct, absent, or network-error entries. A push-to-main also triggers this workflow; that trigger is not a replacement for the post-deploy reading.
 
-## Rollback
+The Mesa's earlier measured deployment baseline was 244 public files, but the expected count must be read from the exact main being deployed. Do not copy an old count into a new receipt.
 
-Set `PREVIOUS_DEPLOYED_COMMIT` to the commit measured as currently deployed in the Cloudflare dashboard, then redeploy that tree and re-run the faro:
+## Rollback boundary
 
-```sh
-test -n "$PREVIOUS_DEPLOYED_COMMIT"
-git worktree add --detach /tmp/preceptoros-web-rollback "$PREVIOUS_DEPLOYED_COMMIT"
-cd /tmp/preceptoros-web-rollback
-npx --yes wrangler deploy --config wrangler.jsonc
-python3 atlas/faro.py
-```
+The checked-in deploy workflow has no rollback input, artifact selector, or rollback job; `wrangler.jsonc` declares only the Worker name, compatibility date, and static asset directory. Therefore this repository does **not** establish a rollback procedure. Prior-version selection and platform rollback behavior are **NO_DATA**, cause: not configured or evidenced by these files. Do not invent a rollback command or redeploy an unmeasured tree. The Sovereign must obtain a separately measured and authorized rollback procedure before treating rollback as available.
 
-A rollback is complete only when the faro reports the file count and all files LIVE with zero drift and zero network errors. If the dashboard does not identify the deployed commit, rollback source is NO_DATA and no redeploy should be guessed.
+## Receipt
+
+Record the source commit, workflow run ID, human approver, result, public-file counts and FARO output. Record only the names of protected settings, never their values. If a step cannot be measured, record `NO_DATA` with its cause. `encolado` is not evidence that a deployment is live.
