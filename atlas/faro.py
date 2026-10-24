@@ -11,6 +11,7 @@ causa impresa.
 """
 
 import hashlib
+import re
 import sys
 import urllib.error
 import urllib.request
@@ -20,6 +21,7 @@ SITIO = "https://www.preceptoros.org/"
 RAIZ = Path(__file__).resolve().parent.parent / "public"
 TIEMPO_FUERA = 15
 AGENTE = "preceptoros-faro/1.0"
+SONDA_BYTES = 96
 
 
 def rutas_locales():
@@ -29,16 +31,29 @@ def rutas_locales():
 
 
 def traer(ruta):
-    """Devuelve (estado, cuerpo). estado: 'ok', 'falta' o 'error'."""
+    """Devuelve (estado, cuerpo, url_final). estado: 'ok', 'falta' o 'error'."""
     url = SITIO if ruta == "index.html" else SITIO + ruta
     pedido = urllib.request.Request(url, headers={"User-Agent": AGENTE})
     try:
         with urllib.request.urlopen(pedido, timeout=TIEMPO_FUERA) as r:
-            return "ok", r.read()
+            return "ok", r.read(), r.geturl()
     except urllib.error.HTTPError:
-        return "falta", b""
+        return "falta", b"", url
     except Exception as e:
-        return "error", str(e).encode("utf-8", "replace")
+        return "error", str(e).encode("utf-8", "replace"), url
+
+
+def sonda(ruta, cuerpo, local, url_final):
+    """Evidencia de una ruta DISTINTA: que recibio de verdad el runner."""
+    solo_newlines = cuerpo.replace(b"\r\n", b"\n") == local.replace(b"\r\n", b"\n")
+    print("  SONDA " + ruta)
+    print("    servido: %d B sha256:%s" % (len(cuerpo), hashlib.sha256(cuerpo).hexdigest()))
+    print("    local:   %d B sha256:%s" % (len(local), hashlib.sha256(local).hexdigest()))
+    print("    url_final: " + url_final)
+    print("    solo_newlines_diff: " + ("SI" if solo_newlines else "NO"))
+    titulo = re.search(rb"<title[^>]*>(.*?)</title>", cuerpo, re.S)
+    print("    titulo_servido: " + (titulo.group(1).decode("utf-8", "replace") if titulo else "NO_DATA"))
+    print("    inicio_servido: " + repr(cuerpo[:SONDA_BYTES]))
 
 
 def main():
@@ -48,7 +63,7 @@ def main():
         return 2
     iguales, distintos, ausentes, errores = [], [], [], []
     for ruta in rutas:
-        estado, cuerpo = traer(ruta)
+        estado, cuerpo, url_final = traer(ruta)
         if estado == "error":
             errores.append((ruta, cuerpo.decode("utf-8", "replace")))
             continue
@@ -58,18 +73,20 @@ def main():
         elif hashlib.sha256(cuerpo).hexdigest() == hashlib.sha256(local).hexdigest():
             iguales.append(ruta)
         else:
-            distintos.append(ruta)
+            distintos.append((ruta, cuerpo, local, url_final))
     print("ficheros comparados: %d" % len(rutas))
     print("LIVE iguales: %d" % len(iguales))
     print("DRIFT distintos: %d" % len(distintos))
     print("DRIFT ausentes: %d" % len(ausentes))
     print("ERRORES de red: %d" % len(errores))
     for r in distintos:
-        print("  DISTINTO " + r)
+        print("  DISTINTO " + r[0])
     for r in ausentes:
         print("  AUSENTE " + r)
     for r, motivo in errores:
         print("  ERROR " + r + " · " + motivo)
+    for r, cuerpo, local, url_final in distintos:
+        sonda(r, cuerpo, local, url_final)
     if errores:
         return 2
     return 1 if (distintos or ausentes) else 0
