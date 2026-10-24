@@ -31,6 +31,14 @@ test('limit rejection persists and keeps last valid frame',()=>{
   assert.equal(p.state().cause,'limit');assert.match(F.describe(p.state()).text,/1024/);
   assert.equal(F.describe(p.state()).clips.at(-1),'limit');
 });
+test('unknown rejection cause keeps exact text and uses the declared reject cue',()=>{
+  const state={action:'reject',color:'cyan',x:206,y:258,count:0,cause:'outside drawing viewport'};
+  const described=F.describe(state);
+  assert.match(described.text,/outside drawing viewport/);
+  assert.equal(described.clips.includes('reject'),true);
+  assert.equal(described.clips.includes('outside drawing viewport'),false);
+  assert.equal(described.clips.includes('unavailable'),false);
+});
 test('queue never overlaps and declares missing or suspended audio',async()=>{
   let active=0,max=0;const played=[],errors=[];
   const catalog={clips:Object.fromEntries(F.INVENTORY.map(name=>[name,{data:'AA=='}]))};

@@ -38,6 +38,15 @@ test('Paint rejects over-limit strokes without truncation and announces cause', 
   assert.equal(p.tryFrame().ok, true);
 });
 
+test('Paint maps into the fitted viewBox and rejects the letterbox bars', () => {
+  const landscape = { left: 10, top: 20, width: 824, height: 515 };
+  assert.deepEqual(P.viewportPoint(landscape, 422, 277.5, 412, 515), [206, 257.5]);
+  assert.equal(P.viewportPoint(landscape, 20, 277.5, 412, 515), null);
+  const portrait = { left: 0, top: 0, width: 412, height: 180 };
+  assert.deepEqual(P.viewportPoint(portrait, 206, 90, 412, 515), [206, 257.5]);
+  assert.equal(P.viewportPoint(portrait, 2, 90, 412, 515), null);
+});
+
 test('Paint mounts accessible DOM and projects points as SVG without HTML parsing', () => {
   const doc = new FakeDocument(), target = host(doc);
   const view = P.mount(target, { id: 'PAINT_DOM' });
@@ -50,4 +59,18 @@ test('Paint mounts accessible DOM and projects points as SVG without HTML parsin
   assert.doesNotMatch(require('node:fs').readFileSync(new URL('../public/game/bubble_paint.js', import.meta.url), 'utf8'), /innerHTML/);
   assert.equal(surface.querySelector('polyline').getAttribute('points'), '12,18 24,30');
   assert.equal(surface.querySelector('polyline').getAttribute('stroke'), Tokens.FRONT_DOOR.cyan);
+});
+
+test('Paint pointer ignores letterboxing and records the transformed SVG point', () => {
+  const doc = new FakeDocument(), target = host(doc), view = P.mount(target, { id: 'PAINT_VIEWPORT' });
+  const surface = target.querySelector('[data-surface="paint"]');
+  let svg = surface.querySelector('svg');
+  svg.getBoundingClientRect = () => ({ left: 10, top: 20, width: 824, height: 515 });
+  surface.listeners.pointerdown[0]({ clientX: 20, clientY: 277.5, pointerId: 1, pointerType: 'mouse' });
+  assert.equal(view.paint.state().cause, 'outside drawing viewport');
+  assert.equal(view.paint.points().length, 0);
+  svg = surface.querySelector('svg');
+  svg.getBoundingClientRect = () => ({ left: 10, top: 20, width: 824, height: 515 });
+  surface.listeners.pointerdown[0]({ clientX: 422, clientY: 277.5, pointerId: 1, pointerType: 'mouse' });
+  assert.deepEqual(view.paint.points(), [[206, 258]]);
 });

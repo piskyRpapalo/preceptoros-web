@@ -48,7 +48,10 @@
     var s = state, clips = [s.action, s.color || 'cyan', 'x'];
     function digits(n) { return String(n).split('').map(function (d) { return 'digit_' + d; }); }
     clips = clips.concat(digits(s.x), ['y'], digits(s.y), ['points'], digits(s.count));
-    if (s.cause) clips.push(s.cause);
+    if (s.cause) {
+      if (INVENTORY.includes(s.cause)) clips.push(s.cause);
+      else if (s.action !== 'reject') clips.push('unavailable');
+    }
     var causes = { limit: 'frame must stay below 1024 bytes', empty: 'no history available' };
     var text = s.action + ' · ' + (s.color || 'cyan') + ' · x ' + s.x + ' · y ' + s.y + ' · ' + s.count + ' points';
     if (s.cause) text += ' · ' + (causes[s.cause] || s.cause);
