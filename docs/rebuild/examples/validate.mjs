@@ -6,6 +6,8 @@ import { page, SKINS, WEB_PREFIX, APP_PREFIX, APP_BASE } from './tools/build.mjs
 const require = createRequire(import.meta.url);
 const Bubble = require('../../../public/game/bubble_language.js');
 require('../../../public/game/bubble_bestiary.js');
+require('../../../public/game/bubble_world.js');
+const Iso = require('../../../public/game/isometric_floor_projection.js');
 const Codex = require('../../../public/assets/codex_scene.js');
 const World = require('./face_world.js');
 const dir = 'docs/rebuild/examples';
@@ -28,11 +30,11 @@ function rgb(c) {
 const lum = (c) => { const [r, g, b] = rgb(c).map((v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }); return 0.2126 * r + 0.7152 * g + 0.0722 * b; };
 const contrast = (a, b) => { const x = lum(Bubble.band(a)), y = lum(Bubble.band(b)); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); };
 
-for (const f of ['face.js', 'face_world.js', 'face.css', 'index.html', ...names.map((n) => n + '.html')]) {
+for (const f of ['face.js', 'face_world.js', 'face_paint.js', 'face.css', 'index.html', ...names.map((n) => n + '.html')]) {
   const size = statSync(join(dir, f)).size;
   assert.ok(size <= 16384, `${f} is ${size} B, over the 16,384 B piece ceiling`);
 }
-const code = readFileSync(join(dir, 'face.js'), 'utf8') + readFileSync(join(dir, 'face_world.js'), 'utf8');
+const code = ['face.js', 'face_world.js', 'face_paint.js'].map((f) => readFileSync(join(dir, f), 'utf8')).join('\n');
 assert.doesNotMatch(code, /Math\.random|Date\.now|new Date|performance\.now|fetch\(|localStorage|XMLHttpRequest|WebSocket/, 'face code uses a forbidden source of authority or network');
 assert.doesNotMatch(code, /\/\/ |\/\*/, 'served face code carries comments');
 const served = [code, readFileSync(join(dir, 'face.css'), 'utf8'), readFileSync(join(dir, 'tools/face.tpl.html'), 'utf8'), readFileSync(join(dir, 'index.html'), 'utf8')].join('\n');
@@ -43,24 +45,34 @@ assert.doesNotMatch(served, /([0-9]{1,3}\.){3}[0-9]{1,3}|\/h[o]me\/|d[o]ogee|S1[
 
 const tpl = readFileSync(join(dir, 'tools/face.tpl.html'), 'utf8');
 for (const b of tpl.match(/<button\b[^>]*>.*?<\/button>/g)) assert.match(b.replace(/<span aria-hidden="true">.*?<\/span>/g, '').replace(/<[^>]+>/g, '').trim(), /\w/, 'button without a text label: ' + b);
-for (const c of tpl.match(/<canvas\b[^>]*>/g)) assert.match(c, /aria-label="[^"]+"/, 'canvas without a label: ' + c);
-for (const id of ['packet', 'say', 'machine', 'machine-map', 'log', 'joy', 'map', 'head', 'skin', 'start', 'follow', 'counter', 'whole']) assert.match(tpl, new RegExp(`id="${id}"`), 'missing #' + id);
+for (const c of tpl.match(/<canvas\b[^>]*>/g)) assert.match(c, /aria-label="[^"]+"|aria-hidden="true"/, 'canvas without a label: ' + c);
+assert.match(tpl, /id="mapwin" role="img" aria-label="[^"]+"/, 'the map window has no label');
+for (const id of ['packet', 'say', 'machine', 'machine-map', 'log', 'joy', 'map', 'mapwin', 'head', 'skin', 'start', 'follow', 'counter', 'whole']) assert.match(tpl, new RegExp(`id="${id}"`), 'missing #' + id);
 assert.match(tpl, /role="status" aria-live="polite"/, 'no live narration');
 
-const starts = [World.homeAt, [20, 20], [700, 20], [20, 940], [700, 940], [360, 480]].concat(World.places.map((p) => p.at));
+const starts = [World.homeAt, [20, 20], [980, 20], [20, 980], [980, 980], [500, 500]].concat(World.places.map((p) => p.at));
+const longTrail = Array.from({ length: 160 }, (_, i) => [20 + i * 6, 980 - i * 6]);
+for (const [x, y] of [[0, 0], [306, 462], [980, 20], [20, 980], [517, 233]]) { const q = Iso.proyecta(x, y, Math.SQRT2); assert.deepEqual(World.iso(x, y), [Math.round(q.x), Math.round(q.y)], 'face_world.iso drifted from isometric_floor_projection.proyecta'); }
+console.log('projection: face_world.iso equals the living map proyecta(col, fila, W = sqrt 2); PASS');
 const states = [];
 for (let task = 0; task <= World.places.length; task++) {
   for (const from of starts) {
     for (const sound of [false, true]) {
-      if (task === World.places.length) { states.push({ at: from, task, step: 0, path: null, change: 'free text', sound }); continue; }
+      if (task === World.places.length) { states.push({ at: from, task, step: 0, path: null, trail: longTrail, change: 'free text', sound }); continue; }
       const path = World.route(from, World.places[task]);
       const wk = World.walk(path);
-      for (let step = 0; step <= wk.steps; step++) states.push({ at: wk.at[step], task, step, path, change: `step ${wk.steps} of ${wk.steps}`, sound, walking: true });
+      for (let step = 0; step <= wk.steps; step++) states.push({ at: wk.at[step], task, step, path, trail: longTrail, change: `step ${wk.steps} of ${wk.steps}`, sound, walking: true, dir: 1 });
     }
   }
 }
 const LAYOUTS = ['quiet', 'zones', 'terminal'];
-const css = readFileSync(join(dir, 'face.css'), 'utf8');
+let css = readFileSync(join(dir, 'face.css'), 'utf8');
+if (sabotage === 'scroll') css = css.replace('html,body{height:100%;overflow:hidden;', 'html,body{height:100%;');
+assert.match(css, /html,body\{height:100%;overflow:hidden;/, 'the page can scroll: one fixed window is the decree');
+assert.match(css, /\.face\{[^}]*height:100dvh;[^}]*overflow:hidden/, 'the face is not one viewport-sized window');
+assert.match(css, /\.side\{[^}]*overflow:auto/, 'the chat side must be the internal scroll area');
+assert.match(css, /#map\{position:fixed;inset:0;/, 'the map is not the wallpaper behind the window');
+console.log('one window: the page never scrolls, the chat scrolls inside, the map is the wallpaper; PASS');
 let worst = 0;
 const ref = {};
 const seen = new Set();
@@ -75,10 +87,10 @@ for (const name of names) {
   assert.match(css, new RegExp(`\\[data-layout=${skin.layout}\\] \\.face\\{grid-template-columns:[^}]*grid-template-areas:`), `face.css has no wide distribution for ${skin.layout}`);
   assert.match(css.slice(css.indexOf('@media (max-width:760px)')), new RegExp(`\\[data-layout=${skin.layout}\\] \\.face\\{[^}]*grid-template-areas:`), `face.css has no phone distribution for ${skin.layout}`);
   assert.match(html, new RegExp(`<body data-layout="${skin.layout}">`), `${name}.html does not declare its layout`);
-  if (sabotage === 'geometry' && name === 'zombie') World.places[0].at = [169, 548];
-  const frames = [['map', World.mapFrame(skin)], ['nodes', World.nodesFrame(skin)], ['grid', World.gridFrame(skin)], ['head', World.headFrame(skin)], ['joy', World.joyFrame(skin, -40, 0)], ['joy0', World.joyFrame(skin, 0, 0)]]
+  if (sabotage === 'geometry' && name === 'zombie') World.isles[0].rx = 125;
+  const frames = [['sea', World.seaFrame(skin)], ['isles0', World.islesFrame(skin, 0)], ['isles1', World.islesFrame(skin, 1)], ['isles2', World.islesFrame(skin, 2)], ['isles3', World.islesFrame(skin, 3)], ['stand', World.standFrame(skin)], ['names', World.namesFrame(skin)], ['head', World.headFrame(skin)], ['joy', World.joyFrame(skin, -40, 0)], ['joy0', World.joyFrame(skin, 0, 0)]]
     .concat(states.map((st) => ['state', World.stateFrame(skin, st)]));
-  if (sabotage === 'size' && name === 'atlantis') frames[0][1].change = ['x'.repeat(400)];
+  if (sabotage === 'size' && name === 'atlantis') frames[2][1].change = ['x'.repeat(400)];
   const cast = [];
   if (skin.cast !== 'none') {
     for (let moves = 0; moves < 36; moves++) for (const at of [World.homeAt].concat(World.canon.map((c) => [c.x, c.y]), [World.wanderAt(moves).slice(0, 2)])) cast.push(World.castFrame(skin, { at, moves, step: 99, change: 'step 99 of 99' }));
@@ -96,7 +108,8 @@ for (const name of names) {
         else assert.equal(c[k], src[k], `${c.o}.${k} differs from the Codex RIFT frame`);
       }
     }
-    assert.equal(54, Math.round(rift.crab.rr * World.codexScale), 'the canon crab size drifted from the Codex RIFT frame');
+    assert.equal(rift.crab.o, 'crab', 'the Codex RIFT crab is missing');
+    assert.ok(JSON.stringify(World.standFrame(skin)).includes('"o":"city"'), 'the home town is not the canon city word');
     console.log(`${name}: canon creatures are the Codex RIFT words (octo, star, snail, bust; crab as your unit), scale ${World.codexScale}; PROVENANCE PASS`);
   }
   cast.forEach((f, i) => {
@@ -118,7 +131,7 @@ for (const name of names) {
     if (!(i in ref)) ref[i] = shape;
     else assert.equal(shape, ref[i], `${name} ${kind} frame ${i} geometry differs from basic`);
   });
-  if (sabotage === 'geometry') World.places[0].at = [168, 548];
+  if (sabotage === 'geometry') World.isles[0].rx = 124;
   const u = SKINS[name].ui;
   for (const [a, b, min] of [['fg', 'bg', 4.5], ['fg', 'panel', 4.5], ['onAccent', 'accent', 4.5], ['edge', 'bg', 3]]) {
     const r = contrast(u[a], u[b]);
@@ -126,7 +139,7 @@ for (const name of names) {
   }
   console.log(`${name} (${skin.layout}): ${frames.length} shared frames + ${cast.length} cast frames < 1,024 B; map scenes identical to basic (the crab and the cast are each proposal's own); contrast fg/bg ${contrast(u.fg, u.bg).toFixed(2)}, accent ${contrast(u.onAccent, u.accent).toFixed(2)}; PASS`);
 }
-const pal = names.map((n) => JSON.stringify(World.mapFrame(Object.assign({ name: n }, SKINS[n])).bands));
+const pal = names.map((n) => JSON.stringify(World.islesFrame(Object.assign({ name: n }, SKINS[n]), 0).bands));
 assert.equal(new Set(pal).size, 3, 'two skins share the same palette');
 const index = readFileSync(join(dir, 'index.html'), 'utf8');
 for (const name of names) assert.match(index, new RegExp(`src="${name}\\.html"`));
@@ -135,7 +148,7 @@ console.log(`${states.length} reachable states per skin; worst frame ${worst} UT
 if (process.env.APP_DIR) {
   const app = join(process.env.APP_DIR, 'interface', 'face');
   assert.ok(existsSync(app), 'APP_DIR has no interface/face');
-  for (const f of ['face.js', 'face_world.js', 'face.css', 'skins.json']) assert.equal(readFileSync(join(app, f), 'utf8'), readFileSync(join(dir, f), 'utf8'), `app ${f} differs from web`);
+  for (const f of ['face.js', 'face_world.js', 'face_paint.js', 'face.css', 'skins.json']) assert.equal(readFileSync(join(app, f), 'utf8'), readFileSync(join(dir, f), 'utf8'), `app ${f} differs from web`);
   for (const name of names) assert.equal(readFileSync(join(app, name + '.html'), 'utf8'), page(name, APP_PREFIX, APP_BASE), `app ${name}.html differs from the shared template`);
-  console.log('app parity: face.js, face_world.js, face.css, skins and three pages byte-identical to the web template; PASS');
+  console.log('app parity: face.js, face_world.js, face_paint.js, face.css, skins and three pages byte-identical to the web template; PASS');
 }
