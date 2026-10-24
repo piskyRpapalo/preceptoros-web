@@ -5,7 +5,7 @@ import { join } from 'node:path';
 import { page, SKINS, WEB_PREFIX, APP_PREFIX, APP_BASE } from './tools/build.mjs';
 const require = createRequire(import.meta.url);
 const Bubble = require('../../../public/game/bubble_language.js');
-const Face = require('./face.js');
+const World = require('./face_world.js');
 const dir = 'docs/rebuild/examples';
 const sabotage = process.env.VALIDATE_SABOTAGE || '';
 const names = Object.keys(SKINS);
@@ -26,13 +26,13 @@ function rgb(c) {
 const lum = (c) => { const [r, g, b] = rgb(c).map((v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }); return 0.2126 * r + 0.7152 * g + 0.0722 * b; };
 const contrast = (a, b) => { const x = lum(Bubble.band(a)), y = lum(Bubble.band(b)); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); };
 
-for (const f of ['face.js', 'face.css', 'index.html', ...names.map((n) => n + '.html')]) {
+for (const f of ['face.js', 'face_world.js', 'face.css', 'index.html', ...names.map((n) => n + '.html')]) {
   const size = statSync(join(dir, f)).size;
   assert.ok(size <= 16384, `${f} is ${size} B, over the 16,384 B piece ceiling`);
 }
-const code = readFileSync(join(dir, 'face.js'), 'utf8');
-assert.doesNotMatch(code, /Math\.random|Date\.now|new Date|fetch\(|localStorage|XMLHttpRequest|WebSocket/, 'face.js uses a forbidden source of authority or network');
-assert.doesNotMatch(code, /\/\/ |\/\*/, 'served face.js carries comments');
+const code = readFileSync(join(dir, 'face.js'), 'utf8') + readFileSync(join(dir, 'face_world.js'), 'utf8');
+assert.doesNotMatch(code, /Math\.random|Date\.now|new Date|performance\.now|fetch\(|localStorage|XMLHttpRequest|WebSocket/, 'face code uses a forbidden source of authority or network');
+assert.doesNotMatch(code, /\/\/ |\/\*/, 'served face code carries comments');
 const served = [code, readFileSync(join(dir, 'face.css'), 'utf8'), readFileSync(join(dir, 'tools/face.tpl.html'), 'utf8'), readFileSync(join(dir, 'index.html'), 'utf8')].join('\n');
 assert.doesNotMatch(served, /oraculo|notario|depin|\btoken\b|moneda|clearing|magia/i, 'banned word in served text');
 assert.doesNotMatch(served, /\b(?:src|href)=["']https?:\/\//i, 'remote request in served text');
@@ -42,20 +42,41 @@ assert.doesNotMatch(served, /([0-9]{1,3}\.){3}[0-9]{1,3}|\/h[o]me\/|d[o]ogee|S1[
 const tpl = readFileSync(join(dir, 'tools/face.tpl.html'), 'utf8');
 for (const b of tpl.match(/<button\b[^>]*>.*?<\/button>/g)) assert.match(b.replace(/<span aria-hidden="true">.*?<\/span>/g, '').replace(/<[^>]+>/g, '').trim(), /\w/, 'button without a text label: ' + b);
 for (const c of tpl.match(/<canvas\b[^>]*>/g)) assert.match(c, /aria-label="[^"]+"/, 'canvas without a label: ' + c);
-for (const id of ['packet', 'say', 'machine', 'log', 'joy', 'scene', 'head', 'skin']) assert.match(tpl, new RegExp(`id="${id}"`), 'missing #' + id);
+for (const id of ['packet', 'say', 'machine', 'machine-map', 'log', 'joy', 'map', 'head', 'skin', 'start', 'follow', 'counter', 'whole']) assert.match(tpl, new RegExp(`id="${id}"`), 'missing #' + id);
 assert.match(tpl, /role="status" aria-live="polite"/, 'no live narration');
 
+const starts = [World.homeAt, [20, 20], [700, 20], [20, 940], [700, 940], [360, 480]].concat(World.places.map((p) => p.at));
 const states = [];
-for (let stop = 0; stop < Face.stopsXY.length; stop++) for (const sound of [false, true]) for (const change of Face.changeList) states.push({ stop, sound, change });
+for (let task = 0; task <= World.places.length; task++) {
+  for (const from of starts) {
+    for (const sound of [false, true]) {
+      if (task === World.places.length) { states.push({ at: from, task, step: 0, path: null, change: 'free text', sound }); continue; }
+      const path = World.route(from, World.places[task]);
+      const wk = World.walk(path);
+      for (let step = 0; step <= wk.steps; step++) states.push({ at: wk.at[step], task, step, path, change: `step ${wk.steps} of ${wk.steps}`, sound, walking: true });
+    }
+  }
+}
+const LAYOUTS = ['quiet', 'zones', 'terminal'];
+const css = readFileSync(join(dir, 'face.css'), 'utf8');
 let worst = 0;
 const ref = {};
+const seen = new Set();
 for (const name of names) {
   const html = readFileSync(join(dir, name + '.html'), 'utf8');
   assert.equal(html, page(name, WEB_PREFIX), `${name}.html drifted from the shared template; run node tools/build.mjs`);
   const skin = Object.assign({ name }, SKINS[name]);
-  if (sabotage === 'geometry' && name === 'zombie') Face.stopsXY[0] = [61, 376];
-  const frames = states.map((st) => ['scene', Face.sceneFrame(skin, st)]).concat([['head', Face.headFrame(skin)], ['joy', Face.joyFrame(skin, -40, 0)], ['joy0', Face.joyFrame(skin, 0, 0)]]);
-  if (sabotage === 'size' && name === 'atlantis') frames[0][1].change = ['x'.repeat(200)];
+  if (sabotage === 'layout' && name === 'zombie') skin.layout = 'quiet';
+  assert.ok(LAYOUTS.includes(skin.layout), `${name} has no known layout`);
+  assert.ok(!seen.has(skin.layout), `${name} repeats the ${skin.layout} layout: three proposals need three distributions`);
+  seen.add(skin.layout);
+  assert.match(css, new RegExp(`\\[data-layout=${skin.layout}\\] \\.face\\{grid-template-columns:[^}]*grid-template-areas:`), `face.css has no wide distribution for ${skin.layout}`);
+  assert.match(css.slice(css.indexOf('@media (max-width:760px)')), new RegExp(`\\[data-layout=${skin.layout}\\] \\.face\\{[^}]*grid-template-areas:`), `face.css has no phone distribution for ${skin.layout}`);
+  assert.match(html, new RegExp(`<body data-layout="${skin.layout}">`), `${name}.html does not declare its layout`);
+  if (sabotage === 'geometry' && name === 'zombie') World.places[0].at = [169, 548];
+  const frames = [['map', World.mapFrame(skin)], ['nodes', World.nodesFrame(skin)], ['grid', World.gridFrame(skin)], ['head', World.headFrame(skin)], ['joy', World.joyFrame(skin, -40, 0)], ['joy0', World.joyFrame(skin, 0, 0)]]
+    .concat(states.map((st) => ['state', World.stateFrame(skin, st)]));
+  if (sabotage === 'size' && name === 'atlantis') frames[0][1].change = ['x'.repeat(400)];
   frames.forEach(([kind, f], i) => {
     const n = bytes(f);
     worst = Math.max(worst, n);
@@ -68,24 +89,24 @@ for (const name of names) {
     if (!(i in ref)) ref[i] = shape;
     else assert.equal(shape, ref[i], `${name} ${kind} frame ${i} geometry differs from basic`);
   });
-  if (sabotage === 'geometry') Face.stopsXY[0] = [62, 376];
+  if (sabotage === 'geometry') World.places[0].at = [168, 548];
   const u = SKINS[name].ui;
   for (const [a, b, min] of [['fg', 'bg', 4.5], ['fg', 'panel', 4.5], ['onAccent', 'accent', 4.5], ['edge', 'bg', 3]]) {
     const r = contrast(u[a], u[b]);
     assert.ok(r >= min, `${name} contrast ${a}/${b} is ${r.toFixed(2)}, below ${min}`);
   }
-  console.log(`${name}: ${frames.length} frames < 1,024 B; geometry identical; contrast fg/bg ${contrast(u.fg, u.bg).toFixed(2)}, accent ${contrast(u.onAccent, u.accent).toFixed(2)}; PASS`);
+  console.log(`${name} (${skin.layout}): ${frames.length} frames < 1,024 B; map scenes identical to basic; contrast fg/bg ${contrast(u.fg, u.bg).toFixed(2)}, accent ${contrast(u.onAccent, u.accent).toFixed(2)}; PASS`);
 }
-const pal = names.map((n) => JSON.stringify(Face.sceneFrame(Object.assign({ name: n }, SKINS[n]), { stop: 2 }).bands));
+const pal = names.map((n) => JSON.stringify(World.mapFrame(Object.assign({ name: n }, SKINS[n])).bands));
 assert.equal(new Set(pal).size, 3, 'two skins share the same palette');
 const index = readFileSync(join(dir, 'index.html'), 'utf8');
 for (const name of names) assert.match(index, new RegExp(`src="${name}\\.html"`));
-console.log(`worst frame ${worst} UTF-8 bytes of 1,024; launcher lists all three skins; zero remote resources; PASS`);
+console.log(`${states.length} reachable states per skin; worst frame ${worst} UTF-8 bytes of 1,024; three distinct layouts; launcher lists all three; zero remote resources; PASS`);
 
 if (process.env.APP_DIR) {
   const app = join(process.env.APP_DIR, 'interface', 'face');
   assert.ok(existsSync(app), 'APP_DIR has no interface/face');
-  for (const f of ['face.js', 'face.css', 'skins.json']) assert.equal(readFileSync(join(app, f), 'utf8'), readFileSync(join(dir, f), 'utf8'), `app ${f} differs from web`);
+  for (const f of ['face.js', 'face_world.js', 'face.css', 'skins.json']) assert.equal(readFileSync(join(app, f), 'utf8'), readFileSync(join(dir, f), 'utf8'), `app ${f} differs from web`);
   for (const name of names) assert.equal(readFileSync(join(app, name + '.html'), 'utf8'), page(name, APP_PREFIX, APP_BASE), `app ${name}.html differs from the shared template`);
-  console.log('app parity: face.js, face.css, skins and three pages byte-identical to the web template; PASS');
+  console.log('app parity: face.js, face_world.js, face.css, skins and three pages byte-identical to the web template; PASS');
 }
