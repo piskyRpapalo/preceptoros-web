@@ -30,11 +30,11 @@ function rgb(c) {
 const lum = (c) => { const [r, g, b] = rgb(c).map((v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }); return 0.2126 * r + 0.7152 * g + 0.0722 * b; };
 const contrast = (a, b) => { const x = lum(Bubble.band(a)), y = lum(Bubble.band(b)); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); };
 
-for (const f of ['face.js', 'face_world.js', 'face_hero.js', 'face_paint.js', 'face_battle.js', 'face_panel.js', 'face_fight.js', 'face_hud.js', 'face.css', 'index.html', ...names.map((n) => n + '.html')]) {
+for (const f of ['face.js', 'face_world.js', 'face_hero.js', 'face_paint.js', 'face_battle.js', 'face_panel.js', 'face_fight.js', 'face_hud.js', 'face_army.js', 'face.css', 'face_canon.css', 'index.html', ...names.map((n) => n + '.html')]) {
   const size = statSync(join(dir, f)).size;
   assert.ok(size <= 16384, `${f} is ${size} B, over the 16,384 B piece ceiling`);
 }
-const code = ['face.js', 'face_world.js', 'face_hero.js', 'face_paint.js', 'face_battle.js', 'face_panel.js', 'face_fight.js', 'face_hud.js'].map((f) => readFileSync(join(dir, f), 'utf8')).join('\n');
+const code = ['face.js', 'face_world.js', 'face_hero.js', 'face_paint.js', 'face_battle.js', 'face_panel.js', 'face_fight.js', 'face_hud.js', 'face_army.js'].map((f) => readFileSync(join(dir, f), 'utf8')).join('\n');
 assert.doesNotMatch(code, /Math\.random|Date\.now|new Date|performance\.now|fetch\(|localStorage|XMLHttpRequest|WebSocket/, 'face code uses a forbidden source of authority or network');
 assert.doesNotMatch(code, /\/\/ |\/\*/, 'served face code carries comments');
 const served = [code, readFileSync(join(dir, 'face.css'), 'utf8'), readFileSync(join(dir, 'tools/face.tpl.html'), 'utf8'), readFileSync(join(dir, 'index.html'), 'utf8')].join('\n');
@@ -44,10 +44,10 @@ assert.doesNotMatch(served, /<img\b|data:image\/(?:png|jpeg)/i, 'raster imagery 
 assert.doesNotMatch(served, /([0-9]{1,3}\.){3}[0-9]{1,3}|\/h[o]me\/|d[o]ogee|S1[1]0\b/i, 'address, user path or device name in served text');
 
 const tpl = readFileSync(join(dir, 'tools/face.tpl.html'), 'utf8');
-for (const b of tpl.match(/<button\b[^>]*>.*?<\/button>/g)) assert.match(b.replace(/<span aria-hidden="true">.*?<\/span>/g, '').replace(/<[^>]+>/g, '').trim(), /\w/, 'button without a text label: ' + b);
+for (const b of tpl.match(/<button\b[^>]*>.*?<\/button>/g)) assert.ok(/aria-label="[^"]+"/.test(b) || /\w/.test(b.replace(/<span aria-hidden="true">.*?<\/span>/g, '').replace(/<[^>]+>/g, '').trim()), 'button without a name: ' + b);
 for (const c of tpl.match(/<canvas\b[^>]*>/g)) assert.match(c, /aria-label="[^"]+"|aria-hidden="true"/, 'canvas without a label: ' + c);
 assert.match(tpl, /id="mapwin" role="img" aria-label="[^"]+"/, 'the map window has no label');
-for (const id of ['packet', 'say', 'machine', 'machine-map', 'log', 'joy', 'map', 'mapwin', 'head', 'skin', 'start', 'follow', 'counter', 'whole', 'tab-chat', 'tab-battle', 'tab-info', 'sheet-chat', 'sheet-battle', 'sheet-info', 'sheet-seal', 'b-start', 'b-step', 'b-play', 'b-withdraw', 'b-receipt']) assert.match(tpl, new RegExp(`id="${id}"`), 'missing #' + id);
+for (const id of ['packet', 'say', 'machine', 'machine-map', 'log', 'joy', 'map', 'mapwin', 'head', 'skin', 'start', 'follow', 'counter', 'whole', 'tab-map', 'tab-battle', 'tab-profile', 'tab-info', 'sheet-battle', 'sheet-profile', 'sheet-info', 'b-start', 'b-step', 'b-play', 'b-withdraw', 'b-receipt', 'army', 'odds', 'g-summon', 'g-adopt', 'identity', 'me-art']) assert.match(tpl, new RegExp(`id="${id}"`), 'missing #' + id);
 assert.match(tpl, /role="status" aria-live="polite"/, 'no live narration');
 
 const starts = [World.homeAt, [20, 20], [980, 20], [20, 980], [980, 980], [500, 500]].concat(World.places.map((p) => p.at));
@@ -74,9 +74,43 @@ const wideCss = css.slice(0, cut1), portraitCss = css.slice(cut1, cut2), landsca
 if (sabotage === 'scroll') css = css.replace('html,body{height:100%;overflow:hidden;', 'html,body{height:100%;');
 assert.match(css, /html,body\{height:100%;overflow:hidden;/, 'the page can scroll: one fixed window is the decree');
 assert.match(css, /\.face\{[^}]*height:100dvh;[^}]*overflow:hidden/, 'the face is not one viewport-sized window');
-assert.match(css, /\.sheets\{[^}]*overflow:auto/, 'the panel sheets must be the internal scroll area');
+assert.match(css, /\.chatbox \.log\{[^}]*overflow:auto/, 'the chat log must be the internal scroll area');
 assert.match(css, /#map\{position:fixed;inset:0;/, 'the map is not the wallpaper behind the window');
-assert.equal((tpl.match(/role="tab"/g) || []).length, 3, 'the panel must offer its categories as tabs');
+let tabsTpl = tpl;
+if (sabotage === 'tabs') tabsTpl = tabsTpl.replace('aria-label="Profile" ', '');
+if (sabotage === 'chatalways') tabsTpl = tabsTpl.replace('<div class="chatbox">', '<section id="sheet-chat" role="tabpanel" hidden><div class="chatbox">');
+const tabBtns = tabsTpl.match(/<button[^>]*role="tab"[^>]*>.*?<\/button>/g) || [];
+assert.deepEqual(tabBtns.map((b) => (/aria-label="([^"]+)"/.exec(b) || [])[1]), ['Map', 'Battle', 'Profile', 'Info'], 'the view icons must be Map, Battle, Profile and Info, each with its name');
+for (const b of tabBtns) assert.equal(b.replace(/<canvas data-icon="tab-[a-z]+" aria-hidden="true"><\/canvas>/, '').replace(/<[^>]+>/g, '').trim(), '', 'a view button shows text: it must be an icon');
+assert.ok(!/id="tab-chat"/.test(tabsTpl), 'Chat must not be a tab: the chat is always present');
+const chatAt = tabsTpl.indexOf('id="log"'), sideAt = tabsTpl.indexOf('<section class="side'), panelOpen = tabsTpl.lastIndexOf('role="tabpanel"', chatAt);
+assert.ok(chatAt > sideAt && (panelOpen < sideAt), 'the chat must live in the always-visible lower half, not inside a view');
+const hudTxt = readFileSync(join(dir, 'face_hud.js'), 'utf8');
+assert.match(hudTxt, /Map, Battle, Profile and Info/, 'the radio does not announce the view names');
+assert.match(hudTxt, /'View: ' \+ t\('sheet-title'\)/, 'the radio does not say which view is on screen');
+console.log('views: four icon tabs (Map, Battle, Profile, Info) with names for the reader, the radio announces them, the chat is always the lower half; PASS');
+const armyCode = readFileSync(join(dir, 'face_army.js'), 'utf8').replace(sabotage === 'army' ? 'AtlasArmyWavePanel.abre(t)' : '\u0000', 'void 0');
+assert.match(armyCode, /A\.crea\(A\.verificaWeb, A\.almacenWeb/, 'the Army is not the canon verified Army');
+assert.match(armyCode, /AtlasArmyWavePanel\.abre\(t\)/, 'a wave does not open the canon wave panel');
+assert.match(armyCode, /NO_DATA \(no waves adopted yet\)/, 'the empty Army is not honest');
+assert.match(armyCode, /A\.TOPE/, 'the Army cap is not the canon cap');
+const Val = require('../../../public/game/valores.js'), ArmyM = require('./face_army.js'), G = require('../../../public/game/gacha.js');
+assert.equal(Val.army_tope, 30, 'army cap is not 30');
+const gachaCode = sabotage === 'adopt' ? armyCode.replace('army.adopta(ad, f.firma)', 'army.adopta(ad, null)') : armyCode;
+assert.match(gachaCode, /I\.firmar\(link\(tc,[^)]*\), pub\)\)|I\.firmar\(link\(/, 'the summon is not signed by your key');
+assert.match(gachaCode, /A\.semillaWeb\(f\.firma\)/, 'the seed does not come from your signature');
+assert.match(gachaCode, /G\.tirada\(seed, tc\)/, 'the wave is not the canon roll');
+assert.match(gachaCode, /AtlasRevela\.muestra\(t/, 'no canon reveal');
+assert.match(gachaCode, /army\.adopta\(ad, f\.firma\)/, 'the adoption is not signed');
+for (const tc of Object.keys(G.TCS)) {
+  const o = G.odds(tc), txt = ArmyM.oddsText(G, sabotage === 'gacha' && tc === 'tc2' ? 'tc1' : tc);
+  assert.equal(o.reduce((x, y) => x + y, 0), 1000, `${tc} odds do not sum to 100%`);
+  G.RAREZAS.forEach((r, i) => assert.ok(txt.includes(ArmyM.names[r] + ' ' + (o[i] / 10).toFixed(1) + '%'), `${tc} shown odds differ from the canon table`));
+  assert.match(txt, /No hidden odds\./);
+}
+const seed = 'ab'.repeat(32), w1 = G.tirada(seed, 'tc3'), w2 = G.tirada(seed, 'tc3');
+assert.deepEqual(w1, w2, 'the roll is not deterministic');
+console.log(`army + gacha: canon verified Army (cap ${Val.army_tope}), canon wave panel, signed summon -> seed from the signature -> canon roll with its odds shown -> canon reveal -> signed adoption; deterministic roll; PASS`);
 assert.match(tpl, /role="tablist"/, 'the panel categories are not a tablist');
 const Battle = require('./face_battle.js');
 const Ticks = require('../../../public/game/combate_ticks.js');
@@ -155,11 +189,12 @@ for (const name of names) {
   for (const f of all) assert.ok(!JSON.stringify(f).includes('"o":"bust"'), `${name}: the Preceptor's head is still on the map`);
 }
 console.log("no bust on the map in any proposal (kept for later, elsewhere); PASS");
-const sheetHead = tplx.slice(tplx.indexOf('<div class="sheet-head">'), tplx.indexOf('</div>', tplx.indexOf('id="radio"')));
+const sheetHead = tplx.slice(tplx.indexOf('<div class="viewbar">'), tplx.indexOf('</div>', tplx.indexOf('id="radio"')));
 const spkx = sabotage === 'speaker' ? sheetHead.replace('id="speaker"', 'id="speakr"') : sheetHead;
-assert.match(spkx, /<b id="sheet-title">[^<]*<\/b>[\s\S]*<button[^>]*id="speaker"[^>]*aria-pressed="false"/, 'no speaker button beside the panel title');
+assert.match(spkx, /<b id="sheet-title"[^>]*>[^<]*<\/b>[\s\S]*<button[^>]*id="speaker"[^>]*aria-pressed="false"/, 'no speaker button beside the view title');
 assert.match(spkx, /id="radio"[^>]*role="region"[^>]*hidden/, 'no radio beside the speaker');
 assert.match(hud, /iconFrame\(on \? 'speaker-on' : 'speaker', skin\)/, 'the speaker is not drawn crossed out when off');
+assert.match(hud, /name: kind === 'speaker' \? 'sound-off' : 'sound-on'/, 'the speaker is not the canon icon word');
 assert.match(hud, /speechSynthesis/, 'the radio does not use the native web reader');
 assert.match(hud, /Voice: NO_DATA, cause: no local voice on this device/, 'the radio must say NO_DATA when no local voice exists');
 console.log('speaker: crossed out beside the panel title; on, a radio reads the screen (native reader, transcript, NO_DATA without a local voice); PASS');
@@ -262,7 +297,7 @@ console.log(`${states.length} reachable states per skin; worst frame ${worst} UT
 if (process.env.APP_DIR) {
   const app = join(process.env.APP_DIR, 'interface', 'face');
   assert.ok(existsSync(app), 'APP_DIR has no interface/face');
-  for (const f of ['face.js', 'face_world.js', 'face_hero.js', 'face_paint.js', 'face_battle.js', 'face_panel.js', 'face_fight.js', 'face_hud.js', 'face.css', 'skins.json']) assert.equal(readFileSync(join(app, f), 'utf8'), readFileSync(join(dir, f), 'utf8'), `app ${f} differs from web`);
+  for (const f of ['face.js', 'face_world.js', 'face_hero.js', 'face_paint.js', 'face_battle.js', 'face_panel.js', 'face_fight.js', 'face_hud.js', 'face_army.js', 'face.css', 'face_canon.css', 'skins.json']) assert.equal(readFileSync(join(app, f), 'utf8'), readFileSync(join(dir, f), 'utf8'), `app ${f} differs from web`);
   for (const name of names) assert.equal(readFileSync(join(app, name + '.html'), 'utf8'), page(name, APP_PREFIX, APP_BASE), `app ${name}.html differs from the shared template`);
   console.log('app parity: face.js, face_world.js, face_paint.js, face.css, skins and three pages byte-identical to the web template; PASS');
 }
