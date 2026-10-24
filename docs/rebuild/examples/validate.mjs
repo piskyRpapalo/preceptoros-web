@@ -30,11 +30,11 @@ function rgb(c) {
 const lum = (c) => { const [r, g, b] = rgb(c).map((v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }); return 0.2126 * r + 0.7152 * g + 0.0722 * b; };
 const contrast = (a, b) => { const x = lum(Bubble.band(a)), y = lum(Bubble.band(b)); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); };
 
-for (const f of ['face.js', 'face_world.js', 'face_paint.js', 'face.css', 'index.html', ...names.map((n) => n + '.html')]) {
+for (const f of ['face.js', 'face_world.js', 'face_paint.js', 'face_battle.js', 'face_panel.js', 'face_fight.js', 'face.css', 'index.html', ...names.map((n) => n + '.html')]) {
   const size = statSync(join(dir, f)).size;
   assert.ok(size <= 16384, `${f} is ${size} B, over the 16,384 B piece ceiling`);
 }
-const code = ['face.js', 'face_world.js', 'face_paint.js'].map((f) => readFileSync(join(dir, f), 'utf8')).join('\n');
+const code = ['face.js', 'face_world.js', 'face_paint.js', 'face_battle.js', 'face_panel.js', 'face_fight.js'].map((f) => readFileSync(join(dir, f), 'utf8')).join('\n');
 assert.doesNotMatch(code, /Math\.random|Date\.now|new Date|performance\.now|fetch\(|localStorage|XMLHttpRequest|WebSocket/, 'face code uses a forbidden source of authority or network');
 assert.doesNotMatch(code, /\/\/ |\/\*/, 'served face code carries comments');
 const served = [code, readFileSync(join(dir, 'face.css'), 'utf8'), readFileSync(join(dir, 'tools/face.tpl.html'), 'utf8'), readFileSync(join(dir, 'index.html'), 'utf8')].join('\n');
@@ -47,7 +47,7 @@ const tpl = readFileSync(join(dir, 'tools/face.tpl.html'), 'utf8');
 for (const b of tpl.match(/<button\b[^>]*>.*?<\/button>/g)) assert.match(b.replace(/<span aria-hidden="true">.*?<\/span>/g, '').replace(/<[^>]+>/g, '').trim(), /\w/, 'button without a text label: ' + b);
 for (const c of tpl.match(/<canvas\b[^>]*>/g)) assert.match(c, /aria-label="[^"]+"|aria-hidden="true"/, 'canvas without a label: ' + c);
 assert.match(tpl, /id="mapwin" role="img" aria-label="[^"]+"/, 'the map window has no label');
-for (const id of ['packet', 'say', 'machine', 'machine-map', 'log', 'joy', 'map', 'mapwin', 'head', 'skin', 'start', 'follow', 'counter', 'whole']) assert.match(tpl, new RegExp(`id="${id}"`), 'missing #' + id);
+for (const id of ['packet', 'say', 'machine', 'machine-map', 'log', 'joy', 'map', 'mapwin', 'head', 'skin', 'start', 'follow', 'counter', 'whole', 'tab-chat', 'tab-battle', 'tab-info', 'sheet-chat', 'sheet-battle', 'sheet-info', 'sheet-seal', 'b-start', 'b-step', 'b-play', 'b-withdraw', 'b-receipt']) assert.match(tpl, new RegExp(`id="${id}"`), 'missing #' + id);
 assert.match(tpl, /role="status" aria-live="polite"/, 'no live narration');
 
 const starts = [World.homeAt, [20, 20], [980, 20], [20, 980], [980, 980], [500, 500]].concat(World.places.map((p) => p.at));
@@ -70,8 +70,32 @@ let css = readFileSync(join(dir, 'face.css'), 'utf8');
 if (sabotage === 'scroll') css = css.replace('html,body{height:100%;overflow:hidden;', 'html,body{height:100%;');
 assert.match(css, /html,body\{height:100%;overflow:hidden;/, 'the page can scroll: one fixed window is the decree');
 assert.match(css, /\.face\{[^}]*height:100dvh;[^}]*overflow:hidden/, 'the face is not one viewport-sized window');
-assert.match(css, /\.side\{[^}]*overflow:auto/, 'the chat side must be the internal scroll area');
+assert.match(css, /\.sheets\{[^}]*overflow:auto/, 'the panel sheets must be the internal scroll area');
 assert.match(css, /#map\{position:fixed;inset:0;/, 'the map is not the wallpaper behind the window');
+assert.equal((tpl.match(/role="tab"/g) || []).length, 3, 'the panel must offer its categories as tabs');
+assert.match(tpl, /role="tablist"/, 'the panel categories are not a tablist');
+const Battle = require('./face_battle.js');
+const Ticks = require('../../../public/game/combate_ticks.js');
+let battleWorst = 0, battles = 0;
+for (const w of [null, 0, 1, 2]) for (const f of Battle.forms) {
+  const x = Battle.create(); x.form(f); x.begin();
+  const frames = [x.frame()];
+  while (!x.done()) { if (w !== null && x.b.st.ronda === 2) x.withdraw(w); x.step(); frames.push(x.frame()); }
+  for (const fr of frames) {
+    const n = bytes(fr); battleWorst = Math.max(battleWorst, n);
+    assert.ok(n < 1024, `battle frame is ${n} UTF-8 bytes`);
+    assert.ok(Bubble.compile(fr).length > 0 && Bubble.compile.notes.length === 0, 'battle frame did not compile cleanly');
+  }
+  const s = x.summary(), t = Battle.teams();
+  const ref = Ticks.recibo(t.def, t.asa, Battle.seed, s.orders);
+  assert.ok(ref.ok && s.receipt === ref.texto, 'the stepped battle drifted from combate_ticks.recibo');
+  assert.ok(s.receipt.length <= 200, `receipt is ${s.receipt.length} B`);
+  let rec = JSON.parse(s.receipt);
+  if (sabotage === 'battle') rec = Object.assign({}, rec, { v: Object.assign({}, rec.v, { g: rec.v.g === 'defensa' ? 'asalto' : 'defensa' }) });
+  assert.ok(Ticks.verifica(rec, t.def, t.asa).ok, 'the receipt does not verify by replay from tick 0');
+  battles++;
+}
+console.log(`battle: ${battles} battles (4 order plans x 3 formations) stepped tick by tick equal combate_ticks; receipts <= 200 B verify by replay; worst frame ${battleWorst} B; PASS`);
 console.log('one window: the page never scrolls, the chat scrolls inside, the map is the wallpaper; PASS');
 let worst = 0;
 const ref = {};
@@ -148,7 +172,7 @@ console.log(`${states.length} reachable states per skin; worst frame ${worst} UT
 if (process.env.APP_DIR) {
   const app = join(process.env.APP_DIR, 'interface', 'face');
   assert.ok(existsSync(app), 'APP_DIR has no interface/face');
-  for (const f of ['face.js', 'face_world.js', 'face_paint.js', 'face.css', 'skins.json']) assert.equal(readFileSync(join(app, f), 'utf8'), readFileSync(join(dir, f), 'utf8'), `app ${f} differs from web`);
+  for (const f of ['face.js', 'face_world.js', 'face_paint.js', 'face_battle.js', 'face_panel.js', 'face_fight.js', 'face.css', 'skins.json']) assert.equal(readFileSync(join(app, f), 'utf8'), readFileSync(join(dir, f), 'utf8'), `app ${f} differs from web`);
   for (const name of names) assert.equal(readFileSync(join(app, name + '.html'), 'utf8'), page(name, APP_PREFIX, APP_BASE), `app ${name}.html differs from the shared template`);
   console.log('app parity: face.js, face_world.js, face_paint.js, face.css, skins and three pages byte-identical to the web template; PASS');
 }
