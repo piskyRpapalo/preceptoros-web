@@ -3,7 +3,7 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 const here = join(dirname(fileURLToPath(import.meta.url)), '..');
 export const SKINS = JSON.parse(readFileSync(join(here, 'skins.json'), 'utf8'));
-export const SCRIPTS = ['tabla_semantica', 'comic_%74okens', 'comic_accents', 'valores', 'gacha', 'comic_atoms', 'bubble_light', 'bubble_language', 'bubble_bestiary', 'bubble_world', 'core', 'isometric_floor_projection', 'world_camera', 'map_zoom', 'fog_of_war', 'assets/atlas-coord', 'canon', 'combate_ticks', 'escuadron', 'wave_render', 'assets/worm_transition'];
+export const SCRIPTS = ['tabla_semantica', 'comic_%74okens', 'comic_accents', 'valores', 'gacha', 'comic_atoms', 'bubble_light', 'bubble_language', 'bubble_bestiary', 'bubble_world', 'core', 'isometric_floor_projection', 'world_camera', 'map_zoom', 'fog_of_war', 'assets/atlas-coord', 'canon', 'combate_ticks', 'escuadron', 'wave_render', 'assets/worm_transition', 'escena', 'sea-floor', 'gdpr-art25-ephemeral-crab', 'crab_render_hd'];
 export const TOOLS = {
   web: [['../../../public/index.html', 'Play theGame'], ['../../../public/creation.html', 'Creation studio']],
   app: [['/dashboard.html', 'Chat with your local model, voice and console'], ['/app.html', 'Detail panel']]

@@ -96,6 +96,31 @@ for (const w of [null, 0, 1, 2]) for (const f of Battle.forms) {
   battles++;
 }
 console.log(`battle: ${battles} battles (4 order plans x 3 formations) stepped tick by tick equal combate_ticks; receipts <= 200 B verify by replay; worst frame ${battleWorst} B; PASS`);
+const paintCode = readFileSync(join(dir, 'face_paint.js'), 'utf8'), faceCode = readFileSync(join(dir, 'face.js'), 'utf8'), build = readFileSync(join(dir, 'tools/build.mjs'), 'utf8');
+assert.match(paintCode, /AtlasMarFondo\.pintor\(\)/, 'the ground between islands is not the canon seafloor painter');
+assert.match(paintCode, /floor\.tierra\(/, 'the canon seafloor tiles are not painted');
+assert.match(build, /'escena', 'sea-floor'/, 'the canon seafloor scripts are not loaded');
+for (const name of names) {
+  const sea = World.seaFrame(Object.assign({ name }, SKINS[name])), shelves = sea.atoms[0].i.slice();
+  if (sabotage === 'shelf') shelves.pop();
+  assert.equal(shelves.length, World.isles.length, `${name}: an island floats without a shelf on the seabed`);
+  World.isles.forEach((q, i) => { const sh = shelves[i]; assert.ok(sh.rx >= 1.3 * q.rx && sh.ry >= 1.3 * q.ry && Math.abs(sh.x - q.x) <= 10 && Math.abs(sh.y - q.y) <= 10, `${name}: island ${q.id} has no shelf around it`); });
+}
+console.log(`seafloor: canon sea-floor tiles under the map; ${World.isles.length} islands each stand on a shelf 1.38x their size; PASS`);
+const Crab = require('../../../public/game/gdpr-art25-ephemeral-crab.js');
+assert.match(faceCode, /CJ\.forma\(cs\.army, cs\.node/, 'the crab does not grow by the canon forma rule');
+assert.match(paintCode, /AtlasToon\.cangrejo\(/, 'the crab is not drawn by the canon toon crab');
+let prev = 0;
+for (let task = 0; task <= World.places.length; task++) for (const won of [false, true]) {
+  const cs = World.crabState(sabotage === 'crab' ? 0 : task, won), fo = Crab.forma(cs.army, cs.node, null);
+  const fr = World.stateFrame(Object.assign({ name: 'basic' }, SKINS.basic), { at: World.homeAt, task, won, forma: { escala: Math.round(fo.escala * 100) / 100, clase: fo.clase } });
+  const r = fr.atoms.find((a) => a.k === 'crab').r;
+  assert.match(r, new RegExp('a ' + fo.clase + ' crab, size ' + Math.round(fo.escala * 100) / 100), 'the frame does not say the crab phase');
+  if (!won) { assert.ok(fo.escala >= prev, 'the crab shrank along the journey'); prev = fo.escala; }
+  assert.equal(fo.clase, task >= World.places.length ? 'coral' : 'mar', `crab colour phase wrong at task ${task}`);
+}
+assert.ok(prev > 1, 'the crab never grows along the journey');
+console.log(`crab: canon AtlasCangrejo.forma grows it (size up to ${prev}) and turns it mar -> coral when the tutorial ends; the frame says each phase; PASS`);
 console.log('one window: the page never scrolls, the chat scrolls inside, the map is the wallpaper; PASS');
 let worst = 0;
 const ref = {};
