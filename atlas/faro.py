@@ -22,6 +22,7 @@ RAIZ = Path(__file__).resolve().parent.parent / "public"
 TIEMPO_FUERA = 15
 AGENTE = "preceptoros-faro/1.0"
 SONDA_BYTES = 96
+SONDA_DIVERGENCIA = 160
 
 
 def rutas_locales():
@@ -54,6 +55,12 @@ def sonda(ruta, cuerpo, local, url_final):
     titulo = re.search(rb"<title[^>]*>(.*?)</title>", cuerpo, re.S)
     print("    titulo_servido: " + (titulo.group(1).decode("utf-8", "replace") if titulo else "NO_DATA"))
     print("    inicio_servido: " + repr(cuerpo[:SONDA_BYTES]))
+    i = 0
+    lim = min(len(cuerpo), len(local))
+    while i < lim and cuerpo[i] == local[i]:
+        i += 1
+    print("    offset_divergencia: %d" % i)
+    print("    divergencia_servido: " + repr(cuerpo[i:i + SONDA_DIVERGENCIA]))
 
 
 def main():
