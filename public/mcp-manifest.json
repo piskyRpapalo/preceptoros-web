@@ -38,7 +38,7 @@
     },
     {
       "id": "lighthouse.move",
-      "title": "Move the lighthouse (Hexelion)",
+      "title": "Move the lighthouse",
       "deep_link": "/?action=lighthouse.move",
       "what": "Focuses the camera/lighthouse control on Hexelion destinations list.",
       "needs": "visitor",

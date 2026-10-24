@@ -11,7 +11,7 @@
     'workshop.sand': { sheet: 'taller', focus: '.atlas-hud', title: 'Workshop · sand a stat',
       what: 'Opens the Workshop on the sanding step. Raises one stat, never adds edges.', needs: 'visitor key, measured residue balance',
       cost: 'residue g, rising per level' },
-    'lighthouse.move': { sheet: 'casa', focus: '#atlas-juego', title: 'Move the lighthouse (Hexelion)',
+    'lighthouse.move': { sheet: 'casa', focus: '#atlas-juego', title: 'Move the lighthouse',
       what: 'Focuses the lighthouse destination list (camera move only).', needs: 'nothing', cost: '0' },
     'transparency.log': { sheet: null, focus: '#radio-chat-alterna', title: 'Transparency log (radio channels)',
       what: 'Opens the communication panel on the sealed log channel.', needs: 'nothing', cost: '0' },
