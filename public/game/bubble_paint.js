@@ -12,6 +12,15 @@
   }
   function clear(node) { while (node.firstChild) node.removeChild(node.firstChild); }
   function copy(points) { return points.map(function (p) { return [p[0], p[1]]; }); }
+  function viewportPoint(box, x, y, width, height) {
+    if (!box || !Number.isFinite(x) || !Number.isFinite(y) || box.width <= 0 || box.height <= 0) return null;
+    var scale = Math.min(box.width / width, box.height / height);
+    var left = box.left + (box.width - width * scale) / 2;
+    var top = box.top + (box.height - height * scale) / 2;
+    var px = (x - left) / scale, py = (y - top) / scale;
+    if (px < 0 || py < 0 || px > width || py > height) return null;
+    return [px, py];
+  }
   function create(options) {
     var E = editor(), o = Object.assign({}, options || {}), points = [], undo = [], redo = [];
     var state = { action: 'ready', x: 206, y: 258, count: 0, color: o.band || 'cyan', cause: '' };
@@ -34,12 +43,13 @@
     }
     function undoPoint() { if (!undo.length) return announce('undo', 'empty'); redo.push(copy(points)); points = undo.pop(); return announce('undo'); }
     function redoPoint() { if (!redo.length) return announce('redo', 'empty'); undo.push(copy(points)); points = redo.pop(); return announce('redo'); }
+    function reject(cause) { return announce('reject', cause); }
     function tryFrame() {
       try { var frame = frameFor(points); E.compile(frame); return { ok: true, frame: frame, bytes: E.byteLength(E.serialize(frame)) }; }
       catch (e) { return { ok: false, cause: e.message }; }
     }
     function frame() { var result = tryFrame(); if (!result.ok) throw new Error(result.cause); return result.frame; }
-    var api = { state: function () { return Object.assign({}, state); }, repeat: function () { return announce('repeat', state.cause); }, addPoint: addPoint, undo: undoPoint, redo: redoPoint, frame: frame, tryFrame: tryFrame,
+    var api = { state: function () { return Object.assign({}, state); }, repeat: function () { return announce('repeat', state.cause); }, addPoint: addPoint, undo: undoPoint, redo: redoPoint, reject: reject, frame: frame, tryFrame: tryFrame,
       points: function () { return copy(points); }, describe: function () { return 'ribbon · ' + (o.band || 'cyan') + ' · ' + points.length + ' points'; } };
     return api;
   }
@@ -70,7 +80,7 @@
       var r = paint.tryFrame(), state = paint.state(), turn = ++revision;
       var message = F ? F.describe(state).text : state.action + ' · x ' + state.x + ' · y ' + state.y + ' · ' + state.count + ' points' + (state.cause ? ' · ' + state.cause : '');
       if (status) status.textContent = message;
-      if (out && r.ok) out.textContent = JSON.stringify(r.frame);
+      if (out) out.textContent = r.ok ? JSON.stringify(r.frame) : '';
       if (speak) {
         if (o.onChange) o.onChange(r.ok ? r.frame : null, state);
         if (o.feedback) o.feedback.announce(state).catch(function (e) { if (status && turn === revision) status.textContent = message + ' · ' + (e.message || String(e)); });
@@ -90,8 +100,21 @@
       return r;
     }
     function point(e) {
-      var box = surface.getBoundingClientRect();
-      paint.addPoint((e.clientX - box.left) * 412 / Math.max(box.width, 1), (e.clientY - box.top) * 515 / Math.max(box.height, 1));
+      var svg = surface.querySelector && surface.querySelector('svg'), box = svg && svg.getBoundingClientRect ? svg.getBoundingClientRect() : surface.getBoundingClientRect();
+      var mapped = null;
+      if (svg && svg.getScreenCTM && svg.createSVGPoint) {
+        try {
+          var matrix = svg.getScreenCTM();
+          if (matrix) {
+            var p = svg.createSVGPoint(); p.x = e.clientX; p.y = e.clientY;
+            var local = p.matrixTransform(matrix.inverse());
+            if (local.x >= 0 && local.y >= 0 && local.x <= 412 && local.y <= 515) mapped = [local.x, local.y];
+          }
+        } catch (_) { mapped = null; }
+      }
+      if (!mapped && box) mapped = viewportPoint(box, e.clientX, e.clientY, 412, 515);
+      if (!mapped) { paint.reject('outside drawing viewport'); update(true); return; }
+      paint.addPoint(mapped[0], mapped[1]);
       update(true);
     }
     function key(e) {
@@ -115,6 +138,6 @@
     update();
     return Object.freeze({ frame: paint.frame, paint: paint, refresh: update });
   }
-  var API = Object.freeze({ LIMIT: 1024, create: create, mount: mount });
+  var API = Object.freeze({ LIMIT: 1024, create: create, mount: mount, viewportPoint: viewportPoint });
   if (common) module.exports = API; else root.AtlasBubblePaint = API;
 })(typeof module === 'object' && module.exports ? this : (this || window));
