@@ -38,10 +38,12 @@ A red faro reading does not by itself mean the deployment failed or the cache is
 1. **Read the instrument first.** `atlas/faro.py` pins the exact origin it judges (`SITIO`). Every manual probe must use the same hostname, or it measures a different vantage.
 2. **Run the faro locally** from a residential connection (`python3 atlas/faro.py` in a fresh clone of `main`). Green local + red remote means the served difference depends on the client, not on the deployment.
 3. **Read the sonda fields** in the faro log (`servido:`/`local:` bytes and sha256, `url_final`, `titulo_servido`, `offset_divergencia`, `divergencia_servido`). Redirects to clean URLs (`/index.html` → `/`) are expected worker behavior. A constant byte delta present on every HTML route is an injected block, not stale cache.
-4. **Inspect the zone panel** (Security → Bots, Analytics → Web Analytics) for functions that modify HTML per client. Zone defenses can inject a fixed snippet into HTML served to datacenter-range addresses while residential visitors receive the exact bytes from `public/`. A zone purge does not remove this class of difference.
+4. **Inspect the zone panel** (Analytics → Web Analytics, Security → Bots) for functions that modify HTML per client. Zone functions can inject a fixed snippet into HTML served to datacenter-range addresses while residential visitors receive the exact bytes from `public/`. A zone purge does not remove this class of difference.
 5. **Purge the whole zone** when purging: the edge caches HTML for both the apex and the `www` hostnames, even when the origin sends `max-age=0`.
 
 Measured facts from this incident: the faro from a residential connection was green 244/244 while the CI runner measured +367 bytes on every HTML route, with identical titles, generation, and clean redirect targets. Deployment and cache were healthy; the red reading was an artifact of the judge's vantage.
+
+Measured culprit (sonda v2 reading, 2026-10-25): the Cloudflare **Web Analytics beacon** (`static.cloudflareinsights.com/beacon.min.js`), injected automatically near the end of every HTML document for datacenter-range clients — a constant +367-byte block at end-of-document offsets, identical on all 11 routes. The fix lives in the zone panel (the Web Analytics toggle for preceptoros.org), not in this repository; the site contract declares zero external requests on load, and this injection violates it for affected clients.
 
 ## Rollback boundary
 
