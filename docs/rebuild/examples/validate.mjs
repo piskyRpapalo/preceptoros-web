@@ -30,11 +30,11 @@ function rgb(c) {
 const lum = (c) => { const [r, g, b] = rgb(c).map((v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }); return 0.2126 * r + 0.7152 * g + 0.0722 * b; };
 const contrast = (a, b) => { const x = lum(Bubble.band(a)), y = lum(Bubble.band(b)); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); };
 
-for (const f of ['face.js', 'face_world.js', 'face_paint.js', 'face_battle.js', 'face_panel.js', 'face_fight.js', 'face_hud.js', 'face.css', 'index.html', ...names.map((n) => n + '.html')]) {
+for (const f of ['face.js', 'face_world.js', 'face_hero.js', 'face_paint.js', 'face_battle.js', 'face_panel.js', 'face_fight.js', 'face_hud.js', 'face.css', 'index.html', ...names.map((n) => n + '.html')]) {
   const size = statSync(join(dir, f)).size;
   assert.ok(size <= 16384, `${f} is ${size} B, over the 16,384 B piece ceiling`);
 }
-const code = ['face.js', 'face_world.js', 'face_paint.js', 'face_battle.js', 'face_panel.js', 'face_fight.js', 'face_hud.js'].map((f) => readFileSync(join(dir, f), 'utf8')).join('\n');
+const code = ['face.js', 'face_world.js', 'face_hero.js', 'face_paint.js', 'face_battle.js', 'face_panel.js', 'face_fight.js', 'face_hud.js'].map((f) => readFileSync(join(dir, f), 'utf8')).join('\n');
 assert.doesNotMatch(code, /Math\.random|Date\.now|new Date|performance\.now|fetch\(|localStorage|XMLHttpRequest|WebSocket/, 'face code uses a forbidden source of authority or network');
 assert.doesNotMatch(code, /\/\/ |\/\*/, 'served face code carries comments');
 const served = [code, readFileSync(join(dir, 'face.css'), 'utf8'), readFileSync(join(dir, 'tools/face.tpl.html'), 'utf8'), readFileSync(join(dir, 'index.html'), 'utf8')].join('\n');
@@ -155,6 +155,28 @@ for (const name of names) {
   for (const f of all) assert.ok(!JSON.stringify(f).includes('"o":"bust"'), `${name}: the Preceptor's head is still on the map`);
 }
 console.log("no bust on the map in any proposal (kept for later, elsewhere); PASS");
+const sheetHead = tplx.slice(tplx.indexOf('<div class="sheet-head">'), tplx.indexOf('</div>', tplx.indexOf('id="radio"')));
+const spkx = sabotage === 'speaker' ? sheetHead.replace('id="speaker"', 'id="speakr"') : sheetHead;
+assert.match(spkx, /<b id="sheet-title">[^<]*<\/b>[\s\S]*<button[^>]*id="speaker"[^>]*aria-pressed="false"/, 'no speaker button beside the panel title');
+assert.match(spkx, /id="radio"[^>]*role="region"[^>]*hidden/, 'no radio beside the speaker');
+assert.match(hud, /iconFrame\(on \? 'speaker-on' : 'speaker', skin\)/, 'the speaker is not drawn crossed out when off');
+assert.match(hud, /speechSynthesis/, 'the radio does not use the native web reader');
+assert.match(hud, /Voice: NO_DATA, cause: no local voice on this device/, 'the radio must say NO_DATA when no local voice exists');
+console.log('speaker: crossed out beside the panel title; on, a radio reads the screen (native reader, transcript, NO_DATA without a local voice); PASS');
+const Hero = require('./face_hero.js');
+let heroWorst = 0;
+for (const name of names) {
+  const sk = SKINS[name];
+  if (name === 'zombie') assert.ok(sk.hero && (sabotage !== 'hero'), 'the zombie protagonist is not the space soldier');
+  else assert.ok(!sk.hero, `${name} must keep the crab`);
+}
+for (const cl of ['mar', 'coral']) for (const dd of [1, -1]) {
+  const f = Hero.heroFrame(SKINS.zombie, cl, dd), n = bytes(f); heroWorst = Math.max(heroWorst, n);
+  assert.ok(n < 1024 && Bubble.compile(f).length > 0 && Bubble.compile.notes.length === 0, 'soldier frame over the ceiling or not compiling');
+  assert.ok(JSON.stringify(f).includes(cl === 'coral' ? 'vermilion.base' : '"cyan"'), 'the soldier visor does not follow the canon colour phase');
+}
+assert.match(paintCode, /PreceptorHero\.heroFrame\(skin, state\.crab\.forma\.clase/, 'the soldier is not painted with the canon phase');
+console.log(`hero: zombie walks a space soldier (helmet, visor, uniform), growing with the canon scale, visor mar -> coral; worst frame ${heroWorst} B; PASS`);
 console.log('one window: the page never scrolls, the chat scrolls inside, the map is the wallpaper; PASS');
 let worst = 0;
 const ref = {};
@@ -240,7 +262,7 @@ console.log(`${states.length} reachable states per skin; worst frame ${worst} UT
 if (process.env.APP_DIR) {
   const app = join(process.env.APP_DIR, 'interface', 'face');
   assert.ok(existsSync(app), 'APP_DIR has no interface/face');
-  for (const f of ['face.js', 'face_world.js', 'face_paint.js', 'face_battle.js', 'face_panel.js', 'face_fight.js', 'face_hud.js', 'face.css', 'skins.json']) assert.equal(readFileSync(join(app, f), 'utf8'), readFileSync(join(dir, f), 'utf8'), `app ${f} differs from web`);
+  for (const f of ['face.js', 'face_world.js', 'face_hero.js', 'face_paint.js', 'face_battle.js', 'face_panel.js', 'face_fight.js', 'face_hud.js', 'face.css', 'skins.json']) assert.equal(readFileSync(join(app, f), 'utf8'), readFileSync(join(dir, f), 'utf8'), `app ${f} differs from web`);
   for (const name of names) assert.equal(readFileSync(join(app, name + '.html'), 'utf8'), page(name, APP_PREFIX, APP_BASE), `app ${name}.html differs from the shared template`);
   console.log('app parity: face.js, face_world.js, face_paint.js, face.css, skins and three pages byte-identical to the web template; PASS');
 }

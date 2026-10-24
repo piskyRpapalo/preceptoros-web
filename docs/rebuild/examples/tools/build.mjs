@@ -17,7 +17,7 @@ export function page(name, prefix, base = '') {
   const tpl = readFileSync(join(here, 'tools', 'face.tpl.html'), 'utf8');
   const app = prefix === APP_PREFIX;
   const src = (s) => s.startsWith('assets/') ? (app ? prefix + s.slice(7) : prefix.replace('/game/', '/assets/') + s.slice(7)) : prefix + s;
-  const scripts = SCRIPTS.map((s) => `<script src="${src(s)}.js"></script>`).join('') + ['face_world', 'face_paint', 'face_battle', 'face_panel', 'face_hud', 'face', 'face_fight'].map((f) => `<script src="${base}${f}.js"></script>`).join('');
+  const scripts = SCRIPTS.map((s) => `<script src="${src(s)}.js"></script>`).join('') + ['face_world', 'face_hero', 'face_paint', 'face_battle', 'face_panel', 'face_hud', 'face', 'face_fight'].map((f) => `<script src="${base}${f}.js"></script>`).join('');
   const tools = TOOLS[app ? 'app' : 'web'].map((t) => `<a href="${t[0]}">${t[1]}</a>`).join('');
   return tpl.replace('{{TITLE}}', TITLES[name]).replace('{{LAYOUT}}', skin.layout).replace('{{SKIN}}', JSON.stringify(Object.assign({ name }, skin))).replace('{{SCRIPTS}}', scripts).replace('{{TOOLS}}', tools).split('{{BASE}}').join(base);
 }
