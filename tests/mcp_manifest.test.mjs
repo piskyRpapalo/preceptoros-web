@@ -6,11 +6,20 @@ const MANIFEST = 'mcp-manifest.json';
 const raw = readFileSync(new URL('../' + MANIFEST, import.meta.url), 'utf8');
 const m = JSON.parse(raw);
 const publicRaw = readFileSync(new URL('../public/' + MANIFEST, import.meta.url), 'utf8');
+const deepLinks = readFileSync(new URL('../public/game/deep_links.js', import.meta.url), 'utf8');
 
 function assertStaticInventory(manifest) {
   if (!manifest.$comment.includes('not an MCP manifest')) throw new Error('missing static inventory disclaimer');
   if (!manifest.$comment.includes('PreceptorOS#64')) throw new Error('missing server reference');
   if (manifest.title !== 'PreceptorOS · theGame · Static deep-link inventory') throw new Error('misleading title');
+}
+
+function assertPublicTitleHygiene(manifest, links) {
+  const action = manifest.actions.find((item) => item.id === 'lighthouse.move');
+  if (!action || action.title !== 'Move the lighthouse') throw new Error('public action title mismatch');
+  if (action.title.includes('Hexelion')) throw new Error('internal node name in served title');
+  const match = links.match(/'lighthouse\.move':\s*\{[^}]*title:\s*'([^']+)'/);
+  if (!match || match[1] !== action.title) throw new Error('deep link title mismatch');
 }
 
 const FORBIDDEN = ['oracle', 'notary', 'depin', 'token', 'currency', 'clearing', 'magic', 'cryptocurrency'];
@@ -28,6 +37,18 @@ test('sabotage: removing the disclaimer is red', () => {
 
 test('served and source inventories stay identical', () => {
   if (publicRaw !== raw) throw new Error('root/public manifest drift');
+});
+
+test('public action title is generic and matches the served dialog', () => {
+  assertPublicTitleHygiene(m, deepLinks);
+});
+
+test('sabotage: internal node name or a divergent dialog title is red', () => {
+  const broken = JSON.parse(raw);
+  broken.actions.find((item) => item.id === 'lighthouse.move').title = 'Move the lighthouse (Hexelion)';
+  assert.throws(() => assertPublicTitleHygiene(broken, deepLinks), /public action title mismatch/);
+  assert.throws(() => assertPublicTitleHygiene(m, deepLinks.replace(
+    "title: 'Move the lighthouse'", "title: 'Move the lighthouse (Hexelion)'")), /deep link title mismatch/);
 });
 
 test('manifest parses and has actions', () => {
