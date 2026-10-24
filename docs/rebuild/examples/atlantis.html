@@ -25,6 +25,7 @@
 <form id="ask" class="ask"><label for="reply">Write to the Preceptor</label><div><input id="reply" autocomplete="off" maxlength="280"><button type="submit">Send</button></div></form>
 <div class="tools"><button type="button" id="sound" data-act="sound" aria-pressed="false"><span aria-hidden="true">♪ </span><span>Sound off</span></button><button type="button" data-act="read">Read aloud</button><button type="button" data-act="home">Go home</button></div>
 <p id="readout" class="small" aria-live="polite"></p>
+<nav class="skins" aria-label="Skins: same face, other colours"><a href="basic.html">Basic</a><a href="atlantis.html">Atlantis</a><a href="zombie.html">Zombie</a></nav>
 <details>
 <summary>Technical details</summary>
 <ul>
@@ -32,7 +33,7 @@
 <li>Every screen is one <code>preceptoros.bubble/1</code> frame under 1,024 bytes: deterministic, no network, no clock. It sits in this page as JSON (<code>#packet</code>) and in the Machine view.</li>
 <li>For agents: <code>window.preceptorFace.state()</code> reads the screen; <code>act(name)</code> drives it. Actions: left, right, ask, home, star1 to star4, sound, read, say.</li>
 <li>Vibration: <span id="touch">NO_DATA</span>.</li>
-<li>Benchmarks and server deployment live in the repositories (DEPLOY.md, the lab). Nothing on this page is measured live: what is not measured says NO_DATA.</li>
+<li>Benchmarks and server deployment live in the repositories: the deployment guide of the web and the lab. Nothing on this page is measured live: what is not measured says NO_DATA.</li>
 </ul>
 </details>
 <details><summary>Machine view · <span id="bytes"></span></summary><pre id="machine"></pre></details>

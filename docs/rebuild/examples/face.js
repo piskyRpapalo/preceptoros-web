@@ -1,14 +1,14 @@
 (function (root) {
   'use strict';
   var V = 'preceptoros.bubble/1';
-  var STOPS = [[62, 376], [140, 398], [206, 404], [272, 398], [350, 376]];
-  var HOME = 2;
-  var STARS = [{ at: 0, x: 62, y: 214 }, { at: 1, x: 140, y: 132 }, { at: 3, x: 272, y: 132 }, { at: 4, x: 350, y: 214 }];
-  var STAR_H = [[1, 30, 30, 0], [-4, 9, 9, 0]];
-  var CRAB_H = [[1, 44, 26, 0], [5, 7, 7, 32], [-3, 7, 7, -32]];
-  var CHANGES = ['rest', 'walk left', 'walk right', 'home', 'to star 4', 'ask star 4', 'sound on', 'sound off', 'free text: NO_DATA'];
-  var ACTIONS = ['left', 'right', 'ask', 'home', 'star1', 'star2', 'star3', 'star4', 'sound', 'read', 'say'];
-  var TEXT = {
+  var stopsXY = [[62, 376], [140, 398], [206, 404], [272, 398], [350, 376]];
+  var homeStop = 2;
+  var starSpots = [{ at: 0, x: 62, y: 214 }, { at: 1, x: 140, y: 132 }, { at: 3, x: 272, y: 132 }, { at: 4, x: 350, y: 214 }];
+  var starH = [[1, 30, 30, 0], [-4, 9, 9, 0]];
+  var crabH = [[1, 44, 26, 0], [5, 7, 7, 32], [-3, 7, 7, -32]];
+  var changeList = ['rest', 'walk left', 'walk right', 'home', 'to star 4', 'ask star 4', 'sound on', 'sound off', 'free text: NO_DATA'];
+  var actionList = ['left', 'right', 'ask', 'home', 'star1', 'star2', 'star3', 'star4', 'sound', 'read', 'say'];
+  var words = {
     hello: 'Hi! I am your Preceptor. Someone new arrives, plays, and in under five minutes their own node speaks for them: safe, local, no cloud.',
     how: 'Walk the crab to a star. Each star is one question for me.',
     stars: [
@@ -23,26 +23,26 @@
   };
 
   function starAt(stop) {
-    for (var i = 0; i < STARS.length; i++) { if (STARS[i].at === stop) { return i; } }
+    for (var i = 0; i < starSpots.length; i++) { if (starSpots[i].at === stop) { return i; } }
     return -1;
   }
 
   function uniq(list) { return list.filter(function (b, j, a) { return a.indexOf(b) === j; }); }
 
   function sceneFrame(skin, st) {
-    var c = STOPS[st.stop], x = c[0], y = c[1], lit = starAt(st.stop), stars = [], i, s, it;
-    for (i = 0; i < STARS.length; i++) {
-      s = STARS[i];
-      it = { o: 'wave', x: s.x, y: s.y, h: STAR_H, f: i === lit ? skin.lit : skin.star };
+    var c = stopsXY[st.stop], x = c[0], y = c[1], lit = starAt(st.stop), stars = [], i, s, it;
+    for (i = 0; i < starSpots.length; i++) {
+      s = starSpots[i];
+      it = { o: 'wave', x: s.x, y: s.y, h: starH, f: i === lit ? skin.lit : skin.star };
       if (i === lit) { it.sc = 1.4; }
       stars.push(it);
     }
     return {
-      v: V, id: 'FACE', t: st.stop,
+      v: V, id: 'face', t: st.stop,
       atoms: [
-        { k: 'isle', r: 'island, path', i: [{ o: 'blob', x: 206, y: 410, rx: 196, ry: 84, f: skin.land }, { o: 'ribbon', pts: STOPS, s: skin.path, lw: 9 }] },
+        { k: 'isle', r: 'island, path', i: [{ o: 'blob', x: 206, y: 410, rx: 196, ry: 84, f: skin.land }, { o: 'ribbon', pts: stopsXY, s: skin.path, lw: 9 }] },
         { k: 'stars', r: lit >= 0 ? 'star ' + (lit + 1) + ' lit' : 'four stars', i: stars },
-        { k: 'crab', r: 'crab at ' + (st.stop + 1), i: [{ o: 'wave', x: x, y: y - 34, h: CRAB_H, f: skin.body }, { o: 'arcs', x: x, y: y - 42, r: [13, 13], n: 2, arc: 24, ph: 168, s: 'ink', lw: 9 }] }
+        { k: 'crab', r: 'crab at ' + (st.stop + 1), i: [{ o: 'wave', x: x, y: y - 34, h: crabH, f: skin.body }, { o: 'arcs', x: x, y: y - 42, r: [13, 13], n: 2, arc: 24, ph: 168, s: 'ink', lw: 9 }] }
       ],
       bands: uniq([skin.land, skin.path, skin.star, skin.lit, skin.body, 'ink']),
       change: [st.change || 'rest'],
@@ -54,7 +54,7 @@
 
   function headFrame(skin) {
     return {
-      v: V, id: 'HEAD', t: 0, cv: [120, 120],
+      v: V, id: 'head', t: 0, cv: [120, 120],
       atoms: [{ k: 'head', r: 'the Preceptor smiles', i: [
         { o: 'arcs', x: 60, y: 60, r: [50, 50], n: 3, arc: 70, ph: 195, s: skin.path, lw: 5 },
         { o: 'blob', x: 60, y: 62, rx: 38, ry: 40, f: skin.face },
@@ -66,7 +66,7 @@
 
   function joyFrame(skin, dx, dy) {
     return {
-      v: V, id: 'JOY', t: 0, cv: [168, 168],
+      v: V, id: 'joy', t: 0, cv: [168, 168],
       atoms: [
         { k: 'base', r: 'joystick, four arrows', i: [
           { o: 'blob', x: 84, y: 84, rx: 74, ry: 74, rough: 0, f: skin.land },
@@ -82,13 +82,13 @@
     return typeof TextEncoder === 'function' ? new TextEncoder().encode(s).length : Buffer.byteLength(s, 'utf8');
   }
 
-  var Face = { CHANGES: CHANGES, STOPS: STOPS, STARS: STARS, HOME: HOME, ACTIONS: ACTIONS, TEXT: TEXT, sceneFrame: sceneFrame, headFrame: headFrame, joyFrame: joyFrame, bytes: bytes, starAt: starAt };
+  var Face = { changeList: changeList, stopsXY: stopsXY, starSpots: starSpots, homeStop: homeStop, actionList: actionList, words: words, sceneFrame: sceneFrame, headFrame: headFrame, joyFrame: joyFrame, bytes: bytes, starAt: starAt };
 
   if (typeof module === 'object' && module.exports) { module.exports = Face; return; }
 
   var doc = root.document, B = root.AtlasBubble, P = root.AtlasComicAtoms, A = root.AtlasSintesis;
   var skin = JSON.parse(doc.getElementById('skin').textContent);
-  var st = { stop: HOME, sound: false, change: 'rest', said: TEXT.how };
+  var st = { stop: homeStop, sound: false, change: 'rest', said: words.how };
   var $ = function (id) { return doc.getElementById(id); };
   var scene = $('scene'), joy = $('joy'), log = $('log'), say = $('say'), packet = $('packet'), machine = $('machine');
   var touch = typeof root.navigator.vibrate === 'function' ? 'vibrate' : 'NO_DATA: this device has no vibration';
@@ -128,8 +128,10 @@
     machine.textContent = JSON.stringify(f, null, 1);
     $('bytes').textContent = n + ' B of 1,024 B';
     scene.setAttribute('aria-label', 'Island scene. ' + f.atoms.map(function (a) { return a.r; }).join('. ') + '.');
-    say.textContent = lit >= 0 ? 'The crab is on star ' + (lit + 1) + ': ' + TEXT.stars[lit][0] + '. The Preceptor answered in the chat.' : st.said;
+    say.textContent = lit >= 0 ? 'The crab is on star ' + (lit + 1) + ': ' + words.stars[lit][0] + '. The Preceptor answered in the chat.' : st.said;
     doc.body.dataset.stop = st.stop;
+    var ks = doc.querySelectorAll('.skins a');
+    for (var j = 0; j < ks.length; j++) { if (ks[j].textContent.toLowerCase() === skin.name) { ks[j].setAttribute('aria-current', 'page'); } }
     var bs = doc.querySelectorAll('[data-act^="star"]');
     for (var i = 0; i < bs.length; i++) { bs[i].setAttribute('aria-current', String(i === lit)); }
     $('sound').setAttribute('aria-pressed', String(st.sound));
@@ -142,7 +144,7 @@
   function voice(i) {
     if (!st.sound || !A) { return; }
     A.activa(true);
-    A.suena(A.vozDe({ armonicos: STAR_H.map(function (h, j) { return [h[0], h[1] + 2 * i * j, h[2], h[3]]; }) }));
+    A.suena(A.vozDe({ armonicos: starH.map(function (h, j) { return [h[0], h[1] + 2 * i * j, h[2], h[3]]; }) }));
     root.setTimeout(function () { A.suena('pop'); }, 620);
   }
 
@@ -150,11 +152,11 @@
     var lit = starAt(st.stop);
     st.change = change;
     if (lit >= 0) {
-      st.said = TEXT.stars[lit][1];
+      st.said = words.stars[lit][1];
       bubble('pre', st.said);
       buzz([30, 40, 30]); voice(lit);
-    } else if (st.stop === HOME) {
-      st.said = TEXT.home;
+    } else if (st.stop === homeStop) {
+      st.said = words.home;
     } else { st.said = 'On the path. Keep walking to a star.'; buzz(15); }
     render();
   }
@@ -162,13 +164,13 @@
   function act(name, arg) {
     var lit = starAt(st.stop), m;
     if (name === 'left' && st.stop > 0) { st.stop--; arrive('walk left'); }
-    else if (name === 'right' && st.stop < STOPS.length - 1) { st.stop++; arrive('walk right'); }
-    else if (name === 'home') { st.stop = HOME; arrive('home'); }
-    else if ((m = /^star([1-4])$/.exec(name))) { st.stop = STARS[+m[1] - 1].at; arrive('to star ' + m[1]); }
-    else if (name === 'ask') { if (lit >= 0) { arrive('ask star ' + (lit + 1)); } else { st.said = TEXT.how; render(); } }
+    else if (name === 'right' && st.stop < stopsXY.length - 1) { st.stop++; arrive('walk right'); }
+    else if (name === 'home') { st.stop = homeStop; arrive('home'); }
+    else if ((m = /^star([1-4])$/.exec(name))) { st.stop = starSpots[+m[1] - 1].at; arrive('to star ' + m[1]); }
+    else if (name === 'ask') { if (lit >= 0) { arrive('ask star ' + (lit + 1)); } else { st.said = words.how; render(); } }
     else if (name === 'sound') { st.sound = !st.sound; st.change = st.sound ? 'sound on' : 'sound off'; render(); }
     else if (name === 'read') { read(); }
-    else if (name === 'say' && arg) { bubble('me', String(arg).slice(0, 280)); st.said = TEXT.free; bubble('pre', TEXT.free); st.change = 'free text: NO_DATA'; render(); }
+    else if (name === 'say' && arg) { bubble('me', String(arg).slice(0, 280)); st.said = words.free; bubble('pre', words.free); st.change = 'free text: NO_DATA'; render(); }
     return state();
   }
 
@@ -176,13 +178,13 @@
     var vs = voices(), out = $('readout');
     if (!vs.length) { out.textContent = 'Read aloud: NO_DATA. Cause: no local English voice on this device.'; return; }
     root.speechSynthesis.cancel();
-    [st.said, TEXT.tail].forEach(function (t) { var u = new root.SpeechSynthesisUtterance(t); u.voice = vs[0]; u.lang = vs[0].lang; root.speechSynthesis.speak(u); });
+    [st.said, words.tail].forEach(function (t) { var u = new root.SpeechSynthesisUtterance(t); u.voice = vs[0]; u.lang = vs[0].lang; root.speechSynthesis.speak(u); });
     out.textContent = 'Reading aloud with a local voice: answer first, then the shortcuts.';
   }
 
   function state() {
     var f = sceneFrame(skin, st), lit = starAt(st.stop);
-    return { skin: skin.name, stop: st.stop, station: st.stop, star: lit >= 0 ? lit + 1 : null, said: st.said, bytes: bytes(f), frame: f, actions: ACTIONS.slice(),
+    return { skin: skin.name, stop: st.stop, station: st.stop, star: lit >= 0 ? lit + 1 : null, said: st.said, bytes: bytes(f), frame: f, actions: actionList.slice(),
       channels: { eye: 'canvas', text: 'aria-live and packet', ear: st.sound ? 'core.js FM' : 'NO_DATA: sound is off', touch: touch } };
   }
 
@@ -229,10 +231,10 @@
   try {
     theme();
     paint($('head'), headFrame(skin));
-    bubble('pre', TEXT.hello);
+    bubble('pre', words.hello);
     stick();
     render();
-    root.preceptorFace = Object.freeze({ state: state, act: act, actions: ACTIONS.slice() });
+    root.preceptorFace = Object.freeze({ state: state, act: act, actions: actionList.slice() });
   } catch (err) {
     say.textContent = 'NO_DATA: the scene could not be drawn. Cause: ' + err.message;
   }

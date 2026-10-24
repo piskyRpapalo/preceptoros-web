@@ -38,7 +38,11 @@ code,pre{font:.8rem/1.35 ui-monospace,"Cascadia Mono",Menlo,monospace}
 pre{white-space:pre-wrap;overflow-wrap:anywhere;max-height:18rem;overflow:auto;margin:6px 0 0}
 #scene{width:100%;aspect-ratio:4/5;height:auto;border-radius:18px;display:block}
 :focus-visible{outline:4px solid var(--accent);outline-offset:3px}
-@media (max-width:760px){.face{grid-template-columns:1fr;grid-template-areas:"hello" "art" "chat" "pad" "more";padding:12px;gap:12px}h1{font-size:1.25rem}#head{width:60px;height:60px}.log{max-height:11rem}#joy{width:136px;height:136px}.art{padding:6px}}
+@media (max-width:760px){.face{grid-template-columns:minmax(0,1fr);grid-template-areas:"hello" "art" "pad" "chat" "more";padding:12px;gap:12px}#scene{width:auto;max-width:100%;max-height:40dvh;margin:0 auto}.how{font-size:.9rem}h1{font-size:1.25rem}#head{width:60px;height:60px}.log{max-height:11rem}#joy{width:136px;height:136px}.art{padding:6px}}
 @media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}button:active{transform:none}}
 @media (prefers-contrast:more){.card,button,.log li{border-width:4px}}
 @media (forced-colors:active){button[aria-current=true],button[aria-pressed=true]{outline:3px solid CanvasText}.card{box-shadow:none}}
+@media (max-width:400px){.pad{gap:10px;flex-direction:column}.stars{grid-template-columns:1fr 1fr;width:100%}#joy{width:120px;height:120px}button{padding:6px 10px}.stars span{margin-right:4px}}
+.skins{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.skins a{color:inherit;font-weight:700;min-height:44px;display:inline-flex;align-items:center;padding:0 12px;border:2px dashed var(--edge);border-radius:14px}
+.skins a[aria-current=page]{background:var(--accent);color:var(--onAccent);border-style:solid}

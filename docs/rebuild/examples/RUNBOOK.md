@@ -47,3 +47,12 @@ node atlas/bubble_paint_casos.mjs
 ```
 
 Expected: three frames below 1,024 UTF-8 bytes, valid Bubble compilation, identical normalized geometry across palettes, all three pages below 16,384 bytes, local resources only; then each atlas case command returns `ok: true`. `test_web.py` is not required because this card changes no file under `public/`. If any source is later copied into `public/`, run `python3 test_web.py` and the full applicable gate, and apply the seal/re-pin rules in the same PR. The Sovereign must confirm visual review on the rack Android; a successful compile or HTTP response is not that review.
+
+## Eyes on the face (added by the painter, 2026-10-24)
+
+The three skins are now generated: edit `face.js`, `face.css`, `skins.json` or `tools/face.tpl.html`, then run `node docs/rebuild/examples/tools/build.mjs` (web) and `node docs/rebuild/examples/tools/build.mjs <app>/interface/face app` (app). The validator fails on any drift.
+
+- Local browser, no download: `node docs/rebuild/examples/tools/shoot.mjs http://127.0.0.1:18765/docs/rebuild/examples/zombie.html out.png 412 walk`. It prints any non-loopback request (must be `[]`) and the face state.
+- Rack Android, measured from the PC: `adb forward tcp:9333 localabstract:chrome_devtools_remote`, then `node docs/rebuild/examples/tools/android.mjs <url> [png] [js]`. It navigates the open loopback tab, reports `innerWidth`/`scrollWidth` and the elements that overflow, and can run a probe. Full-page captures on Android tile; use `adb exec-out screencap -p` for what the screen really shows.
+- Real touch: `adb shell input swipe <x> <y> <x+180> <y> 300` on the joystick centre (CSS px × dpr plus the browser bar offset).
+- App: `PRECEPTOROS_PWA_PUERTO=18766 python3 bin/preceptoros-pwa --db <scratch>/empty.db`, `adb reverse tcp:18766 tcp:18766`, open `http://127.0.0.1:18766/`. Use a scratch database: the default is the person's memory.

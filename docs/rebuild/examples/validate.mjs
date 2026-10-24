@@ -2,7 +2,7 @@ import { readFileSync, statSync, existsSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import assert from 'node:assert/strict';
 import { join } from 'node:path';
-import { page, SKINS, WEB_PREFIX, APP_PREFIX } from './tools/build.mjs';
+import { page, SKINS, WEB_PREFIX, APP_PREFIX, APP_BASE } from './tools/build.mjs';
 const require = createRequire(import.meta.url);
 const Bubble = require('../../../public/game/bubble_language.js');
 const Face = require('./face.js');
@@ -46,14 +46,14 @@ for (const id of ['packet', 'say', 'machine', 'log', 'joy', 'scene', 'head', 'sk
 assert.match(tpl, /role="status" aria-live="polite"/, 'no live narration');
 
 const states = [];
-for (let stop = 0; stop < Face.STOPS.length; stop++) for (const sound of [false, true]) for (const change of Face.CHANGES) states.push({ stop, sound, change });
+for (let stop = 0; stop < Face.stopsXY.length; stop++) for (const sound of [false, true]) for (const change of Face.changeList) states.push({ stop, sound, change });
 let worst = 0;
 const ref = {};
 for (const name of names) {
   const html = readFileSync(join(dir, name + '.html'), 'utf8');
   assert.equal(html, page(name, WEB_PREFIX), `${name}.html drifted from the shared template; run node tools/build.mjs`);
   const skin = Object.assign({ name }, SKINS[name]);
-  if (sabotage === 'geometry' && name === 'zombie') Face.STOPS[0] = [61, 376];
+  if (sabotage === 'geometry' && name === 'zombie') Face.stopsXY[0] = [61, 376];
   const frames = states.map((st) => ['scene', Face.sceneFrame(skin, st)]).concat([['head', Face.headFrame(skin)], ['joy', Face.joyFrame(skin, -40, 0)], ['joy0', Face.joyFrame(skin, 0, 0)]]);
   if (sabotage === 'size' && name === 'atlantis') frames[0][1].change = ['x'.repeat(200)];
   frames.forEach(([kind, f], i) => {
@@ -68,7 +68,7 @@ for (const name of names) {
     if (!(i in ref)) ref[i] = shape;
     else assert.equal(shape, ref[i], `${name} ${kind} frame ${i} geometry differs from basic`);
   });
-  if (sabotage === 'geometry') Face.STOPS[0] = [62, 376];
+  if (sabotage === 'geometry') Face.stopsXY[0] = [62, 376];
   const u = SKINS[name].ui;
   for (const [a, b, min] of [['fg', 'bg', 4.5], ['fg', 'panel', 4.5], ['onAccent', 'accent', 4.5], ['edge', 'bg', 3]]) {
     const r = contrast(u[a], u[b]);
@@ -86,6 +86,6 @@ if (process.env.APP_DIR) {
   const app = join(process.env.APP_DIR, 'interface', 'face');
   assert.ok(existsSync(app), 'APP_DIR has no interface/face');
   for (const f of ['face.js', 'face.css', 'skins.json']) assert.equal(readFileSync(join(app, f), 'utf8'), readFileSync(join(dir, f), 'utf8'), `app ${f} differs from web`);
-  for (const name of names) assert.equal(readFileSync(join(app, name + '.html'), 'utf8'), page(name, APP_PREFIX), `app ${name}.html differs from the shared template`);
+  for (const name of names) assert.equal(readFileSync(join(app, name + '.html'), 'utf8'), page(name, APP_PREFIX, APP_BASE), `app ${name}.html differs from the shared template`);
   console.log('app parity: face.js, face.css, skins and three pages byte-identical to the web template; PASS');
 }
