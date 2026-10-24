@@ -5,6 +5,8 @@ import { join } from 'node:path';
 import { page, SKINS, WEB_PREFIX, APP_PREFIX, APP_BASE } from './tools/build.mjs';
 const require = createRequire(import.meta.url);
 const Bubble = require('../../../public/game/bubble_language.js');
+require('../../../public/game/bubble_bestiary.js');
+const Codex = require('../../../public/assets/codex_scene.js');
 const World = require('./face_world.js');
 const dir = 'docs/rebuild/examples';
 const sabotage = process.env.VALIDATE_SABOTAGE || '';
@@ -77,6 +79,33 @@ for (const name of names) {
   const frames = [['map', World.mapFrame(skin)], ['nodes', World.nodesFrame(skin)], ['grid', World.gridFrame(skin)], ['head', World.headFrame(skin)], ['joy', World.joyFrame(skin, -40, 0)], ['joy0', World.joyFrame(skin, 0, 0)]]
     .concat(states.map((st) => ['state', World.stateFrame(skin, st)]));
   if (sabotage === 'size' && name === 'atlantis') frames[0][1].change = ['x'.repeat(400)];
+  const cast = [];
+  if (skin.cast !== 'none') {
+    for (let moves = 0; moves < 36; moves++) for (const at of [World.homeAt].concat(World.canon.map((c) => [c.x, c.y]), [World.wanderAt(moves).slice(0, 2)])) cast.push(World.castFrame(skin, { at, moves, step: 99, change: 'step 99 of 99' }));
+  }
+  if (sabotage === 'canon' && name === 'atlantis') World.canon[0].r = 30;
+  if (skin.cast === 'canon') {
+    const rift = {};
+    Codex.frame('RIFT').atoms.forEach((a) => (a.i || []).forEach((it) => { rift[it.o] = it; }));
+    for (const c of World.canon) {
+      const src = rift[c.o];
+      assert.ok(src, `${c.o} is not a creature of the Codex RIFT frame`);
+      for (const k of Object.keys(src)) {
+        if (k === 'x' || k === 'y') continue;
+        if (k === 'r' || k === 'rr') assert.equal(c[k], Math.round(src[k] * World.codexScale), `${c.o}.${k} is not the Codex size × ${World.codexScale}`);
+        else assert.equal(c[k], src[k], `${c.o}.${k} differs from the Codex RIFT frame`);
+      }
+    }
+    assert.equal(54, Math.round(rift.crab.rr * World.codexScale), 'the canon crab size drifted from the Codex RIFT frame');
+    console.log(`${name}: canon creatures are the Codex RIFT words (octo, star, snail, bust; crab as your unit), scale ${World.codexScale}; PROVENANCE PASS`);
+  }
+  cast.forEach((f, i) => {
+    const n = bytes(f);
+    worst = Math.max(worst, n);
+    assert.ok(n < 1024, `${name} cast frame ${i} is ${n} UTF-8 bytes`);
+    assert.ok(Bubble.compile(f).length > 0 && Bubble.compile.notes.length === 0, `${name} cast frame ${i} did not compile cleanly`);
+    for (const b of f.bands) Bubble.band(b);
+  });
   frames.forEach(([kind, f], i) => {
     const n = bytes(f);
     worst = Math.max(worst, n);
@@ -85,7 +114,7 @@ for (const name of names) {
     const items = Bubble.compile(f);
     assert.ok(items.length > 0 && Bubble.compile.notes.length === 0, `${name} ${kind} frame ${i} did not compile cleanly: ${JSON.stringify(Bubble.compile.notes)}`);
     for (const b of f.bands) Bubble.band(b);
-    const shape = JSON.stringify(strip(items));
+    const shape = JSON.stringify(strip(kind === 'state' ? Bubble.compile(Object.assign({}, f, { atoms: f.atoms.filter((a) => a.k !== 'crab') })) : items));
     if (!(i in ref)) ref[i] = shape;
     else assert.equal(shape, ref[i], `${name} ${kind} frame ${i} geometry differs from basic`);
   });
@@ -95,7 +124,7 @@ for (const name of names) {
     const r = contrast(u[a], u[b]);
     assert.ok(r >= min, `${name} contrast ${a}/${b} is ${r.toFixed(2)}, below ${min}`);
   }
-  console.log(`${name} (${skin.layout}): ${frames.length} frames < 1,024 B; map scenes identical to basic; contrast fg/bg ${contrast(u.fg, u.bg).toFixed(2)}, accent ${contrast(u.onAccent, u.accent).toFixed(2)}; PASS`);
+  console.log(`${name} (${skin.layout}): ${frames.length} shared frames + ${cast.length} cast frames < 1,024 B; map scenes identical to basic (the crab and the cast are each proposal's own); contrast fg/bg ${contrast(u.fg, u.bg).toFixed(2)}, accent ${contrast(u.onAccent, u.accent).toFixed(2)}; PASS`);
 }
 const pal = names.map((n) => JSON.stringify(World.mapFrame(Object.assign({ name: n }, SKINS[n])).bands));
 assert.equal(new Set(pal).size, 3, 'two skins share the same palette');

@@ -3,7 +3,7 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 const here = join(dirname(fileURLToPath(import.meta.url)), '..');
 export const SKINS = JSON.parse(readFileSync(join(here, 'skins.json'), 'utf8'));
-export const SCRIPTS = ['tabla_semantica', 'comic_%74okens', 'comic_accents', 'valores', 'gacha', 'comic_atoms', 'bubble_light', 'bubble_language', 'core'];
+export const SCRIPTS = ['tabla_semantica', 'comic_%74okens', 'comic_accents', 'valores', 'gacha', 'comic_atoms', 'bubble_light', 'bubble_language', 'bubble_bestiary', 'core'];
 export const WEB_PREFIX = '../../../public/game/';
 export const APP_PREFIX = '/face/bubble/';
 export const APP_BASE = '/face/';
