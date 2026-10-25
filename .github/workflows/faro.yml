@@ -30,6 +30,14 @@ jobs:
         with:
           python-version: "3.11"
       - name: Lo servido contra main, byte a byte
+        env:
+          GH_TOKEN: ${{ secrets.BUZON_TOKEN }}
         run: |
-          set -euo pipefail
-          python atlas/faro.py 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+          set -uo pipefail
+          python atlas/faro.py > faro.txt 2>&1; rc=$?
+          cat faro.txt | tee -a "$GITHUB_STEP_SUMMARY"
+          # Una lectura roja llega a buzon#30 (R-ALARMA-FARO). Sin el secreto lo dice y el paso queda rojo igual.
+          if [ "$rc" -ne 0 ]; then
+            python3 atlas/faro_alarma.py --texto faro.txt --rc "$rc" --run "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" || true
+          fi
+          exit "$rc"
