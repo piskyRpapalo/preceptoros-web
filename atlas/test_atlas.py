@@ -923,7 +923,7 @@ process.stdout.write(JSON.stringify(ok));
         """U1 puso pointer-events:none en la capa para que el mapa reciba el dedo, y eso se HEREDA: la revelacion,
         Customize y los dialogos solo se cerraban con Escape (medido en vivo). Toda clase `position:fixed` del juego
         tiene que estar en una regla pointer-events:auto (salvo el aviso del mapa, que no es pulsable a proposito)."""
-        hojas = [PUBLICO / "assets" / n for n in ("thegame.css", "terminal_menu_shell.css", "atlas.css", "atlas-mapa.css")] + [PUBLICO / "game" / "home.css"]
+        hojas = [PUBLICO / "assets" / n for n in ("thegame.css", "terminal_menu_shell.css", "atlas.css")] + [PUBLICO / "game" / "home.css"]
         vivo = "".join(re.sub(r"/\*.*?\*/", "", h.read_text(encoding="utf-8"), flags=re.S) for h in hojas)
         # Excepciones, NO pulsables a proposito: el aviso del mapa y el lienzo del gusano (PR-2: revela, no decide; si
         # recibiera el dedo, taparia el juego durante la transicion). Y se exige que el gusano lo deje pasar.
