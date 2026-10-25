@@ -76,17 +76,17 @@
 
 ## C1 · Names signed 2026-10-23
 
-The Sovereign signed these names in p0x#52 and p0x#54. The English form is canonical; Spanish forms remain aliases.
+The Sovereign signed these names in <private-issue#52> and <private-issue#54>. The English form is canonical; Spanish forms remain aliases.
 
 | Official name | Historical alias (ES) | Meaning | Status |
 |---|---|---|---|
-| the Risen | zombi / zombis | The zombie world, parallel to Atlantis. | FIRMO · p0x#52 |
-| the rotor | superviviente | The playable character, parallel to the crab. | FIRMO · p0x#52 |
-| the beacon | nodo / faro | The entry point that selects a world and an available tutorial. | FIRMO · p0x#52 |
-| the Wastes | los Yermos | Habitat parallel to the Reef. | FIRMO · p0x#52 |
-| the Flats | las Llanuras | Habitat parallel to the Forest. | FIRMO · p0x#52 |
-| keepsake | recuerdo | Official name of the phase 2 tutorial object. | FIRMO · p0x#54 |
-| the Trunk | el tronco | The web as one object: one served surface, one action register, and the preceptoros.bubble/1 contract. Worlds are WORLDS, never branches. | FIRMO · p0x#54 |
+| the Risen | zombi / zombis | The zombie world, parallel to Atlantis. | FIRMO · <private-issue#52> |
+| the rotor | superviviente | The playable character, parallel to the crab. | FIRMO · <private-issue#52> |
+| the beacon | nodo / faro | The entry point that selects a world and an available tutorial. | FIRMO · <private-issue#52> |
+| the Wastes | los Yermos | Habitat parallel to the Reef. | FIRMO · <private-issue#52> |
+| the Flats | las Llanuras | Habitat parallel to the Forest. | FIRMO · <private-issue#52> |
+| keepsake | recuerdo | Official name of the phase 2 tutorial object. | FIRMO · <private-issue#54> |
+| the Trunk | el tronco | The web as one object: one served surface, one action register, and the preceptoros.bubble/1 contract. Worlds are WORLDS, never branches. | FIRMO · <private-issue#54> |
 | the front door | la puerta principal / portada | The direct front page drawn with bubble_editor and bubble_paint; four native actions keep tutorial, game entry, local key and Questions. | FIRMO · web#272 · G3 |
 | WavesCraft | incubadora del bosque | The local wave workshop and incubation view; the served UI already uses this name. | Alphabet PASS · FIRMO with G5a |
 ## D · Never confuse
@@ -125,7 +125,7 @@ oracle · notary · depin · coin · clearing · magic · token-as-a-name · **c
 ## H · Absorbed from the rack (measured 2026-10-18 — reuse before duplicating)
 
 - **The Eye's living glossary** (~40 entries in the rack). Fixed shape per entry: term · state · what it does · **where to see it** · source · note. Absorbed here: the shape and the rule (a term without a way to see it is a belief). Not duplicated: it keeps its own subject (how the swarm works); this doc covers official names.
-- **The Alphabet** — the rack's inter-silicon tongue. Its ID admission test is: exists in the system, tokenizes no more expensively than the longer form, and does not collide with an existing ID. **Audit · 2026-10-23 · seven signed names:** existence is confirmed by FIRMO p0x#52/#54; the names use ordinary words and introduce no symbols. Token-cost result: **NO_DATA**, cause: no paired 20-message run with the local model tokenizer was supplied. Collision result: **the beacon / faro** collides with the existing rack ID faro in the organ category; rename-winner makes the beacon canonical for tutorial selection and keeps faro as a historical alias. The historic ID oraculo remains retired under the forbidden-name law and is not coined again. A full eight-repository collision scan remains NO_DATA. Historical Alphabet records are left intact.
+- **The Alphabet** — the rack's inter-silicon tongue. Its ID admission test is: exists in the system, tokenizes no more expensively than the longer form, and does not collide with an existing ID. **Audit · 2026-10-23 · seven signed names:** existence is confirmed by FIRMO <private-issue#52>/<private-issue#54>; the names use ordinary words and introduce no symbols. Token-cost result: **NO_DATA**, cause: no paired 20-message run with the local model tokenizer was supplied. Collision result: **the beacon / faro** collides with the existing rack ID faro in the organ category; rename-winner makes the beacon canonical for tutorial selection and keeps faro as a historical alias. The historic ID oraculo remains retired under the forbidden-name law and is not coined again. A full eight-repository collision scan remains NO_DATA. Historical Alphabet records are left intact.
 - **The HEXELION-era lexicon pages** — the name lineage (the Forge · the Tower · the Watchman · the Synod · the Sovereign) and the Necropolis pattern (CANONIZE / GUARD / DISCARD, each with its reason). Pattern reused to judge the signed style; names of retired nodes stay historical.
 - **The scrub list** — the fail-closed private-name list in the rack; distinct from section E (see D).
 - **`GLOSSARY-FORMAT` (mattpocock skills)** — format inspiration: opinionated terms, an *Avoid* line per term, project-specific terms only, multi-context map. Used here; nothing copied as canon.

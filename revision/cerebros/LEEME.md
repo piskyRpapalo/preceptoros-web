@@ -1,7 +1,7 @@
 # cerebros-<l>.json · candidatos para revisión nativa (NO publicados)
 
 Traducidos el 2026-09-24 por `qwen2.5:14b` en el rack
-(`~/p0x/hexelion/laboratorio/traduce_familia.py`), a través de la frontera MCP
+(`<private-ref>/traduce_familia.py`, sha256: NO_DATA, causa: fichero del repo privado, no presente en este repo), a través de la frontera MCP
 y con la salida acotada por esquema. Cada texto pasó reglas deterministas:
 marcadores, cifras, longitud, alfabeto y ni inglés colado ni igual al original.
 Lo que no pasó quedó `NO_DATA · traducción descartada: <motivo>`.

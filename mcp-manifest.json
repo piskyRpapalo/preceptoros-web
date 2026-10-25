@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "title": "PreceptorOS · theGame · Static deep-link inventory",
   "lang": "en",
-  "generated_by": "mistral/g1 (merged to main 2026-10-15, commit e01462b via PR #100; served copy in public/ since 2026-10-19, commit 1194fdd via PR #184). Sign-off record: NO_DATA with cause (no FIRMO ledger entry found for this manifest in the web repo or in p0x).",
+  "generated_by": "mistral/g1 (merged to main 2026-10-15, commit e01462b via PR #100; served copy in public/ since 2026-10-19, commit 1194fdd via PR #184). Sign-off record: NO_DATA with cause (no FIRMO ledger entry found for this manifest in the web repo or in <private-ref>).",
   "declaration": "Static inventory only. No network, no personal data, no runtime discovery. The web receives nothing from anyone (Reglamento (UE) 2024/1689 transparency-by-design, Art. 50).",
   "actions": [
     {
