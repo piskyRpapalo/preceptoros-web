@@ -104,5 +104,5 @@
    "detalle": "Termux funciona hoy. El APK no existe — la guía explica en su §3 por qué, en vez de prometerlo"
   }
  ],
- "nota": "Lo escribe `p0x/bin/release_publica.py` del lado servidor. La pagina NO llama a GitHub: lee este fichero same-origin, network-first y sin cachear, porque es una medida."
+ "nota": "Lo escribe `<private-ref>/bin/release_publica.py` (sha256: NO_DATA, causa: fichero del repo privado, no presente en este repo) del lado servidor. La pagina NO llama a GitHub: lee este fichero same-origin, network-first y sin cachear, porque es una medida."
 }

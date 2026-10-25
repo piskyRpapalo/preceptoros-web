@@ -11,7 +11,7 @@ merges y la VERSION del worker son sensores distintos: no se inventa su paridad.
 App: objeto remoto `3c395961ddbc9b32481b5e3b8cb450be932cdde8`, leído mediante
 la API de contenidos de GitHub sin modificar el clon atrasado del rack.
 Las citas APP de abajo pertenecen a ese objeto, no al HEAD del clon local.
-RACK: lectura del fichero `hexelion-nexo/nodos.py`, SHA-256
+RACK: lectura del fichero `<private-ref>/nodos.py`, SHA-256
 `e1c3fd4fcd91becccdfd55ffccae276be450866f4fa949ff2c607c1817495f07`.
 No se abrió ninguna base de datos ni se ejecutó su CLI de escritura.
 Referencia Worker: objeto local `fe9f07a8c90e78d81b89f3f6be257b7277958b61`;
@@ -21,8 +21,8 @@ es código leído, no prueba de despliegue. RACK y Worker permanecen intactos.
 
 | Tramo | Fuente fichero:línea | Lo que existe / límite |
 |---|---|---|
-| RACK: administración | `hexelion-nexo/nodos.py:82,120` | Nodo por nombre; admin público de 64 hex. Impide sustituir admin sin retirarlo, pero no impide usar el mismo admin en otro nodo. |
-| RACK: exportación | `hexelion-nexo/nodos.py:265` | Cédula sin firma; admin público o null; dispositivos con testigos de solicitud/aceptación; hash del cuerpo. No añade aparato, plan firmado ni SSHSIG. |
+| RACK: administración | `<private-ref>/nodos.py:82,120` | Nodo por nombre; admin público de 64 hex. Impide sustituir admin sin retirarlo, pero no impide usar el mismo admin en otro nodo. |
+| RACK: exportación | `<private-ref>/nodos.py:265` | Cédula sin firma; admin público o null; dispositivos con testigos de solicitud/aceptación; hash del cuerpo. No añade aparato, plan firmado ni SSHSIG. |
 | APP: firma verificada | `nodo_app.py:47,51,57,79` | Bytes firmados y namespace heredados; verifica con allowed_signers local y ssh-keygen, no con una clave de la cédula. |
 | APP: nivel | `nodo_app.py:103` | Vincula dispositivo declarado; excluye delegados del cálculo del nivel humano. No certifica unicidad mundial cuenta↔nodo. |
 | APP: caché de máquina | `nodo_app.py:165,170,184` | Guarda `{cedula,lectura}` en `<casa>/nodo.json`, 0600; admite resultado OK o NO_DATA. La caché no se convierte por ello en raíz de confianza. |

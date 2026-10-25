@@ -5,8 +5,8 @@ description: Las leyes del preceptor de PreceptorOS, comprobadas antes de cada a
 
 # Contrato del preceptor · comprobar antes de actuar
 
-Fuente (consulta, no recuerdes · R-D1): `p0x/CANON_LENGUA.md`, `p0x/PLAN_CLAUDE.md`,
-`p0x/esquema_proceso_preceptor.md`, `AGENTS.md` y `CLAUDE.md` de cada repo.
+Fuente (consulta, no recuerdes · R-D1): `<private-ref>/CANON_LENGUA.md`, `<private-ref>/PLAN_CLAUDE.md`,
+`<private-ref>/esquema_proceso_preceptor.md`, `AGENTS.md` y `CLAUDE.md` de cada repo.
 
 ## Antes de cada accion, cinco preguntas
 1. **¿Firma?** Nunca push, merge ni firma. Commit local en `mistral/*`; las manos del Soberano empujan, la Mesa fusiona.

@@ -1,6 +1,6 @@
 # LF-1 · Graphic provenance closure
 
-Measured 2026-10-24 against web `a499044` and p0x `ab8b269`. This is a
+Measured 2026-10-24 against web `a499044` and <private-ref> `ab8b269`. This is a
 provenance update, not a new claim of physical rendering or original authorship.
 
 ## Census boundaries
@@ -52,7 +52,7 @@ available. This check does not perform a dependency-license audit.
 
 ## Dated O1–O4 reports recovered
 
-Read these from p0x `origin/master` objects, without merging its divergent
+Read these from <private-ref> `origin/master` objects, without merging its divergent
 working checkout:
 
 | Observation | Dated report | Incorporation | Evidence boundary |
@@ -65,7 +65,7 @@ working checkout:
 The historical O4 report calls `deep_links.js` a runtime manifest reader.
 Current source instead duplicates the action table and focuses UI controls;
 it makes no JSON-RPC request. LF-4 must map those actions to actual capabilities
-without carrying that label forward. The p0x bridge later gained two tools
+without carrying that label forward. The <private-ref> bridge later gained two tools
 including `web.validate_bubble` (`be0bf7a`, 2026-10-23); LF-6 measures it
 separately from the app's seven-tool server.
 
