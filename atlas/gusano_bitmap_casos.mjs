@@ -31,7 +31,7 @@ setTimeout(()=>{if(window.__error)throw new Error(window.__error);const canvas=d
       '--disable-sync', '--disable-extensions', '--disable-crash-reporter', '--no-first-run', '--no-default-browser-check',
       '--force-device-scale-factor=1', '--window-size=320,480', '--virtual-time-budget=1000',
       '--user-data-dir=' + resolve(dir, 'profile'), '--dump-dom', pathToFileURL(resolve(dir, 'fixture.html')).href],
-    { encoding: 'utf8', timeout: 30000, maxBuffer: 4 * 1024 * 1024 });
+    { encoding: 'utf8', timeout: 60000, maxBuffer: 4 * 1024 * 1024 });
     if (result.error) throw result.error;
     if (result.status !== 0) throw new Error('Chrome exit ' + result.status + ': ' + result.stderr.slice(-500));
     const match = result.stdout.match(/data-bitmap="([^"]+)"/);

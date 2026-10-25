@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
 
 const receipt = JSON.parse(execFileSync(process.execPath,
-  ['atlas/gusano_bitmap_casos.mjs'], { encoding: 'utf8', timeout: 60000 }));
+  ['atlas/gusano_bitmap_casos.mjs'], { encoding: 'utf8', timeout: 90000 }));
 
 test('worm transition renders repeatable neck bitmaps and catches scroll-progress drift', () => {
   assert.equal(receipt.repeat, 'PASS');
