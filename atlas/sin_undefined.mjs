@@ -53,7 +53,7 @@ async function main() {
     }
   }
 
-  for (const p of ['/en/', '/es/']) {
+  for (const p of ['/play/']) {
     actual = { path: p, step: 'carga' };
     await cmd('Page.navigate', { url: `http://127.0.0.1:${port}${p}` });
     await espera(7000);

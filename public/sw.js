@@ -1,13 +1,12 @@
-const VERSION = 'preceptoros-2026-17-abjg';
+const VERSION = 'preceptoros-2026-17-abjh';
 const SHELL = 'shell-' + VERSION;
 const OBRA = 'obra-' + VERSION;
 
 importScripts('/sw-listas.js?v=' + VERSION);
 
 function rutasDelShell() {
-  const r = ['/', '/manifest.webmanifest'].concat(HUB);   
-  for (const l of IDIOMAS) for (const p of PAGINAS) r.push('/' + l + '/' + p);
-  return r;
+  // Recencia y canon ingles (2026-10-25): las nueve portadas de lengua son 301 a `/`; el juego vive en /play/.
+  return ['/', '/play/', '/manifest.webmanifest'].concat(HUB);
 }
 
 function sinRedireccion(res) {
@@ -70,7 +69,7 @@ const SIN_RED = {
 
 function idiomaDe(url) {
   const l = new URL(url).pathname.split('/')[1];
-  return IDIOMAS.indexOf(l) >= 0 ? l : 'es';
+  return IDIOMAS.indexOf(l) >= 0 ? l : 'en';
 }
 
 function paginaSinRed(url) {

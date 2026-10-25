@@ -292,5 +292,27 @@
    "causa": "protegia el boton de juego del cabezal del hub (cabezal-rotulos.js); la portada ya es el juego",
    "archivo": "docs/pruebas-retiradas/mudanza-b3.py"
   }
+ ],
+ "canon_ingles": [
+  {
+   "prueba": "Estructura.test_las_portadas_declaran_hreflang",
+   "causa": "el hreflang entre las nueve portadas de lengua; las portadas son 301 a `/` y ninguna pagina declara ya hreflang (lo vigila test_toda_pagina_ofrece_LAS_LENGUAS_QUE_EXISTEN, que exige igualdad con el disco: vacio)",
+   "archivo": "docs/pruebas-retiradas/canon-ingles.py"
+  },
+  {
+   "prueba": "Paginas.test_selector_de_idioma_por_path",
+   "causa": "el selector de idioma de la raiz enlazaba a /<l>/; la raiz es ahora la puerta inglesa (Puerta.test_una_lengua_hasta_mvp)",
+   "archivo": "docs/pruebas-retiradas/canon-ingles.py"
+  },
+  {
+   "prueba": "Traducciones.test_cada_pagina_declara_SU_lengua_en_el_bloque",
+   "causa": "el bloque i18n de las paginas bajo /<l>/; esas carpetas salieron de public/",
+   "archivo": "docs/pruebas-retiradas/canon-ingles.py"
+  },
+  {
+   "prueba": "LoQueNoSeVeConElGateVerde.test_lo_que_depende_de_bronce_se_carga_despues",
+   "causa": "el orden de carga en las portadas /<l>/index.html; esas portadas salieron de public/ y el juego de /play/ lo vigila Portada",
+   "archivo": "docs/pruebas-retiradas/canon-ingles.py"
+  }
  ]
 }

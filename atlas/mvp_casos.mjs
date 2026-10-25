@@ -102,10 +102,17 @@ const lenguas = [...leer('LANGUAGES.md').matchAll(/^\| `([a-z]{2})` \|([^\n]*)$/
 // non-language style-selection hub, not a locale. Scope: omit only the
 // top-level `face/` portal from this comparison; all nine LANGUAGES.md entries
 // remain required. Related exceptions: test_web.py coverage and sitemap.py /face/.
-const portales = readdirSync(PUB).filter((d) => d !== 'face' && existsSync(join(PUB, d, 'index.html'))).sort();
+const portales = readdirSync(PUB).filter((d) => d !== 'face' && d !== 'play' && existsSync(join(PUB, d, 'index.html'))).sort();
 const cargador = (leer('public/assets/thegame.js').match(/var LENGUAS = \[([^\]]*)\]/) || [, ''])[1].match(/[a-z]{2}/g) || [];
 if (lenguas.length !== 9) falla('C8', `LANGUAGES.md lists ${lenguas.length} languages, not 9`);
-if (JSON.stringify(lenguas.map((l) => l[0]).sort()) !== JSON.stringify(portales)) falla('C8', `portals ${portales.join(',')} differ from LANGUAGES.md`);
+// English canon until MVP (2026-10-25): no locale portal folder may remain; each row declares the
+// Worker 301, and the Worker's portal rule names every code of the table.
+if (portales.length) falla('C8', `locale portals still in public/: ${portales.join(',')}`);
+const reglaPortal = (leer('worker/index.js').match(/const PORTAL = \/\^\\\/\(\?:([a-z|]+)\)/) || [, ''])[1].split('|');
+for (const [l, resto] of lenguas) {
+  if (!resto.includes('301 to `/`')) falla('C8', `${l}: LANGUAGES.md does not declare the 301 portal`);
+  if (!reglaPortal.includes(l)) falla('C8', `${l}: worker/index.js does not redirect /${l}/`);
+}
 for (const [l, resto] of lenguas) {
   if (!existsSync(join(PUB, `atlas-${l}.json`))) falla('C8', `atlas-${l}.json missing`);
   const dice = /\| yes \|\s*$/.test(resto);

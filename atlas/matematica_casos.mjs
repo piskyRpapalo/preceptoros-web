@@ -205,7 +205,12 @@ const r1 = run(() => m1(piezas));
 caso('M1 techo', r1, run(() => m1([...piezas, { fichero: 'public/game/ficticia.js', bytes: 16400, src: '' }])));
 const libroSinUno = { ...censo, sin_juez: censo.sin_juez.filter((_, i) => i !== 0) };
 const r2 = run(() => m2(piezas, jueces, censo));
-caso('M2 juez', r2, run(() => m2(piezas, jueces, libroSinUno)));
+// Con el libro vacio (2026-10-25: consiento.css ya tiene juez) no hay entrada que quitar: el sabotaje
+// mete entonces una pieza nueva sin juez ni causa, que tiene que poner M2 en rojo igual.
+const sabM2 = censo.sin_juez.length ? () => m2(piezas, jueces, libroSinUno)
+  // El nombre se compone en ejecucion: escrito literal, este mismo fichero (que es juez) lo nombraria.
+  : () => m2([...piezas, { fichero: 'public/game/' + ['pieza', 'huerfana', 'x'].join('-') + '.js', bytes: 10, src: '' }], jueces, censo);
+caso('M2 juez', r2, run(sabM2));
 const r3 = run(() => m3(piezas, vocab));
 caso('M3 sello', r3, run(() => m3([...piezas, { fichero: 'public/game/ficticia.js', bytes: 0, src: "const e = 'GUESSED';" }], vocab)));
 const r4 = run(() => m4(piezas, textos, censo));

@@ -63,7 +63,7 @@ try {
   await page.cmd('Runtime.enable'); await page.cmd('Page.enable'); await page.cmd('Network.enable');
   await page.cmd('Network.setBypassServiceWorker', { bypass: true }); await page.cmd('Network.setCacheDisabled', { cacheDisabled: true });
   if (telefono) execFileSync('adb', ['shell', 'am', 'start', '-n', 'com.android.chrome/com.google.android.apps.chrome.Main'], { stdio: 'ignore' });
-  await page.cmd('Page.navigate', { url: 'http://localhost:' + port + '/en/' });
+  await page.cmd('Page.navigate', { url: 'http://localhost:' + port + '/play/' });
   for (let i = 0; i < 80; i++) { if (await valor('Boolean(window.AtlasArrecife && window.AtlasInspector && window.AtlasPlaceCards)')) break; await pausa(250); }
   if (!(await valor('Boolean(window.AtlasPlaceCards)'))) throw Error('place cards did not boot');
   await valor(`(() => {

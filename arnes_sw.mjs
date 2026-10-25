@@ -204,10 +204,13 @@ const rutas = await shell.keys();
 // 218 con en301_tutorial_copy.js (2026-10-25: textos del tutorial /en/ aparte, el modelo no cabe en 16 KiB).
 // 219 con face_world_terrain.js (2026-10-25, ronda R2 de web#312: el terreno sale de face_world.js).
 // 220 con /face/ (2026-10-25, hub de los mundos: public/face/index.html, sirve el directorio).
-ok('precachea las portadas, su superficie y el juego', rutas.length === 220, rutas.length+' rutas');
+// 220 -> 213 el 2026-10-25 (recencia + canon ingles): salen las nueve portadas de lengua (301 a `/`)
+// y los cinco iconos viejos; entran /play/, landing.css, mark.svg y los tres iconos nuevos.
+ok('precachea las portadas, su superficie y el juego', rutas.length === 213, rutas.length+' rutas');
 ok('el shell trae el juego (D7): la puerta, el cangrejo y la arena',
    ['/assets/thegame.js', '/game/gdpr-art25-ephemeral-crab.js', '/game/ui-arena.js', '/assets/atlas-motor.js'].every(r => rutas.includes(r)));
-ok('el shell trae la portada de cada lengua', ['/es/', '/fr/', '/ar/'].every(r => rutas.includes(r)));
+ok('el shell trae la puerta y el juego', ['/', '/play/'].every(r => rutas.includes(r)));
+ok('el shell YA NO trae portadas de lengua (301 a `/`)', !rutas.some(r => /^\/(ar|de|el|en|es|fr|it|pt|ru)\/$/.test(r)));
 ok('el shell trae la identidad y el canal', ['/assets/auth.js', '/assets/enviar.js', '/assets/page-comment.js', '/assets/pwa.js'].every(r => rutas.includes(r)));
 ok('el shell YA NO trae nada del hub', !rutas.some(r => /community|benchmark|playground|onboarding|profile|instalar|hub\.json|hitos|chat|caras\//.test(r)));
 // NINGUNA DE LAS DOS FAMILIAS VIAJA YA, y la segunda cayo el 2026-09-20.
@@ -254,9 +257,9 @@ ok('atlas-en.json SI se sirve del cache (es contenido del juego)',
 // regla 3: navegacion cacheada, comprobada SIN RED para que no haya duda de
 // que sale del shell y no de la red.
 entorno.SIN_RED = true;
-const r1 = await pedir(ORIGEN+'/es/','navigate');
+const r1 = await pedir(ORIGEN+'/play/','navigate');
 ok('navegacion sale del shell aun sin red',
-   r1 !== 'PASA_DE_LARGO' && r1.status === 200 && String(r1.cuerpo).includes('/es/'),
+   r1 !== 'PASA_DE_LARGO' && r1.status === 200 && String(r1.cuerpo).includes('/play/'),
    'status '+(r1 && r1.status));
 const r2 = await pedir(ORIGEN+'/fr/nueva.html','navigate');
 const txt = await r2.text();

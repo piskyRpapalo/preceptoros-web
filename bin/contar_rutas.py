@@ -85,20 +85,19 @@ def measure():
         "PORTADA locale expansion",
     )
     require_pattern(source, r"\bconst\s+HUB\s*=\s*\[\.\.\.PORTADA,\s*\.\.\.JUEGO\s*\]", "HUB")
+    # English canon until MVP (2026-10-25): the nine locale portals are Worker 301s to `/` and the
+    # game shell lives at /play/, so the shell no longer expands IDIOMAS x PAGINAS.
     require_pattern(
         worker,
-        r"function\s+rutasDelShell\s*\(\)\s*\{\s*const\s+r\s*=\s*\[\s*['\"]\/['\"]\s*,\s*"
-        r"['\"]\/manifest\.webmanifest['\"]\s*\]\s*\.concat\(HUB\);\s*"
-        r"for\s*\(const\s+l\s+of\s+IDIOMAS\)\s*for\s*\(const\s+p\s+of\s+PAGINAS\)\s*"
-        r"r\.push\(['\"]\/['\"]\s*\+\s*l\s*\+\s*['\"]\/['\"]\s*\+\s*p\);\s*return\s+r;",
+        r"function\s+rutasDelShell\s*\(\)\s*\{(?:\s*//[^\n]*)*\s*return\s*\[\s*['\"]\/['\"]\s*,\s*"
+        r"['\"]\/play\/['\"]\s*,\s*['\"]\/manifest\.webmanifest['\"]\s*\]\s*\.concat\(HUB\);\s*\}",
         "service-worker shell expansion",
     )
 
-    entries = ["/", "/manifest.webmanifest"]
+    entries = ["/", "/play/", "/manifest.webmanifest"]
     entries.extend(cover)
     entries.extend("/assets/enviar-" + language + ".js" for language in languages)
     entries.extend(game)
-    entries.extend("/" + language + "/" + page for language in languages for page in pages)
     counts = collections.Counter(entries)
     return {
         "shell_entries": len(entries),

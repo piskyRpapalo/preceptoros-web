@@ -107,7 +107,9 @@ def medir():
     return [
         medido("paginas", len(paginas), "paginas",
                "ficheros .html de contenido unico bajo public/"),
-        medido("idiomas", len(idiomas), "idiomas", "carpetas de dos letras: " + ", ".join(idiomas)),
+        # Canon ingles hasta MVP (2026-10-25): sin carpetas de lengua el 0 es una lectura, y lo dice.
+        medido("idiomas", len(idiomas), "idiomas", "lectura del disco: carpetas de dos letras bajo public/: "
+               + (", ".join(idiomas) or "ninguna (una lengua hasta MVP: ingles en la raiz)")),
         medido("peso_sitio", total, "bytes",
                "todo lo que hay en public/ menos downloads/, counters.json e "
                "historial/: es lo que pesa visitar. Los adaptadores no se "
