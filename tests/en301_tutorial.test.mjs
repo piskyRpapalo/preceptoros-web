@@ -43,3 +43,17 @@ test('local speech stays available when procedural audio cannot start', () => {
  const all=e=>[e,...e.children.flatMap(all)];const button=all(host).find(e=>e['data-action']==='sound');button.listeners.click();
  assert.equal(spoken,1);ui.destroy();
 });
+test('a verified practice fight says Continue and drops the not-verified cause', () => {
+ const C=require('../public/game/en301_tutorial_copy.js');
+ let st=T.elige(T.inicia(),'niebla').estado;
+ st=T.evento(st,'pulso',{}).estado;
+ st=T.evento(st,'disipa',{dato:'NO_DATA',causa:'fixture'}).estado;
+ const waiting=G.view(st,{practiceReady:false});
+ assert.equal(waiting.cause,'practice result not verified yet');
+ assert.equal(waiting.next,C.COPY.arena101.next);
+ const ready=G.view(st,{practiceReady:true});
+ assert.equal(ready.cause,null);
+ assert.equal(ready.next,C.READY_NEXT);
+ assert.equal(ready.audible_text,ready.mirror_text);
+ assert.ok(ready.audible_text.endsWith(C.READY_NEXT));
+});
