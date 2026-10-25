@@ -25,9 +25,13 @@
     return out;
   }
 
+  function terrainIsles(skin) {
+    var s = skin && skin.isleScale;
+    return s ? isles.map(function (q) { return Object.assign({}, q, { rx: Math.round(q.rx * s), ry: Math.round(q.ry * s) }); }) : isles;
+  }
   function seaFrame(skin) {
     return { v: V, id: 'sea', t: 0, cv: [worldSize, worldSize], atoms: [
-      { k: 'shelves', r: 'shelves on the shared seabed', i: isles.map(function (q) { return { o: 'blob', x: q.x + 4, y: q.y + 4, rx: Math.round(q.rx * 1.38), ry: Math.round(q.ry * 1.38), f: skin.shelf }; }) }],
+      { k: 'shelves', r: 'shelves on the shared seabed', i: terrainIsles(skin).map(function (q) { return { o: 'blob', x: q.x + 4, y: q.y + 4, rx: Math.round(q.rx * 1.38), ry: Math.round(q.ry * 1.38), f: skin.shelf }; }) }],
       bands: [skin.shelf], change: ['rest'], sound: 'NO_DATA', soundCause: 'the sea is silent', motion: 'NO_DATA' };
   }
 
@@ -35,7 +39,7 @@
   var groupNames = ['home and the beacon', 'the Reef and the rift', 'the west node, the east node and the peak', 'the wood and an islet'];
 
   function islesFrame(skin, part) {
-    var list = isles.filter(function (s) { return groups[part].indexOf(s.id) >= 0; }), extra = [];
+    var list = terrainIsles(skin).filter(function (s) { return groups[part].indexOf(s.id) >= 0; }), extra = [];
     var atoms = [{ k: 'isles', r: groupNames[part], i: islandItems(list, skin) }];
     if (part === 1) { atoms.push({ k: 'chasm', r: 'the rift opens', i: [{ o: 'ribbon', pts: [[420, 196], [486, 168], [552, 194], [486, 214]], closed: true, f: 'ink' }] }); extra = ['ink']; }
     if (part === 1) { atoms.push({ k: 'coral', r: 'coral of the Reef', i: [{ o: 'field', kind: 'phyllo', x: 724, y: 428, n: 30, c: 10, r: 8, f: skin.coral }] }); extra.push(skin.coral); }
