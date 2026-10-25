@@ -17,6 +17,7 @@ class TrailersHook(unittest.TestCase):
         self.tmp = tempfile.mkdtemp(prefix="x2-")
         self.hooks = os.path.join(self.tmp, "hooks"); os.mkdir(self.hooks)
         shutil.copy(HOOK, self.hooks); os.chmod(os.path.join(self.hooks, "prepare-commit-msg"), 0o755)
+        self.hook_exe = os.path.join(self.hooks, "prepare-commit-msg")  # copia ya ejecutable (la API no conserva el modo del original)
         self.repo = os.path.join(self.tmp, "repo"); os.mkdir(self.repo)
         self.git("init", "-q", "-b", "main")
 
@@ -57,7 +58,7 @@ class TrailersHook(unittest.TestCase):
     def test_idempotent(self):
         f = pathlib.Path(self.tmp, "MSG"); f.write_text("Subject\n")
         for _ in range(2):
-            subprocess.run([str(HOOK), str(f), "message"], cwd=self.repo, check=True,
+            subprocess.run([self.hook_exe, str(f), "message"], cwd=self.repo, check=True,
                            env=dict(os.environ, GIT_DIR=os.path.join(self.repo, ".git")))
         self.assertEqual(self.cuenta(f.read_text()), {"Agent": 1, "Model": 1, "Run": 1})
 
@@ -79,7 +80,7 @@ class TrailersHook(unittest.TestCase):
         f = pathlib.Path(self.tmp, "MSG")
         for texto, env in (("Subject\n", {"GIT_REFLOG_ACTION": "rebase (pick)"}), ("# only a comment\n\n", {})):
             f.write_text(texto)
-            subprocess.run([str(HOOK), str(f), "message"], cwd=self.repo, check=True,
+            subprocess.run([self.hook_exe, str(f), "message"], cwd=self.repo, check=True,
                            env=dict(os.environ, GIT_DIR=os.path.join(self.repo, ".git"), **env))
             self.assertEqual(f.read_text(), texto)
 
