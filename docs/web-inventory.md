@@ -36,6 +36,19 @@ The Worker in `worker/index.js:1-12` redirects `www` to the apex and sends all o
 
 `public/creation.html` still declares `https://preceptoros.org/creation.html` as its canonical URL, although the Worker redirects that URL to `/creation`. The sitemap continues to list `.html` for creation and the three face pages. The sitemap and static paths are reachable through redirects, but their advertised URL and final URL differ.
 
+### Orphan audit
+
+“Orphan” is measured as having no incoming literal HTML anchor in the tracked HTML set. Separately, “no visible door” means there is no link on the initial landing or hub screen; a link hidden behind an Info panel is still an incoming link.
+
+| Candidate | Incoming link result | Classification |
+|---|---|---|
+| `creation.html` | No landing-page or hub link. Each face page has a Creation link in its Info → Tools area. | Not an HTML-link orphan; it is undiscoverable from the initial landing and hub screens. |
+| `/face/atlantis.html` | Linked from `/face/`; skin switch links also appear in Info. | Not an orphan. Direct `.html` URL redirects to the extensionless path. |
+| `/face/basic.html` | Linked from `/face/`; tutorial overlay and skin switch links also lead here. | Not an orphan. Direct `.html` URL redirects to the extensionless path. |
+| `/face/zombie.html` | Linked from `/face/`; skin switch links also appear in Info. | Not an orphan. Its page title uses the older “Zombie terminal” name while the hub uses “the Risen”; direct `.html` URL redirects to the extensionless path. |
+
+The true HTML-link orphans are identified row by row in the 51-file repository HTML inventory below. Their orphan status does not mean they are missing from test or build harnesses; those harness references are noted separately.
+
 The current Worker has no bespoke route table. Any `public/` path is an asset request; paths outside the static tree return the asset layer’s not-found response unless covered by a redirect. For example, `/game/` and `/atlas/` returned `404` in the route spot checks. The complete 265-path result is in the static-path appendix below.
 
 ## The three living screens
