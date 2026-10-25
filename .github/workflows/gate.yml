@@ -43,6 +43,7 @@ jobs:
           for pasada in 1 2; do
             echo "Gate pass $pasada/2"
             python -m unittest tests.test_module_attribution
+            python -m unittest tests.test_faro_alarma
             python bin/contar_rutas.py --check-doc DEPLOY.md
             python test_web.py
             python atlas/test_atlas.py
