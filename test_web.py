@@ -2518,9 +2518,8 @@ class Puerta(unittest.TestCase):
         viejos = {r for r in pide if r.rsplit("/", 1)[-1] in self.VIEJAS}
         self.assertEqual(viejos, set(), "la portada carga graficos de mas de una semana")
         self.assertEqual(re.findall(r'rel="stylesheet" href="([^"]+)"', self.t), ["/assets/landing.css"])
-        # Los colores salen del vocabulario de la casa (comic_tokens, NEUTRAL): la hoja no lleva ninguno crudo.
-        self.assertEqual(re.findall(r'<script src="([^"]+)"', self.t),
-                         ["/game/comic_tokens.js", "/assets/landing.js", "/assets/pwa.js"])
+        # Sin color crudo (barrido) y sin modulos a demanda en la puerta (test_atlas): colores del sistema.
+        self.assertEqual(re.findall(r'<script src="([^"]+)"', self.t), ["/assets/pwa.js"])
 
     def test_las_puertas_se_ven(self):
         for puerta in ("/play/", "/face/", "/creation.html"):

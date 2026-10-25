@@ -1,10 +1,11 @@
 /* preceptoros.org · the landing. Born 2026-10-25 with the recency decree: the entry shows only the
-   work built in the last days. It loads none of the older shared sheets. No raw colour lives here:
-   --ink and --paper come from the house vocabulary (AtlasComicTokens.NEUTRAL, set by landing.js),
-   the same ink-on-paper of the /face/ hub. Without JavaScript the browser defaults stay readable. */
-:root{--fg:var(--ink);--bg:var(--paper);--radius:8px;color-scheme:light dark}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--fg:var(--paper);--bg:var(--ink)}}
-:root[data-theme="dark"]{--fg:var(--paper);--bg:var(--ink)}
+   work built in the last days. It loads none of the older shared sheets and no script but the PWA.
+   No raw colour lives here (barrido ratchet) and no on-demand module is pulled to the door
+   (test_atlas): the page is ink on paper in the system's own colours, light or dark as the
+   reader's device asks. */
+:root{--fg:CanvasText;--bg:Canvas;--radius:8px;color-scheme:light dark}
+:root[data-theme="light"]{color-scheme:light}
+:root[data-theme="dark"]{color-scheme:dark}
 :root{--soft:color-mix(in srgb,var(--fg) 72%,var(--bg));--line:color-mix(in srgb,var(--fg) 20%,transparent)}
 *{box-sizing:border-box}
 html,body{margin:0;min-height:100%}

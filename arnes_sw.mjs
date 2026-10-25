@@ -204,9 +204,9 @@ const rutas = await shell.keys();
 // 218 con en301_tutorial_copy.js (2026-10-25: textos del tutorial /en/ aparte, el modelo no cabe en 16 KiB).
 // 219 con face_world_terrain.js (2026-10-25, ronda R2 de web#312: el terreno sale de face_world.js).
 // 220 con /face/ (2026-10-25, hub de los mundos: public/face/index.html, sirve el directorio).
-// 220 -> 214 el 2026-10-25 (recencia + canon ingles): salen las nueve portadas de lengua (301 a `/`)
-// y los cinco iconos viejos; entran /play/, landing.css, landing.js, mark.svg y los tres iconos nuevos.
-ok('precachea las portadas, su superficie y el juego', rutas.length === 214, rutas.length+' rutas');
+// 220 -> 213 el 2026-10-25 (recencia + canon ingles): salen las nueve portadas de lengua (301 a `/`)
+// y los cinco iconos viejos; entran /play/, landing.css, mark.svg y los tres iconos nuevos.
+ok('precachea las portadas, su superficie y el juego', rutas.length === 213, rutas.length+' rutas');
 ok('el shell trae el juego (D7): la puerta, el cangrejo y la arena',
    ['/assets/thegame.js', '/game/gdpr-art25-ephemeral-crab.js', '/game/ui-arena.js', '/assets/atlas-motor.js'].every(r => rutas.includes(r)));
 ok('el shell trae la puerta y el juego', ['/', '/play/'].every(r => rutas.includes(r)));

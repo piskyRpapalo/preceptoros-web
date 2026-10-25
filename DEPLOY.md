@@ -8,8 +8,8 @@ Status: proposal for review. Deployment remains a human action. This document re
 
 Route-count receipt for this source tree (`origin/main` af0312b + `mistral/p1-landing-recency-20261025`: the nine locale portals are Worker 301s to `/`, the game shell lives at `/play/`):
 
-Rutas precargadas por el shell: 215
-Rutas distintas del shell: 214
+Rutas precargadas por el shell: 214
+Rutas distintas del shell: 213
 
 The workflow runs exactly:
 

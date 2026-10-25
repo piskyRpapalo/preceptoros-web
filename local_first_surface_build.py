@@ -43,8 +43,7 @@ def cabeza(titulo, url, hojas, color):
 
 
 def portada():
-    return cabeza("PreceptorOS", f"{ORIGEN}/", ["/assets/landing.css"], "#17131F").replace(
-        "</head>\n", '<script src="/game/comic_tokens.js"></script>\n<script src="/assets/landing.js"></script>\n</head>\n') + """<body>
+    return cabeza("PreceptorOS", f"{ORIGEN}/", ["/assets/landing.css"], "#17131F") + """<body>
 <a class="skip" href="#doors">Skip to the doors</a>
 <main>
 <img class="mark" src="/assets/mark.svg" alt="" width="48" height="48">
