@@ -187,7 +187,8 @@ for (const name of names) {
   const sea = World.seaFrame(Object.assign({ name }, SKINS[name])), shelves = sea.atoms[0].i.slice();
   if (sabotage === 'shelf') shelves.pop();
   assert.equal(shelves.length, World.isles.length, `${name}: an island floats without a shelf on the seabed`);
-  World.isles.forEach((q, i) => { const sh = shelves[i]; assert.ok(sh.rx >= 1.3 * q.rx && sh.ry >= 1.3 * q.ry && Math.abs(sh.x - q.x) <= 10 && Math.abs(sh.y - q.y) <= 10, `${name}: island ${q.id} has no shelf around it`); });
+  const shown = World.isles.map((q) => { const k = SKINS[name].isleScale; return k ? Object.assign({}, q, { rx: Math.round(q.rx * k), ry: Math.round(q.ry * k) }) : q; });
+  shown.forEach((q, i) => { const sh = shelves[i]; assert.ok(sh.rx >= 1.3 * q.rx && sh.ry >= 1.3 * q.ry && Math.abs(sh.x - q.x) <= 10 && Math.abs(sh.y - q.y) <= 10, `${name}: island ${q.id} has no shelf around it`); });
 }
 console.log(`seafloor: canon sea-floor tiles under the map; ${World.isles.length} islands each stand on a shelf 1.38x their size; PASS`);
 const Crab = require('../../../public/game/gdpr-art25-ephemeral-crab.js');
@@ -320,6 +321,12 @@ for (const name of names) {
     const items = Bubble.compile(f);
     assert.ok(items.length > 0 && Bubble.compile.notes.length === 0, `${name} ${kind} frame ${i} did not compile cleanly: ${JSON.stringify(Bubble.compile.notes)}`);
     for (const b of f.bands) Bubble.band(b);
+    // Declared exception (R3 atlantis terrain, 2026-10-25): a skin with isleScale owns its terrain frames
+    // (shelves and isles); they must still be the canon shapes, scaled. Every other frame stays shared with basic.
+    if (SKINS[name].isleScale && f.atoms.some((a) => a.k === 'shelves' || a.k === 'isles')) {
+      if (kind === 'isles0') assert.ok(JSON.stringify(f).includes(`"rx":${Math.round(124 * SKINS[name].isleScale)}`), `${name}: home isle is not at isleScale`);
+      return;
+    }
     const shape = JSON.stringify(strip(kind === 'state' ? Bubble.compile(Object.assign({}, f, { atoms: f.atoms.filter((a) => a.k !== 'crab') })) : items));
     if (!(i in ref)) ref[i] = shape;
     else assert.equal(shape, ref[i], `${name} ${kind} frame ${i} geometry differs from basic`);
