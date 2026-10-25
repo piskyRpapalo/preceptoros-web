@@ -1,5 +1,5 @@
 # El FARO de la costa: en cada push a main y cada manana, compara byte a byte
-# lo servido en www.preceptoros.org contra public/ de main. El gate mira cada
+# lo servido en preceptoros.org (apex, canonico) contra public/ de main. El gate mira cada
 # PR, el vigia mira el estado de main; el faro mira la luz que llega de verdad.
 # Nacio de una deriva medida (2026-10-19): el cuerpo servido iba 16 rutas por
 # detras de main sin que ningun check lo viera. ROJO = alarma de deriva, no un
