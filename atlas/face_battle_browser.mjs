@@ -2,12 +2,27 @@
 // the fight paints ONLY on its own canvas (never on the world map), and the "×" returns to the map.
 // Uso: node atlas/face_battle_browser.mjs [raiz-public]   (Chrome headless por CDP; sin dependencias)
 // The optional argument serves another public/ tree, so the same harness measures the "before".
-import { spawn } from 'node:child_process';
+import { createServer } from 'node:http';
+import { readFileSync } from 'node:fs';
+import { resolve, extname } from 'node:path';
 import { launchChrome } from './chrome_launch.mjs';
 import { fileURLToPath } from 'node:url';
 
 const PUBLIC = process.argv[2] || fileURLToPath(new URL('../public/', import.meta.url));
 const espera = (ms) => new Promise((r) => setTimeout(r, ms));
+// Static server on port 0 (the OS picks a free port): a fixed range collides with services on the
+// node (measured 2026-10-26: 8740, 8765, 8766 and 8831 were already listening).
+function sirve(raiz) {
+  const tipos = { '.js': 'text/javascript', '.css': 'text/css', '.html': 'text/html', '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png', '.webmanifest': 'application/manifest+json' };
+  const s = createServer((req, res) => {
+    try {
+      let ruta = decodeURIComponent(new URL(req.url, 'http://local').pathname); if (ruta.endsWith('/')) { ruta += 'index.html'; }
+      const f = resolve(raiz, '.' + ruta); if (!f.startsWith(resolve(raiz))) { res.writeHead(403); res.end(); return; }
+      const cuerpo = readFileSync(f); res.writeHead(200, { 'Content-Type': tipos[extname(f)] || 'text/plain', 'Cache-Control': 'no-store' }); res.end(cuerpo);
+    } catch { res.writeHead(404); res.end(); }
+  });
+  return new Promise((r) => s.listen(0, '127.0.0.1', () => r(s)));
+}
 const fallos = [], medidas = {};
 const ok = (cond, que) => { if (!cond) { fallos.push(que); } };
 let ws = null, ch = null, srv = null, id = 0;
@@ -25,9 +40,9 @@ const ESPIA = `(() => {
 })()`;
 
 async function main() {
-  const port = 8700 + (process.pid % 90), cdpPort = 9800 + (process.pid % 90);
-  srv = spawn('python3', ['-m', 'http.server', String(port), '--bind', '127.0.0.1'], { cwd: PUBLIC, stdio: 'ignore' });
-  for (let i = 0; i < 40; i++) { await espera(250); try { await fetch(`http://127.0.0.1:${port}/`); break; } catch {} }
+  const cdpPort = 9800 + (process.pid % 90);
+  srv = await sirve(PUBLIC);
+  const port = srv.address().port;
   ch = launchChrome(cdpPort);
   let lista = null;
   for (let i = 0; i < 60 && !lista && !ch.failure(); i++) { await espera(250); try { lista = await (await fetch(`http://127.0.0.1:${cdpPort}/json`)).json(); } catch {} }
@@ -79,4 +94,4 @@ async function main() {
 }
 
 main().catch((e) => { fallos.push(String(e && e.message || e)); console.log(JSON.stringify({ piece: 'P3-1b', medidas, fallos })); })
-  .finally(() => { try { ws && ws.close(); } catch {} ch && ch.close && ch.close(); srv && srv.kill(); process.exitCode = fallos.length ? 1 : 0; });
+  .finally(() => { try { ws && ws.close(); } catch {} ch && ch.close && ch.close(); srv && srv.close(); process.exitCode = fallos.length ? 1 : 0; });
