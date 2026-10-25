@@ -78,7 +78,7 @@ def sueltas():
     raiz = [p.name for p in PUBLICO.glob("*.html") if p.name != "index.html"]
     # La cara del juego (2026-10-25) vive en su carpeta, sin traduccion: sus
     # tres pieles son contenido y el buscador tiene que verlas.
-    cara = ["face/" + p.name for p in (PUBLICO / "face").glob("*.html")]
+    cara = ["face/" + ("" if p.name == "index.html" else p.name) for p in (PUBLICO / "face").glob("*.html")]
     return sorted(raiz + cara)
 
 

@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Preceptor · Worlds</title>
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#17131F">
+<style>
+:root{--ink:#1E1826;--paper:#F2F5F7;color-scheme:light dark}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--ink:#F2F5F7;--paper:#1E1826}}
+:root[data-theme="dark"]{--ink:#F2F5F7;--paper:#1E1826}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.5 system-ui,sans-serif}
+main{max-width:40rem;margin:0 auto;padding:16px}
+h1{font-size:1.6rem;margin:12px 0 4px}
+.lead{margin:0 0 16px}
+.world{display:block;min-height:44px;box-sizing:border-box;padding:12px 14px;margin:10px 0;border:2px solid var(--ink);border-radius:8px;color:var(--ink);text-decoration:underline}
+.world span{display:block;text-decoration:none;opacity:.85}
+.world:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+footer{margin-top:20px;font-size:.9rem;opacity:.85}
+</style>
+</head>
+<body>
+<main>
+<h1>Worlds</h1>
+<p class="lead">Three node pages, served from this site. Each runs on this device.</p>
+<nav aria-label="Worlds">
+<a class="world" href="/face/atlantis.html">Atlantis for children<span>Zones layout. The canon crab, islands drawn at half size.</span></a>
+<a class="world" href="/face/zombie.html">Zombie terminal<span>Terminal layout. The wanderer and the terminal frame.</span></a>
+<a class="world" href="/face/basic.html">Neutral<span>Quiet layout. The same map with no node style.</span></a>
+</nav>
+<footer><p>Signatures prove authorship of the supplied bytes. A page view does not prove a node is live.</p><p><a href="/">Home</a></p></footer>
+</main>
+<script src="/assets/pwa.js"></script>
+</body>
+</html>
