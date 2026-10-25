@@ -207,7 +207,8 @@ const rutas = await shell.keys();
 // 220 -> 213 el 2026-10-25 (recencia + canon ingles): salen las nueve portadas de lengua (301 a `/`)
 // y los cinco iconos viejos; entran /play/, landing.css, mark.svg y los tres iconos nuevos.
 // 213 -> 215 el 2026-10-26 (P2): entran map_integrity.js y combat_screen.js.
-ok('precachea las portadas, su superficie y el juego', rutas.length === 215, rutas.length+' rutas');
+// 215 -> 216 el 2026-10-26 (P3 1b): entra face_fight_stage.js.
+ok('precachea las portadas, su superficie y el juego', rutas.length === 216, rutas.length+' rutas');
 ok('el shell trae el juego (D7): la puerta, el cangrejo y la arena',
    ['/assets/thegame.js', '/game/gdpr-art25-ephemeral-crab.js', '/game/ui-arena.js', '/assets/atlas-motor.js'].every(r => rutas.includes(r)));
 ok('el shell trae la puerta y el juego', ['/', '/play/'].every(r => rutas.includes(r)));
