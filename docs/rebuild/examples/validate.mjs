@@ -30,11 +30,11 @@ function rgb(c) {
 const lum = (c) => { const [r, g, b] = rgb(c).map((v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }); return 0.2126 * r + 0.7152 * g + 0.0722 * b; };
 const contrast = (a, b) => { const x = lum(Bubble.band(a)), y = lum(Bubble.band(b)); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); };
 
-for (const f of ['face.js', 'face_world.js', 'face_hero.js', 'face_paint.js', 'face_battle.js', 'face_panel.js', 'face_fight.js', 'face_hud.js', 'face_army.js', 'face.css', 'face_canon.css', 'index.html', ...names.map((n) => n + '.html')]) {
+for (const f of ['face.js', 'face_world.js', 'face_hero.js', 'face_paint.js', 'face_battle.js', 'face_panel.js', 'face_fight.js', 'face_hud.js', 'face_army.js', 'face_eggs.js', 'face_workshop.js', 'face_tutorial.js', 'face.css', 'face_views.css', 'face_canon.css', 'index.html', ...names.map((n) => n + '.html')]) {
   const size = statSync(join(dir, f)).size;
   assert.ok(size <= 16384, `${f} is ${size} B, over the 16,384 B piece ceiling`);
 }
-const code = ['face.js', 'face_world.js', 'face_hero.js', 'face_paint.js', 'face_battle.js', 'face_panel.js', 'face_fight.js', 'face_hud.js', 'face_army.js'].map((f) => readFileSync(join(dir, f), 'utf8')).join('\n');
+const code = ['face.js', 'face_world.js', 'face_hero.js', 'face_paint.js', 'face_battle.js', 'face_panel.js', 'face_fight.js', 'face_hud.js', 'face_army.js', 'face_eggs.js', 'face_workshop.js', 'face_tutorial.js'].map((f) => readFileSync(join(dir, f), 'utf8')).join('\n');
 assert.doesNotMatch(code, /Math\.random|Date\.now|new Date|performance\.now|fetch\(|localStorage|XMLHttpRequest|WebSocket/, 'face code uses a forbidden source of authority or network');
 assert.doesNotMatch(code, /\/\/ |\/\*/, 'served face code carries comments');
 const served = [code, readFileSync(join(dir, 'face.css'), 'utf8'), readFileSync(join(dir, 'tools/face.tpl.html'), 'utf8'), readFileSync(join(dir, 'index.html'), 'utf8')].join('\n');
@@ -47,7 +47,7 @@ const tpl = readFileSync(join(dir, 'tools/face.tpl.html'), 'utf8');
 for (const b of tpl.match(/<button\b[^>]*>.*?<\/button>/g)) assert.ok(/aria-label="[^"]+"/.test(b) || /\w/.test(b.replace(/<span aria-hidden="true">.*?<\/span>/g, '').replace(/<[^>]+>/g, '').trim()), 'button without a name: ' + b);
 for (const c of tpl.match(/<canvas\b[^>]*>/g)) assert.match(c, /aria-label="[^"]+"|aria-hidden="true"/, 'canvas without a label: ' + c);
 assert.match(tpl, /id="mapwin" role="img" aria-label="[^"]+"/, 'the map window has no label');
-for (const id of ['packet', 'say', 'machine', 'machine-map', 'log', 'joy', 'map', 'mapwin', 'head', 'skin', 'start', 'follow', 'counter', 'whole', 'tab-map', 'tab-battle', 'tab-profile', 'tab-info', 'sheet-battle', 'sheet-profile', 'sheet-info', 'b-start', 'b-step', 'b-play', 'b-withdraw', 'b-receipt', 'army', 'odds', 'g-summon', 'g-adopt', 'identity', 'me-art']) assert.match(tpl, new RegExp(`id="${id}"`), 'missing #' + id);
+for (const id of ['packet', 'say', 'machine', 'machine-map', 'log', 'joy', 'map', 'mapwin', 'head', 'skin', 'start', 'follow', 'counter', 'whole', 'tab-map', 'tab-battle', 'tab-profile', 'tab-info', 'sheet-battle', 'sheet-profile', 'sheet-info', 'b-pause', 'b-step', 'b-back', 'b-life', 'b-receipt', 'army', 'foes', 'eggs', 'purse', 'tut', 'tut-skip', 'tut-steps', 'nodes', 'node-hexelion', 'node-doggee', 'tut-away', 'ws-waves', 'ws-acts', 'identity', 'me-art']) assert.match(tpl, new RegExp(`id="${id}"`), 'missing #' + id);
 assert.match(tpl, /role="status" aria-live="polite"/, 'no live narration');
 
 const starts = [World.homeAt, [20, 20], [980, 20], [20, 980], [980, 980], [500, 500]].concat(World.places.map((p) => p.at));
@@ -96,12 +96,15 @@ assert.match(armyCode, /NO_DATA \(no waves adopted yet\)/, 'the empty Army is no
 assert.match(armyCode, /A\.TOPE/, 'the Army cap is not the canon cap');
 const Val = require('../../../public/game/valores.js'), ArmyM = require('./face_army.js'), G = require('../../../public/game/gacha.js');
 assert.equal(Val.army_tope, 30, 'army cap is not 30');
-const gachaCode = sabotage === 'adopt' ? armyCode.replace('army.adopta(ad, f.firma)', 'army.adopta(ad, null)') : armyCode;
-assert.match(gachaCode, /I\.firmar\(link\(tc,[^)]*\), pub\)\)|I\.firmar\(link\(/, 'the summon is not signed by your key');
-assert.match(gachaCode, /A\.semillaWeb\(f\.firma\)/, 'the seed does not come from your signature');
-assert.match(gachaCode, /G\.tirada\(seed, tc\)/, 'the wave is not the canon roll');
-assert.match(gachaCode, /AtlasRevela\.muestra\(t/, 'no canon reveal');
-assert.match(gachaCode, /army\.adopta\(ad, f\.firma\)/, 'the adoption is not signed');
+const eggCode0 = readFileSync(join(dir, 'face_eggs.js'), 'utf8');
+const eggCode = sabotage === 'adopt' ? eggCode0.replace('return H.army.adopt(t)', 'return Promise.resolve(t)') : eggCode0;
+assert.match(armyCode, /army\.adopta\(ad, f\.firma\)/, 'the adoption is not signed');
+assert.match(eggCode, /A\.eslabon\(chain, tc, pub\)[\s\S]*I\.firmar\(o\)[\s\S]*A\.semillaWeb\(f\.firma\)[\s\S]*A\.anexa\(chain, o, f\.firma, seed, E\.ciclo, E\.ciclo \+ TC\.incuba\)/, 'the egg is not the canon signed chain link with its cycles');
+assert.match(eggCode, /G\.tirada\(e\.semilla, e\.obj\.tc\)/, 'the hatched wave is not the canon roll of the egg seed');
+assert.match(eggCode, /AtlasRevela\.muestra\(t/, 'no canon reveal at hatch');
+assert.match(eggCode, /return H\.army\.adopt\(t\)/, 'hatching does not adopt in the same tap');
+assert.match(eggCode, /A\.cadenaWeb\(pub\)/, 'the egg chain is not kept in the canon store');
+assert.match(eggCode, /A\.verificaCadena\(/, 'the egg chain is not verified on load');
 for (const tc of Object.keys(G.TCS)) {
   const o = G.odds(tc), txt = ArmyM.oddsText(G, sabotage === 'gacha' && tc === 'tc2' ? 'tc1' : tc);
   assert.equal(o.reduce((x, y) => x + y, 0), 1000, `${tc} odds do not sum to 100%`);
@@ -110,30 +113,71 @@ for (const tc of Object.keys(G.TCS)) {
 }
 const seed = 'ab'.repeat(32), w1 = G.tirada(seed, 'tc3'), w2 = G.tirada(seed, 'tc3');
 assert.deepEqual(w1, w2, 'the roll is not deterministic');
-console.log(`army + gacha: canon verified Army (cap ${Val.army_tope}), canon wave panel, signed summon -> seed from the signature -> canon roll with its odds shown -> canon reveal -> signed adoption; deterministic roll; PASS`);
+const Eggs = require('./face_eggs.js'), motor = readFileSync('public/assets/atlas-motor.js', 'utf8');
+assert.equal(Eggs.cycleMs, Number(/CICLO_MS = (\d+)/.exec(motor)[1]), 'the egg cycle is not the canon game cycle');
+const incuba = { tc1: 20, tc2: 40, tc3: 60, tc4: 90 };
+if (sabotage === 'eggs') Val.tcs.tc1.incuba = 19;
+for (const tc of Object.keys(incuba)) assert.equal(Val.tcs[tc].incuba, incuba[tc], `incubation of ${tc} is not the canon ${incuba[tc]} cycles`);
+if (sabotage === 'eggs') Val.tcs.tc1.incuba = 20;
+const ev = Eggs.eggView({ seq: 1, tc: 'tc1', desde: 10, hasta: 30 }, 25, 20);
+assert.deepEqual([ev.left, ev.pct, ev.ready], [5, 75, false], 'the egg counter does not count cycles');
+assert.ok(!/Date|setTimeout|countdown|timer:/i.test(eggCode.replace('root.setInterval(tick, cycleMs)', '')), 'the egg code carries a clock field');
+for (const k of ['huevo', 'eclosion']) assert.match(eggCode, new RegExp(`sound\\('${k}'\\)`), `the canon ${k} sound is not played`);
+assert.match(armyCode, /suena\('adopcion'\)/, 'the canon adoption sound is not played');
+console.log(`army + eggs: canon verified Army (cap ${Val.army_tope}), canon wave panel; egg = canon signed chain link (desde/hasta in cycles, ${Eggs.cycleMs} ms canon cycle), incubation L1 20 / L2 40 / L3 60 / L4 90 cycles, hatch -> canon roll -> canon reveal -> signed adoption in one tap; odds shown; canon sounds; PASS`);
+const ws0 = readFileSync(join(dir, 'face_workshop.js'), 'utf8'), ws = sabotage === 'workshop' ? ws0.replace('TL.recibo(est, o, pub)', '({ op: o.op })') : ws0;
+assert.match(ws, /TL\.recibo\(est, o, pub\)/, 'the Workshop does not use the canon receipt');
+assert.match(ws, /TL\.estado\(next\)/, 'the Workshop chain is not re-verified');
+for (const o of ["op: 'lija'", "op: 'tinte'", "op: 'desintegra'"]) assert.ok(ws.includes(o), `the Workshop lacks ${o}`);
+assert.match(ws, /H\.army\.retire\(rec, f\)/, 'dissolving does not retire the wave from the Army');
+console.log('workshop: canon AtlasTaller receipts (improve, tint, dissolve) signed and chain-verified; dissolve retires the wave; PASS');
 assert.match(tpl, /role="tablist"/, 'the panel categories are not a tablist');
-const Battle = require('./face_battle.js');
+const Battle = require('./face_battle.js'), Arena = require('../../../public/game/arena.js');
 const Ticks = require('../../../public/game/combate_ticks.js');
+const pats = Battle.patrols();
+if (sabotage === 'patrol') pats[0].tropas = pats[0].tropas.slice(1);
+assert.equal(JSON.stringify(pats.map((x) => x.tropas)), JSON.stringify(Arena.lugares().map((l) => l.defensa.tropas)), 'the opponents are not the canon patrols');
 let battleWorst = 0, battles = 0;
-for (const w of [null, 0, 1, 2]) for (const f of Battle.forms) {
-  const x = Battle.create(); x.form(f); x.begin();
+const squads = [[{ semilla: 'ab'.repeat(32), tc: 'tc1' }], [{ semilla: 'ab'.repeat(32), tc: 'tc1', lija: { velocidad: 1 } }, { semilla: 'cd'.repeat(32), tc: 'tc2' }]];
+for (const p of pats) for (const sq of squads) for (const w of [null, 0]) {
+  const x = Battle.create(); x.begin(p, sq);
   const frames = [x.frame()];
-  while (!x.done()) { if (w !== null && x.b.st.ronda === 2) x.withdraw(w); x.step(); frames.push(x.frame()); }
+  while (!x.done()) { if (w !== null && x.b.st.ronda === 1) x.withdraw(w); x.step(); frames.push(x.frame()); }
   for (const fr of frames) {
     const n = bytes(fr); battleWorst = Math.max(battleWorst, n);
     assert.ok(n < 1024, `battle frame is ${n} UTF-8 bytes`);
     assert.ok(Bubble.compile(fr).length > 0 && Bubble.compile.notes.length === 0, 'battle frame did not compile cleanly');
   }
-  const s = x.summary(), t = Battle.teams();
-  const ref = Ticks.recibo(t.def, t.asa, Battle.seed, s.orders);
+  const s = x.summary(), ref = Ticks.recibo(p.tropas, sq, Battle.seedFor(p, sq), s.orders);
   assert.ok(ref.ok && s.receipt === ref.texto, 'the stepped battle drifted from combate_ticks.recibo');
   assert.ok(s.receipt.length <= 200, `receipt is ${s.receipt.length} B`);
   let rec = JSON.parse(s.receipt);
   if (sabotage === 'battle') rec = Object.assign({}, rec, { v: Object.assign({}, rec.v, { g: rec.v.g === 'defensa' ? 'asalto' : 'defensa' }) });
-  assert.ok(Ticks.verifica(rec, t.def, t.asa).ok, 'the receipt does not verify by replay from tick 0');
+  assert.ok(Ticks.verifica(rec, p.tropas, sq).ok, 'the receipt does not verify by replay from tick 0');
   battles++;
 }
-console.log(`battle: ${battles} battles (4 order plans x 3 formations) stepped tick by tick equal combate_ticks; receipts <= 200 B verify by replay; worst frame ${battleWorst} B; PASS`);
+assert.equal(Val.combate.tropas_max, 10, 'the squad cap is not the canon 10');
+assert.match(readFileSync(join(dir, 'face_battle.js'), 'utf8'), /\.slice\(0, V\.combate\.tropas_max\)/, 'the squad is not capped by the canon');
+console.log(`battle: opponents are the 6 canon patrols; ${battles} battles stepped tick by tick equal combate_ticks (improved waves included); receipts <= 200 B verify by replay; worst frame ${battleWorst} B; PASS`);
+let cssV = readFileSync(join(dir, 'face_views.css'), 'utf8');
+if (sabotage === 'order') cssV = cssV.replace('body[data-battle=on] #sheet-battle .prep,', '');
+assert.match(cssV, /body\[data-battle=on\] #sheet-battle \.prep,body:not\(\[data-battle=on\]\) #sheet-battle \.fight\{display:none\}/, 'the battle is not a reordering of one panel (preparation and fight must replace each other)');
+const bsheet = tpl.slice(tpl.indexOf('<section id="sheet-battle"'), tpl.indexOf('</section>', tpl.indexOf('<section id="sheet-battle"')));
+assert.ok(bsheet.indexOf('id="army"') < bsheet.indexOf('id="foes"') && bsheet.indexOf('id="foes"') < bsheet.indexOf('data-form'), 'the battle panel is not ordered Army -> Opponents -> Formation');
+console.log('order: Battle is one panel ordered Army -> Opponents -> Formation; during a fight it folds into the fight strip; PASS');
+const Tut = require('./face_tutorial.js'), tutCode0 = readFileSync(join(dir, 'face_tutorial.js'), 'utf8');
+const tutCode = sabotage === 'tutorial' ? tutCode0.replace("start = skin.layout === 'quiet'", "start = true") : tutCode0;
+assert.deepEqual(Tut.steps.map((x) => x.id), ['key', 'beacon', 'egg', 'hatch', 'fight', 'node'], 'tutorial steps out of order');
+assert.match(tutCode, /start = skin\.layout === 'quiet'/, 'the tutorial must start only on the Neutral map');
+assert.deepEqual(Tut.nodes.map((n) => [n.id, n.page]), [['hexelion', 'atlantis.html'], ['doggee', 'zombie.html']], 'the node choice must lead to Hexelion (Atlantis) and Doggee (Zombie)');
+assert.match(tutCode, /H\.say\(x\.say\)/, 'the radio does not announce the step');
+assert.match(tutCode, /H\.bubble\(x\.say\)/, 'the chat does not guide the step');
+assert.match(tutCode, /classList\.add\('tut-target'\)/, 'the next button is not highlighted');
+assert.ok(Tut.steps.some((x) => x.reward), 'the tutorial gives no resources');
+assert.match(cssV, /body\[data-tut=on\] \.face button:not\(\.tut-target\)[^{]*\{opacity:\.35;pointer-events:none\}/, 'other controls do not wait during a step');
+assert.match(tpl, /id="tut-skip"[^>]*class="tut-free/, 'the tutorial is not skippable at every step');
+assert.match(tpl, /id="tut-steps"/, 'the user cannot see done and remaining steps');
+console.log('tutorial: Neutral-only start, 6 gated steps (key, beacon, egg, hatch, fight, node), highlighted next button, others wait, radio + chat guidance, checklist, skippable, rewards; node choice Hexelion / Doggee; PASS');
 const paintCode = readFileSync(join(dir, 'face_paint.js'), 'utf8'), faceCode = readFileSync(join(dir, 'face.js'), 'utf8'), build = readFileSync(join(dir, 'tools/build.mjs'), 'utf8');
 assert.match(paintCode, /AtlasMarFondo\.pintor\(\)/, 'the ground between islands is not the canon seafloor painter');
 assert.match(paintCode, /floor\.tierra\(/, 'the canon seafloor tiles are not painted');
@@ -297,7 +341,7 @@ console.log(`${states.length} reachable states per skin; worst frame ${worst} UT
 if (process.env.APP_DIR) {
   const app = join(process.env.APP_DIR, 'interface', 'face');
   assert.ok(existsSync(app), 'APP_DIR has no interface/face');
-  for (const f of ['face.js', 'face_world.js', 'face_hero.js', 'face_paint.js', 'face_battle.js', 'face_panel.js', 'face_fight.js', 'face_hud.js', 'face_army.js', 'face.css', 'face_canon.css', 'skins.json']) assert.equal(readFileSync(join(app, f), 'utf8'), readFileSync(join(dir, f), 'utf8'), `app ${f} differs from web`);
+  for (const f of ['face.js', 'face_world.js', 'face_hero.js', 'face_paint.js', 'face_battle.js', 'face_panel.js', 'face_fight.js', 'face_hud.js', 'face_army.js', 'face_eggs.js', 'face_workshop.js', 'face_tutorial.js', 'face.css', 'face_views.css', 'face_canon.css', 'skins.json']) assert.equal(readFileSync(join(app, f), 'utf8'), readFileSync(join(dir, f), 'utf8'), `app ${f} differs from web`);
   for (const name of names) assert.equal(readFileSync(join(app, name + '.html'), 'utf8'), page(name, APP_PREFIX, APP_BASE), `app ${name}.html differs from the shared template`);
   console.log('app parity: face.js, face_world.js, face_paint.js, face.css, skins and three pages byte-identical to the web template; PASS');
 }

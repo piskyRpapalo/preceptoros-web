@@ -75,8 +75,11 @@ def sueltas():
     selector de idioma, y es la URL que un buscador debe ofrecer a quien no
     coincide con ninguna traduccion.
     """
-    return sorted(p.name for p in PUBLICO.glob("*.html")
-                  if p.name != "index.html")
+    raiz = [p.name for p in PUBLICO.glob("*.html") if p.name != "index.html"]
+    # La cara del juego (2026-10-25) vive en su carpeta, sin traduccion: sus
+    # tres pieles son contenido y el buscador tiene que verlas.
+    cara = ["face/" + p.name for p in (PUBLICO / "face").glob("*.html")]
+    return sorted(raiz + cara)
 
 
 def url(loc, alternativas=()):

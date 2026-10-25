@@ -1075,6 +1075,11 @@ CREATION_PAGE_DEPENDENCIES = CREACION + (
     "tabla_semantica.js", "bubble_editor.js", "bubble_paint.js",
 )
 FUERA_DE_LA_PUERTA = tuple(sorted(set(PUROS + ARENA + CASA + DESCENSO + VT6 + J1 + VT2_ETIQUETA + VT4_SILUETA + VISION_LEXICA)))
+# La cara del juego (2026-10-25) es su propia superficie en public/face/, fuera
+# de la puerta: carga de una vez las piezas que usa, como creation.html. Se
+# declaran aqui las suyas, leidas de sus paginas, y nada mas.
+FACE_PAGE_DEPENDENCIES = tuple(sorted(set(re.findall(r'src="/game/([^"]+)"', (PUBLICO / "face" / "basic.html").read_text(encoding="utf-8")))))
+
 
 
 class TheGameV15(unittest.TestCase):
@@ -1205,6 +1210,8 @@ class TheGameV15(unittest.TestCase):
                 self.assertIn(f"['/game/{m}']", capa, f"la puerta no carga {m}")
                 self.assertIn(f"/game/{m}", listas, f"{m} no esta en el precache")
                 for h in PUBLICO.rglob("*.html"):
+                    if h.parent.name == "face" and m in FACE_PAGE_DEPENDENCIES:
+                        continue   # la cara es su propia superficie (2026-10-25)
                     self.assertNotIn(f"game/{m}", h.read_text(encoding="utf-8"))
 
     def test_creation_page_dependencies_are_precached(self):
@@ -1738,6 +1745,8 @@ class Multijugador(unittest.TestCase):
                 self.assertNotIn("../game/" + m, mundo.PIEZAS)
                 for h in PUBLICO.rglob("*.html"):
                     if h.name == "creation.html" and m in CREATION_PAGE_DEPENDENCIES:
+                        continue
+                    if h.parent.name == "face" and m in FACE_PAGE_DEPENDENCIES:
                         continue
                     self.assertNotIn("game/" + m, h.read_text(encoding="utf-8"))
 
