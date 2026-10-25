@@ -61,6 +61,7 @@ def portada(l, raiz=False):
 <header class="cab-juego">
 <a class="cab-marca" href="/{l}/">PreceptorOS · <b>theGame</b></a>
 <nav class="cab-lenguas" aria-label="Language · {NOMBRE[l]}">{lenguas}</nav>
+<a class="cab-mundos" href="/face/">Worlds</a>
 <div id="identity" class="fila identity"></div>
 </header>
 <main id="juego-panel" class="juego-panel" aria-label="theGame"><h1 class="cab-h1">theGame</h1>
