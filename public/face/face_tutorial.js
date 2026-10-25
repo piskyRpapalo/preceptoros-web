@@ -82,7 +82,7 @@
     box.hidden = false;
     list(i);
     if (i >= steps.length - 1) {
-      $('tut-now').textContent = 'Now: ' + steps[steps.length - 1].name + '.';
+      $('tut-now').textContent = 'Step ' + steps.length + ' of ' + steps.length + ': ' + steps[steps.length - 1].name + '.';
       if (said !== i) { said = i; H.bubble(steps[i].say); H.say(steps[i].say); }
       E.tut.done = true; H.economy.save(); choose(); return;
     }

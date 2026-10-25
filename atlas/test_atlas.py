@@ -3250,5 +3250,14 @@ class PantallasTutorialVT5(unittest.TestCase):
         self.assertTrue(all(c["ok"] for c in casos), [c for c in casos if not c["ok"]])
 
 
+class PasoFinalDeLaCara(unittest.TestCase):
+    """La linea del tutorial de la cara lleva siempre «Step n of total», tambien en el ultimo paso (2026-10-25)."""
+
+    def test_ultimo_paso_conserva_el_contador(self):
+        js = (PUBLICO / "face" / "face_tutorial.js").read_text(encoding="utf-8")
+        self.assertIn("'Step ' + steps.length + ' of ' + steps.length + ': '", js)
+        self.assertNotIn("'Now: '", js)
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=1)
