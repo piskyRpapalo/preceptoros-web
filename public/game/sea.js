@@ -1,7 +1,7 @@
 (function () {
   'use strict';
 
-  var E = window.AtlasEscena, K = window.AtlasCanon, N = window.AtlasNiebla, C = window.AtlasCamara;
+  var E = window.AtlasEscena, K = window.AtlasCanon, N = window.AtlasNiebla, C = window.AtlasCamara, MI = window.AtlasMapIntegrity;
   var F = (window.AtlasValores && window.AtlasValores.fluidez) || {}, O = window.AtlasOnda || {};
     var MF = window.AtlasMarFondo, VE = 620, PASO = 90, VIVO = null;
     var NOMBRE = { izq: 'left', arr: 'up', aba: 'down', der: 'right', casa: 'home', faro: 'beacon' };
@@ -53,7 +53,8 @@
     c.tabIndex = 0;
     var zoom = window.AtlasMapZoom.crea(c);   
     function despeja() {
-      var r = f.luchados ? f.luchados() : {}, luchados = mapaOcupacion.explorados(r, f.ocupacion);
+      // Combat reaches the map ONLY as this rebuilt record (map_integrity.js): known places, bounded integers.
+      var r = MI.record(f.luchados ? f.luchados() : {}, f.lugares()), luchados = mapaOcupacion.explorados(r, f.ocupacion);
       circ = N.despejado({ pub: f.pub(), sha: K.sha, nodos: Ce ? Ce.nodos : [], lugares: f.lugares(), luchados: luchados });
       if (window.AtlasArrecife) { circ = circ.concat(window.AtlasArrecife.circulos()); }
       TS.despejado(circ);
@@ -81,16 +82,20 @@
       return [u * u * a[0] + 2 * u * s * mx + s * s * b[0], u * u * a[1] + 2 * u * s * my + s * s * b[1]];
     }
     function enlace(g, a, b, punteado) {
+      if (!MI.punto(a) || !MI.punto(b)) { return; }
       g.setLineDash(punteado ? [2 * dpr, 6 * dpr] : []); g.beginPath();
       for (var i = 0; i <= 24; i++) { var p = curva(a, b, i / 24); g[i ? 'lineTo' : 'moveTo'](p[0], p[1]); }
       g.stroke(); g.setLineDash([]);
     }
     function pulso(g, a, b, s, cl, rr) {
+      if (!MI.punto(a) || !MI.punto(b)) { return; }
       var p = curva(a, b, s); g.strokeStyle = cl; g.beginPath();
       for (var i = 0; i <= 32; i++) { var u = i / 32 * 2 * Math.PI; g[i ? 'lineTo' : 'moveTo'](p[0] + Math.sin(3 * u + s * 9) * rr, p[1] + Math.sin(2 * u) * rr); }
       g.stroke();
     }
     function rotulo(g, txt, x, y) {
+      txt = MI.texto(txt);
+      if (!txt || !MI.punto([x, y])) { return; }
       g.textAlign = 'center';
       var an = g.measureText(txt).width + 10 * dpr;
       g.fillStyle = 'rgb(6,10,22)'; g.fillRect(x - an / 2, y - 12 * dpr, an, 16 * dpr);
@@ -129,9 +134,10 @@
       });
       var sel = f.sel();
             var cola = [], pon = function (x, y, d, fi) { cola.push({ col: x, fila: y, f: d, ficha: fi }); };
-      var rec = (f.luchados && f.luchados()) || {};
+      var rec = MI.record(f.luchados && f.luchados(), f.lugares());
       f.lugares().forEach(function (l, i) { var s = sitio(l), Z = window.AtlasPlaceReading, v = Z && l.npc ? Z.vector(rec[l.clave], l.lider) : 0, cz = v === 0 ? 0 : Z.color(v); pon(s.x, s.y, function () {
         var p = P(s.x, s.y), t0 = l.lider, r = 18 * dpr;
+        if (!MI.punto(p) || !t0) { return; }
         if (sel === l) {
           if (yo) { g.strokeStyle = col.tuya; g.lineWidth = 2 * dpr; enlace(g, yo, p, false); }
           g.lineWidth = 2 * dpr; g.strokeStyle = col.tuya; g.globalAlpha = q ? 1 : 0.6 + 0.4 * Math.sin(t * 0.005);

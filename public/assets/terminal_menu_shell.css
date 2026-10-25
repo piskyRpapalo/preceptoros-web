@@ -119,3 +119,7 @@ body.portada-juego .pc-boton{display:none}
 @media (max-width:47.999rem){.crt-z-label,.crt-z-out{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}}
 .z-hide-no-data .radio-msg[data-sello="NO_DATA"]{display:none}
 .z-hide-emulated .radio-msg:is([data-sello="SIMULATED"],[data-sello="STALE"]){display:none}
+/* P2 (2026-10-26): combat is its own screen. While a fight is on, the map, the menu and the drawer are
+   not shown at all (the map stops painting); the battle sheet takes the whole game area. */
+html.con-combate .thegame-mapa,html.con-combate .thegame-menu,html.con-combate .thegame-terminal{display:none}
+html.con-combate .thegame-hoja#thegame-batalla{left:0;right:0;width:auto;max-width:none}

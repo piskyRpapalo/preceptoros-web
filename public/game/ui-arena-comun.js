@@ -36,7 +36,8 @@
     requestAnimationFrame(function () { E.mini(c, t); });
     return c;
   }
-  function nombreLugar(l) { return l.npc ? T('npc_' + l.id) : l.pseudo; }
+  // A player without a pseudonym is named by their key fingerprint, never by a missing value (P2).
+  function nombreLugar(l) { return l.npc ? T('npc_' + l.id) : (typeof l.pseudo === 'string' && l.pseudo.trim()) || 'Player ' + String(l.huella || '').slice(0, 8); }
 
   window.AtlasArenaComun = { T: T, textos: textos, el: el, boton: boton, rellena: rellena, quieto: quieto, css: css, colores: colores,
                              nombre: nombre, miniLienzo: miniLienzo, nombreLugar: nombreLugar };

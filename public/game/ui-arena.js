@@ -82,7 +82,7 @@
       if (i) { return; }
       var b = boton('\u2694\uFE0E ' + (sel.npc ? T('arena_luchar') : T('duelo_reta')), 'boton atlas-gran');
       b.id = 'arena-lucha';
-      b.addEventListener('click', function () { if (window.TheGame && window.TheGame.ve) { window.TheGame.ve('batalla'); } pelea(); });
+      b.addEventListener('click', function () { pantalla(null); pelea(); });
       z.appendChild(b);
     });
   }
@@ -115,9 +115,16 @@
     S.suena({ golpe: 'pop', cae: 'eclosion', gana: 'adopcion', pierde: 'huevo' }[tipo], tipo === 'pierde' ? 0.8 : 0);
   }
 
+  // P2: combat is its own screen (combat_screen.js), never the map page. `alSalir` closes the fight's
+  // lifecycle: the computed result is settled exactly once, then the replay stops.
+  function pantalla(alSalir) {
+    var S = window.AtlasCombatScreen;
+    if (S) { S.entra({ alSalir: alSalir }); } else if (window.TheGame && window.TheGame.ve) { window.TheGame.ve('batalla'); }
+  }
   function juega(def, asa, c, info) {
     if (actual) { actual.para(); }
-    if (window.TheGame && window.TheGame.ve) { window.TheGame.ve('batalla'); }
+    var aplicado = false, liquida = function (x) { if (!aplicado && info.alFin) { aplicado = true; info.alFin(x); } };
+    pantalla(function () { liquida(c); if (actual) { actual.para(); actual = null; } });
     R.escena.hidden = false; R.res.textContent = ''; R.resNota.textContent = ''; R.tec.hidden = true;
     R.titulo.textContent = info.titulo || ''; R.titulo.hidden = !info.titulo || info.pve;
     var vel = 1;
@@ -143,7 +150,7 @@
           var suyo = (e[1] === info.yo) ? T('arena_log_tu') : T('arena_log_ellos');
           return 'R' + e[0] + ' · ' + suyo + '#' + (e[2] + 1) + ' → #' + (e[3] + 1) + ' · ' + (e[4] < 0 ? T('arena_fallo') : '-' + e[4]);
         }).join('\n');
-        if (info.alFin) { info.alFin(x); }
+        liquida(x);
       }
     });
     R.vel.onclick = function () { vel = vel >= 4 ? 1 : vel * 2; actual.velocidad(vel); R.vel.textContent = rellena(T('arena_x'), { v: vel }); };
@@ -236,7 +243,8 @@
   });
 
   function ponJugadores(lista) {
-    jugadores = lista.map(function (d) {
+    var MI = window.AtlasMapIntegrity;
+    jugadores = (lista || []).filter(function (d) { return !MI || MI.jugador(d); }).map(function (d) {
       var t = d.sobre.cuerpo.tropas[0];
       return { npc: false, id: d.huella, clave: 'p:' + d.huella, huella: d.huella, de: d.sobre.de, pseudo: d.sobre.pseudonimo,
                defensa: d.sobre.cuerpo, lider: G.tirada(t.semilla, t.tc) };
