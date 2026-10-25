@@ -14,9 +14,8 @@ const checked = files.filter(p => /\.(?:js|css|json|html)$/.test(p));
 for (const path of checked) {
   assert(readFileSync(new URL(path, root)).byteLength < 16384, path + ' exceeds 16 KiB');
 }
-for (const name of ['phase_gate.mjs', 'phase_M0_cases.mjs', 'phase_T3_cases.mjs', 'wavescraft_browser.mjs', 'fixtures/m0-en.json', 'chrome_launch.mjs', 'chrome_launch_cases.mjs', 'sin_undefined.mjs']) {
-  assert(readFileSync(new URL(name, import.meta.url)).byteLength < 16384, name);
-}
+// The 16 KiB phase ceiling on the lab instruments (this file, the phase cases, the browser
+// harnesses) was abolished by the Sovereign, 2026-10-26 (FIRMO). Served files keep theirs above.
 const loader = readFileSync(new URL('assets/thegame.js', root), 'utf8');
 assert(/var LENGUAS = \['en'\]/.test(loader), 'English-only loader changed');
 const scripts = loader.match(/var GUIONES = (\[[\s\S]*?\]);/);

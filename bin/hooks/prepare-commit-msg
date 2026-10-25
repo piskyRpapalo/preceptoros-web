@@ -1,0 +1,17 @@
+#!/bin/sh
+# X2 · optional commit trailers (proposal study#79, merged; installs only after FIRMO).
+# For an ordinary new commit, add `Agent`, `Model` and `Run` once each, as NO_DATA when absent.
+# A value the author supplied is kept as is (`--if-exists doNothing`), so running twice changes
+# nothing. `Status` is never added. Skipped: merge, squash, amend/reuse (-c/-C/--amend), rebase,
+# and a message with no text yet (an empty message must still abort the commit).
+# No network, no history rewrite: it only edits the message file git hands it.
+msg="$1"; fuente="$2"
+case "$fuente" in merge|squash|commit) exit 0 ;; esac
+case "${GIT_REFLOG_ACTION:-}" in *rebase*) exit 0 ;; esac
+# `git commit --amend -m` reaches here with source "message": skip it by the calling command too.
+ps -o args= -p "$PPID" 2>/dev/null | grep -q -- '--amend' && exit 0
+dir=$(git rev-parse --git-dir 2>/dev/null) || exit 0
+[ -d "$dir/rebase-merge" ] || [ -d "$dir/rebase-apply" ] && exit 0
+grep -v '^#' "$msg" | grep -q '[^[:space:]]' || exit 0
+git interpret-trailers --in-place --if-exists doNothing --if-missing add \
+  --trailer 'Agent: NO_DATA' --trailer 'Model: NO_DATA' --trailer 'Run: NO_DATA' "$msg"
