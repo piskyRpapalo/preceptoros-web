@@ -2,7 +2,8 @@ import { test } from 'node:test';
 import { readFileSync } from 'node:fs';
 
 const ROOT = new URL('../', import.meta.url).pathname;
-const LENS = ['', 'en/', 'es/', 'fr/', 'pt/', 'it/', 'de/', 'ru/', 'el/', 'ar/'];
+// English canon until MVP (2026-10-25): the game shell lives at /play/; the root is the door (checked below).
+const LENS = ['play/'];
 
 function page(l) { return readFileSync(ROOT + 'public/' + l + 'index.html', 'utf8'); }
 
@@ -24,6 +25,14 @@ test('one h1 per portada, inside main, visually quiet (cab-h1)', () => {
       throw new Error('h1 no está en el main con cab-h1 en ' + (l || 'raíz'));
     }
   }
+});
+
+test('the landing door: skip-link to the doors, one h1 inside main', () => {
+  const t = page('');
+  if (!/class="skip" href="#doors"/.test(t) || !/<nav id="doors"/.test(t)) { throw new Error('landing: skip-link to #doors missing'); }
+  const n = (t.match(/<h1\b/g) || []).length;
+  if (n !== 1) { throw new Error('landing has ' + n + ' h1 (expected 1)'); }
+  if (!/<main>[\s\S]*<h1>[\s\S]*<\/main>/.test(t)) { throw new Error('landing h1 is not inside main'); }
 });
 
 test('SABOTAJE: removing the skip-link from the template breaks this guardian', () => {

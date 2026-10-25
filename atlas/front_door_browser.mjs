@@ -47,7 +47,7 @@ try {
   await command('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor:1,mobile:name==='mobile'});
   const hashes=[];
   for(let reload=0;reload<2;reload++){
-   await command('Page.navigate',{url:origin+'/en/'});
+   await command('Page.navigate',{url:origin+'/play/'});
    await until("document.querySelectorAll('.front-door-action').length===4");
    await evaluate('document.fonts.ready');
    const measured=await evaluate(`(()=>{

@@ -216,6 +216,11 @@ def _idiomas():
 
 
 IDIOMAS = _idiomas()
+# Canon ingles hasta MVP (2026-10-25): las carpetas de lengua salieron de public/ (301 a `/`), asi
+# que IDIOMAS --las PORTADAS de lengua-- queda vacio a proposito. La maquinaria que sigue viva (los
+# textos de envio, la pagina sin red, las familias `atlas-<l>.json`) se mide contra las lenguas que
+# esa maquinaria LLEVA en disco, no contra las portadas: si no, sus pruebas pasarian en vacio.
+LENGUAS_DATOS = tuple(sorted(f.stem.split("-", 1)[1] for f in PUBLICO.glob("atlas-??.json")))
 
 
 def texto_del_worker():
@@ -322,8 +327,8 @@ class Estructura(unittest.TestCase):
         el hueco gris solo lo ve quien pega el enlace en un chat. Por eso se
         comprueba aqui y no «cuando alguien avise».
         """
-        favicon = PUBLICO / "assets" / "favicon.svg"
-        self.assertTrue(favicon.is_file(), "no existe assets/favicon.svg")
+        favicon = PUBLICO / "assets" / "mark.svg"
+        self.assertTrue(favicon.is_file(), "no existe assets/mark.svg")
 
         con_tarjeta = 0
         for p in PUBLICO.rglob("*.html"):
@@ -529,16 +534,6 @@ class Estructura(unittest.TestCase):
                 continue
             with self.subTest(fichero=str(p_.relative_to(RAIZ))):
                 self.assertIn("canon.css", t, "carga base.css pero no el canon")
-
-    def test_las_portadas_declaran_hreflang(self):
-        """Tres traducciones sin hreflang son tres paginas sueltas para un
-        buscador, y compiten entre ellas en vez de ofrecerse por idioma."""
-        for idi in IDIOMAS:
-            t = (PUBLICO / idi / "index.html").read_text(encoding="utf-8")
-            for otro in IDIOMAS:
-                with self.subTest(idioma=idi, apunta_a=otro):
-                    self.assertRegex(t, rf'hreflang="{otro}"',
-                                     f"{idi} no declara hreflang de {otro}")
 
     def test_toda_pagina_ofrece_LAS_LENGUAS_QUE_EXISTEN(self):
         """La rueda de idiomas sale de aqui, y por eso ofrecia tres de ocho.
@@ -1437,29 +1432,13 @@ class PWA(unittest.TestCase):
         error en espanol."""
         sw = (PUBLICO / "sw.js").read_text(encoding="utf-8")
         self.assertIn("paginaSinRed", sw, "el worker no sintetiza respaldo")
-        for idioma in IDIOMAS:
+        for idioma in LENGUAS_DATOS:
             with self.subTest(idioma=idioma):
                 self.assertRegex(sw, r"\b" + idioma + r"\s*:\s*\[",
                                  f"la pagina de sin conexion no habla {idioma}")
 
 
 class Paginas(unittest.TestCase):
-
-    def test_selector_de_idioma_por_path(self):
-        s = (PUBLICO / "index.html").read_text(encoding="utf-8")
-        for idioma in IDIOMAS:
-            # Vale tanto "./es/" como "/es/": lo que importa es que el idioma
-            # este en la RUTA, no la forma de escribir el enlace.
-            self.assertTrue(f'href="./{idioma}/"' in s or f'href="/{idioma}/"' in s,
-                            f"el selector no enlaza al idioma {idioma}")
-        self.assertNotIn("chat.js", s, "el selector no debe cargar el chat")
-        # La regla es que elegir mal NO te encierre. Hay dos formas validas de
-        # cumplirla y el test admite las dos: o el selector no redirige solo, o
-        # redirige pero deja una salida (`?cambiar`). Lo que no vale es
-        # redirigir sin escape.
-        redirige = "location.replace" in s or "location.href" in s
-        self.assertTrue(not redirige or "cambiar" in s,
-                        "el selector redirige solo y no deja salida: elegir mal encierra")
 
     def test_todas_las_paginas_tienen_pie_honesto(self):
         # Las portadas salieron (mudanza b1, 2026-10-11): ya no son paginas de contenido, son el juego.
@@ -1594,7 +1573,7 @@ class Traducciones(unittest.TestCase):
         """
         import re as _re
         cargados = {}
-        for idioma in IDIOMAS:
+        for idioma in LENGUAS_DATOS:
             f = PUBLICO / "assets" / f"enviar-{idioma}.js"
             with self.subTest(idioma=idioma):
                 self.assertTrue(f.is_file(),
@@ -1611,7 +1590,7 @@ class Traducciones(unittest.TestCase):
                     f"que no traer el fichero")
 
         ingles = cargados.get("en", {})
-        for idioma in IDIOMAS:
+        for idioma in LENGUAS_DATOS:
             if idioma in ("en",):
                 continue
             iguales = [k for k in self.ROTULOS_ENVIO
@@ -1687,30 +1666,6 @@ class Traducciones(unittest.TestCase):
                         + (list(repetidas)[0][:70] if repetidas else "")
                         + " — o falta traducir, o es una coincidencia "
                           "legitima y va nombrada en MISMA_FRASE_A_PROPOSITO")
-
-    def test_cada_pagina_declara_SU_lengua_en_el_bloque(self):
-        """`lang` dentro del bloque no es decorativo: se lo lleva el modelo.
-
-        `pt/onboarding.html` declaraba `lang: "es"`. La pagina se veia
-        portuguesa en el navegador --`<html lang="pt">` estaba bien-- y por
-        dentro se presentaba como castellana. Un dato que solo se lee desde
-        JavaScript no tiene sintoma visual: por eso hace falta esta prueba y
-        no basta con mirar la pagina.
-        """
-        for idioma in IDIOMAS:
-            for f in sorted((PUBLICO / idioma).glob("*.html")):
-                m = re.search(r'id="i18n">(.*?)</script>',
-                              f.read_text(encoding="utf-8"), re.S)
-                if not m:
-                    continue
-                datos = json.loads(m.group(1))
-                if "lang" not in datos:
-                    continue
-                with self.subTest(pagina=f"{idioma}/{f.name}"):
-                    self.assertEqual(datos["lang"], idioma,
-                        f"{idioma}/{f.name} declara lang={datos['lang']!r} "
-                        f"dentro de su bloque i18n")
-
 
     # Las trece de firmar una correccion, y de donde sale cada una.
     ROTULOS_FIRMA_HUB = ("corregirBoton", "corregirQue", "corregirMotivo",
@@ -2135,7 +2090,7 @@ class LasTraduccionesSeSacanYSeMeten(unittest.TestCase):
 
     def test_la_identidad_no_cambia_ni_un_byte(self):
         import traducciones as TR
-        for l in IDIOMAS:
+        for l in LENGUAS_DATOS:
             for rel, tipo in TR.ficheros(l):
                 t = (PUBLICO / rel).read_text(encoding="utf-8")
                 with self.subTest(fichero=rel):
@@ -2192,29 +2147,14 @@ class LoQueNoSeVeConElGateVerde(unittest.TestCase):
         "dictionary": {"es", "fr", "pt", "it", "de", "ru", "el", "ar"},
     }
 
-    def test_lo_que_depende_de_bronce_se_carga_despues(self):
-        for idi in IDIOMAS:
-            f = PUBLICO / idi / "index.html"
-            if not f.exists():
-                continue
-            t = f.read_text(encoding="utf-8")
-            for hijo, padre in self.DEPENDE.items():
-                i, j = t.find("/assets/" + padre), t.find("/assets/" + hijo)
-                if j < 0:
-                    continue
-                with self.subTest(pagina=idi, guion=hijo):
-                    self.assertTrue(0 <= i < j,
-                        f"{idi}/index.html carga {hijo} antes que {padre}: {hijo} "
-                        f"se retira en silencio y la rueda se queda sin su casilla")
-
     def test_cada_familia_por_lengua_esta_completa_o_su_hueco_declarado(self):
         fam = {}
         for f in PUBLICO.glob("*-*.json"):
             m = re.fullmatch(r"(.+)-([a-z]{2})\.json", f.name)
-            if m and m.group(2) in IDIOMAS:
+            if m and m.group(2) in LENGUAS_DATOS:
                 fam.setdefault(m.group(1), set()).add(m.group(2))
         for nombre, tiene in sorted(fam.items()):
-            falta = set(IDIOMAS) - tiene
+            falta = set(LENGUAS_DATOS) - tiene
             with self.subTest(familia=nombre):
                 self.assertEqual(falta, self.HUECOS_DECLARADOS.get(nombre, set()),
                     f"{nombre}-<l>.json: faltan {sorted(falta)} y el hueco declarado "
@@ -2358,7 +2298,7 @@ class ComentarEnTodasLasPaginas(unittest.TestCase):
 
     def test_dice_que_se_envia_en_las_nueve_lenguas(self):
         js = self.JS.read_text(encoding="utf-8")
-        for l in IDIOMAS:
+        for l in LENGUAS_DATOS:
             with self.subTest(lengua=l):
                 m = re.search(r"\n    " + l + r": \[(.*?)\]", js, re.S)
                 self.assertTrue(m, f"sin textos en {l}")
@@ -2502,9 +2442,8 @@ class Portada(unittest.TestCase):
                   "/assets/page-comment.js", "/assets/thegame.js", "/assets/eaa-art12-local-first-surface.js"}
 
     def portadas(self):
-        yield "raiz", (PUBLICO / "index.html").read_text(encoding="utf-8")
-        for l in ("ar", "de", "el", "en", "es", "fr", "it", "pt", "ru"):
-            yield l, (PUBLICO / l / "index.html").read_text(encoding="utf-8")
+        # Recencia + canon ingles (2026-10-25): el juego se monto en /play/; la raiz es la puerta (Puerta, abajo).
+        yield "play", (PUBLICO / "play" / "index.html").read_text(encoding="utf-8")
 
     def test_las_diez_son_la_plantilla(self):
         r = subprocess.run([sys.executable, str(RAIZ / "local_first_surface_build.py"), "--comprueba"], capture_output=True, text=True)
@@ -2559,6 +2498,49 @@ class Portada(unittest.TestCase):
         self.assertIn("P.textContent = ''; P.appendChild(capa);", tg)
         self.assertNotIn("showModal", sin_comentarios(tg))
         self.assertIn("window.TheGame.abre(null", (PUBLICO / "assets" / "eaa-art12-local-first-surface.js").read_text(encoding="utf-8"))
+
+
+class Puerta(unittest.TestCase):
+    """UNA portada inglesa en `/`, la puerta a lo reciente (decreto de recencia + canon P1, 2026-10-25).
+    No carga NINGUNA de las 26 hojas e imagenes compartidas medidas anteriores al 2026-10-18; las
+    nueve portadas de lengua son 301 desde el Worker y ya no estan en public/."""
+
+    VIEJAS = {"base.css", "canon.css", "soberano.css", "consiento.css", "eaa-art12-local-first-surface.css",
+              "atlas.css", "atlas-mapa.css", "thegame.css", "tubo.css", "terminal_menu_shell.css",
+              "page-comment.css", "home.css", "favicon.svg", "preceptor-og.png", "icon-pwa-192.png",
+              "icon-pwa-512.png", "icon-pwa-512-maskable.png"}
+
+    def setUp(self):
+        self.t = (PUBLICO / "index.html").read_text(encoding="utf-8")
+
+    def test_no_carga_ningun_grafico_viejo(self):
+        pide = re.findall(r'(?:href|src|content)="([^"]+)"', self.t)
+        viejos = {r for r in pide if r.rsplit("/", 1)[-1] in self.VIEJAS}
+        self.assertEqual(viejos, set(), "la portada carga graficos de mas de una semana")
+        self.assertEqual(re.findall(r'rel="stylesheet" href="([^"]+)"', self.t), ["/assets/landing.css"])
+        # Los colores salen del vocabulario de la casa (comic_tokens, NEUTRAL): la hoja no lleva ninguno crudo.
+        self.assertEqual(re.findall(r'<script src="([^"]+)"', self.t),
+                         ["/game/comic_tokens.js", "/assets/landing.js", "/assets/pwa.js"])
+
+    def test_las_puertas_se_ven(self):
+        for puerta in ("/play/", "/face/", "/creation.html"):
+            with self.subTest(puerta=puerta):
+                self.assertIn(f'<a class="door" href="{puerta}">', self.t)
+
+    def test_una_lengua_hasta_mvp(self):
+        self.assertIn('<html lang="en"', self.t)
+        self.assertNotIn("hreflang", self.t)
+        self.assertIn("One language until the MVP: English.", self.t)
+        for l in ("ar", "de", "el", "en", "es", "fr", "it", "pt", "ru"):
+            with self.subTest(lengua=l):
+                self.assertFalse((PUBLICO / l).exists(), f"/{l}/ sigue en public/: debe ser un 301 del Worker")
+
+    def test_los_graficos_viejos_salieron_de_public(self):
+        """Los que ya no carga nadie se retiran; los que carga el juego (/play/, maquinaria intocable)
+        siguen hasta que el juego estrene hojas (P3). La lista es la medida, no una promesa."""
+        for n in ("favicon.svg", "preceptor-og.png", "icon-pwa-192.png", "icon-pwa-512.png", "icon-pwa-512-maskable.png"):
+            with self.subTest(fichero=n):
+                self.assertFalse((PUBLICO / "assets" / n).exists())
 
 
 class GlifoSemantico(unittest.TestCase):

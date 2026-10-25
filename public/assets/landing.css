@@ -1,0 +1,23 @@
+/* preceptoros.org · the landing. Born 2026-10-25 with the recency decree: the entry shows only the
+   work built in the last days. It loads none of the older shared sheets. No raw colour lives here:
+   --ink and --paper come from the house vocabulary (AtlasComicTokens.NEUTRAL, set by landing.js),
+   the same ink-on-paper of the /face/ hub. Without JavaScript the browser defaults stay readable. */
+:root{--fg:var(--ink);--bg:var(--paper);--radius:8px;color-scheme:light dark}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--fg:var(--paper);--bg:var(--ink)}}
+:root[data-theme="dark"]{--fg:var(--paper);--bg:var(--ink)}
+:root{--soft:color-mix(in srgb,var(--fg) 72%,var(--bg));--line:color-mix(in srgb,var(--fg) 20%,transparent)}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%}
+body{background:var(--bg);color:var(--fg);font:16px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif}
+.skip{position:absolute;left:-999px}
+.skip:focus{left:16px;top:8px;padding:8px 12px;background:var(--fg);color:var(--bg)}
+main{max-width:40rem;margin:0 auto;padding:24px 16px 32px}
+.mark{display:block;width:48px;height:48px}
+h1{font-size:1.9rem;line-height:1.15;margin:16px 0 6px}
+.lead{margin:0 0 20px;color:var(--soft)}
+.door{display:block;min-height:44px;padding:14px 16px;margin:12px 0;border:2px solid currentColor;border-radius:var(--radius);color:var(--fg);text-decoration:none}
+.door b{display:block;font-size:1.15rem;text-decoration:underline}
+.door span{display:block;color:var(--soft)}
+.door:hover b{text-decoration-thickness:3px}
+.door:focus-visible{outline:3px solid currentColor;outline-offset:3px}
+.note{margin:20px 0 0;padding-top:14px;border-top:1px solid var(--line);font-size:.92rem;color:var(--soft)}

@@ -8,23 +8,26 @@ Piece P10 of the ideas18oct specification.
 *(ES: la matriz verificable de las 9 lenguas; la vigila el caso C8. Si una fila
 miente, el gate se pone rojo.)*
 
-## Matrix (measured 2026-10-19, base `eac293d`)
+## Matrix (game text measured 2026-10-19, base `eac293d`; portals 2026-10-25)
 
-| Code | Language | Dir | Portal `public/<code>/index.html` | Game text `public/atlas-<code>.json` | Strings | Game loader |
+| Code | Language | Dir | Portal `/<code>/` | Game text `public/atlas-<code>.json` | Strings | Game loader |
 |---|---|---|---|---|---|---|
-| `ar` | Arabic | rtl | 3,539 B | 13,559 B | 209 | no |
-| `de` | German | ltr | 3,532 B | 11,274 B | 209 | no |
-| `el` | Greek | ltr | 3,541 B | 15,796 B | 209 | no |
-| `en` | English | ltr | 3,532 B | 16,365 B | 300 | yes |
-| `es` | Spanish | ltr | 3,533 B | 10,420 B | 209 | no |
-| `fr` | French | ltr | 3,534 B | 11,238 B | 209 | no |
-| `it` | Italian | ltr | 3,533 B | 10,749 B | 209 | no |
-| `pt` | Portuguese | ltr | 3,535 B | 10,578 B | 209 | no |
-| `ru` | Russian | ltr | 3,539 B | 15,300 B | 209 | no |
+| `ar` | Arabic | rtl | 301 to `/` | 13,559 B | 209 | no |
+| `de` | German | ltr | 301 to `/` | 11,274 B | 209 | no |
+| `el` | Greek | ltr | 301 to `/` | 15,796 B | 209 | no |
+| `en` | English | ltr | 301 to `/` | 16,365 B | 300 | yes |
+| `es` | Spanish | ltr | 301 to `/` | 10,420 B | 209 | no |
+| `fr` | French | ltr | 301 to `/` | 11,238 B | 209 | no |
+| `it` | Italian | ltr | 301 to `/` | 10,749 B | 209 | no |
+| `pt` | Portuguese | ltr | 301 to `/` | 10,578 B | 209 | no |
+| `ru` | Russian | ltr | 301 to `/` | 15,300 B | 209 | no |
 
 ## How to read it
 
-- **Portal:** the page shell exists in all nine languages (LIVE).
+- **Portal:** English only until the MVP (Sovereign canon, 2026-10-25). The nine
+  portals were the same English landing nine times; `worker/index.js` now answers
+  each `/<code>/` with a 301 to `/`, and their folders left `public/` (history keeps
+  them). The game text files below are untouched machinery.
 - **Game text:** all nine files exist; eight carry 209 strings against 300 in
   English, so 91 strings per language are NO_DATA (cause: not translated).
 - **Game loader:** `public/assets/thegame.js` loads only `en`
@@ -38,7 +41,7 @@ miente, el gate se pone rojo.)*
 
 ```
 node atlas/mvp_casos.mjs      # C8 compares this table with the tree
-wc -c public/*/index.html public/atlas-??.json
+wc -c public/atlas-??.json
 ```
 
 Bytes and string counts in this table are a dated measure, not a rule: the

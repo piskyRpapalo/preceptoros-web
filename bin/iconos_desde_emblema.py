@@ -13,6 +13,10 @@ que dibuja el retrato del guia en atlas-dialogo.js. Una fuente, todas las caras.
 
 El espectro se pide al motor (public/game/gacha.js), no se copia: si el motor cambia, el icono
 cambia con el. Determinista: misma version de Pillow, mismos bytes.
+
+RECENCIA (decreto del Soberano, 2026-10-25): la superficie servida solo muestra lo construido en
+los ultimos dias. Los ficheros nacen hoy con nombre nuevo y la paleta del hub reciente; el
+origen sigue siendo el de F2-8, la onda del emblema.
 """
 import argparse
 import hashlib
@@ -25,8 +29,8 @@ import sys
 RAIZ = pathlib.Path(__file__).resolve().parent.parent
 A = RAIZ / "public" / "assets"
 SEMILLA = "atlas.emblema/1:preceptoros.org"
-FONDO = (0x17, 0x13, 0x1F)          # theme_color del manifiesto
-TONO = (172, 191, 204)               # hsl(205 30% 74%): TONOS[3], el caracter del emblema
+FONDO = (0x1E, 0x18, 0x26)          # theme_color del manifiesto; el papel del hub /face/ (2026-10-25)
+TONO = (0xF2, 0xF5, 0xF7)            # la tinta del hub: la misma onda del emblema, en la paleta reciente
 
 
 def espectro():
@@ -62,8 +66,8 @@ def svg(arm):
     return ('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="PreceptorOS">\n'
             "<title>PreceptorOS</title>\n"
             "<!-- Generado por bin/iconos_desde_emblema.py: la onda del emblema del sitio. No se edita a mano. -->\n"
-            '<rect width="32" height="32" rx="7" fill="#17131f"/>\n'
-            '<path d="%s" fill="none" stroke="#acbfcc" stroke-width="1.6" stroke-linejoin="round"/>\n'
+            '<rect width="32" height="32" rx="7" fill="#1e1826"/>\n'
+            '<path d="%s" fill="none" stroke="#f2f5f7" stroke-width="1.6" stroke-linejoin="round"/>\n'
             "</svg>\n" % d)
 
 
@@ -86,12 +90,12 @@ def png(arm, ancho, alto, frac, grosor):
 def ficheros():
     arm = espectro()
     return {
-        "favicon.svg": svg(arm).encode("utf-8"),
-        "icon-pwa-192.png": png(arm, 192, 192, 0.40, 6),
-        "icon-pwa-512.png": png(arm, 512, 512, 0.40, 14),
+        "mark.svg": svg(arm).encode("utf-8"),
+        "icon-192.png": png(arm, 192, 192, 0.40, 6),
+        "icon-512.png": png(arm, 512, 512, 0.40, 14),
         # maskable: Android recorta a un circulo de radio 0,40*lado; el dibujo va a 0,30 (con su trazo).
-        "icon-pwa-512-maskable.png": png(arm, 512, 512, 0.30, 12),
-        "preceptor-og.png": png(arm, 1200, 630, 0.40, 10),
+        "icon-512-maskable.png": png(arm, 512, 512, 0.30, 12),
+        "og-card.png": png(arm, 1200, 630, 0.40, 10),
     }
 
 

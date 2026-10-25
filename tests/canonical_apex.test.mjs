@@ -18,6 +18,23 @@ test('www root and a static file both redirect; nothing is served from www', asy
   }
 });
 
+test('the nine language portals answer 301 to the one English landing', async () => {
+  for (const l of ['ar', 'de', 'el', 'en', 'es', 'fr', 'it', 'pt', 'ru']) {
+    for (const p of ['/' + l, '/' + l + '/', '/' + l + '/index.html']) {
+      const r = await go('https://preceptoros.org' + p + '?x=1');
+      assert.equal(r.status, 301, p);
+      assert.equal(r.headers.get('location'), 'https://preceptoros.org/', p);
+    }
+  }
+});
+
+test('only the portal itself redirects: lookalike paths are served as assets', async () => {
+  for (const p of ['/play/', '/face/', '/es.json', '/esx/', '/assets/enviar-es.js']) {
+    const r = await go('https://preceptoros.org' + p);
+    assert.equal(r.status, 200, p);
+  }
+});
+
 test('the apex is served by the assets, untouched', async () => {
   const r = await go('https://preceptoros.org/sw.js');
   assert.equal(r.status, 200);

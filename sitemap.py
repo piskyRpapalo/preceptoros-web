@@ -79,7 +79,9 @@ def sueltas():
     # La cara del juego (2026-10-25) vive en su carpeta, sin traduccion: sus
     # tres pieles son contenido y el buscador tiene que verlas.
     cara = ["face/" + ("" if p.name == "index.html" else p.name) for p in (PUBLICO / "face").glob("*.html")]
-    return sorted(raiz + cara)
+    # El juego (2026-10-25) vive en /play/: la portada de la raiz es solo la puerta.
+    juego = ["play/"] if (PUBLICO / "play" / "index.html").is_file() else []
+    return sorted(raiz + cara + juego)
 
 
 def url(loc, alternativas=()):
@@ -94,8 +96,10 @@ def url(loc, alternativas=()):
 def construir():
     bloques = []
 
+    # Canon ingles hasta MVP (2026-10-25): sin carpetas de lengua no hay alternativas que anunciar.
     alt_raiz = [(idi, "%s/%s/" % (ORIGEN, idi)) for idi in IDIOMAS]
-    alt_raiz.append(("x-default", ORIGEN + "/"))
+    if alt_raiz:
+        alt_raiz.append(("x-default", ORIGEN + "/"))
     bloques.append(url(ORIGEN + "/", alt_raiz))
 
     mapa = paginas_por_idioma()
