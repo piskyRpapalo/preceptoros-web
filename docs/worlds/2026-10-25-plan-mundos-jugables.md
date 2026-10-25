@@ -1,7 +1,7 @@
 # REQUIERE_FIRMA · Plan de los dos mundos jugables (ronda 1 · issue #312)
 
 Estado: **PROPUESTA**. Nada de código en este PR. Nada se construye hasta el FIRMO de la Mesa.
-Norte fijado por el encargo: **los dos mundos de nodo jugables en www.preceptoros.org, hasta el despliegue final.**
+Norte fijado por el encargo: **los dos mundos de nodo jugables en preceptoros.org, hasta el despliegue final.**
 
 Procedencia de las cifras: medidas el 2026-10-25 sobre `origin/main` (bb8d56a) con `stat`/`wc -c`, y
 leídas de `arnes_sw.mjs`, `public/sw-listas.js`, `EXCEPCIONES.md`, `AGENTS.md`. Las cifras del
@@ -135,7 +135,7 @@ Cada uno con **medida o `NO_DATA, cause`**:
 | R3 | Terreno propio de `atlantis.html` (sin mapa futuro) | criterios 1–3, 6, 8, 9 |
 | R4 | Terreno propio de `zombie.html` + cuadros de paseo en ambos | criterios 2–5, 9 |
 | R5 | Mapa futuro (50 % menor) **solo si** la Mesa lo firma | criterios completos |
-| R6 | Despliegue: verificación en www.preceptoros.org | ojos y faro |
+| R6 | Despliegue: verificación en preceptoros.org | ojos y faro |
 
 ## 8 · Preguntas para la Mesa (no se contestan con suposiciones)
 

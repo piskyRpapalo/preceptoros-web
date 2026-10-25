@@ -1,4 +1,4 @@
-"""El FARO: lo servido en www.preceptoros.org contra public/ de main.
+"""El FARO: lo servido en preceptoros.org (apex, canonico) contra public/ de main.
 
 El gate mira cada PR, el vigia mira el estado de main cada manana; el faro
 mira la luz que llega de verdad al visitante. Compara byte a byte cada
@@ -17,7 +17,7 @@ import urllib.error
 import urllib.request
 from pathlib import Path
 
-SITIO = "https://www.preceptoros.org/"
+SITIO = "https://preceptoros.org/"  # canonico desde 2026-10-25; www 301 -> apex (worker/index.js)
 RAIZ = Path(__file__).resolve().parent.parent / "public"
 TIEMPO_FUERA = 15
 AGENTE = "preceptoros-faro/1.0"
