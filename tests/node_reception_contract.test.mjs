@@ -26,7 +26,7 @@ test('signed declaration no longer fails the legacy game authenticity predicate'
   assert.equal(N.validaCedulas(catalog), '');
 });
 test('the definitive route is isolated from the existing Agora transport', () => {
-  assert.equal(contract().ENDPOINT, 'https://api.preceptoros.org/aduana/cedulas');
+  assert.equal(contract().ENDPOINT, 'https://api.preceptoros.org/api/v1/cedulas');
   assert.equal(contract().METHOD, 'POST');
   const src = readFileSync(new URL('../public/assets/enviar.js', import.meta.url), 'utf8');
   assert.match(src, /API \+ '\/reto'/); assert.match(src, /API \+ '\/paquetes'/);

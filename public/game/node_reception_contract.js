@@ -88,7 +88,7 @@
     var texts = own(MESSAGES, language) ? MESSAGES[language] : MESSAGES.en;
     return own(texts, code) ? texts[code] : texts.shape;
   }
-  var api = Object.freeze({ ENDPOINT: 'https://api.preceptoros.org/aduana/cedulas', METHOD: 'POST', MAX_BYTES: MAX_BYTES,
+  var api = Object.freeze({ ENDPOINT: 'https://api.preceptoros.org/api/v1/cedulas', METHOD: 'POST', MAX_BYTES: MAX_BYTES,
     AUTHENTICITY: AUTHENTICITY, credential: credential, packet: packet, read: read, declaration: declaration, signedBody: signedBody, message: message, MESSAGES: MESSAGES });
   if (typeof module === 'object' && module.exports) { module.exports = api; }
   else { root.AtlasNodeReception = api; }

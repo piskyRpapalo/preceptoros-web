@@ -7,7 +7,7 @@ grants authority or publishes a node; SSH verification belongs to piece 2.
 
 ## Route and envelope
 
-`POST https://api.preceptoros.org/aduana/cedulas`, JSON request `{cedula}`.
+`POST https://api.preceptoros.org/api/v1/cedulas`, JSON request `{cedula}`.
 This is the definitive contract route; live deployment remains NO_DATA.
 Agora `/api/v1/*` and its challenge protocol are unchanged.
 
