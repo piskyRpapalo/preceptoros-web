@@ -1,8 +1,8 @@
 # The merge fence (R-CERCO-MERGE) · how it works and how to activate it
 
-Status: **PROPOSAL · REQUIRES_FIRMA**. The workflow and its tests are in this branch.
-Activating the required status check is a **Sovereign action** (repository rulesets). The
-Mesa serves the commands; nothing here runs them.
+Status: **ACTIVE** on `main` (measured 2026-10-26 through the rulesets API, read-only): ruleset
+`cerco-hitl`, created 2026-10-25 20:07 UTC, enforcement `active`, required status check `hitl`,
+strict policy on. Activation was a **Sovereign action**; nothing in this repository runs it.
 
 ## Why
 
@@ -43,6 +43,28 @@ The check is named `hitl`. If the workflow never ran, the check does not exist y
   nothing merges without it.
 - A new push changes the head SHA, so every earlier line stops matching. That is intended:
   a new head needs a new line.
+
+## Lessons from the first days of use
+
+Two failures were measured by the Mesa in the register (buzon#30) once the fence was live. Both
+are about *when* the check reads, not about the rule itself.
+
+1. **Rerun the PR's own `hitl` run, for the current head, after the line is posted.** The check
+   runs on pull-request events (opened, synchronize, reopened, edited). Posting the HITL line in
+   the register is a comment in another repository: it does not trigger anything here, so the
+   run that already went red stays red. The cure is to rerun that pull request's `hitl` run once
+   the line exists. A manual `workflow_dispatch` run does **not** help: it reports under another
+   context name than the PR's `hitl` (measured: `hitl` against `hitl / hitl`), and the ruleset
+   only counts the PR's own check. And because a new push changes the head SHA, the line and the
+   rerun must both name the head that will actually merge: line first, rerun second, then merge.
+   Recurring cost per piece, measured: one signature and one rerun.
+
+2. **The date window is UTC, on the runner.** The upper bound "today" is
+   `datetime.now(timezone.utc)` on the GitHub runner, and the head date is the committer date
+   GitHub reports, which is also UTC. A line written with a local date that is already
+   "tomorrow" in Europe but still "today" in UTC (or the other way round, near midnight) falls
+   outside the window and the check prints `fecha_fuera_de_rango`. Date the line with the UTC
+   date: `date -u +%F`.
 
 ## Tests
 
