@@ -1,0 +1,19 @@
+# Dependabot for preceptoros-web (Mesa queue, 2026-10-26).
+# Measured: the repository has no npm, pip or other package manifest; its only third-party code
+# is the GitHub Actions in .github/workflows, all pinned by full 40-character SHA. Dependabot keeps
+# those pins current (it rewrites the SHA and its version comment together).
+# One grouped pull request per week, at most two open, so the HITL fence sees a small queue:
+# every Dependabot PR still needs the Sovereign's HITL line for its exact head before it merges.
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 2
+    groups:
+      actions:
+        patterns: ["*"]
+    commit-message:
+      prefix: "ci"
