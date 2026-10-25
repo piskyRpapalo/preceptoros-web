@@ -1049,9 +1049,9 @@ process.stdout.write(JSON.stringify(ok));
 # Ver atlas/POST_VERIFICACION_MGNO_LAB.md y atlas/POST_VERIFICACION_SISIL_CRIA.md.
 PUROS = ("canon.js", "sobres.js", "rating.js", "arena.js", "duelo.js", "mercado.js", "narragrafo.js", "cria.js", "genoma.js")  # T_CRT §8.1: el orquestador mini lo lee; ningun guion de la web lo pide aun
 # La Arena (2026-09-28, «el mapa multi-jugador en una pestana»): se carga al abrir su pestana, detras del Army.
-ARENA = ("sobres.js", "rating.js", "combate_ticks.js", "arena.js", "duelo.js", "sea-anchors.js", "crab_render_hd.js", "audio_feedback_manager.js", "crab_free_move.js", "genesis_tutorial.js", "buildings_toon.js", "reef_place_cards.js", "shell_schematics.js", "reef_buildings_paint.js", "latency_crystal.js", "hexelion_bench.js", "bubble_bestiary.js", "map_bubble_figures.js", "reef_corals.js", "reef_buildings_layer.js", "sea-crabs.js", "map_pointer_input.js", "semiotic_glyph.js", "hexelion_dictionary.js", "map_nodes_layer.js", "map_zoom.js", "piece_inspector.js", "vector_contract.js", "state_vector.js", "place_reading.js", "npc_territory_map.js", "sea.js", "nodos-pesos.js",
+ARENA = ("sobres.js", "rating.js", "combate_ticks.js", "arena.js", "duelo.js", "sea-anchors.js", "crab_render_hd.js", "audio_feedback_manager.js", "crab_free_move.js", "genesis_tutorial.js", "buildings_toon.js", "reef_place_cards.js", "shell_schematics.js", "reef_buildings_paint.js", "latency_crystal.js", "hexelion_bench.js", "bubble_bestiary.js", "map_bubble_figures.js", "reef_corals.js", "reef_buildings_layer.js", "sea-crabs.js", "map_pointer_input.js", "semiotic_glyph.js", "hexelion_dictionary.js", "map_nodes_layer.js", "map_zoom.js", "piece_inspector.js", "vector_contract.js", "state_vector.js", "place_reading.js", "npc_territory_map.js", "map_integrity.js", "sea.js", "nodos-pesos.js",
          "node_reception_contract.js", "node_trust_anchor.js", "node_trust_manifest.js", "node_signature_messages.js", "node_signature_verify.js", "node_bindings_messages.js", "node_bindings.js", "node_projection.js", "nodos.js", "cuenta.js", "ui-nodos.js", "ui-rack.js", "node_preview.js", "node_file_receiver.js",
-         "escuadron.js", "battle_choreography.js", "battle_replay.js", "npc_occupancy.js", "npc_walls.js", "ui-arena-comun.js", "ui-arena.js", "ui-duelo.js")
+         "escuadron.js", "battle_choreography.js", "battle_replay.js", "npc_occupancy.js", "npc_walls.js", "ui-arena-comun.js", "combat_screen.js", "ui-arena.js", "ui-duelo.js")
 # La CASA (2026-10-05): la primera pantalla, detras del Army. Lleva canon y escena, que la Arena reutiliza.
 # C1+C2 (#264, 2026-10-23): editor Bubble y Paint se cargan con la Casa; ambos son modulos v1.5 a demanda.
 CASA = ("canon.js", "tabla_semantica.js", "comic_tokens.js", "comic_atoms.js", "escena.js", "wave_render.js", "gdpr-art25-ephemeral-crab.js", "aiact-art50-crab-terminal.js", "nodos-cedulas.js", "fog_of_war.js", "isometric_floor_projection.js", "world_camera.js", "sea-floor.js", "sea_rift.js", "bubble_editor.js", "bubble_paint.js", "gdpr-art7-entry-choice.js", "aiact-art50-state-radio.js", "casa-medidas.js", "casa-personaliza.js", "casa-lateral.js", "crab_state_screen.js", "reef_building_lifecycle.js", "home_buildings.js", "summon-wave-card.js", "summon_reveal.js", "taller.js", "army-wave-panel.js", "ui-taller.js", "primer_eco.js", "summon-access.js", "deep_links.js", "hitl_firma.js", "onda_profunda.js", "tarjeta_cantada.js", "cable_llamar.js", "cable_terminal.js")
@@ -2461,8 +2461,11 @@ class MapaMovible(unittest.TestCase):
         # corte de la ficha del rival (i = 1) tiene que ir justo antes del boton (sabotaje medido: sin el, verde).
         self.assertIn("      if (i) { return; }\n      var b = boton('\\u2694\\uFE0E ' + (sel.npc ? T('arena_luchar')", ar,
                       "«Fight» vuelve a pintarse en la ficha del rival")
-        self.assertIn("window.TheGame.ve('batalla'); } pelea();", ar)
-        self.assertIn("if (actual) { actual.para(); }\n    if (window.TheGame && window.TheGame.ve) { window.TheGame.ve('batalla'); }", ar)
+        # P2 (2026-10-26): el boton y cada combate entran por la PANTALLA de combate (combat_screen.js), que
+        # muestra la hoja de batalla en su propia ruta; sin ella, la hoja de siempre como reserva.
+        self.assertIn("b.addEventListener('click', function () { pantalla(null); pelea(); });", ar)
+        self.assertIn("if (S) { S.entra({ alSalir: alSalir }); } else if (window.TheGame && window.TheGame.ve) { window.TheGame.ve('batalla'); }", ar)
+        self.assertIn("if (actual) { actual.para(); }\n    var aplicado = false", ar)
 
     def test_u0_los_troceos_son_una_puerta_sin_gemelos(self):
         """U0 («el mapa unico»): home_buildings, ui-arena y thegame se parten ANTES de tocarlos. Lo que sale vive en

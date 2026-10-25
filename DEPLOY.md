@@ -6,10 +6,10 @@ Status: proposal for review. Deployment remains a human action. This document re
 
 `wrangler.jsonc` names the Worker `preceptoros-web` and serves `./public` as static assets. `.github/workflows/deploy.yml` is `manual-worker-deploy`: `workflow_dispatch`, guarded to `refs/heads/main`, with the `production` environment. The Mesa measured that environment as requiring a reviewer; the approval policy is hosted in GitHub and is not represented in this checkout. The Sovereign triggers the workflow and supplies the human approval. Agents do not deploy.
 
-Route-count receipt for this source tree (`origin/main` af0312b + `mistral/p1-landing-recency-20261025`: the nine locale portals are Worker 301s to `/`, the game shell lives at `/play/`):
+Route-count receipt for this source tree (`origin/main` 7edf7d3 + `mistral/p2-combat-screen-20261026`: combat is its own screen, `map_integrity.js` and `combat_screen.js` join the shell):
 
-Rutas precargadas por el shell: 214
-Rutas distintas del shell: 213
+Rutas precargadas por el shell: 216
+Rutas distintas del shell: 215
 
 The workflow runs exactly:
 
