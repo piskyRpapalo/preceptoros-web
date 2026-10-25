@@ -22,7 +22,7 @@ export function page(name, prefix, base = '') {
   const tpl = readFileSync(join(here, 'tools', 'face.tpl.html'), 'utf8');
   const app = prefix === APP_PREFIX, pub = prefix === PUB_PREFIX;
   const src = (s) => s.startsWith('assets/') ? (app ? prefix + s.slice(7) : prefix.replace('game/', 'assets/') + s.slice(7)) : prefix + s;
-  const scripts = SCRIPTS.map((s) => `<script src="${(pub ? src(s).replace('%74', 't') : src(s))}.js"></script>`).join('') + ['face_world', 'face_hero', 'face_paint', 'face_battle', 'face_panel', 'face_hud', 'face', 'face_army', 'face_eggs', 'face_workshop', 'face_fight', 'face_tutorial'].map((f) => `<script src="${base}${f}.js"></script>`).join('');
+  const scripts = SCRIPTS.map((s) => `<script src="${(pub ? src(s).replace('%74', 't') : src(s))}.js"></script>`).join('') + ['face_world', 'face_world_terrain', 'face_hero', 'face_paint', 'face_battle', 'face_panel', 'face_hud', 'face', 'face_army', 'face_eggs', 'face_workshop', 'face_fight', 'face_tutorial'].map((f) => `<script src="${base}${f}.js"></script>`).join('');
   const tools = TOOLS[app ? 'app' : pub ? 'pub' : 'web'].map((t) => `<a href="${t[0]}">${t[1]}</a>`).join('');
   return tpl.replace('{{TITLE}}', TITLES[name]).replace('{{LAYOUT}}', skin.layout).replace('{{SKIN}}', JSON.stringify(Object.assign({ name }, skin))).replace('{{SCRIPTS}}', scripts + (pub ? '<script src="/assets/pwa.js"></script>' : '')).replace('{{TOOLS}}', tools).replace('{{HEAD}}', pub ? PUB_HEAD : '<link rel="icon" href="data:,">').replace('{{FOOT}}', pub ? PUB_FOOT : '').split('{{BASE}}').join(base);
 }

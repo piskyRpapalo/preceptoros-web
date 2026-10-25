@@ -10,6 +10,7 @@ require('../../../public/game/bubble_world.js');
 const Iso = require('../../../public/game/isometric_floor_projection.js');
 const Codex = require('../../../public/assets/codex_scene.js');
 const World = require('./face_world.js');
+require('./face_world_terrain.js');
 const dir = 'docs/rebuild/examples';
 const sabotage = process.env.VALIDATE_SABOTAGE || '';
 const names = Object.keys(SKINS);
@@ -30,11 +31,11 @@ function rgb(c) {
 const lum = (c) => { const [r, g, b] = rgb(c).map((v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }); return 0.2126 * r + 0.7152 * g + 0.0722 * b; };
 const contrast = (a, b) => { const x = lum(Bubble.band(a)), y = lum(Bubble.band(b)); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); };
 
-for (const f of ['face.js', 'face_world.js', 'face_hero.js', 'face_paint.js', 'face_battle.js', 'face_panel.js', 'face_fight.js', 'face_hud.js', 'face_army.js', 'face_eggs.js', 'face_workshop.js', 'face_tutorial.js', 'face.css', 'face_views.css', 'face_canon.css', 'index.html', ...names.map((n) => n + '.html')]) {
+for (const f of ['face.js', 'face_world.js', 'face_world_terrain.js', 'face_hero.js', 'face_paint.js', 'face_battle.js', 'face_panel.js', 'face_fight.js', 'face_hud.js', 'face_army.js', 'face_eggs.js', 'face_workshop.js', 'face_tutorial.js', 'face.css', 'face_views.css', 'face_canon.css', 'index.html', ...names.map((n) => n + '.html')]) {
   const size = statSync(join(dir, f)).size;
   assert.ok(size <= 16384, `${f} is ${size} B, over the 16,384 B piece ceiling`);
 }
-const code = ['face.js', 'face_world.js', 'face_hero.js', 'face_paint.js', 'face_battle.js', 'face_panel.js', 'face_fight.js', 'face_hud.js', 'face_army.js', 'face_eggs.js', 'face_workshop.js', 'face_tutorial.js'].map((f) => readFileSync(join(dir, f), 'utf8')).join('\n');
+const code = ['face.js', 'face_world.js', 'face_world_terrain.js', 'face_hero.js', 'face_paint.js', 'face_battle.js', 'face_panel.js', 'face_fight.js', 'face_hud.js', 'face_army.js', 'face_eggs.js', 'face_workshop.js', 'face_tutorial.js'].map((f) => readFileSync(join(dir, f), 'utf8')).join('\n');
 assert.doesNotMatch(code, /Math\.random|Date\.now|new Date|performance\.now|fetch\(|localStorage|XMLHttpRequest|WebSocket/, 'face code uses a forbidden source of authority or network');
 assert.doesNotMatch(code, /\/\/ |\/\*/, 'served face code carries comments');
 const served = [code, readFileSync(join(dir, 'face.css'), 'utf8'), readFileSync(join(dir, 'tools/face.tpl.html'), 'utf8'), readFileSync(join(dir, 'index.html'), 'utf8')].join('\n');
@@ -341,7 +342,7 @@ console.log(`${states.length} reachable states per skin; worst frame ${worst} UT
 if (process.env.APP_DIR) {
   const app = join(process.env.APP_DIR, 'interface', 'face');
   assert.ok(existsSync(app), 'APP_DIR has no interface/face');
-  for (const f of ['face.js', 'face_world.js', 'face_hero.js', 'face_paint.js', 'face_battle.js', 'face_panel.js', 'face_fight.js', 'face_hud.js', 'face_army.js', 'face_eggs.js', 'face_workshop.js', 'face_tutorial.js', 'face.css', 'face_views.css', 'face_canon.css', 'skins.json']) assert.equal(readFileSync(join(app, f), 'utf8'), readFileSync(join(dir, f), 'utf8'), `app ${f} differs from web`);
+  for (const f of ['face.js', 'face_world.js', 'face_world_terrain.js', 'face_hero.js', 'face_paint.js', 'face_battle.js', 'face_panel.js', 'face_fight.js', 'face_hud.js', 'face_army.js', 'face_eggs.js', 'face_workshop.js', 'face_tutorial.js', 'face.css', 'face_views.css', 'face_canon.css', 'skins.json']) assert.equal(readFileSync(join(app, f), 'utf8'), readFileSync(join(dir, f), 'utf8'), `app ${f} differs from web`);
   for (const name of names) assert.equal(readFileSync(join(app, name + '.html'), 'utf8'), page(name, APP_PREFIX, APP_BASE), `app ${name}.html differs from the shared template`);
   console.log('app parity: face.js, face_world.js, face_paint.js, face.css, skins and three pages byte-identical to the web template; PASS');
 }

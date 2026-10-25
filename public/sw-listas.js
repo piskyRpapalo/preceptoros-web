@@ -39,7 +39,8 @@ const JUEGO = [
   '/face/face_tutorial.js',
   '/face/face_views.css',
   '/face/face_workshop.js',
-  '/face/face_world.js'
+  '/face/face_world.js',
+  '/face/face_world_terrain.js'
 ];
 
 const PORTADA = ['/assets/base.css', '/assets/canon.css', '/assets/soberano.css', '/assets/consiento.css', '/assets/consiento.js',
