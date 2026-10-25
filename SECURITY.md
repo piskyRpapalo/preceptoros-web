@@ -13,7 +13,7 @@ leaves it only when the visitor presses send.
 
 ## The one outgoing call
 
-POST https://api.preceptoros.org/aduana/cedulas — only after an explicit
+POST https://api.preceptoros.org/api/v1/cedulas — only after an explicit
 visitor gesture. The payload is the signed reception contract
 (public/game/node_reception_contract.js), at most 1,024 bytes, strict UTF-8.
 The WEB verifies signatures (public/game/node_signature_verify.js) and the
