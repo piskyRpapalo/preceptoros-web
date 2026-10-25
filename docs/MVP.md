@@ -34,7 +34,7 @@ number is retained with that cause.
 | W6 languages | nine old portals | `STALE` · old portal count; new-face language and voice coverage not measured. |
 | W7 end-rift questions | `NO_DATA` | `STALE` · old navigation concept superseded by the chat panel; local answer completion is `NO_DATA` · accepted local model route not demonstrated. |
 | W8 browser model | `NO_DATA` | `NO_DATA` · no accepted new-face browser model route measured. |
-| W9 node connection | `NO_DATA` | `NO_DATA` · gateway delivery and receiver remain provisional; old external route is not accepted. |
+| W9 node connection | `NO_DATA` | `NO_DATA` · measured 2026-10-25 (`docs/route-map-web-gateway.md`): `/aduana/cedulas` unbound (404 on GET and POST); `/api/v1/paquetes` bound (405 on GET, `allow: POST`) but its CORS admits only the apex origin, rejecting `www`; trust anchors empty (ceremony pending); receiver behind `paquetes` unmeasured (no signed send). History: export 502 ×2 and cédula route 404 (earlier reading). |
 | W10 no external requests | zero at old load | `STALE` · that load-only scope does not prove the rebuilt product or cold install. |
 | W11 piece ceiling | 16,384 B; old max 16,365 B | `STALE` · old source set. Re-run its exact judge on the accepted artifact. |
 | W12 AI/MCP visitors | `STATIC` | `STALE` · inventory presence does not prove new-face use. |
@@ -62,7 +62,7 @@ No half-migrated generation is accepted.
 | Local voice | `PARTIAL_MEASURED` | App voice route exists at APP base above; lab#88 defines the auditable queue and explicit no-sound cause. New-face voice integration and physical hearing are `NO_DATA` · no accepted integrated build or listening receipt. |
 | Offline install and zero external requests | `NO_DATA` · clean install not measured | Lab#92 supplies an offline verifier and requires complete request capture across install, launch, task, offline launch, surfaces and restart. No real release receipt is attached. |
 | Signed creation and publication | `LIVE` only for the prior generation | E8-final receipt `buzon#19/6376680966` belongs to the old generation and is explicitly excluded from this generation's acceptance. A new generation requires its own signature, import, independent read and persistence evidence. |
-| Node cédula delivery | `NO_DATA` · gateway remains provisional | Prior measurement: export returned 502 twice and cédula route 404. No deployed final route/receiver receipt is present. |
+| Node cédula delivery | `NO_DATA` · gateway remains provisional | 2026-10-25: door 1 route unbound (404 GET/POST); the UI really sends through `/api/v1/paquetes`, whose CORS rejects `www`. History: export 502 ×2 and cédula route 404. No deployed final route/receiver receipt is present. |
 | Deployment freshness | `NO_DATA` · new-generation release absent | Require manual, approved deploy from exact WEB head and a new byte-exact FARO receipt. Historical FARO 244/244 is not reused as this generation's proof. |
 
 ## Ceilings and judges
