@@ -1,0 +1,4 @@
+# Waivers for atlas/version_sw_gate.mjs (frozen-map rule, R-INVESTIGATION 2026-10-25).
+# A line counts ONLY in the diff that adds it; once merged it never covers a later PR.
+# One line per exact path. Use it rarely: bumping VERSION (bin/sellar.py --sellar) is cheap.
+#   public/<exact path> | YYYY-MM-DD | why a stale cached copy is harmless
