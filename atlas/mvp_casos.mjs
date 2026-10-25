@@ -98,7 +98,11 @@ for (const p of servidos) {
 }
 
 const lenguas = [...leer('LANGUAGES.md').matchAll(/^\| `([a-z]{2})` \|([^\n]*)$/gm)].map((m) => [m[1], m[2]]);
-const portales = readdirSync(PUB).filter((d) => existsSync(join(PUB, d, 'index.html'))).sort();
+// Third declared exception · 2026-10-25: `public/face/index.html` is a
+// non-language style-selection hub, not a locale. Scope: omit only the
+// top-level `face/` portal from this comparison; all nine LANGUAGES.md entries
+// remain required. Related exceptions: test_web.py coverage and sitemap.py /face/.
+const portales = readdirSync(PUB).filter((d) => d !== 'face' && existsSync(join(PUB, d, 'index.html'))).sort();
 const cargador = (leer('public/assets/thegame.js').match(/var LENGUAS = \[([^\]]*)\]/) || [, ''])[1].match(/[a-z]{2}/g) || [];
 if (lenguas.length !== 9) falla('C8', `LANGUAGES.md lists ${lenguas.length} languages, not 9`);
 if (JSON.stringify(lenguas.map((l) => l[0]).sort()) !== JSON.stringify(portales)) falla('C8', `portals ${portales.join(',')} differ from LANGUAGES.md`);

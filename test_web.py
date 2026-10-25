@@ -561,6 +561,8 @@ class Estructura(unittest.TestCase):
         for pagina in sorted(PUBLICO.rglob("*.html")):
             if pagina.parent == PUBLICO:
                 continue            # la raiz es el despertar, no una traduccion
+            if pagina == PUBLICO / "face" / "index.html":
+                continue            # hub de los mundos: sin traducciones, en ingles; excepcion declarada (Mesa, 2026-10-25)
             hoja = pagina.name
             en_disco = {l for l in IDIOMAS if (PUBLICO / l / hoja).is_file()}
             declara = set(re.findall(r'hreflang="([a-z]{2})"',

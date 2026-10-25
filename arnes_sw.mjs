@@ -203,7 +203,8 @@ const rutas = await shell.keys();
 // 217 with the game face (2026-10-25): three skins in /face/ and their fifteen face files (+18).
 // 218 con en301_tutorial_copy.js (2026-10-25: textos del tutorial /en/ aparte, el modelo no cabe en 16 KiB).
 // 219 con face_world_terrain.js (2026-10-25, ronda R2 de web#312: el terreno sale de face_world.js).
-ok('precachea las portadas, su superficie y el juego', rutas.length === 219, rutas.length+' rutas');
+// 220 con /face/ (2026-10-25, hub de los mundos: public/face/index.html, sirve el directorio).
+ok('precachea las portadas, su superficie y el juego', rutas.length === 220, rutas.length+' rutas');
 ok('el shell trae el juego (D7): la puerta, el cangrejo y la arena',
    ['/assets/thegame.js', '/game/gdpr-art25-ephemeral-crab.js', '/game/ui-arena.js', '/assets/atlas-motor.js'].every(r => rutas.includes(r)));
 ok('el shell trae la portada de cada lengua', ['/es/', '/fr/', '/ar/'].every(r => rutas.includes(r)));
