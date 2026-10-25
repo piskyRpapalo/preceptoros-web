@@ -8,8 +8,8 @@ Status: proposal for review. Deployment remains a human action. This document re
 
 Route-count receipt for this source tree (`origin/main` 8c4eeed):
 
-Rutas precargadas por el shell: 200
-Rutas distintas del shell: 199
+Rutas precargadas por el shell: 218
+Rutas distintas del shell: 217
 
 The workflow runs exactly:
 
