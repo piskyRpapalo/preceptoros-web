@@ -3,6 +3,9 @@
   var enNode = typeof module === 'object' && !!module.exports;
   var T = enNode ? require('./tutorial_fases.js') : raiz.AtlasTutorial;
   var E = enNode ? require('./etiqueta.js') : raiz.AtlasEtiqueta;
+  var K = enNode ? require('./en301_tutorial_copy.js') : raiz.AtlasTutorialCopy;
+  var COPY = K.COPY;
+  var READY_NEXT = K.READY_NEXT;
   var B = enNode ? require('./en301_tutorial_building.js') : raiz.En301TutorialBuilding;
   var STAMP = 'SIMULATED';
   var FRAME_SCHEMA = 'preceptoros.tutorial-frame/1';
@@ -26,53 +29,6 @@
   var TONE_NO_START = 'local tone could not start: Web Audio is unavailable or was refused';
   var NO_STATE_CAUSE = 'the tutorial state names no known step';
 
-  var COPY = {
-    puerta: {
-      heading: 'Two doors',
-      instruction: 'Go straight to visit cards, or start in the Fog and follow the Wave. Everything here is a local simulation.',
-      next: 'Next: press "Start in the Fog" to follow the Wave, or "Go straight to visit cards" to skip to the cards.'
-    },
-    pulso: {
-      heading: 'The Wave',
-      instruction: 'A pulse rises from the Wave. Press it to see the first ring of fog around a practice beacon.',
-      next: 'Next: press "Pulse the Wave" to clear the first ring of fog.'
-    },
-    disipa: {
-      heading: 'Clear the fog',
-      instruction: 'The fog clears to the first silenced building. This is a practice beacon preview, not a deployed building.',
-      next: 'Next: press "Clear the fog" to reveal the practice beacon.'
-    },
-    arena101: {
-      heading: 'Arena 101',
-      instruction: 'One practice fight you can rewind, on a fixed seed. It runs in the practice area below.',
-      next: 'Next: finish the practice fight below. The reward opens only after its result is verified; use "Reopen practice fight" if it closed.'
-    },
-    recompensa: {
-      heading: 'Reward',
-      instruction: 'Three practice eggs, each with its own sound: Shield, Pike and Bow. They are practice only and are not adopted.',
-      next: 'Next: press "Collect 3 practice eggs" to claim them locally.'
-    },
-    campamento: {
-      heading: 'Camp',
-      instruction: 'A camp fight on a second fixed seed. It runs in the practice area below.',
-      next: 'Next: finish the camp fight below. The building step opens only after its result is verified; use "Reopen camp fight" if it closed.'
-    },
-    primer_edificio: {
-      heading: 'First building',
-      instruction: 'Give your first building a title and a prompt for the local mind. Nothing is written to memory or RAG.',
-      next: 'Next: press "Prepare local label", then "Place first building" to record it as a simulated local label.'
-    },
-    cartas: {
-      heading: 'Visit cards',
-      instruction: 'Visit cards need verified local signed cards. None are verified here, so Atlantis and the Risen show NO_DATA.',
-      next: 'Next: press "Show crossing options" to reach the crossing step.'
-    },
-    salto: {
-      heading: 'Cross to Node 3',
-      instruction: 'Only you can open the network. In this simulation the crossing stays unavailable: no signed card or transport exists.',
-      next: 'Next: press "Keep playing locally" to return to the local game. The crossing stays disabled with its cause.'
-    }
-  };
 
   function hasOwn(o, k) { return Object.prototype.hasOwnProperty.call(o, k); }
   function refuse(reason) { return { ok: false, reason: reason }; }
@@ -92,6 +48,7 @@
     var m = measures && typeof measures === 'object' ? measures : {};
     return {
       practiceVerified: m.practiceVerified === true,
+      practiceReady: m.practiceReady === true,
       label: m.label || null,
       soundOn: m.soundOn === true,
       reducedMotion: m.reducedMotion === true,
@@ -224,7 +181,7 @@
   }
 
   function stepCause(step, m) {
-    if (PRACTICE_STEPS.indexOf(step) >= 0) { return m.practiceVerified ? null : PRACTICE_CAUSE; }
+    if (PRACTICE_STEPS.indexOf(step) >= 0) { return m.practiceVerified || m.practiceReady ? null : PRACTICE_CAUSE; }
     if (step === 'primer_edificio') { return buildingCause(m); }
     if (step === 'cartas') { return CARD_CAUSE; }
     if (step === 'salto') { return TRANSFER_CAUSE; }
@@ -285,7 +242,9 @@
   function view(st, measures) {
     var m = readMeasures(measures), step = stepOf(st);
     if (!hasOwn(COPY, step)) { return noDataView(st, m); }
-    var copy = COPY[step], spoken = spokenOf(copy), cause = stepCause(step, m);
+    var copy = COPY[step], cause = stepCause(step, m);
+    if (m.practiceReady && PRACTICE_STEPS.indexOf(step) >= 0) { copy = { heading: copy.heading, instruction: copy.instruction, next: READY_NEXT }; }
+    var spoken = spokenOf(copy);
     return {
       phase: st.fase, step: step, heading: copy.heading, instruction: copy.instruction, next: copy.next,
       stamp: STAMP, audible_text: spoken, mirror_text: spoken,

@@ -231,6 +231,11 @@ function mount(doc, host, options) {
       closed = true;
       if (section.parentNode === host) host.removeChild(section);
     },
+    ready: () => {
+      if (closed || finishSent) return false;
+      const receipt = session.receipt();
+      return !!(receipt.ok && P.verify(receipt.packet).ok);
+    },
     state: () => session.frame(),
     session: () => session
   };
