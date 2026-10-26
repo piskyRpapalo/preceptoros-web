@@ -158,6 +158,7 @@ def app():
 </ol>
 <h2>Android</h2>
 <p>The app's own guide, {baja('INSTALACION_ANDROID.md')} (in Spanish), covers Termux. There is no APK yet.</p>
+<p class="get-app"><a href="/aduana/">Next: create a node</a></p>
 <h2>What has been tested</h2>
 <table class="pruebas"><thead><tr><th>System</th><th>State</th><th>Detail</th></tr></thead><tbody>{filas}</tbody></table>
 <details class="tech"><summary>Technical details</summary><p>This page is written from the release card the web serves (<a href="/release.json">release.json</a>, measured {r['medido'][:10]}). Its fingerprints match the live {r['version']} release (re-checked 2026-10-26). Release page: <a href="{base}/tag/{r['version']}">{r['repo']} {r['version']}</a>. Manifest sha256: <code class="sha">{r['sha256_manifiesto']}</code></p></details>
@@ -168,10 +169,47 @@ def app():
 """
 
 
+# /aduana/ (North N2, 2026-10-26, Mesa ruling A): "Create a node", OBSERVANT. It registers nothing: it shows the measured
+# state of each step and mounts the node-card checker (node_file_receiver.js). Sending sleeps until the registry is live
+# and the card is signed; the registry state comes from node_reception_contract.js (REGISTRO), never typed here.
+ADUANA_SCRIPTS = ["/assets/atlas-coord.js", "/game/canon.js", "/game/node_reception_contract.js", "/game/node_trust_anchor.js",
+                  "/game/node_trust_manifest.js", "/game/node_signature_messages.js", "/game/node_signature_verify.js",
+                  "/game/node_bindings_messages.js", "/game/node_bindings.js", "/game/node_projection.js", "/game/node_preview.js",
+                  "/game/node_file_receiver.js", "/assets/aduana_page.js", "/assets/pwa.js"]
+
+
+def aduana():
+    guiones = "\n".join(f'<script src="{g}"></script>' for g in ADUANA_SCRIPTS)
+    return cabeza("Create a node · PreceptorOS", f"{ORIGEN}/aduana/", ["/assets/landing.css"], "#17131F") + f"""<body>
+<a class="skip" href="#comprueba">Skip to the card checker</a>
+<main class="guide">
+<p><a href="/">← PreceptorOS</a></p>
+<h1>Create a node</h1>
+<p class="lead">A node is your own machine, registered as part of PreceptorOS. This page registers nothing yet: it shows where each step stands today and lets you check a node card on this device.</p>
+<h2>Where each step stands (measured 2026-10-26)</h2>
+<table class="pruebas" id="pasos"><thead><tr><th>Step</th><th>State</th><th>What that means</th></tr></thead><tbody>
+<tr data-paso="app"><td>1 · The app</td><td>Available</td><td>Release v1.3. <a href="/get-the-app/">Get the app</a>.</td></tr>
+<tr data-paso="cedula"><td>2 · Your node card</td><td>Issued by the rack</td><td>The rack issues the card and the app imports it. You cannot issue one yourself yet.</td></tr>
+<tr data-paso="firma"><td>3 · Its signature</td><td>NO_DATA</td><td>No signing ceremony has run yet. An unsigned card stays pending.</td></tr>
+<tr data-paso="registro"><td>4 · The registry</td><td id="estado-registro">NO_DATA</td><td>Built, not deployed: its address answers with another service.</td></tr>
+<tr data-paso="envio"><td>5 · Sending from here</td><td id="estado-envio">Asleep</td><td>Nothing leaves this page until the registry is live and the card is signed.</td></tr>
+</tbody></table>
+<h2>Check a node card</h2>
+<p>Choose the card file the app gave you. It is read on this device only.</p>
+<div id="comprueba"></div>
+<details class="tech"><summary>Technical details</summary><p>The checker reads <code>preceptoros.cedula-nodo/1</code> under 1 KiB and verifies its integrity hash. Its authenticity stays NO_DATA without a trust anchor. When the registry is live, it will answer with a receipt this page checks by recomputing its hash; a receipt is not a signature.</p></details>
+</main>
+{guiones}
+</body>
+</html>
+"""
+
+
 def todas():
     yield PUBLICO / "index.html", portada()
     yield PUBLICO / "play" / "index.html", juego()
     yield PUBLICO / "get-the-app" / "index.html", app()
+    yield PUBLICO / "aduana" / "index.html", aduana()
 
 
 def main(argv):

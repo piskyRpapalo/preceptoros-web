@@ -1084,6 +1084,12 @@ FACE_PAGE_DEPENDENCIES = tuple(sorted(set(re.findall(r'src="/game/([^"]+)"', (PU
 # puede ampliar la lista en silencio; test_web.Puerta exige que cargue exactamente esta lista.
 LANDING_PAGE_DEPENDENCIES = ("tabla_semantica.js", "comic_tokens.js", "comic_accents.js", "comic_atoms.js",
                              "bubble_language.js", "bubble_letters.js")
+# /aduana/ (Norte N2, 2026-10-26): el comprobador de cedulas, OBSERVANTE, carga la cadena de nodos y solo esa. Se
+# DECLARA aqui; local_first_surface_build.ADUANA_SCRIPTS es la misma lista, y tests/aduana_page.test.mjs exige que
+# coincidan.
+ADUANA_PAGE_DEPENDENCIES = ("canon.js", "node_reception_contract.js", "node_trust_anchor.js", "node_trust_manifest.js",
+                            "node_signature_messages.js", "node_signature_verify.js", "node_bindings_messages.js",
+                            "node_bindings.js", "node_projection.js", "node_preview.js", "node_file_receiver.js")
 
 
 
@@ -1219,6 +1225,8 @@ class TheGameV15(unittest.TestCase):
                         continue   # la cara es su propia superficie (2026-10-25)
                     if h == PUBLICO / "index.html" and m in LANDING_PAGE_DEPENDENCIES:
                         continue   # las puertas de la portada en bubble language (P3 [1d])
+                    if h == PUBLICO / "aduana" / "index.html" and m in ADUANA_PAGE_DEPENDENCIES:
+                        continue   # el comprobador de cedulas de /aduana/ (Norte N2)
                     self.assertNotIn(f"game/{m}", h.read_text(encoding="utf-8"))
 
     def test_creation_page_dependencies_are_precached(self):
@@ -1757,6 +1765,8 @@ class Multijugador(unittest.TestCase):
                         continue
                     if h == PUBLICO / "index.html" and m in LANDING_PAGE_DEPENDENCIES:
                         continue   # las puertas de la portada en bubble language (P3 [1d])
+                    if h == PUBLICO / "aduana" / "index.html" and m in ADUANA_PAGE_DEPENDENCIES:
+                        continue   # el comprobador de cedulas de /aduana/ (Norte N2)
                     self.assertNotIn("game/" + m, h.read_text(encoding="utf-8"))
 
 

@@ -85,11 +85,26 @@ async function main() {
   ok(!/\bundefined\b|\bNaN\b/.test(medida.guia.texto), 'missing value shown on /get-the-app/');
   if (CAPTURA) { const g = await cmd('Page.captureScreenshot', { format: 'png', captureBeyondViewport: true }); writeFileSync(join(CAPTURA, 'get-the-app.png'), Buffer.from(g.result.data, 'base64')); }
   ok(externas.length === 0, 'external requests after /get-the-app/: ' + externas.slice(0, 3));
+  // North N2: /aduana/ is observant. The checker mounts, the registry reads NO_DATA from the contract, sending is
+  // asleep (the send button disabled, envia() sends nothing), nothing external, no sideways scroll.
+  await cmd('Page.navigate', { url: origen + '/aduana/' }); await espera(2000);
+  medida.aduana = JSON.parse(await ev(`(async () => { const b = [...document.querySelectorAll('#comprueba button')];
+    const r = window.AtlasAduana ? await AtlasAduana.envia({ pares: [{}] }) : null;
+    return JSON.stringify({ h1: (document.querySelector('h1') || {}).textContent, botones: b.length, envioOff: b.length ? b[b.length - 1].disabled : null,
+      registro: (document.getElementById('estado-registro') || {}).textContent, envia: r && { sent: r.sent, code: r.code },
+      ancho: document.documentElement.scrollWidth, vista: innerWidth, texto: document.body.innerText }); })()`));
+  ok(medida.aduana.h1 === 'Create a node', '/aduana/ did not load');
+  ok(medida.aduana.botones >= 3 && medida.aduana.envioOff === true, '/aduana/ checker not mounted, or its send is awake');
+  ok(medida.aduana.registro === 'NO_DATA' && medida.aduana.envia && medida.aduana.envia.sent === false && medida.aduana.envia.code === 'registry_not_deployed', '/aduana/ is not asleep: ' + JSON.stringify(medida.aduana.envia));
+  ok(medida.aduana.ancho <= medida.aduana.vista, '/aduana/ scrolls sideways');
+  ok(!/\bundefined\b|\bNaN\b/.test(medida.aduana.texto), 'missing value shown on /aduana/');
+  if (CAPTURA) { const g = await cmd('Page.captureScreenshot', { format: 'png', captureBeyondViewport: true }); writeFileSync(join(CAPTURA, 'aduana.png'), Buffer.from(g.result.data, 'base64')); }
+  ok(externas.length === 0, 'external requests after /aduana/: ' + externas.slice(0, 3));
   if (CAPTURA) {
     const s = await cmd('Page.captureScreenshot', { format: 'png' });
     writeFileSync(join(CAPTURA, 'landing-doors.png'), Buffer.from(s.result.data, 'base64'));
   }
-  console.log(JSON.stringify({ piece: 'P3-1d', receipt: 'MEDIDO', dibujos: medida.dibujos, lados: medida.lados, guia: medida.guia && { ancho: medida.guia.ancho, vista: medida.guia.vista, bajas: medida.guia.bajas, huellas: medida.guia.huellas, filas: medida.guia.filas }, enlaces: medida.enlaces, externas: externas.length, fallos }));
+  console.log(JSON.stringify({ piece: 'P3-1d', receipt: 'MEDIDO', dibujos: medida.dibujos, lados: medida.lados, aduana: medida.aduana && { botones: medida.aduana.botones, envioOff: medida.aduana.envioOff, registro: medida.aduana.registro, envia: medida.aduana.envia, ancho: medida.aduana.ancho }, guia: medida.guia && { ancho: medida.guia.ancho, vista: medida.guia.vista, bajas: medida.guia.bajas, huellas: medida.guia.huellas, filas: medida.guia.filas }, enlaces: medida.enlaces, externas: externas.length, fallos }));
 }
 
 main().catch((e) => { fallos.push(String(e && e.message || e)); console.log(JSON.stringify({ piece: 'P3-1d', fallos })); })
