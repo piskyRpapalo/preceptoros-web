@@ -6,6 +6,7 @@ import { createRequire } from 'node:module';
 
 const require=createRequire(import.meta.url),R=require('../public/game/node_reception_contract.js');
 const K=require('../public/game/canon.js'),Preview=require('../public/game/node_preview.js');
+const Receiver=require('../public/game/node_file_receiver.js');
 const source=readFileSync(new URL('../public/game/node_file_receiver.js',import.meta.url),'utf8');
 const copy=x=>JSON.parse(JSON.stringify(x)),enc=new TextEncoder();
 function credential(){
@@ -126,7 +127,7 @@ test('changing the file while signature verification waits discards the older re
 
 test('dispatch remains pending for every consent, identity, worker and 202 sabotage',async()=>{
   const h=harness(),cases=['gesture','checkbox','signature_missing','signature_rejected','other_account','other_fingerprint','other_destination','worker_error','accepted_202'];
-  for(const scenario of cases){const r=await h.api.dispatch({scenario,verified:true});assert.equal(r.verdict,'pending');assert.equal(r.code,'transport_pending');}
+  for(const scenario of cases){const r=await h.api.dispatch({scenario,verified:true});assert.equal(r.verdict,'pending');assert.equal(r.code,'registry_not_deployed');assert.equal(r.sent,false);}
   assert.equal(h.sends(),0);assert.equal(h.network(),0);
 });
 
@@ -141,4 +142,28 @@ test('all new interface causes have complete translations in nine languages and 
   for(const n of names)assert.ok(readFileSync(new URL('../public/game/'+n,import.meta.url)).length<16384);
   const langs=Object.keys(Preview.MESSAGES);assert.deepEqual(langs.sort(),['ar','de','el','en','es','fr','it','pt','ru']);
   for(const lang of langs)for(const key of Object.keys(Preview.MESSAGES.en))assert.ok(Preview.text(key,lang));
+});
+
+// N2 /aduana (2026-10-26): the real send, behind an injected transport (the registry is not deployed, so the page
+// never sends). The receipt is the worker's shape (aduana reciboDe), its hash recomputed with the web's canon.
+function recibo(c,over={}){const r={esquema:'preceptoros.recibo-cedula/1',credential_sha256:c.sha256,node_id:c.nodo,admin_sha256:c.admin,plan_sha256:c.plan_sha256,estado:'pendiente',causa:'ancla_ausente',recibido:'2026-10-26T23:00:00.000Z',...over};r.recibo_sha256=K.huella(r);return r;}
+function transporte(status,body,log){return async(url,init)=>{log&&log.push({url,init});return {status,json:async()=>body};};}
+test('N2 · asleep: with the registry NO_DATA and no transport, dispatch never touches the network',async()=>{
+  const real=globalThis.fetch;let llamadas=0;globalThis.fetch=async()=>{llamadas++;throw new Error('no');};
+  try{const r=await Receiver.dispatch(packet(credential()));assert.equal(r.sent,false);assert.equal(r.code,'registry_not_deployed');assert.equal(llamadas,0);}finally{globalThis.fetch=real;}
+});
+test('N2 · a valid worker receipt comes back PENDING, sent to the endpoint with only {cedula}',async()=>{
+  const c=credential(),log=[],r=await Receiver.dispatch(packet(c),{transport:transporte(202,{estado:'pendiente',recibo:recibo(c)},log)});
+  assert.equal(r.verdict,'pending');assert.equal(r.sent,true);assert.equal(r.cause,'ancla_ausente');assert.equal(log[0].url,R.ENDPOINT);
+  assert.deepEqual(Object.keys(JSON.parse(log[0].init.body)),['cedula']);assert.equal(log[0].init.method,'POST');
+});
+test('SABOTAGE N2 · a tampered receipt, a receipt for another card, a 422 and an unreachable registry are not accepted',async()=>{
+  const c=credential(),t=recibo(c);t.estado='verificado';
+  assert.equal((await Receiver.dispatch(packet(c),{transport:transporte(202,{recibo:t})})).verdict,'rejected');
+  assert.equal((await Receiver.dispatch(packet(c),{transport:transporte(202,{recibo:recibo(c,{credential_sha256:'ef'.repeat(32)})})})).verdict,'rejected');
+  const r422=await Receiver.dispatch(packet(c),{transport:transporte(422,{estado:'bloqueado',codigo:'cedula_mal_formada'})});assert.equal(r422.verdict,'rejected');assert.equal(r422.code,'cedula_mal_formada');
+  const caida=await Receiver.dispatch(packet(c),{transport:async()=>{throw new Error('down');}});assert.equal(caida.code,'registry_unreachable');assert.equal(caida.sent,false);
+});
+test('N2 · reciboValido recomputes the hash; one changed field breaks it',()=>{
+  const c=credential(),r=recibo(c);assert.equal(R.reciboValido(r),true);assert.equal(R.reciboValido({...r,causa:'otra'}),false);assert.equal(R.reciboValido({}),false);
 });

@@ -102,8 +102,8 @@ const lenguas = [...leer('LANGUAGES.md').matchAll(/^\| `([a-z]{2})` \|([^\n]*)$/
 // non-language style-selection hub, not a locale. Scope: omit only the
 // top-level `face/` portal from this comparison; all nine LANGUAGES.md entries
 // remain required. Related exceptions: test_web.py coverage and sitemap.py /face/.
-// get-the-app (North D1, 2026-10-26) is the app's install guide in English, not a locale portal.
-const portales = readdirSync(PUB).filter((d) => d !== 'face' && d !== 'play' && d !== 'get-the-app' && existsSync(join(PUB, d, 'index.html'))).sort();
+// get-the-app (North D1) and aduana (North N2), 2026-10-26: English content pages, not locale portals.
+const portales = readdirSync(PUB).filter((d) => d !== 'face' && d !== 'play' && d !== 'get-the-app' && d !== 'aduana' && existsSync(join(PUB, d, 'index.html'))).sort();
 const cargador = (leer('public/assets/thegame.js').match(/var LENGUAS = \[([^\]]*)\]/) || [, ''])[1].match(/[a-z]{2}/g) || [];
 if (lenguas.length !== 9) falla('C8', `LANGUAGES.md lists ${lenguas.length} languages, not 9`);
 // English canon until MVP (2026-10-25): no locale portal folder may remain; each row declares the

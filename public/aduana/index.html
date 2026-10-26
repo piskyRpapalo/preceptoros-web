@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Create a node · PreceptorOS</title>
+<meta name="description" content="theGame: a game of waves that runs on your own device. No account, no cloud, no tracking. Build your undersea city, summon wave troops, conquer the reef.">
+<link rel="icon" type="image/svg+xml" href="/assets/mark.svg">
+<link rel="canonical" href="https://preceptoros.org/aduana/">
+<meta property="og:title" content="PreceptorOS · theGame">
+<meta property="og:description" content="theGame: a game of waves that runs on your own device. No account, no cloud, no tracking. Build your undersea city, summon wave troops, conquer the reef.">
+<meta property="og:url" content="https://preceptoros.org/aduana/">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://preceptoros.org/assets/og-card.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#17131F">
+<link rel="stylesheet" href="/assets/landing.css">
+</head>
+<body>
+<a class="skip" href="#comprueba">Skip to the card checker</a>
+<main class="guide">
+<p><a href="/">← PreceptorOS</a></p>
+<h1>Create a node</h1>
+<p class="lead">A node is your own machine, registered as part of PreceptorOS. This page registers nothing yet: it shows where each step stands today and lets you check a node card on this device.</p>
+<h2>Where each step stands (measured 2026-10-26)</h2>
+<table class="pruebas" id="pasos"><thead><tr><th>Step</th><th>State</th><th>What that means</th></tr></thead><tbody>
+<tr data-paso="app"><td>1 · The app</td><td>Available</td><td>Release v1.3. <a href="/get-the-app/">Get the app</a>.</td></tr>
+<tr data-paso="cedula"><td>2 · Your node card</td><td>Issued by the rack</td><td>The rack issues the card and the app imports it. You cannot issue one yourself yet.</td></tr>
+<tr data-paso="firma"><td>3 · Its signature</td><td>NO_DATA</td><td>No signing ceremony has run yet. An unsigned card stays pending.</td></tr>
+<tr data-paso="registro"><td>4 · The registry</td><td id="estado-registro">NO_DATA</td><td>Built, not deployed: its address answers with another service.</td></tr>
+<tr data-paso="envio"><td>5 · Sending from here</td><td id="estado-envio">Asleep</td><td>Nothing leaves this page until the registry is live and the card is signed.</td></tr>
+</tbody></table>
+<h2>Check a node card</h2>
+<p>Choose the card file the app gave you. It is read on this device only.</p>
+<div id="comprueba"></div>
+<details class="tech"><summary>Technical details</summary><p>The checker reads <code>preceptoros.cedula-nodo/1</code> under 1 KiB and verifies its integrity hash. Its authenticity stays NO_DATA without a trust anchor. When the registry is live, it will answer with a receipt this page checks by recomputing its hash; a receipt is not a signature.</p></details>
+</main>
+<script src="/assets/atlas-coord.js"></script>
+<script src="/game/canon.js"></script>
+<script src="/game/node_reception_contract.js"></script>
+<script src="/game/node_trust_anchor.js"></script>
+<script src="/game/node_trust_manifest.js"></script>
+<script src="/game/node_signature_messages.js"></script>
+<script src="/game/node_signature_verify.js"></script>
+<script src="/game/node_bindings_messages.js"></script>
+<script src="/game/node_bindings.js"></script>
+<script src="/game/node_projection.js"></script>
+<script src="/game/node_preview.js"></script>
+<script src="/game/node_file_receiver.js"></script>
+<script src="/assets/aduana_page.js"></script>
+<script src="/assets/pwa.js"></script>
+</body>
+</html>

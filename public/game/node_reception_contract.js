@@ -88,8 +88,19 @@
     var texts = own(MESSAGES, language) ? MESSAGES[language] : MESSAGES.en;
     return own(texts, code) ? texts[code] : texts.shape;
   }
+  // N2 /aduana (2026-10-26): the registry's state, MEASURED, not assumed. The worker is built (aduana#6) but not
+  // deployed: the host answers with another service. Until this says LIVE, nothing is sent ("sleep until signed").
+  var REGISTRO = Object.freeze({ estado: 'NO_DATA', causa: 'registry_not_deployed', medido: '2026-10-26' });
+  // The worker's receipt is checked by recomputing its hash with the web's own canon: measured equal to aduana's
+  // canonicalJson(ascii) + sha256 on 2026-10-26, non-ASCII text included. A receipt is not a signature.
+  function reciboValido(r) {
+    if (!object(r) || !hex(r.recibo_sha256)) { return false; }
+    var sin = {};
+    Object.keys(r).forEach(function (k) { if (k !== 'recibo_sha256') { sin[k] = r[k]; } });
+    try { return K.huella(sin) === r.recibo_sha256; } catch (error) { return false; }
+  }
   var api = Object.freeze({ ENDPOINT: 'https://api.preceptoros.org/api/v1/cedulas', METHOD: 'POST', MAX_BYTES: MAX_BYTES,
-    AUTHENTICITY: AUTHENTICITY, credential: credential, packet: packet, read: read, declaration: declaration, signedBody: signedBody, message: message, MESSAGES: MESSAGES });
+    REGISTRO: REGISTRO, reciboValido: reciboValido, AUTHENTICITY: AUTHENTICITY, credential: credential, packet: packet, read: read, declaration: declaration, signedBody: signedBody, message: message, MESSAGES: MESSAGES });
   if (typeof module === 'object' && module.exports) { module.exports = api; }
   else { root.AtlasNodeReception = api; }
 })(this);
