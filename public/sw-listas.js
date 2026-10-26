@@ -33,6 +33,7 @@ const JUEGO = [
   '/face/face_canon.css',
   '/face/face_eggs.js',
   '/face/face_fight.js',
+  '/face/face_fight_stage.js',
   '/face/face_hero.js',
   '/face/face_hud.js',
   '/face/face_paint.js',
