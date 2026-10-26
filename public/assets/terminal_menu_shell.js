@@ -4,7 +4,7 @@
   var GRUPOS = { history: ['pliego-estado', 'pliego-lapidas'], buildings: ['pliego-lugares', 'pliego-ficha'],
     nodes: ['pliego-nodos', 'terminal-cangrejo', 'radio-estado', 'pliego-skills', 'pliego-opinar'], start: ['pliego-entrada', 'pliego-tutorial'] };
 
-  var vivo = null;
+  var vivo = null, cierra = null;
   // A transition interrupted by the next one is skipped and rejects `ready` (AbortError): expected, not a fault.
   function calla(t) { if (t && t.ready) { t.ready.catch(function () {}); } }
   function monta(x) {
@@ -198,8 +198,10 @@
     // Open the drawer group that holds a panel, by the panel's own id. Fixed, not a toggle: a tap on
     // the map closes the drawer on pointerdown, and the card must still open on the click after it.
     vivo = function (pid) { var g = Object.keys(GRUPOS).filter(function (k) { return GRUPOS[k].indexOf(pid) >= 0; })[0]; if (!g) { return false; } abre(g, false, true); return true; };
+    cierra = function () { if (abierto) { abre(abierto, false); } return true; };
     S.muestra = muestra; S.pliego = pliego; S.abre = abre; S.actual = function () { return actual; };
     return S;
   }
-  raiz.AtlasChatTerminal = { monta: monta, panel: function (pid) { return vivo ? vivo(pid) : false; } };
+  raiz.AtlasChatTerminal = { monta: monta, panel: function (pid) { return vivo ? vivo(pid) : false; },
+    cierra: function () { return cierra ? cierra() : false; } };
 })(this);
