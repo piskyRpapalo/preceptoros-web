@@ -63,7 +63,7 @@
     if (ficha && ficha.kind === 'hexelion-star' && raiz.AtlasHexelionDictionary) { raiz.AtlasHexelionDictionary.monta(panel); }
     if (ficha && ficha.npcId && raiz.AtlasNpcWalls) { raiz.AtlasNpcWalls.monta(panel, ficha); }
 
-    Promise.resolve().then(function () { var b = D.getElementById('menu-pliego-ficha'); if (b && panel.hidden) { b.click(); } });
+    var M = raiz.AtlasChatTerminal; if (M && M.panel) { M.panel('pliego-ficha'); }
   }
 
   function toca(px, py, radio, tocado, lugar) {
