@@ -55,3 +55,9 @@ Todo lo que se construye aquí es **marca personal de PreceptorOS** (el Soberano
 - Un VRF para competir; mandatos y auto-adopción.
 
 Detalle en `atlas/POST_VERIFICACION_MGNO_LAB.md` y `atlas/POST_VERIFICACION_SISIL_CRIA.md`.
+
+## Libro único de firmas (FIRMO 2026-10-26)
+
+- Fuente única de decretos, pre-firmas y firmas cumplidas: repo privado `firmas` → `LIBRO_DE_FIRMAS.md`. Se consulta antes de proponer: ningún trabajo contradice un decreto vivo.
+- Toda transcripción de FIRMA cita el decreto que la autoriza. Cada fusión actualiza el LIBRO con su recibo: el agente publica el recibo en el PR y la Mesa lo appenda.
+- Techo de casa: pieza < 16.384 B. Cuando el LIBRO llegue al techo, el material nuevo va en ficheros NUEVOS del repo `firmas`, apuntados desde el LIBRO. Nada se borra: solo se re-clasifica (cumplida / pendiente / por-verificar / muerta / puerta-dura).
