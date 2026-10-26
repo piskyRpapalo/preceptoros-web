@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Get the app · PreceptorOS</title>
+<meta name="description" content="theGame: a game of waves that runs on your own device. No account, no cloud, no tracking. Build your undersea city, summon wave troops, conquer the reef.">
+<link rel="icon" type="image/svg+xml" href="/assets/mark.svg">
+<link rel="canonical" href="https://preceptoros.org/get-the-app/">
+<meta property="og:title" content="PreceptorOS · theGame">
+<meta property="og:description" content="theGame: a game of waves that runs on your own device. No account, no cloud, no tracking. Build your undersea city, summon wave troops, conquer the reef.">
+<meta property="og:url" content="https://preceptoros.org/get-the-app/">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://preceptoros.org/assets/og-card.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#17131F">
+<link rel="stylesheet" href="/assets/landing.css">
+</head>
+<body>
+<a class="skip" href="#steps">Skip to the steps</a>
+<main class="guide">
+<p><a href="/">← PreceptorOS</a></p>
+<h1>Get the app</h1>
+<p class="lead">The app is your own node, on your own machine: local memory and a local AI that stay with you. Release <b>v1.3</b> (2026-08-31).</p>
+<p class="aviso"><b>Five minutes?</b> Nobody has timed a clean install yet, so that figure is NO_DATA. The steps are short; how long they take on your machine is yours to measure.</p>
+<h2>Before you start</h2>
+<ul>
+<li>You need <code>python3</code> and <code>git</code>. If one is missing, the installer stops and prints the exact command for your system.</li>
+<li>The installer never asks for an administrator password and installs nothing behind your back.</li>
+<li>Ollama is optional. Without it the app remembers, indexes and cleans text, but does not chat.</li>
+<li>8 GB of memory is enough for a small model. No graphics card is needed.</li>
+<li>The installer's messages are in Spanish for now.</li>
+</ul>
+<h2 id="steps">Linux and macOS</h2>
+<ol>
+<li>Download <a href="https://github.com/piskyRpapalo/PreceptorOS/releases/download/v1.3/install.sh">install.sh</a>.</li>
+<li>Check its fingerprint. <code>sha256sum install.sh</code> must print<br><code class="sha" data-asset="install.sh">2bd8666979a67ea1ec8b01a01aac240acfc2cef6165b93e558d0b836d3df6e74</code></li>
+<li>Run it: <code>bash install.sh</code>. It clones the app into <code>~/preceptoros</code>.</li>
+<li>Start it: <code>cd ~/preceptoros &amp;&amp; bin/preceptoros-servicio arranca</code>, then open the local address it prints in your browser.</li>
+</ol>
+<h2>Windows</h2>
+<ol>
+<li>Download <a href="https://github.com/piskyRpapalo/PreceptorOS/releases/download/v1.3/install.ps1">install.ps1</a>. It has never been run: if it fails, the exact message is useful.</li>
+<li>Check its fingerprint. <code>Get-FileHash install.ps1</code> must print<br><code class="sha" data-asset="install.ps1">b10d7b8ade7ea0f301fd325336ae97dba6fd954786956703a3c1c6a80641f19b</code></li>
+</ol>
+<h2>Android</h2>
+<p>The app's own guide, <a href="https://github.com/piskyRpapalo/PreceptorOS/releases/download/v1.3/INSTALACION_ANDROID.md">INSTALACION_ANDROID.md</a> (in Spanish), covers Termux. There is no APK yet.</p>
+<h2>What has been tested</h2>
+<table class="pruebas"><thead><tr><th>System</th><th>State</th><th>Detail</th></tr></thead><tbody><tr data-asset="install.sh" data-estado="PROBADO"><td>Linux</td><td>Tested</td><td>Run end to end on 2026-08-31 on the development node, with an isolated home.</td></tr><tr data-asset="install.sh" data-estado="NO_PROBADO"><td>macOS</td><td>Not tested</td><td>The Homebrew branch is written and reviewed, but there is no Mac in the rack.</td></tr><tr data-asset="install.ps1" data-estado="NO_PROBADO"><td>Windows</td><td>Not tested</td><td>Reviewed line by line, never run: there is no Windows machine in the rack.</td></tr><tr data-asset="INSTALACION_ANDROID.md" data-estado="NO_DATA"><td>Android · Termux</td><td>NO_DATA</td><td>The app&#x27;s own guide says Termux works today and the APK does not exist yet. Not measured here.</td></tr></tbody></table>
+<details class="tech"><summary>Technical details</summary><p>This page is written from the release card the web serves (<a href="/release.json">release.json</a>, measured 2026-09-13). Its fingerprints match the live v1.3 release (re-checked 2026-10-26). Release page: <a href="https://github.com/piskyRpapalo/PreceptorOS/releases/tag/v1.3">piskyRpapalo/PreceptorOS v1.3</a>. Manifest sha256: <code class="sha">75619007eb1b4c923f4299a754a436dcffa6e471f4d4f11b284351b752abaa7f</code></p></details>
+</main>
+<script src="/assets/pwa.js"></script>
+</body>
+</html>
