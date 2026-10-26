@@ -22,3 +22,9 @@ h1{font-size:1.9rem;line-height:1.15;margin:16px 0 6px}
 .door:hover b{text-decoration-thickness:3px}
 .door:focus-visible{outline:3px solid currentColor;outline-offset:3px}
 .note{margin:20px 0 0;padding-top:14px;border-top:1px solid var(--line);font-size:.92rem;color:var(--soft)}
+/* P3 [1d] (2026-10-26): the three doors in the house bubble language. landing_doors.js draws a speech
+   bubble with the title in comic letters on each door; the plain title stays for screen readers and
+   for anyone without JavaScript. Until every bubble is drawn, the doors look exactly as before. */
+.door-art{display:block;width:100%;max-width:320px;height:auto;margin:0 auto 2px}
+.con-burbujas .door{border:0;padding:6px 4px 10px;text-align:center}
+.con-burbujas .door b{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}

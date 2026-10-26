@@ -1079,6 +1079,11 @@ FUERA_DE_LA_PUERTA = tuple(sorted(set(PUROS + ARENA + CASA + DESCENSO + VT6 + J1
 # de la puerta: carga de una vez las piezas que usa, como creation.html. Se
 # declaran aqui las suyas, leidas de sus paginas, y nada mas.
 FACE_PAGE_DEPENDENCIES = tuple(sorted(set(re.findall(r'src="/game/([^"]+)"', (PUBLICO / "face" / "basic.html").read_text(encoding="utf-8")))))
+# La portada (P3 [1d], decreto 2026-10-26) dibuja sus tres puertas en bubble language: carga UNA vez
+# estas piezas de dibujo, y solo estas. Se DECLARAN aqui (no se leen de la pagina), asi la portada no
+# puede ampliar la lista en silencio; test_web.Puerta exige que cargue exactamente esta lista.
+LANDING_PAGE_DEPENDENCIES = ("tabla_semantica.js", "comic_tokens.js", "comic_accents.js", "comic_atoms.js",
+                             "bubble_language.js", "bubble_letters.js")
 
 
 
@@ -1212,6 +1217,8 @@ class TheGameV15(unittest.TestCase):
                 for h in PUBLICO.rglob("*.html"):
                     if h.parent.name == "face" and m in FACE_PAGE_DEPENDENCIES:
                         continue   # la cara es su propia superficie (2026-10-25)
+                    if h == PUBLICO / "index.html" and m in LANDING_PAGE_DEPENDENCIES:
+                        continue   # las puertas de la portada en bubble language (P3 [1d])
                     self.assertNotIn(f"game/{m}", h.read_text(encoding="utf-8"))
 
     def test_creation_page_dependencies_are_precached(self):
@@ -1748,6 +1755,8 @@ class Multijugador(unittest.TestCase):
                         continue
                     if h.parent.name == "face" and m in FACE_PAGE_DEPENDENCIES:
                         continue
+                    if h == PUBLICO / "index.html" and m in LANDING_PAGE_DEPENDENCIES:
+                        continue   # las puertas de la portada en bubble language (P3 [1d])
                     self.assertNotIn("game/" + m, h.read_text(encoding="utf-8"))
 
 
