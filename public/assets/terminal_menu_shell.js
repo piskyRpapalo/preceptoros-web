@@ -4,6 +4,9 @@
   var GRUPOS = { history: ['pliego-estado', 'pliego-lapidas'], buildings: ['pliego-lugares', 'pliego-ficha'],
     nodes: ['pliego-nodos', 'terminal-cangrejo', 'radio-estado', 'pliego-skills', 'pliego-opinar'], start: ['pliego-entrada', 'pliego-tutorial'] };
 
+  var vivo = null;
+  // A transition interrupted by the next one is skipped and rejects `ready` (AbortError): expected, not a fault.
+  function calla(t) { if (t && t.ready) { t.ready.catch(function () {}); } }
   function monta(x) {
     var capa = x.capa, T = x.T, el = x.el, cada = x.cada;
     function texto(k, d) { var t = T(k); return t && t !== k ? t : d; }
@@ -16,7 +19,7 @@
       var turno = ++transicion;
       destino = S.HOJA[id] ? id : null;
       var d = document, rm = raiz.matchMedia && raiz.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if (id !== actual && d.startViewTransition && !rm && capa.isConnected) { d.startViewTransition(function () { if (turno === transicion) { muestraYa(id, foco); } }); }
+      if (id !== actual && d.startViewTransition && !rm && capa.isConnected) { calla(d.startViewTransition(function () { if (turno === transicion) { muestraYa(id, foco); } })); }
       else { muestraYa(id, foco); }
     }
     function muestraYa(id, foco) {
@@ -95,8 +98,9 @@
     ancho.addEventListener('click', function () { cierraHoja(); expande(); });
     if (raiz.matchMedia && raiz.matchMedia('(min-width: 64rem)').matches) { expande(true); }
 
-    function abre(id, foco) {
+    function abre(id, foco, fijo) {
       var siguiente = abierto === id ? null : id;
+      if (fijo) { siguiente = id; }
       if (siguiente && (actual || destino)) { cierraHoja(); }
       var turno = ++transicion, rm = raiz.matchMedia && raiz.matchMedia('(prefers-reduced-motion: reduce)').matches;
       function cambia() {
@@ -107,7 +111,7 @@
         document.documentElement.classList.toggle('con-cajon', !!abierto);
         if (abierto && foco !== false) { var s = cajon.querySelector('#' + GRUPOS[abierto][0] + ' > summary'); if (s) { s.focus(); } }
       }
-      if (document.startViewTransition && !rm && capa.isConnected) { document.startViewTransition(cambia); } else { cambia(); }
+      if (document.startViewTransition && !rm && capa.isConnected) { calla(document.startViewTransition(cambia)); } else { cambia(); }
     }
     function entrada(id, icono, rotulo, accion) {
       var li = el('li'), b = el('button', 'thegame-menu-item'); b.type = 'button'; b.id = 'menu-' + id; b.dataset.panel = id;
@@ -191,8 +195,11 @@
       piso.appendChild(ctl); S.CRT = ctl;
     }
     muestraYa(null);
+    // Open the drawer group that holds a panel, by the panel's own id. Fixed, not a toggle: a tap on
+    // the map closes the drawer on pointerdown, and the card must still open on the click after it.
+    vivo = function (pid) { var g = Object.keys(GRUPOS).filter(function (k) { return GRUPOS[k].indexOf(pid) >= 0; })[0]; if (!g) { return false; } abre(g, false, true); return true; };
     S.muestra = muestra; S.pliego = pliego; S.abre = abre; S.actual = function () { return actual; };
     return S;
   }
-  raiz.AtlasChatTerminal = { monta: monta };
+  raiz.AtlasChatTerminal = { monta: monta, panel: function (pid) { return vivo ? vivo(pid) : false; } };
 })(this);
