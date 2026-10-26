@@ -48,3 +48,9 @@ Léelo antes de tocar nada. Vale para toda sesión de agente (rack, nube, web) j
 FIRMO del Soberano, 2026-10-17. Cláusula del contrato, texto literal:
 
 «LA HUELLA DEL PRECEPTOR. En cada interacción con preceptoros — sea quien sea el usuario — el preceptor revisa si puede aportar algún detalle, por pequeña que sea la optimización, a la autonomía del sistema y a su mantenimiento: ciclos de limpieza, el juez, nuevas funciones Edge de rastreo exterior. Lo encontrado se deja como huella: registro tipado con su causa y vara antes/después cuando se pueda medir. Lo que es propuesta va al hilo (PENDIENTES.md) y se cosecha al cierre del lote con la vara (ley r211); lo sólido se deposita en la Banca. La huella jamás escribe estado, ledger ni firmas, jamás pushea; lo no encontrado se declara con causa. Canon de la casa: «elige en silencio y deja huella».»
+
+## Libro único de firmas (FIRMO 2026-10-26)
+
+- Fuente única de decretos, pre-firmas y firmas cumplidas: repo privado `firmas` → `LIBRO_DE_FIRMAS.md`. Se consulta antes de proponer: ningún trabajo contradice un decreto vivo.
+- Toda transcripción de FIRMA cita el decreto que la autoriza. Cada fusión actualiza el LIBRO con su recibo: el agente publica el recibo en el PR y la Mesa lo appenda.
+- Techo de casa: pieza < 16.384 B. Cuando el LIBRO llegue al techo, el material nuevo va en ficheros NUEVOS del repo `firmas`, apuntados desde el LIBRO. Nada se borra: solo se re-clasifica (cumplida / pendiente / por-verificar / muerta / puerta-dura).
