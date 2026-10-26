@@ -23,9 +23,8 @@
     return f;
   }
   function abrePanel(id) {
-    var D = raiz.document, b = D && D.getElementById('menu-' + id), p = D && D.getElementById(id);
-    if (!b || !p) { return { cause: nd('the destination panel is not loaded') }; }
-    if (p.hidden) { b.click(); }
+    var D = raiz.document, p = D && D.getElementById(id), T = raiz.AtlasChatTerminal;
+    if (!p || !T || !T.panel || !T.panel(id)) { return { cause: nd('the destination panel is not loaded') }; }
     return { ok: true };
   }
   function ejecuta(a) {
