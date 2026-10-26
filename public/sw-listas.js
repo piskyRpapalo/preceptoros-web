@@ -23,6 +23,7 @@ const JUEGO = [
   '/game/comic_accents.js', '/game/bubble_language.js', '/game/bubble_light.js', '/game/bubble_bestiary.js', '/game/map_bubble_figures.js', '/game/bubble_world.js', '/game/bubble_letters.js', '/game/bubble_game.js', '/game/bubble_icons.js', '/game/descent_sound.js',
   '/game/local_app_bridge.js', '/assets/descent_view.js', '/game/world_creator.js', '/assets/descent.css', '/game/tutorial_fases.js', '/game/ui-tutorial-fases.js', '/game/deploy_building.js', '/game/etiqueta.js', '/game/en301_tutorial_building.js', '/game/silueta.js', '/game/en301_practice_model.js', '/game/en301_practice_arena.js', '/game/en301_tutorial_copy.js', '/game/en301_tutorial_model.js', '/game/en301_tutorial_audio.js', '/game/en301_tutorial.js', '/assets/en301_practice.css', '/assets/en301_tutorial.css', '/game/tutorial-fases.css', '/assets/codex_scene.js', '/assets/bout_scene.js',
   '/face/',
+  '/get-the-app/',
   '/face/basic.html',
   '/face/atlantis.html',
   '/face/zombie.html',
