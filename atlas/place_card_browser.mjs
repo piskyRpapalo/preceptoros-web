@@ -1,13 +1,13 @@
 // 6B-1 · arranque y taps reales. Fixture EMULATED aislado; no identidad, firma ni datos del usuario.
 // node atlas/place_card_browser.mjs [--doogee] (ADB/CDP/reverse ya existentes en modo Doogee).
-import { createServer } from 'node:http';
+import { sirve } from './sirve_publico.mjs';
 import { readFileSync, statSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { spawn, execFileSync } from 'node:child_process';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 const publico = fileURLToPath(new URL('../public/', import.meta.url));
-const telefono = process.argv.includes('--doogee'), port = telefono ? 8802 : 8803, cdpPort = telefono ? 9223 : 9400 + process.pid % 300;
+const telefono = process.argv.includes('--doogee'), cdpPort = telefono ? 9223 : 9400 + process.pid % 300;
 const quick = process.argv.includes('--quick');
 const pausa = ms => new Promise(r => setTimeout(r, ms));
 const tipos = ['boya', 'observatorio', 'lapidas', 'cristal', 'coral'];
@@ -30,17 +30,10 @@ async function valor(expression) {
   if (r.exceptionDetails) throw new Error(r.exceptionDetails.text + ': ' + r.exceptionDetails.exception?.description);
   return r.result?.value;
 }
-const server = createServer((req, res) => {
-  try {
-    let f = path.resolve(publico, '.' + decodeURIComponent(new URL(req.url, 'http://localhost').pathname));
-    if (!f.startsWith(publico)) throw Error('outside root');
-    if (statSync(f).isDirectory()) f = path.join(f, 'index.html');
-    const mime = { '.js': 'text/javascript', '.json': 'application/json', '.css': 'text/css', '.html': 'text/html' };
-    res.writeHead(200, { 'Content-Type': mime[path.extname(f)] || 'application/octet-stream', 'Cache-Control': 'no-store' }); res.end(readFileSync(f));
-  } catch { res.writeHead(404); res.end(); }
-});
+let server = null, port = null;
 try {
-  await new Promise((r, j) => { server.once('error', j); server.listen(port, '127.0.0.1', r); });
+  // The phone reaches the node through `adb reverse tcp:8802`, so it keeps its known port; headless Chrome takes port 0 (X7).
+  server = await sirve(publico, telefono ? 8802 : 0); port = server.address().port;
   if (telefono) {
     const a = execFileSync('adb', ['shell', 'dumpsys', 'activity', 'activities'], { encoding: 'utf8' });
     originalActivity = /(?:topResumedActivity|mResumedActivity)\s*[:=][^\n]*?\s([\w.]+\/[\w.$]+)(?=[}\s])/.exec(a)?.[1];
@@ -64,7 +57,10 @@ try {
   await page.cmd('Network.setBypassServiceWorker', { bypass: true }); await page.cmd('Network.setCacheDisabled', { cacheDisabled: true });
   if (telefono) execFileSync('adb', ['shell', 'am', 'start', '-n', 'com.android.chrome/com.google.android.apps.chrome.Main'], { stdio: 'ignore' });
   await page.cmd('Page.navigate', { url: 'http://localhost:' + port + '/play/' });
-  for (let i = 0; i < 80; i++) { if (await valor('Boolean(window.AtlasArrecife && window.AtlasInspector && window.AtlasPlaceCards)')) break; await pausa(250); }
+  // Since P1 the game opens with a descent; the layers load after it (same step as combat_screen_browser).
+  for (let i = 0; i < 60 && !(await valor("Boolean(document.querySelector('.descent-skip'))")); i++) await pausa(250);
+  await valor("(b => { if (b) b.click(); return true; })(document.querySelector('.descent-skip'))");
+  for (let i = 0; i < 160; i++) { if (await valor('Boolean(window.AtlasArrecife && window.AtlasInspector && window.AtlasPlaceCards)')) break; await pausa(250); }
   if (!(await valor('Boolean(window.AtlasPlaceCards)'))) throw Error('place cards did not boot');
   await valor(`(() => {
     const base = { x: AtlasNiebla.HEX.x, y: AtlasNiebla.HEX.y };
@@ -150,7 +146,7 @@ finally {
     execFileSync('adb',['shell','settings','put','system','accelerometer_rotation',rotation.auto]);
   } catch {}
   chrome?.kill(); if(dir) try { rmSync(dir,{recursive:true,force:true}); } catch {}
-  await new Promise(r=>server.close(r));
+  if (server) await new Promise(r=>server.close(r));
 }
 console.log(JSON.stringify(report,null,2));
 process.exitCode=report.failures.length?1:0;

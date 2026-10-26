@@ -2,7 +2,7 @@
 // 100% del interior del tubo (entre menu, barra, borde y chat), la rueda vive abajo a la derecha con >= 44 px y recorta,
 // y el lienzo del mapa es el MISMO nodo antes y despues (fondo perpetuo). Uso: node atlas/crt_surface_browser.mjs
 // Sin Chrome: NO_DATA con causa (rc 0, no es verde ni rojo).
-import { spawn } from 'node:child_process';
+import { sirve } from './sirve_publico.mjs';
 import { launchChrome } from './chrome_launch.mjs';
 import { fileURLToPath } from 'node:url';
 
@@ -22,9 +22,8 @@ const MIDE = `(() => {
 })()`;
 
 async function main() {
-  const port = 8800 + (process.pid % 90), cdpPort = 9600 + (process.pid % 300);
-  srv = spawn('python3', ['-m', 'http.server', String(port), '--bind', '127.0.0.1'], { cwd: PUBLIC, stdio: 'ignore' });
-  for (let i = 0; i < 40; i++) { await espera(250); try { await fetch(`http://127.0.0.1:${port}/`); break; } catch {} }
+  srv = await sirve(PUBLIC);
+  const port = srv.address().port, cdpPort = 9600 + (process.pid % 300);
   ch = launchChrome(cdpPort);
   let lista = null;
   for (let i = 0; i < 60 && !lista && !ch.failure(); i++) { await espera(250); try { lista = await (await fetch(`http://127.0.0.1:${cdpPort}/json`)).json(); } catch {} }
@@ -39,7 +38,7 @@ async function main() {
 
   for (const [w, h] of [[360, 716], [1280, 800]]) {
     await cmd('Emulation.setDeviceMetricsOverride', { width: w, height: h, deviceScaleFactor: 1, mobile: w < 600 });
-    await cmd('Page.navigate', { url: `http://127.0.0.1:${port}/en/` });
+    await cmd('Page.navigate', { url: `http://127.0.0.1:${port}/play/` });
     await espera(7000);
     await evalua("document.querySelector('.descent-skip')?.click()");
     await espera(6000);
@@ -72,6 +71,6 @@ async function main() {
 
 let nodata = null;
 try { nodata = (await main())?.nodata || null; } catch (e) { fallos.push('harness: ' + String(e.message)); }
-finally { try { ws?.close(); } catch {} try { await ch?.close(); } catch {} try { srv?.kill(); } catch {} }
+finally { try { ws?.close(); } catch {} try { await ch?.close(); } catch {} try { srv?.close(); } catch {} }
 if (nodata) { console.log(JSON.stringify({ ok: null, sello: 'NO_DATA', causa: nodata.slice(0, 200) })); process.exitCode = 0; }
 else { console.log(JSON.stringify({ ok: fallos.length === 0, fallos, medidas })); process.exitCode = fallos.length ? 1 : 0; }
