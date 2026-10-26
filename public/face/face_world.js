@@ -81,7 +81,9 @@
 
 
   function namesFrame(skin) {
-    var n = function (tx, x, y) { var p = iso(x, y); return { o: 'text', x: p[0], y: p[1], tx: tx, sz: 24, f: skin.label, sh: [2, 2, skin.halo] }; };
+    // P3 (2026-10-26, decree): world names at half size (24 -> 12), in the comic letters of the bubble
+    // language (bubble_letters.js), drawn with the skin's own two bands: no new font, no new palette.
+    var n = function (tx, x, y) { var p = iso(x, y); return { o: 'letters', x: p[0], y: p[1], tx: tx, sz: 12, f: skin.label, s: skin.halo, sh: [1, 1, skin.halo] }; };
     return { v: V, id: 'names', t: 0, cv: [1420, 1420], atoms: [{ k: 'names', r: 'place names', i: [
       n('home', 560, 800), n('the beacon', 330, 540), n('the Reef', 760, 520), n('the rift', 540, 270)] }],
       bands: uniq([skin.label, skin.halo]), change: ['rest'], sound: 'NO_DATA', soundCause: 'the map is silent', motion: 'NO_DATA' };
