@@ -32,9 +32,10 @@ Depth 4 — specialist model on edge hardware: zero prose; process the
 Loaded is loaded: do not re-fetch what you already hold.
 Anything deeper is NO_DATA, cause: beyond declared depth. -->
 
-This repository holds the public website of PreceptorOS. Its home page is the
-game **theGame**: an isometric world that runs in the browser, in nine
-languages.
+This repository holds the public website of PreceptorOS. Its home page is
+**theGame**: a public AI-deployment space with a governance testnet at its
+core — an isometric world in nine languages where the silicon proposes and
+a human signature (`REQUIERE_FIRMA`) decides.
 
 **Usage contract — the only two things we ask:** respect the ceilings (every
 file under 25 MiB, zero external requests on load, pure standard library,
