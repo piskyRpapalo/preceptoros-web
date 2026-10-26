@@ -1,6 +1,6 @@
 // Guarda A1B8: lo ausente es NO_DATA con causa; jamas undefined ni NaN visibles en theGame.
 // Uso: node atlas/sin_undefined.mjs  (Chrome headless por CDP y python3 sirviendo public/; sin dependencias)
-import { spawn } from 'node:child_process';
+import { sirve } from './sirve_publico.mjs';
 import { launchChrome } from './chrome_launch.mjs';
 import { installWavesCraft, checkWavesCraft } from './wavescraft_browser.mjs';
 import { fileURLToPath } from 'node:url';
@@ -16,10 +16,9 @@ let id = 0;
 let ws = null, ch = null, srv = null;
 
 async function main() {
-  const port = 8900 + (process.pid % 90);
+  srv = await sirve(PUBLIC);
+  const port = srv.address().port;
   const cdpPort = 9300 + (process.pid % 500);
-  srv = spawn('python3', ['-m', 'http.server', String(port), '--bind', '127.0.0.1'], { cwd: PUBLIC, stdio: 'ignore' });
-  for (let i = 0; i < 40; i++) { await espera(250); try { await fetch(`http://127.0.0.1:${port}/`); break; } catch {} }
 
   ch = launchChrome(cdpPort);
   let lista = null;
@@ -206,7 +205,7 @@ try {
 } finally {
   try { ws?.close(); } catch {}
   try { await ch?.close(); } catch {}
-  try { srv?.kill(); } catch {}
+  try { srv?.close(); } catch {}
 }
 console.log(JSON.stringify({ fallos, pasos }, null, 2));
 process.exitCode = fallos.length ? 1 : 0;

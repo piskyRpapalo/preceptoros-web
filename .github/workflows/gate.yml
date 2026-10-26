@@ -63,6 +63,9 @@ jobs:
             node atlas/egg_reload_browser.mjs
             node atlas/combat_screen_browser.mjs
             node atlas/face_battle_browser.mjs
+            node atlas/face_names_browser.mjs
+            node atlas/landing_doors_browser.mjs
+            node atlas/place_card_browser.mjs
             node atlas/bubble_bestiary_casos.mjs
             node atlas/bubble_icons_casos.mjs
             node atlas/bubble_letters_casos.mjs
