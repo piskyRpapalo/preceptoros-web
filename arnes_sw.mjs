@@ -211,7 +211,8 @@ const rutas = await shell.keys();
 // 216 -> 217 el 2026-10-26 (P3 1d sobre 1b): entra landing_doors.js.
 // 217 -> 218 el 2026-10-26 (Norte D1): entra /get-the-app/.
 // 218 -> 220 el 2026-10-26 (Norte N2): entran /aduana/ y aduana_page.js.
-ok('precachea las portadas, su superficie y el juego', rutas.length === 220, rutas.length+' rutas');
+// 220 -> 221 el 2026-10-26 (Norte N3): entra node_catalogue.js.
+ok('precachea las portadas, su superficie y el juego', rutas.length === 221, rutas.length+' rutas');
 ok('el shell trae el juego (D7): la puerta, el cangrejo y la arena',
    ['/assets/thegame.js', '/game/gdpr-art25-ephemeral-crab.js', '/game/ui-arena.js', '/assets/atlas-motor.js'].every(r => rutas.includes(r)));
 ok('el shell trae la puerta y el juego', ['/', '/play/'].every(r => rutas.includes(r)));

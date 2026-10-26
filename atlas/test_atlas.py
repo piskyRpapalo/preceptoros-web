@@ -1089,7 +1089,8 @@ LANDING_PAGE_DEPENDENCIES = ("tabla_semantica.js", "comic_tokens.js", "comic_acc
 # coincidan.
 ADUANA_PAGE_DEPENDENCIES = ("canon.js", "node_reception_contract.js", "node_trust_anchor.js", "node_trust_manifest.js",
                             "node_signature_messages.js", "node_signature_verify.js", "node_bindings_messages.js",
-                            "node_bindings.js", "node_projection.js", "node_preview.js", "node_file_receiver.js")
+                            "node_bindings.js", "node_projection.js", "node_preview.js", "node_file_receiver.js",
+                            "node_catalogue.js")
 
 
 
