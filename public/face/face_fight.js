@@ -81,7 +81,6 @@
   function start(p) {
     root.cancelAnimationFrame(loop);
     if (!fight.begin(p, H.army.squad())) { return; }
-    H.focus(Bt.field);
     H.panel.mark('battle', 'LIVE');
     H.bubble('You face the ' + p.name + ' (' + p.n + ' waves). Your squad stands in ' + Bt.formNames[fight.b.form] + '. Rounds are seeded, so this battle replays the same for everyone.');
     if (H.sound()) { fight.sonar(root.AtlasSintesis); }
@@ -95,7 +94,11 @@
   Array.prototype.forEach.call(doc.querySelectorAll('[data-form]'), function (b) { b.addEventListener('click', function () { fight.form(b.dataset.form); update(); }); });
   H.army.on(cards);
   new root.MutationObserver(function () { if (doc.body.dataset.view !== 'battle' && fight.done()) { back(); } }).observe(doc.body, { attributes: true, attributeFilter: ['data-view'] });
-  H.extra(function (g, toScreen, z) { fight.paint(g, toScreen, z, quiet()); }, function () { return fight.b.on ? fight.frame() : null; });
-  H.battle = { summary: fight.summary, start: function (id) { var p = list.filter(function (x) { return x.id === id; })[0]; if (p) { start(p); } }, step: step, play: play, back: back, patrols: function () { return list; } };
+  // P3 (2026-10-26): the fight no longer paints on the world map. It draws on its own canvas inside
+  // the battle panel (face_fight_stage.js); the map, and the map's machine view, stay clean.
+  H.extra(null, null);
+  H.battle = { summary: fight.summary, start: function (id) { var p = list.filter(function (x) { return x.id === id; })[0]; if (p) { start(p); } }, step: step, play: play, back: back, patrols: function () { return list; },
+    on: function () { return !!fight.b.on; }, frame: function () { return fight.b.on ? fight.frame() : null; },
+    paint: function (g, toScreen, z) { fight.paint(g, toScreen, z, quiet()); } };
   update();
 })(window);
