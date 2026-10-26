@@ -42,7 +42,7 @@
     meta.appendChild(sel); meta.appendChild(fue); meta.appendChild(eda);
     var x = D.createElement('button'); x.type = 'button'; x.className = 'boton-sec terminal-cab-cierra'; x.id = 'terminal-cierra';
     x.textContent = '✕'; x.setAttribute('aria-label', 'Close this panel'); x.dataset.sonido = 'NO_DATA (silent by design)';
-    x.addEventListener('click', function () { var a = abierto(caja), b = a && D.getElementById('menu-' + a.id); if (b) { b.click(); } });
+    x.addEventListener('click', function () { var M = raiz.AtlasChatTerminal; if (M && M.cierra) { M.cierra(); } });
     cab.appendChild(tit); cab.appendChild(meta); cab.appendChild(x);
     caja.insertBefore(cab, caja.firstChild);
 
