@@ -54,6 +54,14 @@ def portada():
 <a class="door" href="/face/"><b>Worlds</b><span>Three node pages: Atlantis, the Risen and Neutral.</span></a>
 <a class="door" href="/creation.html"><b>Creation studio</b><span>Draw a ribbon, sign it with your web identity, carry it as a file.</span></a>
 </nav>
+<section id="web-app" aria-labelledby="web-app-h">
+<h2 id="web-app-h">The web or the app?</h2>
+<div class="pair">
+<p class="side" data-lado="web"><b>The web</b><span>The public door: the map and the game, right here in your browser. Nothing to install.</span></p>
+<p class="side" data-lado="app"><b>The app</b><span>Your own node, on your own machine: local memory and a local AI that stay with you.</span></p>
+</div>
+<details class="tech"><summary>Technical details</summary><p>The web loads with zero external requests and keeps your key in this browser. Local memory and local inference are the app's own claims, stated in <a href="https://github.com/piskyRpapalo/PreceptorOS/blob/main/README.md">its README</a>.</p></details>
+</section>
 <p class="note">One language until the MVP: English. The old translated addresses lead here.</p>
 </main>
 <script src="/game/tabla_semantica.js"></script>

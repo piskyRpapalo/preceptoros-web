@@ -28,3 +28,16 @@ h1{font-size:1.9rem;line-height:1.15;margin:16px 0 6px}
 .door-art{display:block;width:100%;max-width:320px;height:auto;margin:0 auto 2px}
 .con-burbujas .door{border:0;padding:6px 4px 10px;text-align:center}
 .con-burbujas .door b{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+/* [2] (2026-10-26): the web and the app, two speech bubbles facing each other, drawn by the same
+   landing_doors.js. Without JavaScript they are two plain paragraphs. */
+#web-app h2{font-size:1.25rem;margin:28px 0 8px}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.side{margin:0;padding:12px;border:2px solid var(--line);border-radius:var(--radius)}
+.side b{display:block;font-size:1.1rem}
+.side span{display:block;color:var(--soft)}
+.con-burbujas .side{border:0;padding:0 2px 6px;text-align:center}
+.con-burbujas .side b{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.tech{margin:12px 0 0;color:var(--soft);font-size:.92rem}
+.tech summary{cursor:pointer;padding:12px 0;min-height:44px}
+.tech a{color:var(--fg)}
+@media (max-width:480px){.pair{grid-template-columns:1fr}}

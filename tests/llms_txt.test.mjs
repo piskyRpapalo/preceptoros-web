@@ -9,8 +9,14 @@ test('PIEZA 1 · el telescopio responde: public/llms.txt existe, byte a byte igu
   if (!statSync(new URL('../public/llms.txt', import.meta.url)).size) throw new Error('vacío');
 });
 
-test('llms.txt <16 KiB y sin vocablos prohibidos (código Y UI)', () => {
-  if (Buffer.byteLength(servido) > 16384) throw new Error('llms.txt pasa del techo de pieza');
+// X5 (Mesa, firmado en la ronda P3 2026-10-26): techo propio del llms.txt servido, 8.192 B. Medido al
+// fijarlo: 7.850 B, 342 B de holgura. Mas estricto que el techo de pieza: es la tarjeta que un agente
+// lee entera de un trago.
+const TECHO_LLMS = 8192;
+const cabe = (t) => Buffer.byteLength(t) <= TECHO_LLMS;
+
+test('X5 · llms.txt ≤ 8.192 B y sin vocablos prohibidos (código Y UI)', () => {
+  if (!cabe(servido)) throw new Error('llms.txt pasa de su techo: ' + Buffer.byteLength(servido) + ' > ' + TECHO_LLMS + ' B');
   const texto = servido.toLowerCase();
   for (const w of ['oraculo', 'notario', 'depin', 'clearing', 'magia', 'criptomoneda', 'cryptocurrency']) {
     if (texto.includes(w)) throw new Error('vocablo prohibido: ' + w);
@@ -39,4 +45,10 @@ test('SABOTAJE: si el servido diverge de la raíz, la suite cae', () => {
      Aquí se declara; el rojo vivo se mostró rompiendo la copia a propósito. */
   const copiaRota = servido.replace('preceptoros.org', 'otro-dominio.example');
   if (copiaRota === servido) throw new Error('el sabotaje no cambió nada: el test no puede ponerse rojo');
+});
+
+test('SABOTAJE X5 · el mismo juez da rojo a 8.193 B y verde a 8.192 B', () => {
+  const relleno = (n) => servido + 'x'.repeat(n - Buffer.byteLength(servido));
+  if (Buffer.byteLength(relleno(8193)) !== 8193 || cabe(relleno(8193))) throw new Error('8.193 B tendria que caer y no cae');
+  if (!cabe(relleno(8192))) throw new Error('8.192 B tendria que caber y no cabe');
 });

@@ -57,7 +57,13 @@ async function main() {
     return { burbujas: document.documentElement.classList.contains('con-burbujas'), puertas: puertas.length,
       enlaces: puertas.map((a) => a.getAttribute('href')), titulos: puertas.map((a) => (a.querySelector('b') || {}).textContent),
       dibujos: puertas.map((a) => { const c = a.querySelector('canvas.door-art'); return c ? tinta(c) : 0; }),
-      pie: (document.querySelector('.note') || {}).textContent, texto: document.body.innerText };
+      pie: (document.querySelector('.note') || {}).textContent, texto: document.body.innerText,
+      // [2]: the web and the app, two bubbles facing each other; the tail is the ink nearest the bottom corners.
+      lados: [...document.querySelectorAll('#web-app .side')].map((p) => { const c = p.querySelector('canvas.door-art'); if (!c) { return null; }
+        const g = c.getContext('2d'), d = g.getImageData(0, 0, c.width, c.height).data, w = c.width, h = c.height, y = Math.floor(h * 0.95);
+        let izq = 0, der = 0; for (let x = 0; x < w; x++) { if (d[(y * w + x) * 4 + 3] > 0) { if (x < w / 2) { izq++; } else { der++; } } }
+        return { lado: p.dataset.lado, tinta: tinta(c), cola: izq > der ? 'left' : der > izq ? 'right' : 'none', titulo: (p.querySelector('b') || {}).textContent }; }),
+      plegado: !(document.querySelector('#web-app details.tech') || {}).open };
   })())`));
   ok(medida.burbujas && medida.puertas === 3, 'the three doors were not all drawn in bubble language');
   ok(JSON.stringify(medida.enlaces) === JSON.stringify(['/play/', '/face/', '/creation.html']), 'links changed: ' + medida.enlaces);
@@ -65,12 +71,15 @@ async function main() {
   ok(medida.dibujos.every((n) => n > 2000), 'a bubble is blank: ' + medida.dibujos);
   ok(medida.pie === 'One language until the MVP: English. The old translated addresses lead here.', 'footer changed');
   ok(!/\bundefined\b|\bNaN\b/.test(medida.texto), 'missing value shown on the landing');
+  ok(medida.lados.length === 2 && medida.lados.every((l) => l && l.tinta > 2000), '[2] the web/app bubbles are not both drawn: ' + JSON.stringify(medida.lados));
+  ok(JSON.stringify(medida.lados.map((l) => l && [l.lado, l.titulo, l.cola])) === JSON.stringify([['web', 'The web', 'left'], ['app', 'The app', 'right']]), '[2] the bubbles do not face each other: ' + JSON.stringify(medida.lados));
+  ok(medida.plegado, '[2] technical details are not folded');
   ok(externas.length === 0, 'external requests: ' + externas.slice(0, 3));
   if (CAPTURA) {
     const s = await cmd('Page.captureScreenshot', { format: 'png' });
     writeFileSync(join(CAPTURA, 'landing-doors.png'), Buffer.from(s.result.data, 'base64'));
   }
-  console.log(JSON.stringify({ piece: 'P3-1d', receipt: 'MEDIDO', dibujos: medida.dibujos, enlaces: medida.enlaces, externas: externas.length, fallos }));
+  console.log(JSON.stringify({ piece: 'P3-1d', receipt: 'MEDIDO', dibujos: medida.dibujos, lados: medida.lados, enlaces: medida.enlaces, externas: externas.length, fallos }));
 }
 
 main().catch((e) => { fallos.push(String(e && e.message || e)); console.log(JSON.stringify({ piece: 'P3-1d', fallos })); })
