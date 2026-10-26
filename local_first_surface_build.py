@@ -56,6 +56,13 @@ def portada():
 </nav>
 <p class="note">One language until the MVP: English. The old translated addresses lead here.</p>
 </main>
+<script src="/game/tabla_semantica.js"></script>
+<script src="/game/comic_tokens.js"></script>
+<script src="/game/comic_accents.js"></script>
+<script src="/game/comic_atoms.js"></script>
+<script src="/game/bubble_language.js"></script>
+<script src="/game/bubble_letters.js"></script>
+<script src="/assets/landing_doors.js"></script>
 <script src="/assets/pwa.js"></script>
 </body>
 </html>
