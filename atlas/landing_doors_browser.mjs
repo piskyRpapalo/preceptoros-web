@@ -97,6 +97,19 @@ async function main() {
   ok(medida.aduana.botones >= 3 && medida.aduana.envioOff === true, '/aduana/ checker not mounted, or its send is awake');
   ok(medida.aduana.registro === 'NO_DATA' && medida.aduana.envia && medida.aduana.envia.sent === false && medida.aduana.envia.code === 'registry_not_deployed', '/aduana/ is not asleep: ' + JSON.stringify(medida.aduana.envia));
   ok(medida.aduana.ancho <= medida.aduana.vista, '/aduana/ scrolls sideways');
+  // North N3: the catalogue is asleep at load; fed a stub list it shows only real nodes, and a row with a key empties it.
+  medida.catalogo = JSON.parse(await ev(`(async () => {
+    const off = document.getElementById('catalogo-carga').disabled, oculta = document.getElementById('catalogo').hidden;
+    const f = (nodo, x) => Object.assign({ nodo, estado: 'pendiente', causa: 'ancla_ausente', recibido: '2026-10-26T23:00:00.000Z', recibo_sha256: 'ab'.repeat(32) }, x || {});
+    const stub = (cedulas) => async () => ({ json: async () => ({ esquema: 'preceptoros.catalogo-cedulas/1', solo_lectura: true, cedulas }) });
+    await AtlasAduana.catalogo(stub([f('nodo.5.vecino'), f('nodo.9101.claude-test', { causa: 'cuenta_de_prueba' })]));
+    const filas = [...document.querySelectorAll('#catalogo tbody tr')].map((tr) => tr.cells[0].textContent);
+    await AtlasAduana.catalogo(stub([f('nodo.6.malo', { clave: 'cd'.repeat(32) })]));
+    return JSON.stringify({ off, oculta, filas, trasClave: document.getElementById('catalogo').hidden, nota: document.getElementById('catalogo-estado').textContent,
+      clave: document.body.innerText.includes('cd'.repeat(32)) }); })()`));
+  ok(medida.catalogo.off && medida.catalogo.oculta, '/aduana/ catalogue is not asleep at load');
+  ok(JSON.stringify(medida.catalogo.filas) === JSON.stringify(['nodo.5.vecino']), 'catalogue rows wrong (test node listed?): ' + medida.catalogo.filas);
+  ok(medida.catalogo.trasClave && !medida.catalogo.clave && /NO_DATA/.test(medida.catalogo.nota), 'a catalogue row with a key was shown');
   ok(!/\bundefined\b|\bNaN\b/.test(medida.aduana.texto), 'missing value shown on /aduana/');
   if (CAPTURA) { const g = await cmd('Page.captureScreenshot', { format: 'png', captureBeyondViewport: true }); writeFileSync(join(CAPTURA, 'aduana.png'), Buffer.from(g.result.data, 'base64')); }
   ok(externas.length === 0, 'external requests after /aduana/: ' + externas.slice(0, 3));
@@ -104,7 +117,7 @@ async function main() {
     const s = await cmd('Page.captureScreenshot', { format: 'png' });
     writeFileSync(join(CAPTURA, 'landing-doors.png'), Buffer.from(s.result.data, 'base64'));
   }
-  console.log(JSON.stringify({ piece: 'P3-1d', receipt: 'MEDIDO', dibujos: medida.dibujos, lados: medida.lados, aduana: medida.aduana && { botones: medida.aduana.botones, envioOff: medida.aduana.envioOff, registro: medida.aduana.registro, envia: medida.aduana.envia, ancho: medida.aduana.ancho }, guia: medida.guia && { ancho: medida.guia.ancho, vista: medida.guia.vista, bajas: medida.guia.bajas, huellas: medida.guia.huellas, filas: medida.guia.filas }, enlaces: medida.enlaces, externas: externas.length, fallos }));
+  console.log(JSON.stringify({ piece: 'P3-1d', receipt: 'MEDIDO', dibujos: medida.dibujos, lados: medida.lados, catalogo: medida.catalogo && { off: medida.catalogo.off, filas: medida.catalogo.filas, trasClave: medida.catalogo.trasClave }, aduana: medida.aduana && { botones: medida.aduana.botones, envioOff: medida.aduana.envioOff, registro: medida.aduana.registro, envia: medida.aduana.envia, ancho: medida.aduana.ancho }, guia: medida.guia && { ancho: medida.guia.ancho, vista: medida.guia.vista, bajas: medida.guia.bajas, huellas: medida.guia.huellas, filas: medida.guia.filas }, enlaces: medida.enlaces, externas: externas.length, fallos }));
 }
 
 main().catch((e) => { fallos.push(String(e && e.message || e)); console.log(JSON.stringify({ piece: 'P3-1d', fallos })); })

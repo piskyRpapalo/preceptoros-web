@@ -175,7 +175,7 @@ def app():
 ADUANA_SCRIPTS = ["/assets/atlas-coord.js", "/game/canon.js", "/game/node_reception_contract.js", "/game/node_trust_anchor.js",
                   "/game/node_trust_manifest.js", "/game/node_signature_messages.js", "/game/node_signature_verify.js",
                   "/game/node_bindings_messages.js", "/game/node_bindings.js", "/game/node_projection.js", "/game/node_preview.js",
-                  "/game/node_file_receiver.js", "/assets/aduana_page.js", "/assets/pwa.js"]
+                  "/game/node_file_receiver.js", "/game/node_catalogue.js", "/assets/aduana_page.js", "/assets/pwa.js"]
 
 
 def aduana():
@@ -197,6 +197,11 @@ def aduana():
 <h2>Check a node card</h2>
 <p>Choose the card file the app gave you. It is read on this device only.</p>
 <div id="comprueba"></div>
+<h2 id="catalogo-h">Public catalogue</h2>
+<p>The registry's public list: each node with its state and cause, never a device key. Test nodes are never listed.</p>
+<p class="aviso" id="catalogo-estado">NO_DATA · the registry is not deployed, so there is nothing to list yet.</p>
+<p><button type="button" id="catalogo-carga" disabled>Load the catalogue</button></p>
+<table class="pruebas" id="catalogo" aria-labelledby="catalogo-h" hidden><thead><tr><th>Node</th><th>State</th><th>Cause</th><th>Received</th><th>Receipt</th></tr></thead><tbody></tbody></table>
 <details class="tech"><summary>Technical details</summary><p>The checker reads <code>preceptoros.cedula-nodo/1</code> under 1 KiB and verifies its integrity hash. Its authenticity stays NO_DATA without a trust anchor. When the registry is live, it will answer with a receipt this page checks by recomputing its hash; a receipt is not a signature.</p></details>
 </main>
 {guiones}
