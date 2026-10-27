@@ -1,12 +1,9 @@
-// [W] O1a (2026-10-27) · the wave duel scene: ONE combat face for the whole game (dark in O1a: no page loads it yet).
-// Contract of AtlasReplay/AtlasEscena: escena(lienzo, def, asa, combate, op) → { velocidad, salta, otra, para }.
-// op.vivo (O1b): a LIVE fight (practice, worlds) whose combate.registro grows tick by tick; it ends only once combate.gana is set.
-// HYBRID (Sovereign's ruling): v1.1's measured LAYOUT and readability (columns, one life bar per troop, the attacker on a
-// sine trail, a plain dark sea of 5 sine lines, Round N) with each troop keeping its P6 squadron drawing (AtlasEscuadron).
-// Each troop's drawing is P6's exactly (life tint, detuning, squadron); v1.1 adds the life bar under it.
-// Jewel 1 (fourier-shapes): each troop's seal (LIVE · SIMULATED · STALE · NO_DATA) sets its ring hue (AtlasSemantica) and
-// its term count (TERMINOS). Jewel 4 (visual-renderer-core): a 12-radial pulse ring on each hit. q1..q8 + xorshift32
-// seeded from the fight's seed. No system randomness, no clock with authority, no network. No raw colour: tokens, op.colores.
+// [W] O1 (2026-10-27) · the wave duel: the ONE combat face of the game. escena(lienzo, def, asa, combate, op) → { velocidad,
+// salta, otra, para }. op.vivo: a LIVE fight whose combate.registro grows tick by tick; it ends only once combate.gana is set.
+// HYBRID (Sovereign's ruling): v1.1's LAYOUT (columns, a life bar per troop, the attacker on a sine trail, a dark sea of 5 sine
+// lines, Round N) with each troop's P6 squadron drawing. Jewel 1: each troop's seal sets its ring hue (AtlasSemantica) and term
+// count (TERMINOS). Jewel 4: a 12-radial pulse ring per hit. q1..q8 + xorshift32 seeded from the fight. No system randomness,
+// no clock with authority, no network, no raw colour.
 (function (raiz) {
   'use strict';
   var G = raiz.AtlasGacha, E = raiz.AtlasEscena, O = raiz.AtlasOnda || {}, S = raiz.AtlasSemantica, CT = raiz.AtlasComicTokens;
@@ -80,7 +77,7 @@
       var dx = t.x - a.x, dy = t.y - a.y, L = Math.hypot(dx, dy) || 1, f = 9 * dpr * Math.min(3, e[4] / 4) / t.masa;
       t.vx += dx / L * f; t.vy += dy / L * f;
       var sello = selloDe(a, op); Q.resiembra(e[0]);
-      ondas.push({ x: t.x, y: t.y, r: t.r, c: banda(sello), hz: (S && S.de(sello) || {}).pulso_hz || 1, v: vt });
+      ondas.push({ x: t.x, y: t.y, r: t.r, c: banda(sello), hz: (S && S.de(sello) || {}).pulso_hz || 1, v: vt, son: sonDe(t.vida ? 'golpe' : 'cae', sello) });
       pops.push({ x: t.x, y: t.y - t.r, txt: '-' + e[4], c: col.dano || a.color, v: vt });
       if (op.sonido) { op.sonido(t.vida ? 'golpe' : 'cae', a.t, sello); }
       if (!t.vida) {
@@ -137,11 +134,19 @@
       }
       g.stroke(); g.restore();
     }
-    // Jewel 4 (visual-renderer-core.js:121-138): R = r·(0.5+0.5·sin(2π·q0·f))·(1+0.5·morph), 12 radials, its seal's hue.
+    // O3: the ring is the f(t) of ITS hit's sound: width and glow follow its envelope, R beats at its pitch folded to 2-6 Hz.
+    // Silent hit: jewel 4 on the scene clock, R = r·(0.5+0.5·sin(2π·q0·f))·(1+0.5·morph) (visual-renderer-core.js:121-138).
+    function sonDe(k, sello) {
+      var Y = raiz.AtlasSintesis, r = Y && (Y.duelo ? Y.duelo(k, sello, 0) : Y.receta(k > 'd' ? 'pop' : 'eclosion', 0));
+      return r && r.portadora ? r : null;
+    }
     function pulso(o, d) {
-      var R = o.r * (0.5 + 0.5 * Math.sin(TAU * Q.q[0] * o.hz)) * (1 + 0.5 * d), ri = R * 0.7, ro = R * 1.15;
-      g.strokeStyle = o.c; g.lineWidth = (1 - d) * 4 * dpr * (1 + (O.pulso ? O.pulso(vt - o.v) : 0));
-      g.beginPath(); g.arc(o.x, o.y, o.r * (0.6 + d * 1.2), 0, TAU); g.stroke();
+      var Y = raiz.AtlasSintesis, F = (raiz.AtlasValores || {}).fluidez || {}, ms = vt - o.v, n = o.son;
+      var e = n && Y ? Y.envolvente(n, ms / 1000) / n.gan : 0, fase = n && O.pulsoNota ? Q.q[0] + O.pulsoNota(n.portadora) * ms / 1000 : Q.q[0] * o.hz;
+      var R = o.r * (0.5 + 0.5 * Math.sin(TAU * fase)) * (1 + 0.5 * d), ri = R * 0.7, ro = R * 1.15;
+      g.strokeStyle = o.c; g.lineWidth = (1 - d) * 4 * dpr * (1 + (F.pulso_grosor_max || 0) * e);
+      if (cal && e) { g.shadowColor = o.c; g.shadowBlur = (F.pulso_brillo_max || 0) * e * 40 * dpr; }
+      g.beginPath(); g.arc(o.x, o.y, o.r * (0.6 + d * 1.2), 0, TAU); g.stroke(); g.shadowBlur = 0;
       if (!cal) { g.beginPath(); return; }
       g.lineWidth = Math.max(1, (1 - d) * 2 * dpr); g.beginPath();
       for (var i = 0; i < 12; i++) {

@@ -181,6 +181,29 @@ caso2('O2 pure voice: no Date.now, no Math.random, no network in core.js', (core
   const malo = /Date\.now|Math\.random|fetch\(|XMLHttpRequest/.exec(core);
   return malo ? 'found: ' + malo[0] : 'OK';
 }, CORE + '\nvar id = Date.now();');
+// [W] O3 (2026-10-27) · the ring is the f(t) of its hit's sound. core.js is loaded (receta + envolvente); a value is changed
+// after load and the draw list must change with it. The twin cuts the reader, so the change goes unseen (red).
+function juegaO3(src, muta, cuadros = 400) {
+  const cola = [], doc = { hidden: false, createElement: () => lienzo(10).el, documentElement: { lang: 'en' } };
+  const g = { console, document: doc, devicePixelRatio: 1, requestAnimationFrame: (cb) => { cola.push(cb); return cola.length; },
+    cancelAnimationFrame: () => {}, matchMedia: () => ({ matches: false }) };
+  g.window = g; g.globalThis = g;
+  for (const f of BASE) { runInNewContext(leer(f), g, { filename: f }); if (f === 'game/gacha.js') { runInNewContext(leer('game/core.js'), g, { filename: 'core.js' }); } }
+  runInNewContext(src, g, { filename: 'wave_duel_scene.js' });
+  muta(g.AtlasValores);
+  const p = pelea(g, 1), L = lienzo(800);
+  g.AtlasEscena.escena(L.el, p.def, p.asa, p.c, { semilla: p.semilla, ronda: 'Round {r}', colores: {} });
+  for (let i = 0, ts = 0; i < cuadros && cola.length; i++) { ts += 16; cola.shift()(ts); }
+  return createHash('sha256').update(L.lista.join('\n')).digest('hex').slice(0, 16);
+}
+caso('O3: the ring width follows the envelope of its own hit sound (pulso_grosor_max has a reader)', (src) => {
+  const a = juegaO3(src, () => {}), b = juegaO3(src, (V) => { V.fluidez.pulso_grosor_max = 0; });
+  return a !== b ? 'OK' : 'pulso_grosor_max changed nothing';
+}, DUELO.replace('(1 + (F.pulso_grosor_max || 0) * e)', '(1 + 0 * e)'));
+caso('O3: the ring beats at the pitch of the sound that is heard (the seal pitch range re-tuned, O2 voz_hz, moves the rings)', (src) => {
+  const a = juegaO3(src, () => {}), b = juegaO3(src, (V) => { V.sintesis.voz_hz = [110, 1760]; });
+  return a !== b ? 'OK' : 'the seal pitch changed nothing';
+}, DUELO.replace('O.pulsoNota(n.portadora)', '4'));
 
 console.log(JSON.stringify({ v: 'preceptoros.wave_duel/1', casos }, null, 1));
 process.exitCode = casos.every((c) => c.ok) ? 0 : 1;

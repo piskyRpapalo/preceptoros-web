@@ -330,7 +330,7 @@ await caso('M17-bis 5: la deuda SIN_LECTOR es exactamente la medida (nadie mas l
   const fuentes = ['wave_render.js', 'escena.js', 'sea.js', 'sea-floor.js', 'summon_reveal.js', 'wave_duel_scene.js']
     .map((f) => readFileSync(join(RAIZ, 'public/game', f), 'utf-8')).join('\n');
   const leidos = deuda.filter((k) => fuentes.includes(k));
-  return (!leidos.length && deuda.length === 7) || { deuda, leidos_aunque_dice_sin_lector: leidos };
+  return (!leidos.length && deuda.length === 6) || { deuda, leidos_aunque_dice_sin_lector: leidos }; // [W] O3: pulso_grosor_max ya tiene lector
 });
 
 // M17-bis 3 (EN_CURSO_hasta_escucha): ADSR + FM de tres senos detras de valores.sintesis.modo.

@@ -88,7 +88,7 @@
       escudo_lightness_min: ['L sin escudo', 'armadura', 'ESTADO', 'wave_render.js'],
       escudo_ref: ['escudo = armadura / ref (ref = maximo medido)', 'armadura', 'ESTADO', 'wave_render.js'],
       pulso_brillo_max: ['max * rampa de ganancia del pop', 'golpe que suena', 'ESTADO', 'wave_render.js'],
-      pulso_grosor_max: ['-', '-', 'SIN_LECTOR', null],
+      pulso_grosor_max: ['grosor del anillo * (1 + max * envolvente del sonido de ESE golpe)', 'golpe que suena', 'ESTADO', 'wave_duel_scene.js'],
       buffer_escala: ['-', '-', 'SIN_LECTOR', null],
       buffer_ancho_max: ['-', '-', 'SIN_LECTOR', null],
       dither_on: ['tramado 4x4', 'calidad', 'CALIDAD', 'wave_render.js'],
