@@ -2,6 +2,7 @@
   'use strict';
 
   // Compuerta post-intro (VT6): tres carriles, cada uno con su boton o su NO_DATA con causa. PURO: ni DOM, ni red, ni reloj.
+  // UI en ingles (NORTE 5 a1, 2026-10-27): las causas se leen en pantalla en /get-the-app/.
   // Regla: un dato que no esta medido (firma de release, sha256, maquina, fecha) NUNCA muestra un boton ni una cifra inventada.
 
   var enNode = typeof module === 'object' && module.exports;
@@ -21,26 +22,26 @@
     var pwa = d.pwa || {};
     var carril1 = {
       id: 'pwa', clics: 1,
-      boton: pwa.instalable ? boton('Install the web app', true) : boton('Install the web app', false, nd('beforeinstallprompt no disparado en este navegador')),
-      peso: typeof pwa.peso_b === 'number' ? pwa.peso_b + ' B' : nd('peso sin medir en counters.json')
+      boton: pwa.instalable ? boton('Install the web app', true) : boton('Install the web app', false, nd('this browser has not offered to install it')),
+      peso: typeof pwa.peso_b === 'number' ? pwa.peso_b + ' B' : nd('size not measured')
     };
     var firmada = !!(d.release && d.release.firmada && d.release.firmada[os]);
     var carril2 = {
       id: 'app', preseleccionado: INSTALADOR[os], clics: 2,
-      boton: firmada ? boton('Install the app', true) : boton('Install the app', false, nd('sin recibo firmado para ' + os + ' en release.json'))
+      boton: firmada ? boton('Install the app', true) : boton('Install the app', false, nd('no signed receipt for ' + os + ' in release.json'))
     };
     var carril3 = (d.cerebros || []).map(function (c) {
       var medido = !!(c.sha256 && typeof c.size_gb === 'number');
       var conCausa = c.maquina && c.fecha;
-      var cifra = typeof c.size_gb !== 'number' ? nd('size_gb sin medir')
+      var cifra = typeof c.size_gb !== 'number' ? nd('size not measured')
         : conCausa ? c.size_gb + ' GB · ' + c.maquina + ' · ' + c.fecha
-        : nd('cifra sin maquina ni fecha');
+        : nd('figure without machine and date');
       return {
         id: c.id, clics: 2, cifra: cifra, gb_medido: typeof c.size_gb === 'number', sha256: c.sha256 || null,
-        boton: medido ? boton('Download ' + c.id, true) : boton('Download ' + c.id, false, nd('sin sha256 o size_gb medidos'))
+        boton: medido ? boton('Download ' + c.id, true) : boton('Download ' + c.id, false, nd('sha256 or size not measured'))
       };
     });
-    if (!carril3.length) { carril3 = [{ id: 'cerebros', clics: 0, cifra: null, gb_medido: false, sha256: null, boton: boton('Models', false, nd('ningun cerebro en public/cerebros.json')) }]; }
+    if (!carril3.length) { carril3 = [{ id: 'cerebros', clics: 0, cifra: null, gb_medido: false, sha256: null, boton: boton('Models', false, nd('no model in cerebros.json')) }]; }
     return {
       saltar: { etiqueta: 'Skip to the Map', primero: true, enfocable: true },
       carriles: [carril1, carril2].concat(carril3),
