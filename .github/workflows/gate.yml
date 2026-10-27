@@ -66,6 +66,7 @@ jobs:
             node atlas/face_names_browser.mjs
             node atlas/landing_doors_browser.mjs
             node atlas/place_card_browser.mjs
+            node atlas/tutorial_places_browser.mjs
             node atlas/bubble_bestiary_casos.mjs
             node atlas/bubble_icons_casos.mjs
             node atlas/bubble_letters_casos.mjs

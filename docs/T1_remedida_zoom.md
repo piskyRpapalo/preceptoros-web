@@ -11,7 +11,7 @@ FIRMO del Soberano: 15-oct (noche), pieza (a) del PR #106. La pieza de código y
 ## 2 · Protocolo de re-medida (pasos, dispositivo Doogee/beelink)
 
 1. Abrir el mapa del juego con la consola CDP conectada (o `data-zoom` visible en el inspector del lienzo).
-2. **Caso P1 (pellizco abrir):** partir de factor 1.00; separar dos dedos hasta el límite cómodo; leer `data-zoom`. Esperado: sube monótonamente hasta 3.00 máximo (histórico medido: 2.75 al separar, 3.00 al máximo, PARA_LA_MESA.md 13-oct).
+2. **Caso P1 (pellizco abrir):** partir de factor 1.00; separar dos dedos hasta el límite cómodo; leer `data-zoom`. Esperado: sube monótonamente hasta 3.00 máximo (histórico medido: 2.75 al separar, 3.00 al máximo, docs/mesa/PARA_LA_MESA.md 13-oct).
 3. **Caso P2 (pellizco cerrar):** partir de 3.00; juntar dos dedos; leer `data-zoom`. Esperado: baja monótonamente hasta 0.60 mínimo.
 4. **Caso R1 (rueda):** rueda hacia atrás 5 pasos; leer `data-zoom`. Esperado: factor crece geométrico (exp), clamp en 3.00.
 5. **Caso R2 (Ctrl+rueda):** repetir con Ctrl pulsado; esperar que `data-zoom` NO cambie (el navegador hace su zoom de página).
@@ -31,5 +31,5 @@ T1 queda CERRADO cuando: P1, P2, R1, R2 y D tienen lecturas anotadas con sello M
 
 ## 5 · Sellos
 
-- MEDIDO (repo, hoy): constantes MIN=0.6/MAX=3 y `data-zoom` presentes en map_zoom.js; historic Doogee en PARA_LA_MESA.md.
+- MEDIDO (repo, hoy): constantes MIN=0.6/MAX=3 y `data-zoom` presentes en map_zoom.js; historic Doogee en docs/mesa/PARA_LA_MESA.md.
 - NO_DATA (causa): la re-medida física del §2 no es ejecutable desde esta sesión (sin dispositivo); la ejecutan Codex o el Soberano y sus lecturas cierran el §3.

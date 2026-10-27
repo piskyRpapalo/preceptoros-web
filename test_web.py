@@ -2533,6 +2533,14 @@ class Puerta(unittest.TestCase):
             with self.subTest(titulo=titulo):
                 self.assertIn(f'<a class="door" href="{href}"><b>{titulo}</b><span>', self.t)
         self.assertIn('<p class="note">One language until the MVP: English. The old translated addresses lead here.</p>', self.t)
+        # [2] (2026-10-26): la web y la app, dos bocadillos enfrentados; lo tecnico va plegado.
+        self.assertIn('<section id="web-app" aria-labelledby="web-app-h">', self.t)
+        for lado, titulo in (("web", "The web"), ("app", "The app")):
+            with self.subTest(lado=lado):
+                self.assertIn(f'<p class="side" data-lado="{lado}"><b>{titulo}</b><span>', self.t)
+        self.assertIn('<details class="tech"><summary>Technical details</summary>', self.t)
+        self.assertLess(self.t.index('id="doors"'), self.t.index('id="web-app"'))
+        self.assertLess(self.t.index('id="web-app"'), self.t.index('class="note"'))
 
     def test_una_lengua_hasta_mvp(self):
         self.assertIn('<html lang="en"', self.t)

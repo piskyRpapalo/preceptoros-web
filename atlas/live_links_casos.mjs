@@ -3,7 +3,7 @@
 // Buoy and Tombstones (and the inspector itself) clicked a `menu-<panel>` button that never existed,
 // so a player who tapped a place saw nothing. Every case runs on the real sources (must be green) and
 // on a sabotaged twin that puts one dead link back (must be red).
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -64,5 +64,20 @@ caso('Buoy and Tombstones open their panel through the shell', ejecuta, SAB2);
 caso('a tapped place opens the drawer that holds its card', inspector, SAB);
 caso('the shell opens a panel by its id without toggling it shut', shell, { ...F, shell: F.shell.replace('abre(g, false, true)', 'abre(g, false)') });
 
+// [1c] (2026-10-26): the same guess lived on in the tutorial (open, ← Map) and in the drawer's ✕. No
+// served source may look a panel up through a `menu-` button; only worm_transition does, with group ids.
+const SERVIDOS = ['public/game', 'public/assets'].flatMap((d) => readdirSync(join(RAIZ, d)).filter((n) => n.endsWith('.js')).map((n) => d + '/' + n));
+const PERMITIDOS = ['public/assets/worm_transition.js'];
+function adivinan(fuentes) {
+  const malos = Object.keys(fuentes).filter((f) => !PERMITIDOS.includes(f) && /getElementById\(\s*'menu-/.test(fuentes[f]));
+  return malos.length ? 'guess a menu-<panel> button: ' + malos.join(', ') : 'OK';
+}
+const TODAS = Object.fromEntries(SERVIDOS.map((f) => [f, leer(f)]));
+{ // This case reads every served file, so its twin is the same set with one guess put back.
+  const real = adivinan(TODAS), rojo = adivinan({ ...TODAS, 'public/game/genesis_tutorial.js': TODAS['public/game/genesis_tutorial.js'] + "\nD.getElementById('menu-pliego-tutorial');" });
+  casos.push({ caso: 'no served source opens or closes a panel by guessing a menu-<panel> button', ok: real === 'OK' && rojo !== 'OK', detalle: real + ' | sab ' + (rojo !== 'OK' ? 'ROJO' : 'VERDE?!') });
+}
+caso('the shell closes the drawer by itself (the ✕ and ← Map use it)', (S) => /cierra: function \(\) \{ return cierra \? cierra\(\) : false; \}/.test(S.shell) ? 'OK' : 'the shell has no close',
+  { ...F, shell: F.shell.replace('cierra: function () { return cierra ? cierra() : false; }', 'cierra: null') });
 console.log(JSON.stringify({ v: 'preceptoros.live_links/1', casos }, null, 1));
 process.exitCode = casos.every((c) => c.ok) ? 0 : 1;

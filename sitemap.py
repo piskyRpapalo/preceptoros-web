@@ -81,7 +81,11 @@ def sueltas():
     cara = ["face/" + ("" if p.name == "index.html" else p.name) for p in (PUBLICO / "face").glob("*.html")]
     # El juego (2026-10-25) vive en /play/: la portada de la raiz es solo la puerta.
     juego = ["play/"] if (PUBLICO / "play" / "index.html").is_file() else []
-    return sorted(raiz + cara + juego)
+    # La guia de la app (Norte D1, 2026-10-26): contenido en ingles, escrito desde release.json.
+    guia = ["get-the-app/"] if (PUBLICO / "get-the-app" / "index.html").is_file() else []
+    # /aduana/ (Norte N2, 2026-10-26): crear un nodo, observante.
+    aduana = ["aduana/"] if (PUBLICO / "aduana" / "index.html").is_file() else []
+    return sorted(raiz + cara + juego + guia + aduana)
 
 
 def url(loc, alternativas=()):

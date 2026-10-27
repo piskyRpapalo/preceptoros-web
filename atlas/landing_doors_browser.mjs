@@ -57,7 +57,13 @@ async function main() {
     return { burbujas: document.documentElement.classList.contains('con-burbujas'), puertas: puertas.length,
       enlaces: puertas.map((a) => a.getAttribute('href')), titulos: puertas.map((a) => (a.querySelector('b') || {}).textContent),
       dibujos: puertas.map((a) => { const c = a.querySelector('canvas.door-art'); return c ? tinta(c) : 0; }),
-      pie: (document.querySelector('.note') || {}).textContent, texto: document.body.innerText };
+      pie: (document.querySelector('.note') || {}).textContent, texto: document.body.innerText,
+      // [2]: the web and the app, two bubbles facing each other; the tail is the ink nearest the bottom corners.
+      lados: [...document.querySelectorAll('#web-app .side')].map((p) => { const c = p.querySelector('canvas.door-art'); if (!c) { return null; }
+        const g = c.getContext('2d'), d = g.getImageData(0, 0, c.width, c.height).data, w = c.width, h = c.height, y = Math.floor(h * 0.95);
+        let izq = 0, der = 0; for (let x = 0; x < w; x++) { if (d[(y * w + x) * 4 + 3] > 0) { if (x < w / 2) { izq++; } else { der++; } } }
+        return { lado: p.dataset.lado, tinta: tinta(c), cola: izq > der ? 'left' : der > izq ? 'right' : 'none', titulo: (p.querySelector('b') || {}).textContent }; }),
+      plegado: !(document.querySelector('#web-app details.tech') || {}).open };
   })())`));
   ok(medida.burbujas && medida.puertas === 3, 'the three doors were not all drawn in bubble language');
   ok(JSON.stringify(medida.enlaces) === JSON.stringify(['/play/', '/face/', '/creation.html']), 'links changed: ' + medida.enlaces);
@@ -65,12 +71,53 @@ async function main() {
   ok(medida.dibujos.every((n) => n > 2000), 'a bubble is blank: ' + medida.dibujos);
   ok(medida.pie === 'One language until the MVP: English. The old translated addresses lead here.', 'footer changed');
   ok(!/\bundefined\b|\bNaN\b/.test(medida.texto), 'missing value shown on the landing');
+  ok(medida.lados.length === 2 && medida.lados.every((l) => l && l.tinta > 2000), '[2] the web/app bubbles are not both drawn: ' + JSON.stringify(medida.lados));
+  ok(JSON.stringify(medida.lados.map((l) => l && [l.lado, l.titulo, l.cola])) === JSON.stringify([['web', 'The web', 'left'], ['app', 'The app', 'right']]), '[2] the bubbles do not face each other: ' + JSON.stringify(medida.lados));
+  ok(medida.plegado, '[2] technical details are not folded');
   ok(externas.length === 0, 'external requests: ' + externas.slice(0, 3));
+  // North D1: the install guide, at phone width: nothing external, no sideways scroll, no missing value, the landing links it.
+  ok(await ev("!!document.querySelector('#web-app ~ .get-app a[href=\"/get-the-app/\"], .get-app a[href=\"/get-the-app/\"]')"), 'the landing does not link /get-the-app/');
+  await cmd('Page.navigate', { url: origen + '/get-the-app/' }); await espera(1500);
+  medida.guia = JSON.parse(await ev("JSON.stringify({ h1: (document.querySelector('h1') || {}).textContent, ancho: document.documentElement.scrollWidth, vista: innerWidth, bajas: document.querySelectorAll('a[href*=\"/releases/download/\"]').length, huellas: document.querySelectorAll('code.sha[data-asset]').length, filas: document.querySelectorAll('.pruebas tbody tr').length, texto: document.body.innerText })"));
+  ok(medida.guia.h1 === 'Get the app', '/get-the-app/ did not load');
+  ok(medida.guia.ancho <= medida.guia.vista, '/get-the-app/ scrolls sideways: ' + medida.guia.ancho + ' > ' + medida.guia.vista);
+  ok(medida.guia.bajas >= 3 && medida.guia.huellas >= 2 && medida.guia.filas >= 4, '/get-the-app/ lost downloads, fingerprints or the test table');
+  ok(!/\bundefined\b|\bNaN\b/.test(medida.guia.texto), 'missing value shown on /get-the-app/');
+  if (CAPTURA) { const g = await cmd('Page.captureScreenshot', { format: 'png', captureBeyondViewport: true }); writeFileSync(join(CAPTURA, 'get-the-app.png'), Buffer.from(g.result.data, 'base64')); }
+  ok(externas.length === 0, 'external requests after /get-the-app/: ' + externas.slice(0, 3));
+  // North N2: /aduana/ is observant. The checker mounts, the registry reads NO_DATA from the contract, sending is
+  // asleep (the send button disabled, envia() sends nothing), nothing external, no sideways scroll.
+  await cmd('Page.navigate', { url: origen + '/aduana/' }); await espera(2000);
+  medida.aduana = JSON.parse(await ev(`(async () => { const b = [...document.querySelectorAll('#comprueba button')];
+    const r = window.AtlasAduana ? await AtlasAduana.envia({ pares: [{}] }) : null;
+    return JSON.stringify({ h1: (document.querySelector('h1') || {}).textContent, botones: b.length, envioOff: b.length ? b[b.length - 1].disabled : null,
+      registro: (document.getElementById('estado-registro') || {}).textContent, envia: r && { sent: r.sent, code: r.code },
+      ancho: document.documentElement.scrollWidth, vista: innerWidth, texto: document.body.innerText }); })()`));
+  ok(medida.aduana.h1 === 'Create a node', '/aduana/ did not load');
+  ok(medida.aduana.botones >= 3 && medida.aduana.envioOff === true, '/aduana/ checker not mounted, or its send is awake');
+  ok(medida.aduana.registro === 'NO_DATA' && medida.aduana.envia && medida.aduana.envia.sent === false && medida.aduana.envia.code === 'registry_not_deployed', '/aduana/ is not asleep: ' + JSON.stringify(medida.aduana.envia));
+  ok(medida.aduana.ancho <= medida.aduana.vista, '/aduana/ scrolls sideways');
+  // North N3: the catalogue is asleep at load; fed a stub list it shows only real nodes, and a row with a key empties it.
+  medida.catalogo = JSON.parse(await ev(`(async () => {
+    const off = document.getElementById('catalogo-carga').disabled, oculta = document.getElementById('catalogo').hidden;
+    const f = (nodo, x) => Object.assign({ nodo, estado: 'pendiente', causa: 'ancla_ausente', recibido: '2026-10-26T23:00:00.000Z', recibo_sha256: 'ab'.repeat(32) }, x || {});
+    const stub = (cedulas) => async () => ({ json: async () => ({ esquema: 'preceptoros.catalogo-cedulas/1', solo_lectura: true, cedulas }) });
+    await AtlasAduana.catalogo(stub([f('nodo.5.vecino'), f('nodo.9101.claude-test', { causa: 'cuenta_de_prueba' })]));
+    const filas = [...document.querySelectorAll('#catalogo tbody tr')].map((tr) => tr.cells[0].textContent);
+    await AtlasAduana.catalogo(stub([f('nodo.6.malo', { clave: 'cd'.repeat(32) })]));
+    return JSON.stringify({ off, oculta, filas, trasClave: document.getElementById('catalogo').hidden, nota: document.getElementById('catalogo-estado').textContent,
+      clave: document.body.innerText.includes('cd'.repeat(32)) }); })()`));
+  ok(medida.catalogo.off && medida.catalogo.oculta, '/aduana/ catalogue is not asleep at load');
+  ok(JSON.stringify(medida.catalogo.filas) === JSON.stringify(['nodo.5.vecino']), 'catalogue rows wrong (test node listed?): ' + medida.catalogo.filas);
+  ok(medida.catalogo.trasClave && !medida.catalogo.clave && /NO_DATA/.test(medida.catalogo.nota), 'a catalogue row with a key was shown');
+  ok(!/\bundefined\b|\bNaN\b/.test(medida.aduana.texto), 'missing value shown on /aduana/');
+  if (CAPTURA) { const g = await cmd('Page.captureScreenshot', { format: 'png', captureBeyondViewport: true }); writeFileSync(join(CAPTURA, 'aduana.png'), Buffer.from(g.result.data, 'base64')); }
+  ok(externas.length === 0, 'external requests after /aduana/: ' + externas.slice(0, 3));
   if (CAPTURA) {
     const s = await cmd('Page.captureScreenshot', { format: 'png' });
     writeFileSync(join(CAPTURA, 'landing-doors.png'), Buffer.from(s.result.data, 'base64'));
   }
-  console.log(JSON.stringify({ piece: 'P3-1d', receipt: 'MEDIDO', dibujos: medida.dibujos, enlaces: medida.enlaces, externas: externas.length, fallos }));
+  console.log(JSON.stringify({ piece: 'P3-1d', receipt: 'MEDIDO', dibujos: medida.dibujos, lados: medida.lados, catalogo: medida.catalogo && { off: medida.catalogo.off, filas: medida.catalogo.filas, trasClave: medida.catalogo.trasClave }, aduana: medida.aduana && { botones: medida.aduana.botones, envioOff: medida.aduana.envioOff, registro: medida.aduana.registro, envia: medida.aduana.envia, ancho: medida.aduana.ancho }, guia: medida.guia && { ancho: medida.guia.ancho, vista: medida.guia.vista, bajas: medida.guia.bajas, huellas: medida.guia.huellas, filas: medida.guia.filas }, enlaces: medida.enlaces, externas: externas.length, fallos }));
 }
 
 main().catch((e) => { fallos.push(String(e && e.message || e)); console.log(JSON.stringify({ piece: 'P3-1d', fallos })); })

@@ -1074,7 +1074,9 @@ CREATION_PAGE_DEPENDENCIES = CREACION + (
     "bubble_language.js", "comic_tokens.js", "comic_accents.js",
     "tabla_semantica.js", "bubble_editor.js", "bubble_paint.js",
 )
-FUERA_DE_LA_PUERTA = tuple(sorted(set(PUROS + ARENA + CASA + DESCENSO + VT6 + J1 + VT2_ETIQUETA + VT4_SILUETA + VISION_LEXICA)))
+# /aduana/ (Norte N3, 2026-10-26): el catalogo publico de cedulas, puro; solo lo carga la pagina /aduana/.
+ADUANA = ("node_catalogue.js",)
+FUERA_DE_LA_PUERTA = tuple(sorted(set(PUROS + ARENA + CASA + DESCENSO + VT6 + J1 + VT2_ETIQUETA + VT4_SILUETA + VISION_LEXICA + ADUANA)))
 # La cara del juego (2026-10-25) es su propia superficie en public/face/, fuera
 # de la puerta: carga de una vez las piezas que usa, como creation.html. Se
 # declaran aqui las suyas, leidas de sus paginas, y nada mas.
@@ -1084,6 +1086,13 @@ FACE_PAGE_DEPENDENCIES = tuple(sorted(set(re.findall(r'src="/game/([^"]+)"', (PU
 # puede ampliar la lista en silencio; test_web.Puerta exige que cargue exactamente esta lista.
 LANDING_PAGE_DEPENDENCIES = ("tabla_semantica.js", "comic_tokens.js", "comic_accents.js", "comic_atoms.js",
                              "bubble_language.js", "bubble_letters.js")
+# /aduana/ (Norte N2, 2026-10-26): el comprobador de cedulas, OBSERVANTE, carga la cadena de nodos y solo esa. Se
+# DECLARA aqui; local_first_surface_build.ADUANA_SCRIPTS es la misma lista, y tests/aduana_page.test.mjs exige que
+# coincidan.
+ADUANA_PAGE_DEPENDENCIES = ("canon.js", "node_reception_contract.js", "node_trust_anchor.js", "node_trust_manifest.js",
+                            "node_signature_messages.js", "node_signature_verify.js", "node_bindings_messages.js",
+                            "node_bindings.js", "node_projection.js", "node_preview.js", "node_file_receiver.js",
+                            "node_catalogue.js")
 
 
 
@@ -1219,6 +1228,8 @@ class TheGameV15(unittest.TestCase):
                         continue   # la cara es su propia superficie (2026-10-25)
                     if h == PUBLICO / "index.html" and m in LANDING_PAGE_DEPENDENCIES:
                         continue   # las puertas de la portada en bubble language (P3 [1d])
+                    if h == PUBLICO / "aduana" / "index.html" and m in ADUANA_PAGE_DEPENDENCIES:
+                        continue   # el comprobador de cedulas de /aduana/ (Norte N2)
                     self.assertNotIn(f"game/{m}", h.read_text(encoding="utf-8"))
 
     def test_creation_page_dependencies_are_precached(self):
@@ -1745,7 +1756,7 @@ class Multijugador(unittest.TestCase):
             with self.subTest(modulo=m):
                 self.assertLess(f.stat().st_size, TOPE_FICHERO, f"{m} pasa del bloque")
                 self.assertNotIn(m, puerta, f"{m} entra en la puerta del juego")
-                if m in ARENA + CASA + DESCENSO:   # D7: lo que la puerta carga entra en el precache
+                if m in ARENA + CASA + DESCENSO + ADUANA:   # D7: lo que una pagina carga entra en el precache (ADUANA: /aduana/, Norte N3)
                     self.assertIn("/game/" + m, listas, f"{m} no esta en el precache")
                 else:                   # los puros que nadie pide, tampoco al precache
                     self.assertNotIn("/game/" + m, listas, f"{m} entra en el precache sin que nadie lo pida")
@@ -1757,6 +1768,8 @@ class Multijugador(unittest.TestCase):
                         continue
                     if h == PUBLICO / "index.html" and m in LANDING_PAGE_DEPENDENCIES:
                         continue   # las puertas de la portada en bubble language (P3 [1d])
+                    if h == PUBLICO / "aduana" / "index.html" and m in ADUANA_PAGE_DEPENDENCIES:
+                        continue   # el comprobador de cedulas de /aduana/ (Norte N2)
                     self.assertNotIn("game/" + m, h.read_text(encoding="utf-8"))
 
 
@@ -2759,7 +2772,7 @@ class NodosComoCuenta(unittest.TestCase):
     lucha con su niebla. Jugar sin firma no saca nada del navegador; enviar exige gesto, la firma
     de la partida y una SEGUNDA firma de consentimiento (consent 1)."""
 
-    NODOS = ("nodos-pesos.js", "nodos-cedulas.js", "nodos.js", "ui-nodos.js", "node_preview.js", "node_file_receiver.js")
+    NODOS = ("nodos-pesos.js", "nodos-cedulas.js", "nodos.js", "ui-nodos.js", "node_preview.js", "node_file_receiver.js", "node_catalogue.js")
 
     def _js(self, nombre):
         return sin_comentarios(_fam(nombre, (PUBLICO / "game" / nombre).read_text(encoding="utf-8")))

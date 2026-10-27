@@ -1,4 +1,4 @@
-// preceptoros.org · the landing's three doors, redrawn in the house bubble language (P3 [1d],
+// preceptoros.org · the landing's three doors (and the web/app pair of [2]), redrawn in the house bubble language (P3 [1d],
 // Sovereign decree 2026-10-26). Only the presentation changes: each door keeps its real link and its
 // text. A speech bubble with a small sea wave and the title in comic letters is drawn on top; the
 // title stays in the page for screen readers and for anyone without JavaScript.
@@ -15,11 +15,13 @@
   var OLA = [];
   for (var j = 0; j <= 12; j++) { OLA.push([136 + j * 4, Math.round((64 + 3 * Math.sin(j * Math.PI / 4)) * 10) / 10]); }
 
-  // The bubble frame of one door: pure data, under 1,024 bytes.
-  function marco(titulo) {
+  // The bubble frame of one door: pure data, under 1,024 bytes. `espejo` turns the tail to the right,
+  // so the web and the app ([2], 2026-10-26) are two speech bubbles facing each other.
+  function marco(titulo, espejo) {
+    var cola = [[58, 66], [36, 94], [92, 72]].map(function (p) { return espejo ? [ANCHO - p[0], p[1]] : p; });
     return { v: 'preceptoros.bubble/1', id: 'door', t: 0, cv: [ANCHO, ALTO], atoms: [
       { k: 'bubble', r: 'a speech bubble', i: [
-        { o: 'ribbon', pts: [[58, 66], [36, 94], [92, 72]], closed: true, f: 'paper', s: 'ink', lw: 3 },
+        { o: 'ribbon', pts: cola, closed: true, f: 'paper', s: 'ink', lw: 3 },
         { o: 'ribbon', pts: ORLA, closed: true, f: 'paper', s: 'ink', lw: 3 }] },
       { k: 'sea', r: 'a small wave', i: [{ o: 'ribbon', pts: OLA, closed: false, s: 'cyan', lw: 2.5 }] },
       { k: 'title', r: titulo, i: [{ o: 'letters', x: 160, y: 42, tx: titulo, sz: 18, f: 'paper', s: 'ink', sh: [1.5, 1.5, 'cyan'] }] }] };
@@ -30,7 +32,7 @@
   function dibuja() {
     var B = raiz.AtlasBubble, P = raiz.AtlasComicAtoms, doc = raiz.document;
     if (!B || !P || !raiz.AtlasBubbleLetters) { return; }
-    var puertas = doc.querySelectorAll('#doors .door'), hechas = 0;
+    var puertas = doc.querySelectorAll('#doors .door, #web-app .side'), hechas = 0;
     Array.prototype.forEach.call(puertas, function (a) {
       var b = a.querySelector('b'), titulo = b ? b.textContent : '';
       if (!titulo || a.querySelector('.door-art')) { return; }
@@ -40,7 +42,7 @@
       try {
         var g = c.getContext('2d');
         g.setTransform(dpr, 0, 0, dpr, 0, 0);
-        P.paint(g, B.compile(marco(titulo)));
+        P.paint(g, B.compile(marco(titulo, a.getAttribute('data-lado') === 'app')));
       } catch (e) { return; }
       a.insertBefore(c, a.firstChild);
       hechas++;
