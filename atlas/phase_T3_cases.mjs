@@ -7,10 +7,11 @@ const digest = b => createHash('sha256').update(b).digest('hex');
 const baseline = 'e8a92e1d4fe223929f1cf2afb5f234a6ae593282cefc8efffdfd68a5cb8a5040'; /* updated 2026-10-19: rar_magico 'Magic' -> 'Uncommon' (banned word out of the UI); measured from the gate itself */
 const protectedFiles = { /* hashes actualizados 2026-10-16 por D1-laws: los comentarios salieron del codigo (canon en docs/); la logica intacta */
   // armi 30 (web#278): army_tope 60->30; pin re-medido por el gate el 2026-10-23.
-  'public/game/valores.js': '0982f47281becb01f98f4db6d16b4df0d649e7fdbf01aacae34e5d455d254114',
+  // [W] O2 (2026-10-27, REQUIERE_FIRMA bajo el decreto O1..O5): voz del duelo (voz_hz, acorde, acorde_paso); pins re-medidos.
+  'public/game/valores.js': '43fe2eb66ca2f10cc4b6c5fd34a00f1313481e8ae99faab9c818c9fa908ad576',
   'public/assets/atlas-motor.js': 'c31c2b2e51df15707242bbc5d8d80bf1801fce51764d472dd4bcdb15903a0051',
   'public/game/gacha.js': 'f98302cf4f59f281b1ee2bdd90715c576a4630ec42316231191d4fba266d403c',
-  'public/game/core.js': 'f7f126fde151931830f772be35aecdd84fa97f7c5be4b257f80d9674a66f6a0d',
+  'public/game/core.js': '94c30db677f51ac1b52b1cbe58e9c3d73a07961eee4b74e458798d7a1aa456e7',
   // G5b: awaited device commit and serialized invocations; original D1 digest remains in Git history.
   'public/game/ui-invoca.js': '33ef891f7a434ab9845e6b077d9038e52bcb3f3b2e865a3144f0bf7a79f9984b'};
 function validate(raw, files) {
