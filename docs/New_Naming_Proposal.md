@@ -1,6 +1,6 @@
 # New_Naming_Proposal · PROPUESTA Mistral · 2026-10-15
 
-Estado: **PROPUESTA — sin firma del Soberano; sin renombre aplicado.** Los renombres los ejecuta Codex tras FIRMO. Los números J (J1–J15) viven solo en este documento y en PARA_LA_MESA.md: jamás van al código. Cero red, cero datos personales, piezas <16 KiB, inglés primero en UI, 1 cambio por pieza.
+Estado: **PROPUESTA — sin firma del Soberano; sin renombre aplicado.** Los renombres los ejecuta Codex tras FIRMO. Los números J (J1–J15) viven solo en este documento y en docs/mesa/PARA_LA_MESA.md: jamás van al código. Cero red, cero datos personales, piezas <16 KiB, inglés primero en UI, 1 cambio por pieza.
 
 Regla FIRMO del vocabulario: cada nombre de código y UI debe poder leerse en dos claves a la vez — la humana (lore, castellano amable) y la de silicio (EU AI Act + matemática). Anclajes citados: CELEX (AI Act), ISO, W3C, RFC y conceptos matemáticos con nombre propio.
 
@@ -16,7 +16,7 @@ Regla FIRMO del vocabulario: cada nombre de código y UI debe poder leerse en do
 
 **«Echoes» tiene hoy dos dueños:**
 1. Pestaña del panel de comunicación (`public/assets/radio_message_log.js:117` — `['echoes', T('channel_echoes', 'Echoes')]`), con NO_DATA medido en la línea 100.
-2. Pieza del mapa de nombres J11 «Echoes & Residue» (PARA_LA_MESA.md:449) — el taller de disolución y lija (`ui-taller.js`, `primer_eco.js`).
+2. Pieza del mapa de nombres J11 «Echoes & Residue» (docs/mesa/PARA_LA_MESA.md:459) — el taller de disolución y lija (`ui-taller.js`, `primer_eco.js`).
 
 Mi recomendación: renombrar la **pestaña** y conservar «Echoes & Residue» para la pieza J11, porque J11 ya está en el mapa firmado de piezas y moverlo rompería el mapa; la pestaña es un canal de comunicación y tiene mejor anclaje legislativo propio.
 
@@ -49,7 +49,7 @@ Mi recomendación: renombrar la **pestaña** y conservar «Echoes & Residue» pa
 - **Por qué:** humano: «sobre firmado» ya se entiende; en inglés UI gana precisión. Silicio: firma + secuencia + hash encadenado son legibles para un auditor RFC. No hay urgencia: es cosmético si la UI ya lo dice bien; pongo prioridad baja.
 
 ### 1.5 «mercado» → mantener en código; UI: «Trade Currents» (ya firmado J3 del mapa)
-- **Actual:** `el MERCADO entre personas` — `public/game/mercado.js:1`; J3 «Trade Currents» en el mapa de nombres (PARA_LA_MESA.md:449) ya lo cubre.
+- **Actual:** `el MERCADO entre personas` — `public/game/mercado.js:1`; J3 «Trade Currents» en el mapa de nombres (docs/mesa/PARA_LA_MESA.md:459) ya lo cubre.
 - **Propuesto:** ninguno nuevo. Recojo solo que **J3 ya ancla esta pieza** y que `mercado.js:5` ya dice «nunca dinero real ni cripto ni una moneda nueva» — el cerco del vocabulario ya está en el contrato.
 - **Por qué:** no duplico lo firmado. Lo marco como «recogido, sin acción».
 
@@ -93,8 +93,8 @@ Los J1–J15 del mapa firmado no se tocan ni se renumeran aquí.
 
 ## 3 · NO_DATA (con causa)
 
-- No encontré «Echoes & Residue» como fichero ni función: vive solo como entrada del mapa de nombres J11 en PARA_LA_MESA.md:449. La pieza real son `taller.js`/`ui-taller.js`/`primer_eco.js`. Si el Soberano quiere renombrar la pieza J11, es decisión nueva, no de esta propuesta.
-- No pude medir si `preceptoros-2026-17-abho` está ya en el repo: el espejo dice `abgm` (PARA_LA_MESA.md, cierre OCEANO). Si `abho` está desplegado, su recibo vive en el rack: NO_DATA aquí, confirmado por la Mesa como en producción.
+- No encontré «Echoes & Residue» como fichero ni función: vive solo como entrada del mapa de nombres J11 en docs/mesa/PARA_LA_MESA.md:459. La pieza real son `taller.js`/`ui-taller.js`/`primer_eco.js`. Si el Soberano quiere renombrar la pieza J11, es decisión nueva, no de esta propuesta.
+- No pude medir si `preceptoros-2026-17-abho` está ya en el repo: el espejo dice `abgm` (docs/mesa/PARA_LA_MESA.md, cierre OCEANO). Si `abho` está desplegado, su recibo vive en el rack: NO_DATA aquí, confirmado por la Mesa como en producción.
 
 ---
 

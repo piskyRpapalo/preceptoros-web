@@ -26,7 +26,7 @@ Léelo antes de tocar nada. Vale para toda sesión de agente (rack, nube, web) j
 ## Reglas de la casa
 - El silicio propone, el carbono firma: nada de valor sin FIRMO explícito del Soberano. Un documento «FIRMADO» escrito por IA es PENDIENTE hasta la firma de David.
 - Los merges a main NUNCA son por autonomía: cada fusión espera FIRMO PR por PR, tras verificación independiente de la Mesa.
-- PARA_LA_MESA.md es un ledger append-only: solo lectura para agentes; los recibos se publican en el PR y la Mesa los appenda.
+- `docs/mesa/PARA_LA_MESA.md` está CONGELADO desde 2026-10-27 (archivo histórico, solo lectura): el trono de las firmas es `LIBRO_DE_FIRMAS.md` (repo `firmas`). Los recibos se publican en el PR y en buzon#19.
 
 ## Cercos (sin excepciones)
 - Vocablos prohibidos en código y UI: oraculo, notario, depin, token, moneda, clearing, magia. <!-- H7-FORBIDDEN-LIST -->
