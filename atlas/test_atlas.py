@@ -1047,11 +1047,11 @@ process.stdout.write(JSON.stringify(ok));
 # Modulos de `public/game/` que NINGUN guion pide todavia (ni la puerta ni el Army): el multijugador y
 # la cria, firmados por el Soberano el 2026-09-28 («ve construyendo todo… enfocados al multiplayer»).
 # Ver atlas/POST_VERIFICACION_MGNO_LAB.md y atlas/POST_VERIFICACION_SISIL_CRIA.md.
-PUROS = ("canon.js", "sobres.js", "rating.js", "arena.js", "duelo.js", "mercado.js", "narragrafo.js", "cria.js", "genoma.js")  # T_CRT §8.1: el orquestador mini lo lee; ningun guion de la web lo pide aun
+PUROS = ("canon.js", "sobres.js", "rating.js", "arena.js", "duelo.js", "battle_choreography.js", "mercado.js", "narragrafo.js", "cria.js", "genoma.js")  # T_CRT §8.1: el orquestador mini lo lee; ningun guion de la web lo pide aun
 # La Arena (2026-09-28, «el mapa multi-jugador en una pestana»): se carga al abrir su pestana, detras del Army.
 ARENA = ("sobres.js", "rating.js", "combate_ticks.js", "arena.js", "duelo.js", "sea-anchors.js", "crab_render_hd.js", "audio_feedback_manager.js", "crab_free_move.js", "genesis_tutorial.js", "buildings_toon.js", "reef_place_cards.js", "shell_schematics.js", "reef_buildings_paint.js", "latency_crystal.js", "hexelion_bench.js", "bubble_bestiary.js", "map_bubble_figures.js", "reef_corals.js", "reef_buildings_layer.js", "sea-crabs.js", "map_pointer_input.js", "semiotic_glyph.js", "hexelion_dictionary.js", "map_nodes_layer.js", "map_zoom.js", "piece_inspector.js", "vector_contract.js", "state_vector.js", "place_reading.js", "npc_territory_map.js", "map_integrity.js", "sea.js", "nodos-pesos.js",
          "node_reception_contract.js", "node_trust_anchor.js", "node_trust_manifest.js", "node_signature_messages.js", "node_signature_verify.js", "node_bindings_messages.js", "node_bindings.js", "node_projection.js", "nodos.js", "cuenta.js", "ui-nodos.js", "ui-rack.js", "node_preview.js", "node_file_receiver.js",
-         "escuadron.js", "battle_choreography.js", "battle_replay.js", "npc_occupancy.js", "npc_walls.js", "ui-arena-comun.js", "combat_screen.js", "ui-arena.js", "ui-duelo.js")
+         "escuadron.js", "wave_duel_scene.js", "npc_occupancy.js", "npc_walls.js", "ui-arena-comun.js", "combat_screen.js", "ui-arena.js", "ui-duelo.js")
 # La CASA (2026-10-05): la primera pantalla, detras del Army. Lleva canon y escena, que la Arena reutiliza.
 # C1+C2 (#264, 2026-10-23): editor Bubble y Paint se cargan con la Casa; ambos son modulos v1.5 a demanda.
 CASA = ("canon.js", "tabla_semantica.js", "comic_tokens.js", "comic_atoms.js", "escena.js", "wave_render.js", "gdpr-art25-ephemeral-crab.js", "aiact-art50-crab-terminal.js", "nodos-cedulas.js", "fog_of_war.js", "isometric_floor_projection.js", "world_camera.js", "sea-floor.js", "sea_rift.js", "bubble_editor.js", "bubble_paint.js", "gdpr-art7-entry-choice.js", "aiact-art50-state-radio.js", "casa-medidas.js", "casa-personaliza.js", "casa-lateral.js", "crab_state_screen.js", "reef_building_lifecycle.js", "home_buildings.js", "summon-wave-card.js", "summon_reveal.js", "taller.js", "army-wave-panel.js", "ui-taller.js", "primer_eco.js", "summon-access.js", "deep_links.js", "hitl_firma.js", "onda_profunda.js", "tarjeta_cantada.js", "cable_llamar.js", "cable_terminal.js")
@@ -1076,10 +1076,9 @@ CREATION_PAGE_DEPENDENCIES = CREACION + (
 )
 # /aduana/ (Norte N3, 2026-10-26): el catalogo publico de cedulas, puro; solo lo carga la pagina /aduana/.
 ADUANA = ("node_catalogue.js",)
-# [W] O1a (2026-10-27): la escena del duelo de ondas, OSCURA: ninguna pagina la carga todavia (O1b la conecta y retira las
-# caras viejas en la misma pieza). Por eso no entra al precache ni a ninguna pagina; la regla D7 lo exige asi.
-W_O1A = ("wave_duel_scene.js",)
-FUERA_DE_LA_PUERTA = tuple(sorted(set(PUROS + ARENA + CASA + DESCENSO + VT6 + J1 + VT2_ETIQUETA + VT4_SILUETA + VISION_LEXICA + ADUANA + W_O1A)))
+# [W] O1b (2026-10-27): la escena del duelo de ondas entra en la Arena (ARENA) y en los mundos; battle_choreography queda
+# en PUROS (motor intacto, ya no lo carga ninguna cara).
+FUERA_DE_LA_PUERTA = tuple(sorted(set(PUROS + ARENA + CASA + DESCENSO + VT6 + J1 + VT2_ETIQUETA + VT4_SILUETA + VISION_LEXICA + ADUANA)))
 # La cara del juego (2026-10-25) es su propia superficie en public/face/, fuera
 # de la puerta: carga de una vez las piezas que usa, como creation.html. Se
 # declaran aqui las suyas, leidas de sus paginas, y nada mas.
@@ -2192,10 +2191,11 @@ class CombateLimpio(unittest.TestCase):
     El automatico solo baja tras medir fps, lo dice en pantalla y volver a Maxima es un toque."""
 
     def test_la_eleccion_del_jugador_manda_y_la_bajada_se_dice(self):
-        rp = sin_comentarios((PUBLICO / "game" / "battle_replay.js").read_text(encoding="utf-8"))
-        self.assertIn("m === 'luz' ? 0 : m && m !== 'auto' ? 1 : med.nivel(", rp)
-        self.assertIn("R.ahorro.hidden = cal !== 0;", rp)
-        self.assertIn("dibuja(t, 0, 0, W, H, cal);", rp)
+        # [W] O1b (2026-10-27): la regla firmada pasa de battle_replay.js (retirada) al duelo de ondas, la UNA cara.
+        rp = sin_comentarios((PUBLICO / "game" / "wave_duel_scene.js").read_text(encoding="utf-8"))
+        self.assertIn("cal = m === 'luz' ? 0 : m && m !== 'auto' ? 1 : (med && !med.nivel(", rp)
+        self.assertIn("if (!cal) { g.font", rp)
+        self.assertIn("T('rp_ahorro')", rp)
         self.assertIn("C.pon('maxima')", rp)
         tx = json.loads((PUBLICO / "atlas-arena-en.json").read_text(encoding="utf-8"))["ui"]
         self.assertIn("same result", tx["rp_ahorro"])
@@ -2700,23 +2700,25 @@ class MapaMovible(unittest.TestCase):
                 self.assertTrue(c["ok"], c["detalle"])
 
     def test_sin_azar_ni_reloj_ni_red(self):
-        for f in ("battle_choreography.js", "battle_replay.js"):
+        for f in ("battle_choreography.js", "wave_duel_scene.js"):
             c = self._js(f)
             for malo in ("Math.random", "Date.", "performance.now", "fetch(", "localStorage", "innerHTML"):
                 with self.subTest(fichero=f, prohibido=malo):
                     self.assertNotIn(malo, c)
-        self.assertNotIn("arena.combate", self._js("battle_replay.js"), "la repeticion vuelve a decidir el combate")
+        self.assertNotIn("arena.combate", self._js("wave_duel_scene.js"), "la escena vuelve a decidir el combate")
 
     def test_mandos_de_nino_y_accesible(self):
-        r = self._js("battle_replay.js")
-        for pieza in ("R.tiempo.type = 'range'", "R.tiempo.setAttribute('aria-label', T('rp_tiempo'))",
-                      "vel = vel >= 4 ? 1 : vel * 2",
-                      "lienzo.setAttribute('aria-label', T('rp_aria'))", "var claves = [0, 3000, Math.round(k.fin / 2), k.total];",
-                      "desafina: Math.min(1, (1 - p[2] / k.max[j])", "color: velColor(k.vel[j])"):
+        # [W] O1b (2026-10-27, fallo HIBRIDO): los mandos son los de v1.1 en ui-arena (Speed x1/x2/x4, Skip, Replay) sobre la
+        # UNA cara, el duelo de ondas. La linea de tiempo de la repeticion se retira con su cara (REQUIRES_FIRMA).
+        r, u = self._js("wave_duel_scene.js"), self._js("ui-arena.js")
+        for pieza in ("lienzo.setAttribute('aria-label', d)", "lienzo.setAttribute('role', 'img')",
+                      "desafina: Math.min(1, (1 - u.vida / u.max)"):
             with self.subTest(pieza=pieza):
                 self.assertIn(pieza, r)
-        self.assertIn("actual = (window.AtlasReplay || E).escena(R.lienzo, def, asa, c, { semilla: info.semilla, texto: T,",
-                      self._js("ui-arena.js"))
+        for pieza in ("vel = vel >= 4 ? 1 : vel * 2", "R.salta.onclick = function () { actual.salta(); };",
+                      "actual = (window.AtlasWaveDuel || E).escena(R.lienzo, def, asa, c, { semilla: info.semilla, texto: T,"):
+            with self.subTest(pieza=pieza):
+                self.assertIn(pieza, u)
         tx = json.loads((PUBLICO / "atlas-arena-en.json").read_text(encoding="utf-8"))["ui"]
         for k in set(re.findall(r"T\('(\w+)'\)", r)) | {"rp_marcha", "rp_choque", "rp_f_agresiva", "rp_f_defensiva", "rp_f_flanqueo"}:
             with self.subTest(clave=k):
@@ -3231,8 +3233,8 @@ class AccesoTactilYPanel(unittest.TestCase):
         self.assertIn("R.color.setAttribute('role', 'img')", self._lee("game/home_buildings.js"))
 
     def test_la_repeticion_de_batalla_es_una_imagen_con_nombre(self):
-        """battle_replay.js: el canvas lleva aria-label; sin rol no tiene nombre para muchos lectores."""
-        self.assertIn("lienzo.setAttribute('role', 'img')", self._lee("game/battle_replay.js"))
+        """wave_duel_scene.js (antes battle_replay.js): el canvas lleva aria-label; sin rol no tiene nombre para muchos lectores."""
+        self.assertIn("lienzo.setAttribute('role', 'img')", self._lee("game/wave_duel_scene.js"))
 
 
 class EstrellaHexelion(unittest.TestCase):

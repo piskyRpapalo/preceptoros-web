@@ -83,29 +83,12 @@
         change: [change || (b.result ? 'verdict: ' + b.result.gana : 'tick ' + (b.st ? b.st.ronda : 0))], sound: 'NO_DATA', soundCause: 'sound off', motion: 'tick by tick' };
     }
 
-    function paint(g, toScreen, z, quiet) {
-      if (!b.on) { return; }
-      var O = root.AtlasOnda, list = troops(), per = Math.max(1, Math.floor((V.army_tope || 30) / Math.max(1, draws[1].length))), k = Math.max(0.35, z);
-      list.forEach(function (x) {
-        var p2 = toScreen(x.at[0], x.at[1]), r = 18 * k, frac = x.max ? x.vida / x.max : 0, c = O.colorVida(frac, O.tono(x.d));
-        if (x.vida <= 0) { return; }
-        if (x.lado === 1) {
-          var n = Math.min(per, E.cuantas(x.d.aristas)), s = E.sitios(n, x.d.semilla, b.form);
-          for (var i = 1; i < E.vivas(n, x.vida, x.max); i++) { O.dibuja(g, x.d.armonicos, p2[0] + s[i][0] * r * 0.9, p2[1] + s[i][1] * r * 0.55, r * 0.22, { calidad: 0, color: c, alfa: 0.75 }); }
-        }
-        var grow = b.reveal && x.lado === 1 ? Math.min(x.d.armonicos.length, 1 + Math.floor(b.reveal / 6)) : x.d.armonicos.length;
-        O.dibuja(g, x.d.armonicos.slice(0, grow), p2[0], p2[1] - r * 0.4, r, { calidad: quiet ? 1 : 2, color: c, face: true, estela: quiet ? 0 : 2, giro: (b.st ? b.st.ronda : 0) * 0.35 * (x.lado ? -1 : 1) });
-      });
-      g.save();
-      b.last.forEach(function (e) {
-        var a = list.filter(function (x) { return x.lado === e[1] && x.i === e[2]; })[0], d = list.filter(function (x) { return x.lado !== e[1] && x.i === e[3]; })[0];
-        if (!a || !d) { return; }
-        var p1 = toScreen(a.at[0], a.at[1]), q = toScreen(d.at[0], d.at[1]);
-        g.setLineDash(e[4] < 0 ? [4, 6] : []);
-        g.strokeStyle = e[1] ? 'rgba(0,210,255,.85)' : 'rgba(230,57,70,.85)'; g.lineWidth = Math.max(2, 3 * k);
-        g.beginPath(); g.moveTo(p1[0], p1[1] - 10 * k); g.quadraticCurveTo((p1[0] + q[0]) / 2, Math.min(p1[1], q[1]) - 50 * k, q[0], q[1] - 10 * k); g.stroke();
-      });
-      g.restore();
+    // [W] O1b (2026-10-27): the fight is drawn by the ONE combat face, the wave duel, LIVE over this state. The old painter
+    // (paint) is retired. A withdraw order zeroes a unit without a log event, so the scene does not animate it.
+    function duel() {
+      if (!b.st) { return null; }
+      return { def: p.tropas, asa: squad, semilla: seed,
+        combate: { get registro() { return b.st ? b.st.registro : []; }, get gana() { return b.result ? b.result.gana : null; } } };
     }
 
     function sonar(A) { if (A) { A.activa(true); A.suena({ tipo: 'sonar', portadora: 1320, moduladora: 660, indice: 90, dur: 0.5, gan: 0.08 }); } }
@@ -116,7 +99,7 @@
         troops: troops().map(function (x) { return { side: x.lado ? 'yours' : 'patrol', i: x.i, name: x.name, life: x.vida, max: x.max }; }) };
     }
 
-    return { begin: begin, step: step, done: done, withdraw: withdraw, form: form, frame: frame, paint: paint, sonar: sonar, summary: summary, troops: troops, b: b };
+    return { begin: begin, step: step, done: done, withdraw: withdraw, form: form, frame: frame, duel: duel, sonar: sonar, summary: summary, troops: troops, b: b };
   }
 
   var Battle = { create: create, patrols: patrols, seedFor: seedFor, forms: forms, formNames: formNames, field: field };

@@ -28,7 +28,6 @@
 <script src="/public/game/taller.js"></script>
 <script src="/public/game/combate_ticks.js"></script>
 <script src="/public/game/arena.js"></script>
-<script src="/public/assets/bout_scene.js"></script>
 <script>
 // Fixture de palabras: el dibujo es funcion PURA de los datos. Sin reloj, sin azar, sin red.
 (function () {
@@ -98,7 +97,6 @@
       }
     });
     escena('codex', window.AtlasCodexScene);
-    escena('bout', window.AtlasBoutScene);
     window.__palabras = { ok: true, lienzos: lienzos, causas: causas };
   } catch (e) {
     window.__palabras = { ok: false, lienzos: [], causas: ['NO_DATA · ' + e.message] };

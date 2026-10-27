@@ -113,5 +113,17 @@ casos[casos.length - 1] = (() => { // this case judges escena.js alone: the real
   return { caso: 'escena.js without the wave duel: an inert scene, never a throw', ok: sin === 'OK' && con !== 'OK', detalle: sin + ' | sab ' + (con !== 'OK' ? 'ROJO' : 'VERDE?!') };
 })();
 
+// [W] O1b: LIVE fights (practice, worlds) grow their log tick by tick; the scene ends only once a winner exists.
+caso('live mode: a growing fight does not end before its winner, and ends after it', (src) => {
+  const { g, cola } = monta(src), p = pelea(g, 1), L = lienzo(800), todo = p.c.registro, vivo = { registro: todo.slice(0, 3), gana: null };
+  let fin = 0;
+  g.AtlasEscena.escena(L.el, p.def, p.asa, vivo, { semilla: p.semilla, vivo: true, alFin: () => { fin++; } });
+  const corre = (n) => { for (let i = 0, ts = 0; i < n && cola.length; i++) { ts += 16; cola.shift()(ts); } };
+  corre(400);
+  if (fin) { return 'ended before the winner'; }
+  vivo.registro = todo; vivo.gana = p.c.gana; corre(4000);
+  return fin === 1 ? 'OK' : 'did not end after the winner (' + fin + ')';
+}, DUELO.replace('(!op.vivo || combate.gana != null) && ', '').replace('if (op.vivo && combate.gana == null) { vt = Math.min(vt, ev.length * EV + EV * 0.99); }', ''));
+
 console.log(JSON.stringify({ v: 'preceptoros.wave_duel/1', casos }, null, 1));
 process.exitCode = casos.every((c) => c.ok) ? 0 : 1;

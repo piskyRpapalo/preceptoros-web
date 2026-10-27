@@ -72,7 +72,6 @@ jobs:
             node atlas/bubble_icons_casos.mjs
             node atlas/bubble_letters_casos.mjs
             node atlas/codex_casos.mjs
-            node atlas/bout_casos.mjs
             node atlas/descent_sound_casos.mjs
             node atlas/descent_view_casos.mjs
             node atlas/mvp_casos.mjs

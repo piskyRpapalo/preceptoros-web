@@ -31,8 +31,9 @@ function caso(nombre, prueba) {
 caso('the fight registers NO painter on the world map', (S) =>
   (S.fight.includes('H.extra(null, null);') && !/H\.extra\(function/.test(S.fight)) || 'a map painter is registered');
 caso('starting a fight does not move the world camera', (S) => !S.fight.includes('H.focus(Bt.field)') || 'the map camera jumps to the field');
-caso('the fight paints only on its own canvas (#b-stage), through H.battle.paint', (S) =>
-  (S.stage.includes("lienzo.id = 'b-stage';") && S.stage.includes('H.battle.paint(g, function (x, y)') && S.fight.includes('paint: function (g, toScreen, z) { fight.paint(')) || 'stage canvas or paint hook missing');
+// [W] O1b (2026-10-27): the stage no longer paints by itself; it mounts the ONE combat face, the wave duel, live.
+caso('the fight paints only on its own canvas (#b-stage), through the wave duel (H.battle.duel)', (S) =>
+  (S.stage.includes("lienzo.id = 'b-stage';") && S.stage.includes('W.escena(lienzo, d.def, d.asa, d.combate,') && S.fight.includes('duel: function () { return fight.b.on ? fight.duel() : null; }')) || 'stage canvas or paint hook missing');
 caso('during a fight the battle panel covers the whole map area', (S) =>
   (S.css.includes('body[data-battle=on] #sheet-battle{inset:0;max-height:none}') && !S.css.includes('max-height:48%')) || 'panel still in half of the map');
 caso('texts on the left, the fight on the right (one column on a phone)', (S) =>

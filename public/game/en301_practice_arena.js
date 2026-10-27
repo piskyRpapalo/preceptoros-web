@@ -2,8 +2,9 @@
   'use strict';
   var node = typeof module === 'object' && !!module.exports;
   var P = node ? require('./en301_practice_model.js') : root.AtlasPracticeModel;
-  var S = node ? require('./silueta.js') : root.AtlasSilueta;
-  var N = (node ? require('./comic_tokens.js') : root.AtlasComicTokens).NEUTRAL;
+  // [W] O1b (2026-10-27): the practice is drawn by the ONE combat face, the wave duel, LIVE over the practice's own log.
+  // The 16x16 silhouettes are retired; the model, its receipt and these controls are unchanged.
+  var W = node ? null : root.AtlasWaveDuel;
 function mount(doc, host, options) {
   if (!options || !options.seed) throw new Error('Missing seed');
   let session = P.create(options.seed);
@@ -19,31 +20,23 @@ function mount(doc, host, options) {
   p2.setAttribute('role', 'status');
   p2.setAttribute('aria-live', 'polite');
   p2.textContent = '';
+  const lienzo = doc.createElement('canvas');
+  lienzo.className = 'en301-duel';
   const col0 = doc.createElement('div');
   col0.className = 'en301-commander';
-  const canvas0 = doc.createElement('canvas');
-  canvas0.width = 128;
-  canvas0.height = 128;
-  canvas0.setAttribute('aria-hidden', true);
   const label0 = doc.createElement('p');
   label0.textContent = '';
   const hp0 = doc.createElement('p');
   hp0.textContent = '';
-  col0.appendChild(canvas0);
   col0.appendChild(label0);
   col0.appendChild(hp0);
   
   const col1 = doc.createElement('div');
   col1.className = 'en301-commander';
-  const canvas1 = doc.createElement('canvas');
-  canvas1.width = 128;
-  canvas1.height = 128;
-  canvas1.setAttribute('aria-hidden', true);
   const label1 = doc.createElement('p');
   label1.textContent = '';
   const hp1 = doc.createElement('p');
   hp1.textContent = '';
-  col1.appendChild(canvas1);
   col1.appendChild(label1);
   col1.appendChild(hp1);
 
@@ -93,6 +86,7 @@ function mount(doc, host, options) {
   section.appendChild(h3);
   section.appendChild(p1);
   section.appendChild(p2);
+  section.appendChild(lienzo);
   section.appendChild(col0);
   section.appendChild(col1);
   section.appendChild(actionsRow);
@@ -104,28 +98,14 @@ function mount(doc, host, options) {
 
   host.appendChild(section);
 
-  function drawSilhouette(canvas, seed) {
-    const ctx = canvas.getContext('2d');
-    try {
-      if (!ctx) { return; }
-      if (!S.valida({esquema:'preceptoros.silueta/1',silhouette_hex:seed}).ok) { throw Error('Invalid silhouette'); }
-      const hex = seed;
-      ctx.fillStyle = N.ocean;
-      ctx.fillRect(0, 0, 128, 128);
-      for (let y = 0; y < 16; y++) {
-        for (let x = 0; x < 16; x++) {
-          const bit = y * 16 + x;
-          if ((parseInt(hex.charAt(Math.floor(bit / 4)), 16) >> (3 - bit % 4)) & 1) {
-            ctx.fillStyle = N.cyan;
-            ctx.fillRect(x * 8, y * 8, 8, 8);
-          }
-        }
-      }
-    } catch(e) {
-      if (!ctx) { return; }
-      ctx.fillStyle = N.cyan;
-      ctx.fillText('Invalid silhouette', 0, 16);
-    }
+  // The live combat the wave duel reads: getters, so a step or a branch is seen on the next frame.
+  let escena = null;
+  const vivo = { get registro() { return session.trace(); }, get gana() { const f = session.frame(); return f.ended ? f.winner : null; } };
+  function monta() {
+    if (escena) { escena.para(); escena = null; }
+    if (!W) { return; }
+    const t = P.teams(options.seed);
+    escena = W.escena(lienzo, [t.def], [t.asa], vivo, { vivo: true, semilla: options.seed, yo: 1, emulado: 0, ronda: 'Round {r}' });
   }
 
   function render() {
@@ -135,13 +115,11 @@ function mount(doc, host, options) {
     if (f.units[0]) {
       label0.textContent = 'Commander A';
       hp0.textContent = `${f.units[0].hp}/${f.units[0].max}`;
-      drawSilhouette(canvas0, f.units[0].seed);
     }
 
     if (f.units[1]) {
       label1.textContent = 'Commander B';
       hp1.textContent = `${f.units[1].hp}/${f.units[1].max}`;
-      drawSilhouette(canvas1, f.units[1].seed);
     }
 
     const isEnded = !!f.ended;
@@ -200,6 +178,7 @@ function mount(doc, host, options) {
       const forkResult = session.fork(value);
       if (forkResult.ok) {
         session = forkResult.session;
+        monta();
         render();
         if (options.onNarrate) options.onNarrate('Branch created');
       } else {
@@ -224,11 +203,13 @@ function mount(doc, host, options) {
     }
   });
 
+  monta();
   render();
 
   return {
     destroy() {
       closed = true;
+      if (escena) { escena.para(); escena = null; }
       if (section.parentNode === host) host.removeChild(section);
     },
     ready: () => {

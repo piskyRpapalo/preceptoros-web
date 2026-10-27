@@ -11,7 +11,7 @@
 
   var ARENA = [['/game/sobres.js'], ['/game/rating.js'], ['/game/combate_ticks.js'], ['/game/arena.js'], ['/game/duelo.js'],
     ['/game/sea-anchors.js'], ['/game/crab_render_hd.js'], ['/game/audio_feedback_manager.js'], ['/game/crab_free_move.js'], ['/game/genesis_tutorial.js'], ['/game/buildings_toon.js'], ['/game/reef_place_cards.js'], ['/game/shell_schematics.js'], ['/game/reef_buildings_paint.js'], ['/game/latency_crystal.js'], ['/game/hexelion_bench.js'], ['/game/bubble_bestiary.js'], ['/game/map_bubble_figures.js'], ['/game/reef_corals.js'], ['/game/reef_buildings_layer.js'], ['/game/sea-crabs.js'], ['/game/map_pointer_input.js'], ['/game/semiotic_glyph.js'], ['/game/hexelion_dictionary.js'], ['/game/piece_inspector.js'], ['/game/vector_contract.js'], ['/game/state_vector.js'], ['/game/place_reading.js'], ['/game/npc_territory_map.js'], ['/game/map_nodes_layer.js'], ['/game/map_zoom.js'], ['/game/map_integrity.js'], ['/game/sea.js'], ['/game/nodos-pesos.js'], ['/game/node_reception_contract.js'], ['/game/node_trust_anchor.js'], ['/game/node_trust_manifest.js'], ['/game/node_signature_messages.js'], ['/game/node_signature_verify.js'], ['/game/node_bindings_messages.js'], ['/game/node_bindings.js'], ['/game/nodos.js'], ['/game/cuenta.js'], ['/game/node_projection.js'],
-    ['/game/ui-nodos.js'], ['/game/ui-rack.js'], ['/game/node_preview.js'], ['/game/node_file_receiver.js'], ['/game/escuadron.js'], ['/game/battle_choreography.js'], ['/game/battle_replay.js'], ['/game/npc_occupancy.js'], ['/game/npc_walls.js'], ['/game/ui-arena-comun.js'], ['/game/combat_screen.js'], ['/game/ui-arena.js'], ['/game/ui-duelo.js']];
+    ['/game/ui-nodos.js'], ['/game/ui-rack.js'], ['/game/node_preview.js'], ['/game/node_file_receiver.js'], ['/game/escuadron.js'], ['/game/wave_duel_scene.js'], ['/game/npc_occupancy.js'], ['/game/npc_walls.js'], ['/game/ui-arena-comun.js'], ['/game/combat_screen.js'], ['/game/ui-arena.js'], ['/game/ui-duelo.js']];
 
   var LENGUAS = ['en'], RTL = ['ar'];
   var pagina = (document.documentElement.lang || 'en').slice(0, 2);
@@ -173,8 +173,7 @@
     ['/game/bubble_bestiary.js'], ['/game/bubble_world.js'], ['/game/bubble_letters.js'], ['/game/aiact-art50-state-radio.js'], ['/game/descent_sound.js'], ['/game/audio_feedback_manager.js'], ['/game/world_creator.js'], ['/game/tutorial_fases.js'], ['/game/reef_building_lifecycle.js'], ['/game/deploy_building.js'], ['/game/etiqueta.js'], ['/game/en301_tutorial_building.js'], ['/game/ui-tutorial-fases.js'], ['descent_view.js']];
 
   var VISTAS = {
-    codex: [['/game/bubble_game.js'], ['codex_scene.js'], 'AtlasCodexScene'],
-    bout: [['/game/canon.js'], ['/game/sobres.js'], ['/game/rating.js'], ['/game/taller.js'], ['/game/combate_ticks.js'], ['/game/arena.js'], ['/game/bubble_game.js'], ['bout_scene.js'], 'AtlasBoutScene']
+    codex: [['/game/bubble_game.js'], ['codex_scene.js'], 'AtlasCodexScene']
   };
   function nuevos(lista) {
     return lista.filter(function (g) { var s = g[0].charAt(0) === '/' ? g[0] : '/assets/' + g[0]; return !document.querySelector('script[src="' + s + '"]'); });
@@ -207,7 +206,7 @@
   function tutorial() {
     var panel = document.getElementById('juego-panel');
     if (!panel) { return false; }
-    var scripts = [['/game/tabla_semantica.js'], ['/game/comic_tokens.js'], ['/game/comic_accents.js'], ['/game/valores.js'], ['/game/gacha.js'], ['/game/core.js'], ['/assets/atlas-coord.js'], ['/game/canon.js'], ['/game/aiact-art50-state-radio.js'], ['/game/combate_ticks.js'], ['/game/silueta.js'], ['/game/wave_render.js'], ['/game/reef_building_lifecycle.js'], ['/game/deploy_building.js'], ['/game/etiqueta.js'], ['/game/en301_tutorial_building.js'], ['/game/audio_feedback_manager.js'], ['/game/tutorial_fases.js'], ['/game/en301_practice_model.js'], ['/game/en301_practice_arena.js'], ['/game/en301_tutorial_copy.js'], ['/game/en301_tutorial_model.js'], ['/game/en301_tutorial_audio.js'], ['/game/en301_tutorial.js']];
+    var scripts = [['/game/tabla_semantica.js'], ['/game/comic_tokens.js'], ['/game/comic_accents.js'], ['/game/valores.js'], ['/game/gacha.js'], ['/game/core.js'], ['/assets/atlas-coord.js'], ['/game/canon.js'], ['/game/aiact-art50-state-radio.js'], ['/game/combate_ticks.js'], ['/game/silueta.js'], ['/game/wave_render.js'], ['/game/reef_building_lifecycle.js'], ['/game/deploy_building.js'], ['/game/etiqueta.js'], ['/game/en301_tutorial_building.js'], ['/game/audio_feedback_manager.js'], ['/game/tutorial_fases.js'], ['/game/escena.js'], ['/game/escuadron.js'], ['/game/wave_duel_scene.js'], ['/game/en301_practice_model.js'], ['/game/en301_practice_arena.js'], ['/game/en301_tutorial_copy.js'], ['/game/en301_tutorial_model.js'], ['/game/en301_tutorial_audio.js'], ['/game/en301_tutorial.js']];
     ['/assets/en301_tutorial.css', '/assets/en301_practice.css'].forEach(function (href) {
       if (!document.querySelector('link[href="' + href + '"]')) { var sheet = document.createElement('link'); sheet.rel = 'stylesheet'; sheet.href = href; document.head.appendChild(sheet); }
     });
