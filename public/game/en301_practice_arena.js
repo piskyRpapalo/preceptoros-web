@@ -101,11 +101,13 @@ function mount(doc, host, options) {
   // The live combat the wave duel reads: getters, so a step or a branch is seen on the next frame.
   let escena = null;
   const vivo = { get registro() { return session.trace(); }, get gana() { const f = session.frame(); return f.ended ? f.winner : null; } };
+  // [W] O2: the practice sounds through the same duel voice; silent until the player turns audio on.
+  function sonido(tipo, tropa, sello) { const S = root.AtlasSintesis; if (S && S.suenaDuelo) { S.suenaDuelo(tipo, sello, 0); } }
   function monta() {
     if (escena) { escena.para(); escena = null; }
     if (!W) { return; }
     const t = P.teams(options.seed);
-    escena = W.escena(lienzo, [t.def], [t.asa], vivo, { vivo: true, semilla: options.seed, yo: 1, emulado: 0, ronda: 'Round {r}' });
+    escena = W.escena(lienzo, [t.def], [t.asa], vivo, { vivo: true, semilla: options.seed, yo: 1, emulado: 0, ronda: 'Round {r}', sonido: sonido });
   }
 
   function render() {

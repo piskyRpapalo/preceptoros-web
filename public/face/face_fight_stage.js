@@ -17,13 +17,15 @@
   fight.appendChild(lienzo);
 
   function quieto() { return !!(root.matchMedia && root.matchMedia('(prefers-reduced-motion: reduce)').matches); }
+  // [W] O2: the fight sounds through the duel voice (core.js) only while the world's sound is on.
+  function sonido(tipo, tropa, sello) { var S = root.AtlasSintesis; if (H.sound && H.sound() && S && S.suenaDuelo) { S.activa(true); S.suenaDuelo(tipo, sello, 0); } }
   // A fight starting (or a new one) mounts the wave duel over its live state; the fight ending stops it.
   function sigue() {
     var on = H.battle.on(), d = on ? H.battle.duel() : null, W = root.AtlasWaveDuel;
     if (d && W && actual !== d.semilla) {
       if (escena) { escena.para(); }
       actual = d.semilla;
-      escena = W.escena(lienzo, d.def, d.asa, d.combate, { vivo: true, semilla: d.semilla, yo: 1, emulado: 0, ronda: 'Round {r}', quieto: quieto() });
+      escena = W.escena(lienzo, d.def, d.asa, d.combate, { vivo: true, semilla: d.semilla, yo: 1, emulado: 0, ronda: 'Round {r}', quieto: quieto(), sonido: sonido });
     }
     if (!on && escena) { escena.para(); escena = null; actual = null; }
   }

@@ -42,7 +42,7 @@
         sintesis: { modo: 'fm2', adsr: [0.005, 0.03, 0.55, 0.06], m2: 0.5, indice2: 0.5,
             sello: { eclosion: 'PROPUESTA_PENDIENTE_FIRMA', adopcion: 'FIRMADO' },
       urgencia: { PROPUESTA_PENDIENTE_FIRMA: 1, FIRMADO: 0 },
-      vibrato_hz: 6, vibrato_prof: 0.02 },
+      vibrato_hz: 6, vibrato_prof: 0.02, voz_hz: [220, 880], acorde: [4, 5, 6], acorde_paso: 0.1 },
     army_tope: 30,
         combate: {
       rondas: 40, tropas_max: 10, armadura_div: 2,
@@ -113,6 +113,9 @@
       urgencia: ['urgencia del sello (0 quieto, 1 vibra)', 'sello', 'ESTADO', 'core.js'],
       vibrato_hz: ['frecuencia del vibrato', 'sello', 'ESTADO', 'core.js'],
       vibrato_prof: ['profundidad = portadora * prof * urgencia', 'sello', 'ESTADO', 'core.js'],
+      voz_hz: ['portadora del duelo = lo + hue/360 * (hi - lo) (joya 3)', 'sello de quien golpea (NO_DATA calla)', 'ESTADO', 'core.js'],
+      acorde: ['voz i = f * acorde[i] / acorde[0] (joya 5)', 'ganar el combate', 'ESTADO', 'core.js'],
+      acorde_paso: ['retardo de la voz i = i * paso (joya 5)', 'ganar el combate', 'ESTADO', 'core.js'],
       vida: ['base.vida[0]*tcLevel + seedInt(0..base.vida[1]) + affixMods + (unique ? tcLevel : 0) + Workshop sanding', 'signed seed, TC, edge-derived rarity, verified Workshop receipt', 'ESTADO', 'ui-taller.js'],
       armadura: ['base.armadura[0]*tcLevel + seedInt(0..base.armadura[1]) + affixMods + (unique ? tcLevel : 0) + Workshop sanding', 'signed seed, TC, edge-derived rarity, verified Workshop receipt', 'ESTADO', 'ui-taller.js'],
       velocidad: ['base.velocidad[0] + seedInt(0..base.velocidad[1]) + affixMods + (unique ? tcLevel : 0) + Workshop sanding', 'signed seed, TC, edge-derived rarity, verified Workshop receipt', 'ESTADO', 'ui-taller.js'],
