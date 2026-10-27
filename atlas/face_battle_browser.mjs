@@ -28,15 +28,14 @@ const ok = (cond, que) => { if (!cond) { fallos.push(que); } };
 let ws = null, ch = null, srv = null, id = 0;
 const pend = new Map();
 
-// Count every fight-paint call by the canvas it targets: the world map, or the fight's own stage.
+// Count every fight mount by the canvas it targets: the world map, or the fight's own stage. [W] O1b (2026-10-27): the fight
+// is drawn by the ONE combat face, the wave duel (AtlasWaveDuel), so the spy wraps its escena() as the page defines it.
 const ESPIA = `(() => {
   window.__pinta = { mapa: 0, escenario: 0 };
-  let B;
-  Object.defineProperty(window, 'PreceptorBattle', { configurable: true, get: () => B, set: (v) => {
-    const crea = v.create; v.create = function () { const f = crea.apply(this, arguments), p = f.paint;
-      f.paint = function (g) { if (g && g.canvas && g.canvas.id === 'b-stage') { __pinta.escenario++; } else { __pinta.mapa++; } return p.apply(this, arguments); };
-      return f; };
-    B = v; } });
+  let W;
+  Object.defineProperty(window, 'AtlasWaveDuel', { configurable: true, get: () => W, set: (v) => {
+    const e = v.escena; v.escena = function (l) { if (l && l.id === 'b-stage') { __pinta.escenario++; } else { __pinta.mapa++; } return e.apply(this, arguments); };
+    W = v; } });
 })()`;
 
 async function main() {

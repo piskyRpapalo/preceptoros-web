@@ -1,5 +1,5 @@
 // Ojo de palabras: pinta en Chrome headless (solo 127.0.0.1) las palabras `bust` y `crab` de la lengua de
-// burbuja y las secciones de codex y bout (fixture atlas/ojo/fixtures/palabras.html). Saca un PNG
+// burbuja y las secciones de codex (fixture atlas/ojo/fixtures/palabras.html). Saca un PNG
 // y su sha256 por lienzo, recarga la pagina y compara: el dibujo debe ser DETERMINISTA.
 // Uso: node atlas/ojo/ojo_palabras.mjs --out DIR [--fixture RUTA]   (RUTA relativa a la raiz del repo)
 // Salida: UNA linea JSON {ok, recarga_igual, n, hash, causas}. rc=0 si ok && recarga_igual && n>=1 ·

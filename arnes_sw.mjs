@@ -212,7 +212,9 @@ const rutas = await shell.keys();
 // 217 -> 218 el 2026-10-26 (Norte D1): entra /get-the-app/.
 // 218 -> 220 el 2026-10-26 (Norte N2): entran /aduana/ y aduana_page.js.
 // 220 -> 221 el 2026-10-26 (Norte N3): entra node_catalogue.js.
-ok('precachea las portadas, su superficie y el juego', rutas.length === 221, rutas.length+' rutas');
+// 221 -> 219 el 2026-10-27 ([W] O1b): salen battle_replay.js, bout_scene.js y battle_choreography.js (este queda en PUROS, sin
+// cargar); entra wave_duel_scene.js, la UNA cara de combate.
+ok('precachea las portadas, su superficie y el juego', rutas.length === 219, rutas.length+' rutas');
 ok('el shell trae el juego (D7): la puerta, el cangrejo y la arena',
    ['/assets/thegame.js', '/game/gdpr-art25-ephemeral-crab.js', '/game/ui-arena.js', '/assets/atlas-motor.js'].every(r => rutas.includes(r)));
 ok('el shell trae la puerta y el juego', ['/', '/play/'].every(r => rutas.includes(r)));

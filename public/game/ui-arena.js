@@ -130,8 +130,9 @@
     var vel = 1;
     R.vel.textContent = rellena(T('arena_x'), { v: 1 });
 
-    R.vel.hidden = !!window.AtlasReplay;
-    actual = (window.AtlasReplay || E).escena(R.lienzo, def, asa, c, { semilla: info.semilla, texto: T,
+    // [W] O1b: ONE combat face, the wave duel (AtlasWaveDuel); the RTS replay is retired. An NPC side is emulated.
+    R.vel.hidden = false;
+    actual = (window.AtlasWaveDuel || E).escena(R.lienzo, def, asa, c, { semilla: info.semilla, texto: T, emulado: info.pve ? 0 : null,
       quieto: quieto(), colores: colores(), yo: info.yo, fallo: T('arena_fallo'), ronda: T('arena_ronda'), sonido: sonido,
       letrero: function (x) {
         var mia = info.yo ? x.gana === 'asalto' : x.gana === 'defensa', c = colores();

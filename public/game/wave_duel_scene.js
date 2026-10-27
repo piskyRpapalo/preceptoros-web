@@ -1,5 +1,6 @@
 // [W] O1a (2026-10-27) · the wave duel scene: ONE combat face for the whole game (dark in O1a: no page loads it yet).
 // Contract of AtlasReplay/AtlasEscena: escena(lienzo, def, asa, combate, op) → { velocidad, salta, otra, para }.
+// op.vivo (O1b): a LIVE fight (practice, worlds) whose combate.registro grows tick by tick; it ends only once combate.gana is set.
 // HYBRID (Sovereign's ruling): v1.1's measured LAYOUT and readability (columns, one life bar per troop, the attacker on a
 // sine trail, a plain dark sea of 5 sine lines, Round N) with each troop keeping its P6 squadron drawing (AtlasEscuadron).
 // Each troop's drawing is P6's exactly (life tint, detuning, squadron); v1.1 adds the life bar under it.
@@ -43,7 +44,12 @@
     var todos = U[0].concat(U[1]), vt = 0, ultimo = null, vel = 1, hechos = 0, raf = 0, acabado = false, vivo = true;
     var pops = [], chispas = [], ondas = [], ronda = 0, dpr = raiz.devicePixelRatio || 1, finVt = 0, dicho = '';
     var col = op.colores || {}, quieto = !!op.quieto, Q = estado(op.semilla), N = CT ? CT.NEUTRAL : {};
-    var yo = op.yo == null ? 1 : op.yo, texto = col.texto || N.paper;
+    var yo = op.yo == null ? 1 : op.yo, texto = col.texto || N.paper, med = O.medidor ? O.medidor() : null, cal = 1;
+    var T = typeof op.texto === 'function' ? op.texto : function () { return ''; };
+    // Quality (CombateLimpio, 2026-10-10, carried from the replay): the player's choice rules; 'auto' lowers only after
+    // measuring fps and says so; one tap on the scene goes back to Maximum. Same fight, same result.
+    lienzo.addEventListener && lienzo.addEventListener('click', function () { if (cal) { return; } var C = raiz.AtlasCalidad;
+      if (C && C.pon) { C.pon('maxima'); } else { raiz.AtlasCalidad = { modo: 'maxima', nivel: 2 }; } });
     function banda(sello) { var d = S && S.de(sello); return d ? d.bandas.base : texto; }
 
     function mide() {
@@ -88,7 +94,7 @@
     function avanza() {
       var k = Math.min(ev.length, Math.floor(vt / EV + 0.5));
       while (hechos < k) { impacta(ev[hechos], !quieto); hechos++; }
-      if (!acabado && hechos >= ev.length && vt > ev.length * EV + 800) {
+      if (!acabado && hechos >= ev.length && (!op.vivo || combate.gana != null) && vt > ev.length * EV + 800) {
         acabado = true; finVt = vt;
         if (op.sonido) { op.sonido(combate.gana === 'asalto' ? 'gana' : 'pierde'); }
         if (op.alFin) { op.alFin(combate); }
@@ -136,6 +142,7 @@
       var R = o.r * (0.5 + 0.5 * Math.sin(TAU * Q.q[0] * o.hz)) * (1 + 0.5 * d), ri = R * 0.7, ro = R * 1.15;
       g.strokeStyle = o.c; g.lineWidth = (1 - d) * 4 * dpr * (1 + (O.pulso ? O.pulso(vt - o.v) : 0));
       g.beginPath(); g.arc(o.x, o.y, o.r * (0.6 + d * 1.2), 0, TAU); g.stroke();
+      if (!cal) { g.beginPath(); return; }
       g.lineWidth = Math.max(1, (1 - d) * 2 * dpr); g.beginPath();
       for (var i = 0; i < 12; i++) {
         var an = i / 12 * TAU + Q.q[3], c = Math.cos(an), s = Math.sin(an);
@@ -164,9 +171,9 @@
         if (!quieto && u.tiembla !== null && vt - u.tiembla < 260) { dx = Math.sin(vt * 0.12) * 4 * dpr * (1 - (vt - u.tiembla) / 260); }
         var gira = quieto ? 0 : t * 0.00045 * (1 + u.vel / 12) * (u.lado ? 1 : -1) * (acabado && u.vida ? 3 : 1), respira = quieto ? 1 : 1 + 0.035 * Math.sin(t * 0.002 + idx);
         var nota = O.pulsoNota ? O.pulsoNota((((raiz.AtlasValores || {}).sonidos || {}).pop || {}).f || 660) : 4, fo = u.flash * (1 + Math.sin(t * 0.002 * Math.PI * nota) * 0.5);
-        E.figura(g, arm(u, selloDe(u, op)), u.x + dx, u.y, u.r, { color: u.color, giro: gira, alfa: m, grosor: 1.8 * dpr, brillo: u.brillo + fo * 18 * dpr, t: t,
+        E.figura(g, arm(u, selloDe(u, op)), u.x + dx, u.y, u.r, { color: u.color, giro: gira, alfa: m, grosor: 1.8 * dpr, brillo: cal ? u.brillo + fo * 18 * dpr : 0, t: t,
           desafina: Math.min(1, (1 - u.vida / u.max) * 0.8 + u.flash * 0.35), escala: respira * (0.4 + 0.6 * m), vidaFraccion: u.vida / u.max, arm: u.arm });
-        if (raiz.AtlasEscuadron) { raiz.AtlasEscuadron.pinta(g, u, { r: u.r, dpr: dpr, giro: gira, alfa: m, t: t, quieto: quieto }); }
+        if (cal && raiz.AtlasEscuadron) { raiz.AtlasEscuadron.pinta(g, u, { r: u.r, dpr: dpr, giro: gira, alfa: m, t: t, quieto: quieto }); }
         u.flash = Math.max(0, u.flash - 0.05);
         if (m === 1) { barra(u); }
       });
@@ -181,6 +188,7 @@
       pops.forEach(function (p) { var d = vt - p.v; g.globalAlpha = 1 - d / 800; g.fillStyle = p.c; g.fillText(p.txt, p.x, p.y - d * 0.04 * dpr); });
       g.globalAlpha = 1; g.fillStyle = texto;
       if (ronda && op.ronda) { g.fillText(op.ronda.replace('{r}', ronda), W / 2, 20 * dpr); }
+      if (!cal) { g.font = '700 ' + Math.round(11 * dpr) + 'px ui-monospace, monospace'; g.fillText(T('rp_ahorro'), W / 2, 40 * dpr); }
       if (op.emulado != null) { g.font = '700 ' + Math.round(11 * dpr) + 'px ui-monospace, monospace'; g.fillText('COMBAT · EMULADO', W / 2, H - 8 * dpr); }
       if (acabado && op.letrero) {
         var l = op.letrero(combate), a2 = quieto ? 1 : Math.min(1, (vt - finVt) / 500);
@@ -198,7 +206,13 @@
       ultimo = ts;
       if (!visible) { return; }
       mide();
+      if (med) { med.cuadro(ts); }
+      var m = raiz.AtlasCalidad && raiz.AtlasCalidad.modo;
+      cal = m === 'luz' ? 0 : m && m !== 'auto' ? 1 : (med && !med.nivel(todos.length > 8 ? 1 : 2) ? 0 : 1);
+      ev = combate.registro || ev;
       if (!acabado || !quieto) { vt += quieto ? 1e9 : dt * vel; }
+      // Live (op.vivo: practice, worlds): the log grows tick by tick, so time never runs past its last event until a winner.
+      if (op.vivo && combate.gana == null) { vt = Math.min(vt, ev.length * EV + EV * 0.99); }
       avanza(); pinta(ts, dt);
     }
     function reinicia() {
@@ -209,6 +223,7 @@
     return {
       velocidad: function (v) { vel = v; },
       salta: function () {
+        ev = combate.registro || ev;
         while (hechos < ev.length) { impacta(ev[hechos], false); hechos++; }
         vt = Math.max(vt, ev.length * EV + 801); pops = []; chispas = []; ondas = [];
       },
