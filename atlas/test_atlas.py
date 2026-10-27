@@ -521,7 +521,8 @@ process.stdout.write(JSON.stringify(ok));
         self.assertNotIn("JSON.stringify(pedido)", term, "el terminal humano no debe mostrar JSON crudo")
         self.assertNotIn("application/json", (PUBLICO / "game" / "crab_state_screen.js").read_text(encoding="utf-8"))
         self.assertNotIn("reopens in {s} s", (PUBLICO / "atlas-en.json").read_text(encoding="utf-8"))
-        self.assertIn("startup", (RAIZ / "sin_undefined.mjs").read_text(encoding="utf-8"),
+        # NORTE 5 [3] (2026-10-27): /play/ salio; la carga inicial real de cada pagina viva corre en Chrome (paso 'carga').
+        self.assertIn("revisa('carga')", (RAIZ / "sin_undefined.mjs").read_text(encoding="utf-8"),
                       "la regresión de arranque debe ejecutarse en Chrome")
 
 

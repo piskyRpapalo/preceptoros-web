@@ -16,21 +16,14 @@ for (const path of checked) {
 }
 // The 16 KiB phase ceiling on the lab instruments (this file, the phase cases, the browser
 // harnesses) was abolished by the Sovereign, 2026-10-26 (FIRMO). Served files keep theirs above.
-const loader = readFileSync(new URL('assets/thegame.js', root), 'utf8');
-assert(/var LENGUAS = \['en'\]/.test(loader), 'English-only loader changed');
-const scripts = loader.match(/var GUIONES = (\[[\s\S]*?\]);/);
-const styles = loader.match(/\[('atlas\.css'[\s\S]*?)\]\.forEach/);
-assert(scripts && styles, 'initial assets cannot be measured');
-const entry = new Set(['assets/thegame.js', 'atlas-en.json']);
-for (const [, path] of scripts[1].matchAll(/\[\s*'([^']+)'/g)) {
-  entry.add(path.startsWith('/') ? path.slice(1) : 'assets/' + path);
-}
-for (const [, path] of styles[1].matchAll(/'([^']+)'/g)) entry.add('assets/' + path);
-const front = readFileSync(new URL('assets/front_door_view.js', root), 'utf8');
-const frontScripts = front.match(/var SCRIPTS = (\[[\s\S]*?\]);/);
-assert(frontScripts, 'front door load set missing');
-entry.add('assets/front_door_view.js'); entry.add('assets/front_door.css');
-for (const [, path] of frontScripts[1].matchAll(/'([^']+)'/g)) entry.add(path.slice(1));
+// NORTE 5 [3] (2026-10-27, decree ·6452880777): "play the game" left with thegame.js. The game's door is the entry world's
+// page: the page and every same-origin script and stylesheet it loads, gzip per file. Same ceiling (150 KiB).
+const puerta = readFileSync(new URL('face/basic.html', root), 'utf8');
+const entry = new Set(['face/basic.html']);
+for (const [, path] of puerta.matchAll(/<script[^>]*\ssrc="\/([^"]+)"/g)) entry.add(path);
+for (const [, path] of puerta.matchAll(/<link[^>]*rel="stylesheet"[^>]*href="\/([^"]+)"/g)) entry.add(path);
+assert(entry.size > 1, 'initial assets cannot be measured');
+assert(!files.some((p) => /^atlas-(?!en)[a-z]{2}\.json$/.test(p)), 'a non-English game text is back: one language until MVP');
 let gzip = 0;
 for (const path of entry) {
   assert(files.includes(path), 'initial artifact missing: ' + path);
