@@ -12,7 +12,7 @@ const PUBLIC = fileURLToPath(new URL('../public/', import.meta.url)), FIXTURE = 
 const CAPTURA = process.argv[2] || null, espera = (ms) => new Promise((r) => setTimeout(r, ms));
 const TIPOS = { '.js': 'text/javascript', '.css': 'text/css', '.html': 'text/html', '.json': 'application/json' };
 const srv = createServer((req, res) => {
-  const ruta = decodeURIComponent(new URL(req.url, 'http://local').pathname);
+  let ruta = decodeURIComponent(new URL(req.url, 'http://local').pathname); if (ruta.endsWith('/')) { ruta += 'index.html'; }
   if (ruta === '/wave_duel_fixture.html') { res.writeHead(200, { 'Content-Type': 'text/html' }); res.end(FIXTURE); return; }
   try { const f = resolve(PUBLIC, '.' + ruta); if (!f.startsWith(resolve(PUBLIC))) { throw new Error('out'); }
     const cuerpo = readFileSync(f); res.writeHead(200, { 'Content-Type': TIPOS[extname(f)] || 'text/plain', 'Cache-Control': 'no-store' }); res.end(cuerpo); }
@@ -59,9 +59,32 @@ try {
   ok(medida.n.texto.some((t) => /^Round \d+$/.test(t)) && medida.n.texto.some((t) => /^-\d+$/.test(t)), 'no round label or floating damage: ' + medida.n.texto);
   ok(medida.role === 'img' && /harmonics/.test(medida.aria || ''), 'screen-reader text missing: ' + medida.aria);
   ok(medida.fin === true, 'Skip did not end the fight (alFin)');
+  // [W] O1b · the real entry points. A spy counts every wave-duel mount by its target canvas (installed before page load).
+  await cmd('Page.addScriptToEvaluateOnNewDocument', { source: `(() => { window.__montajes = []; let W;
+    Object.defineProperty(window, 'AtlasWaveDuel', { configurable: true, get: () => W, set: (v) => { const e = v.escena;
+      v.escena = function (l) { __montajes.push(l && (l.id || l.className)); return e.apply(this, arguments); }; W = v; } }); })()` });
+  const hasta = async (e, ms) => { for (let t = 0; t < ms; t += 250) { if (await ev(e)) { return true; } await espera(250); } return false; };
+  const tinta = (sel) => `(() => { const c = document.querySelector(${JSON.stringify(sel)}); if (!c || !c.width) return 0; const d = c.getContext('2d').getImageData(0, 0, c.width, c.height).data; let n = 0; for (let i = 3; i < d.length; i += 16) { if (d[i] > 0) n++; } return n; })()`;
+  // 1 · /play/ arena: a PvE fight through ui-arena's real juega (the duel plays through the same juega).
+  await cmd('Page.navigate', { url: origen + '/play/' });
+  await hasta("!!document.querySelector('.descent-skip')", 15000); await ev("(b => b && b.click())(document.querySelector('.descent-skip'))");
+  ok(await hasta('!!(window.AtlasArenaUI && window.AtlasArena && window.AtlasWaveDuel)', 40000), '/play/: the arena or the wave duel did not load');
+  await ev(`(() => { const K = AtlasCanon, A = AtlasArena, l = A.lugares().find((x) => x.id === 'arrecife'), asa = [1, 2, 3].map((n) => ({ tc: 'tc1', semilla: K.sha('w-captura-ref-' + n) })),
+    s = K.sha('w-captura-ref-semilla'); AtlasArenaUI.juega(l.defensa.tropas, asa, A.combate(l.defensa.tropas, asa, s), { titulo: 'ref', yo: 1, semilla: s, pve: true }); return true; })()`);
+  await espera(3000);
+  medida.play = JSON.parse(await ev(`JSON.stringify({ montajes: __montajes.slice(), replay: typeof window.AtlasReplay, tinta: ${tinta('canvas.atlas-arena-lienzo')} })`));
+  ok(medida.play.montajes.includes('atlas-arena-lienzo') && medida.play.replay === 'undefined' && medida.play.tinta > 500, '/play/ arena is not on the wave duel: ' + JSON.stringify(medida.play));
+  if (CAPTURA) { const s = await cmd('Page.captureScreenshot', { format: 'png' }); writeFileSync(join(CAPTURA, 'o1b-play.png'), Buffer.from(s.result.data, 'base64')); }
+  // 2 · the tutorial practice: its own scripts, mounted, rounds advanced until the model ends it (measured: this seed ends at round 2).
+  await ev('TheGame.tutorial()'); await hasta('!!(window.AtlasPracticeArena && window.AtlasWaveDuel)', 30000);
+  await ev(`(() => { const h = document.createElement('div'); h.id = 'w-practica'; document.body.appendChild(h); window.__pr = AtlasPracticeArena.mount(document, h, { seed: AtlasCanon.sha('w-practica') });
+    for (let i = 0; i < 3; i++) { [...h.querySelectorAll('button')].find((b) => b.textContent === 'Next round').click(); } return true; })()`);
+  await espera(2500);
+  medida.practica = JSON.parse(await ev(`JSON.stringify({ montajes: __montajes.slice(), tick: __pr.state().tick, tinta: ${tinta('#w-practica canvas.en301-duel')} })`));
+  ok(medida.practica.montajes.includes('en301-duel') && medida.practica.tick >= 1 && medida.practica.tinta > 200, 'the practice is not on the wave duel: ' + JSON.stringify(medida.practica));
   ok(externas.length === 0, 'external requests: ' + externas.slice(0, 3));
 } catch (e) { fallos.push(String(e && e.message || e)); }
 finally { try { ws && ws.close(); } catch {} ch.close && ch.close(); srv.close(); }
 console.log(JSON.stringify({ piece: 'W-O1a', receipt: 'MEDIDO', fixture: 'atlas/wave_duel_fixture.html (test-only)', canvas: [medida.w, medida.h], gana: medida.gana, rondas: medida.rondas,
-  dibujo: medida.n && { stroke: medida.n.stroke, fillRect: medida.n.fillRect, arc: medida.n.arc, moveTo: medida.n.moveTo, texto: medida.n.texto }, aria: medida.aria, externas: externas.length, fallos }));
+  dibujo: medida.n && { stroke: medida.n.stroke, fillRect: medida.n.fillRect, arc: medida.n.arc, moveTo: medida.n.moveTo, texto: medida.n.texto }, aria: medida.aria, play: medida.play, practica: medida.practica, externas: externas.length, fallos }));
 process.exitCode = fallos.length ? 1 : 0;

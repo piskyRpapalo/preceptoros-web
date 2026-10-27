@@ -99,6 +99,6 @@
   H.extra(null, null);
   H.battle = { summary: fight.summary, start: function (id) { var p = list.filter(function (x) { return x.id === id; })[0]; if (p) { start(p); } }, step: step, play: play, back: back, patrols: function () { return list; },
     on: function () { return !!fight.b.on; }, frame: function () { return fight.b.on ? fight.frame() : null; },
-    paint: function (g, toScreen, z) { fight.paint(g, toScreen, z, quiet()); } };
+    duel: function () { return fight.b.on ? fight.duel() : null; } };
   update();
 })(window);

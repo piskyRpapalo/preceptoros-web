@@ -6,10 +6,10 @@ Status: proposal for review. Deployment remains a human action. This document re
 
 `wrangler.jsonc` names the Worker `preceptoros-web` and serves `./public` as static assets. `.github/workflows/deploy.yml` is `manual-worker-deploy`: `workflow_dispatch`, guarded to `refs/heads/main`, with the `production` environment. The Mesa measured that environment as requiring a reviewer; the approval policy is hosted in GitHub and is not represented in this checkout. The Sovereign triggers the workflow and supplies the human approval. Agents do not deploy.
 
-Route-count receipt for this source tree (`origin/main` 415be65 + get-the-app + aduana-create-node + `mistral/aduana-catalogue-20261026`: `/get-the-app/`, `/aduana/`, `aduana_page.js` and `node_catalogue.js` join the shell):
+Route-count receipt for this source tree (`origin/main` a061e9a + `mistral/w-o1b-switch-20261027`: the wave duel is the one combat face; `battle_replay.js`, `bout_scene.js` and `battle_choreography.js` leave the shell, `wave_duel_scene.js` joins it):
 
-Rutas precargadas por el shell: 222
-Rutas distintas del shell: 221
+Rutas precargadas por el shell: 220
+Rutas distintas del shell: 219
 
 The workflow runs exactly:
 
