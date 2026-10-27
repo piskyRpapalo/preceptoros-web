@@ -121,6 +121,18 @@ def release():
     return json.loads((PUBLICO / "release.json").read_text(encoding="utf-8"))
 
 
+# NORTE 5 (a1, 2026-10-27): the launch gate (VT6) on top, in one or two clicks. Its data is written here, from the cards the
+# web serves (release.json, cerebros.json), so the page makes no request. Only the models the landing shows (`puerta`) enter;
+# their size is the measured `bytes`, with the machine and date of that measurement. No sha256 in the card: no download.
+def gate(r):
+    c = json.loads((PUBLICO / "cerebros.json").read_text(encoding="utf-8"))
+    cer = [{"id": x["id"], "size_gb": round(x["bytes"] / 1e9, 2), "sha256": x.get("sha256"), "maquina": c["backend"],
+            "fecha": c["medido"][:10]} for x in c["cerebros"] if x.get("puerta") and isinstance(x.get("bytes"), int)]
+    d = {"version": r["version"], "pagina": f"https://github.com/{r['repo']}/releases/tag/{r['version']}",
+         "release": {"firmada": r.get("firmada", {})}, "cerebros": cer, "descargas": {}}
+    return json.dumps(d, ensure_ascii=True, separators=(",", ":")).replace("</", "<\\/")
+
+
 def app():
     r = release()
     base = f"https://github.com/{r['repo']}/releases"
@@ -135,6 +147,11 @@ def app():
 <p><a href="/">← PreceptorOS</a></p>
 <h1>Get the app</h1>
 <p class="lead">The app is your own node, on your own machine: local memory and a local AI that stay with you. Release <b>{r['version']}</b> ({r['fecha']}).</p>
+<section class="gate" aria-labelledby="gate-h">
+<h2 id="gate-h">In one or two clicks</h2>
+<ol class="gate-carriles" id="gate-carriles"><li>Without JavaScript, follow the steps below.</li></ol>
+<script type="application/json" id="gate-datos">{gate(r)}</script>
+</section>
 <p class="aviso"><b>Five minutes?</b> Nobody has timed a clean install yet, so that figure is NO_DATA. The steps are short; how long they take on your machine is yours to measure.</p>
 <h2>Before you start</h2>
 <ul>
@@ -164,6 +181,8 @@ def app():
 <details class="tech"><summary>Technical details</summary><p>This page is written from the release card the web serves (<a href="/release.json">release.json</a>, measured {r['medido'][:10]}). Its fingerprints match the live {r['version']} release (re-checked 2026-10-26). Release page: <a href="{base}/tag/{r['version']}">{r['repo']} {r['version']}</a>. Manifest sha256: <code class="sha">{r['sha256_manifiesto']}</code></p></details>
 </main>
 <script src="/assets/pwa.js"></script>
+<script src="/game/launch_gate.js"></script>
+<script src="/assets/get_app_gate.js"></script>
 </body>
 </html>
 """

@@ -1091,6 +1091,8 @@ LANDING_PAGE_DEPENDENCIES = ("tabla_semantica.js", "comic_tokens.js", "comic_acc
 # /aduana/ (Norte N2, 2026-10-26): el comprobador de cedulas, OBSERVANTE, carga la cadena de nodos y solo esa. Se
 # DECLARA aqui; local_first_surface_build.ADUANA_SCRIPTS es la misma lista, y tests/aduana_page.test.mjs exige que
 # coincidan.
+# NORTE 5 a1 (2026-10-27): /get-the-app/ draws the launch gate (VT6).
+APP_PAGE_DEPENDENCIES = ("launch_gate.js",)
 ADUANA_PAGE_DEPENDENCIES = ("canon.js", "node_reception_contract.js", "node_trust_anchor.js", "node_trust_manifest.js",
                             "node_signature_messages.js", "node_signature_verify.js", "node_bindings_messages.js",
                             "node_bindings.js", "node_projection.js", "node_preview.js", "node_file_receiver.js",
@@ -1232,6 +1234,8 @@ class TheGameV15(unittest.TestCase):
                         continue   # las puertas de la portada en bubble language (P3 [1d])
                     if h == PUBLICO / "aduana" / "index.html" and m in ADUANA_PAGE_DEPENDENCIES:
                         continue   # el comprobador de cedulas de /aduana/ (Norte N2)
+                    if h == PUBLICO / "get-the-app" / "index.html" and m in APP_PAGE_DEPENDENCIES:
+                        continue   # la compuerta de lanzamiento de /get-the-app/ (NORTE 5 a1)
                     self.assertNotIn(f"game/{m}", h.read_text(encoding="utf-8"))
 
     def test_creation_page_dependencies_are_precached(self):
@@ -1758,7 +1762,7 @@ class Multijugador(unittest.TestCase):
             with self.subTest(modulo=m):
                 self.assertLess(f.stat().st_size, TOPE_FICHERO, f"{m} pasa del bloque")
                 self.assertNotIn(m, puerta, f"{m} entra en la puerta del juego")
-                if m in ARENA + CASA + DESCENSO + ADUANA:   # D7: lo que una pagina carga entra en el precache (ADUANA: /aduana/, Norte N3)
+                if m in ARENA + CASA + DESCENSO + ADUANA + APP_PAGE_DEPENDENCIES:   # D7: lo que una pagina carga entra en el precache (ADUANA: /aduana/, Norte N3)
                     self.assertIn("/game/" + m, listas, f"{m} no esta en el precache")
                 else:                   # los puros que nadie pide, tampoco al precache
                     self.assertNotIn("/game/" + m, listas, f"{m} entra en el precache sin que nadie lo pida")
@@ -1772,6 +1776,8 @@ class Multijugador(unittest.TestCase):
                         continue   # las puertas de la portada en bubble language (P3 [1d])
                     if h == PUBLICO / "aduana" / "index.html" and m in ADUANA_PAGE_DEPENDENCIES:
                         continue   # el comprobador de cedulas de /aduana/ (Norte N2)
+                    if h == PUBLICO / "get-the-app" / "index.html" and m in APP_PAGE_DEPENDENCIES:
+                        continue   # la compuerta de lanzamiento de /get-the-app/ (NORTE 5 a1)
                     self.assertNotIn("game/" + m, h.read_text(encoding="utf-8"))
 
 
