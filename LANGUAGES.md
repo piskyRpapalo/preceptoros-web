@@ -12,15 +12,15 @@ miente, el gate se pone rojo.)*
 
 | Code | Language | Dir | Portal `/<code>/` | Game text `public/atlas-<code>.json` | Strings | Game loader |
 |---|---|---|---|---|---|---|
-| `ar` | Arabic | rtl | 301 to `/` | 13,559 B | 209 | no |
-| `de` | German | ltr | 301 to `/` | 11,274 B | 209 | no |
-| `el` | Greek | ltr | 301 to `/` | 15,796 B | 209 | no |
+| `ar` | Arabic | rtl | 301 to `/` | removed (NORTE 5 [3], 2026-10-27) | — | no |
+| `de` | German | ltr | 301 to `/` | removed (NORTE 5 [3], 2026-10-27) | — | no |
+| `el` | Greek | ltr | 301 to `/` | removed (NORTE 5 [3], 2026-10-27) | — | no |
 | `en` | English | ltr | 301 to `/` | 16,365 B | 300 | yes |
-| `es` | Spanish | ltr | 301 to `/` | 10,420 B | 209 | no |
-| `fr` | French | ltr | 301 to `/` | 11,238 B | 209 | no |
-| `it` | Italian | ltr | 301 to `/` | 10,749 B | 209 | no |
-| `pt` | Portuguese | ltr | 301 to `/` | 10,578 B | 209 | no |
-| `ru` | Russian | ltr | 301 to `/` | 15,300 B | 209 | no |
+| `es` | Spanish | ltr | 301 to `/` | removed (NORTE 5 [3], 2026-10-27) | — | no |
+| `fr` | French | ltr | 301 to `/` | removed (NORTE 5 [3], 2026-10-27) | — | no |
+| `it` | Italian | ltr | 301 to `/` | removed (NORTE 5 [3], 2026-10-27) | — | no |
+| `pt` | Portuguese | ltr | 301 to `/` | removed (NORTE 5 [3], 2026-10-27) | — | no |
+| `ru` | Russian | ltr | 301 to `/` | removed (NORTE 5 [3], 2026-10-27) | — | no |
 
 ## How to read it
 
@@ -28,11 +28,11 @@ miente, el gate se pone rojo.)*
   portals were the same English landing nine times; `worker/index.js` now answers
   each `/<code>/` with a 301 to `/`, and their folders left `public/` (history keeps
   them). The game text files below are untouched machinery.
-- **Game text:** all nine files exist; eight carry 209 strings against 300 in
-  English, so 91 strings per language are NO_DATA (cause: not translated).
-- **Game loader:** `public/assets/thegame.js` loads only `en`
-  (`var LENGUAS = ['en']`). This is a fence of the house ("loader only 'en'",
-  AGENTS.md), not a bug: opening another language waits the Sovereign's sign-off.
+- **Game text:** NORTE 5 [3] (decree ·6452880777, 2026-10-27): "play the game" left with
+  `thegame.js`, and the eight non-English game texts left with it (no page loaded them).
+  `atlas-en.json` stays: conserved pieces read it until their port.
+- **Game loader:** none today (`thegame.js` left). English only, as it was: opening another
+  language waits the Sovereign's sign-off.
 - **Tightest file:** `atlas-en.json` is 16,365 B, 19 B under the 16,384 B piece
   ceiling of the MVP. A new English string must first move text to an
   on-demand family (`atlas-*-en.json`).

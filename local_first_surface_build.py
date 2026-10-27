@@ -1,6 +1,7 @@
-"""Escribe las paginas de entrada de preceptoros.org desde una plantilla: la portada, el juego y /get-the-app/.
+"""Escribe las paginas de entrada de preceptoros.org desde una plantilla: la portada, /get-the-app/ y /aduana/.
+(NORTE 5 [3], 2026-10-27: /play/ salio; su generador tambien.)
 
-    python3 local_first_surface_build.py            reescribe public/index.html, public/play/index.html y public/get-the-app/index.html
+    python3 local_first_surface_build.py            reescribe public/index.html, public/get-the-app/index.html y public/aduana/index.html
     python3 local_first_surface_build.py --comprueba  sale con 1 si alguna no es la que dice la plantilla
 
 POR QUE (decreto de recencia del Soberano + canon P1, 2026-10-25). Hasta MVP todo en INGLES, y la
@@ -50,9 +51,7 @@ def portada():
 <h1>PreceptorOS</h1>
 <p class="lead">A game of waves that runs on your own device. No account, no cloud, no tracking.</p>
 <nav id="doors" aria-label="Doors">
-<a class="door" href="/play/"><b>Play theGame</b><span>Your undersea city, the map and the reef. Sound included.</span></a>
 <a class="door" href="/face/"><b>Worlds</b><span>Three node pages: Atlantis, the Risen and Neutral.</span></a>
-<a class="door" href="/creation.html"><b>Creation studio</b><span>Draw a ribbon, sign it with your web identity, carry it as a file.</span></a>
 </nav>
 <section id="web-app" aria-labelledby="web-app-h">
 <h2 id="web-app-h">The web or the app?</h2>
@@ -73,34 +72,6 @@ def portada():
 <script src="/game/bubble_letters.js"></script>
 <script src="/assets/landing_doors.js"></script>
 <script src="/assets/pwa.js"></script>
-</body>
-</html>
-"""
-
-
-def juego():
-    hojas = ["/assets/base.css", "/assets/canon.css", "/assets/soberano.css", "/assets/consiento.css",
-             "/assets/eaa-art12-local-first-surface.css"]
-    return cabeza("theGame · PreceptorOS", f"{ORIGEN}/play/", hojas, "#17131F") + """<body class="portada-juego">
-<a class="skip-link" href="#juego-panel">Skip to the game panel</a>
-<header class="cab-juego">
-<a class="cab-marca" href="/">PreceptorOS · <b>theGame</b></a>
-<a class="cab-mundos" href="/face/">Worlds</a>
-<a class="cab-mundos" href="/creation.html">Creation</a>
-<div id="identity" class="fila identity"></div>
-</header>
-<main id="juego-panel" class="juego-panel" aria-label="theGame"><h1 class="cab-h1">theGame</h1>
-<p class="juego-carga">theGame · loading on this device. No account, no cloud.</p>
-<noscript><p class="juego-carga">theGame needs JavaScript: it runs entirely on this device.</p></noscript>
-</main>
-<script src="/assets/auth.js"></script>
-<script src="/assets/consiento.js"></script>
-<script src="/assets/enviar-en.js"></script>
-<script src="/assets/enviar.js"></script>
-<script src="/assets/pwa.js"></script>
-<script src="/assets/page-comment.js" defer></script>
-<script src="/assets/thegame.js"></script>
-<script src="/assets/eaa-art12-local-first-surface.js"></script>
 </body>
 </html>
 """
@@ -231,7 +202,6 @@ def aduana():
 
 def todas():
     yield PUBLICO / "index.html", portada()
-    yield PUBLICO / "play" / "index.html", juego()
     yield PUBLICO / "get-the-app" / "index.html", app()
     yield PUBLICO / "aduana" / "index.html", aduana()
 

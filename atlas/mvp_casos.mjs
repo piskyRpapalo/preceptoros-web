@@ -103,8 +103,8 @@ const lenguas = [...leer('LANGUAGES.md').matchAll(/^\| `([a-z]{2})` \|([^\n]*)$/
 // top-level `face/` portal from this comparison; all nine LANGUAGES.md entries
 // remain required. Related exceptions: test_web.py coverage and sitemap.py /face/.
 // get-the-app (North D1) and aduana (North N2), 2026-10-26: English content pages, not locale portals.
-const portales = readdirSync(PUB).filter((d) => d !== 'face' && d !== 'play' && d !== 'get-the-app' && d !== 'aduana' && existsSync(join(PUB, d, 'index.html'))).sort();
-const cargador = (leer('public/assets/thegame.js').match(/var LENGUAS = \[([^\]]*)\]/) || [, ''])[1].match(/[a-z]{2}/g) || [];
+const portales = readdirSync(PUB).filter((d) => d !== 'face' && d !== 'get-the-app' && d !== 'aduana' && existsSync(join(PUB, d, 'index.html'))).sort();
+const cargador = ['en'];   // NORTE 5 [3] (2026-10-27): thegame.js left; the game spoke English only, and so it stays
 if (lenguas.length !== 9) falla('C8', `LANGUAGES.md lists ${lenguas.length} languages, not 9`);
 // English canon until MVP (2026-10-25): no locale portal folder may remain; each row declares the
 // Worker 301, and the Worker's portal rule names every code of the table.
@@ -115,9 +115,10 @@ for (const [l, resto] of lenguas) {
   if (!reglaPortal.includes(l)) falla('C8', `${l}: worker/index.js does not redirect /${l}/`);
 }
 for (const [l, resto] of lenguas) {
-  if (!existsSync(join(PUB, `atlas-${l}.json`))) falla('C8', `atlas-${l}.json missing`);
+  const fuera = /removed \(NORTE 5 \[3\]/.test(resto);   // the eight non-English game texts left with "play the game"
+  if (fuera === existsSync(join(PUB, `atlas-${l}.json`))) falla('C8', `atlas-${l}.json: LANGUAGES.md says ${fuera ? 'removed' : 'present'}, the tree disagrees`);
   const dice = /\| yes \|\s*$/.test(resto);
-  if (dice !== cargador.includes(l)) falla('C8', `${l}: LANGUAGES.md says loader ${dice ? 'yes' : 'no'}, thegame.js says ${cargador.includes(l) ? 'yes' : 'no'}`);
+  if (dice !== cargador.includes(l)) falla('C8', `${l}: LANGUAGES.md says loader ${dice ? 'yes' : 'no'}, the declared loader says ${cargador.includes(l) ? 'yes' : 'no'}`);
 }
 
 if (/esm\.run|CDN_ADMITIDO/.test(leer('test_web.py'))) falla('C9', 'retired WebLLM CDN exception still declared in test_web.py');

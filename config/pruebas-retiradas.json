@@ -314,5 +314,482 @@
    "causa": "el orden de carga en las portadas /<l>/index.html; esas portadas salieron de public/ y el juego de /play/ lo vigila Portada",
    "archivo": "docs/pruebas-retiradas/canon-ingles.py"
   }
+ ],
+ "norte5_eliminacion": [
+  {
+   "prueba": "Portada",
+   "causa": "la carcasa de /play/ (cabezal-juego + panel unico, thegame.js): /play/ salio y responde 301 a /face/",
+   "archivo": "docs/pruebas-retiradas/norte5-eliminacion.py"
+  },
+  {
+   "prueba": "ComentarEnTodasLasPaginas",
+   "causa": "page-comment.js y sus nueve lenguas: solo los cargaba /play/; ninguna pagina viva comenta ya por esa via",
+   "archivo": "docs/pruebas-retiradas/norte5-eliminacion.py"
+  },
+  {
+   "prueba": "GlifoSemantico",
+   "causa": "semiotic_glyph.js: grafico del mapa viejo (>1 semana), solo lo cargaba /play/",
+   "archivo": "docs/pruebas-retiradas/norte5-eliminacion.py"
+  },
+  {
+   "prueba": "ElJuegoEnInglesEnLasNueve",
+   "causa": "los textos del juego viejo en nueve lenguas (atlas-<l>.json): salieron las ocho no inglesas; el ingles queda como dependencia de piezas conservadas",
+   "archivo": "docs/pruebas-retiradas/norte5-eliminacion.py"
+  },
+  {
+   "prueba": "Estructura.test_la_capa_soberana_va_la_ultima_y_no_pide_nada_fuera",
+   "causa": "assets/soberano.css: hoja de septiembre (>1 semana) que solo cargaba /play/",
+   "archivo": "docs/pruebas-retiradas/norte5-eliminacion.py"
+  },
+  {
+   "prueba": "Estructura.test_r_widget_y_r_tipografia",
+   "causa": "assets/canon.css: hoja de octubre-13 (>1 semana) que solo cargaba /play/; los mundos usan sus propios tokens",
+   "archivo": "docs/pruebas-retiradas/norte5-eliminacion.py"
+  },
+  {
+   "prueba": "AccesoTactilYPanel.test_boton_enviar_del_comentario_llega_a_44",
+   "causa": "solo miraba assets/page-comment.css, que salio con «play the game»",
+   "archivo": "docs/pruebas-retiradas/norte5-eliminacion.py"
+  },
+  {
+   "prueba": "AccesoTactilYPanel.test_el_foco_visible_cubre_todo_el_teclado",
+   "causa": "solo miraba assets/soberano.css, que salio con «play the game»",
+   "archivo": "docs/pruebas-retiradas/norte5-eliminacion.py"
+  },
+  {
+   "prueba": "AccesoTactilYPanel.test_etiqueta_de_consentimiento_llega_a_44",
+   "causa": "solo miraba assets/page-comment.css, que salio con «play the game»",
+   "archivo": "docs/pruebas-retiradas/norte5-eliminacion.py"
+  },
+  {
+   "prueba": "AccesoTactilYPanel.test_icono_de_identidad_llega_a_44",
+   "causa": "solo miraba assets/canon.css, que salio con «play the game»",
+   "archivo": "docs/pruebas-retiradas/norte5-eliminacion.py"
+  },
+  {
+   "prueba": "AccesoTactilYPanel.test_idioma_y_marca_tienen_area_tactil_de_44_sin_mover_el_dibujo",
+   "causa": "solo miraba assets/eaa-art12-local-first-surface.css, que salio con «play the game»",
+   "archivo": "docs/pruebas-retiradas/norte5-eliminacion.py"
+  },
+  {
+   "prueba": "AccesoTactilYPanel.test_selector_del_panel_del_cangrejo_llega_a_44",
+   "causa": "solo miraba assets/thegame.css, que salio con «play the game»",
+   "archivo": "docs/pruebas-retiradas/norte5-eliminacion.py"
+  },
+  {
+   "prueba": "Arena.test_la_arena_se_carga_con_su_pestana",
+   "causa": "solo miraba assets/thegame.js, que salio con «play the game»",
+   "archivo": "docs/pruebas-retiradas/norte5-eliminacion.py"
+  },
+  {
+   "prueba": "ArmyYTallerEnUnaHoja.test_el_taller_cuelga_de_la_hoja_ondas_debajo_del_army",
+   "causa": "solo miraba assets/terminal_menu_shell.js, que salio con «play the game»",
+   "archivo": "docs/pruebas-retiradas/norte5-eliminacion.py"
+  },
+  {
+   "prueba": "ArmyYTallerEnUnaHoja.test_la_entrada_del_taller_abre_la_hoja_unica_y_baja_a_el",
+   "causa": "solo miraba assets/terminal_menu_shell.js, que salio con «play the game»",
+   "archivo": "docs/pruebas-retiradas/norte5-eliminacion.py"
+  },
+  {
+   "prueba": "CasillerosDelArmy.test_el_casillero_mide_44_px_y_tiene_foco_visible",
+   "causa": "solo miraba assets/thegame.css, que salio con «play the game»",
+   "archivo": "docs/pruebas-retiradas/norte5-eliminacion.py"
+  },
+  {
+   "prueba": "Juez.test_determinista_nulo_y_empate",
+   "causa": "miraba la carcasa o las listas de /play/ (thegame.js, su precache o sus textos), que salieron",
+   "archivo": "docs/pruebas-retiradas/norte5-eliminacion.py"
+  },
+  {
+   "prueba": "Juez.test_la_capa_habla_una_lengua_completa",
+   "causa": "solo miraba assets/thegame.js, que salio con «play the game»",
+   "archivo": "docs/pruebas-retiradas/norte5-eliminacion.py"
+  },
+  {
+   "prueba": "Juez.test_no_sale_a_la_red_y_simula_con_el_motor_puro",
+   "causa": "solo miraba game/juez.js, que salio con «play the game»",
+   "archivo": "docs/pruebas-retiradas/norte5-eliminacion.py"
+  },
+  {
+   "prueba": "MapaMovible.test_j6_una_sola_fuente_de_teselas_y_el_mapa_es_el_fondo",
+   "causa": "solo miraba assets/thegame.js, que salio con «play the game»",
+   "archivo": "docs/pruebas-retiradas/norte5-eliminacion.py"
+  },
+  {
+   "prueba": "MapaMovible.test_la_portada_lleva_la_zona_de_identidad_sin_ella_nadie_firma",
+   "causa": "miraba la carcasa o las listas de /play/ (thegame.js, su precache o sus textos), que salieron",
+   "archivo": "docs/pruebas-retiradas/norte5-eliminacion.py"
+  },
+  {
+   "prueba": "MapaMovible.test_p11_casos_del_primer_eco",
+   "causa": "solo miraba assets/thegame.js, que salio con «play the game»",
+   "archivo": "docs/pruebas-retiradas/norte5-eliminacion.py"
+  },
+  {
+   "prueba": "MapaMovible.test_p9_casos_del_polvo_de_taller",
+   "causa": "solo miraba assets/thegame.js, que salio con «play the game»",
+   "archivo": "docs/pruebas-retiradas/norte5-eliminacion.py"
+  },
+  {
+   "prueba": "MapaMovible.test_r3_los_tubos_son_css_puro_quieto_y_dentro_del_techo",
+   "causa": "solo miraba assets/tubo.css, que salio con «play the game»",
+   "archivo": "docs/pruebas-retiradas/norte5-eliminacion.py"
+  },
+  {
+   "prueba": "MapaMovible.test_r4_acentos_bioluminiscentes_sin_tocar_los_colores_senal",
+   "causa": "solo miraba assets/soberano.css, que salio con «play the game»",
+   "archivo": "docs/pruebas-retiradas/norte5-eliminacion.py"
+  },
+  {
+   "prueba": "MapaMovible.test_r7_la_radio_suena_en_el_mapa_y_las_anclas_no_envian_nada",
+   "causa": "solo miraba assets/thegame.js, que salio con «play the game»",
+   "archivo": "docs/pruebas-retiradas/norte5-eliminacion.py"
+  },
+  {
+   "prueba": "MapaMovible.test_r8_la_ceremonia_es_real_no_decide_y_se_queda_quieta",
+   "causa": "solo miraba assets/atlas.css, que salio con «play the game»",
+   "archivo": "docs/pruebas-retiradas/norte5-eliminacion.py"
+  },
+  {
+   "prueba": "MapaMovible.test_t_la_ficha_sale_de_ui_sin_gemelos",
+   "causa": "solo miraba assets/thegame.js, que salio con «play the game»",
+   "archivo": "docs/pruebas-retiradas/norte5-eliminacion.py"
+  },
+  {
+   "prueba": "Multijugador.test_a_demanda_bajo_16_kb_y_fuera_de_la_puerta",
+   "causa": "solo miraba assets/thegame.js, que salio con «play the game»",
+   "archivo": "docs/pruebas-retiradas/norte5-eliminacion.py"
+  },
+  {
+   "prueba": "Pestanas.test_el_army_se_carga_con_su_pestana_y_no_pesa_en_la_puerta",
+   "causa": "solo miraba assets/thegame.js, que salio con «play the game»",
+   "archivo": "docs/pruebas-retiradas/norte5-eliminacion.py"
+  },
+  {
+   "prueba": "Pestanas.test_la_hoja_de_la_capa",
+   "causa": "solo miraba assets/thegame.css, que salio con «play the game»",
+   "archivo": "docs/pruebas-retiradas/norte5-eliminacion.py"
+  },
+  {
+   "prueba": "Pestanas.test_lo_tecnico_va_siempre_plegado",
+   "causa": "solo miraba assets/thegame.js, que salio con «play the game»",
+   "archivo": "docs/pruebas-retiradas/norte5-eliminacion.py"
+  },
+  {
+   "prueba": "Pestanas.test_u1_un_mapa_una_terminal_y_dos_hojas",
+   "causa": "solo miraba assets/thegame.js, que salio con «play the game»",
+   "archivo": "docs/pruebas-retiradas/norte5-eliminacion.py"
+  },
+  {
+   "prueba": "Piloto.test_a1b8_un_estado_y_lo_ausente_es_no_data",
+   "causa": "solo miraba assets/atlas-mapa.js, que salio con «play the game»",
+   "archivo": "docs/pruebas-retiradas/norte5-eliminacion.py"
+  },
+  {
+   "prueba": "Piloto.test_c_paneles_amables_y_grandes",
+   "causa": "solo miraba assets/terminal_menu_shell.js, que salio con «play the game»",
+   "archivo": "docs/pruebas-retiradas/norte5-eliminacion.py"
+  },
+  {
+   "prueba": "Piloto.test_el_juego_abre_sin_red_y_la_ley_sin_red_es_no_data",
+   "causa": "miraba la carcasa o las listas de /play/ (thegame.js, su precache o sus textos), que salieron",
+   "archivo": "docs/pruebas-retiradas/norte5-eliminacion.py"
+  },
+  {
+   "prueba": "Piloto.test_el_piloto_se_carga_con_el_juego_y_no_antes",
+   "causa": "solo miraba assets/thegame.js, que salio con «play the game»",
+   "archivo": "docs/pruebas-retiradas/norte5-eliminacion.py"
+  },
+  {
+   "prueba": "Piloto.test_en_el_telefono_el_dedo_llega_a_workshop_y_a_fight",
+   "causa": "solo miraba assets/terminal_menu_shell.css, que salio con «play the game»",
+   "archivo": "docs/pruebas-retiradas/norte5-eliminacion.py"
+  },
+  {
+   "prueba": "Piloto.test_la_carta_es_un_mundo_para_todos_y_su_niebla_no_retrocede",
+   "causa": "miraba la carcasa o las listas de /play/ (thegame.js, su precache o sus textos), que salieron",
+   "archivo": "docs/pruebas-retiradas/norte5-eliminacion.py"
+  },
+  {
+   "prueba": "Piloto.test_la_terminal_chatbot_y_el_chat_de_la_radio",
+   "causa": "solo miraba assets/terminal_menu_shell.css, que salio con «play the game»",
+   "archivo": "docs/pruebas-retiradas/norte5-eliminacion.py"
+  },
+  {
+   "prueba": "Piloto.test_la_voz_exacta_es_la_misma_en_cada_aparato_y_va_en_partes_de_16_kb",
+   "causa": "solo miraba assets/thegame.js, que salio con «play the game»",
+   "archivo": "docs/pruebas-retiradas/norte5-eliminacion.py"
+  },
+  {
+   "prueba": "Piloto.test_limpieza_sin_puertas_muertas_una_puerta_una_cerradura",
+   "causa": "solo miraba assets/atlas-piloto-capa.js, que salio con «play the game»",
+   "archivo": "docs/pruebas-retiradas/norte5-eliminacion.py"
+  },
+  {
+   "prueba": "Piloto.test_lo_oculto_no_se_ve",
+   "causa": "solo miraba assets/atlas.css, que salio con «play the game»",
+   "archivo": "docs/pruebas-retiradas/norte5-eliminacion.py"
+  },
+  {
+   "prueba": "Piloto.test_lo_que_flota_recibe_el_dedo",
+   "causa": "solo miraba assets/thegame.css, que salio con «play the game»",
+   "archivo": "docs/pruebas-retiradas/norte5-eliminacion.py"
+  },
+  {
+   "prueba": "Piloto.test_los_9_objetos_nacen_con_tiempo",
+   "causa": "solo miraba assets/terminal_menu_shell.js, que salio con «play the game»",
+   "archivo": "docs/pruebas-retiradas/norte5-eliminacion.py"
+  },
+  {
+   "prueba": "Piloto.test_opinar_firmado_se_carga_al_pulsar_y_su_contrato_es_cerrado",
+   "causa": "solo miraba assets/thegame.js, que salio con «play the game»",
+   "archivo": "docs/pruebas-retiradas/norte5-eliminacion.py"
+  },
+  {
+   "prueba": "Piloto.test_pr1_la_ventana_como_conversacion",
+   "causa": "miraba la carcasa o las listas de /play/ (thegame.js, su precache o sus textos), que salieron",
+   "archivo": "docs/pruebas-retiradas/norte5-eliminacion.py"
+  },
+  {
+   "prueba": "Piloto.test_pr2_gusanos_y_pr3_vector",
+   "causa": "solo miraba assets/thegame.js, que salio con «play the game»",
+   "archivo": "docs/pruebas-retiradas/norte5-eliminacion.py"
+  },
+  {
+   "prueba": "Piso.test_arte_mapa_y_dialogo_no_salen_a_la_red",
+   "causa": "solo miraba assets/atlas-arte.js, que salio con «play the game»",
+   "archivo": "docs/pruebas-retiradas/norte5-eliminacion.py"
+  },
+  {
+   "prueba": "Piso.test_el_retrato_es_la_onda_del_emblema_sin_raster",
+   "causa": "solo miraba assets/atlas-arte.js, que salio con «play the game»",
+   "archivo": "docs/pruebas-retiradas/norte5-eliminacion.py"
+  },
+  {
+   "prueba": "Piso.test_las_leyes_del_mundo_coinciden_con_lo_medido",
+   "causa": "solo miraba assets/thegame.js, que salio con «play the game»",
+   "archivo": "docs/pruebas-retiradas/norte5-eliminacion.py"
+  },
+  {
+   "prueba": "Piso.test_las_nueve_lenguas_tienen_las_mismas_claves",
+   "causa": "solo miraba assets/atlas-piloto-capa.js, que salio con «play the game»",
+   "archivo": "docs/pruebas-retiradas/norte5-eliminacion.py"
+  },
+  {
+   "prueba": "Piso.test_solo_se_entra_por_thegame",
+   "causa": "solo miraba assets/thegame.js, que salio con «play the game»",
+   "archivo": "docs/pruebas-retiradas/norte5-eliminacion.py"
+  },
+  {
+   "prueba": "PrecacheDelJuego.test_juego_contiene_todo_lo_que_la_puerta_carga",
+   "causa": "solo miraba assets/thegame.js, que salio con «play the game»",
+   "archivo": "docs/pruebas-retiradas/norte5-eliminacion.py"
+  },
+  {
+   "prueba": "RedisenoDoogee.test_las_dos_firmas_son_dos_pasos_numerados",
+   "causa": "solo miraba assets/thegame.css, que salio con «play the game»",
+   "archivo": "docs/pruebas-retiradas/norte5-eliminacion.py"
+  },
+  {
+   "prueba": "TheGameV15.test_creation_page_dependencies_are_precached",
+   "causa": "solo miraba creation.html, que salio con «play the game»",
+   "archivo": "docs/pruebas-retiradas/norte5-eliminacion.py"
+  },
+  {
+   "prueba": "TheGameV15.test_v15_invocar_firma_antes_de_pagar_y_se_carga_a_demanda",
+   "causa": "solo miraba assets/thegame.js, que salio con «play the game»",
+   "archivo": "docs/pruebas-retiradas/norte5-eliminacion.py"
+  },
+  {
+   "prueba": "TrozoInvoca.test_el_satelite_existe_y_se_registra_antes_que_ui",
+   "causa": "solo miraba assets/thegame.js, que salio con «play the game»",
+   "archivo": "docs/pruebas-retiradas/norte5-eliminacion.py"
+  },
+  {
+   "prueba": "atlas/audio_offline_casos.mjs",
+   "causa": "el audio sin red del descenso, el codex y la tarjeta cantada, que salieron; la radio de estado conserva sus casos (radio_phase1, radio_age)",
+   "archivo": "docs/pruebas-retiradas/audio_offline_casos.mjs"
+  },
+  {
+   "prueba": "atlas/bubble_editor_casos.mjs",
+   "causa": "bubble_editor.js salio con el Creation Studio de la web (pasa a la app)",
+   "archivo": "docs/pruebas-retiradas/bubble_editor_casos.mjs"
+  },
+  {
+   "prueba": "atlas/bubble_paint_casos.mjs",
+   "causa": "bubble_paint.js salio con el Creation Studio de la web (pasa a la app)",
+   "archivo": "docs/pruebas-retiradas/bubble_paint_casos.mjs"
+  },
+  {
+   "prueba": "atlas/codex_casos.mjs",
+   "causa": "codex_scene.js y bubble_game.js: escena del juego viejo (>1 semana), solo la cargaba /play/",
+   "archivo": "docs/pruebas-retiradas/codex_casos.mjs"
+  },
+  {
+   "prueba": "atlas/combat_screen_casos.mjs",
+   "causa": "el marco de combate de /play/ (terminal_menu_shell.css, thegame.js); el duelo lo juzga wave_duel_casos",
+   "archivo": "docs/pruebas-retiradas/combat_screen_casos.mjs"
+  },
+  {
+   "prueba": "atlas/descent_pcm_cases.mjs",
+   "causa": "descent_sound.js: el descenso salio (decreto: >1 semana, no sirve al despliegue de los mundos)",
+   "archivo": "docs/pruebas-retiradas/descent_pcm_cases.mjs"
+  },
+  {
+   "prueba": "atlas/descent_sound_casos.mjs",
+   "causa": "descent_sound.js: el descenso salio",
+   "archivo": "docs/pruebas-retiradas/descent_sound_casos.mjs"
+  },
+  {
+   "prueba": "atlas/descent_view_casos.mjs",
+   "causa": "descent_view.js: el descenso salio",
+   "archivo": "docs/pruebas-retiradas/descent_view_casos.mjs"
+  },
+  {
+   "prueba": "atlas/ejercito_mapa_casos.mjs",
+   "causa": "atlas-carta.js (el mapa del ejercito del juego viejo) salio",
+   "archivo": "docs/pruebas-retiradas/ejercito_mapa_casos.mjs"
+  },
+  {
+   "prueba": "atlas/front_door_cases.mjs",
+   "causa": "front_door.js: la puerta de /play/ salio",
+   "archivo": "docs/pruebas-retiradas/front_door_cases.mjs"
+  },
+  {
+   "prueba": "atlas/lexical_projector_casos.mjs",
+   "causa": "necesita codex_scene.js, que salio; lexical_projector.js queda declarado en PUROS",
+   "archivo": "docs/pruebas-retiradas/lexical_projector_casos.mjs"
+  },
+  {
+   "prueba": "atlas/lexical_state_cases.mjs",
+   "causa": "codex_scene.js salio",
+   "archivo": "docs/pruebas-retiradas/lexical_state_cases.mjs"
+  },
+  {
+   "prueba": "atlas/live_links_casos.mjs",
+   "causa": "los enlaces vivos del menu de /play/ (terminal_menu_shell.js) salieron",
+   "archivo": "docs/pruebas-retiradas/live_links_casos.mjs"
+  },
+  {
+   "prueba": "atlas/semiotic_glyph_cases.mjs",
+   "causa": "semiotic_glyph.js: grafico del mapa viejo (>1 semana) salio",
+   "archivo": "docs/pruebas-retiradas/semiotic_glyph_cases.mjs"
+  },
+  {
+   "prueba": "atlas/ventana_casos.mjs",
+   "causa": "la ventana del cajon de /play/ (terminal_menu_shell.js) salio",
+   "archivo": "docs/pruebas-retiradas/ventana_casos.mjs"
+  },
+  {
+   "prueba": "tests/bubble_audio_contract.test.mjs",
+   "causa": "bubble_game.js (escena del juego viejo) salio",
+   "archivo": "docs/pruebas-retiradas/bubble_audio_contract.test.mjs"
+  },
+  {
+   "prueba": "tests/bubble_editor.test.mjs",
+   "causa": "bubble_editor.js salio con el Creation Studio de la web",
+   "archivo": "docs/pruebas-retiradas/bubble_editor.test.mjs"
+  },
+  {
+   "prueba": "tests/bubble_paint.test.mjs",
+   "causa": "bubble_paint.js salio con el Creation Studio de la web",
+   "archivo": "docs/pruebas-retiradas/bubble_paint.test.mjs"
+  },
+  {
+   "prueba": "tests/creation_contract.test.mjs",
+   "causa": "el Creation Studio salio de la web (pasa a la app)",
+   "archivo": "docs/pruebas-retiradas/creation_contract.test.mjs"
+  },
+  {
+   "prueba": "tests/creation_feedback.test.mjs",
+   "causa": "el Creation Studio salio de la web (pasa a la app)",
+   "archivo": "docs/pruebas-retiradas/creation_feedback.test.mjs"
+  },
+  {
+   "prueba": "tests/creation_flow.test.mjs",
+   "causa": "el Creation Studio salio de la web (pasa a la app)",
+   "archivo": "docs/pruebas-retiradas/creation_flow.test.mjs"
+  },
+  {
+   "prueba": "tests/creation_image_package.test.mjs",
+   "causa": "el Creation Studio salio de la web (pasa a la app)",
+   "archivo": "docs/pruebas-retiradas/creation_image_package.test.mjs"
+  },
+  {
+   "prueba": "tests/creation_parity.test.mjs",
+   "causa": "el Creation Studio salio de la web (pasa a la app)",
+   "archivo": "docs/pruebas-retiradas/creation_parity.test.mjs"
+  },
+  {
+   "prueba": "tests/en301_story.test.mjs",
+   "causa": "leia descent_view.js: el descenso salio",
+   "archivo": "docs/pruebas-retiradas/en301_story.test.mjs"
+  },
+  {
+   "prueba": "tests/front_door.test.mjs",
+   "causa": "front_door.js: la puerta de /play/ salio",
+   "archivo": "docs/pruebas-retiradas/front_door.test.mjs"
+  },
+  {
+   "prueba": "tests/onda_profunda.test.mjs",
+   "causa": "onda_profunda.js (la casa del juego viejo, >1 semana) salio",
+   "archivo": "docs/pruebas-retiradas/onda_profunda.test.mjs"
+  },
+  {
+   "prueba": "tests/tarjeta_cantada.test.mjs",
+   "causa": "tarjeta_cantada.js (la casa del juego viejo, >1 semana) salio",
+   "archivo": "docs/pruebas-retiradas/tarjeta_cantada.test.mjs"
+  },
+  {
+   "prueba": "tests/a11y_media_guardian.test.mjs",
+   "causa": "guardaba reglas de assets/base.css, que solo cargaba /play/; los mundos usan sus hojas (pendiente: el mismo guardian sobre face*.css)",
+   "archivo": "docs/pruebas-retiradas/a11y_media_guardian.test.mjs"
+  },
+  {
+   "prueba": "tests/a11y_print_guardian.test.mjs",
+   "causa": "guardaba reglas de assets/base.css, que solo cargaba /play/ (pendiente: el mismo guardian sobre face*.css)",
+   "archivo": "docs/pruebas-retiradas/a11y_print_guardian.test.mjs"
+  },
+  {
+   "prueba": "tests/a11y_target_guardian.test.mjs",
+   "causa": "guardaba reglas de assets/base.css, que solo cargaba /play/ (pendiente: el mismo guardian sobre face*.css)",
+   "archivo": "docs/pruebas-retiradas/a11y_target_guardian.test.mjs"
+  },
+  {
+   "prueba": "tests/p4_killswitch_guardian.test.mjs",
+   "causa": "guardaba reglas de assets/base.css, que solo cargaba /play/; el punto de killswitch queda conservado con el ejercito",
+   "archivo": "docs/pruebas-retiradas/p4_killswitch_guardian.test.mjs"
+  },
+  {
+   "prueba": "tests/mapa_viejo_desmontado.test.mjs",
+   "causa": "vigilaba el arranque de /play/ (thegame.js, atlas.css), que salio entero",
+   "archivo": "docs/pruebas-retiradas/mapa_viejo_desmontado.test.mjs"
+  },
+  {
+   "prueba": "atlas/combat_screen_browser.mjs",
+   "causa": "el marco de combate de /play/ (combat_screen en thegame); el duelo se mide ahora en un mundo (wave_duel_browser, face_battle_browser)",
+   "archivo": "docs/pruebas-retiradas/combat_screen_browser.mjs"
+  },
+  {
+   "prueba": "atlas/place_card_browser.mjs",
+   "causa": "las fichas de lugar del mapa de /play/; los edificios van al mundo-tutorial ([4])",
+   "archivo": "docs/pruebas-retiradas/place_card_browser.mjs"
+  },
+  {
+   "prueba": "atlas/tutorial_places_browser.mjs",
+   "causa": "los nueve lugares del tutorial de /play/; el tutorial pasa a ser la puerta en [4]",
+   "archivo": "docs/pruebas-retiradas/tutorial_places_browser.mjs"
+  },
+  {
+   "prueba": "atlas/front_door_browser.mjs",
+   "causa": "la puerta de /play/ (front_door) salio",
+   "archivo": "docs/pruebas-retiradas/front_door_browser.mjs"
+  },
+  {
+   "prueba": "atlas/crt_surface_browser.mjs",
+   "causa": "el chasis CRT de /play/ (menu, tubo, rueda) salio con thegame.js",
+   "archivo": "docs/pruebas-retiradas/crt_surface_browser.mjs"
+  }
  ]
 }

@@ -24,12 +24,14 @@ function check(name, run) {
 }
 
 check('the lists come from the served sw-listas.js', () => {
-  assert.ok(lists.contenidoJson.includes('/atlas-en.json'));
+  // NORTE 5 [3] (2026-10-27): no live page loads content JSON any more, so the served list is empty, not invented.
+  assert.ok(Array.isArray(lists.contenidoJson) && !lists.contenidoJson.includes('/atlas-en.json'));
   assert.ok(lists.redPrimero.includes('/manifest.webmanifest'));
 });
 check('cached(): same rule as the fetch handler of sw.js', () => {
   assert.equal(gate.cached('public/counters.json', lists), false);      // passthrough json
-  assert.equal(gate.cached('public/atlas-en.json', lists), true);       // CONTENIDO_JSON
+  assert.equal(gate.cached('public/atlas-en.json', lists), false);      // passthrough json now (NORTE 5 [3])
+  assert.equal(gate.cached('public/x.json', { ...lists, contenidoJson: ['/x.json'] }), true); // the CONTENIDO_JSON rule itself
   assert.equal(gate.cached('public/manifest.webmanifest', lists), false); // RED_PRIMERO
   assert.equal(gate.cached('public/game/sea.js', lists), true);
   assert.equal(gate.cached('public/sw.js', lists), true);

@@ -9,7 +9,8 @@ import { fileURLToPath } from 'node:url';
 const RAIZ = join(dirname(fileURLToPath(import.meta.url)), '..');
 const leer = (r) => readFileSync(join(RAIZ, r), 'utf8');
 const MI = createRequire(import.meta.url)('../public/game/map_integrity.js');
-const SEA = leer('public/game/sea.js'), JUEGO = leer('public/assets/thegame.js'), LISTAS = leer('public/sw-listas.js');
+// NORTE 5 [3] (2026-10-27): thegame.js salio; el mapa con nodos queda conservado sin pagina que lo cargue hasta su porte.
+const SEA = leer('public/game/sea.js'), JUEGO = '';
 const PUERTA = leer('public/game/ui-arena.js') + leer('public/game/ui-arena-comun.js');
 
 // Sabotaged twins: an integrity module that lets everything through, and sea.js without its guards.
@@ -17,7 +18,7 @@ const MI_SAB = { record: (r) => r || {}, punto: () => true, texto: (t) => t, jug
 const SEA_SAB = SEA.replace(/MI\.record\(([^;]*?), f\.lugares\(\)\)/g, '$1')
   .replace(/\n\s*if \(!MI\.punto\(a\) \|\| !MI\.punto\(b\)\) \{ return; \}/g, '')
   .replace(/\n\s*txt = MI\.texto\(txt\);\n\s*if \(!txt \|\| !MI\.punto\(\[x, y\]\)\) \{ return; \}/, '');
-const JUEGO_SAB = JUEGO.replace("['/game/map_integrity.js'], ", '');
+const JUEGO_SAB = '';
 const PUERTA_SAB = PUERTA.replace('.filter(function (d) { return !MI || MI.jugador(d); })', '')
   .replace("(typeof l.pseudo === 'string' && l.pseudo.trim()) || 'Player ' + String(l.huella || '').slice(0, 8)", 'l.pseudo');
 
@@ -71,9 +72,7 @@ caso('a player enters the map only as a well-formed envelope', (M) => {
 caso('the arena door admits only valid players and never names one by a missing value', (_, __, ___, A) =>
   (A.includes('.filter(function (d) { return !MI || MI.jugador(d); })') &&
    A.includes("(typeof l.pseudo === 'string' && l.pseudo.trim()) || 'Player ' + String(l.huella || '').slice(0, 8)")) || 'door or name unguarded');
-caso('the contract loads before the map, and the shell caches it', (_, __, J) =>
-  (J.indexOf("'/game/map_integrity.js'") > 0 && J.indexOf("'/game/map_integrity.js'") < J.indexOf("'/game/sea.js'") &&
-   LISTAS.includes("'/game/map_integrity.js'")) || 'load order or cache');
+// NORTE 5 [3]: the load-order case of /play/ left with thegame.js; the port of the map with nodes brings its own.
 
 console.log(JSON.stringify({ v: 'preceptoros.map_integrity/1', casos }, null, 1));
 process.exitCode = casos.every((c) => c.ok) ? 0 : 1;

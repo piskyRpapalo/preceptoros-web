@@ -35,8 +35,8 @@ function runRadio(voices) {
 const local = runRadio([{ name: 'Local English', lang: 'en-US', localService: true }, { name: 'Remote English', lang: 'en-US', localService: false }]);
 const hi = local.buttons.find(button => button.textContent === 'Say Hi');
 assert.ok(hi, 'radio exposes the Say Hi handshake');
-const css = readFileSync(new URL('../public/assets/thegame.css', import.meta.url), 'utf8');
-assert.match(css, /\.radio-say-hi\{min-width:44px;min-height:44px\}/, 'handshake meets the 44 px target');
+// NORTE 5 [3] (2026-10-27): thegame.css left with "play the game". The state radio (AI Act art. 50) is conserved but no page
+// loads it until its port; the port brings its 44 px rule back (docs/NORTE5_LISTA_CONSERVACION.md, P5).
 hi.click();
 assert.equal(local.spoken.length, 1, 'handshake speaks only after a gesture');
 assert.equal(local.spoken[0].voice.name, 'Local English', 'handshake selects a local English voice');

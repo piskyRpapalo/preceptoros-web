@@ -27,31 +27,20 @@ from pathlib import Path
 RAIZ = Path(__file__).resolve().parent.parent
 PUBLICO = RAIZ / "public"
 ASSETS = PUBLICO / "assets"
-# Lo que baja una visita que abre theGame: los guiones de `GUIONES` en `thegame.js` (el juez incluido),
-# sus hojas (atlas, thegame y tubo) y el texto de la lengua en que el juego abre hoy, que es la primera de `LENGUAS`.
-# La incubadora y su Army (`ARMY` en `thegame.js`) se piden al abrir su pestana y no cuentan, como
-# `atlas-hud.js` y `atlas-opina.js`: lo que no baja al abrir no pesa en la puerta.
-PIEZAS = ["atlas-arte.js", "atlas-coord.js", "atlas-carta.js", "atlas-ondas.js", "atlas-obra.js", "atlas-gesto.js", "atlas-dialogo.js", "atlas-motor.js",
-          "atlas-piso.js", "atlas.css", "thegame.js", "thegame.css", "tubo.css",
-          "radio_message_log.js", "terminal_menu_shell.js", "terminal_menu_shell.css", "terminal_window_frame.js", "worm_transition.js",  # la terminal chatbot (2026-10-12), en la puerta
-          "atlas-piloto.js", "atlas-partida.js", "atlas-piloto-capa.js", "atlas-guardado.js",
-          "../game/juez.js", "../game/z_cutoff.js"]
+# NORTE 5 [3] (2026-10-27, decreto ·6452880777): «play the game» salio con thegame.js; la puerta del juego es ahora la pagina
+# del mundo de entrada. Lo que baja una visita que la abre: la pagina y cada guion y hoja que carga (src/href del mismo
+# origen), gzip por fichero, como antes. Mismo metodo y mismo techo (153.600 B); cambia solo la puerta que se mide.
+PUERTA = PUBLICO / "face" / "basic.html"
+
+
+def piezas():
+    t = PUERTA.read_text(encoding="utf-8")
+    nombres = re.findall(r'<script[^>]*\ssrc="(/[^"]+)"', t) + re.findall(r'<link[^>]*rel="stylesheet"[^>]*href="(/[^"]+)"', t)
+    return [PUERTA] + [PUBLICO / n.lstrip("/") for n in nombres]
 
 
 def gzip_juego():
-    total = 0
-    base = re.search(r"var LENGUAS = \['(\w+)'", (ASSETS / "thegame.js").read_text(encoding="utf-8")).group(1)
-    paths = {ASSETS / n for n in PIEZAS} | {PUBLICO / f"atlas-{base}.json"}
-    view = ASSETS / "front_door_view.js"
-    if view.exists():
-        paths |= {view, ASSETS / "front_door.css"}
-        scripts = re.search(r"var SCRIPTS = (\[[\s\S]*?\]);", view.read_text(encoding="utf-8"))
-        if not scripts:
-            raise ValueError("front door load set is absent")
-        paths |= {PUBLICO / name.lstrip("/") for name in re.findall(r"'([^']+)'", scripts.group(1))}
-    for f in sorted(paths):
-        total += len(gzip.compress(f.read_bytes(), mtime=0))
-    return total
+    return sum(len(gzip.compress(f.read_bytes(), mtime=0)) for f in sorted(set(piezas())))
 
 
 def pruebas_web():

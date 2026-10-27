@@ -268,9 +268,11 @@ await caso('M17 M3: el duelo (wave_duel_scene.js, antes escena.js) destella con 
   const t = readFileSync(join(RAIZ, 'public/game/wave_duel_scene.js'), 'utf-8');
   return (t.includes('O.pulsoNota(') && !t.includes('u.flash*100')) || 'escena no lee pulsoNota';
 });
-await caso('carga: wave_render.js va ANTES que escena.js (escena captura AtlasOnda al cargar; al reves era {})', () => {
-  const t = readFileSync(join(RAIZ, 'public/assets/thegame.js'), 'utf-8'), c = t.slice(t.indexOf('var CASA'));
-  return c.indexOf("'/game/wave_render.js'") < c.indexOf("'/game/escena.js'") || 'escena antes que wave_render';
+await caso('carga: wave_render.js va ANTES que escena.js en cada mundo (escena captura AtlasOnda al cargar; al reves era {})', () => {
+  // NORTE 5 [3]: thegame.js salio; la carga que importa es la de las paginas de los mundos.
+  const malos = ['basic', 'atlantis', 'zombie'].filter((w) => { const t = readFileSync(join(RAIZ, 'public/face/' + w + '.html'), 'utf-8');
+    return !(t.indexOf('"/game/wave_render.js"') >= 0 && t.indexOf('"/game/wave_render.js"') < t.indexOf('"/game/escena.js"')); });
+  return !malos.length || 'escena antes que wave_render en ' + malos;
 });
 await caso('M17-bis 2: L sale del escudo, no de la vida', () => {
   const { O } = ONDA;

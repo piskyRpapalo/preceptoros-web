@@ -215,12 +215,15 @@ const rutas = await shell.keys();
 // 221 -> 219 el 2026-10-27 ([W] O1b): salen battle_replay.js, bout_scene.js y battle_choreography.js (este queda en PUROS, sin
 // cargar); entra wave_duel_scene.js, la UNA cara de combate.
 // 219 -> 221 el 2026-10-27 (NORTE 5 a1): entran get_app_gate.js y launch_gate.js, la compuerta de /get-the-app/.
-ok('precachea las portadas, su superficie y el juego', rutas.length === 221, rutas.length+' rutas');
-ok('el shell trae el juego (D7): la puerta, el cangrejo y la arena',
-   ['/assets/thegame.js', '/game/gdpr-art25-ephemeral-crab.js', '/game/ui-arena.js', '/assets/atlas-motor.js'].every(r => rutas.includes(r)));
-ok('el shell trae la puerta y el juego', ['/', '/play/'].every(r => rutas.includes(r)));
+// 221 -> 80 el 2026-10-27 (NORTE 5 [3], decreto ·6452880777): sale «play the game» (/play/, thegame.js y todo lo que solo
+// el cargaba) y Creation Studio. El precache es ahora EXACTAMENTE lo que cargan las paginas vivas (medido por cargas).
+ok('precachea las portadas, su superficie y los mundos', rutas.length === 80, rutas.length+' rutas');
+ok('el shell trae los mundos (D7): la pagina, el cangrejo efimero y el combate',
+   ['/face/basic.html', '/game/gdpr-art25-ephemeral-crab.js', '/game/wave_duel_scene.js', '/game/combate_ticks.js'].every(r => rutas.includes(r)));
+ok('el shell trae la puerta y los mundos, y YA NO /play/', ['/', '/face/'].every(r => rutas.includes(r)) && !rutas.some(r => /^\/play\//.test(r) || r === '/assets/thegame.js' || r === '/creation.html'));
 ok('el shell YA NO trae portadas de lengua (301 a `/`)', !rutas.some(r => /^\/(ar|de|el|en|es|fr|it|pt|ru)\/$/.test(r)));
-ok('el shell trae la identidad y el canal', ['/assets/auth.js', '/assets/enviar.js', '/assets/page-comment.js', '/assets/pwa.js'].every(r => rutas.includes(r)));
+// NORTE 5 [3]: enviar.js y page-comment.js ya no los carga ninguna pagina viva (el canal vuelve con la llamada al laboratorio).
+ok('el shell trae la identidad y la instalacion', ['/assets/auth.js', '/assets/pwa.js'].every(r => rutas.includes(r)));
 ok('el shell YA NO trae nada del hub', !rutas.some(r => /community|benchmark|playground|onboarding|profile|instalar|hub\.json|hitos|chat|caras\//.test(r)));
 // NINGUNA DE LAS DOS FAMILIAS VIAJA YA, y la segunda cayo el 2026-09-20.
 //
@@ -253,8 +256,9 @@ ok('la API del Agora pasa de largo',
 // regla 2: una MEDIDA no se cachea; el CONTENIDO declarado si.
 ok('counters.json no se cachea (es una medida)',
    await pedir(ORIGEN+'/counters.json','cors') === 'PASA_DE_LARGO');
-ok('atlas-en.json SI se sirve del cache (es contenido del juego)',
-   await pedir(ORIGEN+'/atlas-en.json','cors') !== 'PASA_DE_LARGO');
+// NORTE 5 [3]: ninguna pagina viva carga ya los textos del juego viejo: pasan a la red.
+ok('atlas-en.json YA NO se sirve del cache (ninguna pagina viva lo carga)',
+   await pedir(ORIGEN+'/atlas-en.json','cors') === 'PASA_DE_LARGO');
 {
   // El manifiesto va a red primero: con red responde la red, no el cache.
   const r = await pedir(ORIGEN+'/manifest.webmanifest','cors');
@@ -266,14 +270,15 @@ ok('atlas-en.json SI se sirve del cache (es contenido del juego)',
 // regla 3: navegacion cacheada, comprobada SIN RED para que no haya duda de
 // que sale del shell y no de la red.
 entorno.SIN_RED = true;
-const r1 = await pedir(ORIGEN+'/play/','navigate');
+const r1 = await pedir(ORIGEN+'/face/','navigate');
 ok('navegacion sale del shell aun sin red',
-   r1 !== 'PASA_DE_LARGO' && r1.status === 200 && String(r1.cuerpo).includes('/play/'),
+   r1 !== 'PASA_DE_LARGO' && r1.status === 200 && String(r1.cuerpo).includes('/face/'),
    'status '+(r1 && r1.status));
 const r2 = await pedir(ORIGEN+'/fr/nueva.html','navigate');
 const txt = await r2.text();
 ok('sin red sintetiza pagina', r2.status === 503, 'status '+r2.status);
-ok('la respeta el idioma de la ruta', txt.includes('Hors ligne'), txt.slice(0,0));
+// NORTE 5 [3]: una sola lengua (ingles) hasta el MVP; la pagina sin red tambien.
+ok('la pagina sin red habla ingles (una lengua)', txt.includes('Offline'), txt.slice(0,0));
 ok('la pagina sin red mete el texto en un panel', txt.includes('class="panel"'));
 ok('declara --panel-bg y --panel-fg', txt.includes('--panel-bg') && txt.includes('--panel-fg'));
 

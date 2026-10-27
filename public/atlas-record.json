@@ -6,7 +6,7 @@
  "horizonte_ciclos": 20000,
  "ley": {
   "nd": false,
-  "integridad_max": 107,
+  "integridad_max": 106,
   "dano": 1
  },
  "piloto_base": {
@@ -17,9 +17,9 @@
    "3": 1048,
    "4": 8123
   },
-  "integridad_min": 83,
-  "integridad_final": 107,
-  "integridad_max": 107,
+  "integridad_min": 82,
+  "integridad_final": 106,
+  "integridad_max": 106,
   "acciones": {
    "esperar": 19654,
    "recoger": 0,
@@ -40,7 +40,7 @@
   },
   "integridad_min": 0,
   "integridad_final": 0,
-  "integridad_max": 107,
+  "integridad_max": 106,
   "acciones": null,
   "fallos": null,
   "invalidas": null
@@ -49,7 +49,7 @@
   "arnes_rojo": {
    "ley": {
     "nd": false,
-    "integridad_max": 107,
+    "integridad_max": 106,
     "dano": 2
    },
    "piloto_base": {
@@ -60,9 +60,9 @@
      "3": 1048,
      "4": 8123
     },
-    "integridad_min": 59,
-    "integridad_final": 107,
-    "integridad_max": 107,
+    "integridad_min": 58,
+    "integridad_final": 106,
+    "integridad_max": 106,
     "acciones": {
      "esperar": 19654,
      "recoger": 0,
@@ -83,7 +83,7 @@
     },
     "integridad_min": 0,
     "integridad_final": 0,
-    "integridad_max": 107,
+    "integridad_max": 106,
     "acciones": null,
     "fallos": null,
     "invalidas": null

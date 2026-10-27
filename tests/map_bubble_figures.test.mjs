@@ -52,13 +52,8 @@ test('map layer and reef coral route their visible figures through the bestiary 
   assert.equal(coralCalls[0][5], 'open');
 });
 
-test('arena loads bestiary before either map painter', () => {
-  const source = read('public/assets/thegame.js');
-  const arena = source.match(/var ARENA = \[([\s\S]*?)\];/)[1];
-  assert.ok(arena.indexOf('/game/bubble_bestiary.js') >= 0);
-  assert.ok(arena.indexOf('/game/bubble_bestiary.js') < arena.indexOf('/game/reef_corals.js'));
-  assert.ok(arena.indexOf('/game/bubble_bestiary.js') < arena.indexOf('/game/map_nodes_layer.js'));
-});
+// NORTE 5 [3] (2026-10-27): the arena load order of /play/ (thegame.js) left; the map painters are conserved without a page
+// until their port, which brings its own load-order check. Retired test: docs/pruebas-retiradas/norte5-eliminacion.py.
 
 test('map bubble renderer stays under the per-file ceiling', () => {
   const bytes = readFileSync(new URL('public/game/map_bubble_figures.js', root)).length;

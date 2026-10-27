@@ -46,12 +46,9 @@ test('C4: métricas sin publicar → causa traducida, no bloqueo ni invención',
   if (m && !m.causa && (m.conformidad == null)) throw new Error('tasa sin dato pintada como cifra');
 });
 
-test('i18n: las claves cable viven traducidas en es; en y las demas usan los defaults EN del codigo (T(k, default))', () => {
+// NORTE 5 [3] (2026-10-27): the eight non-English game texts left; the cable keys live in English (one language until MVP).
+test('i18n: las claves cable viven en ingles (una lengua hasta el MVP)', () => {
   const claves = ['cable_aria','cable_boton','cable_recibo','cable_metricas','cable_yendo','cable_fallo','cable_nd','cable_edad'];
-  const es = JSON.parse(readFileSync(new URL('../public/atlas-es.json', import.meta.url), 'utf8'));
-  for (const k of claves) {
-    if (!es.ui || !es.ui[k] || !es.ui[k].length) throw new Error('es sin ' + k);
-  }
   const en = JSON.parse(readFileSync(new URL('../public/atlas-en.json', import.meta.url), 'utf8'));
   for (const k of claves) {
     if (!en.ui || !en.ui[k]) throw new Error('en sin ' + k + ' (T3: las claves viven en las 9 lenguas)');

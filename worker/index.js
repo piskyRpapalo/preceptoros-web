@@ -5,6 +5,9 @@
 // English only until the MVP (Sovereign canon, 2026-10-25): the nine language portals were the
 // same English landing nine times. They answer 301 to the one landing at the root.
 const PORTAL = /^\/(?:ar|de|el|en|es|fr|it|pt|ru)(?:\/(?:index\.html)?)?$/;
+// NORTE 5 [3] (2026-10-27, decree ·6452880777): "play the game" and the web Creation Studio left. Old links answer 301
+// to the worlds, the one truth now; nothing is served from those paths any more.
+const SALIO = /^\/(?:play(?:\/(?:index\.html)?)?|creation\.html)$/;
 
 export default {
   async fetch(request, env) {
@@ -15,6 +18,9 @@ export default {
     }
     if (PORTAL.test(url.pathname)) {
       return Response.redirect(url.origin + '/', 301);
+    }
+    if (SALIO.test(url.pathname)) {
+      return Response.redirect(url.origin + '/face/', 301);
     }
     return env.ASSETS.fetch(request);
   },

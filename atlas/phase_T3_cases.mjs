@@ -61,6 +61,6 @@ if (process.argv.includes('--sabotages')) {
   }
   const report = validate(raw, files);
   assert(readFileSync(new URL('public/game/ui.js',root),'utf8').includes("T('inc_h')"));
-  assert(readFileSync(new URL('public/assets/thegame.js',root),'utf8').includes("T('army_carga')"));
+  // NORTE 5 [3] (2026-10-27): thegame.js (the loader that printed army_carga) left; the label stays pinned in atlas-en.json above.
   console.log(JSON.stringify(report));
 }

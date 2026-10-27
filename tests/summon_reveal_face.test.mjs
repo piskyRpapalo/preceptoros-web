@@ -13,10 +13,8 @@ test('summon_reveal stays under the 16 KiB ceiling', () => {
   assert.ok(bytes <= 16384, 'summon_reveal.js over ceiling: ' + bytes);
 });
 test('summon scene loads comic_tokens before wave_render and summon_reveal', () => {
-  const src = read('public/assets/thegame.js');
-  const casa = src.match(/var CASA = \[\[([\s\S]*?)\]\];/);
-  assert.ok(casa, 'CASA script list found');
-  const scripts = casa[1];
+  // NORTE 5 [3] (2026-10-27): thegame.js left; the summon scene is loaded by the world pages.
+  const scripts = read('public/face/basic.html');
   const iTokens = scripts.indexOf('/game/comic_tokens.js');
   const iWave = scripts.indexOf('/game/wave_render.js');
   const iReveal = scripts.indexOf('/game/summon_reveal.js');

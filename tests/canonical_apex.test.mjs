@@ -29,9 +29,19 @@ test('the nine language portals answer 301 to the one English landing', async ()
 });
 
 test('only the portal itself redirects: lookalike paths are served as assets', async () => {
-  for (const p of ['/play/', '/face/', '/es.json', '/esx/', '/assets/enviar-es.js']) {
+  for (const p of ['/players/', '/playground.html', '/face/', '/es.json', '/esx/', '/creation.json']) {
     const r = await go('https://preceptoros.org' + p);
     assert.equal(r.status, 200, p);
+  }
+});
+
+// NORTE 5 [3] (2026-10-27, decree ·6452880777): "play the game" and the web Creation Studio left; their old addresses
+// answer 301 to the worlds, and only those exact paths do (the lookalikes above stay assets).
+test('the paths that left answer 301 to the worlds', async () => {
+  for (const p of ['/play/', '/play', '/play/index.html', '/creation.html']) {
+    const r = await go('https://preceptoros.org' + p);
+    assert.equal(r.status, 301, p);
+    assert.equal(r.headers.get('location'), 'https://preceptoros.org/face/', p);
   }
 });
 

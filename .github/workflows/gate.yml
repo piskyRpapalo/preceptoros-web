@@ -53,27 +53,17 @@ jobs:
             node arnes_sw.mjs
             node --test 'tests/*.test.mjs'
             node atlas/npc_occupancy_cases.mjs
-            node atlas/ventana_casos.mjs
             node atlas/radio_age_cases.mjs
             node atlas/hud_readings_cases.mjs
             node atlas/bubble_language_casos.mjs
-            node atlas/bubble_editor_casos.mjs
-            node atlas/bubble_paint_casos.mjs
-            node atlas/front_door_browser.mjs
             node atlas/egg_reload_browser.mjs
-            node atlas/combat_screen_browser.mjs
             node atlas/face_battle_browser.mjs
             node atlas/face_names_browser.mjs
             node atlas/landing_doors_browser.mjs
-            node atlas/place_card_browser.mjs
-            node atlas/tutorial_places_browser.mjs
             node atlas/wave_duel_browser.mjs
             node atlas/bubble_bestiary_casos.mjs
             node atlas/bubble_icons_casos.mjs
             node atlas/bubble_letters_casos.mjs
-            node atlas/codex_casos.mjs
-            node atlas/descent_sound_casos.mjs
-            node atlas/descent_view_casos.mjs
             node atlas/mvp_casos.mjs
             node atlas/ficha_casos.mjs
             node atlas/matematica_casos.mjs
@@ -94,7 +84,6 @@ jobs:
             node atlas/phase_T3_cases.mjs
             node atlas/shell_schematics_casos.mjs
             node atlas/z_cutoff_casos.mjs
-            node atlas/lexical_projector_casos.mjs
             node atlas/map_bubble_casos.mjs
             node atlas/todos_los_casos.mjs
           done

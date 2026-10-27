@@ -68,31 +68,26 @@ try {
       v.escena = function (l) { __montajes.push(l && (l.id || l.className)); return e.apply(this, arguments); }; W = v; } }); })()` });
   const hasta = async (e, ms) => { for (let t = 0; t < ms; t += 250) { if (await ev(e)) { return true; } await espera(250); } return false; };
   const tinta = (sel) => `(() => { const c = document.querySelector(${JSON.stringify(sel)}); if (!c || !c.width) return 0; const d = c.getContext('2d').getImageData(0, 0, c.width, c.height).data; let n = 0; for (let i = 3; i < d.length; i += 16) { if (d[i] > 0) n++; } return n; })()`;
-  // 1 · /play/ arena: a PvE fight through ui-arena's real juega (the duel plays through the same juega).
-  await cmd('Page.navigate', { url: origen + '/play/' });
-  await hasta("!!document.querySelector('.descent-skip')", 15000); await ev("(b => b && b.click())(document.querySelector('.descent-skip'))");
-  ok(await hasta('!!(window.AtlasArenaUI && window.AtlasArena && window.AtlasWaveDuel)', 40000), '/play/: the arena or the wave duel did not load');
+  // NORTE 5 [3] (2026-10-27): /play/ left; the duel's real entry point is a world's fight stage. Opt in with the world's own
+  // sound, start the first patrol fight, and measure: the wave duel mounts on #b-stage and draws there, and the fight is heard
+  // at its seals' pitch (LIVE 440 Hz for your squad, SIMULATED 275 Hz for the emulated patrol), only after opting in.
+  await cmd('Page.navigate', { url: origen + '/face/basic.html' });
+  ok(await hasta('!!(window.PreceptorFaceHooks && PreceptorFaceHooks.battle && window.AtlasWaveDuel && window.AtlasSintesis)', 30000), 'world: the fight or the wave duel did not load');
   medida.oscAntes = await ev('__osc.length');
-  await ev(`(() => { AtlasSintesis.activa(true); const K = AtlasCanon, A = AtlasArena, l = A.lugares().find((x) => x.id === 'arrecife'), asa = [1, 2, 3].map((n) => ({ tc: 'tc1', semilla: K.sha('w-captura-ref-' + n) })),
-    s = K.sha('w-captura-ref-semilla'); AtlasArenaUI.juega(l.defensa.tropas, asa, A.combate(l.defensa.tropas, asa, s), { titulo: 'ref', yo: 1, semilla: s, pve: true }); return true; })()`);
-  await espera(3000);
-  medida.play = JSON.parse(await ev(`JSON.stringify({ montajes: __montajes.slice(), replay: typeof window.AtlasReplay, tinta: ${tinta('canvas.atlas-arena-lienzo')} })`));
-  ok(medida.play.montajes.includes('atlas-arena-lienzo') && medida.play.replay === 'undefined' && medida.play.tinta > 500, '/play/ arena is not on the wave duel: ' + JSON.stringify(medida.play));
-  // O2: the fight is heard at its seals' pitch (LIVE 440 Hz, SIMULATED 275 Hz: this PvE side is emulated), only after opting in.
+  await ev("(b => b && b.click())(document.getElementById('sound'))");
+  // A squad of three practice waves stands in for hatched eggs (as face_battle_browser does); the battle itself is the real one.
+  await ev(`(() => { const H = PreceptorFaceHooks, s = (i) => AtlasCanon.sha('w-mundo-escuadra-' + i);
+    H.army.squad = () => [0, 1, 2].map((i) => ({ semilla: s(i), tc: 'tc1' }));
+    document.getElementById('tab-battle').click(); H.battle.start(H.battle.patrols()[0].id); return true; })()`);
   await espera(9000);
+  medida.mundo = JSON.parse(await ev(`JSON.stringify({ montajes: __montajes.slice(), tinta: ${tinta('#b-stage')}, sonido: PreceptorFaceHooks.sound() })`));
+  ok(medida.mundo.montajes.includes('b-stage') && medida.mundo.tinta > 500, 'world: the fight is not on the wave duel stage: ' + JSON.stringify(medida.mundo));
   medida.voz = JSON.parse(await ev('JSON.stringify({ antes: ' + medida.oscAntes + ', osc: __osc.length, f: [...new Set(__osc)].sort((a, b) => a - b) })'));
-  ok(medida.voz.antes === 0 && medida.voz.f.includes(440) && medida.voz.f.includes(275), 'O2: the duel is not heard at its seal pitch: ' + JSON.stringify(medida.voz));
-  if (CAPTURA) { const s = await cmd('Page.captureScreenshot', { format: 'png' }); writeFileSync(join(CAPTURA, 'o1b-play.png'), Buffer.from(s.result.data, 'base64')); }
-  // 2 · the tutorial practice: its own scripts, mounted, rounds advanced until the model ends it (measured: this seed ends at round 2).
-  await ev('TheGame.tutorial()'); await hasta('!!(window.AtlasPracticeArena && window.AtlasWaveDuel)', 30000);
-  await ev(`(() => { const h = document.createElement('div'); h.id = 'w-practica'; document.body.appendChild(h); window.__pr = AtlasPracticeArena.mount(document, h, { seed: AtlasCanon.sha('w-practica') });
-    for (let i = 0; i < 3; i++) { [...h.querySelectorAll('button')].find((b) => b.textContent === 'Next round').click(); } return true; })()`);
-  await espera(2500);
-  medida.practica = JSON.parse(await ev(`JSON.stringify({ montajes: __montajes.slice(), tick: __pr.state().tick, tinta: ${tinta('#w-practica canvas.en301-duel')} })`));
-  ok(medida.practica.montajes.includes('en301-duel') && medida.practica.tick >= 1 && medida.practica.tinta > 200, 'the practice is not on the wave duel: ' + JSON.stringify(medida.practica));
+  ok(medida.mundo.sonido === true && medida.voz.antes === 0 && medida.voz.f.includes(440) && medida.voz.f.includes(275), 'O2: the duel is not heard at its seal pitch: ' + JSON.stringify(medida.voz));
+  if (CAPTURA) { const s = await cmd('Page.captureScreenshot', { format: 'png' }); writeFileSync(join(CAPTURA, 'n5-mundo.png'), Buffer.from(s.result.data, 'base64')); }
   ok(externas.length === 0, 'external requests: ' + externas.slice(0, 3));
 } catch (e) { fallos.push(String(e && e.message || e)); }
 finally { try { ws && ws.close(); } catch {} ch.close && ch.close(); srv.close(); }
 console.log(JSON.stringify({ piece: 'W-O1+O2', receipt: 'MEDIDO', fixture: 'atlas/wave_duel_fixture.html (test-only)', canvas: [medida.w, medida.h], gana: medida.gana, rondas: medida.rondas,
-  dibujo: medida.n && { stroke: medida.n.stroke, fillRect: medida.n.fillRect, arc: medida.n.arc, moveTo: medida.n.moveTo, texto: medida.n.texto }, aria: medida.aria, play: medida.play, voz: medida.voz, practica: medida.practica, externas: externas.length, fallos }));
+  dibujo: medida.n && { stroke: medida.n.stroke, fillRect: medida.n.fillRect, arc: medida.n.arc, moveTo: medida.n.moveTo, texto: medida.n.texto }, aria: medida.aria, mundo: medida.mundo, voz: medida.voz, externas: externas.length, fallos }));
 process.exitCode = fallos.length ? 1 : 0;

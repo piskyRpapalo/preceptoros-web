@@ -1,12 +1,12 @@
-const VERSION = 'preceptoros-2026-17-abjx';
+const VERSION = 'preceptoros-2026-17-abjy';
 const SHELL = 'shell-' + VERSION;
 const OBRA = 'obra-' + VERSION;
 
 importScripts('/sw-listas.js?v=' + VERSION);
 
 function rutasDelShell() {
-  // Recencia y canon ingles (2026-10-25): las nueve portadas de lengua son 301 a `/`; el juego vive en /play/.
-  return ['/', '/play/', '/manifest.webmanifest'].concat(HUB);
+  // NORTE 5 [3] (2026-10-27): /play/ salio; el shell es la portada y lo que cargan las paginas vivas.
+  return ['/', '/manifest.webmanifest'].concat(HUB);
 }
 
 function sinRedireccion(res) {

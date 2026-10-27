@@ -6,10 +6,12 @@ Status: proposal for review. Deployment remains a human action. This document re
 
 `wrangler.jsonc` names the Worker `preceptoros-web` and serves `./public` as static assets. `.github/workflows/deploy.yml` is `manual-worker-deploy`: `workflow_dispatch`, guarded to `refs/heads/main`, with the `production` environment. The Mesa measured that environment as requiring a reviewer; the approval policy is hosted in GitHub and is not represented in this checkout. The Sovereign triggers the workflow and supplies the human approval. Agents do not deploy.
 
-Route-count receipt for this source tree (`origin/main` a061e9a + `mistral/w-o1b-switch-20261027`: the wave duel is the one combat face; `battle_replay.js`, `bout_scene.js` and `battle_choreography.js` leave the shell, `wave_duel_scene.js` joins it):
+Route-count receipt for this source tree (`origin/main` 07df88e + `mistral/norte5-eliminacion-20261027`, NORTE 5 [3], decree ·6452880777: "play the game" (`/play/`, `thegame.js` and everything only it loaded) and the web Creation Studio leave; the precache is exactly what the surviving pages load, measured by resource loads):
 
-Rutas precargadas por el shell: 222
-Rutas distintas del shell: 221
+Rutas precargadas por el shell: 80
+Rutas distintas del shell: 80
+
+The Worker answers `/play/`, `/play` and `/creation.html` with 301 to `/face/`.
 
 The workflow runs exactly:
 

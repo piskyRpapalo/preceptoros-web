@@ -14,7 +14,8 @@ const CLAVES_LIBRO = ['v', 'medido', 'sin_juez', 'vocablo_ley', 'vocablo_pendien
 const SELLO_RE = /^(NO_DATA|LIVE|MEASURED|MEDIDO|EMULAT\w*|SIMULAT\w*|STALE|STATIC|DECLAR\w*|PROPOS\w*|SIGNED|FIRMADO|UNKNOWN|ESTIMAT\w*|INFERRED|GUESS\w*|APPROX\w*)$/;
 const VOCAB_EXTRA = ['MEASURED', 'EMULATED', 'SIGNED', 'PROPOSED', 'DECLARED', 'REQUIRES_FIRMA'];
 const VOC = '\\b(oraculo|notario|depin|tokens?|moneda|clearing|magia|oracle|notary|currency|magic)\\b';
-const CANAL = ['enviar-ar.js', 'enviar-de.js', 'enviar-el.js', 'enviar-en.js', 'enviar-es.js', 'enviar-fr.js', 'enviar-it.js', 'enviar-pt.js', 'enviar-ru.js'];
+// NORTE 5 [3] (2026-10-27): the eight non-English channel texts left (no live page loaded them); English stays (conserved).
+const CANAL = ['enviar-en.js'];
 const leer = (rel) => readFileSync(join(RAIZ, rel), 'utf8');
 const fin = (ok, detalle) => ({ ok, detalle });
 const run = (f) => { try { return f(); } catch (e) { return fin(false, 'excepcion: ' + e.message); } };
@@ -166,11 +167,11 @@ function m6(piezas) {
  return { ...fin(fallos.length === 0, fallos.join('; ') || 'canal con las mismas claves'),
   canal_enviar: canal.length - malos.size };
 }
-// Sabotaje: copia de enviar-es.js sin su primera clave.
+// Sabotaje: copia de enviar-en.js con su primera clave vacia (NORTE 5 [3]: una sola lengua, la paridad no puede fallar).
 function quitaClave(piezas) {
- const es = piezas.find((p) => p.fichero === 'public/assets/enviar-es.js');
+ const es = piezas.find((p) => p.fichero === 'public/assets/enviar-en.js');
  const e = canalDe(es.src);
- delete e[Object.keys(e)[0]];
+ e[Object.keys(e)[0]] = '';
  const src = 'window.ENVT = ' + JSON.stringify(e, null, 1) + ';\n';
  return piezas.map((p) => (p === es ? { ...p, src, bytes: Buffer.byteLength(src) } : p));
 }
