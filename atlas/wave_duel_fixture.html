@@ -1,0 +1,22 @@
+<!doctype html><meta charset="utf-8"><title>Wave duel fixture</title>
+<style>body{margin:0;background:#0f0d18}#caja{width:983px;margin:20px}canvas{display:block;width:983px}</style>
+<div id="caja"><canvas id="lienzo"></canvas></div>
+<script src="/game/tabla_semantica.js"></script><script src="/game/comic_tokens.js"></script><script src="/game/valores.js"></script>
+<script src="/game/gacha.js"></script><script src="/assets/atlas-coord.js"></script><script src="/game/canon.js"></script>
+<script src="/game/sobres.js"></script><script src="/game/rating.js"></script><script src="/game/taller.js"></script>
+<script src="/game/combate_ticks.js"></script><script src="/game/arena.js"></script><script src="/game/wave_render.js"></script>
+<script src="/game/escuadron.js"></script><script src="/game/escena.js"></script><script src="/game/wave_duel_scene.js"></script>
+<script>
+// Test-only fixture (never served by the site): the v1.1 reference fight on the wave duel scene.
+// Colours = ui-arena-comun.js colores() fallbacks (the page has no CSS variables here).
+window.colores = { dano: '#e0a060', fallo: '#9aa', tuya: '#ffb547', suya: '#b07cff', texto: '#ddd', mar: 'rgba(120,170,220,.09)' };
+window.juega = function (op) {
+  var K = AtlasCanon, A = AtlasArena, lugar = A.lugares().find(function (l) { return l.id === 'arrecife'; });
+  var asa = [1, 2, 3].map(function (n) { return { tc: 'tc1', semilla: K.sha('w-captura-ref-' + n) }; });
+  var semilla = K.sha('w-captura-ref-semilla'), c = A.combate(lugar.defensa.tropas, asa, semilla);
+  window.__c = c;
+  return AtlasWaveDuel.escena(document.getElementById('lienzo'), lugar.defensa.tropas, asa, c,
+    Object.assign({ semilla: semilla, yo: 1, colores: window.colores, ronda: 'Round {r}', fallo: 'miss',
+      letrero: function (x) { return { texto: x.gana === 'asalto' ? 'VICTORY' : 'DEFEAT' }; }, alFin: function () { window.__fin = true; } }, op || {}));
+};
+</script>

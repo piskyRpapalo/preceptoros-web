@@ -264,8 +264,8 @@ await caso('M17 M3: el pulso de luz es la nota de la receta bajada por octavas a
   }
   return !mal.length || mal;
 });
-await caso('M17 M3: escena.js destella con el pulso de la nota del golpe (pop), no con una frecuencia inventada', () => {
-  const t = readFileSync(join(RAIZ, 'public/game/escena.js'), 'utf-8');
+await caso('M17 M3: el duelo (wave_duel_scene.js, antes escena.js) destella con el pulso de la nota del golpe (pop), no con una frecuencia inventada', () => {
+  const t = readFileSync(join(RAIZ, 'public/game/wave_duel_scene.js'), 'utf-8');
   return (t.includes('O.pulsoNota(') && !t.includes('u.flash*100')) || 'escena no lee pulsoNota';
 });
 await caso('carga: wave_render.js va ANTES que escena.js (escena captura AtlasOnda al cargar; al reves era {})', () => {

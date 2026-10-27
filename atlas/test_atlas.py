@@ -1076,7 +1076,10 @@ CREATION_PAGE_DEPENDENCIES = CREACION + (
 )
 # /aduana/ (Norte N3, 2026-10-26): el catalogo publico de cedulas, puro; solo lo carga la pagina /aduana/.
 ADUANA = ("node_catalogue.js",)
-FUERA_DE_LA_PUERTA = tuple(sorted(set(PUROS + ARENA + CASA + DESCENSO + VT6 + J1 + VT2_ETIQUETA + VT4_SILUETA + VISION_LEXICA + ADUANA)))
+# [W] O1a (2026-10-27): la escena del duelo de ondas, OSCURA: ninguna pagina la carga todavia (O1b la conecta y retira las
+# caras viejas en la misma pieza). Por eso no entra al precache ni a ninguna pagina; la regla D7 lo exige asi.
+W_O1A = ("wave_duel_scene.js",)
+FUERA_DE_LA_PUERTA = tuple(sorted(set(PUROS + ARENA + CASA + DESCENSO + VT6 + J1 + VT2_ETIQUETA + VT4_SILUETA + VISION_LEXICA + ADUANA + W_O1A)))
 # La cara del juego (2026-10-25) es su propia superficie en public/face/, fuera
 # de la puerta: carga de una vez las piezas que usa, como creation.html. Se
 # declaran aqui las suyas, leidas de sus paginas, y nada mas.
@@ -2559,7 +2562,7 @@ class MapaMovible(unittest.TestCase):
         for c in casos:
             with self.subTest(caso=c["caso"]):
                 self.assertTrue(c["ok"], c["detalle"])
-        self.assertIn("raiz.AtlasEscuadron.pinta(g, u,", (PUBLICO / "game" / "escena.js").read_text(encoding="utf-8"))
+        self.assertIn("raiz.AtlasEscuadron.pinta(g, u,", (PUBLICO / "game" / "wave_duel_scene.js").read_text(encoding="utf-8"))
 
     def test_p11_casos_del_primer_eco(self):
         """P11 (firmado 2026-10-11): el capitulo 1.5 ensena el Taller con sus reglas de verdad, en simulacro."""
@@ -2744,10 +2747,14 @@ class EsteticaMedida(unittest.TestCase):
         return sin_comentarios(_fam(n, (PUBLICO / "game" / n).read_text(encoding="utf-8")))
 
     def test_el_dano_es_desafinacion_y_no_barra(self):
-        e = self._js("escena.js")
+        # 2026-10-04 (directiva): el dano es desafinacion, no barra. 2026-10-27 ([W] O1, fallo HIBRIDO del Soberano): el
+        # duelo de ondas lleva la barra de vida de v1.1 bajo cada tropa Y sigue desafinando la figura con el dano. La
+        # desafinacion sigue siendo OBLIGATORIA; la barra solo vive en el duelo, nunca en la libreria compartida.
+        e, d = self._js("escena.js"), self._js("wave_duel_scene.js")
         self.assertIn("function afina(arm, d, t)", e)
-        self.assertIn("desafina: Math.min(1, (1 - u.vida / u.max)", e, "la vida no desafina la figura")
-        self.assertNotIn("function barra(", e, "vuelve la barra de vida")
+        self.assertIn("desafina: Math.min(1, (1 - u.vida / u.max)", d, "la vida no desafina la figura")
+        self.assertNotIn("function barra(", e, "la barra de vida se sale del duelo")
+        self.assertIn("function barra(u)", d, "el duelo hibrido perdio la barra de v1.1")
         self.assertIn("[[1, 0], [2, 0], [-1, 1], [0, 1], [1, 1], [0, 2]]", e, "el tramado no es Atkinson")
         self.assertIn("(v - q) / 8", e, "Atkinson reparte 1/8 a cada vecino")
 
