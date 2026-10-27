@@ -57,3 +57,10 @@ h1{font-size:1.9rem;line-height:1.15;margin:16px 0 6px}
 #comprueba button{min-height:44px;margin:6px 8px 6px 0;padding:8px 14px;border:2px solid currentColor;border-radius:var(--radius);background:var(--bg);color:var(--fg);font:inherit}
 #comprueba button:disabled{opacity:.55}
 #comprueba [role=status]{margin:8px 0;color:var(--soft)}
+.gate-carriles{list-style:none;padding:0;margin:0;display:grid;gap:12px}
+.gate-carril{padding:12px;border:2px solid var(--line);border-radius:var(--radius)}
+.gate-carril p{margin:6px 0}
+.gate-clics{margin-left:8px;color:var(--soft);font-size:.9rem}
+.gate-boton{display:inline-block;min-height:44px;min-width:44px;margin-top:6px;padding:8px 14px;border:2px solid currentColor;border-radius:var(--radius);background:var(--bg);color:var(--fg);font:inherit;cursor:pointer}
+.gate-boton:disabled{opacity:.55;cursor:default}
+.gate-causa,.gate-cifra,.gate-hecho{color:var(--soft);font-size:.92rem}
