@@ -46,7 +46,6 @@
  ],
  "codigo_sin_cargar": {
   "game/cria.js": "solo lo usan los casos de atlas/ (node); ninguna lista de thegame.js lo pide",
-  "game/genoma.js": "igual",
   "game/mercado.js": "igual",
   "game/narragrafo.js": "igual"
  },

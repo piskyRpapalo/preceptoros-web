@@ -2,7 +2,7 @@
 
 This document records the design notes formerly embedded in the served vector, harmonic and signal modules. Runtime behavior remains defined by the modules and their schemas.
 
-## Genome constraints — `public/game/genoma.js`
+## Genome constraints — `atlas/puros/genoma.js` (out of the served tree since 2026-10-27)
 
 A genome is a bounded set of integer parameters grouped by declared domains. Unknown parameters, fractional values, out-of-range values, and forbidden authority, persistence, network, identity, or physical-engine controls are rejected. Its canonical parameter hash is independent of key order. The local system may propose changes; adoption, activation, and persistence remain human-authorized. The module is pure and performs no DOM, network, clock, or random operations.
 
