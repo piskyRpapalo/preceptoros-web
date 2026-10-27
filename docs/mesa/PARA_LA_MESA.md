@@ -1,3 +1,5 @@
+> **Congelado 2026-10-27** · el trono de las firmas es `LIBRO_DE_FIRMAS.md` (repo `firmas`) · este fichero es archivo histórico: no crece más.
+
 ## SEMANA E · CIERRE MEDIDO Y SELLO · 2026-10-26
 - **E8-final V2 sellado LIVE.** Creación `48f95e56…` (cinta cyan); cadena de recibos en buzon#19: A 6376451329 · B 6376466401 · C 6376517629 · render 6376546273 · sello LIVE 6376680966. Guion V2 ejecutado (sha corto 04ffe1fd); enmienda archival db00d9c5; el guion V1 sigue pineado (90ca2282…). Viajera declarada: Luna; las manos del Soberano actúan bajo la cláusula de manos.
 - **Lane F cerrado 6/6.** web#288 (08a0be93) · web#289 (21b75d25) · web#290 · web#291 (880704d3) · PreceptorOS#98 (a89022b6) · PreceptorOS#99; recibos triples buzon#19 6376804981 · 6377089352. Ramas lf* podadas.
