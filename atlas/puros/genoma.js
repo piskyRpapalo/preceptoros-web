@@ -1,8 +1,10 @@
 
+// Baja del arbol servido (2026-10-27, Mesa (c), REQUIERE_FIRMA): ningun guion ni pagina lo pedia. Es el validador puro
+// del genoma para la cria futura (SISIL_CRIA, orden del Soberano): vive fuera de public/, con sus casos y su contrato.
 (function (raiz) {
   'use strict';
 
-  var K = (typeof module === 'object' && module.exports) ? require('./canon.js') : raiz.AtlasCanon;
+  var K = (typeof module === 'object' && module.exports) ? require('../../public/game/canon.js') : raiz.AtlasCanon;
 
   function tc(prefijo, banda) {
     var o = {};

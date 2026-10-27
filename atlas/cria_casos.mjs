@@ -9,7 +9,7 @@ const require = createRequire(import.meta.url);
 const K = require('../public/game/canon.js');
 const G = require('../public/game/gacha.js');
 const C = require('../public/game/cria.js');
-const Gn = require('../public/game/genoma.js');
+const Gn = require('./puros/genoma.js');
 
 const casos = [];
 function caso(nombre, fn) {
@@ -121,7 +121,7 @@ caso('invocar: fuera del enum de lo que un piloto puede proponer', () => {
 caso('adoptar e invocar: solo ui.js, tras la firma de la persona; ningun modulo del laboratorio', () => {
   const sin = (t) => t.replace(/\/\*[\s\S]*?\*\//g, '').replace(/(^|[^:'"\\])\/\/.*$/gm, '$1');
   const lee = (f) => sin(readFileSync(new URL('../public/game/' + f, import.meta.url), 'utf8'));
-  for (const f of ['canon.js', 'sobres.js', 'arena.js', 'mercado.js', 'narragrafo.js', 'cria.js', 'genoma.js']) {
+  for (const f of ['canon.js', 'sobres.js', 'arena.js', 'mercado.js', 'narragrafo.js', 'cria.js', '../../atlas/puros/genoma.js']) {
     const c = lee(f);
     if (/\.adopta\(|\.invoca\(|Identity\.firmar|firmarTexto/.test(c)) { return f + ' adopta, invoca o firma'; }
   }
