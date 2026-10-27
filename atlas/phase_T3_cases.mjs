@@ -7,7 +7,8 @@ const digest = b => createHash('sha256').update(b).digest('hex');
 const baseline = 'e8a92e1d4fe223929f1cf2afb5f234a6ae593282cefc8efffdfd68a5cb8a5040'; /* updated 2026-10-19: rar_magico 'Magic' -> 'Uncommon' (banned word out of the UI); measured from the gate itself */
 const protectedFiles = { /* hashes actualizados 2026-10-16 por D1-laws: los comentarios salieron del codigo (canon en docs/); la logica intacta */
   // armi 30 (web#278): army_tope 60->30; pin re-medido por el gate el 2026-10-23.
-  'public/game/valores.js': '0982f47281becb01f98f4db6d16b4df0d649e7fdbf01aacae34e5d455d254114',
+  // [W] O3 (2026-10-27, REQUIERE_FIRMA bajo el decreto O1..O5): pulso_grosor_max gana su lector (fila semantica); pin re-medido.
+  'public/game/valores.js': '6b93a5d49d6b55ee2fb1cf024395fd45d7df2c44511404e476b6e360d78a4f9e',
   'public/assets/atlas-motor.js': 'c31c2b2e51df15707242bbc5d8d80bf1801fce51764d472dd4bcdb15903a0051',
   'public/game/gacha.js': 'f98302cf4f59f281b1ee2bdd90715c576a4630ec42316231191d4fba266d403c',
   'public/game/core.js': 'f7f126fde151931830f772be35aecdd84fa97f7c5be4b257f80d9674a66f6a0d',
