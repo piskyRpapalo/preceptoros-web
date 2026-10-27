@@ -39,6 +39,7 @@ const JUEGO = [
   '/face/face_hud.js',
   '/face/face_paint.js',
   '/face/face_panel.js',
+  '/face/face_terminal.js',
   '/face/face_tutorial.js',
   '/face/face_views.css',
   '/face/face_workshop.js',

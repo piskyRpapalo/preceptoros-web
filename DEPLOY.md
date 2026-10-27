@@ -8,8 +8,8 @@ Status: proposal for review. Deployment remains a human action. This document re
 
 Route-count receipt for this source tree (`origin/main` a061e9a + `mistral/w-o1b-switch-20261027`: the wave duel is the one combat face; `battle_replay.js`, `bout_scene.js` and `battle_choreography.js` leave the shell, `wave_duel_scene.js` joins it):
 
-Rutas precargadas por el shell: 222
-Rutas distintas del shell: 221
+Rutas precargadas por el shell: 223
+Rutas distintas del shell: 222
 
 The workflow runs exactly:
 
