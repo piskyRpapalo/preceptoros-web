@@ -67,7 +67,7 @@
   function suena(tipo, calor) {
     var r = typeof tipo === 'object' ? tipo : receta(tipo, calor);
     if (!activo || !ctx || !r) { return null; }
-    var t = ctx.currentTime;
+    var t = ctx.currentTime + (r.retardo || 0);
     var car = ctx.createOscillator(), mod = ctx.createOscillator();
     var prof = ctx.createGain(), sal = ctx.createGain();
     car.type = 'sine'; mod.type = 'sine';
@@ -102,9 +102,39 @@
     return r;
   }
 
+    // [W] O2 · the wave duel's voice. Jewel 3: a hit sounds at the pitch of its seal, f = lo + hue/360·(hi - lo), the hue read
+  // from tabla_semantica (NO_DATA is silence). Jewel 5: a win resolves in a staggered chord. No vibrato on it: what is signed
+  // sounds still (M17-bis 4). The timbre is the event's recipe, only re-tuned.
+  var DUELO = { golpe: 'pop', cae: 'eclosion', gana: 'adopcion', pierde: 'huevo' };
+  function afina(r, f) {
+    var k = f / r.portadora;
+    r.portadora = Math.round(f); r.moduladora = Math.round(r.moduladora * k);
+    if (r.moduladora2) { r.moduladora2 = Math.round(r.moduladora2 * k); }
+    if (r.vibrato) { r.vibrato.prof = Math.round(r.vibrato.prof * k); }
+    return r;
+  }
+  function duelo(tipo, sello, calor) {
+    var I = V.sintesis, M = raiz.AtlasSemantica, h = sello && M ? M.hueDe(sello) : null, r;
+    if (sello === 'NO_DATA' || !DUELO[tipo]) { return null; }
+    if (tipo === 'gana') {
+      var a = I.acorde, b = receta(DUELO.gana, calor).portadora;
+      return a.map(function (q, i) {
+        r = afina(receta(DUELO.gana, calor), b * q / a[0]);
+        r.retardo = i * I.acorde_paso; r.gan = r.gan * (1 - 0.1 * i) / a.length;
+        return r;
+      });
+    }
+    r = receta(DUELO[tipo], tipo === 'pierde' ? 0.8 : calor);
+    return h == null ? r : afina(r, I.voz_hz[0] + h / 360 * (I.voz_hz[1] - I.voz_hz[0]));
+  }
+  function suenaDuelo(tipo, sello, calor) {
+    var r = duelo(tipo, sello, calor);
+    return !r ? null : [].concat(r).map(function (x) { return suena(x); });
+  }
+
     function contexto() { return activo ? ctx : null; }
   var AtlasSintesis = { BASE: BASE, receta: receta, envolvente: envolvente, calorDe: calorDe, activa: activa, suena: suena, vozDe: vozDe,
-                        contexto: contexto };
+                        contexto: contexto, duelo: duelo, suenaDuelo: suenaDuelo };
   if (typeof module === 'object' && module.exports) { module.exports = AtlasSintesis; }
   else { raiz.AtlasSintesis = AtlasSintesis; }
 })(this);

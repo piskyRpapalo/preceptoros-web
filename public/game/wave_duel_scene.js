@@ -79,7 +79,7 @@
       var sello = selloDe(a, op); Q.resiembra(e[0]);
       ondas.push({ x: t.x, y: t.y, r: t.r, c: banda(sello), hz: (S && S.de(sello) || {}).pulso_hz || 1, v: vt, son: sonDe(t.vida ? 'golpe' : 'cae', sello) });
       pops.push({ x: t.x, y: t.y - t.r, txt: '-' + e[4], c: col.dano || a.color, v: vt });
-      if (op.sonido) { op.sonido(t.vida ? 'golpe' : 'cae', a.t); }
+      if (op.sonido) { op.sonido(t.vida ? 'golpe' : 'cae', a.t, sello); }
       if (!t.vida) {
         t.muere = vt;
         for (var i = 0; i < 30; i++) {

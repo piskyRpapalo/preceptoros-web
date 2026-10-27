@@ -73,6 +73,7 @@
     }
     function life(l) { var v = 0, m = 0; troops().forEach(function (x) { if (x.lado === l) { v += x.vida; m += x.max; } }); return [v, m]; }
 
+    function oye() { var Hk = root.PreceptorFaceHooks; return !!(Hk && Hk.sound && Hk.sound()); }
     function frame(change) {
       var atoms = [0, 1].map(function (l) {
         var list = troops().filter(function (x) { return x.lado === l && x.vida > 0; }), lf = life(l);
@@ -80,7 +81,7 @@
           i: list.map(function (x) { return { o: 'wave', x: x.at[0], y: x.at[1], h: [[1, 9, 9, 0]], f: l ? 'cyan' : 'vermilion.base' }; }) };
       });
       return { v: 'preceptoros.bubble/1', id: 'battle', t: b.st ? b.st.ronda : 0, atoms: atoms, bands: ['cyan', 'vermilion.base', 'ink'],
-        change: [change || (b.result ? 'verdict: ' + b.result.gana : 'tick ' + (b.st ? b.st.ronda : 0))], sound: 'NO_DATA', soundCause: 'sound off', motion: 'tick by tick' };
+        change: [change || (b.result ? 'verdict: ' + b.result.gana : 'tick ' + (b.st ? b.st.ronda : 0))], sound: oye() ? 'seal voice' : 'NO_DATA', soundCause: oye() ? 'core.js duel voice: the hitter seal sets the pitch' : 'sound off', motion: 'tick by tick' };
     }
 
     // [W] O1b (2026-10-27): the fight is drawn by the ONE combat face, the wave duel, LIVE over this state. The old painter

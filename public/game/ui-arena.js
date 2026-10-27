@@ -109,10 +109,10 @@
         pintaLista();
       } });
   }
-  function sonido(tipo) {
+  // [W] O2: the duel's voice lives in core.js (the hitter's seal sets the pitch; a win resolves in a chord).
+  function sonido(tipo, tropa, sello) {
     var S = window.AtlasSintesis;
-    if (!S) { return; }
-    S.suena({ golpe: 'pop', cae: 'eclosion', gana: 'adopcion', pierde: 'huevo' }[tipo], tipo === 'pierde' ? 0.8 : 0);
+    if (S && S.suenaDuelo) { S.suenaDuelo(tipo, sello, 0); }
   }
 
   // P2: combat is its own screen (combat_screen.js), never the map page. `alSalir` closes the fight's
