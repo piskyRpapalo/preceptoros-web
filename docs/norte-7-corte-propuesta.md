@@ -34,7 +34,7 @@ referenciados, y cada ficha se mide antes de fusionar.
 2. **Desplegable de Tools = UI visible.** El desplegable de dispositivo/descarga es contenido visible en la INTRO, no un bloque oculto como hoy en `Info → Tools`.
 3. **Chatbot local en cliente, cero servidor.** El chatbot de OPENWORLD corre en el navegador. El chatbot remoto queda diferido como pieza propia, con FIRMO propio.
 
-Estas tres decisiones sustituyen a las preguntas 1 y 2 de §5 (fuente del chatbot y «cabaña»), y a la parte de conflicto de §3 que pedía decidirlas. Las preguntas 3 y 4 de §5 siguen abiertas; el Soberano las decreta al firmar.
+Estas tres decisiones quedan ratificadas por el decreto del 2026-10-28 (§5), que cierra las cuatro preguntas. Con ello, la tensión que §3 señalaba entre el canon y las decisiones queda resuelta.
 
 ## 1. Pieza INTRO
 
@@ -67,23 +67,38 @@ Estas tres decisiones sustituyen a las preguntas 1 y 2 de §5 (fuente del chatbo
 4. **Get the app «refrescado».** El decreto exige refrescar el texto v1.3. Solo puedo refrescar lo que `release.json` mide; no invento hashes ni fechas nuevas. Lo no medido sale como `NO_DATA`.
 5. **LIBRO de firmas.** El repo privado de firmas no está clonado en este checkout, así que **no pude contrastar** la propuesta con los decretos vivos. Antes de fusionar hay que hacerlo, sea quien sea el que tenga el libro a mano.
 
-## 4. Destino de las rutas actuales (propuesta)
+## 4. Destino de las rutas actuales (aprobado por decreto, 2026-10-28)
 
-| Ruta actual | Propuesta | Estado |
+| Ruta actual | Destino | Estado |
 |---|---|---|
 | `/` (index) | INTRO | sustituida |
-| `/play/` | opción OpenWorld o Tutorial | redirección, no borrado |
-| `/face/` | índice de terrenos → OpenWorld | redirección, no borrado |
-| `/face/atlantis.html`, `zombie.html`, `basic.html` | terrenos como datos | redirección; `basic.html` se decide aparte |
-| `/creation.html` | opción Tools | redirección |
+| `/play/` | **`/openworld/`** (un solo destino) | redirección, no borrado |
+| `/face/` | `/openworld/` (índice de terrenos absorbido por el mapa) | redirección, no borrado |
+| `/face/atlantis.html` | terreno Atlantis dentro de `/openworld/` | redirección, no borrado |
+| `/face/zombie.html` | terreno the Risen dentro de `/openworld/` | redirección, no borrado |
+| `/face/basic.html` | `/openworld/` | **RETIRADA** con redirección (no es terreno del decreto) |
+| `/creation.html` | opción Tools de la INTRO | redirección, no borrado |
 | `/get-the-app/` | enlace desde Tools | se conserva |
 
-## 5. Preguntas que solo puede responder el Soberano
+## 4.1 Ruta nueva: `/openworld/` (declarada)
 
-1. **Fuente del chatbot de OpenWorld:** ¿local (el nodo del usuario), remota, o diferida hasta que #363 se firme?
-2. **«Cabaña del Tutorial»:** no encuentro ese nombre en el repo. ¿Es el tutorial `en301` (`public/game/en301_tutorial*.js`) o un terreno nuevo?
-3. **`basic.html` («Neutral»):** ¿se retira o se queda como cuarta variante fuera del decreto?
-4. **Redirecciones:** ¿aprobadas tal como están en §4?
+- **Es ruta nueva.** No existe hoy (`public/openworld/` no está en el repo).
+- **Recuento actual medido** (2026-10-28, `main` @ 07df88e):
+  - `public/sitemap.xml`: **9** URL.
+  - Shell del SW (`rutasDelShell()` en `public/sw.js`): `/`, `/play/`, `/manifest.webmanifest` + `HUB` (`PORTADA` + `JUEGO` en `public/sw-listas.js`).
+- **Efecto al construirla (PR 2, no ahora):**
+  - Sitemap: 9 → 10 URL, con `/play/`, `/face/*` y `/creation.html` dejando de figurar como destinos.
+  - SW: `/openworld/` entra en el shell; `/play/` sale como destino. Se recalcula el recuento de `HUB`.
+  - **Sello SW:** `VERSION` sube por `bin/sellar.py --sellar` según `sello-del-juego`, antes de medir. Cualquier cambio bajo `public/` lo exige.
+
+## 5. Preguntas del Soberano · cerradas por decreto (2026-10-28)
+
+1. **Chatbot:** **LOCAL en cliente.** El remoto queda diferido como pieza propia con FIRMO aparte. Consume PR #363 (terminal de chat), no lo duplica.
+2. **«Cabaña del Tutorial»:** **es el terreno del tutorial en el mapa.** Su interior reutiliza `en301_tutorial*` (`public/game/en301_tutorial*.js`). Nada inventado.
+3. **`basic.html`:** **RETIRADA con redirección.** No es terreno del decreto.
+4. **Redirecciones §4:** **APROBADAS**, con la corrección de `/play/` → `/openworld/`.
+
+Las dirimencias de la Mesa (§0.1) quedan **ratificadas** por este decreto.
 
 ## 6. Plan de PRs, pieza por pieza (draft)
 
