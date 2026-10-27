@@ -2522,25 +2522,28 @@ class Puerta(unittest.TestCase):
         # las piezas declaradas en atlas/test_atlas.py (LANDING_PAGE_DEPENDENCIES), y nada mas.
         self.assertEqual(re.findall(r'<script src="([^"]+)"', self.t),
                          ["/game/tabla_semantica.js", "/game/comic_tokens.js", "/game/comic_accents.js", "/game/comic_atoms.js",
-                          "/game/bubble_language.js", "/game/bubble_letters.js", "/assets/landing_doors.js", "/assets/pwa.js"])
+                          "/game/bubble_language.js", "/game/bubble_letters.js", "/assets/landing_doors.js", "/assets/pwa.js",
+                          "/assets/intro.js"])
 
     def test_las_puertas_se_ven(self):
-        for puerta in ("/play/", "/face/", "/creation.html"):
-            with self.subTest(puerta=puerta):
-                self.assertIn(f'<a class="door" href="{puerta}">', self.t)
-        # P3 [1d]: la burbuja es presentacion; debajo siguen el enlace, el titulo y el pie de siempre.
-        for href, titulo in (("/play/", "Play theGame"), ("/face/", "Worlds"), ("/creation.html", "Creation studio")):
+        # NORTE 7 · PR 1 (decreto 2026-10-28): la INTRO tiene tres opciones, OpenWorld · Tutorial · Tools.
+        # OpenWorld y Tutorial van a /play/ hasta que /openworld/ exista (PR 2).
+        for href, titulo in (("/play/", "OpenWorld"), ("/play/", "Tutorial")):
             with self.subTest(titulo=titulo):
                 self.assertIn(f'<a class="door" href="{href}"><b>{titulo}</b><span>', self.t)
+        # Tools es un clic directo (boton), no un enlace: la PWA o el desplegable visible de abajo.
+        self.assertIn('<button class="door door-tools" id="door-tools" type="button" aria-controls="tools-dispositivo">'
+                      '<b>Tools</b>', self.t)
+        self.assertIn('<section id="tools-dispositivo" aria-labelledby="tools-h">', self.t)
+        self.assertIn('<details open>\n<summary>Device and download</summary>', self.t)
+        self.assertIn('<li><a href="/get-the-app/">', self.t)
+        self.assertIn('<li><a href="/creation.html">', self.t)
+        # La cabecera de la release sale de release.json; lo no leido es NO_DATA con causa.
+        self.assertIn('<section id="release" aria-labelledby="release-h">', self.t)
+        self.assertIn('data-rel="estado">NO_DATA:', self.t)
         self.assertIn('<p class="note">One language until the MVP: English. The old translated addresses lead here.</p>', self.t)
-        # [2] (2026-10-26): la web y la app, dos bocadillos enfrentados; lo tecnico va plegado.
-        self.assertIn('<section id="web-app" aria-labelledby="web-app-h">', self.t)
-        for lado, titulo in (("web", "The web"), ("app", "The app")):
-            with self.subTest(lado=lado):
-                self.assertIn(f'<p class="side" data-lado="{lado}"><b>{titulo}</b><span>', self.t)
-        self.assertIn('<details class="tech"><summary>Technical details</summary>', self.t)
-        self.assertLess(self.t.index('id="doors"'), self.t.index('id="web-app"'))
-        self.assertLess(self.t.index('id="web-app"'), self.t.index('class="note"'))
+        self.assertLess(self.t.index('id="doors"'), self.t.index('id="tools-dispositivo"'))
+        self.assertLess(self.t.index('id="tools-dispositivo"'), self.t.index('id="release"'))
 
     def test_una_lengua_hasta_mvp(self):
         self.assertIn('<html lang="en"', self.t)

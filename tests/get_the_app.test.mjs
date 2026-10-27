@@ -31,10 +31,10 @@ test('D1 · /get-the-app/ only says what release.json says', () => {
   if (f.length) { throw new Error(f.join(' | ')); }
 });
 
-test('D1 · the landing links the guide, under the web/app pair', () => {
+test('D1 · the landing links the guide, inside the visible Tools block (NORTE 7 PR 1)', () => {
   const portada = leer('public/index.html');
-  if (!portada.includes('<p class="get-app"><a href="/get-the-app/">')) { throw new Error('the landing does not link /get-the-app/'); }
-  if (portada.indexOf('id="web-app"') > portada.indexOf('class="get-app"')) { throw new Error('the link is not under the web/app pair'); }
+  if (!portada.includes('<li><a href="/get-the-app/">')) { throw new Error('the landing does not link /get-the-app/'); }
+  if (portada.indexOf('id="tools-dispositivo"') > portada.indexOf('<li><a href="/get-the-app/">')) { throw new Error('the link is not inside the Tools block'); }
 });
 
 test('SABOTAGE D1 · one changed fingerprint or another version turns the judge red', () => {
