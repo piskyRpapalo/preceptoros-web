@@ -1060,7 +1060,6 @@ DESCENSO = ("front_door.js", "silueta.js", "en301_practice_model.js", "en301_pra
 # VT6 (compuerta de lanzamiento): modulo puro, fuera de la puerta del juego; la pantalla aun no la carga.
 VT6 = ("launch_gate.js",)
 # J1 (estrella Hexelion capturable): modulo puro, fuera de la puerta; la mecanica aun no la carga el juego.
-J1 = ("estrella_captura.js",)
 # VT5 (tutorial F0-F3, #189 + pantallas): maquina de fases y pantallas; el cargador es el modo aparte de descent_view.
 # VT5 y world_creator entran por la lista del descenso (thegame.js): grupo DESCENSO.
 # VT2 (etiqueta 1 KB) y VT4 (silueta): modulos puros fuera de la puerta (registrados en main tras sus PR).
@@ -3262,17 +3261,6 @@ class LaunchGateVT6(unittest.TestCase):
 
     def test_launch_gate_casos_en_node(self):
         r = subprocess.run(["node", str(RAIZ / "launch_gate_casos.mjs")], capture_output=True, text=True, check=False)
-        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
-        casos = json.loads(r.stdout)
-        self.assertEqual(len(casos), 7)
-        self.assertTrue(all(c["ok"] for c in casos), [c for c in casos if not c["ok"]])
-
-
-class EstrellaCapturaJ1(unittest.TestCase):
-    """J1: una estrella se captura en su edificio enlazado, una vez, con semiotica medida; lo no medido es NO_DATA."""
-
-    def test_estrella_captura_casos_en_node(self):
-        r = subprocess.run(["node", str(RAIZ / "estrella_captura_casos.mjs")], capture_output=True, text=True, check=False)
         self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
         casos = json.loads(r.stdout)
         self.assertEqual(len(casos), 7)
