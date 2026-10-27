@@ -20,7 +20,7 @@ Todo lo que se construye aquí es **marca personal de PreceptorOS** (el Soberano
 | `public/game/fog_of_war.js`, `world_camera.js`, `mar.js` | El mapa global que se arrastra hasta la niebla (la niebla sale de lo MEDIDO) |
 | `public/game/battle_choreography.js`, `battle_replay.js` | La repetición tipo RTS: coreografía determinista del registro de `arena.combate`; nunca decide |
 | `public/assets/atlas-*.js` | El piso, el motor puro (`atlas-motor.js`, **no se toca** sin firma), el piloto, la partida, el mapa y las ondas |
-| `public/game/` | v1.5 (valores, gacha, db, core, ui, juez) y el multijugador: `canon`, `sobres`, `rating`, `arena`, `duelo`, `escena`, `mar`, `ui-arena`, `ui-duelo`, `mercado`, `narragrafo`, `cria` y `genoma` |
+| `public/game/` | v1.5 (valores, gacha, db, core, ui, juez) y el multijugador: `canon`, `sobres`, `rating`, `arena`, `duelo`, `escena`, `mar`, `ui-arena`, `ui-duelo`, `mercado`, `narragrafo`, `cria` (el validador del genoma vive fuera de lo servido, en `atlas/puros/genoma.js`) |
 | `data/` | Contratos JSON Schema (no se sirven): un caso bueno y 6 violaciones cada uno, en `atlas/test_atlas.py` |
 | `atlas/` | El laboratorio: casos en node (`*_casos.mjs`), verificadores (`verifica_partida.mjs`, `verifica_opinion.mjs`), `tabla_opiniones.mjs`, `vigia.mjs`, planes y auditorías (`PLAN_THEGAME_ESTRUCTURA.md`, `POST_VERIFICACION_*.md`, `PROMPT_RACK_THEGAME.md`) |
 | `partidas/`, `opiniones/` | Lo que llega firmado de las personas; los workflows lo verifican |
