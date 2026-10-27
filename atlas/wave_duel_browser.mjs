@@ -60,6 +60,9 @@ try {
   ok(medida.role === 'img' && /harmonics/.test(medida.aria || ''), 'screen-reader text missing: ' + medida.aria);
   ok(medida.fin === true, 'Skip did not end the fight (alFin)');
   // [W] O1b · the real entry points. A spy counts every wave-duel mount by its target canvas (installed before page load).
+  // [W] O2: every oscillator started is recorded with its frequency (real Web Audio; test-only instrumentation).
+  await cmd('Page.addScriptToEvaluateOnNewDocument', { source: `(() => { window.__osc = []; const st = OscillatorNode.prototype.start;
+    OscillatorNode.prototype.start = function () { __osc.push(Math.round(this.frequency.value)); return st.apply(this, arguments); }; })()` });
   await cmd('Page.addScriptToEvaluateOnNewDocument', { source: `(() => { window.__montajes = []; let W;
     Object.defineProperty(window, 'AtlasWaveDuel', { configurable: true, get: () => W, set: (v) => { const e = v.escena;
       v.escena = function (l) { __montajes.push(l && (l.id || l.className)); return e.apply(this, arguments); }; W = v; } }); })()` });
@@ -69,11 +72,16 @@ try {
   await cmd('Page.navigate', { url: origen + '/play/' });
   await hasta("!!document.querySelector('.descent-skip')", 15000); await ev("(b => b && b.click())(document.querySelector('.descent-skip'))");
   ok(await hasta('!!(window.AtlasArenaUI && window.AtlasArena && window.AtlasWaveDuel)', 40000), '/play/: the arena or the wave duel did not load');
-  await ev(`(() => { const K = AtlasCanon, A = AtlasArena, l = A.lugares().find((x) => x.id === 'arrecife'), asa = [1, 2, 3].map((n) => ({ tc: 'tc1', semilla: K.sha('w-captura-ref-' + n) })),
+  medida.oscAntes = await ev('__osc.length');
+  await ev(`(() => { AtlasSintesis.activa(true); const K = AtlasCanon, A = AtlasArena, l = A.lugares().find((x) => x.id === 'arrecife'), asa = [1, 2, 3].map((n) => ({ tc: 'tc1', semilla: K.sha('w-captura-ref-' + n) })),
     s = K.sha('w-captura-ref-semilla'); AtlasArenaUI.juega(l.defensa.tropas, asa, A.combate(l.defensa.tropas, asa, s), { titulo: 'ref', yo: 1, semilla: s, pve: true }); return true; })()`);
   await espera(3000);
   medida.play = JSON.parse(await ev(`JSON.stringify({ montajes: __montajes.slice(), replay: typeof window.AtlasReplay, tinta: ${tinta('canvas.atlas-arena-lienzo')} })`));
   ok(medida.play.montajes.includes('atlas-arena-lienzo') && medida.play.replay === 'undefined' && medida.play.tinta > 500, '/play/ arena is not on the wave duel: ' + JSON.stringify(medida.play));
+  // O2: the fight is heard at its seals' pitch (LIVE 440 Hz, SIMULATED 275 Hz: this PvE side is emulated), only after opting in.
+  await espera(9000);
+  medida.voz = JSON.parse(await ev('JSON.stringify({ antes: ' + medida.oscAntes + ', osc: __osc.length, f: [...new Set(__osc)].sort((a, b) => a - b) })'));
+  ok(medida.voz.antes === 0 && medida.voz.f.includes(440) && medida.voz.f.includes(275), 'O2: the duel is not heard at its seal pitch: ' + JSON.stringify(medida.voz));
   if (CAPTURA) { const s = await cmd('Page.captureScreenshot', { format: 'png' }); writeFileSync(join(CAPTURA, 'o1b-play.png'), Buffer.from(s.result.data, 'base64')); }
   // 2 · the tutorial practice: its own scripts, mounted, rounds advanced until the model ends it (measured: this seed ends at round 2).
   await ev('TheGame.tutorial()'); await hasta('!!(window.AtlasPracticeArena && window.AtlasWaveDuel)', 30000);
@@ -85,6 +93,6 @@ try {
   ok(externas.length === 0, 'external requests: ' + externas.slice(0, 3));
 } catch (e) { fallos.push(String(e && e.message || e)); }
 finally { try { ws && ws.close(); } catch {} ch.close && ch.close(); srv.close(); }
-console.log(JSON.stringify({ piece: 'W-O1a', receipt: 'MEDIDO', fixture: 'atlas/wave_duel_fixture.html (test-only)', canvas: [medida.w, medida.h], gana: medida.gana, rondas: medida.rondas,
-  dibujo: medida.n && { stroke: medida.n.stroke, fillRect: medida.n.fillRect, arc: medida.n.arc, moveTo: medida.n.moveTo, texto: medida.n.texto }, aria: medida.aria, play: medida.play, practica: medida.practica, externas: externas.length, fallos }));
+console.log(JSON.stringify({ piece: 'W-O1+O2', receipt: 'MEDIDO', fixture: 'atlas/wave_duel_fixture.html (test-only)', canvas: [medida.w, medida.h], gana: medida.gana, rondas: medida.rondas,
+  dibujo: medida.n && { stroke: medida.n.stroke, fillRect: medida.n.fillRect, arc: medida.n.arc, moveTo: medida.n.moveTo, texto: medida.n.texto }, aria: medida.aria, play: medida.play, voz: medida.voz, practica: medida.practica, externas: externas.length, fallos }));
 process.exitCode = fallos.length ? 1 : 0;

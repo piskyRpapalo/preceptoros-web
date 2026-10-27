@@ -125,5 +125,62 @@ caso('live mode: a growing fight does not end before its winner, and ends after 
   return fin === 1 ? 'OK' : 'did not end after the winner (' + fin + ')';
 }, DUELO.replace('(!op.vivo || combate.gana != null) && ', '').replace('if (op.vivo && combate.gana == null) { vt = Math.min(vt, ev.length * EV + EV * 0.99); }', ''));
 
+// [W] O2 (2026-10-27) · the duel's voice (core.js). A fake AudioContext records every oscillator: frequency and start time.
+const CORE = leer('game/core.js');
+function oido(core, duelo) {
+  const sonidos = [], g = monta(null).g;
+  class Nodo { constructor(n) { this.n = n; this.frequency = { value: 0, n: n + '.f' }; this.gain = { value: 0, setValueAtTime() {}, linearRampToValueAtTime() {}, exponentialRampToValueAtTime() {} }; }
+    connect() {} start(t) { if (this.n === 'osc') { sonidos.push({ f: this.frequency.value, t }); } } stop() {} }
+  g.AudioContext = class { constructor() { this.currentTime = 0; this.destination = {}; this.state = 'running'; } createOscillator() { return new Nodo('osc'); } createGain() { return new Nodo('gain'); } };
+  runInNewContext(core, g, { filename: 'core.js' });
+  if (duelo) { runInNewContext(duelo, g, { filename: 'wave_duel_scene.js' }); }
+  g.AtlasSintesis.activa(true);
+  return { g, S: g.AtlasSintesis, sonidos };
+}
+function caso2(nombre, prueba, sabCore, sabDuelo) {
+  let real, rojo;
+  try { real = prueba(CORE, DUELO); } catch (e) { real = 'error: ' + e.message; }
+  try { rojo = prueba(sabCore || CORE, sabDuelo || DUELO); } catch (e) { rojo = 'error: ' + e.message; }
+  casos.push({ caso: nombre, ok: real === 'OK' && rojo !== 'OK', detalle: real + ' | sab ' + (rojo !== 'OK' ? 'ROJO' : 'VERDE?!') });
+}
+caso2('O2 jewel 3: a hit sounds at its seal pitch, f = 220 + hue/360*660 from the table (LIVE 440 · SIMULATED 275)', (core) => {
+  const { S, g, sonidos } = oido(core), V = g.AtlasValores.sintesis.voz_hz, M = g.AtlasSemantica;
+  S.suenaDuelo('golpe', 'LIVE', 0); S.suenaDuelo('golpe', 'SIMULATED', 0);
+  const want = ['LIVE', 'SIMULATED'].map((x) => Math.round(V[0] + M.hueDe(x) / 360 * (V[1] - V[0])));
+  const car = sonidos.filter((_, i) => i % 2 === 0).map((x) => x.f);
+  return JSON.stringify(car) === JSON.stringify(want) && want.join() === '440,275' ? 'OK' : 'carriers ' + car + ' want ' + want;
+}, CORE.replace('return h == null ? r : afina(', 'return h == null || 1 ? r : afina('));
+caso2('O2 jewel 3: the timbre is kept (modulator / carrier ratio of the event recipe)', (core) => {
+  const { S } = oido(core), base = S.receta('pop', 0), r = S.duelo('golpe', 'STALE', 0);
+  return Math.abs(r.moduladora / r.portadora - base.moduladora / base.portadora) < 0.01 && r.portadora === 330 ? 'OK' : JSON.stringify(r);
+}, CORE.replace('r.moduladora = Math.round(r.moduladora * k);', ''));
+caso2('O2 honest sensor: a NO_DATA hit is silence', (core) => {
+  const { S, sonidos } = oido(core); S.suenaDuelo('golpe', 'NO_DATA', 0);
+  return sonidos.length === 0 ? 'OK' : 'NO_DATA sounded: ' + sonidos.length;
+}, CORE.replace("if (sello === 'NO_DATA' || !DUELO[tipo]) { return null; }", 'if (!DUELO[tipo]) { return null; }'));
+caso2('O2 jewel 5: a win resolves in a 4:5:6 chord, voices 0.1 s apart, still (no vibrato: what is signed sounds still)', (core) => {
+  const { S, sonidos } = oido(core), r = S.duelo('gana', null, 0); S.suenaDuelo('gana', null, 0);
+  const car = sonidos.filter((_, i) => i % 2 === 0), f0 = car[0] && car[0].f;
+  const ok = car.length === 3 && car.every((x, i) => Math.abs(x.f / f0 - [1, 1.25, 1.5][i]) < 0.01 && Math.abs(x.t - i * 0.1) < 1e-9) && r.every((x) => !x.vibrato);
+  return ok ? 'OK' : JSON.stringify(car);
+}, CORE.replace('var t = ctx.currentTime + (r.retardo || 0);', 'var t = ctx.currentTime;'));
+caso2('O2 wiring: the scene hands the hitter seal to its host on every hit (LIVE and SIMULATED in an emulated fight)', (core, duelo) => {
+  const oye = [], { g } = oido(core, duelo), p = pelea(g, 1), L = lienzo(800), cola = [];
+  g.requestAnimationFrame = (cb) => { cola.push(cb); return cola.length; };
+  g.AtlasWaveDuel.escena(L.el, p.def, p.asa, p.c, { semilla: p.semilla, emulado: 0, sonido: (tipo, t, sello) => oye.push(tipo + ':' + sello) });
+  for (let i = 0, ts = 0; i < 400 && cola.length; i++) { ts += 16; cola.shift()(ts); }
+  const sellos = new Set(oye.filter((x) => /^(golpe|cae):/.test(x)).map((x) => x.split(':')[1]));
+  return sellos.has('LIVE') && sellos.has('SIMULATED') ? 'OK' : 'heard ' + [...sellos];
+}, null, DUELO.replace("op.sonido(t.vida ? 'golpe' : 'cae', a.t, sello);", "op.sonido(t.vida ? 'golpe' : 'cae', a.t);"));
+{ // O2 D5: a pin on the Sovereign's pending listening (M17BIS_ESCUCHA_AB, EN_CURSO_hasta_escucha); the twin flips the mode.
+  const VAL = leer('game/valores.js'), modo = (src) => { const g = {}; runInNewContext(src, g); return g.AtlasValores.sintesis.modo === 'fm2' ? 'OK' : 'modo ' + g.AtlasValores.sintesis.modo; };
+  const real = modo(VAL), rojo = modo(VAL.replace("modo: 'fm2'", "modo: 'fm3_adsr'"));
+  casos.push({ caso: 'O2 D5: the default stays fm2 until the Sovereign listens (nothing changes by ear meanwhile)', ok: real === 'OK' && rojo !== 'OK', detalle: real + ' | sab ' + (rojo !== 'OK' ? 'ROJO' : 'VERDE?!') });
+}
+caso2('O2 pure voice: no Date.now, no Math.random, no network in core.js', (core) => {
+  const malo = /Date\.now|Math\.random|fetch\(|XMLHttpRequest/.exec(core);
+  return malo ? 'found: ' + malo[0] : 'OK';
+}, CORE + '\nvar id = Date.now();');
+
 console.log(JSON.stringify({ v: 'preceptoros.wave_duel/1', casos }, null, 1));
 process.exitCode = casos.every((c) => c.ok) ? 0 : 1;
