@@ -57,7 +57,7 @@ async function main() {
     return { burbujas: document.documentElement.classList.contains('con-burbujas'), puertas: puertas.length,
       enlaces: puertas.map((a) => a.getAttribute('href')), titulos: puertas.map((a) => (a.querySelector('b') || {}).textContent),
       dibujos: puertas.map((a) => { const c = a.querySelector('canvas.door-art'); return c ? tinta(c) : 0; }),
-      pie: (document.querySelector('.note') || {}).textContent, texto: document.body.innerText,
+      pie: (document.querySelector('main > .note') || {}).textContent, texto: document.body.innerText,
       // [2]: the web and the app, two bubbles facing each other; the tail is the ink nearest the bottom corners.
       lados: [...document.querySelectorAll('#web-app .side')].map((p) => { const c = p.querySelector('canvas.door-art'); if (!c) { return null; }
         const g = c.getContext('2d'), d = g.getImageData(0, 0, c.width, c.height).data, w = c.width, h = c.height, y = Math.floor(h * 0.95);
@@ -66,17 +66,16 @@ async function main() {
       plegado: !(document.querySelector('#web-app details.tech') || {}).open };
   })())`));
   ok(medida.burbujas && medida.puertas === 3, 'the three doors were not all drawn in bubble language');
-  ok(JSON.stringify(medida.enlaces) === JSON.stringify(['/play/', '/face/', '/creation.html']), 'links changed: ' + medida.enlaces);
-  ok(JSON.stringify(medida.titulos) === JSON.stringify(['Play theGame', 'Worlds', 'Creation studio']), 'titles changed or gone: ' + medida.titulos);
+  ok(JSON.stringify(medida.enlaces) === JSON.stringify(['/openworld/', '/play/', null]), 'links changed: ' + medida.enlaces);
+  ok(JSON.stringify(medida.titulos) === JSON.stringify(['OpenWorld', 'Tutorial', 'Tools']), 'titles changed or gone: ' + medida.titulos);
   ok(medida.dibujos.every((n) => n > 2000), 'a bubble is blank: ' + medida.dibujos);
   ok(medida.pie === 'One language until the MVP: English. The old translated addresses lead here.', 'footer changed');
   ok(!/\bundefined\b|\bNaN\b/.test(medida.texto), 'missing value shown on the landing');
-  ok(medida.lados.length === 2 && medida.lados.every((l) => l && l.tinta > 2000), '[2] the web/app bubbles are not both drawn: ' + JSON.stringify(medida.lados));
-  ok(JSON.stringify(medida.lados.map((l) => l && [l.lado, l.titulo, l.cola])) === JSON.stringify([['web', 'The web', 'left'], ['app', 'The app', 'right']]), '[2] the bubbles do not face each other: ' + JSON.stringify(medida.lados));
-  ok(medida.plegado, '[2] technical details are not folded');
+  ok(medida.lados.length === 0, 'NORTE 7 PR 1: the web/app pair is still on the landing: ' + JSON.stringify(medida.lados));
+  ok(await ev("!!document.querySelector('#tools-dispositivo details[open]')"), 'NORTE 7 PR 1: the Tools device list is folded; it must be visible');
   ok(externas.length === 0, 'external requests: ' + externas.slice(0, 3));
   // North D1: the install guide, at phone width: nothing external, no sideways scroll, no missing value, the landing links it.
-  ok(await ev("!!document.querySelector('#web-app ~ .get-app a[href=\"/get-the-app/\"], .get-app a[href=\"/get-the-app/\"]')"), 'the landing does not link /get-the-app/');
+  ok(await ev("!!document.querySelector('#tools-dispositivo a[href=\"/get-the-app/\"]')"), 'the landing does not link /get-the-app/ inside Tools');
   await cmd('Page.navigate', { url: origen + '/get-the-app/' }); await espera(1500);
   medida.guia = JSON.parse(await ev("JSON.stringify({ h1: (document.querySelector('h1') || {}).textContent, ancho: document.documentElement.scrollWidth, vista: innerWidth, bajas: document.querySelectorAll('a[href*=\"/releases/download/\"]').length, huellas: document.querySelectorAll('code.sha[data-asset]').length, filas: document.querySelectorAll('.pruebas tbody tr').length, texto: document.body.innerText })"));
   ok(medida.guia.h1 === 'Get the app', '/get-the-app/ did not load');
@@ -85,6 +84,24 @@ async function main() {
   ok(!/\bundefined\b|\bNaN\b/.test(medida.guia.texto), 'missing value shown on /get-the-app/');
   if (CAPTURA) { const g = await cmd('Page.captureScreenshot', { format: 'png', captureBeyondViewport: true }); writeFileSync(join(CAPTURA, 'get-the-app.png'), Buffer.from(g.result.data, 'base64')); }
   ok(externas.length === 0, 'external requests after /get-the-app/: ' + externas.slice(0, 3));
+  // NORTE 5 a1: the launch gate. Three lanes; the app lane asleep with its cause (no signed receipt); the model with its
+  // measured figure and no download (no sha256); valida() = []. Then the browser's install offer (synthetic here) wakes the
+  // web-app button, and one click makes the prompt.
+  const gate = () => ev(`JSON.stringify([...document.querySelectorAll('#gate-carriles .gate-carril')].map((li) => { const b = li.querySelector('.gate-boton');
+    return { id: li.dataset.carril, tag: b && b.tagName, off: !!(b && b.disabled), causa: (li.querySelector('.gate-causa') || {}).textContent || null, cifra: (li.querySelector('.gate-cifra') || {}).textContent || null, alto: b ? b.getBoundingClientRect().height : 0 }; })
+    .concat([{ fallos: document.getElementById('gate-carriles').dataset.fallos }]))`).then(JSON.parse);
+  medida.gate = await gate();
+  const lane = (id) => medida.gate.find((x) => x.id === id) || {};
+  medida.gateOfertaReal = !lane('pwa').off;   // Chrome may offer the install by itself (measured 2026-10-27: it does)
+  ok(medida.gate.length === 4 && lane('app').off && /no signed receipt/.test(lane('app').causa || ''), 'a1: the gate lanes are not as measured: ' + JSON.stringify(medida.gate));
+  ok(/^1\.36 GB · .+ · 2026-09-07$/.test(lane('mini').cifra || '') && lane('mini').off && /sha256 or size not measured/.test(lane('mini').causa || ''), 'a1: the model lane is not honest: ' + JSON.stringify(lane('mini')));
+  ok(medida.gate.every((x) => x.fallos === undefined || x.fallos === '0') && medida.gate.filter((x) => x.id).every((x) => x.alto >= 44), 'a1: valida() failed or a button is under 44 px');
+  await ev(`(() => { const e = new Event('beforeinstallprompt', { cancelable: true }); e.prompt = () => { window.__oferta = (window.__oferta || 0) + 1; };
+    e.userChoice = Promise.resolve({ outcome: 'accepted' }); dispatchEvent(e); return true; })()`);
+  medida.gateOferta = await gate();
+  await ev("document.querySelector('[data-carril=pwa] .gate-boton').click()"); await espera(300);
+  medida.gatePrompt = await ev('window.__oferta || 0');
+  ok(!(medida.gateOferta.find((x) => x.id === 'pwa') || {}).off && medida.gatePrompt === 1, 'a1: the install offer did not wake the one-click button: ' + JSON.stringify(medida.gateOferta) + ' prompt ' + medida.gatePrompt);
   // North N2: /aduana/ is observant. The checker mounts, the registry reads NO_DATA from the contract, sending is
   // asleep (the send button disabled, envia() sends nothing), nothing external, no sideways scroll.
   await cmd('Page.navigate', { url: origen + '/aduana/' }); await espera(2000);
@@ -117,7 +134,7 @@ async function main() {
     const s = await cmd('Page.captureScreenshot', { format: 'png' });
     writeFileSync(join(CAPTURA, 'landing-doors.png'), Buffer.from(s.result.data, 'base64'));
   }
-  console.log(JSON.stringify({ piece: 'P3-1d', receipt: 'MEDIDO', dibujos: medida.dibujos, lados: medida.lados, catalogo: medida.catalogo && { off: medida.catalogo.off, filas: medida.catalogo.filas, trasClave: medida.catalogo.trasClave }, aduana: medida.aduana && { botones: medida.aduana.botones, envioOff: medida.aduana.envioOff, registro: medida.aduana.registro, envia: medida.aduana.envia, ancho: medida.aduana.ancho }, guia: medida.guia && { ancho: medida.guia.ancho, vista: medida.guia.vista, bajas: medida.guia.bajas, huellas: medida.guia.huellas, filas: medida.guia.filas }, enlaces: medida.enlaces, externas: externas.length, fallos }));
+  console.log(JSON.stringify({ piece: 'P3-1d', receipt: 'MEDIDO', dibujos: medida.dibujos, lados: medida.lados, catalogo: medida.catalogo && { off: medida.catalogo.off, filas: medida.catalogo.filas, trasClave: medida.catalogo.trasClave }, aduana: medida.aduana && { botones: medida.aduana.botones, envioOff: medida.aduana.envioOff, registro: medida.aduana.registro, envia: medida.aduana.envia, ancho: medida.aduana.ancho }, gate: medida.gate, gateOfertaReal: medida.gateOfertaReal, gatePrompt: medida.gatePrompt, guia: medida.guia && { ancho: medida.guia.ancho, vista: medida.guia.vista, bajas: medida.guia.bajas, huellas: medida.guia.huellas, filas: medida.guia.filas }, enlaces: medida.enlaces, externas: externas.length, fallos }));
 }
 
 main().catch((e) => { fallos.push(String(e && e.message || e)); console.log(JSON.stringify({ piece: 'P3-1d', fallos })); })

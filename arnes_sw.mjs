@@ -214,7 +214,10 @@ const rutas = await shell.keys();
 // 220 -> 221 el 2026-10-26 (Norte N3): entra node_catalogue.js.
 // 221 -> 219 el 2026-10-27 ([W] O1b): salen battle_replay.js, bout_scene.js y battle_choreography.js (este queda en PUROS, sin
 // cargar); entra wave_duel_scene.js, la UNA cara de combate.
-ok('precachea las portadas, su superficie y el juego', rutas.length === 219, rutas.length+' rutas');
+// 219 -> 221 el 2026-10-27 (NORTE 5 a1): entran get_app_gate.js y launch_gate.js, la compuerta de /get-the-app/.
+// 221 -> 222 el 2026-10-28 (NORTE 7 PR 1): entra intro.js, el boton Tools y la lectura de release.json, sin red.
+// 222 -> 223 el 2026-10-28 (NORTE 7 PR 2): entra /openworld/ (ficha unica: el script va inline).
+ok('precachea las portadas, su superficie y el juego', rutas.length === 223, rutas.length+' rutas');
 ok('el shell trae el juego (D7): la puerta, el cangrejo y la arena',
    ['/assets/thegame.js', '/game/gdpr-art25-ephemeral-crab.js', '/game/ui-arena.js', '/assets/atlas-motor.js'].every(r => rutas.includes(r)));
 ok('el shell trae la puerta y el juego', ['/', '/play/'].every(r => rutas.includes(r)));

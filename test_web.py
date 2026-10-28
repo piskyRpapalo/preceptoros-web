@@ -2500,6 +2500,54 @@ class Portada(unittest.TestCase):
         self.assertIn("window.TheGame.abre(null", (PUBLICO / "assets" / "eaa-art12-local-first-surface.js").read_text(encoding="utf-8"))
 
 
+class OpenWorld(unittest.TestCase):
+    """NORTE 7 · PR 2 (2026-10-28): /openworld/ es la ficha del mapa global y el chat.
+
+    El estado por defecto son CERO nodos: la pagina enseña el mapa y la cabana del tutorial. Atlantis y the
+    Risen solo aparecen si `estado.json` los lista como vivos. Y el navegador no pide nada fuera de este origen.
+    """
+
+    def setUp(self):
+        self.ruta = PUBLICO / "openworld" / "index.html"
+        self.t = self.ruta.read_text(encoding="utf-8")
+
+    def test_la_ficha_cabe_en_16_kib(self):
+        self.assertLessEqual(self.ruta.stat().st_size, 16384, "la ficha de /openworld/ pasa de 16 KiB")
+
+    def test_el_estado_por_defecto_son_cero_nodos(self):
+        estado = json.loads((PUBLICO / "openworld" / "estado.json").read_text(encoding="utf-8"))
+        self.assertEqual(estado["nodos"], [], "el estado por defecto debe ser cero nodos")
+
+    def test_la_cabana_siempre_y_los_nodos_solo_si_viven(self):
+        # El mapa solo nombra dos nodos, y solo los pinta si la lista de vivos los trae.
+        self.assertIn("cabana: { nombre: 'Tutorial cabin', x: 0.5, y: 0.5, siempre: true }", self.t)
+        self.assertIn("atlantis: { nombre: 'Atlantis · Node Hexelion'", self.t)
+        self.assertIn("risen: { nombre: 'the Risen'", self.t)
+        self.assertIn("if (!t.siempre && vivos.indexOf(id) < 0) { return; }", self.t)
+        self.assertIn("return id === 'atlantis' || id === 'risen';", self.t)
+
+    def test_cero_peticiones_externas(self):
+        # Lo que el navegador DESCARGA: scripts, imagenes, hojas, iconos y manifest. El canonical y las etiquetas
+        # og: nombran el origen propio como direccion; no se cargan.
+        cargas = re.findall(r'<(?:script|img)[^>]* src="(https?://[^"]+)"', self.t)
+        cargas += [m.group(1) for tag in re.findall(r"<link[^>]*>", self.t) if 'rel="canonical"' not in tag
+                   for m in re.finditer(r'href="(https?://[^"]+)"', tag)]
+        self.assertEqual(cargas, [], "la pagina carga algo de fuera del origen")
+        self.assertNotIn("api.preceptoros.org", self.t)
+        self.assertNotIn("atlas.preceptoros.org", self.t)
+
+    def test_el_chat_esta_siempre_y_sin_boton_de_chat(self):
+        self.assertIn('<section id="chat" aria-labelledby="chat-h">', self.t)
+        self.assertNotRegex(self.t, r">\s*Chat\s*</button>", "hay un boton de Chat; el decreto pide el panel siempre presente")
+        self.assertIn('<input id="pregunta" type="text" autocomplete="off" disabled', self.t)
+
+    def test_esta_en_el_sitemap_y_en_el_precache(self):
+        xml = (PUBLICO / "sitemap.xml").read_text(encoding="utf-8")
+        self.assertIn("<loc>https://preceptoros.org/openworld/</loc>", xml)
+        sw = (PUBLICO / "sw-listas.js").read_text(encoding="utf-8")
+        self.assertIn("'/openworld/'", sw)
+
+
 class Puerta(unittest.TestCase):
     """UNA portada inglesa en `/`, la puerta a lo reciente (decreto de recencia + canon P1, 2026-10-25).
     No carga NINGUNA de las 26 hojas e imagenes compartidas medidas anteriores al 2026-10-18; las
@@ -2522,25 +2570,28 @@ class Puerta(unittest.TestCase):
         # las piezas declaradas en atlas/test_atlas.py (LANDING_PAGE_DEPENDENCIES), y nada mas.
         self.assertEqual(re.findall(r'<script src="([^"]+)"', self.t),
                          ["/game/tabla_semantica.js", "/game/comic_tokens.js", "/game/comic_accents.js", "/game/comic_atoms.js",
-                          "/game/bubble_language.js", "/game/bubble_letters.js", "/assets/landing_doors.js", "/assets/pwa.js"])
+                          "/game/bubble_language.js", "/game/bubble_letters.js", "/assets/landing_doors.js", "/assets/pwa.js",
+                          "/assets/intro.js"])
 
     def test_las_puertas_se_ven(self):
-        for puerta in ("/play/", "/face/", "/creation.html"):
-            with self.subTest(puerta=puerta):
-                self.assertIn(f'<a class="door" href="{puerta}">', self.t)
-        # P3 [1d]: la burbuja es presentacion; debajo siguen el enlace, el titulo y el pie de siempre.
-        for href, titulo in (("/play/", "Play theGame"), ("/face/", "Worlds"), ("/creation.html", "Creation studio")):
+        # NORTE 7 · PR 1 (decreto 2026-10-28): la INTRO tiene tres opciones, OpenWorld · Tutorial · Tools.
+        # OpenWorld y Tutorial van a /play/ hasta que /openworld/ exista (PR 2).
+        for href, titulo in (("/openworld/", "OpenWorld"), ("/play/", "Tutorial")):
             with self.subTest(titulo=titulo):
                 self.assertIn(f'<a class="door" href="{href}"><b>{titulo}</b><span>', self.t)
+        # Tools es un clic directo (boton), no un enlace: la PWA o el desplegable visible de abajo.
+        self.assertIn('<button class="door door-tools" id="door-tools" type="button" aria-controls="tools-dispositivo">'
+                      '<b>Tools</b>', self.t)
+        self.assertIn('<section id="tools-dispositivo" aria-labelledby="tools-h">', self.t)
+        self.assertIn('<details open>\n<summary>Device and download</summary>', self.t)
+        self.assertIn('<li><a href="/get-the-app/">', self.t)
+        self.assertIn('<li><a href="/creation.html">', self.t)
+        # La cabecera de la release sale de release.json; lo no leido es NO_DATA con causa.
+        self.assertIn('<section id="release" aria-labelledby="release-h">', self.t)
+        self.assertIn('data-rel="estado">NO_DATA:', self.t)
         self.assertIn('<p class="note">One language until the MVP: English. The old translated addresses lead here.</p>', self.t)
-        # [2] (2026-10-26): la web y la app, dos bocadillos enfrentados; lo tecnico va plegado.
-        self.assertIn('<section id="web-app" aria-labelledby="web-app-h">', self.t)
-        for lado, titulo in (("web", "The web"), ("app", "The app")):
-            with self.subTest(lado=lado):
-                self.assertIn(f'<p class="side" data-lado="{lado}"><b>{titulo}</b><span>', self.t)
-        self.assertIn('<details class="tech"><summary>Technical details</summary>', self.t)
-        self.assertLess(self.t.index('id="doors"'), self.t.index('id="web-app"'))
-        self.assertLess(self.t.index('id="web-app"'), self.t.index('class="note"'))
+        self.assertLess(self.t.index('id="doors"'), self.t.index('id="tools-dispositivo"'))
+        self.assertLess(self.t.index('id="tools-dispositivo"'), self.t.index('id="release"'))
 
     def test_una_lengua_hasta_mvp(self):
         self.assertIn('<html lang="en"', self.t)

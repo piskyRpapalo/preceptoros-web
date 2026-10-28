@@ -12,7 +12,11 @@
 
 (function () {
 
-  addEventListener('beforeinstallprompt', function (e) { e.preventDefault(); });
+  // NORTE 5 (a1, 2026-10-27): the browser's offer to install is KEPT, not thrown away, so a button can make it in one click
+  // (the launch gate's first lane on /get-the-app/). Nothing installs without that click.
+  var oferta = null;
+  addEventListener('beforeinstallprompt', function (e) { e.preventDefault(); oferta = e; dispatchEvent(new Event('pwa-oferta')); });
+  addEventListener('appinstalled', function () { oferta = null; dispatchEvent(new Event('pwa-oferta')); });
 
   function textos() {
     var b = document.getElementById('i18n');
@@ -30,5 +34,15 @@
 
     return navigator.standalone === false;
   }
+
+  window.PreceptorPwa = {
+    instalable: function () { return !!oferta; },
+    instalada: instalada,
+    instala: function () {
+      if (!oferta) { return Promise.resolve(false); }
+      var e = oferta; oferta = null; e.prompt();
+      return (e.userChoice || Promise.resolve({})).then(function (c) { dispatchEvent(new Event('pwa-oferta')); return !!c && c.outcome === 'accepted'; });
+    }
+  };
 
 })();
