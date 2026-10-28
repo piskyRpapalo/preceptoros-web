@@ -49,3 +49,14 @@ body[data-battle=on] #sheet-battle .prep,body:not([data-battle=on]) #sheet-battl
 .warn{border-style:dashed}
 .stage-sheet{top:var(--hudh,0)}
 .honest-footer{font-size:.8rem;margin-top:8px}
+/* NORTE 5 [2]: the chat terminal (radio chat) inside the world chat panel, in the world tokens. */
+.side .radio-chat{margin-top:var(--gap);border:var(--bw) solid var(--edge);border-radius:var(--r);background:var(--panel);color:var(--fg)}
+.radio-chat-alterna{display:flex;gap:8px;align-items:center;width:100%;min-height:var(--tap);padding:6px 10px;border:0;background:none;color:inherit;font:inherit;text-align:left}
+.radio-chat-ultimo{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.radio-chat.plegado :is(.radio-chat-tabs,.radio-chat-lista,.radio-chat-no-data){display:none}
+.radio-chat-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;padding:0 8px}
+.radio-chat-tab{min-height:var(--tap);border:var(--bw) solid var(--edge);border-radius:var(--r);background:var(--bg);color:var(--fg);font:inherit;font-weight:700}
+.radio-chat-tab[aria-selected="true"]{border-color:var(--accent);color:var(--accent)}
+.radio-chat-lista{margin:0;padding:6px 10px 10px;list-style:none;display:grid;gap:6px;max-height:40vh;overflow-y:auto}
+.radio-chat-lista[hidden],.radio-chat-no-data[hidden]{display:none}
+.radio-chat-no-data{margin:6px 10px;padding:8px;border:var(--bw) dashed var(--edge)}
