@@ -227,6 +227,46 @@
       "motivo": "suelo de legibilidad de los nombres",
       "estado": "FIRMADO",
       "ajustable": true
+    },
+    {
+      "nombre": "FORMA_PRECEPTOR_HEXAGONO",
+      "valor": "hexagono",
+      "unidad": "forma",
+      "procedencia": "DECRETO del Soberano, ojos del preview ciclo 4, 2026-10-28: el hexagono es la forma del preceptor; representa lo que el usuario ENCUENTRA cuando la niebla se levanta.",
+      "fecha": "2026-10-28",
+      "motivo": "forma del preceptor en OpenWorld (decretada por ojos, no medida)",
+      "estado": "FIRMADO",
+      "ajustable": false
+    },
+    {
+      "nombre": "NIEBLA_ESTADO",
+      "valor": "NO_DATA con causa 'celda no visitada (niebla)'",
+      "unidad": "estado",
+      "procedencia": "DECRETO del Soberano, preview ciclo 4, 2026-10-28: la niebla es un estado de la MISMA tabla, no un canal nuevo. Implementado en atlas/fixtures/niebla.mjs.",
+      "fecha": "2026-10-28",
+      "motivo": "la niebla y el HITL son estados distintos: la niebla es NO_DATA, el HITL es un estado de la tabla",
+      "estado": "FIRMADO",
+      "ajustable": false
+    },
+    {
+      "nombre": "NIEBLA_REGLA_LEVANTAR",
+      "valor": "visita",
+      "unidad": "regla",
+      "procedencia": "PROPUESTA de diseno (fixture niebla.mjs). Una celda se levanta cuando un carril ha estado en ella. El Soberano no ha decidido la regla.",
+      "fecha": "2026-10-28",
+      "motivo": "la regla de levantar NO esta decidida; se implementa como parametro y se declara PROPUESTA",
+      "estado": "PROPUESTA",
+      "ajustable": true
+    },
+    {
+      "nombre": "FORMA_HITL_INTERROGACION",
+      "valor": "burbuja punteada con interrogacion",
+      "unidad": "forma",
+      "procedencia": "PROPUESTA visual del preview (ciclo 4). Sin ratificar por los ojos del Soberano.",
+      "fecha": "2026-10-28",
+      "motivo": "forma del estado HITL ('?'); distinta de la niebla",
+      "estado": "PROPUESTA",
+      "ajustable": true
     }
   ]
 }

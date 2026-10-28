@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NORTE 7 · vista previa de fixtures</title>
+<meta name="description" content="Vista previa PREVIEW/FIXTURE de T4, T1, T2 y la forma propuesta del HITL. Generada desde los fixtures reales. Sin publicar.">
+<style>
+:root { --tinta:#1a1a1a; --papel:#f4efe3; --acento:#c2410c; --gris:#6b6b6b; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --tinta:#f4efe3; --papel:#1a1a1a; --acento:#f08a4b; --gris:#a8a8a8; } }
+:root[data-theme="dark"] { --tinta:#f4efe3; --papel:#1a1a1a; --acento:#f08a4b; --gris:#a8a8a8; }
+* { box-sizing: border-box; }
+body { margin:0; background:var(--papel); color:var(--tinta); font:16px/1.45 system-ui, sans-serif; }
+main { max-width: 980px; margin: 0 auto; padding: 16px; }
+h1 { font-size: 1.4rem; margin: .2em 0; }
+h2 { font-size: 1.15rem; margin: .2em 0; }
+.tag { display:inline-block; border:2px solid var(--acento); color:var(--acento); padding:0 .45em; font-weight:700; font-size:.8rem; }
+.panel { border:2px solid var(--tinta); padding:12px; margin: 18px 0; }
+.vara { font-size:.9rem; color:var(--gris); }
+.nota { font-size:.9rem; }
+svg { width:100%; height:auto; display:block; }
+button { font:inherit; padding:.35em .8em; border:2px solid var(--tinta); background:var(--papel); color:var(--tinta); cursor:pointer; }
+button:focus-visible { outline:3px solid var(--acento); outline-offset:2px; }
+table { border-collapse: collapse; width:100%; font-size:.9rem; }
+th, td { border-bottom:1px solid var(--tinta); padding:.3em .4em; text-align:left; }
+.row { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+.muted { color: var(--gris); }
+.cols { display:grid; grid-template-columns: 1fr 1fr; gap:12px; }
+@media (max-width: 640px) { .cols { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<main>
+<h1>NORTE 7 · vista previa de los fixtures</h1>
+<p><span class="tag">PREVIEW · FIXTURE</span> Generada por <code>preview/genera_preview.mjs</code> con los fixtures reales. No se sirve, no está en <code>public/</code>, no tiene FIRMO. Sin peticiones externas. Movimiento solo con botón.</p>
+
+<section class="panel" id="p1" aria-labelledby="p1h">
+  <h2 id="p1h">1 · T4 · los tres carriles en la rejilla 7×5</h2>
+  <p class="vara">VARA [1] proporción personaje/entorno: cuerpo 24 / celda 56 = 0.429 (MEDIDO, fixture). Espera detrás de otro carril: MEDIDA.</p>
+  <div class="row">
+    <button type="button" id="t4-atras" aria-controls="t4-svg">Tick anterior</button>
+    <button type="button" id="t4-paso" aria-controls="t4-svg">Tick siguiente</button>
+    <span id="t4-estado" aria-live="polite" class="muted"></span>
+  </div>
+  <svg id="t4-svg" role="img" aria-labelledby="t4-desc"></svg>
+  <p id="t4-desc" class="nota">Tres cuerpos, uno por carril: Mesa, Luna y Claude. Cada cuerpo lleva su estado registrado como sello. Claude está en estado HITL y se muestra con «?». Los cuerpos se mueven solo al pulsar el botón (reduced-motion: no hay animación libre).</p>
+  <p id="t4-leyenda" class="nota"></p>
+  <table aria-label="Esperas medidas por carril">
+    <thead><tr><th>Carril</th><th>Estado registrado</th><th>Espera máxima (ticks, MEDIDO)</th></tr></thead>
+    <tbody id="t4-esperas"></tbody>
+  </table>
+</section>
+
+<section class="panel" id="p2" aria-labelledby="p2h">
+  <h2 id="p2h">2 · T1 · radios de respeto (1.0) y desvío del BFS</h2>
+  <p class="vara">VARA [3] nada se solapa sin intención. Radio 1.0 celda por interactivo (PROPUESTA medida: 9 % de celdas bloqueadas con tres interactivos).</p>
+  <div class="cols">
+    <div><h3 class="nota">Ruta recta (x primero)</h3><svg id="t1-recta" role="img" aria-labelledby="t1-r-desc"></svg><p id="t1-r-desc" class="nota"></p></div>
+    <div><h3 class="nota">Ruta con desvío (BFS, vecinos fijos)</h3><svg id="t1-desvio" role="img" aria-labelledby="t1-d-desc"></svg><p id="t1-d-desc" class="nota"></p></div>
+  </div>
+  <p class="nota" id="t1-leyenda"></p>
+</section>
+
+<section class="panel" id="p3" aria-labelledby="p3h">
+  <h2 id="p3h">3 · T2 · altura logarítmica, misma escala</h2>
+  <p class="vara">VARA [2] crecer es altura, no anchura. h(mana) = h0·(1 + k·ln(1+mana)). h0 = 27 y k = 0.325, ambos MEDIDOS (derivados, ver constantes.json).</p>
+  <svg id="t2-svg" role="img" aria-labelledby="t2-desc"></svg>
+  <p id="t2-desc" class="nota"></p>
+  <table aria-label="Alturas medidas">
+    <thead><tr><th>Mana</th><th>Altura (px ref)</th><th>Veces h0</th><th>Salto frente al anterior</th></tr></thead>
+    <tbody id="t2-tabla"></tbody>
+  </table>
+</section>
+
+<section class="panel" id="p4" aria-labelledby="p4h">
+  <h2 id="p4h">4 · Forma «?» del HITL · PROPUESTA</h2>
+  <p class="vara">Sin medir: propuesta de diseño, registrada como PROPUESTA. Tres colores. Equivalente textual obligatorio (EN 301 549).</p>
+  <div class="row">
+    <svg id="forma-svg" role="img" aria-labelledby="forma-desc" style="width:160px"></svg>
+    <p id="forma-desc" class="nota">Burbuja de borde punteado con una interrogación. El borde punteado la separa de los sellos FIRMADO (doble) y ERROR (dentado). Texto alternativo: «pendiente de decisión humana».</p>
+  </div>
+</section>
+
+<section class="panel" id="p5" aria-labelledby="p5h">
+  <h2 id="p5h">5 · Niebla de guerra · hexágono = lo que el usuario encuentra</h2>
+  <p class="vara"><span class="tag">PROPUESTA</span> Decreto del Soberano (ojos, ciclo 4, 2026-10-28): el hexágono es la forma del preceptor y representa lo que se ENCUENTRA al levantar la niebla. La niebla es el estado NO_DATA de la misma tabla, con causa «celda no visitada». La regla de levantar (visita) NO está decidida.</p>
+  <div class="cols">
+    <div><h3 class="nota">Antes: niebla</h3><svg id="niebla-antes" role="img" aria-labelledby="niebla-a-desc"></svg><p id="niebla-a-desc" class="nota"></p></div>
+    <div><h3 class="nota" id="niebla-d-h">Después: levantada</h3><svg id="niebla-despues" role="img" aria-labelledby="niebla-d-desc"></svg><p id="niebla-d-desc" class="nota"></p></div>
+  </div>
+  <p id="niebla-leyenda" class="nota"></p>
+  <p class="nota">Distinción declarada: la niebla NO es el «?» del HITL. La niebla es «no sé qué hay aquí» (NO_DATA, celda sin visitar). El «?» es «hace falta una persona» (estado HITL de la tabla de un carril). Pueden coincidir en una celda, pero son estados distintos.</p>
+</section>
+
+<script>
+const D = {"constantes":{"H0":27,"K":0.325,"RADIO":1,"LEAN":1,"EPOCA":32,"GRID":{"W":7,"H":5},"CUERPO":{"alto":24,"celda":56},"ZOOM_MIN":0.6},"carriles":["Mesa","Luna","Claude"],"estados":["LIVE","PROPUESTA","FIRMADO","ERROR","NO_DATA","SIMULATED","STALE","HITL"],"hist4":[[{"x":0,"y":0,"e":"LIVE"},{"x":1,"y":0,"e":"PROPUESTA"},{"x":4,"y":1,"e":"HITL"}],[{"x":0,"y":0,"e":"LIVE"},{"x":1,"y":0,"e":"PROPUESTA"},{"x":4,"y":2,"e":"HITL"}],[{"x":0,"y":0,"e":"LIVE"},{"x":1,"y":0,"e":"PROPUESTA"},{"x":4,"y":2,"e":"HITL"}],[{"x":0,"y":0,"e":"LIVE"},{"x":1,"y":0,"e":"PROPUESTA"},{"x":4,"y":2,"e":"HITL"}],[{"x":0,"y":0,"e":"LIVE"},{"x":1,"y":0,"e":"PROPUESTA"},{"x":4,"y":2,"e":"HITL"}],[{"x":0,"y":0,"e":"LIVE"},{"x":1,"y":0,"e":"PROPUESTA"},{"x":4,"y":2,"e":"HITL"}],[{"x":0,"y":0,"e":"LIVE"},{"x":1,"y":0,"e":"PROPUESTA"},{"x":4,"y":2,"e":"HITL"}],[{"x":0,"y":0,"e":"LIVE"},{"x":1,"y":0,"e":"PROPUESTA"},{"x":4,"y":2,"e":"HITL"}],[{"x":0,"y":0,"e":"LIVE"},{"x":1,"y":0,"e":"PROPUESTA"},{"x":4,"y":2,"e":"HITL"}],[{"x":0,"y":0,"e":"LIVE"},{"x":1,"y":0,"e":"PROPUESTA"},{"x":4,"y":2,"e":"HITL"}],[{"x":0,"y":0,"e":"LIVE"},{"x":1,"y":0,"e":"PROPUESTA"},{"x":4,"y":2,"e":"HITL"}],[{"x":0,"y":0,"e":"LIVE"},{"x":1,"y":0,"e":"PROPUESTA"},{"x":4,"y":2,"e":"HITL"}],[{"x":0,"y":0,"e":"LIVE"},{"x":1,"y":0,"e":"PROPUESTA"},{"x":4,"y":2,"e":"HITL"}],[{"x":0,"y":0,"e":"LIVE"},{"x":1,"y":0,"e":"PROPUESTA"},{"x":4,"y":2,"e":"HITL"}],[{"x":0,"y":0,"e":"LIVE"},{"x":1,"y":0,"e":"PROPUESTA"},{"x":4,"y":2,"e":"HITL"}],[{"x":0,"y":0,"e":"LIVE"},{"x":1,"y":0,"e":"PROPUESTA"},{"x":4,"y":2,"e":"HITL"}],[{"x":0,"y":0,"e":"LIVE"},{"x":1,"y":0,"e":"PROPUESTA"},{"x":4,"y":2,"e":"HITL"}],[{"x":0,"y":0,"e":"LIVE"},{"x":1,"y":0,"e":"PROPUESTA"},{"x":4,"y":2,"e":"HITL"}],[{"x":0,"y":0,"e":"LIVE"},{"x":1,"y":0,"e":"PROPUESTA"},{"x":4,"y":2,"e":"HITL"}],[{"x":0,"y":0,"e":"LIVE"},{"x":1,"y":0,"e":"PROPUESTA"},{"x":4,"y":2,"e":"HITL"}],[{"x":0,"y":0,"e":"LIVE"},{"x":1,"y":0,"e":"PROPUESTA"},{"x":4,"y":2,"e":"HITL"}],[{"x":0,"y":0,"e":"LIVE"},{"x":1,"y":0,"e":"PROPUESTA"},{"x":4,"y":2,"e":"HITL"}],[{"x":0,"y":0,"e":"LIVE"},{"x":1,"y":0,"e":"PROPUESTA"},{"x":4,"y":2,"e":"HITL"}],[{"x":0,"y":0,"e":"LIVE"},{"x":1,"y":0,"e":"PROPUESTA"},{"x":4,"y":2,"e":"HITL"}],[{"x":0,"y":0,"e":"LIVE"},{"x":1,"y":0,"e":"PROPUESTA"},{"x":4,"y":2,"e":"HITL"}],[{"x":0,"y":0,"e":"LIVE"},{"x":1,"y":0,"e":"PROPUESTA"},{"x":4,"y":2,"e":"HITL"}],[{"x":0,"y":0,"e":"LIVE"},{"x":1,"y":0,"e":"PROPUESTA"},{"x":4,"y":2,"e":"HITL"}],[{"x":0,"y":0,"e":"LIVE"},{"x":1,"y":0,"e":"PROPUESTA"},{"x":4,"y":2,"e":"HITL"}],[{"x":0,"y":0,"e":"LIVE"},{"x":1,"y":0,"e":"PROPUESTA"},{"x":4,"y":2,"e":"HITL"}],[{"x":0,"y":0,"e":"LIVE"},{"x":1,"y":0,"e":"PROPUESTA"},{"x":4,"y":2,"e":"HITL"}],[{"x":0,"y":0,"e":"LIVE"},{"x":1,"y":0,"e":"PROPUESTA"},{"x":4,"y":2,"e":"HITL"}],[{"x":0,"y":0,"e":"LIVE"},{"x":1,"y":0,"e":"PROPUESTA"},{"x":4,"y":2,"e":"HITL"}],[{"x":0,"y":0,"e":"LIVE"},{"x":2,"y":0,"e":"PROPUESTA"},{"x":3,"y":2,"e":"HITL"}],[{"x":1,"y":0,"e":"LIVE"},{"x":2,"y":1,"e":"PROPUESTA"},{"x":2,"y":2,"e":"HITL"}],[{"x":2,"y":0,"e":"LIVE"},{"x":2,"y":1,"e":"PROPUESTA"},{"x":1,"y":2,"e":"HITL"}],[{"x":3,"y":0,"e":"LIVE"},{"x":2,"y":2,"e":"PROPUESTA"},{"x":1,"y":2,"e":"HITL"}],[{"x":4,"y":0,"e":"LIVE"},{"x":2,"y":3,"e":"PROPUESTA"},{"x":1,"y":2,"e":"HITL"}],[{"x":5,"y":0,"e":"LIVE"},{"x":2,"y":4,"e":"PROPUESTA"},{"x":1,"y":2,"e":"HITL"}],[{"x":6,"y":0,"e":"LIVE"},{"x":2,"y":4,"e":"PROPUESTA"},{"x":1,"y":2,"e":"HITL"}],[{"x":6,"y":0,"e":"LIVE"},{"x":2,"y":4,"e":"PROPUESTA"},{"x":1,"y":2,"e":"HITL"}],[{"x":6,"y":0,"e":"LIVE"},{"x":2,"y":4,"e":"PROPUESTA"},{"x":1,"y":2,"e":"HITL"}],[{"x":6,"y":0,"e":"LIVE"},{"x":2,"y":4,"e":"PROPUESTA"},{"x":1,"y":2,"e":"HITL"}],[{"x":6,"y":0,"e":"LIVE"},{"x":2,"y":4,"e":"PROPUESTA"},{"x":1,"y":2,"e":"HITL"}],[{"x":6,"y":0,"e":"LIVE"},{"x":2,"y":4,"e":"PROPUESTA"},{"x":1,"y":2,"e":"HITL"}],[{"x":6,"y":0,"e":"LIVE"},{"x":2,"y":4,"e":"PROPUESTA"},{"x":1,"y":2,"e":"HITL"}],[{"x":6,"y":0,"e":"LIVE"},{"x":2,"y":4,"e":"PROPUESTA"},{"x":1,"y":2,"e":"HITL"}],[{"x":6,"y":0,"e":"LIVE"},{"x":2,"y":4,"e":"PROPUESTA"},{"x":1,"y":2,"e":"HITL"}],[{"x":6,"y":0,"e":"LIVE"},{"x":2,"y":4,"e":"PROPUESTA"},{"x":1,"y":2,"e":"HITL"}],[{"x":6,"y":0,"e":"LIVE"},{"x":2,"y":4,"e":"PROPUESTA"},{"x":1,"y":2,"e":"HITL"}],[{"x":6,"y":0,"e":"LIVE"},{"x":2,"y":4,"e":"PROPUESTA"},{"x":1,"y":2,"e":"HITL"}],[{"x":6,"y":0,"e":"LIVE"},{"x":2,"y":4,"e":"PROPUESTA"},{"x":1,"y":2,"e":"HITL"}],[{"x":6,"y":0,"e":"LIVE"},{"x":2,"y":4,"e":"PROPUESTA"},{"x":1,"y":2,"e":"HITL"}],[{"x":6,"y":0,"e":"LIVE"},{"x":2,"y":4,"e":"PROPUESTA"},{"x":1,"y":2,"e":"HITL"}],[{"x":6,"y":0,"e":"LIVE"},{"x":2,"y":4,"e":"PROPUESTA"},{"x":1,"y":2,"e":"HITL"}],[{"x":6,"y":0,"e":"LIVE"},{"x":2,"y":4,"e":"PROPUESTA"},{"x":1,"y":2,"e":"HITL"}],[{"x":6,"y":0,"e":"LIVE"},{"x":2,"y":4,"e":"PROPUESTA"},{"x":1,"y":2,"e":"HITL"}],[{"x":6,"y":0,"e":"LIVE"},{"x":2,"y":4,"e":"PROPUESTA"},{"x":1,"y":2,"e":"HITL"}],[{"x":6,"y":0,"e":"LIVE"},{"x":2,"y":4,"e":"PROPUESTA"},{"x":1,"y":2,"e":"HITL"}],[{"x":6,"y":0,"e":"LIVE"},{"x":2,"y":4,"e":"PROPUESTA"},{"x":1,"y":2,"e":"HITL"}],[{"x":6,"y":0,"e":"LIVE"},{"x":2,"y":4,"e":"PROPUESTA"},{"x":1,"y":2,"e":"HITL"}],[{"x":6,"y":0,"e":"LIVE"},{"x":2,"y":4,"e":"PROPUESTA"},{"x":1,"y":2,"e":"HITL"}],[{"x":6,"y":0,"e":"LIVE"},{"x":2,"y":4,"e":"PROPUESTA"},{"x":1,"y":2,"e":"HITL"}],[{"x":6,"y":0,"e":"LIVE"},{"x":2,"y":4,"e":"PROPUESTA"},{"x":1,"y":2,"e":"HITL"}],[{"x":6,"y":0,"e":"LIVE"},{"x":2,"y":4,"e":"PROPUESTA"},{"x":1,"y":2,"e":"HITL"}],[{"x":5,"y":0,"e":"LIVE"},{"x":3,"y":4,"e":"PROPUESTA"},{"x":2,"y":2,"e":"HITL"}],[{"x":4,"y":0,"e":"LIVE"},{"x":4,"y":4,"e":"PROPUESTA"},{"x":3,"y":2,"e":"HITL"}],[{"x":3,"y":0,"e":"LIVE"},{"x":4,"y":3,"e":"PROPUESTA"},{"x":4,"y":2,"e":"HITL"}],[{"x":3,"y":1,"e":"LIVE"},{"x":4,"y":3,"e":"PROPUESTA"},{"x":5,"y":2,"e":"HITL"}],[{"x":3,"y":2,"e":"LIVE"},{"x":4,"y":2,"e":"PROPUESTA"},{"x":6,"y":2,"e":"HITL"}],[{"x":3,"y":3,"e":"LIVE"},{"x":4,"y":2,"e":"PROPUESTA"},{"x":6,"y":3,"e":"HITL"}],[{"x":3,"y":4,"e":"LIVE"},{"x":4,"y":2,"e":"PROPUESTA"},{"x":6,"y":3,"e":"HITL"}],[{"x":3,"y":4,"e":"LIVE"},{"x":4,"y":2,"e":"PROPUESTA"},{"x":6,"y":3,"e":"HITL"}],[{"x":3,"y":4,"e":"LIVE"},{"x":4,"y":2,"e":"PROPUESTA"},{"x":6,"y":3,"e":"HITL"}],[{"x":3,"y":4,"e":"LIVE"},{"x":4,"y":2,"e":"PROPUESTA"},{"x":6,"y":3,"e":"HITL"}],[{"x":3,"y":4,"e":"LIVE"},{"x":4,"y":2,"e":"PROPUESTA"},{"x":6,"y":3,"e":"HITL"}],[{"x":3,"y":4,"e":"LIVE"},{"x":4,"y":2,"e":"PROPUESTA"},{"x":6,"y":3,"e":"HITL"}],[{"x":3,"y":4,"e":"LIVE"},{"x":4,"y":2,"e":"PROPUESTA"},{"x":6,"y":3,"e":"HITL"}],[{"x":3,"y":4,"e":"LIVE"},{"x":4,"y":2,"e":"PROPUESTA"},{"x":6,"y":3,"e":"HITL"}],[{"x":3,"y":4,"e":"LIVE"},{"x":4,"y":2,"e":"PROPUESTA"},{"x":6,"y":3,"e":"HITL"}],[{"x":3,"y":4,"e":"LIVE"},{"x":4,"y":2,"e":"PROPUESTA"},{"x":6,"y":3,"e":"HITL"}],[{"x":3,"y":4,"e":"LIVE"},{"x":4,"y":2,"e":"PROPUESTA"},{"x":6,"y":3,"e":"HITL"}],[{"x":3,"y":4,"e":"LIVE"},{"x":4,"y":2,"e":"PROPUESTA"},{"x":6,"y":3,"e":"HITL"}],[{"x":3,"y":4,"e":"LIVE"},{"x":4,"y":2,"e":"PROPUESTA"},{"x":6,"y":3,"e":"HITL"}],[{"x":3,"y":4,"e":"LIVE"},{"x":4,"y":2,"e":"PROPUESTA"},{"x":6,"y":3,"e":"HITL"}],[{"x":3,"y":4,"e":"LIVE"},{"x":4,"y":2,"e":"PROPUESTA"},{"x":6,"y":3,"e":"HITL"}],[{"x":3,"y":4,"e":"LIVE"},{"x":4,"y":2,"e":"PROPUESTA"},{"x":6,"y":3,"e":"HITL"}],[{"x":3,"y":4,"e":"LIVE"},{"x":4,"y":2,"e":"PROPUESTA"},{"x":6,"y":3,"e":"HITL"}],[{"x":3,"y":4,"e":"LIVE"},{"x":4,"y":2,"e":"PROPUESTA"},{"x":6,"y":3,"e":"HITL"}],[{"x":3,"y":4,"e":"LIVE"},{"x":4,"y":2,"e":"PROPUESTA"},{"x":6,"y":3,"e":"HITL"}],[{"x":3,"y":4,"e":"LIVE"},{"x":4,"y":2,"e":"PROPUESTA"},{"x":6,"y":3,"e":"HITL"}],[{"x":3,"y":4,"e":"LIVE"},{"x":4,"y":2,"e":"PROPUESTA"},{"x":6,"y":3,"e":"HITL"}],[{"x":3,"y":4,"e":"LIVE"},{"x":4,"y":2,"e":"PROPUESTA"},{"x":6,"y":3,"e":"HITL"}],[{"x":3,"y":4,"e":"LIVE"},{"x":4,"y":2,"e":"PROPUESTA"},{"x":6,"y":3,"e":"HITL"}],[{"x":3,"y":4,"e":"LIVE"},{"x":4,"y":2,"e":"PROPUESTA"},{"x":6,"y":3,"e":"HITL"}],[{"x":3,"y":4,"e":"LIVE"},{"x":4,"y":2,"e":"PROPUESTA"},{"x":6,"y":3,"e":"HITL"}],[{"x":3,"y":4,"e":"LIVE"},{"x":4,"y":2,"e":"PROPUESTA"},{"x":6,"y":3,"e":"HITL"}],[{"x":4,"y":4,"e":"LIVE"},{"x":3,"y":2,"e":"PROPUESTA"},{"x":6,"y":2,"e":"HITL"}],[{"x":5,"y":4,"e":"LIVE"},{"x":2,"y":2,"e":"PROPUESTA"},{"x":6,"y":1,"e":"HITL"}],[{"x":5,"y":4,"e":"LIVE"},{"x":1,"y":2,"e":"PROPUESTA"},{"x":6,"y":1,"e":"HITL"}],[{"x":5,"y":4,"e":"LIVE"},{"x":1,"y":3,"e":"PROPUESTA"},{"x":6,"y":1,"e":"HITL"}],[{"x":5,"y":4,"e":"LIVE"},{"x":1,"y":4,"e":"PROPUESTA"},{"x":6,"y":1,"e":"HITL"}],[{"x":5,"y":4,"e":"LIVE"},{"x":1,"y":4,"e":"PROPUESTA"},{"x":6,"y":1,"e":"HITL"}],[{"x":5,"y":4,"e":"LIVE"},{"x":1,"y":4,"e":"PROPUESTA"},{"x":6,"y":1,"e":"HITL"}],[{"x":5,"y":4,"e":"LIVE"},{"x":1,"y":4,"e":"PROPUESTA"},{"x":6,"y":1,"e":"HITL"}],[{"x":5,"y":4,"e":"LIVE"},{"x":1,"y":4,"e":"PROPUESTA"},{"x":6,"y":1,"e":"HITL"}],[{"x":5,"y":4,"e":"LIVE"},{"x":1,"y":4,"e":"PROPUESTA"},{"x":6,"y":1,"e":"HITL"}],[{"x":5,"y":4,"e":"LIVE"},{"x":1,"y":4,"e":"PROPUESTA"},{"x":6,"y":1,"e":"HITL"}],[{"x":5,"y":4,"e":"LIVE"},{"x":1,"y":4,"e":"PROPUESTA"},{"x":6,"y":1,"e":"HITL"}],[{"x":5,"y":4,"e":"LIVE"},{"x":1,"y":4,"e":"PROPUESTA"},{"x":6,"y":1,"e":"HITL"}],[{"x":5,"y":4,"e":"LIVE"},{"x":1,"y":4,"e":"PROPUESTA"},{"x":6,"y":1,"e":"HITL"}],[{"x":5,"y":4,"e":"LIVE"},{"x":1,"y":4,"e":"PROPUESTA"},{"x":6,"y":1,"e":"HITL"}],[{"x":5,"y":4,"e":"LIVE"},{"x":1,"y":4,"e":"PROPUESTA"},{"x":6,"y":1,"e":"HITL"}],[{"x":5,"y":4,"e":"LIVE"},{"x":1,"y":4,"e":"PROPUESTA"},{"x":6,"y":1,"e":"HITL"}],[{"x":5,"y":4,"e":"LIVE"},{"x":1,"y":4,"e":"PROPUESTA"},{"x":6,"y":1,"e":"HITL"}],[{"x":5,"y":4,"e":"LIVE"},{"x":1,"y":4,"e":"PROPUESTA"},{"x":6,"y":1,"e":"HITL"}],[{"x":5,"y":4,"e":"LIVE"},{"x":1,"y":4,"e":"PROPUESTA"},{"x":6,"y":1,"e":"HITL"}],[{"x":5,"y":4,"e":"LIVE"},{"x":1,"y":4,"e":"PROPUESTA"},{"x":6,"y":1,"e":"HITL"}],[{"x":5,"y":4,"e":"LIVE"},{"x":1,"y":4,"e":"PROPUESTA"},{"x":6,"y":1,"e":"HITL"}],[{"x":5,"y":4,"e":"LIVE"},{"x":1,"y":4,"e":"PROPUESTA"},{"x":6,"y":1,"e":"HITL"}],[{"x":5,"y":4,"e":"LIVE"},{"x":1,"y":4,"e":"PROPUESTA"},{"x":6,"y":1,"e":"HITL"}],[{"x":5,"y":4,"e":"LIVE"},{"x":1,"y":4,"e":"PROPUESTA"},{"x":6,"y":1,"e":"HITL"}],[{"x":5,"y":4,"e":"LIVE"},{"x":1,"y":4,"e":"PROPUESTA"},{"x":6,"y":1,"e":"HITL"}],[{"x":5,"y":4,"e":"LIVE"},{"x":1,"y":4,"e":"PROPUESTA"},{"x":6,"y":1,"e":"HITL"}],[{"x":5,"y":4,"e":"LIVE"},{"x":1,"y":4,"e":"PROPUESTA"},{"x":6,"y":1,"e":"HITL"}],[{"x":5,"y":4,"e":"LIVE"},{"x":1,"y":4,"e":"PROPUESTA"},{"x":6,"y":1,"e":"HITL"}],[{"x":5,"y":4,"e":"LIVE"},{"x":1,"y":4,"e":"PROPUESTA"},{"x":6,"y":1,"e":"HITL"}],[{"x":5,"y":4,"e":"LIVE"},{"x":1,"y":4,"e":"PROPUESTA"},{"x":6,"y":1,"e":"HITL"}],[{"x":5,"y":4,"e":"LIVE"},{"x":1,"y":4,"e":"PROPUESTA"},{"x":6,"y":1,"e":"HITL"}],[{"x":4,"y":4,"e":"LIVE"},{"x":2,"y":4,"e":"PROPUESTA"},{"x":5,"y":1,"e":"HITL"}],[{"x":4,"y":3,"e":"LIVE"},{"x":3,"y":4,"e":"PROPUESTA"},{"x":4,"y":1,"e":"HITL"}],[{"x":4,"y":2,"e":"LIVE"},{"x":4,"y":4,"e":"PROPUESTA"},{"x":3,"y":1,"e":"HITL"}],[{"x":4,"y":2,"e":"LIVE"},{"x":5,"y":4,"e":"PROPUESTA"},{"x":2,"y":1,"e":"HITL"}],[{"x":4,"y":2,"e":"LIVE"},{"x":6,"y":4,"e":"PROPUESTA"},{"x":1,"y":1,"e":"HITL"}],[{"x":4,"y":2,"e":"LIVE"},{"x":6,"y":3,"e":"PROPUESTA"},{"x":0,"y":1,"e":"HITL"}],[{"x":4,"y":2,"e":"LIVE"},{"x":6,"y":2,"e":"PROPUESTA"},{"x":0,"y":2,"e":"HITL"}],[{"x":4,"y":2,"e":"LIVE"},{"x":6,"y":1,"e":"PROPUESTA"},{"x":0,"y":3,"e":"HITL"}],[{"x":4,"y":2,"e":"LIVE"},{"x":6,"y":1,"e":"PROPUESTA"},{"x":0,"y":4,"e":"HITL"}],[{"x":4,"y":2,"e":"LIVE"},{"x":6,"y":1,"e":"PROPUESTA"},{"x":0,"y":4,"e":"HITL"}],[{"x":4,"y":2,"e":"LIVE"},{"x":6,"y":1,"e":"PROPUESTA"},{"x":0,"y":4,"e":"HITL"}],[{"x":4,"y":2,"e":"LIVE"},{"x":6,"y":1,"e":"PROPUESTA"},{"x":0,"y":4,"e":"HITL"}],[{"x":4,"y":2,"e":"LIVE"},{"x":6,"y":1,"e":"PROPUESTA"},{"x":0,"y":4,"e":"HITL"}],[{"x":4,"y":2,"e":"LIVE"},{"x":6,"y":1,"e":"PROPUESTA"},{"x":0,"y":4,"e":"HITL"}],[{"x":4,"y":2,"e":"LIVE"},{"x":6,"y":1,"e":"PROPUESTA"},{"x":0,"y":4,"e":"HITL"}],[{"x":4,"y":2,"e":"LIVE"},{"x":6,"y":1,"e":"PROPUESTA"},{"x":0,"y":4,"e":"HITL"}],[{"x":4,"y":2,"e":"LIVE"},{"x":6,"y":1,"e":"PROPUESTA"},{"x":0,"y":4,"e":"HITL"}],[{"x":4,"y":2,"e":"LIVE"},{"x":6,"y":1,"e":"PROPUESTA"},{"x":0,"y":4,"e":"HITL"}],[{"x":4,"y":2,"e":"LIVE"},{"x":6,"y":1,"e":"PROPUESTA"},{"x":0,"y":4,"e":"HITL"}],[{"x":4,"y":2,"e":"LIVE"},{"x":6,"y":1,"e":"PROPUESTA"},{"x":0,"y":4,"e":"HITL"}],[{"x":4,"y":2,"e":"LIVE"},{"x":6,"y":1,"e":"PROPUESTA"},{"x":0,"y":4,"e":"HITL"}],[{"x":4,"y":2,"e":"LIVE"},{"x":6,"y":1,"e":"PROPUESTA"},{"x":0,"y":4,"e":"HITL"}],[{"x":4,"y":2,"e":"LIVE"},{"x":6,"y":1,"e":"PROPUESTA"},{"x":0,"y":4,"e":"HITL"}],[{"x":4,"y":2,"e":"LIVE"},{"x":6,"y":1,"e":"PROPUESTA"},{"x":0,"y":4,"e":"HITL"}],[{"x":4,"y":2,"e":"LIVE"},{"x":6,"y":1,"e":"PROPUESTA"},{"x":0,"y":4,"e":"HITL"}],[{"x":4,"y":2,"e":"LIVE"},{"x":6,"y":1,"e":"PROPUESTA"},{"x":0,"y":4,"e":"HITL"}],[{"x":4,"y":2,"e":"LIVE"},{"x":6,"y":1,"e":"PROPUESTA"},{"x":0,"y":4,"e":"HITL"}],[{"x":4,"y":2,"e":"LIVE"},{"x":6,"y":1,"e":"PROPUESTA"},{"x":0,"y":4,"e":"HITL"}],[{"x":4,"y":2,"e":"LIVE"},{"x":6,"y":1,"e":"PROPUESTA"},{"x":0,"y":4,"e":"HITL"}],[{"x":4,"y":2,"e":"LIVE"},{"x":6,"y":1,"e":"PROPUESTA"},{"x":0,"y":4,"e":"HITL"}],[{"x":4,"y":2,"e":"LIVE"},{"x":6,"y":1,"e":"PROPUESTA"},{"x":0,"y":4,"e":"HITL"}],[{"x":4,"y":2,"e":"LIVE"},{"x":6,"y":1,"e":"PROPUESTA"},{"x":0,"y":4,"e":"HITL"}],[{"x":5,"y":2,"e":"LIVE"},{"x":5,"y":1,"e":"PROPUESTA"},{"x":1,"y":4,"e":"HITL"}],[{"x":6,"y":2,"e":"LIVE"},{"x":5,"y":2,"e":"PROPUESTA"},{"x":2,"y":4,"e":"HITL"}],[{"x":6,"y":3,"e":"LIVE"},{"x":5,"y":3,"e":"PROPUESTA"},{"x":3,"y":4,"e":"HITL"}],[{"x":6,"y":4,"e":"LIVE"},{"x":5,"y":4,"e":"PROPUESTA"},{"x":4,"y":4,"e":"HITL"}],[{"x":6,"y":4,"e":"LIVE"},{"x":5,"y":4,"e":"PROPUESTA"},{"x":4,"y":4,"e":"HITL"}],[{"x":6,"y":4,"e":"LIVE"},{"x":5,"y":4,"e":"PROPUESTA"},{"x":4,"y":4,"e":"HITL"}],[{"x":6,"y":4,"e":"LIVE"},{"x":5,"y":4,"e":"PROPUESTA"},{"x":4,"y":4,"e":"HITL"}],[{"x":6,"y":4,"e":"LIVE"},{"x":5,"y":4,"e":"PROPUESTA"},{"x":4,"y":4,"e":"HITL"}],[{"x":6,"y":4,"e":"LIVE"},{"x":5,"y":4,"e":"PROPUESTA"},{"x":4,"y":4,"e":"HITL"}],[{"x":6,"y":4,"e":"LIVE"},{"x":5,"y":4,"e":"PROPUESTA"},{"x":4,"y":4,"e":"HITL"}],[{"x":6,"y":4,"e":"LIVE"},{"x":5,"y":4,"e":"PROPUESTA"},{"x":4,"y":4,"e":"HITL"}],[{"x":6,"y":4,"e":"LIVE"},{"x":5,"y":4,"e":"PROPUESTA"},{"x":4,"y":4,"e":"HITL"}],[{"x":6,"y":4,"e":"LIVE"},{"x":5,"y":4,"e":"PROPUESTA"},{"x":4,"y":4,"e":"HITL"}],[{"x":6,"y":4,"e":"LIVE"},{"x":5,"y":4,"e":"PROPUESTA"},{"x":4,"y":4,"e":"HITL"}],[{"x":6,"y":4,"e":"LIVE"},{"x":5,"y":4,"e":"PROPUESTA"},{"x":4,"y":4,"e":"HITL"}],[{"x":6,"y":4,"e":"LIVE"},{"x":5,"y":4,"e":"PROPUESTA"},{"x":4,"y":4,"e":"HITL"}],[{"x":6,"y":4,"e":"LIVE"},{"x":5,"y":4,"e":"PROPUESTA"},{"x":4,"y":4,"e":"HITL"}],[{"x":6,"y":4,"e":"LIVE"},{"x":5,"y":4,"e":"PROPUESTA"},{"x":4,"y":4,"e":"HITL"}],[{"x":6,"y":4,"e":"LIVE"},{"x":5,"y":4,"e":"PROPUESTA"},{"x":4,"y":4,"e":"HITL"}],[{"x":6,"y":4,"e":"LIVE"},{"x":5,"y":4,"e":"PROPUESTA"},{"x":4,"y":4,"e":"HITL"}],[{"x":6,"y":4,"e":"LIVE"},{"x":5,"y":4,"e":"PROPUESTA"},{"x":4,"y":4,"e":"HITL"}],[{"x":6,"y":4,"e":"LIVE"},{"x":5,"y":4,"e":"PROPUESTA"},{"x":4,"y":4,"e":"HITL"}],[{"x":6,"y":4,"e":"LIVE"},{"x":5,"y":4,"e":"PROPUESTA"},{"x":4,"y":4,"e":"HITL"}],[{"x":6,"y":4,"e":"LIVE"},{"x":5,"y":4,"e":"PROPUESTA"},{"x":4,"y":4,"e":"HITL"}],[{"x":6,"y":4,"e":"LIVE"},{"x":5,"y":4,"e":"PROPUESTA"},{"x":4,"y":4,"e":"HITL"}],[{"x":6,"y":4,"e":"LIVE"},{"x":5,"y":4,"e":"PROPUESTA"},{"x":4,"y":4,"e":"HITL"}],[{"x":6,"y":4,"e":"LIVE"},{"x":5,"y":4,"e":"PROPUESTA"},{"x":4,"y":4,"e":"HITL"}],[{"x":6,"y":4,"e":"LIVE"},{"x":5,"y":4,"e":"PROPUESTA"},{"x":4,"y":4,"e":"HITL"}],[{"x":6,"y":4,"e":"LIVE"},{"x":5,"y":4,"e":"PROPUESTA"},{"x":4,"y":4,"e":"HITL"}],[{"x":6,"y":4,"e":"LIVE"},{"x":5,"y":4,"e":"PROPUESTA"},{"x":4,"y":4,"e":"HITL"}],[{"x":6,"y":4,"e":"LIVE"},{"x":5,"y":4,"e":"PROPUESTA"},{"x":4,"y":4,"e":"HITL"}],[{"x":6,"y":4,"e":"LIVE"},{"x":5,"y":4,"e":"PROPUESTA"},{"x":4,"y":4,"e":"HITL"}],[{"x":6,"y":4,"e":"LIVE"},{"x":5,"y":3,"e":"PROPUESTA"},{"x":3,"y":4,"e":"HITL"}],[{"x":5,"y":4,"e":"LIVE"},{"x":5,"y":2,"e":"PROPUESTA"},{"x":2,"y":4,"e":"HITL"}],[{"x":4,"y":4,"e":"LIVE"},{"x":5,"y":1,"e":"PROPUESTA"},{"x":1,"y":4,"e":"HITL"}],[{"x":3,"y":4,"e":"LIVE"},{"x":5,"y":1,"e":"PROPUESTA"},{"x":1,"y":4,"e":"HITL"}],[{"x":3,"y":3,"e":"LIVE"},{"x":5,"y":1,"e":"PROPUESTA"},{"x":1,"y":4,"e":"HITL"}],[{"x":3,"y":2,"e":"LIVE"},{"x":5,"y":1,"e":"PROPUESTA"},{"x":1,"y":4,"e":"HITL"}],[{"x":3,"y":1,"e":"LIVE"},{"x":5,"y":1,"e":"PROPUESTA"},{"x":1,"y":4,"e":"HITL"}],[{"x":3,"y":1,"e":"LIVE"},{"x":5,"y":1,"e":"PROPUESTA"},{"x":1,"y":4,"e":"HITL"}],[{"x":3,"y":1,"e":"LIVE"},{"x":5,"y":1,"e":"PROPUESTA"},{"x":1,"y":4,"e":"HITL"}],[{"x":3,"y":1,"e":"LIVE"},{"x":5,"y":1,"e":"PROPUESTA"},{"x":1,"y":4,"e":"HITL"}],[{"x":3,"y":1,"e":"LIVE"},{"x":5,"y":1,"e":"PROPUESTA"},{"x":1,"y":4,"e":"HITL"}],[{"x":3,"y":1,"e":"LIVE"},{"x":5,"y":1,"e":"PROPUESTA"},{"x":1,"y":4,"e":"HITL"}],[{"x":3,"y":1,"e":"LIVE"},{"x":5,"y":1,"e":"PROPUESTA"},{"x":1,"y":4,"e":"HITL"}],[{"x":3,"y":1,"e":"LIVE"},{"x":5,"y":1,"e":"PROPUESTA"},{"x":1,"y":4,"e":"HITL"}],[{"x":3,"y":1,"e":"LIVE"},{"x":5,"y":1,"e":"PROPUESTA"},{"x":1,"y":4,"e":"HITL"}],[{"x":3,"y":1,"e":"LIVE"},{"x":5,"y":1,"e":"PROPUESTA"},{"x":1,"y":4,"e":"HITL"}],[{"x":3,"y":1,"e":"LIVE"},{"x":5,"y":1,"e":"PROPUESTA"},{"x":1,"y":4,"e":"HITL"}],[{"x":3,"y":1,"e":"LIVE"},{"x":5,"y":1,"e":"PROPUESTA"},{"x":1,"y":4,"e":"HITL"}],[{"x":3,"y":1,"e":"LIVE"},{"x":5,"y":1,"e":"PROPUESTA"},{"x":1,"y":4,"e":"HITL"}],[{"x":3,"y":1,"e":"LIVE"},{"x":5,"y":1,"e":"PROPUESTA"},{"x":1,"y":4,"e":"HITL"}],[{"x":3,"y":1,"e":"LIVE"},{"x":5,"y":1,"e":"PROPUESTA"},{"x":1,"y":4,"e":"HITL"}],[{"x":3,"y":1,"e":"LIVE"},{"x":5,"y":1,"e":"PROPUESTA"},{"x":1,"y":4,"e":"HITL"}],[{"x":3,"y":1,"e":"LIVE"},{"x":5,"y":1,"e":"PROPUESTA"},{"x":1,"y":4,"e":"HITL"}],[{"x":3,"y":1,"e":"LIVE"},{"x":5,"y":1,"e":"PROPUESTA"},{"x":1,"y":4,"e":"HITL"}],[{"x":3,"y":1,"e":"LIVE"},{"x":5,"y":1,"e":"PROPUESTA"},{"x":1,"y":4,"e":"HITL"}],[{"x":3,"y":1,"e":"LIVE"},{"x":5,"y":1,"e":"PROPUESTA"},{"x":1,"y":4,"e":"HITL"}],[{"x":3,"y":1,"e":"LIVE"},{"x":5,"y":1,"e":"PROPUESTA"},{"x":1,"y":4,"e":"HITL"}],[{"x":3,"y":1,"e":"LIVE"},{"x":5,"y":1,"e":"PROPUESTA"},{"x":1,"y":4,"e":"HITL"}],[{"x":3,"y":1,"e":"LIVE"},{"x":5,"y":1,"e":"PROPUESTA"},{"x":1,"y":4,"e":"HITL"}],[{"x":3,"y":1,"e":"LIVE"},{"x":5,"y":1,"e":"PROPUESTA"},{"x":1,"y":4,"e":"HITL"}],[{"x":3,"y":1,"e":"LIVE"},{"x":5,"y":1,"e":"PROPUESTA"},{"x":1,"y":4,"e":"HITL"}],[{"x":3,"y":1,"e":"LIVE"},{"x":5,"y":1,"e":"PROPUESTA"},{"x":1,"y":4,"e":"HITL"}],[{"x":4,"y":1,"e":"LIVE"},{"x":5,"y":1,"e":"PROPUESTA"},{"x":2,"y":4,"e":"HITL"}],[{"x":4,"y":1,"e":"LIVE"},{"x":5,"y":1,"e":"PROPUESTA"},{"x":3,"y":4,"e":"HITL"}],[{"x":4,"y":1,"e":"LIVE"},{"x":5,"y":1,"e":"PROPUESTA"},{"x":4,"y":4,"e":"HITL"}],[{"x":4,"y":1,"e":"LIVE"},{"x":5,"y":1,"e":"PROPUESTA"},{"x":5,"y":4,"e":"HITL"}],[{"x":4,"y":1,"e":"LIVE"},{"x":5,"y":1,"e":"PROPUESTA"},{"x":6,"y":4,"e":"HITL"}],[{"x":4,"y":1,"e":"LIVE"},{"x":5,"y":1,"e":"PROPUESTA"},{"x":6,"y":3,"e":"HITL"}],[{"x":4,"y":1,"e":"LIVE"},{"x":5,"y":1,"e":"PROPUESTA"},{"x":6,"y":2,"e":"HITL"}],[{"x":4,"y":1,"e":"LIVE"},{"x":5,"y":1,"e":"PROPUESTA"},{"x":6,"y":1,"e":"HITL"}],[{"x":4,"y":1,"e":"LIVE"},{"x":5,"y":1,"e":"PROPUESTA"},{"x":6,"y":0,"e":"HITL"}],[{"x":4,"y":1,"e":"LIVE"},{"x":5,"y":1,"e":"PROPUESTA"},{"x":6,"y":0,"e":"HITL"}],[{"x":4,"y":1,"e":"LIVE"},{"x":5,"y":1,"e":"PROPUESTA"},{"x":6,"y":0,"e":"HITL"}],[{"x":4,"y":1,"e":"LIVE"},{"x":5,"y":1,"e":"PROPUESTA"},{"x":6,"y":0,"e":"HITL"}],[{"x":4,"y":1,"e":"LIVE"},{"x":5,"y":1,"e":"PROPUESTA"},{"x":6,"y":0,"e":"HITL"}],[{"x":4,"y":1,"e":"LIVE"},{"x":5,"y":1,"e":"PROPUESTA"},{"x":6,"y":0,"e":"HITL"}],[{"x":4,"y":1,"e":"LIVE"},{"x":5,"y":1,"e":"PROPUESTA"},{"x":6,"y":0,"e":"HITL"}],[{"x":4,"y":1,"e":"LIVE"},{"x":5,"y":1,"e":"PROPUESTA"},{"x":6,"y":0,"e":"HITL"}],[{"x":4,"y":1,"e":"LIVE"},{"x":5,"y":1,"e":"PROPUESTA"},{"x":6,"y":0,"e":"HITL"}],[{"x":4,"y":1,"e":"LIVE"},{"x":5,"y":1,"e":"PROPUESTA"},{"x":6,"y":0,"e":"HITL"}],[{"x":4,"y":1,"e":"LIVE"},{"x":5,"y":1,"e":"PROPUESTA"},{"x":6,"y":0,"e":"HITL"}],[{"x":4,"y":1,"e":"LIVE"},{"x":5,"y":1,"e":"PROPUESTA"},{"x":6,"y":0,"e":"HITL"}],[{"x":4,"y":1,"e":"LIVE"},{"x":5,"y":1,"e":"PROPUESTA"},{"x":6,"y":0,"e":"HITL"}],[{"x":4,"y":1,"e":"LIVE"},{"x":5,"y":1,"e":"PROPUESTA"},{"x":6,"y":0,"e":"HITL"}],[{"x":4,"y":1,"e":"LIVE"},{"x":5,"y":1,"e":"PROPUESTA"},{"x":6,"y":0,"e":"HITL"}],[{"x":4,"y":1,"e":"LIVE"},{"x":5,"y":1,"e":"PROPUESTA"},{"x":6,"y":0,"e":"HITL"}],[{"x":4,"y":1,"e":"LIVE"},{"x":5,"y":1,"e":"PROPUESTA"},{"x":6,"y":0,"e":"HITL"}],[{"x":4,"y":1,"e":"LIVE"},{"x":5,"y":1,"e":"PROPUESTA"},{"x":6,"y":0,"e":"HITL"}],[{"x":4,"y":1,"e":"LIVE"},{"x":5,"y":1,"e":"PROPUESTA"},{"x":6,"y":0,"e":"HITL"}],[{"x":4,"y":1,"e":"LIVE"},{"x":5,"y":1,"e":"PROPUESTA"},{"x":6,"y":0,"e":"HITL"}],[{"x":4,"y":1,"e":"LIVE"},{"x":5,"y":1,"e":"PROPUESTA"},{"x":6,"y":0,"e":"HITL"}],[{"x":4,"y":1,"e":"LIVE"},{"x":5,"y":1,"e":"PROPUESTA"},{"x":6,"y":0,"e":"HITL"}],[{"x":4,"y":1,"e":"LIVE"},{"x":5,"y":1,"e":"PROPUESTA"},{"x":6,"y":0,"e":"HITL"}],[{"x":4,"y":1,"e":"LIVE"},{"x":5,"y":1,"e":"PROPUESTA"},{"x":6,"y":0,"e":"HITL"}],[{"x":3,"y":1,"e":"LIVE"},{"x":4,"y":1,"e":"PROPUESTA"},{"x":5,"y":0,"e":"HITL"}],[{"x":3,"y":0,"e":"LIVE"},{"x":4,"y":2,"e":"PROPUESTA"},{"x":4,"y":0,"e":"HITL"}],[{"x":3,"y":0,"e":"LIVE"},{"x":4,"y":2,"e":"PROPUESTA"},{"x":4,"y":0,"e":"HITL"}],[{"x":3,"y":0,"e":"LIVE"},{"x":4,"y":2,"e":"PROPUESTA"},{"x":4,"y":0,"e":"HITL"}],[{"x":3,"y":0,"e":"LIVE"},{"x":4,"y":2,"e":"PROPUESTA"},{"x":4,"y":0,"e":"HITL"}],[{"x":3,"y":0,"e":"LIVE"},{"x":4,"y":2,"e":"PROPUESTA"},{"x":4,"y":0,"e":"HITL"}],[{"x":3,"y":0,"e":"LIVE"},{"x":4,"y":2,"e":"PROPUESTA"},{"x":4,"y":0,"e":"HITL"}],[{"x":3,"y":0,"e":"LIVE"},{"x":4,"y":2,"e":"PROPUESTA"},{"x":4,"y":0,"e":"HITL"}],[{"x":3,"y":0,"e":"LIVE"},{"x":4,"y":2,"e":"PROPUESTA"},{"x":4,"y":0,"e":"HITL"}],[{"x":3,"y":0,"e":"LIVE"},{"x":4,"y":2,"e":"PROPUESTA"},{"x":4,"y":0,"e":"HITL"}],[{"x":3,"y":0,"e":"LIVE"},{"x":4,"y":2,"e":"PROPUESTA"},{"x":4,"y":0,"e":"HITL"}],[{"x":3,"y":0,"e":"LIVE"},{"x":4,"y":2,"e":"PROPUESTA"},{"x":4,"y":0,"e":"HITL"}],[{"x":3,"y":0,"e":"LIVE"},{"x":4,"y":2,"e":"PROPUESTA"},{"x":4,"y":0,"e":"HITL"}],[{"x":3,"y":0,"e":"LIVE"},{"x":4,"y":2,"e":"PROPUESTA"},{"x":4,"y":0,"e":"HITL"}],[{"x":3,"y":0,"e":"LIVE"},{"x":4,"y":2,"e":"PROPUESTA"},{"x":4,"y":0,"e":"HITL"}],[{"x":3,"y":0,"e":"LIVE"},{"x":4,"y":2,"e":"PROPUESTA"},{"x":4,"y":0,"e":"HITL"}],[{"x":3,"y":0,"e":"LIVE"},{"x":4,"y":2,"e":"PROPUESTA"},{"x":4,"y":0,"e":"HITL"}],[{"x":3,"y":0,"e":"LIVE"},{"x":4,"y":2,"e":"PROPUESTA"},{"x":4,"y":0,"e":"HITL"}],[{"x":3,"y":0,"e":"LIVE"},{"x":4,"y":2,"e":"PROPUESTA"},{"x":4,"y":0,"e":"HITL"}],[{"x":3,"y":0,"e":"LIVE"},{"x":4,"y":2,"e":"PROPUESTA"},{"x":4,"y":0,"e":"HITL"}],[{"x":3,"y":0,"e":"LIVE"},{"x":4,"y":2,"e":"PROPUESTA"},{"x":4,"y":0,"e":"HITL"}],[{"x":3,"y":0,"e":"LIVE"},{"x":4,"y":2,"e":"PROPUESTA"},{"x":4,"y":0,"e":"HITL"}],[{"x":3,"y":0,"e":"LIVE"},{"x":4,"y":2,"e":"PROPUESTA"},{"x":4,"y":0,"e":"HITL"}],[{"x":3,"y":0,"e":"LIVE"},{"x":4,"y":2,"e":"PROPUESTA"},{"x":4,"y":0,"e":"HITL"}],[{"x":3,"y":0,"e":"LIVE"},{"x":4,"y":2,"e":"PROPUESTA"},{"x":4,"y":0,"e":"HITL"}],[{"x":3,"y":0,"e":"LIVE"},{"x":4,"y":2,"e":"PROPUESTA"},{"x":4,"y":0,"e":"HITL"}],[{"x":3,"y":0,"e":"LIVE"},{"x":4,"y":2,"e":"PROPUESTA"},{"x":4,"y":0,"e":"HITL"}],[{"x":3,"y":0,"e":"LIVE"},{"x":4,"y":2,"e":"PROPUESTA"},{"x":4,"y":0,"e":"HITL"}],[{"x":3,"y":0,"e":"LIVE"},{"x":4,"y":2,"e":"PROPUESTA"},{"x":4,"y":0,"e":"HITL"}],[{"x":3,"y":0,"e":"LIVE"},{"x":4,"y":2,"e":"PROPUESTA"},{"x":4,"y":0,"e":"HITL"}],[{"x":3,"y":0,"e":"LIVE"},{"x":4,"y":2,"e":"PROPUESTA"},{"x":4,"y":0,"e":"HITL"}],[{"x":3,"y":0,"e":"LIVE"},{"x":4,"y":2,"e":"PROPUESTA"},{"x":4,"y":0,"e":"HITL"}],[{"x":3,"y":0,"e":"LIVE"},{"x":5,"y":2,"e":"PROPUESTA"},{"x":5,"y":0,"e":"HITL"}],[{"x":4,"y":0,"e":"LIVE"},{"x":5,"y":1,"e":"PROPUESTA"},{"x":6,"y":0,"e":"HITL"}],[{"x":5,"y":0,"e":"LIVE"},{"x":5,"y":1,"e":"PROPUESTA"},{"x":6,"y":1,"e":"HITL"}],[{"x":5,"y":0,"e":"LIVE"},{"x":5,"y":1,"e":"PROPUESTA"},{"x":6,"y":1,"e":"HITL"}],[{"x":5,"y":0,"e":"LIVE"},{"x":5,"y":1,"e":"PROPUESTA"},{"x":6,"y":1,"e":"HITL"}],[{"x":5,"y":0,"e":"LIVE"},{"x":5,"y":1,"e":"PROPUESTA"},{"x":6,"y":1,"e":"HITL"}],[{"x":5,"y":0,"e":"LIVE"},{"x":5,"y":1,"e":"PROPUESTA"},{"x":6,"y":1,"e":"HITL"}],[{"x":5,"y":0,"e":"LIVE"},{"x":5,"y":1,"e":"PROPUESTA"},{"x":6,"y":1,"e":"HITL"}],[{"x":5,"y":0,"e":"LIVE"},{"x":5,"y":1,"e":"PROPUESTA"},{"x":6,"y":1,"e":"HITL"}],[{"x":5,"y":0,"e":"LIVE"},{"x":5,"y":1,"e":"PROPUESTA"},{"x":6,"y":1,"e":"HITL"}],[{"x":5,"y":0,"e":"LIVE"},{"x":5,"y":1,"e":"PROPUESTA"},{"x":6,"y":1,"e":"HITL"}],[{"x":5,"y":0,"e":"LIVE"},{"x":5,"y":1,"e":"PROPUESTA"},{"x":6,"y":1,"e":"HITL"}]],"esperas":[{"carril":"Mesa","estado":"LIVE","quietoMax":32},{"carril":"Luna","estado":"PROPUESTA","quietoMax":61},{"carril":"Claude","estado":"HITL","quietoMax":30}],"t1":{"inter":[{"id":"cabin","tipo":"cabin","x":3,"y":2,"radio":1},{"id":"atlantis","tipo":"node","x":1,"y":3,"radio":1},{"id":"risen","tipo":"node","x":5,"y":1,"radio":1}],"bloq":["1,3","3,2","5,1"],"ejemplo":{"s":{"x":0,"y":0},"g":{"x":5,"y":4},"recta":[{"x":0,"y":0},{"x":1,"y":0},{"x":2,"y":0},{"x":3,"y":0},{"x":4,"y":0},{"x":5,"y":0},{"x":5,"y":1},{"x":5,"y":2},{"x":5,"y":3},{"x":5,"y":4}],"desvio":[{"x":0,"y":0},{"x":1,"y":0},{"x":2,"y":0},{"x":3,"y":0},{"x":4,"y":0},{"x":4,"y":1},{"x":4,"y":2},{"x":5,"y":2},{"x":5,"y":3},{"x":5,"y":4}]},"conteo":{"celdasLibres":32,"celdasBloqueadas":3,"total":35},"lados":["atlantis","risen"]},"t2":{"alturas":[{"mana":0,"h":27,"estado":"MEDIDO","causa":null},{"mana":10,"h":48.0415310188057,"estado":"MEDIDO","causa":null},{"mana":25,"h":55.589797121138496,"estado":"MEDIDO","causa":null},{"mana":50,"h":61.50176992715596,"estado":"MEDIDO","causa":null},{"mana":75,"h":65.00218506101255,"estado":"MEDIDO","causa":null},{"mana":90,"h":66.58279216968536,"estado":"MEDIDO","causa":null},{"mana":100,"h":67.49768253528205,"estado":"MEDIDO","causa":null}],"sinDato":{"h":27,"estado":"NO_DATA","causa":"sin dato de mana"}},"forma":{"nombre":"interrogacion-punteada","estado":"PROPUESTA"},"niebla":{"tickDespues":120,"antes":[{"x":0,"y":0,"estado":"NO_DATA","causa":"celda no visitada (niebla)","carril":null},{"x":1,"y":0,"estado":"NO_DATA","causa":"celda no visitada (niebla)","carril":null},{"x":2,"y":0,"estado":"NO_DATA","causa":"celda no visitada (niebla)","carril":null},{"x":3,"y":0,"estado":"NO_DATA","causa":"celda no visitada (niebla)","carril":null},{"x":4,"y":0,"estado":"NO_DATA","causa":"celda no visitada (niebla)","carril":null},{"x":5,"y":0,"estado":"NO_DATA","causa":"celda no visitada (niebla)","carril":null},{"x":6,"y":0,"estado":"NO_DATA","causa":"celda no visitada (niebla)","carril":null},{"x":0,"y":1,"estado":"NO_DATA","causa":"celda no visitada (niebla)","carril":null},{"x":1,"y":1,"estado":"NO_DATA","causa":"celda no visitada (niebla)","carril":null},{"x":2,"y":1,"estado":"NO_DATA","causa":"celda no visitada (niebla)","carril":null},{"x":3,"y":1,"estado":"NO_DATA","causa":"celda no visitada (niebla)","carril":null},{"x":4,"y":1,"estado":"NO_DATA","causa":"celda no visitada (niebla)","carril":null},{"x":5,"y":1,"estado":"NO_DATA","causa":"celda no visitada (niebla)","carril":null},{"x":6,"y":1,"estado":"NO_DATA","causa":"celda no visitada (niebla)","carril":null},{"x":0,"y":2,"estado":"NO_DATA","causa":"celda no visitada (niebla)","carril":null},{"x":1,"y":2,"estado":"NO_DATA","causa":"celda no visitada (niebla)","carril":null},{"x":2,"y":2,"estado":"NO_DATA","causa":"celda no visitada (niebla)","carril":null},{"x":3,"y":2,"estado":"NO_DATA","causa":"celda no visitada (niebla)","carril":null},{"x":4,"y":2,"estado":"NO_DATA","causa":"celda no visitada (niebla)","carril":null},{"x":5,"y":2,"estado":"NO_DATA","causa":"celda no visitada (niebla)","carril":null},{"x":6,"y":2,"estado":"NO_DATA","causa":"celda no visitada (niebla)","carril":null},{"x":0,"y":3,"estado":"NO_DATA","causa":"celda no visitada (niebla)","carril":null},{"x":1,"y":3,"estado":"NO_DATA","causa":"celda no visitada (niebla)","carril":null},{"x":2,"y":3,"estado":"NO_DATA","causa":"celda no visitada (niebla)","carril":null},{"x":3,"y":3,"estado":"NO_DATA","causa":"celda no visitada (niebla)","carril":null},{"x":4,"y":3,"estado":"NO_DATA","causa":"celda no visitada (niebla)","carril":null},{"x":5,"y":3,"estado":"NO_DATA","causa":"celda no visitada (niebla)","carril":null},{"x":6,"y":3,"estado":"NO_DATA","causa":"celda no visitada (niebla)","carril":null},{"x":0,"y":4,"estado":"NO_DATA","causa":"celda no visitada (niebla)","carril":null},{"x":1,"y":4,"estado":"NO_DATA","causa":"celda no visitada (niebla)","carril":null},{"x":2,"y":4,"estado":"NO_DATA","causa":"celda no visitada (niebla)","carril":null},{"x":3,"y":4,"estado":"NO_DATA","causa":"celda no visitada (niebla)","carril":null},{"x":4,"y":4,"estado":"NO_DATA","causa":"celda no visitada (niebla)","carril":null},{"x":5,"y":4,"estado":"NO_DATA","causa":"celda no visitada (niebla)","carril":null},{"x":6,"y":4,"estado":"NO_DATA","causa":"celda no visitada (niebla)","carril":null}],"despues":[{"x":0,"y":0,"estado":"LIVE","causa":null,"carril":"Mesa"},{"x":1,"y":0,"estado":"LIVE","causa":null,"carril":"Mesa"},{"x":2,"y":0,"estado":"LIVE","causa":null,"carril":"Mesa"},{"x":3,"y":0,"estado":"LIVE","causa":null,"carril":"Mesa"},{"x":4,"y":0,"estado":"LIVE","causa":null,"carril":"Mesa"},{"x":5,"y":0,"estado":"LIVE","causa":null,"carril":"Mesa"},{"x":6,"y":0,"estado":"LIVE","causa":null,"carril":"Mesa"},{"x":0,"y":1,"estado":"NO_DATA","causa":"celda no visitada (niebla)","carril":null},{"x":1,"y":1,"estado":"NO_DATA","causa":"celda no visitada (niebla)","carril":null},{"x":2,"y":1,"estado":"PROPUESTA","causa":null,"carril":"Luna"},{"x":3,"y":1,"estado":"LIVE","causa":null,"carril":"Mesa"},{"x":4,"y":1,"estado":"HITL","causa":null,"carril":"Claude"},{"x":5,"y":1,"estado":"NO_DATA","causa":"celda no visitada (niebla)","carril":null},{"x":6,"y":1,"estado":"HITL","causa":null,"carril":"Claude"},{"x":0,"y":2,"estado":"NO_DATA","causa":"celda no visitada (niebla)","carril":null},{"x":1,"y":2,"estado":"PROPUESTA","causa":null,"carril":"Luna"},{"x":2,"y":2,"estado":"PROPUESTA","causa":null,"carril":"Luna"},{"x":3,"y":2,"estado":"PROPUESTA","causa":null,"carril":"Luna"},{"x":4,"y":2,"estado":"PROPUESTA","causa":null,"carril":"Luna"},{"x":5,"y":2,"estado":"HITL","causa":null,"carril":"Claude"},{"x":6,"y":2,"estado":"HITL","causa":null,"carril":"Claude"},{"x":0,"y":3,"estado":"NO_DATA","causa":"celda no visitada (niebla)","carril":null},{"x":1,"y":3,"estado":"PROPUESTA","causa":null,"carril":"Luna"},{"x":2,"y":3,"estado":"PROPUESTA","causa":null,"carril":"Luna"},{"x":3,"y":3,"estado":"LIVE","causa":null,"carril":"Mesa"},{"x":4,"y":3,"estado":"PROPUESTA","causa":null,"carril":"Luna"},{"x":5,"y":3,"estado":"NO_DATA","causa":"celda no visitada (niebla)","carril":null},{"x":6,"y":3,"estado":"HITL","causa":null,"carril":"Claude"},{"x":0,"y":4,"estado":"NO_DATA","causa":"celda no visitada (niebla)","carril":null},{"x":1,"y":4,"estado":"PROPUESTA","causa":null,"carril":"Luna"},{"x":2,"y":4,"estado":"PROPUESTA","causa":null,"carril":"Luna"},{"x":3,"y":4,"estado":"LIVE","causa":null,"carril":"Mesa"},{"x":4,"y":4,"estado":"LIVE","causa":null,"carril":"Mesa"},{"x":5,"y":4,"estado":"LIVE","causa":null,"carril":"Mesa"},{"x":6,"y":4,"estado":"NO_DATA","causa":"celda no visitada (niebla)","carril":null}],"regla":"visita"}};
+const TILE = 56, HALF_W = TILE / 2, HALF_H = TILE / 4;     // proyeccion 2:1 (ancho 56, alto 28)
+const iso = (x, y) => ({ sx: (x - y) * HALF_W, sy: (x + y) * HALF_H });
+const W = D.constantes.GRID.W, H = D.constantes.GRID.H;
+const ESC = { LIVE:'#1a1a1a', PROPUESTA:'#6b6b6b', HITL:'#c2410c' };
+const COLORES = { tinta:'#1a1a1a', papel:'#f4efe3', acento:'#c2410c' };
+
+function viewBoxIso(){
+  const xs = [], ys = [];
+  for (let x=0;x<W;x++) for (let y=0;y<H;y++){ const p = iso(x,y); xs.push(p.sx - HALF_W, p.sx + HALF_W); ys.push(p.sy - HALF_H, p.sy + HALF_H); }
+  const m = 16;
+  const minx = Math.min(...xs) - m, maxx = Math.max(...xs) + m;
+  const miny = Math.min(...ys) - m, maxy = Math.max(...ys) + m + 12;
+  return `${minx} ${miny} ${maxx-minx} ${maxy-miny}`;
+}
+function rombo(x, y, relleno, borde){
+  const p = iso(x,y);
+  const pts = [[p.sx, p.sy - HALF_H], [p.sx + HALF_W, p.sy], [p.sx, p.sy + HALF_H], [p.sx - HALF_W, p.sy]].map(a=>a.join(',')).join(' ');
+  return `<polygon points="${pts}" fill="${relleno}" stroke="${borde}" stroke-width="1"/>`;
+}
+function cuerpo(x, y, etiqueta, estado){
+  const p = iso(x,y), r = 9;
+  const sello = estado === 'HITL' ? `<text x="${p.sx}" y="${p.sy - 2}" text-anchor="middle" font-size="12" font-weight="700" fill="${COLORES.acento}">?</text>` : '';
+  const trazo = estado === 'HITL' ? `stroke-dasharray="4 3"` : '';
+  return `<g role="img" aria-label="${etiqueta}, estado ${estado}">`
+    + `<circle cx="${p.sx}" cy="${p.sy - 6}" r="${r}" fill="${COLORES.papel}" stroke="${COLORES.tinta}" stroke-width="2" ${trazo}/>`
+    + sello
+    + `<text x="${p.sx}" y="${p.sy - 3}" text-anchor="middle" font-size="9" font-weight="700" fill="${COLORES.tinta}">${etiqueta[0]}</text>`
+    + `</g>`;
+}
+
+// ---- panel 1 · T4
+let tick = 0;
+function pintaT4(){
+  const f = D.hist4[tick];
+  let svg = `<title>Rejilla 7×5 con tres carriles, tick ${tick}</title>`;
+  for (let x=0;x<W;x++) for (let y=0;y<H;y++) svg += rombo(x,y,COLORES.papel,COLORES.tinta);
+  const orden = f.map((c,i)=>({c,i})).sort((a,b)=>(a.c.x+a.c.y)-(b.c.x+b.c.y));
+  for (const {c,i} of orden) svg += cuerpo(c.x, c.y, D.carriles[i], c.e);
+  const svgEl = document.getElementById('t4-svg');
+  svgEl.setAttribute('viewBox', viewBoxIso());
+  svgEl.innerHTML = svg;
+  const espera = f.filter((c,i)=> tick>0 && c.x===D.hist4[tick-1][i].x && c.y===D.hist4[tick-1][i].y).map((c,i)=>D.carriles[i]);
+  document.getElementById('t4-estado').textContent = `Tick ${tick} de ${D.hist4.length-1} · en espera este tick: ${espera.length ? espera.join(', ') : 'ninguno'}`;
+}
+document.getElementById('t4-paso').addEventListener('click', ()=>{ tick = Math.min(tick+1, D.hist4.length-1); pintaT4(); });
+document.getElementById('t4-atras').addEventListener('click', ()=>{ tick = Math.max(tick-1, 0); pintaT4(); });
+document.getElementById('t4-leyenda').textContent = 'Leyenda: M = Mesa (LIVE) · L = Luna (PROPUESTA) · C = Claude (HITL, con «?»). La forma del cuerpo no cambia con el estado; el sello sí.';
+document.getElementById('t4-esperas').innerHTML = D.esperas.map(e=>{
+  return `<tr><td>${e.carril}</td><td>${e.estado}</td><td>${e.quietoMax}${e.quietoMax > D.constantes.EPOCA ? ' · supera la época (32): espera detrás de otro carril' : ''}</td></tr>`;
+}).join('');
+pintaT4();
+
+// ---- panel 2 · T1
+function pintaT1(idSvg, camino, etiqueta){
+  const bl = new Set(D.t1.bloq);
+  let svg = `<title>${etiqueta}</title>`;
+  for (let x=0;x<W;x++) for (let y=0;y<H;y++){
+    const bloqueada = bl.has(x+','+y);
+    svg += rombo(x,y, bloqueada ? '#d9d4c7' : COLORES.papel, COLORES.tinta);
+  }
+  for (const it of D.t1.inter){
+    const p = iso(it.x, it.y);
+    svg += `<ellipse cx="${p.sx}" cy="${p.sy}" rx="${it.radio*HALF_W*1.4}" ry="${it.radio*HALF_H*1.4}" fill="none" stroke="${COLORES.acento}" stroke-dasharray="5 4" stroke-width="2"/>`;
+    svg += `<text x="${p.sx}" y="${p.sy - 10}" text-anchor="middle" font-size="13" font-weight="700" fill="${COLORES.tinta}" stroke="${COLORES.papel}" stroke-width="4" paint-order="stroke">${it.id}</text>`;
+  }
+  camino.forEach((c,k)=>{
+    const p = iso(c.x, c.y);
+    svg += `<circle cx="${p.sx}" cy="${p.sy}" r="7" fill="${COLORES.tinta}"/>`;
+    svg += `<text x="${p.sx}" y="${p.sy+4}" text-anchor="middle" font-size="9" fill="${COLORES.papel}">${k}</text>`;
+  });
+  const el = document.getElementById(idSvg);
+  el.setAttribute('viewBox', viewBoxIso());
+  el.innerHTML = svg;
+}
+const ej = D.t1.ejemplo;
+if (ej){
+  pintaT1('t1-recta', ej.recta, 'Ruta recta: pasa por celda bloqueada');
+  pintaT1('t1-desvio', ej.desvio, 'Ruta con desvio BFS');
+  document.getElementById('t1-r-desc').textContent = `Recta de (${ej.s.x},${ej.s.y}) a (${ej.g.x},${ej.g.y}): ${ej.recta.length-1} pasos, cruza celda bloqueada (gris).`;
+  document.getElementById('t1-d-desc').textContent = `Desvío real del BFS: ${ej.desvio.length-1} pasos, sin celda bloqueada.`;
+}
+document.getElementById('t1-leyenda').textContent = `Celdas bloqueadas por keep-out: ${D.t1.conteo.celdasBloqueadas} de ${D.t1.conteo.total} (${(100*D.t1.conteo.celdasBloqueadas/D.t1.conteo.total).toFixed(0)} %, MEDIDO). Círculo discontinuo = radio de respeto. Números = orden del paso.`;
+
+// ---- panel 3 · T2
+(function(){
+  const esc = 4;                       // px de pantalla por px de referencia (misma escala para todas)
+  const base = 320, ancho = 56, sep = 88, x0 = 60;
+  let svg = `<title>Siete edificios por mana, misma escala, y uno sin dato</title>`;
+  D.t2.alturas.forEach((a,i)=>{
+    const h = a.h * esc, x = x0 + i*sep;
+    svg += `<rect x="${x}" y="${base-h}" width="${ancho}" height="${h}" fill="${COLORES.tinta}"/>`;
+    svg += `<text x="${x+ancho/2}" y="${base-h-6}" text-anchor="middle" font-size="12" fill="${COLORES.tinta}">${a.h.toFixed(1)}</text>`;
+    svg += `<text x="${x+ancho/2}" y="${base+18}" text-anchor="middle" font-size="12" fill="${COLORES.tinta}">mana ${a.mana}</text>`;
+  });
+  const xs = x0 + D.t2.alturas.length*sep;
+  svg += `<rect x="${xs}" y="${base-D.constantes.H0*esc}" width="${ancho}" height="${D.constantes.H0*esc}" fill="none" stroke="${COLORES.acento}" stroke-width="2" stroke-dasharray="4 3"/>`;
+  svg += `<text x="${xs+ancho/2}" y="${base+18}" text-anchor="middle" font-size="11" fill="${COLORES.acento}">sin dato</text>`;
+  svg += `<text x="${xs+ancho/2}" y="${base+34}" text-anchor="middle" font-size="10" fill="${COLORES.tinta}">NO_DATA: ${D.t2.sinDato.causa}</text>`;
+  svg += `<line x1="20" y1="${base}" x2="${xs+ancho+30}" y2="${base}" stroke="${COLORES.tinta}" stroke-width="2"/>`;
+  for (let v=0; v<=60; v+=20){
+    const y = base - v*esc;
+    svg += `<line x1="16" y1="${y}" x2="26" y2="${y}" stroke="${COLORES.tinta}"/><text x="12" y="${y+4}" text-anchor="end" font-size="10" fill="${COLORES.tinta}">${v}</text>`;
+  }
+  svg += `<text x="${x0}" y="${base+52}" font-size="10" fill="${COLORES.tinta}">regla en px ref (MEDIDO)</text>`;
+  const el = document.getElementById('t2-svg');
+  el.setAttribute('viewBox', `0 0 ${xs+ancho+60} ${base+60}`);
+  el.innerHTML = svg;
+  const a0 = D.t2.alturas[0], a10 = D.t2.alturas[1], a90 = D.t2.alturas[5], a100 = D.t2.alturas[6];
+  document.getElementById('t2-desc').textContent =
+    `Salto medido de mana 0 a 10: ${a0.h.toFixed(2)} → ${a10.h.toFixed(2)} px (+${(100*(a10.h/a0.h-1)).toFixed(0)} %). De 90 a 100: +${(a100.h-a90.h).toFixed(2)} px. Juzga con tus ojos si el primer salto es brusco; el ajuste es k, declarado.`;
+  document.getElementById('t2-tabla').innerHTML = D.t2.alturas.map((a,i)=>{
+    const prev = i>0 ? D.t2.alturas[i-1].h : null;
+    const salto = prev ? `+${(100*(a.h/prev-1)).toFixed(1)} %` : '—';
+    return `<tr><td>${a.mana}</td><td>${a.h.toFixed(2)}</td><td>${(a.h/D.constantes.H0).toFixed(3)}</td><td>${salto}</td></tr>`;
+  }).join('') + `<tr><td>sin dato</td><td>${D.t2.sinDato.h.toFixed(2)}</td><td>1.000</td><td>NO_DATA · ${D.t2.sinDato.causa}</td></tr>`;
+})();
+
+// ---- panel 5 · niebla con hexágonos
+function hexagono(x, y, relleno, trazo, extra){
+  const p = iso(x,y), w = HALF_W*0.5, h = HALF_H*0.5;   // medio paso entre celdas: no se solapan
+  const pts = [[p.sx, p.sy-h*1.1],[p.sx+w, p.sy-h*0.55],[p.sx+w, p.sy+h*0.55],[p.sx, p.sy+h*1.1],[p.sx-w, p.sy+h*0.55],[p.sx-w, p.sy-h*0.55]].map(a=>a.join(',')).join(' ');
+  return `<polygon points="${pts}" fill="${relleno}" stroke="${trazo}" stroke-width="1.5"/>` + (extra||'');
+}
+function pintaNiebla(idSvg, celdas, id){
+  let svg = `<title>Mapa 7×5 en ${id === 'antes' ? 'niebla' : 'levantada'}</title>
+  <defs><pattern id="niebla-${id}" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="6" stroke="${COLORES.tinta}" stroke-width="2"/></pattern></defs>`;
+  for (const c of celdas){
+    const p = iso(c.x, c.y);
+    if (c.estado === 'NO_DATA'){
+      svg += hexagono(c.x, c.y, '#d9d4c7', COLORES.tinta);   // niebla: relleno gris solido (mismo tono que keep-out)
+    } else {
+      const letra = c.carril ? c.carril[0] : '?';
+      svg += hexagono(c.x, c.y, COLORES.papel, COLORES.tinta, `<text x="${p.sx}" y="${p.sy+4}" text-anchor="middle" font-size="11" font-weight="700" fill="${c.estado==='HITL' ? COLORES.acento : COLORES.tinta}">${letra}</text>`);
+    }
+  }
+  const el = document.getElementById(idSvg);
+  el.setAttribute('viewBox', viewBoxIso());
+  el.innerHTML = svg;
+}
+(function(){
+  const n = D.niebla;
+  pintaNiebla('niebla-antes', n.antes, 'antes');
+  pintaNiebla('niebla-despues', n.despues, 'despues');
+  const libres = n.despues.filter(c=>c.estado!=='NO_DATA').length;
+  const porEstado = {};
+  n.despues.filter(c=>c.estado!=='NO_DATA').forEach(c=>{ porEstado[c.estado] = (porEstado[c.estado]||0)+1; });
+  document.getElementById('niebla-leyenda').textContent = 'Leyenda: sombreado = niebla (NO_DATA, celda no visitada). Letra = carril que levantó la celda (M Mesa, L Luna, C Claude). Estados en las celdas levantadas: ' + Object.entries(porEstado).map(([k,v])=>k+' '+v).join(' · ') + '.';
+  document.getElementById('niebla-a-desc').textContent = `Antes de cualquier paso: ${n.antes.filter(c=>c.estado==='NO_DATA').length} de ${n.antes.length} celdas en niebla (NO_DATA, celda no visitada).`;
+  document.getElementById('niebla-d-desc').textContent = `Tick ${n.tickDespues}: ${libres} de ${n.despues.length} celdas levantadas por visita (regla PROPUESTA, MEDIDO sobre el fixture). Letra = carril que la levantó; debajo, su estado en la tabla.`;
+})();
+
+// ---- panel 4 · forma propuesta del HITL
+(function(){
+  const svg = `<title>Forma propuesta del HITL: burbuja punteada con interrogación</title>
+  <circle cx="60" cy="60" r="44" fill="${COLORES.papel}" stroke="${COLORES.acento}" stroke-width="3" stroke-dasharray="6 5"/>
+  <text x="60" y="78" text-anchor="middle" font-size="58" font-weight="700" fill="${COLORES.acento}">?</text>`;
+  const el = document.getElementById('forma-svg');
+  el.setAttribute('viewBox', '0 0 120 120');
+  el.innerHTML = svg;
+})();
+</script>
+</main>
+</body>
+</html>
