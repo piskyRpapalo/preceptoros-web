@@ -4,7 +4,7 @@
   //   r(theta) = sum_k a_k * sin(k*theta + phi_k)        terminos = [[k, a_k, phi_k], ...]
   //   punto(theta) = (r*cos(theta), r*sin(theta))
   // Sin terminos con amplitud > 0 no hay forma: null (NO_DATA, no se dibuja nada).
-  // El color sale SOLO de la tabla fisica (tabla_semantica.js). Un sello fuera de la tabla devuelve null.
+  // El color sale SOLO de la tabla fisica (tabla_semantica.js). A seal outside the table returns null.
   var TABLA = (typeof module === 'object' && module.exports) ? require('./tabla_semantica.js') : raiz.AtlasSemantica;
 
   function radio(terminos, theta) {
