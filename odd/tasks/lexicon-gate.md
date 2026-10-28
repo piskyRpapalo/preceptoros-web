@@ -58,5 +58,9 @@ ganadores ingleses no requieren excepción: no contienen palabra de la lista neg
   `public/openworld/index.html` con tres palabras españolas (`nodos`, `pinta`, `registro`). La base sube a 181 y añade
   solo ese fichero, con esas tres palabras. Es deuda visible, no oculta: la slice de renombrado de #373 la elimina.
 
+- 2026-10-28 · **Re-base contra `main` ef38a28 (#363 en vivo).** La base sube a 182 y añade solo
+  `public/face/face_terminal.js` (dice, monta, sello), el terminal de chat. Es deuda real de un fichero servido,
+  visible en la base; el barrido de renombrado la baja.
+
 ## Siguiente paso
 Mandato 1: bajar la base rebanada a rebanada (un PR por rebanada, sello SW en cada una que toque `public/`).

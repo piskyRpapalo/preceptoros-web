@@ -488,6 +488,11 @@
     "ciclo",
     "sello"
   ],
+  "public/face/face_terminal.js": [
+    "dice",
+    "monta",
+    "sello"
+  ],
   "public/face/face_tutorial.js": [
     "arrecife"
   ],
