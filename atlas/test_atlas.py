@@ -1078,7 +1078,9 @@ CREATION_PAGE_DEPENDENCIES = CREACION + (
 ADUANA = ("node_catalogue.js",)
 # [W] O1b (2026-10-27): la escena del duelo de ondas entra en la Arena (ARENA) y en los mundos; battle_choreography queda
 # en PUROS (motor intacto, ya no lo carga ninguna cara).
-FUERA_DE_LA_PUERTA = tuple(sorted(set(PUROS + ARENA + CASA + DESCENSO + VT6 + J1 + VT2_ETIQUETA + VT4_SILUETA + VISION_LEXICA + ADUANA)))
+# /openworld/ (NORTE 8 · audio slice 2, 2026-10-28): el sonido nativo del fotograma, cargado solo por esa pagina.
+MUNDO_ABIERTO = ("bubble_sonify.js",)
+FUERA_DE_LA_PUERTA = tuple(sorted(set(PUROS + ARENA + CASA + DESCENSO + VT6 + J1 + VT2_ETIQUETA + VT4_SILUETA + VISION_LEXICA + ADUANA + MUNDO_ABIERTO)))
 # La cara del juego (2026-10-25) es su propia superficie en public/face/, fuera
 # de la puerta: carga de una vez las piezas que usa, como creation.html. Se
 # declaran aqui las suyas, leidas de sus paginas, y nada mas.
@@ -1089,7 +1091,7 @@ FACE_PAGE_DEPENDENCIES = tuple(sorted(set(re.findall(r'src="/game/([^"]+)"', (PU
 LANDING_PAGE_DEPENDENCIES = ("tabla_semantica.js", "comic_tokens.js", "comic_accents.js", "comic_atoms.js",
                              "bubble_language.js", "bubble_letters.js")
 # /openworld/ (NORTE 7 · PR 2, 2026-10-28): el mapa y su cabana dibujan en la misma burbuja que la portada; se DECLARA aqui.
-OPENWORLD_PAGE_DEPENDENCIES = LANDING_PAGE_DEPENDENCIES
+OPENWORLD_PAGE_DEPENDENCIES = LANDING_PAGE_DEPENDENCIES + ("bubble_sonify.js",)   # the native sound: on demand, on the first click
 # /aduana/ (Norte N2, 2026-10-26): el comprobador de cedulas, OBSERVANTE, carga la cadena de nodos y solo esa. Se
 # DECLARA aqui; local_first_surface_build.ADUANA_SCRIPTS es la misma lista, y tests/aduana_page.test.mjs exige que
 # coincidan.
