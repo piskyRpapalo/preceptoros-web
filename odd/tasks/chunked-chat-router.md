@@ -1,8 +1,8 @@
 # Chunked chat router
 
 Date: 2026-10-28
-Law: NORTE 8 chat-router commission after web#363; Sovereign's 2026-10-28 watchword authorizes building and pushing a proposal branch while exact-head signature gates the merge. Lab#104 supplies the measured chunk transport contract. No receipt ID was attached to the watchword.
-Status: IN_PROGRESS · feature branch `mistral/chunked-chat-router-20261028` · propose/build only; no merge or deployment.
+Law: NORTE 8 chat-router commission after web#363; Desk ruling 2026-10-28 permits this design document under standing ODD FIRMO. Code changes belong to lote `2026-10-28-g`; this document makes no code or deployment claim. Lab#104 supplies the measured chunk transport contract.
+Status: DOC_READY_FOR_DESK_REVIEW · documentation only · no code, merge, or deployment.
 
 ## Objective
 
@@ -33,6 +33,12 @@ The Lab proof establishes a local, deterministic, consented chunk loader and a c
 - English public text only. No device or private-path identifiers. No banned vocabulary. No live Worker, deployment, or content change to the face terminal.
 - The model data in Lab#104 is marked synthetic. Keep that seal visible; do not call the classifier a production model or its fixed fixture text a measured answer.
 
+## Coordination and non-duplication
+
+Claude Haiku's open draft web#379 (`haiku/chunk-router-20261028`, head `dfa80e221b7d8713e0a1ab2885ba54c005088821`) implements a no-weight router and activates the OpenWorld input with honest `NO_DATA`. This design does not propose a second `chunk_router.js`, another chat form, or a parallel radio adapter. Its distinct question is how the Lab#104 synthetic, 25,000,000 B demonstration payload can be consent-loaded and routed as `SIMULATED` while that no-weight path remains the fail-closed fallback.
+
+Before code work under lote `2026-10-28-g`, the Desk should sequence #379 and select one integration seam: extend its router with the verified local demonstration path, or replace that router in the same commissioned piece. Do not merge two independently wired OpenWorld forms or two owners of `AtlasRadioChat.dice`. No dependency on Claude or Mistral completing work is assumed by this design card.
+
 ## Checklist
 
 - [x] C1 · Pin the merged chat API, OpenWorld seam, and Lab#104 contract; record the live baseline below.
@@ -43,7 +49,7 @@ The Lab proof establishes a local, deterministic, consented chunk loader and a c
 - [ ] C6 · Verify every chunk and cache read; sabotage missing, short, corrupt, wrong-manifest, tie, attack, oversized input, and absent mapping. Each must return stable `NO_DATA` without fallback.
 - [ ] C7 · Keep result and state transitions visible and announced. Repeat same-input tests and hash receipts twice.
 - [ ] C8 · Update route/size/service-worker measurements and bump `VERSION` for the published asset change. The 2026-10-28 Sovereign decree permits preceptors to bump and measure against LIVE; this feature branch does not deploy.
-- [ ] C9 · Run gates n=2; check SCRUB, size limits, and live smoke only after the accepted head is deployed by the authorized release path. Record `NO_DATA` for anything not measured.
+- [ ] C9 · In the separately commissioned code lot, run gates n=2; check SCRUB and size limits. Run live smoke only after the accepted head is deployed by the authorized release path; record `NO_DATA` for anything not measured.
 
 ## Verification evidence
 
@@ -53,6 +59,7 @@ The Lab proof establishes a local, deterministic, consented chunk loader and a c
 - Live smoke: 2026-10-28, curl + Chrome 155.0.8059.39 on Linux x86_64. `/openworld/` returned HTTP 200 with its chat input disabled. `/face/basic` returned HTTP 200; the terminal mounted open with 3 tabs. A local synthetic submission appeared as `You · LIVE` and returned `Preceptor · NO_DATA` (“No model is connected…”). Live `sw.js` served `preceptoros-2026-17-abka`; the chunk model is not yet deployed. This tests the live chat terminal, not the new router.
 - Production shortcut catalogue, canon-chunk set and source receipts, publisher authentication/rollback policy, trained weights/license, moderator coverage, browser cache quota/eviction, and model quality: `NO_DATA` with cause: no accepted production catalogue, source manifest, model, or measurement in the pinned Lab proof.
 - Local doctrine fingerprint and scope digest are recorded in `docs/receipts/norte8-chunked-chat-router-20261028.json`.
+- Implementation and end-to-end integration for this design: `NO_DATA` under this PR because the Desk assigned code to lote `2026-10-28-g`. This branch contains only this design card and its documentary receipt.
 
 ## Standing signature
 
@@ -66,7 +73,8 @@ PROPOSED · INTANGIBLE, not applied to standing doctrine: keep classifier result
 
 - 2026-10-28 · Re-anchored web#363 without rewriting its signed commit; after the exact-head signature, the Desk merged it. The live smoke confirmed the deployed chat panel, while its answer remains `NO_DATA` until the router is built and released.
 - 2026-10-28 · Lab#104's four-class classifier is synthetic. Its proof demonstrates byte verification and deterministic transport, not the requested production shortcuts or canon catalogue. No category-to-content mapping is assumed by this card.
+- 2026-10-28 · Desk found overlapping draft #379 before publication of this design. Scope was narrowed to documentation; no model chunks, router implementation, UI, route, or service-worker changes are included in this PR.
 
 ## Next step
 
-Build C3–C7 on this feature branch using only source-backed mappings; leave every unmapped path as `NO_DATA`, then run the full gates n=2 before proposing the exact head.
+Desk review and exact-head HITL/FIRMO are the remaining document-PR gates. Code implementation must be commissioned in lote `2026-10-28-g` and use the #379 integration seam selected by the Desk. If a later code head is merged and deployed through the authorized path, perform live smoke then; do not treat the local fixture as production evidence.
