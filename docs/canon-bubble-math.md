@@ -44,6 +44,11 @@ Nombre: el físico es `PROPUESTA`; el mockup lo llama `PROPUESTA_PENDIENTE_FIRMA
 concepto con valores distintos (por ejemplo, pulso de LIVE: 5.16 Hz frente a 0.005 de waveFrequency). Se conservan los dos.
 Decisión pendiente del Soberano: cuál manda.
 
+**Radio fase 1 (`bb_radio.js`):** el pulso usa `DERIVADOS.pulso_hz` (la fuente física, en Hz). Con eso la prueba de
+sincronía (un tick de desfase = rojo) es medible: con `VISUAL.pulseFrequency` (0.02–0.05 Hz) un tick cambia el pulso
+un 0.26 %, bajo cualquier umbral honesto. Consecuencia: LIVE pulsa (5.16 Hz) en la radio, mientras que
+`VISUAL.LIVE.pulseActive` dice `false`. La radio no lee `pulseActive`. Decisión pendiente: cuál de los dos campos manda.
+
 ## 5 · Escenas F2 (lista canónica, con cita)
 
 Fuente de la lista: `p0x/propuestas/2026-10-17_plan-all-in-preceptor.md` (líneas 321–326) y
