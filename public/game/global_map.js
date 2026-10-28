@@ -112,6 +112,38 @@
     };
   }
 
+  // The terrain field: the 19 hex cells within two steps of the cabin, always drawn, whether or not a node lives there.
+  // Each cell's terrain comes from a hash of its own coordinates (grass, water or mountain): the same map every run.
+  // A terrain cell is not a node: it carries no liveness, and its sentence says so.
+  var TERRAIN = ['grass', 'water', 'mountain'];
+  var DIRS = [];
+  for (var q = -2; q <= 2; q++) {
+    for (var r = -2; r <= 2; r++) {
+      if (Math.abs(q + r) <= 2) { DIRS.push([q, r]); }
+    }
+  }
+  var DIAMOND = [[160, 24], [208, 48], [160, 72], [112, 48]];
+  function terrenoMarco(col, fila) {
+    var tipo = TERRAIN[parseInt(hash32(col + ',' + fila).charAt(0), 16) % 3];
+    var f = tipo === 'water' ? 'cyan' : tipo === 'mountain' ? 'ink' : 'paper';
+    var s = tipo === 'mountain' ? 'paper' : 'ink';
+    var frase = 'hex (' + col + ',' + fila + '): ' + tipo + ' · terrain, not a node';
+    return {
+      v: 'preceptoros.bubble/1', id: 'hex-' + col + '-' + fila, t: 0, cv: [ANCHO, ALTO],
+      atoms: [{ k: 'terrain.' + tipo, r: frase, i: [{ o: 'ribbon', pts: DIAMOND, closed: true, f: f, s: s, lw: 2 }] }],
+      bands: ['paper', 'ink', 'cyan'],
+      change: [frase],
+      sound: 'NO_DATA: terrain declares no waves; nothing is invented'
+    };
+  }
+  function terreno(entrada) {
+    var base = Iso.proyecta(NODES[0].reco[0], NODES[0].reco[1], CELDA);
+    return DIRS.map(function (d) {
+      var p = Iso.proyecta(d[0], d[1], CELDA);
+      return Object.freeze({ col: d[0], fila: d[1], x: (p.x - base.x) * ESCALA, y: (p.y - base.y) * ESCALA, frame: terrenoMarco(d[0], d[1]) });
+    });
+  }
+
   // mapa(entrada) → the scene: palette and its sky frame, and each visible node placed by the fixed iso angle and its frame.
   function mapa(entrada) {
     var rows = estado(entrada);
@@ -120,6 +152,7 @@
     return Object.freeze({
       paleta: paleta(t),
       cielo: cielo(paleta(t)),
+      terrain: terreno(entrada),
       nodes: rows.map(function (row) {
         var p = Iso.proyecta(row.reco[0], row.reco[1], CELDA);
         return Object.freeze({ id: row.id, x: (p.x - base.x) * ESCALA, y: (p.y - base.y) * ESCALA, frame: marco(row, t) });
@@ -162,7 +195,7 @@
   var AtlasMapaGlobal = Object.freeze({
     NODES: NODES, CYCLE: CYCLE, ANCHO: ANCHO, ALTO: ALTO, LIMITE_BYTES: LIMITE_BYTES, RECURSO: RECURSO,
     ESCALA: ESCALA, BURBUJA: BURBUJA,
-    estado: estado, paleta: paleta, marco: marco, mapa: mapa, cambios: cambios,
+    estado: estado, paleta: paleta, marco: marco, mapa: mapa, cambios: cambios, terreno: terreno,
     bytes: bytes, valida: valida, hash32: hash32
   });
   if (common) { module.exports = AtlasMapaGlobal; } else { root.AtlasMapaGlobal = AtlasMapaGlobal; }

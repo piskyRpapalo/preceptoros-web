@@ -1,7 +1,7 @@
 {
  "esquema": "atlas.mundo/1",
  "procedencia": "medido en local por atlas/mundo.py; sin rutas, sin nombres",
- "medido_el": "2026-10-28T12:55Z",
+ "medido_el": "2026-10-28T13:21Z",
  "maquina": "Linux x86_64 · Python 3.14.4",
  "pruebas_web": 86,
  "lenguas": 0,
