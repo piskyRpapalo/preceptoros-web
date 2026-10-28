@@ -1,7 +1,7 @@
 # Norte 7 · tarjetas propose-only del mapa (OpenWorld)
 
 Estado: PROPUESTA. Una tarjeta por pieza, cada una con su FIRMO. Ninguna toca `public/`.
-Orden de cola: T1 → T2 → T3 → T4, una a la vez (FIRMO por pieza). Referencia: Bot Crossing
+Orden FIRMADO por el Soberano: T4 (fixture) → T1 → T2 → T3, una a la vez (FIRMO por pieza). Referencia: Bot Crossing
 (Station-Sciences/bot-crossing, MIT) para la **disciplina de medidas** y el patrón de bot-thread;
 **no** su motor (decreto isométrico 2:1 vigente) ni su identidad (fuera de límites).
 

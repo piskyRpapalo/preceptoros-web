@@ -1,49 +1,57 @@
 # T4 · preceptores como personajes bubble en OpenWorld (la joya)
 
-**Slug FIRMO propuesto:** `NORTE7-T4-PRECEPTORES-PERSONAJES`
-**Cierra:** [1] proporción personaje/entorno.
-**Prioridad:** decisión del Soberano sobre T1–T3. Va primero como **fixture** (cuerpo que camina), y T1 se mide sobre él.
+**Slug FIRMO:** `NORTE7-T4-PRECEPTORES-PERSONAJES`
+**Estado:** FIRMADO por el Soberano («firmo. siguiente. vamos all in!»). Orden: T4 primero como fixture, luego T1 → T2 → T3.
+**Dictado de decisiones:** web#387, comentario 6480922688.
+**Cierra:** [1] proporción personaje/entorno (y es el cuerpo que hace probable el keep-out de T1).
 
-## Evidencia medida (origin/main a9a6d31)
+## Dictado (decisiones firmadas)
 
-- No hay personajes en OpenWorld: `git grep -i -E "luna|mesa|claude"` sobre `public/game/global_map.js` y
-  `public/openworld` no devuelve nada. Solo la cabaña y los nodos marcos.
-- Los preceptores existen como nombres de carril en la documentación (Mesa, Luna, Claude; la repo `preceptoros-web-luna`
-  existe en local). Su presencia visual no existe.
-- Estados que pide la tarjeta: la tabla de siete estados ya está registrada (`public/game/tabla_semantica.js`, canon
-  `docs/canon-bubble-math.md` §4). El sello de estado se toma de ahí, sin inventar color.
-- «?» al necesitar HITL: el HITL existe como flujo de firma (buzón, Ley del Buzón), no como señal visual.
-- **Patrón bot-thread de Bot Crossing:** referencia externa **no leída en esta sesión**. Su comportamiento exacto
-  queda NO_DATA hasta leerlo. Se usa solo como técnica; sin copiar identidad, nombres, sprites ni textos.
+- Conteo: carriles vivos. Hoy tres: Mesa, Luna, Claude.
+- El «?» es un estado de la tabla («HITL»), con el mismo pipeline de hash que los demás estados.
+- Posición: la decide el carril, de forma determinista, a partir de su estado registrado. Nunca en vivo.
+- Hexelion es la figura del orquestador, no un canal de control en vivo ni un cuerpo que camina.
 
-## Propuesta (propose-only)
+## Fixture (no es produccion; no se sirve)
 
-Cada preceptor es un **cuerpo bubble** (un marco de ≤1.024 B) que camina el mapa en una rejilla de celdas isométricas
-2:1. Tiene:
+Fichero: `atlas/fixtures/t4_caminante.mjs`. Casos: `atlas/t4_caminante_casos.mjs` (12/12).
 
-- **Sello de estado** visible: uno de los siete estados de la tabla, con su gemelo estático (texto y forma), para que la
-  lectura no dependa del movimiento.
-- **«?»** cuando el preceptor necesita una firma humana (HITL): forma y texto, no solo color.
-- **Caminar** en un tick determinista: la posición es función de (ticks, destino), sin azar.
+- Destino de cada epoca (32 ticks) = hash canon(carril, estado, epoca) modulo la rejilla 7x5. Lee
+  `public/game/bb_canon.js` en solo lectura; no toca `public/`.
+- Un paso por tick, eje x primero. Un carril ocupa su celda; ningun par la comparte.
+- Un carril sin estado registrado queda congelado y se muestra como NO_DATA con causa.
 
-Un preceptor **sin dato** (no hay señal de su estado) se muestra con el sello NO_DATA y su causa, nunca como si estuviera vivo.
+## Evidencia medida (500 ticks, tres carriles, rejilla 7x5)
 
-## Criterio medible (fixture primero)
+| Carril | Celdas distintas visitadas | Mayor tiempo quieto (ticks) |
+|---|---:|---:|
+| Mesa | 26 de 35 | 62 |
+| Luna | 30 de 35 | 61 |
+| Claude | 28 de 35 | 30 |
 
-- Dada una secuencia de ticks, la posición de cada preceptor es idéntica en dos ejecuciones (determinismo).
-- Cada uno de los siete estados tiene forma distinta y texto (prueba sobre la tabla).
-- Un preceptor sin estado medido muestra NO_DATA con causa.
-- Proporción: la altura del cuerpo es menor que la del entorno y mayor que un umbral legible en pantalla (rango medido, no supuesto).
+- Ningun solape en 500 ticks; ningun salto de mas de una celda; nadie sale de la rejilla.
+- Proporcion cuerpo/celda: 24 / 56 = 0.429 (rango legible 0.25–0.5).
+- Hallazgo: los tiempos quietos de 61–62 ticks superan la epoca (32). Es espera detras de otro carril (bloqueo), no un
+  fallo de destino. Pregunta de diseno: ¿se permite desviar o se acepta la espera?
+
+## Vara del ojo que cierra
+
+[1] proporcion personaje/entorno: 0.429 de la celda, medido. Un cuerpo se lee pequeño pero no perdido.
 
 ## Leyes que mantiene
 
-bubble/1 · cuadros ≤1.024 B por cuerpo · determinismo (sin azar, sin reloj de pared: el paso es por tick) · offline ·
-0 peticiones · tres colores · EN 301 549 con cuatro canales (visual, texto, teclado, lector) · reduced-motion (caminar sin
-animación: el cuerpo se mueve a saltos de celda) · SCRUB total: **ningún nombre propio de marca ni de terceros; los
-personajes se llaman por su carril, no por una identidad externa**.
+bubble/1 · cuadros ≤1.024 B por cuerpo · determinismo (sin azar del sistema ni reloj; el azar sale del hash canon) ·
+offline · 0 peticiones · tres colores · EN 301 549 con cuatro canales · reduced-motion (el paso por celdas no exige
+animacion) · SCRUB: los personajes se llaman por su carril, no por una identidad externa · NO_DATA con causa.
 
-## Decisiones que pido al Soberano
+## NO_DATA declarado
 
-1. ¿Cuántos preceptores entran en el mapa a la vez? (proporción y legibilidad).
-2. ¿El «?» es un estado de la tabla o un marcador aparte?
-3. ¿Quién decide la posición de un preceptor: el propio carril, o el orquestador (Hexelion, L7)?
+- Patron bot-thread de Bot Crossing: referencia externa, no leida en esta sesion; sin copiar identidad, nombres, sprites ni textos.
+- Render del cuerpo y del sello: no hay dibujo; el fixture solo calcula posiciones y estados.
+- HITL como estado de la tabla: la fila «HITL» no existe aun en `tabla_semantica.js`. Se anadira como extension aditiva en el
+  pase de cableado, nunca en esta fixture.
+
+## Pendiente para el pase de cableado
+
+- La forma visual del «?» (hoy: forma propuesta `question`, no dibujada).
+- Si el bloqueo de 61–62 ticks se acepta o se resuelve con desvio.
