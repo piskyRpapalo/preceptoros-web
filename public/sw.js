@@ -1,12 +1,13 @@
-const VERSION = 'preceptoros-2026-17-abkg';
+const VERSION = 'preceptoros-2026-17-abkh';
 const SHELL = 'shell-' + VERSION;
 const OBRA = 'obra-' + VERSION;
 
 importScripts('/sw-listas.js?v=' + VERSION);
 
 function rutasDelShell() {
-  // Recencia y canon ingles (2026-10-25): las nueve portadas de lengua son 301 a `/`; el juego vive en /play/.
-  return ['/', '/play/', '/manifest.webmanifest'].concat(HUB);
+  // Recencia y canon ingles (2026-10-25): las nueve portadas de lengua son 301 a `/`.
+  // Sello 2026-10-28 (corte Norte 7, pieza C): /play/ sale del shell; el juego viejo ya no se precachea.
+  return ['/', '/manifest.webmanifest'].concat(HUB);
 }
 
 function sinRedireccion(res) {

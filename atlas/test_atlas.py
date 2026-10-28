@@ -1647,8 +1647,9 @@ class Pestanas(unittest.TestCase):
             with self.subTest(prohibido=prohibido):
                 self.assertNotIn(prohibido, vivo)
         listas = (PUBLICO / "sw.js").read_text(encoding="utf-8") + (PUBLICO / "sw-listas.js").read_text(encoding="utf-8")
-        # D7 (mudanza bloque 2, FIRMO 2026-10-11): el juego ENTRA en el precache: offline tras la primera visita.
-        self.assertIn("/assets/thegame.css", listas, "la hoja de la capa no esta en el precache")
+        # Norte 7 corte C (2026-10-28) supersede D7 (FIRMO 2026-10-11): el juego SALE del precache. web#390 retiro la
+        # puerta (301 /play/ -> /openworld/); el fichero sigue en el arbol hasta el corte D, asi que la guarda es de retirada.
+        self.assertNotIn("/assets/thegame.css", listas, "la hoja del juego retirado sigue en el precache")
         for h in PUBLICO.rglob("*.html"):
             self.assertNotIn("thegame.css", h.read_text(encoding="utf-8"))
 
@@ -1961,25 +1962,17 @@ class PuenteAppLocal(unittest.TestCase):
 
 
 class PrecacheDelJuego(unittest.TestCase):
-    """D7 (mudanza bloque 2, FIRMO 2026-10-11): el juego entra en el precache y se juega SIN RED tras la
-    primera visita. El oraculo: la lista JUEGO de sw-listas.js contiene TODO lo que thegame.js carga (sus
-    listas y lo que pide a demanda), y todo existe. Lo que es MEDIDA (atlas-mundo, atlas-record) sigue
-    fuera: sin red se dice NO_DATA, no una cifra vieja con cara de fresca."""
+    """D7 (mudanza bloque 2, FIRMO 2026-10-11) SUPERSEDIDO por Norte 7 corte C (2026-10-28): el juego ya no entra
+    en el precache. web#390 retiro la puerta (301 /play/ -> /openworld/); thegame.js y su hoja siguen en el arbol
+    hasta el corte D, asi que esta guarda es de RETIRADA: que no se precacheen mientras existen. Lo que es MEDIDA
+    (atlas-mundo, atlas-record) sigue fuera del precache, como antes."""
 
-    def test_juego_contiene_todo_lo_que_la_puerta_carga(self):
-        tg = (PUBLICO / "assets" / "thegame.js").read_text(encoding="utf-8")
-        pide = set()
-        for m in re.finditer(r"\['([^']+\.js)'(?:,\s*'[^']*')?\]", tg):
-            r = m.group(1); pide.add(r if r.startswith("/") else "/assets/" + r)
-        for c in re.findall(r"'([\w.-]+\.css)'", tg):
-            pide.add("/assets/" + c)
-        pide |= {"/assets/atlas-hud.js", "/assets/atlas-opina.js", "/assets/atlas-voz.js", "/game/home.css"}
+    def test_juego_retirado_no_se_precachea(self):
         listas = (PUBLICO / "sw-listas.js").read_text(encoding="utf-8")
-        juego = set(re.findall(r"'(/(?:game|assets)/[\w.-]+)'", listas[listas.index("const JUEGO"):listas.index("];", listas.index("const JUEGO"))]))
-        self.assertEqual(sorted(pide - juego), [], "lo que la puerta carga y el precache no guarda")
-        for r in juego:
+        juego = listas[listas.index("const JUEGO"):listas.index("];", listas.index("const JUEGO"))]
+        for r in ("/assets/thegame.js", "/assets/thegame.css"):
             with self.subTest(ruta=r):
-                self.assertTrue((PUBLICO / r.lstrip("/")).is_file(), f"{r} no existe")
+                self.assertNotIn("'" + r + "'", juego, "el juego retirado sigue en el precache")
 
     def test_lo_que_es_medida_sigue_fuera(self):
         listas = (PUBLICO / "sw-listas.js").read_text(encoding="utf-8")

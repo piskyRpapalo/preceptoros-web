@@ -1394,8 +1394,9 @@ class PWA(unittest.TestCase):
         """
         sw = texto_del_worker()
 
-        # 1 · las piezas de la PORTADA-JUEGO (mudanza b3, 2026-10-11: el hub cayo; la portada es el juego)
-        for pieza in ("/assets/thegame.js", "/assets/eaa-art12-local-first-surface.js", "/assets/auth.js",
+        # 1 · las piezas de la PORTADA-JUEGO (mudanza b3, 2026-10-11: el hub cayo; la portada es el juego).
+        # Corte Norte 7 pieza C (2026-10-28): thegame.js sale del shell con /play/; ya no se cachea.
+        for pieza in ("/assets/eaa-art12-local-first-surface.js", "/assets/auth.js",
                       "/assets/pwa.js", "/game/gdpr-art25-ephemeral-crab.js", "/assets/atlas-motor.js"):
             with self.subTest(pieza=pieza):
                 self.assertIn(f"'{pieza}'", sw,

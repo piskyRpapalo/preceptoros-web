@@ -218,10 +218,11 @@ const rutas = await shell.keys();
 // 221 -> 222 el 2026-10-28 (NORTE 7 PR 1): entra intro.js, el boton Tools y la lectura de release.json, sin red.
 // 222 -> 223 el 2026-10-28 (NORTE 7 PR 2): entra /openworld/ (ficha unica: el script va inline).
 // 223 -> 224 el 2026-10-27 (NORTE 5 [2]): entra face/face_terminal.js, el terminal de chat en los mundos.
-ok('precachea las portadas, su superficie y el juego', rutas.length === 224, rutas.length+' rutas');
-ok('el shell trae el juego (D7): la puerta, el cangrejo y la arena',
-   ['/assets/thegame.js', '/game/gdpr-art25-ephemeral-crab.js', '/game/ui-arena.js', '/assets/atlas-motor.js'].every(r => rutas.includes(r)));
-ok('el shell trae la puerta y el juego', ['/', '/play/'].every(r => rutas.includes(r)));
+// 224 -> 221 el 2026-10-28 (Norte 7 pieza C): salen /play/, assets/thegame.js y assets/thegame.css (theGame sale del shell).
+ok('precachea las portadas, su superficie y el juego', rutas.length === 221, rutas.length+' rutas');
+ok('el shell trae el juego sin theGame (corte Norte 7 C): el cangrejo y la arena',
+   ['/game/gdpr-art25-ephemeral-crab.js', '/game/ui-arena.js', '/assets/atlas-motor.js'].every(r => rutas.includes(r)));
+ok('el shell trae la puerta y NO trae /play/ (corte Norte 7 C)', rutas.includes('/') && !rutas.includes('/play/') && !rutas.includes('/assets/thegame.js'));
 ok('el shell YA NO trae portadas de lengua (301 a `/`)', !rutas.some(r => /^\/(ar|de|el|en|es|fr|it|pt|ru)\/$/.test(r)));
 ok('el shell trae la identidad y el canal', ['/assets/auth.js', '/assets/enviar.js', '/assets/page-comment.js', '/assets/pwa.js'].every(r => rutas.includes(r)));
 ok('el shell YA NO trae nada del hub', !rutas.some(r => /community|benchmark|playground|onboarding|profile|instalar|hub\.json|hitos|chat|caras\//.test(r)));
@@ -269,9 +270,9 @@ ok('atlas-en.json SI se sirve del cache (es contenido del juego)',
 // regla 3: navegacion cacheada, comprobada SIN RED para que no haya duda de
 // que sale del shell y no de la red.
 entorno.SIN_RED = true;
-const r1 = await pedir(ORIGEN+'/play/','navigate');
+const r1 = await pedir(ORIGEN+'/openworld/','navigate');
 ok('navegacion sale del shell aun sin red',
-   r1 !== 'PASA_DE_LARGO' && r1.status === 200 && String(r1.cuerpo).includes('/play/'),
+   r1 !== 'PASA_DE_LARGO' && r1.status === 200 && String(r1.cuerpo).includes('/openworld/'),
    'status '+(r1 && r1.status));
 const r2 = await pedir(ORIGEN+'/fr/nueva.html','navigate');
 const txt = await r2.text();

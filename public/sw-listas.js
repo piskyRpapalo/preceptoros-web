@@ -5,7 +5,7 @@ const PAGINAS = [''];
 const JUEGO = [
   '/creation.html',
   '/assets/front_door_view.js', '/assets/front_door.css', '/game/front_door.js',
-  '/assets/thegame.js', '/assets/thegame.css', '/assets/tubo.css', '/assets/atlas.css',
+  '/assets/tubo.css', '/assets/atlas.css',
   '/assets/atlas-arte.js', '/assets/atlas-coord.js', '/assets/atlas-carta.js', '/assets/atlas-ondas.js',
   '/assets/atlas-obra.js', '/assets/atlas-gesto.js', '/assets/atlas-dialogo.js',
   '/assets/atlas-motor.js', '/assets/atlas-piso.js', '/assets/atlas-piloto.js', '/assets/atlas-partida.js',
