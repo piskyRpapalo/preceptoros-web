@@ -2541,12 +2541,12 @@ class OpenWorld(unittest.TestCase):
     def test_la_cabana_siempre_y_los_nodos_solo_si_viven(self):
         # El mapa (NODO-MAPA, ODD isometric-colony) nombra tres filas en el nucleo puro: la cabana siempre, y
         # Atlantis y the Risen solo si el estado los lista como vivos. La ficha pinta lo que el nucleo decide.
-        nucleo = (PUBLICO / "game" / "mapa_global.js").read_text(encoding="utf-8")
+        nucleo = (PUBLICO / "game" / "global_map.js").read_text(encoding="utf-8")
         self.assertIn("nombre: 'Tutorial cabin'", nucleo)
         self.assertIn("siempre: true", nucleo)
         self.assertIn("nombre: 'Atlantis · Node Hexelion'", nucleo)
         self.assertIn("nombre: 'the Risen'", nucleo)
-        self.assertIn("nodo.siempre || vivos.some(", nucleo)
+        self.assertIn("node.siempre || vivos.some(", nucleo)
         self.assertIn("M.estado(entrada)", self.t)
         self.assertIn("return n && (n.id === 'atlantis' || n.id === 'risen');", self.t)
 

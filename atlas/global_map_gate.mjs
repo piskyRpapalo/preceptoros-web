@@ -2,7 +2,7 @@
 // bitmap gate in headless Chrome, once clean (n=2 byte-identical) and twice sabotaged. Each sabotage must go red:
 //   jitter  · a line width moved with no state change → the hash detector must report n2 = false
 //   clave   · a visible node without its lexicon key   → the page must refuse it as orphan_visual_node
-// Usage: node atlas/mapa_global_gate.mjs   (env CHROME=/path/to/chrome to choose the browser)
+// Usage: node atlas/global_map_gate.mjs   (env CHROME=/path/to/chrome to choose the browser)
 import { spawnSync, execFile } from 'node:child_process';
 import { createServer } from 'node:http';
 import { readFile, writeFile } from 'node:fs/promises';
@@ -36,7 +36,7 @@ function volcado(url) {
   });
 }
 async function recibo(modo) {
-  const url = base + '/atlas/mapa_global_visual.html' + (modo === 'none' ? '' : '?sabotaje=' + modo);
+  const url = base + '/atlas/global_map_visual.html' + (modo === 'none' ? '' : '?sabotaje=' + modo);
   const out = await volcado(url);
   const m = /<pre id="recibo"[^>]*>([\s\S]*?)<\/pre>/.exec(out);
   assert.ok(m, modo + ': no receipt from the browser (is ' + CHROME + ' installed?)');
@@ -50,14 +50,14 @@ const ok = (cond, msg) => { assert.ok(cond, msg); pasos++; console.log('ok · ' 
 
 try {
   // 1 · pure cases (node): liveness, orphan refusal, frame size, palette from t, n=2, detector, grep.
-  const casos = spawnSync(process.execPath, [join(RAIZ, 'atlas/mapa_global_casos.mjs')], { encoding: 'utf8' });
+  const casos = spawnSync(process.execPath, [join(RAIZ, 'atlas/global_map_casos.mjs')], { encoding: 'utf8' });
   assert.equal(casos.status, 0, 'pure cases failed:\n' + casos.stdout + casos.stderr);
   ok(true, casos.stdout.trim());
 
   // 2 · bitmap, clean: n=2 identical pixels in every scene, no errors.
   const limpio = await recibo('none');
   ok(!limpio.error && limpio.n2 === true, 'clean run: two runs, same pixels (n=2)');
-  ok(limpio.escenas.length === 8 && limpio.escenas.every((e) => e.igual), 'all 8 scenes identical across the two runs');
+  ok(limpio.scenes.length === 8 && limpio.scenes.every((e) => e.igual), 'all 8 scenes identical across the two runs');
   ok(Array.isArray(limpio.errores) && limpio.errores.length === 0, 'clean run: no refused node');
 
   // 3 · sabotage jitter: the detector must go red (n2 false, every scene reported).
@@ -68,9 +68,9 @@ try {
   const clave = await recibo('clave');
   ok(clave.error && /orphan_visual_node/.test(clave.error), 'sabotage clave goes red: ' + (clave.error || 'no error'));
 
-  await writeFile(join(RAIZ, 'atlas/mapa_global_recibos.json'),
+  await writeFile(join(RAIZ, 'atlas/global_map_recibos.json'),
     JSON.stringify({ gate: 'mapa-global', pasos_casos: 'see stdout', limpio, jitter, clave }, null, 1) + '\n');
-  console.log('mapa global gate: ' + pasos + ' checks ok · receipts in atlas/mapa_global_recibos.json');
+  console.log('mapa global gate: ' + pasos + ' checks ok · receipts in atlas/global_map_recibos.json');
 } finally {
   servidor.close();
 }

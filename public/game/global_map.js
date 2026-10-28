@@ -11,14 +11,14 @@
   var LIMITE_BYTES = 1024;     // a frame is a syllable (docs/bubble-language.md §1)
   var ANCHO = 320, ALTO = 96;  // the box one node's bubble is drawn in
   var CELDA = 56;              // fixed axonometric cell width: the angle never changes
-  var CICLO = 240;             // ticks in one full day and night
+  var CYCLE = 240;             // ticks in one full day and night
   var ESCALA = 1.5;            // the scene's spacing, in reference units (480 x 240)
   var BURBUJA = 0.6;           // one bubble's scale in the reference units: the same in the door and in the check page
   var RECURSO = 'resource.mana';
 
   // Lexicon keys: a visible node without one is an orphan_visual_node, and it is refused.
   // The three nodes are the first three named in the mandate; their names are English, never an iron brand.
-  var NODOS = [
+  var NODES = [
     { id: 'cabin',    clave: 'node.cabin',    nombre: 'Tutorial cabin',          reco: [0, 0],  siempre: true },
     { id: 'atlantis', clave: 'node.atlantis', nombre: 'Atlantis · Node Hexelion', reco: [-2, 1], siempre: false },
     { id: 'risen',    clave: 'node.risen',    nombre: 'the Risen',                reco: [2, -1], siempre: false }
@@ -32,16 +32,16 @@
     HEX.push([Math.round(160 + 60 * Math.cos(i * Math.PI / 3)), Math.round(48 + 40 * Math.sin(i * Math.PI / 3))]);
   }
 
-  function claveHuerfana(nodo) { return nodo.clave === undefined || nodo.clave === '' || nodo.clave === null; }
+  function claveHuerfana(node) { return node.clave === undefined || node.clave === '' || node.clave === null; }
 
   // A visible node: the cabin always, the others only when listed as alive. Unknown ids are not drawn.
   // The mana of each node is MEDIDO only when the entry carries a whole number; otherwise NO_DATA with its cause.
-  function mana(entrada, nodo) {
+  function mana(entrada, node) {
     var m = entrada && entrada.mana;
     if (m && typeof m.valor === 'number' && Number.isInteger(m.valor) && m.valor >= 0 && m.valor <= 100) {
       return { estado: 'MEDIDO', valor: m.valor };
     }
-    return { estado: 'NO_DATA', causa: nodo.id === 'cabin' ? 'no mana measurement reported for the tutorial cabin yet' : 'no mana measurement reported for this node' };
+    return { estado: 'NO_DATA', causa: node.id === 'cabin' ? 'no mana measurement reported for the tutorial cabin yet' : 'no mana measurement reported for this node' };
   }
 
   // estado(entrada) → the visible rows, in fixed order. entrada = { t, cabin?, nodes: [{ id, mana? }] }.
@@ -49,12 +49,12 @@
     var e = entrada || {};
     var vivos = Array.isArray(e.nodes) ? e.nodes : [];
     var rows = [];
-    NODOS.forEach(function (nodo) {
-      var vivo = nodo.siempre || vivos.some(function (n) { return n && n.id === nodo.id; });
+    NODES.forEach(function (node) {
+      var vivo = node.siempre || vivos.some(function (n) { return n && n.id === node.id; });
       if (!vivo) { return; }
-      if (claveHuerfana(nodo)) { throw new Error('orphan_visual_node: ' + nodo.id + ' has no lexicon key'); }
-      var entradaNodo = nodo.id === 'cabin' ? (e.cabin || {}) : (vivos.find(function (n) { return n && n.id === nodo.id; }) || {});
-      rows.push({ id: nodo.id, clave: nodo.clave, nombre: nodo.nombre, reco: nodo.reco, mana: mana(entradaNodo, nodo) });
+      if (claveHuerfana(node)) { throw new Error('orphan_visual_node: ' + node.id + ' has no lexicon key'); }
+      var nodeEntry = node.id === 'cabin' ? (e.cabin || {}) : (vivos.find(function (n) { return n && n.id === node.id; }) || {});
+      rows.push({ id: node.id, clave: node.clave, nombre: node.nombre, reco: node.reco, mana: mana(nodeEntry, node) });
     });
     return Object.freeze(rows.map(Object.freeze));
   }
@@ -66,15 +66,15 @@
   function mezcla(a, b, k) { return a.map(function (v, j) { return Math.round(v + (b[j] - v) * k / 256); }); }
   function paleta(t) {
     var n = Number.isInteger(t) ? t : 0;
-    var f = ((n % CICLO) + CICLO) % CICLO;
-    var tri = f < CICLO / 2 ? f : CICLO - f;          // 0 at midnight, CICLO/2 at noon
-    var k = Math.round(tri * 256 / (CICLO / 2));      // 0..256
+    var f = ((n % CYCLE) + CYCLE) % CYCLE;
+    var tri = f < CYCLE / 2 ? f : CYCLE - f;          // 0 at midnight, CYCLE/2 at noon
+    var k = Math.round(tri * 256 / (CYCLE / 2));      // 0..256
     return { t: n, dia: k, cielo: hex(mezcla(NOCHE.cielo, DIA.cielo, k)), tinta: hex(mezcla(NOCHE.tinta, DIA.tinta, k)) };
   }
 
   // The base sound of every bubble is the tutorial sea's own wave (the frame's design data, as the door drew it before).
   // A measured mana adds a second wave, from its value; NO_DATA adds nothing and says so in the sentence.
-  var MAR = [[1, 40, 10, 0], [3, 20, 5, 4]];
+  var SEA = [[1, 40, 10, 0], [3, 20, 5, 4]];
   function ondas(m) {
     if (m.estado !== 'MEDIDO') { return []; }
     return [[1, m.valor, 10, 0], [3, Math.floor(m.valor / 2), 5, 4]];
@@ -85,7 +85,7 @@
     var items = [
       { o: 'ribbon', pts: HEX, closed: true, f: 'paper', s: 'ink', lw: 3 },
       { o: 'letters', x: 160, y: 28, tx: row.nombre, sz: 16, f: 'paper', s: 'ink', sh: [1.5, 1.5, 'cyan'] },
-      { o: 'wave', x: 250, y: 72, sc: 0.35, h: MAR, f: 'paper', s: 'ink' }
+      { o: 'wave', x: 250, y: 72, sc: 0.35, h: SEA, f: 'paper', s: 'ink' }
     ];
     var h = ondas(row.mana);
     if (h.length) { items.push({ o: 'wave', x: 160, y: 70, sc: 0.4, h: h, f: 'paper', s: 'ink' }); }
@@ -116,11 +116,11 @@
   function mapa(entrada) {
     var rows = estado(entrada);
     var t = entrada && Number.isInteger(entrada.t) ? entrada.t : 0;
-    var base = Iso.proyecta(NODOS[0].reco[0], NODOS[0].reco[1], CELDA);
+    var base = Iso.proyecta(NODES[0].reco[0], NODES[0].reco[1], CELDA);
     return Object.freeze({
       paleta: paleta(t),
       cielo: cielo(paleta(t)),
-      nodos: rows.map(function (row) {
+      nodes: rows.map(function (row) {
         var p = Iso.proyecta(row.reco[0], row.reco[1], CELDA);
         return Object.freeze({ id: row.id, x: (p.x - base.x) * ESCALA, y: (p.y - base.y) * ESCALA, frame: marco(row, t) });
       })
@@ -160,7 +160,7 @@
   }
 
   var AtlasMapaGlobal = Object.freeze({
-    NODOS: NODOS, CICLO: CICLO, ANCHO: ANCHO, ALTO: ALTO, LIMITE_BYTES: LIMITE_BYTES, RECURSO: RECURSO,
+    NODES: NODES, CYCLE: CYCLE, ANCHO: ANCHO, ALTO: ALTO, LIMITE_BYTES: LIMITE_BYTES, RECURSO: RECURSO,
     ESCALA: ESCALA, BURBUJA: BURBUJA,
     estado: estado, paleta: paleta, marco: marco, mapa: mapa, cambios: cambios,
     bytes: bytes, valida: valida, hash32: hash32

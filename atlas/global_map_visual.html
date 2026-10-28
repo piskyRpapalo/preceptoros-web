@@ -34,7 +34,7 @@
 <script src="../public/game/bubble_language.js"></script>
 <script src="../public/game/bubble_letters.js"></script>
 <script src="../public/game/isometric_floor_projection.js"></script>
-<script src="../public/game/mapa_global.js"></script>
+<script src="../public/game/global_map.js"></script>
 <script>
 (function (raiz) {
   'use strict';
@@ -59,7 +59,7 @@
     g.setTransform(1, 0, 0, 1, 0, 0);
     g.fillStyle = sc.paleta.cielo; g.fillRect(0, 0, canvas.width, canvas.height);
     var cx = canvas.width / 2, cy = canvas.height / 2 + 14;
-    sc.nodos.forEach(function (nd) {
+    sc.nodes.forEach(function (nd) {
       var fotograma = nd.frame;
       if (desviar) { fotograma.atoms[0].i[0].lw = 5; }          // sabotage: a jitter with no state change
       g.save();
@@ -79,18 +79,18 @@
     fig.appendChild(canvas); fig.appendChild(cap);
     fila.appendChild(fig);
     var sc = dibuja(canvas, entrada, t, false);
-    cap.textContent = titulo + ' · t=' + t + ' · ' + sc.nodos.map(function (x) { return x.id; }).join('+') + ' · ' + sc.paleta.cielo;
+    cap.textContent = titulo + ' · t=' + t + ' · ' + sc.nodes.map(function (x) { return x.id; }).join('+') + ' · ' + sc.paleta.cielo;
     return canvas;
   }
 
   function filas() {
-    var resultados = { escenas: [], n2: true, sabotaje: sabotaje || 'none', errores: [] };
+    var resultados = { scenes: [], n2: true, sabotaje: sabotaje || 'none', errores: [] };
     var filaA = document.getElementById('filaA'), filaB = document.getElementById('filaB');
-    var escenas = [];
+    var scenes = [];
     function fijaEscena(nombre, fila, entrada) {
       TICKS.forEach(function (t) {
         var canvas = celda(fila, nombre, entrada, t);
-        escenas.push({ escena: nombre, t: t, canvas: canvas, entrada: entrada });
+        scenes.push({ scene: nombre, t: t, canvas: canvas, entrada: entrada });
       });
     }
     return fetch('../public/openworld/estado.json', { cache: 'no-cache' })
@@ -99,11 +99,11 @@
         fijaEscena('A', filaA, vivo);
         fijaEscena('B', filaB, FIXTURE);
         // n=2: the same vector, a second run, the same pixels. The sabotage flag alters the second run on purpose.
-        var primera = escenas.map(function (e) { return hashCanvas(e.canvas); });
-        escenas.forEach(function (e) { dibuja(e.canvas, e.entrada, e.t, sabotaje === 'jitter'); });
-        var segunda = escenas.map(function (e) { return hashCanvas(e.canvas); });
-        escenas.forEach(function (e, i) {
-          resultados.escenas.push({ escena: e.escena, t: e.t, hash: primera[i], hash2: segunda[i], igual: primera[i] === segunda[i] });
+        var primera = scenes.map(function (e) { return hashCanvas(e.canvas); });
+        scenes.forEach(function (e) { dibuja(e.canvas, e.entrada, e.t, sabotaje === 'jitter'); });
+        var segunda = scenes.map(function (e) { return hashCanvas(e.canvas); });
+        scenes.forEach(function (e, i) {
+          resultados.scenes.push({ scene: e.scene, t: e.t, hash: primera[i], hash2: segunda[i], igual: primera[i] === segunda[i] });
           if (primera[i] !== segunda[i]) { resultados.n2 = false; }
         });
         resultados.recibo_estado_vivo = vivo.nodes || [];
@@ -116,7 +116,7 @@
 
   // sabotage: a sprite without its lexicon key must go red, as orphan_visual_node.
   if (sabotaje === 'clave') {
-    M.NODOS[1].clave = '';
+    M.NODES[1].clave = '';
   }
   filas().then(function (r) {
     if (sabotaje === 'clave') { r.errores.push('expected orphan_visual_node'); }

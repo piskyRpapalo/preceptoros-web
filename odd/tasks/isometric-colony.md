@@ -88,11 +88,11 @@ Fidelity to the eyes of the carbon and to the understanding of the orchestrators
   - Live state: `public/openworld/estado.json` lists no nodes, so the live map shows the cabin alone. The three-node picture is a labelled SYNTHETIC fixture; it proves the render path and is not a measurement of a live node.
   - The door fetched `/openworld/state.json`, which does not exist on disk. It now fetches `/openworld/estado.json`, the file that is there. Additive correction, declared.
   - The cycle: `t` advances one tick per second in the door, and the palette reads `t` only (never a clock). Reduced motion: no cycle.
-  - Tests moved with the law: `test_web` (OpenWorld) now asserts the three rows in `mapa_global.js`; `test_atlas` declares `mapa_global.js` as on-demand, outside the precache, and the door's isometric dependency. Same law, new location.
+  - Tests moved with the law: `test_web` (OpenWorld) now asserts the three rows in `global_map.js`; `test_atlas` declares `global_map.js` as on-demand, outside the precache, and the door's isometric dependency. Same law, new location.
   - Seal: `public/sw.js` VERSION `preceptoros-2026-17-abke` → `abkf`, huella re-stamped by `bin/sellar.py`, counters re-measured by `contadores.py`.
 - Verification evidence (measured 2026-10-28):
-  - `atlas/mapa_global_casos.mjs` 328/328 (pure). Sabotage inside it: an orphan key throws `orphan_visual_node`; a poisoned `Date` changes no byte; a jittered frame moves its hash; a `Math.random` in a synthetic file is caught by the grep gate.
-  - `atlas/mapa_global_gate.mjs` (headless Chrome, `atlas/mapa_global_visual.html`): clean run n=2 identical on 8 scenes (2 rows × 4 ticks 0/30/90/120); sabotage `jitter` → n2 false; sabotage `clave` → refused as `orphan_visual_node`. Receipts: `atlas/mapa_global_recibos.json`. Picture: `atlas/mapa_global_contact_sheet.png`.
+  - `atlas/global_map_casos.mjs` 328/328 (pure). Sabotage inside it: an orphan key throws `orphan_visual_node`; a poisoned `Date` changes no byte; a jittered frame moves its hash; a `Math.random` in a synthetic file is caught by the grep gate.
+  - `atlas/global_map_gate.mjs` (headless Chrome, `atlas/global_map_visual.html`): clean run n=2 identical on 8 scenes (2 rows × 4 ticks 0/30/90/120); sabotage `jitter` → n2 false; sabotage `clave` → refused as `orphan_visual_node`. Receipts: `atlas/global_map_recibos.json`. Picture: `atlas/global_map_contact_sheet.png`.
   - Frame sizes: largest node frame 699 B over all 240 ticks with measured mana 100/0; sky frame 262 B. Law: under 1,024 B.
   - Palette: t=0 `#17131f` (night) · t=120 `#f4ebd0` (day) · period 240 ticks, integer lerp.
   - `test_web.py` 86 tests OK (1 skipped, pre-existing) · `test_atlas.py` 190 tests OK.
@@ -103,4 +103,4 @@ Fidelity to the eyes of the carbon and to the understanding of the orchestrators
 
 ## Next step
 
-The Sovereign's piece FIRMO on the exact head of the global-map PR, after he sees `atlas/mapa_global_contact_sheet.png`. That FIRMO releases IC4 (the first buildings). Codex's IC1/IC2 later replace the stand-in projection.
+The Sovereign's piece FIRMO on the exact head of the global-map PR, after he sees `atlas/global_map_contact_sheet.png`. That FIRMO releases IC4 (the first buildings). Codex's IC1/IC2 later replace the stand-in projection.

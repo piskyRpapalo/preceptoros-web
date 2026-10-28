@@ -76,12 +76,12 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
 <script src="/game/bubble_language.js"></script>
 <script src="/game/bubble_letters.js"></script>
 <script src="/game/isometric_floor_projection.js"></script>
-<script src="/game/mapa_global.js"></script>
+<script src="/game/global_map.js"></script>
 <script src="/assets/pwa.js"></script>
 <script>
 // OpenWorld (NORTE 7 · PR 2 · global map, ODD isometric-colony). Same-origin only: the state file is the one thing read
 // from the server. Default: zero nodes; the cabin is always here. A node that is not listed as alive does not exist.
-// The map is one more render of the state (mapa_global.js). The cycle tick t advances by a fixed step, and the palette
+// The map is one more render of the state (global_map.js). The cycle tick t advances by a fixed step, and the palette
 // reads t alone: never a wall clock. With reduced motion there is no cycle: the sky stays where the state puts it.
 (function (raiz) {
   'use strict';
@@ -107,10 +107,10 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
     var g = surface.getContext('2d');
     g.setTransform(dpr, 0, 0, dpr, 0, 0);
     var fit = Math.min(width / 480, height / 240);
-    var escena = M.mapa(entrada);
-    g.fillStyle = escena.paleta.cielo; g.fillRect(0, 0, width, height);
+    var scene = M.mapa(entrada);
+    g.fillStyle = scene.paleta.cielo; g.fillRect(0, 0, width, height);
     var cx = width / 2, cy = height / 2 + 14 * fit;
-    escena.nodos.forEach(function (nd) {
+    scene.nodes.forEach(function (nd) {
       g.save();
       g.translate(cx + nd.x * fit - M.ANCHO * M.BURBUJA * fit / 2, cy + nd.y * fit - M.ALTO * M.BURBUJA * fit / 2);
       g.scale(M.BURBUJA * fit, M.BURBUJA * fit);
@@ -149,7 +149,7 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
   }
 
   // The cycle: a fixed step of t per second, unless reduced motion is on. The palette is a function of t alone.
-  function ciclo() { if (quieto) { return; } entrada.t += 1; draw(); }
+  function cycle() { if (quieto) { return; } entrada.t += 1; draw(); }
 
   // The sound is the selected frame's own (docs/bubble-language.md, sound and h). An AudioContext is made only on the click.
   var listen = doc.getElementById('listen'), listenState = doc.getElementById('listen-state');
@@ -165,9 +165,9 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
   if (listen) {
     listen.addEventListener('click', function () {
       loadSound(function (S) {
-        var escena = M.mapa(entrada);
-        var nodo = escena.nodos.find(function (nd) { return nd.id === selected; }) || escena.nodos[0];
-        var result = S.sonify(nodo.frame);
+        var scene = M.mapa(entrada);
+        var node = scene.nodes.find(function (nd) { return nd.id === selected; }) || scene.nodes[0];
+        var result = S.sonify(node.frame);
         if (!result.ok) { listenState.textContent = /^NO_DATA/.test(result.cause) ? result.cause : 'NO_DATA: ' + result.cause; return; }
         var Ctx = raiz.AudioContext || raiz.webkitAudioContext;
         if (!Ctx) { listenState.textContent = 'NO_DATA: this browser has no audio output'; return; }
@@ -214,7 +214,7 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
   }
   render();
   raiz.addEventListener('resize', draw);
-  if (!quieto) { raiz.setInterval(ciclo, 1000); }
+  if (!quieto) { raiz.setInterval(cycle, 1000); }
   if (raiz.fetch) {
     raiz.fetch('/openworld/estado.json', { cache: 'no-cache' })
       .then(function (r) { return r.ok ? r.json() : null; })

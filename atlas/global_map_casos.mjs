@@ -1,12 +1,12 @@
 // Gate of the global map (ODD isometric-colony · the first three nodes). Pure cases in node; the bitmap gate lives in
-// atlas/mapa_global_visual.html (headless Chrome). Each sabotage must be able to go red: a check that cannot fail is
+// atlas/global_map_visual.html (headless Chrome). Each sabotage must be able to go red: a check that cannot fail is
 // not a gate.
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 const require = createRequire(import.meta.url);
-const M = require('../public/game/mapa_global.js');
+const M = require('../public/game/global_map.js');
 const RAIZ = fileURLToPath(new URL('..', import.meta.url));
 const enDos = (x) => JSON.stringify(x);
 let n = 0;
@@ -20,10 +20,10 @@ ok(tres.map((r) => r.id).join() === 'cabin,atlantis,risen', 'the three nodes in 
 ok(M.estado({ nodes: [{ id: 'atlantis' }] }).length === 2, 'a node that is not listed does not exist on the map');
 
 // 2 · orphan_visual_node: a visible node without a lexicon key is refused (sabotage: clear the key, then restore).
-const clave = M.NODOS[1].clave;
-M.NODOS[1].clave = '';
+const clave = M.NODES[1].clave;
+M.NODES[1].clave = '';
 assert.throws(() => M.estado({ nodes: [{ id: 'atlantis' }] }), /orphan_visual_node: atlantis/);
-M.NODOS[1].clave = clave;
+M.NODES[1].clave = clave;
 ok(M.estado({ nodes: [{ id: 'atlantis' }] }).length === 2, 'key restored, the node is drawn again');
 
 // 3 · every frame under 1,024 bytes and its sound declared, measured/NO_DATA mana, many ticks.
@@ -31,9 +31,9 @@ for (const t of [0, 1, 37, 120, 239, 240, 1000, -5]) {
   for (const mana of [undefined, { valor: 0 }, { valor: 100 }, { valor: 42.5 }]) {
     const sc = M.mapa({ t, cabin: { mana }, nodes: [{ id: 'atlantis' }, { id: 'risen' }] });
     ok(M.bytes(sc.cielo) < 1024 && M.valida(sc.cielo).length === 0, 'sky frame under 1,024 bytes at t=' + t);
-    for (const nodo of sc.nodos) {
-      ok(M.bytes(nodo.frame) < 1024, nodo.id + ' frame under 1,024 bytes at t=' + t);
-      ok(M.valida(nodo.frame).length === 0, nodo.id + ' frame obeys the law at t=' + t);
+    for (const node of sc.nodes) {
+      ok(M.bytes(node.frame) < 1024, node.id + ' frame under 1,024 bytes at t=' + t);
+      ok(M.valida(node.frame).length === 0, node.id + ' frame obeys the law at t=' + t);
     }
   }
 }
@@ -49,9 +49,9 @@ ok(/mana NO_DATA \(no mana measurement/.test(sinDato.atoms[0].r), 'no measure: t
 
 // 5 · palette is a function of the tick alone: periodic, integer, night at midnight, day at noon.
 for (let t = -300; t < 300; t += 7) {
-  ok(M.paleta(t).cielo === M.paleta(t + M.CICLO).cielo && M.paleta(t).tinta === M.paleta(t + M.CICLO).tinta, 'palette periodic at t=' + t);
+  ok(M.paleta(t).cielo === M.paleta(t + M.CYCLE).cielo && M.paleta(t).tinta === M.paleta(t + M.CYCLE).tinta, 'palette periodic at t=' + t);
 }
-ok(M.paleta(0).dia === 0 && M.paleta(M.CICLO / 2).dia === 256, 'midnight is night (0), noon is day (256)');
+ok(M.paleta(0).dia === 0 && M.paleta(M.CYCLE / 2).dia === 256, 'midnight is night (0), noon is day (256)');
 ok(M.paleta(0).cielo === '#17131f', 'night sky is the house theme colour');
 
 // 6 · sabotage: a wall clock in the palette would change its output. Poison Date and prove the output does not move.
@@ -71,10 +71,10 @@ ok(corrida1 === corrida2, 'n=2 byte-identical scenes');
 ok(M.hash32(corrida1) === M.hash32(corrida2), 'n=2 identical hash');
 
 // 8 · the hash detector goes red when a bitmap hash changes without a state change (sabotage: jitter one frame).
-const receta = (escena) => escena.nodos.map((x) => M.hash32(enDos(x.frame))).join(':');
+const receta = (scene) => scene.nodes.map((x) => M.hash32(enDos(x.frame))).join(':');
 const base = receta(M.mapa(vector));
 const jitter = M.mapa(vector);
-jitter.nodos[0].frame.atoms[0].i[0].lw = 3.0001;
+jitter.nodes[0].frame.atoms[0].i[0].lw = 3.0001;
 ok(receta(jitter) !== base, 'a changed frame moves the hash (the detector can go red)');
 ok(receta(M.mapa(vector)) === base, 'no state change, no hash change');
 
@@ -87,7 +87,7 @@ ok(sale.length === 1 && /leaves/.test(sale[0].change[0]), 'a fallen node leaves 
 // 10 · grep gate: the render path reads no clock, no random, no network. Sabotage: a synthetic file must go red.
 const PROHIBIDO = /Math\.random|Date\.now|new Date\(|performance\.now|\bfetch\(|XMLHttpRequest/;
 const sinProhibidos = (texto) => !PROHIBIDO.test(texto);
-ok(sinProhibidos(readFileSync(RAIZ + 'public/game/mapa_global.js', 'utf8')), 'mapa_global.js has no clock, random or network');
+ok(sinProhibidos(readFileSync(RAIZ + 'public/game/global_map.js', 'utf8')), 'global_map.js has no clock, random or network');
 ok(!sinProhibidos('const x = Math.random();'), 'sabotage: a Math.random in the render path is caught');
 
 console.log('mapa global cases: ' + n + '/' + n);
