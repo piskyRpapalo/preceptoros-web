@@ -1,0 +1,17 @@
+{
+  "esquema": "counters.json (canon METRICAS_NORMA: MEDIDO con como, NO_DATA con causa)",
+  "lote": "bb-lote1 (2026-10-28): primitivas deterministas + forma de Fourier",
+  "fecha": "2026-10-28",
+  "base": "origin/main 2270db3",
+  "version_sw": "preceptoros-2026-17-abkh (sin cambio: ningun fichero nuevo esta en las listas de precache)",
+  "metricas": [
+    {"clave": "bb_lote1_casos", "estado": "MEDIDO", "valor": 15, "unidad": "casos", "como": "node atlas/bb_lote1_casos.mjs: 15 de 15 OK (referencias BigInt independientes para xorshift32 y hash espacial)"},
+    {"clave": "bb_det_bytes", "estado": "MEDIDO", "valor": 1874, "unidad": "bytes", "como": "wc -c public/game/bb_det.js (techo 16384)"},
+    {"clave": "bb_forma_bytes", "estado": "MEDIDO", "valor": 1725, "unidad": "bytes", "como": "wc -c public/game/bb_forma.js (techo 16384)"},
+    {"clave": "bb_math_random", "estado": "MEDIDO", "valor": 0, "unidad": "usos", "como": "grep de Math.random, Date.now y performance.now en el lote: ninguno (caso estatico del lote)"},
+    {"clave": "bb_color_fuera_de_tabla", "estado": "MEDIDO", "valor": 0, "unidad": "colores", "como": "colorDe('INVENTADO') devuelve null; el color solo sale de tabla_semantica.js"},
+    {"clave": "bb_pixeles_renderizados", "estado": "NO_DATA", "valor": null, "unidad": "pixeles", "causa": "lote 1 no dibuja nada: son primitivas y una forma evaluada. La captura y el golden llegan con la primera escena (F2.x)."},
+    {"clave": "bb_hash_draw_list_escenas", "estado": "NO_DATA", "valor": null, "unidad": "hash", "causa": "anti-slop por hash de lista de dibujo exige dos escenas renderizadas; el lote 1 no tiene ninguna."},
+    {"clave": "bb_coste_frame_ms", "estado": "NO_DATA", "valor": null, "unidad": "ms", "causa": "sin bucle de frame en el lote 1; el presupuesto de un solo drawImage por frame se mide con la primera escena."}
+  ]
+}
