@@ -110,7 +110,7 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
     var scene = M.mapa(entrada);
     g.fillStyle = scene.paleta.cielo; g.fillRect(0, 0, width, height);
     var cx = width / 2, cy = height / 2 + 14 * fit;
-    scene.nodes.forEach(function (nd) {
+    scene.terrain.concat(scene.nodes).forEach(function (nd) {
       g.save();
       g.translate(cx + nd.x * fit - M.ANCHO * M.BURBUJA * fit / 2, cy + nd.y * fit - M.ALTO * M.BURBUJA * fit / 2);
       g.scale(M.BURBUJA * fit, M.BURBUJA * fit);

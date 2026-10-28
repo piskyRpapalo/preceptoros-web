@@ -59,7 +59,7 @@
     g.setTransform(1, 0, 0, 1, 0, 0);
     g.fillStyle = sc.paleta.cielo; g.fillRect(0, 0, canvas.width, canvas.height);
     var cx = canvas.width / 2, cy = canvas.height / 2 + 14;
-    sc.nodes.forEach(function (nd) {
+    sc.terrain.concat(sc.nodes).forEach(function (nd) {
       var fotograma = nd.frame;
       if (desviar) { fotograma.atoms[0].i[0].lw = 5; }          // sabotage: a jitter with no state change
       g.save();

@@ -47,6 +47,13 @@ const sinDato = M.marco(M.estado({ nodes: [] })[0], 0);
 ok(sinDato.sound === 'ok' && waves(sinDato) === 1, 'no measure: the sea wave still sounds, and no mana wave is invented');
 ok(/mana NO_DATA \(no mana measurement/.test(sinDato.atoms[0].r), 'no measure: the sentence says NO_DATA with its cause');
 
+// 4b · terrain field: 19 hex cells, every frame under 1,024 bytes, the same bytes on every call, no node key.
+const campo = M.terreno({ nodes: [] });
+ok(campo.length === 19, 'terrain field has 19 hex cells');
+ok(campo.every((c) => M.bytes(c.frame) < 1024 && M.valida(c.frame).length === 0), 'every terrain frame under 1,024 bytes and obeys the law');
+ok(JSON.stringify(M.terreno({ nodes: [] })) === JSON.stringify(campo), 'terrain is the same bytes on every call');
+ok(!campo.some((c) => /^node\./.test(c.frame.atoms[0].k)), 'no terrain cell carries a node key');
+
 // 5 · palette is a function of the tick alone: periodic, integer, night at midnight, day at noon.
 for (let t = -300; t < 300; t += 7) {
   ok(M.paleta(t).cielo === M.paleta(t + M.CYCLE).cielo && M.paleta(t).tinta === M.paleta(t + M.CYCLE).tinta, 'palette periodic at t=' + t);
