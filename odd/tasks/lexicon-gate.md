@@ -62,5 +62,8 @@ ganadores ingleses no requieren excepción: no contienen palabra de la lista neg
   `public/face/face_terminal.js` (dice, monta, sello), el terminal de chat. Es deuda real de un fichero servido,
   visible en la base; el barrido de renombrado la baja.
 
+- 2026-10-28 · **Base bajada tras #373.** `public/openworld/index.html` ya no tiene `nodos`, `pinta` ni `registro`
+  (renombrados). El gate exigió bajar la base: queda en 181, sin tocar `face_terminal.js` (deuda visible).
+
 ## Siguiente paso
 Mandato 1: bajar la base rebanada a rebanada (un PR por rebanada, sello SW en cada una que toque `public/`).

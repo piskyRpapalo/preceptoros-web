@@ -1780,11 +1780,6 @@
   "public/get-the-app/index.html": [
     "aduana"
   ],
-  "public/openworld/index.html": [
-    "nodos",
-    "pinta",
-    "registro"
-  ],
   "public/play/index.html": [
     "portada-juego"
   ],
