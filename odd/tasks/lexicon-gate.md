@@ -54,5 +54,9 @@ ganadores ingleses no requieren excepción: no contienen palabra de la lista neg
 - 2026-10-28 · Propuesta de doctrina (deber de doctrina, toca INTANGIBLE): «el lexicon se aplica por ratchet con base
   versionada» y «el gate debe demostrarse con sabotaje en el árbol real». Se propone en el PR y espera firma; no se aplica.
 
+- 2026-10-28 · **Re-base contra `main` actual (pedido del Desk).** La base de 180 quedó vieja: `main` ganó
+  `public/openworld/index.html` con tres palabras españolas (`nodos`, `pinta`, `registro`). La base sube a 181 y añade
+  solo ese fichero, con esas tres palabras. Es deuda visible, no oculta: la slice de renombrado de #373 la elimina.
+
 ## Siguiente paso
 Mandato 1: bajar la base rebanada a rebanada (un PR por rebanada, sello SW en cada una que toque `public/`).
