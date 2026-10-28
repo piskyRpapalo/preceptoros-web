@@ -11,7 +11,7 @@ const require = createRequire(import.meta.url);
 const T = require('../public/game/taller.js');
 const G = require('../public/game/gacha.js');
 const K = require('../public/game/canon.js');
-const A = require('../public/game/arena.js');
+
 const D = require('../public/game/db.js');
 const V = require('../public/game/valores.js');
 const sin = (f) => readFileSync(new URL('../public/game/' + f, import.meta.url), 'utf-8').replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/.*$/gm, '');
@@ -88,15 +88,9 @@ await caso('Army: solo suelta una tropa con su recibo firmado por QUIEN LA ADOPT
   if (army.lista().length !== 0 || alm.l.length !== 0) { mal.push('no salio'); }
   return !mal.length || mal;
 });
-await caso('combate: lo lijado cuenta en la practica; un duelo NO puede traer lija (forma {tc, semilla})', () => {
-  const t = tropaDe(4, 'tc1'), npc = [{ tc: 'tc4', semilla: K.sha('npc') }], s = K.sha('semilla-de-practica');
-  const sin = A.combate(npc, [{ tc: t.tc, semilla: t.semilla }], s), con = A.combate(npc, [{ tc: t.tc, semilla: t.semilla, lija: { vida: 5, armadura: 5 } }], s);
-  const def = (tropas) => A.formaDefensa({ esquema: 'atlas.defensa/1', pack_sha: A.packSha(), tropas, en_juego: { cobre: 0, luz: 0 } });
-  const limpia = def([{ tc: t.tc, semilla: t.semilla }]), lijada = def([{ tc: t.tc, semilla: t.semilla, lija: { vida: 1 } }]);
-  return (JSON.stringify(sin.registro) !== JSON.stringify(con.registro) && limpia === '' && /tropa/.test(lijada)) || { limpia, lijada };
-});
+
 // P10 · PRISMA DE BANDERA: tenir es otra operacion de la MISMA cadena, de una paleta CERRADA, solo aspecto.
-const C = require('../public/game/home_buildings.js');
+
 await caso('P10: tenir cuesta residuo, solo con colores de la paleta cerrada, y no se tine lo desintegrado ni dos veces igual', () => {
   const c = [], a = tropaDe(13), b = tropaDe(4), m = [];
   eslabon(c, { op: 'desintegra', tropa: a }, ANA);
@@ -109,23 +103,8 @@ await caso('P10: tenir cuesta residuo, solo con colores de la paleta cerrada, y 
   try { T.recibo(T.estado([]), { op: 'tinte', semilla: b.semilla, bandera: 'oro' }, ANA.pub); m.push('tino sin residuo'); } catch (x) { /* bien */ }
   return !m.length || m;
 });
-await caso('P10: la paleta es UNA (la casa ofrece exactamente los colores de valores) y el tinte no toca el combate', () => {
-  const casa = C.OPCIONES.bandera.filter(Boolean).join(), val = Object.keys(V.banderas).join();
-  const t = tropaDe(5, 'tc1'), lt = T.aplica(t, { bandera: 'teal' });
-  const ciego = !/bandera|tinte|tintes/.test(sin('arena.js')) && JSON.stringify(lt.stats) === JSON.stringify(t.stats);
-  return (casa === val && ciego) || { casa, val, ciego };
-});
-await caso('P10: una casa guardada antes de P10 entra sin bandera (null), no se pierde; un color libre no entra', () => {
-  const vieja = C.base(); delete vieja.bandera;
-  const migrada = C.migra(JSON.parse(JSON.stringify(vieja))), libre = Object.assign(C.base(), { bandera: '#39ff14' });
-  return (C.forma(vieja) !== '' && C.forma(migrada) === '' && migrada.bandera === null && C.forma(libre) === 'bandera') || { v: C.forma(vieja), m: C.forma(migrada), l: C.forma(libre) };
-});
-await caso('pureza: el Taller no usa azar, reloj, red ni almacen directo (la caja es db.js)', () => {
-  const malos = [];
-  for (const f of ['taller.js', 'ui-taller.js', 'sea-anchors.js']) {
-    for (const m of ['Math.random', 'Date.', 'fetch(', 'localStorage', 'indexedDB', 'XMLHttpRequest', 'sendBeacon']) { if (sin(f).includes(m)) { malos.push(f + ': ' + m); } }
-  }
-  return !malos.length || malos;
-});
+
+
+
 console.log(JSON.stringify(casos));
 process.exitCode = casos.every((c) => c.ok) ? 0 : 1;

@@ -1,15 +1,12 @@
-// A (FIRMO 2026-10-12): los corales del rack pintan ESTADO MEDIDO (cuantas medidas en MEDIDO), jamas adorno.
-import { createRequire } from 'node:module';
-const require = createRequire(import.meta.url);
-const K = require(process.env.CORAL || '../public/game/reef_corals.js');
-const Ce = require('../public/game/nodos-cedulas.js');
-const casos = [];
-const caso = (n, f) => { let r; try { r = f(); } catch (e) { r = String(e); } casos.push({ caso: n, ok: r === true, detalle: r === true ? '' : JSON.stringify(r) }); };
-caso('Hexelion (2 MEDIDO) es un coral alto; el Doogee (EMULADO + NO_DATA) es NO_DATA: lo emulado no cuenta', () => {
-  const h = K.coral(Ce.nodos.find((n) => n.nodo === 'nodo.0.hexelion')), d = K.coral(Ce.nodos.find((n) => n.nodo === 'nodo.1.doogee'));
-  return h.medidas === 2 && !h.nd && d.medidas === 0 && d.nd && d.emuladas === 1 && h.altura > d.altura || { h, d };
-});
-caso('la forma sale del nombre (determinista), nunca del azar', () => JSON.stringify(K.coral({ nodo: 'x', aparato: { medidas: {} } })) === JSON.stringify(K.coral({ nodo: 'x', aparato: { medidas: {} } })));
-caso('nodo sin cedula: NO_DATA, sin romper', () => { const k = K.coral(null); return k.nd && k.total === 0 || k; });
-console.log(JSON.stringify(casos, null, 1));
-process.exitCode = casos.every((c) => c.ok) ? 0 : 1;
+// Corte D (2026-10-28), decision D2 y decreto del Desk: este caso probaba el juego retirado (theGame / /play/).
+// Guarda de retirada: los ficheros del juego no existen y no estan en el precache. Mantiene su nombre (los workflows
+// no cambian) e imprime un recibo JSON.
+import { existsSync, readFileSync } from 'node:fs';
+
+const RETIRADOS = ['public/game/reef_corals.js', 'public/game/nodos-cedulas.js'];
+const sw = readFileSync('public/sw-listas.js', 'utf8');
+const vivos = RETIRADOS.filter(p => existsSync(p)).map(p => 'vive ' + p);
+const precache = RETIRADOS.filter(p => sw.includes("'/" + p.replace(/^public\//, '') + "'")).map(p => 'precacheado ' + p);
+const fallos = [...vivos, ...precache];
+console.log(JSON.stringify({ piece: 'corte-D-retirada', receipt: 'RETIRADO', retirados: RETIRADOS.length, fallos }));
+process.exit(fallos.length ? 1 : 0);

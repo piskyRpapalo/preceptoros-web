@@ -1,41 +1,12 @@
-import assert from 'node:assert/strict';
-import { createHash } from 'node:crypto';
-import { createRequire } from 'node:module';
-const require = createRequire(import.meta.url);
-const D = require('../public/game/descent_sound.js');
-const C = require('../public/assets/codex_scene.js');
-const R = require('../public/game/aiact-art50-state-radio.js');
-const T = require('../public/game/tarjeta_cantada.js');
-const F = require('../public/game/audio_feedback_manager.js');
-const hash = bytes => createHash('sha256').update(bytes).digest('hex');
-function renderPcm(voices, start, contextRate = 44100) {
-  const buffers = [], node = () => ({frequency:{value:0}, connect(){}, start(){}, stop(){}});
-  const ctx = {sampleRate: contextRate, currentTime: start, createOscillator: node, createBufferSource: node,
-    createBuffer(channels, size, hz) {
-      assert.equal(hz, 44100); const samples = new Float32Array(size); buffers.push(samples);
-      return {sampleRate: hz, getChannelData: () => samples};
-    }, createGain: () => ({connect(){}, gain: {setValueAtTime(){}, linearRampToValueAtTime(){}}})};
-  D.play(ctx, voices, start);
-  return buffers.map(samples => {
-    const bytes = Buffer.alloc(samples.length * 4);
-    samples.forEach((x, i) => bytes.writeFloatLE(x, i * 4));
-    return {samples: samples.length, sha256: hash(bytes)};
-  });
-}
-const noise = [{src:'noise', seed:1, at:.5, env:{a:.6,d:.4,s:.5,r:.9},gain:.03}];
-assert.deepEqual(renderPcm(noise, 0), renderPcm(noise, 1000), 'PCM must not depend on scheduling origin');
-assert.deepEqual(renderPcm(noise, 0), renderPcm(noise, 0, 48000), 'PCM must use a fixed source rate');
-assert.notDeepEqual(renderPcm(noise, 0), renderPcm([{...noise[0],seed:2}], 0));
-const rows = C.SECTIONS.map(id => {
-  const frame = C.frame(id), score = D.score(frame);
-  const packet = JSON.stringify({v:'preceptoros.sound/1',id,cycle:frame.t,sound:frame.sound,score});
-  assert.ok(Buffer.byteLength(packet) < 1024);
-  assert.deepEqual(renderPcm(score.voices, 0), renderPcm(score.voices, 1000));
-  return {id, bytes:Buffer.byteLength(packet), recipe:hash(packet), pcm:renderPcm(score.voices,0)};
-});
-const snap = {esquema:'atlas.instantanea/1',integridad:80,integridad_max:100,recursos:{cobre:1,biomasa:2,luz:3,oxigeno:4},fase:1,nivel_nucleo:1,grieta:{abierta:false},ciclo:7,profundidad:4};
-const recipes = {radio:R.guion(snap),card:T.melodía({id:'fixture',sello:'LIVE',hue:196}),feedback:F.verb('state','MEASURED')};
-for (const value of Object.values(recipes)) assert.ok(Buffer.byteLength(JSON.stringify(value)) < 1024);
-const output = {rate:44100,rows,recipes_sha256:hash(JSON.stringify(recipes)),pcm_engine:'fixed-rate source buffer; browser render measured by oido_web.mjs'};
-if (process.argv.includes('--sabotage')) output.rows[0].recipe = 'changed';
-console.log(JSON.stringify(output));
+// Corte D (2026-10-28), decision D2 y decreto del Desk: este caso probaba el juego retirado (theGame / /play/).
+// Guarda de retirada: los ficheros del juego no existen y no estan en el precache. Mantiene su nombre (los workflows
+// no cambian) e imprime un recibo JSON.
+import { existsSync, readFileSync } from 'node:fs';
+
+const RETIRADOS = ['public/game/descent_sound.js', 'public/assets/codex_scene.js', 'public/game/aiact-art50-state-radio.js', 'public/game/tarjeta_cantada.js', 'public/game/audio_feedback_manager.js'];
+const sw = readFileSync('public/sw-listas.js', 'utf8');
+const vivos = RETIRADOS.filter(p => existsSync(p)).map(p => 'vive ' + p);
+const precache = RETIRADOS.filter(p => sw.includes("'/" + p.replace(/^public\//, '') + "'")).map(p => 'precacheado ' + p);
+const fallos = [...vivos, ...precache];
+console.log(JSON.stringify({ piece: 'corte-D-retirada', receipt: 'RETIRADO', retirados: RETIRADOS.length, fallos }));
+process.exit(fallos.length ? 1 : 0);

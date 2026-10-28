@@ -24,12 +24,14 @@ function check(name, run) {
 }
 
 check('the lists come from the served sw-listas.js', () => {
-  assert.ok(lists.contenidoJson.includes('/atlas-en.json'));
+  // Corte D (2026-10-28): el lexicon de theGame se retiro; CONTENIDO_JSON queda vacio.
+  assert.equal(lists.contenidoJson.length, 0, 'CONTENIDO_JSON vacio tras el corte D');
   assert.ok(lists.redPrimero.includes('/manifest.webmanifest'));
 });
 check('cached(): same rule as the fetch handler of sw.js', () => {
   assert.equal(gate.cached('public/counters.json', lists), false);      // passthrough json
-  assert.equal(gate.cached('public/atlas-en.json', lists), true);       // CONTENIDO_JSON
+  // La regla se prueba con una lista sintetica: el arbol servido ya no tiene JSON de contenido.
+  assert.equal(gate.cached('public/atlas-en.json', { ...lists, contenidoJson: ['/atlas-en.json'] }), true);
   assert.equal(gate.cached('public/manifest.webmanifest', lists), false); // RED_PRIMERO
   assert.equal(gate.cached('public/game/sea.js', lists), true);
   assert.equal(gate.cached('public/sw.js', lists), true);

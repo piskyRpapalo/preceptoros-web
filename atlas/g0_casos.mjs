@@ -6,7 +6,7 @@ import { createRequire } from 'node:module';
 import { generateKeyPairSync, sign, verify, createHash } from 'node:crypto';
 const require = createRequire(import.meta.url);
 const R = new URL('..', import.meta.url).pathname;
-const A = require(R + 'public/game/db.js'), M = require(R + 'public/assets/atlas-motor.js'), Pa = require(R + 'public/assets/atlas-partida.js');
+const A = require(R + 'public/game/db.js');
 const G = require(R + 'public/game/gacha.js');
 
 const casos = [];
@@ -54,18 +54,7 @@ await caso('G0: firma y semilla se re-verifican al volver (Ed25519 real); una al
   const mal = await A.verificaCadena(mala, PUB, verifica, async (f) => semilla(f));
   return bien === '' && /firma/.test(mal) || { bien, mal };
 });
-await caso('G0 · EL BUG DEL HUEVO: pagar, recargar, y el huevo VUELVE (antes: cobre 50 -> 0 y 0 huevos)', () => {
-  const ley = { nd: false, integridad_max: 100, dano: 1 }, TC = G.TCS.tc1.coste;
-  let e = M.inicial(ley), n = 0;
-  while ((e.cobre < TC.cobre || e.luz < TC.luz) && n < 200000) { e = M.ciclo(e, ley); n++; }
-  const cadena = invoca([], 'tc1', n);
-  const p = { esquema: 'atlas.partida/1', contenido_v: M.CATALOGO.contenido_v, ley, truncada: false,
-    pasos: [{ ciclos: n }, { accion: 'invocar', coste: { cobre: TC.cobre, luz: TC.luz }, origen: 'humano' }] };
-  const vuelta = JSON.parse(JSON.stringify(cadena));         // lo que la caja del aparato devuelve al recargar
-  const r = Pa.reproduce(p, M), pagadas = r.eventos.filter(x => JSON.stringify(x).includes('invocar')).length;
-  const huevos = A.huevos(vuelta);
-  return r.cobre === 0 && pagadas === 1 && huevos.length === 1 && huevos[0].semilla === cadena[0].semilla || { cobre: r.cobre, pagadas, huevos };
-});
+
 await caso('G0: abrir un huevo lo marca en la cadena (no se borra: la cronica lo guarda)', () => {
   let c = invoca([], 'tc1', 0); c = invoca(c, 'tc2', 3);
   const d = A.abre(c, 1);

@@ -5,10 +5,12 @@ import { createRequire } from 'node:module';
 
 const require = createRequire(import.meta.url);
 const K = require('../public/game/canon.js');
-const A = require('../public/game/arena.js');
+// Corte D: arena.js y nodos-cedulas.js se retiraron con el juego. Estos fixtures vacios sostienen SOLO los casos
+// de camara y niebla (modulos vivos); los que dependen de contenido del juego se retiran por nombre.
+const A = { lugares: () => [] };
 const C = require(process.env.CAMARA || '../public/game/world_camera.js');
 const N = require('../public/game/fog_of_war.js');
-const Ce = require('../public/game/nodos-cedulas.js');
+const Ce = { nodos: [] };
 
 const casos = [];
 function caso(nombre, fn) {
@@ -57,24 +59,12 @@ caso('chocar con la niebla se nota (para avisarlo) y rebota hacia dentro', () =>
   const choco = C.arrastra(cam, -5000, 0, cs, false);
   return (choco && cam.choco > 0 && dentro(cam, cs)) || 'un arrastre enorme no choco';
 });
-caso('con clave, el mapa empieza en TU casa; sin clave, en Hexelion', () => {
-  const casa = N.sitioCasa(PUB, K.sha), cs = circ(PUB), sin = circ(null);
-  const tieneCasa = cs.some((c) => c.que === 'casa' && c.x === casa.x && c.y === casa.y);
-  return (tieneCasa && dentro(C.crea(casa), cs) && N.sitioCasa(null, K.sha) === null && !sin.some((c) => c.que === 'casa') &&
-          dentro(C.crea(N.HEX), sin)) || 'la casa no es el punto de partida';
-});
-caso('en el mapa solo queda Hexelion (FIRMO 2026-10-12): despejado; el Doogee sin punto, ni circulo ni ancla', () => {
-  const cs = circ(PUB), an = N.anclas({ pub: PUB, sha: K.sha, nodos: Ce.nodos });
-  return (N.niebla(N.HEX.x, N.HEX.y, cs) === 0 && N.sitioNodo('nodo.1.doogee') === null && N.DOOGEE === undefined &&
-          !cs.some((c) => c.que === 'nodo.1.doogee') && !an.some((a) => /doogee/.test(a.id))) || 'queda una referencia huerfana al Doogee en la niebla';
-});
+
+
 caso('misma cuenta, misma niebla; otra cuenta, otra casa', () => {
   return (N.huella(circ(PUB)) === N.huella(circ(PUB)) && N.huella(circ(PUB)) !== N.huella(circ(OTRA))) || 'la niebla no depende solo de la cuenta y lo medido';
 });
-caso('luchar en un lugar lo despeja', () => {
-  const l = lugares[5], antes = circ(PUB).length, despues = circ(PUB, { [l.clave]: true });
-  return (despues.length === antes + 1 && despues.some((c) => c.que === l.clave)) || 'el lugar luchado sigue en niebla';
-});
+
 
 // R7 (plan «el refresco»): LAS ANCLAS de lo que viene. Solo datos y sitio: cada nodo (menos Hexelion, que es el
 // rack) lleva su tubo al rack; tu casa ancla las partes del cuerpo y el prisma; la boya de Hexelion, los ecos.
