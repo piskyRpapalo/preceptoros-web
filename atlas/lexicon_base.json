@@ -335,24 +335,6 @@
     "crea",
     "fija"
   ],
-  "public/game/mercado.js": [
-    "atlassobres",
-    "ciclo",
-    "expira_ciclo",
-    "firma",
-    "fuera",
-    "huella",
-    "sobres"
-  ],
-  "public/game/narragrafo.js": [
-    "atlassobres",
-    "formanodo",
-    "huella",
-    "mgno_nodo",
-    "nodo",
-    "nodos",
-    "sobres"
-  ],
   "public/game/node_bindings.js": [
     "cedula-nodo",
     "firma",
