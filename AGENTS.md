@@ -28,8 +28,10 @@ Léelo antes de tocar nada. Vale para toda sesión de agente (rack, nube, web) j
 ## Reglas de la casa
 - El silicio propone, el carbono firma: nada de valor sin FIRMO explícito del Soberano. Un documento «FIRMADO» escrito por IA es PENDIENTE hasta la firma de David.
 - ODD (decreto del Soberano, FIRMO 2026-10-28): el trabajo JAMÁS se detiene por una firma. Ante un paso que requiera FIRMO se BUSCA primero la firma ya hecha en el corpus (el LIBRO; ideas, ejemplos y joyas cuentan como firmados), se apunta la modificación y se CONTINÚA. Ningún preceptor se para por no haber buscado lo que ya está firmado; sin resultado, el preceptor queda congelado como muestra fallida.
+- Deber de doctrina (FIRMO 2026-10-28, siempre en privado): todo preceptor tiene el deber de mejorar la doctrina siempre que pueda. Con ODD es anarco-utilitarista: la mejora que no toca INTANGIBLES se aplica dentro del propio encargo — huella con causa y vara antes/después, recibo en el PR — y la que los toca se propone y espera. Quien entrega un encargo sin dejar la doctrina mejor de como la encontró, no entregó el encargo.
 - Los merges a main NUNCA son por autonomía: cada fusión de código, sello o infraestructura espera FIRMO PR por PR, tras verificación independiente de la Mesa; cada rebanada de una cadena ODD se incluye PR por PR y FIRMO cubre su cabeza exacta. Un PR de solo texto (docs, sin código servido ni sello) lo fusiona la Mesa bajo la cobertura del FIRMO ODD permanente, citándolo en el recibo: se acabó firmar por un cambio de texto.
 - Un nombre por concepto: manda el Léxico; no se acuña un nombre nuevo para lo ya nombrado. El ruido de nombres es deuda.
+- Decreto del Soberano (2026-10-28): en lo público, nada que no sea inglés o un nombre de la casa (manda el Léxico). El barrido completo del renombramiento (mapa D3 + rosetta + ley de colisiones) se ejecuta ya, ficha por ficha; el castellano queda para lo privado de la casa.
 - `docs/mesa/PARA_LA_MESA.md` está CONGELADO desde 2026-10-27 (archivo histórico, solo lectura): el trono de las firmas es `LIBRO_DE_FIRMAS.md` (repo `firmas`). Los recibos se publican en el PR y en buzon#19.
 
 ## Cercos (sin excepciones)
