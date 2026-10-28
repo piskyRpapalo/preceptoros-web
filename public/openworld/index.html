@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>OpenWorld · PreceptorOS</title>
+<meta name="description" content="OpenWorld: the global map and the chat. The tutorial cabin is always here; nodes appear only while they are alive.">
+<link rel="icon" type="image/svg+xml" href="/assets/mark.svg">
+<link rel="canonical" href="https://preceptoros.org/openworld/">
+<meta property="og:title" content="PreceptorOS · OpenWorld">
+<meta property="og:description" content="The global map and the chat. The tutorial cabin is always here.">
+<meta property="og:url" content="https://preceptoros.org/openworld/">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://preceptoros.org/assets/og-card.png">
+<meta name="theme-color" content="#17131F">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/assets/landing.css">
+<style>
+html,body{height:100%}
+body{display:flex;flex-direction:column;min-height:100vh}
+main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;padding:0;min-height:100vh;box-sizing:border-box}
+#mapa,#chat{padding:12px 16px;min-width:0;box-sizing:border-box;overflow:hidden}
+#mapa{border-bottom:2px solid var(--line);display:flex;flex-direction:column;gap:8px;min-height:44vh}
+#mapa h1{font-size:1.25rem;margin:0}
+#mapa .lienzo{width:100%;flex:1;min-height:0;display:block}
+#mapa .pulsa{display:flex;flex-wrap:wrap;gap:8px}
+#mapa .pulsa button{min-height:44px;padding:8px 14px;border:2px solid currentColor;border-radius:var(--radius);background:var(--bg);color:var(--fg);font:inherit;cursor:pointer}
+#mapa .pulsa button[aria-pressed="true"]{outline:3px solid currentColor;outline-offset:2px}
+#mapa .estado{margin:0;color:var(--soft);font-size:.92rem}
+#chat{display:flex;flex-direction:column;gap:8px;min-height:44vh}
+#chat h2{font-size:1.1rem;margin:0}
+#chat .registro{flex:1;min-height:0;overflow:auto;margin:0;padding:0;list-style:none;color:var(--soft)}
+#chat form{display:flex;gap:8px}
+#chat input{flex:1;min-height:44px;padding:8px 10px;border:2px solid var(--line);border-radius:var(--radius);background:var(--bg);color:var(--fg);font:inherit}
+#chat button{min-height:44px;padding:8px 14px;border:2px solid currentColor;border-radius:var(--radius);background:var(--bg);color:var(--fg);font:inherit}
+#chat button:disabled,#chat input:disabled{opacity:.55}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+@media (min-width:900px){main{grid-template-rows:1fr;grid-template-columns:1fr 1fr}#mapa{border-bottom:0;border-right:2px solid var(--line)}}
+</style>
+</head>
+<body>
+<a class="skip" href="#chat">Skip to the chat</a>
+<main>
+<section id="mapa" aria-labelledby="mapa-h">
+<h1 id="mapa-h">OpenWorld</h1>
+<div class="pulsa" role="group" aria-label="Terrains">
+<button type="button" id="t-cabana" aria-pressed="true" data-terreno="cabana">Tutorial cabin</button>
+</div>
+<canvas class="lienzo" id="lienzo" role="img" aria-label="The global map: the tutorial cabin, and any node that is alive"></canvas>
+<p class="estado" id="estado" aria-live="polite">Nodes online: 0. The tutorial cabin is the basic world.</p>
+</section>
+<section id="chat" aria-labelledby="chat-h">
+<h2 id="chat-h">Chat</h2>
+<ul class="registro" id="registro" role="log" aria-live="polite">
+<li>The chat is not live yet. This panel is ready for it.</li>
+</ul>
+<form id="entrada" onsubmit="return false">
+<label class="sr" for="pregunta">Message</label>
+<input id="pregunta" type="text" autocomplete="off" disabled aria-describedby="chat-nota">
+<button type="submit" disabled>Send</button>
+</form>
+<p class="estado" id="chat-nota">The input opens when the chat is ready.</p>
+</section>
+</main>
+<script src="/game/tabla_semantica.js"></script>
+<script src="/game/comic_tokens.js"></script>
+<script src="/game/comic_accents.js"></script>
+<script src="/game/comic_atoms.js"></script>
+<script src="/game/bubble_language.js"></script>
+<script src="/game/bubble_letters.js"></script>
+<script src="/assets/pwa.js"></script>
+<script>
+// OpenWorld (NORTE 7 · PR 2). Same-origin only: the state file is the one thing read from the server.
+// Default: zero nodes. A node that is not listed as alive does not exist on this map.
+(function (raiz) {
+  'use strict';
+  var doc = raiz.document, ANCHO = 320, ALTO = 96;
+  var TERRENOS = {
+    cabana: { nombre: 'Tutorial cabin', x: 0.5, y: 0.5, siempre: true },
+    atlantis: { nombre: 'Atlantis · Node Hexelion', x: 0.22, y: 0.3 },
+    risen: { nombre: 'the Risen', x: 0.78, y: 0.7 }
+  };
+  var vivos = [];
+  var seleccion = 'cabana';
+  var lienzo = doc.getElementById('lienzo');
+  var pulsa = doc.querySelector('#mapa .pulsa');
+  var estado = doc.getElementById('estado');
+
+  // The bubble outline, as landing_doors.js draws it: pure data, the house bands only.
+  function marco(titulo) {
+    var ORLA = [];
+    for (var i = 0; i < 24; i++) { ORLA.push([Math.round(160 + 150 * Math.cos(i * Math.PI / 12)), Math.round(44 + 38 * Math.sin(i * Math.PI / 12))]); }
+    var OLA = [];
+    for (var j = 0; j <= 12; j++) { OLA.push([136 + j * 4, Math.round((64 + 3 * Math.sin(j * Math.PI / 4)) * 10) / 10]); }
+    return { v: 'preceptoros.bubble/1', id: 'terreno', t: 0, cv: [ANCHO, ALTO], atoms: [
+      { k: 'bubble', r: 'a speech bubble', i: [
+        { o: 'ribbon', pts: [[58, 66], [36, 94], [92, 72]], closed: true, f: 'paper', s: 'ink', lw: 3 },
+        { o: 'ribbon', pts: ORLA, closed: true, f: 'paper', s: 'ink', lw: 3 }] },
+      { k: 'sea', r: 'a small wave', i: [{ o: 'ribbon', pts: OLA, closed: false, s: 'cyan', lw: 2.5 }] },
+      { k: 'title', r: titulo, i: [{ o: 'letters', x: 160, y: 42, tx: titulo, sz: 18, f: 'paper', s: 'ink', sh: [1.5, 1.5, 'cyan'] }] }] };
+  }
+
+  function dibuja() {
+    var B = raiz.AtlasBubble, P = raiz.AtlasComicAtoms;
+    if (!lienzo || !B || !P || !raiz.AtlasBubbleLetters) { return; }
+    var ancho = lienzo.clientWidth || 320, alto = lienzo.clientHeight || 200;
+    var dpr = Math.min(2, raiz.devicePixelRatio || 1);
+    lienzo.width = Math.round(ancho * dpr); lienzo.height = Math.round(alto * dpr);
+    var g = lienzo.getContext('2d');
+    g.setTransform(dpr, 0, 0, dpr, 0, 0);
+    g.clearRect(0, 0, ancho, alto);
+    var escala = Math.min(1, (ancho / 1.2) / ANCHO);
+    Object.keys(TERRENOS).forEach(function (id) {
+      var t = TERRENOS[id];
+      if (!t.siempre && vivos.indexOf(id) < 0) { return; }
+      var x = t.x * ancho - (ANCHO * escala) / 2, y = t.y * alto - (ALTO * escala) / 2;
+      g.save(); g.translate(x, y); g.scale(escala, escala);
+      try { P.paint(g, B.compile(marco(t.nombre))); } catch (e) { /* the node stays off the map; the list says so */ }
+      g.restore();
+    });
+  }
+
+  function botones() {
+    pulsa.innerHTML = '';
+    ['cabana'].concat(vivos).forEach(function (id) {
+      var b = doc.createElement('button');
+      b.type = 'button'; b.textContent = TERRENOS[id].nombre;
+      b.setAttribute('aria-pressed', String(id === seleccion));
+      b.addEventListener('click', function () { seleccion = id; botones(); dibuja(); });
+      pulsa.appendChild(b);
+    });
+  }
+
+  function pinta() {
+    botones();
+    dibuja();
+    estado.textContent = 'Nodes online: ' + vivos.length + '. The tutorial cabin is the basic world.';
+  }
+
+  // Only the two named nodes can appear, and only when the state file lists them as alive.
+  function acepta(datos) {
+    var nodos = datos && Array.isArray(datos.nodos) ? datos.nodos : [];
+    vivos = nodos.map(function (n) { return n && n.id; }).filter(function (id) { return id === 'atlantis' || id === 'risen'; });
+  }
+
+  pinta();
+  raiz.addEventListener('resize', dibuja);
+  if (raiz.fetch) {
+    raiz.fetch('/openworld/estado.json', { cache: 'no-cache' })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (d) { acepta(d); pinta(); })
+      .catch(function () { /* no state file: zero nodes, which is the default */ });
+  }
+})(window);
+</script>
+</body>
+</html>
