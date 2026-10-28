@@ -196,6 +196,16 @@
     "abre",
     "registro"
   ],
+  "public/game/bb_det.js": [
+    "crea",
+    "fija"
+  ],
+  "public/game/bb_forma.js": [
+    "sello"
+  ],
+  "public/game/bb_radio.js": [
+    "sello"
+  ],
   "public/game/canon.js": [
     "huella"
   ],
