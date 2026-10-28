@@ -67,7 +67,7 @@ def portada():
 <h1>PreceptorOS</h1>
 <p class="lead">A game of waves that runs on your own device. No account, no cloud, no tracking.</p>
 <nav id="doors" aria-label="Doors">
-<a class="door" href="/play/"><b>OpenWorld</b><span>The map and the chat, side by side. Your node's world.</span></a>
+<a class="door" href="/openworld/"><b>OpenWorld</b><span>The map and the chat, side by side. Your node's world.</span></a>
 <a class="door" href="/play/"><b>Tutorial</b><span>The first steps: the key, the beacon, the first fight.</span></a>
 <button class="door door-tools" id="door-tools" type="button" aria-controls="tools-dispositivo"><b>Tools</b><span id="tools-estado">Install the app on this device, or pick a download below.</span></button>
 </nav>

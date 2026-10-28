@@ -67,6 +67,7 @@ jobs:
             node atlas/face_battle_browser.mjs
             node atlas/face_names_browser.mjs
             node atlas/landing_doors_browser.mjs
+            node atlas/openworld_browser.mjs
             node atlas/place_card_browser.mjs
             node atlas/tutorial_places_browser.mjs
             node atlas/wave_duel_browser.mjs
