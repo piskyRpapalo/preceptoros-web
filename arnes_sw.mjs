@@ -217,6 +217,7 @@ const rutas = await shell.keys();
 // 219 -> 221 el 2026-10-27 (NORTE 5 a1): entran get_app_gate.js y launch_gate.js, la compuerta de /get-the-app/.
 // 221 -> 222 el 2026-10-28 (NORTE 7 PR 1): entra intro.js, el boton Tools y la lectura de release.json, sin red.
 // 222 -> 223 el 2026-10-28 (NORTE 7 PR 2): entra /openworld/ (ficha unica: el script va inline).
+// 223 sin cambio el 2026-10-28 (NORTE 8 · audio slice 2): game/bubble_sonify.js es A DEMANDA, no entra en el precache.
 ok('precachea las portadas, su superficie y el juego', rutas.length === 223, rutas.length+' rutas');
 ok('el shell trae el juego (D7): la puerta, el cangrejo y la arena',
    ['/assets/thegame.js', '/game/gdpr-art25-ephemeral-crab.js', '/game/ui-arena.js', '/assets/atlas-motor.js'].every(r => rutas.includes(r)));

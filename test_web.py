@@ -2516,14 +2516,14 @@ class OpenWorld(unittest.TestCase):
 
     def test_el_estado_por_defecto_son_cero_nodos(self):
         estado = json.loads((PUBLICO / "openworld" / "estado.json").read_text(encoding="utf-8"))
-        self.assertEqual(estado["nodos"], [], "el estado por defecto debe ser cero nodos")
+        self.assertEqual(estado["nodes"], [], "el estado por defecto debe ser cero nodos")
 
     def test_la_cabana_siempre_y_los_nodos_solo_si_viven(self):
         # El mapa solo nombra dos nodos, y solo los pinta si la lista de vivos los trae.
-        self.assertIn("cabana: { nombre: 'Tutorial cabin', x: 0.5, y: 0.5, siempre: true }", self.t)
-        self.assertIn("atlantis: { nombre: 'Atlantis · Node Hexelion'", self.t)
-        self.assertIn("risen: { nombre: 'the Risen'", self.t)
-        self.assertIn("if (!t.siempre && vivos.indexOf(id) < 0) { return; }", self.t)
+        self.assertIn("cabin: { name: 'Tutorial cabin', x: 0.5, y: 0.5, always: true }", self.t)
+        self.assertIn("atlantis: { name: 'Atlantis · Node Hexelion'", self.t)
+        self.assertIn("risen: { name: 'the Risen'", self.t)
+        self.assertIn("if (!t.always && alive.indexOf(id) < 0) { return; }", self.t)
         self.assertIn("return id === 'atlantis' || id === 'risen';", self.t)
 
     def test_cero_peticiones_externas(self):
@@ -2539,7 +2539,7 @@ class OpenWorld(unittest.TestCase):
     def test_el_chat_esta_siempre_y_sin_boton_de_chat(self):
         self.assertIn('<section id="chat" aria-labelledby="chat-h">', self.t)
         self.assertNotRegex(self.t, r">\s*Chat\s*</button>", "hay un boton de Chat; el decreto pide el panel siempre presente")
-        self.assertIn('<input id="pregunta" type="text" autocomplete="off" disabled', self.t)
+        self.assertIn('<input id="question" type="text" autocomplete="off" disabled', self.t)
 
     def test_esta_en_el_sitemap_y_en_el_precache(self):
         xml = (PUBLICO / "sitemap.xml").read_text(encoding="utf-8")
