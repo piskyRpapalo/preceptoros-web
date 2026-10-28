@@ -12,12 +12,12 @@ import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import vm from 'node:vm';
-import { verifica } from './verifica_partida.mjs';
+
 
 const require = createRequire(import.meta.url);
 const RAIZ = join(dirname(fileURLToPath(import.meta.url)), '..');
-const M = require(join(RAIZ, 'public/assets/atlas-motor.js'));
-const P = require(join(RAIZ, 'public/assets/atlas-piloto.js'));
+
+
 const G = require(join(RAIZ, 'public/game/gacha.js'));
 const A = require(join(RAIZ, 'public/game/db.js'));
 const S = require(join(RAIZ, 'public/game/core.js'));
@@ -30,7 +30,7 @@ async function caso(nombre, f) {
   casos.push({ caso: nombre, ok, detalle });
 }
 const sha = (t) => createHash('sha256').update(String(t)).digest('hex');
-const LEY = M.leyes({ pruebas_web: 171, arnes_sw: '24/24', gzip_juego_b: 95000 });
+
 
 /* --- gacha ---------------------------------------------------------------- */
 // 300 semillas y las cuatro TC: con una sola, un azar escondido puede
@@ -127,39 +127,16 @@ await caso('morfismo: mezcla(a, b, 0) es a y mezcla(a, b, 1) es b', () => {
 });
 
 /* --- motor: invocar -------------------------------------------------------- */
-await caso('motor: invocar sin recursos -> fallo y nada cambia', () => {
-  const e = M.inicial(LEY), d = M.invocar(e, G.TCS.tc1.coste);
-  return (d.cobre === e.cobre && d.eventos.at(-1).tipo === 'invocar' && d.eventos.at(-1).resultado === 'fallo') || d.eventos.at(-1);
-});
-await caso('motor: invocar con recursos -> paga Cobre y Luz', () => {
-  const e = M.inicial(LEY); e.cobre = 700; e.luz = 400;
-  const d = M.invocar(e, G.TCS.tc3.coste);
-  return (d.cobre === 100 && d.luz === 100 && d.eventos.at(-1).resultado === 'ok') || { cobre: d.cobre, luz: d.luz };
-});
-await caso('motor: coste invalido -> error, nunca un gasto raro', () => {
-  try { M.invocar(M.inicial(LEY), { cobre: -1, luz: 0 }); return 'paso'; } catch (e) { return true; }
-});
-await caso('piloto: no puede invocar (fuera del enum)', () =>
-  !P.valida({ esquema: 'atlas.accion/1', accion: 'invocar', origen: 'piloto_base' }));
+
+
+
+
 
 /* --- partida con invocacion: se graba, se reproduce y se verifica ---------- */
 const { publicKey, privateKey } = generateKeyPairSync('ed25519');
 const pub = publicKey.export({ format: 'der', type: 'spki' }).subarray(12).toString('hex');
 const firmaDe = (texto, clave = privateKey) => 'ed25519:' + sign(null, Buffer.from(texto), clave).toString('hex');
-await caso('partida: una invocacion se graba y la partida verifica', () => {
-  const w = {}; vm.createContext(w);
-  vm.runInContext(readFileSync(join(RAIZ, 'public/assets/atlas-motor.js'), 'utf8'), w);
-  vm.runInContext(readFileSync(join(RAIZ, 'public/assets/atlas-partida.js'), 'utf8'), w);
-  let E = w.AtlasMotor.inicial(LEY);
-  for (let i = 0; i < 200; i++) { E = w.AtlasMotor.ciclo(E, LEY); }
-  E = w.AtlasMotor.invocar(E, G.TCS.tc1.coste);
-  for (let i = 0; i < 5; i++) { E = w.AtlasMotor.ciclo(E, LEY); }
-  const p = w.AtlasPartida.partida(E, w.AtlasMotor);
-  const inv = p.pasos.find((s) => s.accion === 'invocar');
-  const r = verifica({ esquema: 'atlas.partida.firmada/1', partida: p, algoritmo: 'Ed25519',
-    firma: firmaDe(JSON.stringify(p)), pseudonimo: 'caso', clave_publica: pub });
-  return (inv && inv.coste.cobre === 50 && inv.origen === 'humano' && r.ok) || { inv, r };
-});
+
 
 /* --- army: sin firma verificada no entra nada ------------------------------- */
 function verificaNode(texto, firmaHex, claveHex) {
@@ -213,10 +190,7 @@ await caso('R6: el espectro manda el timbre (misma tropa, misma receta; las aris
   });
   return !mal.length || [...new Set(mal)].slice(0, 4);
 });
-await caso('R6: la voz exacta usa la MISMA receta (atlas-voz.js no copia la formula)', () => {
-  const v = readFileSync(join(RAIZ, 'public/assets/atlas-voz.js'), 'utf-8');
-  return (v.includes('S.vozDe(t)') && !v.includes('160 + 45')) || 'atlas-voz copia la receta';
-});
+
 await caso('sintesis: receta determinista y sin ficheros', () =>
   JSON.stringify(S.receta('pop', 0.3)) === JSON.stringify(S.receta('pop', 0.3)) && S.receta('mp3', 0) === null);
 await caso('sintesis: el calor del Nucleo hace el sonido mas grave y aspero', () => {
@@ -268,10 +242,7 @@ await caso('M17 M3: el duelo (wave_duel_scene.js, antes escena.js) destella con 
   const t = readFileSync(join(RAIZ, 'public/game/wave_duel_scene.js'), 'utf-8');
   return (t.includes('O.pulsoNota(') && !t.includes('u.flash*100')) || 'escena no lee pulsoNota';
 });
-await caso('carga: wave_render.js va ANTES que escena.js (escena captura AtlasOnda al cargar; al reves era {})', () => {
-  const t = readFileSync(join(RAIZ, 'public/assets/thegame.js'), 'utf-8'), c = t.slice(t.indexOf('var CASA'));
-  return c.indexOf("'/game/wave_render.js'") < c.indexOf("'/game/escena.js'") || 'escena antes que wave_render';
-});
+
 await caso('M17-bis 2: L sale del escudo, no de la vida', () => {
   const { O } = ONDA;
   const sana = O.colorVida(1, null, 24), herida = O.colorVida(0.2, null, 24), sinEscudo = O.colorVida(1, null, 2);

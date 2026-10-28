@@ -290,6 +290,30 @@ def paginas_de_contenido():
                   and p != PUBLICO / "index.html")
 
 
+class JuegoRetirado(unittest.TestCase):
+    """Norte 7 D (decision D2): el juego de /play/ se retiro con su pagina. Esta guarda sustituye a las
+    pruebas que leian ese juego (mismo patron que mapa_viejo_desmontado): que no vuelva a aparecer."""
+
+    FICHEROS = ("play/index.html", "assets/thegame.js", "assets/thegame.css", "assets/atlas-motor.js",
+                "game/ui-arena.js", "game/semiotic_glyph.js", "assets/soberano.css", "assets/canon.css",
+                "assets/page-comment.js", "assets/eaa-art12-local-first-surface.js",
+                "atlas-en.json", "atlas-arena-en.json")
+
+    def test_ningun_fichero_retirado_existe(self):
+        vivos = [f for f in self.FICHEROS if (PUBLICO / f).exists()]
+        self.assertEqual(vivos, [], "vuelven ficheros del juego retirado")
+
+    def test_el_worker_no_los_precachea(self):
+        sw = texto_del_worker()
+        for f in self.FICHEROS:
+            with self.subTest(fichero=f):
+                self.assertNotIn("'/" + f + "'", sw, f"el worker sigue precacheando /{f}")
+
+    def test_el_enlace_de_la_portada_no_apunta_a_play(self):
+        t = (PUBLICO / "index.html").read_text(encoding="utf-8")
+        self.assertNotIn('href="/play/"', t, "la portada enlaza al juego retirado")
+
+
 class Estructura(unittest.TestCase):
 
     def test_maximo_ocho_paginas(self):
@@ -484,57 +508,6 @@ class Estructura(unittest.TestCase):
 
 
 
-    def test_r_widget_y_r_tipografia(self):
-        """El anexo visual, comprobado y no confiado.
-
-        R-WIDGET nacio de una queja real: en el Doogee, con luz de dia, el
-        texto que caia directamente sobre el marmol no se leia. Y el motivo de
-        fondo es que el marmol es una TEXTURA, no un color -- sobre una textura
-        no se puede calcular contraste ninguno, asi que la unica regla honesta
-        es que todo texto tenga su par declarado.
-        """
-        canon = PUBLICO / "assets" / "canon.css"
-        self.assertTrue(canon.is_file(), "falta assets/canon.css")
-        css = canon.read_text(encoding="utf-8")
-
-        for token in ("--panel-bg", "--panel-fg", "--display"):
-            self.assertIn(token, css, f"canon.css no declara {token}")
-
-        # R-TIPOGRAFIA · cero fuentes externas. Las del stack viven ya en el
-        # sistema de quien mira; descargar una romperia «cero peticiones
-        # externas al cargar», que es una cifra publicada en la portada.
-        self.assertNotIn("@import", css, "canon.css importa algo de fuera")
-        self.assertNotIn("@font-face", css, "canon.css descarga una fuente")
-
-        # El contraste se MIDE aqui, con la formula de la WCAG, no se promete.
-        def _lum(h):
-            c = [int(h[i:i + 2], 16) / 255 for i in (0, 2, 4)]
-            c = [x / 12.92 if x <= .03928 else ((x + .055) / 1.055) ** 2.4 for x in c]
-            return .2126 * c[0] + .7152 * c[1] + .0722 * c[2]
-
-        pares = dict(re.findall(r"--panel-(bg|fg):#([0-9A-Fa-f]{6})", css))
-        self.assertEqual(sorted(pares), ["bg", "fg"],
-                         "el par del panel no esta declarado en hex")
-        a, b = _lum(pares["fg"]), _lum(pares["bg"])
-        a, b = max(a, b), min(a, b)
-        razon = (a + .05) / (b + .05)
-        self.assertGreaterEqual(round(razon, 2), 4.5,
-                                f"el par del panel da {razon:.2f}:1, por debajo de 4,5")
-
-        # Y toda pagina que cargue base.css tiene que cargar tambien el canon:
-        # si no, R-WIDGET rige a medias y el hueco es justo el que se veia mal.
-        # Se busca el <link>, no la cadena: la raiz MENCIONA base.css en un
-        # comentario que explica que a proposito NO la carga («ruteo puro,
-        # para que la puerta cargue sola»), y un grep ingenuo la acusaba de
-        # incumplir una regla que no le aplica.
-        enlace = re.compile(r'<link[^>]+href="[^"]*assets/base\.css"')
-        for p_ in PUBLICO.rglob("*.html"):
-            t = p_.read_text(encoding="utf-8")
-            if not enlace.search(t):
-                continue
-            with self.subTest(fichero=str(p_.relative_to(RAIZ))):
-                self.assertIn("canon.css", t, "carga base.css pero no el canon")
-
     def test_toda_pagina_ofrece_LAS_LENGUAS_QUE_EXISTEN(self):
         """La rueda de idiomas sale de aqui, y por eso ofrecia tres de ocho.
 
@@ -567,34 +540,6 @@ class Estructura(unittest.TestCase):
                     en_disco, declara,
                     f"el disco tiene {sorted(en_disco)} y la pagina declara "
                     f"{sorted(declara)}: la rueda de idiomas ofrece lo segundo")
-
-
-    def test_la_capa_soberana_va_la_ultima_y_no_pide_nada_fuera(self):
-        """Soberania Violeta-Cobre, 2026-09-25. Una capa ENCIMA del tema.
-
-        Tiene que cargarse detras de `tema.css` en cada pagina que lo carga:
-        antes, `tema.css` volveria a pisar la paleta y la web saldria a medias
-        segun la pagina. Y no puede traer nada de fuera: ni una fuente.
-        """
-        css = (PUBLICO / "assets" / "soberano.css").read_text(encoding="utf-8")
-        codigo = re.sub(r"/\*.*?\*/", "", css, flags=re.S)
-        self.assertNotIn("http", codigo, "la capa visual pide algo fuera")
-        self.assertNotIn("@import", codigo, "la capa visual encadena otra hoja")
-        for token in ("--bg-primary:#0f0c1b", "--bg-secondary:#1a152a",
-                      "--accent-violet:#7c3aed", "--accent-copper:#d97706",
-                      "--text-main:#e2e8f0", "--text-muted:#94a3b8"):
-            with self.subTest(token=token):
-                self.assertIn(token, codigo, f"falta la paleta firmada: {token}")
-        tema = '<link rel="stylesheet" href="/assets/tema.css">'
-        capa = '<link rel="stylesheet" href="/assets/soberano.css">'
-        for pag in sorted(PUBLICO.rglob("*.html")):
-            t = pag.read_text(encoding="utf-8")
-            if tema not in t:
-                continue
-            with self.subTest(pagina=pag.relative_to(PUBLICO).as_posix()):
-                self.assertIn(capa, t, "la pagina carga el tema y no la capa")
-                self.assertLess(t.index(tema), t.index(capa),
-                                "la capa va antes que el tema y este la pisa")
 
 
     def test_la_prosa_del_pie_va_PLEGADA(self):
@@ -1396,8 +1341,7 @@ class PWA(unittest.TestCase):
 
         # 1 · las piezas de la PORTADA-JUEGO (mudanza b3, 2026-10-11: el hub cayo; la portada es el juego).
         # Corte Norte 7 pieza C (2026-10-28): thegame.js sale del shell con /play/; ya no se cachea.
-        for pieza in ("/assets/eaa-art12-local-first-surface.js", "/assets/auth.js",
-                      "/assets/pwa.js", "/game/gdpr-art25-ephemeral-crab.js", "/assets/atlas-motor.js"):
+        for pieza in ("/assets/auth.js", "/assets/pwa.js", "/game/gdpr-art25-ephemeral-crab.js"):
             with self.subTest(pieza=pieza):
                 self.assertIn(f"'{pieza}'", sw,
                               f"el worker no cachea {pieza}")
@@ -1421,7 +1365,9 @@ class PWA(unittest.TestCase):
         # 3 · contenido si, medida no
         contenido = re.search(r"const CONTENIDO_JSON = \[(.*?)\]", sw, re.S)
         self.assertIsNotNone(contenido, "el worker no separa contenido de medida")
-        self.assertIn("...ATLAS", contenido.group(1), "los textos del juego son contenido")
+        # Norte 7 D: el lexicon de theGame se retiro y CONTENIDO_JSON queda vacio a proposito.
+        self.assertEqual(contenido.group(1).strip(), "",
+                         "el lexicon de theGame se retiro: CONTENIDO_JSON no debe citar nada del juego")
         self.assertNotIn("counters.json", contenido.group(1),
                          "el worker cachearia la cifra de los gates")
         self.assertIn("/manifest.webmanifest",
@@ -2281,69 +2227,6 @@ class ComentarEnTodasLasPaginas(unittest.TestCase):
     JS = PUBLICO / "assets" / "page-comment.js"
 
 
-    def test_el_modulo_usa_la_puerta_que_ya_existe_y_no_abre_otra(self):
-        self.assertTrue(self.JS.is_file(), "falta public/assets/page-comment.js")
-        js = sin_comentarios(self.JS.read_text(encoding="utf-8"))
-        self.assertLessEqual(self.JS.stat().st_size, 16 * 1024)
-        for malo in ("fetch(", "XMLHttpRequest", "sendBeacon", "WebSocket", "EventSource", "innerHTML", "localStorage"):
-            with self.subTest(prohibido=malo):
-                self.assertNotIn(malo, js, "el comentario sale por enviar.js y por nada mas")
-        self.assertEqual(js.count(".paquete('preceptoros/correcciones/1'"), 1)
-        self.assertIn("s.src = '/assets/enviar.js'", js)
-        self.assertIn("correccion: texto", js, "el texto no viaja tal cual")
-        self.assertNotIn(".trim()", js, "el texto se recorta antes de viajar")
-        self.assertIn("tipo: 'comentario'", js, "un comentario entraria en el dataset de correcciones")
-        self.assertIn("R.casilla.checked = false; R.estado.textContent = ''", js, "el consentimiento no es por acto")
-        env = sin_comentarios((PUBLICO / "assets" / "enviar.js").read_text(encoding="utf-8"))
-        self.assertEqual(re.findall(r"fetch\((API \+ '/\w+')", env), ["API + '/reto'", "API + '/paquetes'"])
-
-    def test_dice_que_se_envia_en_las_nueve_lenguas(self):
-        js = self.JS.read_text(encoding="utf-8")
-        for l in LENGUAS_DATOS:
-            with self.subTest(lengua=l):
-                m = re.search(r"\n    " + l + r": \[(.*?)\]", js, re.S)
-                self.assertTrue(m, f"sin textos en {l}")
-                self.assertEqual(len(re.findall(r"'(?:[^'\\]|\\.)*'", m.group(1))), 14, l)
-                self.assertIn("{p}", m.group(1), f"{l}: no dice que pagina se envia")
-
-
-class ElJuegoEnInglesEnLasNueve(unittest.TestCase):
-    """theGame habla solo ingles y se presenta en las nueve lenguas de la web (Soberano,
-    2026-10-04). Medido jugando en headless: el juego se abria bien en las nueve, pero el aviso
-    «This game speaks English for now» caia en la pestana GAME y nadie de /es/ o /ar/ lo veia."""
-
-    def _js(self, n):
-        return sin_comentarios((PUBLICO / "assets" / n).read_text(encoding="utf-8"))
-
-    def test_las_lenguas_del_juego_son_solo_ingles(self):
-        self.assertIn("var LENGUAS = ['en']", self._js("thegame.js"))
-        for n in ("atlas-opina.js",):
-            self.assertIn("window.AtlasLengua.actual) || 'en'", self._js(n), n)
-        self.assertIn("window.AtlasLengua.actual) || 'en'",
-                      sin_comentarios((PUBLICO / "game" / "ui-arena-comun.js").read_text(encoding="utf-8")))  # U0: los textos de la Arena
-
-    def test_el_aviso_de_solo_ingles_va_primero_en_la_pestana_de_entrada(self):
-        # Desde U1 («el mapa unico», 2026-10-11) no hay pestanas: la primera zona es el pliego «Estado» de la
-        # terminal, ABIERTO de salida, y ahi tiene que caer el aviso (si no, cae plegado y no se ve).
-        js = self._js("thegame.js")
-        primera = re.search(r"var PESTANAS = \[\s*\['(\w+)', '[^']*', '([^']*)'\]", js)
-        self.assertTrue(primera, "no encuentro la primera pestana")
-        self.assertTrue(primera.group(2).startswith("#atlas-juego > .no-data:first-child"),
-                        "el aviso de lengua no va el primero en la pestana de entrada: cae en Help y no se ve")
-        self.assertEqual(primera.group(1), "casa", "la primera zona ya no es la del Estado")
-        # Desde la terminal chatbot (FIRMO 2026-10-12) el mapa queda limpio y el cajon cerrado: el aviso de lengua va,
-        # ademas, como PRIMER mensaje del chat de la Radio, que se ve aun plegado (su ultima linea).
-        shell = self._js("terminal_menu_shell.js")
-        self.assertIn("var est = S.PANEL.casa;", shell)
-        self.assertIn("raiz.AtlasRadioChat.dice({ quien: 'Radio', fuente: 'lengua', texto: aviso.textContent, sello: 'NO_DATA' })", shell,
-                      "el aviso de lengua no llega al chat de la Radio")
-        # R2 (plan «el refresco»): Help desaparece; el aviso generico (`#atlas-juego > .no-data`) lo reparte MAP.
-        self.assertLess(js.index(f"['{primera.group(1)}'"), js.index("['mapa'"),
-                        "la entrada tiene que repartir antes que MAP, o MAP se lleva el aviso")
-        piso = self._js("atlas-piso.js")
-        self.assertIn("zona.insertBefore(el('p', 'no-data', U('lengua_nd')", piso)
-        self.assertIn("{l}", json.loads((PUBLICO / "atlas-en.json").read_text(encoding="utf-8"))["ui"]["lengua_nd"])
-
 class WebLimpia(unittest.TestCase):
     """Inventario determinista de public/ (2026-10-04). Lo dudoso NO se borra: queda congelado en
     `config/limpieza-propuesta.json` (PROPUESTA, espera firma). Lo que vigila este gate es que no
@@ -2432,73 +2315,6 @@ class WebLimpia(unittest.TestCase):
             servidor.shutdown()
             servidor.server_close()
             hilo.join(timeout=3)
-
-
-class Portada(unittest.TestCase):
-    """LA PORTADA ES EL JUEGO (mudanza firmada 2026-10-11, bloque 1; plan por capas C1; canon de UI,
-    ideas6oct:1711): cabezal arriba y UN SOLO panel debajo con el juego dentro. Sustituye a las pruebas
-    del hub retiradas (config/pruebas-retiradas.json)."""
-
-    PERMITIDOS = {"/assets/auth.js", "/assets/consiento.js", "/assets/enviar.js", "/assets/pwa.js",
-                  "/assets/page-comment.js", "/assets/thegame.js", "/assets/eaa-art12-local-first-surface.js"}
-
-    def portadas(self):
-        # Recencia + canon ingles (2026-10-25): el juego se monto en /play/; la raiz es la puerta (Puerta, abajo).
-        yield "play", (PUBLICO / "play" / "index.html").read_text(encoding="utf-8")
-
-    def test_las_diez_son_la_plantilla(self):
-        r = subprocess.run([sys.executable, str(RAIZ / "local_first_surface_build.py"), "--comprueba"], capture_output=True, text=True)
-        self.assertEqual(r.returncode, 0, "una portada no es la plantilla (python3 local_first_surface_build.py): " + r.stdout)
-
-    def test_un_solo_panel_y_nada_del_hub(self):
-        for l, t in self.portadas():
-            with self.subTest(portada=l):
-                self.assertEqual(t.count("<main"), 1)
-                self.assertIn('<main id="juego-panel"', t)
-                self.assertEqual(t.count("<header"), 1)
-                for hub in ('id="cabezal"', 'id="i18n"', "chat", "honest-footer", "panel-modelos", "cabezal-rotulos"):
-                    self.assertNotIn(hub, t, f"{l}: la portada trae HTML del hub ({hub})")
-
-    def test_solo_carga_lo_que_el_juego_necesita(self):
-        """Medido (propuestas/mudanza-20261011/pide.js): Identity, el canal, la PWA y el juego."""
-        for l, t in self.portadas():
-            with self.subTest(portada=l):
-                guiones = set(re.findall(r'<script src="([^"]+)"', t))
-                sobran = {g for g in guiones - self.PERMITIDOS if not re.fullmatch(r"/assets/enviar-[a-z]{2}\.js", g)}
-                self.assertEqual(sobran, set(), f"{l} carga lo que el juego no pide")
-                self.assertIn("/assets/thegame.js", guiones)
-
-    def test_la_pagina_se_reordena_no_carga(self):
-        """J10: cambiar de pestana va en startViewTransition, con el cambio de siempre como reserva y SIN
-        animacion con movimiento reducido; el contenido final lo pone muestraYa, el mismo de antes."""
-        # La terminal (menu, cajon, hojas) salio de thegame.js a terminal_menu_shell.js (FIRMO 2026-10-12): se miran los dos.
-        tg = (PUBLICO / "assets" / "thegame.js").read_text(encoding="utf-8") + (PUBLICO / "assets" / "terminal_menu_shell.js").read_text(encoding="utf-8")
-        self.assertIn("d.startViewTransition && !rm", tg)
-        self.assertIn(".thegame-menu-item.con-aviso::after", (PUBLICO / "assets" / "terminal_menu_shell.css").read_text(encoding="utf-8"),
-                      "History mode must show a visible notification light")
-        self.assertIn("else { muestraYa(id, foco); }", tg)
-        self.assertIn("prefers-reduced-motion: reduce", tg[tg.index("function muestra(id"):tg.index("function muestraYa")])
-        css = (PUBLICO / "assets" / "eaa-art12-local-first-surface.css").read_text(encoding="utf-8")
-        self.assertIn("@media (prefers-reduced-motion:reduce){::view-transition-old(root),::view-transition-new(root){animation:none}}", css)
-        for red in ("fetch(", "XMLHttpRequest"):
-            self.assertNotIn(red, tg[tg.index("function muestra(id"):tg.index("function muestraYa")])
-
-    def test_menu_y_hoja_nunca_quedan_abiertos_a_la_vez(self):
-        shell = sin_comentarios((PUBLICO / "assets" / "terminal_menu_shell.js").read_text(encoding="utf-8"))
-        muestra = shell[shell.index("function muestraYa"):shell.index("function hoja(")]
-        abre = shell[shell.index("function abre("):shell.index("function entrada(")]
-        self.assertRegex(muestra, r"if\s*\(actual\)[\s\S]*?(?:cierraCajon|cajon\.hidden\s*=\s*true)",
-                         "abrir hoja debe cerrar el panel lateral antes de mostrarla")
-        self.assertRegex(abre, r"if\s*\(siguiente[\s\S]*?cierraHoja\(\)",
-                         "abrir panel lateral debe cerrar la hoja abierta")
-
-    def test_el_juego_se_monta_en_el_panel_no_encima(self):
-        tg = (PUBLICO / "assets" / "thegame.js").read_text(encoding="utf-8")
-        self.assertIn("var P = document.getElementById('juego-panel');", tg)
-        # U0 («el mapa unico»): todas las paginas son portadas; el camino del <dialog> se retiro (nunca corria).
-        self.assertIn("P.textContent = ''; P.appendChild(capa);", tg)
-        self.assertNotIn("showModal", sin_comentarios(tg))
-        self.assertIn("window.TheGame.abre(null", (PUBLICO / "assets" / "eaa-art12-local-first-surface.js").read_text(encoding="utf-8"))
 
 
 class HubSinMundosVivos(unittest.TestCase):
@@ -2601,10 +2417,13 @@ class Puerta(unittest.TestCase):
 
     def test_las_puertas_se_ven(self):
         # NORTE 7 · PR 1 (decreto 2026-10-28): la INTRO tiene tres opciones, OpenWorld · Tutorial · Tools.
-        # OpenWorld y Tutorial van a /play/ hasta que /openworld/ exista (PR 2).
-        for href, titulo in (("/openworld/", "OpenWorld"), ("/play/", "Tutorial")):
+        # Corte D, decreto del Sovereign (supersede D1): la INTRO solo tiene OpenWorld y Tools. El tutorial es el camino
+        # deterministico DENTRO de OpenWorld (llave, faro, primer combate). La puerta Tutorial sale, no se redirige.
+        for href, titulo in (("/openworld/", "OpenWorld"),):
             with self.subTest(titulo=titulo):
                 self.assertIn(f'<a class="door" href="{href}"><b>{titulo}</b><span>', self.t)
+        self.assertNotIn("<b>Tutorial</b>", self.t, "la puerta Tutorial debe salir de la INTRO (decreto corte D)")
+        self.assertNotIn('href="/play/"', self.t, "la INTRO no enlaza al juego retirado")
         # Tools es un clic directo (boton), no un enlace: la PWA o el desplegable visible de abajo.
         self.assertIn('<button class="door door-tools" id="door-tools" type="button" aria-controls="tools-dispositivo">'
                       '<b>Tools</b>', self.t)
@@ -2633,44 +2452,6 @@ class Puerta(unittest.TestCase):
         for n in ("favicon.svg", "preceptor-og.png", "icon-pwa-192.png", "icon-pwa-512.png", "icon-pwa-512-maskable.png"):
             with self.subTest(fichero=n):
                 self.assertFalse((PUBLICO / "assets" / n).exists())
-
-
-class GlifoSemantico(unittest.TestCase):
-    """P2: family-friendly vector marks, WCAG non-text contrast and a compact four-value record."""
-
-    def test_palette_vectorial_contrasta_con_el_panel(self):
-        fuente = (PUBLICO / "game" / "semiotic_glyph.js").read_text(encoding="utf-8")
-        paleta = re.search(r"var COLORS = \[([^]]+)\]", fuente)
-        self.assertIsNotNone(paleta)
-        colores = re.findall(r"#[0-9A-Fa-f]{6}", paleta.group(1))
-        self.assertEqual(colores, ["#E6A817", "#00D2FF", "#2ECC71", "#9B59B6", "#7F8C8D"])
-
-        def lum(h):
-            rgb = [int(h[i:i + 2], 16) / 255 for i in (1, 3, 5)]
-            linear = [x / 12.92 if x <= .04045 else ((x + .055) / 1.055) ** 2.4 for x in rgb]
-            return .2126 * linear[0] + .7152 * linear[1] + .0722 * linear[2]
-
-        fondo = lum("#111827")
-        for color in colores:
-            with self.subTest(color=color):
-                self.assertGreaterEqual((max(lum(color), fondo) + .05) / (min(lum(color), fondo) + .05), 3.0,
-                                        "WCAG 1.4.11 non-text contrast for the glyph edge")
-
-    def test_glifo_es_accesible_local_y_acotado(self):
-        fuente = (PUBLICO / "game" / "semiotic_glyph.js").read_text(encoding="utf-8")
-        css = (PUBLICO / "game" / "home.css").read_text(encoding="utf-8")
-        self.assertLess(len(fuente.encode()), 16 * 1024)
-        self.assertLess(len(css.encode()), 16 * 1024)
-        self.assertIn("role: 'img'", fuente)
-        self.assertIn("'aria-label': describe(g, note)", fuente)
-        self.assertRegex(css, r"semiotic-sound\{[^}]*min-height:2\.75rem")
-        self.assertIn("@media(prefers-reduced-motion:reduce)", css)
-        for remote in ("fetch(", "WebSocket", "XMLHttpRequest", "sendBeacon"):
-            self.assertNotIn(remote, fuente)
-        r = subprocess.run(["node", str(RAIZ / "atlas" / "semiotic_glyph_cases.mjs")],
-                           capture_output=True, text=True, cwd=RAIZ, timeout=30)
-        self.assertEqual(r.returncode, 0, r.stderr or r.stdout)
-        self.assertIn('"casos":180', r.stdout)
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

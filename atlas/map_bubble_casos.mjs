@@ -1,17 +1,12 @@
-import assert from 'node:assert/strict';
-import { createRequire } from 'node:module';
-const require = createRequire(import.meta.url);
-const figures = require('../public/game/map_bubble_figures.js');
-const bubble = require('../public/game/bubble_language.js');
-require('../public/game/bubble_bestiary.js');
-const names = ['star', 'octo'];
-for (const name of names) {
-  for (const eye of ['open', 'shut']) {
-    const frame = figures.frame(name, 24, 31, 12, eye);
-    assert.ok(frame, name + ' frame is valid');
-    assert.ok(Buffer.byteLength(JSON.stringify(frame), 'utf8') < 1024, name + ' frame exceeds channel ceiling');
-    assert.ok(bubble.compile(frame).length > 0, name + ' resolves to bestiary drawing');
-    assert.equal(frame.atoms[0].i[0].eye, eye, name + ' preserves map state');
-  }
-}
-console.log('map bubble cases: 8/8');
+// Corte D (2026-10-28), decision D2: este caso probaba el juego de /play/, retirado con su pagina.
+// Guarda de retirada: los ficheros del juego no existen y no estan en el precache. Mantiene su nombre (los workflows
+// no cambian) e imprime un recibo JSON.
+import { existsSync, readFileSync } from 'node:fs';
+
+const RETIRADOS = ['public/game/map_bubble_figures.js'];
+const sw = readFileSync('public/sw-listas.js', 'utf8');
+const vivos = RETIRADOS.filter(p => existsSync(p)).map(p => 'vive ' + p);
+const precache = RETIRADOS.filter(p => sw.includes("'/" + p.replace(/^public\//, '') + "'")).map(p => 'precacheado ' + p);
+const fallos = [...vivos, ...precache];
+console.log(JSON.stringify({ piece: 'corte-D-retirada', receipt: 'RETIRADO', retirados: RETIRADOS.length, fallos }));
+process.exit(fallos.length ? 1 : 0);

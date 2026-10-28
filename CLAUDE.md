@@ -22,8 +22,8 @@ Todo lo que se construye aquí es **marca personal de PreceptorOS** (el Soberano
 | `public/assets/atlas-*.js` | El piso, el motor puro (`atlas-motor.js`, **no se toca** sin firma), el piloto, la partida, el mapa y las ondas |
 | `public/game/` | v1.5 (valores, gacha, db, core, ui, juez) y el multijugador: `canon`, `sobres`, `rating`, `arena`, `duelo`, `escena`, `mar`, `ui-arena`, `ui-duelo`, `mercado`, `narragrafo`, `cria` (el validador del genoma vive fuera de lo servido, en `atlas/puros/genoma.js`) |
 | `data/` | Contratos JSON Schema (no se sirven): un caso bueno y 6 violaciones cada uno, en `atlas/test_atlas.py` |
-| `atlas/` | El laboratorio: casos en node (`*_casos.mjs`), verificadores (`verifica_partida.mjs`, `verifica_opinion.mjs`), `tabla_opiniones.mjs`, `vigia.mjs`, planes y auditorías (`PLAN_THEGAME_ESTRUCTURA.md`, `POST_VERIFICACION_*.md`, `PROMPT_RACK_THEGAME.md`) |
-| `partidas/`, `opiniones/` | Lo que llega firmado de las personas; los workflows lo verifican |
+| `atlas/` | El laboratorio: casos en node (`*_casos.mjs`), verificadores (`verifica_opinion.mjs`), `tabla_opiniones.mjs`, `vigia.mjs`, planes y auditorías (`PLAN_THEGAME_ESTRUCTURA.md`, `POST_VERIFICACION_*.md`, `PROMPT_RACK_THEGAME.md`) |
+| `opiniones/` | Lo que llega firmado de las personas; los workflows lo verifican. (`partidas/` y su aduana se retiraron con theGame, corte D) |
 
 ## Cómo se trabaja
 0. **ODD (FIRMO 2026-10-28).** Explora → implementa → checks proporcionales. El trabajo sustancial se trackea en `odd/tasks/<feature>.md`; un paso que requiera firma JAMÁS detiene el trabajo: se busca la firma ya hecha en el corpus (el LIBRO; ideas, ejemplos y joyas cuentan como firmados), se apunta la modificación y se continúa. **Deber de doctrina** (FIRMO 2026-10-28, siempre en privado): cada sesión mejora la doctrina siempre que pueda — anarco-utilitarista: lo que no es INTANGIBLE se aplica en el propio encargo con huella y recibo; lo INTANGIBLE se propone.

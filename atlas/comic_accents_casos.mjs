@@ -2,7 +2,8 @@
 // Se escriben ANTES que el modulo: rojo primero. Imprime UNA linea JSON
 // {ok, casos:[{caso, nombre, ok, medida?}]} y sale con rc=0 solo si todos pasan.
 // Comentarios en espanol; API en ingles.
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import { createRequire } from 'node:module';
 
 const req = createRequire(import.meta.url);
@@ -96,28 +97,11 @@ function caso3() {
   return { ok, medida: `calibracion=${calibracion.map((x) => x.toFixed(2)).join('/')} ${medidas.join(' ')}` };
 }
 
-// 4. Sonido: cada sound resuelve con AtlasRadio.nota(g, o) a un numero finito, y words no vacio.
+// 4. Sonido (corte D, 2026-10-28): la radio de theGame (aiact-art50-state-radio.js) se retiro con el juego.
+// El caso pasa a comprobar la retirada: el fichero no existe.
 function caso4() {
-  if (!modulo.v) return sinModulo(modulo);
-  if (!radio.v || typeof radio.v.nota !== 'function') {
-    return { ok: false, medida: 'sin AtlasRadio.nota: ' + (radio.error || 'falta nota()') };
-  }
-  const A = modulo.v.ACCENTS;
-  const esperado = {
-    vermilion: { g: 1, o: 0, words: 'one soft low bell' },
-    'comic yellow': { g: 3, o: 1, words: 'one warm bell' },
-  };
-  let ok = true;
-  const medidas = [];
-  for (const k of Object.keys(esperado)) {
-    const s = A[k].sound;
-    const e = esperado[k];
-    const hz = radio.v.nota(s.g, s.o);
-    ok = ok && s.g === e.g && s.o === e.o && s.words === e.words
-      && typeof hz === 'number' && Number.isFinite(hz) && s.words.trim() !== '';
-    medidas.push(`${k} g${s.g} o${s.o}=${hz}Hz`);
-  }
-  return { ok, medida: medidas.join('; ') };
+  const radioRetirada = !existsSync(fileURLToPath(new URL('../public/game/aiact-art50-state-radio.js', import.meta.url)));
+  return { ok: radioRetirada, medida: 'aiact-art50-state-radio.js retirado con el juego (corte D)' };
 }
 
 // 5. param_gate reconoce las bandas de los dos acentos, apuntan a sus literales, sin colision.
