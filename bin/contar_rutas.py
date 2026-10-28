@@ -85,16 +85,16 @@ def measure():
         "PORTADA locale expansion",
     )
     require_pattern(source, r"\bconst\s+HUB\s*=\s*\[\.\.\.PORTADA,\s*\.\.\.JUEGO\s*\]", "HUB")
-    # English canon until MVP (2026-10-25): the nine locale portals are Worker 301s to `/` and the
-    # game shell lives at /play/, so the shell no longer expands IDIOMAS x PAGINAS.
+    # English canon until MVP (2026-10-25): the nine locale portals are Worker 301s to `/`, so the
+    # shell no longer expands IDIOMAS x PAGINAS. Norte 7 C (2026-10-28): /play/ left the shell.
     require_pattern(
         worker,
         r"function\s+rutasDelShell\s*\(\)\s*\{(?:\s*//[^\n]*)*\s*return\s*\[\s*['\"]\/['\"]\s*,\s*"
-        r"['\"]\/play\/['\"]\s*,\s*['\"]\/manifest\.webmanifest['\"]\s*\]\s*\.concat\(HUB\);\s*\}",
+        r"['\"]\/manifest\.webmanifest['\"]\s*\]\s*\.concat\(HUB\);\s*\}",
         "service-worker shell expansion",
     )
 
-    entries = ["/", "/play/", "/manifest.webmanifest"]
+    entries = ["/", "/manifest.webmanifest"]
     entries.extend(cover)
     entries.extend("/assets/enviar-" + language + ".js" for language in languages)
     entries.extend(game)

@@ -6,10 +6,10 @@ Status: proposal for review. Deployment remains a human action. This document re
 
 `wrangler.jsonc` names the Worker `preceptoros-web` and serves `./public` as static assets. `.github/workflows/deploy.yml` is `manual-worker-deploy`: `workflow_dispatch`, guarded to `refs/heads/main`, with the `production` environment. The Mesa measured that environment as requiring a reviewer; the approval policy is hosted in GitHub and is not represented in this checkout. The Sovereign triggers the workflow and supplies the human approval. Agents do not deploy.
 
-Route-count receipt for this source tree (`origin/main` 7d909bb + `haiku/openworld-20261028` NORTE 7 PR 2: `/openworld/` joins the shell):
+Route-count receipt for this source tree (`haiku/sw-purge-play-20261028`, Norte 7 C: `/play/` and `thegame.js`/`thegame.css` leave the shell; measured with `python3 bin/contar_rutas.py`, 2026-10-28):
 
-Rutas precargadas por el shell: 225
-Rutas distintas del shell: 224
+Rutas precargadas por el shell: 222
+Rutas distintas del shell: 221
 
 The workflow runs exactly:
 
