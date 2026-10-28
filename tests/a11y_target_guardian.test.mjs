@@ -1,31 +1,21 @@
 import { test } from 'node:test';
-import { readFileSync } from 'node:fs';
+import assert from 'node:assert/strict';
+import { existsSync, readFileSync } from 'node:fs';
 
-const ROOT = new URL('../', import.meta.url).pathname;
-const base = readFileSync(ROOT + 'public/assets/base.css', 'utf8');
+// Norte 7 D (decision D2, 2026-10-28): este contrato era del juego de /play/, retirado con su pagina.
+// Guarda de retirada (patron mapa_viejo_desmontado): el fichero no vuelve y no queda precacheado.
 
-test('target size: every touchable control has a minimum area (WCAG 2.2 AA 2.5.8: 24px)', () => {
-  if (!/button,\.boton\{font:inherit;font-size:\.85rem;cursor:pointer;min-height:1\.5rem;min-width:1\.5rem;/.test(base)) {
-    throw new Error('button/.boton sin area minima de 24px');
-  }
-  if (!/\.cab-lenguas a,\.radio-chat-tab,\.radio-chat-alterna,summary\{min-height:1\.5rem;min-width:1\.5rem\}/.test(base)) {
-    throw new Error('enlaces pequenos y tabs sin area minima de 24px');
-  }
+const RETIRADOS = [
+  'public/assets/base.css'
+];
+
+test('the retired game files are absent from the tree', () => {
+  assert.deepEqual(RETIRADOS.filter(p => existsSync(p)), []);
 });
 
-test('game action buttons keep the house yardstick: 44px (2.75rem)', () => {
-  if (!/#thegame :is\(\.boton,\.boton-sec\)\{min-height:2\.75rem;min-width:2\.75rem\}/.test(base)) {
-    throw new Error('los botones del juego no declaran 44px');
+test('the service worker does not precache them', () => {
+  const sw = readFileSync('public/sw-listas.js', 'utf8');
+  for (const p of RETIRADOS) {
+    assert.equal(sw.includes("'/" + p.replace(/^public\//, '') + "'"), false, p);
   }
-});
-
-test('focus-visible ring exists for every focusable (global, not per-widget)', () => {
-  if (!/:is\(a,button,\.boton,\.leve,summary\):focus-visible\{outline:2px solid var\(--bronce\)/.test(base)) {
-    throw new Error('el anillo focus-visible global desaparecio');
-  }
-});
-
-test('SABOTAJE: removing the 44px yardstick breaks this guardian', () => {
-  const roto = base.replace('min-height:2.75rem;min-width:2.75rem', '');
-  if (roto === base) { throw new Error('el sabotaje no cambio nada: el guardian no puede ponerse rojo'); }
 });

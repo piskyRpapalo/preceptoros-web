@@ -15,60 +15,6 @@
     "pinta",
     "registro"
   ],
-  "public/assets/atlas-arte.js": [
-    "grieta"
-  ],
-  "public/assets/atlas-carta.js": [
-    "accion",
-    "arrecife",
-    "bosque",
-    "esquema_accion",
-    "grieta",
-    "juez",
-    "lee",
-    "niebla",
-    "nodo",
-    "nodos_ajenos",
-    "ojo"
-  ],
-  "public/assets/atlas-dialogo.js": [
-    "nodo",
-    "pinta"
-  ],
-  "public/assets/atlas-gesto.js": [
-    "abre",
-    "accion",
-    "arrecife",
-    "bosque",
-    "causa_ojo",
-    "ficha_grieta_abierta",
-    "ficha_grieta_sellada",
-    "grieta",
-    "monta",
-    "nodo",
-    "nodo_nd",
-    "nodo_tuyo",
-    "toca"
-  ],
-  "public/assets/atlas-guardado.js": [
-    "atlas-guardado-recibo",
-    "atlas-sello",
-    "ciclo",
-    "dice",
-    "firma",
-    "importada_firma_mal",
-    "importada_firma_ok",
-    "importada_sin_firma",
-    "monta",
-    "montainspector"
-  ],
-  "public/assets/atlas-hud.js": [
-    "ciclo",
-    "ciclovalido",
-    "hud_ciclo",
-    "monta",
-    "pinta"
-  ],
   "public/assets/atlas-mapa.js": [
     "adopcion",
     "atlas-nodo",
@@ -82,144 +28,9 @@
     "toca",
     "tropa"
   ],
-  "public/assets/atlas-motor.js": [
-    "aduana",
-    "arrecife",
-    "bosque",
-    "ciclo",
-    "dice",
-    "fuera",
-    "grieta",
-    "grieta-",
-    "ojo",
-    "pinta",
-    "sello",
-    "toca"
-  ],
-  "public/assets/atlas-obra.js": [
-    "ojo",
-    "pinta"
-  ],
-  "public/assets/atlas-opina.js": [
-    "abre",
-    "ciclo",
-    "cierra",
-    "dice",
-    "firma",
-    "grieta",
-    "nodo",
-    "thegame-juez"
-  ],
-  "public/assets/atlas-partida.js": [
-    "accion",
-    "ciclo",
-    "grieta"
-  ],
-  "public/assets/atlas-piloto-capa.js": [
-    "ciclo",
-    "dice",
-    "firma",
-    "monta"
-  ],
-  "public/assets/atlas-piloto.js": [
-    "accion",
-    "arrecife",
-    "bosque",
-    "casa",
-    "faro",
-    "grieta"
-  ],
-  "public/assets/atlas-piso.js": [
-    "accion",
-    "arrecife",
-    "atlas-casa",
-    "atlas-sello",
-    "atlasmar",
-    "bosque",
-    "casa_mal",
-    "ciclo",
-    "dice",
-    "monta",
-    "nodo",
-    "pinta",
-    "sello"
-  ],
-  "public/assets/atlas-voz.js": [
-    "huella"
-  ],
-  "public/assets/atlas.css": [
-    "atlas-casa",
-    "atlas-incubadora",
-    "atlas-nido",
-    "atlas-sello",
-    "atlas-tropa",
-    "bosque",
-    "casa",
-    "fija",
-    "fuera",
-    "incubadora",
-    "ojo",
-    "portada"
-  ],
   "public/assets/auth.js": [
     "firma",
     "huella-corta"
-  ],
-  "public/assets/base.css": [
-    "accion",
-    "casa",
-    "cuenta",
-    "dice",
-    "escribe",
-    "fuera",
-    "hitl-firma",
-    "lee",
-    "navegacion",
-    "ojo",
-    "portada",
-    "toca",
-    "vara"
-  ],
-  "public/assets/canon.css": [
-    "casa",
-    "dice",
-    "fuera",
-    "lee",
-    "navegacion",
-    "pinta",
-    "portada",
-    "sirve",
-    "taller"
-  ],
-  "public/assets/codex_scene.js": [
-    "arena",
-    "huevo"
-  ],
-  "public/assets/consiento.css": [
-    "abre",
-    "app-cuenta",
-    "dice",
-    "escribe",
-    "lee",
-    "ojo",
-    "pinta"
-  ],
-  "public/assets/descent_view.js": [
-    "accion",
-    "botoncuenta",
-    "escena",
-    "haycuenta",
-    "monta"
-  ],
-  "public/assets/eaa-art12-local-first-surface.css": [
-    "portada"
-  ],
-  "public/assets/eaa-art12-local-first-surface.js": [
-    "abre",
-    "casa"
-  ],
-  "public/assets/en301_practice.css": [
-    "arena"
   ],
   "public/assets/enviar-ar.js": [
     "envsinfirmatexto"
@@ -252,9 +63,6 @@
     "envsinfirmatexto",
     "firma"
   ],
-  "public/assets/front_door_view.js": [
-    "valores"
-  ],
   "public/assets/get_app_gate.js": [
     "accion",
     "pinta"
@@ -265,14 +73,6 @@
   ],
   "public/assets/landing.css": [
     "aduana"
-  ],
-  "public/assets/page-comment.js": [
-    "abre",
-    "crea",
-    "escribe",
-    "firma",
-    "monta",
-    "pinta"
   ],
   "public/assets/radio_message_log.js": [
     "ciclo",
@@ -285,142 +85,6 @@
     "registro",
     "sello",
     "sellode"
-  ],
-  "public/assets/soberano.css": [
-    "arrecife",
-    "bandera",
-    "casa",
-    "casa--",
-    "fija",
-    "fuera",
-    "ks-sello",
-    "lee",
-    "mar",
-    "pp-dice"
-  ],
-  "public/assets/terminal_menu_shell.css": [
-    "accion",
-    "atlas-arena-mapa",
-    "casa-tira",
-    "data-sello",
-    "portada-juego",
-    "radio-msg-sello",
-    "sello",
-    "taller",
-    "terminal-cab-cierra",
-    "terminal-cab-sello"
-  ],
-  "public/assets/terminal_menu_shell.js": [
-    "abre",
-    "accion",
-    "altaller",
-    "casa",
-    "casa-army",
-    "cierra",
-    "cierracajon",
-    "cierrahoja",
-    "dice",
-    "monta",
-    "pliego-nodos",
-    "sello",
-    "taller",
-    "taller-unido",
-    "terminal-cangrejo",
-    "thegame-hoja-cierra",
-    "tocanota"
-  ],
-  "public/assets/terminal_window_frame.js": [
-    "arena",
-    "ciclo",
-    "ciclovalido",
-    "cierra",
-    "monta",
-    "pinta",
-    "sello",
-    "terminal-cab-cierra",
-    "terminal-cab-sello",
-    "terminal-cangrejo",
-    "terminal-cierra"
-  ],
-  "public/assets/thegame.css": [
-    "arena",
-    "arrecife",
-    "atlas-arena",
-    "atlas-arena-escena",
-    "atlas-arena-escuadra",
-    "atlas-arena-ficha-tropa",
-    "atlas-arena-fila",
-    "atlas-arena-lienzo",
-    "atlas-arena-log",
-    "atlas-arena-lugar",
-    "atlas-arena-lugar-ficha",
-    "atlas-arena-lugares",
-    "atlas-arena-mandos",
-    "atlas-arena-mapa",
-    "atlas-arena-res",
-    "atlas-cuenta-une",
-    "atlas-duelo-lista",
-    "atlas-huella",
-    "atlas-nodos-cedulas",
-    "atlas-rack-nodo",
-    "cangrejo",
-    "casa-pers",
-    "cierra",
-    "entrada-cangrejo",
-    "juez",
-    "mar",
-    "nodo",
-    "portada",
-    "portada-juego",
-    "terminal-cangrejo",
-    "tropa"
-  ],
-  "public/assets/thegame.js": [
-    "abre",
-    "altaller",
-    "arena",
-    "arena_carga",
-    "atlas-arena-mapa",
-    "atlas-casa",
-    "atlas-incubadora",
-    "atlasarenaui",
-    "atlascasa",
-    "atlasincubadora",
-    "atlaspracticearena",
-    "atlastallerui",
-    "cargaarena",
-    "cargacasa",
-    "casa",
-    "casa-lateral",
-    "casa-medidas",
-    "casa-personaliza",
-    "cuenta",
-    "duelo",
-    "escena",
-    "hitl_firma",
-    "juez",
-    "monta",
-    "nodos",
-    "nodos-cedulas",
-    "nodos-pesos",
-    "practice_arena",
-    "sobres",
-    "taller",
-    "ui-arena",
-    "ui-arena-comun",
-    "ui-duelo",
-    "ui-nodos",
-    "ui-taller",
-    "valores"
-  ],
-  "public/assets/tubo.css": [
-    "atlas-arena-lugar-ficha",
-    "casa-interior",
-    "casa-pers",
-    "entrada-cangrejo",
-    "escribe",
-    "fuera",
-    "mar"
   ],
   "public/assets/worm_transition.js": [
     "ciclo",
@@ -515,43 +179,6 @@
     "taller",
     "valores"
   ],
-  "public/game/aiact-art50-crab-terminal.js": [
-    "abre",
-    "accion",
-    "arrecife",
-    "bosque",
-    "casa",
-    "ciclo",
-    "faro",
-    "grieta",
-    "monta",
-    "pintavars",
-    "terminal-cangrejo"
-  ],
-  "public/game/aiact-art50-state-radio.js": [
-    "ciclo",
-    "grieta",
-    "huella",
-    "monta",
-    "toca",
-    "tocanota"
-  ],
-  "public/game/arena.js": [
-    "atlasarena",
-    "atlassobres",
-    "atlastaller",
-    "atlasvalores",
-    "duelo",
-    "duelo_resultado",
-    "huella",
-    "huellaconjunto",
-    "registro",
-    "registro_sha",
-    "sobres",
-    "taller",
-    "tropa",
-    "valores"
-  ],
   "public/game/army-wave-panel.js": [
     "abre",
     "adopcion",
@@ -565,72 +192,12 @@
     "pinta",
     "tropa"
   ],
-  "public/game/audio_feedback_manager.js": [
-    "fuera",
-    "tocanota"
-  ],
   "public/game/battle_choreography.js": [
     "abre",
     "registro"
   ],
-  "public/game/cable_llamar.js": [
-    "accion",
-    "ciclo",
-    "pinta",
-    "recibo"
-  ],
-  "public/game/cable_terminal.js": [
-    "aduana",
-    "cable_recibo",
-    "cable_sin_huella",
-    "ciclo",
-    "ciclodato",
-    "dice",
-    "huella",
-    "monta",
-    "pinta",
-    "recibo",
-    "selloconedad"
-  ],
   "public/game/canon.js": [
     "huella"
-  ],
-  "public/game/casa-lateral.js": [
-    "atlascasalateral",
-    "atlascasamedidas",
-    "casa-lateral",
-    "casa-lateral-ico",
-    "casa-lateral-nom",
-    "casa-lateral-parte",
-    "casa-lateral-st",
-    "monta",
-    "pinta"
-  ],
-  "public/game/casa-medidas.js": [
-    "atlascasamedidas",
-    "bosque",
-    "faro",
-    "nodos",
-    "st_bosque",
-    "st_faro"
-  ],
-  "public/game/casa-personaliza.js": [
-    "abre",
-    "atlascasapersonaliza",
-    "bandera",
-    "bandera_",
-    "casa",
-    "casa-fila",
-    "casa-grupo",
-    "casa-lema",
-    "casa-nota",
-    "casa-op",
-    "casa-pers",
-    "firma",
-    "valores"
-  ],
-  "public/game/combat_screen.js": [
-    "crea"
   ],
   "public/game/combate_ticks.js": [
     "accion",
@@ -659,17 +226,6 @@
     "suenaduelo",
     "valores"
   ],
-  "public/game/crab_free_move.js": [
-    "abre",
-    "atlascangrejolibre",
-    "atlasniebla",
-    "cangrejo",
-    "ciclo",
-    "dice",
-    "niebla",
-    "pintapanel",
-    "sello"
-  ],
   "public/game/crab_render_hd.js": [
     "atlascangrejo",
     "cangrejo",
@@ -678,13 +234,6 @@
     "dice",
     "niebla",
     "sello"
-  ],
-  "public/game/crab_state_screen.js": [
-    "atlas-incubadora",
-    "casa",
-    "casa-identidad",
-    "casa-lateral",
-    "monta"
   ],
   "public/game/cria.js": [
     "atlascria",
@@ -726,63 +275,6 @@
     "tropa",
     "valores"
   ],
-  "public/game/deep_links.js": [
-    "abre",
-    "casa",
-    "cierra",
-    "monta",
-    "taller"
-  ],
-  "public/game/deploy_building.js": [
-    "huella",
-    "sello"
-  ],
-  "public/game/duelo.js": [
-    "arena",
-    "atlasarena",
-    "atlasduelo",
-    "atlassobres",
-    "atlasvalores",
-    "ciclo",
-    "crea",
-    "duelo",
-    "firma",
-    "firmasobre",
-    "huella",
-    "huellaconjunto",
-    "huelladefensa",
-    "sobres",
-    "valores"
-  ],
-  "public/game/en301_practice_arena.js": [
-    "arena",
-    "atlaspracticearena",
-    "escena",
-    "monta",
-    "registro",
-    "sello",
-    "suenaduelo",
-    "tropa"
-  ],
-  "public/game/en301_practice_model.js": [
-    "atlasvalores",
-    "cierra",
-    "huella",
-    "registro",
-    "valores"
-  ],
-  "public/game/en301_tutorial_building.js": [
-    "sello"
-  ],
-  "public/game/en301_tutorial_copy.js": [
-    "arena"
-  ],
-  "public/game/en301_tutorial_model.js": [
-    "arena",
-    "door-niebla",
-    "niebla",
-    "practice-arena-"
-  ],
   "public/game/escena.js": [
     "atlasescena",
     "atlasvalores",
@@ -799,9 +291,6 @@
     "faro",
     "mesa_de_firma"
   ],
-  "public/game/etiqueta.js": [
-    "registro"
-  ],
   "public/game/fog_of_war.js": [
     "atlasniebla",
     "casa",
@@ -812,9 +301,6 @@
     "nodos",
     "sitiocasa",
     "sitionodo"
-  ],
-  "public/game/front_door.js": [
-    "huevo"
   ],
   "public/game/gacha.js": [
     "atlasvalores",
@@ -835,148 +321,8 @@
     "nodo",
     "pinta"
   ],
-  "public/game/gdpr-art7-entry-choice.js": [
-    "atlasnodoscedulas",
-    "entrada-cangrejo",
-    "firma",
-    "lee",
-    "mar",
-    "mar-abierto",
-    "monta",
-    "nodo",
-    "nodos",
-    "sello"
-  ],
-  "public/game/genesis_tutorial.js": [
-    "abre",
-    "accion",
-    "arena",
-    "atlasarenaui",
-    "atlasarrecife",
-    "atlascangrejolibre",
-    "atlasincubadora",
-    "atlasvalores",
-    "casa",
-    "casa-lateral-parte",
-    "ciclo",
-    "cierra",
-    "dice",
-    "lapidasdetropa",
-    "pinta",
-    "sello",
-    "sincasa"
-  ],
-  "public/game/hexelion_dictionary.js": [
-    "monta",
-    "nodo",
-    "pinta"
-  ],
-  "public/game/hitl_firma.js": [
-    "accionid",
-    "atlashitlfirma",
-    "ciclo",
-    "cierra",
-    "firma",
-    "hitl-firma",
-    "hitl-firma-btn",
-    "hitl-firma-no",
-    "hitl-firma-que",
-    "hitl-firma-recibo",
-    "hitl-firma-row",
-    "hitl-firma-t",
-    "monta",
-    "recibo"
-  ],
-  "public/game/home.css": [
-    "atlas-arena-mapa",
-    "casa",
-    "casa-alto",
-    "casa-color",
-    "casa-cuerpo",
-    "casa-fila",
-    "casa-grupo",
-    "casa-identidad",
-    "casa-int-cab",
-    "casa-int-cuerpo",
-    "casa-interior",
-    "casa-lateral",
-    "casa-lateral-ico",
-    "casa-lateral-nom",
-    "casa-lateral-parte",
-    "casa-lateral-st",
-    "casa-lema",
-    "casa-nota",
-    "casa-op",
-    "casa-pers",
-    "casa-pers-b",
-    "casa-quien",
-    "casa-tira",
-    "escena"
-  ],
-  "public/game/home_buildings.js": [
-    "abre",
-    "accion",
-    "atlas-casa",
-    "atlas-casa-",
-    "atlascangrejo",
-    "atlascasa",
-    "atlascasalateral",
-    "atlascasamedidas",
-    "atlascasapersonaliza",
-    "atlasincubadora",
-    "atlasnodoscedulas",
-    "atlasvalores",
-    "bandera",
-    "bandera_",
-    "bosque",
-    "cangrejo",
-    "casa",
-    "casa-almacen",
-    "casa-clase",
-    "casa-color",
-    "casa-cuerpo",
-    "casa-estado",
-    "casa-hoja",
-    "casa-identidad",
-    "casa-int-cab",
-    "casa-int-cuerpo",
-    "casa-interior",
-    "casa-pers-b",
-    "casa-personaliza",
-    "casa-quien",
-    "casa-tira",
-    "casa-volver",
-    "ciclo",
-    "faro",
-    "grieta",
-    "lee",
-    "monta",
-    "nodo",
-    "nodos",
-    "p_bandera",
-    "state_class_mar"
-  ],
   "public/game/isometric_floor_projection.js": [
     "huella"
-  ],
-  "public/game/juez.js": [
-    "accion",
-    "atlasjuez",
-    "ciclo"
-  ],
-  "public/game/killswitch_dot.js": [
-    "crea",
-    "monta",
-    "pinta",
-    "sello"
-  ],
-  "public/game/latency_crystal.js": [
-    "casa",
-    "ciclo",
-    "dice",
-    "pinta",
-    "sello",
-    "ultimociclo"
   ],
   "public/game/launch_gate.js": [
     "firma"
@@ -984,27 +330,6 @@
   "public/game/lexical_projector.js": [
     "ciclo",
     "proyectarescena"
-  ],
-  "public/game/map_integrity.js": [
-    "huella"
-  ],
-  "public/game/map_nodes_layer.js": [
-    "atlascuenta",
-    "atlasescena",
-    "atlasniebla",
-    "atlasnodoscedulas",
-    "estadonodo",
-    "nodo",
-    "nodos",
-    "pinta",
-    "sitionodo"
-  ],
-  "public/game/map_pointer_input.js": [
-    "arena-lucha",
-    "atlascangrejolibre",
-    "casa",
-    "monta",
-    "toca"
   ],
   "public/game/map_zoom.js": [
     "crea",
@@ -1095,22 +420,6 @@
     "firma",
     "firma_ssh"
   ],
-  "public/game/nodos-cedulas.js": [
-    "atlasnodoscedulas",
-    "casa-doogee",
-    "casa-hexelion",
-    "cedula-nodo",
-    "cedulas_nodo",
-    "cuenta",
-    "firma",
-    "nodo",
-    "nodos"
-  ],
-  "public/game/nodos-pesos.js": [
-    "atlasnodospesos",
-    "firma",
-    "pesos_nodos"
-  ],
   "public/game/nodos.js": [
     "atlasnodos",
     "cedula-nodo",
@@ -1128,139 +437,6 @@
     "partida_nodos",
     "pesos_nodos",
     "registro"
-  ],
-  "public/game/npc_occupancy.js": [
-    "atlasvalores",
-    "ciclo",
-    "ciclos_niebla",
-    "ciclovalido",
-    "crea",
-    "escribe",
-    "firma",
-    "lee",
-    "niebla",
-    "publicaregistro",
-    "recibo",
-    "registro",
-    "valores"
-  ],
-  "public/game/npc_territory_map.js": [
-    "cambiaciclo",
-    "crea",
-    "niebla",
-    "pinta",
-    "tropa"
-  ],
-  "public/game/npc_walls.js": [
-    "ciclo",
-    "ciclos_niebla",
-    "crea",
-    "escribe",
-    "firma",
-    "monta",
-    "niebla"
-  ],
-  "public/game/onda_profunda.js": [
-    "huella",
-    "pinta"
-  ],
-  "public/game/piece_inspector.js": [
-    "abre",
-    "atlascangrejolibre",
-    "lee",
-    "monta",
-    "montainspector",
-    "toca",
-    "tropa"
-  ],
-  "public/game/primer_eco.js": [
-    "accion",
-    "atlascasa",
-    "atlastaller",
-    "atlasvalores",
-    "bandera",
-    "bandera_",
-    "cierracon",
-    "cuenta",
-    "firma",
-    "lee",
-    "monta",
-    "nodo",
-    "pinta",
-    "recibo",
-    "taller",
-    "taller_aristas",
-    "taller_desintegra",
-    "taller_saldo",
-    "toca",
-    "tropa"
-  ],
-  "public/game/rating.js": [
-    "atlasvalores",
-    "huella",
-    "valores"
-  ],
-  "public/game/reef_building_lifecycle.js": [
-    "huella"
-  ],
-  "public/game/reef_buildings_layer.js": [
-    "atlasarrecife",
-    "atlasmar",
-    "atlasniebla",
-    "casa",
-    "ciclo",
-    "dice",
-    "entierratropa",
-    "huella",
-    "lap_recibo",
-    "lee",
-    "pinta",
-    "recibo",
-    "registro",
-    "registrolapidas",
-    "sello",
-    "sitiocasa"
-  ],
-  "public/game/reef_buildings_paint.js": [
-    "casa"
-  ],
-  "public/game/reef_corals.js": [
-    "atlasniebla",
-    "atlasnodoscedulas",
-    "nodo",
-    "nodos",
-    "pinta",
-    "pintauno",
-    "sitionodo"
-  ],
-  "public/game/reef_place_cards.js": [
-    "abrepanel",
-    "atlasarenaui",
-    "atlasarrecife",
-    "ciclo",
-    "monta"
-  ],
-  "public/game/sea-anchors.js": [
-    "atlasmaranclas",
-    "atlasniebla",
-    "bandera",
-    "bandera_mapa",
-    "nodos",
-    "pinta"
-  ],
-  "public/game/sea-crabs.js": [
-    "atlascangrejo",
-    "atlascangrejolibre",
-    "atlascasa",
-    "atlasmarcangrejos",
-    "atlasniebla",
-    "cangrejo",
-    "casa",
-    "ciclo",
-    "niebla",
-    "nodo",
-    "pinta",
-    "sitiocasa"
   ],
   "public/game/sea-floor.js": [
     "atlasescena",
@@ -1303,53 +479,6 @@
     "pinta",
     "sitiocasa"
   ],
-  "public/game/sea_rift.js": [
-    "atlasmarfondo",
-    "atlasmarrift",
-    "niebla"
-  ],
-  "public/game/semiotic_glyph.js": [
-    "monta"
-  ],
-  "public/game/shell_schematics.js": [
-    "huella",
-    "monta"
-  ],
-  "public/game/silueta.js": [
-    "fuera",
-    "registro"
-  ],
-  "public/game/sobres.js": [
-    "atlassobres",
-    "duelo",
-    "duelo_resultado",
-    "firma",
-    "fuera",
-    "huella",
-    "huellaconjunto",
-    "sinfirma",
-    "sobres"
-  ],
-  "public/game/state_vector.js": [
-    "atlasarrecife",
-    "atlascangrejolibre",
-    "atlasincubadora",
-    "atlasnodoscedulas",
-    "cangrejo",
-    "ciclo",
-    "lee",
-    "nodo",
-    "nodos",
-    "registro",
-    "sello",
-    "valores"
-  ],
-  "public/game/summon-access.js": [
-    "atlas-incubadora",
-    "atlasvalores",
-    "casa-estado",
-    "monta"
-  ],
   "public/game/summon-wave-card.js": [
     "atlasvalores",
     "monta",
@@ -1378,285 +507,9 @@
     "tropa",
     "valores"
   ],
-  "public/game/tarjeta_cantada.js": [
-    "sello"
-  ],
   "public/game/tutorial-fases.css": [
     "accion",
     "tutorial-accion"
-  ],
-  "public/game/tutorial_fases.js": [
-    "abre",
-    "arena",
-    "fuera",
-    "niebla",
-    "nodo",
-    "toca"
-  ],
-  "public/game/ui-arena-comun.js": [
-    "atlas-arena-",
-    "atlas-arena-mini",
-    "atlasarenacomun",
-    "atlasescena",
-    "huella",
-    "mar",
-    "nombre_tropa"
-  ],
-  "public/game/ui-arena.js": [
-    "adopcion",
-    "arena-lucha",
-    "arena_conquistado",
-    "arena_empate",
-    "arena_escena_aria",
-    "arena_escuadra_h",
-    "arena_escuadra_nota",
-    "arena_fallo",
-    "arena_final",
-    "arena_gana",
-    "arena_jugador",
-    "arena_log_ellos",
-    "arena_log_tu",
-    "arena_luchar",
-    "arena_mapa_aria",
-    "arena_otra",
-    "arena_pierde",
-    "arena_practica",
-    "arena_pve_nota",
-    "arena_record",
-    "arena_ronda",
-    "arena_saltar",
-    "arena_semilla",
-    "arena_tier",
-    "arena_tope",
-    "arena_vacia",
-    "arena_vs",
-    "arena_x",
-    "atlas-arena",
-    "atlas-arena-duelo",
-    "atlas-arena-escena",
-    "atlas-arena-escuadra",
-    "atlas-arena-ficha-tropa",
-    "atlas-arena-fila",
-    "atlas-arena-lienzo",
-    "atlas-arena-log",
-    "atlas-arena-lugar",
-    "atlas-arena-lugar-ficha",
-    "atlas-arena-lugares",
-    "atlas-arena-mandos",
-    "atlas-arena-mapa",
-    "atlas-arena-res",
-    "atlas-casa",
-    "atlasarena",
-    "atlasarenacomun",
-    "atlasarenaui",
-    "atlasdueloui",
-    "atlasescena",
-    "atlasincubadora",
-    "atlasmar",
-    "atlasnodosui",
-    "atlastallerui",
-    "atlasvalores",
-    "ciclo",
-    "ciclojuego",
-    "crea",
-    "duelo",
-    "duelo_h",
-    "duelo_reta",
-    "escena",
-    "huella",
-    "mar",
-    "monta",
-    "nodos",
-    "nodos_h",
-    "nodoscasa",
-    "pintaescuadra",
-    "pintalista",
-    "pintarival",
-    "pliego-nodos",
-    "registro",
-    "sello",
-    "suenaduelo",
-    "tropa"
-  ],
-  "public/game/ui-duelo.js": [
-    "accion",
-    "arena_crear_id",
-    "arena_vacia",
-    "atlas-arena-mandos",
-    "atlas-duelo-importa",
-    "atlas-duelo-lista",
-    "atlas-duelo-salida",
-    "atlasarenaui",
-    "atlasduelo",
-    "atlasdueloui",
-    "atlasvalores",
-    "ciclo",
-    "crea",
-    "dice",
-    "duelo_abandono",
-    "duelo_abandono_ok",
-    "duelo_abre",
-    "duelo_acepta",
-    "duelo_aceptado",
-    "duelo_bajar",
-    "duelo_con_id",
-    "duelo_copiado",
-    "duelo_copiar",
-    "duelo_enviado",
-    "duelo_enviar",
-    "duelo_fase_",
-    "duelo_fichero",
-    "duelo_h",
-    "duelo_importa",
-    "duelo_mal",
-    "duelo_nd_copiar",
-    "duelo_nd_id",
-    "duelo_nota",
-    "duelo_ok_defensa",
-    "duelo_pega",
-    "duelo_plazo",
-    "duelo_prov",
-    "duelo_publica",
-    "duelo_publicada",
-    "duelo_rating",
-    "duelo_recibido",
-    "duelo_reclamado",
-    "duelo_respondido",
-    "duelo_reto_hecho",
-    "duelo_revela",
-    "duelo_revelado",
-    "duelo_visto",
-    "firma",
-    "huella",
-    "monta",
-    "pinta"
-  ],
-  "public/game/ui-ficha.js": [
-    "atlas-tropa",
-    "atlastallerui",
-    "atlasvalores",
-    "ciclo",
-    "crea",
-    "dice",
-    "huella",
-    "nombre_tropa",
-    "sello"
-  ],
-  "public/game/ui-invoca.js": [
-    "ciclo",
-    "ciclomedido",
-    "crea",
-    "dice",
-    "firma",
-    "huevo",
-    "huevo_aria",
-    "inc_ciclo_nd",
-    "lee",
-    "nido",
-    "nido_vacio",
-    "pinta",
-    "pintanido"
-  ],
-  "public/game/ui-nodos.js": [
-    "atlas-arena-escena",
-    "atlas-arena-lienzo",
-    "atlas-arena-log",
-    "atlas-arena-mandos",
-    "atlas-arena-res",
-    "atlas-casa",
-    "atlas-huella",
-    "atlas-nodo-ficha",
-    "atlas-nodos",
-    "atlas-nodos-cedulas",
-    "atlas-nodos-fichas",
-    "atlas-nodos-porque",
-    "atlasnodos",
-    "atlasnodoscedulas",
-    "atlasnodospesos",
-    "atlasnodosui",
-    "casa-",
-    "cuenta",
-    "escena",
-    "firma",
-    "firma_consent",
-    "firmanota",
-    "monta",
-    "niebla",
-    "nodo",
-    "nodos",
-    "nodos_",
-    "nodos_aria",
-    "nodos_cedulas_h",
-    "nodos_combate_n",
-    "nodos_consent",
-    "nodos_crear_id",
-    "nodos_crudo",
-    "nodos_cuenta",
-    "nodos_empate",
-    "nodos_enviado",
-    "nodos_enviando",
-    "nodos_enviar",
-    "nodos_est_",
-    "nodos_est_no_data",
-    "nodos_fallo",
-    "nodos_firmado",
-    "nodos_firmar",
-    "nodos_gana",
-    "nodos_h",
-    "nodos_inicio",
-    "nodos_listo",
-    "nodos_log_esquiva",
-    "nodos_log_golpe",
-    "nodos_luchar",
-    "nodos_n",
-    "nodos_niebla",
-    "nodos_nota",
-    "nodos_paso",
-    "nodos_pesos",
-    "nodos_porque",
-    "nodos_porque_firma",
-    "nodos_rasgos",
-    "nodos_rech_canal",
-    "nodos_rech_clave",
-    "nodos_rech_consent",
-    "nodos_rech_firma",
-    "nodos_rech_gesto",
-    "nodos_rech_http",
-    "nodos_rech_otro",
-    "nodos_rech_red",
-    "nodos_recibo",
-    "nodos_saltar",
-    "nodos_sin_id",
-    "nodos_tick",
-    "pinta",
-    "recibo",
-    "registro"
-  ],
-  "public/game/ui-rack.js": [
-    "atlas-arena-log",
-    "atlas-casa",
-    "atlas-cuenta",
-    "atlas-cuenta-une",
-    "atlas-rack-nodo",
-    "atlascuenta",
-    "atlasnodoscedulas",
-    "cuenta",
-    "cuenta_app",
-    "cuenta_estado",
-    "cuenta_formato",
-    "cuenta_h",
-    "cuenta_lab",
-    "cuenta_nota",
-    "cuenta_sin_formato",
-    "cuenta_web",
-    "cuenta_web_sin",
-    "cuentamaestra",
-    "estadonodo",
-    "monta",
-    "nodo",
-    "nodos",
-    "nodos_crear_id",
-    "nodos_est_"
   ],
   "public/game/ui-taller.js": [
     "adopcion",
@@ -1704,48 +557,6 @@
     "taller_vacia",
     "tropa"
   ],
-  "public/game/ui-tutorial-fases.js": [
-    "accion",
-    "arena",
-    "crea",
-    "fija",
-    "monta",
-    "niebla",
-    "nodo",
-    "nodos",
-    "pinta",
-    "tutorial-accion"
-  ],
-  "public/game/ui.js": [
-    "abre",
-    "adopcion",
-    "adopcion_no",
-    "army_fuera",
-    "atlas-casa",
-    "atlas-incubadora",
-    "atlas-nido",
-    "atlasincubadora",
-    "atlastallerui",
-    "ciclo",
-    "ciclomedido",
-    "crea",
-    "dice",
-    "fijamodo",
-    "firma",
-    "fuera",
-    "huevo",
-    "huevo_rack",
-    "inc_ciclo_nd",
-    "lee",
-    "monta",
-    "nido",
-    "nido_h",
-    "pinta",
-    "pintaarmy",
-    "pintanido",
-    "soltar_tropa",
-    "tropa"
-  ],
   "public/game/valores.js": [
     "adopcion",
     "arrecife",
@@ -1783,34 +594,14 @@
   "public/openworld/index.html": [
     "valores"
   ],
-  "public/play/index.html": [
-    "portada-juego"
-  ],
   "public/sw-listas.js": [
     "aduana",
     "aduana_page",
-    "arena",
-    "atlas-arena-en",
-    "atlas-casa-en",
-    "casa-lateral",
-    "casa-medidas",
-    "casa-personaliza",
     "cuenta",
-    "duelo",
     "escena",
-    "hitl_firma",
-    "juez",
     "nodos",
-    "nodos-cedulas",
-    "nodos-pesos",
     "portada",
-    "practice_arena",
-    "sobres",
     "taller",
-    "ui-arena",
-    "ui-arena-comun",
-    "ui-duelo",
-    "ui-nodos",
     "ui-taller",
     "valores"
   ],

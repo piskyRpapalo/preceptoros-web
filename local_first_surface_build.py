@@ -1,6 +1,6 @@
 """Escribe las paginas de entrada de preceptoros.org desde una plantilla: la portada, el juego y /get-the-app/.
 
-    python3 local_first_surface_build.py            reescribe public/index.html, public/play/index.html y public/get-the-app/index.html
+    python3 local_first_surface_build.py            reescribe public/index.html, public/get-the-app/index.html y public/aduana/index.html
     python3 local_first_surface_build.py --comprueba  sale con 1 si alguna no es la que dice la plantilla
 
 POR QUE (decreto de recencia del Soberano + canon P1, 2026-10-25). Hasta MVP todo en INGLES, y la
@@ -9,7 +9,7 @@ lenguas) que eran la misma pagina inglesa con el juego montado dentro, y todas c
 compartidas de septiembre. Ahora:
   - `/` es UNA portada inglesa: la puerta a lo reciente (el juego, los mundos, la creacion). Carga solo
     su hoja nueva (`assets/landing.css`) y la marca nueva (`assets/mark.svg`); ninguna hoja vieja.
-  - `/play/` es el juego, sin tocar su maquinaria: la misma carcasa que era la portada, con sus hojas.
+  - (Norte 7 D, 2026-10-28) `/play/` se retiro: ya no se genera; la puerta Tutorial apunta a `/openworld/`.
   - `/ar/` ... `/ru/` responden 301 a `/` desde el Worker (`worker/index.js`); sus ficheros salen de
     `public/`.
 """
@@ -43,7 +43,7 @@ def cabeza(titulo, url, hojas, color, extra=""):
 
 
 # NORTE 7 · PR 1 (decreto 2026-10-28): la INTRO. Tres opciones (OpenWorld · Tutorial · Tools); Tools es un
-# clic directo a la PWA mas un desplegable visible de dispositivo/descarga. OpenWorld y Tutorial van a /play/
+# clic directo a la PWA mas un desplegable visible de dispositivo/descarga. OpenWorld y Tutorial van a /openworld/ (Norte 7 D: /play/ retirado)
 # hasta que /openworld/ exista (PR 2): ese destino entonces cambia, y se declara en su PR.
 ESTILO_INTRO = """<style>
 button.door{width:100%;font:inherit;background:var(--bg);text-align:left;cursor:pointer}
@@ -68,7 +68,7 @@ def portada():
 <p class="lead">A game of waves that runs on your own device. No account, no cloud, no tracking.</p>
 <nav id="doors" aria-label="Doors">
 <a class="door" href="/openworld/"><b>OpenWorld</b><span>The map and the chat, side by side. Your node's world.</span></a>
-<a class="door" href="/play/"><b>Tutorial</b><span>The first steps: the key, the beacon, the first fight.</span></a>
+<a class="door" href="/openworld/"><b>Tutorial</b><span>The first steps: the key, the beacon, the first fight.</span></a>
 <button class="door door-tools" id="door-tools" type="button" aria-controls="tools-dispositivo"><b>Tools</b><span id="tools-estado">Install the app on this device, or pick a download below.</span></button>
 </nav>
 <section id="tools-dispositivo" aria-labelledby="tools-h">
@@ -104,38 +104,6 @@ def portada():
 """
 
 
-def juego():
-    hojas = ["/assets/base.css", "/assets/canon.css", "/assets/soberano.css", "/assets/consiento.css",
-             "/assets/eaa-art12-local-first-surface.css"]
-    return cabeza("theGame · PreceptorOS", f"{ORIGEN}/play/", hojas, "#17131F") + """<body class="portada-juego">
-<a class="skip-link" href="#juego-panel">Skip to the game panel</a>
-<header class="cab-juego">
-<a class="cab-marca" href="/">PreceptorOS · <b>theGame</b></a>
-<a class="cab-mundos" href="/face/">Worlds</a>
-<a class="cab-mundos" href="/creation.html">Creation</a>
-<div id="identity" class="fila identity"></div>
-</header>
-<main id="juego-panel" class="juego-panel" aria-label="theGame"><h1 class="cab-h1">theGame</h1>
-<p class="juego-carga">theGame · loading on this device. No account, no cloud.</p>
-<noscript><p class="juego-carga">theGame needs JavaScript: it runs entirely on this device.</p></noscript>
-</main>
-<script src="/assets/auth.js"></script>
-<script src="/assets/consiento.js"></script>
-<script src="/assets/enviar-en.js"></script>
-<script src="/assets/enviar.js"></script>
-<script src="/assets/pwa.js"></script>
-<script src="/assets/page-comment.js" defer></script>
-<script src="/assets/thegame.js"></script>
-<script src="/assets/eaa-art12-local-first-surface.js"></script>
-</body>
-</html>
-"""
-
-
-# /get-the-app/ (North D1, 2026-10-26): the app's download page, written FROM public/release.json, the release card
-# the web already serves (measured 2026-09-13, its hashes re-checked against the live v1.3 on 2026-10-26). Every link
-# and every fingerprint comes from the card; nothing about the release is typed by hand. English, no script but the
-# PWA, no request at load: the downloads are plain links the reader chooses to follow.
 ESTADO_EN = {"PROBADO": "Tested", "NO_PROBADO": "Not tested", "NO_DATA": "NO_DATA"}
 DETALLE_EN = {("install.sh", "Linux"): "Run end to end on 2026-08-31 on the development node, with an isolated home.",
               ("install.sh", "macOS"): "The Homebrew branch is written and reviewed, but there is no Mac in the rack.",
@@ -257,7 +225,6 @@ def aduana():
 
 def todas():
     yield PUBLICO / "index.html", portada()
-    yield PUBLICO / "play" / "index.html", juego()
     yield PUBLICO / "get-the-app" / "index.html", app()
     yield PUBLICO / "aduana" / "index.html", aduana()
 

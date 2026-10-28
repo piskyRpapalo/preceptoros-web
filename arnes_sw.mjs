@@ -219,12 +219,14 @@ const rutas = await shell.keys();
 // 222 -> 223 el 2026-10-28 (NORTE 7 PR 2): entra /openworld/ (ficha unica: el script va inline).
 // 223 -> 224 el 2026-10-27 (NORTE 5 [2]): entra face/face_terminal.js, el terminal de chat en los mundos.
 // 224 -> 221 el 2026-10-28 (Norte 7 pieza C): salen /play/, assets/thegame.js y assets/thegame.css (theGame sale del shell).
-ok('precachea las portadas, su superficie y el juego', rutas.length === 221, rutas.length+' rutas');
-ok('el shell trae el juego sin theGame (corte Norte 7 C): el cangrejo y la arena',
-   ['/game/gdpr-art25-ephemeral-crab.js', '/game/ui-arena.js', '/assets/atlas-motor.js'].every(r => rutas.includes(r)));
+// 221 -> 106 el 2026-10-28 (Norte 7 pieza D): sale el juego borrado (manifiesto medido: 134 ficheros, enviar.js y enviar-*.js se quedan).
+ok('precachea las portadas, su superficie y el juego', rutas.length === 106, rutas.length+' rutas');
+ok('el shell NO trae el juego retirado (corte Norte 7 D)',
+   !(['/assets/thegame.js', '/game/ui-arena.js', '/assets/atlas-motor.js'].some(r => rutas.includes(r))));
 ok('el shell trae la puerta y NO trae /play/ (corte Norte 7 C)', rutas.includes('/') && !rutas.includes('/play/') && !rutas.includes('/assets/thegame.js'));
 ok('el shell YA NO trae portadas de lengua (301 a `/`)', !rutas.some(r => /^\/(ar|de|el|en|es|fr|it|pt|ru)\/$/.test(r)));
-ok('el shell trae la identidad y el canal', ['/assets/auth.js', '/assets/enviar.js', '/assets/page-comment.js', '/assets/pwa.js'].every(r => rutas.includes(r)));
+ok('el shell trae la identidad y el canal', ['/assets/auth.js', '/assets/enviar.js', '/assets/pwa.js'].every(r => rutas.includes(r)));
+ok('page-comment.js sale del shell (retirada con /play/, corte Norte 7 D)', !rutas.includes('/assets/page-comment.js'));
 ok('el shell YA NO trae nada del hub', !rutas.some(r => /community|benchmark|playground|onboarding|profile|instalar|hub\.json|hitos|chat|caras\//.test(r)));
 // NINGUNA DE LAS DOS FAMILIAS VIAJA YA, y la segunda cayo el 2026-09-20.
 //
@@ -257,8 +259,8 @@ ok('la API del Agora pasa de largo',
 // regla 2: una MEDIDA no se cachea; el CONTENIDO declarado si.
 ok('counters.json no se cachea (es una medida)',
    await pedir(ORIGEN+'/counters.json','cors') === 'PASA_DE_LARGO');
-ok('atlas-en.json SI se sirve del cache (es contenido del juego)',
-   await pedir(ORIGEN+'/atlas-en.json','cors') !== 'PASA_DE_LARGO');
+ok('atlas-en.json YA NO se sirve del cache (lexicon de theGame retirado, corte Norte 7 D)',
+   await pedir(ORIGEN+'/atlas-en.json','cors') === 'PASA_DE_LARGO');
 {
   // El manifiesto va a red primero: con red responde la red, no el cache.
   const r = await pedir(ORIGEN+'/manifest.webmanifest','cors');

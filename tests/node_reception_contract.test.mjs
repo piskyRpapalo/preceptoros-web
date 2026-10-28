@@ -8,7 +8,6 @@ import { gzipSync } from 'node:zlib';
 const require = createRequire(import.meta.url);
 const K = require('../public/game/canon.js');
 const N = require('../public/game/nodos.js');
-const C = require('../public/game/nodos-cedulas.js');
 const path = new URL('../public/game/node_reception_contract.js', import.meta.url);
 const contract = () => require(path.pathname);
 const copy = x => JSON.parse(JSON.stringify(x));
@@ -20,11 +19,6 @@ function credential() {
 }
 const packet = c => ({ esquema: 'preceptoros/cedula-nodo/1', pares: [c || credential()], firma: null });
 
-test('signed declaration no longer fails the legacy game authenticity predicate', () => {
-  const catalog = copy(C), c = catalog.nodos[0];
-  c.firma_ssh = credential().firma_ssh; c.autenticidad = 'SIGNED'; seal(c);
-  assert.equal(N.validaCedulas(catalog), '');
-});
 test('the definitive route is isolated from the existing Agora transport', () => {
   assert.equal(contract().ENDPOINT, 'https://api.preceptoros.org/api/v1/cedulas');
   assert.equal(contract().METHOD, 'POST');
