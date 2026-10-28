@@ -73,12 +73,12 @@ async function main() {
   ok(esBoton === true, 'the listen control is not a button (keyboard operability)');
   await ev("document.getElementById('listen').click()"); await espera(200);
   const escucha = await ev("document.getElementById('listen-state').textContent");
-  ok(/^NO_DATA: no wave or blob with harmonics in the frame$/.test(escucha || ''), 'the cabin sound did not report its NO_DATA cause: ' + escucha);
+  ok(/^Playing 1 voices\.$/.test(escucha || ''), 'the cabin sound did not play its one voice: ' + escucha);
   // El chat: una pregunta se muestra como viva y la respuesta es NO_DATA con su causa (no hay modelo instalado).
   await ev("(() => { const q = document.getElementById('question'); q.value = 'hola'; document.getElementById('entry').dispatchEvent(new Event('submit', { cancelable: true })); })()");
   await espera(900);
   const respuesta = await ev("(document.querySelector('#log li:last-child') || {}).textContent || ''");
-  ok(/^NO_DATA · /.test(respuesta || ''), 'the chat answer is not an honest NO_DATA: ' + respuesta);
+  ok(/^NO_DATA · /.test(respuesta || ''), 'the chat answer is not an honest NO_DATA: ' + respuesta); merged/atlas/openworld_browser.mjs
   ok(JSON.stringify(medida.botones) === JSON.stringify(['Tutorial cabin']), 'the terrain list is not the cabin alone: ' + JSON.stringify(medida.botones));
   ok(medida.tinta > 2000, 'the map is blank: ' + medida.tinta);
   ok(medida.estado === 'Nodes online: 0. The tutorial cabin is the basic world.', 'the default state is not zero nodes: ' + medida.estado);

@@ -1,4 +1,4 @@
-const VERSION = 'preceptoros-2026-17-abkd';
+const VERSION = 'preceptoros-2026-17-abke';
 const SHELL = 'shell-' + VERSION;
 const OBRA = 'obra-' + VERSION;
 
