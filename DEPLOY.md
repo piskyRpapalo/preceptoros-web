@@ -8,8 +8,8 @@ Status: proposal for review. Deployment remains a human action. This document re
 
 Route-count receipt for this source tree (`origin/main` 7d909bb + `haiku/openworld-20261028` NORTE 7 PR 2: `/openworld/` joins the shell):
 
-Rutas precargadas por el shell: 224
-Rutas distintas del shell: 223
+Rutas precargadas por el shell: 225
+Rutas distintas del shell: 224
 
 The workflow runs exactly:
 
