@@ -17,12 +17,17 @@
 // 2026-09-27). Un LoRA del juego solo entra si le gana aqui, con la misma ley
 // y el mismo horizonte.
 import { createRequire } from 'node:module';
-import { readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const require = createRequire(import.meta.url);
 const RAIZ = join(dirname(fileURLToPath(import.meta.url)), '..');
+// Norte 7 D (2026-10-28): theGame se retiro; sin su motor no hay piloto que medir. NO_DATA, no cero.
+if (!existsSync(join(RAIZ, 'public/assets/atlas-motor.js'))) {
+  console.log('NO_DATA · arnes_piloto: theGame retirado (corte Norte 7 D), no hay atlas-motor.js');
+  process.exit(0);
+}
 const M = require(join(RAIZ, 'public/assets/atlas-motor.js'));
 const P = require(join(RAIZ, 'public/assets/atlas-piloto.js'));
 const Pa = require(join(RAIZ, 'public/assets/atlas-partida.js'));

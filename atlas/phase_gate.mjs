@@ -16,25 +16,12 @@ for (const path of checked) {
 }
 // The 16 KiB phase ceiling on the lab instruments (this file, the phase cases, the browser
 // harnesses) was abolished by the Sovereign, 2026-10-26 (FIRMO). Served files keep theirs above.
-const loader = readFileSync(new URL('assets/thegame.js', root), 'utf8');
-assert(/var LENGUAS = \['en'\]/.test(loader), 'English-only loader changed');
-const scripts = loader.match(/var GUIONES = (\[[\s\S]*?\]);/);
-const styles = loader.match(/\[('atlas\.css'[\s\S]*?)\]\.forEach/);
-assert(scripts && styles, 'initial assets cannot be measured');
-const entry = new Set(['assets/thegame.js', 'atlas-en.json']);
-for (const [, path] of scripts[1].matchAll(/\[\s*'([^']+)'/g)) {
-  entry.add(path.startsWith('/') ? path.slice(1) : 'assets/' + path);
-}
-for (const [, path] of styles[1].matchAll(/'([^']+)'/g)) entry.add('assets/' + path);
-const front = readFileSync(new URL('assets/front_door_view.js', root), 'utf8');
-const frontScripts = front.match(/var SCRIPTS = (\[[\s\S]*?\]);/);
-assert(frontScripts, 'front door load set missing');
-entry.add('assets/front_door_view.js'); entry.add('assets/front_door.css');
-for (const [, path] of frontScripts[1].matchAll(/'([^']+)'/g)) entry.add(path.slice(1));
-let gzip = 0;
-for (const path of entry) {
-  assert(files.includes(path), 'initial artifact missing: ' + path);
-  gzip += gzipSync(readFileSync(new URL(path, root)), {level:9}).byteLength;
-}
-assert(gzip < 153600, 'initial gzip exceeds 150 KiB');
-console.log(JSON.stringify({gate:'phase',public_text_files:checked.length,initial_files:entry.size,gzip_initial_b:gzip}));
+// Corte D (2026-10-28): el presupuesto inicial medido sobre thegame.js (el juego de /play/) se retiro con el juego.
+// Lo que queda vivo es el techo de 16 KiB sobre todo public/ (arriba). Retirada comprobada: thegame.js no existe
+// y no figura en el precache.
+const sw = readFileSync(new URL('sw-listas.js', root), 'utf8');
+const retirados = ['assets/thegame.js', 'assets/thegame.css'];
+const vivos = retirados.filter(p => files.includes(p));
+const precache = retirados.filter(p => sw.includes("'/" + p + "'"));
+assert.deepEqual([...vivos, ...precache], [], 'el presupuesto del juego retirado sigue vivo');
+console.log(JSON.stringify({gate:'phase',public_text_files:checked.length,presupuesto_inicial:'retirado con el juego (corte D)'}));

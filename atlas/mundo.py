@@ -39,6 +39,9 @@ PIEZAS = ["atlas-arte.js", "atlas-coord.js", "atlas-carta.js", "atlas-ondas.js",
 
 
 def gzip_juego():
+    # Norte 7 D (2026-10-28): theGame se retiro. Sin su bundle no hay peso de puerta que medir: NO_DATA, no cero.
+    if not (ASSETS / "thegame.js").exists():
+        return None
     total = 0
     base = re.search(r"var LENGUAS = \['(\w+)'", (ASSETS / "thegame.js").read_text(encoding="utf-8")).group(1)
     paths = {ASSETS / n for n in PIEZAS} | {PUBLICO / f"atlas-{base}.json"}

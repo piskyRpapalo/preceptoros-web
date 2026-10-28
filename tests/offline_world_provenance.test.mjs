@@ -1,41 +1,21 @@
-import test from 'node:test';
+import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
-import vm from 'node:vm';
+import { existsSync, readFileSync } from 'node:fs';
 
-const read = (path) => readFileSync(new URL(path, import.meta.url), 'utf8');
-const piso = read('../public/assets/atlas-piso.js');
-const motorSource = read('../public/assets/atlas-motor.js');
-const sw = read('../public/sw.js');
-const lists = read('../public/sw-listas.js');
+// Norte 7 D (decision D2, 2026-10-28): este contrato era del juego de /play/, retirado con su pagina.
+// Guarda de retirada (patron mapa_viejo_desmontado): el fichero no vuelve y no queda precacheado.
 
-function loadMotor(source = motorSource) {
-  const module = { exports: {} };
-  vm.runInNewContext(source, { module, isFinite, Math, Date });
-  return module.exports;
-}
+const RETIRADOS = [
+  'public/assets/atlas-piso.js'
+];
 
-test('missing world data is explicitly marked neutral by the shipped engine', () => {
-  const motor = loadMotor();
-  assert.equal(motor.leyes(null).nd, true);
-  assert.equal(motor.leyes({ pruebas_web: 100, arnes_sw: '2/2', gzip_juego_b: 1 }).nd, false);
+test('the retired game files are absent from the tree', () => {
+  assert.deepEqual(RETIRADOS.filter(p => existsSync(p)), []);
 });
 
-test('world fetch failure reaches the neutral engine input', () => {
-  assert.match(piso, /json\('atlas-mundo\.json'\)\.catch\(function \(\) \{ return null; \}\)/);
-  assert.match(piso, /LEY = M\.leyes\(MUNDO\)/);
-});
-
-test('measurement JSON is excluded from the service-worker content allowlist', () => {
-  const contentList = lists.match(/const CONTENIDO_JSON =([\s\S]*?);/);
-  assert.ok(contentList, 'content allowlist must remain explicit');
-  assert.doesNotMatch(contentList[1], /atlas-mundo\.json/);
-  assert.match(sw, /url\.pathname\.endsWith\('\.json'\)[\s\S]*?CONTENIDO_JSON\.indexOf\(url\.pathname\) < 0/);
-});
-
-test('sabotage: suppressing the neutral provenance bit is detected', () => {
-  const sabotaged = motorSource.replace('nd = !mundo', 'nd = false');
-  assert.notEqual(sabotaged, motorSource, 'sabotage target must exist');
-  assert.equal(loadMotor(sabotaged).leyes(null).nd, false);
-  assert.throws(() => assert.equal(loadMotor(sabotaged).leyes(null).nd, true));
+test('the service worker does not precache them', () => {
+  const sw = readFileSync('public/sw-listas.js', 'utf8');
+  for (const p of RETIRADOS) {
+    assert.equal(sw.includes("'/" + p.replace(/^public\//, '') + "'"), false, p);
+  }
 });

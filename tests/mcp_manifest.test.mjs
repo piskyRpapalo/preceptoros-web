@@ -1,96 +1,21 @@
 import { test } from 'node:test';
-import { strict as assert } from 'node:assert';
-import { readFileSync } from 'node:fs';
+import assert from 'node:assert/strict';
+import { existsSync, readFileSync } from 'node:fs';
 
-const MANIFEST = 'mcp-manifest.json';
-const raw = readFileSync(new URL('../' + MANIFEST, import.meta.url), 'utf8');
-const m = JSON.parse(raw);
-const publicRaw = readFileSync(new URL('../public/' + MANIFEST, import.meta.url), 'utf8');
-const deepLinks = readFileSync(new URL('../public/game/deep_links.js', import.meta.url), 'utf8');
+// Norte 7 D (decision D2, 2026-10-28): este contrato era del juego de /play/, retirado con su pagina.
+// Guarda de retirada (patron mapa_viejo_desmontado): el fichero no vuelve y no queda precacheado.
 
-function assertStaticInventory(manifest) {
-  if (!manifest.$comment.includes('not an MCP manifest')) throw new Error('missing static inventory disclaimer');
-  if (!manifest.$comment.includes('PreceptorOS#64')) throw new Error('missing server reference');
-  if (manifest.title !== 'PreceptorOS · theGame · Static deep-link inventory') throw new Error('misleading title');
-}
+const RETIRADOS = [
+  'public/game/deep_links.js'
+];
 
-function assertPublicTitleHygiene(manifest, links) {
-  const action = manifest.actions.find((item) => item.id === 'lighthouse.move');
-  if (!action || action.title !== 'Move the lighthouse') throw new Error('public action title mismatch');
-  if (action.title.includes('Hexelion')) throw new Error('internal node name in served title');
-  const match = links.match(/'lighthouse\.move':\s*\{[^}]*title:\s*'([^']+)'/);
-  if (!match || match[1] !== action.title) throw new Error('deep link title mismatch');
-}
-
-const FORBIDDEN = ['oracle', 'notary', 'depin', 'token', 'currency', 'clearing', 'magic', 'cryptocurrency'];
-const REQUIRED_ACTION = ['id', 'title', 'deep_link', 'what', 'needs', 'cost_measured', 'state', 'evidence'];
-
-test('manifest identifies a static inventory and points to the separate server', () => {
-  assertStaticInventory(m);
+test('the retired game files are absent from the tree', () => {
+  assert.deepEqual(RETIRADOS.filter(p => existsSync(p)), []);
 });
 
-test('sabotage: removing the disclaimer is red', () => {
-  const broken = JSON.parse(raw);
-  broken.$comment = 'Static inventory only.';
-  assert.throws(() => assertStaticInventory(broken), /missing static inventory disclaimer/);
-});
-
-test('served and source inventories stay identical', () => {
-  if (publicRaw !== raw) throw new Error('root/public manifest drift');
-});
-
-test('public action title is generic and matches the served dialog', () => {
-  assertPublicTitleHygiene(m, deepLinks);
-});
-
-test('sabotage: internal node name or a divergent dialog title is red', () => {
-  const broken = JSON.parse(raw);
-  broken.actions.find((item) => item.id === 'lighthouse.move').title = 'Move the lighthouse (Hexelion)';
-  assert.throws(() => assertPublicTitleHygiene(broken, deepLinks), /public action title mismatch/);
-  assert.throws(() => assertPublicTitleHygiene(m, deepLinks.replace(
-    "title: 'Move the lighthouse'", "title: 'Move the lighthouse (Hexelion)'")), /deep link title mismatch/);
-});
-
-test('manifest parses and has actions', () => {
-  if (!Array.isArray(m.actions) || m.actions.length === 0) throw new Error('no actions');
-});
-
-test('every action has the full double-readable contract', () => {
-  for (const a of m.actions) {
-    for (const k of REQUIRED_ACTION) {
-      if (!a[k]) throw new Error(a.id + ' missing ' + k);
-    }
-    if (!a.deep_link.startsWith('/?action=')) throw new Error(a.id + ' bad deep link');
+test('the service worker does not precache them', () => {
+  const sw = readFileSync('public/sw-listas.js', 'utf8');
+  for (const p of RETIRADOS) {
+    assert.equal(sw.includes("'/" + p.replace(/^public\//, '') + "'"), false, p);
   }
-});
-
-test('no forbidden words anywhere', () => {
-  const declaredGuards = (m.global_guards && m.global_guards.forbidden_words_absent) || [];
-  const text = JSON.stringify({ ...m, global_guards: { ...m.global_guards, forbidden_words_absent: [] } }).toLowerCase();
-  for (const w of FORBIDDEN) {
-    if (text.includes(w)) throw new Error('forbidden word present: ' + w);
-  }
-});
-
-test('state is LIVE or NO_DATA with cause', () => {
-  for (const a of m.actions) {
-    if (a.state === 'LIVE') continue;
-    if (a.state === 'NO_DATA' && a.cause) continue;
-    throw new Error(a.id + ' bad state seal');
-  }
-});
-
-test('sabotage: broken manifest must fail', () => {
-  const broken = JSON.parse(raw);
-  broken.actions[0].state = 'MAYBE';
-  if (broken.actions[0].state === 'MAYBE') {
-    // expected: this would fail validation; the test asserts we detect it
-    if (broken.actions[0].state === 'LIVE' || (broken.actions[0].state === 'NO_DATA' && broken.actions[0].cause)) {
-      throw new Error('sabotage not caught');
-    }
-  }
-});
-
-test('manifest size under 16 KiB', () => {
-  if (Buffer.byteLength(raw) > 16384) throw new Error('piece too big');
 });

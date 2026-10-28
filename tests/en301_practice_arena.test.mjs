@@ -1,9 +1,21 @@
-import test from 'node:test';import assert from 'node:assert/strict';import{createRequire}from'node:module';
-const require=createRequire(import.meta.url),A=require('../public/game/en301_practice_arena.js'),K=require('../public/game/canon.js');
-class El{constructor(tag){this.tagName=tag;this.children=[];this.handlers={};this.value='1';this.disabled=false;}appendChild(e){e.parentNode=this;this.children.push(e);return e;}removeChild(e){this.children.splice(this.children.indexOf(e),1);e.parentNode=null;}setAttribute(k,v){this[k]=v;}addEventListener(k,v){this.handlers[k]=v;}getContext(){return{fillRect(){},fillText(){},clearRect(){}};}click(){if(!this.disabled)this.handlers.click?.();}}
-const doc={createElement:t=>new El(t)};
-function setup(){const host=new El('main'),packets=[];const ui=A.mount(doc,host,{seed:K.sha('arena-dom'),onFinish:p=>packets.push(p)});const all=e=>[e,...e.children.flatMap(all)];const find=t=>all(host).find(e=>e.textContent===t);return{host,ui,packets,find,all};}
-test('cooldown never locks advancing rounds and DOM button stays stable',()=>{const x=setup(),next=x.find('Next round');x.find('Shield').click();next.click();assert.equal(next.disabled,false);assert.equal(x.ui.state().tick,1);assert.equal(x.find('Next round'),next);});
-test('finish needs verified battle and explicit gesture exactly once',()=>{const x=setup();x.find('Continue tutorial').click();assert.equal(x.packets.length,0);x.find('Resolve practice').click();assert.equal(x.packets.length,0);x.find('Continue tutorial').click();x.find('Continue tutorial').click();assert.equal(x.packets.length,1);assert.equal(x.packets[0].f,null);});
-test('fork reuses model and destroyed controls cannot advance',()=>{const x=setup();x.find('Next round').click();x.find('Next round').click();const input=x.all(x.host).find(e=>e.tagName==='input');input.value='1';x.find('Branch before round').click();assert.equal(x.ui.state().tick,0);const next=x.find('Next round');x.ui.destroy();next.click();assert.equal(x.ui.state().tick,0);});
-test('ready reports a verified replay until Continue is pressed, then never again',()=>{const x=setup();assert.equal(x.ui.ready(),false);x.find('Resolve practice').click();assert.equal(x.ui.ready(),true);x.find('Continue tutorial').click();assert.equal(x.ui.ready(),false);assert.equal(x.packets.length,1);});
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import { existsSync, readFileSync } from 'node:fs';
+
+// Norte 7 D (decision D2, 2026-10-28): este contrato era del juego de /play/, retirado con su pagina.
+// Guarda de retirada (patron mapa_viejo_desmontado): el fichero no vuelve y no queda precacheado.
+
+const RETIRADOS = [
+  'public/game/en301_practice_arena.js'
+];
+
+test('the retired game files are absent from the tree', () => {
+  assert.deepEqual(RETIRADOS.filter(p => existsSync(p)), []);
+});
+
+test('the service worker does not precache them', () => {
+  const sw = readFileSync('public/sw-listas.js', 'utf8');
+  for (const p of RETIRADOS) {
+    assert.equal(sw.includes("'/" + p.replace(/^public\//, '') + "'"), false, p);
+  }
+});

@@ -1,11 +1,12 @@
-import assert from 'node:assert/strict';
-import { createRequire } from 'node:module';
-const require = createRequire(import.meta.url);
-const S = require('../public/game/crab_state_screen.js');
+// Corte D (2026-10-28), decision D2 y decreto del Desk: este caso probaba el juego retirado (theGame / /play/).
+// Guarda de retirada: los ficheros del juego no existen y no estan en el precache. Mantiene su nombre (los workflows
+// no cambian) e imprime un recibo JSON.
+import { existsSync, readFileSync } from 'node:fs';
 
-const ids = ['who', 'body', 'core', 'budget', 'receipts', 'actions'];
-assert.deepEqual(S.guion().map((s) => s.id), ids, 'the player state has one fixed order');
-assert.deepEqual(S.guion(), S.guion(), 'the script is deterministic');
-assert.deepEqual(S.guion().map((s) => s.titulo), ['state_who', 'state_body', 'state_core', 'state_budget', 'state_receipts', 'state_actions']);
-assert.equal(S.SECCIONES.length, 6, 'reserved future slots are not rendered today');
-console.log('5C crab state script: 4/4 green');
+const RETIRADOS = ['public/game/crab_state_screen.js'];
+const sw = readFileSync('public/sw-listas.js', 'utf8');
+const vivos = RETIRADOS.filter(p => existsSync(p)).map(p => 'vive ' + p);
+const precache = RETIRADOS.filter(p => sw.includes("'/" + p.replace(/^public\//, '') + "'")).map(p => 'precacheado ' + p);
+const fallos = [...vivos, ...precache];
+console.log(JSON.stringify({ piece: 'corte-D-retirada', receipt: 'RETIRADO', retirados: RETIRADOS.length, fallos }));
+process.exit(fallos.length ? 1 : 0);

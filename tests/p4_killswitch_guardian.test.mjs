@@ -1,31 +1,21 @@
 import { test } from 'node:test';
-import { readFileSync } from 'node:fs';
+import assert from 'node:assert/strict';
+import { existsSync, readFileSync } from 'node:fs';
 
-const ROOT = new URL('../', import.meta.url).pathname;
-const ui = readFileSync(ROOT + 'public/game/killswitch_dot.js', 'utf8');
-const uiOld = readFileSync(ROOT + 'public/game/ui.js', 'utf8');
-const css = readFileSync(ROOT + 'public/assets/base.css', 'utf8');
+// Norte 7 D (decision D2, 2026-10-28): este contrato era del juego de /play/, retirado con su pagina.
+// Guarda de retirada (patron mapa_viejo_desmontado): el fichero no vuelve y no queda precacheado.
 
-test('the killswitch dot exists on the Sound switch and is fed from the semantic BUS (SELLOS)', () => {
-  if (!/KD && KD\.monta\(R\.sonido\)/.test(uiOld)) { throw new Error('sin punto montado en ui.js'); }
-  if (!/killswitch-dot/.test(ui)) { throw new Error('sin punto de color en el interruptor'); }
-  if (!/SEM\.SELLOS/.test(ui)) { throw new Error('el punto no bebe del BUS de sellos (tabla semántica)'); }
+const RETIRADOS = [
+  'public/game/killswitch_dot.js'
+];
+
+test('the retired game files are absent from the tree', () => {
+  assert.deepEqual(RETIRADOS.filter(p => existsSync(p)), []);
 });
 
-test('JAMÁS solo color: every state carries a SHAPE and an aria-label', () => {
-  const formas = (ui.match(/forma: '\\u[a-f0-9a-f]{4}'/g) || []).length;
-  if (formas < 3) { throw new Error('faltan formas por estado: ' + formas + '/3'); }
-  if (!/aria-label', e\.etiqueta/.test(ui)) { throw new Error('sin etiqueta aria por estado'); }
-});
-
-test('the four frontier states are mapped: red (no audio/off), yellow (needs gesture), green (live), green-with-ring (live with exception)', () => {
-  for (const s of ['apagado', 'necesita_gesto', 'vivo']) {
-    if (!ui.includes("'" + s + "'")) { throw new Error('estado ausente: ' + s); }
+test('the service worker does not precache them', () => {
+  const sw = readFileSync('public/sw-listas.js', 'utf8');
+  for (const p of RETIRADOS) {
+    assert.equal(sw.includes("'/" + p.replace(/^public\//, '') + "'"), false, p);
   }
-  if (!/con-anillo/.test(ui) || !/con-anillo/.test(css)) { throw new Error('sin el anillo de excepción'); }
-});
-
-test('SABOTAJE: removing the dot breaks this guardian', () => {
-  const roto = ui.replace('killswitch-dot', 'sabotaje');
-  if (roto === ui) { throw new Error('el sabotaje no cambió nada'); }
 });

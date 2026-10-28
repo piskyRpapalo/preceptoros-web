@@ -7,7 +7,7 @@ const require = createRequire(import.meta.url);
 const E = require('../public/game/escuadron.js');
 const G = require('../public/game/gacha.js');
 const K = require('../public/game/canon.js');
-const A = require('../public/game/arena.js');
+
 const V = require('../public/game/valores.js');
 const sin = (f) => readFileSync(new URL('../public/game/' + f, import.meta.url), 'utf-8').replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/.*$/gm, '');
 const casos = [];
@@ -33,9 +33,6 @@ caso('sitios: deterministas, uno por unidad, el lider en el centro, dentro del r
   const lejos = a.concat(d).some((p) => Math.hypot(p[0], p[1]) > V.escuadron.radio * 1.5);
   return (JSON.stringify(a) === JSON.stringify(b) && a.length === 24 && a[0][0] === 0 && a[0][1] === 0 && !lejos && JSON.stringify(a) !== JSON.stringify(d)) || { lejos };
 });
-caso('el combate NO cambia: arena no conoce el escuadron y el escuadron no decide (sin azar, sin reloj, sin red)', () => {
-  const malos = ['Math.random', 'Date.', 'fetch(', 'combate(', 'AtlasArena'].filter((m) => sin('escuadron.js').includes(m));
-  return (!/escuadron/i.test(sin('arena.js')) && !malos.length && !('escuadron' in JSON.parse(JSON.stringify({ k: A.packSha() })))) || { malos };
-});
+
 console.log(JSON.stringify(casos));
 process.exitCode = casos.every((c) => c.ok) ? 0 : 1;

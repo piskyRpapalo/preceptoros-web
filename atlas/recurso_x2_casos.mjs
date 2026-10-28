@@ -1,18 +1,12 @@
-// Q4 · compara una corrida determinista completa con el ritmo firmado.
-// 1.000 ciclos = 1.000 s. El piloto medido antes producía 400 cobre;
-// la orden duplica el flujo a 800 sin cambiar costes ni semilla.
-import { createRequire } from 'node:module';
-const require = createRequire(import.meta.url);
-const M = require('../public/assets/atlas-motor.js');
-const ley = M.leyes({ pruebas_web: 171, arnes_sw: '22/22', gzip_juego_b: 90385 });
-let e = M.inicial(ley);
-e.abierta = false; e.cierre = 1001;
-for (let i = 0; i < 1000; i++) e = M.ciclo(e, ley);
-let tirada = M.inicial(ley);
-tirada.abierta = false; tirada.cierre = 1001;
-while (tirada.cobre < 50 && tirada.t < 10000) tirada = M.ciclo(tirada, ley);
-const ok = e.t === 1000 && e.cobre === 800 && tirada.t === 63;
-console.log(JSON.stringify({ ciclos: e.t, segundos: e.t * M.CICLO_MS / 1000, cobre: e.cobre,
-  esperado: 800, cobre_por_ciclo: e.cobre / e.t,
-  ciclos_para_50_cobre: tirada.t, segundos_por_cobre: tirada.t * M.CICLO_MS / 1000 / 50, ok }));
-if (!ok) process.exitCode = 1;
+// Corte D (2026-10-28), decision D2 y decreto del Desk: este caso probaba el juego retirado (theGame / /play/).
+// Guarda de retirada: los ficheros del juego no existen y no estan en el precache. Mantiene su nombre (los workflows
+// no cambian) e imprime un recibo JSON.
+import { existsSync, readFileSync } from 'node:fs';
+
+const RETIRADOS = ['public/assets/atlas-motor.js'];
+const sw = readFileSync('public/sw-listas.js', 'utf8');
+const vivos = RETIRADOS.filter(p => existsSync(p)).map(p => 'vive ' + p);
+const precache = RETIRADOS.filter(p => sw.includes("'/" + p.replace(/^public\//, '') + "'")).map(p => 'precacheado ' + p);
+const fallos = [...vivos, ...precache];
+console.log(JSON.stringify({ piece: 'corte-D-retirada', receipt: 'RETIRADO', retirados: RETIRADOS.length, fallos }));
+process.exit(fallos.length ? 1 : 0);
