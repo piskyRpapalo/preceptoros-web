@@ -479,6 +479,20 @@
     "pinta",
     "sitiocasa"
   ],
+  "public/game/state_vector.js": [
+    "atlasarrecife",
+    "atlascangrejolibre",
+    "atlasincubadora",
+    "atlasnodoscedulas",
+    "cangrejo",
+    "ciclo",
+    "lee",
+    "nodo",
+    "nodos",
+    "registro",
+    "sello",
+    "valores"
+  ],
   "public/game/summon-wave-card.js": [
     "atlasvalores",
     "monta",

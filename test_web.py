@@ -2417,10 +2417,13 @@ class Puerta(unittest.TestCase):
 
     def test_las_puertas_se_ven(self):
         # NORTE 7 · PR 1 (decreto 2026-10-28): la INTRO tiene tres opciones, OpenWorld · Tutorial · Tools.
-        # OpenWorld y Tutorial van a /openworld/ (decision D1, Norte 7 D: el tutorial es el camino dentro de OpenWorld).
-        for href, titulo in (("/openworld/", "OpenWorld"), ("/openworld/", "Tutorial")):
+        # Corte D, decreto del Sovereign (supersede D1): la INTRO solo tiene OpenWorld y Tools. El tutorial es el camino
+        # deterministico DENTRO de OpenWorld (llave, faro, primer combate). La puerta Tutorial sale, no se redirige.
+        for href, titulo in (("/openworld/", "OpenWorld"),):
             with self.subTest(titulo=titulo):
                 self.assertIn(f'<a class="door" href="{href}"><b>{titulo}</b><span>', self.t)
+        self.assertNotIn("<b>Tutorial</b>", self.t, "la puerta Tutorial debe salir de la INTRO (decreto corte D)")
+        self.assertNotIn('href="/play/"', self.t, "la INTRO no enlaza al juego retirado")
         # Tools es un clic directo (boton), no un enlace: la PWA o el desplegable visible de abajo.
         self.assertIn('<button class="door door-tools" id="door-tools" type="button" aria-controls="tools-dispositivo">'
                       '<b>Tools</b>', self.t)

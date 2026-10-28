@@ -9,7 +9,7 @@ lenguas) que eran la misma pagina inglesa con el juego montado dentro, y todas c
 compartidas de septiembre. Ahora:
   - `/` es UNA portada inglesa: la puerta a lo reciente (el juego, los mundos, la creacion). Carga solo
     su hoja nueva (`assets/landing.css`) y la marca nueva (`assets/mark.svg`); ninguna hoja vieja.
-  - (Norte 7 D, 2026-10-28) `/play/` se retiro: ya no se genera; la puerta Tutorial apunta a `/openworld/`.
+  - (Norte 7 D, 2026-10-28) `/play/` se retiro: ya no se genera. La puerta Tutorial sale de la INTRO (decreto del Sovereign: solo OpenWorld y Tools; el tutorial es el camino dentro de OpenWorld).
   - `/ar/` ... `/ru/` responden 301 a `/` desde el Worker (`worker/index.js`); sus ficheros salen de
     `public/`.
 """
@@ -42,8 +42,8 @@ def cabeza(titulo, url, hojas, color, extra=""):
 """ + "".join(f'<link rel="stylesheet" href="{h}">\n' for h in hojas) + extra + "</head>\n"
 
 
-# NORTE 7 · PR 1 (decreto 2026-10-28): la INTRO. Tres opciones (OpenWorld · Tutorial · Tools); Tools es un
-# clic directo a la PWA mas un desplegable visible de dispositivo/descarga. OpenWorld y Tutorial van a /openworld/ (Norte 7 D: /play/ retirado)
+# NORTE 7 · PR 1 (decreto 2026-10-28): la INTRO. Dos puertas (OpenWorld · Tools; la puerta Tutorial sale con el corte D); Tools es un
+# clic directo a la PWA mas un desplegable visible de dispositivo/descarga. OpenWorld va a /openworld/
 # hasta que /openworld/ exista (PR 2): ese destino entonces cambia, y se declara en su PR.
 ESTILO_INTRO = """<style>
 button.door{width:100%;font:inherit;background:var(--bg);text-align:left;cursor:pointer}
@@ -68,7 +68,6 @@ def portada():
 <p class="lead">A game of waves that runs on your own device. No account, no cloud, no tracking.</p>
 <nav id="doors" aria-label="Doors">
 <a class="door" href="/openworld/"><b>OpenWorld</b><span>The map and the chat, side by side. Your node's world.</span></a>
-<a class="door" href="/openworld/"><b>Tutorial</b><span>The first steps: the key, the beacon, the first fight.</span></a>
 <button class="door door-tools" id="door-tools" type="button" aria-controls="tools-dispositivo"><b>Tools</b><span id="tools-estado">Install the app on this device, or pick a download below.</span></button>
 </nav>
 <section id="tools-dispositivo" aria-labelledby="tools-h">
