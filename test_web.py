@@ -2539,12 +2539,16 @@ class OpenWorld(unittest.TestCase):
         self.assertEqual(estado["nodes"], [], "el estado por defecto debe ser cero nodos")
 
     def test_la_cabana_siempre_y_los_nodos_solo_si_viven(self):
-        # El mapa solo nombra dos nodos, y solo los pinta si la lista de vivos los trae.
-        self.assertIn("cabin: { name: 'Tutorial cabin', x: 0.5, y: 0.5, always: true }", self.t)
-        self.assertIn("atlantis: { name: 'Atlantis · Node Hexelion'", self.t)
-        self.assertIn("risen: { name: 'the Risen'", self.t)
-        self.assertIn("if (!t.always && alive.indexOf(id) < 0) { return; }", self.t)
-        self.assertIn("return id === 'atlantis' || id === 'risen';", self.t)
+        # El mapa (NODO-MAPA, ODD isometric-colony) nombra tres filas en el nucleo puro: la cabana siempre, y
+        # Atlantis y the Risen solo si el estado los lista como vivos. La ficha pinta lo que el nucleo decide.
+        nucleo = (PUBLICO / "game" / "global_map.js").read_text(encoding="utf-8")
+        self.assertIn("nombre: 'Tutorial cabin'", nucleo)
+        self.assertIn("siempre: true", nucleo)
+        self.assertIn("nombre: 'Atlantis · Node Hexelion'", nucleo)
+        self.assertIn("nombre: 'the Risen'", nucleo)
+        self.assertIn("node.siempre || vivos.some(", nucleo)
+        self.assertIn("M.estado(entrada)", self.t)
+        self.assertIn("return n && (n.id === 'atlantis' || n.id === 'risen');", self.t)
 
     def test_cero_peticiones_externas(self):
         # Lo que el navegador DESCARGA: scripts, imagenes, hojas, iconos y manifest. El canonical y las etiquetas

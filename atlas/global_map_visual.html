@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Global map · visual check</title>
+<style>
+  :root { color-scheme: light; }
+  body { margin: 0; padding: 16px; font: 14px/1.4 system-ui, sans-serif; background: #f4f1ea; color: #17131f; }
+  h1 { font-size: 18px; margin: 0 0 4px; }
+  .sub { margin: 0 0 12px; color: #4a4456; }
+  .row { margin-bottom: 14px; }
+  .row h2 { font-size: 14px; margin: 0 0 6px; }
+  .grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+  figure { margin: 0; background: #fff; border: 1px solid #17131f; }
+  figure canvas { display: block; width: 100%; height: auto; aspect-ratio: 2 / 1; }
+  figcaption { font: 12px/1.3 ui-monospace, monospace; padding: 4px 6px; border-top: 1px solid #17131f; }
+  pre { font: 12px/1.35 ui-monospace, monospace; background: #fff; border: 1px solid #17131f; padding: 8px; white-space: pre-wrap; }
+</style>
+</head>
+<body>
+<h1>Global map · the first three nodes</h1>
+<p class="sub">One state, rendered at four cycle ticks. Row A is the live state as served (<code>/openworld/estado.json</code>). Row B is a labelled SYNTHETIC fixture with all three nodes alive: it proves the render path, it is not a live node.</p>
+<div class="row"><h2>A · live state as served</h2><div class="grid" id="filaA"></div></div>
+<div class="row"><h2>B · synthetic fixture · three nodes alive (not a measurement of a live node)</h2><div class="grid" id="filaB"></div></div>
+<h2 style="font-size:14px">Receipt</h2>
+<pre id="recibo">running…</pre>
+<script src="../public/game/tabla_semantica.js"></script>
+<script src="../public/game/comic_tokens.js"></script>
+<script src="../public/game/comic_accents.js"></script>
+<script src="../public/game/comic_atoms.js"></script>
+<script src="../public/game/valores.js"></script>
+<script src="../public/game/gacha.js"></script>
+<script src="../public/game/bubble_language.js"></script>
+<script src="../public/game/bubble_letters.js"></script>
+<script src="../public/game/isometric_floor_projection.js"></script>
+<script src="../public/game/global_map.js"></script>
+<script>
+(function (raiz) {
+  'use strict';
+  var M = raiz.AtlasMapaGlobal, B = raiz.AtlasBubble, P = raiz.AtlasComicAtoms;
+  var params = new URLSearchParams(raiz.location.search);
+  var sabotaje = params.get('sabotaje') || '';
+  var TICKS = [0, 30, 90, 120];
+  var W = 480, H = 240;
+  var FIXTURE = { cabin: { mana: { valor: 60 } }, nodes: [{ id: 'atlantis', mana: { valor: 12 } }, { id: 'risen' }] };
+
+  // FNV-1a over the canvas pixels: the same pixels give the same hash in every run.
+  function hashCanvas(canvas) {
+    var d = canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height).data, h = 0x811c9dc5;
+    for (var i = 0; i < d.length; i++) { h ^= d[i]; h = Math.imul(h, 0x01000193) >>> 0; }
+    return ('00000000' + (h >>> 0).toString(16)).slice(-8);
+  }
+
+  // One scene at one tick, drawn on one canvas. Positions come from the state's fixed iso angle, scaled for the sheet.
+  function dibuja(canvas, entrada, t, desviar) {
+    var sc = M.mapa(Object.assign({}, entrada, { t: t }));
+    var g = canvas.getContext('2d');
+    g.setTransform(1, 0, 0, 1, 0, 0);
+    g.fillStyle = sc.paleta.cielo; g.fillRect(0, 0, canvas.width, canvas.height);
+    var cx = canvas.width / 2, cy = canvas.height / 2 + 14;
+    sc.nodes.forEach(function (nd) {
+      var fotograma = nd.frame;
+      if (desviar) { fotograma.atoms[0].i[0].lw = 5; }          // sabotage: a jitter with no state change
+      g.save();
+      g.translate(cx + nd.x - M.ANCHO * M.BURBUJA / 2, cy + nd.y - M.ALTO * M.BURBUJA / 2);
+      g.scale(M.BURBUJA, M.BURBUJA);
+      P.paint(g, B.compile(fotograma));
+      g.restore();
+    });
+    return sc;
+  }
+
+  function celda(fila, titulo, entrada, t) {
+    var fig = document.createElement('figure');
+    var canvas = document.createElement('canvas');
+    canvas.width = W; canvas.height = H;
+    var cap = document.createElement('figcaption');
+    fig.appendChild(canvas); fig.appendChild(cap);
+    fila.appendChild(fig);
+    var sc = dibuja(canvas, entrada, t, false);
+    cap.textContent = titulo + ' · t=' + t + ' · ' + sc.nodes.map(function (x) { return x.id; }).join('+') + ' · ' + sc.paleta.cielo;
+    return canvas;
+  }
+
+  function filas() {
+    var resultados = { scenes: [], n2: true, sabotaje: sabotaje || 'none', errores: [] };
+    var filaA = document.getElementById('filaA'), filaB = document.getElementById('filaB');
+    var scenes = [];
+    function fijaEscena(nombre, fila, entrada) {
+      TICKS.forEach(function (t) {
+        var canvas = celda(fila, nombre, entrada, t);
+        scenes.push({ scene: nombre, t: t, canvas: canvas, entrada: entrada });
+      });
+    }
+    return fetch('../public/openworld/estado.json', { cache: 'no-cache' })
+      .then(function (r) { return r.ok ? r.json() : { nodes: [] }; }, function () { return { nodes: [] }; })
+      .then(function (vivo) {
+        fijaEscena('A', filaA, vivo);
+        fijaEscena('B', filaB, FIXTURE);
+        // n=2: the same vector, a second run, the same pixels. The sabotage flag alters the second run on purpose.
+        var primera = scenes.map(function (e) { return hashCanvas(e.canvas); });
+        scenes.forEach(function (e) { dibuja(e.canvas, e.entrada, e.t, sabotaje === 'jitter'); });
+        var segunda = scenes.map(function (e) { return hashCanvas(e.canvas); });
+        scenes.forEach(function (e, i) {
+          resultados.scenes.push({ scene: e.scene, t: e.t, hash: primera[i], hash2: segunda[i], igual: primera[i] === segunda[i] });
+          if (primera[i] !== segunda[i]) { resultados.n2 = false; }
+        });
+        resultados.recibo_estado_vivo = vivo.nodes || [];
+        resultados.ancho = W; resultados.alto = H;
+      })
+      .then(function () { return resultados; });
+  }
+
+  function alto(error) { document.getElementById('recibo').textContent = 'ERROR · ' + error.message; }
+
+  // sabotage: a sprite without its lexicon key must go red, as orphan_visual_node.
+  if (sabotaje === 'clave') {
+    M.NODES[1].clave = '';
+  }
+  filas().then(function (r) {
+    if (sabotaje === 'clave') { r.errores.push('expected orphan_visual_node'); }
+    try {
+      M.estado({ nodes: [{ id: 'atlantis' }] });
+    } catch (e) { r.errores.push(e.message); }
+    r.n2_identical = r.n2;
+    document.getElementById('recibo').textContent = JSON.stringify(r, null, 1);
+    raiz.RECIBO = r;
+  }).catch(alto);
+})(window);
+</script>
+</body>
+</html>

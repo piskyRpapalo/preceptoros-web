@@ -80,7 +80,27 @@ Fidelity to the eyes of the carbon and to the understanding of the orchestrators
 ## Log
 
 - 2026-10-28: the doc is born from the Sovereign's decree; the reference is measured and cited; the Mesa defines the construction order and the slice owners; commissions served on the PR of this document.
+- 2026-10-28 (evening, NODO-MAPA, branch `haiku/global-map-20261028`): the global map with the first three nodes, node-only, in the openworld door. Choices and stand-ins, each one reversible:
+  - IC1/IC2 (codex) were not on main when this was built. Lawful default: the existing `public/game/isometric_floor_projection.js` (fixed axonometric cell, same numbers every run) places the three nodes on their lattice coordinates (cabin 0,0 · Atlantis -2,1 · the Risen 2,-1). No hex-lattice core is written here. When IC1/IC2 land, their core replaces this stand-in; one state, many renders.
+  - `mana` coined in `docs/lexicon.md` (the Sovereign's term). Collision scan 2026-10-28: no project term in the web repo; in `p0x` the word appears only in tokenizer vocabularies, third-party locale strings and video-prompt text.
+  - Cabin mana: no measurement source is wired yet, so it is `NO_DATA` with its cause, written into the frame sentence. No value is invented. A mana wave is drawn only from a measured whole number 0-100.
+  - The base sound of each bubble is the tutorial sea's own wave (the frame's design data, as the door drew before). A measured mana adds a second wave. The listen control plays the selected frame's own sound.
+  - Live state: `public/openworld/estado.json` lists no nodes, so the live map shows the cabin alone. The three-node picture is a labelled SYNTHETIC fixture; it proves the render path and is not a measurement of a live node.
+  - The door fetched `/openworld/state.json`, which does not exist on disk. It now fetches `/openworld/estado.json`, the file that is there. Additive correction, declared.
+  - The cycle: `t` advances one tick per second in the door, and the palette reads `t` only (never a clock). Reduced motion: no cycle.
+  - Tests moved with the law: `test_web` (OpenWorld) now asserts the three rows in `global_map.js`; `test_atlas` declares `global_map.js` as on-demand, outside the precache, and the door's isometric dependency. Same law, new location.
+  - Seal: `public/sw.js` VERSION `preceptoros-2026-17-abke` → `abkf`, huella re-stamped by `bin/sellar.py`, counters re-measured by `contadores.py`.
+- Verification evidence (measured 2026-10-28):
+  - `atlas/global_map_casos.mjs` 328/328 (pure). Sabotage inside it: an orphan key throws `orphan_visual_node`; a poisoned `Date` changes no byte; a jittered frame moves its hash; a `Math.random` in a synthetic file is caught by the grep gate.
+  - `atlas/global_map_gate.mjs` (headless Chrome, `atlas/global_map_visual.html`): clean run n=2 identical on 8 scenes (2 rows × 4 ticks 0/30/90/120); sabotage `jitter` → n2 false; sabotage `clave` → refused as `orphan_visual_node`. Receipts: `atlas/global_map_recibos.json`. Picture: `atlas/global_map_contact_sheet.png`.
+  - Frame sizes: largest node frame 699 B over all 240 ticks with measured mana 100/0; sky frame 262 B. Law: under 1,024 B.
+  - Palette: t=0 `#17131f` (night) · t=120 `#f4ebd0` (day) · period 240 ticks, integer lerp.
+  - `test_web.py` 86 tests OK (1 skipped, pre-existing) · `test_atlas.py` 190 tests OK.
+  - NO_DATA · motion on the weakest device of the fleet ring: not measured here, no device at hand; the cycle has been measured only in headless Chrome.
+  - NO_DATA · live liveness of Atlantis and the Risen: no source wired on the web; `estado.json` lists none.
+  - NO_DATA · mana of the tutorial cabin: no measurement source; shown as NO_DATA.
+- Standing signature: the search was done against the PR #387 comments (the Sovereign's mandate of 2026-10-28, evening, naming the three nodes and the coinage of `mana`) and against the repo's seal and lexicon rules. Both are covered; no other signature is needed for this slice. Buildings (IC4) are NOT in this slice and wait for the Sovereign's piece FIRMO.
 
 ## Next step
 
-IC1 + IC2 (codex): hex lattice state core and iso projection, propose-only, gates n=2, one PR each.
+The Sovereign's piece FIRMO on the exact head of the global-map PR, after he sees `atlas/global_map_contact_sheet.png`. That FIRMO releases IC4 (the first buildings). Codex's IC1/IC2 later replace the stand-in projection.

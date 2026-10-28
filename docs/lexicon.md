@@ -44,6 +44,7 @@
 | the Arm | el brazo | The Mistral web-coder lane: writes, measures, receipts. Never merges, never signs, never pushes. | in use |
 | the Descent | el descenso | The Claude Code lane building the game's visual language (the bubble language). | in use |
 | the Codex lane (astra) | astra / Codex | The lane on the app side (L4a / tier-2 contract). | in use |
+| mana | — (new term; the Sovereign's word, mandate 2026-10-28) | The tutorial cabin's measurable resource, drawn on the global map. Collision scan 2026-10-28: no project term in the web repo; the word appears in tokenizer vocabularies, third-party locale strings and video-prompt text, none of them a project term. Only a MEASURED value is drawn; otherwise NO_DATA with its cause. | coined · pending merge |
 | preceptor | preceptor | Any AI that reads this world and works under these laws. | in use |
 | the Comando | el Comando | The single GitHub lane: mirror of what the app hosts in its own database, and the place where commissions and receipts land. One channel, so no preceptor has to guess where anything lives. | proposal (rename of the Mailbox) |
 | the Mailbox | el buzón | The issues-repo where commissions and receipts land. Rename to **the Comando** proposed (open decision 5). | in use |
