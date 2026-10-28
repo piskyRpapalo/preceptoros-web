@@ -74,10 +74,15 @@ async function main() {
   await ev("document.getElementById('listen').click()"); await espera(200);
   const escucha = await ev("document.getElementById('listen-state').textContent");
   ok(/^NO_DATA: no wave or blob with harmonics in the frame$/.test(escucha || ''), 'the cabin sound did not report its NO_DATA cause: ' + escucha);
+  // El chat: una pregunta se muestra como viva y la respuesta es NO_DATA con su causa (no hay modelo instalado).
+  await ev("(() => { const q = document.getElementById('question'); q.value = 'hola'; document.getElementById('entry').dispatchEvent(new Event('submit', { cancelable: true })); })()");
+  await espera(900);
+  const respuesta = await ev("(document.querySelector('#log li:last-child') || {}).textContent || ''");
+  ok(/^NO_DATA · /.test(respuesta || ''), 'the chat answer is not an honest NO_DATA: ' + respuesta);
   ok(JSON.stringify(medida.botones) === JSON.stringify(['Tutorial cabin']), 'the terrain list is not the cabin alone: ' + JSON.stringify(medida.botones));
   ok(medida.tinta > 2000, 'the map is blank: ' + medida.tinta);
   ok(medida.estado === 'Nodes online: 0. The tutorial cabin is the basic world.', 'the default state is not zero nodes: ' + medida.estado);
-  ok(medida.chatAbierto && medida.entradaOff, 'the chat panel is missing or its input is awake');
+  ok(medida.chatAbierto && !medida.entradaOff, 'the chat panel is missing or its input is off');
   ok(!medida.botonChat, 'there is a Chat button; the chat must always be present, with no button');
   ok(medida.ancho <= medida.vista, 'the page scrolls sideways at phone width: ' + medida.ancho + ' > ' + medida.vista);
   ok(!/\bundefined\b|\bNaN\b/.test(medida.texto), 'missing value shown on the page');
