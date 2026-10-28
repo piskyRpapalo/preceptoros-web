@@ -1,7 +1,7 @@
 # Chunked chat router
 
 Date: 2026-10-28
-Law: NORTE 8 chat-router commission after web#363; Desk ruling 2026-10-28 permits this design document under standing ODD FIRMO. Code changes belong to lote `2026-10-28-g`; this document makes no code or deployment claim. Lab#104 supplies the measured chunk transport contract.
+Law: NORTE 8 chat-router commission after web#363; Desk ruling 2026-10-28 permits this design document under standing ODD FIRMO. Code changes belong to lote `2026-10-28-g`; this document makes no code or deployment claim. Lab#104 supplies the measured chunk transport contract. Desk decree in buzon#19 comment `6458742188`: public router is no-weight; synthetic weights stay out of the public site.
 Status: DOC_READY_FOR_DESK_REVIEW · documentation only · no code, merge, or deployment.
 
 ## Objective
@@ -26,7 +26,7 @@ The Lab proof establishes a local, deterministic, consented chunk loader and a c
 
 ## Constraints
 
-- Use the Lab#104 same-origin contract: four declared files of 6,250,000 B each (25,000,000 B total, 23.84 MiB); each deployed file remains under 25 MiB. These are proof dimensions, not a production model commitment.
+- Use the Lab#104 same-origin contract for any future eligible model: visible declared source and size before consent, per-file chunks under 25 MiB, hash validation before cache storage and cache use. Lab#104's 25,000,000 B/4-chunk synthetic fixture is a local test artifact only; it must not ship in `public/`.
 - Source pieces remain under 16,384 B; channel output remains strictly below 1,024 UTF-8 B. Bound input as the Lab fixture does and fail closed on overflow, attacks, ties, unknown categories, missing mapping, or missing evidence.
 - Do not preload weight files or let a cache miss trigger a request. Do not present SHA-256 as publisher authentication: the Lab contract states it verifies bytes against the manifest, not who published that manifest.
 - The interface has visible state and a screen-reader announcement for each transition: consent required, downloading, verifying, ready, and cause-bearing failure. No sound starts without user consent.
@@ -35,9 +35,9 @@ The Lab proof establishes a local, deterministic, consented chunk loader and a c
 
 ## Coordination and non-duplication
 
-Claude Haiku's open draft web#379 (`haiku/chunk-router-20261028`, head `dfa80e221b7d8713e0a1ab2885ba54c005088821`) implements a no-weight router and activates the OpenWorld input with honest `NO_DATA`. This design does not propose a second `chunk_router.js`, another chat form, or a parallel radio adapter. Its distinct question is how the Lab#104 synthetic, 25,000,000 B demonstration payload can be consent-loaded and routed as `SIMULATED` while that no-weight path remains the fail-closed fallback.
+Claude Haiku's open draft web#379 (`haiku/chunk-router-20261028`, head `dfa80e221b7d8713e0a1ab2885ba54c005088821`) implements a no-weight router and activates the OpenWorld input with honest `NO_DATA`. This design does not propose a second `chunk_router.js`, another chat form, a parallel radio adapter, or public synthetic weights. Its distinct question is how a future accepted non-synthetic model can use the Lab#104 chunk transport contract, after its source, license, and quality have been measured and reviewed. Until then the public path remains weight-free and fail-closed.
 
-Before code work under lote `2026-10-28-g`, the Desk should sequence #379 and select one integration seam: extend its router with the verified local demonstration path, or replace that router in the same commissioned piece. Do not merge two independently wired OpenWorld forms or two owners of `AtlasRadioChat.dice`. No dependency on Claude or Mistral completing work is assumed by this design card.
+Before code work under lote `2026-10-28-g`, the Desk should sequence #379 and select one integration seam: keep its no-weight behavior as the default and add a consented loader only after a non-synthetic model is accepted, or keep the router unchanged until such a model exists. Do not merge two independently wired OpenWorld forms or two owners of `AtlasRadioChat.dice`. No dependency on Claude or Mistral completing work is assumed by this design card.
 
 ## Checklist
 
@@ -54,7 +54,7 @@ Before code work under lote `2026-10-28-g`, the Desk should sequence #379 and se
 ## Verification evidence
 
 - Lab proof source: `lab` main `36019b0ba0580c0f5be11942625986604bd837bc`, `proposals/chunked-web-proof-20261028/CONTRACT.md` (blob `3776a73d5dc31374315e90df9290e718eef49e38`). The contract says: “Only the explicit **Download and verify weights** action starts those requests.” It also says each chunk is checked before cache use and cache misses never download.
-- Lab measurement: `proposals/chunked-web-proof-20261028/RECEIPT.json`, same Lab revision. Two browser runs at 2026-10-28 00:13:25Z and 00:13:26Z on Linux x86_64 / Chrome 155.0.8059.39 measured 0 weight requests before action, 25,000,000 received bytes in four 6,250,000 B chunks, cache miss `cache_chunk_missing`, and repeated output SHA-256 `605e71b9dc8e0cbdcee1150f61d00bc2659c9ba9f9a217e6ce030788c04b2dde`. The receipt marks output as a fixture and live integration as `NO_DATA` at that revision.
+- Lab measurement: `proposals/chunked-web-proof-20261028/RECEIPT.json`, same Lab revision. Two browser runs at 2026-10-28 00:13:25Z and 00:13:26Z on Linux x86_64 / Chrome 155.0.8059.39 measured 0 weight requests before action, 25,000,000 received bytes in four 6,250,000 B chunks, cache miss `cache_chunk_missing`, and repeated output SHA-256 `605e71b9dc8e0cbdcee1150f61d00bc2659c9ba9f9a217e6ce030788c04b2dde`. The receipt marks output as a fixture and live integration as `NO_DATA` at that revision. Under the newer Desk decree, these synthetic bytes remain a local proof only and are excluded from the public site.
 - Web source: `public/face/face_terminal.js` and `public/assets/radio_message_log.js` at web main `ef38a28924e2958275ca530b87ff854e793cac56`; the terminal calls `C.dice` and the module owns `AtlasRadioChat.dice`. OpenWorld markup and disabled form are in `public/openworld/index.html` at the same revision.
 - Live smoke: 2026-10-28, curl + Chrome 155.0.8059.39 on Linux x86_64. `/openworld/` returned HTTP 200 with its chat input disabled. `/face/basic` returned HTTP 200; the terminal mounted open with 3 tabs. A local synthetic submission appeared as `You · LIVE` and returned `Preceptor · NO_DATA` (“No model is connected…”). Live `sw.js` served `preceptoros-2026-17-abka`; the chunk model is not yet deployed. This tests the live chat terminal, not the new router.
 - Production shortcut catalogue, canon-chunk set and source receipts, publisher authentication/rollback policy, trained weights/license, moderator coverage, browser cache quota/eviction, and model quality: `NO_DATA` with cause: no accepted production catalogue, source manifest, model, or measurement in the pinned Lab proof.
@@ -63,7 +63,7 @@ Before code work under lote `2026-10-28-g`, the Desk should sequence #379 and se
 
 ## Standing signature
 
-No additional signature is needed to build this feature branch or record this task. The exact web#363 FIRMO line was found in buzon#30 comment `6458382463` and its HITL rerun passed for head `913e7f3a3db571be6cfaa75e08b64e67ce0c847b`; web#363 merged at `ef38a28924e2958275ca530b87ff854e793cac56`. This does not sign the new head. The new feature's merge still requires its own exact-head HITL/FIRMO.
+No additional signature is needed to prepare this design document. The exact web#363 FIRMO line was found in buzon#30 comment `6458382463` and its HITL rerun passed for head `913e7f3a3db571be6cfaa75e08b64e67ce0c847b`; web#363 merged at `ef38a28924e2958275ca530b87ff854e793cac56`. This does not sign a code change. The code work is assigned to lote `2026-10-28-g`; the document PR still requires Desk review and exact-head ODD FIRMO to merge.
 
 ## Methodology relief
 
@@ -77,4 +77,4 @@ PROPOSED · INTANGIBLE, not applied to standing doctrine: keep classifier result
 
 ## Next step
 
-Desk review and exact-head HITL/FIRMO are the remaining document-PR gates. Code implementation must be commissioned in lote `2026-10-28-g` and use the #379 integration seam selected by the Desk. If a later code head is merged and deployed through the authorized path, perform live smoke then; do not treat the local fixture as production evidence.
+Desk review and exact-head ODD FIRMO are the remaining document-PR gates. Code implementation must be commissioned in lote `2026-10-28-g`, use the #379 integration seam selected by the Desk, and stay weight-free until an eligible non-synthetic model is accepted. If a later code head is merged and deployed through the authorized path, perform live smoke then; do not treat the local fixture as production evidence.
