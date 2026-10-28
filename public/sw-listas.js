@@ -48,7 +48,7 @@ const JUEGO = [
 
 const PORTADA = ['/assets/base.css', '/assets/canon.css', '/assets/soberano.css', '/assets/consiento.css', '/assets/consiento.js',
                  '/assets/auth.js', '/assets/enviar.js', '/assets/page-comment.js', '/assets/page-comment.css', '/assets/pwa.js',
-                 '/assets/landing.css', '/assets/landing_doors.js', '/assets/aduana_page.js', '/assets/get_app_gate.js', '/game/launch_gate.js', '/game/node_catalogue.js', '/assets/mark.svg', '/assets/icon-192.png', '/assets/icon-512.png', '/assets/icon-512-maskable.png']
+                 '/assets/landing.css', '/assets/landing_doors.js', '/assets/intro.js', '/openworld/', '/assets/aduana_page.js', '/assets/get_app_gate.js', '/game/launch_gate.js', '/game/node_catalogue.js', '/assets/mark.svg', '/assets/icon-192.png', '/assets/icon-512.png', '/assets/icon-512-maskable.png']
   .concat(IDIOMAS.map(function (l) { return '/assets/enviar-' + l + '.js'; }));
 const HUB = [...PORTADA, ...JUEGO];
 

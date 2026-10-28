@@ -57,7 +57,7 @@ async function main() {
     return { burbujas: document.documentElement.classList.contains('con-burbujas'), puertas: puertas.length,
       enlaces: puertas.map((a) => a.getAttribute('href')), titulos: puertas.map((a) => (a.querySelector('b') || {}).textContent),
       dibujos: puertas.map((a) => { const c = a.querySelector('canvas.door-art'); return c ? tinta(c) : 0; }),
-      pie: (document.querySelector('.note') || {}).textContent, texto: document.body.innerText,
+      pie: (document.querySelector('main > .note') || {}).textContent, texto: document.body.innerText,
       // [2]: the web and the app, two bubbles facing each other; the tail is the ink nearest the bottom corners.
       lados: [...document.querySelectorAll('#web-app .side')].map((p) => { const c = p.querySelector('canvas.door-art'); if (!c) { return null; }
         const g = c.getContext('2d'), d = g.getImageData(0, 0, c.width, c.height).data, w = c.width, h = c.height, y = Math.floor(h * 0.95);
@@ -66,17 +66,16 @@ async function main() {
       plegado: !(document.querySelector('#web-app details.tech') || {}).open };
   })())`));
   ok(medida.burbujas && medida.puertas === 3, 'the three doors were not all drawn in bubble language');
-  ok(JSON.stringify(medida.enlaces) === JSON.stringify(['/play/', '/face/', '/creation.html']), 'links changed: ' + medida.enlaces);
-  ok(JSON.stringify(medida.titulos) === JSON.stringify(['Play theGame', 'Worlds', 'Creation studio']), 'titles changed or gone: ' + medida.titulos);
+  ok(JSON.stringify(medida.enlaces) === JSON.stringify(['/openworld/', '/play/', null]), 'links changed: ' + medida.enlaces);
+  ok(JSON.stringify(medida.titulos) === JSON.stringify(['OpenWorld', 'Tutorial', 'Tools']), 'titles changed or gone: ' + medida.titulos);
   ok(medida.dibujos.every((n) => n > 2000), 'a bubble is blank: ' + medida.dibujos);
   ok(medida.pie === 'One language until the MVP: English. The old translated addresses lead here.', 'footer changed');
   ok(!/\bundefined\b|\bNaN\b/.test(medida.texto), 'missing value shown on the landing');
-  ok(medida.lados.length === 2 && medida.lados.every((l) => l && l.tinta > 2000), '[2] the web/app bubbles are not both drawn: ' + JSON.stringify(medida.lados));
-  ok(JSON.stringify(medida.lados.map((l) => l && [l.lado, l.titulo, l.cola])) === JSON.stringify([['web', 'The web', 'left'], ['app', 'The app', 'right']]), '[2] the bubbles do not face each other: ' + JSON.stringify(medida.lados));
-  ok(medida.plegado, '[2] technical details are not folded');
+  ok(medida.lados.length === 0, 'NORTE 7 PR 1: the web/app pair is still on the landing: ' + JSON.stringify(medida.lados));
+  ok(await ev("!!document.querySelector('#tools-dispositivo details[open]')"), 'NORTE 7 PR 1: the Tools device list is folded; it must be visible');
   ok(externas.length === 0, 'external requests: ' + externas.slice(0, 3));
   // North D1: the install guide, at phone width: nothing external, no sideways scroll, no missing value, the landing links it.
-  ok(await ev("!!document.querySelector('#web-app ~ .get-app a[href=\"/get-the-app/\"], .get-app a[href=\"/get-the-app/\"]')"), 'the landing does not link /get-the-app/');
+  ok(await ev("!!document.querySelector('#tools-dispositivo a[href=\"/get-the-app/\"]')"), 'the landing does not link /get-the-app/ inside Tools');
   await cmd('Page.navigate', { url: origen + '/get-the-app/' }); await espera(1500);
   medida.guia = JSON.parse(await ev("JSON.stringify({ h1: (document.querySelector('h1') || {}).textContent, ancho: document.documentElement.scrollWidth, vista: innerWidth, bajas: document.querySelectorAll('a[href*=\"/releases/download/\"]').length, huellas: document.querySelectorAll('code.sha[data-asset]').length, filas: document.querySelectorAll('.pruebas tbody tr').length, texto: document.body.innerText })"));
   ok(medida.guia.h1 === 'Get the app', '/get-the-app/ did not load');

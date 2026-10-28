@@ -22,7 +22,7 @@ DESCRIPCION = ("theGame: a game of waves that runs on your own device. No accoun
                "no tracking. Build your undersea city, summon wave troops, conquer the reef.")
 
 
-def cabeza(titulo, url, hojas, color):
+def cabeza(titulo, url, hojas, color, extra=""):
     return f"""<!doctype html>
 <html lang="en" dir="ltr">
 <head>
@@ -39,29 +39,54 @@ def cabeza(titulo, url, hojas, color):
 <meta property="og:image" content="{ORIGEN}/assets/og-card.png">
 <link rel="manifest" href="/manifest.webmanifest">
 <meta name="theme-color" content="{color}">
-""" + "".join(f'<link rel="stylesheet" href="{h}">\n' for h in hojas) + "</head>\n"
+""" + "".join(f'<link rel="stylesheet" href="{h}">\n' for h in hojas) + extra + "</head>\n"
+
+
+# NORTE 7 · PR 1 (decreto 2026-10-28): la INTRO. Tres opciones (OpenWorld · Tutorial · Tools); Tools es un
+# clic directo a la PWA mas un desplegable visible de dispositivo/descarga. OpenWorld y Tutorial van a /play/
+# hasta que /openworld/ exista (PR 2): ese destino entonces cambia, y se declara en su PR.
+ESTILO_INTRO = """<style>
+button.door{width:100%;font:inherit;background:var(--bg);text-align:left;cursor:pointer}
+#tools-dispositivo{margin-top:8px}
+#tools-dispositivo h2{font-size:1.25rem;margin:24px 0 4px}
+#tools-dispositivo summary{cursor:pointer;min-height:44px;padding:10px 0}
+.dispositivos{margin:6px 0 0;padding-left:20px}
+.dispositivos li{margin:8px 0}
+.dispositivos a{color:var(--fg);min-height:44px;display:inline-block}
+#release h2{font-size:1.25rem;margin:28px 0 8px}
+#release code{overflow-wrap:anywhere}
+</style>
+"""
 
 
 def portada():
-    return cabeza("PreceptorOS", f"{ORIGEN}/", ["/assets/landing.css"], "#17131F") + """<body>
+    return cabeza("PreceptorOS", f"{ORIGEN}/", ["/assets/landing.css"], "#17131F", ESTILO_INTRO) + """<body>
 <a class="skip" href="#doors">Skip to the doors</a>
 <main>
 <img class="mark" src="/assets/mark.svg" alt="" width="48" height="48">
 <h1>PreceptorOS</h1>
 <p class="lead">A game of waves that runs on your own device. No account, no cloud, no tracking.</p>
 <nav id="doors" aria-label="Doors">
-<a class="door" href="/play/"><b>Play theGame</b><span>Your undersea city, the map and the reef. Sound included.</span></a>
-<a class="door" href="/face/"><b>Worlds</b><span>Three node pages: Atlantis, the Risen and Neutral.</span></a>
-<a class="door" href="/creation.html"><b>Creation studio</b><span>Draw a ribbon, sign it with your web identity, carry it as a file.</span></a>
+<a class="door" href="/openworld/"><b>OpenWorld</b><span>The map and the chat, side by side. Your node's world.</span></a>
+<a class="door" href="/play/"><b>Tutorial</b><span>The first steps: the key, the beacon, the first fight.</span></a>
+<button class="door door-tools" id="door-tools" type="button" aria-controls="tools-dispositivo"><b>Tools</b><span id="tools-estado">Install the app on this device, or pick a download below.</span></button>
 </nav>
-<section id="web-app" aria-labelledby="web-app-h">
-<h2 id="web-app-h">The web or the app?</h2>
-<div class="pair">
-<p class="side" data-lado="web"><b>The web</b><span>The public door: the map and the game, right here in your browser. Nothing to install.</span></p>
-<p class="side" data-lado="app"><b>The app</b><span>Your own node, on your own machine: local memory and a local AI that stay with you.</span></p>
-</div>
-<p class="get-app"><a href="/get-the-app/">Get the app · install guide</a></p>
-<details class="tech"><summary>Technical details</summary><p>The web loads with zero external requests and keeps your key in this browser. Local memory and local inference are the app's own claims, stated in <a href="https://github.com/piskyRpapalo/PreceptorOS/blob/main/README.md">its README</a>.</p></details>
+<section id="tools-dispositivo" aria-labelledby="tools-h">
+<h2 id="tools-h">Tools</h2>
+<details open>
+<summary>Device and download</summary>
+<ul class="dispositivos">
+<li><a href="/get-the-app/">Linux and macOS: the installer and its fingerprint</a></li>
+<li><a href="/get-the-app/">Windows: the PowerShell installer</a></li>
+<li><a href="/get-the-app/">Android: the Termux guide</a></li>
+<li><a href="/creation.html">Creation studio: draw a ribbon and sign it</a></li>
+</ul>
+</details>
+</section>
+<section id="release" aria-labelledby="release-h">
+<h2 id="release-h">Get the app</h2>
+<p>Release <b data-rel="version">NO_DATA</b> (<span data-rel="fecha">NO_DATA</span>). Fingerprint of the installer: <code data-rel="sha">NO_DATA</code>.</p>
+<p class="note" data-rel="estado">NO_DATA: this page has not read the release card yet. The version above is not verified.</p>
 </section>
 <p class="note">One language until the MVP: English. The old translated addresses lead here.</p>
 </main>
@@ -73,6 +98,7 @@ def portada():
 <script src="/game/bubble_letters.js"></script>
 <script src="/assets/landing_doors.js"></script>
 <script src="/assets/pwa.js"></script>
+<script src="/assets/intro.js"></script>
 </body>
 </html>
 """
