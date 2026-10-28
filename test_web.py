@@ -2539,7 +2539,8 @@ class OpenWorld(unittest.TestCase):
     def test_el_chat_esta_siempre_y_sin_boton_de_chat(self):
         self.assertIn('<section id="chat" aria-labelledby="chat-h">', self.t)
         self.assertNotRegex(self.t, r">\s*Chat\s*</button>", "hay un boton de Chat; el decreto pide el panel siempre presente")
-        self.assertIn('<input id="question" type="text" autocomplete="off" disabled', self.t)
+        self.assertIn('<input id="question" type="text" autocomplete="off" aria-describedby="chat-note">', self.t)
+        self.assertIn("/game/chunk_router.js", self.t, "el envío debe cargar el router de fragmentos a demanda")
 
     def test_esta_en_el_sitemap_y_en_el_precache(self):
         xml = (PUBLICO / "sitemap.xml").read_text(encoding="utf-8")
