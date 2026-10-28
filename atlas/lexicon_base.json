@@ -597,6 +597,10 @@
   "public/get-the-app/index.html": [
     "aduana"
   ],
+  "public/index.html": [
+    "cerebro-superviviente",
+    "superviviente"
+  ],
   "public/openworld/index.html": [
     "valores"
   ],
