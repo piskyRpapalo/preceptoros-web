@@ -22,7 +22,8 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
 #map,#chat{padding:12px 16px;min-width:0;box-sizing:border-box;overflow:hidden}
 #map{border-bottom:2px solid var(--line);display:flex;flex-direction:column;gap:8px;min-height:44vh}
 #map h1{font-size:1.25rem;margin:0}
-#map .surface{width:100%;flex:1;min-height:0;display:block}
+#map .surface{width:100%;flex:1;min-height:0;display:block;transition:opacity 300ms ease}
+@media (prefers-reduced-motion: reduce){#map .surface{transition:none}}
 #map .press{display:flex;flex-wrap:wrap;gap:8px}
 #map .press button,#map .listen button{min-height:44px;padding:8px 14px;border:2px solid currentColor;border-radius:var(--radius);background:var(--bg);color:var(--fg);font:inherit;cursor:pointer}
 #map .press button[aria-pressed="true"]{outline:3px solid currentColor;outline-offset:2px}
@@ -70,6 +71,8 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
 <script src="/game/comic_tokens.js"></script>
 <script src="/game/comic_accents.js"></script>
 <script src="/game/comic_atoms.js"></script>
+<script src="/game/valores.js"></script>
+<script src="/game/gacha.js"></script>
 <script src="/game/bubble_language.js"></script>
 <script src="/game/bubble_letters.js"></script>
 <script src="/assets/pwa.js"></script>
@@ -100,7 +103,7 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
       { k: 'bubble', r: 'a speech bubble', i: [
         { o: 'ribbon', pts: [[58, 66], [36, 94], [92, 72]], closed: true, f: 'paper', s: 'ink', lw: 3 },
         { o: 'ribbon', pts: RIM, closed: true, f: 'paper', s: 'ink', lw: 3 }] },
-      { k: 'sea', r: 'a small wave', i: [{ o: 'ribbon', pts: WAVE_PTS, closed: false, s: 'cyan', lw: 2.5 }] },
+      { k: 'sea', r: 'a small wave', i: [{ o: 'ribbon', pts: WAVE_PTS, closed: false, s: 'cyan', lw: 2.5 }, { o: 'wave', x: 250, y: 72, sc: 0.35, h: [[1, 40, 10, 0], [3, 20, 5, 4]], f: 'paper', s: 'ink' }] },
       { k: 'title', r: title, i: [{ o: 'letters', x: 160, y: 42, tx: title, sz: 18, f: 'paper', s: 'ink', sh: [1.5, 1.5, 'cyan'] }] }] };
   }
 
@@ -130,7 +133,14 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
       var b = doc.createElement('button');
       b.type = 'button'; b.textContent = TERRAINS[id].name;
       b.setAttribute('aria-pressed', String(id === selected));
-      b.addEventListener('click', function () { selected = id; buttons(); draw(); });
+      b.addEventListener('click', function () {
+        selected = id; buttons();
+        // A visible transition: the surface fades and returns. With reduced motion the redraw is at once.
+        var quieto = raiz.matchMedia && raiz.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (quieto || !surface) { draw(); return; }
+        surface.style.opacity = '0.25';
+        raiz.setTimeout(function () { draw(); surface.style.opacity = '1'; }, 300);
+      });
       press.appendChild(b);
     });
   }
