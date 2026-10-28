@@ -1,48 +1,66 @@
-# AUDIO-A11Y-BUBBLE · sonificación del tronco de burbujas (NORTE 8 · mandato 3)
+# AUDIO-A11Y-BUBBLE · sonido nativo del fotograma de burbuja (NORTE 8 · mandato 3)
 
 ## Objetivo
-El mundo audible que la ley A11Y ya promete: un fotograma de burbuja suena de forma determinista, con la escala
-del juego, y se puede usar con teclado y con lector de pantalla. Sin red, sin azar, por debajo de 16 KiB por pieza.
+El mundo audible que la ley A11Y promete, **nativo del lenguaje**: un fotograma de burbuja suena con sus propios
+armónicos, con la receta de sonido del juego, de forma determinista. Lo que no suena lo dice con su causa.
+Teclado y lector de pantalla en la página (rebanada 2).
 
-## Hallazgo previo (búsqueda en el corpus, no inventado)
-- `docs/bubble-visual-audio-contract.md` (LF-2, medido 2026-10-24) dice textualmente: «No shared Bubble-frame audio
-  player traced». **No existe un reproductor compartido de fotogramas de burbuja.** Este feature lo crea.
-- La escala ya existe en `public/game/core.js` (líneas 55-61): `PENTA_V = [0, 2, 4, 7, 9]` y el portador de 110 Hz,
-  `Math.round(110 * 2^((PENTA_V[g%5] + 12*floor(g/5))/12))`. Se reutiliza: no se inventa una escala nueva.
-- `aiact-art50-state-radio.js` usa otra base (220 Hz) para la radio. No es esta escala; no se mezcla.
+## Decisión de diseño (corregida por el Soberano, 2026-10-28)
+La primera versión de esta rebanada (commit `73bab0a`) inventaba un mapeo clase de átomo → nota. **Estaba mal:** el
+audio vive dentro del lenguaje. Esta versión lo reemplaza. Fuentes, todas en el repo:
+- `docs/bubble-language.md` §2: el fotograma declara `sound` y `soundCause`; el lector responde «qué suena» desde el
+  fotograma. §3: los primitivos `wave` y `blob` llevan `h: [[k, ax, ay, ph], …]`.
+- `atlas/param_gate.mjs` (línea 75): el contrato compartido de `sound` es `ok` o `NO_DATA: causa`.
+- `public/game/core.js`, `vozDe(t)` (líneas 56-70): de `armonicos` a receta de sonido. El 2.º armónico fija el grado
+  de la escala (portador 110 Hz, `PENTA_V`); el resto fija la modulación. Mismo formato `[k, ax, ay, ph]`.
+- `docs/bubble-visual-audio-contract.md` (LF-2, 2026-10-24) decía «no shared Bubble-frame audio player». Esa
+  ausencia es lo que esta rebanada cubre con la receta nativa, no con un reproductor paralelo.
 
-## Alcance y rebanadas
-- **Rebanada 1 (este PR):** núcleo puro `atlas/puros/bubble_sonify.js` (fuera de `public/`, como el validador del
-  genoma), con casos y test de deriva contra `core.js`.
-- **Rebanada 2 (pendiente):** cablear el núcleo en una página servida, con controles de teclado y etiquetas para
-  lector de pantalla. Eso toca `public/` y lleva sello SW en el mismo commit. Se hace en su PR.
+## Fuera de esta rebanada (declarado, no inventado)
+- **Transición worm** (`public/assets/worm_transition.js`): el gusano es **estado** (`ciclo`, `intentos`, `sello`,
+  progreso del scroll), dibujado como círculos sobre una curva `neck`. Su sonido no se decide aquí: se
+  sonificará desde su estado en la rebanada 2, si el canon lo pide.
+- **Círculos** (primitivo `bubbles`, `circle` de `comic_atoms.js`): mismo criterio. No tienen receta de sonido
+  declarada; su sonido queda `NO_DATA` con causa hasta que el canon la fije.
+- **Audio de habilidad** (`audio_feedback_manager.js`, base 220 Hz): otra escala, otro uso. No se mezcla.
+
+## Alcance
+- **Rebanada 1 (este PR):** núcleo puro `atlas/puros/bubble_sonify.js`, fuera de `public/`.
+  `receta(armonicos)` replica `vozDe` de core.js; `sonifica(fotograma)` devuelve las voces de las ondas y blobs
+  con armónicos, o `ok: false` con causa.
+- **Rebanada 2 (pendiente):** cablear en una página servida, con teclado y lector de pantalla. Toca `public/`:
+  sello SW en el mismo commit.
 
 ## Restricciones
-- Determinismo: sin `Math.random`, sin `Date`, sin red. Comprobado en el test sobre el código (no sobre los comentarios).
-- Ficha < 16 KiB (comprobado por el test).
-- Vanilla JS, sin dependencias. Funciona como módulo de Node y como global del navegador (UMD).
+- Determinismo: sin `Math.random`, `Date` ni red (comprobado sobre el código, no sobre los comentarios).
+- Ficha < 16 KiB (comprobado).
+- Vanilla JS. Funciona como módulo de Node y como global del navegador (UMD).
 
 ## Checklist
-- [x] AA1 · núcleo `sonifica()` y `hzDeGrado()`: mismas constantes que `core.js`.
-- [x] AA2 · test de deriva: la escala del núcleo coincide con la de `core.js` en los grados 0-14.
-- [x] AA3 · sabotaje en casos: cambiar el portador o `PENTA_V` en una copia de `core.js` → deriva detectada.
-- [x] AA4 · sabotaje en el árbol real: `PORTADOR_HZ` 110 → 111 en el núcleo → 3 tests rojos; revertido → 9/9 verdes.
-- [x] AA5 · fallo cerrado: clase desconocida o sin átomos → `ok: false` con causa (nada de sonido inventado).
-- [x] AA6 · determinismo, orden temporal, tamaño < 16 KiB, sin azar/reloj/red.
-- [ ] AA7 · cableado en página servida (rebanada 2).
-- [ ] AA8 · controles de teclado (Enter/Espacio) y etiquetas `aria` para lector de pantalla (rebanada 2).
-- [ ] AA9 · prueba en navegador real: sonido solo tras un gesto del usuario, cero peticiones externas (rebanada 2).
+- [x] AA1 · `receta(armonicos)`, réplica de `vozDe` de core.js.
+- [x] AA2 · test de deriva: extrae la función `vozDe` **del texto de core.js** y la ejecuta sobre 6 tablas
+      (incluida una con el grado 4 de `PENTA_V`), comparando con `receta()`.
+- [x] AA3 · sabotaje en copia de core.js: cambiar la modulación (`8 + a1` → `9 + a1`) y `PENTA_V` → deriva detectada.
+- [x] AA4 · sabotaje en el árbol real: `PENTA_V` del núcleo modificado → 2 tests rojos; restaurado → 9/9.
+- [x] AA5 · `sound: NO_DATA: causa` del fotograma → silencio con su causa.
+- [x] AA6 · fallo cerrado: sin ondas con armónicos, o sin fotograma → `ok: false`.
+- [x] AA7 · determinismo, orden temporal, tamaño < 16 KiB, sin azar/reloj/red.
+- [ ] AA8 · cableado en página servida, con teclado (Enter/Espacio) y etiquetas `aria` (rebanada 2).
+- [ ] AA9 · prueba en navegador: sonido solo tras un gesto del usuario, cero peticiones externas (rebanada 2).
+- [ ] AA10 · sonido del gusano (worm) y de los círculos: pendiente de canon (ver «Fuera de esta rebanada»).
 
 ## Evidencia
-- `node --test atlas/puros/bubble_sonify_casos.mjs` → 9/9 (rebanada 1).
-- Sabotaje real: `PORTADOR_HZ = 111` → `not ok` en 3 casos (deriva y `hzDeGrado`), revertido → 9/9.
+- `node --test atlas/puros/bubble_sonify_casos.mjs` → 9/9.
+- Sabotaje real: `PENTA_V` [0,2,4,7,9] → [0,2,4,7,11] en el núcleo → 2 tests rojos; restaurado → 9/9.
 
 ## Registro de decisiones (modo desatendido)
 - 2026-10-28 · Base `origin/main` ed76a53. Rama `haiku/audio-a11y-20261028`.
-- 2026-10-28 · Se mantiene fuera de `public/` en la rebanada 1. Motivo: un archivo servido sin página que lo cargue
-  es huérfano y `test_web` lo rechaza. Cablearlo es la rebanada 2, con su sello.
-- 2026-10-28 · Propuesta de doctrina (toca INTANGIBLE, se propone y espera): «cada escala sonora de la web se prueba
-  contra su fuente (test de deriva), no contra una copia».
+- 2026-10-28 · **Corrección de diseño:** el commit `73bab0a` mapeaba clases de átomo a notas. Se sustituye por la
+  receta nativa de `vozDe` sobre los `h` de cada onda. Motivo: el Soberano indicó que el audio vive nativo en el
+  lenguaje. El commit anterior queda en el historial, sin reescribirlo.
+- 2026-10-28 · Se mantiene fuera de `public/` en la rebanada 1: un archivo servido sin página es huérfano y `test_web` lo rechaza.
+- 2026-10-28 · Propuesta de doctrina (INTANGIBLE, se propone y espera): «el sonido de una pieza sale de sus armónicos,
+  por la receta del juego, nunca de un mapeo paralelo».
 
 ## Siguiente paso
-Rebanada 2: página y controles, con sello SW en el mismo commit.
+Rebanada 2: cablear en página con sello SW; luego decidir el sonido del gusano y los círculos con el canon.
