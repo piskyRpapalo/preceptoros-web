@@ -1,6 +1,6 @@
 // Synthetic ordered journey. An event is an observation, never an authentication receipt.
 export const INITIAL = Object.freeze({ stage: 'key', events: [] });
-const NEXT = Object.freeze({ key: ['key_ready', 'lighthouse'], lighthouse: ['lighthouse_reached', 'fight'], fight: ['fight_requested', 'pending'] });
+const NEXT = Object.freeze({ key: ['key_ready', 'lighthouse'], lighthouse: ['lighthouse_reached', 'egg'], egg: ['egg_summoned', 'hatch'], hatch: ['egg_hatched', 'fight'], fight: ['fight_requested', 'pending'] });
 export function step(state, event) {
   if (!state || !Object.hasOwn(NEXT, state.stage) || !Array.isArray(state.events))
     return { ok: false, cause: 'invalid_or_complete_state', state };
