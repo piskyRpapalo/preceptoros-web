@@ -1091,7 +1091,7 @@ FACE_PAGE_DEPENDENCIES = tuple(sorted(set(re.findall(r'src="/game/([^"]+)"', (PU
 LANDING_PAGE_DEPENDENCIES = ("tabla_semantica.js", "comic_tokens.js", "comic_accents.js", "comic_atoms.js",
                              "bubble_language.js", "bubble_letters.js")
 # /openworld/ (NORTE 7 · PR 2, 2026-10-28): el mapa y su cabana dibujan en la misma burbuja que la portada; se DECLARA aqui.
-OPENWORLD_PAGE_DEPENDENCIES = LANDING_PAGE_DEPENDENCIES + ("bubble_sonify.js", "chunk_router.js")   # the native sound: on demand, on the first click
+OPENWORLD_PAGE_DEPENDENCIES = LANDING_PAGE_DEPENDENCIES + ("bubble_sonify.js", "valores.js", "gacha.js", "chunk_router.js")   # the native sound: on demand, on the first click
 # /aduana/ (Norte N2, 2026-10-26): el comprobador de cedulas, OBSERVANTE, carga la cadena de nodos y solo esa. Se
 # DECLARA aqui; local_first_surface_build.ADUANA_SCRIPTS es la misma lista, y tests/aduana_page.test.mjs exige que
 # coincidan.
