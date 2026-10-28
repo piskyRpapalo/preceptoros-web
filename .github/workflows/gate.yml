@@ -48,6 +48,8 @@ jobs:
             python -m unittest tests.test_preflight
             python -m unittest tests.test_trailers_hook
             python bin/contar_rutas.py --check-doc DEPLOY.md
+            node --test atlas/lexicon_gate_casos.mjs
+            node atlas/lexicon_gate.mjs
             python test_web.py
             python atlas/test_atlas.py
             node arnes_sw.mjs
