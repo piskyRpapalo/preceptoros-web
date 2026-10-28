@@ -28,8 +28,16 @@ test('the nine language portals answer 301 to the one English landing', async ()
   }
 });
 
-test('only the portal itself redirects: lookalike paths are served as assets', async () => {
-  for (const p of ['/play/', '/face/', '/es.json', '/esx/', '/assets/enviar-es.js']) {
+test('/play/ answers 301 to /openworld/, keeping the query (Norte 7 · one destination)', async () => {
+  for (const p of ['/play', '/play/', '/play/index.html']) {
+    const r = await go('https://preceptoros.org' + p + '?x=1');
+    assert.equal(r.status, 301, p);
+    assert.equal(r.headers.get('location'), 'https://preceptoros.org/openworld/?x=1', p);
+  }
+});
+
+test('only the redirected portals answer 301: lookalike paths are served as assets', async () => {
+  for (const p of ['/play/x', '/playground/', '/face/', '/es.json', '/esx/', '/assets/enviar-es.js']) {
     const r = await go('https://preceptoros.org' + p);
     assert.equal(r.status, 200, p);
   }
