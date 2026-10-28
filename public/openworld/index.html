@@ -60,10 +60,10 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
 </ul>
 <form id="entry" onsubmit="return false">
 <label class="sr" for="question">Message</label>
-<input id="question" type="text" autocomplete="off" disabled aria-describedby="chat-note">
-<button type="submit" disabled>Send</button>
+<input id="question" type="text" autocomplete="off" aria-describedby="chat-note">
+<button type="submit">Send</button>
 </form>
-<p class="state" id="chat-note">The input opens when the chat is ready.</p>
+<p class="state" id="chat-note">Answers come from a local model. None is installed yet, so each answer says NO_DATA and its cause.</p>
 </section>
 </main>
 <script src="/game/tabla_semantica.js"></script>
@@ -168,6 +168,41 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
         var context = new Ctx();
         var n = S.play(result, context);
         listenState.textContent = 'Playing ' + n + ' voices.';
+      });
+    });
+  }
+  // The chat: the question is shown as live; the answer comes from the chunk router. With no model installed, the
+  // answer is NO_DATA with its cause. The router loads on the first send, never on page load.
+  var entry = doc.getElementById('entry'), question = doc.getElementById('question'), logList = doc.getElementById('log');
+  var chatNote = doc.getElementById('chat-note');
+  function line(cls, text) {
+    var li = doc.createElement('li'); li.className = cls; li.textContent = text; logList.appendChild(li);
+  }
+  function loadRouter(then) {
+    if (raiz.AtlasChunkRouter) { then(raiz.AtlasChunkRouter); return; }
+    var script = doc.createElement('script');
+    script.src = '/game/chunk_router.js';
+    script.onload = function () { then(raiz.AtlasChunkRouter); };
+    script.onerror = function () { then(null); };
+    doc.head.appendChild(script);
+  }
+  if (entry) {
+    entry.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var text = question.value.trim();
+      if (!text) { return; }
+      line('me', text);
+      question.value = '';
+      loadRouter(function (R) {
+        if (!R) { line('', 'NO_DATA · router_not_loaded'); return; }
+        fetch('/model/manifest.json', { cache: 'no-cache' })
+          .then(function (r) { return r.ok ? r.json() : null; }, function () { return null; })
+          .then(function (m) {
+            var plan = R.planifica(m);
+            if (!plan.ok) { line('', plan.causa); return; }
+            var answer = R.responde(text, null);   // a manifest exists, but no model loader is built yet
+            line('', answer.ok ? answer.texto : 'NO_DATA · model_loader_not_built (' + answer.causa + ')');
+          });
       });
     });
   }
