@@ -51,20 +51,29 @@ async function main() {
   await cmd('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 1, mobile: true });
   await cmd('Page.navigate', { url: origen + '/openworld/' }); await espera(1800);
   const medida = JSON.parse(await ev(`(() => {
-    const c = document.getElementById('lienzo'); let tinta = 0;
+    const c = document.getElementById('surface'); let tinta = 0;
     try { const d = c.getContext('2d').getImageData(0, 0, c.width, c.height).data; for (let i = 3; i < d.length; i += 4) { if (d[i] > 0) { tinta++; } } } catch (e) { tinta = -1; }
     return JSON.stringify({
       titulo: (document.querySelector('h1') || {}).textContent,
-      botones: [...document.querySelectorAll('#mapa .pulsa button')].map((b) => b.textContent),
+      botones: [...document.querySelectorAll('#map .press button')].map((b) => b.textContent),
       tinta,
-      estado: (document.getElementById('estado') || {}).textContent,
+      estado: (document.getElementById('state') || {}).textContent,
       chatAbierto: !!document.querySelector('#chat'),
-      entradaOff: !!(document.getElementById('pregunta') || {}).disabled,
+      entradaOff: !!(document.getElementById('question') || {}).disabled,
       botonChat: [...document.querySelectorAll('button')].some((b) => /^\\s*Chat\\s*$/.test(b.textContent)),
       ancho: document.documentElement.scrollWidth, vista: innerWidth,
       texto: document.body.innerText
     }); })()`));
   ok(medida.titulo === 'OpenWorld', 'the page did not load: ' + medida.titulo);
+  // NORTE 8 · mandato 3 (rebanada 2): el sonido nativo. La cabaña no declara ondas con armónicos, así que su
+  // sonido dice NO_DATA con su causa en la región en vivo. Un clic no crea audio sin una voz que sonar.
+  // a demanda: el módulo de sonido no existe en la página hasta el primer clic.
+  ok((await ev("typeof window.AtlasSonifyBubble")) === 'undefined', 'the sound module loaded on page load: it must load on the first click');
+  const esBoton = await ev("document.getElementById('listen') && document.getElementById('listen').tagName === 'BUTTON'");
+  ok(esBoton === true, 'the listen control is not a button (keyboard operability)');
+  await ev("document.getElementById('listen').click()"); await espera(200);
+  const escucha = await ev("document.getElementById('listen-state').textContent");
+  ok(/^NO_DATA: no wave or blob with harmonics in the frame$/.test(escucha || ''), 'the cabin sound did not report its NO_DATA cause: ' + escucha);
   ok(JSON.stringify(medida.botones) === JSON.stringify(['Tutorial cabin']), 'the terrain list is not the cabin alone: ' + JSON.stringify(medida.botones));
   ok(medida.tinta > 2000, 'the map is blank: ' + medida.tinta);
   ok(medida.estado === 'Nodes online: 0. The tutorial cabin is the basic world.', 'the default state is not zero nodes: ' + medida.estado);

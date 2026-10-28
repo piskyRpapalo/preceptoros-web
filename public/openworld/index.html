@@ -19,47 +19,51 @@
 html,body{height:100%}
 body{display:flex;flex-direction:column;min-height:100vh}
 main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;padding:0;min-height:100vh;box-sizing:border-box}
-#mapa,#chat{padding:12px 16px;min-width:0;box-sizing:border-box;overflow:hidden}
-#mapa{border-bottom:2px solid var(--line);display:flex;flex-direction:column;gap:8px;min-height:44vh}
-#mapa h1{font-size:1.25rem;margin:0}
-#mapa .lienzo{width:100%;flex:1;min-height:0;display:block}
-#mapa .pulsa{display:flex;flex-wrap:wrap;gap:8px}
-#mapa .pulsa button{min-height:44px;padding:8px 14px;border:2px solid currentColor;border-radius:var(--radius);background:var(--bg);color:var(--fg);font:inherit;cursor:pointer}
-#mapa .pulsa button[aria-pressed="true"]{outline:3px solid currentColor;outline-offset:2px}
-#mapa .estado{margin:0;color:var(--soft);font-size:.92rem}
+#map,#chat{padding:12px 16px;min-width:0;box-sizing:border-box;overflow:hidden}
+#map{border-bottom:2px solid var(--line);display:flex;flex-direction:column;gap:8px;min-height:44vh}
+#map h1{font-size:1.25rem;margin:0}
+#map .surface{width:100%;flex:1;min-height:0;display:block}
+#map .press{display:flex;flex-wrap:wrap;gap:8px}
+#map .press button,#map .listen button{min-height:44px;padding:8px 14px;border:2px solid currentColor;border-radius:var(--radius);background:var(--bg);color:var(--fg);font:inherit;cursor:pointer}
+#map .press button[aria-pressed="true"]{outline:3px solid currentColor;outline-offset:2px}
+#map .state{margin:0;color:var(--soft);font-size:.92rem}
 #chat{display:flex;flex-direction:column;gap:8px;min-height:44vh}
 #chat h2{font-size:1.1rem;margin:0}
-#chat .registro{flex:1;min-height:0;overflow:auto;margin:0;padding:0;list-style:none;color:var(--soft)}
+#chat .log{flex:1;min-height:0;overflow:auto;margin:0;padding:0;list-style:none;color:var(--soft)}
 #chat form{display:flex;gap:8px}
 #chat input{flex:1;min-height:44px;padding:8px 10px;border:2px solid var(--line);border-radius:var(--radius);background:var(--bg);color:var(--fg);font:inherit}
 #chat button{min-height:44px;padding:8px 14px;border:2px solid currentColor;border-radius:var(--radius);background:var(--bg);color:var(--fg);font:inherit}
 #chat button:disabled,#chat input:disabled{opacity:.55}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
-@media (min-width:900px){main{grid-template-rows:1fr;grid-template-columns:1fr 1fr}#mapa{border-bottom:0;border-right:2px solid var(--line)}}
+@media (min-width:900px){main{grid-template-rows:1fr;grid-template-columns:1fr 1fr}#map{border-bottom:0;border-right:2px solid var(--line)}}
 </style>
 </head>
 <body>
 <a class="skip" href="#chat">Skip to the chat</a>
 <main>
-<section id="mapa" aria-labelledby="mapa-h">
-<h1 id="mapa-h">OpenWorld</h1>
-<div class="pulsa" role="group" aria-label="Terrains">
-<button type="button" id="t-cabana" aria-pressed="true" data-terreno="cabana">Tutorial cabin</button>
+<section id="map" aria-labelledby="map-h">
+<h1 id="map-h">OpenWorld</h1>
+<div class="press" role="group" aria-label="Terrains">
+<button type="button" id="t-cabin" aria-pressed="true" data-terrain="cabin">Tutorial cabin</button>
 </div>
-<canvas class="lienzo" id="lienzo" role="img" aria-label="The global map: the tutorial cabin, and any node that is alive"></canvas>
-<p class="estado" id="estado" aria-live="polite">Nodes online: 0. The tutorial cabin is the basic world.</p>
+<canvas class="surface" id="surface" role="img" aria-label="The global map: the tutorial cabin, and any node that is alive"></canvas>
+<div class="listen">
+<button type="button" id="listen" aria-describedby="listen-state">Listen to the cabin</button>
+</div>
+<p class="state" id="listen-state" aria-live="polite"></p>
+<p class="state" id="state" aria-live="polite">Nodes online: 0. The tutorial cabin is the basic world.</p>
 </section>
 <section id="chat" aria-labelledby="chat-h">
 <h2 id="chat-h">Chat</h2>
-<ul class="registro" id="registro" role="log" aria-live="polite">
+<ul class="log" id="log" role="log" aria-live="polite">
 <li>The chat is not live yet. This panel is ready for it.</li>
 </ul>
-<form id="entrada" onsubmit="return false">
-<label class="sr" for="pregunta">Message</label>
-<input id="pregunta" type="text" autocomplete="off" disabled aria-describedby="chat-nota">
+<form id="entry" onsubmit="return false">
+<label class="sr" for="question">Message</label>
+<input id="question" type="text" autocomplete="off" disabled aria-describedby="chat-note">
 <button type="submit" disabled>Send</button>
 </form>
-<p class="estado" id="chat-nota">The input opens when the chat is ready.</p>
+<p class="state" id="chat-note">The input opens when the chat is ready.</p>
 </section>
 </main>
 <script src="/game/tabla_semantica.js"></script>
@@ -75,80 +79,104 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
 (function (raiz) {
   'use strict';
   var doc = raiz.document, ANCHO = 320, ALTO = 96;
-  var TERRENOS = {
-    cabana: { nombre: 'Tutorial cabin', x: 0.5, y: 0.5, siempre: true },
-    atlantis: { nombre: 'Atlantis · Node Hexelion', x: 0.22, y: 0.3 },
-    risen: { nombre: 'the Risen', x: 0.78, y: 0.7 }
+  var TERRAINS = {
+    cabin: { name: 'Tutorial cabin', x: 0.5, y: 0.5, always: true },
+    atlantis: { name: 'Atlantis · Node Hexelion', x: 0.22, y: 0.3 },
+    risen: { name: 'the Risen', x: 0.78, y: 0.7 }
   };
-  var vivos = [];
-  var seleccion = 'cabana';
-  var lienzo = doc.getElementById('lienzo');
-  var pulsa = doc.querySelector('#mapa .pulsa');
-  var estado = doc.getElementById('estado');
+  var alive = [];
+  var selected = 'cabin';
+  var surface = doc.getElementById('surface');
+  var press = doc.querySelector('#map .press');
+  var state = doc.getElementById('state');
 
   // The bubble outline, as landing_doors.js draws it: pure data, the house bands only.
-  function marco(titulo) {
-    var ORLA = [];
-    for (var i = 0; i < 24; i++) { ORLA.push([Math.round(160 + 150 * Math.cos(i * Math.PI / 12)), Math.round(44 + 38 * Math.sin(i * Math.PI / 12))]); }
-    var OLA = [];
-    for (var j = 0; j <= 12; j++) { OLA.push([136 + j * 4, Math.round((64 + 3 * Math.sin(j * Math.PI / 4)) * 10) / 10]); }
-    return { v: 'preceptoros.bubble/1', id: 'terreno', t: 0, cv: [ANCHO, ALTO], atoms: [
+  function frame(title) {
+    var RIM = [];
+    for (var i = 0; i < 24; i++) { RIM.push([Math.round(160 + 150 * Math.cos(i * Math.PI / 12)), Math.round(44 + 38 * Math.sin(i * Math.PI / 12))]); }
+    var WAVE_PTS = [];
+    for (var j = 0; j <= 12; j++) { WAVE_PTS.push([136 + j * 4, Math.round((64 + 3 * Math.sin(j * Math.PI / 4)) * 10) / 10]); }
+    return { v: 'preceptoros.bubble/1', id: 'terrain', t: 0, cv: [ANCHO, ALTO], atoms: [
       { k: 'bubble', r: 'a speech bubble', i: [
         { o: 'ribbon', pts: [[58, 66], [36, 94], [92, 72]], closed: true, f: 'paper', s: 'ink', lw: 3 },
-        { o: 'ribbon', pts: ORLA, closed: true, f: 'paper', s: 'ink', lw: 3 }] },
-      { k: 'sea', r: 'a small wave', i: [{ o: 'ribbon', pts: OLA, closed: false, s: 'cyan', lw: 2.5 }] },
-      { k: 'title', r: titulo, i: [{ o: 'letters', x: 160, y: 42, tx: titulo, sz: 18, f: 'paper', s: 'ink', sh: [1.5, 1.5, 'cyan'] }] }] };
+        { o: 'ribbon', pts: RIM, closed: true, f: 'paper', s: 'ink', lw: 3 }] },
+      { k: 'sea', r: 'a small wave', i: [{ o: 'ribbon', pts: WAVE_PTS, closed: false, s: 'cyan', lw: 2.5 }] },
+      { k: 'title', r: title, i: [{ o: 'letters', x: 160, y: 42, tx: title, sz: 18, f: 'paper', s: 'ink', sh: [1.5, 1.5, 'cyan'] }] }] };
   }
 
-  function dibuja() {
+  function draw() {
     var B = raiz.AtlasBubble, P = raiz.AtlasComicAtoms;
-    if (!lienzo || !B || !P || !raiz.AtlasBubbleLetters) { return; }
-    var ancho = lienzo.clientWidth || 320, alto = lienzo.clientHeight || 200;
+    if (!surface || !B || !P || !raiz.AtlasBubbleLetters) { return; }
+    var width = surface.clientWidth || 320, height = surface.clientHeight || 200;
     var dpr = Math.min(2, raiz.devicePixelRatio || 1);
-    lienzo.width = Math.round(ancho * dpr); lienzo.height = Math.round(alto * dpr);
-    var g = lienzo.getContext('2d');
+    surface.width = Math.round(width * dpr); surface.height = Math.round(height * dpr);
+    var g = surface.getContext('2d');
     g.setTransform(dpr, 0, 0, dpr, 0, 0);
-    g.clearRect(0, 0, ancho, alto);
-    var escala = Math.min(1, (ancho / 1.2) / ANCHO);
-    Object.keys(TERRENOS).forEach(function (id) {
-      var t = TERRENOS[id];
-      if (!t.siempre && vivos.indexOf(id) < 0) { return; }
-      var x = t.x * ancho - (ANCHO * escala) / 2, y = t.y * alto - (ALTO * escala) / 2;
-      g.save(); g.translate(x, y); g.scale(escala, escala);
-      try { P.paint(g, B.compile(marco(t.nombre))); } catch (e) { /* the node stays off the map; the list says so */ }
+    g.clearRect(0, 0, width, height);
+    var scale = Math.min(1, (width / 1.2) / ANCHO);
+    Object.keys(TERRAINS).forEach(function (id) {
+      var t = TERRAINS[id];
+      if (!t.always && alive.indexOf(id) < 0) { return; }
+      var x = t.x * width - (ANCHO * scale) / 2, y = t.y * height - (ALTO * scale) / 2;
+      g.save(); g.translate(x, y); g.scale(scale, scale);
+      try { P.paint(g, B.compile(frame(t.name))); } catch (e) { /* the node stays off the map; the list says so */ }
       g.restore();
     });
   }
 
-  function botones() {
-    pulsa.innerHTML = '';
-    ['cabana'].concat(vivos).forEach(function (id) {
+  function buttons() {
+    press.innerHTML = '';
+    ['cabin'].concat(alive).forEach(function (id) {
       var b = doc.createElement('button');
-      b.type = 'button'; b.textContent = TERRENOS[id].nombre;
-      b.setAttribute('aria-pressed', String(id === seleccion));
-      b.addEventListener('click', function () { seleccion = id; botones(); dibuja(); });
-      pulsa.appendChild(b);
+      b.type = 'button'; b.textContent = TERRAINS[id].name;
+      b.setAttribute('aria-pressed', String(id === selected));
+      b.addEventListener('click', function () { selected = id; buttons(); draw(); });
+      press.appendChild(b);
     });
   }
 
-  function pinta() {
-    botones();
-    dibuja();
-    estado.textContent = 'Nodes online: ' + vivos.length + '. The tutorial cabin is the basic world.';
+  function render() {
+    buttons();
+    draw();
+    state.textContent = 'Nodes online: ' + alive.length + '. The tutorial cabin is the basic world.';
   }
 
   // Only the two named nodes can appear, and only when the state file lists them as alive.
-  function acepta(datos) {
-    var nodos = datos && Array.isArray(datos.nodos) ? datos.nodos : [];
-    vivos = nodos.map(function (n) { return n && n.id; }).filter(function (id) { return id === 'atlantis' || id === 'risen'; });
+  function accept(data) {
+    var nodes = data && Array.isArray(data.nodes) ? data.nodes : [];
+    alive = nodes.map(function (n) { return n && n.id; }).filter(function (id) { return id === 'atlantis' || id === 'risen'; });
   }
 
-  pinta();
-  raiz.addEventListener('resize', dibuja);
+  // The sound is the frame's own (docs/bubble-language.md, sound and h). An AudioContext is made only on the click.
+  var listen = doc.getElementById('listen'), listenState = doc.getElementById('listen-state');
+  // The sound module is on demand: it loads on the first click, never on page load.
+  function loadSound(then) {
+    if (raiz.AtlasSonifyBubble) { then(raiz.AtlasSonifyBubble); return; }
+    var script = doc.createElement('script');
+    script.src = '/game/bubble_sonify.js';
+    script.onload = function () { then(raiz.AtlasSonifyBubble); };
+    script.onerror = function () { listenState.textContent = 'NO_DATA: the sound module could not be loaded'; };
+    doc.head.appendChild(script);
+  }
+  if (listen) {
+    listen.addEventListener('click', function () {
+      loadSound(function (S) {
+        var result = S.sonify(frame(TERRAINS[selected].name));
+        if (!result.ok) { listenState.textContent = /^NO_DATA/.test(result.cause) ? result.cause : 'NO_DATA: ' + result.cause; return; }
+        var Ctx = raiz.AudioContext || raiz.webkitAudioContext;
+        if (!Ctx) { listenState.textContent = 'NO_DATA: this browser has no audio output'; return; }
+        var context = new Ctx();
+        var n = S.play(result, context);
+        listenState.textContent = 'Playing ' + n + ' voices.';
+      });
+    });
+  }
+  render();
+  raiz.addEventListener('resize', draw);
   if (raiz.fetch) {
-    raiz.fetch('/openworld/estado.json', { cache: 'no-cache' })
+    raiz.fetch('/openworld/state.json', { cache: 'no-cache' })
       .then(function (r) { return r.ok ? r.json() : null; })
-      .then(function (d) { acepta(d); pinta(); })
+      .then(function (d) { accept(d); render(); })
       .catch(function () { /* no state file: zero nodes, which is the default */ });
   }
 })(window);
