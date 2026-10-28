@@ -198,8 +198,42 @@
     return p;
   }
   function color(c, a) {
-    if (typeof c === 'string') { return c; }
+    if (typeof c === 'string') {
+      var named = band(c), alpha = a == null ? 1 : a, hex, hsl, rgb;
+      if (!named) { return c; }
+      if (alpha >= 1) { return named; }
+      hex = /^#([0-9a-f]{6})$/i.exec(named);
+      if (hex) { return 'rgba(' + parseInt(hex[1].slice(0, 2), 16) + ',' + parseInt(hex[1].slice(2, 4), 16) + ',' + parseInt(hex[1].slice(4, 6), 16) + ',' + alpha + ')'; }
+      hsl = /^hsl\(([^)]+)\)$/.exec(named);
+      if (hsl) { return 'hsla(' + hsl[1] + ' / ' + alpha + ')'; }
+      rgb = /^rgb\((\d+),(\d+),(\d+)\)$/.exec(named);
+      return rgb ? 'rgba(' + rgb[1] + ',' + rgb[2] + ',' + rgb[3] + ',' + alpha + ')' : named;
+    }
     return 'hsla(' + c[0] + ' ' + c[1] + '% ' + c[2] + '% / ' + (a == null ? 1 : a) + ')';
+  }
+
+  function band(name) {
+    var K = raiz.AtlasComicTokens, A = raiz.AtlasComicAccents, S = raiz.AtlasSemantica, cut = name.lastIndexOf('.'), head, sub, row;
+    if (K && Object.prototype.hasOwnProperty.call(K.NEUTRAL, name)) { return K.NEUTRAL[name]; }
+    if (cut < 0) { return null; }
+    head = name.slice(0, cut); sub = name.slice(cut + 1);
+    if (A && A.ACCENTS[head] && A.ACCENTS[head].bands[sub]) { return A.ACCENTS[head].bands[sub]; }
+    row = S && S.TABLA && S.TABLA[head];
+    return row && S.bandas(row, S.SAT, S.LUZ)[sub] || null;
+  }
+
+  function drawFace(g, x, y, r) {
+    var ink = band('ink'), paper = band('paper'), eye = r * 0.145, pupil = r * 0.052;
+    if (!ink || !paper) { return false; }
+    g.save(); g.globalCompositeOperation = 'source-over'; g.lineJoin = 'round'; g.lineCap = 'round';
+    g.lineWidth = Math.max(1, r * 0.035); g.strokeStyle = ink; g.fillStyle = paper;
+    [-1, 1].forEach(function (side) {
+      g.beginPath(); g.arc(x + side * r * 0.25, y - r * 0.2, eye, 0, TAU); g.fill(); g.stroke();
+      g.beginPath(); g.arc(x + side * r * 0.23, y - r * 0.205, pupil, 0, TAU); g.fillStyle = ink; g.fill(); g.fillStyle = paper;
+    });
+    g.beginPath(); g.moveTo(x - r * 0.12, y + r * 0.2); g.lineTo(x, y + r * 0.25); g.lineTo(x + r * 0.12, y + r * 0.2);
+    g.lineWidth = Math.max(1, r * 0.045); g.strokeStyle = ink; g.stroke(); g.restore();
+    return true;
   }
 
   function trazo(g, P, x, y, k, cs, sn, ancho, variable) {
@@ -256,6 +290,8 @@
     }
     targetG.restore();
 
+    if (o.face === true) { drawFace(g, x, y, r); }
+
 
     if (isBuffer) {
       renderToReal(g, bufferG, nivel);
@@ -290,7 +326,7 @@
   }
 
   raiz.AtlasOnda = {
-    dibuja: dibuja, pulsoNota: pulsoNota, sprite: sprite, pegaSprite: pegaSprite, tono: tono, riqueza: riqueza, medidor: medidor, limite: limite,
+    dibuja: dibuja, pulsoNota: pulsoNota, sprite: sprite, pegaSprite: pegaSprite, tono: tono, riqueza: riqueza, medidor: medidor, limite: limite, banda: band,
 
     applyMelt: applyMelt,
 

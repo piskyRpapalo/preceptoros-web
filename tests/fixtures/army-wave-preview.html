@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/public/assets/base.css">
+  <link rel="stylesheet" href="/public/assets/atlas.css">
+  <style>
+    body { padding: 0; }
+    #thegame { max-width: 40rem; margin: auto; padding: 1rem; background: var(--army-ocean); color: var(--army-paper); }
+    .army-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(4rem, 1fr)); gap: .4rem; }
+    .army-detail { margin-top: 1rem; }
+    .atlas-tropa canvas { width: 100%; height: auto; background: var(--army-ocean); }
+  </style>
+</head>
+<body>
+  <main id="thegame">
+    <h1>Army · measured waves</h1>
+    <ul id="army" class="atlas-army army-grid"></ul>
+    <section id="army-detail" class="army-detail"></section>
+    <output id="report" hidden></output>
+  </main>
+  <script src="/public/game/valores.js"></script>
+  <script src="/public/game/tabla_semantica.js"></script>
+  <script src="/public/game/comic_tokens.js"></script>
+  <script src="/public/game/comic_accents.js"></script>
+  <script src="/public/game/gacha.js"></script>
+  <script src="/public/game/wave_render.js"></script>
+  <script src="/public/game/ui-ficha.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      var labels = {
+        nombre_tropa: '{base} {pre} {suf}', unico_nombre: 'Leviathan', rar_normal: 'Normal',
+        rar_magico: 'Uncommon', rar_raro: 'Rare', rar_unico: 'Leviathan', aristas_n: '{n} edges',
+        version_previa: 'Earlier wave', sonido: 'Hear wave', st_vida: 'Life', st_armadura: 'Armor',
+        st_velocidad: 'Speed', st_sigilo: 'Stealth', st_inercia: 'Inertia', st_profundidad: 'Depth', st_aura: 'Aura',
+        base_pez: 'Lanternfish', base_centinela: 'Sentinel', base_leviatan: 'Leviathan', base_heraldo: 'Herald',
+        af_atlante: 'Atlantean', af_cuprico: 'Copper', af_termico: 'Thermal', af_solar: 'Solar',
+        af_abismo: 'Abyss', af_sigilo: 'Stealth', af_velocidad: 'Swift', af_algoritmo: 'Algorithmic'
+      };
+      var seeds = [
+        'f7b0f1c774f54b6f3efdfd51b2b6a9600380410f45449c38907e61846e4ef729',
+        'a23d525508b2c6f0074aecea13737118b2729f9842c17a2d1161b3540a30e0e1',
+        '1d60dc3e11deee79b2c8836e7fdee51d9ac2a59767d852d5ee55b251ee0abb8c',
+        '9a342ec9292ec93c7a4de5450a402e2a2d74864e2d3aeb9d0747d9cbcf57ed1b'
+      ];
+      var tiers = ['tc1', 'tc2', 'tc3', 'tc4'];
+      function element(tag, className, text) {
+        var node = document.createElement(tag);
+        if (className) { node.className = className; }
+        if (text != null) { node.textContent = String(text); }
+        return node;
+      }
+      function button(text) { var node = element('button', 'boton', text); node.type = 'button'; return node; }
+      function fill(text, data) {
+        return text.replace(/\{(\w+)\}/g, function (match, key) {
+          return Object.prototype.hasOwnProperty.call(data, key) ? data[key] : match;
+        }).replace(/\s+/g, ' ').trim();
+      }
+      function label(key) { return Object.prototype.hasOwnProperty.call(labels, key) ? labels[key] : key; }
+      window.AtlasTallerUI = { tono: function () { return null; } };
+      document.documentElement.style.setProperty('--army-ocean', AtlasComicTokens.NEUTRAL.ocean);
+      document.documentElement.style.setProperty('--army-paper', AtlasComicTokens.NEUTRAL.paper);
+      var ficha = AtlasFicha.crea({
+        G: AtlasGacha, A: {}, S: { contexto: function () { return {}; } }, T: label,
+        el: element, boton: button, rellena: fill, dice: function () {}
+      }).ficha;
+      var troops = [];
+      for (var index = 0; index < 16; index++) {
+        var source = seeds[index % seeds.length];
+        var seed = source.slice(0, 60) + index.toString(16).padStart(4, '0');
+        troops.push(AtlasGacha.tirada(seed, tiers[index % tiers.length]));
+      }
+      troops.forEach(function (troop, index) {
+        var row = element('li');
+        row.appendChild(ficha(troop, 64));
+        document.getElementById('army').appendChild(row);
+      });
+      document.getElementById('army-detail').appendChild(ficha(troops[0], 168));
+      requestAnimationFrame(function () {
+        var canvases = Array.from(document.querySelectorAll('canvas'));
+        var data = canvases.map(function (canvas) { return canvas.toDataURL(); });
+        var samples = [];
+        function step(index) {
+          var start = performance.now();
+          window.scrollBy(0, 24);
+          requestAnimationFrame(function () {
+            samples.push(performance.now() - start);
+            if (index < 15) { step(index + 1); return; }
+            samples.sort(function (a, b) { return a - b; });
+            document.getElementById('report').textContent = JSON.stringify({ canvases: data, scrollFrameMs: samples });
+          });
+        }
+        step(0);
+      });
+    })();
+  </script>
+</body>
+</html>

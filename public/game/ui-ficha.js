@@ -12,6 +12,13 @@
   }
   function traza(c, arm, clase, latido) {
     var g = c.getContext('2d'), w = c.width, lim = 0;
+    var O = window.AtlasOnda, bandName = { normal: 'paper', magico: 'cyan', raro: 'comic yellow.base', unico: 'vermilion.base' }[clase] || 'paper';
+    if (O && O.dibuja) {
+      lim = O.limite(arm);
+      O.dibuja(g, arm, w / 2, w / 2, w / 2 - 6, { color: bandName, brillo: 0, grosor: Math.max(1.5, w / 90), calidad: 2, respira: false, face: true });
+      c.dataset.rareza = clase || '';
+      return;
+    }
     arm.forEach(function (h) { lim += Math.max(Math.abs(h[1]), Math.abs(h[2])); });
     var k = (w / 2 - 6) / Math.max(1, lim) * (latido || 1);
     g.clearRect(0, 0, w, w);
@@ -46,9 +53,9 @@
     cap.appendChild(el('small', 'atlas-stats', G.STATS.filter(function (k) { return t.stats[k]; }).map(function (k) { return k.slice(0, 3) + ' ' + t.stats[k]; }).join(' · ')));
 
     var k = G.caracter(t);
-
-    var tn = window.AtlasTallerUI && window.AtlasTallerUI.tono(t.semilla);
-    c.style.setProperty('--onda', tn != null ? 'hsl(' + tn + ' 85% 62%)' : ['hsl(35 75% 58%)', 'hsl(140 45% 55%)', 'hsl(275 55% 68%)', 'hsl(210 12% 68%)'][k.color]);
+    var bandName = { normal: 'paper', magico: 'cyan', raro: 'comic yellow.base', unico: 'vermilion.base' }[t.rareza] || 'paper';
+    var bandColor = window.AtlasOnda && window.AtlasOnda.banda ? window.AtlasOnda.banda(bandName) : null;
+    if (bandColor) { f.style.setProperty('--army-band', bandColor); c.style.setProperty('--onda', bandColor); }
     c.dataset.caracter = k.color + '-' + k.pulso + '-' + k.tendencia;
     var oir = boton(T('sonido'));
     oir.addEventListener('click', function () { oye(t); });

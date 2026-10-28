@@ -212,8 +212,8 @@ span.atlas-sector{pointer-events:none}
 #thegame :is(.boton,.boton-sec){transition:transform .12s cubic-bezier(.34,1.56,.64,1)}
 #thegame :is(.boton,.boton-sec):active{transform:scale(1.06,.92)}
 @media (prefers-reduced-motion:reduce){.atlas-army .atlas-onda{animation:none}#thegame :is(.boton,.boton-sec){transition:none}#thegame :is(.boton,.boton-sec):active{transform:none}}
-.rar-magico .atlas-onda{--onda:#7ea6ff}.rar-magico b{color:#7ea6ff}.rar-raro .atlas-onda{--onda:#f2d04a}.rar-raro b{color:#f2d04a}
-.rar-unico .atlas-onda{--onda:#e8b64c}.rar-unico b{color:#e8b64c}
+.atlas-tropa.rar-magico .atlas-onda,.atlas-tropa.rar-raro .atlas-onda,.atlas-tropa.rar-unico .atlas-onda{--onda:var(--army-band,var(--accent-copper-claro))}
+.atlas-tropa.rar-magico b,.atlas-tropa.rar-raro b,.atlas-tropa.rar-unico b{color:var(--army-band,var(--text-main))}
 .atlas-eclosion{margin-top:.6rem;padding:.8rem;border:1px solid var(--accent-copper);border-radius:var(--radius)}
 .atlas-stats{display:flex;flex-wrap:wrap;gap:.2rem 1rem;margin:.4rem 0;padding:0;list-style:none;font:.78rem var(--mono)}
 /* `hidden` tiene que ganar a los display de arriba: si no, lo oculto se ve. */
