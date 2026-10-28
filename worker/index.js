@@ -5,6 +5,9 @@
 // English only until the MVP (Sovereign canon, 2026-10-25): the nine language portals were the
 // same English landing nine times. They answer 301 to the one landing at the root.
 const PORTAL = /^\/(?:ar|de|el|en|es|fr|it|pt|ru)(?:\/(?:index\.html)?)?$/;
+// Norte 7 (decree 2026-10-28, approved in docs/norte-7-corte-propuesta.md §4): the game's old door
+// has one destination now, the isometric OpenWorld. The query travels with it.
+const PLAY = /^\/play(?:\/(?:index\.html)?)?$/;
 
 export default {
   async fetch(request, env) {
@@ -15,6 +18,9 @@ export default {
     }
     if (PORTAL.test(url.pathname)) {
       return Response.redirect(url.origin + '/', 301);
+    }
+    if (PLAY.test(url.pathname)) {
+      return Response.redirect(url.origin + '/openworld/' + url.search, 301);
     }
     return env.ASSETS.fetch(request);
   },
