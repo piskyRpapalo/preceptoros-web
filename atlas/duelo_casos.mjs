@@ -22,15 +22,3 @@ const viaja = (p) => JSON.stringify(p);   // lo que cruza: texto, como por Send 
 
 
 const tropas = (quien, tc, k) => Array.from({ length: k }, (_, i) => ({ tc, semilla: azar(quien + '-tropa-' + i) }));
-
-
-
-
-
-
-
-
-
-
-
-
