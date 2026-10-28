@@ -2500,6 +2500,26 @@ class Portada(unittest.TestCase):
         self.assertIn("window.TheGame.abre(null", (PUBLICO / "assets" / "eaa-art12-local-first-surface.js").read_text(encoding="utf-8"))
 
 
+class HubSinMundosVivos(unittest.TestCase):
+    """Comisión del Soberano (2026-10-28): hoy no hay nodo vivo, así que el hub /face/ no presenta mundos.
+
+    Los mundos (atlantis, zombie, basic) siguen en disco: sus deep links y el duelo de onda no se borran ni se
+    redirigen hasta tener una regla medida y una puerta propia de Worlds.
+    """
+
+    def test_el_hub_no_enlaza_a_ningun_mundo(self):
+        hub = (PUBLICO / "face" / "index.html").read_text(encoding="utf-8")
+        for pagina in ("atlantis.html", "zombie.html", "basic.html"):
+            with self.subTest(pagina=pagina):
+                self.assertNotIn("/face/" + pagina, hub, "el hub presenta un mundo sin nodo vivo")
+        self.assertIn("No node is live", hub)
+
+    def test_las_paginas_de_mundo_siguen_en_disco(self):
+        for pagina in ("atlantis.html", "zombie.html", "basic.html"):
+            with self.subTest(pagina=pagina):
+                self.assertTrue((PUBLICO / "face" / pagina).is_file(), "se borro un deep link del combate")
+
+
 class OpenWorld(unittest.TestCase):
     """NORTE 7 · PR 2 (2026-10-28): /openworld/ es la ficha del mapa global y el chat.
 

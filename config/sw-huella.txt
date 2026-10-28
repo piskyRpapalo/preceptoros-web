@@ -1,3 +1,3 @@
 
-huella=90dde68cece3fcda
+huella=42927e5b99738ea3
 version=preceptoros-2026-17-abjz
