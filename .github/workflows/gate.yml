@@ -48,6 +48,7 @@ jobs:
             python -m unittest tests.test_preflight
             python -m unittest tests.test_trailers_hook
             python bin/contar_rutas.py --check-doc DEPLOY.md
+            node --test atlas/puros/bubble_sonify_casos.mjs
             python test_web.py
             python atlas/test_atlas.py
             node arnes_sw.mjs
