@@ -1,9 +1,9 @@
 {
  "esquema": "atlas.mundo/1",
  "procedencia": "medido en local por atlas/mundo.py; sin rutas, sin nombres",
- "medido_el": "2026-10-28T02:13Z",
- "maquina": "Linux x86_64 · Python 3.14.4",
- "pruebas_web": 84,
+ "medido_el": "2026-10-28T06:52Z",
+ "maquina": "Linux x86_64 · Python 3.12.14",
+ "pruebas_web": 86,
  "lenguas": 0,
  "techo_bloque_b": 26214400,
  "gzip_juego_b": 111321,
