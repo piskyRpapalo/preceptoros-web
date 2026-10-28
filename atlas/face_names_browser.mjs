@@ -56,8 +56,18 @@ async function main() {
     medidas[mundo] = n;
     ok(n.total > 0 && n.letras === n.total, mundo + ': names not all in comic letters ' + JSON.stringify(n));
     ok(n.tallas.length === 1 && n.tallas[0] === 12, mundo + ': name size is not 12 ' + JSON.stringify(n.tallas));
+    // NORTE 5 [2]: the chat terminal (the radio chat /play/ had) is THE chat panel of the world: mounted in the chat section,
+    // open, three channels; a line you write lands in it as You · LIVE-or-NO_DATA (by the game cycle), and the answer as NO_DATA.
+    await ev("(() => { const i = document.getElementById('reply'); i.value = 'hello from the check'; document.getElementById('ask').requestSubmit(); return true; })()");
+    await espera(400);
+    const t = JSON.parse(await ev(`JSON.stringify((() => { const c = document.getElementById('radio-chat');
+      return { en: !!(c && c.parentElement.closest('section') && c.parentElement.closest('section').querySelector('#log')), abierto: !!c && !c.classList.contains('plegado'), canales: c ? c.querySelectorAll('[role=tab]').length : 0,
+        msgs: c ? [...c.querySelectorAll('#radio-chat-lista .radio-msg')].map((li) => [li.dataset.quien, li.dataset.sello, li.dataset.fuente]) : [] }; })())`));
+    medidas[mundo].terminal = t;
+    const tuyo = t.msgs.find((m) => m[0] === 'You' && m[2] === 'chat'), resp = t.msgs.find((m) => m[0] === 'Preceptor' && m[1] === 'NO_DATA');
+    ok(t.en && t.abierto && t.canales === 3 && tuyo && /^(LIVE|NO_DATA)$/.test(tuyo[1]) && resp, mundo + ': [2] the chat terminal is not the chat panel ' + JSON.stringify(t));
   }
-  console.log(JSON.stringify({ piece: 'P3-1a', receipt: 'MEDIDO', medidas, fallos }));
+  console.log(JSON.stringify({ piece: 'P3-1a+N5-2', receipt: 'MEDIDO', medidas, fallos }));
 }
 
 main().catch((e) => { fallos.push(String(e && e.message || e)); console.log(JSON.stringify({ piece: 'P3-1a', medidas, fallos })); })
