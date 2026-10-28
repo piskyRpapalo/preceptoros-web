@@ -1088,6 +1088,8 @@ FACE_PAGE_DEPENDENCIES = tuple(sorted(set(re.findall(r'src="/game/([^"]+)"', (PU
 # puede ampliar la lista en silencio; test_web.Puerta exige que cargue exactamente esta lista.
 LANDING_PAGE_DEPENDENCIES = ("tabla_semantica.js", "comic_tokens.js", "comic_accents.js", "comic_atoms.js",
                              "bubble_language.js", "bubble_letters.js")
+# /openworld/ (NORTE 7 · PR 2, 2026-10-28): el mapa y su cabana dibujan en la misma burbuja que la portada; se DECLARA aqui.
+OPENWORLD_PAGE_DEPENDENCIES = LANDING_PAGE_DEPENDENCIES
 # /aduana/ (Norte N2, 2026-10-26): el comprobador de cedulas, OBSERVANTE, carga la cadena de nodos y solo esa. Se
 # DECLARA aqui; local_first_surface_build.ADUANA_SCRIPTS es la misma lista, y tests/aduana_page.test.mjs exige que
 # coincidan.
@@ -1232,6 +1234,8 @@ class TheGameV15(unittest.TestCase):
                         continue   # la cara es su propia superficie (2026-10-25)
                     if h == PUBLICO / "index.html" and m in LANDING_PAGE_DEPENDENCIES:
                         continue   # las puertas de la portada en bubble language (P3 [1d])
+                    if h == PUBLICO / "openworld" / "index.html" and m in OPENWORLD_PAGE_DEPENDENCIES:
+                        continue   # el mapa de /openworld/ (NORTE 7 PR 2): la cabana en bubble language
                     if h == PUBLICO / "aduana" / "index.html" and m in ADUANA_PAGE_DEPENDENCIES:
                         continue   # el comprobador de cedulas de /aduana/ (Norte N2)
                     if h == PUBLICO / "get-the-app" / "index.html" and m in APP_PAGE_DEPENDENCIES:
@@ -1774,6 +1778,8 @@ class Multijugador(unittest.TestCase):
                         continue
                     if h == PUBLICO / "index.html" and m in LANDING_PAGE_DEPENDENCIES:
                         continue   # las puertas de la portada en bubble language (P3 [1d])
+                    if h == PUBLICO / "openworld" / "index.html" and m in OPENWORLD_PAGE_DEPENDENCIES:
+                        continue   # el mapa de /openworld/ (NORTE 7 PR 2): la cabana en bubble language
                     if h == PUBLICO / "aduana" / "index.html" and m in ADUANA_PAGE_DEPENDENCIES:
                         continue   # el comprobador de cedulas de /aduana/ (Norte N2)
                     if h == PUBLICO / "get-the-app" / "index.html" and m in APP_PAGE_DEPENDENCIES:
