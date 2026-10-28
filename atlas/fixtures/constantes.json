@@ -1,0 +1,232 @@
+{
+  "esquema": "norte7.constantes/1",
+  "nota": "Registro de constantes adoptadas. Todo cambio de valor es una declaracion, nunca silencioso. estado: FIRMADO | PROPUESTA | MEDIDO | NO_DATA.",
+  "constantes": [
+    {
+      "nombre": "CELDA_PX",
+      "valor": 56,
+      "unidad": "px ref",
+      "procedencia": "public/game/global_map.js:14 (main a9a6d31)",
+      "fecha": "2026-10-28",
+      "motivo": "ancho axonometrico fijo de la celda; el angulo no cambia",
+      "estado": "FIRMADO",
+      "ajustable": false
+    },
+    {
+      "nombre": "ESCALA",
+      "valor": 1.5,
+      "unidad": "ref",
+      "procedencia": "public/game/global_map.js:15 (main a9a6d31)",
+      "fecha": "2026-10-28",
+      "motivo": "espaciado de la escena",
+      "estado": "FIRMADO",
+      "ajustable": true
+    },
+    {
+      "nombre": "BURBUJA",
+      "valor": 0.6,
+      "unidad": "ref",
+      "procedencia": "public/game/global_map.js:16 (main a9a6d31)",
+      "fecha": "2026-10-28",
+      "motivo": "escala de una burbuja",
+      "estado": "FIRMADO",
+      "ajustable": true
+    },
+    {
+      "nombre": "ZOOM_MIN",
+      "valor": 0.6,
+      "unidad": "factor",
+      "procedencia": "public/game/map_zoom.js:3 (main a9a6d31)",
+      "fecha": "2026-10-28",
+      "motivo": "limite publicado (dictado T3: 0.6-3)",
+      "estado": "FIRMADO",
+      "ajustable": true
+    },
+    {
+      "nombre": "ZOOM_MAX",
+      "valor": 3,
+      "unidad": "factor",
+      "procedencia": "public/game/map_zoom.js:3 (main a9a6d31)",
+      "fecha": "2026-10-28",
+      "motivo": "limite publicado (dictado T3: 0.6-3)",
+      "estado": "FIRMADO",
+      "ajustable": true
+    },
+    {
+      "nombre": "MANA_RANGO",
+      "valor": [
+        0,
+        100
+      ],
+      "unidad": "entero",
+      "procedencia": "public/game/global_map.js:41 (main a9a6d31)",
+      "fecha": "2026-10-28",
+      "motivo": "dato medido por nodo; fuera de rango = NO_DATA",
+      "estado": "MEDIDO",
+      "ajustable": false
+    },
+    {
+      "nombre": "REJILLA",
+      "valor": [
+        7,
+        5
+      ],
+      "unidad": "celdas",
+      "procedencia": "fixture T4 (b79f63f)",
+      "fecha": "2026-10-28",
+      "motivo": "35 celdas: tres carriles con espacio visible",
+      "estado": "PROPUESTA",
+      "ajustable": true
+    },
+    {
+      "nombre": "EPOCA",
+      "valor": 32,
+      "unidad": "ticks",
+      "procedencia": "fixture T4 (b79f63f)",
+      "fecha": "2026-10-28",
+      "motivo": "ticks entre elecciones de destino",
+      "estado": "PROPUESTA",
+      "ajustable": true
+    },
+    {
+      "nombre": "CUERPO_ALTO",
+      "valor": 24,
+      "unidad": "px ref",
+      "procedencia": "fixture T4 (b79f63f)",
+      "fecha": "2026-10-28",
+      "motivo": "con CELDA_PX=56 da proporcion 0.429, dentro de 0.25-0.5 (legible, no dominante)",
+      "estado": "PROPUESTA",
+      "ajustable": true
+    },
+    {
+      "nombre": "PROPORCION_MIN",
+      "valor": 0.25,
+      "unidad": "ratio",
+      "procedencia": "criterio del fixture T4",
+      "fecha": "2026-10-28",
+      "motivo": "debajo, el cuerpo se pierde",
+      "estado": "PROPUESTA",
+      "ajustable": true
+    },
+    {
+      "nombre": "PROPORCION_MAX",
+      "valor": 0.5,
+      "unidad": "ratio",
+      "procedencia": "criterio del fixture T4",
+      "fecha": "2026-10-28",
+      "motivo": "encima, el cuerpo domina el entorno",
+      "estado": "PROPUESTA",
+      "ajustable": true
+    },
+    {
+      "nombre": "TICK_HZ",
+      "valor": 60,
+      "unidad": "Hz",
+      "procedencia": "public/game/bb_radio.js (lote radio, 67bdc44)",
+      "fecha": "2026-10-28",
+      "motivo": "tick de la radio fase 1",
+      "estado": "PROPUESTA",
+      "ajustable": true
+    },
+    {
+      "nombre": "SR",
+      "valor": 9000,
+      "unidad": "Hz",
+      "procedencia": "public/game/bb_radio.js (67bdc44)",
+      "fecha": "2026-10-28",
+      "motivo": "150 muestras por tick exactas",
+      "estado": "PROPUESTA",
+      "ajustable": true
+    },
+    {
+      "nombre": "NOTA_TICKS",
+      "valor": 15,
+      "unidad": "ticks",
+      "procedencia": "public/game/bb_radio.js (67bdc44)",
+      "fecha": "2026-10-28",
+      "motivo": "0.25 s por nota",
+      "estado": "PROPUESTA",
+      "ajustable": true
+    },
+    {
+      "nombre": "BASE_HZ",
+      "valor": 220,
+      "unidad": "Hz",
+      "procedencia": "public/game/aiact-art50-state-radio.js:4 (main a9a6d31, retirado con la corte D)",
+      "fecha": "2026-10-28",
+      "motivo": "base de la radio del estado (la idea del 11 oct)",
+      "estado": "FIRMADO",
+      "ajustable": true
+    },
+    {
+      "nombre": "RADIO_CUERPO",
+      "valor": 1.0,
+      "unidad": "celdas",
+      "procedencia": "fixture T1, medido: radio 1.0 bloquea 3 celdas de 35 (9%) con los tres interactivos; radio 1.2 bloquea 15 (43%); radio 1.5 bloquea 23 (66%).",
+      "fecha": "2026-10-28",
+      "motivo": "keep-out por tipo (cabina y nodo). CAMBIO DECLARADO: valor previo 1.5 (propuesta inicial) retirado porque 1.5 bloquea el 66% de la rejilla 7x5 y deja poco paso a los carriles.",
+      "estado": "PROPUESTA",
+      "ajustable": true
+    },
+    {
+      "nombre": "LEAN",
+      "valor": 1,
+      "unidad": "celdas",
+      "procedencia": "fixture T1: la rejilla no admite menos de una celda",
+      "fecha": "2026-10-28",
+      "motivo": "separacion lateral maxima del cuerpo bloqueado",
+      "estado": "PROPUESTA",
+      "ajustable": true
+    },
+    {
+      "nombre": "RADIO_BALIZA",
+      "valor": null,
+      "unidad": "celdas",
+      "procedencia": "sin fuente: no hay baliza en el repo (grep vacio)",
+      "fecha": "2026-10-28",
+      "motivo": "NO_DATA: se propone desde medicion cuando exista la primera baliza",
+      "estado": "NO_DATA",
+      "ajustable": true
+    },
+    {
+      "nombre": "RADIO_GRIETA",
+      "valor": null,
+      "unidad": "celdas",
+      "procedencia": "sin fuente: no hay grieta en el mapa (grep vacio)",
+      "fecha": "2026-10-28",
+      "motivo": "NO_DATA: igual que la baliza",
+      "estado": "NO_DATA",
+      "ajustable": true
+    },
+    {
+      "nombre": "ALTURA_H0",
+      "valor": null,
+      "unidad": "px",
+      "procedencia": "sin valor entregado por el Soberano (dictado T2 dice 'h0/k medidos' sin cifra)",
+      "fecha": "2026-10-28",
+      "motivo": "NO_DATA: pedir la cifra; no se inventa",
+      "estado": "NO_DATA",
+      "ajustable": true
+    },
+    {
+      "nombre": "ALTURA_K",
+      "valor": null,
+      "unidad": "adim",
+      "procedencia": "sin valor entregado por el Soberano (dictado T2)",
+      "fecha": "2026-10-28",
+      "motivo": "NO_DATA: pedir la cifra; no se inventa",
+      "estado": "NO_DATA",
+      "ajustable": true
+    },
+    {
+      "nombre": "ETIQUETA_MIN_PX",
+      "valor": 16,
+      "unidad": "px pantalla",
+      "procedencia": "dictado del Soberano (web#387, T3)",
+      "fecha": "2026-10-28",
+      "motivo": "suelo de legibilidad de los nombres",
+      "estado": "FIRMADO",
+      "ajustable": true
+    }
+  ]
+}
