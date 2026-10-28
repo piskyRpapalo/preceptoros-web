@@ -29,9 +29,9 @@ consequential action.
 1. **Measured claims only.** Every number carries its command, machine, and
    date. A missing datum is `NO_DATA` with its cause — never invented, never
    padded, never decorated with a zero.
-2. **One piece per PR, and the PR carries its own measurement** — sizes,
-   hashes, dates, and what is still missing. Issues carry opinions; PRs
-   carry evidence.
+2. **One feature per feature document, one work unit per commit, one PR per
+   slice — and the PR carries its own measurement:** sizes, hashes, dates,
+   and what is still missing. Issues carry opinions; PRs carry evidence.
 3. **The suite must be able to go red.** Sabotage-tested: a check your
    change cannot fail proves nothing.
 4. **Ceilings are law.** Files < 25 MiB; a served piece < 16 KiB where the
@@ -40,7 +40,11 @@ consequential action.
    determinism is the medium, not a preference.
 5. **Propose-only.** No agent merges, signs, or deploys its own work. Every
    consequential action (merge, deploy, secrets, anything of value) waits
-   for a human signature: `REQUIRES_FIRMA` → `FIRMO`.
+   for a human signature: `REQUIRES_FIRMA` → `FIRMO`. The signature gates
+   the **merge**, never the **building**: under ODD (FIRMO 2026-10-28) a
+   step that needs a signature never halts the work — the standing
+   signature is searched for in the corpus first, the modification is
+   recorded, and the work continues.
 6. **Public names in English.** Coin your pieces in English; keep your
    working language at home. History is append-only — we re-classify, we
    do not rewrite.
@@ -50,6 +54,33 @@ consequential action.
    self-preference is a measured bias, not an accusation.
 9. **Share back.** If your tool adapts natively to the app, it belongs here
    next to the rest. That is the whole social contract.
+
+## ODD — the workflow layer (FIRMO 2026-10-28)
+
+**Organic Driven Development** is how a piece grows here:
+**explore → implement → proportionate checks.** It is a workflow layer, not
+a new harness — the Desk still orchestrates, the gates still gate, the
+Sovereign still signs.
+
+- **Explore first.** Read the existing corpus before proposing;
+  investigation and proposal-only work stay read-only. Small, understood
+  work creates no durable task artifact.
+- **One feature document.** Substantial authorized work is tracked once in
+  `odd/tasks/<feature-name>.md` — objective, checklist with stable IDs,
+  verification evidence, next step. One feature, one document, one name:
+  no parallel plans, no task noise.
+- **Work-unit commits.** Commits land as reviewable work units of about
+  400 authored lines — advisory, never a cap or a forced split. A
+  high-risk unit gets its own commit.
+- **Work never halts for a signature.** When a step would need a
+  signature, search the corpus for the standing signature first — the
+  signed book, ideas, examples, and jewels count as signed. Record the
+  modification and continue. The delivery gates (checks that can go red,
+  the receipt, `FIRMO` on the exact head) are never skipped: ODD unblocks
+  the work, not the merge.
+- **Unattended mode.** When no human can answer, chain the feature on a
+  feature branch, record the choice in the feature document's `## Log`,
+  and continue.
 
 ## Any tool is welcome — explicitly
 
@@ -121,14 +152,17 @@ decides.
 
 ## How a contribution flows
 
-1. Open the PR (it carries its own measurement; an issue only carries an
+1. Track the work in the feature document (`odd/tasks/<feature>.md`) when
+   it is substantial; small, understood work needs none.
+2. Open the PR (it carries its own measurement; an issue only carries an
    opinion).
-2. Checks green — run `python3 test_web.py` and `node arnes_sw.mjs` first;
+3. Checks green — run `python3 test_web.py` and `node arnes_sw.mjs` first;
    the suite must be able to fail.
-3. Receipt — sizes, hashes, dates.
-4. Human signature on the exact head (`REQUIRES_FIRMA` → `FIRMO`). A
-   machine never signs.
-5. Merge by the orchestration lane, under the signed head only.
+4. Receipt — sizes, hashes, dates.
+5. Human signature on the exact head (`REQUIRES_FIRMA` → `FIRMO`). A
+   machine never signs. Until it arrives, the work never halts: the
+   pending signature is recorded and the rest of the feature continues.
+6. Merge by the orchestration lane, under the signed head only.
 
 ## Licence
 

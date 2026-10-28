@@ -13,9 +13,11 @@ Depth 1 — auditing (AI Act articles, standards, benchmarks): depth 0 +
   study/01-governance.md, 02-legislation.md, 04-measurement.md + lab/README.md.
   Standards are engineering rails, not legal counsel.
 Depth 2 — coding a PR: depth 1 + AGENTS.md + study/05-contracts.md,
-  10-collisions.md + the target suite. One piece per PR; attach a receipt.
+  10-collisions.md + the target suite. One feature doc per feature; one PR
+  per slice; attach a receipt.
 Depth 3 — operating as a lane under commission: full study + the active
-  commission in the Comando. Propose-only; halt at the Signing Tray.
+  commission in the Comando. Propose-only; the Signing Tray gates merges —
+  under ODD you never halt.
 Depth 4 — specialist model on edge hardware: zero prose; process the
   < 1,024 B payload; return a receipt or NO_DATA with cause.
 Loaded is loaded: do not re-fetch what you already hold.
@@ -25,7 +27,9 @@ Léelo antes de tocar nada. Vale para toda sesión de agente (rack, nube, web) j
 
 ## Reglas de la casa
 - El silicio propone, el carbono firma: nada de valor sin FIRMO explícito del Soberano. Un documento «FIRMADO» escrito por IA es PENDIENTE hasta la firma de David.
-- Los merges a main NUNCA son por autonomía: cada fusión espera FIRMO PR por PR, tras verificación independiente de la Mesa.
+- ODD (decreto del Soberano, FIRMO 2026-10-28): el trabajo JAMÁS se detiene por una firma. Ante un paso que requiera FIRMO se BUSCA primero la firma ya hecha en el corpus (el LIBRO; ideas, ejemplos y joyas cuentan como firmados), se apunta la modificación y se CONTINÚA. Ningún preceptor se para por no haber buscado lo que ya está firmado; sin resultado, el preceptor queda congelado como muestra fallida.
+- Los merges a main NUNCA son por autonomía: cada fusión de código, sello o infraestructura espera FIRMO PR por PR, tras verificación independiente de la Mesa; cada rebanada de una cadena ODD se incluye PR por PR y FIRMO cubre su cabeza exacta. Un PR de solo texto (docs, sin código servido ni sello) lo fusiona la Mesa bajo la cobertura del FIRMO ODD permanente, citándolo en el recibo: se acabó firmar por un cambio de texto.
+- Un nombre por concepto: manda el Léxico; no se acuña un nombre nuevo para lo ya nombrado. El ruido de nombres es deuda.
 - `docs/mesa/PARA_LA_MESA.md` está CONGELADO desde 2026-10-27 (archivo histórico, solo lectura): el trono de las firmas es `LIBRO_DE_FIRMAS.md` (repo `firmas`). Los recibos se publican en el PR y en buzon#19.
 
 ## Cercos (sin excepciones)
@@ -41,8 +45,8 @@ Léelo antes de tocar nada. Vale para toda sesión de agente (rack, nube, web) j
 
 ## Canales
 - Con Codex solo por GitHub: PRs PROPUESTA en ramas mistral/*, comentarios en PRs; jamás tocar codex/* ni claude/*.
-- Enjambre Haiku: ramas haiku/*; escribe y une ramas locales, jamás firma, fusiona ni empuja.
-- Lo que no esté en el repo es NO_DATA con causa: se pregunta al Soberano, jamás se infiere.
+- Enjambre Haiku: ramas haiku/*; escribe y une ramas locales y empuja solo sus propias ramas haiku/* (delegación de llaves, 2026-10-24); jamás firma ni fusiona.
+- Lo que no esté en el repo es NO_DATA con causa: se BUSCA primero en el corpus (el LIBRO; ideas, ejemplos y joyas cuentan como firmados); lo que solo el Soberano puede responder se le pregunta y, mientras llega la respuesta, el resto del feature continúa. Jamás se infiere.
 
 ## Huella del preceptor
 FIRMO del Soberano, 2026-10-17. Cláusula del contrato, texto literal:
