@@ -75,36 +75,27 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
 <script src="/game/gacha.js"></script>
 <script src="/game/bubble_language.js"></script>
 <script src="/game/bubble_letters.js"></script>
+<script src="/game/isometric_floor_projection.js"></script>
+<script src="/game/mapa_global.js"></script>
 <script src="/assets/pwa.js"></script>
 <script>
-// OpenWorld (NORTE 7 · PR 2). Same-origin only: the state file is the one thing read from the server.
-// Default: zero nodes. A node that is not listed as alive does not exist on this map.
+// OpenWorld (NORTE 7 · PR 2 · global map, ODD isometric-colony). Same-origin only: the state file is the one thing read
+// from the server. Default: zero nodes; the cabin is always here. A node that is not listed as alive does not exist.
+// The map is one more render of the state (mapa_global.js). The cycle tick t advances by a fixed step, and the palette
+// reads t alone: never a wall clock. With reduced motion there is no cycle: the sky stays where the state puts it.
 (function (raiz) {
   'use strict';
-  var doc = raiz.document, ANCHO = 320, ALTO = 96;
-  var TERRAINS = {
-    cabin: { name: 'Tutorial cabin', x: 0.5, y: 0.5, always: true },
-    atlantis: { name: 'Atlantis · Node Hexelion', x: 0.22, y: 0.3 },
-    risen: { name: 'the Risen', x: 0.78, y: 0.7 }
-  };
-  var alive = [];
+  var doc = raiz.document, M = raiz.AtlasMapaGlobal;
+  var entrada = { t: 0, cabin: {}, nodes: [] };
   var selected = 'cabin';
   var surface = doc.getElementById('surface');
   var press = doc.querySelector('#map .press');
   var state = doc.getElementById('state');
+  var quieto = raiz.matchMedia && raiz.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  // The bubble outline, as landing_doors.js draws it: pure data, the house bands only.
-  function frame(title) {
-    var RIM = [];
-    for (var i = 0; i < 24; i++) { RIM.push([Math.round(160 + 150 * Math.cos(i * Math.PI / 12)), Math.round(44 + 38 * Math.sin(i * Math.PI / 12))]); }
-    var WAVE_PTS = [];
-    for (var j = 0; j <= 12; j++) { WAVE_PTS.push([136 + j * 4, Math.round((64 + 3 * Math.sin(j * Math.PI / 4)) * 10) / 10]); }
-    return { v: 'preceptoros.bubble/1', id: 'terrain', t: 0, cv: [ANCHO, ALTO], atoms: [
-      { k: 'bubble', r: 'a speech bubble', i: [
-        { o: 'ribbon', pts: [[58, 66], [36, 94], [92, 72]], closed: true, f: 'paper', s: 'ink', lw: 3 },
-        { o: 'ribbon', pts: RIM, closed: true, f: 'paper', s: 'ink', lw: 3 }] },
-      { k: 'sea', r: 'a small wave', i: [{ o: 'ribbon', pts: WAVE_PTS, closed: false, s: 'cyan', lw: 2.5 }, { o: 'wave', x: 250, y: 72, sc: 0.35, h: [[1, 40, 10, 0], [3, 20, 5, 4]], f: 'paper', s: 'ink' }] },
-      { k: 'title', r: title, i: [{ o: 'letters', x: 160, y: 42, tx: title, sz: 18, f: 'paper', s: 'ink', sh: [1.5, 1.5, 'cyan'] }] }] };
+  // The visible rows of the state: the cabin, and each node the state lists as alive. A node without its key is refused.
+  function filas() {
+    try { return M.estado(entrada); } catch (e) { return M.estado({ t: entrada.t, cabin: entrada.cabin, nodes: [] }); }
   }
 
   function draw() {
@@ -115,32 +106,26 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
     surface.width = Math.round(width * dpr); surface.height = Math.round(height * dpr);
     var g = surface.getContext('2d');
     g.setTransform(dpr, 0, 0, dpr, 0, 0);
-    g.clearRect(0, 0, width, height);
-    var scale = Math.min(1, (width / 1.2) / ANCHO);
-    Object.keys(TERRAINS).forEach(function (id) {
-      var t = TERRAINS[id];
-      if (!t.always && alive.indexOf(id) < 0) { return; }
-      var x = t.x * width - (ANCHO * scale) / 2, y = t.y * height - (ALTO * scale) / 2;
-      g.save(); g.translate(x, y); g.scale(scale, scale);
-      try { P.paint(g, B.compile(frame(t.name))); } catch (e) { /* the node stays off the map; the list says so */ }
+    var fit = Math.min(width / 480, height / 240);
+    var escena = M.mapa(entrada);
+    g.fillStyle = escena.paleta.cielo; g.fillRect(0, 0, width, height);
+    var cx = width / 2, cy = height / 2 + 14 * fit;
+    escena.nodos.forEach(function (nd) {
+      g.save();
+      g.translate(cx + nd.x * fit - M.ANCHO * M.BURBUJA * fit / 2, cy + nd.y * fit - M.ALTO * M.BURBUJA * fit / 2);
+      g.scale(M.BURBUJA * fit, M.BURBUJA * fit);
+      try { P.paint(g, B.compile(nd.frame)); } catch (e) { /* the frame is refused; the node stays off the map */ }
       g.restore();
     });
   }
 
   function buttons() {
     press.innerHTML = '';
-    ['cabin'].concat(alive).forEach(function (id) {
+    filas().forEach(function (row) {
       var b = doc.createElement('button');
-      b.type = 'button'; b.textContent = TERRAINS[id].name;
-      b.setAttribute('aria-pressed', String(id === selected));
-      b.addEventListener('click', function () {
-        selected = id; buttons();
-        // A visible transition: the surface fades and returns. With reduced motion the redraw is at once.
-        var quieto = raiz.matchMedia && raiz.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        if (quieto || !surface) { draw(); return; }
-        surface.style.opacity = '0.25';
-        raiz.setTimeout(function () { draw(); surface.style.opacity = '1'; }, 300);
-      });
+      b.type = 'button'; b.textContent = row.nombre;
+      b.setAttribute('aria-pressed', String(row.id === selected));
+      b.addEventListener('click', function () { selected = row.id; buttons(); draw(); });
       press.appendChild(b);
     });
   }
@@ -148,16 +133,25 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
   function render() {
     buttons();
     draw();
-    state.textContent = 'Nodes online: ' + alive.length + '. The tutorial cabin is the basic world.';
+    var vivos = filas().filter(function (row) { return row.id !== 'cabin'; }).length;
+    state.textContent = 'Nodes online: ' + vivos + '. The tutorial cabin is the basic world.';
   }
 
   // Only the two named nodes can appear, and only when the state file lists them as alive.
   function accept(data) {
     var nodes = data && Array.isArray(data.nodes) ? data.nodes : [];
-    alive = nodes.map(function (n) { return n && n.id; }).filter(function (id) { return id === 'atlantis' || id === 'risen'; });
+    entrada = {
+      t: data && Number.isInteger(data.t) ? data.t : 0,
+      cabin: data && data.cabin && typeof data.cabin === 'object' ? data.cabin : {},
+      nodes: nodes.filter(function (n) { return n && (n.id === 'atlantis' || n.id === 'risen'); })
+    };
+    if (selected !== 'cabin' && !entrada.nodes.some(function (n) { return n.id === selected; })) { selected = 'cabin'; }
   }
 
-  // The sound is the frame's own (docs/bubble-language.md, sound and h). An AudioContext is made only on the click.
+  // The cycle: a fixed step of t per second, unless reduced motion is on. The palette is a function of t alone.
+  function ciclo() { if (quieto) { return; } entrada.t += 1; draw(); }
+
+  // The sound is the selected frame's own (docs/bubble-language.md, sound and h). An AudioContext is made only on the click.
   var listen = doc.getElementById('listen'), listenState = doc.getElementById('listen-state');
   // The sound module is on demand: it loads on the first click, never on page load.
   function loadSound(then) {
@@ -171,7 +165,9 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
   if (listen) {
     listen.addEventListener('click', function () {
       loadSound(function (S) {
-        var result = S.sonify(frame(TERRAINS[selected].name));
+        var escena = M.mapa(entrada);
+        var nodo = escena.nodos.find(function (nd) { return nd.id === selected; }) || escena.nodos[0];
+        var result = S.sonify(nodo.frame);
         if (!result.ok) { listenState.textContent = /^NO_DATA/.test(result.cause) ? result.cause : 'NO_DATA: ' + result.cause; return; }
         var Ctx = raiz.AudioContext || raiz.webkitAudioContext;
         if (!Ctx) { listenState.textContent = 'NO_DATA: this browser has no audio output'; return; }
@@ -218,8 +214,9 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
   }
   render();
   raiz.addEventListener('resize', draw);
+  if (!quieto) { raiz.setInterval(ciclo, 1000); }
   if (raiz.fetch) {
-    raiz.fetch('/openworld/state.json', { cache: 'no-cache' })
+    raiz.fetch('/openworld/estado.json', { cache: 'no-cache' })
       .then(function (r) { return r.ok ? r.json() : null; })
       .then(function (d) { accept(d); render(); })
       .catch(function () { /* no state file: zero nodes, which is the default */ });

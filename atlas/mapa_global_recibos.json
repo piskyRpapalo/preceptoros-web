@@ -1,0 +1,141 @@
+{
+ "gate": "mapa-global",
+ "pasos_casos": "see stdout",
+ "limpio": {
+  "escenas": [
+   {
+    "escena": "A",
+    "t": 0,
+    "hash": "f44a93d7",
+    "hash2": "f44a93d7",
+    "igual": true
+   },
+   {
+    "escena": "A",
+    "t": 30,
+    "hash": "876c34e2",
+    "hash2": "876c34e2",
+    "igual": true
+   },
+   {
+    "escena": "A",
+    "t": 90,
+    "hash": "addafed7",
+    "hash2": "addafed7",
+    "igual": true
+   },
+   {
+    "escena": "A",
+    "t": 120,
+    "hash": "a837b172",
+    "hash2": "a837b172",
+    "igual": true
+   },
+   {
+    "escena": "B",
+    "t": 0,
+    "hash": "c8d55236",
+    "hash2": "c8d55236",
+    "igual": true
+   },
+   {
+    "escena": "B",
+    "t": 30,
+    "hash": "ec9a8bcb",
+    "hash2": "ec9a8bcb",
+    "igual": true
+   },
+   {
+    "escena": "B",
+    "t": 90,
+    "hash": "db7650ef",
+    "hash2": "db7650ef",
+    "igual": true
+   },
+   {
+    "escena": "B",
+    "t": 120,
+    "hash": "59bed4aa",
+    "hash2": "59bed4aa",
+    "igual": true
+   }
+  ],
+  "n2": true,
+  "sabotaje": "none",
+  "errores": [],
+  "recibo_estado_vivo": [],
+  "ancho": 480,
+  "alto": 240,
+  "n2_identical": true
+ },
+ "jitter": {
+  "escenas": [
+   {
+    "escena": "A",
+    "t": 0,
+    "hash": "f44a93d7",
+    "hash2": "a294b6cc",
+    "igual": false
+   },
+   {
+    "escena": "A",
+    "t": 30,
+    "hash": "876c34e2",
+    "hash2": "77216e36",
+    "igual": false
+   },
+   {
+    "escena": "A",
+    "t": 90,
+    "hash": "addafed7",
+    "hash2": "c4cc5cb2",
+    "igual": false
+   },
+   {
+    "escena": "A",
+    "t": 120,
+    "hash": "a837b172",
+    "hash2": "71cc5eeb",
+    "igual": false
+   },
+   {
+    "escena": "B",
+    "t": 0,
+    "hash": "c8d55236",
+    "hash2": "97f42d34",
+    "igual": false
+   },
+   {
+    "escena": "B",
+    "t": 30,
+    "hash": "ec9a8bcb",
+    "hash2": "3b33c110",
+    "igual": false
+   },
+   {
+    "escena": "B",
+    "t": 90,
+    "hash": "db7650ef",
+    "hash2": "2323b413",
+    "igual": false
+   },
+   {
+    "escena": "B",
+    "t": 120,
+    "hash": "59bed4aa",
+    "hash2": "08b2c69b",
+    "igual": false
+   }
+  ],
+  "n2": false,
+  "sabotaje": "jitter",
+  "errores": [],
+  "recibo_estado_vivo": [],
+  "ancho": 480,
+  "alto": 240,
+  "n2_identical": false
+ },
+ "clave": {
+  "error": "ERROR · orphan_visual_node: atlantis has no lexicon key"
+ }
+}
