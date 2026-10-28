@@ -49,6 +49,8 @@ jobs:
             node atlas/bubble_paint_casos.mjs
             node atlas/front_door_browser.mjs
             node atlas/egg_reload_browser.mjs
+            node atlas/map_zoom_browser.mjs
+            node atlas/map_zoom_casos.mjs --sabotages
             node atlas/bubble_bestiary_casos.mjs
             node atlas/bubble_icons_casos.mjs
             node atlas/bubble_letters_casos.mjs
