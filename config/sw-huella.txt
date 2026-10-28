@@ -1,3 +1,3 @@
 
-huella=e09cdf8ca9672252
-version=preceptoros-2026-17-abki
+huella=58ac56da53404134
+version=preceptoros-2026-17-abkm
