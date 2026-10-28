@@ -85,7 +85,9 @@ def sueltas():
     guia = ["get-the-app/"] if (PUBLICO / "get-the-app" / "index.html").is_file() else []
     # /aduana/ (Norte N2, 2026-10-26): crear un nodo, observante.
     aduana = ["aduana/"] if (PUBLICO / "aduana" / "index.html").is_file() else []
-    return sorted(raiz + cara + juego + guia + aduana)
+    # OpenWorld (NORTE 7 · PR 2, 2026-10-28): el mapa global y el chat; la cabana del tutorial siempre, nodos solo si estan vivos.
+    mundo = ["openworld/"] if (PUBLICO / "openworld" / "index.html").is_file() else []
+    return sorted(raiz + cara + juego + guia + aduana + mundo)
 
 
 def url(loc, alternativas=()):

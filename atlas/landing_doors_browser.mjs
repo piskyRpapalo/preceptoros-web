@@ -66,7 +66,7 @@ async function main() {
       plegado: !(document.querySelector('#web-app details.tech') || {}).open };
   })())`));
   ok(medida.burbujas && medida.puertas === 3, 'the three doors were not all drawn in bubble language');
-  ok(JSON.stringify(medida.enlaces) === JSON.stringify(['/play/', '/play/', null]), 'links changed: ' + medida.enlaces);
+  ok(JSON.stringify(medida.enlaces) === JSON.stringify(['/openworld/', '/play/', null]), 'links changed: ' + medida.enlaces);
   ok(JSON.stringify(medida.titulos) === JSON.stringify(['OpenWorld', 'Tutorial', 'Tools']), 'titles changed or gone: ' + medida.titulos);
   ok(medida.dibujos.every((n) => n > 2000), 'a bubble is blank: ' + medida.dibujos);
   ok(medida.pie === 'One language until the MVP: English. The old translated addresses lead here.', 'footer changed');
