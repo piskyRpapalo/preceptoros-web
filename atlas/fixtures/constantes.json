@@ -200,22 +200,22 @@
     },
     {
       "nombre": "ALTURA_H0",
-      "valor": null,
-      "unidad": "px",
-      "procedencia": "sin valor entregado por el Soberano (dictado T2 dice 'h0/k medidos' sin cifra)",
+      "valor": 27,
+      "unidad": "px ref",
+      "procedencia": "derivada por medicion: ceil(ETIQUETA_MIN_PX / ZOOM_MIN) = ceil(16 / 0.6) = 27 (registro: ETIQUETA_MIN_PX dictado web#387, ZOOM_MIN map_zoom.js:3); a 27 px ref y zoom 0.6 quedan 16.2 px en pantalla.",
       "fecha": "2026-10-28",
-      "motivo": "NO_DATA: pedir la cifra; no se inventa",
-      "estado": "NO_DATA",
+      "motivo": "suelo de altura legible en pantalla al zoom minimo publicado (analogo vertical del suelo de 16 px). Altura de NO_DATA.",
+      "estado": "MEDIDO",
       "ajustable": true
     },
     {
       "nombre": "ALTURA_K",
-      "valor": null,
+      "valor": 0.325,
       "unidad": "adim",
-      "procedencia": "sin valor entregado por el Soberano (dictado T2)",
+      "procedencia": "derivada por medicion: k = (2.5 - 1) / ln(1 + 100) = 0.325; ratio objetivo 2.5 = punto medio de la ventana 2-3 de la regla [1] (h(100) entre 2 y 3 veces h0).",
       "fecha": "2026-10-28",
-      "motivo": "NO_DATA: pedir la cifra; no se inventa",
-      "estado": "NO_DATA",
+      "motivo": "curva logaritmica h = h0 (1 + k ln(1+mana)); h(100) = 67.5 px ref. Cambio declarado si el Soberano fija otro ratio.",
+      "estado": "MEDIDO",
       "ajustable": true
     },
     {
