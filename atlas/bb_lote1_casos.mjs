@@ -25,11 +25,14 @@ function xorshiftRef(semilla, n) {
   }
   return salida;
 }
-// Referencia independiente del hash espacial (producto en BigInt, xor en 32 bits).
-function hashRef(a, b) {
+// Referencia independiente del hash CANON (a ^ b*73856093 ^ c*19349663, luego xorshift 13,17,5), en BigInt.
+function hashRef(a, b, c = 0) {
   const M = (1n << 32n) - 1n;
-  const pa = (BigInt(a) * 73856093n) & M, pb = (BigInt(b) * 19349663n) & M;
-  return Number((pa ^ pb) & M);
+  let x = (BigInt(a) & M) ^ ((BigInt(b) * 73856093n) & M) ^ ((BigInt(c) * 19349663n) & M);
+  x = (x ^ ((x << 13n) & M)) & M;
+  x = (x ^ (x >> 17n)) & M;
+  x = (x ^ ((x << 5n) & M)) & M;
+  return Number(x);
 }
 
 caso('xorshift32 coincide con la referencia BigInt en 1000 pasos (semilla 1 y 0xDEADBEEF)', () => {
@@ -58,16 +61,16 @@ caso('uniforme cae en [0,1) y su media esta cerca de 0.5 (10000 muestras)', () =
   return Math.abs(media - 0.5) < 0.01 || `media ${media.toFixed(4)}`;
 });
 
-caso('hash espacial coincide con la referencia BigInt en una rejilla 64x64', () => {
-  for (let a = -32; a < 32; a++) for (let b = -32; b < 32; b++) {
-    if (D.hash2(a, b) !== hashRef(a, b)) return `celda (${a},${b}): ${D.hash2(a, b)} != ${hashRef(a, b)}`;
+caso('hash canon coincide con la referencia BigInt en una rejilla 64x64 (c=0 y c=7)', () => {
+  for (let a = 0; a < 64; a++) for (let b = 0; b < 64; b++) for (const c of [0, 7]) {
+    if (D.hash(a, b, c) !== hashRef(a, b, c)) return `celda (${a},${b},${c}): ${D.hash(a, b, c)} != ${hashRef(a, b, c)}`;
   }
   return true;
 });
 
-caso('hash espacial casi no colisiona en una rejilla 100x100 (>= 99.9% distintos)', () => {
+caso('hash canon casi no colisiona en una rejilla 100x100 (>= 99.9% distintos)', () => {
   const vistos = new Set(); let n = 0;
-  for (let a = 0; a < 100; a++) for (let b = 0; b < 100; b++) { vistos.add(D.hash2(a, b)); n++; }
+  for (let a = 0; a < 100; a++) for (let b = 0; b < 100; b++) { vistos.add(D.hash(a, b, 0)); n++; }
   const frac = vistos.size / n;
   return frac >= 0.999 || `solo ${(frac * 100).toFixed(2)}% distintos`;
 });
