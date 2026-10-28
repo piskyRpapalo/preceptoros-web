@@ -1,0 +1,13 @@
+import assert from 'node:assert/strict';
+import { INITIAL, step, replay } from './first_journey.mjs';
+const events = ['key_ready', 'lighthouse_reached', 'fight_requested'];
+assert.deepEqual(replay(events), replay(events));
+assert.equal(replay(events).state.stage, 'pending');
+assert.equal(replay(events).cause, 'fight_receipt_not_measured');
+assert.equal(replay(['fight_requested']).cause, 'unexpected_observation');
+assert.equal(replay(['key_ready', 'fight_requested']).state.stage, 'lighthouse');
+assert.equal(replay([...events, 'fight_requested']).cause, 'invalid_or_complete_state');
+assert.equal(replay(null).cause, 'events_not_array');
+assert.deepEqual(INITIAL, { stage: 'key', events: [] });
+assert.equal(step(INITIAL, 'lighthouse_reached').state, INITIAL);
+console.log('PASS: ordered observations, refusal, no invented fight receipt');
