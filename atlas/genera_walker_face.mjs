@@ -11,6 +11,22 @@ const VIVOS = { Mesa: { estado: 'LIVE' }, Luna: { estado: 'PROPUESTA' }, Claude:
 const TICKS = 300;
 const hist = T4.simula(VIVOS, TICKS);
 
+// Primer viaje (atlas/fixtures/first_journey.mjs): secuencia declarada y VERIFICADA contra el fixture.
+const J = await import('./fixtures/first_journey.mjs');
+const EVENTOS = ['key_ready', 'lighthouse_reached', 'egg_summoned', 'egg_hatched', 'fight_requested'];
+const ETIQUETAS_J = ['Key', 'Lighthouse', 'Egg', 'Hatch', 'Fight', 'Result'];
+{
+  let st = J.INITIAL;
+  for (const ev of EVENTOS) {
+    const r = J.step(st, ev);
+    if (!r.ok) throw new Error('NO_DATA · el fixture rechaza ' + ev + ': ' + r.cause);
+    st = r.state;
+  }
+  const fin = J.replay(EVENTOS);
+  if (!fin.ok || fin.state.stage !== 'pending' || fin.cause !== 'fight_receipt_not_measured') throw new Error('NO_DATA · el replay no termina en pending');
+}
+const JORNADA = { etiquetas: ETIQUETAS_J, eventos: EVENTOS, causaFinal: 'fight_receipt_not_measured' };
+
 // Posiciones compactas: por tick, "x,y" de cada carril separados por espacio.
 const pasos = hist.map((f) => f.map((c) => c.x + ',' + c.y).join(' ')).join('|');
 const estados = T4.CARRILES.map((c) => ({ carril: c, estado: VIVOS[c].estado }));
@@ -49,6 +65,18 @@ th, td { border-bottom:1px solid var(--tinta); padding:.3em .4em; text-align:lef
 <thead><tr><th>Body</th><th>State</th><th>Cell (x, y)</th></tr></thead>
 <tbody id="tabla"></tbody>
 </table>
+<section aria-labelledby="jh">
+<h2 id="jh">First journey</h2>
+<p class="muted">Five ordered steps from the key to the fight. Each press records one observation. The fight result stays unmeasured.</p>
+<p><button type="button" id="jig">Next step</button> <span id="jest" aria-live="polite"></span></p>
+<svg id="jruta" role="img" aria-labelledby="jdesc"></svg>
+<p id="jdesc" class="muted">Six stages from Key to Result. The highlighted stage is the current one. Text alternative: the table below lists each stage and its state.</p>
+<table aria-label="Journey stages and state">
+<thead><tr><th>Stage</th><th>State</th></tr></thead>
+<tbody id="jtabla"></tbody>
+</table>
+<p class="muted" id="jcausa"></p>
+</section>
 <footer class="honest-footer"><p class="muted">Positions come from the walker fixture (t4_caminante.mjs, 300 ticks). Nothing is measured in the browser. No external requests. Built by atlas/genera_walker_face.mjs.</p></footer>
 </main>
 <script src="/assets/pwa.js"></script>
@@ -85,6 +113,36 @@ function dibuja() {
 }
 document.getElementById('paso').addEventListener('click', function () { t = (t + 1) % PASOS.length; dibuja(); });
 dibuja();
+var JORNADA = ${JSON.stringify(JORNADA)};
+var JET = 0;
+function jiso(i) { return { sx: i * 56, sy: i * 28 }; }
+function jdibuja() {
+  var s = '';
+  JORNADA.etiquetas.forEach(function (etq, i) {
+    var p = jiso(i), activa = i === JET, hecha = i < JET;
+    var rel = activa ? 'var(--acento)' : 'var(--tinta)';
+    if (i > 0) s += '<line x1="' + jiso(i-1).sx + '" y1="' + jiso(i-1).sy + '" x2="' + p.sx + '" y2="' + p.sy + '" stroke="var(--tinta)" stroke-width="2"/>';
+    s += '<circle cx="' + p.sx + '" cy="' + p.sy + '" r="' + (activa ? 12 : 9) + '" fill="' + (hecha ? 'var(--tinta)' : 'var(--papel)') + '" stroke="' + rel + '" stroke-width="' + (activa ? 3 : 2) + '"/>';
+    s += '<text x="' + p.sx + '" y="' + (p.sy + 28) + '" text-anchor="middle" font-size="11" fill="var(--tinta)">' + etq + '</text>';
+  });
+  var max = jiso(JORNADA.etiquetas.length - 1);
+  var svg = document.getElementById('jruta');
+  svg.setAttribute('viewBox', '-30 -30 ' + (max.sx + 60) + ' ' + (max.sy + 70));
+  svg.innerHTML = s;
+  document.getElementById('jest').textContent = 'Stage ' + (JET + 1) + ' of ' + JORNADA.etiquetas.length + ': ' + JORNADA.etiquetas[JET];
+  document.getElementById('jtabla').innerHTML = JORNADA.etiquetas.map(function (etq, i) {
+    var est = i < JET ? 'done' : (i === JET ? 'current' : 'waiting');
+    if (i === JORNADA.etiquetas.length - 1 && JET === JORNADA.etiquetas.length - 1) est = 'NO_DATA';
+    return '<tr><td>' + etq + '</td><td>' + est + '</td></tr>';
+  }).join('');
+  document.getElementById('jig').disabled = JET >= JORNADA.eventos.length;
+  document.getElementById('jcausa').textContent = JET >= JORNADA.eventos.length ? 'Cause: ' + JORNADA.causaFinal + '.' : '';
+}
+document.getElementById('jig').addEventListener('click', function () {
+  if (JET < JORNADA.eventos.length) { JET = JET + 1; }
+  jdibuja();
+});
+jdibuja();
 </script>
 </main>
 </body>
