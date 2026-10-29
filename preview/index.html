@@ -115,12 +115,12 @@ function rombo(x, y, relleno, borde){
 }
 function cuerpo(x, y, etiqueta, estado){
   const p = iso(x,y), r = 9;
-  const sello = estado === 'HITL' ? `<text x="${p.sx}" y="${p.sy - 2}" text-anchor="middle" font-size="12" font-weight="700" fill="${COLORES.acento}">?</text>` : '';
+  const marca = estado === 'HITL' ? '?' : etiqueta[0];
+  const color = estado === 'HITL' ? COLORES.acento : COLORES.tinta;
   const trazo = estado === 'HITL' ? `stroke-dasharray="4 3"` : '';
   return `<g role="img" aria-label="${etiqueta}, estado ${estado}">`
     + `<circle cx="${p.sx}" cy="${p.sy - 6}" r="${r}" fill="${COLORES.papel}" stroke="${COLORES.tinta}" stroke-width="2" ${trazo}/>`
-    + sello
-    + `<text x="${p.sx}" y="${p.sy - 3}" text-anchor="middle" font-size="9" font-weight="700" fill="${COLORES.tinta}">${etiqueta[0]}</text>`
+    + `<text x="${p.sx}" y="${p.sy - 3}" text-anchor="middle" font-size="9" font-weight="700" fill="${color}">${marca}</text>`
     + `</g>`;
 }
 
@@ -135,7 +135,7 @@ function pintaT4(){
   const svgEl = document.getElementById('t4-svg');
   svgEl.setAttribute('viewBox', viewBoxIso());
   svgEl.innerHTML = svg;
-  const espera = f.filter((c,i)=> tick>0 && c.x===D.hist4[tick-1][i].x && c.y===D.hist4[tick-1][i].y).map((c,i)=>D.carriles[i]);
+  const espera = f.flatMap((c,i)=> tick>0 && c.x===D.hist4[tick-1][i].x && c.y===D.hist4[tick-1][i].y ? [D.carriles[i]] : []);
   document.getElementById('t4-estado').textContent = `Tick ${tick} de ${D.hist4.length-1} · en espera este tick: ${espera.length ? espera.join(', ') : 'ninguno'}`;
 }
 document.getElementById('t4-paso').addEventListener('click', ()=>{ tick = Math.min(tick+1, D.hist4.length-1); pintaT4(); });
