@@ -339,10 +339,10 @@ class Estructura(unittest.TestCase):
         # perfil: se enlaza desde la app y desde fuera, y una URL que abre la
         # portada y hace scroll hasta un bloque no es la pagina de nadie.
         #
-        # Y sigue sin entrar sola la decima.
+        # Wave Army face commissioned in buzon #30 ·6489884378: ten content pages.
         paginas = paginas_de_contenido()
-        self.assertLessEqual(len(paginas), 9,
-            "mas de 9 paginas de contenido: " + ", ".join(p.name for p in paginas))
+        self.assertLessEqual(len(paginas), 10,
+            "more than 10 content pages: " + ", ".join(p.name for p in paginas))
 
     def test_la_tarjeta_social_apunta_a_algo_que_existe(self):
         """og:image, og:url y el favicon, comprobados contra el disco.
@@ -1388,6 +1388,11 @@ class PWA(unittest.TestCase):
 class Paginas(unittest.TestCase):
 
     def test_todas_las_paginas_tienen_pie_honesto(self):
+        command = ["node", "atlas/wave_army_face_casos.mjs"]
+        green = subprocess.run(command, cwd=RAIZ, capture_output=True, text=True)
+        self.assertEqual(green.returncode, 0, green.stderr)
+        red = subprocess.run(command + ["--sabotage"], cwd=RAIZ, capture_output=True, text=True)
+        self.assertNotEqual(red.returncode, 0, "changed-state sabotage must be detected")
         # Las portadas salieron (mudanza b1, 2026-10-11): ya no son paginas de contenido, son el juego.
         for p in paginas_de_contenido():
             if p.name == "index.html":

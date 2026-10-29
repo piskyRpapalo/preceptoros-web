@@ -1,0 +1,32 @@
+import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
+import { readFileSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
+import { squad } from './fixtures/wave_army_face.mjs';
+const digest = value => createHash('sha256').update(value).digest('hex');
+const a = squad(), b = squad();
+assert.equal(JSON.stringify(a), JSON.stringify(b));
+assert.equal(a.length, 4);
+assert.equal(new Set(a.map(row => row.cell.join(','))).size, 4);
+for (const row of a) {
+  assert.ok(Buffer.byteLength(JSON.stringify(row)) < 1024);
+  assert.equal(row.points.length, 64);
+  assert.ok(row.points.every(p => p.length === 2 && p.every(Number.isFinite)));
+}
+const changed = structuredClone(a);
+changed[0].points[0][0] += 1;
+assert.notEqual(digest(JSON.stringify(changed)), digest(JSON.stringify(a)));
+const target = new URL('../public/face/army.html', import.meta.url);
+const prior = readFileSync(target);
+execFileSync(process.execPath, ['atlas/generate_wave_army_face.mjs'], {stdio:'ignore'});
+assert.deepEqual(readFileSync(target), prior, 'generated page must match fixture');
+const text = prior.toString('utf8');
+assert.ok(text.includes('class="honest-footer"'));
+assert.ok(text.includes('/assets/pwa.js'));
+assert.ok(text.includes('/manifest.webmanifest'));
+assert.ok(text.includes('/assets/mark.svg'));
+assert.ok(readFileSync(new URL('../public/sw-listas.js', import.meta.url), 'utf8').includes("'/face/army.html'"));
+assert.ok(readFileSync(new URL('../public/openworld/index.html', import.meta.url), 'utf8').includes('href="/face/army.html"'));
+assert.ok(!/https?:\/\//i.test(text));
+if (process.argv.includes('--sabotage')) assert.equal(digest(JSON.stringify(changed)), digest(JSON.stringify(a)));
+console.log('PASS: seeded fixture, row sizes, changed-state detection and page contract');
