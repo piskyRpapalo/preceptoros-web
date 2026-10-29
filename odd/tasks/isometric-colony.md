@@ -101,6 +101,8 @@ Fidelity to the eyes of the carbon and to the understanding of the orchestrators
   - NO_DATA · mana of the tutorial cabin: no measurement source; shown as NO_DATA.
 - Standing signature: the search was done against the PR #387 comments (the Sovereign's mandate of 2026-10-28, evening, naming the three nodes and the coinage of `mana`) and against the repo's seal and lexicon rules. Both are covered; no other signature is needed for this slice. Buildings (IC4) are NOT in this slice and wait for the Sovereign's piece FIRMO.
 
+- 2026-10-29 (IC3, branch `haiku/isometric-catalogo-ic3-20261029`): the catalogue core in `atlas/puros/catalogo_iso.js` (pure UMD, not served). Each living row of the state becomes one bubble-language frame, sorted by id; the kinds are six lexicon keys (`sprite.cabin`, `risen`, `sea`, `fleet`, `tower`, `building`) with a fixed wave table; a kind without a key or a row without id is refused as `orphan_visual_node`; a value not measured (whole 0-100 only) is NO_DATA with its cause and does not sound; a `sintetico` row says SYNTHETIC; a `vivo: false` row is not drawn. Evidence: `atlas/puros/catalogo_iso_casos.mjs` 12/12 (sabotage: unknown kind, missing id, out-of-range value, frame over 1,024 B, Math.random/Date/fetch grep). Not served: no change under `public/`, so no SW VERSION bump. IC4 (buildings, birth growth) waits for the Sovereign's piece FIRMO.
+
 ## Next step
 
 The Sovereign's piece FIRMO on the exact head of the global-map PR, after he sees `atlas/global_map_contact_sheet.png`. That FIRMO releases IC4 (the first buildings). Codex's IC1/IC2 later replace the stand-in projection.
