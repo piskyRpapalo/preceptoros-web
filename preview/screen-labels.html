@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Screen-space names · fixture</title>
+<style>
+*{box-sizing:border-box} body{font:16px/1.5 system-ui,sans-serif;background:#f4efe3;color:#1a1a1a;margin:1rem}
+main{max-width:900px;margin:auto} button,input{font:inherit} input{accent-color:#c2410c} button{min-height:44px;min-width:44px} button:focus-visible,input:focus-visible{outline:3px solid #c2410c;outline-offset:2px}
+#scene{position:relative;width:100%;height:360px;border:2px solid #1a1a1a;overflow:hidden} #terrain{position:absolute;inset:0;width:100%;height:100%}
+.name{position:absolute;transform:translate(-50%,-50%);background:#f4efe3;color:#1a1a1a;border:2px solid #1a1a1a;padding:0 8px;white-space:nowrap;font-size:16px}
+</style></head><body><main><h1>Screen-space names · fixture</h1>
+<p>Three synthetic nodes. Labels and controls stay in screen space; the ground changes scale. Status is fixture data. Labels at the scene edge indicate an off-screen node.</p>
+<label for="zoom">Zoom <output id="value">1.0</output></label> <input id="zoom" type="range" min="0.6" max="3" step="0.1" value="1">
+<div id="scene" aria-label="Synthetic colony map"><svg id="terrain" aria-hidden="true"></svg></div>
+<p id="result" role="status">Choose a node to inspect its fixture status.</p>
+<script src="screen-label-core.js"></script><script>
+'use strict';
+const nodes=[{name:'Cabin',q:-2,r:-4,status:'fixture'}, {name:'the Risen',q:2,r:0,status:'fixture'}, {name:'Atlantis',q:0,r:7,status:'fixture'}];
+const scene=document.getElementById('scene'), terrain=document.getElementById('terrain'), slider=document.getElementById('zoom');
+const buttons=nodes.map(n=>{const b=document.createElement('button'); b.type='button'; b.className='name'; b.textContent=n.name; b.setAttribute('aria-label',n.name+', '+n.status); b.onclick=()=>{document.getElementById('result').textContent=n.name+': '+n.status;}; scene.appendChild(b); return b;});
+function draw(){const z=ScreenLabels.clamp(Number(slider.value)); document.getElementById('value').textContent=z.toFixed(1); const origin={x:scene.clientWidth/2,y:scene.clientHeight/2};
+  terrain.innerHTML='<g transform="translate('+origin.x+' '+origin.y+') scale('+z+')" fill="none" stroke="#1a1a1a" stroke-width="1">'+Array.from({length:13},(_,i)=>{let n=(i-6)*32;return '<path d="M '+(n-192)+' -96 L '+(n+192)+' 96 M '+(n-192)+' 96 L '+(n+192)+' -96"/>';}).join('')+'</g>';
+  nodes.forEach((n,i)=>{const p=ScreenLabels.place(n.q,n.r,z,origin); const b=buttons[i], halfW=b.offsetWidth/2, halfH=b.offsetHeight/2; const x=Math.max(halfW,Math.min(scene.clientWidth-halfW,p.x)); const y=Math.max(halfH,Math.min(scene.clientHeight-halfH,p.y)); b.style.left=x+'px'; b.style.top=y+'px'; b.dataset.edge=String(x!==p.x || y!==p.y); b.title=b.dataset.edge==='true' ? 'Outside the visible scene' : ''; b.setAttribute('aria-label',n.name+', '+n.status+(b.title ? ', '+b.title : '')); }); }
+slider.addEventListener('input',draw); window.addEventListener('resize',draw); draw();
+</script></main></body></html>
