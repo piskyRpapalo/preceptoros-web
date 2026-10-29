@@ -19,7 +19,7 @@ const JUEGO = [
   '/game/comic_accents.js', '/game/bubble_language.js', '/game/bubble_light.js', '/game/bubble_bestiary.js',
   '/game/bubble_world.js', '/game/bubble_letters.js', '/game/bubble_icons.js', '/game/local_app_bridge.js',
   '/game/tutorial-fases.css', '/face/', '/get-the-app/', '/aduana/', '/face/basic.html', '/face/atlantis.html',
-  '/face/zombie.html', '/face/face.css', '/face/face.js', '/face/face_army.js', '/face/face_battle.js',
+  '/face/zombie.html', '/face/army.html', '/face/face.css', '/face/face.js', '/face/face_army.js', '/face/face_battle.js',
   '/face/face_canon.css', '/face/face_eggs.js', '/face/face_fight.js', '/face/face_fight_stage.js',
   '/face/face_hero.js', '/face/face_hud.js', '/face/face_paint.js', '/face/face_panel.js',
   '/face/face_terminal.js', '/face/face_tutorial.js', '/face/face_views.css', '/face/face_workshop.js',
