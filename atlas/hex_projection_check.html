@@ -1,0 +1,21 @@
+<!doctype html><meta charset="utf-8"><title>Hex projection check</title>
+<canvas id="canvas" width="256" height="160"></canvas><pre id="receipt"></pre>
+<script src="../public/game/vector_contract.js"></script><script src="puros/hex_projection.js"></script>
+<script>
+(function () {
+  'use strict';
+  var v={v:'preceptoros.vector/1',c:null,r:null,k:[0,0,0,0,0],p:null,t:null,e:[],l:[],n:[],z:null,q:[],g:null,nd:{c:'no data',r:'no data',e:'no data',l:'no data',z:'no data'}};
+  if (!AtlasVectorContract.valida(v)) throw Error('invalid vector');
+  var c=document.getElementById('canvas'), g=c.getContext('2d');
+  g.fillStyle='#17131f'; g.fillRect(0,0,c.width,c.height);
+  // Synthetic cells are explicit fixture input; vector/1 does not provide colony rows.
+  [[0,0],[1,0],[1,-1],[0,-1],[-1,0],[-1,1],[0,1]].forEach(function (cell) {
+    var p=HexProjection(cell[0],cell[1]);
+    g.beginPath(); [[-32,0],[-16,-12],[16,-12],[32,0],[16,12],[-16,12]].forEach(function (v,i) {
+      if (!i) g.moveTo(128+p.x+v[0],80+p.y+v[1]); else g.lineTo(128+p.x+v[0],80+p.y+v[1]);
+    });
+    g.closePath(); g.strokeStyle='#e2d8b7'; g.stroke();
+  });
+  document.getElementById('receipt').textContent=JSON.stringify({vector:v,pixels:Array.from(g.getImageData(0,0,c.width,c.height).data)});
+})();
+</script>
