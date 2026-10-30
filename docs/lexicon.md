@@ -1,6 +1,6 @@
 # THE LEXICON — Official Names of PreceptorOS
 
-**Status:** PROPOSAL by the Command Desk · REQUIRES_SIGN-OFF of the Sovereign · drafted 2026-10-18 (round 306), sources measured 2026-10-18 · extended 2026-10-20 (sections I–J), sources measured 2026-10-20 · destination: `docs/lexicon.md` in preceptoros-web, under the Renaming Law.
+**Status:** PROPOSAL by the Command Desk · REQUIRES_SIGN-OFF of the Sovereign · drafted 2026-10-18 (round 306), sources measured 2026-10-18 · extended 2026-10-20 (sections I–J), sources measured 2026-10-20 · extended 2026-10-30 (section C2, one-map coins) · destination: `docs/lexicon.md` in preceptoros-web, under the Renaming Law.
 
 **Purpose (declared by the Sovereign):** the professional and literary evolution of the Sovereign. Every term below carries his work and his voice; the names are chosen to be readable by humans and by the preceptors in a single pass.
 
@@ -90,6 +90,21 @@ The Sovereign signed these names in <private-issue#52> and <private-issue#54>. T
 | the Trunk | el tronco | The web as one object: one served surface, one action register, and the preceptoros.bubble/1 contract. Worlds are WORLDS, never branches. | FIRMO · <private-issue#54> |
 | the front door | la puerta principal / portada | The direct front page drawn with bubble_editor and bubble_paint; four native actions keep tutorial, game entry, local key and Questions. | FIRMO · web#272 · G3 |
 | WavesCraft | incubadora del bosque | The local wave workshop and incubation view; the served UI already uses this name. | Alphabet PASS · FIRMO with G5a |
+## C2 · The one-map coins (decrees 2026-10-30)
+
+Signed into law by the Sovereign's decrees of 2026-10-30 (buzon#30 ·6524386655 ·6524440790 ·6524731435 ·6522243791 ·6525195489); the law lives in [canon the one map](canon-the-one-map.md).
+
+| Official name | Replaces | Meaning | Status |
+|---|---|---|---|
+| the one map | el mapa único / mapa principal | The single live map the web exposes (preceptoros.org/openworld); it carries ALL the data of the system. There is no second map — everything else is a test. Avoid: "main map", "colony map". | decree ·6524386655 |
+| heartbeat | latido | A node's published beat: LIVE 300 s → STALE, dated. Only Customs publishes beats; the web only reads. Avoid: "ping", "keepalive". | decree D7 ·6524731435 |
+| cell | celda | One node takes one cell, named by the canonical pseudonym of the fleet census. Avoid: "slot". | decree D7 ·6524731435 |
+| the terminal | la terminal | The user's own chat console; its color follows the node they play on, modifiable in their own app. Avoid: "skin". | decree ·6522236505 |
+| the panel | el panel | The terminal adapted to Android over the one map: the map is the always-live background; the chatbot sits at the bottom (reference: the Risen's yellow interface). | decree ·6525195489 |
+| the station | la estación | The rack of today: the sovereign node of the fleet, with its own beat. | decree ·6523194194 |
+
+*Amendment · Customs (la aduana), decree D7 ·6524731435:* Customs is also the live worker that receives beats and publishes the state — the single publisher; the web only reads. The PR-gate meaning stands unchanged.
+
 ## D · Never confuse
 
 - **Ledger vs Register** — rounds log vs the rack's signed record.

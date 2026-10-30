@@ -1,4 +1,4 @@
-const VERSION = 'preceptoros-2026-17-aby';
+const VERSION = 'preceptoros-2026-17-ao';
 const SHELL = 'shell-' + VERSION;
 const OBRA = 'obra-' + VERSION;
 
@@ -36,7 +36,6 @@ self.addEventListener('activate', e => {
         ks.filter(k => k !== SHELL && k !== OBRA).map(k => caches.delete(k))))
       .then(() => self.clients.claim()));
 });
-
 
 const SIN_RED = {
   es: ['Sin conexión', 'Esta página no está en tu caché todavía.',
@@ -153,7 +152,6 @@ self.addEventListener('fetch', e => {
   
   if (url.pathname.endsWith('.json') &&
       CONTENIDO_JSON.indexOf(url.pathname) < 0) return;
-
   if (req.mode === 'navigate') { e.respondWith(navegacion(e)); return; }
   e.respondWith(estatico(e));
 });
