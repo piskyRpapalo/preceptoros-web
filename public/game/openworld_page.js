@@ -170,7 +170,6 @@
         var answer = R.responde(text, null);
         line('', answer.ok ? answer.texto : answer.causa);
       });
-      });
     });
   }
   render();
