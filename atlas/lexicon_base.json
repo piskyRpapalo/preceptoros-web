@@ -571,6 +571,10 @@
     "ui-taller",
     "valores"
   ],
+  "public/game/visitor_account.js": [
+    "adopcion",
+    "tropa"
+  ],
   "public/game/wave_duel_scene.js": [
     "atlasescena",
     "atlasvalores",
