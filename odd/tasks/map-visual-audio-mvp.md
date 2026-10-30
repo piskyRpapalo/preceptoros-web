@@ -1,7 +1,7 @@
 # map-visual-audio-mvp
 
 Date: 2026-10-31
-Law: the Mesa's approval of this proposal (buzon#30, 2026-10-30: «APRUEBO TU PROPUESTA: declara el PLANO declare-only ... Propose-only: nada se cocina antes de plano + FIRMO»); decree ·6524501049 (the whole truth reaches the single map); decree ·6524386655 and addendo ·6524440790 (one map, the web is the only reality, the app only connects); ideas13oct sections 2 (the map is the node; each cell shows its rules before entering; the grid runs locally with the rack off), 16 (chat sonoro: the state lives in the chat as text; voice out is local TTS, NO_DATA without a local voice), 18 (the contract: frames under 1 KB with colour, coordinates, sound and time), 20 (audio mode: eyes-free; the voice input is an honest declared risk).
+Law: the Mesa's approval of this proposal (buzon#30, 2026-10-30: «APRUEBO TU PROPUESTA: declara el PLANO declare-only ... Propose-only: nada se cocina antes de plano + FIRMO»); the Sovereign's decree on this plan (buzon#30 Mesa message, 2026-10-30): MV-D1 and MV-D2 below, and the canon §18 compact state; decree ·6524501049 (the whole truth reaches the single map); decree ·6524386655 and addendo ·6524440790 (one map, the web is the only reality, the app only connects); ideas13oct sections 2 (the map is the node; each cell shows its rules before entering; the grid runs locally with the rack off), 16 (chat sonoro: the state lives in the chat as text; voice out is local TTS, NO_DATA without a local voice), 18 (the contract: frames under 1 KB with colour, coordinates, sound and time), 20 (audio mode: eyes-free; the voice input is an honest declared risk).
 
 ## Objective
 
@@ -27,8 +27,8 @@ Out of scope: voice input (the microphone). It is a declared risk (section 20), 
 
 ## Decisions to take (open, with the Sovereign's call)
 
-- **MV-D1 · the mask**: fixed window with no scroll on every width (the examples' instruction), or fixed on desktop and scrolling only below 360 px (the terminal piece, merged in #423). Recommendation: keep the scroll below 360 px and say so on the page.
-- **MV-D2 · the voice**: speech on request only (a button), never on load; the reader chooses the frame. Recommendation: on request.
+- **MV-D1 · DECIDED by the Sovereign: the map is what moves.** The map is always live as the background of the page. The panel is a terminal adapted to Android, with the chat at the bottom. Reference (read on the Doggee screen, the Risen page `/face/zombie.html`, 2026-10-30): a live scene fills the top; below it a dark terminal with yellow text, a row of icon buttons, the tabs ECHOES, CHAT and RADIO, and the preceptor's chat. Adapt the layout and the behaviour; copy no asset and no text from the reference.
+- **MV-D2 · DECIDED by the Sovereign: the local voice also speaks on load.** The voice is the device's own TTS, with no network; it is silent with a NO_DATA cause when the device has no voice. A way to stop it is always visible (44 px, keyboard).
 - **MV-D3 · the sound of the cabin**: keep the cabin's waves as the base sound of the tutorial, as today.
 
 ## Checklist (one piece = one PR, FIRMO per piece)
@@ -40,6 +40,8 @@ Out of scope: voice input (the microphone). It is a declared risk (section 20), 
 - [ ] MV-5 · captures on doggee against `preceptoros.org`: before deploy (declared as draft) and after deploy (definitive), on the same seal.
 
 ## Constraints
+
+- Canon §18 (decree ·6525195489): the published state `estado.json` stays compact, under 1 KiB. Measured today: 595 B, one line, evidence kept in the source (`odd/data/nodes.json`).
 
 - Frames under 1,024 UTF-8 bytes, one sentence per atom, a declared sound (`NO_DATA` with cause when none), a time (`t`) and coordinates where they exist (section 18).
 - No network on load; no random numbers, no clock in the render path.
@@ -53,7 +55,7 @@ Measured in main (`256f1a4`): the map panel is `#map` with `overflow` set by the
 
 ## Standing signature
 
-Required: FIRMO of this plan, then FIRMO per piece. The mask decision (MV-D1) and the voice policy (MV-D2) need the Sovereign's call before MV-1 and MV-4. Search done: `odd/tasks/examples-to-live-map.md`, `odd/tasks/game-pieces.md`, ideas13oct secs. 2, 16, 18 and 20, the door and its sound code on main.
+Required: FIRMO of this plan, then FIRMO per piece. MV-D1 and MV-D2 are decided by the Sovereign (decree of 2026-10-30). Search done: `odd/tasks/examples-to-live-map.md`, `odd/tasks/game-pieces.md`, ideas13oct secs. 2, 16, 18 and 20, the door and its sound code on main.
 
 ## Methodology relief
 
@@ -65,4 +67,4 @@ None.
 
 ## Next step
 
-The Sovereign's call on MV-D1 and MV-D2, then FIRMO of the plan, then MV-1.
+FIRMO of this plan (MV-D1 and MV-D2 are already decided by the Sovereign), then MV-1.
