@@ -77,3 +77,15 @@ The worker answers `202 {estado:"encolado", recibidos:1, paquete:{esquema:"prece
 3. Web: `ENDPOINT` in `node_reception_contract.js` changes in the same PR as the test that
    pins it (`tests/node_reception_contract.test.mjs`).
 4. A separate Sovereign FIRMO for deployment. Nothing deploys from this document.
+
+## 7. Re-measurement · 2026-10-30
+
+The deployment findings above are the historical baseline from 2026-10-25 and no
+longer describe the current service. The Mesa reports the Worker deployment and D1
+binding live. A fresh read-only probe measured `/health` as
+`{"estado":"vivo","version":"preceptoros.aduana/2"}` and `GET /api/v1/latidos` as
+HTTP 200. Its state was `NO_DATA` with cause `identidades_canonicas_no_configuradas`,
+with zero published nodes and buildings. The service is therefore deployed, while no
+canonical heartbeat identity is yet published. This probe does not establish that
+`schema.sql` has been imported or that a sender credential, timer, or first heartbeat
+is active. See `odd/tasks/heartbeat-state-writer.md` for the proposed web integration.
