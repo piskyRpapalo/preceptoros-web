@@ -24,6 +24,10 @@ jobs:
         with:
           node-version: '22'
       - run: python -m pip install --disable-pip-version-check jsonschema
+      - name: Preflight rapido (cierre)
+        run: |
+          python3 test_web.py
+
       - name: Same tree, two complete passes
         id: gates
         shell: bash
