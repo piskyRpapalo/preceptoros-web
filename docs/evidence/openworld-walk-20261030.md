@@ -19,7 +19,7 @@ Captured at a 1000 × 800 viewport through the served `/openworld/` page:
 1. Initial view: the tutorial cabin and its controls are visible.
 2. `enter node`: the terminal reports `tutorial: key played`.
 3. `east`: the joystick reports `NO_DATA: no colony node on that hex`.
-4. `enter node` again: the next tutorial step is Beelink; no Beelink cell is fabricated.
+4. `enter node` again: the tutorial identifies its next place; this public report omits that identifier under SCRUB. No cell is fabricated there.
 
 This records the current boundary honestly: the cabin step is playable; movement toward an absent node and the Beelink step remain unavailable until state declares that node alive. The capture does not measure Android, latency, balance, or combat.
 
@@ -30,6 +30,4 @@ This records the current boundary honestly: the cabin step is playable; movement
 | [01-map-live.png](openworld-walk-20261030/01-map-live.png) | Initial production map and empty node state | `660e166133724694ef96947632e03a4d69699a94bb657006f08660f0dca29f4d` |
 | [02-enter-cabin.png](openworld-walk-20261030/02-enter-cabin.png) | Cabin terminal; `key played` | `cb1ed1687ef45e697c8c9095e0bf8a4de08edacab118bf4c8a0f2f1aa9bf355` |
 | [03-east-empty.png](openworld-walk-20261030/03-east-empty.png) | East movement refused with `NO_DATA` | `b3c7e67164d1d56a90af6c1b579333022e2012a7b81bbf0a1b574ed8550d8f2e` |
-| [04-enter-after-east.png](openworld-walk-20261030/04-enter-after-east.png) | Next step names Beelink; no node is drawn there | `e8341671a18b0e29c008502e5cf7393bbbfc86b0d6b5bdceaa18fc90f46b73a5` |
-
-All four PNGs are 1000 × 800. The map and movement path were measured against production; no state was written.
+All three retained PNGs are 1000 × 800. The map and movement path were measured against production; no state was written. The fourth capture was omitted because it exposed a physical node name.
