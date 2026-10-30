@@ -82,7 +82,9 @@ try {
   // HUECO 1: the visitor reads one sentence per bot and per building under the picture.
   const frasesDe = async (query) => { const out = await volcado(base + '/openworld/' + query); const m = /<ul class="state" id="frases"[^>]*>([\s\S]*?)<\/ul>/.exec(out); return m ? (m[1].match(/<li>/g) || []).length : -1; };
   const nFrases = await frasesDe('?fixture=sintetica');
-  ok(nFrases === 15, 'door, fixture: one visible sentence per bot and per building (' + nFrases + ' of 15)');
+  ok(nFrases === 16, 'door, fixture: one visible sentence per bot, per building and for the walker (' + nFrases + ' of 16)');
+  const joyDom = await volcado(base + '/openworld/?fixture=sintetica');
+  ok((joyDom.match(/<button type="button"/g) || []).length >= 7 && /enter node/.test(joyDom), 'door: joystick with its six directions and enter node');
 
   console.log('\n' + pasos + ' passes · IC6 gate green');
 } catch (e) {

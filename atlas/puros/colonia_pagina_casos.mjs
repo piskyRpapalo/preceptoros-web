@@ -101,3 +101,10 @@ test('HUECO 1 + 2: every bot and building sentence says its seal; a missing seal
   assert.ok(texts.some((t) => /bot of cabin .*seal NO_DATA/.test(t)), 'no seal given: NO_DATA');
   assert.ok(texts.some((t) => /building b-ring-e on ring-e .*seal LIVE/.test(t)));
 });
+
+test('TA-3 (D15): the ephemeral walker has its own sentence, seal NO_DATA, and passes the frame law', () => {
+  const frame = CP.youFrame({ node: 'cabin', q: 0, r: 0 }, 6, false);
+  assert.equal(frame.seal, 'NO_DATA');
+  assert.match(frame.atoms[0].r, /ephemeral walker on node cabin .* seal NO_DATA/);
+  assert.deepEqual(F.valida(frame), []);
+});
