@@ -7,6 +7,7 @@ import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
 const page = fs.readFileSync(path.join(root, 'public/face/basic.html'), 'utf8');
+const armyPage = fs.readFileSync(path.join(root, 'public/face/army.html'), 'utf8');
 const glue = fs.readFileSync(path.join(root, 'public/face/face_openworld_terminal.js'), 'utf8');
 const stateFile = JSON.parse(fs.readFileSync(path.join(root, 'public/openworld/estado.json'), 'utf8'));
 const readState = require('../public/game/openworld_state.js');
@@ -26,4 +27,11 @@ test('Neutral terminal renders and moves only on the shared colony state', () =>
   assert.equal(result.ok, false);
   assert.match(result.cause, /NO_DATA/);
   assert.equal(stateFile.colonia.nodes.find((node) => node.id === 'beelink').seal, 'NO_DATA');
+});
+
+test('Army deep link does not render a second map or synthetic account army', () => {
+  assert.match(armyPage, /NO_DATA/);
+  assert.match(armyPage, /SHA-256 profile/);
+  assert.match(armyPage, /href="\/face\/basic\.html"/);
+  assert.doesNotMatch(armyPage, /<svg|<canvas|synthetic seeded waves/i);
 });
