@@ -20,6 +20,10 @@ An AI on the web moves the scenery: a human order in natural language becomes a 
 3. **DE-3 · serving on the web** — the entry is the Orchestrator terminal rail (app draft, receipt ·6525934417): the chat reaches the orchestrator channel, the command reaches the verb. The moved prop is painted through the M1 scene composition (depth order; what is in front covers what is behind). The AI lives on the web; the app only connects.
 4. **DE-4 · frames of scenery** — every movement writes one frame under 1 KB (colour, coordinates, sound, time) to the benchmark record (B3 law) and to the lab feed (B4): NO_DATA with cause until the aduana route is deployed. Never identity (BM-D3).
 
+### DE-1 implementation note · proposal
+
+The pure adapter binds the caller's measured visible colony nodes once; the returned verb keeps the three-argument `MOVER(prop, destination, seed)` shape. A destination is an integer axial cell present in that bound node set. The seed is carried as replay metadata; this slice performs a direct relocation and invents no path, collision, water, height, or balance rule. Each result carries a Bubble/1 movement sentence, `SIMULATED` seal, and sound `NO_DATA` with cause. The map painter remains DE-3.
+
 Out of scope: any change to node identity, to the core state fields, or to the heartbeat producer (D7); any balance rule for props (measured first, like BM-D2).
 
 ## Decisions to take
@@ -41,3 +45,7 @@ Out of scope: any change to node identity, to the core state fields, or to the h
 - Frames under 1,024 UTF-8 bytes, one sentence per atom, a declared sound or NO_DATA with cause.
 - Lexicon in English in public text; the vocabulary of the one map applies.
 - Nothing is cooked before this plan and its FIRMO; one piece = one PR with FIRMO per piece.
+
+## Log
+
+- 2026-10-30 · DE-1 proposal implemented on `mistral/de1-decor-mover-20261030`; repeat-id, non-finite/outside-node, and Bubble-size sabotage are in the candidate cases. Code and remote CI remain pending exact-head review; DE-2 is not claimed complete.
