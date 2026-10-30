@@ -20,6 +20,8 @@ export const TOPE = AV.TOPE;
 const NEUTROS = ['ink', 'paper', 'ocean', 'cyan'];
 const BANDAS = ['brillo', 'base', 'sombra', 'contorno'];
 const CLAVES_COLOR = ['f', 's', 'fill', 'stroke'];
+// IC7 seal contract (2026-10-31): the six doctrine labels. An optional top-level `seal` must be one of them.
+const SELLOS = ['LIVE', 'STALE', 'STATIC', 'SIMULATED', 'NO_DATA', 'ERROR'];
 const SABOTAJES = ['--sabotage-band', '--sabotage-serial', '--sabotage-size'];
 let nombres = null;
 
@@ -98,6 +100,9 @@ export function checkFrame(frame) {
     causas.push(/circular/i.test(e.message) ? 'not serializable: cycle' : 'not serializable: ' + e.message);
   }
   if (bytes !== null && bytes >= TOPE) causas.push('NO_DATA: frame over TOPE bytes');
+  if (esObjeto(frame) && Object.prototype.hasOwnProperty.call(frame, 'seal') && !SELLOS.includes(frame.seal)) {
+    causas.push('seal outside the doctrine labels: ' + String(frame.seal));
+  }
   if (!esObjeto(frame)) {
     causas.push('not an object: frame');
     return { ok: false, bytes, causes: sinRepetir(causas), fields: {} };

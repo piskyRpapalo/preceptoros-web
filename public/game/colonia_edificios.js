@@ -67,7 +67,7 @@
     var frase = 'building ' + edificio.id + ' on ' + edificio.node + ' · ' + forma + ' · growth ' + paso + '/' + PASOS + ' · seal ' + (seal || 'NO_DATA');
     var items = [{ o: 'ribbon', pts: base, closed: true, f: 'paper', s: 'ink', lw: 2 }];
     return {
-      v: 'preceptoros.bubble/1', id: edificio.id, t: paso, cv: BOX,
+      v: 'preceptoros.bubble/1', id: edificio.id, t: paso, cv: BOX, seal: seal || 'NO_DATA',
       atoms: [{ k: 'building.' + forma, r: frase, i: items }],
       bands: ['paper', 'ink', 'cyan'],
       change: [frase],
