@@ -77,3 +77,18 @@ test('IC7-S3: a node that the state does not declare alive gets no bot and no ti
   assert.deepEqual(sc.bots.map((b) => b.id), ['bot-beelink']);
   assert.deepEqual(sc.tiles.map((t) => t.id), ['beelink']);
 });
+
+test('IC7-S4 (D11): a zombie bot has its own face and body family, and says so in its sentence', () => {
+  const z = CP.botFrame({ id: 'doggee-a', look: 'zombie' }, 0, false);
+  const b = CP.botFrame({ id: 'doggee-a', look: 'basic' }, 0, false);
+  assert.match(z.atoms[0].r, /zombie face/);
+  assert.match(b.atoms[0].r, /basic face/);
+  assert.notEqual(JSON.stringify(z.atoms[0].i), JSON.stringify(b.atoms[0].i));
+  assert.deepEqual(F.valida(z), []);
+});
+
+test('IC7-S4: scene passes the looks of the state to each bot', () => {
+  const sc = CP.scene(COLONIA, 0, false, { 'ring-e': 'zombie' });
+  const bot = sc.bots.find((x) => x.id === 'bot-ring-e');
+  assert.match(bot.frame.atoms[0].r, /zombie face/);
+});

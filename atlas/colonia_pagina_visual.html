@@ -42,7 +42,8 @@
   var TICKS = [0, 60, 120, 180, 240];
   var W = 480, H = 320;
   // The synthetic colony of the door's fixture: the same rows, labelled SYNTHETIC on the page.
-  var COLONIA = { nodes: [{ id: 'cabin', q: 0, r: 0 }, { id: 'ring-e', q: 1, r: 0 }, { id: 'ring-ne', q: 1, r: -1 }, { id: 'ring-nw', q: 0, r: -1 }, { id: 'ring-w', q: -1, r: 0 }, { id: 'ring-sw', q: -1, r: 1 }, { id: 'ring-se', q: 0, r: 1 }], buildings: [{ id: 'b-cabin', node: 'cabin' }, { id: 'b-ring-e', node: 'ring-e' }, { id: 'b-ring-nw', node: 'ring-nw' }, { id: 'b-ring-sw', node: 'ring-sw' }], units: [] };
+  var COLONIA = { nodes: [{ id: 'cabin', q: 0, r: 0 }, { id: 'ring-e', q: 1, r: 0 }, { id: 'ring-ne', q: 1, r: -1 }, { id: 'ring-nw', q: 0, r: -1 }, { id: 'ring-w', q: -1, r: 0 }, { id: 'ring-sw', q: -1, r: 1 }, { id: 'ring-se', q: 0, r: 1 }, { id: 'doggee-a', q: 2, r: 0 }, { id: 'doggee-b', q: 2, r: -1 }], buildings: [{ id: 'b-cabin', node: 'cabin' }, { id: 'b-ring-e', node: 'ring-e' }, { id: 'b-ring-nw', node: 'ring-nw' }, { id: 'b-ring-sw', node: 'ring-sw' }, { id: 'b-doggee-a', node: 'doggee-a' }, { id: 'b-doggee-b', node: 'doggee-b' }], units: [] };
+  var LOOKS = { 'doggee-a': 'zombie', 'doggee-b': 'zombie' };
 
   function hashCanvas(canvas) {
     var d = canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height).data, h = 0x811c9dc5;
@@ -65,11 +66,11 @@
     var escenas = TICKS.map(function (t) { return { t: t, reducido: false, canvas: celda('tick ' + t) }; });
     escenas.push({ t: 0, reducido: true, canvas: celda('tick 0 · reduced motion') });
     var resultados = { scenes: [], n2: true, sabotaje: sabotaje || 'none' };
-    escenas.forEach(function (e) { e.sc = CP.draw(e.canvas, COLONIA, e.t, e.reducido); e.cielo1 = e.sc.cielo; });
+    escenas.forEach(function (e) { e.sc = CP.draw(e.canvas, COLONIA, e.t, e.reducido, LOOKS); e.cielo1 = e.sc.cielo; });
     var primera = escenas.map(function (e) { return hashCanvas(e.canvas); });
     escenas.forEach(function (e) {
       var t2 = tickDe(e.t, sabotaje === 'reloj');
-      CP.draw(e.canvas, COLONIA, t2, e.reducido);
+      CP.draw(e.canvas, COLONIA, t2, e.reducido, LOOKS);
       if (sabotaje === 'jitter') { var g = e.canvas.getContext('2d'); g.fillStyle = '#000'; g.fillRect(0, 0, 1, 1); }   // sabotage: one pixel moves with no state change
     });
     var segunda = escenas.map(function (e) { return hashCanvas(e.canvas); });

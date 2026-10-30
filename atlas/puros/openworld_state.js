@@ -12,6 +12,7 @@
   var SHOWN = ['LIVE', 'STALE'];
   var V1 = 'preceptoros.openworld-estado/1', V2 = 'preceptoros.openworld-estado/2';
   var DATE = /^\d{4}-\d{2}-\d{2}$/;
+  var LOOKS = ['basic', 'atlantis', 'zombie'];   // IC7-S4 (D11): the node's own face and colour family; default basic
 
   function fail(cause) { throw new Error('openworld_state: ' + cause); }
 
@@ -24,7 +25,9 @@
     if (SEALS.indexOf(n.seal) < 0) { fail('node ' + n.id + ' has an unknown seal ' + JSON.stringify(n.seal)); }
     if (n.since !== null && (typeof n.since !== 'string' || !DATE.test(n.since))) { fail('node ' + n.id + ' has a malformed date'); }
     if (n.seal === 'LIVE' && n.since === null) { fail('node ' + n.id + ' is LIVE without a dated measurement'); }
-    return { id: n.id, q: n.q, r: n.r, alive: n.alive, seal: n.seal, since: n.since };
+    var look = n.look === undefined ? 'basic' : n.look;
+    if (LOOKS.indexOf(look) < 0) { fail('node ' + n.id + ' has an unknown look ' + JSON.stringify(look)); }
+    return { id: n.id, q: n.q, r: n.r, alive: n.alive, seal: n.seal, since: n.since, look: look };
   }
 
   // leer(estado) → { version, colonia, seals, hidden }. colonia is null for v1, and otherwise the IC1 colony of
@@ -32,7 +35,7 @@
   function leer(estado) {
     var e = estado && typeof estado === 'object' ? estado : {};
     if (e.esquema === undefined || e.esquema === V1) {
-      return { version: 1, colonia: null, seals: {}, hidden: 0 };
+      return { version: 1, colonia: null, seals: {}, looks: {}, hidden: 0 };
     }
     if (e.esquema !== V2) { fail('unknown schema ' + JSON.stringify(e.esquema)); }
     var c = e.colonia;
@@ -44,8 +47,9 @@
     var ids = {};
     visibles.forEach(function (n) { ids[n.id] = true; });
     var buildings = c.buildings.filter(function (b) { return b && ids[b.node]; }).map(function (b) { return { id: b.id, node: b.node }; });
-    var seals = {};
+    var seals = {}, looks = {};
     nodes.forEach(function (n) { seals[n.id] = n.seal; });
+    visibles.forEach(function (n) { looks[n.id] = n.look; });
     return {
       version: 2,
       colonia: colony({
@@ -54,11 +58,12 @@
         units: Array.isArray(c.units) ? c.units.filter(function (u) { return u && ids[u.node]; }).map(function (u) { return { id: u.id, node: u.node }; }) : []
       }),
       seals: seals,
+      looks: looks,
       hidden: nodes.length - visibles.length
     };
   }
 
-  var AtlasOpenworldState = { SEALS: SEALS, SHOWN: SHOWN, V1: V1, V2: V2, leer: leer };
+  var AtlasOpenworldState = { SEALS: SEALS, SHOWN: SHOWN, LOOKS: LOOKS, V1: V1, V2: V2, leer: leer };
   if (common) { module.exports = AtlasOpenworldState; }
   else { root.AtlasOpenworldState = AtlasOpenworldState; }
 })(typeof globalThis === 'object' ? globalThis : this);
