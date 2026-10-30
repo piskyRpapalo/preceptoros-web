@@ -42,7 +42,7 @@ Out of scope: a heartbeat producer that sends data to the network (needs its own
 ## Checklist
 
 - [x] IC7-S1 · Search of history: no heartbeat producer and no writer of `estado.json` in main; canon marks the heartbeat `NO_DATA` and not read at load (see Problem).
-- [ ] IC7-S2 · Schema v2 for `estado.json`: nodes `{ id, q, r, vivo, sello, desde }`, buildings `{ id, node }`, validated by IC1; key `colonia` of IC6 kept.
+- [ ] IC7-S2 · Schema v2 for `estado.json`: nodes `{ id, q, r, alive, seal, since }`, buildings `{ id, node }`, validated by IC1; key `colonia` of IC6 kept.
 - [ ] IC7-S3 · Bots with faces on the live nodes' hexes; Beelink/Hexelion on the centre hex with the Atlantis look; Doggee with the zombie look.
 - [ ] IC7-S4 · Doggee on two adjacent nodes `doggee-a` and `doggee-b`, one building each (IC1 unchanged).
 - [ ] IC7-S5 · Terminal (basic, atlantis, zombie) follows the node the user plays on; personalisation in the app is `NO_DATA` on the web.
