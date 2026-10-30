@@ -83,6 +83,7 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
 <script src="/game/colony_state.js"></script>
 <script src="/game/colonia_edificios.js"></script>
 <script src="/game/palette_cycle.js"></script>
+<script src="/game/openworld_state.js"></script>
 <script src="/game/colonia_pagina.js"></script>
 <script src="/assets/pwa.js"></script>
 <script>
@@ -170,7 +171,13 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
       nodes: nodes.filter(function (n) { return n && (n.id === 'atlantis' || n.id === 'risen'); })
     };
     if (selected !== 'cabin' && !entrada.nodes.some(function (n) { return n.id === selected; })) { selected = 'cabin'; }
-    if (data && data.colonia && typeof data.colonia === 'object') { colonia = data.colonia; colonia_fuente = 'estado'; }
+    // IC7-S3 (D7): the colony comes only from openworld_state.js; a node is drawn only when it is alive and sealed LIVE or STALE.
+    if (colonia_fuente !== 'fixture') try {
+      var estado = raiz.AtlasOpenworldState.leer(data);
+      colonia = estado.colonia && estado.colonia.nodes.length > 0 ? estado.colonia : null;
+      colonia_fuente = colonia ? 'estado' : 'NO_DATA';
+      if (!colonia && estado.version === 2) { colonia_error = 'no node declared alive and sealed LIVE or STALE (' + estado.ocultos + ' hidden)'; }
+    } catch (e) { colonia = null; colonia_error = e.message || 'the state is refused'; }
   }
   if (new URLSearchParams(raiz.location.search).get('fixture') === 'sintetica') { colonia = FIXTURE; colonia_fuente = 'fixture'; }
 
