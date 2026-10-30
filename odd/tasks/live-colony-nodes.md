@@ -44,11 +44,13 @@ Out of scope: a heartbeat producer that sends data to the network (needs its own
 - [x] IC7-S1 · Search of history: no heartbeat producer and no writer of `estado.json` in main; canon marks the heartbeat `NO_DATA` and not read at load (see Problem).
 - [x] IC7-S2 · Schema v2 for `estado.json`: nodes `{ id, q, r, alive, seal, since }`, buildings `{ id, node }`, validated by IC1; key `colonia` of IC6 kept.
 - [ ] IC7-S3 · Bots with faces on the live nodes' hexes; Beelink/Hexelion on the centre hex with the Atlantis look; Doggee with the zombie look.
-- [ ] IC7-S4 · Doggee on two adjacent nodes `doggee-a` and `doggee-b`, one building each (IC1 unchanged).
-- [ ] IC7-S5 · Terminal (basic, atlantis, zombie) follows the node the user plays on; personalisation in the app is `NO_DATA` on the web.
+- [x] IC7-S4 · Doggee on two adjacent nodes `doggee-a` and `doggee-b`, one building each (IC1 unchanged); node field `look` (zombie for Doggee). Needs its own FIRMO: it creates new node ids.
+- [ ] IC7-S5 · Terminal (basic, atlantis, zombie) follows the node the user plays on; personalisation in the app is `NO_DATA` on the web. Decree ·6523047400 part 1 (colour anchor): on entering a node the page adopts that node's colours (D8).
 - [ ] IC7-S6 · Empty state: the account's house (radius 360) and fog cells as `NO_DATA` ("cell not visited"); a cell lifts when a lane has stood on it.
 - [ ] IC7-S7 · VERSION: next free letter after `abkt` (checked against open PRs) and the full seal chain in the same commit.
 - [ ] IC7-S8 · Gates: pure cases (schema v2, IC1 refuses two buildings on one node, a stale datum becomes STALE, no random, no clock, no network), visual page with two identical runs, sabotages (a node without a lexicon key; a stale datum drawn as LIVE). `test_web.py` and `test_atlas.py` (`OPENWORLD_PAGE_DEPENDENCIES`) updated.
+- [ ] IC7-S10 · Joystick, permanent (decree ·6523047400 part 2): always present on the map, to move the user's ephemeral character. Placed after S6 (D9).
+- [ ] IC7-S11 · Android layout (decree ·6523047400 part 3): the chat sits below the map window on small screens (D10).
 - [ ] IC7-S9 · Captures: draft before deploy (declared); definitive on Doggee against `preceptoros.org` after deploy, with `adb shell am start -a android.intent.action.VIEW -d https://preceptoros.org/openworld/` and `adb exec-out screencap -p`.
 
 ## Verification evidence
@@ -68,6 +70,9 @@ The canon line "a live rack heartbeat ... remains NO_DATA" and the decree "only 
 
 ## Log
 
+- 2026-10-30 · Decree ·6523047400 folded in (Sovereign): (1) colour anchor → IC7-S5, D8; (2) permanent joystick → IC7-S10, D9, placed after S6; (3) Android: chat under the map window → IC7-S11, D10. Order of the ladder is S4, S5, S6, S10, S11, S7, S8, S9.
+- 2026-10-30 · Decision D11 (IC7-S4): node field `look` ∈ {basic, atlantis, zombie}, default basic. Doggee is `zombie`, Beelink/Hexelion `atlantis`. The look is data of the state, not a fixed skin in code. Contract change: needs FIRMO with S4.
+- 2026-10-30 · IC7-S4 built on `haiku/ic7-s4-doggee-20261030`: `doggee-a` (2,0) and `doggee-b` (2,-1) on the fixture, one building each; bots with the zombie face; IC1 unchanged.
 - 2026-10-30 · Plan approved (buzon#30 decrees above). IC7-S1 searched and recorded.
 - 2026-10-30 · Decision D7 (declared): IC7 reads only `estado.json`. Its content must come from dated, measured evidence, the same source the canon already uses for node activity. A heartbeat is a separate piece with its own FIRMO. This keeps the canon intact while the decree's "real nodes appear" is served.
 - 2026-10-30 · Decision D1: Doggee on two adjacent nodes `doggee-a`, `doggee-b` (IC1 intact).

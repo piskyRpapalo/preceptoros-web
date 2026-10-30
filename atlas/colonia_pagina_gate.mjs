@@ -76,7 +76,7 @@ try {
   ok(/Colony: NO_DATA · no live colony/.test(sinColonia), 'door, live state: NO_DATA with its cause (' + sinColonia.slice(-90) + ')');
 
   const conFixture = await puerta('?fixture=sintetica');
-  ok(/Colony: 7 nodes · 4 buildings · 7 bots with faces/.test(conFixture) && /SYNTHETIC fixture, not a live colony/.test(conFixture),
+  ok(/Colony: 9 nodes · 6 buildings · 9 bots with faces/.test(conFixture) && /SYNTHETIC fixture, not a live colony/.test(conFixture),
     'door, fixture: the colony is drawn, labelled SYNTHETIC (' + conFixture.slice(0, 80) + ')');
 
   console.log('\n' + pasos + ' passes · IC6 gate green');
