@@ -54,6 +54,7 @@ jobs:
             python bin/contar_rutas.py --check-doc DEPLOY.md
             node --test atlas/puros/decor_mover_casos.mjs
             node --test atlas/puros/decor_command_casos.mjs
+            node --test atlas/puros/wave_duel_casos.mjs
             node --test atlas/puros/state_frames_casos.mjs
             node --test atlas/puros/colony_state_casos.mjs
             node --test atlas/puros/hex_projection_casos.mjs

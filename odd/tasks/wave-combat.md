@@ -62,6 +62,7 @@ None.
 ## Log
 
 - 2026-10-30 · Plan declared propose-only. No code written. Balance stays NO_DATA.
+- 2026-10-30 · W1 candidate on `mistral/g5-w1-sha256-20261030`: the pure BM-2 core now uses WebCrypto SHA-256 for deterministic commitments; no duel is served, and balance remains NO_DATA. W2 stays a separate piece.
 
 ## Next step
 
