@@ -2430,9 +2430,11 @@ class Puerta(unittest.TestCase):
         self.assertNotIn("<b>Tutorial</b>", self.t, "la puerta Tutorial debe salir de la INTRO (decreto corte D)")
         self.assertNotIn('href="/play/"', self.t, "la INTRO no enlaza al juego retirado")
         # Tools es un clic directo (boton), no un enlace: la PWA o el desplegable visible de abajo.
-        self.assertIn('<button class="door door-tools" id="door-tools" type="button" aria-controls="tools-dispositivo">'
-                      '<b>Tools</b>', self.t)
-        self.assertIn('<section id="tools-dispositivo" aria-labelledby="tools-h">', self.t)
+        self.assertIn('<button class="door door-tools" id="door-tools" type="button" aria-controls="tools-dispositivo" '
+                      'aria-expanded="false">', self.t)
+        # La intro muestra solo las puertas: el bloque de herramientas va oculto hasta pulsar Tools (sin pagina nueva).
+        self.assertIn('<section id="tools-dispositivo" aria-labelledby="tools-h" hidden>', self.t)
+        self.assertIn('id="close-tools"', self.t, "la seccion Tools debe tener su boton Cerrar")
         self.assertIn('<details open>\n<summary>Device and download</summary>', self.t)
         self.assertIn('<li><a href="/get-the-app/">', self.t)
         self.assertIn('<li><a href="/creation.html">', self.t)
