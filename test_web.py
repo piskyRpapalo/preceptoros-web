@@ -2434,6 +2434,7 @@ class Puerta(unittest.TestCase):
                       'aria-expanded="false">', self.t)
         # La intro muestra solo las puertas: el bloque de herramientas va oculto hasta pulsar Tools (sin pagina nueva).
         self.assertIn('<section id="tools-dispositivo" aria-labelledby="tools-h" hidden>', self.t)
+        self.assertIn('id="close-tools"', self.t, "la seccion Tools debe tener su boton Cerrar")
         self.assertIn('<details open>\n<summary>Device and download</summary>', self.t)
         self.assertIn('<li><a href="/get-the-app/">', self.t)
         self.assertIn('<li><a href="/creation.html">', self.t)
