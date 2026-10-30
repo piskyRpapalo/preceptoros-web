@@ -94,8 +94,15 @@
     // IC7-S4: the spacing shrinks when the widest node would leave the canvas; it never grows past K.
     var reach = sc.tiles.reduce(function (m, n) { return Math.max(m, Math.abs(n.x)); }, 1);
     var k = Math.min(K, (canvas.width / 2 - 80) / reach);
-    var drawn = sc.tiles.concat(sc.buildings, sc.bots);
-    if (you) { drawn.push({ x: you.x - BOT_DX * ESCALA_SALA, y: you.y - 22, frame: sc.you }); }
+    // M1-2: one deterministic depth order for every layer of this same map.
+    var layers = sc.tiles.map(function (n, i) { return { id: 'tile-' + i, item: n }; })
+      .concat(sc.buildings.map(function (n, i) { return { id: 'building-' + i, item: n }; }))
+      .concat(sc.bots.map(function (n, i) { return { id: 'bot-' + i, item: n }; }));
+    if (you) { layers.push({ id: 'walker', item: { x: you.x - BOT_DX * ESCALA_SALA, y: you.y - 22, frame: sc.you } }); }
+    var drawn = root.AtlasMapScene ? root.AtlasMapScene.compose(layers.map(function (layer) {
+      return { id: layer.id, x: layer.item.x, y: layer.item.y, frame: layer.item.frame };
+    })).map(function (layer) { return { x: layer.x, y: layer.y, frame: layer.frame }; })
+      : layers.map(function (layer) { return layer.item; });
     drawn.forEach(function (nd) {
       g.save();
       g.translate(cx + nd.x * k - BX * S, cy + nd.y * k - BY * S);

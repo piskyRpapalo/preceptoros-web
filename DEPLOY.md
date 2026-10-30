@@ -8,8 +8,8 @@ Status: proposal for review. Deployment remains a human action. This document re
 
 Route-count receipt for this source tree (`haiku/corte-d-borrado-20261028`, Norte 7 D: the theGame stack leaves the shell with its files; measured with `python3 bin/contar_rutas.py`, 2026-10-28):
 
-Rutas precargadas por el shell: 108
-Rutas distintas del shell: 107
+Rutas precargadas por el shell: 117
+Rutas distintas del shell: 116
 
 The workflow runs exactly:
 
@@ -52,3 +52,5 @@ The checked-in deploy workflow has no rollback input, artifact selector, or roll
 ## Receipt
 
 Record the source commit, workflow run ID, human approver, result, public-file counts and FARO output. Record only the names of protected settings, never their values. If a step cannot be measured, record `NO_DATA` with its cause. `encolado` is not evidence that a deployment is live.
+
+JN-3 source receipt: visitor modules and the extracted map controller introduce no page route. Shell precache remains 117 entries / 116 distinct / one duplicate (bin/contar_rutas.py). Modules are requested from the same origin; deployment remains a separately signed action.

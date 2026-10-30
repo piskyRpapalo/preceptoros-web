@@ -1,5 +1,5 @@
-// P3 [1a] · world names at half size, in the comic letters of the bubble language, with the skin's
-// own bands. Every case runs on the real sources (must be green) and on a sabotaged twin (must be red).
+// P3 [1a] · preserved face-world names use comic letters and skin bands. The neutral terminal is not a face.
+// Every case runs on the real sources (must be green) and on a sabotaged twin (must be red).
 import { readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { join, dirname } from 'node:path';
@@ -10,16 +10,17 @@ const leer = (r) => readFileSync(join(RAIZ, r), 'utf8');
 const req = createRequire(import.meta.url);
 const B = req('../public/game/bubble_language.js');
 const L = req('../public/game/bubble_letters.js');
-const MUNDOS = ['basic', 'atlantis', 'zombie'];
+const MUNDOS = ['atlantis', 'zombie'];
 const BASE = 24;   // measured size of the names before this piece (main 0478edc)
 
 function carga(src) { const module = { exports: {} }; new Function('module', 'require', src)(module, req); return module.exports; }
 const FUENTE = leer('public/face/face_world.js');
-const REAL = { W: carga(FUENTE), pages: MUNDOS.map((m) => leer(`public/face/${m}.html`)) };
+const REAL = { W: carga(FUENTE), pages: MUNDOS.map((m) => leer(`public/face/${m}.html`)), basic: leer('public/face/basic.html') };
 const SAB = {
   W: carga(FUENTE.replace("o: 'letters', x: p[0], y: p[1], tx: tx, sz: 12, f: skin.label, s: skin.halo, sh: [1, 1, skin.halo]",
     "o: 'text', x: p[0], y: p[1], tx: tx, sz: 24, f: skin.label, s: 'comic yellow.base', sh: [2, 2, skin.halo]").replace("n('the rift', 540, 270)", "n('the rift ☂', 540, 270)")),
   pages: REAL.pages.map((t, i) => i ? t : t.replace('<script src="/game/bubble_letters.js"></script>', '')),
+  basic: REAL.basic.replace('/game/colony_controls.js', '/game/missing_colony_controls.js'),
 };
 const skin = (t) => JSON.parse(t.match(/id="skin"[^>]*>([^<]+)</)[1]);
 const nombres = (W, t) => W.namesFrame(skin(t)).atoms[0].i;
@@ -42,12 +43,15 @@ caso('letters use only the skin\'s own bands (no new palette)', (S) => S.pages.e
 }) || 'a band outside the skin');
 caso('every character of every name has a comic glyph', (S) =>
   S.pages.every((t) => nombres(S.W, t).every((n) => L.missing(n.tx).length === 0)) || 'a glyph is missing');
-caso('the names frame compiles in the three worlds and stays under 1,024 B', (S) => S.pages.every((t) => {
+caso('the names frame compiles in both face worlds and stays under 1,024 B', (S) => S.pages.every((t) => {
   const f = S.W.namesFrame(skin(t));
   return Buffer.byteLength(JSON.stringify(f)) < 1024 && B.compile(f) && f.atoms[0].i.every((n) => n.o === 'letters');
 }) || 'compile or size');
-caso('the three worlds load the comic letters right after the bubble language', (S) =>
+caso('both face worlds load the comic letters right after the bubble language', (S) =>
   S.pages.every((t) => t.indexOf('/game/bubble_letters.js') > t.indexOf('/game/bubble_language.js') && t.indexOf('/game/bubble_language.js') > 0) || 'load order');
+caso('the neutral terminal uses the shared map controls without a face-world skin', (S) =>
+  (S.basic.includes('/game/colony_controls.js') && S.basic.includes('/face/face_openworld_terminal.js') &&
+   !S.basic.includes('/face/face_world.js')) || 'neutral terminal control or face isolation');
 
 console.log(JSON.stringify({ v: 'preceptoros.face_names/1', casos }, null, 1));
 process.exitCode = casos.every((c) => c.ok) ? 0 : 1;

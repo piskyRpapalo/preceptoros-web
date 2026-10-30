@@ -1,4 +1,4 @@
-// P3 [1b] · combat fills the map area in its own panel; the world map is never painted by combat.
+// P3 [1b] · preserved face worlds keep combat in their own panel; the neutral terminal is not a face.
 // Every case runs on the real sources (must be green) and on a sabotaged twin (must be red).
 import { readFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
@@ -6,9 +6,10 @@ import { fileURLToPath } from 'node:url';
 
 const RAIZ = join(dirname(fileURLToPath(import.meta.url)), '..');
 const leer = (r) => readFileSync(join(RAIZ, r), 'utf8');
+const FACE_WORLDS = ['atlantis', 'zombie'];
 const REAL = {
   fight: leer('public/face/face_fight.js'), stage: leer('public/face/face_fight_stage.js'), css: leer('public/face/face_views.css'),
-  pages: ['basic', 'atlantis', 'zombie'].map((m) => leer(`public/face/${m}.html`)), listas: leer('public/sw-listas.js'),
+  pages: FACE_WORLDS.map((m) => leer(`public/face/${m}.html`)), basic: leer('public/face/basic.html'), listas: leer('public/sw-listas.js'),
 };
 const SAB = {
   fight: REAL.fight.replace('H.extra(null, null);', 'H.extra(function (g, toScreen, z) { fight.paint(g, toScreen, z, quiet()); }, null);')
@@ -17,6 +18,7 @@ const SAB = {
   css: REAL.css.replace('body[data-battle=on] #sheet-battle{inset:0;max-height:none}', 'body[data-battle=on] #sheet-battle{top:auto;max-height:48%}')
     .replace('#sheet-battle .fight-stage{grid-column:2;grid-row:1/span 4', '#sheet-battle .fight-stage{grid-column:1;grid-row:auto'),
   pages: REAL.pages.map((t, i) => i ? t : t.replace('<script src="/face/face_fight_stage.js"></script>', '')),
+  basic: REAL.basic.replace('/game/colony_controls.js', '/game/missing_colony_controls.js'),
   listas: REAL.listas.replace("'/face/face_fight_stage.js',", ''),
 };
 
@@ -41,9 +43,12 @@ caso('texts on the left, the fight on the right (one column on a phone)', (S) =>
 caso('every panel that covers the map gets an "×" back to the map', (S) =>
   (S.stage.includes("doc.querySelectorAll('.stage-sheet .sheet-head')") && S.stage.includes("doc.getElementById('tab-map')") &&
    S.stage.includes("x.setAttribute('aria-label', 'Close and return to the map')")) || '× missing on some panel');
-caso('the three worlds load the stage after the fight, and the shell caches it', (S) =>
+caso('the two face worlds load the stage after the fight, and the shell caches it', (S) =>
   (S.pages.every((t) => t.indexOf('/face/face_fight_stage.js') > t.indexOf('/face/face_fight.js') && t.indexOf('/face/face_fight.js') > 0) &&
    S.listas.includes("'/face/face_fight_stage.js'")) || 'load order or cache');
+caso('the neutral terminal loads shared controls without face combat assets', (S) =>
+  (S.basic.includes('/game/colony_controls.js') && S.basic.includes('/face/face_openworld_terminal.js') &&
+   !S.basic.includes('/face/face_fight.js') && !S.basic.includes('/face/face_fight_stage.js')) || 'neutral terminal control or face isolation');
 
 console.log(JSON.stringify({ v: 'preceptoros.face_battle_screen/1', casos }, null, 1));
 process.exitCode = casos.every((c) => c.ok) ? 0 : 1;

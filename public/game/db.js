@@ -103,6 +103,28 @@
   }
 
 
+  function appendAdoption(record) {
+    var check = crea(verificaWeb);
+    return check.adopta(record.adopcion, record.firma).then(function () {
+      return new Promise(function (resolve, reject) {
+        var request = raiz.indexedDB.open('atlas-army', 1);
+        request.onupgradeneeded = function () { request.result.createObjectStore('army'); };
+        request.onerror = function () { reject(request.error); };
+        request.onsuccess = function () {
+          var database = request.result, transaction = database.transaction('army', 'readwrite');
+          var store = transaction.objectStore('army'), read = store.get('mia');
+          read.onsuccess = function () {
+            var records = read.result || [];
+            if (!Array.isArray(records) || records.length >= TOPE || records.some(function (x) { return x.adopcion && x.adopcion.tropa && x.adopcion.tropa.semilla === record.adopcion.tropa.semilla; })) { transaction.abort(); return; }
+            store.put(records.concat([record]), 'mia');
+          };
+          transaction.oncomplete = function () { database.close(); resolve(true); };
+          transaction.onerror = transaction.onabort = function () { database.close(); reject(new Error('NO_DATA: adoption was not saved')); };
+        };
+      });
+    });
+  }
+
   function caja(base, almacen, clave, strict) {
     function db() {
       return new Promise(function (ok, mal) {
@@ -228,7 +250,7 @@
     });
   }
 
-  var AtlasArmy = { TOPE: TOPE, adopcion: adopcion, crea: crea, almacenWeb: almacenWeb, cajaWeb: caja, calidadWeb: calidadWeb, conquistasWeb: conquistasWeb, limpiaRecord: limpiaRecord, verificaWeb: verificaWeb, semillaWeb: semillaWeb,
+  var AtlasArmy = { appendAdoption: appendAdoption, TOPE: TOPE, adopcion: adopcion, crea: crea, almacenWeb: almacenWeb, cajaWeb: caja, calidadWeb: calidadWeb, conquistasWeb: conquistasWeb, limpiaRecord: limpiaRecord, verificaWeb: verificaWeb, semillaWeb: semillaWeb,
     eslabon: eslabon, compruebaCadena: compruebaCadena, anexa: anexa, huevos: huevos, abre: abre, verificaCadena: verificaCadena, cadenaWeb: cadenaWeb,
     piedad: piedad, cronica: cronica };
   if (typeof module === 'object' && module.exports) { module.exports = AtlasArmy; }
