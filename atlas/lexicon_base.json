@@ -585,6 +585,10 @@
     "escena",
     "tropa"
   ],
+  "public/game/visitor_conquest.js": [
+    "atlasniebla",
+    "niebla"
+  ],
   "public/game/visitor_eggs.js": [
     "abre",
     "adopcion",

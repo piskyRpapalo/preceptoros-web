@@ -36,7 +36,7 @@
     });
     s.eggs.forEach(function (egg) { button('Sign adoption · egg ' + egg.seq + (egg.ready ? ' · ready' : ' · ' + egg.remaining + ' steps'), 'visitor-hatch-' + egg.seq, function () { return game.hatch(egg.seq, true); }, !egg.ready); });
     s.chronicle.forEach(function (e) { line('Invocation ' + e.seq + ' · ' + e.tc + ' · seal ' + e.sello + ' · ' + e.rareza); });
-    button('End this visit', 'visitor-end', function () { game.end(); game = null; account = null; });
+    button('End this visit', 'visitor-end', function () { game.end(); box.dispatchEvent(new Event('visitor:end')); game = null; account = null; });
     box.dispatchEvent(new CustomEvent('visitor:render', { detail: { state: s, game: game, account: account, controls: controls } }));
   }
   render();
