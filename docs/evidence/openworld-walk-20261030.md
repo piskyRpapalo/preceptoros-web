@@ -21,7 +21,7 @@ Captured at a 1000 × 800 viewport through the served `/openworld/` page:
 3. `east`: the joystick reports `NO_DATA: no colony node on that hex`.
 4. `enter node` again: the tutorial identifies its next place; this public report omits that identifier under SCRUB. No cell is fabricated there.
 
-This records the current boundary honestly: the cabin step is playable; movement toward an absent node and the Beelink step remain unavailable until state declares that node alive. The capture does not measure Android, latency, balance, or combat.
+This records the current boundary honestly: the cabin step is playable; movement toward an absent node and the next tutorial place remain unavailable until state declares that node alive. The capture does not measure Android, latency, balance, or combat.
 
 ## Captures
 
