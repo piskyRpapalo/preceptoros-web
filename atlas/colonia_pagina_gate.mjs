@@ -73,7 +73,8 @@ try {
   ok(!reloj.error && reloj.n2 === false, 'sabotage reloj goes red: a sky reading the wall clock is caught');
 
   const sinColonia = await puerta('');
-  ok(/Colony: NO_DATA · no live colony/.test(sinColonia), 'door, live state: NO_DATA with its cause (' + sinColonia.slice(-90) + ')');
+  // Newest state (MVP moderno, 2026-10-30): only the tutorial is LIVE; Beelink and Doggee are NO_DATA and hidden.
+  ok(/Colony: 1 nodes · 1 buildings · 1 bots with faces/.test(sinColonia) && !/SYNTHETIC/.test(sinColonia), 'door, live state: the tutorial is the only LIVE node (' + sinColonia.slice(-90) + ')');
 
   const conFixture = await puerta('?fixture=sintetica');
   ok(/Colony: 9 nodes · 6 buildings · 9 bots with faces/.test(conFixture) && /SYNTHETIC fixture, not a live colony/.test(conFixture),
@@ -82,7 +83,9 @@ try {
   // HUECO 1: the visitor reads one sentence per bot and per building under the picture.
   const frasesDe = async (query) => { const out = await volcado(base + '/openworld/' + query); const m = /<ul class="state" id="frases"[^>]*>([\s\S]*?)<\/ul>/.exec(out); return m ? (m[1].match(/<li>/g) || []).length : -1; };
   const nFrases = await frasesDe('?fixture=sintetica');
-  ok(nFrases === 15, 'door, fixture: one visible sentence per bot and per building (' + nFrases + ' of 15)');
+  ok(nFrases === 16, 'door, fixture: one visible sentence per bot, per building and for the walker (' + nFrases + ' of 16)');
+  const joyDom = await volcado(base + '/openworld/?fixture=sintetica');
+  ok((joyDom.match(/<button type="button"/g) || []).length >= 7 && /enter node/.test(joyDom), 'door: joystick with its six directions and enter node');
 
   console.log('\n' + pasos + ' passes · IC6 gate green');
 } catch (e) {
