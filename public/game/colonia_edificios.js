@@ -61,10 +61,10 @@
 
   // The frame of one building at growth p. Its sentence says what is drawn and how far it has grown; no value is invented.
   // The module under it is drawn by its own tile frame, so the colour is never drawn twice.
-  function marcoEdificio(edificio, p, paso) {
+  function marcoEdificio(edificio, p, paso, seal) {
     var forma = formaDe(edificio.id);
     var base = crece(contorno(forma), p);
-    var frase = 'building ' + edificio.id + ' on ' + edificio.node + ' · ' + forma + ' · growth ' + paso + '/' + PASOS;
+    var frase = 'building ' + edificio.id + ' on ' + edificio.node + ' · ' + forma + ' · growth ' + paso + '/' + PASOS + ' · seal ' + (seal || 'NO_DATA');
     var items = [{ o: 'ribbon', pts: base, closed: true, f: 'paper', s: 'ink', lw: 2 }];
     return {
       v: 'preceptoros.bubble/1', id: edificio.id, t: paso, cv: BOX,
@@ -91,7 +91,7 @@
 
   // scene(colonia, p, reducido) → the scene: one tile per node and one building frame per building, placed on the
   // hex projection (x, y in the reference units). p is the growth of every building; reducido makes it 1 at once.
-  function scene(colonia, p, reducido) {
+  function scene(colonia, p, reducido, seals) {
     if (!colonia || !Array.isArray(colonia.nodes) || !Array.isArray(colonia.buildings)) { fail('a colony with nodes and buildings is required'); }
     var g = reducido === true ? 1 : Math.max(0, Math.min(1, typeof p === 'number' && isFinite(p) ? p : 1));
     var paso = Math.max(1, Math.min(PASOS, Math.ceil(g * PASOS)));
@@ -104,7 +104,7 @@
     });
     var buildings = colonia.buildings.map(function (b) {
       if (!pos[b.node]) { fail('building ' + b.id + ' stands on an unknown node'); }
-      var frame = marcoEdificio(b, g, paso);
+      var frame = marcoEdificio(b, g, paso, seals ? seals[b.node] : undefined);
       if (F.valida(frame).length) { fail('building frame of ' + b.id + ' breaks the frame law'); }
       return Object.freeze({ id: b.id, node: b.node, forma: formaDe(b.id), x: pos[b.node].x * ESCALA, y: pos[b.node].y * ESCALA, paso: paso, frame: frame });
     });

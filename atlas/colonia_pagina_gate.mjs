@@ -79,6 +79,11 @@ try {
   ok(/Colony: 9 nodes · 6 buildings · 9 bots with faces/.test(conFixture) && /SYNTHETIC fixture, not a live colony/.test(conFixture),
     'door, fixture: the colony is drawn, labelled SYNTHETIC (' + conFixture.slice(0, 80) + ')');
 
+  // HUECO 1: the visitor reads one sentence per bot and per building under the picture.
+  const frasesDe = async (query) => { const out = await volcado(base + '/openworld/' + query); const m = /<ul class="state" id="frases"[^>]*>([\s\S]*?)<\/ul>/.exec(out); return m ? (m[1].match(/<li>/g) || []).length : -1; };
+  const nFrases = await frasesDe('?fixture=sintetica');
+  ok(nFrases === 15, 'door, fixture: one visible sentence per bot and per building (' + nFrases + ' of 15)');
+
   console.log('\n' + pasos + ' passes · IC6 gate green');
 } catch (e) {
   console.error('RED · ' + e.message);

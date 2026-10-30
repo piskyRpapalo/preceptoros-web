@@ -92,3 +92,12 @@ test('IC7-S4: scene passes the looks of the state to each bot', () => {
   const bot = sc.bots.find((x) => x.id === 'bot-ring-e');
   assert.match(bot.frame.atoms[0].r, /zombie face/);
 });
+
+test('HUECO 1 + 2: every bot and building sentence says its seal; a missing seal says NO_DATA, never LIVE', () => {
+  const sc = CP.scene(COLONIA, 0, false, {}, { 'ring-e': 'LIVE' });
+  const texts = CP.frases(sc);
+  assert.equal(texts.length, sc.bots.length + sc.buildings.length, 'one sentence per bot and per building');
+  assert.ok(texts.some((t) => /bot of ring-e .*seal LIVE/.test(t)));
+  assert.ok(texts.some((t) => /bot of cabin .*seal NO_DATA/.test(t)), 'no seal given: NO_DATA');
+  assert.ok(texts.some((t) => /building b-ring-e on ring-e .*seal LIVE/.test(t)));
+});
