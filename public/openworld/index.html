@@ -49,6 +49,7 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
 #chat button:disabled,#chat input:disabled{opacity:.55}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 @media (min-width:900px){main{grid-template-rows:1fr;grid-template-columns:1fr 1fr}#map{border-bottom:0;border-right:2px solid var(--line)}}
+.map-stage{position:relative;height:400px;min-height:360px;flex:none}.map-stage #surface{height:100%;width:100%}.map-stage #joy{position:absolute;bottom:8px;right:8px;width:min(76%,270px);box-sizing:border-box;font-size:12px}.map-stage #joy details{grid-column:1/-1}.map-stage #joy summary{min-height:44px;cursor:pointer}.map-stage #joy .state{font-size:11px}
 </style>
 </head>
 <body>
@@ -60,8 +61,8 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
 <div class="press" role="group" aria-label="Terrains">
 <button type="button" id="t-cabin" aria-pressed="true" data-terrain="cabin">Tutorial cabin</button>
 </div>
-<div id="joy" aria-label="Walking controls"></div>
-<canvas class="surface" id="surface" role="img" aria-label="The global map: tutorial cabin and live nodes"></canvas>
+<div class="map-stage"><canvas class="surface" id="surface" role="img" aria-label="The global map: tutorial cabin and live nodes"></canvas>
+<div id="joy" aria-label="Walking controls"></div></div>
 <div class="listen">
 <button type="button" id="listen" aria-describedby="listen-state">Listen to the cabin</button>
 </div>
@@ -122,5 +123,6 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
 <script src="/game/visitor_play.js"></script>
 <script src="/assets/pwa.js"></script>
 <script src="/game/openworld_page.js"></script>
+<script src="/game/map_chat.js"></script>
 </body>
 </html>

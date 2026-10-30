@@ -19,7 +19,7 @@
   var frases_el = doc.getElementById('frases');
   // TA-4 (D13-D16): the terminal, the anchor and the joystick live in colony_controls.js; the page passes its state in.
   var CC = raiz.AtlasColonyControls;
-  var CCT = CC ? CC.attach({ doc: doc, win: raiz, colony: function () { return colonia; }, looks: function () { return colony_looks; }, seals: function () { return colony_seals; }, redraw: function () { draw(); renderFrases(); } }) : null;
+  var CCT = CC ? CC.attach({ doc: doc, win: raiz, colony: function () { return colonia; }, looks: function () { return colony_looks; }, seals: function () { return colony_seals; }, redraw: function () { draw(); renderFrases(); if (CCT && CCT.walker()) { doc.dispatchEvent(new CustomEvent("map:context", { detail: { label: "Node " + CCT.walker().node + " · browser companion; backend linkage NO_DATA" } })); } } }) : null;
 
   // The visible rows of the state: the cabin, and each node the state lists as alive. A node without its key is refused.
   function filas() {
@@ -149,34 +149,6 @@
   }
   // The chat: the question is shown as live; the answer comes from the chunk router. With no model installed, the
   // answer is NO_DATA with its cause. The router loads on the first send, never on page load.
-  var entry = doc.getElementById('entry'), question = doc.getElementById('question'), logList = doc.getElementById('log');
-  var chatNote = doc.getElementById('chat-note');
-  function line(cls, text) {
-    var li = doc.createElement('li');
-    li.className = cls; li.textContent = text; logList.appendChild(li);
-  }
-  function loadRouter(then) {
-    if (raiz.AtlasChunkRouter) { then(raiz.AtlasChunkRouter); return; }
-    var script = doc.createElement('script');
-    script.src = '/game/chunk_router.js';
-    script.onload = function () { then(raiz.AtlasChunkRouter); };
-    script.onerror = function () { then(null); };
-    doc.head.appendChild(script);
-  }
-  if (entry) {
-    entry.addEventListener('submit', function (e) {
-      e.preventDefault();
-      var text = question.value.trim();
-      if (!text) { return; }
-      line('me', text);
-      question.value = '';
-      loadRouter(function (R) {
-        if (!R) { line('', 'NO_DATA · router_not_loaded'); return; }
-        var answer = R.responde(text, null);
-        line('', answer.ok ? answer.texto : answer.causa);
-      });
-    });
-  }
   render();
   raiz.addEventListener('resize', draw);
   if (!quieto) { raiz.setInterval(cycle, 1000); }
