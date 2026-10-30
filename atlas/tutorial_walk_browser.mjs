@@ -32,7 +32,12 @@ const press = (txt) => ev(`(() => { const b=[...document.querySelectorAll('#joy 
 const out = {};
 out.start = await say();
 await press('enter node'); await espera(200); out.enterCabin1 = await say();
+out.skipButtonHeight = await ev(`(() => { const b=[...document.querySelectorAll('#joy button')].find(x=>x.textContent==='Skip tutorial'); return b ? b.getBoundingClientRect().height : 0; })()`);
+await press('Skip tutorial'); await espera(200); out.afterSkip = await say();
 await press('enter node'); await espera(200); out.enterCabin2 = await say();
 await press('east'); await espera(200); out.eastFromCabin = await say();
+if (!out.enterCabin1.includes('key played') || out.skipButtonHeight < 44 || out.afterSkip !== 'tutorial: skipped' || !out.enterCabin2.includes('tutorial: complete')) {
+  console.error(JSON.stringify(out)); process.exitCode = 1;
+}
 console.log(JSON.stringify(out, null, 1));
 ch.kill ? ch.kill() : null; srv.close(); ws.close(); process.exit(0);
