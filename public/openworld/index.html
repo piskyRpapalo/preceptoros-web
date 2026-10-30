@@ -102,7 +102,9 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
   var quieto = raiz.matchMedia && raiz.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var CP = raiz.AtlasColoniaPagina, colonia = null, colonia_fuente = 'NO_DATA', colonia_error = '';
   // Synthetic fixture, opt-in with ?fixture=sintetica: it is labelled SYNTHETIC on the page, never a live colony.
-  var FIXTURE = { nodes: [{ id: 'cabin', q: 0, r: 0 }, { id: 'ring-e', q: 1, r: 0 }, { id: 'ring-ne', q: 1, r: -1 }, { id: 'ring-nw', q: 0, r: -1 }, { id: 'ring-w', q: -1, r: 0 }, { id: 'ring-sw', q: -1, r: 1 }, { id: 'ring-se', q: 0, r: 1 }], buildings: [{ id: 'b-cabin', node: 'cabin' }, { id: 'b-ring-e', node: 'ring-e' }, { id: 'b-ring-nw', node: 'ring-nw' }, { id: 'b-ring-sw', node: 'ring-sw' }], units: [] };
+  var FIXTURE = { nodes: [{ id: 'cabin', q: 0, r: 0 }, { id: 'ring-e', q: 1, r: 0 }, { id: 'ring-ne', q: 1, r: -1 }, { id: 'ring-nw', q: 0, r: -1 }, { id: 'ring-w', q: -1, r: 0 }, { id: 'ring-sw', q: -1, r: 1 }, { id: 'ring-se', q: 0, r: 1 }, { id: 'doggee-a', q: 2, r: 0 }, { id: 'doggee-b', q: 2, r: -1 }], buildings: [{ id: 'b-cabin', node: 'cabin' }, { id: 'b-ring-e', node: 'ring-e' }, { id: 'b-ring-nw', node: 'ring-nw' }, { id: 'b-ring-sw', node: 'ring-sw' }, { id: 'b-doggee-a', node: 'doggee-a' }, { id: 'b-doggee-b', node: 'doggee-b' }], units: [] };
+  // IC7-S4 (D11): the looks of the fixture's nodes; Doggee is the zombie look. The live state carries its own looks.
+  var FIXTURE_LOOKS = { 'doggee-a': 'zombie', 'doggee-b': 'zombie' }, colony_looks = {};
 
   // The visible rows of the state: the cabin, and each node the state lists as alive. A node without its key is refused.
   function filas() {
@@ -116,7 +118,7 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
     var dpr = Math.min(2, raiz.devicePixelRatio || 1);
     surface.width = Math.round(width * dpr); surface.height = Math.round(height * dpr);
     if (colonia && CP) {
-      try { CP.draw(surface, colonia, entrada.t, quieto); return; }
+      try { CP.draw(surface, colonia, entrada.t, quieto, colony_looks); return; }
       catch (e) { colonia_error = e.message || 'the colony is refused'; }
     }
     var g = surface.getContext('2d');
@@ -151,7 +153,7 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
     var vivos = filas().filter(function (row) { return row.id !== 'cabin'; }).length;
     var linea = 'Nodes online: ' + vivos + '. The tutorial cabin is the basic world.';
     if (colonia && CP && !colonia_error) {
-      try { linea = CP.texto(CP.scene(colonia, entrada.t, quieto)) + (colonia_fuente === 'fixture' ? ' · SYNTHETIC fixture, not a live colony' : ''); }
+      try { linea = CP.texto(CP.scene(colonia, entrada.t, quieto, colony_looks)) + (colonia_fuente === 'fixture' ? ' · SYNTHETIC fixture, not a live colony' : ''); }
       catch (e) { colonia_error = e.message || 'the colony is refused'; }
     }
     if (colonia_error) {
@@ -176,10 +178,11 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
       var estado = raiz.AtlasOpenworldState.leer(data);
       colonia = estado.colonia && estado.colonia.nodes.length > 0 ? estado.colonia : null;
       colonia_fuente = colonia ? 'estado' : 'NO_DATA';
+      colony_looks = estado.looks || {};
       if (!colonia && estado.version === 2) { colonia_error = 'no node declared alive and sealed LIVE or STALE (' + estado.ocultos + ' hidden)'; }
     } catch (e) { colonia = null; colonia_error = e.message || 'the state is refused'; }
   }
-  if (new URLSearchParams(raiz.location.search).get('fixture') === 'sintetica') { colonia = FIXTURE; colonia_fuente = 'fixture'; }
+  if (new URLSearchParams(raiz.location.search).get('fixture') === 'sintetica') { colonia = FIXTURE; colonia_fuente = 'fixture'; colony_looks = FIXTURE_LOOKS; }
 
   // The cycle: a fixed step of t per second, unless reduced motion is on. The palette is a function of t alone.
   function cycle() { if (quieto) { return; } entrada.t += 1; draw(); }

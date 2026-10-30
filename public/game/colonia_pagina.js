@@ -26,18 +26,25 @@
     }
     return pts;
   }
+  // The face of a node follows its look (IC7-S4, D11). basic and atlantis: smiling face on paper. zombie: flat eyes and a
+  // straight mouth on the cyan family. Only house bands are used; the look is data of the state, never a fixed skin.
   function botFrame(node, t, reducido) {
     var dy = reducido === true ? 0 : RONDA[((t % 4) + 4) % 4];
-    var frase = 'bot of ' + node.id + ' · face · tick ' + t + (reducido === true ? ' · still (reduced motion)' : '');
+    var look = node.look === 'zombie' ? 'zombie' : 'basic';
+    var frase = 'bot of ' + node.id + ' · ' + look + ' face · tick ' + t + (reducido === true ? ' · still (reduced motion)' : '');
     var cuerpo = cuerpoPts(9).map(function (q) { return [q[0] + BX, q[1] + BY - 14 - dy]; });
+    var cara = look === 'zombie' ? [
+      { o: 'ribbon', pts: [[BX - 6, BY - 18 - dy], [BX - 2, BY - 18 - dy], [BX - 2, BY - 16 - dy], [BX - 6, BY - 16 - dy]], closed: true, f: 'ink', s: 'ink', lw: 1 },
+      { o: 'ribbon', pts: [[BX + 2, BY - 18 - dy], [BX + 6, BY - 18 - dy], [BX + 6, BY - 16 - dy], [BX + 2, BY - 16 - dy]], closed: true, f: 'ink', s: 'ink', lw: 1 },
+      { o: 'ribbon', pts: [[BX - 5, BY - 9 - dy], [BX + 5, BY - 9 - dy], [BX + 5, BY - 8 - dy], [BX - 5, BY - 8 - dy]], closed: true, f: 'ink', s: 'ink', lw: 1 }
+    ] : [
+      { o: 'ribbon', pts: [[BX - 4, BY - 18 - dy], [BX - 2, BY - 16 - dy], [BX - 4, BY - 14 - dy]], closed: true, f: 'ink', s: 'ink', lw: 1 },
+      { o: 'ribbon', pts: [[BX + 4, BY - 18 - dy], [BX + 6, BY - 16 - dy], [BX + 4, BY - 14 - dy]], closed: true, f: 'ink', s: 'ink', lw: 1 },
+      { o: 'ribbon', pts: [[BX - 4, BY - 10 - dy], [BX, BY - 8 - dy], [BX + 4, BY - 10 - dy]], closed: false, f: 'ink', s: 'ink', lw: 1 }
+    ];
     return {
       v: 'preceptoros.bubble/1', id: 'bot-' + node.id, t: t, cv: [120, 110],
-      atoms: [{ k: 'bot.' + node.id, r: frase, i: [
-        { o: 'ribbon', pts: cuerpo, closed: true, f: 'paper', s: 'ink', lw: 2 },
-        { o: 'ribbon', pts: [[BX - 4, BY - 18 - dy], [BX - 2, BY - 16 - dy], [BX - 4, BY - 14 - dy]], closed: true, f: 'ink', s: 'ink', lw: 1 },
-        { o: 'ribbon', pts: [[BX + 4, BY - 18 - dy], [BX + 6, BY - 16 - dy], [BX + 4, BY - 14 - dy]], closed: true, f: 'ink', s: 'ink', lw: 1 },
-        { o: 'ribbon', pts: [[BX - 4, BY - 10 - dy], [BX, BY - 8 - dy], [BX + 4, BY - 10 - dy]], closed: false, f: 'ink', s: 'ink', lw: 1 }
-      ] }],
+      atoms: [{ k: 'bot.' + node.id, r: frase, i: [{ o: 'ribbon', pts: cuerpo, closed: true, f: look === 'zombie' ? 'cyan' : 'paper', s: 'ink', lw: 2 }].concat(cara) }],
       bands: ['paper', 'ink', 'cyan'],
       change: [frase],
       sound: 'NO_DATA: bots declare no waves; nothing is invented',
@@ -46,7 +53,7 @@
   }
 
   // The colony as it is drawn: validated state in, scene out. Throws on any invalid state (no invented row).
-  function scene(estado, t, reducido) {
+  function scene(estado, t, reducido, looks) {
     var validar = root.AtlasColonyState || root.colony;   // the browser: colony_state.js is a classic script, so colony is global
     var colonia = validar(estado);
     var AE = root.AtlasEdificios, PC = root.AtlasPaletteCycle;
@@ -54,23 +61,26 @@
     var cielo = PC.palette(t, reducido === true).cielo;
     // One bot per live node, beside the node's hex (IC7-S3). Buildings are drawn separately, as before.
     var bots = sc.tiles.map(function (n) {
-      return { id: 'bot-' + n.id, x: n.x + BOT_DX * ESCALA_SALA, y: n.y + BOT_DY * ESCALA_SALA, frame: botFrame({ id: n.id }, t, reducido === true) };
+      return { id: 'bot-' + n.id, x: n.x + BOT_DX * ESCALA_SALA, y: n.y + BOT_DY * ESCALA_SALA, frame: botFrame({ id: n.id, look: looks ? looks[n.id] : undefined }, t, reducido === true) };
     });
     return { tiles: sc.tiles, buildings: sc.buildings, bots: bots, cielo: cielo, nodes: colonia.nodes.length, edificios: colonia.buildings.length };
   }
   var ESCALA_SALA = 2;   // the same spacing as the core: the scene is placed at twice the axial positions
 
   // draw(canvas, estado, t, reducido) → the scene drawn on canvas, with the sky of its tick under it.
-  function draw(canvas, estado, t, reducido) {
+  function draw(canvas, estado, t, reducido, looks) {
     var B = root.AtlasBubble, P = root.AtlasComicAtoms;
-    var sc = scene(estado, t, reducido);
+    var sc = scene(estado, t, reducido, looks);
     var g = canvas.getContext('2d');
     g.setTransform(1, 0, 0, 1, 0, 0);
     g.fillStyle = sc.cielo; g.fillRect(0, 0, canvas.width, canvas.height);
     var cx = canvas.width / 2, cy = canvas.height / 2;
+    // IC7-S4: the spacing shrinks when the widest node would leave the canvas; it never grows past K.
+    var reach = sc.tiles.reduce(function (m, n) { return Math.max(m, Math.abs(n.x)); }, 1);
+    var k = Math.min(K, (canvas.width / 2 - 80) / reach);
     sc.tiles.concat(sc.buildings, sc.bots).forEach(function (nd) {
       g.save();
-      g.translate(cx + nd.x * K - BX * S, cy + nd.y * K - BY * S);
+      g.translate(cx + nd.x * k - BX * S, cy + nd.y * k - BY * S);
       g.scale(S, S);
       P.paint(g, B.compile(nd.frame));
       g.restore();
