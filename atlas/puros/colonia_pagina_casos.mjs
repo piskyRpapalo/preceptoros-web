@@ -18,6 +18,7 @@ globalThis.HexProjection = require('./hex_projection.js');
 globalThis.AtlasColonyState = require('../../public/game/colony_state.js');
 globalThis.AtlasEdificios = require('../../public/game/colonia_edificios.js');
 globalThis.AtlasPaletteCycle = require('../../public/game/palette_cycle.js');
+globalThis.AtlasMapScene = require('../../public/game/map_scene.js');
 const CP = require('../../public/game/colonia_pagina.js');
 const OS = require('../../public/game/openworld_state.js');
 const F = require('./state_frames.js');

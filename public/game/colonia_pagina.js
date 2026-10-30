@@ -94,8 +94,13 @@
     // IC7-S4: the spacing shrinks when the widest node would leave the canvas; it never grows past K.
     var reach = sc.tiles.reduce(function (m, n) { return Math.max(m, Math.abs(n.x)); }, 1);
     var k = Math.min(K, (canvas.width / 2 - 80) / reach);
-    var drawn = sc.tiles.concat(sc.buildings, sc.bots);
-    if (you) { drawn.push({ x: you.x - BOT_DX * ESCALA_SALA, y: you.y - 22, frame: sc.you }); }
+    // M1-2: the order is the one-map composition (map_scene.js): by depth, then by layer (tiles, buildings, bots, walker).
+    var capas = sc.tiles.map(function (n, i) { return { id: 'a' + i, x: n.x, y: n.y, item: n }; })
+      .concat(sc.buildings.map(function (n, i) { return { id: 'b' + i, x: n.x, y: n.y, item: n }; }))
+      .concat(sc.bots.map(function (n, i) { return { id: 'c' + i, x: n.x, y: n.y, item: n }; }));
+    if (you) { capas.push({ id: 'd', x: you.x - BOT_DX * ESCALA_SALA, y: you.y - 22, item: { x: you.x - BOT_DX * ESCALA_SALA, y: you.y - 22, frame: sc.you } }); }
+    var frames = root.AtlasMapScene ? root.AtlasMapScene.compose(capas.map(function (c) { return { id: c.id, x: c.x, y: c.y, frame: c.item.frame }; })) : null;
+    var drawn = frames ? frames.map(function (f) { return { x: f.x, y: f.y, frame: f.frame }; }) : capas.map(function (c) { return c.item; });
     drawn.forEach(function (nd) {
       g.save();
       g.translate(cx + nd.x * k - BX * S, cy + nd.y * k - BY * S);
