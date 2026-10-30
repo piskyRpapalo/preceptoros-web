@@ -50,7 +50,7 @@ def construye(fuente):
         if n.get("look") not in LOOKS:
             fallo(nid + ": look desconocido")
         nodos.append({"id": nid, "q": n["q"], "r": n["r"], "alive": n["alive"], "seal": n["seal"],
-                      "since": since, "look": n["look"], "evidence": n["evidence"]})
+                      "since": since, "look": n["look"]})   # evidence stays in the source (audit); not published
     ids = {n["id"] for n in nodos}
     edificios = []
     for b in fuente.get("edificios", []):
@@ -68,7 +68,10 @@ def construye(fuente):
 
 def main():
     fuente = json.loads(FUENTE.read_text(encoding="utf-8"))
-    texto = json.dumps(construye(fuente), ensure_ascii=False, indent=2) + "\n"
+    # Compacto (canon §18, decreto ·6525195489): una linea, sin espacios, menos de 1 KiB.
+    texto = json.dumps(construye(fuente), ensure_ascii=False, separators=(",", ":")) + "\n"
+    if len(texto.encode("utf-8")) >= 1024:
+        fallo("estado.json compactado pasa de 1 KiB: " + str(len(texto.encode("utf-8"))) + " B")
     if "--check" in sys.argv:
         if not SALIDA.exists() or SALIDA.read_text(encoding="utf-8") != texto:
             print("estado_v2: el estado escrito no coincide con la fuente")
