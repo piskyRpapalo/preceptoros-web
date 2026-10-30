@@ -56,7 +56,7 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
 <div id="joy"></div>
 <p class="state" id="state" aria-live="polite">Nodes online: 0.</p>
 <ul class="state" id="frases" aria-label="Map details"></ul>
-<p><a href="/face/army.html" style="display:inline-flex;min-height:44px">Army fixture</a> · <a href="/openworld/hexelion-benchmark.json" style="display:inline-block;min-height:44px">Benchmark data</a> · <a href="/face/basic.html" style="display:inline-block;min-height:44px">Tutorial · no key</a></p>
+<p><a href="/face/army.html" style="display:inline-flex;min-height:44px">Army fixture</a></p>
 </section>
 <section id="chat" aria-labelledby="chat-h">
 <h2 id="chat-h">Chat</h2>
@@ -165,11 +165,8 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
       try { linea = CP.texto(CP.scene(colonia, entrada.t, quieto, colony_looks, colony_seals)) + (colonia_fuente === 'fixture' ? ' · SYNTHETIC fixture, not a live colony' : ''); }
       catch (e) { colonia_error = e.message || 'the colony is refused'; }
     }
-    if (colonia_error) {
-      linea += ' Colony: NO_DATA · ' + colonia_error + '.';
-    } else if (!colonia) {
-      linea += ' Colony: NO_DATA · no live colony in the state (estado.json has no colonia).';
-    }
+    if (colonia_error) { linea += ' Colony: NO_DATA · ' + colonia_error + '.'; }
+    else if (!colonia) { linea += ' Colony: NO_DATA · no live colony in the state (estado.json has no colonia).'; }
     if (CCT) { CCT.start(); }
     state.textContent = linea;
     renderFrases();
@@ -244,7 +241,8 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
   var entry = doc.getElementById('entry'), question = doc.getElementById('question'), logList = doc.getElementById('log');
   var chatNote = doc.getElementById('chat-note');
   function line(cls, text) {
-    var li = doc.createElement('li'); li.className = cls; li.textContent = text; logList.appendChild(li);
+    var li = doc.createElement('li');
+    li.className = cls; li.textContent = text; logList.appendChild(li);
   }
   function loadRouter(then) {
     if (raiz.AtlasChunkRouter) { then(raiz.AtlasChunkRouter); return; }
