@@ -71,16 +71,16 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
 <p><a href="/face/army.html" style="display:inline-flex;min-height:44px">Army fixture</a></p>
 </section>
 <section id="chat" aria-labelledby="chat-h">
-<h2 id="chat-h">Chat</h2>
+<h2 id="chat-h">Device AI chat</h2>
 <ul class="log" id="log" role="log" aria-live="polite">
-<li>The chat is not live yet.</li>
+<li>This chat reaches the local PreceptorOS app on this device. Send a message to make a request.</li>
 </ul>
 <form id="entry" onsubmit="return false">
 <label class="sr" for="question">Message</label>
-<input id="question" type="text" autocomplete="off" aria-describedby="chat-note">
+<input id="question" type="text" maxlength="600" autocomplete="off" aria-describedby="chat-note">
 <button type="submit">Send</button>
 </form>
-<p class="state" id="chat-note">NO_DATA: no local answer model is connected.</p>
+<p class="state" id="chat-note">No request is made until you send. The local app may return NO_DATA if it is unavailable.</p>
 </section>
 </main>
 <script src="/game/tabla_semantica.js"></script>
@@ -103,6 +103,7 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
 <script src="/game/colonia_pagina.js"></script>
 <script src="/game/tutorial_walk.js"></script>
 <script src="/game/colony_controls.js"></script>
+<script src="/game/local_app_bridge.js"></script>
 <script src="/assets/pwa.js"></script>
 <script>
 // OpenWorld (NORTE 7 · PR 2 · global map, ODD isometric-colony). Same-origin only: the state file is the one thing read
@@ -120,9 +121,9 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
   var quieto = raiz.matchMedia && raiz.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var CP = raiz.AtlasColoniaPagina, colonia = null, colonia_fuente = 'NO_DATA', colonia_error = '';
   // Synthetic fixture, opt-in with ?fixture=sintetica: it is labelled SYNTHETIC on the page, never a live colony.
-  var FIXTURE = { nodes: [{ id: 'cabin', q: 0, r: 0 }, { id: 'ring-e', q: 1, r: 0 }, { id: 'ring-ne', q: 1, r: -1 }, { id: 'ring-nw', q: 0, r: -1 }, { id: 'ring-w', q: -1, r: 0 }, { id: 'ring-sw', q: -1, r: 1 }, { id: 'ring-se', q: 0, r: 1 }, { id: 'doggee-a', q: 2, r: 0 }, { id: 'doggee-b', q: 2, r: -1 }], buildings: [{ id: 'b-cabin', node: 'cabin' }, { id: 'b-ring-e', node: 'ring-e' }, { id: 'b-ring-nw', node: 'ring-nw' }, { id: 'b-ring-sw', node: 'ring-sw' }, { id: 'b-doggee-a', node: 'doggee-a' }, { id: 'b-doggee-b', node: 'doggee-b' }], units: [] };
-  // IC7-S4 (D11): the looks of the fixture's nodes; Doggee is the zombie look. The live state carries its own looks.
-  var FIXTURE_LOOKS = { 'doggee-a': 'zombie', 'doggee-b': 'zombie' }, colony_looks = {}, colony_seals = {};
+  // Device slots are anonymous; only the cabin has a fixture building.
+  var FIXTURE = { nodes: [{ id: 'cabin', q: 0, r: 0 }, { id: 'ring-e', q: 1, r: 0 }, { id: 'ring-ne', q: 1, r: -1 }, { id: 'ring-nw', q: 0, r: -1 }, { id: 'ring-w', q: -1, r: 0 }, { id: 'ring-sw', q: -1, r: 1 }, { id: 'ring-se', q: 0, r: 1 }, { id: '1', q: 2, r: 0 }, { id: '2', q: 2, r: -1 }, { id: '3', q: 3, r: 0 }, { id: '4', q: 3, r: -1 }], buildings: [{ id: 'b-cabin', node: 'cabin' }], units: [] };
+  var FIXTURE_LOOKS = {}, colony_looks = {}, colony_seals = {};
   var frases_el = doc.getElementById('frases');
   // TA-4 (D13-D16): the terminal, the anchor and the joystick live in colony_controls.js; the page passes its state in.
   var CC = raiz.AtlasColonyControls;
@@ -249,39 +250,44 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
       });
     });
   }
-  // The chat: the question is shown as live; the answer comes from the chunk router. With no model installed, the
-  // answer is NO_DATA with its cause. The router loads on the first send, never on page load.
+  // Device AI chat: only an explicit submit contacts this device's loopback PreceptorOS app.
   var entry = doc.getElementById('entry'), question = doc.getElementById('question'), logList = doc.getElementById('log');
   var chatNote = doc.getElementById('chat-note');
   function line(cls, text) {
     var li = doc.createElement('li');
     li.className = cls; li.textContent = text; logList.appendChild(li);
   }
-  function loadRouter(then) {
-    if (raiz.AtlasChunkRouter) { then(raiz.AtlasChunkRouter); return; }
-    var script = doc.createElement('script');
-    script.src = '/game/chunk_router.js';
-    script.onload = function () { then(raiz.AtlasChunkRouter); };
-    script.onerror = function () { then(null); };
-    doc.head.appendChild(script);
-  }
+  var chatBusy = false;
   if (entry) {
     entry.addEventListener('submit', function (e) {
       e.preventDefault();
       var text = question.value.trim();
-      if (!text) { return; }
+      if (!text || chatBusy) { return; }
+      chatBusy = true;
       line('me', text);
       question.value = '';
-      loadRouter(function (R) {
-        if (!R) { line('', 'NO_DATA · router_not_loaded'); return; }
-        fetch('/model/manifest.json', { cache: 'no-cache' })
-          .then(function (r) { return r.ok ? r.json() : null; }, function () { return null; })
-          .then(function (m) {
-            var plan = R.planifica(m);
-            if (!plan.ok) { line('', plan.causa); return; }
-            var answer = R.responde(text, null);   // a manifest exists, but no model loader is built yet
-            line('', answer.ok ? answer.texto : 'NO_DATA · model_loader_not_built (' + answer.causa + ')');
-          });
+      var send = entry.querySelector('button[type="submit"]');
+      if (send) { send.disabled = true; }
+      chatNote.textContent = 'Asking the local app on this device…';
+      var bridge = raiz.AtlasLocalAppBridge;
+      var result = bridge && typeof bridge.consultar === 'function'
+        ? bridge.consultar(text)
+        : Promise.resolve({ estado: 'NO_DATA', causa: 'local app bridge is unavailable' });
+      result.then(function (answer) {
+        chatBusy = false;
+        if (send) { send.disabled = false; }
+        if (answer.estado === 'MEASURED') {
+          line('ai', answer.respuesta);
+          chatNote.textContent = 'Answered by this device’s local AI · ' + answer.origen + ' · ' + answer.fuentes + ' sources.';
+        } else {
+          line('', answer.estado + ' · ' + answer.causa);
+          chatNote.textContent = 'The local app did not answer.';
+        }
+      }, function () {
+        chatBusy = false;
+        if (send) { send.disabled = false; }
+        line('', 'NO_DATA · local app request failed');
+        chatNote.textContent = 'The local app did not answer.';
       });
     });
   }

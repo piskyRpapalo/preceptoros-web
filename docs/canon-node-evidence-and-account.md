@@ -12,6 +12,8 @@ The proposed master account links the local app, laboratory, and web using only 
 
 The static JSON record lists three dated local model measurements from HEXELION (2026-10-30): eval rate, `ollama ps` processor/context, and `ollama list` disk size. Its source receipt hash points to the node's local lab record. It is historical evidence, not a live heartbeat and not authority to publish a colony node. A node remains absent or NO_DATA until the signed publication path supplies its current measurement. No model is run by this record and no rack connection is made.
 
+The OpenWorld state may reserve anonymous display slots `1`–`4` while device-to-slot evidence is absent. These slots remain NO_DATA with no date or buildings; their numbers do not identify a host or claim that an app is installed. Only a measured, signed state can make one visible as a live node.
+
 ## Public reference dictionary — `public/game/hexelion_dictionary.js`
 
 The catalogue is static and English-first. Its public references point to signed annex material, while machine-readable anchors also exist in the dictionary data and `llms.txt`. The module requests only two same-origin JSON resources. This module performs no network lookup, storage, wall-clock read, random choice, or capture/reward behavior.

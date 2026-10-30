@@ -1,5 +1,4 @@
-// NORTE 7 · PR 2 in a real browser: /openworld/ draws the tutorial cabin with zero nodes, the chat panel is
-// there with its input off, no exception, no external request, no sideways scroll at phone width.
+// NORTE 7 · PR 2 in a real browser: /openworld/ draws the tutorial cabin, joystick and device-local AI chat.
 // Uso: node atlas/openworld_browser.mjs [carpeta-captura]
 import { createServer } from 'node:http';
 import { readFileSync, writeFileSync } from 'node:fs';
@@ -47,6 +46,17 @@ async function main() {
   const cmd = (method, params = {}) => new Promise((r) => { const i = ++id; pend.set(i, r); ws.send(JSON.stringify({ id: i, method, params })); });
   const ev = async (e) => (await cmd('Runtime.evaluate', { expression: e, awaitPromise: true, returnByValue: true })).result?.result?.value ?? null;
   await cmd('Runtime.enable'); await cmd('Page.enable'); await cmd('Network.enable');
+  await cmd('Page.addScriptToEvaluateOnNewDocument', { source: `(() => {
+    const original = window.fetch.bind(window); window.__localAiCalls = [];
+    window.fetch = function (input, init) {
+      const url = typeof input === 'string' ? input : input.url;
+      if (url === 'http://127.0.0.1:8740/api/orquestador') {
+        window.__localAiCalls.push({ url, init });
+        return Promise.resolve(new Response(JSON.stringify({ esquema:'preceptoros.orquestador/1', intent:'QUERY_STATE', estado:'MEASURED', causa:null, origen:'memory.fts5', respuesta:'Local measured reply', fuentes:1 }), { status:200, headers:{'Content-Type':'application/json'} }));
+      }
+      return original(input, init);
+    };
+  })();` });
   // Phone width first: the map is the top half, the chat the bottom half, nothing scrolls sideways.
   await cmd('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 1, mobile: true });
   await cmd('Page.navigate', { url: origen + '/openworld/' }); await espera(1800);
@@ -67,6 +77,7 @@ async function main() {
       texto: document.body.innerText
     }); })()`));
   ok(medida.titulo === 'OpenWorld', 'the page did not load: ' + medida.titulo);
+  ok(await ev('window.__localAiCalls.length') === 0, 'the local device was contacted on page load');
   ok(medida.sceneComposer === 'back,front', 'the single map did not load its depth composer: ' + medida.sceneComposer);
   // NORTE 8 · mandato 3 (rebanada 2): el sonido nativo. La cabaña no declara ondas con armónicos, así que su
   // sonido dice NO_DATA con su causa en la región en vivo. Un clic no crea audio sin una voz que sonar.
@@ -77,14 +88,19 @@ async function main() {
   await ev("document.getElementById('listen').click()"); await espera(200);
   const escucha = await ev("document.getElementById('listen-state').textContent");
   ok(/^Playing 1 voices\.$/.test(escucha || ''), 'the cabin sound did not play its one voice: ' + escucha);
-  // El chat: una pregunta se muestra como viva y la respuesta es NO_DATA con su causa (no hay modelo instalado).
+  // The local AI is called only after an explicit submit; the browser stub measures the bounded loopback request.
   await ev("(() => { const q = document.getElementById('question'); q.value = 'hola'; document.getElementById('entry').dispatchEvent(new Event('submit', { cancelable: true })); })()");
   await espera(900);
   const respuesta = await ev("(document.querySelector('#log li:last-child') || {}).textContent || ''");
-  ok(/^NO_DATA · /.test(respuesta || ''), 'the chat answer is not an honest NO_DATA: ' + respuesta);
-  ok(JSON.stringify(medida.botones) === JSON.stringify(['Tutorial cabin']), 'the terrain list is not the cabin alone: ' + JSON.stringify(medida.botones));
+  const localChat = await ev("JSON.stringify({calls:window.__localAiCalls.length,url:window.__localAiCalls[0]&&window.__localAiCalls[0].url,body:window.__localAiCalls[0]&&window.__localAiCalls[0].init.body,credentials:window.__localAiCalls[0]&&window.__localAiCalls[0].init.credentials})");
+  const chatCall = JSON.parse(localChat || '{}');
+  ok(respuesta === 'Local measured reply', 'the local AI answer is missing: ' + respuesta);
+  ok(chatCall.calls === 1 && chatCall.url === 'http://127.0.0.1:8740/api/orquestador' && JSON.parse(chatCall.body).payload.consulta === 'hola', 'chat did not call this device app exactly once: ' + JSON.stringify(chatCall));
+  ok((await ev('window.__localAiCalls[0].init.credentials')) === 'omit', 'local app call includes credentials');
+  medida.chat = { local_requests: chatCall.calls, endpoint: '/api/orquestador on this device', answer: respuesta };
+  ok(JSON.stringify(medida.botones) === JSON.stringify(['Tutorial cabin']), 'the terrain list is not the one live cabin: ' + JSON.stringify(medida.botones));
   ok(medida.tinta > 2000, 'the map is blank: ' + medida.tinta);
-  // Estado de 2026-10-30 (MVP moderno): la cabaña es el unico nodo LIVE; Beelink y Doggee son NO_DATA y no se dibujan.
+  // The cabin is the only LIVE node; four anonymous device slots remain NO_DATA and are not drawn.
   ok(/^Colony: 1 nodes · 1 buildings · 1 bots with faces · sky #[0-9a-f]{6}$/.test(medida.estado || ''), 'the default state is not the declared one (cabin only, LIVE): ' + medida.estado);
   ok(medida.chatAbierto && !medida.entradaOff, 'the chat panel is missing or its input is off');
   ok(medida.joystick.buttons === 8 && medida.joystick.visible, 'the joystick is missing or below the phone viewport: ' + JSON.stringify(medida.joystick));

@@ -17,9 +17,14 @@ test('schema v1 (the file on main today) carries no colony', () => {
   assert.equal(r.colonia, null);
 });
 
-test('the file on main reads as v1 with no colony', () => {
+test('the served state keeps four anonymous device slots NO_DATA and the cabin as its only live node', () => {
   const raw = JSON.parse(readFileSync(new URL('../../public/openworld/estado.json', import.meta.url), 'utf8'));
-  assert.equal(S.leer(raw).colonia, null);
+  const state = S.leer(raw);
+  assert.deepEqual(raw.colonia.nodes.filter((n) => n.id !== 'cabin').map((n) => n.id), ['1', '2', '3', '4']);
+  assert.ok(raw.colonia.nodes.filter((n) => n.id !== 'cabin').every((n) => n.seal === 'NO_DATA' && n.since === null));
+  assert.deepEqual(raw.colonia.buildings.map((b) => b.node), ['cabin']);
+  assert.deepEqual(state.colonia.nodes.map((n) => n.id), ['cabin']);
+  assert.equal(state.hidden, 4);
 });
 
 test('a missing schema is read as v1, so an old file keeps working', () => {
