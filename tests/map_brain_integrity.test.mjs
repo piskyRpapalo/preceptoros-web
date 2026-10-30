@@ -52,3 +52,13 @@ test('cached shard digest and byte count are checked', async () => {
   await assert.rejects(self.test.verify(corrupt.buffer, record), /SHA-256/);
   await assert.rejects(self.test.verify(bytes.buffer.slice(1), record), /size/);
 });
+
+
+test('consent never bypasses the missing runtime integrity gate', async () => {
+  const { self, replies, calls } = sandbox();
+  await self.onmessage({ data: { id: 2, type: 'load', consent: true } });
+  assert.equal(calls.length, 0);
+  assert.match(replies[0].error, /runtime_integrity_unavailable/);
+  const source = readFileSync('public/game/map_brain_worker.js', 'utf8');
+  assert.doesNotMatch(source, /import\s*\(/);
+});
