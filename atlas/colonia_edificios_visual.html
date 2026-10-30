@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Colony buildings · visual check</title>
+<style>
+  :root { color-scheme: light; }
+  body { margin: 0; padding: 16px; font: 14px/1.4 system-ui, sans-serif; background: #f4f1ea; color: #17131f; }
+  h1 { font-size: 18px; margin: 0 0 4px; }
+  .sub { margin: 0 0 12px; color: #4a4456; }
+  .row { margin-bottom: 14px; }
+  .row h2 { font-size: 14px; margin: 0 0 6px; }
+  .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+  figure { margin: 0; background: #fff; border: 1px solid #17131f; }
+  figure canvas { display: block; width: 100%; height: auto; aspect-ratio: 3 / 2; }
+  figcaption { font: 12px/1.3 ui-monospace, monospace; padding: 4px 6px; border-top: 1px solid #17131f; }
+  pre { font: 12px/1.35 ui-monospace, monospace; background: #fff; border: 1px solid #17131f; padding: 8px; white-space: pre-wrap; }
+</style>
+</head>
+<body>
+<h1>Colony buildings · one hex ring around the cabin</h1>
+<p class="sub">One synthetic colony, drawn three ways: whole (A), born in six steps (B), reduced motion, arriving whole (C). The fixture is SYNTHETIC: it proves the render path, it is not a live colony.</p>
+<div class="row"><h2>A · whole · the colony as a place</h2><div class="grid" id="filaA"></div></div>
+<div class="row"><h2>B · birth growth · six steps of the same colony</h2><div class="grid" id="filaB"></div></div>
+<div class="row"><h2>C · reduced motion · arrives whole in one step</h2><div class="grid" id="filaC"></div></div>
+<h2 style="font-size:14px">Receipt</h2>
+<pre id="recibo">running…</pre>
+<script src="../public/game/tabla_semantica.js"></script>
+<script src="../public/game/comic_tokens.js"></script>
+<script src="../public/game/comic_accents.js"></script>
+<script src="../public/game/comic_atoms.js"></script>
+<script src="../public/game/valores.js"></script>
+<script src="../public/game/gacha.js"></script>
+<script src="../public/game/bubble_language.js"></script>
+<script src="../public/game/bubble_letters.js"></script>
+<script src="puros/state_frames.js"></script>
+<script src="puros/hex_projection.js"></script>
+<script src="puros/colonia_edificios.js"></script>
+<script>
+(function (raiz) {
+  'use strict';
+  var E = raiz.AtlasEdificios, B = raiz.AtlasBubble, P = raiz.AtlasComicAtoms;
+  var params = new URLSearchParams(raiz.location.search);
+  var sabotaje = params.get('sabotaje') || '';
+  var W = 480, H = 320, K = 1.5, S = 1.4;   // K spaces the hex positions, S scales one bubble box in the sheet
+  var BX = 60, BY = 84;                     // the base of a building inside its box (the same as the core)
+
+  // The synthetic colony: the cabin at the centre, six hex neighbours around it, buildings on four of them.
+  // Written by hand, it is valid by the state contract: one building per node, every owner in the node list.
+  var NODOS = [
+    { id: 'cabin', q: 0, r: 0 },
+    { id: 'ring-e', q: 1, r: 0 }, { id: 'ring-ne', q: 1, r: -1 }, { id: 'ring-nw', q: 0, r: -1 },
+    { id: 'ring-w', q: -1, r: 0 }, { id: 'ring-sw', q: -1, r: 1 }, { id: 'ring-se', q: 0, r: 1 }
+  ];
+  var EDIFICIOS = [
+    { id: 'b-cabin', node: 'cabin' }, { id: 'b-ring-e', node: 'ring-e' },
+    { id: 'b-ring-nw', node: 'ring-nw' }, { id: 'b-ring-sw', node: 'ring-sw' }
+  ];
+  var COLONIA = { nodes: NODOS, buildings: EDIFICIOS, units: [] };
+
+  // FNV-1a over the canvas pixels: the same pixels give the same hash in every run.
+  function hashCanvas(canvas) {
+    var d = canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height).data, h = 0x811c9dc5;
+    for (var i = 0; i < d.length; i++) { h ^= d[i]; h = Math.imul(h, 0x01000193) >>> 0; }
+    return ('00000000' + (h >>> 0).toString(16)).slice(-8);
+  }
+
+  // The sabotage flag changes the second run on purpose: a line width moves with no state change.
+  function dibuja(canvas, escena, desviar) {
+    var g = canvas.getContext('2d');
+    g.setTransform(1, 0, 0, 1, 0, 0);
+    g.fillStyle = '#f4ebd0'; g.fillRect(0, 0, canvas.width, canvas.height);
+    var cx = canvas.width / 2, cy = canvas.height / 2;
+    var todos = escena.tiles.concat(escena.buildings);
+    todos.forEach(function (nd) {
+      var fotograma = nd.frame;
+      if (desviar && nd.frame.atoms[0].i[0]) { fotograma.atoms[0].i[0].lw = 5; }   // sabotage: no state change
+      g.save();
+      g.translate(cx + nd.x * K - BX * S, cy + nd.y * K - BY * S);
+      g.scale(S, S);
+      P.paint(g, B.compile(fotograma));
+      g.restore();
+    });
+  }
+
+  function celda(fila, titulo, escena) {
+    var fig = document.createElement('figure');
+    var canvas = document.createElement('canvas');
+    canvas.width = W; canvas.height = H;
+    var cap = document.createElement('figcaption');
+    cap.textContent = titulo + ' · growth ' + escena.paso + '/' + escena.pasos + ' · ' + escena.buildings.length + ' buildings';
+    fig.appendChild(canvas); fig.appendChild(cap);
+    fila.appendChild(fig);
+    return canvas;
+  }
+
+  function filas() {
+    var resultados = { scenes: [], n2: true, sabotaje: sabotaje || 'none', errores: [] };
+    var escenas = [];
+    var filaA = document.getElementById('filaA'), filaB = document.getElementById('filaB'), filaC = document.getElementById('filaC');
+    var todas = [];
+    var whole = E.escena(COLONIA, 1, false);
+    todas.push({ scene: 'A', nombre: 'whole', fila: filaA, escena: whole });
+    E.nacimiento(COLONIA, false).forEach(function (sc) { todas.push({ scene: 'B', nombre: 'birth', fila: filaB, escena: sc }); });
+    E.nacimiento(COLONIA, true).forEach(function (sc) { todas.push({ scene: 'C', nombre: 'reduced', fila: filaC, escena: sc }); });
+    todas.forEach(function (e) {
+      e.canvas = celda(e.fila, e.scene + ' · ' + e.nombre, e.escena);
+      escenas.push(e);
+    });
+    escenas.forEach(function (e) { dibuja(e.canvas, e.escena, false); });
+    var primera = escenas.map(function (e) { return hashCanvas(e.canvas); });
+    escenas.forEach(function (e) { dibuja(e.canvas, e.escena, sabotaje === 'jitter'); });
+    var segunda = escenas.map(function (e) { return hashCanvas(e.canvas); });
+    escenas.forEach(function (e, i) {
+      resultados.scenes.push({ scene: e.scene, paso: e.escena.paso, hash: primera[i], hash2: segunda[i], igual: primera[i] === segunda[i] });
+      if (primera[i] !== segunda[i]) { resultados.n2 = false; }
+    });
+    // Reduced motion must arrive at the same pixels as the whole scene.
+    resultados.reducido_igual_a_entero = primera[primera.length - 1] === primera[0];
+    resultados.ancho = W; resultados.alto = H;
+    resultados.edificios = whole.buildings.map(function (b) { return b.id + ':' + b.forma; });
+    return resultados;
+  }
+
+  function alto(error) { document.getElementById('recibo').textContent = 'ERROR · ' + error.message; }
+
+  // sabotage: a building on a node the colony does not hold must be refused.
+  if (sabotaje === 'nodo') { EDIFICIOS.push({ id: 'b-ghost', node: 'ghost' }); }
+
+  try {
+    var r = filas();
+    document.getElementById('recibo').textContent = JSON.stringify(r);
+  } catch (error) {
+    alto(error);
+  }
+})(this);
+</script>
+</body>
+</html>
