@@ -87,6 +87,7 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
 <script src="/game/palette_cycle.js"></script>
 <script src="/game/openworld_state.js"></script>
 <script src="/game/colonia_pagina.js"></script>
+<script src="/game/tutorial_walk.js"></script>
 <script src="/game/colony_controls.js"></script>
 <script src="/assets/pwa.js"></script>
 <script>
@@ -111,7 +112,7 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
   var frases_el = doc.getElementById('frases');
   // TA-4 (D13-D16): the terminal, the anchor and the joystick live in colony_controls.js; the page passes its state in.
   var CC = raiz.AtlasColonyControls;
-  var CCT = CC ? CC.attach({ doc: doc, win: raiz, colony: function () { return colonia; }, looks: function () { return colony_looks; }, redraw: function () { draw(); renderFrases(); } }) : null;
+  var CCT = CC ? CC.attach({ doc: doc, win: raiz, colony: function () { return colonia; }, looks: function () { return colony_looks; }, seals: function () { return colony_seals; }, redraw: function () { draw(); renderFrases(); } }) : null;
 
   // The visible rows of the state: the cabin, and each node the state lists as alive. A node without its key is refused.
   function filas() {
