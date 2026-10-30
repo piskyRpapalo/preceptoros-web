@@ -2429,19 +2429,22 @@ class Puerta(unittest.TestCase):
                 self.assertIn(f'<a class="door" href="{href}"><b>{titulo}</b><span>', self.t)
         self.assertNotIn("<b>Tutorial</b>", self.t, "la puerta Tutorial debe salir de la INTRO (decreto corte D)")
         self.assertNotIn('href="/play/"', self.t, "la INTRO no enlaza al juego retirado")
-        # Tools es un clic directo (boton), no un enlace: la PWA o el desplegable visible de abajo.
-        self.assertIn('<button class="door door-tools" id="door-tools" type="button" aria-controls="tools-dispositivo">'
-                      '<b>Tools</b>', self.t)
-        self.assertIn('<section id="tools-dispositivo" aria-labelledby="tools-h">', self.t)
-        self.assertIn('<details open>\n<summary>Device and download</summary>', self.t)
-        self.assertIn('<li><a href="/get-the-app/">', self.t)
-        self.assertIn('<li><a href="/creation.html">', self.t)
+        # T1 (·6512483624): la intro solo tiene las dos puertas. Tools es un enlace a /tools/.
+        self.assertIn('<a class="door door-tools" id="door-tools" href="/tools/"><b>Tools</b>', self.t)
+        self.assertNotIn('id="tools-dispositivo"', self.t, "la intro no lleva herramientas: van en /tools/")
+        self.assertNotIn('class="cerebro"', self.t, "los cerebros van en /tools/")
+        self.assertLess(self.t.index('id="doors"'), self.t.index('<p class="note">One language until the MVP'))
+        tools = (PUBLICO / "tools" / "index.html").read_text(encoding="utf-8")
+        self.assertIn('<title>Tools · PreceptorOS</title>', tools)
+        self.assertIn('<section id="tools-dispositivo" aria-labelledby="tools-h">', tools)
+        self.assertIn('<details open>\n<summary>Device and download</summary>', tools)
+        self.assertIn('<li><a href="/get-the-app/">', tools)
+        self.assertIn('<li><a href="/creation.html">', tools)
+        self.assertEqual(tools.count('class="cerebro"'), 7, "los siete cerebros medidos van en /tools/")
         # La cabecera de la release sale de release.json; lo no leido es NO_DATA con causa.
-        self.assertIn('<section id="release" aria-labelledby="release-h">', self.t)
-        self.assertIn('data-rel="estado">NO_DATA:', self.t)
-        self.assertIn('<p class="note">One language until the MVP: English. The old translated addresses lead here.</p>', self.t)
-        self.assertLess(self.t.index('id="doors"'), self.t.index('id="tools-dispositivo"'))
-        self.assertLess(self.t.index('id="tools-dispositivo"'), self.t.index('id="release"'))
+        self.assertIn('<section id="release" aria-labelledby="release-h">', tools)
+        self.assertIn('data-rel="estado">NO_DATA:', tools)
+        self.assertLess(tools.index('id="tools-dispositivo"'), tools.index('id="release"'))
 
     def test_una_lengua_hasta_mvp(self):
         self.assertIn('<html lang="en"', self.t)

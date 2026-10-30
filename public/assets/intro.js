@@ -10,8 +10,7 @@
 
   function sinDatos(causa) { return 'NO_DATA: ' + causa; }
 
-  // Tools is a direct click: if the browser kept its install offer, the click makes the install.
-  // If not, the click opens the device list below, and the label says why.
+  // The label says whether the app is installed, installable, or why it cannot be installed here.
   function pintaTools() {
     if (!boton || !estado || !raiz.PreceptorPwa) { return; }
     if (raiz.PreceptorPwa.instalada()) {
@@ -23,13 +22,12 @@
     }
   }
 
+  // The Tools door is a link to /tools/. Only an install offer the browser can take is handled here, in place.
   if (boton) {
-    boton.addEventListener('click', function () {
+    boton.addEventListener('click', function (e) {
       if (raiz.PreceptorPwa && raiz.PreceptorPwa.instalable()) {
+        e.preventDefault();
         raiz.PreceptorPwa.instala().then(pintaTools);
-      } else if (dispositivo) {
-        dispositivo.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        pintaTools();
       }
     });
   }
