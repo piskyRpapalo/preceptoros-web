@@ -1,11 +1,35 @@
 let engine = null, manifest = null, active = false, history = [];
 const encoder = new TextEncoder(), originalFetch = self.fetch.bind(self);
 const MODULE = 'https://cdn.jsdelivr.net/npm/@mlc-ai/web-llm@0.2.85/lib/index.js';
+const EXPECTED_BASE = 'https://huggingface.co/mlc-ai/Qwen3-1.7B-q4f16_1-MLC/resolve/80b3abcec6c3b3f5355dc0cc99cc4fb578f192bc/';
 const LIBRARY = 'https://raw.githubusercontent.com/mlc-ai/binary-mlc-llm-libs/146ed9cd4b4062e967b017fd2291f7106b50599f/web-llm-models/v0_2_84/base/Qwen3-1.7B-q4f16_1_cs1k-webgpu.wasm';
 function hex(bytes) { return Array.from(new Uint8Array(bytes), x => x.toString(16).padStart(2, '0')).join(''); }
 function recordFor(url) {
-  if (!manifest || !url.startsWith(manifest.base)) return null;
-  return manifest.records.find(r => new URL(url).pathname.endsWith('/' + r.name));
+  if (!manifest || !url.startsWith(EXPECTED_BASE)) return null;
+  const parsed = new URL(url);
+  if (parsed.origin !== new URL(EXPECTED_BASE).origin || !parsed.pathname.startsWith(new URL(EXPECTED_BASE).pathname)) return null;
+  const name = parsed.pathname.slice(new URL(EXPECTED_BASE).pathname.length);
+  return manifest.records.find(r => r.name === name) || null;
+}
+function validateManifest(data) {
+  if (!data || data.schema !== 'preceptoros.browser-brain/1' || data.model !== 'Qwen3-1.7B-q4f16_1-MLC' ||
+      data.revision !== '80b3abcec6c3b3f5355dc0cc99cc4fb578f192bc' || data.base !== EXPECTED_BASE ||
+      data.weightBytes !== 968001536 || !Array.isArray(data.records) || data.records.length !== 30) throw Error('Browser model inventory rejected');
+  let total = 0; const seen = new Set();
+  for (const record of data.records) {
+    if (!record || !/^params_shard_(?:[0-9]|[12][0-9])\.bin$/.test(record.name) || seen.has(record.name) ||
+        !Number.isSafeInteger(record.bytes) || record.bytes <= 0 || !Array.isArray(record.chunks) || !record.chunks.length) throw Error('Invalid model shard inventory');
+    seen.add(record.name); let offset = 0;
+    for (const chunk of record.chunks) {
+      if (!chunk || chunk.offset !== offset || !Number.isSafeInteger(chunk.bytes) || chunk.bytes <= 0 || chunk.bytes > 16777216 ||
+          !/^[0-9a-f]{64}$/.test(chunk.sha256)) throw Error('Invalid model chunk inventory');
+      offset += chunk.bytes;
+    }
+    if (offset !== record.bytes) throw Error('Incomplete model chunk inventory');
+    total += record.bytes;
+  }
+  if (total !== data.weightBytes) throw Error('Model weight inventory mismatch');
+  return data;
 }
 async function verify(buffer, record) {
   if (buffer.byteLength !== record.bytes) throw Error('Model shard size mismatch');
@@ -17,7 +41,10 @@ async function verify(buffer, record) {
 }
 self.fetch = async (input, options) => {
   const url = typeof input === 'string' ? input : input.url, record = recordFor(url);
-  if (!record) return originalFetch(input, options);
+  if (!record) {
+    if (url.startsWith(EXPECTED_BASE) && /\.bin(?:[?#]|$)/.test(url)) throw Error('Unlisted model shard rejected');
+    return originalFetch(input, options);
+  }
   const parts = [];
   for (const chunk of record.chunks) {
     const source = manifest.base + record.name + '?part=' + chunk.offset;
@@ -38,6 +65,8 @@ if (self.caches) {
     return new Proxy(cache, { get(target, key) {
       if (key === 'match') return async (...args) => {
         const response = await target.match(...args), input = args[0], record = recordFor(typeof input === 'string' ? input : input.url);
+        const url = typeof input === 'string' ? input : input.url;
+        if (!record && url.startsWith(EXPECTED_BASE) && /\.bin(?:[?#]|$)/.test(url)) throw Error('Unlisted cached shard rejected');
         if (response && record) await verify(await response.clone().arrayBuffer(), record);
         return response;
       };
@@ -54,8 +83,7 @@ self.onmessage = async event => {
       if (message.consent !== true || engine) throw Error('Explicit download consent is required');
       const response = await originalFetch('/game/browser_brain_manifest.json', { cache: 'no-store' });
       if (!response.ok) throw Error('Browser model inventory unavailable');
-      manifest = await response.json();
-      if (manifest.schema !== 'preceptoros.browser-brain/1' || manifest.weightBytes !== 968001536) throw Error('Browser model inventory rejected');
+      manifest = validateManifest(await response.json());
       const runtime = await import(MODULE);
       engine = await runtime.CreateMLCEngine(manifest.model, {
         appConfig: { useIndexedDBCache: false, model_list: [{ model_id: manifest.model, model: manifest.base, model_lib: LIBRARY, vram_required_MB: 2036.66, low_resource_required: true }] },
