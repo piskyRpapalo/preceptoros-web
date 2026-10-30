@@ -42,7 +42,7 @@ Out of scope: a heartbeat producer that sends data to the network (needs its own
 ## Checklist
 
 - [x] IC7-S1 · Search of history: no heartbeat producer and no writer of `estado.json` in main; canon marks the heartbeat `NO_DATA` and not read at load (see Problem).
-- [ ] IC7-S2 · Schema v2 for `estado.json`: nodes `{ id, q, r, alive, seal, since }`, buildings `{ id, node }`, validated by IC1; key `colonia` of IC6 kept.
+- [x] IC7-S2 · Schema v2 for `estado.json`: nodes `{ id, q, r, alive, seal, since }`, buildings `{ id, node }`, validated by IC1; key `colonia` of IC6 kept.
 - [ ] IC7-S3 · Bots with faces on the live nodes' hexes; Beelink/Hexelion on the centre hex with the Atlantis look; Doggee with the zombie look.
 - [ ] IC7-S4 · Doggee on two adjacent nodes `doggee-a` and `doggee-b`, one building each (IC1 unchanged).
 - [ ] IC7-S5 · Terminal (basic, atlantis, zombie) follows the node the user plays on; personalisation in the app is `NO_DATA` on the web.
@@ -75,6 +75,8 @@ The canon line "a live rack heartbeat ... remains NO_DATA" and the decree "only 
 - 2026-10-30 · Decision D4: no animated appearance; a node that is no longer declared alive leaves the map on the next state, with no error panel. Reduced motion: no bot bobbing (IC6 behaviour).
 - 2026-10-30 · Decision D5: English texts; node labels come from `estado.json`, never fixed in code.
 
+- 2026-10-30 · IC7-S2 done on `haiku/ic7-s2-estado-v2-20261030`: `atlas/puros/openworld_state.js` (served copy in `public/game/`), 16 pure cases green; VERSION `abkt` -> `abku`; the door is unchanged, `estado.json` still v1.
+
 ## Next step
 
-IC7-S2: schema v2 of `estado.json` and its validation, as a pure module under `atlas/puros/` with a copy in `public/game/` (the parity test of IC6 applies).
+IC7-S3: bots with faces on the live nodes' hexes, drawn from the `colonia` that `openworld_state.js` returns for schema v2.
