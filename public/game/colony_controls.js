@@ -69,7 +69,7 @@
   }
 
   // mount(doc, container, handlers): the DOM glue of the joystick and the terminal choice (TA-4). Not run by the pure cases.
-  // handlers: { move(direction), enter(), choose(look | null) }. Every control is a real button, at least 44 px high.
+  // handlers: { move(direction), enter(), choose(look | null), skip() }. Every control is a real button, at least 44 px high.
   function mount(doc, container, handlers) {
     var box = doc.createElement('div');
     box.setAttribute('role', 'group');
@@ -88,6 +88,7 @@
       pad.appendChild(button(name, function () { handlers.move(name); }));
     });
     pad.appendChild(button('enter node', function () { handlers.enter(); }));
+    pad.appendChild(button('Skip tutorial', function () { handlers.skip(); }));
     var sel = doc.createElement('select');
     sel.setAttribute('aria-label', 'Terminal look');
     [['', 'node default'], ['basic', 'basic'], ['atlantis', 'atlantis'], ['zombie', 'zombie']].forEach(function (o) {
@@ -111,7 +112,7 @@
   function attach(env) {
     var walker = null;
     var saved = savedChoice(storeOf(env.win));
-    var joy = mount(env.doc, env.doc.getElementById('joy'), { move: moveWalker, enter: enterNode, choose: chooseLook });
+    var joy = mount(env.doc, env.doc.getElementById('joy'), { move: moveWalker, enter: enterNode, choose: chooseLook, skip: skipTutorial });
     function storeOf(win) { try { return win.localStorage; } catch (e) { return null; } }
     function hex(name) { return bandHex(name, env.win.AtlasComicTokens, env.win.AtlasComicAccents); }
     function anchor(look) {
@@ -148,14 +149,23 @@
     function tutorialStep(node) {
       var TW = env.win.AtlasTutorialWalk;
       if (!TW) { return ''; }
-      var done = TW.progress(tutorialLog);
-      var next = TW.STEPS.filter(function (x) { return done.indexOf(x.id) < 0; })[0];
+      var resolved = tutorialLog.map(function (x) { return x.step; });
+      var next = TW.STEPS.filter(function (x) { return resolved.indexOf(x.id) < 0; })[0];
       if (!next) { return 'tutorial: complete'; }
       if (TW.placeFor(next.id) !== node) { return 'tutorial: next step is at ' + TW.placeFor(next.id); }
       var ok = TW.canWalk(next.id, env.seals());
       if (!ok.ok) { return ok.cause; }
       tutorialLog = TW.record(tutorialLog, next.id, 'played');
       return 'tutorial: ' + next.id + ' played';
+    }
+    function skipTutorial() {
+      var TW = env.win.AtlasTutorialWalk;
+      if (!TW) { joy.say('NO_DATA: tutorial is unavailable'); return; }
+      var resolved = tutorialLog.map(function (x) { return x.step; });
+      TW.STEPS.forEach(function (step) {
+        if (resolved.indexOf(step.id) < 0) { tutorialLog = TW.record(tutorialLog, step.id, 'skipped'); }
+      });
+      joy.say('tutorial: skipped');
     }
     function chooseLook(look) {
       var st = storeOf(env.win);
