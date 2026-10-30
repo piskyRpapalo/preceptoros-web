@@ -38,8 +38,6 @@ jobs:
         run: |
           node atlas/version_sw_casos.mjs
           node atlas/version_sw_gate.mjs
-      - name: Preflight rapido (paridad, crudos, cierre)
-        run: |
           node atlas/colonia_pagina_gate.mjs
           node atlas/barrido_casos.mjs
           python test_web.py
