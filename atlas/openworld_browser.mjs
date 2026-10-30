@@ -81,7 +81,8 @@ async function main() {
   ok(/^NO_DATA · /.test(respuesta || ''), 'the chat answer is not an honest NO_DATA: ' + respuesta);
   ok(JSON.stringify(medida.botones) === JSON.stringify(['Tutorial cabin']), 'the terrain list is not the cabin alone: ' + JSON.stringify(medida.botones));
   ok(medida.tinta > 2000, 'the map is blank: ' + medida.tinta);
-  ok(/^Nodes online: 0\. The tutorial cabin is the basic world\. Colony: NO_DATA · .+\.$/.test(medida.estado || ''), 'the default state is not zero nodes with an honest colony cause: ' + medida.estado);
+  // Estado de 2026-10-30 (MVP moderno): la cabaña es el unico nodo LIVE; Beelink y Doggee son NO_DATA y no se dibujan.
+  ok(/^Colony: 1 nodes · 1 buildings · 1 bots with faces · sky #[0-9a-f]{6}$/.test(medida.estado || ''), 'the default state is not the declared one (cabin only, LIVE): ' + medida.estado);
   ok(medida.chatAbierto && !medida.entradaOff, 'the chat panel is missing or its input is off');
   ok(!medida.botonChat, 'there is a Chat button; the chat must always be present, with no button');
   ok(medida.ancho <= medida.vista, 'the page scrolls sideways at phone width: ' + medida.ancho + ' > ' + medida.vista);
