@@ -100,11 +100,6 @@
     "taller",
     "valores"
   ],
-  "public/face/basic.html": [
-    "escena",
-    "taller",
-    "valores"
-  ],
   "public/face/face.js": [
     "atlascangrejo"
   ],
@@ -575,6 +570,19 @@
     "taller",
     "ui-taller",
     "valores"
+  ],
+  "public/game/visitor_account.js": [
+    "adopcion",
+    "tropa"
+  ],
+  "public/game/visitor_eggs.js": [
+    "abre",
+    "adopcion",
+    "crea",
+    "firma"
+  ],
+  "public/game/visitor_play.js": [
+    "sello"
   ],
   "public/game/wave_duel_scene.js": [
     "atlasescena",

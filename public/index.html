@@ -35,10 +35,11 @@ button.door{width:100%;font:inherit;background:var(--bg);text-align:left;cursor:
 <p class="lead">A game of waves that runs on your own device. No account, no cloud, no tracking.</p>
 <nav id="doors" aria-label="Doors">
 <a class="door" href="/openworld/"><b>OpenWorld</b><span>The map and the chat, side by side. Your node's world.</span></a>
-<button class="door door-tools" id="door-tools" type="button" aria-controls="tools-dispositivo"><b>Tools</b><span id="tools-estado">Install the app on this device, or pick a download below.</span></button>
+<button class="door door-tools" id="door-tools" type="button" aria-controls="tools-dispositivo" aria-expanded="false"><b>Tools</b><span id="tools-estado">Install the app on this device, or pick a download below.</span></button>
 </nav>
-<section id="tools-dispositivo" aria-labelledby="tools-h">
-<h2 id="tools-h">Tools</h2>
+<section id="tools-dispositivo" aria-labelledby="tools-h" hidden>
+<h2 id="tools-h" tabindex="-1">Tools</h2>
+<button type="button" id="close-tools" class="close-tools" aria-controls="tools-dispositivo" style="min-height:44px;min-width:44px">Close tools</button>
 <details open>
 <summary>Device and download</summary>
 <ul class="dispositivos">

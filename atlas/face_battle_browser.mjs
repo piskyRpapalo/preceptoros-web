@@ -1,4 +1,5 @@
-// P3 [1b] in a real browser: in the three worlds, combat fills the map area inside its own panel,
+// P3 [1b] in a real browser: in the preserved Atlantis/Zombie faces, combat fills the map area inside its own panel;
+// /face/basic.html is the neutral shared-map terminal and is measured below.
 // the fight paints ONLY on its own canvas (never on the world map), and the "×" returns to the map.
 // Uso: node atlas/face_battle_browser.mjs [raiz-public]   (Chrome headless por CDP; sin dependencias)
 // The optional argument serves another public/ tree, so the same harness measures the "before".
@@ -64,7 +65,7 @@ async function main() {
   await cmd('Emulation.setDeviceMetricsOverride', { width: 1280, height: 800, deviceScaleFactor: 1, mobile: false });
   await cmd('Page.addScriptToEvaluateOnNewDocument', { source: ESPIA });
 
-  for (const mundo of ['basic', 'atlantis', 'zombie']) {
+  for (const mundo of ['atlantis', 'zombie']) {
     await cmd('Page.navigate', { url: `http://127.0.0.1:${port}/face/${mundo}.html` });
     ok(await hasta('!!(window.PreceptorFaceHooks && PreceptorFaceHooks.battle && PreceptorFaceHooks.army)', 20000), mundo + ': face loaded');
     // A squad of three practice waves stands in for hatched eggs; the battle itself is the real one.
@@ -89,6 +90,11 @@ async function main() {
       oculta: document.getElementById('sheet-battle').hidden })`));
     ok(fuera.v === 'map' && !fuera.on && fuera.oculta, mundo + ': "×" did not return to the map ' + JSON.stringify(fuera));
   }
+  await cmd('Page.navigate', { url: `http://127.0.0.1:${port}/face/basic.html` });
+  ok(await hasta('!!(window.AtlasOpenworldState && window.AtlasColonyControls && document.getElementById("joy"))', 20000), 'basic: shared terminal loaded');
+  const terminal = JSON.parse(await ev(`JSON.stringify({ joy: (() => { const r = document.getElementById('joy').getBoundingClientRect(); return r.width >= 96 && r.height >= 96; })(), map: !!document.getElementById('map'), privateWorld: !!window.AtlasFaceWorld })`));
+  medidas.basic_terminal = terminal;
+  ok(terminal.joy && terminal.map && !terminal.privateWorld, 'basic: terminal is not a private map');
   console.log(JSON.stringify({ piece: 'P3-1b', receipt: 'MEDIDO', medidas, fallos }));
 }
 
