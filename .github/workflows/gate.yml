@@ -55,6 +55,8 @@ jobs:
             node --test atlas/puros/catalogo_iso_casos.mjs
             node --test atlas/puros/colonia_edificios_casos.mjs
             node atlas/colonia_edificios_gate.mjs
+      - node --test atlas/puros/paleta_ciclo_casos.mjs
+      - node atlas/paleta_ciclo_gate.mjs
             node --test atlas/lexicon_gate_casos.mjs
             node atlas/lexicon_gate.mjs
             python test_web.py
