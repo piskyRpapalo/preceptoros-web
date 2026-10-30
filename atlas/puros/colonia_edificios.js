@@ -77,11 +77,11 @@
   }
 
   // The hex module of a node, drawn at its projected place. The frame names the node and its colour.
-  function marcoModulo(nodo) {
-    var frase = 'module ' + nodo.id + ' · colour ' + colorDe(nodo.id);
+  function marcoModulo(node) {
+    var frase = 'module ' + node.id + ' · colour ' + colorDe(node.id);
     return {
-      v: 'preceptoros.bubble/1', id: nodo.id, t: 0, cv: BOX,
-      atoms: [{ k: 'module.' + nodo.id, r: frase, i: [{ o: 'ribbon', pts: moduloPts(), closed: true, f: colorDe(nodo.id), s: 'ink', lw: 2 }] }],
+      v: 'preceptoros.bubble/1', id: node.id, t: 0, cv: BOX,
+      atoms: [{ k: 'module.' + node.id, r: frase, i: [{ o: 'ribbon', pts: moduloPts(), closed: true, f: colorDe(node.id), s: 'ink', lw: 2 }] }],
       bands: ['paper', 'ink', 'cyan'],
       change: [frase],
       sound: 'NO_DATA: modules declare no waves; nothing is invented',
@@ -89,9 +89,9 @@
     };
   }
 
-  // escena(colonia, p, reducido) → the scene: one tile per node and one building frame per building, placed on the
+  // scene(colonia, p, reducido) → the scene: one tile per node and one building frame per building, placed on the
   // hex projection (x, y in the reference units). p is the growth of every building; reducido makes it 1 at once.
-  function escena(colonia, p, reducido) {
+  function scene(colonia, p, reducido) {
     if (!colonia || !Array.isArray(colonia.nodes) || !Array.isArray(colonia.buildings)) { fail('a colony with nodes and buildings is required'); }
     var g = reducido === true ? 1 : Math.max(0, Math.min(1, typeof p === 'number' && isFinite(p) ? p : 1));
     var paso = Math.max(1, Math.min(PASOS, Math.ceil(g * PASOS)));
@@ -116,15 +116,15 @@
   // nacimiento(colonia, reducido) → the birth frames of every building, one scene per growth step, in order.
   // reducido gives one scene only: the building arrives whole.
   function nacimiento(colonia, reducido) {
-    if (reducido === true) { return [escena(colonia, 1, true)]; }
+    if (reducido === true) { return [scene(colonia, 1, true)]; }
     var out = [];
-    for (var k = 1; k <= PASOS; k++) { out.push(escena(colonia, k / PASOS, false)); }
+    for (var k = 1; k <= PASOS; k++) { out.push(scene(colonia, k / PASOS, false)); }
     return out;
   }
 
   var AtlasEdificios = {
     PASOS: PASOS, MODULOS: MODULOS, FORMAS: FORMAS,
-    hash: hash, colorDe: colorDe, formaDe: formaDe, escena: escena, nacimiento: nacimiento
+    hash: hash, colorDe: colorDe, formaDe: formaDe, scene: scene, nacimiento: nacimiento
   };
   if (common) { module.exports = AtlasEdificios; }
   else { root.AtlasEdificios = AtlasEdificios; }

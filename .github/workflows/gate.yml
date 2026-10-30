@@ -38,6 +38,10 @@ jobs:
         run: |
           node atlas/version_sw_casos.mjs
           node atlas/version_sw_gate.mjs
+          node atlas/colonia_pagina_gate.mjs
+          node atlas/barrido_casos.mjs
+          python test_web.py
+
       - name: Gates completos n=2
         run: |
           for pasada in 1 2; do
@@ -57,6 +61,7 @@ jobs:
             node atlas/colonia_edificios_gate.mjs
             node --test atlas/puros/paleta_ciclo_casos.mjs
             node atlas/paleta_ciclo_gate.mjs
+            node atlas/colonia_pagina_gate.mjs
             node --test atlas/lexicon_gate_casos.mjs
             node atlas/lexicon_gate.mjs
             python test_web.py

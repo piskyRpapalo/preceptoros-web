@@ -67,12 +67,12 @@
   }
 
   // The sabotage flag changes the second run on purpose: a line width moves with no state change.
-  function dibuja(canvas, escena, desviar) {
+  function dibuja(canvas, scene, desviar) {
     var g = canvas.getContext('2d');
     g.setTransform(1, 0, 0, 1, 0, 0);
     g.fillStyle = '#f4ebd0'; g.fillRect(0, 0, canvas.width, canvas.height);
     var cx = canvas.width / 2, cy = canvas.height / 2;
-    var todos = escena.tiles.concat(escena.buildings);
+    var todos = scene.tiles.concat(scene.buildings);
     todos.forEach(function (nd) {
       var fotograma = nd.frame;
       if (desviar && nd.frame.atoms[0].i[0]) { fotograma.atoms[0].i[0].lw = 5; }   // sabotage: no state change
@@ -84,12 +84,12 @@
     });
   }
 
-  function celda(fila, titulo, escena) {
+  function celda(fila, titulo, scene) {
     var fig = document.createElement('figure');
     var canvas = document.createElement('canvas');
     canvas.width = W; canvas.height = H;
     var cap = document.createElement('figcaption');
-    cap.textContent = titulo + ' · growth ' + escena.paso + '/' + escena.pasos + ' · ' + escena.buildings.length + ' buildings';
+    cap.textContent = titulo + ' · growth ' + scene.paso + '/' + scene.pasos + ' · ' + scene.buildings.length + ' buildings';
     fig.appendChild(canvas); fig.appendChild(cap);
     fila.appendChild(fig);
     return canvas;
@@ -100,20 +100,20 @@
     var escenas = [];
     var filaA = document.getElementById('filaA'), filaB = document.getElementById('filaB'), filaC = document.getElementById('filaC');
     var todas = [];
-    var whole = E.escena(COLONIA, 1, false);
-    todas.push({ scene: 'A', nombre: 'whole', fila: filaA, escena: whole });
-    E.nacimiento(COLONIA, false).forEach(function (sc) { todas.push({ scene: 'B', nombre: 'birth', fila: filaB, escena: sc }); });
-    E.nacimiento(COLONIA, true).forEach(function (sc) { todas.push({ scene: 'C', nombre: 'reduced', fila: filaC, escena: sc }); });
+    var whole = E.scene(COLONIA, 1, false);
+    todas.push({ scene: 'A', nombre: 'whole', fila: filaA, scene: whole });
+    E.nacimiento(COLONIA, false).forEach(function (sc) { todas.push({ scene: 'B', nombre: 'birth', fila: filaB, scene: sc }); });
+    E.nacimiento(COLONIA, true).forEach(function (sc) { todas.push({ scene: 'C', nombre: 'reduced', fila: filaC, scene: sc }); });
     todas.forEach(function (e) {
-      e.canvas = celda(e.fila, e.scene + ' · ' + e.nombre, e.escena);
+      e.canvas = celda(e.fila, e.scene + ' · ' + e.nombre, e.scene);
       escenas.push(e);
     });
-    escenas.forEach(function (e) { dibuja(e.canvas, e.escena, false); });
+    escenas.forEach(function (e) { dibuja(e.canvas, e.scene, false); });
     var primera = escenas.map(function (e) { return hashCanvas(e.canvas); });
-    escenas.forEach(function (e) { dibuja(e.canvas, e.escena, sabotaje === 'jitter'); });
+    escenas.forEach(function (e) { dibuja(e.canvas, e.scene, sabotaje === 'jitter'); });
     var segunda = escenas.map(function (e) { return hashCanvas(e.canvas); });
     escenas.forEach(function (e, i) {
-      resultados.scenes.push({ scene: e.scene, paso: e.escena.paso, hash: primera[i], hash2: segunda[i], igual: primera[i] === segunda[i] });
+      resultados.scenes.push({ scene: e.scene, paso: e.scene.paso, hash: primera[i], hash2: segunda[i], igual: primera[i] === segunda[i] });
       if (primera[i] !== segunda[i]) { resultados.n2 = false; }
     });
     // Reduced motion must arrive at the same pixels as the whole scene.
@@ -126,7 +126,7 @@
   function alto(error) { document.getElementById('recibo').textContent = 'ERROR · ' + error.message; }
 
   // sabotage: a building on a node the colony does not hold must be refused.
-  if (sabotaje === 'nodo') { EDIFICIOS.push({ id: 'b-ghost', node: 'ghost' }); }
+  if (sabotaje === 'node') { EDIFICIOS.push({ id: 'b-ghost', node: 'ghost' }); }
 
   try {
     var r = filas();

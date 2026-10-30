@@ -1,6 +1,6 @@
 // Gate runner of the colony buildings (ODD isometric-colony, IC4). One command: the pure cases in node, then the bitmap
 // gate in headless Chrome: clean (n=2 byte-identical, reduced motion equal to the whole scene), then two sabotages that
-// must go red (jitter: a line moved with no state change; nodo: a building on a node the colony does not hold).
+// must go red (jitter: a line moved with no state change; node: a building on a node the colony does not hold).
 // Usage: node atlas/colonia_edificios_gate.mjs   (env CHROME=/path/to/chrome to choose the browser)
 import { spawnSync, execFile } from 'node:child_process';
 import { createServer } from 'node:http';
@@ -63,9 +63,9 @@ try {
   const jitter = await recibo('jitter');
   ok(!jitter.error && jitter.n2 === false, 'sabotage jitter goes red: a bitmap changed without a state change');
 
-  // 4 · sabotage nodo: a building on a node the colony does not hold is refused, not drawn.
-  const nodo = await recibo('nodo');
-  ok(nodo.error && /unknown node/.test(nodo.error), 'sabotage nodo goes red: ' + (nodo.error || 'no error'));
+  // 4 · sabotage node: a building on a node the colony does not hold is refused, not drawn.
+  const node = await recibo('node');
+  ok(node.error && /unknown node/.test(node.error), 'sabotage node goes red: ' + (node.error || 'no error'));
 
   console.log('\n' + pasos + ' passes · IC4 gate green');
 } catch (e) {

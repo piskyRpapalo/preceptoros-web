@@ -39,7 +39,7 @@
 <script>
 (function (raiz) {
   'use strict';
-  var E = raiz.AtlasEdificios, B = raiz.AtlasBubble, P = raiz.AtlasComicAtoms, C = raiz.AtlasPaletaCiclo;
+  var E = raiz.AtlasEdificios, B = raiz.AtlasBubble, P = raiz.AtlasComicAtoms, C = raiz.AtlasPaletteCycle;
   var params = new URLSearchParams(raiz.location.search);
   var sabotaje = params.get('sabotaje') || '';
   var W = 480, H = 320, K = 1.5, S = 1.4;
@@ -68,15 +68,15 @@
   // the detector must see it move between the two runs and go red.
   function cieloDe(t, reducido, reloj) {
     var tick = reloj ? Math.floor(Date.now() / 1000) % 240 : t;
-    return C.paleta(tick, reducido).cielo;
+    return C.palette(tick, reducido).cielo;
   }
 
-  function dibuja(canvas, escena, cielo, desviar) {
+  function dibuja(canvas, scene, cielo, desviar) {
     var g = canvas.getContext('2d');
     g.setTransform(1, 0, 0, 1, 0, 0);
     g.fillStyle = cielo; g.fillRect(0, 0, canvas.width, canvas.height);
     var cx = canvas.width / 2, cy = canvas.height / 2;
-    escena.tiles.concat(escena.buildings).forEach(function (nd) {
+    scene.tiles.concat(scene.buildings).forEach(function (nd) {
       var fotograma = nd.frame;
       if (desviar && nd.frame.atoms[0].i[0]) { fotograma.atoms[0].i[0].lw = 5; }   // sabotage: no state change
       g.save();
@@ -101,21 +101,21 @@
   function filas() {
     var resultados = { scenes: [], n2: true, sabotaje: sabotaje || 'none', errores: [] };
     var filaA = document.getElementById('filaA'), filaB = document.getElementById('filaB');
-    var escena = E.escena(COLONIA, 1, false);
-    var escenaReducida = E.escena(COLONIA, 1, true);
+    var scene = E.scene(COLONIA, 1, false);
+    var escenaReducida = E.scene(COLONIA, 1, true);
     var todas = [];
-    TICKS.forEach(function (t) { todas.push({ scene: 'A', t: t, reducido: false, fila: filaA, escena: escena }); });
-    todas.push({ scene: 'B', t: 0, reducido: true, fila: filaB, escena: escenaReducida });
+    TICKS.forEach(function (t) { todas.push({ scene: 'A', t: t, reducido: false, fila: filaA, scene: scene }); });
+    todas.push({ scene: 'B', t: 0, reducido: true, fila: filaB, scene: escenaReducida });
     todas.forEach(function (e) {
       e.cielo = cieloDe(e.t, e.reducido, false);
       e.canvas = celda(e.fila, e.scene + ' · tick ' + e.t + (e.reducido ? ' · reduced' : ''), e.cielo);
     });
-    todas.forEach(function (e) { dibuja(e.canvas, e.escena, e.cielo, false); });
+    todas.forEach(function (e) { dibuja(e.canvas, e.scene, e.cielo, false); });
     var primera = todas.map(function (e) { return hashCanvas(e.canvas); });
     // second run: the sky is recomputed (it reads the wall clock only in the "reloj" sabotage)
     todas.forEach(function (e) {
       e.cielo2 = cieloDe(e.t, e.reducido, sabotaje === 'reloj');
-      dibuja(e.canvas, e.escena, e.cielo2, sabotaje === 'jitter');
+      dibuja(e.canvas, e.scene, e.cielo2, sabotaje === 'jitter');
     });
     var segunda = todas.map(function (e) { return hashCanvas(e.canvas); });
     todas.forEach(function (e, i) {

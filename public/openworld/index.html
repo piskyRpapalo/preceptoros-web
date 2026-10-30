@@ -78,6 +78,12 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
 <script src="/game/bubble_letters.js"></script>
 <script src="/game/isometric_floor_projection.js"></script>
 <script src="/game/global_map.js"></script>
+<script src="/game/state_frames.js"></script>
+<script src="/game/hex_projection.js"></script>
+<script src="/game/colony_state.js"></script>
+<script src="/game/colonia_edificios.js"></script>
+<script src="/game/palette_cycle.js"></script>
+<script src="/game/colonia_pagina.js"></script>
 <script src="/assets/pwa.js"></script>
 <script>
 // OpenWorld (NORTE 7 · PR 2 · global map, ODD isometric-colony). Same-origin only: the state file is the one thing read
@@ -93,6 +99,9 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
   var press = doc.querySelector('#map .press');
   var state = doc.getElementById('state');
   var quieto = raiz.matchMedia && raiz.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var CP = raiz.AtlasColoniaPagina, colonia = null, colonia_fuente = 'NO_DATA', colonia_error = '';
+  // Synthetic fixture, opt-in with ?fixture=sintetica: it is labelled SYNTHETIC on the page, never a live colony.
+  var FIXTURE = { nodes: [{ id: 'cabin', q: 0, r: 0 }, { id: 'ring-e', q: 1, r: 0 }, { id: 'ring-ne', q: 1, r: -1 }, { id: 'ring-nw', q: 0, r: -1 }, { id: 'ring-w', q: -1, r: 0 }, { id: 'ring-sw', q: -1, r: 1 }, { id: 'ring-se', q: 0, r: 1 }], buildings: [{ id: 'b-cabin', node: 'cabin' }, { id: 'b-ring-e', node: 'ring-e' }, { id: 'b-ring-nw', node: 'ring-nw' }, { id: 'b-ring-sw', node: 'ring-sw' }], units: [] };
 
   // The visible rows of the state: the cabin, and each node the state lists as alive. A node without its key is refused.
   function filas() {
@@ -105,6 +114,10 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
     var width = surface.clientWidth || 320, height = surface.clientHeight || 200;
     var dpr = Math.min(2, raiz.devicePixelRatio || 1);
     surface.width = Math.round(width * dpr); surface.height = Math.round(height * dpr);
+    if (colonia && CP) {
+      try { CP.draw(surface, colonia, entrada.t, quieto); return; }
+      catch (e) { colonia_error = e.message || 'the colony is refused'; }
+    }
     var g = surface.getContext('2d');
     g.setTransform(dpr, 0, 0, dpr, 0, 0);
     var fit = Math.min(width / 480, height / 240);
@@ -135,7 +148,17 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
     buttons();
     draw();
     var vivos = filas().filter(function (row) { return row.id !== 'cabin'; }).length;
-    state.textContent = 'Nodes online: ' + vivos + '. The tutorial cabin is the basic world.';
+    var linea = 'Nodes online: ' + vivos + '. The tutorial cabin is the basic world.';
+    if (colonia && CP && !colonia_error) {
+      try { linea = CP.texto(CP.scene(colonia, entrada.t, quieto)) + (colonia_fuente === 'fixture' ? ' · SYNTHETIC fixture, not a live colony' : ''); }
+      catch (e) { colonia_error = e.message || 'the colony is refused'; }
+    }
+    if (colonia_error) {
+      linea += ' Colony: NO_DATA · ' + colonia_error + '.';
+    } else if (!colonia) {
+      linea += ' Colony: NO_DATA · no live colony in the state (estado.json has no colonia).';
+    }
+    state.textContent = linea;
   }
 
   // Only the two named nodes can appear, and only when the state file lists them as alive.
@@ -147,7 +170,9 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
       nodes: nodes.filter(function (n) { return n && (n.id === 'atlantis' || n.id === 'risen'); })
     };
     if (selected !== 'cabin' && !entrada.nodes.some(function (n) { return n.id === selected; })) { selected = 'cabin'; }
+    if (data && data.colonia && typeof data.colonia === 'object') { colonia = data.colonia; colonia_fuente = 'estado'; }
   }
+  if (new URLSearchParams(raiz.location.search).get('fixture') === 'sintetica') { colonia = FIXTURE; colonia_fuente = 'fixture'; }
 
   // The cycle: a fixed step of t per second, unless reduced motion is on. The palette is a function of t alone.
   function cycle() { if (quieto) { return; } entrada.t += 1; draw(); }

@@ -16,7 +16,7 @@ const COLONIA = colony({
 });
 
 test('every node is a module tile, every building a frame; the scene is placed on the hex projection', () => {
-  const s = E.escena(COLONIA, 1, false);
+  const s = E.scene(COLONIA, 1, false);
   assert.deepEqual(s.tiles.map((t) => t.id), ['cabin', 'atlantis', 'risen']);
   assert.deepEqual(s.buildings.map((b) => b.id).sort(), ['b-cabin', 'b-risen']);
   const risen = s.tiles.find((t) => t.id === 'risen');
@@ -25,8 +25,8 @@ test('every node is a module tile, every building a frame; the scene is placed o
 });
 
 test('a module keeps its colour from the id: the same colour in every run and every scene', () => {
-  const a = E.escena(COLONIA, 1, false).tiles.map((t) => t.color);
-  const b = E.escena(COLONIA, 0.5, false).tiles.map((t) => t.color);
+  const a = E.scene(COLONIA, 1, false).tiles.map((t) => t.color);
+  const b = E.scene(COLONIA, 0.5, false).tiles.map((t) => t.color);
   assert.deepEqual(a, b);
   for (const c of a) assert.ok(E.MODULOS.includes(c), 'the colour is one of the house bands');
 });
@@ -60,29 +60,29 @@ test('reduced motion arrives in one step: the building is whole at once', () => 
 });
 
 test('the growth progress is clamped to 0-1, and a missing progress is whole', () => {
-  assert.equal(E.escena(COLONIA, -1, false).p, 0);
-  assert.equal(E.escena(COLONIA, 9, false).p, 1);
-  assert.equal(E.escena(COLONIA, NaN, false).p, 1);
-  assert.equal(E.escena(COLONIA).p, 1);
+  assert.equal(E.scene(COLONIA, -1, false).p, 0);
+  assert.equal(E.scene(COLONIA, 9, false).p, 1);
+  assert.equal(E.scene(COLONIA, NaN, false).p, 1);
+  assert.equal(E.scene(COLONIA).p, 1);
 });
 
 test('the buildings are drawn back to front: a lower one comes after a higher one', () => {
-  const ys = E.escena(COLONIA, 1, false).buildings.map((b) => b.y);
+  const ys = E.scene(COLONIA, 1, false).buildings.map((b) => b.y);
   assert.deepEqual(ys, [...ys].sort((a, b) => a - b));
 });
 
 test('the same colony gives byte-identical scenes, two runs', () => {
-  assert.equal(JSON.stringify(E.escena(COLONIA, 0.5, false)), JSON.stringify(E.escena(COLONIA, 0.5, false)));
+  assert.equal(JSON.stringify(E.scene(COLONIA, 0.5, false)), JSON.stringify(E.scene(COLONIA, 0.5, false)));
 });
 
 test('sabotage: a building on a node that is not in the colony is refused', () => {
   const rota = { nodes: COLONIA.nodes, buildings: [{ id: 'b-ghost', node: 'ghost' }], units: [] };
-  assert.throws(() => E.escena(rota, 1, false), /unknown node/);
+  assert.throws(() => E.scene(rota, 1, false), /unknown node/);
 });
 
 test('sabotage: a scene without a colony is refused, not drawn empty', () => {
-  assert.throws(() => E.escena(null, 1, false), /a colony with nodes and buildings is required/);
-  assert.throws(() => E.escena({ nodes: [] }, 1, false), /a colony with nodes and buildings is required/);
+  assert.throws(() => E.scene(null, 1, false), /a colony with nodes and buildings is required/);
+  assert.throws(() => E.scene({ nodes: [] }, 1, false), /a colony with nodes and buildings is required/);
 });
 
 test('the buildings and modules read no random number, no clock and no network', () => {
