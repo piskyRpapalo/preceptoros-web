@@ -96,7 +96,16 @@ async function main() {
   ok(!/\bundefined\b|\bNaN\b/.test(medida.texto), 'missing value shown on the page');
   ok(externas.length === 0, 'external requests: ' + externas.slice(0, 3));
   if (CAPTURA) { const g = await cmd('Page.captureScreenshot', { format: 'png', captureBeyondViewport: true }); writeFileSync(join(CAPTURA, 'openworld-390.png'), Buffer.from(g.result.data, 'base64')); }
-  console.log(JSON.stringify({ medida: { ...medida, texto: undefined }, externas: externas.length, fallos }));
+  await cmd('Emulation.setDeviceMetricsOverride', { width: 1440, height: 900, deviceScaleFactor: 1, mobile: false });
+  await cmd('Page.navigate', { url: origen + '/openworld/' }); await espera(1200);
+  const escritorio = JSON.parse(await ev(`(() => { const j = document.getElementById('joy'), r = j.getBoundingClientRect(), b = j.querySelector('button'); return JSON.stringify({ buttons: j.querySelectorAll('button').length, top: r.top, bottom: r.bottom, visible: r.width > 0 && r.height > 0 && r.top >= 0 && r.bottom <= innerHeight, touch: getComputedStyle(b).minHeight, width: document.documentElement.scrollWidth, viewport: innerWidth }); })()`));
+  ok(escritorio.buttons === 8 && escritorio.visible, 'the joystick is missing or below the desktop viewport: ' + JSON.stringify(escritorio));
+  ok(parseFloat(escritorio.touch) >= 44, 'desktop joystick controls are below the touch target: ' + escritorio.touch);
+  ok(escritorio.width <= escritorio.viewport, 'the page scrolls sideways at desktop width: ' + escritorio.width + ' > ' + escritorio.viewport);
+  await ev("[...document.querySelectorAll('#joy button')].find((b) => b.textContent === 'enter node').click()");
+  const desktopEntry = await ev("document.querySelector('#joy [aria-live]').textContent");
+  ok(/^terminal: basic/.test(desktopEntry || ''), 'the ephemeral cabin cannot be entered on desktop: ' + desktopEntry);
+  console.log(JSON.stringify({ medida: { ...medida, texto: undefined }, escritorio, externas: externas.length, fallos }));
 }
 
 main().catch((e) => { fallos.push('harness: ' + e.message); })
