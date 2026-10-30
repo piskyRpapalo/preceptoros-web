@@ -106,6 +106,8 @@ Fidelity to the eyes of the carbon and to the understanding of the orchestrators
 
 - 2026-10-29: the Mesa ordered the IC4 cases and visual gate added to the workflow (buzon#30 ·6511406023).
 
+- 2026-10-30 (IC5, branch `haiku/isometric-paleta-ic5-20261030`, on main 86bf9a8): the day and night palette as a pure core in `atlas/puros/paleta_ciclo.js` (not served). The colours read the tick t alone: whole ticks only (a fraction is refused as a clock), period 240, noon at 120, the measured night `#17131f` and day `#f4ebd0` of the global map, integer lerp. Reduced motion is no cycle: the palette stays at noon and no sky frame changes. Sky changes travel as state frames under 1,024 B. Evidence: `atlas/puros/paleta_ciclo_casos.mjs` 12/12, including tick-by-tick equality with the global map over 480 ticks and the sabotages (wall clock moving, Math.random throwing, a fractional tick); `atlas/paleta_ciclo_gate.mjs` green (two clean runs identical on 7 scenes, sabotage jitter and reloj red); contact sheet `atlas/paleta_ciclo_contact_sheet.png`. NO_DATA: device motion of the weakest ring device; the ink band of the buildings is hard to tell apart from the night sky (observed, not changed). gate.yml is not edited: its line waits for the Mesa's order in the PR.
+
 ## Next step
 
 The Sovereign's piece FIRMO on the exact head of the global-map PR, after he sees `atlas/global_map_contact_sheet.png`. That FIRMO releases IC4 (the first buildings). Codex's IC1/IC2 later replace the stand-in projection.
