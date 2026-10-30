@@ -167,14 +167,9 @@
       question.value = '';
       loadRouter(function (R) {
         if (!R) { line('', 'NO_DATA · router_not_loaded'); return; }
-        fetch('/model/manifest.json', { cache: 'no-cache' })
-          .then(function (r) { return r.ok ? r.json() : null; }, function () { return null; })
-          .then(function (m) {
-            var plan = R.planifica(m);
-            if (!plan.ok) { line('', plan.causa); return; }
-            var answer = R.responde(text, null);   // a manifest exists, but no model loader is built yet
-            line('', answer.ok ? answer.texto : 'NO_DATA · model_loader_not_built (' + answer.causa + ')');
-          });
+        var answer = R.responde(text, null);
+        line('', answer.ok ? answer.texto : answer.causa);
+      });
       });
     });
   }

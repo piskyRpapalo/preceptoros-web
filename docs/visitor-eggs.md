@@ -9,3 +9,5 @@ The former inline map controller is moved unchanged to public/game/openworld_pag
 Validation: Chromium invokes, advances 20 steps, adopts and reloads without persistent Identity; OpenSSL verifies the actual browser adoption signature. Existing OpenWorld phone/desktop browser gate passes with zero external requests. test_web 75 checks (one skip), arnes_sw 24/24 and visitor tests pass locally. Production deployment is not claimed.
 
 Route count remains shell_entries=117, shell_unique=116, shell_duplicates=1. New modules are same-origin resources, no new user-facing route. Historical patrol definitions and rules are inventoried for JN-4; fairness remains NO_DATA.
+
+Physical Android verification (local build through USB loopback, not production): secure Chrome origin, viewport 360 CSS px; visit start, beacon, invocation, 20 steps and adoption succeeded; all measured visitor controls were 44 px high; one map surface. Private screenshot retained locally. No deployment claim. Extraction also exposed an old nonexistent manifest fetch to the source gate; it now reports the existing router's model_not_installed result without requesting a missing route.
