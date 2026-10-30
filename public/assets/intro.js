@@ -23,12 +23,15 @@
     }
   }
 
+  // The intro shows only the doors. Tools opens the device list in place (hidden until pressed).
   if (boton) {
     boton.addEventListener('click', function () {
       if (raiz.PreceptorPwa && raiz.PreceptorPwa.instalable()) {
         raiz.PreceptorPwa.instala().then(pintaTools);
       } else if (dispositivo) {
-        dispositivo.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        dispositivo.hidden = !dispositivo.hidden;
+        boton.setAttribute('aria-expanded', String(!dispositivo.hidden));
+        if (!dispositivo.hidden) { dispositivo.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
         pintaTools();
       }
     });
