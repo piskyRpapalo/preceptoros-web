@@ -20,9 +20,9 @@ html,body{height:100%}
 body{display:flex;flex-direction:column;min-height:100vh}
 main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;padding:0;min-height:100vh;box-sizing:border-box}
 #map,#chat{padding:12px 16px;min-width:0;box-sizing:border-box;overflow:hidden}
-#map{border-bottom:2px solid var(--line);display:flex;flex-direction:column;gap:8px;min-height:44vh}
+#map{border-bottom:2px solid var(--line);display:flex;flex-direction:column;gap:8px;min-height:44vh;overflow:auto}
 #map h1{font-size:1.25rem;margin:0}
-#map .surface{width:100%;flex:1;min-height:0;display:block;transition:opacity 300ms ease}
+#map .surface{width:100%;flex:1;min-height:240px;display:block;transition:opacity 300ms ease}
 @media (prefers-reduced-motion: reduce){#map .surface{transition:none}}
 #map .press{display:flex;flex-wrap:wrap;gap:8px}
 #map .press button,#map .listen button{min-height:44px;padding:8px 14px;border:2px solid currentColor;border-radius:var(--radius);background:var(--bg);color:var(--fg);font:inherit;cursor:pointer}
@@ -52,6 +52,7 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
 <button type="button" id="listen" aria-describedby="listen-state">Listen to the cabin</button>
 </div>
 <p class="state" id="listen-state" aria-live="polite"></p>
+<div id="joy"></div>
 <p class="state" id="state" aria-live="polite">Nodes online: 0. The tutorial cabin is the basic world.</p>
 <ul class="state" id="frases" aria-label="What the colony shows"></ul>
 <p><a href="/face/army.html" style="display:inline-flex;align-items:center;min-height:44px">Wave Army fixture</a></p>
@@ -86,6 +87,7 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
 <script src="/game/palette_cycle.js"></script>
 <script src="/game/openworld_state.js"></script>
 <script src="/game/colonia_pagina.js"></script>
+<script src="/game/colony_controls.js"></script>
 <script src="/assets/pwa.js"></script>
 <script>
 // OpenWorld (NORTE 7 · PR 2 · global map, ODD isometric-colony). Same-origin only: the state file is the one thing read
@@ -107,6 +109,9 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
   // IC7-S4 (D11): the looks of the fixture's nodes; Doggee is the zombie look. The live state carries its own looks.
   var FIXTURE_LOOKS = { 'doggee-a': 'zombie', 'doggee-b': 'zombie' }, colony_looks = {}, colony_seals = {};
   var frases_el = doc.getElementById('frases');
+  // TA-4 (D13-D16): the terminal, the anchor and the joystick live in colony_controls.js; the page passes its state in.
+  var CC = raiz.AtlasColonyControls;
+  var CCT = CC ? CC.attach({ doc: doc, win: raiz, colony: function () { return colonia; }, looks: function () { return colony_looks; }, redraw: function () { draw(); renderFrases(); } }) : null;
 
   // The visible rows of the state: the cabin, and each node the state lists as alive. A node without its key is refused.
   function filas() {
@@ -120,7 +125,7 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
     var dpr = Math.min(2, raiz.devicePixelRatio || 1);
     surface.width = Math.round(width * dpr); surface.height = Math.round(height * dpr);
     if (colonia && CP) {
-      try { CP.draw(surface, colonia, entrada.t, quieto, colony_looks, colony_seals); return; }
+      try { CP.draw(surface, colonia, entrada.t, quieto, colony_looks, colony_seals, CCT ? CCT.walker() : null); return; }
       catch (e) { colonia_error = e.message || 'the colony is refused'; }
     }
     var g = surface.getContext('2d');
@@ -163,6 +168,7 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
     } else if (!colonia) {
       linea += ' Colony: NO_DATA · no live colony in the state (estado.json has no colonia).';
     }
+    if (CCT) { CCT.start(); }
     state.textContent = linea;
     renderFrases();
   }
@@ -173,7 +179,9 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
     frases_el.innerHTML = '';
     if (!colonia || !CP || colonia_error) { return; }
     try {
-      CP.frases(CP.scene(colonia, entrada.t, quieto, colony_looks, colony_seals)).forEach(function (texto) {
+      var sc = CP.scene(colonia, entrada.t, quieto, colony_looks, colony_seals);
+      if (CCT && CCT.walker()) { sc.you = CP.youFrame(CCT.walker(), entrada.t, quieto); }
+      CP.frases(sc).forEach(function (texto) {
         var li = doc.createElement('li'); li.textContent = texto; frases_el.appendChild(li);
       });
     } catch (e) { /* a refused colony is already said on the state line */ }
