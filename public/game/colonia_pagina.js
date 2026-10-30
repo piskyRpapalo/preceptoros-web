@@ -31,7 +31,7 @@
   function botFrame(node, t, reducido) {
     var dy = reducido === true ? 0 : RONDA[((t % 4) + 4) % 4];
     var look = node.look === 'zombie' ? 'zombie' : 'basic';
-    var frase = 'bot of ' + node.id + ' · ' + look + ' face · tick ' + t + (reducido === true ? ' · still (reduced motion)' : '');
+    var frase = 'bot of ' + node.id + ' · ' + look + ' face · seal ' + (node.seal || 'NO_DATA') + ' · tick ' + t + (reducido === true ? ' · still (reduced motion)' : '');
     var cuerpo = cuerpoPts(9).map(function (q) { return [q[0] + BX, q[1] + BY - 14 - dy]; });
     var cara = look === 'zombie' ? [
       { o: 'ribbon', pts: [[BX - 6, BY - 18 - dy], [BX - 2, BY - 18 - dy], [BX - 2, BY - 16 - dy], [BX - 6, BY - 16 - dy]], closed: true, f: 'ink', s: 'ink', lw: 1 },
@@ -53,24 +53,24 @@
   }
 
   // The colony as it is drawn: validated state in, scene out. Throws on any invalid state (no invented row).
-  function scene(estado, t, reducido, looks) {
+  function scene(estado, t, reducido, looks, seals) {
     var validar = root.AtlasColonyState || root.colony;   // the browser: colony_state.js is a classic script, so colony is global
     var colonia = validar(estado);
     var AE = root.AtlasEdificios, PC = root.AtlasPaletteCycle;
-    var sc = AE.scene(colonia, 1, reducido === true);
+    var sc = AE.scene(colonia, 1, reducido === true, seals);
     var cielo = PC.palette(t, reducido === true).cielo;
     // One bot per live node, beside the node's hex (IC7-S3). Buildings are drawn separately, as before.
     var bots = sc.tiles.map(function (n) {
-      return { id: 'bot-' + n.id, x: n.x + BOT_DX * ESCALA_SALA, y: n.y + BOT_DY * ESCALA_SALA, frame: botFrame({ id: n.id, look: looks ? looks[n.id] : undefined }, t, reducido === true) };
+      return { id: 'bot-' + n.id, x: n.x + BOT_DX * ESCALA_SALA, y: n.y + BOT_DY * ESCALA_SALA, frame: botFrame({ id: n.id, look: looks ? looks[n.id] : undefined, seal: seals ? seals[n.id] : undefined }, t, reducido === true) };
     });
     return { tiles: sc.tiles, buildings: sc.buildings, bots: bots, cielo: cielo, nodes: colonia.nodes.length, edificios: colonia.buildings.length };
   }
   var ESCALA_SALA = 2;   // the same spacing as the core: the scene is placed at twice the axial positions
 
   // draw(canvas, estado, t, reducido) → the scene drawn on canvas, with the sky of its tick under it.
-  function draw(canvas, estado, t, reducido, looks) {
+  function draw(canvas, estado, t, reducido, looks, seals) {
     var B = root.AtlasBubble, P = root.AtlasComicAtoms;
-    var sc = scene(estado, t, reducido, looks);
+    var sc = scene(estado, t, reducido, looks, seals);
     var g = canvas.getContext('2d');
     g.setTransform(1, 0, 0, 1, 0, 0);
     g.fillStyle = sc.cielo; g.fillRect(0, 0, canvas.width, canvas.height);
@@ -93,7 +93,12 @@
     return 'Colony: ' + sc.nodes + ' nodes · ' + sc.edificios + ' buildings · ' + sc.bots.length + ' bots with faces · sky ' + sc.cielo;
   }
 
-  var AtlasColoniaPagina = { ANCHO: ANCHO, ALTO: ALTO, scene: scene, draw: draw, texto: texto, botFrame: botFrame, hash: hash };
+  // The sentences a visitor reads under the picture (HUECO 1): every bot and building says what it is and its seal.
+  function frases(sc) {
+    return sc.bots.concat(sc.buildings).map(function (f) { return f.frame.atoms[0].r; });
+  }
+
+  var AtlasColoniaPagina = { ANCHO: ANCHO, ALTO: ALTO, scene: scene, draw: draw, texto: texto, frases: frases, botFrame: botFrame, hash: hash };
   if (typeof module === 'object' && module.exports) { module.exports = AtlasColoniaPagina; }
   else { root.AtlasColoniaPagina = AtlasColoniaPagina; }
 })(typeof globalThis === 'object' ? globalThis : this);

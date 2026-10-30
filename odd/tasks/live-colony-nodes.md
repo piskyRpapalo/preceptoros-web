@@ -82,6 +82,9 @@ The canon line "a live rack heartbeat ... remains NO_DATA" and the decree "only 
 
 - 2026-10-30 · IC7-S2 done on `haiku/ic7-s2-estado-v2-20261030`: `atlas/puros/openworld_state.js` (served copy in `public/game/`), 16 pure cases green; VERSION `abkt` -> `abku`; the door is unchanged, `estado.json` still v1.
 
+- 2026-10-31 · Decree ·6523148687, freedom inside the cage (·6523297468 holes). Route declared before cooking: (1) HUECO 1 · the frame sentence is shown to the visitor: a list under the state line, one sentence per bot and per building, refreshed each tick (built). (2) HUECO 2 · no frame carried a seal: the spec `preceptoros.bubble/1` has no seal field (its reader fields are atoms, bands, change, sound, r, id, t). Cure inside the spec: every bot and building sentence states its node's seal (LIVE, STALE, …), or NO_DATA when none is given (built, D12). Proposal, needs FIRMO: an optional top-level `seal` in the frame contract (`atlas/param_gate.mjs`), amendment of `docs/bubble-language.md`; not built here.
+- 2026-10-31 · Decision D12: seals ride in the sentence `r` until the spec amendment is signed. Frames stay under 1,024 B; IC4 and IC6 judges green.
+
 ## Next step
 
 IC7-S3: bots with faces on the live nodes' hexes, drawn from the `colonia` that `openworld_state.js` returns for schema v2.
