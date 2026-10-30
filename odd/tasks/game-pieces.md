@@ -1,7 +1,7 @@
 # game-pieces
 
 Date: 2026-10-31
-Law: buzon#30 decree ·6523949872, point 2 («hora de lo jugable: tutoriales, combates y demás») and point 3 (method: the author declares the plan in the ODD before cooking; the Sovereign approves each piece with FIRMO; nothing is coded before its plan is declared). Brújula: the newest visual orders first, as in `odd/tasks/visual-orders-inventory.md`.
+Law: buzon#30 ·6524440790 (the web is the only reality and holds all the data; the app is a local instance whose only purpose is to connect to the web: every piece here lives in the web, and the app gets no map and no data of its own), buzon#30 decree ·6523949872, point 2 («hora de lo jugable: tutoriales, combates y demás») and point 3 (method: the author declares the plan in the ODD before cooking; the Sovereign approves each piece with FIRMO; nothing is coded before its plan is declared). Brújula: the newest visual orders first, as in `odd/tasks/visual-orders-inventory.md`.
 
 ## Objective
 
