@@ -11,13 +11,13 @@ function walk(base) {
 }
 const files = walk('');
 const checked = files.filter(p => /\.(?:js|css|json|html)$/.test(p));
+const MAX_BLOCK_BYTES = 25 * 1024 * 1024;
 for (const path of checked) {
-  assert(readFileSync(new URL(path, root)).byteLength < 16384, path + ' exceeds 16 KiB');
+  assert(readFileSync(new URL(path, root)).byteLength <= MAX_BLOCK_BYTES, path + ' exceeds 25 MiB');
 }
-// The 16 KiB phase ceiling on the lab instruments (this file, the phase cases, the browser
-// harnesses) was abolished by the Sovereign, 2026-10-26 (FIRMO). Served files keep theirs above.
+// D2 (FIRMO, 2026-10-11) revoked the 16 KiB per-file ceiling; the signed 25 MiB block limit applies.
 // Corte D (2026-10-28): el presupuesto inicial medido sobre thegame.js (el juego de /play/) se retiro con el juego.
-// Lo que queda vivo es el techo de 16 KiB sobre todo public/ (arriba). Retirada comprobada: thegame.js no existe
+// Retirada comprobada: thegame.js no existe
 // y no figura en el precache.
 const sw = readFileSync(new URL('sw-listas.js', root), 'utf8');
 const retirados = ['assets/thegame.js', 'assets/thegame.css'];

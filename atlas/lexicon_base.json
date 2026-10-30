@@ -100,11 +100,6 @@
     "taller",
     "valores"
   ],
-  "public/face/basic.html": [
-    "escena",
-    "taller",
-    "valores"
-  ],
   "public/face/face.js": [
     "atlascangrejo"
   ],
