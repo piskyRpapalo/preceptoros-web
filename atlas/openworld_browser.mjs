@@ -55,6 +55,7 @@ async function main() {
     try { const d = c.getContext('2d').getImageData(0, 0, c.width, c.height).data; for (let i = 3; i < d.length; i += 4) { if (d[i] > 0) { tinta++; } } } catch (e) { tinta = -1; }
     return JSON.stringify({
       titulo: (document.querySelector('h1') || {}).textContent,
+      sceneComposer: typeof window.AtlasMapScene === 'object' && window.AtlasMapScene.compose([{ id: 'front', x: 0, y: 2, frame: {} }, { id: 'back', x: 0, y: 1, frame: {} }]).map((x) => x.id).join(','),
       botones: [...document.querySelectorAll('#map .press button')].map((b) => b.textContent),
       tinta,
       estado: (document.getElementById('state') || {}).textContent,
@@ -66,6 +67,7 @@ async function main() {
       texto: document.body.innerText
     }); })()`));
   ok(medida.titulo === 'OpenWorld', 'the page did not load: ' + medida.titulo);
+  ok(medida.sceneComposer === 'back,front', 'the single map did not load its depth composer: ' + medida.sceneComposer);
   // NORTE 8 · mandato 3 (rebanada 2): el sonido nativo. La cabaña no declara ondas con armónicos, así que su
   // sonido dice NO_DATA con su causa en la región en vivo. Un clic no crea audio sin una voz que sonar.
   // a demanda: el módulo de sonido no existe en la página hasta el primer clic.
