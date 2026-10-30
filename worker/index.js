@@ -1,3 +1,4 @@
+import { worldState } from './world_state.js';
 // Canonical origin: https://preceptoros.org (apex). www is an alias that only redirects.
 // Decided by the Sovereign, 2026-10-25. Every other request is served by the static
 // assets untouched: run_worker_first makes this script see each request before the assets do.
@@ -22,6 +23,7 @@ export default {
     if (PLAY.test(url.pathname)) {
       return Response.redirect(url.origin + '/openworld/' + url.search, 301);
     }
+    if (url.pathname === '/api/world-state') return worldState(request, env);
     return env.ASSETS.fetch(request);
   },
 };

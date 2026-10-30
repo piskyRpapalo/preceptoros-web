@@ -1,4 +1,4 @@
-const VERSION = 'preceptoros-2026-17-ao';
+const VERSION = 'preceptoros-2026-17-ar';
 const SHELL = 'shell-' + VERSION;
 const OBRA = 'obra-' + VERSION;
 
@@ -144,7 +144,8 @@ self.addEventListener('fetch', e => {
   if (req.method !== 'GET') return;                 
 
   const url = new URL(req.url);
-  if (url.origin !== self.location.origin) return;  
+  if (url.origin !== self.location.origin) return;
+  if (url.pathname === '/api/world-state') return;
 
   if (RED_PRIMERO.indexOf(url.pathname) >= 0) { e.respondWith(redPrimero(e)); return; }
 

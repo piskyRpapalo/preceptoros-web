@@ -103,12 +103,13 @@
     if (selected !== 'cabin' && !entrada.nodes.some(function (n) { return n.id === selected; })) { selected = 'cabin'; }
     // IC7-S3 (D7): the colony comes only from openworld_state.js; a node is drawn only when it is alive and sealed LIVE or STALE.
     if (colonia_fuente !== 'fixture') try {
+      colonia_error = '';
       var estado = raiz.AtlasOpenworldState.leer(data);
       colonia = estado.colonia && estado.colonia.nodes.length > 0 ? estado.colonia : null;
       colonia_fuente = colonia ? 'estado' : 'NO_DATA';
       colony_looks = estado.looks || {};
       colony_seals = estado.seals || {};
-      if (!colonia && estado.version === 2) { colonia_error = 'no node declared alive and sealed LIVE or STALE (' + estado.ocultos + ' hidden)'; }
+      if (!colonia && estado.version === 2) { colonia_error = 'no node declared alive and sealed LIVE or STALE (' + estado.hidden + ' hidden)'; }
     } catch (e) { colonia = null; colonia_error = e.message || 'the state is refused'; }
   }
   if (new URLSearchParams(raiz.location.search).get('fixture') === 'sintetica') { colonia = FIXTURE; colonia_fuente = 'fixture'; colony_looks = FIXTURE_LOOKS; colony_seals = {}; }
@@ -175,10 +176,44 @@
   render();
   raiz.addEventListener('resize', draw);
   if (!quieto) { raiz.setInterval(cycle, 1000); }
+  var tutorial = null;
   if (raiz.fetch) {
     raiz.fetch('/openworld/estado.json', { cache: 'no-cache' })
       .then(function (r) { return r.ok ? r.json() : null; })
-      .then(function (d) { accept(d); render(); })
-      .catch(function () { /* no state file: zero nodes, which is the default */ });
+      .then(function (d) { tutorial = d; accept(d); render(); })
+      .catch(function () { state.textContent = 'NO_DATA: tutorial state unavailable.'; });
+  }
+  var refresh = doc.getElementById('world-refresh'), expiry = null, requestGeneration = 0;
+  raiz.addEventListener('pagehide', function () { requestGeneration++; fallback('refresh required'); });
+  function fallback(cause) {
+    clearTimeout(expiry);
+    if (tutorial) { accept(tutorial); render(); }
+    state.textContent += ' · Live nodes NO_DATA: ' + cause;
+  }
+  if (refresh && raiz.AtlasWorldFeed && colonia_fuente !== 'fixture') {
+    refresh.addEventListener('click', async function () {
+      refresh.disabled = true;
+      var generation = ++requestGeneration;
+      try {
+        if (!tutorial) throw new Error('tutorial unavailable');
+        var d = await raiz.AtlasWorldFeed.read(raiz.fetch.bind(raiz));
+        if (generation !== requestGeneration) return;
+        var cabin = tutorial.colonia.nodes.filter(function (n) { return n.id === 'cabin'; });
+        if (cabin.length !== 1) throw new Error('tutorial cabin unavailable');
+        var c = cabin[0], live = d.colonia;
+        if (live.nodes.some(function (n) { return n.id === c.id || (n.q === c.q && n.r === c.r); })) throw new Error('node overlaps tutorial cabin');
+        var merged = {esquema: d.esquema, nodes: [], colonia: {
+          nodes: [c].concat(live.nodes),
+          buildings: tutorial.colonia.buildings.filter(function (b) { return b.node === c.id; }).concat(live.buildings),
+          units: live.units
+        }};
+        raiz.AtlasOpenworldState.leer(merged);
+        accept(merged); render();
+        if (d.cobertura && d.cobertura.estado === 'NO_DATA') state.textContent += ' · Live nodes NO_DATA: ' + d.cobertura.causa;
+        clearTimeout(expiry);
+        expiry = setTimeout(function () { fallback('refresh required'); }, 60000);
+      } catch (e) { fallback(e.message || 'publisher unavailable'); }
+      finally { refresh.disabled = false; }
+    });
   }
 })(window);
