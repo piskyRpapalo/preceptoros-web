@@ -63,7 +63,9 @@ None.
 
 - 2026-10-30 · Plan declared propose-only. No code written. Balance stays NO_DATA.
 - 2026-10-30 · W1 candidate on `mistral/g5-w1-sha256-20261030`: the pure BM-2 core now uses WebCrypto SHA-256 for deterministic commitments; no duel is served, and balance remains NO_DATA. W2 stays a separate piece.
+- 2026-10-30 · W1 is now on main at `423c5c3` (`atlas/puros/wave_duel.js`); this supersedes the candidate status above. The core remains unserved.
+- 2026-10-30 · W2 preflight on current main `1919272c`: `estado.json` exposes one eligible node (`cabin`, LIVE); `beelink` and both doggee nodes are NO_DATA. The schema carries node id, axial position, seal and look, but no troop genome. `wave_duel_scene.js` requires troop definitions (`tc` and seed) and combat records. A two-node wave fight and its scene are therefore NO_DATA: cause, fewer than two eligible nodes and no measured troop genomes. Do not substitute synthetic troops or balance. The SHA-256 core is available at `atlas/puros/wave_duel.js`; W2 remains open until the map state contains two eligible combatants with declared wave data.
 
 ## Next step
 
-The Mesa's FIRMA of this plan. Then W1 as its own PR from main.
+The map's measured state must first declare two eligible combatants with wave data; then W2 can be implemented and verified against the existing wave scene. Balance remains NO_DATA until measured.
