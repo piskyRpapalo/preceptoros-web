@@ -575,6 +575,16 @@
     "adopcion",
     "tropa"
   ],
+  "public/game/visitor_battle.js": [
+    "atlasniebla",
+    "atlasvalores",
+    "registro"
+  ],
+  "public/game/visitor_battle_ui.js": [
+    "adopcion",
+    "escena",
+    "tropa"
+  ],
   "public/game/visitor_eggs.js": [
     "abre",
     "adopcion",
@@ -610,6 +620,8 @@
     "superviviente"
   ],
   "public/openworld/index.html": [
+    "escena",
+    "taller",
     "valores"
   ],
   "public/sw-listas.js": [
