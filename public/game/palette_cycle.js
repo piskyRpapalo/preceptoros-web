@@ -1,6 +1,6 @@
 // Day and night palette (ODD isometric-colony, IC5). Pure: the colours are a function of the cycle tick t alone.
 // Never a wall clock: no Date, no performance clock, no random numbers. The constants are the ones measured on the
-// global map (public/game/global_map.js, NODE-MAPA): CYCLE 240, night sky #17131f at t=0, day sky #f4ebd0 at noon.
+// global map (public/game/global_map.js, NODE-MAPA): CYCLE 240, the measured night sky at t=0, the measured day sky at noon.
 // Reduced motion is no cycle: the palette stays fixed at noon, and no sky frame changes.
 (function (root) {
   'use strict';
