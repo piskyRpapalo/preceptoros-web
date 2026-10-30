@@ -11,7 +11,10 @@ Measure, on the single map, how AIs move and how they fight waves, with a record
 
 - The map has bots with faces (one per live node, IC7-S3) and a walker of the user (IC7-S10 in the terminal branch, merged). Nothing moves by its own rule yet, and no fight happens on the map.
 - The combat rules of the crabs (ideas13oct sec. 15) are described, but their balance has no measured value: NO_DATA.
-- The receipts route from the devices to the web (aduana, D4) is not deployed: a result has no route to the lab yet.
+- Aduana's D7 heartbeat receiver and public state endpoint are deployed, but the live
+  projection currently returns `NO_DATA · identidades_canonicas_no_configuradas` with
+  zero nodes. This does not publish benchmark frames or create the B4 lab feed; those
+  remain separate work.
 
 ## Scope
 
@@ -20,10 +23,12 @@ In scope, in this order:
 1. **B1 · the seeded mover** — a pure rule that moves an AI bot one hex at a time over colony nodes only, from a seed. The same seed gives the same path, twice. A node that is not LIVE is never entered (D7).
 2. **B2 · the wave duel** — two bots on a shared hex fight by the crabs' rule (Fourier coefficients, the duel log with commit-reveal). The log is the script; a duel with no seed is refused. Balance: NO_DATA until measured.
 3. **B3 · the benchmark record** — every run writes one frame per round (under 1 KB, with colour, coordinates, sound and time, as sec. 18) and one summary: seed, rules version, device, date, result, seal.
-4. **B4 · the lab feed** — the records are published as a file the lab reads. Route: the web state first; the aduana receipt route only when it is deployed (D4). Until then the feed says NO_DATA with cause.
+4. **B4 · the lab feed** — the records are published as a file the lab reads. The
+   deployed heartbeat route supplies map presence only; it is not the benchmark
+   record route. Until a measured frames route exists, the feed says NO_DATA with cause.
 5. **B5 · from each rack device** — the app connects to the web and runs the benchmark there; the app holds no map and no data of its own (decree ·6524440790).
 
-Out of scope: any LoRA training step (the lab's own plan, after its FIRMO); any real-user data; any heartbeat producer (D7, its own FIRMO).
+Out of scope: any LoRA training step (the lab's own plan, after its FIRMO); any real-user data; changes to the separately deployed D7 heartbeat receiver or its operator-managed sender.
 
 ## Decisions to take
 
@@ -48,7 +53,7 @@ Out of scope: any LoRA training step (the lab's own plan, after its FIRMO); any 
 
 ## Verification evidence
 
-Measured in main (`1902295`): the map and its bots (IC7-S3), the walker (IC7-S10), the frase list (IC7-S3 to S5). Not measured: the duel's balance (NO_DATA), the aduana receipt route (NO_DATA, not deployed), the lab's reading of the records (NO_DATA).
+Measured in main (`1902295`): the map and its bots (IC7-S3), the walker (IC7-S10), the frase list (IC7-S3 to S5). Measured on 2026-10-30: Aduana health is live; its heartbeat state endpoint returns HTTP 200 with no configured canonical identities and zero nodes. Not measured: a published first heartbeat, the duel's balance (NO_DATA), the benchmark-frames route and lab feed (NO_DATA).
 
 ## Standing signature
 
