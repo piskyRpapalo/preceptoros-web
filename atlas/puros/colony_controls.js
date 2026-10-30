@@ -139,7 +139,23 @@
       if (!walker) { return; }
       var e = enter(walker, env.looks()[walker.node], saved);
       anchor(e.look);
-      joy.say('terminal: ' + e.look + ' (' + (e.source === 'user' ? 'your choice' : e.source === 'node' ? 'the node' : 'default') + ')');
+      var step = tutorialStep(walker.node);
+      joy.say('terminal: ' + e.look + ' (' + (e.source === 'user' ? 'your choice' : e.source === 'node' ? 'the node' : 'default') + ')' + (step ? '. ' + step : ''));
+    }
+    // G4-2: the tutorial is a walk. Entering a node may complete the next step (tutorial_walk.js). Its progress is this
+    // visit's memory only, like the walker: a reload starts the walk again. Only a LIVE or STALE place can be walked.
+    var tutorialLog = [];
+    function tutorialStep(node) {
+      var TW = env.win.AtlasTutorialWalk;
+      if (!TW) { return ''; }
+      var done = TW.progress(tutorialLog);
+      var next = TW.STEPS.filter(function (x) { return done.indexOf(x.id) < 0; })[0];
+      if (!next) { return 'tutorial: complete'; }
+      if (TW.placeFor(next.id) !== node) { return 'tutorial: next step is at ' + TW.placeFor(next.id); }
+      var ok = TW.canWalk(next.id, env.seals());
+      if (!ok.ok) { return ok.cause; }
+      tutorialLog = TW.record(tutorialLog, next.id, 'played');
+      return 'tutorial: ' + next.id + ' played';
     }
     function chooseLook(look) {
       var st = storeOf(env.win);
