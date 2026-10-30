@@ -38,7 +38,7 @@ Out of scope: any LoRA training step (the lab's own plan, after its FIRMO); any 
 
 ## Checklist (one piece = one PR, FIRMO per piece)
 
-- [ ] BM-1 · seeded mover (pure), tests twice, sabotage: a path that enters a non-LIVE node is refused.
+- [x] BM-1 · seeded mover (pure), tests twice, sabotage: a path that enters a non-LIVE node is refused. Implemented in PR #444; merged as `97bf5d44`.
 - [ ] BM-2 · wave duel (pure) with the commit-reveal log, tests twice, sabotage: a duel with no seed is refused; abandonment at 900 cycles is recorded.
 - [ ] BM-3 · benchmark record and frame law, tests, sabotage: a frame over 1 KB is refused.
 - [ ] BM-4 · lab feed as a file, NO_DATA with cause until the aduana route is deployed.
@@ -55,6 +55,8 @@ Out of scope: any LoRA training step (the lab's own plan, after its FIRMO); any 
 
 Measured in main (`1902295`): the map and its bots (IC7-S3), the walker (IC7-S10), the frase list (IC7-S3 to S5). Measured on 2026-10-30: Aduana health is live; its heartbeat state endpoint returns HTTP 200 with no configured canonical identities and zero nodes. Not measured: a published first heartbeat, the duel's balance (NO_DATA), the benchmark-frames route and lab feed (NO_DATA).
 
+BM-1 receipt: PR #444, merge `97bf5d4403ed7172ed22fa6a13043ea0dbc5a39e`; its head was `bc6b807a35332cf716a91df297758f3b70171a18`. `node atlas/puros/bench_mover_casos.mjs` passed 7/7, including same-seed replay and refusal to enter a NO_DATA node. The implementation stays a pure, unserved rule; live-node execution remains NO_DATA until the heartbeat is live.
+
 ## Standing signature
 
 Required: FIRMO of this plan, then FIRMO per PR. The NORTE decree and the LoRA lift are the Sovereign's (·6525335471 and ·6525528435). Search done: ideas13oct secs. 15 and 18, the Mesa's canonical answer, the map and bots on main.
@@ -65,8 +67,9 @@ None.
 
 ## Log
 
-- 2026-10-31 · Benchmarks plan declared (propose-only). No code written.
+- 2026-10-31 · Benchmarks plan declared (propose-only). No code written at plan time.
+- 2026-10-31 · BM-1 close-out recorded from merged PR #444. BM-2 remains open: the W1 SHA-256 core is not evidence of the planned Fourier combat or multiparty commit-reveal contract.
 
 ## Next step
 
-The Sovereign's FIRMO of this plan and the decision BM-D1 to BM-D3; then BM-1.
+BM-2, as its own PR, after implementing the planned Fourier combat and the canon's participant-supplied commit-reveal inputs. BM-3 through BM-5 remain separate PRs; live-node runs wait for a live heartbeat.

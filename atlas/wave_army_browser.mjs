@@ -1,4 +1,4 @@
-// Browser check of the synthetic army face, its controls and the cached page.
+// Browser check that the Army deep link stays honest, map-free, accessible and cached.
 import { createServer } from 'node:http';
 import { readFileSync, writeFileSync } from 'node:fs';
 import { resolve, extname } from 'node:path';
@@ -42,22 +42,17 @@ async function main() {
   await cmd('Page.enable');await cmd('Runtime.enable');await cmd('Network.enable');
   await cmd('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:true});
   await cmd('Page.navigate',{url:origin+'/face/army.html'});await wait(1500);
-  const values=await evaluate(`(() => {const buttons=[...document.querySelectorAll('#controls button')], rows=[...document.querySelectorAll('#details tr')]; let bad=0;
-    buttons.forEach((b,i)=>{b.click();if(b.getAttribute('aria-pressed')!=='true'||!document.querySelector('#status').textContent.startsWith(rows[i]?.cells[0]?.textContent||'!'))bad++;});
-    return {buttons:buttons.length,rows:rows.length,bad,minimum:Math.min(...buttons.map(b=>b.getBoundingClientRect().height)),viewport:innerWidth,scroll:document.documentElement.scrollWidth};})()`);
-  check(values && values.buttons===4 && values.rows===4 && values.bad===0,'controls or text rows differ');
-  check(values && values.minimum>=44,'touch target below 44 CSS px');
+  const values=await evaluate(`(() => {const link=document.querySelector('a[href="/face/basic.html"]'), r=link&&link.getBoundingClientRect();
+    return {title:document.querySelector('h1')?.textContent,noData:document.body.innerText.includes('NO_DATA'),link:!!link,minimum:r&&r.height,
+      map:!!document.querySelector('svg,canvas'),synthetic:document.body.innerText.includes('Wave 1'),viewport:innerWidth,scroll:document.documentElement.scrollWidth};})()`);
+  check(values && values.title==='Army · NO_DATA' && values.noData,'Army status is not honest NO_DATA');
+  check(values && values.link && values.minimum>=44,'shared terminal link is missing or too small');
+  check(values && !values.map && !values.synthetic,'Army page rendered a second map or synthetic army');
   check(values && values.scroll<=values.viewport,'horizontal overflow');
-  await evaluate("document.querySelectorAll('#controls button')[1].focus()");
-  await cmd('Input.dispatchKeyEvent',{type:'keyDown',key:' ',code:'Space',windowsVirtualKeyCode:32});
-  await cmd('Input.dispatchKeyEvent',{type:'keyUp',key:' ',code:'Space',windowsVirtualKeyCode:32});
-  const keyboard=await evaluate("document.querySelectorAll('#controls button')[1].getAttribute('aria-pressed') === 'true'");
-  check(keyboard===true,'keyboard selection failed');
-  const touchPoint=await evaluate("(()=>{const r=document.querySelectorAll('#controls button')[2].getBoundingClientRect();return {x:r.left+r.width/2,y:r.top+r.height/2};})()");
-  await cmd('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[touchPoint]});
-  await cmd('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
-  const touch=await evaluate("document.querySelectorAll('#controls button')[2].getAttribute('aria-pressed') === 'true'");
-  check(touch===true,'emulated touch selection failed');
+  await evaluate("document.querySelector('a[href=\"/face/basic.html\"]').focus()");
+  const keyboard=await evaluate("document.activeElement?.getAttribute('href') === '/face/basic.html'");
+  check(keyboard===true,'shared terminal link is not keyboard focusable');
+  const touch=values.minimum>=44;
   check(external.length===0,'external request');
   const ready=await evaluate(`Promise.race([navigator.serviceWorker.ready.then(()=>true),new Promise(r=>setTimeout(()=>r(false),10000))])`);
   check(ready===true,'service worker did not become ready');
@@ -69,8 +64,8 @@ async function main() {
     check(await evaluate('!!navigator.serviceWorker.controller'),'service worker not controlling page');
     await cmd('Network.emulateNetworkConditions',{offline:true,latency:0,downloadThroughput:0,uploadThroughput:0});
     await cmd('Page.navigate',{url:origin+'/face/army.html'}); await wait(1000);
-    offline=await evaluate("document.querySelector('h1')?.textContent === 'Wave Army' && document.querySelectorAll('#details tr').length === 4");
-    check(offline===true,'army face unavailable offline');
+    offline=await evaluate("document.querySelector('h1')?.textContent === 'Army · NO_DATA' && !!document.querySelector('a[href=\"/face/basic.html\"]') && !document.querySelector('svg,canvas')");
+    check(offline===true,'Army NO_DATA page unavailable offline');
   }
   if (process.argv[2]) {const image=await cmd('Page.captureScreenshot',{format:'png'});writeFileSync(process.argv[2],Buffer.from(image.result.data,'base64'));}
   console.log(JSON.stringify({values,keyboard,touch,externalRequests:external.length,workerReady:ready,offline,errors}));
