@@ -31,6 +31,15 @@ In scope, as a ladder of small pieces:
 - The door stays under 16 KiB; logic lives in `public/game/` modules.
 - Single map: every piece is shown on `/openworld/`, not on a test page.
 
+## Map functions the pieces must respect (ideas13oct, read 2026-10-31)
+
+- G2 extends to the crab's action panel (F4, sec. 24): Shell, Claws, Legs, Eyes, and the link to Summoning. The colour anchor stays.
+- G4 (tutorial) feeds the real core level only when played, and is always skippable (F7, sec. 17).
+- G5 (combat) is the duel of crabs (F8, sec. 15): Fourier coefficients, commit-reveal log, abandonment at 900 cycles. The wave duel of the army fixture is the reference for the rules, not the look.
+- New G7 · click by coordinate (F3, sec. 24): tap on the map reports the place and offers its actions. Plan only.
+- New G8 · radios and live visitors (F5, sec. 23): NO_DATA until the rack transmits. Plan only.
+- Every piece: frames under 1 KB with colour, coordinates, sound and time (F6).
+
 ## Checklist (one piece = one PR; FIRMO per piece before code)
 
 - [ ] G1 · joystick and walker (built, waiting for merge)
@@ -39,6 +48,8 @@ In scope, as a ladder of small pieces:
 - [ ] G4 · tutorial as a walk (plan only)
 - [ ] G5 · first combat, wave duel (plan only; balance NO_DATA)
 - [ ] G6 · empty state, house and fog (plan only; IC7-S6)
+- [ ] G7 · click by coordinate, report and actions (plan only; F3)
+- [ ] G8 · radios and live visitors (plan only; F5; NO_DATA until the rack transmits)
 
 ## Verification evidence
 
