@@ -33,7 +33,7 @@
     var dpr = Math.min(2, raiz.devicePixelRatio || 1);
     surface.width = Math.round(width * dpr); surface.height = Math.round(height * dpr);
     if (colonia && CP) {
-      try { CP.draw(surface, colonia, entrada.t, quieto, colony_looks, colony_seals, CCT ? CCT.walker() : null); return; }
+      try { CP.draw(surface, colonia, entrada.t, quieto, colony_looks, colony_seals, CCT ? CCT.walker() : null); visitorLayer(); return; }
       catch (e) { colonia_error = e.message || 'the colony is refused'; }
     }
     var g = surface.getContext('2d');
@@ -49,7 +49,12 @@
       try { P.paint(g, B.compile(nd.frame)); } catch (e) { /* the frame is refused; the node stays off the map */ }
       g.restore();
     });
+    visitorLayer();
   }
+  function visitorLayer() {
+    surface.dispatchEvent(new CustomEvent('visitor:draw'));
+  }
+  doc.getElementById('visitor-play').addEventListener('visitor:changed', draw);
 
   function buttons() {
     press.innerHTML = '';
@@ -169,7 +174,6 @@
         if (!R) { line('', 'NO_DATA · router_not_loaded'); return; }
         var answer = R.responde(text, null);
         line('', answer.ok ? answer.texto : answer.causa);
-      });
       });
     });
   }
