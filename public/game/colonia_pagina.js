@@ -68,9 +68,25 @@
   var ESCALA_SALA = 2;   // the same spacing as the core: the scene is placed at twice the axial positions
 
   // draw(canvas, estado, t, reducido) → the scene drawn on canvas, with the sky of its tick under it.
-  function draw(canvas, estado, t, reducido, looks, seals) {
+  // TA-3 · the user's ephemeral walker (D15): not node state, so its seal is NO_DATA and its sentence says so.
+  function youFrame(walker, t, reducido) {
+    var dy = reducido === true ? 0 : RONDA[((t % 4) + 4) % 4];
+    var frase = 'you · ephemeral walker on node ' + walker.node + ' · not node state · seal NO_DATA · tick ' + t;
+    var ring = cuerpoPts(7).map(function (q) { return [q[0] + BX, q[1] + BY - 12 - dy]; });
+    return {
+      v: 'preceptoros.bubble/1', id: 'you', t: t, cv: [120, 110], seal: 'NO_DATA',
+      atoms: [{ k: 'you', r: frase, i: [{ o: 'ribbon', pts: ring, closed: true, f: 'vermilion.base', s: 'ink', lw: 2 }] }],
+      bands: ['paper', 'ink', 'cyan'], change: [frase],
+      sound: 'NO_DATA: the walker declares no waves; nothing is invented',
+      soundCause: 'the walker has no measured value in this slice'
+    };
+  }
+
+  function draw(canvas, estado, t, reducido, looks, seals, walker) {
     var B = root.AtlasBubble, P = root.AtlasComicAtoms;
     var sc = scene(estado, t, reducido, looks, seals);
+    var you = walker ? sc.tiles.filter(function (n) { return n.id === walker.node; })[0] : null;
+    sc.you = you ? youFrame(walker, t, reducido === true) : null;
     var g = canvas.getContext('2d');
     g.setTransform(1, 0, 0, 1, 0, 0);
     g.fillStyle = sc.cielo; g.fillRect(0, 0, canvas.width, canvas.height);
@@ -78,7 +94,9 @@
     // IC7-S4: the spacing shrinks when the widest node would leave the canvas; it never grows past K.
     var reach = sc.tiles.reduce(function (m, n) { return Math.max(m, Math.abs(n.x)); }, 1);
     var k = Math.min(K, (canvas.width / 2 - 80) / reach);
-    sc.tiles.concat(sc.buildings, sc.bots).forEach(function (nd) {
+    var drawn = sc.tiles.concat(sc.buildings, sc.bots);
+    if (you) { drawn.push({ x: you.x - BOT_DX * ESCALA_SALA, y: you.y - 22, frame: sc.you }); }
+    drawn.forEach(function (nd) {
       g.save();
       g.translate(cx + nd.x * k - BX * S, cy + nd.y * k - BY * S);
       g.scale(S, S);
@@ -95,10 +113,12 @@
 
   // The sentences a visitor reads under the picture (HUECO 1): every bot and building says what it is and its seal.
   function frases(sc) {
-    return sc.bots.concat(sc.buildings).map(function (f) { return f.frame.atoms[0].r; });
+    var out = sc.bots.concat(sc.buildings).map(function (f) { return f.frame.atoms[0].r; });
+    if (sc.you) { out.push(sc.you.atoms[0].r); }
+    return out;
   }
 
-  var AtlasColoniaPagina = { ANCHO: ANCHO, ALTO: ALTO, scene: scene, draw: draw, texto: texto, frases: frases, botFrame: botFrame, hash: hash };
+  var AtlasColoniaPagina = { ANCHO: ANCHO, ALTO: ALTO, scene: scene, draw: draw, texto: texto, frases: frases, botFrame: botFrame, youFrame: youFrame, hash: hash };
   if (typeof module === 'object' && module.exports) { module.exports = AtlasColoniaPagina; }
   else { root.AtlasColoniaPagina = AtlasColoniaPagina; }
 })(typeof globalThis === 'object' ? globalThis : this);
