@@ -2352,6 +2352,8 @@ class OpenWorld(unittest.TestCase):
     def setUp(self):
         self.ruta = PUBLICO / "openworld" / "index.html"
         self.t = self.ruta.read_text(encoding="utf-8")
+        self.assertLess(self.ruta.stat().st_size, 16384)
+        self.t += (PUBLICO / "game/openworld_page.js").read_text(encoding="utf-8")
 
     def test_la_ficha_cabe_en_25_mib(self):
         # D2 (FIRMO 2026-10-11) revoco el tope de 16 KiB por fichero.
