@@ -48,27 +48,27 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
 <div class="press" role="group" aria-label="Terrains">
 <button type="button" id="t-cabin" aria-pressed="true" data-terrain="cabin">Tutorial cabin</button>
 </div>
-<canvas class="surface" id="surface" role="img" aria-label="The global map: the tutorial cabin, and any node that is alive"></canvas>
+<canvas class="surface" id="surface" role="img" aria-label="The global map: tutorial cabin and live nodes"></canvas>
 <div class="listen">
 <button type="button" id="listen" aria-describedby="listen-state">Listen to the cabin</button>
 </div>
 <p class="state" id="listen-state" aria-live="polite"></p>
 <div id="joy"></div>
-<p class="state" id="state" aria-live="polite">Nodes online: 0. The tutorial cabin is the basic world.</p>
-<ul class="state" id="frases" aria-label="What the colony shows"></ul>
-<p><a href="/face/army.html" style="display:inline-flex;align-items:center;min-height:44px">Wave Army fixture</a></p>
+<p class="state" id="state" aria-live="polite">Nodes online: 0.</p>
+<ul class="state" id="frases" aria-label="Map details"></ul>
+<p><a href="/face/army.html" style="display:inline-flex;min-height:44px">Army fixture</a> · <a href="/openworld/hexelion-benchmark.json" style="display:inline-block;min-height:44px">Benchmark data</a> · <a href="/face/basic.html" style="display:inline-block;min-height:44px">Tutorial · no key</a></p>
 </section>
 <section id="chat" aria-labelledby="chat-h">
 <h2 id="chat-h">Chat</h2>
 <ul class="log" id="log" role="log" aria-live="polite">
-<li>The chat is not live yet. This panel is ready for it.</li>
+<li>The chat is not live yet.</li>
 </ul>
 <form id="entry" onsubmit="return false">
 <label class="sr" for="question">Message</label>
 <input id="question" type="text" autocomplete="off" aria-describedby="chat-note">
 <button type="submit">Send</button>
 </form>
-<p class="state" id="chat-note">Answers come from a local model. None is installed yet, so each answer says NO_DATA and its cause.</p>
+<p class="state" id="chat-note">NO_DATA: no local answer model is connected.</p>
 </section>
 </main>
 <script src="/game/tabla_semantica.js"></script>
@@ -160,7 +160,7 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
     buttons();
     draw();
     var vivos = filas().filter(function (row) { return row.id !== 'cabin'; }).length;
-    var linea = 'Nodes online: ' + vivos + '. The tutorial cabin is the basic world.';
+    var linea = 'Nodes online: ' + vivos + '.';
     if (colonia && CP && !colonia_error) {
       try { linea = CP.texto(CP.scene(colonia, entrada.t, quieto, colony_looks, colony_seals)) + (colonia_fuente === 'fixture' ? ' · SYNTHETIC fixture, not a live colony' : ''); }
       catch (e) { colonia_error = e.message || 'the colony is refused'; }
