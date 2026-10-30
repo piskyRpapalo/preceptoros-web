@@ -1,0 +1,64 @@
+{
+  "schema": "preceptoros.hexelion-benchmark/1",
+  "node": "HEXELION",
+  "measured_on": "2026-10-30",
+  "timezone": "UTC",
+  "measurement_window": {
+    "started_at": "17:38:48",
+    "completed_at": "17:42:00"
+  },
+  "source_receipt_sha256": "dcdab5740810cb035fb36cd2d447409a6bf32159fb57a6e487dbba56917981fd",
+  "source_commands": [
+    "ollama list",
+    "ollama run <model> --verbose <shared Spanish 1-to-50 counting prompt>",
+    "ollama ps"
+  ],
+  "prompt_and_output_receipt": "Exact prompt and saved responses are in the node-local lab receipt, hashed above.",
+  "map_pointers": {
+    "one_map": "/openworld/",
+    "joystick_controller": "/game/colony_controls.js",
+    "ephemeral_walker_renderer": "/game/colonia_pagina.js",
+    "no_identity_tutorial_entry": "/face/basic.html",
+    "ephemeral_player_crab": "/game/gdpr-art25-ephemeral-crab.js",
+    "optional_browser_identity": "/assets/auth.js"
+  },
+  "measurements": [
+    {
+      "model": "hexelion",
+      "base_model": "gpt-oss:120b",
+      "architecture": "MoE Transformer",
+      "ollama_list_size": "65 GB",
+      "processor": "100% GPU",
+      "context": 65536,
+      "kv_cache": "q8_0",
+      "eval_rate": 34.05,
+      "eval_rate_unit": "tok/s"
+    },
+    {
+      "model": "huggingface.co/bartowski/moonshotai_Kimi-Linear-48B-A3B-Instruct-GGUF:Q4_K_M",
+      "architecture": "KDA + MLA linear",
+      "ollama_list_size": "30 GB",
+      "processor": "100% GPU",
+      "context": 65536,
+      "kv_cache": "f16",
+      "eval_rate": 64.78,
+      "eval_rate_unit": "tok/s"
+    },
+    {
+      "model": "huggingface.co/bartowski/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-GGUF:Q4_0",
+      "architecture": "Mamba2 hybrid + MTP",
+      "ollama_list_size": "19 GB",
+      "processor": "100% GPU",
+      "context": 65536,
+      "kv_cache": "q8_0",
+      "eval_rate": 67.05,
+      "eval_rate_unit": "tok/s"
+    }
+  ],
+  "limitations": [
+    "Architecture labels are declared classifications; rates do not identify architecture.",
+    "The models have different sizes and quantizations; Kimi used f16 KV because q8_0 failed to initialize for its V-head dimension.",
+    "This dated benchmark is not a heartbeat and does not declare HEXELION online in the colony state.",
+    "The joystick walker is page-memory state, not an account identity or a colony node. The web offers a no-identity tutorial entry; no separate ephemeral account is claimed. The optional browser key is separate."
+  ]
+}
