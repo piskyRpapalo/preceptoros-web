@@ -84,11 +84,16 @@
       return b;
     }
     var pad = doc.createElement('div');
+    pad.setAttribute('role', 'group');
+    pad.setAttribute('aria-label', 'Walk to a neighbouring node');
     Object.keys(DIRS).forEach(function (name) {
       pad.appendChild(button(name, function () { handlers.move(name); }));
     });
-    pad.appendChild(button('enter node', function () { handlers.enter(); }));
-    pad.appendChild(button('Skip tutorial', function () { handlers.skip(); }));
+    var actions = doc.createElement('div');
+    actions.setAttribute('role', 'group');
+    actions.setAttribute('aria-label', 'Node and tutorial');
+    actions.appendChild(button('enter node', function () { handlers.enter(); }));
+    actions.appendChild(button('Skip tutorial', function () { handlers.skip(); }));
     var sel = doc.createElement('select');
     sel.setAttribute('aria-label', 'Terminal look');
     [['', 'node default'], ['basic', 'basic'], ['atlantis', 'atlantis'], ['zombie', 'zombie']].forEach(function (o) {
@@ -96,7 +101,7 @@
     });
     sel.style.minHeight = '44px';
     sel.addEventListener('change', function () { handlers.choose(sel.value === '' ? null : sel.value); });
-    box.appendChild(pad); box.appendChild(sel); box.appendChild(status);
+    box.appendChild(pad); box.appendChild(actions); box.appendChild(sel); box.appendChild(status);
     container.appendChild(box);
     // Arrow keys: east and west move along the row; up and down take the two north and two south neighbours.
     var keys = { ArrowRight: 'east', ArrowLeft: 'west', ArrowUp: 'north-east', ArrowDown: 'south-west' };

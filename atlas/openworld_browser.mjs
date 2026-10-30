@@ -61,6 +61,7 @@ async function main() {
       chatAbierto: !!document.querySelector('#chat'),
       entradaOff: !!(document.getElementById('question') || {}).disabled,
       botonChat: [...document.querySelectorAll('button')].some((b) => /^\\s*Chat\\s*$/.test(b.textContent)),
+      joystick: (() => { const j = document.getElementById('joy'), r = j.getBoundingClientRect(); return { buttons: j.querySelectorAll('button').length, top: r.top, bottom: r.bottom, visible: r.width > 0 && r.height > 0 && r.top >= 0 && r.bottom <= innerHeight, touch: getComputedStyle(j.querySelector('button')).minHeight }; })(),
       ancho: document.documentElement.scrollWidth, vista: innerWidth,
       texto: document.body.innerText
     }); })()`));
@@ -84,6 +85,12 @@ async function main() {
   // Estado de 2026-10-30 (MVP moderno): la cabaña es el unico nodo LIVE; Beelink y Doggee son NO_DATA y no se dibujan.
   ok(/^Colony: 1 nodes · 1 buildings · 1 bots with faces · sky #[0-9a-f]{6}$/.test(medida.estado || ''), 'the default state is not the declared one (cabin only, LIVE): ' + medida.estado);
   ok(medida.chatAbierto && !medida.entradaOff, 'the chat panel is missing or its input is off');
+  ok(medida.joystick.buttons === 8 && medida.joystick.visible, 'the joystick is missing or below the phone viewport: ' + JSON.stringify(medida.joystick));
+  ok(parseFloat(medida.joystick.touch) >= 44, 'joystick controls are below the touch target: ' + medida.joystick.touch);
+  const entered = await ev("(() => { const b = [...document.querySelectorAll('#joy button')].find((x) => x.textContent === 'enter node'); b.click(); return document.querySelector('#joy [aria-live]').textContent; })()");
+  ok(/^terminal: basic/.test(entered || ''), 'the ephemeral cabin cannot be entered through the joystick: ' + entered);
+  const blocked = await ev("(() => { const b = [...document.querySelectorAll('#joy button')].find((x) => x.textContent === 'east'); b.click(); return document.querySelector('#joy [aria-live]').textContent; })()");
+  ok(/^NO_DATA: no colony node/.test(blocked || ''), 'an absent neighbour was not honestly refused: ' + blocked);
   ok(!medida.botonChat, 'there is a Chat button; the chat must always be present, with no button');
   ok(medida.ancho <= medida.vista, 'the page scrolls sideways at phone width: ' + medida.ancho + ' > ' + medida.vista);
   ok(!/\bundefined\b|\bNaN\b/.test(medida.texto), 'missing value shown on the page');

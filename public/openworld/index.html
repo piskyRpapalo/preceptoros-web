@@ -28,6 +28,18 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
 #map .press button,#map .listen button{min-height:44px;padding:8px 14px;border:2px solid currentColor;border-radius:var(--radius);background:var(--bg);color:var(--fg);font:inherit;cursor:pointer}
 #map .press button[aria-pressed="true"]{outline:3px solid currentColor;outline-offset:2px}
 #map .state{margin:0;color:var(--soft);font-size:.92rem}
+#joy{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;padding:10px;border:2px solid var(--line);border-radius:var(--radius);background:var(--bg);color:var(--fg)}
+#joy [role="group"]{display:grid;grid-template-columns:repeat(3,minmax(44px,1fr));gap:6px;align-items:center}
+#joy [aria-label="Walk to a neighbouring node"]{grid-column:1/-1;grid-template-areas:". ne nw" "w . e" "sw . se"}
+#joy [aria-label="Walk to a neighbouring node"]>button:nth-child(1){grid-area:e}
+#joy [aria-label="Walk to a neighbouring node"]>button:nth-child(2){grid-area:ne}
+#joy [aria-label="Walk to a neighbouring node"]>button:nth-child(3){grid-area:nw}
+#joy [aria-label="Walk to a neighbouring node"]>button:nth-child(4){grid-area:w}
+#joy [aria-label="Walk to a neighbouring node"]>button:nth-child(5){grid-area:sw}
+#joy [aria-label="Walk to a neighbouring node"]>button:nth-child(6){grid-area:se}
+#joy button,#joy select{min-height:44px;min-width:44px;padding:6px;border:2px solid currentColor;border-radius:var(--radius);background:var(--bg);color:var(--fg);font:inherit;cursor:pointer}
+#joy [aria-live]{grid-column:1/-1}
+@media(max-width:520px){#joy{grid-template-columns:1fr}}
 #chat{display:flex;flex-direction:column;gap:8px;min-height:44vh}
 #chat h2{font-size:1.1rem;margin:0}
 #chat .log{flex:1;min-height:0;overflow:auto;margin:0;padding:0;list-style:none;color:var(--soft)}
@@ -48,12 +60,12 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
 <div class="press" role="group" aria-label="Terrains">
 <button type="button" id="t-cabin" aria-pressed="true" data-terrain="cabin">Tutorial cabin</button>
 </div>
+<div id="joy" aria-label="Walking controls"></div>
 <canvas class="surface" id="surface" role="img" aria-label="The global map: tutorial cabin and live nodes"></canvas>
 <div class="listen">
 <button type="button" id="listen" aria-describedby="listen-state">Listen to the cabin</button>
 </div>
 <p class="state" id="listen-state" aria-live="polite"></p>
-<div id="joy"></div>
 <p class="state" id="state" aria-live="polite">Nodes online: 0.</p>
 <ul class="state" id="frases" aria-label="Map details"></ul>
 <p><a href="/face/army.html" style="display:inline-flex;min-height:44px">Army fixture</a> · <a href="/openworld/hexelion-benchmark.json" style="display:inline-block;min-height:44px">Benchmark data</a> · <a href="/face/basic.html" style="display:inline-block;min-height:44px">Tutorial · no key</a></p>
