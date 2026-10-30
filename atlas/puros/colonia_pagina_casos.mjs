@@ -9,7 +9,7 @@ import { createHash } from 'node:crypto';
 const require = createRequire(import.meta.url);
 
 // [source under atlas/puros, copy under public/game]: the source keeps the name the IC5 gate already cites.
-const COPIAS = [['colony_state.js', 'colony_state.js'], ['hex_projection.js', 'hex_projection.js'], ['colonia_edificios.js', 'colonia_edificios.js'], ['paleta_ciclo.js', 'palette_cycle.js'], ['state_frames.js', 'state_frames.js']];
+const COPIAS = [['openworld_state.js', 'openworld_state.js'], ['colony_state.js', 'colony_state.js'], ['hex_projection.js', 'hex_projection.js'], ['colonia_edificios.js', 'colonia_edificios.js'], ['paleta_ciclo.js', 'palette_cycle.js'], ['state_frames.js', 'state_frames.js']];
 const sha = (ruta) => createHash('sha256').update(readFileSync(new URL(ruta, import.meta.url))).digest('hex');
 
 // The page reads its modules from the browser globals; in node they are provided the same way.
@@ -19,6 +19,7 @@ globalThis.AtlasColonyState = require('../../public/game/colony_state.js');
 globalThis.AtlasEdificios = require('../../public/game/colonia_edificios.js');
 globalThis.AtlasPaletteCycle = require('../../public/game/palette_cycle.js');
 const CP = require('../../public/game/colonia_pagina.js');
+const OS = require('../../public/game/openworld_state.js');
 const F = require('./state_frames.js');
 
 const COLONIA = {
@@ -33,11 +34,11 @@ test('the served copies under public/game are the same files as the sources unde
   }
 });
 
-test('the page draws the colony: one tile per node, one bot with a face per building, the sky of its tick', () => {
+test('the page draws the colony: one tile per node, one bot with a face per live node, the sky of its tick', () => {
   const sc = CP.scene(COLONIA, 120, false);
   assert.equal(sc.tiles.length, 3);
   assert.equal(sc.buildings.length, 2);
-  assert.equal(sc.bots.length, 2, 'one bot per building');
+  assert.equal(sc.bots.length, 3, 'one bot per live node (IC7-S3), not per building');
   assert.equal(sc.cielo, '#f4ebd0', 'tick 120 is the day sky');
 });
 
@@ -64,4 +65,15 @@ test('reduced motion: the bot stands still, its frame is the same at every tick'
 test('the page reads no random number, no clock and no network', () => {
   const src = readFileSync(new URL('../../public/game/colonia_pagina.js', import.meta.url), 'utf8');
   assert.doesNotMatch(src, /Math\.random|Date\.now|new Date|performance\.now|fetch\(|XMLHttpRequest/);
+});
+
+test('IC7-S3: a node that the state does not declare alive gets no bot and no tile (D7)', () => {
+  const estado = { esquema: OS.V2, colonia: { nodes: [
+    { id: 'beelink', q: 0, r: 0, alive: true, seal: 'LIVE', since: '2026-10-30' },
+    { id: 'doggee-a', q: 1, r: 0, alive: false, seal: 'LIVE', since: '2026-10-30' },
+    { id: 'doggee-b', q: -1, r: 0, alive: true, seal: 'NO_DATA', since: null }
+  ], buildings: [{ id: 'b1', node: 'beelink' }, { id: 'b2', node: 'doggee-a' }], units: [] } };
+  const sc = CP.scene(OS.leer(estado).colonia, 0, false);
+  assert.deepEqual(sc.bots.map((b) => b.id), ['bot-beelink']);
+  assert.deepEqual(sc.tiles.map((t) => t.id), ['beelink']);
 });

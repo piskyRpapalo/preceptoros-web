@@ -52,8 +52,9 @@
     var AE = root.AtlasEdificios, PC = root.AtlasPaletteCycle;
     var sc = AE.scene(colonia, 1, reducido === true);
     var cielo = PC.palette(t, reducido === true).cielo;
-    var bots = sc.buildings.map(function (b) {
-      return { id: 'bot-' + b.node, x: b.x + BOT_DX * ESCALA_SALA, y: b.y + BOT_DY * ESCALA_SALA, frame: botFrame({ id: b.node }, t, reducido === true) };
+    // One bot per live node, beside the node's hex (IC7-S3). Buildings are drawn separately, as before.
+    var bots = sc.tiles.map(function (n) {
+      return { id: 'bot-' + n.id, x: n.x + BOT_DX * ESCALA_SALA, y: n.y + BOT_DY * ESCALA_SALA, frame: botFrame({ id: n.id }, t, reducido === true) };
     });
     return { tiles: sc.tiles, buildings: sc.buildings, bots: bots, cielo: cielo, nodes: colonia.nodes.length, edificios: colonia.buildings.length };
   }
