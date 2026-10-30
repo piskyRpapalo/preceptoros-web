@@ -29,6 +29,7 @@ One state, many renders. A **frame** is a *syllable* of the bubble language: a s
 | `style` | `clear` (flat), `volume` (default: shadow, halftone, rim, highlight) or `etch` (hatching instead of halftone) |
 | `atoms` | the words, back to front. `k` the noun, `r` the sentence, `i` the items |
 | `bands`, `change`, `sound`, `soundCause`, `motion` | as the shared frame contract (`atlas/param_gate.mjs`) |
+| `seal` (optional, IC7 seal contract, 2026-10-31) | the doctrine label of the data this frame shows: one of `LIVE`, `STALE`, `STATIC`, `SIMULATED`, `NO_DATA`, `ERROR`. Absent means the frame declares no seal, and a reader takes it as `NO_DATA`. A word, never a colour |
 
 Every item has `o` (its primitive or word), `f` (fill band or `null`), `s` (stroke band), optional `lw` (ink width) and `d` (depth: `0` near, `1` middle, `2` far; default `0`). A frame may leave out `cv`, `light` and `style` when they are the defaults: that is how syllables stay small.
 

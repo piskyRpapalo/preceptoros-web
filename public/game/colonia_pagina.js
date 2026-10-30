@@ -43,7 +43,7 @@
       { o: 'ribbon', pts: [[BX - 4, BY - 10 - dy], [BX, BY - 8 - dy], [BX + 4, BY - 10 - dy]], closed: false, f: 'ink', s: 'ink', lw: 1 }
     ];
     return {
-      v: 'preceptoros.bubble/1', id: 'bot-' + node.id, t: t, cv: [120, 110],
+      v: 'preceptoros.bubble/1', id: 'bot-' + node.id, t: t, cv: [120, 110], seal: node.seal || 'NO_DATA',
       atoms: [{ k: 'bot.' + node.id, r: frase, i: [{ o: 'ribbon', pts: cuerpo, closed: true, f: look === 'zombie' ? 'cyan' : 'paper', s: 'ink', lw: 2 }].concat(cara) }],
       bands: ['paper', 'ink', 'cyan'],
       change: [frase],
