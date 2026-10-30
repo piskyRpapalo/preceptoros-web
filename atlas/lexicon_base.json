@@ -575,6 +575,15 @@
     "adopcion",
     "tropa"
   ],
+  "public/game/visitor_eggs.js": [
+    "abre",
+    "adopcion",
+    "crea",
+    "firma"
+  ],
+  "public/game/visitor_play.js": [
+    "sello"
+  ],
   "public/game/wave_duel_scene.js": [
     "atlasescena",
     "atlasvalores",
