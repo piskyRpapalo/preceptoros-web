@@ -1,7 +1,7 @@
 # main-map-single
 
 Date: 2026-10-31
-Law: buzon#30 decree ·6523949872 (the main map must show the living colony; the colony lives only at /openworld/; «lo vivo se ve EN el mapa principal»); the Sovereign's answer to the question «which is the main map» (2026-10-31): only one map exists, the others are tests; that map must be alive at preceptoros.org with all data in the system. Rosetta A9: one state, many renders. Method: propose first, FIRMO per piece before any code (ODD).
+Law: buzon#30 ·6524440790 (the single map is the one the web exposes; the web is where everything exists; the app is a local instance whose only purpose is to connect to the web from anywhere: it has no map and no data of its own), precising ·6524386655 (one map only), and decree ·6523949872 (the main map must show the living colony; the colony lives only at /openworld/; «lo vivo se ve EN el mapa principal»); the Sovereign's answer to the question «which is the main map» (2026-10-31): only one map exists, the others are tests; that map must be alive at preceptoros.org with all data in the system. Rosetta A9: one state, many renders. Method: propose first, FIRMO per piece before any code (ODD).
 
 ## Objective
 
