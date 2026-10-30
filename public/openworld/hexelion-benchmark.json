@@ -18,7 +18,7 @@
     "one_map": "/openworld/",
     "joystick_controller": "/game/colony_controls.js",
     "ephemeral_walker_renderer": "/game/colonia_pagina.js",
-    "no_identity_tutorial_entry": "/face/basic.html",
+    "no_identity_tutorial_entry": "/openworld/",
     "ephemeral_player_crab": "/game/gdpr-art25-ephemeral-crab.js",
     "optional_browser_identity": "/assets/auth.js"
   },

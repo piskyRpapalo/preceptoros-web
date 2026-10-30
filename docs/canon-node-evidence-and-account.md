@@ -18,7 +18,7 @@ The catalogue is static and English-first. Its public references point to signed
 
 ## Ephemeral visitor and browser identity
 
-On `/openworld/`, `public/game/colony_controls.js` owns a page-memory walker. `public/game/colonia_pagina.js` renders it with `NO_DATA` and explicitly says it is not node state. This is not an account. The no-account entry is the tutorial (`public/face/basic.html`); the GDPR art. 25 ephemeral crab is `public/game/gdpr-art25-ephemeral-crab.js`. The optional browser identity is separate: `public/assets/auth.js` creates a key only after the visitor chooses it and stores that key in IndexedDB. The map page points to the benchmark data; its limitations name the walker, tutorial entry, optional identity, and live node state separately.
+On `/openworld/`, `public/game/colony_controls.js` owns a page-memory walker. `public/game/colonia_pagina.js` renders it with `NO_DATA` and explicitly says it is not node state. This is not an account. The no-account entry is the tutorial walk on the one map itself (`/openworld/`, the tutorial cabin); the pre-decree world page `public/face/basic.html` stays preserved as deep links (app#115) and is not the tutorial entry of the one map. The GDPR art. 25 ephemeral crab is `public/game/gdpr-art25-ephemeral-crab.js`. The optional browser identity is separate: `public/assets/auth.js` creates a key only after the visitor chooses it and stores that key in IndexedDB. The benchmark record is published at its URL; its limitations name the walker, tutorial entry, optional identity, and live node state separately.
 
 ## Honest inspector — `public/game/piece_inspector.js`
 
