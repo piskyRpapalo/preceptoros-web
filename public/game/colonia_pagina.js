@@ -82,18 +82,47 @@
     };
   }
 
+  // geometry(sc, canvas) → { cx, cy, k }: the one place where the scene is placed on the canvas. Drawing and the click
+  // test both read it, so a click lands on the drawn hex.
+  // IC7-S4: the spacing shrinks when the widest node would leave the canvas; it never grows past K.
+  function geometry(sc, canvas) {
+    var reach = sc.tiles.reduce(function (m, n) { return Math.max(m, Math.abs(n.x)); }, 1);
+    return { cx: canvas.width / 2, cy: canvas.height / 2, k: Math.min(K, (canvas.width / 2 - 80) / reach) };
+  }
+
+  // nodeAt(canvas, estado, t, looks, seals, px, py) → the id of the node drawn under the point (canvas pixels), or null.
+  // The anchor of a node is the point where its hex is drawn; the test radius is one bubble box at its own scale.
+  function nodeAt(canvas, estado, t, looks, seals, px, py) {
+    var sc = scene(estado, t, false, looks, seals), G = geometry(sc, canvas), best = null, bestD = 36 * S;
+    sc.tiles.forEach(function (n) {
+      var dx = G.cx + n.x * G.k - px, dy = G.cy + n.y * G.k - py, d = Math.sqrt(dx * dx + dy * dy);
+      if (d <= bestD) { best = n.id; bestD = d; }
+    });
+    return best;
+  }
+
+  function tileOf(sc, id) { return sc.tiles.filter(function (n) { return n.id === id; })[0] || null; }
+
+  // anchorOf(canvas, estado, t, looks, seals, id) → { x, y } in canvas pixels where the hex of node id is drawn, or null.
+  function anchorOf(canvas, estado, t, looks, seals, id) {
+    var sc = scene(estado, t, false, looks, seals), G = geometry(sc, canvas), n = tileOf(sc, id);
+    return n ? { x: G.cx + n.x * G.k, y: G.cy + n.y * G.k } : null;
+  }
+
   function draw(canvas, estado, t, reducido, looks, seals, walker) {
     var B = root.AtlasBubble, P = root.AtlasComicAtoms;
     var sc = scene(estado, t, reducido, looks, seals);
-    var you = walker ? sc.tiles.filter(function (n) { return n.id === walker.node; })[0] : null;
+    var you = walker ? tileOf(sc, walker.node) : null;
+    // W-3: while the walker walks, it stands between the two hexes by the fraction of its step.
+    if (you && walker.to && walker.fraction > 0) {
+      var nxt = tileOf(sc, walker.to);
+      if (nxt) { you = { id: you.id, x: you.x + (nxt.x - you.x) * walker.fraction, y: you.y + (nxt.y - you.y) * walker.fraction }; }
+    }
     sc.you = you ? youFrame(walker, t, reducido === true) : null;
     var g = canvas.getContext('2d');
     g.setTransform(1, 0, 0, 1, 0, 0);
     g.fillStyle = sc.cielo; g.fillRect(0, 0, canvas.width, canvas.height);
-    var cx = canvas.width / 2, cy = canvas.height / 2;
-    // IC7-S4: the spacing shrinks when the widest node would leave the canvas; it never grows past K.
-    var reach = sc.tiles.reduce(function (m, n) { return Math.max(m, Math.abs(n.x)); }, 1);
-    var k = Math.min(K, (canvas.width / 2 - 80) / reach);
+    var G = geometry(sc, canvas), cx = G.cx, cy = G.cy, k = G.k;
     // M1-2: one deterministic depth order for every layer of this same map.
     var layers = sc.tiles.map(function (n, i) { return { id: 'tile-' + i, item: n }; })
       .concat(sc.buildings.map(function (n, i) { return { id: 'building-' + i, item: n }; }))
@@ -125,7 +154,7 @@
     return out;
   }
 
-  var AtlasColoniaPagina = { ANCHO: ANCHO, ALTO: ALTO, scene: scene, draw: draw, texto: texto, frases: frases, botFrame: botFrame, youFrame: youFrame, hash: hash };
+  var AtlasColoniaPagina = { ANCHO: ANCHO, ALTO: ALTO, scene: scene, draw: draw, nodeAt: nodeAt, anchorOf: anchorOf, texto: texto, frases: frases, botFrame: botFrame, youFrame: youFrame, hash: hash };
   if (typeof module === 'object' && module.exports) { module.exports = AtlasColoniaPagina; }
   else { root.AtlasColoniaPagina = AtlasColoniaPagina; }
 })(typeof globalThis === 'object' ? globalThis : this);

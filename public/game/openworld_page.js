@@ -119,6 +119,23 @@
   }
   if (new URLSearchParams(raiz.location.search).get('fixture') === 'sintetica') { colonia = FIXTURE; colonia_fuente = 'fixture'; colony_looks = FIXTURE_LOOKS; colony_seals = {}; }
 
+  // W-3: a click or tap on a visible node walks the avatar there over the visible route. The walk runs one frame at a
+  // time (frames are counted, never milliseconds); arrival enters the node (colony_controls.js).
+  function walkLoop() {
+    if (!CCT) { return; }
+    var more = CCT.tick();
+    draw(); renderFrases();
+    if (more) { raiz.requestAnimationFrame(walkLoop); }
+  }
+  surface.addEventListener('click', function (e) {
+    if (!CCT || !colonia || !CP || colonia_error) { return; }
+    var r = surface.getBoundingClientRect();
+    var px = (e.clientX - r.left) * (surface.width / r.width), py = (e.clientY - r.top) * (surface.height / r.height);
+    var id = CP.nodeAt(surface, colonia, entrada.t, colony_looks, colony_seals, px, py);
+    if (!id) { CCT.say('NO_DATA: no visible node on that hex.'); return; }
+    if (CCT.walkTo(id)) { walkLoop(); }
+  });
+
   // The cycle: a fixed step of t per second, unless reduced motion is on. The palette is a function of t alone.
   function cycle() { if (quieto) { return; } entrada.t += 1; draw(); renderFrases(); }
 

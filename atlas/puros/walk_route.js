@@ -52,7 +52,33 @@
     return { ok: true, cause: '' };
   }
 
-  var AtlasWalkRoute = { STEPS: STEPS, route: route, checkPath: checkPath, adjacent: adjacent, visible: visible };
+  // Motion (W-3): the walk is counted in frames, never in milliseconds (W-D3). FRAMES is the frames of one step.
+  var FRAMES = 12;
+
+  // startWalk(path, reducido) → the walk state. With reduced motion the walk arrives at once (one step).
+  function startWalk(path, reducido) {
+    return { path: (path || []).slice(), i: 0, f: 0, reducido: reducido === true };
+  }
+
+  function doneWalk(w) { return w.path.length === 0 || w.i >= w.path.length - 1; }
+
+  // advanceWalk(w) → a new state after one frame. A finished walk stays where it is.
+  function advanceWalk(w) {
+    if (doneWalk(w)) { return w; }
+    if (w.reducido) { return { path: w.path, i: w.path.length - 1, f: 0, reducido: true }; }
+    var f = w.f + 1;
+    if (f >= FRAMES) { return { path: w.path, i: w.i + 1, f: 0, reducido: false }; }
+    return { path: w.path, i: w.i, f: f, reducido: false };
+  }
+
+  // poseOf(w) → { node, to, fraction }: the node the walker stands on, the node it walks to (or null), and how far
+  // along that step it is (0 to 1, from whole frames only).
+  function poseOf(w) {
+    var done = doneWalk(w);
+    return { node: w.path[w.i], to: done ? null : w.path[w.i + 1], fraction: done ? 0 : w.f / FRAMES };
+  }
+
+  var AtlasWalkRoute = { STEPS: STEPS, FRAMES: FRAMES, route: route, checkPath: checkPath, adjacent: adjacent, visible: visible, startWalk: startWalk, advanceWalk: advanceWalk, doneWalk: doneWalk, poseOf: poseOf };
   if (common) { module.exports = AtlasWalkRoute; }
   else { root.AtlasWalkRoute = AtlasWalkRoute; }
 })(typeof globalThis === 'object' ? globalThis : this);

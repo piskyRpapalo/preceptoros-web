@@ -75,6 +75,43 @@ test('sabotage: a route that passes a node which is not alive is refused', () =>
   assert.match(r.cause, /^NO_DATA: b is not alive/);
 });
 
+test('a walk counts frames: each step takes FRAMES frames, and the walker ends on the last node', () => {
+  let w = R.startWalk(['a', 'b', 'c'], false);
+  let frames = 0;
+  while (!R.doneWalk(w)) { w = R.advanceWalk(w); frames++; }
+  assert.equal(frames, 2 * R.FRAMES);
+  assert.equal(R.poseOf(w).node, 'c');
+  assert.equal(R.poseOf(w).to, null);
+});
+
+test('mid-step the pose says where the walker is going and how far along it is', () => {
+  let w = R.startWalk(['a', 'b'], false);
+  for (let k = 0; k < R.FRAMES / 2; k++) { w = R.advanceWalk(w); }
+  const p = R.poseOf(w);
+  assert.equal(p.node, 'a');
+  assert.equal(p.to, 'b');
+  assert.equal(p.fraction, 0.5);
+});
+
+test('reduced motion arrives in one step: one frame is enough', () => {
+  let w = R.startWalk(['a', 'b', 'c'], true);
+  w = R.advanceWalk(w);
+  assert.equal(R.doneWalk(w), true);
+  assert.equal(R.poseOf(w).node, 'c');
+});
+
+test('a finished walk stays where it is', () => {
+  const w = R.advanceWalk(R.startWalk(['a'], false));
+  assert.equal(R.doneWalk(w), true);
+  assert.deepEqual(R.advanceWalk(w), w);
+});
+
+test('sabotage: a walk that teleports (finishes in one frame without reduced motion) is caught by the frame count', () => {
+  let w = R.startWalk(['a', 'b'], false);
+  w = R.advanceWalk(w);
+  assert.equal(R.doneWalk(w), false);
+});
+
 test('the module reads no random number, no clock and no network', () => {
   const src = readFileSync(new URL('./walk_route.js', import.meta.url), 'utf8');
   assert.doesNotMatch(src, /Math\.random|Date\.now|new Date|performance\.now|fetch\(|XMLHttpRequest/);
