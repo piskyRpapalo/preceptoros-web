@@ -154,14 +154,22 @@
     function tutorialStep(node) {
       var TW = env.win.AtlasTutorialWalk;
       if (!TW) { return ''; }
-      var resolved = tutorialLog.map(function (x) { return x.step; });
-      var next = TW.STEPS.filter(function (x) { return resolved.indexOf(x.id) < 0; })[0];
-      if (!next) { return 'tutorial: complete'; }
-      if (TW.placeFor(next.id) !== node) { return 'tutorial: next step is at ' + TW.placeFor(next.id); }
-      var ok = TW.canWalk(next.id, env.seals());
-      if (!ok.ok) { return ok.cause; }
-      tutorialLog = TW.record(tutorialLog, next.id, 'played');
-      return 'tutorial: ' + next.id + ' played';
+      var r = TW.advance(tutorialLog, node, env.seals());
+      tutorialLog = r.log;
+      return r.said;
+    }
+    // Link visit → tutorial (EU-1): when the visit ends, the steps still open whose place is not alive are recorded as
+    // skipped (NO_DATA). Walkable steps stay open. The status says what was played and what was skipped.
+    var visitBox = env.doc.getElementById('visitor-play');
+    if (visitBox) {
+      visitBox.addEventListener('visitor:end', function () {
+        var TW = env.win.AtlasTutorialWalk;
+        if (!TW) { return; }
+        tutorialLog = TW.close(tutorialLog, env.seals());
+        var played = TW.progress(tutorialLog);
+        var skipped = tutorialLog.filter(function (e) { return e.outcome === 'skipped'; }).map(function (e) { return e.step; });
+        joy.say('visit ended. tutorial played: ' + (played.join(', ') || 'none') + ' · skipped: ' + (skipped.join(', ') || 'none'));
+      });
     }
     function skipTutorial() {
       var TW = env.win.AtlasTutorialWalk;
