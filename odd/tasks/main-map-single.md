@@ -25,6 +25,33 @@ Out of scope: a heartbeat sent by the apps or from the racks (needs its own FIRM
 - **A · build-time writer (proposed first)**: a script in `bin/` reads a source file of nodes with their dated evidence (for example `odd/data/nodes.json`, one entry per node: id, q, r, alive, seal, since, evidence) and writes `public/openworld/estado.json` in schema v2. No network, no clock inside the page. Liveness is what the evidence says, with its date; a node with no dated evidence is not written.
 - **B · signed heartbeat from the apps**: needs a canon amendment and its own FIRMO. Not proposed here.
 
+## Functions of the single map (read 2026-10-31, before amending)
+
+Source: `ideas13oct` v2.0.1, `propuestas/2026-10-20_recursos_adjuntos/2026-10-20_ideas13oct-manifiesto-v2.0.1.md` (law), sections 2, 15, 17, 18, 23, 24. The `ideas6oct §2.5` text is not in `p0x`: the only trace is the summary in `MISION_V1_1.md` line 19 (building is the door; STALE or NO_DATA when its node falls; building is the anchor; no invented figures). Declared as NO_DATA for the full §2.5 text.
+
+- **F1 · the map is the node.** Each building is a sovereign cell whose rules are visible before entering (sec. 2). Colony IC1 to IC7 already draws it.
+- **F2 · local-first grid.** The grid runs in the browser even when the rack is off (sec. 2). The page must show the last declared state and say so, never a fake live one.
+- **F3 · click by coordinate.** Click or tap on the map reports where it happened (audio, by coordinate) and offers the actions there (sec. 24).
+- **F4 · the terminal is the crab's action panel** (Shell, Claws, Legs, Eyes), with a link to Summoning (sec. 24). Today's terminal (IC7-S5) is the colour anchor only: the panel is a gap.
+- **F5 · live visitors and radios** (sec. 23): Radio Niebla (unmeasured, honest static) and Radio of the Node (retransmitted from the rack). Both NO_DATA until the rack transmits.
+- **F6 · the contract** (sec. 18): every visible frame under 1 KB, with colour, coordinates, sound and time. Frames already meet this (IC4 to IC7); coordinates and time are added per piece.
+- **F7 · core level from the action log** (sec. 17): the level is a log of what the time-interactor does; the tutorial feeds it only when played and is always skippable.
+- **F8 · duel of crabs** (sec. 15): two crabs, Fourier coefficients mutate with the cycles, a signed log (commit-reveal, abandonment at 900 cycles) is the script of the animation.
+- **F9 · the nine objects** (sec. 3): the laws as toys. Four revealed, five NO_DATA.
+
+## The whole truth, and how each one reaches the map (decree ·6524501049, order 1)
+
+| truth | source of record | writer | route to the map | status |
+|---|---|---|---|---|
+| nodes, colony, buildings | `odd/data/nodes.json` (to be created, dated evidence) | `bin/estado_v2.py` (option A) | `public/openworld/estado.json` | MM-2, MM-3, after FIRMO |
+| frases, seals per frame | the frame contract | the colony modules | rendered on the map | DONE on main (`aby`) |
+| versions and seals | `public/sw.js`, `config/sw-huella.txt` | the seal chain at build | the page footer (to be added) | PROPOSED |
+| inventory V01-V19 | `odd/tasks/visual-orders-inventory.md` | the author, by hand | a generated status file at build | PROPOSED, no schema yet |
+| fleet and station | the rack's measured inventory (codex lane) | codex, not this plan | a status feed, not the node schema | NO_DATA: no producer in this repo |
+| ecosystem work (commits, PRs) | git history of the org | a build step reading git | a generated changelog | PROPOSED, needs FIRMO for the step |
+
+Rule: a truth without a producer stays NO_DATA on the map, with its cause. Nothing is copied by hand into the page.
+
 ## Checklist (ladder, one piece = one PR)
 
 - [ ] MM-1 · declare the single map in the canon note (this document) and label the test pages as tests in their own titles. No deletion. Gate: text only.

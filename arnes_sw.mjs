@@ -220,7 +220,8 @@ const rutas = await shell.keys();
 // 223 -> 224 el 2026-10-27 (NORTE 5 [2]): entra face/face_terminal.js, el terminal de chat en los mundos.
 // 224 -> 221 el 2026-10-28 (Norte 7 pieza C): salen /play/, assets/thegame.js y assets/thegame.css (theGame sale del shell).
 // 221 -> 106 el 2026-10-28 (Norte 7 pieza D): sale el juego borrado (manifiesto medido: 134 ficheros, enviar.js y enviar-*.js se quedan).
-ok('precachea las portadas, su superficie y el juego', rutas.length === 107 && rutas.includes('/face/army.html'), rutas.length+' rutas');
+// 107 -> 116 el 2026-10-30: the shared-map neutral terminal and its renderer chain join the shell cache.
+ok('precachea las portadas, su superficie y el juego', rutas.length === 116 && rutas.includes('/face/army.html'), rutas.length+' rutas');
 ok('el shell NO trae el juego retirado (corte Norte 7 D)',
    !(['/assets/thegame.js', '/game/ui-arena.js', '/assets/atlas-motor.js'].some(r => rutas.includes(r))));
 ok('el shell trae la puerta y NO trae /play/ (corte Norte 7 C)', rutas.includes('/') && !rutas.includes('/play/') && !rutas.includes('/assets/thegame.js'));
