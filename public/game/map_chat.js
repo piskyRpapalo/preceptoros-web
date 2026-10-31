@@ -2,11 +2,7 @@
   'use strict';
   var doc = root.document, form = doc.getElementById('entry'), log = doc.getElementById('log'), note = doc.getElementById('chat-note');
   if (!form || !log) { return; }
-  var joystick = doc.getElementById('joy'), actions = joystick.querySelector('[aria-label="Node and tutorial"]'), preference = joystick.querySelector('select');
-  if (actions && preference) {
-    var fold = doc.createElement('details'), summary = doc.createElement('summary'); summary.textContent = 'Terminal and tutorial';
-    fold.append(summary, actions, preference); joystick.querySelector('[role="group"]').append(fold);
-  }
+  // The joystick stays as the page serves it: the companion does not move or fold page controls.
   var worker = null, next = 0, pending = new Map(), ready = false, busy = false;
   var model = 'Qwen3-1.7B-q4f16_1-MLC', context = 'Tutorial cabin · local visitor practice';
   var zone = doc.createElement('div'); zone.id = 'map-brain'; form.before(zone);
@@ -42,9 +38,11 @@
   });
   doc.getElementById('visitor-play').addEventListener('visitor:battle', function (event) { choose('Practice battle at ' + event.detail.place + ' · ' + event.detail.combat.gana + ' · balance NO_DATA'); });
   form.addEventListener('submit', async function (event) {
+    if (!ready) { return; }  // no brain loaded: the page router answers with its honest NO_DATA
     event.preventDefault();
+    event.stopImmediatePropagation();  // the browser brain answers here, and only here
     var input = doc.getElementById('question'), text = input.value.trim();
-    if (!text || busy) { return; }
+    if (!text || busy) { event.preventDefault(); return; }
     if (new TextEncoder().encode(text).length > 600) { note.textContent = 'NO_DATA: message exceeds 600 UTF-8 bytes.'; return; }
     line('You', text); input.value = '';
     if (!ready) { line('Companion', 'NO_DATA: choose and load the browser brain first.'); return; }
