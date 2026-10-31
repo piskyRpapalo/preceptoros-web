@@ -69,7 +69,7 @@
   }
 
   // mount(doc, container, handlers): the DOM glue of the joystick and the terminal choice (TA-4). Not run by the pure cases.
-  // handlers: { move(direction), enter(), choose(look | null) }. Every control is a real button, at least 44 px high.
+  // handlers: { move(direction), enter(), choose(look | null), skip() }. Every control is a real button, at least 44 px high.
   function mount(doc, container, handlers) {
     var box = doc.createElement('div');
     box.setAttribute('role', 'group');
@@ -84,10 +84,16 @@
       return b;
     }
     var pad = doc.createElement('div');
+    pad.setAttribute('role', 'group');
+    pad.setAttribute('aria-label', 'Walk to a neighbouring node');
     Object.keys(DIRS).forEach(function (name) {
       pad.appendChild(button(name, function () { handlers.move(name); }));
     });
-    pad.appendChild(button('enter node', function () { handlers.enter(); }));
+    var actions = doc.createElement('div');
+    actions.setAttribute('role', 'group');
+    actions.setAttribute('aria-label', 'Node and tutorial');
+    actions.appendChild(button('enter node', function () { handlers.enter(); }));
+    actions.appendChild(button('Skip tutorial', function () { handlers.skip(); }));
     var sel = doc.createElement('select');
     sel.setAttribute('aria-label', 'Terminal look');
     [['', 'node default'], ['basic', 'basic'], ['atlantis', 'atlantis'], ['zombie', 'zombie']].forEach(function (o) {
@@ -95,7 +101,7 @@
     });
     sel.style.minHeight = '44px';
     sel.addEventListener('change', function () { handlers.choose(sel.value === '' ? null : sel.value); });
-    box.appendChild(pad); box.appendChild(sel); box.appendChild(status);
+    box.appendChild(pad); box.appendChild(actions); box.appendChild(sel); box.appendChild(status);
     container.appendChild(box);
     // Arrow keys: east and west move along the row; up and down take the two north and two south neighbours.
     var keys = { ArrowRight: 'east', ArrowLeft: 'west', ArrowUp: 'north-east', ArrowDown: 'south-west' };
@@ -111,7 +117,7 @@
   function attach(env) {
     var walker = null;
     var saved = savedChoice(storeOf(env.win));
-    var joy = mount(env.doc, env.doc.getElementById('joy'), { move: moveWalker, enter: enterNode, choose: chooseLook });
+    var joy = mount(env.doc, env.doc.getElementById('joy'), { move: moveWalker, enter: enterNode, choose: chooseLook, skip: skipTutorial });
     function storeOf(win) { try { return win.localStorage; } catch (e) { return null; } }
     function hex(name) { return bandHex(name, env.win.AtlasComicTokens, env.win.AtlasComicAccents); }
     function anchor(look) {
@@ -139,7 +145,32 @@
       if (!walker) { return; }
       var e = enter(walker, env.looks()[walker.node], saved);
       anchor(e.look);
-      joy.say('terminal: ' + e.look + ' (' + (e.source === 'user' ? 'your choice' : e.source === 'node' ? 'the node' : 'default') + ')');
+      var step = tutorialStep(walker.node);
+      joy.say('terminal: ' + e.look + ' (' + (e.source === 'user' ? 'your choice' : e.source === 'node' ? 'the node' : 'default') + ')' + (step ? '. ' + step : ''));
+    }
+    // G4-2: the tutorial is a walk. Entering a node may complete the next step (tutorial_walk.js). Its progress is this
+    // visit's memory only, like the walker: a reload starts the walk again. Only a LIVE or STALE place can be walked.
+    var tutorialLog = [];
+    function tutorialStep(node) {
+      var TW = env.win.AtlasTutorialWalk;
+      if (!TW) { return ''; }
+      var resolved = tutorialLog.map(function (x) { return x.step; });
+      var next = TW.STEPS.filter(function (x) { return resolved.indexOf(x.id) < 0; })[0];
+      if (!next) { return 'tutorial: complete'; }
+      if (TW.placeFor(next.id) !== node) { return 'tutorial: next step is at ' + TW.placeFor(next.id); }
+      var ok = TW.canWalk(next.id, env.seals());
+      if (!ok.ok) { return ok.cause; }
+      tutorialLog = TW.record(tutorialLog, next.id, 'played');
+      return 'tutorial: ' + next.id + ' played';
+    }
+    function skipTutorial() {
+      var TW = env.win.AtlasTutorialWalk;
+      if (!TW) { joy.say('NO_DATA: tutorial is unavailable'); return; }
+      var resolved = tutorialLog.map(function (x) { return x.step; });
+      TW.STEPS.forEach(function (step) {
+        if (resolved.indexOf(step.id) < 0) { tutorialLog = TW.record(tutorialLog, step.id, 'skipped'); }
+      });
+      joy.say('tutorial: skipped');
     }
     function chooseLook(look) {
       var st = storeOf(env.win);

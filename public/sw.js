@@ -1,4 +1,4 @@
-const VERSION = 'preceptoros-2026-17-aca';
+const VERSION = 'preceptoros-2026-17-ar';
 const SHELL = 'shell-' + VERSION;
 const OBRA = 'obra-' + VERSION;
 
@@ -36,7 +36,6 @@ self.addEventListener('activate', e => {
         ks.filter(k => k !== SHELL && k !== OBRA).map(k => caches.delete(k))))
       .then(() => self.clients.claim()));
 });
-
 
 const SIN_RED = {
   es: ['Sin conexión', 'Esta página no está en tu caché todavía.',
@@ -145,7 +144,8 @@ self.addEventListener('fetch', e => {
   if (req.method !== 'GET') return;                 
 
   const url = new URL(req.url);
-  if (url.origin !== self.location.origin) return;  
+  if (url.origin !== self.location.origin) return;
+  if (url.pathname === '/api/world-state') return;
 
   if (RED_PRIMERO.indexOf(url.pathname) >= 0) { e.respondWith(redPrimero(e)); return; }
 
@@ -153,7 +153,6 @@ self.addEventListener('fetch', e => {
   
   if (url.pathname.endsWith('.json') &&
       CONTENIDO_JSON.indexOf(url.pathname) < 0) return;
-
   if (req.mode === 'navigate') { e.respondWith(navegacion(e)); return; }
   e.respondWith(estatico(e));
 });
