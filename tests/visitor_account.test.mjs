@@ -20,6 +20,10 @@ test('Chromium visit signature verifies independently through OpenSSL', async ()
  const { promisify } = await import('node:util');
  const { execFile } = await import('node:child_process');
  const run = promisify(execFile);
- const { stdout } = await run(process.execPath, ['atlas/visitor_account_browser.mjs'], { cwd: new URL('..',import.meta.url), timeout:60000 });
+ // The browser check exits 1 and prints its failures on stdout. execFile hides that text behind «Command failed»,
+ // so the failures are read from the error and put in the assertion message.
+ let stdout = '';
+ try { ({ stdout } = await run(process.execPath, ['atlas/visitor_account_browser.mjs'], { cwd: new URL('..',import.meta.url), timeout:60000 })); }
+ catch (error) { throw new Error('browser check failed: ' + ((error.stdout || '').trim() || error.message)); }
  assert.equal(JSON.parse(stdout.trim()).medidas.openssl,true);
 });
