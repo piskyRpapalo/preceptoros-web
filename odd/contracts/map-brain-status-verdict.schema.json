@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Map-brain fail-closed status verdict",
+  "description": "The only verdict allowed while a map-brain runtime or judge is unavailable.",
+  "type": "object",
+  "required": ["choice", "score", "no_data", "causa"],
+  "properties": {
+    "choice": { "type": "null" },
+    "score": { "type": "null" },
+    "no_data": { "const": true },
+    "causa": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[a-z][a-z0-9_]{0,63}$"
+    }
+  },
+  "additionalProperties": false
+}

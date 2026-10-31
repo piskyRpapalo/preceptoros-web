@@ -2,6 +2,22 @@ let engine = null, manifest = null, active = false, history = [];
 const encoder = new TextEncoder(), originalFetch = self.fetch.bind(self);
 const EXPECTED_BASE = 'https://huggingface.co/mlc-ai/Qwen3-1.7B-q4f16_1-MLC/resolve/80b3abcec6c3b3f5355dc0cc99cc4fb578f192bc/';
 function hex(bytes) { return Array.from(new Uint8Array(bytes), x => x.toString(16).padStart(2, '0')).join(''); }
+function verdictCause(error) {
+  const message = String(error && error.message || error || '');
+  if (message.includes('runtime_integrity_unavailable')) return 'runtime_integrity_unavailable';
+  if (/consent/i.test(message)) return 'consent_required';
+  if (/busy/i.test(message)) return 'model_busy';
+  if (/not loaded/i.test(message)) return 'model_not_installed';
+  if (/input|context budget/i.test(message)) return 'input_out_of_bounds';
+  if (/manifest|inventory|integrity|shard|chunk|SHA-256|byte count|size mismatch/i.test(message)) return 'model_integrity_unavailable';
+  return 'model_unavailable';
+}
+function postNoData(message, error) {
+  const detail = String(error && error.message || error || 'model unavailable').slice(0, 500);
+  postMessage({ id: message && message.id, error: detail, verdict: {
+    choice: null, score: null, no_data: true, causa: verdictCause(error)
+  } });
+}
 function recordFor(url) {
   if (!manifest || !url.startsWith(EXPECTED_BASE)) return null;
   const parsed = new URL(url);
@@ -74,7 +90,7 @@ if (self.caches) {
 }
 self.onmessage = async event => {
   const message = event.data;
-  if (active) { postMessage({ id: message.id, error: 'The brain is busy' }); return; }
+  if (active) { postNoData(message, Error('The brain is busy')); return; }
   active = true;
   try {
     if (message.type === 'load') {
@@ -93,6 +109,6 @@ self.onmessage = async event => {
       history = [{ role: 'user', content: message.text }, { role: 'assistant', content: text }];
       postMessage({ id: message.id, text, model: manifest.model });
     } else throw Error('Unknown brain request');
-  } catch (error) { postMessage({ id: message.id, error: String(error.message || error).slice(0, 500) }); }
+  } catch (error) { postNoData(message, error); }
   finally { active = false; }
 };

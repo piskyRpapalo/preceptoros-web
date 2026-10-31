@@ -14,3 +14,5 @@ Integrity follow-up: the loader checks that all 30 uniquely named shards cover t
 
 
 Runtime integrity hard gate: consent alone cannot make unverified runtime, WebAssembly and configuration safe. Loading now fails closed before any manifest or third-party request with `runtime_integrity_unavailable`, and no dynamic runtime import is present. The button checks availability and reports NO_DATA; no model response is claimed. Restoring loading requires a reviewable, complete pinned inventory and a verified execution path covering transitive runtime imports, model library and configuration, with corruption and cache tests. Weight hashes alone do not satisfy that condition.
+
+Typed status output uses the single [map-brain status verdict contract](../contracts/map-brain-status-verdict.schema.json). Its current valid branch is fail-closed NO_DATA; a positive score or choice stays unavailable until a measured judge defines it. Tier-2 election output remains a separate app contract.

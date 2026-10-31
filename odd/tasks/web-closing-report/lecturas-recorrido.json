@@ -1,0 +1,10 @@
+{
+ "shot": "06-este-desde-beelink.png",
+ "estado_inicial": "",
+ "enter node": "ok",
+ "paso1_enter_cabana": "terminal: basic (the node). tutorial: key played",
+ "east": "ok",
+ "paso2_este_a_beelink": "NO_DATA: no colony node on that hex",
+ "paso3_enter_beelink": "terminal: basic (the node). tutorial: next step is at beelink",
+ "paso4_este_desde_beelink": "NO_DATA: no colony node on that hex"
+}
