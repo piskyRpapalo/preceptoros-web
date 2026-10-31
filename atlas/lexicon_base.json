@@ -100,11 +100,6 @@
     "taller",
     "valores"
   ],
-  "public/face/basic.html": [
-    "escena",
-    "taller",
-    "valores"
-  ],
   "public/face/face.js": [
     "atlascangrejo"
   ],
@@ -576,6 +571,33 @@
     "ui-taller",
     "valores"
   ],
+  "public/game/visitor_account.js": [
+    "adopcion",
+    "tropa"
+  ],
+  "public/game/visitor_battle.js": [
+    "atlasniebla",
+    "atlasvalores",
+    "registro"
+  ],
+  "public/game/visitor_battle_ui.js": [
+    "adopcion",
+    "escena",
+    "tropa"
+  ],
+  "public/game/visitor_conquest.js": [
+    "atlasniebla",
+    "niebla"
+  ],
+  "public/game/visitor_eggs.js": [
+    "abre",
+    "adopcion",
+    "crea",
+    "firma"
+  ],
+  "public/game/visitor_play.js": [
+    "sello"
+  ],
   "public/game/wave_duel_scene.js": [
     "atlasescena",
     "atlasvalores",
@@ -602,6 +624,8 @@
     "superviviente"
   ],
   "public/openworld/index.html": [
+    "escena",
+    "taller",
     "valores"
   ],
   "public/sw-listas.js": [

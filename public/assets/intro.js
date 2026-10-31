@@ -23,12 +23,31 @@
     }
   }
 
+  // Accessibility: Tools opens and closes in place. Opening moves focus to the heading; closing returns focus
+  // to the Tools door; Escape closes it too. The close button is a real button, at least 44 px.
+  var closeButton = doc.getElementById('close-tools');
+  var titulo = doc.getElementById('tools-h');
+  function closeTools() {
+    if (!dispositivo || dispositivo.hidden) { return; }
+    dispositivo.hidden = true;
+    if (boton) { boton.setAttribute('aria-expanded', 'false'); boton.focus(); }
+  }
+  function openTools() {
+    if (!dispositivo) { return; }
+    dispositivo.hidden = false;
+    if (boton) { boton.setAttribute('aria-expanded', 'true'); }
+    if (titulo) { titulo.focus(); }
+    dispositivo.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  if (closeButton) { closeButton.addEventListener('click', closeTools); }
+  doc.addEventListener('keydown', function (e) { if (e.key === 'Escape') { closeTools(); } });
+  // The intro shows only the doors. Tools opens the device list in place (hidden until pressed).
   if (boton) {
     boton.addEventListener('click', function () {
       if (raiz.PreceptorPwa && raiz.PreceptorPwa.instalable()) {
         raiz.PreceptorPwa.instala().then(pintaTools);
       } else if (dispositivo) {
-        dispositivo.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        if (dispositivo.hidden) { openTools(); } else { closeTools(); }
         pintaTools();
       }
     });

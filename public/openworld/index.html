@@ -4,11 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>OpenWorld · PreceptorOS</title>
-<meta name="description" content="OpenWorld: the global map and the chat. The tutorial cabin is always here; nodes appear only while they are alive.">
+<meta name="description" content="OpenWorld map and chat; tutorial cabin always here.">
 <link rel="icon" type="image/svg+xml" href="/assets/mark.svg">
 <link rel="canonical" href="https://preceptoros.org/openworld/">
 <meta property="og:title" content="PreceptorOS · OpenWorld">
-<meta property="og:description" content="The global map and the chat. The tutorial cabin is always here.">
+<meta property="og:description" content="The map and chat; tutorial cabin always here.">
 <meta property="og:url" content="https://preceptoros.org/openworld/">
 <meta property="og:type" content="website">
 <meta property="og:image" content="https://preceptoros.org/assets/og-card.png">
@@ -20,14 +20,26 @@ html,body{height:100%}
 body{display:flex;flex-direction:column;min-height:100vh}
 main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;padding:0;min-height:100vh;box-sizing:border-box}
 #map,#chat{padding:12px 16px;min-width:0;box-sizing:border-box;overflow:hidden}
-#map{border-bottom:2px solid var(--line);display:flex;flex-direction:column;gap:8px;min-height:44vh}
+#map{border-bottom:2px solid var(--line);display:flex;flex-direction:column;gap:8px;min-height:44vh;overflow:auto}
 #map h1{font-size:1.25rem;margin:0}
-#map .surface{width:100%;flex:1;min-height:0;display:block;transition:opacity 300ms ease}
+#map .surface{width:100%;flex:1;min-height:240px;display:block;transition:opacity 300ms ease}
 @media (prefers-reduced-motion: reduce){#map .surface{transition:none}}
 #map .press{display:flex;flex-wrap:wrap;gap:8px}
-#map .press button,#map .listen button{min-height:44px;padding:8px 14px;border:2px solid currentColor;border-radius:var(--radius);background:var(--bg);color:var(--fg);font:inherit;cursor:pointer}
+#map .press button,#map .listen button,#world-refresh{min-height:44px;padding:8px 14px;border:2px solid currentColor;border-radius:var(--radius);background:var(--bg);color:var(--fg);font:inherit;cursor:pointer}
 #map .press button[aria-pressed="true"]{outline:3px solid currentColor;outline-offset:2px}
 #map .state{margin:0;color:var(--soft);font-size:.92rem}
+#joy{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;padding:10px;border:2px solid var(--line);border-radius:var(--radius);background:var(--bg);color:var(--fg)}
+#joy [role="group"]{display:grid;grid-template-columns:repeat(3,minmax(44px,1fr));gap:6px;align-items:center}
+#joy [aria-label="Walk to a neighbouring node"]{grid-column:1/-1;grid-template-areas:". ne nw" "w . e" "sw . se"}
+#joy [aria-label="Walk to a neighbouring node"]>button:nth-child(1){grid-area:e}
+#joy [aria-label="Walk to a neighbouring node"]>button:nth-child(2){grid-area:ne}
+#joy [aria-label="Walk to a neighbouring node"]>button:nth-child(3){grid-area:nw}
+#joy [aria-label="Walk to a neighbouring node"]>button:nth-child(4){grid-area:w}
+#joy [aria-label="Walk to a neighbouring node"]>button:nth-child(5){grid-area:sw}
+#joy [aria-label="Walk to a neighbouring node"]>button:nth-child(6){grid-area:se}
+#joy button,#joy select{min-height:44px;min-width:44px;padding:6px;border:2px solid currentColor;border-radius:var(--radius);background:var(--bg);color:var(--fg);font:inherit;cursor:pointer}
+#joy [aria-live]{grid-column:1/-1}
+@media(max-width:520px){#joy{grid-template-columns:1fr}}
 #chat{display:flex;flex-direction:column;gap:8px;min-height:44vh}
 #chat h2{font-size:1.1rem;margin:0}
 #chat .log{flex:1;min-height:0;overflow:auto;margin:0;padding:0;list-style:none;color:var(--soft)}
@@ -43,30 +55,34 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
 <a class="skip" href="#chat">Skip to the chat</a>
 <main>
 <section id="map" aria-labelledby="map-h">
+<a href="/" style="display:inline-block;min-height:44px">Back</a>
 <h1 id="map-h">OpenWorld</h1>
 <div class="press" role="group" aria-label="Terrains">
 <button type="button" id="t-cabin" aria-pressed="true" data-terrain="cabin">Tutorial cabin</button>
 </div>
-<canvas class="surface" id="surface" role="img" aria-label="The global map: the tutorial cabin, and any node that is alive"></canvas>
+<div id="joy" aria-label="Walking controls"></div>
+<canvas class="surface" id="surface" role="img" aria-label="The global map: tutorial cabin and live nodes"></canvas>
 <div class="listen">
 <button type="button" id="listen" aria-describedby="listen-state">Listen to the cabin</button>
 </div>
 <p class="state" id="listen-state" aria-live="polite"></p>
-<p class="state" id="state" aria-live="polite">Nodes online: 0. The tutorial cabin is the basic world.</p>
-<ul class="state" id="frases" aria-label="What the colony shows"></ul>
-<p><a href="/face/army.html" style="display:inline-flex;align-items:center;min-height:44px">Wave Army fixture</a></p>
+<button type="button" id="world-refresh">Check live nodes</button>
+<p class="state" id="state" aria-live="polite">Nodes online: 0.</p>
+<ul class="state" id="frases" aria-label="Map details"></ul>
+<p><a href="/face/army.html" style="display:inline-flex;min-height:44px">Army · NO_DATA</a></p>
+<div id="visitor-play" aria-label="Visitor play"></div>
 </section>
 <section id="chat" aria-labelledby="chat-h">
 <h2 id="chat-h">Chat</h2>
 <ul class="log" id="log" role="log" aria-live="polite">
-<li>The chat is not live yet. This panel is ready for it.</li>
+<li>The chat is not live yet.</li>
 </ul>
 <form id="entry" onsubmit="return false">
 <label class="sr" for="question">Message</label>
 <input id="question" type="text" autocomplete="off" aria-describedby="chat-note">
 <button type="submit">Send</button>
 </form>
-<p class="state" id="chat-note">Answers come from a local model. None is installed yet, so each answer says NO_DATA and its cause.</p>
+<p class="state" id="chat-note">NO_DATA: no local answer model is connected.</p>
 </section>
 </main>
 <script src="/game/tabla_semantica.js"></script>
@@ -82,198 +98,31 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
 <script src="/game/state_frames.js"></script>
 <script src="/game/hex_projection.js"></script>
 <script src="/game/colony_state.js"></script>
+<script src="/game/map_scene.js"></script>
 <script src="/game/colonia_edificios.js"></script>
 <script src="/game/palette_cycle.js"></script>
 <script src="/game/openworld_state.js"></script>
 <script src="/game/colonia_pagina.js"></script>
+<script src="/game/tutorial_walk.js"></script>
+<script src="/game/colony_controls.js"></script>
+<script src="/game/db.js"></script>
+<script src="/game/visitor_account.js"></script>
+<script src="/game/visitor_eggs.js"></script>
+<script src="/assets/atlas-coord.js"></script>
+<script src="/game/canon.js"></script>
+<script src="/game/taller.js"></script>
+<script src="/game/combate_ticks.js"></script>
+<script src="/game/escuadron.js"></script>
+<script src="/game/escena.js"></script>
+<script src="/game/wave_rules.js"></script>
+<script src="/game/wave_duel_scene.js"></script>
+<script src="/game/fog_of_war.js"></script>
+<script src="/game/visitor_battle.js"></script>
+<script src="/game/visitor_battle_ui.js"></script>
+<script src="/game/visitor_conquest.js"></script>
+<script src="/game/visitor_play.js"></script>
+<script src="/game/world_feed.js"></script>
 <script src="/assets/pwa.js"></script>
-<script>
-// OpenWorld (NORTE 7 · PR 2 · global map, ODD isometric-colony). Same-origin only: the state file is the one thing read
-// from the server. Default: zero nodes; the cabin is always here. A node that is not listed as alive does not exist.
-// The map is one more render of the state (global_map.js). The cycle tick t advances by a fixed step, and the palette
-// reads t alone: never a wall clock. With reduced motion there is no cycle: the sky stays where the state puts it.
-(function (raiz) {
-  'use strict';
-  var doc = raiz.document, M = raiz.AtlasMapaGlobal;
-  var entrada = { t: 0, cabin: {}, nodes: [] };
-  var selected = 'cabin';
-  var surface = doc.getElementById('surface');
-  var press = doc.querySelector('#map .press');
-  var state = doc.getElementById('state');
-  var quieto = raiz.matchMedia && raiz.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var CP = raiz.AtlasColoniaPagina, colonia = null, colonia_fuente = 'NO_DATA', colonia_error = '';
-  // Synthetic fixture, opt-in with ?fixture=sintetica: it is labelled SYNTHETIC on the page, never a live colony.
-  var FIXTURE = { nodes: [{ id: 'cabin', q: 0, r: 0 }, { id: 'ring-e', q: 1, r: 0 }, { id: 'ring-ne', q: 1, r: -1 }, { id: 'ring-nw', q: 0, r: -1 }, { id: 'ring-w', q: -1, r: 0 }, { id: 'ring-sw', q: -1, r: 1 }, { id: 'ring-se', q: 0, r: 1 }, { id: 'doggee-a', q: 2, r: 0 }, { id: 'doggee-b', q: 2, r: -1 }], buildings: [{ id: 'b-cabin', node: 'cabin' }, { id: 'b-ring-e', node: 'ring-e' }, { id: 'b-ring-nw', node: 'ring-nw' }, { id: 'b-ring-sw', node: 'ring-sw' }, { id: 'b-doggee-a', node: 'doggee-a' }, { id: 'b-doggee-b', node: 'doggee-b' }], units: [] };
-  // IC7-S4 (D11): the looks of the fixture's nodes; Doggee is the zombie look. The live state carries its own looks.
-  var FIXTURE_LOOKS = { 'doggee-a': 'zombie', 'doggee-b': 'zombie' }, colony_looks = {}, colony_seals = {};
-  var frases_el = doc.getElementById('frases');
-
-  // The visible rows of the state: the cabin, and each node the state lists as alive. A node without its key is refused.
-  function filas() {
-    try { return M.estado(entrada); } catch (e) { return M.estado({ t: entrada.t, cabin: entrada.cabin, nodes: [] }); }
-  }
-
-  function draw() {
-    var B = raiz.AtlasBubble, P = raiz.AtlasComicAtoms;
-    if (!surface || !B || !P || !raiz.AtlasBubbleLetters) { return; }
-    var width = surface.clientWidth || 320, height = surface.clientHeight || 200;
-    var dpr = Math.min(2, raiz.devicePixelRatio || 1);
-    surface.width = Math.round(width * dpr); surface.height = Math.round(height * dpr);
-    if (colonia && CP) {
-      try { CP.draw(surface, colonia, entrada.t, quieto, colony_looks, colony_seals); return; }
-      catch (e) { colonia_error = e.message || 'the colony is refused'; }
-    }
-    var g = surface.getContext('2d');
-    g.setTransform(dpr, 0, 0, dpr, 0, 0);
-    var fit = Math.min(width / 480, height / 240);
-    var scene = M.mapa(entrada);
-    g.fillStyle = scene.paleta.cielo; g.fillRect(0, 0, width, height);
-    var cx = width / 2, cy = height / 2 + 14 * fit;
-    scene.terrain.concat(scene.nodes).forEach(function (nd) {
-      g.save();
-      g.translate(cx + nd.x * fit - M.ANCHO * M.BURBUJA * fit / 2, cy + nd.y * fit - M.ALTO * M.BURBUJA * fit / 2);
-      g.scale(M.BURBUJA * fit, M.BURBUJA * fit);
-      try { P.paint(g, B.compile(nd.frame)); } catch (e) { /* the frame is refused; the node stays off the map */ }
-      g.restore();
-    });
-  }
-
-  function buttons() {
-    press.innerHTML = '';
-    filas().forEach(function (row) {
-      var b = doc.createElement('button');
-      b.type = 'button'; b.textContent = row.nombre;
-      b.setAttribute('aria-pressed', String(row.id === selected));
-      b.addEventListener('click', function () { selected = row.id; buttons(); draw(); });
-      press.appendChild(b);
-    });
-  }
-
-  function render() {
-    buttons();
-    draw();
-    var vivos = filas().filter(function (row) { return row.id !== 'cabin'; }).length;
-    var linea = 'Nodes online: ' + vivos + '. The tutorial cabin is the basic world.';
-    if (colonia && CP && !colonia_error) {
-      try { linea = CP.texto(CP.scene(colonia, entrada.t, quieto, colony_looks, colony_seals)) + (colonia_fuente === 'fixture' ? ' · SYNTHETIC fixture, not a live colony' : ''); }
-      catch (e) { colonia_error = e.message || 'the colony is refused'; }
-    }
-    if (colonia_error) {
-      linea += ' Colony: NO_DATA · ' + colonia_error + '.';
-    } else if (!colonia) {
-      linea += ' Colony: NO_DATA · no live colony in the state (estado.json has no colonia).';
-    }
-    state.textContent = linea;
-    renderFrases();
-  }
-
-  // HUECO 1 (ALL IN ·6523297468): the sentence of every frame is shown to the visitor, and it follows the tick.
-  function renderFrases() {
-    if (!frases_el) { return; }
-    frases_el.innerHTML = '';
-    if (!colonia || !CP || colonia_error) { return; }
-    try {
-      CP.frases(CP.scene(colonia, entrada.t, quieto, colony_looks, colony_seals)).forEach(function (texto) {
-        var li = doc.createElement('li'); li.textContent = texto; frases_el.appendChild(li);
-      });
-    } catch (e) { /* a refused colony is already said on the state line */ }
-  }
-
-  // Only the two named nodes can appear, and only when the state file lists them as alive.
-  function accept(data) {
-    var nodes = data && Array.isArray(data.nodes) ? data.nodes : [];
-    entrada = {
-      t: data && Number.isInteger(data.t) ? data.t : 0,
-      cabin: data && data.cabin && typeof data.cabin === 'object' ? data.cabin : {},
-      nodes: nodes.filter(function (n) { return n && (n.id === 'atlantis' || n.id === 'risen'); })
-    };
-    if (selected !== 'cabin' && !entrada.nodes.some(function (n) { return n.id === selected; })) { selected = 'cabin'; }
-    // IC7-S3 (D7): the colony comes only from openworld_state.js; a node is drawn only when it is alive and sealed LIVE or STALE.
-    if (colonia_fuente !== 'fixture') try {
-      var estado = raiz.AtlasOpenworldState.leer(data);
-      colonia = estado.colonia && estado.colonia.nodes.length > 0 ? estado.colonia : null;
-      colonia_fuente = colonia ? 'estado' : 'NO_DATA';
-      colony_looks = estado.looks || {};
-      colony_seals = estado.seals || {};
-      if (!colonia && estado.version === 2) { colonia_error = 'no node declared alive and sealed LIVE or STALE (' + estado.ocultos + ' hidden)'; }
-    } catch (e) { colonia = null; colonia_error = e.message || 'the state is refused'; }
-  }
-  if (new URLSearchParams(raiz.location.search).get('fixture') === 'sintetica') { colonia = FIXTURE; colonia_fuente = 'fixture'; colony_looks = FIXTURE_LOOKS; colony_seals = {}; }
-
-  // The cycle: a fixed step of t per second, unless reduced motion is on. The palette is a function of t alone.
-  function cycle() { if (quieto) { return; } entrada.t += 1; draw(); renderFrases(); }
-
-  // The sound is the selected frame's own (docs/bubble-language.md, sound and h). An AudioContext is made only on the click.
-  var listen = doc.getElementById('listen'), listenState = doc.getElementById('listen-state');
-  // The sound module is on demand: it loads on the first click, never on page load.
-  function loadSound(then) {
-    if (raiz.AtlasSonifyBubble) { then(raiz.AtlasSonifyBubble); return; }
-    var script = doc.createElement('script');
-    script.src = '/game/bubble_sonify.js';
-    script.onload = function () { then(raiz.AtlasSonifyBubble); };
-    script.onerror = function () { listenState.textContent = 'NO_DATA: the sound module could not be loaded'; };
-    doc.head.appendChild(script);
-  }
-  if (listen) {
-    listen.addEventListener('click', function () {
-      loadSound(function (S) {
-        var scene = M.mapa(entrada);
-        var node = scene.nodes.find(function (nd) { return nd.id === selected; }) || scene.nodes[0];
-        var result = S.sonify(node.frame);
-        if (!result.ok) { listenState.textContent = /^NO_DATA/.test(result.cause) ? result.cause : 'NO_DATA: ' + result.cause; return; }
-        var Ctx = raiz.AudioContext || raiz.webkitAudioContext;
-        if (!Ctx) { listenState.textContent = 'NO_DATA: this browser has no audio output'; return; }
-        var context = new Ctx();
-        var n = S.play(result, context);
-        listenState.textContent = 'Playing ' + n + ' voices.';
-      });
-    });
-  }
-  // The chat: the question is shown as live; the answer comes from the chunk router. With no model installed, the
-  // answer is NO_DATA with its cause. The router loads on the first send, never on page load.
-  var entry = doc.getElementById('entry'), question = doc.getElementById('question'), logList = doc.getElementById('log');
-  var chatNote = doc.getElementById('chat-note');
-  function line(cls, text) {
-    var li = doc.createElement('li'); li.className = cls; li.textContent = text; logList.appendChild(li);
-  }
-  function loadRouter(then) {
-    if (raiz.AtlasChunkRouter) { then(raiz.AtlasChunkRouter); return; }
-    var script = doc.createElement('script');
-    script.src = '/game/chunk_router.js';
-    script.onload = function () { then(raiz.AtlasChunkRouter); };
-    script.onerror = function () { then(null); };
-    doc.head.appendChild(script);
-  }
-  if (entry) {
-    entry.addEventListener('submit', function (e) {
-      e.preventDefault();
-      var text = question.value.trim();
-      if (!text) { return; }
-      line('me', text);
-      question.value = '';
-      loadRouter(function (R) {
-        if (!R) { line('', 'NO_DATA · router_not_loaded'); return; }
-        fetch('/model/manifest.json', { cache: 'no-cache' })
-          .then(function (r) { return r.ok ? r.json() : null; }, function () { return null; })
-          .then(function (m) {
-            var plan = R.planifica(m);
-            if (!plan.ok) { line('', plan.causa); return; }
-            var answer = R.responde(text, null);   // a manifest exists, but no model loader is built yet
-            line('', answer.ok ? answer.texto : 'NO_DATA · model_loader_not_built (' + answer.causa + ')');
-          });
-      });
-    });
-  }
-  render();
-  raiz.addEventListener('resize', draw);
-  if (!quieto) { raiz.setInterval(cycle, 1000); }
-  if (raiz.fetch) {
-    raiz.fetch('/openworld/estado.json', { cache: 'no-cache' })
-      .then(function (r) { return r.ok ? r.json() : null; })
-      .then(function (d) { accept(d); render(); })
-      .catch(function () { /* no state file: zero nodes, which is the default */ });
-  }
-})(window);
-</script>
+<script src="/game/openworld_page.js"></script>
 </body>
 </html>

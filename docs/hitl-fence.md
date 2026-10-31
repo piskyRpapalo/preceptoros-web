@@ -96,3 +96,18 @@ Per repository, after the first run of the `hitl` check (so GitHub knows the nam
 The script reads its repository, register issue and PR from environment variables. For
 another repository, set `PR_REPO`, `BUZON_REPO` and `BUZON_ISSUE`, copy the workflow, and
 keep the job name `hitl`. The decision function is pure and does not depend on the repository.
+
+## Amendment · the signed line must carry the header (2026-10-30)
+
+Measured with the fence live (#414, 2026-10-30): the fence only reads register
+comments that CONTAIN the header «FIRMA SOBERANO». A bare HITL line, however
+exact, fails as `sin_firma`. The signed comment therefore carries the header,
+its context lines, and under them the exact line:
+
+`HITL: <sha40> <slug> <YYYY-MM-DD>`
+
+The fence validates: the head SHA of the pull request (a new head kills the
+line — the law of hashes), the slug (`[A-Za-z0-9#._-]+`), and the date (between
+the head commit's date and today). A sign-off served on a moved head needs a
+new line. Re-fire without a new push: edit the pull request body (the
+`edited` event re-runs `hitl`).
