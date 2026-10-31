@@ -2390,7 +2390,12 @@ class OpenWorld(unittest.TestCase):
         self.assertIn('<section id="chat" aria-labelledby="chat-h">', self.t)
         self.assertNotRegex(self.t, r">\s*Chat\s*</button>", "hay un boton de Chat; el decreto pide el panel siempre presente")
         self.assertIn('<input id="question" type="text" autocomplete="off" aria-describedby="chat-note">', self.t)
-        self.assertIn("/game/chunk_router.js", self.t, "el envío debe cargar el router de fragmentos a demanda")
+        self.assertIn('/game/map_chat.js', self.t)
+        chat = (PUBLICO / 'game/map_chat.js').read_text(encoding='utf-8')
+        worker = (PUBLICO / 'game/map_brain_worker.js').read_text(encoding='utf-8')
+        self.assertIn("start.addEventListener('click'", chat)
+        self.assertIn('runtime_integrity_unavailable', worker)
+        self.assertNotIn('import(MODULE)', worker)
 
     def test_esta_en_el_sitemap_y_en_el_precache(self):
         xml = (PUBLICO / "sitemap.xml").read_text(encoding="utf-8")

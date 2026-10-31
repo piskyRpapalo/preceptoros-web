@@ -1,8 +1,6 @@
 let engine = null, manifest = null, active = false, history = [];
 const encoder = new TextEncoder(), originalFetch = self.fetch.bind(self);
-const MODULE = 'https://cdn.jsdelivr.net/npm/@mlc-ai/web-llm@0.2.85/lib/index.js';
 const EXPECTED_BASE = 'https://huggingface.co/mlc-ai/Qwen3-1.7B-q4f16_1-MLC/resolve/80b3abcec6c3b3f5355dc0cc99cc4fb578f192bc/';
-const LIBRARY = 'https://raw.githubusercontent.com/mlc-ai/binary-mlc-llm-libs/146ed9cd4b4062e967b017fd2291f7106b50599f/web-llm-models/v0_2_84/base/Qwen3-1.7B-q4f16_1_cs1k-webgpu.wasm';
 function hex(bytes) { return Array.from(new Uint8Array(bytes), x => x.toString(16).padStart(2, '0')).join(''); }
 function recordFor(url) {
   if (!manifest || !url.startsWith(EXPECTED_BASE)) return null;
@@ -81,15 +79,7 @@ self.onmessage = async event => {
   try {
     if (message.type === 'load') {
       if (message.consent !== true || engine) throw Error('Explicit download consent is required');
-      const response = await originalFetch('/game/browser_brain_manifest.json', { cache: 'no-store' });
-      if (!response.ok) throw Error('Browser model inventory unavailable');
-      manifest = validateManifest(await response.json());
-      const runtime = await import(MODULE);
-      engine = await runtime.CreateMLCEngine(manifest.model, {
-        appConfig: { useIndexedDBCache: false, model_list: [{ model_id: manifest.model, model: manifest.base, model_lib: LIBRARY, vram_required_MB: 2036.66, low_resource_required: true }] },
-        initProgressCallback: progress => postMessage({ progress: String(progress.text || 'Loading model').slice(0, 400) })
-      }, { context_window_size: 1024 });
-      postMessage({ id: message.id, ready: true, model: manifest.model });
+      throw Error('runtime_integrity_unavailable: runtime, library and model configuration are not verified');
     } else if (message.type === 'reply') {
       if (!engine) throw Error('Browser brain is not loaded');
       if (typeof message.text !== 'string' || !message.text.trim() || encoder.encode(message.text).length > 600 || typeof message.context !== 'string' || message.context.length > 160) throw Error('Chat input exceeds its context budget');
