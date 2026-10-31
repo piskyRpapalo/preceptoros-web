@@ -54,16 +54,19 @@ The EU-0 plan (`usuario-efimero.md`, merged) said the gacha was «not seen in th
 ## Checklist (one piece = one PR; FIRMO per head)
 
 - [x] EU-1.1 · inventory in odd (this document): flow measured, cuts named.
-- [ ] EU-1.2 · the short route in `tutorial_walk.js` (EU-2): STEPS and their pure cases, with sabotage (a step played on a NO_DATA place is refused).
-- [ ] EU-1.3 · the per-step skip for a NO_DATA place, recorded as skipped, never as done; pure cases with sabotage (a skipped step counted as progress is refused).
-- [ ] EU-1.4 · the link: the tutorial log is readable at the end of the visit, and the visit end is recorded next to it (page-level, in memory).
-- [ ] EU-1.5 · the browser pass: arrival, visit start, cabin key played, beacon skipped, visit beacon claimed, one invocation, visit end; then the tutorial and the account are checked for coherence. One fixed port per test, cleaned by PID. Verify with three consecutive runs.
-- [ ] EU-1.6 · gates per piece (lexicon, version, colony gate, openworld browser, seal chain in the same commit, door ≤ 16 KiB).
+- [x] EU-1.2 · the short route in `tutorial_walk.js` (EU-2): STEPS and their pure cases, with sabotage (a step played on a NO_DATA place is refused).
+- [x] EU-1.3 · the per-step skip for a NO_DATA place, recorded as skipped, never as done; pure cases with sabotage (a skipped step counted as progress is refused).
+- [x] EU-1.4 · the link: the tutorial log is readable at the end of the visit, and the visit end is recorded next to it (page-level, in memory).
+- [x] EU-1.5 · the browser pass: arrival, visit start, cabin key played, beacon skipped, visit beacon claimed, one invocation, visit end; then the tutorial and the account are checked for coherence. One fixed port per test, cleaned by PID. Verify with three consecutive runs.
+- [x] EU-1.6 · gates per piece (lexicon, version, colony gate, openworld browser, seal chain in the same commit, door ≤ 16 KiB).
 
 ## Verification evidence
 
 - Measured: the visit flow in `visitor_play.js` (button ids and their actions); the modules loaded in `index.html`; the absence of any tutorial reference in the visit modules (`grep` on `tut` and `skip` in `public/game/visitor_*.js` returns nothing).
-- Not measured yet: the browser pass itself (EU-1.5).
+- EU-1.2 and EU-1.3: `atlas/puros/tutorial_walk_casos.mjs` 17 cases, plus `colony_controls_casos.mjs`, 29 pass in total with the wrapper test. Sabotage: a dead place is never played; a skip is never progress; close never closes a walkable step.
+- EU-1.4 and EU-1.5: `atlas/usuario_efimero_pasada_browser.mjs`, three consecutive runs green (key played, visit beacon and one step, visit end reports «played: key · skipped: beacon», account gone, node played on the second entry, walk complete). Sabotage (visit-end link removed): the pass goes red on the end report.
+- EU-1.6: seal chain run in the required order (VERSION `preceptoros-2026-17-av`, `test_web` 75 tests OK, `arnes_sw` 24/24); `version_sw_gate` green; `lexicon` green; `colonia_pagina_gate` 11 passes; `openworld_browser` fallos []; `test_atlas` 44 OK; `sellar.py` consistent; door 7,385 B.
+- Found while doing EU-1.2: `atlas/puros/colony_controls.js` had drifted from the served copy on main (the skip button of #439 was served but not in the source). Source synced to the served copy; the two are identical now.
 
 ## Standing signature
 
@@ -79,4 +82,4 @@ None.
 
 ## Next step
 
-EU-1.2: the short route in `tutorial_walk.js`, with its pure cases, after this head is FIRMO.
+FIRMA of this head, then EU-1 piece 1 is complete. Open item: the replay controls (EU-3).
