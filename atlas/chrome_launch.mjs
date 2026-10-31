@@ -1,5 +1,5 @@
 import { spawn } from 'node:child_process';
-import { mkdtempSync, rmSync } from 'node:fs';
+import { mkdtempSync, rmSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 
@@ -49,6 +49,16 @@ export function launchChrome(port) {
     child.once('close', (code, signal) => { failure ||= `Chrome exit=${code} signal=${signal}`; resolve(); });
   });
   return {
+    async debugPort() {
+      for (let i = 0; i < 100 && !failure; i++) {
+        try {
+          const value = Number(readFileSync(path.join(dir, 'DevToolsActivePort'), 'utf8').split('\n')[0]);
+          if (Number.isInteger(value) && value > 0 && value < 65536) return value;
+        } catch { /* Chrome has not written its private port yet. */ }
+        await new Promise(resolve => setTimeout(resolve, 100));
+      }
+      throw new Error(`NO_DATA: Chrome assigned no CDP port; ${failure || 'startup timeout'}`);
+    },
     failure: () => failure,
     diagnostic: () => `NO_DATA: Chrome CDP unavailable; ${failure || 'startup timeout'}; ${stderr}`,
     async close() {
