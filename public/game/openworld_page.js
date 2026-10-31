@@ -19,7 +19,7 @@
   var frases_el = doc.getElementById('frases');
   // TA-4 (D13-D16): the terminal, the anchor and the joystick live in colony_controls.js; the page passes its state in.
   var CC = raiz.AtlasColonyControls;
-  var CCT = CC ? CC.attach({ doc: doc, win: raiz, colony: function () { return colonia; }, looks: function () { return colony_looks; }, seals: function () { return colony_seals; }, redraw: function () { draw(); renderFrases(); } }) : null;
+  var CCT = CC ? CC.attach({ doc: doc, win: raiz, colony: function () { return colonia; }, looks: function () { return colony_looks; }, seals: function () { return colony_seals; }, redraw: function () { draw(); renderFrases(); }, walk: function () { walkLoop(); } }) : null;
 
   // The visible rows of the state: the cabin, and each node the state lists as alive. A node without its key is refused.
   function filas() {
@@ -121,11 +121,17 @@
 
   // W-3: a click or tap on a visible node walks the avatar there over the visible route. The walk runs one frame at a
   // time (frames are counted, never milliseconds); arrival enters the node (colony_controls.js).
+  // One loop at a time: a walk started by a click or by the keyboard runs the same frames (colony_controls walkTo).
+  var looping = false;
   function walkLoop() {
-    if (!CCT) { return; }
+    if (!CCT || looping) { return; }
+    looping = true;
+    step();
+  }
+  function step() {
     var more = CCT.tick();
     draw(); renderFrases();
-    if (more) { raiz.requestAnimationFrame(walkLoop); }
+    if (more) { raiz.requestAnimationFrame(step); } else { looping = false; }
   }
   surface.addEventListener('click', function (e) {
     if (!CCT || !colonia || !CP || colonia_error) { return; }
