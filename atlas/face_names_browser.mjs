@@ -1,4 +1,4 @@
-// P3 [1a] in a real browser: the three worlds load the comic letters and draw their place names with
+// P3 [1a] in a real browser: the preserved Atlantis/Zombie faces load the comic letters and draw their place names with
 // them, at half size, with no exception. Uso: node atlas/face_names_browser.mjs  (Chrome headless por CDP)
 import { createServer } from 'node:http';
 import { readFileSync } from 'node:fs';
@@ -48,7 +48,7 @@ async function main() {
   const hasta = async (e, ms) => { for (let t = 0; t < ms; t += 250) { if (await ev(e)) { return true; } await espera(250); } return false; };
   await cmd('Runtime.enable'); await cmd('Page.enable');
 
-  for (const mundo of ['basic', 'atlantis', 'zombie']) {
+  for (const mundo of ['atlantis', 'zombie']) {
     await cmd('Page.navigate', { url: `http://127.0.0.1:${port}/face/${mundo}.html` });
     ok(await hasta("!!(window.AtlasBubbleLetters && document.getElementById('machine-map') && document.getElementById('machine-map').textContent.includes('\"id\":\"names\"'))", 20000), mundo + ': world and its names loaded');
     const n = JSON.parse(await ev(`JSON.stringify((() => { const f = document.getElementById('machine-map').textContent.split('\\n').map((l) => JSON.parse(l)).filter((x) => x.id === 'names')[0];
@@ -67,6 +67,11 @@ async function main() {
     const tuyo = t.msgs.find((m) => m[0] === 'You' && m[2] === 'chat'), resp = t.msgs.find((m) => m[0] === 'Preceptor' && m[1] === 'NO_DATA');
     ok(t.en && t.abierto && t.canales === 3 && tuyo && /^(LIVE|NO_DATA)$/.test(tuyo[1]) && resp, mundo + ': [2] the chat terminal is not the chat panel ' + JSON.stringify(t));
   }
+  await cmd('Page.navigate', { url: `http://127.0.0.1:${port}/face/basic.html` });
+  ok(await hasta("!!(window.AtlasOpenworldState && window.AtlasColonyControls && document.getElementById('joy'))", 20000), 'basic: shared terminal loaded');
+  const terminal = JSON.parse(await ev(`JSON.stringify({ joy: !!document.getElementById('joy'), map: !!document.getElementById('map'), privateWorld: !!window.AtlasFaceWorld })`));
+  medidas.basic_terminal = terminal;
+  ok(terminal.joy && terminal.map && !terminal.privateWorld, 'basic: terminal is not a private map');
   console.log(JSON.stringify({ piece: 'P3-1a+N5-2', receipt: 'MEDIDO', medidas, fallos }));
 }
 

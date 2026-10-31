@@ -65,7 +65,7 @@ test('a change of colour travels as a state frame, one per tick where the day fr
 test('sabotage: a non-whole tick is refused, a fraction would be a clock', () => {
   assert.throws(() => P.palette(1.5), /t must be a whole tick/);
   assert.throws(() => P.palette(NaN), /t must be a whole tick/);
-  assert.throws(() => P.palette(Date.now() / 1000 + 0.5), /t must be a whole tick/);
+  assert.throws(() => P.palette(1700000000.5), /t must be a whole tick/);
 });
 
 test('sabotage: the colours do not move when the wall clock moves', () => {
