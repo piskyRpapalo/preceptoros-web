@@ -16,7 +16,7 @@ export async function worldState(request, env) {
   const timer = setTimeout(() => controller.abort(), 5000);
   try {
     const response = await env.ADUANA.fetch(new Request('https://api.preceptoros.org/api/v1/latidos', {
-      method: 'GET', redirect: 'error', signal: controller.signal
+      method: 'GET', redirect: 'manual', signal: controller.signal
     }));
     if (!response.ok || !response.body) return missing('world_publisher_failed');
     const reader = response.body.getReader();
