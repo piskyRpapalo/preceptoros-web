@@ -35,7 +35,7 @@ explicit FIRMO. Private keys never leave the visitor device.
   EXCEPCIONES.md). The byte-per-file ceiling was revoked on 2026-10-11; the
   yardsticks now are measured fps on the reference phone and the game door:
   gzip_juego_b below 153,600 B.
-- Service worker served with a measured fingerprint and a daily vigia.
+- Service worker served with a measured fingerprint.
 - Review of the service-worker update path: NO_DATA with cause (review
   pending; not claimed done).
 - Content Security Policy: NO_DATA with cause. The reference exists in the

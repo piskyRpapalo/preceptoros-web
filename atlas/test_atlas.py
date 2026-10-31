@@ -554,35 +554,6 @@ class Opiniones(unittest.TestCase):
         self.assertEqual(json.loads(r.stdout)["esquema"], "atlas.opiniones.corpus/1")
 
 
-class Vigia(unittest.TestCase):
-    """El vigia diario de `main` (sugerencia firmada por el Soberano, 2026-09-28): el umbral del peso
-    lo da el motor, no una cifra copiada; avisa en el run diario y no bloquea ningun PR."""
-
-    def corre(self, mundo=None):
-        orden = ["node", str(RAIZ / "vigia.mjs")] + ([str(mundo)] if mundo else [])
-        r = subprocess.run(orden, capture_output=True, text=True, timeout=60)
-        return r.returncode, json.loads(r.stdout.splitlines()[0])
-
-
-
-    def test_el_vigia_corre_cada_dia_y_no_en_los_pr(self):
-        wf = (RAIZ.parent / ".github" / "workflows" / "vigia.yml").read_text(encoding="utf-8")
-        vivo = "\n".join(l for l in wf.splitlines() if not l.lstrip().startswith("#"))
-        self.assertRegex(vivo, r'schedule:\s*\n\s*- cron: "[0-9]+ [0-9]+ \* \* \*"')
-        self.assertNotIn("pull_request", vivo)
-        self.assertIn("contents: read", vivo)
-        for orden in ("python test_web.py", "python atlas/test_atlas.py", "node atlas/vigia.mjs"):
-            with self.subTest(orden=orden):
-                self.assertIn(orden, vivo)
-
-
-
-
-
-
-
-
-
 class Cria(unittest.TestCase):
     """La cria soberana y el genoma de SISIL (auditoria SISIL_CRIA): validar, nunca calibrar ni adoptar solo.
     Las odds se ven y son las que se tiran."""
