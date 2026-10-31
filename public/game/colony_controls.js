@@ -116,6 +116,8 @@
   // walker (memory only), the joystick, the anchor on enter and the user's choice. The page only passes its state in.
   function attach(env) {
     var walker = null;
+    // W-3: a walk over the visible nodes (walk_route.js). Frames are counted, never milliseconds (W-D3).
+    var walk = null, reduced = !!(env.win.matchMedia && env.win.matchMedia('(prefers-reduced-motion: reduce)').matches);
     var saved = savedChoice(storeOf(env.win));
     var joy = mount(env.doc, env.doc.getElementById('joy'), { move: moveWalker, enter: enterNode, choose: chooseLook, skip: skipTutorial });
     function storeOf(win) { try { return win.localStorage; } catch (e) { return null; } }
@@ -133,6 +135,7 @@
       if (home) { walker = { node: home.id, q: home.q, r: home.r }; }
     }
     function moveWalker(direction) {
+      if (walk) { return; }
       var c = env.colony();
       if (!c || !walker) { joy.say('NO_DATA: no colony node to walk on'); return; }
       var r = move(walker, direction, c.nodes);
@@ -142,7 +145,7 @@
       joy.say('on node ' + walker.node + '. Enter takes its terminal.');
     }
     function enterNode() {
-      if (!walker) { return; }
+      if (!walker || walk) { return; }
       var e = enter(walker, env.looks()[walker.node], saved);
       anchor(e.look);
       var step = tutorialStep(walker.node);
@@ -186,7 +189,41 @@
       saved = look;
       enterNode();
     }
-    return { start: start, walker: function () { return walker; } };
+    // walkerView(): the walker as the page draws it. While walking it carries the node it stands on, the node it walks
+    // to and the fraction of that step (walk_route.js poseOf).
+    function walkerView() {
+      var W = env.win.AtlasWalkRoute;
+      if (!walker || !walk || !W) { return walker; }
+      var p = W.poseOf(walk);
+      return { node: p.node, q: walker.q, r: walker.r, to: p.to, fraction: p.fraction };
+    }
+    function coordOf(id, c) { return (c.nodes || []).filter(function (n) { return n.id === id; })[0]; }
+    // walkTo(id): walk the visible route to node id. Arrival is entering. Returns true while the walk runs.
+    function walkTo(id) {
+      var W = env.win.AtlasWalkRoute, c = env.colony();
+      if (!W || !c || !walker) { joy.say('NO_DATA: no colony node to walk on'); return false; }
+      if (walk) { return true; }
+      if (id === walker.node) { enterNode(); return false; }
+      var r = W.route(c.nodes, env.seals(), walker.node, id);
+      if (!r.ok) { joy.say(r.cause); return false; }
+      walk = W.startWalk(r.path, reduced);
+      joy.say('walking to ' + id + ' · ' + (r.path.length - 1) + ' step(s)');
+      return true;
+    }
+    // tickWalk(): one frame of the walk. On arrival the walker is on the last node and enters it.
+    function tickWalk() {
+      var W = env.win.AtlasWalkRoute, c = env.colony();
+      if (!walk || !W || !c) { return false; }
+      walk = W.advanceWalk(walk);
+      if (!W.doneWalk(walk)) { env.redraw(); return true; }
+      var last = coordOf(walk.path[walk.path.length - 1], c);
+      walker = { node: last.id, q: last.q, r: last.r };
+      walk = null;
+      env.redraw();
+      enterNode();
+      return false;
+    }
+    return { start: start, walker: walkerView, walkTo: walkTo, tick: tickWalk, walking: function () { return !!walk; }, say: function (text) { joy.say(text); } };
   }
 
   var AtlasColonyControls = {
