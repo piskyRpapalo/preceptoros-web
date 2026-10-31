@@ -1,0 +1,8 @@
+{
+ "shot": "08-tools-cerrado.png",
+ "Tools": "ok",
+ "tras_abrir_tools": "{\"hidden\":false,\"expandido\":\"true\",\"foco\":\"tools-h\"}",
+ "Close tools": "ok",
+ "tras_cerrar": "{\"hidden\":true,\"expandido\":\"false\",\"foco\":\"door-tools\"}",
+ "excepciones": []
+}
