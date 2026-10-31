@@ -23,7 +23,7 @@ Connect measured node presence to the one map and keep local chat fail-closed un
 |---|---|---|
 | Published world state | Aduana's D7 publisher emits `preceptoros.openworld-estado/2`; the web reader `public/game/world_feed.js` validates it. | Keep Aduana the sole publisher and the web a reader. The app must not keep or publish a parallel colony snapshot. |
 | D7 heartbeat request | Aduana validates `preceptoros.latido/1` at `POST /api/v1/latidos`. | Adapt a measured local observation to this request only after canonical identity, stable sequence and sender credential are configured. NEXO's `preceptoros.node-heartbeat/1-proposed` is a local proposal, not a second public D7 wire contract. No alias, cell or credential is inferred. |
-| Map-brain verdict | This task is the single ODD definition until an implementation PR extracts the same invariants into its machine-readable contract. | Exact fields: `{choice, score, no_data, causa}`. If integrity or generation is unavailable, `choice=null`, `score=null`, `no_data=true`, and `causa` is a non-empty stable cause. A positive `score` scale and allowed `choice` values are not yet defined; keep the verdict fail-closed until a separately measured judge contract defines them. The web and app consume the same contract; neither creates its own scoring rubric. |
+| Map-brain status verdict | This task is the single ODD definition for the commission's four-field status envelope; an implementation PR must consume it instead of adding a second local schema. | Exact fields: `{choice, score, no_data, causa}`. If integrity or generation is unavailable, `choice=null`, `score=null`, `no_data=true`, and `causa` is a non-empty stable cause. Positive `choice` values and a `score` scale are not defined for this status surface; keep it fail-closed until a separately measured judge contract defines them. The web and app consume this same definition; neither creates its own rubric. |
 
 Do not copy a contract into another repository as a separately maintained schema. If consumers need a generated or vendored artifact, it must be produced from one versioned source and checked against that source in CI. Runtime page loads remain same-origin and offline-capable.
 
@@ -47,6 +47,7 @@ Do not copy a contract into another repository as a separately maintained schema
 
 - Canonical public identity, coordinates and local-backend authorization remain `NO_DATA`; neither the live heartbeat nor the inventory presence supplies that join.
 - The typed verdict's allowed `choice` set and `score` meaning/range need a measured judge definition. This plan does not invent either.
+- PreceptorOS already has a separate `hexelion.eleccion.tier2/1` decision contract (`docs/contratos-decision.md` at app main `44cf577f`). Its abstention uses `choice=NO_DATA`, `score=null`, and structured `no_data` causes. It remains the authority for tier-2 elections; it is not silently substituted for or copied into the four-field map-brain status verdict.
 - The Android runtime integrity gate passed its negative case. Positive runtime integrity and a coherent generated response remain `NO_DATA`.
 - The ODD board in `odd/STATUS.md` reports a 2026-10-28 baseline and is stale relative to this commission; this receipt does not overwrite that shared board or the Claude lane's UI task.
 
