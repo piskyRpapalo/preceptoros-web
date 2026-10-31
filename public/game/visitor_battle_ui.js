@@ -31,7 +31,21 @@
     var canvas = root.document.createElement('canvas'); canvas.style.width = '100%'; canvas.setAttribute('role', 'img'); canvas.setAttribute('aria-label', sentence.textContent);
     var close = root.document.createElement('button'); close.textContent = 'Return to the map'; close.style.minHeight = '44px'; close.addEventListener('click', function () { dialog.close(); });
     dialog.addEventListener('close', function () { if (renderer) { renderer.para(); renderer = null; } });
-    dialog.append(sentence, canvas, close); box.append(dialog); dialog.showModal();
+    var replay = root.AtlasBattleReplayControls, state = replay.start(), bar = root.document.createElement('div');
+    var status = root.document.createElement('p'); status.setAttribute('role', 'status'); status.textContent = replay.label(state);
+    function control(text, action, pressed) {
+      var b = root.document.createElement('button'); b.type = 'button'; b.textContent = text; b.style.minHeight = '44px'; b.style.minWidth = '44px';
+      if (pressed !== undefined) { b.setAttribute('aria-pressed', String(pressed)); }
+      b.addEventListener('click', function () { state = action(state); if (renderer) { renderer.velocidad(replay.rate(state)); } status.textContent = replay.label(state); render(); });
+      return b;
+    }
+    function render() {
+      bar.replaceChildren();
+      bar.append(state.paused ? control('Play', replay.play) : control('Pause', replay.pause));
+      replay.SPEEDS.forEach(function (v) { bar.append(control('×' + v, function (st) { return replay.setSpeed(st, v); }, state.speed === v)); });
+    }
+    render();
+    dialog.append(sentence, canvas, bar, status, close); box.append(dialog); dialog.showModal();
     renderer = root.AtlasWaveDuel.escena(canvas, result.defenders, result.attackers, result.combat, { semilla: result.seed, quieto: root.matchMedia('(prefers-reduced-motion: reduce)').matches, emulado: 0, anuncia: function (text) { canvas.setAttribute('aria-label', text); } });
     if (root.matchMedia('(prefers-reduced-motion: reduce)').matches) { renderer.salta(); }
   }
