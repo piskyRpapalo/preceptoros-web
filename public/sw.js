@@ -1,4 +1,4 @@
-const VERSION = 'preceptoros-2026-17-ar';
+const VERSION = 'preceptoros-2026-17-as';
 const SHELL = 'shell-' + VERSION;
 const OBRA = 'obra-' + VERSION;
 
@@ -46,7 +46,7 @@ const SIN_RED = {
        + 'Try again when you have a connection.', 'Retry'],
   it: ['Senza connessione', 'Questa pagina non è ancora nella tua cache.',
        'PreceptorOS gira sulla tua macchina; questo sito è solo la porta. '
-       + 'Riprova quando avrai la rete.', 'Riprova'],
+       'Riprova quando avrai la rete.', 'Riprova'],
   de: ['Keine Verbindung', 'Diese Seite ist noch nicht in deinem Zwischenspeicher.',
        'PreceptorOS läuft auf deinem Rechner; diese Seite ist nur die Tür. '
        + 'Versuch es wieder, wenn du Netz hast.', 'Erneut versuchen'],
@@ -116,7 +116,7 @@ function refrescarDetras(req, cache) {
 function navegacion(e) {
   return caches.open(SHELL).then(cache =>
     cache.match(e.request, { ignoreSearch: true }).then(guardada => {
-      const red = refrescarDetras(e.request, cache).catch(() => null);
+      const red = refrescarDetras(e.request).catch(() => null);
       if (guardada && !guardada.redirected) return guardada;
       return red.then(res => res || paginaSinRed(e.request.url));
     }));
@@ -133,7 +133,7 @@ function redPrimero(e) {
 function estatico(e) {
   return caches.open(OBRA).then(cache =>
     cache.match(e.request).then(guardada => {
-      const red = refrescarDetras(e.request, cache).catch(() => null);
+      const red = refrescarDetras(e.request).catch(() => null);
       if (guardada) return guardada;
       return red.then(res => res || Response.error());
     }));
