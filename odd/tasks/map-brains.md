@@ -1,0 +1,13 @@
+# Map brains
+
+Authority: Sovereign requests recovering the historical browser chunk model and node conversation, adapting it to today's single-map architecture. Explicit direction: interactive map chat must have a real brain, all users remain ephemeral visitors, the joystick belongs to that visit across web/PWA/app. One proposed implementation PR; no merge/deploy authority.
+
+Reuse history: archived engine.js/chat.js used WebLLM Qwen3 1.7B only after a user download gesture; piso-chat.js selected browser/rack companions per tower floor. The recent lab chunk demonstration is a synthetic classifier and is not conversation. Restore the real engine through the one OpenWorld chat rather than revive those old pages.
+
+Proposed native boundary: one same-origin chat controller with ephemeral conversation memory and bounded contextual inputs from the map. A declared, user-initiated external download retrieves a pinned WebLLM runtime and pinned Qwen3 1.7B model shards; no external load-time request. Source, measured weight bytes and GPU requirement are disclosed before consent. Browser answers remain local and non-authoritative; no game action is executed by text. A failed/unavailable engine says NO_DATA. External model download is the historical route retained under L-075's explicit-action transport allowance, not a claim that weights are hosted by this site.
+
+Map objects select the companion context. The same browser model can accompany cabin, egg, patrol, territory or a selected node. It never impersonates a node's measured backend. A separate explicit local-app transport can use the existing orchestrator query contract; absent signed per-node backend linkage is NO_DATA. Physical-node backend URLs are never inferred from public node names. No node is made LIVE by its chat.
+
+Verification: zero external requests before consent, denied consent fetches nothing, real browser GPU capability probe, model source manifest and byte inventory, contextual chat rejection bounds, lifecycle clearing and no action execution. Synthetic engine doubles can test plumbing but never count as measured inference. Local/CI evidence is separate from post-deploy device captures. Publisher hashes pin bytes, not identity or model quality.
+
+Integrity follow-up: the loader checks that all 30 uniquely named shards cover the declared weight bytes with contiguous, bounded SHA-256 chunks, rejects unknown shard downloads and cached shards, and checks cached bytes before use. Weight hashes do not pin the dynamically imported runtime, WebAssembly library or model configuration. Those dependencies remain NO_DATA for integrity; the UI says so. Synthetic fixtures check rejection and consent, not inference or physical Android behavior.
