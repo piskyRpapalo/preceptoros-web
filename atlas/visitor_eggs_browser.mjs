@@ -27,8 +27,9 @@ const pend = new Map();
 
 async function main() {
   srv = await sirve(PUBLIC);
-  const port = srv.address().port, cdpPort = 9700 + (process.pid % 90);
-  ch = launchChrome(cdpPort);
+  const port = srv.address().port;
+  ch = launchChrome(0);
+  const cdpPort = await ch.debugPort();
   let lista = null;
   for (let i = 0; i < 60 && !lista && !ch.failure(); i++) { await espera(250); try { lista = await (await fetch(`http://127.0.0.1:${cdpPort}/json`)).json(); } catch {} }
   if (!lista) { throw new Error(ch.diagnostic()); }
