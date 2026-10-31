@@ -1,0 +1,123 @@
+#!/usr/bin/env python3
+"""Run a local check while keeping its captured output bounded under XDG state."""
+
+from __future__ import annotations
+
+import argparse
+import fcntl
+import os
+from pathlib import Path
+import re
+import shutil
+import subprocess
+import sys
+
+
+MAX_BYTES = 100 * 1024 * 1024
+ROTATIONS = 3
+_LABEL = re.compile(r"[a-zA-Z0-9][a-zA-Z0-9._-]{0,63}\Z")
+
+
+def state_root(env=None):
+    env = os.environ if env is None else env
+    configured = env.get("XDG_STATE_HOME")
+    root = Path(configured).expanduser() if configured else Path.home() / ".local" / "state"
+    return root / "preceptoros-web" / "batteries"
+
+
+def _prepare(root: Path, name: str, max_bytes: int, rotations: int):
+    if not _LABEL.fullmatch(name):
+        raise ValueError("unsafe log label")
+    root.mkdir(mode=0o700, parents=True, exist_ok=True)
+    if not root.is_dir():
+        raise ValueError("log directory is not a directory")
+    try:
+        root.chmod(0o700)
+    except OSError:
+        pass
+
+    paths = [root / f"{name}.log"] + [root / f"{name}.log.{i}" for i in range(1, rotations + 1)]
+    for path in paths:
+        try:
+            info = path.lstat()
+        except FileNotFoundError:
+            continue
+        if not path.is_file() or path.is_symlink():
+            raise ValueError("managed log is not a regular file")
+        if info.st_size > max_bytes:
+            raise ValueError("managed log exceeds the configured limit")
+    return paths
+
+
+def _rotate(paths):
+    oldest = paths[-1]
+    oldest.unlink(missing_ok=True)
+    for index in range(len(paths) - 1, 0, -1):
+        if paths[index - 1].exists():
+            os.replace(paths[index - 1], paths[index])
+
+
+def ejecutar(command, *, root: Path, name: str, max_bytes=MAX_BYTES, rotations=ROTATIONS):
+    """Capture a process; injectable size is for tests, never exposed in the CLI."""
+    if not command:
+        raise ValueError("missing command")
+    if max_bytes <= 0 or rotations < 0:
+        raise ValueError("invalid capture limits")
+    paths = _prepare(root, name, max_bytes, rotations)
+    lock_path = root / f".{name}.lock"
+    lock_fd = os.open(lock_path, os.O_CREAT | os.O_RDWR, 0o600)
+    try:
+        fcntl.flock(lock_fd, fcntl.LOCK_EX)
+        process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        current_size = paths[0].stat().st_size if paths[0].exists() else 0
+        log_fd = os.open(paths[0], os.O_CREAT | os.O_WRONLY | os.O_APPEND, 0o600)
+        try:
+            while True:
+                chunk = process.stdout.read(64 * 1024)
+                if not chunk:
+                    break
+                sys.stdout.buffer.write(chunk)
+                sys.stdout.buffer.flush()
+                offset = 0
+                while offset < len(chunk):
+                    if current_size == max_bytes:
+                        os.close(log_fd)
+                        _rotate(paths)
+                        log_fd = os.open(paths[0], os.O_CREAT | os.O_WRONLY | os.O_APPEND, 0o600)
+                        current_size = 0
+                    amount = min(len(chunk) - offset, max_bytes - current_size)
+                    view = memoryview(chunk)[offset:offset + amount]
+                    while view:
+                        written = os.write(log_fd, view)
+                        view = view[written:]
+                    current_size += amount
+                    offset += amount
+            return process.wait()
+        finally:
+            os.close(log_fd)
+            if process.stdout:
+                process.stdout.close()
+            if process.poll() is None:
+                process.kill()
+                process.wait()
+    finally:
+        os.close(lock_fd)
+
+
+def main(argv=None):
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--name", required=True, help="safe local label for the rotating log")
+    parser.add_argument("command", nargs=argparse.REMAINDER, help="command after --")
+    args = parser.parse_args(argv)
+    command = args.command[1:] if args.command[:1] == ["--"] else args.command
+    if not command:
+        parser.error("provide a command after --")
+    try:
+        return ejecutar(command, root=state_root(), name=args.name)
+    except (OSError, ValueError) as exc:
+        print(f"battery capture refused: {exc}", file=sys.stderr)
+        return 125
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
