@@ -25,7 +25,7 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
 #map .surface{width:100%;flex:1;min-height:240px;display:block;transition:opacity 300ms ease}
 @media (prefers-reduced-motion: reduce){#map .surface{transition:none}}
 #map .press{display:flex;flex-wrap:wrap;gap:8px}
-#map .press button,#map .listen button{min-height:44px;padding:8px 14px;border:2px solid currentColor;border-radius:var(--radius);background:var(--bg);color:var(--fg);font:inherit;cursor:pointer}
+#map .press button,#map .listen button,#world-refresh{min-height:44px;padding:8px 14px;border:2px solid currentColor;border-radius:var(--radius);background:var(--bg);color:var(--fg);font:inherit;cursor:pointer}
 #map .press button[aria-pressed="true"]{outline:3px solid currentColor;outline-offset:2px}
 #map .state{margin:0;color:var(--soft);font-size:.92rem}
 #joy{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;padding:10px;border:2px solid var(--line);border-radius:var(--radius);background:var(--bg);color:var(--fg)}
@@ -66,6 +66,7 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
 <button type="button" id="listen" aria-describedby="listen-state">Listen to the cabin</button>
 </div>
 <p class="state" id="listen-state" aria-live="polite"></p>
+<button type="button" id="world-refresh">Check live nodes</button>
 <p class="state" id="state" aria-live="polite">Nodes online: 0.</p>
 <ul class="state" id="frases" aria-label="Map details"></ul>
 <p><a href="/face/army.html" style="display:inline-flex;min-height:44px">Army · NO_DATA</a></p>
@@ -120,6 +121,7 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
 <script src="/game/visitor_battle_ui.js"></script>
 <script src="/game/visitor_conquest.js"></script>
 <script src="/game/visitor_play.js"></script>
+<script src="/game/world_feed.js"></script>
 <script src="/assets/pwa.js"></script>
 <script src="/game/openworld_page.js"></script>
 </body>
