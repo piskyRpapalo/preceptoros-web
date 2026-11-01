@@ -24,6 +24,24 @@
   var ZOOM = raiz.AtlasMapZoom && surface ? raiz.AtlasMapZoom.create(surface) : null, zoomSeen = surface ? surface.dataset.zoom : null;
   function onZoom() { if (surface.dataset.zoom !== zoomSeen) { zoomSeen = surface.dataset.zoom; draw(); } }
   if (ZOOM) { surface.style.touchAction = 'none'; surface.addEventListener('pointermove', onZoom); surface.addEventListener('wheel', onZoom); }
+  // A11Y: zoom without fingers. Buttons (44 px) and the keys + - 0 outside form fields; the level is spoken by aria-live.
+  if (ZOOM) {
+    var zoomBar = doc.createElement('div'), zoomSay = doc.createElement('p');
+    zoomBar.id = 'zoom-controls'; zoomBar.setAttribute('role', 'group'); zoomBar.setAttribute('aria-label', 'Map zoom');
+    zoomSay.id = 'zoom-state'; zoomSay.setAttribute('aria-live', 'polite');
+    var zoomTo = function (d) { ZOOM.step(d); onZoom(); zoomSay.textContent = 'Map zoom ' + surface.dataset.zoom + '×'; };
+    [['Zoom in', 1, 'zoom-in'], ['Zoom out', -1, 'zoom-out'], ['Reset zoom', 0, 'zoom-reset']].forEach(function (z) {
+      var b = doc.createElement('button'); b.type = 'button'; b.id = z[2]; b.textContent = z[0];
+      b.style.minHeight = '44px'; b.style.minWidth = '44px'; b.addEventListener('click', function () { zoomTo(z[1]); }); zoomBar.appendChild(b);
+    });
+    zoomBar.appendChild(zoomSay); surface.after(zoomBar);
+    doc.addEventListener('keydown', function (e) {
+      var t = e.target, field = t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT' || t.isContentEditable);
+      var d = { '+': 1, '=': 1, '-': -1, '0': 0 }[e.key];
+      if (field || d === undefined || e.ctrlKey || e.metaKey) { return; }
+      e.preventDefault(); zoomTo(d);
+    });
+  }
 
   // The visible rows of the state: the cabin, and each node the state lists as alive. A node without its key is refused.
   function filas() {

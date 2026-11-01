@@ -1,6 +1,6 @@
 (function (raiz) {
   'use strict';
-  var MIN = 0.6, MAX = 3;
+  var MIN = 0.6, MAX = 3, STEP = 1.25;
 
   function crea(c) {
     var zm = 1, pts = {}, d0 = 0, zm0 = 1;
@@ -15,9 +15,10 @@
     function suelta(ev) { delete pts[ev.pointerId]; }
     c.addEventListener('pointerup', suelta); c.addEventListener('pointercancel', suelta);
     c.addEventListener('wheel', function (ev) { if (ev.ctrlKey) { return; } ev.preventDefault(); fija(zm * Math.exp(-ev.deltaY * 0.0015)); }, { passive: false });
-    return { factor: function () { return zm; } };
+    // A11Y: the same factor without a pointer — set(v) and step(+1|-1|0) for the keys and buttons of the page.
+    return { factor: function () { return zm; }, set: fija, step: function (d) { fija(d === 0 ? 1 : zm * (d > 0 ? STEP : 1 / STEP)); return zm; } };
   }
 
-  var AtlasMapZoom = { crea: crea, create: crea, MIN: MIN, MAX: MAX };
+  var AtlasMapZoom = { crea: crea, create: crea, MIN: MIN, MAX: MAX, STEP: STEP };
   if (typeof module === 'object' && module.exports) { module.exports = AtlasMapZoom; } else { raiz.AtlasMapZoom = AtlasMapZoom; }
 })(this);

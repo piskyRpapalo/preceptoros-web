@@ -58,7 +58,7 @@
   function pinta(tarjeta) {
     var campos = {
       version: tarjeta.version || sinDatos('the card has no version.'),
-      fecha: tarjeta.fecha ? 'released ' + tarjeta.fecha + ', measured ' + String(tarjeta.medido || '').slice(0, 10) : sinDatos('no release date in the card.')
+      fecha: tarjeta.fecha ? 'released ' + tarjeta.fecha + ', measured ' + String(tarjeta.medido || '').slice(0, 10) + (tarjeta.seal ? ' · seal ' + tarjeta.seal : '') : sinDatos('no release date in the card.')
     };
     var instalador = (tarjeta.assets || []).filter(function (a) { return a.nombre === 'install.sh'; })[0];
     campos.sha = instalador && instalador.sha256 ? instalador.sha256 : sinDatos('install.sh has no fingerprint in the card.');
