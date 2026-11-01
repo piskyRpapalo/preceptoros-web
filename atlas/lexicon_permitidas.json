@@ -1,1 +1,12 @@
-{"esquema":"preceptoros.lexicon-permitidas/1","palabras":[],"motivo":"excepciones con causa; vacia al nacer"}
+{
+ "esquema": "preceptoros.lexicon-permitidas/1",
+ "palabras": [
+  "exzqvspbleenx",
+  "leecr"
+ ],
+ "motivo": "excepciones con causa; vacia al nacer",
+ "causas": {
+  "exzqvspbleenx": "2026-11-01 · fragmentos de una cadena base64 dentro de public/vendor/wllama/wllama.js (runtime MIT fijado por sha en models/web-node/manifest.json); no son palabras",
+  "leecr": "2026-11-01 · fragmentos de una cadena base64 dentro de public/vendor/wllama/wllama.js (runtime MIT fijado por sha en models/web-node/manifest.json); no son palabras"
+ }
+}

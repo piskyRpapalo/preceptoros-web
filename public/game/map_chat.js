@@ -3,32 +3,27 @@
   var doc = root.document, form = doc.getElementById('entry'), log = doc.getElementById('log'), note = doc.getElementById('chat-note');
   if (!form || !log) { return; }
   // The joystick stays as the page serves it: the companion does not move or fold page controls.
-  var worker = null, next = 0, pending = new Map(), ready = false, busy = false;
-  var model = 'Qwen3-1.7B-q4f16_1-MLC', context = 'Tutorial cabin · local visitor practice';
+  // The web node brain (web_node_brain.js): a same-origin model in 5 verified chunks, run on this device's CPU.
+  var ready = false, busy = false, loading = false;
+  var model = 'SmolLM2-135M-Instruct', context = 'Tutorial cabin · local visitor practice';
   var zone = doc.createElement('div'); zone.id = 'map-brain'; form.before(zone);
-  var disclosure = doc.createElement('p'); disclosure.textContent = 'Optional browser brain: Qwen3 1.7B · 968,001,536 weight bytes plus runtime/configuration files (extra size NO_DATA). Download sources: jsDelivr, Hugging Face and MLC GitHub. About 2,037 MB GPU memory required. Loading is unavailable: runtime, library and model configuration do not yet have verified integrity. Your chat text stays on this device; no download starts until you choose it. The model advises; it never signs or plays for you.'; zone.append(disclosure);
-  var start = doc.createElement('button'); start.type = 'button'; start.id = 'brain-load'; start.textContent = 'Download the browser brain and verify its weights'; start.style.minHeight = '44px'; zone.append(start);
+  var disclosure = doc.createElement('p'); disclosure.textContent = 'Web node brain: SmolLM2 135M Instruct (Apache-2.0) · 105,454,144 weight bytes in 5 chunks plus the wllama runtime (MIT) · 9,146,582 bytes, all from this site, each checked by SHA-256. It runs on this device\'s processor; no graphics card needed. Nothing downloads until you choose; after that it stays on this device. Your chat text stays on this device. The model advises; it never signs or plays for you.'; zone.append(disclosure);
+  var start = doc.createElement('button'); start.type = 'button'; start.id = 'brain-load'; start.textContent = 'Download the web node brain and verify it'; start.style.minHeight = '44px'; zone.append(start);
   var selected = doc.createElement('p'); selected.id = 'brain-context'; selected.textContent = context; zone.append(selected);
   function line(who, text) { var item = doc.createElement('li'); item.textContent = text.startsWith('NO_DATA') ? text : who + ' · ' + text; log.append(item); }
-  function call(type, payload) {
-    return new Promise(function (resolve, reject) {
-      var id = ++next; pending.set(id, { resolve: resolve, reject: reject }); worker.postMessage(Object.assign({ id: id, type: type }, payload));
+  function brain() {
+    if (root.AtlasWebNodeBrain) { return Promise.resolve(root.AtlasWebNodeBrain); }
+    return new Promise(function (ok, fail) {
+      var s = doc.createElement('script'); s.src = '/game/web_node_brain.js';
+      s.onload = function () { ok(root.AtlasWebNodeBrain); }; s.onerror = function () { fail(new Error('the brain module did not load')); }; doc.head.append(s);
     });
   }
-  start.addEventListener('click', async function () {
-    if (worker) { return; }
-    if (!root.navigator.gpu) { note.textContent = 'NO_DATA: WebGPU is unavailable in this browser.'; return; }
-    start.disabled = true; note.textContent = 'Loading the declared browser model…';
-    worker = new Worker('/game/map_brain_worker.js', { type: 'module' });
-    worker.onmessage = function (event) {
-      var data = event.data;
-      if (data.progress) { note.textContent = data.progress; return; }
-      var request = pending.get(data.id); if (!request) { return; } pending.delete(data.id);
-      if (data.error) { request.reject(new Error(data.error)); } else { request.resolve(data); }
-    };
-    worker.onerror = function () { pending.forEach(function (p) { p.reject(new Error('Browser brain worker failed')); }); pending.clear(); };
-    try { var answer = await call('load', { consent: true }); ready = answer.ready; note.textContent = model + ' · ready on this device.'; start.textContent = 'Browser brain ready'; }
-    catch (error) { note.textContent = 'NO_DATA: ' + error.message; worker.terminate(); worker = null; start.disabled = false; }
+  start.addEventListener('click', function () {
+    if (ready || loading) { return; }
+    loading = true; start.disabled = true; note.textContent = 'Loading the web node brain…';
+    brain().then(function (B) { return B.load({ consent: true, say: function (t) { note.textContent = t; } }); }).then(function () {
+      ready = true; note.textContent = model + ' · ready on this device. Ask the tutorial guide anything.'; start.textContent = 'Web node brain ready';
+    }, function (error) { note.textContent = 'NO_DATA · ' + (error.cause || 'model_unavailable') + ': ' + error.message; start.disabled = false; }).then(function () { loading = false; });
   });
   doc.addEventListener('map:context', function (event) { choose(event.detail.label); });
   function choose(label) { context = String(label).slice(0, 160); selected.textContent = 'Companion context: ' + context + ' · node backend link NO_DATA unless explicitly measured'; }
@@ -45,11 +40,14 @@
     if (!text || busy) { event.preventDefault(); return; }
     if (new TextEncoder().encode(text).length > 600) { note.textContent = 'NO_DATA: message exceeds 600 UTF-8 bytes.'; return; }
     line('You', text); input.value = '';
-    if (!ready) { line('Companion', 'NO_DATA: choose and load the browser brain first.'); return; }
+    if (!ready) { line('Companion', 'NO_DATA: choose and load the web node brain first.'); return; }
     busy = true; form.querySelector('button[type="submit"]').disabled = true;
-    try { var answer = await call('reply', { text: text, context: context }); line(answer.model, answer.text); note.textContent = 'Local browser answer · ' + context; }
-    catch (error) { line('Companion', 'NO_DATA: ' + error.message); }
+    try {
+      var answer = await root.AtlasWebNodeBrain.reply(text, context); line(answer.model, answer.text); note.textContent = 'Local answer from the web node brain · ' + context;
+      doc.dispatchEvent(new CustomEvent('brain:answer', { detail: { verified: answer.verified, model: answer.model, text: answer.text, sha: answer.sha } }));
+    }
+    catch (error) { line('Companion', 'NO_DATA · ' + (error.cause || 'model_unavailable') + ': ' + error.message); }
     finally { busy = false; form.querySelector('button[type="submit"]').disabled = false; }
   });
-  root.addEventListener('pagehide', function () { if (worker) { worker.terminate(); worker = null; } ready = false; pending.clear(); log.replaceChildren(); });
+  root.addEventListener('pagehide', function () { ready = false; log.replaceChildren(); });
 })(globalThis);
