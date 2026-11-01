@@ -32,6 +32,7 @@ test('Neutral terminal renders and moves only on the shared colony state', () =>
 test('Army deep link does not render a second map or synthetic account army', () => {
   assert.match(armyPage, /NO_DATA/);
   assert.match(armyPage, /SHA-256 profile/);
-  assert.match(armyPage, /href="\/face\/basic\.html"/);
+  assert.match(armyPage, /href="\/openworld\/"/);
+  assert.doesNotMatch(armyPage, /\/face\/basic\.html|shared map/i);
   assert.doesNotMatch(armyPage, /<svg|<canvas|synthetic seeded waves/i);
 });

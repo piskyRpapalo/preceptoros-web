@@ -1,0 +1,52 @@
+{
+ "schema": "preceptoros.web-node-brain/1",
+ "model": "SmolLM2-135M-Instruct-Q4_K_M",
+ "license": "Apache-2.0",
+ "source": "https://huggingface.co/unsloth/SmolLM2-135M-Instruct-GGUF (file SmolLM2-135M-Instruct-Q4_K_M.gguf)",
+ "model_sha256": "ed5fa30c487b282ec156c29062f1222e5c20875a944ac98289dbd242e947f747",
+ "runtime": [
+  {
+   "name": "/vendor/wllama/wllama.js",
+   "bytes": 382633,
+   "sha256": "e5506753e41a59c11f61f2c52422045be9fc76e32a7e47f037aaad5df4ec723e",
+   "license": "MIT",
+   "source": "npm @wllama/wllama 3.8.1",
+   "license_file": "/vendor/wllama/LICENCE.txt"
+  },
+  {
+   "name": "/vendor/wllama/wllama.wasm",
+   "bytes": 8763949,
+   "sha256": "551f13439366eff11e057b1b91fe46a7fdac29d56d67372d4c5f19a549dfe70c",
+   "license": "MIT",
+   "source": "npm @wllama/wllama 3.8.1",
+   "license_file": "/vendor/wllama/LICENCE.txt"
+  }
+ ],
+ "chunks": [
+  {
+   "name": "/models/web-node/smollm2-135m-q4km.part0",
+   "bytes": 22020096,
+   "sha256": "8a56da92c569cc8852a6893d2d17985816cf9330027f9db1044e0a415cf75dfc"
+  },
+  {
+   "name": "/models/web-node/smollm2-135m-q4km.part1",
+   "bytes": 22020096,
+   "sha256": "ad8c700aaefb74bea360b3e659ce7728446d61640ab86d32e199923917e70587"
+  },
+  {
+   "name": "/models/web-node/smollm2-135m-q4km.part2",
+   "bytes": 22020096,
+   "sha256": "3381963f54d5ff708c7d9ac062231b34b305b7b613885863846ea4606a65835d"
+  },
+  {
+   "name": "/models/web-node/smollm2-135m-q4km.part3",
+   "bytes": 22020096,
+   "sha256": "edc072c65269fa3d9e0cfc147c58cb22defc68e44bdf6ca31871866e69aeb0dc"
+  },
+  {
+   "name": "/models/web-node/smollm2-135m-q4km.part4",
+   "bytes": 17373760,
+   "sha256": "f62519337f2a3223479da0fc4154073d50011172bc685bfc89433fb815d46fcc"
+  }
+ ]
+}
