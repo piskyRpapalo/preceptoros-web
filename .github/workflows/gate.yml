@@ -62,6 +62,7 @@ jobs:
             node --test atlas/barrido_web_casos.mjs
             node --test atlas/map_carta_casos.mjs
             node --test atlas/map_chunks_casos.mjs
+            node --test atlas/web_node_brain_casos.mjs
             node --test atlas/map_painter_casos.mjs
             node --test atlas/retiro_face_casos.mjs
             node --test atlas/nombres_retirados_casos.mjs
@@ -94,6 +95,7 @@ jobs:
             node atlas/combat_screen_browser.mjs
             node atlas/landing_doors_browser.mjs
             node atlas/openworld_browser.mjs
+            node atlas/web_node_brain_browser.mjs
             node atlas/walk_avatar_browser.mjs
             node atlas/walk_keys_browser.mjs
             node atlas/visitor_account_browser.mjs
