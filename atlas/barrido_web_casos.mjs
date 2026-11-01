@@ -18,10 +18,10 @@ test('1 · las terminales de prueba no salen en la cara pública: ni en el sitem
 
 test('2 · la release citada lleva su sello y su causa, y quien la pinta lo muestra', () => {
   const r = JSON.parse(P('release.json'));
-  assert.equal(r.sello, 'STALE');
-  assert.ok(r.sello_causa && r.sello_causa.includes(r.medido.slice(0, 10)), 'la causa cita la fecha medida');
+  assert.equal(r.seal, 'STALE');
+  assert.ok(r.seal_cause && r.seal_cause.includes(r.medido.slice(0, 10)), 'la causa cita la fecha medida');
   assert.ok(P('get-the-app/index.html').includes('seal STALE'), '/get-the-app/ muestra el sello');
-  assert.match(P('assets/intro.js'), /tarjeta\.sello \? ' · seal ' \+ tarjeta\.sello/, 'la portada muestra el sello');
+  assert.match(P('assets/intro.js'), /tarjeta\.seal \? ' · seal ' \+ tarjeta\.seal/, 'la portada muestra el sello');
 });
 
 test('3 · los stubs de la colonia dicen por qué están vacíos', () => {

@@ -1,8 +1,8 @@
 {
  "esquema": "preceptoros/release/1",
  "medido": "2026-09-13T17:47:43+00:00",
- "sello": "STALE",
- "sello_causa": "measured 2026-09-13; fingerprints re-checked 2026-10-26; install tests not re-run on a fleet device since",
+ "seal": "STALE",
+ "seal_cause": "measured 2026-09-13; fingerprints re-checked 2026-10-26; install tests not re-run on a fleet device since",
  "repo": "piskyRpapalo/PreceptorOS",
  "version": "v1.3",
  "fecha": "2026-08-31",

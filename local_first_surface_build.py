@@ -171,7 +171,7 @@ def app():
 <p class="get-app"><a href="/aduana/">Next: create a node</a></p>
 <h2>What has been tested</h2>
 <table class="pruebas"><thead><tr><th>System</th><th>State</th><th>Detail</th></tr></thead><tbody>{filas}</tbody></table>
-<details class="tech"><summary>Technical details</summary><p>This page is written from the release card the web serves (<a href="/release.json">release.json</a>, measured {r['medido'][:10]}{(' · seal ' + r['sello'] + ': ' + r['sello_causa']) if r.get('sello') else ''}). Its fingerprints match the live {r['version']} release (re-checked 2026-10-26). Release page: <a href="{base}/tag/{r['version']}">{r['repo']} {r['version']}</a>. Manifest sha256: <code class="sha">{r['sha256_manifiesto']}</code></p></details>
+<details class="tech"><summary>Technical details</summary><p>This page is written from the release card the web serves (<a href="/release.json">release.json</a>, measured {r['medido'][:10]}{(' · seal ' + r['seal'] + ': ' + r['seal_cause']) if r.get('seal') else ''}). Its fingerprints match the live {r['version']} release (re-checked 2026-10-26). Release page: <a href="{base}/tag/{r['version']}">{r['repo']} {r['version']}</a>. Manifest sha256: <code class="sha">{r['sha256_manifiesto']}</code></p></details>
 </main>
 <script src="/assets/pwa.js"></script>
 <script src="/game/launch_gate.js"></script>
