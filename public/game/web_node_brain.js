@@ -4,19 +4,23 @@
 // /vendor/wllama/. /models/web-node/manifest.json pins one SHA-256 for every byte that runs: the runtime script, the
 // wasm and each chunk. Nothing is fetched without an explicit consent; a byte that does not match is NO_DATA with its
 // cause, never a guess. Verified bytes are kept in CacheStorage by hash, so a second visit downloads nothing.
+// 2026-11-01 (guia LoRA): load() takes the manifest to load, so the visitor can choose the base model or the house guide
+// (/models/web-node-guide/, a LoRA of the same base trained on this map's facts); both pass the same integrity checks.
 // Answers are greedy (temperature 0, top_k 1) and grounded on the page's own labels; the runtime reuses its prompt cache,
 // so wording may vary between turns (measured 2026-11-01). The model advises;
 // it never signs, plays or spends for the visitor.
 (function (root) {
   'use strict';
   var MANIFEST = '/models/web-node/manifest.json', CACHE = 'web-node-brain-1';
+  // Only a same-origin manifest under /models/<one folder>/ may be chosen: the chooser cannot point anywhere else.
+  var MANIFEST_PATH = /^\/models\/[a-z0-9-]+\/manifest\.json$/;
   // The facts the guide may use: the real labels of this page. Small models invent when they are not given facts.
   var SYSTEM = 'You are the guide of the tutorial cabin on the PreceptorOS web map. Reply in one or two short sentences. ' +
     'Facts: Move with the arrow keys or by dragging the on-screen stick on the map. Press "Start an ephemeral visit" to play. ' +
     '"Visit the beacon" gives 100 copper once per visit. "Sign invocation" summons a wave creature; the reef summon costs 50 copper. ' +
     'Eggs hatch after some steps with "Sign adoption". Battles are practice and are replayed exactly. ' +
     'If the answer is not in these facts, say NO_DATA.';
-  var state = { status: 'idle', engine: null, manifest: null, model: null };
+  var state = { status: 'idle', engine: null, manifest: null, model: null, src: null };
 
   function noData(cause, detail) { var e = new Error(detail || cause); e.cause = cause; return e; }
   function hex(buf) { return Array.prototype.map.call(new Uint8Array(buf), function (b) { return ('0' + b.toString(16)).slice(-2); }).join(''); }
@@ -58,14 +62,19 @@
     });
   }
 
-  // load({ consent, say }) → resolves when the model answers; say(text) narrates each verified step (for #chat-note).
+  // load({ consent, say, manifest }) → resolves when the model answers; say(text) narrates each verified step (for
+  // #chat-note). manifest defaults to MANIFEST; choosing another one unloads the running model first.
   function load(opts) {
     var say = (opts && opts.say) || function () {};
     if (!opts || opts.consent !== true) { return Promise.reject(noData('consent_required', 'Explicit download consent is required')); }
-    if (state.status === 'ready') { return Promise.resolve(state); }
-    if (state.status === 'loading') { return Promise.reject(noData('model_busy', 'The brain is already loading')); }
+    var src = opts.manifest === undefined ? MANIFEST : opts.manifest;
+    if (typeof src !== 'string' || !MANIFEST_PATH.test(src)) { return Promise.reject(noData('model_integrity_unavailable', 'manifest path rejected: ' + src)); }
+    if (state.status === 'loading' || state.status === 'busy') { return Promise.reject(noData('model_busy', 'The brain is already loading')); }
+    if (state.status === 'ready' && state.src === src) { return Promise.resolve(state); }
+    if (state.engine) { try { if (state.engine.exit) { state.engine.exit(); } } catch (e) { /* the old engine is dropped either way */ } }
+    state.engine = null; state.model = null; state.src = null;
     state.status = 'loading';
-    return root.fetch(MANIFEST, { credentials: 'omit' }).then(function (r) { return r.json(); }).then(function (m) {
+    return root.fetch(src, { credentials: 'omit' }).then(function (r) { return r.json(); }).then(function (m) {
       state.manifest = check(m);
       var js = m.runtime[0], wasm = m.runtime[1];
       return bytes(js, say).then(function (jsBuf) {
@@ -79,7 +88,7 @@
               var engine = new W.Wllama({ default: wasmUrl, 'single-thread/wllama.wasm': wasmUrl }, { suppressNativeLog: true });
               say('Starting the model on this device…');
               return engine.loadModel([new Blob(parts)], { n_ctx: 1024, n_threads: 1 }).then(function () {
-                state.engine = engine; state.model = m.model; state.status = 'ready'; return state;
+                state.engine = engine; state.model = m.model; state.src = src; state.status = 'ready'; return state;
               });
             });
           });
@@ -107,5 +116,5 @@
     }).then(function (a) { state.status = 'ready'; return a; }, function (e) { state.status = 'ready'; throw e.cause ? e : noData('model_unavailable', e.message); });
   }
 
-  root.AtlasWebNodeBrain = { load: load, reply: reply, check: check, status: function () { return state.status; }, MANIFEST: MANIFEST };
+  root.AtlasWebNodeBrain = { load: load, reply: reply, check: check, status: function () { return state.status; }, loaded: function () { return state.src; }, MANIFEST: MANIFEST };
 })(globalThis);

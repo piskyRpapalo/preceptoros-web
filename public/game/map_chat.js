@@ -7,7 +7,27 @@
   var ready = false, busy = false, loading = false;
   var model = 'SmolLM2-135M-Instruct', context = 'Tutorial cabin · local visitor practice';
   var zone = doc.createElement('div'); zone.id = 'map-brain'; form.before(zone);
-  var disclosure = doc.createElement('p'); disclosure.textContent = 'Web node brain: SmolLM2 135M Instruct (Apache-2.0) · 105,454,144 weight bytes in 5 chunks plus the wllama runtime (MIT) · 9,146,582 bytes, all from this site, each checked by SHA-256. It runs on this device\'s processor; no graphics card needed. Nothing downloads until you choose; after that it stays on this device. Your chat text stays on this device. The model advises; it never signs or plays for you.'; zone.append(disclosure);
+  // Two models of the same size, the visitor chooses (2026-11-01): the base, or the house guide (a LoRA of the same base
+  // trained only on this map's labels and laws; receipt in /models/web-node-guide/manifest.json). Default: the base.
+  var MODELS = [
+    { id: 'base', manifest: '/models/web-node/manifest.json', name: 'SmolLM2-135M-Instruct',
+      label: 'Base model · SmolLM2 135M Instruct · 105 MB · general small model' },
+    { id: 'guide', manifest: '/models/web-node-guide/manifest.json', name: 'PreceptorOS guide',
+      label: 'House guide · SmolLM2 135M LoRA · 105 MB · tuned on this map\'s facts' }
+  ], pick = MODELS[0];
+  var disclosure = doc.createElement('p'); disclosure.textContent = 'Web node brain: choose one of two models of the same size, both SmolLM2 135M (Apache-2.0): the base model, or the house guide, a LoRA of it trained on this map\'s labels (held-out test of 52 questions: base 5, guide 33). Each is about 105,450,000 weight bytes in 5 chunks plus the wllama runtime (MIT) · 9,146,582 bytes, all from this site, each checked by SHA-256. It runs on this device\'s processor; no graphics card needed. Nothing downloads until you choose; after that it stays on this device. Your chat text stays on this device. The model advises; it never signs or plays for you.'; zone.append(disclosure);
+  var chooser = doc.createElement('div'); chooser.id = 'brain-choice'; chooser.setAttribute('role', 'group'); chooser.setAttribute('aria-label', 'Choose the web node brain'); chooser.style.cssText = 'display:flex;flex-wrap:wrap;gap:8px'; zone.append(chooser);
+  MODELS.forEach(function (m) {
+    var b = doc.createElement('button'); b.type = 'button'; b.id = 'brain-pick-' + m.id; b.textContent = m.label; b.style.minHeight = '44px';
+    b.setAttribute('aria-pressed', m === pick ? 'true' : 'false');
+    b.addEventListener('click', function () {
+      if (loading || busy || m === pick) { return; }
+      pick = m; model = m.name; ready = false; start.disabled = false; start.textContent = 'Download the web node brain and verify it';
+      chooser.querySelectorAll('button').forEach(function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+      note.textContent = 'Chosen: ' + m.label + '. Press download to load it.';
+    });
+    chooser.append(b);
+  });
   var start = doc.createElement('button'); start.type = 'button'; start.id = 'brain-load'; start.textContent = 'Download the web node brain and verify it'; start.style.minHeight = '44px'; zone.append(start);
   var selected = doc.createElement('p'); selected.id = 'brain-context'; selected.textContent = context; zone.append(selected);
   function line(who, text) { var item = doc.createElement('li'); item.textContent = text.startsWith('NO_DATA') ? text : who + ' · ' + text; log.append(item); }
@@ -21,7 +41,7 @@
   start.addEventListener('click', function () {
     if (ready || loading) { return; }
     loading = true; start.disabled = true; note.textContent = 'Loading the web node brain…';
-    brain().then(function (B) { return B.load({ consent: true, say: function (t) { note.textContent = t; } }); }).then(function () {
+    brain().then(function (B) { return B.load({ consent: true, manifest: pick.manifest, say: function (t) { note.textContent = t; } }); }).then(function () {
       ready = true; note.textContent = model + ' · ready on this device. Ask the tutorial guide anything.'; start.textContent = 'Web node brain ready';
     }, function (error) { note.textContent = 'NO_DATA · ' + (error.cause || 'model_unavailable') + ': ' + error.message; start.disabled = false; }).then(function () { loading = false; });
   });
@@ -29,7 +49,7 @@
   function choose(label) { context = String(label).slice(0, 160); selected.textContent = 'Companion context: ' + context + ' · node backend link NO_DATA unless explicitly measured'; }
   doc.getElementById('map').addEventListener('click', function (event) {
     var button = event.target.closest('button');
-    if (button && button.id !== 'brain-load') { choose(button.textContent); }
+    if (button && button.id !== 'brain-load' && !button.closest('#brain-choice')) { choose(button.textContent); }
   });
   doc.getElementById('visitor-play').addEventListener('visitor:battle', function (event) { choose('Practice battle at ' + event.detail.place + ' · ' + event.detail.combat.gana + ' · balance NO_DATA'); });
   form.addEventListener('submit', async function (event) {

@@ -293,12 +293,13 @@ def paginas_de_contenido():
 # Nodo web (2026-11-01, retirados/brain/RETIRO.md): el runtime del cerebro se baja SOLO tras el consentimiento y cada
 # byte va fijado por SHA-256 en public/models/web-node/manifest.json. No es primera carga ni texto de la casa: las
 # guardas de primera carga y de rutas lo exentan por esa lista exacta, no por carpeta (DECRETO-TECHO-NUEVO-20261101).
+# 2026-11-01 (guia LoRA): dos modelos a elegir, asi que la lista es la union de TODOS los manifiestos bajo public/models/.
 def _a_demanda():
-    m = PUBLICO / "models" / "web-node" / "manifest.json"
-    if not m.is_file():
-        return set()
-    d = json.loads(m.read_text(encoding="utf-8"))
-    return {(PUBLICO / e["name"].lstrip("/")).resolve() for e in d.get("runtime", []) + d.get("chunks", [])}
+    fuera = set()
+    for m in sorted((PUBLICO / "models").glob("*/manifest.json")):
+        d = json.loads(m.read_text(encoding="utf-8"))
+        fuera |= {(PUBLICO / e["name"].lstrip("/")).resolve() for e in d.get("runtime", []) + d.get("chunks", [])}
+    return fuera
 A_DEMANDA = _a_demanda()
 
 

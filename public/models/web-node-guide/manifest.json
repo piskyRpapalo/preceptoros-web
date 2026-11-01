@@ -1,0 +1,52 @@
+{
+ "schema": "preceptoros.web-node-brain/1",
+ "model": "PreceptorOS guide (SmolLM2-135M LoRA)",
+ "license": "Apache-2.0",
+ "source": "LoRA r=16 on HuggingFaceTB/SmolLM2-135M-Instruct (Apache-2.0), trained 2026-11-01 on CPU from 416 instruction pairs built only from this map's labels, the lore refresh of buzon#30 and the house laws (dataset sha256 1f80c4f4af2bd7753a4c0b22879ca956fd9c1c32c31d83461fdb70446362f81c); merged, converted with llama.cpp convert_hf_to_gguf.py and quantized Q4_K_M with llama-quantize build 10488. Held-out eval (52 questions, GGUF): base 5/52, guide 33/52, forbidden names 0. Receipt: training report INFORME.md, run guia-web-20261101.",
+ "model_sha256": "6be21c9042baaa0fd9c18240a34e5a1cbf6bff52ea9701db5b6ce98064273fbb",
+ "runtime": [
+  {
+   "name": "/vendor/wllama/wllama.js",
+   "bytes": 382633,
+   "sha256": "e5506753e41a59c11f61f2c52422045be9fc76e32a7e47f037aaad5df4ec723e",
+   "license": "MIT",
+   "source": "npm @wllama/wllama 3.8.1",
+   "license_file": "/vendor/wllama/LICENCE.txt"
+  },
+  {
+   "name": "/vendor/wllama/wllama.wasm",
+   "bytes": 8763949,
+   "sha256": "551f13439366eff11e057b1b91fe46a7fdac29d56d67372d4c5f19a549dfe70c",
+   "license": "MIT",
+   "source": "npm @wllama/wllama 3.8.1",
+   "license_file": "/vendor/wllama/LICENCE.txt"
+  }
+ ],
+ "chunks": [
+  {
+   "name": "/models/web-node-guide/guide-smollm2-135m-lora-q4km.part0",
+   "bytes": 22020096,
+   "sha256": "c57ab8f6cd480f5a8722e414d42a5f1989195903798a6d7cee5a55b864a760d8"
+  },
+  {
+   "name": "/models/web-node-guide/guide-smollm2-135m-lora-q4km.part1",
+   "bytes": 22020096,
+   "sha256": "23d90932e0abf5c76883de400c75ffb7716451c48f7575150f3eae1410115a1a"
+  },
+  {
+   "name": "/models/web-node-guide/guide-smollm2-135m-lora-q4km.part2",
+   "bytes": 22020096,
+   "sha256": "af20e3966f87c6c92eca8e503d168fbe281d36c43fe5ada3885d72a221fca852"
+  },
+  {
+   "name": "/models/web-node-guide/guide-smollm2-135m-lora-q4km.part3",
+   "bytes": 22020096,
+   "sha256": "c21b9406e12aaff3a373a44278912c0428c1444296acb72b50263b4eee44ea11"
+  },
+  {
+   "name": "/models/web-node-guide/guide-smollm2-135m-lora-q4km.part4",
+   "bytes": 17373600,
+   "sha256": "1597cee5dd2672d2af030dc5518be1bad54d3b408416d64c84199dd605657e62"
+  }
+ ]
+}

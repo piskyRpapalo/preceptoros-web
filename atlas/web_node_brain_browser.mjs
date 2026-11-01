@@ -20,7 +20,7 @@ function sirve(raiz) {
   });
   return new Promise((r) => s.listen(0, '127.0.0.1', () => r(s)));
 }
-const fallos = [], externas = [], modelos = [];
+const fallos = [], externas = [], modelos = [], guia = [];
 const ok = (cond, que) => { if (!cond) { fallos.push(que); } };
 let ws = null, ch = null, srv = null, id = 0;
 const pend = new Map();
@@ -37,7 +37,7 @@ async function main() {
   ws.addEventListener('message', (m) => {
     const d = JSON.parse(m.data);
     if (d.id && pend.has(d.id)) { pend.get(d.id)(d); pend.delete(d.id); }
-    if (d.method === 'Network.requestWillBeSent') { const u = d.params.request.url; if (/^https?:/.test(u) && new URL(u).origin !== origen) { externas.push(u); } if (/\/models\/web-node\//.test(u)) { modelos.push(u); } }
+    if (d.method === 'Network.requestWillBeSent') { const u = d.params.request.url; if (/^https?:/.test(u) && new URL(u).origin !== origen) { externas.push(u); } if (/\/models\/web-node\//.test(u)) { modelos.push(u); } if (/\/models\/web-node-guide\//.test(u)) { guia.push(u); } }
     if (d.method === 'Runtime.exceptionThrown') {
       const x = d.params.exceptionDetails, f = (x.stackTrace?.callFrames || [])[0] || x;
       fallos.push('exception: ' + String(x.exception?.description || x.text).split('\n')[0].slice(0, 80) + ' @ ' + String(f.url || '').split('/').pop());
@@ -68,6 +68,35 @@ async function main() {
   ok(/arrow keys|stick/.test(r.text || ''), 'the guide does not use the page facts: ' + r.text);
   ok(modelos.length === 6, 'expected manifest + 5 chunks + nothing else from /models/: ' + modelos.length);
   ok(externas.length === 0, 'external requests: ' + externas.slice(0, 3));
-  console.log(JSON.stringify({ piece: 'web-node-brain', medidas: r, peticiones_modelo: modelos.length, externas: externas.length, fallos }));
+  ok(guia.length === 0, 'the house guide was fetched while the base was chosen: ' + guia.length);
+  // 2026-11-01: the second model. The chooser defaults to the base, is two real buttons of 44 px, and the guide loads
+  // only its own manifest + 5 chunks (the runtime comes from the cache by hash), answering with its own name.
+  const g = JSON.parse(await ev(`(async () => { const note = document.getElementById('chat-note'), heard = [];
+    document.addEventListener('brain:answer', (e) => heard.push(e.detail));
+    const pb = document.getElementById('brain-pick-base'), pg = document.getElementById('brain-pick-guide');
+    const before = { base: pb.getAttribute('aria-pressed'), guide: pg.getAttribute('aria-pressed') };
+    const sizes = [pb, pg].map((b) => b.getBoundingClientRect().height), tags = [pb, pg].map((b) => b.tagName + ':' + b.tabIndex);
+    const labels = [pb.textContent, pg.textContent];
+    pg.focus(); const focused = document.activeElement === pg; pg.click();
+    const after = pg.getAttribute('aria-pressed') + '/' + pb.getAttribute('aria-pressed');
+    document.getElementById('brain-load').click();
+    for (let i = 0; i < 600 && !/ready on this device/.test(note.textContent); i++) await new Promise((r) => setTimeout(r, 100));
+    const ready = note.textContent;
+    const q = document.getElementById('question'); q.value = 'What does the beacon give?';
+    document.getElementById('entry').requestSubmit();
+    for (let i = 0; i < 900 && !heard.length; i++) await new Promise((r) => setTimeout(r, 100));
+    const a = heard[0] || {}, log = [...document.querySelectorAll('#log li')].map((li) => li.textContent);
+    return JSON.stringify({ before, sizes, tags, labels, focused, after, ready, text: a.text || null, model: a.model || null, verified: a.verified === true,
+      logged: log.some((l) => l.startsWith('PreceptorOS guide (SmolLM2-135M LoRA) · ')) }); })()`));
+  ok(g.before.base === 'true' && g.before.guide === 'false', 'the default is not the base model: ' + JSON.stringify(g.before));
+  ok(g.sizes.every((h) => h >= 44), 'a model button is below 44 px: ' + g.sizes);
+  ok(g.tags.every((t) => t === 'BUTTON:0') && g.focused, 'the chooser is not keyboard reachable: ' + g.tags);
+  ok(g.labels.every((l) => /105 MB/.test(l)), 'a model button does not say its size: ' + g.labels);
+  ok(g.after === 'true/false', 'choosing the guide did not switch the pressed button: ' + g.after);
+  ok(/ready on this device/.test(g.ready) && g.verified && g.logged && g.model === 'PreceptorOS guide (SmolLM2-135M LoRA)', 'the house guide did not answer under its own name: ' + JSON.stringify(g));
+  ok(guia.length === 6, 'expected guide manifest + 5 chunks: ' + guia.length);
+  ok(modelos.length === 6, 'the guide re-fetched base files: ' + modelos.length);
+  ok(externas.length === 0, 'external requests: ' + externas.slice(0, 3));
+  console.log(JSON.stringify({ piece: 'web-node-brain', medidas: r, guia: g, peticiones_modelo: modelos.length, peticiones_guia: guia.length, externas: externas.length, fallos }));
 }
 main().catch((e) => { fallos.push(String(e.message || e)); console.log(JSON.stringify({ fallos })); }).finally(() => { try { ws && ws.close(); } catch {} try { ch && ch.close && ch.close(); } catch {} try { srv && srv.close(); } catch {} process.exit(fallos.length ? 1 : 0); });
