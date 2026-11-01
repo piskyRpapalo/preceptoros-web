@@ -970,7 +970,8 @@ class PasoFinalDeLaCara(unittest.TestCase):
     """La linea del tutorial de la cara lleva siempre «Step n of total», tambien en el ultimo paso (2026-10-25)."""
 
     def test_ultimo_paso_conserva_el_contador(self):
-        js = (PUBLICO / "face" / "face_tutorial.js").read_text(encoding="utf-8")
+        # H2 (2026-11-01): la piel se retiro con recibo; la regla se guarda en su copia retirada.
+        js = (RAIZ.parent / "retirados" / "face" / "face_tutorial.js").read_text(encoding="utf-8")
         self.assertIn("'Step ' + steps.length + ' of ' + steps.length + ': '", js)
         self.assertNotIn("'Now: '", js)
 

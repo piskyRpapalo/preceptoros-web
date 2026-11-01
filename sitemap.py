@@ -80,7 +80,9 @@ def sueltas():
     # tres pieles son contenido y el buscador tiene que verlas.
     # Barrido 2026-11-01 (AUDITORIA-WEB): una pagina de prueba («<title>Test ·») no se anuncia; lo decide su titulo, en el disco.
     cara = ["face/" + ("" if p.name == "index.html" else p.name) for p in (PUBLICO / "face").glob("*.html")
-            if "<title>Test ·" not in p.read_text(encoding="utf-8")]
+            if "<title>Test ·" not in p.read_text(encoding="utf-8") and 'content="noindex"' not in p.read_text(encoding="utf-8")]
+    # H2 (2026-11-01): la tropa (army.html) se mudo de /face/ a /game/ con su anuncio.
+    cara += ["game/army.html"] if (PUBLICO / "game" / "army.html").is_file() else []
     # El juego (2026-10-25) vive en /play/: la portada de la raiz es solo la puerta.
     juego = ["play/"] if (PUBLICO / "play" / "index.html").is_file() else []
     # La guia de la app (Norte D1, 2026-10-26): contenido en ingles, escrito desde release.json.

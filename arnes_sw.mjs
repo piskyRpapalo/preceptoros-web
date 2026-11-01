@@ -221,7 +221,9 @@ const rutas = await shell.keys();
 // 224 -> 221 el 2026-10-28 (Norte 7 pieza C): salen /play/, assets/thegame.js y assets/thegame.css (theGame sale del shell).
 // 221 -> 106 el 2026-10-28 (Norte 7 pieza D): sale el juego borrado (manifiesto medido: 134 ficheros, enviar.js y enviar-*.js se quedan).
 // 107 -> 116 el 2026-10-30: the shared-map neutral terminal and its renderer chain join the shell cache.
-ok('precachea las portadas, su superficie y el juego', rutas.length === 116 && rutas.includes('/face/army.html'), rutas.length+' rutas');
+// 116 -> 100 el 2026-11-01 (H2): salen los dieciseis modulos de las pieles retiradas (retirados/face/); army.html,
+// face_canon.css y face_terminal.js se mudan a /game/; atlantis y zombie quedan como lapidas que siguen offline.
+ok('precachea las portadas, su superficie y el juego', rutas.length === 100 && rutas.includes('/game/army.html'), rutas.length+' rutas');
 ok('el shell NO trae el juego retirado (corte Norte 7 D)',
    !(['/assets/thegame.js', '/game/ui-arena.js', '/assets/atlas-motor.js'].some(r => rutas.includes(r))));
 ok('el shell trae la puerta y NO trae /play/ (corte Norte 7 C)', rutas.includes('/') && !rutas.includes('/play/') && !rutas.includes('/assets/thegame.js'));

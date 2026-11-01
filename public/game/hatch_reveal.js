@@ -16,7 +16,7 @@
   function load() {
     if (root.AtlasRevela) { return Promise.resolve(); }
     if (!ready) {
-      var link = doc.createElement('link'); link.rel = 'stylesheet'; link.href = '/face/face_canon.css'; doc.head.appendChild(link);
+      var link = doc.createElement('link'); link.rel = 'stylesheet'; link.href = '/game/face_canon.css'; doc.head.appendChild(link);
       ready = SCRIPTS.reduce(function (p, src) { return p.then(function () { return script(src); }); }, Promise.resolve());
     }
     return ready;

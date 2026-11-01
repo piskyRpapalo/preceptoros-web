@@ -21,11 +21,7 @@ const JUEGO = [
   '/game/state_frames.js', '/game/hex_projection.js', '/game/colony_state.js', '/game/colonia_edificios.js',
   '/game/palette_cycle.js', '/game/openworld_state.js', '/game/colonia_pagina.js', '/game/colony_controls.js',
   '/game/tutorial-fases.css', '/face/', '/get-the-app/', '/aduana/', '/face/basic.html', '/face/atlantis.html',
-  '/face/zombie.html', '/face/army.html', '/face/face.css', '/face/face.js', '/face/face_openworld_terminal.js', '/face/face_army.js', '/face/face_battle.js',
-  '/face/face_canon.css', '/face/face_eggs.js', '/face/face_fight.js', '/face/face_fight_stage.js',
-  '/face/face_hero.js', '/face/face_hud.js', '/face/face_paint.js', '/face/face_panel.js',
-  '/face/face_terminal.js', '/face/face_tutorial.js', '/face/face_views.css', '/face/face_workshop.js',
-  '/face/face_world.js', '/face/face_world_terrain.js'
+  '/face/zombie.html', '/face/face_openworld_terminal.js', '/game/army.html', '/game/face_canon.css', '/game/face_terminal.js'
 ];
 
 const PORTADA = [

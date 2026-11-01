@@ -5,10 +5,11 @@ import assert from 'node:assert/strict';
 import { readFileSync, readdirSync } from 'node:fs';
 const P = (f) => readFileSync(new URL('../public/' + f, import.meta.url), 'utf8');
 
-const pruebas = readdirSync(new URL('../public/face/', import.meta.url)).filter((f) => f.endsWith('.html') && P('face/' + f).includes('<title>Test ·'));
+// H2 (2026-11-01): las tres terminales de prueba se retiraron; en su URL queda una lápida «Retired ·».
+const pruebas = readdirSync(new URL('../public/face/', import.meta.url)).filter((f) => f.endsWith('.html') && /<title>(Test|Retired) ·/.test(P('face/' + f)));
 
 test('1 · las terminales de prueba no salen en la cara pública: ni en el sitemap ni en el índice del buscador', () => {
-  assert.ok(pruebas.length >= 3, 'walker, atlantis y zombie siguen siendo páginas de prueba');
+  assert.ok(pruebas.length >= 3, 'walker, atlantis y zombie siguen en su URL (prueba o lápida)');
   const mapa = P('sitemap.xml');
   for (const f of pruebas) {
     assert.ok(!mapa.includes('/face/' + f), f + ' no se anuncia');

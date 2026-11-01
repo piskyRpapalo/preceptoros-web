@@ -1832,7 +1832,7 @@ class Sitemap(unittest.TestCase):
                 esperado = ORIGEN_PROPIO + "/" + rel[:-len("index.html")]
             with self.subTest(pagina=rel):
                 # Barrido 2026-11-01: una pagina de prueba («<title>Test ·») es la excepcion simetrica: NO se anuncia.
-                if "<title>Test ·" in p.read_text(encoding="utf-8"):
+                if "<title>Test ·" in p.read_text(encoding="utf-8") or 'content="noindex"' in p.read_text(encoding="utf-8"):
                     self.assertNotIn("<loc>" + esperado + "</loc>", xml, f"{rel} es de prueba y se anuncia")
                     continue
                 self.assertIn("<loc>" + esperado + "</loc>", xml,
@@ -2341,9 +2341,15 @@ class HubSinMundosVivos(unittest.TestCase):
         self.assertIn("No node is live", hub)
 
     def test_las_paginas_de_mundo_siguen_en_disco(self):
+        # H2 (2026-11-01): atlantis y zombie se retiraron con recibo (retirados/face/RETIRO.md); su deep link sigue
+        # vivo como lapida noindex que lleva al mapa. basic.html sigue siendo la terminal compartida.
         for pagina in ("atlantis.html", "zombie.html", "basic.html"):
             with self.subTest(pagina=pagina):
                 self.assertTrue((PUBLICO / "face" / pagina).is_file(), "se borro un deep link del combate")
+        for pagina in ("atlantis.html", "zombie.html"):
+            lapida = (PUBLICO / "face" / pagina).read_text(encoding="utf-8")
+            self.assertIn('<meta name="robots" content="noindex">', lapida)
+            self.assertIn('href="/openworld/"', lapida)
 
 
 class OpenWorld(unittest.TestCase):
