@@ -71,6 +71,12 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
 .stage #joy [role="application"]{width:112px !important;height:112px !important;margin:0 !important;grid-row:span 3}
 .stage #joy .state{font-size:.8rem;max-height:3.6em;overflow:hidden}
 .stage #joy button,.stage #joy select{padding:4px 8px}
+.next{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:8px 10px;border:2px solid currentColor;border-radius:var(--radius)}
+.next p{margin:0;flex:1 1 12em;font-size:1.05rem}
+.next button{min-height:44px;padding:8px 14px;border:3px solid currentColor;border-radius:var(--radius);background:var(--bg);color:var(--fg);font:inherit;font-weight:700;cursor:pointer}
+.next button[hidden]{display:none}
+#more summary{min-height:44px;display:flex;align-items:center;cursor:pointer}
+#more select{min-height:44px;font:inherit}
 .sheet-h{font-size:1.05rem;margin:0}
 .sheet button{min-height:44px;padding:8px 14px;border:2px solid currentColor;border-radius:var(--radius);background:var(--bg);color:var(--fg);font:inherit;cursor:pointer}
 .tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
@@ -101,7 +107,10 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
 <button type="button" id="listen" aria-describedby="listen-state">Listen to the cabin</button>
 </div>
 <button type="button" id="world-refresh">Check live nodes</button>
+<details id="more"><summary>More: map details and terminal look</summary>
+<div id="more-look"></div>
 <ul class="state" id="frases" aria-label="Map details"></ul>
+</details>
 </section>
 <section id="sheet-summons" class="sheet" role="tabpanel" aria-labelledby="tab-summons" hidden>
 <h2 class="sheet-h">Summons</h2>
@@ -118,6 +127,8 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
 <button type="button" role="tab" id="tab-summons" aria-selected="false" aria-controls="sheet-summons" tabindex="-1">Summons</button>
 <button type="button" role="tab" id="tab-army" aria-selected="false" aria-controls="sheet-army" tabindex="-1">Army</button>
 </div>
+<div id="next" class="next"><p id="next-step" aria-live="polite"><strong>Next:</strong> <span id="next-text">Press Play now.</span></p>
+<button type="button" id="play-now">Play now</button></div>
 <div class="status">
 <p class="state" id="listen-state" aria-live="polite"></p>
 <p class="state" id="state" aria-live="polite">Nodes online: 0.</p>
@@ -127,6 +138,7 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
 <section id="chat" aria-labelledby="chat-h">
 <h2 id="chat-h">Chat</h2>
 <ul class="log" id="log" role="log" aria-live="polite">
+<li>Start here: press Play now, walk with the stick, ask the guide below.</li>
 <li>The chat is not live yet: NO_DATA until you download the optional browser brain below.</li>
 </ul>
 <form id="entry" onsubmit="return false">

@@ -4,7 +4,7 @@
   if (!form || !log) { return; }
   // The joystick stays as the page serves it: the companion does not move or fold page controls.
   // The web node brain (web_node_brain.js): a same-origin model in 5 verified chunks, run on this device's CPU.
-  var ready = false, busy = false, loading = false;
+  var ready = false, busy = false, loading = false, offline = false;
   var model = 'SmolLM2-135M-Instruct', context = 'Tutorial cabin · local visitor practice';
   var zone = doc.createElement('div'); zone.id = 'map-brain'; form.before(zone);
   var disclosure = doc.createElement('p'); disclosure.textContent = 'Web node brain: SmolLM2 135M Instruct (Apache-2.0) · 105,454,144 weight bytes in 5 chunks plus the wllama runtime (MIT) · 9,146,582 bytes, all from this site, each checked by SHA-256. It runs on this device\'s processor; no graphics card needed. Nothing downloads until you choose; after that it stays on this device. Your chat text stays on this device. The model advises; it never signs or plays for you.'; zone.append(disclosure);
@@ -21,8 +21,16 @@
   start.addEventListener('click', function () {
     if (ready || loading) { return; }
     loading = true; start.disabled = true; note.textContent = 'Loading the web node brain…';
-    brain().then(function (B) { return B.load({ consent: true, say: function (t) { note.textContent = t; } }); }).then(function () {
-      ready = true; note.textContent = model + ' · ready on this device. Ask the tutorial guide anything.'; start.textContent = 'Web node brain ready';
+    var B = null; brain().then(function (b) { B = b; return B.load({ consent: true, say: function (t) { note.textContent = t; } }); }).then(function () {
+      offline = !!(B.offline && B.offline());
+      // Airplane mode: once the brain is kept, the page's own scripts are asked once through the service worker, which
+      // keeps them, so /openworld/ and its guide open with the network off. Same origin only; ready waits for it.
+      if (offline || !root.navigator.serviceWorker || !root.navigator.serviceWorker.controller) { return null; }
+      note.textContent = 'Keeping this page on this device for airplane mode…';
+      var urls = Array.prototype.map.call(doc.scripts, function (s) { return s.src; }).filter(function (u) { return u && u.indexOf(root.location.origin + '/') === 0; }).concat(['/openworld/estado.json']);
+      return Promise.all(urls.map(function (u) { return root.fetch(u).then(function (r) { return r.ok; }, function () { return false; }); }));
+    }).then(function () {
+      ready = true; note.textContent = model + ' · ready on this device' + (offline ? ' · offline' : '') + '. Ask the tutorial guide anything.'; start.textContent = 'Web node brain ready';
     }, function (error) { note.textContent = 'NO_DATA · ' + (error.cause || 'model_unavailable') + ': ' + error.message; start.disabled = false; }).then(function () { loading = false; });
   });
   doc.addEventListener('map:context', function (event) { choose(event.detail.label); });
@@ -43,7 +51,7 @@
     if (!ready) { line('Companion', 'NO_DATA: choose and load the web node brain first.'); return; }
     busy = true; form.querySelector('button[type="submit"]').disabled = true;
     try {
-      var answer = await root.AtlasWebNodeBrain.reply(text, context); line(answer.model, answer.text); note.textContent = 'Local answer from the web node brain · ' + context;
+      var answer = await root.AtlasWebNodeBrain.reply(text, context); line(answer.model + (offline ? ' · offline' : ''), answer.text); note.textContent = 'Local answer from the web node brain · ' + context;
       doc.dispatchEvent(new CustomEvent('brain:answer', { detail: { verified: answer.verified, model: answer.model, text: answer.text, sha: answer.sha } }));
     }
     catch (error) { line('Companion', 'NO_DATA · ' + (error.cause || 'model_unavailable') + ': ' + error.message); }
