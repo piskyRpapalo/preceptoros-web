@@ -363,6 +363,21 @@
      "text": "the offline answer did not reach the radio"
     }
    ]
+  },
+  {
+   "id": "lab-arena",
+   "scripts": [
+    "/game/bench_lab.js"
+   ],
+   "globals": [
+    "AtlasBenchLab"
+   ],
+   "guards": [
+    {
+     "file": "atlas/arena_lab_browser.mjs",
+     "text": "keyboard Enter did not open the model card in the radio"
+    }
+   ]
   }
  ]
 }

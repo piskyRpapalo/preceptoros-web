@@ -73,6 +73,7 @@
   // kindOf(building) → 'cabin' for the building on the cabin node, else its shape from the catalogue.
   function kindOf(building) {
     if (!building || typeof building.id !== 'string') { return null; }
+    if (building.lab) { return 'lab'; }   // a Laboratory building brings its own script (bench_lab.js)
     if (building.node === 'cabin') { return 'cabin'; }
     return E.formaDe(building.id);
   }
@@ -101,7 +102,7 @@
   }
 
   function scriptOf(building) {
-    var s = SCRIPTS[kindOf(building)];
+    var s = building && building.lab ? building.lab : SCRIPTS[kindOf(building)];
     if (!s) { throw new Error('building_chat: no script for ' + JSON.stringify(building && building.id)); }
     return s;
   }

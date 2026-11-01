@@ -172,7 +172,7 @@
     return out;
   }
 
-  var AtlasColoniaPagina = { ANCHO: ANCHO, ALTO: ALTO, scene: scene, draw: draw, nodeAt: nodeAt, anchorOf: anchorOf, texto: texto, frases: frases, botFrame: botFrame, youFrame: youFrame, hash: hash };
+  var AtlasColoniaPagina = { ANCHO: ANCHO, ALTO: ALTO, scene: scene, draw: draw, nodeAt: nodeAt, anchorOf: anchorOf, geometry: geometry, texto: texto, frases: frases, botFrame: botFrame, youFrame: youFrame, hash: hash };
   if (typeof module === 'object' && module.exports) { module.exports = AtlasColoniaPagina; }
   else { root.AtlasColoniaPagina = AtlasColoniaPagina; }
 })(typeof globalThis === 'object' ? globalThis : this);

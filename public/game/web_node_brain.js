@@ -137,5 +137,19 @@
     }).then(function (a) { state.status = 'ready'; return a; }, function (e) { state.status = 'ready'; throw e.cause ? e : noData('model_unavailable', e.message); });
   }
 
-  root.AtlasWebNodeBrain = { load: load, reply: reply, check: check, status: function () { return state.status; }, offline: function () { return state.offline; }, MANIFEST: MANIFEST };
+  // bench() → { count, seconds, rate, model }: one fixed prompt, greedy, 32 pieces at most, timed on THIS device from the
+  // call to the last piece (prompt included). The Benchmark Lab shows it next to the rack number; it is never sent.
+  var BENCH = 'Count from one to twenty in English words, separated by spaces.';
+  function bench() {
+    if (state.status !== 'ready') { return Promise.reject(noData('model_not_installed', 'Browser brain is not loaded')); }
+    state.status = 'busy';
+    var t0 = root.performance.now(), e = state.engine;
+    return e.createCompletion({ prompt: BENCH, max_tokens: 32, temperature: 0, temp: 0, top_k: 1, seed: 1, stream: false }).then(function (r) {
+      var s = (root.performance.now() - t0) / 1000, n = r && r.usage && r.usage.completion_tokens;
+      if (!Number.isSafeInteger(n) || n <= 0) { throw noData('model_unavailable', 'The run reported no generated count'); }
+      return { count: n, seconds: s, rate: s > 0 ? n / s : 0, model: state.model };
+    }).then(function (a) { state.status = 'ready'; return a; }, function (x) { state.status = 'ready'; throw x.cause ? x : noData('model_unavailable', x.message); });
+  }
+
+  root.AtlasWebNodeBrain = { load: load, reply: reply, bench: bench, check: check, status: function () { return state.status; }, offline: function () { return state.offline; }, MANIFEST: MANIFEST };
 })(globalThis);
