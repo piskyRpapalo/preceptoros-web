@@ -1,0 +1,4 @@
+{"$schema":"https://json-schema.org/draft/2020-12/schema","$id":"atlas.chunk/1","title":"One hex chunk of the map: floor cells and art referenced by id, never the art itself","type":"object","additionalProperties":false,"required":["v","c","seed","frame","cells","assets"],
+"properties":{"v":{"const":"atlas.chunk/1"},"c":{"type":"array","minItems":2,"maxItems":2,"items":{"type":"integer"}},"seed":{"type":"integer","minimum":0},"frame":{"type":"object","additionalProperties":false,"required":["t","d"],"properties":{"t":{"type":"string","minLength":1,"maxLength":80},"d":{"type":"string","minLength":1,"maxLength":600},"role":{"type":"string","minLength":1,"maxLength":40}}},
+"cells":{"type":"array","items":{"type":"array","minItems":4,"maxItems":4,"prefixItems":[{"type":"integer"},{"type":"integer"},{"type":"integer","minimum":0},{"enum":["water","floor","keepout"]}],"items":false}},
+"assets":{"type":"array","items":{"type":"string","pattern":"^[a-z0-9-]+$"}}}}
