@@ -85,7 +85,9 @@ try {
   const nFrases = await frasesDe('?fixture=sintetica');
   ok(nFrases === 16, 'door, fixture: one visible sentence per bot, per building and for the walker (' + nFrases + ' of 16)');
   const joyDom = await volcado(base + '/openworld/?fixture=sintetica');
-  ok((joyDom.match(/<button type="button"/g) || []).length >= 7 && /enter node/.test(joyDom), 'door: joystick with its six directions and enter node');
+  // W-4/W-5: the six-direction grid and «enter node» are gone; the map is walked by click and by arrow keys.
+  const grid = /<button type="button"[^>]*>(east|west|north-east|north-west|south-east|south-west|enter node)</.test(joyDom);
+  ok(!grid && /id="joy"/.test(joyDom), 'door: no six-direction grid and no enter node button; the status line stays');
 
   console.log('\n' + pasos + ' passes · IC6 gate green');
 } catch (e) {
