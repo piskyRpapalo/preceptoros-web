@@ -112,7 +112,9 @@
     stickPad.addEventListener('pointerup', function () { var walked = drag && lastName; drag = null; if (walked) { handlers.enter(); } });
     stickPad.addEventListener('pointercancel', function () { drag = null; });
     box.appendChild(stickPad);
-    box.appendChild(status); box.appendChild(actions); box.appendChild(sel);
+    box.appendChild(status); box.appendChild(actions);
+    // Plug&play (2026-11-01): the look choice is rarely used, so a page may fold it away (#more-look, in the News sheet).
+    (doc.getElementById('more-look') || box).appendChild(sel);
     container.appendChild(box);
     // Arrow keys choose a neighbour (move() decides which); Enter walks to the chosen one. Form fields keep their keys.
     var keys = { ArrowRight: 'east', ArrowLeft: 'west', ArrowUp: 'north-east', ArrowDown: 'south-west' };

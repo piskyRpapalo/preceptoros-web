@@ -1,4 +1,4 @@
-const VERSION = 'preceptoros-2026-17-cl';
+const VERSION = 'preceptoros-2026-17-ct';
 const SHELL = 'shell-' + VERSION;
 const OBRA = 'obra-' + VERSION;
 
@@ -116,6 +116,7 @@ function refrescarDetras(req, cache) {
 function navegacion(e) {
   return caches.open(SHELL).then(cache =>
     cache.match(e.request, { ignoreSearch: true }).then(guardada => {
+      if (guardada && !guardada.redirected && self.navigator && self.navigator.onLine === false) return guardada;
       const red = refrescarDetras(e.request, cache).catch(() => null);
       if (guardada && !guardada.redirected) return guardada;
       return red.then(res => res || paginaSinRed(e.request.url));
@@ -123,8 +124,8 @@ function navegacion(e) {
 }
 
 function redPrimero(e) {
-  return caches.open(OBRA).then(cache =>
-    fetch(e.request).then(res => {
+  return caches.open(OBRA).then(cache => (self.navigator && self.navigator.onLine === false
+    ? cache.match(e.request, { ignoreSearch: true }).then(g => g || caches.match(e.request, { cacheName: SHELL, ignoreSearch: true })).then(g => g || Response.error()) : fetch(e.request)).then(res => {
       if (res && res.ok) cache.put(e.request, res.clone());
       return res;
     }).catch(() => cache.match(e.request).then(g => g || Response.error())));
@@ -132,9 +133,11 @@ function redPrimero(e) {
 
 function estatico(e) {
   return caches.open(OBRA).then(cache =>
-    cache.match(e.request).then(guardada => {
-      const red = refrescarDetras(e.request, cache).catch(() => null);
+    cache.match(e.request).then(g => g || caches.match(e.request, { cacheName: SHELL })).then(guardada => {
+      // Modo avion (2026-11-01, medido por CDP): un estatico guardado se entrega sin pedir nada. OBRA y SHELL llevan la
+      // VERSION en el nombre y activate borra los de la anterior, asi que cada sello trae los bytes nuevos.
       if (guardada) return guardada;
+      const red = refrescarDetras(e.request, cache).catch(() => null);
       return red.then(res => res || Response.error());
     }));
 }
@@ -152,7 +155,8 @@ self.addEventListener('fetch', e => {
   
   
   if (url.pathname.endsWith('.json') &&
-      CONTENIDO_JSON.indexOf(url.pathname) < 0) return;
+      CONTENIDO_JSON.indexOf(url.pathname) < 0 &&
+      (typeof MAPA_JSON === 'undefined' || MAPA_JSON.indexOf(url.pathname) < 0)) return;
   if (req.mode === 'navigate') { e.respondWith(navegacion(e)); return; }
   e.respondWith(estatico(e));
 });
