@@ -55,19 +55,27 @@ export function parseWaivers(text) {
 }
 
 // Pure decision: no git, no clock. Everything the verdict depends on is an argument.
-export function decide({ changed, versionBase, versionHead, lists, waiversBase, waiversHead }) {
+// served: every VERSION main has already shipped (first-parent history up to the base). A bump to one of them is a
+// reuse: visitors who kept that cache never fetch the new copies (measured 2026-11-01: 29 reuses in main's history).
+export function decide({ changed, versionBase, versionHead, lists, waiversBase, waiversHead, served = [] }) {
   const fresh = new Set(parseWaivers(waiversBase).map((w) => w.line));
   const added = parseWaivers(waiversHead).filter((w) => !fresh.has(w.line));
   const hits = changed.filter((p) => cached(p, lists));
   const waived = hits.filter((p) => added.some((w) => w.path === p));
   const blocking = hits.filter((p) => !waived.includes(p));
   const bumped = versionHead !== null && versionHead !== versionBase;
-  const ok = versionHead !== null && (bumped || blocking.length === 0);
-  return { ok, bumped, versionBase, versionHead, hits, waived, blocking };
+  const reused = bumped && served.includes(versionHead);
+  const ok = versionHead !== null && !reused && (bumped || blocking.length === 0);
+  return { ok, bumped, reused, versionBase, versionHead, hits, waived, blocking };
 }
 
 export function message(v) {
   if (v.versionHead === null) return 'version_sw_gate: RED · public/sw.js declares no VERSION.';
+  if (v.reused) return [
+    `version_sw_gate: RED · VERSION ${v.versionHead} was already served by main; a bump must be a VERSION never shipped.`,
+    'Visitors who kept that cache would never fetch the new copies (frozen-map outage, 2026-10-25).',
+    'Cure: python3 bin/sellar.py --sellar --version <a VERSION never used>, then the seal chain in CLAUDE.md.',
+  ].join('\n');
   if (v.ok) {
     const why = v.bumped ? `VERSION ${v.versionBase} -> ${v.versionHead}`
       : v.hits.length ? `${v.waived.length} cached path(s) waived in this diff` : 'no cached path changed';
@@ -91,6 +99,16 @@ function show(rev, path) {
   try { return git('show', `${rev}:${path}`); } catch { return ''; }
 }
 
+// Every VERSION on main's first-parent line up to rev (needs full history: gate.yml checks out with fetch-depth 0).
+export function servedBy(rev) {
+  let log = '';
+  try { log = execFileSync('git', ['log', '--first-parent', '-p', '--format=', rev, '--', 'public/sw.js'], { encoding: 'utf8', maxBuffer: 64 << 20, stdio: ['ignore', 'pipe', 'ignore'] }); } catch { return []; }
+  const out = new Set();
+  for (const m of log.matchAll(/^[+-]const VERSION = '([^']+)'/gm)) out.add(m[1]);
+  const now = versionOf(show(rev, 'public/sw.js')); if (now) out.add(now);
+  return [...out];
+}
+
 function main() {
   const i = process.argv.indexOf('--base');
   const base = i > 0 ? git('merge-base', process.argv[i + 1], 'HEAD').trim() : git('rev-parse', 'HEAD^1').trim();
@@ -102,6 +120,7 @@ function main() {
     lists: listsOf(show('HEAD', 'public/sw-listas.js')),
     waiversBase: show(base, WAIVERS),
     waiversHead: show('HEAD', WAIVERS),
+    served: servedBy(base),
   });
   console.log(message(v));
   process.exit(v.ok ? 0 : 1);

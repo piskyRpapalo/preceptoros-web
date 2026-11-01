@@ -85,6 +85,17 @@ def siguiente(v):
     return base + "a" + "".join(suf)  # se desborda por la izquierda: z -> aa
 
 
+def servidas():
+    """Toda VERSION que ya publico main (linea de primer padre). Sin historia (clon superficial): conjunto vacio."""
+    import subprocess
+    try:
+        log = subprocess.run(["git", "log", "--first-parent", "-p", "--format=", "origin/main", "--", "public/sw.js"],
+                             cwd=RAIZ, capture_output=True, text=True, check=True).stdout
+    except (OSError, subprocess.CalledProcessError):
+        return set()
+    return set(re.findall(r"^[+-]const VERSION = '([^']+)'", log, re.M))
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--sellar", action="store_true",
@@ -108,6 +119,14 @@ def main():
         return 0
 
     nueva = a.version or siguiente(vieja)
+    # 2026-11-01: la serie se continua SALTANDO lo ya servido. main bajo de `be` a `bd` y el siguiente de `bd` es `be`,
+    # que ya esta en las caches de quien lo abrio. version_sw_gate lo rechaza; aqui ni se propone.
+    if not a.version:
+        usadas = servidas()
+        while nueva in usadas:
+            nueva = siguiente(nueva)
+    elif a.version != vieja and a.version in servidas():
+        print(f"AVISO · {a.version} ya la sirvio main: version_sw_gate la rechazara")
     print(f"version   {vieja}  ->  {nueva}")
     print(f"huella    {sello.get('huella')}  ->  {real}")
     if not a.sellar:
