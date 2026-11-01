@@ -8,8 +8,8 @@ Status: proposal for review. Deployment remains a human action. This document re
 
 Route-count receipt for this source tree (`haiku/corte-d-borrado-20261028`, Norte 7 D: the theGame stack leaves the shell with its files; measured with `python3 bin/contar_rutas.py`, 2026-10-28):
 
-Rutas precargadas por el shell: 102
-Rutas distintas del shell: 101
+Rutas precargadas por el shell: 113
+Rutas distintas del shell: 112
 
 The workflow runs exactly:
 
@@ -57,3 +57,5 @@ JN-3 source receipt: visitor modules and the extracted map controller introduce 
 
 JN-4 source receipt: same-origin historical battle modules, W1 namespace adapter and visitor scene adapter add no page route. Shell precache remains 117 entries / 116 distinct / one duplicate. No deployment is performed by this slice.
 H2 source receipt (2026-11-01): the face skins retire to retirados/face/ with their receipt; shell precache drops 117 -> 101 entries / 100 distinct / one duplicate (bin/contar_rutas.py). Tombstones keep the three retired URLs alive offline (atlantis, zombie) and online (walker).
+P2/P3 source receipt (2026-11-01): the map by chunks joins the shell cache: map_carta.js, map_chunks.js, /map/carta.json, /art/sea-palette.json and the 7 baked chunks (30,476 B for the 9 data files). 112 entries / 111 distinct.
+P5a source receipt (2026-11-01): /game/hitl_walkers.js joins the shell. 113 entries / 112 distinct.

@@ -227,6 +227,10 @@ process.stdout.write(JSON.stringify(ok));
         ok_tal = {"esquema": "atlas.taller/1", "op": "desintegra", "prev": "0" * 64, "clave_publica": pub, "semilla": "b" * 64,
                   "tc": "tc4", "aristas": 13, "gramos": 39, "saldo": 39}
         ok_inv = {"esquema": "atlas.invocacion/2", "tc": "tc2", "seq": 3, "prev": "c" * 64, "clave_publica": pub}
+        ok_car = {"v": "atlas.carta/1", "radius": 8, "seed": 1, "frame": {"t": "Tutorial cabin chunk", "d": "Floor and water around the tutorial cabin."},
+                  "chunks": [{"id": "0_0", "c": [0, 0], "sha256": "a" * 64, "bytes": 900, "frame": {"t": "Tutorial cabin chunk", "d": "Floor and water around the tutorial cabin."}}]}
+        ok_chu = {"v": "atlas.chunk/1", "c": [0, 0], "seed": 1, "frame": {"t": "Tutorial cabin chunk", "d": "Floor and water around the tutorial cabin."}, "cells": [[0, 0, 0, "floor"], [1, 0, 0, "water"]], "assets": ["sea-palette"]}
+        ok_ass = {"v": "atlas.asset/1", "id": "sea-palette", "kind": "palette", "frame": {"t": "Tutorial cabin chunk", "d": "Floor and water around the tutorial cabin."}, "data": {"bands": [[23, 19, 31]]}}
         casos = {
             # G0: el eslabon solo firma lo que fija la semilla (ni pseudonimo ni ciclo: eso era pesca de semilla).
             "atlas_invocacion_schema.json": (ok_inv, [
@@ -247,6 +251,18 @@ process.stdout.write(JSON.stringify(ok));
                 con(ok_par, pasos=[{"ciclos": 0}]), con(ok_par, ley={"nd": False}),
                 con(ok_par, pasos=[{"accion": "reparar", "origen": "humano", "dia": "2026-09-27"}]),
                 sin(ok_par, "final"), con(ok_par, hora="12:00")]),
+            # P1 del plan 2.5D (odd/tasks/mapa-25d-aldea.md, 2026-11-01): el mapa por chunks hex.
+            "atlas_carta_schema.json": (ok_car, [
+                con(ok_car, v="atlas.carta/2"), con(ok_car, radius=0), sin(ok_car, "frame"),
+                con(ok_car, chunks=[]), con(ok_car, chunks=[dict(ok_car["chunks"][0], sha256="x")]),
+                con(ok_car, x=1)]),
+            "atlas_chunk_schema.json": (ok_chu, [
+                con(ok_chu, cells=[[0, 0, 0, "lava"]]), con(ok_chu, cells=[[0, 0, -1, "floor"]]),
+                con(ok_chu, assets=["Big Sprite.png"]), sin(ok_chu, "frame"), con(ok_chu, c=[0]),
+                con(ok_chu, png="AAAA")]),
+            "atlas_asset_schema.json": (ok_ass, [
+                con(ok_ass, kind="glb"), con(ok_ass, id="Up Case"), sin(ok_ass, "frame"),
+                con(ok_ass, frame={"t": "", "d": "x"}), sin(ok_ass, "data"), con(ok_ass, url="https://x")]),
         }
         # B6 (2026-09-27): con politica lora la firma cubre el modelo concreto.
         ace = jsonschema.Draft202012Validator(json.loads((DATOS / "atlas_aceptacion_schema.json").read_text(encoding="utf-8")))
