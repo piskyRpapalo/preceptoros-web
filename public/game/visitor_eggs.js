@@ -38,7 +38,7 @@
           await A.appendAdoption({ adopcion: adoption, firma: signature });
           alive(); await army.adopta(adoption, signature);
           pending = pending.filter(function (e) { return e !== egg; }); chain = A.abre(chain, seq);
-          return state();
+          var out = state(); out.hatched = troop; return out;   // H1b: the new troop, for the egg-opening reveal
         } finally { busy = false; }
       },
       end: function () { ended = true; pending = []; chain = []; account.end(); }
