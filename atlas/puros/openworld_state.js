@@ -12,7 +12,7 @@
   var SHOWN = ['LIVE', 'STALE'];
   var V1 = 'preceptoros.openworld-estado/1', V2 = 'preceptoros.openworld-estado/2';
   var DATE = /^\d{4}-\d{2}-\d{2}$/;
-  var LOOKS = ['basic', 'atlantis', 'zombie'];   // IC7-S4 (D11): the node's own face and colour family; default basic
+  var LOOKS = ['basic', 'ocean', 'flat'];   // IC7-S4 (D11): the node's own face and colour family; default basic
 
   function fail(cause) { throw new Error('openworld_state: ' + cause); }
 

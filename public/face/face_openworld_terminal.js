@@ -57,7 +57,7 @@
       return;
     }
     walker = result.walker;
-    causeText.textContent = 'Moved on the shared map. Walker state is ephemeral and is not saved.';
+    causeText.textContent = 'Moved on the colony map. Walker state is ephemeral and is not saved.';
     draw();
   }
 

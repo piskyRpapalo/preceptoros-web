@@ -1,3 +1,4 @@
+// Decreto p0 (buzon#30, 2026-11-01): the walker access was retired from Army; the page links back to /openworld/.
 // Keep the Army deep link honest until an account profile is linked to the shared colony state.
 import { writeFileSync } from 'node:fs';
 const html = `<!doctype html>
@@ -17,8 +18,7 @@ const html = `<!doctype html>
 <body><main>
 <h1>Army · NO_DATA</h1>
 <p>No account army or SHA-256 profile is connected to the shared colony state. No synthetic army or separate map is shown here.</p>
-<p>The ephemeral walker is available on the shared map terminal. Its movement does not save account or node state.</p>
-<a href="/face/basic.html">Open the shared map terminal</a>
+<a href="/openworld/">Back to OpenWorld</a>
 <footer class="honest-footer"><p>No army data or account profile is measured here.</p></footer>
 </main><script src="/assets/pwa.js"></script></body>
 </html>
