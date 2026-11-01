@@ -176,3 +176,27 @@ hasta su recibo.
 1. ¿2D/2.5D sin build durante el MVP? (este plan lo asume) · 2. Atribución MIT de bot-crossing en `CREDITS.md`.
 3. Política de assets binarios: este plan no usa ninguno; un GLB necesitaría enmienda.
 4. Radio del chunk (8) y vecindad (7): se proponen y se miden; los cambia el FPS del Doogee, no el gusto.
+
+## Adenda · NO_DATA desatascados con el rack (búsqueda por palabras clave, 2026-11-01)
+
+Busqué con `grep -rIl` en `p0x/`, `roadmap/`, `mapa-registro/` y en `odd/` y `atlas/` de la web.
+
+- **atlas.carta/1 sí tuvo módulo, y es recuperable.** `public/assets/atlas-carta.js` era el estado **puro** del mundo
+  abierto («ni DOM, ni red, ni reloj, ni azar»: mismo estado, mismo mundo, misma niebla). Tenía 11,750 B y salió con
+  Norte 7 corte D (`752338f`). Se lee con `git show 752338f^:public/assets/atlas-carta.js`. Hay una copia comentada de
+  16,238 B en `p0x/propuestas/obra-abku/instantaneas/d1-assets-comentados-2026-10-18/`. Por eso, en el §0, «sin
+  esquema» se mantiene, pero «sin módulo» queda corregido. **P1 parte de ese módulo**, no de cero; `atlas-mapa.js` fue
+  su vista y quedó huérfano.
+- **El FPS del Doogee tiene método medido** (`p0x/hexelion/laboratorio/espacios/web-pupilo/huellas.jsonl`, 2026-10-13).
+  Es un perfil de CPU por CDP en el teléfono, con un A/B en la misma pestaña y `Network.setBypassServiceWorker`, y su
+  guarda con sabotaje. Medidas de entonces: **2.8 → 57.8 fps** (cache de teselas rehecha cada cuadro) y 59 fps. La
+  decisión de entonces sigue viva: medir los fps tras **cualquier** cambio de cámara o proyección. P4 y P7 reusan ese
+  método; la vara es ~58 fps.
+- **bot-crossing ya fue leído** (`p0x/preceptor-runtime/odd/tasks/status-bus-research.md:5-7`, 2026-10-28, commit
+  `8cd9d76`). La frontera de casa ya está propuesta: observaciones tipadas `{id, state, cause, source, sequence}` →
+  autoridad local → snapshot → el renderer pinta y **no infiere trabajo de la animación**. Los estados del walker en F4
+  se toman de ahí.
+- **Siguen siendo NO_DATA, porque no los resuelve una búsqueda:**
+  - Lectura con TalkBack: hacen falta las manos del carbono.
+  - Enlace al modelo local del Soberano: el slot lo reservó él.
+  - Atribución MIT en `CREDITS.md`: es decisión §6.
