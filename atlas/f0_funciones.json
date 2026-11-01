@@ -329,6 +329,42 @@
    ]
   },
   {
+   "id": "next-step",
+   "scripts": [
+    "/game/visitor_play.js",
+    "/game/colony_controls.js"
+   ],
+   "globals": [],
+   "guards": [
+    {
+     "file": "atlas/openworld_browser.mjs",
+     "text": "the next step does not say Play now"
+    },
+    {
+     "file": "atlas/openworld_browser.mjs",
+     "text": "the terminal look is not folded under More"
+    }
+   ]
+  },
+  {
+   "id": "offline-brain",
+   "scripts": [
+    "/game/map_chat.js",
+    "/assets/pwa.js"
+   ],
+   "globals": [],
+   "guards": [
+    {
+     "file": "atlas/offline_brain_browser.mjs",
+     "text": "network requests while offline"
+    },
+    {
+     "file": "atlas/offline_brain_browser.mjs",
+     "text": "the offline answer did not reach the radio"
+    }
+   ]
+  },
+  {
    "id": "two-clicks",
    "scripts": [
     "/game/welcome_card.js",
