@@ -1,5 +1,5 @@
 // P3 [1a] in a real browser: the preserved Atlantis/Zombie faces load the comic letters and draw their place names with
-// them, at half size, with no exception. Uso: node atlas/face_names_browser.mjs  (Chrome headless por CDP)
+// them, at half size, with no exception. Uso: node atlas/visitor_account_browser.mjs  (Chrome headless por CDP)
 import { createServer } from 'node:http';
 import { readFileSync } from 'node:fs';
 import { resolve, extname } from 'node:path';

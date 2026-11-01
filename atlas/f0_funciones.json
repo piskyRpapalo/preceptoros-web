@@ -1,0 +1,275 @@
+{
+ "esquema": "atlas.f0/1",
+ "nota": "Inventario vivo de funciones de /openworld/ (odd/tasks/mapa-25d-aldea.md, F0). Cada fila: los scripts que la sirven, el global que exportan y la guarda de navegador que la ejerce (fichero + texto exacto de su comprobación). La guarda tiene que correr en .github/workflows/gate.yml.",
+ "pagina": "public/openworld/index.html",
+ "funciones": [
+  {
+   "id": "map",
+   "scripts": [
+    "/game/global_map.js",
+    "/game/colonia_pagina.js",
+    "/game/openworld_page.js",
+    "/game/tabla_semantica.js",
+    "/game/comic_tokens.js",
+    "/game/comic_accents.js",
+    "/game/comic_atoms.js",
+    "/game/bubble_language.js",
+    "/game/bubble_letters.js",
+    "/game/isometric_floor_projection.js",
+    "/game/state_frames.js",
+    "/game/hex_projection.js",
+    "/game/colony_state.js",
+    "/game/map_scene.js",
+    "/game/colonia_edificios.js",
+    "/game/palette_cycle.js"
+   ],
+   "globals": [
+    "AtlasMapaGlobal",
+    "AtlasColoniaPagina"
+   ],
+   "guards": [
+    {
+     "file": "atlas/openworld_browser.mjs",
+     "text": "the map is blank"
+    }
+   ]
+  },
+  {
+   "id": "cabin-entry",
+   "scripts": [
+    "/game/colony_controls.js"
+   ],
+   "globals": [
+    "AtlasColonyControls"
+   ],
+   "guards": [
+    {
+     "file": "atlas/openworld_browser.mjs",
+     "text": "the ephemeral cabin cannot be entered by clicking it on the map"
+    }
+   ]
+  },
+  {
+   "id": "walk",
+   "scripts": [
+    "/game/walk_route.js",
+    "/game/tutorial_walk.js"
+   ],
+   "globals": [
+    "AtlasWalkRoute",
+    "AtlasTutorialWalk"
+   ],
+   "guards": [
+    {
+     "file": "atlas/walk_avatar_browser.mjs",
+     "text": "W-3"
+    },
+    {
+     "file": "atlas/walk_keys_browser.mjs",
+     "text": "W-4"
+    }
+   ]
+  },
+  {
+   "id": "stick",
+   "scripts": [
+    "/game/map_stick.js"
+   ],
+   "globals": [
+    "AtlasMapStick"
+   ],
+   "guards": [
+    {
+     "file": "atlas/openworld_browser.mjs",
+     "text": "joystick controls are below the touch target"
+    }
+   ]
+  },
+  {
+   "id": "zoom",
+   "scripts": [
+    "/game/map_zoom.js"
+   ],
+   "globals": [
+    "AtlasMapZoom"
+   ],
+   "guards": [
+    {
+     "file": "atlas/openworld_browser.mjs",
+     "text": "the + key does not zoom or is not spoken"
+    }
+   ]
+  },
+  {
+   "id": "visitor-account",
+   "scripts": [
+    "/game/visitor_account.js",
+    "/game/gdpr-art25-ephemeral-crab.js"
+   ],
+   "globals": [
+    "AtlasVisitorAccount",
+    "AtlasCrab"
+   ],
+   "guards": [
+    {
+     "file": "atlas/visitor_account_browser.mjs",
+     "text": "JN-2"
+    }
+   ]
+  },
+  {
+   "id": "eggs-hatch",
+   "scripts": [
+    "/game/visitor_eggs.js",
+    "/game/hatch_reveal.js",
+    "/game/db.js",
+    "/game/valores.js",
+    "/game/gacha.js",
+    "/game/visitor_play.js"
+   ],
+   "globals": [
+    "AtlasVisitorEggs",
+    "AtlasHatchReveal",
+    "AtlasArmy"
+   ],
+   "guards": [
+    {
+     "file": "atlas/visitor_eggs_browser.mjs",
+     "text": "JN-3"
+    },
+    {
+     "file": "atlas/visitor_conquest_browser.mjs",
+     "text": "the egg opens"
+    }
+   ]
+  },
+  {
+   "id": "duel",
+   "scripts": [
+    "/game/visitor_battle.js",
+    "/game/wave_duel_scene.js",
+    "/game/combate_ticks.js",
+    "/assets/atlas-coord.js",
+    "/game/canon.js",
+    "/game/taller.js",
+    "/game/escuadron.js",
+    "/game/escena.js",
+    "/game/wave_rules.js",
+    "/game/battle_replay_controls.js",
+    "/game/visitor_battle_ui.js"
+   ],
+   "globals": [
+    "AtlasVisitorBattle",
+    "AtlasWaveDuel",
+    "AtlasCombateTicks"
+   ],
+   "guards": [
+    {
+     "file": "atlas/visitor_battle_browser.mjs",
+     "text": "JN-4"
+    },
+    {
+     "file": "atlas/battle_replay_controls_browser.mjs",
+     "text": "EU-3"
+    }
+   ]
+  },
+  {
+   "id": "conquest",
+   "scripts": [
+    "/game/visitor_conquest.js"
+   ],
+   "globals": [],
+   "guards": [
+    {
+     "file": "atlas/visitor_conquest_browser.mjs",
+     "text": "verified practice victory records a session conquest"
+    }
+   ]
+  },
+  {
+   "id": "fog",
+   "scripts": [
+    "/game/fog_of_war.js"
+   ],
+   "globals": [
+    "AtlasNiebla"
+   ],
+   "guards": [
+    {
+     "file": "atlas/visitor_conquest_browser.mjs",
+     "text": "one persistent map"
+    }
+   ]
+  },
+  {
+   "id": "chat",
+   "scripts": [
+    "/game/map_chat.js",
+    "/game/world_feed.js"
+   ],
+   "globals": [],
+   "guards": [
+    {
+     "file": "atlas/openworld_browser.mjs",
+     "text": "the chat answer is not an honest NO_DATA"
+    }
+   ]
+  },
+  {
+   "id": "radio",
+   "scripts": [
+    "/assets/radio_message_log.js",
+    "/game/face_terminal.js"
+   ],
+   "globals": [
+    "AtlasRadioChat"
+   ],
+   "guards": [
+    {
+     "file": "atlas/openworld_browser.mjs",
+     "text": "the radio does not hear what the map says aloud"
+    }
+   ]
+  },
+  {
+   "id": "state-log",
+   "scripts": [
+    "/game/openworld_state.js"
+   ],
+   "globals": [
+    "AtlasOpenworldState"
+   ],
+   "guards": [
+    {
+     "file": "atlas/openworld_browser.mjs",
+     "text": "the default state is not the declared one"
+    }
+   ]
+  },
+  {
+   "id": "ephemeral-pass",
+   "scripts": [],
+   "globals": [],
+   "guards": [
+    {
+     "file": "atlas/usuario_efimero_pasada_browser.mjs",
+     "text": "EU-1.5"
+    }
+   ]
+  },
+  {
+   "id": "no-external",
+   "scripts": [
+    "/assets/pwa.js"
+   ],
+   "globals": [],
+   "guards": [
+    {
+     "file": "atlas/openworld_browser.mjs",
+     "text": "external requests: "
+    }
+   ]
+  }
+ ]
+}
