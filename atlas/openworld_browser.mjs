@@ -111,6 +111,19 @@ async function main() {
   ok(escritorio.buttons === 1 && escritorio.visible, 'the status panel is missing or below the desktop viewport: ' + JSON.stringify(escritorio));
   ok(parseFloat(escritorio.touch) >= 44, 'desktop joystick controls are below the touch target: ' + escritorio.touch);
   ok(escritorio.width <= escritorio.viewport, 'the page scrolls sideways at desktop width: ' + escritorio.width + ' > ' + escritorio.viewport);
+  // P6: Enter by keyboard goes into the tutorial cabin; its greeting lands in the radio; the input asks its bot; Escape leaves.
+  const cabina = JSON.parse(await ev(`(async () => { const w = (ms) => new Promise((r) => setTimeout(r, ms)), st = () => document.getElementById('state').textContent;
+    document.body.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true })); await w(600);
+    const radio = () => [...document.querySelectorAll('#radio-chat-lista li')].map((li) => li.textContent).join(' | ');
+    const greeting = radio().includes('Welcome to the tutorial cabin'), inside = st(), leave = document.getElementById('leave-building');
+    const tall = !!leave && !leave.hidden && leave.getBoundingClientRect().height >= 44;
+    const ask = async (t) => { document.getElementById('question').value = t; document.getElementById('entry').dispatchEvent(new Event('submit', { cancelable: true })); await w(500); return (document.querySelector('#log li:last-child') || {}).textContent; };
+    const help = await ask('help'), poem = await ask('write me a poem');
+    document.body.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })); await w(100);
+    return JSON.stringify({ greeting, inside, tall, help, poem, left: st(), hidden: leave && leave.hidden }); })()`));
+  ok(cabina.greeting && /^Inside building b-cabin/.test(cabina.inside) && cabina.tall, 'Enter does not open the cabin chat in the radio: ' + JSON.stringify(cabina));
+  ok(/^Tutorial cabin · Ask me/.test(cabina.help || '') && cabina.poem === 'NO_DATA · model_not_installed', 'the cabin bot does not answer honestly: ' + JSON.stringify(cabina));
+  ok(cabina.left === 'Left building b-cabin' && cabina.hidden === true, 'Escape does not leave the building: ' + JSON.stringify(cabina));
   const desktopEntry = await ev(CLIC_CABINA);
   ok(/^terminal: basic/.test(desktopEntry || ''), 'the ephemeral cabin cannot be entered on desktop: ' + desktopEntry);
   // H9: the radio chat lives in the chat section and hears what the whole map says aloud (layer 1, PREGUNTAS P-radio).
@@ -165,6 +178,17 @@ async function main() {
     return JSON.stringify({ said: document.getElementById('floor-state').textContent, cells: W ? W.cells.list.length : 0, tones: set.size }); })()`));
   ok(/^Map chunks: 7 of 7 around area 0_0\. Cabin chunk: \d+ water, \d+ sand, \d+ moss, \d+ rock cells/.test(suelo.said) && suelo.cells === 1519 && suelo.tones >= 12, 'the 2.5D floor is not painted: ' + JSON.stringify(suelo));
   if (CAPTURA) { const g2 = await cmd('Page.captureScreenshot', { format: 'png' }); writeFileSync(join(CAPTURA, 'openworld-floor.png'), Buffer.from(g2.result.data, 'base64')); }
+  // Terminal tabs (atlantis/zombie layout): ArrowRight moves to News, Enter opens a sheet that covers the map, Escape returns.
+  const pest = JSON.parse(await ev(`(async () => { const t = document.getElementById('tab-map'); t.focus();
+    t.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true })); const moved = document.activeElement.id;
+    document.getElementById('tab-summons').click(); const sh = document.getElementById('sheet-summons'), sv = document.getElementById('surface');
+    const a = sh.getBoundingClientRect(), b = sv.getBoundingClientRect(); const covers = !sh.hidden && a.top <= b.top + 1 && a.bottom >= b.bottom - 1 && a.width >= b.width - 2;
+    const start = !!sh.querySelector('#visitor-start');
+    sh.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })); const back = sh.hidden && document.getElementById('tab-map').getAttribute('aria-selected') === 'true';
+    const sizes = [...document.querySelectorAll('#map [role=tab]')].map((x) => x.getBoundingClientRect().height);
+    return JSON.stringify({ moved, covers, start, back, sizes }); })()`));
+  ok(pest.moved === 'tab-news' && pest.covers && pest.start && pest.back && pest.sizes.every((h) => h >= 44), 'the terminal tabs do not cover the map or the keyboard fails: ' + JSON.stringify(pest));
+  if (CAPTURA) { await ev("document.getElementById('tab-summons').click()"); const g3 = await cmd('Page.captureScreenshot', { format: 'png' }); writeFileSync(join(CAPTURA, 'openworld-summons.png'), Buffer.from(g3.result.data, 'base64')); await ev("document.getElementById('tab-map').click()"); }
   console.log(JSON.stringify({ medida: { ...medida, texto: undefined }, escritorio, externas: externas.length, fallos }));
 }
 
