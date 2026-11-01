@@ -76,7 +76,7 @@
     return {
       v: 'preceptoros.bubble/1', id: 'you', t: t, cv: [120, 110], seal: 'NO_DATA',
       atoms: [{ k: 'you', r: frase, i: [{ o: 'ribbon', pts: ring, closed: true, f: 'vermilion.base', s: 'ink', lw: 2 }] }],
-      bands: ['paper', 'ink', 'cyan'], change: [frase],
+      bands: ['paper', 'ink', 'cyan', 'vermilion.base'], change: [frase],
       sound: 'NO_DATA: the walker declares no waves; nothing is invented',
       soundCause: 'the walker has no measured value in this slice'
     };
