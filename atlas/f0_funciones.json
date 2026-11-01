@@ -272,6 +272,25 @@
    ]
   },
   {
+   "id": "floor-25d",
+   "scripts": [
+    "/game/map_carta.js",
+    "/game/map_chunks.js",
+    "/game/map_painter.js"
+   ],
+   "globals": [
+    "AtlasMapCarta",
+    "AtlasMapChunks",
+    "AtlasMapPainter"
+   ],
+   "guards": [
+    {
+     "file": "atlas/openworld_browser.mjs",
+     "text": "the 2.5D floor is not painted"
+    }
+   ]
+  },
+  {
    "id": "hitl-walkers",
    "scripts": [
     "/game/hitl_walkers.js"

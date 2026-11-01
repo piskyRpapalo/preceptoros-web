@@ -227,6 +227,8 @@
     });
   }
   render();
+  // P4: the baked floor loads by neighbourhood; its text equivalent goes to #floor-state, then the map redraws on it.
+  if (raiz.AtlasMapPainter) { raiz.AtlasMapPainter.start(function (s) { var el = doc.getElementById('floor-state'); if (el) { el.textContent = s; } draw(); }); }
   raiz.addEventListener('resize', draw);
   if (!quieto) { raiz.setInterval(cycle, 1000); }
   var tutorial = null;
