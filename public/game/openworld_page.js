@@ -19,7 +19,7 @@
   var frases_el = doc.getElementById('frases');
   // TA-4 (D13-D16): the terminal, the anchor and the joystick live in colony_controls.js; the page passes its state in.
   var CC = raiz.AtlasColonyControls;
-  var CCT = CC ? CC.attach({ doc: doc, win: raiz, colony: function () { return colonia; }, looks: function () { return colony_looks; }, seals: function () { return colony_seals; }, redraw: function () { draw(); renderFrases(); }, walk: function () { walkLoop(); } }) : null;
+  var CCT = CC ? CC.attach({ doc: doc, win: raiz, colony: function () { return colonia; }, looks: function () { return colony_looks; }, seals: function () { return colony_seals; }, redraw: function () { draw(); renderFrases(); }, stepped: function () { var vb = doc.getElementById('visitor-play'); if (vb) { vb.dispatchEvent(new CustomEvent('visitor:advance')); } }, walk: function () { walkLoop(); } }) : null;
   // P5a: the view hitl_walkers.js reads on every visitor:draw (the «?» and the walkers).
   raiz.AtlasOpenworldView = function () { return { colony: colonia_error ? null : colonia, t: entrada.t, reduced: quieto, looks: colony_looks, seals: colony_seals, pending: colony_pending, controls: CCT, state: state }; };
   // H1b: two fingers (or the wheel) zoom the colony between 0.6 and 3; the factor lives on the canvas and every redraw reads it.

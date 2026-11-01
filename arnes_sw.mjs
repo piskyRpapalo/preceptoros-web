@@ -227,7 +227,7 @@ const rutas = await shell.keys();
 // 100 -> 111 el 2026-11-01 (P2/P3): entran map_carta.js, map_chunks.js, la carta, la paleta del mar y los 7 chunks.
 // 116 -> 100 el 2026-11-01 (H2): salen los dieciseis modulos de las pieles retiradas (retirados/face/); army.html,
 // face_canon.css y face_terminal.js se mudan a /game/; atlantis y zombie quedan como lapidas que siguen offline.
-ok('precachea las portadas, su superficie y el juego', rutas.length === 114 && rutas.includes('/game/army.html') && rutas.includes('/map/carta.json'), rutas.length+' rutas');
+ok('precachea las portadas, su superficie y el juego', rutas.length === 115 && rutas.includes('/game/army.html') && rutas.includes('/map/carta.json'), rutas.length+' rutas');
 ok('el shell NO trae el juego retirado (corte Norte 7 D)',
    !(['/assets/thegame.js', '/game/ui-arena.js', '/assets/atlas-motor.js'].some(r => rutas.includes(r))));
 ok('el shell trae la puerta y NO trae /play/ (corte Norte 7 C)', rutas.includes('/') && !rutas.includes('/play/') && !rutas.includes('/assets/thegame.js'));

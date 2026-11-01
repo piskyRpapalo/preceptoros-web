@@ -63,6 +63,7 @@ jobs:
             node --test atlas/map_carta_casos.mjs
             node --test atlas/map_chunks_casos.mjs
             node --test atlas/map_painter_casos.mjs
+            node --test atlas/visitor_walk_casos.mjs
             node --test atlas/retiro_face_casos.mjs
             node --test atlas/f0_funciones_casos.mjs
             node --test atlas/map_zoom_colonia_casos.mjs

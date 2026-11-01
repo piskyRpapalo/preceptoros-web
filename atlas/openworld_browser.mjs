@@ -98,7 +98,8 @@ async function main() {
   // W-5: a click on the cabin hex walks there (already there: it enters); an arrow key with no neighbour says NO_DATA.
   const entered = await ev(CLIC_CABINA);
   ok(/^terminal: basic/.test(entered || ''), 'the ephemeral cabin cannot be entered by clicking it on the map: ' + entered);
-  const blocked = await ev("(() => { document.body.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true })); return document.querySelector('#joy [aria-live]').textContent; })()");
+  // Free walk on by default; the W-4 node law stays reachable by turning it off (the #free-walk checkbox).
+  const blocked = await ev("(() => { const f = document.getElementById('free-walk'); f.checked = false; f.dispatchEvent(new Event('change')); document.body.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true })); const said = document.querySelector('#joy [aria-live]').textContent; f.checked = true; f.dispatchEvent(new Event('change')); return said; })()");
   ok(/^NO_DATA: no colony node/.test(blocked || ''), 'an absent neighbour was not honestly refused: ' + blocked);
   ok(!medida.botonChat, 'there is a Chat button; the chat must always be present, with no button');
   ok(medida.ancho <= medida.vista, 'the page scrolls sideways at phone width: ' + medida.ancho + ' > ' + medida.vista);
@@ -165,6 +166,20 @@ async function main() {
     return JSON.stringify({ said: document.getElementById('floor-state').textContent, cells: W ? W.cells.list.length : 0, tones: set.size }); })()`));
   ok(/^Map chunks: 7 of 7 around area 0_0\. Cabin chunk: \d+ water, \d+ sand, \d+ moss, \d+ rock cells/.test(suelo.said) && suelo.cells === 1519 && suelo.tones >= 12, 'the 2.5D floor is not painted: ' + JSON.stringify(suelo));
   if (CAPTURA) { const g2 = await cmd('Page.captureScreenshot', { format: 'png' }); writeFileSync(join(CAPTURA, 'openworld-floor.png'), Buffer.from(g2.result.data, 'base64')); }
+  // Free walk: from the HITL cabin (-1,0) ArrowRight seven times walks the crab east over the floor to 6,0; the seventh is water and is refused.
+  // With a visit started, each accepted step is one game step (the eggs hatch by walking).
+  const libre = JSON.parse(await ev(`(async () => { const say = () => document.querySelector('#joy [aria-live]').textContent, key = (k) => document.body.dispatchEvent(new KeyboardEvent('keydown', { key: k, bubbles: true }));
+    document.getElementById('visitor-start').click(); for (let i = 0; i < 40 && !document.getElementById('visitor-step'); i++) await new Promise((r) => setTimeout(r, 100));
+    const said = []; for (let i = 0; i < 7; i++) { key('ArrowRight'); said.push(say()); }
+    key('ArrowRight'); const water = say(); const visitText = document.getElementById('visitor-play').textContent; document.getElementById('visitor-end').click();
+    const crab = [...document.querySelectorAll('#frases li')].map((li) => li.textContent).filter((t) => /^you · /.test(t))[0] || '';
+    const visit = visitText.match(/Step (\\d+)/);
+    return JSON.stringify({ said, water, crab, step: visit ? +visit[1] : -1 }); })()`));
+  ok(libre.said[6] === 'You walk east to 6,0 · moss · step 7', 'the crab does not walk the floor cell by cell: ' + JSON.stringify(libre.said));
+  ok(libre.water === 'NO_DATA: water blocks the way east', 'a step into water is not refused: ' + libre.water);
+  ok(/on cell 6,0/.test(libre.crab), 'the crab is not drawn on its floor cell: ' + libre.crab);
+  ok(libre.step === 7, 'walking does not advance the visit: ' + libre.step);
+  if (CAPTURA) { await ev("document.getElementById('tab-map').click()"); await cmd('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 1, mobile: true }); await espera(400); const g4 = await cmd('Page.captureScreenshot', { format: 'png' }); writeFileSync(join(CAPTURA, 'openworld-free-walk.png'), Buffer.from(g4.result.data, 'base64')); await cmd('Emulation.setDeviceMetricsOverride', { width: 1440, height: 900, deviceScaleFactor: 1, mobile: false }); }
   // Terminal tabs (atlantis/zombie layout): ArrowRight moves to News, Enter opens a sheet that covers the map, Escape returns.
   const pest = JSON.parse(await ev(`(async () => { const t = document.getElementById('tab-map'); t.focus();
     t.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true })); const moved = document.activeElement.id;

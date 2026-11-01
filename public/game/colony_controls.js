@@ -107,11 +107,17 @@
     stickPad.addEventListener('pointermove', function (e) {
       if (!drag) { return; }
       var name = handlers.direction ? handlers.direction(e.clientX - drag[0], e.clientY - drag[1]) : null;
-      if (name && name !== lastName) { lastName = name; handlers.select(name); }
+      if (name && name !== lastName) { lastName = name; handlers.select(name, 'stick'); }
     });
-    stickPad.addEventListener('pointerup', function () { var walked = drag && lastName; drag = null; if (walked) { handlers.enter(); } });
+    stickPad.addEventListener('pointerup', function () { var walked = drag && lastName; drag = null; if (walked) { handlers.enter('stick'); } });
     stickPad.addEventListener('pointercancel', function () { drag = null; });
     box.appendChild(stickPad);
+    // Free walk: on by default once the floor is loaded; off gives back the W-4 node law (arrows choose a node).
+    var freeLabel = doc.createElement('label'), free = doc.createElement('input');
+    free.type = 'checkbox'; free.id = 'free-walk'; free.checked = true; free.style.minHeight = free.style.minWidth = '44px';
+    free.addEventListener('change', function () { if (handlers.free) { handlers.free(free.checked); } });
+    freeLabel.appendChild(free); freeLabel.appendChild(doc.createTextNode(' Free walk'));
+    box.appendChild(freeLabel);
     box.appendChild(status); box.appendChild(actions); box.appendChild(sel);
     container.appendChild(box);
     // Arrow keys choose a neighbour (move() decides which); Enter walks to the chosen one. Form fields keep their keys.
@@ -119,8 +125,8 @@
     doc.addEventListener('keydown', function (e) {
       var t = e.target, campo = t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT' || t.isContentEditable);
       if (campo) { return; }
-      if (keys[e.key]) { e.preventDefault(); handlers.select(keys[e.key]); }
-      else if (e.key === 'Enter' && t === doc.body) { handlers.enter(); }
+      if (keys[e.key]) { e.preventDefault(); handlers.select(keys[e.key], 'key'); }
+      else if (e.key === 'Enter' && t === doc.body) { handlers.enter('key'); }
     });
     return { say: function (text) { status.textContent = text; }, select: sel };
   }
@@ -134,7 +140,46 @@
     var saved = savedChoice(storeOf(env.win));
     // W-4: the chosen neighbour (by an arrow key or the stick). It is cleared when a walk starts.
     var selected = null;
-    var joy = mount(env.doc, env.doc.getElementById('joy'), { select: selectNeighbour, enter: walkSelected, choose: chooseLook, skip: skipTutorial,
+    // Free walk (visitor_walk.js): the crab steps cell by cell on the floor of AtlasMapPainter.world().
+    var freeOn = true, crab = null, aim = null;
+    function freeWalker() {
+      var V = env.win.AtlasVisitorWalk, P = env.win.AtlasMapPainter, w = P && P.world();
+      if (!freeOn || !V || !w || !walker || walk) { return null; }
+      if (!crab) { crab = V.create(w.cells, [walker.q, walker.r]); }
+      return crab;
+    }
+    function freeStep(direction) {
+      var fw = freeWalker(), r = fw.step(direction), c = env.colony(), text = r.sentence;
+      if (r.ok) {
+        var hit = c ? (c.nodes || []).filter(function (n) { return n.q === r.q && n.r === r.r; })[0] : null;
+        walker = { node: hit ? hit.id : walker.node, q: r.q, r: r.r, on: hit ? hit.id : null };
+        if (hit) { text += ' · ' + hit.id + ' is here · Enter enters it'; }
+        if (env.stepped) { env.stepped(r); }
+        env.redraw();
+      }
+      joy.say(text);
+    }
+    function select(direction, source) {
+      if (!freeWalker()) { selectNeighbour(direction); return; }
+      if (source === 'stick') { aim = direction; joy.say('aim ' + direction + ' · let go to step'); return; }
+      freeStep(direction);
+    }
+    function enterKey(source) {
+      if (!freeWalker()) { walkSelected(); return; }
+      if (source === 'stick') { if (aim) { var d = aim; aim = null; freeStep(d); } return; }
+      if (walker.on === undefined || walker.on) { enterNode(); return; }
+      joy.say('No node on this cell: walk onto a node, then Enter.');
+    }
+    function setFree(on) {
+      freeOn = on; aim = null;
+      if (!on && crab && walker && walker.on === null) {
+        var c = env.colony(), home = c && ((c.nodes || []).filter(function (n) { return n.id === walker.node; })[0]);
+        if (home) { walker = { node: home.id, q: home.q, r: home.r }; }
+      }
+      crab = null; env.redraw();
+      joy.say(on ? 'free walk: on' : 'free walk: off · arrow keys choose a node');
+    }
+    var joy = mount(env.doc, env.doc.getElementById('joy'), { select: select, enter: enterKey, free: setFree, choose: chooseLook, skip: skipTutorial,
       direction: function (dx, dy) { var M = env.win.AtlasMapStick; return M ? M.direction(dx, dy) : null; } });
     function storeOf(win) { try { return win.localStorage; } catch (e) { return null; } }
     function hex(name) { return bandHex(name, env.win.AtlasComicTokens, env.win.AtlasComicAccents); }
@@ -217,6 +262,10 @@
     // to and the fraction of that step (walk_route.js poseOf).
     function walkerView() {
       var W = env.win.AtlasWalkRoute;
+      if (walker && !walk && crab && freeOn) {
+        var cell = crab.here();
+        return { node: walker.node, q: cell.q, r: cell.r, h: cell.h, free: true };
+      }
       if (!walker || !walk || !W) { return walker; }
       var p = W.poseOf(walk);
       return { node: p.node, q: walker.q, r: walker.r, to: p.to, fraction: p.fraction };
@@ -227,6 +276,7 @@
       var W = env.win.AtlasWalkRoute, c = env.colony();
       if (!W || !c || !walker) { joy.say('NO_DATA: no colony node to walk on'); return false; }
       if (walk) { return true; }
+      if (crab) { var back = coordOf(walker.node, c); if (back) { walker = { node: back.id, q: back.q, r: back.r }; } crab = null; }
       if (id === walker.node) { enterNode(); return false; }
       var r = W.route(c.nodes, env.seals(), walker.node, id);
       if (!r.ok) { joy.say(r.cause); return false; }
