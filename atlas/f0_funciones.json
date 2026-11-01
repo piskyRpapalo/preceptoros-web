@@ -225,6 +225,23 @@
    ]
   },
   {
+   "id": "guide-tools",
+   "scripts": [
+    "/game/map_chat.js"
+   ],
+   "globals": [],
+   "guards": [
+    {
+     "file": "atlas/guide_tools_browser.mjs",
+     "text": "a tool call was not schema-valid"
+    },
+    {
+     "file": "atlas/guide_tools_browser.mjs",
+     "text": "the guide summoned"
+    }
+   ]
+  },
+  {
    "id": "radio",
    "scripts": [
     "/assets/radio_message_log.js",

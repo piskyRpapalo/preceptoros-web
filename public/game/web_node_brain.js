@@ -107,5 +107,16 @@
     }).then(function (a) { state.status = 'ready'; return a; }, function (e) { state.status = 'ready'; throw e.cause ? e : noData('model_unavailable', e.message); });
   }
 
-  root.AtlasWebNodeBrain = { load: load, reply: reply, check: check, status: function () { return state.status; }, MANIFEST: MANIFEST };
+  // complete(messages, schema) → the raw text of one completion constrained by a JSON schema (guide_tools.js). wllama
+  // passes response_format to llama.cpp, which compiles the schema into a grammar and samples only inside it.
+  function complete(messages, schema) {
+    if (state.status !== 'ready') { return Promise.reject(noData('model_not_installed', 'Browser brain is not loaded')); }
+    state.status = 'busy';
+    return state.engine.createChatCompletion({ messages: messages, response_format: { type: 'json_schema', json_schema: { name: 'guide_tool', strict: true, schema: schema } },
+      temperature: 0, temp: 0, top_k: 1, seed: 1, max_tokens: 96, stream: false
+    }).then(function (r) { state.status = 'ready'; return (r && r.choices && r.choices[0] && r.choices[0].message && r.choices[0].message.content || '').trim(); },
+      function (e) { state.status = 'ready'; throw e.cause ? e : noData('model_unavailable', e.message); });
+  }
+
+  root.AtlasWebNodeBrain = { load: load, reply: reply, complete: complete, FACTS: SYSTEM.slice(SYSTEM.indexOf('Facts:')), check: check, status: function () { return state.status; }, MANIFEST: MANIFEST };
 })(globalThis);
