@@ -34,7 +34,7 @@
       line(tc + ' · ' + cost.cobre + ' copper / ' + cost.luz + ' light · odds per thousand: ' + root.AtlasGacha.RAREZAS.map(function (r, i) { return r + ' ' + odds[i]; }).join(', '));
       button('Sign invocation · ' + tc, 'visitor-summon-' + tc, function () { return game.summon(tc, true); }, s.copper < cost.cobre || s.light < cost.luz);
     });
-    s.eggs.forEach(function (egg) { button('Sign adoption · egg ' + egg.seq + (egg.ready ? ' · ready' : ' · ' + egg.remaining + ' steps'), 'visitor-hatch-' + egg.seq, function () { return game.hatch(egg.seq, true); }, !egg.ready); });
+    s.eggs.forEach(function (egg) { button('Sign adoption · egg ' + egg.seq + (egg.ready ? ' · ready' : ' · ' + egg.remaining + ' steps'), 'visitor-hatch-' + egg.seq, async function () { var after = await game.hatch(egg.seq, true); var R = root.AtlasHatchReveal; if (R) { R.show(after, function (t) { status.textContent = t; }); } }, !egg.ready); });
     s.chronicle.forEach(function (e) { line('Invocation ' + e.seq + ' · ' + e.tc + ' · seal ' + e.sello + ' · ' + e.rareza); });
     button('End this visit', 'visitor-end', function () { game.end(); box.dispatchEvent(new Event('visitor:end')); game = null; account = null; });
     box.dispatchEvent(new CustomEvent('visitor:render', { detail: { state: s, game: game, account: account, controls: controls } }));
