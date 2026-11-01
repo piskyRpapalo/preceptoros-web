@@ -59,7 +59,12 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
   background:color-mix(in srgb,var(--bg) 90%,transparent);color:var(--fg);border:2px solid var(--line);border-radius:var(--radius)}
 .sheet[hidden]{display:none}
 /* The walking controls step ON the map, as an upper layer (bottom-left, like the first terminals' pad); a sheet covers both. */
-.stage #joy{position:absolute;left:8px;bottom:60px;z-index:2;max-width:calc(100% - 16px);padding:6px;gap:4px;
+/* Zoom is a layer too, top-right on a plate (its spoken level sits on the plate, never on the drawing). */
+.stage #zoom-controls{position:absolute;top:8px;right:8px;z-index:2;display:flex;flex-wrap:wrap;justify-content:flex-end;gap:4px;max-width:60%;
+  padding:4px;border:2px solid var(--line);border-radius:var(--radius);background:color-mix(in srgb,var(--bg) 78%,transparent)}
+.stage #zoom-controls button{padding:2px 8px;font-size:.85rem}
+.stage #zoom-state{margin:0;width:100%;text-align:right;font-size:.8rem}
+.stage #joy{position:absolute;left:8px;bottom:calc(1.6em + 8px);z-index:2;max-width:calc(100% - 16px);padding:6px;gap:4px;
   background:color-mix(in srgb,var(--bg) 72%,transparent);border-width:2px}
 .stage #joy > [role="group"]{display:grid;grid-template-columns:auto 1fr;gap:4px 8px;align-items:center}
 .stage #joy [role="application"]{width:112px !important;height:112px !important;margin:0 !important;grid-row:span 3}
@@ -76,7 +81,7 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
 @supports not (background:color-mix(in srgb,red 50%,transparent)){.sheet{background:var(--bg)}}
 /* Hero map (2026-11-01, measured on the Doogee: the map was below the fold inside a 44vh scroll box). On a phone the map
    is no longer trapped in a scroll box: it follows the walking controls at a fixed share of the screen and the page scrolls as one; the chat follows, always present. */
-@media (max-width:899px){html,body{height:auto}main{flex:none;grid-template-rows:auto auto;min-height:0}#map{overflow:visible;min-height:0}#map .surface{flex:none;height:min(46vh,520px);min-height:280px;border-radius:var(--radius)}}
+@media (max-width:899px){html,body{height:auto}main{flex:none;grid-template-rows:auto auto;min-height:0}#map{overflow:visible;min-height:0}#map .surface{flex:none;height:45vh;min-height:280px;max-height:620px;width:auto;margin-inline:-16px;border-radius:0}}
 @media (min-width:900px){main{grid-template-rows:1fr;grid-template-columns:1fr 1fr}#map{border-bottom:0;border-right:2px solid var(--line)}}
 </style>
 </head>
