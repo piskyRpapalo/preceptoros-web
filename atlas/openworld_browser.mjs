@@ -110,6 +110,18 @@ async function main() {
   ok(escritorio.width <= escritorio.viewport, 'the page scrolls sideways at desktop width: ' + escritorio.width + ' > ' + escritorio.viewport);
   const desktopEntry = await ev(CLIC_CABINA);
   ok(/^terminal: basic/.test(desktopEntry || ''), 'the ephemeral cabin cannot be entered on desktop: ' + desktopEntry);
+  // H9: the radio chat lives in the chat section and hears what the whole map says aloud (layer 1, PREGUNTAS P-radio).
+  const radio = JSON.parse(await ev(`(async () => { const box = document.getElementById('radio-chat'), chat = document.getElementById('chat');
+    const st = document.getElementById('state'); st.textContent = 'Nodes online: 7 · radio probe'; await new Promise((r) => setTimeout(r, 300));
+    const heard = [...document.querySelectorAll('#radio-chat-lista li')].some((li) => li.textContent.includes('radio probe'));
+    const before = box.classList.contains('plegado'); document.dispatchEvent(new KeyboardEvent('keydown', { key: 'r', altKey: true, bubbles: true }));
+    const toggled = box.classList.contains('plegado') !== before;
+    const tap = [...box.querySelectorAll('button')].filter((b) => b.offsetParent).every((b) => b.getBoundingClientRect().height >= 44);
+    return JSON.stringify({ exists: !!box, inChat: !!box && chat.contains(box), heard, toggled, tap, mainKids: document.querySelector('main').children.length }); })()`));
+  ok(radio.exists && radio.inChat, 'the radio chat is missing or outside the chat section: ' + JSON.stringify(radio));
+  ok(radio.heard, 'the radio does not hear what the map says aloud: ' + JSON.stringify(radio));
+  ok(radio.toggled && radio.tap, 'Alt+R or the 44 px targets fail: ' + JSON.stringify(radio));
+  ok(radio.mainKids === 2, 'the radio broke the two-row map/chat grid: ' + radio.mainKids);
   // A11Y: zoom without fingers — the + key, the buttons, the spoken level and the reset.
   const zoom = JSON.parse(await ev(`(() => { const s = document.getElementById('surface'), say = () => (document.getElementById('zoom-state') || {}).textContent || '';
     document.body.dispatchEvent(new KeyboardEvent('keydown', { key: '+', bubbles: true })); const k = s.dataset.zoom, ks = say();
