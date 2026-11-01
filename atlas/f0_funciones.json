@@ -319,6 +319,21 @@
      "text": "the terminal tabs do not cover the map or the keyboard fails"
     }
    ]
+  },
+  {
+   "id": "screen-frame",
+   "scripts": [
+    "/game/screen_frame.js"
+   ],
+   "globals": [
+    "AtlasScreenFrame"
+   ],
+   "guards": [
+    {
+     "file": "atlas/openworld_browser.mjs",
+     "text": "Alt+S does not put the «Screen ·» sentence in the radio"
+    }
+   ]
   }
  ]
 }

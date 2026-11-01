@@ -133,14 +133,27 @@
     R.lista = el('ol', 'radio-chat-lista'); R.lista.id = 'radio-chat-lista'; R.lista.setAttribute('role', 'log'); R.lista.setAttribute('aria-live', 'polite');
     R.ecos = el('ol', 'radio-chat-lista'); R.ecos.id = 'radio-chat-ecos'; R.ecos.setAttribute('role', 'log'); R.ecos.setAttribute('aria-live', 'polite'); R.ecos.hidden = true;
     R.noData = el('p', 'radio-chat-no-data'); R.noData.id = 'radio-chat-no-data'; R.noData.setAttribute('role', 'status');
-    R.caja.appendChild(R.boton); R.caja.appendChild(R.tabs); R.caja.appendChild(R.noData); R.caja.appendChild(R.ecos); R.caja.appendChild(R.lista); canal('radio');
+    R.screenBtn = el('button', 'radio-chat-screen', T('screen_read', 'Read the screen')); R.screenBtn.type = 'button'; R.screenBtn.id = 'radio-chat-screen';
+    R.screenBtn.setAttribute('aria-keyshortcuts', 'Alt+S'); R.screenBtn.style.minHeight = '44px'; R.screenBtn.style.minWidth = '44px';
+    R.screenBtn.addEventListener('click', function () { readScreen(); });
+    R.caja.appendChild(R.boton); R.caja.appendChild(R.screenBtn); R.caja.appendChild(R.tabs); R.caja.appendChild(R.noData); R.caja.appendChild(R.ecos); R.caja.appendChild(R.lista); canal('radio');
     if (raiz.AtlasWorldCreator && typeof raiz.AtlasWorldCreator.onEcho === 'function') { raiz.AtlasWorldCreator.onEcho(function () { if (R.canal === 'echoes') { canal('echoes'); } }); }
     capa.appendChild(R.caja);
     document.addEventListener('keydown', function (e) { if (e.altKey && (e.key === 'r' || e.key === 'R')) { e.preventDefault(); alterna(); R.boton.focus(); } });
+    document.addEventListener('keydown', function (e) { if (e.altKey && (e.key === 's' || e.key === 'S')) { e.preventDefault(); readScreen(); } });
     observa(capa);
     pinta();
   }
+  // The screen in one bubble (public/game/screen_frame.js): its sentence goes to the radio, and its measured bytes.
+  function readScreen() {
+    var S = raiz.AtlasScreenFrame, f = null;
+    try { f = S && typeof S.read === 'function' ? S.read(document, raiz) : null; } catch (e) { f = null; }
+    if (!f) { return dice({ quien: T('screen_who', 'Screen'), fuente: 'screen-frame', texto: 'NO_DATA · the screen reader is not loaded on this page' }); }
+    dice({ quien: T('screen_who', 'Screen'), fuente: 'screen-frame', texto: f.sentence });
+    dice({ quien: T('screen_who', 'Screen'), fuente: 'screen-frame-bytes', texto: 'Screen frame · ' + f.bytes + ' B' + (f.dropped ? ' · ' + f.dropped + ' atoms dropped' : '') });
+    return f;
+  }
   function registro() { return lista.map(function (m) { return { quien: m.quien, sello: sello(m), fuente: m.fuente, ciclo: m.ciclo, texto: m.texto }; }); }
 
-  raiz.AtlasRadioChat = { VIEJO: VIEJO, monta: monta, dice: dice, alterna: alterna, registro: registro, selloDe: selloDe };
+  raiz.AtlasRadioChat = { VIEJO: VIEJO, monta: monta, dice: dice, readScreen: readScreen, alterna: alterna, registro: registro, selloDe: selloDe };
 })(this);

@@ -125,6 +125,19 @@ async function main() {
   ok(radio.heard, 'the radio does not hear what the map says aloud: ' + JSON.stringify(radio));
   ok(radio.toggled && radio.tap, 'Alt+R or the 44 px targets fail: ' + JSON.stringify(radio));
   ok(radio.mainKids === 2, 'the radio broke the two-row map/chat grid: ' + radio.mainKids);
+  // The screen in one bubble: Alt+S posts the frame's sentence to the radio and its measured bytes; preceptorScreen()
+  // is the agents' entry (like the retired preceptorFace.state()) and names the tutorial cabin under 1,024 B.
+  const pantalla = JSON.parse(await ev(`(async () => { let heard = null; document.addEventListener('screen:frame', (e) => { heard = e.detail; }, { once: true });
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 's', altKey: true, bubbles: true })); await new Promise((r) => setTimeout(r, 100));
+    const lines = [...document.querySelectorAll('#radio-chat-lista .radio-msg-texto')].map((p) => p.textContent);
+    const f = typeof window.preceptorScreen === 'function' ? window.preceptorScreen() : null;
+    const b = document.getElementById('radio-chat-screen'), h = b ? b.getBoundingClientRect().height : 0;
+    return JSON.stringify({ sentence: lines.some((t) => t.startsWith('Screen · /openworld/')), bytesLine: lines.filter((t) => t.startsWith('Screen frame · ')).pop() || null,
+      real: f ? new TextEncoder().encode(JSON.stringify(f)).length : -1, said: f && f.bytes, schema: f && f.schema, cabin: !!f && /cabin/.test(JSON.stringify(f.atoms)), event: !!heard, h, key: b && b.getAttribute('aria-keyshortcuts'), frame: f }); })()`));
+  ok(pantalla.sentence && pantalla.bytesLine && pantalla.event, 'Alt+S does not put the «Screen ·» sentence in the radio: ' + JSON.stringify({ ...pantalla, frame: undefined }));
+  ok(pantalla.schema === 'preceptoros.bubble/1' && pantalla.real < 1024 && pantalla.real === pantalla.said && pantalla.cabin, 'preceptorScreen() does not return a frame under 1,024 B naming the tutorial cabin: ' + JSON.stringify(pantalla));
+  ok(pantalla.h >= 44 && pantalla.key === 'Alt+S', 'the Read the screen button is below 44 px or has no shortcut: ' + pantalla.h);
+  console.log('screen frame: ' + pantalla.real + ' B · ' + pantalla.bytesLine + ' · ' + JSON.stringify(pantalla.frame));
   // A11Y: zoom without fingers — the + key, the buttons, the spoken level and the reset.
   const zoom = JSON.parse(await ev(`(() => { const s = document.getElementById('surface'), say = () => (document.getElementById('zoom-state') || {}).textContent || '';
     document.body.dispatchEvent(new KeyboardEvent('keydown', { key: '+', bubbles: true })); const k = s.dataset.zoom, ks = say();
@@ -180,4 +193,4 @@ async function main() {
 }
 
 main().catch((e) => { fallos.push('harness: ' + e.message); })
-  .finally(() => { try { ws && ws.close(); } catch {} ch && ch.close && ch.close(); srv && srv.close(); process.exitCode = fallos.length ? 1 : 0; });
+  .finally(() => { if (fallos.length) { console.error(fallos.join("\n")); } try { ws && ws.close(); } catch {} ch && ch.close && ch.close(); srv && srv.close(); process.exitCode = fallos.length ? 1 : 0; });
