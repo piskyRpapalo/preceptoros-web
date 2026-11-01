@@ -21,7 +21,7 @@
   var CC = raiz.AtlasColonyControls;
   var CCT = CC ? CC.attach({ doc: doc, win: raiz, colony: function () { return colonia; }, looks: function () { return colony_looks; }, seals: function () { return colony_seals; }, redraw: function () { draw(); renderFrases(); }, walk: function () { walkLoop(); }, entered: function (node) { enterBuilding(node); } }) : null;
   // P5a: the view hitl_walkers.js reads on every visitor:draw (the «?» and the walkers).
-  raiz.AtlasOpenworldView = function () { return { colony: colonia_error ? null : colonia, t: entrada.t, reduced: quieto, looks: colony_looks, seals: colony_seals, pending: colony_pending, controls: CCT, state: state }; };
+  raiz.AtlasOpenworldView = function () { return { colony: colonia_error ? null : colonia, t: entrada.t, reduced: quieto, looks: colony_looks, seals: colony_seals, pending: colony_pending, controls: CCT, state: state, redraw: function () { draw(); } }; };
   // H1b: two fingers (or the wheel) zoom the colony between 0.6 and 3; the factor lives on the canvas and every redraw reads it.
   var ZOOM = raiz.AtlasMapZoom && surface ? raiz.AtlasMapZoom.create(surface) : null, zoomSeen = surface ? surface.dataset.zoom : null;
   function onZoom() { if (surface.dataset.zoom !== zoomSeen) { zoomSeen = surface.dataset.zoom; draw(); } }
@@ -167,6 +167,18 @@
     if (CCT.walkTo(id)) { walkLoop(); }
   });
 
+  // 3.5D: hover (pointer) or keyboard focus on the map marks one node «hot»; its building breathes higher. Render only.
+  function setHot(id) { id = id || ''; if ((surface.dataset.hot || '') !== id) { surface.dataset.hot = id; draw(); } }
+  if (surface) {
+    surface.addEventListener('pointermove', function (e) {
+      if (!colonia || !CP || colonia_error || e.pointerType === 'touch') { return; }
+      var r = surface.getBoundingClientRect();
+      setHot(CP.nodeAt(surface, colonia, entrada.t, colony_looks, colony_seals, (e.clientX - r.left) * (surface.width / r.width), (e.clientY - r.top) * (surface.height / r.height)));
+    });
+    surface.addEventListener('pointerleave', function () { setHot(''); });
+    surface.addEventListener('focus', function () { var w = CCT && CCT.walker ? CCT.walker() : null; setHot(w && w.node ? w.node : 'cabin'); });
+    surface.addEventListener('blur', function () { setHot(''); });
+  }
   // The cycle: a fixed step of t per second, unless reduced motion is on. The palette is a function of t alone.
   function cycle() { if (quieto) { return; } entrada.t += 1; draw(); renderFrases(); }
 

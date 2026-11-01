@@ -69,6 +69,24 @@
       .map(function (n) { return { id: n.id, piece: pending[n.id] }; });
   }
 
+  // 3.5D · VOLUMETRIC BUBBLES. Pure parts: the elastic ease of a bubble that appears (counted draws, never ms) and the
+  // slight lag of a bubble that follows its walker. Reduced motion: no easing and no lag.
+  var EASE_FRAMES = 18, LAG = 0.35;
+  function elastic(x) {
+    if (x <= 0) { return 0; } if (x >= 1) { return 1; }
+    return Math.pow(2, -10 * x) * Math.sin((x * 10 - 0.75) * (2 * Math.PI / 3)) + 1;
+  }
+  function appearScale(n, reduced) { return reduced === true ? 1 : elastic(n / EASE_FRAMES); }
+  function follow(prev, target, reduced) {
+    if (reduced === true || !prev) { return { x: target.x, y: target.y }; }
+    return { x: prev.x + (target.x - prev.x) * (1 - LAG), y: prev.y + (target.y - prev.y) * (1 - LAG) };
+  }
+  // sphereStops(T, A) → three '#rrggbb' stops of a lit sphere, computed at runtime from the house tokens only.
+  function sphereStops(T, A) {
+    var C = A.color, N = T.NEUTRAL, paper = C.rgbOf(N.paper), cyan = C.rgbOf(N.cyan), ink = C.rgbOf(N.ink);
+    return [C.css(paper), C.css(C.mix(paper, cyan, 0.45)), C.css(C.mix(cyan, ink, 0.55))];
+  }
+
   // attach(win): the browser layer. It redraws on every visitor:draw of the map, reading the page's view.
   function attach(win) {
     var doc = win.document, surface = doc.getElementById('surface');
@@ -77,8 +95,21 @@
     if (win.getComputedStyle(holder).position === 'static') { holder.style.position = 'relative'; }
     say.id = 'walkers-state'; say.setAttribute('aria-live', 'polite'); say.className = 'state';
     surface.after(say);
-    function paint(g, f, x, y) {
-      g.save(); g.translate(x - 20 * S, y - 20 * S); g.scale(S, S); win.AtlasComicAtoms.paint(g, win.AtlasBubble.compile(f)); g.restore();
+    var seen = {}, settling = 0, pendingFrame = false;
+    // sphere(g, x, y, r): an eccentric radial gradient (light from the north-west, like the floor) under the bubble.
+    function sphere(g, x, y, r) {
+      var T = win.AtlasComicTokens, A = win.AtlasMapPainter; if (!T || !A || !A.color) { return; }
+      var st = sphereStops(T, A), gr = g.createRadialGradient(x - r * 0.38, y - r * 0.42, r * 0.08, x, y, r);
+      gr.addColorStop(0, st[0]); gr.addColorStop(0.55, st[1]); gr.addColorStop(1, st[2]);
+      g.save(); g.globalAlpha = 0.9; g.fillStyle = gr; g.beginPath(); g.arc(x, y, r, 0, 6.283); g.fill(); g.restore();
+    }
+    // paint(g, f, x, y, key, reduced): the bubble as a sphere, eased in on appear and lagging slightly behind its target.
+    function paint(g, f, x, y, key, reduced) {
+      var e = seen[key] || (seen[key] = { n: 0, at: null }); e.live = true;
+      e.at = follow(e.at, { x: x, y: y }, reduced); var sc = appearScale(e.n, reduced) * S; e.n++;
+      if (!reduced && (e.n <= EASE_FRAMES || Math.abs(e.at.x - x) + Math.abs(e.at.y - y) > 0.5)) { settling = 1; }
+      sphere(g, e.at.x, e.at.y, 23 * sc);
+      g.save(); g.translate(e.at.x - 20 * sc, e.at.y - 20 * sc); g.scale(sc, sc); win.AtlasComicAtoms.paint(g, win.AtlasBubble.compile(f)); g.restore();
     }
     function button(p, view) {
       var b = buttons[p.id];
@@ -98,6 +129,7 @@
     }
     surface.addEventListener('visitor:draw', function () {
       var v = win.AtlasOpenworldView ? win.AtlasOpenworldView() : null, CP = win.AtlasColoniaPagina, keep = {}, said = [];
+      settling = 0; Object.keys(seen).forEach(function (k) { seen[k].live = false; });
       try {
         if (!v || !v.colony || !CP) { throw new Error('no colony'); }
         var c = v.colony, g = surface.getContext('2d'), seed = c.nodes.map(function (n) { return n.id; }).join(',');
@@ -108,24 +140,27 @@
           said.push(sentence(w, v.reduced));
           if (!w.node) { return; }
           var a = at(w.node), b2 = w.to ? at(w.to) : a;
-          paint(g, walkerFrame(w, v.t), a.x + (b2.x - a.x) * w.fraction, a.y + (b2.y - a.y) * w.fraction + 24);
+          paint(g, walkerFrame(w, v.t), a.x + (b2.x - a.x) * w.fraction, a.y + (b2.y - a.y) * w.fraction + 24, 'w:' + n.id, v.reduced);
         });
         var rect = surface.getBoundingClientRect(), sx = (rect.width || surface.width) / surface.width, sy = (rect.height || surface.height) / surface.height;
         pendingOf(c, v.pending).forEach(function (p) {
           var a = at(p.id);
-          paint(g, markerFrame(p.id, p.piece, v.t), a.x, a.y - LIFT);
+          paint(g, markerFrame(p.id, p.piece, v.t), a.x, a.y - LIFT, 'm:' + p.id, v.reduced);
           var b = button(p, v); keep[p.id] = true;
           b.style.left = (surface.offsetLeft + a.x * sx - 22) + 'px'; b.style.top = (surface.offsetTop + (a.y - LIFT) * sy - 22) + 'px';
         });
       } catch (e) { /* no colony: no walkers and no marks */ }
       Object.keys(buttons).forEach(function (id) { if (!keep[id]) { buttons[id].remove(); delete buttons[id]; } });
+      Object.keys(seen).forEach(function (k) { if (!seen[k].live) { delete seen[k]; } });
+      // While a bubble eases in or catches up, ask the page for a few more frames (counted, bounded by EASE_FRAMES).
+      if (settling && v && v.redraw && win.requestAnimationFrame && !pendingFrame) { pendingFrame = true; win.requestAnimationFrame(function () { pendingFrame = false; v.redraw(); }); }
       var text = said.join('; ');
       if (say.textContent !== text) { say.textContent = text; }
     });
     return { buttons: buttons };
   }
 
-  var AtlasHitlWalkers = { STATES: STATES, SHAPES: SHAPES, LIFT: LIFT, hash: hash, walkerAt: walkerAt, sentence: sentence, walkerFrame: walkerFrame, markerFrame: markerFrame, pendingOf: pendingOf, attach: attach };
+  var AtlasHitlWalkers = { elastic: elastic, appearScale: appearScale, follow: follow, sphereStops: sphereStops, EASE_FRAMES: EASE_FRAMES, STATES: STATES, SHAPES: SHAPES, LIFT: LIFT, hash: hash, walkerAt: walkerAt, sentence: sentence, walkerFrame: walkerFrame, markerFrame: markerFrame, pendingOf: pendingOf, attach: attach };
   if (common) { module.exports = AtlasHitlWalkers; }
   else { root.AtlasHitlWalkers = AtlasHitlWalkers; attach(root); }
 })(typeof globalThis === 'object' ? globalThis : this);

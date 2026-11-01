@@ -177,6 +177,39 @@ async function main() {
     for (let i = 0; i < d.length; i += 4 * 97) set.add(d[i] >> 4 << 8 | d[i + 1] >> 4 << 4 | d[i + 2] >> 4);
     return JSON.stringify({ said: document.getElementById('floor-state').textContent, cells: W ? W.cells.list.length : 0, tones: set.size }); })()`));
   ok(/^Map chunks: 7 of 7 around area 0_0\. Cabin chunk: \d+ water, \d+ sand, \d+ moss, \d+ rock cells/.test(suelo.said) && suelo.cells === 1519 && suelo.tones >= 12, 'the 2.5D floor is not painted: ' + JSON.stringify(suelo));
+  // 3.5D: the floor baked into bitmaps per chunk. 120 floor draws timed live vs baked (performance.now lives HERE, in
+  // the harness, never in the painter), and Long Animation Frames counted over 120 full redraws per mode.
+  await cmd('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 1, mobile: true });
+  await cmd('Page.navigate', { url: origen + '/openworld/' }); await espera(1500);
+  await ev("(async () => { for (let i = 0; i < 50 && !/^Map chunks/.test(document.getElementById('floor-state').textContent); i++) await new Promise((r) => setTimeout(r, 100)); })()");
+  // Phone-class CPU (4× slower), as the Doogee is: the numbers below are emulated, not measured on the S110.
+  await cmd('Emulation.setCPUThrottlingRate', { rate: 4 });
+  const banco = JSON.parse(await ev(`(async () => {
+    const P = AtlasMapPainter, CPg = AtlasColoniaPagina, v = AtlasOpenworldView(), c = document.getElementById('surface'), g = c.getContext('2d');
+    if (!v.colony) { return JSON.stringify({ error: 'no colony' }); }
+    const G0 = CPg.geometry(CPg.scene(v.colony, 0, false, v.looks, v.seals), c), Z = Number(c.dataset.zoom) || 1;
+    let G = G0;
+    const floorMs = (mode) => { P.setLive(mode === 'live'); P.setBake(mode === 'baked'); P.resetCache(); const ms = []; for (let i = 0; i < 120; i++) { const a = performance.now(); P.draw(g, G, i, false); ms.push(performance.now() - a); } ms.sort((x, y) => x - y); return { mean: +(ms.reduce((x, y) => x + y, 0) / ms.length).toFixed(3), median: +ms[60].toFixed(3), p95: +ms[113].toFixed(3), bakes: P.cacheStats().bakes, mode: P.cacheStats().mode }; };
+    const loaf = (mode) => new Promise((done) => { P.setLive(mode === 'live'); P.setBake(mode === 'baked'); P.resetCache(); let n = 0, o = null;
+      try { o = new PerformanceObserver((l) => { n += l.getEntries().length; }); o.observe({ type: 'long-animation-frame' }); } catch (e) { n = -1; }
+      let i = 0; const step = () => { v.redraw(); if (++i < 120) { requestAnimationFrame(step); } else { setTimeout(() => { o && o.disconnect(); done(n); }, 200); } }; requestAnimationFrame(step); });
+    const zooms = {}; for (const z of [0.6, 1, 3]) { G = { cx: G0.cx, cy: G0.cy, k: G0.k / Z * z }; zooms[z] = { live: floorMs('live'), baked: floorMs('baked'), auto: floorMs('auto') }; }
+    G = G0;
+    const live = floorMs('live'), baked = floorMs('baked'), auto = floorMs('auto'), loafLive = await loaf('live'), loafBaked = await loaf('baked'), loafAuto = await loaf('auto');
+    P.setLive(false); P.setBake(false); P.resetCache(); v.redraw();
+    const d = g.getImageData(0, 0, c.width, c.height).data, tones = new Set(); for (let i = 0; i < d.length; i += 4 * 97) tones.add(d[i] >> 4 << 8 | d[i + 1] >> 4 << 4 | d[i + 2] >> 4);
+    return JSON.stringify({ zooms, live, baked, auto, loafAuto, loafLive, loafBaked, stats: P.cacheStats(), tones: tones.size, offscreen: typeof OffscreenCanvas === 'function' }); })()`));
+  await cmd('Emulation.setCPUThrottlingRate', { rate: 1 });
+  await cmd('Emulation.setDeviceMetricsOverride', { width: 1440, height: 900, deviceScaleFactor: 1, mobile: false });
+  await cmd('Page.navigate', { url: origen + '/openworld/' }); await espera(1500);
+  console.log('MOTOR35D ' + JSON.stringify(banco));
+  // Zoomed out (many prisms) the bitmaps must win; the policy (auto) must never be slower than live by more than noise.
+  ok(banco.zooms && banco.zooms['0.6'].baked.median < banco.zooms['0.6'].live.median, 'the baked floor is not faster zoomed out: ' + JSON.stringify(banco.zooms));
+  ok(Object.values(banco.zooms || {}).every((z) => z.auto.median <= z.live.median * 1.25 + 0.3), 'the bake policy loses to live: ' + JSON.stringify(banco.zooms));
+  ok(banco.tones >= 12, 'the floor is not painted after the bench: ' + JSON.stringify(banco));
+  ok(typeof banco.loafAuto === 'number' && banco.loafAuto >= 0 && typeof banco.loafLive === 'number', 'LoAF not reported: ' + JSON.stringify(banco));
+  const tapBaked = await ev(CLIC_CABINA);
+  ok(/^terminal: basic|^Inside|cabin/.test(tapBaked || ''), 'a tap on the cabin does not enter with the baked floor: ' + tapBaked);
   if (CAPTURA) { const g2 = await cmd('Page.captureScreenshot', { format: 'png' }); writeFileSync(join(CAPTURA, 'openworld-floor.png'), Buffer.from(g2.result.data, 'base64')); }
   // Terminal tabs (atlantis/zombie layout): ArrowRight moves to News, Enter opens a sheet that covers the map, Escape returns.
   const pest = JSON.parse(await ev(`(async () => { const t = document.getElementById('tab-map'); t.focus();

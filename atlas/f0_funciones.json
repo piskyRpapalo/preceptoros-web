@@ -363,6 +363,33 @@
      "text": "the offline answer did not reach the radio"
     }
    ]
+  },
+  {
+   "id": "motor-35d",
+   "scripts": [
+    "/game/map_painter.js",
+    "/game/colonia_pagina.js",
+    "/game/hitl_walkers.js"
+   ],
+   "globals": [
+    "AtlasMapPainter",
+    "AtlasColoniaPagina",
+    "AtlasHitlWalkers"
+   ],
+   "guards": [
+    {
+     "file": "atlas/openworld_browser.mjs",
+     "text": "the baked floor is not faster zoomed out"
+    },
+    {
+     "file": "atlas/openworld_browser.mjs",
+     "text": "a tap on the cabin does not enter with the baked floor"
+    },
+    {
+     "file": "atlas/openworld_browser.mjs",
+     "text": "LoAF not reported"
+    }
+   ]
   }
  ]
 }
