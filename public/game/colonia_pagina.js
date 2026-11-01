@@ -139,6 +139,8 @@
     g.setTransform(1, 0, 0, 1, 0, 0);
     g.fillStyle = sc.cielo; g.fillRect(0, 0, canvas.width, canvas.height);
     var G = geometry(sc, canvas), cx = G.cx, cy = G.cy, k = G.k;
+    // P4: the 2.5D floor of the baked chunks, under every layer, by this same placement (map_painter.js).
+    if (root.AtlasMapPainter) { root.AtlasMapPainter.draw(g, G, t, reducido === true); }
     // M1-2: one deterministic depth order for every layer of this same map.
     var layers = sc.tiles.map(function (n, i) { return { id: 'tile-' + i, item: n }; })
       .concat(sc.buildings.map(function (n, i) { return { id: 'building-' + i, item: n }; }))
