@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Test map · isometric drawings</title>
+<style>
+  :root { color-scheme: light dark; }
+  body { margin: 0; background: #17131f; color: #eee; font: 14px system-ui, sans-serif; }
+  header { padding: 10px 14px; }
+  .angles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; padding: 0 10px 10px; }
+  figure { margin: 0; background: #0b0912; }
+  figcaption { padding: 4px 8px; font-size: 12px; opacity: .8; }
+  canvas { width: 100%; height: auto; display: block; }
+  ul { padding: 0 14px; font-size: 12px; }
+</style>
+</head>
+<body>
+<header><strong>Test map</strong> · 20 nodes · 4 camera angles · every colony drawing the repo already makes (bubble frames). Test environment: not served to the public.</header>
+<main class="angles" id="angles"></main>
+<ul id="legend"></ul>
+<script src="../../public/game/tabla_semantica.js"></script>
+<script src="../../public/game/comic_tokens.js"></script>
+<script src="../../public/game/comic_accents.js"></script>
+<script src="../../public/game/comic_atoms.js"></script>
+<script src="../../public/game/valores.js"></script>
+<script src="../../public/game/gacha.js"></script>
+<script src="../../public/game/bubble_language.js"></script>
+<script src="../../public/game/bubble_letters.js"></script>
+<script src="../../public/game/isometric_floor_projection.js"></script>
+<script src="../../public/game/global_map.js"></script>
+<script src="../../public/game/state_frames.js"></script>
+<script src="../../public/game/hex_projection.js"></script>
+<script src="../../public/game/colony_state.js"></script>
+<script src="../../public/game/map_scene.js"></script>
+<script src="../../public/game/colonia_edificios.js"></script>
+<script src="../../public/game/palette_cycle.js"></script>
+<script src="../../public/game/colonia_pagina.js"></script>
+<script src="./mapa-test.js"></script>
+</body>
+</html>
