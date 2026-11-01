@@ -304,6 +304,21 @@
      "text": "Tab never reaches the HITL button"
     }
    ]
+  },
+  {
+   "id": "terminal-tabs",
+   "scripts": [
+    "/game/terminal_tabs.js"
+   ],
+   "globals": [
+    "AtlasTerminalTabs"
+   ],
+   "guards": [
+    {
+     "file": "atlas/openworld_browser.mjs",
+     "text": "the terminal tabs do not cover the map or the keyboard fails"
+    }
+   ]
   }
  ]
 }
