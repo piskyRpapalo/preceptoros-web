@@ -1,11 +1,11 @@
-// Cases of the H1 port (public/game/map_stick.js). Parity with public/face/face_world.js, and the joystick aim properties.
+// Cases of the H1 port (public/game/map_stick.js). Parity with retirados/face/face_world.js (retired H2, kept as the reference), and the joystick aim properties.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 import { readFileSync } from 'node:fs';
 const require = createRequire(import.meta.url);
 const M = require('../public/game/map_stick.js');
-const W = require('../public/face/face_world.js');
+const W = require('../retirados/face/face_world.js');
 
 test('the three preconfigured places are the face places, in the same order', () => {
   assert.deepEqual(M.places.map((p) => p.id), ['beacon', 'reef', 'rift']);

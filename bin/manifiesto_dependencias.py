@@ -11,8 +11,8 @@ import json, os, re, sys
 RAIZ = sys.argv[1]
 PUB = os.path.join(RAIZ, 'public')
 THEGAME = ['play/index.html', 'assets/thegame.js']
-VIVO = ['index.html', 'openworld/index.html', 'face/index.html', 'face/basic.html', 'face/atlantis.html',
-        'face/zombie.html', 'get-the-app/index.html', 'aduana/index.html', 'creation.html']
+VIVO = ['index.html', 'openworld/index.html', 'face/index.html', 'face/basic.html', 'game/army.html',
+        'get-the-app/index.html', 'aduana/index.html', 'creation.html']
 EXT = ('.js', '.css', '.html', '.json', '.svg', '.png', '.webmanifest', '.woff2', '.mjs')
 LIT = re.compile(r"""['"`]([A-Za-z0-9_\-./]+\.(?:js|css|html|json|svg|png|webmanifest|woff2|mjs))['"`]""")
 SRCHREF = re.compile(r"""(?:src|href)=["']([^"'#?]+)""")

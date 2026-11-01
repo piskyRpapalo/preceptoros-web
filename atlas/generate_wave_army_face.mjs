@@ -23,5 +23,5 @@ const html = `<!doctype html>
 </main><script src="/assets/pwa.js"></script></body>
 </html>
 `;
-writeFileSync(new URL('../public/face/army.html', import.meta.url), html);
+writeFileSync(new URL('../public/game/army.html', import.meta.url), html);
 console.log(JSON.stringify({bytes: Buffer.byteLength(html), map: 'NO_DATA until an account profile is linked'}));

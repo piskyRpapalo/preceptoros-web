@@ -2341,9 +2341,15 @@ class HubSinMundosVivos(unittest.TestCase):
         self.assertIn("No node is live", hub)
 
     def test_las_paginas_de_mundo_siguen_en_disco(self):
+        # H2 (2026-11-01): atlantis y zombie se retiraron con recibo (retirados/face/RETIRO.md); su deep link sigue
+        # vivo como lapida noindex que lleva al mapa. basic.html sigue siendo la terminal compartida.
         for pagina in ("atlantis.html", "zombie.html", "basic.html"):
             with self.subTest(pagina=pagina):
                 self.assertTrue((PUBLICO / "face" / pagina).is_file(), "se borro un deep link del combate")
+        for pagina in ("atlantis.html", "zombie.html"):
+            lapida = (PUBLICO / "face" / pagina).read_text(encoding="utf-8")
+            self.assertIn('<meta name="robots" content="noindex">', lapida)
+            self.assertIn('href="/openworld/"', lapida)
 
 
 class OpenWorld(unittest.TestCase):

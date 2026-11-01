@@ -41,7 +41,7 @@ async function main() {
   const evaluate=async expression => (await cmd('Runtime.evaluate',{expression,awaitPromise:true,returnByValue:true})).result?.result?.value;
   await cmd('Page.enable');await cmd('Runtime.enable');await cmd('Network.enable');
   await cmd('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:true});
-  await cmd('Page.navigate',{url:origin+'/face/army.html'});await wait(1500);
+  await cmd('Page.navigate',{url:origin+'/game/army.html'});await wait(1500);
   const values=await evaluate(`(() => {const link=document.querySelector('a[href="/face/basic.html"]'), r=link&&link.getBoundingClientRect();
     return {title:document.querySelector('h1')?.textContent,noData:document.body.innerText.includes('NO_DATA'),link:!!link,minimum:r&&r.height,
       map:!!document.querySelector('svg,canvas'),synthetic:document.body.innerText.includes('Wave 1'),viewport:innerWidth,scroll:document.documentElement.scrollWidth};})()`);
@@ -58,12 +58,12 @@ async function main() {
   check(ready===true,'service worker did not become ready');
   let offline = false;
   if (ready) {
-    const cached=await evaluate(`caches.match('/face/army.html').then(r=>!!r)`);
+    const cached=await evaluate(`caches.match('/game/army.html').then(r=>!!r)`);
     check(cached===true,'army face absent from cache');
     await cmd('Page.reload'); await wait(1000);
     check(await evaluate('!!navigator.serviceWorker.controller'),'service worker not controlling page');
     await cmd('Network.emulateNetworkConditions',{offline:true,latency:0,downloadThroughput:0,uploadThroughput:0});
-    await cmd('Page.navigate',{url:origin+'/face/army.html'}); await wait(1000);
+    await cmd('Page.navigate',{url:origin+'/game/army.html'}); await wait(1000);
     offline=await evaluate("document.querySelector('h1')?.textContent === 'Army · NO_DATA' && !!document.querySelector('a[href=\"/face/basic.html\"]') && !document.querySelector('svg,canvas')");
     check(offline===true,'Army NO_DATA page unavailable offline');
   }

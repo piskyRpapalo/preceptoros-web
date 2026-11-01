@@ -95,85 +95,6 @@
     "pinta",
     "sello"
   ],
-  "public/face/atlantis.html": [
-    "escena",
-    "taller",
-    "valores"
-  ],
-  "public/face/face.js": [
-    "atlascangrejo"
-  ],
-  "public/face/face_army.js": [
-    "abre",
-    "adopcion",
-    "atlascangrejo",
-    "atlasincubadora",
-    "cangrejo",
-    "crea",
-    "firma",
-    "tropa"
-  ],
-  "public/face/face_battle.js": [
-    "accion",
-    "arrecife",
-    "atlasvalores",
-    "cierra",
-    "recibo",
-    "registro",
-    "valores"
-  ],
-  "public/face/face_eggs.js": [
-    "abre",
-    "ciclo",
-    "firma",
-    "huevo",
-    "lee"
-  ],
-  "public/face/face_fight_stage.js": [
-    "escena",
-    "sello",
-    "suenaduelo",
-    "tropa"
-  ],
-  "public/face/face_paint.js": [
-    "atlasescena",
-    "atlasmarfondo",
-    "atlasniebla",
-    "cangrejo",
-    "crea",
-    "niebla"
-  ],
-  "public/face/face_panel.js": [
-    "ciclo",
-    "sello"
-  ],
-  "public/face/face_terminal.js": [
-    "dice",
-    "monta",
-    "sello"
-  ],
-  "public/face/face_tutorial.js": [
-    "arrecife"
-  ],
-  "public/face/face_workshop.js": [
-    "adopcion",
-    "atlastaller",
-    "atlasvalores",
-    "bandera",
-    "firma",
-    "lee",
-    "recibo",
-    "taller",
-    "tropa"
-  ],
-  "public/face/face_world.js": [
-    "mar"
-  ],
-  "public/face/zombie.html": [
-    "escena",
-    "taller",
-    "valores"
-  ],
   "public/game/army-wave-panel.js": [
     "abre",
     "adopcion",
@@ -295,6 +216,11 @@
   "public/game/estrella_captura.js": [
     "faro",
     "mesa_de_firma"
+  ],
+  "public/game/face_terminal.js": [
+    "dice",
+    "monta",
+    "sello"
   ],
   "public/game/fog_of_war.js": [
     "atlasniebla",

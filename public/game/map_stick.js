@@ -1,5 +1,5 @@
 // H1 · the joystick's aim and the preconfigured routes, ported to the unified map (pure math, no DOM).
-// Ported from public/face/face_world.js (route, sample, walk, places) and public/face/face.js (stick aim).
+// Ported from the retired face skins (face_world.js: route, sample, walk, places; face.js: stick aim), kept unserved since H2.
 // Same numbers as the face: a parity test compares both (atlas/map_stick_casos.mjs). No clock, no randomness.
 (function (root) {
   'use strict';
