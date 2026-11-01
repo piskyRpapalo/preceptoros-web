@@ -10,12 +10,12 @@
     east: [1, 0], 'north-east': [1, -1], 'north-west': [0, -1],
     west: [-1, 0], 'south-west': [-1, 1], 'south-east': [0, 1]
   };
-  var LOOKS = ['basic', 'atlantis', 'zombie'];
+  var LOOKS = ['basic', 'ocean', 'flat'];
   // D13/D14: the house bands of each terminal (names only).
   var ANCHOR = {
     basic: { bg: 'paper', fg: 'ink', accent: 'cyan' },
-    atlantis: { bg: 'ocean', fg: 'paper', accent: 'comic yellow.base' },
-    zombie: { bg: 'ink', fg: 'cyan', accent: 'vermilion.base' }
+    ocean: { bg: 'ocean', fg: 'paper', accent: 'comic yellow.base' },
+    flat: { bg: 'ink', fg: 'cyan', accent: 'vermilion.base' }
   };
   var KEY = 'preceptoros.terminal';
 
@@ -91,7 +91,7 @@
     actions.appendChild(button('Skip tutorial', function () { handlers.skip(); }));
     var sel = doc.createElement('select');
     sel.setAttribute('aria-label', 'Terminal look');
-    [['', 'node default'], ['basic', 'basic'], ['atlantis', 'atlantis'], ['zombie', 'zombie']].forEach(function (o) {
+    [['', 'node default'], ['basic', 'basic'], ['ocean', 'ocean'], ['flat', 'flat']].forEach(function (o) {
       var opt = doc.createElement('option'); opt.value = o[0]; opt.textContent = o[1]; sel.appendChild(opt);
     });
     sel.style.minHeight = '44px';

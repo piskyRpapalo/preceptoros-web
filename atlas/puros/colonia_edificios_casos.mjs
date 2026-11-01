@@ -10,18 +10,18 @@ const E = require('./colonia_edificios.js');
 const F = require('./state_frames.js');
 
 const COLONIA = colony({
-  nodes: [{ id: 'cabin', q: 0, r: 0 }, { id: 'atlantis', q: -2, r: 1 }, { id: 'risen', q: 2, r: -1 }],
-  buildings: [{ id: 'b-cabin', node: 'cabin' }, { id: 'b-risen', node: 'risen' }],
+  nodes: [{ id: 'cabin', q: 0, r: 0 }, { id: 'hexelion', q: -2, r: 1 }, { id: 'second', q: 2, r: -1 }],
+  buildings: [{ id: 'b-cabin', node: 'cabin' }, { id: 'b-second', node: 'second' }],
   units: []
 });
 
 test('every node is a module tile, every building a frame; the scene is placed on the hex projection', () => {
   const s = E.scene(COLONIA, 1, false);
-  assert.deepEqual(s.tiles.map((t) => t.id), ['cabin', 'atlantis', 'risen']);
-  assert.deepEqual(s.buildings.map((b) => b.id).sort(), ['b-cabin', 'b-risen']);
-  const risen = s.tiles.find((t) => t.id === 'risen');
-  assert.equal(risen.x, 192, 'projection x = 48q, scaled by 2');
-  assert.equal(risen.y, 0, 'projection y = 12q + 24r, here 0');
+  assert.deepEqual(s.tiles.map((t) => t.id), ['cabin', 'hexelion', 'second']);
+  assert.deepEqual(s.buildings.map((b) => b.id).sort(), ['b-cabin', 'b-second']);
+  const second = s.tiles.find((t) => t.id === 'second');
+  assert.equal(second.x, 192, 'projection x = 48q, scaled by 2');
+  assert.equal(second.y, 0, 'projection y = 12q + 24r, here 0');
 });
 
 test('a module keeps its colour from the id: the same colour in every run and every scene', () => {

@@ -2343,34 +2343,31 @@ class WebLimpia(unittest.TestCase):
 class HubSinMundosVivos(unittest.TestCase):
     """Comisión del Soberano (2026-10-28): hoy no hay nodo vivo, así que el hub /face/ no presenta mundos.
 
-    Los mundos (atlantis, zombie, basic) siguen en disco: sus deep links y el duelo de onda no se borran ni se
-    redirigen hasta tener una regla medida y una puerta propia de Worlds.
+    Decreto p0 (buzon#30, 2026-11-01): las dos lápidas con nombre prohibido salieron a retirados/face/; en /face/
+    quedan basic.html (terminal compartida) y la lápida de walker.
     """
 
     def test_el_hub_no_enlaza_a_ningun_mundo(self):
         hub = (PUBLICO / "face" / "index.html").read_text(encoding="utf-8")
-        for pagina in ("atlantis.html", "zombie.html", "basic.html"):
+        for pagina in ("walker.html", "basic.html"):
             with self.subTest(pagina=pagina):
                 self.assertNotIn("/face/" + pagina, hub, "el hub presenta un mundo sin nodo vivo")
         self.assertIn("No node is live", hub)
 
     def test_las_paginas_de_mundo_siguen_en_disco(self):
-        # H2 (2026-11-01): atlantis y zombie se retiraron con recibo (retirados/face/RETIRO.md); su deep link sigue
-        # vivo como lapida noindex que lleva al mapa. basic.html sigue siendo la terminal compartida.
-        for pagina in ("atlantis.html", "zombie.html", "basic.html"):
-            with self.subTest(pagina=pagina):
-                self.assertTrue((PUBLICO / "face" / pagina).is_file(), "se borro un deep link del combate")
-        for pagina in ("atlantis.html", "zombie.html"):
-            lapida = (PUBLICO / "face" / pagina).read_text(encoding="utf-8")
-            self.assertIn('<meta name="robots" content="noindex">', lapida)
-            self.assertIn('href="/openworld/"', lapida)
+        # H2 (2026-11-01) dejó lápidas; el decreto p0 retiró las dos que nombraban lo que la web ya no nombra.
+        self.assertTrue((PUBLICO / "face" / "basic.html").is_file(), "se borro la terminal compartida")
+        lapida = (PUBLICO / "face" / "walker.html").read_text(encoding="utf-8")
+        self.assertIn('<meta name="robots" content="noindex">', lapida)
+        self.assertIn('href="/openworld/"', lapida)
+        self.assertEqual(sorted(p.name for p in (PUBLICO / "face").glob("*.html")), ["basic.html", "index.html", "walker.html"])
 
 
 class OpenWorld(unittest.TestCase):
     """NORTE 7 · PR 2 (2026-10-28): /openworld/ es la ficha del mapa global y el chat.
 
-    El estado por defecto son CERO nodos: la pagina enseña el mapa y la cabana del tutorial. Atlantis y the
-    Risen solo aparecen si `estado.json` los lista como vivos. Y el navegador no pide nada fuera de este origen.
+    El estado por defecto son CERO nodos: la pagina enseña el mapa y la cabana del tutorial. Node Hexelion y el
+    segundo nodo solo aparecen si `estado.json` los lista como vivos. Y el navegador no pide nada fuera de este origen.
     """
 
     def setUp(self):
@@ -2390,15 +2387,15 @@ class OpenWorld(unittest.TestCase):
 
     def test_la_cabana_siempre_y_los_nodos_solo_si_viven(self):
         # El mapa (NODO-MAPA, ODD isometric-colony) nombra tres filas en el nucleo puro: la cabana siempre, y
-        # Atlantis y the Risen solo si el estado los lista como vivos. La ficha pinta lo que el nucleo decide.
+        # Node Hexelion y Second node solo si el estado los lista como vivos (decreto p0, 2026-11-01). La ficha pinta lo que el nucleo decide.
         nucleo = (PUBLICO / "game" / "global_map.js").read_text(encoding="utf-8")
         self.assertIn("nombre: 'Tutorial cabin'", nucleo)
         self.assertIn("siempre: true", nucleo)
-        self.assertIn("nombre: 'Atlantis · Node Hexelion'", nucleo)
-        self.assertIn("nombre: 'the Risen'", nucleo)
+        self.assertIn("nombre: 'Node Hexelion'", nucleo)
+        self.assertIn("nombre: 'Second node'", nucleo)
         self.assertIn("node.siempre || vivos.some(", nucleo)
         self.assertIn("M.estado(entrada)", self.t)
-        self.assertIn("return n && (n.id === 'atlantis' || n.id === 'risen');", self.t)
+        self.assertIn("return n && (n.id === 'hexelion' || n.id === 'second');", self.t)
 
     def test_cero_peticiones_externas(self):
         # Lo que el navegador DESCARGA: scripts, imagenes, hojas, iconos y manifest. El canonical y las etiquetas

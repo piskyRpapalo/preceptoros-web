@@ -37,14 +37,14 @@
     }
     return pts;
   }
-  // The face of a node follows its look (IC7-S4, D11). basic and atlantis: smiling face on paper. zombie: flat eyes and a
+  // The face of a node follows its look (IC7-S4, D11). basic and ocean: smiling face on paper. flat: flat eyes and a
   // straight mouth on the cyan family. Only house bands are used; the look is data of the state, never a fixed skin.
   function botFrame(node, t, reducido) {
     var dy = reducido === true ? 0 : RONDA[((t % 4) + 4) % 4];
-    var look = node.look === 'zombie' ? 'zombie' : 'basic';
+    var look = node.look === 'flat' ? 'flat' : 'basic';
     var frase = 'bot of ' + node.id + ' · ' + look + ' face · seal ' + (node.seal || 'NO_DATA') + ' · tick ' + t + (reducido === true ? ' · still (reduced motion)' : '');
     var cuerpo = cuerpoPts(9).map(function (q) { return [q[0] + BX, q[1] + BY - 14 - dy]; });
-    var cara = look === 'zombie' ? [
+    var cara = look === 'flat' ? [
       { o: 'ribbon', pts: [[BX - 6, BY - 18 - dy], [BX - 2, BY - 18 - dy], [BX - 2, BY - 16 - dy], [BX - 6, BY - 16 - dy]], closed: true, f: 'ink', s: 'ink', lw: 1 },
       { o: 'ribbon', pts: [[BX + 2, BY - 18 - dy], [BX + 6, BY - 18 - dy], [BX + 6, BY - 16 - dy], [BX + 2, BY - 16 - dy]], closed: true, f: 'ink', s: 'ink', lw: 1 },
       { o: 'ribbon', pts: [[BX - 5, BY - 9 - dy], [BX + 5, BY - 9 - dy], [BX + 5, BY - 8 - dy], [BX - 5, BY - 8 - dy]], closed: true, f: 'ink', s: 'ink', lw: 1 }
@@ -55,7 +55,7 @@
     ];
     return {
       v: 'preceptoros.bubble/1', id: 'bot-' + node.id, t: t, cv: [120, 110], seal: node.seal || 'NO_DATA',
-      atoms: [{ k: 'bot.' + node.id, r: frase, i: [{ o: 'ribbon', pts: cuerpo, closed: true, f: look === 'zombie' ? 'cyan' : 'paper', s: 'ink', lw: 2 }].concat(cara) }],
+      atoms: [{ k: 'bot.' + node.id, r: frase, i: [{ o: 'ribbon', pts: cuerpo, closed: true, f: look === 'flat' ? 'cyan' : 'paper', s: 'ink', lw: 2 }].concat(cara) }],
       bands: ['paper', 'ink', 'cyan'],
       change: [frase],
       sound: 'NO_DATA: bots declare no waves; nothing is invented',

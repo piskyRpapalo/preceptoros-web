@@ -23,7 +23,8 @@ assert.deepEqual(readFileSync(target), prior, 'generated page must match fixture
 const text = prior.toString('utf8');
 assert.ok(text.includes('Army · NO_DATA'));
 assert.ok(text.includes('SHA-256 profile'));
-assert.ok(text.includes('href="/face/basic.html"'));
+assert.ok(text.includes('href="/openworld/"'), 'Army links back to /openworld/');
+assert.ok(!text.includes('/face/basic.html') && !/shared map/i.test(text), 'decreto p0: no shared map access from Army');
 assert.ok(!/<svg|<canvas/i.test(text), 'Army page must not draw a second map');
 assert.ok(text.includes('/assets/pwa.js'));
 assert.ok(text.includes('/manifest.webmanifest'));
