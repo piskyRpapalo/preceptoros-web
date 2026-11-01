@@ -61,6 +61,7 @@ jobs:
             node --test atlas/puros/hex_projection_casos.mjs
             node --test atlas/barrido_web_casos.mjs
             node --test atlas/map_carta_casos.mjs
+            node --test atlas/map_chunks_casos.mjs
             node --test atlas/retiro_face_casos.mjs
             node --test atlas/map_zoom_colonia_casos.mjs
             node atlas/hex_projection_gate.mjs
