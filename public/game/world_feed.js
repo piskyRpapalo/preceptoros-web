@@ -5,7 +5,12 @@
     var timeout = setTimeout(function () { controller.abort(); }, 7000);
     try {
       var response = await fetcher('/api/world-state', {cache: 'no-store', credentials: 'omit', redirect: 'error', signal: controller.signal});
-      if (!response.ok) throw new Error('publisher unavailable');
+      if (!response.ok) {
+        // The worker answers its own NO_DATA (503 with cobertura.causa); say that cause, not a generic one.
+        var causa = 'publisher answered HTTP ' + response.status;
+        try { var nd = JSON.parse(await response.text()); if (nd && nd.cobertura && typeof nd.cobertura.causa === 'string') causa = nd.cobertura.causa.slice(0, 80); } catch (e) {}
+        throw new Error(causa);
+      }
       var text = await response.text();
       if (new TextEncoder().encode(text).length > 16384) throw new Error('publisher response too large');
       var data = JSON.parse(text);

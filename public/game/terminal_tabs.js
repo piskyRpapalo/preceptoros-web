@@ -27,5 +27,24 @@
   });
   var play = doc.getElementById('visitor-play');
   if (play) { play.addEventListener('visitor:changed', function () { var s = doc.getElementById('tab-summons'); if (s && s.getAttribute('aria-selected') !== 'true' && doc.getElementById('visitor-beacon')) { select(s, false); } }); }
+  // Army sheet: the troops adopted in this visit (from visitor_play's render), or NO_DATA with its cause; the link stays.
+  var armySheet = doc.getElementById('sheet-army');
+  function paintArmy(troops) {
+    if (!armySheet) { return; }
+    var box = doc.getElementById('army-visit');
+    if (!box) { box = doc.createElement('div'); box.id = 'army-visit'; box.setAttribute('aria-live', 'polite'); armySheet.insertBefore(box, armySheet.querySelector('p')); }
+    box.textContent = '';
+    var p = doc.createElement('p');
+    if (!troops || !troops.length) { p.textContent = 'NO_DATA: no troops adopted in this visit yet.'; box.appendChild(p); return; }
+    p.textContent = 'Troops of this visit: ' + troops.length + '.'; box.appendChild(p);
+    var ul = doc.createElement('ul');
+    troops.forEach(function (u, i) { var t = (u && u.adopcion && u.adopcion.tropa) || {}; var li = doc.createElement('li'); li.textContent = String(t.nombre || t.tc || ('Troop ' + (i + 1))); ul.appendChild(li); });
+    box.appendChild(ul);
+  }
+  paintArmy(null);
+  if (play) {
+    play.addEventListener('visitor:render', function (e) { paintArmy(e.detail && e.detail.state && e.detail.state.troops); });
+    play.addEventListener('visitor:end', function () { paintArmy(null); });
+  }
   root.AtlasTerminalTabs = { select: function (id) { var t = doc.getElementById(id); if (t) { select(t, false); } } };
 })(globalThis);
