@@ -16,6 +16,16 @@
 <link rel="manifest" href="/manifest.webmanifest">
 <link rel="stylesheet" href="/assets/landing.css">
 <style>
+.radio-chat{margin-top:8px;border:2px solid currentColor;border-radius:12px;background:var(--bg);color:var(--fg)}
+.radio-chat-alterna{display:flex;gap:8px;align-items:center;width:100%;min-height:44px;padding:6px 10px;border:0;background:none;color:inherit;font:inherit;text-align:left}
+.radio-chat-ultimo{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.radio-chat.plegado :is(.radio-chat-tabs,.radio-chat-lista,.radio-chat-no-data){display:none}
+.radio-chat-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;padding:0 8px}
+.radio-chat-tab{min-height:44px;border:2px solid currentColor;border-radius:12px;background:var(--bg);color:var(--fg);font:inherit;font-weight:700}
+.radio-chat-tab[aria-selected="true"]{text-decoration:underline;border-width:3px}
+.radio-chat-lista{margin:0;padding:6px 10px 10px;list-style:none;display:grid;gap:6px;max-height:40vh;overflow-y:auto}
+.radio-chat-lista[hidden],.radio-chat-no-data[hidden]{display:none}
+.radio-chat-no-data{margin:6px 10px;padding:8px;border:2px dashed currentColor}
 html,body{height:100%}
 body{display:flex;flex-direction:column;min-height:100vh}
 main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;padding:0;min-height:100vh;box-sizing:border-box}
@@ -45,7 +55,7 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
 </head>
 <body>
 <a class="skip" href="#chat">Skip to the chat</a>
-<main>
+<main data-radio-capa>
 <section id="map" aria-labelledby="map-h">
 <a href="/" style="display:inline-block;min-height:44px">Back</a>
 <h1 id="map-h">OpenWorld</h1>
@@ -121,6 +131,8 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
 <script src="/game/visitor_play.js"></script>
 <script src="/game/world_feed.js"></script>
 <script src="/game/map_chat.js"></script>
+<script src="/assets/radio_message_log.js"></script>
+<script src="/game/face_terminal.js"></script>
 <script src="/assets/pwa.js"></script>
 <script src="/game/openworld_page.js"></script>
 </body>
