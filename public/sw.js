@@ -149,8 +149,8 @@ self.addEventListener('fetch', e => {
 
   if (RED_PRIMERO.indexOf(url.pathname) >= 0) { e.respondWith(redPrimero(e)); return; }
 
-    
-    
+  
+  
   if (url.pathname.endsWith('.json') &&
       CONTENIDO_JSON.indexOf(url.pathname) < 0) return;
   if (req.mode === 'navigate') { e.respondWith(navegacion(e)); return; }
