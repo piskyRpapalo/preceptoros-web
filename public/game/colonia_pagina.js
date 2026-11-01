@@ -10,7 +10,8 @@
   var BX = 60, BY = 84;                       // the base of a building inside its box (the same as the core)
   var BOT_DX = 22, BOT_DY = 8;               // a bot stands just beside its building
   var ANCHO = 480, ALTO = 320;                // the canvas the page draws on, in its own units
-  var RONDA = [0, 1, 2, 1];                   // one bob cycle, whole numbers only
+  var RONDA = [0, 1, 2, 1];
+  var SQUASH = Math.sqrt(3) / 4;              // the ground-to-screen squash of HexProjection (x 48q, y 12q+24r)                   // one bob cycle, whole numbers only
 
   function hash(texto) {
     var h = 0x811c9dc5;
@@ -106,7 +107,18 @@
     var zoom = Number(canvas.dataset && canvas.dataset.zoom) || 1;
     // Free walk: the camera pan (canvas pixels, canvas.dataset.panx/pany) keeps the crab in view; clicks read it too.
     var px = Number(canvas.dataset && canvas.dataset.panx) || 0, py = Number(canvas.dataset && canvas.dataset.pany) || 0;
-    return { cx: canvas.width / 2 + px, cy: canvas.height / 2 + py, k: Math.min(K, (canvas.width / 2 - 80) / reach) * zoom };
+    // Orbit: the view angle (canvas.dataset.angle, whole degrees) turns the projected floor around the scene origin.
+    // Only the picture turns (law P5): the state, the fog and every result stay where they are.
+    var deg = Math.round(Number(canvas.dataset && canvas.dataset.angle) || 0), a = deg * Math.PI / 180;
+    var G = { cx: canvas.width / 2 + px, cy: canvas.height / 2 + py, k: Math.min(K, (canvas.width / 2 - 80) / reach) * zoom,
+      angle: ((deg % 360) + 360) % 360, cos: Math.cos(a), sin: Math.sin(a) };
+    // turn(x, y) → the projected point after the view rotation (still in scene units; depth is its y). The turn is on the
+    // ground: HexProjection squashes y by SQUASH (√3/4 makes its hex regular), so y is unsquashed, turned and squashed
+    // again. A hex stays a hex at every angle and 60° lands each cell on a neighbour's place.
+    G.turn = function (x, y) { var u = y / SQUASH; return { x: x * G.cos - u * G.sin, y: (x * G.sin + u * G.cos) * SQUASH }; };
+    // at(x, y) → canvas pixels of a scene point: the one formula drawing and the click test share.
+    G.at = function (x, y) { var r = G.turn(x, y); return { x: G.cx + r.x * G.k, y: G.cy + r.y * G.k }; };
+    return G;
   }
 
   // nodeAt(canvas, estado, t, looks, seals, px, py) → the id of the node drawn under the point (canvas pixels), or null.
@@ -114,7 +126,7 @@
   function nodeAt(canvas, estado, t, looks, seals, px, py) {
     var sc = scene(estado, t, false, looks, seals), G = geometry(sc, canvas), best = null, bestD = 36 * S;
     sc.tiles.forEach(function (n) {
-      var dx = G.cx + n.x * G.k - px, dy = G.cy + n.y * G.k - py, d = Math.sqrt(dx * dx + dy * dy);
+      var p = G.at(n.x, n.y), dx = p.x - px, dy = p.y - py, d = Math.sqrt(dx * dx + dy * dy);
       if (d <= bestD) { best = n.id; bestD = d; }
     });
     return best;
@@ -125,14 +137,14 @@
   // anchorOf(canvas, estado, t, looks, seals, id) → { x, y } in canvas pixels where the hex of node id is drawn, or null.
   function anchorOf(canvas, estado, t, looks, seals, id) {
     var sc = scene(estado, t, false, looks, seals), G = geometry(sc, canvas), n = tileOf(sc, id);
-    return n ? { x: G.cx + n.x * G.k, y: G.cy + n.y * G.k } : null;
+    return n ? G.at(n.x, n.y) : null;
   }
 
   // follow(canvas, sc, you): when the crab leaves the upper band of the canvas (the joystick panel covers the lower half
   // at phone width), pan so it stands at mid width, a quarter down. A jump, never a tween, so reduced motion needs
   // nothing more. The pan is written on canvas.dataset, beside dataset.zoom, and geometry() reads it.
   function follow(canvas, sc, you) {
-    var G = geometry(sc, canvas), x = G.cx + you.x * G.k, y = G.cy + you.y * G.k, W = canvas.width, H = canvas.height;
+    var G = geometry(sc, canvas), p = G.at(you.x, you.y), x = p.x, y = p.y - (you.lift || 0) * G.k, W = canvas.width, H = canvas.height;
     if (x < W * 0.15 || x > W * 0.85 || y < H * 0.12 || y > H * 0.42) {
       canvas.dataset.panx = String(Math.round(G.cx - W / 2 - (x - W / 2)));
       canvas.dataset.pany = String(Math.round(G.cy - H / 2 - (y - H / 4)));
@@ -152,7 +164,7 @@
     var MP = root.AtlasMapPainter, HP = root.HexProjection;
     if (you && walker.free && HP) {
       var cell = HP(walker.q, walker.r);
-      you = { id: you.id, x: cell.x, y: cell.y - (walker.h || 0) * (MP ? MP.HSTEP : 7), free: true };
+      you = { id: you.id, x: cell.x, y: cell.y, lift: (walker.h || 0) * (MP ? MP.HSTEP : 7), free: true };
       follow(canvas, sc, you);
     }
     sc.you = you ? youFrame(walker, t, reducido === true) : null;
@@ -166,14 +178,19 @@
     var layers = sc.tiles.map(function (n, i) { return { id: 'tile-' + i, item: n }; })
       .concat(sc.buildings.map(function (n, i) { return { id: 'building-' + i, item: n }; }))
       .concat(sc.bots.map(function (n, i) { return { id: 'bot-' + i, item: n }; }));
-    if (you) { layers.push({ id: 'walker', item: you.free ? { x: you.x, y: you.y, frame: sc.you } : { x: you.x - BOT_DX * ESCALA_SALA, y: you.y - 22, frame: sc.you } }); }
-    var drawn = root.AtlasMapScene ? root.AtlasMapScene.compose(layers.map(function (layer) {
-      return { id: layer.id, x: layer.item.x, y: layer.item.y, frame: layer.item.frame };
-    })).map(function (layer) { return { x: layer.x, y: layer.y, frame: layer.frame }; })
-      : layers.map(function (layer) { return layer.item; });
+    if (you) { layers.push({ id: 'walker', item: you.free ? { x: you.x, y: you.y, lift: you.lift, frame: sc.you } : { x: you.x - BOT_DX * ESCALA_SALA, y: you.y - 22, frame: sc.you } }); }
+    // Orbit: each layer is turned with the floor, then sorted back to front by its TURNED depth (floor law step 3).
+    var turned = layers.map(function (layer) {
+      var r = G.turn(layer.item.x, layer.item.y);
+      return { id: layer.id, x: r.x, y: r.y, lift: layer.item.lift || 0, frame: layer.item.frame };
+    });
+    var drawn = root.AtlasMapScene ? root.AtlasMapScene.compose(turned.map(function (l) { return { id: l.id, x: l.x, y: l.y, frame: l.frame }; }))
+      .map(function (l) { return turned.filter(function (o) { return o.id === l.id; })[0]; })
+      : turned.slice().sort(function (a, b) { return a.y - b.y || a.x - b.x || (a.id < b.id ? -1 : 1); });
+    sc.order = drawn.map(function (l) { return l.id; });
     drawn.forEach(function (nd) {
       g.save();
-      g.translate(cx + nd.x * k - BX * S, cy + nd.y * k - BY * S);
+      g.translate(cx + nd.x * k - BX * S, cy + (nd.y - nd.lift) * k - BY * S);
       g.scale(S, S);
       P.paint(g, B.compile(nd.frame));
       g.restore();
@@ -193,7 +210,7 @@
     return out;
   }
 
-  var AtlasColoniaPagina = { ANCHO: ANCHO, ALTO: ALTO, scene: scene, draw: draw, nodeAt: nodeAt, anchorOf: anchorOf, texto: texto, frases: frases, botFrame: botFrame, youFrame: youFrame, hash: hash };
+  var AtlasColoniaPagina = { ANCHO: ANCHO, ALTO: ALTO, scene: scene, draw: draw, geometry: geometry, SQUASH: SQUASH, nodeAt: nodeAt, anchorOf: anchorOf, texto: texto, frases: frases, botFrame: botFrame, youFrame: youFrame, hash: hash };
   if (typeof module === 'object' && module.exports) { module.exports = AtlasColoniaPagina; }
   else { root.AtlasColoniaPagina = AtlasColoniaPagina; }
 })(typeof globalThis === 'object' ? globalThis : this);

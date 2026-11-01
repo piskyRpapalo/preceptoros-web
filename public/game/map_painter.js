@@ -53,17 +53,31 @@
     all.sort(function (a, b) { var ya = 12 * a[0] + 24 * a[1], yb = 12 * b[0] + 24 * b[1]; return ya - yb || a[0] - b[0]; });
     return { list: all, at: h };
   }
+  // orderAt(cells, G) → the cell list sorted back to front by the TURNED depth of the view angle (floor law step 3).
+  // The projection and the turn are both linear, so one sort per angle is enough; it is kept until the angle changes.
+  function orderAt(cells, G) {
+    var deg = G.angle || 0;
+    if (!deg) { return cells.list; }
+    if (cells.deg === deg) { return cells.turned; }
+    cells.turned = cells.list.slice().sort(function (a, b) {
+      var pa = P(a[0], a[1]), pb = P(b[0], b[1]), ta = G.turn(pa.x, pa.y), tb = G.turn(pb.x, pb.y);
+      return ta.y - tb.y || ta.x - tb.x || a[0] - b[0] || a[1] - b[1];
+    });
+    cells.deg = deg;
+    return cells.turned;
+  }
   function height(c) { return c[3] === 'water' ? 0 : c[2]; }
 
   // floor(g, G, world, t, reduced): paints the prisms; G = colonia_pagina geometry; world = { cells, frames }.
   function floor(g, G, world, t, reduced) {
     if (!world || !world.cells.list.length) { return 0; }
     var B = bands(), day = PC.palette(t, reduced).dia / 256, k = G.k, W = g.canvas.width, H = g.canvas.height, drawn = 0;
-    var corner = NB.map(function (d, i) { var e = NB[(i + 1) % 6], p = P(d[0] + e[0], d[1] + e[1]); return [p.x / 3 * k, p.y / 3 * k]; });
+    var turn = G.turn || function (x, y) { return { x: x, y: y }; };   // the view orbit of colonia_pagina geometry()
+    var corner = NB.map(function (d, i) { var e = NB[(i + 1) % 6], p = P(d[0] + e[0], d[1] + e[1]), r = turn(p.x, p.y); return [r.x / 3 * k, r.y / 3 * k]; });
     var wt = reduced ? 0 : t * SEA.speed, lod = k * 48 > 18, lit = 0.62 + 0.38 * day;
     g.save(); g.lineJoin = 'round';
-    world.cells.list.forEach(function (c) {
-      var p = P(c[0], c[1]), x = G.cx + p.x * k, y = G.cy + p.y * k;
+    orderAt(world.cells, G).forEach(function (c) {
+      var h0 = P(c[0], c[1]), p = turn(h0.x, h0.y), x = G.cx + p.x * k, y = G.cy + p.y * k;
       if (x < -60 * k || x > W + 60 * k || y < -60 * k || y > H + 90 * k) { return; }
       var b = B[bandOf(c)], hh = height(c), wave = b.kind === 'water' ? Math.round(SEA.amp * Math.sin((c[0] * 2 + c[1] * 3 + wt / 8) / SEA.len) * 10) / 10 : 0;
       var top = y - (hh * HSTEP + wave) * k, occl = 1;
@@ -118,7 +132,7 @@
   }
   function draw(g, G, t, reduced) { return floor(g, G, world, Math.round(t) || 0, reduced === true); }
 
-  var api = { frameOf: frameOf, cellsOf: cellsOf, floor: floor, bands: bands, start: start, draw: draw,
+  var api = { frameOf: frameOf, cellsOf: cellsOf, orderAt: orderAt, floor: floor, bands: bands, start: start, draw: draw,
     world: function () { return world; }, describe: function () { return said; }, HSTEP: HSTEP };
   if (common) { module.exports = api; } else { root.AtlasMapPainter = api; }
 })(typeof globalThis === 'object' ? globalThis : this);

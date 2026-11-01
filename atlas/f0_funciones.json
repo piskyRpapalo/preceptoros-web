@@ -101,6 +101,25 @@
    ]
   },
   {
+   "id": "map-orbit",
+   "scripts": [
+    "/game/map_zoom.js",
+    "/game/colonia_pagina.js",
+    "/game/map_painter.js"
+   ],
+   "globals": [
+    "AtlasMapZoom",
+    "AtlasColoniaPagina",
+    "AtlasMapPainter"
+   ],
+   "guards": [
+    {
+     "file": "atlas/openworld_browser.mjs",
+     "text": "E does not turn the map 60° or the line does not say it"
+    }
+   ]
+  },
+  {
    "id": "visitor-account",
    "scripts": [
     "/game/visitor_account.js",

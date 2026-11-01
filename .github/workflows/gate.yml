@@ -67,6 +67,7 @@ jobs:
             node --test atlas/retiro_face_casos.mjs
             node --test atlas/f0_funciones_casos.mjs
             node --test atlas/map_zoom_colonia_casos.mjs
+            node --test atlas/map_orbita_casos.mjs
             node --test atlas/hitl_walkers_casos.mjs
             node atlas/hex_projection_gate.mjs
             node --test atlas/puros/catalogo_iso_casos.mjs

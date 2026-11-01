@@ -146,9 +146,23 @@ async function main() {
     document.getElementById('zoom-reset').click(); const r = s.dataset.zoom;
     const sizes = Array.from(document.querySelectorAll('#zoom-controls button')).map((b) => b.getBoundingClientRect().height);
     return JSON.stringify({ k, ks, o, r, sizes }); })()`));
-  ok(zoom.k === '1.25' && /Map zoom 1\.25×/.test(zoom.ks), 'the + key does not zoom or is not spoken: ' + JSON.stringify(zoom));
+  ok(zoom.k === '1.25' && /zoom 1\.25×/.test(zoom.ks), 'the + key does not zoom or is not spoken: ' + JSON.stringify(zoom));
   ok(zoom.o === '0.80' && zoom.r === '1.00', 'zoom out / reset do not move the factor: ' + JSON.stringify(zoom));
-  ok(zoom.sizes.length === 3 && zoom.sizes.every((h) => h >= 44), 'zoom buttons below the touch target: ' + zoom.sizes);
+  ok(zoom.sizes.length === 6 && zoom.sizes.every((h) => h >= 44), 'zoom buttons below the touch target: ' + zoom.sizes);
+  // Orbit: E turns the view 60° (spoken in the plate's line), a tap on the cabin at 120° still enters it, Reset view returns to 0°.
+  const orbita = JSON.parse(await ev(`(async () => { const s = document.getElementById('surface'), say = () => (document.getElementById('zoom-state') || {}).textContent || '', w = (ms) => new Promise((r) => setTimeout(r, ms));
+    document.body.dispatchEvent(new KeyboardEvent('keydown', { key: 'e', bubbles: true })); await w(400); const a1 = s.dataset.angle, l1 = say();
+    document.getElementById('rotate-right').click(); await w(400); const a2 = s.dataset.angle;
+    const d = await (await fetch('/openworld/estado.json', { cache: 'no-store' })).json(), est = AtlasOpenworldState.leer(d);
+    const a = AtlasColoniaPagina.anchorOf(s, est.colonia, 0, est.looks || {}, est.seals || {}, 'cabin'), r = s.getBoundingClientRect();
+    s.dispatchEvent(new MouseEvent('click', { bubbles: true, clientX: r.left + a.x * r.width / s.width, clientY: r.top + a.y * r.height / s.height })); await w(300);
+    const joy = document.querySelector('#joy [aria-live]').textContent;
+    document.getElementById('view-reset').click(); await w(100);
+    return JSON.stringify({ a1, l1, a2, joy, r: s.dataset.angle, z: s.dataset.zoom, rl: say(), labels: ['rotate-left', 'rotate-right', 'view-reset'].map((id) => (document.getElementById(id) || {}).textContent) }); })()`));
+  ok(orbita.a1 === '60' && /^Map view 60° · zoom 1\.00×$/.test(orbita.l1), 'E does not turn the map 60° or the line does not say it: ' + JSON.stringify(orbita));
+  ok(orbita.a2 === '120' && /^terminal: basic/.test(orbita.joy || ''), 'a tap on the cabin at 120° does not enter it: ' + JSON.stringify(orbita));
+  ok(orbita.r === '0' && orbita.z === '1.00' && /^Map view 0°/.test(orbita.rl), 'Reset view does not return to 0°: ' + JSON.stringify(orbita));
+  ok(orbita.labels.join('|') === 'Rotate left|Rotate right|Reset view', 'the orbit buttons are missing: ' + orbita.labels);
   // P5a: the HITL «?» is a real button over the cabin: 44 px, reached by Tab, Enter opens it and #state says it.
   HITL_ON = true;
   await cmd('Page.navigate', { url: origen + '/openworld/' }); await espera(1500);
