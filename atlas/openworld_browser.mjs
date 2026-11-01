@@ -189,6 +189,24 @@ async function main() {
     return JSON.stringify({ moved, covers, start, back, sizes }); })()`));
   ok(pest.moved === 'tab-news' && pest.covers && pest.start && pest.back && pest.sizes.every((h) => h >= 44), 'the terminal tabs do not cover the map or the keyboard fails: ' + JSON.stringify(pest));
   if (CAPTURA) { await ev("document.getElementById('tab-summons').click()"); const g3 = await cmd('Page.captureScreenshot', { format: 'png' }); writeFileSync(join(CAPTURA, 'openworld-summons.png'), Buffer.from(g3.result.data, 'base64')); await ev("document.getElementById('tab-map').click()"); }
+  // Plug&play (2026-11-01): at 390 px the page reads map → tabs → ONE next step → chat; the rare controls are folded.
+  await cmd('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 1, mobile: true });
+  await cmd('Page.navigate', { url: origen + '/openworld/' }); await espera(1500);
+  const plug = JSON.parse(await ev(`(async () => { const w = (ms) => new Promise((r) => setTimeout(r, ms)), y = (id) => document.getElementById(id).getBoundingClientRect().top;
+    const t0 = document.getElementById('next-text').textContent, p = document.getElementById('play-now'), tall = p.getBoundingClientRect().height;
+    const order = y('surface') < y('tab-map') && y('tab-map') < y('next-step') && y('next-step') < y('chat');
+    const look = document.querySelector('select[aria-label="Terminal look"]'), folded = !!look && !!look.closest('#more') && !document.querySelector('#joy select');
+    const first = (document.querySelector('#radio-chat-lista li') || {}).textContent || '';
+    p.click(); for (let i = 0; i < 50 && !document.getElementById('visitor-beacon'); i++) await w(100);
+    const t1 = document.getElementById('next-text').textContent, gone = p.hidden;
+    document.getElementById('visitor-beacon').click(); for (let i = 0; i < 50 && !/Summon/.test(document.getElementById('next-text').textContent); i++) await w(100);
+    return JSON.stringify({ t0, tall, order, folded, first, t1, gone, t2: document.getElementById('next-text').textContent, live: document.getElementById('next-step').getAttribute('aria-live') }); })()`));
+  ok(plug.t0 === 'Press Play now.' && plug.tall >= 44 && plug.live === 'polite', 'the next step does not say Play now on a 44 px button: ' + JSON.stringify(plug));
+  ok(plug.order, 'the phone order is not map, tabs, next step, chat: ' + JSON.stringify(plug));
+  ok(plug.folded, 'the terminal look is not folded under More: ' + JSON.stringify(plug));
+  ok(/Start here: press Play now/.test(plug.first), 'the radio first line does not tell a newcomer what to do: ' + plug.first);
+  ok(plug.gone && plug.t1 === 'Ask the guide in the chat.' && plug.t2 === 'Summon a wave in Summons.', 'the next step does not follow the visit state: ' + JSON.stringify(plug));
+  if (CAPTURA) { await cmd('Page.navigate', { url: origen + '/openworld/' }); await espera(1500); const g4 = await cmd('Page.captureScreenshot', { format: 'png' }); writeFileSync(join(CAPTURA, 'openworld-first-screen.png'), Buffer.from(g4.result.data, 'base64')); }
   console.log(JSON.stringify({ medida: { ...medida, texto: undefined }, escritorio, externas: externas.length, fallos }));
 }
 

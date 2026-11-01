@@ -16,7 +16,7 @@
     '"Visit the beacon" gives 100 copper once per visit. "Sign invocation" summons a wave creature; the reef summon costs 50 copper. ' +
     'Eggs hatch after some steps with "Sign adoption". Battles are practice and are replayed exactly. ' +
     'If the answer is not in these facts, say NO_DATA.';
-  var state = { status: 'idle', engine: null, manifest: null, model: null };
+  var state = { status: 'idle', engine: null, manifest: null, model: null, offline: false };
 
   function noData(cause, detail) { var e = new Error(detail || cause); e.cause = cause; return e; }
   function hex(buf) { return Array.prototype.map.call(new Uint8Array(buf), function (b) { return ('0' + b.toString(16)).slice(-2); }).join(''); }
@@ -58,6 +58,36 @@
     });
   }
 
+  // manifest(say) → the pinned manifest. Online it is fetched and kept in the same cache with its own SHA-256; with the
+  // network off (navigator.onLine false) nothing is asked: the kept copy is read and its hash checked again before use.
+  function manifest(say) {
+    var cache = root.caches ? root.caches.open(CACHE) : Promise.resolve(null), key = '/web-node-brain/manifest';
+    function kept(c) {
+      if (!c) { return Promise.reject(noData('offline_no_copy', 'No network and no kept manifest on this device')); }
+      return c.match(key).then(function (hit) {
+        if (!hit) { throw noData('offline_no_copy', 'No network and no kept manifest on this device'); }
+        var want = hit.headers.get('X-Sha256');
+        return hit.arrayBuffer().then(function (buf) {
+          return sha(buf).then(function (h) {
+            if (h !== want) { c.delete(key); throw noData('model_integrity_unavailable', 'kept manifest SHA-256 mismatch'); }
+            state.offline = true; say('Web node brain · offline · from this device');
+            return new Response(buf).text().then(JSON.parse);
+          });
+        });
+      });
+    }
+    return cache.then(function (c) {
+      if (root.navigator && root.navigator.onLine === false) { return kept(c); }
+      return root.fetch(MANIFEST, { credentials: 'omit' }).then(function (r) { return r.arrayBuffer(); }).then(function (buf) {
+        return new Response(buf.slice(0)).text().then(function (t) { var m = check(JSON.parse(t));
+        state.offline = false;
+        return sha(buf).then(function (h) {
+          return c ? c.put(key, new Response(buf.slice(0), { headers: { 'X-Sha256': h } })).then(function () { return m; }) : m;
+        }); });
+      }, function () { return kept(c); });
+    });
+  }
+
   // load({ consent, say }) → resolves when the model answers; say(text) narrates each verified step (for #chat-note).
   function load(opts) {
     var say = (opts && opts.say) || function () {};
@@ -65,7 +95,7 @@
     if (state.status === 'ready') { return Promise.resolve(state); }
     if (state.status === 'loading') { return Promise.reject(noData('model_busy', 'The brain is already loading')); }
     state.status = 'loading';
-    return root.fetch(MANIFEST, { credentials: 'omit' }).then(function (r) { return r.json(); }).then(function (m) {
+    return manifest(say).then(function (m) {
       state.manifest = check(m);
       var js = m.runtime[0], wasm = m.runtime[1];
       return bytes(js, say).then(function (jsBuf) {
@@ -118,5 +148,5 @@
       function (e) { state.status = 'ready'; throw e.cause ? e : noData('model_unavailable', e.message); });
   }
 
-  root.AtlasWebNodeBrain = { load: load, reply: reply, complete: complete, FACTS: SYSTEM.slice(SYSTEM.indexOf('Facts:')), check: check, status: function () { return state.status; }, MANIFEST: MANIFEST };
+  root.AtlasWebNodeBrain = { load: load, reply: reply, complete: complete, FACTS: SYSTEM.slice(SYSTEM.indexOf('Facts:')), check: check, status: function () { return state.status; }, offline: function () { return state.offline; }, MANIFEST: MANIFEST };
 })(globalThis);

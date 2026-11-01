@@ -8,8 +8,8 @@ Status: proposal for review. Deployment remains a human action. This document re
 
 Route-count receipt for this source tree (`haiku/corte-d-borrado-20261028`, Norte 7 D: the theGame stack leaves the shell with its files; measured with `python3 bin/contar_rutas.py`, 2026-10-28):
 
-Rutas precargadas por el shell: 114
-Rutas distintas del shell: 113
+Rutas precargadas por el shell: 115
+Rutas distintas del shell: 114
 
 The workflow runs exactly:
 
@@ -63,4 +63,5 @@ P4 source receipt (2026-11-01): /game/map_painter.js joins the shell (the 2.5D f
 Terminal source receipt (2026-11-01): /game/terminal_tabs.js joins the shell. 114 entries / 113 distinct.
 Terminal source receipt (2026-11-01): /game/terminal_tabs.js joins the shell. 115 entries / 114 distinct.
 Decree p0 source receipt (2026-11-01, buzon#30): /face/atlantis.html and /face/zombie.html tombstones leave the shell for retirados/face/. 113 entries / 112 distinct.
-Guide tools source receipt (2026-11-01): /game/guide_tools.js joins the shell (the tool registry of the web node guide). 114 entries / 113 distinct.
+Airplane-mode source receipt (2026-11-01): /game/web_node_brain.js joins the shell so the guide loads with the network off. 114 entries / 113 distinct.
+Guide tools source receipt (2026-11-01): /game/guide_tools.js joins the shell (the tool registry of the web node guide). 115 entries / 114 distinct.
