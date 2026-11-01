@@ -167,7 +167,7 @@
     function enterKey(source) {
       if (!freeWalker()) { walkSelected(); return; }
       if (source === 'stick') { if (aim) { var d = aim; aim = null; freeStep(d); } return; }
-      if (walker.on === undefined || walker.on) { enterNode(); return; }
+      if (walker.on === undefined || walker.on) { enterNode(true); return; }
       joy.say('No node on this cell: walk onto a node, then Enter.');
     }
     function setFree(on) {
