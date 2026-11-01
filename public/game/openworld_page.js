@@ -19,7 +19,7 @@
   var frases_el = doc.getElementById('frases');
   // TA-4 (D13-D16): the terminal, the anchor and the joystick live in colony_controls.js; the page passes its state in.
   var CC = raiz.AtlasColonyControls;
-  var CCT = CC ? CC.attach({ doc: doc, win: raiz, colony: function () { return colonia; }, looks: function () { return colony_looks; }, seals: function () { return colony_seals; }, redraw: function () { draw(); renderFrases(); }, walk: function () { walkLoop(); } }) : null;
+  var CCT = CC ? CC.attach({ doc: doc, win: raiz, colony: function () { return colonia; }, looks: function () { return colony_looks; }, seals: function () { return colony_seals; }, redraw: function () { draw(); renderFrases(); }, walk: function () { walkLoop(); }, entered: function (node) { enterBuilding(node); } }) : null;
   // H1b: two fingers (or the wheel) zoom the colony between 0.6 and 3; the factor lives on the canvas and every redraw reads it.
   var ZOOM = raiz.AtlasMapZoom && surface ? raiz.AtlasMapZoom.create(surface) : null, zoomSeen = surface ? surface.dataset.zoom : null;
   function onZoom() { if (surface.dataset.zoom !== zoomSeen) { zoomSeen = surface.dataset.zoom; draw(); } }
@@ -216,12 +216,21 @@
       if (!text) { return; }
       line('me', text);
       question.value = '';
+      if (raiz.AtlasBuildingChat && raiz.AtlasBuildingChat.ask(text)) { return; }
       loadRouter(function (R) {
         if (!R) { line('', 'NO_DATA · router_not_loaded'); return; }
         var answer = R.responde(text, null);
         line('', answer.ok ? answer.texto : answer.causa);
       });
     });
+  }
+  // P6: building chat, loaded on entry.
+  function enterBuilding(node) {
+    var b = colonia && colonia.buildings.filter(function (x) { return x.node === node; })[0], C = 'AtlasBuildingChat';
+    if (!b) { state.textContent = 'NO_DATA: no building on ' + node; return; }
+    var go = function () { raiz[C].open(b, { doc: doc, state: state, entry: entry, line: line, router: loadRouter }); };
+    if (raiz[C]) { go(); return; }
+    var sc = doc.createElement('script'); sc.src = '/game/building_chat.js'; sc.onload = go; sc.onerror = function () { line('', 'NO_DATA · not_loaded'); }; doc.head.appendChild(sc);
   }
   render();
   raiz.addEventListener('resize', draw);
