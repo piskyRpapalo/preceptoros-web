@@ -290,6 +290,18 @@ def paginas_de_contenido():
                   and p != PUBLICO / "index.html")
 
 
+# Nodo web (2026-11-01, retirados/brain/RETIRO.md): el runtime del cerebro se baja SOLO tras el consentimiento y cada
+# byte va fijado por SHA-256 en public/models/web-node/manifest.json. No es primera carga ni texto de la casa: las
+# guardas de primera carga y de rutas lo exentan por esa lista exacta, no por carpeta (DECRETO-TECHO-NUEVO-20261101).
+def _a_demanda():
+    m = PUBLICO / "models" / "web-node" / "manifest.json"
+    if not m.is_file():
+        return set()
+    d = json.loads(m.read_text(encoding="utf-8"))
+    return {(PUBLICO / e["name"].lstrip("/")).resolve() for e in d.get("runtime", []) + d.get("chunks", [])}
+A_DEMANDA = _a_demanda()
+
+
 class JuegoRetirado(unittest.TestCase):
     """Norte 7 D (decision D2): el juego de /play/ se retiro con su pagina. Esta guarda sustituye a las
     pruebas que leian ese juego (mismo patron que mapa_viejo_desmontado): que no vuelva a aparecer."""
@@ -613,8 +625,8 @@ class Estructura(unittest.TestCase):
             if not (p.is_file() and p.suffix in (".html", ".css", ".js",
                                                  ".json", ".webmanifest")):
                 continue
-            if p.stem in LICENCIAS:
-                continue
+            if p.stem in LICENCIAS or p.resolve() in A_DEMANDA:
+                continue    # A_DEMANDA: no viaja en la primera carga; solo tras el consentimiento del visitante
             comprimido = len(gzip.compress(p.read_bytes(), 9))
             with self.subTest(fichero=str(p.relative_to(RAIZ))):
                 self.assertLessEqual(
@@ -700,6 +712,8 @@ class Doctrina(unittest.TestCase):
         for p, t in textos():
             if p.name in ("test_web.py", "contadores.py"):
                 continue    # guiones locales: resuelven su propia ruta, no la escriben
+            if p.resolve() in A_DEMANDA:
+                continue    # runtime vendorizado fijado por sha: «/home/web_user» es el FS virtual de emscripten
             with self.subTest(fichero=p.name):
                 self.assertNotIn("/home/", t, f"ruta absoluta en {p}")
                 sin_dibujos = re.sub(r"<svg.*?</svg>", "", t, flags=re.S)
@@ -2402,10 +2416,11 @@ class OpenWorld(unittest.TestCase):
         self.assertIn('<input id="question" type="text" autocomplete="off" aria-describedby="chat-note">', self.t)
         self.assertIn('/game/map_chat.js', self.t)
         chat = (PUBLICO / 'game/map_chat.js').read_text(encoding='utf-8')
-        worker = (PUBLICO / 'game/map_brain_worker.js').read_text(encoding='utf-8')
+        # 2026-11-01: el cerebro del nodo web (retirados/brain/RETIRO.md) carga solo tras el clic, del mismo origen.
+        cerebro = (PUBLICO / 'game/web_node_brain.js').read_text(encoding='utf-8')
         self.assertIn("start.addEventListener('click'", chat)
-        self.assertIn('runtime_integrity_unavailable', worker)
-        self.assertNotIn('import(MODULE)', worker)
+        self.assertIn("opts.consent !== true", cerebro)
+        self.assertNotIn('https://', cerebro.split('// ')[0] if False else ''.join(l for l in cerebro.splitlines() if not l.strip().startswith('//')))
 
     def test_esta_en_el_sitemap_y_en_el_precache(self):
         xml = (PUBLICO / "sitemap.xml").read_text(encoding="utf-8")

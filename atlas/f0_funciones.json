@@ -213,6 +213,10 @@
     {
      "file": "atlas/openworld_browser.mjs",
      "text": "the chat answer is not an honest NO_DATA"
+    },
+    {
+     "file": "atlas/web_node_brain_browser.mjs",
+     "text": "no verified answer reached the chat log and brain:answer"
     }
    ]
   },
