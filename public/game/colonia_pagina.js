@@ -84,7 +84,7 @@
     var dy = reducido === true ? 0 : RONDA[((t % 4) + 4) % 4];
     // H1b: the visitor is one more bot, drawn as the ephemeral crab of the sea class (gdpr-art25-ephemeral-crab.js): its
     // outline is the crab's own Fourier series (shell k=1, scallops, claws k=2), sampled the way gacha.js samples a wave.
-    var C = root.AtlasCangrejo, crab = !!(C && C.onda && C.forma);
+    var C = root.AtlasCrab, crab = !!(C && C.onda && C.forma);
     var frase = 'you · ephemeral ' + (crab ? 'crab (sea)' : 'walker') + ' on node ' + walker.node + ' · not node state · seal NO_DATA · tick ' + t;
     var ring = (crab ? crabPts(C) : cuerpoPts(7)).map(function (q) { return [q[0] + BX, q[1] + BY - 12 - dy]; });
     return {

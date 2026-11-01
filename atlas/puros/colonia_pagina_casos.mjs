@@ -111,7 +111,7 @@ test('TA-3 (D15): the ephemeral walker has its own sentence, seal NO_DATA, and p
 
 test('H1b: with the ephemeral crab loaded, the visitor is drawn as the crab (sea class), under the frame law', () => {
   const sin = CP.youFrame({ node: 'cabin', q: 0, r: 0 }, 6, false);
-  globalThis.AtlasCangrejo = require('../../public/game/gdpr-art25-ephemeral-crab.js');
+  globalThis.AtlasCrab = require('../../public/game/gdpr-art25-ephemeral-crab.js');
   try {
     const frame = CP.youFrame({ node: 'cabin', q: 0, r: 0 }, 6, false);
     assert.match(frame.atoms[0].r, /ephemeral crab \(sea\) on node cabin .* seal NO_DATA/, 'colour plus text: the sentence names the crab');
@@ -122,5 +122,5 @@ test('H1b: with the ephemeral crab loaded, the visitor is drawn as the crab (sea
     assert.deepEqual(F.valida(frame), []);
     assert.ok(Buffer.byteLength(JSON.stringify(frame)) < 1024, 'frame under 1 KB');
     assert.deepEqual(CP.youFrame({ node: 'cabin', q: 0, r: 0 }, 6, false), frame, 'deterministic');
-  } finally { delete globalThis.AtlasCangrejo; }
+  } finally { delete globalThis.AtlasCrab; }
 });
