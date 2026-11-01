@@ -27,7 +27,8 @@
     if (n.seal === 'LIVE' && n.since === null) { fail('node ' + n.id + ' is LIVE without a dated measurement'); }
     var look = n.look === undefined ? 'basic' : n.look;
     if (LOOKS.indexOf(look) < 0) { fail('node ' + n.id + ' has an unknown look ' + JSON.stringify(look)); }
-    return { id: n.id, q: n.q, r: n.r, alive: n.alive, seal: n.seal, since: n.since, look: look };
+    if (n.pending !== undefined && (typeof n.pending !== 'string' || n.pending === '')) { fail('node ' + n.id + ' has a malformed pending piece'); }
+    return { id: n.id, q: n.q, r: n.r, alive: n.alive, seal: n.seal, since: n.since, look: look, pending: n.pending };
   }
 
   // leer(estado) → { version, colonia, seals, hidden }. colonia is null for v1, and otherwise the IC1 colony of
@@ -35,7 +36,7 @@
   function leer(estado) {
     var e = estado && typeof estado === 'object' ? estado : {};
     if (e.esquema === undefined || e.esquema === V1) {
-      return { version: 1, colonia: null, seals: {}, looks: {}, hidden: 0 };
+      return { version: 1, colonia: null, seals: {}, looks: {}, pending: {}, hidden: 0 };
     }
     if (e.esquema !== V2) { fail('unknown schema ' + JSON.stringify(e.esquema)); }
     var c = e.colonia;
@@ -47,9 +48,9 @@
     var ids = {};
     visibles.forEach(function (n) { ids[n.id] = true; });
     var buildings = c.buildings.filter(function (b) { return b && ids[b.node]; }).map(function (b) { return { id: b.id, node: b.node }; });
-    var seals = {}, looks = {};
+    var seals = {}, looks = {}, pending = {};
     nodes.forEach(function (n) { seals[n.id] = n.seal; });
-    visibles.forEach(function (n) { looks[n.id] = n.look; });
+    visibles.forEach(function (n) { looks[n.id] = n.look; if (n.pending) { pending[n.id] = n.pending; } });
     return {
       version: 2,
       colonia: colony({
@@ -59,6 +60,7 @@
       }),
       seals: seals,
       looks: looks,
+      pending: pending,
       hidden: nodes.length - visibles.length
     };
   }

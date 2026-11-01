@@ -10,13 +10,16 @@ import { fileURLToPath } from 'node:url';
 const PUBLIC = fileURLToPath(new URL('../public/', import.meta.url));
 const CAPTURA = process.argv[2] || null;
 const espera = (ms) => new Promise((r) => setTimeout(r, ms));
+// P5a: with HITL_ON the state file is the test fixture (the tutorial cabin waits for a signature).
+const HITL = readFileSync(new URL('./fixtures/hitl_estado.json', import.meta.url));
+let HITL_ON = false;
 function sirve(raiz) {
   const tipos = { '.js': 'text/javascript', '.css': 'text/css', '.html': 'text/html', '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png', '.webmanifest': 'application/manifest+json' };
   const s = createServer((req, res) => {
     try {
       let ruta = decodeURIComponent(new URL(req.url, 'http://local').pathname); if (ruta.endsWith('/')) { ruta += 'index.html'; }
       const f = resolve(raiz, '.' + ruta); if (!f.startsWith(resolve(raiz))) { res.writeHead(403); res.end(); return; }
-      const cuerpo = readFileSync(f); res.writeHead(200, { 'Content-Type': tipos[extname(f)] || 'text/plain', 'Cache-Control': 'no-store' }); res.end(cuerpo);
+      const cuerpo = HITL_ON && ruta === '/openworld/estado.json' ? HITL : readFileSync(f); res.writeHead(200, { 'Content-Type': tipos[extname(f)] || 'text/plain', 'Cache-Control': 'no-store' }); res.end(cuerpo);
     } catch { res.writeHead(404); res.end(); }
   });
   return new Promise((r) => s.listen(0, '127.0.0.1', () => r(s)));
@@ -145,6 +148,29 @@ async function main() {
   ok(zoom.k === '1.25' && /Map zoom 1\.25×/.test(zoom.ks), 'the + key does not zoom or is not spoken: ' + JSON.stringify(zoom));
   ok(zoom.o === '0.80' && zoom.r === '1.00', 'zoom out / reset do not move the factor: ' + JSON.stringify(zoom));
   ok(zoom.sizes.length === 3 && zoom.sizes.every((h) => h >= 44), 'zoom buttons below the touch target: ' + zoom.sizes);
+  // P5a: the HITL «?» is a real button over the cabin: 44 px, reached by Tab, Enter opens it and #state says it.
+  HITL_ON = true;
+  await cmd('Page.navigate', { url: origen + '/openworld/' }); await espera(1500);
+  const tecla = async (key, code, vk, text) => {
+    await cmd('Input.dispatchKeyEvent', { type: 'keyDown', key, code, windowsVirtualKeyCode: vk, text });
+    await cmd('Input.dispatchKeyEvent', { type: 'keyUp', key, code, windowsVirtualKeyCode: vk });
+  };
+  let alcanzado = false;
+  for (let i = 0; i < 40 && !alcanzado; i++) {
+    await tecla('Tab', 'Tab', 9);
+    alcanzado = await ev("!!(document.activeElement && document.activeElement.classList.contains('hitl-mark'))");
+  }
+  const marca = JSON.parse(await ev(`(() => { const b = document.querySelector('.hitl-mark'); if (!b) { return '{}'; } const r = b.getBoundingClientRect(); return JSON.stringify({ tag: b.tagName, label: b.getAttribute('aria-label'), w: r.width, h: r.height, walkers: (document.getElementById('walkers-state') || {}).textContent || '' }); })()`));
+  if (alcanzado) { await tecla('Enter', 'Enter', 13, '\r'); await espera(300); }
+  const tras = JSON.parse(await ev("JSON.stringify({ state: document.getElementById('state').textContent, joy: document.querySelector('#joy [aria-live]').textContent })"));
+  ok(marca.tag === 'BUTTON' && marca.label === 'Needs you: P5a tutorial signature', 'the HITL mark is not a labelled button: ' + JSON.stringify(marca));
+  ok(marca.w >= 44 && marca.h >= 44, 'the HITL button is below 44 px: ' + JSON.stringify(marca));
+  ok(alcanzado, 'Tab never reaches the HITL button');
+  ok(/terminal: basic/.test(tras.joy), 'Enter on the HITL button does not open the cabin: ' + tras.joy);
+  ok(/Needs you: P5a tutorial signature · opening cabin/.test(tras.state), 'the HITL opening is not announced in #state: ' + tras.state);
+  ok(/walker of cabin: needs you · at cabin/.test(marca.walkers), 'the walker log does not say needs-you: ' + marca.walkers);
+  HITL_ON = false;
+  console.log(JSON.stringify({ hitl: { marca, alcanzado, tras }, medida: { ...medida, texto: undefined }, escritorio, externas: externas.length, fallos }));
   // P4: the 2.5D floor of the 7 baked chunks is under the colony, and its text equivalent is spoken in #floor-state.
   const suelo = JSON.parse(await ev(`(async () => { for (let i = 0; i < 50 && !/^Map chunks/.test(document.getElementById('floor-state').textContent); i++) await new Promise((r) => setTimeout(r, 100));
     const W = window.AtlasMapPainter && AtlasMapPainter.world(), c = document.getElementById('surface'), g = c.getContext('2d'), d = g.getImageData(0, 0, c.width, c.height).data, set = new Set();
