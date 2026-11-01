@@ -144,7 +144,9 @@
     }
     if (inside && inside.id === building.id) { return; }
     inside = building; leave.hidden = false;
-    p.state.textContent = 'Inside building ' + building.id + ' · ' + scriptOf(building).name + ' · Escape leaves';
+    // Appended, never overwritten: what was just said (e.g. the HITL «Needs you» opening) stays in the state log.
+    var said = p.state.textContent, inside = 'Inside building ' + building.id + ' · ' + scriptOf(building).name + ' · Escape leaves';
+    p.state.textContent = /^Needs you: /.test(said) ? said + ' · ' + inside : inside;
     opening(building).forEach(function (f) { p.line('', f.atoms[0].r); });
   }
   function ask(text) {
