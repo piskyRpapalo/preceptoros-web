@@ -36,7 +36,7 @@ Lo que nunca va en un lugar: IPs, hostnames, rutas, claves privadas o telemetrí
 
 ## 2 · Los tres lugares del rack (nombres de la casa, no de la máquina)
 
-| id | qué PC del rack representa (solo en este doc privado) | celda | forma | frase bubble (`frame.d`) |
+| id | qué PC del rack representa (descripción genérica, sin hostname) | celda | forma | frase bubble (`frame.d`) |
 |---|---|---|---|---|
 | `pocket-lighthouse` | el teléfono de referencia (Doogee S110) | `5,-1` (moss, h2) | `tower` | «The pocket lighthouse: the phone every frame is measured on. Dark until it links.» |
 | `sovereign-hall` | el cerebro central del rack | `-5,4` (rock, h3) | `block` | «The sovereign hall: where the rack thinks and signs nothing. Dark until it links.» |
