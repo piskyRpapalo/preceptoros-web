@@ -46,3 +46,13 @@ test('the module reads no random number, no clock and no network', () => {
   const src = readFileSync(new URL('../public/game/map_stick.js', import.meta.url), 'utf8');
   assert.doesNotMatch(src, /Math\.random|Date\.now|new Date|performance\.now|fetch\(|XMLHttpRequest/);
 });
+
+test('the stick direction picks the nearest of the six neighbours; inside the dead zone it picks none', () => {
+  assert.equal(M.direction(40, 0), 'east');
+  assert.equal(M.direction(-40, 0), 'west');
+  assert.equal(M.direction(20, -35), 'north-east');
+  assert.equal(M.direction(-20, -35), 'north-west');
+  assert.equal(M.direction(20, 35), 'south-east');
+  assert.equal(M.direction(-20, 35), 'south-west');
+  assert.equal(M.direction(3, 3), null);
+});

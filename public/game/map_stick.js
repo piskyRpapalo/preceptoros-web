@@ -25,6 +25,19 @@
     return { knob: [dx, dy], dir: d > DEAD ? [px / d, py / d] : [0, 0] };
   }
 
+  // direction(dx, dy) → the name of the axial neighbour nearest to the stick's angle, or null inside the dead zone.
+  // Screen y grows downwards, so up is positive. The six names follow colony_controls.js DIRS (east, north-east, ...).
+  var NAMES = [['east', 0], ['north-east', 60], ['north-west', 120], ['west', 180], ['south-west', 240], ['south-east', 300]];
+  function direction(dx, dy) {
+    if (Math.hypot(dx, dy) <= DEAD) { return null; }
+    var a = (Math.atan2(-dy, dx) * 180 / Math.PI + 360) % 360, best = null, gap = 999;
+    NAMES.forEach(function (n) {
+      var g = Math.abs(((a - n[1]) % 360 + 540) % 360 - 180);
+      if (g < gap) { gap = g; best = n[0]; }
+    });
+    return best;
+  }
+
   function route(from, place) {
     var a = from, b = place.at, dx = b[0] - a[0], dy = b[1] - a[1], len = Math.hypot(dx, dy) || 1;
     var nx = -dy / len, ny = dx / len, h = hash32(place.id), pts = [], i, t, w, bow;
@@ -66,6 +79,6 @@
     return { steps: steps, units: Math.round(total), at: out };
   }
 
-  var MapStick = { tile: tile, worldSize: worldSize, root2: root2, homeAt: homeAt, places: places, R: R, DEAD: DEAD, hash32: hash32, aim: aim, route: route, sample: sample, walk: walk };
+  var MapStick = { direction: direction, tile: tile, worldSize: worldSize, root2: root2, homeAt: homeAt, places: places, R: R, DEAD: DEAD, hash32: hash32, aim: aim, route: route, sample: sample, walk: walk };
   if (typeof module === 'object' && module.exports) { module.exports = MapStick; } else { root.AtlasMapStick = MapStick; }
 })(typeof module === 'object' && module.exports ? this : window);

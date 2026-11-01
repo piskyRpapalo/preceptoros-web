@@ -101,6 +101,22 @@
     });
     sel.style.minHeight = '44px';
     sel.addEventListener('change', function () { handlers.choose(sel.value === '' ? null : sel.value); });
+    // H1: the stick. Dragging inside the pad picks the neighbour by angle (handlers.direction) and moves the character there (handlers.move).
+    var stickPad = doc.createElement('div');
+    stickPad.setAttribute('role', 'application');
+    stickPad.setAttribute('aria-label', 'Move your character: drag inside the circle');
+    stickPad.style.cssText = 'width:168px;height:168px;touch-action:none;border:2px solid currentColor;border-radius:50%;margin:8px 0';
+    var drag = null, lastName = null;
+    stickPad.addEventListener('pointerdown', function (e) { drag = [e.clientX, e.clientY]; lastName = null; stickPad.setPointerCapture(e.pointerId); });
+    stickPad.addEventListener('pointermove', function (e) {
+      if (!drag) { return; }
+      var name = handlers.direction ? handlers.direction(e.clientX - drag[0], e.clientY - drag[1]) : null;
+      if (name && name !== lastName) { lastName = name; handlers.move(name); }
+    });
+    function stickEnd() { drag = null; }
+    stickPad.addEventListener('pointerup', stickEnd);
+    stickPad.addEventListener('pointercancel', stickEnd);
+    box.appendChild(stickPad);
     box.appendChild(pad); box.appendChild(actions); box.appendChild(sel); box.appendChild(status);
     container.appendChild(box);
     // Arrow keys: east and west move along the row; up and down take the two north and two south neighbours.
@@ -119,7 +135,8 @@
     // W-3: a walk over the visible nodes (walk_route.js). Frames are counted, never milliseconds (W-D3).
     var walk = null, reduced = !!(env.win.matchMedia && env.win.matchMedia('(prefers-reduced-motion: reduce)').matches);
     var saved = savedChoice(storeOf(env.win));
-    var joy = mount(env.doc, env.doc.getElementById('joy'), { move: moveWalker, enter: enterNode, choose: chooseLook, skip: skipTutorial });
+    var joy = mount(env.doc, env.doc.getElementById('joy'), { move: moveWalker, enter: enterNode, choose: chooseLook, skip: skipTutorial,
+      direction: function (dx, dy) { var M = env.win.AtlasMapStick; return M ? M.direction(dx, dy) : null; } });
     function storeOf(win) { try { return win.localStorage; } catch (e) { return null; } }
     function hex(name) { return bandHex(name, env.win.AtlasComicTokens, env.win.AtlasComicAccents); }
     function anchor(look) {
