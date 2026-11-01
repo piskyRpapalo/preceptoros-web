@@ -96,6 +96,22 @@
     });
     sel.style.minHeight = '44px';
     sel.addEventListener('change', function () { handlers.choose(sel.value === '' ? null : sel.value); });
+    // H1: the stick. Dragging inside the pad selects the neighbour by angle (handlers.direction → handlers.select, the W-4 law);
+    // letting go walks to it (handlers.enter), the same as Enter after an arrow key.
+    var stickPad = doc.createElement('div');
+    stickPad.setAttribute('role', 'application');
+    stickPad.setAttribute('aria-label', 'Move your character: drag inside the circle, let go to walk');
+    stickPad.style.cssText = 'width:168px;height:168px;touch-action:none;border:2px solid currentColor;border-radius:50%;margin:8px 0';
+    var drag = null, lastName = null;
+    stickPad.addEventListener('pointerdown', function (e) { drag = [e.clientX, e.clientY]; lastName = null; stickPad.setPointerCapture(e.pointerId); });
+    stickPad.addEventListener('pointermove', function (e) {
+      if (!drag) { return; }
+      var name = handlers.direction ? handlers.direction(e.clientX - drag[0], e.clientY - drag[1]) : null;
+      if (name && name !== lastName) { lastName = name; handlers.select(name); }
+    });
+    stickPad.addEventListener('pointerup', function () { var walked = drag && lastName; drag = null; if (walked) { handlers.enter(); } });
+    stickPad.addEventListener('pointercancel', function () { drag = null; });
+    box.appendChild(stickPad);
     box.appendChild(status); box.appendChild(actions); box.appendChild(sel);
     container.appendChild(box);
     // Arrow keys choose a neighbour (move() decides which); Enter walks to the chosen one. Form fields keep their keys.
@@ -116,9 +132,10 @@
     // W-3: a walk over the visible nodes (walk_route.js). Frames are counted, never milliseconds (W-D3).
     var walk = null, reduced = !!(env.win.matchMedia && env.win.matchMedia('(prefers-reduced-motion: reduce)').matches);
     var saved = savedChoice(storeOf(env.win));
-    // W-4: the chosen neighbour (by an arrow key). It is cleared when a walk starts.
+    // W-4: the chosen neighbour (by an arrow key or the stick). It is cleared when a walk starts.
     var selected = null;
-    var joy = mount(env.doc, env.doc.getElementById('joy'), { select: selectNeighbour, enter: walkSelected, choose: chooseLook, skip: skipTutorial });
+    var joy = mount(env.doc, env.doc.getElementById('joy'), { select: selectNeighbour, enter: walkSelected, choose: chooseLook, skip: skipTutorial,
+      direction: function (dx, dy) { var M = env.win.AtlasMapStick; return M ? M.direction(dx, dy) : null; } });
     function storeOf(win) { try { return win.localStorage; } catch (e) { return null; } }
     function hex(name) { return bandHex(name, env.win.AtlasComicTokens, env.win.AtlasComicAccents); }
     function anchor(look) {
