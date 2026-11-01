@@ -27,6 +27,7 @@
     }
     var s; try { s = game.state(); } catch (_) { game = null; account = null; render(); return; }
     line('Copper ' + s.copper + ' · Light ' + s.light + ' · Step ' + s.step + ' · Troops ' + s.troops.length + ' · Pity NO_DATA: not approved.');
+    var star = doc.createElement('p'); star.id = 'visitor-voice-star'; star.textContent = 'Voice Star ' + s.echoes + '/' + s.echoCap; controls.append(star);
     button('Visit the beacon · claim 100 copper once', 'visitor-beacon', function () { game.beacon(); }, s.claimed);
     button('Advance one game step', 'visitor-step', function () { game.advance(); });
     Object.keys(root.AtlasGacha.TCS).forEach(function (tc) {
@@ -41,5 +42,16 @@
   }
   // Free walk: each accepted step on the floor is one game step of an active visit, so walking hatches eggs.
   box.addEventListener('visitor:advance', function () { if (!game || waiting) { return; } try { game.advance(); } catch (_) { return; } render(); });
+  // Voice Star: the web node brain dispatches brain:answer after each verified local answer.
+  doc.addEventListener('brain:answer', async function (event) {
+    var log = doc.getElementById('state'), say = function (t) { if (log) { log.textContent = t; } };
+    var d = event.detail || {};
+    if (!game) { say('Voice Star: NO_DATA · start a visit first'); return; }
+    try { var s = await game.echo({ verified: d.verified, model: d.model, text: d.text, sha: d.sha }); render(); say('Voice Star: +25 copper for a verified answer (' + s.echoes + ' of ' + s.echoCap + ')'); }
+    catch (error) {
+      var capped = false; try { capped = game && game.state().echoes >= game.state().echoCap; } catch (_) {}
+      say(capped ? 'Voice Star: this visit already earned its 4 echoes' : 'Voice Star: NO_DATA · ' + error.message);
+    }
+  });
   render();
 })(globalThis);
