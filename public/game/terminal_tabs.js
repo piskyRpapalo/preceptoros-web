@@ -1,4 +1,4 @@
-// The terminal tabs of /openworld/ (the layout of the first atlantis/zombie terminals, retirados/face/): Map shows the
+// The terminal tabs of /openworld/ (the layout of the first face terminals, retirados/face/): Map shows the
 // map; News, Summons and Army open a sheet that covers it. ARIA tabs: arrow keys, Home and End move between tabs;
 // Enter, Space or a tap opens; Escape inside a sheet goes back to the map and to its tab. A starting visit opens Summons.
 (function (root) {

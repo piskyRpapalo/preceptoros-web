@@ -20,8 +20,8 @@
   // The three nodes are the first three named in the mandate; their names are English, never an iron brand.
   var NODES = [
     { id: 'cabin',    clave: 'node.cabin',    nombre: 'Tutorial cabin',          reco: [0, 0],  siempre: true },
-    { id: 'atlantis', clave: 'node.atlantis', nombre: 'Atlantis · Node Hexelion', reco: [-2, 1], siempre: false },
-    { id: 'risen',    clave: 'node.risen',    nombre: 'the Risen',                reco: [2, -1], siempre: false }
+    { id: 'hexelion', clave: 'node.hexelion', nombre: 'Node Hexelion',            reco: [-2, 1], siempre: false },
+    { id: 'second',   clave: 'node.second',   nombre: 'Second node',              reco: [2, -1], siempre: false }
   ];
   var FRASE = {
     appears: 'appears: the node is alive',

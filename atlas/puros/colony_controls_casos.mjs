@@ -29,9 +29,9 @@ test('sabotage: an unknown direction is refused', () => {
 });
 
 test('the user’s saved terminal wins over the node’s look; the node’s look is used otherwise', () => {
-  assert.equal(C.enter(START, 'zombie', 'atlantis').look, 'atlantis');
-  assert.equal(C.enter(START, 'zombie', null).look, 'zombie');
-  assert.equal(C.enter(START, 'zombie', null).source, 'node');
+  assert.equal(C.enter(START, 'flat', 'ocean').look, 'ocean');
+  assert.equal(C.enter(START, 'flat', null).look, 'flat');
+  assert.equal(C.enter(START, 'flat', null).source, 'node');
 });
 
 test('an unknown node look falls back to basic, labelled as the default', () => {
@@ -45,7 +45,7 @@ test('the anchor colours are the house bands, resolved from comic_tokens and com
   const basic = C.colours('basic', hex);
   assert.equal(basic.bg, TOK.NEUTRAL.paper);
   assert.equal(basic.fg, TOK.NEUTRAL.ink);
-  const atl = C.colours('atlantis', hex);
+  const atl = C.colours('ocean', hex);
   assert.equal(atl.accent, ACC.ACCENTS['comic yellow'].bands.base);
 });
 
@@ -60,7 +60,7 @@ test('sabotage: a terminal look that is not one of the three is refused', () => 
 test('the saved choice: an invalid value is ignored; a store that throws reads as no choice', () => {
   assert.equal(C.savedChoice({ getItem: () => 'neon' }), null);
   assert.equal(C.savedChoice({ getItem: () => { throw new Error('denied'); } }), null);
-  assert.equal(C.savedChoice({ getItem: () => 'zombie' }), 'zombie');
+  assert.equal(C.savedChoice({ getItem: () => 'flat' }), 'flat');
 });
 
 test('saving: an invalid look is refused and never stored; a throwing store reports false', () => {
@@ -68,8 +68,8 @@ test('saving: an invalid look is refused and never stored; a throwing store repo
   const store = { setItem: (k, v) => { stored = v; } };
   assert.equal(C.saveChoice(store, 'neon'), false);
   assert.equal(stored, null);
-  assert.equal(C.saveChoice(store, 'atlantis'), true);
-  assert.equal(stored, 'atlantis');
+  assert.equal(C.saveChoice(store, 'ocean'), true);
+  assert.equal(stored, 'ocean');
   assert.equal(C.saveChoice({ setItem: () => { throw new Error('quota'); } }, 'basic'), false);
 });
 

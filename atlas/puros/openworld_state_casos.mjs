@@ -97,12 +97,12 @@ test('the module reads no random number, no clock and no network', () => {
   assert.doesNotMatch(src, /Math\.random|Date\.now|new Date|performance\.now|fetch\(|XMLHttpRequest/);
 });
 
-test('IC7-S4 (D11): look defaults to basic; zombie is returned for the visible node that declares it', () => {
+test('IC7-S4 (D11): look defaults to basic; flat is returned for the visible node that declares it', () => {
   const r = S.leer(v2([
     { id: 'beelink', q: 0, r: 0, alive: true, seal: 'LIVE', since: '2026-10-30' },
-    { id: 'doggee-a', q: 2, r: 0, alive: true, seal: 'LIVE', since: '2026-10-30', look: 'zombie' }
+    { id: 'doggee-a', q: 2, r: 0, alive: true, seal: 'LIVE', since: '2026-10-30', look: 'flat' }
   ]));
-  assert.deepEqual(r.looks, { beelink: 'basic', 'doggee-a': 'zombie' });
+  assert.deepEqual(r.looks, { beelink: 'basic', 'doggee-a': 'flat' });
 });
 
 test('sabotage: an unknown look is refused, never drawn with a guessed face', () => {
@@ -111,8 +111,8 @@ test('sabotage: an unknown look is refused, never drawn with a guessed face', ()
 
 test('IC7-S4: Doggee on two adjacent nodes, one building each, is accepted by IC1', () => {
   const r = S.leer(v2([
-    { id: 'doggee-a', q: 2, r: 0, alive: true, seal: 'LIVE', since: '2026-10-30', look: 'zombie' },
-    { id: 'doggee-b', q: 2, r: -1, alive: true, seal: 'LIVE', since: '2026-10-30', look: 'zombie' }
+    { id: 'doggee-a', q: 2, r: 0, alive: true, seal: 'LIVE', since: '2026-10-30', look: 'flat' },
+    { id: 'doggee-b', q: 2, r: -1, alive: true, seal: 'LIVE', since: '2026-10-30', look: 'flat' }
   ], [{ id: 'b-a', node: 'doggee-a' }, { id: 'b-b', node: 'doggee-b' }]));
   assert.equal(r.colonia.buildings.length, 2);
 });

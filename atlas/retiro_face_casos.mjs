@@ -29,7 +29,11 @@ test('el precache no lista lo retirado y sí lo mudado', () => {
 });
 
 test('cada URL retirada deja una lápida: noindex, lleva al mapa con un objetivo de 44 px y lo dice en texto', () => {
-  for (const f of ['atlantis', 'zombie', 'walker']) {
+  // Decreto p0 (buzon#30, 2026-11-01): las lápidas de atlantis y zombie salieron a retirados/face/*.lapida.html.
+  for (const f of ['atlantis', 'zombie']) {
+    assert.ok(!existsSync(R('public/face/' + f + '.html')) && existsSync(R('retirados/face/' + f + '.lapida.html')), f + ' sigue servida');
+  }
+  for (const f of ['walker']) {
     const t = T('public/face/' + f + '.html');
     assert.match(t, /<title>Retired · /, f);
     assert.match(t, /<meta name="robots" content="noindex">/, f);
