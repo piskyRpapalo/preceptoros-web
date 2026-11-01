@@ -78,7 +78,9 @@ def sueltas():
     raiz = [p.name for p in PUBLICO.glob("*.html") if p.name != "index.html"]
     # La cara del juego (2026-10-25) vive en su carpeta, sin traduccion: sus
     # tres pieles son contenido y el buscador tiene que verlas.
-    cara = ["face/" + ("" if p.name == "index.html" else p.name) for p in (PUBLICO / "face").glob("*.html")]
+    # Barrido 2026-11-01 (AUDITORIA-WEB): una pagina de prueba («<title>Test ·») no se anuncia; lo decide su titulo, en el disco.
+    cara = ["face/" + ("" if p.name == "index.html" else p.name) for p in (PUBLICO / "face").glob("*.html")
+            if "<title>Test ·" not in p.read_text(encoding="utf-8")]
     # El juego (2026-10-25) vive en /play/: la portada de la raiz es solo la puerta.
     juego = ["play/"] if (PUBLICO / "play" / "index.html").is_file() else []
     # La guia de la app (Norte D1, 2026-10-26): contenido en ingles, escrito desde release.json.
