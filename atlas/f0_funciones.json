@@ -274,6 +274,55 @@
      "text": "external requests: "
     }
    ]
+  },
+  {
+   "id": "floor-25d",
+   "scripts": [
+    "/game/map_carta.js",
+    "/game/map_chunks.js",
+    "/game/map_painter.js"
+   ],
+   "globals": [
+    "AtlasMapCarta",
+    "AtlasMapChunks",
+    "AtlasMapPainter"
+   ],
+   "guards": [
+    {
+     "file": "atlas/openworld_browser.mjs",
+     "text": "the 2.5D floor is not painted"
+    }
+   ]
+  },
+  {
+   "id": "hitl-walkers",
+   "scripts": [
+    "/game/hitl_walkers.js"
+   ],
+   "globals": [
+    "AtlasHitlWalkers"
+   ],
+   "guards": [
+    {
+     "file": "atlas/openworld_browser.mjs",
+     "text": "Tab never reaches the HITL button"
+    }
+   ]
+  },
+  {
+   "id": "terminal-tabs",
+   "scripts": [
+    "/game/terminal_tabs.js"
+   ],
+   "globals": [
+    "AtlasTerminalTabs"
+   ],
+   "guards": [
+    {
+     "file": "atlas/openworld_browser.mjs",
+     "text": "the terminal tabs do not cover the map or the keyboard fails"
+    }
+   ]
   }
  ]
 }
