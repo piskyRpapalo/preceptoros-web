@@ -79,15 +79,16 @@ async function main() {
     for(let i=0;i<50&&!won;i++){const x=await AtlasVisitorBattle.run('arrecife',[{tc:'tc1',semilla:await AtlasVisitorAccount.digest('case'+i)},{tc:'tc1',semilla:await AtlasVisitorAccount.digest('pair'+i)}],info.seed);if(x.combat.gana==='asalto')won=x;}
     if(!won)return false;
     const dialog=document.createElement('dialog');box.append(dialog);dialog.showModal();
-    box.dispatchEvent(new CustomEvent('visitor:battle',{detail:won}));document.getElementById('visitor-conquer').click();
-    // wait for the list to show the conquest (bounded), instead of a fixed sleep that a slow runner can miss
-    for(let i=0;i<40&&!document.getElementById('visitor-conquests').textContent.includes('step 21');i++){await new Promise(r=>setTimeout(r,50));}
+    box.dispatchEvent(new CustomEvent('visitor:battle',{detail:won}));
+    // The handler appends to the first dialog in the box, and an earlier real 'asalto' leaves its own #visitor-conquer: click the newest one, then wait for its async verify.
+    const conquer=[...box.querySelectorAll('#visitor-conquer')].pop();conquer.click();
+    for(let t=0;t<5000&&conquer.textContent==='Record this local conquest';t+=50){await new Promise(r=>setTimeout(r,50));}
     const recorded=document.getElementById('visitor-conquests').textContent.includes('step 21');
     const radius=AtlasNiebla.niebla(won.frames[0].coordinate[0],won.frames[0].coordinate[1],[{x:won.frames[0].coordinate[0],y:won.frames[0].coordinate[1],r:200}])===0;
     box.dispatchEvent(new Event('visitor:end'));dialog.close();dialog.remove();
     return recorded&&radius&&document.getElementById('visitor-conquests').children.length===0;
   })()`);
-  ok(conquest,'verified practice victory records a session conquest and end clears it');
+  ok(conquest===true,'verified practice victory records a session conquest and end clears it');
   const saved=await ev(`(async()=>{const x=await AtlasArmy.cajaWeb('atlas-army','army','mia',true).lee();return x;})()`);
   const result={record:saved[0].adopcion,signature:saved[0].firma,publicKey:saved[0].adopcion.clave_publica};
   ok(await ev('typeof Identity === "undefined"'),'no persistent identity used');
