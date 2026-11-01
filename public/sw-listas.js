@@ -2,6 +2,7 @@
 const IDIOMAS = ['es', 'en', 'fr', 'pt', 'it', 'de', 'ru', 'el', 'ar'];
 const PAGINAS = [''];
 
+// P2/P3 (2026-11-01): the map chunks are precached by exact name; atlas/hornea_chunks.mjs --check keeps them equal to the baked files.
 const JUEGO = [
   '/creation.html', '/assets/atlas-coord.js', '/assets/radio_message_log.js', '/assets/worm_transition.js',
   '/game/valores.js', '/game/gacha.js', '/game/db.js', '/game/core.js', '/game/canon.js',
@@ -21,7 +22,9 @@ const JUEGO = [
   '/game/state_frames.js', '/game/hex_projection.js', '/game/colony_state.js', '/game/colonia_edificios.js',
   '/game/palette_cycle.js', '/game/openworld_state.js', '/game/colonia_pagina.js', '/game/colony_controls.js',
   '/game/tutorial-fases.css', '/face/', '/get-the-app/', '/aduana/', '/face/basic.html', '/face/atlantis.html',
-  '/face/zombie.html', '/face/face_openworld_terminal.js', '/game/army.html', '/game/face_canon.css', '/game/face_terminal.js'
+  '/face/zombie.html', '/face/face_openworld_terminal.js', '/game/army.html', '/game/face_canon.css', '/game/face_terminal.js',
+  '/game/map_carta.js', '/game/map_chunks.js', '/map/carta.json', '/art/sea-palette.json',
+  '/map/chunks/-17_8.533552f4.json', '/map/chunks/-8_-9.f441ec9b.json', '/map/chunks/-9_17.c34de2b7.json', '/map/chunks/0_0.1a4f24a6.json', '/map/chunks/17_-8.206414ba.json', '/map/chunks/8_9.8896dfe9.json', '/map/chunks/9_-17.b1b968aa.json'
 ];
 
 const PORTADA = [

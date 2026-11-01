@@ -50,6 +50,9 @@ if (check) {
   const bad = [...files].filter(([f, b]) => !existsSync(new URL(f, OUT)) || readFileSync(new URL(f, OUT), 'utf8') !== b).map(([f]) => f);
   const served = existsSync(new URL('map/chunks/', OUT)) ? readdirSync(new URL('map/chunks/', OUT)).map((n) => 'map/chunks/' + n) : [];
   const stale = served.filter((f) => !files.has(f));
+  const listas = readFileSync(new URL('sw-listas.js', OUT), 'utf8'), listed = [...listas.matchAll(/'\/(map\/chunks\/[^']+)'/g)].map((m) => m[1]);
+  const want = [...files.keys()].filter((f) => f.startsWith('map/chunks/'));
+  if (want.some((f) => !listed.includes(f)) || listed.some((f) => !want.includes(f))) { console.error('ROJO · sw-listas.js no precachea exactamente los chunks horneados'); process.exit(1); }
   if (bad.length || stale.length) { console.error('ROJO · horno distinto de lo servido: ' + bad.concat(stale).join(', ')); process.exit(1); }
   console.log('VERDE · ' + files.size + ' ficheros horneados = servidos'); process.exit(0);
 }
