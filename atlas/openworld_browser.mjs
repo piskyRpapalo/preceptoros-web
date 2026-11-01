@@ -132,6 +132,13 @@ async function main() {
   ok(zoom.k === '1.25' && /Map zoom 1\.25×/.test(zoom.ks), 'the + key does not zoom or is not spoken: ' + JSON.stringify(zoom));
   ok(zoom.o === '0.80' && zoom.r === '1.00', 'zoom out / reset do not move the factor: ' + JSON.stringify(zoom));
   ok(zoom.sizes.length === 3 && zoom.sizes.every((h) => h >= 44), 'zoom buttons below the touch target: ' + zoom.sizes);
+  // P4: the 2.5D floor of the 7 baked chunks is under the colony, and its text equivalent is spoken in #floor-state.
+  const suelo = JSON.parse(await ev(`(async () => { for (let i = 0; i < 50 && !/^Map chunks/.test(document.getElementById('floor-state').textContent); i++) await new Promise((r) => setTimeout(r, 100));
+    const W = window.AtlasMapPainter && AtlasMapPainter.world(), c = document.getElementById('surface'), g = c.getContext('2d'), d = g.getImageData(0, 0, c.width, c.height).data, set = new Set();
+    for (let i = 0; i < d.length; i += 4 * 97) set.add(d[i] >> 4 << 8 | d[i + 1] >> 4 << 4 | d[i + 2] >> 4);
+    return JSON.stringify({ said: document.getElementById('floor-state').textContent, cells: W ? W.cells.list.length : 0, tones: set.size }); })()`));
+  ok(/^Map chunks: 7 of 7 around area 0_0\. Cabin chunk: \d+ water, \d+ sand, \d+ moss, \d+ rock cells/.test(suelo.said) && suelo.cells === 1519 && suelo.tones >= 12, 'the 2.5D floor is not painted: ' + JSON.stringify(suelo));
+  if (CAPTURA) { const g2 = await cmd('Page.captureScreenshot', { format: 'png' }); writeFileSync(join(CAPTURA, 'openworld-floor.png'), Buffer.from(g2.result.data, 'base64')); }
   console.log(JSON.stringify({ medida: { ...medida, texto: undefined }, escritorio, externas: externas.length, fallos }));
 }
 
