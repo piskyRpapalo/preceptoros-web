@@ -10,17 +10,17 @@ const F = require('./state_frames.js');
 const S = require('../../public/game/bubble_sonify.js');
 
 const FILAS = [
-  { id: 'risen-1', tipo: 'risen', medida: { nombre: 'mana', valor: 60 } },
+  { id: 'second-1', tipo: 'second', medida: { nombre: 'mana', valor: 60 } },
   { id: 'cabin', tipo: 'cabin', medida: { nombre: 'mana', valor: 100 } },
   { id: 'sea-1', tipo: 'sea', sintetico: true, causa: 'no mana source wired for this creature yet' }
 ];
 
 test('the catalogue is born from the rows: one frame per living row, sorted by id, each under the law', () => {
   const out = C.catalogo({ t: 30, filas: FILAS });
-  assert.deepEqual(out.map((f) => f.id), ['cabin', 'risen-1', 'sea-1']);
+  assert.deepEqual(out.map((f) => f.id), ['cabin', 'sea-1', 'second-1']);
   for (const f of out) assert.deepEqual(F.valida(f), [], `frame ${f.id} obeys the law`);
   assert.equal(out[0].atoms[0].k, 'sprite.cabin');
-  assert.equal(out[1].atoms[0].k, 'sprite.risen');
+  assert.equal(out[2].atoms[0].k, 'sprite.second');
 });
 
 test('a measured value is drawn and sounds from the kind’s own waves, scaled by the value', () => {
@@ -65,7 +65,7 @@ test('sabotage: a sprite whose kind is not in the catalogue is refused as orphan
 });
 
 test('sabotage: a row with no id is refused as orphan_visual_node, not drawn as an empty sprite', () => {
-  assert.throws(() => C.catalogo({ filas: [{ tipo: 'risen' }] }), /orphan_visual_node/);
+  assert.throws(() => C.catalogo({ filas: [{ tipo: 'second' }] }), /orphan_visual_node/);
 });
 
 test('sabotage: a measured value out of 0-100 or not a whole number is NO_DATA, never drawn', () => {

@@ -17,7 +17,7 @@ RAIZ = pathlib.Path(__file__).resolve().parent.parent
 FUENTE = RAIZ / "odd" / "data" / "nodes.json"
 SALIDA = RAIZ / "public" / "openworld" / "estado.json"
 SELLOS = ["LIVE", "STALE", "STATIC", "SIMULATED", "NO_DATA", "ERROR"]
-LOOKS = ["basic", "atlantis", "zombie"]
+LOOKS = ["basic", "ocean", "flat"]
 FECHA = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 
 

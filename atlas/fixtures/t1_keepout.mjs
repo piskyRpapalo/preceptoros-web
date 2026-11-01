@@ -14,7 +14,7 @@ const RADIO_POR_TIPO = { cabin: valor('RADIO_CUERPO'), node: valor('RADIO_CUERPO
 
 // Posiciones en celdas: el origen de la rejilla (3,2) es la cabina; los nodos llegan por su reco (global_map.js:22-26).
 const ORIGEN = { x: 3, y: 2 };
-const RECO = { atlantis: [-2, 1], risen: [2, -1] };
+const RECO = { hexelion: [-2, 1], second: [2, -1] };
 
 // Radio de un interactivo: override por instancia si lo hay; si no, el del tipo. Sin radio medido -> error (NO_DATA).
 export function radioDe(tipo, override) {
@@ -27,10 +27,10 @@ export function radioDe(tipo, override) {
   return r;
 }
 
-// Interactivos vivos: la cabina siempre; atlantis y risen solo si su nodo esta vivo (dictado Norte 7).
+// Interactivos vivos: la cabina siempre; hexelion y second solo si su nodo esta vivo (dictado Norte 7).
 export function interactivos(vivos) {
   const out = [{ id: 'cabin', tipo: 'cabin', x: ORIGEN.x, y: ORIGEN.y, radio: radioDe('cabin') }];
-  for (const id of ['atlantis', 'risen']) {
+  for (const id of ['hexelion', 'second']) {
     if (vivos && vivos.includes(id)) {
       out.push({ id, tipo: 'node', x: ORIGEN.x + RECO[id][0], y: ORIGEN.y + RECO[id][1], radio: radioDe('node') });
     }
