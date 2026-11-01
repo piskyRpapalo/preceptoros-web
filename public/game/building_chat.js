@@ -50,7 +50,7 @@
       offers: 'I offer the rules of a duel. A challenge is signed by a person, never by me.',
       replies: {
         help: 'Ask me: what, status or offer. Escape or the Leave building button takes you out.',
-        what: 'A tower is an arena. Every duel replays from its law, its seed and its actions.',
+        what: 'A tower is a duel hall. Every duel replays from its law, its seed and its actions.',
         status: 'My status is the seal of my node. Without a measure it is NO_DATA.',
         offer: 'I can explain a duel. I never challenge, accept or settle for you.'
       }
