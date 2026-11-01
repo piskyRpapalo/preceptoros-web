@@ -58,6 +58,7 @@ jobs:
             node --test atlas/puros/state_frames_casos.mjs
             node --test atlas/puros/colony_state_casos.mjs
             node --test atlas/puros/hex_projection_casos.mjs
+            node --test atlas/barrido_web_casos.mjs
             node atlas/hex_projection_gate.mjs
             node --test atlas/puros/catalogo_iso_casos.mjs
             node --test atlas/puros/colonia_edificios_casos.mjs
