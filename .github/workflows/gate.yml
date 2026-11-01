@@ -59,7 +59,7 @@ jobs:
             node --test atlas/puros/state_frames_casos.mjs
             node --test atlas/puros/colony_state_casos.mjs
             node --test atlas/puros/hex_projection_casos.mjs
-            node --test atlas/puros/barrido_web_casos.mjs
+            node --test atlas/barrido_web_casos.mjs
             node --test atlas/map_carta_casos.mjs
             node --test atlas/map_chunks_casos.mjs
             node --test atlas/map_painter_casos.mjs

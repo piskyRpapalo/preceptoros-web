@@ -53,7 +53,7 @@ const SIN_RED = {
   ru: ['Нет связи', 'Этой страницы пока нет в твоём кэше.',
        'PreceptorOS работает на твоей машине; этот сайт — только дверь. '
        + 'Попробуй снова, когда будет сеть.', 'Повторить'],
-  el: ['Χωρίς σύνδεση', 'Αυτή η σελίδα δεν είναι ακόμα στη μνήμη σου.',
+  el: ['Χωρίς σύνδεση', 'Αυτή η σελίδα δεν είναι ακόμη στη μνήμη σου.',
        'Το PreceptorOS τρέχει στο μηχάνημά σου· αυτός ο ιστότοπος είναι μόνο η πόρτα. '
        + 'Δοκίμασε ξανά όταν έχεις δίκτυο.', 'Ξαναδοκίμασε'],
   fr: ['Hors ligne', "Cette page n'est pas encore dans votre cache.",
@@ -149,8 +149,8 @@ self.addEventListener('fetch', e => {
 
   if (RED_PRIMERO.indexOf(url.pathname) >= 0) { e.respondWith(redPrimero(e)); return; }
 
-  
-  
+    
+    
   if (url.pathname.endsWith('.json') &&
       CONTENIDO_JSON.indexOf(url.pathname) < 0) return;
   if (req.mode === 'navigate') { e.respondWith(navegacion(e)); return; }
