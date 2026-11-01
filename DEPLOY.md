@@ -8,8 +8,8 @@ Status: proposal for review. Deployment remains a human action. This document re
 
 Route-count receipt for this source tree (`haiku/corte-d-borrado-20261028`, Norte 7 D: the theGame stack leaves the shell with its files; measured with `python3 bin/contar_rutas.py`, 2026-10-28):
 
-Rutas precargadas por el shell: 114
-Rutas distintas del shell: 113
+Rutas precargadas por el shell: 115
+Rutas distintas del shell: 114
 
 The workflow runs exactly:
 
@@ -60,3 +60,5 @@ H2 source receipt (2026-11-01): the face skins retire to retirados/face/ with th
 P2/P3 source receipt (2026-11-01): the map by chunks joins the shell cache: map_carta.js, map_chunks.js, /map/carta.json, /art/sea-palette.json and the 7 baked chunks (30,476 B for the 9 data files). 112 entries / 111 distinct.
 P5a source receipt (2026-11-01): /game/hitl_walkers.js joins the shell after P4. 114 entries / 113 distinct.
 P4 source receipt (2026-11-01): /game/map_painter.js joins the shell (the 2.5D floor). 113 entries / 112 distinct.
+Terminal source receipt (2026-11-01): /game/terminal_tabs.js joins the shell. 114 entries / 113 distinct.
+Terminal source receipt (2026-11-01): /game/terminal_tabs.js joins the shell. 115 entries / 114 distinct.
