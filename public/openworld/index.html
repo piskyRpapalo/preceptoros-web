@@ -70,6 +70,9 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
 .tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
 .tabs [role="tab"]{min-height:44px;padding:6px;border:2px solid currentColor;border-radius:var(--radius);background:var(--bg);color:var(--fg);font:inherit;cursor:pointer}
 .tabs [role="tab"][aria-selected="true"]{font-weight:700;text-decoration:underline;border-width:3px}
+.welcome{justify-content:center;max-width:none;background:var(--bg)}
+.welcome p{margin:0;max-width:34em}
+.sheet .welcome-play{min-height:56px;font-size:1.1rem;font-weight:700;border-width:3px}
 @supports not (background:color-mix(in srgb,red 50%,transparent)){.sheet{background:var(--bg)}}
 /* Hero map (2026-11-01, measured on the Doogee: the map was below the fold inside a 44vh scroll box). On a phone the map
    is no longer trapped in a scroll box: it follows the walking controls at a fixed share of the screen and the page scrolls as one; the chat follows, always present. */
@@ -104,6 +107,13 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
 <section id="sheet-army" class="sheet" role="tabpanel" aria-labelledby="tab-army" hidden>
 <h2 class="sheet-h">Army</h2>
 <p><a href="/game/army.html" style="display:inline-flex;min-height:44px">Army · NO_DATA: no troops adopted in this visit yet</a></p>
+</section>
+<section id="sheet-welcome" class="sheet welcome" role="dialog" aria-modal="false" aria-labelledby="welcome-h" aria-describedby="welcome-lore" hidden>
+<h2 class="sheet-h" id="welcome-h">Welcome to the sunken forest</h2>
+<p id="welcome-lore">You are an ephemeral crab: your key is signed on this device and nothing leaves it; the model advises, never signs.</p>
+<button type="button" id="welcome-play" class="welcome-play">Play now · sign on this device</button>
+<button type="button" id="welcome-look">Look around first</button>
+<p id="welcome-result" class="state" role="status"></p>
 </section>
 </div>
 <div class="tabs" role="tablist" aria-label="What covers the map">
@@ -178,6 +188,7 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
 <script src="/game/visitor_conquest.js"></script>
 <script src="/game/hatch_reveal.js"></script>
 <script src="/game/visitor_play.js"></script>
+<script src="/game/welcome_card.js"></script>
 <script src="/game/world_feed.js"></script>
 <script src="/game/map_chat.js"></script>
 <script src="/assets/radio_message_log.js"></script>
