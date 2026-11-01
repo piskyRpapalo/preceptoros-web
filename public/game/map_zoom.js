@@ -18,6 +18,6 @@
     return { factor: function () { return zm; } };
   }
 
-  var AtlasMapZoom = { crea: crea, MIN: MIN, MAX: MAX };
+  var AtlasMapZoom = { crea: crea, create: crea, MIN: MIN, MAX: MAX };
   if (typeof module === 'object' && module.exports) { module.exports = AtlasMapZoom; } else { raiz.AtlasMapZoom = AtlasMapZoom; }
 })(this);

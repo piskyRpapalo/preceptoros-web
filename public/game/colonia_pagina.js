@@ -87,7 +87,9 @@
   // IC7-S4: the spacing shrinks when the widest node would leave the canvas; it never grows past K.
   function geometry(sc, canvas) {
     var reach = sc.tiles.reduce(function (m, n) { return Math.max(m, Math.abs(n.x)); }, 1);
-    return { cx: canvas.width / 2, cy: canvas.height / 2, k: Math.min(K, (canvas.width / 2 - 80) / reach) };
+    // H1b: the pinch/wheel factor of map_zoom.js (canvas.dataset.zoom) scales the one placement, so drawing and the click test agree.
+    var zoom = Number(canvas.dataset && canvas.dataset.zoom) || 1;
+    return { cx: canvas.width / 2, cy: canvas.height / 2, k: Math.min(K, (canvas.width / 2 - 80) / reach) * zoom };
   }
 
   // nodeAt(canvas, estado, t, looks, seals, px, py) → the id of the node drawn under the point (canvas pixels), or null.
