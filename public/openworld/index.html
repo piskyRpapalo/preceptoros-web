@@ -50,6 +50,9 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
 #chat button{min-height:44px;padding:8px 14px;border:2px solid currentColor;border-radius:var(--radius);background:var(--bg);color:var(--fg);font:inherit}
 #chat button:disabled,#chat input:disabled{opacity:.55}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+/* Hero map (2026-11-01, measured on the Doogee: the map was below the fold inside a 44vh scroll box). On a phone the map
+   is no longer trapped in a scroll box: it follows the walking controls at a fixed share of the screen and the page scrolls as one; the chat follows, always present. */
+@media (max-width:899px){html,body{height:auto}main{flex:none;grid-template-rows:auto auto;min-height:0}#map{overflow:visible;min-height:0}#map .surface{flex:none;height:min(46vh,520px);min-height:280px;border-radius:var(--radius)}}
 @media (min-width:900px){main{grid-template-rows:1fr;grid-template-columns:1fr 1fr}#map{border-bottom:0;border-right:2px solid var(--line)}}
 </style>
 </head>
