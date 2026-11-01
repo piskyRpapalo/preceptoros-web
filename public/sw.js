@@ -1,4 +1,4 @@
-const VERSION = 'preceptoros-2026-17-bu';
+const VERSION = 'preceptoros-2026-17-bz';
 const SHELL = 'shell-' + VERSION;
 const OBRA = 'obra-' + VERSION;
 
@@ -53,7 +53,7 @@ const SIN_RED = {
   ru: ['Нет связи', 'Этой страницы пока нет в твоём кэше.',
        'PreceptorOS работает на твоей машине; этот сайт — только дверь. '
        + 'Попробуй снова, когда будет сеть.', 'Повторить'],
-  el: ['Χωρίς σύνδεση', 'Αυτή η σελίδα δεν είναι ακόμη στη μνήμη σου.',
+  el: ['Χωρίς σύνδεση', 'Αυτή η σελίδα δεν είναι ακόμα στη μνήμη σου.',
        'Το PreceptorOS τρέχει στο μηχάνημά σου· αυτός ο ιστότοπος είναι μόνο η πόρτα. '
        + 'Δοκίμασε ξανά όταν έχεις δίκτυο.', 'Ξαναδοκίμασε'],
   fr: ['Hors ligne', "Cette page n'est pas encore dans votre cache.",
@@ -141,7 +141,7 @@ function estatico(e) {
 
 self.addEventListener('fetch', e => {
   const req = e.request;
-  if (req.method !== 'GET') return;                 
+  if (req.method !== 'GET') return;                
 
   const url = new URL(req.url);
   if (url.origin !== self.location.origin) return;
