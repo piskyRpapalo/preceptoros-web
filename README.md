@@ -51,14 +51,22 @@ The human words that used to live here moved intact to
 This file is now a map for agents: the note for the AI, the four
 repositories, the contract, the promises, the measured numbers.
 
-What the site serves today, measured: the game on the home page, the same game in
-nine languages, and the project's numbers with their date. Nothing beyond the
+What the site serves today, measured: the game on the home page, the same
+game in nine languages, the open-world colony at `/openworld/` (a 2.5D
+isometric map — a live cabin, buildings, bots with faces drawn in bubble
+language, and the visitor flow of beacon, eggs, battles and local
+conquests), and the project's numbers with their date. Nothing beyond the
 list below is promised.
 
 ## What you can do here
 
 - **Play.** The home page is theGame: a map you can drag, zoom with a pinch or
   the wheel, and a crab that swims. Panels open from the menu on the left.
+- **Explore the open world.** `/openworld/` is the 2.5D isometric colony: a
+  live cabin, buildings, bots with faces drawn in bubble language, and a
+  visitor flow with no account — beacon, egg, battle, local conquest. Same
+  map laws: drag, zoom with a pinch or the wheel; what is not measured is
+  named, not guessed.
 - **Read the numbers.** Site weight, languages and test counts are in
   `public/counters.json`, each with the date it was taken.
 - **Install it.** The site is an installable app (`manifest.webmanifest`) and
