@@ -291,6 +291,21 @@
    ]
   },
   {
+   "id": "hitl-walkers",
+   "scripts": [
+    "/game/hitl_walkers.js"
+   ],
+   "globals": [
+    "AtlasHitlWalkers"
+   ],
+   "guards": [
+    {
+     "file": "atlas/openworld_browser.mjs",
+     "text": "Tab never reaches the HITL button"
+    }
+   ]
+  },
+  {
    "id": "terminal-tabs",
    "scripts": [
     "/game/terminal_tabs.js"
