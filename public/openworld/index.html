@@ -59,6 +59,7 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
   background:color-mix(in srgb,var(--bg) 90%,transparent);color:var(--fg);border:2px solid var(--line);border-radius:var(--radius)}
 .sheet[hidden]{display:none}
 /* The walking controls step ON the map, as an upper layer (bottom-left, like the first terminals' pad); a sheet covers both. */
+.topbar > a{display:inline-flex;align-items:center;min-width:44px;min-height:44px}
 /* Zoom is a layer too, top-right on a plate (its spoken level sits on the plate, never on the drawing). */
 .stage #zoom-controls{position:absolute;top:8px;right:8px;z-index:2;display:flex;flex-wrap:wrap;justify-content:flex-end;gap:4px;max-width:60%;
   padding:4px;border:2px solid var(--line);border-radius:var(--radius);background:color-mix(in srgb,var(--bg) 78%,transparent)}
@@ -117,7 +118,7 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
 </section>
 <section id="sheet-army" class="sheet" role="tabpanel" aria-labelledby="tab-army" hidden>
 <h2 class="sheet-h">Army</h2>
-<p><a href="/game/army.html" style="display:inline-flex;min-height:44px">Army · NO_DATA: no troops adopted in this visit yet</a></p>
+<p><a href="/game/army.html" style="display:inline-flex;min-height:44px">Open the full Army page</a></p>
 </section>
 </div>
 <div class="tabs" role="tablist" aria-label="What covers the map">
