@@ -227,7 +227,7 @@ process.stdout.write(JSON.stringify(ok));
         ok_tal = {"esquema": "atlas.taller/1", "op": "desintegra", "prev": "0" * 64, "clave_publica": pub, "semilla": "b" * 64,
                   "tc": "tc4", "aristas": 13, "gramos": 39, "saldo": 39}
         ok_inv = {"esquema": "atlas.invocacion/2", "tc": "tc2", "seq": 3, "prev": "c" * 64, "clave_publica": pub}
-        ok_car = {"v": "atlas.carta/1", "radius": 8, "seed": 1, "frame": {"t": "Tutorial cabin chunk", "d": "Floor and water around the tutorial cabin."},
+        ok_car = {"v": "atlas.carta/1", "radius": 8, "seed": 1, "budget": {"chunk_bytes_max": 65536, "visible_bytes_max": 458752}, "frame": {"t": "Tutorial cabin chunk", "d": "Floor and water around the tutorial cabin."},
                   "chunks": [{"id": "0_0", "c": [0, 0], "sha256": "a" * 64, "bytes": 900, "frame": {"t": "Tutorial cabin chunk", "d": "Floor and water around the tutorial cabin."}}]}
         ok_chu = {"v": "atlas.chunk/1", "c": [0, 0], "seed": 1, "frame": {"t": "Tutorial cabin chunk", "d": "Floor and water around the tutorial cabin."}, "cells": [[0, 0, 0, "floor"], [1, 0, 0, "water"]], "assets": ["sea-palette"]}
         ok_ass = {"v": "atlas.asset/1", "id": "sea-palette", "kind": "palette", "frame": {"t": "Tutorial cabin chunk", "d": "Floor and water around the tutorial cabin."}, "data": {"bands": [[23, 19, 31]]}}
@@ -253,9 +253,9 @@ process.stdout.write(JSON.stringify(ok));
                 sin(ok_par, "final"), con(ok_par, hora="12:00")]),
             # P1 del plan 2.5D (odd/tasks/mapa-25d-aldea.md, 2026-11-01): el mapa por chunks hex.
             "atlas_carta_schema.json": (ok_car, [
-                con(ok_car, v="atlas.carta/2"), con(ok_car, radius=0), sin(ok_car, "frame"),
-                con(ok_car, chunks=[]), con(ok_car, chunks=[dict(ok_car["chunks"][0], sha256="x")]),
-                con(ok_car, x=1)]),
+                con(ok_car, v="atlas.carta/2"), sin(ok_car, "frame"),
+                con(ok_car, chunks=[dict(ok_car["chunks"][0], sha256="x")]), con(ok_car, x=1),
+                sin(ok_car, "budget"), con(ok_car, budget={"chunk_bytes_max": 0, "visible_bytes_max": 1})]),
             "atlas_chunk_schema.json": (ok_chu, [
                 con(ok_chu, cells=[[0, 0, 0, "lava"]]), con(ok_chu, cells=[[0, 0, -1, "floor"]]),
                 con(ok_chu, assets=["Big Sprite.png"]), sin(ok_chu, "frame"), con(ok_chu, c=[0]),

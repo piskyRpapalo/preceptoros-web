@@ -47,7 +47,52 @@
     });
   }
 
-  var api = { load: load };
+  // loadAround(cell, { fetch, base, cache }) → same shape as load(). For free walk: idempotent, cached by area key and by
+  // chunk key, so walking inside one area asks nothing new and entering a new area asks only the chunks not yet held.
+  // Requests stay quantized: the carta once, then chunk files by key. A failed chunk is not cached (it may be retried).
+  var shared = { carta: null, chunks: {}, areas: {} };
+  function loadAround(cell, opts) {
+    var cache = (opts && opts.cache) || shared, get = (opts && opts.fetch) || root.fetch.bind(root), base = (opts && opts.base) || '/map/';
+    var requests = [];
+    function ask(url) { requests.push(url); return get(url).then(function (r) { if (!r.ok) { throw new Error('HTTP ' + r.status); } return r.arrayBuffer(); }); }
+    if (!cache.carta) {
+      cache.carta = ask(base + 'carta.json').then(function (buf) {
+        var c = JSON.parse(text(buf)), bad = C.checkCarta(c); if (bad) { throw new Error(bad); } return c;
+      });
+      cache.carta.catch(function () { cache.carta = null; });
+    }
+    return cache.carta.then(function (carta) {
+      var R = carta.radius, here = C.key(C.chunkOf(cell[0], cell[1], R));
+      if (cache.areas[here]) { return cache.areas[here].then(function (o) { return Object.assign({}, o, { requests: [] }); }); }
+      var index = {}, out = { key: here, chunks: {}, missing: [], requests: requests, say: '' };
+      carta.chunks.forEach(function (c) { index[c.id] = c; });
+      var p = Promise.all(C.neighbourhood(C.chunkOf(cell[0], cell[1], R), R).map(function (c) {
+        var k = C.key(c), entry = index[k];
+        if (!entry) { out.missing.push({ key: k, cause: 'cache_chunk_missing: not baked yet' }); return null; }
+        if (!cache.chunks[k]) {
+          cache.chunks[k] = ask(base + 'chunks/' + k + '.' + entry.sha256.slice(0, 8) + '.json').then(function (b) {
+            return sha256(b).then(function (hex) {
+              if (hex !== entry.sha256) { throw new Error('chunk_hash_mismatch'); }
+              var chunk = JSON.parse(text(b)), why = C.checkChunk(chunk, R); if (why) { throw new Error(why); }
+              return chunk;
+            });
+          });
+          cache.chunks[k].catch(function () { delete cache.chunks[k]; });
+        }
+        return cache.chunks[k].then(function (chunk) { out.chunks[k] = chunk; }, function (e) {
+          out.missing.push({ key: k, cause: /^HTTP/.test(e.message) ? 'cache_chunk_missing: ' + e.message : e.message });
+        });
+      })).then(function () {
+        out.say = 'Map chunks: ' + Object.keys(out.chunks).length + ' of 7 around area ' + here + (out.missing.length ? ' · NO_DATA ' + out.missing.map(function (m) { return m.key + ' (' + m.cause + ')'; }).join(', ') : '');
+        if (out.missing.length) { delete cache.areas[here]; }
+        return out;
+      });
+      cache.areas[here] = p;
+      return p;
+    }, function (e) { return { key: null, chunks: {}, missing: [], requests: requests, say: 'Map chunks: NO_DATA · ' + e.message }; });
+  }
+
+  var api = { load: load, loadAround: loadAround };
   root.AtlasMapChunks = api;
   if (typeof module !== 'undefined' && module.exports) { module.exports = api; }
 })(typeof globalThis !== 'undefined' ? globalThis : this);

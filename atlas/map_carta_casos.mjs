@@ -6,7 +6,8 @@ import { createRequire } from 'node:module';
 const C = createRequire(import.meta.url)('../public/game/map_carta.js');
 const R = 8;
 const frame = { t: 'Tutorial cabin chunk', d: 'Floor and water around the tutorial cabin.' };
-const carta = () => ({ v: 'atlas.carta/1', radius: R, seed: 1, frame, chunks: [{ id: '0_0', c: [0, 0], sha256: 'a'.repeat(64), bytes: 900, frame }] });
+const budget = { chunk_bytes_max: 65536, visible_bytes_max: 458752 };
+const carta = () => ({ v: 'atlas.carta/1', radius: R, seed: 1, budget, frame, chunks: [{ id: '0_0', c: [0, 0], sha256: 'a'.repeat(64), bytes: 900, frame }] });
 
 test('el teselado es exacto: cada celda cae en un solo chunk y cada chunk tiene 3R²+3R+1 celdas', () => {
   const n = new Map();
@@ -39,6 +40,18 @@ test('carta, chunk y asset válidos pasan; cada violación dice su causa', () =>
   assert.match(C.checkChunk(Object.assign({}, ch, { cells: [[0, 0, 0, 'lava']] }), R), /unknown kind/);
   assert.equal(C.checkAsset({ v: 'atlas.asset/1', id: 'sea-palette', kind: 'palette', frame, data: {} }), null);
   assert.match(C.checkAsset({ v: 'atlas.asset/1', id: 'x', kind: 'glb', frame, data: {} }), /kind/);
+});
+
+test('presupuesto (enmienda 2026-11-01): sin budget, chunk por encima o área visible por encima se rechazan', () => {
+  const sin = carta(); delete sin.budget;
+  assert.match(C.checkCarta(sin), /budget/);
+  assert.match(C.checkCarta(Object.assign(carta(), { budget: { chunk_bytes_max: 9, visible_bytes_max: 3 } })), /budget/);
+  const gordo = carta(); gordo.chunks[0].bytes = 65537;
+  assert.match(C.checkCarta(gordo), /over budget: 65537 bytes \(limit 65536\)/);
+  const justo = carta(); justo.chunks[0].bytes = 65536; assert.equal(C.checkCarta(justo), null);
+  const area = Object.assign(carta(), { budget: { chunk_bytes_max: 600, visible_bytes_max: 1000 } });
+  area.chunks = C.neighbourhood([0, 0], R).slice(0, 2).map((c) => ({ id: C.key(c), c, sha256: 'a'.repeat(64), bytes: 600, frame }));
+  assert.match(C.checkCarta(area), /over visible budget: 1200/);
 });
 
 test('el marco de burbuja se mide en bytes UTF-8, no en caracteres', () => {

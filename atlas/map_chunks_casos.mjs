@@ -40,11 +40,23 @@ test('un byte cambiado es chunk_hash_mismatch; un chunk ausente es cache_chunk_m
   assert.deepEqual(r.missing, [{ key: c.id, cause: 'chunk_hash_mismatch' }]);
   r = await L.load([0, 0], { fetch: servido({ [url]: 404 }) });
   assert.match(r.missing[0].cause, /^cache_chunk_missing/);
-  r = await L.load([17, -8], { fetch: servido() });
+  r = await L.load([34, -16], { fetch: servido() });
   assert.ok(r.missing.length > 0 && r.missing.every((m) => /not baked yet/.test(m.cause)) && /NO_DATA/.test(r.say));
 });
 
 test('cada gráfico horneado lleva su marco de burbuja < 1.024 B', () => {
   const C = globalThis.AtlasMapCarta;
   assert.equal(C.checkAsset(JSON.parse(readFileSync(pub('/art/sea-palette.json'), 'utf8'))), null);
+});
+
+test('loadAround es idempotente y cachea por clave: misma área no pide nada; área nueva pide sólo lo que falta', async () => {
+  const cache = { carta: null, chunks: {}, areas: {} }, f = servido();
+  const a = await L.loadAround([2, -1], { fetch: f, cache });
+  assert.equal(a.key, '0_0'); assert.equal(a.requests.length, 8); assert.equal(Object.keys(a.chunks).length, 7);
+  const b = await L.loadAround([5, -3], { fetch: f, cache });
+  assert.equal(b.requests.length, 0); assert.equal(Object.keys(b.chunks).length, 7);
+  const c = await L.loadAround([17, -8], { fetch: f, cache });            // walk into the neighbouring area (ring 2 is baked)
+  assert.equal(c.key, '17_-8'); assert.equal(Object.keys(c.chunks).length, 7, c.say);
+  assert.equal(c.requests.length, 3, 'shares 4 chunks with the cabin area: only 3 new files');
+  assert.ok(a.requests.concat(c.requests).every((u) => /^\/map\/(carta|chunks\/-?\d+_-?\d+\.[0-9a-f]{8})\.json$/.test(u)), 'peticiones cuantizadas');
 });

@@ -43,6 +43,8 @@
     if (!isInt(o.radius) || o.radius < 1) { return 'radius must be a positive integer'; }
     var f = frameCause(o.frame); if (f) { return 'carta ' + f; }
     if (!Array.isArray(o.chunks) || !o.chunks.length) { return 'carta without chunks'; }
+    var b = o.budget, seen = {};                        // budget amendment (2026-11-01): bytes per chunk and per visible area
+    if (!b || !isInt(b.chunk_bytes_max) || !isInt(b.visible_bytes_max) || b.chunk_bytes_max < 1 || b.visible_bytes_max < b.chunk_bytes_max || b.chunk_bytes_max > 25 * 1024 * 1024) { return 'carta without a valid budget'; }
     for (var i = 0; i < o.chunks.length; i++) {
       var c = o.chunks[i];
       if (!isC(c.c) || c.id !== key(c.c)) { return 'chunk ' + i + ': id is not its quantized key'; }
@@ -50,6 +52,12 @@
       if (!/^[0-9a-f]{64}$/.test(c.sha256 || '')) { return 'chunk ' + c.id + ': sha256 missing'; }
       if (!isInt(c.bytes) || c.bytes < 1 || c.bytes > 25 * 1024 * 1024) { return 'chunk ' + c.id + ': bytes outside 1..25 MiB'; }
       f = frameCause(c.frame); if (f) { return 'chunk ' + c.id + ' ' + f; }
+      if (c.bytes > b.chunk_bytes_max) { return 'chunk ' + c.id + ' over budget: ' + c.bytes + ' bytes (limit ' + b.chunk_bytes_max + ')'; }
+      seen[c.id] = c.bytes;
+    }
+    for (i = 0; i < o.chunks.length; i++) {           // what one visit sees: the 7 around any baked chunk
+      var sum = 0; neighbourhood(o.chunks[i].c, o.radius).forEach(function (n) { sum += seen[key(n)] || 0; });
+      if (sum > b.visible_bytes_max) { return 'area ' + o.chunks[i].id + ' over visible budget: ' + sum + ' bytes (limit ' + b.visible_bytes_max + ')'; }
     }
     return null;
   }
