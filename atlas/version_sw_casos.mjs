@@ -74,4 +74,26 @@ check('RED · a waiver without date or reason is ignored', () => {
   }
 });
 
+// Never reuse a served VERSION (2026-11-01). Fixture measured on main: #528 (54f4ebe) shipped be, then #527 (c69e58d)
+// shipped bd; the next automatic bump from bd is be again — already in the caches of whoever opened the egg.
+const BD = 'preceptoros-2026-17-bd', BE = 'preceptoros-2026-17-be', BI = 'preceptoros-2026-17-bi';
+const SERVED = [ABJC, ABJD, BD, BE];
+check('RED · a bump to a VERSION main already served (bd -> be, the 2026-11-01 case)', () => {
+  const v = gate.decide({ ...base, changed: PR311, versionBase: BD, versionHead: BE, served: SERVED });
+  assert.equal(v.ok, false); assert.equal(v.reused, true);
+  assert.match(gate.message(v), /already served by main/);
+});
+check('GREEN · a bump to a VERSION never served (bd -> bi)', () => {
+  const v = gate.decide({ ...base, changed: PR311, versionBase: BD, versionHead: BI, served: SERVED });
+  assert.equal(v.ok, true); assert.equal(v.reused, false);
+});
+check('GREEN · no bump is never a reuse (the base VERSION is in served by definition)', () => {
+  assert.equal(gate.decide({ ...base, changed: [], versionBase: BD, versionHead: BD, served: SERVED }).ok, true);
+});
+check('the served list comes from the real first-parent history and holds today\'s case', () => {
+  const s = gate.servedBy('HEAD');
+  assert.ok(s.length > 100, 'history is there (fetch-depth 0): ' + s.length);
+  assert.ok(s.includes(ABJC) && s.includes(BD), 'abjc and bd were served');
+});
+
 console.log(JSON.stringify({ v: 'preceptoros.version_sw/1', casos: total, ok: true }));

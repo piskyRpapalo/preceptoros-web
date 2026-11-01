@@ -26,7 +26,8 @@ jobs:
         with:
           # version_sw_gate compares HEAD^1..HEAD: on a PR merge ref that is
           # exactly the PR's effect on main; on a push to main, the new commit.
-          fetch-depth: 2
+          # Full history (2026-11-01): a bump must not reuse any VERSION main already served.
+          fetch-depth: 0
       - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
           python-version: "3.11"
