@@ -19,6 +19,17 @@
   }
 
   // The bot: a body, two eyes and a mouth, all bubble ribbons. The face says the state, not a feeling.
+  // crabPts(C) → 24 integer points of the crab outline, scaled so its widest harmonic sum is 9 px (the walker's box).
+  function crabPts(C) {
+    var arm = C.onda(C.forma(0, false).escala, null, 'cupula'), lim = 0, pts = [];
+    arm.forEach(function (h) { lim += Math.max(Math.abs(h[1]), Math.abs(h[2])); });
+    for (var i = 0; i < 24; i++) {
+      var u = i * 2 * Math.PI / 24, x = 0, y = 0;
+      arm.forEach(function (h) { var f = h[0] * u + h[3] * Math.PI / 32; x += h[1] * Math.cos(f); y += h[2] * Math.sin(f); });
+      pts.push([Math.round(9 * x / lim), Math.round(9 * y / lim)]);
+    }
+    return pts;
+  }
   function cuerpoPts(r) {
     var pts = [];
     for (var i = 0; i < 10; i++) {
@@ -71,8 +82,11 @@
   // TA-3 · the user's ephemeral walker (D15): not node state, so its seal is NO_DATA and its sentence says so.
   function youFrame(walker, t, reducido) {
     var dy = reducido === true ? 0 : RONDA[((t % 4) + 4) % 4];
-    var frase = 'you · ephemeral walker on node ' + walker.node + ' · not node state · seal NO_DATA · tick ' + t;
-    var ring = cuerpoPts(7).map(function (q) { return [q[0] + BX, q[1] + BY - 12 - dy]; });
+    // H1b: the visitor is one more bot, drawn as the ephemeral crab of the sea class (gdpr-art25-ephemeral-crab.js): its
+    // outline is the crab's own Fourier series (shell k=1, scallops, claws k=2), sampled the way gacha.js samples a wave.
+    var C = root.AtlasCrab, crab = !!(C && C.onda && C.forma);
+    var frase = 'you · ephemeral ' + (crab ? 'crab (sea)' : 'walker') + ' on node ' + walker.node + ' · not node state · seal NO_DATA · tick ' + t;
+    var ring = (crab ? crabPts(C) : cuerpoPts(7)).map(function (q) { return [q[0] + BX, q[1] + BY - 12 - dy]; });
     return {
       v: 'preceptoros.bubble/1', id: 'you', t: t, cv: [120, 110], seal: 'NO_DATA',
       atoms: [{ k: 'you', r: frase, i: [{ o: 'ribbon', pts: ring, closed: true, f: 'vermilion.base', s: 'ink', lw: 2 }] }],
