@@ -35,7 +35,7 @@ test('cada URL retirada deja una lápida: noindex, lleva al mapa con un objetivo
     assert.match(t, /<meta name="robots" content="noindex">/, f);
     assert.match(t, /min-height:44px[^>]*href="\/openworld\/"/, f + ' sin enlace táctil al mapa');
     assert.match(t, /role="status">This test page was retired/, f + ' no dice por qué');
-    assert.ok(!/<script/.test(t) && t.length < 2048, f + ' no es una lápida mínima');
+    assert.ok((t.match(/<script/g) || []).length === 1 && t.includes('<script src="/assets/pwa.js">') && t.length < 2048, f + ' no es una lápida mínima');
   }
 });
 
