@@ -163,17 +163,20 @@
     // walkSelected(): walk to the chosen node. With no choice, say how to choose one.
     function walkSelected() {
       if (walk) { return; }
-      if (!selected) { joy.say('No node selected: press an arrow key, or click a node on the map, then Enter.'); return; }
+      // P6: with no choice, Enter goes into the building you stand on (the law says so first, then what was entered).
+      if (!selected) { if (walker) { enterNode(true, 'No node selected: press an arrow key, or click a node on the map, then Enter. '); } else { joy.say('No node selected: press an arrow key, or click a node on the map, then Enter.'); } return; }
       var target = selected;
       selected = null;
       walkTo(target);
     }
-    function enterNode() {
+    // enterNode(inside, prefix): anchor the terminal of the node; with inside, go into its building too (P6, env.entered).
+    function enterNode(inside, prefix) {
       if (!walker || walk) { return; }
       var e = enter(walker, env.looks()[walker.node], saved);
       anchor(e.look);
       var step = tutorialStep(walker.node);
-      joy.say('terminal: ' + e.look + ' (' + (e.source === 'user' ? 'your choice' : e.source === 'node' ? 'the node' : 'default') + ')' + (step ? '. ' + step : ''));
+      joy.say((prefix || '') + 'terminal: ' + e.look + ' (' + (e.source === 'user' ? 'your choice' : e.source === 'node' ? 'the node' : 'default') + ')' + (step ? '. ' + step : ''));
+      if (inside && env.entered) { env.entered(walker.node); }
     }
     // G4-2: the tutorial is a walk. Entering a node may complete the next step (tutorial_walk.js). Its progress is this
     // visit's memory only, like the walker: a reload starts the walk again. Only a LIVE or STALE place can be walked.
@@ -227,7 +230,7 @@
       var W = env.win.AtlasWalkRoute, c = env.colony();
       if (!W || !c || !walker) { joy.say('NO_DATA: no colony node to walk on'); return false; }
       if (walk) { return true; }
-      if (id === walker.node) { enterNode(); return false; }
+      if (id === walker.node) { enterNode(true); return false; }
       var r = W.route(c.nodes, env.seals(), walker.node, id);
       if (!r.ok) { joy.say(r.cause); return false; }
       walk = W.startWalk(r.path, reduced);
@@ -245,7 +248,7 @@
       walker = { node: last.id, q: last.q, r: last.r };
       walk = null; selected = null;
       env.redraw();
-      enterNode();
+      enterNode(true);
       return false;
     }
     return { start: start, walker: walkerView, walkTo: walkTo, tick: tickWalk, walking: function () { return !!walk; }, say: function (text) { joy.say(text); } };
