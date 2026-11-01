@@ -1,6 +1,6 @@
 // The screen in one bubble (preceptoros.bubble/1): what the carbon sees on /openworld/ right now, read from the page's
 // own text and safe globals, in a frame under 1,024 UTF-8 bytes (measured with TextEncoder). A mini orchestrator on the
-// radio can read it like a screenshot. Lore: the retired face had window.preceptorFace.state() (retirados/face/face.js);
+// radio can read it like a screenshot. Lore: the retired face had window.preceptorFace.state() (the retired face skins);
 // the D4 proposal (CANAL NORTE): one state, three projections — visual, maths under 1,024 B, radio.
 // Every atom degrades to NO_DATA with its cause; nothing is undefined. When the frame would pass 1,023 B, atoms are
 // dropped in a fixed order and the frame says how many (a smaller limit can be asked; never a larger one). No Math.random, no clock, no network.
