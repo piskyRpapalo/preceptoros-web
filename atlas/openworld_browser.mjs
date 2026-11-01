@@ -122,6 +122,16 @@ async function main() {
   ok(radio.heard, 'the radio does not hear what the map says aloud: ' + JSON.stringify(radio));
   ok(radio.toggled && radio.tap, 'Alt+R or the 44 px targets fail: ' + JSON.stringify(radio));
   ok(radio.mainKids === 2, 'the radio broke the two-row map/chat grid: ' + radio.mainKids);
+  // A11Y: zoom without fingers — the + key, the buttons, the spoken level and the reset.
+  const zoom = JSON.parse(await ev(`(() => { const s = document.getElementById('surface'), say = () => (document.getElementById('zoom-state') || {}).textContent || '';
+    document.body.dispatchEvent(new KeyboardEvent('keydown', { key: '+', bubbles: true })); const k = s.dataset.zoom, ks = say();
+    document.getElementById('zoom-out').click(); document.getElementById('zoom-out').click(); const o = s.dataset.zoom;
+    document.getElementById('zoom-reset').click(); const r = s.dataset.zoom;
+    const sizes = Array.from(document.querySelectorAll('#zoom-controls button')).map((b) => b.getBoundingClientRect().height);
+    return JSON.stringify({ k, ks, o, r, sizes }); })()`));
+  ok(zoom.k === '1.25' && /Map zoom 1\.25×/.test(zoom.ks), 'the + key does not zoom or is not spoken: ' + JSON.stringify(zoom));
+  ok(zoom.o === '0.80' && zoom.r === '1.00', 'zoom out / reset do not move the factor: ' + JSON.stringify(zoom));
+  ok(zoom.sizes.length === 3 && zoom.sizes.every((h) => h >= 44), 'zoom buttons below the touch target: ' + zoom.sizes);
   console.log(JSON.stringify({ medida: { ...medida, texto: undefined }, escritorio, externas: externas.length, fallos }));
 }
 
