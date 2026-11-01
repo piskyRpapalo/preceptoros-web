@@ -7,7 +7,7 @@
       var response = await fetcher('/api/world-state', {cache: 'no-store', credentials: 'omit', redirect: 'error', signal: controller.signal});
       if (!response.ok) {
         // The worker answers its own NO_DATA (503 with cobertura.causa); say that cause, not a generic one.
-        var causa = 'publisher answered HTTP ' + response.status;
+        var causa = 'publisher unavailable (HTTP ' + response.status + ')';
         try { var nd = JSON.parse(await response.text()); if (nd && nd.cobertura && typeof nd.cobertura.causa === 'string') causa = nd.cobertura.causa.slice(0, 80); } catch (e) {}
         throw new Error(causa);
       }

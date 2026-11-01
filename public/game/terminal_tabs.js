@@ -37,9 +37,6 @@
     var p = doc.createElement('p');
     if (!troops || !troops.length) { p.textContent = 'NO_DATA: no troops adopted in this visit yet.'; box.appendChild(p); return; }
     p.textContent = 'Troops of this visit: ' + troops.length + '.'; box.appendChild(p);
-    var ul = doc.createElement('ul');
-    troops.forEach(function (u, i) { var t = (u && u.adopcion && u.adopcion.tropa) || {}; var li = doc.createElement('li'); li.textContent = String(t.nombre || t.tc || ('Troop ' + (i + 1))); ul.appendChild(li); });
-    box.appendChild(ul);
   }
   paintArmy(null);
   if (play) {
