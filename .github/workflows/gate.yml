@@ -60,6 +60,7 @@ jobs:
             node --test atlas/puros/colony_state_casos.mjs
             node --test atlas/puros/hex_projection_casos.mjs
             node --test atlas/barrido_web_casos.mjs
+            node --test atlas/retiro_face_casos.mjs
             node --test atlas/map_zoom_colonia_casos.mjs
             node atlas/hex_projection_gate.mjs
             node --test atlas/puros/catalogo_iso_casos.mjs
@@ -84,8 +85,6 @@ jobs:
             node atlas/front_door_browser.mjs
             node atlas/egg_reload_browser.mjs
             node atlas/combat_screen_browser.mjs
-            node atlas/face_battle_browser.mjs
-            node atlas/face_names_browser.mjs
             node atlas/landing_doors_browser.mjs
             node atlas/openworld_browser.mjs
             node atlas/wave_army_browser.mjs
