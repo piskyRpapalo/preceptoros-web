@@ -98,6 +98,7 @@ jobs:
             node atlas/walk_keys_browser.mjs
             node atlas/visitor_account_browser.mjs
             node atlas/visitor_eggs_browser.mjs
+            node --test atlas/voice_star_casos.mjs
             node atlas/visitor_battle_browser.mjs
             node atlas/visitor_conquest_browser.mjs
             node atlas/battle_replay_controls_browser.mjs
