@@ -79,5 +79,5 @@
 
   var AtlasCangrejo = { TRAMO: TRAMO, PARTES: PARTES, paseo: paseo, forma: forma, cuerpo: cuerpo, onda: onda, huellaPaseo: huellaPaseo, pinta: pinta };
   if (typeof module === 'object' && module.exports) { module.exports = AtlasCangrejo; }
-  else { raiz.AtlasCangrejo = AtlasCangrejo; }
+  else { raiz.AtlasCangrejo = AtlasCangrejo; raiz.AtlasCrab = AtlasCangrejo; }
 })(this);
