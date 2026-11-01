@@ -73,7 +73,7 @@
   function mount(doc, container, handlers) {
     var box = doc.createElement('div');
     box.setAttribute('role', 'group');
-    box.setAttribute('aria-label', 'Joystick and terminal');
+    box.setAttribute('aria-label', 'Terminal and tutorial');
     var status = doc.createElement('p');
     status.className = 'state';
     status.setAttribute('aria-live', 'polite');
@@ -83,16 +83,11 @@
       b.addEventListener('click', onClick);
       return b;
     }
-    var pad = doc.createElement('div');
-    pad.setAttribute('role', 'group');
-    pad.setAttribute('aria-label', 'Walk to a neighbouring node');
-    Object.keys(DIRS).forEach(function (name) {
-      pad.appendChild(button(name, function () { handlers.move(name); }));
-    });
+    // W-4: the six-direction grid and «enter node» are gone. The map is walked by clicking a node (W-3), and the arrow
+    // keys choose a neighbouring node; Enter walks there. Every selection is said on the status line (live region).
     var actions = doc.createElement('div');
     actions.setAttribute('role', 'group');
-    actions.setAttribute('aria-label', 'Node and tutorial');
-    actions.appendChild(button('enter node', function () { handlers.enter(); }));
+    actions.setAttribute('aria-label', 'Tutorial');
     actions.appendChild(button('Skip tutorial', function () { handlers.skip(); }));
     var sel = doc.createElement('select');
     sel.setAttribute('aria-label', 'Terminal look');
@@ -101,29 +96,31 @@
     });
     sel.style.minHeight = '44px';
     sel.addEventListener('change', function () { handlers.choose(sel.value === '' ? null : sel.value); });
-    // H1: the stick. Dragging inside the pad picks the neighbour by angle (handlers.direction) and moves the character there (handlers.move).
+    // H1: the stick. Dragging inside the pad selects the neighbour by angle (handlers.direction → handlers.select, the W-4 law);
+    // letting go walks to it (handlers.enter), the same as Enter after an arrow key.
     var stickPad = doc.createElement('div');
     stickPad.setAttribute('role', 'application');
-    stickPad.setAttribute('aria-label', 'Move your character: drag inside the circle');
+    stickPad.setAttribute('aria-label', 'Move your character: drag inside the circle, let go to walk');
     stickPad.style.cssText = 'width:168px;height:168px;touch-action:none;border:2px solid currentColor;border-radius:50%;margin:8px 0';
     var drag = null, lastName = null;
     stickPad.addEventListener('pointerdown', function (e) { drag = [e.clientX, e.clientY]; lastName = null; stickPad.setPointerCapture(e.pointerId); });
     stickPad.addEventListener('pointermove', function (e) {
       if (!drag) { return; }
       var name = handlers.direction ? handlers.direction(e.clientX - drag[0], e.clientY - drag[1]) : null;
-      if (name && name !== lastName) { lastName = name; handlers.move(name); }
+      if (name && name !== lastName) { lastName = name; handlers.select(name); }
     });
-    function stickEnd() { drag = null; }
-    stickPad.addEventListener('pointerup', stickEnd);
-    stickPad.addEventListener('pointercancel', stickEnd);
+    stickPad.addEventListener('pointerup', function () { var walked = drag && lastName; drag = null; if (walked) { handlers.enter(); } });
+    stickPad.addEventListener('pointercancel', function () { drag = null; });
     box.appendChild(stickPad);
-    box.appendChild(pad); box.appendChild(actions); box.appendChild(sel); box.appendChild(status);
+    box.appendChild(status); box.appendChild(actions); box.appendChild(sel);
     container.appendChild(box);
-    // Arrow keys: east and west move along the row; up and down take the two north and two south neighbours.
+    // Arrow keys choose a neighbour (move() decides which); Enter walks to the chosen one. Form fields keep their keys.
     var keys = { ArrowRight: 'east', ArrowLeft: 'west', ArrowUp: 'north-east', ArrowDown: 'south-west' };
     doc.addEventListener('keydown', function (e) {
-      if (keys[e.key]) { e.preventDefault(); handlers.move(keys[e.key]); }
-      else if (e.key === 'Enter' && e.target === doc.body) { handlers.enter(); }
+      var t = e.target, campo = t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT' || t.isContentEditable);
+      if (campo) { return; }
+      if (keys[e.key]) { e.preventDefault(); handlers.select(keys[e.key]); }
+      else if (e.key === 'Enter' && t === doc.body) { handlers.enter(); }
     });
     return { say: function (text) { status.textContent = text; }, select: sel };
   }
@@ -135,7 +132,9 @@
     // W-3: a walk over the visible nodes (walk_route.js). Frames are counted, never milliseconds (W-D3).
     var walk = null, reduced = !!(env.win.matchMedia && env.win.matchMedia('(prefers-reduced-motion: reduce)').matches);
     var saved = savedChoice(storeOf(env.win));
-    var joy = mount(env.doc, env.doc.getElementById('joy'), { move: moveWalker, enter: enterNode, choose: chooseLook, skip: skipTutorial,
+    // W-4: the chosen neighbour (by an arrow key or the stick). It is cleared when a walk starts.
+    var selected = null;
+    var joy = mount(env.doc, env.doc.getElementById('joy'), { select: selectNeighbour, enter: walkSelected, choose: chooseLook, skip: skipTutorial,
       direction: function (dx, dy) { var M = env.win.AtlasMapStick; return M ? M.direction(dx, dy) : null; } });
     function storeOf(win) { try { return win.localStorage; } catch (e) { return null; } }
     function hex(name) { return bandHex(name, env.win.AtlasComicTokens, env.win.AtlasComicAccents); }
@@ -151,15 +150,23 @@
       var home = c.nodes.filter(function (n) { return n.id === 'cabin'; })[0] || c.nodes[0];
       if (home) { walker = { node: home.id, q: home.q, r: home.r }; }
     }
-    function moveWalker(direction) {
-      if (walk) { return; }
+    // selectNeighbour(direction): choose the visible node in that direction (move() decides). Nothing moves yet.
+    function selectNeighbour(direction) {
       var c = env.colony();
       if (!c || !walker) { joy.say('NO_DATA: no colony node to walk on'); return; }
+      if (walk) { return; }
       var r = move(walker, direction, c.nodes);
-      if (!r.ok) { joy.say(r.cause); return; }
-      walker = r.walker;
-      env.redraw();
-      joy.say('on node ' + walker.node + '. Enter takes its terminal.');
+      if (!r.ok) { selected = null; joy.say(r.cause); return; }
+      selected = r.walker.node;
+      joy.say('selected ' + selected + ' · Enter walks there.');
+    }
+    // walkSelected(): walk to the chosen node. With no choice, say how to choose one.
+    function walkSelected() {
+      if (walk) { return; }
+      if (!selected) { joy.say('No node selected: press an arrow key, or click a node on the map, then Enter.'); return; }
+      var target = selected;
+      selected = null;
+      walkTo(target);
     }
     function enterNode() {
       if (!walker || walk) { return; }
@@ -225,6 +232,7 @@
       if (!r.ok) { joy.say(r.cause); return false; }
       walk = W.startWalk(r.path, reduced);
       joy.say('walking to ' + id + ' · ' + (r.path.length - 1) + ' step(s)');
+      if (env.walk) { env.walk(); }
       return true;
     }
     // tickWalk(): one frame of the walk. On arrival the walker is on the last node and enters it.
@@ -235,7 +243,7 @@
       if (!W.doneWalk(walk)) { env.redraw(); return true; }
       var last = coordOf(walk.path[walk.path.length - 1], c);
       walker = { node: last.id, q: last.q, r: last.r };
-      walk = null;
+      walk = null; selected = null;
       env.redraw();
       enterNode();
       return false;

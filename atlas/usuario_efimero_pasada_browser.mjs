@@ -51,6 +51,8 @@ async function main() {
   const cmd = (method, params = {}) => new Promise((r) => { const i = ++id; pend.set(i, r); ws.send(JSON.stringify({ id: i, method, params })); });
   const ev = async (e) => (await cmd('Runtime.evaluate', { expression: e, awaitPromise: true, returnByValue: true })).result?.result?.value ?? null;
   const hasta = async (e, ms) => { for (let t = 0; t < ms; t += 250) { if (await ev(e)) { return true; } await espera(250); } return false; };
+  // W-5: a click on the cabin hex, from the page's own state and geometry.
+  const clicCabina = () => ev(`(async () => { const d = await (await fetch('/openworld/estado.json', { cache: 'no-store' })).json(); const est = AtlasOpenworldState.leer(d); const s = document.getElementById('surface'); const a = AtlasColoniaPagina.anchorOf(s, est.colonia, 0, est.looks || {}, est.seals || {}, 'cabin'); const r = s.getBoundingClientRect(); s.dispatchEvent(new MouseEvent('click', { bubbles: true, clientX: r.left + a.x * r.width / s.width, clientY: r.top + a.y * r.height / s.height })); return true; })()`);
   // Click the first button whose text matches; the page's own handler runs.
   const pulsa = (texto) => ev(`(() => { const b = [...document.querySelectorAll('button')].find(x => x.textContent.trim() === ${JSON.stringify(texto)}); if (!b) { return false; } b.click(); return true; })()`);
   const pulsaId = (idb) => ev(`(() => { const b = document.getElementById(${JSON.stringify(idb)}); if (!b || b.disabled) { return false; } b.click(); return true; })()`);
@@ -61,8 +63,9 @@ async function main() {
   ok(await hasta('!!document.getElementById("surface") && !!document.getElementById("joy")', 15000), 'map and joystick loaded');
 
   // 1 · the cabin key: the walker stands on the cabin at start; entering it plays the key.
-  ok(await hasta("[...document.querySelectorAll('button')].some(x => x.textContent.trim() === 'enter node')", 15000), 'enter node button exists');
-  ok(await pulsa('enter node'), 'enter node pressed');
+  // W-5: the cabin is entered by walking there: a click on its hex.
+  ok(await hasta("document.getElementById('state').textContent.includes('Colony:')", 15000), 'colony drawn before the cabin click');
+  ok(await clicCabina(), 'click on the cabin hex');
   await espera(300);
   const primero = await estado();
   ok(/tutorial: key played/.test(primero), 'cabin key played on first entry: ' + primero.slice(0, 120));
@@ -89,14 +92,14 @@ async function main() {
   ok(await hasta('!!document.getElementById("visitor-start") && !document.getElementById("visitor-beacon")', 5000), 'account is gone after the visit ends');
 
   // 4 · the walk finishes: entering the cabin again plays the node step (the dead beacon is already resolved).
-  ok(await pulsa('enter node'), 'enter node button still exists after the visit');
+  ok(await clicCabina(), 'click on the cabin hex after the visit');
   await espera(300);
   const segunda = await estado();
   ok(/tutorial: node played/.test(segunda), 'node step played on the second entry: ' + segunda.slice(0, 120));
   medidas.segunda_entrada = segunda.slice(0, 160);
 
   // 5 · the walk is over: a further entry says so, and nothing else is recorded.
-  ok(await pulsa('enter node'), 'enter node button for the last check');
+  ok(await clicCabina(), 'click on the cabin hex for the last check');
   await espera(300);
   const ultima = await estado();
   ok(/tutorial: complete/.test(ultima), 'walk reports complete at the end: ' + ultima.slice(0, 120));
