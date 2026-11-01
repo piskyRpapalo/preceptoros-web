@@ -96,6 +96,7 @@ jobs:
             node atlas/landing_doors_browser.mjs
             node atlas/openworld_browser.mjs
             node atlas/web_node_brain_browser.mjs
+            node atlas/offline_brain_browser.mjs
             node atlas/walk_avatar_browser.mjs
             node atlas/walk_keys_browser.mjs
             node atlas/visitor_account_browser.mjs

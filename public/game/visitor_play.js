@@ -19,13 +19,31 @@
     }); controls.append(b); return b;
   }
   function line(text) { var p = doc.createElement('p'); p.textContent = text; details.append(p); }
+  // Plug&play (2026-11-01): ONE next-step sentence under the tabs, computed from the visit state only.
+  var nextText = doc.getElementById('next-text'), playNow = doc.getElementById('play-now');
+  function next(s) {
+    var t = !s ? 'Press Play now.' : s.copper >= 50 ? 'Summon a wave in Summons.' :
+      (s.eggs.filter(function (e) { return !e.ready; })[0] ? 'Walk ' + s.eggs.filter(function (e) { return !e.ready; })[0].remaining + ' steps to hatch.' : 'Ask the guide in the chat.');
+    if (nextText && nextText.textContent !== t) { nextText.textContent = t; }
+    if (playNow) { playNow.hidden = !!s; }
+  }
+  async function start() { account = await root.AtlasVisitorAccount.create(true); game = await root.AtlasVisitorEggs.create(account); }
+  if (playNow) {
+    playNow.addEventListener('click', async function () {
+      if (waiting || game) { return; } waiting = true; playNow.disabled = true;
+      try { await start(); status.textContent = 'Action completed in this visit.'; } catch (error) { status.textContent = 'NO_DATA: ' + error.message; }
+      finally { waiting = false; playNow.disabled = false; render(); }
+    });
+  }
   function render() {
     controls.replaceChildren(); details.replaceChildren();
     if (!game) {
-      button('Start an ephemeral visit', 'visitor-start', async function () { account = await root.AtlasVisitorAccount.create(true); game = await root.AtlasVisitorEggs.create(account); });
+      next(null);
+      button('Start an ephemeral visit', 'visitor-start', start);
       return;
     }
     var s; try { s = game.state(); } catch (_) { game = null; account = null; render(); return; }
+    next(s);
     line('Copper ' + s.copper + ' · Light ' + s.light + ' · Step ' + s.step + ' · Troops ' + s.troops.length + ' · Pity NO_DATA: not approved.');
     var star = doc.createElement('p'); star.id = 'visitor-voice-star'; star.textContent = 'Voice Star ' + s.echoes + '/' + s.echoCap; controls.append(star);
     button('Visit the beacon · claim 100 copper once', 'visitor-beacon', function () { game.beacon(); }, s.claimed);
