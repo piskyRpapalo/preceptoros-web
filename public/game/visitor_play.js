@@ -51,7 +51,7 @@
     Object.keys(root.AtlasGacha.TCS).forEach(function (tc) {
       var cost = root.AtlasGacha.TCS[tc].coste, odds = root.AtlasGacha.odds(tc);
       line(tc + ' · ' + cost.cobre + ' copper / ' + cost.luz + ' light · odds per thousand: ' + root.AtlasGacha.RAREZAS.map(function (r, i) { return r + ' ' + odds[i]; }).join(', '));
-      button('Sign invocation · ' + tc, 'visitor-summon-' + tc, function () { return game.summon(tc, true); }, s.copper < cost.cobre || s.light < cost.luz);
+      button('Sign invocation · ' + tc, 'visitor-summon-' + tc, async function () { var after = await game.summon(tc, true), e = after.eggs[after.eggs.length - 1] || {}; doc.dispatchEvent(new CustomEvent('invocation:signed', { detail: { tc: tc, copper: cost.cobre, seq: e.seq, step: after.step } })); }, s.copper < cost.cobre || s.light < cost.luz);
     });
     s.eggs.forEach(function (egg) { button('Sign adoption · egg ' + egg.seq + (egg.ready ? ' · ready' : ' · ' + egg.remaining + ' steps'), 'visitor-hatch-' + egg.seq, async function () { var after = await game.hatch(egg.seq, true); var R = root.AtlasHatchReveal; if (R) { R.show(after, function (t) { status.textContent = t; }); } }, !egg.ready); });
     s.chronicle.forEach(function (e) { line('Invocation ' + e.seq + ' · ' + e.tc + ' · seal ' + e.sello + ' · ' + e.rareza); });
@@ -63,7 +63,7 @@
     var log = doc.getElementById('state'), say = function (t) { if (log) { log.textContent = t; } };
     var d = event.detail || {};
     if (!game) { say('Voice Star: NO_DATA · start a visit first'); return; }
-    try { var s = await game.echo({ verified: d.verified, model: d.model, text: d.text, sha: d.sha }); render(); say('Voice Star: +25 copper for a verified answer (' + s.echoes + ' of ' + s.echoCap + ')'); }
+    try { var s = await game.echo({ verified: d.verified, model: d.model, text: d.text, sha: d.sha }); render(); doc.dispatchEvent(new CustomEvent('voicestar:granted', { detail: { copper: 25, sha: d.sha, echoes: s.echoes } })); say('Voice Star: +25 copper for a verified answer (' + s.echoes + ' of ' + s.echoCap + ')'); }
     catch (error) {
       var capped = false; try { capped = game && game.state().echoes >= game.state().echoCap; } catch (_) {}
       say(capped ? 'Voice Star: this visit already earned its 4 echoes' : 'Voice Star: NO_DATA · ' + error.message);

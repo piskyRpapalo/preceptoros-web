@@ -73,6 +73,7 @@ jobs:
             node --test atlas/puros/catalogo_iso_casos.mjs
             node --test atlas/puros/colonia_edificios_casos.mjs
             node --test atlas/building_chat_casos.mjs
+            node --test atlas/invocacion_viva_casos.mjs
             node atlas/colonia_edificios_gate.mjs
             node --test atlas/puros/paleta_ciclo_casos.mjs
             node atlas/paleta_ciclo_gate.mjs
@@ -95,6 +96,7 @@ jobs:
             node atlas/combat_screen_browser.mjs
             node atlas/landing_doors_browser.mjs
             node atlas/openworld_browser.mjs
+            node atlas/invocacion_viva_browser.mjs
             node atlas/web_node_brain_browser.mjs
             node atlas/offline_brain_browser.mjs
             node atlas/walk_avatar_browser.mjs
