@@ -54,6 +54,14 @@ async function main() {
   ok(await hasta('!!document.getElementById("visitor-start")',10000),'visitor controls available');
   await ev('document.getElementById("visitor-start").click()');
   ok(await hasta('!!document.getElementById("visitor-beacon")',10000),'visit started without Identity');
+  // Voice Star: a fake verified brain:answer with a correct sha earns +25 copper and is announced in #state.
+  ok(await ev('document.getElementById("visitor-voice-star").textContent') === 'Voice Star 0/4', 'Voice Star counter 0/4');
+  const antes = await ev('Number(/Copper (\\d+)/.exec(document.getElementById("visitor-play").textContent)[1])');
+  await ev(`(async()=>{const text='The Navigator answers.';const sha=await AtlasVisitorAccount.digest(text);document.dispatchEvent(new CustomEvent('brain:answer',{detail:{verified:true,model:'tutorial',text,sha}}));})()`);
+  ok(await hasta('document.getElementById("state").textContent === "Voice Star: +25 copper for a verified answer (1 of 4)"', 10000), 'Voice Star announced in #state');
+  const despues = await ev('Number(/Copper (\\d+)/.exec(document.getElementById("visitor-play").textContent)[1])');
+  ok(despues === antes + 25, 'Voice Star copper rose by 25'); medidas.voiceStar = { antes, despues };
+  ok(await ev('document.getElementById("visitor-voice-star").textContent') === 'Voice Star 1/4', 'Voice Star counter 1/4');
   await ev('document.getElementById("visitor-beacon").click()');
   ok(await hasta('document.getElementById("visitor-beacon").disabled && !document.getElementById("visitor-summon-tc1").disabled',10000),'beacon granted once');
   await ev('document.getElementById("visitor-summon-tc1").click()');
