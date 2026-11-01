@@ -1831,6 +1831,10 @@ class Sitemap(unittest.TestCase):
             if p.name == "index.html":
                 esperado = ORIGEN_PROPIO + "/" + rel[:-len("index.html")]
             with self.subTest(pagina=rel):
+                # Barrido 2026-11-01: una pagina de prueba («<title>Test ·») es la excepcion simetrica: NO se anuncia.
+                if "<title>Test ·" in p.read_text(encoding="utf-8"):
+                    self.assertNotIn("<loc>" + esperado + "</loc>", xml, f"{rel} es de prueba y se anuncia")
+                    continue
                 self.assertIn("<loc>" + esperado + "</loc>", xml,
                               f"{rel} no esta en el sitemap")
 
