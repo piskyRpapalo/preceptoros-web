@@ -50,6 +50,30 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
 #chat button{min-height:44px;padding:8px 14px;border:2px solid currentColor;border-radius:var(--radius);background:var(--bg);color:var(--fg);font:inherit}
 #chat button:disabled,#chat input:disabled{opacity:.55}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+/* The terminal of the first version (atlantis/zombie, retirados/face/): the map owns the top; a tab bar opens sheets that
+   cover it (news, summons, army); the chat of all AIs lives below. The status lines stay outside the sheets: the state
+   log is always present. Selected tab = bold + underline + thicker border, never colour alone. */
+.topbar{display:flex;flex-wrap:wrap;align-items:center;gap:4px 12px}
+.stage{position:relative;display:flex;flex-direction:column;min-height:0}
+.sheet{position:absolute;inset:0;z-index:3;overflow:auto;overscroll-behavior:contain;padding:12px;display:flex;flex-direction:column;gap:8px;
+  background:color-mix(in srgb,var(--bg) 90%,transparent);color:var(--fg);border:2px solid var(--line);border-radius:var(--radius)}
+.sheet[hidden]{display:none}
+/* The walking controls step ON the map, as an upper layer (bottom-left, like the first terminals' pad); a sheet covers both. */
+.stage #joy{position:absolute;left:8px;bottom:60px;z-index:2;max-width:calc(100% - 16px);padding:6px;gap:4px;
+  background:color-mix(in srgb,var(--bg) 72%,transparent);border-width:2px}
+.stage #joy > [role="group"]{display:grid;grid-template-columns:auto 1fr;gap:4px 8px;align-items:center}
+.stage #joy [role="application"]{width:112px !important;height:112px !important;margin:0 !important;grid-row:span 3}
+.stage #joy .state{font-size:.8rem;max-height:3.6em;overflow:hidden}
+.stage #joy button,.stage #joy select{padding:4px 8px}
+.sheet-h{font-size:1.05rem;margin:0}
+.sheet button{min-height:44px;padding:8px 14px;border:2px solid currentColor;border-radius:var(--radius);background:var(--bg);color:var(--fg);font:inherit;cursor:pointer}
+.tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.tabs [role="tab"]{min-height:44px;padding:6px;border:2px solid currentColor;border-radius:var(--radius);background:var(--bg);color:var(--fg);font:inherit;cursor:pointer}
+.tabs [role="tab"][aria-selected="true"]{font-weight:700;text-decoration:underline;border-width:3px}
+@supports not (background:color-mix(in srgb,red 50%,transparent)){.sheet{background:var(--bg)}}
+/* Hero map (2026-11-01, measured on the Doogee: the map was below the fold inside a 44vh scroll box). On a phone the map
+   is no longer trapped in a scroll box: it follows the walking controls at a fixed share of the screen and the page scrolls as one; the chat follows, always present. */
+@media (max-width:899px){html,body{height:auto}main{flex:none;grid-template-rows:auto auto;min-height:0}#map{overflow:visible;min-height:0}#map .surface{flex:none;height:min(46vh,520px);min-height:280px;border-radius:var(--radius)}}
 @media (min-width:900px){main{grid-template-rows:1fr;grid-template-columns:1fr 1fr}#map{border-bottom:0;border-right:2px solid var(--line)}}
 </style>
 </head>
@@ -57,22 +81,42 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
 <a class="skip" href="#chat">Skip to the chat</a>
 <main data-radio-capa>
 <section id="map" aria-labelledby="map-h">
-<a href="/" style="display:inline-block;min-height:44px">Back</a>
+<div class="topbar"><a href="/" style="display:inline-block;min-height:44px">Back</a>
 <h1 id="map-h">OpenWorld</h1>
 <div class="press" role="group" aria-label="Terrains">
 <button type="button" id="t-cabin" aria-pressed="true" data-terrain="cabin">Tutorial cabin</button>
-</div>
-<div id="joy" aria-label="Walking controls"></div>
+</div></div>
+<div id="stage" class="stage">
 <canvas class="surface" id="surface" role="img" aria-label="The global map: tutorial cabin and live nodes"></canvas>
+<div id="joy" aria-label="Walking controls"></div>
+<section id="sheet-news" class="sheet" role="tabpanel" aria-labelledby="tab-news" hidden>
+<h2 class="sheet-h">News of the map</h2>
 <div class="listen">
 <button type="button" id="listen" aria-describedby="listen-state">Listen to the cabin</button>
 </div>
-<p class="state" id="listen-state" aria-live="polite"></p>
 <button type="button" id="world-refresh">Check live nodes</button>
-<p class="state" id="state" aria-live="polite">Nodes online: 0.</p>
 <ul class="state" id="frases" aria-label="Map details"></ul>
-<p><a href="/game/army.html" style="display:inline-flex;min-height:44px">Army · NO_DATA: no troops adopted in this visit yet</a></p>
+</section>
+<section id="sheet-summons" class="sheet" role="tabpanel" aria-labelledby="tab-summons" hidden>
+<h2 class="sheet-h">Summons</h2>
 <div id="visitor-play" aria-label="Visitor play"></div>
+</section>
+<section id="sheet-army" class="sheet" role="tabpanel" aria-labelledby="tab-army" hidden>
+<h2 class="sheet-h">Army</h2>
+<p><a href="/game/army.html" style="display:inline-flex;min-height:44px">Army · NO_DATA: no troops adopted in this visit yet</a></p>
+</section>
+</div>
+<div class="tabs" role="tablist" aria-label="What covers the map">
+<button type="button" role="tab" id="tab-map" aria-selected="true" aria-controls="surface">Map</button>
+<button type="button" role="tab" id="tab-news" aria-selected="false" aria-controls="sheet-news" tabindex="-1">News</button>
+<button type="button" role="tab" id="tab-summons" aria-selected="false" aria-controls="sheet-summons" tabindex="-1">Summons</button>
+<button type="button" role="tab" id="tab-army" aria-selected="false" aria-controls="sheet-army" tabindex="-1">Army</button>
+</div>
+<div class="status">
+<p class="state" id="listen-state" aria-live="polite"></p>
+<p class="state" id="state" aria-live="polite">Nodes online: 0.</p>
+<p class="state" id="floor-state" aria-live="polite">Map floor: loading the 7 chunks around the cabin.</p>
+</div>
 </section>
 <section id="chat" aria-labelledby="chat-h">
 <h2 id="chat-h">Chat</h2>
@@ -106,10 +150,15 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
 <script src="/game/openworld_state.js"></script>
 <script src="/game/colonia_pagina.js"></script>
 <script src="/game/map_zoom.js"></script>
+<script src="/game/map_carta.js"></script>
+<script src="/game/map_chunks.js"></script>
+<script src="/game/map_painter.js"></script>
+<script src="/game/terminal_tabs.js"></script>
 <script src="/game/tutorial_walk.js"></script>
 <script src="/game/walk_route.js"></script>
 <script src="/game/map_stick.js"></script>
 <script src="/game/colony_controls.js"></script>
+<script src="/game/hitl_walkers.js"></script>
 <script src="/game/db.js"></script>
 <script src="/game/visitor_account.js"></script>
 <script src="/game/visitor_eggs.js"></script>

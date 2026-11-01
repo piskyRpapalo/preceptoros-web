@@ -15,11 +15,13 @@
   // Synthetic fixture, opt-in with ?fixture=sintetica: it is labelled SYNTHETIC on the page, never a live colony.
   var FIXTURE = { nodes: [{ id: 'cabin', q: 0, r: 0 }, { id: 'ring-e', q: 1, r: 0 }, { id: 'ring-ne', q: 1, r: -1 }, { id: 'ring-nw', q: 0, r: -1 }, { id: 'ring-w', q: -1, r: 0 }, { id: 'ring-sw', q: -1, r: 1 }, { id: 'ring-se', q: 0, r: 1 }, { id: 'doggee-a', q: 2, r: 0 }, { id: 'doggee-b', q: 2, r: -1 }], buildings: [{ id: 'b-cabin', node: 'cabin' }, { id: 'b-ring-e', node: 'ring-e' }, { id: 'b-ring-nw', node: 'ring-nw' }, { id: 'b-ring-sw', node: 'ring-sw' }, { id: 'b-doggee-a', node: 'doggee-a' }, { id: 'b-doggee-b', node: 'doggee-b' }], units: [] };
   // IC7-S4 (D11): the looks of the fixture's nodes; Doggee is the zombie look. The live state carries its own looks.
-  var FIXTURE_LOOKS = { 'doggee-a': 'zombie', 'doggee-b': 'zombie' }, colony_looks = {}, colony_seals = {};
+  var FIXTURE_LOOKS = { 'doggee-a': 'zombie', 'doggee-b': 'zombie' }, colony_looks = {}, colony_seals = {}, colony_pending = {};
   var frases_el = doc.getElementById('frases');
   // TA-4 (D13-D16): the terminal, the anchor and the joystick live in colony_controls.js; the page passes its state in.
   var CC = raiz.AtlasColonyControls;
   var CCT = CC ? CC.attach({ doc: doc, win: raiz, colony: function () { return colonia; }, looks: function () { return colony_looks; }, seals: function () { return colony_seals; }, redraw: function () { draw(); renderFrases(); }, walk: function () { walkLoop(); } }) : null;
+  // P5a: the view hitl_walkers.js reads on every visitor:draw (the «?» and the walkers).
+  raiz.AtlasOpenworldView = function () { return { colony: colonia_error ? null : colonia, t: entrada.t, reduced: quieto, looks: colony_looks, seals: colony_seals, pending: colony_pending, controls: CCT, state: state }; };
   // H1b: two fingers (or the wheel) zoom the colony between 0.6 and 3; the factor lives on the canvas and every redraw reads it.
   var ZOOM = raiz.AtlasMapZoom && surface ? raiz.AtlasMapZoom.create(surface) : null, zoomSeen = surface ? surface.dataset.zoom : null;
   function onZoom() { if (surface.dataset.zoom !== zoomSeen) { zoomSeen = surface.dataset.zoom; draw(); } }
@@ -136,6 +138,7 @@
       colonia_fuente = colonia ? 'estado' : 'NO_DATA';
       colony_looks = estado.looks || {};
       colony_seals = estado.seals || {};
+      colony_pending = estado.pending || {};
       if (!colonia && estado.version === 2) { colonia_error = 'no node declared alive and sealed LIVE or STALE (' + estado.hidden + ' hidden)'; }
     } catch (e) { colonia = null; colonia_error = e.message || 'the state is refused'; }
   }
@@ -224,6 +227,8 @@
     });
   }
   render();
+  // P4: the baked floor loads by neighbourhood; its text equivalent goes to #floor-state, then the map redraws on it.
+  if (raiz.AtlasMapPainter) { raiz.AtlasMapPainter.start(function (s) { var el = doc.getElementById('floor-state'); if (el) { el.textContent = s; } draw(); }); }
   raiz.addEventListener('resize', draw);
   if (!quieto) { raiz.setInterval(cycle, 1000); }
   var tutorial = null;
