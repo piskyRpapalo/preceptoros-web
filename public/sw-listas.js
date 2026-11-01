@@ -19,7 +19,7 @@ const JUEGO = [
   '/game/comic_accents.js', '/game/bubble_language.js', '/game/bubble_light.js', '/game/bubble_bestiary.js',
   '/game/bubble_world.js', '/game/bubble_letters.js', '/game/bubble_icons.js', '/game/local_app_bridge.js',
   '/game/state_frames.js', '/game/hex_projection.js', '/game/colony_state.js', '/game/colonia_edificios.js',
-  '/game/palette_cycle.js', '/game/openworld_state.js', '/game/colonia_pagina.js', '/game/colony_controls.js',
+  '/game/palette_cycle.js', '/game/openworld_state.js', '/game/colonia_pagina.js', '/game/colony_controls.js', '/game/hitl_walkers.js',
   '/game/tutorial-fases.css', '/face/', '/get-the-app/', '/aduana/', '/face/basic.html', '/face/atlantis.html',
   '/face/zombie.html', '/face/face_openworld_terminal.js', '/game/army.html', '/game/face_canon.css', '/game/face_terminal.js'
 ];

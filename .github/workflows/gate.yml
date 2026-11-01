@@ -62,6 +62,7 @@ jobs:
             node --test atlas/barrido_web_casos.mjs
             node --test atlas/retiro_face_casos.mjs
             node --test atlas/map_zoom_colonia_casos.mjs
+            node --test atlas/hitl_walkers_casos.mjs
             node atlas/hex_projection_gate.mjs
             node --test atlas/puros/catalogo_iso_casos.mjs
             node --test atlas/puros/colonia_edificios_casos.mjs
