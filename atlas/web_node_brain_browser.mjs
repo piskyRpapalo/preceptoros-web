@@ -55,6 +55,8 @@ async function main() {
     const b = document.getElementById('brain-load'); const tall = b.getBoundingClientRect().height; b.click();
     for (let i = 0; i < 600 && !/ready on this device/.test(note.textContent); i++) await new Promise((r) => setTimeout(r, 100));
     const t1 = performance.now(), ready = note.textContent;
+    // Plain mode (guide tools OFF): this guard keeps the plain answer path; atlas/guide_tools_browser.mjs covers the tools.
+    const gm = document.getElementById('guide-mode'); if (gm && gm.getAttribute('aria-pressed') === 'true') gm.click();
     const q = document.getElementById('question'); q.value = 'How do I move my character?';
     document.getElementById('entry').requestSubmit();
     for (let i = 0; i < 900 && !heard.length; i++) await new Promise((r) => setTimeout(r, 100));
