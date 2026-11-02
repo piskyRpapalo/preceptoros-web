@@ -363,6 +363,21 @@
      "text": "the offline answer did not reach the radio"
     }
    ]
+  },
+  {
+   "id": "two-clicks",
+   "scripts": [
+    "/game/welcome_card.js",
+    "/game/visitor_play.js",
+    "/game/terminal_tabs.js"
+   ],
+   "globals": [],
+   "guards": [
+    {
+     "file": "atlas/dos_clics_browser.mjs",
+     "text": "reaching the game took"
+    }
+   ]
   }
  ]
 }
