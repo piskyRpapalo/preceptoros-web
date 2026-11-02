@@ -22,29 +22,39 @@
   var CCT = CC ? CC.attach({ doc: doc, win: raiz, colony: function () { return colonia; }, looks: function () { return colony_looks; }, seals: function () { return colony_seals; }, redraw: function () { draw(); renderFrases(); }, stepped: function () { var vb = doc.getElementById('visitor-play'); if (vb) { vb.dispatchEvent(new CustomEvent('visitor:advance')); } }, walk: function () { walkLoop(); }, entered: function (node) { var W = raiz.AtlasInvocacionViva; if (W) { W.tunnel(function () { enterBuilding(node); }); } else { enterBuilding(node); } } }) : null;
   // P5a: the view hitl_walkers.js reads on every visitor:draw (the «?» and the walkers).
   raiz.AtlasOpenworldView = function () { return { colony: colonia_error ? null : colonia, t: entrada.t, reduced: quieto, looks: colony_looks, seals: colony_seals, pending: colony_pending, controls: CCT, state: state, redraw: function () { draw(); } }; };
-  // H1b: two fingers (or the wheel) zoom the colony between 0.6 and 3; the factor lives on the canvas and every redraw reads it.
-  var ZOOM = raiz.AtlasMapZoom && surface ? raiz.AtlasMapZoom.create(surface) : null, zoomSeen = surface ? surface.dataset.zoom : null;
-  function onZoom() { if (surface.dataset.zoom !== zoomSeen) { zoomSeen = surface.dataset.zoom; draw(); } }
-  if (ZOOM) { surface.style.touchAction = 'none'; surface.addEventListener('pointermove', onZoom); surface.addEventListener('wheel', onZoom); }
-  // A11Y: zoom without fingers. Buttons (44 px) and the keys + - 0 outside form fields; the level is spoken by aria-live.
+  // H1b: two fingers (or the wheel) zoom the colony between 0.6 and 3, anchored to the fingers; the orbit turns the view.
+  // The view (zoom, angle, pan) lives on the canvas and every redraw reads it; only the picture changes (law P5).
+  var viewSeen = '', ZOOM = raiz.AtlasMapZoom && surface ? raiz.AtlasMapZoom.create(surface, { changed: function () { onZoom(); } }) : null;
+  function onZoom() {
+    var d = surface.dataset, v = d.zoom + '|' + d.angle + '|' + d.panx + '|' + d.pany;
+    if (v !== viewSeen) { viewSeen = v; draw(); }
+  }
+  if (ZOOM) { surface.style.touchAction = 'none'; }
+  // A11Y: zoom and turn without fingers. Buttons (44 px), the keys + - 0 Q E outside form fields; the view is spoken by aria-live.
   if (ZOOM) {
     var zoomBar = doc.createElement('div'), zoomSay = doc.createElement('p');
-    zoomBar.id = 'zoom-controls'; zoomBar.setAttribute('role', 'group'); zoomBar.setAttribute('aria-label', 'Map zoom');
+    zoomBar.id = 'zoom-controls'; zoomBar.setAttribute('role', 'group'); zoomBar.setAttribute('aria-label', 'Map view');
     zoomSay.id = 'zoom-state'; zoomSay.setAttribute('aria-live', 'polite');
-    var zoomTo = function (d) { ZOOM.step(d); onZoom(); zoomSay.textContent = 'Map zoom ' + surface.dataset.zoom + '×'; };
-    [['Zoom in', 1, 'zoom-in'], ['Zoom out', -1, 'zoom-out'], ['Reset zoom', 0, 'zoom-reset']].forEach(function (z) {
+    var speak = function () { zoomSay.textContent = ZOOM.say(); };
+    var zoomTo = function (d) { ZOOM.step(d); speak(); };
+    var turnTo = function (d) { var to = ZOOM.turn(d); zoomSay.textContent = 'Map view ' + to + '° · zoom ' + surface.dataset.zoom + '×'; };
+    var resetView = function () { ZOOM.reset(); speak(); };
+    [['Zoom in', function () { zoomTo(1); }, 'zoom-in'], ['Zoom out', function () { zoomTo(-1); }, 'zoom-out'], ['Reset zoom', function () { zoomTo(0); }, 'zoom-reset'],
+      ['Rotate left', function () { turnTo(-1); }, 'rotate-left'], ['Rotate right', function () { turnTo(1); }, 'rotate-right'], ['Reset view', resetView, 'view-reset']].forEach(function (z) {
       var b = doc.createElement('button'); b.type = 'button'; b.id = z[2]; b.textContent = z[0];
-      b.style.minHeight = '44px'; b.style.minWidth = '44px'; b.addEventListener('click', function () { zoomTo(z[1]); }); zoomBar.appendChild(b);
+      b.style.minHeight = '44px'; b.style.minWidth = '44px'; b.addEventListener('click', z[1]); zoomBar.appendChild(b);
     });
     surface.after(zoomBar);
-    // The compact terminal (2026-11-02): the spoken level is the Zoom voice in the panel, never a text on the map.
-    zoomSay.textContent = 'Map zoom ' + (surface.dataset.zoom || '1.00') + '×';
+    // The compact terminal (2026-11-02): the spoken view is the Zoom voice in the panel, never a text on the map.
+    speak();
     (doc.getElementById('voice-zoom') || zoomBar).appendChild(zoomSay);
+    // A free turn or a pinch is spoken once the fingers lift, never on every frame.
+    surface.addEventListener('pointerup', function () { if (zoomSay.textContent !== ZOOM.say()) { speak(); } });
     doc.addEventListener('keydown', function (e) {
       var t = e.target, field = t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT' || t.isContentEditable);
-      var d = { '+': 1, '=': 1, '-': -1, '0': 0 }[e.key];
-      if (field || d === undefined || e.ctrlKey || e.metaKey) { return; }
-      e.preventDefault(); zoomTo(d);
+      if (field || e.ctrlKey || e.metaKey || e.altKey) { return; }
+      var d = { '+': 1, '=': 1, '-': -1, '0': 0 }[e.key], r = { q: -1, Q: -1, e: 1, E: 1 }[e.key];
+      if (d !== undefined) { e.preventDefault(); zoomTo(d); } else if (r !== undefined) { e.preventDefault(); turnTo(r); }
     });
   }
 
@@ -169,7 +179,11 @@
     // Tap-to-step (compact terminal, 2026-11-02, the pad retired): a tap off any node, with free walk on, steps the crab
     // one cell toward the tap: the nearest of the six hex directions by screen angle, same names as the arrow keys.
     if (!id && CCT.step && surface.dataset.youx) {
-      var a = (Math.atan2(Number(surface.dataset.youy) - py, px - Number(surface.dataset.youx)) * 180 / Math.PI + 360) % 360;
+      // Orbit: the tap vector is turned back to the 0° view on the ground (the inverse of geometry().turn), so the six
+      // directions keep their names at any view angle and the step lands on the cell under the finger.
+      var vx = px - Number(surface.dataset.youx), vy = (py - Number(surface.dataset.youy)) / (CP.SQUASH || 1);
+      var th = -(Number(surface.dataset.angle) || 0) * Math.PI / 180, ux = vx * Math.cos(th) - vy * Math.sin(th), uy = (vx * Math.sin(th) + vy * Math.cos(th)) * (CP.SQUASH || 1);
+      var a = (Math.atan2(-uy, ux) * 180 / Math.PI + 360) % 360;
       var dir = [['east', 0], ['north-east', 60], ['north-west', 120], ['west', 180], ['south-west', 240], ['south-east', 300], ['east', 360]]
         .reduce(function (b, d) { return Math.abs(a - d[1]) < Math.abs(a - b[1]) ? d : b; })[0];
       if (CCT.step(dir)) { draw(); renderFrases(); return; }
