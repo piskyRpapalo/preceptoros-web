@@ -19,10 +19,10 @@
     }); controls.append(b); return b;
   }
   function line(text) { var p = doc.createElement('p'); p.textContent = text; details.append(p); }
-  // Plug&play (2026-11-01): ONE next-step sentence under the tabs, computed from the visit state only.
+  // Plug&play (2026-11-01): ONE next-step sentence, the Guide voice of the panel (compact terminal, 2026-11-02), computed from the visit state only.
   var nextText = doc.getElementById('next-text'), playNow = doc.getElementById('play-now');
   function next(s) {
-    var t = !s ? 'Press Play now.' : s.copper >= 50 ? 'Summon a wave in Summons.' :
+    var t = !s ? 'Press Play now.' : s.copper >= 50 ? 'Summon a wave with the House buttons below.' :
       (s.eggs.filter(function (e) { return !e.ready; })[0] ? 'Walk ' + s.eggs.filter(function (e) { return !e.ready; })[0].remaining + ' steps to hatch.' : 'Ask the guide in the chat.');
     if (nextText && nextText.textContent !== t) { nextText.textContent = t; }
     if (playNow) { playNow.hidden = !!s; }

@@ -1,4 +1,4 @@
-// Terminal, anchor and joystick of /openworld/ (ODD colony-terminal-anchor, TA-1). Pure core: no random numbers,
+// Terminal, anchor and walking keys of /openworld/ (the on-map stick retired 2026-11-02) (ODD colony-terminal-anchor, TA-1). Pure core: no random numbers,
 // no clock reads, no network. The user's choice of terminal stays in their own browser (the store is injected).
 // Colours are house bands; hex values come from comic_tokens and comic_accents at run time, never written here.
 (function (root) {
@@ -96,22 +96,8 @@
     });
     sel.style.minHeight = '44px';
     sel.addEventListener('change', function () { handlers.choose(sel.value === '' ? null : sel.value); });
-    // H1: the stick. Dragging inside the pad selects the neighbour by angle (handlers.direction → handlers.select, the W-4 law);
-    // letting go walks to it (handlers.enter), the same as Enter after an arrow key.
-    var stickPad = doc.createElement('div');
-    stickPad.setAttribute('role', 'application');
-    stickPad.setAttribute('aria-label', 'Move your character: drag inside the circle, let go to walk');
-    stickPad.style.cssText = 'width:168px;height:168px;touch-action:none;border:2px solid currentColor;border-radius:50%;margin:8px 0';
-    var drag = null, lastName = null;
-    stickPad.addEventListener('pointerdown', function (e) { drag = [e.clientX, e.clientY]; lastName = null; stickPad.setPointerCapture(e.pointerId); });
-    stickPad.addEventListener('pointermove', function (e) {
-      if (!drag) { return; }
-      var name = handlers.direction ? handlers.direction(e.clientX - drag[0], e.clientY - drag[1]) : null;
-      if (name && name !== lastName) { lastName = name; handlers.select(name); }
-    });
-    stickPad.addEventListener('pointerup', function () { var walked = drag && lastName; drag = null; if (walked) { handlers.enter(); } });
-    stickPad.addEventListener('pointercancel', function () { drag = null; });
-    box.appendChild(stickPad);
+    // 2026-11-02 (the Sovereign p0, buzon#30): the on-map stick pad is retired (retirados/RETIRO-joystick-20261102.md).
+    // Touch walks by tapping a node on the map (W-3); the arrow keys below still choose a neighbour and Enter walks.
     box.appendChild(status); box.appendChild(actions);
     // Plug&play (2026-11-01): the look choice is rarely used, so a page may fold it away (#more-look, in the News sheet).
     (doc.getElementById('more-look') || box).appendChild(sel);
@@ -134,10 +120,9 @@
     // W-3: a walk over the visible nodes (walk_route.js). Frames are counted, never milliseconds (W-D3).
     var walk = null, reduced = !!(env.win.matchMedia && env.win.matchMedia('(prefers-reduced-motion: reduce)').matches);
     var saved = savedChoice(storeOf(env.win));
-    // W-4: the chosen neighbour (by an arrow key or the stick). It is cleared when a walk starts.
+    // W-4: the chosen neighbour (by an arrow key). It is cleared when a walk starts.
     var selected = null;
-    var joy = mount(env.doc, env.doc.getElementById('joy'), { select: selectNeighbour, enter: walkSelected, choose: chooseLook, skip: skipTutorial,
-      direction: function (dx, dy) { var M = env.win.AtlasMapStick; return M ? M.direction(dx, dy) : null; } });
+    var joy = mount(env.doc, env.doc.getElementById('joy'), { select: selectNeighbour, enter: walkSelected, choose: chooseLook, skip: skipTutorial });
     function storeOf(win) { try { return win.localStorage; } catch (e) { return null; } }
     function hex(name) { return bandHex(name, env.win.AtlasComicTokens, env.win.AtlasComicAccents); }
     function anchor(look) {

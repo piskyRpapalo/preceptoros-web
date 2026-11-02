@@ -36,7 +36,10 @@
       var b = doc.createElement('button'); b.type = 'button'; b.id = z[2]; b.textContent = z[0];
       b.style.minHeight = '44px'; b.style.minWidth = '44px'; b.addEventListener('click', function () { zoomTo(z[1]); }); zoomBar.appendChild(b);
     });
-    zoomBar.appendChild(zoomSay); surface.after(zoomBar);
+    surface.after(zoomBar);
+    // The compact terminal (2026-11-02): the spoken level is the Zoom voice in the panel, never a text on the map.
+    zoomSay.textContent = 'Map zoom ' + (surface.dataset.zoom || '1.00') + '×';
+    (doc.getElementById('voice-zoom') || zoomBar).appendChild(zoomSay);
     doc.addEventListener('keydown', function (e) {
       var t = e.target, field = t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT' || t.isContentEditable);
       var d = { '+': 1, '=': 1, '-': -1, '0': 0 }[e.key];

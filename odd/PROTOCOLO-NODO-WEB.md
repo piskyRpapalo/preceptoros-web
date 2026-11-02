@@ -47,3 +47,10 @@ En un teléfono (390 px) el orden vertical es: mapa (40-50 %, de borde a borde) 
 ## 5 · Antes de declarar NO_DATA
 
 Se busca primero en `odd/tasks/claves-del-rack.md` y luego en el rack (`grep -rIl`). Las mejores fuentes son los folios de ideas de octubre y las joyas. Cada clave que desatasca algo se añade a ese índice.
+
+## 6 · Terminal compacta (2026-11-02, buzon#30)
+
+La tabla del §1 cambia en dos filas: el joystick sobre el mapa y las pestañas con hojas se retiran
+(`retirados/RETIRO-joystick-20261102.md`). En un teléfono el orden es ahora **mapa (40-50 %, de borde a borde) → UN
+panel** (el chat), donde cada cosa que la página dice es una voz con el nombre de quien habla (`terminal_panel.js`).
+En escritorio: mapa a la izquierda, panel a la derecha.
