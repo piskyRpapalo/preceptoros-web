@@ -31,7 +31,7 @@
       for (var offset = 0; offset < events.length; offset += 4) {
         var segment = events.slice(offset, offset + 4), commits = await seal(round, segment);
         var sentence = place.name + ' practice · round ' + round + ' · balance NO_DATA: not measured';
-        var frame = { v: 'preceptoros.bubble/1', id: 'visitor-round', t: round, atoms: [{ k: 'round', r: sentence, i: [] }], bands: ['cyan', 'ink'], change: [sentence], sound: 'NO_DATA', soundCause: 'practice sound is off', motion: 'step' };
+        var frame = { v: 'preceptoros.acho/1', id: 'visitor-round', t: round, atoms: [{ k: 'round', r: sentence, i: [] }], bands: ['cyan', 'ink'], change: [sentence], sound: 'NO_DATA', soundCause: 'practice sound is off', motion: 'step' };
         var entry = { rules: RULES, place: place.id, coordinate: place.coordinate, round: round, part: offset / 4, commits: commits, reveal: segment, frame: frame };
         if (new TextEncoder().encode(JSON.stringify(entry)).length >= 1024) { throw new Error('Round frame exceeds its channel budget'); }
         frames.push(entry);

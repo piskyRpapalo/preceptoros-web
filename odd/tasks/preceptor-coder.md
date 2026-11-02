@@ -1,14 +1,14 @@
 # PRECEPTOR-CODER · dibujos en lenguaje de burbujas para la web y la app (comisión 2026-10-28)
 
 ## Objetivo
-Un CLI que convierte fotogramas `preceptoros.bubble/1` en SVG que la web y la app pueden dibujar. Hoy hay laboratorio,
+Un CLI que convierte fotogramas `preceptoros.acho/1` en SVG que la web y la app pueden dibujar. Hoy hay laboratorio,
 web y app, y no hay dibujos. El CLI es el creador.
 
 ## Alcance (slice 1)
 - `tools/preceptor-coder/bin/preceptor-coder.mjs`: `draw` (fotograma → SVG), `check` (la ley), `measure` (bytes y conteo).
 - `tools/preceptor-coder/frames/cabin.json`: el fotograma de la cabaña del tutorial, como ejemplo.
 - Casos: 6/6, con sabotaje de frase vacía y de fotograma sobredimensionado.
-- Sin dependencias: usa el compilador de `public/game/bubble_language.js`, el mismo de la web.
+- Sin dependencias: usa el compilador de `public/game/acho_language.js`, el mismo de la web.
 
 ## Medido (honesto)
 - La cabaña dibujada ocupa **19.462 bytes de SVG** y 219 operaciones. **Supera el techo de pieza de 16 KiB.** Dos

@@ -44,10 +44,10 @@ The complete encoded package ceiling applies independently of decoded sizes.
 ## MVP content
 
 `frame.json` is nonempty UTF-8 JSON strictly smaller than 1,024 bytes. This version
-accepts one ribbon only, using the existing Bubble vocabulary:
+accepts one ribbon only, using the existing Acho vocabulary:
 
 ```json
-{"v":"preceptoros.bubble/1","id":"CREATION","cv":[412,515],"style":"clear","atoms":[{"k":"keepsake","i":[{"o":"ribbon","f":"cyan","s":"ink","d":0,"lw":2.5,"pts":[[206,258],[210,258]]}]}]}
+{"v":"preceptoros.acho/1","id":"CREATION","cv":[412,515],"style":"clear","atoms":[{"k":"keepsake","i":[{"o":"ribbon","f":"cyan","s":"ink","d":0,"lw":2.5,"pts":[[206,258],[210,258]]}]}]}
 ```
 
 Every object has exactly the illustrated fields. `id` matches `[A-Z0-9_-]{1,32}`;

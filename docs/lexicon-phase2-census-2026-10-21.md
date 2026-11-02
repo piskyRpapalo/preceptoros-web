@@ -61,7 +61,7 @@ Public text assets and repository documentation were inventoried by path and byt
 | `docs/New_Naming_Proposal_2.md` | 10503 | NO_HABLA: repository document, not rendered in sampled PWA |
 | `docs/T1_remedida_zoom.md` | 3044 | NO_HABLA: repository document, not rendered in sampled PWA |
 | `docs/Visual_Theme_Proposal_1.md` | 7536 | NO_HABLA: repository document, not rendered in sampled PWA |
-| `docs/bubble-language.md` | 14057 | NO_HABLA: repository document, not rendered in sampled PWA |
+| `docs/acho-language.md` | 14057 | NO_HABLA: repository document, not rendered in sampled PWA |
 | `docs/canon-arena-and-duels.md` | 15169 | NO_HABLA: repository document, not rendered in sampled PWA |
 | `docs/canon-context-hygiene.md` | 3073 | NO_HABLA: repository document, not rendered in sampled PWA |
 | `docs/canon-house-maths.md` | 5069 | NO_HABLA: repository document, not rendered in sampled PWA |

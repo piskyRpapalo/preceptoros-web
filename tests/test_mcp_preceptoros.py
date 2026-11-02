@@ -37,23 +37,23 @@ class McpBridgeTests(unittest.TestCase):
         response = server.dispatch({"jsonrpc": "2.0", "id": 1, "method": "tools/list"})
         self.assertEqual(response["error"]["code"], -32002)
 
-    def test_bubble_frame_under_limit_is_measured(self):
-        frame = {"v": "preceptoros.bubble/1", "id": "RIFT", "atoms": [], "sound": "NO_DATA"}
-        result = MODULE.call_tool(ROOT, "web.validate_bubble", {"frame": frame})
+    def test_acho_frame_under_limit_is_measured(self):
+        frame = {"v": "preceptoros.acho/1", "id": "RIFT", "atoms": [], "sound": "NO_DATA"}
+        result = MODULE.call_tool(ROOT, "web.validate_acho", {"frame": frame})
         self.assertEqual(result["state"], "LIVE")
         self.assertLess(result["bytes"], 1024)
         self.assertEqual(result["sound"], "NO_DATA")
 
     def test_sabotage_exact_limit_is_rejected(self):
-        frame = {"v": "preceptoros.bubble/1", "id": "RIFT", "atoms": [], "sound": ""}
+        frame = {"v": "preceptoros.acho/1", "id": "RIFT", "atoms": [], "sound": ""}
         frame["sound"] = "x" * (1024 - len(MODULE.encode(frame).encode("utf-8")))
         self.assertEqual(len(MODULE.encode(frame).encode("utf-8")), 1024)
         with self.assertRaises(MODULE.ToolFailure):
-            MODULE.call_tool(ROOT, "web.validate_bubble", {"frame": frame})
+            MODULE.call_tool(ROOT, "web.validate_acho", {"frame": frame})
 
     def test_sabotage_wrong_frame_schema_is_rejected(self):
         with self.assertRaises(MODULE.ToolFailure):
-            MODULE.call_tool(ROOT, "web.validate_bubble", {"frame": {"v": "wrong", "id": "RIFT", "atoms": []}})
+            MODULE.call_tool(ROOT, "web.validate_acho", {"frame": {"v": "wrong", "id": "RIFT", "atoms": []}})
 
     def test_wave_math_is_finite_and_bounded(self):
         result = MODULE.call_tool(ROOT, "web.check_wave_math", {"harmonics": [[1, 24, 24, 0], [2, 3, 4, 16]]})

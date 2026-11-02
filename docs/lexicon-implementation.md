@@ -23,17 +23,20 @@ Sections I–L continue the official lexicon in [docs/lexicon.md](lexicon.md). T
 | pointer-by-coordinate | map_pointer_input.js | Turns a tap into a world coordinate and resolves the piece or action under it. | in use (measured: 2.540 B) |
 | voice-guided install | instalar-pc-voz | The A11Y plug&play path: a blind user installs and configures with a voice agent on the rack. | in use (app#55 merged: `bin/instalar-pc-voz` 4.078 B + tests 2.497 B, 10/10 ×2) |
 
-## K · Bubble language contract map
+## K · Acho language contract map
 
 This map is descriptive; this lexicon remains PROPOSAL and is not signed off.
 
 | Encountered form | Canonical term | Meaning | Status |
 |---|---|---|---|
-| bubble language | bubble language | Canonical language name for the shared visual and lexical form. | measured: `docs/bubble-language.md` §1 |
-| `preceptoros.bubble/1` | bubble language | Versioned frame schema, not a competing language name. | measured: `docs/bubble-language.md` §2 |
-| frame | frame | Serialized unit carried by the language. | measured: `docs/bubble-language.md` §2 |
+| Acho language | Acho language | Canonical language name for the shared visual and lexical form. | measured: `docs/acho-language.md` §1 |
+| `preceptoros.acho/1` | Acho language | Versioned frame schema, not a competing language name. | measured: `docs/acho-language.md` §2 |
+| frame | frame | Serialized unit carried by the language. | measured: `docs/acho-language.md` §2 |
 | syllable | frame | Explanatory metaphor for one frame, not a schema alias. | descriptive only |
-| `AtlasBubble` | bubble language renderer | Runtime API name; retained as the existing public module contract. | measured: `public/game/bubble_language.js` |
+| `AtlasAcho` | Acho language renderer | Runtime API name; retained as the existing public module contract. | measured: `public/game/acho_language.js` |
+| **Acho** | Acho | The name of the house language and of its interpreter. Coined by the Sovereign: interpreter ·6585602408, «bubble» removed as a name ·6585675927 (buzon#30, 2026-11-02). | **coined** · AC-0b |
+| `preceptoros.bubble/1` | historical alias of `preceptoros.acho/1` | Read during the D5 window so frames already signed and cached keep validating; never written, never re-coined. | alias · AC-0 |
+| bubble | Acho (when it names the language) | Historical name, kept only in records written before 2026-11-02. Water bubbles, speech bubbles and the DOM `bubbles` flag are other words and stay. | historical |
 
 ## L · Lexical vision (pre-signed issue #3)
 

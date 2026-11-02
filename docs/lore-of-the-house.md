@@ -20,7 +20,7 @@ NO_DATA with cause is a lawful state. A fixture shown as a model's answer is a l
 
 ## The world without drawings
 
-Nothing in this house is drawn by hand. Every visible thing is a frame — a bubble that carries its own phrase and its own sound, spoken from the frame's own data, under 1,024 bytes, one phrase per atom, honoring those who need stillness. The builders author drawings as data: buildings, waves, transitions — all of them frames in the bubble language. The CLI of the house (preceptoros-coder) will let a preceptor author a drawing and ship it to the eyes and the body.
+Nothing in this house is drawn by hand. Every visible thing is a frame — an Acho syllable that carries its own phrase and its own sound, spoken from the frame's own data, under 1,024 bytes, one phrase per atom, honoring those who need stillness. The builders author drawings as data: buildings, waves, transitions — all of them frames in the Acho language. The CLI of the house (preceptoros-coder) will let a preceptor author a drawing and ship it to the eyes and the body.
 
 ## Decisions and proposals
 

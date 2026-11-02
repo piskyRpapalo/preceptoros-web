@@ -6,7 +6,7 @@ cambio de terreno se ve con una transición que respeta el movimiento reducido.
 
 ## Hecho
 - Onda `wave` con `h` dentro de la capa de mar del fotograma del terreno (sc 0.35, dentro del lienzo, x=250).
-- `gacha.js` y `valores.js` cargados antes de `bubble_language.js`: la onda necesita `AtlasGacha.punto`. Antes, la
+- `gacha.js` y `valores.js` cargados antes de `acho_language.js`: la onda necesita `AtlasGacha.punto`. Antes, la
   onda rompía el dibujo en el navegador (el error se tragaba en el `try`); el diagnóstico lo confirmó.
 - Transición del lienzo: se atenúa a 0,25 y vuelve tras 300 ms. Con `prefers-reduced-motion`, redibujo inmediato.
 - El botón dice «Playing 1 voices.» en vez de `NO_DATA`.

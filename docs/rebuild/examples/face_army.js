@@ -78,7 +78,7 @@
     if (!s || !cv) { return; }
     var d = Math.min(2, root.devicePixelRatio || 1), g = cv.getContext('2d'), c = s.crab, E = H.economy ? H.economy.state() : null;
     cv.width = 120 * d; cv.height = 120 * d; g.setTransform(d, 0, 0, d, 0, 0); g.clearRect(0, 0, 120, 120);
-    if (skin.hero && root.PreceptorHero) { root.AtlasComicAtoms.paint(g, root.AtlasBubble.compile(root.PreceptorHero.heroFrame(skin, c.clase, 1))); }
+    if (skin.hero && root.PreceptorHero) { root.AtlasComicAtoms.paint(g, root.AtlasAcho.compile(root.PreceptorHero.heroFrame(skin, c.clase, 1))); }
     else if (root.AtlasToon && root.AtlasCangrejo) { g.setTransform(1, 0, 0, 1, 0, 0); root.AtlasToon.cangrejo(g, 60 * d, 96 * d, 40 * d, { forma: root.AtlasCangrejo.forma(c.army, c.node, null), cuerpo: root.AtlasCangrejo.cuerpo({ army: c.army, nucleo: 3 * Math.min(s.done, 3) }), dir: 1, dpr: d, quieto: true, id: 'me' }); }
     cv.setAttribute('aria-label', 'You: a ' + c.clase + (skin.hero ? ' space soldier' : ' crab') + ', size ' + Math.round(c.escala * 100) / 100);
     var rows = [['Size', String(Math.round(c.escala * 100) / 100)], ['Colour', c.clase === 'coral' ? 'coral (holds a node, EMULADO)' : 'sea blue'],

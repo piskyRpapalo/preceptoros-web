@@ -7,7 +7,7 @@ import { readFileSync } from 'node:fs';
 const require = createRequire(import.meta.url);
 const C = require('./catalogo_iso.js');
 const F = require('./state_frames.js');
-const S = require('../../public/game/bubble_sonify.js');
+const S = require('../../public/game/acho_sonify.js');
 
 const FILAS = [
   { id: 'second-1', tipo: 'second', medida: { nombre: 'mana', valor: 60 } },

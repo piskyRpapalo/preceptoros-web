@@ -1,6 +1,6 @@
 // M1-1 · the one isometric map: scene composition (odd/tasks/single-map-isometric-3d.md). Pure: no random numbers,
 // no clock reads, no network. The elements are drawn by depth: the one behind is drawn first. Ties are broken by x,
-// then by id, so the order is the same in every run. Each element is a bubble frame under 1,024 bytes (frame law).
+// then by id, so the order is the same in every run. Each element is a Acho frame under 1,024 bytes (frame law).
 (function (root) {
   'use strict';
   var common = typeof module === 'object' && module.exports;
