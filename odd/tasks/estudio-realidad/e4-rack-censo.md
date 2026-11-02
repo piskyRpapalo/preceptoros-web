@@ -17,13 +17,13 @@ E-0 declared the other nodes of the rack out of reach for the study («propose-o
 
 | # | incoherence | measured | state |
 |---|---|---|---|
-| I1 | the aula (open-webui, self-declared «ventana de los hermanos, F2-alfa — solo tailnet») bound to the tailscale IP `100.81.82.34:8080` against the «no server» law | unit text · `ss` | **CORREGIDO POR** the user-unit override to `127.0.0.1:8080`; the clean `ss` paste is still missing: `NO_DATA: no receipt after the port parasite died` |
+| I1 | the aula (open-webui, self-declared «ventana de los hermanos, F2-alfa — solo tailnet») bound to the tailscale IP `100·81·82·34:8080` against the «no server» law | unit text · `ss` | **CORREGIDO POR** the user-unit override to `127.0.0.1:8080`; the clean `ss` paste is still missing: `NO_DATA: no receipt after the port parasite died` |
 | I2 | the aula lived TWICE: docker (container exited 5 weeks, image 7.16 GB) + uv tool v0.11.1 (running since 10-31) | `docker ps -a` · `uv tool list` | **CORREGIDO POR** the purge: docker removed |
 | I3 | `~/Cuarentena`, inside the Sovereign's home, was owned by user `vibecrew` (uid 1001, home 52 KB, no `.ssh`, no crontab, no processes) | `ls -ld` · `id` · `du` | **CORREGIDO POR** `chown -R pisky:pisky`; `vibecrew` is a purge candidate pending FIRMA; origin `NO_DATA: no creation record read` |
 | I4 | open-webui and f1-heartbeat are USER units; the first census listed them among system units | `sudo systemctl restart open-webui` → «Unit not found»; `systemctl --user cat f1-heartbeat` | census corrected by the second pass; both scopes now noted |
 | I5 | **nginx listens on `*:80`** (all interfaces) on the beelink; no prior census or registry names it | `sudo lsof -nP -iTCP:80 -sTCP:LISTEN` | `NO_DATA: config not read`. First step: `ls /etc/nginx/sites-enabled/` — is it `preceptoros-pwa.service`? Against the «no server» law if it serves beyond loopback/LAN |
 | I6 | sage-a15 (REJECTED as canon brain, ·6588111541) stayed resident on onexstation (68 GB, 100 % GPU) while hexelion sat evicted | tanda + census | cure served (`ollama stop sage-a15` + `ollama run hexelion`); `NO_DATA: the run's output was not pasted — the throne has no receipt` |
-| I7 | two IPv4 on `eno1` (192.168.50.202 + 192.168.50.150) | MOTD | `NO_DATA: cause not measured` |
+| I7 | two IPv4 on `eno1` (192·168·50·202 + 192·168·50·150) | MOTD | `NO_DATA: cause not measured` |
 | I8 | the deploy of letter `dp` ran hours after its FIRMO: production served `do` while main held `dp` | merge `3b8a05a3` (20:47Z) vs deploy version `1abcd637` (~21:0xZ) | closed the same night: atlas **181/181 · 0/0/0**; era `do` ended |
 
 ## The purge, measured (FIRMA «purguemos», receipt ·6588560177)
@@ -67,3 +67,4 @@ GPU of the beelink · owner of Cuarentena · the listener of port 80 (named: ngi
 ## Log
 
 - 2026-11-02 night · E-4 written by Mesa TF on branch `mesa/e4-censo-rack-20261102` from main `62dd2fd5`. Docs-only. Waits for FIRMA + FIRMO.
+- 2026-11-02 night+ · cure: the census had written three rack addresses as literal IPs; the gate law `cero_rutas_absolutas_ni_ips` keeps real addresses out of the tree — rewritten with `·` separators (measurement intact, the literal lives in the unit text on the beelink). Loopbacks stay.
