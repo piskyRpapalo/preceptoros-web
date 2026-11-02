@@ -34,13 +34,18 @@ A gap is something that neither the Sovereign nor the Mesas see. Triage (fixed i
 | 3 | **`/api/creaciones/` answers 404**, yet the page calls it. A signed creation has nowhere to live | 3 | 2 | M | **3.0** | P | read the deploy config for a route named `creaciones`: does it exist on any branch? |
 | 4 | **29 seal letters re-issued** on main after #271 (10-23). Each letter names two builds, so a phone's SW may keep an old build under a «current» letter | 2 | 2 | S | **4.0** | R | count, on the Doogee, which letter its SW holds now against `do` |
 | 5 | **Lab main red** (`pruebas`, 10-30) and **9 of 13 repos without CI**, `firmas` and `aduana` among them | 2 | 2 | S | **4.0** | R | open the failing run of lab main and name the failing test |
-| 6 | **Ed25519 on the phone is unmeasured**, while the code is already served. The Acho plan said the code was missing; the measure is what is missing | 2 | 3 | S | **6.0** | N | open `/` on the Doogee and run `crypto.subtle.generateKey({name:'Ed25519'})` once: ok or `NotSupportedError` |
+| 6 | ~~**Ed25519 on the phone is unmeasured**~~ **CLOSED, see below**, while the code is already served. The Acho plan said the code was missing; the measure is what is missing | 2 | 3 | S | **6.0** | N | open `/` on the Doogee and run `crypto.subtle.generateKey({name:'Ed25519'})` once: ok or `NotSupportedError` |
 | 7 | **The rename reaches farther than the seal**: 195 files carry the word | 2 | 2 | S | **4.0** | R | classify the 39 hits under `public/` (rename / historical / out of scope) |
 | 8 | **The book is 6,128 B over its own ceiling** (22,512 B vs 16,384), against its own rule | 1 | 2 | S | **2.0** | R | measure which section of the book is the largest and propose that one as the first new file |
 | 9 | **FA1-FA6 / NORTE 10 and status-chat are not written where the rail reads.** Decrees that live only in a context cannot be gated | 2 | 2 | S | **4.0** | R | ask the Mesa for the ·id of NORTE 10 and the 6 steps; they go to an `odd/` piece |
 | 10 | **`aduana` serves a feature branch as default**, and three repos claim preceptoros.org while only the web answers | 1 | 1 | S | **1.0** | R | read the aduana repo's README on its default branch: does it describe the 16-oct proposal or the current gateway? |
 
 **Order of work by score:** 6 → 1, 2 → 4, 5, 7, 9 → 3 → 8 → 10. Gap 6 comes first because it is the cheapest unblocking measurement in the whole map: one call on one phone. It also closes AC-5b of Acho.
+
+## Measured after writing (2026-11-02, the Doogee by ADB, read-only, tab on production `/openworld/`)
+
+- **Gap 6 closed.** Chrome 156 on Android 10: `generateKey Ed25519` ok · signature **64 B** · `verify` **true** · tampered message **false** · first key+sign+verify **9.2 ms** · 50 verifies **29.9 ms** (about 0.6 ms each). Nothing stored: the key was non-extractable and lived in memory only. AC-5b of Acho has its number. AC-6 is no longer blocked by the device.
+- **Gap 4, first step done.** The phone's service worker cache is **`shell-preceptoros-2026-17-dl`**. Production serves **`do`**. The phone is behind by the letters `dm` and `do`, with the page open. `dl` is not one of the 29 re-issued letters, so this lag is an update that has not landed, not a collision. Next step: read whether a new SW is `waiting`, and how long it takes to activate.
 
 ## Part 3 · annex (lower score or out of reach)
 
