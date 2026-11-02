@@ -77,7 +77,7 @@ async function main() {
   // NORTE 8 · mandato 3 (rebanada 2): el sonido nativo. La cabaña no declara ondas con armónicos, así que su
   // sonido dice NO_DATA con su causa en la región en vivo. Un clic no crea audio sin una voz que sonar.
   // a demanda: el módulo de sonido no existe en la página hasta el primer clic.
-  ok((await ev("typeof window.AtlasSonifyBubble")) === 'undefined', 'the sound module loaded on page load: it must load on the first click');
+  ok((await ev("typeof window.AtlasSonifyAcho")) === 'undefined', 'the sound module loaded on page load: it must load on the first click');
   const esBoton = await ev("document.getElementById('listen') && document.getElementById('listen').tagName === 'BUTTON'");
   ok(esBoton === true, 'the listen control is not a button (keyboard operability)');
   await ev("document.getElementById('listen').click()"); await espera(200);

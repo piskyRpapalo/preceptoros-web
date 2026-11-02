@@ -10,7 +10,7 @@ Más H2 (#533, cabeza 64e313c): `/face/face_terminal.js` pasa a `/game/face_term
 - **«atlas.carta/1 ya existe»: solo a medias.** Vive únicamente en `public/assets/atlas-mapa.js` (12,989 B, `:38`), y
   **ninguna página servida carga ese fichero** (`grep -rl atlas-mapa.js public` = 0). Tampoco hay esquema en `data/`.
   Hoy el contrato es un huérfano: F3 lo **define** (esquema + casos) en vez de heredarlo.
-- **Cinco módulos señalados, uno ya fuera.** `face_world*.js` salen con H2 (#533, a `retirados/face/`). `bubble_world.js`
+- **Cinco módulos señalados, uno ya fuera.** `face_world*.js` salen con H2 (#533, a `retirados/face/`). `acho_world.js`
   (6,249 B) no pinta: no tiene canvas ni bucle.
 - **Censo de pintores servidos, sin /face**: 12 ficheros con `getContext('2d')`. Bucles `requestAnimationFrame` en
   `sea.js`, `openworld_page.js`, `summon_reveal.js`, `summon-wave-card.js`, `wave_duel_scene.js` y `atlas-mapa.js`
@@ -36,8 +36,8 @@ los ejercen sin nombrarlos. El gate F0 lo hace explícito.
 | 4 | `game/comic_atoms.js` | 5201 | AtlasComicAtoms | — | 11 |
 | 5 | `game/valores.js` | 8584 | AtlasValores | — | 23 |
 | 6 | `game/gacha.js` | 6005 | AtlasGacha | — | 26 |
-| 7 | `game/bubble_language.js` | 16240 | AtlasBubble | — | 20 |
-| 8 | `game/bubble_letters.js` | 5197 | AtlasBubbleLetters | — | 10 |
+| 7 | `game/acho_language.js` | 16240 | AtlasAcho | — | 20 |
+| 8 | `game/acho_letters.js` | 5197 | AtlasAchoLetters | — | 10 |
 | 9 | `game/isometric_floor_projection.js` | 1486 | — | — | 4 |
 | 10 | `game/global_map.js` | 10717 | AtlasMapaGlobal | — | 5 |
 | 11 | `game/state_frames.js` | 2772 | AtlasStateFrames | — | 14 |
@@ -137,7 +137,7 @@ de navegador que la ejerce. Quitar una función da rojo. Se enseña en rojo quit
 
 ## Edificios con chatbot
 
-- Cada edificio del catálogo trae `chat`: un guion en bubble language (saludo, qué mide, qué ofrece) y su **interfaz**.
+- Cada edificio del catálogo trae `chat`: un guion en Acho language (saludo, qué mide, qué ofrece) y su **interfaz**.
   El banco habla de huevos, la arena de duelos y la cabaña del tutorial.
 - Entrar en un edificio (Enter o tap, `colony_controls` select/enter) abre su conversación en la **misma radio**
   (`AtlasRadioChat`). Así, el lector de pantalla oye el edificio igual que oye el mapa.

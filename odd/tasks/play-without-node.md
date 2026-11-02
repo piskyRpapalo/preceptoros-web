@@ -50,7 +50,7 @@ JN-2 precedes JN-3; JN-3 plus approved NPC content precedes JN-4; verified JN-4 
 - Inspect browser storage before/after creation, adoption, transition, reload and restoration. Only explicitly accepted adoptions persist. Private export fails; fresh visit cannot retire an old troop. Code inspection complements storage snapshots; a negative snapshot alone cannot prove custody.
 - Replay identical seed/actions twice. Sabotage absent seed, invalid signatures, changed reveal, expired/replayed challenge, wrong audience/scope, unsigned transition, missing NPC/budget/victory rule. Reject with cause and no partial writes.
 - L-075: observe cold-load network, zero external requests. Dynamic Aduana transport declares destination class, payload and purpose before user initiation. No network in rendering.
-- Complete serialized bubble frames strictly below 1,024 UTF-8 bytes, door below 16,384 bytes, logic in public/game/. Reject boundary sizes. Bound/chunk round logs. Preserve map_scene y→x→id order and single-map output.
+- Complete serialized Acho frames strictly below 1,024 UTF-8 bytes, door below 16,384 bytes, logic in public/game/. Reject boundary sizes. Bound/chunk round logs. Preserve map_scene y→x→id order and single-map output.
 - Verify victory/draw/abandon against core and existing scene; required gates, sabotage red then green, n=2 determinism and scrubbed browser receipts per PR. No runtime tests are claimed by JN-1.
 
 ## Input scrub and failure rules

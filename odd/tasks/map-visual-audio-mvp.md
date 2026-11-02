@@ -51,7 +51,7 @@ Out of scope: voice input (the microphone). It is a declared risk (section 20), 
 
 ## Verification evidence
 
-Measured in main (`256f1a4`): the map panel is `#map` with `overflow` set by the terminal piece; the sound module is `bubble_sonify.js` and its use in the door's "Listen" button; the frase list is rendered per tick (IC7-S3 to S5). Not measured here: the device voices on doggee (NO_DATA until the capture runs).
+Measured in main (`256f1a4`): the map panel is `#map` with `overflow` set by the terminal piece; the sound module is `acho_sonify.js` and its use in the door's "Listen" button; the frase list is rendered per tick (IC7-S3 to S5). Not measured here: the device voices on doggee (NO_DATA until the capture runs).
 
 ## Standing signature
 

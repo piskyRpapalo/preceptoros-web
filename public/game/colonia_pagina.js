@@ -6,7 +6,7 @@
 (function (root) {
   'use strict';
 
-  var K = 1.6, S = 1.4;                       // K spaces the hex positions, S scales one bubble box in the page
+  var K = 1.6, S = 1.4;                       // K spaces the hex positions, S scales one Acho box in the page
   var BX = 60, BY = 84;                       // the base of a building inside its box (the same as the core)
   var BOT_DX = 22, BOT_DY = 8;               // a bot stands just beside its building
   var ANCHO = 480, ALTO = 320;                // the canvas the page draws on, in its own units
@@ -19,7 +19,7 @@
     return h >>> 0;
   }
 
-  // The bot: a body, two eyes and a mouth, all bubble ribbons. The face says the state, not a feeling.
+  // The bot: a body, two eyes and a mouth, all Acho ribbons. The face says the state, not a feeling.
   // crabPts(C) → 24 integer points of the crab outline, scaled so its widest harmonic sum is 9 px (the walker's box).
   function crabPts(C) {
     var arm = C.onda(C.forma(0, false).escala, null, 'cupula'), lim = 0, pts = [];
@@ -55,7 +55,7 @@
       { o: 'ribbon', pts: [[BX - 4, BY - 10 - dy], [BX, BY - 8 - dy], [BX + 4, BY - 10 - dy]], closed: false, f: 'ink', s: 'ink', lw: 1 }
     ];
     return {
-      v: 'preceptoros.bubble/1', id: 'bot-' + node.id, t: t, cv: [120, 110], seal: node.seal || 'NO_DATA',
+      v: 'preceptoros.acho/1', id: 'bot-' + node.id, t: t, cv: [120, 110], seal: node.seal || 'NO_DATA',
       atoms: [{ k: 'bot.' + node.id, r: frase, i: [{ o: 'ribbon', pts: cuerpo, closed: true, f: look === 'flat' ? 'cyan' : 'paper', s: 'ink', lw: 2 }].concat(cara) }],
       bands: ['paper', 'ink', 'cyan'],
       change: [frase],
@@ -106,7 +106,7 @@
     var frase = 'you · ephemeral ' + (crab ? 'crab (sea)' : 'walker') + ' ' + on + ' · not node state · seal NO_DATA · tick ' + t;
     var ring = (crab ? crabPts(C) : cuerpoPts(7)).map(function (q) { return [q[0] + BX, q[1] + BY - 12 - dy]; });
     return {
-      v: 'preceptoros.bubble/1', id: 'you', t: t, cv: [120, 110], seal: 'NO_DATA',
+      v: 'preceptoros.acho/1', id: 'you', t: t, cv: [120, 110], seal: 'NO_DATA',
       atoms: [{ k: 'you', r: frase, i: [{ o: 'ribbon', pts: ring, closed: true, f: 'vermilion.base', s: 'ink', lw: 2 }] }],
       bands: ['paper', 'ink', 'cyan'], change: [frase],
       sound: 'NO_DATA: the walker declares no waves; nothing is invented',
@@ -138,7 +138,7 @@
   }
 
   // nodeAt(canvas, estado, t, looks, seals, px, py) → the id of the node drawn under the point (canvas pixels), or null.
-  // The anchor of a node is the point where its hex is drawn; the test radius is one bubble box at its own scale.
+  // The anchor of a node is the point where its hex is drawn; the test radius is one Acho box at its own scale.
   function nodeAt(canvas, estado, t, looks, seals, px, py) {
     var sc = scene(estado, t, false, looks, seals), G = geometry(sc, canvas), best = null, bestD = 36 * S;
     sc.tiles.forEach(function (n) {
@@ -169,7 +169,7 @@
 
 
   function draw(canvas, estado, t, reducido, looks, seals, walker) {
-    var B = root.AtlasBubble, P = root.AtlasComicAtoms;
+    var B = root.AtlasAcho, P = root.AtlasComicAtoms;
     var sc = scene(estado, t, reducido, looks, seals), hot = canvas.dataset ? canvas.dataset.hot : '';
     var you = walker ? tileOf(sc, walker.node) : null;
     // W-3: while the walker walks, it stands between the two hexes by the fraction of its step.

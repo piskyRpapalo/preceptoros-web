@@ -66,8 +66,8 @@
   }
 
   function draw() {
-    var B = raiz.AtlasBubble, P = raiz.AtlasComicAtoms;
-    if (!surface || !B || !P || !raiz.AtlasBubbleLetters) { return; }
+    var B = raiz.AtlasAcho, P = raiz.AtlasComicAtoms;
+    if (!surface || !B || !P || !raiz.AtlasAchoLetters) { return; }
     var width = surface.clientWidth || 320, height = surface.clientHeight || 200;
     var dpr = Math.min(2, raiz.devicePixelRatio || 1);
     surface.width = Math.round(width * dpr); surface.height = Math.round(height * dpr);
@@ -214,14 +214,14 @@
   // The cycle: a fixed step of t per second, unless reduced motion is on. The palette is a function of t alone.
   function cycle() { if (quieto) { return; } entrada.t += 1; draw(); renderFrases(); }
 
-  // The sound is the selected frame's own (docs/bubble-language.md, sound and h). An AudioContext is made only on the click.
+  // The sound is the selected frame's own (docs/acho-language.md, sound and h). An AudioContext is made only on the click.
   var listen = doc.getElementById('listen'), listenState = doc.getElementById('listen-state');
   // The sound module is on demand: it loads on the first click, never on page load.
   function loadSound(then) {
-    if (raiz.AtlasSonifyBubble) { then(raiz.AtlasSonifyBubble); return; }
+    if (raiz.AtlasSonifyAcho) { then(raiz.AtlasSonifyAcho); return; }
     var script = doc.createElement('script');
-    script.src = '/game/bubble_sonify.js';
-    script.onload = function () { then(raiz.AtlasSonifyBubble); };
+    script.src = '/game/acho_sonify.js';
+    script.onload = function () { then(raiz.AtlasSonifyAcho); };
     script.onerror = function () { listenState.textContent = 'NO_DATA: the sound module could not be loaded'; };
     doc.head.appendChild(script);
   }

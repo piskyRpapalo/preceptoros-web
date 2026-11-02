@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// preceptor-coder · turns bubble-language frames into SVG drawings both the web and the app can render.
+// preceptor-coder · turns acho-language frames into SVG drawings both the web and the app can render.
 // Commands:  draw FRAME.json [--out FILE.svg]   · check FRAME.json   · measure FRAME.json
 // The frame must obey the law (under 1,024 bytes, one sentence per atom, a declared sound). Deterministic: no
 // Math.random, no clock. Operations the painter does not know are counted and reported, never silently dropped.
@@ -8,8 +8,8 @@ import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 
 const require = createRequire(import.meta.url);
-const BUBBLE = require(fileURLToPath(new URL('../../../public/game/bubble_language.js', import.meta.url)));
-const compila = (BUBBLE.AtlasBubble || BUBBLE).compile;
+const ACHO = require(fileURLToPath(new URL('../../../public/game/acho_language.js', import.meta.url)));
+const compila = (ACHO.AtlasAcho || ACHO).compile;
 const LIMITE = 1024;
 
 export function ley(frame) {

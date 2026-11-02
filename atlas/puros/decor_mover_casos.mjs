@@ -18,9 +18,9 @@ test('same prop, destination and seed produce byte-identical movement scripts', 
   assert.equal(first.seed, 17);
 });
 
-test('movement frame is a sealed Bubble with a phrase and honest sound absence', () => {
+test('movement frame is a sealed Acho frame with a phrase and honest sound absence', () => {
   const frame = move(prop, { q: 1, r: 0 }, 17).frames[0];
-  assert.equal(frame.v, 'preceptoros.bubble/1');
+  assert.equal(frame.v, 'preceptoros.acho/1');
   assert.equal(frame.seal, 'SIMULATED');
   assert.match(frame.atoms[0].r, /sample-prop moves to axial cell 1,0/);
   assert.match(frame.sound, /^NO_DATA:/);
@@ -54,8 +54,8 @@ test('repeated colony ids or cells are refused before a movement can be issued',
   assert.throws(() => D.inColony([...nodes, { id: 'd', q: 1, r: 0 }]), /repeated/);
 });
 
-test('Bubble frame at or above 1 KiB is refused', () => {
-  assert.throws(() => move({ id: 'p'.repeat(1100), q: 0, r: 0 }, { q: 1, r: 0 }, 17), /Bubble\/1 law/);
+test('Acho frame at or above 1 KiB is refused', () => {
+  assert.throws(() => move({ id: 'p'.repeat(1100), q: 0, r: 0 }, { q: 1, r: 0 }, 17), /Acho\/1 law/);
 });
 
 test('invalid seed is refused and source has no random, clock or network path', () => {

@@ -24,7 +24,7 @@ In scope, as a ladder of small pieces:
 
 ## Constraints
 
-- Every visible change is a bubble frame under 1,024 bytes, with its own sentence and a declared sound (NO_DATA with cause when none).
+- Every visible change is a Acho frame under 1,024 bytes, with its own sentence and a declared sound (NO_DATA with cause when none).
 - No random number, no clock, no network in the render path; seeded rules only.
 - Reduced motion: no bobbing, the move arrives in one step.
 - Accessibility: buttons at least 44 px; keyboard reaches everything; colour plus text.

@@ -1,11 +1,11 @@
-// MVP slice 1 · every visible state becomes a bubble-language frame (pure core, not served yet).
+// MVP slice 1 · every visible state becomes a acho-language frame (pure core, not served yet).
 // A state is a short sentence the reader can see. The frame says what changed (`r`), and its sound comes from the
 // frame's own data (`sound`, and waves with `h`), so the sonify core decides whether it sounds or says NO_DATA.
 // Reduced motion is honored: with it on, no transition lasts. No Math.random, no clock, no network.
 (function (raiz) {
   'use strict';
 
-  var LIMITE_BYTES = 1024;   // a frame is a syllable: under 1,024 UTF-8 bytes (docs/bubble-language.md §1)
+  var LIMITE_BYTES = 1024;   // a frame is a syllable: under 1,024 UTF-8 bytes (docs/acho-language.md §1)
   var RIM = [[58, 66], [36, 94], [92, 72]];
 
   // stateFrame({ id, sentence, waves }) → frame. `waves` is an optional list of harmonic tables; with none, the
@@ -17,7 +17,7 @@
     var items = [{ o: 'ribbon', pts: RIM, closed: true, f: 'paper', s: 'ink', lw: 3 }];
     waves.forEach(function (h, i) { items.push({ o: 'wave', x: 60 + i * 40, y: 60, sc: 12, h: h }); });
     return {
-      v: 'preceptoros.bubble/1', id: id, t: 0, cv: [320, 96],
+      v: 'preceptoros.acho/1', id: id, t: 0, cv: [320, 96],
       atoms: [{ k: id, r: sentence, i: items }],
       bands: ['paper', 'ink', 'cyan'],
       change: [sentence],

@@ -1,4 +1,4 @@
-// Registro del canon del lenguaje de burbujas (docs/canon-bubble-math.md). Cada caso compara contra un vector
+// Registro del canon del lenguaje de burbujas (docs/canon-acho-math.md). Cada caso compara contra un vector
 // generado EJECUTANDO el codigo original (atlas/fixtures/bb_canon_vectores.json), no contra mi reimplementacion.
 // Uso: node atlas/bb_canon_casos.mjs  -> [{caso, ok, detalle}] ; exit 0 solo si todos pasan.
 import { createRequire } from 'node:module';

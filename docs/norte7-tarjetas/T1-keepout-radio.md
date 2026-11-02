@@ -53,7 +53,7 @@
 
 ## Leyes que mantiene
 
-bubble/1 · cuadros ≤1.024 B (la prueba no genera cuadros) · determinismo (BFS de orden fijo, sin azar ni reloj) · offline ·
+acho/1 · cuadros ≤1.024 B (la prueba no genera cuadros) · determinismo (BFS de orden fijo, sin azar ni reloj) · offline ·
 0 peticiones · reduced-motion (el empuje no exige animación) · NO_DATA con causa (tipo sin radio = NO_DATA) · SCRUB.
 
 ## Decisiones que pido al Soberano

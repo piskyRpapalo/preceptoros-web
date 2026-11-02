@@ -50,11 +50,11 @@
     return 'walker of ' + w.id + ': ' + st + where + ' · stops ' + w.path.join(' → ') + (reduced === true ? ' (jumped, reduced motion)' : '');
   }
 
-  // frame(id, shape, said, t) → a bubble frame (preceptoros.bubble/1) under 1,024 UTF-8 bytes that names itself.
+  // frame(id, shape, said, t) → a Acho frame (preceptoros.acho/1) under 1,024 UTF-8 bytes that names itself.
   function frame(id, shape, said, t) {
     var s = SHAPES[shape];
     return {
-      v: 'preceptoros.bubble/1', id: id, t: t, cv: [40, 40], seal: 'NO_DATA',
+      v: 'preceptoros.acho/1', id: id, t: t, cv: [40, 40], seal: 'NO_DATA',
       atoms: [{ k: id, r: said, i: [{ o: 'ribbon', pts: s[0], closed: s[1], f: 'paper', s: 'ink', lw: 3 }] }],
       bands: ['paper', 'ink'], change: [said],
       sound: 'NO_DATA: this mark declares no waves', soundCause: 'a mark has no measured value'
@@ -110,7 +110,7 @@
       e.at = follow(e.at, { x: x, y: y }, reduced); var sc = appearScale(e.n, reduced) * S; e.n++;
       if (!reduced && (e.n <= EASE_FRAMES || Math.abs(e.at.x - x) + Math.abs(e.at.y - y) > 0.5)) { settling = 1; }
       if (!(win.matchMedia && win.matchMedia('(forced-colors: active)').matches)) { sphere(g, e.at.x, e.at.y, 23 * sc); }
-      g.save(); g.translate(e.at.x - 20 * sc, e.at.y - 20 * sc); g.scale(sc, sc); win.AtlasComicAtoms.paint(g, win.AtlasBubble.compile(f)); g.restore();
+      g.save(); g.translate(e.at.x - 20 * sc, e.at.y - 20 * sc); g.scale(sc, sc); win.AtlasComicAtoms.paint(g, win.AtlasAcho.compile(f)); g.restore();
     }
     function button(p, view) {
       var b = buttons[p.id];

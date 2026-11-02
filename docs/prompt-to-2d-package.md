@@ -1,7 +1,7 @@
 # Versioned 2D image creation package
 
 This package boundary is separate from `preceptoros.creation/1`; that format
-continues to accept a single Bubble ribbon frame and a statement WAV. The new
+continues to accept a single Acho ribbon frame and a statement WAV. The new
 `preceptoros.creation.image/1` contract is implemented in
 `tools/creation_image_package.js`. It packages only `image.png` and
 `declaration.wav`, hashes each file, signs the exact UTF-8 manifest bytes with

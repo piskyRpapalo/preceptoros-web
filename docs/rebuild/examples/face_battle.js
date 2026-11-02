@@ -79,7 +79,7 @@
         return { k: l ? 'yours' : 'patrol', r: (l ? 'your squad, ' + formNames[b.form] : (patrolNames[b.patrol] || 'patrol')) + ': ' + list.length + ' alive, life ' + lf[0] + ' of ' + lf[1],
           i: list.map(function (x) { return { o: 'wave', x: x.at[0], y: x.at[1], h: [[1, 9, 9, 0]], f: l ? 'cyan' : 'vermilion.base' }; }) };
       });
-      return { v: 'preceptoros.bubble/1', id: 'battle', t: b.st ? b.st.ronda : 0, atoms: atoms, bands: ['cyan', 'vermilion.base', 'ink'],
+      return { v: 'preceptoros.acho/1', id: 'battle', t: b.st ? b.st.ronda : 0, atoms: atoms, bands: ['cyan', 'vermilion.base', 'ink'],
         change: [change || (b.result ? 'verdict: ' + b.result.gana : 'tick ' + (b.st ? b.st.ronda : 0))], sound: 'NO_DATA', soundCause: 'sound off', motion: 'tick by tick' };
     }
 

@@ -29,7 +29,7 @@ number is retained with that cause.
 | W1 initial load | 71,277 B gzip | `STALE` · measured on the 2026-10-19 tree; accepted-generation build not remeasured. Old judge `atlas/mvp_casos.mjs C6`. |
 | W2 state vector | `preceptoros.vector/1`, 466 B | `STALE` · old tree; current face's task envelope is separate. Old judge C5 / `vector_casos`. |
 | W3 seal palette | seven web seals | `STALE` · old route; new face mapping is pending acceptance. Old judge `atlas/mvp_casos.mjs`. |
-| W4 Descent / Bubble | `LIVE` | `STALE` · old generation; new face is assessed by its own fixture. |
+| W4 Descent / Acho | `LIVE` | `STALE` · old generation; new face is assessed by its own fixture. |
 | W5 four channels | `NO_DATA` | `PARTIAL_MEASURED` · lab#87 provides offline viewport/zoom/contrast/parity gates; lab#88 defines deterministic narration and the visible fallback. Current integrated new-face physical assistive-technology use remains `NO_DATA` · accepted web/app builds and human device reading are not supplied. |
 | W6 languages | nine old portals | `STALE` · old portal count; new-face language and voice coverage not measured. |
 | W7 end-rift questions | `NO_DATA` | `STALE` · old navigation concept superseded by the chat panel; local answer completion is `NO_DATA` · accepted local model route not demonstrated. |
@@ -49,7 +49,7 @@ number is retained with that cause.
 NORTE 5 defines one product face on WEB and APP: a chat panel plus one joystick.
 The three proposals — basic, atlantis, zombie — and the app face remain
 `REQUIERE_FIRMA` under the pending visual gate. Claude supplies colors and shapes
-through Bubble language; the Sovereign's visual review is the acceptance gesture.
+through Acho language; the Sovereign's visual review is the acceptance gesture.
 No half-migrated generation is accepted.
 
 | Objective | Seal | Judge / evidence required |
@@ -57,7 +57,7 @@ No half-migrated generation is accepted.
 | One identity and complete task across WEB and APP | `REQUIERE_FIRMA` · visual and task acceptance pending | Shared task fixtures compare state, messages, errors, controls and contract. Lab#91 runner reads pinned branch evidence; actual origin evidence is `NO_DATA` until those branch refs and manifests are supplied. |
 | Three family-friendly themes | `REQUIERE_FIRMA` · Sovereign visual gate pending | Same scene-geometry fixture; layouts may differ. Current accepted-source pixel/render comparison is `NO_DATA`. |
 | Four-channel access | `PARTIAL_MEASURED` | Lab#87 has 48 viewport cases (three themes × two orientations × eight heights), zoom bounds 0.60–3.00, contrast fixtures and task parity. Lab#88 defines visible narration, deterministic queue decisions and sound-off text fallback. No complete physical assistive-technology pass is claimed. |
-| Bubble frames | `PARTIAL_MEASURED` · Claude-reported fixture result | Worst frame 1,017 / 1,024 UTF-8 bytes (7 B headroom) is a dated report, not a fresh accepted-build measure. Lab#87's post-export judge must run on the pinned release. |
+| Acho frames | `PARTIAL_MEASURED` · Claude-reported fixture result | Worst frame 1,017 / 1,024 UTF-8 bytes (7 B headroom) is a dated report, not a fresh accepted-build measure. Lab#87's post-export judge must run on the pinned release. |
 | Contrast | `PARTIAL_MEASURED` · regression values only | basic 15.80/9.91, atlantis 18.27/9.61, zombie 15.11/11.93. Lab#87 checks drift. These values are not WCAG or EN 301 549 certification. |
 | Local voice | `PARTIAL_MEASURED` | App voice route exists at APP base above; lab#88 defines the auditable queue and explicit no-sound cause. New-face voice integration and physical hearing are `NO_DATA` · no accepted integrated build or listening receipt. |
 | Offline install and zero external requests | `NO_DATA` · clean install not measured | Lab#92 supplies an offline verifier and requires complete request capture across install, launch, task, offline launch, surfaces and restart. No real release receipt is attached. |

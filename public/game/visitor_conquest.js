@@ -53,19 +53,19 @@
     root.AtlasVisitorBattle.places().forEach(function (place) {
       var x = (width / 2 + place.coordinate[0] * scale) / px, y = (height / 2 + place.coordinate[1] * scale) / px;
       var clear = root.AtlasNiebla.niebla(place.coordinate[0], place.coordinate[1], cleared) === 0;
-      var tx = place.name + (records[place.id] ? ' +' : ''), lw = root.AtlasBubbleLetters.layout(tx).width * CAP / 12;
+      var tx = place.name + (records[place.id] ? ' +' : ''), lw = root.AtlasAchoLetters.layout(tx).width * CAP / 12;
       var box = { x: Math.round(x - lw / 2 - PAD), y: Math.round(y - CAP / 2 - PAD), w: Math.round(lw + 2 * PAD), h: CAP + 2 * PAD };
       for (var i = 0; i < 12 && taken.some(function (t) { return hits(box, t); }); i++) { box.y += box.h + 2; }
       if (taken.some(function (t) { return hits(box, t); }) || box.x < 0 || box.y < 0 || box.x + box.w > cssW || box.y + box.h > cssH) { return; }
       taken.push(box); boxes.push({ name: place.name, x: box.x, y: box.y, w: box.w, h: box.h, cap: CAP });
       var cx = box.x + box.w / 2, cy = box.y + box.h / 2, hw = box.w / 2, hh = box.h / 2;
       var sentence = place.name + (records[place.id] ? ' · conquered this visit' : ' · local practice place') + ' · sound NO_DATA: off';
-      var frame = { v: 'preceptoros.bubble/1', id: 'visitor-place', t: context.game.state().step, atoms: [{ k: 'place', r: sentence, i: [
+      var frame = { v: 'preceptoros.acho/1', id: 'visitor-place', t: context.game.state().step, atoms: [{ k: 'place', r: sentence, i: [
         { o: 'ribbon', f: 'ink', s: 'paper', lw: 2, closed: true, pts: [[-hw, -hh], [hw, -hh], [hw, hh], [-hw, hh]] },
         { o: 'letters', x: 0, y: 0, tx: tx, sz: CAP, f: 'paper', s: 'ink', sh: [0, 0, 'ink'] }] }], bands: ['paper', 'ink'], change: [sentence], sound: 'NO_DATA', soundCause: 'sound off', motion: 'still' };
       if (new TextEncoder().encode(JSON.stringify(frame)).length >= 1024) { return; }
       g.save(); g.setTransform(px, 0, 0, px, cx * px, cy * px); g.globalAlpha = clear ? 1 : 0.6;
-      root.AtlasComicAtoms.paint(g, root.AtlasBubble.compile(frame)); g.restore();
+      root.AtlasComicAtoms.paint(g, root.AtlasAcho.compile(frame)); g.restore();
     });
     surface.dataset.places = JSON.stringify(boxes);
   });
