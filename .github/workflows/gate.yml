@@ -81,6 +81,16 @@ jobs:
             node atlas/hex_projection_gate.mjs
             node --test atlas/puros/catalogo_iso_casos.mjs
             node --test atlas/puros/colonia_edificios_casos.mjs
+            node atlas/fixtures/first_journey_cases.mjs
+            node atlas/ojo/ojo_descenso_casos.mjs
+            node --test atlas/puros/battle_replay_controls_casos.mjs
+            node --test atlas/puros/bench_mover_casos.mjs
+            node --test atlas/puros/colonia_pagina_casos.mjs
+            node --test atlas/puros/colony_controls_casos.mjs
+            node --test atlas/puros/map_scene_casos.mjs
+            node --test atlas/puros/openworld_state_casos.mjs
+            node --test atlas/puros/tutorial_walk_casos.mjs
+            node --test atlas/puros/walk_route_casos.mjs
             node --test atlas/building_chat_casos.mjs
             node --test atlas/invocacion_viva_casos.mjs
             node atlas/colonia_edificios_gate.mjs
