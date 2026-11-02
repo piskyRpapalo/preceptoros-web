@@ -94,7 +94,7 @@ async function main() {
   ok(medida.chatAbierto && !medida.entradaOff, 'the chat panel is missing or its input is off');
   // W-5: the grid is gone; the status panel (with Skip tutorial) must still be on screen at phone width.
   ok(medida.joystick.buttons === 1 && medida.joystick.visible, 'the status panel is missing or below the phone viewport: ' + JSON.stringify(medida.joystick));
-  ok(parseFloat(medida.joystick.touch) >= 44, 'joystick controls are below the touch target: ' + medida.joystick.touch);
+  ok(parseFloat(medida.joystick.touch) >= 44, 'tutorial voice controls are below the touch target: ' + medida.joystick.touch);
   // W-5: a click on the cabin hex walks there (already there: it enters); an arrow key with no neighbour says NO_DATA.
   const entered = await ev(CLIC_CABINA);
   ok(/^terminal: basic/.test(entered || ''), 'the ephemeral cabin cannot be entered by clicking it on the map: ' + entered);
@@ -110,7 +110,7 @@ async function main() {
   await cmd('Page.navigate', { url: origen + '/openworld/' }); await espera(1200);
   const escritorio = JSON.parse(await ev(`(() => { const j = document.getElementById('joy'), r = j.getBoundingClientRect(), b = j.querySelector('button'); return JSON.stringify({ buttons: j.querySelectorAll('button').length, top: r.top, bottom: r.bottom, visible: r.width > 0 && r.height > 0 && r.top >= 0 && r.bottom <= innerHeight, touch: getComputedStyle(b).minHeight, width: document.documentElement.scrollWidth, viewport: innerWidth }); })()`));
   ok(escritorio.buttons === 1 && escritorio.visible, 'the status panel is missing or below the desktop viewport: ' + JSON.stringify(escritorio));
-  ok(parseFloat(escritorio.touch) >= 44, 'desktop joystick controls are below the touch target: ' + escritorio.touch);
+  ok(parseFloat(escritorio.touch) >= 44, 'desktop tutorial voice controls are below the touch target: ' + escritorio.touch);
   ok(escritorio.width <= escritorio.viewport, 'the page scrolls sideways at desktop width: ' + escritorio.width + ' > ' + escritorio.viewport);
   // P6: Enter by keyboard goes into the tutorial cabin; its greeting lands in the radio; the input asks its bot; Escape leaves.
   const cabina = JSON.parse(await ev(`(async () => { const w = (ms) => new Promise((r) => setTimeout(r, ms)), st = () => document.getElementById('state').textContent;
@@ -179,48 +179,61 @@ async function main() {
     return JSON.stringify({ said: document.getElementById('floor-state').textContent, cells: W ? W.cells.list.length : 0, tones: set.size }); })()`));
   ok(/^Map chunks: 7 of 7 around area 0_0\. Cabin chunk: \d+ water, \d+ sand, \d+ moss, \d+ rock cells/.test(suelo.said) && suelo.cells === 1519 && suelo.tones >= 12, 'the 2.5D floor is not painted: ' + JSON.stringify(suelo));
   if (CAPTURA) { const g2 = await cmd('Page.captureScreenshot', { format: 'png' }); writeFileSync(join(CAPTURA, 'openworld-floor.png'), Buffer.from(g2.result.data, 'base64')); }
+  // Compact terminal (the Sovereign p0, buzon#30, 2026-11-02): ONE map, ONE panel. No tab sheet, no stick pad, no loose
+  // text under the map; every voice of the panel has a header naming its speaker (< 1,024 UTF-8 bytes) and its line starts
+  // with it; every log line carries its speaker; the visit's actions are 44 px buttons inside the panel; desktop: map left.
+  const panel = JSON.parse(await ev(`(() => { const map = document.getElementById('map'), chat = document.getElementById('chat');
+    const vivas = [...map.querySelectorAll('[aria-live],[role=status],p.state,[role=tablist],.sheet,[role=application]')].map((e) => e.id || e.className || e.tagName);
+    const voces = [...document.querySelectorAll('#voices > li')].map((li) => { const h = li.querySelector(':scope > .who'), t = h ? h.textContent : '';
+      return { who: t, bytes: new TextEncoder().encode(t).length, starts: !!t && li.textContent.trim().startsWith(t), label: li.getAttribute('aria-label') }; });
+    const log = [...document.querySelectorAll('#log li')].map((li) => li.dataset.speaker || '');
+    const dentro = ['state', 'floor-state', 'listen-state', 'next-step', 'zoom-state', 'walkers-state', 'joy', 'visitor-play', 'army-visit', 'frases'].filter((id) => { const e = document.getElementById(id); return !e || !chat.contains(e); });
+    const acts = ['play-now', 'visitor-start', 'listen', 'world-refresh'].map((id) => { const e = document.getElementById(id); return e && chat.contains(e) ? e.getBoundingClientRect().height : 0; });
+    const m = document.getElementById('surface').getBoundingClientRect(), c = chat.getBoundingClientRect();
+    return JSON.stringify({ vivas, voces, log, dentro, acts, izquierda: m.right <= c.left + 1, logVivo: document.getElementById('log').getAttribute('aria-live') }); })()`));
+  ok(panel.vivas.length === 0 && panel.dentro.length === 0 && panel.voces.length >= 8 && panel.voces.every((v) => v.who && v.bytes < 1024 && v.starts && v.label)
+    && panel.log.length >= 2 && panel.log.every(Boolean) && panel.logVivo === 'polite' && panel.acts.every((h) => h >= 44) && panel.izquierda,
+    'the compact terminal is fragmented or a voice has no speaker: ' + JSON.stringify(panel));
+  if (CAPTURA) { const g3 = await cmd('Page.captureScreenshot', { format: 'png' }); writeFileSync(join(CAPTURA, 'openworld-desktop.png'), Buffer.from(g3.result.data, 'base64')); }
   // Free walk: from the HITL cabin (-1,0) ArrowRight seven times walks the crab east over the floor to 6,0; the seventh is water and is refused.
   // With a visit started, each accepted step is one game step (the eggs hatch by walking).
   const libre = JSON.parse(await ev(`(async () => { const say = () => document.querySelector('#joy [aria-live]').textContent, key = (k) => document.body.dispatchEvent(new KeyboardEvent('keydown', { key: k, bubbles: true }));
     document.getElementById('visitor-start').click(); for (let i = 0; i < 40 && !document.getElementById('visitor-step'); i++) await new Promise((r) => setTimeout(r, 100));
     const said = []; for (let i = 0; i < 7; i++) { key('ArrowRight'); said.push(say()); }
-    key('ArrowRight'); const water = say(); const visitText = document.getElementById('visitor-play').textContent; document.getElementById('visitor-end').click();
+    key('ArrowRight'); const water = say();
+    // Tap-to-step (the pad retired): a tap west of the crab, off any node, steps it one cell west.
+    const s = document.getElementById('surface'), r = s.getBoundingClientRect(), x = Number(s.dataset.youx) - 80, y = Number(s.dataset.youy);
+    s.dispatchEvent(new MouseEvent('click', { bubbles: true, clientX: r.left + x * r.width / s.width, clientY: r.top + y * r.height / s.height }));
+    const tap = say(); const visitText = document.getElementById('visitor-play').textContent; document.getElementById('visitor-end').click();
     const crab = [...document.querySelectorAll('#frases li')].map((li) => li.textContent).filter((t) => /^you · /.test(t))[0] || '';
     const visit = visitText.match(/Step (\\d+)/);
-    return JSON.stringify({ said, water, crab, step: visit ? +visit[1] : -1 }); })()`));
+    return JSON.stringify({ said, water, tap, crab, step: visit ? +visit[1] : -1 }); })()`));
   ok(libre.said[6] === 'You walk east to 6,0 · moss · step 7', 'the crab does not walk the floor cell by cell: ' + JSON.stringify(libre.said));
   ok(libre.water === 'NO_DATA: water blocks the way east', 'a step into water is not refused: ' + libre.water);
-  ok(/on cell 6,0/.test(libre.crab), 'the crab is not drawn on its floor cell: ' + libre.crab);
-  ok(libre.step === 7, 'walking does not advance the visit: ' + libre.step);
-  if (CAPTURA) { await ev("document.getElementById('tab-map').click()"); await cmd('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 1, mobile: true }); await espera(400); const g4 = await cmd('Page.captureScreenshot', { format: 'png' }); writeFileSync(join(CAPTURA, 'openworld-free-walk.png'), Buffer.from(g4.result.data, 'base64')); await cmd('Emulation.setDeviceMetricsOverride', { width: 1440, height: 900, deviceScaleFactor: 1, mobile: false }); }
-  // Terminal tabs (atlantis/zombie layout): ArrowRight moves to News, Enter opens a sheet that covers the map, Escape returns.
-  const pest = JSON.parse(await ev(`(async () => { const t = document.getElementById('tab-map'); t.focus();
-    t.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true })); const moved = document.activeElement.id;
-    document.getElementById('tab-summons').click(); const sh = document.getElementById('sheet-summons'), sv = document.getElementById('surface');
-    const a = sh.getBoundingClientRect(), b = sv.getBoundingClientRect(); const covers = !sh.hidden && a.top <= b.top + 1 && a.bottom >= b.bottom - 1 && a.width >= b.width - 2;
-    const start = !!sh.querySelector('#visitor-start');
-    sh.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })); const back = sh.hidden && document.getElementById('tab-map').getAttribute('aria-selected') === 'true';
-    const sizes = [...document.querySelectorAll('#map [role=tab]')].map((x) => x.getBoundingClientRect().height);
-    return JSON.stringify({ moved, covers, start, back, sizes }); })()`));
-  ok(pest.moved === 'tab-news' && pest.covers && pest.start && pest.back && pest.sizes.every((h) => h >= 44), 'the terminal tabs do not cover the map or the keyboard fails: ' + JSON.stringify(pest));
-  if (CAPTURA) { await ev("document.getElementById('tab-summons').click()"); const g3 = await cmd('Page.captureScreenshot', { format: 'png' }); writeFileSync(join(CAPTURA, 'openworld-summons.png'), Buffer.from(g3.result.data, 'base64')); await ev("document.getElementById('tab-map').click()"); }
+  ok(/on cell 5,0/.test(libre.crab), 'the crab is not drawn on its floor cell after the tap: ' + libre.crab);
+  ok(/^You walk west to 5,0/.test(libre.tap || ''), 'a tap on the map does not step the crab without the pad: ' + libre.tap);
+  ok(libre.step === 8, 'walking does not advance the visit: ' + libre.step);
+  if (CAPTURA) { await cmd('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 1, mobile: true }); await espera(400); const g4 = await cmd('Page.captureScreenshot', { format: 'png' }); writeFileSync(join(CAPTURA, 'openworld-free-walk.png'), Buffer.from(g4.result.data, 'base64')); await cmd('Emulation.setDeviceMetricsOverride', { width: 1440, height: 900, deviceScaleFactor: 1, mobile: false }); }
   // Plug&play (2026-11-01): at 390 px the page reads map → tabs → ONE next step → chat; the rare controls are folded.
   await cmd('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 1, mobile: true });
   await cmd('Page.navigate', { url: origen + '/openworld/' }); await espera(1500);
   const plug = JSON.parse(await ev(`(async () => { const w = (ms) => new Promise((r) => setTimeout(r, ms)), y = (id) => document.getElementById(id).getBoundingClientRect().top;
     const t0 = document.getElementById('next-text').textContent, p = document.getElementById('play-now'), tall = p.getBoundingClientRect().height;
-    const order = y('surface') < y('tab-map') && y('tab-map') < y('next-step') && y('next-step') < y('chat');
+    const s = document.getElementById('surface').getBoundingClientRect(), share = s.height / innerHeight;
+    const geo = [y('surface'), y('chat'), y('next-step'), Math.round(s.width), innerWidth], order = geo[0] < geo[1] && geo[1] <= geo[2] && share >= 0.4 && share <= 0.5 && s.width >= innerWidth - 1 && !document.querySelector('#map [role=tablist], .sheet');
     const look = document.querySelector('select[aria-label="Terminal look"]'), folded = !!look && !!look.closest('#more') && !document.querySelector('#joy select');
     const first = (document.querySelector('#radio-chat-lista li') || {}).textContent || '';
     p.click(); for (let i = 0; i < 50 && !document.getElementById('visitor-beacon'); i++) await w(100);
     const t1 = document.getElementById('next-text').textContent, gone = p.hidden;
     document.getElementById('visitor-beacon').click(); for (let i = 0; i < 50 && !/Summon/.test(document.getElementById('next-text').textContent); i++) await w(100);
-    return JSON.stringify({ t0, tall, order, folded, first, t1, gone, t2: document.getElementById('next-text').textContent, live: document.getElementById('next-step').getAttribute('aria-live') }); })()`));
+    const pad = !!document.querySelector('#joy [role=application], [aria-label*="drag inside the circle"]'), tap = await ${CLIC_CABINA};
+    return JSON.stringify({ t0, tall, order, geo, share, folded, first, pad, tap, t1, gone, t2: document.getElementById('next-text').textContent, live: document.getElementById('next-step').getAttribute('aria-live') }); })()`));
   ok(plug.t0 === 'Press Play now.' && plug.tall >= 44 && plug.live === 'polite', 'the next step does not say Play now on a 44 px button: ' + JSON.stringify(plug));
-  ok(plug.order, 'the phone order is not map, tabs, next step, chat: ' + JSON.stringify(plug));
+  ok(plug.order, 'the phone order is not one map (40-50 %, edge to edge) then one panel: ' + JSON.stringify(plug));
+  ok(!plug.pad && /^terminal: basic/.test(plug.tap || ''), 'a phone user cannot walk without the stick pad (tap a node on the map): ' + JSON.stringify(plug));
   ok(plug.folded, 'the terminal look is not folded under More: ' + JSON.stringify(plug));
   ok(/Start here: press Play now/.test(plug.first), 'the radio first line does not tell a newcomer what to do: ' + plug.first);
-  ok(plug.gone && plug.t1 === 'Ask the guide in the chat.' && plug.t2 === 'Summon a wave in Summons.', 'the next step does not follow the visit state: ' + JSON.stringify(plug));
+  ok(plug.gone && plug.t1 === 'Ask the guide in the chat.' && plug.t2 === 'Summon a wave with the House buttons below.', 'the next step does not follow the visit state: ' + JSON.stringify(plug));
   if (CAPTURA) { await cmd('Page.navigate', { url: origen + '/openworld/' }); await espera(1500); const g4 = await cmd('Page.captureScreenshot', { format: 'png' }); writeFileSync(join(CAPTURA, 'openworld-first-screen.png'), Buffer.from(g4.result.data, 'base64')); }
   console.log(JSON.stringify({ medida: { ...medida, texto: undefined }, escritorio, externas: externas.length, fallos }));
 }

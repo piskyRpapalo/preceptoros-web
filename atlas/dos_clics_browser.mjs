@@ -62,7 +62,7 @@ async function main() {
     return { path: location.pathname, shown: !!c && !c.hidden, role: c && c.getAttribute('role'), modal: c && c.getAttribute('aria-modal'), title: (document.getElementById('welcome-h') || {}).textContent,
       focus: document.activeElement && document.activeElement.id, h: r.height, w: r.width, top: r.top, bottom: r.bottom, look: !!document.getElementById('welcome-look'), ancho: document.documentElement.scrollWidth }; })())`));
   ok(llegada.path === '/openworld/', 'click 1 did not reach /openworld/: ' + llegada.path);
-  ok(llegada.shown && llegada.role === 'dialog' && llegada.modal === 'false', 'the welcome card does not cover the map as a dialog: ' + JSON.stringify(llegada));
+  ok(llegada.shown && llegada.role === 'dialog' && llegada.modal === 'false', 'the welcome card is not a dialog voice at the top of the panel: ' + JSON.stringify(llegada));
   ok(llegada.title === 'Welcome to the sunken forest', 'the welcome title is wrong: ' + llegada.title);
   ok(llegada.focus === 'welcome-play', 'focus is not on «Play now»: ' + llegada.focus);
   ok(llegada.h >= 44 && llegada.w >= 44 && llegada.top >= 0 && llegada.bottom <= 844, 'the «Play now» button is below 44 px or off screen: ' + JSON.stringify(llegada));
@@ -71,12 +71,12 @@ async function main() {
   await clic('#welcome-play'); await espera(1500);
   const jugando = JSON.parse(await ev(`JSON.stringify((() => { const s = document.getElementById('visitor-summon-tc1'), t = (document.getElementById('visitor-play') || {}).textContent || '';
     const m = /Copper (\\d+)/.exec(t); return { card: document.getElementById('sheet-welcome').hidden, copper: m ? +m[1] : -1, summon: !!s && !s.disabled, end: !!document.getElementById('visitor-end'),
-      tab: document.getElementById('tab-summons').getAttribute('aria-selected'), state: document.getElementById('state').textContent, result: document.getElementById('welcome-result').textContent }; })())`));
+      tab: String(!!document.getElementById('visitor-summon-tc1') && document.getElementById('chat').contains(document.getElementById('visitor-summon-tc1'))), state: document.getElementById('state').textContent, result: document.getElementById('welcome-result').textContent }; })())`));
   ok(clics === 2, 'reaching the game took ' + clics + ' clicks, not 2');
   ok(jugando.end, 'after two clicks no visit is active');
   ok(jugando.copper >= 100, 'after two clicks the copper is below 100: ' + jugando.copper);
   ok(jugando.summon, 'after two clicks the reef summon button is not enabled');
-  ok(jugando.card === true && jugando.tab === 'true', 'the welcome card did not give way to the Summons tab: ' + JSON.stringify(jugando));
+  ok(jugando.card === true && jugando.tab === 'true', 'the welcome card did not give way to the House voice of the panel: ' + JSON.stringify(jugando));
   ok(/Visit started · signed on this device · 100 copper from the beacon · you can summon twice/.test(jugando.state), '#state does not announce the visit: ' + jugando.state);
   ok(/Play the tutorial by walking to the beacon, or press Skip tutorial/.test(jugando.result), 'the tutorial choice is not said: ' + jugando.result);
   await foto('dos-clics-playing.png');

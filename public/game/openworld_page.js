@@ -36,7 +36,10 @@
       var b = doc.createElement('button'); b.type = 'button'; b.id = z[2]; b.textContent = z[0];
       b.style.minHeight = '44px'; b.style.minWidth = '44px'; b.addEventListener('click', function () { zoomTo(z[1]); }); zoomBar.appendChild(b);
     });
-    zoomBar.appendChild(zoomSay); surface.after(zoomBar);
+    surface.after(zoomBar);
+    // The compact terminal (2026-11-02): the spoken level is the Zoom voice in the panel, never a text on the map.
+    zoomSay.textContent = 'Map zoom ' + (surface.dataset.zoom || '1.00') + '×';
+    (doc.getElementById('voice-zoom') || zoomBar).appendChild(zoomSay);
     doc.addEventListener('keydown', function (e) {
       var t = e.target, field = t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT' || t.isContentEditable);
       var d = { '+': 1, '=': 1, '-': -1, '0': 0 }[e.key];
@@ -163,6 +166,14 @@
     var r = surface.getBoundingClientRect();
     var px = (e.clientX - r.left) * (surface.width / r.width), py = (e.clientY - r.top) * (surface.height / r.height);
     var id = CP.nodeAt(surface, colonia, entrada.t, colony_looks, colony_seals, px, py);
+    // Tap-to-step (compact terminal, 2026-11-02, the pad retired): a tap off any node, with free walk on, steps the crab
+    // one cell toward the tap: the nearest of the six hex directions by screen angle, same names as the arrow keys.
+    if (!id && CCT.step && surface.dataset.youx) {
+      var a = (Math.atan2(Number(surface.dataset.youy) - py, px - Number(surface.dataset.youx)) * 180 / Math.PI + 360) % 360;
+      var dir = [['east', 0], ['north-east', 60], ['north-west', 120], ['west', 180], ['south-west', 240], ['south-east', 300], ['east', 360]]
+        .reduce(function (b, d) { return Math.abs(a - d[1]) < Math.abs(a - b[1]) ? d : b; })[0];
+      if (CCT.step(dir)) { draw(); renderFrases(); return; }
+    }
     if (!id) { CCT.say('NO_DATA: no visible node on that hex.'); return; }
     if (CCT.walkTo(id)) { walkLoop(); }
   });

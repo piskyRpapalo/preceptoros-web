@@ -103,13 +103,20 @@ async function main() {
   ok(/terminal: basic/.test(llegada), 'arrival anchors the terminal: ' + llegada.slice(0, 140));
   ok(/beacon skipped · NO_DATA/.test(llegada) || /next step is at cabin/.test(llegada) || /tutorial:/.test(llegada), 'arrival reports the tutorial: ' + llegada.slice(0, 180));
 
-  // 3 · a click on an empty hex walks nowhere and says NO_DATA.
+  // 3 · with free walk off (the W-4 node law), a click on an empty hex walks nowhere and says NO_DATA.
+  // With free walk on (compact terminal, 2026-11-02: the pad is retired), the same tap steps the crab one cell toward it.
+  const libre = (on) => ev(`(() => { const f = document.getElementById('free-walk'); if (f && f.checked !== ${on}) { f.click(); } return !!f; })()`);
+  await libre(false);
   const vacio = await anclaDe('cabin');
   await clicEn(vacio.x + 200, vacio.y + 200);
   await espera(200);
   const vacia = await estado();
   ok(!/walking to/.test(vacia), 'an empty hex does not start a walk');
   ok(/NO_DATA: no visible node on that hex/.test(vacia), 'an empty hex says NO_DATA: ' + vacia.slice(0, 120));
+  ok(await libre(true), 'the free-walk checkbox is missing');
+  await clicEn(vacio.x + 200, vacio.y + 200); await espera(200);
+  const paso = await estado();
+  ok(/^You walk (east|south-east|south-west|west|north-east|north-west) to /.test(paso), 'with free walk on, a tap off any node does not step the crab: ' + paso.slice(0, 120));
 
   console.log(JSON.stringify({ piece: 'W-3', medidas, fallos }));
 }

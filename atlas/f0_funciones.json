@@ -71,21 +71,6 @@
    ]
   },
   {
-   "id": "stick",
-   "scripts": [
-    "/game/map_stick.js"
-   ],
-   "globals": [
-    "AtlasMapStick"
-   ],
-   "guards": [
-    {
-     "file": "atlas/openworld_browser.mjs",
-     "text": "joystick controls are below the touch target"
-    }
-   ]
-  },
-  {
    "id": "zoom",
    "scripts": [
     "/game/map_zoom.js"
@@ -314,17 +299,21 @@
    ]
   },
   {
-   "id": "terminal-tabs",
+   "id": "terminal-panel",
    "scripts": [
-    "/game/terminal_tabs.js"
+    "/game/terminal_panel.js"
    ],
    "globals": [
-    "AtlasTerminalTabs"
+    "AtlasTerminalPanel"
    ],
    "guards": [
     {
      "file": "atlas/openworld_browser.mjs",
-     "text": "the terminal tabs do not cover the map or the keyboard fails"
+     "text": "the compact terminal is fragmented or a voice has no speaker"
+    },
+    {
+     "file": "atlas/openworld_browser.mjs",
+     "text": "a phone user cannot walk without the stick pad"
     }
    ]
   },
@@ -369,7 +358,7 @@
    "scripts": [
     "/game/welcome_card.js",
     "/game/visitor_play.js",
-    "/game/terminal_tabs.js"
+    "/game/terminal_panel.js"
    ],
    "globals": [],
    "guards": [
@@ -395,6 +384,20 @@
      "text": "the crab does not walk the floor cell by cell"
     }
    ]
+  }
+ ],
+ "retiradas": [
+  {
+   "id": "stick",
+   "fecha": "2026-11-02",
+   "recibo": "retirados/RETIRO-joystick-20261102.md",
+   "sustituye": "tocar un nodo del mapa (guarda terminal-panel) y las flechas (colony_controls.js)"
+  },
+  {
+   "id": "terminal-tabs",
+   "fecha": "2026-11-02",
+   "recibo": "retirados/RETIRO-joystick-20261102.md",
+   "sustituye": "terminal-panel"
   }
  ]
 }

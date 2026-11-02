@@ -1,5 +1,5 @@
-// The first-run welcome card of /openworld/ (two clicks from the landing to play): it covers the map while no visit is
-// active. «Play now» runs the existing visit flow in one click: start (consent + Ed25519 keys signed on this device),
+// The first-run welcome card of /openworld/ (two clicks from the landing to play): the Welcome voice at the top of the
+// panel while no visit is active (compact terminal, 2026-11-02: it no longer covers the map; the Summons tab is retired). «Play now» runs the existing visit flow in one click: start (consent + Ed25519 keys signed on this device),
 // claim the beacon (+100 copper, two reef summons), open the Summons tab, say it in #state. Any visit start closes it.
 (function (root) {
   'use strict';
@@ -12,7 +12,7 @@
   function press(id) { var b = doc.getElementById(id); if (!b || b.disabled) { throw new Error(id + ' is not available'); } b.click(); }
   function ready(d) { var b = d.controls && d.controls.querySelector('#visitor-step'); return !!(d.state && b && !b.disabled); }
   play.addEventListener('visitor:render', function () { if (!go.disabled) { close(); } });
-  look.addEventListener('click', function () { close(); var t = doc.getElementById('tab-map'); if (t) { t.focus(); } });
+  look.addEventListener('click', function () { close(); var t = doc.getElementById('play-now'); if (t && !t.hidden) { t.focus(); } });
   card.addEventListener('keydown', function (e) { if (e.key === 'Escape') { e.preventDefault(); look.click(); } });
   go.addEventListener('click', async function () {
     go.disabled = true; said.textContent = 'Signing on this device…';

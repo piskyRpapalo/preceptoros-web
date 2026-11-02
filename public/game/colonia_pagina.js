@@ -155,6 +155,8 @@
       you = { id: you.id, x: cell.x, y: cell.y - (walker.h || 0) * (MP ? MP.HSTEP : 7), free: true };
       follow(canvas, sc, you);
     }
+    // Tap-to-step (compact terminal, 2026-11-02): where the crab stands on the canvas, read by the page's tap on a cell.
+    if (you && canvas.dataset) { var GY = geometry(sc, canvas); canvas.dataset.youx = String(Math.round(GY.cx + you.x * GY.k)); canvas.dataset.youy = String(Math.round(GY.cy + you.y * GY.k)); }
     sc.you = you ? youFrame(walker, t, reducido === true) : null;
     var g = canvas.getContext('2d');
     g.setTransform(1, 0, 0, 1, 0, 0);

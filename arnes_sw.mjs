@@ -223,6 +223,7 @@ const rutas = await shell.keys();
 // 107 -> 116 el 2026-10-30: the shared-map neutral terminal and its renderer chain join the shell cache.
 // 112 -> 113 el 2026-11-01 (modo avion): entra /game/web_node_brain.js, para que el guia cargue sin red.
 // 113 -> 114 el 2026-11-01 (terminal): entra /game/terminal_tabs.js.
+// 113 -> 113 el 2026-11-02 (terminal compacta): sale /game/terminal_tabs.js (retirados/terminal/), entra /game/terminal_panel.js.
 // 114 -> 112 el 2026-11-01 (decreto p0, buzon#30): salen las lapidas /face/atlantis.html y /face/zombie.html.
 // 112 -> 113 el 2026-11-01 (P5a, tras P4): entra /game/hitl_walkers.js.
 // 111 -> 112 el 2026-11-01 (P4): entra /game/map_painter.js, el suelo 2.5D.
