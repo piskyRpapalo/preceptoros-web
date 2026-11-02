@@ -1,4 +1,4 @@
-const VERSION = 'preceptoros-2026-17-dr';
+const VERSION = 'preceptoros-2026-17-ds';
 const SHELL = 'shell-' + VERSION;
 const OBRA = 'obra-' + VERSION;
 
@@ -152,7 +152,6 @@ self.addEventListener('fetch', e => {
 
   if (RED_PRIMERO.indexOf(url.pathname) >= 0) { e.respondWith(redPrimero(e)); return; }
 
-  
   
   if (url.pathname.endsWith('.json') &&
       CONTENIDO_JSON.indexOf(url.pathname) < 0 &&
