@@ -1,4 +1,4 @@
-"""La alarma del faro: solo lleva lo que el faro midio; sin token dice NO_DATA y no envia."""
+"""La alarma del actions: solo lleva lo que el actions midio; sin token dice NO_DATA y no envia."""
 import os
 import sys
 import tempfile
@@ -7,7 +7,7 @@ from pathlib import Path
 from unittest import mock
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "atlas"))
-import faro_alarma as fa  # noqa: E402
+import actions_alarma as fa  # noqa: E402
 
 SALIDA_ROJA = """ficheros comparados: 4
 LIVE iguales: 2

@@ -27,23 +27,23 @@ Mesa's 2026-10-26 receipt for the first green deployment records this sequence: 
 
 1. The Sovereign dispatches `manual-worker-deploy` from `main` and approves the `production` environment.
 2. If measured HTML drift remains after the deploy, the Sovereign purges the affected zone cache using the authorized Cloudflare control. The exact purge command/endpoint is **NO_DATA**, cause: no purge procedure is versioned in this repository; do not infer a zone identifier or API call.
-3. After any required purge, the Sovereign dispatches the `faro` workflow (`workflow_dispatch`). It runs `python atlas/faro.py`, comparing served files byte-for-byte with `public/` from main. A green reading is exit 0 with all files equal and zero distinct, absent, or network-error entries. A push-to-main also triggers this workflow; that trigger is not a replacement for the post-deploy reading.
+3. After any required purge, the Sovereign dispatches the `actions` workflow (`workflow_dispatch`). It runs `python atlas/actions.py`, comparing served files byte-for-byte with `public/` from main. A green reading is exit 0 with all files equal and zero distinct, absent, or network-error entries. A push-to-main also triggers this workflow; that trigger is not a replacement for the post-deploy reading.
 
 The Mesa's earlier measured deployment baseline was 244 public files, but the expected count must be read from the exact main being deployed. Do not copy an old count into a new receipt.
 
-## FARO diagnostic ladder (measured 2026-10-25)
+## ACTIONS diagnostic ladder (measured 2026-10-25)
 
-A red faro reading does not by itself mean the deployment failed or the cache is stale. Measured incident: five consecutive red readings on the same 11 HTML routes while every non-HTML asset was byte-identical to main, and the deployment had been byte-identical to main the whole time. The ladder, in order:
+A red actions reading does not by itself mean the deployment failed or the cache is stale. Measured incident: five consecutive red readings on the same 11 HTML routes while every non-HTML asset was byte-identical to main, and the deployment had been byte-identical to main the whole time. The ladder, in order:
 
-1. **Read the instrument first.** `atlas/faro.py` pins the exact origin it judges (`SITIO`). Every manual probe must use the same hostname, or it measures a different vantage.
-2. **Run the faro locally** from a residential connection (`python3 atlas/faro.py` in a fresh clone of `main`). Green local + red remote means the served difference depends on the client, not on the deployment.
-3. **Read the sonda fields** in the faro log (`servido:`/`local:` bytes and sha256, `url_final`, `titulo_servido`, `offset_divergencia`, `divergencia_servido`). Redirects to clean URLs (`/index.html` → `/`) are expected worker behavior. A constant byte delta present on every HTML route is an injected block, not stale cache.
+1. **Read the instrument first.** `atlas/actions.py` pins the exact origin it judges (`SITIO`). Every manual probe must use the same hostname, or it measures a different vantage.
+2. **Run the actions locally** from a residential connection (`python3 atlas/actions.py` in a fresh clone of `main`). Green local + red remote means the served difference depends on the client, not on the deployment.
+3. **Read the sonda fields** in the actions log (`servido:`/`local:` bytes and sha256, `url_final`, `titulo_servido`, `offset_divergencia`, `divergencia_servido`). Redirects to clean URLs (`/index.html` → `/`) are expected worker behavior. A constant byte delta present on every HTML route is an injected block, not stale cache.
 4. **Inspect the zone panel** (Analytics → Web Analytics, Security → Bots) for functions that modify HTML per client. Zone functions can inject a fixed snippet into HTML for clients outside their configured exclusions — a Web Analytics rule excluding EU visitors made every EU probe read clean while the non-EU CI runner received the injected bytes. A zone purge does not remove this class of difference; disabling the zone function does, and a whole-zone purge clears copies already cached at the edge.
 5. **Purge the whole zone** when purging: the edge caches HTML for both the apex and the `www` hostnames, even when the origin sends `max-age=0`.
 
-Measured facts from this incident: the faro from a residential EU connection was green 244/244 while the non-EU CI runner measured +367 bytes on every HTML route, with identical titles, generation, and clean redirect targets. Deployment and cache were healthy; the red reading was an artifact of the judge's vantage.
+Measured facts from this incident: the actions from a residential EU connection was green 244/244 while the non-EU CI runner measured +367 bytes on every HTML route, with identical titles, generation, and clean redirect targets. Deployment and cache were healthy; the red reading was an artifact of the judge's vantage.
 
-Measured culprit (sonda v2 reading, 2026-10-25): the Cloudflare **Web Analytics beacon** (`static.cloudflareinsights.com/beacon.min.js`), auto-injected near the end of every HTML document — a constant +367-byte block at end-of-document offsets, identical on all 11 routes. The zone setting was "Enable, excluding visitor data in the EU", so EU visitors received exact main bytes while the non-EU CI runner received the beacon — the vantage asymmetry behind every red remote reading. The fix lives in the zone panel (Web Analytics → Manage site → Automatic Setup → Disable), not in this repository; the site contract declares zero external requests on load, and the injection violated it for affected clients. Case closure (2026-10-25): after Disable plus a whole-zone purge, the faro read green 244/244, DRIFT 0, ERRORES 0 (run `40142159933`).
+Measured culprit (sonda v2 reading, 2026-10-25): the Cloudflare **Web Analytics beacon** (`static.cloudflareinsights.com/beacon.min.js`), auto-injected near the end of every HTML document — a constant +367-byte block at end-of-document offsets, identical on all 11 routes. The zone setting was "Enable, excluding visitor data in the EU", so EU visitors received exact main bytes while the non-EU CI runner received the beacon — the vantage asymmetry behind every red remote reading. The fix lives in the zone panel (Web Analytics → Manage site → Automatic Setup → Disable), not in this repository; the site contract declares zero external requests on load, and the injection violated it for affected clients. Case closure (2026-10-25): after Disable plus a whole-zone purge, the actions read green 244/244, DRIFT 0, ERRORES 0 (run `40142159933`).
 
 ## Rollback boundary
 
@@ -51,7 +51,7 @@ The checked-in deploy workflow has no rollback input, artifact selector, or roll
 
 ## Receipt
 
-Record the source commit, workflow run ID, human approver, result, public-file counts and FARO output. Record only the names of protected settings, never their values. If a step cannot be measured, record `NO_DATA` with its cause. `encolado` is not evidence that a deployment is live.
+Record the source commit, workflow run ID, human approver, result, public-file counts and ACTIONS output. Record only the names of protected settings, never their values. If a step cannot be measured, record `NO_DATA` with its cause. `encolado` is not evidence that a deployment is live.
 
 JN-3 source receipt: visitor modules and the extracted map controller introduce no page route. Shell precache remains 117 entries / 116 distinct / one duplicate (bin/contar_rutas.py). Modules are requested from the same origin; deployment remains a separately signed action.
 

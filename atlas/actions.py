@@ -1,6 +1,6 @@
-"""El FARO: lo servido en preceptoros.org (apex, canonico) contra public/ de main.
+"""El ACTIONS (antes faro): lo servido en preceptoros.org (apex, canonico) contra public/ de main.
 
-El gate mira cada PR, el vigia mira el estado de main cada manana; el faro
+El gate mira cada PR, el vigia mira el estado de main cada manana; el actions
 mira la luz que llega de verdad al visitante. Compara byte a byte cada
 fichero de public/ contra el sitio vivo. Determinista, sin LLM, solo
 biblioteca estandar.
@@ -20,7 +20,7 @@ from pathlib import Path
 SITIO = "https://preceptoros.org/"  # canonico desde 2026-10-25; www 301 -> apex (worker/index.js)
 RAIZ = Path(__file__).resolve().parent.parent / "public"
 TIEMPO_FUERA = 15
-AGENTE = "preceptoros-faro/1.0"
+AGENTE = "preceptoros-actions/1.0"
 SONDA_BYTES = 96
 SONDA_DIVERGENCIA = 160
 

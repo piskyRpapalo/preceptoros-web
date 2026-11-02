@@ -1,12 +1,12 @@
-"""Alarma del faro: una lectura roja se escribe en buzon#30, donde la Mesa la lee.
+"""Alarma del actions: una lectura roja se escribe en buzon#30, donde la Mesa la lee.
 
-Solo lee la salida que el faro ya imprime (conteos, DISTINTO, AUSENTE, ERROR). No
-recalcula nada: el faro decide, esto solo lo lleva al tablero de la Mesa.
+Solo lee la salida que el actions ya imprime (conteos, DISTINTO, AUSENTE, ERROR). No
+recalcula nada: el actions decide, esto solo lo lleva al tablero de la Mesa.
 
-Uso (lo llama .github/workflows/faro.yml solo si el faro sale distinto de 0):
-    python3 atlas/faro_alarma.py --texto faro.txt --rc 1 --run <url de la ejecucion>
+Uso (lo llama .github/workflows/actions.yml solo si el actions sale distinto de 0):
+    python3 atlas/actions_alarma.py --texto actions.txt --rc 1 --run <url de la ejecucion>
 
-Sin GH_TOKEN no envia nada y lo dice: NO_DATA con su causa. El rojo del faro
+Sin GH_TOKEN no envia nada y lo dice: NO_DATA con su causa. El rojo del actions
 sigue siendo el rojo del paso; esto no lo tapa ni lo cambia.
 """
 import argparse
@@ -25,10 +25,10 @@ def cuerpo(texto, rc, run):
     lineas = texto.splitlines()
     cabecera = [l for l in lineas if l.startswith(("ficheros comparados", "LIVE iguales", "DRIFT ", "ERRORES de red"))]
     detalle = [l.strip() for l in lineas if l.startswith(("  DISTINTO ", "  AUSENTE ", "  ERROR "))]
-    causa = "NO_DATA · el faro no llego a comparar" if rc == 2 and not detalle else (
+    causa = "NO_DATA · el actions no llego a comparar" if rc == 2 and not detalle else (
         "deriva: lo servido difiere de public/ de main" if rc == 1 else "error de red o de medida")
     partes = [
-        "ALARMA DEL FARO · lectura roja · " + causa,
+        "ALARMA DEL ACTIONS · lectura roja · " + causa,
         "",
         f"Ejecucion: {run}",
         f"Codigo de salida: {rc}",
@@ -38,7 +38,7 @@ def cuerpo(texto, rc, run):
         *detalle,
         "```",
         "",
-        "Propuesto desde el faro. Sin decision humana no hay accion; la lectura es del faro, no de este aviso.",
+        "Propuesto desde el actions. Sin decision humana no hay accion; la lectura es del actions, no de este aviso.",
     ]
     texto_out = "\n".join(partes)
     while len(texto_out.encode("utf-8")) > TOPE and len(partes) > 8:

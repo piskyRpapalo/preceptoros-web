@@ -1,10 +1,10 @@
-# El FARO de la costa: en cada push a main y cada manana, compara byte a byte
+# El ACTIONS de la costa (antes faro): en cada push a main y cada manana, compara byte a byte
 # lo servido en preceptoros.org (apex, canonico) contra public/ de main. El gate mira cada
-# PR, el vigia mira el estado de main; el faro mira la luz que llega de verdad.
+# PR, el vigia mira el estado de main; el actions mira la luz que llega de verdad.
 # Nacio de una deriva medida (2026-10-19): el cuerpo servido iba 16 rutas por
 # detras de main sin que ningun check lo viera. ROJO = alarma de deriva, no un
 # fallo del script. Determinista y sin LLM.
-name: faro
+name: actions
 
 on:
   push:
@@ -14,14 +14,14 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: faro
+  group: actions
   cancel-in-progress: false
 
 permissions:
   contents: read
 
 jobs:
-  faro:
+  actions:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -34,10 +34,10 @@ jobs:
           GH_TOKEN: ${{ secrets.BUZON_TOKEN }}
         run: |
           set -uo pipefail
-          python atlas/faro.py > faro.txt 2>&1; rc=$?
-          cat faro.txt | tee -a "$GITHUB_STEP_SUMMARY"
-          # Una lectura roja llega a buzon#30 (R-ALARMA-FARO). Sin el secreto lo dice y el paso queda rojo igual.
+          python atlas/actions.py > actions.txt 2>&1; rc=$?
+          cat actions.txt | tee -a "$GITHUB_STEP_SUMMARY"
+          # Una lectura roja llega a buzon#30 (R-ALARMA-ACTIONS). Sin el secreto lo dice y el paso queda rojo igual.
           if [ "$rc" -ne 0 ]; then
-            python3 atlas/faro_alarma.py --texto faro.txt --rc "$rc" --run "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" || true
+            python3 atlas/actions_alarma.py --texto actions.txt --rc "$rc" --run "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" || true
           fi
           exit "$rc"
