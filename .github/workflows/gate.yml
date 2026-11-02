@@ -43,121 +43,120 @@ jobs:
           node atlas/barrido_casos.mjs
           python test_web.py
 
-      - name: Culprit probe n2 (diagnostico de la Mesa)
+      - name: Gates completos n=2
         run: |
-          set +e
-          : > /tmp/culprit.txt
-          probe() { "$@"; rc=$?; if [ "$rc" -ne 0 ]; then echo "::error title=CULPRIT::P$p FAILED rc=$rc :: $*"; echo "P$p rc=$rc :: $*" >> /tmp/culprit.txt; fi; }
-          for p in 1 2; do
-            echo "Probe pass $p/2"
-            probe python -m unittest tests.test_module_attribution
-            probe python -m unittest tests.test_faro_alarma
-            probe python -m unittest tests.test_hitl_cerco
-            probe python -m unittest tests.test_preflight
-            probe python -m unittest tests.test_trailers_hook
-            probe python bin/contar_rutas.py --check-doc DEPLOY.md
-            probe node --test atlas/puros/decor_mover_casos.mjs
-            probe node --test atlas/puros/decor_command_casos.mjs
-            probe node --test atlas/puros/wave_duel_casos.mjs
-            probe node --test atlas/puros/state_frames_casos.mjs
-            probe node --test atlas/puros/colony_state_casos.mjs
-            probe node --test atlas/puros/hex_projection_casos.mjs
-            probe node --test atlas/barrido_web_casos.mjs
-            probe node --test atlas/map_carta_casos.mjs
-            probe node --test atlas/map_chunks_casos.mjs
-            probe node --test atlas/web_node_brain_casos.mjs
-            probe node --test atlas/map_painter_casos.mjs
-            probe node --test atlas/visitor_walk_casos.mjs
-            probe node --test atlas/retiro_face_casos.mjs
-            probe node --test atlas/nombres_retirados_casos.mjs
-            probe node --test atlas/f0_funciones_casos.mjs
-            probe node --test atlas/map_zoom_colonia_casos.mjs
-            probe node --test atlas/hitl_walkers_casos.mjs
-            probe node --test atlas/motor_35d_casos.mjs
-            probe node atlas/hex_projection_gate.mjs
-            probe node --test atlas/puros/catalogo_iso_casos.mjs
-            probe node --test atlas/puros/colonia_edificios_casos.mjs
-            probe node --test atlas/building_chat_casos.mjs
-            probe node --test atlas/invocacion_viva_casos.mjs
-            probe node atlas/colonia_edificios_gate.mjs
-            probe node --test atlas/puros/paleta_ciclo_casos.mjs
-            probe node atlas/paleta_ciclo_gate.mjs
-            probe node atlas/colonia_pagina_gate.mjs
-            probe node --test atlas/lexicon_gate_casos.mjs
-            probe node atlas/lexicon_gate.mjs
-            probe python test_web.py
-            probe python atlas/test_atlas.py
-            probe node arnes_sw.mjs
-            probe node --test 'tests/*.test.mjs'
-            probe node atlas/npc_occupancy_cases.mjs
-            probe node atlas/ventana_casos.mjs
-            probe node atlas/radio_age_cases.mjs
-            probe node atlas/hud_readings_cases.mjs
-            probe node atlas/bubble_language_casos.mjs
-            probe node atlas/bubble_editor_casos.mjs
-            probe node atlas/bubble_paint_casos.mjs
-            probe node atlas/front_door_browser.mjs
-            probe node atlas/egg_reload_browser.mjs
-            probe node atlas/combat_screen_browser.mjs
-            probe node atlas/landing_doors_browser.mjs
-            probe node atlas/openworld_browser.mjs
-            probe node atlas/invocacion_viva_browser.mjs
-            probe node atlas/dos_clics_browser.mjs
-            probe node atlas/ojo_carbono_browser.mjs
-            probe node atlas/web_node_brain_browser.mjs
-            probe node atlas/offline_brain_browser.mjs
-            probe node atlas/walk_avatar_browser.mjs
-            probe node atlas/walk_keys_browser.mjs
-            probe node atlas/visitor_account_browser.mjs
-            probe node atlas/visitor_eggs_browser.mjs
-            probe node --test atlas/voice_star_casos.mjs
-            probe node atlas/visitor_battle_browser.mjs
-            probe node atlas/visitor_conquest_browser.mjs
-            probe node atlas/battle_replay_controls_browser.mjs
-            probe node atlas/usuario_efimero_pasada_browser.mjs
-            probe node atlas/wave_army_browser.mjs
-            probe node atlas/place_card_browser.mjs
-            probe node atlas/tutorial_places_browser.mjs
-            probe node atlas/tutorial_walk_browser.mjs
-            probe node atlas/wave_duel_browser.mjs
-            probe node atlas/bubble_bestiary_casos.mjs
-            probe node atlas/bubble_icons_casos.mjs
-            probe node atlas/bubble_letters_casos.mjs
-            probe node atlas/codex_casos.mjs
-            probe node atlas/descent_sound_casos.mjs
-            probe node atlas/descent_view_casos.mjs
-            probe node atlas/mvp_casos.mjs
-            probe node atlas/ficha_casos.mjs
-            probe node atlas/matematica_casos.mjs
-            probe node questions/ventana_casos.mjs
-            probe node atlas/ecos_casos.mjs
-            probe node atlas/barrido_casos.mjs
-            probe node atlas/bubble_bust_casos.mjs
-            probe node atlas/bubble_crab_casos.mjs
-            probe node atlas/chrome_launch_cases.mjs
-            probe node atlas/comic_accents_casos.mjs
-            probe node atlas/comic_atoms_casos.mjs
-            probe node atlas/comic_css_paridad_casos.mjs
-            probe node atlas/comic_tokens_casos.mjs
-            probe node atlas/sea_rift_casos.mjs
-            probe node atlas/param_gate_casos.mjs
-            probe node atlas/harness_agentes_casos.mjs
-            probe node atlas/phase_M0_cases.mjs
-            probe node atlas/phase_T3_cases.mjs
-            probe node atlas/shell_schematics_casos.mjs
-            probe node atlas/z_cutoff_casos.mjs
-            probe node atlas/lexical_projector_casos.mjs
-            probe node atlas/map_bubble_casos.mjs
-            probe node atlas/todos_los_casos.mjs
+          probe() { "$@" >/tmp/probe-out 2>&1; rc=$?; if [ "$rc" -ne 0 ]; then echo "::error title=CULPRIT::[P$pasada] FAILED rc=$rc :: $*"; echo "P$pasada rc=$rc :: $*" >> /tmp/culprit.txt; echo "--- $* (rc=$rc)" >> /tmp/culprit-detalle.txt; tail -40 /tmp/probe-out >> /tmp/culprit-detalle.txt; fi; return 0; }
+          for pasada in 1 2; do
+          echo "Gate pass $pasada/2"
+          probe python -m unittest tests.test_module_attribution
+          probe python -m unittest tests.test_faro_alarma
+          probe python -m unittest tests.test_hitl_cerco
+          probe python -m unittest tests.test_preflight
+          probe python -m unittest tests.test_trailers_hook
+          probe python bin/contar_rutas.py --check-doc DEPLOY.md
+          probe node --test atlas/puros/decor_mover_casos.mjs
+          probe node --test atlas/puros/decor_command_casos.mjs
+          probe node --test atlas/puros/wave_duel_casos.mjs
+          probe node --test atlas/puros/state_frames_casos.mjs
+          probe node --test atlas/puros/colony_state_casos.mjs
+          probe node --test atlas/puros/hex_projection_casos.mjs
+          probe node --test atlas/barrido_web_casos.mjs
+          probe node --test atlas/map_carta_casos.mjs
+          probe node --test atlas/map_chunks_casos.mjs
+          probe node --test atlas/web_node_brain_casos.mjs
+          probe node --test atlas/map_painter_casos.mjs
+          probe node --test atlas/visitor_walk_casos.mjs
+          probe node --test atlas/retiro_face_casos.mjs
+          probe node --test atlas/nombres_retirados_casos.mjs
+          probe node --test atlas/f0_funciones_casos.mjs
+          probe node --test atlas/map_zoom_colonia_casos.mjs
+          probe node --test atlas/hitl_walkers_casos.mjs
+          probe node --test atlas/motor_35d_casos.mjs
+          probe node atlas/hex_projection_gate.mjs
+          probe node --test atlas/puros/catalogo_iso_casos.mjs
+          probe node --test atlas/puros/colonia_edificios_casos.mjs
+          probe node --test atlas/building_chat_casos.mjs
+          probe node --test atlas/invocacion_viva_casos.mjs
+          probe node atlas/colonia_edificios_gate.mjs
+          probe node --test atlas/puros/paleta_ciclo_casos.mjs
+          probe node atlas/paleta_ciclo_gate.mjs
+          probe node atlas/colonia_pagina_gate.mjs
+          probe node --test atlas/lexicon_gate_casos.mjs
+          probe node atlas/lexicon_gate.mjs
+          probe python test_web.py
+          probe python atlas/test_atlas.py
+          probe node arnes_sw.mjs
+          probe node --test 'tests/*.test.mjs'
+          probe node atlas/npc_occupancy_cases.mjs
+          probe node atlas/ventana_casos.mjs
+          probe node atlas/radio_age_cases.mjs
+          probe node atlas/hud_readings_cases.mjs
+          probe node atlas/bubble_language_casos.mjs
+          probe node atlas/bubble_editor_casos.mjs
+          probe node atlas/bubble_paint_casos.mjs
+          probe node atlas/front_door_browser.mjs
+          probe node atlas/egg_reload_browser.mjs
+          probe node atlas/combat_screen_browser.mjs
+          probe node atlas/landing_doors_browser.mjs
+          probe node atlas/openworld_browser.mjs
+          probe node atlas/invocacion_viva_browser.mjs
+          probe node atlas/dos_clics_browser.mjs
+          probe node atlas/ojo_carbono_browser.mjs
+          probe node atlas/web_node_brain_browser.mjs
+          probe node atlas/offline_brain_browser.mjs
+          probe node atlas/walk_avatar_browser.mjs
+          probe node atlas/walk_keys_browser.mjs
+          probe node atlas/visitor_account_browser.mjs
+          probe node atlas/visitor_eggs_browser.mjs
+          probe node --test atlas/voice_star_casos.mjs
+          probe node atlas/visitor_battle_browser.mjs
+          probe node atlas/visitor_conquest_browser.mjs
+          probe node atlas/battle_replay_controls_browser.mjs
+          probe node atlas/usuario_efimero_pasada_browser.mjs
+          probe node atlas/wave_army_browser.mjs
+          probe node atlas/place_card_browser.mjs
+          probe node atlas/tutorial_places_browser.mjs
+          probe node atlas/tutorial_walk_browser.mjs
+          probe node atlas/wave_duel_browser.mjs
+          probe node atlas/bubble_bestiary_casos.mjs
+          probe node atlas/bubble_icons_casos.mjs
+          probe node atlas/bubble_letters_casos.mjs
+          probe node atlas/codex_casos.mjs
+          probe node atlas/descent_sound_casos.mjs
+          probe node atlas/descent_view_casos.mjs
+          probe node atlas/mvp_casos.mjs
+          probe node atlas/ficha_casos.mjs
+          probe node atlas/matematica_casos.mjs
+          probe node questions/ventana_casos.mjs
+          probe node atlas/ecos_casos.mjs
+          probe node atlas/barrido_casos.mjs
+          probe node atlas/bubble_bust_casos.mjs
+          probe node atlas/bubble_crab_casos.mjs
+          probe node atlas/chrome_launch_cases.mjs
+          probe node atlas/comic_accents_casos.mjs
+          probe node atlas/comic_atoms_casos.mjs
+          probe node atlas/comic_css_paridad_casos.mjs
+          probe node atlas/comic_tokens_casos.mjs
+          probe node atlas/sea_rift_casos.mjs
+          probe node atlas/param_gate_casos.mjs
+          probe node atlas/harness_agentes_casos.mjs
+          probe node atlas/phase_M0_cases.mjs
+          probe node atlas/phase_T3_cases.mjs
+          probe node atlas/shell_schematics_casos.mjs
+          probe node atlas/z_cutoff_casos.mjs
+          probe node atlas/lexical_projector_casos.mjs
+          probe node atlas/map_bubble_casos.mjs
+          probe node atlas/todos_los_casos.mjs
           done
           if [ -s /tmp/culprit.txt ]; then
-            cat /tmp/culprit.txt
-            git config user.name "mesa-diagnostico"
-            git config user.email "mesa@users.noreply.github.com"
-            git checkout -q -b reporte
-            { echo "=== culprit probe $(date -u +%Y-%m-%dT%H:%M:%SZ) merge-ref $(git rev-parse HEAD)"; cat /tmp/culprit.txt; } > atlas-culprit-report.txt
-            git add atlas-culprit-report.txt
-            git commit -q -m "diagnostico: culprit report del bloque n=2"
-            git push -q origin reporte:refs/heads/mesa/diagnostico-n2-20261102-report
-            exit 1
-          fi
+  cat /tmp/culprit.txt
+  cat /tmp/culprit-detalle.txt
+  git config user.name "mesa-diagnostico"
+  git config user.email "mesa@users.noreply.github.com"
+  git checkout -q -b reporte
+  { echo "=== culprit probe v2 $(date -u +%Y-%m-%dT%H:%M:%SZ) merge-ref $(git rev-parse HEAD)"; cat /tmp/culprit.txt; echo; cat /tmp/culprit-detalle.txt; } > atlas-culprit-report.txt
+  git add atlas-culprit-report.txt
+  git commit -q -m "diagnostico v2: culprit report"
+  git push -q -f origin reporte:refs/heads/mesa/diagnostico-n2-20261102-report
+  exit 1
+fi
