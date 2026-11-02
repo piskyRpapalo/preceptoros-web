@@ -74,6 +74,8 @@ if (!/^solid 3px/.test(proxy.contorno)) { fallos.push('proxy outline: ' + proxy.
 if (!/terminal: /.test(proxy.tras)) { fallos.push('Enter did not enter the cabin: ' + proxy.tras); }
 
 // 3 · the live region says its speaker in the accessibility tree; its textContent is untouched.
+// TF-2 (D3): only the open category is in the tree; Map lives in Explore, so the visitor opens it first.
+await ev("document.querySelector('.cats [data-cat=Explore]').click()");
 const ax = (await cmd('Accessibility.getFullAXTree')).result.nodes;
 const habla = ax.filter((n) => n.role?.value === 'StaticText' && /^(Map|Floor|Guide|Zoom|Walkers|Tutorial|Army|Radio|House|Welcome):\s?$/.test(n.name?.value || '')).map((n) => n.name.value.replace(/:\s?$/, ''));
 const vivo = { voces: [...new Set(habla)].sort(), textoMap: await ev("document.getElementById('state').textContent") };
