@@ -2,6 +2,7 @@
   "name": "preceptoros-web",
   "compatibility_date": "2026-08-27",
   "main": "worker/index.js",
+  "build": { "command": "python3 bin/guarda_deploy.py" },
   "services": [{ "binding": "ADUANA", "service": "preceptoros-aduana" }],
   "assets": { "directory": "./public", "binding": "ASSETS", "run_worker_first": true }
 }
