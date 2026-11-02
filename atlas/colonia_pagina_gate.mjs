@@ -47,7 +47,7 @@ async function recibo(modo) {
 }
 async function puerta(query) {
   const out = await volcado(base + '/openworld/' + query);
-  const m = /<p class="state" id="state"[^>]*>([\s\S]*?)<\/p>/.exec(out);
+  const m = /<p id="state-tech"[^>]*>([\s\S]*?)<\/p>/.exec(out);
   assert.ok(m, 'door: no state line in the browser dump');
   return decodifica(m[1]);
 }

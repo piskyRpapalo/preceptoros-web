@@ -21,13 +21,19 @@
   function edad(m) { var actual = ciclo(); return actual === null || !cicloValido(m.ciclo) || actual < m.ciclo ? null : actual - m.ciclo; }
   function sello(m) { var edadN = edad(m); return m.sello === 'LIVE' && edadN === null ? 'NO_DATA' : (m.sello === 'LIVE' && edadN > VIEJO ? 'STALE' : m.sello); }
 
+  // Terminal familia (TF-1): the visitor reads words; the raw seal and the cycle Δ stay in the title (Technical details).
+  var HUMANO = { LIVE: 'live', STALE: 'a while ago', NO_DATA: 'not measured yet', SIMULATED: 'simulated', EMULADO: 'emulated' };
+  function humano(s) { return T('sello_' + s, HUMANO[s] || String(s).toLowerCase()); }
   function burbuja(m) {
     var li = el('li', 'radio-msg'), s = sello(m), cab = el('p', 'radio-msg-cab');
     li.dataset.quien = m.quien; li.dataset.sello = s; li.dataset.fuente = m.fuente; li.dataset.ciclo = cicloValido(m.ciclo) ? String(m.ciclo) : 'NO_DATA';
     cab.appendChild(el('b', null, m.quien));
-    cab.appendChild(el('span', 'radio-msg-sello', s));
-    var edadN = edad(m), edadTexto = T('chat_edad', 'Δ {n} cycles').replace('{n}', edadN === null ? 'NO_DATA (game cycle unavailable or reset)' : String(edadN));
-    cab.appendChild(el('span', 'radio-msg-meta', m.fuente + ' · ' + edadTexto));
+    cab.appendChild(document.createTextNode(' · '));
+    var marca = el('span', 'radio-msg-sello', humano(s)); marca.title = s; cab.appendChild(marca);
+    var edadN = edad(m), edadTexto = edadN === null ? T('chat_edad_sin', 'turn not measured') : T('chat_edad', '{n} turns ago').replace('{n}', String(edadN));
+    var meta = el('span', 'radio-msg-meta', ' · ' + m.fuente + ' · ' + edadTexto);
+    meta.title = 'Δ ' + (edadN === null ? 'NO_DATA (game cycle unavailable or reset)' : String(edadN)) + ' cycles';
+    cab.appendChild(meta);
     li.appendChild(cab); li.appendChild(el('p', 'radio-msg-texto', m.texto));
     return li;
   }
@@ -36,7 +42,7 @@
     R.lista.textContent = '';
     lista.forEach(function (m) { R.lista.appendChild(burbuja(m)); });
     var u = lista[lista.length - 1];
-    R.ultimo.textContent = u ? u.quien + ' · ' + sello(u) + ' · ' + u.texto : T('chat_vacio', 'The Radio is listening.');
+    R.ultimo.textContent = u ? u.quien + ' · ' + humano(sello(u)) + ' · ' + u.texto : T('chat_vacio', 'The Radio is listening.');
     R.lista.scrollTop = R.lista.scrollHeight;
   }
 
@@ -101,8 +107,9 @@
       var li = el('li', 'radio-msg'), cab = el('p', 'radio-msg-cab');
       li.dataset.sello = e.seal; li.dataset.fuente = 'world-creator';
       cab.appendChild(el('b', null, T('echo_who', 'World creator')));
-      cab.appendChild(el('span', 'radio-msg-sello', e.seal));
-      cab.appendChild(el('span', 'radio-msg-meta', e.passage ? e.passage.source + ' · ' + e.passage.seal : e.cause));
+      cab.appendChild(document.createTextNode(' · '));
+      var marca = el('span', 'radio-msg-sello', humano(e.seal)); marca.title = e.seal; cab.appendChild(marca);
+      var meta = el('span', 'radio-msg-meta', e.passage ? ' · ' + e.passage.source : ''); meta.title = e.passage ? e.passage.source + ' · ' + e.passage.seal : String(e.cause || ''); cab.appendChild(meta);
       li.appendChild(cab); li.appendChild(el('p', 'radio-msg-texto', e.text));
       if (e.sound && e.sound.texto) { li.appendChild(el('p', 'radio-msg-meta', e.sound.texto)); }
       R.ecos.appendChild(li);
