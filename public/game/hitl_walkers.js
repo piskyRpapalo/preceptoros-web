@@ -109,7 +109,7 @@
       var e = seen[key] || (seen[key] = { n: 0, at: null }); e.live = true;
       e.at = follow(e.at, { x: x, y: y }, reduced); var sc = appearScale(e.n, reduced) * S; e.n++;
       if (!reduced && (e.n <= EASE_FRAMES || Math.abs(e.at.x - x) + Math.abs(e.at.y - y) > 0.5)) { settling = 1; }
-      sphere(g, e.at.x, e.at.y, 23 * sc);
+      if (!(win.matchMedia && win.matchMedia('(forced-colors: active)').matches)) { sphere(g, e.at.x, e.at.y, 23 * sc); }
       g.save(); g.translate(e.at.x - 20 * sc, e.at.y - 20 * sc); g.scale(sc, sc); win.AtlasComicAtoms.paint(g, win.AtlasBubble.compile(f)); g.restore();
     }
     function button(p, view) {

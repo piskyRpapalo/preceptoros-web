@@ -449,6 +449,30 @@
      "text": "entering the cabin does not play the worm tunnel first"
     }
    ]
+  },
+  {
+   "id": "a11y-fill",
+   "scripts": [
+    "/game/map_focus.js",
+    "/game/comic_atoms.js"
+   ],
+   "globals": [
+    "AtlasMapFocus"
+   ],
+   "guards": [
+    {
+     "file": "atlas/a11y_relleno_browser.mjs",
+     "text": "forced-colors rules applied"
+    },
+    {
+     "file": "atlas/a11y_relleno_browser.mjs",
+     "text": "Tab never reached the cabin proxy"
+    },
+    {
+     "file": "atlas/a11y_relleno_browser.mjs",
+     "text": "the Map live region does not say «Map: »"
+    }
+   ]
   }
  ],
  "retiradas": [

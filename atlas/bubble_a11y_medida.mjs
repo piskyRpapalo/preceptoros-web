@@ -36,6 +36,8 @@ const items = ax.filter((n) => n.role?.value === 'listitem' && !n.ignored).map((
 const voces = ['Guide', 'Tutorial', 'Map', 'Floor', 'Walkers', 'Zoom', 'House', 'Army', 'Radio'];
 const vozAX = voces.filter((v) => items.some((t) => t.startsWith(v)));
 // The speaker of a log line is CSS ::before text: Chromium exposes it as its own StaticText node before the line's text.
+// 12-13 (filled 2026-11-02): focusable proxies over the drawn bubbles, and live regions whose AX text starts with «Speaker:».
+const vivoAX = [...new Set(ax.filter((n) => n.role?.value === 'StaticText' && /^(Tutorial|Welcome|Guide|Map|Floor|Walkers|Zoom|House|Army|Radio):\s?$/.test(n.name?.value || '')).map((n) => n.name.value.replace(/:\s?$/, '')))];
 const logAX = ax.filter((n) => n.role?.value === 'StaticText' && /^Guide · $/.test(n.name?.value || '')).length, logLi = await ev("document.querySelectorAll('#log li.who-before').length");
 const fila = await ev(`JSON.stringify((() => {
   const frases = document.querySelectorAll('#frases li').length, radio = [...document.querySelectorAll('#radio-chat-lista li')];
@@ -45,6 +47,7 @@ const fila = await ev(`JSON.stringify((() => {
   return { frases, radio: radio.length, conQuien, ancho200, vista: innerWidth, canvasLabel: canvas.getAttribute('aria-label'), canvasRole: canvas.getAttribute('role'),
     seals: [...document.querySelectorAll('.radio-msg-sello')].filter((x) => x.textContent).length,
     hitlKeys: [...document.querySelectorAll('.hitl-mark')].filter((b) => b.tabIndex >= 0).length,
+    proxies: [...document.querySelectorAll('.map-proxy')].filter((b) => b.tabIndex >= 0 && b.offsetWidth >= 44 && b.offsetHeight >= 44).length,
     lang: document.documentElement.lang };
 })())`);
 const m = JSON.parse(fila);
@@ -58,6 +61,6 @@ const quieto = JSON.parse(await ev(`(async () => { const a = AtlasOpenworldView(
 // 4 · forced colours (Windows high contrast): does any Bubble rule answer to it?
 await cmd('Emulation.setEmulatedMedia', { features: [{ name: 'forced-colors', value: 'active' }] });
 await cmd('Page.navigate', { url: origen + '/openworld/' }); await espera(1500);
-const forzado = JSON.parse(await ev(`JSON.stringify({ reglas: [...document.styleSheets].flatMap((s) => { try { return [...s.cssRules]; } catch { return []; } }).filter((r) => /forced-colors|prefers-contrast/.test(r.conditionText || r.media?.mediaText || '')).length })`));
-console.log(JSON.stringify({ medida: '2026-11-02', vozAX, logAX, logLi, items: items.length, ...m, quieto, forzado }));
+const forzado = JSON.parse(await ev(`JSON.stringify({ reglas: [...document.styleSheets].flatMap((s) => { try { return [...s.cssRules]; } catch { return []; } }).filter((r) => /forced-colors|prefers-contrast/.test(r.conditionText || r.media?.mediaText || '')).length, aplicadas: [...document.styleSheets].flatMap((s) => { try { return [...s.cssRules]; } catch { return []; } }).filter((r) => /forced-colors|prefers-contrast/.test(r.conditionText || '') && matchMedia(r.conditionText).matches).reduce((n, r) => n + r.cssRules.length, 0), lienzo: AtlasComicAtoms.highContrast ? AtlasComicAtoms.highContrast() : 'NO_DATA' })`));
+console.log(JSON.stringify({ medida: '2026-11-02', vozAX, vivoAX, logAX, logLi, items: items.length, ...m, quieto, forzado }));
 ws.close(); ch.close && ch.close(); srv.close(); process.exit(0);

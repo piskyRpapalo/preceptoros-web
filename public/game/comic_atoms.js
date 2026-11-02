@@ -64,7 +64,11 @@
     return { kind: kind, items: items, read: read, sound: 'NO_DATA', soundCause: SIN_AUDIO };
   }
 
+  // High contrast (forced colours, buzon#30 2026-11-02): one system ink outlines every shape over the system canvas;
+  // the shapes and their patterns stay, the colours go (shape + pattern, never colour alone). Set by the page per draw.
+  var hc = false;
   function figura(ctx, it, ox, oy, fill, stroke) {
+    if (hc) { fill = fill ? 'Canvas' : null; stroke = 'CanvasText'; it = it.lw ? it : Object.assign({}, it, { lw: 1 }); }
     if (it.op === 'path') { return pathFigure(ctx, it, ox, oy, fill, stroke); }
     ctx.beginPath();
     if (it.op === 'circle') { ctx.arc(it.x + ox, it.y + oy, it.r, 0, 2 * Math.PI); }
@@ -104,19 +108,19 @@
         ctx.font = it.weight + ' ' + it.size + 'px sans-serif';
         ctx.textAlign = it.align;
         ctx.textBaseline = 'middle';
-        ctx.fillStyle = it.fill;
+        ctx.fillStyle = hc ? 'CanvasText' : it.fill;
         ctx.fillText(it.text, it.x, it.y);
       } else if (it.op === 'group') {
         groupItem(ctx, it);
       } else {
 
-        if (it.shadow) { figura(ctx, it, it.shadow[0], it.shadow[1], it.shadowFill || N.ink, null); }
+        if (it.shadow && !hc) { figura(ctx, it, it.shadow[0], it.shadow[1], it.shadowFill || N.ink, null); }
         figura(ctx, it, 0, 0, it.fill, it.stroke);
       }
     }
   }
 
-  var AtlasComicAtoms = Object.freeze({ KINDS: KINDS, atom: atom, paint: paint });
+  var AtlasComicAtoms = Object.freeze({ KINDS: KINDS, atom: atom, paint: paint, highContrast: function (on) { if (on !== undefined) { hc = on === true; } return hc; } });
   if (typeof module === 'object' && module.exports) { module.exports = AtlasComicAtoms; }
   else { raiz.AtlasComicAtoms = AtlasComicAtoms; }
 })(typeof module === 'object' && module.exports ? this : (this || window));

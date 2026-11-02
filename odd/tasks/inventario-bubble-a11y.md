@@ -40,3 +40,36 @@ que cabía; al final se volvió a medir y se rellenó. La columna «al abrir» g
 - Fila 11: tabla de bandas → colores de sistema para la Burbuja bajo `forced-colors`, con firma de canon visual.
 - Fila 12: un proxy DOM (`button` por nodo visible, como la marca HITL) para llegar con Tab.
 - Fila 13: una pieza que mueva el hablante dentro de cada región viva y actualice sus guardas a la vez.
+
+## Relleno medido · 2026-11-02 · rama `haiku/a11y-rellena-20261102` (DECRETO-NO-DATA-ESTADO-VIVO)
+
+Las filas 11-13 de arriba se quedan como estaban (fecha de apertura). Debajo, la misma fila con la medida nueva:
+`node atlas/bubble_a11y_medida.mjs` reejecutado tras construir, y la guarda nueva `atlas/a11y_relleno_browser.mjs`
+(roja con sabotaje, verde sin él).
+
+| # | función | antes (2026-11-02, apertura) | medida al rellenar (2026-11-02) | estado |
+|---|---|---|---|---|
+| 11 | repintado en colores del sistema (`forced-colors`) | 0 reglas | **2** bloques `@media` (`forced-colors: active`, `prefers-contrast: more`) · **11** reglas aplicadas con `forced-colors: active` emulado (CDP) · lienzo por la ruta de alto contraste (`AtlasComicAtoms.highContrast()` = `true`: cada forma contorneada en `CanvasText` sobre `Canvas`, sombras y gradientes fuera, el suelo velado al 80 %) · anillo de foco `solid 3px` (`Highlight`) en «Play now» con Tab real · contraste del texto del panel **21:1** | **rellenada** |
+| 12 | foco de teclado por burbuja dibujada | 0 enfocables | **1/1** nodo de la colonia por defecto con proxy `<button>` ≥ 44×44 sobre su ancla (`map_focus.js`, colocación única `anchorOf`) · Tab llega al proxy de la cabaña en **21** pulsaciones · Enter entra (`terminal: basic (the node)`) · anillo dibujado en el lienzo (sólido + discontinuo) | **rellenada** |
+| 13 | el anuncio vivo dice el hablante | el texto de la región no empezaba por el hablante | **10/10** voces (Tutorial, Welcome, Guide, Map, Floor, Walkers, Zoom, House, Army, Radio) con su región viva leída «Hablante: …» en el árbol AX · `textContent` intacto: **0** de las 28 lecturas exactas de `atlas/*.mjs` tocadas | **rellenada** |
+
+Elecciones, con su causa:
+- **Fila 13 por CSS, no por las 28 lecturas.** El hablante va en un `::before` visualmente oculto por voz
+  (`.voice[data-speaker="Map"] [aria-live]::before{content:"Map: "}`): el texto generado entra en el árbol de
+  accesibilidad (medido: StaticText `Map:`) y no en `textContent`, así que `openworld_page.js` sigue reescribiendo la
+  región y ninguna guarda se debilita ni se mueve. Un `<span class="sr">` dentro habría cambiado `textContent` y
+  habría muerto en la primera reescritura.
+- **Fila 12: el edificio va dentro del nodo.** El edificio se dibuja en el ancla de su nodo y Enter sobre el nodo lo
+  entra; un segundo proxy en el mismo punto sería un Tab vacío. La frase del edificio va en el nombre del proxy. Los
+  `?` HITL (ya botones) se mueven justo detrás de su nodo para que el orden de Tab siga la profundidad.
+- **Fila 11, matiz honesto:** el 21:1 lo da también el remapeo del navegador; lo que se debe a esta pieza son las 11
+  reglas (botones `ButtonText`/`ButtonFace`, enlaces `LinkText`, foco `Highlight`, bordes `CanvasText`) y el lienzo,
+  que el navegador **no** remapea.
+
+## Recuento al rellenar (2026-11-02)
+
+| | filas |
+|---|---|
+| presentes y medidas | **13** |
+| ausentes | **0** |
+| NO_DATA con causa exacta | **2** (filas 14 y 15, sin cambio) |

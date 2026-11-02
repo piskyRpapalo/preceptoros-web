@@ -79,6 +79,42 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
 #log li.who-before::before{content:attr(data-speaker) " · ";font-weight:700}
 /* The keyboard ring is the page's own, never the browser default alone (measured 2026-11-02: «auto 1px» before). */
 #map :is(button,a):focus-visible,#chat :is(button,a,select,summary,input):focus-visible{outline:3px solid currentColor;outline-offset:2px}
+/* Tab to every map bubble (map_focus.js): a real 44×44 button over each node, invisible until focused; then its own ring. */
+#map-proxies .map-proxy{position:absolute;width:44px;height:44px;min-width:44px;min-height:44px;padding:0;margin:0;border:0;background:transparent;color:inherit;cursor:pointer;z-index:1}
+#map-proxies .map-proxy:focus-visible{outline:3px solid currentColor;outline-offset:2px}
+/* The speaker in every live announcement (buzon#30, 2026-11-02): «Map: …» for the screen reader only. Generated text is
+   in the accessibility tree and not in textContent, so every exact-text read of these regions stays as it was. */
+.voice :is([aria-live],[role=status])::before{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.voice[data-speaker="Tutorial"] :is([aria-live],[role=status])::before{content:"Tutorial: "}
+.voice[data-speaker="Welcome"] :is([aria-live],[role=status])::before{content:"Welcome: "}
+.voice[data-speaker="Guide"] :is([aria-live],[role=status])::before{content:"Guide: "}
+.voice[data-speaker="Map"] :is([aria-live],[role=status])::before{content:"Map: "}
+.voice[data-speaker="Floor"] :is([aria-live],[role=status])::before{content:"Floor: "}
+.voice[data-speaker="Walkers"] :is([aria-live],[role=status])::before{content:"Walkers: "}
+.voice[data-speaker="Zoom"] :is([aria-live],[role=status])::before{content:"Zoom: "}
+.voice[data-speaker="House"] :is([aria-live],[role=status])::before{content:"House: "}
+.voice[data-speaker="Army"] :is([aria-live],[role=status])::before{content:"Army: "}
+.voice[data-speaker="Radio"] :is([aria-live],[role=status])::before{content:"Radio: "}
+/* High contrast (buzon#30, 2026-11-02): system colours only (keywords, never a raw colour); the canvas has its own path. */
+@media (forced-colors: active){
+  body,main,#map,#chat,.voice,.radio-chat{background:Canvas;color:CanvasText}
+  .voice,.radio-chat,#map,#chat input{border-color:CanvasText}
+  #map .state,#chat .log,.voice .state{color:CanvasText}
+  .voice > .who{color:CanvasText}
+  a{color:LinkText}
+  button,select,summary,.voice button,#chat button,#map .press button,.radio-chat-tab{background:ButtonFace;color:ButtonText;border-color:ButtonText;forced-color-adjust:none}
+  .stage #zoom-controls{background:Canvas;border-color:CanvasText;forced-color-adjust:none}
+  .hitl-mark{border-color:ButtonText!important}
+  :focus-visible,#map-proxies .map-proxy:focus-visible{outline:3px solid Highlight!important;outline-offset:2px}
+  #surface{border:2px solid CanvasText;forced-color-adjust:none}
+  .welcome,.radio-chat-no-data{border:2px solid CanvasText}
+}
+@media (prefers-contrast: more){
+  .voice,#map .press button,.voice button,#chat button,#chat input,.stage #zoom-controls{border-width:3px}
+  #map .state,#chat .log,.voice .state{color:var(--fg)}
+  .stage #zoom-controls{background:var(--bg)}
+  :focus-visible{outline-width:4px}
+}
 @media (max-width:899px){html,body{height:auto}main{flex:none;grid-template-rows:auto auto;min-height:0}#map{overflow:visible;min-height:0}#chat{overflow:visible;min-height:0}#map .surface{flex:none;height:45vh;min-height:280px;max-height:620px;width:auto;margin-inline:-16px;border-radius:0}}
 @media (min-width:900px){main{grid-template-rows:1fr;grid-template-columns:3fr 2fr;height:100vh}#map{border-bottom:0;border-right:2px solid var(--line)}}
 </style>
@@ -165,6 +201,7 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
 <script src="/game/visitor_walk.js"></script>
 <script src="/game/colony_controls.js"></script>
 <script src="/game/hitl_walkers.js"></script>
+<script src="/game/map_focus.js"></script>
 <script src="/game/db.js"></script>
 <script src="/game/visitor_account.js"></script>
 <script src="/game/visitor_eggs.js"></script>
