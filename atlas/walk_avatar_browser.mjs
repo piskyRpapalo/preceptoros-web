@@ -73,7 +73,7 @@ async function main() {
 
   await cmd('Page.navigate', { url: `http://127.0.0.1:${port}/openworld/` });
   ok(await hasta('!!document.getElementById("surface")', 15000), 'map loaded');
-  ok(await hasta(`(document.querySelector('#joy .state') || {}).textContent && document.querySelector('#joy .state').textContent.includes('terminal') || document.getElementById('state').textContent.includes('Colony:')`, 15000), 'colony drawn from the state');
+  ok(await hasta(`(document.querySelector('#joy .state') || {}).textContent && document.querySelector('#joy .state').textContent.includes('terminal') || document.getElementById('state-tech').textContent.includes('Colony:')`, 15000), 'colony drawn from the state');
   await espera(300);
 
   // 1 · a click on the cabin enters it (the walker starts there): the key of the tutorial is played.
