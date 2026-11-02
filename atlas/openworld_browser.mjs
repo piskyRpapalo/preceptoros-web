@@ -93,6 +93,12 @@ async function main() {
   // Estado de 2026-10-30 (MVP moderno): la cabaña es el unico nodo LIVE; Beelink y Doggee son NO_DATA y no se dibujan.
   ok(/^Colony: 1 nodes · 1 buildings · 1 bots with faces$/.test(medida.tecnico || '') && medida.estado === 'Your cabin is awake · 3 more still asleep.', 'the default state is not the declared one (cabin only, LIVE): ' + medida.estado + ' | ' + medida.tecnico);
   ok(medida.chatAbierto && !medida.entradaOff, 'the chat panel is missing or its input is off');
+  // TF-2: four category buttons (44 px), one category visible; Explore shows the Map voice; the brain and the form stay.
+  const cats = JSON.parse(await ev(`(() => { const vis = () => [...document.querySelectorAll('#voices [data-speaker]')].filter((li) => li.getBoundingClientRect().height > 0).map((li) => li.dataset.speaker);
+    const bs = [...document.querySelectorAll('.cats button')], antes = vis(); bs.find((b) => b.dataset.cat === 'Explore').click(); const explore = vis(); bs[0].click();
+    return JSON.stringify({ cats: bs.map((b) => b.dataset.cat), alto: Math.min(...bs.map((b) => b.getBoundingClientRect().height)), antes, explore, form: document.getElementById('entry').getBoundingClientRect().height > 0 }); })()`));
+  ok(cats.cats.join() === 'Start,Explore,Play,About' && cats.alto >= 44 && cats.antes.join() === 'Tutorial,Welcome,Guide'.split(',').filter((v) => cats.antes.includes(v)).join() && !cats.antes.includes('Map') && cats.explore.includes('Map') && !cats.explore.includes('Guide') && cats.form,
+    'the category panel is not one visible category with 44 px buttons: ' + JSON.stringify(cats));
   // W-5: the grid is gone; the status panel (with Skip tutorial) must still be on screen at phone width.
   ok(medida.joystick.buttons === 1 && medida.joystick.visible, 'the status panel is missing or below the phone viewport: ' + JSON.stringify(medida.joystick));
   ok(parseFloat(medida.joystick.touch) >= 44, 'tutorial voice controls are below the touch target: ' + medida.joystick.touch);
@@ -250,7 +256,7 @@ async function main() {
       return { who: t, bytes: new TextEncoder().encode(t).length, starts: !!t && li.textContent.trim().startsWith(t), label: li.getAttribute('aria-label') }; });
     const log = [...document.querySelectorAll('#log li')].map((li) => li.dataset.speaker || '');
     const dentro = ['state', 'floor-state', 'listen-state', 'next-step', 'zoom-state', 'walkers-state', 'joy', 'visitor-play', 'army-visit', 'frases'].filter((id) => { const e = document.getElementById(id); return !e || !chat.contains(e); });
-    const acts = ['play-now', 'visitor-start', 'listen', 'world-refresh'].map((id) => { const e = document.getElementById(id); return e && chat.contains(e) ? e.getBoundingClientRect().height : 0; });
+    const acts = ['play-now', 'visitor-start', 'listen', 'world-refresh'].map((id) => { const e = document.getElementById(id), li = e && e.closest('[data-cat]'); if (li) { document.querySelector('.cats [data-cat=' + li.dataset.cat + ']').click(); } return e && chat.contains(e) ? e.getBoundingClientRect().height : 0; }); document.querySelector('.cats [data-cat=Start]').click(); // TF-2: each action measured in its own category
     const m = document.getElementById('surface').getBoundingClientRect(), c = chat.getBoundingClientRect();
     return JSON.stringify({ vivas, voces, log, dentro, acts, izquierda: m.right <= c.left + 1, logVivo: document.getElementById('log').getAttribute('aria-live') }); })()`));
   ok(panel.vivas.length === 0 && panel.dentro.length === 0 && panel.voces.length >= 8 && panel.voces.every((v) => v.who && v.bytes < 1024 && v.starts && v.label)

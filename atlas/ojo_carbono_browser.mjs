@@ -79,8 +79,8 @@ async function main() {
   const orden = JSON.parse(await ev(`JSON.stringify((() => { const t = (s) => document.querySelector(s).getBoundingClientRect(); return { mapa: t('#surface').top, mapaFin: t('#surface').bottom, chat: t('#chat').top, joy: t('#joy').top, pad: !!document.querySelector('[role=application]'), hojas: document.querySelectorAll('.sheet,#map [role=tablist]').length, ancho: document.documentElement.scrollWidth }; })())`));
   ok(orden.mapa < orden.chat && orden.mapaFin <= orden.chat + 1 && orden.joy > orden.chat && !orden.pad && orden.hojas === 0 && orden.ancho <= 390, 'the phone page is not one map, then one panel: ' + JSON.stringify(orden));
 
-  // 4 · Army: its voice in the panel shows, honest content, the link to the full army page.
-  const army = JSON.parse(await ev(`(async () => { const s = document.getElementById('army-visit').closest('li'), r = s.getBoundingClientRect(); return JSON.stringify({ visible: r.height > 0, texto: s.innerText, enlace: !!s.querySelector('a[href="/game/army.html"]'), quien: s.dataset.speaker }); })()`));
+  // 4 · Army (TF-2: in the Play category, opened first): its voice in the panel shows, honest content, the link to the full army page.
+  const army = JSON.parse(await ev(`(async () => { document.querySelector('.cats [data-cat=Play]').click(); const s = document.getElementById('army-visit').closest('li'), r = s.getBoundingClientRect(); return JSON.stringify({ visible: r.height > 0, texto: s.innerText, enlace: !!s.querySelector('a[href="/game/army.html"]'), quien: s.dataset.speaker }); })()`));
   ok(army.visible && army.quien === 'Army', 'the Army voice is not in the panel: ' + JSON.stringify(army));
   ok(/^Army\s+NO_DATA: no troops adopted in this visit yet|^Army\s+Troops of this visit/.test(army.texto) && army.enlace, 'the Army voice does not say its troops or NO_DATA with the army link: ' + army.texto);
   // the radio tabs: Echoes hides the Radio list, Radio shows it again.
