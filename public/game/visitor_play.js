@@ -58,6 +58,8 @@
     button('End this visit', 'visitor-end', function () { game.end(); box.dispatchEvent(new Event('visitor:end')); game = null; account = null; });
     box.dispatchEvent(new CustomEvent('visitor:render', { detail: { state: s, game: game, account: account, controls: controls } }));
   }
+  // Free walk: each accepted step on the floor is one game step of an active visit, so walking hatches eggs.
+  box.addEventListener('visitor:advance', function () { if (!game || waiting) { return; } try { game.advance(); } catch (_) { return; } render(); });
   // Voice Star: the web node brain dispatches brain:answer after each verified local answer.
   doc.addEventListener('brain:answer', async function (event) {
     var log = doc.getElementById('state'), say = function (t) { if (log) { log.textContent = t; } };

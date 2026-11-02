@@ -48,7 +48,7 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 /* The compact terminal (the Sovereign p0, buzon#30, 2026-11-02): ONE map on top, ONE panel below (right on desktop).
    Everything the page says lives in the panel as a voice with its speaker's name (terminal_panel.js). The tab sheets and
-   the on-map stick are retired (retirados/RETIRO-joystick-20261102.md). Touch walks by tapping a node; arrows select. */
+   the on-map stick are retired (retirados/RETIRO-joystick-20261102.md). Touch walks by tapping the map; arrows step. */
 .topbar{display:flex;flex-wrap:wrap;align-items:center;gap:4px 12px}
 .topbar > a{display:inline-flex;align-items:center;min-width:44px;min-height:44px}
 .stage{position:relative;display:flex;flex-direction:column;min-height:0;flex:1}
@@ -65,6 +65,7 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
 .voice button,.voice select{min-height:44px;min-width:44px;padding:8px 14px;border:2px solid currentColor;border-radius:var(--radius);background:var(--bg);color:var(--fg);font:inherit;cursor:pointer}
 .voice .acts,.voice #joy [role="group"],#visitor-play > div{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
 .voice #joy{display:grid;gap:6px}
+.voice #joy label{display:inline-flex;align-items:center;gap:6px;min-height:44px}
 #visitor-play h2{font-size:1rem;margin:0}
 .next p{font-size:1.05rem}
 .next button{border-width:3px;font-weight:700}
@@ -161,6 +162,7 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
 <script src="/game/terminal_panel.js"></script>
 <script src="/game/tutorial_walk.js"></script>
 <script src="/game/walk_route.js"></script>
+<script src="/game/visitor_walk.js"></script>
 <script src="/game/colony_controls.js"></script>
 <script src="/game/hitl_walkers.js"></script>
 <script src="/game/db.js"></script>

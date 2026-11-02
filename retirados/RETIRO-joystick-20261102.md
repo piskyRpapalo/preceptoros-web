@@ -35,3 +35,7 @@ por qué, adónde va y qué lo sustituye. Append-only.
   zoom → *Zoom*.
 - **Guardas movidas, no debilitadas.** La de pestañas pasa a «the compact terminal is fragmented or a voice has no
   speaker»; el ojo de carbono comprueba la voz Army y el orden mapa → panel; su sabotaje S3b devuelve un pad al mapa.
+
+## 2026-11-02 (tarde) · tras fusionar #548 «caminar libre»
+
+La caminata libre ya está en `main`. Sin el pad, se camina así: las flechas mueven al cangrejo celda a celda, Enter sobre un nodo entra en él, y la casilla «Free walk» (en la voz Tutorial) devuelve la ley W-4. En el teléfono, **tocar un nodo** recorre la ruta hasta él, y **tocar otra celda** da un paso hacia el toque. La dirección es la más cercana de las seis por el ángulo en pantalla desde el cangrejo, con los mismos nombres que las flechas. Es determinista: no usa reloj ni azar. El pad que #548 traía también se retira. Las guardas son «a tap on the map does not step the crab without the pad» (openworld) y «with free walk on, a tap off any node does not step the crab» (walk_avatar). Con «Free walk» apagado, tocar una celda vacía sigue diciendo NO_DATA.

@@ -98,7 +98,8 @@ async function main() {
   // W-5: a click on the cabin hex walks there (already there: it enters); an arrow key with no neighbour says NO_DATA.
   const entered = await ev(CLIC_CABINA);
   ok(/^terminal: basic/.test(entered || ''), 'the ephemeral cabin cannot be entered by clicking it on the map: ' + entered);
-  const blocked = await ev("(() => { document.body.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true })); return document.querySelector('#joy [aria-live]').textContent; })()");
+  // Free walk on by default; the W-4 node law stays reachable by turning it off (the #free-walk checkbox).
+  const blocked = await ev("(() => { const f = document.getElementById('free-walk'); f.checked = false; f.dispatchEvent(new Event('change')); document.body.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true })); const said = document.querySelector('#joy [aria-live]').textContent; f.checked = true; f.dispatchEvent(new Event('change')); return said; })()");
   ok(/^NO_DATA: no colony node/.test(blocked || ''), 'an absent neighbour was not honestly refused: ' + blocked);
   ok(!medida.botonChat, 'there is a Chat button; the chat must always be present, with no button');
   ok(medida.ancho <= medida.vista, 'the page scrolls sideways at phone width: ' + medida.ancho + ' > ' + medida.vista);
@@ -194,6 +195,25 @@ async function main() {
     && panel.log.length >= 2 && panel.log.every(Boolean) && panel.logVivo === 'polite' && panel.acts.every((h) => h >= 44) && panel.izquierda,
     'the compact terminal is fragmented or a voice has no speaker: ' + JSON.stringify(panel));
   if (CAPTURA) { const g3 = await cmd('Page.captureScreenshot', { format: 'png' }); writeFileSync(join(CAPTURA, 'openworld-desktop.png'), Buffer.from(g3.result.data, 'base64')); }
+  // Free walk: from the HITL cabin (-1,0) ArrowRight seven times walks the crab east over the floor to 6,0; the seventh is water and is refused.
+  // With a visit started, each accepted step is one game step (the eggs hatch by walking).
+  const libre = JSON.parse(await ev(`(async () => { const say = () => document.querySelector('#joy [aria-live]').textContent, key = (k) => document.body.dispatchEvent(new KeyboardEvent('keydown', { key: k, bubbles: true }));
+    document.getElementById('visitor-start').click(); for (let i = 0; i < 40 && !document.getElementById('visitor-step'); i++) await new Promise((r) => setTimeout(r, 100));
+    const said = []; for (let i = 0; i < 7; i++) { key('ArrowRight'); said.push(say()); }
+    key('ArrowRight'); const water = say();
+    // Tap-to-step (the pad retired): a tap west of the crab, off any node, steps it one cell west.
+    const s = document.getElementById('surface'), r = s.getBoundingClientRect(), x = Number(s.dataset.youx) - 80, y = Number(s.dataset.youy);
+    s.dispatchEvent(new MouseEvent('click', { bubbles: true, clientX: r.left + x * r.width / s.width, clientY: r.top + y * r.height / s.height }));
+    const tap = say(); const visitText = document.getElementById('visitor-play').textContent; document.getElementById('visitor-end').click();
+    const crab = [...document.querySelectorAll('#frases li')].map((li) => li.textContent).filter((t) => /^you · /.test(t))[0] || '';
+    const visit = visitText.match(/Step (\\d+)/);
+    return JSON.stringify({ said, water, tap, crab, step: visit ? +visit[1] : -1 }); })()`));
+  ok(libre.said[6] === 'You walk east to 6,0 · moss · step 7', 'the crab does not walk the floor cell by cell: ' + JSON.stringify(libre.said));
+  ok(libre.water === 'NO_DATA: water blocks the way east', 'a step into water is not refused: ' + libre.water);
+  ok(/on cell 5,0/.test(libre.crab), 'the crab is not drawn on its floor cell after the tap: ' + libre.crab);
+  ok(/^You walk west to 5,0/.test(libre.tap || ''), 'a tap on the map does not step the crab without the pad: ' + libre.tap);
+  ok(libre.step === 8, 'walking does not advance the visit: ' + libre.step);
+  if (CAPTURA) { await cmd('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 1, mobile: true }); await espera(400); const g4 = await cmd('Page.captureScreenshot', { format: 'png' }); writeFileSync(join(CAPTURA, 'openworld-free-walk.png'), Buffer.from(g4.result.data, 'base64')); await cmd('Emulation.setDeviceMetricsOverride', { width: 1440, height: 900, deviceScaleFactor: 1, mobile: false }); }
   // Plug&play (2026-11-01): at 390 px the page reads map → tabs → ONE next step → chat; the rare controls are folded.
   await cmd('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 1, mobile: true });
   await cmd('Page.navigate', { url: origen + '/openworld/' }); await espera(1500);
