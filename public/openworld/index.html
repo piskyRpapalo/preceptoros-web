@@ -70,6 +70,11 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
 .next button{border-width:3px;font-weight:700}
 .next button[hidden]{display:none}
 #more summary{min-height:44px;display:flex;align-items:center;cursor:pointer}
+.welcome{display:grid;gap:6px}
+.welcome[hidden]{display:none}
+.voice:has(> .welcome[hidden]){display:none}
+.welcome h3{font-size:1.05rem;margin:0}
+.voice .welcome-play{min-height:56px;font-size:1.1rem;font-weight:700;border-width:3px}
 #log li.who-before::before{content:attr(data-speaker) " · ";font-weight:700}
 /* The keyboard ring is the page's own, never the browser default alone (measured 2026-11-02: «auto 1px» before). */
 #map :is(button,a):focus-visible,#chat :is(button,a,select,summary,input):focus-visible{outline:3px solid currentColor;outline-offset:2px}
@@ -93,9 +98,16 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
 <section id="chat" aria-labelledby="chat-h">
 <h2 id="chat-h">Chat</h2>
 <ol class="voices" id="voices" aria-label="What the page says, by speaker">
+<li class="voice" data-speaker="Tutorial"><div id="joy" aria-label="Tutorial"></div></li>
+<li class="voice" data-speaker="Welcome"><section id="sheet-welcome" class="welcome" role="dialog" aria-modal="false" aria-labelledby="welcome-h" aria-describedby="welcome-lore" hidden>
+<h3 id="welcome-h">Welcome to the sunken forest</h3>
+<p id="welcome-lore">You are an ephemeral crab: your key is signed on this device and nothing leaves it; the model advises, never signs.</p>
+<div class="acts"><button type="button" id="welcome-play" class="welcome-play">Play now · sign on this device</button>
+<button type="button" id="welcome-look">Look around first</button></div>
+<p id="welcome-result" class="state" role="status"></p>
+</section></li>
 <li class="voice next" id="next" data-speaker="Guide"><p id="next-step" aria-live="polite"><strong>Next:</strong> <span id="next-text">Press Play now.</span></p>
 <div class="acts"><button type="button" id="play-now">Play now</button></div></li>
-<li class="voice" data-speaker="Tutorial"><div id="joy" aria-label="Tutorial"></div></li>
 <li class="voice" data-speaker="Map"><p class="state" id="state" aria-live="polite">Nodes online: 0.</p></li>
 <li class="voice" data-speaker="Floor"><p class="state" id="floor-state" aria-live="polite">Map floor: loading the 7 chunks around the cabin.</p></li>
 <li class="voice" id="voice-walkers" data-speaker="Walkers"></li>
@@ -170,6 +182,7 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
 <script src="/game/visitor_conquest.js"></script>
 <script src="/game/hatch_reveal.js"></script>
 <script src="/game/visitor_play.js"></script>
+<script src="/game/welcome_card.js"></script>
 <script src="/game/world_feed.js"></script>
 <script src="/game/map_chat.js"></script>
 <script src="/assets/radio_message_log.js"></script>
