@@ -114,7 +114,7 @@ async function main() {
   ok(escritorio.width <= escritorio.viewport, 'the page scrolls sideways at desktop width: ' + escritorio.width + ' > ' + escritorio.viewport);
   // P6: Enter by keyboard goes into the tutorial cabin; its greeting lands in the radio; the input asks its bot; Escape leaves.
   const cabina = JSON.parse(await ev(`(async () => { const w = (ms) => new Promise((r) => setTimeout(r, ms)), st = () => document.getElementById('state').textContent;
-    document.body.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true })); await w(600);
+    document.body.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true })); for (let i = 0; i < 30 && !/Inside building/.test(st()); i++) await w(100); // the entry passes through the hexagonal tunnel (#561): wait for it, up to 3 s
     const radio = () => [...document.querySelectorAll('#radio-chat-lista li')].map((li) => li.textContent).join(' | ');
     const greeting = radio().includes('Welcome to the tutorial cabin'), inside = st(), leave = document.getElementById('leave-building');
     const tall = !!leave && !leave.hidden && leave.getBoundingClientRect().height >= 44;
@@ -146,9 +146,23 @@ async function main() {
     document.getElementById('zoom-reset').click(); const r = s.dataset.zoom;
     const sizes = Array.from(document.querySelectorAll('#zoom-controls button')).map((b) => b.getBoundingClientRect().height);
     return JSON.stringify({ k, ks, o, r, sizes }); })()`));
-  ok(zoom.k === '1.25' && /Map zoom 1\.25×/.test(zoom.ks), 'the + key does not zoom or is not spoken: ' + JSON.stringify(zoom));
+  ok(zoom.k === '1.25' && /zoom 1\.25×/.test(zoom.ks), 'the + key does not zoom or is not spoken: ' + JSON.stringify(zoom));
   ok(zoom.o === '0.80' && zoom.r === '1.00', 'zoom out / reset do not move the factor: ' + JSON.stringify(zoom));
-  ok(zoom.sizes.length === 3 && zoom.sizes.every((h) => h >= 44), 'zoom buttons below the touch target: ' + zoom.sizes);
+  ok(zoom.sizes.length === 6 && zoom.sizes.every((h) => h >= 44), 'zoom buttons below the touch target: ' + zoom.sizes);
+  // Orbit: E turns the view 60° (spoken in the plate's line), a tap on the cabin at 120° still enters it, Reset view returns to 0°.
+  const orbita = JSON.parse(await ev(`(async () => { const s = document.getElementById('surface'), say = () => (document.getElementById('zoom-state') || {}).textContent || '', w = (ms) => new Promise((r) => setTimeout(r, ms));
+    document.body.dispatchEvent(new KeyboardEvent('keydown', { key: 'e', bubbles: true })); await w(400); const a1 = s.dataset.angle, l1 = say();
+    document.getElementById('rotate-right').click(); await w(400); const a2 = s.dataset.angle;
+    const d = await (await fetch('/openworld/estado.json', { cache: 'no-store' })).json(), est = AtlasOpenworldState.leer(d);
+    const a = AtlasColoniaPagina.anchorOf(s, est.colonia, 0, est.looks || {}, est.seals || {}, 'cabin'), r = s.getBoundingClientRect();
+    s.dispatchEvent(new MouseEvent('click', { bubbles: true, clientX: r.left + a.x * r.width / s.width, clientY: r.top + a.y * r.height / s.height })); await w(300);
+    const joy = document.querySelector('#joy [aria-live]').textContent;
+    document.getElementById('view-reset').click(); await w(100);
+    return JSON.stringify({ a1, l1, a2, joy, r: s.dataset.angle, z: s.dataset.zoom, rl: say(), labels: ['rotate-left', 'rotate-right', 'view-reset'].map((id) => { const b = document.getElementById(id); return b ? (b.getAttribute('aria-label') || b.textContent) : undefined; }) }); })()`));
+  ok(orbita.a1 === '60' && /^Map view 60° · zoom 1\.00×$/.test(orbita.l1), 'E does not turn the map 60° or the line does not say it: ' + JSON.stringify(orbita));
+  ok(orbita.a2 === '120' && /^terminal: basic/.test(orbita.joy || ''), 'a tap on the cabin at 120° does not enter it: ' + JSON.stringify(orbita));
+  ok(orbita.r === '0' && orbita.z === '1.00' && /^Map view 0°/.test(orbita.rl), 'Reset view does not return to 0°: ' + JSON.stringify(orbita));
+  ok(orbita.labels.join('|') === 'Rotate left|Rotate right|Reset view', 'the orbit buttons are missing: ' + orbita.labels);
   // P5a: the HITL «?» is a real button over the cabin: 44 px, reached by Tab, Enter opens it and #state says it.
   HITL_ON = true;
   await cmd('Page.navigate', { url: origen + '/openworld/' }); await espera(1500);
@@ -201,6 +215,20 @@ async function main() {
     const d = g.getImageData(0, 0, c.width, c.height).data, tones = new Set(); for (let i = 0; i < d.length; i += 4 * 97) tones.add(d[i] >> 4 << 8 | d[i + 1] >> 4 << 4 | d[i + 2] >> 4);
     return JSON.stringify({ zooms, live, baked, auto, loafAuto, loafLive, loafBaked, stats: P.cacheStats(), tones: tones.size, offscreen: typeof OffscreenCanvas === 'function' }); })()`));
   await cmd('Emulation.setCPUThrottlingRate', { rate: 1 });
+  // Orbit × 3.5D: the baked floor at 120° matches the live floor at 120° (the cache key carries the angle). First a bake at
+  // 0°, then 120°: a key without the angle would blit the 0° bitmaps turned nowhere. Pixels differing by > 48 in a channel.
+  const giro = JSON.parse(await ev(`(() => {
+    const P = AtlasMapPainter, CPg = AtlasColoniaPagina, v = AtlasOpenworldView(), s = document.getElementById('surface');
+    const pinta = (ang, mode) => { const c = document.createElement('canvas'); c.width = s.width; c.height = s.height; c.dataset.angle = String(ang);
+      const g = c.getContext('2d'), G = CPg.geometry(CPg.scene(v.colony, 0, true, v.looks, v.seals), c); P.setLive(mode === 'live'); P.setBake(mode === 'baked');
+      g.fillStyle = '#000'; g.fillRect(0, 0, c.width, c.height); P.draw(g, G, 0, true); return g.getImageData(0, 0, c.width, c.height).data; };
+    P.resetCache(); pinta(0, 'baked'); const baked = pinta(120, 'baked'), scope = P.cacheStats().scope, live = pinta(120, 'live'), cero = pinta(0, 'live');
+    P.setLive(false); P.setBake(false); P.resetCache(); v.redraw();
+    const diff = (a, b) => { let n = 0, lit = 0; for (let i = 0; i < a.length; i += 4) { const on = a[i] + a[i + 1] + a[i + 2] > 0 || b[i] + b[i + 1] + b[i + 2] > 0; if (!on) continue; lit++;
+      if (Math.abs(a[i] - b[i]) > 48 || Math.abs(a[i + 1] - b[i + 1]) > 48 || Math.abs(a[i + 2] - b[i + 2]) > 48) n++; } return +(n / (lit || 1)).toFixed(4); };
+    return JSON.stringify({ scope, baked_vs_live: diff(baked, live), live120_vs_live0: diff(live, cero) }); })()`));
+  console.log('ORBITA35D ' + JSON.stringify(giro));
+  ok(giro.baked_vs_live < 0.05 && giro.live120_vs_live0 > 0.2, 'the baked floor at 120° does not match the live floor at 120°: ' + JSON.stringify(giro));
   await cmd('Emulation.setDeviceMetricsOverride', { width: 1440, height: 900, deviceScaleFactor: 1, mobile: false });
   await cmd('Page.navigate', { url: origen + '/openworld/' }); await espera(1500);
   console.log('MOTOR35D ' + JSON.stringify(banco));
@@ -237,15 +265,23 @@ async function main() {
     // Tap-to-step (the pad retired): a tap west of the crab, off any node, steps it one cell west.
     const s = document.getElementById('surface'), r = s.getBoundingClientRect(), x = Number(s.dataset.youx) - 80, y = Number(s.dataset.youy);
     s.dispatchEvent(new MouseEvent('click', { bubbles: true, clientX: r.left + x * r.width / s.width, clientY: r.top + y * r.height / s.height }));
-    const tap = say(); const visitText = document.getElementById('visitor-play').textContent; document.getElementById('visitor-end').click();
+    const tap = say();
+    // Orbit: at 120° a tap toward the cell drawn west of the crab still steps it west (the tap is turned back to the ground).
+    document.getElementById('rotate-right').click(); await new Promise((r) => setTimeout(r, 400)); document.getElementById('rotate-right').click(); await new Promise((r) => setTimeout(r, 400));
+    const G = AtlasColoniaPagina.geometry({ tiles: [{ x: 1 }] }, s), wv = G.turn(-48, -12), wl = Math.hypot(wv.x, wv.y) || 1;
+    const x2 = Number(s.dataset.youx) + 80 * wv.x / wl, y2 = Number(s.dataset.youy) + 80 * wv.y / wl;
+    s.dispatchEvent(new MouseEvent('click', { bubbles: true, clientX: r.left + x2 * r.width / s.width, clientY: r.top + y2 * r.height / s.height }));
+    const tap120 = say(), angle120 = s.dataset.angle; document.getElementById('view-reset').click();
+    const visitText = document.getElementById('visitor-play').textContent; document.getElementById('visitor-end').click();
     const crab = [...document.querySelectorAll('#frases li')].map((li) => li.textContent).filter((t) => /^you · /.test(t))[0] || '';
     const visit = visitText.match(/Step (\\d+)/);
-    return JSON.stringify({ said, water, tap, crab, step: visit ? +visit[1] : -1 }); })()`));
+    return JSON.stringify({ said, water, tap, tap120, angle120, crab, step: visit ? +visit[1] : -1 }); })()`));
   ok(libre.said[6] === 'You walk east to 6,0 · moss · step 7', 'the crab does not walk the floor cell by cell: ' + JSON.stringify(libre.said));
   ok(libre.water === 'NO_DATA: water blocks the way east', 'a step into water is not refused: ' + libre.water);
-  ok(/on cell 5,0/.test(libre.crab), 'the crab is not drawn on its floor cell after the tap: ' + libre.crab);
+  ok(/on cell 4,0/.test(libre.crab), 'the crab is not drawn on its floor cell after the tap: ' + libre.crab);
+  ok(libre.angle120 === '120' && /^You walk west to 4,0/.test(libre.tap120 || ''), 'a tap at 120° does not step the crab toward the drawn cell: ' + JSON.stringify(libre));
   ok(/^You walk west to 5,0/.test(libre.tap || ''), 'a tap on the map does not step the crab without the pad: ' + libre.tap);
-  ok(libre.step === 8, 'walking does not advance the visit: ' + libre.step);
+  ok(libre.step === 9, 'walking does not advance the visit: ' + libre.step);
   if (CAPTURA) { await cmd('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 1, mobile: true }); await espera(400); const g4 = await cmd('Page.captureScreenshot', { format: 'png' }); writeFileSync(join(CAPTURA, 'openworld-free-walk.png'), Buffer.from(g4.result.data, 'base64')); await cmd('Emulation.setDeviceMetricsOverride', { width: 1440, height: 900, deviceScaleFactor: 1, mobile: false }); }
   // Plug&play (2026-11-01): at 390 px the page reads map → tabs → ONE next step → chat; the rare controls are folded.
   await cmd('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 1, mobile: true });
