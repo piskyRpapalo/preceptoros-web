@@ -378,6 +378,23 @@
      "text": "reaching the game took"
     }
    ]
+  },
+  {
+   "id": "free-walk",
+   "scripts": [
+    "/game/visitor_walk.js",
+    "/game/colony_controls.js",
+    "/game/map_painter.js"
+   ],
+   "globals": [
+    "AtlasVisitorWalk"
+   ],
+   "guards": [
+    {
+     "file": "atlas/openworld_browser.mjs",
+     "text": "the crab does not walk the floor cell by cell"
+    }
+   ]
   }
  ]
 }
