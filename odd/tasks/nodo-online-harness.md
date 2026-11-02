@@ -28,7 +28,7 @@ The rules for writing in Acho (why: audio, local models, blind readers) are in `
 ## Checklist
 
 - [x] NO-0 · this plan, measured.
-- [ ] NO-1 · terrain frame from the heartbeat.
+- [x] NO-1 · terrain frame from the heartbeat: `atlas/puros/nodo_terreno.js`, seven tiles per node keyed by the FNV-1a hash of id, birth day and offset (the seal changes the sentence, never the land); water tiles carry a wave and sound. Gate `atlas/puros/nodo_terreno_casos.mjs`, 8 cases; red first (keying on the seal fails 2). On the two live heartbeats of 2026-11-03: 14/14 tiles pass `Acho.valida` (largest 512 B), 3 sound.
 - [ ] NO-2 · the online node born on the phone (Sovereign's hands for keys).
 - [ ] NO-3 · the app as harness, parity of verdicts with the web.
 - [ ] NO-4 · the map sounds.
