@@ -2,7 +2,7 @@
 # Hasta hoy solo corría en la máquina de quien commiteaba: `main` no tenía
 # guardia. Es la misma orden que un contribuidor lanza en local, sin nada más:
 # biblioteca estándar más `jsonschema`, que valida `data/` contra su esquema.
-name: gate
+name: gate-diagnostico
 
 on:
   pull_request:
@@ -15,10 +15,10 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
-  test_web:
+  culprit_probe:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -43,107 +43,121 @@ jobs:
           node atlas/barrido_casos.mjs
           python test_web.py
 
-      - name: Gates completos n=2
+      - name: Culprit probe n2 (diagnostico de la Mesa)
         run: |
-          for pasada in 1 2; do
-            echo "Gate pass $pasada/2"
-            python -m unittest tests.test_module_attribution
-            python -m unittest tests.test_faro_alarma
-            python -m unittest tests.test_hitl_cerco
-            python -m unittest tests.test_preflight
-            python -m unittest tests.test_trailers_hook
-            python bin/contar_rutas.py --check-doc DEPLOY.md
-            node --test atlas/puros/decor_mover_casos.mjs
-            node --test atlas/puros/decor_command_casos.mjs
-            node --test atlas/puros/wave_duel_casos.mjs
-            node --test atlas/puros/state_frames_casos.mjs
-            node --test atlas/puros/colony_state_casos.mjs
-            node --test atlas/puros/hex_projection_casos.mjs
-            node --test atlas/barrido_web_casos.mjs
-            node --test atlas/map_carta_casos.mjs
-            node --test atlas/map_chunks_casos.mjs
-            node --test atlas/web_node_brain_casos.mjs
-            node --test atlas/map_painter_casos.mjs
-            node --test atlas/visitor_walk_casos.mjs
-            node --test atlas/retiro_face_casos.mjs
-            node --test atlas/nombres_retirados_casos.mjs
-            node --test atlas/f0_funciones_casos.mjs
-            node --test atlas/map_zoom_colonia_casos.mjs
-            node --test atlas/hitl_walkers_casos.mjs
-            node --test atlas/motor_35d_casos.mjs
-            node atlas/hex_projection_gate.mjs
-            node --test atlas/puros/catalogo_iso_casos.mjs
-            node --test atlas/puros/colonia_edificios_casos.mjs
-            node --test atlas/building_chat_casos.mjs
-            node --test atlas/invocacion_viva_casos.mjs
-            node atlas/colonia_edificios_gate.mjs
-            node --test atlas/puros/paleta_ciclo_casos.mjs
-            node atlas/paleta_ciclo_gate.mjs
-            node atlas/colonia_pagina_gate.mjs
-            node --test atlas/lexicon_gate_casos.mjs
-            node atlas/lexicon_gate.mjs
-            python test_web.py
-            python atlas/test_atlas.py
-            node arnes_sw.mjs
-            node --test 'tests/*.test.mjs'
-            node atlas/npc_occupancy_cases.mjs
-            node atlas/ventana_casos.mjs
-            node atlas/radio_age_cases.mjs
-            node atlas/hud_readings_cases.mjs
-            node atlas/bubble_language_casos.mjs
-            node atlas/bubble_editor_casos.mjs
-            node atlas/bubble_paint_casos.mjs
-            node atlas/front_door_browser.mjs
-            node atlas/egg_reload_browser.mjs
-            node atlas/combat_screen_browser.mjs
-            node atlas/landing_doors_browser.mjs
-            node atlas/openworld_browser.mjs
-            node atlas/invocacion_viva_browser.mjs
-            node atlas/dos_clics_browser.mjs
-            node atlas/ojo_carbono_browser.mjs
-            node atlas/web_node_brain_browser.mjs
-            node atlas/offline_brain_browser.mjs
-            node atlas/walk_avatar_browser.mjs
-            node atlas/walk_keys_browser.mjs
-            node atlas/visitor_account_browser.mjs
-            node atlas/visitor_eggs_browser.mjs
-            node --test atlas/voice_star_casos.mjs
-            node atlas/visitor_battle_browser.mjs
-            node atlas/visitor_conquest_browser.mjs
-            node atlas/battle_replay_controls_browser.mjs
-            node atlas/usuario_efimero_pasada_browser.mjs
-            node atlas/wave_army_browser.mjs
-            node atlas/place_card_browser.mjs
-            node atlas/tutorial_places_browser.mjs
-            node atlas/tutorial_walk_browser.mjs
-            node atlas/wave_duel_browser.mjs
-            node atlas/bubble_bestiary_casos.mjs
-            node atlas/bubble_icons_casos.mjs
-            node atlas/bubble_letters_casos.mjs
-            node atlas/codex_casos.mjs
-            node atlas/descent_sound_casos.mjs
-            node atlas/descent_view_casos.mjs
-            node atlas/mvp_casos.mjs
-            node atlas/ficha_casos.mjs
-            node atlas/matematica_casos.mjs
-            node questions/ventana_casos.mjs
-            node atlas/ecos_casos.mjs
-            node atlas/barrido_casos.mjs
-            node atlas/bubble_bust_casos.mjs
-            node atlas/bubble_crab_casos.mjs
-            node atlas/chrome_launch_cases.mjs
-            node atlas/comic_accents_casos.mjs
-            node atlas/comic_atoms_casos.mjs
-            node atlas/comic_css_paridad_casos.mjs
-            node atlas/comic_tokens_casos.mjs
-            node atlas/sea_rift_casos.mjs
-            node atlas/param_gate_casos.mjs
-            node atlas/harness_agentes_casos.mjs
-            node atlas/phase_M0_cases.mjs
-            node atlas/phase_T3_cases.mjs
-            node atlas/shell_schematics_casos.mjs
-            node atlas/z_cutoff_casos.mjs
-            node atlas/lexical_projector_casos.mjs
-            node atlas/map_bubble_casos.mjs
-            node atlas/todos_los_casos.mjs
+          set +e
+          : > /tmp/culprit.txt
+          probe() { "$@"; rc=$?; if [ "$rc" -ne 0 ]; then echo "::error title=CULPRIT::P$p FAILED rc=$rc :: $*"; echo "P$p rc=$rc :: $*" >> /tmp/culprit.txt; fi; }
+          for p in 1 2; do
+            echo "Probe pass $p/2"
+            probe python -m unittest tests.test_module_attribution
+            probe python -m unittest tests.test_faro_alarma
+            probe python -m unittest tests.test_hitl_cerco
+            probe python -m unittest tests.test_preflight
+            probe python -m unittest tests.test_trailers_hook
+            probe python bin/contar_rutas.py --check-doc DEPLOY.md
+            probe node --test atlas/puros/decor_mover_casos.mjs
+            probe node --test atlas/puros/decor_command_casos.mjs
+            probe node --test atlas/puros/wave_duel_casos.mjs
+            probe node --test atlas/puros/state_frames_casos.mjs
+            probe node --test atlas/puros/colony_state_casos.mjs
+            probe node --test atlas/puros/hex_projection_casos.mjs
+            probe node --test atlas/barrido_web_casos.mjs
+            probe node --test atlas/map_carta_casos.mjs
+            probe node --test atlas/map_chunks_casos.mjs
+            probe node --test atlas/web_node_brain_casos.mjs
+            probe node --test atlas/map_painter_casos.mjs
+            probe node --test atlas/visitor_walk_casos.mjs
+            probe node --test atlas/retiro_face_casos.mjs
+            probe node --test atlas/nombres_retirados_casos.mjs
+            probe node --test atlas/f0_funciones_casos.mjs
+            probe node --test atlas/map_zoom_colonia_casos.mjs
+            probe node --test atlas/hitl_walkers_casos.mjs
+            probe node --test atlas/motor_35d_casos.mjs
+            probe node atlas/hex_projection_gate.mjs
+            probe node --test atlas/puros/catalogo_iso_casos.mjs
+            probe node --test atlas/puros/colonia_edificios_casos.mjs
+            probe node --test atlas/building_chat_casos.mjs
+            probe node --test atlas/invocacion_viva_casos.mjs
+            probe node atlas/colonia_edificios_gate.mjs
+            probe node --test atlas/puros/paleta_ciclo_casos.mjs
+            probe node atlas/paleta_ciclo_gate.mjs
+            probe node atlas/colonia_pagina_gate.mjs
+            probe node --test atlas/lexicon_gate_casos.mjs
+            probe node atlas/lexicon_gate.mjs
+            probe python test_web.py
+            probe python atlas/test_atlas.py
+            probe node arnes_sw.mjs
+            probe node --test 'tests/*.test.mjs'
+            probe node atlas/npc_occupancy_cases.mjs
+            probe node atlas/ventana_casos.mjs
+            probe node atlas/radio_age_cases.mjs
+            probe node atlas/hud_readings_cases.mjs
+            probe node atlas/bubble_language_casos.mjs
+            probe node atlas/bubble_editor_casos.mjs
+            probe node atlas/bubble_paint_casos.mjs
+            probe node atlas/front_door_browser.mjs
+            probe node atlas/egg_reload_browser.mjs
+            probe node atlas/combat_screen_browser.mjs
+            probe node atlas/landing_doors_browser.mjs
+            probe node atlas/openworld_browser.mjs
+            probe node atlas/invocacion_viva_browser.mjs
+            probe node atlas/dos_clics_browser.mjs
+            probe node atlas/ojo_carbono_browser.mjs
+            probe node atlas/web_node_brain_browser.mjs
+            probe node atlas/offline_brain_browser.mjs
+            probe node atlas/walk_avatar_browser.mjs
+            probe node atlas/walk_keys_browser.mjs
+            probe node atlas/visitor_account_browser.mjs
+            probe node atlas/visitor_eggs_browser.mjs
+            probe node --test atlas/voice_star_casos.mjs
+            probe node atlas/visitor_battle_browser.mjs
+            probe node atlas/visitor_conquest_browser.mjs
+            probe node atlas/battle_replay_controls_browser.mjs
+            probe node atlas/usuario_efimero_pasada_browser.mjs
+            probe node atlas/wave_army_browser.mjs
+            probe node atlas/place_card_browser.mjs
+            probe node atlas/tutorial_places_browser.mjs
+            probe node atlas/tutorial_walk_browser.mjs
+            probe node atlas/wave_duel_browser.mjs
+            probe node atlas/bubble_bestiary_casos.mjs
+            probe node atlas/bubble_icons_casos.mjs
+            probe node atlas/bubble_letters_casos.mjs
+            probe node atlas/codex_casos.mjs
+            probe node atlas/descent_sound_casos.mjs
+            probe node atlas/descent_view_casos.mjs
+            probe node atlas/mvp_casos.mjs
+            probe node atlas/ficha_casos.mjs
+            probe node atlas/matematica_casos.mjs
+            probe node questions/ventana_casos.mjs
+            probe node atlas/ecos_casos.mjs
+            probe node atlas/barrido_casos.mjs
+            probe node atlas/bubble_bust_casos.mjs
+            probe node atlas/bubble_crab_casos.mjs
+            probe node atlas/chrome_launch_cases.mjs
+            probe node atlas/comic_accents_casos.mjs
+            probe node atlas/comic_atoms_casos.mjs
+            probe node atlas/comic_css_paridad_casos.mjs
+            probe node atlas/comic_tokens_casos.mjs
+            probe node atlas/sea_rift_casos.mjs
+            probe node atlas/param_gate_casos.mjs
+            probe node atlas/harness_agentes_casos.mjs
+            probe node atlas/phase_M0_cases.mjs
+            probe node atlas/phase_T3_cases.mjs
+            probe node atlas/shell_schematics_casos.mjs
+            probe node atlas/z_cutoff_casos.mjs
+            probe node atlas/lexical_projector_casos.mjs
+            probe node atlas/map_bubble_casos.mjs
+            probe node atlas/todos_los_casos.mjs
           done
+          if [ -s /tmp/culprit.txt ]; then
+            cat /tmp/culprit.txt
+            git config user.name "mesa-diagnostico"
+            git config user.email "mesa@users.noreply.github.com"
+            git checkout -q -b reporte
+            { echo "=== culprit probe $(date -u +%Y-%m-%dT%H:%M:%SZ) merge-ref $(git rev-parse HEAD)"; cat /tmp/culprit.txt; } > atlas-culprit-report.txt
+            git add atlas-culprit-report.txt
+            git commit -q -m "diagnostico: culprit report del bloque n=2"
+            git push -q origin reporte:refs/heads/mesa/diagnostico-n2-20261102-report
+            exit 1
+          fi
