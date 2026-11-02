@@ -1,6 +1,6 @@
 // The summon comes alive (render and sound only). A signed summon or a Voice Star grant gets a particle burst in the
-// bubble language (circles and arcs, house tokens), a deterministic voice through the house sonification
-// (bubble_sonify.js, only after «Listen») and, on entering a building, a tunnel of hexagonal rings.
+// Acho language (circles and arcs, house tokens), a deterministic voice through the house sonification
+// (acho_sonify.js, only after «Listen») and, on entering a building, a tunnel of hexagonal rings.
 // This layer NEVER decides: the egg, the seal and the copper come from visitor_eggs.js; it only draws what was signed.
 // Determinism: the seed is a hash of the event receipt; frames are counted, never a clock; no random source.
 // Rosetta: the tunnel's maths are own work, ported from public/assets/worm_transition.js (segments counted by the
@@ -72,7 +72,7 @@
     return 'Voice Star · +' + e.copper + ' copper · answer ' + String(e.sha || 'NO_DATA').slice(0, 8);
   }
   function receiptOf(e) { return e.type === 'summon' ? 'summon|' + e.tc + '|' + e.seq + '|' + e.step : 'echo|' + e.sha + '|' + e.echoes; }
-  // voice(receipt) → a frame with one wave and its harmonics [k, ax, ay, ph], for AtlasSonifyBubble.sonify.
+  // voice(receipt) → a frame with one wave and its harmonics [k, ax, ay, ph], for AtlasSonifyAcho.sonify.
   function voice(receipt) {
     var g = generator(seedOf('voice|' + receipt)), h = [[1, 8, 8, 0]];
     for (var i = 0; i < 3; i++) { h.push([2 + Math.floor(g() * 12), 1 + Math.floor(g() * 6), 1 + Math.floor(g() * 6), Math.floor(g() * 64)]); }
@@ -128,7 +128,7 @@
   }
   function play(receipt) {
     if (!soundOn) { return 0; }
-    var S = root.AtlasSonifyBubble, Ctx = root.AudioContext || root.webkitAudioContext;
+    var S = root.AtlasSonifyAcho, Ctx = root.AudioContext || root.webkitAudioContext;
     if (!S || !Ctx) { return 0; }
     var r = S.sonify(voice(receipt)); if (!r.ok) { return 0; }
     try { return S.play(r, new Ctx()); } catch (_) { return 0; }

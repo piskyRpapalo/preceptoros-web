@@ -22,7 +22,7 @@ An AI on the web moves the scenery: a human order in natural language becomes a 
 
 ### DE-1 implementation note · proposal
 
-The pure adapter binds the caller's measured visible colony nodes once; the returned verb keeps the three-argument `MOVER(prop, destination, seed)` shape. A destination is an integer axial cell present in that bound node set. The seed is carried as replay metadata; this slice performs a direct relocation and invents no path, collision, water, height, or balance rule. Each result carries a Bubble/1 movement sentence, `SIMULATED` seal, and sound `NO_DATA` with cause. The map painter remains DE-3.
+The pure adapter binds the caller's measured visible colony nodes once; the returned verb keeps the three-argument `MOVER(prop, destination, seed)` shape. A destination is an integer axial cell present in that bound node set. The seed is carried as replay metadata; this slice performs a direct relocation and invents no path, collision, water, height, or balance rule. Each result carries a Acho/1 movement sentence, `SIMULATED` seal, and sound `NO_DATA` with cause. The map painter remains DE-3.
 
 Out of scope: any change to node identity, to the core state fields, or to the heartbeat producer (D7); any balance rule for props (measured first, like BM-D2).
 

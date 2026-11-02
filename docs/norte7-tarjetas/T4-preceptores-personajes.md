@@ -40,7 +40,7 @@ Fichero: `atlas/fixtures/t4_caminante.mjs`. Casos: `atlas/t4_caminante_casos.mjs
 
 ## Leyes que mantiene
 
-bubble/1 · cuadros ≤1.024 B por cuerpo · determinismo (sin azar del sistema ni reloj; el azar sale del hash canon) ·
+acho/1 · cuadros ≤1.024 B por cuerpo · determinismo (sin azar del sistema ni reloj; el azar sale del hash canon) ·
 offline · 0 peticiones · tres colores · EN 301 549 con cuatro canales · reduced-motion (el paso por celdas no exige
 animacion) · SCRUB: los personajes se llaman por su carril, no por una identidad externa · NO_DATA con causa.
 

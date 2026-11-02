@@ -42,7 +42,7 @@
 |---|---|---|---|
 | the Rack | el rack (beelink) | The lab machine; home of the local loops and the Register. | in use |
 | the Arm | el brazo | The Mistral web-coder lane: writes, measures, receipts. Never merges, never signs, never pushes. | in use |
-| the Descent | el descenso | The Claude Code lane building the game's visual language (the bubble language). | in use |
+| the Descent | el descenso | The Claude Code lane building the game's visual language (the Acho language). | in use |
 | the Codex lane (astra) | astra / Codex | The lane on the app side (L4a / tier-2 contract). | in use |
 | mana | — (new term; the Sovereign's word, mandate 2026-10-28) | The tutorial cabin's measurable resource, drawn on the global map. Collision scan 2026-10-28: no project term in the web repo; the word appears in tokenizer vocabularies, third-party locale strings and video-prompt text, none of them a project term. Only a MEASURED value is drawn; otherwise NO_DATA with its cause. | coined · pending merge |
 | preceptor | preceptor | Any AI that reads this world and works under these laws. | in use |
@@ -87,8 +87,8 @@ The Sovereign signed these names in <private-issue#52> and <private-issue#54>. T
 | the Wastes | los Yermos | Habitat parallel to the Reef. | FIRMO · <private-issue#52> |
 | the Flats | las Llanuras | Habitat parallel to the Forest. | FIRMO · <private-issue#52> |
 | keepsake | recuerdo | Official name of the phase 2 tutorial object. | FIRMO · <private-issue#54> |
-| the Trunk | el tronco | The web as one object: one served surface, one action register, and the preceptoros.bubble/1 contract. Worlds are WORLDS, never branches. | FIRMO · <private-issue#54> |
-| the front door | la puerta principal / portada | The direct front page drawn with bubble_editor and bubble_paint; four native actions keep tutorial, game entry, local key and Questions. | FIRMO · web#272 · G3 |
+| the Trunk | el tronco | The web as one object: one served surface, one action register, and the preceptoros.acho/1 contract. Worlds are WORLDS, never branches. | FIRMO · <private-issue#54> |
+| the front door | la puerta principal / portada | The direct front page drawn with acho_editor and acho_paint; four native actions keep tutorial, game entry, local key and Questions. | FIRMO · web#272 · G3 |
 | WavesCraft | incubadora del bosque | The local wave workshop and incubation view; the served UI already uses this name. | Alphabet PASS · FIRMO with G5a |
 ## C2 · The one-map coins (decrees 2026-10-30)
 
@@ -117,7 +117,7 @@ Signed into law by the Sovereign's decrees of 2026-10-30 (buzon#30 ·6524386655 
 
 ## E · Forbidden as names (standing law)
 
-oracle · notary · depin · coin · clearing · magic · token-as-a-name · **cryptocurrency** (ES: criptomoneda). No official term in this project may be coined from them, in any language.
+oracle · notary · depin · coin · clearing · magic · token-as-a-name · **cryptocurrency** (ES: criptomoneda). «bubble» as the language's name: historical only (·6585675927). No official term in this project may be coined from them, in any language.
 
 *Amendment · FIRMO 2026-10-22:* `cryptocurrency`/`criptomoneda` join the list (L1 to any public example, until new request). **Approved:** `cryptography`·`cryptographic`·`criptográfica`.
 
@@ -150,4 +150,4 @@ oracle · notary · depin · coin · clearing · magic · token-as-a-name · **c
 
 ## I–L · Implementation records
 
-Benchmark, lexical-screen, Bubble-language, and lexical-vision entries continue in [lexicon implementation records](lexicon-implementation.md).
+Benchmark, lexical-screen, Acho language, and lexical-vision entries continue in [lexicon implementation records](lexicon-implementation.md).

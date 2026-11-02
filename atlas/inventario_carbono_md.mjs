@@ -1,5 +1,5 @@
 // Inventario a ojos de carbono · paso 2: de las medidas JSON (inventario_carbono.mjs) a la tabla Markdown.
-// Cada pieza recibe su marco preceptoros.bubble/1, su peso UTF-8 medido (Buffer.byteLength), su sello
+// Cada pieza recibe su marco preceptoros.acho/1, su peso UTF-8 medido (Buffer.byteLength), su sello
 // (LIVE · STALE · NO_DATA con causa · unbuilt_mechanic) por regla escrita aqui, y sus contratos que faltan.
 // Uso: node atlas/inventario_carbono_md.mjs main.json pr545.json pr543.json > tabla.md
 import { readFileSync } from 'node:fs';
@@ -45,7 +45,7 @@ const REGLAS = [
 const contratos = (p) => { const s = p.sel + ' ' + p.texto; const out = new Set(); for (const [re, cs] of REGLAS) if (re.test(s)) cs.forEach((c) => out.add(c)); return [...out]; };
 const frase = (p, ruta, se) => `${p.tag} «${(p.texto || p.sel).slice(0, 60)}» en ${ruta}: ${se.split(' ')[0]}${p.toque === 'no' ? ', toque <44 px' : ''}.`;
 function marco(p, ruta, se, n) {
-  const f = { v: 'preceptoros.bubble/1', id: (ruta + '#' + (p.id || n)).slice(0, 60), t: 0, atoms: [{ k: 'pieza', r: frase(p, ruta, se) }] };
+  const f = { v: 'preceptoros.acho/1', id: (ruta + '#' + (p.id || n)).slice(0, 60), t: 0, atoms: [{ k: 'pieza', r: frase(p, ruta, se) }] };
   const j = JSON.stringify(f); return { j, b: Buffer.byteLength(j, 'utf8') };
 }
 const esc = (s) => String(s).replace(/\|/g, '\\|');
@@ -57,7 +57,7 @@ function filas(d, filtro, etiqueta) {
     const ps = pg.piezas.filter((p) => filtro(pg.ruta, p)); if (!ps.length) continue;
     out.push(`\n### ${pg.ruta} ${etiqueta}\n`);
     out.push(`Errores de consola al cargar: ${pg.errCarga.length ? pg.errCarga.map(esc).join(' · ') : 'ninguno medido'}.\n`);
-    out.push('| # | pieza (selector · fuente) | texto visible | tamaño (≥44?) | marco preceptoros.bubble/1 | B | sello | falta |');
+    out.push('| # | pieza (selector · fuente) | texto visible | tamaño (≥44?) | marco preceptoros.acho/1 | B | sello | falta |');
     out.push('|---|---|---|---|---|---|---|---|');
     ps.forEach((p, i) => {
       const se = (etiqueta ? 'NO_DATA (causa: en PR, no desplegado) · en rama: ' : '') + sello(p, pg.ruta);

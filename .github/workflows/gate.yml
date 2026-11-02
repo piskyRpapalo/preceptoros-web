@@ -51,6 +51,7 @@ jobs:
             python -m unittest tests.test_actions_alarma
             python -m unittest tests.test_hitl_cerco
             python -m unittest tests.test_preflight
+            python -m unittest tests.test_guarda_deploy
             python -m unittest tests.test_trailers_hook
             python bin/contar_rutas.py --check-doc DEPLOY.md
             node --test atlas/puros/decor_mover_casos.mjs
@@ -58,6 +59,8 @@ jobs:
             node --test atlas/puros/wave_duel_casos.mjs
             node --test atlas/puros/state_frames_casos.mjs
             node --test atlas/puros/acho_casos.mjs
+            node --test atlas/puros/acho_lee_casos.mjs
+            node --test atlas/puros/nodo_terreno_casos.mjs
             node --test atlas/puros/sala_voces_casos.mjs
             node --test atlas/puros/colony_state_casos.mjs
             node --test atlas/puros/hex_projection_casos.mjs
@@ -78,6 +81,16 @@ jobs:
             node atlas/hex_projection_gate.mjs
             node --test atlas/puros/catalogo_iso_casos.mjs
             node --test atlas/puros/colonia_edificios_casos.mjs
+            node atlas/fixtures/first_journey_cases.mjs
+            node atlas/ojo/ojo_descenso_casos.mjs
+            node --test atlas/puros/battle_replay_controls_casos.mjs
+            node --test atlas/puros/bench_mover_casos.mjs
+            node --test atlas/puros/colonia_pagina_casos.mjs
+            node --test atlas/puros/colony_controls_casos.mjs
+            node --test atlas/puros/map_scene_casos.mjs
+            node --test atlas/puros/openworld_state_casos.mjs
+            node --test atlas/puros/tutorial_walk_casos.mjs
+            node --test atlas/puros/walk_route_casos.mjs
             node --test atlas/building_chat_casos.mjs
             node --test atlas/invocacion_viva_casos.mjs
             node atlas/colonia_edificios_gate.mjs
@@ -94,9 +107,9 @@ jobs:
             node atlas/ventana_casos.mjs
             node atlas/radio_age_cases.mjs
             node atlas/hud_readings_cases.mjs
-            node atlas/bubble_language_casos.mjs
-            node atlas/bubble_editor_casos.mjs
-            node atlas/bubble_paint_casos.mjs
+            node atlas/acho_language_casos.mjs
+            node atlas/acho_editor_casos.mjs
+            node atlas/acho_paint_casos.mjs
             node atlas/front_door_browser.mjs
             node atlas/egg_reload_browser.mjs
             node atlas/combat_screen_browser.mjs
@@ -122,9 +135,9 @@ jobs:
             node atlas/tutorial_places_browser.mjs
             node atlas/tutorial_walk_browser.mjs
             node atlas/wave_duel_browser.mjs
-            node atlas/bubble_bestiary_casos.mjs
-            node atlas/bubble_icons_casos.mjs
-            node atlas/bubble_letters_casos.mjs
+            node atlas/acho_bestiary_casos.mjs
+            node atlas/acho_icons_casos.mjs
+            node atlas/acho_letters_casos.mjs
             node atlas/codex_casos.mjs
             node atlas/descent_sound_casos.mjs
             node atlas/descent_view_casos.mjs
@@ -134,8 +147,8 @@ jobs:
             node questions/ventana_casos.mjs
             node atlas/ecos_casos.mjs
             node atlas/barrido_casos.mjs
-            node atlas/bubble_bust_casos.mjs
-            node atlas/bubble_crab_casos.mjs
+            node atlas/acho_bust_casos.mjs
+            node atlas/acho_crab_casos.mjs
             node atlas/chrome_launch_cases.mjs
             node atlas/comic_accents_casos.mjs
             node atlas/comic_atoms_casos.mjs
@@ -149,6 +162,6 @@ jobs:
             node atlas/shell_schematics_casos.mjs
             node atlas/z_cutoff_casos.mjs
             node atlas/lexical_projector_casos.mjs
-            node atlas/map_bubble_casos.mjs
+            node atlas/map_acho_casos.mjs
             node atlas/todos_los_casos.mjs
           done

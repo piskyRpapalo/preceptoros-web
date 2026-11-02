@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {createRequire} from 'node:module';
 const require=createRequire(import.meta.url);
 const F=require('../public/game/creation_feedback.js');
-const P=require('../public/game/bubble_paint.js');
+const P=require('../public/game/acho_paint.js');
 
 test('keyboard and pointer share integer coordinates and feedback',()=>{
   const keyboard=P.create(), touch=P.create();

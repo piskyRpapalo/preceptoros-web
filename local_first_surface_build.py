@@ -93,8 +93,8 @@ def portada():
 <script src="/game/comic_tokens.js"></script>
 <script src="/game/comic_accents.js"></script>
 <script src="/game/comic_atoms.js"></script>
-<script src="/game/bubble_language.js"></script>
-<script src="/game/bubble_letters.js"></script>
+<script src="/game/acho_language.js"></script>
+<script src="/game/acho_letters.js"></script>
 <script src="/assets/landing_doors.js"></script>
 <script src="/assets/pwa.js"></script>
 <script src="/assets/intro.js"></script>

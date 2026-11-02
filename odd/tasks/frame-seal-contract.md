@@ -1,11 +1,11 @@
 # frame-seal-contract
 
 Date: 2026-10-31
-Law: buzon#30 ·6523552961 (the Sovereign: «FIRMO TODO. PUSHEA.»; item 2: the optional top-level `seal` field of the frame, with the amendment of `docs/bubble-language.md`, is authorised as its own piece with a contract FIRMO). It answers the second hole of ·6523297468: no frame carried a seal, and the spec has no field for it.
+Law: buzon#30 ·6523552961 (the Sovereign: «FIRMO TODO. PUSHEA.»; item 2: the optional top-level `seal` field of the frame, with the amendment of `docs/acho-language.md`, is authorised as its own piece with a contract FIRMO). It answers the second hole of ·6523297468: no frame carried a seal, and the spec has no field for it.
 
 ## Objective
 
-Every bubble frame may carry a top-level `seal`, one of the six doctrine labels (LIVE, STALE, STATIC, SIMULATED, NO_DATA, ERROR). A reader then knows the seal from the frame alone, not only from its sentence. Colony frames (bots and buildings) carry the seal of their node.
+Every Acho frame may carry a top-level `seal`, one of the six doctrine labels (LIVE, STALE, STATIC, SIMULATED, NO_DATA, ERROR). A reader then knows the seal from the frame alone, not only from its sentence. Colony frames (bots and buildings) carry the seal of their node.
 
 ## Problem and why
 
@@ -14,7 +14,7 @@ The frame's reader fields are `atoms`, `bands`, `change`, `sound`, `soundCause`,
 ## Scope
 
 In scope:
-1. Amendment of `docs/bubble-language.md`: one row for `seal`, optional, with its six values, and the rule that an absent `seal` means the frame declares none (the reader reads NO_DATA).
+1. Amendment of `docs/acho-language.md`: one row for `seal`, optional, with its six values, and the rule that an absent `seal` means the frame declares none (the reader reads NO_DATA).
 2. `atlas/param_gate.mjs` `checkFrame`: a present `seal` must be one of the six strings; anything else is a cause of refusal.
 3. Colony frames: `public/game/colonia_edificios.js` (building) and `public/game/colonia_pagina.js` (bot) set top-level `seal` from the node's seal, or `NO_DATA`. Source copies under `atlas/puros/` stay identical (parity test).
 4. Gates for the contract and the colony.
@@ -30,7 +30,7 @@ Out of scope: a seal on terrain and sky frames (no node data; they keep the abse
 
 ## Checklist
 
-- [x] SEAL-1 · amendment of `docs/bubble-language.md` (the optional `seal` row and its rule).
+- [x] SEAL-1 · amendment of `docs/acho-language.md` (the optional `seal` row and its rule).
 - [x] SEAL-2 · `checkFrame` refuses a `seal` outside the six doctrine labels; an absent `seal` is accepted.
 - [x] SEAL-3 · colony frames carry top-level `seal` (bot and building).
 - [x] SEAL-4 · gates: contract cases (accept, refuse, absent), colony frame carries the node's seal or NO_DATA, parity, visual gate unchanged.
@@ -38,7 +38,7 @@ Out of scope: a seal on terrain and sky frames (no node data; they keep the abse
 
 ## Verification evidence
 
-- SEAL-1: `docs/bubble-language.md` table row for `seal` (optional, six labels, absent = NO_DATA).
+- SEAL-1: `docs/acho-language.md` table row for `seal` (optional, six labels, absent = NO_DATA).
 - SEAL-2: `atlas/param_gate.mjs` `SELLOS` and the check in `checkFrame`; `atlas/frame_seal_casos.mjs` 10 cases (six labels pass, absent passes, `PROBABLE`/`#17131f`/`live` refused).
 - SEAL-3: `atlas/puros/colonia_edificios.js` (`seal: seal || 'NO_DATA'`) and `public/game/colonia_pagina.js` (`seal: node.seal || 'NO_DATA'`); served copy identical (`cmp`).
 - SEAL-4: colony frames pass `checkFrame`; seal equals the node's; no seal gives NO_DATA. Gates: frame_seal 12/12 twice; colonia_pagina_gate 10 passes; IC4 and IC5 gates green; param_gate CLI ok.
@@ -46,7 +46,7 @@ Out of scope: a seal on terrain and sky frames (no node data; they keep the abse
 
 ## Standing signature
 
-Needed: FIRMO of contract (the Sovereign's «FIRMO TODO» of ·6523552961 covers the amendment as its own piece). Search done: `docs/bubble-language.md` (frame table, lines 25–31), `atlas/param_gate.mjs` (`checkFrame`, the six reader fields), buzon#30 ·6523297468 and ·6523552961.
+Needed: FIRMO of contract (the Sovereign's «FIRMO TODO» of ·6523552961 covers the amendment as its own piece). Search done: `docs/acho-language.md` (frame table, lines 25–31), `atlas/param_gate.mjs` (`checkFrame`, the six reader fields), buzon#30 ·6523297468 and ·6523552961.
 
 ## Methodology relief
 

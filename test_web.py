@@ -2444,11 +2444,11 @@ class Puerta(unittest.TestCase):
         viejos = {r for r in pide if r.rsplit("/", 1)[-1] in self.VIEJAS}
         self.assertEqual(viejos, set(), "la portada carga graficos de mas de una semana")
         self.assertEqual(re.findall(r'rel="stylesheet" href="([^"]+)"', self.t), ["/assets/landing.css"])
-        # Sin color crudo (barrido). P3 [1d] (2026-10-26): las tres puertas se dibujan en bubble language con
+        # Sin color crudo (barrido). P3 [1d] (2026-10-26): las tres puertas se dibujan en Acho language con
         # las piezas declaradas en atlas/test_atlas.py (LANDING_PAGE_DEPENDENCIES), y nada mas.
         self.assertEqual(re.findall(r'<script src="([^"]+)"', self.t),
                          ["/game/tabla_semantica.js", "/game/comic_tokens.js", "/game/comic_accents.js", "/game/comic_atoms.js",
-                          "/game/bubble_language.js", "/game/bubble_letters.js", "/assets/landing_doors.js", "/assets/pwa.js",
+                          "/game/acho_language.js", "/game/acho_letters.js", "/assets/landing_doors.js", "/assets/pwa.js",
                           "/assets/intro.js"])
 
     def test_las_puertas_se_ven(self):

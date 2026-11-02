@@ -1,7 +1,7 @@
 // Acho · AC-1 · the pure validator of a frame (odd/tasks/acho-interpreter.md). Not served yet.
-// Same verdict as checkFrame (atlas/param_gate.mjs) without Node: the UTF-8 bytes are counted by hand, and the
+// checkFrame's verdict (atlas/param_gate.mjs), plus one rule of its own (the schema seal), without Node: the UTF-8 bytes are counted by hand, and the
 // band names come in as an argument, so the same file runs in the browser, the app and node.
-// No DOM, no network, no clock, no Math.random. It does not read `v`: the seal of the schema is AC-0's (D5 window).
+// No DOM, no network, no clock, no Math.random. Since AC-0 it reads `v`: Acho, or the historical seal during the D5 window.
 (function (raiz) {
   'use strict';
 
@@ -9,6 +9,7 @@
   var NEUTROS = ['ink', 'paper', 'ocean', 'cyan'];
   var BANDAS = ['brillo', 'base', 'sombra', 'contorno'];
   var CLAVES_COLOR = ['f', 's', 'fill', 'stroke'];
+  var ESQUEMAS = ['preceptoros.acho/1', 'preceptoros.bubble/1'];   // AC-0: Acho, plus the historical seal (D5 window)
   var SELLOS = ['LIVE', 'STALE', 'STATIC', 'SIMULATED', 'NO_DATA', 'ERROR'];
   var tiene = function (o, k) { return Object.prototype.hasOwnProperty.call(o, k); };
 
@@ -70,6 +71,7 @@
     if (esObjeto(frame) && tiene(frame, 'seal') && SELLOS.indexOf(frame.seal) < 0) {
       causas.push('seal outside the doctrine labels: ' + String(frame.seal));
     }
+    if (esObjeto(frame) && ESQUEMAS.indexOf(frame.v) < 0) { causas.push('schema seal is not Acho: ' + String(frame.v)); }
     if (!esObjeto(frame)) {
       causas.push('not an object: frame');
       return { ok: false, bytes: bytes, causes: sinRepetir(causas), fields: {} };
@@ -111,6 +113,42 @@
     return { ok: causas.length === 0, bytes: bytes, causes: sinRepetir(causas), fields: fields };
   }
 
-  var Acho = Object.freeze({ TOPE: TOPE, SELLOS: SELLOS, bytesUtf8: bytesUtf8, nombres: nombres, valida: valida });
+  // AC-3 · lee(frame) → { alt, oye }. What a person who cannot see, or a small local model, receives from a frame:
+  // one plain line (seal word first, then its sentences, what changed, and whether it sounds), and the sound verdict.
+  // A frame with harmonics sounds; a frame that says NO_DATA keeps its cause; a frame that says nothing is NO_DATA.
+  var ALT_MAX = 280;
+  var CON_ARMONICOS = { wave: true, blob: true };
+  function oye(frame) {
+    if (!esObjeto(frame)) { return { ok: false, causa: 'the frame does not exist' }; }
+    if (cadena(frame.sound) && frame.sound.indexOf('NO_DATA') === 0) {
+      return { ok: false, causa: frame.sound.replace(/^NO_DATA:?\s*/, '') || (cadena(frame.soundCause) ? frame.soundCause : 'no cause given') };
+    }
+    var n = 0;
+    (Array.isArray(frame.atoms) ? frame.atoms : []).forEach(function (a) {
+      (esObjeto(a) && Array.isArray(a.i) ? a.i : []).forEach(function (it) {
+        if (esObjeto(it) && CON_ARMONICOS[it.o] === true && Array.isArray(it.h) && it.h.length) { n++; }
+      });
+    });
+    if (!n) { return { ok: false, causa: cadena(frame.sound) ? 'it says it sounds, but it carries no harmonics' : 'sound not declared' }; }
+    return { ok: true, voces: n };
+  }
+  function lee(frame) {
+    var o = oye(frame);
+    if (!esObjeto(frame)) { return { alt: 'NO_DATA: no frame.', oye: o }; }
+    var partes = [], frases = [];
+    partes.push(SELLOS.indexOf(frame.seal) >= 0 ? frame.seal : 'NO_DATA');
+    (Array.isArray(frame.atoms) ? frame.atoms : []).forEach(function (a) {
+      if (esObjeto(a) && cadena(a.r) && frases.indexOf(a.r.trim()) < 0) { frases.push(a.r.trim()); }
+    });
+    partes.push(frases.length ? frases.join('. ') : 'no sentence');
+    var cambio = (Array.isArray(frame.change) ? frame.change : []).filter(function (c) { return cadena(c) && frases.indexOf(c.trim()) < 0; });
+    if (cambio.length) { partes.push('Changed: ' + cambio.join('; ')); }
+    partes.push(o.ok ? 'Sound: ' + o.voces + (o.voces === 1 ? ' voice' : ' voices') : 'Silent: ' + o.causa);
+    var alt = partes.join(' · ');
+    if (alt.length > ALT_MAX) { alt = alt.slice(0, ALT_MAX - 1) + '…'; }
+    return { alt: alt, oye: o };
+  }
+
+  var Acho = Object.freeze({ TOPE: TOPE, ESQUEMAS: ESQUEMAS, SELLOS: SELLOS, bytesUtf8: bytesUtf8, nombres: nombres, valida: valida, ALT_MAX: ALT_MAX, oye: oye, lee: lee });
   if (typeof module === 'object' && module.exports) { module.exports = Acho; } else { raiz.Acho = Acho; }
 })(typeof module === 'object' && module.exports ? this : (this || window));

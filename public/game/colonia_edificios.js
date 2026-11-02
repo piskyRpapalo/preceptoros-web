@@ -1,6 +1,6 @@
 // Buildings and birth growth (ODD isometric-colony, IC4). Pure: no random numbers, no clock reads, no I/O.
 // The input is a colony from colony_state.js. Every node is a hex module, coloured from a hash of its id (the same
-// colour every run). Every building is a bubble-language frame, its shape chosen by a hash of its id. The growth
+// colour every run). Every building is a acho-language frame, its shape chosen by a hash of its id. The growth
 // progress p (0 to 1) scales the building from its base; reduced motion arrives in one step, p = 1.
 // Units are not drawn here: IC4 is buildings only, and a unit needs its own slice.
 (function (root) {
@@ -9,7 +9,7 @@
   var F = common ? require('./state_frames.js') : root.AtlasStateFrames;
   var proyecta = common ? require('./hex_projection.js') : root.HexProjection;
 
-  var BOX = [120, 110];              // one building's bubble box, in its own units
+  var BOX = [120, 110];              // one building's Acho box, in its own units
   var BASE = [60, 84];               // where a building stands on its module
   var PASOS = 6;                     // birth frames, from the first sprout to the whole building
   var ESCALA = 2;                    // the axial step is 48 x 24 units; a module is 100 wide, so the scene is spaced by 2
@@ -30,7 +30,7 @@
   function formaDe(id) { return FORMAS[hash('building:' + id) % FORMAS.length]; }
 
   // The hex module: a flat hexagon squashed by the iso angle, centred on the box base.
-  // Each corner is given twice: the bubble smoothing rounds a corner less when its point is doubled, so the hex keeps its edges.
+  // Each corner is given twice: the Acho smoothing rounds a corner less when its point is doubled, so the hex keeps its edges.
   function moduloPts() {
     var pts = [];
     for (var i = 0; i < 6; i++) {
@@ -67,7 +67,7 @@
     var frase = 'building ' + edificio.id + ' on ' + edificio.node + ' · ' + forma + ' · growth ' + paso + '/' + PASOS + ' · seal ' + (seal || 'NO_DATA');
     var items = [{ o: 'ribbon', pts: base, closed: true, f: 'paper', s: 'ink', lw: 2 }];
     return {
-      v: 'preceptoros.bubble/1', id: edificio.id, t: paso, cv: BOX, seal: seal || 'NO_DATA',
+      v: 'preceptoros.acho/1', id: edificio.id, t: paso, cv: BOX, seal: seal || 'NO_DATA',
       atoms: [{ k: 'building.' + forma, r: frase, i: items }],
       bands: ['paper', 'ink', 'cyan'],
       change: [frase],
@@ -80,7 +80,7 @@
   function marcoModulo(node) {
     var frase = 'module ' + node.id + ' · colour ' + colorDe(node.id);
     return {
-      v: 'preceptoros.bubble/1', id: node.id, t: 0, cv: BOX,
+      v: 'preceptoros.acho/1', id: node.id, t: 0, cv: BOX,
       atoms: [{ k: 'module.' + node.id, r: frase, i: [{ o: 'ribbon', pts: moduloPts(), closed: true, f: colorDe(node.id), s: 'ink', lw: 2 }] }],
       bands: ['paper', 'ink', 'cyan'],
       change: [frase],

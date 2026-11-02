@@ -36,7 +36,7 @@
     var p = palette(t, reducido);
     var frase = 'the sky at tick ' + p.t + ': ' + p.cielo + ' · day ' + p.dia + ' of 256' + (reducido === true ? ' · reduced motion, no cycle' : '');
     var frame = {
-      v: 'preceptoros.bubble/1', id: 'sky', t: p.t, cv: [320, 96],
+      v: 'preceptoros.acho/1', id: 'sky', t: p.t, cv: [320, 96],
       atoms: [{ k: 'sky', r: frase, i: [] }],
       bands: ['paper', 'ink', 'cyan'],
       change: [frase],

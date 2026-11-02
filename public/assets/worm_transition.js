@@ -11,12 +11,12 @@
     } catch (_) { return null; }
   }
 
-  function bubble() { return raiz.AtlasBubble || (typeof module === 'object' && module.exports ? require('../game/bubble_language.js') : null); }
+  function acho() { return raiz.AtlasAcho || (typeof module === 'object' && module.exports ? require('../game/acho_language.js') : null); }
   function gusano(S, A, B, p) {
     var segs = Math.max(1, Math.min(TOPE_SEG, S.intentos || 1)), curva = Math.min(140, 16 + Math.abs(S.delta || 0) / 12);
-    var BUBBLE = bubble(), lado = cicloValido(S.ciclo) ? (S.ciclo % 2 === 0 ? -1 : 1) : 0;
+    var ACHO = acho(), lado = cicloValido(S.ciclo) ? (S.ciclo % 2 === 0 ? -1 : 1) : 0;
     p = Number.isFinite(p) ? Math.max(0, Math.min(1, p)) : 0;
-    return { puntos: BUBBLE.neck(A, B, lado ? curva : 0, p, lado || 1), segmentos: segs, progreso: p, hue: hueDe(S.sello) };
+    return { puntos: ACHO.neck(A, B, lado ? curva : 0, p, lado || 1), segmentos: segs, progreso: p, hue: hueDe(S.sello) };
   }
   function centro(el) { if (!el) { return null; } var q = el.getBoundingClientRect(); return [Math.round(q.left + q.width / 2), Math.round(q.top + q.height / 2)]; }
   function quieto() { return raiz.matchMedia && raiz.matchMedia('(prefers-reduced-motion: reduce)').matches; }

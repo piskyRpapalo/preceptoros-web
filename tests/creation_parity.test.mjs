@@ -6,7 +6,7 @@ import path from 'node:path';
 
 const tree=path.resolve(process.env.CREATION_WEB_TREE || '.');
 const require=createRequire(import.meta.url);
-const Paint=require(path.join(tree,'public/game/bubble_paint.js'));
+const Paint=require(path.join(tree,'public/game/acho_paint.js'));
 const Feedback=require(path.join(tree,'public/game/creation_feedback.js'));
 const {FakeDocument,host}=await import(pathToFileURL(path.join(tree,'tests/fake_dom.mjs')));
 const sabotage=process.env.CREATION_PARITY_SABOTAGE || '';

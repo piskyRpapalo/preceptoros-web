@@ -82,6 +82,26 @@ Sovereign still signs.
   feature branch, record the choice in the feature document's `## Log`,
   and continue.
 
+## Writing in Acho — who it is for (Sovereign, 2026-11-02)
+
+Acho (the language still called *bubble* in [docs/bubble-language.md](docs/bubble-language.md) until its
+rename lands) is not decoration. A frame is written for three readers at once, and a contribution serves all three:
+
+1. **A person who cannot see.** The frame alone must answer four questions out loud: *which section?* (`id`, `t`),
+   *what changed?* (`change`), *what sounds?* (`sound`, `soundCause`), *what can I do here?*. Colour never carries
+   meaning alone: every colour is a named band and every coloured atom has its plain sentence (`r`).
+2. **A small local model.** Under 1,024 UTF-8 bytes, fixed fields, no prose to guess from: the target is a model small
+   enough to run on a phone (that it reads and writes Acho well is `NO_DATA` until a benchmark measures it).
+   Efficient understanding, not a bigger prompt.
+3. **A human auditor.** Every field is either measured or `NO_DATA` with its cause.
+
+**Audio on the web is not optional.** Every new visual piece declares its sound: what it plays, or `NO_DATA` with
+the cause of why not yet. Measured on main (2026-11-02): frames that carry harmonics (`wave`, `blob`) sound
+natively, on demand, through `public/game/bubble_sonify.js` on `/openworld/` (since 2026-10-28); frames without
+harmonics — text and plain shapes — still say `sound=NO_DATA` (`comic_atoms.js`). The older field contract
+[LF-2](docs/bubble-visual-audio-contract.md) predates the sonifier. Giving a sound to the frames that have none is
+open work: propose it as its own piece, with test vectors.
+
 ## Any tool is welcome — explicitly
 
 We do not rank tools, and we do not exclude people by their choice of one.
@@ -149,6 +169,27 @@ propose, when it must wait. Then **you** sign them. The model configures
 the node to your tastes and your studies; the signature stays human. That
 is the whole product: a home where the silicon proposes and the carbon
 decides.
+
+## Writing in Acho — why every visual is a sentence and a sound
+
+Acho is the language of this house (coined 2026-11-02; it replaces the old name «bubble»). Every visual on the web and in the app is an **Acho frame**: a small JSON object under 1,024 UTF-8 bytes, `v: "preceptoros.acho/1"`, that a renderer turns into a picture and a sound. Spec: `docs/acho-language.md`.
+
+**Why you write in Acho, and not in pixels.** A frame is the same truth for three readers:
+- **a person who cannot see** hears its line (seal, sentences, what changed, whether it sounds) and its voice;
+- **a small local model** (1B/3B on a phone) reads a few hundred bytes instead of an image, and can write one back;
+- **a person who sees** gets the picture, drawn by mathematics from the same bytes.
+
+If one of the three is left out, the frame is not finished.
+
+**The rules a reviewer will check:**
+1. **Under 1,024 bytes**, and `Acho.valida(frame)` passes (`atlas/puros/acho.js`). The historical seal `preceptoros.bubble/1` is only read, never written.
+2. **Every atom says what it shows** in `r`, in plain words. Colour is a named band and always travels with text.
+3. **Sound is declared.** Either the frame carries harmonics (`wave` or `blob` with `h`) and sounds, or it says `NO_DATA: <cause>`. Never invent a sound; never stay silent without a cause.
+4. **`Acho.lee(frame).alt` reads well aloud.** Paste it into a screen reader before you open the PR.
+5. **Seal as a word** (`LIVE`, `STALE`, `NO_DATA`…), never as a colour only.
+6. No `Math.random`, no clock, no network inside a frame or its renderer: the same frame gives the same picture and the same sound.
+
+The audio is not optional. Today **0 of the 10 frames of the map sound** (measured 2026-11-02, `atlas/puros/acho_lee_casos.mjs`): giving the map its voice is open work, and a good first contribution.
 
 ## How a contribution flows
 
