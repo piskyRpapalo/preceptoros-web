@@ -114,7 +114,7 @@ async function main() {
   ok(escritorio.width <= escritorio.viewport, 'the page scrolls sideways at desktop width: ' + escritorio.width + ' > ' + escritorio.viewport);
   // P6: Enter by keyboard goes into the tutorial cabin; its greeting lands in the radio; the input asks its bot; Escape leaves.
   const cabina = JSON.parse(await ev(`(async () => { const w = (ms) => new Promise((r) => setTimeout(r, ms)), st = () => document.getElementById('state').textContent;
-    document.body.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true })); await w(600);
+    document.body.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true })); for (let i = 0; i < 30 && !/Inside building/.test(st()); i++) await w(100); // the entry passes through the hexagonal tunnel (#561): wait for it, up to 3 s
     const radio = () => [...document.querySelectorAll('#radio-chat-lista li')].map((li) => li.textContent).join(' | ');
     const greeting = radio().includes('Welcome to the tutorial cabin'), inside = st(), leave = document.getElementById('leave-building');
     const tall = !!leave && !leave.hidden && leave.getBoundingClientRect().height >= 44;
