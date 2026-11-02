@@ -19,9 +19,9 @@
   var frases_el = doc.getElementById('frases');
   // TA-4 (D13-D16): the terminal, the anchor and the joystick live in colony_controls.js; the page passes its state in.
   var CC = raiz.AtlasColonyControls;
-  var CCT = CC ? CC.attach({ doc: doc, win: raiz, colony: function () { return colonia; }, looks: function () { return colony_looks; }, seals: function () { return colony_seals; }, redraw: function () { draw(); renderFrases(); }, walk: function () { walkLoop(); }, entered: function (node) { var W = raiz.AtlasInvocacionViva; if (W) { W.tunnel(function () { enterBuilding(node); }); } else { enterBuilding(node); } } }) : null;
+  var CCT = CC ? CC.attach({ doc: doc, win: raiz, colony: function () { return colonia; }, looks: function () { return colony_looks; }, seals: function () { return colony_seals; }, redraw: function () { draw(); renderFrases(); }, stepped: function () { var vb = doc.getElementById('visitor-play'); if (vb) { vb.dispatchEvent(new CustomEvent('visitor:advance')); } }, walk: function () { walkLoop(); }, entered: function (node) { var W = raiz.AtlasInvocacionViva; if (W) { W.tunnel(function () { enterBuilding(node); }); } else { enterBuilding(node); } } }) : null;
   // P5a: the view hitl_walkers.js reads on every visitor:draw (the «?» and the walkers).
-  raiz.AtlasOpenworldView = function () { return { colony: colonia_error ? null : colonia, t: entrada.t, reduced: quieto, looks: colony_looks, seals: colony_seals, pending: colony_pending, controls: CCT, state: state }; };
+  raiz.AtlasOpenworldView = function () { return { colony: colonia_error ? null : colonia, t: entrada.t, reduced: quieto, looks: colony_looks, seals: colony_seals, pending: colony_pending, controls: CCT, state: state, redraw: function () { draw(); } }; };
   // H1b: two fingers (or the wheel) zoom the colony between 0.6 and 3; the factor lives on the canvas and every redraw reads it.
   var ZOOM = raiz.AtlasMapZoom && surface ? raiz.AtlasMapZoom.create(surface) : null, zoomSeen = surface ? surface.dataset.zoom : null;
   function onZoom() { if (surface.dataset.zoom !== zoomSeen) { zoomSeen = surface.dataset.zoom; draw(); } }
@@ -36,7 +36,10 @@
       var b = doc.createElement('button'); b.type = 'button'; b.id = z[2]; b.textContent = z[0];
       b.style.minHeight = '44px'; b.style.minWidth = '44px'; b.addEventListener('click', function () { zoomTo(z[1]); }); zoomBar.appendChild(b);
     });
-    zoomBar.appendChild(zoomSay); surface.after(zoomBar);
+    surface.after(zoomBar);
+    // The compact terminal (2026-11-02): the spoken level is the Zoom voice in the panel, never a text on the map.
+    zoomSay.textContent = 'Map zoom ' + (surface.dataset.zoom || '1.00') + '×';
+    (doc.getElementById('voice-zoom') || zoomBar).appendChild(zoomSay);
     doc.addEventListener('keydown', function (e) {
       var t = e.target, field = t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT' || t.isContentEditable);
       var d = { '+': 1, '=': 1, '-': -1, '0': 0 }[e.key];
@@ -163,10 +166,30 @@
     var r = surface.getBoundingClientRect();
     var px = (e.clientX - r.left) * (surface.width / r.width), py = (e.clientY - r.top) * (surface.height / r.height);
     var id = CP.nodeAt(surface, colonia, entrada.t, colony_looks, colony_seals, px, py);
+    // Tap-to-step (compact terminal, 2026-11-02, the pad retired): a tap off any node, with free walk on, steps the crab
+    // one cell toward the tap: the nearest of the six hex directions by screen angle, same names as the arrow keys.
+    if (!id && CCT.step && surface.dataset.youx) {
+      var a = (Math.atan2(Number(surface.dataset.youy) - py, px - Number(surface.dataset.youx)) * 180 / Math.PI + 360) % 360;
+      var dir = [['east', 0], ['north-east', 60], ['north-west', 120], ['west', 180], ['south-west', 240], ['south-east', 300], ['east', 360]]
+        .reduce(function (b, d) { return Math.abs(a - d[1]) < Math.abs(a - b[1]) ? d : b; })[0];
+      if (CCT.step(dir)) { draw(); renderFrases(); return; }
+    }
     if (!id) { CCT.say('NO_DATA: no visible node on that hex.'); return; }
     if (CCT.walkTo(id)) { walkLoop(); }
   });
 
+  // 3.5D: hover (pointer) or keyboard focus on the map marks one node «hot»; its building breathes higher. Render only.
+  function setHot(id) { id = id || ''; if ((surface.dataset.hot || '') !== id) { surface.dataset.hot = id; draw(); } }
+  if (surface) {
+    surface.addEventListener('pointermove', function (e) {
+      if (!colonia || !CP || colonia_error || e.pointerType === 'touch') { return; }
+      var r = surface.getBoundingClientRect();
+      setHot(CP.nodeAt(surface, colonia, entrada.t, colony_looks, colony_seals, (e.clientX - r.left) * (surface.width / r.width), (e.clientY - r.top) * (surface.height / r.height)));
+    });
+    surface.addEventListener('pointerleave', function () { setHot(''); });
+    surface.addEventListener('focus', function () { var w = CCT && CCT.walker ? CCT.walker() : null; setHot(w && w.node ? w.node : 'cabin'); });
+    surface.addEventListener('blur', function () { setHot(''); });
+  }
   // The cycle: a fixed step of t per second, unless reduced motion is on. The palette is a function of t alone.
   function cycle() { if (quieto) { return; } entrada.t += 1; draw(); renderFrases(); }
 

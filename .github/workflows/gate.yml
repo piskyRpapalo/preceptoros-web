@@ -64,11 +64,13 @@ jobs:
             node --test atlas/map_chunks_casos.mjs
             node --test atlas/web_node_brain_casos.mjs
             node --test atlas/map_painter_casos.mjs
+            node --test atlas/visitor_walk_casos.mjs
             node --test atlas/retiro_face_casos.mjs
             node --test atlas/nombres_retirados_casos.mjs
             node --test atlas/f0_funciones_casos.mjs
             node --test atlas/map_zoom_colonia_casos.mjs
             node --test atlas/hitl_walkers_casos.mjs
+            node --test atlas/motor_35d_casos.mjs
             node atlas/hex_projection_gate.mjs
             node --test atlas/puros/catalogo_iso_casos.mjs
             node --test atlas/puros/colonia_edificios_casos.mjs
@@ -97,6 +99,7 @@ jobs:
             node atlas/landing_doors_browser.mjs
             node atlas/openworld_browser.mjs
             node atlas/invocacion_viva_browser.mjs
+            node atlas/dos_clics_browser.mjs
             node atlas/ojo_carbono_browser.mjs
             node atlas/web_node_brain_browser.mjs
             node atlas/offline_brain_browser.mjs

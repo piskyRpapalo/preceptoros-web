@@ -71,21 +71,6 @@
    ]
   },
   {
-   "id": "stick",
-   "scripts": [
-    "/game/map_stick.js"
-   ],
-   "globals": [
-    "AtlasMapStick"
-   ],
-   "guards": [
-    {
-     "file": "atlas/openworld_browser.mjs",
-     "text": "joystick controls are below the touch target"
-    }
-   ]
-  },
-  {
    "id": "zoom",
    "scripts": [
     "/game/map_zoom.js"
@@ -314,17 +299,21 @@
    ]
   },
   {
-   "id": "terminal-tabs",
+   "id": "terminal-panel",
    "scripts": [
-    "/game/terminal_tabs.js"
+    "/game/terminal_panel.js"
    ],
    "globals": [
-    "AtlasTerminalTabs"
+    "AtlasTerminalPanel"
    ],
    "guards": [
     {
      "file": "atlas/openworld_browser.mjs",
-     "text": "the terminal tabs do not cover the map or the keyboard fails"
+     "text": "the compact terminal is fragmented or a voice has no speaker"
+    },
+    {
+     "file": "atlas/openworld_browser.mjs",
+     "text": "a phone user cannot walk without the stick pad"
     }
    ]
   },
@@ -365,6 +354,65 @@
    ]
   },
   {
+   "id": "two-clicks",
+   "scripts": [
+    "/game/welcome_card.js",
+    "/game/visitor_play.js",
+    "/game/terminal_panel.js"
+   ],
+   "globals": [],
+   "guards": [
+    {
+     "file": "atlas/dos_clics_browser.mjs",
+     "text": "reaching the game took"
+    }
+   ]
+  },
+  {
+   "id": "free-walk",
+   "scripts": [
+    "/game/visitor_walk.js",
+    "/game/colony_controls.js",
+    "/game/map_painter.js"
+   ],
+   "globals": [
+    "AtlasVisitorWalk"
+   ],
+   "guards": [
+    {
+     "file": "atlas/openworld_browser.mjs",
+     "text": "the crab does not walk the floor cell by cell"
+    }
+   ]
+  },
+  {
+   "id": "motor-35d",
+   "scripts": [
+    "/game/map_painter.js",
+    "/game/colonia_pagina.js",
+    "/game/hitl_walkers.js"
+   ],
+   "globals": [
+    "AtlasMapPainter",
+    "AtlasColoniaPagina",
+    "AtlasHitlWalkers"
+   ],
+   "guards": [
+    {
+     "file": "atlas/openworld_browser.mjs",
+     "text": "the baked floor is not faster zoomed out"
+    },
+    {
+     "file": "atlas/openworld_browser.mjs",
+     "text": "a tap on the cabin does not enter with the baked floor"
+    },
+    {
+     "file": "atlas/openworld_browser.mjs",
+     "text": "LoAF not reported"
+    }
+   ]
+  },
+  {
    "id": "invocacion-viva",
    "scripts": [
     "/game/invocacion_viva.js"
@@ -382,6 +430,20 @@
      "text": "entering the cabin does not play the worm tunnel first"
     }
    ]
+  }
+ ],
+ "retiradas": [
+  {
+   "id": "stick",
+   "fecha": "2026-11-02",
+   "recibo": "retirados/RETIRO-joystick-20261102.md",
+   "sustituye": "tocar un nodo del mapa (guarda terminal-panel) y las flechas (colony_controls.js)"
+  },
+  {
+   "id": "terminal-tabs",
+   "fecha": "2026-11-02",
+   "recibo": "retirados/RETIRO-joystick-20261102.md",
+   "sustituye": "terminal-panel"
   }
  ]
 }

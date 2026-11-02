@@ -35,10 +35,13 @@
   });
   doc.addEventListener('map:context', function (event) { choose(event.detail.label); });
   function choose(label) { context = String(label).slice(0, 160); selected.textContent = 'Companion context: ' + context + ' · node backend link NO_DATA unless explicitly measured'; }
-  doc.getElementById('map').addEventListener('click', function (event) {
+  // The compact terminal (2026-11-02): the map and the voices of the panel (the visit's buttons live there now) choose the context.
+  doc.getElementById('map').addEventListener('click', pick);
+  var voices = doc.getElementById('voices'); if (voices) { voices.addEventListener('click', pick); }
+  function pick(event) {
     var button = event.target.closest('button');
     if (button && button.id !== 'brain-load') { choose(button.textContent); }
-  });
+  }
   doc.getElementById('visitor-play').addEventListener('visitor:battle', function (event) { choose('Practice battle at ' + event.detail.place + ' · ' + event.detail.combat.gana + ' · balance NO_DATA'); });
   form.addEventListener('submit', async function (event) {
     if (!ready) { return; }  // no brain loaded: the page router answers with its honest NO_DATA
