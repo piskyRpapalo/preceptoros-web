@@ -22,16 +22,54 @@
     var m = /^([^·:]{1,60}?) · /.exec(String(text || ''));
     return m && !/^NO_DATA/.test(m[1]) ? m[1] : 'Guide';
   }
+  // TF-2 (buzon#30, 2026-11-02): the voices go in four category buttons; one category is visible, the rest are buttons.
+  // The brain (#map-brain), the log and the form stay fixed under the panel: they are the single chatbot's surface.
+  var CATS = [['Start', ['Tutorial', 'Welcome', 'Guide']], ['Explore', ['Map', 'Floor', 'Walkers', 'Zoom']], ['Play', ['House', 'Army']], ['About', ['Radio']]];
+  // categoryOf(speaker) → its category; a speaker no category names goes to About, never lost.
+  function categoryOf(speaker) {
+    for (var i = 0; i < CATS.length; i++) { if (CATS[i][1].indexOf(speaker) >= 0) { return CATS[i][0]; } }
+    return 'About';
+  }
+  function categories(doc, voices) {
+    if (voices.parentNode.querySelector(':scope > .cats')) { return null; }
+    var bar = doc.createElement('div'), buttons = {}, current = null;
+    bar.className = 'cats'; bar.setAttribute('role', 'group'); bar.setAttribute('aria-label', 'Voices by category');
+    bar.style.cssText = 'display:flex;flex-wrap:wrap;gap:6px;margin-top:6px';
+    function show(cat) {
+      current = cat;
+      Array.prototype.forEach.call(voices.querySelectorAll('[data-speaker]'), function (li) { li.style.display = li.dataset.cat === cat ? '' : 'none'; });
+      CATS.forEach(function (c) { var b = buttons[c[0]]; b.setAttribute('aria-pressed', String(c[0] === cat)); if (c[0] === cat) { b.textContent = c[0]; } });
+    }
+    CATS.forEach(function (c) {
+      var b = doc.createElement('button'); b.type = 'button'; b.textContent = c[0]; b.dataset.cat = c[0];
+      b.style.cssText = 'min-height:44px;min-width:44px;padding:8px 14px;border:2px solid currentColor;border-radius:var(--radius);background:var(--bg);color:var(--fg);font:inherit';
+      b.addEventListener('click', function () { show(c[0]); });
+      buttons[c[0]] = b; bar.appendChild(b);
+    });
+    // Under the voices, like a phone's bottom tabs: the door's «Play now» stays above the fold (measured 390×844).
+    voices.parentNode.insertBefore(bar, voices.nextSibling);
+    // A voice that speaks while its category is hidden marks its button («•»), so nothing said is lost from sight.
+    new root.MutationObserver(function (ch) {
+      ch.forEach(function (c) {
+        var n = c.target.nodeType === 1 ? c.target : c.target.parentNode, li = n && n.closest && n.closest('[data-cat]');
+        if (li && li.dataset.cat !== current && buttons[li.dataset.cat]) { buttons[li.dataset.cat].textContent = li.dataset.cat + ' •'; }
+      });
+    }).observe(voices, { subtree: true, childList: true, characterData: true });
+    show('Start');
+    return show;
+  }
   // mount(doc): give every voice its header, tag the log lines, and paint the Army voice from the visit.
   function mount(doc) {
     var voices = doc.getElementById('voices'), log = doc.getElementById('log');
     if (!voices) { return null; }
     Array.prototype.forEach.call(voices.querySelectorAll('[data-speaker]'), function (li) {
+      li.dataset.cat = categoryOf(li.dataset.speaker);
       if (li.querySelector(':scope > .who')) { return; }
       var h = doc.createElement('p'); h.className = 'who'; h.textContent = frame(li.dataset.speaker, li.dataset.title);
       li.setAttribute('aria-label', li.dataset.speaker);
       li.insertBefore(h, li.firstChild);
     });
+    var show = categories(doc, voices);
     function tag(li) {
       if (li.nodeType !== 1 || li.dataset.speaker) { return; }
       var who = speakerOf(li.textContent, li.classList.contains('me'));
@@ -54,9 +92,9 @@
       play.addEventListener('visitor:render', function (e) { paintArmy(e.detail && e.detail.state && e.detail.state.troops); });
       play.addEventListener('visitor:end', function () { paintArmy(null); });
     }
-    return { voices: voices.querySelectorAll('[data-speaker]').length };
+    return { voices: voices.querySelectorAll('[data-speaker]').length, show: show };
   }
-  var P = { BYTES: BYTES, frame: frame, speakerOf: speakerOf, mount: mount };
+  var P = { BYTES: BYTES, CATS: CATS, categoryOf: categoryOf, frame: frame, speakerOf: speakerOf, mount: mount };
   if (typeof module === 'object' && module.exports) { module.exports = P; }
   else { root.AtlasTerminalPanel = P; if (root.document) { P.mounted = mount(root.document); } }
 })(typeof globalThis === 'object' ? globalThis : this);

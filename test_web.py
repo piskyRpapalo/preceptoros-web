@@ -2534,5 +2534,21 @@ class TerminalFamilia(unittest.TestCase):
         self.assertIn("SHA-256", (PUBLICO / "game" / "map_chat.js").read_text(encoding="utf-8"))
 
 
+class PanelPorCategorias(unittest.TestCase):
+    """TF-2: diez voces en cuatro botones (Start · Explore · Play · About); una categoría visible, ninguna voz perdida."""
+
+    def test_cada_voz_de_la_puerta_tiene_su_categoria(self):
+        pagina = (PUBLICO / "openworld" / "index.html").read_text(encoding="utf-8")
+        voces = re.findall(r'<li class="voice[^>]*data-speaker="([^"]+)"', pagina)
+        self.assertEqual(len(voces), 10, voces)
+        guion = ("const P=require('./public/game/terminal_panel.js');"
+                 "process.stdout.write(JSON.stringify([P.CATS.map(c=>c[0]),process.argv.slice(1).map(P.categoryOf)]))")
+        cats, de = json.loads(subprocess.run(["node", "-e", guion, *voces], capture_output=True, text=True, cwd=RAIZ, check=True).stdout)
+        self.assertEqual(cats, ["Start", "Explore", "Play", "About"])
+        esperado = {"Tutorial": "Start", "Welcome": "Start", "Guide": "Start", "Map": "Explore", "Floor": "Explore",
+                    "Walkers": "Explore", "Zoom": "Explore", "House": "Play", "Army": "Play", "Radio": "About"}
+        self.assertEqual(dict(zip(voces, de)), esperado)
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
