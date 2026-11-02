@@ -15,21 +15,21 @@ const ok = (cond, msg) => { assert.ok(cond, msg); n++; };
 // 1 · liveness: the cabin is always here; the others only while listed alive; unknown ids are not drawn.
 const solo = M.estado({ nodes: [] });
 ok(solo.length === 1 && solo[0].id === 'cabin', 'only the cabin when no node is alive');
-const tres = M.estado({ nodes: [{ id: 'atlantis' }, { id: 'risen' }, { id: 'fantasma' }] });
-ok(tres.map((r) => r.id).join() === 'cabin,atlantis,risen', 'the three nodes in fixed order, unknown id not drawn');
-ok(M.estado({ nodes: [{ id: 'atlantis' }] }).length === 2, 'a node that is not listed does not exist on the map');
+const tres = M.estado({ nodes: [{ id: 'hexelion' }, { id: 'second' }, { id: 'fantasma' }] });
+ok(tres.map((r) => r.id).join() === 'cabin,hexelion,second', 'the three nodes in fixed order, unknown id not drawn');
+ok(M.estado({ nodes: [{ id: 'hexelion' }] }).length === 2, 'a node that is not listed does not exist on the map');
 
 // 2 · orphan_visual_node: a visible node without a lexicon key is refused (sabotage: clear the key, then restore).
 const clave = M.NODES[1].clave;
 M.NODES[1].clave = '';
-assert.throws(() => M.estado({ nodes: [{ id: 'atlantis' }] }), /orphan_visual_node: atlantis/);
+assert.throws(() => M.estado({ nodes: [{ id: 'hexelion' }] }), /orphan_visual_node: hexelion/);
 M.NODES[1].clave = clave;
-ok(M.estado({ nodes: [{ id: 'atlantis' }] }).length === 2, 'key restored, the node is drawn again');
+ok(M.estado({ nodes: [{ id: 'hexelion' }] }).length === 2, 'key restored, the node is drawn again');
 
 // 3 · every frame under 1,024 bytes and its sound declared, measured/NO_DATA mana, many ticks.
 for (const t of [0, 1, 37, 120, 239, 240, 1000, -5]) {
   for (const mana of [undefined, { valor: 0 }, { valor: 100 }, { valor: 42.5 }]) {
-    const sc = M.mapa({ t, cabin: { mana }, nodes: [{ id: 'atlantis' }, { id: 'risen' }] });
+    const sc = M.mapa({ t, cabin: { mana }, nodes: [{ id: 'hexelion' }, { id: 'second' }] });
     ok(M.bytes(sc.cielo) < 1024 && M.valida(sc.cielo).length === 0, 'sky frame under 1,024 bytes at t=' + t);
     for (const node of sc.nodes) {
       ok(M.bytes(node.frame) < 1024, node.id + ' frame under 1,024 bytes at t=' + t);
@@ -62,17 +62,17 @@ ok(M.paleta(0).dia === 0 && M.paleta(M.CYCLE / 2).dia === 256, 'midnight is nigh
 ok(M.paleta(0).cielo === '#17131f', 'night sky is the house theme colour');
 
 // 6 · sabotage: a wall clock in the palette would change its output. Poison Date and prove the output does not move.
-const antes = enDos(M.mapa({ t: 77, nodes: [{ id: 'risen' }] }));
+const antes = enDos(M.mapa({ t: 77, nodes: [{ id: 'second' }] }));
 const DateOriginal = globalThis.Date, nowOriginal = Date.now;
 globalThis.Date = class extends DateOriginal { constructor() { super(); throw new Error('clock read in render path'); } };
 Date.now = () => { throw new Error('clock read in render path'); };
 let despues;
-try { despues = enDos(M.mapa({ t: 77, nodes: [{ id: 'risen' }] })); }
+try { despues = enDos(M.mapa({ t: 77, nodes: [{ id: 'second' }] })); }
 finally { globalThis.Date = DateOriginal; Date.now = nowOriginal; }
 ok(antes === despues, 'the scene reads no clock (Date poisoned, same bytes)');
 
 // 7 · n=2 byte-identical: the same vector, two runs, the same bytes and the same hash.
-const vector = { t: 120, cabin: { mana: { valor: 60 } }, nodes: [{ id: 'atlantis', mana: { valor: 12 } }, { id: 'risen' }] };
+const vector = { t: 120, cabin: { mana: { valor: 60 } }, nodes: [{ id: 'hexelion', mana: { valor: 12 } }, { id: 'second' }] };
 const corrida1 = enDos(M.mapa(vector)), corrida2 = enDos(M.mapa(vector));
 ok(corrida1 === corrida2, 'n=2 byte-identical scenes');
 ok(M.hash32(corrida1) === M.hash32(corrida2), 'n=2 identical hash');
@@ -86,9 +86,9 @@ ok(receta(jitter) !== base, 'a changed frame moves the hash (the detector can go
 ok(receta(M.mapa(vector)) === base, 'no state change, no hash change');
 
 // 9 · visible changes travel as frames: a node that appears and one that leaves, each under 1,024 bytes.
-const cam = M.cambios({ nodes: [] }, { nodes: [{ id: 'atlantis' }] }, 5);
+const cam = M.cambios({ nodes: [] }, { nodes: [{ id: 'hexelion' }] }, 5);
 ok(cam.length === 1 && /appears/.test(cam[0].change[0]) && M.bytes(cam[0]) < 1024, 'appearance is one frame');
-const sale = M.cambios({ nodes: [{ id: 'risen' }] }, { nodes: [] }, 5);
+const sale = M.cambios({ nodes: [{ id: 'second' }] }, { nodes: [] }, 5);
 ok(sale.length === 1 && /leaves/.test(sale[0].change[0]), 'a fallen node leaves as one frame, with no placeholder');
 
 // 10 · grep gate: the render path reads no clock, no random, no network. Sabotage: a synthetic file must go red.

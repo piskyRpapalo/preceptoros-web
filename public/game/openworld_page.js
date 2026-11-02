@@ -14,8 +14,8 @@
   var CP = raiz.AtlasColoniaPagina, colonia = null, colonia_fuente = 'NO_DATA', colonia_error = '';
   // Synthetic fixture, opt-in with ?fixture=sintetica: it is labelled SYNTHETIC on the page, never a live colony.
   var FIXTURE = { nodes: [{ id: 'cabin', q: 0, r: 0 }, { id: 'ring-e', q: 1, r: 0 }, { id: 'ring-ne', q: 1, r: -1 }, { id: 'ring-nw', q: 0, r: -1 }, { id: 'ring-w', q: -1, r: 0 }, { id: 'ring-sw', q: -1, r: 1 }, { id: 'ring-se', q: 0, r: 1 }, { id: 'doggee-a', q: 2, r: 0 }, { id: 'doggee-b', q: 2, r: -1 }], buildings: [{ id: 'b-cabin', node: 'cabin' }, { id: 'b-ring-e', node: 'ring-e' }, { id: 'b-ring-nw', node: 'ring-nw' }, { id: 'b-ring-sw', node: 'ring-sw' }, { id: 'b-doggee-a', node: 'doggee-a' }, { id: 'b-doggee-b', node: 'doggee-b' }], units: [] };
-  // IC7-S4 (D11): the looks of the fixture's nodes; Doggee is the zombie look. The live state carries its own looks.
-  var FIXTURE_LOOKS = { 'doggee-a': 'zombie', 'doggee-b': 'zombie' }, colony_looks = {}, colony_seals = {}, colony_pending = {};
+  // IC7-S4 (D11): the looks of the fixture's nodes; Doggee is the flat look. The live state carries its own looks.
+  var FIXTURE_LOOKS = { 'doggee-a': 'flat', 'doggee-b': 'flat' }, colony_looks = {}, colony_seals = {}, colony_pending = {};
   var frases_el = doc.getElementById('frases');
   // TA-4 (D13-D16): the terminal, the anchor and the joystick live in colony_controls.js; the page passes its state in.
   var CC = raiz.AtlasColonyControls;
@@ -44,7 +44,10 @@
       var b = doc.createElement('button'); b.type = 'button'; b.id = z[2]; b.textContent = z[0];
       b.style.minHeight = '44px'; b.style.minWidth = '44px'; b.addEventListener('click', z[1]); zoomBar.appendChild(b);
     });
-    zoomBar.appendChild(zoomSay); surface.after(zoomBar);
+    surface.after(zoomBar);
+    // The compact terminal (2026-11-02): the spoken view is the Zoom voice in the panel, never a text on the map.
+    speak();
+    (doc.getElementById('voice-zoom') || zoomBar).appendChild(zoomSay);
     // A free turn or a pinch is spoken once the fingers lift, never on every frame.
     surface.addEventListener('pointerup', function () { if (zoomSay.textContent !== ZOOM.say()) { speak(); } });
     doc.addEventListener('keydown', function (e) {
@@ -137,7 +140,7 @@
     entrada = {
       t: data && Number.isInteger(data.t) ? data.t : 0,
       cabin: data && data.cabin && typeof data.cabin === 'object' ? data.cabin : {},
-      nodes: nodes.filter(function (n) { return n && (n.id === 'atlantis' || n.id === 'risen'); })
+      nodes: nodes.filter(function (n) { return n && (n.id === 'hexelion' || n.id === 'second'); })
     };
     if (selected !== 'cabin' && !entrada.nodes.some(function (n) { return n.id === selected; })) { selected = 'cabin'; }
     // IC7-S3 (D7): the colony comes only from openworld_state.js; a node is drawn only when it is alive and sealed LIVE or STALE.
@@ -173,6 +176,18 @@
     var r = surface.getBoundingClientRect();
     var px = (e.clientX - r.left) * (surface.width / r.width), py = (e.clientY - r.top) * (surface.height / r.height);
     var id = CP.nodeAt(surface, colonia, entrada.t, colony_looks, colony_seals, px, py);
+    // Tap-to-step (compact terminal, 2026-11-02, the pad retired): a tap off any node, with free walk on, steps the crab
+    // one cell toward the tap: the nearest of the six hex directions by screen angle, same names as the arrow keys.
+    if (!id && CCT.step && surface.dataset.youx) {
+      // Orbit: the tap vector is turned back to the 0° view on the ground (the inverse of geometry().turn), so the six
+      // directions keep their names at any view angle and the step lands on the cell under the finger.
+      var vx = px - Number(surface.dataset.youx), vy = (py - Number(surface.dataset.youy)) / (CP.SQUASH || 1);
+      var th = -(Number(surface.dataset.angle) || 0) * Math.PI / 180, ux = vx * Math.cos(th) - vy * Math.sin(th), uy = (vx * Math.sin(th) + vy * Math.cos(th)) * (CP.SQUASH || 1);
+      var a = (Math.atan2(-uy, ux) * 180 / Math.PI + 360) % 360;
+      var dir = [['east', 0], ['north-east', 60], ['north-west', 120], ['west', 180], ['south-west', 240], ['south-east', 300], ['east', 360]]
+        .reduce(function (b, d) { return Math.abs(a - d[1]) < Math.abs(a - b[1]) ? d : b; })[0];
+      if (CCT.step(dir)) { draw(); renderFrases(); return; }
+    }
     if (!id) { CCT.say('NO_DATA: no visible node on that hex.'); return; }
     if (CCT.walkTo(id)) { walkLoop(); }
   });

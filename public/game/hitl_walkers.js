@@ -76,7 +76,8 @@
     var holder = surface.parentNode, say = doc.createElement('p'), buttons = {};
     if (win.getComputedStyle(holder).position === 'static') { holder.style.position = 'relative'; }
     say.id = 'walkers-state'; say.setAttribute('aria-live', 'polite'); say.className = 'state';
-    surface.after(say);
+    // The compact terminal (2026-11-02): the walkers line is a voice in the panel when the page has one, never under the map.
+    var voice = doc.getElementById('voice-walkers'); if (voice) { voice.appendChild(say); } else { surface.after(say); }
     function paint(g, f, x, y) {
       g.save(); g.translate(x - 20 * S, y - 20 * S); g.scale(S, S); win.AtlasComicAtoms.paint(g, win.AtlasBubble.compile(f)); g.restore();
     }

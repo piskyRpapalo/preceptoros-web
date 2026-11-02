@@ -15,7 +15,7 @@
   // The kinds the catalogue knows. Each kind is one lexicon key and a fixed wave table (harmonic, amplitude at 100).
   var TIPOS = {
     cabin:    { clave: 'sprite.cabin',    nombre: 'Tutorial cabin', tabla: [[1, 30, 10, 0]] },
-    risen:    { clave: 'sprite.risen',    nombre: 'the Risen',      tabla: [[2, 24, 8, 0]] },
+    second:   { clave: 'sprite.second',   nombre: 'Second node',    tabla: [[2, 24, 8, 0]] },
     sea:      { clave: 'sprite.sea',      nombre: 'Submerged Forest creature', tabla: [[1, 40, 10, 0], [3, 20, 5, 4]] },
     fleet:    { clave: 'sprite.fleet',    nombre: 'fleet unit',     tabla: [[1, 36, 9, 0]] },
     tower:    { clave: 'sprite.tower',    nombre: 'the Tower',      tabla: [[1, 44, 12, 0]] },

@@ -71,21 +71,6 @@
    ]
   },
   {
-   "id": "stick",
-   "scripts": [
-    "/game/map_stick.js"
-   ],
-   "globals": [
-    "AtlasMapStick"
-   ],
-   "guards": [
-    {
-     "file": "atlas/openworld_browser.mjs",
-     "text": "joystick controls are below the touch target"
-    }
-   ]
-  },
-  {
    "id": "zoom",
    "scripts": [
     "/game/map_zoom.js"
@@ -236,6 +221,10 @@
     {
      "file": "atlas/openworld_browser.mjs",
      "text": "the chat answer is not an honest NO_DATA"
+    },
+    {
+     "file": "atlas/web_node_brain_browser.mjs",
+     "text": "no verified answer reached the chat log and brain:answer"
     }
    ]
   },
@@ -329,17 +318,72 @@
    ]
   },
   {
-   "id": "terminal-tabs",
+   "id": "terminal-panel",
    "scripts": [
-    "/game/terminal_tabs.js"
+    "/game/terminal_panel.js"
    ],
    "globals": [
-    "AtlasTerminalTabs"
+    "AtlasTerminalPanel"
    ],
    "guards": [
     {
      "file": "atlas/openworld_browser.mjs",
-     "text": "the terminal tabs do not cover the map or the keyboard fails"
+     "text": "the compact terminal is fragmented or a voice has no speaker"
+    },
+    {
+     "file": "atlas/openworld_browser.mjs",
+     "text": "a phone user cannot walk without the stick pad"
+    }
+   ]
+  },
+  {
+   "id": "next-step",
+   "scripts": [
+    "/game/visitor_play.js",
+    "/game/colony_controls.js"
+   ],
+   "globals": [],
+   "guards": [
+    {
+     "file": "atlas/openworld_browser.mjs",
+     "text": "the next step does not say Play now"
+    },
+    {
+     "file": "atlas/openworld_browser.mjs",
+     "text": "the terminal look is not folded under More"
+    }
+   ]
+  },
+  {
+   "id": "offline-brain",
+   "scripts": [
+    "/game/map_chat.js",
+    "/assets/pwa.js"
+   ],
+   "globals": [],
+   "guards": [
+    {
+     "file": "atlas/offline_brain_browser.mjs",
+     "text": "network requests while offline"
+    },
+    {
+     "file": "atlas/offline_brain_browser.mjs",
+     "text": "the offline answer did not reach the radio"
+    }
+   ]
+  },
+  {
+   "id": "two-clicks",
+   "scripts": [
+    "/game/welcome_card.js",
+    "/game/visitor_play.js",
+    "/game/terminal_panel.js"
+   ],
+   "globals": [],
+   "guards": [
+    {
+     "file": "atlas/dos_clics_browser.mjs",
+     "text": "reaching the game took"
     }
    ]
   },
@@ -359,6 +403,37 @@
      "text": "the crab does not walk the floor cell by cell"
     }
    ]
+  },
+  {
+   "id": "free-walk",
+   "scripts": [
+    "/game/visitor_walk.js",
+    "/game/colony_controls.js",
+    "/game/map_painter.js"
+   ],
+   "globals": [
+    "AtlasVisitorWalk"
+   ],
+   "guards": [
+    {
+     "file": "atlas/openworld_browser.mjs",
+     "text": "the crab does not walk the floor cell by cell"
+    }
+   ]
+  }
+ ],
+ "retiradas": [
+  {
+   "id": "stick",
+   "fecha": "2026-11-02",
+   "recibo": "retirados/RETIRO-joystick-20261102.md",
+   "sustituye": "tocar un nodo del mapa (guarda terminal-panel) y las flechas (colony_controls.js)"
+  },
+  {
+   "id": "terminal-tabs",
+   "fecha": "2026-11-02",
+   "recibo": "retirados/RETIRO-joystick-20261102.md",
+   "sustituye": "terminal-panel"
   }
  ]
 }

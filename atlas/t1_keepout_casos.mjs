@@ -9,7 +9,7 @@ function caso(nombre, fn) {
   catch (e) { casos.push({ caso: nombre, ok: false, detalle: 'excepcion: ' + e.message }); }
 }
 const VIVOS = { Mesa: { estado: 'LIVE' }, Luna: { estado: 'PROPUESTA' }, Claude: { estado: 'HITL' } };
-const TODOS = ['atlantis', 'risen'];
+const TODOS = ['hexelion', 'second'];
 
 caso('ningun carril entra en el radio de un interactivo (500 ticks, nodos vivos)', () => {
   const { historia, inter } = K.simula(VIVOS, 500, TODOS);
@@ -26,8 +26,8 @@ caso('la cabina es origen y tiene radio (cero exenciones)', () => {
   return (cab && cab.x === 3 && cab.y === 2 && cab.radio > 0) || 'cabina sin origen o radio';
 });
 
-caso('un nodo sin vida no existe como interactivo: atlantis y risen solo con nodo vivo', () => {
-  return K.interactivos([]).length === 1 && K.interactivos(['atlantis']).length === 2 && K.interactivos(TODOS).length === 3
+caso('un nodo sin vida no existe como interactivo: hexelion y second solo con nodo vivo', () => {
+  return K.interactivos([]).length === 1 && K.interactivos(['hexelion']).length === 2 && K.interactivos(TODOS).length === 3
     || 'interactivos mal filtrados';
 });
 

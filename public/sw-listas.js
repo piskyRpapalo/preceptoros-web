@@ -21,9 +21,9 @@ const JUEGO = [
   '/game/bubble_world.js', '/game/bubble_letters.js', '/game/bubble_icons.js', '/game/local_app_bridge.js',
   '/game/state_frames.js', '/game/hex_projection.js', '/game/colony_state.js', '/game/colonia_edificios.js',
   '/game/palette_cycle.js', '/game/openworld_state.js', '/game/colonia_pagina.js', '/game/colony_controls.js', '/game/hitl_walkers.js',
-  '/game/tutorial-fases.css', '/face/', '/get-the-app/', '/aduana/', '/face/basic.html', '/face/atlantis.html',
-  '/face/zombie.html', '/face/face_openworld_terminal.js', '/game/army.html', '/game/face_canon.css', '/game/face_terminal.js',
-  '/game/map_carta.js', '/game/map_chunks.js', '/game/map_painter.js', '/game/terminal_tabs.js', '/game/visitor_walk.js', '/map/carta.json', '/art/sea-palette.json',
+  '/game/tutorial-fases.css', '/face/', '/get-the-app/', '/aduana/', '/face/basic.html',
+  '/face/face_openworld_terminal.js', '/game/army.html', '/game/face_canon.css', '/game/face_terminal.js',
+  '/game/map_carta.js', '/game/map_chunks.js', '/game/map_painter.js', '/game/terminal_panel.js', '/game/visitor_walk.js', '/game/welcome_card.js', '/game/web_node_brain.js', '/map/carta.json', '/art/sea-palette.json',
   '/map/chunks/-17_8.533552f4.json', '/map/chunks/-8_-9.f441ec9b.json', '/map/chunks/-9_17.c34de2b7.json', '/map/chunks/0_0.1a4f24a6.json', '/map/chunks/17_-8.206414ba.json', '/map/chunks/8_9.8896dfe9.json', '/map/chunks/9_-17.b1b968aa.json'
 ];
 
@@ -38,6 +38,9 @@ const HUB = [...PORTADA, ...JUEGO];
 
 const ATLAS = [];
 const CONTENIDO_JSON = [];
+// Modo avion (2026-11-01): la carta, la paleta y los chunks horneados (inmutables, con hash) salen del cache sin red.
+const MAPA_JSON = JUEGO.filter(function (r) { return r.endsWith('.json'); });
 
-const RED_PRIMERO = ['/manifest.webmanifest'];
+// Modo avion (2026-11-01): el estado del tutorial va a red primero y, sin red, sale de la ultima copia.
+const RED_PRIMERO = ['/manifest.webmanifest', '/openworld/estado.json'];
 

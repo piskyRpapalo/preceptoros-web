@@ -1,4 +1,4 @@
-// Terminal, anchor and joystick of /openworld/ (ODD colony-terminal-anchor, TA-1). Pure core: no random numbers,
+// Terminal, anchor and walking keys of /openworld/ (the on-map stick retired 2026-11-02) (ODD colony-terminal-anchor, TA-1). Pure core: no random numbers,
 // no clock reads, no network. The user's choice of terminal stays in their own browser (the store is injected).
 // Colours are house bands; hex values come from comic_tokens and comic_accents at run time, never written here.
 (function (root) {
@@ -10,12 +10,12 @@
     east: [1, 0], 'north-east': [1, -1], 'north-west': [0, -1],
     west: [-1, 0], 'south-west': [-1, 1], 'south-east': [0, 1]
   };
-  var LOOKS = ['basic', 'atlantis', 'zombie'];
+  var LOOKS = ['basic', 'ocean', 'flat'];
   // D13/D14: the house bands of each terminal (names only).
   var ANCHOR = {
     basic: { bg: 'paper', fg: 'ink', accent: 'cyan' },
-    atlantis: { bg: 'ocean', fg: 'paper', accent: 'comic yellow.base' },
-    zombie: { bg: 'ink', fg: 'cyan', accent: 'vermilion.base' }
+    ocean: { bg: 'ocean', fg: 'paper', accent: 'comic yellow.base' },
+    flat: { bg: 'ink', fg: 'cyan', accent: 'vermilion.base' }
   };
   var KEY = 'preceptoros.terminal';
 
@@ -91,34 +91,22 @@
     actions.appendChild(button('Skip tutorial', function () { handlers.skip(); }));
     var sel = doc.createElement('select');
     sel.setAttribute('aria-label', 'Terminal look');
-    [['', 'node default'], ['basic', 'basic'], ['atlantis', 'atlantis'], ['zombie', 'zombie']].forEach(function (o) {
+    [['', 'node default'], ['basic', 'basic'], ['ocean', 'ocean'], ['flat', 'flat']].forEach(function (o) {
       var opt = doc.createElement('option'); opt.value = o[0]; opt.textContent = o[1]; sel.appendChild(opt);
     });
     sel.style.minHeight = '44px';
     sel.addEventListener('change', function () { handlers.choose(sel.value === '' ? null : sel.value); });
-    // H1: the stick. Dragging inside the pad selects the neighbour by angle (handlers.direction → handlers.select, the W-4 law);
-    // letting go walks to it (handlers.enter), the same as Enter after an arrow key.
-    var stickPad = doc.createElement('div');
-    stickPad.setAttribute('role', 'application');
-    stickPad.setAttribute('aria-label', 'Move your character: drag inside the circle, let go to walk');
-    stickPad.style.cssText = 'width:168px;height:168px;touch-action:none;border:2px solid currentColor;border-radius:50%;margin:8px 0';
-    var drag = null, lastName = null;
-    stickPad.addEventListener('pointerdown', function (e) { drag = [e.clientX, e.clientY]; lastName = null; stickPad.setPointerCapture(e.pointerId); });
-    stickPad.addEventListener('pointermove', function (e) {
-      if (!drag) { return; }
-      var name = handlers.direction ? handlers.direction(e.clientX - drag[0], e.clientY - drag[1]) : null;
-      if (name && name !== lastName) { lastName = name; handlers.select(name, 'stick'); }
-    });
-    stickPad.addEventListener('pointerup', function () { var walked = drag && lastName; drag = null; if (walked) { handlers.enter('stick'); } });
-    stickPad.addEventListener('pointercancel', function () { drag = null; });
-    box.appendChild(stickPad);
+    // 2026-11-02 (the Sovereign p0, buzon#30): the on-map stick pad is retired (retirados/RETIRO-joystick-20261102.md).
+    // Touch walks by tapping the map (a node: walk the route; another cell: one free step toward it); arrows still step.
     // Free walk: on by default once the floor is loaded; off gives back the W-4 node law (arrows choose a node).
     var freeLabel = doc.createElement('label'), free = doc.createElement('input');
     free.type = 'checkbox'; free.id = 'free-walk'; free.checked = true; free.style.minHeight = free.style.minWidth = '44px';
     free.addEventListener('change', function () { if (handlers.free) { handlers.free(free.checked); } });
     freeLabel.appendChild(free); freeLabel.appendChild(doc.createTextNode(' Free walk'));
     box.appendChild(freeLabel);
-    box.appendChild(status); box.appendChild(actions); box.appendChild(sel);
+    box.appendChild(status); box.appendChild(actions);
+    // Plug&play (2026-11-01): the look choice is rarely used, so a page may fold it away (#more-look, in the News sheet).
+    (doc.getElementById('more-look') || box).appendChild(sel);
     container.appendChild(box);
     // Arrow keys choose a neighbour (move() decides which); Enter walks to the chosen one. Form fields keep their keys.
     var keys = { ArrowRight: 'east', ArrowLeft: 'west', ArrowUp: 'north-east', ArrowDown: 'south-west' };
@@ -138,7 +126,7 @@
     // W-3: a walk over the visible nodes (walk_route.js). Frames are counted, never milliseconds (W-D3).
     var walk = null, reduced = !!(env.win.matchMedia && env.win.matchMedia('(prefers-reduced-motion: reduce)').matches);
     var saved = savedChoice(storeOf(env.win));
-    // W-4: the chosen neighbour (by an arrow key or the stick). It is cleared when a walk starts.
+    // W-4: the chosen neighbour (by an arrow key). It is cleared when a walk starts.
     var selected = null;
     // Free walk (visitor_walk.js): the crab steps cell by cell on the floor of AtlasMapPainter.world().
     var freeOn = true, crab = null, aim = null;
@@ -161,12 +149,10 @@
     }
     function select(direction, source) {
       if (!freeWalker()) { selectNeighbour(direction); return; }
-      if (source === 'stick') { aim = direction; joy.say('aim ' + direction + ' · let go to step'); return; }
       freeStep(direction);
     }
     function enterKey(source) {
       if (!freeWalker()) { walkSelected(); return; }
-      if (source === 'stick') { if (aim) { var d = aim; aim = null; freeStep(d); } return; }
       if (walker.on === undefined || walker.on) { enterNode(true); return; }
       joy.say('No node on this cell: walk onto a node, then Enter.');
     }
@@ -179,8 +165,7 @@
       crab = null; env.redraw();
       joy.say(on ? 'free walk: on' : 'free walk: off · arrow keys choose a node');
     }
-    var joy = mount(env.doc, env.doc.getElementById('joy'), { select: select, enter: enterKey, free: setFree, choose: chooseLook, skip: skipTutorial,
-      direction: function (dx, dy) { var M = env.win.AtlasMapStick; return M ? M.direction(dx, dy) : null; } });
+    var joy = mount(env.doc, env.doc.getElementById('joy'), { select: select, enter: enterKey, free: setFree, choose: chooseLook, skip: skipTutorial });
     function storeOf(win) { try { return win.localStorage; } catch (e) { return null; } }
     function hex(name) { return bandHex(name, env.win.AtlasComicTokens, env.win.AtlasComicAccents); }
     function anchor(look) {
@@ -301,7 +286,7 @@
       enterNode(true);
       return false;
     }
-    return { start: start, walker: walkerView, walkTo: walkTo, tick: tickWalk, walking: function () { return !!walk; }, say: function (text) { joy.say(text); } };
+    return { start: start, step: function (direction) { if (!freeWalker()) { return false; } freeStep(direction); return true; }, walker: walkerView, walkTo: walkTo, tick: tickWalk, walking: function () { return !!walk; }, say: function (text) { joy.say(text); } };
   }
 
   var AtlasColonyControls = {

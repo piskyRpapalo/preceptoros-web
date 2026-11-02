@@ -62,4 +62,8 @@ P5a source receipt (2026-11-01): /game/hitl_walkers.js joins the shell after P4.
 P4 source receipt (2026-11-01): /game/map_painter.js joins the shell (the 2.5D floor). 113 entries / 112 distinct.
 Terminal source receipt (2026-11-01): /game/terminal_tabs.js joins the shell. 114 entries / 113 distinct.
 Terminal source receipt (2026-11-01): /game/terminal_tabs.js joins the shell. 115 entries / 114 distinct.
-Free walk source receipt (2026-11-01): /game/visitor_walk.js joins the shell. 116 entries / 115 distinct.
+Decree p0 source receipt (2026-11-01, buzon#30): /face/atlantis.html and /face/zombie.html tombstones leave the shell for retirados/face/. 113 entries / 112 distinct.
+Airplane-mode source receipt (2026-11-01): /game/web_node_brain.js joins the shell so the guide loads with the network off. 114 entries / 113 distinct.
+Rebase receipt (2026-11-01): /game/welcome_card.js join the shell after main. 115 entries / 114 distinct.
+Rebase receipt (2026-11-01): /game/visitor_walk.js join the shell after main. 116 entries / 115 distinct.
+Compact terminal source receipt (2026-11-02, buzon#30): /game/terminal_tabs.js retires to retirados/terminal/ and /game/terminal_panel.js takes its slot; /game/map_stick.js (not precached) retires to retirados/joystick/. 116 entries / 115 distinct.

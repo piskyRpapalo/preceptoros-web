@@ -1,10 +1,10 @@
-// Cases of the H1 port (public/game/map_stick.js). Parity with retirados/face/face_world.js (retired H2, kept as the reference), and the joystick aim properties.
+// Cases of the H1 port (retirados/joystick/map_stick.js, retired 2026-11-02). Parity with retirados/face/face_world.js (retired H2, kept as the reference), and the joystick aim properties.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 import { readFileSync } from 'node:fs';
 const require = createRequire(import.meta.url);
-const M = require('../public/game/map_stick.js');
+const M = require('../retirados/joystick/map_stick.js');
 const W = require('../retirados/face/face_world.js');
 
 test('the three preconfigured places are the face places, in the same order', () => {
@@ -43,7 +43,7 @@ test('sabotage: a walk that stops short of its place is caught (it must end on t
 });
 
 test('the module reads no random number, no clock and no network', () => {
-  const src = readFileSync(new URL('../public/game/map_stick.js', import.meta.url), 'utf8');
+  const src = readFileSync(new URL('../retirados/joystick/map_stick.js', import.meta.url), 'utf8');
   assert.doesNotMatch(src, /Math\.random|Date\.now|new Date|performance\.now|fetch\(|XMLHttpRequest/);
 });
 
