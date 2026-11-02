@@ -23,12 +23,12 @@
 
   // Terminal familia (TF-1): the visitor reads words; the raw seal and the cycle Δ stay in the title (Technical details).
   var HUMANO = { LIVE: 'live', STALE: 'a while ago', NO_DATA: 'not measured yet', SIMULATED: 'simulated', EMULADO: 'emulated' };
-  function humano(s) { return T('sello_' + s, HUMANO[s] || String(s).toLowerCase()); }
+  function humano(s) { return T('seal_' + s, HUMANO[s] || String(s).toLowerCase()); }
   function burbuja(m) {
     var li = el('li', 'radio-msg'), s = sello(m), cab = el('p', 'radio-msg-cab');
     li.dataset.quien = m.quien; li.dataset.sello = s; li.dataset.fuente = m.fuente; li.dataset.ciclo = cicloValido(m.ciclo) ? String(m.ciclo) : 'NO_DATA';
     cab.appendChild(el('b', null, m.quien));
-    cab.appendChild(document.createTextNode(' · '));
+    cab.appendChild(el('span', null, ' · '));
     var marca = el('span', 'radio-msg-sello', humano(s)); marca.title = s; cab.appendChild(marca);
     var edadN = edad(m), edadTexto = edadN === null ? T('chat_edad_sin', 'turn not measured') : T('chat_edad', '{n} turns ago').replace('{n}', String(edadN));
     var meta = el('span', 'radio-msg-meta', ' · ' + m.fuente + ' · ' + edadTexto);
@@ -107,7 +107,7 @@
       var li = el('li', 'radio-msg'), cab = el('p', 'radio-msg-cab');
       li.dataset.sello = e.seal; li.dataset.fuente = 'world-creator';
       cab.appendChild(el('b', null, T('echo_who', 'World creator')));
-      cab.appendChild(document.createTextNode(' · '));
+      cab.appendChild(el('span', null, ' · '));
       var marca = el('span', 'radio-msg-sello', humano(e.seal)); marca.title = e.seal; cab.appendChild(marca);
       var meta = el('span', 'radio-msg-meta', e.passage ? ' · ' + e.passage.source : ''); meta.title = e.passage ? e.passage.source + ' · ' + e.passage.seal : String(e.cause || ''); cab.appendChild(meta);
       li.appendChild(cab); li.appendChild(el('p', 'radio-msg-texto', e.text));

@@ -2522,7 +2522,7 @@ class TerminalFamilia(unittest.TestCase):
         radio = (PUBLICO / "assets" / "radio_message_log.js").read_text(encoding="utf-8")
         self.assertNotIn("'radio-msg-sello', s)", radio)
         self.assertNotIn("'radio-msg-sello', e.seal)", radio)
-        self.assertIn("document.createTextNode(' · ')", radio)
+        self.assertIn("el('span', null, ' · ')", radio)
         self.assertNotIn("'Δ {n} cycles'", radio)
 
     def test_lo_tecnico_sigue_ahi_plegado(self):

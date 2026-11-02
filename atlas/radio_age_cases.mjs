@@ -30,7 +30,9 @@ for (const invalid of [undefined, null, NaN, Infinity, -1, 0.5, '1', 1000000001]
     const row = r.api.registro()[0];
     assert.equal(row.ciclo, null); assert.equal(row.sello, 'NO_DATA');
     const bubble = r.nodes.findLast((n) => n.className === 'radio-msg');
-    assert.match(bubble.textContent, /NO_DATA \(.*cycle.*\)/);
+    // TF-1: the visitor reads «turn not measured»; NO_DATA with its cause is folded into the title.
+    assert.match(bubble.textContent, /turn not measured/);
+    assert.ok(r.nodes.some((n) => /NO_DATA \(.*cycle.*\)/.test(n.title || '')));
     assert.doesNotMatch(bubble.textContent, /NaN|undefined/);
   });
 }
