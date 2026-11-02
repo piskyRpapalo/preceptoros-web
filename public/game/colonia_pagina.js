@@ -176,10 +176,15 @@
     sc.you = you ? youFrame(walker, t, reducido === true) : null;
     var g = canvas.getContext('2d');
     g.setTransform(1, 0, 0, 1, 0, 0);
-    g.fillStyle = sc.cielo; g.fillRect(0, 0, canvas.width, canvas.height);
+    // Forced colours (buzon#30, 2026-11-02): the system canvas under everything, the floor veiled to a faint texture, and
+    // every bubble outlined in the one system ink (comic_atoms highContrast). Shape and pattern stay; colour goes.
+    var hc = !!(root.matchMedia && root.matchMedia('(forced-colors: active)').matches);
+    if (P.highContrast) { P.highContrast(hc); }
+    g.fillStyle = hc ? 'Canvas' : sc.cielo; g.fillRect(0, 0, canvas.width, canvas.height);
     var G = geometry(sc, canvas), cx = G.cx, cy = G.cy, k = G.k;
     // P4: the 2.5D floor of the baked chunks, under every layer, by this same placement (map_painter.js).
     if (root.AtlasMapPainter) { root.AtlasMapPainter.draw(g, G, t, reducido === true); }
+    if (hc) { g.save(); g.globalAlpha = 0.8; g.fillStyle = 'Canvas'; g.fillRect(0, 0, canvas.width, canvas.height); g.restore(); }
     // M1-2: one deterministic depth order for every layer of this same map.
     var layers = sc.tiles.map(function (n, i) { return { id: 'tile-' + i, item: n }; })
       .concat(sc.buildings.map(function (n, i) { return { id: 'building-' + i, item: n, lift: breathe(n.id, t, reducido, hot && hot === n.node) }; }))
@@ -191,7 +196,7 @@
     })).map(function (layer) { return { x: layer.x, y: layer.y, frame: layer.frame, lift: lifts[layer.id] || 0, building: /^building-/.test(layer.id) }; })
       : layers.map(function (layer) { return { x: layer.item.x, y: layer.item.y, frame: layer.item.frame, lift: layer.lift || 0, building: /^building-/.test(layer.id) }; });
     drawn.forEach(function (nd) {
-      if (nd.building && !reducido) { shadow(g, cx + nd.x * k, cy + nd.y * k, S / 1.4, nd.lift, BREATH.hot); }
+      if (nd.building && !reducido && !hc) { shadow(g, cx + nd.x * k, cy + nd.y * k, S / 1.4, nd.lift, BREATH.hot); }
       g.save();
       g.translate(cx + nd.x * k - BX * S, cy + nd.y * k - BY * S - nd.lift);
       g.scale(S, S);
