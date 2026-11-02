@@ -76,6 +76,9 @@ async function main() {
   ok(await hasta(`document.getElementById('state').textContent.includes('Colony:')`, 15000), 'colony drawn from the state');
   await espera(300);
 
+  // 0 · free walk (visitor_walk.js) is on by default; this guard checks the W-4 node law, reachable by turning it off.
+  await ev(`(() => { const f = document.getElementById('free-walk'); if (f) { f.checked = false; f.dispatchEvent(new Event('change')); } return true; })()`);
+
   // 1 · the grid of six buttons and the enter button are gone from the page.
   const botones = await ev(`[...document.querySelectorAll('#joy button')].map(b => b.textContent.trim())`);
   medidas.botones = botones;

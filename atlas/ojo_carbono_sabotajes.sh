@@ -11,8 +11,8 @@ sab public/creation.html '<script src="/game/tabla_semantica.js"></script>
 sab public/game/world_feed.js "'/api/world-state'" "'/api/world-state-retirado'" "S2a missing endpoint"
 sab public/game/world_feed.js "if (nd && nd.cobertura" "if (false && nd.cobertura" "S2b generic cause"
 sab public/openworld/index.html ".topbar > a{display:inline-flex;align-items:center;min-width:44px;min-height:44px}" "" "S3 Back 36px"
-sab public/openworld/index.html "grid-area:1/1;align-self:end" "position:absolute;left:8px;bottom:60px;align-self:end" "S3b pad off the map"
-sab public/game/terminal_tabs.js "  paintArmy(null);
+sab public/openworld/index.html "<div id=\"stage\" class=\"stage\">" "<div id=\"stage\" class=\"stage\"><div role=\"application\" aria-label=\"stick\"></div>" "S3b the stick pad comes back on the map"
+sab public/game/terminal_panel.js "    paintArmy(null);
 " "" "S4 empty Army"
 sab public/assets/radio_message_log.js "R.lista.hidden = id !== 'radio';" "R.lista.hidden = false;" "S4b radio does not switch"
 rm -f "$BK"

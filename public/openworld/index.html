@@ -35,14 +35,10 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
 #map .surface{width:100%;flex:1;min-height:240px;display:block;transition:opacity 300ms ease}
 @media (prefers-reduced-motion: reduce){#map .surface{transition:none}}
 #map .press{display:flex;flex-wrap:wrap;gap:8px}
-#map .press button,#map .listen button,#world-refresh{min-height:44px;padding:8px 14px;border:2px solid currentColor;border-radius:var(--radius);background:var(--bg);color:var(--fg);font:inherit;cursor:pointer}
+#map .press button{min-height:44px;padding:8px 14px;border:2px solid currentColor;border-radius:var(--radius);background:var(--bg);color:var(--fg);font:inherit;cursor:pointer}
 #map .press button[aria-pressed="true"]{outline:3px solid currentColor;outline-offset:2px}
 #map .state{margin:0;color:var(--soft);font-size:.92rem}
-#joy{display:grid;gap:8px;padding:10px;border:2px solid var(--line);border-radius:var(--radius);background:var(--bg);color:var(--fg)}
-#joy [role="group"]{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
-#joy button,#joy select{min-height:44px;min-width:44px;padding:6px;border:2px solid currentColor;border-radius:var(--radius);background:var(--bg);color:var(--fg);font:inherit;cursor:pointer}
-#joy [aria-live]{margin:0}
-#chat{display:flex;flex-direction:column;gap:8px;min-height:44vh}
+#chat{display:flex;flex-direction:column;gap:8px;min-height:44vh;overflow:auto}
 #chat h2{font-size:1.1rem;margin:0}
 #chat .log{flex:1;min-height:0;overflow:auto;margin:0;padding:0;list-style:none;color:var(--soft)}
 #chat form{display:flex;gap:8px}
@@ -50,43 +46,41 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
 #chat button{min-height:44px;padding:8px 14px;border:2px solid currentColor;border-radius:var(--radius);background:var(--bg);color:var(--fg);font:inherit}
 #chat button:disabled,#chat input:disabled{opacity:.55}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
-/* The terminal of the first version (the first face terminals, retirados/face/): the map owns the top; a tab bar opens sheets that
-   cover it (news, summons, army); the chat of all AIs lives below. The status lines stay outside the sheets: the state
-   log is always present. Selected tab = bold + underline + thicker border, never colour alone. */
+/* The compact terminal (the Sovereign p0, buzon#30, 2026-11-02): ONE map on top, ONE panel below (right on desktop).
+   Everything the page says lives in the panel as a voice with its speaker's name (terminal_panel.js). The tab sheets and
+   the on-map stick are retired (retirados/RETIRO-joystick-20261102.md). Touch walks by tapping the map; arrows step. */
 .topbar{display:flex;flex-wrap:wrap;align-items:center;gap:4px 12px}
-.stage{position:relative;display:flex;flex-direction:column;min-height:0}
-.sheet{position:absolute;inset:0;z-index:3;overflow:auto;overscroll-behavior:contain;padding:12px;display:flex;flex-direction:column;gap:8px;
-  background:color-mix(in srgb,var(--bg) 90%,transparent);color:var(--fg);border:2px solid var(--line);border-radius:var(--radius)}
-.sheet[hidden]{display:none}
-/* The walking controls step ON the map, as an upper layer (bottom-left, like the first terminals' pad); a sheet covers both. */
 .topbar > a{display:inline-flex;align-items:center;min-width:44px;min-height:44px}
-/* Zoom is a layer too, top-right on a plate (its spoken level sits on the plate, never on the drawing). */
+.stage{position:relative;display:flex;flex-direction:column;min-height:0;flex:1}
+/* Zoom stays a layer on the map, top-right on a plate; its spoken level is a voice in the panel, never on the drawing. */
 .stage #zoom-controls{position:absolute;top:8px;right:8px;z-index:2;display:flex;flex-wrap:wrap;justify-content:flex-end;gap:4px;max-width:60%;
   padding:4px;border:2px solid var(--line);border-radius:var(--radius);background:color-mix(in srgb,var(--bg) 78%,transparent)}
 .stage #zoom-controls button{padding:2px 8px;font-size:.85rem}
-.stage #zoom-state{margin:0;width:100%;text-align:right;font-size:.8rem}
-.stage #joy{position:absolute;left:8px;bottom:calc(1.6em + 8px);z-index:2;max-width:calc(100% - 16px);padding:6px;gap:4px;
-  background:color-mix(in srgb,var(--bg) 72%,transparent);border-width:2px}
-.stage #joy > [role="group"]{display:grid;grid-template-columns:auto 1fr;gap:4px 8px;align-items:center}
-.stage #joy [role="application"]{width:112px !important;height:112px !important;margin:0 !important;grid-row:span 3}
-.stage #joy .state{font-size:.8rem;max-height:3.6em;overflow:hidden}
-.stage #joy button,.stage #joy select{padding:4px 8px}
-.next{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:8px 10px;border:2px solid currentColor;border-radius:var(--radius)}
-.next p{margin:0;flex:1 1 12em;font-size:1.05rem}
-.next button{min-height:44px;padding:8px 14px;border:3px solid currentColor;border-radius:var(--radius);background:var(--bg);color:var(--fg);font:inherit;font-weight:700;cursor:pointer}
+@supports not (background:color-mix(in srgb,red 50%,transparent)){.stage #zoom-controls{background:var(--bg)}}
+.voices{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.voice{border:2px solid var(--line);border-radius:var(--radius);padding:6px 10px;display:grid;gap:6px;color:var(--fg)}
+.voice > .who{margin:0;font-weight:700;font-size:.9rem;text-decoration:underline}
+.voice p{margin:0}
+.voice .state{color:var(--fg);font-size:.95rem}
+.voice button,.voice select{min-height:44px;min-width:44px;padding:8px 14px;border:2px solid currentColor;border-radius:var(--radius);background:var(--bg);color:var(--fg);font:inherit;cursor:pointer}
+.voice .acts,.voice #joy [role="group"],#visitor-play > div{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.voice #joy{display:grid;gap:6px}
+.voice #joy label{display:inline-flex;align-items:center;gap:6px;min-height:44px}
+#visitor-play h2{font-size:1rem;margin:0}
+.next p{font-size:1.05rem}
+.next button{border-width:3px;font-weight:700}
 .next button[hidden]{display:none}
 #more summary{min-height:44px;display:flex;align-items:center;cursor:pointer}
-#more select{min-height:44px;font:inherit}
-.sheet-h{font-size:1.05rem;margin:0}
-.sheet button{min-height:44px;padding:8px 14px;border:2px solid currentColor;border-radius:var(--radius);background:var(--bg);color:var(--fg);font:inherit;cursor:pointer}
-.tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
-.tabs [role="tab"]{min-height:44px;padding:6px;border:2px solid currentColor;border-radius:var(--radius);background:var(--bg);color:var(--fg);font:inherit;cursor:pointer}
-.tabs [role="tab"][aria-selected="true"]{font-weight:700;text-decoration:underline;border-width:3px}
-@supports not (background:color-mix(in srgb,red 50%,transparent)){.sheet{background:var(--bg)}}
-/* Hero map (2026-11-01, measured on the Doogee: the map was below the fold inside a 44vh scroll box). On a phone the map
-   is no longer trapped in a scroll box: it follows the walking controls at a fixed share of the screen and the page scrolls as one; the chat follows, always present. */
-@media (max-width:899px){html,body{height:auto}main{flex:none;grid-template-rows:auto auto;min-height:0}#map{overflow:visible;min-height:0}#map .surface{flex:none;height:45vh;min-height:280px;max-height:620px;width:auto;margin-inline:-16px;border-radius:0}}
-@media (min-width:900px){main{grid-template-rows:1fr;grid-template-columns:1fr 1fr}#map{border-bottom:0;border-right:2px solid var(--line)}}
+.welcome{display:grid;gap:6px}
+.welcome[hidden]{display:none}
+.voice:has(> .welcome[hidden]){display:none}
+.welcome h3{font-size:1.05rem;margin:0}
+.voice .welcome-play{min-height:56px;font-size:1.1rem;font-weight:700;border-width:3px}
+#log li.who-before::before{content:attr(data-speaker) " · ";font-weight:700}
+/* The keyboard ring is the page's own, never the browser default alone (measured 2026-11-02: «auto 1px» before). */
+#map :is(button,a):focus-visible,#chat :is(button,a,select,summary,input):focus-visible{outline:3px solid currentColor;outline-offset:2px}
+@media (max-width:899px){html,body{height:auto}main{flex:none;grid-template-rows:auto auto;min-height:0}#map{overflow:visible;min-height:0}#chat{overflow:visible;min-height:0}#map .surface{flex:none;height:45vh;min-height:280px;max-height:620px;width:auto;margin-inline:-16px;border-radius:0}}
+@media (min-width:900px){main{grid-template-rows:1fr;grid-template-columns:3fr 2fr;height:100vh}#map{border-bottom:0;border-right:2px solid var(--line)}}
 </style>
 </head>
 <body>
@@ -99,46 +93,40 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
 <button type="button" id="t-cabin" aria-pressed="true" data-terrain="cabin">Tutorial cabin</button>
 </div></div>
 <div id="stage" class="stage">
-<canvas class="surface" id="surface" role="img" aria-label="The global map: tutorial cabin and live nodes"></canvas>
-<div id="joy" aria-label="Walking controls"></div>
-<section id="sheet-news" class="sheet" role="tabpanel" aria-labelledby="tab-news" hidden>
-<h2 class="sheet-h">News of the map</h2>
-<div class="listen">
-<button type="button" id="listen" aria-describedby="listen-state">Listen to the cabin</button>
-</div>
-<button type="button" id="world-refresh">Check live nodes</button>
-<details id="more"><summary>More: map details and terminal look</summary>
-<div id="more-look"></div>
-<ul class="state" id="frases" aria-label="Map details"></ul>
-</details>
-</section>
-<section id="sheet-summons" class="sheet" role="tabpanel" aria-labelledby="tab-summons" hidden>
-<h2 class="sheet-h">Summons</h2>
-<div id="visitor-play" aria-label="Visitor play"></div>
-</section>
-<section id="sheet-army" class="sheet" role="tabpanel" aria-labelledby="tab-army" hidden>
-<h2 class="sheet-h">Army</h2>
-<p><a href="/game/army.html" style="display:inline-flex;min-height:44px">Open the full Army page</a></p>
-</section>
-</div>
-<div class="tabs" role="tablist" aria-label="What covers the map">
-<button type="button" role="tab" id="tab-map" aria-selected="true" aria-controls="surface">Map</button>
-<button type="button" role="tab" id="tab-news" aria-selected="false" aria-controls="sheet-news" tabindex="-1">News</button>
-<button type="button" role="tab" id="tab-summons" aria-selected="false" aria-controls="sheet-summons" tabindex="-1">Summons</button>
-<button type="button" role="tab" id="tab-army" aria-selected="false" aria-controls="sheet-army" tabindex="-1">Army</button>
-</div>
-<div id="next" class="next"><p id="next-step" aria-live="polite"><strong>Next:</strong> <span id="next-text">Press Play now.</span></p>
-<button type="button" id="play-now">Play now</button></div>
-<div class="status">
-<p class="state" id="listen-state" aria-live="polite"></p>
-<p class="state" id="state" aria-live="polite">Nodes online: 0.</p>
-<p class="state" id="floor-state" aria-live="polite">Map floor: loading the 7 chunks around the cabin.</p>
+<canvas class="surface" id="surface" role="img" aria-label="The global map: tutorial cabin and live nodes. Tap or click a node to walk there; arrow keys choose a neighbour, Enter walks."></canvas>
 </div>
 </section>
 <section id="chat" aria-labelledby="chat-h">
 <h2 id="chat-h">Chat</h2>
-<ul class="log" id="log" role="log" aria-live="polite">
-<li>Start here: press Play now, walk with the stick, ask the guide below.</li>
+<ol class="voices" id="voices" aria-label="What the page says, by speaker">
+<li class="voice" data-speaker="Tutorial"><div id="joy" aria-label="Tutorial"></div></li>
+<li class="voice" data-speaker="Welcome"><section id="sheet-welcome" class="welcome" role="dialog" aria-modal="false" aria-labelledby="welcome-h" aria-describedby="welcome-lore" hidden>
+<h3 id="welcome-h">Welcome to the sunken forest</h3>
+<p id="welcome-lore">You are an ephemeral crab: your key is signed on this device and nothing leaves it; the model advises, never signs.</p>
+<div class="acts"><button type="button" id="welcome-play" class="welcome-play">Play now · sign on this device</button>
+<button type="button" id="welcome-look">Look around first</button></div>
+<p id="welcome-result" class="state" role="status"></p>
+</section></li>
+<li class="voice next" id="next" data-speaker="Guide"><p id="next-step" aria-live="polite"><strong>Next:</strong> <span id="next-text">Press Play now.</span></p>
+<div class="acts"><button type="button" id="play-now">Play now</button></div></li>
+<li class="voice" data-speaker="Map"><p class="state" id="state" aria-live="polite">Nodes online: 0.</p></li>
+<li class="voice" data-speaker="Floor"><p class="state" id="floor-state" aria-live="polite">Map floor: loading the 7 chunks around the cabin.</p></li>
+<li class="voice" id="voice-walkers" data-speaker="Walkers"></li>
+<li class="voice" id="voice-zoom" data-speaker="Zoom"></li>
+<li class="voice" data-speaker="House" data-title="summons"><div id="visitor-play" aria-label="House"></div></li>
+<li class="voice" data-speaker="Army"><p class="state" id="army-visit" aria-live="polite"></p>
+<p><a href="/game/army.html" style="display:inline-flex;align-items:center;min-height:44px">Open the full Army page</a></p></li>
+<li class="voice" data-speaker="Radio" data-title="news of the map">
+<div class="acts listen"><button type="button" id="listen" aria-describedby="listen-state">Listen to the cabin</button>
+<button type="button" id="world-refresh">Check live nodes</button></div>
+<p class="state" id="listen-state" aria-live="polite"></p>
+<details id="more"><summary>More: map details and terminal look</summary>
+<div id="more-look"></div>
+<ul class="state" id="frases" aria-label="Map details"></ul>
+</details></li>
+</ol>
+<ul class="log" id="log" role="log" aria-live="polite" aria-label="Conversation">
+<li>Start here: press Play now, tap a node on the map to walk (arrow keys choose one), ask the guide below.</li>
 <li>The chat is not live yet: NO_DATA until you download the optional browser brain below.</li>
 </ul>
 <form id="entry" onsubmit="return false">
@@ -171,10 +159,10 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
 <script src="/game/map_carta.js"></script>
 <script src="/game/map_chunks.js"></script>
 <script src="/game/map_painter.js"></script>
-<script src="/game/terminal_tabs.js"></script>
+<script src="/game/terminal_panel.js"></script>
 <script src="/game/tutorial_walk.js"></script>
 <script src="/game/walk_route.js"></script>
-<script src="/game/map_stick.js"></script>
+<script src="/game/visitor_walk.js"></script>
 <script src="/game/colony_controls.js"></script>
 <script src="/game/hitl_walkers.js"></script>
 <script src="/game/db.js"></script>
@@ -196,6 +184,7 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
 <script src="/game/visitor_conquest.js"></script>
 <script src="/game/hatch_reveal.js"></script>
 <script src="/game/visitor_play.js"></script>
+<script src="/game/welcome_card.js"></script>
 <script src="/game/world_feed.js"></script>
 <script src="/game/map_chat.js"></script>
 <script src="/assets/radio_message_log.js"></script>

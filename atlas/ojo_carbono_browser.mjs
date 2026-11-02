@@ -3,7 +3,7 @@
 // server answers /api/world-state through the real worker (worker/world_state.js) with no publisher binding, i.e. the
 // honest 503 NO_DATA the deployed site gives when its publisher is missing. 3 every visible a/button/select/input/tab
 // on / and /openworld/ is >= 44x44 at 390 px (exempt: .skip links, off-screen until focused; .sr, visually hidden).
-// 4 the Army tab shows its sheet with troops or NO_DATA and the /game/army.html link; the radio tabs switch panels.
+// 4 the Army voice of the panel shows troops or NO_DATA and the /game/army.html link; the radio tabs switch panels.
 // Uso: node atlas/ojo_carbono_browser.mjs
 import { createServer } from 'node:http';
 import { readFileSync } from 'node:fs';
@@ -71,18 +71,18 @@ async function main() {
   const enLanding = JSON.parse(await ev(PEQUENOS));
   ok(enLanding.length === 0, '/ has targets under 44x44: ' + enLanding.join(' | '));
 
-  // /openworld/: touch targets, then the tabs, then «Check live nodes».
+  // /openworld/: touch targets, then the one-map-one-panel order, then «Check live nodes».
   await cmd('Page.navigate', { url: origen + '/openworld/' }); await espera(1800);
   const enMapa = JSON.parse(await ev(PEQUENOS));
   ok(enMapa.length === 0, '/openworld/ has targets under 44x44: ' + enMapa.join(' | '));
-  // vertical order for one column: map (with the joystick on it) above the tabs, the tabs above the chat.
-  const orden = JSON.parse(await ev(`JSON.stringify((() => { const t = (s) => document.querySelector(s).getBoundingClientRect(); return { mapa: t('#surface').top, joy: t('#joy').bottom, mapaFin: t('#surface').bottom, tabs: t('[role=tablist]').top, chat: t('#chat').top, ancho: document.documentElement.scrollWidth }; })())`));
-  ok(orden.mapa < orden.tabs && orden.joy <= orden.mapaFin + 1 && orden.tabs < orden.chat && orden.ancho <= 390, 'the phone page is not map-with-joystick, then buttons, then chat: ' + JSON.stringify(orden));
+  // vertical order for one column (compact terminal, 2026-11-02): the map, then ONE panel that holds every voice; no stick on the map.
+  const orden = JSON.parse(await ev(`JSON.stringify((() => { const t = (s) => document.querySelector(s).getBoundingClientRect(); return { mapa: t('#surface').top, mapaFin: t('#surface').bottom, chat: t('#chat').top, joy: t('#joy').top, pad: !!document.querySelector('[role=application]'), hojas: document.querySelectorAll('.sheet,#map [role=tablist]').length, ancho: document.documentElement.scrollWidth }; })())`));
+  ok(orden.mapa < orden.chat && orden.mapaFin <= orden.chat + 1 && orden.joy > orden.chat && !orden.pad && orden.hojas === 0 && orden.ancho <= 390, 'the phone page is not one map, then one panel: ' + JSON.stringify(orden));
 
-  // 4 · Army: its sheet shows, honest content, the link to the full army page.
-  const army = JSON.parse(await ev(`(async () => { document.getElementById('tab-army').click(); await new Promise((r) => setTimeout(r, 200)); const s = document.getElementById('sheet-army'), r = s.getBoundingClientRect(); return JSON.stringify({ visible: !s.hidden && r.height > 0, texto: s.innerText, enlace: !!s.querySelector('a[href="/game/army.html"]'), elegida: document.getElementById('tab-army').getAttribute('aria-selected') }); })()`));
-  ok(army.visible && army.elegida === 'true', 'the Army tab does not show its sheet: ' + JSON.stringify(army));
-  ok(/NO_DATA: no troops adopted in this visit yet|Troops of this visit/.test(army.texto) && army.enlace, 'the Army sheet does not say its troops or NO_DATA with the army link: ' + army.texto);
+  // 4 · Army: its voice in the panel shows, honest content, the link to the full army page.
+  const army = JSON.parse(await ev(`(async () => { const s = document.getElementById('army-visit').closest('li'), r = s.getBoundingClientRect(); return JSON.stringify({ visible: r.height > 0, texto: s.innerText, enlace: !!s.querySelector('a[href="/game/army.html"]'), quien: s.dataset.speaker }); })()`));
+  ok(army.visible && army.quien === 'Army', 'the Army voice is not in the panel: ' + JSON.stringify(army));
+  ok(/^Army\s+NO_DATA: no troops adopted in this visit yet|^Army\s+Troops of this visit/.test(army.texto) && army.enlace, 'the Army voice does not say its troops or NO_DATA with the army link: ' + army.texto);
   // the radio tabs: Echoes hides the Radio list, Radio shows it again.
   const radio = JSON.parse(await ev(`(async () => { const p = () => new Promise((r) => setTimeout(r, 120)); const c = document.getElementById('radio-chat'); if (!c) { return JSON.stringify({ falta: true }); }
     c.querySelector('.radio-chat-alterna').click(); await p(); const tabs = [...c.querySelectorAll('[role=tab]')], l = document.getElementById('radio-chat-lista');
@@ -92,7 +92,7 @@ async function main() {
 
   // 2 · «Check live nodes»: zero 404s after the click, and a sentence in #state.
   no404.length = 0;
-  const frase = await ev(`(async () => { document.getElementById('tab-news').click(); const b = document.getElementById('world-refresh'); const antes = document.getElementById('state').textContent; b.click(); for (let i = 0; i < 40 && document.getElementById('state').textContent === antes; i++) { await new Promise((r) => setTimeout(r, 100)); } return document.getElementById('state').textContent; })()`);
+  const frase = await ev(`(async () => { const b = document.getElementById('world-refresh'); const antes = document.getElementById('state').textContent; b.click(); for (let i = 0; i < 40 && document.getElementById('state').textContent === antes; i++) { await new Promise((r) => setTimeout(r, 100)); } return document.getElementById('state').textContent; })()`);
   ok(no404.length === 0, '«Check live nodes» requested a missing endpoint: ' + no404.join(' '));
   ok(/Live nodes (NO_DATA: \S|online)/.test(frase || '') && /world_publisher_unavailable$/.test(frase || ''), '«Check live nodes» did not announce a sentence with its cause: ' + frase);
   ok(excepciones.length === 0, '/ or /openworld/ threw: ' + excepciones.join(' | '));
