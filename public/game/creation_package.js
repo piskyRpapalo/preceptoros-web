@@ -50,7 +50,7 @@
   function frame(value) {
     const b = bytes(value); if (!b.length || b.length >= 1024) fail('frame byte limit');
     const f = JSON.parse(dec.decode(b)); exact(f, ['v', 'id', 'cv', 'style', 'atoms'], 'frame');
-    if (f.v !== 'preceptoros.acho/1' || typeof f.id !== 'string' || !/^[A-Z0-9_-]{1,32}$/.test(f.id) ||
+    if ((f.v !== 'preceptoros.acho/1' && f.v !== 'preceptoros.bubble/1') || typeof f.id !== 'string' || !/^[A-Z0-9_-]{1,32}$/.test(f.id) ||
         JSON.stringify(f.cv) !== '[412,515]' || !['volume', 'etch', 'clear'].includes(f.style) ||
         !Array.isArray(f.atoms) || f.atoms.length !== 1) fail('frame schema');
     const a = f.atoms[0]; exact(a, ['k', 'i'], 'atom');
