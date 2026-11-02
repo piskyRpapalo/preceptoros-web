@@ -30,5 +30,6 @@ test('3 · los stubs de la colonia dicen por qué están vacíos', () => {
   const o = P('openworld/index.html');
   assert.ok(!/>Army · NO_DATA</.test(o), 'Army no es un NO_DATA pelado');
   assert.ok(!o.includes('<li>The chat is not live yet.</li>'), 'el chat no es un stub pelado');
-  assert.match(o, /The chat is not live yet: NO_DATA until/);
+  assert.match(o, /The guide is still asleep; you can wake it below\./);
+  assert.match(o, /<details class="tech"><summary>Technical details<\/summary><p>NO_DATA: no local answer model/);
 });

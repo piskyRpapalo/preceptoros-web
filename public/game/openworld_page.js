@@ -11,7 +11,7 @@
   var press = doc.querySelector('#map .press');
   var state = doc.getElementById('state');
   var quieto = raiz.matchMedia && raiz.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var CP = raiz.AtlasColoniaPagina, colonia = null, colonia_fuente = 'NO_DATA', colonia_error = '';
+  var CP = raiz.AtlasColoniaPagina, colonia_ocultos = 0, colonia = null, colonia_fuente = 'NO_DATA', colonia_error = '';
   // Synthetic fixture, opt-in with ?fixture=sintetica: it is labelled SYNTHETIC on the page, never a live colony.
   var FIXTURE = { nodes: [{ id: 'cabin', q: 0, r: 0 }, { id: 'ring-e', q: 1, r: 0 }, { id: 'ring-ne', q: 1, r: -1 }, { id: 'ring-nw', q: 0, r: -1 }, { id: 'ring-w', q: -1, r: 0 }, { id: 'ring-sw', q: -1, r: 1 }, { id: 'ring-se', q: 0, r: 1 }, { id: 'doggee-a', q: 2, r: 0 }, { id: 'doggee-b', q: 2, r: -1 }], buildings: [{ id: 'b-cabin', node: 'cabin' }, { id: 'b-ring-e', node: 'ring-e' }, { id: 'b-ring-nw', node: 'ring-nw' }, { id: 'b-ring-sw', node: 'ring-sw' }, { id: 'b-doggee-a', node: 'doggee-a' }, { id: 'b-doggee-b', node: 'doggee-b' }], units: [] };
   // IC7-S4 (D11): the looks of the fixture's nodes; Doggee is the flat look. The live state carries its own looks.
@@ -110,15 +110,19 @@
     buttons();
     draw();
     var vivos = filas().filter(function (row) { return row.id !== 'cabin'; }).length;
-    var linea = 'Nodes online: ' + vivos + '.';
+    var linea = 'Nodes online: ' + vivos + '.', tecnico = '';
+    // TF-1: a family sentence; NO_DATA and its cause in #state-tech.
     if (colonia && CP && !colonia_error) {
-      try { linea = CP.texto(CP.scene(colonia, entrada.t, quieto, colony_looks, colony_seals)) + (colonia_fuente === 'fixture' ? ' · SYNTHETIC fixture, not a live colony' : ''); }
+      try { var v = CP.voz(CP.scene(colonia, entrada.t, quieto, colony_looks, colony_seals), colonia_ocultos, colonia_fuente === 'fixture'); linea = v[0]; tecnico = v[1]; }
       catch (e) { colonia_error = e.message || 'the colony is refused'; }
     }
-    if (colonia_error) { linea += ' Colony: NO_DATA · ' + colonia_error + '.'; }
-    else if (!colonia) { linea += ' Colony: NO_DATA · no live colony in the state (estado.json has no colonia).'; }
+    if (colonia_error || !colonia) {
+      linea += colonia_error ? ' The colony is still asleep.' : tutorial ? ' No colony yet.' : ' Loading the map…';
+      tecnico = 'Colony: NO_DATA · ' + (colonia_error || (tutorial ? 'estado.json has no colonia' : 'state not loaded yet')) + '.';
+    }
     if (CCT) { CCT.start(); }
     state.textContent = linea;
+    doc.getElementById('state-tech').textContent = tecnico;
     renderFrases();
   }
 
@@ -154,6 +158,7 @@
       colony_looks = estado.looks || {};
       colony_seals = estado.seals || {};
       colony_pending = estado.pending || {};
+      colonia_ocultos = Number.isInteger(estado.hidden) ? estado.hidden : 0;
       if (!colonia && estado.version === 2) { colonia_error = 'no node declared alive and sealed LIVE or STALE (' + estado.hidden + ' hidden)'; }
     } catch (e) { colonia = null; colonia_error = e.message || 'the state is refused'; }
   }
@@ -276,7 +281,7 @@
   }
   render();
   // P4: the baked floor loads by neighbourhood; its text equivalent goes to #floor-state, then the map redraws on it.
-  if (raiz.AtlasMapPainter) { raiz.AtlasMapPainter.start(function (s) { var el = doc.getElementById('floor-state'); if (el) { el.textContent = s; } draw(); }); }
+  if (raiz.AtlasMapPainter) { raiz.AtlasMapPainter.start(function (s, d) { doc.getElementById('floor-state').textContent = s; doc.getElementById('floor-tech').textContent = d; draw(); }); }
   raiz.addEventListener('resize', draw);
   if (!quieto) { raiz.setInterval(cycle, 1000); }
   var tutorial = null;

@@ -40,10 +40,12 @@
       }));
     }).then(function () {
       var n = Object.keys(out.chunks).length;
-      out.say = 'Map chunks: ' + n + ' of 7 around area ' + out.key + (out.missing.length ? ' · NO_DATA ' + out.missing.map(function (m) { return m.key + ' (' + m.cause + ')'; }).join(', ') : '');
+      // Terminal familia (TF-1): say is the visitor's sentence; detail keeps chunk keys and causes for Technical details.
+      out.detail = 'Map chunks: ' + n + ' of 7 around area ' + out.key + (out.missing.length ? ' · NO_DATA ' + out.missing.map(function (m) { return m.key + ' (' + m.cause + ')'; }).join(', ') : '');
+      out.say = n === 7 ? 'Map loaded' : n ? 'Part of the map is still missing' : 'The map has not loaded';
       return out;
     }, function (e) {
-      out.say = 'Map chunks: NO_DATA · ' + e.message; return out;
+      out.detail = 'Map chunks: NO_DATA · ' + e.message; out.say = 'The map has not loaded'; return out;
     });
   }
 

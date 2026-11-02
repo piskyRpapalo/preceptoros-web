@@ -103,7 +103,7 @@
           color: col, grosor: 2.6 * dpr, brillo: 0.6 + 0.4 * crece, estela: q ? 0 : 6, respira: !q, calidad: 2, face: true });
       }
       if (tarjeta && p >= 1) { tarjeta.element.hidden = false; }
-      if (p >= 1 && !txt.textContent) { txt.textContent = inicioCiclo === null ? 'NO_DATA (game cycle unavailable; showing the measured final frame) · ' + rar + ' · ' + cuenta : rar + ' · ' + cuenta; b.focus(); tiembla = ciclo; if (S && S.vozDe) { S.suena(S.vozDe(t)); } }
+      if (p >= 1 && !txt.textContent) { txt.textContent = rar + ' · ' + cuenta; if (inicioCiclo === null) { txt.title = 'NO_DATA (game cycle unavailable; showing the measured final frame)'; } b.focus(); tiembla = ciclo; if (S && S.vozDe) { S.suena(S.vozDe(t)); } }
 
       var faseTemblor = tiembla === null || q ? 0 : Math.max(0, 3 - (ciclo - tiembla));
       cv.style.transform = faseTemblor ? 'translate(' + (Math.sin((ciclo - tiembla) * Math.PI / 2) * 3 * faseTemblor / 3).toFixed(1) + 'px,0)' : '';

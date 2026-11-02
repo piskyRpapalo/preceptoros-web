@@ -227,7 +227,13 @@
 
   // The sentence the door shows under the picture: what is drawn, and what is not.
   function texto(sc) {
-    return 'Colony: ' + sc.nodes + ' nodes · ' + sc.edificios + ' buildings · ' + sc.bots.length + ' bots with faces · sky ' + sc.cielo;
+    return 'Colony: ' + sc.nodes + ' nodes · ' + sc.edificios + ' buildings · ' + sc.bots.length + ' bots with faces';
+  }
+
+  // Terminal familia (TF-1): [the family sentence for the Map voice, the counts folded in Technical details].
+  function voz(sc, ocultos, muestra) {
+    return [(sc.nodes === 1 ? 'Your cabin is awake' : sc.nodes + ' places are awake') + (ocultos > 0 ? ' · ' + ocultos + ' more still asleep' : '') +
+      (muestra ? ' · a sample colony, not a live one' : '') + '.', texto(sc) + (muestra ? ' · SYNTHETIC fixture, not a live colony' : '')];
   }
 
   // The sentences a visitor reads under the picture (HUECO 1): every bot and building says what it is and its seal.
@@ -237,7 +243,7 @@
     return out;
   }
 
-  var AtlasColoniaPagina = { breathe: breathe, BREATH: BREATH, ANCHO: ANCHO, ALTO: ALTO, scene: scene, draw: draw, geometry: geometry, SQUASH: SQUASH, nodeAt: nodeAt, anchorOf: anchorOf, texto: texto, frases: frases, botFrame: botFrame, youFrame: youFrame, hash: hash };
+  var AtlasColoniaPagina = { breathe: breathe, BREATH: BREATH, ANCHO: ANCHO, ALTO: ALTO, scene: scene, draw: draw, geometry: geometry, SQUASH: SQUASH, nodeAt: nodeAt, anchorOf: anchorOf, texto: texto, voz: voz, frases: frases, botFrame: botFrame, youFrame: youFrame, hash: hash };
   if (typeof module === 'object' && module.exports) { module.exports = AtlasColoniaPagina; }
   else { root.AtlasColoniaPagina = AtlasColoniaPagina; }
 })(typeof globalThis === 'object' ? globalThis : this);

@@ -145,8 +145,10 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
 </section></li>
 <li class="voice next" id="next" data-speaker="Guide"><p id="next-step" aria-live="polite"><strong>Next:</strong> <span id="next-text">Press Play now.</span></p>
 <div class="acts"><button type="button" id="play-now">Play now</button></div></li>
-<li class="voice" data-speaker="Map"><p class="state" id="state" aria-live="polite">Nodes online: 0.</p></li>
-<li class="voice" data-speaker="Floor"><p class="state" id="floor-state" aria-live="polite">Map floor: loading the 7 chunks around the cabin.</p></li>
+<li class="voice" data-speaker="Map"><p class="state" id="state" aria-live="polite">Nodes online: 0.</p>
+<details class="tech"><summary>Technical details</summary><p id="state-tech"></p></details></li>
+<li class="voice" data-speaker="Floor"><p class="state" id="floor-state" aria-live="polite">Loading the map…</p>
+<details class="tech"><summary>Technical details</summary><p id="floor-tech">Map floor: loading the 7 chunks around the cabin.</p></details></li>
 <li class="voice" id="voice-walkers" data-speaker="Walkers"></li>
 <li class="voice" id="voice-zoom" data-speaker="Zoom"></li>
 <li class="voice" data-speaker="House" data-title="summons"><div id="visitor-play" aria-label="House"></div></li>
@@ -163,14 +165,15 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
 </ol>
 <ul class="log" id="log" role="log" aria-live="polite" aria-label="Conversation">
 <li>Start here: press Play now, tap a node on the map to walk (arrow keys choose one), ask the guide below.</li>
-<li>The chat is not live yet: NO_DATA until you download the optional browser brain below.</li>
+<li>The guide is still asleep; you can wake it below.</li>
 </ul>
 <form id="entry" onsubmit="return false">
 <label class="sr" for="question">Message</label>
 <input id="question" type="text" autocomplete="off" aria-describedby="chat-note">
 <button type="submit">Send</button>
 </form>
-<p class="state" id="chat-note">NO_DATA: no local answer model is connected.</p>
+<p class="state" id="chat-note">The guide is still asleep; you can wake it below.</p>
+<details class="tech"><summary>Technical details</summary><p>NO_DATA: no local answer model is connected until you download the optional browser brain.</p></details>
 </section>
 </main>
 <script src="/game/tabla_semantica.js"></script>

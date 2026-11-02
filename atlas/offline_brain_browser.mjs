@@ -88,7 +88,7 @@ async function main() {
   ok(r.announced, 'the offline load was not announced in #chat-note');
   ok(r.verified && r.sha_ok, 'no verified offline answer: ' + JSON.stringify(r));
   ok(r.radio, 'the offline answer did not reach the radio');
-  ok(/^Map chunks: 7 of 7/.test(r.floor), 'the map floor did not load offline: ' + r.floor);
+  ok(/^Map loaded/.test(r.floor), 'the map floor did not load offline: ' + r.floor);
   for (const q of sw.values()) { fuera.push((q.worker ? 'worker:' : 'page:') + q.u.replace(origen, '')); }
   ok(fuera.length === 0, 'network requests while offline: ' + fuera.length + ' ' + fuera.slice(0, 30));
   ok(externas.length === 0, 'external requests: ' + externas.slice(0, 3));
