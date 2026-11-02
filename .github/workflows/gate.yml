@@ -45,7 +45,9 @@ jobs:
 
       - name: Gates completos n=2
         run: |
-          probe() { "$@" >/tmp/probe-out 2>&1; rc=$?; if [ "$rc" -ne 0 ]; then echo "::error title=CULPRIT::[P$pasada] FAILED rc=$rc :: $*"; echo "P$pasada rc=$rc :: $*" >> /tmp/culprit.txt; echo "--- $* (rc=$rc)" >> /tmp/culprit-detalle.txt; tail -40 /tmp/probe-out >> /tmp/culprit-detalle.txt; fi; return 0; }
+          probe() { "$@" >/tmp/probe-out 2>&1; rc=$?; if [ "$rc" -ne 0 ]; then echo "::error title=CULPRIT::[P$pasada] FAILED rc=$rc :: $*"; echo "P$pasada rc=$rc :: $*" >> /tmp/culprit.txt; echo "--- P$pasada :: $*" >> /tmp/culprit-detalle.txt; tail -40 /tmp/probe-out >> /tmp/culprit-detalle.txt; fi; return 0; }
+          : > /tmp/culprit.txt
+          : > /tmp/culprit-detalle.txt
           for pasada in 1 2; do
           echo "Gate pass $pasada/2"
           probe python -m unittest tests.test_module_attribution
@@ -149,14 +151,14 @@ jobs:
           probe node atlas/todos_los_casos.mjs
           done
           if [ -s /tmp/culprit.txt ]; then
-  cat /tmp/culprit.txt
-  cat /tmp/culprit-detalle.txt
-  git config user.name "mesa-diagnostico"
-  git config user.email "mesa@users.noreply.github.com"
-  git checkout -q -b reporte
-  { echo "=== culprit probe v2 $(date -u +%Y-%m-%dT%H:%M:%SZ) merge-ref $(git rev-parse HEAD)"; cat /tmp/culprit.txt; echo; cat /tmp/culprit-detalle.txt; } > atlas-culprit-report.txt
-  git add atlas-culprit-report.txt
-  git commit -q -m "diagnostico v2: culprit report"
-  git push -q -f origin reporte:refs/heads/mesa/diagnostico-n2-20261102-report
-  exit 1
-fi
+            cat /tmp/culprit.txt
+            cat /tmp/culprit-detalle.txt
+            git config user.name "mesa-diagnostico"
+            git config user.email "mesa@users.noreply.github.com"
+            git checkout -q -b reporte
+            { echo "=== culprit probe v3 $(date -u +%Y-%m-%dT%H:%M:%SZ) merge-ref $(git rev-parse HEAD)"; cat /tmp/culprit.txt; echo; cat /tmp/culprit-detalle.txt; } > atlas-culprit-report.txt
+            git add atlas-culprit-report.txt
+            git commit -q -m "diagnostico v3: culprit report"
+            git push -q -f origin reporte:refs/heads/mesa/diagnostico-n2-20261102-report
+            exit 1
+          fi
