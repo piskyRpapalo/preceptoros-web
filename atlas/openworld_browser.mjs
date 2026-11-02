@@ -158,7 +158,7 @@ async function main() {
     s.dispatchEvent(new MouseEvent('click', { bubbles: true, clientX: r.left + a.x * r.width / s.width, clientY: r.top + a.y * r.height / s.height })); await w(300);
     const joy = document.querySelector('#joy [aria-live]').textContent;
     document.getElementById('view-reset').click(); await w(100);
-    return JSON.stringify({ a1, l1, a2, joy, r: s.dataset.angle, z: s.dataset.zoom, rl: say(), labels: ['rotate-left', 'rotate-right', 'view-reset'].map((id) => (document.getElementById(id) || {}).textContent) }); })()`));
+    return JSON.stringify({ a1, l1, a2, joy, r: s.dataset.angle, z: s.dataset.zoom, rl: say(), labels: ['rotate-left', 'rotate-right', 'view-reset'].map((id) => { const b = document.getElementById(id); return b ? (b.getAttribute('aria-label') || b.textContent) : undefined; }) }); })()`));
   ok(orbita.a1 === '60' && /^Map view 60° · zoom 1\.00×$/.test(orbita.l1), 'E does not turn the map 60° or the line does not say it: ' + JSON.stringify(orbita));
   ok(orbita.a2 === '120' && /^terminal: basic/.test(orbita.joy || ''), 'a tap on the cabin at 120° does not enter it: ' + JSON.stringify(orbita));
   ok(orbita.r === '0' && orbita.z === '1.00' && /^Map view 0°/.test(orbita.rl), 'Reset view does not return to 0°: ' + JSON.stringify(orbita));
@@ -302,7 +302,7 @@ async function main() {
   ok(!plug.pad && /^terminal: basic/.test(plug.tap || ''), 'a phone user cannot walk without the stick pad (tap a node on the map): ' + JSON.stringify(plug));
   ok(plug.folded, 'the terminal look is not folded under More: ' + JSON.stringify(plug));
   ok(/Start here: press Play now/.test(plug.first), 'the radio first line does not tell a newcomer what to do: ' + plug.first);
-  ok(plug.gone && plug.t1 === 'Ask the guide in the chat.' && plug.t2 === 'Summon a wave with the House buttons below.', 'the next step does not follow the visit state: ' + JSON.stringify(plug));
+  ok(plug.gone && plug.t1 === 'Ask the guide in the chat.' && plug.t2 === 'Summon a wave: press Summon at the Reef below.', 'the next step does not follow the visit state: ' + JSON.stringify(plug));
   if (CAPTURA) { await cmd('Page.navigate', { url: origen + '/openworld/' }); await espera(1500); const g4 = await cmd('Page.captureScreenshot', { format: 'png' }); writeFileSync(join(CAPTURA, 'openworld-first-screen.png'), Buffer.from(g4.result.data, 'base64')); }
   console.log(JSON.stringify({ medida: { ...medida, texto: undefined }, escritorio, externas: externas.length, fallos }));
 }

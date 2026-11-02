@@ -46,8 +46,9 @@ async function main() {
   const ev = async (e) => (await cmd('Runtime.evaluate', { expression: e, awaitPromise: true, returnByValue: true })).result?.result?.value ?? null;
   const foto = async (n) => { if (CAPTURA) { const g = await cmd('Page.captureScreenshot', { format: 'png' }); writeFileSync(join(CAPTURA, n), Buffer.from(g.result.data, 'base64')); } };
   // A real click: the mouse at the centre of the element as laid out on screen (whatever covers it gets the click).
-  const clic = async (sel) => {
-    const c = JSON.parse(await ev(`(() => { const e = document.querySelector(${JSON.stringify(sel)}); if (!e) { return 'null'; } e.scrollIntoView({ block: 'center' }); const r = e.getBoundingClientRect(); return JSON.stringify({ x: r.left + r.width / 2, y: r.top + r.height / 2 }); })()`));
+  // quieto: the element is already on screen (asserted before), so the test itself does not scroll the page.
+  const clic = async (sel, quieto) => {
+    const c = JSON.parse(await ev(`(() => { const e = document.querySelector(${JSON.stringify(sel)}); if (!e) { return 'null'; } ${quieto ? '' : "e.scrollIntoView({ block: 'center' });"} const r = e.getBoundingClientRect(); return JSON.stringify({ x: r.left + r.width / 2, y: r.top + r.height / 2 }); })()`));
     if (!c) { fallos.push('nothing to click: ' + sel); return; }
     for (const type of ['mousePressed', 'mouseReleased']) { await cmd('Input.dispatchMouseEvent', { type, x: c.x, y: c.y, button: 'left', clickCount: 1 }); }
     clics++;
@@ -68,7 +69,23 @@ async function main() {
   ok(llegada.h >= 44 && llegada.w >= 44 && llegada.top >= 0 && llegada.bottom <= 844, 'the «Play now» button is below 44 px or off screen: ' + JSON.stringify(llegada));
   ok(llegada.look && llegada.ancho <= 390, 'no «Look around first» or sideways scroll: ' + JSON.stringify(llegada));
   await foto('dos-clics-welcome.png');
-  await clic('#welcome-play'); await espera(1500);
+  await clic('#welcome-play', true); await espera(1500);
+  // Ojo del Doogee (2026-11-02): after «Play now» the map stays in view, the summon buttons say place and cost in words, the zoom
+  // plate is three labelled 44 px icons, and the place names on the map are legible (>= 12 CSS px) and never collide.
+  const ojo = JSON.parse(await ev(`JSON.stringify((() => { const c = document.getElementById('surface'), m = c.getBoundingClientRect();
+    const sum = [1, 2, 3, 4].map((n) => (document.getElementById('visitor-summon-tc' + n) || {}).textContent || '');
+    const zb = ['zoom-in', 'zoom-out', 'zoom-reset'].map((i) => { const b = document.getElementById(i), r = b ? b.getBoundingClientRect() : {}; return { l: b && b.getAttribute('aria-label'), w: r.width, h: r.height, t: b && b.textContent }; });
+    const pl = JSON.parse(c.dataset.places || '[]'), px = c.width / m.width, yx = +c.dataset.youx / px, yy = +c.dataset.youy / px;
+    const hit = (a, b) => a.x < b.x + b.w && b.x < a.x + a.w && a.y < b.y + b.h && b.y < a.y + a.h;
+    return { mapTop: m.top, scrollY: scrollY, sum, step: (document.getElementById('visitor-step') || {}).textContent, zb, pl, overlap: pl.some((a, i) => pl.some((b, j) => i < j && hit(a, b))),
+      zoom: (() => { const z = document.getElementById('zoom-controls').getBoundingClientRect(), q = { x: z.left - m.left, y: z.top - m.top, w: z.width, h: z.height }; return pl.some((a) => hit(a, q)); })(),
+      crab: pl.some((a) => a.x < yx && yx < a.x + a.w && a.y < yy && yy < a.y + a.h) }; })())`));
+  ok(ojo.mapTop >= 0 && ojo.mapTop < 844, 'after Play now the map scrolled away: ' + JSON.stringify({ top: ojo.mapTop, y: ojo.scrollY }));
+  ok(/^Summon at the Reef · 50 copper$/.test(ojo.sum[0]), 'the reef summon is not human: ' + ojo.sum[0]);
+  ok(ojo.sum.slice(1).every((t) => /^Summon at the [A-Z][a-z]+ · \d+ copper \+ \d+ light · needs \d+ more/.test(t)) && !ojo.sum.some((t) => /tc\d/.test(t)), 'summon labels are not human or do not say what is missing: ' + JSON.stringify(ojo.sum));
+  ok(ojo.step === 'Wait one turn', 'the step button is not human: ' + ojo.step);
+  ok(ojo.zb.every((b) => b.w >= 44 && b.h >= 44 && b.w <= 48 && /^(Zoom in|Zoom out|Reset zoom)$/.test(b.l || '') && b.t.length === 1), 'the zoom plate is not three labelled 44 px icons: ' + JSON.stringify(ojo.zb));
+  ok(ojo.pl.length >= 4 && ojo.pl.every((p) => p.cap >= 12) && !ojo.overlap && !ojo.crab && !ojo.zoom, 'map place names are small, few or colliding: ' + JSON.stringify(ojo.pl));
   const jugando = JSON.parse(await ev(`JSON.stringify((() => { const s = document.getElementById('visitor-summon-tc1'), t = (document.getElementById('visitor-play') || {}).textContent || '';
     const m = /Copper (\\d+)/.exec(t); return { card: document.getElementById('sheet-welcome').hidden, copper: m ? +m[1] : -1, summon: !!s && !s.disabled, end: !!document.getElementById('visitor-end'),
       tab: String(!!document.getElementById('visitor-summon-tc1') && document.getElementById('chat').contains(document.getElementById('visitor-summon-tc1'))), state: document.getElementById('state').textContent, result: document.getElementById('welcome-result').textContent }; })())`));
@@ -86,7 +103,7 @@ async function main() {
   await cmd('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27 });
   ok((await ev("document.getElementById('sheet-welcome').hidden")) === true, 'Escape does not close the welcome card');
   ok(externas.length === 0, 'external requests: ' + externas.join(' '));
-  console.log(JSON.stringify({ clics, llegada, jugando, externas: externas.length, fallos }));
+  console.log(JSON.stringify({ clics, llegada, ojo, jugando, externas: externas.length, fallos }));
 }
 main().catch((e) => { fallos.push(String(e && e.message || e)); console.log(JSON.stringify({ fallos })); })
   .finally(() => { try { ws && ws.close(); } catch {} ch && ch.close && ch.close(); srv && srv.close(); process.exitCode = fallos.length ? 1 : 0; });

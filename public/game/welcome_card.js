@@ -12,7 +12,7 @@
   function press(id) { var b = doc.getElementById(id); if (!b || b.disabled) { throw new Error(id + ' is not available'); } b.click(); }
   function ready(d) { var b = d.controls && d.controls.querySelector('#visitor-step'); return !!(d.state && b && !b.disabled); }
   play.addEventListener('visitor:render', function () { if (!go.disabled) { close(); } });
-  look.addEventListener('click', function () { close(); var t = doc.getElementById('play-now'); if (t && !t.hidden) { t.focus(); } });
+  look.addEventListener('click', function () { close(); var t = doc.getElementById('play-now'); if (t && !t.hidden) { t.focus({ preventScroll: true }); } });
   card.addEventListener('keydown', function (e) { if (e.key === 'Escape') { e.preventDefault(); look.click(); } });
   go.addEventListener('click', async function () {
     go.disabled = true; said.textContent = 'Signing on this device…';
@@ -25,7 +25,8 @@
       var n = Math.floor(d.state.copper / root.AtlasGacha.TCS.tc1.coste.cobre);
       doc.getElementById('state').textContent = 'Visit started · signed on this device · ' + d.state.copper + ' copper from the beacon · you can summon ' + (n === 2 ? 'twice' : n + ' times') + '. ' + TUTORIAL;
       said.textContent = TUTORIAL; close();
-      var reef = doc.getElementById('visitor-summon-tc1'); if (reef) { reef.focus(); }
+      // The map stays in view on a phone: focus moves without scrolling; the Guide voice says the next step (aria-live).
+      var reef = doc.getElementById('visitor-summon-tc1'); if (reef) { reef.focus({ preventScroll: true }); }
     } catch (error) { said.textContent = 'NO_DATA: ' + error.message; go.disabled = false; }
   });
   if (doc.getElementById('visitor-beacon')) { close(); } else { card.hidden = false; go.focus({ preventScroll: true }); }
