@@ -253,14 +253,15 @@
   }
 
   // start(onReady, opts) loads the 7 chunks around the cabin; describe() is the text.
-  var world = null, said = '';
+  var world = null, said = '', detail = '';
   function start(onReady, opts) {
-    var L = root.AtlasMapChunks; if (!L) { said = 'Map floor: NO_DATA · map_chunks.js not loaded'; onReady && onReady(said); return; }
+    var L = root.AtlasMapChunks; if (!L) { said = 'The map has not loaded.'; detail = 'Map floor: NO_DATA · map_chunks.js not loaded'; onReady && onReady(said, detail); return; }
     L.load([0, 0], opts).then(function (r) {
       world = { cells: cellsOf(r.chunks), chunks: r.chunks };
       var n = Object.keys(r.chunks).length;
-      said = n ? r.say + '. ' + frameOf(r.chunks[r.key] || r.chunks[Object.keys(r.chunks)[0]], 0, false).r : r.say;
-      onReady && onReady(said);
+      said = r.say + '.';
+      detail = n ? r.detail + '. ' + frameOf(r.chunks[r.key] || r.chunks[Object.keys(r.chunks)[0]], 0, false).r : r.detail;
+      onReady && onReady(said, detail);
     });
   }
   // envOf(g) → offscreen maker; null in node or when forced live.

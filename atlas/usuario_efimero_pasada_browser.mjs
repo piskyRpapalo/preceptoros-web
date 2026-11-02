@@ -64,7 +64,7 @@ async function main() {
 
   // 1 · the cabin key: the walker stands on the cabin at start; entering it plays the key.
   // W-5: the cabin is entered by walking there: a click on its hex.
-  ok(await hasta("document.getElementById('state').textContent.includes('Colony:')", 15000), 'colony drawn before the cabin click');
+  ok(await hasta("document.getElementById('state-tech').textContent.includes('Colony:')", 15000), 'colony drawn before the cabin click');
   ok(await clicCabina(), 'click on the cabin hex');
   await espera(300);
   const primero = await estado();

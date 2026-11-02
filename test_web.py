@@ -2491,5 +2491,48 @@ class Puerta(unittest.TestCase):
             with self.subTest(fichero=n):
                 self.assertFalse((PUBLICO / "assets" / n).exists())
 
+class TerminalFamilia(unittest.TestCase):
+    """TF-1 (FIRMO HITL 2026-11-02): la terminal abierta habla a la familia. Lo visible no lleva NO_DATA crudo,
+    colores hex, SHA-256 ni bytes; todo eso sigue existiendo, plegado en «Technical details»."""
+    CONSOLA = re.compile(r"NO_DATA|#[0-9a-fA-F]{6}\b|SHA-256|\bbytes\b|\bcells\b")
+
+    def _visible(self, fuente, patron):
+        lineas = [l for l in (PUBLICO / fuente).read_text(encoding="utf-8").splitlines() if re.search(patron, l)]
+        self.assertTrue(lineas, f"{fuente}: no encuentro {patron}")
+        return lineas
+
+    def test_el_chat_abierto_no_habla_como_consola(self):
+        pagina = (PUBLICO / "openworld" / "index.html").read_text(encoding="utf-8")
+        chat = pagina[pagina.index('<section id="chat"'):pagina.index("</section>\n</main>")]
+        visible = re.sub(r"<[^>]+>", " ", re.sub(r"<details[\s\S]*?</details>", "", chat))
+        self.assertIsNone(self.CONSOLA.search(visible), visible[:300])
+
+    def test_las_frases_que_pinta_el_js_son_humanas(self):
+        casos = [("game/map_chunks.js", r"out\.say = "), ("game/map_painter.js", r"said = "),
+                 ("game/openworld_page.js", r"linea (\+)?= "), ("game/summon_reveal.js", r"txt\.textContent = "),
+                 ("game/map_chat.js", r"simple\.textContent = "), ("game/colonia_pagina.js", r"return 'Colony: "), ("game/colonia_pagina.js", r"return \[\(sc\.nodes === 1")]
+        for fuente, patron in casos:
+            for l in self._visible(fuente, patron):
+                for m in re.finditer(patron, l):
+                    frase = l[m.start():].split("; ")[0]  # solo la asignación visible; lo técnico va en su propia variable
+                    with self.subTest(fuente=fuente):
+                        self.assertIsNone(re.search(r"NO_DATA|SHA-256|sky ", frase), frase[:200])
+
+    def test_la_burbuja_separa_y_humaniza_el_sello(self):
+        radio = (PUBLICO / "assets" / "radio_message_log.js").read_text(encoding="utf-8")
+        self.assertNotIn("'radio-msg-sello', s)", radio)
+        self.assertNotIn("'radio-msg-sello', e.seal)", radio)
+        self.assertIn("el('span', null, ' · ')", radio)
+        self.assertNotIn("'Δ {n} cycles'", radio)
+
+    def test_lo_tecnico_sigue_ahi_plegado(self):
+        pagina = (PUBLICO / "openworld" / "index.html").read_text(encoding="utf-8")
+        for id_ in ("state-tech", "floor-tech"):
+            with self.subTest(id=id_):
+                self.assertRegex(pagina, r'<details class="tech"><summary>Technical details</summary><p id="' + id_ + '"')
+        self.assertIn("how.append(disclosure)", (PUBLICO / "game" / "map_chat.js").read_text(encoding="utf-8"))
+        self.assertIn("SHA-256", (PUBLICO / "game" / "map_chat.js").read_text(encoding="utf-8"))
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

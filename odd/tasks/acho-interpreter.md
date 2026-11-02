@@ -50,8 +50,8 @@ The pieces exist but are spread: the compiler (`bubble_language.js`), the gate (
 
 - [ ] AC-0 · the rename bubble → Acho. Scope measured on `5406d6bd` (2026-11-02): `preceptoros.bubble/1` in **62** files (the Mesa counted 61; same sha, re-measure at execution), **14** served under `public/`; **9** `public/game/bubble_*`; 2 canon docs. The word «bubble» appears in **195** files (39 under `public/`): a seal-only rename leaves ~130 live mentions, so AC-0 lists them and classifies each (rename / historical / out of scope). Reseal with a new letter + cascade world → counters → fingerprint; deploy after FIRMO. **Not executed today.** Rail: shares `public/` with the Terminal Familia train (TF-1/TF-2): **TF goes first**; the seal letter goes to whoever merges first; never two live PRs resealing the same tree. The Mesas administer the letters; this PR only declares that AC-0 reseals.
 - [ ] AC-0b · coinage: entry «Acho» in `docs/lexicon.md` with the decree receipt and the historical alias «bubble». Without it the rename is not canon.
-- [ ] AC-0 · this plan signed (and the decisions D1-D3 below).
-- [ ] AC-1 · `acho.valida`: pure validator, browser-safe byte count; gate: every case of `frame_seal_casos` + `bubble_language_casos` gives the same verdict as `checkFrame` (parity table).
+- [x] AC-P · this plan signed (D1, D2, D3, D5 signed HITL 2026-11-02, recorded on #575; D4 waits for TF).
+- [x] AC-1 · `acho.valida`: pure validator, browser-safe byte count. Level: LEY. Lives in `atlas/puros/acho.js` (116 lines), **not served**, so it reseals nothing and never competes with TF or AC-0 for a letter. Gate: `atlas/puros/acho_casos.mjs`, 44 cases, wired in `gate.yml`: a parity table of 39 frames (seals, colours, bands, ceiling at 1,023/1,024, two-, three- and four-byte text, cycles, `state_frames` and colony frames) where `Acho.valida` and `checkFrame` must be deep-equal; the band-name set equals `bandNames()`; same answer in two passes; no DOM, network, clock, random, `require` or `Buffer` in the core. Shown red first: counting 2-byte letters as 1 fails 7 cases; dropping the seal guard fails 2. It does not read `v`: the schema's seal belongs to AC-0 (D5 window).
 - [ ] AC-2 · `acho.evalua` + `huella`: gate: 2 passes, identical `huella`, over all frames of the Codex and colony; pixels unchanged (contact sheet).
 - [ ] AC-3 · alt text: gate: every evaluated frame gives non-empty `alt`, ≤ 280 chars, with seal word.
 - [ ] AC-4 · web host on `/openworld/`: eyes wired; gate: 16 KiB page ceiling, a11y measure unchanged or better.
@@ -67,6 +67,11 @@ Decisions that need the Sovereign:
 - **D3** · the mould: the JSON schema, renamed (no binary layout).
 - **D4** · order of execution of AC-0 (after the TF train, see the rail note).
 - **D5** · seal transition. **Recommended: WINDOW** — accept both seals, count hits of the old seal on each deploy, cut when the counter reads zero for N declared cycles. Cost: one extra branch in the validator and one counter. **Clean cut** costs: frames already signed with the old seal and kept by old service workers and phone IndexedDB stop validating, silently. The house does not break in silence. Cost of either is NO_DATA until the counter of old-seal frames on real devices is measured.
+
+## Notes from AC-1
+
+- `atlas/puros/state_frames.js` `valida` falls back to `texto.length` (UTF-16 units) when `TextEncoder` is missing. A frame with non-ASCII text is then undercounted against the 1,024 B ceiling. `Acho.bytesUtf8` counts by hand and is pinned against `Buffer.byteLength`. Where `state_frames` runs without `TextEncoder` is `NO_DATA`; the fix belongs to the piece that wires Acho into the hosts.
+- `checkFrame` never reads `v`. Until AC-0, no gate refuses a frame with the wrong schema seal.
 
 ## Ties
 
@@ -93,4 +98,5 @@ None.
 ## Log
 
 - 2026-11-02 · Plan written on fresh main `5406d6bd` (worktree `claude/acho-plano-20261102`). Zero code.
+- 2026-11-02 · AC-1 built on main `5cc55dac`: validator + 44 cases, red first, green twice.
 - 2026-11-02 · Mesa audit accepted; name decree bubble → Acho; AC-0, AC-0b, AC-5b, D4, D5, ties and limits added; TF rail note.

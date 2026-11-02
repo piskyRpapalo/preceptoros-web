@@ -73,7 +73,7 @@ async function main() {
 
   await cmd('Page.navigate', { url: `http://127.0.0.1:${port}/openworld/` });
   ok(await hasta('!!document.getElementById("surface")', 15000), 'map loaded');
-  ok(await hasta(`document.getElementById('state').textContent.includes('Colony:')`, 15000), 'colony drawn from the state');
+  ok(await hasta(`document.getElementById('state-tech').textContent.includes('Colony:')`, 15000), 'colony drawn from the state');
   await espera(300);
 
   // 0 · free walk (visitor_walk.js) is on by default; this guard checks the W-4 node law, reachable by turning it off.
