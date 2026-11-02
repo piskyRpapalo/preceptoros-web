@@ -1,4 +1,4 @@
-// Native sound of a bubble frame (NORTE 8 · audio slice 2, wired on /openworld/).
+// Native sound of a Acho frame (NORTE 8 · audio slice 2, wired on /openworld/).
 // A wave (`wave`) or blob (`blob`) carries its own harmonics: h: [[k, ax, ay, ph], ...], the same format as the
 // `armonicos` of the troops. The sound recipe is the one in game/core.js (`vozDe`): the second harmonic picks the
 // degree of the scale (carrier 110 Hz, PENTA_V), the rest sets the modulation. The frame's `sound` says whether it
@@ -64,7 +64,7 @@
     return result.voices.length;
   }
 
-  var AtlasSonifyBubble = { PENTA_V: PENTA_V, STEP_MS: STEP_MS, recipe: recipe, sonify: sonify, play: play };
-  if (typeof module === 'object' && module.exports) { module.exports = AtlasSonifyBubble; }
-  else { raiz.AtlasSonifyBubble = AtlasSonifyBubble; }
+  var AtlasSonifyAcho = { PENTA_V: PENTA_V, STEP_MS: STEP_MS, recipe: recipe, sonify: sonify, play: play };
+  if (typeof module === 'object' && module.exports) { module.exports = AtlasSonifyAcho; }
+  else { raiz.AtlasSonifyAcho = AtlasSonifyAcho; }
 })(this);

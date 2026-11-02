@@ -50,7 +50,7 @@
         var sentence = item.id + ' moves to axial cell ' + destination.q + ',' + destination.r + ' · seed ' + seed;
         var frame = F.stateFrame({ id: item.id, sentence: sentence });
         frame.seal = 'SIMULATED';
-        if (F.valida(frame).length) { fail('movement frame reaches or breaks the Bubble/1 law'); }
+        if (F.valida(frame).length) { fail('movement frame reaches or breaks the Acho/1 law'); }
         moves.push({ id: item.id, from: { q: item.q, r: item.r }, to: { q: destination.q, r: destination.r } });
         frames.push(frame);
       });

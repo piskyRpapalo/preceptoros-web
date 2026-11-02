@@ -1,5 +1,5 @@
 // Catalogue core (ODD isometric-colony, IC3). The preconfigured sprites of the colony: each row of the state becomes
-// one bubble-language frame, born from the state and never from a picture. A row whose kind has no lexicon key is
+// one acho-language frame, born from the state and never from a picture. A row whose kind has no lexicon key is
 // refused as orphan_visual_node. Pure: no random numbers, no clock reads, no network. A value that is not measured is NO_DATA
 // with its cause; a row marked sintetico says SYNTHETIC in its sentence.
 (function (root) {
@@ -57,7 +57,7 @@
     var items = [{ o: 'ribbon', pts: HEX, closed: true, f: 'paper', s: 'ink', lw: 3 }];
     if (med.estado === 'MEDIDO') { items.push({ o: 'wave', x: 160, y: 70, sc: 0.4, h: ondas(tipo.tabla, med.valor), f: 'paper', s: 'ink' }); }
     return {
-      v: 'preceptoros.bubble/1', id: fila.id, t: t, cv: [320, 96],
+      v: 'preceptoros.acho/1', id: fila.id, t: t, cv: [320, 96],
       atoms: [{ k: tipo.clave, r: frase, i: items }],
       bands: ['paper', 'ink', 'cyan'],
       change: [frase],

@@ -113,9 +113,9 @@
   function apply(salida, contorno, opciones) {
     var o = opciones || {}, p = contorno || [];
     var style = o.style || 'volume';
-    if (STYLES.indexOf(style) < 0) { throw new Error('bubble light: unknown style ' + style); }
+    if (STYLES.indexOf(style) < 0) { throw new Error('acho light: unknown style ' + style); }
     if (p.length < 3) { return salida; }
-    if (typeof o.toPath !== 'function' || !Array.isArray(o.light)) { throw new Error('bubble light: faltan toPath o light'); }
+    if (typeof o.toPath !== 'function' || !Array.isArray(o.light)) { throw new Error('acho light: faltan toPath o light'); }
     var L = unit(o.light[0], o.light[1]), L3 = light3(o.light), g = ellipse(p), nr = normals(p, g);
     var cajas = o.textBoxes || [], d = o.toPath(p, true);
     var lw = o.lw !== undefined ? o.lw : (o.depth === 0 ? 3.5 : 3.0);
@@ -137,6 +137,6 @@
     return salida;
   }
 
-  var AtlasBubbleLight = Object.freeze({ apply: apply });
-  if (IS_NODE) { module.exports = AtlasBubbleLight; } else { root.AtlasBubbleLight = AtlasBubbleLight; }
+  var AtlasAchoLight = Object.freeze({ apply: apply });
+  if (IS_NODE) { module.exports = AtlasAchoLight; } else { root.AtlasAchoLight = AtlasAchoLight; }
 })(typeof module === 'object' && module.exports ? this : (this || window));

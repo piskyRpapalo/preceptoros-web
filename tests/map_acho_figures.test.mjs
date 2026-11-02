@@ -7,7 +7,7 @@ import { existsSync, readFileSync } from 'node:fs';
 
 const RETIRADOS = [
   'public/game/map_nodes_layer.js',
-  'public/game/map_bubble_figures.js',
+  'public/game/map_acho_figures.js',
   'public/assets/thegame.js'
 ];
 

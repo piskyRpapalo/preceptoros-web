@@ -5,16 +5,16 @@ Law: the Sovereign, 2026-10-31 («están en la web, pero no en el mapa único. L
 
 ## Objective
 
-The drawings that Claude made in the past (see `odd/tasks/past-bubble-drawings.md`) and the colony already on the map become ONE isometric map at `/openworld/`, with a 3D sensation: depth, height and light, drawn only in bubble language. Nothing is loaded from outside, and no 3D engine is used.
+The drawings that Claude made in the past (see `odd/tasks/past-acho-drawings.md`) and the colony already on the map become ONE isometric map at `/openworld/`, with a 3D sensation: depth, height and light, drawn only in Acho language. Nothing is loaded from outside, and no 3D engine is used.
 
 ## Problem and why
 
 - Each drawing lives on its own page or module: the terrain on the test pages (`face_world_terrain.js`), the sprites in `atlas/puros/catalogo_iso.js` (not served), the colony on `/openworld/` (IC4 to IC7). The public sees fragments, not one map.
-- The colony is isometric (2:1, fixed cell) but the cells read as flat hexes: no heights, no shadow, no light. The bubble language has the parts for volume (`style: volume` with shadow, halftone, rim and highlight), but the colony frames do not use them yet.
+- The colony is isometric (2:1, fixed cell) but the cells read as flat hexes: no heights, no shadow, no light. The Acho language has the parts for volume (`style: volume` with shadow, halftone, rim and highlight), but the colony frames do not use them yet.
 
 ## What "3D sensation" means here (declared)
 
-Not a 3D engine. Four things that the eye reads as depth, all drawn with bubble primitives:
+Not a 3D engine. Four things that the eye reads as depth, all drawn with Acho primitives:
 
 1. **Painter's order by depth**: each element is drawn after the ones behind it (the colony already sorts buildings by `y`; extend it to terrain, sprites and bots).
 2. **Height**: a building stands on its hex as a prism (`wall` + top `ribbon`), with a height from the declared data. Where no height is declared, the frame says `NO_DATA: height` and draws the base only.
@@ -35,7 +35,7 @@ Out of scope: a 3D engine (three.js or similar), imported 3D models, a free came
 
 ## Constraints
 
-- Each element is one bubble frame under 1,024 UTF-8 bytes, with its sentence, its seal and a declared sound (NO_DATA with cause when none).
+- Each element is one Acho frame under 1,024 UTF-8 bytes, with its sentence, its seal and a declared sound (NO_DATA with cause when none).
 - The door stays under 16 KiB; the composition lives in a module under `public/game/`.
 - No random number, no clock, no network in the render path.
 - Accessibility: the sentences of the frames are listed under the map (frase list, IC7-S3 to S5); buttons at least 44 px.

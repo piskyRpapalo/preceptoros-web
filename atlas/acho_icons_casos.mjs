@@ -1,13 +1,13 @@
 // Lote 1 de iconos de burbuja: casos (decision mia, sin firma).
-// Modulo: public/game/bubble_icons.js. Salida: una linea JSON {ok, casos}; rc=0 solo si todos pasan.
+// Modulo: public/game/acho_icons.js. Salida: una linea JSON {ok, casos}; rc=0 solo si todos pasan.
 import { readFileSync, existsSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 
 const require = createRequire(import.meta.url);
 const gamePath = (name) => fileURLToPath(new URL('../public/game/' + name, import.meta.url));
-const ICONS_PATH = gamePath('bubble_icons.js');
-const CORE_PATH = gamePath('bubble_language.js');
+const ICONS_PATH = gamePath('acho_icons.js');
+const CORE_PATH = gamePath('acho_language.js');
 
 const NAMES = ['left', 'up', 'down', 'right', 'home', 'beacon', 'eye', 'terminal', 'buoy', 'bubble', 'sound-on', 'sound-off', 'comment'];
 const BANDS = [null, 'ink', 'paper', 'cyan', 'ocean', 'comic yellow.base'];
@@ -23,8 +23,8 @@ const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 const clone = (value) => JSON.parse(JSON.stringify(value));
 
 function loadModule(file) {
-  if (!existsSync(file)) return { error: 'falta bubble_icons.js' };
-  try { return { mod: require(file) }; } catch (e) { return { error: 'no carga bubble_icons.js: ' + e.message }; }
+  if (!existsSync(file)) return { error: 'falta acho_icons.js' };
+  try { return { mod: require(file) }; } catch (e) { return { error: 'no carga acho_icons.js: ' + e.message }; }
 }
 const LOADED = loadModule(ICONS_PATH);
 const I = LOADED.mod || null;
@@ -32,7 +32,7 @@ const core = (() => { try { return require(CORE_PATH); } catch (e) { return null
 
 function frameOf(items) {
   return {
-    v: 'preceptoros.bubble/1', id: 'ICONOS', t: 0, cv: [412, 515], light: [-0.35, -0.94], style: 'volume',
+    v: 'preceptoros.acho/1', id: 'ICONOS', t: 0, cv: [412, 515], light: [-0.35, -0.94], style: 'volume',
     atoms: [{ k: 'iconos', i: items }],
   };
 }
@@ -62,7 +62,7 @@ check('2 · NAMES son exactamente los 13 en orden', () => {
 });
 
 check('3 · cada icono compila dentro de un fotograma sin notas (compile.notes vacio)', () => {
-  if (!I || !core) return { ok: false, detail: LOADED.error || 'bubble_language.js no carga' };
+  if (!I || !core) return { ok: false, detail: LOADED.error || 'acho_language.js no carga' };
   const bad = [];
   for (const name of NAMES) {
     for (const f of [undefined, 'paper']) {
@@ -140,7 +140,7 @@ check('7 · name desconocido -> [] sin lanzar; missing() true para desconocidos 
 });
 
 check('8 · sabotaje: un icono con f \'#123456\' hace lanzar a compile (unknown band)', () => {
-  if (!I || !core) return { ok: false, detail: LOADED.error || 'bubble_language.js no carga' };
+  if (!I || !core) return { ok: false, detail: LOADED.error || 'acho_language.js no carga' };
   try {
     core.compile(frameOf([{ o: 'icon', name: 'left', x: 50, y: 50, r: 20, f: '#123456' }]));
   } catch (e) {

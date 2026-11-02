@@ -1,6 +1,6 @@
 (function (root) {
   'use strict';
-  var V = 'preceptoros.bubble/1';
+  var V = 'preceptoros.acho/1';
   function heroFrame(skin, clase, dir) {
     var h = skin.hero, d = dir === 1 ? 1 : -1, x = function (v) { return 60 + (v - 60) * d; }, visor = clase === 'coral' ? 'vermilion.base' : 'cyan';
     return { v: V, id: 'hero', t: 0, cv: [120, 120], atoms: [{ k: 'soldier', r: 'you: a space soldier in uniform and a full helmet, visor ' + (clase === 'coral' ? 'coral' : 'sea blue'), i: [

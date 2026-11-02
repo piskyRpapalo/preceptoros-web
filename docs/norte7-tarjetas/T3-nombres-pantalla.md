@@ -31,7 +31,7 @@
 
 ## Leyes que mantiene
 
-bubble/1 (el nombre sigue siendo texto dentro del marco) · cuadros ≤1.024 B · determinismo · offline · 0 peticiones ·
+acho/1 (el nombre sigue siendo texto dentro del marco) · cuadros ≤1.024 B · determinismo · offline · 0 peticiones ·
 tres colores · EN 301 549: el nombre es texto real, con foco de teclado y área táctil ≥ 44 px · reduced-motion (el zoom
 sin animación obligatoria) · NO_DATA con causa.
 

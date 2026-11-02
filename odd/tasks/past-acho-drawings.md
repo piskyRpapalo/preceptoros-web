@@ -1,11 +1,11 @@
-# past-bubble-drawings
+# past-acho-drawings
 
 Date: 2026-10-31
-Law: the Sovereign, 2026-10-31 («tienes todos los objetivos del sistema. tú te encargas de que sea bonito en la web. trae todos los dibujos creados por Claude en el pasado que nos funcionen con bubble language»); the bubble frame law (`atlas/param_gate.mjs` `checkFrame`: under 1,024 bytes, named bands, a declared sound, a sentence per atom); ODD: the plan first, FIRMO per piece before any code.
+Law: the Sovereign, 2026-10-31 («tienes todos los objetivos del sistema. tú te encargas de que sea bonito en la web. trae todos los dibujos creados por Claude en el pasado que nos funcionen con Acho language»); the Acho frame law (`atlas/param_gate.mjs` `checkFrame`: under 1,024 bytes, named bands, a declared sound, a sentence per atom); ODD: the plan first, FIRMO per piece before any code.
 
 ## Objective
 
-Every bubble-language drawing that Claude made in the past, and that passes the frame law, is on the web at preceptoros.org, presented well. Each one that does not pass is recorded with its cause.
+Every acho-language drawing that Claude made in the past, and that passes the frame law, is on the web at preceptoros.org, presented well. Each one that does not pass is recorded with its cause.
 
 ## Inventory (measured on `origin/main`, 2026-10-31)
 
@@ -15,7 +15,7 @@ Git records most of these files under the house identity, with the trailer `Co-A
 |---|---|---|---|---|
 | `public/face/basic.html`, `atlantis.html`, `zombie.html` | 13–14 KB | yes | yes (test pages, `Test ·` titles) | served; the pages are tests, not the map |
 | `public/face/face_world.js`, `face_world_terrain.js`, `face_hud.js`, `face_paint.js`, `face_battle.js`, `face_hero.js` | 1–12 KB | yes | yes (loaded by the pages above) | served; world frames and terrain |
-| `public/game/bubble_language.js` | 16 KB | yes | yes | the language itself |
+| `public/game/acho_language.js` | 16 KB | yes | yes | the language itself |
 | `public/game/colonia_edificios.js`, `colonia_pagina.js`, `global_map.js`, `palette_cycle.js`, `state_frames.js` | 3–11 KB | yes | yes | served; colony, sky, frames (IC4 to IC7) |
 | `public/assets/landing_doors.js` | 3 KB | yes | yes | served; the intro's doors |
 | `atlas/puros/catalogo_iso.js` | 5 KB | yes | **no** | merged in main (IC3); pure core that builds sprite frames; not served |

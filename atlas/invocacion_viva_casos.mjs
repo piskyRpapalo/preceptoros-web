@@ -1,6 +1,6 @@
 // La invocación vive · casos puros de public/game/invocacion_viva.js. Uso: node --test atlas/invocacion_viva_casos.mjs
 // Mismo recibo → mismas partículas; movimiento reducido → sin animación; física acotada; sin Math.random ni Date;
-// la voz pasa por la sonificación de la casa (bubble_sonify.js); el túnel cabe en 600 ms.
+// la voz pasa por la sonificación de la casa (acho_sonify.js); el túnel cabe en 600 ms.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
@@ -8,7 +8,7 @@ import { createRequire } from 'node:module';
 
 const require = createRequire(import.meta.url);
 const V = require('../public/game/invocacion_viva.js');
-const S = require('../public/game/bubble_sonify.js');
+const S = require('../public/game/acho_sonify.js');
 const FUENTE = readFileSync(new URL('../public/game/invocacion_viva.js', import.meta.url), 'utf8');
 const R = 'summon|tc1|1|0';
 

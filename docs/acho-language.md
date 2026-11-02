@@ -1,10 +1,10 @@
-# The bubble language · `preceptoros.bubble/1`
+# The Acho language · `preceptoros.acho/1`
 
-Signed by the Sovereign on 2026-10-18: *the language of preceptoros is created by Claude, and that language makes the graphics.* This page is its specification. The renderer lives in `public/game/bubble_language.js` (primitives and light) and `public/game/bubble_bestiary.js` (composite words). The first text written in it is the story of the statue (`public/assets/descent_scene.js`, retired 2026-10-19); its living example is now the Codex, `public/assets/codex_scene.js`.
+Signed by the Sovereign on 2026-10-18: *the language of preceptoros is created by Claude, and that language makes the graphics.* This page is its specification. The renderer lives in `public/game/acho_language.js` (primitives and light) and `public/game/acho_bestiary.js` (composite words). The first text written in it is the story of the statue (`public/assets/descent_scene.js`, retired 2026-10-19); its living example is now the Codex, `public/assets/codex_scene.js`.
 
 ## 1 · Why a language
 
-One state, many renders. A **frame** is a *syllable* of the bubble language: a small JSON object, always under 1,024 UTF-8 bytes, that a small model can read and write and a person can audit. The renderer turns it into a comic picture by mathematics. The picture is rich because the math is rich, not because the frame is big.
+One state, many renders. A **frame** is a *syllable* of the Acho language: a small JSON object, always under 1,024 UTF-8 bytes, that a small model can read and write and a person can audit. The renderer turns it into a comic picture by mathematics. The picture is rich because the math is rich, not because the frame is big.
 
 - **Deterministic.** Same frame, same picture. No `Math.random`, no clock, no network. Variation comes from a seeded hash.
 - **Named colour only.** Every colour is a band name: `ink`, `paper`, `ocean`, `cyan`, the signed accents `vermilion.base` and `comic yellow.base` (plus their `brillo`, `sombra`, `contorno`), and the seal bands of `tabla_semantica.js` only where they carry their literal meaning (for example `FIRMADO.base`: signed). Colour always travels with text.
@@ -14,7 +14,7 @@ One state, many renders. A **frame** is a *syllable* of the bubble language: a s
 ## 2 · The frame
 
 ```json
-{"v":"preceptoros.bubble/1","id":"CLIFF","t":500,"cv":[412,515],"light":[-0.35,-0.94],"style":"volume",
+{"v":"preceptoros.acho/1","id":"CLIFF","t":500,"cv":[412,515],"light":[-0.35,-0.94],"style":"volume",
  "atoms":[{"k":"rock","r":"a big marble rock sticks out of the cliff","i":[{"o":"blob","x":200,"y":220,"rx":118,"ry":100,"seed":"rock","vein":4,"f":"paper","s":"ink","d":0}]}],
  "bands":["cyan","ink","ocean","paper"],"change":["the logo leaves; the rock arrives"],
  "sound":"NO_DATA","soundCause":"static-first: sound planned, not served","motion":"NO_DATA"}
@@ -22,7 +22,7 @@ One state, many renders. A **frame** is a *syllable* of the bubble language: a s
 
 | key | meaning |
 |---|---|
-| `v` | always `preceptoros.bubble/1` |
+| `v` | always `preceptoros.acho/1`. The historical seal `preceptoros.bubble/1` is still **read** during the D5 window (frames already signed and cached keep compiling) and never written. Any other `v` is refused by `compile` and by `Acho.valida` |
 | `id`, `t` | the section and where it starts on the page (scroll px) |
 | `cv` | canvas size in CSS px (default `[412,515]`, 4:5) |
 | `light` | unit vector pointing TO the light, canvas axes (y grows down). Under the sea the light comes from above: default `[-0.35,-0.94]` |
@@ -53,7 +53,7 @@ Coordinates are canvas CSS px; angles are degrees; `seed` is any short string.
 
 **Defaults** (leave them out and the syllable stays small): `halftone` covers the whole canvas with `r` `5|3|1.5|0`, step 12, angle 45; `bubbles` `n` 3, `h` 200, `r` `[4,10]`; `wall` `side` `right`, `lip` `round`; `blob` `rough` 0.25; `bust` `r` 64, eyes `shut`, mouth `closed`; `pile` `n` 7, `r` `[18,30]`; `boing` `n` 2, `arc` 50; `crab` `rr` 40, `dir` 1, eyes `open`; `troop` `r` 12. The `reef` word paints its own water before its corals.
 
-Composite **words** (`bust`, `crab`, `star`, `snail`, `octo`, `fish`, `troop`, `city`, `reef`, `pile`, `rift`, `seam`, `slab`, `boing`, `wob`) are registered with `AtlasBubble.define(name, fn)` and expand into primitives. Their parameters are listed in `bubble_bestiary.js`.
+Composite **words** (`bust`, `crab`, `star`, `snail`, `octo`, `fish`, `troop`, `city`, `reef`, `pile`, `rift`, `seam`, `slab`, `boing`, `wob`) are registered with `AtlasAcho.define(name, fn)` and expand into primitives. Their parameters are listed in `acho_bestiary.js`.
 
 ## 4 · Light and volume (`style: "volume"`)
 
@@ -101,7 +101,7 @@ Three rules keep it honest. **Same `p`, same picture:** the table is data and th
 
 ## 6c · The game's words and letters (V7 and V9, 2026-10-18)
 
-- **`letters`** (`bubble_letters.js`): the house letters, 72 vector glyphs (A-Z, Ñ, a-z, ñ, 0-9, `. , ! ? - · : %`) on an 8 × 12 grid, 1.6 KB of data. Three passes: hard shadow, `comic yellow.base` contour, `paper` fill. Round caps make them bubbles. What is not in the family is named by `missing()` and skipped.
+- **`letters`** (`acho_letters.js`): the house letters, 72 vector glyphs (A-Z, Ñ, a-z, ñ, 0-9, `. , ! ? - · : %`) on an 8 × 12 grid, 1.6 KB of data. Three passes: hard shadow, `comic yellow.base` contour, `paper` fill. Round caps make them bubbles. What is not in the family is named by `missing()` and skipped.
 - **`troop`** `{as | arm, x, y, r, f, rot}`: a troop is its real spectrum (the gacha's harmonics) drawn as a `wave` scaled to radius `r`. `as` names a spectrum registered with `cast(name, arm)`: the syllable says *which* troop, the registry holds the numbers (same idea as `keep`).
 - **`meter`** `{x, y, w, v, max, f}`: life, armor or speed as a row of dots, filled in proportion. Life is never a hidden number.
 - **`odds`** `{x, y, w, chances, bands}`: honest luck. 100 dots, one per 1 % (largest remainder), plus a legend with the exact figures.
@@ -119,4 +119,4 @@ A reader that cannot see answers four questions from the frame alone: *which sec
 **What it reuses.** The colour vocabulary is not new: band names resolve to `comic_tokens.js` (W1: `ink`, `paper`, `ocean`, `cyan`), to `comic_accents.js` (the two signed accents) and to `tabla_semantica.js` (the seal bands). The wave is the house formula, `AtlasGacha.punto` in `gacha.js`. The language adds geometry and light, never a colour.
 
 
-`AtlasBubble = { compile(frame) → items, define(name, fn), words(), hash32(s), rng(key), wavePoints(h, n), smoothPath(pts, closed) }`. The items are the painter list of `public/game/comic_atoms.js` (`rect`, `circle`, `ellipse`, `path`, `text`, `group`), with literal colours resolved from the band names by `comic_tokens.js`, `comic_accents.js` and `tabla_semantica.js`.
+`AtlasAcho = { compile(frame) → items, define(name, fn), words(), hash32(s), rng(key), wavePoints(h, n), smoothPath(pts, closed) }`. The items are the painter list of `public/game/comic_atoms.js` (`rect`, `circle`, `ellipse`, `path`, `text`, `group`), with literal colours resolved from the band names by `comic_tokens.js`, `comic_accents.js` and `tabla_semantica.js`.

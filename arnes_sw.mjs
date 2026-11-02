@@ -196,7 +196,7 @@ const rutas = await shell.keys();
 // 131 con `summon-access.js` (Q3: la puerta de summon en Base también queda offline).
 // 132-134 con los tres modulos de ocupacion NPC; 135 añade Shell Schematics.
 // 158 con `comic_tokens.js` (W1, tokens comic: neutros y tonos sobre AtlasSemantica); 159 con `comic_atoms.js` (W2, atomos comic sobre los tokens).
-// 167 con el descenso (obra abku): comic_accents, los cuatro bubble_*, descent_scene, descent_view y descent.css; 168 con bubble_letters (V7); 170 con bubble_game y codex_scene (V9, el Codex); 171 con bout_scene (viabilidad); 174 con mar_rift, bubble_icons y descent_sound (estilo rift); 173 sin descent_scene (2026-10-19: el descenso sale de la presentación).
+// 167 con el descenso (obra abku): comic_accents, los cuatro acho_*, descent_scene, descent_view y descent.css; 168 con acho_letters (V7); 170 con bubble_game y codex_scene (V9, el Codex); 171 con bout_scene (viabilidad); 174 con mar_rift, acho_icons y descent_sound (estilo rift); 173 sin descent_scene (2026-10-19: el descenso sale de la presentación).
 // 174 con z_cutoff (T_CRT, 2026-10-19): la regla de la rueda Z se pide en la puerta (173 tras retirar descent_scene, +1).
 // 176 con combate_ticks (VT3, 2026-10-19): el paso a paso del combate, extraido de arena.js (+1 ruta).
 // G3 adds the front door composition, view, and stylesheet to the offline shell.

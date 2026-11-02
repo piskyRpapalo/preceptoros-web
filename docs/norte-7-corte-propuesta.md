@@ -14,10 +14,10 @@
 | `public/face/basic.html` | 13.185 | Tercera variante («Neutral»). No es terreno del decreto. |
 | `public/face/face_world_terrain.js` | 4.927 | Geometría de islas (`isles`). Fuente de datos del terreno. |
 | `public/game/map_nodes_layer.js` | 1.772 | Capa de nodos del mapa. Reutilizar. |
-| `public/game/map_bubble_figures.js` | 1.424 | Figuras de burbuja del mapa. Reutilizar. |
+| `public/game/map_acho_figures.js` | 1.424 | Figuras de burbuja del mapa. Reutilizar. |
 | `public/game/nodos.js` | 10.562 | Catálogo/nodos. Reutilizar; no reescribir. |
 | `public/game/node_*.js`, `nodos-*.js`, `ui-nodos.js` | 177–13.441 c/u | Ninguno pasa de 16 KiB por fichero. Reutilizar. |
-| `public/game/bubble_*.js` | 1.5K–16.2K c/u | `bubble_language.js` (16.240) **supera** el techo 16 KiB si se carga como ficha única: no se toca; se carga como dependencia. |
+| `public/game/acho_*.js` | 1.5K–16.2K c/u | `acho_language.js` (16.240) **supera** el techo 16 KiB si se carga como ficha única: no se toca; se carga como dependencia. |
 | `public/get-the-app/index.html` | 5.491 | Get the app v1.3. Su gate ya pinta «en una o dos clics». |
 | `public/assets/pwa.js` | 1.596 | Guarda la oferta `beforeinstallprompt` (decisión a1). Base del botón PWA de Tools. |
 | `public/release.json` | 3.724 | Tarjeta de release v1.3, medida 2026-09-13. |
@@ -54,8 +54,8 @@ Estas tres decisiones quedan ratificadas por el decreto del 2026-10-28 (§5), qu
   1. **Atlantis** = nodo Hexelion. Datos de `face_world_terrain.js` + `atlantis.html`.
   2. **the Risen** = nodo 1. Datos de `zombie.html`.
   3. **Cabaña del Tutorial** = terreno del tutorial. Ver §5, pregunta 2.
-- **Estilo:** burbujas de hoy (`bubble_*`), 3 colores, nada más.
-- **Reutiliza, no reescribe:** `map_nodes_layer.js`, `map_bubble_figures.js`, `nodos.js`, `node_*.js`, `bubble_*.js`.
+- **Estilo:** burbujas de hoy (`acho_*`), 3 colores, nada más.
+- **Reutiliza, no reescribe:** `map_nodes_layer.js`, `map_acho_figures.js`, `nodos.js`, `node_*.js`, `acho_*.js`.
 - **Chatbot:** la «terminal de chat» ya está en PR #363 (NORTE 5 p3, REQUIERE_FIRMA). Esta pieza la consume; no la duplica. Su fuente de respuesta (local o remota) es decisión del Soberano (§5, pregunta 1).
 - **Techo:** cada terreno es un módulo de datos pequeño; la pieza no se monta como un HTML de terrenos inline.
 
@@ -116,7 +116,7 @@ Cada PR de código se enseña **en rojo antes de verde** (regla de la Mesa) y pa
 ## 7. Sugerencias (coste S/M/L)
 
 - **S:** cerrar §5 antes de abrir el primer PR de código. Evita reescribir la INTRO dos veces.
-- **S:** medir el tamaño de cada ficha nueva en el worktree, no suponerlo; `bubble_language.js` ya está sobre el techo si se carga entera.
+- **S:** medir el tamaño de cada ficha nueva en el worktree, no suponerlo; `acho_language.js` ya está sobre el techo si se carga entera.
 - **M:** unificar `face/index.html` (índice de mundos) con la INTRO para que haya una sola puerta, no dos.
 - **M:** mover `Tools of this product` a la INTRO y retirar el bloque oculto de cada página de mundo.
 - **L:** traer el LIBRO de firmas a este checkout para poder contrastar decretos antes de proponer.

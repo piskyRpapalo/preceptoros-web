@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
-const P = require('../public/game/bubble_paint.js');
+const P = require('../public/game/acho_paint.js');
 const p = P.create({ id: 'GATE', band: 'paper' });
 for (const q of [[20, 30], [40, 50], [70, 40]]) p.addPoint(q[0], q[1]);
 const first = p.frame();

@@ -116,13 +116,13 @@
   var WORDS = { icon: icon };
   var core = null;
   if (typeof module === 'object' && module.exports) {
-    try { core = require('./bubble_language.js'); } catch (e) { core = null; }
+    try { core = require('./acho_language.js'); } catch (e) { core = null; }
   } else {
-    core = root.AtlasBubble || null;
+    core = root.AtlasAcho || null;
   }
   if (core && typeof core.define === 'function') { core.define('icon', icon); }
 
   var API = { NAMES: NAMES, WORDS: WORDS, missing: missing };
   if (typeof module === 'object' && module.exports) { module.exports = API; }
-  else { root.AtlasBubbleIcons = API; }
+  else { root.AtlasAchoIcons = API; }
 })(typeof module === 'object' && module.exports ? this : (this || window));

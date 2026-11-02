@@ -41,7 +41,7 @@
 
   function hueDe(sello) { return HUE.hasOwnProperty(sello) ? HUE[sello] : null; }
 
-  // EXTENSION VISUAL (Desk 2026-10-28, canon registrado en docs/canon-bubble-math.md). Aditiva: los siete
+  // EXTENSION VISUAL (Desk 2026-10-28, canon registrado en docs/canon-acho-math.md). Aditiva: los siete
   // estados de arriba no cambian. El sello desconocido no tiene visual: visual(sello) devuelve null.
   // PROPUESTA es el nombre fisico; el mockup lo llama PROPUESTA_PENDIENTE_FIRMA (mismo hue, 45).
   var VISUAL = {

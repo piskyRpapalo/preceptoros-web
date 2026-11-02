@@ -3,7 +3,7 @@
 // no cambian) e imprime un recibo JSON.
 import { existsSync, readFileSync } from 'node:fs';
 
-const RETIRADOS = ['public/game/map_bubble_figures.js'];
+const RETIRADOS = ['public/game/map_acho_figures.js'];
 const sw = readFileSync('public/sw-listas.js', 'utf8');
 const vivos = RETIRADOS.filter(p => existsSync(p)).map(p => 'vive ' + p);
 const precache = RETIRADOS.filter(p => sw.includes("'/" + p.replace(/^public\//, '') + "'")).map(p => 'precacheado ' + p);

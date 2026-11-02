@@ -23,7 +23,7 @@ A delete without a measured manifest removes files that a live door still loads.
 ## Checklist
 - [x] D0 · script runs on the slice C tree with `python3 -I` (no import from the cwd).
 - [x] D1 · counts measured: {"COMPARTIDO": 62, "EXCLUSIVO_THEGAME": 123, "HUERFANO_SIN_REF": 48, "VIVO": 38}.
-- [x] D2 · the commission's «shared with /face/» list (core, db, valores, gacha, bubble_*, comic_*, combate_ticks, escuadron, wave_duel_scene, sea-floor, crab_render_hd, fog_of_war, isometric_floor_projection, world_camera, map_zoom) is classified COMPARTIDO; `face/face_battle.js` and `face/face_fight.js` are VIVO. Matches the commission.
+- [x] D2 · the commission's «shared with /face/» list (core, db, valores, gacha, acho_*, comic_*, combate_ticks, escuadron, wave_duel_scene, sea-floor, crab_render_hd, fog_of_war, isometric_floor_projection, world_camera, map_zoom) is classified COMPARTIDO; `face/face_battle.js` and `face/face_fight.js` are VIVO. Matches the commission.
 - [x] D3 · dynamic loads: `assets/atlas-piso.js` loads `atlas-<lang>.json` and `atlas-mundo.json` by name. The lexicon JSON are used only by the theGame cluster (`atlas-piso`, `atlas-opina`, `atlas-guardado`, `atlas-motor`, `terminal_menu_shell`, `thegame.js`), checked by grep.
 - [x] D4 · cross-check by basename, outside the candidates and outside `sw-listas`/`sw`: only `game/sobres.js` is cited, and by two orphans (`game/narragrafo.js`, `game/mercado.js`), neither reachable from a root.
 - [ ] D5 · the delete itself: NOT in this piece. It needs the test migration (see Next step) and VERSION + seal in the same commit.
@@ -117,7 +117,7 @@ A delete without a measured manifest removes files that a live door still loads.
 - `public/game/juez.js` (2130 B)
 - `public/game/killswitch_dot.js` (1823 B)
 - `public/game/latency_crystal.js` (4675 B)
-- `public/game/map_bubble_figures.js` (1424 B)
+- `public/game/map_acho_figures.js` (1424 B)
 - `public/game/map_integrity.js` (2870 B)
 - `public/game/map_nodes_layer.js` (1772 B)
 - `public/game/map_pointer_input.js` (2540 B)

@@ -1,5 +1,5 @@
 // W1 · casos de las palabras compuestas de la lengua de burbuja (decision mia, sin firma).
-// Criaturas: public/game/bubble_bestiary.js. Lugares: public/game/bubble_world.js.
+// Criaturas: public/game/acho_bestiary.js. Lugares: public/game/acho_world.js.
 // Salida: una linea JSON {ok, casos}; rc=0 solo si todos los casos pasan.
 // NO_DATA con causa cuenta como paso (caso 8, mientras el nucleo no exista).
 import { readFileSync, existsSync } from 'node:fs';
@@ -8,9 +8,9 @@ import { fileURLToPath } from 'node:url';
 
 const require = createRequire(import.meta.url);
 const gamePath = (name) => fileURLToPath(new URL('../public/game/' + name, import.meta.url));
-const BESTIARY_PATH = gamePath('bubble_bestiary.js');
-const WORLD_PATH = gamePath('bubble_world.js');
-const CORE_PATH = gamePath('bubble_language.js');
+const BESTIARY_PATH = gamePath('acho_bestiary.js');
+const WORLD_PATH = gamePath('acho_world.js');
+const CORE_PATH = gamePath('acho_language.js');
 
 const PRIMITIVES = ['wave', 'blob', 'ribbon', 'arcs', 'field', 'text'];
 const BANDS = ['ink', 'paper', 'ocean', 'cyan', 'comic yellow.base', 'FIRMADO.base'];
@@ -78,8 +78,8 @@ const WORDS = { ...BEST_WORDS, ...WORLD_WORDS };
 function missing() {
   if (BEST.error) return BEST.error;
   if (WORLD.error) return WORLD.error;
-  if (!BEST.mod.WORDS) return 'bubble_bestiary.js sin WORDS';
-  if (!WORLD.mod.WORDS) return 'bubble_world.js sin WORDS';
+  if (!BEST.mod.WORDS) return 'acho_bestiary.js sin WORDS';
+  if (!WORLD.mod.WORDS) return 'acho_world.js sin WORDS';
   return null;
 }
 
@@ -197,14 +197,14 @@ check('7 · PEGI: ninguna palabra ni texto contiene teeth, blood, crack, fire, s
   return { ok: found.length === 0, detail: found.length ? found.slice(0, 10) : 'limpio' };
 });
 
-check('8 · si AtlasBubble existe: compile de un fotograma con las 14 palabras no lanza (si no, NO_DATA)', () => {
+check('8 · si AtlasAcho existe: compile de un fotograma con las 14 palabras no lanza (si no, NO_DATA)', () => {
   if (!existsSync(CORE_PATH)) {
-    return { ok: true, detail: 'NO_DATA: bubble_language.js aun no existe (AtlasBubble ausente); compile sin verificar' };
+    return { ok: true, detail: 'NO_DATA: acho_language.js aun no existe (AtlasAcho ausente); compile sin verificar' };
   }
   let core;
-  try { core = require(CORE_PATH); } catch (e) { return { ok: false, detail: 'bubble_language.js no carga: ' + e.message }; }
+  try { core = require(CORE_PATH); } catch (e) { return { ok: false, detail: 'acho_language.js no carga: ' + e.message }; }
   if (!core || typeof core.compile !== 'function') {
-    return { ok: true, detail: 'NO_DATA: AtlasBubble sin compile() (API incompleta)' };
+    return { ok: true, detail: 'NO_DATA: AtlasAcho sin compile() (API incompleta)' };
   }
   const m = missing(); if (m) return { ok: false, detail: m };
   const registered = typeof core.words === 'function' ? core.words() : [];
@@ -212,7 +212,7 @@ check('8 · si AtlasBubble existe: compile de un fotograma con las 14 palabras n
     for (const name of ALL_WORDS) if (!registered.includes(name)) core.define(name, WORDS[name]);
   }
   const frame = {
-    v: 'preceptoros.bubble/1', id: 'CASOS', t: 0, cv: [412, 515], light: [-0.35, -0.94], style: 'volume',
+    v: 'preceptoros.acho/1', id: 'CASOS', t: 0, cv: [412, 515], light: [-0.35, -0.94], style: 'volume',
     atoms: [{ k: 'casos', r: 'the fourteen words, one of each', i: ALL_WORDS.map((name) => ({ o: name, ...MINIMAL[name] })) }],
     bands: ['ink', 'paper', 'ocean', 'cyan', 'FIRMADO.base'], change: ['casos de palabras'],
     sound: 'NO_DATA', soundCause: 'casos: sin sonido', motion: 'NO_DATA',

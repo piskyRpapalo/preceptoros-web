@@ -24,7 +24,7 @@ The shell still precaches `/play/` and the theGame bundle, so a client with the 
 ## Checklist
 - [x] C1 · baseline before the change: `arnes_sw.mjs` 23/23, `test_web.py` 86 OK on `origin/main`.
 - [x] C2 · `/play/` and both theGame files are absent from `rutasDelShell()` / JUEGO (arnes assert, 221 entries).
-- [x] C3 · guards: `mapa_viejo_desmontado` 6/6, `map_bubble_figures` 4/4, `node_bindings` 22/22, `canonical_apex` 5/5.
+- [x] C3 · guards: `mapa_viejo_desmontado` 6/6, `map_acho_figures` 4/4, `node_bindings` 22/22, `canonical_apex` 5/5.
 - [x] C4 · seal chain converged: `sellar.py` dry run → "NADA QUE SELLAR" at `abkh`; `atlas/mundo.py` `version_sw=abkh`, `arnes_sw=23/23`, `gzip_juego_b=111321` (< 153600).
 - [x] C5 · `openworld_browser` on the branch: exit 0, `fallos []`, `externas 0`, chat active, 390 px.
 - [ ] C6 · RED-before-GREEN on the weakest live device of the fleet ring — NO_DATA: the change is not deployed and no device is at hand.

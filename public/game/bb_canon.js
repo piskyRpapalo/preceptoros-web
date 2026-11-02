@@ -1,6 +1,6 @@
 (function (raiz) {
   'use strict';
-  // CANON REGISTRADO del lenguaje de burbujas (Desk, dictamen 2026-10-28). Procedencia y verificacion: docs/canon-bubble-math.md.
+  // CANON REGISTRADO del lenguaje de burbujas (Desk, dictamen 2026-10-28). Procedencia y verificacion: docs/canon-acho-math.md.
   // Hash espacial (canon, render_seed.js:5-11): x = a ^ (b*73856093) ^ (c*19349663); luego xorshift 13, 17, 5; resultado uint32.
   // Cosecha (canon, render_combat.js:64-65): seed = hash(vertices, spectrum, valve+sel);
   //   PENETRATES si seed % 100 < 40 + 3*vertices + 10*valve; si no, FILTERED.

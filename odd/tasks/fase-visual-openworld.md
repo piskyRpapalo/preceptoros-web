@@ -54,7 +54,7 @@ porque todavía nada pinta los chunks.
 ## Fase 2 · un chunk cada vez
 
 Pasos a-f del brief, más lo siguiente:
-- **Sonido (corrección 4)**: el marco nuevo pasa `tests/bubble_audio_contract.test.mjs`, `atlas/bubble_sonify_casos.mjs`
+- **Sonido (corrección 4)**: el marco nuevo pasa `tests/acho_audio_contract.test.mjs`, `atlas/acho_sonify_casos.mjs`
   y `atlas/audio_feedback_manager_casos.mjs`. Si la radio (#532) dice algo distinto, eso necesita **recibo propio** en el PR.
 - **Guardián de hash (corrección 8)**: `atlas/frames_hash_casos.mjs` sella el hash del conjunto de marcos de cada chunk.
   Un cambio sin hash nuevo declarado en el PR da rojo: una regresión visual que una máquina puede ver lleva su check.

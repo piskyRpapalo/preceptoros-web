@@ -1,4 +1,4 @@
-// Cases for the native sound of a bubble frame (NORTE 8 · audio slice 2).
+// Cases for the native sound of a Acho frame (NORTE 8 · audio slice 2).
 // The source of truth is public/game/core.js: the drift test EXTRACTS its vozDe function and runs it.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -7,7 +7,7 @@ import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 
 const require = createRequire(import.meta.url);
-const S = require('../public/game/bubble_sonify.js');
+const S = require('../public/game/acho_sonify.js');
 const AQUI = fileURLToPath(new URL('../public/game/', import.meta.url));
 const CORE = fileURLToPath(new URL('../public/game/core.js', import.meta.url));
 
@@ -53,7 +53,7 @@ function drift(text) {
 }
 
 const WITH_SOUND = {
-  v: 'preceptoros.bubble/1', sound: 'ok',
+  v: 'preceptoros.acho/1', sound: 'ok',
   atoms: [{ k: 'creature', r: 'a wave creature', i: [{ o: 'wave', x: 100, y: 100, h: [[1, 40, 10, 0], [3, 20, 5, 4]] }] },
           { k: 'rock', r: 'a blob rock', i: [{ o: 'blob', x: 200, y: 200, rx: 60, ry: 40, h: [[1, 30, 8, 0], [6, 12, 3, 2]] }] }]
 };
@@ -117,7 +117,7 @@ test('play: schedules two oscillators per voice, and stays silent without a cont
 });
 
 test('the module fits in 16 KiB, has no randomness, clock or network', () => {
-  const path = AQUI + 'bubble_sonify.js';
+  const path = AQUI + 'acho_sonify.js';
   const text = readFileSync(path, 'utf8');
   assert.ok(statSync(path).size <= 16384, 'the module is over 16 KiB');
   const code = text.replace(/\/\/[^\n]*/g, '');   // code only: comment prose does not count

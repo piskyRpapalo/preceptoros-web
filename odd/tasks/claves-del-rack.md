@@ -13,7 +13,7 @@ Se añade, nunca se reescribe (append-only). Las rutas son relativas a su reposi
 | `estrella(s)` | `propuestas/2026-10-20_recursos_adjuntos/2026-10-20_ideas12-13-14.txt` | la Estrella de la Voz y The First Echo → #542 (hablar da cobre) |
 | `face` / `stage-sheet` | `retirados/face/atlantis.html`, `face_views.css` | la terminal de las primeras pieles: mapa arriba, hojas que lo cubren, chat abajo → #545 |
 | `PRUEBA_5_MINUTOS` | `docs/PRUEBA_5_MINUTOS.md` | existe pero está desfasado (cita /play/ y /face/): G0-4 lo reescribe |
-| `bubble_audio_contract` | `tests/bubble_audio_contract.test.mjs` | el contrato de audio que entra en el checklist por chunk |
+| `acho_audio_contract` | `tests/acho_audio_contract.test.mjs` | el contrato de audio que entra en el checklist por chunk |
 | `13-rosetta` | repo `study`, `13-rosetta.md` (por `gh api`) | la Rosetta: procedencia de ideas adoptadas |
 | `REFRESH DEL LORE` | buzón #30, 2026-11-01 ~10:57Z | NPCs en la niebla, paredes-mensaje, caravanas, L-074 |
 | `smollm2` / `wllama` | Hugging Face (unsloth, Apache-2.0) y npm (MIT, 3.8.1), licencias leídas en la fuente | el cerebro del nodo web en 5 chunks del mismo origen → #543 |

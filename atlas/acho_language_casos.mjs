@@ -1,5 +1,5 @@
-// bubble_language · casos del nucleo, preceptoros.bubble/1 (decision mia, sin firma).
-// Rojo primero: sin public/game/bubble_language.js todos los casos fallan y rc=1.
+// acho_language · casos del nucleo, preceptoros.acho/1 (decision mia, sin firma).
+// Rojo primero: sin public/game/acho_language.js todos los casos fallan y rc=1.
 // Salida: una linea JSON {ok, casos}; rc=0 solo si todos pasan.
 import { readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
@@ -7,12 +7,12 @@ import { fileURLToPath } from 'node:url';
 
 const require = createRequire(import.meta.url);
 const DIR = fileURLToPath(new URL('../public/game/', import.meta.url));
-const V = 'preceptoros.bubble/1';
+const V = 'preceptoros.acho/1';
 const casos = [];
 let nota = '';
 let B = null;
 let cargaError = '';
-try { B = require(DIR + 'bubble_language.js'); } catch (e) { cargaError = String(e.message).split('\n')[0]; }
+try { B = require(DIR + 'acho_language.js'); } catch (e) { cargaError = String(e.message).split('\n')[0]; }
 
 const json = (x) => JSON.stringify(x);
 const marco = (atoms, extra) => ({ v: V, id: 'T', atoms, ...(extra || {}) });
@@ -186,7 +186,7 @@ check('pureza: los dos fuentes sin document, Date, Math.random, performance, fet
     [/#[0-9a-fA-F]{3,8}\b/, 'literal hex'], [/\brgb\s*\(/, 'rgb('], [/\bhsl\s*\(/, 'hsl('],
   ];
   const malos = [];
-  for (const f of ['bubble_language.js', 'bubble_light.js']) {
+  for (const f of ['acho_language.js', 'acho_light.js']) {
     const src = readFileSync(DIR + f, 'utf8');
     for (const [re, nombre] of PROHIBIDOS) if (re.test(src)) malos.push(f + ':' + nombre);
   }
@@ -294,6 +294,15 @@ check('smoothPath: cerrado acaba en Z con n curvas C; abierto no', () => {
   const cuenta = (s, ch) => s.split(ch).length - 1;
   if (!c.endsWith('Z') || cuenta(c, 'C') !== 4) return 'cerrado: ' + c;
   if (o.endsWith('Z') || cuenta(o, 'C') !== 3) return 'abierto: ' + o;
+  return true;
+});
+
+check('AC-0 · sello de esquema: acho/1 compila; el alias historico compila igual (ventana D5); otro v se rechaza', () => {
+  const f = (v) => ({ v, id: 'SELLO', t: 0, atoms: [{ k: 'r', r: 'a rock', i: [{ o: 'blob', x: 100, y: 100, rx: 40, ry: 30, seed: 's', f: 'paper', s: 'ink' }] }] });
+  if (B.VERSION !== 'preceptoros.acho/1' || B.ALIAS !== 'preceptoros.bubble/1') return 'constantes: ' + B.VERSION + ' / ' + B.ALIAS;
+  const a = JSON.stringify(B.compile(f(B.VERSION))), h = JSON.stringify(B.compile(f(B.ALIAS)));
+  if (a !== h) return 'el alias no dibuja lo mismo';
+  for (const v of ['preceptoros.burbuja/1', undefined]) { try { B.compile(f(v)); return 'aceptado: ' + v; } catch (e) { if (!/marco no admitido/.test(e.message)) return e.message; } }
   return true;
 });
 

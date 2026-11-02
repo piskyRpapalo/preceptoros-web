@@ -4,15 +4,15 @@ import { createRequire } from 'node:module';
 import { FakeDocument, host } from './fake_dom.mjs';
 
 const require = createRequire(import.meta.url);
-const P = require('../public/game/bubble_paint.js');
-const B = require('../public/game/bubble_language.js');
+const P = require('../public/game/acho_paint.js');
+const B = require('../public/game/acho_language.js');
 const Tokens = require('../public/game/comic_tokens.js');
 
 test('Paint records points as a single frame ribbon and undo/redo is exact', () => {
   const p = P.create({ id: 'PAINT', band: 'paper' });
   p.addPoint(20, 30).addPoint(40, 50).addPoint(70, 40);
   const before = p.frame();
-  assert.equal(before.v, 'preceptoros.bubble/1');
+  assert.equal(before.v, 'preceptoros.acho/1');
   assert.equal(before.atoms[0].i[0].o, 'ribbon');
   assert.deepEqual(before.atoms[0].i[0].pts, [[20, 30], [40, 50], [70, 40]]);
   assert.ok(B.compile(before).length > 0);
@@ -55,8 +55,8 @@ test('Paint mounts accessible DOM and projects points as SVG without HTML parsin
   assert.equal(target.querySelectorAll('[data-action]').length, 2);
   view.paint.addPoint(12, 18).addPoint(24, 30); view.refresh();
   assert.ok(surface.querySelector('svg'));
-  assert.ok(target.querySelector('[data-frame]').textContent.includes('preceptoros.bubble/1'));
-  assert.doesNotMatch(require('node:fs').readFileSync(new URL('../public/game/bubble_paint.js', import.meta.url), 'utf8'), /innerHTML/);
+  assert.ok(target.querySelector('[data-frame]').textContent.includes('preceptoros.acho/1'));
+  assert.doesNotMatch(require('node:fs').readFileSync(new URL('../public/game/acho_paint.js', import.meta.url), 'utf8'), /innerHTML/);
   assert.equal(surface.querySelector('polyline').getAttribute('points'), '12,18 24,30');
   assert.equal(surface.querySelector('polyline').getAttribute('stroke'), Tokens.FRONT_DOOR.cyan);
 });

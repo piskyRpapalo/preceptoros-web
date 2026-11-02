@@ -36,7 +36,7 @@
 <summary>Technical details</summary>
 <ul>
 <li>One product: the web and the app load the same face files and draw the same frames.</li>
-<li>The map is one isometric plane drawn from small <code>preceptoros.bubble/1</code> frames, each under 1,024 bytes; your state and the battle are frames too. Deterministic, no network, no clock. The state sits in this page as JSON (<code>#packet</code>).</li>
+<li>The map is one isometric plane drawn from small <code>preceptoros.acho/1</code> frames, each under 1,024 bytes; your state and the battle are frames too. Deterministic, no network, no clock. The state sits in this page as JSON (<code>#packet</code>).</li>
 <li>Distance and time are counted in cells and steps; real time is NO_DATA because no clock is read.</li>
 <li>Battle: the canon seeded rounds; the receipt is at most 200 bytes and is checked by replaying from tick 0. Formation changes how the squad stands, not the rounds.</li>
 <li>For agents: <code>window.preceptorFace.state()</code> reads the screen; <code>act(name)</code> drives it. Actions: task, accept, decline, start, follow, up, down, left, right, whole, sound, read, say.</li><li>The three map icons say their name on the map when tapped, and the voice speaks it when Sound is on.</li>
