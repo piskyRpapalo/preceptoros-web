@@ -2550,5 +2550,29 @@ class PanelPorCategorias(unittest.TestCase):
         self.assertEqual(dict(zip(voces, de)), esperado)
 
 
+class ManifiestoVivo(unittest.TestCase):
+    """R1 (espejo de la comunidad, 2026-11-02): cada acción del manifiesto para IAs lleva a un elemento real y visible."""
+
+    def test_cada_enlace_profundo_llega_a_un_id_que_existe(self):
+        datos = json.loads((PUBLICO / "mcp-manifest.json").read_text(encoding="utf-8"))
+        self.assertTrue(datos["actions"])
+        for a in datos["actions"]:
+            with self.subTest(accion=a["id"]):
+                ruta, _, ancla = a["deep_link"].partition("#")
+                self.assertTrue(ancla, "sin ancla: " + a["deep_link"])
+                pagina = PUBLICO / (ruta.lstrip("/") + ("index.html" if ruta.endswith("/") else ""))
+                html = pagina.read_text(encoding="utf-8")
+                self.assertIn(' id="%s"' % ancla, html)
+                # TF-2: un ancla dentro de una voz que no es de Start está oculta al llegar.
+                li = html.rfind("<li class=\"voice", 0, html.index(' id="%s"' % ancla))
+                if li >= 0 and html.rfind("</li>", li, html.index(' id="%s"' % ancla)) < 0:
+                    hablante = re.search(r'data-speaker="([^"]+)"', html[li:li + 200]).group(1)
+                    self.assertIn(hablante, ("Tutorial", "Welcome", "Guide"), a["deep_link"])
+
+    def test_las_dos_copias_son_iguales(self):
+        self.assertEqual((RAIZ / "mcp-manifest.json").read_bytes(), (PUBLICO / "mcp-manifest.json").read_bytes())
+        self.assertEqual((RAIZ / "llms.txt").read_bytes(), (PUBLICO / "llms.txt").read_bytes())
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
