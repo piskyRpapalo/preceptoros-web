@@ -31,14 +31,14 @@
 <script src="../public/game/comic_atoms.js"></script>
 <script src="../public/game/valores.js"></script>
 <script src="../public/game/gacha.js"></script>
-<script src="../public/game/bubble_language.js"></script>
-<script src="../public/game/bubble_letters.js"></script>
+<script src="../public/game/acho_language.js"></script>
+<script src="../public/game/acho_letters.js"></script>
 <script src="../public/game/isometric_floor_projection.js"></script>
 <script src="../public/game/global_map.js"></script>
 <script>
 (function (raiz) {
   'use strict';
-  var M = raiz.AtlasMapaGlobal, B = raiz.AtlasBubble, P = raiz.AtlasComicAtoms;
+  var M = raiz.AtlasMapaGlobal, B = raiz.AtlasAcho, P = raiz.AtlasComicAtoms;
   var params = new URLSearchParams(raiz.location.search);
   var sabotaje = params.get('sabotaje') || '';
   var TICKS = [0, 30, 90, 120];

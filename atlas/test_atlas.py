@@ -290,14 +290,14 @@ process.stdout.write(JSON.stringify(ok));
 # Ver atlas/POST_VERIFICACION_MGNO_LAB.md y atlas/POST_VERIFICACION_SISIL_CRIA.md.
 PUROS = ("canon.js", "sobres.js", "rating.js", "arena.js", "duelo.js", "battle_choreography.js", "mercado.js", "narragrafo.js", "cria.js")  # genoma.js salio del arbol servido (atlas/puros/, 2026-10-27) · T_CRT §8.1: el orquestador mini lo lee; ningun guion de la web lo pide aun
 # La Arena (2026-09-28, «el mapa multi-jugador en una pestana»): se carga al abrir su pestana, detras del Army.
-ARENA = ("sobres.js", "rating.js", "combate_ticks.js", "arena.js", "duelo.js", "sea-anchors.js", "crab_render_hd.js", "audio_feedback_manager.js", "crab_free_move.js", "genesis_tutorial.js", "buildings_toon.js", "reef_place_cards.js", "shell_schematics.js", "reef_buildings_paint.js", "latency_crystal.js", "hexelion_bench.js", "bubble_bestiary.js", "map_bubble_figures.js", "reef_corals.js", "reef_buildings_layer.js", "sea-crabs.js", "map_pointer_input.js", "semiotic_glyph.js", "hexelion_dictionary.js", "map_nodes_layer.js", "map_zoom.js", "piece_inspector.js", "vector_contract.js", "state_vector.js", "place_reading.js", "npc_territory_map.js", "map_integrity.js", "sea.js", "nodos-pesos.js",
+ARENA = ("sobres.js", "rating.js", "combate_ticks.js", "arena.js", "duelo.js", "sea-anchors.js", "crab_render_hd.js", "audio_feedback_manager.js", "crab_free_move.js", "genesis_tutorial.js", "buildings_toon.js", "reef_place_cards.js", "shell_schematics.js", "reef_buildings_paint.js", "latency_crystal.js", "hexelion_bench.js", "acho_bestiary.js", "map_acho_figures.js", "reef_corals.js", "reef_buildings_layer.js", "sea-crabs.js", "map_pointer_input.js", "semiotic_glyph.js", "hexelion_dictionary.js", "map_nodes_layer.js", "map_zoom.js", "piece_inspector.js", "vector_contract.js", "state_vector.js", "place_reading.js", "npc_territory_map.js", "map_integrity.js", "sea.js", "nodos-pesos.js",
          "node_reception_contract.js", "node_trust_anchor.js", "node_trust_manifest.js", "node_signature_messages.js", "node_signature_verify.js", "node_bindings_messages.js", "node_bindings.js", "node_projection.js", "nodos.js", "cuenta.js", "ui-nodos.js", "ui-rack.js", "node_preview.js", "node_file_receiver.js",
          "escuadron.js", "wave_duel_scene.js", "npc_occupancy.js", "npc_walls.js", "ui-arena-comun.js", "combat_screen.js", "ui-arena.js", "ui-duelo.js")
 # La CASA (2026-10-05): la primera pantalla, detras del Army. Lleva canon y escena, que la Arena reutiliza.
-# C1+C2 (#264, 2026-10-23): editor Bubble y Paint se cargan con la Casa; ambos son modulos v1.5 a demanda.
-CASA = ("canon.js", "tabla_semantica.js", "comic_tokens.js", "comic_atoms.js", "escena.js", "wave_render.js", "gdpr-art25-ephemeral-crab.js", "aiact-art50-crab-terminal.js", "nodos-cedulas.js", "fog_of_war.js", "isometric_floor_projection.js", "world_camera.js", "sea-floor.js", "sea_rift.js", "bubble_editor.js", "bubble_paint.js", "gdpr-art7-entry-choice.js", "aiact-art50-state-radio.js", "casa-medidas.js", "casa-personaliza.js", "casa-lateral.js", "crab_state_screen.js", "reef_building_lifecycle.js", "home_buildings.js", "summon-wave-card.js", "summon_reveal.js", "taller.js", "army-wave-panel.js", "ui-taller.js", "primer_eco.js", "summon-access.js", "deep_links.js", "hitl_firma.js", "onda_profunda.js", "tarjeta_cantada.js", "cable_llamar.js", "cable_terminal.js")
+# C1+C2 (#264, 2026-10-23): editor Acho y Paint se cargan con la Casa; ambos son modulos v1.5 a demanda.
+CASA = ("canon.js", "tabla_semantica.js", "comic_tokens.js", "comic_atoms.js", "escena.js", "wave_render.js", "gdpr-art25-ephemeral-crab.js", "aiact-art50-crab-terminal.js", "nodos-cedulas.js", "fog_of_war.js", "isometric_floor_projection.js", "world_camera.js", "sea-floor.js", "sea_rift.js", "acho_editor.js", "acho_paint.js", "gdpr-art7-entry-choice.js", "aiact-art50-state-radio.js", "casa-medidas.js", "casa-personaliza.js", "casa-lateral.js", "crab_state_screen.js", "reef_building_lifecycle.js", "home_buildings.js", "summon-wave-card.js", "summon_reveal.js", "taller.js", "army-wave-panel.js", "ui-taller.js", "primer_eco.js", "summon-access.js", "deep_links.js", "hitl_firma.js", "onda_profunda.js", "tarjeta_cantada.js", "cable_llamar.js", "cable_terminal.js")
 # El descenso (obra abku, 2026-10-18): los pide thegame.js por su lista DESCENSO, no con la casa.
-DESCENSO = ("front_door.js", "silueta.js", "en301_practice_model.js", "en301_practice_arena.js", "en301_tutorial_copy.js", "en301_tutorial_model.js", "en301_tutorial_audio.js", "en301_tutorial.js", "deploy_building.js", "etiqueta.js", "en301_tutorial_building.js", "world_creator.js", "tutorial_fases.js", "ui-tutorial-fases.js", "comic_accents.js", "bubble_language.js", "bubble_light.js", "bubble_bestiary.js", "bubble_world.js", "bubble_letters.js", "bubble_game.js", "bubble_icons.js", "descent_sound.js", "local_app_bridge.js")
+DESCENSO = ("front_door.js", "silueta.js", "en301_practice_model.js", "en301_practice_arena.js", "en301_tutorial_copy.js", "en301_tutorial_model.js", "en301_tutorial_audio.js", "en301_tutorial.js", "deploy_building.js", "etiqueta.js", "en301_tutorial_building.js", "world_creator.js", "tutorial_fases.js", "ui-tutorial-fases.js", "comic_accents.js", "acho_language.js", "acho_light.js", "acho_bestiary.js", "acho_world.js", "acho_letters.js", "bubble_game.js", "acho_icons.js", "descent_sound.js", "local_app_bridge.js")
 # VT6 (compuerta de lanzamiento): modulo puro, fuera de la puerta del juego; la pantalla aun no la carga.
 VT6 = ("launch_gate.js",)
 # J1 (estrella Hexelion capturable): modulo puro, fuera de la puerta; la mecanica aun no la carga el juego.
@@ -312,27 +312,27 @@ VISION_LEXICA = ("lexical_projector.js",)
 # La creacion (E1+E2+E4): módulos cargados por creation.html, no por theGame.
 CREACION = ("creation_package.js", "creation_feedback.js", "creation_flow.js")
 CREATION_PAGE_DEPENDENCIES = CREACION + (
-    "bubble_language.js", "comic_tokens.js", "comic_accents.js",
-    "tabla_semantica.js", "bubble_editor.js", "bubble_paint.js",
+    "acho_language.js", "comic_tokens.js", "comic_accents.js",
+    "tabla_semantica.js", "acho_editor.js", "acho_paint.js",
 )
 # /aduana/ (Norte N3, 2026-10-26): el catalogo publico de cedulas, puro; solo lo carga la pagina /aduana/.
 ADUANA = ("node_catalogue.js",)
 # [W] O1b (2026-10-27): la escena del duelo de ondas entra en la Arena (ARENA) y en los mundos; battle_choreography queda
 # en PUROS (motor intacto, ya no lo carga ninguna cara).
 # /openworld/ (NORTE 8 · audio slice 2, 2026-10-28): el sonido nativo del fotograma, cargado solo por esa pagina.
-MUNDO_ABIERTO = ("bubble_sonify.js", "chunk_router.js", "global_map.js")   # /openworld/: sonido, router y el mapa global (NODO-MAPA, 2026-10-28), fuera de la puerta y fuera del precache
+MUNDO_ABIERTO = ("acho_sonify.js", "chunk_router.js", "global_map.js")   # /openworld/: sonido, router y el mapa global (NODO-MAPA, 2026-10-28), fuera de la puerta y fuera del precache
 FUERA_DE_LA_PUERTA = tuple(sorted(set(PUROS + ARENA + CASA + DESCENSO + VT6 + J1 + VT2_ETIQUETA + VT4_SILUETA + VISION_LEXICA + ADUANA + MUNDO_ABIERTO)))
 # La cara del juego (2026-10-25) es su propia superficie en public/face/, fuera
 # de la puerta: carga de una vez las piezas que usa, como creation.html. Se
 # declaran aqui las suyas, leidas de sus paginas, y nada mas.
 FACE_PAGE_DEPENDENCIES = tuple(sorted(set(re.findall(r'src="/game/([^"]+)"', (PUBLICO / "face" / "basic.html").read_text(encoding="utf-8")))))
-# La portada (P3 [1d], decreto 2026-10-26) dibuja sus tres puertas en bubble language: carga UNA vez
+# La portada (P3 [1d], decreto 2026-10-26) dibuja sus tres puertas en Acho language: carga UNA vez
 # estas piezas de dibujo, y solo estas. Se DECLARAN aqui (no se leen de la pagina), asi la portada no
 # puede ampliar la lista en silencio; test_web.Puerta exige que cargue exactamente esta lista.
 LANDING_PAGE_DEPENDENCIES = ("tabla_semantica.js", "comic_tokens.js", "comic_accents.js", "comic_atoms.js",
-                             "bubble_language.js", "bubble_letters.js")
+                             "acho_language.js", "acho_letters.js")
 # /openworld/ (NORTE 7 · PR 2, 2026-10-28): el mapa y su cabana dibujan en la misma burbuja que la portada; se DECLARA aqui.
-OPENWORLD_PAGE_DEPENDENCIES = LANDING_PAGE_DEPENDENCIES + ("bubble_sonify.js", "valores.js", "gacha.js", "chunk_router.js", "isometric_floor_projection.js", "global_map.js")   # the native sound: on demand, on the first click; the map: the projection and its state
+OPENWORLD_PAGE_DEPENDENCIES = LANDING_PAGE_DEPENDENCIES + ("acho_sonify.js", "valores.js", "gacha.js", "chunk_router.js", "isometric_floor_projection.js", "global_map.js")   # the native sound: on demand, on the first click; the map: the projection and its state
 # /aduana/ (Norte N2, 2026-10-26): el comprobador de cedulas, OBSERVANTE, carga la cadena de nodos y solo esa. Se
 # DECLARA aqui; local_first_surface_build.ADUANA_SCRIPTS es la misma lista, y tests/aduana_page.test.mjs exige que
 # coincidan.
@@ -407,8 +407,8 @@ class TheGameV15(unittest.TestCase):
             with self.subTest(module=module):
                 self.assertIn(f"/game/{module}", page)
                 self.assertIn(f"/game/{module}", lists)
-        for module in ("bubble_language.js", "comic_tokens.js", "comic_accents.js",
-                       "tabla_semantica.js", "bubble_editor.js", "bubble_paint.js"):
+        for module in ("acho_language.js", "comic_tokens.js", "comic_accents.js",
+                       "tabla_semantica.js", "acho_editor.js", "acho_paint.js"):
             with self.subTest(dependency=module):
                 self.assertIn(f"/game/{module}", page)
                 self.assertIn(f"/game/{module}", lists)

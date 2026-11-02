@@ -127,7 +127,7 @@
     try { renderVerified(await Package.verify(await fileText(event.target))); }
     catch (error) { document.getElementById('reader-status').textContent = 'NO_DATA · ' + error.message; }
   });
-  drawing = window.AtlasBubblePaint.mount(document.getElementById('paint'), {
+  drawing = window.AtlasAchoPaint.mount(document.getElementById('paint'), {
     band: 'cyan', stroke: 'ink', feedback: sound,
     onChange: function (frame) { drawing.frameValue = frame; invalidate(frame ? 'Drawing changed. Sign the creation again.' : 'NO_DATA · drawing is invalid.');
       sign.disabled = !frame || !catalog || !declaration; }

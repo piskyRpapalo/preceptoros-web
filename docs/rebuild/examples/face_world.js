@@ -1,6 +1,6 @@
 (function (root) {
   'use strict';
-  var V = 'preceptoros.bubble/1', root2 = Math.SQRT2;
+  var V = 'preceptoros.acho/1', root2 = Math.SQRT2;
   var worldSize = 1000, tile = 12;
   var homeAt = [500, 690];
   var starH = [[1, 26, 26, 0], [-4, 8, 8, 0]];

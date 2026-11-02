@@ -12,7 +12,9 @@ const SF = require('./state_frames.js');
 const CP = require('../../public/game/colonia_pagina.js');
 
 const NM = Acho.nombres(TOKENS, ACCENTS);
-const base = () => ({ id: 'x', t: 0, cv: [120, 110],
+// Where Acho inserts the seal cause: after the serialization, size and doctrine-seal causes, before everything else.
+const sinSello = (cs) => cs.filter((x) => /^(not serializable|NO_DATA: frame over|seal outside)/.test(x)).length;
+const base = () => ({ v: 'preceptoros.acho/1', id: 'x', t: 0, cv: [120, 110],
   atoms: [{ k: 'k', r: 'a sentence', i: [{ o: 'ribbon', pts: [[1, 1], [50, 1], [50, 50]], closed: true, f: 'paper', s: 'ink', lw: 2 }] }],
   bands: ['paper', 'ink', 'cyan'], change: ['a sentence'], sound: 'NO_DATA', soundCause: 'no waves' });
 const relleno = (n, c) => ({ ...base(), change: [c.repeat(n)] });
@@ -36,6 +38,9 @@ const corpus = {
   'bare NO_DATA sound': { ...base(), soundCause: '' },
   'sound ok': { ...base(), sound: 'ok' },
   'atom sounds only': (() => { const f = base(); delete f.sound; delete f.soundCause; f.atoms[0].sound = 'ok'; return f; })(),
+  'schema seal: historical alias (D5 window)': { ...base(), v: 'preceptoros.bubble/1' },
+  'schema seal: wrong': { ...base(), v: 'preceptoros.burbuja/1' },
+  'schema seal: absent': (() => { const f = base(); delete f.v; return f; })(),
   'cycle': ciclo(),
   'undefined inside': { ...base(), extra: [undefined] },
   'not an object': [1, 2],
@@ -62,11 +67,21 @@ test('the band names are the same set as param_gate builds', () => {
   assert.deepEqual(Object.keys(NM).sort(), [...bandNames().porNombre.keys()].sort());
 });
 
+test('the schema seal is load-bearing: Acho and its alias pass, anything else is refused', () => {
+  assert.equal(Acho.valida(corpus['base'], NM).ok, true);
+  assert.equal(Acho.valida(corpus['schema seal: historical alias (D5 window)'], NM).ok, true);
+  for (const k of ['schema seal: wrong', 'schema seal: absent']) assert.ok(Acho.valida(corpus[k], NM).causes.some((c) => /schema seal is not Acho/.test(c)), k);
+});
+
 test('the ceiling is the house one', () => { assert.equal(Acho.TOPE, TOPE); });
 
 for (const [nombre, frame] of Object.entries(corpus)) {
   test(`parity: ${nombre}`, () => {
-    assert.deepEqual(Acho.valida(frame, NM), checkFrame(frame));
+    // Acho = checkFrame + the schema seal (AC-0). checkFrame is the shared legibility contract and stays seal-blind.
+    const a = Acho.valida(frame, NM), c = checkFrame(frame);
+    const sello = a.causes.filter((x) => /^schema seal is not Acho/.test(x));
+    const esperado = sello.length ? { ...c, ok: false, causes: [...c.causes.slice(0, sinSello(c.causes)), ...sello, ...c.causes.slice(sinSello(c.causes))] } : c;
+    assert.deepEqual(a, esperado);
   });
 }
 

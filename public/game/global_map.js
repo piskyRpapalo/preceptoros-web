@@ -1,5 +1,5 @@
 // Global map · the first three nodes (ODD isometric-colony, mandate 2026-10-28 evening).
-// One state, many renders (D4/D5): this pure core turns the liveness rows into bubble-language frames.
+// One state, many renders (D4/D5): this pure core turns the liveness rows into acho-language frames.
 // A node appears only while it is alive; the tutorial cabin is always here. Every visible change is a frame of
 // under 1,024 UTF-8 bytes whose sound comes from the frame's own waves. The day/night palette is a function of the
 // cycle tick `t` alone: never a wall clock. No random numbers, no clock reads, no network.
@@ -8,7 +8,7 @@
   var common = typeof module === 'object' && module.exports;
   var Iso = common ? require('./isometric_floor_projection.js') : root.IsometricFloor;
 
-  var LIMITE_BYTES = 1024;     // a frame is a syllable (docs/bubble-language.md §1)
+  var LIMITE_BYTES = 1024;     // a frame is a syllable (docs/acho-language.md §1)
   var ANCHO = 320, ALTO = 96;  // the box one node's bubble is drawn in
   var CELDA = 56;              // fixed axonometric cell width: the angle never changes
   var CYCLE = 240;             // ticks in one full day and night
@@ -92,7 +92,7 @@
     var medida = row.mana.estado === 'MEDIDO' ? 'mana ' + row.mana.valor : 'mana NO_DATA (' + row.mana.causa + ')';
     var frase = row.nombre + ' · ' + medida + ' · ' + (evento ? FRASE[evento] : 'drawn at tick ' + t);
     var fotograma = {
-      v: 'preceptoros.bubble/1', id: row.id, t: t, cv: [ANCHO, ALTO],
+      v: 'preceptoros.acho/1', id: row.id, t: t, cv: [ANCHO, ALTO],
       atoms: [{ k: row.clave, r: frase, i: items }],
       bands: ['paper', 'ink', 'cyan'],
       change: [frase],
@@ -104,7 +104,7 @@
   // The sky is a visible change too: its own frame, one sentence, no waves (so its sound is NO_DATA with its cause).
   function cielo(pal) {
     return {
-      v: 'preceptoros.bubble/1', id: 'sky', t: pal.t, cv: [ANCHO, ALTO],
+      v: 'preceptoros.acho/1', id: 'sky', t: pal.t, cv: [ANCHO, ALTO],
       atoms: [{ k: 'sky', r: 'the sky at tick ' + pal.t + ': day ' + pal.dia + ' of 256', i: [] }],
       bands: ['paper', 'ink', 'cyan'],
       change: ['the sky at tick ' + pal.t],
@@ -129,7 +129,7 @@
     var s = tipo === 'mountain' ? 'paper' : 'ink';
     var frase = 'hex (' + col + ',' + fila + '): ' + tipo + ' · terrain, not a node';
     return {
-      v: 'preceptoros.bubble/1', id: 'hex-' + col + '-' + fila, t: 0, cv: [ANCHO, ALTO],
+      v: 'preceptoros.acho/1', id: 'hex-' + col + '-' + fila, t: 0, cv: [ANCHO, ALTO],
       atoms: [{ k: 'terrain.' + tipo, r: frase, i: [{ o: 'ribbon', pts: DIAMOND, closed: true, f: f, s: s, lw: 2 }] }],
       bands: ['paper', 'ink', 'cyan'],
       change: [frase],

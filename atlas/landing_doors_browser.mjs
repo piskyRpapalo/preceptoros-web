@@ -1,4 +1,4 @@
-// P3 [1d] in a real browser: the landing's three doors are drawn in the house bubble language, with
+// P3 [1d] in a real browser: the landing's three doors are drawn in the house Acho language, with
 // the same three links, the same footer, the titles still readable by screen readers, no exception
 // and no external request. Uso: node atlas/landing_doors_browser.mjs [carpeta-captura]
 import { createServer } from 'node:http';
@@ -65,7 +65,7 @@ async function main() {
         return { lado: p.dataset.lado, tinta: tinta(c), cola: izq > der ? 'left' : der > izq ? 'right' : 'none', titulo: (p.querySelector('b') || {}).textContent }; }),
       plegado: !(document.querySelector('#web-app details.tech') || {}).open };
   })())`));
-  ok(medida.burbujas && medida.puertas === 2, 'the two doors (decreto corte D: sin Tutorial) were not all drawn in bubble language');
+  ok(medida.burbujas && medida.puertas === 2, 'the two doors (decreto corte D: sin Tutorial) were not all drawn in Acho language');
   ok(JSON.stringify(medida.enlaces) === JSON.stringify(['/openworld/', null]), 'links changed: ' + medida.enlaces);
   ok(JSON.stringify(medida.titulos) === JSON.stringify(['OpenWorld', 'Tools']), 'titles changed or gone: ' + medida.titulos);
   ok(medida.dibujos.every((n) => n > 2000), 'a bubble is blank: ' + medida.dibujos);

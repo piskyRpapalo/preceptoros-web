@@ -74,7 +74,7 @@ test('el pintor reordena el suelo por la profundidad GIRADA (atrás → delante)
 
 test('las capas de la colonia se dibujan por su profundidad girada', () => {
   const g = new Proxy({}, { get: (o, k) => k in o ? o[k] : () => ({}), set: (o, k, v) => { o[k] = v; return true; } });
-  globalThis.AtlasBubble = { compile: (f) => f }; globalThis.AtlasComicAtoms = { paint: () => {} };
+  globalThis.AtlasAcho = { compile: (f) => f }; globalThis.AtlasComicAtoms = { paint: () => {} };
   for (const a of [0, 137, 300]) {
     const c = lienzo(a); c.getContext = () => g;
     const sc = CP.draw(c, COLONIA, 0, true, {}, {}, null), G = CP.geometry(sc, c);

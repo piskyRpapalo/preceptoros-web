@@ -25,7 +25,7 @@
 - The web should weigh **~1 KB per screen**; today it does not (measured in the removal PR).
 - **Creation Studio leaves the web entirely**: app only (drawing app or image generator, or deterministic colour-changing
   "pieces"; both paths proposed measured, the Sovereign decides).
-- **The basic tutorial is the web's door**, with the simplest Ephemeral Account. The bubble-language object is always
+- **The basic tutorial is the web's door**, with the simplest Ephemeral Account. The acho-language object is always
   the same, the ephemeral user:
   - the tutorial: a plain circle, agar.io-like;
   - Atlantis: the crab, improved;
@@ -65,7 +65,7 @@ RETIRE (leaves with "play the game"), DECIDE (two signed things pull in opposite
 | P13 | **History mode / crab state** | `crab_state_screen.js`, `casa-medidas.js`, `casa-personaliza.js`, `casa-lateral.js` (4) | `crab_state_screen_casos`, `tutorial_casos`, `mapa_viejo_desmontado.test` | own profile (`#sheet-profile`) | **RETIRE** (the world's profile is its counterpart) | |
 | P14 | **Workshop** | `ui-taller.js` (face) · `taller.js` (engine) | `taller_casos`, `eco_casos`, `wave_duel_casos` | own `face_workshop.js` | **RETIRE the whole workshop / Creation Studio from the web** (decree; see P16). **`taller.js` STAYS**: measured loaders that are conserved: `combate_ticks.js`, `arena.js` (P2) and `primer_eco.js` (P7) | decree ·6452880777 |
 | P15 | **Pilot layer · ATLAS engine** (the Forest expedition) | `atlas-motor.js`, `atlas-piloto.js`, `atlas-piloto-capa.js`, `atlas-partida.js`, `juez.js` (5) | `motor_casos`, `piloto_casos`, `arnes_piloto`, `verifica_partida`, `grieta_casos`, `vigia`, `phase_T3_cases` … | no | **SPLIT by measured loaders** (decree: what nothing conserved needs, dies). **STAY:** `atlas-motor.js` (`ui.js:189` CICLO_MS, `ui-duelo.js:29` CATALOGO: P11, P2), `atlas-partida.js` (`atlas-guardado.js:45`: P7), `atlas-piloto.js` (`aiact-art50-crab-terminal.js:3`, `sea.js:23`: P5, P1). **DIE:** `juez.js`, `atlas-piloto-capa.js` (only `thegame.js` loads them) | decree ·6452880777 |
-| P16 | **Creation Studio** | `creation.html` + `creation_package.js`, `creation_feedback.js`, `creation_flow.js`, `bubble_editor.js`, `bubble_paint.js` (the last two are also in /play/'s CASA list) | `test_atlas` (`CREATION_PAGE_DEPENDENCIES`); its own cases | no | **RETIRE from the web** (decree). App-only: a separate proposal measures both paths (drawing app / image generator vs deterministic colour pieces); the Sovereign decides | decree ·6452880777 |
+| P16 | **Creation Studio** | `creation.html` + `creation_package.js`, `creation_feedback.js`, `creation_flow.js`, `acho_editor.js`, `acho_paint.js` (the last two are also in /play/'s CASA list) | `test_atlas` (`CREATION_PAGE_DEPENDENCIES`); its own cases | no | **RETIRE from the web** (decree). App-only: a separate proposal measures both paths (drawing app / image generator vs deterministic colour pieces); the Sovereign decides | decree ·6452880777 |
 
 ## What this list does not do
 
