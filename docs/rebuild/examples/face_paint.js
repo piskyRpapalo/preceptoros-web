@@ -1,6 +1,6 @@
 (function (root) {
   'use strict';
-  var B = root.AtlasBubble, P = root.AtlasComicAtoms, C = root.AtlasCamara, N = root.AtlasNiebla, Z = root.AtlasMapZoom, Wd = root.PreceptorWorld;
+  var B = root.AtlasAcho, P = root.AtlasComicAtoms, C = root.AtlasCamara, N = root.AtlasNiebla, Z = root.AtlasMapZoom, Wd = root.PreceptorWorld;
   var root2 = Math.SQRT2;
 
   function create(canvas, win, skin) {
@@ -42,7 +42,7 @@
       var key = JSON.stringify(items) + seed;
       if (!minis[key]) {
         if (nminis > 300) { minis = {}; nminis = 0; }
-        minis[key] = B.compile({ v: 'preceptoros.bubble/1', id: seed, t: 0, atoms: [{ k: 'piece', r: 'piece', i: items }] }); nminis++;
+        minis[key] = B.compile({ v: 'preceptoros.acho/1', id: seed, t: 0, atoms: [{ k: 'piece', r: 'piece', i: items }] }); nminis++;
       }
       return minis[key];
     }
@@ -53,7 +53,7 @@
         if (free.length) {
           ctx.setTransform(d * v.z, 0, 0, d * v.z, d * v.e, d * v.f);
           ctx.setLineDash(dashed ? [16 / v.z * v.k, 13 / v.z * v.k] : []);
-          P.paint(ctx, B.compile({ v: 'preceptoros.bubble/1', id: frame.id, t: 0, atoms: [{ k: atom.k, r: atom.r, i: free }] }));
+          P.paint(ctx, B.compile({ v: 'preceptoros.acho/1', id: frame.id, t: 0, atoms: [{ k: atom.k, r: atom.r, i: free }] }));
           ctx.setLineDash([]);
         }
         var fixed = list.filter(anchorOf), groups = composite[atom.k] && fixed.length ? [fixed] : fixed.map(function (it) { return [it]; });

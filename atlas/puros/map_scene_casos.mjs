@@ -5,7 +5,7 @@ import { createRequire } from 'node:module';
 import { readFileSync } from 'node:fs';
 const require = createRequire(import.meta.url);
 const S = require('./map_scene.js');
-const F = (id) => ({ v: 'preceptoros.bubble/1', id, t: 0, cv: [120, 110], atoms: [{ k: id, r: 'a sentence', i: [] }], bands: ['paper', 'ink', 'cyan'], change: ['x'], sound: 'NO_DATA: none', soundCause: 'none' });
+const F = (id) => ({ v: 'preceptoros.acho/1', id, t: 0, cv: [120, 110], atoms: [{ k: id, r: 'a sentence', i: [] }], bands: ['paper', 'ink', 'cyan'], change: ['x'], sound: 'NO_DATA: none', soundCause: 'none' });
 const ITEMS = [
   { id: 'bot-b', x: 5, y: 40, frame: F('bot-b') },
   { id: 'hex-a', x: 0, y: 10, frame: F('hex-a') },

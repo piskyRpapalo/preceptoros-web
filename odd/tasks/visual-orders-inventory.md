@@ -1,7 +1,7 @@
 # visual-orders-inventory
 
 Date: 2026-10-31
-Law: buzon#30 decree ·6523148687 (ALL IN: keep the rails; the web is the main charge; the apps may now be touched; inventory every visual order, newest first; every visual is a bubble frame under 1,024 bytes with its own sentence and a declared sound; terminal parity between beelink and doggee). It also folds decrees ·6523047400, ·6522713617, ·6522236505, ·6522287730, ·6522243791, ·6522187525, ·6521940119, ·6521381629, ·6521324145.
+Law: buzon#30 decree ·6523148687 (ALL IN: keep the rails; the web is the main charge; the apps may now be touched; inventory every visual order, newest first; every visual is a Acho frame under 1,024 bytes with its own sentence and a declared sound; terminal parity between beelink and doggee). It also folds decrees ·6523047400, ·6522713617, ·6522236505, ·6522287730, ·6522243791, ·6522187525, ·6521940119, ·6521381629, ·6521324145.
 
 ## Objective
 
@@ -20,7 +20,7 @@ Out of scope: orders for the local AI and the orchestrator map (codex lane, ·65
 ## Constraints
 
 - Newer order wins. Order of work: newest first.
-- Each visual is a bubble frame under 1,024 UTF-8 bytes, with one sentence per atom and a declared sound (NO_DATA with cause when there is none).
+- Each visual is a Acho frame under 1,024 UTF-8 bytes, with one sentence per atom and a declared sound (NO_DATA with cause when there is none).
 - Terminal parity: a terminal open on beelink and on doggee shows the same visual.
 - Web first. The apps may be modified now; no app change is part of this document.
 - Doctrine: status labels LIVE, STALE, STATIC, SIMULATED, NO_DATA, ERROR per datum.
@@ -32,7 +32,7 @@ Status: DONE (built and merged or measured), BUILT (built, awaiting FIRMO), PEND
 
 - [x] V01 · ·6523148687 · ALL IN decree: the rails stay; inventory folded here; web first. Status: DONE (this document).
 - [ ] V02 · ·6523148687 · terminal parity between beelink and doggee. Status: PENDING. Cause: the apps are not yet measured here; the web terminal exists (basic, atlantis, zombie pages).
-- [ ] V03 · ·6523148687 · every visual a bubble frame under 1,024 bytes with sentence and sound. Status: PARTIAL. Frames of IC4, IC5, IC6, IC7-S3 and IC7-S4 are checked by their gates; the web terminal pages and the apps are not measured here (NO_DATA with cause).
+- [ ] V03 · ·6523148687 · every visual a Acho frame under 1,024 bytes with sentence and sound. Status: PARTIAL. Frames of IC4, IC5, IC6, IC7-S3 and IC7-S4 are checked by their gates; the web terminal pages and the apps are not measured here (NO_DATA with cause).
 - [ ] V04 · ·6523047400 · colour anchor: on entering a node, the page adopts its colours. Status: PENDING. Folds into IC7-S5 (D8).
 - [ ] V05 · ·6523047400 · permanent joystick to move the user's ephemeral character. Status: PENDING. Folds into IC7-S10 (D9), after S6.
 - [ ] V06 · ·6523047400 · Android: the chat sits below the map window. Status: PENDING. Folds into IC7-S11 (D10).

@@ -61,6 +61,6 @@ test('taxonomía: cada estado con forma y texto distintos (nunca solo color)', (
 test('cada gráfico nuevo es un frame burbuja < 1024 B que se nombra en texto', () => {
   const w = (state) => HW.walkerFrame({ id: 'doggee-b', node: 'cabin', to: null, state, path: ['cabin', 'doggee-b'], cause: 'NO_DATA: x' }, 3);
   const frames = [HW.markerFrame('cabin', 'P5a tutorial signature', 3)].concat(['walking', 'building', 'needs-you', 'NO_DATA'].map(w));
-  frames.forEach((f) => { assert.ok(bytes(f) < 1024, f.id + ' ' + bytes(f)); assert.ok(f.atoms[0].r.length > 10); assert.equal(f.v, 'preceptoros.bubble/1'); });
+  frames.forEach((f) => { assert.ok(bytes(f) < 1024, f.id + ' ' + bytes(f)); assert.ok(f.atoms[0].r.length > 10); assert.equal(f.v, 'preceptoros.acho/1'); });
   assert.match(frames[0].atoms[0].r, /needs you: P5a tutorial signature/);
 });

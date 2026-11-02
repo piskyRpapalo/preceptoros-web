@@ -55,7 +55,7 @@ Si el ojo lo ve brusco, el ajuste es **k**, declarado y medible; no se toca en s
 
 ## Leyes que mantiene
 
-bubble/1 · cuadros ≤1.024 B (la altura entra como un número en el marco) · determinismo · offline · 0 peticiones ·
+acho/1 · cuadros ≤1.024 B (la altura entra como un número en el marco) · determinismo · offline · 0 peticiones ·
 tres colores (la altura no añade color) · reduced-motion (el crecimiento es un cambio de marco, no una animación) ·
 EN 301 549 (si la altura se muestra como número, lleva equivalente textual) · NO_DATA con causa.
 

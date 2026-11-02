@@ -37,7 +37,7 @@ test('empty descriptions fail with a named package validation cause', async () =
 test('the creation page loads its local identity and verifier before the flow', () => {
   const html = readFileSync(new URL('../public/creation.html', import.meta.url), 'utf8');
   const ordered = ['assets/auth.js', 'game/comic_tokens.js', 'game/creation_package.js', 'game/creation_feedback.js',
-    'game/bubble_paint.js', 'game/creation_flow.js'].map(path => html.indexOf(path));
+    'game/acho_paint.js', 'game/creation_flow.js'].map(path => html.indexOf(path));
   assert(ordered.every(index => index >= 0));
   assert.deepEqual(ordered, ordered.slice().sort((a,b) => a-b));
   for (const id of ['voice-catalog-file','voice-declaration-file','voice-audio-file',

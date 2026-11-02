@@ -1,6 +1,6 @@
 (function (root) {
   'use strict';
-  var doc = root.document, B = root.AtlasBubble, P = root.AtlasComicAtoms, A = root.AtlasSintesis, Wd = root.PreceptorWorld;
+  var doc = root.document, B = root.AtlasAcho, P = root.AtlasComicAtoms, A = root.AtlasSintesis, Wd = root.PreceptorWorld;
   var $ = function (id) { return doc.getElementById(id); };
   var skin = JSON.parse($('skin').textContent);
   var places = Wd.places, actionList = ['task', 'accept', 'decline', 'start', 'follow', 'up', 'down', 'left', 'right', 'whole', 'sound', 'read', 'say'];

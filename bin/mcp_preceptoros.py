@@ -9,10 +9,12 @@ import sys
 
 PROTOCOL = "2025-11-25"
 FRAME_LIMIT = 1024
+# AC-0: Acho, plus the historical seal for the D5 window.
+SCHEMAS = ("preceptoros.acho/1", "preceptoros.bubble/1")
 RECEIPT_LIMIT = 1024
 PENTA = (0, 2, 4, 7, 9)
 TOOL_NAMES = [
-    "web.validate_bubble",
+    "web.validate_acho",
     "web.check_wave_math",
     "web.check_detuning",
     "web.run_gates",
@@ -42,7 +44,7 @@ def radio_hz(grade, octave):
     return round(220 * (2 ** (octave + PENTA[grade] / 12)), 2)
 
 
-def validate_bubble(args):
+def validate_acho(args):
     require_keys(args, ("frame",))
     frame = args["frame"]
     if not isinstance(frame, dict):
@@ -50,7 +52,7 @@ def validate_bubble(args):
     raw = encode(frame).encode("utf-8")
     if len(raw) >= FRAME_LIMIT:
         raise ToolFailure("frame must be below 1,024 UTF-8 bytes")
-    if frame.get("v") != "preceptoros.bubble/1" or not isinstance(frame.get("id"), str) or not frame["id"]:
+    if frame.get("v") not in SCHEMAS or not isinstance(frame.get("id"), str) or not frame["id"]:
         raise ToolFailure("frame schema or id is unsupported")
     atoms = frame.get("atoms")
     if not isinstance(atoms, list) or len(atoms) > 64:
@@ -196,7 +198,8 @@ def emit_receipt(args):
 
 def call_tool(root, name, args):
     handlers = {
-        "web.validate_bubble": validate_bubble,
+        "web.validate_acho": validate_acho,
+        "web.validate_bubble": validate_acho,  # historical alias (D5 window), not listed
         "web.check_wave_math": check_wave_math,
         "web.check_detuning": check_detuning,
         "web.run_gates": lambda value: run_gates(root, value),
@@ -213,13 +216,13 @@ def call_tool(root, name, args):
 def tool_specs():
     empty = {"type": "object", "properties": {}, "required": [], "additionalProperties": False}
     schemas = {
-        "web.validate_bubble": {"type": "object", "properties": {"frame": {"type": "object"}}, "required": ["frame"], "additionalProperties": False},
+        "web.validate_acho": {"type": "object", "properties": {"frame": {"type": "object"}}, "required": ["frame"], "additionalProperties": False},
         "web.check_wave_math": {"type": "object", "properties": {"harmonics": {"type": "array", "items": {"type": "array"}}}, "required": ["harmonics"], "additionalProperties": False},
         "web.check_detuning": {"type": "object", "properties": {"grade": {"type": "integer"}, "octave": {"type": "integer"}, "observed_hz": {"type": "number"}}, "required": ["grade", "octave", "observed_hz"], "additionalProperties": False},
         "receipt.emit": {"type": "object", "properties": {"state": {"enum": ["LIVE", "NO_DATA"]}, "code": {"type": "string"}, "count": {"type": "integer"}, "sha256": {"type": "string"}, "cause": {"type": "string"}}, "required": ["state", "code", "count", "sha256"], "additionalProperties": False},
     }
     descriptions = {
-        "web.validate_bubble": "Validate a bounded preceptoros.bubble/1 frame without rendering it.",
+        "web.validate_acho": "Validate a bounded preceptoros.acho/1 frame without rendering it.",
         "web.check_wave_math": "Measure the sampled radius of a closed harmonic vector.",
         "web.check_detuning": "Compare an observed radio frequency with the fixed pentatonic rule.",
         "web.run_gates": "Run fixed local tests and the initial gzip budget gate.",
