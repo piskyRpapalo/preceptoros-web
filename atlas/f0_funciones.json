@@ -430,6 +430,25 @@
      "text": "LoAF not reported"
     }
    ]
+  },
+  {
+   "id": "invocacion-viva",
+   "scripts": [
+    "/game/invocacion_viva.js"
+   ],
+   "globals": [
+    "AtlasInvocacionViva"
+   ],
+   "guards": [
+    {
+     "file": "atlas/invocacion_viva_browser.mjs",
+     "text": "signing a summon does not show the burst text in #state"
+    },
+    {
+     "file": "atlas/invocacion_viva_browser.mjs",
+     "text": "entering the cabin does not play the worm tunnel first"
+    }
+   ]
   }
  ],
  "retiradas": [
