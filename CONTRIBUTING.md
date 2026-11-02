@@ -96,9 +96,11 @@ rename lands) is not decoration. A frame is written for three readers at once, a
 3. **A human auditor.** Every field is either measured or `NO_DATA` with its cause.
 
 **Audio on the web is not optional.** Every new visual piece declares its sound: what it plays, or `NO_DATA` with
-the cause of why not yet. Measured today (contract [LF-2](docs/bubble-visual-audio-contract.md)): troops sound
-through a Web Audio FM recipe; a shared player for Acho frames is **not built** yet, and `comic_atoms.js` reports
-`sound=NO_DATA`. Closing that gap is open work: propose it as its own piece, with the test vectors LF-2 asks for.
+the cause of why not yet. Measured on main (2026-11-02): frames that carry harmonics (`wave`, `blob`) sound
+natively, on demand, through `public/game/bubble_sonify.js` on `/openworld/` (since 2026-10-28); frames without
+harmonics — text and plain shapes — still say `sound=NO_DATA` (`comic_atoms.js`). The older field contract
+[LF-2](docs/bubble-visual-audio-contract.md) predates the sonifier. Giving a sound to the frames that have none is
+open work: propose it as its own piece, with test vectors.
 
 ## Any tool is welcome — explicitly
 
