@@ -77,6 +77,22 @@
     });
     return { tiles: sc.tiles, buildings: sc.buildings, bots: bots, cielo: cielo, nodes: colonia.nodes.length, edificios: colonia.buildings.length };
   }
+  // 3.5D · BREATHING BUILDINGS. breathe(id, t, reducido, hot) → canvas px a building floats above its ground:
+  // A·sin(t·f + phase(id)) lifted to ≥ 0, phase from an integer hash of the id (no random, no clock). Hover or keyboard
+  // focus on the building's node raises the amplitude; reduced motion keeps it at 0. Render only: taps use the hex anchor.
+  var BREATH = { a: 2.5, hot: 5, f: 0.7 };
+  function breathe(id, t, reducido, hot) {
+    if (reducido === true) { return 0; }
+    var a = hot ? BREATH.hot : BREATH.a, phase = (hash(String(id)) % 628) / 100;
+    return Math.round(a * (1 + Math.sin((Number(t) || 0) * BREATH.f + phase)) / 2 * 100) / 100;
+  }
+  // shadow(g, x, y, k, lift, hot) → a soft ellipse on the ground under a floating building; it shrinks as the building rises.
+  function shadow(g, x, y, k, lift, top) {
+    var T = root.AtlasComicTokens, A = root.AtlasMapPainter; if (!T || !A) { return; }
+    var r = Math.max(4, (26 - lift * 1.6)) * k, f = 1 - lift / (top * 2.4);
+    g.save(); g.globalAlpha = 0.22 * f; g.fillStyle = A.color.css(A.color.rgbOf(T.NEUTRAL.ink));
+    g.beginPath(); g.ellipse(x, y, r, r * 0.38, 0, 0, 6.283); g.fill(); g.restore();
+  }
   var ESCALA_SALA = 2;   // the same spacing as the core: the scene is placed at twice the axial positions
 
   // draw(canvas, estado, t, reducido) → the scene drawn on canvas, with the sky of its tick under it.
@@ -154,7 +170,7 @@
 
   function draw(canvas, estado, t, reducido, looks, seals, walker) {
     var B = root.AtlasBubble, P = root.AtlasComicAtoms;
-    var sc = scene(estado, t, reducido, looks, seals);
+    var sc = scene(estado, t, reducido, looks, seals), hot = canvas.dataset ? canvas.dataset.hot : '';
     var you = walker ? tileOf(sc, walker.node) : null;
     // W-3: while the walker walks, it stands between the two hexes by the fraction of its step.
     if (you && walker.to && walker.fraction > 0) {
@@ -180,21 +196,23 @@
     if (root.AtlasMapPainter) { root.AtlasMapPainter.draw(g, G, t, reducido === true); }
     // M1-2: one deterministic depth order for every layer of this same map.
     var layers = sc.tiles.map(function (n, i) { return { id: 'tile-' + i, item: n }; })
-      .concat(sc.buildings.map(function (n, i) { return { id: 'building-' + i, item: n }; }))
+      .concat(sc.buildings.map(function (n, i) { return { id: 'building-' + i, item: n, lift: breathe(n.id, t, reducido, hot && hot === n.node) }; }))
       .concat(sc.bots.map(function (n, i) { return { id: 'bot-' + i, item: n }; }));
-    if (you) { layers.push({ id: 'walker', item: you.free ? { x: you.x, y: you.y, lift: you.lift, frame: sc.you } : { x: you.x - BOT_DX * ESCALA_SALA, y: you.y - 22, frame: sc.you } }); }
+    if (you) { layers.push({ id: 'walker', item: you.free ? { x: you.x, y: you.y, wl: you.lift, frame: sc.you } : { x: you.x - BOT_DX * ESCALA_SALA, y: you.y - 22, frame: sc.you } }); }
     // Orbit: each layer is turned with the floor, then sorted back to front by its TURNED depth (floor law step 3).
+    // Two lifts: wl is the crab's cell height (scene units, scaled by k); lift is a building's breath (pixels, 3.5D).
     var turned = layers.map(function (layer) {
       var r = G.turn(layer.item.x, layer.item.y);
-      return { id: layer.id, x: r.x, y: r.y, lift: layer.item.lift || 0, frame: layer.item.frame };
+      return { id: layer.id, x: r.x, y: r.y, wl: layer.item.wl || 0, lift: layer.lift || 0, frame: layer.item.frame, building: /^building-/.test(layer.id) };
     });
     var drawn = root.AtlasMapScene ? root.AtlasMapScene.compose(turned.map(function (l) { return { id: l.id, x: l.x, y: l.y, frame: l.frame }; }))
       .map(function (l) { return turned.filter(function (o) { return o.id === l.id; })[0]; })
       : turned.slice().sort(function (a, b) { return a.y - b.y || a.x - b.x || (a.id < b.id ? -1 : 1); });
     sc.order = drawn.map(function (l) { return l.id; });
     drawn.forEach(function (nd) {
+      if (nd.building && !reducido) { shadow(g, cx + nd.x * k, cy + nd.y * k, S / 1.4, nd.lift, BREATH.hot); }
       g.save();
-      g.translate(cx + nd.x * k - BX * S, cy + (nd.y - nd.lift) * k - BY * S);
+      g.translate(cx + nd.x * k - BX * S, cy + (nd.y - nd.wl) * k - BY * S - nd.lift);
       g.scale(S, S);
       P.paint(g, B.compile(nd.frame));
       g.restore();
@@ -214,7 +232,7 @@
     return out;
   }
 
-  var AtlasColoniaPagina = { ANCHO: ANCHO, ALTO: ALTO, scene: scene, draw: draw, geometry: geometry, SQUASH: SQUASH, nodeAt: nodeAt, anchorOf: anchorOf, texto: texto, frases: frases, botFrame: botFrame, youFrame: youFrame, hash: hash };
+  var AtlasColoniaPagina = { breathe: breathe, BREATH: BREATH, ANCHO: ANCHO, ALTO: ALTO, scene: scene, draw: draw, geometry: geometry, SQUASH: SQUASH, nodeAt: nodeAt, anchorOf: anchorOf, texto: texto, frases: frases, botFrame: botFrame, youFrame: youFrame, hash: hash };
   if (typeof module === 'object' && module.exports) { module.exports = AtlasColoniaPagina; }
   else { root.AtlasColoniaPagina = AtlasColoniaPagina; }
 })(typeof globalThis === 'object' ? globalThis : this);

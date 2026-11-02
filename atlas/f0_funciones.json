@@ -405,19 +405,29 @@
    ]
   },
   {
-   "id": "free-walk",
+   "id": "motor-35d",
    "scripts": [
-    "/game/visitor_walk.js",
-    "/game/colony_controls.js",
-    "/game/map_painter.js"
+    "/game/map_painter.js",
+    "/game/colonia_pagina.js",
+    "/game/hitl_walkers.js"
    ],
    "globals": [
-    "AtlasVisitorWalk"
+    "AtlasMapPainter",
+    "AtlasColoniaPagina",
+    "AtlasHitlWalkers"
    ],
    "guards": [
     {
      "file": "atlas/openworld_browser.mjs",
-     "text": "the crab does not walk the floor cell by cell"
+     "text": "the baked floor is not faster zoomed out"
+    },
+    {
+     "file": "atlas/openworld_browser.mjs",
+     "text": "a tap on the cabin does not enter with the baked floor"
+    },
+    {
+     "file": "atlas/openworld_browser.mjs",
+     "text": "LoAF not reported"
     }
    ]
   }
