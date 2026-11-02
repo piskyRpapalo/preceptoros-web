@@ -13,11 +13,11 @@
 <script src="/public/game/comic_atoms.js"></script>
 <script src="/public/game/valores.js"></script>
 <script src="/public/game/gacha.js"></script>
-<script src="/public/game/bubble_language.js"></script>
-<script src="/public/game/bubble_light.js"></script>
-<script src="/public/game/bubble_bestiary.js"></script>
-<script src="/public/game/bubble_world.js"></script>
-<script src="/public/game/bubble_letters.js"></script>
+<script src="/public/game/acho_language.js"></script>
+<script src="/public/game/acho_light.js"></script>
+<script src="/public/game/acho_bestiary.js"></script>
+<script src="/public/game/acho_world.js"></script>
+<script src="/public/game/acho_letters.js"></script>
 <script src="/public/game/aiact-art50-state-radio.js"></script>
 <script src="/public/game/descent_sound.js"></script>
 <script src="/public/game/bubble_game.js"></script>
@@ -32,7 +32,7 @@
 // Fixture de palabras: el dibujo es funcion PURA de los datos. Sin reloj, sin azar, sin red.
 (function () {
   'use strict';
-  var K = window.AtlasComicTokens, A = window.AtlasBubble, P = window.AtlasComicAtoms;
+  var K = window.AtlasComicTokens, A = window.AtlasAcho, P = window.AtlasComicAtoms;
   var lienzos = [], causas = [];
   var PALABRAS = [
     ['busto-dormido', { o: 'bust', x: 206, y: 280 }],
@@ -85,7 +85,7 @@
   }
 
   try {
-    if (!K || !A || !P) throw new Error('faltan AtlasComicTokens, AtlasBubble o AtlasComicAtoms');
+    if (!K || !A || !P) throw new Error('faltan AtlasComicTokens, AtlasAcho o AtlasComicAtoms');
     PALABRAS.forEach(function (p) {
       try {
         var items = A.compile(marco(p[1]));
