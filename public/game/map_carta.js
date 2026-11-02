@@ -2,7 +2,7 @@
 // no randomness. A chunk is a hexagon of radius R in axial (q, r); chunks tile the plane exactly (3R²+3R+1 cells each)
 // on the lattice a = (2R+1, -R), b = (R, R+1). A position is asked for only as its chunk key (quantized area), never as
 // exact coordinates, and the neighbourhood is always the same 7 keys. Validation keeps every graphic inside its
-// bubble-language frame (< 1,024 UTF-8 bytes, a name and a text description).
+// acho-language frame (< 1,024 UTF-8 bytes, a name and a text description).
 (function (root) {
   'use strict';
   var V = { carta: 'atlas.carta/1', chunk: 'atlas.chunk/1', asset: 'atlas.asset/1' };

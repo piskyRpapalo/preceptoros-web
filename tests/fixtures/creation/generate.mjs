@@ -7,7 +7,7 @@ const wav = Buffer.alloc(48); wav.write('RIFF'); wav.writeUInt32LE(40, 4); wav.w
 wav.writeUInt32LE(16, 16); wav.writeUInt16LE(1, 20); wav.writeUInt16LE(1, 22);
 wav.writeUInt32LE(8000, 24); wav.writeUInt32LE(16000, 28); wav.writeUInt16LE(2, 32); wav.writeUInt16LE(16, 34);
 wav.write('data', 36); wav.writeUInt32LE(4, 40); wav.writeInt16LE(1000, 44); wav.writeInt16LE(-1000, 46);
-const frame = {v:'preceptoros.bubble/1',id:'CREATION',cv:[412,515],style:'clear',
+const frame = {v:'preceptoros.acho/1',id:'CREATION',cv:[412,515],style:'clear',
   atoms:[{k:'keepsake',i:[{o:'ribbon',f:'cyan',s:'ink',d:0,lw:2.5,pts:[[206,258],[210,258],[210,262]]}]}]};
 const prepared = await P.prepare({author:'Fixture author',description:'A test ribbon.',voice_profile:'a'.repeat(64),frame,audio:wav});
 // A leading newline proves that receivers verify original bytes, not reconstructed JSON.

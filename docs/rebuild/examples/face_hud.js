@@ -1,7 +1,7 @@
 (function (root) {
   'use strict';
-  var doc = root.document, B = root.AtlasBubble, P = root.AtlasComicAtoms;
-  var V = 'preceptoros.bubble/1';
+  var doc = root.document, B = root.AtlasAcho, P = root.AtlasComicAtoms;
+  var V = 'preceptoros.acho/1';
 
   function iconFrame(kind, skin) {
     var items;

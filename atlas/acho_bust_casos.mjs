@@ -1,10 +1,10 @@
-// Casos de la cabeza del Preceptor (busto): palabra bust de public/game/bubble_bestiary.js (decision mia, sin firma).
+// Casos de la cabeza del Preceptor (busto): palabra bust de public/game/acho_bestiary.js (decision mia, sin firma).
 // Salida: una linea JSON {ok, casos}; rc=0 solo si todos los casos pasan.
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 
 const require = createRequire(import.meta.url);
-const { WORDS } = require(fileURLToPath(new URL('../public/game/bubble_bestiary.js', import.meta.url)));
+const { WORDS } = require(fileURLToPath(new URL('../public/game/acho_bestiary.js', import.meta.url)));
 const bust = WORDS.bust;
 const C = { x: 192, y: 214 };
 const EYE = [192 + 0.33 * 64, 214 - 0.35 * 64];

@@ -1,6 +1,6 @@
 // Inventario medido de las funciones de accesibilidad de la Burbuja en /openworld/ (buzon#30, 2026-11-02).
 // Cada fila sale de una medida en un navegador real (CDP), nunca de memoria. Lo que no se puede medir aquí es NO_DATA
-// con su causa exacta. Uso: node atlas/bubble_a11y_medida.mjs  → una línea JSON con las filas.
+// con su causa exacta. Uso: node atlas/acho_a11y_medida.mjs  → una línea JSON con las filas.
 import { createServer } from 'node:http';
 import { readFileSync } from 'node:fs';
 import { resolve, extname } from 'node:path';
@@ -58,7 +58,7 @@ m.foco = await ev("(() => { const e = document.activeElement, s = getComputedSty
 await cmd('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'reduce' }] });
 await cmd('Page.navigate', { url: origen + '/openworld/' }); await espera(1500);
 const quieto = JSON.parse(await ev(`(async () => { const a = AtlasOpenworldView().t; await new Promise((r) => setTimeout(r, 2200)); return JSON.stringify({ a, b: AtlasOpenworldView().t, tr: getComputedStyle(document.getElementById('surface')).transitionDuration }); })()`));
-// 4 · forced colours (Windows high contrast): does any Bubble rule answer to it?
+// 4 · forced colours (Windows high contrast): does any Acho rule answer to it?
 await cmd('Emulation.setEmulatedMedia', { features: [{ name: 'forced-colors', value: 'active' }] });
 await cmd('Page.navigate', { url: origen + '/openworld/' }); await espera(1500);
 const forzado = JSON.parse(await ev(`JSON.stringify({ reglas: [...document.styleSheets].flatMap((s) => { try { return [...s.cssRules]; } catch { return []; } }).filter((r) => /forced-colors|prefers-contrast/.test(r.conditionText || r.media?.mediaText || '')).length, aplicadas: [...document.styleSheets].flatMap((s) => { try { return [...s.cssRules]; } catch { return []; } }).filter((r) => /forced-colors|prefers-contrast/.test(r.conditionText || '') && matchMedia(r.conditionText).matches).reduce((n, r) => n + r.cssRules.length, 0), lienzo: AtlasComicAtoms.highContrast ? AtlasComicAtoms.highContrast() : 'NO_DATA' })`));

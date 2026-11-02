@@ -1,7 +1,7 @@
 # colony-terminal-anchor
 
 Date: 2026-10-31
-Law: buzon#30 ·6523552961 («FIRMO TODO»), ·6523867430 (#418 signed; the rail: #418 first, contract after, then «sigue cocinando» without waiting for the rail; the order's own comment has no id here); decree ·6523148687 (ALL IN: newest first, every visual a bubble frame under 1,024 bytes with its sentence and sound); decree ·6523047400 (colour anchor, permanent joystick, Android chat under the map); decree ·6522236505 («the terminal is the user's; its colour changes with the node; the user can change it in their own app»); decree ·6522187525 (the aesthetics of the nodes, as the tutorial); D7 (IC7 reads only `estado.json`).
+Law: buzon#30 ·6523552961 («FIRMO TODO»), ·6523867430 (#418 signed; the rail: #418 first, contract after, then «sigue cocinando» without waiting for the rail; the order's own comment has no id here); decree ·6523148687 (ALL IN: newest first, every visual a Acho frame under 1,024 bytes with its sentence and sound); decree ·6523047400 (colour anchor, permanent joystick, Android chat under the map); decree ·6522236505 («the terminal is the user's; its colour changes with the node; the user can change it in their own app»); decree ·6522187525 (the aesthetics of the nodes, as the tutorial); D7 (IC7 reads only `estado.json`).
 
 ## Objective
 
@@ -18,7 +18,7 @@ In scope, in this order:
 1. The terminal look and its colours, from the node the user enters (V09, V04).
 2. The user's own choice of terminal, kept in their browser only (V09).
 3. The joystick, always present, moving the ephemeral walker over the colony's hexes (V05, D9).
-4. The walker drawn as a bubble frame with its own sentence and a declared seal (NO_DATA: the walker is not node state).
+4. The walker drawn as a Acho frame with its own sentence and a declared seal (NO_DATA: the walker is not node state).
 5. The Android layout check: chat under the map below 900 px (V06, D10).
 
 Out of scope: the apps (beelink 8740 and doggee) are not touched in this piece; the double capture on doggee after deploy (V02, the parity); any change to `estado.json`; any heartbeat producer (D7).

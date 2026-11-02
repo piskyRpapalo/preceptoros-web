@@ -3,7 +3,7 @@
 // "cabin") or its shape from colonia_edificios.js (dome, tower, block). Each kind has a script: a greeting, what it
 // measures, what it offers, and short replies keyed by simple intents. A question with no scripted intent would need a
 // model: it goes to chunk_router.js, and with no model installed the answer is its honest NO_DATA cause. Nothing is
-// invented. Every line is a bubble-language frame under 1,024 UTF-8 bytes (state_frames.js).
+// invented. Every line is a acho-language frame under 1,024 UTF-8 bytes (state_frames.js).
 (function (root) {
   'use strict';
   var common = typeof module === 'object' && module.exports;
@@ -87,11 +87,11 @@
     return null;
   }
 
-  // frame(building, t, text, seal) → a bubble frame that carries one line of the conversation as its sentence.
+  // frame(building, t, text, seal) → a Acho frame that carries one line of the conversation as its sentence.
   function frame(building, t, text, seal) {
     var line = String(text);
     return {
-      v: 'preceptoros.bubble/1', id: 'chat.' + building.id, t: t, cv: [120, 110], seal: seal,
+      v: 'preceptoros.acho/1', id: 'chat.' + building.id, t: t, cv: [120, 110], seal: seal,
       atoms: [{ k: 'chat.' + kindOf(building), r: line, i: [] }],
       bands: ['paper', 'ink', 'cyan'],
       change: [line],

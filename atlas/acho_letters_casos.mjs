@@ -1,5 +1,5 @@
-// atlas/bubble_letters_casos.mjs · las letras de la casa (V7, FIRMO 2026-10-18: «sí, en lote aparte»).
-// Uso: node atlas/bubble_letters_casos.mjs · rc 0 solo si todos los casos pasan. Node 22, ESM, sin dependencias.
+// atlas/acho_letters_casos.mjs · las letras de la casa (V7, FIRMO 2026-10-18: «sí, en lote aparte»).
+// Uso: node atlas/acho_letters_casos.mjs · rc 0 solo si todos los casos pasan. Node 22, ESM, sin dependencias.
 // Blanca con contorno dorado: relleno `paper`, contorno `comic yellow.base`, sombra dura `cyan`.
 import { readFileSync, existsSync, statSync } from 'node:fs';
 import { createRequire } from 'node:module';
@@ -8,7 +8,7 @@ import { checkFrame } from './param_gate.mjs';
 
 const req = createRequire(import.meta.url);
 const ruta = (rel) => fileURLToPath(new URL(rel, import.meta.url));
-const MOD = ruta('../public/game/bubble_letters.js');
+const MOD = ruta('../public/game/acho_letters.js');
 const TECHO = 16384;
 const casos = [];
 const caso = (n, nombre, prueba) => {
@@ -28,11 +28,11 @@ if (existsSync(MOD)) {
       if (m === 'comic_accents') globalThis.AtlasComicAccents = g;
       if (m === 'gacha') globalThis.AtlasGacha = g;
     }
-    A = req(ruta('../public/game/bubble_language.js'));
-    globalThis.AtlasBubble = A;
+    A = req(ruta('../public/game/acho_language.js'));
+    globalThis.AtlasAcho = A;
     L = req(MOD);
   } catch (e) { causa = 'no carga: ' + e.message; }
-} else { causa = 'public/game/bubble_letters.js no existe todavia'; }
+} else { causa = 'public/game/acho_letters.js no existe todavia'; }
 const falta = () => ({ ok: false, medida: 'NO_DATA: ' + causa });
 
 const fuente = existsSync(MOD) ? readFileSync(MOD, 'utf8') : '';
@@ -98,7 +98,7 @@ caso(7, 'lo que no esta en la familia no rompe: missing() lo nombra y la palabra
 
 caso(8, 'en la lengua: un fotograma con letters compila sin notas y pasa checkFrame', () => {
   if (!L || !A) return falta();
-  const f = { v: 'preceptoros.bubble/1', id: 'LETRAS', t: 0, bands: ['FIRMADO.base', 'cyan', 'ink', 'ocean', 'paper'], change: ['the house letters'],
+  const f = { v: 'preceptoros.acho/1', id: 'LETRAS', t: 0, bands: ['FIRMADO.base', 'cyan', 'ink', 'ocean', 'paper'], change: ['the house letters'],
     sound: 'NO_DATA', soundCause: 'static-first: not served', motion: 'NO_DATA',
     atoms: [{ k: 'logo', r: 'the word preceptoros in the house letters', i: [{ o: 'letters', tx: 'preceptoros', x: 96, y: 268, rot: -90, sz: 44 }] }] };
   const g = checkFrame(f), out = A.compile(f);
@@ -109,7 +109,7 @@ caso(8, 'en la lengua: un fotograma con letters compila sin notas y pasa checkFr
 
 caso(9, 'sabotaje: un color crudo en f hace lanzar a compile', () => {
   if (!L || !A) return falta();
-  const f = { v: 'preceptoros.bubble/1', id: 'S', t: 0, bands: ['paper'], change: ['x'], sound: 'NO_DATA', soundCause: 'x', motion: 'NO_DATA',
+  const f = { v: 'preceptoros.acho/1', id: 'S', t: 0, bands: ['paper'], change: ['x'], sound: 'NO_DATA', soundCause: 'x', motion: 'NO_DATA',
     atoms: [{ k: 'x', r: 'x', i: [{ o: 'letters', tx: 'A', x: 0, y: 0, f: '#123456' }] }] };
   try { A.compile(f); return { ok: false, medida: 'no lanzo' }; } catch (e) { return { ok: /unknown band/.test(e.message), medida: e.message }; }
 });

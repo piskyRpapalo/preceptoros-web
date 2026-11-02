@@ -1,6 +1,6 @@
 // The compact terminal of /openworld/ (the Sovereign p0, buzon#30, 2026-11-02): ONE map, ONE panel. Everything the page
 // says to the visitor lives in the chat panel as a voice with its speaker's name: Guide, Tutorial, Map, Floor, Walkers,
-// Zoom, House, Army, Radio. Each voice is a bubble frame whose header names who speaks (under 1,024 UTF-8 bytes); the
+// Zoom, House, Army, Radio. Each voice is a Acho frame whose header names who speaks (under 1,024 UTF-8 bytes); the
 // header is real text, so the line read by a screen reader starts with its speaker, never colour alone. Lines of the
 // conversation log (#log) carry their speaker as data-speaker. It replaces the tab sheets (retirados/terminal/).
 // Pure core: no clock, no randomness, no network.

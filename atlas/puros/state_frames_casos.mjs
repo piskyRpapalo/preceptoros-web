@@ -1,11 +1,11 @@
 // Cases for the state → frame core (MVP slice 1). The sound of a frame comes from its own waves through the
-// shared sonify core (public/game/bubble_sonify.js); a state with no waves says NO_DATA and nothing sounds.
+// shared sonify core (public/game/acho_sonify.js); a state with no waves says NO_DATA and nothing sounds.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const F = require('./state_frames.js');
-const S = require('../../public/game/bubble_sonify.js');
+const S = require('../../public/game/acho_sonify.js');
 
 const CON_ONDA = [[1, 40, 10, 0], [3, 20, 5, 4]];
 

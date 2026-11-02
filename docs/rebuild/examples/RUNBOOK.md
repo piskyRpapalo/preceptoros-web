@@ -33,7 +33,7 @@ If more than one Android device is connected, or `adb reverse` fails, stop and r
 
 - `interface/dashboard.html` + `interface/dashboard.js` (APP `7885afe88ad8a456d6af91aa08a62998818b5c9c`) → existing app dashboard/navigation; it is not yet the measured shared chat-plus-joystick face.
 - `interface/creation_voice.js` + `voz_creacion.py` + `/api/creaciones/voz` → local author-voice generation/download path (PreceptorOS#100, receipt buzon#19/6377404930); usable as an optional voice asset, not as the unified chatbot response path.
-- WEB `tools/creation_image_package.js` → validates/packages image bytes, but has no generator/model/UI (NO_DATA, cause recorded in `docs/prompt-to-2d-package.md`). WEB `bubble_paint.js` → Bubble paint interaction is in the web game, not mounted in the app dashboard (NO_DATA for app integration, cause: no app route/caller found in measured APP tree).
+- WEB `tools/creation_image_package.js` → validates/packages image bytes, but has no generator/model/UI (NO_DATA, cause recorded in `docs/prompt-to-2d-package.md`). WEB `acho_paint.js` → Bubble paint interaction is in the web game, not mounted in the app dashboard (NO_DATA for app integration, cause: no app route/caller found in measured APP tree).
 
 ## Claude's exact gates
 
@@ -41,9 +41,9 @@ Run from WEB worktree root:
 
 ```sh
 node docs/rebuild/examples/validate.mjs
-node atlas/bubble_language_casos.mjs
-node atlas/bubble_bestiary_casos.mjs
-node atlas/bubble_paint_casos.mjs
+node atlas/acho_language_casos.mjs
+node atlas/acho_bestiary_casos.mjs
+node atlas/acho_paint_casos.mjs
 ```
 
 Expected: three frames below 1,024 UTF-8 bytes, valid Bubble compilation, identical normalized geometry across palettes, all three pages below 16,384 bytes, local resources only; then each atlas case command returns `ok: true`. `test_web.py` is not required because this card changes no file under `public/`. If any source is later copied into `public/`, run `python3 test_web.py` and the full applicable gate, and apply the seal/re-pin rules in the same PR. The Sovereign must confirm visual review on the rack Android; a successful compile or HTTP response is not that review.

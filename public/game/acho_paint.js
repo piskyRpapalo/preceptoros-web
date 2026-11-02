@@ -4,7 +4,7 @@
   var SVG_NS = 'http:' + '//' + 'www.w3.org/2000/svg';
   var STROKE_CYAN = common ? require('./comic_tokens.js').FRONT_DOOR.cyan : root.AtlasComicTokens.FRONT_DOOR.cyan;
   function feedback() { return common ? require('./creation_feedback.js') : root.CreationFeedback; }
-  function editor() { return common ? require('./bubble_editor.js') : root.AtlasBubbleEditor; }
+  function editor() { return common ? require('./acho_editor.js') : root.AtlasAchoEditor; }
   function make(doc, tag, text) {
     var n = doc.createElement(tag);
     if (text != null) n.textContent = text;
@@ -29,7 +29,7 @@
       state = { action: action, x: last[0], y: last[1], count: points.length, color: o.band || 'cyan', cause: cause || '' };
       return api;
     }
-    if (!E) throw new Error('Bubble editor unavailable');
+    if (!E) throw new Error('Acho editor unavailable');
     function snapshot() { undo.push(copy(points)); redo.length = 0; }
     function frameFor(ps) { return E.create(Object.assign({}, o, { primitive: 'ribbon', item: {
       o: 'ribbon', f: o.band || 'cyan', s: o.stroke || 'ink', d: 0, lw: 2.5, pts: copy(ps)
@@ -57,9 +57,9 @@
     if (!target) throw new Error('Paint target required');
     var o = options || {}, doc = target.ownerDocument, paint = create(o), active = false, status, revision = 0, F = feedback();
     if (!doc || typeof doc.createElement !== 'function') throw new Error('Paint document unavailable');
-    var section = make(doc, 'section'); section.className = 'bubble-paint';
-    section.setAttribute('aria-label', 'Paint Bubble composition');
-    section.appendChild(make(doc, 'p', 'Draw with a pointer or keyboard. The same Bubble frame drives the description and composition.'));
+    var section = make(doc, 'section'); section.className = 'acho-paint';
+    section.setAttribute('aria-label', 'Paint Acho composition');
+    section.appendChild(make(doc, 'p', 'Draw with a pointer or keyboard. The same Acho frame drives the description and composition.'));
     var surface = make(doc, 'div'); surface.setAttribute('data-surface', 'paint');
     surface.setAttribute('role', 'application'); surface.setAttribute('tabindex', '0');
     surface.setAttribute('aria-label', 'Paint surface; use arrow keys to add points');
@@ -139,5 +139,5 @@
     return Object.freeze({ frame: paint.frame, paint: paint, refresh: update });
   }
   var API = Object.freeze({ LIMIT: 1024, create: create, mount: mount, viewportPoint: viewportPoint });
-  if (common) module.exports = API; else root.AtlasBubblePaint = API;
+  if (common) module.exports = API; else root.AtlasAchoPaint = API;
 })(typeof module === 'object' && module.exports ? this : (this || window));

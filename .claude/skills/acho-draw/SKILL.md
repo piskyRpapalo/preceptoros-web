@@ -1,11 +1,11 @@
 ---
-name: bubble-draw
-description: Dibujar en la lengua de burbujas (preceptoros.bubble/1) - bandas de paleta, geometria familiar y los criterios medibles del inventario NORTE 5. Usala antes de crear o cambiar cualquier fotograma, skin o dibujo.
+name: acho-draw
+description: Dibujar en la lengua Acho (preceptoros.acho/1) - bandas de paleta, geometria familiar y los criterios medibles del inventario NORTE 5. Usala antes de crear o cambiar cualquier fotograma, skin o dibujo.
 ---
 
-# Dibujar en `preceptoros.bubble/1`
+# Dibujar en `preceptoros.acho/1`
 
-Especificacion: `docs/bubble-language.md`. Compilador: `public/game/bubble_language.js`.
+Especificacion: `docs/acho-language.md`. Compilador: `public/game/acho_language.js`.
 Criterios medibles: `docs/rebuild/2026-10-26-foundation-inventory.md` (seccion "sounds like Bubble").
 
 ## Paleta: solo bandas que existen

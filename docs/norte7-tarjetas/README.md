@@ -9,7 +9,7 @@ Vara del ojo (aviso del Soberano, no lista de trabajo):
 [1] proporción personaje/entorno · [2] crecer es altura, no anchura · [3] nada se solapa sin intención ·
 [4] lo que el ojo sigue no encoge · [5] siempre legible.
 
-Leyes que cada tarjeta conserva: bubble/1 (`docs/bubble-language.md`), cuadros ≤1.024 B, tope vigente de 25 MiB
+Leyes que cada tarjeta conserva: acho/1 (`docs/acho-language.md`), cuadros ≤1.024 B, tope vigente de 25 MiB
 por bloque (firma D2 2026-10-11; el 16 KiB revocado), determinismo (sin `Math.random` ni `Date.now`), offline,
 0 peticiones externas, proyección isométrica 2:1 (`odd/tasks/isometric-colony.md`; el nombre «colony-projection/1»
 no aparece en el repo: NO_DATA), tres colores, EN 301 549 con cuatro canales, movimiento reducido, SCRUB, NO_DATA con causa.

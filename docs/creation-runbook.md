@@ -1,6 +1,6 @@
 # First signed creation · operator runbook
 
-This runbook covers one locally voiced, author-signed Bubble drawing hosted by
+This runbook covers one locally voiced, author-signed Acho drawing hosted by
 the rack app. It does not publish a node credential and it does not treat an
 `encolado` credential receipt as evidence that the creation is live.
 

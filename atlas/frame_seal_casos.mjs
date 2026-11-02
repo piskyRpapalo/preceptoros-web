@@ -6,7 +6,7 @@ import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const { checkFrame } = await import('./param_gate.mjs');
 
-const base = () => ({ v: 'preceptoros.bubble/1', id: 'x', t: 0, cv: [120, 110],
+const base = () => ({ v: 'preceptoros.acho/1', id: 'x', t: 0, cv: [120, 110],
   atoms: [{ k: 'k', r: 'a sentence', i: [{ o: 'ribbon', pts: [[1, 1], [50, 1], [50, 50]], closed: true, f: 'paper', s: 'ink', lw: 2 }] }],
   bands: ['paper', 'ink', 'cyan'], change: ['a sentence'], sound: 'NO_DATA', soundCause: 'no waves' });
 

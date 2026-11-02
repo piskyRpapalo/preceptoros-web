@@ -254,9 +254,9 @@
 
   var core = null;
   if (typeof module === 'object' && module.exports) {
-    try { core = require('./bubble_language.js'); } catch (e) { core = null; }
+    try { core = require('./acho_language.js'); } catch (e) { core = null; }
   } else {
-    core = root.AtlasBubble || null;
+    core = root.AtlasAcho || null;
   }
   if (core && typeof core.define === 'function') {
     Object.keys(WORDS).forEach(function (name) { core.define(name, WORDS[name]); });
@@ -264,5 +264,5 @@
 
   var API = { WORDS: WORDS };
   if (typeof module === 'object' && module.exports) { module.exports = API; }
-  else { root.AtlasBubbleBestiary = API; }
+  else { root.AtlasAchoBestiary = API; }
 })(typeof module === 'object' && module.exports ? this : (this || window));

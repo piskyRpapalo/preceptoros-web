@@ -73,13 +73,13 @@
   var WORDS = { letters: letters };
   var core = null;
   if (typeof module === 'object' && module.exports) {
-    try { core = require('./bubble_language.js'); } catch (e) { core = null; }
+    try { core = require('./acho_language.js'); } catch (e) { core = null; }
   } else {
-    core = root.AtlasBubble || null;
+    core = root.AtlasAcho || null;
   }
   if (core && typeof core.define === 'function') { core.define('letters', letters); }
 
   var API = Object.freeze({ GLYPHS: GLYPHS, decode: decode, missing: missing, layout: layout, WORDS: WORDS });
   if (typeof module === 'object' && module.exports) { module.exports = API; }
-  else { root.AtlasBubbleLetters = API; }
+  else { root.AtlasAchoLetters = API; }
 })(typeof module === 'object' && module.exports ? this : (this || window));

@@ -1,8 +1,8 @@
-// preceptoros.org · the landing's three doors (and the web/app pair of [2]), redrawn in the house bubble language (P3 [1d],
+// preceptoros.org · the landing's three doors (and the web/app pair of [2]), redrawn in the house Acho language (P3 [1d],
 // Sovereign decree 2026-10-26). Only the presentation changes: each door keeps its real link and its
 // text. A speech bubble with a small sea wave and the title in comic letters is drawn on top; the
 // title stays in the page for screen readers and for anyone without JavaScript.
-// Reuse only: bubble_language.js + bubble_letters.js + comic_atoms.js and the house bands (paper, ink,
+// Reuse only: acho_language.js + acho_letters.js + comic_atoms.js and the house bands (paper, ink,
 // cyan). No font, no palette, no raw colour lives here.
 (function (raiz) {
   'use strict';
@@ -15,11 +15,11 @@
   var OLA = [];
   for (var j = 0; j <= 12; j++) { OLA.push([136 + j * 4, Math.round((64 + 3 * Math.sin(j * Math.PI / 4)) * 10) / 10]); }
 
-  // The bubble frame of one door: pure data, under 1,024 bytes. `espejo` turns the tail to the right,
+  // The Acho frame of one door: pure data, under 1,024 bytes. `espejo` turns the tail to the right,
   // so the web and the app ([2], 2026-10-26) are two speech bubbles facing each other.
   function marco(titulo, espejo) {
     var cola = [[58, 66], [36, 94], [92, 72]].map(function (p) { return espejo ? [ANCHO - p[0], p[1]] : p; });
-    return { v: 'preceptoros.bubble/1', id: 'door', t: 0, cv: [ANCHO, ALTO], atoms: [
+    return { v: 'preceptoros.acho/1', id: 'door', t: 0, cv: [ANCHO, ALTO], atoms: [
       { k: 'bubble', r: 'a speech bubble', i: [
         { o: 'ribbon', pts: cola, closed: true, f: 'paper', s: 'ink', lw: 3 },
         { o: 'ribbon', pts: ORLA, closed: true, f: 'paper', s: 'ink', lw: 3 }] },
@@ -30,8 +30,8 @@
   if (typeof module === 'object' && module.exports) { module.exports = { marco: marco, ANCHO: ANCHO, ALTO: ALTO }; return; }
 
   function dibuja() {
-    var B = raiz.AtlasBubble, P = raiz.AtlasComicAtoms, doc = raiz.document;
-    if (!B || !P || !raiz.AtlasBubbleLetters) { return; }
+    var B = raiz.AtlasAcho, P = raiz.AtlasComicAtoms, doc = raiz.document;
+    if (!B || !P || !raiz.AtlasAchoLetters) { return; }
     var puertas = doc.querySelectorAll('#doors .door, #web-app .side'), hechas = 0;
     Array.prototype.forEach.call(puertas, function (a) {
       var b = a.querySelector('b'), titulo = b ? b.textContent : '';

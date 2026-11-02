@@ -27,7 +27,7 @@ Out of scope: the crab's panel and Fourier coefficients (F8, a later plan); any 
 
 ## Constraints
 
-- Every visible frame is a bubble frame under 1,024 UTF-8 bytes with its sentence and a declared sound (NO_DATA with cause when none).
+- Every visible frame is a Acho frame under 1,024 UTF-8 bytes with its sentence and a declared sound (NO_DATA with cause when none).
 - No random number, no clock with authority, no network in the render path; the seed is required.
 - The door stays under 16 KiB; the logic lives in `public/game/`.
 - Commitment: SHA-256 only. No FNV or other non-cryptographic hash in any served file.

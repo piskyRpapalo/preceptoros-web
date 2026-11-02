@@ -1,12 +1,12 @@
 (function (root) {
   'use strict';
-  var VERSION = 'preceptoros.bubble/1', LIMIT = 1024;
+  var VERSION = 'preceptoros.acho/1', LIMIT = 1024;
   var PRIMITIVES = Object.freeze(['wave', 'blob', 'ribbon', 'arcs', 'field', 'wall', 'text', 'keep', 'neck']);
   var STYLES = Object.freeze(['volume', 'etch', 'clear']);
   var NEUTRALS = Object.freeze(['ink', 'paper', 'ocean', 'cyan']);
   var common = typeof module === 'object' && module.exports;
-  function bubble() { return common ? require('./bubble_language.js') : root.AtlasBubble; }
-  function fail(reason) { var e = new Error(reason); e.name = 'BubbleEditorError'; throw e; }
+  function acho() { return common ? require('./acho_language.js') : root.AtlasAcho; }
+  function fail(reason) { var e = new Error(reason); e.name = 'AchoEditorError'; throw e; }
   function object(v) { return !!v && typeof v === 'object' && !Array.isArray(v); }
   function jsonBytes(v) {
     var s;
@@ -48,7 +48,7 @@
     if (p === 'arcs') return Object.assign(base, { x: x, y: y, n: 2, arc: 240, ph: 0, r: [12, 22] });
     if (p === 'field') return Object.assign(base, { kind: 'bubbles', x: x, y: y, n: 3, h: 38, r: [3, 6] });
     if (p === 'wall') return Object.assign(base, { x: [x - 18, x + 18], y: [y - 18, y + 18], side: 'right' });
-    if (p === 'text') return Object.assign(base, { x: x, y: y, tx: 'Bubble', sz: 16 });
+    if (p === 'text') return Object.assign(base, { x: x, y: y, tx: 'Acho', sz: 16 });
     if (p === 'keep') return Object.assign(base, { k: 'source' });
     if (p === 'neck') return Object.assign(base, { a: [x - 18, y], b: [x + 18, y], k: 8, p: 0.5 });
     fail('unknown primitive');
@@ -70,15 +70,15 @@
     return frame;
   }
   function serialize(frame) {
-    if (!object(frame) || frame.v !== VERSION || !Array.isArray(frame.atoms)) fail('invalid Bubble frame');
+    if (!object(frame) || frame.v !== VERSION || !Array.isArray(frame.atoms)) fail('invalid Acho frame');
     var encoded = jsonBytes(frame);
     return encoded;
   }
   function compile(frame) {
-    var B = bubble();
-    if (!B || typeof B.compile !== 'function') fail('Bubble compiler unavailable');
+    var B = acho();
+    if (!B || typeof B.compile !== 'function') fail('Acho compiler unavailable');
     var copy = JSON.parse(serialize(frame)), result = B.compile(copy);
-    if (B.compile.notes && B.compile.notes.length) fail(B.compile.notes[0].cause || 'Bubble compilation failed');
+    if (B.compile.notes && B.compile.notes.length) fail(B.compile.notes[0].cause || 'Acho compilation failed');
     return result;
   }
   function clear(node) { while (node.firstChild) node.removeChild(node.firstChild); }
@@ -113,8 +113,8 @@
     if (!target) fail('editor target required');
     var doc = target.ownerDocument, opts = Object.assign({}, initial || {}), current = create(opts);
     if (!doc || typeof doc.createElement !== 'function') fail('editor document unavailable');
-    var section = make(doc, 'section'); section.className = 'bubble-editor';
-    section.setAttribute('aria-label', 'Bubble object editor');
+    var section = make(doc, 'section'); section.className = 'acho-editor';
+    section.setAttribute('aria-label', 'Acho object editor');
     var controls = [
       selectField(doc, 'Primitive', 'primitive', PRIMITIVES, opts.primitive || 'blob'),
       selectField(doc, 'Style', 'style', STYLES, opts.style || 'volume'),
@@ -137,7 +137,7 @@
       Array.prototype.forEach.call(fields, function (el) { values[el.getAttribute('data-field')] = el.type === 'number' ? Number(el.value) : el.value; });
       opts = Object.assign(opts, values); current = create(opts); compile(current);
       if (frameOut) frameOut.textContent = serialize(current);
-      if (status) status.textContent = 'Bubble frame ready · ' + BufferBytes(serialize(current)) + ' bytes';
+      if (status) status.textContent = 'Acho frame ready · ' + BufferBytes(serialize(current)) + ' bytes';
       return current;
     }
     function click(e) { if (e.target && e.target.getAttribute('data-action') === 'refresh') refresh(); }
@@ -150,5 +150,5 @@
     } });
   }
   var API = Object.freeze({ VERSION: VERSION, LIMIT: LIMIT, PRIMITIVES: PRIMITIVES, STYLES: STYLES, bands: bands, byteLength: BufferBytes, create: create, serialize: serialize, compile: compile, mount: mount });
-  if (common) module.exports = API; else root.AtlasBubbleEditor = API;
+  if (common) module.exports = API; else root.AtlasAchoEditor = API;
 })(typeof module === 'object' && module.exports ? this : (this || window));

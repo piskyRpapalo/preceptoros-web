@@ -2,14 +2,15 @@
 'use strict';
 const { cos, sin, tan, exp, sqrt, hypot, floor, ceil, round, imul, min, max, PI } = Math;
 const NODE = typeof module === 'object' && !!module.exports;
-const VERSION = 'preceptoros.bubble/1', CANVAS = [412, 515], LIGHT = [-0.35, -0.94];
+// ALIAS: historical seal, read during the D5 window (AC-0).
+const VERSION = 'preceptoros.acho/1', ALIAS = 'preceptoros.bubble/1', CANVAS = [412, 515], LIGHT = [-0.35, -0.94];
 const STYLES = ['volume', 'etch', 'clear'], PRIMS = ['wave', 'blob', 'ribbon', 'arcs', 'field', 'wall', 'text', 'keep', 'neck'];
 const SUBS = ['brillo', 'base', 'sombra', 'contorno'], MAX = 8, words = Object.create(null);
 const has = (o, k) => Object.prototype.hasOwnProperty.call(o, k);
 const lib = (n) => (NODE ? require('./' + { AtlasGacha: 'gacha', AtlasComicTokens: 'comic_tokens', AtlasComicAccents: 'comic_accents', AtlasSemantica: 'tabla_semantica' }[n] + '.js') : root[n]);
 const light = () => {
- if (!NODE) return root.AtlasBubbleLight || null;
- try { return require('./bubble_light.js'); } catch (e) { if (e.code === 'MODULE_NOT_FOUND') return null; throw e; }
+ if (!NODE) return root.AtlasAchoLight || null;
+ try { return require('./acho_light.js'); } catch (e) { if (e.code === 'MODULE_NOT_FOUND') return null; throw e; }
 };
 const num = (v, d) => (typeof v === 'number' && isFinite(v) ? v : d);
 const nums = (it, keys) => keys.split(' ').every((k) => typeof it[k] === 'number' && isFinite(it[k]));
@@ -80,7 +81,7 @@ function smoothPath(pts, closed) {
 
 function depthOf(it) {
  const d = it.d === undefined ? 0 : it.d;
- if (d !== 0 && d !== 1 && d !== 2) throw new Error('bubble: depth ' + d);
+ if (d !== 0 && d !== 1 && d !== 2) throw new Error('acho: depth ' + d);
  return d;
 }
 const strokeOf = (it, depth) => (depth === 2
@@ -116,7 +117,7 @@ function finalize(sc) {
 }
 
 function neck(a, b, k, p, side) {
- if (!pair(a) || !pair(b) || !a.every(Number.isFinite) || !b.every(Number.isFinite) || !Number.isFinite(k) || k < 0 || !Number.isFinite(p) || p < 0 || p > 1 || (side !== undefined && side !== -1 && side !== 1)) throw new Error('bubble: neck');
+ if (!pair(a) || !pair(b) || !a.every(Number.isFinite) || !b.every(Number.isFinite) || !Number.isFinite(k) || k < 0 || !Number.isFinite(p) || p < 0 || p > 1 || (side !== undefined && side !== -1 && side !== 1)) throw new Error('acho: neck');
  const dx = b[0] - a[0], dy = b[1] - a[1], len = hypot(dx, dy) || 1, width = k * 4 * p * (1 - p) * (side || 1);
  return Array.from({ length: 25 }, (_, i) => { const t = i / 24, q = width * sin(PI * t); return [rd(a[0] + dx * t - dy / len * q), rd(a[1] + dy * t + dx / len * q)]; });
 }
@@ -272,12 +273,12 @@ function keep(sc, it, out) {
 }
 
 function item(sc, ai, it, out, wd) {
- if (wd > MAX) throw new Error('bubble: anidamiento excesivo');
+ if (wd > MAX) throw new Error('acho: anidamiento excesivo');
  if (!it || typeof it.o !== 'string') return note('?', String(ai), 'NO_DATA · item sin o');
  const key = it.seed != null && it.seed !== '' ? String(it.seed) : sc.frame.id + ':' + ai;
  if (has(words, it.o)) {
   const kids = words[it.o](it, { key, rng: rng(key), frame: sc.frame, atom: ai, band, depth: wd });
-  if (!Array.isArray(kids)) throw new Error('bubble: palabra sin lista ' + it.o);
+  if (!Array.isArray(kids)) throw new Error('acho: palabra sin lista ' + it.o);
   kids.forEach((kid, j) => item(sc, ai, Object.assign({}, kid, kid.seed == null ? { seed: key + '/' + j } : {}), out, wd + 1));
   return;
  }
@@ -288,10 +289,10 @@ function item(sc, ai, it, out, wd) {
 }
 
 function section(frame, prev, fd, only) {
- if (fd > MAX) throw new Error('bubble: keep en bucle');
- if (!frame || frame.v !== VERSION || !Array.isArray(frame.atoms)) throw new Error('bubble: marco no admitido');
+ if (fd > MAX) throw new Error('acho: keep en bucle');
+ if (!frame || (frame.v !== VERSION && frame.v !== ALIAS) || !Array.isArray(frame.atoms)) throw new Error('acho: marco no admitido');
  const cv = pair(frame.cv ?? CANVAS), lg = pair(frame.light ?? LIGHT), style = frame.style ?? 'volume';
- if (!cv || !lg || !STYLES.includes(style)) throw new Error('bubble: cv, light o style');
+ if (!cv || !lg || !STYLES.includes(style)) throw new Error('acho: cv, light o style');
  const sc = { frame, prev, fd, cv, light: lg, style, boxes: [], jobs: [] }, res = [];
  frame.atoms.forEach((atom, ai) => {
   if (only && !only.includes(String(atom && atom.k))) return;
@@ -311,9 +312,9 @@ function compile(frame) {
 }
 
 function define(name, fn) {
- if (typeof name !== 'string' || PRIMS.includes(name) || typeof fn !== 'function') throw new Error('bubble: define ' + name);
+ if (typeof name !== 'string' || PRIMS.includes(name) || typeof fn !== 'function') throw new Error('acho: define ' + name);
  words[name] = fn;
 }
-const AtlasBubble = Object.freeze({ compile, define, words: () => Object.keys(words), hash32, rng, wavePoints, smoothPath, neck, band });
-if (NODE) module.exports = AtlasBubble; else root.AtlasBubble = AtlasBubble;
+const AtlasAcho = Object.freeze({ VERSION, ALIAS, compile, define, words: () => Object.keys(words), hash32, rng, wavePoints, smoothPath, neck, band });
+if (NODE) module.exports = AtlasAcho; else root.AtlasAcho = AtlasAcho;
 })(typeof module === 'object' && module.exports ? this : (this || window));

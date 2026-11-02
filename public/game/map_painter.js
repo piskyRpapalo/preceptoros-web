@@ -1,5 +1,5 @@
 // P4 · the 2.5D floor of the one map (odd/tasks/mapa-25d-aldea.md F3/F4): baked chunks become hex prisms, placed by
-// colonia_pagina geometry (cx, cy, k, turn) + HexProjection. Each chunk is also a bubble frame < 1,024 B. Deterministic;
+// colonia_pagina geometry (cx, cy, k, turn) + HexProjection. Each chunk is also a Acho frame < 1,024 B. Deterministic;
 // house tokens only, a pattern per band (colour never the only cue); reduced motion: the sea stands still.
 (function (root) {
   'use strict';
@@ -30,7 +30,7 @@
   }
   function bandOf(cell) { return cell[3] === 'water' ? 0 : Math.max(1, Math.min(3, cell[2])); }
 
-  // frameOf(chunk, t, reduced) → the chunk's maths as a bubble frame (< 1,024 B).
+  // frameOf(chunk, t, reduced) → the chunk's maths as a Acho frame (< 1,024 B).
   function frameOf(chunk, t, reduced) {
     var n = [0, 0, 0, 0]; chunk.cells.forEach(function (c) { n[bandOf(c)]++; });
     var day = PC.palette(t, reduced).dia, B = bands();

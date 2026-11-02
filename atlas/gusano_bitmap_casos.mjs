@@ -8,7 +8,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 const root = fileURLToPath(new URL('.', import.meta.url));
 const chrome = process.env.CHROME_BIN || 'google-chrome';
 const source = pathToFileURL(resolve(root, '../public/assets/worm_transition.js')).href;
-const bubbleSource = pathToFileURL(resolve(root, '../public/game/bubble_language.js')).href;
+const bubbleSource = pathToFileURL(resolve(root, '../public/game/acho_language.js')).href;
 
 function capture(progress) {
   const dir = mkdtempSync(resolve(tmpdir(), 'worm-bitmap-'));

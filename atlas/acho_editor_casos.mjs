@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
-const E = require('../public/game/bubble_editor.js');
-const B = require('../public/game/bubble_language.js');
+const E = require('../public/game/acho_editor.js');
+const B = require('../public/game/acho_language.js');
 const frame = E.create({ id: 'GATE', primitive: 'blob', band: 'cyan', x: 120, y: 90 });
 const encoded = E.serialize(frame);
 assert.ok(E.byteLength(encoded) < 1024);

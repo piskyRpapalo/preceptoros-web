@@ -1,7 +1,7 @@
 // Acho · AC-1 · the pure validator of a frame (odd/tasks/acho-interpreter.md). Not served yet.
-// Same verdict as checkFrame (atlas/param_gate.mjs) without Node: the UTF-8 bytes are counted by hand, and the
+// checkFrame's verdict (atlas/param_gate.mjs), plus one rule of its own (the schema seal), without Node: the UTF-8 bytes are counted by hand, and the
 // band names come in as an argument, so the same file runs in the browser, the app and node.
-// No DOM, no network, no clock, no Math.random. It does not read `v`: the seal of the schema is AC-0's (D5 window).
+// No DOM, no network, no clock, no Math.random. Since AC-0 it reads `v`: Acho, or the historical seal during the D5 window.
 (function (raiz) {
   'use strict';
 
@@ -9,6 +9,7 @@
   var NEUTROS = ['ink', 'paper', 'ocean', 'cyan'];
   var BANDAS = ['brillo', 'base', 'sombra', 'contorno'];
   var CLAVES_COLOR = ['f', 's', 'fill', 'stroke'];
+  var ESQUEMAS = ['preceptoros.acho/1', 'preceptoros.bubble/1'];   // AC-0: Acho, plus the historical seal (D5 window)
   var SELLOS = ['LIVE', 'STALE', 'STATIC', 'SIMULATED', 'NO_DATA', 'ERROR'];
   var tiene = function (o, k) { return Object.prototype.hasOwnProperty.call(o, k); };
 
@@ -70,6 +71,7 @@
     if (esObjeto(frame) && tiene(frame, 'seal') && SELLOS.indexOf(frame.seal) < 0) {
       causas.push('seal outside the doctrine labels: ' + String(frame.seal));
     }
+    if (esObjeto(frame) && ESQUEMAS.indexOf(frame.v) < 0) { causas.push('schema seal is not Acho: ' + String(frame.v)); }
     if (!esObjeto(frame)) {
       causas.push('not an object: frame');
       return { ok: false, bytes: bytes, causes: sinRepetir(causas), fields: {} };
@@ -111,6 +113,6 @@
     return { ok: causas.length === 0, bytes: bytes, causes: sinRepetir(causas), fields: fields };
   }
 
-  var Acho = Object.freeze({ TOPE: TOPE, SELLOS: SELLOS, bytesUtf8: bytesUtf8, nombres: nombres, valida: valida });
+  var Acho = Object.freeze({ TOPE: TOPE, ESQUEMAS: ESQUEMAS, SELLOS: SELLOS, bytesUtf8: bytesUtf8, nombres: nombres, valida: valida });
   if (typeof module === 'object' && module.exports) { module.exports = Acho; } else { raiz.Acho = Acho; }
 })(typeof module === 'object' && module.exports ? this : (this || window));

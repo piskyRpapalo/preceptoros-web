@@ -6,13 +6,13 @@
     var MF = window.AtlasMarFondo, VE = 620, PASO = 90, VIVO = null;
     var NOMBRE = { izq: 'left', arr: 'up', aba: 'down', der: 'right', casa: 'home', faro: 'beacon' };
     function dibujaIcono(b, d, cola) {
-      var I = window.AtlasBubbleIcons, A = window.AtlasBubble, P = window.AtlasComicAtoms, n = NOMBRE[d] || d, z = 28, s = 2;
+      var I = window.AtlasAchoIcons, A = window.AtlasAcho, P = window.AtlasComicAtoms, n = NOMBRE[d] || d, z = 28, s = 2;
       if (!I || !A || !P || I.missing(n)) { return false; }
       var c = document.createElement('canvas'), g;
       c.width = c.height = z * s; c.className = 'mapa-ico'; c.setAttribute('aria-hidden', 'true');
       g = c.getContext('2d'); g.setTransform(s, 0, 0, s, 0, 0);
       try {
-        P.paint(g, A.compile({ v: 'preceptoros.bubble/1', id: 'ICON', t: 0, cv: [z, z], bands: ['cyan', 'ink', 'paper'], change: ['icon'],
+        P.paint(g, A.compile({ v: 'preceptoros.acho/1', id: 'ICON', t: 0, cv: [z, z], bands: ['cyan', 'ink', 'paper'], change: ['icon'],
           sound: 'NO_DATA', soundCause: 'icon', motion: 'NO_DATA', atoms: [{ k: n, r: n, i: [{ o: 'icon', name: n, x: z / 2, y: z / 2, r: z * 0.38 }] }] }));
       } catch (e) { return false; }
       b.textContent = ''; b.appendChild(c);

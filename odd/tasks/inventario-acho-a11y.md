@@ -1,7 +1,7 @@
 # Inventario medido · funciones de la Burbuja para la accesibilidad en /openworld/ (2026-11-02)
 
 Encargo: el Soberano p0, buzon#30 (·6572069590). Rama `haiku/terminal-compacta-20261102`.
-Medida: `node atlas/bubble_a11y_medida.mjs` (Chromium real por CDP, 390×844, árbol de accesibilidad completo) más
+Medida: `node atlas/acho_a11y_medida.mjs` (Chromium real por CDP, 390×844, árbol de accesibilidad completo) más
 las guardas `atlas/openworld_browser.mjs` y `atlas/ojo_carbono_browser.mjs`. Nada de memoria: cada fila dice su medida.
 
 **NO_DATA es un marcador vivo.** Primero se declaró cada hueco con su causa; luego se construyó en este mismo PR lo
@@ -44,7 +44,7 @@ que cabía; al final se volvió a medir y se rellenó. La columna «al abrir» g
 ## Relleno medido · 2026-11-02 · rama `haiku/a11y-rellena-20261102` (DECRETO-NO-DATA-ESTADO-VIVO)
 
 Las filas 11-13 de arriba se quedan como estaban (fecha de apertura). Debajo, la misma fila con la medida nueva:
-`node atlas/bubble_a11y_medida.mjs` reejecutado tras construir, y la guarda nueva `atlas/a11y_relleno_browser.mjs`
+`node atlas/acho_a11y_medida.mjs` reejecutado tras construir, y la guarda nueva `atlas/a11y_relleno_browser.mjs`
 (roja con sabotaje, verde sin él).
 
 | # | función | antes (2026-11-02, apertura) | medida al rellenar (2026-11-02) | estado |

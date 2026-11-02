@@ -1,19 +1,19 @@
 // C1-C4 del cangrejo (decision mia, sin firma): el cangrejo se lee como CANGREJO, nunca como medusa.
-// Criatura: public/game/bubble_bestiary.js (crabWord). Salida: una linea JSON {ok, casos}; rc=0 solo si todos pasan.
+// Criatura: public/game/acho_bestiary.js (crabWord). Salida: una linea JSON {ok, casos}; rc=0 solo si todos pasan.
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 
 const require = createRequire(import.meta.url);
-const BESTIARY_PATH = fileURLToPath(new URL('../public/game/bubble_bestiary.js', import.meta.url));
+const BESTIARY_PATH = fileURLToPath(new URL('../public/game/acho_bestiary.js', import.meta.url));
 const P = { x: 300, y: 440, rr: 50, dir: 1, eye: 'up' };
 const MIRROR_X = 2 * P.x;
 const EPS = 1e-9;
 const cases = [];
 
 let mod = null, loadError = '';
-try { mod = require(BESTIARY_PATH); } catch (e) { loadError = 'no carga bubble_bestiary.js: ' + e.message; }
+try { mod = require(BESTIARY_PATH); } catch (e) { loadError = 'no carga acho_bestiary.js: ' + e.message; }
 const crab = mod && mod.WORDS ? mod.WORDS.crab : null;
-if (!crab && !loadError) { loadError = 'bubble_bestiary.js sin WORDS.crab'; }
+if (!crab && !loadError) { loadError = 'acho_bestiary.js sin WORDS.crab'; }
 
 const clone = (value) => JSON.parse(JSON.stringify(value));
 const centroid = (pts) => [
