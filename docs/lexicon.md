@@ -1,6 +1,6 @@
 # THE LEXICON — Official Names of PreceptorOS
 
-**Status:** PROPOSAL by the Command Desk · REQUIRES_SIGN-OFF of the Sovereign · drafted 2026-10-18 (round 306), sources measured 2026-10-18 · extended 2026-10-20 (sections I–J), sources measured 2026-10-20 · extended 2026-10-30 (section C2, one-map coins) · extended 2026-11-02 (section B1, companions door) · destination: `docs/lexicon.md` in preceptoros-web, under the Renaming Law.
+**Status:** PROPOSAL by the Command Desk · REQUIRES_SIGN-OFF of the Sovereign · drafted 2026-10-18 (round 306), sources measured 2026-10-18 · extended 2026-10-20 (sections I–J), sources measured 2026-10-20 · extended 2026-10-30 (section C2, one-map coins) · destination: `docs/lexicon.md` in preceptoros-web, under the Renaming Law.
 
 **Purpose (declared by the Sovereign):** the professional and literary evolution of the Sovereign. Every term below carries his work and his voice; the names are chosen to be readable by humans and by the preceptors in a single pass.
 
@@ -151,5 +151,3 @@ oracle · notary · depin · coin · clearing · magic · token-as-a-name · **c
 ## I–L · Implementation records
 
 Benchmark, lexical-screen, Bubble-language, and lexical-vision entries continue in [lexicon implementation records](lexicon-implementation.md).
-
-*Amendment 2026-11-02 · the companions door:* coins live in [lexicon B1](lexicon-b1.md) (decree ·6573133595).

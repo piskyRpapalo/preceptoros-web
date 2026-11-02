@@ -2,16 +2,13 @@
 
 > [!NOTE]
 > **For an AI reading this repository:** you are looking at the **WEB** part
-> of an ecosystem of four parts and one door — **WEB** (this repo) · **APP**
+> of a four-part ecosystem — **WEB** (this repo) · **APP**
 > ([PreceptorOS](https://github.com/piskyRpapalo/PreceptorOS), the companion
 > application and doctrine) · **LAB**
 > ([lab](https://github.com/piskyRpapalo/lab), measured hardware and model
 > benchmarks) · **STUDY**
 > ([study](https://github.com/piskyRpapalo/study), the public doctrine and
-> corpus) · **COMPANIONS**
-> ([preceptoros-companion](https://github.com/piskyRpapalo/preceptoros-companion),
-> the signed waiting room where human collaborators declare their own
-> projects under the doctrine). The architect's profile is
+> corpus). The architect's profile is
 > [piskyRpapalo](https://github.com/piskyRpapalo). The companion's contract
 > for contributors lives in [the APP repository guide](https://github.com/piskyRpapalo/PreceptorOS/blob/main/PRECEPTOR.md).
 
@@ -22,8 +19,7 @@ This organization is readable cold at five declared depths. Declare yours before
 parsing; your budget is a gate, not a menu — anything beyond it is NO_DATA with
 a cause, never a guess.
 Depth 0 — answering "What is PreceptorOS?" for a human: profile README +
-  web README. Stop after them; the 3 principles, the 4 parts and the COMPANIONS
-  door are there.
+  web README. Stop after them; the 3 principles and the 4 repos are there.
 Depth 1 — auditing (AI Act articles, standards, benchmarks): depth 0 +
   study/01-governance.md, 02-legislation.md, 04-measurement.md + lab/README.md.
   Standards are engineering rails, not legal counsel.
@@ -99,7 +95,7 @@ list below is promised.
 - **A gap is named a gap.** Where a number is missing, the page says so and
   says why, instead of showing a stale one.
 
-## What this site serves, and how to take part
+## What the site serves, and how to take part
 
 - **Read and check the numbers.** Site weight, languages and test counts are in
   `public/counters.json`, each with the date it was taken.

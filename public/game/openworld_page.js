@@ -41,7 +41,9 @@
     var resetView = function () { ZOOM.reset(); speak(); };
     [['Zoom in', function () { zoomTo(1); }, 'zoom-in'], ['Zoom out', function () { zoomTo(-1); }, 'zoom-out'], ['Reset zoom', function () { zoomTo(0); }, 'zoom-reset'],
       ['Rotate left', function () { turnTo(-1); }, 'rotate-left'], ['Rotate right', function () { turnTo(1); }, 'rotate-right'], ['Reset view', resetView, 'view-reset']].forEach(function (z) {
-      var b = doc.createElement('button'); b.type = 'button'; b.id = z[2]; b.textContent = z[0];
+      var b = doc.createElement('button'); b.type = 'button'; b.id = z[2]; var ICON = { 'zoom-in': '+', 'zoom-out': '\u2212', 'zoom-reset': '\u27F2', 'rotate-left': '\u21BA', 'rotate-right': '\u21BB', 'view-reset': '\u2302' };
+      // Compact plate (Doogee review, 2026-11-02): 44 px icon buttons, the words in aria-label and title, no text over the drawing.
+      b.textContent = ICON[z[2]] || z[0]; b.setAttribute('aria-label', z[0]); b.title = z[0];
       b.style.minHeight = '44px'; b.style.minWidth = '44px'; b.addEventListener('click', z[1]); zoomBar.appendChild(b);
     });
     surface.after(zoomBar);
