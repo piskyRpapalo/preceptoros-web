@@ -150,6 +150,27 @@ the node to your tastes and your studies; the signature stays human. That
 is the whole product: a home where the silicon proposes and the carbon
 decides.
 
+## Writing in Acho — why every visual is a sentence and a sound
+
+Acho is the language of this house (coined 2026-11-02; it replaces the old name «bubble»). Every visual on the web and in the app is an **Acho frame**: a small JSON object under 1,024 UTF-8 bytes, `v: "preceptoros.acho/1"`, that a renderer turns into a picture and a sound. Spec: `docs/acho-language.md`.
+
+**Why you write in Acho, and not in pixels.** A frame is the same truth for three readers:
+- **a person who cannot see** hears its line (seal, sentences, what changed, whether it sounds) and its voice;
+- **a small local model** (1B/3B on a phone) reads a few hundred bytes instead of an image, and can write one back;
+- **a person who sees** gets the picture, drawn by mathematics from the same bytes.
+
+If one of the three is left out, the frame is not finished.
+
+**The rules a reviewer will check:**
+1. **Under 1,024 bytes**, and `Acho.valida(frame)` passes (`atlas/puros/acho.js`). The historical seal `preceptoros.bubble/1` is only read, never written.
+2. **Every atom says what it shows** in `r`, in plain words. Colour is a named band and always travels with text.
+3. **Sound is declared.** Either the frame carries harmonics (`wave` or `blob` with `h`) and sounds, or it says `NO_DATA: <cause>`. Never invent a sound; never stay silent without a cause.
+4. **`Acho.lee(frame).alt` reads well aloud.** Paste it into a screen reader before you open the PR.
+5. **Seal as a word** (`LIVE`, `STALE`, `NO_DATA`…), never as a colour only.
+6. No `Math.random`, no clock, no network inside a frame or its renderer: the same frame gives the same picture and the same sound.
+
+The audio is not optional. Today **0 of the 10 frames of the map sound** (measured 2026-11-02, `atlas/puros/acho_lee_casos.mjs`): giving the map its voice is open work, and a good first contribution.
+
 ## How a contribution flows
 
 1. Track the work in the feature document (`odd/tasks/<feature>.md`) when
