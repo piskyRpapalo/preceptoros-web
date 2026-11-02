@@ -266,7 +266,7 @@ async function main() {
   ok(!plug.pad && /^terminal: basic/.test(plug.tap || ''), 'a phone user cannot walk without the stick pad (tap a node on the map): ' + JSON.stringify(plug));
   ok(plug.folded, 'the terminal look is not folded under More: ' + JSON.stringify(plug));
   ok(/Start here: press Play now/.test(plug.first), 'the radio first line does not tell a newcomer what to do: ' + plug.first);
-  ok(plug.gone && plug.t1 === 'Ask the guide in the chat.' && plug.t2 === 'Summon a wave with the House buttons below.', 'the next step does not follow the visit state: ' + JSON.stringify(plug));
+  ok(plug.gone && plug.t1 === 'Ask the guide in the chat.' && plug.t2 === 'Summon a wave: press Summon at the Reef below.', 'the next step does not follow the visit state: ' + JSON.stringify(plug));
   if (CAPTURA) { await cmd('Page.navigate', { url: origen + '/openworld/' }); await espera(1500); const g4 = await cmd('Page.captureScreenshot', { format: 'png' }); writeFileSync(join(CAPTURA, 'openworld-first-screen.png'), Buffer.from(g4.result.data, 'base64')); }
   console.log(JSON.stringify({ medida: { ...medida, texto: undefined }, escritorio, externas: externas.length, fallos }));
 }

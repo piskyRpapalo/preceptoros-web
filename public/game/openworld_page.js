@@ -32,8 +32,9 @@
     zoomBar.id = 'zoom-controls'; zoomBar.setAttribute('role', 'group'); zoomBar.setAttribute('aria-label', 'Map zoom');
     zoomSay.id = 'zoom-state'; zoomSay.setAttribute('aria-live', 'polite');
     var zoomTo = function (d) { ZOOM.step(d); onZoom(); zoomSay.textContent = 'Map zoom ' + surface.dataset.zoom + '×'; };
-    [['Zoom in', 1, 'zoom-in'], ['Zoom out', -1, 'zoom-out'], ['Reset zoom', 0, 'zoom-reset']].forEach(function (z) {
-      var b = doc.createElement('button'); b.type = 'button'; b.id = z[2]; b.textContent = z[0];
+    // Compact plate (Doogee review, 2026-11-02): three 44 px icon buttons, the words in aria-label and title, no text over the drawing.
+    [['Zoom in', 1, 'zoom-in', '+'], ['Zoom out', -1, 'zoom-out', '\u2212'], ['Reset zoom', 0, 'zoom-reset', '\u27F2']].forEach(function (z) {
+      var b = doc.createElement('button'); b.type = 'button'; b.id = z[2]; b.textContent = z[3]; b.setAttribute('aria-label', z[0]); b.title = z[0];
       b.style.minHeight = '44px'; b.style.minWidth = '44px'; b.addEventListener('click', function () { zoomTo(z[1]); }); zoomBar.appendChild(b);
     });
     surface.after(zoomBar);

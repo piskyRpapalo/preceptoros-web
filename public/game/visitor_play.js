@@ -18,11 +18,12 @@
       finally { waiting = false; render(); }
     }); controls.append(b); return b;
   }
+  function place(tc) { var B = root.AtlasVisitorBattle, p = B ? B.places().filter(function (x) { return x.troops[0] && x.troops[0].tc === tc; })[0] : null; return p ? p.name : 'House'; }
   function line(text) { var p = doc.createElement('p'); p.textContent = text; details.append(p); }
   // Plug&play (2026-11-01): ONE next-step sentence, the Guide voice of the panel (compact terminal, 2026-11-02), computed from the visit state only.
   var nextText = doc.getElementById('next-text'), playNow = doc.getElementById('play-now');
   function next(s) {
-    var t = !s ? 'Press Play now.' : s.copper >= 50 ? 'Summon a wave with the House buttons below.' :
+    var t = !s ? 'Press Play now.' : s.copper >= 50 ? 'Summon a wave: press Summon at the Reef below.' :
       (s.eggs.filter(function (e) { return !e.ready; })[0] ? 'Walk ' + s.eggs.filter(function (e) { return !e.ready; })[0].remaining + ' steps to hatch.' : 'Ask the guide in the chat.');
     if (nextText && nextText.textContent !== t) { nextText.textContent = t; }
     if (playNow) { playNow.hidden = !!s; }
@@ -47,11 +48,14 @@
     line('Copper ' + s.copper + ' · Light ' + s.light + ' · Step ' + s.step + ' · Troops ' + s.troops.length + ' · Pity NO_DATA: not approved.');
     var star = doc.createElement('p'); star.id = 'visitor-voice-star'; star.textContent = 'Voice Star ' + s.echoes + '/' + s.echoCap; controls.append(star);
     button('Visit the beacon · claim 100 copper once', 'visitor-beacon', function () { game.beacon(); }, s.claimed);
-    button('Advance one game step', 'visitor-step', function () { game.advance(); });
+    button('Wait one turn', 'visitor-step', function () { game.advance(); });
     Object.keys(root.AtlasGacha.TCS).forEach(function (tc) {
       var cost = root.AtlasGacha.TCS[tc].coste, odds = root.AtlasGacha.odds(tc);
       line(tc + ' · ' + cost.cobre + ' copper / ' + cost.luz + ' light · odds per thousand: ' + root.AtlasGacha.RAREZAS.map(function (r, i) { return r + ' ' + odds[i]; }).join(', '));
-      button('Sign invocation · ' + tc, 'visitor-summon-' + tc, async function () { var after = await game.summon(tc, true), e = after.eggs[after.eggs.length - 1] || {}; doc.dispatchEvent(new CustomEvent('invocation:signed', { detail: { tc: tc, copper: cost.cobre, seq: e.seq, step: after.step } })); }, s.copper < cost.cobre || s.light < cost.luz);
+      // Human labels (Doogee review, 2026-11-02): the place of the tier from the house's own patrol table, its cost, and what is
+      // missing said in words when the button is off — never colour alone. The ids stay visitor-summon-tc1..4.
+      var lack = [cost.cobre - s.copper > 0 ? (cost.cobre - s.copper) + ' more copper' : '', cost.luz - s.light > 0 ? (cost.luz - s.light) + ' more light' : ''].filter(Boolean);
+      button('Summon at the ' + place(tc) + ' · ' + cost.cobre + ' copper' + (cost.luz ? ' + ' + cost.luz + ' light' : '') + (lack.length ? ' · needs ' + lack.join(', ') : ''), 'visitor-summon-' + tc, async function () { var after = await game.summon(tc, true), e = after.eggs[after.eggs.length - 1] || {}; doc.dispatchEvent(new CustomEvent('invocation:signed', { detail: { tc: tc, copper: cost.cobre, seq: e.seq, step: after.step } })); }, s.copper < cost.cobre || s.light < cost.luz);
     });
     s.eggs.forEach(function (egg) { button('Sign adoption · egg ' + egg.seq + (egg.ready ? ' · ready' : ' · ' + egg.remaining + ' steps'), 'visitor-hatch-' + egg.seq, async function () { var after = await game.hatch(egg.seq, true); var R = root.AtlasHatchReveal; if (R) { R.show(after, function (t) { status.textContent = t; }); } }, !egg.ready); });
     s.chronicle.forEach(function (e) { line('Invocation ' + e.seq + ' · ' + e.tc + ' · seal ' + e.sello + ' · ' + e.rareza); });
