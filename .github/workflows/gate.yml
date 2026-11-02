@@ -58,6 +58,7 @@ jobs:
             node --test atlas/puros/wave_duel_casos.mjs
             node --test atlas/puros/state_frames_casos.mjs
             node --test atlas/puros/acho_casos.mjs
+            node --test atlas/puros/acho_lee_casos.mjs
             node --test atlas/puros/sala_voces_casos.mjs
             node --test atlas/puros/colony_state_casos.mjs
             node --test atlas/puros/hex_projection_casos.mjs
