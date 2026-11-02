@@ -25,7 +25,8 @@ test('desde la cabaña se piden la carta y exactamente 7 chunks, y se cargan los
   assert.equal(r.requests.length, 8);
   assert.ok(r.requests.every((u) => /^\/map\/(carta|chunks\/-?\d+_-?\d+\.[0-9a-f]{8})\.json$/.test(u)), 'ninguna petición lleva coordenadas exactas');
   assert.equal(Object.keys(r.chunks).length, 7);
-  assert.match(r.say, /^Map chunks: 7 of 7 around area 0_0$/);
+  assert.equal(r.say, 'Map loaded');
+  assert.match(r.detail, /^Map chunks: 7 of 7 around area 0_0$/);
 });
 
 test('dos posiciones del mismo chunk hacen las mismas peticiones (la posición no viaja)', async () => {
@@ -41,7 +42,7 @@ test('un byte cambiado es chunk_hash_mismatch; un chunk ausente es cache_chunk_m
   r = await L.load([0, 0], { fetch: servido({ [url]: 404 }) });
   assert.match(r.missing[0].cause, /^cache_chunk_missing/);
   r = await L.load([17, -8], { fetch: servido() });
-  assert.ok(r.missing.length > 0 && r.missing.every((m) => /not baked yet/.test(m.cause)) && /NO_DATA/.test(r.say));
+  assert.ok(r.missing.length > 0 && r.missing.every((m) => /not baked yet/.test(m.cause)) && /NO_DATA/.test(r.detail) && r.say === 'Part of the map is still missing');
 });
 
 test('cada gráfico horneado lleva su marco de burbuja < 1.024 B', () => {

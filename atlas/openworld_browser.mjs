@@ -64,6 +64,7 @@ async function main() {
       botones: [...document.querySelectorAll('#map .press button')].map((b) => b.textContent),
       tinta,
       estado: (document.getElementById('state') || {}).textContent,
+      tecnico: (document.getElementById('state-tech') || {}).textContent,
       chatAbierto: !!document.querySelector('#chat'),
       entradaOff: !!(document.getElementById('question') || {}).disabled,
       botonChat: [...document.querySelectorAll('button')].some((b) => /^\\s*Chat\\s*$/.test(b.textContent)),
@@ -90,7 +91,7 @@ async function main() {
   ok(JSON.stringify(medida.botones) === JSON.stringify(['Tutorial cabin']), 'the terrain list is not the cabin alone: ' + JSON.stringify(medida.botones));
   ok(medida.tinta > 2000, 'the map is blank: ' + medida.tinta);
   // Estado de 2026-10-30 (MVP moderno): la cabaña es el unico nodo LIVE; Beelink y Doggee son NO_DATA y no se dibujan.
-  ok(/^Colony: 1 nodes · 1 buildings · 1 bots with faces · sky #[0-9a-f]{6}$/.test(medida.estado || ''), 'the default state is not the declared one (cabin only, LIVE): ' + medida.estado);
+  ok(/^Colony: 1 nodes · 1 buildings · 1 bots with faces$/.test(medida.tecnico || '') && medida.estado === 'Your cabin is awake · 3 more still asleep.', 'the default state is not the declared one (cabin only, LIVE): ' + medida.estado + ' | ' + medida.tecnico);
   ok(medida.chatAbierto && !medida.entradaOff, 'the chat panel is missing or its input is off');
   // W-5: the grid is gone; the status panel (with Skip tutorial) must still be on screen at phone width.
   ok(medida.joystick.buttons === 1 && medida.joystick.visible, 'the status panel is missing or below the phone viewport: ' + JSON.stringify(medida.joystick));
@@ -187,16 +188,16 @@ async function main() {
   HITL_ON = false;
   console.log(JSON.stringify({ hitl: { marca, alcanzado, tras }, medida: { ...medida, texto: undefined }, escritorio, externas: externas.length, fallos }));
   // P4: the 2.5D floor of the 7 baked chunks is under the colony, and its text equivalent is spoken in #floor-state.
-  const suelo = JSON.parse(await ev(`(async () => { for (let i = 0; i < 50 && !/^Map chunks/.test(document.getElementById('floor-state').textContent); i++) await new Promise((r) => setTimeout(r, 100));
+  const suelo = JSON.parse(await ev(`(async () => { for (let i = 0; i < 50 && !/^Map loaded/.test(document.getElementById('floor-state').textContent); i++) await new Promise((r) => setTimeout(r, 100));
     const W = window.AtlasMapPainter && AtlasMapPainter.world(), c = document.getElementById('surface'), g = c.getContext('2d'), d = g.getImageData(0, 0, c.width, c.height).data, set = new Set();
     for (let i = 0; i < d.length; i += 4 * 97) set.add(d[i] >> 4 << 8 | d[i + 1] >> 4 << 4 | d[i + 2] >> 4);
-    return JSON.stringify({ said: document.getElementById('floor-state').textContent, cells: W ? W.cells.list.length : 0, tones: set.size }); })()`));
-  ok(/^Map chunks: 7 of 7 around area 0_0\. Cabin chunk: \d+ water, \d+ sand, \d+ moss, \d+ rock cells/.test(suelo.said) && suelo.cells === 1519 && suelo.tones >= 12, 'the 2.5D floor is not painted: ' + JSON.stringify(suelo));
+    return JSON.stringify({ said: document.getElementById('floor-state').textContent, tech: document.getElementById('floor-tech').textContent, cells: W ? W.cells.list.length : 0, tones: set.size }); })()`));
+  ok(suelo.said === 'Map loaded.' && /^Map chunks: 7 of 7 around area 0_0\. Cabin chunk: \d+ water, \d+ sand, \d+ moss, \d+ rock cells/.test(suelo.tech) && suelo.cells === 1519 && suelo.tones >= 12, 'the 2.5D floor is not painted: ' + JSON.stringify(suelo));
   // 3.5D: the floor baked into bitmaps per chunk. 120 floor draws timed live vs baked (performance.now lives HERE, in
   // the harness, never in the painter), and Long Animation Frames counted over 120 full redraws per mode.
   await cmd('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 1, mobile: true });
   await cmd('Page.navigate', { url: origen + '/openworld/' }); await espera(1500);
-  await ev("(async () => { for (let i = 0; i < 50 && !/^Map chunks/.test(document.getElementById('floor-state').textContent); i++) await new Promise((r) => setTimeout(r, 100)); })()");
+  await ev("(async () => { for (let i = 0; i < 50 && !/^Map loaded/.test(document.getElementById('floor-state').textContent); i++) await new Promise((r) => setTimeout(r, 100)); })()");
   // Phone-class CPU (4× slower), as the Doogee is: the numbers below are emulated, not measured on the S110.
   await cmd('Emulation.setCPUThrottlingRate', { rate: 4 });
   const banco = JSON.parse(await ev(`(async () => {
