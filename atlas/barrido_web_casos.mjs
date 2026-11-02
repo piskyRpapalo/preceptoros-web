@@ -5,11 +5,12 @@ import assert from 'node:assert/strict';
 import { readFileSync, readdirSync } from 'node:fs';
 const P = (f) => readFileSync(new URL('../public/' + f, import.meta.url), 'utf8');
 
-// H2 (2026-11-01): las tres terminales de prueba se retiraron; en su URL queda una lápida «Retired ·».
+// H2 (2026-11-01): las tres terminales de prueba se retiraron con lápida «Retired ·»; el decreto p0 (buzon#30)
+// sacó las lápidas de atlantis y zombie a retirados/face/: queda una, la de walker.
 const pruebas = readdirSync(new URL('../public/face/', import.meta.url)).filter((f) => f.endsWith('.html') && /<title>(Test|Retired) ·/.test(P('face/' + f)));
 
 test('1 · las terminales de prueba no salen en la cara pública: ni en el sitemap ni en el índice del buscador', () => {
-  assert.ok(pruebas.length >= 3, 'walker, atlantis y zombie siguen en su URL (prueba o lápida)');
+  assert.deepEqual(pruebas, ['walker.html'], 'solo la lápida de walker sigue en su URL (decreto p0)');
   const mapa = P('sitemap.xml');
   for (const f of pruebas) {
     assert.ok(!mapa.includes('/face/' + f), f + ' no se anuncia');

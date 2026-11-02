@@ -42,16 +42,16 @@ async function main() {
   await cmd('Page.enable');await cmd('Runtime.enable');await cmd('Network.enable');
   await cmd('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:true});
   await cmd('Page.navigate',{url:origin+'/game/army.html'});await wait(1500);
-  const values=await evaluate(`(() => {const link=document.querySelector('a[href="/face/basic.html"]'), r=link&&link.getBoundingClientRect();
+  const values=await evaluate(`(() => {const link=document.querySelector('a[href="/openworld/"]'), r=link&&link.getBoundingClientRect();
     return {title:document.querySelector('h1')?.textContent,noData:document.body.innerText.includes('NO_DATA'),link:!!link,minimum:r&&r.height,
       map:!!document.querySelector('svg,canvas'),synthetic:document.body.innerText.includes('Wave 1'),viewport:innerWidth,scroll:document.documentElement.scrollWidth};})()`);
   check(values && values.title==='Army · NO_DATA' && values.noData,'Army status is not honest NO_DATA');
-  check(values && values.link && values.minimum>=44,'shared terminal link is missing or too small');
+  check(values && values.link && values.minimum>=44,'OpenWorld back link is missing or too small');
   check(values && !values.map && !values.synthetic,'Army page rendered a second map or synthetic army');
   check(values && values.scroll<=values.viewport,'horizontal overflow');
-  await evaluate("document.querySelector('a[href=\"/face/basic.html\"]').focus()");
-  const keyboard=await evaluate("document.activeElement?.getAttribute('href') === '/face/basic.html'");
-  check(keyboard===true,'shared terminal link is not keyboard focusable');
+  await evaluate("document.querySelector('a[href=\"/openworld/\"]').focus()");
+  const keyboard=await evaluate("document.activeElement?.getAttribute('href') === '/openworld/'");
+  check(keyboard===true,'OpenWorld back link is not keyboard focusable');
   const touch=values.minimum>=44;
   check(external.length===0,'external request');
   const ready=await evaluate(`Promise.race([navigator.serviceWorker.ready.then(()=>true),new Promise(r=>setTimeout(()=>r(false),10000))])`);
@@ -64,7 +64,7 @@ async function main() {
     check(await evaluate('!!navigator.serviceWorker.controller'),'service worker not controlling page');
     await cmd('Network.emulateNetworkConditions',{offline:true,latency:0,downloadThroughput:0,uploadThroughput:0});
     await cmd('Page.navigate',{url:origin+'/game/army.html'}); await wait(1000);
-    offline=await evaluate("document.querySelector('h1')?.textContent === 'Army · NO_DATA' && !!document.querySelector('a[href=\"/face/basic.html\"]') && !document.querySelector('svg,canvas')");
+    offline=await evaluate("document.querySelector('h1')?.textContent === 'Army · NO_DATA' && !!document.querySelector('a[href=\"/openworld/\"]') && !document.querySelector('svg,canvas')");
     check(offline===true,'Army NO_DATA page unavailable offline');
   }
   if (process.argv[2]) {const image=await cmd('Page.captureScreenshot',{format:'png'});writeFileSync(process.argv[2],Buffer.from(image.result.data,'base64'));}

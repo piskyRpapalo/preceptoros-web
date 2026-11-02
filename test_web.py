@@ -290,6 +290,18 @@ def paginas_de_contenido():
                   and p != PUBLICO / "index.html")
 
 
+# Nodo web (2026-11-01, retirados/brain/RETIRO.md): el runtime del cerebro se baja SOLO tras el consentimiento y cada
+# byte va fijado por SHA-256 en public/models/web-node/manifest.json. No es primera carga ni texto de la casa: las
+# guardas de primera carga y de rutas lo exentan por esa lista exacta, no por carpeta (DECRETO-TECHO-NUEVO-20261101).
+def _a_demanda():
+    m = PUBLICO / "models" / "web-node" / "manifest.json"
+    if not m.is_file():
+        return set()
+    d = json.loads(m.read_text(encoding="utf-8"))
+    return {(PUBLICO / e["name"].lstrip("/")).resolve() for e in d.get("runtime", []) + d.get("chunks", [])}
+A_DEMANDA = _a_demanda()
+
+
 class JuegoRetirado(unittest.TestCase):
     """Norte 7 D (decision D2): el juego de /play/ se retiro con su pagina. Esta guarda sustituye a las
     pruebas que leian ese juego (mismo patron que mapa_viejo_desmontado): que no vuelva a aparecer."""
@@ -613,8 +625,8 @@ class Estructura(unittest.TestCase):
             if not (p.is_file() and p.suffix in (".html", ".css", ".js",
                                                  ".json", ".webmanifest")):
                 continue
-            if p.stem in LICENCIAS:
-                continue
+            if p.stem in LICENCIAS or p.resolve() in A_DEMANDA:
+                continue    # A_DEMANDA: no viaja en la primera carga; solo tras el consentimiento del visitante
             comprimido = len(gzip.compress(p.read_bytes(), 9))
             with self.subTest(fichero=str(p.relative_to(RAIZ))):
                 self.assertLessEqual(
@@ -700,6 +712,8 @@ class Doctrina(unittest.TestCase):
         for p, t in textos():
             if p.name in ("test_web.py", "contadores.py"):
                 continue    # guiones locales: resuelven su propia ruta, no la escriben
+            if p.resolve() in A_DEMANDA:
+                continue    # runtime vendorizado fijado por sha: «/home/web_user» es el FS virtual de emscripten
             with self.subTest(fichero=p.name):
                 self.assertNotIn("/home/", t, f"ruta absoluta en {p}")
                 sin_dibujos = re.sub(r"<svg.*?</svg>", "", t, flags=re.S)
@@ -2329,34 +2343,31 @@ class WebLimpia(unittest.TestCase):
 class HubSinMundosVivos(unittest.TestCase):
     """Comisión del Soberano (2026-10-28): hoy no hay nodo vivo, así que el hub /face/ no presenta mundos.
 
-    Los mundos (atlantis, zombie, basic) siguen en disco: sus deep links y el duelo de onda no se borran ni se
-    redirigen hasta tener una regla medida y una puerta propia de Worlds.
+    Decreto p0 (buzon#30, 2026-11-01): las dos lápidas con nombre prohibido salieron a retirados/face/; en /face/
+    quedan basic.html (terminal compartida) y la lápida de walker.
     """
 
     def test_el_hub_no_enlaza_a_ningun_mundo(self):
         hub = (PUBLICO / "face" / "index.html").read_text(encoding="utf-8")
-        for pagina in ("atlantis.html", "zombie.html", "basic.html"):
+        for pagina in ("walker.html", "basic.html"):
             with self.subTest(pagina=pagina):
                 self.assertNotIn("/face/" + pagina, hub, "el hub presenta un mundo sin nodo vivo")
         self.assertIn("No node is live", hub)
 
     def test_las_paginas_de_mundo_siguen_en_disco(self):
-        # H2 (2026-11-01): atlantis y zombie se retiraron con recibo (retirados/face/RETIRO.md); su deep link sigue
-        # vivo como lapida noindex que lleva al mapa. basic.html sigue siendo la terminal compartida.
-        for pagina in ("atlantis.html", "zombie.html", "basic.html"):
-            with self.subTest(pagina=pagina):
-                self.assertTrue((PUBLICO / "face" / pagina).is_file(), "se borro un deep link del combate")
-        for pagina in ("atlantis.html", "zombie.html"):
-            lapida = (PUBLICO / "face" / pagina).read_text(encoding="utf-8")
-            self.assertIn('<meta name="robots" content="noindex">', lapida)
-            self.assertIn('href="/openworld/"', lapida)
+        # H2 (2026-11-01) dejó lápidas; el decreto p0 retiró las dos que nombraban lo que la web ya no nombra.
+        self.assertTrue((PUBLICO / "face" / "basic.html").is_file(), "se borro la terminal compartida")
+        lapida = (PUBLICO / "face" / "walker.html").read_text(encoding="utf-8")
+        self.assertIn('<meta name="robots" content="noindex">', lapida)
+        self.assertIn('href="/openworld/"', lapida)
+        self.assertEqual(sorted(p.name for p in (PUBLICO / "face").glob("*.html")), ["basic.html", "index.html", "walker.html"])
 
 
 class OpenWorld(unittest.TestCase):
     """NORTE 7 · PR 2 (2026-10-28): /openworld/ es la ficha del mapa global y el chat.
 
-    El estado por defecto son CERO nodos: la pagina enseña el mapa y la cabana del tutorial. Atlantis y the
-    Risen solo aparecen si `estado.json` los lista como vivos. Y el navegador no pide nada fuera de este origen.
+    El estado por defecto son CERO nodos: la pagina enseña el mapa y la cabana del tutorial. Node Hexelion y el
+    segundo nodo solo aparecen si `estado.json` los lista como vivos. Y el navegador no pide nada fuera de este origen.
     """
 
     def setUp(self):
@@ -2376,15 +2387,15 @@ class OpenWorld(unittest.TestCase):
 
     def test_la_cabana_siempre_y_los_nodos_solo_si_viven(self):
         # El mapa (NODO-MAPA, ODD isometric-colony) nombra tres filas en el nucleo puro: la cabana siempre, y
-        # Atlantis y the Risen solo si el estado los lista como vivos. La ficha pinta lo que el nucleo decide.
+        # Node Hexelion y Second node solo si el estado los lista como vivos (decreto p0, 2026-11-01). La ficha pinta lo que el nucleo decide.
         nucleo = (PUBLICO / "game" / "global_map.js").read_text(encoding="utf-8")
         self.assertIn("nombre: 'Tutorial cabin'", nucleo)
         self.assertIn("siempre: true", nucleo)
-        self.assertIn("nombre: 'Atlantis · Node Hexelion'", nucleo)
-        self.assertIn("nombre: 'the Risen'", nucleo)
+        self.assertIn("nombre: 'Node Hexelion'", nucleo)
+        self.assertIn("nombre: 'Second node'", nucleo)
         self.assertIn("node.siempre || vivos.some(", nucleo)
         self.assertIn("M.estado(entrada)", self.t)
-        self.assertIn("return n && (n.id === 'atlantis' || n.id === 'risen');", self.t)
+        self.assertIn("return n && (n.id === 'hexelion' || n.id === 'second');", self.t)
 
     def test_cero_peticiones_externas(self):
         # Lo que el navegador DESCARGA: scripts, imagenes, hojas, iconos y manifest. El canonical y las etiquetas
@@ -2402,10 +2413,11 @@ class OpenWorld(unittest.TestCase):
         self.assertIn('<input id="question" type="text" autocomplete="off" aria-describedby="chat-note">', self.t)
         self.assertIn('/game/map_chat.js', self.t)
         chat = (PUBLICO / 'game/map_chat.js').read_text(encoding='utf-8')
-        worker = (PUBLICO / 'game/map_brain_worker.js').read_text(encoding='utf-8')
+        # 2026-11-01: el cerebro del nodo web (retirados/brain/RETIRO.md) carga solo tras el clic, del mismo origen.
+        cerebro = (PUBLICO / 'game/web_node_brain.js').read_text(encoding='utf-8')
         self.assertIn("start.addEventListener('click'", chat)
-        self.assertIn('runtime_integrity_unavailable', worker)
-        self.assertNotIn('import(MODULE)', worker)
+        self.assertIn("opts.consent !== true", cerebro)
+        self.assertNotIn('https://', cerebro.split('// ')[0] if False else ''.join(l for l in cerebro.splitlines() if not l.strip().startswith('//')))
 
     def test_esta_en_el_sitemap_y_en_el_precache(self):
         xml = (PUBLICO / "sitemap.xml").read_text(encoding="utf-8")
