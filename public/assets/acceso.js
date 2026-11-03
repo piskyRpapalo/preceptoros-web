@@ -35,17 +35,22 @@
     punto.className = 'cab-enlaces';
 
     // El estado sale del boton de hablar, no de una segunda averiguacion:
-    // `aria-disabled` es «ni local ni nube», y el permiso de sesion lo escribe
-    // `voice.js` en `sessionStorage`. Se lee de donde se escribe.
-    var muerto = mic.getAttribute('aria-disabled') === 'true';
-    var aceptado = false;
-    try { aceptado = sessionStorage.getItem('voz-nube') === '1'; } catch (e) { /* privado */ }
-    var porNube = !muerto && /google|externo|extern|Google/i.test(mic.title || '');
-
-    punto.dataset.estado = muerto ? 'sin' : (porNube && !aceptado ? 'pide' : 'listo');
-    // El rotulo ES el del boton: mismo texto, misma lengua, una sola verdad.
-    punto.title = mic.title || '';
-    punto.setAttribute('aria-label', punto.title);
+    // `aria-disabled` es «ni local ni nube», y si el permiso de sesion SIGUE
+    // VALIDO (registrado, con su huella y sin caducar) lo decide `voice.js` y
+    // lo deja en `data-permiso`. Desde el 2026-10-04 el si es un registro con
+    // ttl y hash: leerlo aqui otra vez seria un segundo juez que puede
+    // discrepar del primero. Y se repinta cuando `voice.js` avisa.
+    function estado() {
+      var muerto = mic.getAttribute('aria-disabled') === 'true';
+      var aceptado = mic.dataset.permiso === 'vigente';
+      var porNube = !muerto && /google|externo|extern|Google/i.test(mic.title || '');
+      punto.dataset.estado = muerto ? 'sin' : (porNube && !aceptado ? 'pide' : 'listo');
+      // El rotulo ES el del boton: mismo texto, misma lengua, una sola verdad.
+      punto.title = mic.title || '';
+      punto.setAttribute('aria-label', punto.title);
+    }
+    estado();
+    document.addEventListener('preceptor:voz', estado);
 
     punto.addEventListener('click', function () {
       // Le cede el turno a quien manda. `scrollIntoView` antes del clic para

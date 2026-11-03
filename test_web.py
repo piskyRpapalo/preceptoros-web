@@ -5837,5 +5837,203 @@ class LaColaDelRack(unittest.TestCase):
         self.assertNotIn("TODO: tunel", self._js("rack.js"))
 
 
+# --- LA VOZ VERIFICADA (2026-10-04) -----------------------------------------
+# Excepcion de promesa firmada por el Soberano y registrada en
+# `preceptor/EXCEPCIONES.md`: la voz web puede usar el motor del navegador y
+# mandar audio a un tercero SOLO con un si registrado, revocable de forma
+# verificada, audible, y sin que ninguna pagina siga diciendo «cero nube».
+# Estas pruebas leen el codigo (estaticas, como el resto de la suite) y la
+# ultima ejecuta `arnes_voz.mjs`, que lo hace correr con un navegador falso.
+VOZ_TEXTOS_NUEVOS = ("micRevocar", "micRevocado", "micRevocarFallo",
+                     "micSinRegistro", "micPitido")
+# Lo que niega la nube, en las nueve lenguas. Es una LISTA HEURISTICA y se dice:
+# caza las formulas que esta web ha usado o usaria; una redaccion nueva que
+# niegue la nube con otras palabras se anade aqui el dia que aparezca.
+NIEGA_NUBE = re.compile(
+    r"cero nube|sin nube|nada de lo que dices sale|no sale de (?:tu|este) (?:m[aá]quina|aparato)"
+    r"|zero cloud|no cloud|nothing you say leaves|never leaves your|stays on your device"
+    r"|sans cloud|aucun cloud|ne quitte jamais|rien de ce que (?:tu dis|vous dites) ne quitte"
+    r"|senza cloud|nessun cloud|non lascia mai|nulla di ci[oò] che dici"
+    r"|sem nuvem|nada do que dizes sai|nunca sai d"
+    r"|ohne Cloud|keine Cloud|verl[aä]sst nie|nichts von dem,? was du sagst"
+    r"|без облака|никогда не покидает|ничего из того,? что (?:ты )?говоришь|ничего сказанного"
+    r"|χωρίς σύννεφο|δεν φεύγει ποτέ|τίποτα από όσα λες"
+    r"|بدون سحاب|لا يغادر أبد|لا شيء مما تقوله|مما تقوله لا يغادر", re.I)
+# El unico texto de voz que PUEDE decir que el audio no sale: el de la via
+# local, y solo se pinta cuando `local` es cierto (lo comprueba la prueba).
+VOZ_SOLO_LOCAL = {"micEnAparato"}
+
+
+def _i18n(pagina):
+    t = pagina.read_text(encoding="utf-8")
+    m = re.search(r'<script[^>]*id="i18n"[^>]*>(.*?)</script>', t, re.S)
+    return json.loads(m.group(1)) if m else {}
+
+
+def _sin_comentarios_js(texto):
+    """`sin_comentarios` mas los `//` de fin de linea, que voice.js usa."""
+    return re.sub(r"(?m)(^|\s)//[^\n]*", r"\1", sin_comentarios(texto))
+
+
+class LaVozVerificada(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        cls.voz = _sin_comentarios_js(
+            (PUBLICO / "assets" / "voice.js").read_text(encoding="utf-8"))
+        cls.acceso = _sin_comentarios_js(
+            (PUBLICO / "assets" / "acceso.js").read_text(encoding="utf-8"))
+        cls.paginas = {p.parent.name: _i18n(p)
+                       for p in sorted(PUBLICO.glob("*/index.html"))
+                       if "micHablar" in _i18n(p)}
+
+    def _cuerpo(self, nombre):
+        """El cuerpo de `function nombre(...) {...}` contando llaves."""
+        i = self.voz.index("function " + nombre + "(")
+        j = self.voz.index("{", i)
+        n = 0
+        for k in range(j, len(self.voz)):
+            n += {"{": 1, "}": -1}.get(self.voz[k], 0)
+            if n == 0:
+                return self.voz[j:k + 1]
+        self.fail(f"no cierra {nombre}")
+
+    def test_el_microfono_no_arranca_sin_un_si_registrado(self):
+        """Sabotaje: quitar la guarda de `arranca` --o volver al '1'-- es rojo."""
+        a = self._cuerpo("arranca")
+        guarda = re.search(r"if \(!local && !permisoVigente\(\)\) \{[^}]*return;", a)
+        self.assertTrue(guarda, "arranca() ya no comprueba el si antes de la nube")
+        self.assertLess(guarda.start(), a.index(".start()"),
+                        "la guarda va DESPUES de start(): el micro ya se abrio")
+        v = self._cuerpo("permisoVigente")
+        for pieza in ("p.que !== 'voz-web'", "p.hash !== huella", "p.ttl_s",
+                      "Date.now()", "borraPermiso()"):
+            self.assertIn(pieza, v, f"permisoVigente() no mira {pieza}")
+        r = self._cuerpo("registra")
+        for campo in ("que:", "alcance:", "ttl_s:", "fecha:", "hash:"):
+            self.assertIn(campo, r, f"el registro del si no lleva {campo}")
+        self.assertIn("crypto.subtle.digest('SHA-256'", self.voz)
+        self.assertIn("encode(T.micNubeTrato)", self.voz,
+                      "el hash no es del texto del trato aceptado")
+        for js, nombre in ((self.voz, "voice.js"), (self.acceso, "acceso.js")):
+            self.assertIsNone(re.search(r"getItem\((?:CLAVE|'voz-nube')\)\s*===\s*'1'", js),
+                              f"{nombre} vuelve a aceptar el '1' sin registro")
+        self.assertNotIn("voz-nube", self.acceso,
+                         "acceso.js lee el permiso por su cuenta: segundo juez")
+
+    def test_el_killswitch_no_pinta_exito_sin_evento_de_fin(self):
+        """Sabotaje: pintar «revocado» justo tras abort(), o apagar `vivo`
+        fuera de onend/onerror, es rojo."""
+        v = self.voz
+        self.assertEqual(1, v.count("T.micRevocado"),
+                         "«revocado» se pinta desde mas de un sitio")
+        ver = self._cuerpo("veredicto")
+        self.assertIn("if (cerrado && sinPermiso) decir(T.micRevocado", ver)
+        self.assertIn("T.micRevocarFallo", ver, "el fallo no se declara")
+        rev = self._cuerpo("revoca")
+        llamadas = re.findall(r"[^\n]*veredicto\(true[^\n]*", rev)
+        self.assertEqual(2, len(llamadas), llamadas)
+        self.assertTrue(any("alFin = function" in l for l in llamadas))
+        self.assertTrue(any("if (!vivo)" in l for l in llamadas))
+        self.assertRegex(rev, r"setTimeout\(function \(\) \{ veredicto\(false,[^\n]*PLAZO_MS\)",
+                         "sin plazo, una revocacion sin fin espera para siempre")
+        self.assertLess(rev.index("alFin = function"), rev.index(".abort()"),
+                        "se aborta antes de escuchar el fin: se puede perder")
+        # `vivo` solo se apaga donde el NAVEGADOR anuncia el fin (o no empezo).
+        apagados = re.findall(r"[^\n]*(?<!var )\bvivo = false[^\n]*", v)
+        self.assertEqual(2, len(apagados), apagados)
+        self.assertIn("catch (e) { vivo = false", "".join(apagados))
+        terminados = [m.start() for m in re.finditer(r"terminado\('", v)]
+        self.assertEqual(2, len(terminados))
+        on_err, on_end = v.index("r.onerror = function"), v.index("r.onend = function")
+        self.assertTrue(on_err < terminados[0] < on_end < terminados[1],
+                        "terminado() se llama fuera de onerror/onend")
+        # Control nativo, atajo declarado y escuchado.
+        self.assertIn("createElement('button')", v)
+        self.assertIn("setAttribute('aria-keyshortcuts', ATAJO)", v)
+        self.assertIn("e.altKey && e.shiftKey && e.code === 'KeyV'", v)
+
+    def test_ninguna_promesa_de_voz_dice_cero_nube_mientras_haya_nube(self):
+        """Sabotaje: un texto de voz que niegue la nube en cualquier lengua,
+        con voice.js capaz de mandarla a un tercero, es rojo."""
+        hay_nube = "arranca(false)" in self.voz and "T.micNubeSi" in self.voz
+        self.assertTrue(hay_nube, "voice.js ya no tiene via de nube: revisa "
+                        "si esta prueba sigue haciendo falta")
+        self.assertIn("local ? T.micEnAparato : T.micEnNube", self.voz,
+                      "el texto de la via local se pinta sin mirar si es local")
+        self.assertEqual(9, len(self.paginas), sorted(self.paginas))
+        for lengua, d in sorted(self.paginas.items()):
+            for k, v in sorted(d.items()):
+                if not k.startswith("mic") or k in VOZ_SOLO_LOCAL:
+                    continue
+                with self.subTest(lengua=lengua, clave=k):
+                    self.assertIsNone(NIEGA_NUBE.search(v),
+                                      f"«{v}» niega la nube y la voz la usa")
+        self.assertTrue(NIEGA_NUBE.search("Mientras esta web prometa que "
+                                          "nada de lo que dices sale de tu máquina"),
+                        "la lista ya no caza la frase que motivo esta prueba")
+
+    def test_el_permiso_de_voz_nunca_vive_en_localStorage(self):
+        """Sabotaje: `localStorage` en voice.js o acceso.js es rojo."""
+        self.assertNotIn("localStorage", self.voz)
+        self.assertNotIn("localStorage", self.acceso)
+        for f in sorted((PUBLICO / "assets").glob("*.js")):
+            js = f.read_text(encoding="utf-8")
+            with self.subTest(fichero=f.name):
+                self.assertNotRegex(js, r"localStorage\.setItem\(\s*['\"]voz",
+                                    "un permiso de voz en localStorage")
+
+    def test_la_voz_no_guarda_audio_ni_lo_dictado(self):
+        """Sabotaje: grabar, subir o guardar el audio o el texto es rojo."""
+        for prohibido in ("MediaRecorder", "getUserMedia", "indexedDB", "caches.",
+                          "fetch(", "XMLHttpRequest", "sendBeacon", "WebSocket",
+                          "new Blob", "createObjectURL", "FileReader"):
+            with self.subTest(prohibido=prohibido):
+                self.assertNotIn(prohibido, self.voz)
+        claves = re.findall(r"sessionStorage\.setItem\(\s*([A-Z_]+)", self.voz)
+        self.assertEqual({"CLAVE", "SILENCIO"}, set(claves),
+                         "sessionStorage guarda algo mas que el permiso y el silencio")
+        self.assertNotRegex(self.voz, r"setItem\([^)]*transcript",
+                            "lo dictado no se guarda: va al campo y punto")
+
+    def test_el_aviso_sonoro_se_genera_aqui_y_se_puede_callar(self):
+        v = self.voz
+        self.assertIn("createOscillator()", v)
+        self.assertNotRegex(v, r"new Audio\(|\.(?:mp3|wav|ogg)\b",
+                            "el tono se descarga: eso es una peticion")
+        p = self._cuerpo("pitido")
+        self.assertIn("callado()", p, "el tono no respeta el silencio")
+        self.assertIn("pitido(true)", v)
+        self.assertIn("pitido(false)", self._cuerpo("terminado"))
+        self.assertIn("setAttribute('aria-pressed'", v)
+
+    def test_los_textos_de_voz_existen_en_las_nueve_lenguas(self):
+        es = self.paginas["es"]
+        for lengua, d in sorted(self.paginas.items()):
+            for k in VOZ_TEXTOS_NUEVOS + ("micNubeTrato", "micSinLocal"):
+                with self.subTest(lengua=lengua, clave=k):
+                    self.assertTrue(d.get(k), "texto de voz ausente")
+                    if lengua not in ("es",):
+                        self.assertNotEqual(es[k], d[k], "identico al castellano")
+            with self.subTest(lengua=lengua, clave="micNubeTrato"):
+                for marca in ("Google", "Alt+Shift+V", "30"):
+                    self.assertIn(marca, d["micNubeTrato"],
+                                  f"el trato en {lengua} no dice {marca}")
+            with self.subTest(lengua=lengua, clave="micRevocarFallo"):
+                self.assertTrue(d["micRevocarFallo"].startswith("NO_DATA"))
+
+    def test_la_voz_pasa_su_arnes(self):
+        """`arnes_voz.mjs` ejecuta voice.js con un navegador falso. Se salta
+        sin node: NO_DATA declarado, como el arnes del worker."""
+        import shutil, subprocess
+        node = shutil.which("node")
+        if not node:
+            self.skipTest("NO_DATA · no hay node: voice.js queda sin ejecutar")
+        r = subprocess.run([node, "arnes_voz.mjs"], cwd=str(RAIZ),
+                           capture_output=True, text=True, timeout=120)
+        self.assertEqual(0, r.returncode,
+                         "el arnes de la voz falla:\n" + r.stdout + r.stderr)
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
