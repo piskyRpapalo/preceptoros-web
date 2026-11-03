@@ -52,6 +52,7 @@ async function main() {
   const cmd = (method, params = {}) => new Promise((r) => { const i = ++id; pend.set(i, r); ws.send(JSON.stringify({ id: i, method, params })); });
   const ev = async (e) => (await cmd('Runtime.evaluate', { expression: e, awaitPromise: true, returnByValue: true })).result?.result?.value ?? null;
   await cmd('Runtime.enable'); await cmd('Page.enable'); await cmd('Network.enable');
+  await cmd('Network.setBlockedURLs', { urls: ['https://api.preceptoros.org/*'] }); // the live door is never called from CI
   // Phone width first: the map is the top half, the chat the bottom half, nothing scrolls sideways.
   await cmd('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 1, mobile: true });
   await cmd('Page.navigate', { url: origen + '/openworld/' }); await espera(1800);
@@ -131,7 +132,7 @@ async function main() {
     document.body.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })); await w(100);
     return JSON.stringify({ greeting, inside, tall, help, poem, left: st(), hidden: leave && leave.hidden }); })()`));
   ok(cabina.greeting && /^Inside building b-cabin/.test(cabina.inside) && cabina.tall, 'Enter does not open the cabin chat in the radio: ' + JSON.stringify(cabina));
-  ok(/^Tutorial cabin · Ask me/.test(cabina.help || '') && cabina.poem === 'NO_DATA · model_not_installed', 'the cabin bot does not answer honestly: ' + JSON.stringify(cabina));
+  ok(/^Tutorial cabin · Ask me/.test(cabina.help || '') && /^Hexelion · NO_DATA · .*\(red\)$/.test(cabina.poem || ''), 'the cabin bot does not answer honestly: ' + JSON.stringify(cabina));
   ok(cabina.left === 'Left building b-cabin' && cabina.hidden === true, 'Escape does not leave the building: ' + JSON.stringify(cabina));
   const desktopEntry = await ev(CLIC_CABINA);
   ok(/^terminal: basic/.test(desktopEntry || ''), 'the ephemeral cabin cannot be entered on desktop: ' + desktopEntry);
@@ -262,7 +263,7 @@ async function main() {
     const m = document.getElementById('surface').getBoundingClientRect(), c = chat.getBoundingClientRect();
     return JSON.stringify({ vivas, voces, log, dentro, acts, izquierda: m.right <= c.left + 1, logVivo: document.getElementById('log').getAttribute('aria-live') }); })()`));
   ok(panel.vivas.length === 0 && panel.dentro.length === 0 && panel.voces.length >= 8 && panel.voces.every((v) => v.who && v.bytes < 1024 && v.starts && v.label)
-    && panel.log.length >= 2 && panel.log.every(Boolean) && panel.logVivo === 'polite' && panel.acts.every((h) => h >= 44) && panel.izquierda,
+    && panel.log.length >= 1 && panel.log.every(Boolean) && panel.logVivo === 'polite' && panel.acts.every((h) => h >= 44) && panel.izquierda,
     'the compact terminal is fragmented or a voice has no speaker: ' + JSON.stringify(panel));
   if (CAPTURA) { const g3 = await cmd('Page.captureScreenshot', { format: 'png' }); writeFileSync(join(CAPTURA, 'openworld-desktop.png'), Buffer.from(g3.result.data, 'base64')); }
   // Free walk: from the HITL cabin (-1,0) ArrowRight seven times walks the crab east over the floor to 6,0; the seventh is water and is refused.

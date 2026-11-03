@@ -92,6 +92,8 @@ jobs:
             node --test atlas/puros/tutorial_walk_casos.mjs
             node --test atlas/puros/walk_route_casos.mjs
             node --test atlas/building_chat_casos.mjs
+            node --test atlas/rack_ideas_casos.mjs
+            node --test atlas/voces_casos.mjs
             node --test atlas/invocacion_viva_casos.mjs
             node atlas/colonia_edificios_gate.mjs
             node --test atlas/puros/paleta_ciclo_casos.mjs
@@ -128,6 +130,9 @@ jobs:
             node atlas/a11y_relleno_browser.mjs
             node atlas/web_node_brain_browser.mjs
             node atlas/offline_brain_browser.mjs
+            node atlas/rack_ideas_browser.mjs
+            node atlas/objetivos_44_browser.mjs
+            node atlas/infante_browser.mjs
             node atlas/walk_avatar_browser.mjs
             node atlas/walk_keys_browser.mjs
             node atlas/visitor_account_browser.mjs

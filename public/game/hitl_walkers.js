@@ -93,7 +93,7 @@
     if (!surface) { return null; }
     var holder = surface.parentNode, say = doc.createElement('p'), buttons = {};
     if (win.getComputedStyle(holder).position === 'static') { holder.style.position = 'relative'; }
-    say.id = 'walkers-state'; say.setAttribute('aria-live', 'polite'); say.className = 'state';
+    say.id = 'walkers-state'; say.setAttribute('aria-live', 'polite'); say.className = 'state'; say.dataset.radio = 'tecnico';
     // The compact terminal (2026-11-02): the walkers line is a voice in the panel when the page has one, never under the map.
     var voice = doc.getElementById('voice-walkers'); if (voice) { voice.appendChild(say); } else { surface.after(say); }
     var seen = {}, settling = 0, pendingFrame = false;
