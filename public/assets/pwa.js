@@ -2,6 +2,17 @@
   if (!('serviceWorker' in navigator)) return;
 
   if (!self.isSecureContext) return;
+  // First load after a deploy (odd/tasks/sw-primera-carga.md, measured on the Doogee 2026-11-03): a returning visit
+  // starts on the previous worker's cached code. When the new worker takes control, reload ONCE so the visit runs
+  // today's code; never a first-ever visit, never after the visitor touched the page, never twice in 30 s.
+  var antes = !!navigator.serviceWorker.controller, tocada = false;
+  ['pointerdown', 'keydown'].forEach(function (t) { addEventListener(t, function () { tocada = true; }, { capture: true, once: true }); });
+  navigator.serviceWorker.addEventListener('controllerchange', function () {
+    if (!antes) { return; }
+    if (tocada) { return; }
+    try { if (Date.now() - Number(sessionStorage.getItem('sw-recarga') || 0) < 30000) { return; } sessionStorage.setItem('sw-recarga', String(Date.now())); } catch (_) { return; }
+    location.reload();
+  });
   addEventListener('load', function () {
 
     navigator.serviceWorker.register('/sw.js')
