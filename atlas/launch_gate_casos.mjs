@@ -22,17 +22,21 @@ const datos = (extra = {}) => ({ os: 'linux', pwa: { instalable: true, peso_b: 7
   cerebros: [medido, { id: 'especialista' }], carga: ['/assets/thegame.js', 'https://preceptoros.org/x.js'], ...extra });
 const cerebroDe = (v, id) => v.carriles.find((c) => c.id === id);
 
-caso('valido: PWA con 1 clic, app sin firma = NO_DATA, modelo medido con cifra completa, sin peticion externa', () => {
+caso('valido: PWA con 1 clic, app sin firma activa, modelo medido con cifra completa, sin peticion externa', () => {
   const v = G.vista(datos());
   const fallos = G.valida(v);
   if (fallos.length) return 'la vista valida tiene fallos: ' + fallos.join(' | ');
   if (v.saltar.primero !== true) return 'Saltar al Mapa no es el primero';
   const pwa = cerebroDe(v, 'pwa'), app = cerebroDe(v, 'app'), mod = cerebroDe(v, 'orquestador'), sin = cerebroDe(v, 'especialista');
   if (pwa.clics !== 1 || !pwa.boton.activo) return 'la PWA no es de 1 clic activo';
-  if (app.boton.activo || !/NO_DATA/.test(app.boton.causa)) return 'app sin firma no es NO_DATA';
+  if (!app.boton.activo) return 'app exige firma para instalar';
   if (mod.cifra !== '4.7 GB · soberano · 2026-10-19' || !mod.boton.activo) return 'modelo medido mal: ' + JSON.stringify(mod);
   if (sin.boton.activo || !/NO_DATA/.test(sin.cifra)) return 'modelo sin medir muestra boton o cifra';
   return true;
+});
+
+caso('movil sin instalador nativo es NO_DATA', () => {
+  return ['android', 'ios'].every((os) => { const app = cerebroDe(G.vista(datos({os})), 'app'); return !app.boton.activo && /NO_DATA/.test(app.boton.causa); }) || 'movil promete un instalador no medido';
 });
 
 caso('violacion: un carril con mas de 2 clics', () => {

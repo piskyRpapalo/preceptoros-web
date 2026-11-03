@@ -228,9 +228,6 @@
   "public/game/isometric_floor_projection.js": [
     "huella"
   ],
-  "public/game/launch_gate.js": [
-    "firma"
-  ],
   "public/game/lexical_projector.js": [
     "ciclo",
     "proyectarescena"

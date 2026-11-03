@@ -3,7 +3,7 @@
 
   // Compuerta post-intro (VT6): tres carriles, cada uno con su boton o su NO_DATA con causa. PURO: ni DOM, ni red, ni reloj.
   // UI en ingles (NORTE 5 a1, 2026-10-27): las causas se leen en pantalla en /get-the-app/.
-  // Regla: un dato que no esta medido (firma de release, sha256, maquina, fecha) NUNCA muestra un boton ni una cifra inventada.
+  // An install link needs no visitor signature. Unmeasured model figures remain NO_DATA.
 
   var enNode = typeof module === 'object' && module.exports;
   var TOQUE_MIN = 44;
@@ -11,7 +11,7 @@
   var ORIGEN = 'preceptoros.org';
 
   // Instalador por entorno (radiogroup preseleccionado segun el OS).
-  var INSTALADOR = { android: 'bin/instalar-android', linux: 'bin/instalar-pc', windows: 'bin/instalar-pc', mac: 'bin/instalar-pc' };
+  var INSTALADOR = { android: 'bin/instalar-android', ios: 'NO_DATA', linux: 'bin/instalar-pc', windows: 'bin/instalar-pc', mac: 'bin/instalar-pc' };
 
   function nd(c) { return 'NO_DATA (' + c + ')'; }
   function boton(etiqueta, activo, causa) { return { etiqueta: etiqueta, activo: activo, causa: causa || null, tamano: TOQUE_MIN }; }
@@ -25,10 +25,10 @@
       boton: pwa.instalable ? boton('Install the web app', true) : boton('Install the web app', false, nd('this browser has not offered to install it')),
       peso: typeof pwa.peso_b === 'number' ? pwa.peso_b + ' B' : nd('size not measured')
     };
-    var firmada = !!(d.release && d.release.firmada && d.release.firmada[os]);
+    var installer = os !== 'android' && os !== 'ios';
     var carril2 = {
       id: 'app', preseleccionado: INSTALADOR[os], clics: 2,
-      boton: firmada ? boton('Install the app', true) : boton('Install the app', false, nd('no signed receipt for ' + os + ' in release.json'))
+      boton: installer ? boton('Install the app', true) : boton('Install the app', false, nd('native installer not available for ' + os))
     };
     var carril3 = (d.cerebros || []).map(function (c) {
       var medido = !!(c.sha256 && typeof c.size_gb === 'number');
