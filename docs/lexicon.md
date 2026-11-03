@@ -151,3 +151,6 @@ oracle · notary · depin · coin · clearing · magic · token-as-a-name · **c
 ## I–L · Implementation records
 
 Benchmark, lexical-screen, Acho language, and lexical-vision entries continue in [lexicon implementation records](lexicon-implementation.md).
+
+
+**2026-11-03:** vocabulary now lives in the Babel registry (piskyRpapalo/babel); this doc is its seed.
