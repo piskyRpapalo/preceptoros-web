@@ -187,7 +187,7 @@
   function vivos(arm, o) {
     var t = o.t || 0, n = arm.length, c = o.crece == null ? 1 : o.crece, d = o.desafina || 0;
     return arm.map(function (h, j) {
-      var peso = Math.max(0, Math.min(1, c * n - j)), late = o.respira === false ? 1 : 1 + 0.05 * Math.sin(t * 0.0011 * (j + 1) + j * 1.7);
+      var peso = Math.max(0, Math.min(1, c * n - j)), late = o.respira === false ? 1 : 1 + 0.05 * Math.sin(t * 0.0011 * (j + 1) + j * 2.399963229728653);
       var tuerce = d ? ((j * 7 + 3) % 11 - 5) / 5 * d * 14 : 0;
       return [h[0], h[1] * peso * late, h[2] * peso * late, h[3] + tuerce];
     });
