@@ -325,6 +325,9 @@
     "pesos_nodos",
     "registro"
   ],
+  "public/game/palette_cycle.js": [
+    "paleta_ciclo_casos"
+  ],
   "public/game/sea-floor.js": [
     "atlasescena",
     "atlasmarfondo",
