@@ -13,6 +13,16 @@
     return { panx: Math.max(-lx, Math.min(lx, Math.round(p.panx))), pany: Math.max(-ly, Math.min(ly, Math.round(p.pany))) };
   }
 
+  // rest(pan, v, w, h, z) → where a coast from velocity v stops (pure, J7): the same brake and bound as the frames,
+  // run ahead without drawing, so the destination is spoken the instant the finger lifts (about 9·v, bounded).
+  function rest(p, v, w, h, z) {
+    for (v = v.slice(); ;) {
+      v = [v[0] * FRENO, v[1] * FRENO];
+      if (Math.abs(v[0]) + Math.abs(v[1]) < 0.5) { return p; }
+      p = clamp({ panx: p.panx + v[0], pany: p.pany + v[1] }, w, h, z);
+    }
+  }
+
   function attach(c, opts) {
     opts = opts || {};
     var doc = c.ownerDocument, pts = {}, one = null, vel = [0, 0], raf = raiz.requestAnimationFrame, queued = false, coast = 0;
@@ -57,6 +67,8 @@
       // A short coast with a brake, unless reduced motion is on.
       if (reduced || !raf || Math.abs(vel[0]) + Math.abs(vel[1]) < 1) { return; }
       var id = ++coast, v = vel.slice();
+      var end = rest({ panx: Number(c.dataset.panx) || 0, pany: Number(c.dataset.pany) || 0 }, v, c.width || 1, c.height || 1, Number(c.dataset.zoom) || 1);
+      say('Map view moved · stops at ' + end.panx + ', ' + end.pany + ' px');
       (function frame() {
         if (id !== coast) { return; }
         v = [v[0] * FRENO, v[1] * FRENO];
@@ -80,7 +92,7 @@
     return { move: move, home: home };
   }
 
-  var api = { attach: attach, clamp: clamp, TAP: TAP, BOUND: BOUND };
+  var api = { attach: attach, clamp: clamp, rest: rest, TAP: TAP, BOUND: BOUND, FRENO: FRENO };
   if (typeof module === 'object' && module.exports) { module.exports = api; }
   raiz.AtlasMapDrag = api;
   // Attach after the page script has built the map (and map_zoom's click guard, so a drag's click is already swallowed).

@@ -5,7 +5,7 @@
 // - while the visitor looks around, a redraw does not snap the view back (colonia_pagina follow() respects the look);
 // - two fingers still pinch-zoom (map_zoom.js); W A S D move the view and the view is spoken; ⌂ brings it home;
 // - the pan is bounded; openworld_page.js does not grow; map_drag.js stays under 7 KiB.
-// Sabotage: SABOTAJE=sin-mirada serves map_drag.js without the look mark ⇒ follow() snaps the view back ⇒ red.
+// Sabotage: SABOTAJE=sin-destino drops the J7 announcement ⇒ red. SABOTAJE=sin-mirada serves map_drag.js without the look mark ⇒ follow() snaps the view back ⇒ red.
 // Uso: node atlas/map_drag_browser.mjs [carpeta-captura]
 import { createServer } from 'node:http';
 import { readFileSync, writeFileSync, statSync, existsSync } from 'node:fs';
@@ -27,6 +27,7 @@ function sirve(raiz) {
       const f = resolve(raiz, '.' + ruta); if (!f.startsWith(resolve(raiz))) { res.writeHead(403); res.end(); return; }
       let cuerpo = readFileSync(f);
       if (ruta === '/game/map_drag.js' && SAB === 'sin-mirada') { cuerpo = Buffer.from(String(cuerpo).replace("c.dataset.look = '1'; ", '')); }
+      if (ruta === '/game/map_drag.js' && SAB === 'sin-destino') { cuerpo = Buffer.from(String(cuerpo).replace("say('Map view moved · stops at ' + end.panx + ', ' + end.pany + ' px');", '')); }
       res.writeHead(200, { 'Content-Type': tipos[extname(f)] || 'text/plain', 'Cache-Control': 'no-store' }); res.end(cuerpo);
     } catch { res.writeHead(404); res.end(); }
   });
@@ -82,8 +83,13 @@ async function main() {
 
   // 1 · drag left 80 CSS px: the view moves with the finger, no walk, no click.
   const a = await vista();
-  await dedo(centro.x, centro.y, -10, 0, 8); await espera(700);
+  await dedo(centro.x, centro.y, -10, 0, 8); await espera(30);
+  const b0 = await vista(); await espera(700);
   const b = await vista();
+  // J7 · the destination is spoken as the finger lifts, and the coast stops exactly there.
+  const dest = /stops at (-?\d+), (-?\d+) px/.exec(b0.say);
+  medidas.destino = { dicho: b0.say, final: [b.panx, b.pany] };
+  ok(!!dest && Number(dest[1]) === b.panx && Number(dest[2]) === b.pany, 'the stop was not announced when the finger lifted (J7): ' + JSON.stringify(medidas.destino));
   medidas.arrastre = { antes: [a.panx, a.pany], despues: [b.panx, b.pany], k: centro.k };
   ok(b.panx - a.panx <= -60 * centro.k, 'a one-finger drag did not move the view with the finger: ' + JSON.stringify(medidas.arrastre));
   ok(b.walker === a.walker, 'the drag walked the crab: ' + a.walker + ' → ' + b.walker);
