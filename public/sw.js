@@ -153,6 +153,7 @@ self.addEventListener('fetch', e => {
   if (RED_PRIMERO.indexOf(url.pathname) >= 0) { e.respondWith(redPrimero(e)); return; }
 
   
+  
   if (url.pathname.endsWith('.json') &&
       CONTENIDO_JSON.indexOf(url.pathname) < 0 &&
       (typeof MAPA_JSON === 'undefined' || MAPA_JSON.indexOf(url.pathname) < 0)) return;
