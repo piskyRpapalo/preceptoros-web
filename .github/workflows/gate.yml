@@ -119,6 +119,7 @@ jobs:
             node atlas/dos_clics_browser.mjs
             node atlas/ojo_carbono_browser.mjs
             node atlas/latido_carga_browser.mjs
+            node atlas/map_wide_browser.mjs
             node atlas/aula_chat_browser.mjs
             node atlas/sw_primera_carga_browser.mjs
             node atlas/latido_vivo_casos.mjs

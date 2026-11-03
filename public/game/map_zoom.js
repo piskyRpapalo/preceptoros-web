@@ -110,4 +110,13 @@
 
   var AtlasMapZoom = { crea: crea, create: crea, zoomAt: zoomAt, turnAt: turnAt, snapped: snapped, SQUASH: SQUASH, MIN: MIN, MAX: MAX, STEP: STEP, SNAP: SNAP };
   if (typeof module === 'object' && module.exports) { module.exports = AtlasMapZoom; } else { raiz.AtlasMapZoom = AtlasMapZoom; }
+  // G1: the full-screen map lives in its own file, asked for once the map tools exist (the page HTML stays at its ceiling).
+  var d = raiz.document;
+  if (d && d.getElementById && d.getElementById('surface')) {
+    var ancho = function () {
+      if (raiz.AtlasMapWide || !d.getElementById('zoom-controls')) { return; }
+      var s = d.createElement('script'); s.src = '/game/map_wide.js'; d.head.appendChild(s);
+    };
+    if (d.readyState === 'loading') { d.addEventListener('DOMContentLoaded', ancho); } else { ancho(); }
+  }
 })(this);
