@@ -99,4 +99,20 @@ J5, J6 y J7 son de pulido.
 4. **J8**, el borde-firma.
 5. **J4**, la marea: M, necesita la capa de agua viva con fps medidos.
 
+## Medido de noche (2026-11-03, BOLA DE LA NOCHE, punto 5)
+
+- **J2 no gana pieza todavía. Lo que la medida corrigió:**
+  - La caja de 320×96 (`global_map.js`: `ANCHO 320, ALTO 96`) solo se pinta en el camino **de reserva** de `openworld_page.js`, cuando la colonia no dibuja. En el Doogee la colonia dibuja, así que pasar a 320×139 cambia **0 píxeles** en el camino normal.
+  - Lo que sí se ve es la píldora del sello LIVE de la colonia: **170×71 px reales (~57×24 CSS), 2,39:1**, medidos en la captura del Doogee. La losa del suelo es 1 : √3/4 = **2,31:1**. Ya está a un 3 % del suelo, sin tocar nada.
+  - La respiración (a ≤ 0,02) sobre 57 px CSS mueve **1,1 px**: no se siente. Es la lección de J4.
+  - Y la ley L4 (web#609, billboards) dice que un rótulo va **de pie**, no tendido en el suelo. J2 queda absorbida: la proporción del suelo es para las losas, que ya son exactas (J1), no para los rótulos.
+- **Vía (b): sigue en NO_DATA, ahora medida.** Tres turnos válidos (CIEF de 242 B y la pregunta J2) por `/api/v1/chat`, a las 04:55–05:02 UTC. Los tres dieron HTTP 502 en 0,08–0,15 s con `{"estado":"NO_DATA","causa":"aula_rechaza"}`. La puerta llega al aula y el aula rechaza. Su conexión y su llave son del Soberano: queda declarado, sin tocar. Las tres preguntas siguen arriba, listas.
+
+### Orden corregido de noche
+1. **J7**, el destino de la inercia anunciado: S, va con LA MANO (#606) y se lee en `#zoom-state`.
+2. **J3**, el día sin aristas: S, se ve en minutos.
+3. **J8**, el borde-firma.
+4. **J4**, la marea: M, con capa de agua viva y fps medidos.
+5. **J2**: absorbida por L4 y J1 (arriba).
+
 Agent: claude-code · Model: claude-opus-5-5
