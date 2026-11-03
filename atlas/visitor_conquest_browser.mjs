@@ -63,6 +63,7 @@ async function main() {
   await ev('document.getElementById("visitor-hatch-1").click()');
   ok(await hasta('document.getElementById("visitor-play").textContent.includes("Troops 1")',10000),'adopted troop available');
   ok(await hasta('!!document.querySelector(".revela canvas.revela-lienzo") && !!window.AtlasRevela',10000),'the egg opens: the reveal shows the hatched troop');
+  ok(await ev('["Normal","Magic","Rare","Leviathan"].some(x => document.querySelector(".revela").textContent.includes(x))'), 'the reveal rarity is not in English');
   await ev(`document.getElementById('visitor-play').addEventListener('visitor:battle',e=>window.measuredBattle=e.detail,{once:true})`);
   await ev('document.getElementById("visitor-fight-arrecife").click()');
   ok(await hasta('!!document.getElementById("visitor-battle-result")',10000),'existing wave scene opens over the map');
