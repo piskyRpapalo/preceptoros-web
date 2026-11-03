@@ -8,8 +8,8 @@ Status: proposal for review. Deployment remains a human action. This document re
 
 Route-count receipt for this source tree (`haiku/corte-d-borrado-20261028`, Norte 7 D: the theGame stack leaves the shell with its files; measured with `python3 bin/contar_rutas.py`, 2026-10-28):
 
-Rutas precargadas por el shell: 118
-Rutas distintas del shell: 117
+Rutas precargadas por el shell: 119
+Rutas distintas del shell: 118
 
 The workflow runs exactly:
 
