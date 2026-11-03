@@ -46,18 +46,25 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
 #chat button{min-height:44px;padding:8px 14px;border:2px solid currentColor;border-radius:var(--radius);background:var(--bg);color:var(--fg);font:inherit}
 #chat button:disabled,#chat input:disabled{opacity:.55}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
-/* The compact terminal (the Sovereign p0, buzon#30, 2026-11-02): ONE map on top, ONE panel below (right on desktop).
-   Everything the page says lives in the panel as a voice with its speaker's name (terminal_panel.js). The tab sheets and
-   the on-map stick are retired (retirados/RETIRO-joystick-20261102.md). Touch walks by tapping the map; arrows step. */
-.topbar{display:flex;flex-wrap:wrap;align-items:center;gap:4px 12px}
+/* One map, one attributed speech panel: stacked on phones, side by side on desktop. */
+.topbar{display:flex;justify-content:flex-end;align-items:center;gap:4px 12px}
 .topbar > a{display:inline-flex;align-items:center;min-width:44px;min-height:44px}
 .stage{position:relative;display:flex;flex-direction:column;min-height:0;flex:1}
-/* Zoom stays a layer on the map, top-right on a plate; its spoken level is a voice in the panel, never on the drawing. */
-.stage #zoom-controls{position:absolute;top:6px;right:6px;z-index:2;display:flex;flex-direction:column;gap:2px;
+/* Zoom controls follow the map's spoken instructions. */
+#zoom-controls{display:flex;flex-wrap:wrap;gap:2px;
   padding:2px;border:2px solid var(--line);border-radius:var(--radius);background:color-mix(in srgb,var(--bg) 78%,transparent)}
-.stage #zoom-controls button{width:44px;height:44px;padding:0;font-size:1.3rem;font-weight:700;line-height:1}
-@supports not (background:color-mix(in srgb,red 50%,transparent)){.stage #zoom-controls{background:var(--bg)}}
+#zoom-controls button{width:44px;height:44px;padding:0;font-size:1.3rem;font-weight:700;line-height:1}
+@supports not (background:color-mix(in srgb,red 50%,transparent)){#zoom-controls{background:var(--bg)}}
 .voices{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+#voices{display:contents}
+#voices > [data-speaker="Welcome"]{order:0}
+#log{order:1}
+#entry{order:2}
+#voices > [data-speaker]:not([data-speaker="Welcome"]){order:3}
+.cats{order:4}
+#map-actions{order:5}
+#map-brain,#radio-chat{order:6}
+#chat-note,.tech{order:7}
 .voice{border:2px solid var(--line);border-radius:var(--radius);padding:6px 10px;display:grid;gap:6px;color:var(--fg)}
 .voice > .who{margin:0;font-weight:700;font-size:.9rem;text-decoration:underline}
 .voice p{margin:0}
@@ -103,7 +110,7 @@ body,main,#map,#chat,.voice,.radio-chat{background:Canvas;color:CanvasText}
 .voice > .who{color:CanvasText}
 a{color:LinkText}
 button,select,summary,.voice button,#chat button,#map .press button,.radio-chat-tab{background:ButtonFace;color:ButtonText;border-color:ButtonText;forced-color-adjust:none}
-.stage #zoom-controls{background:Canvas;border-color:CanvasText;forced-color-adjust:none}
+#zoom-controls{background:Canvas;border-color:CanvasText;forced-color-adjust:none}
 .hitl-mark{border-color:ButtonText!important}
 :focus-visible,#map-proxies .map-proxy:focus-visible{outline:3px solid Highlight!important;outline-offset:2px}
 #surface{border:2px solid CanvasText;forced-color-adjust:none}
@@ -112,7 +119,7 @@ button,select,summary,.voice button,#chat button,#map .press button,.radio-chat-
 @media (prefers-contrast: more){
 .voice,#map .press button,.voice button,#chat button,#chat input,.stage #zoom-controls{border-width:3px}
 #map .state,#chat .log,.voice .state{color:var(--fg)}
-.stage #zoom-controls{background:var(--bg)}
+#zoom-controls{background:var(--bg)}
 :focus-visible{outline-width:4px}
 }
 @media (max-width:899px){html,body{height:auto}main{flex:none;grid-template-rows:auto auto;min-height:0}#map{overflow:visible;min-height:0}#chat{overflow:visible;min-height:0}#map .surface{flex:none;height:45vh;min-height:280px;max-height:620px;width:auto;margin-inline:-16px;border-radius:0}}
@@ -123,19 +130,14 @@ button,select,summary,.voice button,#chat button,#map .press button,.radio-chat-
 <a class="skip" href="#chat">Skip to the chat</a>
 <main data-radio-capa>
 <section id="map" aria-labelledby="map-h">
-<div class="topbar"><a href="/" style="display:inline-block;min-height:44px">Back</a>
-<h1 id="map-h">OpenWorld</h1>
-<div class="press" role="group" aria-label="Terrains">
-<button type="button" id="t-cabin" aria-pressed="true" data-terrain="cabin">Tutorial cabin</button>
-</div></div>
+<div class="topbar"><h1 id="map-h">preceptoros.org</h1></div>
 <div id="stage" class="stage">
 <canvas class="surface" id="surface" role="img" aria-label="The global map: tutorial cabin and live nodes. Tap or click a node to walk there; arrow keys choose a neighbour, Enter walks."></canvas>
 </div>
 </section>
 <section id="chat" aria-labelledby="chat-h">
 <h2 id="chat-h">Chat</h2>
-<ol class="voices" id="voices" aria-label="What the page says, by speaker">
-<li class="voice" data-speaker="Tutorial"><div id="joy" aria-label="Tutorial"></div></li>
+<ol class="voices" id="voices" role="list" aria-label="What the page says, by speaker">
 <li class="voice" data-speaker="Welcome"><section id="sheet-welcome" class="welcome" role="dialog" aria-modal="false" aria-labelledby="welcome-h" aria-describedby="welcome-lore" hidden>
 <h3 id="welcome-h">Welcome to the sunken forest</h3>
 <p id="welcome-lore">You are an ephemeral crab: your key is signed on this device and nothing leaves it; the model advises, never signs.</p>
@@ -143,6 +145,7 @@ button,select,summary,.voice button,#chat button,#map .press button,.radio-chat-
 <button type="button" id="welcome-look">Look around first</button></div>
 <p id="welcome-result" class="state" role="status"></p>
 </section></li>
+<li class="voice" data-speaker="Tutorial"><div id="joy" aria-label="Tutorial"></div></li>
 <li class="voice next" id="next" data-speaker="Guide"><p id="next-step" aria-live="polite"><strong>Next:</strong> <span id="next-text">Press Play now.</span></p>
 <div class="acts"><button type="button" id="play-now">Play now</button></div></li>
 <li class="voice" data-speaker="Map"><p class="state" id="state" aria-live="polite">Nodes online: checking…</p>
@@ -171,6 +174,7 @@ button,select,summary,.voice button,#chat button,#map .press button,.radio-chat-
 <input id="question" type="text" autocomplete="off" aria-describedby="chat-note">
 <button type="submit">Send</button>
 </form>
+<div id="map-actions" class="press" role="group" aria-label="Map controls"><div id="terrain-actions" class="press"><button type="button" id="t-cabin" aria-pressed="true" data-terrain="cabin">Tutorial cabin</button></div></div>
 <p class="state" id="chat-note">The guide is still asleep; you can wake it below.</p>
 <details class="tech"><summary>Technical details</summary><p>NO_DATA: no local answer model is connected until you download the optional browser brain.</p></details>
 </section>
