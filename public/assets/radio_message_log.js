@@ -77,7 +77,7 @@
     function mira(n) {
       if (!n || n.nodeType !== 1 || (R.caja && R.caja.contains(n))) { return; }
       // A line a page marks as technical (data-radio="tecnico", e.g. the walkers' routes) is said in its own place, not here.
-      if (n.closest && n.closest('[data-radio="tecnico"]')) { return; }
+      if (n.closest && n.closest('[data-radio="tecnico"],#log')) { return; }
       var t = (n.textContent || '').trim();
       if (!t || ultimos.get(n) === t) { return; }
       ultimos.set(n, t);
