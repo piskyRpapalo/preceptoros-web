@@ -8,8 +8,8 @@ Status: proposal for review. Deployment remains a human action. This document re
 
 Route-count receipt for this source tree (`haiku/corte-d-borrado-20261028`, Norte 7 D: the theGame stack leaves the shell with its files; measured with `python3 bin/contar_rutas.py`, 2026-10-28):
 
-Rutas precargadas por el shell: 118
-Rutas distintas del shell: 117
+Rutas precargadas por el shell: 119
+Rutas distintas del shell: 118
 
 The workflow runs exactly:
 
@@ -70,3 +70,4 @@ Compact terminal source receipt (2026-11-02, buzon#30): /game/terminal_tabs.js r
 Rebase receipt (2026-11-01):  join the shell after main. 116 entries / 115 distinct.
 A11y fill source receipt (2026-11-02, buzon#30): /game/map_focus.js joins the shell (Tab to every map bubble). 117 entries / 116 distinct.
 LA MANO source receipt (2026-11-03, buzon#30): /game/map_drag.js joins the shell (one finger drags the map). 118 entries / 117 distinct.
+G1 source receipt (2026-11-03, web#608, rebased after LA MANO): /game/map_wide.js joins the shell (the map fills the screen on demand). 119 entries / 118 distinct.
