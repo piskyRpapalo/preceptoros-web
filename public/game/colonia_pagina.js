@@ -163,6 +163,7 @@
   // at phone width), pan so it stands at mid width, a quarter down. A jump, never a tween, so reduced motion needs
   // nothing more. The pan is written on canvas.dataset, beside dataset.zoom, and geometry() reads it.
   function follow(canvas, sc, you) {
+    if (canvas.dataset.look) { return; }   // LA MANO: the visitor is looking around (map_drag.js); a tap or ⌂ ends it
     var G = geometry(sc, canvas), p = G.at(you.x, you.y), x = p.x, y = p.y - (you.lift || 0) * G.k, W = canvas.width, H = canvas.height;
     if (x < W * 0.15 || x > W * 0.85 || y < H * 0.12 || y > H * 0.42) {
       canvas.dataset.panx = String(Math.round(G.cx - W / 2 - (x - W / 2)));

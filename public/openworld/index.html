@@ -97,23 +97,23 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
 .voice[data-speaker="Radio"] :is([aria-live],[role=status])::before{content:"Radio: "}
 /* High contrast (buzon#30, 2026-11-02): system colours only (keywords, never a raw colour); the canvas has its own path. */
 @media (forced-colors: active){
-  body,main,#map,#chat,.voice,.radio-chat{background:Canvas;color:CanvasText}
-  .voice,.radio-chat,#map,#chat input{border-color:CanvasText}
-  #map .state,#chat .log,.voice .state{color:CanvasText}
-  .voice > .who{color:CanvasText}
-  a{color:LinkText}
-  button,select,summary,.voice button,#chat button,#map .press button,.radio-chat-tab{background:ButtonFace;color:ButtonText;border-color:ButtonText;forced-color-adjust:none}
-  .stage #zoom-controls{background:Canvas;border-color:CanvasText;forced-color-adjust:none}
-  .hitl-mark{border-color:ButtonText!important}
-  :focus-visible,#map-proxies .map-proxy:focus-visible{outline:3px solid Highlight!important;outline-offset:2px}
-  #surface{border:2px solid CanvasText;forced-color-adjust:none}
-  .welcome,.radio-chat-no-data{border:2px solid CanvasText}
+body,main,#map,#chat,.voice,.radio-chat{background:Canvas;color:CanvasText}
+.voice,.radio-chat,#map,#chat input{border-color:CanvasText}
+#map .state,#chat .log,.voice .state{color:CanvasText}
+.voice > .who{color:CanvasText}
+a{color:LinkText}
+button,select,summary,.voice button,#chat button,#map .press button,.radio-chat-tab{background:ButtonFace;color:ButtonText;border-color:ButtonText;forced-color-adjust:none}
+.stage #zoom-controls{background:Canvas;border-color:CanvasText;forced-color-adjust:none}
+.hitl-mark{border-color:ButtonText!important}
+:focus-visible,#map-proxies .map-proxy:focus-visible{outline:3px solid Highlight!important;outline-offset:2px}
+#surface{border:2px solid CanvasText;forced-color-adjust:none}
+.welcome,.radio-chat-no-data{border:2px solid CanvasText}
 }
 @media (prefers-contrast: more){
-  .voice,#map .press button,.voice button,#chat button,#chat input,.stage #zoom-controls{border-width:3px}
-  #map .state,#chat .log,.voice .state{color:var(--fg)}
-  .stage #zoom-controls{background:var(--bg)}
-  :focus-visible{outline-width:4px}
+.voice,#map .press button,.voice button,#chat button,#chat input,.stage #zoom-controls{border-width:3px}
+#map .state,#chat .log,.voice .state{color:var(--fg)}
+.stage #zoom-controls{background:var(--bg)}
+:focus-visible{outline-width:4px}
 }
 @media (max-width:899px){html,body{height:auto}main{flex:none;grid-template-rows:auto auto;min-height:0}#map{overflow:visible;min-height:0}#chat{overflow:visible;min-height:0}#map .surface{flex:none;height:45vh;min-height:280px;max-height:620px;width:auto;margin-inline:-16px;border-radius:0}}
 @media (min-width:900px){main{grid-template-rows:1fr;grid-template-columns:3fr 2fr;height:100vh}#map{border-bottom:0;border-right:2px solid var(--line)}}
@@ -195,6 +195,7 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
 <script src="/game/openworld_state.js"></script>
 <script src="/game/colonia_pagina.js"></script>
 <script src="/game/map_zoom.js"></script>
+<script src="/game/map_drag.js"></script>
 <script src="/game/map_carta.js"></script>
 <script src="/game/map_chunks.js"></script>
 <script src="/game/map_painter.js"></script>
