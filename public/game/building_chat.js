@@ -126,36 +126,56 @@
   // «ideas», «rack» or «study» (or the 44 px Rack ideas button) asks the rack for its ideas through rack_ideas.js.
   function titleOf(building) { return building ? scriptOf(building).name + ' · ' + building.id + ' · chat' : 'Chat'; }
   function wantsIdeas(text) { return /(^|[^a-z])(ideas?|rack|study)([^a-z]|$)/i.test(String(text || '')); }
+  function wantsJewels(text) { return /(^|[^a-z])(jewels?|joyas?)([^a-z]|$)/i.test(String(text || '')); }
+  // A question with no script goes to the live door: Hexelion at the edge (aula_chat.js), only on the visitor's Send.
+  // Its context names the building, so the answer can be about where the visitor stands.
 
   // open(building, page) / ask(text): the DOM glue of /openworld/ (not run by the pure cases). page = { doc, state, entry,
   // line(cls, text), router(then) }. The lines go to the chat log, which face_terminal.js copies into the radio, so the
   // screen reader hears the building as it hears the map. While a building is open, the chat input asks its bot; Escape
   // or the 44 px «Leave building» button closes it, and #state says so.
-  var inside = null, page = null, leave = null, rackBtn = null, asking = false;
+  var inside = null, page = null, leave = null, rackBtn = null, jewelBtn = null, asking = false, chain = null, visit = null;
   function title(b) { var h = page.doc.getElementById('chat-h'); if (h) { h.textContent = titleOf(b); } }
+  function busy(on) { asking = on; rackBtn.disabled = on; jewelBtn.disabled = on; }
   function leaveBuilding() {
     if (!inside) { return; }
-    var id = inside.id; inside = null; leave.hidden = true; rackBtn.hidden = true; title(null);
+    var id = inside.id; inside = null; leave.hidden = true; rackBtn.hidden = true; jewelBtn.hidden = true; title(null);
     page.state.textContent = 'Left building ' + id;
   }
-  // The one request of this piece leaves here, after the visitor asked; each idea is said one by one while they stay.
-  function rackIdeas() {
+  function load(src, name, then) {
+    if (root[name]) { then(root[name]); return; }
+    var sc = page.doc.createElement('script'); sc.src = src; sc.onload = function () { then(root[name] || null); };
+    sc.onerror = function () { then(null); }; page.doc.head.appendChild(sc);
+  }
+  // The requests of this piece leave here, after the visitor asked; each idea or jewel is said one by one while they stay.
+  function fromRack(kind) {
     if (!inside || asking) { return; }
-    var b = inside, name = scriptOf(b).name, w = page.doc.defaultView || root; asking = true; rackBtn.disabled = true;
-    var done = function () { asking = false; rackBtn.disabled = false; };
-    page.line('', name + ' · asking the rack for its ideas…');
-    var go = function () {
-      var R = root.AtlasRackIdeas;
-      R.fetchIdeas({ fetch: w.fetch && w.fetch.bind(w), online: w.navigator ? w.navigator.onLine : undefined }).then(function (r) {
-        if (inside !== b) { done(); return; }
-        if (!r.ok) { page.line('', r.causa); done(); return; }
-        var lines = [R.header(name, r)].concat(r.ideas.map(function (x, i) { return R.lineOf(x, i, r.ideas.length); }));
-        var n = 0; R.stream(lines, function (t) { page.line('', t); if (++n === lines.length) { done(); } }, function () { return inside === b || (done(), false); }, function (f, ms) { w.setTimeout(f, ms); });
+    var b = inside, name = scriptOf(b).name, w = page.doc.defaultView || root, jw = kind === 'jewels'; busy(true);
+    page.line('', name + (jw ? ' · asking the rack for its jewels…' : ' · asking the rack for its ideas…'));
+    load('/game/rack_ideas.js', 'AtlasRackIdeas', function (R) {
+      if (!R) { page.line('', 'NO_DATA · not_loaded: the rack bridge did not load.'); busy(false); return; }
+      var o = { fetch: w.fetch && w.fetch.bind(w), online: w.navigator ? w.navigator.onLine : undefined };
+      (jw ? R.fetchJewels(o) : R.fetchIdeas(o)).then(function (r) {
+        if (inside !== b) { busy(false); return; }
+        if (!r.ok) { page.line('', r.causa); busy(false); return; }
+        var lines = jw ? [R.jewelHeader(name, r)].concat(r.jewels.map(function (x, i) { return R.jewelLine(x, i, r.jewels.length); }))
+          : [R.header(name, r)].concat(r.ideas.map(function (x, i) { return R.lineOf(x, i, r.ideas.length); }));
+        var n = 0; R.stream(lines, function (t) { page.line('', t); if (++n === lines.length) { busy(false); } }, function () { return inside === b || (busy(false), false); }, function (f, ms) { w.setTimeout(f, ms); });
       });
-    };
-    if (root.AtlasRackIdeas) { go(); return; }
-    var sc = page.doc.createElement('script'); sc.src = '/game/rack_ideas.js'; sc.onload = go;
-    sc.onerror = function () { page.line('', 'NO_DATA · not_loaded: the rack bridge did not load.'); done(); }; page.doc.head.appendChild(sc);
+    });
+  }
+  function hexelion(b, text) {
+    var w = page.doc.defaultView || root;
+    load('/game/aula_chat.js', 'AtlasAulaChat', function (A) {
+      if (!A) { page.line('', 'NO_DATA · not_loaded: the door to Hexelion did not load.'); return; }
+      var account = visit ? Promise.resolve(visit) : (root.AtlasVisitorAccount ? root.AtlasVisitorAccount.create(true) : Promise.reject(new Error('no visit')));
+      account.then(function (v) {
+        visit = v; return A.turn(w.fetch.bind(w), v.info().seed, text, chain, '/openworld/#' + b.id);
+      }).then(function (r) {
+        chain = r.chain; if (inside !== b) { return; }
+        page.line('', r.ok ? 'Hexelion · ' + r.text + (r.cut ? ' [shortened]' : '') : A.plain(r.cause) + (r.retry ? ' · wait ' + r.retry + ' s' : ''));
+      }).catch(function (e) { page.line('', 'NO_DATA · ' + String(e && e.message || e).slice(0, 120)); });
+    });
   }
   function open(building, p) {
     page = p;
@@ -167,12 +187,17 @@
       rackBtn = p.doc.createElement('button');
       rackBtn.type = 'button'; rackBtn.id = 'rack-ideas'; rackBtn.textContent = 'Rack ideas';
       rackBtn.style.minHeight = '44px'; rackBtn.style.minWidth = '44px';
-      rackBtn.addEventListener('click', rackIdeas);
-      if (p.entry) { p.entry.before(leave); p.entry.before(rackBtn); }
+      rackBtn.addEventListener('click', function () { fromRack('ideas'); });
+      jewelBtn = p.doc.createElement('button');
+      jewelBtn.type = 'button'; jewelBtn.id = 'rack-jewels'; jewelBtn.textContent = 'Jewels';
+      jewelBtn.style.minHeight = '44px'; jewelBtn.style.minWidth = '44px';
+      jewelBtn.addEventListener('click', function () { fromRack('jewels'); });
+      if (p.entry) { p.entry.before(leave); p.entry.before(rackBtn); p.entry.before(jewelBtn); }
       p.doc.addEventListener('keydown', function (e) { if (e.key === 'Escape' && inside) { e.preventDefault(); leaveBuilding(); } });
     }
     if (inside && inside.id === building.id) { return; }
-    inside = building; leave.hidden = false; rackBtn.hidden = false; title(building);
+    inside = building; leave.hidden = false; rackBtn.hidden = false; jewelBtn.hidden = false; title(building);
+    chain = { tic: 0, hash: null, sello: null };
     // Appended, never overwritten: what was just said (e.g. the HITL «Needs you» opening) stays in the state log.
     var said = p.state.textContent, here = 'Inside building ' + building.id + ' · ' + scriptOf(building).name + ' · Escape leaves';
     p.state.textContent = /Needs you: /.test(said) ? said + ' · ' + here : here;
@@ -180,13 +205,15 @@
   }
   function ask(text) {
     if (!inside) { return false; }
-    if (wantsIdeas(text)) { rackIdeas(); return true; }
+    if (wantsJewels(text)) { fromRack('jewels'); return true; }
+    if (wantsIdeas(text)) { fromRack('ideas'); return true; }
     var b = inside;
-    page.router(function (R) { page.line('', reply(b, text, R).atoms[0].r); });
+    if (intentOf(text)) { page.line('', reply(b, text, null).atoms[0].r); return true; }
+    hexelion(b, text);
     return true;
   }
 
-  var AtlasBuildingChat = { KINDS: KINDS, INTENTS: INTENTS, SCRIPTS: SCRIPTS, kindOf: kindOf, intentOf: intentOf, opening: opening, reply: reply, titleOf: titleOf, wantsIdeas: wantsIdeas, open: open, ask: ask };
+  var AtlasBuildingChat = { KINDS: KINDS, INTENTS: INTENTS, SCRIPTS: SCRIPTS, kindOf: kindOf, intentOf: intentOf, opening: opening, reply: reply, titleOf: titleOf, wantsIdeas: wantsIdeas, wantsJewels: wantsJewels, open: open, ask: ask };
   if (common) { module.exports = AtlasBuildingChat; }
   else { root.AtlasBuildingChat = AtlasBuildingChat; }
 })(typeof globalThis === 'object' ? globalThis : this);

@@ -89,3 +89,23 @@ test('the chat title names the building; ideas are asked by whole word', () => {
   for (const s of ['ideas', 'show me the rack', 'Study?', 'one idea please']) { assert.ok(C.wantsIdeas(s), s); }
   for (const s of ['racket', 'studying', 'hello', 'status']) { assert.ok(!C.wantsIdeas(s), s); }
 });
+
+test('jewels: headings and their «Dónde» are read live; a foreign file is NO_DATA', () => {
+  const md = '# JOYAS · x\n\n### J1 · El **hexágono** (YA VIVE)\n- **Dónde:** `public/game/hex_projection.js`: x = 48q\n### J2 · Sin dónde\ntexto\n';
+  const r = R.parseJewels(md);
+  assert.equal(r.ok, true); assert.equal(r.jewels.length, 2);
+  assert.deepEqual(r.jewels[0], { id: 'J1', title: 'El hexágono (YA VIVE)', where: 'public/game/hex_projection.js: x = 48q' });
+  assert.equal(r.jewels[1].where, 'NO_DATA');
+  assert.match(R.jewelLine(r.jewels[0], 0, 2), /^Jewel 1\/2 · J1 · El hexágono \(YA VIVE\) · where: .* · odd\/JOYAS\.md \(es\)$/);
+  assert.match(R.parseJewels('<html>').causa, /^NO_DATA · not_jewels:/);
+  assert.match(R.parseJewels('# JOYAS\nnada').causa, /^NO_DATA · no_jewels:/);
+  const vivas = R.parseJewels(readFileSync(new URL('../odd/JOYAS.md', import.meta.url), 'utf8'));
+  assert.ok(vivas.ok && vivas.jewels.length >= 7, 'the repo JOYAS.md does not parse');
+  for (const [i, j] of vivas.jewels.entries()) { assert.ok(bytes(R.jewelLine(j, i, vivas.jewels.length)) < 1024); }
+  assert.match(R.JEWELS, /^https:\/\/raw\.githubusercontent\.com\/piskyRpapalo\/preceptoros-web\/main\/odd\/JOYAS\.md$/);
+});
+
+test('jewels are asked by whole word, in English or Spanish', () => {
+  for (const s of ['jewels', 'show me a joya', 'Joyas!']) { assert.ok(C.wantsJewels(s), s); }
+  for (const s of ['jewelry', 'joyería', 'ideas']) { assert.ok(!C.wantsJewels(s), s); }
+});

@@ -4,7 +4,10 @@
 // - zero external requests on load: nothing leaves the origin until the visitor asks;
 // - inside a building the chat title names it; leaving gives the title back («Chat»);
 // - the Rack ideas button is a 44 px target; one click → ONE request, to the study index, and the ideas arrive one by one;
-// - a failing rack (HTTP 404) is said as NO_DATA with its cause; nothing is invented.
+// - a failing rack (HTTP 404) is said as NO_DATA with its cause; nothing is invented;
+// - the Jewels button brings the system's jewels (odd/JOYAS.md on main) one by one, the same way;
+// - a question with no script goes to the live door (Hexelion, /api/v1/chat) with the building in its context; a closed
+//   door is said in plain words with its cause. Hexelion is answered by a page-side stub: CI never calls production.
 // The study index is served by the harness through CDP Fetch (fixture atlas/fixtures/ai-index-muestra.json): the proof never
 // depends on the network. Sabotage: SABOTAJE=en-carga asks the rack on load ⇒ red; SABOTAJE=sin-titulo keeps «Chat» ⇒ red.
 // Uso: node atlas/rack_ideas_browser.mjs [carpeta-captura]
@@ -20,6 +23,7 @@ const CAPTURA = process.argv[2] || null;
 const SAB = process.env.SABOTAJE || '';
 const W = 360, H = 716, STUDY = 'https://raw.githubusercontent.com/';
 const MUESTRA = readFileSync(join(RAIZ, 'atlas/fixtures/ai-index-muestra.json'));
+const JOYAS = readFileSync(join(RAIZ, 'odd/JOYAS.md'));
 const espera = (ms) => new Promise((r) => setTimeout(r, ms));
 const tipos = { '.js': 'text/javascript', '.css': 'text/css', '.html': 'text/html', '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png', '.webmanifest': 'application/manifest+json' };
 function sirve(raiz) {
@@ -57,7 +61,8 @@ async function main() {
     if (d.method === 'Network.requestWillBeSent') { const u = d.params.request.url; if (!u.startsWith(origen) && !u.startsWith('data:') && !u.startsWith('blob:')) { pedidas.push(u); } }
     if (d.method === 'Fetch.requestPaused') {
       const p = d.params, cab = [{ name: 'Access-Control-Allow-Origin', value: '*' }, { name: 'Content-Type', value: 'text/plain; charset=utf-8' }];
-      if (modo === 200) { cmd('Fetch.fulfillRequest', { requestId: p.requestId, responseCode: 200, responseHeaders: cab, body: MUESTRA.toString('base64') }); }
+      const cuerpo = /JOYAS\.md$/.test(p.request.url) ? JOYAS : MUESTRA;
+      if (modo === 200) { cmd('Fetch.fulfillRequest', { requestId: p.requestId, responseCode: 200, responseHeaders: cab, body: cuerpo.toString('base64') }); }
       else { cmd('Fetch.fulfillRequest', { requestId: p.requestId, responseCode: 404, responseHeaders: cab, body: Buffer.from('404: Not Found').toString('base64') }); }
     }
   });
@@ -108,10 +113,36 @@ async function main() {
   medidas.falla = falla;
   ok(/^NO_DATA · http_404: /.test(falla || ''), 'a failing rack is not said as NO_DATA with its cause: ' + falla);
 
+  // 4b · the jewels: one click, one request to JOYAS.md on main, said one by one.
+  modo = 200; const antes = pedidas.length;
+  const joyas = () => ev(`[...document.querySelectorAll('#log li')].filter((li) => /^Jewel /.test(li.textContent)).length`);
+  await ev("document.getElementById('rack-jewels').click(), true"); await espera(450);
+  const jPronto = await joyas(); await espera(4000);
+  const jLuego = await joyas(), total = (String(JOYAS).match(/^### J\d+ · /gm) || []).length;
+  medidas.joyas = { pronto: jPronto, luego: jLuego, total, peticion: pedidas.slice(antes) };
+  ok(pedidas.length === antes + 1 && /\/preceptoros-web\/main\/odd\/JOYAS\.md$/.test(pedidas[antes] || ''), 'the Jewels click did not make one request to JOYAS.md: ' + pedidas.slice(antes));
+  ok(jPronto >= 1 && jPronto < total && jLuego === total, 'the jewels did not arrive one by one: ' + JSON.stringify(medidas.joyas));
+
+  // 4c · a question with no script goes to Hexelion with the building in its context (page-side stub of the edge).
+  const hex = JSON.parse(await ev(`(async () => { const w = (ms) => new Promise((r) => setTimeout(r, ms)), real = window.fetch, vistos = [];
+    let respuesta = { status: 200, body: { v: 'preceptoros.chat/1', estado: 'OK', burbuja: { texto: 'The cabin is where every visit starts.', recortada: false }, sello: { tic: 1, mac: 'x' } } };
+    window.fetch = (u, o) => { if (String(u).startsWith('https://api.preceptoros.org/')) { vistos.push(JSON.parse(o.body)); return Promise.resolve(new Response(JSON.stringify(respuesta.body), { status: respuesta.status })); } return real(u, o); };
+    const ask = async (t) => { document.getElementById('question').value = t; document.getElementById('entry').dispatchEvent(new Event('submit', { cancelable: true })); await w(900); return (document.querySelector('#log li:last-child') || {}).textContent; };
+    const bien = await ask('tell me a story of the sea');
+    respuesta = { status: 503, body: { v: 'preceptoros.chat/1', estado: 'NO_DATA', causa: 'aula_rechaza' } };
+    const cerrada = await ask('are you there');
+    window.fetch = real;
+    return JSON.stringify({ bien, cerrada, pagina: vistos[0] && vistos[0].contexto.pagina, tics: vistos.map((v) => v.tic) }); })()`));
+  medidas.hexelion = hex;
+  ok(hex.bien === 'Hexelion · The cabin is where every visit starts.', 'Hexelion\'s live answer is not shown: ' + hex.bien);
+  ok(hex.pagina === '/openworld/#b-cabin', 'the door does not know the building: ' + hex.pagina);
+  ok(/^NO_DATA · Hexelion is not taking visitors right now\. \(aula_rechaza\)$/.test(hex.cerrada || ''), 'a closed door is not said with its cause: ' + hex.cerrada);
+  ok(JSON.stringify(hex.tics) === '[1,2]', 'the turns do not chain: ' + JSON.stringify(hex.tics));
+
   // 5 · Escape leaves: the title comes back, the button hides.
   await cmd('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27 });
   await cmd('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27 }); await espera(300);
-  const fuera = JSON.parse(await ev(`JSON.stringify({ titulo: document.getElementById('chat-h').textContent, hidden: document.getElementById('rack-ideas').hidden })`));
+  const fuera = JSON.parse(await ev(`JSON.stringify({ titulo: document.getElementById('chat-h').textContent, hidden: document.getElementById('rack-ideas').hidden && document.getElementById('rack-jewels').hidden })`));
   medidas.fuera = fuera;
   ok(fuera.titulo === 'Chat' && fuera.hidden === true, 'leaving does not give the title back: ' + JSON.stringify(fuera));
 

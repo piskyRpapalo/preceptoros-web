@@ -52,6 +52,7 @@ async function main() {
   const cmd = (method, params = {}) => new Promise((r) => { const i = ++id; pend.set(i, r); ws.send(JSON.stringify({ id: i, method, params })); });
   const ev = async (e) => (await cmd('Runtime.evaluate', { expression: e, awaitPromise: true, returnByValue: true })).result?.result?.value ?? null;
   await cmd('Runtime.enable'); await cmd('Page.enable'); await cmd('Network.enable');
+  await cmd('Network.setBlockedURLs', { urls: ['https://api.preceptoros.org/*'] }); // the live door is never called from CI
   // Phone width first: the map is the top half, the chat the bottom half, nothing scrolls sideways.
   await cmd('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 1, mobile: true });
   await cmd('Page.navigate', { url: origen + '/openworld/' }); await espera(1800);
@@ -131,7 +132,7 @@ async function main() {
     document.body.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })); await w(100);
     return JSON.stringify({ greeting, inside, tall, help, poem, left: st(), hidden: leave && leave.hidden }); })()`));
   ok(cabina.greeting && /^Inside building b-cabin/.test(cabina.inside) && cabina.tall, 'Enter does not open the cabin chat in the radio: ' + JSON.stringify(cabina));
-  ok(/^Tutorial cabin · Ask me/.test(cabina.help || '') && cabina.poem === 'NO_DATA · model_not_installed', 'the cabin bot does not answer honestly: ' + JSON.stringify(cabina));
+  ok(/^Tutorial cabin · Ask me/.test(cabina.help || '') && /^NO_DATA · .*\(red\)$/.test(cabina.poem || ''), 'the cabin bot does not answer honestly: ' + JSON.stringify(cabina));
   ok(cabina.left === 'Left building b-cabin' && cabina.hidden === true, 'Escape does not leave the building: ' + JSON.stringify(cabina));
   const desktopEntry = await ev(CLIC_CABINA);
   ok(/^terminal: basic/.test(desktopEntry || ''), 'the ephemeral cabin cannot be entered on desktop: ' + desktopEntry);
