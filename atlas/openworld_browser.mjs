@@ -156,7 +156,8 @@ async function main() {
     return JSON.stringify({ k, ks, o, r, sizes }); })()`));
   ok(zoom.k === '1.25' && /zoom 1\.25×/.test(zoom.ks), 'the + key does not zoom or is not spoken: ' + JSON.stringify(zoom));
   ok(zoom.o === '0.80' && zoom.r === '1.00', 'zoom out / reset do not move the factor: ' + JSON.stringify(zoom));
-  ok(zoom.sizes.length === 6 && zoom.sizes.every((h) => h >= 44), 'zoom buttons below the touch target: ' + zoom.sizes);
+  // G1 (2026-11-03, web#608): the Explore button joins the map tools, so seven 44 px buttons.
+  ok(zoom.sizes.length === 7 && zoom.sizes.every((h) => h >= 44), 'zoom buttons below the touch target: ' + zoom.sizes);
   // Orbit: E turns the view 60° (spoken in the plate's line), a tap on the cabin at 120° still enters it, Reset view returns to 0°.
   const orbita = JSON.parse(await ev(`(async () => { const s = document.getElementById('surface'), say = () => (document.getElementById('zoom-state') || {}).textContent || '', w = (ms) => new Promise((r) => setTimeout(r, ms));
     document.body.dispatchEvent(new KeyboardEvent('keydown', { key: 'e', bubbles: true })); await w(400); const a1 = s.dataset.angle, l1 = say();
