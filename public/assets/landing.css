@@ -11,7 +11,7 @@
 html,body{margin:0;min-height:100%}
 body{background:var(--bg);color:var(--fg);font:16px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif}
 .skip{position:absolute;left:-999px}
-.skip:focus{left:16px;top:8px;padding:8px 12px;background:var(--fg);color:var(--bg)}
+.skip:focus{left:16px;top:8px;z-index:10;display:inline-flex;align-items:center;min-height:44px;padding:8px 12px;background:var(--fg);color:var(--bg)}
 main{max-width:40rem;margin:0 auto;padding:24px 16px 32px}
 .mark{display:block;width:48px;height:48px}
 h1{font-size:1.9rem;line-height:1.15;margin:16px 0 6px}

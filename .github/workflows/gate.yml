@@ -130,6 +130,7 @@ jobs:
             node atlas/web_node_brain_browser.mjs
             node atlas/offline_brain_browser.mjs
             node atlas/rack_ideas_browser.mjs
+            node atlas/objetivos_44_browser.mjs
             node atlas/walk_avatar_browser.mjs
             node atlas/walk_keys_browser.mjs
             node atlas/visitor_account_browser.mjs
