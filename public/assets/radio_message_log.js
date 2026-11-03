@@ -18,6 +18,9 @@
     if (/SIMULATED/.test(texto)) { return 'SIMULATED'; }
     return 'LIVE';
   }
+  // A page with no game clock at all (theGame retired: /openworld/) has nothing to age a line against. That is not a failed
+  // measurement, so the visitor reads only who spoke; the seal, the source and the cause stay folded in the title.
+  function reloj() { var J = raiz.AtlasJuego; return !!(J && typeof J.instantanea === 'function'); }
   function edad(m) { var actual = ciclo(); return actual === null || !cicloValido(m.ciclo) || actual < m.ciclo ? null : actual - m.ciclo; }
   function sello(m) { var edadN = edad(m); return m.sello === 'LIVE' && edadN === null ? 'NO_DATA' : (m.sello === 'LIVE' && edadN > VIEJO ? 'STALE' : m.sello); }
 
@@ -28,12 +31,18 @@
     var li = el('li', 'radio-msg'), s = sello(m), cab = el('p', 'radio-msg-cab');
     li.dataset.quien = m.quien; li.dataset.sello = s; li.dataset.fuente = m.fuente; li.dataset.ciclo = cicloValido(m.ciclo) ? String(m.ciclo) : 'NO_DATA';
     cab.appendChild(el('b', null, m.quien));
-    cab.appendChild(el('span', null, ' · '));
-    var marca = el('span', 'radio-msg-sello', humano(s)); marca.title = s; cab.appendChild(marca);
-    var edadN = edad(m), edadTexto = edadN === null ? T('chat_edad_sin', 'turn not measured') : T('chat_edad', '{n} turns ago').replace('{n}', String(edadN));
-    var meta = el('span', 'radio-msg-meta', ' · ' + m.fuente + ' · ' + edadTexto);
-    meta.title = 'Δ ' + (edadN === null ? 'NO_DATA (game cycle unavailable or reset)' : String(edadN)) + ' cycles';
-    cab.appendChild(meta);
+    var edadN = edad(m), causa = 'Δ ' + (edadN === null ? 'NO_DATA (game cycle unavailable or reset)' : String(edadN)) + ' cycles';
+    if (!reloj()) {
+      cab.title = s + ' · ' + m.fuente + ' · ' + causa;
+      if (m.sello !== 'LIVE') { cab.appendChild(el('span', null, ' · ')); var propia = el('span', 'radio-msg-sello', humano(m.sello)); propia.title = m.sello; cab.appendChild(propia); }
+    } else {
+      cab.appendChild(el('span', null, ' · '));
+      var marca = el('span', 'radio-msg-sello', humano(s)); marca.title = s; cab.appendChild(marca);
+      var edadTexto = edadN === null ? T('chat_edad_sin', 'turn not measured') : T('chat_edad', '{n} turns ago').replace('{n}', String(edadN));
+      var meta = el('span', 'radio-msg-meta', ' · ' + m.fuente + ' · ' + edadTexto);
+      meta.title = causa;
+      cab.appendChild(meta);
+    }
     li.appendChild(cab); li.appendChild(el('p', 'radio-msg-texto', m.texto));
     return li;
   }
@@ -42,7 +51,7 @@
     R.lista.textContent = '';
     lista.forEach(function (m) { R.lista.appendChild(burbuja(m)); });
     var u = lista[lista.length - 1];
-    R.ultimo.textContent = u ? u.quien + ' · ' + humano(sello(u)) + ' · ' + u.texto : T('chat_vacio', 'The Radio is listening.');
+    R.ultimo.textContent = u ? u.quien + (reloj() || u.sello !== 'LIVE' ? ' · ' + humano(reloj() ? sello(u) : u.sello) : '') + ' · ' + u.texto : T('chat_vacio', 'The Radio is listening.');
     R.lista.scrollTop = R.lista.scrollHeight;
   }
 
@@ -67,6 +76,8 @@
   function observa(zona) {
     function mira(n) {
       if (!n || n.nodeType !== 1 || (R.caja && R.caja.contains(n))) { return; }
+      // A line a page marks as technical (data-radio="tecnico", e.g. the walkers' routes) is said in its own place, not here.
+      if (n.closest && n.closest('[data-radio="tecnico"]')) { return; }
       var t = (n.textContent || '').trim();
       if (!t || ultimos.get(n) === t) { return; }
       ultimos.set(n, t);

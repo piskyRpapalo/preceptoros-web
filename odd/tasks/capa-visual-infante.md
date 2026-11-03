@@ -67,3 +67,15 @@ Propuesta (S): `textos()` salta también `".claude" in p.parts`, igual que ya sa
 - **Puertas nuevas en la INTRO:** el corte D sigue vivo. El enlace a `/chat/` lo decide la Mesa.
 
 Agent: claude-code · Model: claude-opus-5-5
+
+## 6. Estado medido · 2026-11-03 (web#613)
+
+Medida en el teléfono del borde (Chrome remoto, producción a457add6, 360×716): **10.520 caracteres visibles, 2,9 pantallas**. La radio repetía una línea cruda por cada paso de los caminantes, y cada burbuja decía «not measured yet · turn not measured», porque /openworld/ no tiene reloj de juego (theGame retirado). Además, «Conversation» se cortaba.
+
+- **e5 HECHA:** `atlas/infante_browser.mjs` mide R2, R3 y R4, más un techo de texto visible (6.000), a 360×716. Sobre main da ROJO (R3 técnico visible · la radio repite a los caminantes · R4 «Conversation»). En la rama da VERDE: 1.226 caracteres, 0 líneas técnicas, 0 cortes. Entra en `gate.yml`.
+- **e4 HECHA:**
+  - Sin reloj de juego, la burbuja dice solo quién habla. El sello, la fuente y la causa van en el `title`, y los `data-*` no cambian.
+  - Un ciclo inválido sigue diciendo «turn not measured» (`radio_age_cases`, 14/14).
+  - Los caminantes marcan su línea `data-radio="tecnico"` y la radio no la repite.
+  - La pestaña pasa a «Talk».
+- **Pendientes:** e1 (un solo «Play now»), e2 (frase única del guía dormido) y e3 (herramientas del mapa plegadas). R1 aún no se mide.
