@@ -91,7 +91,8 @@ async function main() {
   ok(JSON.stringify(medida.botones) === JSON.stringify(['Tutorial cabin']), 'the terrain list is not the cabin alone: ' + JSON.stringify(medida.botones));
   ok(medida.tinta > 2000, 'the map is blank: ' + medida.tinta);
   // Estado de 2026-10-30 (MVP moderno): la cabaña es el unico nodo LIVE; Beelink y Doggee son NO_DATA y no se dibujan.
-  ok(/^Colony: 1 nodes · 1 buildings · 1 bots with faces$/.test(medida.tecnico || '') && medida.estado === 'Your cabin is awake · 3 more still asleep.', 'the default state is not the declared one (cabin only, LIVE): ' + medida.estado + ' | ' + medida.tecnico);
+  // Latido visible (2026-11-03): this static server has no /api/world-state, so the head says the heartbeat is pending or NO_DATA, never «0».
+  ok(/^Colony: 1 nodes · 1 buildings · 1 bots with faces$/.test(medida.tecnico || '') && /^Nodes online: (NO_DATA\.|checking…) Your cabin is awake · 3 more still asleep\./.test(medida.estado || ''), 'the default state is not the declared one (cabin only, LIVE): ' + medida.estado + ' | ' + medida.tecnico);
   ok(medida.chatAbierto && !medida.entradaOff, 'the chat panel is missing or its input is off');
   // TF-2: four category buttons (44 px), one category visible; Explore shows the Map voice; the brain and the form stay.
   const cats = JSON.parse(await ev(`(() => { const vis = () => [...document.querySelectorAll('#voices [data-speaker]')].filter((li) => li.getBoundingClientRect().height > 0).map((li) => li.dataset.speaker);

@@ -90,13 +90,30 @@
     if (!r.ok) { throw new Error('estado.json returned HTTP ' + r.status); }
     return r.json();
   }).then(function (data) {
+    var parsed = apply(data);
+    causeText.textContent = colony ? 'State source: /openworld/estado.json · validated by openworld_state.js. Movement follows colony_controls.js.' : 'NO_DATA: ' + parsed.hidden + ' nodes are hidden because none is sealed LIVE or STALE.';
+    draw();
+    // Latido visible (terminal parity with /openworld/): the same heartbeat, merged the same way, or NO_DATA with its cause.
+    var WF = root.AtlasWorldFeed, base = causeText.textContent;
+    if (!WF) { return; }
+    WF.follow({ win: root, tutorial: function () { return data; },
+      live: function (merged) {
+        apply(merged);
+        var vivos = Object.keys(seals).filter(function (id) { return id !== 'cabin' && seals[id] === 'LIVE'; });
+        causeText.textContent = 'Live nodes: ' + vivos.length + ' LIVE' + (vivos.length ? ' (' + vivos.join(', ') + ')' : '') + ' · source /api/world-state, merged with the tutorial cabin of /openworld/estado.json.';
+        draw();
+      },
+      fail: function (cause) { apply(data); causeText.textContent = base + ' · Live nodes NO_DATA: ' + cause; draw(); }
+    }).read();
+  }).catch(function (e) { causeText.textContent = 'NO_DATA: shared state unavailable or invalid (' + e.message + ').'; draw(); });
+  function apply(data) {
     var parsed = OS.leer(data);
     colony = parsed.colonia; looks = parsed.looks; seals = parsed.seals;
     sourceNodes = data && data.colonia && Array.isArray(data.colonia.nodes) ? data.colonia.nodes : [];
-    var home = colony && colony.nodes.filter(function (n) { return n.id === 'cabin'; })[0] || colony && colony.nodes[0];
+    var at = walker && colony && colony.nodes.filter(function (n) { return n.id === walker.node; })[0];
+    var home = at || colony && colony.nodes.filter(function (n) { return n.id === 'cabin'; })[0] || colony && colony.nodes[0];
     walker = home ? { node: home.id, q: home.q, r: home.r } : null;
-    causeText.textContent = colony ? 'State source: /openworld/estado.json · validated by openworld_state.js. Movement follows colony_controls.js.' : 'NO_DATA: ' + parsed.hidden + ' nodes are hidden because none is sealed LIVE or STALE.';
-    draw();
-  }).catch(function (e) { causeText.textContent = 'NO_DATA: shared state unavailable or invalid (' + e.message + ').'; draw(); });
+    return parsed;
+  }
   draw();
 })(window);
