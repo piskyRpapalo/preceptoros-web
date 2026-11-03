@@ -286,7 +286,7 @@
       enterNode(true);
       return false;
     }
-    return { start: start, step: function (direction) { if (!freeWalker()) { return false; } freeStep(direction); return true; }, walker: walkerView, walkTo: walkTo, tick: tickWalk, walking: function () { return !!walk; }, say: function (text) { joy.say(text); } };
+    return { tutorial: function () { return { log: tutorialLog.map(function (e) { return { step: e.step, outcome: e.outcome }; }), seals: Object.assign({}, env.seals()) }; }, start: start, step: function (direction) { if (!freeWalker()) { return false; } freeStep(direction); return true; }, walker: walkerView, walkTo: walkTo, tick: tickWalk, walking: function () { return !!walk; }, say: function (text) { joy.say(text); } };
   }
 
   var AtlasColonyControls = {

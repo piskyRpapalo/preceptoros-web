@@ -974,7 +974,7 @@ class LaunchGateVT6(unittest.TestCase):
         r = subprocess.run(["node", str(RAIZ / "launch_gate_casos.mjs")], capture_output=True, text=True, check=False)
         self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
         casos = json.loads(r.stdout)
-        self.assertEqual(len(casos), 7)
+        self.assertEqual(len(casos), 8)
         self.assertTrue(all(c["ok"] for c in casos), [c for c in casos if not c["ok"]])
 
 
