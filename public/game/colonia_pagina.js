@@ -75,7 +75,10 @@
     var bots = sc.tiles.map(function (n) {
       return { id: 'bot-' + n.id, x: n.x + BOT_DX * ESCALA_SALA, y: n.y + BOT_DY * ESCALA_SALA, frame: botFrame({ id: n.id, look: looks ? looks[n.id] : undefined, seal: seals ? seals[n.id] : undefined }, t, reducido === true) };
     });
-    return { tiles: sc.tiles, buildings: sc.buildings, bots: bots, cielo: cielo, nodes: colonia.nodes.length, edificios: colonia.buildings.length };
+    // Pieza 2 (latido_vivo.js, loaded on demand): seals over the shown nodes, their woken ground and the State buoy.
+    var LV = root.AtlasLatidoVivo, WF = root.AtlasWorldFeed;
+    return { tiles: sc.tiles, buildings: sc.buildings, bots: bots, cielo: cielo, nodes: colonia.nodes.length, edificios: colonia.buildings.length,
+      vivo: LV ? LV.scene(sc.tiles, seals || {}, t, reducido === true, WF && WF.record ? WF.record() : null) : null };
   }
   // 3.5D · BREATHING BUILDINGS. breathe(id, t, reducido, hot) → canvas px a building floats above its ground:
   // A·sin(t·f + phase(id)) lifted to ≥ 0, phase from an integer hash of the id (no random, no clock). Hover or keyboard
@@ -198,6 +201,7 @@
     var G = geometry(sc, canvas), cx = G.cx, cy = G.cy, k = G.k;
     // P4: the 2.5D floor of the baked chunks, under every layer, by this same placement (map_painter.js).
     if (root.AtlasMapPainter) { root.AtlasMapPainter.draw(g, G, t, reducido === true); }
+    if (sc.vivo) { root.AtlasLatidoVivo.ground(g, G, sc.vivo.ground); }
     if (hc) { g.save(); g.globalAlpha = 0.8; g.fillStyle = 'Canvas'; g.fillRect(0, 0, canvas.width, canvas.height); g.restore(); }
     // M1-2: one deterministic depth order for every layer of this same map.
     var layers = sc.tiles.map(function (n, i) { return { id: 'tile-' + i, item: n }; })
@@ -222,6 +226,11 @@
       P.paint(g, B.compile(nd.frame));
       g.restore();
     });
+    // The seals and the buoy ride over every layer, turned with the map, like a label.
+    (sc.vivo ? sc.vivo.marks : []).forEach(function (m) {
+      var r = G.turn(m.x, m.y);
+      g.save(); g.translate(cx + r.x * k - BX * S, cy + r.y * k - BY * S); g.scale(S, S); P.paint(g, B.compile(m.frame)); g.restore();
+    });
     return sc;
   }
 
@@ -240,7 +249,7 @@
   function frases(sc) {
     var out = sc.bots.concat(sc.buildings).map(function (f) { return f.frame.atoms[0].r; });
     if (sc.you) { out.push(sc.you.atoms[0].r); }
-    return out;
+    return sc.vivo ? out.concat(sc.vivo.frases) : out;
   }
 
   var AtlasColoniaPagina = { breathe: breathe, BREATH: BREATH, ANCHO: ANCHO, ALTO: ALTO, scene: scene, draw: draw, geometry: geometry, SQUASH: SQUASH, nodeAt: nodeAt, anchorOf: anchorOf, texto: texto, voz: voz, frases: frases, botFrame: botFrame, youFrame: youFrame, hash: hash };

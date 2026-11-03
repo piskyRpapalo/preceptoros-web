@@ -96,6 +96,37 @@ hace falta al abrir se carga a demanda»). Sin nodos vivos, el mapa no paga ni u
    latido (dos lecturas perdidas) y NO_DATA a los 200. Es una regla, no una medida.
 3. **Sonido del sello**: un pulso para LIVE dentro de Listen; la boya, pitido solo en cambio de fase.
 
+## 3b · Lo que salió al construir (FIRMO del Soberano «optimizaciones preceptor · continúa», 2026-11-03)
+
+- **El tic de la Boya es cada lectura del latido, no el ciclo de la página.** Con movimiento reducido el ciclo se
+  para y la terminal básica dibuja siempre en `t = 0`: la Boya se habría congelado justo para quien no ve
+  animaciones. `world_feed.js` lleva el registro `{t, nace, cuidado}` (`AtlasWorldFeed.record()`); sin red el tic
+  cuenta sin pedir nada. Desgaste **300 por tic** (no 5): una lectura perdida → vida 700; dos → gastada; cuatro →
+  `NO_DATA · unattended 4 cycles`.
+- **Un fallo también programa la siguiente lectura** (cada minuto, página visible). En la pieza 1 un fallo dejaba de
+  leer: la Boya se habría quedado en «vivo» con el publicador caído.
+- **El suelo despierto es el contorno de las siete celdas** (18 esquinas, cada una a la altura de su celda) más el
+  borde de la celda del nodo: siete bordes completos pesaban 1 262 B. STALE: contorno fino y media llanta abierta.
+  Un suelo fuera del lienzo no se dibuja; un fotograma que rompa la ley dice `NO_DATA · frame …` y no se pinta.
+- **Motor de ondas a demanda.** El latido del sello y la Boya son ondas (`wave`): Acho necesita `gacha.js` (sobre
+  `valores.js`). La terminal básica no lo traía; `world_feed.js` lo carga solo si falta y solo cuando hay algo vivo.
+  `valores`/`atlasvalores` entran en `atlas/lexicon_permitidas.json` con su causa (nombre propio de un fichero
+  servido); la base del léxico **bajó** 27 entradas y no subió ninguna.
+- **El pitido automático de la Boya al cambiar de fase pasa a la pieza 4 (LA VOZ)**, que trae el interruptor de
+  sonido activable y silenciable. Hoy la Boya y el sello LIVE suenan con «Listen», tras un gesto; el cambio de fase
+  se dice en la frase.
+- **Sin texto visible nuevo** (la captura del Soberano: «injugable para un infante»): sello = una palabra y un
+  latido dibujados; sus frases van a lo plegado y al lector de pantalla.
+
+### Medido
+| qué | dato |
+|---|---|
+| fotogramas, peor caso en pantalla (id de 40) | sello 643 B · suelo 950 B · boya 843 B (< 1 024) |
+| `latido_vivo.js` (fuente = traducción servida: es código) | 10 800 B disco · 4 226 B gzip |
+| `colonia_pagina.js` / `world_feed.js` | 6 794 / 2 150 B gzip (tope 7 168) |
+| Doogee, coste de un redibujado (720×696, 2×30) | 3,84 ms sin la capa → 6,0 ms con ella (+2,1 ms; un cuadro a 60 fps son 16,7) |
+| Doogee, primera carga | servía la pieza 1 desde la caché del SW con la misma VERSION: **la pieza 2 necesita letra nueva** |
+
 ## 4 · Fuera de esta pieza
 - Que la aduana publique tic o terreno en el latido: es otro repo; si hace falta, sale como propuesta.
 - El Observatorio (otro de los 9 objetos) aunque el latido ya traiga `observatorio-primer-ancla`.

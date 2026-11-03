@@ -37,23 +37,45 @@
   // follow({win, button, tutorial(), live(merged, d), fail(cause)}) → {read}. The heartbeat is read when asked, by the
   // button, and again every minute while the page is visible. Hidden or gone, the claim falls back with its cause and
   // is read again on return: a live claim is never older than a minute on screen. A stale answer never wins.
+  // The heartbeat record (Proof of Tick, odd/tasks/mapa-vivo.md): one tick per read the page attempts (offline counts,
+  // asking nothing of the network), the tick of the first good read and of the last. The State buoy is replayed from it.
+  var record = {t: 0, nace: null, cuidado: null}, cargando = false;
   function follow(o) {
     var win = o.win, doc = win.document, gen = 0, expiry = null, ok = false;
     function fail(cause) { clearTimeout(expiry); ok = false; o.fail(cause); }
+    // A failed read is retried too: an unattended buoy wears down in sight, it never freezes on its last good word.
+    function later() { clearTimeout(expiry); expiry = setTimeout(function () { if (doc.visibilityState === 'hidden') fail('refresh required'); else now(); }, 60000); }
+    // The map-alive layer (latido_vivo.js) loads with the first good read that brings a node: nothing alive, nothing paid.
+    // The seal and the buoy are waves: a terminal without the wave engine (gacha.js, on valores.js) takes it first.
+    function layer(redraw) {
+      if (root.AtlasLatidoVivo || cargando || !doc.createElement) return;
+      cargando = true;
+      var need = (root.AtlasValores ? [] : ['/game/valores.js']).concat(root.AtlasGacha ? [] : ['/game/gacha.js'], ['/game/latido_vivo.js']);
+      (function next() {
+        var src = need.shift();
+        if (!src) { redraw(); return; }
+        var s = doc.createElement('script'); s.src = src; s.onload = next; s.onerror = function () { cargando = false; };
+        doc.head.appendChild(s);
+      })();
+    }
     async function now() {
       if (o.button) o.button.disabled = true;
       var g = ++gen;
       try {
         var t = o.tutorial();
         if (!t) throw new Error('tutorial unavailable');
+        record.t++;
         // Offline, nothing is asked of the network: NO_DATA with its cause, read again when the network returns.
         if (win.navigator && win.navigator.onLine === false) throw new Error('offline');
         var d = await read(win.fetch.bind(win));
         if (g !== gen) return;
-        o.live(merge(t, d), d); ok = true;
-        clearTimeout(expiry);
-        expiry = setTimeout(function () { if (doc.visibilityState === 'hidden') fail('refresh required'); else now(); }, 60000);
-      } catch (e) { if (g === gen) fail(e.message || 'publisher unavailable'); }
+        var m = merge(t, d);
+        o.live(m, d); ok = true;
+        if (record.nace === null) record.nace = record.t;
+        record.cuidado = record.t;
+        if (d.colonia.nodes.length) layer(function () { o.live(m, d); });
+        later();
+      } catch (e) { if (g === gen) { fail(e.message || 'publisher unavailable'); later(); } }
       finally { if (o.button) o.button.disabled = false; }
     }
     win.addEventListener('pagehide', function () { gen++; fail('refresh required'); });
@@ -62,6 +84,6 @@
     if (o.button) o.button.addEventListener('click', now);
     return {read: now};
   }
-  root.AtlasWorldFeed = {read: read, merge: merge, follow: follow};
+  root.AtlasWorldFeed = {read: read, merge: merge, follow: follow, record: function () { return {t: record.t, nace: record.nace, cuidado: record.cuidado}; }};
   if (typeof module === 'object' && module.exports) module.exports = root.AtlasWorldFeed;
 })(typeof window !== 'undefined' ? window : globalThis);
