@@ -68,7 +68,7 @@ async function main() {
       tecnico: (document.getElementById('state-tech') || {}).textContent,
       chatAbierto: !!document.querySelector('#chat'),
       entradaOff: !!(document.getElementById('question') || {}).disabled,
-      botonChat: [...document.querySelectorAll('button')].some((b) => /^\\s*Chat\\s*$/.test(b.textContent)),
+      botonChat: [...document.querySelectorAll('button:not([role=tab])')].some((b) => /^\\s*Chat\\s*$/.test(b.textContent)),
       joystick: (() => { const j = document.getElementById('joy'), r = j.getBoundingClientRect(); return { buttons: j.querySelectorAll('button').length, top: r.top, bottom: r.bottom, visible: r.width > 0 && r.height > 0 && r.top >= 0 && r.bottom <= innerHeight, touch: getComputedStyle(j.querySelector('button')).minHeight }; })(),
       ancho: document.documentElement.scrollWidth, vista: innerWidth,
       texto: document.body.innerText
@@ -125,13 +125,13 @@ async function main() {
   const cabina = JSON.parse(await ev(`(async () => { const w = (ms) => new Promise((r) => setTimeout(r, ms)), st = () => document.getElementById('state').textContent;
     document.body.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true })); for (let i = 0; i < 30 && !/Inside building/.test(st()); i++) await w(100); // the entry passes through the hexagonal tunnel (#561): wait for it, up to 3 s
     const radio = () => [...document.querySelectorAll('#radio-chat-lista li')].map((li) => li.textContent).join(' | ');
-    const greeting = radio().includes('Welcome to the tutorial cabin'), inside = st(), leave = document.getElementById('leave-building');
+    const greeting = document.getElementById('log').textContent.includes('Welcome to the tutorial cabin'), radioClean = !radio().includes('Welcome to the tutorial cabin'), inside = st(), leave = document.getElementById('leave-building');
     const tall = !!leave && !leave.hidden && leave.getBoundingClientRect().height >= 44;
     const ask = async (t) => { document.getElementById('question').value = t; document.getElementById('entry').dispatchEvent(new Event('submit', { cancelable: true })); await w(500); return (document.querySelector('#log li:last-child') || {}).textContent; };
     const help = await ask('help'), poem = await ask('write me a poem');
     document.body.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })); await w(100);
-    return JSON.stringify({ greeting, inside, tall, help, poem, left: st(), hidden: leave && leave.hidden }); })()`));
-  ok(cabina.greeting && /^Inside building b-cabin/.test(cabina.inside) && cabina.tall, 'Enter does not open the cabin chat in the radio: ' + JSON.stringify(cabina));
+    return JSON.stringify({ greeting, radioClean, inside, tall, help, poem, left: st(), hidden: leave && leave.hidden }); })()`));
+  ok(cabina.greeting && cabina.radioClean && /^Inside building b-cabin/.test(cabina.inside) && cabina.tall, 'Enter does not open the cabin chat in the radio: ' + JSON.stringify(cabina));
   ok(/^Tutorial cabin · Ask me/.test(cabina.help || '') && /^Hexelion · NO_DATA · .*\(red\)$/.test(cabina.poem || ''), 'the cabin bot does not answer honestly: ' + JSON.stringify(cabina));
   ok(cabina.left === 'Left building b-cabin' && cabina.hidden === true, 'Escape does not leave the building: ' + JSON.stringify(cabina));
   const desktopEntry = await ev(CLIC_CABINA);
@@ -301,7 +301,7 @@ async function main() {
     const s = document.getElementById('surface').getBoundingClientRect(), share = s.height / innerHeight;
     const geo = [y('surface'), y('chat'), y('next-step'), Math.round(s.width), innerWidth], order = geo[0] < geo[1] && geo[1] <= geo[2] && share >= 0.4 && share <= 0.5 && s.width >= innerWidth - 1 && !document.querySelector('#map [role=tablist], .sheet');
     const look = document.querySelector('select[aria-label="Terminal look"]'), folded = !!look && !!look.closest('#more') && !document.querySelector('#joy select');
-    const first = (document.querySelector('#radio-chat-lista li') || {}).textContent || '';
+    const first = (document.getElementById('log') || {}).textContent || '';
     p.click(); for (let i = 0; i < 50 && !document.getElementById('visitor-beacon'); i++) await w(100);
     const t1 = document.getElementById('next-text').textContent, gone = p.hidden;
     document.getElementById('visitor-beacon').click(); for (let i = 0; i < 50 && !/Summon/.test(document.getElementById('next-text').textContent); i++) await w(100);
@@ -311,7 +311,7 @@ async function main() {
   ok(plug.order, 'the phone order is not one map (40-50 %, edge to edge) then one panel: ' + JSON.stringify(plug));
   ok(!plug.pad && /^terminal: basic/.test(plug.tap || ''), 'a phone user cannot walk without the stick pad (tap a node on the map): ' + JSON.stringify(plug));
   ok(plug.folded, 'the terminal look is not folded under More: ' + JSON.stringify(plug));
-  ok(/Start here: press Play now/.test(plug.first), 'the radio first line does not tell a newcomer what to do: ' + plug.first);
+  ok(/Start here: press Play now/.test(plug.first), 'the conversation does not tell a newcomer what to do: ' + plug.first);
   ok(plug.gone && plug.t1 === 'Ask the guide in the chat.' && plug.t2 === 'Summon a wave: press Summon at the Reef below.', 'the next step does not follow the visit state: ' + JSON.stringify(plug));
   if (CAPTURA) { await cmd('Page.navigate', { url: origen + '/openworld/' }); await espera(1500); const g4 = await cmd('Page.captureScreenshot', { format: 'png' }); writeFileSync(join(CAPTURA, 'openworld-first-screen.png'), Buffer.from(g4.result.data, 'base64')); }
   console.log(JSON.stringify({ medida: { ...medida, texto: undefined }, escritorio, externas: externas.length, fallos }));

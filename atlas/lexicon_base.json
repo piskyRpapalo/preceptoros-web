@@ -195,7 +195,6 @@
     "mesa_de_firma"
   ],
   "public/game/face_terminal.js": [
-    "dice",
     "monta"
   ],
   "public/game/fog_of_war.js": [
