@@ -473,6 +473,29 @@
      "text": "the Map live region does not say «Map: »"
     }
    ]
+  },
+  {
+   "id": "la-mano",
+   "scripts": [
+    "/game/map_drag.js"
+   ],
+   "globals": [
+    "AtlasMapDrag"
+   ],
+   "guards": [
+    {
+     "file": "atlas/map_drag_browser.mjs",
+     "text": "a one-finger drag did not move the view with the finger"
+    },
+    {
+     "file": "atlas/map_drag_browser.mjs",
+     "text": "the stop was not announced when the finger lifted (J7)"
+    },
+    {
+     "file": "atlas/map_drag_browser.mjs",
+     "text": "the pan left its bound"
+    }
+   ]
   }
  ],
  "retiradas": [
