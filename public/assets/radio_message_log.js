@@ -63,6 +63,7 @@
     var e = { quien: m.quien || 'Radio', sello: selloDe(texto, m.sello), fuente: m.fuente || 'web', ciclo: ciclo(), texto: texto };
     lista.push(e); if (lista.length > TOPE) { lista.shift(); }
     pinta();
+    if (R.canal === 'echoes') { canal('echoes'); }
     return e;
   }
 
@@ -109,15 +110,29 @@
     pintaEcos(ecos);
   }
   function ecosDe() {
-    var W = raiz.AtlasWorldCreator;
-    try { return W && typeof W.echoes === 'function' ? W.echoes() : []; } catch (e) { return []; }
+    var W = raiz.AtlasWorldCreator, T = raiz.AtlasTutorialWalk;
+    try {
+      if (W && typeof W.echoes === 'function') { return W.echoes().slice(0, 1); }
+      var v = raiz.AtlasOpenworldView && raiz.AtlasOpenworldView(), c = v && v.controls;
+      if (!T || !c || !c.tutorial) { return []; }
+      var state = c.tutorial(), played = T.progress(state.log);
+      if (played.indexOf('key') < 0) { return []; }
+      var next = T.nextStep(state.log);
+      if (!next) { return []; }
+      var check = T.canWalk(next.id, state.seals), seal = check.ok ? state.seals[next.place] : 'NO_DATA';
+      var line = check.ok ? 'Tutorial: continue at ' + next.place + ' · ' + next.id : check.cause;
+      var frame = { v: 'preceptoros.acho/1', id: 'echo.' + next.id, t: 0, seal: seal,
+        atoms: [{ k: 'tutorial', r: line, i: [] }], bands: ['ink', 'paper'], change: [line],
+        sound: 'NO_DATA: this tutorial echo has no measured sound' };
+      return [{ seal: seal, text: line, cause: check.cause, frame: frame }];
+    } catch (e) { return []; }
   }
   function pintaEcos(ecos) {
     R.ecos.textContent = '';
     ecos.forEach(function (e) {
       var li = el('li', 'radio-msg'), cab = el('p', 'radio-msg-cab');
       li.dataset.sello = e.seal; li.dataset.fuente = 'world-creator';
-      cab.appendChild(el('b', null, T('echo_who', 'World creator')));
+      cab.appendChild(el('b', null, T('echo_who', e.frame ? 'Tutorial' : 'World creator')));
       cab.appendChild(el('span', null, ' · '));
       var marca = el('span', 'radio-msg-sello', humano(e.seal)); marca.title = e.seal; cab.appendChild(marca);
       var meta = el('span', 'radio-msg-meta', e.passage ? ' · ' + e.passage.source : ''); meta.title = e.passage ? e.passage.source + ' · ' + e.passage.seal : String(e.cause || ''); cab.appendChild(meta);
