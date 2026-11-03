@@ -72,6 +72,10 @@ async function main() {
   const vivo = await lee('#state', '/Nodes online: 2/');
   ok(pedidos > 0, '/openworld/ did not read /api/world-state on load');
   ok(/Nodes online: 2\b/.test(vivo) && /primer-ancla LIVE/.test(vivo) && /onexstation LIVE/.test(vivo), '/openworld/ does not show the two LIVE nodes on load: ' + vivo);
+  // Pieza 2 (odd/tasks/mapa-vivo.md): the map-alive layer loads on demand and says its seals, ground and buoy, no click.
+  const mapa = await lee('#frases', '/State buoy/');
+  ok(/seal LIVE · primer-ancla/.test(mapa) && /seal LIVE · onexstation/.test(mapa) && /ground of primer-ancla · awake/.test(mapa) && /State buoy · \S+ · .*Proof of Tick/.test(mapa),
+    'the live map does not draw its seals, ground and buoy on load: ' + mapa.slice(0, 200));
   pedidos = 0;
   await cmd('Page.navigate', { url: origen + '/face/basic.html' }); await espera(800);
   const cara = await lee('#cause', '/2 LIVE/');
@@ -82,6 +86,8 @@ async function main() {
   await cmd('Page.navigate', { url: origen + '/openworld/' }); await espera(800);
   const sin = await lee('#state', '/world_publisher_unavailable/');
   ok(!/Nodes online: 0\b/.test(sin) && /NO_DATA/.test(sin) && /world_publisher_unavailable/.test(sin), '/openworld/ without a publisher does not say NO_DATA with its cause: ' + sin);
+  const sinMapa = await ev("(document.getElementById('frases') || {}).textContent || ''");
+  ok(!/seal LIVE · (primer-ancla|onexstation)/.test(sinMapa) && !/ground of/.test(sinMapa), 'without a publisher the map still claims a live seal: ' + sinMapa.slice(0, 200));
   ok(excepciones.length === 0, 'exceptions: ' + excepciones.join(' | '));
   console.log(JSON.stringify({ piece: 'latido-visible', receipt: fallos.length ? 'ROJO' : 'VERDE', vivo: vivo.slice(0, 120), cara: cara.slice(0, 120), sin: sin.slice(0, 160), fallos }));
 }

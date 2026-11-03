@@ -118,6 +118,8 @@ jobs:
             node atlas/invocacion_viva_browser.mjs
             node atlas/dos_clics_browser.mjs
             node atlas/ojo_carbono_browser.mjs
+            node atlas/latido_carga_browser.mjs
+            node atlas/latido_vivo_casos.mjs
             node atlas/a11y_relleno_browser.mjs
             node atlas/web_node_brain_browser.mjs
             node atlas/offline_brain_browser.mjs

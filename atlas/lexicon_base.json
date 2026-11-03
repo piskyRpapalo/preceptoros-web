@@ -101,7 +101,6 @@
     "atlascasa",
     "atlasincubadora",
     "atlastallerui",
-    "atlasvalores",
     "cierra",
     "monta",
     "onda-taller",
@@ -129,15 +128,13 @@
     "accion",
     "arena",
     "atlastaller",
-    "atlasvalores",
     "cierra",
     "firma",
     "fuera",
     "huella",
     "recibo",
     "registro",
-    "taller",
-    "valores"
+    "taller"
   ],
   "public/game/comic_accents.js": [
     "vara",
@@ -145,12 +142,10 @@
   ],
   "public/game/core.js": [
     "adopcion",
-    "atlasvalores",
     "duelo",
     "huevo",
     "sello",
-    "suenaduelo",
-    "valores"
+    "suenaduelo"
   ],
   "public/game/crab_render_hd.js": [
     "atlascangrejo",
@@ -163,7 +158,6 @@
   ],
   "public/game/cria.js": [
     "atlascria",
-    "atlasvalores",
     "compruebatropa",
     "cria",
     "cria_calibracion",
@@ -171,8 +165,7 @@
     "desdevalores",
     "firma",
     "fuera",
-    "tropa",
-    "valores"
+    "tropa"
   ],
   "public/game/cuenta.js": [
     "atlascuenta",
@@ -187,7 +180,6 @@
   "public/game/db.js": [
     "abre",
     "adopcion",
-    "atlasvalores",
     "ciclo",
     "crea",
     "firma",
@@ -198,20 +190,16 @@
     "recibo",
     "sello",
     "taller",
-    "tropa",
-    "valores"
+    "tropa"
   ],
   "public/game/escena.js": [
     "atlasescena",
-    "atlasvalores",
     "escena"
   ],
   "public/game/escuadron.js": [
     "atlascasa",
-    "atlasvalores",
     "casa",
-    "pinta",
-    "valores"
+    "pinta"
   ],
   "public/game/estrella_captura.js": [
     "faro",
@@ -234,11 +222,9 @@
     "sitionodo"
   ],
   "public/game/gacha.js": [
-    "atlasvalores",
     "huevo",
     "taller",
-    "tropa",
-    "valores"
+    "tropa"
   ],
   "public/game/gdpr-art25-ephemeral-crab.js": [
     "atlascangrejo",
@@ -374,7 +360,6 @@
     "atlasmarfondo",
     "atlasniebla",
     "atlasnodoscedulas",
-    "atlasvalores",
     "bandera",
     "cambiaciclo",
     "casa",
@@ -403,11 +388,9 @@
     "nodo",
     "nodos",
     "registro",
-    "sello",
-    "valores"
+    "sello"
   ],
   "public/game/summon-wave-card.js": [
-    "atlasvalores",
     "monta",
     "taller-unido"
   ],
@@ -426,13 +409,11 @@
   ],
   "public/game/taller.js": [
     "atlastaller",
-    "atlasvalores",
     "bandera",
     "firma",
     "recibo",
     "taller",
-    "tropa",
-    "valores"
+    "tropa"
   ],
   "public/game/tutorial-fases.css": [
     "accion",
@@ -446,7 +427,6 @@
     "atlasincubadora",
     "atlastaller",
     "atlastallerui",
-    "atlasvalores",
     "bandera",
     "casa",
     "dice",
@@ -487,15 +467,13 @@
   "public/game/valores.js": [
     "adopcion",
     "arrecife",
-    "atlasvalores",
     "duelo",
     "firma",
     "huevo",
     "niebla_alfa",
     "sello",
     "taller",
-    "ui-taller",
-    "valores"
+    "ui-taller"
   ],
   "public/game/visitor_account.js": [
     "adopcion",
@@ -503,7 +481,6 @@
   ],
   "public/game/visitor_battle.js": [
     "atlasniebla",
-    "atlasvalores",
     "registro"
   ],
   "public/game/visitor_battle_ui.js": [
@@ -526,7 +503,6 @@
   ],
   "public/game/wave_duel_scene.js": [
     "atlasescena",
-    "atlasvalores",
     "duelo",
     "escena",
     "mar",
@@ -534,9 +510,6 @@
     "registro",
     "sello",
     "sellode"
-  ],
-  "public/game/wave_render.js": [
-    "atlasvalores"
   ],
   "public/game/world_camera.js": [
     "crea",
@@ -551,8 +524,7 @@
   ],
   "public/openworld/index.html": [
     "escena",
-    "taller",
-    "valores"
+    "taller"
   ],
   "public/sw-listas.js": [
     "aduana",
@@ -562,8 +534,7 @@
     "nodos",
     "portada",
     "taller",
-    "ui-taller",
-    "valores"
+    "ui-taller"
   ],
   "public/sw.js": [
     "idiomade",
