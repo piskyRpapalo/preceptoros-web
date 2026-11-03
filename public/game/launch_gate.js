@@ -11,7 +11,7 @@
   var ORIGEN = 'preceptoros.org';
 
   // Instalador por entorno (radiogroup preseleccionado segun el OS).
-  var INSTALADOR = { android: 'bin/instalar-android', linux: 'bin/instalar-pc', windows: 'bin/instalar-pc', mac: 'bin/instalar-pc' };
+  var INSTALADOR = { android: 'bin/instalar-android', ios: 'NO_DATA', linux: 'bin/instalar-pc', windows: 'bin/instalar-pc', mac: 'bin/instalar-pc' };
 
   function nd(c) { return 'NO_DATA (' + c + ')'; }
   function boton(etiqueta, activo, causa) { return { etiqueta: etiqueta, activo: activo, causa: causa || null, tamano: TOQUE_MIN }; }
@@ -25,10 +25,10 @@
       boton: pwa.instalable ? boton('Install the web app', true) : boton('Install the web app', false, nd('this browser has not offered to install it')),
       peso: typeof pwa.peso_b === 'number' ? pwa.peso_b + ' B' : nd('size not measured')
     };
-    var installer = os !== 'android';
+    var installer = os !== 'android' && os !== 'ios';
     var carril2 = {
       id: 'app', preseleccionado: INSTALADOR[os], clics: 2,
-      boton: installer ? boton('Install the app', true) : boton('Install the app', false, nd('Android app installer not available'))
+      boton: installer ? boton('Install the app', true) : boton('Install the app', false, nd('native installer not available for ' + os))
     };
     var carril3 = (d.cerebros || []).map(function (c) {
       var medido = !!(c.sha256 && typeof c.size_gb === 'number');
