@@ -35,9 +35,8 @@ caso('valido: PWA con 1 clic, app sin firma activa, modelo medido con cifra comp
   return true;
 });
 
-caso('Android sin instalador nativo es NO_DATA', () => {
-  const v = G.vista(datos({os: 'android'})); const app = cerebroDe(v, 'app');
-  return !app.boton.activo && /NO_DATA/.test(app.boton.causa) || 'Android promete un instalador no medido';
+caso('movil sin instalador nativo es NO_DATA', () => {
+  return ['android', 'ios'].every((os) => { const app = cerebroDe(G.vista(datos({os})), 'app'); return !app.boton.activo && /NO_DATA/.test(app.boton.causa); }) || 'movil promete un instalador no medido';
 });
 
 caso('violacion: un carril con mas de 2 clics', () => {

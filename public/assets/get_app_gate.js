@@ -17,7 +17,7 @@
 
   function sistema() {
     var u = navigator.userAgent || '';
-    return /Android/i.test(u) ? 'android' : /Windows/i.test(u) ? 'windows' : /Mac OS X|iPhone|iPad/i.test(u) ? 'mac' : 'linux';
+    return /Android/i.test(u) ? 'android' : /iPhone|iPad|iPod/i.test(u) ? 'ios' : /Windows/i.test(u) ? 'windows' : /Mac OS X/i.test(u) ? 'mac' : 'linux';
   }
   function el(tag, clase, texto) {
     var n = document.createElement(tag);
