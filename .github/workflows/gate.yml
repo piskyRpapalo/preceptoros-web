@@ -108,6 +108,7 @@ jobs:
             node atlas/radio_age_cases.mjs
             node atlas/hud_readings_cases.mjs
             node atlas/acho_language_casos.mjs
+            node atlas/acho_estilo_casos.mjs
             node atlas/acho_editor_casos.mjs
             node atlas/acho_paint_casos.mjs
             node atlas/front_door_browser.mjs
