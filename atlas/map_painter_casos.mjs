@@ -40,3 +40,18 @@ test('sin azar ni reloj; colores sólo de la casa; cada banda con su patrón pro
   assert.ok(!/#[0-9a-fA-F]{3,8}\b|rgba?\(/.test(src), 'ni un color crudo');
   const pats = M.bands().map((b) => b.pattern); assert.equal(new Set(pats).size, 4);
 });
+
+// J4 · la marea de dos trenes (odd/JOYAS.md): al tren (2, 3) se suma el (3, 2), CERCANO (misma frecuencia, diferencia
+// (1, −1) → batido de ~22 celdas), a media altura y otra velocidad. Medido el 2026-11-03: el ortogonal (3, −2) NO bate
+// (rango 0,20: el batido es tan corto como la ola); el cercano sí (rango 1,50). Con un solo tren, todas las ventanas
+// llegan a la misma cresta (rojo).
+test('J4 · el mar tiene batidos: la cresta de cada ventana 6×6 varía, está acotada y se desplaza', () => {
+  assert.equal(typeof M.swell, 'function', 'map_painter expone swell(c, wt), la altura de ola de una celda');
+  const crestas = (wt) => { const out = []; for (let wx = 0; wx < 60; wx += 6) for (let wy = 0; wy < 60; wy += 6) { let m = 0; for (let i = 0; i < 6; i++) for (let j = 0; j < 6; j++) { m = Math.max(m, Math.abs(M.swell([wx + i, wy + j], wt))); } out.push(m); } return out; };
+  const a = crestas(0), b = crestas(400);
+  const rango = Math.max(...a) - Math.min(...a);
+  assert.ok(rango > 0.6, 'sin batidos: todas las ventanas llegan a la misma cresta (rango ' + rango.toFixed(2) + ')');
+  assert.ok(Math.max(...a, ...b) <= 3.05, 'la ola se sale de su amplitud: ' + Math.max(...a, ...b));
+  assert.notDeepEqual(a, b, 'los batidos no se desplazan con el tiempo');
+  for (let i = 0; i < 40; i++) { const h = M.swell([i, 2 * i - 7], i * 13); assert.equal(Math.round(h * 10), h * 10, 'la altura va en décimas: ' + h); }
+});

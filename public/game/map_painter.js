@@ -68,10 +68,12 @@
   function same(x, y) { return { x: x, y: y }; }
   function turnOf(G) { return G.turn || same; }
   function litOf(t, reduced) { return 0.62 + 0.38 * PC.palette(t, reduced).dia / 256; }
+  // swell(c, wt): two near trains, (2,3) and (3,2) at half height and its own pace: they beat in ~22-cell swells (JOYAS J4).
+  function swell(c, wt) { return Math.round(SEA.amp * (Math.sin((c[0] * 2 + c[1] * 3 + wt / 8) / SEA.len) + Math.sin((c[0] * 3 + c[1] * 2 + wt / 6) / SEA.len) / 2) * 10) / 10; }
   // cell(g, c, x, y, o): one prism. o = { B, corner, k, lit, wt, lod, at, still }; still = baked (flat sea).
   function cell(g, c, x, y, o) {
     var b = o.B[bandOf(c)], hh = height(c), k = o.k;
-    var wave = !o.still && b.kind === 'water' ? Math.round(SEA.amp * Math.sin((c[0] * 2 + c[1] * 3 + o.wt / 8) / SEA.len) * 10) / 10 : 0;
+    var wave = !o.still && b.kind === 'water' ? swell(c, o.wt) : 0;
     var top = y - (hh * HSTEP + wave) * k, occl = 1, corner = o.corner;
     NB.forEach(function (d) { var n = o.at[(c[0] + d[0]) + ',' + (c[1] + d[1])]; if (n && height(n) > hh) { occl -= 0.07; } });
     // Side faces toward the viewer, shaded by normal against the light.
@@ -292,7 +294,7 @@
     return n;
   }
 
-  var api = { frameOf: frameOf, cellsOf: cellsOf, orderAt: orderAt, floor: floor, floorBaked: floorBaked, hazeAt: hazeAt, bands: bands, start: start, draw: draw,
+  var api = { swell: swell, frameOf: frameOf, cellsOf: cellsOf, orderAt: orderAt, floor: floor, floorBaked: floorBaked, hazeAt: hazeAt, bands: bands, start: start, draw: draw,
     cacheStats: function () { return { mode: lastMode, bakes: cache.bakes, hits: cache.hits, size: Object.keys(cache.map).length, scope: cache.scope }; },
     resetCache: function () { cache = { scope: '', map: {}, bakes: 0, hits: 0 }; }, setLive: function (on) { forceLive = on === true; }, setBake: function (on) { forceBake = on === true; },
     color: { rgbOf: rgbOf, mix: mix, shade: shade, css: css },
