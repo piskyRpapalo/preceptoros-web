@@ -1,127 +1,154 @@
-# P3 · el chatbot del nodo, de la web al aula (plano, antes de código)
+# La puerta y P3 · Hexelion habla con el mundo (plano, antes de código)
 
-Orden: Mesa TF · 2026-11-03. Actas: ·6593305512 (norte), ·6593362920 (mapa de la cadena), ·6593390632 (túnel nacido).
-Tramo de claude: **(a)** ruta `/api/v1/chat` en la aduana, que hace de proxy al túnel con una llave del aula;
-**(b)** el chat del visitante efímero en la web. P1 (el endpoint del nodo) es de codex; P2 (el túnel), de MANOS.
-Regla de la casa: **el visitante jamás ve el túnel; todo pasa por `api.preceptoros.org`.**
+Fuentes que se citan aquí:
+- **Decreto de la puerta** ·6593268733: la app es la puerta. El usuario arma ahí su RAG y corre su harness, y eso
+  ofrece productos en la web.
+- **Doctrina del chatbot** ·6593579266.
+- **Decreto Hexelion** ·6591245593: extensión del Soberano, permisos prefirmados con ventana y revocación.
+- **Decreto de marcha** ·6593641992.
+- **Actas de la cadena:** ·6593305512, ·6593362920, ·6593390632, y la del aula (la clave vive en `auth`).
+
+Tramo de claude en P3:
+- **(a)** ruta `/api/v1/chat` en la aduana, que hace de proxy al aula;
+- **(b)** el chat del visitante efímero en la web.
+
+**La voz que responde es Hexelion.** Regla de la casa: el visitante jamás ve el túnel; todo pasa por
+`api.preceptoros.org`.
 
 ## 0 · Lo medido (2026-11-03, ~02:05Z)
 
-### La app hoy, pestaña a pestaña (`127.0.0.1:8740/app.html`, runtime main 3b46596)
-| pestaña | qué hay | API que llama | ¿lleva a la web? |
+### La app hoy, pestaña a pestaña (`app.html`, runtime main 3b46596)
+| pestaña | qué hay | API | ¿acerca a RAG · harness · web? |
 |---|---|---|---|
-| Command | dial de 8 sectores (M0–M7, «Bronze»), botones The Path / Detail | — | no |
-| Talk | una caja y «Say it» | `/api/charla` al enviar | no |
-| Boundary | «Run it through the filter» | `/api/frontera` al enviar | no |
-| Notebook | la captura (9 082 caracteres de texto) | `GET /api/captura` | no |
-| Lab | canales recientes, modelos locales | `GET /api/lab` | no |
-| **Harness** | lista de bucles systemd con su última ejecución (`afinador`, `alquimista`, `curador`…) | `GET /api/harness` | **no: es solo lectura de timers** |
-| Public gate | llave de entrada + «documento que lee la IA» (`/api/empieza-aqui`), dos botones de copiar | `GET /api/empieza-aqui` | no: se copia a mano |
-| Models | modelos locales | `GET /api/lab` | no |
-| Settings | voz de creación, identidad del nodo, **«Send to the gateway»** (cédula), publicar creación firmada | al pulsar | **sí, el único**: `POST api.preceptoros.org/api/v1/cedulas` |
+| Command | dial de 8 sectores M0–M7, «Bronze» (rótulos ilegibles: arreglo en APP#158) | — | indirecto: el camino |
+| Talk | caja + «Say it» | `/api/charla` al enviar | RAG (conversa con la memoria) |
+| Boundary | «Run it through the filter» | `/api/frontera` | harness (filtro) |
+| Notebook | la captura (9 082 caracteres) | `GET /api/captura` | RAG (lo que entra en `memory.db`) |
+| Lab | canales recientes, modelos locales | `GET /api/lab` | harness |
+| **Harness** | bucles systemd con su última ejecución | `GET /api/harness` | harness, **pero solo lectura: nada sale de ahí** |
+| Public gate | llave de entrada + «documento que lee la IA», dos botones de copiar | `GET /api/empieza-aqui` | se copia a mano |
+| Models | modelos locales | `GET /api/lab` | harness |
+| Settings | voz de creación (404 de su script: arreglo en APP#157), identidad del nodo, **«Send to the gateway»** | al pulsar | **web: la única salida** (`POST /api/v1/cedulas`) |
 
-Motor RAG: `~/.preceptoros/memory.db` (FTS5). Harness: `~/.preceptoros/loops.db` + timers de usuario.
-Única salida de la app a la web: la cédula de alta del nodo.
+Motor RAG: `~/.preceptoros/memory.db` (FTS5). Harness: `~/.preceptoros/loops.db` + timers.
 
-**El tramo que falta (harness → vitrina):** ninguna pestaña convierte lo que el harness produce en algo visible en la
-web. Lo más cercano es Public gate, que se copia a mano. La vitrina de la web hoy solo enseña nodos (latido) y
-edificios. **Propuesta:** el primer producto de la vitrina sea *el propio chatbot del nodo*. G1 = la app anuncia «mi
-AI local + RAG atiende chat» por la aduana, con su llave de nodo estilo F1 (la misma familia que el latido); la web
-lo muestra como una puerta en el mapa del nodo. Esa pieza se planea con codex (P1) y no entra en este PR.
+### El tramo que falta: harness → vitrina
+Ninguna pestaña convierte lo que el harness produce en un producto visible en la web. La web solo enseña nodos
+(latido) y edificios.
 
-### El borde
-- `api.preceptoros.org` = worker `preceptoros-aduana` (repo privado `aduana`, rama por defecto
-  `codex/node-gateway-worker-20261016`): `/health` · `/api/v1/cedulas` · `/api/v1/latidos` · `/api/v1/edificios`.
-  **`/api/v1/chat` = 404.**
-- Ya existen: CORS limitado al apex (`corsHeaders`), techos de bytes por ruta (latido 1 024 B, edificio 1 024 B) y
-  llaves de nodo por hash con caducidad (`PRECEPTOROS_HEARTBEAT_KEY_HASHES`, máximo 24 h). **No hay limitador de
-  frecuencia** en ninguna ruta.
-- La web llega a la aduana por service binding (`ADUANA`, `wrangler.jsonc`). No hay CSP `connect-src` que lo impida.
+**Propuesta:** el primer producto de la vitrina es **Hexelion hablando**. La pieza siguiente (G1, con codex) la
+plantea así:
+1. La app gana un paso «Publish your chatbot» en Public gate.
+2. Ese paso anuncia por la aduana, con la llave de nodo estilo F1, que el nodo atiende chat.
+3. La web pinta una puerta de chat en el hex del nodo.
 
-### El túnel (P2) — 🔴 hallazgo
-`chat.preceptoros.org` → `http://127.0.0.1:8080` = **Open WebUI 0.11.1** del Beelink, servido a internet. Medido:
-- auth ON y registro OFF; `/api/models` y `/ollama/api/tags` dan 401 sin token. No es una fuga abierta.
-- Pero sí es el **formulario de login del Open WebUI del Soberano, público**: superficie de fuerza bruta, y el
-  visitante puede «ver el túnel».
+Hoy la puerta es una sola (Hexelion, en el nodo del Soberano), así que P3 no espera a G1.
 
-P3 necesita que el túnel apunte al **endpoint de P1** (chat del nodo con RAG), y que solo la aduana pueda llamarlo.
+### La cadena
+- **Borde.** `api.preceptoros.org` = `preceptoros-aduana`.
+  - Rutas: `/health`, cédulas, latidos, edificios. `/api/v1/chat` = 404.
+  - CORS solo al apex; techos de bytes por ruta.
+  - **Sin limitador de frecuencia.**
+- **Túnel (P2) vivo.** `chat.preceptoros.org` → `127.0.0.1:8080` = **el aula (Open WebUI 0.11.1)**.
+  - Medido: auth ON, registro OFF; los modelos y ollama dan 401 sin token.
+  - Por decisión de la Mesa, el aula conecta con la estación de Hexelion (`127.0.0.1:21434`, túnel medido vivo).
+  - 🟠 El login del aula queda público: superficie de fuerza bruta. Recomiendo Cloudflare Access con service token
+    delante. Es de MANOS.
+- **Web.** La cuenta del visitante es `visitor_account.js`: Ed25519 no extraíble por visita, que muere en `pagehide`.
+  **El cangrejo no se toca.** No hay CSP `connect-src` que lo impida.
 
-### La web
-- Cuenta del visitante: `visitor_account.js` → clave Ed25519 no extraíble por visita, que muere en `pagehide`
-  (decreto 30-oct). **El cangrejo no se toca**: el chat la usa, no crea otra.
-- `llms.txt` ya declara que el navegador llama a `api.preceptoros.org` solo cuando el visitante envía.
+## 1 · La doctrina ·6593579266, pieza por pieza
 
-## 1 · Diseño
+| doctrina | cómo la cumple P3 | dónde |
+|---|---|---|
+| **1 · HARNESS:** el RAG inyecta forzosamente glosario y contratos | el aula de Hexelion lleva glosario y contratos como conocimiento fijo del modelo, no opcional. La aduana **no** inyecta: solo pasa el turno | P1 / aula (Hexelion, codex) |
+| 1 · el agente desambigua preguntando, no adivinando | prompt de sistema del modelo del aula. La web pinta la pregunta igual que una respuesta | aula + web |
+| 1 · handoff = **CIEF** (estado + intención + contexto + hash esperado + tic); la aduana rechaza STALE con delta | cada turno viaja como CIEF (ver §2a). Si el `hash esperado` (sha256 de la última respuesta que vio el visitante) no casa con lo que la aduana devolvió a esa visita, responde 409 `NO_DATA · stale` con el delta de tics | aduana |
+| 1 · molde < 1 KB | la petición entera ≤ 1 024 B | aduana (413 si no) |
+| **2 · ACHO LEE:** la burbuja es la traducción, < 1 024 B; la fuente puede llegar a 25 MB | la respuesta que llega a la web es una burbuja ≤ 1 024 B: frase + sonido declarado. Si el aula devuelve más, la aduana recorta en frontera de frase y marca `recortada`. La fuente no se guarda en ningún sitio | aduana + web |
+| 2 · escribir en Acho = accesibilidad: audio, entendimiento, TTS local, J1 | cada burbuja lleva su sonido (llega / NO_DATA) y se lee con la voz del dispositivo (pieza 4, LA VOZ). J1: 44 px, foco, Enter, aria-live | web |
+| **3 · POLÍTICAS:** visitante efímero, IndexedDB, sin identidad persistente | la visita es el cangrejo. Solo viaja `sha256(clave pública)`, distinto en cada visita. Los turnos viven solo en el IndexedDB del dispositivo | web |
+| 3 · cero peticiones al cargar, llamada solo al enviar | `aula_chat.js` no hace `fetch` hasta pulsar Send. Prueba: 0 peticiones a `/api` al abrir, 1 por envío | web |
+| 3 · no tracking | la aduana no guarda turnos ni IP. El limitador usa la IP solo en memoria del binding | aduana |
+| 3 · sin dark patterns | sin contadores falsos ni urgencias; «Forget this chat» siempre visible | web |
+| 3 · el modelo aconseja, jamás firma | la ruta de chat **no da herramientas ni escritura** a Hexelion: solo texto. Su escritura sigue siendo Sala + consola E1 (·6591245593), propose-only | aduana + aula |
+| 3 · divulgación de IA al inicio | primera línea fija: «You are talking to Hexelion, an AI on the Soberano's node. It advises; it never signs.» | web |
+| 3 · si el nodo duerme: NO_DATA con causa en lengua llana, jamás silencio | ver la tabla de causas de §2a; cada causa con su frase llana en la web | aduana + web |
+
+**Hexelion, sus límites (·6591245593):**
+- **Ventana:** la API key del aula es de un usuario del aula dedicado y con el mínimo de permisos, con caducidad.
+  Rotarla no toca la web.
+- **Revocación:** borrar o caducar la key → 502 `aula_rechaza` en el acto, y la web dice «Hexelion is not taking
+  visitors right now».
+- **Escritura:** ninguna por esta vía.
+
+## 2 · Diseño
 
 ### (a) Borde: `POST /api/v1/chat` en la aduana
 ```
-web (visitante) ──POST /api/v1/chat──▶ aduana ──POST + x-aula-key (+ Access service token)──▶ túnel ──▶ P1 nodo
-     ◀── {estado, respuesta | causa} ───────────────────────────────────────────────────────────────┘
+web ──CIEF ≤1 KiB──▶ aduana ──POST /api/chat/completions · Bearer AULA_API_KEY (+ Access service token)──▶ aula (Open WebUI) ──▶ Hexelion
+    ◀── burbuja ≤1 024 B | NO_DATA + causa ◀──────────────────────────────────────────────────────────────┘
 ```
-- **Entrada** `preceptoros.chat/1`: `{v, visita: <sha256 de la clave pública de la visita>, texto}`.
-  - `texto` ≤ 1 000 caracteres.
-  - Cuerpo ≤ 2 048 B; si no, 413 con causa.
-  - Sin historial en el borde: el contexto lo pone el RAG del nodo.
-- **Llave del aula.** Secreto `AULA_CHAT_KEY` en la aduana (`wrangler secret`, jamás en el repo ni en la web). Viaja
-  como `x-aula-key`; P1 la compara por hash. **Recomendado además** Cloudflare Access con service token delante de
-  `chat.preceptoros.org`, para que nadie más que la aduana llegue al túnel. Configurarlo es de MANOS.
-- **Límites** (valores por defecto que propongo; los firma la Mesa):
-  | límite | valor | dónde | si se pasa |
-  |---|---|---|---|
-  | frecuencia por visita | 6 turnos / 60 s | binding `[[ratelimits]]` de Workers, clave = `visita` | 429 · `NO_DATA · limite_visita` + `retry_after` |
-  | frecuencia por red | 30 / 60 s | mismo binding, clave = hash de `CF-Connecting-IP` (solo en memoria; no se guarda) | 429 · `limite_red` |
-  | tokens de salida | `max_tokens: 256` (lo manda la aduana; P1 lo respeta) | aduana → nodo | la respuesta se corta y lo dice |
-  | respuesta | ≤ 2 000 caracteres | aduana | recorta y marca `recortada: true` |
-  | espera | 25 s (`AbortController`) | aduana | 504 · `NO_DATA · tiempo_agotado` |
-- **Cuando el nodo duerme** nunca hay silencio: cada fallo es un `NO_DATA` con su causa.
-  | qué pasa | respuesta |
-  |---|---|
-  | túnel caído o sin conexión | 503 · `nodo_dormido` |
-  | el nodo rechaza la llave | 502 · `aula_rechaza` (la llave rotó) |
-  | el nodo responde algo que no cumple el esquema | 502 · `respuesta_fuera_de_ley` |
-  | falta el secreto en la aduana | 503 · `aula_sin_llave` |
-- **Privacidad:** la aduana **no guarda** turnos. Ni en D1 ni en logs propios; solo cuenta por causa.
-- **Despliegue:** la aduana tiene su propia guarda y su propio tubo FIRMA+FIRMO, y la rama la elige su Mesa. Va
-  como PR al repo `aduana` con su prueba en rojo y luego en verde.
+- **CIEF de entrada** (`preceptoros.chat/1`):
+  ```
+  {estado: {visita: <sha256 de la clave pública>},
+   intencion: "chat",
+   contexto: {texto ≤ 600 caracteres, pagina},
+   hash_esperado: <sha256 de la última burbuja recibida | null>,
+   tic: <entero monótono de la visita>}
+  ```
+- **Hacia el aula:** API compatible OpenAI de Open WebUI, `model` = el de Hexelion, `max_tokens: 256`,
+  `stream: false`. El secreto `AULA_API_KEY` vive en la aduana (`wrangler secret`), jamás en el repo ni en la web.
+- **Límites** (valores que propongo):
+  | límite | valor | si se pasa |
+  |---|---|---|
+  | frecuencia por visita | 6 turnos / 60 s (binding `[[ratelimits]]`, clave = visita) | 429 · `limite_visita` + `retry_after` |
+  | frecuencia por red | 30 / 60 s (clave = hash de `CF-Connecting-IP`, solo en memoria) | 429 · `limite_red` |
+  | turnos por visita | 40 (contador en el propio CIEF, `tic`) | 429 · `visita_agotada` |
+  | tokens de salida | `max_tokens: 256` | burbuja recortada y lo dice |
+  | espera | 25 s (`AbortController`); la acta pide medir el turno real de Hexelion | 504 · `tiempo_agotado` |
+- **Causas, nunca silencio:**
+  | código | causa | frase llana en la web |
+  |---|---|---|
+  | 503 | `nodo_dormido` (túnel o aula caídos) | «Hexelion is asleep right now.» |
+  | 502 | `aula_rechaza` (key revocada o caducada) | «Hexelion is not taking visitors right now.» |
+  | 502 | `respuesta_fuera_de_ley` | «Hexelion answered something we cannot show.» |
+  | 503 | `aula_sin_llave` | «The door to Hexelion is not set up yet.» |
+  | 409 | `stale` + delta | «Your chat is out of step; we resent it.» (la web reintenta una vez) |
+  | 429 | límites | «Wait N s.» |
+- **Pruebas** (en rojo antes que en verde), en `test/chat.test.mjs` de la aduana:
+  - techos de bytes;
+  - sin llave, upstream mudo, 401 y respuesta gigante;
+  - el 7.º turno en 60 s;
+  - un `hash_esperado` STALE.
 
-### (b) Web: el chat del visitante efímero
-- **Una acción visible por pantalla** (encargo del infante): página `/chat/` con una caja, «Send» y la conversación.
-  Lo técnico, plegado. Un enlace desde la puerta.
-- **Cero peticiones al cargar.** `aula_chat.js` no hace `fetch` hasta pulsar Send. Prueba de navegador: 0 peticiones
-  a `/api/` al abrir, 1 al enviar.
-- **IndexedDB** `aula-chat` guarda los turnos solo en el dispositivo. «Forget this chat» los borra.
-- **La visita** sale de `AtlasVisitorAccount.create(true)` con consentimiento explícito: un botón «Start a visit».
-  Solo viaja `sha256(clave pública)`; la clave no se exporta.
-- **Estados honestos en pantalla:** enviando… · respuesta · `NO_DATA · the node is asleep` (y demás causas
-  traducidas) · `Wait 40 s` en 429. Jamás un spinner eterno.
-- **J1:** objetivos de 44 px, foco visible, Enter envía, aria-live en la conversación. Sonido corto al llegar una
-  respuesta y otro distinto para NO_DATA; la voz llega con la pieza 4.
-- **Paridad:** la terminal básica recibe el mismo módulo en `face/basic.html`.
-- **Pesos:** `aula_chat.js` < 7 168 B gzip; la página < 16 384 B.
+  Sabotaje: quitar el limitador ⇒ rojo.
 
-## 2 · Pruebas (cada una enseñada en rojo antes que en verde)
-- aduana `test/chat.test.mjs`:
-  - techos de cuerpo y de texto;
-  - sin llave → `aula_sin_llave`;
-  - un upstream que no responde → `tiempo_agotado`;
-  - un upstream 401 → `aula_rechaza`;
-  - el 7.º turno en 60 s → 429.
-  Sabotaje: quitar el límite ⇒ rojo.
-- web `atlas/aula_chat_browser.mjs` con la aduana simulada:
+### (b) Web: `/chat/` (una acción por pantalla: el encargo del infante)
+- Una caja, «Send» y la conversación, con la divulgación arriba. Lo técnico, plegado. Enlace desde la puerta y
+  desde el hex del nodo del Soberano.
+- `aula_chat.js` (< 7 168 B gzip) se carga con la página, pero **no llama a nada hasta Send**.
+- IndexedDB `aula-chat`; «Forget this chat».
+- «Start a visit» crea el cangrejo con consentimiento.
+- Paridad: `face/basic.html` recibe el mismo módulo.
+- Pruebas: `atlas/aula_chat_browser.mjs` con una aduana simulada:
   - 0 peticiones al cargar;
-  - un turno → respuesta en la conversación y en IndexedDB;
-  - 503 → «NO_DATA · the node is asleep» visible;
-  - 429 → espera visible.
-  Sabotaje: un `fetch` al cargar ⇒ rojo.
+  - un turno → burbuja en pantalla y en IndexedDB;
+  - 503 → «Hexelion is asleep right now.»;
+  - 429 → espera.
 
-## 3 · Orden y firmas
-1. Este plano → FIRMA.
-2. MANOS repunta el túnel a P1 y lo cierra con Access. Hasta entonces, el upstream es `NO_DATA`.
-3. PR `aduana` (ruta + límites) → FIRMA → FIRMO → deploy de la aduana.
-4. PR `preceptoros-web` (`/chat/` + `aula_chat.js`) → FIRMA → merge → deploy → verificar en el Beelink y el Doogee.
+  Sabotaje: un `fetch` al cargar ⇒ rojo.
+- Pesos (ley del ojo): `/chat/index.html` < 16 384 B; burbuja ≤ 1 024 B por turno (traducción); fuente = respuesta
+  del aula, no guardada.
+
+## 3 · Orden
+1. Este plano → FIRMA (solo texto).
+2. PR `aduana`: ruta + límites + CIEF → FIRMA → FIRMO → deploy.
+3. PR web: `/chat/` + `aula_chat.js` → FIRMA → merge → deploy → Beelink + Doogee.
+4. Bloqueo real hoy: el secreto `AULA_API_KEY`. Lo crea el Soberano en el aula y lo pone MANOS con
+   `wrangler secret put`; yo no veo la key. Mientras falte, la ruta responde `aula_sin_llave`, que está probado.
 
 ## 4 · Fuera de este PR
-- G1 (la app anuncia su chatbot a la vitrina) y P1 (endpoint del nodo).
-- Persistencia en servidor de nada del visitante.
-- Las 10 rojas heredadas de `wllama.js` siguen como están (`test_cero_rutas_absolutas_ni_ips`); se declaran en el
-  plano del embellecimiento.
+G1 (vitrina de chatbots por nodo) · P1 (el RAG del aula, codex) · persistir nada del visitante en servidor ·
+las 10 rojas heredadas de `wllama.js` (`test_cero_rutas_absolutas_ni_ips`), que se declaran en el plano del
+embellecimiento.
