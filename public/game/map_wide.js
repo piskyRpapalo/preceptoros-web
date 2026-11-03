@@ -1,4 +1,4 @@
-// G1 · LA VENTANA GRANDE (odd/tasks/mundo-grande.md, web#608): one button gives the map the whole screen and gives it
+// G1 · LA VENTANA GRANDE (odd/tasks/mundo-grande.md, PR 608): one button gives the map the whole screen and gives it
 // back. Measured on the edge phone (360×716 CSS): the map had 348 px of height, half the screen, while 1,519 cells were
 // already loaded. Only the frame changes (law P5): the chat section steps aside, the canvas grows, the page redraws
 // through its own resize path. No state, fog or result is touched; no clock, no random numbers, no network.
