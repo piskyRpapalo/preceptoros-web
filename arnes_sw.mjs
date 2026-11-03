@@ -225,14 +225,16 @@ const rutas = await shell.keys();
 // 113 -> 114 el 2026-11-01 (terminal): entra /game/terminal_tabs.js.
 // 113 -> 113 el 2026-11-02 (terminal compacta): sale /game/terminal_tabs.js (retirados/terminal/), entra /game/terminal_panel.js.
 // 115 -> 116 el 2026-11-02 (a11y, buzon#30): entra /game/map_focus.js, el Tab a cada burbuja del mapa.
+// 116 -> 117 el 2026-11-03 (pieza 3 LA MANO): entra /game/map_drag.js, el arrastre con un dedo.
 // 114 -> 112 el 2026-11-01 (decreto p0, buzon#30): salen las lapidas /face/atlantis.html y /face/zombie.html.
 // 112 -> 113 el 2026-11-01 (P5a, tras P4): entra /game/hitl_walkers.js.
 // 111 -> 112 el 2026-11-01 (P4): entra /game/map_painter.js, el suelo 2.5D.
 // 100 -> 111 el 2026-11-01 (P2/P3): entran map_carta.js, map_chunks.js, la carta, la paleta del mar y los 7 chunks.
 // 116 -> 100 el 2026-11-01 (H2): salen los dieciseis modulos de las pieles retiradas (retirados/face/); army.html,
 // face_canon.css y face_terminal.js se mudan a /game/; atlantis y zombie quedan como lapidas que siguen offline.
-// 116 -> 117 el 2026-11-03 (G1, web#608): entra /game/map_wide.js, el mapa a pantalla completa.
-ok('precachea las portadas, su superficie y el juego', rutas.length === 117 && rutas.includes('/game/web_node_brain.js') && rutas.includes('/game/army.html') && rutas.includes('/map/carta.json'), rutas.length+' rutas');
+// 116 -> 117 el 2026-11-03 (LA MANO, web#606): entra /game/map_drag.js.
+// 117 -> 118 el 2026-11-03 (G1, web#608): entra /game/map_wide.js, el mapa a pantalla completa.
+ok('precachea las portadas, su superficie y el juego', rutas.length === 118 && rutas.includes('/game/map_drag.js') && rutas.includes('/game/map_wide.js') && rutas.includes('/game/web_node_brain.js') && rutas.includes('/game/army.html') && rutas.includes('/map/carta.json'), rutas.length+' rutas');
 ok('el shell NO trae el juego retirado (corte Norte 7 D)',
    !(['/assets/thegame.js', '/game/ui-arena.js', '/assets/atlas-motor.js'].some(r => rutas.includes(r))));
 ok('el shell trae la puerta y NO trae /play/ (corte Norte 7 C)', rutas.includes('/') && !rutas.includes('/play/') && !rutas.includes('/assets/thegame.js'));
