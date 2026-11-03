@@ -59,7 +59,8 @@
     return Object.freeze(rows.map(Object.freeze));
   }
 
-  // paleta(t) → day/night colours. Integer lerp between night and day; the triangle wave depends on t only.
+  // paleta(t) → day/night colours. Integer lerp between night and day. The day fraction is palette_cycle.js's (J3, the
+  // cosine table) so the map and the page share one sky; read at draw time, after both scripts loaded.
   var NOCHE = { cielo: [23, 19, 31], tinta: [236, 228, 210] };
   var DIA = { cielo: [244, 235, 208], tinta: [23, 19, 31] };
   function hex(c) { return '#' + c.map(function (v) { return ('0' + v.toString(16)).slice(-2); }).join(''); }
@@ -67,8 +68,8 @@
   function paleta(t) {
     var n = Number.isInteger(t) ? t : 0;
     var f = ((n % CYCLE) + CYCLE) % CYCLE;
-    var tri = f < CYCLE / 2 ? f : CYCLE - f;          // 0 at midnight, CYCLE/2 at noon
-    var k = Math.round(tri * 256 / (CYCLE / 2));      // 0..256
+    var PC = common ? require('./palette_cycle.js') : root.AtlasPaletteCycle, tri = f < CYCLE / 2 ? f : CYCLE - f;
+    var k = PC ? PC.fraccion(f) : Math.round(tri * 256 / (CYCLE / 2));   // 0..256; the triangle only if the sky module is absent
     return { t: n, dia: k, cielo: hex(mezcla(NOCHE.cielo, DIA.cielo, k)), tinta: hex(mezcla(NOCHE.tinta, DIA.tinta, k)) };
   }
 
