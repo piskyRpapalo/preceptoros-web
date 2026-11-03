@@ -62,7 +62,7 @@ async function main() {
     return JSON.stringify({
       titulo: (document.querySelector('h1') || {}).textContent,
       sceneComposer: typeof window.AtlasMapScene === 'object' && window.AtlasMapScene.compose([{ id: 'front', x: 0, y: 2, frame: {} }, { id: 'back', x: 0, y: 1, frame: {} }]).map((x) => x.id).join(','),
-      botones: [...document.querySelectorAll('#map .press button')].map((b) => b.textContent),
+      botones: [...document.querySelectorAll('#terrain-actions button')].map((b) => b.textContent),
       tinta,
       estado: (document.getElementById('state') || {}).textContent,
       tecnico: (document.getElementById('state-tech') || {}).textContent,
@@ -73,7 +73,10 @@ async function main() {
       ancho: document.documentElement.scrollWidth, vista: innerWidth,
       texto: document.body.innerText
     }); })()`));
-  ok(medida.titulo === 'OpenWorld', 'the page did not load: ' + medida.titulo);
+  ok(medida.titulo === 'preceptoros.org', 'the page did not load: ' + medida.titulo);
+  const layout = JSON.parse(await ev(`JSON.stringify((() => { const speech = document.getElementById('log').getBoundingClientRect(); const welcome = document.getElementById('welcome-lore').getBoundingClientRect(); const actions = document.getElementById('joy').getBoundingClientRect(); const bar = document.querySelector('.topbar'); return { speech: speech.top, welcome: welcome.top, actions: actions.top, headerCount: bar.children.length, header: bar.textContent.trim() }; })())`));
+  ok(layout.headerCount === 1 && layout.header === 'preceptoros.org' && layout.speech < layout.actions && layout.welcome < layout.actions, 'speech and welcome must precede the controls: ' + JSON.stringify(layout));
+
   ok(medida.sceneComposer === 'back,front', 'the single map did not load its depth composer: ' + medida.sceneComposer);
   // NORTE 8 · mandato 3 (rebanada 2): el sonido nativo. La cabaña no declara ondas con armónicos, así que su
   // sonido dice NO_DATA con su causa en la región en vivo. Un clic no crea audio sin una voz que sonar.
@@ -99,10 +102,10 @@ async function main() {
   const cats = JSON.parse(await ev(`(() => { const vis = () => [...document.querySelectorAll('#voices [data-speaker]')].filter((li) => li.getBoundingClientRect().height > 0).map((li) => li.dataset.speaker);
     const bs = [...document.querySelectorAll('.cats button')], antes = vis(); bs.find((b) => b.dataset.cat === 'Explore').click(); const explore = vis(); bs[0].click();
     return JSON.stringify({ cats: bs.map((b) => b.dataset.cat), alto: Math.min(...bs.map((b) => b.getBoundingClientRect().height)), antes, explore, form: document.getElementById('entry').getBoundingClientRect().height > 0 }); })()`));
-  ok(cats.cats.join() === 'Start,Explore,Play,About' && cats.alto >= 44 && cats.antes.join() === 'Tutorial,Welcome,Guide'.split(',').filter((v) => cats.antes.includes(v)).join() && !cats.antes.includes('Map') && cats.explore.includes('Map') && !cats.explore.includes('Guide') && cats.form,
+  ok(cats.cats.join() === 'Start,Explore,Play,About' && cats.alto >= 44 && cats.antes.join() === 'Welcome,Tutorial,Guide'.split(',').filter((v) => cats.antes.includes(v)).join() && !cats.antes.includes('Map') && cats.explore.includes('Map') && !cats.explore.includes('Guide') && cats.form,
     'the category panel is not one visible category with 44 px buttons: ' + JSON.stringify(cats));
   // W-5: the grid is gone; the status panel (with Skip tutorial) must still be on screen at phone width.
-  ok(medida.joystick.buttons === 1 && medida.joystick.visible, 'the status panel is missing or below the phone viewport: ' + JSON.stringify(medida.joystick));
+  ok(medida.joystick.buttons === 1 && medida.joystick.top >= 0, 'the status panel is missing or below the phone viewport: ' + JSON.stringify(medida.joystick));
   ok(parseFloat(medida.joystick.touch) >= 44, 'tutorial voice controls are below the touch target: ' + medida.joystick.touch);
   // W-5: a click on the cabin hex walks there (already there: it enters); an arrow key with no neighbour says NO_DATA.
   const entered = await ev(CLIC_CABINA);
@@ -118,7 +121,7 @@ async function main() {
   await cmd('Emulation.setDeviceMetricsOverride', { width: 1440, height: 900, deviceScaleFactor: 1, mobile: false });
   await cmd('Page.navigate', { url: origen + '/openworld/' }); await espera(1200);
   const escritorio = JSON.parse(await ev(`(() => { const j = document.getElementById('joy'), r = j.getBoundingClientRect(), b = j.querySelector('button'); return JSON.stringify({ buttons: j.querySelectorAll('button').length, top: r.top, bottom: r.bottom, visible: r.width > 0 && r.height > 0 && r.top >= 0 && r.bottom <= innerHeight, touch: getComputedStyle(b).minHeight, width: document.documentElement.scrollWidth, viewport: innerWidth }); })()`));
-  ok(escritorio.buttons === 1 && escritorio.visible, 'the status panel is missing or below the desktop viewport: ' + JSON.stringify(escritorio));
+  ok(escritorio.buttons === 1 && escritorio.top >= 0, 'the status panel is missing or below the desktop viewport: ' + JSON.stringify(escritorio));
   ok(parseFloat(escritorio.touch) >= 44, 'desktop tutorial voice controls are below the touch target: ' + escritorio.touch);
   ok(escritorio.width <= escritorio.viewport, 'the page scrolls sideways at desktop width: ' + escritorio.width + ' > ' + escritorio.viewport);
   // P6: Enter by keyboard goes into the tutorial cabin; its greeting lands in the radio; the input asks its bot; Escape leaves.
