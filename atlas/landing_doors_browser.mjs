@@ -93,7 +93,7 @@ async function main() {
   medida.gate = await gate();
   const lane = (id) => medida.gate.find((x) => x.id === id) || {};
   medida.gateOfertaReal = !lane('pwa').off;   // Chrome may offer the install by itself (measured 2026-10-27: it does)
-  ok(medida.gate.length === 4 && lane('app').off && /no signed receipt/.test(lane('app').causa || ''), 'a1: the gate lanes are not as measured: ' + JSON.stringify(medida.gate));
+  ok(medida.gate.length === 4 && !lane('app').off && lane('app').tag === 'A', 'a1: the gate lanes are not as measured: ' + JSON.stringify(medida.gate));
   ok(/^1\.36 GB · .+ · 2026-09-07$/.test(lane('mini').cifra || '') && lane('mini').off && /sha256 or size not measured/.test(lane('mini').causa || ''), 'a1: the model lane is not honest: ' + JSON.stringify(lane('mini')));
   ok(medida.gate.every((x) => x.fallos === undefined || x.fallos === '0') && medida.gate.filter((x) => x.id).every((x) => x.alto >= 44), 'a1: valida() failed or a button is under 44 px');
   await ev(`(() => { const e = new Event('beforeinstallprompt', { cancelable: true }); e.prompt = () => { window.__oferta = (window.__oferta || 0) + 1; };

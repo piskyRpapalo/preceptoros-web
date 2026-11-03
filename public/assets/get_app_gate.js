@@ -1,7 +1,7 @@
 // NORTE 5 (a1, 2026-10-27) · the app in one or two clicks, on /get-the-app/. It draws the launch gate (VT6,
 // public/game/launch_gate.js, signed 2026-10-19) that no page drew: lane 1 installs the web app in one click when the
-// browser offers it (pwa.js keeps that offer); lane 2 installs the app only with a SIGNED receipt for this system in
-// release.json; lane 3 lists the models with their measured size, and a download only with a sha256. Every lane that
+// browser offers it (pwa.js keeps that offer); lane 2 links to available desktop installers without a visitor signature;
+// lane 3 lists the models with their measured size, and a download only with a sha256. Every lane that
 // cannot act says why (NO_DATA with its cause). Its data is written into the page by local_first_surface_build.py:
 // no request, no storage, no clock.
 (function () {
@@ -17,7 +17,7 @@
 
   function sistema() {
     var u = navigator.userAgent || '';
-    return /Android/i.test(u) ? 'android' : /Windows/i.test(u) ? 'windows' : /Mac OS X|iPhone|iPad/i.test(u) ? 'mac' : 'linux';
+    return /Android/i.test(u) ? 'android' : /iPhone|iPad|iPod/i.test(u) ? 'ios' : /Windows/i.test(u) ? 'windows' : /Mac OS X/i.test(u) ? 'mac' : 'linux';
   }
   function el(tag, clase, texto) {
     var n = document.createElement(tag);
