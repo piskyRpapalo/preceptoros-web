@@ -16,11 +16,15 @@
   // Integer lerp: k is 0..256, so every channel stays a whole number.
   function mezcla(a, b, k) { return a.map(function (v, j) { return Math.round(v + (b[j] - v) * k / 256); }); }
 
-  // The day fraction at tick t: 0 at midnight, 256 at noon. Integer arithmetic only.
+  // J3 · the day without edges (odd/JOYAS.md). The light follows (1 − cos(2π f/240))/2, not a triangle: dawn and dusk
+  // slow down by themselves, like a real day, and noon and midnight have no sharp peak. The law is this table of 121 whole
+  // values (ticks 0..120, mirrored after noon), pinned by its sha256 in atlas/puros/paleta_ciclo_casos.mjs: no cosine runs
+  // while the world draws, and every engine reads the same light.
+  var DIA_COS = Object.freeze([0,0,0,0,1,1,2,2,3,4,4,5,6,7,9,10,11,12,14,16,17,19,21,23,24,26,29,31,33,35,37,40,42,45,47,50,53,56,58,61,64,67,70,73,76,79,82,85,88,92,95,98,101,105,108,111,115,118,121,125,128,131,135,138,141,145,148,151,155,158,161,164,168,171,174,177,180,183,186,189,192,195,198,200,203,206,209,211,214,216,219,221,223,225,227,230,232,233,235,237,239,240,242,244,245,246,247,249,250,251,252,252,253,254,254,255,255,256,256,256,256]);
+  // The day fraction at tick t: 0 at midnight, 256 at noon. A table lookup: whole numbers only.
   function fraccion(t) {
     var f = ((t % CYCLE) + CYCLE) % CYCLE;
-    var tri = f < MEDIODIA ? f : CYCLE - f;
-    return Math.round(tri * 256 / MEDIODIA);
+    return DIA_COS[f < MEDIODIA ? f : CYCLE - f];
   }
 
   // palette(t, reducido) → the colours at tick t. Refuses a tick that is not a whole number: a fraction would be a clock.
@@ -59,7 +63,7 @@
     return out;
   }
 
-  var AtlasPaletteCycle = { CYCLE: CYCLE, MEDIODIA: MEDIODIA, NOCHE: NOCHE, DIA: DIA, fraccion: fraccion, palette: palette, marcoCielo: marcoCielo, cambios: cambios };
+  var AtlasPaletteCycle = { CYCLE: CYCLE, MEDIODIA: MEDIODIA, DIA_COS: DIA_COS, NOCHE: NOCHE, DIA: DIA, fraccion: fraccion, palette: palette, marcoCielo: marcoCielo, cambios: cambios };
   if (common) { module.exports = AtlasPaletteCycle; }
   else { root.AtlasPaletteCycle = AtlasPaletteCycle; }
 })(this);

@@ -4,6 +4,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 import { readFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 const require = createRequire(import.meta.url);
 const P = require('./paleta_ciclo.js');
 const F = require('./state_frames.js');
@@ -59,7 +60,19 @@ test('a change of colour travels as a state frame, one per tick where the day fr
   const fs = P.cambios(0, 10);
   assert.ok(fs.length > 0);
   assert.ok(fs.every((f) => F.valida(f).length === 0));
-  assert.equal(fs[0].t, 1);
+  // J3: the cosine day starts slowly — the first change of light comes at tick 4, not 1 (the triangle's).
+  assert.equal(fs[0].t, 4);
+});
+
+test('J3 · the day without edges: a pinned cosine table, flat at midnight and noon (red with a triangle)', () => {
+  const D = P.DIA_COS;
+  assert.equal(createHash('sha256').update(JSON.stringify(D)).digest('hex'), '960bc3faffb5510586119fac5ac0ced83a4d1eb402d8bb70ed534774e2198341');
+  assert.equal(D.length, 121); assert.equal(D[0], 0); assert.equal(D[120], 256); assert.equal(D[60], 128);
+  assert.equal(D[1] - D[0], 0, 'dawn has no edge'); assert.equal(D[120] - D[119], 0, 'noon has no peak');
+  for (let f = 1; f <= 120; f++) { assert.ok(Number.isInteger(D[f]) && D[f] >= D[f - 1], 'monotone at ' + f); }
+  for (let f = 0; f <= 60; f++) { assert.equal(D[f] + D[120 - f], 256, 'symmetric at ' + f); }
+  for (let t = 0; t <= 120; t++) { assert.equal(P.palette(t).dia, D[t], 'the painted light follows the table at ' + t); }
+  for (let t = 0; t < 240; t++) { assert.equal(P.palette(t).dia, P.palette(240 - t).dia, 'mirror at ' + t); }
 });
 
 test('sabotage: a non-whole tick is refused, a fraction would be a clock', () => {

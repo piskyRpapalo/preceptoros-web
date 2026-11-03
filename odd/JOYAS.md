@@ -116,3 +116,7 @@ J5, J6 y J7 son de pulido.
 5. **J2**: absorbida por L4 y J1 (arriba).
 
 Agent: claude-code · Model: claude-opus-5-5
+
+## Hechas
+
+- **J3 HECHA** (2026-11-03, rama `claude/joya-dia-coseno-20261103`, apilada sobre web#613): `palette_cycle.js` lee una tabla de 121 enteros, `round(256·(1−cos(2πf/240))/2)`, fijada por sha256 (`960bc3fa…`). `global_map.paleta` lee la misma: un solo cielo. Medido: a medianoche y a mediodía la luz no tiene arista (Δ = 0 en los tics 0→1 y 119→120; con el triángulo era 2). El primer cambio de luz llega en el tic 4, no en el 1. Sabotaje con el triángulo → 3 casos en rojo.
