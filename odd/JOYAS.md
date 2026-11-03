@@ -82,4 +82,21 @@ La respuesta del oráculo entra aquí, citada con su tic y su hash de burbuja. *
 
 J5, J6 y J7 son de pulido.
 
+## Medido al construir (2026-11-03, tarde): lo que la medida corrigió
+
+- **J4, la marea: la teoría estaba MAL y la pieza no se siente.**
+  - Dos trenes **ortogonales** (3, −2) no baten. El batido sale tan corto como la ola: el rango de cresta por ventana de 6×6 es **0,20**. Los batidos salen de trenes **cercanos**: (2, 3) + (3, 2), cuya diferencia (1, −1) da batidos de ~22 celdas, con un rango de **1,50** y crestas acotadas en 3.
+  - El código está en la rama `claude/joya-marea-20261103` (f419593e). La prueba sale roja con un tren y verde con dos.
+  - Pero **en el Doogee el mar está horneado en reposo** (`mode: baked`, `still: true`): la ola solo se pinta durante un giro. Forzando el modo vivo, el mapa cambia un **0,15 %** de píxeles en 3 s, porque la ola mueve 1–3 px. **No mueve el ojo.**
+  - Para que se vea haría falta una capa de agua viva sobre los chunks horneados, con los fps medidos en el Doogee: es una pieza M aparte. Se queda como base, sin PR de función.
+- **J3, el día sin aristas: sí se vería, pero despacio.** La página avanza el tic 1 por segundo (`openworld_page.js` `cycle()`, medido en el Doogee: t de 8 a 11 en 3 s). El ciclo de 240 tics dura 4 minutos, así que el pico del triángulo (mediodía y medianoche) cae una vez cada 2 minutos.
+- **Hallazgo de la vista previa:** un service worker viejo en un puerto reciclado sirvió un `map_zoom.js` antiguo (`AtlasMapZoom.create is not a function`) y la página no arrancó su ciclo. Es justo el fallo de primera carga que cura la pieza M (web#603).
+
+### Orden corregido
+1. **J2**, la burbuja en la proporción del suelo: la candidata de la Mesa. Está siempre en pantalla y no depende del tic.
+2. **J7**, el destino de la inercia anunciado: es de LA MANO (#606) y cuesta S.
+3. **J3**, el día sin aristas: S, se ve en minutos.
+4. **J8**, el borde-firma.
+5. **J4**, la marea: M, necesita la capa de agua viva con fps medidos.
+
 Agent: claude-code · Model: claude-opus-5-5
