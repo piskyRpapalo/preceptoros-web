@@ -93,6 +93,7 @@ jobs:
             node --test atlas/puros/walk_route_casos.mjs
             node --test atlas/building_chat_casos.mjs
             node --test atlas/rack_ideas_casos.mjs
+            node --test atlas/voces_casos.mjs
             node --test atlas/invocacion_viva_casos.mjs
             node atlas/colonia_edificios_gate.mjs
             node --test atlas/puros/paleta_ciclo_casos.mjs

@@ -94,15 +94,15 @@ async function main() {
   ok(pedidas.length === 0, 'entering a building asked the network: ' + pedidas.slice(0, 3));
 
   // 3 · one click: one request to the study index; the ideas arrive one by one (never all at once).
-  const ideas = () => ev(`[...document.querySelectorAll('#log li')].filter((li) => /^Rack idea /.test(li.textContent)).length`);
+  const ideas = () => ev(`[...document.querySelectorAll('#log li')].filter((li) => li.dataset.voice === 'rack' && /^Rack · study · Idea /.test(li.textContent)).length`);
   await ev("document.getElementById('rack-ideas').click(), true"); await espera(450);
   const pronto = await ideas(); await espera(2000);
   const luego = await ideas();
-  const lineas = JSON.parse(await ev(`JSON.stringify([...document.querySelectorAll('#log li')].map((li) => li.textContent).filter((t) => /asks the rack|^Rack idea /.test(t)))`));
+  const lineas = JSON.parse(await ev(`JSON.stringify([...document.querySelectorAll('#log li')].map((li) => li.textContent).filter((t) => /^Rack · study · /.test(t)))`));
   medidas.ideas = { pronto, luego, peticiones: pedidas.length, primera: lineas[1] || null };
   ok(pedidas.length === 1 && /\/study\/main\/ai-index\.json$/.test(pedidas[0] || ''), 'one click did not make exactly one request to the study index: ' + pedidas);
   ok(pronto >= 1 && pronto < 3 && luego === 3, 'the ideas did not arrive one by one: ' + JSON.stringify(medidas.ideas));
-  ok(/^Tutorial cabin asks the rack: 3 ideas, live from study/.test(lineas[0] || ''), 'no header naming the building and the count: ' + lineas[0]);
+  ok(/^Rack · study · 3 ideas, live from study .*asked from Tutorial cabin\.$/.test(lineas[0] || ''), 'no header naming the count and the building: ' + lineas[0]);
   ok(lineas.every((t) => Buffer.byteLength(t) < 1024), 'a rack line is over 1 KiB');
   await foto('rack-ideas.png');
 
@@ -111,11 +111,11 @@ async function main() {
   const falla = await ev(`(async () => { const w = (ms) => new Promise((r) => setTimeout(r, ms)); document.getElementById('question').value = 'ideas';
     document.getElementById('entry').dispatchEvent(new Event('submit', { cancelable: true })); await w(800); return (document.querySelector('#log li:last-child') || {}).textContent; })()`);
   medidas.falla = falla;
-  ok(/^NO_DATA · http_404: /.test(falla || ''), 'a failing rack is not said as NO_DATA with its cause: ' + falla);
+  ok(/^Rack · study · NO_DATA · http_404: /.test(falla || ''), 'a failing rack is not said as NO_DATA with its cause: ' + falla);
 
   // 4b · the jewels: one click, one request to JOYAS.md on main, said one by one.
   modo = 200; const antes = pedidas.length;
-  const joyas = () => ev(`[...document.querySelectorAll('#log li')].filter((li) => /^Jewel /.test(li.textContent)).length`);
+  const joyas = () => ev(`[...document.querySelectorAll('#log li')].filter((li) => li.dataset.voice === 'jewels' && /^Rack · jewels · Jewel /.test(li.textContent)).length`);
   await ev("document.getElementById('rack-jewels').click(), true"); await espera(450);
   const jPronto = await joyas(); await espera(4000);
   const jLuego = await joyas(), total = (String(JOYAS).match(/^### J\d+ · /gm) || []).length;
@@ -136,8 +136,19 @@ async function main() {
   medidas.hexelion = hex;
   ok(hex.bien === 'Hexelion · The cabin is where every visit starts.', 'Hexelion\'s live answer is not shown: ' + hex.bien);
   ok(hex.pagina === '/openworld/#b-cabin', 'the door does not know the building: ' + hex.pagina);
-  ok(/^NO_DATA · Hexelion is not taking visitors right now\. \(aula_rechaza\)$/.test(hex.cerrada || ''), 'a closed door is not said with its cause: ' + hex.cerrada);
+  ok(/^Hexelion · NO_DATA · Hexelion is not taking visitors right now\. \(aula_rechaza\)$/.test(hex.cerrada || ''), 'a closed door is not said with its cause: ' + hex.cerrada);
   ok(JSON.stringify(hex.tics) === '[1,2]', 'the turns do not chain: ' + JSON.stringify(hex.tics));
+
+  // 4d · «voices»: the building lists who can speak here, one by one, from the pinned table (the contributors included);
+  // and every line of the conversation names who speaks.
+  const voces = JSON.parse(await ev(`(async () => { const w = (ms) => new Promise((r) => setTimeout(r, ms)); document.getElementById('question').value = 'voices';
+    document.getElementById('entry').dispatchEvent(new Event('submit', { cancelable: true })); await w(4500);
+    const all = [...document.querySelectorAll('#log li')], v = all.map((li) => li.textContent).filter((t) => /^Tutorial cabin · Voice \\d+\\/9 · /.test(t));
+    return JSON.stringify({ n: v.length, claude: v.some((t) => /Contributor · Claude — contributor model, GitHub/.test(t)), chunk: v.some((t) => /Guide · SmolLM2 135M — chunk model/.test(t)),
+      sinTitulo: all.filter((li) => !li.dataset.speaker).map((li) => li.textContent.slice(0, 40)) }); })()`));
+  medidas.voces = voces;
+  ok(voces.n === 9 && voces.claude && voces.chunk, 'the voices are not listed one by one from the table: ' + JSON.stringify(voces));
+  ok(voces.sinTitulo.length === 0, 'a conversation line has no speaker: ' + voces.sinTitulo.join(' | '));
 
   // 5 · Escape leaves: the title comes back, the button hides.
   await cmd('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27 });

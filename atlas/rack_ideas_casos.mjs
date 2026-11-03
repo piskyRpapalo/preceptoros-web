@@ -53,7 +53,7 @@ test('every line stays short and names where the idea lives', () => {
   r.ideas.forEach((x, i) => {
     const l = R.lineOf(x, i, r.ideas.length);
     assert.ok(bytes(l) < 1024, 'line over 1 KiB: ' + bytes(l));
-    assert.match(l, new RegExp('^Rack idea ' + (i + 1) + '/3 · .* · study/' + x.path.replace('.', '\\.') + ' · sha256 [0-9a-f]{12}$'));
+    assert.match(l, new RegExp('^Idea ' + (i + 1) + '/3 · .* · study/' + x.path.replace('.', '\\.') + ' · sha256 [0-9a-f]{12}$'));
   });
   assert.ok(bytes(R.header('Tutorial cabin', r)) < 1024);
 });

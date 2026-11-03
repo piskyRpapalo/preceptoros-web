@@ -13,7 +13,9 @@
   var disclosure = doc.createElement('p'); disclosure.textContent = 'Web node brain: SmolLM2 135M Instruct (Apache-2.0) · 105,454,144 weight bytes in 5 chunks plus the wllama runtime (MIT) · 9,146,582 bytes, all from this site, each checked by SHA-256. It runs on this device\'s processor; no graphics card needed. Nothing downloads until you choose; after that it stays on this device. Your chat text stays on this device. The model advises; it never signs or plays for you.'; how.append(disclosure); zone.append(how);
   var start = doc.createElement('button'); start.type = 'button'; start.id = 'brain-load'; start.textContent = 'Download the web node brain and verify it'; start.style.minHeight = '44px'; zone.append(start);
   var selected = doc.createElement('p'); selected.id = 'brain-context'; selected.textContent = context; zone.append(selected);
-  function line(who, text) { var item = doc.createElement('li'); item.textContent = text.startsWith('NO_DATA') ? text : who + ' · ' + text; log.append(item); }
+  // LAS VOCES (terminal_panel.js): the visitor is «you»; the guide and its NO_DATA are the chunk model's voice, titled by its exact model.
+  function line(who, text) { var P = root.AtlasTerminalPanel; if (P && P.decir) { P.decir(doc, log, who === 'You' ? 'you' : 'chunk', text, who === 'You' || who === 'Companion' ? null : who); return; }
+    var item = doc.createElement('li'); item.textContent = text.startsWith('NO_DATA') ? text : who + ' · ' + text; log.append(item); }
   function brain() {
     if (root.AtlasWebNodeBrain) { return Promise.resolve(root.AtlasWebNodeBrain); }
     return new Promise(function (ok, fail) {

@@ -43,11 +43,11 @@
     return { ok: true, jewels: jewels };
   }
   function jewelLine(j, i, n) { return cut('Jewel ' + (i + 1) + '/' + n + ' · ' + j.id + ' · ' + j.title + ' · where: ' + j.where + ' · odd/JOYAS.md (es)'); }
-  function jewelHeader(name, r) { return name + ' asks the rack for its jewels: ' + r.jewels.length + ', live from main.'; }
+  function jewelHeader(name, r) { return r.jewels.length + ' jewels, live from main, asked from ' + name + '.'; }
 
   // Each idea, one line: what it says and where it lives. The short sha lets anyone check the copy.
-  function lineOf(idea, i, n) { return 'Rack idea ' + (i + 1) + '/' + n + ' · ' + idea.line + ' · study/' + idea.path + ' · sha256 ' + idea.sha256.slice(0, 12); }
-  function header(name, r) { return name + ' asks the rack: ' + r.ideas.length + ' ideas, live from study (index of ' + r.generated + ').'; }
+  function lineOf(idea, i, n) { return 'Idea ' + (i + 1) + '/' + n + ' · ' + idea.line + ' · study/' + idea.path + ' · sha256 ' + idea.sha256.slice(0, 12); }
+  function header(name, r) { return r.ideas.length + ' ideas, live from study (index of ' + r.generated + '), asked from ' + name + '.'; }
 
   // fetchIdeas({ fetch, online, timer }) → Promise of parse()'s result. Never rejects: every failure is a NO_DATA cause.
   function fetchIdeas(o) { return ask(o, SOURCE, parse); }

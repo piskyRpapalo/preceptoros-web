@@ -22,6 +22,30 @@
     var m = /^([^·:]{1,60}?) · /.exec(String(text || ''));
     return m && !/^NO_DATA/.test(m[1]) ? m[1] : 'Guide';
   }
+  // LAS VOCES (the Sovereign, 2026-11-03): every line of the conversation names who speaks, shaped by the piece that speaks
+  // it — from the chunk model on this device to the contributors' models on GitHub. The panel is immutable: this table is
+  // pinned by sha256 in atlas/voces_casos.mjs, so a new voice is a new signed version, never a silent edit. It lives on
+  // GitHub and on the web; it is what an ephemeral visit acts through. Row: id, title, what it is, where it runs.
+  var VOCES = Object.freeze([
+    ['you', 'You', 'the visitor', 'this device'],
+    ['script', '', 'the building\'s script (its title is the building)', 'this browser'],
+    ['chunk', 'Guide · SmolLM2 135M', 'chunk model: 5 same-origin chunks, each checked by SHA-256', 'this device'],
+    ['hexelion', 'Hexelion', 'the rack\'s model, behind the edge door', 'the rack, through api.preceptoros.org'],
+    ['rack', 'Rack · study', 'the rack\'s canonical ideas (ai-index.json)', 'the study repository'],
+    ['jewels', 'Rack · jewels', 'the system\'s jewels (odd/JOYAS.md)', 'the web repository'],
+    ['claude', 'Contributor · Claude', 'contributor model', 'GitHub: pull requests and receipts'],
+    ['codex', 'Contributor · Codex', 'contributor model', 'GitHub: pull requests and receipts'],
+    ['mistral', 'Contributor · Mistral', 'contributor model', 'GitHub: pull requests and receipts'],
+    ['glm', 'Contributor · GLM', 'contributor model (the Mesa)', 'GitHub: pull requests and receipts']
+  ].map(Object.freeze));
+  function voz(id) { for (var i = 0; i < VOCES.length; i++) { if (VOCES[i][0] === id) { return VOCES[i]; } } return null; }
+  // decir(doc, log, id, text, title) → appends one line «Title · text» with its voice; an unknown voice is refused.
+  function decir(doc, log, id, text, title) {
+    var v = voz(id); if (!v) { throw new Error('unknown voice: ' + id); }
+    var li = doc.createElement('li'), who = frame(title || v[1]);
+    li.dataset.voice = id; li.dataset.speaker = who; li.title = v[2] + ' · ' + v[3];
+    li.textContent = who + ' · ' + String(text); log.appendChild(li); return li;
+  }
   // TF-2 (buzon#30, 2026-11-02): the voices go in four category buttons; one category is visible, the rest are buttons.
   // The brain (#map-brain), the log and the form stay fixed under the panel: they are the single chatbot's surface.
   var CATS = [['Start', ['Tutorial', 'Welcome', 'Guide']], ['Explore', ['Map', 'Floor', 'Walkers', 'Zoom']], ['Play', ['House', 'Army']], ['About', ['Radio']]];
@@ -94,7 +118,7 @@
     }
     return { voices: voices.querySelectorAll('[data-speaker]').length, show: show };
   }
-  var P = { BYTES: BYTES, CATS: CATS, categoryOf: categoryOf, frame: frame, speakerOf: speakerOf, mount: mount };
+  var P = { BYTES: BYTES, CATS: CATS, VOCES: VOCES, voz: voz, decir: decir, categoryOf: categoryOf, frame: frame, speakerOf: speakerOf, mount: mount };
   if (typeof module === 'object' && module.exports) { module.exports = P; }
   else { root.AtlasTerminalPanel = P; if (root.document) { P.mounted = mount(root.document); } }
 })(typeof globalThis === 'object' ? globalThis : this);
