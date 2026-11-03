@@ -27,7 +27,9 @@
     }
     var capa = document.getElementById('thegame') || document.body, antes = document.activeElement;
     var fondo = el('div', 'revela'), cv = el('canvas', 'revela-lienzo'), n = O.riqueza(t.armonicos);
-    var rar = T('rar_' + t.rareza, t.rareza), S = raiz.AtlasSintesis;
+    var names = ['Normal', 'Magic', 'Rare', 'Leviathan'], G = raiz.AtlasGacha;
+    var index = G && G.RAREZAS ? G.RAREZAS.indexOf(t.rareza) : -1;
+    var rar = T('rar_' + t.rareza, names[index] || 'NO_DATA'), S = raiz.AtlasSintesis;
     var cuenta = t.aristas ? T('aristas_n', '{n} edges').replace('{n}', t.aristas) : n + ' ' + T('revela_arm', 'harmonics');
     cv.setAttribute('role', 'img');
     cv.setAttribute('aria-label', rar + ' · ' + cuenta + ' · ' + T('revela_aria', 'a new wave is born, harmonic by harmonic'));
