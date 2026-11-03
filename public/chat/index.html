@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Talk to Hexelion · PreceptorOS</title>
+<meta name="description" content="Talk to Hexelion, an AI on the Soberano's node. It advises; it never signs. Your chat stays on your device.">
+<link rel="icon" type="image/svg+xml" href="/assets/mark.svg">
+<link rel="canonical" href="https://preceptoros.org/chat/">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#17131F">
+<link rel="stylesheet" href="/assets/landing.css">
+<style>
+.chat{max-width:40rem}
+#chat-log{list-style:none;padding:0;margin:1rem 0;min-height:6rem}
+#chat-log .turn{padding:.6rem .8rem;margin:.4rem 0;border-left:4px solid}
+#chat-log .me{border-style:dotted}
+#chat-log .them{border-style:solid}
+#chat-log .nodata{border-style:double}
+#chat-form{display:flex;flex-wrap:wrap;gap:.5rem;align-items:stretch}
+#chat-text{flex:1 1 16rem;min-height:44px;font:inherit;padding:.6rem}
+.chat button{min-height:44px;min-width:44px;font:inherit;padding:.5rem 1rem}
+#chat-position{font-size:.85rem}
+</style>
+</head>
+<body>
+<a class="skip" href="#chat-text">Skip to the message box</a>
+<main class="guide chat">
+<p><a href="/">← PreceptorOS</a></p>
+<h1>Talk to Hexelion</h1>
+<p class="lead" id="chat-ai"><b>You are talking to Hexelion, an AI on the Soberano's node. It advises; it never signs.</b></p>
+<ol id="chat-log" aria-live="polite" aria-label="Conversation"></ol>
+<form id="chat-form">
+<label for="chat-text">Your message</label>
+<textarea id="chat-text" maxlength="600" rows="2" placeholder="Ask Hexelion something" required></textarea>
+<button type="submit" id="chat-send">Send</button>
+</form>
+<p>Sending starts a visit: a key made on this device that ends when you leave. Your chat stays only on this device.</p>
+<p><button type="button" id="chat-forget">Forget this chat</button></p>
+<p id="chat-position" aria-live="off"></p>
+<details class="tech"><summary>Technical details</summary>
+<p>Nothing is requested when this page opens. Each Send is one request to <code>api.preceptoros.org/api/v1/chat</code>; the door passes it to Hexelion's room and you never reach the node directly.</p>
+<p>A turn is under 1&nbsp;KB (text up to 600 characters) and the answer is a bubble under 1,024&nbsp;B. Limits: 6 turns a minute per visit, 30 per network, 40 per visit.</p>
+<p>What travels is a hash of your visit key, the text and the turn counter with its seal. The door keeps nothing; your turns live in this browser's IndexedDB until you forget them.</p>
+<p>When Hexelion cannot answer you see NO_DATA with its cause: asleep, not taking visitors, too slow, out of step, or limited.</p>
+</details>
+</main>
+<script src="/assets/pwa.js"></script>
+<script src="/game/visitor_account.js"></script>
+<script src="/game/aula_chat.js"></script>
+</body>
+</html>

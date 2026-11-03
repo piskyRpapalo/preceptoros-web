@@ -83,7 +83,6 @@
     "pintaecos",
     "radio-msg-sello",
     "registro",
-    "sello",
     "sellode"
   ],
   "public/assets/worm_transition.js": [
@@ -92,8 +91,7 @@
     "ciclovalido",
     "dice",
     "monta",
-    "pinta",
-    "sello"
+    "pinta"
   ],
   "public/game/army-wave-panel.js": [
     "abre",
@@ -114,12 +112,6 @@
   "public/game/bb_det.js": [
     "crea",
     "fija"
-  ],
-  "public/game/bb_forma.js": [
-    "sello"
-  ],
-  "public/game/bb_radio.js": [
-    "sello"
   ],
   "public/game/canon.js": [
     "huella"
@@ -144,7 +136,6 @@
     "adopcion",
     "duelo",
     "huevo",
-    "sello",
     "suenaduelo"
   ],
   "public/game/crab_render_hd.js": [
@@ -153,8 +144,7 @@
     "ciclo",
     "desello",
     "dice",
-    "niebla",
-    "sello"
+    "niebla"
   ],
   "public/game/cria.js": [
     "atlascria",
@@ -188,7 +178,6 @@
     "lee",
     "pinta",
     "recibo",
-    "sello",
     "taller",
     "tropa"
   ],
@@ -207,8 +196,7 @@
   ],
   "public/game/face_terminal.js": [
     "dice",
-    "monta",
-    "sello"
+    "monta"
   ],
   "public/game/fog_of_war.js": [
     "atlasniebla",
@@ -387,8 +375,7 @@
     "lee",
     "nodo",
     "nodos",
-    "registro",
-    "sello"
+    "registro"
   ],
   "public/game/summon-wave-card.js": [
     "monta",
@@ -403,9 +390,6 @@
     "cuenta",
     "iniciociclo",
     "monta"
-  ],
-  "public/game/tabla_semantica.js": [
-    "sello"
   ],
   "public/game/taller.js": [
     "atlastaller",
@@ -471,7 +455,6 @@
     "firma",
     "huevo",
     "niebla_alfa",
-    "sello",
     "taller",
     "ui-taller"
   ],
@@ -498,9 +481,6 @@
     "crea",
     "firma"
   ],
-  "public/game/visitor_play.js": [
-    "sello"
-  ],
   "public/game/wave_duel_scene.js": [
     "atlasescena",
     "duelo",
@@ -508,7 +488,6 @@
     "mar",
     "pinta",
     "registro",
-    "sello",
     "sellode"
   ],
   "public/game/world_camera.js": [
@@ -542,7 +521,6 @@
     "paginasinred",
     "precachear",
     "rutasdelshell",
-    "sello",
     "sinredireccion"
   ]
 }
