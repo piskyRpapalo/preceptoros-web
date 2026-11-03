@@ -122,15 +122,40 @@
     return frame(building, 3 + INTENTS.length, cause, 'NO_DATA');
   }
 
+  // LA VOZ DEL RACK (ODD decree 2026-10-28): the chat window's title names the building the visitor is in, and a typed
+  // «ideas», «rack» or «study» (or the 44 px Rack ideas button) asks the rack for its ideas through rack_ideas.js.
+  function titleOf(building) { return building ? scriptOf(building).name + ' · ' + building.id + ' · chat' : 'Chat'; }
+  function wantsIdeas(text) { return /(^|[^a-z])(ideas?|rack|study)([^a-z]|$)/i.test(String(text || '')); }
+
   // open(building, page) / ask(text): the DOM glue of /openworld/ (not run by the pure cases). page = { doc, state, entry,
   // line(cls, text), router(then) }. The lines go to the chat log, which face_terminal.js copies into the radio, so the
   // screen reader hears the building as it hears the map. While a building is open, the chat input asks its bot; Escape
   // or the 44 px «Leave building» button closes it, and #state says so.
-  var inside = null, page = null, leave = null;
+  var inside = null, page = null, leave = null, rackBtn = null, asking = false;
+  function title(b) { var h = page.doc.getElementById('chat-h'); if (h) { h.textContent = titleOf(b); } }
   function leaveBuilding() {
     if (!inside) { return; }
-    var id = inside.id; inside = null; leave.hidden = true;
+    var id = inside.id; inside = null; leave.hidden = true; rackBtn.hidden = true; title(null);
     page.state.textContent = 'Left building ' + id;
+  }
+  // The one request of this piece leaves here, after the visitor asked; each idea is said one by one while they stay.
+  function rackIdeas() {
+    if (!inside || asking) { return; }
+    var b = inside, name = scriptOf(b).name, w = page.doc.defaultView || root; asking = true; rackBtn.disabled = true;
+    var done = function () { asking = false; rackBtn.disabled = false; };
+    page.line('', name + ' · asking the rack for its ideas…');
+    var go = function () {
+      var R = root.AtlasRackIdeas;
+      R.fetchIdeas({ fetch: w.fetch && w.fetch.bind(w), online: w.navigator ? w.navigator.onLine : undefined }).then(function (r) {
+        if (inside !== b) { done(); return; }
+        if (!r.ok) { page.line('', r.causa); done(); return; }
+        var lines = [R.header(name, r)].concat(r.ideas.map(function (x, i) { return R.lineOf(x, i, r.ideas.length); }));
+        var n = 0; R.stream(lines, function (t) { page.line('', t); if (++n === lines.length) { done(); } }, function () { return inside === b || (done(), false); }, function (f, ms) { w.setTimeout(f, ms); });
+      });
+    };
+    if (root.AtlasRackIdeas) { go(); return; }
+    var sc = page.doc.createElement('script'); sc.src = '/game/rack_ideas.js'; sc.onload = go;
+    sc.onerror = function () { page.line('', 'NO_DATA · not_loaded: the rack bridge did not load.'); done(); }; page.doc.head.appendChild(sc);
   }
   function open(building, p) {
     page = p;
@@ -139,11 +164,15 @@
       leave.type = 'button'; leave.id = 'leave-building'; leave.textContent = 'Leave building';
       leave.style.minHeight = '44px'; leave.style.minWidth = '44px';
       leave.addEventListener('click', leaveBuilding);
-      if (p.entry) { p.entry.before(leave); }
+      rackBtn = p.doc.createElement('button');
+      rackBtn.type = 'button'; rackBtn.id = 'rack-ideas'; rackBtn.textContent = 'Rack ideas';
+      rackBtn.style.minHeight = '44px'; rackBtn.style.minWidth = '44px';
+      rackBtn.addEventListener('click', rackIdeas);
+      if (p.entry) { p.entry.before(leave); p.entry.before(rackBtn); }
       p.doc.addEventListener('keydown', function (e) { if (e.key === 'Escape' && inside) { e.preventDefault(); leaveBuilding(); } });
     }
     if (inside && inside.id === building.id) { return; }
-    inside = building; leave.hidden = false;
+    inside = building; leave.hidden = false; rackBtn.hidden = false; title(building);
     // Appended, never overwritten: what was just said (e.g. the HITL «Needs you» opening) stays in the state log.
     var said = p.state.textContent, here = 'Inside building ' + building.id + ' · ' + scriptOf(building).name + ' · Escape leaves';
     p.state.textContent = /Needs you: /.test(said) ? said + ' · ' + here : here;
@@ -151,12 +180,13 @@
   }
   function ask(text) {
     if (!inside) { return false; }
+    if (wantsIdeas(text)) { rackIdeas(); return true; }
     var b = inside;
     page.router(function (R) { page.line('', reply(b, text, R).atoms[0].r); });
     return true;
   }
 
-  var AtlasBuildingChat = { KINDS: KINDS, INTENTS: INTENTS, SCRIPTS: SCRIPTS, kindOf: kindOf, intentOf: intentOf, opening: opening, reply: reply, open: open, ask: ask };
+  var AtlasBuildingChat = { KINDS: KINDS, INTENTS: INTENTS, SCRIPTS: SCRIPTS, kindOf: kindOf, intentOf: intentOf, opening: opening, reply: reply, titleOf: titleOf, wantsIdeas: wantsIdeas, open: open, ask: ask };
   if (common) { module.exports = AtlasBuildingChat; }
   else { root.AtlasBuildingChat = AtlasBuildingChat; }
 })(typeof globalThis === 'object' ? globalThis : this);
