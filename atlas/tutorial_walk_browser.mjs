@@ -11,7 +11,7 @@ const espera = (ms) => new Promise((r) => setTimeout(r, ms));
 const tipos = { '.js': 'text/javascript', '.html': 'text/html', '.json': 'application/json', '.css': 'text/css' };
 const srv = createServer((req, res) => {
   try { let p = decodeURIComponent(new URL(req.url, 'http://l').pathname); if (p.endsWith('/')) { p += 'index.html'; }
-    const f = resolve(PUBLIC, '.' + p); res.writeHead(200, { 'Content-Type': tipos[extname(f)] || 'text/plain' }); res.end(readFileSync(f));
+    const f = resolve(PUBLIC, '.' + p); const cuerpo = readFileSync(f); res.writeHead(200, { 'Content-Type': tipos[extname(f)] || 'text/plain' }); res.end(cuerpo);
   } catch { res.writeHead(404); res.end(); } });
 await new Promise((r) => srv.listen(0, '127.0.0.1', r));
 const port = srv.address().port, cdp = 9700 + (process.pid % 90);

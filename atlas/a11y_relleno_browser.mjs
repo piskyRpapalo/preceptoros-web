@@ -16,7 +16,7 @@ const tipos = { '.js': 'text/javascript', '.css': 'text/css', '.html': 'text/htm
 const srv = await new Promise((r) => { const s = createServer((req, res) => {
   try { let ruta = decodeURIComponent(new URL(req.url, 'http://local').pathname); if (ruta.endsWith('/')) { ruta += 'index.html'; }
     const f = resolve(PUBLIC, '.' + ruta); if (!f.startsWith(resolve(PUBLIC))) { res.writeHead(403); res.end(); return; }
-    res.writeHead(200, { 'Content-Type': tipos[extname(f)] || 'text/plain', 'Cache-Control': 'no-store' }); res.end(readFileSync(f)); } catch { res.writeHead(404); res.end(); }
+    const cuerpo = readFileSync(f); res.writeHead(200, { 'Content-Type': tipos[extname(f)] || 'text/plain', 'Cache-Control': 'no-store' }); res.end(cuerpo); } catch { res.writeHead(404); res.end(); }
 }); s.listen(0, '127.0.0.1', () => r(s)); });
 const origen = 'http://127.0.0.1:' + srv.address().port, cdpPort = 9600 + (process.pid % 90), ch = launchChrome(cdpPort);
 let lista = null, id = 0; const pend = new Map();

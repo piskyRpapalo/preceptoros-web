@@ -12,6 +12,7 @@
   var state = doc.getElementById('state');
   var quieto = raiz.matchMedia && raiz.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var CP = raiz.AtlasColoniaPagina, colonia_ocultos = 0, colonia = null, colonia_fuente = 'NO_DATA', colonia_error = '';
+  var live = 'pending', live_fuente = 'NO_DATA'; // the heartbeat: pending, ok, or its cause
   // Synthetic fixture, opt-in with ?fixture=sintetica: it is labelled SYNTHETIC on the page, never a live colony.
   var FIXTURE = { nodes: [{ id: 'cabin', q: 0, r: 0 }, { id: 'ring-e', q: 1, r: 0 }, { id: 'ring-ne', q: 1, r: -1 }, { id: 'ring-nw', q: 0, r: -1 }, { id: 'ring-w', q: -1, r: 0 }, { id: 'ring-sw', q: -1, r: 1 }, { id: 'ring-se', q: 0, r: 1 }, { id: 'doggee-a', q: 2, r: 0 }, { id: 'doggee-b', q: 2, r: -1 }], buildings: [{ id: 'b-cabin', node: 'cabin' }, { id: 'b-ring-e', node: 'ring-e' }, { id: 'b-ring-nw', node: 'ring-nw' }, { id: 'b-ring-sw', node: 'ring-sw' }, { id: 'b-doggee-a', node: 'doggee-a' }, { id: 'b-doggee-b', node: 'doggee-b' }], units: [] };
   // IC7-S4 (D11): the looks of the fixture's nodes; Doggee is the flat look. The live state carries its own looks.
@@ -109,11 +110,14 @@
   function render() {
     buttons();
     draw();
-    var vivos = filas().filter(function (row) { return row.id !== 'cabin'; }).length;
-    var linea = 'Nodes online: ' + vivos + '.', tecnico = '';
+    // «Nodes online» counts the LIVE seals of the heartbeat, never the cabin; without it NO_DATA, never a 0.
+    var nombres = Object.keys(colony_seals).filter(function (id) { return id !== 'cabin' && colony_seals[id] === 'LIVE'; });
+    var cabeza = live === 'ok' ? 'Nodes online: ' + nombres.length + nombres.map(function (id) { return ' · ' + id + ' LIVE'; }).join('') + '.'
+      : live === 'pending' ? 'Nodes online: checking…' : 'Nodes online: NO_DATA.';
+    var linea = cabeza, tecnico = '';
     // TF-1: a family sentence; NO_DATA and its cause in #state-tech.
     if (colonia && CP && !colonia_error) {
-      try { var v = CP.voz(CP.scene(colonia, entrada.t, quieto, colony_looks, colony_seals), colonia_ocultos, colonia_fuente === 'fixture'); linea = v[0]; tecnico = v[1]; }
+      try { var v = CP.voz(CP.scene(colonia, entrada.t, quieto, colony_looks, colony_seals), colonia_ocultos, colonia_fuente === 'fixture'); linea = cabeza + ' ' + v[0]; tecnico = v[1] + (live === 'ok' ? ' · Live source: /api/world-state (' + live_fuente + ')' : ''); }
       catch (e) { colonia_error = e.message || 'the colony is refused'; }
     }
     if (colonia_error || !colonia) {
@@ -288,40 +292,18 @@
   if (raiz.fetch) {
     raiz.fetch('/openworld/estado.json', { cache: 'no-cache' })
       .then(function (r) { return r.ok ? r.json() : null; })
-      .then(function (d) { tutorial = d; accept(d); render(); })
+      .then(function (d) { tutorial = d; accept(d); render(); if (seguir) { seguir.read(); } })
       .catch(function () { state.textContent = 'NO_DATA: tutorial state unavailable.'; });
   }
-  var refresh = doc.getElementById('world-refresh'), expiry = null, requestGeneration = 0;
-  raiz.addEventListener('pagehide', function () { requestGeneration++; fallback('refresh required'); });
-  function fallback(cause) {
-    clearTimeout(expiry);
-    if (tutorial) { accept(tutorial); render(); }
-    state.textContent += ' · Live nodes NO_DATA: ' + cause;
-  }
-  if (refresh && raiz.AtlasWorldFeed && colonia_fuente !== 'fixture') {
-    refresh.addEventListener('click', async function () {
-      refresh.disabled = true;
-      var generation = ++requestGeneration;
-      try {
-        if (!tutorial) throw new Error('tutorial unavailable');
-        var d = await raiz.AtlasWorldFeed.read(raiz.fetch.bind(raiz));
-        if (generation !== requestGeneration) return;
-        var cabin = tutorial.colonia.nodes.filter(function (n) { return n.id === 'cabin'; });
-        if (cabin.length !== 1) throw new Error('tutorial cabin unavailable');
-        var c = cabin[0], live = d.colonia;
-        if (live.nodes.some(function (n) { return n.id === c.id || (n.q === c.q && n.r === c.r); })) throw new Error('node overlaps tutorial cabin');
-        var merged = {esquema: d.esquema, nodes: [], colonia: {
-          nodes: [c].concat(live.nodes),
-          buildings: tutorial.colonia.buildings.filter(function (b) { return b.node === c.id; }).concat(live.buildings),
-          units: live.units
-        }};
-        raiz.AtlasOpenworldState.leer(merged);
-        accept(merged); render();
-        if (d.cobertura && d.cobertura.estado === 'NO_DATA') state.textContent += ' · Live nodes NO_DATA: ' + d.cobertura.causa;
-        clearTimeout(expiry);
-        expiry = setTimeout(function () { fallback('refresh required'); }, 60000);
-      } catch (e) { fallback(e.message || 'publisher unavailable'); }
-      finally { refresh.disabled = false; }
-    });
-  }
+  // Latido visible (odd/tasks/latido-visible.md): world_feed.js follow reads it on load, by button, every minute.
+  var seguir = raiz.AtlasWorldFeed && raiz.fetch && colonia_fuente !== 'fixture' ? raiz.AtlasWorldFeed.follow({ win: raiz, button: doc.getElementById('world-refresh'),
+    tutorial: function () { return tutorial; },
+    live: function (merged, d) {
+      raiz.AtlasOpenworldState.leer(merged);
+      live = 'ok'; live_fuente = d.cobertura && d.cobertura.fuente ? String(d.cobertura.fuente).slice(0, 40) : 'NO_DATA';
+      accept(merged); render();
+      if (d.cobertura && d.cobertura.estado === 'NO_DATA') { state.textContent += ' · Live nodes NO_DATA: ' + d.cobertura.causa; }
+    },
+    fail: function (cause) { live = cause; if (tutorial) { accept(tutorial); } render(); state.textContent += ' · Live nodes NO_DATA: ' + cause; }
+  }) : null;
 })(window);
