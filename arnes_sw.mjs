@@ -234,7 +234,9 @@ const rutas = await shell.keys();
 // face_canon.css y face_terminal.js se mudan a /game/; atlantis y zombie quedan como lapidas que siguen offline.
 // 116 -> 117 el 2026-11-03 (LA MANO, web#606): entra /game/map_drag.js.
 // 117 -> 118 el 2026-11-03 (G1, web#608): entra /game/map_wide.js, el mapa a pantalla completa.
-ok('precachea las portadas, su superficie y el juego', rutas.length === 118 && rutas.includes('/game/map_drag.js') && rutas.includes('/game/map_wide.js') && rutas.includes('/game/web_node_brain.js') && rutas.includes('/game/army.html') && rutas.includes('/map/carta.json'), rutas.length+' rutas');
+// 118 -> 120 (OpenWorld model frames): entra el proyector Acho y su panel bajo demanda.
+// 120 -> 121 (OpenWorld first-load budget): its page stylesheet moves to a same-origin cached file.
+ok('precachea las portadas, su superficie y el juego', rutas.length === 121 && rutas.includes('/assets/openworld.css') && rutas.includes('/game/map_drag.js') && rutas.includes('/game/map_wide.js') && rutas.includes('/game/cerebro_frame.js') && rutas.includes('/game/cerebro_panel.js') && rutas.includes('/game/web_node_brain.js') && rutas.includes('/game/army.html') && rutas.includes('/map/carta.json'), rutas.length+' rutas');
 ok('el shell NO trae el juego retirado (corte Norte 7 D)',
    !(['/assets/thegame.js', '/game/ui-arena.js', '/assets/atlas-motor.js'].some(r => rutas.includes(r))));
 ok('el shell trae la puerta y NO trae /play/ (corte Norte 7 C)', rutas.includes('/') && !rutas.includes('/play/') && !rutas.includes('/assets/thegame.js'));

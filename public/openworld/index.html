@@ -15,111 +15,7 @@
 <meta name="theme-color" content="#17131F">
 <link rel="manifest" href="/manifest.webmanifest">
 <link rel="stylesheet" href="/assets/landing.css">
-<style>
-.radio-chat{margin-top:8px;border:2px solid currentColor;border-radius:12px;background:var(--bg);color:var(--fg)}
-.radio-chat-alterna{display:flex;gap:8px;align-items:center;width:100%;min-height:44px;padding:6px 10px;border:0;background:none;color:inherit;font:inherit;text-align:left}
-.radio-chat-ultimo{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.radio-chat.plegado :is(.radio-chat-tabs,.radio-chat-lista,.radio-chat-no-data){display:none}
-.radio-chat-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;padding:0 8px}
-.radio-chat-tab{min-height:44px;border:2px solid currentColor;border-radius:12px;background:var(--bg);color:var(--fg);font:inherit;font-weight:700}
-.radio-chat-tab[aria-selected="true"]{text-decoration:underline;border-width:3px}
-.radio-chat-lista{margin:0;padding:6px 10px 10px;list-style:none;display:grid;gap:6px;max-height:40vh;overflow-y:auto}
-.radio-chat-lista[hidden],.radio-chat-no-data[hidden]{display:none}
-.radio-chat-no-data{margin:6px 10px;padding:8px;border:2px dashed currentColor}
-html,body{width:100%;height:100%;min-height:0}
-html{overflow:clip}
-body{position:fixed;inset:0;display:flex;flex-direction:column;min-height:0;overflow:hidden}
-main.map-panel-mask{flex:1;display:grid;grid-template-rows:minmax(280px,52dvh) minmax(0,1fr);grid-template-columns:minmax(0,1fr);height:100vh;height:100dvh;padding:0;min-height:0;overflow:hidden}
-#map,#chat{padding:12px 16px;min-width:0;box-sizing:border-box;overflow:hidden}
-#map{border-bottom:2px solid var(--line);display:flex;flex-direction:column;gap:8px;min-height:0}
-#map h1{font-size:1.25rem;margin:0}
-#map .surface{display:block;width:100%;height:0;min-height:0;min-width:0;flex:1 1 0;transition:opacity 300ms ease}
-@media (prefers-reduced-motion: reduce){#map .surface{transition:none}}
-#map .press{display:flex;flex-wrap:wrap;gap:8px}
-#map .press button{min-height:44px;padding:8px 14px;border:2px solid currentColor;border-radius:var(--radius);background:var(--bg);color:var(--fg);font:inherit;cursor:pointer}
-#map .press button[aria-pressed="true"]{outline:3px solid currentColor;outline-offset:2px}
-#map .state{margin:0;color:var(--soft);font-size:.92rem}
-#chat{display:flex;flex-direction:column;gap:8px;min-height:0;overflow-y:auto;overscroll-behavior:contain}
-#chat h2{font-size:1.1rem;margin:0}
-#chat .log{order:2;flex:1;min-height:0;overflow:auto;margin:0;padding:0;list-style:none;color:var(--soft)}
-#chat form{display:flex;gap:8px}
-#entry{order:3;flex:0 0 auto}
-#chat input{flex:1;min-height:44px;padding:8px 10px;border:2px solid var(--line);border-radius:var(--radius);background:var(--bg);color:var(--fg);font:inherit}
-#chat button{min-height:44px;padding:8px 14px;border:2px solid currentColor;border-radius:var(--radius);background:var(--bg);color:var(--fg);font:inherit}
-#chat button:disabled,#chat input:disabled{opacity:.55}
-.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
-.topbar{display:flex;justify-content:flex-end;align-items:center;gap:4px 12px}
-.topbar > a{display:inline-flex;align-items:center;min-width:44px;min-height:44px}
-.stage{position:relative;display:flex;flex-direction:column;min-height:0;flex:1}
-#zoom-controls{display:flex;flex-wrap:wrap;gap:2px;
-  padding:2px;border:2px solid var(--line);border-radius:var(--radius);background:color-mix(in srgb,var(--bg) 78%,transparent)}
-#zoom-controls button{width:44px;height:44px;padding:0;font-size:1.3rem;font-weight:700;line-height:1}
-@supports not (background:color-mix(in srgb,red 50%,transparent)){#zoom-controls{background:var(--bg)}}
-.voices{list-style:none;margin:0;padding:0;display:grid;gap:6px}
-#voices{display:contents}
-#voices>[data-speaker=Welcome]{order:0}
-#voices>[data-speaker]:not([data-speaker=Welcome]){order:1}
-.cats{order:4}
-#map-actions{order:5}
-#map-brain,#radio-chat{order:6}
-#chat-note,.tech{order:7}
-.voice{border:2px solid var(--line);border-radius:var(--radius);padding:6px 10px;display:grid;gap:6px;color:var(--fg)}
-.voice > .who{margin:0;font-weight:700;font-size:.9rem;text-decoration:underline}
-.voice p{margin:0}
-.voice .state{color:var(--fg);font-size:.95rem}
-.voice button,.voice select{min-height:44px;min-width:44px;padding:8px 14px;border:2px solid currentColor;border-radius:var(--radius);background:var(--bg);color:var(--fg);font:inherit;cursor:pointer}
-.voice .acts,.voice #joy [role="group"],#visitor-play > div{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
-.voice #joy{display:grid;gap:6px}
-.voice #joy label{display:inline-flex;align-items:center;gap:6px;min-height:44px}
-.voice #joy .walk-pad{display:grid;grid-template-columns:repeat(3,44px);grid-template-rows:repeat(3,44px);gap:4px;justify-content:start}
-.voice #joy .walk-pad button,.voice #joy .walk-gap{width:44px;height:44px;min-width:44px;min-height:44px;padding:0;display:grid;place-items:center;font-weight:700}
-#visitor-play h2{font-size:1rem;margin:0}
-.next p{font-size:1.05rem}
-.next button{border-width:3px;font-weight:700}
-.next button[hidden]{display:none}
-#more summary{min-height:44px;display:flex;align-items:center;cursor:pointer}
-.welcome{display:grid;gap:6px}
-.welcome[hidden]{display:none}
-.voice:has(> .welcome[hidden]){display:none}
-.welcome h3{font-size:1.05rem;margin:0}
-.voice .welcome-play{min-height:56px;font-size:1.1rem;font-weight:700;border-width:3px}
-#log li.who-before::before{content:attr(data-speaker) " · ";font-weight:700}
-#map :is(button,a):focus-visible,#chat :is(button,a,select,summary,input):focus-visible{outline:3px solid currentColor;outline-offset:2px}
-#map-proxies .map-proxy{position:absolute;width:44px;height:44px;min-width:44px;min-height:44px;padding:0;margin:0;border:0;background:transparent;color:inherit;cursor:pointer;z-index:1}
-#map-proxies .map-proxy:focus-visible{outline:3px solid currentColor;outline-offset:2px}
-.voice :is([aria-live],[role=status])::before{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
-.voice[data-speaker="Tutorial"] :is([aria-live],[role=status])::before{content:"Tutorial: "}
-.voice[data-speaker="Welcome"] :is([aria-live],[role=status])::before{content:"Welcome: "}
-.voice[data-speaker="Guide"] :is([aria-live],[role=status])::before{content:"Guide: "}
-.voice[data-speaker="Map"] :is([aria-live],[role=status])::before{content:"Map: "}
-.voice[data-speaker="Floor"] :is([aria-live],[role=status])::before{content:"Floor: "}
-.voice[data-speaker="Walkers"] :is([aria-live],[role=status])::before{content:"Walkers: "}
-.voice[data-speaker="Zoom"] :is([aria-live],[role=status])::before{content:"Zoom: "}
-.voice[data-speaker="House"] :is([aria-live],[role=status])::before{content:"House: "}
-.voice[data-speaker="Army"] :is([aria-live],[role=status])::before{content:"Army: "}
-.voice[data-speaker="Radio"] :is([aria-live],[role=status])::before{content:"Radio: "}
-@media (forced-colors: active){
-body,main,#map,#chat,.voice,.radio-chat{background:Canvas;color:CanvasText}
-.voice,.radio-chat,#map,#chat input{border-color:CanvasText}
-#map .state,#chat .log,.voice .state{color:CanvasText}
-.voice > .who{color:CanvasText}
-a{color:LinkText}
-button,select,summary,.voice button,#chat button,#map .press button,.radio-chat-tab{background:ButtonFace;color:ButtonText;border-color:ButtonText;forced-color-adjust:none}
-#zoom-controls{background:Canvas;border-color:CanvasText;forced-color-adjust:none}
-.hitl-mark{border-color:ButtonText!important}
-:focus-visible,#map-proxies .map-proxy:focus-visible{outline:3px solid Highlight!important;outline-offset:2px}
-#surface{border:2px solid CanvasText;forced-color-adjust:none}
-.welcome,.radio-chat-no-data{border:2px solid CanvasText}
-}
-@media (prefers-contrast: more){
-.voice,#map .press button,.voice button,#chat button,#chat input,.stage #zoom-controls{border-width:3px}
-#map .state,#chat .log,.voice .state{color:var(--fg)}
-#zoom-controls{background:var(--bg)}
-:focus-visible{outline-width:4px}
-}
-@media (width<900px){main.map-panel-mask{grid-template-rows:minmax(280px,49dvh) minmax(0,1fr)}#map .surface{width:100vw;margin:0 -16px}#chat{padding:6px 16px 12px;gap:4px}}
-@media (min-width:900px){main.map-panel-mask{grid-template-rows:minmax(0,1fr);grid-template-columns:minmax(0,3fr) minmax(0,2fr)}#map{border-bottom:0;border-right:2px solid var(--line)}}
-</style>
+<link rel="stylesheet" href="/assets/openworld.css">
 </head>
 <body>
 <a class="skip" href="#chat">Skip to the chat</a>
@@ -185,6 +81,8 @@ button,select,summary,.voice button,#chat button,#map .press button,.radio-chat-
 <script src="/game/isometric_floor_projection.js"></script>
 <script src="/game/global_map.js"></script>
 <script src="/game/state_frames.js"></script>
+<script src="/game/cerebro_frame.js"></script>
+<script src="/game/cerebro_panel.js"></script>
 <script src="/game/hex_projection.js"></script>
 <script src="/game/colony_state.js"></script>
 <script src="/game/map_scene.js"></script>

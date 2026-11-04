@@ -64,3 +64,10 @@ h1{font-size:1.9rem;line-height:1.15;margin:16px 0 6px}
 .gate-boton{display:inline-block;min-height:44px;min-width:44px;margin-top:6px;padding:8px 14px;border:2px solid currentColor;border-radius:var(--radius);background:var(--bg);color:var(--fg);font:inherit;cursor:pointer}
 .gate-boton:disabled{opacity:.55;cursor:default}
 .gate-causa,.gate-cifra,.gate-hecho{color:var(--soft);font-size:.92rem}
+#map-brain{order:6}
+#map-brain summary{cursor:pointer;min-height:44px;padding:8px 0}
+.model-frames{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr));gap:8px;margin:8px 0;padding:0;list-style:none}
+.model-frame{min-width:0;border:2px solid currentColor;border-radius:var(--radius);padding:6px}
+.model-frame h3{margin:0 0 4px;font-size:.95rem;overflow-wrap:anywhere}
+.model-frame canvas{display:block;width:100%;height:auto;aspect-ratio:320/96}
+.model-frame p{margin:4px 0 0;font-size:.85rem}

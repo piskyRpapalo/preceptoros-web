@@ -475,6 +475,26 @@
    ]
   },
   {
+   "id": "model-frames",
+   "scripts": [
+    "/game/cerebro_frame.js",
+    "/game/cerebro_panel.js"
+   ],
+   "globals": [
+    "AtlasCerebroFrame"
+   ],
+   "guards": [
+    {
+     "file": "atlas/openworld_browser.mjs",
+     "text": "the on-demand Acho panel did not project the seven declared models"
+    },
+    {
+     "file": "atlas/openworld_browser.mjs",
+     "text": "opening the model panel more than once repeated its same-origin catalogue request"
+    }
+   ]
+  },
+  {
    "id": "la-mano",
    "scripts": [
     "/game/map_drag.js"

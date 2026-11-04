@@ -24,7 +24,7 @@ function sirve(raiz) {
   });
   return new Promise((r) => s.listen(0, '127.0.0.1', () => r(s)));
 }
-const fallos = [], externas = [];
+const fallos = [], externas = [], cerebrosRequests = [];
 // W-5: a click on the cabin hex on the map (the page's own state, the page's own geometry), then the status line.
 const CLIC_CABINA = "(async () => { const d = await (await fetch('/openworld/estado.json', { cache: 'no-store' })).json(); const est = AtlasOpenworldState.leer(d); const s = document.getElementById('surface'); const a = AtlasColoniaPagina.anchorOf(s, est.colonia, 0, est.looks || {}, est.seals || {}, 'cabin'); const r = s.getBoundingClientRect(); s.dispatchEvent(new MouseEvent('click', { bubbles: true, clientX: r.left + a.x * r.width / s.width, clientY: r.top + a.y * r.height / s.height })); await new Promise((x) => setTimeout(x, 300)); return document.querySelector('#joy [aria-live]').textContent; })()";
 const ok = (cond, que) => { if (!cond) { fallos.push(que); } };
@@ -43,7 +43,7 @@ async function main() {
   ws.addEventListener('message', (m) => {
     const d = JSON.parse(m.data);
     if (d.id && pend.has(d.id)) { pend.get(d.id)(d); pend.delete(d.id); }
-    if (d.method === 'Network.requestWillBeSent') { const u = d.params.request.url; if (/^https?:/.test(u) && new URL(u).origin !== origen) { externas.push(u); } }
+    if (d.method === 'Network.requestWillBeSent') { const u = d.params.request.url; if (/^https?:/.test(u) && new URL(u).origin !== origen) { externas.push(u); } if (new URL(u).pathname === '/cerebros.json') { cerebrosRequests.push(u); } }
     if (d.method === 'Runtime.exceptionThrown') {
       const x = d.params.exceptionDetails, f = (x.stackTrace?.callFrames || [])[0] || x;
       fallos.push('exception: ' + String(x.exception?.description || x.text).split('\n')[0].slice(0, 80) + ' @ ' + String(f.url || '').split('/').pop());
@@ -338,6 +338,15 @@ async function main() {
   ok(plug.folded, 'the terminal look is not folded under More: ' + JSON.stringify(plug));
   ok(/Start here: press Play now/.test(plug.first), 'the conversation does not tell a newcomer what to do: ' + plug.first);
   ok(plug.gone && plug.t1 === 'Ask the guide in the chat.' && plug.t2 === 'Summon a wave: press Summon at the Reef below.', 'the next step does not follow the visit state: ' + JSON.stringify(plug));
+  await ev("document.querySelector('#model-catalog summary').click()");
+  await espera(500);
+  const modelPanel = JSON.parse(await ev(`JSON.stringify((() => { const d = document.getElementById('model-catalog'), s = document.getElementById('model-catalog-state'); return { open: d.open, summaryHeight: d.querySelector('summary').getBoundingClientRect().height, status: s.textContent, cards: document.querySelectorAll('#model-frames .model-frame').length, canvases: [...document.querySelectorAll('#model-frames canvas')].map((c) => ({ role: c.getAttribute('role'), label: c.getAttribute('aria-label') })) }; })())`));
+  ok(modelPanel.open && /7 declared model frames/.test(modelPanel.status) && modelPanel.cards === 7, 'the on-demand Acho panel did not project the seven declared models: ' + JSON.stringify(modelPanel));
+  ok(modelPanel.summaryHeight >= 44, 'the model panel disclosure is below the signed 44 px touch target: ' + modelPanel.summaryHeight);
+  ok(modelPanel.canvases.length === 7 && modelPanel.canvases.every((c) => c.role === 'img' && /residency NO_DATA/.test(c.label)), 'model frames are not native Acho images with the caused NO_DATA residency: ' + JSON.stringify(modelPanel.canvases));
+  await ev("document.querySelector('#model-catalog summary').click(); document.querySelector('#model-catalog summary').click()");
+  await espera(100);
+  ok(cerebrosRequests.length === 1, 'opening the model panel more than once repeated its same-origin catalogue request: ' + cerebrosRequests.length);
   if (CAPTURA) { await cmd('Page.navigate', { url: origen + '/openworld/' }); await espera(1500); const g4 = await cmd('Page.captureScreenshot', { format: 'png' }); writeFileSync(join(CAPTURA, 'openworld-first-screen.png'), Buffer.from(g4.result.data, 'base64')); }
   console.log(JSON.stringify({ medida: { ...medida, texto: undefined }, telefono: mask.slice(0, 2).map((m) => ({ ancho: m.width, alto: m.height, joystickY: m.joy[0] })), escritorio, externas: externas.length, fallos }));
 }
