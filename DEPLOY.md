@@ -31,6 +31,13 @@ Mesa's 2026-10-26 receipt for the first green deployment records this sequence: 
 
 The Mesa's earlier measured deployment baseline was 244 public files, but the expected count must be read from the exact main being deployed. Do not copy an old count into a new receipt.
 
+### When a merged change is not visible
+
+1. Record the current `main` SHA and the SHA and conclusion of the latest `manual-worker-deploy` run. A merge and its automatic `actions` run do not deploy the Worker; a queued run is not a completed deployment.
+2. After the authorized deploy, run `actions` again against the same `main` SHA. If `main` advanced meanwhile, record the mismatch and repeat against the intended revision before claiming parity.
+3. If the served files match but a device still shows the old interface, record its service-worker version and test a fresh load on that device. A green server comparison does not measure the device cache.
+4. Treat a missing or stale alarm as `NO_DATA` and inspect the workflow result directly. Investigate a red comparison with the diagnostic ladder below before assuming a failed deploy or purging a cache.
+
 ## ACTIONS diagnostic ladder (measured 2026-10-25)
 
 A red actions reading does not by itself mean the deployment failed or the cache is stale. Measured incident: five consecutive red readings on the same 11 HTML routes while every non-HTML asset was byte-identical to main, and the deployment had been byte-identical to main the whole time. The ladder, in order:
