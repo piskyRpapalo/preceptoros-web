@@ -7,7 +7,7 @@
   if (!chat || !note) { return; }
 
   var panel = doc.createElement('section');
-  panel.id = 'map-brain'; panel.className = 'voice';
+  panel.id = 'model-frames-panel'; panel.className = 'voice';
   var disclosure = doc.createElement('details'); disclosure.id = 'model-catalog';
   var summary = doc.createElement('summary'); summary.textContent = 'Model frames · Acho';
   var status = doc.createElement('p'); status.id = 'model-catalog-state'; status.className = 'state'; status.setAttribute('role', 'status'); status.textContent = 'Not loaded until opened.';

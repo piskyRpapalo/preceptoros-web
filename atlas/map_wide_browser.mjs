@@ -68,6 +68,7 @@ async function main() {
   await cmd('Runtime.enable'); await cmd('Page.enable');
   await cmd('Emulation.setDeviceMetricsOverride', { width: W, height: H, deviceScaleFactor: 1, mobile: true });
   await cmd('Page.navigate', { url: origen + '/openworld/' }); await espera(2500);
+  await ev("document.querySelector('.cats [data-cat=Explore]').click(), true");
 
   const caja = async () => JSON.parse(await ev(`JSON.stringify((() => { const c = document.getElementById('surface'), r = c.getBoundingClientRect(), b = document.getElementById('map-wide'), br = b ? b.getBoundingClientRect() : null;
     return { h: Math.round(r.height), w: Math.round(r.width), px: c.height, alto: innerHeight, chat: getComputedStyle(document.getElementById('chat')).display,
@@ -81,6 +82,21 @@ async function main() {
   ok(a.boton && a.boton.w >= 44 && a.boton.h >= 44, 'the Explore button is under 44 px: ' + JSON.stringify(a.boton));
   ok(a.boton && a.boton.enBarra === 'zoom-controls' && a.boton.pressed === 'false' && /Explore/.test(a.boton.label || ''), 'the Explore button is not a labelled toggle in the map tools: ' + JSON.stringify(a.boton));
   await foto('g1-antes.png');
+  await ev("document.querySelector('.cats [data-cat=Explore]').click(), true");
+
+  // The terminal controls belong below the map; panels cover the map, not the conversation.
+  const terminal = await ev(`(() => { const stage = document.getElementById('stage'), voices = document.getElementById('voices'),
+    bar = document.querySelector('.cats'), chat = document.getElementById('chat'), pad = stage.querySelector('.walk-pad'),
+    composer = document.getElementById('entry'), buttons = bar && bar.querySelectorAll('button');
+    if (!bar || !pad || !buttons || buttons.length < 2) return null;
+    buttons[1].click();
+    const out = { panelOnMap: voices.parentElement === stage && !voices.hidden,
+      barBelowMap: bar.parentElement.id === 'map' && bar.getBoundingClientRect().top >= stage.getBoundingClientRect().bottom,
+      padOnMap: pad.parentElement === stage, chatVisible: getComputedStyle(chat).display !== 'none',
+      composerVisible: composer.getBoundingClientRect().height > 0 && composer.getBoundingClientRect().bottom <= innerHeight, pressed: buttons[1].getAttribute('aria-pressed') };
+    buttons[1].click(); out.closed = voices.hidden; return out; })()`);
+  medidas.terminal = terminal;
+  ok(terminal && Object.values(terminal).every(v => v === true || v === 'true'), 'terminal layout or panel toggle failed: ' + JSON.stringify(terminal));
 
   // 2 · Explore: the canvas grows, its pixels follow, and the chat remains available.
   await ev("document.getElementById('map-wide').click(), true"); await espera(700);

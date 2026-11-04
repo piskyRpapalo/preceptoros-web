@@ -95,7 +95,9 @@
       var b = button(entry[1], function () { handlers.select(entry[0], 'joystick'); });
       b.dataset.direction = entry[0]; b.setAttribute('aria-label', 'Walk ' + entry[0]); pad.appendChild(b);
     });
-    box.appendChild(pad);
+    // Keep the same accessible movement buttons on the map's panel layer.
+    var stage = doc.getElementById('stage');
+    if (stage) { stage.appendChild(pad); } else { box.appendChild(pad); }
     // W-4: node choice remains available with arrow keys and map taps; Enter enters the selected building.
     // Touch buttons now move the same ephemeral walker, on the panel, outside the map drawing.
     var actions = doc.createElement('div');

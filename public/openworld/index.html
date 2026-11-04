@@ -21,13 +21,13 @@
 <a class="skip" href="#chat">Skip to the chat</a>
 <main class="map-panel-mask" data-radio-capa>
 <section id="map" aria-labelledby="map-h">
-<div class="topbar"><h1 id="map-h">preceptoros.org</h1></div>
+<div class="topbar"><h1 id="map-h">Location · NO_DATA: visitor position unavailable</h1></div>
 <div id="stage" class="stage">
-<canvas class="surface" id="surface" role="img" aria-label="The global map: tutorial cabin and live nodes. Tap or click a node to walk there, or use the map joystick in the chat panel; arrow keys also move, and Enter enters a building."></canvas>
+<canvas class="surface" id="surface" role="img" aria-label="Hexagonal map floor. Use the movement controls or arrow keys to walk. Map information is available in the Explore panel."></canvas>
 </div>
 </section>
 <section id="chat" aria-labelledby="chat-h">
-<h2 id="chat-h">Chat</h2>
+<h2 id="chat-h">Guide</h2>
 <ol class="voices" id="voices" role="list" aria-label="What the page says, by speaker">
 <li class="voice" data-speaker="Welcome"><section id="sheet-welcome" class="welcome" role="dialog" aria-modal="false" aria-labelledby="welcome-h" aria-describedby="welcome-lore" hidden>
 <h3 id="welcome-h">Welcome to the sunken forest</h3>
@@ -43,7 +43,7 @@
 <details class="tech"><summary>Technical details</summary><p id="state-tech"></p></details></li>
 <li class="voice" data-speaker="Floor"><p class="state" id="floor-state" aria-live="polite">Loading the map…</p>
 <details class="tech"><summary>Technical details</summary><p id="floor-tech">Map floor: loading the 7 chunks around the cabin.</p></details></li>
-<li class="voice" id="voice-walkers" data-speaker="Walkers"></li>
+<li class="voice" id="voice-walkers" data-speaker="Walkers">Walkers are not shown on this surface.</li>
 <li class="voice" id="voice-zoom" data-speaker="Zoom"></li>
 <li class="voice" data-speaker="House" data-title="summons"><div id="visitor-play" aria-label="House"></div></li>
 <li class="voice" data-speaker="Army"><p class="state" id="army-visit" aria-live="polite"></p>
@@ -58,7 +58,7 @@
 </details></li>
 </ol>
 <ul class="log" id="log" role="log" aria-live="polite" aria-label="Conversation">
-<li>Start here: press Play now, walk with the map joystick or tap a node, then ask the guide below.</li>
+<li>Start here: press Play now, walk with the map controls, then ask the guide below.</li>
 </ul>
 <form id="entry" onsubmit="return false">
 <label class="sr" for="question">Message</label>
@@ -100,8 +100,6 @@
 <script src="/game/walk_route.js"></script>
 <script src="/game/visitor_walk.js"></script>
 <script src="/game/colony_controls.js"></script>
-<script src="/game/hitl_walkers.js"></script>
-<script src="/game/map_focus.js"></script>
 <script src="/game/db.js"></script>
 <script src="/game/visitor_account.js"></script>
 <script src="/game/visitor_eggs.js"></script>
