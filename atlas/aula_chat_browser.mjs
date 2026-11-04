@@ -91,7 +91,7 @@ async function main() {
   const BURBUJA = 'Hello. I am Hexelion; I advise and never sign.';
   await ev(`window.__cola.push({ status: 200, body: { v: 'preceptoros.chat/1', estado: 'OK', voz: 'Hexelion', burbuja: { texto: ${JSON.stringify(BURBUJA)}, recortada: false }, sello: { tic: 1, hash: '${sha(BURBUJA)}', firma: 'f'.repeat(64) } } }), true`);
   await envia('Who are you?');
-  ok(await hasta("document.getElementById('chat-log').innerText.includes('Hexelion: Hello. I am Hexelion')", 5000), 'the answer is not shown as Hexelion\'s: ' + await log());
+  ok(await hasta("document.getElementById('chat-log').innerText.includes('Hexelion · Hello. I am Hexelion')", 5000), 'the answer is not shown as Hexelion\'s Acho speech: ' + await log());
   const c1 = JSON.parse((await ev('window.__llamadas[0] && window.__llamadas[0].body')) || '{}');
   ok(await ev('window.__llamadas.length') === 1, 'one Send made more than one request');
   ok(c1.v === 'preceptoros.chat/1' && c1.tic === 1 && c1.hash_esperado === null && /^[0-9a-f]{64}$/.test(c1.estado?.visita || '') && c1.contexto?.texto === 'Who are you?', 'turn 1 is not a CIEF: ' + JSON.stringify(c1));
@@ -111,7 +111,7 @@ async function main() {
   // Reopen: history from IndexedDB, still zero requests.
   await cmd('Page.navigate', { url: origen + '/chat/' }); await espera(1500);
   const hist = await log();
-  ok(/Who are you\?/.test(hist) && /Hexelion: Hello/.test(hist), 'the chat did not stay on this device: ' + hist.slice(0, 160));
+  ok(/Who are you\?/.test(hist) && /Hexelion · Hello/.test(hist), 'the Acho chat did not stay on this device: ' + hist.slice(0, 160));
   ok(await ev('window.__llamadas.length') === 0, 'reopening with history called the door');
 
   ok(excepciones.length === 0, 'exceptions: ' + excepciones.join(' | '));

@@ -69,13 +69,14 @@ async function main() {
       chatAbierto: !!document.querySelector('#chat'),
       entradaOff: !!(document.getElementById('question') || {}).disabled,
       botonChat: [...document.querySelectorAll('button:not([role=tab])')].some((b) => /^\\s*Chat\\s*$/.test(b.textContent)),
-      joystick: (() => { const j = document.getElementById('joy'), r = j.getBoundingClientRect(); return { buttons: j.querySelectorAll('button').length, top: r.top, bottom: r.bottom, visible: r.width > 0 && r.height > 0 && r.top >= 0 && r.bottom <= innerHeight, touch: getComputedStyle(j.querySelector('button')).minHeight }; })(),
-      ancho: document.documentElement.scrollWidth, vista: innerWidth,
+      joystick: (() => { const j = document.getElementById('joy'), r = j.getBoundingClientRect(); return { buttons: j.querySelectorAll('button').length, top: r.top, bottom: r.bottom, visible: r.width > 0 && r.height > 0 && r.top >= 0, touch: getComputedStyle(j.querySelector('button')).minHeight }; })(),
+      ancho: document.documentElement.scrollWidth, vista: innerWidth, alto: innerHeight,
       texto: document.body.innerText
     }); })()`));
   ok(medida.titulo === 'preceptoros.org', 'the page did not load: ' + medida.titulo);
-  const layout = JSON.parse(await ev(`JSON.stringify((() => { const speech = document.getElementById('log').getBoundingClientRect(); const welcome = document.getElementById('welcome-lore').getBoundingClientRect(); const actions = document.getElementById('joy').getBoundingClientRect(); const bar = document.querySelector('.topbar'); return { speech: speech.top, welcome: welcome.top, actions: actions.top, headerCount: bar.children.length, header: bar.textContent.trim() }; })())`));
-  ok(layout.headerCount === 1 && layout.header === 'preceptoros.org' && layout.speech < layout.actions && layout.welcome < layout.actions, 'speech and welcome must precede the controls: ' + JSON.stringify(layout));
+  const layout = JSON.parse(await ev(`JSON.stringify((() => { const welcome = document.getElementById('welcome-lore').getBoundingClientRect(); const actions = document.getElementById('joy').getBoundingClientRect(), log = document.getElementById('log').getBoundingClientRect(), form = document.getElementById('entry').getBoundingClientRect(); const bar = document.querySelector('.topbar'); return { welcome: welcome.top, actions: actions.top, log: log.top, form: form.top, headerCount: bar.children.length, header: bar.textContent.trim() }; })())`));
+  ok(layout.headerCount === 1 && layout.header === 'preceptoros.org' && layout.welcome < layout.actions && layout.actions < layout.log && layout.log < layout.form, 'welcome, joystick, log, and form are out of order: ' + JSON.stringify(layout));
+  ok(layout.actions < medida.alto, 'the joystick is below the initial phone viewport: ' + JSON.stringify(layout));
 
   // MV-1 panel mask: a fixed live map window stays visible while one terminal scrolls below it on phones;
   // desktop keeps the map left and the terminal right. Widths are the commissioned matrix.
@@ -83,9 +84,10 @@ async function main() {
   for (const [width, height, mobile] of [[360, 716, true], [412, 844, true], [900, 900, false], [1200, 900, false]]) {
     await cmd('Emulation.setDeviceMetricsOverride', { width, height, deviceScaleFactor: 1, mobile }); await espera(120);
     mask.push(JSON.parse(await ev(`(() => { window.scrollTo(0,0); window.scrollTo(0,100); const rootScroll = scrollY; window.scrollTo(0,0); const m = document.getElementById('map').getBoundingClientRect(), c = document.getElementById('chat').getBoundingClientRect(), s = document.getElementById('surface').getBoundingClientRect();
-      return JSON.stringify({ width: innerWidth, height: innerHeight, map: [m.left,m.top,m.right,m.bottom], chat: [c.left,c.top,c.right,c.bottom], surface: [s.width,s.height], rootScroll, bodyOverflow: getComputedStyle(document.body).overflowY, overflow: getComputedStyle(document.getElementById('chat')).overflowY }); })()`)));
+      const joy = document.getElementById('joy').getBoundingClientRect();
+      return JSON.stringify({ width: innerWidth, height: innerHeight, map: [m.left,m.top,m.right,m.bottom], chat: [c.left,c.top,c.right,c.bottom], joy: [joy.top,joy.bottom], surface: [s.width,s.height], rootScroll, bodyOverflow: getComputedStyle(document.body).overflowY, overflow: getComputedStyle(document.getElementById('chat')).overflowY }); })()`)));
   }
-  ok(mask.length === 4 && mask.slice(0, 2).every((m) => m.map[1] === 0 && Math.abs(m.map[3] - m.height * 0.52) < 2 && m.chat[1] >= m.map[3] - 1 && Math.abs(m.chat[3] - m.height) < 1 && m.overflow === 'auto' && m.bodyOverflow === 'hidden' && m.rootScroll === 0 && m.surface[1] > m.height * 0.4 && m.surface[1] < m.height * 0.5), 'phone panel mask is not a fixed live map above the scrolling terminal: ' + JSON.stringify(mask.slice(0, 2)));
+  ok(mask.length === 4 && mask.slice(0, 2).every((m) => m.map[1] === 0 && Math.abs(m.map[3] - m.height * 0.49) < 2 && m.chat[1] >= m.map[3] - 1 && Math.abs(m.chat[3] - m.height) < 1 && m.overflow === 'auto' && m.bodyOverflow === 'hidden' && m.rootScroll === 0 && m.surface[1] > m.height * 0.4 && m.surface[1] < m.height * 0.5 && m.joy[0] < m.height), 'phone panel mask is misplaced: ' + JSON.stringify(mask.slice(0, 2)));
   ok(mask.slice(2).every((m) => m.map[1] === 0 && m.chat[1] === 0 && m.map[2] <= m.chat[0] + 1 && Math.abs(m.map[3] - m.height) < 1 && Math.abs(m.chat[3] - m.height) < 1 && m.bodyOverflow === 'hidden' && m.rootScroll === 0 && m.surface[1] > 0), 'desktop panel mask is not one full-height map-left / terminal-right view: ' + JSON.stringify(mask.slice(2)));
   await cmd('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 1, mobile: true }); await espera(120);
 
@@ -121,7 +123,7 @@ async function main() {
     return JSON.stringify({ label: pad && pad.getAttribute('aria-label'), directions: bs.map((b) => b.dataset.direction), names: bs.map((b) => b.getAttribute('aria-label')), sizes: bs.map((b) => [b.getBoundingClientRect().width,b.getBoundingClientRect().height]), inTerminal: !!pad && document.getElementById('chat').contains(pad), outsideMap: !!pad && !document.getElementById('map').contains(pad) }); })()`));
   ok(stick.label === 'Map joystick' && stick.directions.join('|') === 'north-west|north-east|west|east|south-west|south-east' && stick.names.every(Boolean) && stick.sizes.every((r) => r[0] >= 44 && r[1] >= 44) && stick.inTerminal && stick.outsideMap, 'the six-direction joystick is missing, unnamed, too small, or covering the map: ' + JSON.stringify(stick));
   // W-5: the six-direction controls replace the retired map overlay and remain in the scrollable terminal.
-  ok(medida.joystick.buttons === 7 && medida.joystick.top >= 0, 'the terminal movement controls are missing: ' + JSON.stringify(medida.joystick));
+  ok(medida.joystick.buttons === 7 && medida.joystick.top >= 0 && medida.joystick.visible, 'the terminal movement controls are missing from the scrollable phone panel: ' + JSON.stringify(medida.joystick));
   ok(parseFloat(medida.joystick.touch) >= 44, 'tutorial voice controls are below the touch target: ' + medida.joystick.touch);
   // W-5: a click on the cabin hex walks there (already there: it enters); an arrow key with no neighbour says NO_DATA.
   const entered = await ev(CLIC_CABINA);
@@ -337,7 +339,7 @@ async function main() {
   ok(/Start here: press Play now/.test(plug.first), 'the conversation does not tell a newcomer what to do: ' + plug.first);
   ok(plug.gone && plug.t1 === 'Ask the guide in the chat.' && plug.t2 === 'Summon a wave: press Summon at the Reef below.', 'the next step does not follow the visit state: ' + JSON.stringify(plug));
   if (CAPTURA) { await cmd('Page.navigate', { url: origen + '/openworld/' }); await espera(1500); const g4 = await cmd('Page.captureScreenshot', { format: 'png' }); writeFileSync(join(CAPTURA, 'openworld-first-screen.png'), Buffer.from(g4.result.data, 'base64')); }
-  console.log(JSON.stringify({ medida: { ...medida, texto: undefined }, escritorio, externas: externas.length, fallos }));
+  console.log(JSON.stringify({ medida: { ...medida, texto: undefined }, telefono: mask.slice(0, 2).map((m) => ({ ancho: m.width, alto: m.height, joystickY: m.joy[0] })), escritorio, externas: externas.length, fallos }));
 }
 
 main().catch((e) => { fallos.push('harness: ' + e.message); })

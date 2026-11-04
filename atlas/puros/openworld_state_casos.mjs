@@ -116,3 +116,17 @@ test('IC7-S4: Doggee on two adjacent nodes, one building each, is accepted by IC
   ], [{ id: 'b-a', node: 'doggee-a' }, { id: 'b-b', node: 'doggee-b' }]));
   assert.equal(r.colonia.buildings.length, 2);
 });
+
+test('T2: only visible nodes pass their optional mana declaration to the Acho building adapter', () => {
+  const r = S.leer(v2([
+    { id: 'a', q: 0, r: 0, alive: true, seal: 'LIVE', since: '2026-10-30', mana: 50 },
+    { id: 'b', q: 1, r: 0, alive: true, seal: 'LIVE', since: '2026-10-30' },
+    { id: 'hidden', q: 2, r: 0, alive: false, seal: 'LIVE', since: '2026-10-30', mana: 100 }
+  ]));
+  assert.deepEqual(r.mana, { a: 50 });
+});
+
+test('T2: invalid object mana becomes a bounded bad declaration instead of invented data', () => {
+  const r = S.leer(v2([{ id: 'a', q: 0, r: 0, alive: true, seal: 'LIVE', since: '2026-10-30', mana: { value: 90 } }]));
+  assert.deepEqual(r.mana, { a: 'invalid declared mana type' });
+});

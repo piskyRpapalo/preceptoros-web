@@ -125,9 +125,11 @@
     if (!form || !box || !list) return null;
     var db = store(win), account = null, chain = { tic: 0, hash: null, sello: null }, busy = false;
     function show(who, text, kind) {
-      var li = doc.createElement('li'); li.className = 'turn ' + kind;
-      var b = doc.createElement('b'); b.textContent = who + ': '; li.appendChild(b); li.appendChild(doc.createTextNode(text));
-      list.appendChild(li); li.scrollIntoView && li.scrollIntoView({ block: 'nearest' });
+      var panel = win.AtlasTerminalPanel;
+      if (!panel || typeof panel.decir !== 'function') { throw new Error('NO_DATA: the Acho speech adapter did not load'); }
+      var li = panel.decir(doc, list, who === 'You' ? 'you' : 'hexelion', text, who === 'You' ? null : who);
+      li.className = 'turn ' + kind;
+      li.scrollIntoView && li.scrollIntoView({ block: 'nearest' });
     }
     db.all().then(function (rows) { (rows || []).forEach(function (r) { show(r.who, r.text, r.kind); }); }).catch(function () { /* history is optional */ });
     doc.addEventListener('focusin', function (e) {
