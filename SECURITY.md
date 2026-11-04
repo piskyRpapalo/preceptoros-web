@@ -6,9 +6,9 @@ cause, never as an assurance.
 
 ## What the WEB is
 
-A static site: no accounts, no sessions, no cookies, no telemetry. The home
-page is the game; the game runs entirely in the visitor browser and makes zero
-external requests on load. Visitor state lives in the visitor browser and
+A static site: no accounts, no sessions, no cookies, no telemetry. The
+world runs entirely in the visitor's browser and makes zero external
+requests on load. Visitor state lives in the visitor browser and
 leaves it only when the visitor presses send.
 
 ## The one outgoing call
@@ -33,8 +33,9 @@ explicit FIRMO. Private keys never leave the visitor device.
 - 1,024 bytes per reception-contract payload, strict UTF-8.
 - 25 MiB per synthetic block (higher only by signed exception in
   EXCEPCIONES.md). The byte-per-file ceiling was revoked on 2026-10-11; the
-  yardsticks now are measured fps on the reference phone and the game door:
-  gzip_juego_b below 153,600 B.
+  yardstick now is measured fps on the reference phone. The old game door
+  (gzip_juego_b) is NO_DATA with its cause since the theGame retirement
+  (corte D, 2026-10-28).
 - Service worker served with a measured fingerprint.
 - Review of the service-worker update path: NO_DATA with cause (review
   pending; not claimed done).
