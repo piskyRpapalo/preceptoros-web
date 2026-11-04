@@ -16,15 +16,14 @@
   // Synthetic fixture, opt-in with ?fixture=sintetica: it is labelled SYNTHETIC on the page, never a live colony.
   var FIXTURE = { nodes: [{ id: 'cabin', q: 0, r: 0 }, { id: 'ring-e', q: 1, r: 0 }, { id: 'ring-ne', q: 1, r: -1 }, { id: 'ring-nw', q: 0, r: -1 }, { id: 'ring-w', q: -1, r: 0 }, { id: 'ring-sw', q: -1, r: 1 }, { id: 'ring-se', q: 0, r: 1 }, { id: 'doggee-a', q: 2, r: 0 }, { id: 'doggee-b', q: 2, r: -1 }], buildings: [{ id: 'b-cabin', node: 'cabin' }, { id: 'b-ring-e', node: 'ring-e' }, { id: 'b-ring-nw', node: 'ring-nw' }, { id: 'b-ring-sw', node: 'ring-sw' }, { id: 'b-doggee-a', node: 'doggee-a' }, { id: 'b-doggee-b', node: 'doggee-b' }], units: [] };
   // IC7-S4 (D11): the looks of the fixture's nodes; Doggee is the flat look. The live state carries its own looks.
-  var FIXTURE_LOOKS = { 'doggee-a': 'flat', 'doggee-b': 'flat' }, colony_looks = {}, colony_seals = {}, colony_pending = {};
+  var FIXTURE_LOOKS = { 'doggee-a': 'flat', 'doggee-b': 'flat' }, colony_looks = {}, colony_seals = {}, colony_pending = {}, colony_mana = {};
   var frases_el = doc.getElementById('frases');
   // TA-4 (D13-D16): the terminal, the anchor and the joystick live in colony_controls.js; the page passes its state in.
   var CC = raiz.AtlasColonyControls;
   var CCT = CC ? CC.attach({ doc: doc, win: raiz, colony: function () { return colonia; }, looks: function () { return colony_looks; }, seals: function () { return colony_seals; }, redraw: function () { draw(); renderFrases(); }, stepped: function () { var vb = doc.getElementById('visitor-play'); if (vb) { vb.dispatchEvent(new CustomEvent('visitor:advance')); } }, walk: function () { walkLoop(); }, entered: function (node) { var W = raiz.AtlasInvocacionViva; if (W) { W.tunnel(function () { enterBuilding(node); }); } else { enterBuilding(node); } } }) : null;
   // P5a: the view hitl_walkers.js reads on every visitor:draw (the «?» and the walkers).
-  raiz.AtlasOpenworldView = function () { return { colony: colonia_error ? null : colonia, t: entrada.t, reduced: quieto, looks: colony_looks, seals: colony_seals, pending: colony_pending, controls: CCT, state: state, redraw: function () { draw(); } }; };
-  // H1b: two fingers (or the wheel) zoom the colony between 0.6 and 3, anchored to the fingers; the orbit turns the view.
-  // The view (zoom, angle, pan) lives on the canvas and every redraw reads it; only the picture changes (law P5).
+  raiz.AtlasOpenworldView = function () { return { colony: colonia_error ? null : colonia, t: entrada.t, reduced: quieto, looks: colony_looks, seals: colony_seals, mana: colony_mana, pending: colony_pending, controls: CCT, state: state, redraw: function () { draw(); } }; };
+  // Zoom and orbit use the canvas state; the map picture alone changes (law P5).
   var viewSeen = '', ZOOM = raiz.AtlasMapZoom && surface ? raiz.AtlasMapZoom.create(surface, { changed: function () { onZoom(); } }) : null;
   function onZoom() {
     var d = surface.dataset, v = d.zoom + '|' + d.angle + '|' + d.panx + '|' + d.pany;
@@ -73,7 +72,7 @@
     var dpr = Math.min(2, raiz.devicePixelRatio || 1);
     surface.width = Math.round(width * dpr); surface.height = Math.round(height * dpr);
     if (colonia && CP) {
-      try { CP.draw(surface, colonia, entrada.t, quieto, colony_looks, colony_seals, CCT ? CCT.walker() : null); visitorLayer(); return; }
+      try { CP.draw(surface, colonia, entrada.t, quieto, colony_looks, colony_seals, CCT ? CCT.walker() : null, colony_mana); visitorLayer(); return; }
       catch (e) { colonia_error = e.message || 'the colony is refused'; }
     }
     var g = surface.getContext('2d');
@@ -117,7 +116,7 @@
     var linea = cabeza, tecnico = '';
     // TF-1: a family sentence; NO_DATA and its cause in #state-tech.
     if (colonia && CP && !colonia_error) {
-      try { var v = CP.voz(CP.scene(colonia, entrada.t, quieto, colony_looks, colony_seals), colonia_ocultos, colonia_fuente === 'fixture'); linea = cabeza + ' ' + v[0]; tecnico = v[1] + (live === 'ok' ? ' · Live source: /api/world-state (' + live_fuente + ')' : ''); }
+      try { var v = CP.voz(CP.scene(colonia, entrada.t, quieto, colony_looks, colony_seals, colony_mana), colonia_ocultos, colonia_fuente === 'fixture'); linea = cabeza + ' ' + v[0]; tecnico = v[1] + (live === 'ok' ? ' · Live source: /api/world-state (' + live_fuente + ')' : ''); }
       catch (e) { colonia_error = e.message || 'the colony is refused'; }
     }
     if (colonia_error || !colonia) {
@@ -136,7 +135,7 @@
     frases_el.innerHTML = '';
     if (!colonia || !CP || colonia_error) { return; }
     try {
-      var sc = CP.scene(colonia, entrada.t, quieto, colony_looks, colony_seals);
+      var sc = CP.scene(colonia, entrada.t, quieto, colony_looks, colony_seals, colony_mana);
       if (CCT && CCT.walker()) { sc.you = CP.youFrame(CCT.walker(), entrada.t, quieto); }
       CP.frases(sc).forEach(function (texto) {
         var li = doc.createElement('li'); li.textContent = texto; frases_el.appendChild(li);
@@ -161,12 +160,13 @@
       colonia_fuente = colonia ? 'estado' : 'NO_DATA';
       colony_looks = estado.looks || {};
       colony_seals = estado.seals || {};
+      colony_mana = estado.mana || {};
       colony_pending = estado.pending || {};
       colonia_ocultos = Number.isInteger(estado.hidden) ? estado.hidden : 0;
       if (!colonia && estado.version === 2) { colonia_error = 'no node declared alive and sealed LIVE or STALE (' + estado.hidden + ' hidden)'; }
     } catch (e) { colonia = null; colonia_error = e.message || 'the state is refused'; }
   }
-  if (new URLSearchParams(raiz.location.search).get('fixture') === 'sintetica') { colonia = FIXTURE; colonia_fuente = 'fixture'; colony_looks = FIXTURE_LOOKS; colony_seals = {}; }
+  if (new URLSearchParams(raiz.location.search).get('fixture') === 'sintetica') { colonia = FIXTURE; colonia_fuente = 'fixture'; colony_looks = FIXTURE_LOOKS; colony_seals = {}; colony_mana = {}; }
 
   // W-3: a click or tap on a visible node walks the avatar there over the visible route. The walk runs one frame at a
   // time (frames are counted, never milliseconds); arrival enters the node (colony_controls.js).
