@@ -2,7 +2,7 @@
  "esquema": "atlas.mundo/1",
  "procedencia": "medido en local por atlas/mundo.py; sin rutas, sin nombres",
  "medido_el": "2026-11-04T11:15Z",
- "maquina": "Linux x86_64 Â· Python 3.12.14",
+ "maquina": "Linux x86_64 · Python 3.12.14",
  "pruebas_web": 82,
  "lenguas": 0,
  "techo_bloque_b": 26214400,

@@ -44,7 +44,7 @@
       "estado": "NO_DATA",
       "valor": null,
       "unidad": "tokens",
-      "causa": "sin fuente real declarada. La web no rastrea usuarios (cero IDs persistentes), asi que esta cifra solo puede veniz de un reporte voluntario y firmado. Todavia no hay ninguno."
+      "causa": "sin fuente real declarada. La web no rastrea usuarios (cero IDs persistentes), asi que esta cifra solo puede venir de un reporte voluntario y firmado. Todavia no hay ninguno."
     },
     {
       "clave": "instalaciones_reportadas",
