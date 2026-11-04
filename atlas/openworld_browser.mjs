@@ -69,7 +69,7 @@ async function main() {
       chatAbierto: !!document.querySelector('#chat'),
       entradaOff: !!(document.getElementById('question') || {}).disabled,
       botonChat: [...document.querySelectorAll('button:not([role=tab])')].some((b) => /^\\s*Chat\\s*$/.test(b.textContent)),
-      joystick: (() => { const j = document.getElementById('joy'), r = j.getBoundingClientRect(); return { buttons: j.querySelectorAll('button').length, top: r.top, bottom: r.bottom, visible: r.width > 0 && r.height > 0 && r.top >= 0 && r.bottom <= innerHeight, touch: getComputedStyle(j.querySelector('button')).minHeight }; })(),
+      joystick: (() => { const j = document.getElementById('joy'), r = j.getBoundingClientRect(); return { buttons: j.querySelectorAll('button').length, top: r.top, bottom: r.bottom, visible: r.width > 0 && r.height > 0 && r.top >= 0, touch: getComputedStyle(j.querySelector('button')).minHeight }; })(),
       ancho: document.documentElement.scrollWidth, vista: innerWidth, alto: innerHeight,
       texto: document.body.innerText
     }); })()`));
@@ -87,7 +87,7 @@ async function main() {
       const joy = document.getElementById('joy').getBoundingClientRect();
       return JSON.stringify({ width: innerWidth, height: innerHeight, map: [m.left,m.top,m.right,m.bottom], chat: [c.left,c.top,c.right,c.bottom], joy: [joy.top,joy.bottom], surface: [s.width,s.height], rootScroll, bodyOverflow: getComputedStyle(document.body).overflowY, overflow: getComputedStyle(document.getElementById('chat')).overflowY }); })()`)));
   }
-  ok(mask.length === 4 && mask.slice(0, 2).every((m) => m.map[1] === 0 && Math.abs(m.map[3] - m.height * 0.52) < 2 && m.chat[1] >= m.map[3] - 1 && Math.abs(m.chat[3] - m.height) < 1 && m.overflow === 'auto' && m.bodyOverflow === 'hidden' && m.rootScroll === 0 && m.surface[1] > m.height * 0.4 && m.surface[1] < m.height * 0.5 && m.joy[0] < m.height), 'phone panel mask or first-screen movement controls are misplaced: ' + JSON.stringify(mask.slice(0, 2)));
+  ok(mask.length === 4 && mask.slice(0, 2).every((m) => m.map[1] === 0 && Math.abs(m.map[3] - m.height * 0.52) < 2 && m.chat[1] >= m.map[3] - 1 && Math.abs(m.chat[3] - m.height) < 1 && m.overflow === 'auto' && m.bodyOverflow === 'hidden' && m.rootScroll === 0 && m.surface[1] > m.height * 0.4 && m.surface[1] < m.height * 0.5 && m.joy[0] < m.height), 'phone panel mask is misplaced: ' + JSON.stringify(mask.slice(0, 2)));
   ok(mask.slice(2).every((m) => m.map[1] === 0 && m.chat[1] === 0 && m.map[2] <= m.chat[0] + 1 && Math.abs(m.map[3] - m.height) < 1 && Math.abs(m.chat[3] - m.height) < 1 && m.bodyOverflow === 'hidden' && m.rootScroll === 0 && m.surface[1] > 0), 'desktop panel mask is not one full-height map-left / terminal-right view: ' + JSON.stringify(mask.slice(2)));
   await cmd('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 1, mobile: true }); await espera(120);
 
@@ -123,7 +123,7 @@ async function main() {
     return JSON.stringify({ label: pad && pad.getAttribute('aria-label'), directions: bs.map((b) => b.dataset.direction), names: bs.map((b) => b.getAttribute('aria-label')), sizes: bs.map((b) => [b.getBoundingClientRect().width,b.getBoundingClientRect().height]), inTerminal: !!pad && document.getElementById('chat').contains(pad), outsideMap: !!pad && !document.getElementById('map').contains(pad) }); })()`));
   ok(stick.label === 'Map joystick' && stick.directions.join('|') === 'north-west|north-east|west|east|south-west|south-east' && stick.names.every(Boolean) && stick.sizes.every((r) => r[0] >= 44 && r[1] >= 44) && stick.inTerminal && stick.outsideMap, 'the six-direction joystick is missing, unnamed, too small, or covering the map: ' + JSON.stringify(stick));
   // W-5: the six-direction controls replace the retired map overlay and remain in the scrollable terminal.
-  ok(medida.joystick.buttons === 7 && medida.joystick.top >= 0, 'the terminal movement controls are missing: ' + JSON.stringify(medida.joystick));
+  ok(medida.joystick.buttons === 7 && medida.joystick.top >= 0 && medida.joystick.visible, 'the terminal movement controls are missing from the scrollable phone panel: ' + JSON.stringify(medida.joystick));
   ok(parseFloat(medida.joystick.touch) >= 44, 'tutorial voice controls are below the touch target: ' + medida.joystick.touch);
   // W-5: a click on the cabin hex walks there (already there: it enters); an arrow key with no neighbour says NO_DATA.
   const entered = await ev(CLIC_CABINA);
