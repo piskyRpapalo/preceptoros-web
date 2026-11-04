@@ -1,1 +1,3 @@
-repo://piskyRpapalo/preceptoros-web/sha/5fd43b6a61f119b6a410f01dfb35a37fa5d22966/contents/config/sw-huella.txt
+
+huella=56219a4bf91f8656
+version=preceptoros-2026-25-do
