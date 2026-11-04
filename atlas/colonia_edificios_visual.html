@@ -37,6 +37,14 @@
 <script src="puros/state_frames.js"></script>
 <script src="puros/hex_projection.js"></script>
 <script src="puros/colonia_edificios.js"></script>
+<script src="../public/game/tabla_semantica.js"></script>
+<script src="../public/game/comic_tokens.js"></script>
+<script src="../public/game/state_frames.js"></script>
+<script src="../public/game/hex_projection.js"></script>
+<script src="../public/game/palette_cycle.js"></script>
+<script src="../public/game/map_painter.js"></script>
+<script src="floor_fixture_chunk.js"></script>
+<script src="floor_fixture.js"></script>
 <script>
 (function (raiz) {
   'use strict';
@@ -73,6 +81,7 @@
     var g = canvas.getContext('2d');
     g.setTransform(1, 0, 0, 1, 0, 0);
     g.fillStyle = '#f4ebd0'; g.fillRect(0, 0, canvas.width, canvas.height);
+    drawFloorFixture(canvas, 0, false);
     var cx = canvas.width / 2, cy = canvas.height / 2;
     var todos = scene.tiles.concat(scene.buildings);
     todos.forEach(function (nd) {
@@ -122,6 +131,7 @@
     resultados.reducido_igual_a_entero = primera[primera.length - 1] === primera[0];
     resultados.ancho = W; resultados.alto = H;
     resultados.edificios = whole.buildings.map(function (b) { return b.id + ':' + b.forma + ':' + b.altura.h; });
+    resultados.floor = escenas.map(function (e) { return JSON.parse(e.canvas.dataset.floorFrame); });
     return resultados;
   }
 

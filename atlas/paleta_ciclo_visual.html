@@ -36,6 +36,14 @@
 <script src="puros/hex_projection.js"></script>
 <script src="puros/colonia_edificios.js"></script>
 <script src="puros/paleta_ciclo.js"></script>
+<script src="../public/game/tabla_semantica.js"></script>
+<script src="../public/game/comic_tokens.js"></script>
+<script src="../public/game/state_frames.js"></script>
+<script src="../public/game/hex_projection.js"></script>
+<script src="../public/game/palette_cycle.js"></script>
+<script src="../public/game/map_painter.js"></script>
+<script src="floor_fixture_chunk.js"></script>
+<script src="floor_fixture.js"></script>
 <script>
 (function (raiz) {
   'use strict';
@@ -71,10 +79,11 @@
     return C.palette(tick, reducido).cielo;
   }
 
-  function dibuja(canvas, scene, cielo, desviar) {
+  function dibuja(canvas, scene, cielo, desviar, tick, reduced) {
     var g = canvas.getContext('2d');
     g.setTransform(1, 0, 0, 1, 0, 0);
     g.fillStyle = cielo; g.fillRect(0, 0, canvas.width, canvas.height);
+    drawFloorFixture(canvas, tick, reduced);
     var cx = canvas.width / 2, cy = canvas.height / 2;
     scene.tiles.concat(scene.buildings).forEach(function (nd) {
       var fotograma = nd.frame;
@@ -110,12 +119,12 @@
       e.cielo = cieloDe(e.t, e.reducido, false);
       e.canvas = celda(e.fila, e.scene + ' · tick ' + e.t + (e.reducido ? ' · reduced' : ''), e.cielo);
     });
-    todas.forEach(function (e) { dibuja(e.canvas, e.scene, e.cielo, false); });
+    todas.forEach(function (e) { dibuja(e.canvas, e.scene, e.cielo, false, e.t, e.reducido); });
     var primera = todas.map(function (e) { return hashCanvas(e.canvas); });
     // second run: the sky is recomputed (it reads the wall clock only in the "reloj" sabotage)
     todas.forEach(function (e) {
       e.cielo2 = cieloDe(e.t, e.reducido, sabotaje === 'reloj');
-      dibuja(e.canvas, e.scene, e.cielo2, sabotaje === 'jitter');
+      dibuja(e.canvas, e.scene, e.cielo2, sabotaje === 'jitter', e.t, e.reducido);
     });
     var segunda = todas.map(function (e) { return hashCanvas(e.canvas); });
     todas.forEach(function (e, i) {
@@ -124,6 +133,7 @@
     });
     resultados.cielo = todas.map(function (e) { return e.t + ':' + e.cielo; });
     resultados.ancho = W; resultados.alto = H;
+    resultados.floor = todas.map(function (e) { return JSON.parse(e.canvas.dataset.floorFrame); });
     return resultados;
   }
 

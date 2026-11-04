@@ -34,6 +34,14 @@
 <script src="/game/colonia_edificios.js"></script>
 <script src="/game/palette_cycle.js"></script>
 <script src="/game/colonia_pagina.js"></script>
+<script src="/game/tabla_semantica.js"></script>
+<script src="/game/comic_tokens.js"></script>
+<script src="/game/state_frames.js"></script>
+<script src="/game/hex_projection.js"></script>
+<script src="/game/palette_cycle.js"></script>
+<script src="/game/map_painter.js"></script>
+<script src="/atlas/floor_fixture_chunk.js"></script>
+<script src="/atlas/floor_fixture.js"></script>
 <script>
 (function (raiz) {
   'use strict';
@@ -62,6 +70,8 @@
     return canvas;
   }
 
+  AtlasMapPainter.draw = function (g, G, t, reduced) { var c = window.FloorFixtureChunk; g.canvas.dataset.floorFrame = JSON.stringify(AtlasMapPainter.frameOf(c, t, reduced)); return AtlasMapPainter.floor(g, G, { cells: AtlasMapPainter.cellsOf({ '0_0': c }) }, t, reduced); };
+
   function run() {
     var escenas = TICKS.map(function (t) { return { t: t, reducido: false, canvas: celda('tick ' + t) }; });
     escenas.push({ t: 0, reducido: true, canvas: celda('tick 0 · reduced motion') });
@@ -79,6 +89,7 @@
       if (primera[i] !== segunda[i]) { resultados.n2 = false; }
     });
     resultados.reducido_quieto = escenas[escenas.length - 1].cielo1 === '#f4ebd0';
+    resultados.floor = escenas.map(function (e) { return JSON.parse(e.canvas.dataset.floorFrame); });
     return resultados;
   }
 
