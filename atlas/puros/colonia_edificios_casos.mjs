@@ -66,7 +66,7 @@ test('the prism frame has three Acho ribbon walls and one six-sided roof; mana c
   const x = (items) => items[3].pts.map((p) => p[0]);
   assert.deepEqual(x(a), x(b));
   assert.ok(a[3].pts[0][1] - b[3].pts[0][1] > 0);
-  assert.match(short.atoms[0].r, /NO_DATA height/);
+  assert.match(short.atoms[0].r, /NO_DATA:/);
   assert.match(short.atoms[0].r, /no mana measurement declared/);
 });
 

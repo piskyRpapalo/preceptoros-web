@@ -83,7 +83,7 @@
   // The module under it is drawn by its own tile frame, so the colour is never drawn twice.
   function marcoEdificio(edificio, p, paso, seal) {
     var measured = altura(edificio.mana), h = Math.round(measured.h * p);
-    var causa = measured.causa ? ' · NO_DATA height: ' + measured.causa : ' · mana ' + edificio.mana + ' MEDIDO';
+    var causa = measured.causa ? ' · NO_DATA: ' + measured.causa : ' · mana ' + edificio.mana + ' MEDIDO';
     var frase = edificio.id + ' on ' + edificio.node + ' · hex-prism · h=' + h + 'px' + causa + ' · ' + paso + '/' + PASOS + ' · seal ' + (seal || 'NO_DATA');
     return {
       v: 'preceptoros.acho/1', id: edificio.id, t: paso, cv: BOX, seal: seal || 'NO_DATA',
