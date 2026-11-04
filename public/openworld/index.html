@@ -48,11 +48,9 @@ main.map-panel-mask{flex:1;display:grid;grid-template-rows:minmax(280px,52dvh) m
 #chat button{min-height:44px;padding:8px 14px;border:2px solid currentColor;border-radius:var(--radius);background:var(--bg);color:var(--fg);font:inherit}
 #chat button:disabled,#chat input:disabled{opacity:.55}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
-/* One map, one attributed speech panel: stacked on phones, side by side on desktop. */
 .topbar{display:flex;justify-content:flex-end;align-items:center;gap:4px 12px}
 .topbar > a{display:inline-flex;align-items:center;min-width:44px;min-height:44px}
 .stage{position:relative;display:flex;flex-direction:column;min-height:0;flex:1}
-/* Zoom controls follow the map's spoken instructions. */
 #zoom-controls{display:flex;flex-wrap:wrap;gap:2px;
   padding:2px;border:2px solid var(--line);border-radius:var(--radius);background:color-mix(in srgb,var(--bg) 78%,transparent)}
 #zoom-controls button{width:44px;height:44px;padding:0;font-size:1.3rem;font-weight:700;line-height:1}
@@ -88,13 +86,9 @@ main.map-panel-mask{flex:1;display:grid;grid-template-rows:minmax(280px,52dvh) m
 .welcome h3{font-size:1.05rem;margin:0}
 .voice .welcome-play{min-height:56px;font-size:1.1rem;font-weight:700;border-width:3px}
 #log li.who-before::before{content:attr(data-speaker) " · ";font-weight:700}
-/* The keyboard ring is the page's own, never the browser default alone (measured 2026-11-02: «auto 1px» before). */
 #map :is(button,a):focus-visible,#chat :is(button,a,select,summary,input):focus-visible{outline:3px solid currentColor;outline-offset:2px}
-/* Tab to every map bubble (map_focus.js): a real 44×44 button over each node, invisible until focused; then its own ring. */
 #map-proxies .map-proxy{position:absolute;width:44px;height:44px;min-width:44px;min-height:44px;padding:0;margin:0;border:0;background:transparent;color:inherit;cursor:pointer;z-index:1}
 #map-proxies .map-proxy:focus-visible{outline:3px solid currentColor;outline-offset:2px}
-/* The speaker in every live announcement (buzon#30, 2026-11-02): «Map: …» for the screen reader only. Generated text is
-   in the accessibility tree and not in textContent, so every exact-text read of these regions stays as it was. */
 .voice :is([aria-live],[role=status])::before{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 .voice[data-speaker="Tutorial"] :is([aria-live],[role=status])::before{content:"Tutorial: "}
 .voice[data-speaker="Welcome"] :is([aria-live],[role=status])::before{content:"Welcome: "}
@@ -106,7 +100,6 @@ main.map-panel-mask{flex:1;display:grid;grid-template-rows:minmax(280px,52dvh) m
 .voice[data-speaker="House"] :is([aria-live],[role=status])::before{content:"House: "}
 .voice[data-speaker="Army"] :is([aria-live],[role=status])::before{content:"Army: "}
 .voice[data-speaker="Radio"] :is([aria-live],[role=status])::before{content:"Radio: "}
-/* High contrast (buzon#30, 2026-11-02): system colours only (keywords, never a raw colour); the canvas has its own path. */
 @media (forced-colors: active){
 body,main,#map,#chat,.voice,.radio-chat{background:Canvas;color:CanvasText}
 .voice,.radio-chat,#map,#chat input{border-color:CanvasText}
