@@ -8,8 +8,8 @@ Status: proposal for review. Deployment remains a human action. This document re
 
 Route-count receipt for this source tree (`haiku/corte-d-borrado-20261028`, Norte 7 D: the theGame stack leaves the shell with its files; measured with `python3 bin/contar_rutas.py`, 2026-10-28):
 
-Rutas precargadas por el shell: 121
-Rutas distintas del shell: 120
+Rutas precargadas por el shell: 122
+Rutas distintas del shell: 121
 
 The workflow runs exactly:
 
@@ -72,3 +72,4 @@ A11y fill source receipt (2026-11-02, buzon#30): /game/map_focus.js joins the sh
 LA MANO source receipt (2026-11-03, buzon#30): /game/map_drag.js joins the shell (one finger drags the map). 118 entries / 117 distinct.
 G1 source receipt (2026-11-03, web#608, rebased after LA MANO): /game/map_wide.js joins the shell (the map fills the screen on demand). 119 entries / 118 distinct.
 OpenWorld model-frame source receipt (2026-11-04, web#644): /game/cerebro_frame.js and /game/cerebro_panel.js join the shell; 121 entries / 120 distinct.
+OpenWorld first-load budget receipt (2026-11-04, web#644): the page-only stylesheet moves to /assets/openworld.css, precached same-origin; HTML falls below the first-load ceiling; 122 entries / 121 distinct.
