@@ -1,6 +1,7 @@
 # odd/ — Organic Driven Development
 
 Adopted by FIRMO 2026-10-28; see `CONTRIBUTING.md` for the house rules.
+Renamed by decree 2026-11-03: the workflow is **THE MARCH** (ES: LA MARCHA); «ODD» remains its historical name. The manual below keeps its shape.
 The law lives in `study` → `02-legislation.md` (Amendment · ODD routing ·
 2026-10-28). This file is that law's operating manual in this repo.
 
