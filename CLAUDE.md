@@ -3,24 +3,24 @@
 > Léelo antes de tocar nada. Lo leen todas las sesiones de Claude Code: las del rack y las de la nube.
 
 ## Qué es esto: la marca personal de PreceptorOS
-Todo lo que se construye aquí es **marca personal de PreceptorOS** (el Soberano, 2026-09-28): la web pública y **theGame** (ATLAS, el Bosque Sumergido). No es un juego genérico ni un SaaS. Tiene una firma reconocible, y cada sesión la conserva y la hace crecer:
+Todo lo que se construye aquí es **marca personal de PreceptorOS** (el Soberano, 2026-09-28): la web pública y **OpenWorld** (el mapa vivo de `/openworld/`). theGame — la puerta de portada — fue retirado en el corte D (2026-10-28). No es un SaaS genérico. Tiene una firma reconocible, y cada sesión la conserva y la hace crecer:
 - **Los personajes son ondas.** Cada tropa es su serie de Fourier (`[k, ax, ay, fase]` enteros), dibujada con sus propios armónicos. No hay imágenes: el emblema de cada nodo sale de su clave pública. Nuevas criaturas, mapas y efectos salen de ahí, no de sprites.
 - **HITL.** El silicio propone y el carbono firma. Nada de valor (invocar, adoptar, retar, aceptar, liquidar) ocurre sin la firma Ed25519 de la persona. Los pilotos, los agentes y el laboratorio proponen; nunca firman. (Antes: IronClaw; renombrado a HITL por FIRMO 2026-10-22. En público: "hitl".)
 - **Sensores honestos.** Lo que no se mide es `NO_DATA` con su causa; lo heurístico lleva `EMULADO`; lo provisional se dice en pantalla. Lo técnico va **siempre plegado** («Technical details»).
 - **Sin servidor.** Entre personas viajan **sobres firmados** (`atlas.sobre/1`) en **paquetes** (`atlas.paquete_mp/1`) por el canal que elija la persona (Send, Copy, Download). La semilla de todo combate sale de un **commit-reveal**: nadie la elige a solas.
 - **Determinismo.** Todo resultado se vuelve a jugar desde la ley, la semilla y las acciones. Enteros; sin `Math.random`, sin `Date` con autoridad.
-- **Peso con ley.** Máximo 25 MiB por bloque (límite técnico de despliegue). Los 16 KiB por pieza son una **regla de eficiencia**, modificable por la Mesa (D-B, FIRMO 2026-10-22); no son un límite de seguridad. La vara de rendimiento son los fps medidos en el Doogee. La puerta del juego (`gzip_juego_b`, medida por `atlas/mundo.py`) tiene que quedar por debajo de 153 600 B, o la grieta hace el doble de daño. `.github/workflows/vigia.yml` avisa cada día. Lo que no hace falta al abrir se carga **a demanda** (Army, Arena, opinar).
-- **El juego habla solo inglés hoy.** Los textos van a `public/atlas-en.json` o a su familia a demanda (`atlas-opina-en.json`, `atlas-arena-en.json`). No se traduce sin orden.
+- **Peso con ley.** Máximo 25 MiB por bloque (límite técnico de despliegue). Los 16 KiB por pieza son una **regla de eficiencia**, modificable por la Mesa (D-B, FIRMO 2026-10-22); no son un límite de seguridad. La vara de rendimiento son los fps medidos en el Doogee. La puerta del juego retirado (`gzip_juego_b`) es hoy NO_DATA (causa: theGame retirado, corte D, 2026-10-28). La vara de rendimiento son los fps medidos en el Doogee. Lo que no hace falta al abrir se carga **a demanda** (Army, Arena, opinar).
+- **El mundo habla solo inglés hoy.** Los textos viven junto al código bajo `public/game/`. No se traduce sin orden.
 
 ## Mapa
 | Dónde | Qué |
 |---|---|
-| `public/assets/thegame.js` | La puerta y las cuatro pestañas (Home, Map, Battle, Help). Las listas `GUIONES` (puerta), `ARMY`, `CASA` y `ARENA` (a demanda; la Arena pinta Map y Battle) |
-| `public/game/home_*.js`, `wave_render.js`, `summon_reveal.js` | Tu casa (ciudad sumergida en corte, edificios = botones con su cifra MEDIDA, personalización sin ventaja), el trazo de las ondas y la revelación de la gacha |
-| `public/game/fog_of_war.js`, `world_camera.js`, `mar.js` | El mapa global que se arrastra hasta la niebla (la niebla sale de lo MEDIDO) |
-| `public/game/battle_choreography.js`, `battle_replay.js` | La repetición tipo RTS: coreografía determinista del registro de `arena.combate`; nunca decide |
-| `public/assets/atlas-*.js` | El piso, el motor puro (`atlas-motor.js`, **no se toca** sin firma), el piloto, la partida, el mapa y las ondas |
-| `public/game/` | v1.5 (valores, gacha, db, core, ui, juez) y el multijugador: `canon`, `sobres`, `rating`, `arena`, `duelo`, `escena`, `mar`, `ui-arena`, `ui-duelo`, `mercado`, `narragrafo`, `cria` (el validador del genoma vive fuera de lo servido, en `atlas/puros/genoma.js`) |
+| `public/index.html` | La portada: panel de puertas (OpenWorld, Tools). theGame, la puerta de portada, se retiró en el corte D (2026-10-28) |
+| `public/game/wave_render.js`, `summon_reveal.js`, `cria.js` | El trazo de las ondas, la revelación de la gacha y la cría |
+| `public/game/fog_of_war.js`, `world_camera.js`, `sea.js`, `sea-floor.js` | El mapa global que se arrastra hasta la niebla (la niebla sale de lo MEDIDO) |
+| `public/game/battle_choreography.js`, `battle_replay_controls.js` | La repetición tipo RTS: coreografía determinista; nunca decide |
+| `atlas/puros/` | Los puros fuera de lo servido (`genoma.js`, casos de decor y wave_duel). El motor servido se retiró con theGame (corte D) |
+| `public/game/` | El mundo que `/openworld/` carga: valores, gacha, db, core, ui, mapa, colonia y combate (`canon.js`, `cria.js`, `escena.js`; el validador del genoma vive fuera de lo servido, en `atlas/puros/genoma.js`) |
 | `data/` | Contratos JSON Schema (no se sirven): un caso bueno y 6 violaciones cada uno, en `atlas/test_atlas.py` |
 | `atlas/` | El laboratorio: casos en node (`*_casos.mjs`), verificadores (`verifica_opinion.mjs`), `tabla_opiniones.mjs`, `vigia.mjs`, planes y auditorías (`PLAN_THEGAME_ESTRUCTURA.md`, `POST_VERIFICACION_*.md`, `PROMPT_RACK_THEGAME.md`) |
 | `opiniones/` | Lo que llega firmado de las personas; los workflows lo verifican. (`partidas/` y su aduana se retiraron con theGame, corte D) |
