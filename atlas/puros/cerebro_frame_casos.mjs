@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 import { readFileSync } from 'node:fs';
 const require = createRequire(import.meta.url);
-const C = require('./cerebro_frame.js');
+const C = require('../../public/game/cerebro_frame.js');
 const A = require('./acho.js');
 const TOKENS = require('../../public/game/comic_tokens.js');
 const ACCENTS = require('../../public/game/comic_accents.js').ACCENTS;
@@ -48,6 +48,6 @@ test('bad, duplicate and empty catalogues fail closed', () => {
 });
 
 test('pure projection contains no clock, randomness, network or DOM access', () => {
-  const code = readFileSync(new URL('./cerebro_frame.js', import.meta.url), 'utf8');
+  const code = readFileSync(new URL('../../public/game/cerebro_frame.js', import.meta.url), 'utf8');
   assert.doesNotMatch(code, /Math\.random|Date\b|fetch\(|XMLHttpRequest|document\./);
 });
