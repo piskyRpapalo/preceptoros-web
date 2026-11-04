@@ -70,7 +70,8 @@
     return canvas;
   }
 
-  AtlasMapPainter.draw = function (g, G, t, reduced) { var c = window.FloorFixtureChunk; g.canvas.dataset.floorFrame = JSON.stringify(AtlasMapPainter.frameOf(c, t, reduced)); return AtlasMapPainter.floor(g, G, { cells: AtlasMapPainter.cellsOf({ '0_0': c }) }, t, reduced); };
+  raiz.AtlasMapChunks = { load: function () { return Promise.resolve({ chunks: { '0_0': raiz.FloorFixtureChunk }, key: '0_0', say: 'Synthetic floor loaded', detail: 'SYNTHETIC fixture' }); } };
+  AtlasMapPainter.setLive(true);
 
   function run() {
     var escenas = TICKS.map(function (t) { return { t: t, reducido: false, canvas: celda('tick ' + t) }; });
@@ -89,15 +90,14 @@
       if (primera[i] !== segunda[i]) { resultados.n2 = false; }
     });
     resultados.reducido_quieto = escenas[escenas.length - 1].cielo1 === '#f4ebd0';
-    resultados.floor = escenas.map(function (e) { return JSON.parse(e.canvas.dataset.floorFrame); });
+    resultados.floor = escenas.map(function (e) { return AtlasMapPainter.frameOf(raiz.FloorFixtureChunk, e.t, e.reducido); });
     return resultados;
   }
 
-  try {
-    document.getElementById('recibo').textContent = JSON.stringify(run());
-  } catch (error) {
-    document.getElementById('recibo').textContent = 'ERROR · ' + error.message;
-  }
+  AtlasMapPainter.start(function () {
+    try { document.getElementById('recibo').textContent = JSON.stringify(run()); }
+    catch (error) { document.getElementById('recibo').textContent = 'ERROR · ' + error.message; }
+  });
 })(this);
 </script>
 </body>
