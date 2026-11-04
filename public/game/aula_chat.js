@@ -24,6 +24,64 @@
     var b = await root.crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
     return Array.from(new Uint8Array(b), function (x) { return x.toString(16).padStart(2, '0'); }).join('');
   }
+  // D7 canonical bytes: ASCII JSON, sorted protocol keys, no whitespace.
+  function canonical(value) {
+    if (value === null || typeof value === 'boolean' || typeof value === 'string') {
+      return JSON.stringify(value).replace(/[\u007f-\uffff]/g, function (c) { return '\\u' + c.charCodeAt(0).toString(16).padStart(4, '0'); });
+    }
+    if (Array.isArray(value)) return '[' + value.map(canonical).join(',') + ']';
+    if (!value || typeof value !== 'object') throw new Error('unsupported receipt value');
+    return '{' + Object.keys(value).sort().map(function (k) { return canonical(k) + ':' + canonical(value[k]); }).join(',') + '}';
+  }
+  function keys(value, expected) {
+    return value && typeof value === 'object' && !Array.isArray(value) && Object.keys(value).sort().join('|') === expected.slice().sort().join('|');
+  }
+  function publicText(text) {
+    return typeof text === 'string' && text.trim() &&
+      !/(?:\/(?:home|users)\/|(?:\d{1,3}\.){3}\d{1,3}|(?:[a-f0-9]{0,4}:){2,}|password|private key|secret)/i.test(text);
+  }
+  async function verifyReceipt(receipt) {
+    var absent = { ok: false, cause: 'receipt_unavailable' };
+    if (receipt == null) return absent;
+    try {
+      // Reject the whole receipt, never truncate or render unverified fields.
+      if (!keys(receipt, ['veredicto', 'trailer']) || new TextEncoder().encode(canonical(receipt) + '\n').length >= 1024) throw new Error();
+      var v = receipt.veredicto, t = receipt.trailer;
+      if (!keys(t, ['recibido', 'payload_sha256', 'recibo_sha256']) ||
+          !/^[0-9a-f]{64}$/.test(t.payload_sha256) || !/^[0-9a-f]{64}$/.test(t.recibo_sha256) ||
+          typeof t.recibido !== 'string' || !/^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(?:\.\d{1,3})?Z$/.test(t.recibido)) throw new Error();
+      if (!v || v.FIRMA !== 'NO') throw new Error();
+      if (v.state === 'NO_DATA') {
+        if (!keys(v, ['state', 'cause', 'FIRMA']) || !publicText(v.cause)) throw new Error();
+      } else if (v.state === 'PROPOSED') {
+        if (!keys(v, ['state', 'FUENTE', 'ACCIÓN', 'EVIDENCIA', 'COSTE', 'FIRMA']) ||
+            !['FUENTE', 'ACCIÓN', 'EVIDENCIA', 'COSTE'].every(function (k) { return publicText(v[k]); })) throw new Error();
+      } else throw new Error();
+      if (await sha(canonical(v)) !== t.payload_sha256 ||
+          await sha(canonical({ recibido: t.recibido, payload_sha256: t.payload_sha256 })) !== t.recibo_sha256) throw new Error();
+      return { ok: true, verdict: v, trailer: t };
+    } catch (_) { return { ok: false, cause: 'receipt_invalid' }; }
+  }
+  function receiptSummary(result) {
+    if (!result || !result.ok) return 'NO_DATA · Decision receipt unavailable or invalid.';
+    return result.verdict.state === 'PROPOSED' ? 'Decision proposed. Hexelion advises; it never signs.' : 'NO_DATA · ' + result.verdict.cause;
+  }
+  function renderReceipt(doc, list, result) {
+    if (!list) return;
+    var item = doc.createElement('li'); item.className = 'turn receipt';
+    var label = doc.createElement('p'); label.textContent = 'Hexelion · ' + receiptSummary(result); item.appendChild(label);
+    if (result && result.ok) {
+      var details = doc.createElement('details'), summary = doc.createElement('summary'), body = doc.createElement('pre');
+      summary.textContent = 'Receipt details'; summary.style.minHeight = '44px';
+      summary.style.minWidth = '44px'; details.appendChild(summary);
+      body.style.whiteSpace = 'pre-wrap'; body.style.overflowWrap = 'anywhere';
+      var v = result.verdict, t = result.trailer;
+      body.textContent = (v.state === 'PROPOSED' ? 'Source: ' + v.FUENTE + '\nAction: ' + v['ACCIÓN'] + '\nEvidence: ' + v.EVIDENCIA + '\nCost: ' + v.COSTE + '\n' : '') +
+        'Signature: NO\nRecorded: ' + t.recibido + '\nPayload SHA-256: ' + t.payload_sha256 + '\nReceipt SHA-256: ' + t.recibo_sha256 + '\nIntegrity verified; source truth and human authority are not authenticated.';
+      details.appendChild(body); item.appendChild(details);
+    }
+    list.appendChild(item);
+  }
   // One turn against the door. Returns {ok, text, cause, chain}; it never throws at the page.
   async function turn(fetcher, visita, text, chain, page) {
     if (root.navigator && root.navigator.onLine === false) return { ok: false, cause: 'offline', chain: chain };
@@ -34,7 +92,7 @@
     } catch (e) { return { ok: false, cause: 'red', chain: chain }; }
     if (res.status === 200 && body && body.estado === 'OK' && body.burbuja && typeof body.burbuja.texto === 'string' && body.sello) {
       var mine = await sha(body.burbuja.texto);
-      return { ok: true, text: body.burbuja.texto, cut: body.burbuja.recortada === true, chain: { tic: body.sello.tic, hash: mine, sello: body.sello } };
+      return { receiptState: await verifyReceipt(body.recibo), ok: true, text: body.burbuja.texto, cut: body.burbuja.recortada === true, chain: { tic: body.sello.tic, hash: mine, sello: body.sello } };
     }
     var cause = body && typeof body.causa === 'string' ? body.causa : 'red';
     return { ok: false, cause: cause, retry: body && body.retry_after, chain: cause === 'stale' ? { tic: 0, hash: null, sello: null } : chain };
@@ -92,6 +150,7 @@
         chain = r.chain;
         var line = r.ok ? r.text + (r.cut ? ' [shortened]' : '') : plain(r.cause) + (r.retry ? ' · wait ' + r.retry + ' s' : '');
         show(r.ok ? 'Hexelion' : 'Door', line, r.ok ? 'them' : 'nodata');
+        if (r.ok) renderReceipt(doc, list, r.receiptState);
         db.add({ who: r.ok ? 'Hexelion' : 'Door', text: line, kind: r.ok ? 'them' : 'nodata' }).catch(function () {});
         beep(win, r.ok);
       } catch (err) {
@@ -102,7 +161,7 @@
     if (forget) forget.addEventListener('click', function () { db.clear().catch(function () {}); list.textContent = ''; show('Door', 'This chat is forgotten on this device.', 'nodata'); });
     return { turn: turn };
   }
-  var api = { cief: cief, turn: turn, plain: plain, mount: mount, API: API };
+  var api = { canonical: canonical, verifyReceipt: verifyReceipt, receiptSummary: receiptSummary, renderReceipt: renderReceipt, cief: cief, turn: turn, plain: plain, mount: mount, API: API };
   if (typeof module === 'object' && module.exports) { module.exports = api; }
   root.AtlasAulaChat = api;
   if (root.document && root.document.getElementById) {

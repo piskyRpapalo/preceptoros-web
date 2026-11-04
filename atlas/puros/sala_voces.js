@@ -18,6 +18,7 @@
     { id: 'oraculo', rol: 'the oracle', estado: 'VIVA', cerebro: 'gpt-oss:120b', medida: '34.05 tok/s · ctx 65536 · containment PARTIAL' },
     { id: 'tentaculo', rol: 'the tentacle, with a judge', estado: 'VIVA', cerebro: 'Kimi-48B', medida: '64.78 tok/s' },
     { id: 'sabio', rol: 'the sage', estado: 'VACANTE', causa: 'candidate discarded by benchcard: it fabricated its identity (·6588111541)' },
+    { id: 'hexelion-estacion', rol: 'the station model of the fleet: the interim voice of Hexelion while its bodies forge', estado: 'SIN_BENCHCARD', cerebro: 'NO_DATA: 70B class; model name pending the census' },
     { id: 'privada-1', rol: 'NO_DATA', estado: 'PRIVADA', causa: 'private by decree' },
     { id: 'nodo-sdr', rol: 'a fleet node', estado: 'NO_DATA', causa: 'device voice not measured until the census (H6)' },
     { id: 'nodo-git', rol: 'a fleet node', estado: 'NO_DATA', causa: 'device voice not measured until the census (H6)' },
