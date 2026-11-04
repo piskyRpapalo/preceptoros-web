@@ -7,7 +7,7 @@
   var ready = false, busy = false, loading = false, offline = false;
   var model = 'SmolLM2-135M-Instruct', context = 'Tutorial cabin · local visitor practice';
   var zone = doc.createElement('div'); zone.id = 'map-brain';
-  var guide = doc.querySelector('#voices [data-speaker="Guide"]');
+  var guide = doc.querySelector('#voices [data-speaker="Models"]');
   if (guide) { guide.appendChild(zone); if (note) { guide.appendChild(note); } } else { form.before(zone); }
   // Terminal familia (TF-1): one simple sentence visible; the full disclosure (bytes, SHA-256, licences) stays, folded.
   var simple = doc.createElement('p'); simple.textContent = 'The guide runs on your device; nothing leaves it.'; zone.append(simple);

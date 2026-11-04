@@ -63,16 +63,16 @@
   }
   // TF-2 (buzon#30, 2026-11-02): the voices go in four category buttons; one category is visible, the rest are buttons.
   // The brain (#map-brain), the log and the form stay fixed under the panel: they are the single chatbot's surface.
-  var CATS = [['Start', ['Tutorial', 'Welcome', 'Guide']], ['Explore', ['Map', 'Floor', 'Walkers', 'Zoom']], ['Play', ['House', 'Army']], ['About', ['Radio']]];
+  var CATS = [['Start', ['Welcome', 'Guide']], ['Map', ['Map', 'Floor', 'Walkers', 'Zoom']], ['Tutorial', ['Tutorial']], ['House', ['House']], ['Army', ['Army']], ['Radio', ['Radio']], ['Models', ['Models']]];
   // categoryOf(speaker) → its category; a speaker no category names goes to About, never lost.
   function categoryOf(speaker) {
     for (var i = 0; i < CATS.length; i++) { if (CATS[i][1].indexOf(speaker) >= 0) { return CATS[i][0]; } }
-    return 'About';
+    return 'Start';
   }
   function categories(doc, voices) {
     var map = doc.getElementById('map'), stage = doc.getElementById('stage');
     if (!map || !stage || map.querySelector(':scope > .cats')) { return null; }
-    var bar = doc.createElement('div'), buttons = {}, current = null, icons = { Start: '◇', Explore: '⌖', Play: '✧', About: '◉' };
+    var bar = doc.createElement('div'), buttons = {}, current = null, icons = { Start: '◇', Map: '⌖', Tutorial: '?', House: '⌂', Army: '✧', Radio: '◉', Models: '⬡' };
     bar.className = 'cats'; bar.setAttribute('role', 'group'); bar.setAttribute('aria-label', 'Voices by category');
     voices.classList.add('map-voices');
     stage.appendChild(voices);
@@ -115,8 +115,8 @@
     if (mapActions && zoomVoice) { zoomVoice.appendChild(mapActions); }
     var details = doc.querySelector('#chat > .tech'), guideVoice = voices.querySelector('[data-speaker="Guide"]');
     if (details && guideVoice) { guideVoice.appendChild(details); }
-    var modelPanel = doc.querySelector('#chat > #model-frames-panel');
-    if (modelPanel && guideVoice) { guideVoice.appendChild(modelPanel); }
+    var modelPanel = doc.querySelector('#chat > #model-frames-panel'), modelVoice = voices.querySelector('[data-speaker="Models"]');
+    if (modelPanel && modelVoice) { modelVoice.appendChild(modelPanel); }
     var show = categories(doc, voices);
     function tag(li) {
       if (li.nodeType !== 1 || li.dataset.speaker) { return; }
