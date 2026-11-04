@@ -60,3 +60,24 @@ test('túnel hexagonal: ≤ 600 ms, anillos de seis lados que crecen', () => {
   assert.equal(a.length, 4); a.forEach((r) => assert.equal(r.pts.length, 6));
   assert.ok(b[0].r > a[0].r);
 });
+
+test('cada tic del túnel es una escena Acho determinista y legible', () => {
+  assert.equal(typeof V.tunnelFrame, 'function');
+  const a = V.tunnelFrame(12, 360, 640), b = V.tunnelFrame(12, 360, 640);
+  assert.deepEqual(a, b);
+  assert.equal(a.v, 'preceptoros.acho/1'); assert.equal(a.t, 12);
+  assert.equal(a.seed, 'openworld-entry');
+  assert.match(a.atoms[0].r, /hexagonal tunnel.*frame 12 of 36/i);
+  assert.match(a.sound, /^NO_DATA:/); assert.ok(a.soundCause);
+  assert.ok(Buffer.byteLength(JSON.stringify(a), 'utf8') < 1024);
+  const B = require('../public/game/acho_language.js');
+  const shapes = B.compile(a);
+  assert.equal(shapes.length, 4);
+  assert.equal(B.compile.notes.length, 0);
+  for (let t = 0; t <= V.TUNNEL_FRAMES; t++) {
+    const frame = V.tunnelFrame(t, 360, 640);
+    assert.ok(Buffer.byteLength(JSON.stringify(frame), 'utf8') < 1024, 'frame ' + t + ' exceeds 1,024 B');
+    assert.deepEqual(frame, V.tunnelFrame(t, 360, 640), 'frame ' + t + ' changed for the same scene, seed and tick');
+    assert.equal(B.compile(frame).length, 4); assert.equal(B.compile.notes.length, 0);
+  }
+});
