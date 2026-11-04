@@ -193,6 +193,7 @@
       }).then(function (r) {
         chain = r.chain; if (inside !== b) { return; }
         say('hexelion', r.ok ? r.text + (r.cut ? ' [shortened]' : '') : A.plain(r.cause) + (r.retry ? ' · wait ' + r.retry + ' s' : ''));
+        if (r.ok && A.renderReceipt) A.renderReceipt(page.doc, page.doc.getElementById('log'), r.receiptState);
       }).catch(function (e) { say('hexelion', 'NO_DATA · ' + String(e && e.message || e).slice(0, 120)); });
     });
   }
