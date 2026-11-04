@@ -185,7 +185,8 @@
       tunnelRead.style.position = 'absolute'; tunnelRead.style.width = '1px'; tunnelRead.style.height = '1px';
       tunnelRead.style.padding = '0'; tunnelRead.style.margin = '-1px'; tunnelRead.style.overflow = 'hidden';
       tunnelRead.style.clip = 'rect(0, 0, 0, 0)'; tunnelRead.style.whiteSpace = 'nowrap';
-      surface.after(tunnelRead);
+      var mapState = D.getElementById('state') || D.querySelector('[data-speaker="Map"]');
+      if (mapState) { mapState.after(tunnelRead); }
     }
     tunnelRead.textContent = 'Entering the building through a deterministic hexagonal tunnel, 36 frames.';
     function end() { if (done) { return; } done = true; L.g.clearRect(0, 0, overlay.width, overlay.height); overlay.dataset.tunnel = 'done'; tunnelRead.textContent = ''; then(); }

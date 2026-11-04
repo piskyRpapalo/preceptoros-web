@@ -44,9 +44,11 @@ const ENTRA = `(async () => { const w = (ms) => new Promise((r) => setTimeout(r,
   s.dispatchEvent(new MouseEvent('click', { bubbles: true, clientX: r.left + a.x * r.width / s.width, clientY: r.top + a.y * r.height / s.height }));
   await w(30); const corriendo = L() ? L().dataset.tunnel : null, renderer = L() && L().dataset.renderer,
     tick = L() && Number(L().dataset.frame), lectura = $('openworld-entry-read') && $('openworld-entry-read').getAttribute('aria-live'),
+    vozMap = !!($('openworld-entry-read') && $('openworld-entry-read').closest('[data-speaker="Map"]')),
+    fueraDelMapa = !!($('openworld-entry-read') && !document.getElementById('map').contains($('openworld-entry-read'))),
     chatDurante = document.querySelectorAll('#log li').length;
   for (let i = 0; i < 40 && document.querySelectorAll('#log li').length === antes; i++) await w(50);
-  return JSON.stringify({ corriendo, renderer, tick, lectura, chatDurante, antes, despues: document.querySelectorAll('#log li').length, fin: L() ? L().dataset.tunnel : null }); })()`;
+  return JSON.stringify({ corriendo, renderer, tick, lectura, vozMap, fueraDelMapa, chatDurante, antes, despues: document.querySelectorAll('#log li').length, fin: L() ? L().dataset.tunnel : null }); })()`;
 
 async function main() {
   srv = await sirve(PUBLIC);
@@ -77,7 +79,8 @@ async function main() {
   await espera(1600);
   const e = JSON.parse(await ev(ENTRA) || '{}');
   ok(e.corriendo === 'running' && e.chatDurante === e.antes, 'entering the cabin does not play the worm tunnel first: ' + JSON.stringify(e));
-  ok(e.renderer === 'acho' && e.tick >= 0 && e.lectura === 'polite', 'the tunnel is not painted from legible Acho frames: ' + JSON.stringify(e));
+  ok(e.renderer === 'acho' && e.tick >= 0 && e.lectura === 'polite' && e.vozMap && e.fueraDelMapa,
+    'the tunnel is not painted from legible Acho frames in the Map voice: ' + JSON.stringify(e));
   ok(e.despues > e.antes && e.fin === 'done', 'the building chat does not open after the tunnel: ' + JSON.stringify(e));
   // 2 · movimiento reducido: un anillo quieto, el texto igual, el chat al instante.
   await cmd('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'reduce' }] });
