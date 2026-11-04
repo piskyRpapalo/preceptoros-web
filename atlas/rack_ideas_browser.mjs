@@ -124,16 +124,17 @@ async function main() {
   ok(jPronto >= 1 && jPronto < total && jLuego === total, 'the jewels did not arrive one by one: ' + JSON.stringify(medidas.joyas));
 
   // 4c · a question with no script goes to Hexelion with the building in its context (page-side stub of the edge).
-  // The stub now carries the D7 decision receipt (PROPOSED · FIRMA:NO, sha chain forged with the page's own canonical):
-  // the aula shows the answer AND its receipt beside it; the receipt is only trusted when the chain holds.
+  // The stub now carries the D7 decision receipt (PROPOSED · FIRMA:NO): the aula shows the answer AND its receipt
+  // beside it; the receipt is only trusted when the sha chain holds. Forged here in CI (node) with the same canonical
+  // bytes as the page's, because the aula script only loads when the visitor asks. CI never calls production.
+  const canon = (v) => { if (v === null || typeof v === 'boolean' || typeof v === 'string') { return JSON.stringify(v).replace(/[\u007f-\uffff]/g, (c) => '\\u' + c.charCodeAt(0).toString(16).padStart(4, '0')); } if (Array.isArray(v)) { return '[' + v.map(canon).join(',') + ']'; } if (!v || typeof v !== 'object') { throw new Error('unsupported receipt value'); } return '{' + Object.keys(v).sort().map((k) => canon(k) + ':' + canon(v[k])).join(',') + '}'; },
+    sha256 = async (t) => { const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(t)); return Array.from(new Uint8Array(b), (x) => x.toString(16).padStart(2, '0')).join(''); },
+    veredicto = { state: 'PROPOSED', FUENTE: 'The study index of the rack.', ACCIÓN: 'Advise the visitor; never sign.', EVIDENCIA: 'Measured by la-voz-del-rack in CI.', COSTE: 'One local turn; no external call.', FIRMA: 'NO' },
+    payload_sha256 = await sha256(canon(veredicto)), recibido = '2026-11-04T01:00:00.000Z',
+    recibo_sha256 = await sha256(canon({ recibido: recibido, payload_sha256: payload_sha256 })),
+    RECIBO = JSON.stringify({ veredicto: veredicto, trailer: { recibido: recibido, payload_sha256: payload_sha256, recibo_sha256: recibo_sha256 } });
   const hex = JSON.parse(await ev(`(async () => { const w = (ms) => new Promise((r) => setTimeout(r, ms)), real = window.fetch, vistos = [];
-    const C = window.AtlasAulaChat.canonical,
-      shaHex = async (t) => { const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(t)); return Array.from(new Uint8Array(b), (x) => x.toString(16).padStart(2, '0')).join(''); },
-      veredicto = { state: 'PROPOSED', FUENTE: 'The study index of the rack.', ACCIÓN: 'Advise the visitor; never sign.', EVIDENCIA: 'Measured by la-voz-del-rack in CI.', COSTE: 'One local turn; no external call.', FIRMA: 'NO' },
-      payload_sha256 = await shaHex(C(veredicto)), recibido = '2026-11-04T01:00:00.000Z',
-      recibo_sha256 = await shaHex(C({ recibido: recibido, payload_sha256: payload_sha256 })),
-      recibo = { veredicto: veredicto, trailer: { recibido: recibido, payload_sha256: payload_sha256, recibo_sha256: recibo_sha256 } };
-    let respuesta = { status: 200, body: { v: 'preceptoros.chat/1', estado: 'OK', burbuja: { texto: 'The cabin is where every visit starts.', recortada: false }, sello: { tic: 1, mac: 'x' }, recibo: recibo } };
+    let respuesta = { status: 200, body: { v: 'preceptoros.chat/1', estado: 'OK', burbuja: { texto: 'The cabin is where every visit starts.', recortada: false }, sello: { tic: 1, mac: 'x' }, recibo: ${RECIBO} } };
     window.fetch = (u, o) => { if (String(u).startsWith('https://api.preceptoros.org/')) { vistos.push(JSON.parse(o.body)); return Promise.resolve(new Response(JSON.stringify(respuesta.body), { status: respuesta.status })); } return real(u, o); };
     const last = () => [...document.querySelectorAll('#log li')].filter((li) => !/receipt/.test(li.className || '')).pop(),
       ask = async (t) => { document.getElementById('question').value = t; document.getElementById('entry').dispatchEvent(new Event('submit', { cancelable: true })); await w(900); return (last() || {}).textContent; };
