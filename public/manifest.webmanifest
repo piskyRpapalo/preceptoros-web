@@ -1,8 +1,8 @@
 {
  "id": "/",
- "name": "PreceptorOS · theGame",
+ "name": "PreceptorOS",
  "short_name": "PreceptorOS",
- "description": "A game of waves that runs on your own device. No account, no cloud, no tracking.",
+ "description": "A world of waves that runs on your own device. No account, no cloud, no tracking.",
  "lang": "en",
  "dir": "ltr",
  "start_url": "/",
