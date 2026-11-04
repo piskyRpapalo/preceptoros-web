@@ -61,6 +61,7 @@ try {
   ok(true, 'pure cases: ' + (casos.stdout.match(/# pass \d+/) || ['pass ?'])[0]);
 
   const limpio = await recibo('none');
+  ok(Array.isArray(limpio.floor) && limpio.floor.length > 0 && limpio.floor.every((f) => f.v === 'preceptoros.floor/1' && f.bands.reduce((n, b) => n + b[2], 0) === 217), 'all scenes declare the painter floor');
   ok(!limpio.error, 'clean run: no error in the browser ' + (limpio.error || ''));
   ok(limpio.n2 === true, 'clean run: two runs, same pixels (n=2)');
   ok(limpio.scenes.length === 6 && limpio.scenes.every((e) => e.igual), 'all 6 scenes identical across the two runs');

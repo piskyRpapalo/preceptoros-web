@@ -34,6 +34,14 @@
 <script src="/game/colonia_edificios.js"></script>
 <script src="/game/palette_cycle.js"></script>
 <script src="/game/colonia_pagina.js"></script>
+<script src="/game/tabla_semantica.js"></script>
+<script src="/game/comic_tokens.js"></script>
+<script src="/game/state_frames.js"></script>
+<script src="/game/hex_projection.js"></script>
+<script src="/game/palette_cycle.js"></script>
+<script src="/game/map_painter.js"></script>
+<script src="/atlas/floor_fixture_chunk.js"></script>
+<script src="/atlas/floor_fixture.js"></script>
 <script>
 (function (raiz) {
   'use strict';
@@ -62,6 +70,9 @@
     return canvas;
   }
 
+  raiz.AtlasMapChunks = { load: function () { return Promise.resolve({ chunks: { '0_0': raiz.FloorFixtureChunk }, key: '0_0', say: 'Synthetic floor loaded', detail: 'SYNTHETIC fixture' }); } };
+  AtlasMapPainter.setLive(true);
+
   function run() {
     var escenas = TICKS.map(function (t) { return { t: t, reducido: false, canvas: celda('tick ' + t) }; });
     escenas.push({ t: 0, reducido: true, canvas: celda('tick 0 · reduced motion') });
@@ -79,14 +90,14 @@
       if (primera[i] !== segunda[i]) { resultados.n2 = false; }
     });
     resultados.reducido_quieto = escenas[escenas.length - 1].cielo1 === '#f4ebd0';
+    resultados.floor = escenas.map(function (e) { return AtlasMapPainter.frameOf(raiz.FloorFixtureChunk, e.t, e.reducido); });
     return resultados;
   }
 
-  try {
-    document.getElementById('recibo').textContent = JSON.stringify(run());
-  } catch (error) {
-    document.getElementById('recibo').textContent = 'ERROR · ' + error.message;
-  }
+  AtlasMapPainter.start(function () {
+    try { document.getElementById('recibo').textContent = JSON.stringify(run()); }
+    catch (error) { document.getElementById('recibo').textContent = 'ERROR · ' + error.message; }
+  });
 })(this);
 </script>
 </body>

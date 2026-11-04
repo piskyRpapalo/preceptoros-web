@@ -6,7 +6,7 @@ const page=fileURLToPath(new URL('./hex_projection_check.html',import.meta.url))
 function capture() {
  const html=execFileSync(process.env.CHROME || 'google-chrome',['--headless=new','--no-sandbox','--disable-gpu','--dump-dom','file://'+page],{encoding:'utf8',maxBuffer:4*1024*1024,stdio:['ignore','pipe','ignore']});
  const match=html.match(/<pre id="receipt">(.*?)<\/pre>/s); assert.ok(match,'missing bitmap receipt');
- const receipt=JSON.parse(match[1]); assert.equal(receipt.vector.v,'preceptoros.vector/1');
+ const receipt=JSON.parse(match[1]); assert.equal(receipt.vector.v,'preceptoros.vector/1'); assert.equal(receipt.floor.v,'preceptoros.floor/1'); assert.equal(receipt.floor.bands.reduce((n,b)=>n+b[2],0),217);
  return Buffer.from(receipt.pixels);
 }
 const a=capture(), b=capture();

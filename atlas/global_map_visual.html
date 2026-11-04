@@ -35,6 +35,14 @@
 <script src="../public/game/acho_letters.js"></script>
 <script src="../public/game/isometric_floor_projection.js"></script>
 <script src="../public/game/global_map.js"></script>
+<script src="../public/game/tabla_semantica.js"></script>
+<script src="../public/game/comic_tokens.js"></script>
+<script src="../public/game/state_frames.js"></script>
+<script src="../public/game/hex_projection.js"></script>
+<script src="../public/game/palette_cycle.js"></script>
+<script src="../public/game/map_painter.js"></script>
+<script src="floor_fixture_chunk.js"></script>
+<script src="floor_fixture.js"></script>
 <script>
 (function (raiz) {
   'use strict';
@@ -43,7 +51,7 @@
   var sabotaje = params.get('sabotaje') || '';
   var TICKS = [0, 30, 90, 120];
   var W = 480, H = 240;
-  var FIXTURE = { cabin: { mana: { valor: 60 } }, nodes: [{ id: 'atlantis', mana: { valor: 12 } }, { id: 'risen' }] };
+  var FIXTURE = { cabin: { mana: { valor: 60 } }, nodes: [{ id: 'hexelion', mana: { valor: 12 } }, { id: 'second' }] };
 
   // FNV-1a over the canvas pixels: the same pixels give the same hash in every run.
   function hashCanvas(canvas) {
@@ -58,6 +66,7 @@
     var g = canvas.getContext('2d');
     g.setTransform(1, 0, 0, 1, 0, 0);
     g.fillStyle = sc.paleta.cielo; g.fillRect(0, 0, canvas.width, canvas.height);
+    drawFloorFixture(canvas, t, false);
     var cx = canvas.width / 2, cy = canvas.height / 2 + 14;
     sc.terrain.concat(sc.nodes).forEach(function (nd) {
       var fotograma = nd.frame;
@@ -106,6 +115,7 @@
           resultados.scenes.push({ scene: e.scene, t: e.t, hash: primera[i], hash2: segunda[i], igual: primera[i] === segunda[i] });
           if (primera[i] !== segunda[i]) { resultados.n2 = false; }
         });
+        resultados.floor = scenes.map(function (e) { return JSON.parse(e.canvas.dataset.floorFrame); });
         resultados.recibo_estado_vivo = vivo.nodes || [];
         resultados.ancho = W; resultados.alto = H;
       })
@@ -121,7 +131,7 @@
   filas().then(function (r) {
     if (sabotaje === 'clave') { r.errores.push('expected orphan_visual_node'); }
     try {
-      M.estado({ nodes: [{ id: 'atlantis' }] });
+      M.estado({ nodes: [{ id: 'hexelion' }] });
     } catch (e) { r.errores.push(e.message); }
     r.n2_identical = r.n2;
     document.getElementById('recibo').textContent = JSON.stringify(r, null, 1);

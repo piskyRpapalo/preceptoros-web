@@ -5,10 +5,40 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, readdirSync } from 'node:fs';
 import { createRequire } from 'node:module';
+import { createHash } from 'node:crypto';
 const M = createRequire(import.meta.url)('../public/game/map_painter.js');
 const dir = new URL('../public/map/chunks/', import.meta.url);
 const chunks = Object.fromEntries(readdirSync(dir).map((f) => { const c = JSON.parse(readFileSync(new URL(f, dir), 'utf8')); return [c.c.join('_'), c]; }));
 const bytes = (o) => new TextEncoder().encode(JSON.stringify(o)).length;
+
+test('el fixture visual conserva los bytes del chunk horneado de la cabina', () => {
+  const source = readFileSync(new URL('./floor_fixture_chunk.js', import.meta.url), 'utf8');
+  const match = source.match(/window\.FloorFixtureChunk = (\{.*\});/);
+  assert.ok(match, 'fixture chunk missing');
+  const file = readdirSync(dir).find((name) => name.startsWith('0_0.'));
+  assert.ok(file, 'baked cabin chunk missing');
+  assert.equal(match[1] + '\n', readFileSync(new URL(file, dir), 'utf8'));
+});
+
+test('la carta identifica cada chunk por el SHA-256 de sus bytes', () => {
+  const carta = JSON.parse(readFileSync(new URL('../public/map/carta.json', import.meta.url), 'utf8'));
+  assert.equal(carta.chunks.length, 7);
+  for (const entry of carta.chunks) {
+    const file = entry.id + '.' + entry.sha256.slice(0, 8) + '.json';
+    const raw = readFileSync(new URL(file, dir));
+    assert.equal(createHash('sha256').update(raw).digest('hex'), entry.sha256);
+    assert.equal(raw.length, entry.bytes);
+  }
+});
+
+test('cada chunk cita exactamente el marco del pintor en el tick inicial', () => {
+  assert.equal(Object.keys(chunks).length, 7);
+  for (const c of Object.values(chunks)) {
+    assert.deepEqual(c.floor, M.frameOf(c, 0, false));
+    assert.ok(bytes(c.floor) < 1024);
+    assert.equal(c.floor.bands.reduce((n, band) => n + band[2], 0), c.cells.length);
+  }
+});
 
 test('cada chunk horneado se traduce a un marco < 1.024 B que cuenta todas sus celdas en texto', () => {
   for (const c of Object.values(chunks)) {

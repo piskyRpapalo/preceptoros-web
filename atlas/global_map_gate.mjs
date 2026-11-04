@@ -56,6 +56,7 @@ try {
 
   // 2 · bitmap, clean: n=2 identical pixels in every scene, no errors.
   const limpio = await recibo('none');
+  ok(Array.isArray(limpio.floor) && limpio.floor.length > 0 && limpio.floor.every((f) => f.v === 'preceptoros.floor/1' && f.bands.reduce((n, b) => n + b[2], 0) === 217), 'all scenes declare the painter floor');
   ok(!limpio.error && limpio.n2 === true, 'clean run: two runs, same pixels (n=2)');
   ok(limpio.scenes.length === 8 && limpio.scenes.every((e) => e.igual), 'all 8 scenes identical across the two runs');
   ok(Array.isArray(limpio.errores) && limpio.errores.length === 0, 'clean run: no refused node');
