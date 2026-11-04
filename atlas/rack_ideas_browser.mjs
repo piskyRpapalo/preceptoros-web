@@ -124,17 +124,29 @@ async function main() {
   ok(jPronto >= 1 && jPronto < total && jLuego === total, 'the jewels did not arrive one by one: ' + JSON.stringify(medidas.joyas));
 
   // 4c · a question with no script goes to Hexelion with the building in its context (page-side stub of the edge).
+  // The stub now carries the D7 decision receipt (PROPOSED · FIRMA:NO): the aula shows the answer AND its receipt
+  // beside it; the receipt is only trusted when the sha chain holds. Forged here in CI (node) with the same canonical
+  // bytes as the page's, because the aula script only loads when the visitor asks. CI never calls production.
+  const canon = (v) => { if (v === null || typeof v === 'boolean' || typeof v === 'string') { return JSON.stringify(v).replace(/[\u007f-\uffff]/g, (c) => '\\u' + c.charCodeAt(0).toString(16).padStart(4, '0')); } if (Array.isArray(v)) { return '[' + v.map(canon).join(',') + ']'; } if (!v || typeof v !== 'object') { throw new Error('unsupported receipt value'); } return '{' + Object.keys(v).sort().map((k) => canon(k) + ':' + canon(v[k])).join(',') + '}'; },
+    sha256 = async (t) => { const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(t)); return Array.from(new Uint8Array(b), (x) => x.toString(16).padStart(2, '0')).join(''); },
+    veredicto = { state: 'PROPOSED', FUENTE: 'The study index of the rack.', ACCIÓN: 'Advise the visitor; never sign.', EVIDENCIA: 'Measured by la-voz-del-rack in CI.', COSTE: 'One local turn; no external call.', FIRMA: 'NO' },
+    payload_sha256 = await sha256(canon(veredicto)), recibido = '2026-11-04T01:00:00.000Z',
+    recibo_sha256 = await sha256(canon({ recibido: recibido, payload_sha256: payload_sha256 })),
+    RECIBO = JSON.stringify({ veredicto: veredicto, trailer: { recibido: recibido, payload_sha256: payload_sha256, recibo_sha256: recibo_sha256 } });
   const hex = JSON.parse(await ev(`(async () => { const w = (ms) => new Promise((r) => setTimeout(r, ms)), real = window.fetch, vistos = [];
-    let respuesta = { status: 200, body: { v: 'preceptoros.chat/1', estado: 'OK', burbuja: { texto: 'The cabin is where every visit starts.', recortada: false }, sello: { tic: 1, mac: 'x' } } };
+    let respuesta = { status: 200, body: { v: 'preceptoros.chat/1', estado: 'OK', burbuja: { texto: 'The cabin is where every visit starts.', recortada: false }, sello: { tic: 1, mac: 'x' }, recibo: ${RECIBO} } };
     window.fetch = (u, o) => { if (String(u).startsWith('https://api.preceptoros.org/')) { vistos.push(JSON.parse(o.body)); return Promise.resolve(new Response(JSON.stringify(respuesta.body), { status: respuesta.status })); } return real(u, o); };
-    const ask = async (t) => { document.getElementById('question').value = t; document.getElementById('entry').dispatchEvent(new Event('submit', { cancelable: true })); await w(900); return (document.querySelector('#log li:last-child') || {}).textContent; };
+    const last = () => [...document.querySelectorAll('#log li')].filter((li) => !/receipt/.test(li.className || '')).pop(),
+      ask = async (t) => { document.getElementById('question').value = t; document.getElementById('entry').dispatchEvent(new Event('submit', { cancelable: true })); await w(900); return (last() || {}).textContent; };
     const bien = await ask('tell me a story of the sea');
+    const reciboLi = (document.querySelector('#log li.turn.receipt') || {}).textContent || '';
     respuesta = { status: 503, body: { v: 'preceptoros.chat/1', estado: 'NO_DATA', causa: 'aula_rechaza' } };
     const cerrada = await ask('are you there');
     window.fetch = real;
-    return JSON.stringify({ bien, cerrada, pagina: vistos[0] && vistos[0].contexto.pagina, tics: vistos.map((v) => v.tic) }); })()`));
+    return JSON.stringify({ bien, reciboLi, cerrada, pagina: vistos[0] && vistos[0].contexto.pagina, tics: vistos.map((v) => v.tic) }); })()`));
   medidas.hexelion = hex;
   ok(hex.bien === 'Hexelion · The cabin is where every visit starts.', 'Hexelion\'s live answer is not shown: ' + hex.bien);
+  ok(/Hexelion · Decision proposed\. Hexelion advises; it never signs\./.test(hex.reciboLi || '') && /Payload SHA-256: [0-9a-f]{64}/.test(hex.reciboLi || ''), 'the decision receipt is not shown beside the answer: ' + hex.reciboLi);
   ok(hex.pagina === '/openworld/#b-cabin', 'the door does not know the building: ' + hex.pagina);
   ok(/^Hexelion · NO_DATA · Hexelion is not taking visitors right now\. \(aula_rechaza\)$/.test(hex.cerrada || ''), 'a closed door is not said with its cause: ' + hex.cerrada);
   ok(JSON.stringify(hex.tics) === '[1,2]', 'the turns do not chain: ' + JSON.stringify(hex.tics));
