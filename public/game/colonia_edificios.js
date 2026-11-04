@@ -89,7 +89,7 @@
       v: 'preceptoros.acho/1', id: edificio.id, t: paso, cv: BOX, seal: seal || 'NO_DATA',
       light: LIGHT,
       atoms: [{ k: 'building.hex-prism', r: frase, i: prismItems(h) }],
-      bands: ['paper', 'ink', 'cyan'],
+      bands: ['paper', 'ink', 'cyan', 'ocean'],
       change: ['height'],
       sound: 'NO_DATA: buildings declare no waves; nothing is invented',
       soundCause: 'no harmonic table declared'
