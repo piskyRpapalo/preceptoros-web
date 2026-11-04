@@ -26,31 +26,31 @@
 .radio-chat-lista{margin:0;padding:6px 10px 10px;list-style:none;display:grid;gap:6px;max-height:40vh;overflow-y:auto}
 .radio-chat-lista[hidden],.radio-chat-no-data[hidden]{display:none}
 .radio-chat-no-data{margin:6px 10px;padding:8px;border:2px dashed currentColor}
-html,body{height:100%}
-body{display:flex;flex-direction:column;min-height:100vh}
-main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;padding:0;min-height:100vh;box-sizing:border-box}
+html,body{width:100%;height:100%;min-height:0}
+html{overflow:clip}
+body{position:fixed;inset:0;display:flex;flex-direction:column;min-height:0;overflow:hidden}
+main.map-panel-mask{flex:1;display:grid;grid-template-rows:minmax(280px,52dvh) minmax(0,1fr);grid-template-columns:minmax(0,1fr);max-width:none;width:100%;height:100vh;height:100dvh;padding:0;min-height:0;overflow:hidden;box-sizing:border-box}
 #map,#chat{padding:12px 16px;min-width:0;box-sizing:border-box;overflow:hidden}
-#map{border-bottom:2px solid var(--line);display:flex;flex-direction:column;gap:8px;min-height:44vh;overflow:auto}
+#map{border-bottom:2px solid var(--line);display:flex;flex-direction:column;gap:8px;min-height:0}
 #map h1{font-size:1.25rem;margin:0}
-#map .surface{width:100%;flex:1;min-height:240px;display:block;transition:opacity 300ms ease}
+#map .surface{display:block;width:100%;height:0;min-height:0;min-width:0;flex:1 1 0;transition:opacity 300ms ease}
 @media (prefers-reduced-motion: reduce){#map .surface{transition:none}}
 #map .press{display:flex;flex-wrap:wrap;gap:8px}
 #map .press button{min-height:44px;padding:8px 14px;border:2px solid currentColor;border-radius:var(--radius);background:var(--bg);color:var(--fg);font:inherit;cursor:pointer}
 #map .press button[aria-pressed="true"]{outline:3px solid currentColor;outline-offset:2px}
 #map .state{margin:0;color:var(--soft);font-size:.92rem}
-#chat{display:flex;flex-direction:column;gap:8px;min-height:44vh;overflow:auto}
+#chat{display:flex;flex-direction:column;gap:8px;min-height:0;overflow-y:auto;overscroll-behavior:contain}
 #chat h2{font-size:1.1rem;margin:0}
 #chat .log{flex:1;min-height:0;overflow:auto;margin:0;padding:0;list-style:none;color:var(--soft)}
 #chat form{display:flex;gap:8px}
+#entry{order:8;flex:0 0 auto}
 #chat input{flex:1;min-height:44px;padding:8px 10px;border:2px solid var(--line);border-radius:var(--radius);background:var(--bg);color:var(--fg);font:inherit}
 #chat button{min-height:44px;padding:8px 14px;border:2px solid currentColor;border-radius:var(--radius);background:var(--bg);color:var(--fg);font:inherit}
 #chat button:disabled,#chat input:disabled{opacity:.55}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
-/* One map, one attributed speech panel: stacked on phones, side by side on desktop. */
 .topbar{display:flex;justify-content:flex-end;align-items:center;gap:4px 12px}
 .topbar > a{display:inline-flex;align-items:center;min-width:44px;min-height:44px}
 .stage{position:relative;display:flex;flex-direction:column;min-height:0;flex:1}
-/* Zoom controls follow the map's spoken instructions. */
 #zoom-controls{display:flex;flex-wrap:wrap;gap:2px;
   padding:2px;border:2px solid var(--line);border-radius:var(--radius);background:color-mix(in srgb,var(--bg) 78%,transparent)}
 #zoom-controls button{width:44px;height:44px;padding:0;font-size:1.3rem;font-weight:700;line-height:1}
@@ -73,6 +73,8 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
 .voice .acts,.voice #joy [role="group"],#visitor-play > div{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
 .voice #joy{display:grid;gap:6px}
 .voice #joy label{display:inline-flex;align-items:center;gap:6px;min-height:44px}
+.voice #joy .walk-pad{display:grid;grid-template-columns:repeat(3,44px);grid-template-rows:repeat(3,44px);gap:4px;justify-content:start}
+.voice #joy .walk-pad button,.voice #joy .walk-gap{width:44px;height:44px;min-width:44px;min-height:44px;padding:0;display:grid;place-items:center;font-weight:700}
 #visitor-play h2{font-size:1rem;margin:0}
 .next p{font-size:1.05rem}
 .next button{border-width:3px;font-weight:700}
@@ -84,13 +86,9 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
 .welcome h3{font-size:1.05rem;margin:0}
 .voice .welcome-play{min-height:56px;font-size:1.1rem;font-weight:700;border-width:3px}
 #log li.who-before::before{content:attr(data-speaker) " · ";font-weight:700}
-/* The keyboard ring is the page's own, never the browser default alone (measured 2026-11-02: «auto 1px» before). */
 #map :is(button,a):focus-visible,#chat :is(button,a,select,summary,input):focus-visible{outline:3px solid currentColor;outline-offset:2px}
-/* Tab to every map bubble (map_focus.js): a real 44×44 button over each node, invisible until focused; then its own ring. */
 #map-proxies .map-proxy{position:absolute;width:44px;height:44px;min-width:44px;min-height:44px;padding:0;margin:0;border:0;background:transparent;color:inherit;cursor:pointer;z-index:1}
 #map-proxies .map-proxy:focus-visible{outline:3px solid currentColor;outline-offset:2px}
-/* The speaker in every live announcement (buzon#30, 2026-11-02): «Map: …» for the screen reader only. Generated text is
-   in the accessibility tree and not in textContent, so every exact-text read of these regions stays as it was. */
 .voice :is([aria-live],[role=status])::before{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 .voice[data-speaker="Tutorial"] :is([aria-live],[role=status])::before{content:"Tutorial: "}
 .voice[data-speaker="Welcome"] :is([aria-live],[role=status])::before{content:"Welcome: "}
@@ -102,7 +100,6 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
 .voice[data-speaker="House"] :is([aria-live],[role=status])::before{content:"House: "}
 .voice[data-speaker="Army"] :is([aria-live],[role=status])::before{content:"Army: "}
 .voice[data-speaker="Radio"] :is([aria-live],[role=status])::before{content:"Radio: "}
-/* High contrast (buzon#30, 2026-11-02): system colours only (keywords, never a raw colour); the canvas has its own path. */
 @media (forced-colors: active){
 body,main,#map,#chat,.voice,.radio-chat{background:Canvas;color:CanvasText}
 .voice,.radio-chat,#map,#chat input{border-color:CanvasText}
@@ -122,17 +119,17 @@ button,select,summary,.voice button,#chat button,#map .press button,.radio-chat-
 #zoom-controls{background:var(--bg)}
 :focus-visible{outline-width:4px}
 }
-@media (max-width:899px){html,body{height:auto}main{flex:none;grid-template-rows:auto auto;min-height:0}#map{overflow:visible;min-height:0}#chat{overflow:visible;min-height:0}#map .surface{flex:none;height:45vh;min-height:280px;max-height:620px;width:auto;margin-inline:-16px;border-radius:0}}
-@media (min-width:900px){main{grid-template-rows:1fr;grid-template-columns:3fr 2fr;height:100vh}#map{border-bottom:0;border-right:2px solid var(--line)}}
+@media (max-width:899px){#map .surface{width:calc(100% + 32px);margin-inline:-16px;border-radius:0}}
+@media (min-width:900px){main.map-panel-mask{grid-template-rows:minmax(0,1fr);grid-template-columns:minmax(0,3fr) minmax(0,2fr)}#map{border-bottom:0;border-right:2px solid var(--line)}}
 </style>
 </head>
 <body>
 <a class="skip" href="#chat">Skip to the chat</a>
-<main data-radio-capa>
+<main class="map-panel-mask" data-radio-capa>
 <section id="map" aria-labelledby="map-h">
 <div class="topbar"><h1 id="map-h">preceptoros.org</h1></div>
 <div id="stage" class="stage">
-<canvas class="surface" id="surface" role="img" aria-label="The global map: tutorial cabin and live nodes. Tap or click a node to walk there; arrow keys choose a neighbour, Enter walks."></canvas>
+<canvas class="surface" id="surface" role="img" aria-label="The global map: tutorial cabin and live nodes. Tap or click a node to walk there, or use the map joystick in the chat panel; arrow keys also move, and Enter enters a building."></canvas>
 </div>
 </section>
 <section id="chat" aria-labelledby="chat-h">
@@ -167,7 +164,7 @@ button,select,summary,.voice button,#chat button,#map .press button,.radio-chat-
 </details></li>
 </ol>
 <ul class="log" id="log" role="log" aria-live="polite" aria-label="Conversation">
-<li>Start here: press Play now, tap a node on the map to walk (arrow keys choose one), ask the guide below.</li>
+<li>Start here: press Play now, walk with the map joystick or tap a node, then ask the guide below.</li>
 </ul>
 <form id="entry" onsubmit="return false">
 <label class="sr" for="question">Message</label>

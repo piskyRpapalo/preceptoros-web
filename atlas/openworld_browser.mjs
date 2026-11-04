@@ -77,6 +77,18 @@ async function main() {
   const layout = JSON.parse(await ev(`JSON.stringify((() => { const speech = document.getElementById('log').getBoundingClientRect(); const welcome = document.getElementById('welcome-lore').getBoundingClientRect(); const actions = document.getElementById('joy').getBoundingClientRect(); const bar = document.querySelector('.topbar'); return { speech: speech.top, welcome: welcome.top, actions: actions.top, headerCount: bar.children.length, header: bar.textContent.trim() }; })())`));
   ok(layout.headerCount === 1 && layout.header === 'preceptoros.org' && layout.speech < layout.actions && layout.welcome < layout.actions, 'speech and welcome must precede the controls: ' + JSON.stringify(layout));
 
+  // MV-1 panel mask: a fixed live map window stays visible while one terminal scrolls below it on phones;
+  // desktop keeps the map left and the terminal right. Widths are the commissioned matrix.
+  const mask = [];
+  for (const [width, height, mobile] of [[360, 716, true], [412, 844, true], [900, 900, false], [1200, 900, false]]) {
+    await cmd('Emulation.setDeviceMetricsOverride', { width, height, deviceScaleFactor: 1, mobile }); await espera(120);
+    mask.push(JSON.parse(await ev(`(() => { window.scrollTo(0,0); window.scrollTo(0,100); const rootScroll = scrollY; window.scrollTo(0,0); const m = document.getElementById('map').getBoundingClientRect(), c = document.getElementById('chat').getBoundingClientRect(), s = document.getElementById('surface').getBoundingClientRect();
+      return JSON.stringify({ width: innerWidth, height: innerHeight, map: [m.left,m.top,m.right,m.bottom], chat: [c.left,c.top,c.right,c.bottom], surface: [s.width,s.height], rootScroll, bodyOverflow: getComputedStyle(document.body).overflowY, overflow: getComputedStyle(document.getElementById('chat')).overflowY }); })()`)));
+  }
+  ok(mask.length === 4 && mask.slice(0, 2).every((m) => m.map[1] === 0 && Math.abs(m.map[3] - m.height * 0.52) < 2 && m.chat[1] >= m.map[3] - 1 && Math.abs(m.chat[3] - m.height) < 1 && m.overflow === 'auto' && m.bodyOverflow === 'hidden' && m.rootScroll === 0 && m.surface[1] > m.height * 0.4 && m.surface[1] < m.height * 0.5), 'phone panel mask is not a fixed live map above the scrolling terminal: ' + JSON.stringify(mask.slice(0, 2)));
+  ok(mask.slice(2).every((m) => m.map[1] === 0 && m.chat[1] === 0 && m.map[2] <= m.chat[0] + 1 && Math.abs(m.map[3] - m.height) < 1 && Math.abs(m.chat[3] - m.height) < 1 && m.bodyOverflow === 'hidden' && m.rootScroll === 0 && m.surface[1] > 0), 'desktop panel mask is not one full-height map-left / terminal-right view: ' + JSON.stringify(mask.slice(2)));
+  await cmd('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 1, mobile: true }); await espera(120);
+
   ok(medida.sceneComposer === 'back,front', 'the single map did not load its depth composer: ' + medida.sceneComposer);
   // NORTE 8 · mandato 3 (rebanada 2): el sonido nativo. La cabaña no declara ondas con armónicos, así que su
   // sonido dice NO_DATA con su causa en la región en vivo. Un clic no crea audio sin una voz que sonar.
@@ -104,8 +116,12 @@ async function main() {
     return JSON.stringify({ cats: bs.map((b) => b.dataset.cat), alto: Math.min(...bs.map((b) => b.getBoundingClientRect().height)), antes, explore, form: document.getElementById('entry').getBoundingClientRect().height > 0 }); })()`));
   ok(cats.cats.join() === 'Start,Explore,Play,About' && cats.alto >= 44 && cats.antes.join() === 'Welcome,Tutorial,Guide'.split(',').filter((v) => cats.antes.includes(v)).join() && !cats.antes.includes('Map') && cats.explore.includes('Map') && !cats.explore.includes('Guide') && cats.form,
     'the category panel is not one visible category with 44 px buttons: ' + JSON.stringify(cats));
-  // W-5: the grid is gone; the status panel (with Skip tutorial) must still be on screen at phone width.
-  ok(medida.joystick.buttons === 1 && medida.joystick.top >= 0, 'the status panel is missing or below the phone viewport: ' + JSON.stringify(medida.joystick));
+  // Character control: six native buttons stay in the terminal, outside the map canvas, with 44 px targets and named directions.
+  const stick = JSON.parse(await ev(`(() => { const pad = document.querySelector('#joy .walk-pad'), bs = [...document.querySelectorAll('#joy .walk-pad button')];
+    return JSON.stringify({ label: pad && pad.getAttribute('aria-label'), directions: bs.map((b) => b.dataset.direction), names: bs.map((b) => b.getAttribute('aria-label')), sizes: bs.map((b) => [b.getBoundingClientRect().width,b.getBoundingClientRect().height]), inTerminal: !!pad && document.getElementById('chat').contains(pad), outsideMap: !!pad && !document.getElementById('map').contains(pad) }); })()`));
+  ok(stick.label === 'Map joystick' && stick.directions.join('|') === 'north-west|north-east|west|east|south-west|south-east' && stick.names.every(Boolean) && stick.sizes.every((r) => r[0] >= 44 && r[1] >= 44) && stick.inTerminal && stick.outsideMap, 'the six-direction joystick is missing, unnamed, too small, or covering the map: ' + JSON.stringify(stick));
+  // W-5: the six-direction controls replace the retired map overlay and remain in the scrollable terminal.
+  ok(medida.joystick.buttons === 7 && medida.joystick.top >= 0, 'the terminal movement controls are missing: ' + JSON.stringify(medida.joystick));
   ok(parseFloat(medida.joystick.touch) >= 44, 'tutorial voice controls are below the touch target: ' + medida.joystick.touch);
   // W-5: a click on the cabin hex walks there (already there: it enters); an arrow key with no neighbour says NO_DATA.
   const entered = await ev(CLIC_CABINA);
@@ -121,7 +137,7 @@ async function main() {
   await cmd('Emulation.setDeviceMetricsOverride', { width: 1440, height: 900, deviceScaleFactor: 1, mobile: false });
   await cmd('Page.navigate', { url: origen + '/openworld/' }); await espera(1200);
   const escritorio = JSON.parse(await ev(`(() => { const j = document.getElementById('joy'), r = j.getBoundingClientRect(), b = j.querySelector('button'); return JSON.stringify({ buttons: j.querySelectorAll('button').length, top: r.top, bottom: r.bottom, visible: r.width > 0 && r.height > 0 && r.top >= 0 && r.bottom <= innerHeight, touch: getComputedStyle(b).minHeight, width: document.documentElement.scrollWidth, viewport: innerWidth }); })()`));
-  ok(escritorio.buttons === 1 && escritorio.top >= 0, 'the status panel is missing or below the desktop viewport: ' + JSON.stringify(escritorio));
+  ok(escritorio.buttons === 7 && escritorio.top >= 0, 'the terminal movement controls are missing on desktop: ' + JSON.stringify(escritorio));
   ok(parseFloat(escritorio.touch) >= 44, 'desktop tutorial voice controls are below the touch target: ' + escritorio.touch);
   ok(escritorio.width <= escritorio.viewport, 'the page scrolls sideways at desktop width: ' + escritorio.width + ' > ' + escritorio.viewport);
   // P6: Enter by keyboard goes into the tutorial cabin; its greeting lands in the radio; the input asks its bot; Escape leaves.
@@ -272,9 +288,11 @@ async function main() {
   // Free walk: from the HITL cabin (-1,0) ArrowRight seven times walks the crab east over the floor to 6,0; the seventh is water and is refused.
   // With a visit started, each accepted step is one game step (the eggs hatch by walking).
   const libre = JSON.parse(await ev(`(async () => { const say = () => document.querySelector('#joy [aria-live]').textContent, key = (k) => document.body.dispatchEvent(new KeyboardEvent('keydown', { key: k, bubbles: true }));
+    const visitStep = () => { const p = document.querySelector('#visitor-play div:nth-of-type(2) p'), m = p && p.textContent.match(/Step (\\d+)/); return m ? Number(m[1]) : -1; };
     document.getElementById('visitor-start').click(); for (let i = 0; i < 40 && !document.getElementById('visitor-step'); i++) await new Promise((r) => setTimeout(r, 100));
-    const said = []; for (let i = 0; i < 7; i++) { key('ArrowRight'); said.push(say()); }
-    key('ArrowRight'); const water = say();
+    const stickBefore = visitStep(); document.querySelector('#joy .walk-pad [data-direction="east"]').click(); const stickAfter = visitStep(), stickSaid = say();
+    const said = []; for (let i = 0; i < 6; i++) { key('ArrowRight'); said.push(say()); }
+    key('ArrowRight'); const water = say(); const blockedBefore = visitStep(); document.querySelector('#joy .walk-pad [data-direction="east"]').click(); const stickBlocked = say(), blockedAfter = visitStep();
     // Tap-to-step (the pad retired): a tap west of the crab, off any node, steps it one cell west.
     const s = document.getElementById('surface'), r = s.getBoundingClientRect(), x = Number(s.dataset.youx) - 80, y = Number(s.dataset.youy);
     s.dispatchEvent(new MouseEvent('click', { bubbles: true, clientX: r.left + x * r.width / s.width, clientY: r.top + y * r.height / s.height }));
@@ -288,8 +306,10 @@ async function main() {
     const visitText = document.getElementById('visitor-play').textContent; document.getElementById('visitor-end').click();
     const crab = [...document.querySelectorAll('#frases li')].map((li) => li.textContent).filter((t) => /^you · /.test(t))[0] || '';
     const visit = visitText.match(/Step (\\d+)/);
-    return JSON.stringify({ said, water, tap, tap120, angle120, crab, step: visit ? +visit[1] : -1 }); })()`));
-  ok(libre.said[6] === 'You walk east to 6,0 · moss · step 7', 'the crab does not walk the floor cell by cell: ' + JSON.stringify(libre.said));
+    return JSON.stringify({ said, water, tap, tap120, angle120, crab, step: visit ? +visit[1] : -1, stickBefore, stickAfter, stickSaid, stickBlocked, blockedBefore, blockedAfter }); })()`));
+  ok(libre.stickBefore === 0 && libre.stickAfter === 1 && /You walk east to 0,0/.test(libre.stickSaid), 'the joystick does not advance the active ephemeral visit by one accepted map step: ' + JSON.stringify(libre));
+  ok(/^NO_DATA: water blocks/.test(libre.stickBlocked || '') && libre.blockedAfter === libre.blockedBefore, 'a blocked joystick move changed visit progress or hid its cause: ' + JSON.stringify(libre));
+  ok(libre.said[5] === 'You walk east to 6,0 · moss · step 7', 'the crab does not walk the floor cell by cell: ' + JSON.stringify(libre.said));
   ok(libre.water === 'NO_DATA: water blocks the way east', 'a step into water is not refused: ' + libre.water);
   ok(/on cell 4,0/.test(libre.crab), 'the crab is not drawn on its floor cell after the tap: ' + libre.crab);
   ok(libre.angle120 === '120' && /^You walk west to 4,0/.test(libre.tap120 || ''), 'a tap at 120° does not step the crab toward the drawn cell: ' + JSON.stringify(libre));
