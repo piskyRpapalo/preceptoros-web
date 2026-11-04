@@ -23,8 +23,7 @@
   var CCT = CC ? CC.attach({ doc: doc, win: raiz, colony: function () { return colonia; }, looks: function () { return colony_looks; }, seals: function () { return colony_seals; }, redraw: function () { draw(); renderFrases(); }, stepped: function () { var vb = doc.getElementById('visitor-play'); if (vb) { vb.dispatchEvent(new CustomEvent('visitor:advance')); } }, walk: function () { walkLoop(); }, entered: function (node) { var W = raiz.AtlasInvocacionViva; if (W) { W.tunnel(function () { enterBuilding(node); }); } else { enterBuilding(node); } } }) : null;
   // P5a: the view hitl_walkers.js reads on every visitor:draw (the «?» and the walkers).
   raiz.AtlasOpenworldView = function () { return { colony: colonia_error ? null : colonia, t: entrada.t, reduced: quieto, looks: colony_looks, seals: colony_seals, mana: colony_mana, pending: colony_pending, controls: CCT, state: state, redraw: function () { draw(); } }; };
-  // H1b: two fingers (or the wheel) zoom the colony between 0.6 and 3, anchored to the fingers; the orbit turns the view.
-  // The view (zoom, angle, pan) lives on the canvas and every redraw reads it; only the picture changes (law P5).
+  // Zoom and orbit use the canvas state; the map picture alone changes (law P5).
   var viewSeen = '', ZOOM = raiz.AtlasMapZoom && surface ? raiz.AtlasMapZoom.create(surface, { changed: function () { onZoom(); } }) : null;
   function onZoom() {
     var d = surface.dataset, v = d.zoom + '|' + d.angle + '|' + d.panx + '|' + d.pany;
