@@ -8,6 +8,19 @@
   'use strict';
   var BYTES = 1024;
   function bytes(s) { return typeof TextEncoder === 'function' ? new TextEncoder().encode(s).length : unescape(encodeURIComponent(s)).length; }
+  // Every chatbot line is stored in the same language as the map. The DOM text is its accessible rendering.
+  function speechFrame(id, speaker, text) {
+    var body = String(text), sentence = String(speaker) + ' · ' + body;
+    var frame = { v: 'preceptoros.acho/1', id: 'chat.' + id, t: 0, cv: [412, 96],
+      atoms: [{ k: 'voice.' + id, r: sentence, i: [] }], bands: ['paper', 'ink', 'cyan'], change: ['speech'],
+      sound: 'NO_DATA: this line declares no sound wave', soundCause: 'speech frame has no measured harmonic table' };
+    if (/^NO_DATA(?:\b| ·)/.test(body)) { frame.seal = 'NO_DATA'; }
+    if (bytes(JSON.stringify(frame)) < BYTES) { return frame; }
+    var cause = 'NO_DATA · speech exceeds the 1,024-byte Acho frame limit';
+    return { v: 'preceptoros.acho/1', id: 'chat.' + id, t: 0, cv: [412, 96], seal: 'NO_DATA',
+      atoms: [{ k: 'voice.' + id, r: String(speaker) + ' · ' + cause, i: [] }], bands: ['paper', 'ink', 'cyan'], change: ['speech'],
+      sound: 'NO_DATA: this line declares no sound wave', soundCause: 'speech frame has no measured harmonic table' };
+  }
   // frame(speaker, title) → the header text of a voice. A voice with no speaker, or a header of 1,024 bytes or more, is refused.
   function frame(speaker, title) {
     var who = String(speaker || '').trim();
@@ -42,9 +55,11 @@
   // decir(doc, log, id, text, title) → appends one line «Title · text» with its voice; an unknown voice is refused.
   function decir(doc, log, id, text, title) {
     var v = voz(id); if (!v) { throw new Error('unknown voice: ' + id); }
-    var li = doc.createElement('li'), who = frame(title || v[1]);
+    var li = doc.createElement('li'), who = frame(title || v[1]), acho = speechFrame(id, who, text);
     li.dataset.voice = id; li.dataset.speaker = who; li.title = v[2] + ' · ' + v[3];
-    li.textContent = who + ' · ' + String(text); log.appendChild(li); return li;
+    li.dataset.acho = JSON.stringify(acho);
+    li.className = 'turn ' + (id === 'you' ? 'me' : acho.seal === 'NO_DATA' ? 'nodata' : 'them');
+    li.textContent = acho.atoms[0].r; log.appendChild(li); return li;
   }
   // TF-2 (buzon#30, 2026-11-02): the voices go in four category buttons; one category is visible, the rest are buttons.
   // The brain (#map-brain), the log and the form stay fixed under the panel: they are the single chatbot's surface.
@@ -98,6 +113,7 @@
       if (li.nodeType !== 1 || li.dataset.speaker) { return; }
       var who = speakerOf(li.textContent, li.classList.contains('me'));
       li.dataset.speaker = who;
+      if (!li.dataset.acho) { li.dataset.acho = JSON.stringify(speechFrame(who.toLowerCase().replace(/[^a-z0-9]+/g, '-'), who, li.textContent.replace(new RegExp('^' + who.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ' · '), ''))); }
       // The speaker is shown before the text unless the line already starts with it (CSS ::before, see the page).
       if (li.textContent.indexOf(who + ' · ') !== 0) { li.classList.add('who-before'); }
     }
@@ -118,7 +134,7 @@
     }
     return { voices: voices.querySelectorAll('[data-speaker]').length, show: show };
   }
-  var P = { BYTES: BYTES, CATS: CATS, VOCES: VOCES, voz: voz, decir: decir, categoryOf: categoryOf, frame: frame, speakerOf: speakerOf, mount: mount };
+  var P = { BYTES: BYTES, CATS: CATS, VOCES: VOCES, voz: voz, decir: decir, speechFrame: speechFrame, categoryOf: categoryOf, frame: frame, speakerOf: speakerOf, mount: mount };
   if (typeof module === 'object' && module.exports) { module.exports = P; }
   else { root.AtlasTerminalPanel = P; if (root.document) { P.mounted = mount(root.document); } }
 })(typeof globalThis === 'object' ? globalThis : this);

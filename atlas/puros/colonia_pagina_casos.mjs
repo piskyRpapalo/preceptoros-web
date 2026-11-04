@@ -93,13 +93,21 @@ test('IC7-S4: scene passes the looks of the state to each bot', () => {
   assert.match(bot.frame.atoms[0].r, /flat face/);
 });
 
+test('T2: OpenWorld passes declared mana through to the Acho building prism', () => {
+  const sc = CP.scene(COLONIA, 0, true, {}, { cabin: 'LIVE' }, { cabin: 50 });
+  const building = sc.buildings.find((b) => b.node === 'cabin');
+  assert.equal(building.altura.estado, 'MEDIDO');
+  assert.equal(building.altura.h, require('../../public/game/colonia_edificios.js').altura(50).h);
+  assert.match(building.frame.atoms[0].r, /mana 50 MEDIDO/);
+});
+
 test('HUECO 1 + 2: every bot and building sentence says its seal; a missing seal says NO_DATA, never LIVE', () => {
   const sc = CP.scene(COLONIA, 0, false, {}, { 'ring-e': 'LIVE' });
   const texts = CP.frases(sc);
   assert.equal(texts.length, sc.bots.length + sc.buildings.length, 'one sentence per bot and per building');
   assert.ok(texts.some((t) => /bot of ring-e .*seal LIVE/.test(t)));
   assert.ok(texts.some((t) => /bot of cabin .*seal NO_DATA/.test(t)), 'no seal given: NO_DATA');
-  assert.ok(texts.some((t) => /building b-ring-e on ring-e .*seal LIVE/.test(t)));
+  assert.ok(texts.some((t) => /b-ring-e on ring-e .*seal LIVE/.test(t)));
 });
 
 test('TA-3 (D15): the ephemeral walker has its own sentence, seal NO_DATA, and passes the frame law', () => {

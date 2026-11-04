@@ -65,11 +65,11 @@
   }
 
   // The colony as it is drawn: validated state in, scene out. Throws on any invalid state (no invented row).
-  function scene(estado, t, reducido, looks, seals) {
+  function scene(estado, t, reducido, looks, seals, manaByNode) {
     var validar = root.AtlasColonyState || root.colony;   // the browser: colony_state.js is a classic script, so colony is global
     var colonia = validar(estado);
     var AE = root.AtlasEdificios, PC = root.AtlasPaletteCycle;
-    var sc = AE.scene(colonia, 1, reducido === true, seals);
+    var sc = AE.scene(colonia, 1, reducido === true, seals, manaByNode);
     var cielo = PC.palette(t, reducido === true).cielo;
     // One bot per live node, beside the node's hex (IC7-S3). Buildings are drawn separately, as before.
     var bots = sc.tiles.map(function (n) {
@@ -172,9 +172,9 @@
   }
 
 
-  function draw(canvas, estado, t, reducido, looks, seals, walker) {
+  function draw(canvas, estado, t, reducido, looks, seals, walker, manaByNode) {
     var B = root.AtlasAcho, P = root.AtlasComicAtoms;
-    var sc = scene(estado, t, reducido, looks, seals), hot = canvas.dataset ? canvas.dataset.hot : '';
+    var sc = scene(estado, t, reducido, looks, seals, manaByNode), hot = canvas.dataset ? canvas.dataset.hot : '';
     var you = walker ? tileOf(sc, walker.node) : null;
     // W-3: while the walker walks, it stands between the two hexes by the fraction of its step.
     if (you && walker.to && walker.fraction > 0) {

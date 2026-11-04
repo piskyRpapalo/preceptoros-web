@@ -31,6 +31,11 @@ test('decir writes the title first, with its voice, and refuses an unknown voice
   const d = doc();
   const li = P.decir(d, d.log, 'hexelion', 'NO_DATA · the door is closed');
   assert.equal(li.textContent, 'Hexelion · NO_DATA · the door is closed');
+  const acho = JSON.parse(li.dataset.acho);
+  assert.equal(acho.v, 'preceptoros.acho/1');
+  assert.equal(acho.atoms[0].r, li.textContent);
+  assert.ok(Buffer.byteLength(li.dataset.acho, 'utf8') < 1024);
+  assert.equal(acho.seal, 'NO_DATA');
   assert.equal(li.dataset.voice, 'hexelion'); assert.equal(li.dataset.speaker, 'Hexelion');
   assert.match(li.title, /edge door · the rack, through api\.preceptoros\.org$/);
   assert.equal(P.decir(d, d.log, 'script', 'Welcome.', 'Tutorial cabin').textContent, 'Tutorial cabin · Welcome.');
@@ -38,4 +43,16 @@ test('decir writes the title first, with its voice, and refuses an unknown voice
   assert.equal(d.log.children.length, 3);
   assert.throws(() => P.decir(d, d.log, 'oracle', 'x'), /unknown voice/);
   assert.throws(() => P.decir(d, d.log, 'script', 'x'), /without a speaker/);
+});
+
+test('chat lines remain accessible text backed by Acho frames, and over-limit speech fails closed', () => {
+  const good = P.speechFrame('hexelion', 'Hexelion', 'A measured reply.');
+  assert.equal(good.v, 'preceptoros.acho/1');
+  assert.equal(good.atoms[0].r, 'Hexelion · A measured reply.');
+  assert.equal('seal' in good, false, 'unmeasured speech has no invented state seal');
+  assert.equal(good.sound.startsWith('NO_DATA:'), true);
+  assert.ok(Buffer.byteLength(JSON.stringify(good), 'utf8') < 1024);
+  const long = P.speechFrame('hexelion', 'Hexelion', 'x'.repeat(1100));
+  assert.equal(long.seal, 'NO_DATA');
+  assert.match(long.atoms[0].r, /speech exceeds the 1,024-byte Acho frame limit/);
 });

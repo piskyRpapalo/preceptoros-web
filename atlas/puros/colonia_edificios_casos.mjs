@@ -31,9 +31,43 @@ test('a module keeps its colour from the id: the same colour in every run and ev
   for (const c of a) assert.ok(E.MODULOS.includes(c), 'the colour is one of the house bands');
 });
 
-test('a building shape comes from its id, one of the three forms, and all three appear across ids', () => {
-  const formas = new Set(Array.from({ length: 40 }, (_, i) => E.formaDe('b-' + i)));
-  assert.deepEqual([...formas].sort(), [...E.FORMAS].sort());
+test('every building uses the same Acho hexagonal prism; id no longer chooses dome, tower or block art', () => {
+  assert.deepEqual(E.FORMAS, ['hex-prism']);
+  for (let i = 0; i < 40; i++) assert.equal(E.formaDe('b-' + i), 'hex-prism');
+});
+
+test('T2 logarithmic height matches the registered floor, coefficient and sample values', () => {
+  assert.equal(E.H0, 27);
+  assert.equal(E.K, 0.325);
+  assert.equal(E.altura(0).h, 27);
+  assert.equal(Math.round(E.altura(10).h * 100) / 100, 48.04);
+  assert.equal(Math.round(E.altura(50).h * 100) / 100, 61.5);
+  assert.equal(Math.round(E.altura(100).h * 100) / 100, 67.5);
+  assert.equal(E.altura(50).estado, 'MEDIDO');
+});
+
+test('missing or invalid T2 mana keeps floor height with NO_DATA and a cause', () => {
+  for (const mana of [undefined, null, -1, 101, 2.5, '50', false]) {
+    const a = E.altura(mana);
+    assert.equal(a.h, E.H0);
+    assert.equal(a.estado, 'NO_DATA');
+    assert.ok(a.causa);
+  }
+});
+
+test('the prism frame has three Acho ribbon walls and one six-sided roof; mana changes height, never width', () => {
+  const short = E.scene(COLONIA, 1, false, {}, {}).buildings.find((b) => b.node === 'cabin').frame;
+  const tall = E.scene(COLONIA, 1, false, {}, { cabin: 100 }).buildings.find((b) => b.node === 'cabin').frame;
+  const a = short.atoms[0].i, b = tall.atoms[0].i;
+  assert.equal(short.atoms[0].k, 'building.hex-prism');
+  assert.equal(a.length, 4);
+  assert.ok(a.every((item) => item.o === 'ribbon' && item.closed === true));
+  assert.deepEqual(a.slice(0, 3).map((item) => item.f), ['ocean', 'ink', 'ocean']);
+  const x = (items) => items[3].pts.map((p) => p[0]);
+  assert.deepEqual(x(a), x(b));
+  assert.ok(a[3].pts[0][1] - b[3].pts[0][1] > 0);
+  assert.match(short.atoms[0].r, /NO_DATA:/);
+  assert.match(short.atoms[0].r, /no mana measurement declared/);
 });
 
 test('every frame obeys the law: under 1,024 bytes, a sentence on each atom, a declared sound', () => {
