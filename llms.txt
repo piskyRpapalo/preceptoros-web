@@ -25,10 +25,10 @@ Anything deeper is NO_DATA, cause: beyond declared depth.
 
 ## The ecosystem
 
-- [WEB: preceptoros-web README](https://github.com/piskyRpapalo/preceptoros-web/blob/main/README.md): this repository — the public website; its home page is a door panel: the OpenWorld world at `/openworld/` and the installable guide. theGame was retired 2026-10-28 (corte D). Measured: zero external requests on load.
+- [WEB: preceptoros-web README](https://github.com/piskyRpapalo/preceptoros-web/blob/main/README.md): this repository — the public website; its home page is the OpenWorld door at `/openworld/` plus the install guide; theGame was retired 2026-10-28 (corte D). Measured: zero external requests on load.
 - [APP: PreceptorOS README](https://github.com/piskyRpapalo/PreceptorOS/blob/main/README.md): the local-first companion application — local memory, local inference, zero cloud.
-- [STATE.md (APP)](https://github.com/piskyRpapalo/PreceptorOS/blob/main/STATE.md): the ecosystem's state card — measured figures with their source, NO_DATA with cause. Written to be read in one pass and handed to another AI.
-- [STATE.md (LAB)](https://github.com/piskyRpapalo/lab/blob/main/STATE.md): the same state card, published from the measured record.
+- [STATE.md (APP)](https://github.com/piskyRpapalo/PreceptorOS/blob/main/STATE.md): the ecosystem's state card — measured figures with their source, NO_DATA with cause. Written to be read in one pass and handed on.
+- [STATE.md (LAB)](https://github.com/piskyRpapalo/lab/blob/main/STATE.md): the same state card, from the measured record.
 - [PRECEPTOR.md](https://github.com/piskyRpapalo/PreceptorOS/blob/main/PRECEPTOR.md): the contributor contract, signed by the architect. What an AI may do here, and how it must report what it measures.
 - [RACK.md](https://github.com/piskyRpapalo/PreceptorOS/blob/main/RACK.md): the rack's public card — the machines, what runs on them, what was measured. No addresses, no ports, no keys.
 
@@ -39,7 +39,7 @@ Anything deeper is NO_DATA, cause: beyond declared depth.
 
 ## Live site
 
-- [preceptoros.org](https://preceptoros.org): the served site. English, zero external requests on load, 82 web tests: 81 passing and 1 skipped (measured 2026-11-02; live figure in /counters.json).
+- [preceptoros.org](https://preceptoros.org): the served site. English, zero external requests on load, 82 web tests (measured 2026-11-02; live figure in /counters.json).
 - [Action manifest for visiting AIs](/mcp-manifest.json): what a visitor (human or AI) can do here today, each linked to a real element of the page. An AI proposes; the human acts. No network (Reglamento (UE) 2024/1689, Art. 50).
 
 ## For AI agents · the local MCP server
@@ -50,7 +50,7 @@ Anything deeper is NO_DATA, cause: beyond declared depth.
 
 ## HEXELION Star · public machine references
 
-Plain identifiers only; the site makes no lookup calls from these values. Each entry carries exactly one tag: [applies] means at least one reference applies to the WEB as measured; [self-imposed] means the project adopts it as its own restriction, with no claim of external applicability. The English catalogue contains 43 entries from the signed A1–D45 annex. Two records are held for safe naming. The final unique count is NO_DATA until the earlier table can be reconciled.
+Plain identifiers; the site makes no lookup calls. Each entry carries exactly one tag: [applies] means at least one reference applies to the WEB as measured; [self-imposed] means the project adopts it as its own restriction, with no claim of external applicability. The English catalogue contains 43 entries from the signed A1–D45 annex. Two records are held for safe naming. The final unique count is NO_DATA until the earlier table can be reconciled.
 
 - A1: W3C-CSP-Level3 / NIST-SP-800-207 / Wikidata:Q104889869 · [self-imposed]
 - A2: ECMA-262-ESModules / SLSA-Level-3 · [self-imposed]
@@ -107,7 +107,7 @@ Read this index, then come back ONCE for ONE package by name (pass 2, <=300 toke
 - rack: machines, measured, no addresses
 - benchmarks: 2026-10-11 embedding/reading
 - hexelion: 43 machine references, A1-D45
-- thegame: retired 2026-10-28 (corte D); the map lives at /openworld/
+- thegame: retired 2026-10-28; the map lives at /openworld/
 - citizenship: Ed25519 key, never leaves device
 - guardrails: forbidden words, 25 MiB ceiling (signed exceptions in EXCEPCIONES.md), no network
 - measured: the MEASURED/NO_DATA rule
