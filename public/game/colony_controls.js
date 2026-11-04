@@ -68,8 +68,8 @@
     try { store.setItem(KEY, look); return true; } catch (e) { return false; }
   }
 
-  // mount(doc, container, handlers): the DOM glue of the joystick and the terminal choice (TA-4). Not run by the pure cases.
-  // handlers: { move(direction), enter(), choose(look | null), skip() }. Every control is a real button, at least 44 px high.
+  // mount(doc, container, handlers): the DOM glue of the map joystick and terminal choice (TA-4). Not run by the pure cases.
+  // handlers: { select(direction), enter(), choose(look | null), skip() }. Every control is a real button, at least 44 px.
   function mount(doc, container, handlers) {
     var box = doc.createElement('div');
     box.setAttribute('role', 'group');
@@ -83,8 +83,21 @@
       b.addEventListener('click', onClick);
       return b;
     }
-    // W-4: the six-direction grid and «enter node» are gone. The map is walked by clicking a node (W-3), and the arrow
-    // keys choose a neighbouring node; Enter walks there. Every selection is said on the status line (live region).
+    // Six native controls inside the terminal, never over the map canvas. They use the same axial movement as arrow keys.
+    var pad = doc.createElement('div'); pad.className = 'walk-pad'; pad.setAttribute('role', 'group'); pad.setAttribute('aria-label', 'Map joystick');
+    var directions = [
+      ['north-west', 'NW'], null, ['north-east', 'NE'],
+      ['west', 'W'], null, ['east', 'E'],
+      ['south-west', 'SW'], null, ['south-east', 'SE']
+    ];
+    directions.forEach(function (entry) {
+      if (!entry) { var gap = doc.createElement('span'); gap.className = 'walk-gap'; gap.setAttribute('aria-hidden', 'true'); pad.appendChild(gap); return; }
+      var b = button(entry[1], function () { handlers.select(entry[0], 'joystick'); });
+      b.dataset.direction = entry[0]; b.setAttribute('aria-label', 'Walk ' + entry[0]); pad.appendChild(b);
+    });
+    box.appendChild(pad);
+    // W-4: node choice remains available with arrow keys and map taps; Enter enters the selected building.
+    // Touch buttons now move the same ephemeral walker, on the panel, outside the map drawing.
     var actions = doc.createElement('div');
     actions.setAttribute('role', 'group');
     actions.setAttribute('aria-label', 'Tutorial');
@@ -96,8 +109,8 @@
     });
     sel.style.minHeight = '44px';
     sel.addEventListener('change', function () { handlers.choose(sel.value === '' ? null : sel.value); });
-    // 2026-11-02 (the Sovereign p0, buzon#30): the on-map stick pad is retired (retirados/RETIRO-joystick-20261102.md).
-    // Touch walks by tapping the map (a node: walk the route; another cell: one free step toward it); arrows still step.
+    // 2026-11-02 (the Sovereign p0, buzon#30): the on-map overlay is retired (retirados/RETIRO-joystick-20261102.md).
+    // Touch can tap the map or use the six native controls in the terminal; neither control covers the scene.
     // Free walk: on by default once the floor is loaded; off gives back the W-4 node law (arrows choose a node).
     var freeLabel = doc.createElement('label'), free = doc.createElement('input');
     free.type = 'checkbox'; free.id = 'free-walk'; free.checked = true; free.style.minHeight = free.style.minWidth = '44px';
