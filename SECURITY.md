@@ -1,6 +1,6 @@
-# Security policy Â· the WEB (preceptoros-web)
+# Security policy · the WEB (preceptoros-web)
 
-Status: PROPOSAL Â· REQUIRES SIGNATURE. This card states the security posture
+Status: PROPOSAL · REQUIRES SIGNATURE. This card states the security posture
 of the WEB as measured. What is not measured appears as NO_DATA with its
 cause, never as an assurance.
 
@@ -13,11 +13,11 @@ leaves it only when the visitor presses send.
 
 ## The one outgoing call
 
-POST https://api.preceptoros.org/api/v1/cedulas â only after an explicit
+POST https://api.preceptoros.org/api/v1/cedulas — only after an explicit
 visitor gesture. The payload is the signed reception contract
 (public/game/node_reception_contract.js), at most 1,024 bytes, strict UTF-8.
 The WEB verifies signatures (public/game/node_signature_verify.js) and the
-verdict is always authority:false â presence declared, never verified
+verdict is always authority:false — presence declared, never verified
 authority. With no Ed25519 available the result is PENDING with its cause; a
 rejection is never simulated.
 

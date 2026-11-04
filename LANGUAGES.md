@@ -1,9 +1,9 @@
-# LANGUAGES â the dated matrix of the nine languages
+# LANGUAGES — the dated matrix of the nine languages
 
-**RE-CLASSIFIED Â· 2026-11-04 (corte D, 2026-10-28):** the game text files
+**RE-CLASSIFIED · 2026-11-04 (corte D, 2026-10-28):** the game text files
 (`public/atlas-<code>.json`) and the game loader
 (`public/assets/thegame.js`) were retired with theGame; none of them exists
-anymore. `atlas/mvp_casos.mjs` no longer checks this table â since corte D
+anymore. `atlas/mvp_casos.mjs` no longer checks this table — since corte D
 it is the retirement guard (the retired files must stay absent and out of
 the precache). The matrix below is kept as a dated measure of what the
 nine portals served on 2026-10-19 (base `eac293d`). Piece P10 of the
@@ -12,7 +12,7 @@ ideas18oct specification, in its time.
 *(ES: la matriz verificable de las 9 lenguas; la vigila el caso C8. Si una fila
 miente, el gate se pone rojo.)*
 
-## Matrix â dated measure kept as history (game text measured 2026-10-19, base `eac293d`; portals 2026-10-25)
+## Matrix — dated measure kept as history (game text measured 2026-10-19, base `eac293d`; portals 2026-10-25)
 
 | Code | Language | Dir | Portal `/<code>/` | Game text `public/atlas-<code>.json` | Strings | Game loader |
 |---|---|---|---|---|---|---|
@@ -34,10 +34,10 @@ miente, el gate se pone rojo.)*
   portals were the same English landing nine times; `worker/index.js` answers
   each `/<code>/` with a 301 to `/`.
 - **Game text:** all nine files existed; eight carried 209 strings against
-  300 in English â 91 strings per language were NO_DATA (cause: not
+  300 in English — 91 strings per language were NO_DATA (cause: not
   translated).
-- **Game loader:** `public/assets/thegame.js` loaded onl9 en
-  (`var LENGUAS = ['en']`) â a fence of the house ("loader onl9'en'",
+- **Game loader:** `public/assets/thegame.js` loaded only `en`
+  (`var LENGUAS = ['en']`) — a fence of the house ("loader only 'en'",
   AGENTS.md), not a bug.
 - **Tightest file:** `atlas-en.json` was 16,365 B, 19 B under the 16,384 B
   piece ceiling of the MVP.
