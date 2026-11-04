@@ -1,6 +1,6 @@
 # Families · 1/2
 
-2026-11-03 · Beelink · `git ls-tree` / `git grep` on web 97c5d644 and app
+2026-11-03 · local rack (device identifier withheld) · `git ls-tree` / `git grep` on web 97c5d644 and app
 7e40181. A = source slice served, B = rack/integration not measured.
 
 | Family | Anchor or NO_DATA | A/B | Empty template must say |

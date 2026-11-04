@@ -1,6 +1,6 @@
 # Web byte receipt · 2026-11-03 19:04Z
 
-Beelink: `curl https://preceptoros.org/game/<file> | sha256sum`, compared
+Local rack (device identifier withheld): `curl https://preceptoros.org/game/<file> | sha256sum`, compared
 with `git show origin/main:public/game/<file> | sha256sum` (97c5d644).
 All four pairs equal:
 
