@@ -57,6 +57,8 @@
     { id: 'b-cabin', node: 'cabin' }, { id: 'b-ring-e', node: 'ring-e' },
     { id: 'b-ring-nw', node: 'ring-nw' }, { id: 'b-ring-sw', node: 'ring-sw' }
   ];
+  // Synthetic T2 values exercise the signed curve; these are fixtures, never live node measurements.
+  var MANA = { cabin: 0, 'ring-e': 10, 'ring-nw': 50, 'ring-sw': 100 };
   var COLONIA = { nodes: NODOS, buildings: EDIFICIOS, units: [] };
 
   // FNV-1a over the canvas pixels: the same pixels give the same hash in every run.
@@ -89,7 +91,7 @@
     var canvas = document.createElement('canvas');
     canvas.width = W; canvas.height = H;
     var cap = document.createElement('figcaption');
-    cap.textContent = titulo + ' · growth ' + scene.paso + '/' + scene.pasos + ' · ' + scene.buildings.length + ' buildings';
+    cap.textContent = titulo + ' · growth ' + scene.paso + '/' + scene.pasos + ' · ' + scene.buildings.map(function (b) { return b.node + ' h=' + Math.round(b.altura.h) + 'px ' + b.altura.estado; }).join(' · ');
     fig.appendChild(canvas); fig.appendChild(cap);
     fila.appendChild(fig);
     return canvas;
@@ -100,12 +102,12 @@
     var escenas = [];
     var filaA = document.getElementById('filaA'), filaB = document.getElementById('filaB'), filaC = document.getElementById('filaC');
     var todas = [];
-    var whole = E.scene(COLONIA, 1, false);
-    todas.push({ scene: 'A', nombre: 'whole', fila: filaA, scene: whole });
-    E.nacimiento(COLONIA, false).forEach(function (sc) { todas.push({ scene: 'B', nombre: 'birth', fila: filaB, scene: sc }); });
-    E.nacimiento(COLONIA, true).forEach(function (sc) { todas.push({ scene: 'C', nombre: 'reduced', fila: filaC, scene: sc }); });
+    var whole = E.scene(COLONIA, 1, false, {}, MANA);
+    todas.push({ etiqueta: 'A', nombre: 'whole', fila: filaA, scene: whole });
+    E.nacimiento(COLONIA, false, {}, MANA).forEach(function (sc) { todas.push({ etiqueta: 'B', nombre: 'birth', fila: filaB, scene: sc }); });
+    E.nacimiento(COLONIA, true, {}, MANA).forEach(function (sc) { todas.push({ etiqueta: 'C', nombre: 'reduced', fila: filaC, scene: sc }); });
     todas.forEach(function (e) {
-      e.canvas = celda(e.fila, e.scene + ' · ' + e.nombre, e.scene);
+      e.canvas = celda(e.fila, e.etiqueta + ' · ' + e.nombre, e.scene);
       escenas.push(e);
     });
     escenas.forEach(function (e) { dibuja(e.canvas, e.scene, false); });
@@ -113,13 +115,13 @@
     escenas.forEach(function (e) { dibuja(e.canvas, e.scene, sabotaje === 'jitter'); });
     var segunda = escenas.map(function (e) { return hashCanvas(e.canvas); });
     escenas.forEach(function (e, i) {
-      resultados.scenes.push({ scene: e.scene, paso: e.scene.paso, hash: primera[i], hash2: segunda[i], igual: primera[i] === segunda[i] });
+      resultados.scenes.push({ scene: e.etiqueta + ' · ' + e.nombre, paso: e.scene.paso, hash: primera[i], hash2: segunda[i], igual: primera[i] === segunda[i] });
       if (primera[i] !== segunda[i]) { resultados.n2 = false; }
     });
     // Reduced motion must arrive at the same pixels as the whole scene.
     resultados.reducido_igual_a_entero = primera[primera.length - 1] === primera[0];
     resultados.ancho = W; resultados.alto = H;
-    resultados.edificios = whole.buildings.map(function (b) { return b.id + ':' + b.forma; });
+    resultados.edificios = whole.buildings.map(function (b) { return b.id + ':' + b.forma + ':' + b.altura.h; });
     return resultados;
   }
 

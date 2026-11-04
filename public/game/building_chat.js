@@ -1,7 +1,8 @@
 // P6 (2.5D village plan, "Buildings with a chatbot"): every building of the colony catalogue talks, in the browser,
 // with no server. Pure: no random numbers, no clock reads, no I/O. A building's kind is the tutorial cabin (its node is
-// "cabin") or its shape from colonia_edificios.js (dome, tower, block). Each kind has a script: a greeting, what it
-// measures, what it offers, and short replies keyed by simple intents. A question with no scripted intent would need a
+// "cabin") or its Acho hexagonal prism. The generic script describes only declared state and T2 height. Each kind has
+// a greeting, what it measures, what it offers, and short replies keyed by simple intents. A question with no scripted
+// intent would need a
 // model: it goes to chunk_router.js, and with no model installed the answer is its honest NO_DATA cause. Nothing is
 // invented. Every line is a acho-language frame under 1,024 UTF-8 bytes (state_frames.js).
 (function (root) {
@@ -31,40 +32,16 @@
         offer: 'Walk to a live node, listen to the cabin, or skip the tutorial from the status panel.'
       }
     },
-    dome: {
-      name: 'Dome',
-      greeting: 'This is a dome. It keeps the eggs of its node.',
-      measures: 'I measure the eggs this node declares. A count that is not published is NO_DATA.',
-      offers: 'I offer a look at the egg count. Hatching is signed by a person, never by me.',
+    'hex-prism': {
+      name: 'Hexagonal building',
+      greeting: 'This is a hexagonal building drawn in Acho from the OpenWorld state.',
+      measures: 'Its height follows the T2 mana rule. Without declared mana, its height is the floor and the measure is NO_DATA.',
+      offers: 'Ask status for this node seal, or ask the rack for sourced ideas. I describe state and never invent it.',
       replies: {
         help: 'Ask me: what, status or offer. Escape or the Leave building button takes you out.',
-        what: 'A dome is a hatchery. It holds eggs; it does not make them.',
+        what: 'This is a hexagonal prism on one OpenWorld node, rendered only with Acho frames.',
         status: 'My status is the seal of my node. Without a measure it is NO_DATA.',
-        offer: 'I can tell you what is declared here. I never sign, adopt or hatch for you.'
-      }
-    },
-    tower: {
-      name: 'Tower',
-      greeting: 'This is a tower. It watches the duels of its node.',
-      measures: 'I measure the duels this node declares. A result that is not published is NO_DATA.',
-      offers: 'I offer the rules of a duel. A challenge is signed by a person, never by me.',
-      replies: {
-        help: 'Ask me: what, status or offer. Escape or the Leave building button takes you out.',
-        what: 'A tower is a duel hall. Every duel replays from its law, its seed and its actions.',
-        status: 'My status is the seal of my node. Without a measure it is NO_DATA.',
-        offer: 'I can explain a duel. I never challenge, accept or settle for you.'
-      }
-    },
-    block: {
-      name: 'Block',
-      greeting: 'This is a block. It keeps the workshop of its node.',
-      measures: 'I measure the parts this node declares. A part that is not published is NO_DATA.',
-      offers: 'I offer a list of what is declared. Building is signed by a person, never by me.',
-      replies: {
-        help: 'Ask me: what, status or offer. Escape or the Leave building button takes you out.',
-        what: 'A block is a workshop. It shows parts; it does not invent them.',
-        status: 'My status is the seal of my node. Without a measure it is NO_DATA.',
-        offer: 'I can tell you what is declared here. I never sign or trade for you.'
+        offer: 'I can tell you what is declared here and return NO_DATA with its cause when it is absent.'
       }
     }
   };

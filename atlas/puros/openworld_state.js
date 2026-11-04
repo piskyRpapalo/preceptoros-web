@@ -1,6 +1,6 @@
 // IC7-S2 · state file of /openworld/, schema v2. Pure: no random numbers, no clock reads, no network.
 // v1 (`{ esquema, nodes: [] }`) carries no colony. v2 carries `colonia` with nodes that declare their own seal and date:
-// `{ id, q, r, alive, seal, since }`, and buildings `{ id, node }`. Only a node that is alive AND sealed LIVE or STALE
+// `{ id, q, r, alive, seal, since, mana? }`, and buildings `{ id, node }`. Only a node that is alive AND sealed LIVE or STALE
 // is drawn; the rest is counted as hidden, never invented. A LIVE seal without a dated measurement is refused.
 // The geometry is checked by colony_state.js (IC1): at most one building per node, unique ids, no dangling references.
 (function (root) {
@@ -28,7 +28,13 @@
     var look = n.look === undefined ? 'basic' : n.look;
     if (LOOKS.indexOf(look) < 0) { fail('node ' + n.id + ' has an unknown look ' + JSON.stringify(look)); }
     if (n.pending !== undefined && (typeof n.pending !== 'string' || n.pending === '')) { fail('node ' + n.id + ' has a malformed pending piece'); }
-    return { id: n.id, q: n.q, r: n.r, alive: n.alive, seal: n.seal, since: n.since, look: look, pending: n.pending };
+    var row = { id: n.id, q: n.q, r: n.r, alive: n.alive, seal: n.seal, since: n.since, look: look, pending: n.pending };
+    // Mana is an optional T2 input. Preserve its declared scalar as-is; the Acho adapter turns absent/invalid values
+    // into floor height with NO_DATA and a cause instead of rejecting the otherwise valid node or inventing a value.
+    if (Object.prototype.hasOwnProperty.call(n, 'mana')) {
+      row.mana = n.mana !== null && typeof n.mana === 'object' ? 'invalid declared mana type' : n.mana;
+    }
+    return row;
   }
 
   // leer(estado) → { version, colonia, seals, hidden }. colonia is null for v1, and otherwise the IC1 colony of
@@ -48,9 +54,13 @@
     var ids = {};
     visibles.forEach(function (n) { ids[n.id] = true; });
     var buildings = c.buildings.filter(function (b) { return b && ids[b.node]; }).map(function (b) { return { id: b.id, node: b.node }; });
-    var seals = {}, looks = {}, pending = {};
+    var seals = {}, looks = {}, pending = {}, mana = {};
     nodes.forEach(function (n) { seals[n.id] = n.seal; });
-    visibles.forEach(function (n) { looks[n.id] = n.look; if (n.pending) { pending[n.id] = n.pending; } });
+    visibles.forEach(function (n) {
+      looks[n.id] = n.look;
+      if (n.pending) { pending[n.id] = n.pending; }
+      if (Object.prototype.hasOwnProperty.call(n, 'mana')) { mana[n.id] = n.mana; }
+    });
     return {
       version: 2,
       colonia: colony({
@@ -60,6 +70,7 @@
       }),
       seals: seals,
       looks: looks,
+      mana: mana,
       pending: pending,
       hidden: nodes.length - visibles.length
     };

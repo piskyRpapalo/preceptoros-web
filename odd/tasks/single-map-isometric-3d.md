@@ -70,6 +70,7 @@ None.
 ## Log
 
 - 2026-10-31 · Plan declared. The fence (no 3D engine) is kept as the first rule.
+- 2026-11-04 · OpenWorld buildings/chat slice prepared on current main `107cd5d9` (web#637 merge). The prior buildings were already Acho frames, but used hash-selected flat dome/tower/block silhouettes; this proposal replaces them with one fixed hexagonal prism, three side faces and one roof, under the existing light vector. Height follows T2 `h(mana)=27·(1+0.325·ln(1+mana))`, with integer mana 0–100; absent/invalid mana keeps the 27 px base and declares `NO_DATA` with cause. Main's OpenWorld state has no mana field, so no live node height is claimed. Chat lines now carry a canonical `preceptoros.acho/1` frame in the accessible transcript; no non-Acho drawing format or new external asset is introduced. Local contact sheet uses labelled synthetic mana solely for geometry review. Reduced-motion and deterministic scene checks pass locally; no Doogee/Hexelion device measurement is claimed. Served-file cascade and SW version remain pending Mesa's next seal assignment above `dm`.
 
 ## Next step
 
