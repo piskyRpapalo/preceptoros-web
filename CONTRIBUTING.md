@@ -12,7 +12,7 @@
 
 This is the collaboration contract of **PreceptorOS**, a local-first
 AI-sovereignty ecosystem in four public parts: **WEB** (this repo — the
-gateway and the game), **APP**
+gateway and the living world), **APP**
 ([PreceptorOS](https://github.com/piskyRpapalo/PreceptorOS) — the companion
 application; its per-device contract is
 [PRECEPTOR.md](https://github.com/piskyRpapalo/PreceptorOS/blob/main/PRECEPTOR.md)),
@@ -40,8 +40,8 @@ consequential action.
    determinism is the medium, not a preference.
 5. **Propose-only.** No agent merges, signs, or deploys its own work. Every
    consequential action (merge, deploy, secrets, anything of value) waits
-   for a human signature: `REQUIRES_FIRMA` → `FIRMO`. The signature gates
-   the **merge**, never the **building**: under ODD (FIRMO 2026-10-28) a
+   for a human signature: `HITL` → `FIRMO` («REQUIRES_FIRMA» queda como alias histórico, FIRMO 2026-10-22). The signature gates
+   the **merge**, never the **building**: under THE MARCH (formerly ODD; FIRMO 2026-10-28; renamed by decree 2026-11-03) a
    step that needs a signature never halts the work — the standing
    signature is searched for in the corpus first, the modification is
    recorded, and the work continues.
@@ -55,9 +55,9 @@ consequential action.
 9. **Share back.** If your tool adapts natively to the app, it belongs here
    next to the rest. That is the whole social contract.
 
-## ODD — the workflow layer (FIRMO 2026-10-28)
+## THE MARCH — the workflow layer (formerly ODD; FIRMO 2026-10-28; renamed by decree 2026-11-03)
 
-**Organic Driven Development** is how a piece grows here:
+**Organic Driven Development** — now **THE MARCH** (decree 2026-11-03) — is how a piece grows here:
 **explore → implement → proportionate checks.** It is a workflow layer, not
 a new harness — the Desk still orchestrates, the gates still gate, the
 Sovereign still signs.
@@ -76,16 +76,15 @@ Sovereign still signs.
   signature, search the corpus for the standing signature first — the
   signed book, ideas, examples, and jewels count as signed. Record the
   modification and continue. The delivery gates (checks that can go red,
-  the receipt, `FIRMO` on the exact head) are never skipped: ODD unblocks
+  the receipt, `FIRMO` on the exact head) are never skipped: THE MARCH unblocks
   the work, not the merge.
 - **Unattended mode.** When no human can answer, chain the feature on a
   feature branch, record the choice in the feature document's `## Log`,
   and continue.
 
-## Writing in Acho — who it is for (Sovereign, 2026-11-02)
+## Acho — the frame contract for contributors (Sovereign, 2026-11-02)
 
-Acho (the language still called *bubble* in [docs/bubble-language.md](docs/bubble-language.md) until its
-rename lands) is not decoration. A frame is written for three readers at once, and a contribution serves all three:
+Acho (coined 2026-11-02; it replaces the historical name «bubble» — the historical seal `preceptoros.bubble/1` is only read, never written; the living seal is `preceptoros.acho/1`, spec: [docs/acho-language.md](docs/acho-language.md)) is not decoration. A frame is written for three readers at once, and a contribution serves all three:
 
 1. **A person who cannot see.** The frame alone must answer four questions out loud: *which section?* (`id`, `t`),
    *what changed?* (`change`), *what sounds?* (`sound`, `soundCause`), *what can I do here?*. Colour never carries
@@ -200,7 +199,7 @@ The audio is not optional. Today **0 of the 10 frames of the map sound** (measur
 3. Checks green — run `python3 test_web.py` and `node arnes_sw.mjs` first;
    the suite must be able to fail.
 4. Receipt — sizes, hashes, dates.
-5. Human signature on the exact head (`REQUIRES_FIRMA` → `FIRMO`). A
+5. Human signature on the exact head (`HITL` → `FIRMO`). A
    machine never signs. Until it arrives, the work never halts: the
    pending signature is recorded and the rest of the feature continues.
 6. Merge by the orchestration lane, under the signed head only.

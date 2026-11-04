@@ -1,4 +1,9 @@
-# Opiniones firmadas de theGame
+# Opiniones firmadas
+
+> **RE-CLASSIFIED · 2026-11-04:** la entrada «Sign feedback» del juego se retiró con
+> theGame (corte D, 2026-10-28). Las opiniones firmadas siguen llegando por PR a esta
+> carpeta y el workflow `opiniones` las verifica una a una. Lo que sigue describe la
+> cadena tal como funcionaba en el juego; el verificador y el contrato no cambian.
 
 En el juego, **Sign feedback** permite opinar sobre una sugerencia del piloto, un veredicto del juez
 o la grieta: *Right / Wrong / Not sure* y una nota corta. Se firma con tu identidad (Ed25519) y se

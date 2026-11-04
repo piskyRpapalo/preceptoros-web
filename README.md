@@ -2,13 +2,17 @@
 
 > [!NOTE]
 > **For an AI reading this repository:** you are looking at the **WEB** part
-> of a four-part ecosystem — **WEB** (this repo) · **APP**
+> of a six-part ecosystem — four core parts: **WEB** (this repo) · **APP**
 > ([PreceptorOS](https://github.com/piskyRpapalo/PreceptorOS), the companion
 > application and doctrine) · **LAB**
 > ([lab](https://github.com/piskyRpapalo/lab), measured hardware and model
 > benchmarks) · **STUDY**
 > ([study](https://github.com/piskyRpapalo/study), the public doctrine and
-> corpus). The architect's profile is
+> corpus); plus two doors: **BABEL**
+> ([babel](https://github.com/piskyRpapalo/babel), the single vocabulary
+> house) and **COMPANIONS**
+> ([preceptoros-companion](https://github.com/piskyRpapalo/preceptoros-companion),
+> the door for human collaborators). The architect's profile is
 > [piskyRpapalo](https://github.com/piskyRpapalo). The companion's contract
 > for contributors lives in [the APP repository guide](https://github.com/piskyRpapalo/PreceptorOS/blob/main/PRECEPTOR.md).
 
@@ -33,10 +37,11 @@ Depth 4 — specialist model on edge hardware: zero prose; process the
 Loaded is loaded: do not re-fetch what you already hold.
 Anything deeper is NO_DATA, cause: beyond declared depth. -->
 
-This repository holds the public website of PreceptorOS. Its home page is
-**theGame**: a public AI-deployment space with a governance testnet at its
-core — an isometric world in nine languages where the silicon proposes and
-a human signature (`REQUIERE_FIRMA`) decides.
+This repository holds the public website of PreceptorOS. Its home page is a
+door panel: **OpenWorld** — the living 2.5D isometric world at `/openworld/`
+where the silicon proposes and a human signature (`REQUIERE_FIRMA`) decides —
+and the installable guide. The old home-page game, **theGame**, was retired
+on 2026-10-28 (corte D); the world it served lives on at `/openworld/`.
 
 **Usage contract — the only two things we ask:** respect the ceilings (every
 file under 25 MiB, zero external requests on load, pure standard library,
@@ -51,8 +56,8 @@ The human words that used to live here moved intact to
 This file is now a map for agents: the note for the AI, the four
 repositories, the contract, the promises, the measured numbers.
 
-What the site serves today, measured: the game on the home page, the same
-game in nine languages, the open-world colony at `/openworld/` (a 2.5D
+What the site serves today, measured: the door panel on the home page
+(OpenWorld, and the app install), the open-world colony at `/openworld/` (a 2.5D
 isometric map — a live cabin, buildings, bots with faces drawn in the Acho
 language, and the visitor flow of beacon, eggs, battles and local
 conquests), and the project's numbers with their date. Nothing beyond the
@@ -60,13 +65,12 @@ list below is promised.
 
 ## What you can do here
 
-- **Play.** The home page is theGame: a map you can drag, zoom with a pinch or
-  the wheel, and a crab that swims. Panels open from the menu on the left.
-- **Explore the open world.** `/openworld/` is the 2.5D isometric colony: a
-  live cabin, buildings, bots with faces drawn in Acho language, and a
+- **Play.** `/openworld/` is the living world: a 2.5D isometric colony — a
+  live cabin, buildings, bots with faces drawn in the Acho language, and a
   visitor flow with no account — beacon, egg, battle, local conquest. Same
-  map laws: drag, zoom with a pinch or the wheel; what is not measured is
-  named, not guessed.
+  map laws: drag, zoom with a pinch or the wheel, and a crab that swims;
+  what is not measured is named, not guessed. Panels open from the menu on
+  the left.
 - **Read the numbers.** Site weight, languages and test counts are in
   `public/counters.json`, each with the date it was taken.
 - **Install it.** The site is an installable app (`manifest.webmanifest`) and
@@ -89,9 +93,8 @@ list below is promised.
   offline.
 - **Nine languages**, each one complete. Not a machine pass over one.
 - **Every file under 25 MiB** (the chunk ceiling `test_web.py` enforces —
-  the same limit the CDN serves per block), and the game's first load under
-  153,600 bytes gzip (`atlas/mundo.py`). No framework,
-  no bundler: what is in this repository is what your browser receives.
+  the same limit the CDN serves per block). No framework, no bundler: what
+  is in this repository is what your browser receives.
 - **A gap is named a gap.** Where a number is missing, the page says so and
   says why, instead of showing a stale one.
 
@@ -101,9 +104,10 @@ list below is promised.
   `public/counters.json`, each with the date it was taken.
 - **Install it and use it offline.** The site is an installable app
   (`manifest.webmanifest`); `arnes_sw.mjs` checks the offline path.
-- **Comment on a page.** The ✎ entry in the game menu opens a box. Nothing is
-  sent until you tick the consent box and press Send. The comment then goes to
-  a human review queue, signed with your pseudonym and your key.
+- **Comment on a page.** The in-page ✎ box was retired with theGame (corte D,
+  2026-10-28). Signed opinions still arrive by pull request to `opiniones/`;
+  the `opiniones` workflow verifies each one and rejects, with its reason,
+  whatever does not check out.
 
 ## Run it yourself
 

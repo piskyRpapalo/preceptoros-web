@@ -90,8 +90,26 @@
     return out;
   }
 
+  // tunnelFrame(tick, width, height) → one deterministic preceptoros.acho/1 frame.
+  // The fixed scene seed names this transition; progress is the integer frame tick, never elapsed time.
+  function tunnelFrame(tick, width, height) {
+    var t = Math.max(0, Math.min(TUNNEL_FRAMES, Math.floor(Number(tick) || 0)));
+    var w = Math.max(1, Math.floor(Number(width) || 412)), h = Math.max(1, Math.floor(Number(height) || 515));
+    var rings = hexRings(t / TUNNEL_FRAMES, 4), sentence = 'OpenWorld entry · seed openworld-entry · hexagonal tunnel · frame ' + t + ' of ' + TUNNEL_FRAMES;
+    return {
+      v: 'preceptoros.acho/1', id: 'openworld-entry', seed: 'openworld-entry', t: t, cv: [w, h], style: 'clear',
+      atoms: [{ k: 'tunnel', r: sentence, i: rings.map(function (ring) {
+        return { o: 'ribbon', pts: ring.pts.map(function (pt) { return [Math.round(w / 2 + pt[0]), Math.round(h / 2 + pt[1])]; }),
+          closed: true, f: null, s: 'cyan', lw: 1 + Math.round(2 * ring.alpha), d: 2 };
+      }) }],
+      bands: ['cyan', 'ink', 'paper'], change: [sentence],
+      sound: 'NO_DATA: no measured tunnel soundtrack; silence is intentional',
+      soundCause: 'this transition has no measured sound contract'
+    };
+  }
+
   // ---- DOM: only drawing, sound after «Listen», and the state line. ----
-  var D = root.document, soundOn = false, overlay = null, run = 0;
+  var D = root.document, soundOn = false, overlay = null, tunnelRead = null, run = 0;
   function quiet() { return !!(root.matchMedia && root.matchMedia('(prefers-reduced-motion: reduce)').matches); }
   function colour(token) {
     var T = root.AtlasComicTokens; return T && T.FRONT_DOOR && T.FRONT_DOOR[token] ? T.FRONT_DOOR[token] : (T && T.NEUTRAL ? T.NEUTRAL.cyan : 'currentColor');
@@ -154,28 +172,37 @@
     })();
   }
   // tunnel(then): hexagonal rings for TUNNEL_FRAMES frames (≤ 600 ms), then the building's chat. Reduced → at once.
-  function tunnel(then) {
+  function tunnel(building, then) {
+    if (typeof building === 'function') { then = building; }
+    then = typeof then === 'function' ? then : function () {};
     var surface = D.getElementById('surface');
     if (quiet() || !surface || !root.requestAnimationFrame) { then(); return; }
-    var L = layer(surface), o = { x: L.q.width / 2, y: L.q.height / 2 }, f = 0, mine = ++run, tok = colour('cyan'), done = false;
-    overlay.dataset.tunnel = 'running';
-    function end() { if (done) { return; } done = true; L.g.clearRect(0, 0, overlay.width, overlay.height); overlay.dataset.tunnel = 'done'; then(); }
+    var L = layer(surface), f = 0, mine = ++run, done = false, B = root.AtlasAcho, P = root.AtlasComicAtoms;
+    if (!B || !P) { then(); return; }
+    overlay.dataset.renderer = 'acho'; overlay.dataset.seed = 'openworld-entry'; overlay.dataset.tunnel = 'running';
+    if (!tunnelRead) {
+      tunnelRead = D.createElement('span'); tunnelRead.id = 'openworld-entry-read'; tunnelRead.setAttribute('aria-live', 'polite');
+      tunnelRead.style.position = 'absolute'; tunnelRead.style.width = '1px'; tunnelRead.style.height = '1px';
+      tunnelRead.style.padding = '0'; tunnelRead.style.margin = '-1px'; tunnelRead.style.overflow = 'hidden';
+      tunnelRead.style.clip = 'rect(0, 0, 0, 0)'; tunnelRead.style.whiteSpace = 'nowrap';
+      var mapState = D.getElementById('state') || D.querySelector('[data-speaker="Map"]');
+      if (mapState) { mapState.after(tunnelRead); }
+    }
+    tunnelRead.textContent = 'Entering the building through a deterministic hexagonal tunnel, 36 frames.';
+    function end() { if (done) { return; } done = true; L.g.clearRect(0, 0, overlay.width, overlay.height); overlay.dataset.tunnel = 'done'; tunnelRead.textContent = ''; then(); }
     (function frame() {
       if (mine !== run) { end(); return; }
       L.g.clearRect(0, 0, overlay.width, overlay.height);
       if (f > TUNNEL_FRAMES) { end(); return; }
-      hexRings(f / TUNNEL_FRAMES, 4).forEach(function (ring) {
-        L.g.globalAlpha = ring.alpha; L.g.strokeStyle = tok; L.g.lineWidth = 3; L.g.beginPath();
-        ring.pts.forEach(function (pt, i) { if (i) { L.g.lineTo(o.x + pt[0], o.y + pt[1]); } else { L.g.moveTo(o.x + pt[0], o.y + pt[1]); } });
-        L.g.closePath(); L.g.stroke();
-      });
-      L.g.globalAlpha = 1; f++; root.requestAnimationFrame(frame);
+      var achoFrame = tunnelFrame(f, overlay.width, overlay.height);
+      overlay.dataset.frame = String(achoFrame.t);
+      P.paint(L.g, B.compile(achoFrame)); f++; root.requestAnimationFrame(frame);
     })();
   }
 
   var api = { FRAMES: FRAMES, TUNNEL_FRAMES: TUNNEL_FRAMES, BOUND: BOUND, EGGS: EGGS, seedOf: seedOf, particles: particles, step: step,
     project: project, simulate: simulate, plan: plan, describe: describe, receiptOf: receiptOf, voice: voice, hexRings: hexRings,
-    burst: burst, tunnel: tunnel };
+    burst: burst, tunnelFrame: tunnelFrame, tunnel: tunnel };
   if (typeof module === 'object' && module.exports) { module.exports = api; return; }
   root.AtlasInvocacionViva = api;
   if (D) {

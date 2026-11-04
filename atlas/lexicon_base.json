@@ -105,6 +105,11 @@
     "pinta",
     "tropa"
   ],
+  "public/game/aula_chat.js": [
+    "firma",
+    "recibo",
+    "recibo_sha"
+  ],
   "public/game/battle_choreography.js": [
     "abre",
     "registro"

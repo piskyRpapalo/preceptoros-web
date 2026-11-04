@@ -64,7 +64,8 @@ None.
 ## Log
 
 - 2026-10-31 · Plan declared (declare-only). No code written.
+- 2026-11-04 · MV-1 implemented on the existing one-map surface: at 360–899 px the map stays fixed in the upper 52dvh window (minimum 280 px), leaving 40–50% of the viewport for its live drawing, and the terminal scrolls inside the remaining viewport; the chat form follows the attributed speech and map controls at the terminal bottom. At 900 px and wider, the map occupies the left 3/5 and the terminal the right 2/5, both filling the viewport. `atlas/openworld_browser.mjs` covers 360×716, 412×844, 900×900 and 1200×900. The scroll sabotage exposed that hiding overflow on `body` alone still allowed programmatic root scrolling (red); clipping overflow at the `html` root stops it (green). No scene geometry or 3.5D painter changed.
 
 ## Next step
 
-FIRMO of this plan (MV-D1 and MV-D2 are already decided by the Sovereign), then MV-1.
+MV-2 · sound per frame in colony frames; the gate refuses a frame claiming sound without declared waves.
