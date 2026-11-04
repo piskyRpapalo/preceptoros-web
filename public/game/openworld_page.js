@@ -8,7 +8,7 @@
   var entrada = { t: 0, cabin: {}, nodes: [] };
   var selected = 'cabin';
   var surface = doc.getElementById('surface');
-  var press = doc.querySelector('#map .press');
+  var press = doc.querySelector('#terrain-actions');
   var state = doc.getElementById('state');
   var quieto = raiz.matchMedia && raiz.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var CP = raiz.AtlasColoniaPagina, colonia_ocultos = 0, colonia = null, colonia_fuente = 'NO_DATA', colonia_error = '';
@@ -47,8 +47,8 @@
       b.textContent = ICON[z[2]] || z[0]; b.setAttribute('aria-label', z[0]); b.title = z[0];
       b.style.minHeight = '44px'; b.style.minWidth = '44px'; b.addEventListener('click', z[1]); zoomBar.appendChild(b);
     });
-    surface.after(zoomBar);
-    // The compact terminal (2026-11-02): the spoken view is the Zoom voice in the panel, never a text on the map.
+    doc.getElementById('map-actions').appendChild(zoomBar);
+    // Speak zoom in the panel, not over the map.
     speak();
     (doc.getElementById('voice-zoom') || zoomBar).appendChild(zoomSay);
     // A free turn or a pinch is spoken once the fingers lift, never on every frame.

@@ -42,8 +42,13 @@ test('unmeasured device voices and unknown voices are refused, never invented', 
   assert.equal(S.ficha('quien-sea'), null);
 });
 
-test('a voice without a benchcard may speak, but always sealed NO_DATA', () => {
-  // No seat is in that state today; the rule is pinned on a copy so it cannot drift.
+test('the station speaks without a benchcard, and every word is sealed NO_DATA (SALA-E)', () => {
+  const r = S.regla('hexelion-estacion');
+  assert.deepEqual(r, { puede: true, sello: 'NO_DATA', causa: 'no benchcard: its words are not measured' });
+  const v = S.VOCES.find((x) => x.id === 'hexelion-estacion');
+  assert.equal(v.estado, 'SIN_BENCHCARD');
+  assert.match(v.rol, /interim voice of Hexelion/);
+  assert.match(v.cerebro, /^NO_DATA: 70B class/);
   const src = readFileSync(new URL('./sala_voces.js', import.meta.url), 'utf8');
   assert.match(src, /SIN_BENCHCARD'\) \{ return \{ puede: true, sello: 'NO_DATA'/);
 });

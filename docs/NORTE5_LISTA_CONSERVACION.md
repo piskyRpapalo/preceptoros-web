@@ -1,3 +1,5 @@
+> RE-CLASSIFIED · CLOSED (2026-11-04, ps de texto): the conservation campaign of 2026-10-27 was signed and executed; this list no longer commands. The living north is buzon#54 (NORTE); this record stays citable. Superseded by: NORTE and the roadmap.
+
 # NORTE 5 · (b) conservation list: what leaves /play/ and what stays on the global map
 
 **Measured 2026-10-27** on `soberano` against WEB main `df0dce5`. Docs only: nothing here moves code. The Sovereign signs
