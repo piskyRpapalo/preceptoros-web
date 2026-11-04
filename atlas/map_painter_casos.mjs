@@ -10,6 +10,15 @@ const dir = new URL('../public/map/chunks/', import.meta.url);
 const chunks = Object.fromEntries(readdirSync(dir).map((f) => { const c = JSON.parse(readFileSync(new URL(f, dir), 'utf8')); return [c.c.join('_'), c]; }));
 const bytes = (o) => new TextEncoder().encode(JSON.stringify(o)).length;
 
+test('cada chunk cita exactamente el marco del pintor en el tick inicial', () => {
+  assert.equal(Object.keys(chunks).length, 7);
+  for (const c of Object.values(chunks)) {
+    assert.deepEqual(c.floor, M.frameOf(c, 0, false));
+    assert.ok(bytes(c.floor) < 1024);
+    assert.equal(c.floor.bands.reduce((n, band) => n + band[2], 0), c.cells.length);
+  }
+});
+
 test('cada chunk horneado se traduce a un marco < 1.024 B que cuenta todas sus celdas en texto', () => {
   for (const c of Object.values(chunks)) {
     const f = M.frameOf(c, 37, false);
