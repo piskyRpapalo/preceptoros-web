@@ -25,7 +25,7 @@ main.map-panel-mask{flex:1;display:grid;grid-template-rows:minmax(280px,52dvh) m
 #chat h2{font-size:1.1rem;margin:0}
 #chat .log{order:2;flex:1;min-height:0;overflow:auto;margin:0;padding:0;list-style:none;color:var(--soft)}
 #chat form{display:flex;gap:8px}
-#entry{order:3;flex:0 0 auto}
+#entry{order:3;flex:0 0 auto;position:sticky;bottom:0;z-index:3;background:var(--bg);padding-block:6px env(safe-area-inset-bottom)}
 #chat input{flex:1;min-height:44px;padding:8px 10px;border:2px solid var(--line);border-radius:var(--radius);background:var(--bg);color:var(--fg);font:inherit}
 #chat button{min-height:44px;padding:8px 14px;border:2px solid currentColor;border-radius:var(--radius);background:var(--bg);color:var(--fg);font:inherit}
 #chat button:disabled,#chat input:disabled{opacity:.55}
@@ -99,5 +99,5 @@ button,select,summary,.voice button,#chat button,#map .press button,.radio-chat-
 #zoom-controls{background:var(--bg)}
 :focus-visible{outline-width:4px}
 }
-@media (width<900px){main.map-panel-mask{grid-template-rows:minmax(280px,49dvh) minmax(0,1fr)}#map .surface{width:100vw;margin:0 -16px}#chat{padding:6px 16px 12px;gap:4px}}
+@media (width<900px){main.map-panel-mask{grid-template-rows:minmax(180px,46dvh) minmax(0,1fr)}#map .surface{width:100%;margin:0}#map{padding:6px 8px}#chat{padding:6px 8px 0;gap:4px}}
 @media (min-width:900px){main.map-panel-mask{grid-template-rows:minmax(0,1fr);grid-template-columns:minmax(0,3fr) minmax(0,2fr)}#map{border-bottom:0;border-right:2px solid var(--line)}}

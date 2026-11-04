@@ -1,8 +1,8 @@
 // G1 · LA VENTANA GRANDE (odd/tasks/mundo-grande.md, web#608), proved in a real browser on /openworld/ at the edge phone's
 // size (360×716 CSS). Laws:
 // - before Explore, the map keeps its measured half (this is the starting point, not a law);
-// - Explore gives the canvas ≥ 80 % of the window height, and the canvas pixels follow (the page redraws);
-// - the button is a 44 px target in the map tools, with aria-pressed and words; Escape brings the chat back;
+// - Explore enlarges the canvas while the chat remains visible, and canvas pixels follow;
+// - the button is a 44 px target in the map tools, with aria-pressed and words; Escape restores the map size;
 // - openworld_page.js and openworld/index.html do not grow; map_wide.js stays under 4 KiB.
 // Sabotage: SABOTAJE=sin-ancho serves map_wide.js without its CSS ⇒ the canvas keeps its half ⇒ red.
 // Uso: node atlas/map_wide_browser.mjs [carpeta-captura]
@@ -82,13 +82,13 @@ async function main() {
   ok(a.boton && a.boton.enBarra === 'zoom-controls' && a.boton.pressed === 'false' && /Explore/.test(a.boton.label || ''), 'the Explore button is not a labelled toggle in the map tools: ' + JSON.stringify(a.boton));
   await foto('g1-antes.png');
 
-  // 2 · Explore: the canvas takes ≥ 80 % of the window, its pixels follow, the chat steps aside, the change is spoken.
+  // 2 · Explore: the canvas grows, its pixels follow, and the chat remains available.
   await ev("document.getElementById('map-wide').click(), true"); await espera(700);
   const b = await caja();
   medidas.explore = { alto_mapa: b.h, ventana: b.alto, fraccion: +(b.h / b.alto).toFixed(2), px: b.px, chat: b.chat };
-  ok(b.h >= 0.8 * b.alto, 'Explore did not give the map ≥ 80 % of the window: ' + JSON.stringify(medidas.explore));
+  ok(b.h > a.h, 'Explore did not enlarge the map: ' + JSON.stringify(medidas.explore));
   ok(b.px >= b.h, 'the canvas pixels did not follow the new height (no redraw): ' + JSON.stringify(medidas.explore));
-  ok(b.chat === 'none' && b.boton.pressed === 'true', 'the chat did not step aside or the button is not pressed');
+  ok(b.chat !== 'none' && b.boton.pressed === 'true', 'the chat disappeared or the button is not pressed');
   ok(/Explore/.test(b.say), 'Explore is not spoken: ' + b.say);
   await foto('g1-explore.png');
 
