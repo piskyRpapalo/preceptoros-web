@@ -1,3 +1,5 @@
+> RE-CLASSIFIED · CLOSED (2026-11-04, ps de texto): the renaming sweep was executed by the decree of 2026-10-28 (AGENTS.md). This document no longer commands; it remains as the citable J-* dictionary. Superseded by: the executed renaming and the house lexicon.
+
 # New_Naming_Proposal · PROPUESTA Mistral · 2026-10-15
 
 Estado: **PROPUESTA — sin firma del Soberano; sin renombre aplicado.** Los renombres los ejecuta Codex tras FIRMO. Los números J (J1–J15) viven solo en este documento y en docs/mesa/PARA_LA_MESA.md: jamás van al código. Cero red, cero datos personales, piezas <16 KiB, inglés primero en UI, 1 cambio por pieza.
