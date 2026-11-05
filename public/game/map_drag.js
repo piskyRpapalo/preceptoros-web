@@ -98,7 +98,7 @@
   // Attach after the page script has built the map (and map_zoom's click guard, so a drag's click is already swallowed).
   var doc = raiz.document;
   if (doc && doc.getElementById) {
-    var go = function () { var c = doc.getElementById('surface'); if (c && raiz.AtlasMapZoom) { attach(c); } };
+    var go = function () { var c = doc.getElementById('surface'); if (c && raiz.AtlasMapZoom) { raiz.AtlasMapPan = attach(c); var s = doc.createElement('script'); s.src = '/game/map_view_joystick.js'; doc.head.appendChild(s); } };
     if (doc.readyState === 'loading') { doc.addEventListener('DOMContentLoaded', go); } else { go(); }
   }
 })(typeof window !== 'undefined' ? window : globalThis);

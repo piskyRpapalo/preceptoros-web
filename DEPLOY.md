@@ -8,8 +8,8 @@ Status: proposal for review. Deployment remains a human action. This document re
 
 Current route-count receipt (measured with `python3 bin/count_routes.py`, 2026-11-05; includes the landing controller added in #651):
 
-Rutas precargadas por el shell: 123
-Rutas distintas del shell: 122
+Rutas precargadas por el shell: 124
+Rutas distintas del shell: 123
 
 The workflow runs exactly:
 
