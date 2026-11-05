@@ -41,9 +41,9 @@ Run from WEB worktree root:
 
 ```sh
 node docs/rebuild/examples/validate.mjs
-node atlas/acho_language_casos.mjs
-node atlas/acho_bestiary_casos.mjs
-node atlas/acho_paint_casos.mjs
+node atlas/acho_language_cases.mjs
+node atlas/acho_bestiary_cases.mjs
+node atlas/acho_paint_cases.mjs
 ```
 
 Expected: three frames below 1,024 UTF-8 bytes, valid Bubble compilation, identical normalized geometry across palettes, all three pages below 16,384 bytes, local resources only; then each atlas case command returns `ok: true`. `test_web.py` is not required because this card changes no file under `public/`. If any source is later copied into `public/`, run `python3 test_web.py` and the full applicable gate, and apply the seal/re-pin rules in the same PR. The Sovereign must confirm visual review on the rack Android; a successful compile or HTTP response is not that review.

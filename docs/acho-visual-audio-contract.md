@@ -13,11 +13,11 @@ equivalence between a rendered Acho shape and a physically played signal.
 | Troop `armonicos` in `core.js:vozDe` | Harmonic number and absolute amplitudes produce carrier/modulator frequencies and modulation depth | A lossy FM recipe, not a waveform reconstruction |
 | `core.js:suena` recipe | Hz for carrier/modulators/vibrato; seconds for duration/envelope; gain for amplitude | Actual Web Audio scheduling when enabled |
 | `wave_render.js:vivos` option `desafina` | Dimensionless visual distortion; alters a copied harmonic phase array | No sound call in this drawing path |
-| `escena.js:figura` option `desafina` | Damage/flash-derived distortion in `afina`, plus position wobble | No sound call in this drawing path |
+| `scene.js:figura` option `desafina` | Damage/flash-derived distortion in `afina`, plus position wobble | No sound call in this drawing path |
 | Editor optional `frame.sound` | `acho_editor.js:create` can retain caller metadata | No shared Acho frame audio player traced |
 
 Source anchors: `gacha.js:109`, `acho_language.js:61`, `bubble_game.js:100`,
-`core.js:56`, `core.js:67`, `wave_render.js:188`, `escena.js:48` and `:186`,
+`core.js:56`, `core.js:67`, `wave_render.js:188`, `scene.js:48` and `:186`,
 all below `public/game/`. `comic_atoms.js` explicitly reports `sound=NO_DATA`.
 
 For numeric conversion only, one harmonic phase step equals 5.625 degrees.

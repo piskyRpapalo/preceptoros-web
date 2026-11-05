@@ -15,7 +15,7 @@ An AI on the web moves the scenery: a human order in natural language becomes a 
 
 ## Scope, in this order
 
-1. **DE-1 · the MOVER verb (pure)** — `atlas/puros/decor_mover.js`: one verb, MOVER(prop, destination, seed). Same order and seed give the same movement script, twice. Sabotage: a destination that is not finite, a prop without id, a repeated id, a destination outside colony nodes, a frame at or over 1,024 bytes — all refused.
+1. **DE-1 · the MOVER verb (pure)** — `atlas/puros/decor_move.js`: one verb, MOVER(prop, destination, seed). Same order and seed give the same movement script, twice. Sabotage: a destination that is not finite, a prop without id, a repeated id, a destination outside colony nodes, a frame at or over 1,024 bytes — all refused.
 2. **DE-2 · the orchestrator bridge** — natural language becomes a MOVER command with seed. The brain is served by the station through the lab route; the known quirk of the small brain (empty answer without its flag) is declared. An offline judge accepts only exact commands; the AI decides OUTSIDE the render path.
 3. **DE-3 · serving on the web** — the entry is the Orchestrator terminal rail (app draft, receipt ·6525934417): the chat reaches the orchestrator channel, the command reaches the verb. The moved prop is painted through the M1 scene composition (depth order; what is in front covers what is behind). The AI lives on the web; the app only connects.
 4. **DE-4 · frames of scenery** — every movement writes one frame under 1 KB (colour, coordinates, sound, time) to the benchmark record (B3 law) and to the lab feed (B4): NO_DATA with cause until the aduana route is deployed. Never identity (BM-D3).

@@ -1,0 +1,118 @@
+#!/usr/bin/env python3
+"""Genera `public/atlas-world.json`: las leyes del mundo de theGame. Biblioteca estandar.
+
+    python3 atlas/world.py
+
+LAS LEYES SALEN DE MEDIDAS, NO DE UNA OPINION. El Bosque lee cifras reales de
+esta web -- cuantas pruebas pasan, cuantas lenguas hay, cuanto pesa el juego,
+que version del service worker se sirve y si el arnes del SW esta en verde -- y
+el motor (`atlas-motor.js › leyes`) las convierte en fisica del juego:
+integridad maxima del Nucleo, y cuanto dana la grieta.
+
+SE REGENERA CON CADA RELEASE, como `counters.json`: `atlas/test_atlas.py` se
+pone rojo si el fichero no coincide con lo medido. Orden de una release:
+subir VERSION en `sw.js` -> `python3 counters.py` -> `python3 atlas/world.py`
+-> huella del SW.
+
+SIN RUTAS NI NOMBRES. Solo cifras, cuando (`medido_el`, UTC) y en que clase de
+maquina (`maquina`, sin hostname); la prueba lo vigila.
+"""
+import datetime
+import gzip
+import json
+import re
+import subprocess
+from pathlib import Path
+
+RAIZ = Path(__file__).resolve().parent.parent
+PUBLICO = RAIZ / "public"
+ASSETS = PUBLICO / "assets"
+# Lo que baja una visita que abre theGame: los guiones de `GUIONES` en `thegame.js` (el juez incluido),
+# sus hojas (atlas, thegame y tubo) y el texto de la lengua en que el juego abre hoy, que es la primera de `LENGUAS`.
+# La incubadora y su Army (`ARMY` en `thegame.js`) se piden al abrir su pestana y no cuentan, como
+# `atlas-hud.js` y `atlas-opina.js`: lo que no baja al abrir no pesa en la puerta.
+PIEZAS = ["atlas-arte.js", "atlas-coord.js", "atlas-carta.js", "atlas-ondas.js", "atlas-obra.js", "atlas-gesto.js", "atlas-dialogo.js", "atlas-motor.js",
+          "atlas-piso.js", "atlas.css", "thegame.js", "thegame.css", "tubo.css",
+          "radio_message_log.js", "terminal_menu_shell.js", "terminal_menu_shell.css", "terminal_window_frame.js", "worm_transition.js",  # la terminal chatbot (2026-10-12), en la puerta
+          "atlas-piloto.js", "atlas-partida.js", "atlas-piloto-capa.js", "atlas-guardado.js",
+          "../game/juez.js", "../game/z_cutoff.js"]
+
+
+def gzip_juego():
+    # Norte 7 D (2026-10-28): theGame se retiro. Sin su bundle no hay peso de puerta que medir: NO_DATA, no cero.
+    if not (ASSETS / "thegame.js").exists():
+        return None
+    total = 0
+    base = re.search(r"var LENGUAS = \['(\w+)'", (ASSETS / "thegame.js").read_text(encoding="utf-8")).group(1)
+    paths = {ASSETS / n for n in PIEZAS} | {PUBLICO / f"atlas-{base}.json"}
+    view = ASSETS / "front_door_view.js"
+    if view.exists():
+        paths |= {view, ASSETS / "front_door.css"}
+        scripts = re.search(r"var SCRIPTS = (\[[\s\S]*?\]);", view.read_text(encoding="utf-8"))
+        if not scripts:
+            raise ValueError("front door load set is absent")
+        paths |= {PUBLICO / name.lstrip("/") for name in re.findall(r"'([^']+)'", scripts.group(1))}
+    for f in sorted(paths):
+        total += len(gzip.compress(f.read_bytes(), mtime=0))
+    return total
+
+
+def pruebas_web():
+    c = json.loads((PUBLICO / "counters.json").read_text(encoding="utf-8"))
+    for m in c["metricas"]:
+        if m.get("clave") == "pruebas_web":
+            return m["valor"]
+    return None
+
+
+def version_sw():
+    m = re.search(r"const VERSION = '([^']+)'", (PUBLICO / "sw.js").read_text(encoding="utf-8"))
+    return m.group(1) if m else None
+
+
+def lenguas():
+    return len([d for d in PUBLICO.iterdir() if d.is_dir() and len(d.name) == 2 and d.name.isalpha()])
+
+
+def arnes_sw():
+    try:
+        r = subprocess.run(["node", "sw_harness.mjs"], cwd=RAIZ, capture_output=True,
+                           text=True, timeout=120)
+    except (OSError, subprocess.TimeoutExpired):
+        return "NO_DATA"
+    m = re.search(r"(\d+)/(\d+) en verde", r.stdout)
+    return f"{m.group(1)}/{m.group(2)}" if m else "NO_DATA"
+
+
+def maquina():
+    """Donde se midio, SIN hostname (el fichero es publico: cero nombres de
+    nodo). Por defecto, sistema y arquitectura; `ATLAS_MAQUINA` lo precisa
+    cuando quien mide quiere decir mas, p. ej. «rack» o «nube»."""
+    import os
+    import platform
+    base = f"{platform.system()} {platform.machine()} · Python {platform.python_version()}"
+    extra = os.environ.get("ATLAS_MAQUINA", "").strip()
+    return f"{extra} · {base}" if extra else base
+
+
+def mide():
+    return {
+        "esquema": "atlas.mundo/1",
+        "procedencia": "medido en local por atlas/world.py; sin rutas, sin nombres",
+        "medido_el": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%MZ"),
+        "maquina": maquina(),
+        "pruebas_web": pruebas_web(),
+        "lenguas": lenguas(),
+        "techo_bloque_b": 25 * 1024 * 1024,
+        "gzip_juego_b": gzip_juego(),
+        "version_sw": version_sw(),
+        "arnes_sw": arnes_sw(),
+    }
+
+
+if __name__ == "__main__":
+    d = mide()
+    (PUBLICO / "atlas-world.json").write_text(
+        json.dumps(d, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+    print("atlas-world.json ·", ", ".join(f"{k}={v}" for k, v in d.items()
+                                         if k not in ("esquema", "procedencia")))

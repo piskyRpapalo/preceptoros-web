@@ -11,7 +11,7 @@ Status: PROPOSED · the merge waits for the Sovereign's single HITL signature.
 | The chat title names the building or node | `building_chat.js` `titleOf()` | §2 «Tutorial cabin · b-cabin · chat»; §5 back to «Chat» |
 | Inside the building, the chat fetches the rack's ideas live and shows them one by one | `rack_ideas.js` `fetchIdeas()` + `stream()` (one line every 400 ms) | §3: 1 line at 450 ms, 3 at 2.45 s |
 | Zero requests on load; retrieval only after an explicit act | the bridge loads on demand; the only `fetch` is in the click/ask path | §1 and §2: 0 external requests; §3: exactly 1 |
-| Strict NO_DATA | `parse()`/`fetchIdeas()` never reject: offline · no_fetch · timeout · http_<n> · network_error · not_json · schema_unknown · no_entries · no_ideas | `rack_ideas_casos.mjs` (7 cases); §4 `NO_DATA · http_404` |
+| Strict NO_DATA | `parse()`/`fetchIdeas()` never reject: offline · no_fetch · timeout · http_<n> · network_error · not_json · schema_unknown · no_entries · no_ideas | `rack_ideas_cases.mjs` (7 cases); §4 `NO_DATA · http_404` |
 | Boundaries: web owns the window, study owns the ideas | the source is study's own index `ai-index.json` (`preceptoros.ai-index/1`), read as is; nothing is copied into this repo | — |
 
 ## Choices made, and why
@@ -28,7 +28,7 @@ The CLAUDE.md list names «Puente al laboratorio con `fetch`» because it clashe
 
 ## Measured
 
-- Pure: `node --test atlas/rack_ideas_casos.mjs` 7/7. Sabotage (decoys as ideas) → 4 red.
+- Pure: `node --test atlas/rack_ideas_cases.mjs` 7/7. Sabotage (decoys as ideas) → 4 red.
 - Browser: `node atlas/rack_ideas_browser.mjs` VERDE. Sabotages `en-carga` → ROJO (external request on load), `sin-titulo` → ROJO.
 - Weight: `rack_ideas.js` 4,290 B; `building_chat.js` 8,892 → 11,351 B. `openworld_page.js` and `openworld/index.html` unchanged (the HTML has 5 B free).
 
