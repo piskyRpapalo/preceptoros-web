@@ -8,6 +8,12 @@
 .radio-chat-lista{margin:0;padding:6px 10px 10px;list-style:none;display:grid;gap:6px;max-height:40vh;overflow-y:auto}
 .radio-chat-lista[hidden],.radio-chat-no-data[hidden]{display:none}
 .radio-chat-no-data{margin:6px 10px;padding:8px;border:2px dashed currentColor}
+/* The OpenWorld surface follows the Sovereign's teal terminal prototype. */
+body{--fg:#e6f4f0;--bg:#101b22;--line:#5a8b84;--soft:#c1dcd5;color-scheme:dark}
+#chat{background:#172b31}
+#entry{background:#14262c}
+.cats{background:#142a2f}
+#voices.map-voices{background:#1a3036}
 html,body{width:100%;height:100%;min-height:0}
 html{overflow:clip}
 body{position:fixed;inset:0;display:flex;flex-direction:column;min-height:0;overflow:hidden}
@@ -87,6 +93,8 @@ main.map-panel-mask{flex:1;display:grid;grid-template-rows:minmax(280px,52dvh) m
 .voice[data-speaker="Army"] :is([aria-live],[role=status])::before{content:"Army: "}
 .voice[data-speaker="Radio"] :is([aria-live],[role=status])::before{content:"Radio: "}
 @media (forced-colors: active){
+body{--fg:CanvasText;--bg:Canvas;--line:CanvasText;--soft:CanvasText;color-scheme:normal}
+#entry,.cats,#voices.map-voices{background:Canvas;color:CanvasText}
 body,main,#map,#chat,.voice,.radio-chat{background:Canvas;color:CanvasText}
 .voice,.radio-chat,#map,#chat input{border-color:CanvasText}
 #map .state,#chat .log,.voice .state{color:CanvasText}
@@ -107,3 +115,9 @@ button,select,summary,.voice button,#chat button,#map .press button,.radio-chat-
 }
 @media (width<900px){main.map-panel-mask{grid-template-rows:minmax(180px,46dvh) minmax(0,1fr)}#map .surface{width:100%;margin:0}#map{padding:6px 8px}#chat{padding:6px 8px 0;gap:4px}}
 @media (min-width:900px){main.map-panel-mask{grid-template-rows:minmax(0,1fr);grid-template-columns:minmax(0,3fr) minmax(0,2fr)}#map{border-bottom:0;border-right:2px solid var(--line)}}
+/* A phone in desktop-site mode can report a desktop-sized CSS viewport. */
+@media (min-width:900px) and (pointer:coarse) and (orientation:portrait){
+main.map-panel-mask{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(180px,46dvh) minmax(0,1fr)}
+#map{border-right:0;border-bottom:2px solid var(--line);padding:6px 8px}
+#chat{padding:6px 8px 0;gap:4px}
+}
