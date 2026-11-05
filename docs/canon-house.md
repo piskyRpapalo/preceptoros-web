@@ -83,7 +83,7 @@ La tabla de sellos de la ronda: hue por sello. Lo que no esta aqui no tiene colo
 
 ## public/game/crab_render_hd.js:18
 
-OLA 1 P1 (F305, consolidacion): la tabla vive AHORA en tabla_semantica.js — la UNICA fuente fisica. Este modulo la lee; no la duplica.
+OLA 1 P1 (F305, consolidacion): la tabla vive AHORA en semantic_table.js — la UNICA fuente fisica. Este modulo la lee; no la duplica.
 
 
 ## public/game/crab_render_hd.js:25
@@ -224,7 +224,7 @@ preceptoros.org · theGame · EL CANGREJO (C5/J1, firmado en el plan de ronda 20
    salga de la pestana (GDPR art. 25, proteccion por defecto). Nace al abrir el juego, crece mientras
    juegas y muere al salir.
 
-   UN PERSONAJE ES SU ONDA (escena.js). El cangrejo es una serie de Fourier [k, ax, ay, fase]: el
+   UN PERSONAJE ES SU ONDA (scene.js). El cangrejo es una serie de Fourier [k, ax, ay, fase]: el
    caparazon es el armonico 1, el borde festoneado el 6 y las pinzas el 2; se rellena con el color de su
    clase (el sprite aditivo a 1/4 lo quemaba a blanco: medido en captura). Andar hacia el otro lado es el
    ESPEJO: la misma onda con la x negada, sin un byte nuevo (J10/J11).
@@ -419,7 +419,7 @@ preceptoros.org · theGame · LA ENTRADA: elegir zona o nodo, y ver sus reglas a
 
    LAS REGLAS SALEN DE LO MEDIDO, no se escriben a mano: el admin, los dispositivos y lo que cada nodo
    midio vienen de las cedulas (`AtlasNodosCedulas`). Sin admin, nadie puede aceptarte: se dice. Una
-   cifra sin medir no entra como numero: NO_DATA (ley de nodos.js).
+   cifra sin medir no entra como numero: NO_DATA (ley de nodes.js).
 
    SIN VENTAJA (sabotaje en atlas/test_atlas.py): la eleccion no toca el motor ni el combate; solo
    colorea la casa y dice donde estas. Se guarda en ESTE aparato por db.js (la unica puerta). Elegir es

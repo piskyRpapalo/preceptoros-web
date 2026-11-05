@@ -121,7 +121,7 @@
     }
     if (colonia_error || !colonia) {
       linea += colonia_error ? ' The colony is still asleep.' : tutorial ? ' No colony yet.' : ' Loading the map…';
-      tecnico = 'Colony: NO_DATA · ' + (colonia_error || (tutorial ? 'estado.json has no colonia' : 'state not loaded yet')) + '.';
+      tecnico = 'Colony: NO_DATA · ' + (colonia_error || (tutorial ? 'state.json has no colonia' : 'state not loaded yet')) + '.';
     }
     if (CCT) { CCT.start(); }
     state.textContent = linea;
@@ -290,7 +290,7 @@
   if (!quieto) { raiz.setInterval(cycle, 1000); }
   var tutorial = null;
   if (raiz.fetch) {
-    raiz.fetch('/openworld/estado.json', { cache: 'no-cache' })
+    raiz.fetch('/openworld/state.json', { cache: 'no-cache' })
       .then(function (r) { return r.ok ? r.json() : null; })
       .then(function (d) { tutorial = d; accept(d); render(); if (seguir) { seguir.read(); } })
       .catch(function () { state.textContent = 'NO_DATA: tutorial state unavailable.'; });

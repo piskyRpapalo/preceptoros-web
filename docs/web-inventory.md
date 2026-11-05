@@ -110,11 +110,11 @@ All 51 files below exist in the checkout but each direct apex request returned `
 |---|---|---|---|
 | `atlas/egg_reload_fixture.html` | Isolated egg/reload browser fixture. | Orphan; opened by the egg-reload harness. | G5b, PR #276 (`fed7f94`). |
 | `atlas/isometric_floor_prueba.html` | Lab preview of the isometric floor, explicitly marked not published. | Orphan; lab/test use only. | Floor step 1, PR #33 (`9e11465`). |
-| `atlas/ojo/fixtures/descenso_ok.html` | Valid descent-render fixture. | Orphan; visual harness only. | Param-gate fixture stage, PR #160 (`df1c682`). |
-| `atlas/ojo/fixtures/descenso_sabotaje.html` | Deliberately sabotaged descent fixture. | Orphan; sabotage harness only. | Param-gate fixture stage, PR #160 (`df1c682`). |
+| `atlas/ojo/fixtures/descent_ok.html` | Valid descent-render fixture. | Orphan; visual harness only. | Param-gate fixture stage, PR #160 (`df1c682`). |
+| `atlas/ojo/fixtures/descent_sabotage.html` | Deliberately sabotaged descent fixture. | Orphan; sabotage harness only. | Param-gate fixture stage, PR #160 (`df1c682`). |
 | `atlas/ojo/fixtures/oido.html` | Pending audio-measurement fixture. | Orphan; audio harness only. | Audio measurement, PR #209 (`c6ea8bf`). |
-| `atlas/ojo/fixtures/palabras.html` | Word-rendering fixture for face/descent/game scenes. | Orphan; word-render harness only. | Word-eye fixture (`c00b73f`); later census PR #208. |
-| `atlas/ojo/fixtures/palabras_sabotaje.html` | Word-rendering sabotage fixture. | Orphan; word-render sabotage harness only. | Word-eye fixture (`c00b73f`); later census PR #208. |
+| `atlas/ojo/fixtures/words.html` | Word-rendering fixture for face/descent/game scenes. | Orphan; word-render harness only. | Word-eye fixture (`c00b73f`); later census PR #208. |
+| `atlas/ojo/fixtures/words_sabotage.html` | Word-rendering sabotage fixture. | Orphan; word-render sabotage harness only. | Word-eye fixture (`c00b73f`); later census PR #208. |
 | `atlas/ojo/fixtures/viewport_mismatch.html` | Narrow-screen visual-viewport regression fixture. | Orphan; viewport harness only. | Viewport proposal, PR #251 (`f23e45b`). |
 | `atlas/vista.html` | Atlas game preview, not in the deployed asset tree. | Orphan. | Atlas tower floor stage, PR #4 (`0be0322`). |
 | `docs/fusion-or-oneshot/zoom-evidence/index.html` | Zoom evidence comparing one camera and crab at two zoom values. | Orphan. | NORTE 5 visual evidence, PR #302 (`1811f77`). |
@@ -176,7 +176,7 @@ Each line is one tracked file under `public/`, expressed as its apex URL path an
 200 /assets/atlas-guardado.js
 200 /assets/atlas-hud.js
 200 /assets/atlas-mapa.css
-200 /assets/atlas-mapa.js
+200 /assets/atlas-map.js
 200 /assets/atlas-motor.js
 200 /assets/atlas-obra.js
 200 /assets/atlas-ondas.js
@@ -200,16 +200,16 @@ Each line is one tracked file under `public/`, expressed as its apex URL path an
 200 /assets/eaa-art12-local-first-surface.js
 200 /assets/en301_practice.css
 200 /assets/en301_tutorial.css
-200 /assets/enviar-ar.js
-200 /assets/enviar-de.js
-200 /assets/enviar-el.js
-200 /assets/enviar-en.js
-200 /assets/enviar-es.js
-200 /assets/enviar-fr.js
-200 /assets/enviar-it.js
-200 /assets/enviar-pt.js
-200 /assets/enviar-ru.js
-200 /assets/enviar.js
+200 /assets/send-ar.js
+200 /assets/send-de.js
+200 /assets/send-el.js
+200 /assets/send-en.js
+200 /assets/send-es.js
+200 /assets/send-fr.js
+200 /assets/send-it.js
+200 /assets/send-pt.js
+200 /assets/send-ru.js
+200 /assets/send.js
 200 /assets/favicon.svg
 200 /assets/front_door.css
 200 /assets/front_door_view.js
@@ -238,12 +238,12 @@ Each line is one tracked file under `public/`, expressed as its apex URL path an
 200 /atlas-es.json
 200 /atlas-fr.json
 200 /atlas-it.json
-200 /atlas-mundo.json
+200 /atlas-world.json
 200 /atlas-opina-en.json
 200 /atlas-pt.json
 200 /atlas-record.json
 200 /atlas-ru.json
-200 /cerebros.json
+200 /brains.json
 200 /counters.json
 307 /creation.html -> /creation
 307 /de/index.html -> /de/
@@ -304,7 +304,7 @@ Each line is one tracked file under `public/`, expressed as its apex URL path an
 200 /game/casa-lateral.js
 200 /game/casa-medidas.js
 200 /game/casa-personaliza.js
-200 /game/combate_ticks.js
+200 /game/combat_ticks.js
 200 /game/comic_accents.js
 200 /game/comic_atoms.js
 200 /game/comic_tokens.js
@@ -315,8 +315,8 @@ Each line is one tracked file under `public/`, expressed as its apex URL path an
 200 /game/creation_feedback.js
 200 /game/creation_flow.js
 200 /game/creation_package.js
-200 /game/cria.js
-200 /game/cuenta.js
+200 /game/brood.js
+200 /game/account.js
 200 /game/db.js
 200 /game/deep_links.js
 200 /game/deploy_building.js
@@ -329,9 +329,9 @@ Each line is one tracked file under `public/`, expressed as its apex URL path an
 200 /game/en301_tutorial_building.js
 200 /game/en301_tutorial_copy.js
 200 /game/en301_tutorial_model.js
-200 /game/escena.js
-200 /game/escuadron.js
-200 /game/estrella_captura.js
+200 /game/scene.js
+200 /game/squadron.js
+200 /game/star_capture.js
 200 /game/etiqueta.js
 200 /game/fog_of_war.js
 200 /game/front_door.js
@@ -339,7 +339,7 @@ Each line is one tracked file under `public/`, expressed as its apex URL path an
 200 /game/gdpr-art25-ephemeral-crab.js
 200 /game/gdpr-art7-entry-choice.js
 200 /game/genesis_tutorial.js
-200 /game/genoma.js
+200 /game/genome.js
 200 /game/hexelion_bench.js
 200 /game/hexelion_dictionary.js
 200 /game/hitl_firma.js
@@ -370,11 +370,11 @@ Each line is one tracked file under `public/`, expressed as its apex URL path an
 200 /game/node_trust_manifest.js
 200 /game/nodos-cedulas.js
 200 /game/nodos-pesos.js
-200 /game/nodos.js
+200 /game/nodes.js
 200 /game/npc_occupancy.js
 200 /game/npc_territory_map.js
 200 /game/npc_walls.js
-200 /game/onda_profunda.js
+200 /game/deep_wave.js
 200 /game/piece_inspector.js
 200 /game/place_reading.js
 200 /game/primer_eco.js
@@ -397,22 +397,22 @@ Each line is one tracked file under `public/`, expressed as its apex URL path an
 200 /game/summon-access.js
 200 /game/summon-wave-card.js
 200 /game/summon_reveal.js
-200 /game/tabla_semantica.js
-200 /game/taller.js
-200 /game/tarjeta_cantada.js
-200 /game/tutorial-fases.css
+200 /game/semantic_table.js
+200 /game/workshop.js
+200 /game/sung_card.js
+200 /game/tutorial-phases.css
 200 /game/tutorial_fases.js
 200 /game/ui-arena-comun.js
 200 /game/ui-arena.js
 200 /game/ui-duelo.js
 200 /game/ui-ficha.js
 200 /game/ui-invoca.js
-200 /game/ui-nodos.js
+200 /game/ui-nodes.js
 200 /game/ui-rack.js
-200 /game/ui-taller.js
-200 /game/ui-tutorial-fases.js
+200 /game/ui-workshop.js
+200 /game/ui-tutorial-phases.js
 200 /game/ui.js
-200 /game/valores.js
+200 /game/values.js
 200 /game/vector_contract.js
 200 /game/wave_render.js
 200 /game/world_camera.js
