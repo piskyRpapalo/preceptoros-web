@@ -1,0 +1,2 @@
+/* VT5 · pantallas F0-F3: cada accion es un objetivo tactil de 44x44 px como minimo (EN 301 549). */
+.tutorial-accion.touch44 { min-width: 44px; min-height: 44px; }

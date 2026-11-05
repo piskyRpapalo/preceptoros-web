@@ -1,6 +1,6 @@
 # Tabla de opiniones firmadas
 
-La genera `node atlas/tabla_opiniones.mjs --escribe` y la comprueba el CI: no se edita a mano.
+La genera `node atlas/opinions_table.mjs --escribe` y la comprueba el CI: no se edita a mano.
 Solo cuentan las que verifican (forma, nota y firma Ed25519) y no son de ejemplo. La huella del
 estado es NO_DATA hasta casarla con la partida exportada.
 
