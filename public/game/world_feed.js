@@ -40,9 +40,20 @@
   // The heartbeat record (Proof of Tick, odd/tasks/mapa-vivo.md): one tick per read the page attempts (offline counts,
   // asking nothing of the network), the tick of the first good read and of the last. The State buoy is replayed from it.
   var record = {t: 0, nace: null, cuidado: null};
+  function summary(data) {
+    var coverage = data && data.cobertura, nodes = data && data.colonia && data.colonia.nodes;
+    if (!coverage || coverage.estado !== 'MEDIDO' || !Array.isArray(nodes)) {
+      return { ok: false, cause: coverage && typeof coverage.causa === 'string' ? coverage.causa.slice(0, 80) : 'publisher evidence unavailable' };
+    }
+    if (!nodes.every(function (n) { return n && typeof n.id === 'string' && typeof n.alive === 'boolean' && (n.seal === 'LIVE' || n.seal === 'STALE'); })) {
+      return { ok: false, cause: 'node evidence invalid' };
+    }
+    return { ok: true, live: nodes.filter(function (n) { return n.alive && n.seal === 'LIVE'; }).length };
+  }
   function follow(o) {
     var win = o.win, doc = win.document, gen = 0, expiry = null, ok = false;
-    function fail(cause) { clearTimeout(expiry); ok = false; o.fail(cause); }
+    function tell(detail) { if (typeof win.CustomEvent === 'function' && doc.dispatchEvent) doc.dispatchEvent(new win.CustomEvent('world:summary', { detail: detail })); }
+    function fail(cause) { clearTimeout(expiry); ok = false; o.fail(cause); tell({ ok: false, cause: String(cause).slice(0, 80) }); }
     // A failed read is retried too: an unattended buoy wears down in sight, it never freezes on its last good word.
     function later() { clearTimeout(expiry); expiry = setTimeout(function () { if (doc.visibilityState === 'hidden') fail('refresh required'); else now(); }, 60000); }
     async function now() {
@@ -57,7 +68,7 @@
         var d = await read(win.fetch.bind(win));
         if (g !== gen) return;
         var m = merge(t, d);
-        o.live(m, d); ok = true;
+        o.live(m, d); ok = true; tell(summary(d));
         if (record.nace === null) record.nace = record.t;
         record.cuidado = record.t;
         later();
@@ -70,7 +81,7 @@
     if (o.button) o.button.addEventListener('click', now);
     return {read: now};
   }
-  root.AtlasWorldFeed = {read: read, merge: merge, follow: follow, record: function () { return {t: record.t, nace: record.nace, cuidado: record.cuidado}; }};
+  root.AtlasWorldFeed = {read: read, merge: merge, follow: follow, summary: summary, record: function () { return {t: record.t, nace: record.nace, cuidado: record.cuidado}; }};
   if (root.addEventListener && root.location && root.location.search.indexOf('landing=1') >= 0) {
     root.addEventListener('message', function (e) {
       if (e.origin !== root.location.origin || !e.data || e.data.type !== 'preceptoros:enter-openworld') { return; }

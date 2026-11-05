@@ -6,6 +6,16 @@
   var doc = root.document, card = doc.getElementById('sheet-welcome'), play = doc.getElementById('visitor-play');
   if (!card || !play) { return; }
   var go = doc.getElementById('welcome-play'), look = doc.getElementById('welcome-look'), said = doc.getElementById('welcome-result');
+  var lore = doc.getElementById('welcome-lore');
+  lore.textContent = 'Welcome to a world of waves: AI models live on equipment their owners control, under a human protocol. Owners can create buildings; you can explore and interact during your visit.';
+  var liveStatus = doc.createElement('p'); liveStatus.id = 'welcome-live'; liveStatus.setAttribute('role', 'status');
+  liveStatus.textContent = 'Live nodes: NO_DATA · waiting for the map. Live visitors: NO_DATA · no shared count is available.';
+  lore.after(liveStatus);
+  doc.addEventListener('world:summary', function (event) {
+    var data = event.detail || {};
+    liveStatus.textContent = (data.ok ? 'Live nodes: ' + data.live + '.' : 'Live nodes: NO_DATA · ' + (data.cause || 'publisher unavailable') + '.') +
+      ' Live visitors: NO_DATA · no shared count is available.';
+  });
   var TUTORIAL = 'Play the tutorial by walking to the beacon, or press Skip tutorial.';
   function close() { card.hidden = true; }
   function next(test) { return new Promise(function (ok) { function on(e) { if (test(e.detail || {})) { play.removeEventListener('visitor:render', on); ok(e.detail); } } play.addEventListener('visitor:render', on); }); }
