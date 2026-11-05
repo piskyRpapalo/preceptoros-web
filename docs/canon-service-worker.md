@@ -161,7 +161,7 @@ EL JUEGO, AL PRECACHE (mudanza firmada, bloque 2, firma D7 del 2026-10-11). Hast
    FUERA del precache (firma del 2026-09-26: la puerta no pesaba en la primera visita). La mudanza lo
    invierte porque la portada YA ES el juego: sin el en el shell, sin red no se juega. La lista es TODO
    lo que `thegame.js` carga (sus listas y lo que pide a demanda); `atlas/test_atlas.py` la compara con
-   la puerta, asi que no puede quedarse atras. Lo que es MEDIDA (`atlas-mundo.json`, `atlas-record.json`)
+   la puerta, asi que no puede quedarse atras. Lo que es MEDIDA (`atlas-world.json`, `atlas-record.json`)
    sigue fuera: sin red, NO_DATA, nunca una cifra vieja. Los textos del juego (atlas-*.json, tambien los
    de la casa) van en CONTENIDO_JSON, abajo.
 
@@ -181,7 +181,7 @@ Lo que viaja en el shell: la portada y el juego. (Antes se llamaba HUB; el nombr
 
 ## public/sw-listas.js:68
 
-Los TEXTOS del juego son contenido (se sirven del cache); `atlas-mundo.json` y `atlas-record.json`
+Los TEXTOS del juego son contenido (se sirven del cache); `atlas-world.json` y `atlas-record.json`
    son MEDIDAS y siguen fuera: sin red, NO_DATA, nunca una cifra vieja con cara de fresca.
 
 

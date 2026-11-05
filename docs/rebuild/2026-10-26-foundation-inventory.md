@@ -7,14 +7,14 @@ Proposal input for Claude's one-shot. Bases: WEB `c48658a406f84d5fcf451992af21d9
 | Component | Class | Keep/rebuild boundary; evidence |
 |---|---|---|
 | Bubble contract | MATH/TELEMETRY | Keep `preceptoros.acho/1`, frame validation, deterministic inputs: `docs/acho-language.md:1-27`, `public/game/acho_language.js:1-80`, `public/game/creation_package.js:3,53`. Rebuild renderer/presentation separately. WEB#294 package contract; LF-1/LF-2 receipt 6376804981. |
-| Acho compiler and editor | HYBRID | Keep geometry/math (`acho_language.js`, `gacha.js`, `valores.js`); rebuild SVG/canvas, controls, CSS, transitions (`acho_paint.js`, `acho_editor.js`). WEB#295 measured six games and four-channel simulated parity with letterboxing; physical touch is not evidenced here. |
-| Semantic palette | MATH/TELEMETRY | Keep semantic roles/tokens in `public/game/comic_tokens.js:5-16`, `comic_accents.js:50-75`, `tabla_semantica.js`; replace skin without changing role. |
+| Acho compiler and editor | HYBRID | Keep geometry/math (`acho_language.js`, `gacha.js`, `values.js`); rebuild SVG/canvas, controls, CSS, transitions (`acho_paint.js`, `acho_editor.js`). WEB#295 measured six games and four-channel simulated parity with letterboxing; physical touch is not evidenced here. |
+| Semantic palette | MATH/TELEMETRY | Keep semantic roles/tokens in `public/game/comic_tokens.js:5-16`, `comic_accents.js:50-75`, `semantic_table.js`; replace skin without changing role. |
 | Wave figures | MATH/TELEMETRY | Keep deterministic harmonics and points (`public/game/gacha.js`, `acho_language.js:65-80`); renderer may change. Measure exact dependencies before extraction. |
 | FM synthesis | HYBRID | Keep recipe math in `public/game/core.js:7-25,38-82` (carrier/modulator/index/envelope/LFO); Web Audio graph and mix are heard presentation. `audio_feedback_manager.js` maps cues to playback. LF-2 receipt 6376804981 says visual/audio fields are not interchangeable. |
 | Web shell/game | CARBON-SEES/HEARS | Rebuild page hierarchy, panels, CSS, focus, SVG/canvas, transitions, labels and mix: `public/index.html`, `public/assets/thegame.js`, `public/game/`. Retain reviewed contracts/math, not wholesale UI. |
 | Creation | HYBRID | Keep schema, signature and hashes in `docs/creation-package.md`, `public/game/creation_package.js`; rebuild creation surface in `public/creation.html`, `creation_flow.js`, editor. E8 LIVE receipt 6376680966 verifies one package path only. |
-| Counters and seal | MATH/TELEMETRY | Keep `atlas/mundo.py`, `contadores.py`, `bin/sellar.py`, `config/sw-huella.txt`, `public/counters.json`; presentation of measurements is replaceable. |
-| Offline routes | MATH/TELEMETRY | Keep `public/sw-listas.js`, `public/sw.js`, `bin/contar_rutas.py`, `arnes_sw.mjs`. LF-3 receipt 6377089352. Rebuild offline UX only with cache-contract coverage. |
+| Counters and seal | MATH/TELEMETRY | Keep `atlas/world.py`, `counters.py`, `bin/seal.py`, `config/sw-huella.txt`, `public/counters.json`; presentation of measurements is replaceable. |
+| Offline routes | MATH/TELEMETRY | Keep `public/sw-listas.js`, `public/sw.js`, `bin/count_routes.py`, `sw_harness.mjs`. LF-3 receipt 6377089352. Rebuild offline UX only with cache-contract coverage. |
 | Deploy/faro | MATH/TELEMETRY | Keep `wrangler.jsonc`, `.github/workflows/deploy.yml`, `faro.yml`, `atlas/faro.py`; operator instructions/UI can change. No deployment was performed for this card. |
 | App server/dispatcher | HYBRID | Keep validation, API schemas and measured state in `bin/preceptoros-pwa`, `orquestador.py`; rebuild `interface/app.html` and client shell. APP 7885afe8 includes local creation voice route, PreceptorOS#100 / receipt 6377404930. Resident-service behavior is NOT VERIFIED here. |
 | App telemetry | MATH/TELEMETRY | Keep `metricas.py:2-17,39-47` (11 named measures and NO_DATA semantics); `consola.py:2-30,45-55` is a read-only `preceptoros.consola/1` view over local state. Rebuild how values are presented. |
@@ -32,7 +32,7 @@ A drawing passes only with fixture evidence for each applicable criterion; this 
 2. Every visible object is calculated from declared geometry/parameters; no opaque bitmap or untracked path. Exceptions are listed with cause.
 3. Canonical UTF-8 frame size ≤1,024 bytes after serialization.
 4. `preceptoros.acho/1` validates with current contract/compiler (`docs/acho-language.md`, `acho_language.js`); unknown token/shape rejects with named cause.
-5. Chroma is semantic: use roles from `comic_tokens.js`, `comic_accents.js`, `tabla_semantica.js`; record role-to-token mapping and preserve roles across skins.
+5. Chroma is semantic: use roles from `comic_tokens.js`, `comic_accents.js`, `semantic_table.js`; record role-to-token mapping and preserve roles across skins.
 6. If sound applies, trace a declared frame/state field through cue mapping to FM recipe in `core.js`. If none applies, say “none”. Never equate visual phase with audio phase (LF-2).
 7. Transitions are deterministic and bounded; compare same geometry/event sequence across variants. Any timing difference must be explicit in fixture.
 

@@ -9,7 +9,7 @@ import { launchChrome } from '../chrome_launch.mjs';
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
 const PAGE = 'atlas/ojo/fixtures/oido.html';
 const TRACKS = ['descent', 'radio', 'card', 'feedback'];
-const SOURCES = ['public/game/descent_sound.js', 'public/game/aiact-art50-state-radio.js', 'public/game/tarjeta_cantada.js', 'public/game/audio_feedback_manager.js', 'public/game/core.js'];
+const SOURCES = ['public/game/descent_sound.js', 'public/game/aiact-art50-state-radio.js', 'public/game/sung_card.js', 'public/game/audio_feedback_manager.js', 'public/game/core.js'];
 const NO_CLOCK = /\b(?:Date\.now|performance\.now|new Date\s*\()/;
 const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
 class NoData extends Error {}

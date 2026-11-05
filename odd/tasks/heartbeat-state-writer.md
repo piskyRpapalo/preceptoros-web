@@ -28,7 +28,7 @@ never become public labels or page content.
   `NO_DATA · identidades_canonicas_no_configuradas`, zero nodes, and zero buildings.
   Therefore no node is currently publishable and no first heartbeat is visible.
 - Web `public/openworld/index.html` currently reads the same-origin static
-  `/openworld/estado.json`; `public/game/openworld_state.js` validates v2. It does not
+  `/openworld/state.json`; `public/game/openworld_state.js` validates v2. It does not
   yet read Aduana. The canon still says rack heartbeat is `NO_DATA` because the page
   does not read it at load (`docs/canon-node-evidence-and-account.md`).
 
@@ -43,7 +43,7 @@ never become public labels or page content.
    `https://api.preceptoros.org/api/v1/latidos` endpoint with `GET`, `cache: no-store`,
    `credentials: omit`, and redirects refused. Its existing CORS contract admits the
    canonical web origin. The response body is the map's state JSON; the term
-   `estado.json` names this contract, not a periodically frozen artifact.
+   `state.json` names this contract, not a periodically frozen artifact.
 4. Feed the validated response to the existing state validator and colony renderer.
    Keep the tutorial cabin as tutorial scenery; do not promote it into a machine row.
    With no valid node, retain the cabin and show the publisher's exact `NO_DATA` cause.

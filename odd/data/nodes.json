@@ -1,6 +1,6 @@
 {
   "esquema": "preceptoros.nodes-evidencia/1",
-  "nota": "Fuente de los nodos del mapa unico. Cada nodo lleva su evidencia fechada; sin evidencia no entra. Escribe public/openworld/estado.json (bin/estado_v2.py).",
+  "nota": "Fuente de los nodos del mapa unico. Cada nodo lleva su evidencia fechada; sin evidencia no entra. Escribe public/openworld/state.json (bin/state_v2.py).",
   "nodos": [
     {
       "id": "cabin",
