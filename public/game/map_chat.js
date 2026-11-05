@@ -22,6 +22,16 @@
   });
   zone.prepend(modeLabel, mode);
   var remoteNotice = doc.createElement('p'); remoteNotice.textContent = 'Hexelion is an AI on the rack. Sending shares your message and an ephemeral visit identifier with the gateway. It advises; it never signs.'; remoteNotice.hidden = true; zone.append(remoteNotice);
+  var aulaLoad = null;
+  function loadAula() {
+    if (root.AtlasAulaChat) return Promise.resolve(root.AtlasAulaChat);
+    if (!aulaLoad) aulaLoad = new Promise(function (resolve, reject) {
+      var script = doc.createElement('script'); script.src = '/game/classroom_chat.js';
+      script.onload = function () { resolve(root.AtlasAulaChat); };
+      script.onerror = function () { aulaLoad = null; reject(new Error('gateway module unavailable')); }; doc.head.append(script);
+    });
+    return aulaLoad;
+  }
   var visitAccount = null, chain = { tic: 0, hash: null, sello: null }, visitGeneration = 0;
   var visitPanel = doc.getElementById('visitor-play');
   visitPanel.addEventListener('visitor:render', function (event) { visitAccount = event.detail.account; });
@@ -74,9 +84,10 @@
     if (!text || busy) return;
     if (!visitAccount) { line('Hexelion', 'NO_DATA · Start an ephemeral visit before sending to Hexelion.'); return; }
     if (new TextEncoder().encode(text).length > 600) { line('Hexelion', 'NO_DATA · Message exceeds 600 UTF-8 bytes.'); return; }
-    if (!root.AtlasAulaChat) { line('Hexelion', 'NO_DATA · Chat gateway module unavailable.'); return; }
+    busy = true;
+    try { await loadAula(); } catch (_) { busy = false; line('Hexelion', 'NO_DATA · Chat gateway module unavailable.'); return; }
     var generation = visitGeneration, account = visitAccount, seed;
-    try { seed = account.info().seed; } catch (_) { line('Hexelion', 'NO_DATA · This visit has ended.'); return; }
+    try { seed = account.info().seed; } catch (_) { busy = false; line('Hexelion', 'NO_DATA · This visit has ended.'); return; }
     line('You', text); input.value = ''; busy = true;
     var send = form.querySelector('button[type="submit"]'); send.disabled = true;
     try {

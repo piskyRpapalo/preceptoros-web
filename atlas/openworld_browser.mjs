@@ -92,6 +92,7 @@ async function main() {
 
   const remoteChat = await evaluate(`(async () => {
     const mode = document.getElementById('chat-destination'), form = document.getElementById('entry'), input = document.getElementById('question');
+    const script=document.createElement('script'); script.src='/game/classroom_chat.js'; await new Promise((resolve,reject)=>{script.onload=resolve;script.onerror=reject;document.head.append(script)});
     let calls = [], original = AtlasAulaChat.turn;
     AtlasAulaChat.turn = async (fetcher, visit, text, chain, page) => { calls.push({visit, text, page}); return {ok:true,text:'Fixture response',chain:{tic:1,hash:'fixture',sello:{}},receiptState:{ok:false}}; };
     mode.value='hexelion'; mode.dispatchEvent(new Event('change'));

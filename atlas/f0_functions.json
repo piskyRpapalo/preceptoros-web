@@ -229,21 +229,6 @@
    ]
   },
   {
-   "id": "aula-chat",
-   "scripts": [
-    "/game/classroom_chat.js"
-   ],
-   "globals": [
-    "AtlasAulaChat"
-   ],
-   "guards": [
-    {
-     "file": "atlas/openworld_browser.mjs",
-     "text": "remote chat must use the active ephemeral visit only"
-    }
-   ]
-  },
-  {
    "id": "radio",
    "scripts": [
     "/assets/radio_message_log.js",
