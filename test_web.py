@@ -1169,3 +1169,1410 @@ class PWA(unittest.TestCase):
             with self.subTest(icono=icono["src"]):
                 self.assertTrue(ruta.exists(), f"{icono['src']} no existe")
 
+        # Un color de barra en el manifiesto y otro en la etiqueta es una
+        # ventana que cambia de color al instalarse.
+        for p in self.paginas_servidas():
+            t = p.read_text(encoding="utf-8")
+            meta = re.search(r'<meta name="theme-color" content="([^"]+)"', t)
+            with self.subTest(pagina=str(p.relative_to(PUBLICO))):
+                self.assertIsNotNone(meta, "la pagina no declara theme-color")
+                self.assertEqual(m["theme_color"].lower(), meta.group(1).lower(),
+                                 "el manifiesto y la pagina discrepan del color")
+
+    def test_un_icono_maskable_no_puede_ser_el_mismo_que_el_normal(self):
+        """Medido el 2026-08-30 sobre icon-512.png y por eso existe.
+
+        El manifiesto declaraba `purpose: maskable` sobre el MISMO fichero que
+        servia de icono normal. Android recorta los maskable a un circulo del
+        80% del lado: radio 205 px en un lienzo de 512. El contenido de ese
+        icono llega a 255 px del centro. Es decir, la promesa «esto aguanta el
+        recorte» era falsa y el glifo se cortaba en cada telefono Android.
+
+        Un maskable necesita su PROPIO fichero, con el dibujo mas pequeno
+        dentro de la zona segura. Mientras no exista, es mejor no declararlo:
+        el sistema pone su propia placa y se ve peor, pero no miente.
+        """
+        m = json.loads((PUBLICO / "manifest.webmanifest").read_text(encoding="utf-8"))
+        normales = {i["src"] for i in m["icons"]
+                    if "maskable" not in i.get("purpose", "any")}
+        for icono in m["icons"]:
+            if "maskable" in icono.get("purpose", ""):
+                with self.subTest(icono=icono["src"]):
+                    self.assertNotIn(
+                        icono["src"], normales,
+                        f"{icono['src']} se declara maskable y ademas normal: "
+                        "o tiene margen de sobra como icono, o se recorta como "
+                        "maskable. No puede ser lo correcto en los dos papeles.")
+
+    def test_los_iconos_no_engordan_sin_permiso(self):
+        """Los iconos pasaron de 12 KB a 180 KB al cambiar de arte.
+
+        Es el precio de una imagen fotorrealista y esta pagado a proposito:
+        el anterior era un glifo plano de otra paleta. Pero un techo declarado
+        evita que el proximo cambio meta un PNG de un mega sin que nadie lo
+        mire. No se cargan al abrir la web --solo al instalar la app-- y por
+        eso el techo es alto y no minusculo.
+        """
+        m = json.loads((PUBLICO / "manifest.webmanifest").read_text(encoding="utf-8"))
+        vistos, total = set(), 0
+        for icono in m["icons"]:
+            if icono["src"] in vistos:
+                continue
+            vistos.add(icono["src"])
+            total += (PUBLICO / icono["src"].lstrip("/")).stat().st_size
+        self.assertLess(total, 256 * 1024,
+                        f"los iconos del manifiesto suman {total} B")
+
+    def test_manifest_es_minimo(self):
+        """Lo que hace falta para instalar, y nada de adorno.
+
+        Un manifiesto que crece con claves que ningun navegador lee es un
+        fichero que nadie vuelve a auditar. Se fija la lista: si alguien anade
+        una clave, tiene que anadirla tambien aqui y explicar para que.
+        """
+        m = json.loads((PUBLICO / "manifest.webmanifest").read_text(encoding="utf-8"))
+        obligatorias = {"name", "short_name", "start_url", "display", "icons"}
+        self.assertTrue(obligatorias <= set(m),
+                        f"faltan claves de instalacion: {obligatorias - set(m)}")
+        admitidas = obligatorias | {"id", "scope", "lang", "dir", "description",
+                                    "orientation", "background_color", "theme_color"}
+        sobran = set(m) - admitidas
+        self.assertFalse(sobran, f"claves decorativas en el manifiesto: {sobran}")
+        # Los iconos son PNG de 192 y 512: un webp de 128 px no instala en
+        # Android, que pide 192 como minimo y 512 para la pantalla de arranque.
+        tam = {i["sizes"] for i in m["icons"]}
+        self.assertIn("192x192", tam, "sin icono de 192 no hay instalacion")
+        self.assertIn("512x512", tam, "sin icono de 512 no hay pantalla de arranque")
+
+    def test_iconos_y_tarjeta_salen_del_emblema(self):
+        """Firma F2-8 del Soberano, 2026-10-10: favicon, iconos PWA y og:image siguen
+        existiendo, pero CAMBIA SU ORIGEN: los genera bin/icons_from_emblem.py con la
+        onda del emblema del sitio. Lo publicado tiene que ser exactamente lo que el
+        generador produce hoy: un icono retocado a mano o un PNG pintado no pasa."""
+        try:
+            import PIL  # noqa: F401
+        except ImportError:
+            self.skipTest("NO_DATA · sin Pillow no se puede regenerar. Remedio: instalar Pillow")
+        r = subprocess.run([sys.executable, str(RAIZ / "bin" / "icons_from_emblem.py"), "--comprobar"],
+                           cwd=RAIZ, capture_output=True, text=True, timeout=120)
+        self.assertEqual(r.returncode, 0, "lo publicado no es lo que genera el emblema:\n" + r.stdout)
+
+    def test_el_maskable_cabe_de_verdad_en_su_circulo(self):
+        """No que lo diga el manifiesto: que lo diga el fichero.
+
+        El anterior se declaraba maskable y se recortaba -- contenido a 255 px
+        del centro con un radio seguro de 205. Aquella comprobacion solo miraba
+        que fuese un fichero distinto del icono normal, que es necesario y no
+        suficiente: un fichero distinto puede estar igual de mal encuadrado.
+        Esta abre el PNG y mide.
+        """
+        try:
+            from PIL import Image
+        except ImportError:
+            self.skipTest("NO_DATA · sin Pillow no se puede medir el encuadre. "
+                          "Remedio: instalar Pillow y repetir")
+        import math
+        m = json.loads((PUBLICO / "manifest.webmanifest").read_text(encoding="utf-8"))
+        masc = [i for i in m["icons"] if "maskable" in i.get("purpose", "")]
+        if not masc:
+            self.skipTest("el manifiesto no declara ningun icono maskable")
+        for icono in masc:
+            im = Image.open(PUBLICO / icono["src"].lstrip("/")).convert("RGB")
+            w, h = im.size
+            with self.subTest(icono=icono["src"]):
+                self.assertEqual(w, h, "un maskable tiene que ser cuadrado")
+                fondo = im.getpixel((2, 2))
+                # Android recorta a un circulo del 80% del lado: radio 40%.
+                seguro = 0.40 * w
+                cx, cy = w / 2, h / 2
+                lejos = 0.0
+                px = im.load()
+                for y in range(h):
+                    for x in range(w):
+                        c = px[x, y]
+                        if abs(c[0]-fondo[0]) + abs(c[1]-fondo[1]) + abs(c[2]-fondo[2]) > 24:
+                            d = math.hypot(x - cx, y - cy)
+                            if d > lejos:
+                                lejos = d
+                self.assertLessEqual(
+                    lejos, seguro,
+                    f"{icono['src']}: hay dibujo a {lejos:.0f} px del centro y "
+                    f"el circulo seguro son {seguro:.0f}. Android lo recortaria.")
+
+    def test_el_worker_no_guarda_lo_ajeno_ni_los_datos(self):
+        """Las dos reglas que el worker anterior rompia.
+
+        Cacheaba TODO con `caches.match() || fetch()`, la API incluida: una
+        respuesta guardada para siempre y una pagina que no puede notarlo.
+        Y guardar counters.json seria publicar cifras viejas con cara de
+        frescas -- la misma averia que la portada con sus 19 pruebas.
+        """
+        sw = (PUBLICO / "sw.js").read_text(encoding="utf-8")
+        self.assertIn("url.origin !== self.location.origin", sw,
+                      "el worker no distingue su propio origen del ajeno")
+        self.assertIn(".json", sw, "el worker no deja fuera los datos")
+        # Ni un host escrito a mano: la frontera es el origen, que el
+        # navegador ya sabe. Una lista de dominios envejece en silencio.
+        self.assertEqual([], re.findall(r"https?://[^\s\"']+", sw),
+                         "el worker lleva un dominio incrustado")
+
+    def test_el_worker_pasa_su_arnes(self):
+        """Las reglas de enrutado, ejecutadas de verdad.
+
+        Todo lo demas de esta clase lee el fichero y busca cadenas: comprueba
+        que el worker DICE lo correcto, no que lo HAGA. `sw_harness.mjs` lo
+        ejecuta con un entorno falso y le pide las cuatro reglas.
+
+        Se salta si no hay node. Preferir un NO_DATA declarado a una prueba
+        que se cae en cualquier maquina sin node instalado -- el gate de este
+        repositorio es de biblioteca estandar y asi sigue.
+        """
+        import shutil, subprocess
+        node = shutil.which("node")
+        if not node:
+            self.skipTest("NO_DATA · no hay node: la logica del worker queda "
+                          "sin ejecutar. Remedio: instalar node y repetir")
+        r = subprocess.run([node, "sw_harness.mjs"], cwd=str(RAIZ),
+                           capture_output=True, text=True, timeout=120)
+        self.assertEqual(0, r.returncode,
+                         "el arnes del worker falla:\n" + r.stdout + r.stderr)
+
+    def test_sw_cachea_los_nuevos_assets(self):
+        """El worker tiene que conocer TODO lo que la portada necesita.
+
+        La lista no se escribe aqui: se DERIVA del disco y de `hub.json`. Si
+        manana entra una cara de agente nueva y nadie la anade al worker, este
+        caso se cae solo -- que es justo lo que hace falta, porque el sintoma
+        contrario es invisible: la app instalada abre, pinta el esqueleto, y
+        la rejilla se queda en NO_DATA sin que nadie sepa por que.
+
+        Y la distincion entre medida y contenido se comprueba en los dos
+        sentidos: `hub.json` tiene que estar declarado como contenido, y
+        `counters.json` NO puede estarlo. Cachear la cifra de los gates seria
+        repetir la averia de la puerta 1 dentro del worker.
+        """
+        sw = texto_del_worker()
+
+        # 1 · las piezas de la PORTADA-JUEGO (mudanza b3, 2026-10-11: el hub cayo; la portada es el juego).
+        # Corte Norte 7 pieza C (2026-10-28): thegame.js sale del shell con /play/; ya no se cachea.
+        for pieza in ("/assets/auth.js", "/assets/pwa.js", "/game/gdpr-art25-ephemeral-crab.js"):
+            with self.subTest(pieza=pieza):
+                self.assertIn(f"'{pieza}'", sw,
+                              f"el worker no cachea {pieza}")
+
+        # 2 · NINGUNA de las dos familias de iconos de companero viaja ya.
+        #
+        # Lo de los ojos venia del 2026-09-05 y ya estaba escrito aqui; las
+        # esferas se van el 2026-09-20 con los companeros. Se comprueba por
+        # PREFIJO y no por nombre: una lista generada con un `map` colaria por
+        # debajo de una comprobacion que buscara los ocho nombres.
+        #
+        # La regla se invierte en vez de borrarse. Un hueco donde habia una
+        # comprobacion es como vuelve el mismo desperdicio dentro de seis meses
+        # -- alguien reañade la lista «por si acaso» y no falla nada.
+        for prefijo in ("agente-3d-", "agente-" + "ojo-"):
+            with self.subTest(prefijo=prefijo):
+                self.assertNotIn(prefijo, sw,
+                                 f"el worker vuelve a precachear {prefijo}* y "
+                                 f"no lo pinta nadie")
+
+        # 3 · contenido si, medida no
+        contenido = re.search(r"const CONTENIDO_JSON = \[(.*?)\]", sw, re.S)
+        self.assertIsNotNone(contenido, "el worker no separa contenido de medida")
+        # Norte 7 D: el lexicon de theGame se retiro y CONTENIDO_JSON queda vacio a proposito.
+        self.assertEqual(contenido.group(1).strip(), "",
+                         "el lexicon de theGame se retiro: CONTENIDO_JSON no debe citar nada del juego")
+        self.assertNotIn("counters.json", contenido.group(1),
+                         "el worker cachearia la cifra de los gates")
+        self.assertIn("/manifest.webmanifest",
+                      re.search(r"const RED_PRIMERO = \[(.*?)\]", sw, re.S).group(1),
+                      "el manifiesto no va a red primero")
+
+    def test_sin_conexion_hay_algo_que_leer(self):
+        """Y en los tres idiomas: quien instala desde /fr/ no merece un
+        error en espanol."""
+        sw = (PUBLICO / "sw.js").read_text(encoding="utf-8")
+        self.assertIn("paginaSinRed", sw, "el worker no sintetiza respaldo")
+        for idioma in LENGUAS_DATOS:
+            with self.subTest(idioma=idioma):
+                self.assertRegex(sw, r"\b" + idioma + r"\s*:\s*\[",
+                                 f"la pagina de sin conexion no habla {idioma}")
+
+
+class Paginas(unittest.TestCase):
+
+    def test_todas_las_paginas_tienen_pie_honesto(self):
+        command = ["node", "atlas/wave_army_face_cases.mjs"]
+        green = subprocess.run(command, cwd=RAIZ, capture_output=True, text=True)
+        self.assertEqual(green.returncode, 0, green.stderr)
+        red = subprocess.run(command + ["--sabotage"], cwd=RAIZ, capture_output=True, text=True)
+        self.assertNotEqual(red.returncode, 0, "changed-state sabotage must be detected")
+        # Las portadas salieron (mudanza b1, 2026-10-11): ya no son paginas de contenido, son el juego.
+        for p in paginas_de_contenido():
+            if p.name == "index.html":
+                continue
+            with self.subTest(pagina=p.name):
+                self.assertIn('class="honest-footer"', p.read_text(encoding="utf-8"))
+
+    def test_los_enlaces_internos_existen(self):
+        """Ningun enlace relativo apunta a una pagina que no esta.
+
+        Existe por una cicatriz: las tres landings enlazaron a instalar.html y
+        lore.html varios commits antes de que existieran.
+        """
+        for p in PUBLICO.rglob("*.html"):
+            s = p.read_text(encoding="utf-8")
+            for href in re.findall(r'href="([^"]+)"', s):
+                if href.startswith(("http", "#", "mailto:")):
+                    continue
+                ruta = href.split("#")[0].split("?")[0]
+                if not ruta:
+                    continue
+                # Un href que empieza por "/" es relativo a la RAIZ DEL SITIO,
+                # que aqui es public/, no al sistema de ficheros. La primera
+                # version resolvia "/es/" contra / y daba nueve falsos rotos.
+                base = PUBLICO if ruta.startswith("/") else p.parent
+                destino = (base / ruta.lstrip("/")).resolve()
+                if destino.is_dir():
+                    destino = destino / "index.html"
+                with self.subTest(pagina=str(p.relative_to(PUBLICO)), href=href):
+                    self.assertTrue(destino.exists(), f"enlace roto: {href} -> {destino}")
+
+
+class Traducciones(unittest.TestCase):
+
+    @staticmethod
+    def claves_que_usa(js):
+        # Se quitan los comentarios ANTES de mirar: si no, la propia
+        # documentacion del fichero se inventa claves. Paso por aqui.
+        js = re.sub(r"/\*.*?\*/", "", js, flags=re.S)
+        js = re.sub(r"(?m)//.*$", "", js)
+        return set(re.findall(r"\bT\.([A-Za-z]+)", js))
+
+    # Guiones que NO leen sus rotulos del bloque de la pagina. Se enumeran uno a
+    # uno con su motivo, y no como categoria: una categoria --«los que tienen
+    # otra fuente»-- deja entrar al siguiente sin que nadie lo mire.
+    OTRA_FUENTE = {
+        "cabezal-rotulos.js": "los rotulos del cabezal salen de /nav.json, que "
+                              "genera nav.py desde las propias portadas",
+        "pwa.js": "comparte con el cabezal los rotulos de /nav.json",
+        "auth.js": "resuelve T en rotulos(), que lee el mismo catalogo",
+        "hub.js": "T.agentes es un override opcional; los nombres salen de "
+                  "agentes-<idioma>.json",
+        "send.js": "sus ocho rotulos viven en send-<idioma>.js desde el "
+                     "2026-09-14; los comprueba "
+                     "test_los_rotulos_del_ENVIO_viven_en_las_ocho",
+        "engine.js": "sus 19 rotulos viven en motor-<idioma>.json desde el "
+                     "2026-09-20, cuando la descarga del modelo se mudo del "
+                     "LorAtelier a la portada: no caben en el bloque del "
+                     "griego, que deja 107 bytes libres. El bloque propio "
+                     "sigue mandando --- la familia solo rellena lo que falte "
+                     "---, y la paridad la comprueba LasTresFamilias",
+    }
+
+    def test_NINGUNA_pagina_cae_al_respaldo_en_castellano(self):
+        """La regla entera, y contra TODOS los guiones que carga cada pagina.
+
+        Hasta hoy esto se vigilaba pieza a pieza: el taller tenia su guardian,
+        el Agora gano el suyo el 2026-09-14 despues de publicar tres titulares
+        en espanol dentro de la pagina inglesa. Pieza a pieza significa que la
+        siguiente pieza entra sin vigilancia, y asi entraron las dos que este
+        test encontro al escribirse:
+
+          · `rackFallo`, `rackCausa` y `rackSinAdaptador` faltaban en las OCHO
+            `benchmark.html`, que tambien pide turnos al rack. Ahi no caian al
+            castellano: caian a `undefined`, y la pagina decia «undefined Failed
+            to fetch». Peor que un idioma equivocado, porque no significa nada.
+          · `tbVacio` y `tbEscritura` existian SOLO en castellano, y son el
+            hueco mas visible del Agora: lo que se lee cuando no hay ni un hilo.
+
+        El respaldo en castellano dentro del codigo es comodo y por eso es
+        peligroso: no rompe nada, se ve razonable, y solo lo nota quien lee las
+        dos lenguas. Esta prueba es la unica que puede verlo por el.
+        """
+        clave = re.compile(r"\bT\.([A-Za-z][A-Za-z0-9]*)|T\('([A-Za-z][A-Za-z0-9]*)'")
+        for pagina in sorted(PUBLICO.rglob("*.html")):
+            html = pagina.read_text(encoding="utf-8")
+            bloque = re.search(r'id="i18n">(.*?)</script>', html, re.S)
+            if not bloque:
+                continue        # sus textos viven en un JSON propio
+            tiene = set(json.loads(bloque.group(1)))
+            for src in re.findall(r'<script src="/assets/([^"]+)"', html):
+                if src in self.OTRA_FUENTE:
+                    continue
+                f = PUBLICO / "assets" / src
+                if not f.is_file():
+                    continue
+                js = re.sub(r"/\*.*?\*/", "", f.read_text(encoding="utf-8"), flags=re.S)
+                js = re.sub(r"(?m)//.*$", "", js)
+                pide = {a or b for a, b in clave.findall(js)}
+                # `state.js` solo pinta el badge del cerebro si la pagina trae
+                # `#brain`, y se retira ANTES de leer una sola clave si no esta.
+                if src == "state.js" and 'id="brain"' not in html:
+                    pide -= {"brainAsleep", "brainLabel", "brainLive", "brainNone"}
+                with self.subTest(pagina=str(pagina.relative_to(PUBLICO)), guion=src):
+                    self.assertFalse(
+                        pide - tiene,
+                        f"{src} pide claves que esta pagina no declara y caera "
+                        f"a su respaldo: {sorted(pide - tiene)}")
+
+    # Los ocho rotulos de la puerta hacia el rack, y su casa desde el
+    # 2026-09-14. Se nombran aqui y no se deducen del fichero: si manana
+    # alguien borra uno, el test tiene que echarlo de menos.
+    ROTULOS_ENVIO = ("envBoton", "envEnviando", "envEncolado", "envFallo",
+                     "envSinCanal", "envSinFirmaTexto", "envRemedio", "envAviso")
+
+    def test_los_rotulos_del_ENVIO_viven_en_las_ocho(self):
+        """`send.js` esta perdonado arriba, asi que aqui se paga el perdon.
+
+        Y la asercion que de verdad importa no es que existan: es que **no
+        sean la version inglesa**. Este fichero nace de encontrar SEIS lenguas
+        --fr, pt, it, de, ru, el-- publicando «Send to the rack» dentro de tres
+        paginas cada una. Nada saltaba: las claves estaban, tenian texto, y el
+        texto estaba bien escrito. En el idioma equivocado.
+
+        Es la familia de A17 --el respaldo silencioso-- con una vuelta de
+        tuerca: alli el respaldo era castellano y lo veia cualquiera de la
+        casa; aqui era ingles, que en una web tecnica no llama la atencion de
+        nadie. Por eso el guardian no puede preguntar «hay texto?» sino
+        «es OTRO texto?».
+        """
+        import re as _re
+        cargados = {}
+        for idioma in LENGUAS_DATOS:
+            f = PUBLICO / "assets" / f"send-{idioma}.js"
+            with self.subTest(idioma=idioma):
+                self.assertTrue(f.is_file(),
+                    f"la puerta hacia el rack no tiene rotulos en {idioma}: "
+                    f"falta {f.name}")
+                crudo = f.read_text(encoding="utf-8")
+                m = _re.search(r"window\.ENVT\s*=\s*(\{.*?\});", crudo, _re.S)
+                self.assertIsNotNone(m, f"{f.name} no declara window.ENVT")
+                datos = json.loads(m.group(1))
+                cargados[idioma] = datos
+                faltan = [k for k in self.ROTULOS_ENVIO if not datos.get(k)]
+                self.assertFalse(faltan,
+                    f"{f.name} no trae {faltan}: en pantalla eso se ve igual "
+                    f"que no traer el fichero")
+
+        ingles = cargados.get("en", {})
+        for idioma in LENGUAS_DATOS:
+            if idioma in ("en",):
+                continue
+            iguales = [k for k in self.ROTULOS_ENVIO
+                       if cargados[idioma].get(k) == ingles.get(k)]
+            with self.subTest(idioma=idioma, contra="en"):
+                self.assertFalse(iguales,
+                    f"send-{idioma}.js repite la version INGLESA en "
+                    f"{iguales}. No es un hueco --hay texto-- y por eso no lo "
+                    f"ve nadie que no lea las dos lenguas.")
+
+    # Frases que SON iguales en varias lenguas y deben serlo. Se nombran una a
+    # una: una categoria («los nombres de fichero») dejaria pasar la siguiente
+    # frase que se cuele por parecerse a la categoria.
+    MISMA_FRASE_A_PROPOSITO = {
+        ("onboarding.html", "s3pc"):
+            "«Linux o macOS · install.sh» son dos sistemas operativos y un "
+            "nombre de fichero. La `o` coincide en varias lenguas por "
+            "casualidad, y traducir el nombre del script seria un error.",
+    }
+
+    def test_NINGUNA_pagina_repite_LA_PROSA_DE_OTRA_LENGUA(self):
+        """El hueco que ni el respaldo ni las claves ausentes podian ver.
+
+        Los dos guardianes que ya habia preguntan por la EXISTENCIA: que la
+        clave este, que no falte. Ninguno pregunta si lo que hay dice algo en
+        la lengua de la pagina. Y el 2026-09-14 aparecieron las dos formas del
+        mismo fallo, en direcciones opuestas:
+
+          · `envBoton` y sus siete hermanas decian «Send to the rack» en fr,
+            pt, it, de, ru y el. Texto habia, y bien escrito: en ingles.
+          · Las paginas PORTUGUESAS del Libro de Pruebas, la Comunidad, el
+            Provador y sobre todo el Onboarding --41 claves de 41-- eran el
+            castellano copiado tal cual. `pt/onboarding.html` llegaba a
+            declarar `lang: "es"` dentro de su propio bloque.
+
+        Por eso esto compara CADA lengua contra CADA otra y no contra una de
+        referencia: anclarlo en el castellano habria visto el portugues y no
+        el ingles; anclarlo en el ingles, al reves.
+
+        El umbral --cuatro palabras y 25 caracteres-- deja fuera los cognados
+        de verdad: «Copiar para», «Modelo natural», «motor:» son iguales en
+        castellano y portugues porque asi se dice. Lo que pasa de ahi ya no
+        coincide por casualidad.
+        """
+        import collections
+        paginas = sorted({p.name for p in (PUBLICO / "es").glob("*.html")})
+        for pagina in paginas:
+            bloques = {}
+            for idioma in IDIOMAS:
+                f = PUBLICO / idioma / pagina
+                if not f.is_file():
+                    continue
+                m = re.search(r'id="i18n">(.*?)</script>',
+                              f.read_text(encoding="utf-8"), re.S)
+                if m:
+                    bloques[idioma] = json.loads(m.group(1))
+            if len(bloques) < 2:
+                continue
+            claves = set().union(*[set(d) for d in bloques.values()])
+            for clave in sorted(claves):
+                if (pagina, clave) in self.MISMA_FRASE_A_PROPOSITO:
+                    continue
+                por_texto = collections.defaultdict(list)
+                for idioma, datos in bloques.items():
+                    v = datos.get(clave)
+                    if isinstance(v, str) and len(v.split()) >= 4 and len(v) >= 25:
+                        por_texto[v].append(idioma)
+                repetidas = {v: ls for v, ls in por_texto.items() if len(ls) > 1}
+                with self.subTest(pagina=pagina, clave=clave):
+                    self.assertFalse(repetidas,
+                        f"«{clave}» dice LO MISMO en "
+                        f"{sorted(sum(repetidas.values(), []))}: "
+                        + (list(repetidas)[0][:70] if repetidas else "")
+                        + " — o falta traducir, o es una coincidencia "
+                          "legitima y va nombrada en MISMA_FRASE_A_PROPOSITO")
+
+    # Las trece de firmar una correccion, y de donde sale cada una.
+    ROTULOS_FIRMA_HUB = ("corregirBoton", "corregirQue", "corregirMotivo",
+                         "corregirFirmar", "corregirNoViaja",
+                         "corregirGuardado", "corregirFallo")
+    ROTULOS_FIRMA_NAV = ("idEntrar", "idAviso", "idClave", "idFallo",
+                         "idPerfil", "idPublica")
+
+
+    # Guiones que llevan su PROPIA tabla de ocho lenguas dentro, y por eso
+    # tienen castellano escrito a mano con toda la razon. Se nombran uno a uno:
+    # una regla («los que tengan `es:`») dejaria pasar al siguiente que se
+    # invente una tabla a medias.
+    TABLA_PROPIA = {
+        "aprender.js": "TEXTO, las ocho lenguas del «aprender de mis reescrituras»",
+        "elegir.js": "VOZ, las ocho del «¿te ha servido?»",
+        "consiento.js": "las ocho del consentimiento de analisis",
+        "sello-rack.js": "TX, las nueve del sello «disponible» de las puertas al rack",
+        "medidas-turno.js": "TX, the nine languages of the per-answer measurements tag",
+        "page-comment.js": "TX, las nueve del «comentar esta pagina» (que se envia y que no)",
+    }
+
+    def test_NINGUN_guion_lleva_CASTELLANO_suelto(self):
+        """El hueco por donde se colo el Showman, y que el otro guardian no ve.
+
+        `test_NINGUNA_pagina_cae_al_respaldo_en_castellano` sigue el patron
+        `T('clave')`: mira que la pagina declare lo que el guion pide. Una
+        TABLA LITERAL no pide nada, asi que le es invisible.
+
+        Y ahi vivian las tres frases que se leen justo debajo del chat en la
+        portada. Las ocho lenguas veian «En el cerro · Tu pregunta sube al rack
+        del Soberano y vuelve». No lo cazo el gate: lo cazo abrir la web
+        publicada en el Doogee.
+
+        La regla es simple: un guion que NO es de una lengua concreta no puede
+        llevar una frase castellana suelta. Puede llevarla como RESPALDO
+        declarado --segundo argumento de `T(...)`, que es lo que se ve si el
+        fichero de la lengua no llega-- y puede llevarla dentro de su propia
+        tabla de ocho, si la tiene nombrada aqui abajo.
+        """
+        import re as _re
+        acento = _re.compile(r"[áéíóúñ¿¡ÁÉÍÓÚÑ]")
+        for f in sorted((PUBLICO / "assets").glob("*.js")):
+            # `corregir-el.js`, `send-pt.js`, `prompts-fr.js`: SON de una
+            # lengua. Su trabajo es justo llevar prosa dentro.
+            if _re.search(r"-(?:es|en|fr|pt|it|de|ru|el)\.js$", f.name):
+                continue
+            if f.name in self.TABLA_PROPIA:
+                continue
+            src = f.read_text(encoding="utf-8")
+            src = _re.sub(r"/\*.*?\*/", "", src, flags=_re.S)
+            # `//` precedido de `:` es una URL dentro de una cadena, no un
+            # comentario. Hasta el 2026-09-24 se cortaba igual: la comilla de
+            # 'https://...' quedaba abierta, el emparejamiento de comillas se
+            # desfasaba y la prosa de detras quedaba FUERA de cadena, sin mirar.
+            src = _re.sub(r"(?m)(?<!:)//.*$", "", src)
+            # fuera los respaldos declarados: T('clave', '...')
+            # (con sus trozos concatenados: T('k', 'uno ' + 'dos') es UN respaldo)
+            src = _re.sub(r"T\(\s*'[A-Za-z0-9]+'\s*,\s*'(?:\\.|[^'\\])*'"
+                          r"(?:\s*\+\s*'(?:\\.|[^'\\])*')*",
+                          "T(", src, flags=_re.S)
+            src = _re.sub(r'T\(\s*"[A-Za-z0-9]+"\s*,\s*"(?:\\.|[^"\\])*"',
+                          "T(", src, flags=_re.S)
+            # Y la otra forma del MISMO trato, que esta casa usa igual:
+            # `UI.clave || 'respaldo'`. Sigue significando que el texto sale de
+            # un catalogo y que esto es lo que se ve si el catalogo no llego.
+            src = _re.sub(r"\|\|\s*'(?:\\.|[^'\\])*'(?:\s*\+\s*'(?:\\.|[^'\\])*')*", "|| X", src)
+            src = _re.sub(r'\|\|\s*"(?:\\.|[^"\\])*"', "|| X", src)
+            sueltas = []
+            for m in _re.finditer(r"'((?:\\.|[^'\\])*)'|\"((?:\\.|[^\"\\])*)\"", src):
+                v = m.group(1) or m.group(2) or ""
+                if len(v.split()) >= 3 and acento.search(v):
+                    sueltas.append(v[:70])
+            with self.subTest(guion=f.name):
+                self.assertFalse(sueltas,
+                    f"{f.name} lleva castellano suelto y lo veran las ocho "
+                    f"lenguas: {sueltas}")
+
+
+
+class Imagenes(unittest.TestCase):
+
+    def test_no_vuelven_los_raster_retirados(self):
+        """Firma F2 del Soberano, 2026-10-10: identidad pura, cero imagenes.
+
+        Antes aqui se pesaban el sprite (despierta + habla < 50 KiB) y las cinco
+        laminas (< 30 KiB cada una). Ninguna pagina las pintaba (censo de la capa
+        visual); los tests eran lo unico que las mantenia vivas. Ahora se exige
+        lo contrario: que no vuelvan."""
+        a = PUBLICO / "assets"
+        for nombre in ("despierta.webp", "habla.webp", "preceptor-pixel.png"):
+            with self.subTest(fichero=nombre):
+                self.assertFalse((a / nombre).exists(), f"vuelve {nombre}")
+        self.assertEqual(sorted(p.name for p in a.glob("lamina-*")), [], "vuelven las laminas")
+
+    def test_ningun_asset_precacheado_esta_muerto(self):
+        """Todo lo que `sw.js` mete en la cache lo pinta alguien.
+
+        El service worker precachea para que la web funcione sin conexion. Un
+        asset precacheado y no pintado por nadie es peso que TODOS los
+        visitantes descargan y ninguno ve -- y no da la cara como sobra,
+        porque el fichero existe y su linea de precache tambien.
+
+        Se encontro asi el 2026-09-02: los ocho `agente-ojo-*.webp` (48 410 B)
+        llevaban precacheados desde que se anadieron, y ni `hub.js` ni
+        `chat-router.js` los usaban -- los dos pintan `agente-3d-*`. El propio
+        comentario de `sw.js` decia para que eran: «la cara es el OJO que el
+        cabezal le pone al Preceptor segun con quien hablas». Se diseno, se
+        precacheo, y no se conecto.
+
+        LOS NOMBRES SE COMPONEN, y la prueba tiene que saberlo. `hub.js` no
+        escribe `agente-3d-coder.webp` en ninguna linea: escribe
+        `'/assets/agente-3d-' + a.icono3d + '.webp'`. Buscar el nombre entero
+        daria por muertos ocho ficheros bien vivos. Asi que un prefijo que
+        alguien concatena cuenta como referencia a toda su familia -- que es
+        exactamente lo que el navegador va a pedir.
+        """
+        sw = (PUBLICO / "sw.js").read_text(encoding="utf-8")
+        precacheados = set(re.findall(r"/assets/([\w.-]+\.\w+)", sw))
+        for prefijo in re.findall(r"'/assets/([\w-]+-)'\s*\+", sw):
+            for f in (PUBLICO / "assets").glob(prefijo + "*"):
+                precacheados.add(f.name)
+
+        vivos = ""
+        for f in sorted(PUBLICO.rglob("*")):
+            if not f.is_file() or f.name == "sw.js":
+                continue
+            if f.suffix.lower() not in (".html", ".css", ".js", ".mjs", ".json"):
+                continue
+            vivos += f.read_text(encoding="utf-8")
+
+        # Prefijos que algun consumidor concatena: valen por toda su familia.
+        compuestos = tuple(re.findall(r"'/assets/([\w-]+-)'\s*\+", vivos))
+
+        muertos = sorted(
+            n for n in precacheados
+            if (PUBLICO / "assets" / n).is_file()
+            and n not in vivos
+            and not any(n.startswith(c) for c in compuestos))
+        self.assertFalse(
+            muertos,
+            "estos assets se precachean y no los pinta nadie -- peso que todos "
+            "descargan y nadie ve: " + ", ".join(muertos))
+
+
+class Contadores(unittest.TestCase):
+
+    def setUp(self):
+        self.datos = json.loads((PUBLICO / "counters.json").read_text(encoding="utf-8"))
+
+    def test_toda_metrica_esta_medida_o_declara_su_causa(self):
+        for m in self.datos["metricas"]:
+            with self.subTest(metrica=m["clave"]):
+                if m["estado"] == "MEDIDO":
+                    self.assertIsNotNone(m["valor"])
+                    self.assertTrue(m.get("como"), "una cifra medida lleva su metodo al lado")
+                else:
+                    self.assertEqual(m["estado"], "NO_DATA")
+                    self.assertIsNone(m["valor"], "NO_DATA no lleva valor")
+                    self.assertTrue(m.get("causa"), "NO_DATA sin causa no es NO_DATA")
+
+    def test_ningun_cero_decorativo(self):
+        """Un 0 solo vale si `como` NOMBRA la lectura de la que salio.
+
+        La primera version de esta prueba solo miraba que `como` fuese largo, y
+        una prueba de mutacion la pillo: un texto largo y vacio pasaba igual. La
+        longitud no es prueba de nada. Ahora se exige vocabulario de medicion
+        explicito — es una heuristica, y se dice que lo es, pero distingue "sale
+        de medir con performance.getEntriesByType" de un relleno cualquiera.
+        """
+        medicion = re.compile(r"\bmedid[oa]\b|\bmedir\b|\blectura\b|\bmedicion\b", re.I)
+        for m in self.datos["metricas"]:
+            if m.get("valor") == 0:
+                como = m.get("como", "")
+                with self.subTest(metrica=m["clave"]):
+                    self.assertTrue(como.strip(), f"{m['clave']} vale 0 y no dice de donde sale")
+                    self.assertRegex(como, medicion,
+                        f"{m['clave']} vale 0 y su `como` no nombra ninguna lectura: {como!r}")
+
+
+
+class Sitemap(unittest.TestCase):
+
+    def test_el_sitemap_no_anuncia_paginas_que_no_estan(self):
+        """Un sitemap rancio manda al buscador a un 404 que no ve ningun humano.
+
+        Es exactamente lo que habria pasado el 2026-09-02 al renombrar
+        `board.html`: la lista escrita a mano habria seguido anunciandola. Por
+        eso `sitemap.py` DERIVA del disco, y por eso esto lo comprueba contra
+        el disco tambien.
+        """
+        xml = (PUBLICO / "sitemap.xml").read_text(encoding="utf-8")
+        locs = re.findall(r"<loc>([^<]+)</loc>", xml)
+        self.assertTrue(locs, "el sitemap no anuncia nada")
+        for loc in locs:
+            with self.subTest(url=loc):
+                self.assertTrue(loc.startswith(ORIGEN_PROPIO),
+                                "una URL del sitemap no es de este origen")
+                ruta = loc[len(ORIGEN_PROPIO):].lstrip("/")
+                destino = PUBLICO / ruta if ruta else PUBLICO
+                if destino.is_dir():
+                    destino = destino / "index.html"
+                self.assertTrue(destino.exists(), f"el sitemap anuncia {loc}")
+
+    def test_toda_pagina_de_contenido_esta_en_el_sitemap(self):
+        """La averia simetrica: la pagina existe y el buscador no la ve."""
+        xml = (PUBLICO / "sitemap.xml").read_text(encoding="utf-8")
+        for p in paginas_de_contenido():
+            rel = p.relative_to(PUBLICO).as_posix()
+            esperado = ORIGEN_PROPIO + "/" + rel
+            if p.name == "index.html":
+                esperado = ORIGEN_PROPIO + "/" + rel[:-len("index.html")]
+            with self.subTest(pagina=rel):
+                # Barrido 2026-11-01: una pagina de prueba («<title>Test ·») es la excepcion simetrica: NO se anuncia.
+                if "<title>Test ·" in p.read_text(encoding="utf-8") or 'content="noindex"' in p.read_text(encoding="utf-8"):
+                    self.assertNotIn("<loc>" + esperado + "</loc>", xml, f"{rel} es de prueba y se anuncia")
+                    continue
+                self.assertIn("<loc>" + esperado + "</loc>", xml,
+                              f"{rel} no esta en el sitemap")
+
+    def test_robots_apunta_al_sitemap(self):
+        r = (PUBLICO / "robots.txt").read_text(encoding="utf-8")
+        self.assertIn("Sitemap: " + ORIGEN_PROPIO + "/sitemap.xml", r,
+                      "robots.txt no declara el sitemap")
+
+
+class Reescrituras(unittest.TestCase):
+    """La segunda puerta de feedback: la que no le pide nada a nadie.
+
+    `corregir.js` pide sentarse a escribir, y por eso llega poco --medido el
+    2026-09-13: la pool de `charla-web` tenia 6 filas y 3 firmas, todas de
+    prueba--. `aprender.js` recoge lo que la web ya ve pasar: alguien pregunta,
+    no le sirve, y vuelve a preguntar lo mismo con otras palabras.
+    """
+
+    def _codigo(self):
+        js = (PUBLICO / "assets" / "aprender.js").read_text(encoding="utf-8")
+        js = re.sub(r"/\*.*?\*/", "", js, flags=re.S)
+        return re.sub(r"(?m)//.*$", "", js)
+
+    def test_va_donde_va_la_otra_puerta(self):
+        """Las dos puertas se cargan juntas o la nueva no existe.
+
+        Una puerta de feedback en una sola pagina es la mitad del error que
+        costo la sesion pasada: `corregir.js` vivia solo en `es/index.html` y
+        el LorAtelier --la pagina cuyo motivo entero es elegir entre dos
+        respuestas-- no producia ni una fila.
+        """
+        faltan = []
+        for q in sorted(PUBLICO.rglob("*.html")):
+            t = q.read_text(encoding="utf-8")
+            if "assets/corregir.js" in t and "assets/aprender.js" not in t:
+                faltan.append(q.relative_to(PUBLICO).as_posix())
+        self.assertEqual([], faltan,
+                         "estas paginas dejan escribir correcciones y no "
+                         "aprenden de las reescrituras: " + ", ".join(faltan))
+
+
+# Las claves FIRMADAS de cada familia (cierres C4 y C9 del brief). Se enumeran
+# una a una a proposito: la gracia es que anadir una clave obligue a tocar esta
+# lista y, con ella, las ocho lenguas. Una familia que crece por un lado y no
+# por el otro es media traduccion, y media traduccion se ve en produccion.
+CLAVES_CAMINOS = {
+    f"camino_{n}_{c}"
+    # LOS TRES ULTIMOS entraron el 2026-09-20 y van nombrados aqui a proposito:
+    # esta lista es la firma. Anadir un peldano tiene que ser una decision, no
+    # un descuido, y el gate se cae hasta que alguien lo escribe.
+    #   puertos    · el entorno local: que escucha en tu propia maquina
+    #   whoami     · el entorno online: que hay de ti ahi fuera
+    #   killswitch · cortar, y medir cuanto se deshace de verdad
+    # ATLAS fue el piso 9 del 2026-09-25 al 26 y SALIO de la Torre por orden
+    # del Soberano: el juego vive tras la puerta theGame, no es un peldano.
+    for n in ("despertar", "primeros_pasos", "exposicion", "silencio",
+              "contribuir", "puertos", "whoami", "killswitch")
+    # `papel` y `corpus` entran el 2026-09-20 y son de otra clase que los
+    # cuatro de arriba, asi que se nombran con su porque.
+    #   papel  · CON QUIEN cree el modelo que habla en este piso. Sin eso quien
+    #            prueba no sabe contra que mide: si le repiten los pasos de
+    #            instalacion no puede distinguir un modelo malo de un arnes que
+    #            le dijo que hablaba con alguien que acababa de llegar.
+    #   corpus · de que datos saldria el adaptador de este piso. Hoy NINGUNO lo
+    #            tiene --- medido el 2026-09-20: no hay un solo `preceptor-*`
+    #            que sea un afinado, son Modelfiles con system prompt sobre
+    #            Mistral --- asi que el campo dice DE DONDE saldria el dato en
+    #            vez de «proximamente». Un hueco con su fuente escrita se
+    #            rellena; una promesa no.
+    for c in ("titulo", "frase", "falla", "para_quien", "papel", "corpus")
+} | {"torre_titulo", "torre_lema", "torre_nivel", "torre_paso", "torre_firmar",
+     "torre_guia_no_data",
+     # `torre_probar` y `torre_firmado` entran el 2026-09-20 arreglando un
+     # rotulo mudo: el boton que sube la practica al chat llevaba puesto
+     # `torre_paso`, que es el SUSTANTIVO «paso» --- «step», «pas», «Schritt»,
+     # «ступень» ---. Un boton etiquetado con un sustantivo no dice que hace, y
+     # llevaba asi en las ocho lenguas desde que existe la Torre. Se vio en el
+     # navegador, no en el gate: aqui pasaba entero, porque la clave existia y
+     # estaba traducida. Una traduccion correcta de la palabra equivocada es
+     # justo lo que ninguna prueba de paridad puede cazar.
+     "torre_probar", "torre_firmado",
+     # `torre_anfitrion` entra el 2026-09-20 y es el PAPEL POSITIVO, que
+     # faltaba. El arnes eran tres prohibiciones --- `PR.reglas`: nada de
+     # nube, nada de datos personales, si no sabes di NO_DATA --- y ni una
+     # linea de que SI hacer. Medido contra el rack ese dia: con solo las
+     # prohibiciones, el modelo de la puerta contestaba «NO_DATA» a «no se
+     # que es esto», teniendo los hechos del producto delante. Una lista de
+     # prohibiciones no es un papel: es un bozal.
+     # El texto es el mismo con el que `duelo_mini.py` midio mediana 10 sobre
+     # 10 en el juez de la casa, y se copia de ahi a proposito --- un papel
+     # medido en el laboratorio y otro escrito para la web serian dos, y el
+     # numero solo valdria para uno.
+     "torre_anfitrion",
+     # `torre_no_enviado` entra el 2026-09-20 y es una promesa en pantalla, no
+     # un adorno: firmar NO envia, y no decirlo es la misma mentira que el
+     # boton que ponia «firmado» sin firmar nada, con el signo cambiado.
+     "torre_no_enviado",
+     # `torre_hechos` entra el 2026-09-20 y no es un rotulo: es lo que el
+     # modelo SABE del producto cuando contesta desde un piso. Se escribe
+     # porque su ausencia se midio. Los tres candidatos del duelo del mini
+     # inventaron que es PreceptorOS --- «una distribucion de Linux», «una
+     # plataforma para gestionar informacion» --- y no por ser pequenos: el
+     # papel nunca se lo habia dicho. Un modelo al que no le das los hechos
+     # rellena el hueco, y lo rellena con seguridad.
+     "torre_hechos",
+     # LOS SIETE `ks_*` ENTRAN EL 2026-09-20 CON LA MUDANZA DEL KILLSWITCH.
+     #
+     # El panel del Survival Killswitch vivia en la pestaña Proyectos de
+     # `community.html`, en las ocho lenguas, y el Soberano lo mando a su
+     # sitio: la Torre de la Ascension, en la portada --- donde ya habia un
+     # peldano `killswitch` desde que existe la familia. Tener el proyecto en
+     # una pagina y su peldano en otra eran dos puertas al mismo sitio.
+     #
+     # POR QUE AQUI Y NO EN EL `#i18n` DE LA PORTADA, que es donde vivian:
+     # `public/el/index.html` tiene 107 bytes libres de los 16.384 y
+     # `public/ru/index.html` 539. Siete claves traducidas no caben en el
+     # griego ni de lejos. La familia `caminos-<lengua>.json` es donde vive el
+     # resto de la Torre, no cuesta un byte de marcado, y ya la carga
+     # `camino.js` --- asi que el panel lee sus rotulos de donde lee los suyos
+     # el piso que lo contiene, en vez de de otro fichero.
+     #
+     # Las traducciones NO se escribieron: se copiaron de las ocho
+     # `community.html` donde ya estaban. Es la leccion de `torre_anfitrion`,
+     # que nunca llego a la interfaz porque la lista se mantenia a mano.
+     "ks_sello", "ks_falla", "ks_medido",
+     "ks_juez_titulo", "ks_juez_pedir", "ks_juez_sin_turnos",
+     "ks_juez_una_capa",
+     # EL JUEGO DE PUERTOS del piso 4 (2026-09-25): el rotulo del boton y el
+     # sello, nada mas. Su prosa vive en `puertos-<lengua>.json` y se pide al
+     # pulsar; aqui solo lo que se pinta antes de pedir nada.
+     "pp_abrir", "pp_sello"}
+
+CLAVES_DUELOS = {
+    # `duelo_degenera` entra el 2026-09-20 y nombra una acusacion, no un
+    # adorno: medido en produccion ese dia, la columna desnuda devolvio
+    # «Traducir entre idiomas» unas ciento cincuenta veces seguidas. Sin
+    # nombrarlo, quien ve un muro de texto repetido no sabe si la averia es
+    # del sitio o del modelo. Es del modelo, y es lo que esta pantalla existe
+    # para enseñar.
+    "duelo_degenera",
+    "duelo_titulo", "duelo_input", "duelo_enviar", "duelo_col_base",
+    "duelo_col_lora", "duelo_veredicto", "duelo_guia", "duelo_reescribir",
+    "duelo_firmar", "duelo_sin_prueba", "duelo_juez_no_data"}
+
+CLAVES_HERRAMIENTAS = {
+    # 2026-09-24: the audio, voice, image and vision panels (herr-medios.js),
+    # asked by the Soberano; the catalog is verified by p0x/bin/verifica-medios.py.
+    "herr_medios", "herr_medios_nota", "herr_g_voz", "herr_g_musica", "herr_g_imagen",
+    "herr_g_vision", "herr_descargar", "herr_copiar", "herr_disponible", "herr_no_un_clic",
+    "herr_verificado", "herr_licencia", "herr_lenguas", "herr_no_medido", "herr_flux_mas",
+    "herr_titulo", "herr_lema", "herr_web", "herr_app", "herr_audio",
+    "herr_cerrada", "herr_copia_ai", "herr_errores",
+    # 2026-09-23: la causa del audio deja de ser «cero referencias» (era falsa:
+    # existe TALLER_DE_MUSICA.md desde el 09-14), el Agora se muda aqui desde
+    # Comunidad, y entran los modelos con su comando de instalacion.
+    "herr_audio_causa", "herr_agora", "herr_modelos", "herr_modelos_nota",
+    # 2026-09-23: la app a un clic, eligiendo el sistema (`descarga-app.js`).
+    "herr_desc_so", "herr_desc_boton", "herr_desc_nix", "herr_desc_win",
+    "herr_desc_apk", "herr_desc_ios", "herr_desc_sinprobar", "herr_desc_guia",
+    "herr_modelo_casa"}
+
+# LA CUARTA FAMILIA, 2026-09-20. Nace por el mismo motivo que las tres de
+# arriba y con la misma forma: los rotulos del motor local no caben en el
+# bloque de la portada. Se firma aqui para que anadir uno sea una decision.
+CLAVES_MOTOR = set(CLAVES_MOTOR_LISTA)   # una sola lista: ver FUERA_DEL_BLOQUE
+
+# LA QUINTA, 2026-09-23: que se quiere APRENDER en cada piso. Sale de
+# `caminos` porque el griego paso del tope al entrar; y es otro asunto --alli
+# lo que el piso ES, aqui lo que se mide en el--. El criterio del juez de cada
+# piso ira a esta misma familia.
+CLAVES_OBJETIVOS = ({f"camino_{n}_aprender" for n in (
+    "despertar", "primeros_pasos", "exposicion", "silencio", "contribuir",
+    "puertos", "whoami", "killswitch")}
+    | {"torre_et_aprender", "torre_et_papel", "torre_et_corpus"}
+    # El juez de dos capas (2026-09-23): rotulos, las cinco reglas de la capa
+    # determinista y el papel del modelo juez. Los pinta `veredicto.js`.
+    # `juez_duelo` es el contexto del juez en el LoRAtelier.
+    | {"juez_duelo", 'juez_titulo', 'juez_pedir', 'juez_capa1', 'juez_capa2', 'juez_ok', 'juez_ko', 'juez_degenera', 'juez_recita', 'juez_producto', 'juez_cifras', 'juez_fuga', 'juez_contesta', 'juez_sin_turno', 'juez_papel'})
+
+# LA SEXTA, 2026-09-23: «Mi perfil» deja de ser pagina y pasa a pestaña de
+# Comunidad (addendum F.5). Sus textos salieron tal cual de las ocho
+# `profile.html` (bloque #i18n + los escritos en el marcado).
+CLAVES_PERFIL = {
+    'idAviso', 'idClave', 'idEntrar', 'idFallo',
+    'idHola', 'idPerfil', 'idPublica', 'pfCargando',
+    'pfClaveAviso', 'pfClaveBoton', 'pfClaveCancela', 'pfClaveConfirma',
+    'pfClaveEscribe', 'pfClaveFallo', 'pfClaveHecho', 'pfClaveLetra1',
+    'pfClaveLetra2', 'pfClavePalabra', 'pfClaveSinIdentidad', 'pfClaveTitulo',
+    'pfComoCrear', 'pfDerivado', 'pfGuiaFuerte', 'pfGuiaResto',
+    'pfH_app', 'pfH_cla', 'pfH_niv', 'pfH_rack',
+    'pfH_ver', 'pfH_yo', 'pfHuella', 'pfInstalada',
+    'pfInstalarEnlace', 'pfNiv1', 'pfNiv1Que', 'pfNiv1Sube',
+    'pfNiv2', 'pfNiv2Que', 'pfNiv2Sube', 'pfNiv3',
+    'pfNiv3Que', 'pfNivSinBronce', 'pfNoInstalada', 'pfPie1f',
+    'pfPie1r', 'pfPie2f', 'pfPie2r', 'pfPie3f',
+    'pfPie3r', 'pfPieTitulo', 'pfSinClave', 'pfSinIdentidad',
+    'pfVerCausa', 'pfVerClave', 'pfVerFecha', 'pfVerQue',
+    'pfVerSinCampo', 'pfVerSinFichero', 'prActualizar', 'prAviso',
+    'prDesde', 'prFallo', 'prMandando', 'prMaquinaNada',
+    'prMaquinaNoLlega', 'prMaquinaOfrece', 'prPseudonimo', 'prRegistrado',
+    'prRegistrar', 'prSinIdentidad', 'prSinRegistrar'}
+
+class LasTraduccionesSeSacanYSeMeten(unittest.TestCase):
+    """`traducciones.py` saca los textos y los reinserta sin tocar el marcado.
+
+    Entro con el arabe (2026-09-23). Si sacar y meter con la identidad cambiara
+    un solo byte, la herramienta de la revision nativa --y de la proxima
+    lengua-- estaria rompiendo paginas en silencio."""
+
+    def test_la_identidad_no_cambia_ni_un_byte(self):
+        import traducciones as TR
+        for l in LENGUAS_DATOS:
+            for rel, tipo in TR.ficheros(l):
+                t = (PUBLICO / rel).read_text(encoding="utf-8")
+                with self.subTest(fichero=rel):
+                    self.assertEqual(TR.rehace(t, tipo, lambda s: s), t)
+
+    def test_ninguna_familia_lleva_un_rotulo_vacio(self):
+        """El pie de Instalar salio como un triangulo SIN rotulo en ocho de nueve
+        lenguas durante semanas: `pieTitulo` estaba vacio y solo el griego lo
+        tenia. Una cadena vacia no es una traduccion pendiente: es un hueco que
+        el gate no veia porque la clave EXISTIA."""
+        def hojas(o, r=""):
+            if isinstance(o, dict):
+                for k, v in o.items():
+                    yield from hojas(v, r + "." + k)
+            elif isinstance(o, list):
+                for i, v in enumerate(o):
+                    yield from hojas(v, f"{r}[{i}]")
+            elif isinstance(o, str):
+                yield r, o
+        for f in sorted(PUBLICO.glob("*-??.json")):
+            for ruta, valor in hojas(json.loads(f.read_text(encoding="utf-8"))):
+                with self.subTest(fichero=f.name, clave=ruta):
+                    self.assertTrue(valor.strip(), "rotulo vacio")
+
+
+class LoQueNoSeVeConElGateVerde(unittest.TestCase):
+    """Dos averias que 161 verdes no vieron, medidas el 2026-09-24 en produccion.
+
+    1 · ORDEN DE CARGA. En 8 de las 9 portadas `bronce.js` se cargaba DESPUES de
+        `aprender.js` y `elegir.js`. Los dos miran `window.Bronce` al arrancar y,
+        si no esta, se retiran sin decir nada: fuera de `es` no habia casillas de
+        «aprender» ni de «valorar» en la rueda, y no se capturaba ni una
+        reescritura ni una valoracion. Degradar en silencio.
+    2 · FAMILIAS A MEDIAS. `brains-<l>.json` solo existia en `es` y `en`: las
+        otras siete lenguas pintaban los atajos del chat en ingles. Un hueco que
+        se conoce se DECLARA aqui; uno nuevo pone el gate en rojo, y uno que se
+        cierra sin quitarlo de la lista tambien, para que la lista no mienta.
+    """
+
+    DEPENDE = {"aprender.js": "bronce.js", "elegir.js": "bronce.js"}
+    HUECOS_DECLARADOS = {
+        # familia: lenguas que faltan, con el motivo. Se vacia traduciendo.
+        "cerebros": {"fr", "pt", "it", "de", "ru", "el", "ar"},  # pendiente de traducir
+        "ledger": {"es"},                                          # es usa ledger.json base
+        # theGame habla solo ingles (LENGUAS de thegame.js, 2026-09-28): opinar carga siempre `en`.
+        "atlas-opina": {"es", "fr", "pt", "it", "de", "ru", "el", "ar"},
+        # La Arena (2026-09-28), con el mismo criterio: el juego habla solo ingles y sus textos se
+        # cargan al abrir la pestana.
+        "atlas-arena": {"es", "fr", "pt", "it", "de", "ru", "el", "ar"},
+        # La casa (2026-10-05), con el mismo criterio: el juego habla solo ingles.
+        "atlas-casa": {"es", "fr", "pt", "it", "de", "ru", "el", "ar"},
+        # Dictionary glossary is loaded by the English-only game; translations
+        # remain absent until each version is measured and reviewed.
+        "dictionary": {"es", "fr", "pt", "it", "de", "ru", "el", "ar"},
+    }
+
+    def test_cada_familia_por_lengua_esta_completa_o_su_hueco_declarado(self):
+        fam = {}
+        for f in PUBLICO.glob("*-*.json"):
+            m = re.fullmatch(r"(.+)-([a-z]{2})\.json", f.name)
+            if m and m.group(2) in LENGUAS_DATOS:
+                fam.setdefault(m.group(1), set()).add(m.group(2))
+        for nombre, tiene in sorted(fam.items()):
+            falta = set(LENGUAS_DATOS) - tiene
+            with self.subTest(familia=nombre):
+                self.assertEqual(falta, self.HUECOS_DECLARADOS.get(nombre, set()),
+                    f"{nombre}-<l>.json: faltan {sorted(falta)} y el hueco declarado "
+                    f"es {sorted(self.HUECOS_DECLARADOS.get(nombre, set()))}")
+
+
+
+    def test_cada_pagina_que_captura_tiene_su_puerta_de_salida_y_su_sello(self):
+        """Pedido por el Soberano el 2026-09-24: que cada sitio desde el que un
+        tester deja una valoracion llegue al rack y lo diga con un sello. Hasta
+        ese dia `send.js` --la UNICA puerta de salida-- solo estaba en la
+        portada: quien firmaba un duelo en el banco o reseñaba una mision de
+        Comunidad guardaba su par y no podia mandarlo sin cambiar de pagina."""
+        CAPTURAN = ("elegir.js", "corregir.js", "aprender.js", "camino.js",
+                    "duelo-firma.js", "resena.js")
+        for f in sorted(PUBLICO.glob("*/*.html")):
+            idi = f.parent.name
+            if idi not in IDIOMAS:
+                continue
+            t = f.read_text(encoding="utf-8")
+            if not any(f'/assets/{c}"' in t for c in CAPTURAN):
+                continue
+            for guion in ("bronce.js", f"send-{idi}.js", "send.js", "sello-rack.js"):
+                with self.subTest(pagina=f"{idi}/{f.name}", guion=guion):
+                    self.assertIn(f'/assets/{guion}"', t,
+                        f"{idi}/{f.name} captura pares y no carga {guion}")
+            with self.subTest(pagina=f"{idi}/{f.name}", orden="send-<l> antes que enviar"):
+                self.assertLess(t.find(f"/assets/send-{idi}.js"), t.find("/assets/send.js"))
+
+
+
+
+
+FAMILIAS = {"caminos": CLAVES_CAMINOS, "objetivos": CLAVES_OBJETIVOS,
+            "perfil": CLAVES_PERFIL,
+            "duelos": CLAVES_DUELOS,
+            "herramientas": CLAVES_HERRAMIENTAS, "motor": CLAVES_MOTOR}
+
+
+class LasTresFamilias(unittest.TestCase):
+    """Torre, duelo y herramientas: un fichero por asunto y por lengua.
+
+    POR QUE TRES FAMILIAS Y NO UN `i18n/<lengua>.json`. El plan pedia un solo
+    fichero por idioma. No cabe: `hub-textos.json`, que cubre SOLO el hub, ya
+    pesa 16.094 B de los 16.384 que deja el gate. Un fichero que reuniera toda
+    la interfaz del sitio nace pasado de tope el primer dia.
+
+    Y ya habia patron: `taller-<lengua>.json` hace exactamente esto desde el
+    2026-09-14. Estas tres son sus hermanas, con su mismo guardian --- que es
+    esta clase --- calcado del suyo.
+
+    Lo que NO se toco, y consta: `prompts-*.js` no es interfaz sino el papel
+    que se le da al modelo, y su forma `.js` es una decision MEDIDA --- el
+    worker no cachea los `.json` que no nombra, asi que en `.json` el chat se
+    quedaria sin papel al perder la red.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        cls.fam = {}
+        for nombre in FAMILIAS:
+            cls.fam[nombre] = {
+                q.stem.split("-", 1)[1]: json.loads(q.read_text(encoding="utf-8"))
+                for q in PUBLICO.glob(f"{nombre}-*.json")}
+
+
+    def test_cada_familia_dice_exactamente_sus_claves_firmadas(self):
+        for nombre, firmadas in FAMILIAS.items():
+            for idioma, d in sorted(self.fam[nombre].items()):
+                with self.subTest(familia=nombre, idioma=idioma):
+                    self.assertEqual(firmadas, set(d["ui"]),
+                                     f"difiere: {firmadas ^ set(d['ui'])}")
+                    self.assertEqual(idioma, d["idioma"],
+                                     "el fichero no se reconoce a si mismo")
+
+    def test_ninguna_traduccion_llega_vacia(self):
+        """Una cadena vacia pasa la paridad de claves y sale en blanco."""
+        for nombre in FAMILIAS:
+            for idioma, d in sorted(self.fam[nombre].items()):
+                for clave, valor in sorted(d["ui"].items()):
+                    with self.subTest(familia=nombre, idioma=idioma, clave=clave):
+                        self.assertIsInstance(valor, str)
+                        self.assertTrue(valor.strip(), "vacia")
+
+
+    def test_cada_lengua_dice_de_donde_salio(self):
+        """Quien lea esto tiene que poder separar la salida CRUDA del modelo de
+        lo que el silicio corrigio a mano. Mezclarlas seria firmar como propio
+        lo que no se reviso, y al reves: esconder lo que si se toco."""
+        for nombre in FAMILIAS:
+            for idioma, d in sorted(self.fam[nombre].items()):
+                with self.subTest(familia=nombre, idioma=idioma):
+                    proc = d.get("procedencia") or {}
+                    self.assertTrue(proc.get("traducido_por"),
+                                    "no dice que modelo la produjo")
+
+    def test_el_ruso_y_el_griego_estan_en_su_alfabeto(self):
+        """El fallo que ya esta medido en el canon: un modelo pequeno se pasa
+        al ingles sin avisar y la paridad de claves lo da por bueno. Aqui se
+        mira el ALFABETO, que es lo unico que distingue una traduccion de una
+        copia. No juzga la calidad --- de eso va la revision nativa que
+        `ESTADO.md` deja pendiente --- solo que no sea otra lengua."""
+        rangos = {"ru": ("\u0400", "\u04ff"), "el": ("\u0370", "\u03ff")}
+        for idioma, (bajo, alto) in rangos.items():
+            for nombre in FAMILIAS:
+                d = self.fam[nombre].get(idioma)
+                if d is None:
+                    continue
+                largas = [v for v in d["ui"].values() if len(v) > 25]
+                with self.subTest(familia=nombre, idioma=idioma):
+                    self.assertTrue(
+                        all(any(bajo <= c <= alto for c in v) for v in largas),
+                        f"hay cadenas largas sin un solo caracter de su alfabeto")
+
+
+
+class ComentarEnTodasLasPaginas(unittest.TestCase):
+    """Comentar cualquier pagina, en las nueve lenguas, por el canal que YA llega al rack (Soberano,
+    2026-10-05): `Enviar.paquete` -> POST /api/v1/paquetes con `preceptoros/correcciones/1`, firmado
+    con la identidad del navegador. Un solo modulo compartido, ningun endpoint nuevo; dice que se envia
+    y que no; consentimiento por acto; el texto viaja tal cual."""
+
+    JS = PUBLICO / "assets" / "page-comment.js"
+
+
+class WebLimpia(unittest.TestCase):
+    """Inventario determinista de public/ (2026-10-04). Lo dudoso NO se borra: queda congelado en
+    `config/cleaning-proposal.json` (PROPUESTA, espera firma). Lo que vigila este gate es que no
+    nazca basura NUEVA: un fichero que nada nombra, un duplicado exacto o un enlace interno roto."""
+
+    TEXTO = (".html", ".js", ".css", ".json", ".webmanifest", ".xml", ".txt", ".mjs", ".py", ".yml",
+             ".md", ".jsonc", ".toml")
+
+    @classmethod
+    def setUpClass(cls):
+        cls.prop = json.loads((RAIZ / "config" / "cleaning-proposal.json").read_text(encoding="utf-8"))
+        cls.ficheros = sorted(p.relative_to(PUBLICO).as_posix() for p in PUBLICO.rglob("*") if p.is_file())
+        corpus = []
+        for p in RAIZ.rglob("*"):
+            if p.is_file() and p.suffix in cls.TEXTO and ".git" not in p.parts and "__pycache__" not in p.parts:
+                corpus.append((p, p.read_text(encoding="utf-8", errors="ignore")))
+        cls.corpus = corpus
+
+    def _nombrado(self, rel):
+        base = rel.rsplit("/", 1)[-1]
+        plantilla = re.sub(r"-(ar|de|el|en|es|fr|it|pt|ru)\.json$", "-", base)
+        yo = PUBLICO / rel
+        return any((base in t or (plantilla != base and plantilla in t)) for p, t in self.corpus if p != yo)
+
+    def test_ningun_huerfano_nuevo(self):
+        huerfanos = {f for f in self.ficheros if not f.endswith("index.html") and not self._nombrado(f)}
+        nuevos = sorted(huerfanos - set(self.prop["huerfanos"]))
+        self.assertEqual(nuevos, [], "ficheros en public/ que nada nombra (o se usan, o van a la PROPUESTA)")
+
+    def test_la_propuesta_no_lista_ficheros_que_ya_no_existen(self):
+        self.assertEqual(sorted(set(self.prop["huerfanos"]) - set(self.ficheros)), [],
+                         "la PROPUESTA nombra ficheros borrados: quitalos de la lista")
+
+    def test_ningun_duplicado_exacto_nuevo(self):
+        por_hash = {}
+        for f in self.ficheros:
+            por_hash.setdefault(hashlib.sha256((PUBLICO / f).read_bytes()).hexdigest(), []).append(f)
+        conocidos = {tuple(sorted(g)) for g in self.prop["duplicados"]}
+        nuevos = [g for g in por_hash.values() if len(g) > 1 and tuple(sorted(g)) not in conocidos]
+        self.assertEqual(nuevos, [], "ficheros identicos byte a byte en public/")
+
+    def test_ningun_enlace_interno_roto(self):
+        rutas = set()
+        for f in self.ficheros:
+            if not f.endswith((".html", ".css", ".webmanifest")):
+                continue
+            t = (PUBLICO / f).read_text(encoding="utf-8", errors="ignore")
+            for u in re.findall(r"""(?:href|src)\s*=\s*["']([^"'#?]+)""", t) + re.findall(r"url\(\s*['\"]?([^'\")#?]+)", t):
+                if re.match(r"^(https?:|//|data:|mailto:|javascript:|tel:)", u) or "{" in u or "+" in u:
+                    continue
+                d = (PUBLICO / u.lstrip("/")) if u.startswith("/") else ((PUBLICO / f).parent / u)
+                d = d.resolve()
+                if d.is_dir():
+                    d = d / "index.html"
+                if not d.exists():
+                    self.fail(f"enlace interno sin destino: {f} -> {u}")
+                rutas.add("/" + d.relative_to(PUBLICO.resolve()).as_posix())
+
+        class Silencioso(SimpleHTTPRequestHandler):
+            def log_message(self, *_args):
+                pass
+
+        servidor = ThreadingHTTPServer(("127.0.0.1", 0), lambda *a, **kw: Silencioso(*a, directory=str(PUBLICO), **kw))
+        hilo = Thread(target=servidor.serve_forever, daemon=True)
+        hilo.start()
+        base = "http://127.0.0.1:" + str(servidor.server_port)
+        try:
+            try:
+                with urlopen(base + "/__sabotaje_enlace_interno_inexistente__", timeout=3):
+                    pass
+            except HTTPError as e:
+                self.assertEqual(e.code, 404, "el control negativo debe distinguir un destino inexistente")
+                e.close()
+            else:
+                self.fail("el control negativo del gate no produjo 404")
+            rotos = []
+            for ruta in sorted(rutas):
+                try:
+                    with urlopen(base + ruta, timeout=3) as respuesta:
+                        if respuesta.status != 200:
+                            rotos.append(f"{ruta}: HTTP {respuesta.status}")
+                except Exception as e:
+                    rotos.append(f"{ruta}: {e}")
+            self.assertEqual(rotos, [], "destinos internos que no responden HTTP 200")
+        finally:
+            servidor.shutdown()
+            servidor.server_close()
+            hilo.join(timeout=3)
+
+
+class HubSinMundosVivos(unittest.TestCase):
+    """Comisión del Soberano (2026-10-28): hoy no hay nodo vivo, así que el hub /face/ no presenta mundos.
+
+    Decreto p0 (buzon#30, 2026-11-01): las dos lápidas con nombre prohibido salieron a retirados/face/; en /face/
+    quedan basic.html (terminal compartida) y la lápida de walker.
+    """
+
+    def test_el_hub_no_enlaza_a_ningun_mundo(self):
+        hub = (PUBLICO / "face" / "index.html").read_text(encoding="utf-8")
+        for pagina in ("walker.html", "basic.html"):
+            with self.subTest(pagina=pagina):
+                self.assertNotIn("/face/" + pagina, hub, "el hub presenta un mundo sin nodo vivo")
+        self.assertIn("No node is live", hub)
+
+    def test_las_paginas_de_mundo_siguen_en_disco(self):
+        # H2 (2026-11-01) dejó lápidas; el decreto p0 retiró las dos que nombraban lo que la web ya no nombra.
+        self.assertTrue((PUBLICO / "face" / "basic.html").is_file(), "se borro la terminal compartida")
+        lapida = (PUBLICO / "face" / "walker.html").read_text(encoding="utf-8")
+        self.assertIn('<meta name="robots" content="noindex">', lapida)
+        self.assertIn('href="/openworld/"', lapida)
+        self.assertEqual(sorted(p.name for p in (PUBLICO / "face").glob("*.html")), ["basic.html", "index.html", "walker.html"])
+
+
+class OpenWorld(unittest.TestCase):
+    """NORTE 7 · PR 2 (2026-10-28): /openworld/ es la ficha del mapa global y el chat.
+
+    El estado por defecto son CERO nodos: la pagina enseña el mapa y la cabana del tutorial. Node Hexelion y el
+    segundo nodo solo aparecen si `state.json` los lista como vivos. Y el navegador no pide nada fuera de este origen.
+    """
+
+    def setUp(self):
+        self.ruta = PUBLICO / "openworld" / "index.html"
+        self.t = self.ruta.read_text(encoding="utf-8")
+        self.assertLess(self.ruta.stat().st_size, 16384)
+        self.t += (PUBLICO / "game/openworld_page.js").read_text(encoding="utf-8")
+
+    def test_la_ficha_cabe_en_25_mib(self):
+        # D2 (FIRMO 2026-10-11) revoco el tope de 16 KiB por fichero.
+        self.assertLessEqual(self.ruta.stat().st_size, 25 * 1024 * 1024,
+                             "la ficha de /openworld/ pasa de 25 MiB")
+
+    def test_el_estado_por_defecto_son_cero_nodos(self):
+        estado = json.loads((PUBLICO / "openworld" / "state.json").read_text(encoding="utf-8"))
+        self.assertEqual(estado["nodes"], [], "el estado por defecto debe ser cero nodos")
+
+    def test_la_cabana_siempre_y_los_nodos_solo_si_viven(self):
+        # El mapa (NODO-MAPA, ODD isometric-colony) nombra tres filas en el nucleo puro: la cabana siempre, y
+        # Node Hexelion y Second node solo si el estado los lista como vivos (decreto p0, 2026-11-01). La ficha pinta lo que el nucleo decide.
+        nucleo = (PUBLICO / "game" / "global_map.js").read_text(encoding="utf-8")
+        self.assertIn("nombre: 'Tutorial cabin'", nucleo)
+        self.assertIn("siempre: true", nucleo)
+        self.assertIn("nombre: 'Node Hexelion'", nucleo)
+        self.assertIn("nombre: 'Second node'", nucleo)
+        self.assertIn("node.siempre || vivos.some(", nucleo)
+        self.assertIn("M.estado(entrada)", self.t)
+        self.assertIn("return n && (n.id === 'hexelion' || n.id === 'second');", self.t)
+
+    def test_cero_peticiones_externas(self):
+        # Lo que el navegador DESCARGA: scripts, imagenes, hojas, iconos y manifest. El canonical y las etiquetas
+        # og: nombran el origen propio como direccion; no se cargan.
+        cargas = re.findall(r'<(?:script|img)[^>]* src="(https?://[^"]+)"', self.t)
+        cargas += [m.group(1) for tag in re.findall(r"<link[^>]*>", self.t) if 'rel="canonical"' not in tag
+                   for m in re.finditer(r'href="(https?://[^"]+)"', tag)]
+        self.assertEqual(cargas, [], "la pagina carga algo de fuera del origen")
+        self.assertNotIn("api.preceptoros.org", self.t)
+        self.assertNotIn("atlas.preceptoros.org", self.t)
+
+    def test_el_chat_esta_siempre_y_sin_boton_de_chat(self):
+        self.assertIn('<section id="chat" aria-labelledby="chat-h">', self.t)
+        self.assertNotRegex(self.t, r">\s*Chat\s*</button>", "hay un boton de Chat; el decreto pide el panel siempre presente")
+        self.assertIn('<input id="question" type="text" autocomplete="off" aria-describedby="chat-note">', self.t)
+        self.assertIn('/game/map_chat.js', self.t)
+        chat = (PUBLICO / 'game/map_chat.js').read_text(encoding='utf-8')
+        # 2026-11-01: el cerebro del nodo web (retirados/brain/RETIRO.md) carga solo tras el clic, del mismo origen.
+        cerebro = (PUBLICO / 'game/web_node_brain.js').read_text(encoding='utf-8')
+        self.assertIn("start.addEventListener('click'", chat)
+        self.assertIn("opts.consent !== true", cerebro)
+        self.assertNotIn('https://', cerebro.split('// ')[0] if False else ''.join(l for l in cerebro.splitlines() if not l.strip().startswith('//')))
+
+    def test_esta_en_el_sitemap_y_en_el_precache(self):
+        xml = (PUBLICO / "sitemap.xml").read_text(encoding="utf-8")
+        self.assertIn("<loc>https://preceptoros.org/openworld/</loc>", xml)
+        sw = (PUBLICO / "sw-listas.js").read_text(encoding="utf-8")
+        self.assertIn("'/openworld/'", sw)
+
+
+class Puerta(unittest.TestCase):
+    """UNA portada inglesa en `/`, la puerta a lo reciente (decreto de recencia + canon P1, 2026-10-25).
+    No carga NINGUNA de las 26 hojas e imagenes compartidas medidas anteriores al 2026-10-18; las
+    nueve portadas de lengua son 301 desde el Worker y ya no estan en public/."""
+
+    VIEJAS = {"base.css", "canon.css", "soberano.css", "consiento.css", "eaa-art12-local-first-surface.css",
+              "atlas.css", "atlas-mapa.css", "thegame.css", "tubo.css", "terminal_menu_shell.css",
+              "page-comment.css", "home.css", "favicon.svg", "preceptor-og.png", "icon-pwa-192.png",
+              "icon-pwa-512.png", "icon-pwa-512-maskable.png"}
+
+    def setUp(self):
+        self.t = (PUBLICO / "index.html").read_text(encoding="utf-8")
+
+    def test_no_carga_ningun_grafico_viejo(self):
+        pide = re.findall(r'(?:href|src|content)="([^"]+)"', self.t)
+        viejos = {r for r in pide if r.rsplit("/", 1)[-1] in self.VIEJAS}
+        self.assertEqual(viejos, set(), "la portada carga graficos de mas de una semana")
+        self.assertEqual(re.findall(r'rel="stylesheet" href="([^"]+)"', self.t), ["/assets/landing.css"])
+        # Sin color crudo (barrido). P3 [1d] (2026-10-26): las tres puertas se dibujan en Acho language con
+        # las piezas declaradas en atlas/test_atlas.py (LANDING_PAGE_DEPENDENCIES), y nada mas.
+        self.assertEqual(re.findall(r'<script src="([^"]+)"', self.t),
+                         ["/game/semantic_table.js", "/game/comic_tokens.js", "/game/comic_accents.js", "/game/comic_atoms.js",
+                          "/game/acho_language.js", "/game/acho_letters.js", "/assets/landing_doors.js", "/assets/pwa.js",
+                          "/assets/intro.js"])
+
+    def test_las_puertas_se_ven(self):
+        # NORTE 7 · PR 1 (decreto 2026-10-28): la INTRO tiene tres opciones, OpenWorld · Tutorial · Tools.
+        # Corte D, decreto del Sovereign (supersede D1): la INTRO solo tiene OpenWorld y Tools. El tutorial es el camino
+        # deterministico DENTRO de OpenWorld (llave, faro, primer combate). La puerta Tutorial sale, no se redirige.
+        for href, titulo in (("/openworld/", "OpenWorld"),):
+            with self.subTest(titulo=titulo):
+                self.assertIn(f'<a class="door" href="{href}"><b>{titulo}</b><span>', self.t)
+        self.assertNotIn("<b>Tutorial</b>", self.t, "la puerta Tutorial debe salir de la INTRO (decreto corte D)")
+        self.assertNotIn('href="/play/"', self.t, "la INTRO no enlaza al juego retirado")
+        # Tools es un clic directo (boton), no un enlace: la PWA o el desplegable visible de abajo.
+        self.assertIn('<button class="door door-tools" id="door-tools" type="button" aria-controls="tools-dispositivo" '
+                      'aria-expanded="false">', self.t)
+        # La intro muestra solo las puertas: el bloque de herramientas va oculto hasta pulsar Tools (sin pagina nueva).
+        self.assertIn('<section id="tools-dispositivo" aria-labelledby="tools-h" hidden>', self.t)
+        self.assertIn('id="close-tools"', self.t, "la seccion Tools debe tener su boton Cerrar")
+        self.assertIn('<details open>\n<summary>Device and download</summary>', self.t)
+        self.assertIn('<li><a href="/get-the-app/">', self.t)
+        self.assertIn('<li><a href="/creation.html">', self.t)
+        # La cabecera de la release sale de release.json; lo no leido es NO_DATA con causa.
+        self.assertIn('<section id="release" aria-labelledby="release-h">', self.t)
+        self.assertIn('data-rel="estado">NO_DATA:', self.t)
+        self.assertIn('<p class="note">One language until the MVP: English. The old translated addresses lead here.</p>', self.t)
+        self.assertLess(self.t.index('id="doors"'), self.t.index('id="tools-dispositivo"'))
+        self.assertLess(self.t.index('id="tools-dispositivo"'), self.t.index('id="release"'))
+
+    def test_una_lengua_hasta_mvp(self):
+        self.assertIn('<html lang="en"', self.t)
+        self.assertNotIn("hreflang", self.t)
+        self.assertIn("One language until the MVP: English.", self.t)
+        for l in ("ar", "de", "el", "en", "es", "fr", "it", "pt", "ru"):
+            with self.subTest(lengua=l):
+                self.assertFalse((PUBLICO / l).exists(), f"/{l}/ sigue en public/: debe ser un 301 del Worker")
+
+    def test_los_graficos_viejos_salieron_de_public(self):
+        """Los que ya no carga nadie se retiran; los que carga el juego (/play/, maquinaria intocable)
+        siguen hasta que el juego estrene hojas (P3). La lista es la medida, no una promesa."""
+        for n in ("favicon.svg", "preceptor-og.png", "icon-pwa-192.png", "icon-pwa-512.png", "icon-pwa-512-maskable.png"):
+            with self.subTest(fichero=n):
+                self.assertFalse((PUBLICO / "assets" / n).exists())
+
+class TerminalFamilia(unittest.TestCase):
+    """TF-1 (FIRMO HITL 2026-11-02): la terminal abierta habla a la familia. Lo visible no lleva NO_DATA crudo,
+    colores hex, SHA-256 ni bytes; todo eso sigue existiendo, plegado en «Technical details»."""
+    CONSOLA = re.compile(r"NO_DATA|#[0-9a-fA-F]{6}\b|SHA-256|\bbytes\b|\bcells\b")
+
+    def _visible(self, fuente, patron):
+        lineas = [l for l in (PUBLICO / fuente).read_text(encoding="utf-8").splitlines() if re.search(patron, l)]
+        self.assertTrue(lineas, f"{fuente}: no encuentro {patron}")
+        return lineas
+
+    def test_el_chat_abierto_no_habla_como_consola(self):
+        pagina = (PUBLICO / "openworld" / "index.html").read_text(encoding="utf-8")
+        chat = pagina[pagina.index('<section id="chat"'):pagina.index("</section>\n</main>")]
+        visible = re.sub(r"<[^>]+>", " ", re.sub(r"<details[\s\S]*?</details>", "", chat))
+        self.assertIsNone(self.CONSOLA.search(visible), visible[:300])
+
+    def test_las_frases_que_pinta_el_js_son_humanas(self):
+        casos = [("game/map_chunks.js", r"out\.say = "), ("game/map_painter.js", r"said = "),
+                 ("game/openworld_page.js", r"linea (\+)?= "), ("game/summon_reveal.js", r"txt\.textContent = "),
+                 ("game/map_chat.js", r"simple\.textContent = "), ("game/colony_page.js", r"return 'Colony: "), ("game/colony_page.js", r"return \[\(sc\.nodes === 1")]
+        for fuente, patron in casos:
+            for l in self._visible(fuente, patron):
+                for m in re.finditer(patron, l):
+                    frase = l[m.start():].split("; ")[0]  # solo la asignación visible; lo técnico va en su propia variable
+                    with self.subTest(fuente=fuente):
+                        self.assertIsNone(re.search(r"NO_DATA|SHA-256|sky ", frase), frase[:200])
+
+    def test_la_burbuja_separa_y_humaniza_el_sello(self):
+        radio = (PUBLICO / "assets" / "radio_message_log.js").read_text(encoding="utf-8")
+        self.assertNotIn("'radio-msg-sello', s)", radio)
+        self.assertNotIn("'radio-msg-sello', e.seal)", radio)
+        self.assertIn("el('span', null, ' · ')", radio)
+        self.assertNotIn("'Δ {n} cycles'", radio)
+
+    def test_lo_tecnico_sigue_ahi_plegado(self):
+        pagina = (PUBLICO / "openworld" / "index.html").read_text(encoding="utf-8")
+        for id_ in ("state-tech", "floor-tech"):
+            with self.subTest(id=id_):
+                self.assertRegex(pagina, r'<details class="tech"><summary>Technical details</summary><p id="' + id_ + '"')
+        self.assertIn("how.append(disclosure)", (PUBLICO / "game" / "map_chat.js").read_text(encoding="utf-8"))
+        self.assertIn("SHA-256", (PUBLICO / "game" / "map_chat.js").read_text(encoding="utf-8"))
+
+
+class PanelPorCategorias(unittest.TestCase):
+    """TF-2: diez voces en cuatro botones (Start · Explore · Play · About); una categoría visible, ninguna voz perdida."""
+
+    def test_cada_voz_de_la_puerta_tiene_su_categoria(self):
+        pagina = (PUBLICO / "openworld" / "index.html").read_text(encoding="utf-8")
+        voces = re.findall(r'<li class="voice[^>]*data-speaker="([^"]+)"', pagina)
+        self.assertEqual(len(voces), 10, voces)
+        guion = ("const P=require('./public/game/terminal_panel.js');"
+                 "process.stdout.write(JSON.stringify([P.CATS.map(c=>c[0]),process.argv.slice(1).map(P.categoryOf)]))")
+        cats, de = json.loads(subprocess.run(["node", "-e", guion, *voces], capture_output=True, text=True, cwd=RAIZ, check=True).stdout)
+        self.assertEqual(cats, ["Start", "Explore", "Play", "About"])
+        esperado = {"Tutorial": "Start", "Welcome": "Start", "Guide": "Start", "Map": "Explore", "Floor": "Explore",
+                    "Walkers": "Explore", "Zoom": "Explore", "House": "Play", "Army": "Play", "Radio": "About"}
+        self.assertEqual(dict(zip(voces, de)), esperado)
+
+
+class ManifiestoVivo(unittest.TestCase):
+    """R1 (espejo de la comunidad, 2026-11-02): cada acción del manifiesto para IAs lleva a un elemento real y visible."""
+
+    def test_cada_enlace_profundo_llega_a_un_id_que_existe(self):
+        datos = json.loads((PUBLICO / "mcp-manifest.json").read_text(encoding="utf-8"))
+        self.assertTrue(datos["actions"])
+        for a in datos["actions"]:
+            with self.subTest(accion=a["id"]):
+                ruta, _, ancla = a["deep_link"].partition("#")
+                self.assertTrue(ancla, "sin ancla: " + a["deep_link"])
+                pagina = PUBLICO / (ruta.lstrip("/") + ("index.html" if ruta.endswith("/") else ""))
+                html = pagina.read_text(encoding="utf-8")
+                self.assertIn(' id="%s"' % ancla, html)
+                # TF-2: un ancla dentro de una voz que no es de Start está oculta al llegar.
+                li = html.rfind("<li class=\"voice", 0, html.index(' id="%s"' % ancla))
+                if li >= 0 and html.rfind("</li>", li, html.index(' id="%s"' % ancla)) < 0:
+                    hablante = re.search(r'data-speaker="([^"]+)"', html[li:li + 200]).group(1)
+                    self.assertIn(hablante, ("Tutorial", "Welcome", "Guide"), a["deep_link"])
+
+    def test_las_dos_copias_son_iguales(self):
+        self.assertEqual((RAIZ / "mcp-manifest.json").read_bytes(), (PUBLICO / "mcp-manifest.json").read_bytes())
+        self.assertEqual((RAIZ / "llms.txt").read_bytes(), (PUBLICO / "llms.txt").read_bytes())
+
+
+if __name__ == "__main__":
+    unittest.main(verbosity=2)
