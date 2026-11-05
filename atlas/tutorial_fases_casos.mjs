@@ -1,6 +1,6 @@
 // VT5 · tutorial «De Onda a Nodo Soberano» (F0-F3): doble puerta, orden de fases, 3 huevos medidos,
 // primer edificio con NO_DATA con causa cuando no hay medida, y la red solo tras el cruce humano.
-// Se ejecuta con: node atlas/tutorial_casos.mjs  -> [{caso, ok, detalle}]  (sale != 0 si alguno falla)
+// Se ejecuta con: node atlas/tutorial_cases.mjs  -> [{caso, ok, detalle}]  (sale != 0 si alguno falla)
 import { createRequire } from 'node:module';
 
 const require = createRequire(import.meta.url);

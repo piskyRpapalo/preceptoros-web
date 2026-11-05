@@ -3,7 +3,7 @@
 **RE-CLASSIFIED · 2026-11-04 (corte D, 2026-10-28):** the game text files
 (`public/atlas-<code>.json`) and the game loader
 (`public/assets/thegame.js`) were retired with theGame; none of them exists
-anymore. `atlas/mvp_casos.mjs` no longer checks this table — since corte D
+anymore. `atlas/mvp_cases.mjs` no longer checks this table — since corte D
 it is the retirement guard (the retired files must stay absent and out of
 the precache). The matrix below is kept as a dated measure of what the
 nine portals served on 2026-10-19 (base `eac293d`). Piece P10 of the
@@ -45,7 +45,7 @@ miente, el gate se pone rojo.)*
 ## How to measure again
 
 ```
-node atlas/mvp_casos.mjs      # corte-D retirement guard: the retired files must stay absent
+node atlas/mvp_cases.mjs      # corte-D retirement guard: the retired files must stay absent
 ```
 
 The portals 301 behavior is still measurable; the game-text columns are
