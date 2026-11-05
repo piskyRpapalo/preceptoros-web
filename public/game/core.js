@@ -1,7 +1,7 @@
 (function (raiz) {
   'use strict';
 
-    var V = (typeof module === 'object' && module.exports) ? require('./valores.js') : raiz.AtlasValores;
+    var V = (typeof module === 'object' && module.exports) ? require('./values.js') : raiz.AtlasValores;
   var BASE = V.sonidos;
 
   function receta(tipo, calor) {
@@ -103,7 +103,7 @@
   }
 
     // [W] O2 · the wave duel's voice. Jewel 3: a hit sounds at the pitch of its seal, f = lo + hue/360·(hi - lo), the hue read
-  // from tabla_semantica (NO_DATA is silence). Jewel 5: a win resolves in a staggered chord. No vibrato on it: what is signed
+  // from semantic_table (NO_DATA is silence). Jewel 5: a win resolves in a staggered chord. No vibrato on it: what is signed
   // sounds still (M17-bis 4). The timbre is the event's recipe, only re-tuned.
   var DUELO = { golpe: 'pop', cae: 'eclosion', gana: 'adopcion', pierde: 'huevo' };
   function afina(r, f) {

@@ -4,8 +4,8 @@ El código está en el árbol, pero el sonido de siempre (`fm2`) sigue por defec
 
 ## Qué se compara
 - **A · `fm2`:** el sonido actual. Portadora + 1 moduladora, caída exponencial.
-- **B · `fm3_adsr`:** portadora + **2** moduladoras (las dos conectadas; la joya del mockup no las conectaba) y envolvente ataque-caída-sostenido-relajación. Valores provisionales en `public/game/valores.js` → `sintesis.adsr = [0.005, 0.03, 0.55, 0.06]`, `m2 = 0.5`, `indice2 = 0.5`.
-- **El pulso visual del golpe sigue la misma envolvente que suena**, en A y en B (test de coherencia en `atlas/gacha_casos.mjs`).
+- **B · `fm3_adsr`:** portadora + **2** moduladoras (las dos conectadas; la joya del mockup no las conectaba) y envolvente ataque-caída-sostenido-relajación. Valores provisionales en `public/game/values.js` → `sintesis.adsr = [0.005, 0.03, 0.55, 0.06]`, `m2 = 0.5`, `indice2 = 0.5`.
+- **El pulso visual del golpe sigue la misma envolvente que suena**, en A y en B (test de coherencia en `atlas/gacha_cases.mjs`).
 
 ## Cómo escuchar (5 minutos, solo loopback)
 1. Servir el repo en local (desde su raíz; re-medido 2026-10-27, [W] O2: `/en/` ya no existe y el worktree `~/preceptoros-web-juego` tampoco):
@@ -41,7 +41,7 @@ O2 **no** cambia `modo`: la escucha sigue siendo del Soberano.
 
 ## La decisión (la escribe el Soberano)
 - **Gana A:** se deja `modo: 'fm2'`. El código B queda dormido y probado, o se revierte entero con `git revert <commit del movimiento 3>`.
-- **Gana B:** se cambia `modo: 'fm3_adsr'` en `valores.js`, se sella y el movimiento 3 se cierra en su propio commit.
+- **Gana B:** se cambia `modo: 'fm3_adsr'` en `values.js`, se sella y el movimiento 3 se cierra en su propio commit.
 - **Gana B con ajustes:** se dicen los valores (por ejemplo «ataque más lento») y se fijan como medidos por el oído.
 
 Estado: **EN_CURSO_hasta_escucha**. La escucha y la firma son del Soberano.

@@ -50,7 +50,7 @@ audio vive dentro del lenguaje. Esta versión lo reemplaza. Fuentes, todas en el
 - [ ] AA10 · sonido del gusano (worm) y de los círculos: pendiente de canon (ver «Fuera de esta rebanada»).
 
 ## Evidencia
-- `node --test atlas/puros/acho_sonify_casos.mjs` → 9/9.
+- `node --test atlas/puros/acho_sonify_cases.mjs` → 9/9.
 - Sabotaje real: `PENTA_V` [0,2,4,7,9] → [0,2,4,7,11] en el núcleo → 2 tests rojos; restaurado → 9/9.
 
 ## Registro de decisiones (modo desatendido)

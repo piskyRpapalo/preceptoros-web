@@ -55,7 +55,7 @@ Out of scope: any LoRA training step (the lab's own plan, after its FIRMO); any 
 
 Measured in main (`1902295`): the map and its bots (IC7-S3), the walker (IC7-S10), the frase list (IC7-S3 to S5). Measured on 2026-10-30: Aduana health is live; its heartbeat state endpoint returns HTTP 200 with no configured canonical identities and zero nodes. Not measured: a published first heartbeat, the duel's balance (NO_DATA), the benchmark-frames route and lab feed (NO_DATA).
 
-BM-1 receipt: PR #444, merge `97bf5d4403ed7172ed22fa6a13043ea0dbc5a39e`; its head was `bc6b807a35332cf716a91df297758f3b70171a18`. `node atlas/puros/bench_mover_casos.mjs` passed 7/7, including same-seed replay and refusal to enter a NO_DATA node. The implementation stays a pure, unserved rule; live-node execution remains NO_DATA until the heartbeat is live.
+BM-1 receipt: PR #444, merge `97bf5d4403ed7172ed22fa6a13043ea0dbc5a39e`; its head was `bc6b807a35332cf716a91df297758f3b70171a18`. `node atlas/puros/bench_move_cases.mjs` passed 7/7, including same-seed replay and refusal to enter a NO_DATA node. The implementation stays a pure, unserved rule; live-node execution remains NO_DATA until the heartbeat is live.
 
 ## Standing signature
 

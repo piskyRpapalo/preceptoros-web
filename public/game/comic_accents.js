@@ -1,7 +1,7 @@
 (function (root) {
   'use strict';
   var IS_NODE = typeof module === 'object' && !!module.exports;
-  var AtlasSemantica = IS_NODE ? require('./tabla_semantica.js') : root.AtlasSemantica;
+  var AtlasSemantica = IS_NODE ? require('./semantic_table.js') : root.AtlasSemantica;
   var AtlasComicTokens = IS_NODE ? require('./comic_tokens.js') : root.AtlasComicTokens;
   var NEUTRAL = AtlasComicTokens.NEUTRAL;
 

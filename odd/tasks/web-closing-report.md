@@ -43,7 +43,7 @@ Harness note: for the intro shots the install offer event was disabled in the te
 
 ## Movements and routes
 
-Coordinates (axial, from the state; seals from `public/openworld/estado.json` as on main):
+Coordinates (axial, from the state; seals from `public/openworld/state.json` as on main):
 
 | node | q, r | seal | visible on the map |
 |---|---|---|---|

@@ -14,7 +14,7 @@
 
 ## Fixture (no es produccion; no se sirve)
 
-Fichero: `atlas/fixtures/t4_caminante.mjs`. Casos: `atlas/t4_caminante_casos.mjs` (12/12).
+Fichero: `atlas/fixtures/t4_walker.mjs`. Casos: `atlas/t4_walker_cases.mjs` (12/12).
 
 - Destino de cada epoca (32 ticks) = hash canon(carril, estado, epoca) modulo la rejilla 7x5. Lee
   `public/game/bb_canon.js` en solo lectura; no toca `public/`.
@@ -48,7 +48,7 @@ animacion) · SCRUB: los personajes se llaman por su carril, no por una identida
 
 - Patron bot-thread de Bot Crossing: referencia externa, no leida en esta sesion; sin copiar identidad, nombres, sprites ni textos.
 - Render del cuerpo y del sello: no hay dibujo; el fixture solo calcula posiciones y estados.
-- HITL como estado de la tabla: la fila «HITL» no existe aun en `tabla_semantica.js`. Se anadira como extension aditiva en el
+- HITL como estado de la tabla: la fila «HITL» no existe aun en `semantic_table.js`. Se anadira como extension aditiva en el
   pase de cableado, nunca en esta fixture.
 
 ## Pendiente para el pase de cableado
