@@ -55,3 +55,7 @@ Follow-up: focused mode-switch arrows now control only the view as well; they
 cannot bubble to the visitor walker. The browser gate exercises that path,
 then resets and verifies the mouse gesture separately. The new dry-run hash is
 `1754983e8c4fd8c3`; it is not a seal or an assignment.
+
+Review follow-up: mode changes stop propagation before the map's chat-context
+listener; the browser gate confirms selecting camera mode cannot impersonate a
+new building context. The module remains unsealed pending the serial order.

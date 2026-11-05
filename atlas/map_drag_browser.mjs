@@ -154,7 +154,10 @@ async function main() {
     await espera(150);
     const afterKey = await vista();
     ok(afterKey.panx !== beforeKey.panx && afterKey.walker === beforeKey.walker, 'focused joystick arrows must pan without walking visitor');
+    const contextBeforeMode = await ev("document.getElementById('brain-context').textContent");
     await ev("document.getElementById('view-stick-mode').click(), true");
+    const contextAfterMode = await ev("document.getElementById('brain-context').textContent");
+    ok(contextAfterMode === contextBeforeMode, 'changing camera mode must not change the chat context');
     await ev("document.getElementById('view-stick-mode').focus(), true");
     const beforeModeKey = await vista();
     for (const type of ['keyDown', 'keyUp']) await cmd('Input.dispatchKeyEvent', {type, key:'ArrowLeft', code:'ArrowLeft', windowsVirtualKeyCode:37});

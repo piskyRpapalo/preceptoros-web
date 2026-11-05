@@ -18,6 +18,8 @@
   mode.style.cssText = 'min-width:88px;min-height:44px;padding:4px;background:var(--bg);color:var(--fg);border:2px solid currentColor';
   var status = doc.createElement('span'); status.className = 'sr'; status.setAttribute('role', 'status');
   group.append(stick, mode, status); stage.appendChild(group);
+  // View controls are not a selected building or a new chat context.
+  group.addEventListener('click', function (event) { event.stopPropagation(); });
   var turning = false, active = null, carryX = 0, carryY = 0;
   function announce(message) { status.textContent = message; }
   function refreshMode() {
