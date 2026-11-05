@@ -32,6 +32,28 @@
     "firma",
     "huella-corta"
   ],
+  "public/assets/get_app_gate.js": [
+    "accion",
+    "pinta"
+  ],
+  "public/assets/intro.js": [
+    "pinta",
+    "pintatools"
+  ],
+  "public/assets/landing.css": [
+    "aduana"
+  ],
+  "public/assets/radio_message_log.js": [
+    "ciclo",
+    "ciclovalido",
+    "dice",
+    "monta",
+    "pinta",
+    "pintaecos",
+    "radio-msg-sello",
+    "registro",
+    "sellode"
+  ],
   "public/assets/send-ar.js": [
     "envsinfirmatexto"
   ],
@@ -63,28 +85,6 @@
     "envsinfirmatexto",
     "firma"
   ],
-  "public/assets/get_app_gate.js": [
-    "accion",
-    "pinta"
-  ],
-  "public/assets/intro.js": [
-    "pinta",
-    "pintatools"
-  ],
-  "public/assets/landing.css": [
-    "aduana"
-  ],
-  "public/assets/radio_message_log.js": [
-    "ciclo",
-    "ciclovalido",
-    "dice",
-    "monta",
-    "pinta",
-    "pintaecos",
-    "radio-msg-sello",
-    "registro",
-    "sellode"
-  ],
   "public/assets/worm_transition.js": [
     "ciclo",
     "cicloactual",
@@ -92,6 +92,16 @@
     "dice",
     "monta",
     "pinta"
+  ],
+  "public/game/account.js": [
+    "atlascuenta",
+    "cuenta",
+    "cuenta-maestra",
+    "cuentamaestra",
+    "estadonodo",
+    "firma",
+    "nodo",
+    "nodos"
   ],
   "public/game/army-wave-panel.js": [
     "abre",
@@ -105,11 +115,6 @@
     "pinta",
     "tropa"
   ],
-  "public/game/classroom_chat.js": [
-    "firma",
-    "recibo",
-    "recibo_sha"
-  ],
   "public/game/battle_choreography.js": [
     "abre",
     "registro"
@@ -118,8 +123,24 @@
     "crea",
     "fija"
   ],
+  "public/game/brood.js": [
+    "atlascria",
+    "compruebatropa",
+    "cria",
+    "cria_calibracion",
+    "cuenta_atras",
+    "desdevalores",
+    "firma",
+    "fuera",
+    "tropa"
+  ],
   "public/game/canon.js": [
     "huella"
+  ],
+  "public/game/classroom_chat.js": [
+    "firma",
+    "recibo",
+    "recibo_sha"
   ],
   "public/game/combat_ticks.js": [
     "accion",
@@ -130,8 +151,7 @@
     "fuera",
     "huella",
     "recibo",
-    "registro",
-    "taller"
+    "registro"
   ],
   "public/game/comic_accents.js": [
     "vara",
@@ -151,27 +171,6 @@
     "dice",
     "niebla"
   ],
-  "public/game/brood.js": [
-    "atlascria",
-    "compruebatropa",
-    "cria",
-    "cria_calibracion",
-    "cuenta_atras",
-    "desdevalores",
-    "firma",
-    "fuera",
-    "tropa"
-  ],
-  "public/game/account.js": [
-    "atlascuenta",
-    "cuenta",
-    "cuenta-maestra",
-    "cuentamaestra",
-    "estadonodo",
-    "firma",
-    "nodo",
-    "nodos"
-  ],
   "public/game/db.js": [
     "abre",
     "adopcion",
@@ -185,19 +184,6 @@
     "recibo",
     "taller",
     "tropa"
-  ],
-  "public/game/scene.js": [
-    "atlasescena",
-    "escena"
-  ],
-  "public/game/squadron.js": [
-    "atlascasa",
-    "casa",
-    "pinta"
-  ],
-  "public/game/star_capture.js": [
-    "faro",
-    "mesa_de_firma"
   ],
   "public/game/face_terminal.js": [
     "monta"
@@ -282,10 +268,8 @@
     "atlascuenta",
     "atlasniebla",
     "atlasnodos",
-    "cuenta",
     "estadonodo",
     "nodo",
-    "nodos",
     "sitionodo"
   ],
   "public/game/node_reception_contract.js": [
@@ -326,8 +310,9 @@
     "pesos_nodos",
     "registro"
   ],
-  "public/game/palette_cycle.js": [
-    "paleta_ciclo_casos"
+  "public/game/scene.js": [
+    "atlasescena",
+    "escena"
   ],
   "public/game/sea-floor.js": [
     "atlasescena",
@@ -369,6 +354,15 @@
     "pinta",
     "sitiocasa"
   ],
+  "public/game/squadron.js": [
+    "atlascasa",
+    "casa",
+    "pinta"
+  ],
+  "public/game/star_capture.js": [
+    "faro",
+    "mesa_de_firma"
+  ],
   "public/game/state_vector.js": [
     "atlasarrecife",
     "atlascangrejolibre",
@@ -394,14 +388,6 @@
     "cuenta",
     "iniciociclo",
     "monta"
-  ],
-  "public/game/workshop.js": [
-    "atlastaller",
-    "bandera",
-    "firma",
-    "recibo",
-    "taller",
-    "tropa"
   ],
   "public/game/tutorial-phases.css": [
     "accion",
@@ -459,8 +445,7 @@
     "firma",
     "huevo",
     "niebla_alfa",
-    "taller",
-    "ui-workshop"
+    "taller"
   ],
   "public/game/visitor_account.js": [
     "adopcion",
@@ -494,6 +479,14 @@
     "registro",
     "sellode"
   ],
+  "public/game/workshop.js": [
+    "atlastaller",
+    "bandera",
+    "firma",
+    "recibo",
+    "taller",
+    "tropa"
+  ],
   "public/game/world_camera.js": [
     "crea",
     "fuera"
@@ -505,19 +498,10 @@
     "cerebro-superviviente",
     "superviviente"
   ],
-  "public/openworld/index.html": [
-    "escena",
-    "taller"
-  ],
   "public/sw-listas.js": [
     "aduana",
     "aduana_page",
-    "cuenta",
-    "escena",
-    "nodos",
-    "portada",
-    "taller",
-    "ui-workshop"
+    "portada"
   ],
   "public/sw.js": [
     "idiomade",
