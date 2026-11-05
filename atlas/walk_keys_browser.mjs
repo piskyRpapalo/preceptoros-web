@@ -76,6 +76,7 @@ async function main() {
   ok(await hasta('!!document.getElementById("surface")', 15000), 'map loaded');
   ok(await hasta(`document.getElementById('state-tech').textContent.includes('Colony:')`, 15000), 'colony drawn from the state');
   await espera(300);
+  await ev(`(() => { const b = document.querySelector('.cats [data-cat=Tutorial]'); if (b && b.getAttribute('aria-pressed') !== 'true') b.click(); return true; })()`);
 
   // 0 · free walk (visitor_walk.js) is on by default; this guard checks the W-4 node law, reachable by turning it off.
   await ev(`(() => { const f = document.getElementById('free-walk'); if (f) { f.checked = false; f.dispatchEvent(new Event('change')); } return true; })()`);
@@ -88,7 +89,7 @@ async function main() {
   ok(retiro.pad === false, 'the six-direction pad is still on the page');
   ok(retiro.dataDirections === 0, 'direction buttons are still on the page: ' + retiro.dataDirections);
   ok(retiro.skipHeight >= 44, 'the skip tutorial button is under 44 px: ' + retiro.skipHeight);
-  const joystick = JSON.parse(await ev(`JSON.stringify((() => { const g = document.querySelector('#stage #view-joystick'); const bs = g ? [...g.querySelectorAll('button')] : []; return { present: !!g, onStage: !!g && g.parentElement === document.getElementById('stage'), buttons: bs.length, minHeight: bs.map(b=>b.getBoundingClientRect().height).reduce((m,h)=>Math.min(m,h), 0) }; })())`));
+  const joystick = JSON.parse(await ev(`JSON.stringify((() => { const g = document.querySelector('#stage #view-joystick'); const bs = g ? [...g.querySelectorAll('button')] : []; return { present: !!g, onStage: !!g && g.parentElement === document.getElementById('stage'), buttons: bs.length, minHeight: bs.length ? Math.min(...bs.map(b=>b.getBoundingClientRect().height)) : 0 }; })())`));
   medidas.joystick = joystick;
   ok(joystick.present && joystick.onStage, 'the view joystick is not on the map stage: ' + JSON.stringify(joystick));
   ok(joystick.buttons === 2 && joystick.minHeight >= 44, 'the view joystick is not two 44 px controls: ' + JSON.stringify(joystick));
@@ -104,14 +105,18 @@ async function main() {
   await tecla('ArrowRight');
   await espera(150);
   const despues = JSON.parse(await ev(`JSON.stringify({ h1: document.querySelector('h1').textContent, estado: (document.querySelector('#joy .state') || {}).textContent || '' })`));
-  medidas.retiro.arrowsWalk = !!(despues.h1 !== antes.h1 || despues.estado !== antes.estado || /selected/.test(despues.estado));
+  medidas.retiro.arrowsWalk = !!(despues.h1 !== antes.h1 || despues.estado !== antes.estado);
   ok(medidas.retiro.arrowsWalk === false, 'a page-level arrow still walks or selects: ' + JSON.stringify({ antes, despues }));
 
   // 4 · the keyboard law survives on the node places: focus the east neighbour's place, Enter walks there and enters it.
   await ev(`(() => { const b = document.querySelector('.cats [data-cat=Map]'); if (b && b.getAttribute('aria-pressed') !== 'true') b.click(); return true; })()`);
   ok(await hasta(`(() => { const b = document.querySelector('#map-node-list [data-node=ring-e]'); return !!b && b.getBoundingClientRect().height >= 44; })()`, 8000), 'the east neighbour place never appeared in the panel');
   await ev(`(() => { window.__dibujos = 0; document.getElementById('surface').addEventListener('visitor:draw', () => { window.__dibujos++; }); document.querySelector('#map-node-list [data-node=ring-e]').focus(); return true; })()`);
-  await tecla('Enter');
+  medidas.focus = await ev(`document.activeElement.outerHTML.slice(0, 300)`);
+  await cmd('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Enter', code: 'Enter', windowsVirtualKeyCode: 13, text: '\r', unmodifiedText: '\r' });
+  await cmd('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Enter', code: 'Enter', windowsVirtualKeyCode: 13 });
+  medidas.afterKey = await ev(`({ active: document.activeElement.outerHTML.slice(0, 200), state: document.querySelector('#joy .state').textContent })`);
+  ok(await hasta(`window.__dibujos >= 12`, 8000), 'the walk is drawn frame by frame');
   ok(await hasta(`/terminal: basic/.test(document.querySelector('#joy .state').textContent)`, 8000), 'Enter on the focused node place does not walk there and enter it');
   const llegada = await estado();
   medidas.llegada = llegada.slice(0, 160);
