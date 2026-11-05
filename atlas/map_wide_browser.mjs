@@ -86,13 +86,13 @@ async function main() {
 
   // The terminal controls belong below the map; panels cover the map, not the conversation.
   const terminal = await ev(`(() => { const stage = document.getElementById('stage'), voices = document.getElementById('voices'),
-    bar = document.querySelector('.cats'), chat = document.getElementById('chat'), pad = stage.querySelector('.walk-pad'),
+    bar = document.querySelector('.cats'), chat = document.getElementById('chat'), joy = stage.querySelector('#view-joystick'),
     composer = document.getElementById('entry'), buttons = bar && bar.querySelectorAll('button');
-    if (!bar || !pad || !buttons || buttons.length < 2) return null;
+    if (!bar || !joy || !buttons || buttons.length < 2) return null;
     buttons[1].click();
     const out = { panelOnMap: voices.parentElement === stage && !voices.hidden,
       barBelowMap: bar.parentElement.id === 'map' && bar.getBoundingClientRect().top >= stage.getBoundingClientRect().bottom,
-      padOnMap: pad.parentElement === stage, chatVisible: getComputedStyle(chat).display !== 'none',
+      joyOnMap: joy.parentElement === stage, chatVisible: getComputedStyle(chat).display !== 'none',
       composerVisible: composer.getBoundingClientRect().height > 0 && composer.getBoundingClientRect().bottom <= innerHeight, pressed: buttons[1].getAttribute('aria-pressed'),
       noInvisibleTargets: !stage.querySelector(':scope > #map-proxies, :scope > .hitl-mark'),
       placesInPanel: !!voices.querySelector('#map-node-list') };

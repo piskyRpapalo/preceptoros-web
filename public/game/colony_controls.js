@@ -1,4 +1,4 @@
-// Terminal, anchor and walking keys of /openworld/ (the on-map stick retired 2026-11-02) (ODD colony-terminal-anchor, TA-1). Pure core: no random numbers,
+// Terminal, anchor and walking of /openworld/ (the six-direction pad and the arrow-walk retired 2026-11-05 by the Sovereign's decree — odd/tasks/openworld-controls-retirement.md) (ODD colony-terminal-anchor, TA-1). Pure core: no random numbers,
 // no clock reads, no network. The user's choice of terminal stays in their own browser (the store is injected).
 // Colours are house bands; hex values come from comic_tokens and comic_accents at run time, never written here.
 (function (root) {
@@ -83,23 +83,9 @@
       b.addEventListener('click', onClick);
       return b;
     }
-    // Six native controls inside the terminal, never over the map canvas. They use the same axial movement as arrow keys.
-    var pad = doc.createElement('div'); pad.className = 'walk-pad'; pad.setAttribute('role', 'group'); pad.setAttribute('aria-label', 'Map joystick');
-    var directions = [
-      ['north-west', 'NW'], null, ['north-east', 'NE'],
-      ['west', 'W'], null, ['east', 'E'],
-      ['south-west', 'SW'], null, ['south-east', 'SE']
-    ];
-    directions.forEach(function (entry) {
-      if (!entry) { var gap = doc.createElement('span'); gap.className = 'walk-gap'; gap.setAttribute('aria-hidden', 'true'); pad.appendChild(gap); return; }
-      var b = button(entry[1], function () { handlers.select(entry[0], 'joystick'); });
-      b.dataset.direction = entry[0]; b.setAttribute('aria-label', 'Walk ' + entry[0]); pad.appendChild(b);
-    });
-    // Keep the same accessible movement buttons on the map's panel layer.
-    var stage = doc.getElementById('stage');
-    if (stage) { stage.appendChild(pad); } else { box.appendChild(pad); }
-    // W-4: node choice remains available with arrow keys and map taps; Enter enters the selected building.
-    // Touch buttons now move the same ephemeral walker, on the panel, outside the map drawing.
+    // 2026-11-05 (the Sovereign's decree, buzon#53 ·6658822854): the six-direction pad is retired. The map corners
+    // belong to the view joystick (map_view_joystick.js) and walking is a tap on a hex (tap-to-step, openworld_page.js);
+    // a node's panel place walks to it. Recorded in odd/tasks/openworld-controls-retirement.md, not a silent drop.
     var actions = doc.createElement('div');
     actions.setAttribute('role', 'group');
     actions.setAttribute('aria-label', 'Tutorial');
@@ -112,8 +98,8 @@
     sel.style.minHeight = '44px';
     sel.addEventListener('change', function () { handlers.choose(sel.value === '' ? null : sel.value); });
     // 2026-11-02 (the Sovereign p0, buzon#30): the on-map overlay is retired (retirados/RETIRO-joystick-20261102.md).
-    // Touch can tap the map or use the six native controls in the terminal; neither control covers the scene.
-    // Free walk: on by default once the floor is loaded; off gives back the W-4 node law (arrows choose a node).
+    // 2026-11-05: the six native controls are retired too (the Sovereign's decree); walking is a tap on the map.
+    // Free walk: on by default once the floor is loaded; off gives back the W-4 node law (a node place walks to it).
     var freeLabel = doc.createElement('label'), free = doc.createElement('input');
     free.type = 'checkbox'; free.id = 'free-walk'; free.checked = true; free.style.minHeight = free.style.minWidth = '44px';
     free.addEventListener('change', function () { if (handlers.free) { handlers.free(free.checked); } });
@@ -123,13 +109,14 @@
     // Plug&play (2026-11-01): the look choice is rarely used, so a page may fold it away (#more-look, in the News sheet).
     (doc.getElementById('more-look') || box).appendChild(sel);
     container.appendChild(box);
-    // Arrow keys choose a neighbour (move() decides which); Enter walks to the chosen one. Form fields keep their keys.
-    var keys = { ArrowRight: 'east', ArrowLeft: 'west', ArrowUp: 'north-east', ArrowDown: 'south-west' };
+    // 2026-11-05 (the Sovereign's decree, buzon#53 ·6658822854): the arrow-walk is retired — its removal is recorded
+    // as the Sovereign's decision, not a silent drop (odd/tasks/openworld-controls-retirement.md). The no-joystick
+    // visitor is served by tap-to-engage and the node places; the view joystick keeps its own arrow keys when focused.
+    // Enter still enters the selected building. Form fields keep their keys.
     doc.addEventListener('keydown', function (e) {
       var t = e.target, campo = t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT' || t.isContentEditable);
       if (campo) { return; }
-      if (keys[e.key]) { e.preventDefault(); handlers.select(keys[e.key], 'key'); }
-      else if (e.key === 'Enter' && t === doc.body) { handlers.enter('key'); }
+      if (e.key === 'Enter' && t === doc.body) { handlers.enter('key'); }
     });
     return { say: function (text) { status.textContent = text; }, select: sel };
   }
@@ -141,7 +128,7 @@
     // W-3: a walk over the visible nodes (walk_route.js). Frames are counted, never milliseconds (W-D3).
     var walk = null, reduced = !!(env.win.matchMedia && env.win.matchMedia('(prefers-reduced-motion: reduce)').matches);
     var saved = savedChoice(storeOf(env.win));
-    // W-4: the chosen neighbour (by an arrow key). It is cleared when a walk starts.
+    // W-4: the chosen neighbour (by a node place or a map tap). It is cleared when a walk starts.
     var selected = null;
     // Free walk (visitor_walk.js): the crab steps cell by cell on the floor of AtlasMapPainter.world().
     var freeOn = true, crab = null, aim = null;
@@ -178,7 +165,7 @@
         if (home) { walker = { node: home.id, q: home.q, r: home.r }; }
       }
       crab = null; env.redraw();
-      joy.say(on ? 'free walk: on' : 'free walk: off · arrow keys choose a node');
+      joy.say(on ? 'free walk: on' : 'free walk: off · walking is by a node place in the panel');
     }
     var joy = mount(env.doc, env.doc.getElementById('joy'), { select: select, enter: enterKey, free: setFree, choose: chooseLook, skip: skipTutorial });
     function storeOf(win) { try { return win.localStorage; } catch (e) { return null; } }
@@ -209,7 +196,7 @@
     function walkSelected() {
       if (walk) { return; }
       // P6: with no choice, Enter goes into the building you stand on (the law says so first, then what was entered).
-      if (!selected) { if (walker) { enterNode(true, 'No node selected: press an arrow key, or click a node on the map, then Enter. '); } else { joy.say('No node selected: press an arrow key, or click a node on the map, then Enter.'); } return; }
+      if (!selected) { if (walker) { enterNode(true, 'No node selected: tap a node on the map, then Enter. '); } else { joy.say('No node selected: tap a node on the map, then Enter.'); } return; }
       var target = selected;
       selected = null;
       walkTo(target);

@@ -45,9 +45,6 @@ main.map-panel-mask{flex:1;display:grid;grid-template-rows:minmax(280px,52dvh) m
 .cats{display:flex;gap:4px;overflow-x:auto;flex:0 0 auto}
 .cats button{flex:1 0 44px;min-width:44px;min-height:44px;padding:4px;border:2px solid currentColor;border-radius:var(--radius);background:var(--bg);color:var(--fg);font:inherit;cursor:pointer}
 .cats button[aria-pressed="true"]{outline:3px solid currentColor;outline-offset:-4px}
-#stage > .walk-pad{position:absolute;z-index:5;right:4px;bottom:4px;display:grid;grid-template-columns:repeat(3,44px);grid-template-rows:repeat(3,44px);gap:2px}
-#stage > .walk-pad button,#stage > .walk-pad .walk-gap{width:44px;height:44px;min-width:44px;min-height:44px;padding:0}
-#stage > .walk-pad button{border:2px solid currentColor;border-radius:var(--radius);background:var(--bg);color:var(--fg);font:inherit}
 #map-actions{order:5}
 #map-brain,#radio-chat{order:6}
 #chat-note,.tech{order:7}
@@ -59,8 +56,6 @@ main.map-panel-mask{flex:1;display:grid;grid-template-rows:minmax(280px,52dvh) m
 .voice .acts,.voice #joy [role="group"],#visitor-play > div{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
 .voice #joy{display:grid;gap:6px}
 .voice #joy label{display:inline-flex;align-items:center;gap:6px;min-height:44px}
-.voice #joy .walk-pad{display:grid;grid-template-columns:repeat(3,44px);grid-template-rows:repeat(3,44px);gap:4px;justify-content:start}
-.voice #joy .walk-pad button,.voice #joy .walk-gap{width:44px;height:44px;min-width:44px;min-height:44px;padding:0;display:grid;place-items:center;font-weight:700}
 #visitor-play h2{font-size:1rem;margin:0}
 .next p{font-size:1.05rem}
 .next button{border-width:3px;font-weight:700}

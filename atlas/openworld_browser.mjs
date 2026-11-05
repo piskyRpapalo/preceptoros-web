@@ -73,12 +73,12 @@ async function main() {
   const initial = JSON.parse(await evaluate(`JSON.stringify((() => {
     const map = document.getElementById('map'), stage = document.getElementById('stage'), canvas = document.getElementById('surface');
     const voices = document.getElementById('voices'), chat = document.getElementById('chat'), bar = map.querySelector('.cats');
-    const pad = stage.querySelector('.walk-pad'), form = document.getElementById('entry'), sr = (e) => { const r=e.getBoundingClientRect(); return [r.left,r.top,r.right,r.bottom,r.width,r.height]; };
+    const joy = stage.querySelector('#view-joystick'), form = document.getElementById('entry'), sr = (e) => { const r=e.getBoundingClientRect(); return [r.left,r.top,r.right,r.bottom,r.width,r.height]; };
     let inkPixels = 0; try { const data=canvas.getContext('2d').getImageData(0,0,canvas.width,canvas.height).data; for(let i=3;i<data.length;i+=4) if(data[i]) inkPixels++; } catch { inkPixels=-1; }
     return { title: document.querySelector('h1')?.textContent, canvases: document.querySelectorAll('canvas').length,
       inkPixels,
       map: sr(map), stage: sr(stage), canvas: sr(canvas), bar: sr(bar), panelParent: voices.parentElement.id, panelHidden: voices.hidden,
-      chat: sr(chat), form: sr(form), pad: pad && sr(pad), padRight: pad && pad.getBoundingClientRect().right,
+      chat: sr(chat), form: sr(form), joy: joy && sr(joy), padGone: !document.querySelector('.walk-pad'),
       count: bar?.querySelectorAll('button').length, labels: [...(bar?.querySelectorAll('button') || [])].map(b=>b.getAttribute('aria-label')),
       intro: document.body.innerText }; })())`));
   ok(/^Location · /.test(initial.title || ''), 'map title does not identify the ephemeral account location: ' + initial.title);
@@ -88,7 +88,8 @@ async function main() {
   ok(initial.count === 7 && initial.labels.join('|') === 'Start|Map|Tutorial|House|Army|Radio|Models', 'the seven compact voice controls are missing or unnamed: ' + JSON.stringify(initial.labels));
   ok(initial.bar[1] >= initial.stage[3] - 1, 'voice controls are not immediately below the map: ' + JSON.stringify(initial.bar));
   ok(initial.chat[5] > 0 && initial.form[5] > 0 && initial.form[3] <= 844, 'chat or anchored composer is not visible on phone');
-  ok(initial.pad && initial.pad[4] >= 130 && initial.padRight >= initial.stage[2] - 6, 'the joystick is not visible at the right edge of the map layer: ' + JSON.stringify(initial.pad));
+  ok(initial.padGone, 'the retired six-direction pad is still on the map layer');
+  ok(initial.joy && initial.joy[4] >= 88, 'the view joystick is not visible on the map layer: ' + JSON.stringify(initial.joy));
 
   const remoteChat = await evaluate(`(async () => {
     const mode = document.getElementById('chat-destination'), form = document.getElementById('entry'), input = document.getElementById('question');
@@ -156,13 +157,19 @@ async function main() {
   ok(orbit === '60', 'the E key does not rotate the map to 60 degrees: ' + orbit);
   await key('Escape','Escape',27); await wait(100);
 
-  const movement = JSON.parse(await evaluate(`JSON.stringify((() => {
-    const pad=document.querySelector('#stage .walk-pad'), button=pad?.querySelector('[data-direction="east"]'), before=document.querySelector('h1').textContent;
-    const live=pad?.querySelector('[aria-live]'); button?.click();
-    return {buttons:pad?.querySelectorAll('button').length, before, after:document.querySelector('h1').textContent,
-      live:live?.textContent, names:[...(pad?.querySelectorAll('button')||[])].every(b=>!!b.getAttribute('aria-label'))}; })())`));
-  ok(movement.buttons === 6 && movement.names, 'map joystick does not expose six named directions: ' + JSON.stringify(movement));
-  ok(movement.after !== movement.before, 'joystick movement does not update the visible location title');
+  const movement = await evaluate(`(async () => {
+    const cat=document.querySelector('.cats [data-cat=Map]'); if (cat && cat.getAttribute('aria-pressed') !== 'true') cat.click();
+    await new Promise(r=>setTimeout(r,400));
+    const place=document.querySelector('#map-node-list [data-node="cabin"]');
+    const joy=document.querySelector('#stage #view-joystick'); const before=document.querySelector('h1').textContent;
+    place?.click();
+    await new Promise(r=>setTimeout(r,600));
+    return {joyOnStage:!!joy && joy.parentElement===document.getElementById('stage'),
+      buttons:joy?joy.querySelectorAll('button').length:0, before, after:document.querySelector('h1').textContent,
+      live:(document.querySelector('#joy [aria-live]')||{}).textContent || ''};
+  })()`);
+  ok(movement.joyOnStage && movement.buttons === 2, 'the view joystick is not the two-control view panner on the map: ' + JSON.stringify(movement));
+  ok(/terminal: \//.test(movement.live), 'a node place click does not walk and enter the node: ' + JSON.stringify(movement));
 
   await evaluate(`(() => { const q=document.getElementById('question'); q.value='hello'; document.getElementById('entry').requestSubmit(); })()`);
   await wait(800);

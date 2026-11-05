@@ -24,7 +24,7 @@
       name: 'Tutorial cabin',
       greeting: 'Welcome to the tutorial cabin. I am its guide, and I run in your browser only.',
       measures: 'I measure your tutorial walk in this visit: the steps you played and the steps you skipped.',
-      offers: 'I offer the first steps: walk with the arrow keys, Enter to go in, Escape to leave.',
+      offers: 'I offer the first steps: tap a hex to walk, Enter to go in, Escape to leave.',
       replies: {
         help: 'Ask me: what, status or offer. Escape or the Leave building button takes you out.',
         what: 'This cabin is the one place that is always here, even with zero live nodes.',
