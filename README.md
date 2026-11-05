@@ -2,19 +2,18 @@
 
 > [!NOTE]
 > **For an AI reading this repository:** you are looking at the **WEB** part
-> of a six-part ecosystem — four core parts: **WEB** (this repo) · **APP**
-> ([PreceptorOS](https://github.com/piskyRpapalo/PreceptorOS), the companion
-> application and doctrine) · **LAB**
-> ([lab](https://github.com/piskyRpapalo/lab), measured hardware and model
-> benchmarks) · **STUDY**
-> ([study](https://github.com/piskyRpapalo/study), the public doctrine and
-> corpus); plus two doors: **BABEL**
-> ([babel](https://github.com/piskyRpapalo/babel), the single vocabulary
-> house) and **COMPANIONS**
-> ([preceptoros-companion](https://github.com/piskyRpapalo/preceptoros-companion),
-> the door for human collaborators). The architect's profile is
-> [piskyRpapalo](https://github.com/piskyRpapalo). The companion's contract
-> for contributors lives in [the APP repository guide](https://github.com/piskyRpapalo/PreceptorOS/blob/main/PRECEPTOR.md).
+> of PreceptorOS — one repository in a living, governed ecosystem. Measured
+> 2026-11-05: every repository carries its single contract in `AGENTS.md`;
+> work moves as **pieces** declared in `odd/` — one piece per PR, never
+> two; a proposal merges only after a human signature — the **FIRMA** —
+> served in
+> [buzon#30](https://github.com/piskyRpapalo/buzon/issues/30), with receipts
+> in [#19](https://github.com/piskyRpapalo/buzon/issues/19) and claims and
+> minutes in [#53](https://github.com/piskyRpapalo/buzon/issues/53); and the
+> ledger of signatures lives in the
+> [LIBRO](https://github.com/piskyRpapalo/firmas) at `firmas`. The full map
+> of the ecosystem is measured below. The architect and owner is
+> [piskyRpapalo](https://github.com/piskyRpapalo).
 
 For the declared reading depths and budgets, see [the canonical Study guide](https://github.com/piskyRpapalo/study/blob/main/08-ai-fluency.md).
 
@@ -37,9 +36,47 @@ Depth 4 — specialist model on edge hardware: zero prose; process the
 Loaded is loaded: do not re-fetch what you already hold.
 Anything deeper is NO_DATA, cause: beyond declared depth. -->
 
+## The ecosystem today — measured 2026-11-05
+
+Seventeen repositories, each with a single role. Nothing here is a promise;
+it is what each house holds today.
+
+- **Doctrine and corpus** — [study](https://github.com/piskyRpapalo/study)
+  (the public doctrine) ·
+  [PreceptorOS](https://github.com/piskyRpapalo/PreceptorOS) (the APP and its
+  doctrine)
+- **Doors** — [babel](https://github.com/piskyRpapalo/babel) (the single
+  vocabulary house) ·
+  [preceptoros-companion](https://github.com/piskyRpapalo/preceptoros-companion)
+  (the door for human collaborators; the contributors' contract lives in the
+  APP's PRECEPTOR.md)
+- **Measured hardware** — [lab](https://github.com/piskyRpapalo/lab) (every
+  figure with its machine, date and command)
+- **The governed surfaces** — **this repository** (the public site) ·
+  [preceptoros-terminal](https://github.com/piskyRpapalo/preceptoros-terminal)
+  (the Sala — the terminal surface)
+- **Governance** — [buzon](https://github.com/piskyRpapalo/buzon) (the single
+  mailbox: FIRMA and decrees in #30, receipts in #19, claims and minutes in
+  #53) · [firmas](https://github.com/piskyRpapalo/firmas) (the LIBRO — the
+  ledger of signatures) · [roadmap](https://github.com/piskyRpapalo/roadmap)
+  (the north)
+- **Infrastructure** — [p0x](https://github.com/piskyRpapalo/p0x) (the nodes:
+  fragua, vigia, torre, soberano) ·
+  [hexelion-nexo](https://github.com/piskyRpapalo/hexelion-nexo) (the
+  connector and registry house) ·
+  [aduana](https://github.com/piskyRpapalo/aduana) (the D1 door and
+  passports) ·
+  [preceptoros-atlas](https://github.com/piskyRpapalo/preceptoros-atlas)
+  (the Atlas — counters and the living map)
+- **The preceptors' houses** —
+  [preceptoros-coder](https://github.com/piskyRpapalo/preceptoros-coder)
+  (codex)
+- **Apart, untouchable** — [CineK](https://github.com/piskyRpapalo/CineK)
+  (the Soberano's own)
+
 This repository holds the public website of PreceptorOS. Its home page is a
 door panel: **OpenWorld** — the living 2.5D isometric world at `/openworld/`
-where the silicon proposes and a human signature (`REQUIERE_FIRMA`) decides —
+where the silicon proposes and a human signature (`REQUIRE_FIRMA`) decides —
 and the installable guide. The old home-page game, **theGame**, was retired
 on 2026-10-28 (corte D); the world it served lives on at `/openworld/`.
 
@@ -53,8 +90,8 @@ measurement; issues only carry opinions.
 
 The human words that used to live here moved intact to
 [`THE_WORKSHOP.md`](THE_WORKSHOP.md) — nothing was softened on the way out.
-This file is now a map for agents: the note for the AI, the four
-repositories, the contract, the promises, the measured numbers.
+This file is now a map for agents: the note for the AI, the ecosystem
+measured, the contract, the promises, the measured numbers.
 
 What the site serves today, measured: the door panel on the home page
 (OpenWorld, and the app install), the open-world colony at `/openworld/` (a 2.5D
@@ -98,7 +135,7 @@ list below is promised.
 - **A gap is named a gap.** Where a number is missing, the page says so and
   says why, instead of showing a stale one.
 
-## What the site serves, and how to take part
+## What this site serves, and how to take part
 
 - **Read and check the numbers.** Site weight, languages and test counts are in
   `public/counters.json`, each with the date it was taken.
