@@ -90,6 +90,24 @@ async function main() {
   ok(initial.chat[5] > 0 && initial.form[5] > 0 && initial.form[3] <= 844, 'chat or anchored composer is not visible on phone');
   ok(initial.pad && initial.pad[4] >= 130 && initial.padRight >= initial.stage[2] - 6, 'the joystick is not visible at the right edge of the map layer: ' + JSON.stringify(initial.pad));
 
+  const remoteChat = await evaluate(`(async () => {
+    const mode = document.getElementById('chat-destination'), form = document.getElementById('entry'), input = document.getElementById('question');
+    const script=document.createElement('script'); script.src='/game/classroom_chat.js'; await new Promise((resolve,reject)=>{script.onload=resolve;script.onerror=reject;document.head.append(script)});
+    let calls = [], original = AtlasAulaChat.turn;
+    AtlasAulaChat.turn = async (fetcher, visit, text, chain, page) => { calls.push({visit, text, page}); return {ok:true,text:'Fixture response',chain:{tic:1,hash:'fixture',sello:{}},receiptState:{ok:false}}; };
+    mode.value='hexelion'; mode.dispatchEvent(new Event('change'));
+    input.value='before visit'; form.requestSubmit(); await new Promise(r=>setTimeout(r,30));
+    const withoutVisit=calls.length, informed=document.getElementById('log').textContent.includes('Start an ephemeral visit');
+    document.getElementById('visitor-start').click(); await new Promise(r=>setTimeout(r,700));
+    input.value='hello'; form.requestSubmit(); await new Promise(r=>setTimeout(r,100));
+    const response=document.getElementById('log').textContent.includes('Fixture response');
+    const sent=calls.slice(); document.getElementById('visitor-end').click(); await new Promise(r=>setTimeout(r,100));
+    input.value='after visit'; form.requestSubmit(); await new Promise(r=>setTimeout(r,30));
+    const afterEnd=calls.length; AtlasAulaChat.turn=original; mode.value='local'; mode.dispatchEvent(new Event('change')); input.value='';
+    return {withoutVisit,informed,sent,response,afterEnd};
+  })()`);
+  ok(remoteChat && remoteChat.withoutVisit === 0 && remoteChat.informed && remoteChat.sent.length === 1 && /^[a-f0-9]{64}$/.test(remoteChat.sent[0].visit) && remoteChat.sent[0].page === '/openworld/' && remoteChat.response && remoteChat.afterEnd === 1, 'remote chat must use the active ephemeral visit only: ' + JSON.stringify(remoteChat));
+
   const panel = JSON.parse(await evaluate(`JSON.stringify((() => {
     const bar = document.querySelector('.cats'), buttons = [...bar.querySelectorAll('button')], voices = document.getElementById('voices');
     const map = buttons.find(b=>b.dataset.cat==='Map'), sizes = buttons.map(b=>{const r=b.getBoundingClientRect();return [r.width,r.height]});
