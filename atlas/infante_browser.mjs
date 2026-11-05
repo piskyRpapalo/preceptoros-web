@@ -66,7 +66,12 @@ async function main() {
     const ctl = [...document.querySelectorAll('button,[role=tab],summary,a[href]')].filter(vis);
     const cortados = ctl.filter((e) => e.scrollWidth > e.clientWidth + 1).map((e) => e.textContent.trim().slice(0, 30));
     const radio = [...document.querySelectorAll('#radio-chat-lista li')].map((li) => li.textContent);
-    return { dup, tecnico, cortados, chars: lineas.join(' ').length, radio: radio.length, radioCaminantes: radio.filter((t) => /walker of /.test(t)).length };
+    // R1: a primary-looking control is one drawn heavier than the rest (border ≥ 3 px, a double border, or a filled face).
+    const peso = (e) => { const s = getComputedStyle(e); return parseFloat(s.borderTopWidth) >= 3 || s.borderTopStyle === 'double' || s.outlineStyle === 'double'; };
+    const prim = ctl.filter((e) => e.getBoundingClientRect().top < innerHeight && e.getBoundingClientRect().bottom > 0 && peso(e)).map((e) => (e.id || e.textContent.trim().slice(0, 24)) + '@' + Math.round(e.getBoundingClientRect().top));
+    const plays = ctl.filter((e) => /^Play( now|\b)/.test(e.textContent.trim())).map((e) => e.textContent.trim() + (peso(e) ? ' [primary]' : '') + '@' + Math.round(e.getBoundingClientRect().top));
+    const wp = document.getElementById('welcome-play'), wr = wp && wp.getBoundingClientRect(), primEntera = !!wr && wr.top >= 0 && wr.bottom <= innerHeight;
+    return { dup, tecnico, cortados, prim, plays, primEntera, chars: lineas.join(' ').length, radio: radio.length, radioCaminantes: radio.filter((t) => /walker of /.test(t)).length };
   })())`));
   medidas.infante = r;
   ok(r.dup.length === 0, 'R2 a line repeats on the first screen: ' + r.dup.slice(0, 3).join(' | '));
@@ -74,6 +79,8 @@ async function main() {
   ok(r.radioCaminantes === 0, 'R3 the radio echoes the walkers: ' + r.radioCaminantes);
   ok(r.cortados.length === 0, 'R4 cut at 360 px: ' + r.cortados.join(' | '));
   ok(r.chars < TECHO, 'the visible text is over ' + TECHO + ' chars: ' + r.chars);
+  // R1 (e1): ONE primary action on the first screen — the welcome's «Play now · sign on this device», whole in the fold.
+  ok(r.prim.length === 1 && /^welcome-play@/.test(r.prim[0]) && r.primEntera, 'R1 not exactly one primary, whole in the first screen: ' + JSON.stringify({ prim: r.prim, entera: r.primEntera }));
   console.log(JSON.stringify({ piece: 'infante', publico: process.env.PUBLICO ? 'override' : 'branch', receipt: fallos.length ? 'ROJO' : 'VERDE', medidas, fallos }));
 }
 main().catch((e) => { fallos.push(String(e && e.message || e)); console.log(JSON.stringify({ piece: 'infante', receipt: 'ROJO', medidas, fallos })); })
