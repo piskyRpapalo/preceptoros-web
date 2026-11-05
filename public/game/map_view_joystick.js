@@ -54,10 +54,12 @@
     active = null; mode.disabled = false; carryX = carryY = 0; knob.style.transform = ''; announce(state());
   }
   stick.addEventListener('pointerup', finish); stick.addEventListener('pointercancel', finish); stick.addEventListener('lostpointercapture', finish);
-  stick.addEventListener('keydown', function (event) {
+  function keyView(event) {
     var delta = { ArrowLeft: [-24, 0], ArrowRight: [24, 0], ArrowUp: [0, -24], ArrowDown: [0, 24] }[event.key];
     if (!delta) return;
     event.preventDefault(); event.stopPropagation(); camera(delta[0], delta[1]); announce(state());
-  });
+  }
+  stick.addEventListener('keydown', keyView);
+  mode.addEventListener('keydown', keyView);
   refreshMode();
 })(typeof window !== 'undefined' ? window : globalThis);

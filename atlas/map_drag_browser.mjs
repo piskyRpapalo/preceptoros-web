@@ -155,6 +155,14 @@ async function main() {
     const afterKey = await vista();
     ok(afterKey.panx !== beforeKey.panx && afterKey.walker === beforeKey.walker, 'focused joystick arrows must pan without walking visitor');
     await ev("document.getElementById('view-stick-mode').click(), true");
+    await ev("document.getElementById('view-stick-mode').focus(), true");
+    const beforeModeKey = await vista();
+    for (const type of ['keyDown', 'keyUp']) await cmd('Input.dispatchKeyEvent', {type, key:'ArrowLeft', code:'ArrowLeft', windowsVirtualKeyCode:37});
+    await espera(300);
+    const afterModeKey = await vista();
+    const angleAfterKey = await ev("Number(document.getElementById('surface').dataset.angle)");
+    ok(angleAfterKey !== 0 && afterModeKey.walker === beforeModeKey.walker, 'focused mode arrows must turn the view without walking visitor');
+    await ev("document.getElementById('view-reset').click(), true"); await espera(250);
     const beforeMouse = await vista();
     await cmd('Emulation.setTouchEmulationEnabled', {enabled:false});
     await cmd('Input.dispatchMouseEvent', {type:'mouseMoved', x:stickBox.x, y:stickBox.y});

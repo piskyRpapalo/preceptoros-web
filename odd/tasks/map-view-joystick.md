@@ -50,3 +50,8 @@ atlas/f0_functions_cases.mjs`: 15/15. `node sw_harness.mjs`: 24/24.
 124 passed, 1 skipped, 1 failure caused by the deliberately unsealed SW hash.
 `bin/seal.py` dry-run proposes a version already contested by other drafts; the
 Mesa must assign a distinct seal before this piece can be ready.
+
+Follow-up: focused mode-switch arrows now control only the view as well; they
+cannot bubble to the visitor walker. The browser gate exercises that path,
+then resets and verifies the mouse gesture separately. The new dry-run hash is
+`1754983e8c4fd8c3`; it is not a seal or an assignment.
