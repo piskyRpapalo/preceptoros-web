@@ -76,7 +76,7 @@ it is what each house holds today.
 
 This repository holds the public website of PreceptorOS. Its home page is a
 door panel: **OpenWorld** — the living 2.5D isometric world at `/openworld/`
-where the silicon proposes and a human signature (`REQUIRE_FIRMA`) decides —
+where the silicon proposes and a human signature (`REQUIRES_FIRMA`) decides —
 and the installable guide. The old home-page game, **theGame**, was retired
 on 2026-10-28 (corte D); the world it served lives on at `/openworld/`.
 
