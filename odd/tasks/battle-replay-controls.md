@@ -30,14 +30,14 @@ Out of scope: any change to `wave_duel_scene.js` (16,200 B of its 16,384 B ceili
 
 ## Checklist (one piece = one PR)
 
-- [x] EU-3.1 · pure state with cases and sabotage (`atlas/puros/battle_replay_controls_casos.mjs`, 9/9).
+- [x] EU-3.1 · pure state with cases and sabotage (`atlas/puros/battle_replay_controls_cases.mjs`, 9/9).
 - [x] EU-3.2 · controls in the battle dialog (`public/game/visitor_battle_ui.js`), loaded before it in the door.
 - [x] EU-3.3 · browser check (`atlas/battle_replay_controls_browser.mjs`): rates `[0,0,0,4,2,0,2]`, record unchanged, visit goes on. Sabotage (rate ignores pause) turns it red.
 - [ ] EU-3.4 · seal chain and judges, then the receipt.
 
 ## Verification evidence
 
-- Pure cases 9/9. Browser check passes three times in a row. The existing battle check (`visitor_battle_browser.mjs`) and the single visit pass (`usuario_efimero_pasada_browser.mjs`) still pass.
+- Pure cases 9/9. Browser check passes three times in a row. The existing battle check (`visitor_battle_browser.mjs`) and the single visit pass (`ephemeral_user_pass_browser.mjs`) still pass.
 - Sabotage: `rate` ignoring the pause gives rates `[1,2,4,4,2,2,2]` and the check goes red.
 
 ## Standing signature

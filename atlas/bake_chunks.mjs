@@ -1,4 +1,4 @@
-// P2 · the chunk oven (lab, never served). Writes public/map/carta.json (atlas.carta/1), one file per chunk
+// P2 · the chunk oven (lab, never served). Writes public/map/chart.json (atlas.carta/1), one file per chunk
 // public/map/chunks/<cq>_<cr>.<sha8>.json (atlas.chunk/1) and the art by id in public/art/<id>.json (atlas.asset/1).
 // DETERMINISTIC: same seed, same bytes, same shas (no Math.random, no Date). Art is data: waves and palettes.
 // Preceptor contract: study/05-contracts.md (digest measured, never invented from its tag).
@@ -7,7 +7,7 @@
 import { createHash } from 'node:crypto';
 import { writeFileSync, readFileSync, mkdirSync, readdirSync, rmSync, existsSync } from 'node:fs';
 import { createRequire } from 'node:module';
-const C = createRequire(import.meta.url)('../public/game/map_carta.js');
+const C = createRequire(import.meta.url)('../public/game/map_chart.js');
 const M = createRequire(import.meta.url)('../public/game/map_painter.js');
 const R = 8, SEED = 20261101, RING = 1;            // ring 1 = the 7-chunk neighbourhood of the tutorial cabin
 const OUT = new URL('../public/', import.meta.url);
@@ -43,7 +43,7 @@ export function bake() {
     chunks.push({ id: C.key(c), c, sha256: s, bytes: Buffer.byteLength(body), frame, file: '/' + name });
   }
   const carta = { v: 'atlas.carta/1', radius: R, seed: SEED, frame: { t: 'Sunken forest map', d: '7 hex chunks around the tutorial cabin, radius ' + R + '. Each chunk is asked for by its area key only.' }, chunks: chunks.map(({ file, ...k }) => k) };
-  files.set('map/carta.json', json(carta));
+  files.set('map/chart.json', json(carta));
   return { files, carta, chunks };
 }
 

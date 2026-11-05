@@ -7,7 +7,7 @@ Esto es **diseño**, no código servido. Nada de aquí se declara medido; cada l
 
 - **`nodos_ajenos` existía, pero en la carta retirada.** `public/assets/atlas-carta.js:227` (vista en `752338f^`) decía
   `nodos_ajenos: { valor: null, causa: 'la web no llama a ningun servidor' }`. Ese módulo salió con Norte 7 corte D.
-  El `atlas.carta/1` vivo (`data/atlas_carta_schema.json`, #536) **no tiene ese campo** (`additionalProperties:false`).
+  El `atlas.carta/1` vivo (`data/atlas_chart_schema.json`, #536) **no tiene ese campo** (`additionalProperties:false`).
   ✗ **Contradicción preservada**: la puerta del diseño existía en la carta vieja; en la nueva hay que **abrirla por
   enmienda** (§3), sin heredarla en silencio.
 - **Celdas disponibles**: medidas sobre el chunk horneado `0_0` (`public/map/chunks/0_0.*.json`, semilla 20261101).
@@ -26,7 +26,7 @@ solo elige el tipo y las condiciones). Campos:
 | `id` | `[a-z0-9-]+`, estable, **sin nombre de host ni de máquina** (SCRUB) |
 | `kind` | `rack` · `npc` · `conquest` (§4) |
 | `c` | celda axial `[q, r]`. Debe ser suelo en su chunk; si no, se rechaza |
-| `form` | forma de `colonia_edificios.js` (`dome` · `tower` · `block`) |
+| `form` | forma de `colony_buildings.js` (`dome` · `tower` · `block`) |
 | `frame` | marco bubble < 1,024 B: `t` (nombre), `d` (frase), `role` |
 | `seal` | `NO_DATA` · `LIVE` · `STALE`, **medido**, nunca declarado |
 | `cause` | obligatoria cuando `seal` ≠ `LIVE` |
@@ -51,8 +51,8 @@ sin color de sello. La frase lo dice: «Dark until it links.»
 
 1. **Enmienda de `atlas.carta/1`** (pieza propia): campo opcional `places: [atlas.lugar/1]`. Es la puerta que
    `nodos_ajenos` dejaba abierta. La carta lista los lugares y su celda; el horno (`hornea_chunks.mjs`) los valida.
-2. **El enlace es un marco firmado, no una sesión.** El nodo publica en `openworld/estado.json` (el mismo canal que ya
-   lee la colonia) su entrada `{ id, clave, seal }`. `estado_v2.py` exige ya clave y sello: **sin clave no hay luz**.
+2. **El enlace es un marco firmado, no una sesión.** El nodo publica en `openworld/state.json` (el mismo canal que ya
+   lee la colonia) su entrada `{ id, clave, seal }`. `state_v2.py` exige ya clave y sello: **sin clave no hay luz**.
 3. **Fog-push medido**: cuando el estado trae el lugar con sello `LIVE` y su clave verifica, la niebla se abre en
    r = 380 + 160·k alrededor de su celda (la fórmula que el lore cita como ya medida), y el registro lo dice:
    «The pocket lighthouse is lit · LIVE since tick N». Si el sello envejece: `STALE` con su Δ. Si falta: `NO_DATA` con causa.

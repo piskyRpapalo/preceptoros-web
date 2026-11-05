@@ -11,10 +11,10 @@ que el gate se sabotea en sus propios casos y también en el árbol real.
 
 ## Alcance
 - `atlas/lexicon_gate.mjs`: escanea `public/**/*.{html,js,mjs,css}` (sin `historial/`).
-- `atlas/lexicon_espanol.json`: la lista negra medida (D2, `docs/INDEX_RENAMING.md`).
-- `atlas/lexicon_permitidas.json`: lista blanca de excepciones, con motivo, vacía al nacer.
+- `atlas/lexicon_es.json`: la lista negra medida (D2, `docs/INDEX_RENAMING.md`).
+- `atlas/lexicon_allowed.json`: lista blanca de excepciones, con motivo, vacía al nacer.
 - `atlas/lexicon_base.json`: deuda medida hoy, fichero a fichero. Se regenera con `--escribe-base`.
-- `atlas/lexicon_gate_casos.mjs`: siete casos, entre ellos el sabotaje.
+- `atlas/lexicon_gate_cases.mjs`: siete casos, entre ellos el sabotaje.
 - Cableado en `.github/workflows/gate.yml`, en el bloque de gates.
 
 ## Restricciones
@@ -27,12 +27,12 @@ que el gate se sabotea en sus propios casos y también en el árbol real.
 - [x] LX2 · base generada: 180 ficheros, medida hoy (155 con la lista del D2 + 25 de los alias de Rosetta, §Registro).
 - [x] LX3 · sabotaje en casos: palabra nueva, camelCase, URL que no cuenta, excepción, base que no baja, base real.
 - [x] LX4 · sabotaje en el árbol real: `public/assets/pwa.js` con `monta` → rojo (exit 1), revertido → verde.
-- [x] LX5 · cableado en gate.yml (`node --test atlas/lexicon_gate_casos.mjs` y `node atlas/lexicon_gate.mjs`).
+- [x] LX5 · cableado en gate.yml (`node --test atlas/lexicon_gate_cases.mjs` y `node atlas/lexicon_gate.mjs`).
 - [ ] LX6 · lista blanca completa de inglés (diccionario versionado). Pendiente de decisión del Soberano.
 - [ ] LX7 · el barrido baja la base a cero (mandato 1). Pendiente: 155 ficheros.
 
 ## Evidencia
-- `node --test atlas/lexicon_gate_casos.mjs` → 7/7.
+- `node --test atlas/lexicon_gate_cases.mjs` → 7/7.
 - `node atlas/lexicon_gate.mjs` en el árbol real → VERDE, 180 ficheros, base 180.
 - Sabotaje real: `echo "// sabotaje: monta" >> public/assets/pwa.js` → `NUEVA public/assets/pwa.js: monta`, `ROJO`, exit 1. Revertido → VERDE.
 

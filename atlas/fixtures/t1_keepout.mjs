@@ -4,10 +4,10 @@
 // Usa el caminante de T4 (solo sus funciones exportadas; T4 no se modifica).
 import { createRequire } from 'node:module';
 import { readFileSync } from 'node:fs';
-import * as T4 from './t4_caminante.mjs';
+import * as T4 from './t4_walker.mjs';
 const require = createRequire(import.meta.url);
 
-const REG = JSON.parse(readFileSync(new URL('./constantes.json', import.meta.url), 'utf8')).constantes;
+const REG = JSON.parse(readFileSync(new URL('./constants.json', import.meta.url), 'utf8')).constantes;
 const valor = (nombre) => REG.find((c) => c.nombre === nombre).valor;
 export const LEAN = valor('LEAN');
 const RADIO_POR_TIPO = { cabin: valor('RADIO_CUERPO'), node: valor('RADIO_CUERPO') };

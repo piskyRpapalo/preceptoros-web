@@ -2,7 +2,7 @@
 (function (root) {
   'use strict';
   var common = typeof module === 'object' && module.exports;
-  var M = common ? require('./decor_mover.js') : root.AtlasDecorMover;
+  var M = common ? require('./decor_move.js') : root.AtlasDecorMover;
   var VERSION = 'preceptoros.decor-command/1';
 
   function fail(cause) { throw new Error('decor_command: ' + cause); }

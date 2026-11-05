@@ -16,7 +16,7 @@ change it. One decision is the Sovereign's: the route name (section 2).
 | The worker's own test suite: **0 of 3 pass**. Each test expects 503 or 422 and gets 404, because it posts to the README path the code does not serve. | `npm test` |
 | The worker sends **no CORS headers** and handles no `OPTIONS`. A browser on the site cannot POST to it, and cannot read its errors. | worker source (0 `access-control` matches) |
 | The web contract names `https://api.preceptoros.org/aduana/cedulas` (`public/game/node_reception_contract.js`). | web repo |
-| The live node UI sends through `POST /api/v1/paquetes`, which admits only the apex origin. | `public/assets/enviar.js`, route map |
+| The live node UI sends through `POST /api/v1/paquetes`, which admits only the apex origin. | `public/assets/send.js`, route map |
 | The web receiver `public/game/node_file_receiver.js` parses a local file. No code in the web repo receives a cédula response from the gateway. | web repo |
 | Trust anchors are empty (`public/game/node_trust_anchor.js`); door 2 cannot say "trusted". | web repo |
 
