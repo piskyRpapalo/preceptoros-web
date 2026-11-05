@@ -126,7 +126,8 @@
       var list = doc.createElement('ul');
       [ ['Pocket lighthouse', 'A small lighthouse for a portable node.'],
         ['Sovereign hall', 'A hall for the colony’s central work.'],
-        ['The oven', 'A place for heavy computing.'] ].forEach(function (place) {
+        ['The oven', 'A place for heavy computing.'],
+        ['Benchmark Lab', 'A proposed place for model benchmarks and adversarial safety exercises; results are not available.'] ].forEach(function (place) {
         var item = doc.createElement('li'); item.textContent = place[0] + ' · proposed · ' + place[1] + ' Link NO_DATA: not verified.'; list.appendChild(item);
       });
       catalog.appendChild(list); houseVoice.appendChild(catalog);

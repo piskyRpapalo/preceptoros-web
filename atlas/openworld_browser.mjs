@@ -143,8 +143,8 @@ async function main() {
     return {open:details.open, text:details.textContent, count:details.querySelectorAll('li').length,
       canvases:document.querySelectorAll('canvas').length};
   })()`);
-  ok(historicPlaces && historicPlaces.open && historicPlaces.count === 3 && historicPlaces.canvases === 1 &&
-    ['Pocket lighthouse','Sovereign hall','The oven'].every(name => historicPlaces.text.includes(name)) &&
+  ok(historicPlaces && historicPlaces.open && historicPlaces.count === 4 && historicPlaces.canvases === 1 &&
+    ['Pocket lighthouse','Sovereign hall','The oven','Benchmark Lab'].every(name => historicPlaces.text.includes(name)) &&
     historicPlaces.text.includes('NO_DATA') && !historicPlaces.text.includes('LIVE'),
     'historic places must be accessible proposals on the single map: ' + JSON.stringify(historicPlaces));
   const start = JSON.parse(await evaluate(`JSON.stringify((() => { const b=document.querySelector('.cats [data-cat=Start]'); b.click(); const p=document.getElementById('play-now');
