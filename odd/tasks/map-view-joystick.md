@@ -33,3 +33,20 @@ signature and independent review before merge.
 Sovereign's showcase commission in the chat; existing sources
 `public/game/map_drag.js`, `public/game/map_zoom.js` and
 `odd/tasks/la-mano-la-voz.md`. Claim buzon#53 ·6655298626.
+
+## Local evidence · 2026-11-05
+
+`CHROME_BINARY=/usr/bin/chromium node atlas/map_drag_browser.mjs` on Linux
+x86_64: GREEN. Touch moved the camera by 30 pixels; keyboard moved it by 24;
+mouse in turn/zoom mode produced 60 degrees and 1.25×. The visitor's walker
+state stayed unchanged in each case. Existing one-finger drag, pinch, view
+bounds, home and keyboard remained green. These are browser simulations, not
+physical phone, FPS or screen-reader measurements.
+
+`node --test atlas/map_zoom_colony_cases.mjs atlas/map_orbit_cases.mjs
+atlas/f0_functions_cases.mjs`: 15/15. `node sw_harness.mjs`: 24/24.
+`python3 bin/count_routes.py --check-doc DEPLOY.md`: 124 entries, 123 unique.
+`NODE_OPTIONS='--test-reporter=tap' python3 -m unittest test_web atlas.test_atlas`:
+124 passed, 1 skipped, 1 failure caused by the deliberately unsealed SW hash.
+`bin/seal.py` dry-run proposes a version already contested by other drafts; the
+Mesa must assign a distinct seal before this piece can be ready.
