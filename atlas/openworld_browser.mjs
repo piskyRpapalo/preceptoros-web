@@ -169,7 +169,10 @@ async function main() {
       live:(document.querySelector('#joy [aria-live]')||{}).textContent || ''};
   })()`);
   ok(movement.joyOnStage && movement.buttons === 2, 'the view joystick is not the two-control view panner on the map: ' + JSON.stringify(movement));
-  ok(/terminal: \//.test(movement.live), 'a node place click does not walk and enter the node: ' + JSON.stringify(movement));
+  ok(/terminal: basic \(the node\)/.test(movement.live), 'a node place click does not walk and enter the node: ' + JSON.stringify(movement));
+
+  // The place enters the cabin's scripted chat; leave it before testing the general model's NO_DATA answer.
+  await evaluate(`document.getElementById('leave-building')?.click()`);
 
   await evaluate(`(() => { const q=document.getElementById('question'); q.value='hello'; document.getElementById('entry').requestSubmit(); })()`);
   await wait(800);
