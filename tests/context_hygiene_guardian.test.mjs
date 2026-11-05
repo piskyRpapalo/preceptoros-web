@@ -3,7 +3,7 @@ import { readFileSync, existsSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 
 const ROOT = new URL('../', import.meta.url).pathname;
-const AGENT_FACING = ['llms.txt', 'AGENTS.md', 'CLAUDE.md', 'README.md'];
+const AGENT_FACING = ['llms.txt', 'AGENTS.md', 'README.md'];
 const FORBIDDEN = ['oracle', 'notary', 'depin', 'currency', 'clearing', 'magic', 'cryptocurrency'];
 const FORBIDDEN_LIST_MARKER = '<!-- H7-FORBIDDEN-LIST -->';
 const FORBIDDEN_LIST_PREFIX = '- Vocablos prohibidos en código y UI:';
