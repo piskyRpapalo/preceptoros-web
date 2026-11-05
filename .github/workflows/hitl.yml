@@ -38,4 +38,4 @@ jobs:
           PR_REPO: ${{ github.repository }}
           BUZON_REPO: piskyRpapalo/buzon
           BUZON_ISSUE: "30"
-        run: python3 atlas/hitl_cerco.py
+        run: python3 atlas/hitl_fence.py

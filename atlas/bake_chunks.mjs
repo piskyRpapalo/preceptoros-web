@@ -1,7 +1,9 @@
-// P2 · el horno de chunks (laboratorio, no se sirve). Escribe public/map/carta.json (atlas.carta/1), un fichero por chunk
-// public/map/chunks/<cq>_<cr>.<sha8>.json (atlas.chunk/1) y el arte por id en public/art/<id>.json (atlas.asset/1).
-// DETERMINISTA: misma semilla, mismos bytes y mismos sha (sin Math.random ni Date). El arte son datos: ondas y paletas.
-// Uso: node atlas/hornea_chunks.mjs [--check]   (--check falla si lo servido no es lo que se hornearía)
+// P2 · the chunk oven (lab, never served). Writes public/map/carta.json (atlas.carta/1), one file per chunk
+// public/map/chunks/<cq>_<cr>.<sha8>.json (atlas.chunk/1) and the art by id in public/art/<id>.json (atlas.asset/1).
+// DETERMINISTIC: same seed, same bytes, same shas (no Math.random, no Date). Art is data: waves and palettes.
+// Preceptor contract: study/05-contracts.md (digest measured, never invented from its tag).
+// PS: propose-only + seal: atlas.carta/1 · atlas.chunk/1 · atlas.asset/1.
+// Use: node atlas/bake_chunks.mjs [--check]   (--check fails if what is served is not what would be baked)
 import { createHash } from 'node:crypto';
 import { writeFileSync, readFileSync, mkdirSync, readdirSync, rmSync, existsSync } from 'node:fs';
 import { createRequire } from 'node:module';
@@ -21,7 +23,7 @@ function cell(q, r) {
 const sha = (s) => createHash('sha256').update(s).digest('hex');
 const json = (o) => JSON.stringify(o) + '\n';
 
-export function hornea() {
+export function bake() {
   const files = new Map();
   const palette = { v: 'atlas.asset/1', id: 'sea-palette', kind: 'palette',
     frame: { t: 'Sea palette', d: 'Four bands of the sunken forest: deep water, shallow water, sand and moss. Each band also has a pattern, so colour is never the only cue.', role: 'floor' },
@@ -46,7 +48,7 @@ export function hornea() {
 }
 
 const check = process.argv.includes('--check');
-const { files, carta } = hornea();
+const { files, carta } = bake();
 const err = C.checkCarta(carta); if (err) { console.error('carta: ' + err); process.exit(1); }
 if (check) {
   const bad = [...files].filter(([f, b]) => !existsSync(new URL(f, OUT)) || readFileSync(new URL(f, OUT), 'utf8') !== b).map(([f]) => f);
@@ -54,10 +56,10 @@ if (check) {
   const stale = served.filter((f) => !files.has(f));
   const listas = readFileSync(new URL('sw-listas.js', OUT), 'utf8'), listed = [...listas.matchAll(/'\/(map\/chunks\/[^']+)'/g)].map((m) => m[1]);
   const want = [...files.keys()].filter((f) => f.startsWith('map/chunks/'));
-  if (want.some((f) => !listed.includes(f)) || listed.some((f) => !want.includes(f))) { console.error('ROJO · sw-listas.js no precachea exactamente los chunks horneados'); process.exit(1); }
-  if (bad.length || stale.length) { console.error('ROJO · horno distinto de lo servido: ' + bad.concat(stale).join(', ')); process.exit(1); }
-  console.log('VERDE · ' + files.size + ' ficheros horneados = servidos'); process.exit(0);
+  if (want.some((f) => !listed.includes(f)) || listed.some((f) => !want.includes(f))) { console.error('ROJO · sw-listas.js does not precache exactly the baked chunks'); process.exit(1); }
+  if (bad.length || stale.length) { console.error('ROJO · oven differs from what is served: ' + bad.concat(stale).join(', ')); process.exit(1); }
+  console.log('VERDE · ' + files.size + ' baked files = served'); process.exit(0);
 }
 rmSync(new URL('map/chunks/', OUT), { recursive: true, force: true });
 for (const [f, b] of files) { mkdirSync(new URL('.', new URL(f, OUT)), { recursive: true }); writeFileSync(new URL(f, OUT), b); }
-console.log(JSON.stringify({ ficheros: files.size, bytes: [...files.values()].reduce((a, b) => a + Buffer.byteLength(b), 0), chunks: carta.chunks.map((c) => c.id + ':' + c.bytes) }));
+console.log(JSON.stringify({ files: files.size, bytes: [...files.values()].reduce((a, b) => a + Buffer.byteLength(b), 0), chunks: carta.chunks.map((c) => c.id + ':' + c.bytes) }));

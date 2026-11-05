@@ -1,10 +1,11 @@
-"""Casos de bin/guarda_deploy.py: el juez puro del deploy (incidente del 2026-11-02, buzon#30 ·6590360027)."""
+"""Cases of bin/deploy_guard.py: the pure judge of the deploy (incident of 2026-11-02, buzon#30 ·6590360027).
+Preceptor contract: study/05-contracts.md · PS: propose-only + seal."""
 import importlib.util
 import pathlib
 import unittest
 
-RUTA = pathlib.Path(__file__).resolve().parent.parent / "bin" / "guarda_deploy.py"
-spec = importlib.util.spec_from_file_location("guarda_deploy", RUTA)
+RUTA = pathlib.Path(__file__).resolve().parent.parent / "bin" / "deploy_guard.py"
+spec = importlib.util.spec_from_file_location("deploy_guard", RUTA)
 G = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(G)
 A, B = "a" * 40, "b" * 40
@@ -46,7 +47,7 @@ class Juez(unittest.TestCase):
 
     def test_wrangler_la_corre_antes_de_cada_deploy(self):
         conf = (RUTA.parent.parent / "wrangler.jsonc").read_text(encoding="utf-8")
-        self.assertIn('"build": { "command": "python3 bin/guarda_deploy.py" }', conf)
+        self.assertIn('"build": { "command": "python3 bin/deploy_guard.py" }', conf)
 
 
 if __name__ == "__main__":

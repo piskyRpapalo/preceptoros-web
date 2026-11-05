@@ -1,15 +1,18 @@
 #!/usr/bin/env python3
-"""Guarda del deploy · corre ANTES de cada `wrangler deploy` (build.command de wrangler.jsonc).
+"""The deploy guard · runs BEFORE every `wrangler deploy` (build.command of wrangler.jsonc).
 
-Por qué existe (incidente medido, 2026-11-02 ~22:40Z, buzon#30 ·6590360027): un `wrangler deploy` lanzado
-desde un clon cuyo nombre decía «main» pero estaba en `mistral/interior-army-20261020`, 1.108 commits detrás
-de main. El `git pull` falló y el deploy siguió: producción volvió a la letra `abjg` (20-oct) y `/openworld/`
-dio 404. Wrangler no pregunta de qué rama sale lo que sube; esta guarda sí.
+Preceptor contract: study/05-contracts.md (policy vs engine: the engine is fail-closed; you change a policy,
+not eight brains). PS: propose-only + seal; the guard is the deploy's fail-closed gate.
 
-Ley: en local solo se despliega `main`, idéntico a `origin/main` recién traído, sin cambios en lo que se sirve
-(`public/`, `worker/`, `wrangler.jsonc`). En GitHub Actions manda la regla del workflow (`refs/heads/main`).
-Salida declarada para un rollback a propósito: PRECEPTOROS_DEPLOY_EXCEPCION="<motivo>" (se imprime, no se calla).
-Sin dependencias; fail-closed: ante la duda, no se despliega.
+Why it exists (measured incident, 2026-11-02 ~22:40Z, buzon#30 ·6590360027): a `wrangler deploy` was launched
+from a clone whose name said «main» but lived in `mistral/interior-army-20261020`, 1.108 commits behind
+main. The `git pull` failed and the deploy went ahead: production fell back to the `abjg` letter (Oct 20)
+and `/openworld/` answered 404. Wrangler never asks which branch what it uploads comes from; this guard does.
+
+Law: locally, deploy only `main`, identical to a freshly fetched `origin/main`, with no changes in what is
+served (`public/`, `worker/`, `wrangler.jsonc`). In GitHub Actions the workflow's rule decides
+(`refs/heads/main`). Declared exit for a deliberate rollback: PRECEPTOROS_DEPLOY_EXCEPTION="<reason>"
+(it is printed, never whispered). No dependencies; fail-closed: in doubt, no deploy.
 """
 import os
 import subprocess
@@ -54,7 +57,7 @@ def main():
         origen = git("rev-parse", "origin/main")
         sucios = [l[3:] for l in git("status", "--porcelain", "--", *SERVIDO).splitlines() if l.strip()]
     ok, motivo = juzga(entorno, rama, head, origen, sucios)
-    print(("guarda_deploy · VERDE · " if ok else "guarda_deploy · ROJO · deploy cancelado · ") + motivo,
+    print(("deploy_guard · VERDE · " if ok else "deploy_guard · ROJO · deploy cancelado · ") + motivo,
           file=sys.stderr)
     return 0 if ok else 1
 

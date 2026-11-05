@@ -1,17 +1,20 @@
-"""Cerco de fusion (R-CERCO-MERGE): una PR solo es verde si el Soberano firmo su cabeza exacta.
+"""The merge fence (R-CERCO-MERGE): a PR is green only if the Sovereign signed its exact head.
 
-La firma vive en buzon#30. El Mesa copia la linea del Soberano en un comentario que
-empieza por «FIRMA SOBERANO» y que contiene una linea exacta:
+Preceptor contract: study/05-contracts.md (closed forms; reference is not signature — a pointer
+at a sign-off is never the sign-off). PS: propose-only + seal; this fence is the seal's gate.
 
-    HITL: <SHA de 40 hex en minusculas> <pieza-slug> <AAAA-MM-DD>
+The sign-off lives in buzon#30. The Mesa copies the Sovereign's line into a comment that starts
+with «FIRMA SOBERANO» and carries one exact line:
 
-Verde solo si esa linea lleva el SHA de la cabeza de la PR EXACTO, una fecha que no
-es anterior a la fecha del commit de la cabeza ni posterior a hoy, y un slug valido.
-Todo lo demas es rojo con su causa medida. Sin BUZON_TOKEN es rojo: NO_DATA, no se asume.
+    HITL: <40 lowercase hex SHA> <pieza-slug> <YYYY-MM-DD>
 
-Honesto sobre el limite: el cerco comprueba el registro, no a la persona. Quien escribe
-la linea en buzon#30 es el Mesa, copiando lo que el Soberano dijo en el chat. La
-garantia humana es esa frase del Soberano; el cerco impide fusionar sin ella.
+Green only if that line carries the PR head's EXACT SHA, a date no earlier than the head
+commit's date and no later than today, and a valid slug. Everything else is red with its
+measured cause. Without BUZON_TOKEN it is red: NO_DATA, never assumed.
+
+Honest about the limit: the fence checks the register, not the person. Whoever writes the
+line in buzon#30 is the Mesa, copying what the Sovereign said in chat. The human guarantee
+is that Sovereign phrase; the fence only makes merging without it impossible.
 """
 import json
 import os

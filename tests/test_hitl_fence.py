@@ -1,10 +1,11 @@
-"""Sabotajes del cerco de fusion: cada caso malo debe quedar ROJO con su causa."""
+"""Sabotages of the merge fence (atlas/hitl_fence.py): every bad case stays RED with its cause.
+Preceptor contract: study/05-contracts.md · PS: propose-only + seal."""
 import sys
 import unittest
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "atlas"))
-from hitl_cerco import decide  # noqa: E402
+from hitl_fence import decide  # noqa: E402
 
 CABEZA = "5ef999e19f3b0485adb18f1f050999e8c9a28dfc"
 OTRA = "91a5c953de2b0666006e65e1c2294dd5d281f795"
