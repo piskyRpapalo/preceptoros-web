@@ -1,3 +1,5 @@
+> **RETIRADA · decreto 2026-11-05 (PR #654)**: la capa latido_vivo.js sale del mundo — solo estado nativo del hex. Este plano queda como registro.
+
 # Pieza 2 · el mapa vivo (plano, antes de código)
 
 Orden del Soberano · Mesa TF · 2026-11-03. Decreto citado: ·6591940119 (lo vivo se muestra). Apilada sobre la
