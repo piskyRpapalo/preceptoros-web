@@ -135,6 +135,18 @@ async function main() {
       const stillChat=chat.getBoundingClientRect().height>0; b.click(); return {cat,visible,over,stillChat};});
     return results; })())`));
   ok(categories.length === 7 && categories.every((row) => row.visible && row.over && row.stillChat), 'a category panel or persistent chat is broken: ' + JSON.stringify(categories));
+  const historicPlaces = await evaluate(`(() => {
+    document.querySelector('.cats [data-cat="House"]').click();
+    const details = document.getElementById('historic-places');
+    if (!details) return null;
+    details.querySelector('summary').click();
+    return {open:details.open, text:details.textContent, count:details.querySelectorAll('li').length,
+      canvases:document.querySelectorAll('canvas').length};
+  })()`);
+  ok(historicPlaces && historicPlaces.open && historicPlaces.count === 3 && historicPlaces.canvases === 1 &&
+    ['Pocket lighthouse','Sovereign hall','The oven'].every(name => historicPlaces.text.includes(name)) &&
+    historicPlaces.text.includes('NO_DATA') && !historicPlaces.text.includes('LIVE'),
+    'historic places must be accessible proposals on the single map: ' + JSON.stringify(historicPlaces));
   const start = JSON.parse(await evaluate(`JSON.stringify((() => { const b=document.querySelector('.cats [data-cat=Start]'); b.click(); const p=document.getElementById('play-now');
     const answer={play:!!p && p.getBoundingClientRect().height>=44,form:document.getElementById('entry').getBoundingClientRect().height>0}; b.click(); return answer; })())`));
   ok(start.play && start.form, 'Start panel does not expose the next step above the persistent composer');
