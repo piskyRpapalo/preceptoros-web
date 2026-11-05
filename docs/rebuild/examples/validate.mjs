@@ -95,7 +95,7 @@ assert.match(armyCode, /A\.crea\(A\.verificaWeb, A\.almacenWeb/, 'the Army is no
 assert.match(armyCode, /AtlasArmyWavePanel\.abre\(t\)/, 'a wave does not open the canon wave panel');
 assert.match(armyCode, /NO_DATA \(no waves adopted yet\)/, 'the empty Army is not honest');
 assert.match(armyCode, /A\.TOPE/, 'the Army cap is not the canon cap');
-const Val = require('../../../public/game/valores.js'), ArmyM = require('./face_army.js'), G = require('../../../public/game/gacha.js');
+const Val = require('../../../public/game/values.js'), ArmyM = require('./face_army.js'), G = require('../../../public/game/gacha.js');
 assert.equal(Val.army_tope, 30, 'army cap is not 30');
 const eggCode0 = readFileSync(join(dir, 'face_eggs.js'), 'utf8');
 const eggCode = sabotage === 'adopt' ? eggCode0.replace('return H.army.adopt(t)', 'return Promise.resolve(t)') : eggCode0;
@@ -134,7 +134,7 @@ assert.match(ws, /H\.army\.retire\(rec, f\)/, 'dissolving does not retire the wa
 console.log('workshop: canon AtlasTaller receipts (improve, tint, dissolve) signed and chain-verified; dissolve retires the wave; PASS');
 assert.match(tpl, /role="tablist"/, 'the panel categories are not a tablist');
 const Battle = require('./face_battle.js'), Arena = require('../../../public/game/arena.js');
-const Ticks = require('../../../public/game/combate_ticks.js');
+const Ticks = require('../../../public/game/combat_ticks.js');
 const pats = Battle.patrols();
 if (sabotage === 'patrol') pats[0].tropas = pats[0].tropas.slice(1);
 assert.equal(JSON.stringify(pats.map((x) => x.tropas)), JSON.stringify(Arena.lugares().map((l) => l.defensa.tropas)), 'the opponents are not the canon patrols');
@@ -150,7 +150,7 @@ for (const p of pats) for (const sq of squads) for (const w of [null, 0]) {
     assert.ok(Bubble.compile(fr).length > 0 && Bubble.compile.notes.length === 0, 'battle frame did not compile cleanly');
   }
   const s = x.summary(), ref = Ticks.recibo(p.tropas, sq, Battle.seedFor(p, sq), s.orders);
-  assert.ok(ref.ok && s.receipt === ref.texto, 'the stepped battle drifted from combate_ticks.recibo');
+  assert.ok(ref.ok && s.receipt === ref.texto, 'the stepped battle drifted from combat_ticks.recibo');
   assert.ok(s.receipt.length <= 200, `receipt is ${s.receipt.length} B`);
   let rec = JSON.parse(s.receipt);
   if (sabotage === 'battle') rec = Object.assign({}, rec, { v: Object.assign({}, rec.v, { g: rec.v.g === 'defensa' ? 'asalto' : 'defensa' }) });
@@ -159,7 +159,7 @@ for (const p of pats) for (const sq of squads) for (const w of [null, 0]) {
 }
 assert.equal(Val.combate.tropas_max, 10, 'the squad cap is not the canon 10');
 assert.match(readFileSync(join(dir, 'face_battle.js'), 'utf8'), /\.slice\(0, V\.combate\.tropas_max\)/, 'the squad is not capped by the canon');
-console.log(`battle: opponents are the 6 canon patrols; ${battles} battles stepped tick by tick equal combate_ticks (improved waves included); receipts <= 200 B verify by replay; worst frame ${battleWorst} B; PASS`);
+console.log(`battle: opponents are the 6 canon patrols; ${battles} battles stepped tick by tick equal combat_ticks (improved waves included); receipts <= 200 B verify by replay; worst frame ${battleWorst} B; PASS`);
 let cssV = readFileSync(join(dir, 'face_views.css'), 'utf8');
 if (sabotage === 'order') cssV = cssV.replace('body[data-battle=on] #sheet-battle .prep,', '');
 assert.match(cssV, /body\[data-battle=on\] #sheet-battle \.prep,body:not\(\[data-battle=on\]\) #sheet-battle \.fight\{display:none\}/, 'the battle is not a reordering of one panel (preparation and fight must replace each other)');

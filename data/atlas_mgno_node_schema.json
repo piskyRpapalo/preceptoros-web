@@ -1,0 +1,46 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "preceptoros:atlas.mgno_nodo/1",
+ "title": "Nodo del narragrafo",
+ "description": "Un nodo es DATO: texto corto sin etiquetas, enlaces, codigo, plantillas, rutas ni IPs; etiquetas; afinidad de 8 enteros. Se nombra por su huella. Vive fuera de `public/`: es el contrato, no se sirve. Lo valida en JS `public/game/narragrafo.js` con la misma forma.",
+ "type": "object",
+ "additionalProperties": false,
+ "required": [
+  "esquema",
+  "texto",
+  "etiquetas",
+  "afinidad"
+ ],
+ "properties": {
+  "esquema": {
+   "const": "atlas.mgno_nodo/1"
+  },
+  "texto": {
+   "type": "string",
+   "minLength": 1,
+   "maxLength": 280,
+   "not": {
+    "pattern": "[<>`]|https?:|javascript:|data:|\\{\\{|\\}\\}|=>|\\bfunction\\b|(^|[^0-9])/[a-z]|@|\\b[0-9]{1,3}(\\.[0-9]{1,3}){3}\\b"
+   }
+  },
+  "etiquetas": {
+   "type": "array",
+   "maxItems": 6,
+   "uniqueItems": true,
+   "items": {
+    "type": "string",
+    "pattern": "^[a-z_]{1,24}$"
+   }
+  },
+  "afinidad": {
+   "type": "array",
+   "minItems": 8,
+   "maxItems": 8,
+   "items": {
+    "type": "integer",
+    "minimum": 0,
+    "maximum": 255
+   }
+  }
+ }
+}

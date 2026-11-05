@@ -15,6 +15,6 @@ Firmado por el Soberano, 2026-10-09.
   presupuesto por hardware + hash (ideas6oct:1908); (2) NO tocar los tests de
   doctrina honesta (textos en las nueve lenguas, carga-a-demanda/indexedDB,
   desafinación = daño) — no son techos, son sensores; (3) bench Doogee 8 GB;
-  (4) M17: 6 commits en claude/web-solo-juego + M3 en escena.js sin commitar +
+  (4) M17: 6 commits en claude/web-solo-juego + M3 en scene.js sin commitar +
   cosecha PARA_LA_MESA.md pendiente.
 - Sello: DECLARADO por el Soberano; el resto, MEDIDO solo con máquina, fecha y sha.

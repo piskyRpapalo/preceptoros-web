@@ -6,13 +6,13 @@
 ## Cómo se midió (no se declaró)
 
 - **Servido local** de `public/` (y de `public/` de cada rama en PR, extraída con `git archive`) con un servidor HTTP efímero en el bucle local; **Chrome headless por CDP** con `atlas/chrome_launch.mjs`, a 390×844 (móvil), mismo patrón que `atlas/openworld_browser.mjs`.
-- Generador: `atlas/inventario_carbono.mjs` (medida → JSON) y `atlas/inventario_carbono_md.mjs` (JSON → estas tablas, marcos y bytes). No se sirven y **no entran en `gate.yml`**: dependen del tiempo de carga del navegador (1,8 s por página), no son una comprobación determinista.
+- Generador: `atlas/inventory_carbon.mjs` (medida → JSON) y `atlas/inventory_carbon_md.mjs` (JSON → estas tablas, marcos y bytes). No se sirven y **no entran en `gate.yml`**: dependen del tiempo de carga del navegador (1,8 s por página), no son una comprobación determinista.
 - Selector de piezas: `button, a[href], input, select, textarea, details, summary, dialog, [aria-live], [role], [hidden], canvas, iframe`.
 - **Clic**: solo `button`/`summary` visibles y habilitados cuyo texto o id **no** casa con firma/invocación/envío/descarga/borrado/instalación/reset. Se mide si cambia el DOM (longitud de `body.innerHTML` + nº de `[open]`/`[aria-expanded=true]`/`[aria-selected=true]`) y si salta una excepción o un error de consola. Los enlaces internos se piden por HTTP (código medido); los externos no se siguen.
 - **Bytes del marco**: `Buffer.byteLength(JSON.stringify(marco), 'utf8')`, calculado por el script. Techo pedido: < 1.024 B. **Marco mayor medido: 205 B** (piezas) y 233 B (piezas dormidas).
 - **Fuente** (`fichero:línea`): primera línea de un `.html`/`.js` de `public/` que contiene el id, la clase o el texto, empezando por la propia página. Si nada casa: `NO_DATA (generado en tiempo de ejecucion)`. Es heurística: una coincidencia por texto puede apuntar a la plantilla JS que pinta la pieza, no a la página.
 
-### Reglas de sello (escritas en `inventario_carbono_md.mjs`)
+### Reglas de sello (escritas en `inventory_carbon_md.mjs`)
 
 | sello | cuándo |
 |---|---|
@@ -37,7 +37,7 @@ Las filas «en PR» llevan siempre `NO_DATA (causa: en PR, no desplegado)` y, al
 
 ## Hallazgos medidos (se anotan, no se tocan: están bajo `public/`)
 
-1. **`/creation.html` lanza 4 excepciones al cargar**: `Cannot read properties of undefined (reading 'TABLA' | 'NEUTRAL' | 'FRONT_DOOR')`. Causa leída en la fuente: `public/creation.html:49-51` carga `comic_tokens.js` **antes** que `tabla_semantica.js`, y `comic_tokens.js:3-4` lee `raiz.AtlasSemantica.TABLA` al evaluarse. La cadena arrastra a `comic_accents.js`, `acho_paint.js` y `creation_flow.js`. «Load local voice files» y «Create my key» se pulsan sin cambio de DOM medido.
+1. **`/creation.html` lanza 4 excepciones al cargar**: `Cannot read properties of undefined (reading 'TABLA' | 'NEUTRAL' | 'FRONT_DOOR')`. Causa leída en la fuente: `public/creation.html:49-51` carga `comic_tokens.js` **antes** que `semantic_table.js`, y `comic_tokens.js:3-4` lee `raiz.AtlasSemantica.TABLA` al evaluarse. La cadena arrastra a `comic_accents.js`, `acho_paint.js` y `creation_flow.js`. «Load local voice files» y «Create my key» se pulsan sin cambio de DOM medido.
 2. **`/openworld/` · «Check live nodes»** (`#world-refresh`) pide `/api/world-state` y recibe **404** en el sitio estático: la pieza existe y su fuente no.
 3. **`/openworld/` · «Radio»** (pestaña de `#radio-chat`) no cambia el DOM al pulsarla; Echoes y Conversation sí.
 4. **#545 · pestaña «Army»** (`#tab-army`) no cambia el DOM medido al pulsarla en la rama; «Summons» no se pulsó (su nombre casa con la regla de no invocar).
@@ -61,7 +61,7 @@ L-074: campamentos, colonización NPC, captura, caravanas entran como estructura
 ## Lo que falta, agrupado por contrato
 
 Nombres **propuestos**, sin firma. Entre paréntesis, cuántas piezas medidas lo necesitan; después, dónde.
-Lista generada por las reglas de `REGLAS` en `atlas/inventario_carbono_md.mjs`:
+Lista generada por las reglas de `REGLAS` en `atlas/inventory_carbon_md.mjs`:
 
 - **caravana.firma/1** (9): /face/basic.html #joy · /face/basic.html #walker · /openworld/ div · /openworld/ p · /openworld/ button · /openworld/ select · /openworld/ #walkers-state
 - **radio.canal-repo/1** (8): /openworld/ #radio-chat-alterna · /openworld/ div · /openworld/ button · /openworld/ #radio-chat-no-data · /openworld/ #radio-chat-ecos · /openworld/ #radio-chat-lista
@@ -110,10 +110,10 @@ Contradicción que se conserva: el recuento premia a `caravana.firma/1` porque l
 ## Cómo repetirlo
 
 ```
-node atlas/inventario_carbono.mjs public main > main.json
+node atlas/inventory_carbon.mjs public main > main.json
 git archive -o pr.tar origin/<rama> public && mkdir pr && tar -xf pr.tar -C pr
-node atlas/inventario_carbono.mjs pr/public pr > pr.json
-node atlas/inventario_carbono_md.mjs main.json pr.json > tabla.md
+node atlas/inventory_carbon.mjs pr/public pr > pr.json
+node atlas/inventory_carbon_md.mjs main.json pr.json > tabla.md
 ```
 
 ## Tablas por página
