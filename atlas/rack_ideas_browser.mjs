@@ -74,14 +74,14 @@ async function main() {
   await cmd('Emulation.setDeviceMetricsOverride', { width: W, height: H, deviceScaleFactor: 1, mobile: true });
   await cmd('Page.navigate', { url: origen + '/openworld/' }); await espera(2500);
 
-  // 1 · load: no request leaves the origin; the map is first and the chat second, both on the first screen.
+  // 1 · load: no request leaves the origin; communication opens only when requested.
   medidas.externas_en_carga = pedidas.length;
   ok(pedidas.length === 0, 'external requests on load: ' + pedidas.slice(0, 3));
   const orden = JSON.parse(await ev(`JSON.stringify((() => { const m = document.getElementById('map').getBoundingClientRect(), c = document.getElementById('chat').getBoundingClientRect();
     const vis = [...document.querySelectorAll('main > section')].filter((s) => { const r = s.getBoundingClientRect(); return r.height > 0 && getComputedStyle(s).display !== 'none'; }).map((s) => s.id);
     return { mapa: Math.round(m.top), chat: Math.round(c.top), alto: innerHeight, vis: vis.slice(0, 2), titulo: document.getElementById('chat-h').textContent }; })())`));
   medidas.orden = orden;
-  ok(orden.vis[0] === 'map' && orden.vis[1] === 'chat' && orden.mapa < orden.chat && orden.chat < orden.alto, 'the map is not first and the chat second on the first screen: ' + JSON.stringify(orden));
+  ok(orden.vis[0] === 'map' && orden.vis.length === 1 && orden.mapa === 0, 'the showcase is not the only visible surface before interaction: ' + JSON.stringify(orden));
   ok(orden.titulo === 'Guide', 'the initial panel does not identify its guide speaker: ' + orden.titulo);
 
   // 2 · enter the tutorial cabin: the title names it; the Rack ideas button is a 44 px target.
