@@ -13,7 +13,7 @@ Discipline alone did not hold, so the rule moves into the merge itself.
 ## How it works
 
 1. A pull request opens or changes. The workflow `hitl` (`.github/workflows/hitl.yml`) runs
-   `atlas/hitl_cerco.py`.
+   `atlas/hitl_fence.py`.
 2. The script reads the head SHA of the PR and the commit date of that head.
 3. It reads the comments of the register issue (buzon#30) through `BUZON_TOKEN`.
 4. **Green** only if a comment containing `FIRMA SOBERANO` has a line, exactly:
@@ -68,7 +68,7 @@ are about *when* the check reads, not about the rule itself.
 
 ## Tests
 
-`tests/test_hitl_cerco.py` (15 cases) runs in the CI gate. Sabotage cases must stay red:
+`tests/test_hitl_fence.py` (15 cases) runs in the CI gate. Sabotage cases must stay red:
 fake SHA, wrong date (before and after the window), absent line, prefix collision (7, 39 and
 41 characters), uppercase SHA, bad slug, a signature header with no `HITL:` line, and an empty
 register. Mutating the SHA check or the date check turns the suite red.

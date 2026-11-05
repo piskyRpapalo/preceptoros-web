@@ -1,5 +1,6 @@
-// P2/P3 · el horno es determinista y lo servido es lo horneado; el loader pide sólo la vecindad de 7 por clave,
-// verifica cada sha y convierte lo que falta o está corrupto en NO_DATA con causa. Uso: node --test atlas/map_chunks_casos.mjs
+// P2/P3 · the oven is deterministic and what is served is what is baked; the loader asks for the 7-chunk neighbourhood by key only.
+// It verifies each sha and turns what is missing or corrupt into NO_DATA with a cause. Use: node --test atlas/map_chunks_casos.mjs
+// Preceptor contract: study/05-contracts.md · PS: propose-only + seal.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
@@ -16,7 +17,7 @@ const servido = (mutar = {}) => async (url) => {
 };
 
 test('el horno es determinista y lo servido coincide con lo horneado', () => {
-  assert.match(execFileSync('node', ['atlas/hornea_chunks.mjs', '--check'], { encoding: 'utf8' }), /^VERDE/);
+  assert.match(execFileSync('node', ['atlas/bake_chunks.mjs', '--check'], { encoding: 'utf8' }), /^VERDE/);
 });
 
 test('desde la cabaña se piden la carta y exactamente 7 chunks, y se cargan los 7', async () => {

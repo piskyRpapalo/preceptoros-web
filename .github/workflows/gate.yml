@@ -49,9 +49,9 @@ jobs:
             echo "Gate pass $pasada/2"
             python -m unittest tests.test_module_attribution
             python -m unittest tests.test_actions_alarma
-            python -m unittest tests.test_hitl_cerco
+            python -m unittest tests.test_hitl_fence
             python -m unittest tests.test_preflight
-            python -m unittest tests.test_guarda_deploy
+            python -m unittest tests.test_deploy_guard
             python -m unittest tests.test_trailers_hook
             python -m unittest test_sellar tests.test_estado_v2 atlas.test_tools_cerebros
             node --test tools/preceptor-coder/preceptor_coder_casos.mjs
