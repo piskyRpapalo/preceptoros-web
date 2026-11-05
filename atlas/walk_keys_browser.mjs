@@ -1,5 +1,5 @@
 // W-4 in a real browser: the keyboard walks the map. Arrow keys choose a visible neighbour, Enter walks there. The
-// native six-direction joystick lives in the terminal; it does not replace the keyboard node law. The page lists two LIVE nodes (the cabin
+// native six-direction joystick lives over the map; it does not replace the keyboard node law. The page lists two LIVE nodes (the cabin
 // and its east neighbour). A click on the cabin enters it; a click on the neighbour walks there over the visible route
 // and arrival enters it; a click on an empty hex says NO_DATA and walks nowhere. Uso: node atlas/walk_avatar_browser.mjs
 // (Chrome headless por CDP). Prints one JSON line; exit 1 on failure.
@@ -80,13 +80,13 @@ async function main() {
   await ev(`(() => { const f = document.getElementById('free-walk'); if (f) { f.checked = false; f.dispatchEvent(new Event('change')); } return true; })()`);
 
   // 1 · the six touch directions stay native and named; no separate enter-node button is added.
-  const botones = await ev(`[...document.querySelectorAll('#joy button')].map(b => b.textContent.trim())`);
+  const botones = await ev(`[...document.querySelectorAll('#stage .walk-pad button')].map(b => b.textContent.trim())`);
   medidas.botones = botones;
-  const joystick = await ev(`(() => { const p = document.querySelector('#joy .walk-pad'); return JSON.stringify({ label: p && p.getAttribute('aria-label'), directions: [...document.querySelectorAll('#joy .walk-pad button')].map(b => b.dataset.direction), heights: [...document.querySelectorAll('#joy .walk-pad button')].map(b => b.getBoundingClientRect().height), enter: [...document.querySelectorAll('#joy button')].some(b => /enter node/i.test(b.textContent)) }); })()`);
+  const joystick = await ev(`(() => { const p = document.querySelector('#stage .walk-pad'); return JSON.stringify({ label: p && p.getAttribute('aria-label'), directions: [...document.querySelectorAll('#stage .walk-pad button')].map(b => b.dataset.direction), heights: [...document.querySelectorAll('#stage .walk-pad button')].map(b => b.getBoundingClientRect().height), enter: [...document.querySelectorAll('#stage .walk-pad button')].some(b => /enter node/i.test(b.textContent)) }); })()`);
   medidas.joystick = JSON.parse(joystick);
   ok(medidas.joystick.label === 'Map joystick' && medidas.joystick.directions.join('|') === 'north-west|north-east|west|east|south-west|south-east' && medidas.joystick.heights.every((h) => h >= 44), 'the native map joystick is absent or below the touch target: ' + JSON.stringify(medidas.joystick));
   ok(!medidas.joystick.enter, 'a separate enter-node button was added');
-  ok(botones.includes('Skip tutorial'), 'the skip tutorial button stays');
+  ok(await ev("!!document.querySelector('#joy button') && document.querySelector('#joy button').textContent.includes('Skip tutorial')"), 'the skip tutorial button stays');
 
   // 2 · Enter with no choice says how to choose.
   await tecla('Enter');

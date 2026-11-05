@@ -1,6 +1,5 @@
-// W-3 in a real browser: the avatar walks the map. The page is served with a state that lists two LIVE nodes (the cabin
-// and its east neighbour). A click on the cabin enters it; a click on the neighbour walks there over the visible route
-// and arrival enters it; a click on an empty hex says NO_DATA and walks nowhere. Uso: node atlas/walk_avatar_browser.mjs
+// W-3 in a real browser: the avatar walks the map. The page is served with two LIVE nodes; the Map panel's visible
+// actions enter them without invisible canvas targets. Empty-hex taps still obey the free-walk law. Uso: node atlas/walk_avatar_browser.mjs
 // (Chrome headless por CDP). Prints one JSON line; exit 1 on failure.
 import { createServer } from 'node:http';
 import { readFileSync } from 'node:fs';
@@ -66,7 +65,12 @@ async function main() {
   const ev = async (e) => (await cmd('Runtime.evaluate', { expression: e, awaitPromise: true, returnByValue: true })).result?.result?.value ?? null;
   const hasta = async (e, ms) => { for (let t = 0; t < ms; t += 250) { if (await ev(e)) { return true; } await espera(250); } return false; };
   const estado = () => ev(`(document.querySelector('#joy .state') || {}).textContent || ''`);
-  // A pointer click at a point of the canvas, in canvas pixels, the way a visitor makes it.
+  // Map-panel node actions are visible 44 px buttons; selecting one walks the same route as keyboard input.
+  const clicNodo = async (id) => {
+    await ev("(() => { const b=document.querySelector('.cats [data-cat=Map]'); if(b.getAttribute('aria-pressed')!=='true') b.click(); })()"); await espera(100);
+    return ev(`(() => { const b=document.querySelector('#map-node-list [data-node=${JSON.stringify(id)}]'); if(!b || b.getBoundingClientRect().height<44) return false; b.click(); return true; })()`);
+  };
+  // A pointer click at a point of the canvas, in canvas pixels, remains a free-walk gesture.
   const clicEn = (px, py) => ev(`(() => { const s = document.getElementById('surface'), r = s.getBoundingClientRect(); s.dispatchEvent(new MouseEvent('click', { bubbles: true, clientX: r.left + ${px} * r.width / s.width, clientY: r.top + ${py} * r.height / s.height })); return true; })()`);
   const anclaDe = (nodo) => ev(`(() => { const s = document.getElementById('surface'); const est = AtlasOpenworldState.leer(${JSON.stringify(ESTADO)}); const a = AtlasColoniaPagina.anchorOf(s, est.colonia, 0, est.looks || {}, est.seals || {}, ${JSON.stringify(nodo)}); return a; })()`);
   await cmd('Runtime.enable'); await cmd('Page.enable');
@@ -79,7 +83,7 @@ async function main() {
   // 1 · a click on the cabin enters it (the walker starts there): the key of the tutorial is played.
   const cabina = await anclaDe('cabin');
   ok(cabina && typeof cabina.x === 'number', 'cabin hex has an anchor');
-  await clicEn(cabina.x, cabina.y);
+  ok(await clicNodo('cabin'), 'visible Map panel offers a touch-sized cabin action');
   await espera(300);
   const primero = await estado();
   ok(/tutorial: key played/.test(primero), 'click on the cabin enters it: ' + primero.slice(0, 140));
@@ -89,7 +93,7 @@ async function main() {
   const vecino = await anclaDe('ring-e');
   ok(vecino && typeof vecino.x === 'number', 'ring-e hex has an anchor');
   await ev(`window.__dibujos = 0; document.getElementById('surface').addEventListener('visitor:draw', () => { window.__dibujos++; })`);
-  await clicEn(vecino.x, vecino.y);
+  ok(await clicNodo('ring-e'), 'visible Map panel offers a touch-sized ring-e action');
   await espera(60);
   const caminando = await estado();
   medidas.caminando = caminando.slice(0, 120);
