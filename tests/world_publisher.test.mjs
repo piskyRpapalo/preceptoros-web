@@ -25,3 +25,17 @@ test('browser requests only on explicit read and rejects invalid publisher respo
   await assert.rejects(feed.read(async()=>Response.json({})),/invalid/);
   await assert.rejects(feed.read(async()=>new Response('',{status:503})),/unavailable/);
 });
+
+// Cloudflare Workers rejects Request redirect:error at construction; manual prevents following redirects.
+test('service request uses Cloudflare-supported manual redirects and never follows 3xx', async () => {
+  let calls = 0;
+  const binding = {ADUANA: {fetch: async request => {
+    calls++;
+    assert.equal(request.redirect, 'manual');
+    return new Response(null, {status: 302, headers: {location: 'https://other.example/'}});
+  }}};
+  const response = await worldState(req(), binding);
+  assert.equal(calls, 1);
+  assert.equal(response.status, 503);
+  assert.equal((await response.json()).cobertura.causa, 'world_publisher_failed');
+});
