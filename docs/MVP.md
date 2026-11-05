@@ -70,7 +70,7 @@ No half-migrated generation is accepted.
 | Ceiling or measurement | Seal / source | Judge |
 |---|---|---|
 | Served piece ≤16,384 B; old maximum 16,365 B | `STALE` · WEB tree `eac293d` | Old `atlas/mvp_casos.mjs C4`; rerun on accepted tree. |
-| State channel <1,024 B; old S_t 466 B | `STALE` · WEB tree `eac293d` | Old C5 and `atlas/vector_casos.mjs`; new creation package uses its separate frame contract. |
+| State channel <1,024 B; old S_t 466 B | `STALE` · WEB tree `eac293d` | Old C5 and `atlas/vector_cases.mjs`; new creation package uses its separate frame contract. |
 | Initial compressed load <153,600 B; old 71,277 B | `STALE` · WEB tree `eac293d` | Old C6; rerun on the complete accepted artifact. |
 | Zero external requests | `STALE` · old load-only test | Old C7 plus `test_web.py`; new generation requires full cold-install capture, not just page-load inspection. |
 | Nine portal languages | `STALE` · old portals only | Old C8; new face language/voice inventory `NO_DATA`. |

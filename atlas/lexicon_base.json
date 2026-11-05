@@ -15,7 +15,7 @@
     "pinta",
     "registro"
   ],
-  "public/assets/atlas-mapa.js": [
+  "public/assets/atlas-map.js": [
     "adopcion",
     "atlas-nodo",
     "atlasincubadora",
@@ -32,34 +32,34 @@
     "firma",
     "huella-corta"
   ],
-  "public/assets/enviar-ar.js": [
+  "public/assets/send-ar.js": [
     "envsinfirmatexto"
   ],
-  "public/assets/enviar-de.js": [
+  "public/assets/send-de.js": [
     "envsinfirmatexto"
   ],
-  "public/assets/enviar-el.js": [
+  "public/assets/send-el.js": [
     "envsinfirmatexto"
   ],
-  "public/assets/enviar-en.js": [
+  "public/assets/send-en.js": [
     "envsinfirmatexto"
   ],
-  "public/assets/enviar-es.js": [
+  "public/assets/send-es.js": [
     "envsinfirmatexto"
   ],
-  "public/assets/enviar-fr.js": [
+  "public/assets/send-fr.js": [
     "envsinfirmatexto"
   ],
-  "public/assets/enviar-it.js": [
+  "public/assets/send-it.js": [
     "envsinfirmatexto"
   ],
-  "public/assets/enviar-pt.js": [
+  "public/assets/send-pt.js": [
     "envsinfirmatexto"
   ],
-  "public/assets/enviar-ru.js": [
+  "public/assets/send-ru.js": [
     "envsinfirmatexto"
   ],
-  "public/assets/enviar.js": [
+  "public/assets/send.js": [
     "envsinfirmatexto",
     "firma"
   ],
@@ -105,7 +105,7 @@
     "pinta",
     "tropa"
   ],
-  "public/game/aula_chat.js": [
+  "public/game/classroom_chat.js": [
     "firma",
     "recibo",
     "recibo_sha"
@@ -121,7 +121,7 @@
   "public/game/canon.js": [
     "huella"
   ],
-  "public/game/combate_ticks.js": [
+  "public/game/combat_ticks.js": [
     "accion",
     "arena",
     "atlastaller",
@@ -151,7 +151,7 @@
     "dice",
     "niebla"
   ],
-  "public/game/cria.js": [
+  "public/game/brood.js": [
     "atlascria",
     "compruebatropa",
     "cria",
@@ -162,7 +162,7 @@
     "fuera",
     "tropa"
   ],
-  "public/game/cuenta.js": [
+  "public/game/account.js": [
     "atlascuenta",
     "cuenta",
     "cuenta-maestra",
@@ -186,16 +186,16 @@
     "taller",
     "tropa"
   ],
-  "public/game/escena.js": [
+  "public/game/scene.js": [
     "atlasescena",
     "escena"
   ],
-  "public/game/escuadron.js": [
+  "public/game/squadron.js": [
     "atlascasa",
     "casa",
     "pinta"
   ],
-  "public/game/estrella_captura.js": [
+  "public/game/star_capture.js": [
     "faro",
     "mesa_de_firma"
   ],
@@ -308,7 +308,7 @@
     "firma",
     "firma_ssh"
   ],
-  "public/game/nodos.js": [
+  "public/game/nodes.js": [
     "atlasnodos",
     "cedula-nodo",
     "cedulas_nodo",
@@ -395,7 +395,7 @@
     "iniciociclo",
     "monta"
   ],
-  "public/game/taller.js": [
+  "public/game/workshop.js": [
     "atlastaller",
     "bandera",
     "firma",
@@ -403,11 +403,11 @@
     "taller",
     "tropa"
   ],
-  "public/game/tutorial-fases.css": [
+  "public/game/tutorial-phases.css": [
     "accion",
     "tutorial-accion"
   ],
-  "public/game/ui-taller.js": [
+  "public/game/ui-workshop.js": [
     "adopcion",
     "atlas-taller",
     "atlasarrecife",
@@ -452,7 +452,7 @@
     "taller_vacia",
     "tropa"
   ],
-  "public/game/valores.js": [
+  "public/game/values.js": [
     "adopcion",
     "arrecife",
     "duelo",
@@ -460,7 +460,7 @@
     "huevo",
     "niebla_alfa",
     "taller",
-    "ui-taller"
+    "ui-workshop"
   ],
   "public/game/visitor_account.js": [
     "adopcion",
@@ -517,7 +517,7 @@
     "nodos",
     "portada",
     "taller",
-    "ui-taller"
+    "ui-workshop"
   ],
   "public/sw.js": [
     "idiomade",

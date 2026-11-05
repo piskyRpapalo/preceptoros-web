@@ -14,7 +14,7 @@ latido, **(C)** la Boya del Estado con Proof of Tick.
 | el sello hoy | viaja en los fotogramas Acho (`seal`) y en las frases; **no se dibuja**: en el Doogee los nodos LIVE son hexes negros con tejado, sin marca |
 | primitiva ya servida | `comic_atoms.js` átomo `stamp`: tono por sello y **late solo si es LIVE**, quieto con movimiento reducido |
 | el suelo | `map_painter.js` pinta celdas horneadas `[q, r, altura, tipo]` en cuatro bandas con patrón; no sabe nada de nodos |
-| la Boya | ley firmada (FIRMO 2026-10-12, commit `2ef43155`): `reef_building_lifecycle.js`, estado = función pura de (manifiesto `preceptoros.edificio/1`, tic); retirada en el corte D con `/play/`. Sus casos siguen vaciados en `atlas/reef_building_casos.mjs` |
+| la Boya | ley firmada (FIRMO 2026-10-12, commit `2ef43155`): `reef_building_lifecycle.js`, estado = función pura de (manifiesto `preceptoros.edificio/1`, tic); retirada en el corte D con `/play/`. Sus casos siguen vaciados en `atlas/reef_building_cases.mjs` |
 | sonido J1 | cada fotograma Acho declara el suyo; `acho_sonify.js` lo toca solo tras un gesto (botón Listen) |
 
 ### Presupuestos que deciden dónde vive el código
@@ -24,22 +24,22 @@ latido, **(C)** la Boya del Estado con Proof of Tick.
 | `openworld/index.html` | 16 367 | 4 712 | 2 456 | **17 B** — no cabe ni una etiqueta `<script>` |
 | `openworld_page.js` | 20 695 | 7 125 | **43 B** | ya por encima |
 | `map_painter.js` | 19 738 | 6 942 | **226 B** | ya por encima |
-| `colonia_pagina.js` | 17 802 | 6 543 | 625 B | ya por encima |
+| `colony_page.js` | 17 802 | 6 543 | 625 B | ya por encima |
 | `world_feed.js` | 4 141 | 1 674 | 5 494 B | 12 243 B |
 
 Consecuencia: **no se toca `index.html`, `openworld_page.js` ni `map_painter.js`**. Todo lo nuevo vive en un fichero
-nuevo, `public/game/latido_vivo.js`, que se carga **a demanda** con el primer latido bueno (ley de la casa: «lo que no
+nuevo, `public/game/live_heartbeat.js`, que se carga **a demanda** con el primer latido bueno (ley de la casa: «lo que no
 hace falta al abrir se carga a demanda»). Sin nodos vivos, el mapa no paga ni un byte.
 
 ## 1 · Diseño
 
 ### Cableado (lo único que se toca fuera del fichero nuevo)
 - `world_feed.js` · `follow()`: en cada lectura buena o fallida emite un evento `latido` en `window`
-  (`{ok, causa}`) y, la primera vez que hay nodos, añade `<script src="/game/latido_vivo.js">`. Como `follow()` lo
+  (`{ok, causa}`) y, la primera vez que hay nodos, añade `<script src="/game/live_heartbeat.js">`. Como `follow()` lo
   usan las dos terminales, **la paridad sale gratis**: `/openworld/` y `face/basic.html` cargan la misma capa.
-- `colonia_pagina.js` · `draw()`: tras el suelo y antes de las capas, si existe `AtlasLatidoVivo`, le pide el suelo
+- `colony_page.js` · `draw()`: tras el suelo y antes de las capas, si existe `AtlasLatidoVivo`, le pide el suelo
   despierto y sus capas (sellos y boya) y las mete en el **mismo orden de profundidad** que edificios y bots. ~120 B gzip.
-- `sw-listas.js`: el fichero nuevo entra en la lista de a demanda; el recuento de rutas de `arnes_sw.mjs` se ajusta
+- `sw-listas.js`: el fichero nuevo entra en la lista de a demanda; el recuento de rutas de `sw_harness.mjs` se ajusta
   **antes** de la cadena de sello (lección W1).
 
 ### (A) El sello visible en el hex
@@ -58,7 +58,7 @@ hace falta al abrir se carga a demanda»). Sin nodos vivos, el mapa no paga ni u
 
 ### (C) La Boya del Estado · Proof of Tick
 - **Vuelve la ley firmada, no el código a ciegas**: `estado(manifiesto, t)` puro, de `2ef43155`, dentro de
-  `latido_vivo.js` (naciendo → vivo → gastado → NO_DATA con causa; nunca «0»).
+  `live_heartbeat.js` (naciendo → vivo → gastado → NO_DATA con causa; nunca «0»).
 - **La cuida el latido**: `nace_tic` = el tic del primer latido bueno; cada latido bueno fija `cuidado_tic` al tic
   de ese momento. El tic es el del ciclo de la página (`AtlasOpenworldView().t`): paso fijo, **sin reloj de pared**.
 - **Proof of Tick**: el fotograma de la boya lleva `{nace_tic, cuidado_tic, t}`. Con esos tres enteros cualquiera
@@ -75,16 +75,16 @@ hace falta al abrir se carga a demanda»). Sin nodos vivos, el mapa no paga ni u
 ### EL OJO · pesos por pieza (se rellenan al construir)
 | pieza | peso fuente | peso traducción (Acho) | peso servido |
 |---|---|---|---|
-| sello (A) | `latido_vivo.js` (código) | un fotograma < 1 024 B por nodo | B en disco / B gzip |
+| sello (A) | `live_heartbeat.js` (código) | un fotograma < 1 024 B por nodo | B en disco / B gzip |
 | suelo (B) | idem | un fotograma < 1 024 B por nodo | idem |
 | boya (C) | idem | un fotograma < 1 024 B | idem |
 
 ## 2 · Pruebas (cada una enseñada en rojo antes que en verde)
-- `atlas/latido_vivo_casos.mjs` (node, puro): fotogramas < 1 024 B; LIVE late y con movimiento reducido no;
+- `atlas/live_heartbeat_cases.mjs` (node, puro): fotogramas < 1 024 B; LIVE late y con movimiento reducido no;
   STALE nunca late; un nodo oculto no da sello ni suelo; 7 celdas por nodo LIVE; la boya se re-juega igual desde
   los mismos `(nace_tic, cuidado_tic, t)`; sin cuidado → gastado → NO_DATA con causa, nunca 0.
   Sabotajes: «lo desatendido nunca muere» y «STALE late» tienen que dar rojo.
-- `atlas/latido_carga_browser.mjs` crece: con el latido, la frase del sello y la de la boya aparecen sin clic; sin
+- `atlas/heartbeat_load_browser.mjs` crece: con el latido, la frase del sello y la de la boya aparecen sin clic; sin
   publicador, ni sellos ni suelo despierto, y la boya dice NO_DATA.
 - **fps en el Doogee**, antes y después, con dos nodos vivos (la vara de rendimiento de la casa). Si no hay medidor
   servido en `/openworld/`: `NO_DATA` con su causa, y se propone medirlo.
@@ -109,8 +109,8 @@ hace falta al abrir se carga a demanda»). Sin nodos vivos, el mapa no paga ni u
   borde de la celda del nodo: siete bordes completos pesaban 1 262 B. STALE: contorno fino y media llanta abierta.
   Un suelo fuera del lienzo no se dibuja; un fotograma que rompa la ley dice `NO_DATA · frame …` y no se pinta.
 - **Motor de ondas a demanda.** El latido del sello y la Boya son ondas (`wave`): Acho necesita `gacha.js` (sobre
-  `valores.js`). La terminal básica no lo traía; `world_feed.js` lo carga solo si falta y solo cuando hay algo vivo.
-  `valores`/`atlasvalores` entran en `atlas/lexicon_permitidas.json` con su causa (nombre propio de un fichero
+  `values.js`). La terminal básica no lo traía; `world_feed.js` lo carga solo si falta y solo cuando hay algo vivo.
+  `valores`/`atlasvalores` entran en `atlas/lexicon_allowed.json` con su causa (nombre propio de un fichero
   servido); la base del léxico **bajó** 27 entradas y no subió ninguna.
 - **El pitido automático de la Boya al cambiar de fase pasa a la pieza 4 (LA VOZ)**, que trae el interruptor de
   sonido activable y silenciable. Hoy la Boya y el sello LIVE suenan con «Listen», tras un gesto; el cambio de fase
@@ -122,8 +122,8 @@ hace falta al abrir se carga a demanda»). Sin nodos vivos, el mapa no paga ni u
 | qué | dato |
 |---|---|
 | fotogramas, peor caso en pantalla (id de 40) | sello 643 B · suelo 950 B · boya 843 B (< 1 024) |
-| `latido_vivo.js` (fuente = traducción servida: es código) | 10 800 B disco · 4 226 B gzip |
-| `colonia_pagina.js` / `world_feed.js` | 6 794 / 2 150 B gzip (tope 7 168) |
+| `live_heartbeat.js` (fuente = traducción servida: es código) | 10 800 B disco · 4 226 B gzip |
+| `colony_page.js` / `world_feed.js` | 6 794 / 2 150 B gzip (tope 7 168) |
 | Doogee, coste de un redibujado (720×696, 2×30) | 3,84 ms sin la capa → 6,0 ms con ella (+2,1 ms; un cuadro a 60 fps son 16,7) |
 | Doogee, primera carga | servía la pieza 1 desde la caché del SW con la misma VERSION: **la pieza 2 necesita letra nueva** |
 

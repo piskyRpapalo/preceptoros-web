@@ -23,7 +23,7 @@ The nine captured routes include the root page and eight language routes; root a
 
 ## Existing eye canvases, re-measured
 
-`ojo_palabras.mjs` measured 15 canvases; second pass after reload and a second fresh process produced the same full PNG digests; causes=0. PNG bytes and full SHA-256:
+`eye_words.mjs` measured 15 canvases; second pass after reload and a second fresh process produced the same full PNG digests; causes=0. PNG bytes and full SHA-256:
 
 | Canvas | PNG B | SHA-256 |
 |---|---:|---|
@@ -100,6 +100,6 @@ Public text assets and repository documentation were inventoried by path and byt
 
 ## Harness correction and limits
 
-Before correction, `node atlas/ojo/ojo_palabras_casos.mjs` failed: the positive case reported 11 canvases and a missing combat scene. The fixture omitted `combate_ticks.js`; the eye also treated a non-empty `causas` list as success. The fixture now loads that dependency, the eye fails closed on causes, and the positive case requires at least 15 PNGs. Current result: 15 canvases, reload identical, zero causes; the synthetic nondeterminism case remains expected-red.
+Before correction, `node atlas/ojo/eye_words_cases.mjs` failed: the positive case reported 11 canvases and a missing combat scene. The fixture omitted `combat_ticks.js`; the eye also treated a non-empty `causas` list as success. The fixture now loads that dependency, the eye fails closed on causes, and the positive case requires at least 15 PNGs. Current result: 15 canvases, reload identical, zero causes; the synthetic nondeterminism case remains expected-red.
 
 This census does not mark the lexicon canonical. Module-level HABLA/NO_HABLA, individual documentation screenshots, stable reloads for every language, and mobile captures are NO_DATA until a dedicated attribution/reader path exists. No public runtime files were changed.

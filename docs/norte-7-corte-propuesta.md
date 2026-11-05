@@ -15,8 +15,8 @@
 | `public/face/face_world_terrain.js` | 4.927 | Geometría de islas (`isles`). Fuente de datos del terreno. |
 | `public/game/map_nodes_layer.js` | 1.772 | Capa de nodos del mapa. Reutilizar. |
 | `public/game/map_acho_figures.js` | 1.424 | Figuras de burbuja del mapa. Reutilizar. |
-| `public/game/nodos.js` | 10.562 | Catálogo/nodos. Reutilizar; no reescribir. |
-| `public/game/node_*.js`, `nodos-*.js`, `ui-nodos.js` | 177–13.441 c/u | Ninguno pasa de 16 KiB por fichero. Reutilizar. |
+| `public/game/nodes.js` | 10.562 | Catálogo/nodos. Reutilizar; no reescribir. |
+| `public/game/node_*.js`, `nodos-*.js`, `ui-nodes.js` | 177–13.441 c/u | Ninguno pasa de 16 KiB por fichero. Reutilizar. |
 | `public/game/acho_*.js` | 1.5K–16.2K c/u | `acho_language.js` (16.240) **supera** el techo 16 KiB si se carga como ficha única: no se toca; se carga como dependencia. |
 | `public/get-the-app/index.html` | 5.491 | Get the app v1.3. Su gate ya pinta «en una o dos clics». |
 | `public/assets/pwa.js` | 1.596 | Guarda la oferta `beforeinstallprompt` (decisión a1). Base del botón PWA de Tools. |
@@ -55,7 +55,7 @@ Estas tres decisiones quedan ratificadas por el decreto del 2026-10-28 (§5), qu
   2. **the Risen** = nodo 1. Datos de `zombie.html`.
   3. **Cabaña del Tutorial** = terreno del tutorial. Ver §5, pregunta 2.
 - **Estilo:** burbujas de hoy (`acho_*`), 3 colores, nada más.
-- **Reutiliza, no reescribe:** `map_nodes_layer.js`, `map_acho_figures.js`, `nodos.js`, `node_*.js`, `acho_*.js`.
+- **Reutiliza, no reescribe:** `map_nodes_layer.js`, `map_acho_figures.js`, `nodes.js`, `node_*.js`, `acho_*.js`.
 - **Chatbot:** la «terminal de chat» ya está en PR #363 (NORTE 5 p3, REQUIERE_FIRMA). Esta pieza la consume; no la duplica. Su fuente de respuesta (local o remota) es decisión del Soberano (§5, pregunta 1).
 - **Techo:** cada terreno es un módulo de datos pequeño; la pieza no se monta como un HTML de terrenos inline.
 
@@ -89,7 +89,7 @@ Estas tres decisiones quedan ratificadas por el decreto del 2026-10-28 (§5), qu
 - **Efecto al construirla (PR 2, no ahora):**
   - Sitemap: 9 → 10 URL, con `/play/`, `/face/*` y `/creation.html` dejando de figurar como destinos.
   - SW: `/openworld/` entra en el shell; `/play/` sale como destino. Se recalcula el recuento de `HUB`.
-  - **Sello SW:** `VERSION` sube por `bin/sellar.py --sellar` según `sello-del-juego`, antes de medir. Cualquier cambio bajo `public/` lo exige.
+  - **Sello SW:** `VERSION` sube por `bin/seal.py --sellar` según `sello-del-juego`, antes de medir. Cualquier cambio bajo `public/` lo exige.
 
 ## 5. Preguntas del Soberano · cerradas por decreto (2026-10-28)
 
@@ -107,7 +107,7 @@ Cada PR es un bloque, con su propia FIRMO. Ninguno se fusiona ni se despliega si
 | # | PR | Alcance | Gate |
 |---|---|---|---|
 | 0 | **este** (docs, REQUIERE_FIRMA) | propuesta de corte | revisión de la Mesa |
-| 1 | INTRO (draft) | `public/index.html` + `pwa.js` reuso + Tools | `test_web.py`, `arnes_sw.mjs`, sello si cambia `public/` |
+| 1 | INTRO (draft) | `public/index.html` + `pwa.js` reuso + Tools | `test_web.py`, `sw_harness.mjs`, sello si cambia `public/` |
 | 2 | OPENWORLD (draft) | mapa + terrenos como datos + chat (según §5.1) | `atlas/test_atlas.py`, casos node, sello |
 | 3 | redirecciones (draft) | §4, sin borrado | comprobación de enlaces |
 

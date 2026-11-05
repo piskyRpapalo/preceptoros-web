@@ -117,7 +117,7 @@ All routes over HTTP/2, 2026-10-25, against main `91e4858`.
   network. **The bump is the atomic rebuild.** The abjc → abjd seal of web#319
   (deployed 16:45) is that rebuild for today's phones.
 - Correction to the brief: web#320 kept `abjc` but changed only
-  `atlas-mundo.json`, `counters.json`, `mcp-manifest.json` and `release.json`,
+  `atlas-world.json`, `counters.json`, `mcp-manifest.json` and `release.json`,
   all network passthrough. That PR froze nothing. The face work did: web#307,
   #310, #311, #314 and #315 changed cached modules under `abjc`.
 - Finding, not fixed here: the install step precaches the whole `HUB` into
@@ -140,7 +140,7 @@ PR, with a new `VERSION` in `public/sw.js`.**
 
 Why the existing seal did not catch it: `test_web` checks that `VERSION` and the
 huella agree **inside one tree**. Nothing compared `VERSION` with the base, and
-the documented `sellar.py --sellar --version <the same>` lets a PR re-seal the
+the documented `seal.py --sellar --version <the same>` lets a PR re-seal the
 huella and keep the old `VERSION`.
 
 The gate (`atlas/version_sw_gate.mjs`, wired into `.github/workflows/gate.yml`
@@ -154,12 +154,12 @@ before the full battery, `fetch-depth: 2`):
   worker. Measurement-only commits (passthrough JSON) need no bump, which keeps
   the rule honest instead of noisy.
 - Failure message names each blocking path, the outage, the cure
-  (`python3 bin/sellar.py --sellar`, then the seal chain) and the exception.
+  (`python3 bin/seal.py --sellar`, then the seal chain) and the exception.
 - Exception path: a line **added in the same diff** to
   `config/sw-version-waivers.txt`, `public/<exact path> | YYYY-MM-DD | reason`.
   A waiver already present at the base never counts, so it cannot leak into a
   later PR.
-- Evidence: `atlas/version_sw_casos.mjs`, 10 cases from measured fixtures
+- Evidence: `atlas/version_sw_cases.mjs`, 10 cases from measured fixtures
   (web#311 red, web#320 green, waiver scope and expiry). Shown red first with
   `VERSION_SW_SABOTAGE=1`. Replayed through the CLI on the real merges: web#311
   RED (`public/face/face_tutorial.js`), web#320 GREEN. Over main's first-parent

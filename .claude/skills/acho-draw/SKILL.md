@@ -11,7 +11,7 @@ Criterios medibles: `docs/rebuild/2026-10-26-foundation-inventory.md` (seccion "
 ## Paleta: solo bandas que existen
 - Neutras (`comic_tokens.js`): `ink paper ocean cyan`.
 - Acentos firmados (`comic_accents.js`): `vermilion.*`, `comic yellow.*` con `base brillo sombra contorno`.
-- Sellos (`tabla_semantica.js`): `LIVE PROPUESTA FIRMADO ERROR NO_DATA SIMULATED STALE` **solo con su significado literal**
+- Sellos (`semantic_table.js`): `LIVE PROPUESTA FIRMADO ERROR NO_DATA SIMULATED STALE` **solo con su significado literal**
   (p. ej. `STALE`/`NO_DATA` para el skin dormido).
 - Banda que no existe = `NO_DATA` y propuesta aparte. Jamas inventar un token.
 

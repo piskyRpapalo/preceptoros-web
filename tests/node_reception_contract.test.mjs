@@ -7,7 +7,7 @@ import { gzipSync } from 'node:zlib';
 
 const require = createRequire(import.meta.url);
 const K = require('../public/game/canon.js');
-const N = require('../public/game/nodos.js');
+const N = require('../public/game/nodes.js');
 const path = new URL('../public/game/node_reception_contract.js', import.meta.url);
 const contract = () => require(path.pathname);
 const copy = x => JSON.parse(JSON.stringify(x));
@@ -22,7 +22,7 @@ const packet = c => ({ esquema: 'preceptoros/cedula-nodo/1', pares: [c || creden
 test('the definitive route is isolated from the existing Agora transport', () => {
   assert.equal(contract().ENDPOINT, 'https://api.preceptoros.org/api/v1/cedulas');
   assert.equal(contract().METHOD, 'POST');
-  const src = readFileSync(new URL('../public/assets/enviar.js', import.meta.url), 'utf8');
+  const src = readFileSync(new URL('../public/assets/send.js', import.meta.url), 'utf8');
   assert.match(src, /API \+ '\/reto'/); assert.match(src, /API \+ '\/paquetes'/);
 });
 test('valid shape remains unverified, unsigned by silicon, and without authority', () => {
@@ -140,7 +140,7 @@ test('loading and using the browser contract performs no network, DOM, storage o
   assert.equal(context.AtlasNodeReception.packet(packet()).authority, false);
 });
 test('the seven semantic seals remain frozen; STATIC has no invented color', () => {
-  const S = require('../public/game/tabla_semantica.js');
+  const S = require('../public/game/semantic_table.js');
   assert.equal(Object.keys(S.TABLA).length, 7); assert.equal(S.de('STATIC'), null);
 });
 test('the new served module stays below both source and gzip ceilings', () => {
