@@ -332,7 +332,7 @@
     },
     {
      "file": "atlas/openworld_browser.mjs",
-     "text": "map joystick does not expose six named directions"
+     "text": "the view joystick is not the two-control view panner on the map"
     }
    ]
   },
@@ -400,7 +400,7 @@
    "guards": [
     {
      "file": "atlas/openworld_browser.mjs",
-     "text": "joystick movement does not update the visible location title"
+     "text": "a node place click does not walk and enter the node"
     }
    ]
   },
