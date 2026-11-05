@@ -66,6 +66,7 @@ and the existing service-worker cascade for any served change.
   canvas and chat. On 2026-11-05: `NODE_OPTIONS='--test-reporter=tap'
   python3 -m unittest test_web atlas.test_atlas` passed 126 / 1 skipped;
   service-worker harness 24/24; OpenWorld terminal, map-wide, invocation,
-  ephemeral-visit and accessibility browser checks green.
+  ephemeral-visit, online/offline brain consent, tutorial, keyboard movement,
+  accessible node walk, and carbon accessibility browser checks green.
 - Live node state remains `NO_DATA` where the publisher returns 404. Physical
   device, screen-reader, and production cache behavior have not been measured.

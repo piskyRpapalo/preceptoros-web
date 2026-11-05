@@ -61,6 +61,7 @@ async function main() {
   await cmd('Page.navigate', { url: origen + '/openworld/' }); await espera(2000);
   const ctl = await ev(`(async () => { await navigator.serviceWorker.ready; for (let i = 0; i < 100 && !navigator.serviceWorker.controller; i++) await new Promise((r) => setTimeout(r, 100)); return !!navigator.serviceWorker.controller; })()`);
   ok(ctl === true, 'the service worker never controlled /openworld/');
+  await ev("document.querySelector('.cats [data-cat=Models]').click()");
   const uno = await ev(`(async () => { const note = document.getElementById('chat-note'); document.getElementById('brain-load').click();
     for (let i = 0; i < 900 && !/ready on this device/.test(note.textContent); i++) await new Promise((r) => setTimeout(r, 100)); return note.textContent; })()`);
   ok(/ready on this device/.test(uno || ''), 'the online download did not get ready: ' + uno);
@@ -69,10 +70,11 @@ async function main() {
   const AVION = { offline: true, latency: 0, downloadThroughput: -1, uploadThroughput: -1 };
   await cmd('Network.emulateNetworkConditions', AVION); for (const s of sesiones) { await cmd('Network.emulateNetworkConditions', AVION, s); }
   await cmd('Page.reload', { ignoreCache: false }); await espera(2500);
+  await ev("document.querySelector('.cats [data-cat=Models]').click()");
   const r = JSON.parse(await ev(`(async () => { const t0 = performance.now(), note = document.getElementById('chat-note'), heard = [], said = [];
     new MutationObserver(() => said.push(note.textContent)).observe(note, { childList: true, characterData: true, subtree: true });
     document.addEventListener('brain:answer', (e) => heard.push(e.detail));
-    const page = { title: (document.querySelector('h1') || {}).textContent || '', online: navigator.onLine };
+    const page = { title: document.title, location: (document.querySelector('h1') || {}).textContent || '', online: navigator.onLine };
     document.getElementById('brain-load').click();
     for (let i = 0; i < 900 && !/ready on this device|^NO_DATA/.test(note.textContent); i++) await new Promise((r) => setTimeout(r, 100));
     const t1 = performance.now(), ready = note.textContent;
@@ -83,7 +85,7 @@ async function main() {
     const radio = [...document.querySelectorAll('#radio-chat-lista li')].map((li) => li.textContent);
     return JSON.stringify({ page, load_ms: Math.round(t1 - t0), reply_ms: Math.round(performance.now() - t1), ready, announced: said.some((t) => t === 'Web node brain · offline · from this device'),
       text: a.text || null, sha_ok: !!a.text && h === a.sha, verified: a.verified === true, radio: radio.some((l) => !!a.text && l.includes(a.text)), floor: document.getElementById('floor-state').textContent }); })()`));
-  ok(r.page.title === 'preceptoros.org' && r.page.online === false, '/openworld/ did not open in airplane mode with the site identity: ' + JSON.stringify(r.page));
+  ok(r.page.title === 'OpenWorld · PreceptorOS' && /^Location · /.test(r.page.location) && r.page.online === false, '/openworld/ did not retain site identity and the location title in airplane mode: ' + JSON.stringify(r.page));
   ok(/ready on this device · offline/.test(r.ready), 'the brain did not load offline from this device: ' + r.ready);
   ok(r.announced, 'the offline load was not announced in #chat-note');
   ok(r.verified && r.sha_ok, 'no verified offline answer: ' + JSON.stringify(r));

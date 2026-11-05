@@ -50,6 +50,8 @@ async function main() {
   await cmd('Page.navigate', { url: origen + '/openworld/' }); await espera(2500);
   // Before the click: nothing of the model is asked for, and the brain module is not even loaded.
   ok(modelos.length === 0 && (await ev('typeof window.AtlasWebNodeBrain')) === 'undefined', 'the brain loaded before the click');
+  // The local brain is a Models panel action; expose that visible panel before measuring or consenting.
+  await ev("document.querySelector('.cats [data-cat=Models]').click()");
   const r = JSON.parse(await ev(`(async () => { const t0 = performance.now(), note = document.getElementById('chat-note'), heard = [];
     document.addEventListener('brain:answer', (e) => heard.push(e.detail));
     const b = document.getElementById('brain-load'); const tall = b.getBoundingClientRect().height; b.click();
