@@ -90,6 +90,16 @@ async function main() {
   ok(initial.chat[5] > 0 && initial.form[5] > 0 && initial.form[3] <= 844, 'chat or anchored composer is not visible on phone');
   ok(initial.pad && initial.pad[4] >= 130 && initial.padRight >= initial.stage[2] - 6, 'the joystick is not visible at the right edge of the map layer: ' + JSON.stringify(initial.pad));
 
+  // A phone requesting the desktop site can expose a viewport wider than 900 CSS pixels.
+  await command('Emulation.setTouchEmulationEnabled', { enabled: true, maxTouchPoints: 2 });
+  await command('Emulation.setDeviceMetricsOverride', { width: 980, height: 1800, deviceScaleFactor: 1, mobile: true });
+  await wait(250);
+  const portraitLayout = await evaluate(`(() => { const map=document.getElementById('map').getBoundingClientRect(), chat=document.getElementById('chat').getBoundingClientRect(); return {coarse:matchMedia('(pointer:coarse)').matches,portrait:matchMedia('(orientation:portrait)').matches,mapBottom:map.bottom,chatTop:chat.top}; })()`);
+  ok(portraitLayout && portraitLayout.coarse && portraitLayout.portrait && portraitLayout.chatTop >= portraitLayout.mapBottom - 1, 'wide touch portrait must keep the chat below the map: ' + JSON.stringify(portraitLayout));
+  await command('Emulation.setTouchEmulationEnabled', { enabled: false });
+  await command('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 1, mobile: true });
+  await wait(250);
+
   const remoteChat = await evaluate(`(async () => {
     const mode = document.getElementById('chat-destination'), form = document.getElementById('entry'), input = document.getElementById('question');
     const script=document.createElement('script'); script.src='/game/classroom_chat.js'; await new Promise((resolve,reject)=>{script.onload=resolve;script.onerror=reject;document.head.append(script)});
