@@ -47,6 +47,21 @@ and the existing service-worker cascade for any served change.
 - [x] Screenshots supplied by the Sovereign show the current mobile experience.
 - [x] Read current OpenWorld markup and CSS and the existing LA FORMA commission.
 - [ ] Inventory ideas, jewels, existing controls and their measured states.
-- [ ] Build a reviewable surface on the single map and preserve accessible paths.
-- [ ] Measure browser, device, cache/version and repository gates.
+- [x] Build a reviewable surface on the single map and preserve browser-accessible paths.
+- [x] Measure browser, cache/version and repository gates. Physical-device and screen-reader hardware measurements remain NO_DATA.
 - [ ] Obtain the Sovereign's selection before treating the design as final.
+
+### Current implementation evidence · 2026-11-05
+
+- The landing iframe loads `/openworld/?landing=1`; entering OpenWorld reveals that
+  same document and canvas, then starts the live-node read. Browser Back restores
+  the intro. The intro remains an accessible foreground card over the map.
+- OpenWorld keeps the chat and composer visible, puts seven category controls
+  below the map, places the joystick on the map's right edge, and exposes map
+  place actions as visible buttons. No second renderer or canvas is created.
+- Chromium checks cover 390×844 phone layout, first paint, two-click entry,
+  movement, all seven panels, keyboard/forced-colors, and the service-worker
+  shell. On 2026-11-05: `test_web` + `atlas.test_atlas` 126 passed / 1 skipped;
+  service-worker harness 24/24; map-wide and accessibility browser checks green.
+- Live node state remains `NO_DATA` where the publisher returns 404. Physical
+  device, screen-reader, and production cache behavior have not been measured.

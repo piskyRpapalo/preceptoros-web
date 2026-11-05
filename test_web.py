@@ -2449,7 +2449,7 @@ class Puerta(unittest.TestCase):
         self.assertEqual(re.findall(r'<script src="([^"]+)"', self.t),
                          ["/game/semantic_table.js", "/game/comic_tokens.js", "/game/comic_accents.js", "/game/comic_atoms.js",
                           "/game/acho_language.js", "/game/acho_letters.js", "/assets/landing_doors.js", "/assets/pwa.js",
-                          "/assets/intro.js"])
+                          "/assets/intro.js", "/assets/landing_world.js"])
 
     def test_las_puertas_se_ven(self):
         # NORTE 7 · PR 1 (decreto 2026-10-28): la INTRO tiene tres opciones, OpenWorld · Tutorial · Tools.

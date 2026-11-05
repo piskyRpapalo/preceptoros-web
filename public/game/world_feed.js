@@ -71,5 +71,13 @@
     return {read: now};
   }
   root.AtlasWorldFeed = {read: read, merge: merge, follow: follow, record: function () { return {t: record.t, nace: record.nace, cuidado: record.cuidado}; }};
+  if (root.addEventListener && root.location && root.location.search.indexOf('landing=1') >= 0) {
+    root.addEventListener('message', function (e) {
+      if (e.origin !== root.location.origin || !e.data || e.data.type !== 'preceptoros:enter-openworld') { return; }
+      if (root.AtlasTerminalPanel && root.AtlasTerminalPanel.mounted) { root.AtlasTerminalPanel.mounted.show('Start'); }
+      var play = root.document.getElementById('welcome-play'); if (play && !play.hidden) { play.scrollIntoView({ block: 'nearest' }); play.focus({ preventScroll: true }); }
+      if (root.AtlasOpenworldFollow) { root.AtlasOpenworldFollow.read(); }
+    });
+  }
   if (typeof module === 'object' && module.exports) module.exports = root.AtlasWorldFeed;
 })(typeof window !== 'undefined' ? window : globalThis);

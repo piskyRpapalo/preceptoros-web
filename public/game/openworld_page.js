@@ -1,7 +1,6 @@
-// OpenWorld (NORTE 7 · PR 2 · global map, ODD isometric-colony). Same-origin only: the state file is the one thing read
-// from the server. Default: zero nodes; the cabin is always here. A node that is not listed as alive does not exist.
-// The map is one more render of the state (global_map.js). The cycle tick t advances by a fixed step, and the palette
-// reads t alone: never a wall clock. With reduced motion there is no cycle: the sky stays where the state puts it.
+// OpenWorld: one same-origin map and state; the state file is its only server input.
+// Unlisted nodes do not exist; the cabin is always here. Fixed ticks drive the palette, never wall-clock time.
+// Reduced motion keeps the sky still.
 (function (raiz) {
   'use strict';
   var doc = raiz.document, M = raiz.AtlasMapaGlobal;
@@ -285,10 +284,11 @@
   raiz.addEventListener('resize', draw);
   if (!quieto) { raiz.setInterval(cycle, 1000); }
   var tutorial = null;
+  var landingMode = raiz.location.search.indexOf('landing=1') >= 0;
   if (raiz.fetch) {
     raiz.fetch('/openworld/state.json', { cache: 'no-cache' })
       .then(function (r) { return r.ok ? r.json() : null; })
-      .then(function (d) { tutorial = d; accept(d); render(); if (seguir) { seguir.read(); } })
+      .then(function (d) { tutorial = d; accept(d); render(); if (seguir && !landingMode) { seguir.read(); } })
       .catch(function () { state.textContent = 'NO_DATA: tutorial state unavailable.'; });
   }
   // Latido visible (odd/tasks/latido-visible.md): world_feed.js follow reads it on load, by button, every minute.
@@ -302,4 +302,5 @@
     },
     fail: function (cause) { live = cause; if (tutorial) { accept(tutorial); } render(); state.textContent += ' · Live nodes NO_DATA: ' + cause; }
   }) : null;
+  raiz.AtlasOpenworldFollow = seguir;
 })(window);
