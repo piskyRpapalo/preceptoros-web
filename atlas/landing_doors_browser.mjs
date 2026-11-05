@@ -72,6 +72,17 @@ async function main() {
   ok(medida.pie === 'One language until the MVP: English. The old translated addresses lead here.', 'footer changed');
   ok(!/\bundefined\b|\bNaN\b/.test(medida.texto), 'missing value shown on the landing');
   ok(medida.lados.length === 0, 'NORTE 7 PR 1: the web/app pair is still on the landing: ' + JSON.stringify(medida.lados));
+  const world = JSON.parse(await ev(`(async()=>{const f=document.getElementById('landing-world');
+    for(let t=0;t<80;t++){const c=f.contentDocument?.querySelector('#surface');let n=0;if(c?.width&&c?.height){const x=c.getContext('2d').getImageData(0,0,c.width,c.height).data;for(let i=3;i<x.length;i+=4)if(x[i])n++;}if(n>2000)break;await new Promise(r=>setTimeout(r,100));}
+    const d=f.contentDocument, canvas=d?.querySelector('#surface'), before=d?.defaultView?.performance?.timeOrigin;
+    const ink=canvas?(()=>{const x=canvas.getContext('2d').getImageData(0,0,canvas.width,canvas.height).data;let n=0;for(let i=3;i<x.length;i+=4)if(x[i])n++;return n;})():0;
+    document.querySelector('#doors a[href="/openworld/"]').click(); await new Promise(r=>setTimeout(r,250));
+    const entered=document.body.classList.contains('world-active') && getComputedStyle(document.querySelector('main')).display==='none' && f.getAttribute('aria-hidden')==='false';
+    const same=d===f.contentDocument && before===d?.defaultView?.performance?.timeOrigin && d?.querySelectorAll('canvas').length===1;
+    history.back(); await new Promise(r=>setTimeout(r,150));
+    return JSON.stringify({loaded:!!canvas,canvases:d?.querySelectorAll('canvas').length||0,ink,entered,same,restored:!document.body.classList.contains('world-active')});})()`));
+  ok(world.loaded && world.canvases === 1 && world.ink > 2000, 'the intro has no painted shared map behind it: ' + JSON.stringify(world));
+  ok(world.entered && world.same && world.restored, 'OpenWorld did not reveal and preserve the same single map instance: ' + JSON.stringify(world));
   ok(await ev("!!document.querySelector('#tools-dispositivo details[open]')"), 'NORTE 7 PR 1: the Tools device list is folded; it must be visible');
   ok(externas.length === 0, 'external requests: ' + externas.slice(0, 3));
   // North D1: the install guide, at phone width: nothing external, no sideways scroll, no missing value, the landing links it.

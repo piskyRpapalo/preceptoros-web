@@ -91,6 +91,32 @@
   function attach(win) {
     var doc = win.document, surface = doc.getElementById('surface');
     if (!surface) { return null; }
+    var panel = doc.getElementById('voice-walkers');
+    if (panel) {
+      var summary = doc.createElement('p'), list = doc.createElement('div'), panelButtons = {};
+      summary.id = 'walkers-state'; summary.setAttribute('aria-live', 'polite');
+      list.setAttribute('aria-label', 'Items needing attention');
+      panel.appendChild(summary); panel.appendChild(list);
+      surface.addEventListener('visitor:draw', function () {
+        var v = win.AtlasOpenworldView && win.AtlasOpenworldView(), keep = {}, lines = [];
+        if (v && v.colony) {
+          var c = v.colony, seed = c.nodes.map(function (n) { return n.id; }).join(',');
+          c.nodes.forEach(function (n) { lines.push(sentence(walkerAt(c.nodes, v.seals, v.pending, n.id, seed, v.t, v.reduced), v.reduced)); });
+          pendingOf(c, v.pending).forEach(function (p) {
+            var b = panelButtons[p.id];
+            if (!b) {
+              b = panelButtons[p.id] = doc.createElement('button'); b.type = 'button'; b.className = 'hitl-mark'; b.dataset.node = p.id;
+              b.addEventListener('click', function () { var view = win.AtlasOpenworldView(); view.state.textContent += ' · Needs you: ' + b.dataset.piece + ' · opening ' + b.dataset.node; if (view.controls) { view.controls.walkTo(b.dataset.node); } });
+              list.appendChild(b);
+            }
+            keep[p.id] = true; b.dataset.piece = p.piece; b.textContent = 'Needs you: ' + p.piece; b.setAttribute('aria-label', b.textContent);
+          });
+        }
+        Object.keys(panelButtons).forEach(function (id) { if (!keep[id]) { panelButtons[id].remove(); delete panelButtons[id]; } });
+        var text = lines.join('; ') || 'NO_DATA: no walker state available.'; if (summary.textContent !== text) { summary.textContent = text; }
+      });
+      return { buttons: panelButtons };
+    }
     var holder = surface.parentNode, say = doc.createElement('p'), buttons = {};
     if (win.getComputedStyle(holder).position === 'static') { holder.style.position = 'relative'; }
     say.id = 'walkers-state'; say.setAttribute('aria-live', 'polite'); say.className = 'state'; say.dataset.radio = 'tecnico';

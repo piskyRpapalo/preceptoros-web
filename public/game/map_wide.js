@@ -1,14 +1,12 @@
 // G1 · LA VENTANA GRANDE (odd/tasks/mundo-grande.md, PR 608): one button gives the map the whole screen and gives it
-// back. Measured on the edge phone (360×716 CSS): the map had 348 px of height, half the screen, while 1,519 cells were
-// already loaded. Only the frame changes (law P5): the chat section steps aside, the canvas grows, the page redraws
+// back. Only the frame changes (law P5): the canvas grows while the chat remains available, and the page redraws
 // through its own resize path. No state, fog or result is touched; no clock, no random numbers, no network.
 // Keyboard: the button is in the map tools (Tab reaches it), Escape leaves; the change is spoken in #zoom-state.
 (function (raiz) {
   'use strict';
   var CLASE = 'map-wide';
-  var CSS = 'html.' + CLASE + ' #chat{display:none}' +
-    'html.' + CLASE + ' main{grid-template-rows:1fr}' +
-    'html.' + CLASE + ' #map{border-bottom:0;min-height:100vh;min-height:100dvh}' +
+  var CSS = '@media (width < 900px){html.' + CLASE + ' main.map-panel-mask{grid-template-rows:minmax(180px,60dvh) minmax(0,1fr)}}' +
+    '@media (min-width:900px){html.' + CLASE + ' main.map-panel-mask{grid-template-columns:minmax(0,4fr) minmax(280px,2fr)}}' +
     'html.' + CLASE + ' #stage .surface{flex:1 1 0;min-height:0}' +
     '#map-wide svg{width:22px;height:22px;display:block;margin:auto}';
   // Four corner arrows, drawn: no glyph that a phone font may lack.
@@ -16,7 +14,7 @@
     '<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>';
 
   // label(abierto) → the button's words in each state (pure).
-  function label(abierto) { return abierto ? 'Back to the chat' : 'Explore: the map fills the screen'; }
+  function label(abierto) { return abierto ? 'Restore map size' : 'Explore: enlarge the map'; }
 
   function attach(doc) {
     var html = doc.documentElement, barra = doc.getElementById('zoom-controls');
@@ -34,10 +32,10 @@
     pon(false);
     b.addEventListener('click', function () {
       var abierto = !html.classList.contains(CLASE); pon(abierto);
-      say(abierto ? 'Explore · the map fills the screen. Escape or the same button brings the chat back.' : 'The map is back beside the chat.');
+      say(abierto ? 'Explore · the map is larger and the chat stays visible. Escape restores the map size.' : 'The map is back to its usual size.');
     });
     doc.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && html.classList.contains(CLASE)) { pon(false); say('The map is back beside the chat.'); b.focus(); }
+      if (e.key === 'Escape' && html.classList.contains(CLASE)) { pon(false); say('The map is back to its usual size.'); b.focus(); }
     });
     barra.insertBefore(b, barra.firstChild);
     return { open: function () { pon(true); }, close: function () { pon(false); } };

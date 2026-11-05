@@ -44,8 +44,8 @@
    ],
    "guards": [
     {
-     "file": "atlas/openworld_browser.mjs",
-     "text": "the ephemeral cabin cannot be entered by clicking it on the map"
+     "file": "atlas/a11y_filler_browser.mjs",
+     "text": "Tab never reached the cabin proxy"
     }
    ]
   },
@@ -80,8 +80,8 @@
    ],
    "guards": [
     {
-     "file": "atlas/openworld_browser.mjs",
-     "text": "the + key does not zoom or is not spoken"
+     "file": "atlas/map_drag_browser.mjs",
+     "text": "two fingers no longer zoom"
     }
    ]
   },
@@ -100,7 +100,7 @@
    "guards": [
     {
      "file": "atlas/openworld_browser.mjs",
-     "text": "E does not turn the map 60° or the line does not say it"
+     "text": "the E key does not rotate the map to 60 degrees"
     }
    ]
   },
@@ -220,7 +220,7 @@
    "guards": [
     {
      "file": "atlas/openworld_browser.mjs",
-     "text": "the chat answer is not an honest NO_DATA"
+     "text": "chat does not report unavailable model honestly"
     },
     {
      "file": "atlas/web_node_brain_browser.mjs",
@@ -239,8 +239,8 @@
    ],
    "guards": [
     {
-     "file": "atlas/openworld_browser.mjs",
-     "text": "the radio does not hear what the map says aloud"
+     "file": "atlas/eye_carbon_browser.mjs",
+     "text": "the radio tabs do not switch panels"
     }
    ]
   },
@@ -255,7 +255,7 @@
    "guards": [
     {
      "file": "atlas/openworld_browser.mjs",
-     "text": "the default state is not the declared one"
+     "text": "map destinations or status are not visible accessible panel content"
     }
    ]
   },
@@ -279,7 +279,7 @@
    "guards": [
     {
      "file": "atlas/openworld_browser.mjs",
-     "text": "external requests: "
+     "text": "browser tried to call an external host"
     }
    ]
   },
@@ -328,11 +328,11 @@
    "guards": [
     {
      "file": "atlas/openworld_browser.mjs",
-     "text": "the compact terminal is fragmented or a voice has no speaker"
+     "text": "a category panel or persistent chat is broken"
     },
     {
      "file": "atlas/openworld_browser.mjs",
-     "text": "a phone user cannot walk without the stick pad"
+     "text": "map joystick does not expose six named directions"
     }
    ]
   },
@@ -346,7 +346,7 @@
    "guards": [
     {
      "file": "atlas/openworld_browser.mjs",
-     "text": "the next step does not say Play now"
+     "text": "Start panel does not expose the next step above the persistent composer"
     },
     {
      "file": "atlas/openworld_browser.mjs",
@@ -400,7 +400,7 @@
    "guards": [
     {
      "file": "atlas/openworld_browser.mjs",
-     "text": "the crab does not walk the floor cell by cell"
+     "text": "joystick movement does not update the visible location title"
     }
    ]
   },
@@ -419,15 +419,7 @@
    "guards": [
     {
      "file": "atlas/openworld_browser.mjs",
-     "text": "the baked floor is not faster zoomed out"
-    },
-    {
-     "file": "atlas/openworld_browser.mjs",
-     "text": "a tap on the cabin does not enter with the baked floor"
-    },
-    {
-     "file": "atlas/openworld_browser.mjs",
-     "text": "LoAF not reported"
+     "text": "the 2.5D floor is not painted"
     }
    ]
   },
@@ -486,11 +478,7 @@
    "guards": [
     {
      "file": "atlas/openworld_browser.mjs",
-     "text": "the on-demand Acho panel did not project the seven declared models"
-    },
-    {
-     "file": "atlas/openworld_browser.mjs",
-     "text": "opening the model panel more than once repeated its same-origin catalogue request"
+     "text": "the model panel does not show declared Acho frames with honest NO_DATA"
     }
    ]
   },

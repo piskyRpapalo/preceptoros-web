@@ -11,7 +11,7 @@
 html,body{width:100%;height:100%;min-height:0}
 html{overflow:clip}
 body{position:fixed;inset:0;display:flex;flex-direction:column;min-height:0;overflow:hidden}
-main.map-panel-mask{flex:1;display:grid;grid-template-rows:minmax(280px,52dvh) minmax(0,1fr);grid-template-columns:minmax(0,1fr);height:100vh;height:100dvh;padding:0;min-height:0;overflow:hidden}
+main.map-panel-mask{flex:1;display:grid;grid-template-rows:minmax(280px,52dvh) minmax(0,1fr);grid-template-columns:minmax(0,1fr);width:100%;max-width:none;height:100vh;height:100dvh;padding:0;min-height:0;overflow:hidden}
 #map,#chat{padding:12px 16px;min-width:0;box-sizing:border-box;overflow:hidden}
 #map{border-bottom:2px solid var(--line);display:flex;flex-direction:column;gap:8px;min-height:0}
 #map h1{font-size:1.25rem;margin:0}
@@ -25,12 +25,12 @@ main.map-panel-mask{flex:1;display:grid;grid-template-rows:minmax(280px,52dvh) m
 #chat h2{font-size:1.1rem;margin:0}
 #chat .log{order:2;flex:1;min-height:0;overflow:auto;margin:0;padding:0;list-style:none;color:var(--soft)}
 #chat form{display:flex;gap:8px}
-#entry{order:3;flex:0 0 auto}
+#entry{order:3;flex:0 0 auto;position:sticky;bottom:0;z-index:3;background:var(--bg);padding-block:6px env(safe-area-inset-bottom)}
 #chat input{flex:1;min-height:44px;padding:8px 10px;border:2px solid var(--line);border-radius:var(--radius);background:var(--bg);color:var(--fg);font:inherit}
 #chat button{min-height:44px;padding:8px 14px;border:2px solid currentColor;border-radius:var(--radius);background:var(--bg);color:var(--fg);font:inherit}
 #chat button:disabled,#chat input:disabled{opacity:.55}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
-.topbar{display:flex;justify-content:flex-end;align-items:center;gap:4px 12px}
+.topbar{display:flex;justify-content:flex-start;align-items:center;gap:4px 12px}
 .topbar > a{display:inline-flex;align-items:center;min-width:44px;min-height:44px}
 .stage{position:relative;display:flex;flex-direction:column;min-height:0;flex:1}
 #zoom-controls{display:flex;flex-wrap:wrap;gap:2px;
@@ -38,10 +38,16 @@ main.map-panel-mask{flex:1;display:grid;grid-template-rows:minmax(280px,52dvh) m
 #zoom-controls button{width:44px;height:44px;padding:0;font-size:1.3rem;font-weight:700;line-height:1}
 @supports not (background:color-mix(in srgb,red 50%,transparent)){#zoom-controls{background:var(--bg)}}
 .voices{list-style:none;margin:0;padding:0;display:grid;gap:6px}
-#voices{display:contents}
+#voices.map-voices{display:grid;position:absolute;z-index:4;inset:8px 160px 8px 8px;overflow:auto;align-content:start;padding:8px;background:var(--bg);border:2px solid var(--line);border-radius:var(--radius)}
+#voices.map-voices[hidden]{display:none}
 #voices>[data-speaker=Welcome]{order:0}
 #voices>[data-speaker]:not([data-speaker=Welcome]){order:1}
-.cats{order:4}
+.cats{display:flex;gap:4px;overflow-x:auto;flex:0 0 auto}
+.cats button{flex:1 0 44px;min-width:44px;min-height:44px;padding:4px;border:2px solid currentColor;border-radius:var(--radius);background:var(--bg);color:var(--fg);font:inherit;cursor:pointer}
+.cats button[aria-pressed="true"]{outline:3px solid currentColor;outline-offset:-4px}
+#stage > .walk-pad{position:absolute;z-index:5;right:4px;bottom:4px;display:grid;grid-template-columns:repeat(3,44px);grid-template-rows:repeat(3,44px);gap:2px}
+#stage > .walk-pad button,#stage > .walk-pad .walk-gap{width:44px;height:44px;min-width:44px;min-height:44px;padding:0}
+#stage > .walk-pad button{border:2px solid currentColor;border-radius:var(--radius);background:var(--bg);color:var(--fg);font:inherit}
 #map-actions{order:5}
 #map-brain,#radio-chat{order:6}
 #chat-note,.tech{order:7}
@@ -99,5 +105,5 @@ button,select,summary,.voice button,#chat button,#map .press button,.radio-chat-
 #zoom-controls{background:var(--bg)}
 :focus-visible{outline-width:4px}
 }
-@media (width<900px){main.map-panel-mask{grid-template-rows:minmax(280px,49dvh) minmax(0,1fr)}#map .surface{width:100vw;margin:0 -16px}#chat{padding:6px 16px 12px;gap:4px}}
+@media (width<900px){main.map-panel-mask{grid-template-rows:minmax(180px,46dvh) minmax(0,1fr)}#map .surface{width:100%;margin:0}#map{padding:6px 8px}#chat{padding:6px 8px 0;gap:4px}}
 @media (min-width:900px){main.map-panel-mask{grid-template-rows:minmax(0,1fr);grid-template-columns:minmax(0,3fr) minmax(0,2fr)}#map{border-bottom:0;border-right:2px solid var(--line)}}

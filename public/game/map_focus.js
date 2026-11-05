@@ -23,6 +23,28 @@
   function attach(win) {
     var doc = win.document, surface = doc.getElementById('surface');
     if (!surface) { return null; }
+    var mapVoice = doc.querySelector('#voices [data-speaker="Map"]');
+    if (mapVoice) {
+      var list = doc.createElement('div'), items = {};
+      list.id = 'map-node-list'; list.setAttribute('role', 'group'); list.setAttribute('aria-label', 'Map places'); mapVoice.appendChild(list);
+      surface.addEventListener('visitor:draw', function () {
+        var v = win.AtlasOpenworldView && win.AtlasOpenworldView(), keep = {};
+        if (v && v.colony) {
+          v.colony.nodes.forEach(function (n) {
+            var b = items[n.id];
+            if (!b) {
+              b = items[n.id] = doc.createElement('button'); b.type = 'button'; b.className = 'map-place'; b.dataset.node = n.id;
+              b.textContent = 'Walk to ' + n.id; b.setAttribute('aria-label', 'Walk to ' + n.id);
+              b.addEventListener('click', function () { var view = win.AtlasOpenworldView(); if (view && view.controls) { view.controls.walkTo(n.id); } });
+              list.appendChild(b);
+            }
+            keep[n.id] = true;
+          });
+        }
+        Object.keys(items).forEach(function (id) { if (!keep[id]) { items[id].remove(); delete items[id]; } });
+      });
+      return { proxies: items };
+    }
     var holder = surface.parentNode, layer = doc.createElement('div'), proxies = {};
     layer.id = 'map-proxies'; layer.setAttribute('role', 'group'); layer.setAttribute('aria-label', 'Map bubbles: Tab moves between them');
     surface.after(layer);

@@ -84,8 +84,12 @@ test('stream says one line per step and stops when the visitor leaves', () => {
 });
 
 test('the chat title names the building; ideas are asked by whole word', () => {
-  assert.equal(C.titleOf({ id: 'b-cabin', node: 'cabin' }), 'Tutorial cabin · b-cabin · chat');
-  assert.equal(C.titleOf(null), 'Chat');
+  assert.equal(C.titleOf({ id: 'b-cabin', node: 'cabin' }), 'Tutorial cabin · b-cabin');
+  assert.equal(C.titleOf(null), 'Guide');
+  const oldBrain = globalThis.AtlasWebNodeBrain;
+  globalThis.AtlasWebNodeBrain = { model: () => 'SmolLM2-135M-Instruct' };
+  assert.equal(C.titleOf(null), 'SmolLM2-135M-Instruct');
+  if (oldBrain === undefined) { delete globalThis.AtlasWebNodeBrain; } else { globalThis.AtlasWebNodeBrain = oldBrain; }
   for (const s of ['ideas', 'show me the rack', 'Study?', 'one idea please']) { assert.ok(C.wantsIdeas(s), s); }
   for (const s of ['racket', 'studying', 'hello', 'status']) { assert.ok(!C.wantsIdeas(s), s); }
 });

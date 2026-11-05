@@ -172,7 +172,7 @@
   }
 
 
-  function draw(canvas, estado, t, reducido, looks, seals, walker, manaByNode) {
+  function draw(canvas, estado, t, reducido, looks, seals, walker, manaByNode, floorOnly) {
     var B = root.AtlasAcho, P = root.AtlasComicAtoms;
     var sc = scene(estado, t, reducido, looks, seals, manaByNode), hot = canvas.dataset ? canvas.dataset.hot : '';
     var you = walker ? tileOf(sc, walker.node) : null;
@@ -202,6 +202,8 @@
     var G = geometry(sc, canvas), cx = G.cx, cy = G.cy, k = G.k;
     // P4: the 2.5D floor of the baked chunks, under every layer, by this same placement (map_painter.js).
     if (root.AtlasMapPainter) { root.AtlasMapPainter.draw(g, G, t, reducido === true); }
+    // The OpenWorld surface can show the shared floor without the legacy illustrations.
+    if (floorOnly) { return sc; }
     if (sc.vivo) { root.AtlasLatidoVivo.ground(g, G, sc.vivo.ground); }
     if (hc) { g.save(); g.globalAlpha = 0.8; g.fillStyle = 'Canvas'; g.fillRect(0, 0, canvas.width, canvas.height); g.restore(); }
     // M1-2: one deterministic depth order for every layer of this same map.

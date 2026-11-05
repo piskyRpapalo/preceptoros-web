@@ -1,7 +1,6 @@
-// OpenWorld (NORTE 7 · PR 2 · global map, ODD isometric-colony). Same-origin only: the state file is the one thing read
-// from the server. Default: zero nodes; the cabin is always here. A node that is not listed as alive does not exist.
-// The map is one more render of the state (global_map.js). The cycle tick t advances by a fixed step, and the palette
-// reads t alone: never a wall clock. With reduced motion there is no cycle: the sky stays where the state puts it.
+// OpenWorld: one same-origin map and state; the state file is its only server input.
+// Unlisted nodes do not exist; the cabin is always here. Fixed ticks drive the palette, never wall-clock time.
+// Reduced motion keeps the sky still.
 (function (raiz) {
   'use strict';
   var doc = raiz.document, M = raiz.AtlasMapaGlobal;
@@ -68,11 +67,13 @@
   function draw() {
     var B = raiz.AtlasAcho, P = raiz.AtlasComicAtoms;
     if (!surface || !B || !P || !raiz.AtlasAchoLetters) { return; }
+    var position = CCT && CCT.walker(), location = doc.getElementById('map-h');
+    if (location) { location.textContent = position && Number.isFinite(position.q) && Number.isFinite(position.r) ? 'Location · ' + position.q + ', ' + position.r : 'Location · NO_DATA: visitor position unavailable'; }
     var width = surface.clientWidth || 320, height = surface.clientHeight || 200;
     var dpr = Math.min(2, raiz.devicePixelRatio || 1);
     surface.width = Math.round(width * dpr); surface.height = Math.round(height * dpr);
     if (colonia && CP) {
-      try { CP.draw(surface, colonia, entrada.t, quieto, colony_looks, colony_seals, CCT ? CCT.walker() : null, colony_mana); visitorLayer(); return; }
+      try { CP.draw(surface, colonia, entrada.t, quieto, colony_looks, colony_seals, CCT ? CCT.walker() : null, colony_mana, true); visitorLayer(); return; }
       catch (e) { colonia_error = e.message || 'the colony is refused'; }
     }
     var g = surface.getContext('2d');
@@ -81,13 +82,7 @@
     var scene = M.mapa(entrada);
     g.fillStyle = scene.paleta.cielo; g.fillRect(0, 0, width, height);
     var cx = width / 2, cy = height / 2 + 14 * fit;
-    scene.terrain.concat(scene.nodes).forEach(function (nd) {
-      g.save();
-      g.translate(cx + nd.x * fit - M.ANCHO * M.BURBUJA * fit / 2, cy + nd.y * fit - M.ALTO * M.BURBUJA * fit / 2);
-      g.scale(M.BURBUJA * fit, M.BURBUJA * fit);
-      try { P.paint(g, B.compile(nd.frame)); } catch (e) { /* the frame is refused; the node stays off the map */ }
-      g.restore();
-    });
+    if (CP && raiz.AtlasMapPainter) { g.setTransform(1, 0, 0, 1, 0, 0); raiz.AtlasMapPainter.draw(g, CP.geometry({ tiles: [] }, surface), entrada.t, quieto === true); }
     visitorLayer();
   }
   function visitorLayer() {
@@ -186,7 +181,7 @@
     if (!CCT || !colonia || !CP || colonia_error) { return; }
     var r = surface.getBoundingClientRect();
     var px = (e.clientX - r.left) * (surface.width / r.width), py = (e.clientY - r.top) * (surface.height / r.height);
-    var id = CP.nodeAt(surface, colonia, entrada.t, colony_looks, colony_seals, px, py);
+    var id = null; // Legacy node illustrations are not visible on the floor-only surface.
     // Tap-to-step (compact terminal, 2026-11-02, the pad retired): a tap off any node, with free walk on, steps the crab
     // one cell toward the tap: the nearest of the six hex directions by screen angle, same names as the arrow keys.
     if (!id && CCT.step && surface.dataset.youx) {
@@ -209,7 +204,7 @@
     surface.addEventListener('pointermove', function (e) {
       if (!colonia || !CP || colonia_error || e.pointerType === 'touch') { return; }
       var r = surface.getBoundingClientRect();
-      setHot(CP.nodeAt(surface, colonia, entrada.t, colony_looks, colony_seals, (e.clientX - r.left) * (surface.width / r.width), (e.clientY - r.top) * (surface.height / r.height)));
+      setHot('');
     });
     surface.addEventListener('pointerleave', function () { setHot(''); });
     surface.addEventListener('focus', function () { var w = CCT && CCT.walker ? CCT.walker() : null; setHot(w && w.node ? w.node : 'cabin'); });
@@ -289,10 +284,11 @@
   raiz.addEventListener('resize', draw);
   if (!quieto) { raiz.setInterval(cycle, 1000); }
   var tutorial = null;
+  var landingMode = raiz.location.search.indexOf('landing=1') >= 0;
   if (raiz.fetch) {
     raiz.fetch('/openworld/state.json', { cache: 'no-cache' })
       .then(function (r) { return r.ok ? r.json() : null; })
-      .then(function (d) { tutorial = d; accept(d); render(); if (seguir) { seguir.read(); } })
+      .then(function (d) { tutorial = d; accept(d); render(); if (seguir && !landingMode) { seguir.read(); } })
       .catch(function () { state.textContent = 'NO_DATA: tutorial state unavailable.'; });
   }
   // Latido visible (odd/tasks/latido-visible.md): world_feed.js follow reads it on load, by button, every minute.
@@ -306,4 +302,5 @@
     },
     fail: function (cause) { live = cause; if (tutorial) { accept(tutorial); } render(); state.textContent += ' · Live nodes NO_DATA: ' + cause; }
   }) : null;
+  raiz.AtlasOpenworldFollow = seguir;
 })(window);

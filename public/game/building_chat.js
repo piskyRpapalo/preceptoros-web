@@ -101,7 +101,11 @@
 
   // LA VOZ DEL RACK (ODD decree 2026-10-28): the chat window's title names the building the visitor is in, and a typed
   // «ideas», «rack» or «study» (or the 44 px Rack ideas button) asks the rack for its ideas through rack_ideas.js.
-  function titleOf(building) { return building ? scriptOf(building).name + ' · ' + building.id + ' · chat' : 'Chat'; }
+  function titleOf(building) {
+    if (building) { return scriptOf(building).name + ' · ' + building.id; }
+    var brain = root.AtlasWebNodeBrain, model = brain && typeof brain.model === 'function' ? brain.model() : '';
+    return typeof model === 'string' && model ? model : 'Guide';
+  }
   function wantsIdeas(text) { return /(^|[^a-z])(ideas?|rack|study)([^a-z]|$)/i.test(String(text || '')); }
   function wantsVoices(text) { return /(^|[^a-z])(voices|who speaks)([^a-z]|$)/i.test(String(text || '')); }
   function wantsJewels(text) { return /(^|[^a-z])(jewels?|joyas?)([^a-z]|$)/i.test(String(text || '')); }

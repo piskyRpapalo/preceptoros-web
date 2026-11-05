@@ -63,38 +63,41 @@
   }
   // TF-2 (buzon#30, 2026-11-02): the voices go in four category buttons; one category is visible, the rest are buttons.
   // The brain (#map-brain), the log and the form stay fixed under the panel: they are the single chatbot's surface.
-  var CATS = [['Start', ['Tutorial', 'Welcome', 'Guide']], ['Explore', ['Map', 'Floor', 'Walkers', 'Zoom']], ['Play', ['House', 'Army']], ['About', ['Radio']]];
+  var CATS = [['Start', ['Welcome', 'Guide']], ['Map', ['Map', 'Floor', 'Walkers', 'Zoom']], ['Tutorial', ['Tutorial']], ['House', ['House']], ['Army', ['Army']], ['Radio', ['Radio']], ['Models', ['Models']]];
   // categoryOf(speaker) → its category; a speaker no category names goes to About, never lost.
   function categoryOf(speaker) {
     for (var i = 0; i < CATS.length; i++) { if (CATS[i][1].indexOf(speaker) >= 0) { return CATS[i][0]; } }
-    return 'About';
+    return 'Start';
   }
   function categories(doc, voices) {
-    if (voices.parentNode.querySelector(':scope > .cats')) { return null; }
-    var bar = doc.createElement('div'), buttons = {}, current = null;
+    var map = doc.getElementById('map'), stage = doc.getElementById('stage');
+    if (!map || !stage || map.querySelector(':scope > .cats')) { return null; }
+    var bar = doc.createElement('div'), buttons = {}, current = null, icons = { Start: '◇', Map: '⌖', Tutorial: '?', House: '⌂', Army: '✧', Radio: '◉', Models: '⬡' };
     bar.className = 'cats'; bar.setAttribute('role', 'group'); bar.setAttribute('aria-label', 'Voices by category');
-    bar.style.cssText = 'display:flex;flex-wrap:wrap;gap:6px;margin-top:6px';
+    voices.classList.add('map-voices');
+    stage.appendChild(voices);
     function show(cat) {
-      current = cat;
+      current = cat; voices.hidden = !cat;
       Array.prototype.forEach.call(voices.querySelectorAll('[data-speaker]'), function (li) { li.style.display = li.dataset.cat === cat ? '' : 'none'; });
-      CATS.forEach(function (c) { var b = buttons[c[0]]; b.setAttribute('aria-pressed', String(c[0] === cat)); if (c[0] === cat) { b.textContent = c[0]; } });
+      CATS.forEach(function (c) { var b = buttons[c[0]]; b.setAttribute('aria-pressed', String(c[0] === cat)); if (c[0] === cat) { b.textContent = icons[c[0]]; } });
     }
     CATS.forEach(function (c) {
-      var b = doc.createElement('button'); b.type = 'button'; b.textContent = c[0]; b.dataset.cat = c[0];
-      b.style.cssText = 'min-height:44px;min-width:44px;padding:8px 14px;border:2px solid currentColor;border-radius:var(--radius);background:var(--bg);color:var(--fg);font:inherit';
-      b.addEventListener('click', function () { show(c[0]); });
+      var b = doc.createElement('button'); b.type = 'button'; b.textContent = icons[c[0]]; b.dataset.cat = c[0]; b.setAttribute('aria-label', c[0]); b.title = c[0];
+      b.setAttribute('aria-controls', 'voices');
+      b.addEventListener('click', function () { show(current === c[0] ? null : c[0]); });
       buttons[c[0]] = b; bar.appendChild(b);
     });
     // Under the voices, like a phone's bottom tabs: the door's «Play now» stays above the fold (measured 390×844).
-    voices.parentNode.insertBefore(bar, voices.nextSibling);
+    map.appendChild(bar);
     // A voice that speaks while its category is hidden marks its button («•»), so nothing said is lost from sight.
     new root.MutationObserver(function (ch) {
       ch.forEach(function (c) {
         var n = c.target.nodeType === 1 ? c.target : c.target.parentNode, li = n && n.closest && n.closest('[data-cat]');
-        if (li && li.dataset.cat !== current && buttons[li.dataset.cat]) { buttons[li.dataset.cat].textContent = li.dataset.cat + ' •'; }
+        if (li && li.dataset.cat !== current && buttons[li.dataset.cat]) { buttons[li.dataset.cat].textContent = icons[li.dataset.cat] + ' •'; }
       });
     }).observe(voices, { subtree: true, childList: true, characterData: true });
-    show('Start');
+    doc.addEventListener('keydown', function (e) { if (e.key === 'Escape' && current) { var b = buttons[current]; show(null); b.focus(); } });
+    show(null);
     return show;
   }
   // mount(doc): give every voice its header, tag the log lines, and paint the Army voice from the visit.
@@ -108,6 +111,12 @@
       li.setAttribute('aria-label', li.dataset.speaker);
       li.insertBefore(h, li.firstChild);
     });
+    var mapActions = doc.getElementById('map-actions'), zoomVoice = doc.getElementById('voice-zoom');
+    if (mapActions && zoomVoice) { zoomVoice.appendChild(mapActions); }
+    var details = doc.querySelector('#chat > .tech'), guideVoice = voices.querySelector('[data-speaker="Guide"]');
+    if (details && guideVoice) { guideVoice.appendChild(details); }
+    var modelPanel = doc.querySelector('#chat > #model-frames-panel'), modelVoice = voices.querySelector('[data-speaker="Models"]');
+    if (modelPanel && modelVoice) { modelVoice.appendChild(modelPanel); }
     var show = categories(doc, voices);
     function tag(li) {
       if (li.nodeType !== 1 || li.dataset.speaker) { return; }

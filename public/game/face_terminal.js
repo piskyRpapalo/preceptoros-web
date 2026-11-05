@@ -9,6 +9,6 @@
   var capa = doc.querySelector('[data-radio-capa]') || caja;
   // Where the chat is always on screen (/openworld/), the radio's conversation channel is not a second «Chat» button.
   C.monta(capa, {});
-  if (capa !== caja) { var box = doc.getElementById('radio-chat'); if (box) { caja.appendChild(box); } }
+  if (capa !== caja) { var box = doc.getElementById('radio-chat'), radio = doc.querySelector('#voices [data-speaker="Radio"]'); if (box) { (radio || caja).appendChild(box); } }
   C.alterna(true);
 })(window);

@@ -51,8 +51,8 @@ async function main() {
   const cmd = (method, params = {}) => new Promise((r) => { const i = ++id; pend.set(i, r); ws.send(JSON.stringify({ id: i, method, params })); });
   const ev = async (e) => (await cmd('Runtime.evaluate', { expression: e, awaitPromise: true, returnByValue: true })).result?.result?.value ?? null;
   const hasta = async (e, ms) => { for (let t = 0; t < ms; t += 250) { if (await ev(e)) { return true; } await espera(250); } return false; };
-  // W-5: a click on the cabin hex, from the page's own state and geometry.
-  const clicCabina = () => ev(`(async () => { const d = await (await fetch('/openworld/state.json', { cache: 'no-store' })).json(); const est = AtlasOpenworldState.leer(d); const s = document.getElementById('surface'); const a = AtlasColoniaPagina.anchorOf(s, est.colonia, 0, est.looks || {}, est.seals || {}, 'cabin'); const r = s.getBoundingClientRect(); s.dispatchEvent(new MouseEvent('click', { bubbles: true, clientX: r.left + a.x * r.width / s.width, clientY: r.top + a.y * r.height / s.height })); return true; })()`);
+  // The accessible Map panel exposes a real button for each place; never synthesize an invisible hit target.
+  const clicCabina = async () => { await ev("(() => { const b=document.querySelector('.cats [data-cat=Map]'); if(b.getAttribute('aria-pressed')!=='true')b.click(); })()"); await espera(100); return ev(`(() => { const b=document.querySelector('#map-node-list [data-node=cabin]'); if(!b || b.getBoundingClientRect().height<44)return false; b.click(); return true; })()`); };
   // Click the first button whose text matches; the page's own handler runs.
   const pulsa = (texto) => ev(`(() => { const b = [...document.querySelectorAll('button')].find(x => x.textContent.trim() === ${JSON.stringify(texto)}); if (!b) { return false; } b.click(); return true; })()`);
   const pulsaId = (idb) => ev(`(() => { const b = document.getElementById(${JSON.stringify(idb)}); if (!b || b.disabled) { return false; } b.click(); return true; })()`);

@@ -24,7 +24,7 @@ function sirve(raiz) {
 }
 const fallos = [], externas = [];
 const ok = (cond, que) => { if (!cond) { fallos.push(que); } };
-let ws = null, ch = null, srv = null, id = 0, clics = 0;
+let ws = null, ch = null, srv = null, id = 0, clics = 0, enMapa = false;
 const pend = new Map();
 
 async function main() {
@@ -43,12 +43,13 @@ async function main() {
     if (d.method === 'Runtime.exceptionThrown') { const x = d.params.exceptionDetails; fallos.push('exception: ' + String(x.exception?.description || x.text).split('\n')[0].slice(0, 80)); }
   });
   const cmd = (method, params = {}) => new Promise((r) => { const i = ++id; pend.set(i, r); ws.send(JSON.stringify({ id: i, method, params })); });
-  const ev = async (e) => (await cmd('Runtime.evaluate', { expression: e, awaitPromise: true, returnByValue: true })).result?.result?.value ?? null;
+  const ev = async (e) => (await cmd('Runtime.evaluate', { expression: enMapa ? `document.querySelector('#landing-world').contentWindow.eval(${JSON.stringify(e)})` : e, awaitPromise: true, returnByValue: true })).result?.result?.value ?? null;
   const foto = async (n) => { if (CAPTURA) { const g = await cmd('Page.captureScreenshot', { format: 'png' }); writeFileSync(join(CAPTURA, n), Buffer.from(g.result.data, 'base64')); } };
   // A real click: the mouse at the centre of the element as laid out on screen (whatever covers it gets the click).
   // quieto: the element is already on screen (asserted before), so the test itself does not scroll the page.
   const clic = async (sel, quieto) => {
-    const c = JSON.parse(await ev(`(() => { const e = document.querySelector(${JSON.stringify(sel)}); if (!e) { return 'null'; } ${quieto ? '' : "e.scrollIntoView({ block: 'center' });"} const r = e.getBoundingClientRect(); return JSON.stringify({ x: r.left + r.width / 2, y: r.top + r.height / 2 }); })()`));
+    const scope = enMapa ? "document.querySelector('#landing-world').contentDocument" : 'document';
+    const c = JSON.parse(await cmd('Runtime.evaluate', { expression: `(() => { const e = ${scope}.querySelector(${JSON.stringify(sel)}); if (!e) { return 'null'; } ${quieto ? '' : "e.scrollIntoView({ block: 'center' });"} const r = e.getBoundingClientRect(); return JSON.stringify({ x: r.left + r.width / 2, y: r.top + r.height / 2 }); })()`, awaitPromise: true, returnByValue: true }).then((x) => x.result?.result?.value ?? null));
     if (!c) { fallos.push('nothing to click: ' + sel); return; }
     for (const type of ['mousePressed', 'mouseReleased']) { await cmd('Input.dispatchMouseEvent', { type, x: c.x, y: c.y, button: 'left', clickCount: 1 }); }
     clics++;
@@ -58,10 +59,11 @@ async function main() {
   await cmd('Page.navigate', { url: origen + '/' }); await espera(1200);
   const puerta = await ev("(() => { const a = [...document.querySelectorAll('a.door')].find((x) => /OpenWorld/.test(x.textContent)); return a ? a.textContent : null; })()");
   ok(/Play now: the map, your crab and the chat\./.test(puerta || ''), 'the OpenWorld door does not say «Play now»: ' + puerta);
-  await clic('a.door[href="/openworld/"]'); await espera(2000);
+  await clic('a.door[href="/openworld/"]'); enMapa = true; await espera(2000);
   const llegada = JSON.parse(await ev(`JSON.stringify((() => { const c = document.getElementById('sheet-welcome'), b = document.getElementById('welcome-play'), r = b ? b.getBoundingClientRect() : {};
     return { path: location.pathname, shown: !!c && !c.hidden, role: c && c.getAttribute('role'), modal: c && c.getAttribute('aria-modal'), title: (document.getElementById('welcome-h') || {}).textContent,
-      focus: document.activeElement && document.activeElement.id, h: r.height, w: r.width, top: r.top, bottom: r.bottom, look: !!document.getElementById('welcome-look'), ancho: document.documentElement.scrollWidth }; })())`));
+      focus: document.activeElement && document.activeElement.id, h: r.height, w: r.width, top: r.top, bottom: r.bottom, look: !!document.getElementById('welcome-look'), ancho: document.documentElement.scrollWidth,
+      viewport: [innerWidth,innerHeight], body: [document.body.getBoundingClientRect().width,document.body.getBoundingClientRect().height], map: (()=>{const x=document.getElementById('map')?.getBoundingClientRect();return x&&[x.width,x.height]})(), parent: (()=>{const x=frameElement?.getBoundingClientRect();return x&&[x.width,x.height]})() }; })())`));
   ok(llegada.path === '/openworld/', 'click 1 did not reach /openworld/: ' + llegada.path);
   ok(llegada.shown && llegada.role === 'dialog' && llegada.modal === 'false', 'the welcome card is not a dialog voice at the top of the panel: ' + JSON.stringify(llegada));
   ok(llegada.title === 'Welcome to the sunken forest', 'the welcome title is wrong: ' + llegada.title);
@@ -70,6 +72,7 @@ async function main() {
   ok(llegada.look && llegada.ancho <= 390, 'no «Look around first» or sideways scroll: ' + JSON.stringify(llegada));
   await foto('dos-clics-welcome.png');
   await clic('#welcome-play', true); await espera(1500);
+  await ev("document.querySelector('.cats [data-cat=Map]').click()");
   // Ojo del Doogee (2026-11-02): after «Play now» the map stays in view, the summon buttons say place and cost in words, the zoom
   // plate is three labelled 44 px icons, and the place names on the map are legible (>= 12 CSS px) and never collide.
   const ojo = JSON.parse(await ev(`JSON.stringify((() => { const c = document.getElementById('surface'), m = c.getBoundingClientRect();
@@ -88,7 +91,7 @@ async function main() {
   ok(ojo.pl.length >= 4 && ojo.pl.every((p) => p.cap >= 12) && !ojo.overlap && !ojo.crab && !ojo.zoom, 'map place names are small, few or colliding: ' + JSON.stringify(ojo.pl));
   const jugando = JSON.parse(await ev(`JSON.stringify((() => { const s = document.getElementById('visitor-summon-tc1'), t = (document.getElementById('visitor-play') || {}).textContent || '';
     const m = /Copper (\\d+)/.exec(t); return { card: document.getElementById('sheet-welcome').hidden, copper: m ? +m[1] : -1, summon: !!s && !s.disabled, end: !!document.getElementById('visitor-end'),
-      tab: String(!!document.getElementById('visitor-summon-tc1') && document.getElementById('chat').contains(document.getElementById('visitor-summon-tc1'))), state: document.getElementById('state').textContent, result: document.getElementById('welcome-result').textContent }; })())`));
+      tab: String(!!document.querySelector('#voices [data-speaker="House"]')?.contains(document.getElementById('visitor-play'))), state: document.getElementById('state').textContent, result: document.getElementById('welcome-result').textContent }; })())`));
   ok(clics === 2, 'reaching the game took ' + clics + ' clicks, not 2');
   ok(jugando.end, 'after two clicks no visit is active');
   ok(jugando.copper >= 100, 'after two clicks the copper is below 100: ' + jugando.copper);
@@ -98,7 +101,9 @@ async function main() {
   ok(/Play the tutorial by walking to the beacon, or press Skip tutorial/.test(jugando.result), 'the tutorial choice is not said: ' + jugando.result);
   await foto('dos-clics-playing.png');
   // «Look around first» and Escape: a fresh page, the card closes and the map is there.
-  await cmd('Page.navigate', { url: origen + '/openworld/' }); await espera(1500);
+  enMapa = false; await cmd('Page.navigate', { url: origen + '/openworld/' }); await espera(1500);
+  await ev("document.querySelector('.cats [data-cat=Start]').click()");
+  await ev("document.getElementById('welcome-play').focus()");
   await cmd('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27 });
   await cmd('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27 });
   ok((await ev("document.getElementById('sheet-welcome').hidden")) === true, 'Escape does not close the welcome card');

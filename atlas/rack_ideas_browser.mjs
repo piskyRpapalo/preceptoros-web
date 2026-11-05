@@ -2,14 +2,15 @@
 // Laws:
 // - the map is the first visible element and the chat window the second (both inside the first screen, map above);
 // - zero external requests on load: nothing leaves the origin until the visitor asks;
-// - inside a building the chat title names it; leaving gives the title back («Chat»);
+// - before entry the panel names its guide («Guide»); inside a building it names that building; leaving restores «Guide»;
 // - the Rack ideas button is a 44 px target; one click → ONE request, to the study index, and the ideas arrive one by one;
 // - a failing rack (HTTP 404) is said as NO_DATA with its cause; nothing is invented;
 // - the Jewels button brings the system's jewels (odd/JOYAS.md on main) one by one, the same way;
 // - a question with no script goes to the live door (Hexelion, /api/v1/chat) with the building in its context; a closed
 //   door is said in plain words with its cause. Hexelion is answered by a page-side stub: CI never calls production.
 // The study index is served by the harness through CDP Fetch (fixture atlas/fixtures/ai-index-sample.json): the proof never
-// depends on the network. Sabotage: SABOTAJE=en-carga asks the rack on load ⇒ red; SABOTAJE=sin-titulo keeps «Chat» ⇒ red.
+// depends on the network.
+// Sabotage: SABOTAJE=en-carga asks on page load; SABOTAJE=sin-titulo prevents the building speaker name.
 // Uso: node atlas/rack_ideas_browser.mjs [carpeta-captura]
 import { createServer } from 'node:http';
 import { readFileSync, writeFileSync } from 'node:fs';
@@ -81,7 +82,7 @@ async function main() {
     return { mapa: Math.round(m.top), chat: Math.round(c.top), alto: innerHeight, vis: vis.slice(0, 2), titulo: document.getElementById('chat-h').textContent }; })())`));
   medidas.orden = orden;
   ok(orden.vis[0] === 'map' && orden.vis[1] === 'chat' && orden.mapa < orden.chat && orden.chat < orden.alto, 'the map is not first and the chat second on the first screen: ' + JSON.stringify(orden));
-  ok(orden.titulo === 'Chat', 'the chat title before entering is not «Chat»: ' + orden.titulo);
+  ok(orden.titulo === 'Guide', 'the initial panel does not identify its guide speaker: ' + orden.titulo);
 
   // 2 · enter the tutorial cabin: the title names it; the Rack ideas button is a 44 px target.
   const dentro = JSON.parse(await ev(`(async () => { const w = (ms) => new Promise((r) => setTimeout(r, ms)), st = () => document.getElementById('state').textContent;
@@ -89,7 +90,7 @@ async function main() {
     const b = document.getElementById('rack-ideas'), r = b && b.getBoundingClientRect();
     return JSON.stringify({ titulo: document.getElementById('chat-h').textContent, boton: b ? { w: Math.round(r.width), h: Math.round(r.height), hidden: b.hidden } : null }); })()`));
   medidas.dentro = dentro;
-  ok(dentro.titulo === 'Tutorial cabin · b-cabin · chat', 'the chat title does not name the building: ' + dentro.titulo);
+  ok(dentro.titulo === 'Tutorial cabin · b-cabin', 'the panel title does not name its current speaker: ' + dentro.titulo);
   ok(dentro.boton && !dentro.boton.hidden && dentro.boton.h >= 44 && dentro.boton.w >= 44, 'no 44 px Rack ideas button inside: ' + JSON.stringify(dentro.boton));
   ok(pedidas.length === 0, 'entering a building asked the network: ' + pedidas.slice(0, 3));
 
@@ -167,7 +168,7 @@ async function main() {
   await cmd('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27 }); await espera(300);
   const fuera = JSON.parse(await ev(`JSON.stringify({ titulo: document.getElementById('chat-h').textContent, hidden: document.getElementById('rack-ideas').hidden && document.getElementById('rack-jewels').hidden })`));
   medidas.fuera = fuera;
-  ok(fuera.titulo === 'Chat' && fuera.hidden === true, 'leaving does not give the title back: ' + JSON.stringify(fuera));
+  ok(fuera.titulo === 'Guide' && fuera.hidden === true, 'leaving does not restore the guide speaker title: ' + JSON.stringify(fuera));
 
   console.log(JSON.stringify({ piece: 'la-voz-del-rack', sabotaje: SAB || null, receipt: fallos.length ? 'ROJO' : 'VERDE', medidas, fallos }));
 }

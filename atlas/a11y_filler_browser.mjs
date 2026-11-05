@@ -35,6 +35,8 @@ const fallos = [];
 // 1 · forced colours.
 await cmd('Emulation.setEmulatedMedia', { features: [{ name: 'forced-colors', value: 'active' }] });
 await cmd('Page.navigate', { url: origen + '/openworld/' }); await espera(2000);
+// The terminal opens with no voice overlay; the visitor chooses Start before tabbing its actions.
+await ev("document.querySelector('.cats [data-cat=Start]').click()");
 const fc = JSON.parse(await ev(`JSON.stringify((() => {
   const reglas = [...document.styleSheets].flatMap((s) => { try { return [...s.cssRules]; } catch { return []; } })
     .filter((r) => /forced-colors/.test(r.conditionText || r.media?.mediaText || ''));
@@ -53,29 +55,29 @@ if (fc.lienzo !== true) { fallos.push('canvas high-contrast path off'); }
 if (!/^play-now solid 3px/.test(fc.foco || '')) { fallos.push('focus ring under forced colours: ' + fc.foco); }
 if (!(fc.contraste >= 7)) { fallos.push('panel text contrast ' + fc.contraste); }
 
-// 2 · Tab reaches the cabin proxy; Enter enters; the ring is drawn on the canvas.
+// 2 · Open the map panel; Tab reaches its visible cabin button and Enter enters.
 await cmd('Emulation.setEmulatedMedia', { features: [] });
 await cmd('Page.navigate', { url: origen + '/openworld/' }); await espera(2000);
+await ev("(() => { const b = document.querySelector('.cats [data-cat=Map]'); if (b.getAttribute('aria-pressed') !== 'true') b.click(); })()");
 let tabs = 0;
-for (; tabs < 60 && !(await ev("document.activeElement.matches('.map-proxy[data-node=\"cabin\"]')")); tabs++) { await tecla('Tab', 'Tab', 9); }
+for (; tabs < 80 && !(await ev("document.activeElement.matches('.map-place[data-node=\"cabin\"]')")); tabs++) { await tecla('Tab', 'Tab', 9); }
 await espera(200);
 const proxy = JSON.parse(await ev(`JSON.stringify((() => { const b = document.activeElement, r = b.getBoundingClientRect(), c = document.getElementById('surface').getBoundingClientRect();
-  return { cabina: b.matches('.map-proxy[data-node="cabin"]'), w: r.width, h: r.height, dentro: r.left + 22 >= c.left && r.left + 22 <= c.right && r.top + 22 >= c.top && r.top + 22 <= c.bottom,
-    nombre: b.getAttribute('aria-label'), anillo: document.getElementById('map-proxies')?.dataset.ring || '', proxies: document.querySelectorAll('.map-proxy').length,
+  return { cabina: b.matches('.map-place[data-node="cabin"]'), w: r.width, h: r.height, dentro: !!b.closest('#voices'),
+    nombre: b.getAttribute('aria-label'), proxies: document.querySelectorAll('.map-place').length,
     contorno: getComputedStyle(b).outlineStyle + ' ' + getComputedStyle(b).outlineWidth }; })())`));
 await tecla('Enter', 'Enter', 13); await espera(400);
 proxy.tras = await ev("(document.querySelector('#joy [aria-live]') || {}).textContent || ''");
 proxy.tabs = tabs;
 if (!proxy.cabina) { fallos.push('Tab never reached the cabin proxy (' + tabs + ' presses)'); }
 if (proxy.w < 44 || proxy.h < 44 || !proxy.dentro) { fallos.push('proxy box ' + proxy.w + '×' + proxy.h + ' inside=' + proxy.dentro); }
-if (!/^Map node cabin: /.test(proxy.nombre || '')) { fallos.push('proxy name: ' + proxy.nombre); }
-if (!proxy.anillo) { fallos.push('no ring drawn on the canvas'); }
+if (proxy.nombre !== 'Walk to cabin') { fallos.push('place name: ' + proxy.nombre); }
 if (!/^solid 3px/.test(proxy.contorno)) { fallos.push('proxy outline: ' + proxy.contorno); }
 if (!/terminal: /.test(proxy.tras)) { fallos.push('Enter did not enter the cabin: ' + proxy.tras); }
 
 // 3 · the live region says its speaker in the accessibility tree; its textContent is untouched.
 // TF-2 (D3): only the open category is in the tree; Map lives in Explore, so the visitor opens it first.
-await ev("document.querySelector('.cats [data-cat=Explore]').click()");
+await ev("(() => { const b = document.querySelector('.cats [data-cat=Map]'); if (b.getAttribute('aria-pressed') !== 'true') b.click(); })()");
 const ax = (await cmd('Accessibility.getFullAXTree')).result.nodes;
 const habla = ax.filter((n) => n.role?.value === 'StaticText' && /^(Map|Floor|Guide|Zoom|Walkers|Tutorial|Army|Radio|House|Welcome):\s?$/.test(n.name?.value || '')).map((n) => n.name.value.replace(/:\s?$/, ''));
 const vivo = { voces: [...new Set(habla)].sort(), textoMap: await ev("document.getElementById('state').textContent") };
