@@ -2,7 +2,7 @@
 const IDIOMAS = ['es', 'en', 'fr', 'pt', 'it', 'de', 'ru', 'el', 'ar'];
 const PAGINAS = [''];
 
-// P2/P3 (2026-11-01): the map chunks are precached by exact name; atlas/bake_chunks.mjs --check keeps them equal to the baked files.
+// P2/P3 (2026-11-01): the map chunks are precached by exact name; atlas/hornea_chunks.mjs --check keeps them equal to the baked files.
 const JUEGO = [
   '/creation.html', '/assets/atlas-coord.js', '/assets/radio_message_log.js', '/assets/worm_transition.js',
   '/game/valores.js', '/game/gacha.js', '/game/db.js', '/game/core.js', '/game/canon.js',
