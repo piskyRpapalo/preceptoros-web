@@ -107,3 +107,26 @@ button,select,summary,.voice button,#chat button,#map .press button,.radio-chat-
 }
 @media (width<900px){main.map-panel-mask{grid-template-rows:minmax(180px,46dvh) minmax(0,1fr)}#map .surface{width:100%;margin:0}#map{padding:6px 8px}#chat{padding:6px 8px 0;gap:4px}}
 @media (min-width:900px){main.map-panel-mask{grid-template-rows:minmax(0,1fr);grid-template-columns:minmax(0,3fr) minmax(0,2fr)}#map{border-bottom:0;border-right:2px solid var(--line)}}
+
+/* The communication player opens on the map; it owns the existing chat. */
+main.map-panel-mask.with-showcase-player{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr)}
+.with-showcase-player #map{border:0;min-height:0}
+#chat[hidden]{display:none}
+#voices.map-voices:not([data-active-category="Radio"]){inset:20% 8px 8px}
+#voices.map-voices[data-active-category="Radio"]{inset:auto clamp(76px,25vw,160px) 8px;max-height:min(58%,30rem);overflow:auto;align-content:start}
+#voices[data-active-category="Radio"] > [data-speaker="Radio"]{min-width:0;padding:4px;gap:4px}
+#voices[data-active-category="Radio"] .radio-chat{margin:0}
+#voices[data-active-category="Radio"] .radio-chat-tabs{gap:2px;padding:0 2px}
+#voices[data-active-category="Radio"] .radio-chat-tab{min-width:0;padding:4px 2px;font-size:.8rem}
+#voices[data-active-category="Radio"] #chat-h{font-size:.9rem;margin:4px}
+#voices[data-active-category="Radio"] #log{list-style:none;margin:0;padding:4px;max-height:20vh;overflow:auto;overflow-wrap:anywhere}
+#voices[data-active-category="Radio"] #entry{display:flex;gap:3px;position:sticky;bottom:0;order:initial;padding:4px;background:var(--bg)}
+#voices[data-active-category="Radio"] #entry[hidden],#voices[data-active-category="Radio"] #log[hidden],#voices[data-active-category="Radio"] #chat-h[hidden]{display:none}
+#voices[data-active-category="Radio"] #question{width:0;flex:1;min-width:0;min-height:44px;font:inherit;color:var(--fg);background:var(--bg);border:2px solid currentColor}
+#voices[data-active-category="Radio"] #entry button{min-width:44px;padding:4px}
+@media (max-width:600px){
+#voices.map-voices:not([data-active-category="Radio"]){inset:0;padding-bottom:148px}
+/* Keep the player clear of the existing 136px walk pad until the joystick replaces it. */
+#voices.map-voices[data-active-category="Radio"]{left:8px;right:8px;bottom:148px}
+}
+@media (forced-colors:active){#voices[data-active-category="Radio"] #entry,#voices[data-active-category="Radio"] #question{background:Canvas;color:CanvasText}}

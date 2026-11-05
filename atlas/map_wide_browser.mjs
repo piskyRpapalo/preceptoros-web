@@ -92,8 +92,8 @@ async function main() {
     buttons[1].click();
     const out = { panelOnMap: voices.parentElement === stage && !voices.hidden,
       barBelowMap: bar.parentElement.id === 'map' && bar.getBoundingClientRect().top >= stage.getBoundingClientRect().bottom,
-      padOnMap: pad.parentElement === stage, chatVisible: getComputedStyle(chat).display !== 'none',
-      composerVisible: composer.getBoundingClientRect().height > 0 && composer.getBoundingClientRect().bottom <= innerHeight, pressed: buttons[1].getAttribute('aria-pressed'),
+      padOnMap: pad.parentElement === stage, chatClosed: getComputedStyle(chat).display === 'none',
+      composerClosed: composer.getBoundingClientRect().height === 0, pressed: buttons[1].getAttribute('aria-pressed'),
       noInvisibleTargets: !stage.querySelector(':scope > #map-proxies, :scope > .hitl-mark'),
       placesInPanel: !!voices.querySelector('#map-node-list') };
     buttons[1].click(); out.closed = voices.hidden;
@@ -103,22 +103,30 @@ async function main() {
   medidas.terminal = terminal;
   ok(terminal && Object.values(terminal).every(v => v === true || v === 'true'), 'terminal layout or panel toggle failed: ' + JSON.stringify(terminal));
 
-  // 2 · Explore: the canvas grows, its pixels follow, and the chat remains available.
+  // The player opens on demand and keeps the existing channels and composer reachable.
+  const player = await ev(`(() => { const b=document.querySelector('.cats [data-cat=Radio]'); b.click();
+    const voices=document.getElementById('voices'), form=document.getElementById('entry'), box=document.getElementById('radio-chat');
+    const f=form.getBoundingClientRect(), r=voices.getBoundingClientRect(), tabs=[...box.querySelectorAll('[role=tab]')];
+    const out={opened:!voices.hidden, channels:tabs.map(t=>t.textContent), form:f.height>=44 && f.bottom<=innerHeight, within:r.left>=0 && r.right<=innerWidth, count:document.querySelectorAll('#entry').length};
+    b.click(); out.closed=voices.hidden; return out; })()`);
+  ok(player && player.opened && player.closed && player.form && player.within && player.count === 1 && player.channels.join('|') === 'Echoes|Chat|Radio', 'communication player is missing or unreachable: ' + JSON.stringify(player));
+
+  // Explore closes the current leaf: the map already fills the showcase.
   await ev("document.getElementById('map-wide').click(), true"); await espera(700);
   const b = await caja();
   medidas.explore = { alto_mapa: b.h, ventana: b.alto, fraccion: +(b.h / b.alto).toFixed(2), px: b.px, chat: b.chat };
-  ok(W < 900 ? b.h > a.h : b.w > a.w, 'Explore did not enlarge the map: ' + JSON.stringify(medidas.explore));
+  ok(b.h >= a.h && b.h / b.alto >= 0.8, 'Explore did not retain the full showcase: ' + JSON.stringify(medidas.explore));
   ok(b.px >= b.h, 'the canvas pixels did not follow the new height (no redraw): ' + JSON.stringify(medidas.explore));
-  ok(b.chat !== 'none' && b.boton.pressed === 'true', 'the chat disappeared or the button is not pressed');
+  ok(b.chat === 'none' && b.boton.pressed === 'true', 'the fixed chat remains or Explore is not pressed');
   ok(/Explore/.test(b.say), 'Explore is not spoken: ' + b.say);
   await foto('g1-explore.png');
 
-  // 3 · Escape brings the chat back and the map its half.
+  // Escape restores the map controls leaf; communication remains available on demand.
   await cmd('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27 });
   await cmd('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27 }); await espera(500);
   const c = await caja();
   medidas.escape = { alto_mapa: c.h, chat: c.chat };
-  ok(c.chat !== 'none' && c.boton.pressed === 'false' && (W < 900 ? c.h < b.h : c.w < b.w), 'Escape did not restore the map: ' + JSON.stringify(medidas.escape));
+  ok(c.chat === 'none' && c.boton.pressed === 'false' && await ev("!document.getElementById('voices').hidden && document.getElementById('voices').dataset.activeCategory === 'Map'"), 'Escape did not restore the map controls: ' + JSON.stringify(medidas.escape));
 
   console.log(JSON.stringify({ piece: 'g1-ventana-grande', sabotaje: SAB || null, receipt: fallos.length ? 'ROJO' : 'VERDE', medidas, fallos }));
 }

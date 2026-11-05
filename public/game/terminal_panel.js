@@ -78,6 +78,7 @@
     stage.appendChild(voices);
     function show(cat) {
       current = cat; voices.hidden = !cat;
+      voices.dataset.activeCategory = cat || '';
       Array.prototype.forEach.call(voices.querySelectorAll('[data-speaker]'), function (li) { li.style.display = li.dataset.cat === cat ? '' : 'none'; });
       CATS.forEach(function (c) { var b = buttons[c[0]]; b.setAttribute('aria-pressed', String(c[0] === cat)); if (c[0] === cat) { b.textContent = icons[c[0]]; } });
     }
