@@ -104,6 +104,7 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
 <script src="/game/tutorial_walk.js"></script>
 <script src="/game/colony_controls.js"></script>
 <script src="/assets/pwa.js"></script>
+<script src="/game/world_feed.js"></script>
 <script>
 // OpenWorld (NORTE 7 · PR 2 · global map, ODD isometric-colony). Same-origin only: the state file is the one thing read
 // from the server. Default: zero nodes; the cabin is always here. A node that is not listed as alive does not exist.
@@ -288,12 +289,36 @@ main{flex:1;display:grid;grid-template-rows:1fr 1fr;max-width:none;width:100%;pa
   render();
   raiz.addEventListener('resize', draw);
   if (!quieto) { raiz.setInterval(cycle, 1000); }
-  if (raiz.fetch) {
-    raiz.fetch('/openworld/estado.json', { cache: 'no-cache' })
-      .then(function (r) { return r.ok ? r.json() : null; })
-      .then(function (d) { accept(d); render(); })
-      .catch(function () { /* no state file: zero nodes, which is the default */ });
+  var tutorial = { esquema: 'preceptoros.openworld-estado/2', nodes: [], colonia: {
+    nodes: [{id: 'cabin', q: -1, r: 0, alive: true, seal: 'LIVE', since: '2026-10-30', look: 'basic'}],
+    buildings: [{id: 'b-cabin', node: 'cabin'}], units: []
+  }};
+  function showWorld(data) {
+    colonia_error = '';
+    accept(data); render();
   }
+  if (colonia_fuente !== 'fixture') {
+    showWorld(tutorial);
+    var stopFeed = raiz.AtlasWorldFeed.start({fetch: raiz.fetch.bind(raiz),
+      validate: function (data) { raiz.AtlasOpenworldState.leer(data); },
+      accept: function (data) {
+        var c = data.colonia;
+        if (c.nodes.some(function (n) { return n.id === 'cabin' || (n.q === -1 && n.r === 0); })) {
+          showWorld(data); return;
+        }
+        showWorld({esquema: data.esquema, nodes: [], colonia: {
+          nodes: tutorial.colonia.nodes.concat(c.nodes),
+          buildings: tutorial.colonia.buildings.concat(c.buildings), units: c.units
+        }});
+        if (data.cobertura && data.cobertura.estado === 'NO_DATA') {
+          state.textContent += ' Live nodes: NO_DATA. Tutorial only.';
+        }
+      },
+      unavailable: function (cause) { showWorld(tutorial); state.textContent += ' ' + cause; }
+    });
+    raiz.addEventListener('pagehide', function (event) { if (!event.persisted) stopFeed(); });
+  }
+
 })(window);
 </script>
 </body>

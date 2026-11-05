@@ -144,6 +144,7 @@ self.addEventListener('fetch', e => {
   if (req.method !== 'GET') return;                 
 
   const url = new URL(req.url);
+  if (url.pathname.startsWith('/api/')) return;
   if (url.origin !== self.location.origin) return;  
 
   if (RED_PRIMERO.indexOf(url.pathname) >= 0) { e.respondWith(redPrimero(e)); return; }
