@@ -80,7 +80,7 @@ async function main() {
   await ev(`(() => { const f = document.getElementById('free-walk'); if (f) { f.checked = false; f.dispatchEvent(new Event('change')); } return true; })()`);
 
   // 1 · the six touch directions stay native and named; no separate enter-node button is added.
-  const botones = await ev(`[...document.querySelectorAll('#stage .walk-pad button')].map(b => b.textContent.trim())`);
+  const botones = await ev(`(() => [...document.querySelectorAll('#stage .walk-pad button')].map(b => b.textContent.trim()).concat([...document.querySelectorAll('#joy button')].filter(b=>b.textContent.includes('Skip tutorial')).map(b=>b.textContent.trim())))()`);
   medidas.botones = botones;
   const joystick = await ev(`(() => { const p = document.querySelector('#stage .walk-pad'); return JSON.stringify({ label: p && p.getAttribute('aria-label'), directions: [...document.querySelectorAll('#stage .walk-pad button')].map(b => b.dataset.direction), heights: [...document.querySelectorAll('#stage .walk-pad button')].map(b => b.getBoundingClientRect().height), enter: [...document.querySelectorAll('#stage .walk-pad button')].some(b => /enter node/i.test(b.textContent)) }); })()`);
   medidas.joystick = JSON.parse(joystick);
