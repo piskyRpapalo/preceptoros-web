@@ -9,7 +9,7 @@ import { launchChrome } from './chrome_launch.mjs';
 
 const PUBLIC = fileURLToPath(new URL('../public/', import.meta.url));
 const CAPTURE = process.argv[2] || null;
-const HITL = readFileSync(new URL('./fixtures/hitl_estado.json', import.meta.url));
+const HITL = readFileSync(new URL('./fixtures/hitl_state.json', import.meta.url));
 let hitlOn = false;
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const failures = [], external = [];
@@ -25,7 +25,7 @@ function serve() {
       if (path.endsWith('/')) path += 'index.html';
       const file = resolve(PUBLIC, '.' + path);
       if (!file.startsWith(resolve(PUBLIC))) { res.writeHead(403).end(); return; }
-      const body = hitlOn && path === '/openworld/estado.json' ? HITL : readFileSync(file);
+      const body = hitlOn && path === '/openworld/state.json' ? HITL : readFileSync(file);
       res.writeHead(200, { 'Content-Type': types[extname(file)] || 'text/plain', 'Cache-Control': 'no-store' }); res.end(body);
     } catch { res.writeHead(404).end(); }
   });
