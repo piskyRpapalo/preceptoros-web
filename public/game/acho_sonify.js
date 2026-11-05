@@ -56,6 +56,12 @@
       carrierOsc.frequency.value = r.carrier; modulatorOsc.frequency.value = r.modulator;
       depth.gain.value = r.index;
       modulatorOsc.connect(depth); depth.connect(carrierOsc.frequency);
+      if (r.modulator2 !== undefined && r.index2 !== undefined) {
+        var modulator2 = context.createOscillator(), depth2 = context.createGain();
+        modulator2.frequency.value = r.modulator2; depth2.gain.value = r.index2;
+        modulator2.connect(depth2); depth2.connect(carrierOsc.frequency);
+        modulator2.start(t); modulator2.stop(t + r.dur);
+      }
       out.gain.setValueAtTime(0, t); out.gain.linearRampToValueAtTime(r.gain, t + 0.02);
       out.gain.linearRampToValueAtTime(0, t + r.dur);
       carrierOsc.connect(out); out.connect(context.destination);
