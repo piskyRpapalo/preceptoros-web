@@ -59,15 +59,19 @@ def valor_de(modelo, campo):
 def bloque(d):
     partes = [INICIO, '<div class="cerebros">']
     partes.append(
-        f'<p class="note">Chat brains the web can ask the rack for. Speeds, load time and size are measured on the node '
-        f'(context {d.get("contexto", "NO_DATA")}, backend {html.escape(str(d.get("backend", "NO_DATA")))}, '
-        f'{d.get("muestras", "NO_DATA")} sample). Source: public/brains.json.</p>'
+        f'<p class="note">Historical node measurements (context {d.get("contexto", "NO_DATA")}, '
+        f'backend {html.escape(str(d.get("backend", "NO_DATA")))}, {d.get("muestras", "NO_DATA")} sample). '
+        f'Current availability: NO_DATA. Source: public/brains.json.</p>'
     )
     for c in d["cerebros"]:
         mid = html.escape(c.get("id", "NO_DATA"))
         modelo = html.escape(c.get("modelo", "NO_DATA"))
         partes.append(f'<article class="cerebro" id="cerebro-{mid}">')
-        partes.append(f"<h4>{mid} · <code>{modelo}</code></h4>")
+        size, size_mark = valor_de(c, "bytes")
+        unit = " GiB" if size_mark.startswith("MEDIDO") else ""
+        partes.append('<details><summary>')
+        partes.append(f'{mid} · <code>{modelo}</code> · {html.escape(size)}{unit}')
+        partes.append('</summary><p>Historical node measurement; expand for details and the install command.</p>')
         partes.append("<dl>")
         for campo, etiqueta in ETIQUETAS:
             texto, marca = valor_de(c, campo)
@@ -77,7 +81,7 @@ def bloque(d):
             )
         partes.append("</dl>")
         partes.append(f"<pre><code>ollama pull {modelo}</code></pre>")
-        partes.append("</article>")
+        partes.append("</details></article>")
     partes.append("</div>")
     partes.append(FIN)
     return "\n".join(partes)

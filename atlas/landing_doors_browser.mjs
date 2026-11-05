@@ -83,6 +83,16 @@ async function main() {
     return JSON.stringify({loaded:!!canvas,canvases:d?.querySelectorAll('canvas').length||0,ink,entered,same,restored:!document.body.classList.contains('world-active')});})()`));
   ok(world.loaded && world.canvases === 1 && world.ink > 2000, 'the intro has no painted shared map behind it: ' + JSON.stringify(world));
   ok(world.entered && world.same && world.restored, 'OpenWorld did not reveal and preserve the same single map instance: ' + JSON.stringify(world));
+  await ev(`(() => { const e = new Event('beforeinstallprompt', { cancelable: true });
+    e.prompt = () => { window.__toolsPrompt = (window.__toolsPrompt || 0) + 1; };
+    e.userChoice = Promise.resolve({ outcome: 'accepted' }); dispatchEvent(e); })()`);
+  await ev("document.getElementById('door-tools').click()"); await espera(100);
+  const toolsOffer = await ev(`(() => ({ visible: !document.getElementById('tools-dispositivo').hidden,
+    prompt: window.__toolsPrompt || 0, enabled: !document.getElementById('tools-install').disabled,
+    focus: document.activeElement.id, hasModelSource: !!document.querySelector('#tools-dispositivo a[href^="https://huggingface.co/"]') }))()`);
+  ok(toolsOffer && toolsOffer.visible && toolsOffer.prompt === 0 && toolsOffer.enabled && toolsOffer.focus === 'tools-h' && toolsOffer.hasModelSource, 'Tools must open the offers without triggering installation: ' + JSON.stringify(toolsOffer));
+  await ev("document.getElementById('tools-install').click()"); await espera(100);
+  ok(await ev('window.__toolsPrompt === 1'), 'the separate install action did not invoke the browser offer');
   ok(await ev("!!document.querySelector('#tools-dispositivo details[open]')"), 'NORTE 7 PR 1: the Tools device list is folded; it must be visible');
   ok(externas.length === 0, 'external requests: ' + externas.slice(0, 3));
   // North D1: the install guide, at phone width: nothing external, no sideways scroll, no missing value, the landing links it.
