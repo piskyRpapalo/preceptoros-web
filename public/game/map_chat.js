@@ -84,9 +84,10 @@
     if (!text || busy) return;
     if (!visitAccount) { line('Hexelion', 'NO_DATA · Start an ephemeral visit before sending to Hexelion.'); return; }
     if (new TextEncoder().encode(text).length > 600) { line('Hexelion', 'NO_DATA · Message exceeds 600 UTF-8 bytes.'); return; }
+    var generation = visitGeneration, account = visitAccount, seed;
     busy = true;
     try { await loadAula(); } catch (_) { busy = false; line('Hexelion', 'NO_DATA · Chat gateway module unavailable.'); return; }
-    var generation = visitGeneration, account = visitAccount, seed;
+    if (generation !== visitGeneration || account !== visitAccount) { busy = false; return; }
     try { seed = account.info().seed; } catch (_) { busy = false; line('Hexelion', 'NO_DATA · This visit has ended.'); return; }
     line('You', text); input.value = ''; busy = true;
     var send = form.querySelector('button[type="submit"]'); send.disabled = true;
