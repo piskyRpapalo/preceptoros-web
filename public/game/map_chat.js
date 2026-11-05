@@ -37,7 +37,9 @@
       var urls = Array.prototype.map.call(doc.scripts, function (s) { return s.src; }).filter(function (u) { return u && u.indexOf(root.location.origin + '/') === 0; }).concat(['/openworld/state.json']);
       return Promise.all(urls.map(function (u) { return root.fetch(u).then(function (r) { return r.ok; }, function () { return false; }); }));
     }).then(function () {
-      ready = true; var heading = doc.getElementById('chat-h'); if (heading) { heading.textContent = model; } note.textContent = model + ' · ready on this device' + (offline ? ' · offline' : '') + '. Ask the tutorial guide anything.'; start.textContent = 'Web node brain ready';
+      ready = true; var loaded = B && typeof B.model === 'function' ? B.model() : ''; if (typeof loaded === 'string' && loaded) { model = loaded; }
+      var heading = doc.getElementById('chat-h'); if (heading) { heading.textContent = model; }
+      note.textContent = model + ' · ready on this device' + (offline ? ' · offline' : '') + '. Ask the tutorial guide anything.'; start.textContent = 'Web node brain ready';
     }, function (error) { note.textContent = 'NO_DATA · ' + (error.cause || 'model_unavailable') + ': ' + error.message; start.disabled = false; }).then(function () { loading = false; });
   });
   doc.addEventListener('map:context', function (event) { choose(event.detail.label); });

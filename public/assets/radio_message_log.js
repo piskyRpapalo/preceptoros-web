@@ -78,7 +78,9 @@
     function mira(n) {
       if (!n || n.nodeType !== 1 || (R.caja && R.caja.contains(n))) { return; }
       // A line a page marks as technical (data-radio="tecnico", e.g. the walkers' routes) is said in its own place, not here.
-      if (n.closest && n.closest('[data-radio="tecnico"],#log')) { return; }
+      // The Walkers voice is a technical frame whose parent can be the mutation target when the panel mounts;
+      // skip the whole voice so the radio cannot capture its child route before the leaf's technical marker is observed.
+      if (n.closest && n.closest('[data-radio="tecnico"],#log,#voice-walkers')) { return; }
       var t = (n.textContent || '').trim();
       if (!t || ultimos.get(n) === t) { return; }
       ultimos.set(n, t);

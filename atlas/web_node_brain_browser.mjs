@@ -70,6 +70,12 @@ async function main() {
   ok(/arrow keys|stick/.test(r.text || ''), 'the guide does not use the page facts: ' + r.text);
   ok(modelos.length === 6, 'expected manifest + 5 chunks + nothing else from /models/: ' + modelos.length);
   ok(externas.length === 0, 'external requests: ' + externas.slice(0, 3));
-  console.log(JSON.stringify({ piece: 'web-node-brain', medidas: r, peticiones_modelo: modelos.length, externas: externas.length, fallos }));
+  const speaker = JSON.parse(await ev(`(async () => { const w=(ms)=>new Promise(r=>setTimeout(r,ms)), map=document.querySelector('.cats [data-cat=Map]'); map.click();
+    for(let i=0;i<50;i++){const b=document.querySelector('#map-node-list [data-node=cabin]');if(b){b.click();break;}await w(100);}
+    for(let i=0;i<50&&!/Tutorial cabin/.test(document.getElementById('chat-h').textContent);i++)await w(100);
+    const inside=document.getElementById('chat-h').textContent, leave=document.getElementById('leave-building'); if(leave)leave.click();
+    return JSON.stringify({inside, after:document.getElementById('chat-h').textContent}); })()`));
+  ok(speaker.inside === 'Tutorial cabin · b-cabin' && speaker.after === 'SmolLM2-135M-Instruct-Q4_K_M', 'leaving a building did not restore the loaded model as speaker: ' + JSON.stringify(speaker));
+  console.log(JSON.stringify({ piece: 'web-node-brain', medidas: r, speaker, peticiones_modelo: modelos.length, externas: externas.length, fallos }));
 }
 main().catch((e) => { fallos.push(String(e.message || e)); console.log(JSON.stringify({ fallos })); }).finally(() => { try { ws && ws.close(); } catch {} try { ch && ch.close && ch.close(); } catch {} try { srv && srv.close(); } catch {} process.exit(fallos.length ? 1 : 0); });

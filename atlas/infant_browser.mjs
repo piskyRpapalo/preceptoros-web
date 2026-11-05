@@ -66,12 +66,12 @@ async function main() {
     const ctl = [...document.querySelectorAll('button,[role=tab],summary,a[href]')].filter(vis);
     const cortados = ctl.filter((e) => e.scrollWidth > e.clientWidth + 1).map((e) => e.textContent.trim().slice(0, 30));
     const radio = [...document.querySelectorAll('#radio-chat-lista li')].map((li) => li.textContent);
-    return { dup, tecnico, cortados, chars: lineas.join(' ').length, radio: radio.length, radioCaminantes: radio.filter((t) => /walker of /.test(t)).length };
+    return { dup, tecnico, cortados, chars: lineas.join(' ').length, radio: radio.length, radioCaminantes: radio.filter((t) => /walker of /.test(t)).map((t) => t.slice(0, 180)) };
   })())`));
   medidas.infante = r;
   ok(r.dup.length === 0, 'R2 a line repeats on the first screen: ' + r.dup.slice(0, 3).join(' | '));
   ok(r.tecnico.length === 0, 'R3 technical text is visible: ' + r.tecnico.slice(0, 3).join(' | ').slice(0, 300));
-  ok(r.radioCaminantes === 0, 'R3 the radio echoes the walkers: ' + r.radioCaminantes);
+  ok(r.radioCaminantes.length === 0, 'R3 the radio echoes the walkers: ' + r.radioCaminantes.join(' | '));
   ok(r.cortados.length === 0, 'R4 cut at 360 px: ' + r.cortados.join(' | '));
   ok(r.chars < TECHO, 'the visible text is over ' + TECHO + ' chars: ' + r.chars);
   console.log(JSON.stringify({ piece: 'infante', publico: process.env.PUBLICO ? 'override' : 'branch', receipt: fallos.length ? 'ROJO' : 'VERDE', medidas, fallos }));

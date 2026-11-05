@@ -137,5 +137,5 @@
     }).then(function (a) { state.status = 'ready'; return a; }, function (e) { state.status = 'ready'; throw e.cause ? e : noData('model_unavailable', e.message); });
   }
 
-  root.AtlasWebNodeBrain = { load: load, reply: reply, check: check, status: function () { return state.status; }, offline: function () { return state.offline; }, MANIFEST: MANIFEST };
+  root.AtlasWebNodeBrain = { load: load, reply: reply, check: check, status: function () { return state.status; }, model: function () { return state.model; }, offline: function () { return state.offline; }, MANIFEST: MANIFEST };
 })(globalThis);

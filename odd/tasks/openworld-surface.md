@@ -59,6 +59,9 @@ and the existing service-worker cascade for any served change.
 - OpenWorld keeps the chat and composer visible, puts seven category controls
   below the map, places the joystick on the map's right edge, and exposes map
   place actions as visible buttons. No second renderer or canvas is created.
+- The chat heading follows the active speaker: `Guide` before the optional
+  local brain is ready, its verified model name after readiness, and the
+  current building while inside; leaving restores that active speaker.
 - Chromium checks cover 390×844 phone layout, first paint, two-click entry,
   movement, all seven panels, keyboard/forced-colors, and the service-worker
   shell. Browser checks now use the visible Map place control; layout asserts
@@ -70,3 +73,8 @@ and the existing service-worker cascade for any served change.
   accessible node walk, and carbon accessibility browser checks green.
 - Live node state remains `NO_DATA` where the publisher returns 404. Physical
   device, screen-reader, and production cache behavior have not been measured.
+- A further Chromium pass exposed R3's Walker route leaking into Radio during
+  panel mount; the observer now excludes the complete Walkers voice. The chat
+  heading now restores the current speaker after leaving a building. Local
+  tests are green except the expected SW fingerprint mismatch while the next
+  seal is assigned; no served-asset fix has been pushed yet.
