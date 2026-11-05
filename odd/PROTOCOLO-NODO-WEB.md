@@ -7,7 +7,7 @@ Norte: `/openworld/` es el **nodo web tutorial** y tiene que llegar a **triple A
 
 | capa | qué | dónde vive |
 |---|---|---|
-| mapa | suelo 2.5D de chunks hex horneados, caminantes, cabaña, `?` de HITL | `colonia_pagina.js` (colocación única), `map_painter.js`, `map_chunks.js`, `map_carta.js`, `hitl_walkers.js` |
+| mapa | suelo 2.5D de chunks hex horneados, caminantes, cabaña, `?` de HITL | `colony_page.js` (colocación única), `map_painter.js`, `map_chunks.js`, `map_chart.js`, `hitl_walkers.js` |
 | capas sobre el mapa | joystick (abajo a la izquierda), zoom (arriba a la derecha) | `colony_controls.js`, `map_zoom.js`, CSS de `openworld/index.html` |
 | botones | pestañas Map · News · Summons · Army, con hojas que cubren el mapa | `terminal_tabs.js` |
 | estado | tira aria-live, siempre fuera de las hojas | `#state`, `#floor-state` |
@@ -21,14 +21,14 @@ En un teléfono (390 px) el orden vertical es: mapa (40-50 %, de borde a borde) 
 
 1. **Un PR por pieza**, con la plantilla `PROPUESTA · REQUIERE_FIRMA`.
 2. **Cada prueba nueva se enseña primero en rojo** con un sabotaje real y luego en verde.
-3. **Gate completo en local**: todos los comandos de `gate.yml`, `test_web.py`, `atlas/test_atlas.py` y `arnes_sw.mjs`, con 0 rojos.
+3. **Gate completo en local**: todos los comandos de `gate.yml`, `test_web.py`, `atlas/test_atlas.py` y `sw_harness.mjs`, con 0 rojos.
 4. **Ojo de carbono**: captura a 390 px, **mirada**. Objetivos de 44 px, teclado, aria-live, nada solo por color, texto y dibujo jamás solapados.
-5. **F0**: toda función nueva de `/openworld/` entra en `atlas/f0_funciones.json` con una guarda de navegador que corre en CI.
+5. **F0**: toda función nueva de `/openworld/` entra en `atlas/f0_functions.json` con una guarda de navegador que corre en CI.
 6. **Sello**: VERSION **creciente** y nunca reutilizada (gate de #531). Cada pieza reserva su letra al nacer; si main ya sirve una mayor, se re-sella con la siguiente libre.
 7. **Léxico trinquete, barrido sin colores crudos, cero peticiones externas al cargar, SCRUB**, y determinismo (sin `Math.random` ni `Date`).
 8. **El render jamás decide** (P5): cámara, giro y zoom cambian la vista, nunca la niebla, los recursos ni los resultados.
 9. **Cloudflare sin estado**: el borde sirve bytes horneados e inmutables; no calcula el mapa.
-10. **Decreto p0 del 2026-11-01**: la web no nombra Atlantis ni the Risen hasta que los PCs del rack estén desplegados (guarda `atlas/nombres_retirados_casos.mjs`).
+10. **Decreto p0 del 2026-11-01**: la web no nombra Atlantis ni the Risen hasta que los PCs del rack estén desplegados (guarda `atlas/retired_names_cases.mjs`).
 
 ## 3 · El tren de PRs (cómo se llega a main)
 

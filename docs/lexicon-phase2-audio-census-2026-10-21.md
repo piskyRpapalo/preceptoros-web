@@ -20,12 +20,12 @@ All serialized channels are 100–947 B (<1,024 B); each channel digest stayed e
 
 ## Measured causes and limits
 
-- Source sizes: `descent_sound.js` 5,118 B; `aiact-art50-state-radio.js` 5,991 B; `tarjeta_cantada.js` 2,817 B; `audio_feedback_manager.js` 5,568 B; `core.js` 4,639 B. All five are below 16,384 B.
+- Source sizes: `descent_sound.js` 5,118 B; `aiact-art50-state-radio.js` 5,991 B; `sung_card.js` 2,817 B; `audio_feedback_manager.js` 5,568 B; `core.js` 4,639 B. All five are below 16,384 B.
 - `descent_sound.js:34-57,88-110` makes stable voice recipes and starts native oscillators without a declared phase; the measured recipe hashes match while rendered sample hashes differ. The phase cause is a source-level hypothesis, not proven by this census.
 - `aiact-art50-state-radio.js:4` has five pentatonic intervals and a declared 300 ms step at `:62`; no five-block, 1,024-byte wavetable exists in the measured source. NO_DATA for that requested structure.
-- `tarjeta_cantada.js:43-45` calls `S.activa()` as a read; `core.js:44-52` sets `activo = !!si`, so a no-argument read turns audio off. Result: NO_DATA with the returned cause; no source fix included.
+- `sung_card.js:43-45` calls `S.activa()` as a read; `core.js:44-52` sets `activo = !!si`, so a no-argument read turns audio off. Result: NO_DATA with the returned cause; no source fix included.
 - Physical-speaker output and Doogee playback: NO_DATA; this harness renders offline and never opens a device speaker.
-- Existing baseline: `atlas/descent_sound_casos.mjs:94-111` uses a fake context; `tests/tarjeta_cantada.test.mjs:51-55` expects browser audio to be unavailable in Node. Neither produced a waveform hash.
+- Existing baseline: `atlas/descent_sound_casos.mjs:94-111` uses a fake context; `tests/sung_card.test.mjs:51-55` expects browser audio to be unavailable in Node. Neither produced a waveform hash.
 
 ## Harness and safety
 

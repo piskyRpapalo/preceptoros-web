@@ -6,7 +6,7 @@
 // desaparece obliga a bajar la base (la base solo puede encogerse). Se regenera con `--escribe-base`.
 //
 // Honestidad: la ley dice «palabra fuera de la lista blanca»; hoy el gate aplica la lista NEGRA medida (las
-// palabras españolas del D2) mas la lista blanca de excepciones (atlas/lexicon_permitidas.json). Una lista
+// palabras españolas del D2) mas la lista blanca de excepciones (atlas/lexicon_allowed.json). Una lista
 // blanca completa de ingles exige un diccionario versionado: decision pendiente del Soberano.
 import { readdirSync, readFileSync, statSync, writeFileSync, existsSync } from 'node:fs';
 import { join, relative, resolve } from 'node:path';
@@ -33,8 +33,8 @@ function cargaLista(raiz, nombre, por) {
 
 // Devuelve { fichero: [palabras] } para cada fichero servido con palabra española no permitida.
 export function escanea(raiz = RAIZ_POR_DEFECTO) {
-  const lista = cargaLista(raiz, 'lexicon_espanol.json', { palabras: [] });
-  const permitidas = new Set(cargaLista(raiz, 'lexicon_permitidas.json', { palabras: [] }).palabras.map((w) => w.toLowerCase()));
+  const lista = cargaLista(raiz, 'lexicon_es.json', { palabras: [] });
+  const permitidas = new Set(cargaLista(raiz, 'lexicon_allowed.json', { palabras: [] }).palabras.map((w) => w.toLowerCase()));
   const negra = new Set(lista.palabras);
   const hallazgos = {};
   for (const f of ficheros(join(raiz, 'public'))) {

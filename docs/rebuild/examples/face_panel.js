@@ -3,7 +3,7 @@
   var doc = root.document;
   var heads = {
     map: ['Map', 'LIVE', 'this page: the living map'],
-    battle: ['Battle', 'NO_DATA', 'canon Army, gacha and combate_ticks; summons and adoptions are signed by your key'],
+    battle: ['Battle', 'NO_DATA', 'canon Army, gacha and combat_ticks; summons and adoptions are signed by your key'],
     profile: ['Profile', 'LIVE', 'this page: your growth by the canon rule; your key from the canon identity'],
     info: ['Info', 'LIVE', 'this page: sound, voice, layouts, tools and the machine view']
   };

@@ -9,7 +9,7 @@ Base: `0b5da04`. Proposal; native mixed PCM remains NO_DATA: no browser in this 
 | `public/game/descent_sound.js:95-110` | Native oscillators, gain automation and absolute scheduling remain delegated to Web Audio | Native mixed waveform is not measured by the offline test |
 | `public/game/aiact-art50-state-radio.js:6-8,39-43,57-63` | Note recipe is pure; playback uses 300 ms timers | Callback delay can shift playback; no hidden random seed was found |
 | `public/game/aiact-art50-state-radio.js:66-74` | TTS selects a local English voice | Machine voice inventory is an explicit environmental dependency |
-| `public/game/tarjeta_cantada.js:6-35,40-50` | ID hash and melody are pure; playback uses timers and calls activa without an argument | `core.js:44-45` disables audio on that call; this is a separate deterministic failure, not random PCM |
+| `public/game/sung_card.js:6-35,40-50` | ID hash and melody are pure; playback uses timers and calls activa without an argument | `core.js:44-45` disables audio on that call; this is a separate deterministic failure, not random PCM |
 | `public/game/audio_feedback_manager.js:54-68,81-98` | Recipe depends on input and opt-in/context state | It delegates oscillator timing to the shared synthesis module |
 | `public/game/core.js:44-49,67-100` | AudioContext has no explicit requested rate; synthesis starts at currentTime | Device rate and scheduling matter for live output; this alone does not explain the earlier offline reload failure |
 
@@ -27,6 +27,6 @@ Two Chrome headless loopback runs confirmed the six recipe hashes match while al
 
 `descent_sound.js:88-113` now synthesizes sine, triangle, and seeded noise samples into one ordered 44.1 kHz buffer before Web Audio schedules it. With the fix, both separate browser runs returned the same PCM hashes for all six frames; no external request was seen. `atlas/descent_pcm_cases.mjs` also compares the production buffer across two context rates and start times.
 
-Other source findings: `core.js:43-51,70` leaves the live context rate to the device and schedules at `currentTime`; `aiact-art50-state-radio.js:59-63` and `tarjeta_cantada.js:47-49` use 300 ms timers for separate notes. Those are live timing dependencies, not the cause of this offline reload mismatch. `audio_feedback_manager.js:81-98` makes deterministic recipes and delegates timing to `core.js`. The card still reports `NO_DATA` because `tarjeta_cantada.js:43-45` calls the state-changing `activa()` without enabling it; that is a separate issue and remains unchanged.
+Other source findings: `core.js:43-51,70` leaves the live context rate to the device and schedules at `currentTime`; `aiact-art50-state-radio.js:59-63` and `sung_card.js:47-49` use 300 ms timers for separate notes. Those are live timing dependencies, not the cause of this offline reload mismatch. `audio_feedback_manager.js:81-98` makes deterministic recipes and delegates timing to `core.js`. The card still reports `NO_DATA` because `sung_card.js:43-45` calls the state-changing `activa()` without enabling it; that is a separate issue and remains unchanged.
 
 Cross-browser and physical-device PCM equality: NO_DATA (measured here only in this Chrome build at 44.1 kHz). Open 1: should byte equality across browser engines and devices be required? No evidence currently supports that wider claim.

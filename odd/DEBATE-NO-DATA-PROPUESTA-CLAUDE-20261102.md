@@ -29,8 +29,8 @@ libertad, tiene que atacar las dos cosas.
    registro `{ campo, antes, después, evidencia_sha, fecha }`. Así se puede revisar y optimizar el pasado sin perder lo
    append-only. Es el «revisión directa al pasado» del addendum, hecho comprobable.
 3. **(M) Sellar al fusionar, no en cada PR**: ayer, la mayoría de los conflictos estaban en `sw.js`,
-   `config/sw-huella.txt`, `counters.json` y `atlas-mundo.json` (el sello), en los recuentos de rutas de `arnes_sw.mjs`
-   y `DEPLOY.md`, y en la fila de `atlas/f0_funciones.json`.
+   `config/sw-huella.txt`, `counters.json` y `atlas-world.json` (el sello), en los recuentos de rutas de `sw_harness.mjs`
+   y `DEPLOY.md`, y en la fila de `atlas/f0_functions.json`.
    - Si los PRs no tocan el sello y un paso de la Mesa o de CI sella **una vez tras cada fusión**, la VERSION sigue
      siendo creciente y única, y desaparece casi toda la cascada.
    - Con F0 en un fichero por función (`atlas/f0/<id>.json`) y el recuento de rutas generado, se quitan las otras dos.

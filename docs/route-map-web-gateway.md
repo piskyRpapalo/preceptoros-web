@@ -45,19 +45,19 @@ and cannot pass the preflight of the packet POST. A visitor on the apex can.
 | `public/game/nodos-cedulas.js` | static catalog `atlas.cedulas_nodo/1` (two accounts, two nodes) | static; no network |
 | `public/game/node_reception_contract.js` | door 1 contract: `ENDPOINT https://api.preceptoros.org/aduana/cedulas`, `POST`, byte ceiling | **declared only**: no file under `public/` calls `fetch` on it |
 | `public/game/node_signature_verify.js` | door 2: verifies against `node_trust_anchor.js` | anchors `key_sha256: null`, `manifest_sha256: null` (ceremony pending) |
-| `public/assets/enviar.js` | live transport: `GET /api/v1/reto`, then `POST /api/v1/paquetes` (`cache: no-store`, JSON) | used by `ui-nodos.js:161` (schema from `nodos.js` `ESQUEMA_ENVIO`) and `page-comment.js` |
+| `public/assets/send.js` | live transport: `GET /api/v1/reto`, then `POST /api/v1/paquetes` (`cache: no-store`, JSON) | used by `ui-nodes.js:161` (schema from `nodes.js` `ESQUEMA_ENVIO`) and `page-comment.js` |
 
 So the node UI sends through `/api/v1/paquetes`, **not** through door 1. Door 1
 and the live transport are different routes with different contracts
-(`docs/node-reception-contract.md` vs `enviar.js`).
+(`docs/node-reception-contract.md` vs `send.js`).
 
 ## Other references in the repo
 
 `README.md:75`, `llms.txt:23` and `public/llms.txt:23` promise the host is called
 only when a visitor presses send. `SECURITY.md:16` and
 `docs/node-reception-contract.md:10` name door 1. `public/nexo-v1.json` documents
-reto → paquetes. `arnes_sw.mjs:239` proves the service worker lets
-`/api/v1/tasks` pass untouched (cross-origin). `humo_lenguas.py` targets
+reto → paquetes. `sw_harness.mjs:239` proves the service worker lets
+`/api/v1/tasks` pass untouched (cross-origin). `smoke_languages.py` targets
 `/api/generate` (rack smoke test, not served). `test_web.py:90` allowlists the
 host.
 

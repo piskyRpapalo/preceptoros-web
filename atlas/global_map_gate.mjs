@@ -50,7 +50,7 @@ const ok = (cond, msg) => { assert.ok(cond, msg); pasos++; console.log('ok · ' 
 
 try {
   // 1 · pure cases (node): liveness, orphan refusal, frame size, palette from t, n=2, detector, grep.
-  const casos = spawnSync(process.execPath, [join(RAIZ, 'atlas/global_map_casos.mjs')], { encoding: 'utf8' });
+  const casos = spawnSync(process.execPath, [join(RAIZ, 'atlas/global_map_cases.mjs')], { encoding: 'utf8' });
   assert.equal(casos.status, 0, 'pure cases failed:\n' + casos.stdout + casos.stderr);
   ok(true, casos.stdout.trim());
 
