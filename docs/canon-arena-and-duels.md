@@ -164,7 +164,7 @@ Lo que importa, en orden: el Núcleo, la fase, no romperse por el camino y la XP
 Una sugerencia que no cambia nada del estado es una alucinación: no hay rama que jugar.
 
 
-## public/game/escuadron.js:1
+## public/game/squadron.js:1
 
 preceptoros.org · theGame · EL ESCUADRON (P6, combate a escala; firmado por el Soberano el 2026-10-11).
 
@@ -183,29 +183,29 @@ preceptoros.org · theGame · EL ESCUADRON (P6, combate a escala; firmado por el
    no hay escuadron (degradacion honesta: la tropa sigue). Sin azar: los sitios salen de la semilla.
 
 
-## public/game/escuadron.js:24
+## public/game/squadron.js:24
 
 Cuantas unidades despliega una tropa de n aristas: round(por_aristas / n), con tope; el Leviatan, 1.
 
 
-## public/game/escuadron.js:26
+## public/game/squadron.js:26
 
 Cuantas siguen en pie con esa vida (la ultima cae con la tropa).
 
 
-## public/game/escuadron.js:29
+## public/game/squadron.js:29
 
 Los sitios de las n unidades, en radios de la tropa, alrededor de su lider (la unidad 0, en el centro).
      Espiral aurea (cada unidad en su sitio, sin solaparse) con un desvio de la semilla, y la formacion:
      agresiva = cuna hacia delante; defensiva = anillo; flanqueo = dos alas. Pura y determinista.
 
 
-## public/game/escuadron.js:44
+## public/game/squadron.js:44
 
 El camino de la cara de combate, radio 1, cacheado por tropa (acotado a 64).
 
 
-## public/game/escuadron.js:56
+## public/game/squadron.js:56
 
 Dibuja el escuadron de la unidad `u` de la escena (su lider ya esta dibujado). o: { r, dpr, giro, alfa, t, quieto }.
 
@@ -218,7 +218,7 @@ preceptoros.org · theGame · LA COREOGRAFIA de un combate ya resuelto: el regis
    `arena.combate` ya decidio cada golpe con enteros y una semilla. Aqui no se decide nada: se pone en
    el mapa a quien ya golpeo, a quien ya cayo y cuando. La vida de cada tropa se recalcula SOLO desde
    el registro, con la misma regla que el motor (`porMil`), y por eso el ganador que se VE es siempre
-   el que el registro dice (`ganadorVisual`, comprobado en `atlas/replay_casos.mjs`).
+   el que el registro dice (`ganadorVisual`, comprobado en `atlas/replay_cases.mjs`).
 
    LO QUE SI SE INVENTA, SE SIEMBRA. Las rocas, las bases, las formaciones y los rodeos salen de un
    generador sembrado con la semilla de la partida: misma partida, misma coreografia, en cualquier
@@ -318,7 +318,7 @@ La estela: por donde paso en los ultimos fotogramas.
 
 ## public/game/battle_replay.js:146
 
-P6: su ESCUADRON alrededor (escuadron.js), que cae con su vida. Solo coreografia: no decide.
+P6: su ESCUADRON alrededor (squadron.js), que cae con su vida. Solo coreografia: no decide.
 
 
 ## public/game/battle_replay.js:154

@@ -89,7 +89,7 @@ def portada():
 </section>
 <p class="note">One language until the MVP: English. The old translated addresses lead here.</p>
 </main>
-<script src="/game/tabla_semantica.js"></script>
+<script src="/game/semantic_table.js"></script>
 <script src="/game/comic_tokens.js"></script>
 <script src="/game/comic_accents.js"></script>
 <script src="/game/comic_atoms.js"></script>
@@ -115,10 +115,10 @@ def release():
 
 
 # NORTE 5 (a1, 2026-10-27): the launch gate (VT6) on top, in one or two clicks. Its data is written here, from the cards the
-# web serves (release.json, cerebros.json), so the page makes no request. Only the models the landing shows (`puerta`) enter;
+# web serves (release.json, brains.json), so the page makes no request. Only the models the landing shows (`puerta`) enter;
 # their size is the measured `bytes`, with the machine and date of that measurement. No sha256 in the card: no download.
 def gate(r):
-    c = json.loads((PUBLICO / "cerebros.json").read_text(encoding="utf-8"))
+    c = json.loads((PUBLICO / "brains.json").read_text(encoding="utf-8"))
     cer = [{"id": x["id"], "size_gb": round(x["bytes"] / 1e9, 2), "sha256": x.get("sha256"), "maquina": c["backend"],
             "fecha": c["medido"][:10]} for x in c["cerebros"] if x.get("puerta") and isinstance(x.get("bytes"), int)]
     d = {"version": r["version"], "pagina": f"https://github.com/{r['repo']}/releases/tag/{r['version']}",

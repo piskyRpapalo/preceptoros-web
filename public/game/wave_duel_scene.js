@@ -106,7 +106,7 @@
         u.x += u.vx * k; u.y += u.vy * k;
       });
     }
-    // v1.1 (escena.js:112-122): five faint sine lines on the plain dark sea.
+    // v1.1 (scene.js:112-122): five faint sine lines on the plain dark sea.
     function mar(W, H, t) {
       g.save(); g.strokeStyle = col.mar || texto; g.globalAlpha = col.mar ? 1 : 0.08; g.lineWidth = dpr;
       for (var j = 1; j <= 5; j++) {
@@ -116,14 +116,14 @@
       }
       g.restore();
     }
-    // v1.1 (escena.js:124-129): one life bar under each troop, yours in tuya and the other side in suya.
+    // v1.1 (scene.js:124-129): one life bar under each troop, yours in tuya and the other side in suya.
     function barra(u) {
       var w = u.r * 1.6, x = u.x - w / 2, y = u.y + u.r + 8 * dpr, h = 4 * dpr;
       g.save(); g.globalAlpha = 0.12; g.fillStyle = texto; g.fillRect(x, y, w, h); g.restore();
       g.fillStyle = u.lado === yo ? (col.tuya || u.color) : (col.suya || u.color);
       g.fillRect(x, y, w * u.vida / u.max, h);
     }
-    // v1.1 (escena.js:154-162): the attacker's sine trail toward its target.
+    // v1.1 (scene.js:154-162): the attacker's sine trail toward its target.
     function rastro(a, b, fase, t) {
       var L = Math.hypot(b.x - a.x, b.y - a.y) || 1, nx = -(b.y - a.y) / L, ny = (b.x - a.x) / L;
       g.save(); g.strokeStyle = a.color; g.globalAlpha = 0.8 * Math.sin(Math.PI * (fase - 0.3) / 0.45); g.lineWidth = 1.4 * dpr;

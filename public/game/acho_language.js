@@ -7,7 +7,7 @@ const VERSION = 'preceptoros.acho/1', ALIAS = 'preceptoros.bubble/1', CANVAS = [
 const STYLES = ['volume', 'etch', 'clear'], PRIMS = ['wave', 'blob', 'ribbon', 'arcs', 'field', 'wall', 'text', 'keep', 'neck'];
 const SUBS = ['brillo', 'base', 'sombra', 'contorno'], MAX = 8, words = Object.create(null);
 const has = (o, k) => Object.prototype.hasOwnProperty.call(o, k);
-const lib = (n) => (NODE ? require('./' + { AtlasGacha: 'gacha', AtlasComicTokens: 'comic_tokens', AtlasComicAccents: 'comic_accents', AtlasSemantica: 'tabla_semantica' }[n] + '.js') : root[n]);
+const lib = (n) => (NODE ? require('./' + { AtlasGacha: 'gacha', AtlasComicTokens: 'comic_tokens', AtlasComicAccents: 'comic_accents', AtlasSemantica: 'semantic_table' }[n] + '.js') : root[n]);
 const light = () => {
  if (!NODE) return root.AtlasAchoLight || null;
  try { return require('./acho_light.js'); } catch (e) { if (e.code === 'MODULE_NOT_FOUND') return null; throw e; }

@@ -8,7 +8,7 @@
 // - the Jewels button brings the system's jewels (odd/JOYAS.md on main) one by one, the same way;
 // - a question with no script goes to the live door (Hexelion, /api/v1/chat) with the building in its context; a closed
 //   door is said in plain words with its cause. Hexelion is answered by a page-side stub: CI never calls production.
-// The study index is served by the harness through CDP Fetch (fixture atlas/fixtures/ai-index-muestra.json): the proof never
+// The study index is served by the harness through CDP Fetch (fixture atlas/fixtures/ai-index-sample.json): the proof never
 // depends on the network. Sabotage: SABOTAJE=en-carga asks the rack on load ⇒ red; SABOTAJE=sin-titulo keeps «Chat» ⇒ red.
 // Uso: node atlas/rack_ideas_browser.mjs [carpeta-captura]
 import { createServer } from 'node:http';
@@ -22,7 +22,7 @@ const PUBLIC = join(RAIZ, 'public/');
 const CAPTURA = process.argv[2] || null;
 const SAB = process.env.SABOTAJE || '';
 const W = 360, H = 716, STUDY = 'https://raw.githubusercontent.com/';
-const MUESTRA = readFileSync(join(RAIZ, 'atlas/fixtures/ai-index-muestra.json'));
+const MUESTRA = readFileSync(join(RAIZ, 'atlas/fixtures/ai-index-sample.json'));
 const JOYAS = readFileSync(join(RAIZ, 'odd/JOYAS.md'));
 const espera = (ms) => new Promise((r) => setTimeout(r, ms));
 const tipos = { '.js': 'text/javascript', '.css': 'text/css', '.html': 'text/html', '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png', '.webmanifest': 'application/manifest+json' };
