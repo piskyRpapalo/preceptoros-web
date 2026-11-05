@@ -9,8 +9,8 @@ The room's two pure cores, before any panel exists: **who may speak** (SALA-C, l
 
 ## Scope
 
-- SALA-C · `atlas/puros/sala_voces.js`: one Acho card per voice (< 1,024 B, passes `Acho.valida`), and `regla(id)` → `{ puede, sello, causa }`.
-- SALA-B · `atlas/puros/sala_log.js`: each message is an Acho frame with seal, voice and turn. The log is append-only and chained by the hash of the previous message; it has a thread head and a verifier.
+- SALA-C · `atlas/puros/room_voices.js`: one Acho card per voice (< 1,024 B, passes `Acho.valida`), and `regla(id)` → `{ puede, sello, causa }`.
+- SALA-B · `atlas/puros/room_log.js`: each message is an Acho frame with seal, voice and turn. The log is append-only and chained by the hash of the previous message; it has a thread head and a verifier.
 - Not served: nothing under `public/`, so no reseal. Never two live PRs resealing the same tree.
 
 ## Decisions taken inside the cage (declared)
@@ -25,7 +25,7 @@ The room's two pure cores, before any panel exists: **who may speak** (SALA-C, l
 
 - [x] SALA-C-1 · the register: 13 voices, each with a card that passes `Acho.valida` (the largest is 548 B).
 - [x] SALA-C-2 · the rule: live voices speak; vacant, private, unmeasured and unknown voices are refused with their cause.
-- [x] SALA-C-3 · gate `atlas/puros/sala_voces_casos.mjs` (8 cases, in `gate.yml`). Red first: making the private voice speak fails case 4.
+- [x] SALA-C-3 · gate `atlas/puros/room_voices_cases.mjs` (8 cases, in `gate.yml`). Red first: making the private voice speak fails case 4.
 - [ ] SALA-B · the log (next PR).
 
 ## Log

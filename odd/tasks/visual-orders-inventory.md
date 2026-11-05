@@ -37,7 +37,7 @@ Status: DONE (built and merged or measured), BUILT (built, awaiting FIRMO), PEND
 - [ ] V05 · ·6523047400 · permanent joystick to move the user's ephemeral character. Status: PENDING. Folds into IC7-S10 (D9), after S6.
 - [ ] V06 · ·6523047400 · Android: the chat sits below the map window. Status: PENDING. Folds into IC7-S11 (D10).
 - [ ] V07 · ·6522713617 · measure the mathematical deployment on web, app beelink and app doggee; frames under 1 KB, size, sentence and seal, or NO_DATA with cause. Status: PARTIAL. Web frames: measured inside each piece's gate. App surfaces: NO_DATA (not measured here).
-- [ ] V08 · ·6522287730 · terminal and heartbeat plan, measured before code. Status: PENDING for the terminal. Heartbeat: NO_DATA (decision D7: the page reads only `estado.json`).
+- [ ] V08 · ·6522287730 · terminal and heartbeat plan, measured before code. Status: PENDING for the terminal. Heartbeat: NO_DATA (decision D7: the page reads only `state.json`).
 - [ ] V09 · ·6522236505 · the terminal is the user's: its colour follows the node, and the user can change it in their own app, local-first, with no account and no network. Status: PENDING. Folds into IC7-S5. Web storage is per visitor (IndexedDB) and is NO_DATA as a persistent preference until decided.
 - [x] V10 · ·6522243791 · addenda: terminals are the user's, the map is the colony of bots, IC7 composes IC1 to IC5 plus terminals plus liveness. Status: DONE for the colony and bots (IC6, IC7-S2, IC7-S3, IC7-S4). Terminals: see V09.
 - [ ] V11 · ·6522187525 · aesthetics as in the tutorial: Doggee zombie, Beelink atlantis, cabin basic. Status: PARTIAL. Doggee zombie built in IC7-S4 (`look`, D11). The Beelink atlantis look is not set in the fixture yet (PENDING, small).

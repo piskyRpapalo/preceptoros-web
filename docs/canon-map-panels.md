@@ -6,7 +6,7 @@ This document preserves the design notes formerly carried by the served scene an
 
 One user gesture reads one wave. Displayed figures come from the existing Army and Workshop receipt chain.
 
-## Combat scene — `public/game/escena.js`
+## Combat scene — `public/game/scene.js`
 
 A combat character is represented by its harmonic wave and carries its squadron. Damage is shown by deterministic detuning of that character's harmonic phases and amplitudes; the exact remaining value is also exposed in the DOM. Projectile color represents speed, while spring weight represents inertia. The background uses four-tone ordered dithering without image assets. Combatants use a simplified, legible shape during battle.
 

@@ -41,10 +41,10 @@ jobs:
             fi
             python3 test_web.py
             python3 atlas/test_atlas.py
-            node arnes_sw.mjs
+            node sw_harness.mjs
             node --test tests/citations.test.mjs
             node atlas/no_undefined.mjs | tee "$RUNNER_TEMP/phase-chrome-$pass.json"
-            node atlas/vector_casos.mjs
+            node atlas/vector_cases.mjs
             node atlas/phase_gate.mjs
             git diff --check
           done

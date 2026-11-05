@@ -2,8 +2,8 @@
   'use strict';
   var common = typeof module === 'object' && module.exports;
   var B = common ? require('./node_bindings.js') : root.AtlasNodeBindings;
-  var N = common ? require('./nodos.js') : root.AtlasNodos;
-  var Q = common ? require('./cuenta.js') : root.AtlasCuenta;
+  var N = common ? require('./nodes.js') : root.AtlasNodos;
+  var Q = common ? require('./account.js') : root.AtlasCuenta;
   var F = common ? require('./fog_of_war.js') : root.AtlasNiebla;
   var views = new WeakSet();
   function freeze(value) {

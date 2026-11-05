@@ -20,7 +20,7 @@ In scope:
 3. A link so the tutorial state and the visit state are visible to each other at the end of the pass: the visit reports its end, and the tutorial log is kept in memory for the page.
 4. The browser pass itself, with one fixed port per test (the isolation rule from the decree).
 
-Out of scope: the replay controls (EU-3); the gacha (EU-4, the gacha is already in the visit); NPC buildings (EU-5); any change to `estado.json`; any write to a node.
+Out of scope: the replay controls (EU-3); the gacha (EU-4, the gacha is already in the visit); NPC buildings (EU-5); any change to `state.json`; any write to a node.
 
 ## Inventory measured today (main `7828f98`)
 
@@ -63,9 +63,9 @@ The EU-0 plan (`usuario-efimero.md`, merged) said the gacha was «not seen in th
 ## Verification evidence
 
 - Measured: the visit flow in `visitor_play.js` (button ids and their actions); the modules loaded in `index.html`; the absence of any tutorial reference in the visit modules (`grep` on `tut` and `skip` in `public/game/visitor_*.js` returns nothing).
-- EU-1.2 and EU-1.3: `atlas/puros/tutorial_walk_casos.mjs` 17 cases, plus `colony_controls_casos.mjs`, 29 pass in total with the wrapper test. Sabotage: a dead place is never played; a skip is never progress; close never closes a walkable step.
-- EU-1.4 and EU-1.5: `atlas/usuario_efimero_pasada_browser.mjs`, three consecutive runs green (key played, visit beacon and one step, visit end reports «played: key · skipped: beacon», account gone, node played on the second entry, walk complete). Sabotage (visit-end link removed): the pass goes red on the end report.
-- EU-1.6: seal chain run in the required order (VERSION `preceptoros-2026-17-av`, `test_web` 75 tests OK, `arnes_sw` 24/24); `version_sw_gate` green; `lexicon` green; `colonia_pagina_gate` 11 passes; `openworld_browser` fallos []; `test_atlas` 44 OK; `sellar.py` consistent; door 7,385 B.
+- EU-1.2 and EU-1.3: `atlas/puros/tutorial_walk_cases.mjs` 17 cases, plus `colony_controls_cases.mjs`, 29 pass in total with the wrapper test. Sabotage: a dead place is never played; a skip is never progress; close never closes a walkable step.
+- EU-1.4 and EU-1.5: `atlas/ephemeral_user_pass_browser.mjs`, three consecutive runs green (key played, visit beacon and one step, visit end reports «played: key · skipped: beacon», account gone, node played on the second entry, walk complete). Sabotage (visit-end link removed): the pass goes red on the end report.
+- EU-1.6: seal chain run in the required order (VERSION `preceptoros-2026-17-av`, `test_web` 75 tests OK, `arnes_sw` 24/24); `version_sw_gate` green; `lexicon` green; `colonia_pagina_gate` 11 passes; `openworld_browser` fallos []; `test_atlas` 44 OK; `seal.py` consistent; door 7,385 B.
 - Found while doing EU-1.2: `atlas/puros/colony_controls.js` had drifted from the served copy on main (the skip button of #439 was served but not in the source). Source synced to the served copy; the two are identical now.
 
 ## Standing signature
