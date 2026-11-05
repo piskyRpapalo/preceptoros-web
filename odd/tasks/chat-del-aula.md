@@ -68,7 +68,7 @@ Hoy la puerta es una sola (Hexelion, en el nodo del Soberano), así que P3 no es
 | **2 · ACHO LEE:** la burbuja es la traducción, < 1 024 B; la fuente puede llegar a 25 MB | la respuesta que llega a la web es una burbuja ≤ 1 024 B: frase + sonido declarado. Si el aula devuelve más, la aduana recorta en frontera de frase y marca `recortada`. La fuente no se guarda en ningún sitio | aduana + web |
 | 2 · escribir en Acho = accesibilidad: audio, entendimiento, TTS local, J1 | cada burbuja lleva su sonido (llega / NO_DATA) y se lee con la voz del dispositivo (pieza 4, LA VOZ). J1: 44 px, foco, Enter, aria-live | web |
 | **3 · POLÍTICAS:** visitante efímero, IndexedDB, sin identidad persistente | la visita es el cangrejo. Solo viaja `sha256(clave pública)`, distinto en cada visita. Los turnos viven solo en el IndexedDB del dispositivo | web |
-| 3 · cero peticiones al cargar, llamada solo al enviar | `aula_chat.js` no hace `fetch` hasta pulsar Send. Prueba: 0 peticiones a `/api` al abrir, 1 por envío | web |
+| 3 · cero peticiones al cargar, llamada solo al enviar | `classroom_chat.js` no hace `fetch` hasta pulsar Send. Prueba: 0 peticiones a `/api` al abrir, 1 por envío | web |
 | 3 · no tracking | la aduana no guarda turnos ni IP. El limitador usa la IP solo en memoria del binding | aduana |
 | 3 · sin dark patterns | sin contadores falsos ni urgencias; «Forget this chat» siempre visible | web |
 | 3 · el modelo aconseja, jamás firma | la ruta de chat **no da herramientas ni escritura** a Hexelion: solo texto. Su escritura sigue siendo Sala + consola E1 (·6591245593), propose-only | aduana + aula |
@@ -127,11 +127,11 @@ web ──CIEF ≤1 KiB──▶ aduana ──POST /api/chat/completions · Bear
 ### (b) Web: `/chat/` (una acción por pantalla: el encargo del infante)
 - Una caja, «Send» y la conversación, con la divulgación arriba. Lo técnico, plegado. Enlace desde la puerta y
   desde el hex del nodo del Soberano.
-- `aula_chat.js` (< 7 168 B gzip) se carga con la página, pero **no llama a nada hasta Send**.
+- `classroom_chat.js` (< 7 168 B gzip) se carga con la página, pero **no llama a nada hasta Send**.
 - IndexedDB `aula-chat`; «Forget this chat».
 - «Start a visit» crea el cangrejo con consentimiento.
 - Paridad: `face/basic.html` recibe el mismo módulo.
-- Pruebas: `atlas/aula_chat_browser.mjs` con una aduana simulada:
+- Pruebas: `atlas/classroom_chat_browser.mjs` con una aduana simulada:
   - 0 peticiones al cargar;
   - un turno → burbuja en pantalla y en IndexedDB;
   - 503 → «Hexelion is asleep right now.»;
@@ -144,7 +144,7 @@ web ──CIEF ≤1 KiB──▶ aduana ──POST /api/chat/completions · Bear
 ## 3 · Orden
 1. Este plano → FIRMA (solo texto).
 2. PR `aduana`: ruta + límites + CIEF → FIRMA → FIRMO → deploy.
-3. PR web: `/chat/` + `aula_chat.js` → FIRMA → merge → deploy → Beelink + Doogee.
+3. PR web: `/chat/` + `classroom_chat.js` → FIRMA → merge → deploy → Beelink + Doogee.
 4. Bloqueo real hoy: el secreto `AULA_API_KEY`. Lo crea el Soberano en el aula y lo pone MANOS con
    `wrangler secret put`; yo no veo la key. Mientras falte, la ruta responde `aula_sin_llave`, que está probado.
 

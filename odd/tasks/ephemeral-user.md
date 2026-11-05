@@ -29,7 +29,7 @@ Each row is what the code does, with its file and size. Sizes are the served fil
 | practice battle | `public/game/visitor_battle.js` (3,510 B) and `visitor_battle_ui.js` (3,353 B) | Six patrols (Reef, Kelp, Ruins, Silt, Abyss, Core) from `AtlasValores.patrullas`. Historical ticks (`historical-ticks/1`). Replay is checked with `verify`. | functional; **no replay controls** (no pause, no speed) |
 | conquest | `public/game/visitor_conquest.js` (3,843 B) | Winning a NPC place keeps it conquered on this device, with a clearing radius of 200. Wall-clock date is NO_DATA. List `ul#visitor-conquests`. | functional; browser check passes alone |
 | gacha | `public/game/gacha.js` (6,005 B) | Deterministic from a 64-hex seed: four rarities, seven stats, Fourier-style harmonics. | on main; **not seen in the visit flow** (to be confirmed in EU-4) |
-| walker | `public/game/colony_controls.js` (10,085 B), `colonia_pagina.js` | Ephemeral walker in memory. Its seal is NO_DATA (not node state). | on main (TA-1 to TA-5) |
+| walker | `public/game/colony_controls.js` (10,085 B), `colony_page.js` | Ephemeral walker in memory. Its seal is NO_DATA (not node state). | on main (TA-1 to TA-5) |
 | tutorial walk | `public/game/tutorial_walk.js` (2,455 B) | Six steps: key (cabin), beacon (beelink), egg (doggee-a), hatch (doggee-a), fight (doggee-b), node (cabin). Skip is recorded as skipped. | on main; **the Doggee steps are still in the walk** |
 | crab | `public/game/gdpr-art25-ephemeral-crab.js` (4,613 B) | Crab that walks the bed of the visitor's house. No identity. | on main |
 | wave look | `public/game/wave_render.js` (10,858 B), `wave_duel_scene.js` (16,200 B) | Wave figures and duel scene. | on main |
@@ -38,7 +38,7 @@ Tests measured in this pass (worktree of `origin/main`, no code changed):
 
 - `tests/visitor_*.test.mjs` (4 files, 6 tests): 6/6 when run alone; 6/6 on one pass, then 1 failure in the next 6 combined runs. The failing test is `Chromium visit signature verifies independently through OpenSSL`, which runs `atlas/visitor_account_browser.mjs`. Run alone, that browser check passed 3 of 3.
 - `atlas/visitor_eggs_browser.mjs`: `fallos []`.
-- `atlas/puros/tutorial_walk_casos.mjs` and `atlas/puros/colony_controls_casos.mjs`: 20/20.
+- `atlas/puros/tutorial_walk_cases.mjs` and `atlas/puros/colony_controls_cases.mjs`: 20/20.
 
 ## What the internal reference adds (adapted, never copied)
 
@@ -80,7 +80,7 @@ No name, figure or crew design from the reference later than 2026-09-16 is used.
 - [ ] EU-3 · battle replay controls (play, pause, ×1 ×2 ×4, timeline) over the verified record. Pure cases; sabotage: a speed change that alters the result is refused. Contact sheet. Phase 2.
 - [ ] EU-4 · gacha pull inside the visit with copper as the only cost; balance NO_DATA. Confirm first where the pull is (G-d). Pure cases twice. Phase 2.
 - [ ] EU-5 · NPC places drawn as buildings on the single map; conquest changes the frame with its sentence and seal LOCAL · practice. Frames under 1,024 B. Contact sheet. Phase 3.
-- [ ] EU-6 · gates per piece: `atlas/lexicon_gate.mjs`, `atlas/version_sw_gate.mjs --base origin/main`, `atlas/colonia_pagina_gate.mjs`, `atlas/openworld_browser.mjs` (fallos []), seal chain in the same commit, door ≤ 16 KiB.
+- [ ] EU-6 · gates per piece: `atlas/lexicon_gate.mjs`, `atlas/version_sw_gate.mjs --base origin/main`, `atlas/colony_page_gate.mjs`, `atlas/openworld_browser.mjs` (fallos []), seal chain in the same commit, door ≤ 16 KiB.
 
 ## Verification evidence
 

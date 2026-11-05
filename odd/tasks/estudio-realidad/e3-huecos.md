@@ -12,8 +12,8 @@ A gap is something that neither the Sovereign nor the Mesas see. Triage (fixed i
 | seed | verdict | measured |
 |---|---|---|
 | Hands: Ed25519 in the browser is NO_DATA | **CONTRADICTED** (and it corrects the Acho plan, finding 4) | WebCrypto Ed25519 **exists on main**: `generateKey` and `sign` in `public/assets/auth.js:107,152,165`, `verify` in `public/game/creation_package.js:89` and `node_signature_verify.js:80`, `sign` in `visitor_account.js:28`. What is NO_DATA is **the measurement on the Doogee**, not the code. The messages even carry `crypto_unavailable` for devices without it |
-| Hands: customs asleep; `units: []` | confirmed | `aduana_page.js`: registry `NO_DATA`, sending «Asleep»; `estado.json` `units: []` |
-| Hands: heartbeat producer | confirmed, **worse** | no producer on main; `estado.json` has 5 commits in its life, all by hand; `since: 2026-10-30` frozen (E-1) |
+| Hands: customs asleep; `units: []` | confirmed | `aduana_page.js`: registry `NO_DATA`, sending «Asleep»; `state.json` `units: []` |
+| Hands: heartbeat producer | confirmed, **worse** | no producer on main; `state.json` has 5 commits in its life, all by hand; `since: 2026-10-30` frozen (E-1) |
 | Registry of creations: no public store | confirmed, **with a nuance** | the client exists: `creation_flow.js:59` calls `fetch('/api/creaciones/…')`. Production answers **404** to `/api/creaciones/` (P). A door painted on a wall with nothing behind it |
 | Chain of life: heartbeat → nodes → combats → lab → LoRA | broken at the **first** link | no heartbeat producer → `units: []` → no measured combats on the map → no feed. The lab's `pruebas` is red on main (10-30, E-2). LoRA: `NO_DATA: p0x master frozen since 10-28` (R) |
 | Identity: anchors empty | confirmed | `public/game/node_trust_manifest.js` exports **`null`**; `node_signature_verify.js:102` → `pending · trust_missing` («Human approval of the trust anchor is pending»). Every credential stays unpublishable |
@@ -29,7 +29,7 @@ A gap is something that neither the Sovereign nor the Mesas see. Triage (fixed i
 
 | # | gap | I | B | C | score | seen by | first measurable step |
 |---|---|---|---|---|---|---|---|
-| 1 | **No heartbeat producer.** The live map shows frozen data dated 10-30. Every link of the chain of life hangs from it | 3 | 3 | M | **4.5** | R | run the decreed chain once by hand and diff `estado.json` before and after: does any field move? |
+| 1 | **No heartbeat producer.** The live map shows frozen data dated 10-30. Every link of the chain of life hangs from it | 3 | 3 | M | **4.5** | R | run the decreed chain once by hand and diff `state.json` before and after: does any field move? |
 | 2 | **Trust anchors are `null`.** All credential checks end in `pending`. Nobody can be published, so the hands of Acho have no one to sign for | 3 | 3 | M | **4.5** | R | list who would be anchor #1 (the Sovereign's public key) and measure the manifest's bytes with one entry |
 | 3 | **`/api/creaciones/` answers 404**, yet the page calls it. A signed creation has nowhere to live | 3 | 2 | M | **3.0** | P | read the deploy config for a route named `creaciones`: does it exist on any branch? |
 | 4 | **29 seal letters re-issued** on main after #271 (10-23). Each letter names two builds, so a phone's SW may keep an old build under a «current» letter | 2 | 2 | S | **4.0** | R | count, on the Doogee, which letter its SW holds now against `do` |

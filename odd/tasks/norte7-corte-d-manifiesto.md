@@ -10,7 +10,7 @@ Measure, before any delete, which files under `public/` belong only to theGame (
 A delete without a measured manifest removes files that a live door still loads. The guard the commission asks for is only as good as the list it protects.
 
 ## Scope
-- Script: `bin/manifiesto_dependencias.py` (a static reference graph over `public/`). It reads `public/`, writes JSON to stdout, changes nothing. Run: `python3 -I bin/manifiesto_dependencias.py "$PWD"`.
+- Script: `bin/manifest_dependencies.py` (a static reference graph over `public/`). It reads `public/`, writes JSON to stdout, changes nothing. Run: `python3 -I bin/manifest_dependencies.py "$PWD"`.
 - Roots of the theGame group: `play/index.html`, `assets/thegame.js`.
 - Roots of the live group: `index.html`, `openworld/index.html`, `face/index.html`, `face/basic.html`, `face/atlantis.html`, `face/zombie.html`, `get-the-app/index.html`, `aduana/index.html`, `creation.html`.
 - Dynamic loads the graph cannot see were found by grep and are listed separately below.
@@ -23,8 +23,8 @@ A delete without a measured manifest removes files that a live door still loads.
 ## Checklist
 - [x] D0 · script runs on the slice C tree with `python3 -I` (no import from the cwd).
 - [x] D1 · counts measured: {"COMPARTIDO": 62, "EXCLUSIVO_THEGAME": 123, "HUERFANO_SIN_REF": 48, "VIVO": 38}.
-- [x] D2 · the commission's «shared with /face/» list (core, db, valores, gacha, acho_*, comic_*, combate_ticks, escuadron, wave_duel_scene, sea-floor, crab_render_hd, fog_of_war, isometric_floor_projection, world_camera, map_zoom) is classified COMPARTIDO; `face/face_battle.js` and `face/face_fight.js` are VIVO. Matches the commission.
-- [x] D3 · dynamic loads: `assets/atlas-piso.js` loads `atlas-<lang>.json` and `atlas-mundo.json` by name. The lexicon JSON are used only by the theGame cluster (`atlas-piso`, `atlas-opina`, `atlas-guardado`, `atlas-motor`, `terminal_menu_shell`, `thegame.js`), checked by grep.
+- [x] D2 · the commission's «shared with /face/» list (core, db, valores, gacha, acho_*, comic_*, combat_ticks, escuadron, wave_duel_scene, sea-floor, crab_render_hd, fog_of_war, isometric_floor_projection, world_camera, map_zoom) is classified COMPARTIDO; `face/face_battle.js` and `face/face_fight.js` are VIVO. Matches the commission.
+- [x] D3 · dynamic loads: `assets/atlas-piso.js` loads `atlas-<lang>.json` and `atlas-world.json` by name. The lexicon JSON are used only by the theGame cluster (`atlas-piso`, `atlas-opina`, `atlas-guardado`, `atlas-motor`, `terminal_menu_shell`, `thegame.js`), checked by grep.
 - [x] D4 · cross-check by basename, outside the candidates and outside `sw-listas`/`sw`: only `game/sobres.js` is cited, and by two orphans (`game/narragrafo.js`, `game/mercado.js`), neither reachable from a root.
 - [ ] D5 · the delete itself: NOT in this piece. It needs the test migration (see Next step) and VERSION + seal in the same commit.
 
@@ -64,8 +64,8 @@ A delete without a measured manifest removes files that a live door still loads.
 - `public/assets/eaa-art12-local-first-surface.js` (648 B)
 - `public/assets/en301_practice.css` (1142 B)
 - `public/assets/en301_tutorial.css` (2657 B)
-- `public/assets/enviar-en.js` (646 B)
-- `public/assets/enviar.js` (5023 B)
+- `public/assets/send-en.js` (646 B)
+- `public/assets/send.js` (5023 B)
 - `public/assets/front_door.css` (3633 B)
 - `public/assets/front_door_view.js` (8015 B)
 - `public/assets/page-comment.css` (2212 B)
@@ -77,7 +77,7 @@ A delete without a measured manifest removes files that a live door still loads.
 - `public/assets/thegame.css` (12519 B)
 - `public/assets/thegame.js` (15411 B)
 - `public/assets/tubo.css` (4559 B)
-- `public/atlas-mundo.json` (344 B)
+- `public/atlas-world.json` (344 B)
 - `public/dictionary-en.json` (2591 B)
 - `public/dictionary.json` (14881 B)
 - `public/game/aiact-art50-crab-terminal.js` (5020 B)
@@ -126,7 +126,7 @@ A delete without a measured manifest removes files that a live door still loads.
 - `public/game/npc_occupancy.js` (9567 B)
 - `public/game/npc_territory_map.js` (1188 B)
 - `public/game/npc_walls.js` (3859 B)
-- `public/game/onda_profunda.js` (1456 B)
+- `public/game/deep_wave.js` (1456 B)
 - `public/game/piece_inspector.js` (5540 B)
 - `public/game/place_reading.js` (1440 B)
 - `public/game/primer_eco.js` (7982 B)
@@ -145,16 +145,16 @@ A delete without a measured manifest removes files that a live door still loads.
 - `public/game/sobres.js` (8519 B)
 - `public/game/state_vector.js` (14014 B)
 - `public/game/summon-access.js` (3083 B)
-- `public/game/tarjeta_cantada.js` (2817 B)
+- `public/game/sung_card.js` (2817 B)
 - `public/game/tutorial_fases.js` (3696 B)
 - `public/game/ui-arena-comun.js` (2614 B)
 - `public/game/ui-arena.js` (14917 B)
 - `public/game/ui-duelo.js` (8203 B)
 - `public/game/ui-ficha.js` (5394 B)
 - `public/game/ui-invoca.js` (5058 B)
-- `public/game/ui-nodos.js` (13441 B)
+- `public/game/ui-nodes.js` (13441 B)
 - `public/game/ui-rack.js` (3933 B)
-- `public/game/ui-tutorial-fases.js` (5393 B)
+- `public/game/ui-tutorial-phases.js` (5393 B)
 - `public/game/ui.js` (10567 B)
 - `public/game/vector_contract.js` (3259 B)
 - `public/game/world_creator.js` (12050 B)
@@ -176,18 +176,18 @@ A delete without a measured manifest removes files that a live door still loads.
 - `public/atlas-ru.json` (15298 B)
 
 ### Referenced by no root (kept, to decide)
-- `public/assets/atlas-mapa.js` (12989 B)
-- `public/assets/enviar-ar.js` (854 B)
-- `public/assets/enviar-de.js` (759 B)
-- `public/assets/enviar-el.js` (1151 B)
-- `public/assets/enviar-es.js` (650 B)
-- `public/assets/enviar-fr.js` (702 B)
-- `public/assets/enviar-it.js` (684 B)
-- `public/assets/enviar-pt.js` (669 B)
-- `public/assets/enviar-ru.js` (1093 B)
+- `public/assets/atlas-map.js` (12989 B)
+- `public/assets/send-ar.js` (854 B)
+- `public/assets/send-de.js` (759 B)
+- `public/assets/send-el.js` (1151 B)
+- `public/assets/send-es.js` (650 B)
+- `public/assets/send-fr.js` (702 B)
+- `public/assets/send-it.js` (684 B)
+- `public/assets/send-pt.js` (669 B)
+- `public/assets/send-ru.js` (1093 B)
 - `public/assets/og-card.png` (45814 B)
 - `public/atlas-record.json` (2499 B)
-- `public/cerebros.json` (11222 B)
+- `public/brains.json` (11222 B)
 - `public/counters.json` (2816 B)
 - `public/downloads/README.md` (2001 B)
 - `public/downloads/entorno-estudio-v1.tar.gz` (3096 B)
@@ -198,13 +198,13 @@ A delete without a measured manifest removes files that a live door still loads.
 - `public/downloads/preceptor-tribune-en-v1.gguf.sha256` (65 B)
 - `public/downloads/preceptor-tribune-multi-v1.gguf.sha256` (65 B)
 - `public/game/battle_choreography.js` (8345 B)
-- `public/game/cria.js` (6967 B)
-- `public/game/estrella_captura.js` (2660 B)
+- `public/game/brood.js` (6967 B)
+- `public/game/star_capture.js` (2660 B)
 - `public/game/lexical_projector.js` (3529 B)
 - `public/game/local_app_bridge.js` (3122 B)
 - `public/game/mercado.js` (5450 B)
 - `public/game/narragrafo.js` (6192 B)
-- `public/game/tutorial-fases.css` (166 B)
+- `public/game/tutorial-phases.css` (166 B)
 - `public/lexical_state_schema.json` (2529 B)
 - `public/llms.txt` (7850 B)
 - `public/mcp-manifest.json` (4217 B)

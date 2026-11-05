@@ -1,0 +1,535 @@
+{
+ "esquema": "atlas.f0/1",
+ "nota": "Inventario vivo de funciones de /openworld/ (odd/tasks/mapa-25d-aldea.md, F0). Cada fila: los scripts que la sirven, el global que exportan y la guarda de navegador que la ejerce (fichero + texto exacto de su comprobación). La guarda tiene que correr en .github/workflows/gate.yml.",
+ "pagina": "public/openworld/index.html",
+ "funciones": [
+  {
+   "id": "map",
+   "scripts": [
+    "/game/global_map.js",
+    "/game/colony_page.js",
+    "/game/openworld_page.js",
+    "/game/semantic_table.js",
+    "/game/comic_tokens.js",
+    "/game/comic_accents.js",
+    "/game/comic_atoms.js",
+    "/game/acho_language.js",
+    "/game/acho_letters.js",
+    "/game/isometric_floor_projection.js",
+    "/game/state_frames.js",
+    "/game/hex_projection.js",
+    "/game/colony_state.js",
+    "/game/map_scene.js",
+    "/game/colony_buildings.js",
+    "/game/palette_cycle.js"
+   ],
+   "globals": [
+    "AtlasMapaGlobal",
+    "AtlasColoniaPagina"
+   ],
+   "guards": [
+    {
+     "file": "atlas/openworld_browser.mjs",
+     "text": "the map is blank"
+    }
+   ]
+  },
+  {
+   "id": "cabin-entry",
+   "scripts": [
+    "/game/colony_controls.js"
+   ],
+   "globals": [
+    "AtlasColonyControls"
+   ],
+   "guards": [
+    {
+     "file": "atlas/openworld_browser.mjs",
+     "text": "the ephemeral cabin cannot be entered by clicking it on the map"
+    }
+   ]
+  },
+  {
+   "id": "walk",
+   "scripts": [
+    "/game/walk_route.js",
+    "/game/tutorial_walk.js"
+   ],
+   "globals": [
+    "AtlasWalkRoute",
+    "AtlasTutorialWalk"
+   ],
+   "guards": [
+    {
+     "file": "atlas/walk_avatar_browser.mjs",
+     "text": "W-3"
+    },
+    {
+     "file": "atlas/walk_keys_browser.mjs",
+     "text": "W-4"
+    }
+   ]
+  },
+  {
+   "id": "zoom",
+   "scripts": [
+    "/game/map_zoom.js"
+   ],
+   "globals": [
+    "AtlasMapZoom"
+   ],
+   "guards": [
+    {
+     "file": "atlas/openworld_browser.mjs",
+     "text": "the + key does not zoom or is not spoken"
+    }
+   ]
+  },
+  {
+   "id": "map-orbit",
+   "scripts": [
+    "/game/map_zoom.js",
+    "/game/colony_page.js",
+    "/game/map_painter.js"
+   ],
+   "globals": [
+    "AtlasMapZoom",
+    "AtlasColoniaPagina",
+    "AtlasMapPainter"
+   ],
+   "guards": [
+    {
+     "file": "atlas/openworld_browser.mjs",
+     "text": "E does not turn the map 60° or the line does not say it"
+    }
+   ]
+  },
+  {
+   "id": "visitor-account",
+   "scripts": [
+    "/game/visitor_account.js",
+    "/game/gdpr-art25-ephemeral-crab.js"
+   ],
+   "globals": [
+    "AtlasVisitorAccount",
+    "AtlasCrab"
+   ],
+   "guards": [
+    {
+     "file": "atlas/visitor_account_browser.mjs",
+     "text": "JN-2"
+    }
+   ]
+  },
+  {
+   "id": "eggs-hatch",
+   "scripts": [
+    "/game/visitor_eggs.js",
+    "/game/hatch_reveal.js",
+    "/game/db.js",
+    "/game/values.js",
+    "/game/gacha.js",
+    "/game/visitor_play.js"
+   ],
+   "globals": [
+    "AtlasVisitorEggs",
+    "AtlasHatchReveal",
+    "AtlasArmy"
+   ],
+   "guards": [
+    {
+     "file": "atlas/visitor_eggs_browser.mjs",
+     "text": "JN-3"
+    },
+    {
+     "file": "atlas/visitor_eggs_browser.mjs",
+     "text": "Voice Star announced in #state"
+    },
+    {
+     "file": "atlas/visitor_conquest_browser.mjs",
+     "text": "the egg opens"
+    }
+   ]
+  },
+  {
+   "id": "duel",
+   "scripts": [
+    "/game/visitor_battle.js",
+    "/game/wave_duel_scene.js",
+    "/game/combat_ticks.js",
+    "/assets/atlas-coord.js",
+    "/game/canon.js",
+    "/game/workshop.js",
+    "/game/squadron.js",
+    "/game/scene.js",
+    "/game/wave_rules.js",
+    "/game/battle_replay_controls.js",
+    "/game/visitor_battle_ui.js"
+   ],
+   "globals": [
+    "AtlasVisitorBattle",
+    "AtlasWaveDuel",
+    "AtlasCombateTicks"
+   ],
+   "guards": [
+    {
+     "file": "atlas/visitor_battle_browser.mjs",
+     "text": "JN-4"
+    },
+    {
+     "file": "atlas/battle_replay_controls_browser.mjs",
+     "text": "EU-3"
+    }
+   ]
+  },
+  {
+   "id": "conquest",
+   "scripts": [
+    "/game/visitor_conquest.js"
+   ],
+   "globals": [],
+   "guards": [
+    {
+     "file": "atlas/visitor_conquest_browser.mjs",
+     "text": "verified practice victory records a session conquest"
+    }
+   ]
+  },
+  {
+   "id": "fog",
+   "scripts": [
+    "/game/fog_of_war.js"
+   ],
+   "globals": [
+    "AtlasNiebla"
+   ],
+   "guards": [
+    {
+     "file": "atlas/visitor_conquest_browser.mjs",
+     "text": "one persistent map"
+    }
+   ]
+  },
+  {
+   "id": "chat",
+   "scripts": [
+    "/game/map_chat.js",
+    "/game/world_feed.js"
+   ],
+   "globals": [],
+   "guards": [
+    {
+     "file": "atlas/openworld_browser.mjs",
+     "text": "the chat answer is not an honest NO_DATA"
+    },
+    {
+     "file": "atlas/web_node_brain_browser.mjs",
+     "text": "no verified answer reached the chat log and brain:answer"
+    }
+   ]
+  },
+  {
+   "id": "radio",
+   "scripts": [
+    "/assets/radio_message_log.js",
+    "/game/face_terminal.js"
+   ],
+   "globals": [
+    "AtlasRadioChat"
+   ],
+   "guards": [
+    {
+     "file": "atlas/openworld_browser.mjs",
+     "text": "the radio does not hear what the map says aloud"
+    }
+   ]
+  },
+  {
+   "id": "state-log",
+   "scripts": [
+    "/game/openworld_state.js"
+   ],
+   "globals": [
+    "AtlasOpenworldState"
+   ],
+   "guards": [
+    {
+     "file": "atlas/openworld_browser.mjs",
+     "text": "the default state is not the declared one"
+    }
+   ]
+  },
+  {
+   "id": "ephemeral-pass",
+   "scripts": [],
+   "globals": [],
+   "guards": [
+    {
+     "file": "atlas/ephemeral_user_pass_browser.mjs",
+     "text": "EU-1.5"
+    }
+   ]
+  },
+  {
+   "id": "no-external",
+   "scripts": [
+    "/assets/pwa.js"
+   ],
+   "globals": [],
+   "guards": [
+    {
+     "file": "atlas/openworld_browser.mjs",
+     "text": "external requests: "
+    }
+   ]
+  },
+  {
+   "id": "floor-25d",
+   "scripts": [
+    "/game/map_chart.js",
+    "/game/map_chunks.js",
+    "/game/map_painter.js"
+   ],
+   "globals": [
+    "AtlasMapCarta",
+    "AtlasMapChunks",
+    "AtlasMapPainter"
+   ],
+   "guards": [
+    {
+     "file": "atlas/openworld_browser.mjs",
+     "text": "the 2.5D floor is not painted"
+    }
+   ]
+  },
+  {
+   "id": "hitl-walkers",
+   "scripts": [
+    "/game/hitl_walkers.js"
+   ],
+   "globals": [
+    "AtlasHitlWalkers"
+   ],
+   "guards": [
+    {
+     "file": "atlas/openworld_browser.mjs",
+     "text": "Tab never reaches the HITL button"
+    }
+   ]
+  },
+  {
+   "id": "terminal-panel",
+   "scripts": [
+    "/game/terminal_panel.js"
+   ],
+   "globals": [
+    "AtlasTerminalPanel"
+   ],
+   "guards": [
+    {
+     "file": "atlas/openworld_browser.mjs",
+     "text": "the compact terminal is fragmented or a voice has no speaker"
+    },
+    {
+     "file": "atlas/openworld_browser.mjs",
+     "text": "a phone user cannot walk without the stick pad"
+    }
+   ]
+  },
+  {
+   "id": "next-step",
+   "scripts": [
+    "/game/visitor_play.js",
+    "/game/colony_controls.js"
+   ],
+   "globals": [],
+   "guards": [
+    {
+     "file": "atlas/openworld_browser.mjs",
+     "text": "the next step does not say Play now"
+    },
+    {
+     "file": "atlas/openworld_browser.mjs",
+     "text": "the terminal look is not folded under More"
+    }
+   ]
+  },
+  {
+   "id": "offline-brain",
+   "scripts": [
+    "/game/map_chat.js",
+    "/assets/pwa.js"
+   ],
+   "globals": [],
+   "guards": [
+    {
+     "file": "atlas/offline_brain_browser.mjs",
+     "text": "network requests while offline"
+    },
+    {
+     "file": "atlas/offline_brain_browser.mjs",
+     "text": "the model answer leaked into the system radio"
+    }
+   ]
+  },
+  {
+   "id": "two-clicks",
+   "scripts": [
+    "/game/welcome_card.js",
+    "/game/visitor_play.js",
+    "/game/terminal_panel.js"
+   ],
+   "globals": [],
+   "guards": [
+    {
+     "file": "atlas/two_clicks_browser.mjs",
+     "text": "reaching the game took"
+    }
+   ]
+  },
+  {
+   "id": "free-walk",
+   "scripts": [
+    "/game/visitor_walk.js",
+    "/game/colony_controls.js",
+    "/game/map_painter.js"
+   ],
+   "globals": [
+    "AtlasVisitorWalk"
+   ],
+   "guards": [
+    {
+     "file": "atlas/openworld_browser.mjs",
+     "text": "the crab does not walk the floor cell by cell"
+    }
+   ]
+  },
+  {
+   "id": "motor-35d",
+   "scripts": [
+    "/game/map_painter.js",
+    "/game/colony_page.js",
+    "/game/hitl_walkers.js"
+   ],
+   "globals": [
+    "AtlasMapPainter",
+    "AtlasColoniaPagina",
+    "AtlasHitlWalkers"
+   ],
+   "guards": [
+    {
+     "file": "atlas/openworld_browser.mjs",
+     "text": "the baked floor is not faster zoomed out"
+    },
+    {
+     "file": "atlas/openworld_browser.mjs",
+     "text": "a tap on the cabin does not enter with the baked floor"
+    },
+    {
+     "file": "atlas/openworld_browser.mjs",
+     "text": "LoAF not reported"
+    }
+   ]
+  },
+  {
+   "id": "invocacion-viva",
+   "scripts": [
+    "/game/live_invocation.js"
+   ],
+   "globals": [
+    "AtlasInvocacionViva"
+   ],
+   "guards": [
+    {
+     "file": "atlas/live_invocation_browser.mjs",
+     "text": "signing a summon does not show the burst text in #state"
+    },
+    {
+     "file": "atlas/live_invocation_browser.mjs",
+     "text": "entering the cabin does not play the worm tunnel first"
+    }
+   ]
+  },
+  {
+   "id": "a11y-fill",
+   "scripts": [
+    "/game/map_focus.js",
+    "/game/comic_atoms.js"
+   ],
+   "globals": [
+    "AtlasMapFocus"
+   ],
+   "guards": [
+    {
+     "file": "atlas/a11y_filler_browser.mjs",
+     "text": "forced-colors rules applied"
+    },
+    {
+     "file": "atlas/a11y_filler_browser.mjs",
+     "text": "Tab never reached the cabin proxy"
+    },
+    {
+     "file": "atlas/a11y_filler_browser.mjs",
+     "text": "the Map live region does not say «Map: »"
+    }
+   ]
+  },
+  {
+   "id": "model-frames",
+   "scripts": [
+    "/game/brain_frame.js",
+    "/game/brain_panel.js"
+   ],
+   "globals": [
+    "AtlasCerebroFrame"
+   ],
+   "guards": [
+    {
+     "file": "atlas/openworld_browser.mjs",
+     "text": "the on-demand Acho panel did not project the seven declared models"
+    },
+    {
+     "file": "atlas/openworld_browser.mjs",
+     "text": "opening the model panel more than once repeated its same-origin catalogue request"
+    }
+   ]
+  },
+  {
+   "id": "la-mano",
+   "scripts": [
+    "/game/map_drag.js"
+   ],
+   "globals": [
+    "AtlasMapDrag"
+   ],
+   "guards": [
+    {
+     "file": "atlas/map_drag_browser.mjs",
+     "text": "a one-finger drag did not move the view with the finger"
+    },
+    {
+     "file": "atlas/map_drag_browser.mjs",
+     "text": "the stop was not announced when the finger lifted (J7)"
+    },
+    {
+     "file": "atlas/map_drag_browser.mjs",
+     "text": "the pan left its bound"
+    }
+   ]
+  }
+ ],
+ "retiradas": [
+  {
+   "id": "stick",
+   "fecha": "2026-11-02",
+   "recibo": "retirados/RETIRO-joystick-20261102.md",
+   "sustituye": "tocar un nodo del mapa (guarda terminal-panel) y las flechas (colony_controls.js)"
+  },
+  {
+   "id": "terminal-tabs",
+   "fecha": "2026-11-02",
+   "recibo": "retirados/RETIRO-joystick-20261102.md",
+   "sustituye": "terminal-panel"
+  }
+ ]
+}
