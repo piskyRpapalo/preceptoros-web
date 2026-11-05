@@ -1,4 +1,4 @@
-# cerebros-<l>.json · candidatos para revisión nativa (NO publicados)
+# brains-<l>.json · candidatos para revisión nativa (NO publicados)
 
 Traducidos el 2026-09-24 por `qwen2.5:14b` en el rack
 (`<private-ref>/traduce_familia.py`, sha256: NO_DATA, causa: fichero del repo privado, no presente en este repo), a través de la frontera MCP
@@ -16,7 +16,7 @@ Lo que no pasó quedó `NO_DATA · traducción descartada: <motivo>`.
 | el | 68 | 2 | 19.106 |
 | ar | 63 | 7 | 13.952 |
 
-**Por qué no están en `public/`.** `cerebros.json › prosa_pendiente` declara estas
+**Por qué no están en `public/`.** `brains.json › prosa_pendiente` declara estas
 siete lenguas y fija la condición para publicarlas: una traducción revisada por
 nativo. Las reglas prueban la forma, no la voz; el 2026-09-19 un 7B dio 21/21
 válidas y 3 impublicables.
@@ -26,5 +26,5 @@ válidas y 3 impublicables.
 2. Que quepa en el tope. En JSON compacto, ru ocupa 15.984 B y cabe; **el ocupa
    18.337 B y no cabe**, ni siquiera sin la `nota` (17.781 B). Hay que partir la
    familia por asunto, porque recortar no es la regla de la casa.
-3. Quitarla de `prosa_pendiente` en `cerebros.json` y de `HUECOS_DECLARADOS` en
+3. Quitarla de `prosa_pendiente` en `brains.json` y de `HUECOS_DECLARADOS` en
    `test_web.py`, y sellar.

@@ -16,7 +16,7 @@ The frame's reader fields are `atoms`, `bands`, `change`, `sound`, `soundCause`,
 In scope:
 1. Amendment of `docs/acho-language.md`: one row for `seal`, optional, with its six values, and the rule that an absent `seal` means the frame declares none (the reader reads NO_DATA).
 2. `atlas/param_gate.mjs` `checkFrame`: a present `seal` must be one of the six strings; anything else is a cause of refusal.
-3. Colony frames: `public/game/colonia_edificios.js` (building) and `public/game/colonia_pagina.js` (bot) set top-level `seal` from the node's seal, or `NO_DATA`. Source copies under `atlas/puros/` stay identical (parity test).
+3. Colony frames: `public/game/colony_buildings.js` (building) and `public/game/colony_page.js` (bot) set top-level `seal` from the node's seal, or `NO_DATA`. Source copies under `atlas/puros/` stay identical (parity test).
 4. Gates for the contract and the colony.
 
 Out of scope: a seal on terrain and sky frames (no node data; they keep the absent field, declared); a seal drawn on screen (the sentence already says it); any change to the painter.
@@ -39,8 +39,8 @@ Out of scope: a seal on terrain and sky frames (no node data; they keep the abse
 ## Verification evidence
 
 - SEAL-1: `docs/acho-language.md` table row for `seal` (optional, six labels, absent = NO_DATA).
-- SEAL-2: `atlas/param_gate.mjs` `SELLOS` and the check in `checkFrame`; `atlas/frame_seal_casos.mjs` 10 cases (six labels pass, absent passes, `PROBABLE`/`#17131f`/`live` refused).
-- SEAL-3: `atlas/puros/colonia_edificios.js` (`seal: seal || 'NO_DATA'`) and `public/game/colonia_pagina.js` (`seal: node.seal || 'NO_DATA'`); served copy identical (`cmp`).
+- SEAL-2: `atlas/param_gate.mjs` `SELLOS` and the check in `checkFrame`; `atlas/frame_seal_cases.mjs` 10 cases (six labels pass, absent passes, `PROBABLE`/`#17131f`/`live` refused).
+- SEAL-3: `atlas/puros/colony_buildings.js` (`seal: seal || 'NO_DATA'`) and `public/game/colony_page.js` (`seal: node.seal || 'NO_DATA'`); served copy identical (`cmp`).
 - SEAL-4: colony frames pass `checkFrame`; seal equals the node's; no seal gives NO_DATA. Gates: frame_seal 12/12 twice; colonia_pagina_gate 10 passes; IC4 and IC5 gates green; param_gate CLI ok.
 - SEAL-5: VERSION abkx -> aby, huella f14efc93b36909f6; test_web OK; test_atlas OK; arnes 24/24; version_sw_gate green; lexicon VERDE; SCRUB 0. Contact sheet: `atlas/frame-seal-sheet.png`. The door's look does not change (the seal is not painted).
 

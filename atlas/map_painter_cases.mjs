@@ -1,0 +1,72 @@
+// P4 · el suelo 2.5D (public/game/map_painter.js): cada chunk se traduce a un marco de burbuja < 1.024 B (su
+// matemática: luz, mar, bandas, frase), determinista, con el mar quieto en movimiento reducido, colores sólo de la
+// casa y un patrón por banda. Uso: node --test atlas/map_painter_cases.mjs
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { readFileSync, readdirSync } from 'node:fs';
+import { createRequire } from 'node:module';
+import { createHash } from 'node:crypto';
+const M = createRequire(import.meta.url)('../public/game/map_painter.js');
+const dir = new URL('../public/map/chunks/', import.meta.url);
+const chunks = Object.fromEntries(readdirSync(dir).map((f) => { const c = JSON.parse(readFileSync(new URL(f, dir), 'utf8')); return [c.c.join('_'), c]; }));
+const bytes = (o) => new TextEncoder().encode(JSON.stringify(o)).length;
+
+test('el fixture visual conserva los bytes del chunk horneado de la cabina', () => {
+  const source = readFileSync(new URL('./floor_fixture_chunk.js', import.meta.url), 'utf8');
+  const match = source.match(/window\.FloorFixtureChunk = (\{.*\});/);
+  assert.ok(match, 'fixture chunk missing');
+  const file = readdirSync(dir).find((name) => name.startsWith('0_0.'));
+  assert.ok(file, 'baked cabin chunk missing');
+  assert.equal(match[1] + '\n', readFileSync(new URL(file, dir), 'utf8'));
+});
+
+test('la carta identifica cada chunk por el SHA-256 de sus bytes', () => {
+  const carta = JSON.parse(readFileSync(new URL('../public/map/chart.json', import.meta.url), 'utf8'));
+  assert.equal(carta.chunks.length, 7);
+  for (const entry of carta.chunks) {
+    const file = entry.id + '.' + entry.sha256.slice(0, 8) + '.json';
+    const raw = readFileSync(new URL(file, dir));
+    assert.equal(createHash('sha256').update(raw).digest('hex'), entry.sha256);
+    assert.equal(raw.length, entry.bytes);
+  }
+});
+
+test('cada chunk cita exactamente el marco del pintor en el tick inicial', () => {
+  assert.equal(Object.keys(chunks).length, 7);
+  for (const c of Object.values(chunks)) {
+    assert.deepEqual(c.floor, M.frameOf(c, 0, false));
+    assert.ok(bytes(c.floor) < 1024);
+    assert.equal(c.floor.bands.reduce((n, band) => n + band[2], 0), c.cells.length);
+  }
+});
+
+test('cada chunk horneado se traduce a un marco < 1.024 B que cuenta todas sus celdas en texto', () => {
+  for (const c of Object.values(chunks)) {
+    const f = M.frameOf(c, 37, false);
+    assert.ok(bytes(f) < 1024, c.c + ': ' + bytes(f));
+    const n = [...f.r.matchAll(/(\d+) (water|sand|moss|rock)/g)].reduce((a, m) => a + +m[1], 0);
+    assert.equal(n, c.cells.length, 'la frase cuenta las ' + c.cells.length + ' celdas');
+  }
+});
+
+test('determinista: mismo chunk y tick, mismo marco y mismos trazos', () => {
+  const c = chunks['0_0'];
+  assert.deepEqual(M.frameOf(c, 90, false), M.frameOf(c, 90, false));
+  const traza = () => { const ops = []; const g = new Proxy({ canvas: { width: 390, height: 240 } }, { get: (o, k) => k in o ? o[k] : (...a) => ops.push(k + a.map((x) => typeof x === 'number' ? x.toFixed(2) : '').join()), set: (o, k, v) => { ops.push(k + '=' + v); return true; } });
+    M.floor(g, { cx: 195, cy: 120, k: 0.6 }, { cells: M.cellsOf(chunks) }, 90, false); return ops; };
+  assert.deepEqual(traza(), traza());
+  assert.ok(traza().length > 1000, 'pinta prismas');
+});
+
+test('movimiento reducido: el mar se queda quieto y la frase lo dice', () => {
+  const c = chunks['0_0'], f = M.frameOf(c, 10, true);
+  assert.equal(f.sea.amp, 0); assert.match(f.r, /the sea stands still/);
+  assert.deepEqual(M.frameOf(c, 10, true), M.frameOf(c, 200, true), 'sin reloj visible en reducido');
+});
+
+test('sin azar ni reloj; colores sólo de la casa; cada banda con su patrón propio', () => {
+  const src = readFileSync(new URL('../public/game/map_painter.js', import.meta.url), 'utf8').replace(/^\s*\/\/.*$/gm, '');
+  assert.ok(!/Math\.random|Date\.now|new Date|performance\.now/.test(src));
+  assert.ok(!/#[0-9a-fA-F]{3,8}\b|rgba?\(/.test(src), 'ni un color crudo');
+  const pats = M.bands().map((b) => b.pattern); assert.equal(new Set(pats).size, 4);
+});

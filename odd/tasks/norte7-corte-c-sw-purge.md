@@ -12,9 +12,9 @@ The shell still precaches `/play/` and the theGame bundle, so a client with the 
 ## Scope
 - `public/sw.js`: `rutasDelShell()` drops `/play/`; VERSION `abkg` → `abkh`.
 - `public/sw-listas.js`: drops `/assets/thegame.js` and `/assets/thegame.css` from JUEGO.
-- `arnes_sw.mjs`: shell count 224 → 221; `/play/` removed from the shell asserts; the offline-navigation check moves to `/openworld/`.
+- `sw_harness.mjs`: shell count 224 → 221; `/play/` removed from the shell asserts; the offline-navigation check moves to `/openworld/`.
 - `test_web.py`: the precache guard no longer requires `thegame.js` (it is no longer precached by design).
-- Seal: `counters.json`, `atlas-mundo.json`, `config/sw-huella.txt`.
+- Seal: `counters.json`, `atlas-world.json`, `config/sw-huella.txt`.
 - Out of scope, kept for slice D: `public/play/index.html`, the rest of the theGame stack, the lexicon sections.
 
 ## Constraints
@@ -22,16 +22,16 @@ The shell still precaches `/play/` and the theGame bundle, so a client with the 
 - `/openworld/` untouched except through the seal.
 
 ## Checklist
-- [x] C1 · baseline before the change: `arnes_sw.mjs` 23/23, `test_web.py` 86 OK on `origin/main`.
+- [x] C1 · baseline before the change: `sw_harness.mjs` 23/23, `test_web.py` 86 OK on `origin/main`.
 - [x] C2 · `/play/` and both theGame files are absent from `rutasDelShell()` / JUEGO (arnes assert, 221 entries).
 - [x] C3 · guards: `mapa_viejo_desmontado` 6/6, `map_acho_figures` 4/4, `node_bindings` 22/22, `canonical_apex` 5/5.
-- [x] C4 · seal chain converged: `sellar.py` dry run → "NADA QUE SELLAR" at `abkh`; `atlas/mundo.py` `version_sw=abkh`, `arnes_sw=23/23`, `gzip_juego_b=111321` (< 153600).
+- [x] C4 · seal chain converged: `seal.py` dry run → "NADA QUE SELLAR" at `abkh`; `atlas/world.py` `version_sw=abkh`, `arnes_sw=23/23`, `gzip_juego_b=111321` (< 153600).
 - [x] C5 · `openworld_browser` on the branch: exit 0, `fallos []`, `externas 0`, chat active, 390 px.
 - [ ] C6 · RED-before-GREEN on the weakest live device of the fleet ring — NO_DATA: the change is not deployed and no device is at hand.
 - [ ] C7 · before/after capture of the shell on a real installed client — NO_DATA: needs a live deploy and a client with the old SW.
 
 ## Verification evidence
-- `arnes_sw.mjs` on branch: 23/23. Shell list length 224 (main) → 221 (branch).
+- `sw_harness.mjs` on branch: 23/23. Shell list length 224 (main) → 221 (branch).
 - `test_web.py` on branch: 86 OK, skipped 1 (same as main).
 - `atlas/version_sw_gate.mjs`: GREEN.
 - `atlas/openworld_browser.mjs`: exit 0, `fallos []`.

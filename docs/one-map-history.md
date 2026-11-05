@@ -25,7 +25,7 @@ So the circular Hexelion map and the rhombus projection were already in theGame 
 ## 3. What the live site serves today (measured)
 
 - `/openworld/` and `/game/global_map.js` on the live site have the **same SHA-1 as branch head `fe51495`**, not as `main` (`abke`). The live site therefore serves the PR branch build. Its `sw.js` is `abkf`.
-- The cabin graphic the Sovereign saw is that build with `estado.json` listing zero nodes (`docs/one-map/live-openworld-before.png`). The cabin is the only bubble, so the isometric layout did not read as isometric.
+- The cabin graphic the Sovereign saw is that build with `state.json` listing zero nodes (`docs/one-map/live-openworld-before.png`). The cabin is the only bubble, so the isometric layout did not read as isometric.
 - The guided tutorial on `/play/` is not the circular map: "Start the guided tutorial" opens "Two doors" (phase F0), then "The Wave" (phase F1) with a practice beacon (`live-tutorial-after-click-before.png`, `live-fog-map-before.png`). "Check the rift" opens the sea scene with the crab (`live-rift-map-before.png`).
 - The circular map is reached from the game panel (`live-worldmap-circular-before.png`).
 - A device may still hold an older service-worker cache. Not measured: no device at hand (NO_DATA).

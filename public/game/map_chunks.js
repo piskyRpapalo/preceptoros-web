@@ -1,10 +1,10 @@
-// P3 · loads the map by neighbourhood (odd/tasks/mapa-25d-aldea.md F3). It asks for /map/carta.json, then ONLY the
+// P3 · loads the map by neighbourhood (odd/tasks/mapa-25d-aldea.md F3). It asks for /map/chart.json, then ONLY the
 // 7 chunks around the area key of a cell (AtlasMapCarta.neighbourhood), never an exact position. Each chunk is checked
 // by SHA-256 (the chunk_router.js pattern: chunk_hash_mismatch, cache_chunk_missing) and by its contract; anything
 // missing or wrong is NO_DATA with its cause (honest fog). Every request is declared in the result. No server state.
 (function (root) {
   'use strict';
-  var C = root.AtlasMapCarta || (typeof require === 'function' ? require('./map_carta.js') : null);
+  var C = root.AtlasMapCarta || (typeof require === 'function' ? require('./map_chart.js') : null);
 
   function hexOf(buf) { return Array.prototype.map.call(new Uint8Array(buf), function (b) { return ('0' + b.toString(16)).slice(-2); }).join(''); }
   function sha256(buf) {
@@ -20,7 +20,7 @@
     var get = (opts && opts.fetch) || root.fetch.bind(root), base = (opts && opts.base) || '/map/';
     var requests = [], out = { key: null, chunks: {}, missing: [], requests: requests, say: '' };
     function ask(url) { requests.push(url); return get(url).then(function (r) { if (!r.ok) { throw new Error('HTTP ' + r.status); } return r.arrayBuffer(); }); }
-    return ask(base + 'carta.json').then(function (buf) {
+    return ask(base + 'chart.json').then(function (buf) {
       var carta = JSON.parse(text(buf)), bad = C.checkCarta(carta);
       if (bad) { throw new Error(bad); }
       var R = carta.radius, here = C.chunkOf(cell[0], cell[1], R), index = {};

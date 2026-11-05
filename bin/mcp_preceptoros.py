@@ -107,7 +107,7 @@ def run_gates(root, args):
     require_keys(args, ())
     commands = [
         ("test_web", [sys.executable, "test_web.py"], re.compile(r"Ran (\d+) tests")),
-        ("service_worker", ["node", "arnes_sw.mjs"], re.compile(r"(\d+)/(\d+)")),
+        ("service_worker", ["node", "sw_harness.mjs"], re.compile(r"(\d+)/(\d+)")),
         ("initial_gzip", ["node", "atlas/phase_gate.mjs"], re.compile(r'"gzip_initial_b":(\d+)')),
     ]
     rows = []

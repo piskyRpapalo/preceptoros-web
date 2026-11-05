@@ -9,7 +9,7 @@ What a message of the room is, before any panel exists: an Acho frame (< 1,024 B
 
 ## Scope
 
-`atlas/puros/sala_log.js`, not served (no reseal):
+`atlas/puros/room_log.js`, not served (no reseal):
 - `mensaje(log, {voz, texto, sello}, voces)` builds the next frame. The turn and the chain come from the log, never from the caller.
 - `asienta(log, frame, autor, voces, juez)` is the only way to grow the log: it returns a new array and leaves the old one untouched.
 - `verifica(log, voces, juez)` walks the log and names the first broken turn.
@@ -29,7 +29,7 @@ The register (SALA-C) and the judge (`Acho.valida`) come in as arguments, so thi
 
 - [x] SALA-B-1 · message = Acho frame with seal, voice, turn and `prev`.
 - [x] SALA-B-2 · append-only, chained; a rewritten past breaks the next turn.
-- [x] SALA-B-3 · gate `atlas/puros/sala_log_casos.mjs` (7 cases, in `gate.yml`). Red first: without the chain check, case 5 fails.
+- [x] SALA-B-3 · gate `atlas/puros/room_log_cases.mjs` (7 cases, in `gate.yml`). Red first: without the chain check, case 5 fails.
 
 ## Log
 

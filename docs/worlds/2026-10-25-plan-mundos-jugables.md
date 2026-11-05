@@ -4,7 +4,7 @@ Estado: **PROPUESTA**. Nada de código en este PR. Nada se construye hasta el FI
 Norte fijado por el encargo: **los dos mundos de nodo jugables en preceptoros.org, hasta el despliegue final.**
 
 Procedencia de las cifras: medidas el 2026-10-25 sobre `origin/main` (bb8d56a) con `stat`/`wc -c`, y
-leídas de `arnes_sw.mjs`, `public/sw-listas.js`, `EXCEPCIONES.md`, `AGENTS.md`. Las cifras del
+leídas de `sw_harness.mjs`, `public/sw-listas.js`, `EXCEPCIONES.md`, `AGENTS.md`. Las cifras del
 encargo que no se volvieron a medir aquí se marcan **[encargo]**.
 
 ---
@@ -30,7 +30,7 @@ encargo que no se volvieron a medir aquí se marcan **[encargo]**.
   **Por tanto el “mundo jugable” de hoy no es un vacío: es un recorrido de seis pasos sobre un solo mapa
   neutro.** La brecha real es que los dos mundos de nodo no tienen terreno ni recorrido propios.
 - Precache: los doce ficheros de `public/face/` están listados en `public/sw-listas.js` (líneas 25–42).
-- Conteo de rutas: `arnes_sw.mjs:203` comenta **218** tras añadir `/face/` (2026-10-25). El encargo dice
+- Conteo de rutas: `sw_harness.mjs:203` comenta **218** tras añadir `/face/` (2026-10-25). El encargo dice
   **219 entradas / 218 únicas** [encargo]. Hay que reconciliar esa diferencia antes de sumar nada (ver §3).
 - Presupuesto gzip: `bin/mcp_preceptoros.py:118` compara `gzip_initial_b < 153600`. La cifra **110.678 B**
   es del encargo [encargo]; no se re-midió en esta ronda.
@@ -85,9 +85,9 @@ Impacto:
 - `face_world.js` tiene **466 B** libres. Cualquier terreno nuevo dentro de él lo cruza.
 - **Partición propuesta (R2):** `face_world.js` (núcleo: lugares, rutas, niebla, contador) +
   `face_world_terrain.js` (datos de terreno por nodo). Precedente: `en301_tutorial_copy.js` (web#310),
-  que se sacó del modelo porque «el modelo no cabe en 16 KiB» (`arnes_sw.mjs:204`).
+  que se sacó del modelo porque «el modelo no cabe en 16 KiB» (`sw_harness.mjs:204`).
 - Cada pieza nueva suma **una** entrada en `public/sw-listas.js`, **una** en la lista de scripts del
-  HTML del nodo, y **una** en el conteo de `arnes_sw.mjs` (218 → 219 con la partición; la
+  HTML del nodo, y **una** en el conteo de `sw_harness.mjs` (218 → 219 con la partición; la
   reconciliación 219/218 del encargo va primero).
 - Ninguna pieza nueva puede pasar de 16 KiB. El gate es `wc -c` por fichero en `public/face/`.
 
@@ -95,11 +95,11 @@ Impacto:
 
 Todo cambio bajo `public/` exige la cadena de `sello-del-juego`. Orden:
 
-1. Listas y conteos primero: `public/sw-listas.js`, `arnes_sw.mjs`, `contadores.py`. Arnés en verde.
-2. `python3 bin/sellar.py --sellar --version "$V"` con `V` = la VERSION de `origin/main`. **Nunca sin `--version`.**
-3. `python3 atlas/mundo.py` (`version_sw`, `gzip_juego_b` < 153.600).
-4. `node atlas/arnes_piloto.mjs`, de nuevo `contadores.py` y `sellar.py`.
-5. `python3 test_web.py && node arnes_sw.mjs`.
+1. Listas y conteos primero: `public/sw-listas.js`, `sw_harness.mjs`, `counters.py`. Arnés en verde.
+2. `python3 bin/seal.py --sellar --version "$V"` con `V` = la VERSION de `origin/main`. **Nunca sin `--version`.**
+3. `python3 atlas/world.py` (`version_sw`, `gzip_juego_b` < 153.600).
+4. `node atlas/pilot_harness.mjs`, de nuevo `counters.py` y `seal.py`.
+5. `python3 test_web.py && node sw_harness.mjs`.
 
 Ramas que sellan en paralelo suben a la misma VERSION: **quien fusiona último re-sella**.
 Este PR de plan no toca `public/` y **no necesita sello**.
@@ -108,7 +108,7 @@ Este PR de plan no toca `public/` y **no necesita sello**.
 
 - Las piezas nuevas de terreno y los cuadros de paseo entran en `sw-listas.js` **antes** del sello,
   para que la precarga sea honesta: si no están precargadas, el nodo no abre sin red.
-- `arnes_sw.mjs` debe comprobar que cada fichero nuevo está en la lista de precarga y que el nodo
+- `sw_harness.mjs` debe comprobar que cada fichero nuevo está en la lista de precarga y que el nodo
   carga sin red tras una primera visita.
 - El dato de terreno no se pide por red en ningún caso (cero red nueva).
 
@@ -141,7 +141,7 @@ Cada uno con **medida o `NO_DATA, cause`**:
 
 1. ¿El techo de 16 KiB es regla vigente o legado tras D2? (§3)
 2. ¿Cómo se escribe el nombre de cada mundo: «Doggee» o «Doogee»? (§1)
-3. ¿Cuál es la cifra correcta de entradas de ruta: 218 (`arnes_sw.mjs`) o 219 (encargo)? (§0)
+3. ¿Cuál es la cifra correcta de entradas de ruta: 218 (`sw_harness.mjs`) o 219 (encargo)? (§0)
 4. ¿R5 (mapa futuro) entra en el norte o queda para después del despliegue? (§7)
 
 ## Optimización propuesta

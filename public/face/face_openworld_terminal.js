@@ -86,12 +86,12 @@
   });
   root.addEventListener('resize', draw);
 
-  root.fetch('/openworld/estado.json', { cache: 'no-cache' }).then(function (r) {
-    if (!r.ok) { throw new Error('estado.json returned HTTP ' + r.status); }
+  root.fetch('/openworld/state.json', { cache: 'no-cache' }).then(function (r) {
+    if (!r.ok) { throw new Error('state.json returned HTTP ' + r.status); }
     return r.json();
   }).then(function (data) {
     var parsed = apply(data);
-    causeText.textContent = colony ? 'State source: /openworld/estado.json · validated by openworld_state.js. Movement follows colony_controls.js.' : 'NO_DATA: ' + parsed.hidden + ' nodes are hidden because none is sealed LIVE or STALE.';
+    causeText.textContent = colony ? 'State source: /openworld/state.json · validated by openworld_state.js. Movement follows colony_controls.js.' : 'NO_DATA: ' + parsed.hidden + ' nodes are hidden because none is sealed LIVE or STALE.';
     draw();
     // Latido visible (terminal parity with /openworld/): the same heartbeat, merged the same way, or NO_DATA with its cause.
     var WF = root.AtlasWorldFeed, base = causeText.textContent;
@@ -100,7 +100,7 @@
       live: function (merged) {
         apply(merged);
         var vivos = Object.keys(seals).filter(function (id) { return id !== 'cabin' && seals[id] === 'LIVE'; });
-        causeText.textContent = 'Live nodes: ' + vivos.length + ' LIVE' + (vivos.length ? ' (' + vivos.join(', ') + ')' : '') + ' · source /api/world-state, merged with the tutorial cabin of /openworld/estado.json.';
+        causeText.textContent = 'Live nodes: ' + vivos.length + ' LIVE' + (vivos.length ? ' (' + vivos.join(', ') + ')' : '') + ' · source /api/world-state, merged with the tutorial cabin of /openworld/state.json.';
         draw();
       },
       fail: function (cause) { apply(data); causeText.textContent = base + ' · Live nodes NO_DATA: ' + cause; draw(); }

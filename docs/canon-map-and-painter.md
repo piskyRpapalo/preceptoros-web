@@ -214,7 +214,7 @@ preceptoros.org · theGame · EL PINTOR DEL MAR: las teselas del lecho y de la n
    Desde U1 («el mapa unico», 2026-10-11) el fondo de la portada ES el mapa global, interactivo y siempre detras:
    el lienzo de fondo propio de J6 (`monta`, `portada`) se RETIRA y queda lo que lo hacia posible, el pintor UNICO
    de teselas que pide el mapa (T0-D: sin gemelos). La deriva es UN desplazamiento global por cuadro (las teselas
-   no cambian, el mar si: la respiracion que M4 horneaba mal). Ruido entero (escena.js), niebla de lo MEDIDO
+   no cambian, el mar si: la respiracion que M4 horneaba mal). Ruido entero (scene.js), niebla de lo MEDIDO
    (fog_of_war.js); el reloj de pantalla solo mueve la deriva.
 
 
@@ -440,7 +440,7 @@ preceptoros.org · theGame · LA CAMARA del mapa global: se arrastra, tiene iner
    inercia la lleve y la frene. Su centro solo puede estar en lo DESPEJADO (`fog_of_war.js`): si un
    paso la saca, vuelve al borde mas cercano, su velocidad rebota hacia dentro y se avisa del choque.
    Con movimiento reducido no hay inercia: saltos. Puro y determinista: mismo estado y mismos pasos,
-   misma vista (`atlas/camara_casos.mjs`). Sin DOM, sin reloj; el `dt` lo pone quien llama.
+   misma vista (`atlas/camera_cases.mjs`). Sin DOM, sin reloj; el `dt` lo pone quien llama.
 
 
 ## public/game/world_camera.js:10
@@ -497,7 +497,7 @@ Lo que se ve: la caja de MUNDO que contiene las cuatro esquinas del lienzo (en r
 La matriz del rombo (pixeles por unidad de mundo): para dibujar una tesela cuadrada como rombo con setTransform.
 
 
-## public/game/onda_profunda.js:1
+## public/game/deep_wave.js:1
 
 preceptoros.org · theGame · PIEZA (b) FIRMADA (PR #106, Ola 0) · PROFUNDIDAD DE ONDAS
    SOBRE LA LEY DEL SUELO. ideas13oct:306: «"3D" SIMULADO sobre la ley del suelo
@@ -518,20 +518,20 @@ preceptoros.org · theGame · PIEZA (b) FIRMADA (PR #106, Ola 0) · PROFUNDIDAD 
    ley firmada el 2026-10-12.
 
 
-## public/game/onda_profunda.js:23
+## public/game/deep_wave.js:23
 
 El plan de una onda: ancla del rombo (o del centro de su huella), profundidad
      del pintor y el radio con escala viva. Todo función pura del lugar.
 
 
-## public/game/onda_profunda.js:30
+## public/game/deep_wave.js:30
 
 ESCALA VIVA sin perspectiva: el radio crece LINEALMENTE con la profundidad
        relativa al plano (0 en el centro visible), clamp para no romper la retícula.
        Es una función del eje (col+fila), no de un punto de fuga: cero faked 3D.
 
 
-## public/game/onda_profunda.js:39
+## public/game/deep_wave.js:39
 
 Encola una onda en la cola del pintor del mar, con su ficha. Igual que `pon`
      de sea.js pero con la profundidad de la ley (huella incluida).

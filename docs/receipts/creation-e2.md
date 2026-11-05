@@ -8,7 +8,7 @@ queued local feedback.
 |---|---|
 | `node --test tests/creation_feedback.test.mjs` | VERDE: six directed cases |
 | Physical touch/audio check | `NO_DATA`, cause: no attached touch device or accessible audio server |
-| `node arnes_sw.mjs` | VERDE: 22/22 |
+| `node sw_harness.mjs` | VERDE: 22/22 |
 | `python3 test_web.py` | 78 tests; 76 passed, 1 skipped, 1 `NO_DATA` error: sandbox denies loopback socket bind |
 
 The guard checks reachable UI dimensions, coordinates, frame bytes, state

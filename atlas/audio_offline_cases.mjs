@@ -3,7 +3,7 @@
 // Preceptor contract: study/05-contracts.md. PS: propose-only + seal: corte-D-retirada.
 import { existsSync, readFileSync } from 'node:fs';
 
-const RETIRADOS = ['public/game/descent_sound.js', 'public/assets/codex_scene.js', 'public/game/aiact-art50-state-radio.js', 'public/game/tarjeta_cantada.js', 'public/game/audio_feedback_manager.js'];
+const RETIRADOS = ['public/game/descent_sound.js', 'public/assets/codex_scene.js', 'public/game/aiact-art50-state-radio.js', 'public/game/sung_card.js', 'public/game/audio_feedback_manager.js'];
 const sw = readFileSync('public/sw-listas.js', 'utf8');
 const vivos = RETIRADOS.filter(p => existsSync(p)).map(p => 'vive ' + p);
 const precache = RETIRADOS.filter(p => sw.includes("'/" + p.replace(/^public\//, '') + "'")).map(p => 'precacheado ' + p);

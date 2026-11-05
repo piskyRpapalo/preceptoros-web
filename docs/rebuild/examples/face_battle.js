@@ -2,11 +2,11 @@
   'use strict';
   var node = typeof module === 'object' && module.exports;
   function lib(name, file) { return root[name] || (node ? require(file) : null); }
-  var T = lib('AtlasCombateTicks', '../../../public/game/combate_ticks.js');
+  var T = lib('AtlasCombateTicks', '../../../public/game/combat_ticks.js');
   var G = lib('AtlasGacha', '../../../public/game/gacha.js');
   var K = lib('AtlasCanon', '../../../public/game/canon.js');
-  var E = lib('AtlasEscuadron', '../../../public/game/escuadron.js');
-  var V = lib('AtlasValores', '../../../public/game/valores.js');
+  var E = lib('AtlasEscuadron', '../../../public/game/squadron.js');
+  var V = lib('AtlasValores', '../../../public/game/values.js');
   var forms = ['agresiva', 'defensiva', 'flanqueo'];
   var formNames = { agresiva: 'Spear', defensiva: 'Shield', flanqueo: 'Wings' };
   var patrolNames = { arrecife: 'Reef patrol', algas: 'Kelp patrol', ruinas: 'Ruins patrol', limo: 'Silt patrol', abismo: 'Abyss patrol', nucleo: 'Core patrol' };

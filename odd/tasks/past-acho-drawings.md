@@ -16,12 +16,12 @@ Git records most of these files under the house identity, with the trailer `Co-A
 | `public/face/basic.html`, `atlantis.html`, `zombie.html` | 13–14 KB | yes | yes (test pages, `Test ·` titles) | served; the pages are tests, not the map |
 | `public/face/face_world.js`, `face_world_terrain.js`, `face_hud.js`, `face_paint.js`, `face_battle.js`, `face_hero.js` | 1–12 KB | yes | yes (loaded by the pages above) | served; world frames and terrain |
 | `public/game/acho_language.js` | 16 KB | yes | yes | the language itself |
-| `public/game/colonia_edificios.js`, `colonia_pagina.js`, `global_map.js`, `palette_cycle.js`, `state_frames.js` | 3–11 KB | yes | yes | served; colony, sky, frames (IC4 to IC7) |
+| `public/game/colony_buildings.js`, `colony_page.js`, `global_map.js`, `palette_cycle.js`, `state_frames.js` | 3–11 KB | yes | yes | served; colony, sky, frames (IC4 to IC7) |
 | `public/assets/landing_doors.js` | 3 KB | yes | yes | served; the intro's doors |
-| `atlas/puros/catalogo_iso.js` | 5 KB | yes | **no** | merged in main (IC3); pure core that builds sprite frames; not served |
-| `atlas/puros/colonia_edificios.js`, `paleta_ciclo.js`, `state_frames.js` | 3–8 KB | yes | **no** (their served copies are in `public/game/`) | source copies, kept in parity |
+| `atlas/puros/catalog_iso.js` | 5 KB | yes | **no** | merged in main (IC3); pure core that builds sprite frames; not served |
+| `atlas/puros/colony_buildings.js`, `palette_cycle.js`, `state_frames.js` | 3–8 KB | yes | **no** (their served copies are in `public/game/`) | source copies, kept in parity |
 | `tools/preceptor-coder/frames/cabin.json` | 410 B | yes | no | **fails the frame law**: `bands not an array`; `paper`, `ink` not declared. NO_DATA with cause until repaired |
-| `atlas/ojo/fixtures/palabras.html` | 4 KB | yes | no | a test fixture, not a drawing; not published |
+| `atlas/ojo/fixtures/words.html` | 4 KB | yes | no | a test fixture, not a drawing; not published |
 | `docs/rebuild/examples/*` (basic, atlantis, zombie, index, harnesses) | 13 KB each | yes/no | no (examples) | duplicates; the examples' changes are in `odd/tasks/examples-to-live-map.md` |
 
 ## Decisions (declared)
@@ -29,7 +29,7 @@ Git records most of these files under the house identity, with the trailer `Co-A
 - **PB-D1 · served only if it passes.** A drawing is published only when `checkFrame` passes on its frames and its gate is green. Nothing is published by hand.
 - **PB-D2 · the test pages stay tests.** `basic`, `atlantis`, `zombie` are labelled as tests (MM-1); their drawings are shown on the single map through the colony pieces, not as the map.
 - **PB-D3 · repair before serve.** `cabin.json` is repaired (its bands declared as a list, the sentence kept) in its own piece, then it may be served. Its repair is not made here.
-- **PB-D4 · `catalogo_iso.js` is served with its sheet.** Its sprites are shown in a contact sheet (IC8) before any publication, as the visual rule requires.
+- **PB-D4 · `catalog_iso.js` is served with its sheet.** Its sprites are shown in a contact sheet (IC8) before any publication, as the visual rule requires.
 - **PB-D5 · presentation.** "Bonito" means: the served drawings sit on the single map, with their sentence, seal and sound visible, and with the house bands only. The layout follows `odd/tasks/map-visual-audio-mvp.md` (MV-D1, MV-D2).
 
 ## Checklist (one drawing or one repair = one PR, FIRMO per piece)

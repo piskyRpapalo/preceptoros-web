@@ -2,7 +2,7 @@
 (function (raiz) {
   'use strict';
 
-  var V = (typeof module === 'object' && module.exports) ? require('./valores.js') : raiz.AtlasValores;
+  var V = (typeof module === 'object' && module.exports) ? require('./values.js') : raiz.AtlasValores;
   var TOPE = V.army_tope;
 
   function hex(buf) {

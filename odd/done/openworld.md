@@ -20,7 +20,7 @@ The INTRO (PR #366) sends OpenWorld to `/play/` provisionally. This PR creates t
 
 ## Constraints
 - Client: zero external requests. No `api.` and no `atlas.` from the browser.
-- Node state: same-origin file, `public/openworld/estado.json`, zero nodes by default. No new Worker and no deployment.
+- Node state: same-origin file, `public/openworld/state.json`, zero nodes by default. No new Worker and no deployment.
 - Graphics: today's bubble, 3 colors (`paper`, `ink`, `cyan`), nothing more.
 - UI text in English. No device names and no user paths. No banned vocabulary.
 - No merge, no deploy, no Cloudflare.
@@ -28,11 +28,11 @@ The INTRO (PR #366) sends OpenWorld to `/play/` provisionally. This PR creates t
 ## Checklist
 - [x] OW1 · page `public/openworld/index.html` with the two halves and the cabin always visible.
 - [x] OW2 · default state: zero nodes; the map shows only the cabin.
-- [x] OW3 · Atlantis and the Risen appear only if `estado.json` lists them as alive; otherwise they do not exist on screen.
+- [x] OW3 · Atlantis and the Risen appear only if `state.json` lists them as alive; otherwise they do not exist on screen.
 - [x] OW4 · chat always present, no "Chat" button; input disabled with honest text until #363 arrives.
 - [x] OW5 · INTRO: OpenWorld → `/openworld/`.
 - [x] OW6 · sitemap 9 → 10, regenerated with `sitemap.py`.
-- [x] OW7 · precache 222 → 223 in `arnes_sw.mjs`, with a history line.
+- [x] OW7 · precache 222 → 223 in `sw_harness.mjs`, with a history line.
 - [x] OW8 · tests: route, default state, zero external requests, no chat button.
 - [x] OW9 · seal: VERSION rises, fingerprint, `gzip_juego_b`, counters.
 - [x] OW10 · gates ×2 green, locally and in CI, before reporting. Closed at merge: CI green on the exact head (hitl, gate, phase), merged by the Desk under the Sovereign's FIRMO.
@@ -42,7 +42,7 @@ The INTRO (PR #366) sends OpenWorld to `/play/` provisionally. This PR creates t
 - OW8: `test_web.OpenWorld` 6/6 (page ≤ 16 KiB, default state zero nodes, nodes only if alive, zero external requests, chat always present without button, sitemap and precache).
 - OW5: `local_first_surface_build.py` moves OpenWorld's destination to /openworld/; `test_web.Puerta` and `landing_doors_browser` updated.
 - OW6: `sitemap.py` 9 → 10 URLs (`sueltas()` gains `openworld/`); `sitemap.xml` regenerated.
-- OW7: `arnes_sw.mjs` 222 → 223 (history line).
+- OW7: `sw_harness.mjs` 222 → 223 (history line).
 - OW9: VERSION `preceptoros-2026-17-abjy` → `preceptoros-2026-17-abjz` (bump in the same commit); final fingerprint `90dde68cece3fcda`; `gzip_juego_b` 111321 (< 153600); `arnes_sw` 23/23; `pruebas_web` 84 (measured by `Ran 84 tests`).
 
 ## Decision log (unattended mode: feature-branch-chain)

@@ -25,7 +25,7 @@ recibe el navegador. `wrangler.jsonc` configura Workers Static Assets con
 | Peso que se despliega | **4,4 MB de `assets/`**, de los que 2,2 MB son `assets/caras/` |
 | Peso en disco | los `public/downloads/*.gguf` siguen **ignorados por git** |
 | Tope por fichero | **16 KiB**, vigilado por el gate |
-| Pruebas | `test_web.py` **153** (cero saltadas) · `arnes_sw.mjs` **23/23** |
+| Pruebas | `test_web.py` **153** (cero saltadas) · `sw_harness.mjs` **23/23** |
 
 **El fichero que menos margen tiene YA NO es `sw.js`** --- se partió en
 `sw.js` + `sw-listas.js` y hoy deja 5.150 B libres. Medido el 2026-09-22, los
@@ -126,7 +126,7 @@ Tres cosas que hay que saber de esta clase de fallo, porque ninguna es obvia:
 
 Se arregló en los **tres** sitios por los que entra o sale la marca —al
 precachear, al refrescar por detrás y al leer del caché—; arreglar uno solo
-deja el sitio roto igual. `arnes_sw.mjs` cubre ahora los tres y **está
+deja el sitio roto igual. `sw_harness.mjs` cubre ahora los tres y **está
 comprobado que caza**: contra el worker viejo da 3 en rojo. Si tocas el
 worker, no borres esas pruebas para que pase el gate.
 
@@ -153,7 +153,7 @@ worker, no borres esas pruebas para que pase el gate.
 
 ### Lo que ya está
 - `docs/img/` tiene **cuatro capturas regeneradas hoy** contra la versión
-  desplegada: `puerta.webp`, `chat.webp`, `install.webp`, `phone.webp`.
+  desplegada: `door.webp`, `chat.webp`, `install.webp`, `phone.webp`.
 - Los dos README están **redactados y sin aplicar**, pendientes de firma:
   sólo en inglés, frases simples, sin nombres propios. La app se presenta como
   medidor de IA y acceso democratizado al autoconocimiento; la web, como guía
@@ -254,4 +254,4 @@ Hay tres salidas y la elección es del Soberano, no de la sesión:
 
 ---
 
-*Gate al 2026-09-22: `test_web.py` **153/153**, cero saltadas · `arnes_sw.mjs` **23/23** · worker `preceptoros-2026-17-aaw` (desplegado: `aav`).*
+*Gate al 2026-09-22: `test_web.py` **153/153**, cero saltadas · `sw_harness.mjs` **23/23** · worker `preceptoros-2026-17-aaw` (desplegado: `aav`).*

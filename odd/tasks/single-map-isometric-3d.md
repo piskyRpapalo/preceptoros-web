@@ -9,7 +9,7 @@ The drawings that Claude made in the past (see `odd/tasks/past-acho-drawings.md`
 
 ## Problem and why
 
-- Each drawing lives on its own page or module: the terrain on the test pages (`face_world_terrain.js`), the sprites in `atlas/puros/catalogo_iso.js` (not served), the colony on `/openworld/` (IC4 to IC7). The public sees fragments, not one map.
+- Each drawing lives on its own page or module: the terrain on the test pages (`face_world_terrain.js`), the sprites in `atlas/puros/catalog_iso.js` (not served), the colony on `/openworld/` (IC4 to IC7). The public sees fragments, not one map.
 - The colony is isometric (2:1, fixed cell) but the cells read as flat hexes: no heights, no shadow, no light. The Acho language has the parts for volume (`style: volume` with shadow, halftone, rim and highlight), but the colony frames do not use them yet.
 
 ## What "3D sensation" means here (declared)
@@ -57,7 +57,7 @@ Out of scope: a 3D engine (three.js or similar), imported 3D models, a free came
 
 ## Verification evidence
 
-Measured in main (`772d95a`): the colony (IC4 to IC7) and its painter's order by `y`; the terrain frames (`face_world_terrain.js`: `islesFrame`, `seaFrame`, `standFrame`); the palette by tick (IC5); the sprites (`catalogo_iso.js`, IC3, not served). Not measured here: the 3D sensation itself (NO_DATA until the contact sheet is seen by the Sovereign).
+Measured in main (`772d95a`): the colony (IC4 to IC7) and its painter's order by `y`; the terrain frames (`face_world_terrain.js`: `islesFrame`, `seaFrame`, `standFrame`); the palette by tick (IC5); the sprites (`catalog_iso.js`, IC3, not served). Not measured here: the 3D sensation itself (NO_DATA until the contact sheet is seen by the Sovereign).
 
 ## Standing signature
 

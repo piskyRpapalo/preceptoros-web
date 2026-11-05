@@ -3,7 +3,7 @@
 Solo medición y propuesta; ninguna construcción de ③ o ④.
 Medición: 2026-10-16, Linux x86_64, Node v22.22.1, Python 3.14.4.
 Web: base exacta `e6eef92cfc9bdec6b553ccc66e8ac22be004d363`.
-Sincronización ff-only antes de ramificar. `bin/sellar.py --sellar` con la
+Sincronización ff-only antes de ramificar. `bin/seal.py --sellar` con la
 VERSION existente devuelve NADA QUE SELLAR: huella `0b9a7a221d0cb53a`,
 VERSION `preceptoros-2026-17-abik`; cero cambios públicos. Las letras de los
 merges y la VERSION del worker son sensores distintos: no se inventa su paridad.
@@ -33,12 +33,12 @@ es código leído, no prueba de despliegue. RACK y Worker permanecen intactos.
 | WEB: puerta ① | `public/game/node_reception_contract.js:49,56,70,76` | Contrato estricto; cédula y sobre son formas distintas. Menos de 1.024 B UTF-8; no admite aparato ni testigos de dispositivo del exportador legado. |
 | WEB: puerta ② | `public/game/node_signature_verify.js:97` | Verifica forma, pins, manifiesto y SSHSIG; veredicto separado, authority:false. No instala, almacena o publica la cédula. |
 | WEB: confianza | `public/game/node_trust_anchor.js:3`; `node_trust_manifest.js:3`; `docs/canon-node-trust.md:6` | Pins y manifiesto vacíos. Falta ceremonia real separada; cualquier candidata real sigue pendiente. |
-| WEB: doble puerta antigua | `public/game/nodos.js:48,65` | El encabezado firmado usa R.declaration, no el verificador ②. Sigue exigiendo aparato y hash completo. SIGNED no prueba autenticidad aquí. |
-| WEB: estado/cuenta maestra | `public/game/cuenta.js:17,29`; `data/preceptoros_cuenta_maestra_schema.json:8` | Actividad DECLARADA por medidas fechadas, latido NO_DATA. Cuenta maestra limitada al nodo maestro, PROPUESTA y firma:null. No hay importador de cuenta maestra firmada. |
-| WEB: pesos | `public/game/nodos-pesos.js:20`; `public/game/nodos.js:107`; `atlas/nodos_casos.mjs:115` | PROPUESTA sin firma; rejilla y banda comprobables. La ausencia usa base y niebla; no inventa rendimiento. |
+| WEB: doble puerta antigua | `public/game/nodes.js:48,65` | El encabezado firmado usa R.declaration, no el verificador ②. Sigue exigiendo aparato y hash completo. SIGNED no prueba autenticidad aquí. |
+| WEB: estado/cuenta maestra | `public/game/account.js:17,29`; `data/preceptoros_master_account_schema.json:8` | Actividad DECLARADA por medidas fechadas, latido NO_DATA. Cuenta maestra limitada al nodo maestro, PROPUESTA y firma:null. No hay importador de cuenta maestra firmada. |
+| WEB: pesos | `public/game/nodos-pesos.js:20`; `public/game/nodes.js:107`; `atlas/nodes_cases.mjs:115` | PROPUESTA sin firma; rejilla y banda comprobables. La ausencia usa base y niebla; no inventa rendimiento. |
 | WEB: mapa/corales | `public/game/fog_of_war.js:22`; `map_nodes_layer.js:4`; `reef_corals.js:37` | Leen el catálogo. Solo el nodo maestro tiene posición; importar una cédula no autoriza otras coordenadas. |
-| WEB: consentimiento | `public/game/ui-nodos.js:170`; `public/game/nodos.js:200` | Clic real, casilla y segunda firma; puerta de partidas, no de importación de cédulas. |
-| WEB: transporte | `public/assets/enviar.js:32,59,75` | Enviar.paquete usa reto de Agora y POST `/api/v1/paquetes`. No usa ENDPOINT de ①. |
+| WEB: consentimiento | `public/game/ui-nodes.js:170`; `public/game/nodes.js:200` | Clic real, casilla y segunda firma; puerta de partidas, no de importación de cédulas. |
+| WEB: transporte | `public/assets/send.js:32,59,75` | Enviar.paquete usa reto de Agora y POST `/api/v1/paquetes`. No usa ENDPOINT de ①. |
 | Worker: recepción | `aduana/src/index.js:63,73,79,93` | Espera solo `{cedula}`; verifica cédula y plan; responde 202 encolado con paquete. No es publicación ni entrega de un registro completo. |
 | Worker: registro | `aduana/schema.sql:1` | Auditoría con huella de cédula única; node_id y admin_sha256 NO son únicos. Ninguna ruta de lectura del registro global en el código examinado. |
 
@@ -57,7 +57,7 @@ es código leído, no prueba de despliegue. RACK y Worker permanecen intactos.
   su constructor y su esquema solo producen una propuesta para el nodo maestro.
 - El aparato del catálogo no lo exporta la app. Autenticidad, actividad,
   hardware, pertenencia y publicación son ejes distintos; no se promueven juntos.
-- `ui-nodos.js:104` elige las primeras dos cuentas. Ampliar el selector queda
+- `ui-nodes.js:104` elige las primeras dos cuentas. Ampliar el selector queda
   fuera de estas piezas; no se anuncia combate general entre más cuentas.
 - Patrón de fichero existente: `public/game/shell_schematics.js:54` ofrece
   selección local y preview sin aplicar. Es referencia de gesto, no el
@@ -75,7 +75,7 @@ No se añadieron tests ni se modificaron módulos para obtener estos resultados.
 | Alias de cuenta repetido | Rechaza por forma de cuenta. |
 | Dos cuentas para un nodo | Rechaza por invariante 1:1. |
 | Documento de nodo repetido | Acepta: falta detectar nodo duplicado en la lista. |
-| Cédula de forma ① sin aparato | R.credential acepta forma; nodos.js rechaza por aparato. |
+| Cédula de forma ① sin aparato | R.credential acepta forma; nodes.js rechaza por aparato. |
 | Añadir aparato y recalcular hash | R.credential rechaza por campos; no es solución de compatibilidad. |
 | estadoNodo sin aparato | medidas:0, activo:NO_DATA, desde:null, latido:NO_DATA. |
 | cuentaMaestra | Sigue PROPUESTA; no prueba de cuenta firmada. |

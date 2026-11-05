@@ -6,19 +6,19 @@ Ley nueva del Soberano (16-oct): en el código servido (public/*.js y public/gam
 
 - Ficheros en alcance: 88 (public/*.js + public/game/*.js) · 10.083 líneas.
 - Comentarios: 588 bloques /* */ + 27 de línea // — **151.626 B de comentario total** (~10% del código servido).
-- Concentración: 63 ficheros llevan >1 KB de comentario; el top es valores.js (7.073 B), wave_render.js (4.818 B), sw.js (4.748 B), gacha.js (4.475 B).
+- Concentración: 63 ficheros llevan >1 KB de comentario; el top es values.js (7.073 B), wave_render.js (4.818 B), sw.js (4.748 B), gacha.js (4.475 B).
 - Excepción medida (se declara, no se recorta): los strings UI multilingües de la página sin-red de sw.js (SIN_RED es/es… ar) son DATO i18n que el worker sintetiza por lengua — no son comentarios. Se quedan y este doc es la causa.
 
 ## Índice propuesto: un doc por asunto (la unidad de la casa)
 
 | Doc | Asunto | De dónde migra (origen medido) |
 |---|---|---|
-| docs/canon-laws-of-the-world.md | Leyes del motor y constantes con su causa | valores.js, core.js, canon.js, gacha.js |
+| docs/canon-laws-of-the-world.md | Leyes del motor y constantes con su causa | values.js, core.js, canon.js, gacha.js |
 | docs/canon-service-worker.md | Historia y reglas del SW (instalación, 307, medidas) | sw.js, sw-listas.js, arnes comentado |
 | docs/canon-map-and-painter.md | Ley del suelo isométrica, orden de pintor, zoom | isometric_floor_projection.js, sea.js*, map_zoom.js, mar-*.js |
 | docs/canon-identity-and-signatures.md | Ed25519, sobres, FIRMO, identidad de visitante | auth.js, sobres.js, mercado.js, hitl_firma.js |
-| docs/canon-workflow.md | Taller: disolución, lija, residuo | taller.js, ui-taller.js, primer_eco.js |
-| docs/canon-arena-and-duels.md | Arena, duelos, juez, escuadrón | arena.js, duelo.js, juez.js, escuadron.js |
+| docs/canon-workflow.md | Taller: disolución, lija, residuo | workshop.js, ui-workshop.js, primer_eco.js |
+| docs/canon-arena-and-duels.md | Arena, duelos, juez, escuadrón | arena.js, duelo.js, juez.js, squadron.js |
 | docs/canon-house.md | La casa: cangrejo, edificios, personalización | casa-*.js, crab_*.js, home_*.js, reef_*.js |
 | docs/canon-nodes-and-npc.md | Nodos del rack, NPC, niebla | nodos*.js, npc_*.js, fog_of_war.js |
 | docs/canon-terminal-and-radio.md | Terminal J7, radio, canales, cable al lab | aiact-art50-*.js, radio (assets), cable_*.js, nexo |
@@ -34,7 +34,7 @@ Top por frecuencia en 88 ficheros: monta (25), pinta (20), crea (9), abre/cierra
 
 ## Nombres de fichero (D3) — mapa propuesto
 
-sea.js→sea.js · cria.js→brood.js · taller.js→workshop.js · nodos.js→nodes.js · cuenta.js→account.js · valores.js→values.js · sobres.js→envelopes.js · juez.js→judge.js · escena.js→scene.js · casa-*.js→house-*.js · arnés y sw-listas alineados en la misma pieza (sw-listas.js precachea estas rutas y atlas/test_atlas.py compara la lista con la puerta — la mudanza viaja con las listas alineadas o la suite cae, y esa es la vara).
+sea.js→sea.js · brood.js→brood.js · workshop.js→workshop.js · nodes.js→nodes.js · account.js→account.js · values.js→values.js · sobres.js→envelopes.js · juez.js→judge.js · scene.js→scene.js · casa-*.js→house-*.js · arnés y sw-listas alineados en la misma pieza (sw-listas.js precachea estas rutas y atlas/test_atlas.py compara la lista con la puerta — la mudanza viaja con las listas alineadas o la suite cae, y esa es la vara).
 
 ## Plan de ejecución (3 piezas, 3 PR, apiladas sobre main)
 

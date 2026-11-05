@@ -1,6 +1,6 @@
 # NORTE 7 fixture clarity
 
-PROPUESTA · REQUIERE_FIRMA. Baseline `bdd4005` (2026-10-28), fixture only. The preview's HITL question mark and lane initial occupy the same coordinates (`preview/plantilla.html`, `cuerpo`); at 1200 × 1000 the capture shows them colliding. The wait list filters the frame before mapping indices back to lanes, so a later waiting lane can be attributed to an earlier lane. Both defects obscure the actual fixture state.
+PROPUESTA · REQUIERE_FIRMA. Baseline `bdd4005` (2026-10-28), fixture only. The preview's HITL question mark and lane initial occupy the same coordinates (`preview/template.html`, `cuerpo`); at 1200 × 1000 the capture shows them colliding. The wait list filters the frame before mapping indices back to lanes, so a later waiting lane can be attributed to an earlier lane. Both defects obscure the actual fixture state.
 
 Slice: display the HITL state symbol inside its body instead of superimposing the initial, with the lane and state retained in the accessible label and legend. Preserve lane indices when calculating waits. This is a visual fixture proposal, not production wiring. The Sovereign approved the hexagon and requested label legibility in web #387 comment 6480922688 and the subsequent fog commission. The exact symbol appearance remains subject to eyes and signature. Full nameplate legibility, screen-space hit-testing and fleet performance are NO_DATA: not measured in this slice.
 

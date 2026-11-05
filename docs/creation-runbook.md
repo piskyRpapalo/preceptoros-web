@@ -72,7 +72,7 @@ accessibility across the entire site or app.
 node --test tests/creation_parity.test.mjs
 node --test tests/creation_flow.test.mjs
 python3 test_web.py
-node arnes_sw.mjs
+node sw_harness.mjs
 ```
 
 Run the existing web gates without changing their thresholds. If a local

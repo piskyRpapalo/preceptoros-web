@@ -1,6 +1,6 @@
 {
  "esquema": "atlas.record/1",
- "procedencia": "medido por atlas/arnes_piloto.mjs; determinista; atlas/test_atlas.py lo recalcula",
+ "procedencia": "medido por atlas/pilot_harness.mjs; determinista; atlas/test_atlas.py lo recalcula",
  "contenido_v": "2026-10-14.2",
  "politica": "piloto_base",
  "horizonte_ciclos": 20000,

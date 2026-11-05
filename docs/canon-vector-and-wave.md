@@ -2,7 +2,7 @@
 
 This document records the design notes formerly embedded in the served vector, harmonic and signal modules. Runtime behavior remains defined by the modules and their schemas.
 
-## Genome constraints — `atlas/puros/genoma.js` (out of the served tree since 2026-10-27)
+## Genome constraints — `atlas/puros/genome.js` (out of the served tree since 2026-10-27)
 
 A genome is a bounded set of integer parameters grouped by declared domains. Unknown parameters, fractional values, out-of-range values, and forbidden authority, persistence, network, identity, or physical-engine controls are rejected. Its canonical parameter hash is independent of key order. The local system may propose changes; adoption, activation, and persistence remain human-authorized. The module is pure and performs no DOM, network, clock, or random operations.
 
@@ -26,7 +26,7 @@ The glyph module adds deterministic, local visual and optional sound representat
 
 The vector is a read-only snapshot of visible game state, including resources, the active panel and freshness, tutorial progress, structures, places, nodes, records, and the latest radio output. Color, sound, and motion are projections of the same state. Missing readings retain a cause; they are never replaced by invented zeroes. The serialized JSON target is below 1 KiB. Byte accounting is performed on the serialized UTF-8 representation. Each source read may fail independently without preventing the remaining snapshot from being produced.
 
-## Shared semantic table — `public/game/tabla_semantica.js`
+## Shared semantic table — `public/game/semantic_table.js`
 
 The frozen seven-signal table is the sole physical source for signal color and derived motion, scale, feedback, pulse, and silence behavior. Unknown signals have no invented color or derivative. Text labels remain available alongside color, and the module is pure. New signals require separate human authorization.
 

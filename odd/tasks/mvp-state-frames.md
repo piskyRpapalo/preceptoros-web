@@ -12,7 +12,7 @@ ves. **Pregunta:** ¿qué estados llevan ondas? Hasta entonces, el sonido de eso
 ## Alcance (slice 1, núcleo puro, sin tocar la página)
 - `atlas/puros/state_frames.js`: `stateFrame`, `transitionMs` (movimiento reducido → 0), `valida` (ley: < 1.024 B, frase
   en cada átomo, sonido declarado).
-- `atlas/puros/state_frames_casos.mjs`: 7 casos, con sabotaje de frase vacía (real: rojo, restaurado: verde) y de fotograma
+- `atlas/puros/state_frames_cases.mjs`: 7 casos, con sabotaje de frase vacía (real: rojo, restaurado: verde) y de fotograma
   sobredimensionado.
 - Slice 2 (pendiente de la decisión de ondas): cablear en la página, con sello SW y su propio PR.
 

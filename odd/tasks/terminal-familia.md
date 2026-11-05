@@ -3,12 +3,12 @@
 Encargo 2026-11-02. Base `main` 5406d6bd (sello `do`, medido en `public/sw.js:1` y en producción).
 Este fichero es el único cambio del PR: **cero código, cero `public/`, cero resello**. Se construye tras FIRMO.
 
-## V1 · contradicción «Colony: 1 nodes» vs «estado.json has no colonia» — MEDIDA
+## V1 · contradicción «Colony: 1 nodes» vs «state.json has no colonia» — MEDIDA
 
 No es caché ni captura vieja. Son **la misma voz (Map, `#state`) en dos instantes**, y el estado es el correcto:
 
 1. **Service worker descartado.** `sw.js` deja pasar todo `.json` que no esté en `CONTENIDO_JSON`/`MAPA_JSON`;
-   `/openworld/estado.json` no está en ninguna → el SW no lo toca. Además se pide con `cache: 'no-cache'`
+   `/openworld/state.json` no está en ninguna → el SW no lo toca. Además se pide con `cache: 'no-cache'`
    (`openworld_page.js:284`). Producción sirve hoy `colonia` con 4 nodos (medido con curl).
 2. **«has no colonia»** = el `render()` síncrono de `openworld_page.js:277`, antes de que llegue el fetch
    (`colonia === null`). Texto falso: no es que el fichero no tenga colonia, es que aún no se ha leído.
@@ -29,7 +29,7 @@ cuando la clave ya existe allí); `NO_DATA` **con su causa** sigue existiendo, p
 |---|---|---|---|---|
 | T1 | `radio_message_log.js:25-33` `burbuja()` | `<b>quien</b><span>sello</span><span>fuente · Δ</span>` sin separador → «PreceptorNO_DATAchat» | «Preceptor · not measured yet · chat»; mapa sello→humano: LIVE «live», STALE «a while ago», NO_DATA «not measured yet» | sello crudo en `title` + detalles |
 | T1b | mismo, `pinta()` línea `R.ultimo` | `quien · NO_DATA · texto` | mismo mapa humano | — |
-| T2 | `colonia_pagina.js:230` `texto()` | «sky #17131f» | quitar el hex de la frase; cielo en palabras solo si hay tabla medida (no inventar nombres de color) | hex en detalles |
+| T2 | `colony_page.js:230` `texto()` | «sky #17131f» | quitar el hex de la frase; cielo en palabras solo si hay tabla medida (no inventar nombres de color) | hex en detalles |
 | T3 | `map_painter.js:40` campo `r` del frame | «49 water, 77 sand… cells» | **duda D1**: `r` es parte del frame `preceptoros.floor/1` (≤1 024 B, contrato). Propongo NO tocar `r`; cambiar solo dónde se pinta | cifras al `<details id="more">` existente |
 | T4 | `map_chunks.js:43,46` `out.say` | «Map chunks: 7 of 7… NO_DATA key (cause)» | «Map loaded» / «Part of the map is still missing» | claves y causas |
 | T5 | `map_chat.js:10` disclosure | bytes, SHA-256, licencias | «The guide runs on your device; nothing leaves it.» | `<details><summary>How the guide works</summary>` con el texto íntegro actual (licencias se conservan: obligación MIT/Apache) |
@@ -38,7 +38,7 @@ cuando la clave ya existe allí); `NO_DATA` **con su causa** sigue existiendo, p
 | T8 | `summon_reveal.js:106` | «NO_DATA (game cycle unavailable; showing the measured final frame) · …» | «rareza · cuenta» limpio | causa en `title`/detalles |
 
 Riesgo: mínimo, pero **no nulo** — `test_web.py`/`arnes_*` pueden fijar cadenas literales. Antes de
-cambiar cada una: `grep -rn "<cadena>" test_web.py atlas/ arnes_sw.mjs`; si una prueba fija el texto,
+cambiar cada una: `grep -rn "<cadena>" test_web.py atlas/ sw_harness.mjs`; si una prueba fija el texto,
 se actualiza en el mismo commit y se enseña en rojo primero (regla 2 de CLAUDE.md).
 
 ## TF-2 · panel compacto (PR aparte, FIRMO aparte)

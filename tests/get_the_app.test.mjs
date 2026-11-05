@@ -46,7 +46,7 @@ test('SABOTAGE D1 · one changed fingerprint or another version turns the judge 
 
 // NORTE 5 a1 (2026-10-27): the launch gate's data is the cards'. Lane 2 lights only with a SIGNED receipt per system in
 // release.json; a model enters with its measured bytes, its machine and date, and a download only with a sha256.
-const C = JSON.parse(leer('public/cerebros.json'));
+const C = JSON.parse(leer('public/brains.json'));
 function juezGate(t, r, c) {
   const m = t.match(/<script type="application\/json" id="gate-datos">([^<]*)<\/script>/);
   if (!m) { return ['no gate data in the page']; }

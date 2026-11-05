@@ -3,7 +3,7 @@
 **Slug FIRMO:** `NORTE7-T2-ALTURA-LOG`
 **Estado:** fixture en marcha (autonomía concedida; T2 PROCEDE YA, parametrizada y con h0/k derivados por medición).
 **Cierra:** [2] crecer es altura, no anchura.
-**Fixture:** `atlas/fixtures/t2_altura.mjs` · pruebas `atlas/t2_altura_casos.mjs` (11/11) · registro `atlas/fixtures/constantes.json`.
+**Fixture:** `atlas/fixtures/t2_height.mjs` · pruebas `atlas/t2_height_cases.mjs` (11/11) · registro `atlas/fixtures/constants.json`.
 
 ## Ley firmada (dictado web#387)
 
@@ -25,7 +25,7 @@ decrecientes (la curva es cóncava). El cambio queda declarado aquí, no silenci
   referencia y zoom 0.6 quedan **16.2 px en pantalla**. Procedencia: dictado web#387 (16 px) y `public/game/map_zoom.js:3` (0.6).
 - **k = (2.5 − 1) / ln(1 + 100) = 0.325.** El ratio objetivo 2.5 es el punto medio de la ventana [2, 3] de la regla [1]
   (la altura de un nodo lleno no baja de 2 ni sube de 3 veces el suelo). Procedencia: regla [1] del dictado.
-- Ambos quedan **MEDIDOS con derivación** en `constantes.json`. El Soberano valida el antes y el después con sus ojos.
+- Ambos quedan **MEDIDOS con derivación** en `constants.json`. El Soberano valida el antes y el después con sus ojos.
 
 ## Tabla medida (fixture)
 

@@ -1,0 +1,27 @@
+{
+  "v": "preceptoros.barrido/1",
+  "medido": "2026-10-20",
+  "regla": "raw colour literals outside the house vocabulary (band names of comic_tokens, comic_accents, semantic_table); the count per piece only goes down",
+  "vocabulario": [
+    "bubble_bestiary.js",
+    "bubble_game.js",
+    "bubble_icons.js",
+    "bubble_language.js",
+    "bubble_letters.js",
+    "bubble_light.js",
+    "bubble_world.js",
+    "comic_accents.js",
+    "comic_atoms.js",
+    "comic_tokens.js",
+    "semantic_table.js"
+  ],
+  "piezas": {
+    "public/assets/worm_transition.js": 2,
+    "public/game/crab_render_hd.js": 2,
+    "public/game/scene.js": 5,
+    "public/game/gdpr-art25-ephemeral-crab.js": 4,
+    "public/game/sea.js": 5,
+    "public/game/summon_reveal.js": 7,
+    "public/game/wave_render.js": 2
+  }
+}

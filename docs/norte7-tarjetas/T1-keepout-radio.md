@@ -4,7 +4,7 @@
 **Estado:** fixture en marcha (autonomía concedida, web#387). Orden firmado: T4 → **T1** → T2 → T3.
 **Cierra:** [3] nada se solapa sin intención.
 **Usa:** el caminante de T4 como cuerpo móvil.
-**Fixture:** `atlas/fixtures/t1_keepout.mjs` · pruebas `atlas/t1_keepout_casos.mjs` (13/13) · registro `atlas/fixtures/constantes.json`.
+**Fixture:** `atlas/fixtures/t1_keepout.mjs` · pruebas `atlas/t1_keepout_cases.mjs` (13/13) · registro `atlas/fixtures/constants.json`.
 
 ## Dictado aplicado (web#387)
 
@@ -19,7 +19,7 @@
   llegan por su `reco` ([-2,1] y [2,-1]).
 - Estado en `origin/main` (a9a6d31): no hay colisión ni radio en `public/game` ni `public/openworld`.
 - Números sin fuente en el corpus: el grep de «lean», «keep-out» y «radio de respeto» no encuentra valores. El radio y el
-  LEAN son **propuestas medidas**, registradas con su procedencia (`constantes.json`), no fuentes.
+  LEAN son **propuestas medidas**, registradas con su procedencia (`constants.json`), no fuentes.
 
 ## Hallazgos medidos (500 ticks, tres carriles)
 
@@ -43,7 +43,7 @@
 - Determinismo; un carril a lo sumo una celda por tick; sin solape; arranques fuera de todo radio. **Pasan.**
 - Cada constante con procedencia, estado y motivo; `NO_DATA` sin valor. **Pasa.**
 
-## Constantes (todas en `constantes.json`, ajustables como declaración)
+## Constantes (todas en `constants.json`, ajustables como declaración)
 
 | Constante | Valor | Estado | Procedencia |
 |---|---|---|---|

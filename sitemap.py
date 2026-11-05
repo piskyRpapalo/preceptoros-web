@@ -8,7 +8,7 @@ mira ningun humano nunca. Aqui se DERIVA: si la pagina no esta en el disco, no
 sale en el XML.
 
 EL CRITERIO DE PAGINA ES EL MISMO DE SIEMPRE, y esa es la razon de que este
-duplicado en tres sitios (test_web.py, contadores.py y aqui): las tres
+duplicado en tres sitios (test_web.py, counters.py y aqui): las tres
 preguntas son distintas --cuantas hay, cuantas caben, cuales se anuncian-- y
 compartir una funcion entre un test y su sujeto es como se fabrica un gate que
 se aprueba a si mismo.
@@ -25,7 +25,7 @@ PUBLICO = RAIZ / "public"
 ORIGEN = "https://preceptoros.org"
 # Los idiomas se DESCUBREN del disco: toda carpeta de dos letras bajo `public/`
 # es una traduccion. Estaban escritos a mano en once sitios --`sitemap.py`,
-# `contadores.py` y nueve tuplas de `test_web.py`-- y anadir uno obligaba a
+# `counters.py` y nueve tuplas de `test_web.py`-- y anadir uno obligaba a
 # tocarlos todos: bastaba olvidar una para dejar un idioma sin comprobar, que
 # es exactamente donde vive un hueco que nadie ve. Firmado 2026-09-04, al
 # entrar el portugues.

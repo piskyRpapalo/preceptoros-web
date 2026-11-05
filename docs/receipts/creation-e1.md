@@ -9,7 +9,7 @@ Node v22.22.1. Scope: portable creation contract, browser verifier, fixtures.
 | `node tests/creation_contract.test.mjs` | VERDE: 11 pass, 0 fail, 0 skip |
 | `node --test tests/creation_contract.test.mjs` | VERDE: file process passes (runner reports 1 file) |
 | `python3 test_web.py` | 78 tests; 76 passed, 1 skipped, 1 `NO_DATA` error: sandbox denies loopback socket bind |
-| `node arnes_sw.mjs` | VERDE: 22/22 |
+| `node sw_harness.mjs` | VERDE: 22/22 |
 
 Measured: real Ed25519 verification and fresh signing, exact original manifest
 bytes, independent parsing, changed frame/audio/manifest/signature rejection,

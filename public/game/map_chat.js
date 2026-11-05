@@ -32,7 +32,7 @@
       // keeps them, so /openworld/ and its guide open with the network off. Same origin only; ready waits for it.
       if (offline || !root.navigator.serviceWorker || !root.navigator.serviceWorker.controller) { return null; }
       note.textContent = 'Keeping this page on this device for airplane mode…';
-      var urls = Array.prototype.map.call(doc.scripts, function (s) { return s.src; }).filter(function (u) { return u && u.indexOf(root.location.origin + '/') === 0; }).concat(['/openworld/estado.json']);
+      var urls = Array.prototype.map.call(doc.scripts, function (s) { return s.src; }).filter(function (u) { return u && u.indexOf(root.location.origin + '/') === 0; }).concat(['/openworld/state.json']);
       return Promise.all(urls.map(function (u) { return root.fetch(u).then(function (r) { return r.ok; }, function () { return false; }); }));
     }).then(function () {
       ready = true; note.textContent = model + ' · ready on this device' + (offline ? ' · offline' : '') + '. Ask the tutorial guide anything.'; start.textContent = 'Web node brain ready';

@@ -170,7 +170,7 @@ LICENCIAS = {"LICENSE", "LICENSE-PROSE"}
 # 5 · REVOCADO EL 2026-10-11 por el Soberano (firma D2 del plan de ronda): el tope de 16 KiB por fichero
 #     deja de existir. La ley nueva es 25 MiB por bloque sintetico, y solo sube por excepcion firmada en
 #     EXCEPCIONES.md. La vara de rendimiento ya no es el byte: son los fps MEDIDOS en el Doogee
-#     (ideas6oct:785) y la puerta del juego, gzip_juego_b < 153.600 B, que sigue intacta en mundo.py.
+#     (ideas6oct:785) y la puerta del juego, gzip_juego_b < 153.600 B, que sigue intacta en world.py.
 TOPE_FICHERO = 25 * 1024 * 1024
 
 
@@ -183,7 +183,7 @@ def textos():
             continue
         if p.name in LICENCIAS:
             continue
-        # .mjs entro el 2026-08-30. `arnes_sw.mjs` llevaba una hora en el
+        # .mjs entro el 2026-08-30. `sw_harness.mjs` llevaba una hora en el
         # repo sin que NINGUNA prueba de doctrina lo mirase: ni frameworks, ni
         # urls externas, ni rutas absolutas. Un sufijo que no esta en esta
         # tupla es un punto ciego del gate, y un punto ciego no avisa de que
@@ -195,7 +195,7 @@ def textos():
 
 # Los idiomas se DESCUBREN del disco: toda carpeta de dos letras bajo `public/`
 # es una traduccion. Estaban escritos a mano en once sitios --`sitemap.py`,
-# `contadores.py` y nueve tuplas de `test_web.py`-- y anadir uno obligaba a
+# `counters.py` y nueve tuplas de `test_web.py`-- y anadir uno obligaba a
 # tocarlos todos: bastaba olvidar una para dejar un idioma sin comprobar, que
 # es exactamente donde vive un hueco que nadie ve. Firmado 2026-09-04, al
 # entrar el portugues.
@@ -280,7 +280,7 @@ FUERA_DEL_BLOQUE.update({k: "motor-{lengua}.json" for k in CLAVES_MOTOR_LISTA})
 def paginas_de_contenido():
     """Paginas de CONTENIDO unico.
 
-    Criterio fijado en el commit 1 y usado igual por contadores.py: la raiz es
+    Criterio fijado en el commit 1 y usado igual por counters.py: la raiz es
     ruteo (3 KB de selector, sin contenido) y en/ y fr/ son traducciones de es/,
     no paginas nuevas. Si este criterio cambia, cambia en los dos sitios — o el
     test dara verde sobre una regla que ya no es la del proyecto.
@@ -432,13 +432,13 @@ class Estructura(unittest.TestCase):
     def test_counters_tiene_dos_duenos_y_ninguno_pisa_al_otro(self):
         """Dos guiones escriben este fichero. Ninguno puede borrar al otro.
 
-        `contadores.py` (aqui) mide el sitio; `p0x/bin/coherencia-publica.py`
+        `counters.py` (aqui) mide el sitio; `p0x/bin/coherencia-publica.py`
         mide los dos gates y escribe `pruebas_app` y `pruebas_web`. Aquel
         funde por clave desde siempre; este reescribia `metricas` entero, asi
         que correrlo borraba las dos cifras de pruebas y el gate se ponia en
         rojo senalando su propio remedio. Paso el 2026-09-01.
 
-        El cerrojo `O_EXCL` de `contadores.py` no protege de esto: cubre dos
+        El cerrojo `O_EXCL` de `counters.py` no protege de esto: cubre dos
         copias A LA VEZ, y esto ocurria corriendo uno DESPUES del otro. Son
         dos averias distintas y hacen falta las dos defensas.
 
@@ -452,7 +452,7 @@ class Estructura(unittest.TestCase):
                           f"falta «{ajena}»: alguien reescribio metricas entero. "
                           "Remedio: python3 ~/p0x/bin/coherencia-publica.py --si")
         for propia in ("paginas", "peso_sitio"):
-            self.assertIn(propia, claves, f"falta «{propia}», que mide contadores.py")
+            self.assertIn(propia, claves, f"falta «{propia}», que mide counters.py")
 
         # Y SE COMPRUEBA EL VALOR, no solo que la clave exista.
         #
@@ -484,7 +484,7 @@ class Estructura(unittest.TestCase):
         # nadie lo note: es el «dos verdades» de siempre con forma de numero.
         import importlib.util
         _esp = importlib.util.spec_from_file_location(
-            "contadores", RAIZ / "contadores.py")
+            "contadores", RAIZ / "counters.py")
         _cont = importlib.util.module_from_spec(_esp)
         _esp.loader.exec_module(_cont)
         _peso_sin_descargas = _cont.peso_del_sitio
@@ -509,14 +509,14 @@ class Estructura(unittest.TestCase):
                 self.assertEqual(
                     m["valor"], real,
                     f"counters.json publica {clave}={m['valor']} y hay {real}. "
-                    "Remedio: python3 contadores.py")
+                    "Remedio: python3 counters.py")
 
-        fuente = (RAIZ / "contadores.py").read_text(encoding="utf-8")
+        fuente = (RAIZ / "counters.py").read_text(encoding="utf-8")
         self.assertIn("conservando(previo", fuente,
-                      "contadores.py vuelve a escribir `metricas` sin conservar")
+                      "counters.py vuelve a escribir `metricas` sin conservar")
         limpio = re.sub(r'""".*?"""', "", fuente, flags=re.S)
         self.assertNotIn('"metricas": medir()', limpio,
-                         "contadores.py pisa el fichero entero otra vez")
+                         "counters.py pisa el fichero entero otra vez")
 
 
 
@@ -710,7 +710,7 @@ class Doctrina(unittest.TestCase):
         <svg> no queda ni una sola coincidencia en las tres portadas.
         """
         for p, t in textos():
-            if p.name in ("test_web.py", "contadores.py"):
+            if p.name in ("test_web.py", "counters.py"):
                 continue    # guiones locales: resuelven su propia ruta, no la escriben
             if p.resolve() in A_DEMANDA:
                 continue    # runtime vendorizado fijado por sha: «/home/web_user» es el FS virtual de emscripten
@@ -720,7 +720,7 @@ class Doctrina(unittest.TestCase):
                 for ip in re.findall(r"\b(?:\d{1,3}\.){3}\d{1,3}\b", sin_dibujos):
                     # 0.0.0.0 is not the address of anything: it means «every
                     # interface», and the Tower's ports floor has to teach it
-                    # (cerebros.json › docente, 2026-09-24).
+                    # (brains.json › docente, 2026-09-24).
                     self.assertIn(ip, ("127.0.0.1", "0.0.0.0"), f"IP incrustada en {p}: {ip}")
 
     def test_una_pagina_no_mezcla_rutas_absolutas_y_relativas(self):
@@ -1246,14 +1246,14 @@ class PWA(unittest.TestCase):
 
     def test_iconos_y_tarjeta_salen_del_emblema(self):
         """Firma F2-8 del Soberano, 2026-10-10: favicon, iconos PWA y og:image siguen
-        existiendo, pero CAMBIA SU ORIGEN: los genera bin/iconos_desde_emblema.py con la
+        existiendo, pero CAMBIA SU ORIGEN: los genera bin/icons_from_emblem.py con la
         onda del emblema del sitio. Lo publicado tiene que ser exactamente lo que el
         generador produce hoy: un icono retocado a mano o un PNG pintado no pasa."""
         try:
             import PIL  # noqa: F401
         except ImportError:
             self.skipTest("NO_DATA · sin Pillow no se puede regenerar. Remedio: instalar Pillow")
-        r = subprocess.run([sys.executable, str(RAIZ / "bin" / "iconos_desde_emblema.py"), "--comprobar"],
+        r = subprocess.run([sys.executable, str(RAIZ / "bin" / "icons_from_emblem.py"), "--comprobar"],
                            cwd=RAIZ, capture_output=True, text=True, timeout=120)
         self.assertEqual(r.returncode, 0, "lo publicado no es lo que genera el emblema:\n" + r.stdout)
 
@@ -1320,7 +1320,7 @@ class PWA(unittest.TestCase):
         """Las reglas de enrutado, ejecutadas de verdad.
 
         Todo lo demas de esta clase lee el fichero y busca cadenas: comprueba
-        que el worker DICE lo correcto, no que lo HAGA. `arnes_sw.mjs` lo
+        que el worker DICE lo correcto, no que lo HAGA. `sw_harness.mjs` lo
         ejecuta con un entorno falso y le pide las cuatro reglas.
 
         Se salta si no hay node. Preferir un NO_DATA declarado a una prueba
@@ -1332,7 +1332,7 @@ class PWA(unittest.TestCase):
         if not node:
             self.skipTest("NO_DATA · no hay node: la logica del worker queda "
                           "sin ejecutar. Remedio: instalar node y repetir")
-        r = subprocess.run([node, "arnes_sw.mjs"], cwd=str(RAIZ),
+        r = subprocess.run([node, "sw_harness.mjs"], cwd=str(RAIZ),
                            capture_output=True, text=True, timeout=120)
         self.assertEqual(0, r.returncode,
                          "el arnes del worker falla:\n" + r.stdout + r.stderr)
@@ -1402,7 +1402,7 @@ class PWA(unittest.TestCase):
 class Paginas(unittest.TestCase):
 
     def test_todas_las_paginas_tienen_pie_honesto(self):
-        command = ["node", "atlas/wave_army_face_casos.mjs"]
+        command = ["node", "atlas/wave_army_face_cases.mjs"]
         green = subprocess.run(command, cwd=RAIZ, capture_output=True, text=True)
         self.assertEqual(green.returncode, 0, green.stderr)
         red = subprocess.run(command + ["--sabotage"], cwd=RAIZ, capture_output=True, text=True)
@@ -1459,7 +1459,7 @@ class Traducciones(unittest.TestCase):
         "auth.js": "resuelve T en rotulos(), que lee el mismo catalogo",
         "hub.js": "T.agentes es un override opcional; los nombres salen de "
                   "agentes-<idioma>.json",
-        "enviar.js": "sus ocho rotulos viven en enviar-<idioma>.js desde el "
+        "send.js": "sus ocho rotulos viven en send-<idioma>.js desde el "
                      "2026-09-14; los comprueba "
                      "test_los_rotulos_del_ENVIO_viven_en_las_ocho",
         "engine.js": "sus 19 rotulos viven en motor-<idioma>.json desde el "
@@ -1523,7 +1523,7 @@ class Traducciones(unittest.TestCase):
                      "envSinCanal", "envSinFirmaTexto", "envRemedio", "envAviso")
 
     def test_los_rotulos_del_ENVIO_viven_en_las_ocho(self):
-        """`enviar.js` esta perdonado arriba, asi que aqui se paga el perdon.
+        """`send.js` esta perdonado arriba, asi que aqui se paga el perdon.
 
         Y la asercion que de verdad importa no es que existan: es que **no
         sean la version inglesa**. Este fichero nace de encontrar SEIS lenguas
@@ -1540,7 +1540,7 @@ class Traducciones(unittest.TestCase):
         import re as _re
         cargados = {}
         for idioma in LENGUAS_DATOS:
-            f = PUBLICO / "assets" / f"enviar-{idioma}.js"
+            f = PUBLICO / "assets" / f"send-{idioma}.js"
             with self.subTest(idioma=idioma):
                 self.assertTrue(f.is_file(),
                     f"la puerta hacia el rack no tiene rotulos en {idioma}: "
@@ -1563,7 +1563,7 @@ class Traducciones(unittest.TestCase):
                        if cargados[idioma].get(k) == ingles.get(k)]
             with self.subTest(idioma=idioma, contra="en"):
                 self.assertFalse(iguales,
-                    f"enviar-{idioma}.js repite la version INGLESA en "
+                    f"send-{idioma}.js repite la version INGLESA en "
                     f"{iguales}. No es un hueco --hay texto-- y por eso no lo "
                     f"ve nadie que no lea las dos lenguas.")
 
@@ -1675,7 +1675,7 @@ class Traducciones(unittest.TestCase):
         import re as _re
         acento = _re.compile(r"[áéíóúñ¿¡ÁÉÍÓÚÑ]")
         for f in sorted((PUBLICO / "assets").glob("*.js")):
-            # `corregir-el.js`, `enviar-pt.js`, `prompts-fr.js`: SON de una
+            # `corregir-el.js`, `send-pt.js`, `prompts-fr.js`: SON de una
             # lengua. Su trabajo es justo llevar prosa dentro.
             if _re.search(r"-(?:es|en|fr|pt|it|de|ru|el)\.js$", f.name):
                 continue
@@ -2094,7 +2094,7 @@ class LoQueNoSeVeConElGateVerde(unittest.TestCase):
         si no esta, se retiran sin decir nada: fuera de `es` no habia casillas de
         «aprender» ni de «valorar» en la rueda, y no se capturaba ni una
         reescritura ni una valoracion. Degradar en silencio.
-    2 · FAMILIAS A MEDIAS. `cerebros-<l>.json` solo existia en `es` y `en`: las
+    2 · FAMILIAS A MEDIAS. `brains-<l>.json` solo existia en `es` y `en`: las
         otras siete lenguas pintaban los atajos del chat en ingles. Un hueco que
         se conoce se DECLARA aqui; uno nuevo pone el gate en rojo, y uno que se
         cierra sin quitarlo de la lista tambien, para que la lista no mienta.
@@ -2135,7 +2135,7 @@ class LoQueNoSeVeConElGateVerde(unittest.TestCase):
     def test_cada_pagina_que_captura_tiene_su_puerta_de_salida_y_su_sello(self):
         """Pedido por el Soberano el 2026-09-24: que cada sitio desde el que un
         tester deja una valoracion llegue al rack y lo diga con un sello. Hasta
-        ese dia `enviar.js` --la UNICA puerta de salida-- solo estaba en la
+        ese dia `send.js` --la UNICA puerta de salida-- solo estaba en la
         portada: quien firmaba un duelo en el banco o reseñaba una mision de
         Comunidad guardaba su par y no podia mandarlo sin cambiar de pagina."""
         CAPTURAN = ("elegir.js", "corregir.js", "aprender.js", "camino.js",
@@ -2147,12 +2147,12 @@ class LoQueNoSeVeConElGateVerde(unittest.TestCase):
             t = f.read_text(encoding="utf-8")
             if not any(f'/assets/{c}"' in t for c in CAPTURAN):
                 continue
-            for guion in ("bronce.js", f"enviar-{idi}.js", "enviar.js", "sello-rack.js"):
+            for guion in ("bronce.js", f"send-{idi}.js", "send.js", "sello-rack.js"):
                 with self.subTest(pagina=f"{idi}/{f.name}", guion=guion):
                     self.assertIn(f'/assets/{guion}"', t,
                         f"{idi}/{f.name} captura pares y no carga {guion}")
-            with self.subTest(pagina=f"{idi}/{f.name}", orden="enviar-<l> antes que enviar"):
-                self.assertLess(t.find(f"/assets/enviar-{idi}.js"), t.find("/assets/enviar.js"))
+            with self.subTest(pagina=f"{idi}/{f.name}", orden="send-<l> antes que enviar"):
+                self.assertLess(t.find(f"/assets/send-{idi}.js"), t.find("/assets/send.js"))
 
 
 
@@ -2252,7 +2252,7 @@ class ComentarEnTodasLasPaginas(unittest.TestCase):
 
 class WebLimpia(unittest.TestCase):
     """Inventario determinista de public/ (2026-10-04). Lo dudoso NO se borra: queda congelado en
-    `config/limpieza-propuesta.json` (PROPUESTA, espera firma). Lo que vigila este gate es que no
+    `config/cleaning-proposal.json` (PROPUESTA, espera firma). Lo que vigila este gate es que no
     nazca basura NUEVA: un fichero que nada nombra, un duplicado exacto o un enlace interno roto."""
 
     TEXTO = (".html", ".js", ".css", ".json", ".webmanifest", ".xml", ".txt", ".mjs", ".py", ".yml",
@@ -2260,7 +2260,7 @@ class WebLimpia(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.prop = json.loads((RAIZ / "config" / "limpieza-propuesta.json").read_text(encoding="utf-8"))
+        cls.prop = json.loads((RAIZ / "config" / "cleaning-proposal.json").read_text(encoding="utf-8"))
         cls.ficheros = sorted(p.relative_to(PUBLICO).as_posix() for p in PUBLICO.rglob("*") if p.is_file())
         corpus = []
         for p in RAIZ.rglob("*"):
@@ -2367,7 +2367,7 @@ class OpenWorld(unittest.TestCase):
     """NORTE 7 · PR 2 (2026-10-28): /openworld/ es la ficha del mapa global y el chat.
 
     El estado por defecto son CERO nodos: la pagina enseña el mapa y la cabana del tutorial. Node Hexelion y el
-    segundo nodo solo aparecen si `estado.json` los lista como vivos. Y el navegador no pide nada fuera de este origen.
+    segundo nodo solo aparecen si `state.json` los lista como vivos. Y el navegador no pide nada fuera de este origen.
     """
 
     def setUp(self):
@@ -2382,7 +2382,7 @@ class OpenWorld(unittest.TestCase):
                              "la ficha de /openworld/ pasa de 25 MiB")
 
     def test_el_estado_por_defecto_son_cero_nodos(self):
-        estado = json.loads((PUBLICO / "openworld" / "estado.json").read_text(encoding="utf-8"))
+        estado = json.loads((PUBLICO / "openworld" / "state.json").read_text(encoding="utf-8"))
         self.assertEqual(estado["nodes"], [], "el estado por defecto debe ser cero nodos")
 
     def test_la_cabana_siempre_y_los_nodos_solo_si_viven(self):
@@ -2447,7 +2447,7 @@ class Puerta(unittest.TestCase):
         # Sin color crudo (barrido). P3 [1d] (2026-10-26): las tres puertas se dibujan en Acho language con
         # las piezas declaradas en atlas/test_atlas.py (LANDING_PAGE_DEPENDENCIES), y nada mas.
         self.assertEqual(re.findall(r'<script src="([^"]+)"', self.t),
-                         ["/game/tabla_semantica.js", "/game/comic_tokens.js", "/game/comic_accents.js", "/game/comic_atoms.js",
+                         ["/game/semantic_table.js", "/game/comic_tokens.js", "/game/comic_accents.js", "/game/comic_atoms.js",
                           "/game/acho_language.js", "/game/acho_letters.js", "/assets/landing_doors.js", "/assets/pwa.js",
                           "/assets/intro.js"])
 
@@ -2510,7 +2510,7 @@ class TerminalFamilia(unittest.TestCase):
     def test_las_frases_que_pinta_el_js_son_humanas(self):
         casos = [("game/map_chunks.js", r"out\.say = "), ("game/map_painter.js", r"said = "),
                  ("game/openworld_page.js", r"linea (\+)?= "), ("game/summon_reveal.js", r"txt\.textContent = "),
-                 ("game/map_chat.js", r"simple\.textContent = "), ("game/colonia_pagina.js", r"return 'Colony: "), ("game/colonia_pagina.js", r"return \[\(sc\.nodes === 1")]
+                 ("game/map_chat.js", r"simple\.textContent = "), ("game/colony_page.js", r"return 'Colony: "), ("game/colony_page.js", r"return \[\(sc\.nodes === 1")]
         for fuente, patron in casos:
             for l in self._visible(fuente, patron):
                 for m in re.finditer(patron, l):

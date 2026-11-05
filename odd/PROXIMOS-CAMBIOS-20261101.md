@@ -20,7 +20,7 @@ servida, la Mesa sirve HITL y se fusiona con `gh pr merge --merge` (nunca `--adm
 | 7 | #551 | La pantalla en una burbuja (< 1 KB) y la radio la lee | contexto para el guía |
 | 8 | #562 | El guía con herramientas (gramática; nunca firma) | usa #551 |
 | 9 | #560 | El guía propio: LoRA medido 33/52 frente a 5/52 | segundo modelo |
-| 10 | #564 | Arena del Laboratorio: edificios = medidas de `cerebros.json` | barrio nuevo |
+| 10 | #564 | Arena del Laboratorio: edificios = medidas de `brains.json` | barrio nuevo |
 | 11 | #555 | Edge chunks: borde inmutable, 19 chunks, `budget` en la carta | mundo más grande |
 | 12 | #559 | Manifiesto adaptado (solo texto) | registro |
 

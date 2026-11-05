@@ -32,7 +32,7 @@ The tutorial lives in `public/face/face_tutorial.js` as a list of six steps, wit
 ## Prerequisites (must be on main first)
 
 - G1 and G2: the joystick and the terminal (`haiku/ic7-terminal-anchor-20261031`, `cdfeef3`).
-- The producer of `estado.json` v2 (`haiku/mm2-productor-estado-v2-20261031`, `9815910`) so that the state can name the places.
+- The producer of `state.json` v2 (`haiku/mm2-productor-estado-v2-20261031`, `9815910`) so that the state can name the places.
 
 ## Checklist (IDs stable, one piece = one PR)
 

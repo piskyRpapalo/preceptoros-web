@@ -9,7 +9,7 @@ Estado: **PROPUESTA — sin firma del Soberano; sin renombre aplicado.** Extiend
 ## 1 · Propuestas nuevas (para FIRMO individual, una a una)
 
 ### 1.9 «Odds» (puntos básicos por 10.000) → «Outcome Distribution» · **FIRMADA 2026-10-15 (noche) por el Soberano — pendiente de ejecución por Codex.**
-- **Actual:** `Odds` en puntos básicos — `public/game/canon.js:91` (y `cria.js:114`).
+- **Actual:** `Odds` en puntos básicos — `public/game/canon.js:91` (y `brood.js:114`).
 - **Propuesto:** UI: `Outcome distribution (basis points, rounded down)`; en código el comentario puede decir «distribución, no promesa».
 - **Anclaje doble:** legislación: AI Act Art. 13 (CELEX 32024R1689, transparencia de riesgos y límites — «odds» es vocabulario de apuestas; «distribution» es vocabulario de divulgación honesta). Matemática: distribución de probabilidad discreta sobre pesos normalizados; el propio puntosBasicos es una función de masa redondeada hacia abajo «para que la suma enseñada no mienta» (canon.js:91-92).
 - **Por qué mejora la doble lectura:** humano: deja de sonar a casa de apuestas («sin FOMO, la casa no gana»). Silicio: un auditor lee «distribution» y sabe que hay una función de masa verificable, no una promesa comercial.
@@ -30,9 +30,9 @@ Estado: **PROPUESTA — sin firma del Soberano; sin renombre aplicado.** Extiend
 - **Riesgo:** bajo (etiqueta). Alineación Estrella: NO_DATA con causa — no hay entrada de la Estrella para CRDT ni para narrativa colaborativa; queda propuesto para futura entrada, decisión del Soberano. **PROPUESTA.**
 
 ### 1.12 «Escuadrón» → mantener; UI «Squad Choreography (MDA)» · **FIRMADA 2026-10-15 (noche) por el Soberano — pendiente de ejecución por Codex.**
-- **Actual:** `EL ESCUADRON` — `public/game/escuadron.js:1`.
-- **Propuesto:** UI: `Squad Choreography`; escuadron.js se queda.
-- **Anclaje doble:** legislación: AI Act Art. 14 (la caída de unidades es supervisable y legible: «el daño se lee a escala, sin barras», escuadron.js:6-7). Matemática: coreografía determinista = función del estado de la tropa (vivas = ceil(N·vida/max), techo de referencia MDA); «choreography» ya vive en battle_choreography.js, así que es vocabulario de la casa, no importado.
+- **Actual:** `EL ESCUADRON` — `public/game/squadron.js:1`.
+- **Propuesto:** UI: `Squad Choreography`; squadron.js se queda.
+- **Anclaje doble:** legislación: AI Act Art. 14 (la caída de unidades es supervisable y legible: «el daño se lee a escala, sin barras», squadron.js:6-7). Matemática: coreografía determinista = función del estado de la tropa (vivas = ceil(N·vida/max), techo de referencia MDA); «choreography» ya vive en battle_choreography.js, así que es vocabulario de la casa, no importado.
 - **Por qué:** humano: «coreografía» ya lo usa el equipo (battle_choreography.js). Silicio: MDA (Mechanics-Dynamics-Aesthetics) es término auditable de diseño de juegos.
 - **Riesgo:** bajo. Alineación Estrella: NO_DATA con causa (sin entrada para MDA en la Estrella). **PROPUESTA.**
 
@@ -44,7 +44,7 @@ Estado: **PROPUESTA — sin firma del Soberano; sin renombre aplicado.** Extiend
 - **Riesgo:** bajo; solo si el Soberano quiere distinguir la Radio que suena del canal escrito (la pestaña 1.1 ya fue firmada como Transparency Log para el canal 'echoes'; esta es la 'radio'). Alineación Estrella: D35 Memory Log (Automatic Logging, EUR-Lex-CELEX:32024R1689-Art12). **PROPUESTA.**
 
 ### 1.14 «workshop dust» / «static residue» → mantener «residue»; renombrar «dust» → «Residue Ledger (grams)» · **FIRMADA 2026-10-15 (noche) por el Soberano — pendiente de ejecución por Codex.**
-- **Actual:** `Workshop dust` — `public/game/ui-taller.js:142`; «Static residue: {g} g» en :105.
+- **Actual:** `Workshop dust` — `public/game/ui-workshop.js:142`; «Static residue: {g} g» en :105.
 - **Propuesto:** UI: unificar en `Residue Ledger (g)` — el saldo de lija con su unidad.
 - **Anclaje doble:** legislación: AI Act Art. 12 (asiento encadenado por hash, atlas.asiento/1, mercado.js — el residuo se contabiliza igual: cada gramo sale de una disolución firmada). Matemática: libro mayor de enteros (integer ledger); el gramo es la unidad mínima indivisible del contrato.
 - **Por qué:** humano: «ledger (g)» dice que cada gramo está contado y trazado, no «polvo» decorativo. Silicio: «ledger» es el término estándar de contabilidad verificable; «dust» en cripto-jerga significa moneda minúscula — vocabulario prohibido por cercos de moneda.
@@ -65,12 +65,12 @@ Estado: **PROPUESTA — sin firma del Soberano; sin renombre aplicado.** Extiend
 
 | # | Cambio | Fichero:línea | Riesgo | Recomendación |
 |---|---|---|---|---|
-| 1.9 | Odds → Outcome distribution | canon.js:91, cria.js:114 | Bajo | **FIRMADA 15-oct** |
+| 1.9 | Odds → Outcome distribution | canon.js:91, brood.js:114 | Bajo | **FIRMADA 15-oct** |
 | 1.10 | GACHA (espectro UI) → Harmonic Spectrum | gacha.js:1 | Medio | **FIRMADA 15-oct** |
 | 1.11 | Narragrafo (UI) → Story Graph (CRDT) | narragrafo.js:1 | Bajo | **FIRMADA 15-oct** |
-| 1.12 | Escuadrón (UI) → Squad Choreography | escuadron.js:1 | Bajo | **FIRMADA 15-oct** |
+| 1.12 | Escuadrón (UI) → Squad Choreography | squadron.js:1 | Bajo | **FIRMADA 15-oct** |
 | 1.13 | Pestaña Radio → State Broadcast | radio_message_log.js:117 | Bajo | **FIRMADA 15-oct** |
-| 1.14 | Workshop dust → Residue Ledger (g) | ui-taller.js:142,105 | Bajo | **FIRMADA 15-oct** |
+| 1.14 | Workshop dust → Residue Ledger (g) | ui-workshop.js:142,105 | Bajo | **FIRMADA 15-oct** |
 | 1.15 | Colores semánticos | semiotic_glyph.js:6 | — | Recopilado, sin acción |
 
 J1–J15 del mapa firmado: intactos, sin renumerar. **1.9–1.15: FIRMADAS 15-oct (noche).** 1.2–1.8 de la ronda 1: FIRMADAS 15-oct (noche) — ver New_Naming_Proposal.md. Ninguna aplicada todavía: las ejecuta Codex.

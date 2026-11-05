@@ -1,8 +1,8 @@
 # Inventario medido · funciones de la Burbuja para la accesibilidad en /openworld/ (2026-11-02)
 
 Encargo: el Soberano p0, buzon#30 (·6572069590). Rama `haiku/terminal-compacta-20261102`.
-Medida: `node atlas/acho_a11y_medida.mjs` (Chromium real por CDP, 390×844, árbol de accesibilidad completo) más
-las guardas `atlas/openworld_browser.mjs` y `atlas/ojo_carbono_browser.mjs`. Nada de memoria: cada fila dice su medida.
+Medida: `node atlas/acho_a11y_measure.mjs` (Chromium real por CDP, 390×844, árbol de accesibilidad completo) más
+las guardas `atlas/openworld_browser.mjs` y `atlas/eye_carbon_browser.mjs`. Nada de memoria: cada fila dice su medida.
 
 **NO_DATA es un marcador vivo.** Primero se declaró cada hueco con su causa; luego se construyó en este mismo PR lo
 que cabía; al final se volvió a medir y se rellenó. La columna «al abrir» guarda lo que había antes de construir.
@@ -33,7 +33,7 @@ que cabía; al final se volvió a medir y se rellenó. La columna «al abrir» g
 | 11 | repintado en colores del sistema (`forced-colors`) | NO_DATA | **0** reglas `forced-colors`/`prefers-contrast` con `forced-colors: active` emulado | **ausente** · causa: el pintor de la Burbuja lee solo `comic_tokens`/`comic_accents` y el navegador no remapea los píxeles de un canvas. Elegir bandas de sistema es decisión de canon visual: se propone, no se hace aquí |
 | 12 | foco de teclado por burbuja dibujada | NO_DATA | 0 elementos enfocables sobre el canvas con el estado por defecto (las marcas HITL `?` sí lo son: guarda P5a) | **ausente** · causa: cada nodo es píxeles del canvas, sin proxy DOM; hoy se llega con flechas + Enter (ley de `colony_controls.js`), no con Tab |
 | 13 | el anuncio vivo dice el hablante | NO_DATA | la región viva es el `<p>` interior (`#state`, `#joy .state`…): su texto **no** empieza por el hablante; la cabecera está fuera de la región | **ausente** · causa: 28 lecturas de esas regiones en `atlas/*.mjs` (grep medido) anclan en su texto exacto (`^Colony`, `^terminal:`) y `openworld_page.js` reescribe `textContent`; meter el hablante dentro exige mover esas guardas en una pieza propia, sin debilitarlas |
-| 14 | sonido de la burbuja de cada nodo | NO_DATA | «Playing 1 voices.» solo en la cabaña | **NO_DATA** · causa: la cabaña es el único nodo LIVE de `estado.json`; no hay otro fotograma que hacer sonar |
+| 14 | sonido de la burbuja de cada nodo | NO_DATA | «Playing 1 voices.» solo en la cabaña | **NO_DATA** · causa: la cabaña es el único nodo LIVE de `state.json`; no hay otro fotograma que hacer sonar |
 | 15 | lectura real con TalkBack en el Doogee S110 | NO_DATA | — | **NO_DATA** · causa: TalkBack es de las manos del carbono (PROTOCOLO-NODO-WEB §4); el silicio midió el árbol AX de Chromium, no la voz del lector |
 
 ## Lo que se propone (no se hace aquí)
@@ -44,7 +44,7 @@ que cabía; al final se volvió a medir y se rellenó. La columna «al abrir» g
 ## Relleno medido · 2026-11-02 · rama `haiku/a11y-rellena-20261102` (DECRETO-NO-DATA-ESTADO-VIVO)
 
 Las filas 11-13 de arriba se quedan como estaban (fecha de apertura). Debajo, la misma fila con la medida nueva:
-`node atlas/acho_a11y_medida.mjs` reejecutado tras construir, y la guarda nueva `atlas/a11y_relleno_browser.mjs`
+`node atlas/acho_a11y_measure.mjs` reejecutado tras construir, y la guarda nueva `atlas/a11y_filler_browser.mjs`
 (roja con sabotaje, verde sin él).
 
 | # | función | antes (2026-11-02, apertura) | medida al rellenar (2026-11-02) | estado |

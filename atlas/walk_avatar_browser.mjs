@@ -11,7 +11,7 @@ import { fileURLToPath } from 'node:url';
 const PUBLIC = fileURLToPath(new URL('../public/', import.meta.url));
 const espera = (ms) => new Promise((r) => setTimeout(r, ms));
 
-// Two LIVE nodes side by side: the cabin (0,0) and ring-e (1,0). Shaped as the server writes estado.json (schema 2).
+// Two LIVE nodes side by side: the cabin (0,0) and ring-e (1,0). Shaped as the server writes state.json (schema 2).
 const ESTADO = {
   esquema: 'preceptoros.openworld-estado/2', nodes: [],
   colonia: {
@@ -30,7 +30,7 @@ function sirve(raiz) {
   const s = createServer((req, res) => {
     try {
       let ruta = decodeURIComponent(new URL(req.url, 'http://local').pathname); if (ruta.endsWith('/')) { ruta += 'index.html'; }
-      if (ruta === '/openworld/estado.json') { res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' }); res.end(JSON.stringify(ESTADO)); return; }
+      if (ruta === '/openworld/state.json') { res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' }); res.end(JSON.stringify(ESTADO)); return; }
       const f = resolve(raiz, '.' + ruta); if (!f.startsWith(resolve(raiz))) { res.writeHead(403); res.end(); return; }
       const cuerpo = readFileSync(f); res.writeHead(200, { 'Content-Type': tipos[extname(f)] || 'text/plain', 'Cache-Control': 'no-store' }); res.end(cuerpo);
     } catch { res.writeHead(404); res.end(); }

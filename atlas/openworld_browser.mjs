@@ -11,7 +11,7 @@ const PUBLIC = fileURLToPath(new URL('../public/', import.meta.url));
 const CAPTURA = process.argv[2] || null;
 const espera = (ms) => new Promise((r) => setTimeout(r, ms));
 // P5a: with HITL_ON the state file is the test fixture (the tutorial cabin waits for a signature).
-const HITL = readFileSync(new URL('./fixtures/hitl_estado.json', import.meta.url));
+const HITL = readFileSync(new URL('./fixtures/hitl_state.json', import.meta.url));
 let HITL_ON = false;
 function sirve(raiz) {
   const tipos = { '.js': 'text/javascript', '.css': 'text/css', '.html': 'text/html', '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png', '.webmanifest': 'application/manifest+json' };
@@ -19,14 +19,14 @@ function sirve(raiz) {
     try {
       let ruta = decodeURIComponent(new URL(req.url, 'http://local').pathname); if (ruta.endsWith('/')) { ruta += 'index.html'; }
       const f = resolve(raiz, '.' + ruta); if (!f.startsWith(resolve(raiz))) { res.writeHead(403); res.end(); return; }
-      const cuerpo = HITL_ON && ruta === '/openworld/estado.json' ? HITL : readFileSync(f); res.writeHead(200, { 'Content-Type': tipos[extname(f)] || 'text/plain', 'Cache-Control': 'no-store' }); res.end(cuerpo);
+      const cuerpo = HITL_ON && ruta === '/openworld/state.json' ? HITL : readFileSync(f); res.writeHead(200, { 'Content-Type': tipos[extname(f)] || 'text/plain', 'Cache-Control': 'no-store' }); res.end(cuerpo);
     } catch { res.writeHead(404); res.end(); }
   });
   return new Promise((r) => s.listen(0, '127.0.0.1', () => r(s)));
 }
 const fallos = [], externas = [], cerebrosRequests = [];
 // W-5: a click on the cabin hex on the map (the page's own state, the page's own geometry), then the status line.
-const CLIC_CABINA = "(async () => { const d = await (await fetch('/openworld/estado.json', { cache: 'no-store' })).json(); const est = AtlasOpenworldState.leer(d); const s = document.getElementById('surface'); const a = AtlasColoniaPagina.anchorOf(s, est.colonia, 0, est.looks || {}, est.seals || {}, 'cabin'); const r = s.getBoundingClientRect(); s.dispatchEvent(new MouseEvent('click', { bubbles: true, clientX: r.left + a.x * r.width / s.width, clientY: r.top + a.y * r.height / s.height })); await new Promise((x) => setTimeout(x, 300)); return document.querySelector('#joy [aria-live]').textContent; })()";
+const CLIC_CABINA = "(async () => { const d = await (await fetch('/openworld/state.json', { cache: 'no-store' })).json(); const est = AtlasOpenworldState.leer(d); const s = document.getElementById('surface'); const a = AtlasColoniaPagina.anchorOf(s, est.colonia, 0, est.looks || {}, est.seals || {}, 'cabin'); const r = s.getBoundingClientRect(); s.dispatchEvent(new MouseEvent('click', { bubbles: true, clientX: r.left + a.x * r.width / s.width, clientY: r.top + a.y * r.height / s.height })); await new Promise((x) => setTimeout(x, 300)); return document.querySelector('#joy [aria-live]').textContent; })()";
 const ok = (cond, que) => { if (!cond) { fallos.push(que); } };
 let ws = null, ch = null, srv = null, id = 0;
 const pend = new Map();
@@ -43,7 +43,7 @@ async function main() {
   ws.addEventListener('message', (m) => {
     const d = JSON.parse(m.data);
     if (d.id && pend.has(d.id)) { pend.get(d.id)(d); pend.delete(d.id); }
-    if (d.method === 'Network.requestWillBeSent') { const u = d.params.request.url; if (/^https?:/.test(u) && new URL(u).origin !== origen) { externas.push(u); } if (new URL(u).pathname === '/cerebros.json') { cerebrosRequests.push(u); } }
+    if (d.method === 'Network.requestWillBeSent') { const u = d.params.request.url; if (/^https?:/.test(u) && new URL(u).origin !== origen) { externas.push(u); } if (new URL(u).pathname === '/brains.json') { cerebrosRequests.push(u); } }
     if (d.method === 'Runtime.exceptionThrown') {
       const x = d.params.exceptionDetails, f = (x.stackTrace?.callFrames || [])[0] || x;
       fallos.push('exception: ' + String(x.exception?.description || x.text).split('\n')[0].slice(0, 80) + ' @ ' + String(f.url || '').split('/').pop());
@@ -184,7 +184,7 @@ async function main() {
   const orbita = JSON.parse(await ev(`(async () => { const s = document.getElementById('surface'), say = () => (document.getElementById('zoom-state') || {}).textContent || '', w = (ms) => new Promise((r) => setTimeout(r, ms));
     document.body.dispatchEvent(new KeyboardEvent('keydown', { key: 'e', bubbles: true })); await w(400); const a1 = s.dataset.angle, l1 = say();
     document.getElementById('rotate-right').click(); await w(400); const a2 = s.dataset.angle;
-    const d = await (await fetch('/openworld/estado.json', { cache: 'no-store' })).json(), est = AtlasOpenworldState.leer(d);
+    const d = await (await fetch('/openworld/state.json', { cache: 'no-store' })).json(), est = AtlasOpenworldState.leer(d);
     const a = AtlasColoniaPagina.anchorOf(s, est.colonia, 0, est.looks || {}, est.seals || {}, 'cabin'), r = s.getBoundingClientRect();
     s.dispatchEvent(new MouseEvent('click', { bubbles: true, clientX: r.left + a.x * r.width / s.width, clientY: r.top + a.y * r.height / s.height })); await w(300);
     const joy = document.querySelector('#joy [aria-live]').textContent;

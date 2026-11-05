@@ -7,7 +7,7 @@ Capture date: 2026-10-30, 17:16 UTC. This is a measured production snapshot, not
 | Request | Result | Measurement |
 |---|---:|---|
 | `GET /openworld/` | 200 | 16,312 bytes; SHA-256 `26a4f8e9b2ab4c49a4b87cf55e743218319309303ede217138591e910f67627f` |
-| `GET /openworld/estado.json` | 200 | `preceptoros.openworld-estado/2`; `nodes: []`; SHA-256 `d1ae3d52cfbb6ab7d0740a9f49a6e356a25def36f5f5682444361ba6bfea4e8c` |
+| `GET /openworld/state.json` | 200 | `preceptoros.openworld-estado/2`; `nodes: []`; SHA-256 `d1ae3d52cfbb6ab7d0740a9f49a6e356a25def36f5f5682444361ba6bfea4e8c` |
 | `GET /sw.js` | 200 | version `preceptoros-2026-17-ace` |
 
 The cabin remains present with no live colony nodes in the state. The browser made zero requests to another origin in this capture.

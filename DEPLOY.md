@@ -6,7 +6,7 @@ Status: proposal for review. Deployment remains a human action. This document re
 
 `wrangler.jsonc` names the Worker `preceptoros-web` and serves `./public` as static assets. `.github/workflows/deploy.yml` is `manual-worker-deploy`: `workflow_dispatch`, guarded to `refs/heads/main`, with the `production` environment. The Mesa measured that environment as requiring a reviewer; the approval policy is hosted in GitHub and is not represented in this checkout. The Sovereign triggers the workflow and supplies the human approval. Agents do not deploy.
 
-Route-count receipt for this source tree (`haiku/corte-d-borrado-20261028`, Norte 7 D: the theGame stack leaves the shell with its files; measured with `python3 bin/contar_rutas.py`, 2026-10-28):
+Route-count receipt for this source tree (`haiku/corte-d-borrado-20261028`, Norte 7 D: the theGame stack leaves the shell with its files; measured with `python3 bin/count_routes.py`, 2026-10-28):
 
 Rutas precargadas por el shell: 122
 Rutas distintas del shell: 121
@@ -53,11 +53,11 @@ The checked-in deploy workflow has no rollback input, artifact selector, or roll
 
 Record the source commit, workflow run ID, human approver, result, public-file counts and ACTIONS output. Record only the names of protected settings, never their values. If a step cannot be measured, record `NO_DATA` with its cause. `encolado` is not evidence that a deployment is live.
 
-JN-3 source receipt: visitor modules and the extracted map controller introduce no page route. Shell precache remains 117 entries / 116 distinct / one duplicate (bin/contar_rutas.py). Modules are requested from the same origin; deployment remains a separately signed action.
+JN-3 source receipt: visitor modules and the extracted map controller introduce no page route. Shell precache remains 117 entries / 116 distinct / one duplicate (bin/count_routes.py). Modules are requested from the same origin; deployment remains a separately signed action.
 
 JN-4 source receipt: same-origin historical battle modules, W1 namespace adapter and visitor scene adapter add no page route. Shell precache remains 117 entries / 116 distinct / one duplicate. No deployment is performed by this slice.
-H2 source receipt (2026-11-01): the face skins retire to retirados/face/ with their receipt; shell precache drops 117 -> 101 entries / 100 distinct / one duplicate (bin/contar_rutas.py). Tombstones keep the three retired URLs alive offline (atlantis, zombie) and online (walker).
-P2/P3 source receipt (2026-11-01): the map by chunks joins the shell cache: map_carta.js, map_chunks.js, /map/carta.json, /art/sea-palette.json and the 7 baked chunks (30,476 B for the 9 data files). 112 entries / 111 distinct.
+H2 source receipt (2026-11-01): the face skins retire to retirados/face/ with their receipt; shell precache drops 117 -> 101 entries / 100 distinct / one duplicate (bin/count_routes.py). Tombstones keep the three retired URLs alive offline (atlantis, zombie) and online (walker).
+P2/P3 source receipt (2026-11-01): the map by chunks joins the shell cache: map_chart.js, map_chunks.js, /map/chart.json, /art/sea-palette.json and the 7 baked chunks (30,476 B for the 9 data files). 112 entries / 111 distinct.
 P5a source receipt (2026-11-01): /game/hitl_walkers.js joins the shell after P4. 114 entries / 113 distinct.
 P4 source receipt (2026-11-01): /game/map_painter.js joins the shell (the 2.5D floor). 113 entries / 112 distinct.
 Terminal source receipt (2026-11-01): /game/terminal_tabs.js joins the shell. 114 entries / 113 distinct.
@@ -71,5 +71,5 @@ Rebase receipt (2026-11-01):  join the shell after main. 116 entries / 115 disti
 A11y fill source receipt (2026-11-02, buzon#30): /game/map_focus.js joins the shell (Tab to every map bubble). 117 entries / 116 distinct.
 LA MANO source receipt (2026-11-03, buzon#30): /game/map_drag.js joins the shell (one finger drags the map). 118 entries / 117 distinct.
 G1 source receipt (2026-11-03, web#608, rebased after LA MANO): /game/map_wide.js joins the shell (the map fills the screen on demand). 119 entries / 118 distinct.
-OpenWorld model-frame source receipt (2026-11-04, web#644): /game/cerebro_frame.js and /game/cerebro_panel.js join the shell; 121 entries / 120 distinct.
+OpenWorld model-frame source receipt (2026-11-04, web#644): /game/brain_frame.js and /game/brain_panel.js join the shell; 121 entries / 120 distinct.
 OpenWorld first-load budget receipt (2026-11-04, web#644): the page-only stylesheet moves to /assets/openworld.css, precached same-origin; HTML falls below the first-load ceiling; 122 entries / 121 distinct.

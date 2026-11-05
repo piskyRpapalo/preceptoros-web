@@ -37,10 +37,10 @@ jobs:
           node-version: "22"
       - name: Cached change ships with a new SW VERSION (frozen-map rule)
         run: |
-          node atlas/version_sw_casos.mjs
+          node atlas/version_sw_cases.mjs
           node atlas/version_sw_gate.mjs
-          node atlas/colonia_pagina_gate.mjs
-          node atlas/barrido_casos.mjs
+          node atlas/colony_page_gate.mjs
+          node atlas/sweep_cases.mjs
           python test_web.py
 
       - name: Gates completos n=2
@@ -48,132 +48,132 @@ jobs:
           for pasada in 1 2; do
             echo "Gate pass $pasada/2"
             python -m unittest tests.test_module_attribution
-            python -m unittest tests.test_actions_alarma
+            python -m unittest tests.test_actions_alarm
             python -m unittest tests.test_hitl_fence
             python -m unittest tests.test_preflight
             python -m unittest tests.test_deploy_guard
             python -m unittest tests.test_trailers_hook
-            python -m unittest test_sellar tests.test_estado_v2 atlas.test_tools_cerebros
-            node --test tools/preceptor-coder/preceptor_coder_casos.mjs
+            python -m unittest test_seal tests.test_state_v2 atlas.test_brain_tools
+            node --test tools/preceptor-coder/preceptor_coder_cases.mjs
             npx --yes --package=workerd@1.20261104.1 workerd test tests/world_worker_workerd.capnp
-            python bin/contar_rutas.py --check-doc DEPLOY.md
-            node --test atlas/puros/decor_mover_casos.mjs
-            node --test atlas/puros/decor_command_casos.mjs
-            node --test atlas/puros/wave_duel_casos.mjs
-            node --test atlas/puros/state_frames_casos.mjs
-            node --test atlas/puros/cerebro_frame_casos.mjs
-            node --test atlas/puros/acho_casos.mjs
-            node --test atlas/puros/acho_lee_casos.mjs
-            node --test atlas/puros/nodo_terreno_casos.mjs
-            node --test atlas/puros/sala_voces_casos.mjs
-            node --test atlas/puros/colony_state_casos.mjs
-            node --test atlas/puros/hex_projection_casos.mjs
-            node --test atlas/puros/sala_log_casos.mjs
-            node --test atlas/barrido_web_casos.mjs
-            node --test atlas/map_carta_casos.mjs
-            node --test atlas/map_chunks_casos.mjs
-            node --test atlas/web_node_brain_casos.mjs
-            node --test atlas/map_painter_casos.mjs
-            node --test atlas/visitor_walk_casos.mjs
-            node --test atlas/retiro_face_casos.mjs
-            node --test atlas/nombres_retirados_casos.mjs
-            node --test atlas/f0_funciones_casos.mjs
-            node --test atlas/map_zoom_colonia_casos.mjs
-            node --test atlas/map_orbita_casos.mjs
-            node --test atlas/hitl_walkers_casos.mjs
-            node --test atlas/motor_35d_casos.mjs
+            python bin/count_routes.py --check-doc DEPLOY.md
+            node --test atlas/puros/decor_move_cases.mjs
+            node --test atlas/puros/decor_command_cases.mjs
+            node --test atlas/puros/wave_duel_cases.mjs
+            node --test atlas/puros/state_frames_cases.mjs
+            node --test atlas/puros/brain_frame_cases.mjs
+            node --test atlas/puros/acho_cases.mjs
+            node --test atlas/puros/acho_reads_cases.mjs
+            node --test atlas/puros/node_terrain_cases.mjs
+            node --test atlas/puros/room_voices_cases.mjs
+            node --test atlas/puros/colony_state_cases.mjs
+            node --test atlas/puros/hex_projection_cases.mjs
+            node --test atlas/puros/room_log_cases.mjs
+            node --test atlas/sweep_web_cases.mjs
+            node --test atlas/map_chart_cases.mjs
+            node --test atlas/map_chunks_cases.mjs
+            node --test atlas/web_node_brain_cases.mjs
+            node --test atlas/map_painter_cases.mjs
+            node --test atlas/visitor_walk_cases.mjs
+            node --test atlas/face_retirement_cases.mjs
+            node --test atlas/retired_names_cases.mjs
+            node --test atlas/f0_functions_cases.mjs
+            node --test atlas/map_zoom_colony_cases.mjs
+            node --test atlas/map_orbit_cases.mjs
+            node --test atlas/hitl_walkers_cases.mjs
+            node --test atlas/motor_35d_cases.mjs
             node atlas/hex_projection_gate.mjs
-            node --test atlas/puros/catalogo_iso_casos.mjs
-            node --test atlas/puros/colonia_edificios_casos.mjs
+            node --test atlas/puros/catalog_iso_cases.mjs
+            node --test atlas/puros/colony_buildings_cases.mjs
             node atlas/fixtures/first_journey_cases.mjs
-            node atlas/ojo/ojo_descenso_casos.mjs
-            node --test atlas/puros/battle_replay_controls_casos.mjs
-            node --test atlas/puros/bench_mover_casos.mjs
-            node --test atlas/puros/colonia_pagina_casos.mjs
-            node --test atlas/puros/colony_controls_casos.mjs
-            node --test atlas/puros/map_scene_casos.mjs
-            node --test atlas/puros/openworld_state_casos.mjs
-            node --test atlas/puros/tutorial_walk_casos.mjs
-            node --test atlas/puros/walk_route_casos.mjs
-            node --test atlas/building_chat_casos.mjs
-            node --test atlas/rack_ideas_casos.mjs
-            node --test atlas/voces_casos.mjs
-            node --test atlas/invocacion_viva_casos.mjs
-            node atlas/colonia_edificios_gate.mjs
-            node --test atlas/puros/paleta_ciclo_casos.mjs
-            node atlas/paleta_ciclo_gate.mjs
-            node atlas/colonia_pagina_gate.mjs
-            node --test atlas/lexicon_gate_casos.mjs
+            node atlas/ojo/eye_descent_cases.mjs
+            node --test atlas/puros/battle_replay_controls_cases.mjs
+            node --test atlas/puros/bench_move_cases.mjs
+            node --test atlas/puros/colony_page_cases.mjs
+            node --test atlas/puros/colony_controls_cases.mjs
+            node --test atlas/puros/map_scene_cases.mjs
+            node --test atlas/puros/openworld_state_cases.mjs
+            node --test atlas/puros/tutorial_walk_cases.mjs
+            node --test atlas/puros/walk_route_cases.mjs
+            node --test atlas/building_chat_cases.mjs
+            node --test atlas/rack_ideas_cases.mjs
+            node --test atlas/voices_cases.mjs
+            node --test atlas/live_invocation_cases.mjs
+            node atlas/colony_buildings_gate.mjs
+            node --test atlas/puros/palette_cycle_cases.mjs
+            node atlas/palette_cycle_gate.mjs
+            node atlas/colony_page_gate.mjs
+            node --test atlas/lexicon_gate_cases.mjs
             node atlas/lexicon_gate.mjs
             python test_web.py
             python atlas/test_atlas.py
-            node arnes_sw.mjs
+            node sw_harness.mjs
             node --test 'tests/*.test.mjs'
             node atlas/npc_occupancy_cases.mjs
             node atlas/window_cases.mjs
             node atlas/radio_age_cases.mjs
-            node --test atlas/echoes_tutorial_casos.mjs
+            node --test atlas/echoes_tutorial_cases.mjs
             node atlas/hud_readings_cases.mjs
-            node atlas/acho_language_casos.mjs
-            node atlas/acho_estilo_casos.mjs
-            node atlas/acho_editor_casos.mjs
-            node atlas/acho_paint_casos.mjs
+            node atlas/acho_language_cases.mjs
+            node atlas/acho_style_cases.mjs
+            node atlas/acho_editor_cases.mjs
+            node atlas/acho_paint_cases.mjs
             node atlas/front_door_browser.mjs
             node atlas/egg_reload_browser.mjs
             node atlas/combat_screen_browser.mjs
             node atlas/landing_doors_browser.mjs
             node atlas/openworld_browser.mjs
-            node atlas/invocacion_viva_browser.mjs
-            node atlas/dos_clics_browser.mjs
-            node atlas/ojo_carbono_browser.mjs
-            node atlas/latido_carga_browser.mjs
+            node atlas/live_invocation_browser.mjs
+            node atlas/two_clicks_browser.mjs
+            node atlas/eye_carbon_browser.mjs
+            node atlas/heartbeat_load_browser.mjs
             node atlas/map_drag_browser.mjs
             node atlas/map_wide_browser.mjs
-            node atlas/aula_chat_browser.mjs
-            node atlas/sw_primera_carga_browser.mjs
-            node atlas/latido_vivo_casos.mjs
-            node atlas/a11y_relleno_browser.mjs
+            node atlas/classroom_chat_browser.mjs
+            node atlas/sw_first_load_browser.mjs
+            node atlas/live_heartbeat_cases.mjs
+            node atlas/a11y_filler_browser.mjs
             node atlas/web_node_brain_browser.mjs
             node atlas/offline_brain_browser.mjs
             node atlas/rack_ideas_browser.mjs
-            node atlas/objetivos_44_browser.mjs
-            node atlas/infante_browser.mjs
+            node atlas/objectives_44_browser.mjs
+            node atlas/infant_browser.mjs
             node atlas/walk_avatar_browser.mjs
             node atlas/walk_keys_browser.mjs
             node atlas/visitor_account_browser.mjs
             node atlas/visitor_eggs_browser.mjs
-            node --test atlas/voice_star_casos.mjs
+            node --test atlas/voice_star_cases.mjs
             node atlas/visitor_battle_browser.mjs
             node atlas/visitor_conquest_browser.mjs
             node atlas/battle_replay_controls_browser.mjs
-            node atlas/usuario_efimero_pasada_browser.mjs
+            node atlas/ephemeral_user_pass_browser.mjs
             node atlas/wave_army_browser.mjs
             node atlas/place_card_browser.mjs
             node atlas/tutorial_places_browser.mjs
             node atlas/tutorial_walk_browser.mjs
             node atlas/wave_duel_browser.mjs
-            node atlas/acho_bestiary_casos.mjs
-            node atlas/acho_icons_casos.mjs
-            node atlas/acho_letters_casos.mjs
+            node atlas/acho_bestiary_cases.mjs
+            node atlas/acho_icons_cases.mjs
+            node atlas/acho_letters_cases.mjs
             node atlas/codex_cases.mjs
             node atlas/descent_sound_cases.mjs
-            node atlas/descent_view_casos.mjs
+            node atlas/descent_view_cases.mjs
             node atlas/mvp_cases.mjs
             node atlas/card_cases.mjs
             node atlas/math_cases.mjs
             node questions/window_cases.mjs
             node atlas/echoes_cases.mjs
-            node atlas/barrido_casos.mjs
-            node atlas/acho_bust_casos.mjs
-            node atlas/acho_crab_casos.mjs
+            node atlas/sweep_cases.mjs
+            node atlas/acho_bust_cases.mjs
+            node atlas/acho_crab_cases.mjs
             node atlas/chrome_launch_cases.mjs
-            node atlas/comic_accents_casos.mjs
-            node atlas/comic_atoms_casos.mjs
+            node atlas/comic_accents_cases.mjs
+            node atlas/comic_atoms_cases.mjs
             node atlas/comic_css_parity_cases.mjs
-            node atlas/comic_tokens_casos.mjs
+            node atlas/comic_tokens_cases.mjs
             node atlas/sea_rift_cases.mjs
-            node atlas/param_gate_casos.mjs
-            node atlas/harness_agentes_casos.mjs
+            node atlas/param_gate_cases.mjs
+            node atlas/harness_agents_cases.mjs
             node atlas/phase_M0_cases.mjs
             node atlas/phase_T3_cases.mjs
             node atlas/shell_schematics_cases.mjs

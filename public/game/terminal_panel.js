@@ -37,7 +37,7 @@
   }
   // LAS VOCES (the Sovereign, 2026-11-03): every line of the conversation names who speaks, shaped by the piece that speaks
   // it — from the chunk model on this device to the contributors' models on GitHub. The panel is immutable: this table is
-  // pinned by sha256 in atlas/voces_casos.mjs, so a new voice is a new signed version, never a silent edit. It lives on
+  // pinned by sha256 in atlas/voices_cases.mjs, so a new voice is a new signed version, never a silent edit. It lives on
   // GitHub and on the web; it is what an ephemeral visit acts through. Row: id, title, what it is, where it runs.
   var VOCES = Object.freeze([
     ['you', 'You', 'the visitor', 'this device'],

@@ -12,9 +12,9 @@
   var RATIOS = [1, 9 / 8, 5 / 4, 3 / 2, 5 / 3, 2, 9 / 4, 5 / 2]; // pentatonica mayor de 8 notas
   var BASE_HZ = 220;
 
-  var SEM = (typeof module === 'object' && module.exports) ? require('./tabla_semantica.js') : raiz.AtlasSemantica;
+  var SEM = (typeof module === 'object' && module.exports) ? require('./semantic_table.js') : raiz.AtlasSemantica;
 
-  // Pulso: frecuencia FISICA (DERIVADOS.pulso_hz de tabla_semantica.js, en Hz). Sello sin fisica -> 0 (silencio).
+  // Pulso: frecuencia FISICA (DERIVADOS.pulso_hz de semantic_table.js, en Hz). Sello sin fisica -> 0 (silencio).
   function pulso(sello, t) {
     var d = SEM.de(sello);
     if (!d) { return 0; }

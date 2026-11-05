@@ -48,7 +48,7 @@ the one shared map. Fixing that binding is the panels commission's scope.
 - `python3 atlas/test_atlas.py` — one pre-existing failure in this sandbox
   (`test_node_signature_verify`, needs OpenSSH tooling), not touched by this
   piece; the remaining 44 tests green.
-- `node arnes_sw.mjs` — 24/24.
-- Service worker re-stamped in the same commit (`bin/sellar.py --sellar`).
+- `node sw_harness.mjs` — 24/24.
+- Service worker re-stamped in the same commit (`bin/seal.py --sellar`).
 
 Agent: preceptor-orquestador-github · Model: GLM-5.3

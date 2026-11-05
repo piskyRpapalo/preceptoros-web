@@ -12,18 +12,18 @@ Run on main, 2026-11-02:
 | suite | result |
 |---|---|
 | `atlas/fixtures/first_journey_cases.mjs` | green |
-| `atlas/ojo/ojo_descenso_casos.mjs` | green |
-| `atlas/puros/battle_replay_controls_casos.mjs` | green |
-| `atlas/puros/bench_mover_casos.mjs` | green |
-| `atlas/puros/colonia_pagina_casos.mjs` | green |
-| `atlas/puros/colony_controls_casos.mjs` | green |
-| `atlas/puros/map_scene_casos.mjs` | green |
-| `atlas/puros/openworld_state_casos.mjs` | green |
-| `atlas/puros/tutorial_walk_casos.mjs` | green |
-| `atlas/puros/walk_route_casos.mjs` | green |
-| `atlas/ojo/ojo_palabras_casos.mjs` | **red**: `ojo ok=false`. Its fixtures load `public/game/bubble_game.js`, retired with the cut of North 7 D. Red for some time; nobody saw it, because nothing ran it |
+| `atlas/ojo/eye_descent_cases.mjs` | green |
+| `atlas/puros/battle_replay_controls_cases.mjs` | green |
+| `atlas/puros/bench_move_cases.mjs` | green |
+| `atlas/puros/colony_page_cases.mjs` | green |
+| `atlas/puros/colony_controls_cases.mjs` | green |
+| `atlas/puros/map_scene_cases.mjs` | green |
+| `atlas/puros/openworld_state_cases.mjs` | green |
+| `atlas/puros/tutorial_walk_cases.mjs` | green |
+| `atlas/puros/walk_route_cases.mjs` | green |
+| `atlas/ojo/eye_words_cases.mjs` | **red**: `ojo ok=false`. Its fixtures load `public/game/bubble_game.js`, retired with the cut of North 7 D. Red for some time; nobody saw it, because nothing ran it |
 
-`atlas/puros/colonia_pagina_casos.mjs` is the parity gate of the colony page with its served copy. It was the one whose silence weighed most.
+`atlas/puros/colony_page_cases.mjs` is the parity gate of the colony page with its served copy. It was the one whose silence weighed most.
 
 ## Change
 

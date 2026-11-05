@@ -103,7 +103,7 @@ class McpBridgeTests(unittest.TestCase):
             result = Done()
             if "test_web.py" in args:
                 result.stdout = "Ran 78 tests in 1s\nOK (skipped=1)"
-            elif "arnes_sw.mjs" in args:
+            elif "sw_harness.mjs" in args:
                 result.stdout = "22/22 en verde"
             else:
                 result.stdout = '{"gzip_initial_b":90000}'

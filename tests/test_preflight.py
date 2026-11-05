@@ -12,8 +12,8 @@ spec.loader.exec_module(P)
 class Preflight(unittest.TestCase):
     def test_runs_every_gate_step_and_the_phase_gate(self):
         todos = "\n".join(s for _, s in P.plan(False))
-        for orden in ("node atlas/phase_gate.mjs", "python test_web.py", "node arnes_sw.mjs",
-                      "node atlas/discovery_runner.mjs", "node atlas/version_sw_casos.mjs"):
+        for orden in ("node atlas/phase_gate.mjs", "python test_web.py", "node sw_harness.mjs",
+                      "node atlas/discovery_runner.mjs", "node atlas/version_sw_cases.mjs"):
             with self.subTest(orden=orden):
                 self.assertIn(orden, todos)
 

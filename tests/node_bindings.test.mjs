@@ -6,8 +6,8 @@ import { createRequire } from 'node:module';
 import { createPrivateKey, createPublicKey, createHash, sign, webcrypto } from 'node:crypto';
 
 const require=createRequire(import.meta.url), K=require('../public/game/canon.js');
-const R=require('../public/game/node_reception_contract.js'),N=require('../public/game/nodos.js');
-const Q=require('../public/game/cuenta.js');
+const R=require('../public/game/node_reception_contract.js'),N=require('../public/game/nodes.js');
+const Q=require('../public/game/account.js');
 const F=require('../public/game/fog_of_war.js');
 const cp=x=>JSON.parse(JSON.stringify(x)),canon=x=>JSON.stringify(K.ordena(x));
 const sha=x=>createHash('sha256').update(x).digest('hex'),utf8=x=>Buffer.from(x);

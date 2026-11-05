@@ -41,7 +41,7 @@
         boton: medido ? boton('Download ' + c.id, true) : boton('Download ' + c.id, false, nd('sha256 or size not measured'))
       };
     });
-    if (!carril3.length) { carril3 = [{ id: 'cerebros', clics: 0, cifra: null, gb_medido: false, sha256: null, boton: boton('Models', false, nd('no model in cerebros.json')) }]; }
+    if (!carril3.length) { carril3 = [{ id: 'cerebros', clics: 0, cifra: null, gb_medido: false, sha256: null, boton: boton('Models', false, nd('no model in brains.json')) }]; }
     return {
       saltar: { etiqueta: 'Skip to the Map', primero: true, enfocable: true },
       carriles: [carril1, carril2].concat(carril3),

@@ -1,5 +1,5 @@
 // Tab to every bubble of the map (buzon#30, 2026-11-02, NO_DATA filled): each node drawn on the canvas gets a real,
-// focusable proxy <button> (44×44) over its anchor, placed by the ONE placement of colonia_pagina.js (anchorOf) on every
+// focusable proxy <button> (44×44) over its anchor, placed by the ONE placement of colony_page.js (anchorOf) on every
 // visitor:draw, so it follows redraw, zoom and pan. Its name is the node's own bubble sentence (and its building's: the
 // building stands on the node's anchor and Enter on the node enters it). Tab order is the map's depth order (back to
 // front, then left to right); the «?» marks of hitl_walkers.js are moved right after their node. Enter or Space = a tap.

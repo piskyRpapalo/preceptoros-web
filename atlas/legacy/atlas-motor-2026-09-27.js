@@ -1,7 +1,7 @@
 /* preceptoros.org · theGame · el MOTOR de ATLAS, el Bosque Sumergido.
 
    LOGICA PURA. Ni DOM, ni red, ni reloj propio: recibe un estado y devuelve
-   otro. Por eso se prueba fuera del navegador (`atlas/motor_casos.mjs`) y el
+   otro. Por eso se prueba fuera del navegador (`atlas/motor_cases.mjs`) y el
    mismo estado da siempre el mismo resultado. Quien pinta es `atlas-piso.js`.
 
    ENTEROS SIEMPRE. La curva de XP es la tabla OSRS canonica escrita como
@@ -77,7 +77,7 @@
   }
 
   /* Las leyes del mundo salen de medidas reales de la web
-     (`atlas-mundo.json`). Sin ellas, leyes neutras y se dice. */
+     (`atlas-world.json`). Sin ellas, leyes neutras y se dice. */
   function leyes(mundo) {
     var m = mundo || {}, nd = !mundo;
     var pruebas = entero(m.pruebas_web) ? m.pruebas_web : null;

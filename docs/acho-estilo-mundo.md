@@ -5,7 +5,7 @@ estilo de mapa y pidió su **sensación** en lengua Acho. Aquí se traducen prin
 ni nombres, ni personajes, ni arte, ni aspecto de otro producto. Los personajes siguen siendo
 ondas, el valor sigue pasando por HITL y lo que no se mide sigue siendo NO_DATA.
 
-Prueba viva: `node atlas/acho_estilo_casos.mjs` (con `--frames` imprime los 10 fotogramas).
+Prueba viva: `node atlas/acho_style_cases.mjs` (con `--frames` imprime los 10 fotogramas).
 `ESTILO_SABOTAJE=cenit|insignia|todo-insignia|billboard` rompe una ley cada vez y la prueba sale roja.
 
 ## 1. Las cuatro leyes, ya escritas como fotogramas `preceptoros.acho/1`
@@ -14,7 +14,7 @@ Prueba viva: `node atlas/acho_estilo_casos.mjs` (con `--frames` imprime los 10 f
 |---|---|---|---|
 | **L1 · el cielo es el entorno** | la luz del mundo no se elige a mano: sale del cielo | el `light` de cada fotograma se calcula del tic con `palette_cycle.palette(t).dia` | `palette_cycle.js` (CYCLE 240, día 0..256), sin tocarlo |
 | **L2 · el sol nunca en el cénit** | toda forma conserva una sombra que se lee; nunca hay un mediodía plano | el ángulo de la luz vive en **[115,66°, 154,34°]**: sube hasta 90° + 25,66° y baja hasta 180° − 25,66° | `hex_projection.js` y `map_zoom.js` (`SQUASH = √3/4`): **25,66° = asin(√3/4)**, la elevación del suelo |
-| **L3 · insignias de tamaño fijo, solo para lo urgente** | lo que te necesita se ve igual de lejos que de cerca; lo normal no grita | insignia de **44 px de pantalla** (la diana de J1), dibujada después de la cámara; solo la llevan `PROPUESTA` (espera tu firma) y `ERROR` | `tabla_semantica.js` (bandas de sello con su significado literal) |
+| **L3 · insignias de tamaño fijo, solo para lo urgente** | lo que te necesita se ve igual de lejos que de cerca; lo normal no grita | insignia de **44 px de pantalla** (la diana de J1), dibujada después de la cámara; solo la llevan `PROPUESTA` (espera tu firma) y `ERROR` | `semantic_table.js` (bandas de sello con su significado literal) |
 | **L4 · billboards** | los nombres están de pie, miren desde donde miren | el rótulo se ancla a su celda proyectada y girada, pero el texto va con `rot: 0` y tamaño fijo | `isometric_floor_projection.js` (`proyecta`), `map_zoom.js` (giro Q/E) |
 
 **La cifra bonita de L2.** A mediodía la luz vale **(−√3/4, −√13/4) = (−0,433, −0,901)**, y a

@@ -54,7 +54,7 @@ Propuesta para resolverlo sin romper ninguna de las dos:
   Se para al cerrar la capa, con la pestaña oculta, con un diálogo abierto, con
   el fusible (3 fallos) o con «Soltar».
 - Hoy el piloto es una **regla fija** (`atlas-piloto.js`), y su récord medido
-  es la línea base. Un LoRA solo la sustituye si le gana en `atlas/arnes_piloto.mjs`.
+  es la línea base. Un LoRA solo la sustituye si le gana en `atlas/pilot_harness.mjs`.
 - La instantánea se mudó a `atlas-partida.js` para que la pestaña, el arnés y la
   Aduana la calculen con el mismo código.
 - `ESPEC_ATLAS_AUTOMEJORA` se cita arriba pero no existe en este repo ni en el

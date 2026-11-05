@@ -30,7 +30,7 @@ One ordered stack that ties the pieces of the single map, with the exact head of
 
 ## Gates the stack must pass at each step
 
-- `python3 test_web.py`, `python3 atlas/test_atlas.py`, `node arnes_sw.mjs`, `node atlas/version_sw_gate.mjs`, `node atlas/lexicon_gate.mjs`.
+- `python3 test_web.py`, `python3 atlas/test_atlas.py`, `node sw_harness.mjs`, `node atlas/version_sw_gate.mjs`, `node atlas/lexicon_gate.mjs`.
 - `node atlas/openworld_browser.mjs` at the declared state (cabin LIVE; Beelink and Doggee NO_DATA).
 - The seal chain in order: measures, then the seal at the end, with a fixed VERSION.
 - SCRUB: no machine paths, no users, no credentials, and the vetoed word absent.

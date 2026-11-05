@@ -1,7 +1,7 @@
 (function (raiz) {
   'use strict';
-      var SEM = (typeof module === 'object' && module.exports) ? require('./tabla_semantica.js') : raiz.AtlasSemantica;
-  if (!SEM || !SEM.SELLOS) { throw new Error('NO_DATA · tabla_semantica.js no cargada: la tabla semantica manda, no se duplica'); }
+      var SEM = (typeof module === 'object' && module.exports) ? require('./semantic_table.js') : raiz.AtlasSemantica;
+  if (!SEM || !SEM.SELLOS) { throw new Error('NO_DATA · semantic_table.js no cargada: la tabla semantica manda, no se duplica'); }
   var SELLOS = SEM.SELLOS;
   var LUZ = { x: -0.6, y: -0.8 }, MORF_MS = 2000;
   var morfos = {}, narrado = {};

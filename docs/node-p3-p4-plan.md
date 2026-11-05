@@ -14,17 +14,17 @@ el Soberano firma cada pieza. Letras reservadas: abkd para ③, abke para ④.
    firmada: admin↔nodo, ambos dentro de signedBody. La identidad de cuenta
    propuesta es la clave pública cruda del navegador en admin, sin nombre de
    persona. Los alias de juego son rótulos, no identidades ni prueba de firma.
-   Fuentes: `nodos.js:48`; `node_reception_contract.js:57,81`;
+   Fuentes: `nodes.js:48`; `node_reception_contract.js:57,81`;
    `auth.js:127`; referencia RACK `nodos.py:123`.
 2. REQUIERE_FIRMA: no se promueve la cuenta maestra PROPUESTA a registro real
    ni se generaliza silenciosamente su esquema. Tampoco se llena admin:null
    en cédulas antiguas usando la sesión del navegador: haría falta emitir y
-   firmar otro documento. Fuente: `cuenta.js:29` y su esquema cerrado.
+   firmar otro documento. Fuente: `account.js:29` y su esquema cerrado.
 3. REQUIERE_FIRMA: la web verifica unicidad solo en el conjunto de evidencias
    que realmente recibió y verificó; nunca afirma que un conjunto parcial es
    el registro mundial. Rechaza una cuenta con dos nodos, un nodo con dos
    cuentas y entradas duplicadas. No elige un ganador por orden de llegada,
-   fecha ni nivel de hardware. Fuentes: `nodos.js:65`; inventario de duplicados.
+   fecha ni nivel de hardware. Fuentes: `nodes.js:65`; inventario de duplicados.
 4. REQUIERE_FIRMA de dirección: para unicidad durable/global, se propone un
    registro separado de admisiones en la aduana con unicidad transaccional de
    cuenta y nodo, vinculado al plan firmado. El actual node_requests se conserva
@@ -44,7 +44,7 @@ el Soberano firma cada pieza. Letras reservadas: abkd para ③, abke para ④.
   conflictos y devuelve evidencia inmutable, alcance del conjunto y causas.
   Fuente a heredar: `node_reception_contract.js:56,81`;
   `node_signature_verify.js:97`. authority:false y firma:null permanecen.
-- REQUIERE_FIRMA, `public/game/nodos.js:65`: cerrar el documento de nodo
+- REQUIERE_FIRMA, `public/game/nodes.js:65`: cerrar el documento de nodo
   duplicado sin retirar la puerta legada. Separar la validación del catálogo
   antiguo de la verificación criptográfica de evidencias reales. Tener
   firma_ssh o SIGNED nunca basta para el nuevo registro.
@@ -52,8 +52,8 @@ el Soberano firma cada pieza. Letras reservadas: abkd para ③, abke para ④.
   evidencia y aparato separados. Nunca inserta aparato en la cédula ni
   recalcula su huella para simular una firma. Sin mediciones vinculadas:
   ram_mib y gen_cps quedan NO_DATA con valor:null y causa; no se copian las
-  medidas de otro nodo. Reusa `nodos.js:107` para base/niebla y
-  `cuenta.js:17` para actividad declarada. Firma válida no es latido LIVE.
+  medidas de otro nodo. Reusa `nodes.js:107` para base/niebla y
+  `account.js:17` para actividad declarada. Firma válida no es latido LIVE.
 - REQUIERE_FIRMA, consumidores `map_nodes_layer.js:4`, `reef_corals.js:37`
   y `ui-rack.js:71`: aceptar la proyección a través de un adaptador común,
   conservando el catálogo como origen legado. La cuenta maestra sigue siendo
@@ -77,7 +77,7 @@ falsificado; ancla ausente; conjunto parcial presentado como global.
 Después, verdes con raíces y cédulas sintéticas, idempotencia del resultado,
 orden independiente, ausencia de mutación y bloqueo de autoridades.
 Regresión: pesos, bandas de equilibrio, estadoNodo, mapa y corales; ninguna
-coordenada nueva. Fuentes: `atlas/nodos_casos.mjs:34,115,128`.
+coordenada nueva. Fuentes: `atlas/nodes_cases.mjs:34,115,128`.
 
 Optimización auto-comprobable propuesta: un solo cálculo de ①/② por huella
 en cada operación, compartido por ficha/estado/proyección; nada de caché global
@@ -119,24 +119,24 @@ Solo después del cierre de ③ por la Mesa se corta ④ desde main fresco.
   desde la proyección sin hardware inventado. Sin ancla: pendiente; sin
   WebCrypto: pendiente; firma inválida: rechazo. No se muestra verificada por
   una etiqueta leída del fichero. La revisión no aplica ni guarda el nodo.
-  Fuentes: `node_signature_verify.js:97`; `cuenta.js:17,29`. Antes de
+  Fuentes: `node_signature_verify.js:97`; `account.js:17,29`. Antes de
   diseñar o cambiar la ficha visual, la Mesa aporta la cita exacta vigente de
   ideas6oct/ideas7oct; sin ella, diseño visual NO_DATA, no se diseña de oído.
 - REQUIERE_FIRMA: si hay firma válida, la identidad activa debe probar posesión
   de la clave admin antes de despachar como esa cuenta; diferencia de clave
   bloquea, no se reescribe admin. No se mezcla firma SSH soberana con firma
-  de consentimiento del navegador. Fuente: `auth.js:127`; `ui-nodos.js:170`.
+  de consentimiento del navegador. Fuente: `auth.js:127`; `ui-nodes.js:170`.
 - REQUIERE_FIRMA: envío siempre aparte: clic real, casilla explícita y segunda
   firma que vincule huella exacta, destino y acción. Revalidar que nada cambió
   antes de llamar la única puerta Enviar.paquete. Cancelación o fallo de firma
-  produce cero llamadas de red. Fuente: `ui-nodos.js:170`; `nodos.js:200`.
+  produce cero llamadas de red. Fuente: `ui-nodes.js:170`; `nodes.js:200`.
 
 ### Costura de transporte que debe quedar dirimida antes de construir ④
 
 REQUIERE_FIRMA: extender la puerta única Enviar.paquete para el esquema de
 cédulas y ENDPOINT de ①, dejando intactos el reto y las rutas de Agora para
 sus cargas actuales. No cambiar globalmente API ni enviar cédulas a
-`/api/v1/paquetes`. Fuentes: `enviar.js:32,75`; contrato ① `:91`.
+`/api/v1/paquetes`. Fuentes: `send.js:32,75`; contrato ① `:91`.
 
 El Worker actual solo acepta `{cedula}` (`aduana/src/index.js:73`): no recibe
 el consentimiento de segunda firma del patrón de partidas. Se propone que
@@ -174,11 +174,11 @@ y exigir el mismo rechazo/veredicto. El ahorro sigue NO_DATA hasta medirse.
 REQUIERE_FIRMA en cada pieza. Rama nueva desde origin/main vigente, PR borrador
 propio; ③ termina antes de empezar ④. Abkd/abke los asigna la Mesa, no el agente.
 Satélites M1 para responsabilidades puras y mensajes; cada bloque <16.384 B.
-No se agranda ui-nodos.js (hoy 15.379 B) para esconder el receptor dentro.
+No se agranda ui-nodes.js (hoy 15.379 B) para esconder el receptor dentro.
 Fuente de pesos actuales: inventario medido; ningún tamaño futuro se inventa.
 
 Tras rojos dirigidos sobre la base exacta, implementar y ejecutar dos tandas:
-`python3 test_web.py`, `python3 atlas/test_atlas.py`, `node arnes_sw.mjs`
+`python3 test_web.py`, `python3 atlas/test_atlas.py`, `node sw_harness.mjs`
 (vara actual 22/22), `node --test tests/*.test.mjs`, además de dirigidas nuevas.
 Conteos, fallos y omisiones por suite, sin sumar casos anidados. También
 T3/M0/phase, nueve lenguas bajo techo, paridad llms, siete sellos, privacidad

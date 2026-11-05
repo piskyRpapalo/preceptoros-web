@@ -8,17 +8,17 @@ is not a published figure.
 
 | Figure | What it counts | Measured by | Date | Where the reading lives |
 |---|---|---|---|---|
-| 78 web tests | doctrine suite of the WEB, total | python3 test_web.py | 2026-10-16 | PR #139; public/atlas-mundo.json (pruebas_web) |
+| 78 web tests | doctrine suite of the WEB, total | python3 test_web.py | 2026-10-16 | PR #139; public/atlas-world.json (pruebas_web) |
 | 77 passing, 1 skipped | outcome of that suite on the current tree | python3 test_web.py | 2026-10-16 | PR #139; llms.txt cites this index |
 | 130 passing, 5 skipped | Node suite of the guardian files (tests/) | node --test tests/ (yardstick; the receipt names the suite, not the command) | 2026-10-16 | PR #139 |
 | 24/24 | directed sabotage vectors of the signature verifier (piece 2) | directed vector run, both yardstick passes | 2026-10-16 | PR #139 |
 | 181/181 | atlas suite | python3 atlas/test_atlas.py | 2026-10-16 | PR #139 |
-| 22/22 | service-worker harness | node arnes_sw.mjs | 2026-10-16 | public/atlas-mundo.json (arnes_sw) |
+| 22/22 | service-worker harness | node sw_harness.mjs | 2026-10-16 | public/atlas-world.json (arnes_sw) |
 | 0 external requests on load | resource entries of the served home page | instrumented load of the served page; guarded by test_web.py | 2026-10-16 | the served page; llms.txt |
-| 91,528 B | game weight gzipped, against the 153,600 B door | atlas/mundo.py on the current tree | 2026-10-16T21:37Z | public/atlas-mundo.json (gzip_juego_b); daily vigia |
-| 9 languages | served translations, discovered from disk | test_web.py and sitemap.py discovery | 2026-10-16 | public/ language folders; public/atlas-mundo.json (lenguas) |
+| 91,528 B | game weight gzipped, against the 153,600 B door | atlas/world.py on the current tree | 2026-10-16T21:37Z | public/atlas-world.json (gzip_juego_b); daily vigia |
+| 9 languages | served translations, discovered from disk | test_web.py and sitemap.py discovery | 2026-10-16 | public/ language folders; public/atlas-world.json (lenguas) |
 | 43 | HEXELION Star entries (A1-D45) | line count of the Star annex | 2026-10-16 | llms.txt; guarded by tests/citations.test.mjs |
-| 25 MiB per block | size ceiling of a synthetic block (the byte-per-file ceiling was revoked) | signed exception in EXCEPCIONES.md only | 2026-10-11 | test_web.py; public/atlas-mundo.json (techo_bloque_b) |
+| 25 MiB per block | size ceiling of a synthetic block (the byte-per-file ceiling was revoked) | signed exception in EXCEPCIONES.md only | 2026-10-11 | test_web.py; public/atlas-world.json (techo_bloque_b) |
 
 The Node suite (tests/) is not wired into CI as a whole; it runs in the
 yardstick. This PR wires its citations guardian into gate, phase and the daily

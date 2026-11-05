@@ -14,7 +14,7 @@ Read on 2026-11-02, GET only:
 | link | reading |
 |---|---|
 | `/api/world-state` | **200**, 423 B, schema `openworld-estado/2`, `cobertura: MEDIDO · 2 · node_heartbeats`. Two nodes (`primer-ancla`, one rack node), both **STALE since 2026-11-01**. `units: []` |
-| `/openworld/estado.json` (static) | 200. Four colony nodes with `since: 2026-10-30`. This is the fallback that E-3 read as «the state» |
+| `/openworld/state.json` (static) | 200. Four colony nodes with `since: 2026-10-30`. This is the fallback that E-3 read as «the state» |
 | the timer | active, fires every 240 s |
 | the one-shot service | **failed**. Last accepted heartbeat: **HTTP 202, 2026-11-01 17:57:38 UTC**. Since then, **396 rejections, HTTP 401** (54 B body), about 15 per hour, until this reading |
 

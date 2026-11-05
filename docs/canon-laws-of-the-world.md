@@ -5,7 +5,7 @@
 Bloques migrados: 60 · bytes de canon: 15961
 
 
-## public/game/valores.js:1
+## public/game/values.js:1
 
 preceptoros.org · theGame · los VALORES, separados de la logica.
 
@@ -21,21 +21,21 @@ preceptoros.org · theGame · los VALORES, separados de la logica.
    dia de los mods de la comunidad, un mod sera un objeto con esta forma.
 
 
-## public/game/valores.js:18
+## public/game/values.js:18
 
 M18-B (opcion B firmada por el Soberano, 2026-10-11): la version sube porque la tirada cambia. Las
        tropas de antes (sin `aristas`) se dicen de otra version; un duelo entre versiones distintas no se
        resuelve (`arena.packSha`).
 
 
-## public/game/valores.js:22
+## public/game/values.js:22
 
 Treasure Classes. Coste en Cobre y Luz: medido con el piloto base, la
        Biomasa nunca pasa de 2. `incuba` en ciclos de juego. La rareza ya no se
        tira aparte: sale de las ARISTAS (abajo).
 
 
-## public/game/valores.js:31
+## public/game/values.js:31
 
 EL SONAR DE ARISTAS (M18-B; corpus: «6 planes.txt»:134-142, ideas6oct:1724 «rareza por aristas»).
        La rareza es COMPLEJIDAD GEOMETRICA: cada tirada saca primero cuantas aristas (lobulos) tiene su
@@ -46,12 +46,12 @@ EL SONAR DE ARISTAS (M18-B; corpus: «6 planes.txt»:134-142, ideas6oct:1724 «r
        se publican: las mismas que se tiran.
 
 
-## public/game/valores.js:44
+## public/game/values.js:44
 
 La rareza por aristas: hasta 4 normal, hasta 8 magico, hasta 12 raro; mas, unico (Leviatan).
 
 
-## public/game/valores.js:46
+## public/game/values.js:46
 
 La forma de la onda (no es equilibrio, es dibujo): la amplitud del armonico que pone las aristas
        sale de `a1`; los demas, de a1 / (div * j^2), con su fase ALINEADA a la del primero (todos tienen su
@@ -60,12 +60,12 @@ La forma de la onda (no es equilibrio, es dibujo): la amplitud del armonico que 
        0,75 fallan 532); con fases al azar hacia falta div = 3 y los armonicos altos salian casi todos a 0.
 
 
-## public/game/valores.js:60
+## public/game/values.js:60
 
 Base de una tropa por nivel de TC: vida = vida[0]*nivel + [0..vida[1]].
 
 
-## public/game/valores.js:62
+## public/game/values.js:62
 
 P9 · POLVO DE TALLER («6 planes.txt»:144-155; LEEME:1155). Desintegrar una onda da RESIDUO
        ESTATICO: un gramo por arista (una cuadrada, 4 g); un Leviatan fallido, `leviatan_x` veces mas.
@@ -74,14 +74,14 @@ P9 · POLVO DE TALLER («6 planes.txt»:144-155; LEEME:1155). Desintegrar una on
        compra. PROVISIONAL, como todo este fichero.
 
 
-## public/game/valores.js:69
+## public/game/values.js:69
 
 P6 · EL ESCUADRON (combate a escala): una tropa despliega round(por_aristas / aristas) unidades (tope
        `tope`), el Leviatan `coloso`; `radio` y `unidad` son dibujo, en radios de la tropa. NO es equilibrio
        (el combate sigue por tropa) y por eso no entra en `packSha`. PROVISIONAL.
 
 
-## public/game/valores.js:73
+## public/game/values.js:73
 
 P10 · PRISMA DE BANDERA («6 planes.txt»:156-163; LEEME:1159-1161): tu color de capitan, de una paleta
        CERRADA de ocho tonos bioluminiscentes (un tono hsl cada uno). Cerrada a proposito: un color libre seria
@@ -89,17 +89,17 @@ P10 · PRISMA DE BANDERA («6 planes.txt»:156-163; LEEME:1159-1161): tu color d
        gasta residuo (`taller.tinte`). Solo aspecto: no entra en el combate. Nada decide color por otro.
 
 
-## public/game/valores.js:78
+## public/game/values.js:78
 
 Solo para LEER las tropas de la version anterior (sin `aristas`): su simetria iba por rareza.
 
 
-## public/game/valores.js:81
+## public/game/values.js:81
 
 Recetas de sonido FM: Hz, segundos, indice en Hz.
 
 
-## public/game/valores.js:88
+## public/game/values.js:88
 
 M17-bis 3 (firma F-A, EN_CURSO_hasta_escucha del Soberano): ADSR + FM de tres senos (portadora y
        DOS moduladoras, ambas conectadas: la joya del mockup no las conectaba). `modo` decide; 'fm2' es el
@@ -108,7 +108,7 @@ M17-bis 3 (firma F-A, EN_CURSO_hasta_escucha del Soberano): ADSR + FM de tres se
        los fija el oido del Soberano, que es la medida que falta.
 
 
-## public/game/valores.js:94
+## public/game/values.js:94
 
 M17-bis 4 (firma F-A): VIBRATO POR URGENCIA DEL SELLO. Lo que espera firma vibra; lo firmado
          suena quieto. eclosion = la tropa nacida espera tu firma para adoptarla (ui.js:175);
@@ -116,7 +116,7 @@ M17-bis 4 (firma F-A): VIBRATO POR URGENCIA DEL SELLO. Lo que espera firma vibra
          PROVISIONALES: se fijan en la misma escucha que el movimiento 3.
 
 
-## public/game/valores.js:102
+## public/game/values.js:102
 
 Combate entre personas y patrullas (`arena.js`): rondas ENTERAS y todo PROVISIONAL. `ataque`
        pondera los stats de la tropa; `esquiva` va por mil por punto de sigilo, con tope; la armadura
@@ -124,19 +124,19 @@ Combate entre personas y patrullas (`arena.js`): rondas ENTERAS y todo PROVISION
        central): `k` y `k_provisional` para las primeras `provisional_hasta` partidas.
 
 
-## public/game/valores.js:111
+## public/game/values.js:111
 
 Regla de ABANDONO (firmada por el Soberano, 2026-09-28): quien se compromete y no revela en
          estos ciclos de juego de quien espera, pierde el duelo por abandono y queda como deuda.
 
 
-## public/game/valores.js:115
+## public/game/values.js:115
 
 Los LUGARES NPC de la Arena: patrullas que salen de la semilla de su lugar, iguales en todos los
        aparatos, para probar el combate sin red. Mas hondo, mas duro. PROVISIONAL.
 
 
-## public/game/valores.js:121
+## public/game/values.js:121
 
 MOVIMIENTO 5 - M17: FLUIDEZ PS1 - Tunables como datos (corpus ideas6oct-2:785)
        Todos los parametros de la capa PS1 en un solo objeto declarativo.
@@ -144,62 +144,62 @@ MOVIMIENTO 5 - M17: FLUIDEZ PS1 - Tunables como datos (corpus ideas6oct-2:785)
        PROVISIONAL - ajustar segun bench en el Beelink.
 
 
-## public/game/valores.js:126
+## public/game/values.js:126
 
 Melt de batalla (MOVIMIENTO 1): persistencia canvas offscreen
 
 
-## public/game/valores.js:130
+## public/game/values.js:130
 
 Color = Vida (MOVIMIENTO 2): Hue deriva a cobre, Lightness = escudo
 
 
-## public/game/valores.js:134
+## public/game/values.js:134
 
 M17-bis 2: L va de min (sin escudo) a base (escudo_ref); escudo_ref = armadura maxima medida.
 
 
-## public/game/valores.js:137
+## public/game/values.js:137
 
 Respira al beat (MOVIMIENTO 3): pulso de brillo/grosor
 
 
-## public/game/valores.js:140
+## public/game/values.js:140
 
 Buffer PS1 (MOVIMIENTO 6): resoluciones por nivel
 
 
-## public/game/valores.js:143
+## public/game/values.js:143
 
 Dither PS1 (MOVIMIENTO 6): patron 4x4 ordenado
 
 
-## public/game/valores.js:146
+## public/game/values.js:146
 
 Wobble PS1 (MOVIMIENTO 6): grid para temblor de vertices
 
 
-## public/game/valores.js:148
+## public/game/values.js:148
 
 Niebla de Omen (MOVIMIENTO 7): vignette y niebla
 
 
-## public/game/valores.js:151
+## public/game/values.js:151
 
 Sprites chunky (MOVIMIENTO 8): NPCs a 1/4 escala
 
 
-## public/game/valores.js:154
+## public/game/values.js:154
 
 Estela (MOVIMIENTO 1-2): longitud maxima
 
 
-## public/game/valores.js:156
+## public/game/values.js:156
 
 Burbujas por calidad (MOVIMIENTO 4): mar respira
 
 
-## public/game/valores.js:159
+## public/game/values.js:159
 
 M17-bis 5 (firma F-A, 2026-10-10): LA TABLA DE DERIVADOS SEMANTICOS. Cada parametro visual y
        sonoro con [formula, de que sale, clase, quien lo lee]. Clases: ESTADO (sale del estado del
@@ -349,7 +349,7 @@ preceptoros.org · theGame v1.5 · el GACHA ARMONICO: Treasure Classes,
 
 ## public/game/gacha.js:27
 
-LOS VALORES VIVEN EN `valores.js` (estado PROVISIONAL): aqui solo la logica.
+LOS VALORES VIVEN EN `values.js` (estado PROVISIONAL): aqui solo la logica.
      En node se piden con require; en la pestana los carga la puerta antes.
 
 

@@ -19,12 +19,12 @@ Solo se pisa un nodo cuyo sello sea LIVE o STALE; un hexágono sin nodo visible 
 El paso se cuenta en FOTOGRAMAS (FRAMES = 12), jamás en milisegundos. Con movimiento reducido la
 caminata llega en un paso. La pose del caminante: `{ nodo, destino, fracción 0..1 }`.
 
-## 3 · El caminante sembrado — `atlas/puros/bench_mover.js` (BM-1)
+## 3 · El caminante sembrado — `atlas/puros/bench_move.js` (BM-1)
 FNV-1a sobre el texto de la semilla → mulberry32 de enteros → **la misma semilla da el mismo camino
 en cualquier aparato**. Sin semilla se niega. Solo entra en nodos vivos (D7); si eligiera uno muerto,
 falla cerrado.
 
-## 4 · El mudador de decorado — `atlas/puros/decor_mover.js` (DE-1)
+## 4 · El mudador de decorado — `atlas/puros/decor_move.js` (DE-1)
 `MOVER(prop, destino, semilla)`: solo celdas DENTRO de la colonia medida; el fotograma del movimiento
 lleva sello SIMULADO y debe pasar la ley Acho/1; el guion entero < 16.384 B.
 
@@ -33,7 +33,7 @@ Cada paso es un lugar; un lugar solo se camina LIVE (D21). Lo saltado queda regi
 jamás como hecho (D19); solo lo jugado cuenta (D20). Ruta corta del Soberano (31-oct): cabaña →
 beelink → cabaña; un paso sin lugar vivo se salta con NO_DATA y no bloquea la caminata.
 
-## 6 · El catálogo isométrico — `atlas/puros/catalogo_iso.js` (IC3)
+## 6 · El catálogo isométrico — `atlas/puros/catalog_iso.js` (IC3)
 Cada fila del estado se vuelve UN fotograma Acho nacido del estado, nunca de una imagen: hexágono de
 seis vértices (cinta cerrada) + onda armónica escalada por el valor MEDIDO (0-100, entero). Sin medida,
 NO_DATA con causa y sin onda. Un tipo sin clave de léxico se rechaza como `orphan_visual_node`.
@@ -51,7 +51,7 @@ y servido en main (`public/game/map_painter.js`, `openworld_page.js`). Medido so
   muestra el estado, jamás lo cambia.
 - Órbita: hornea solo en ángulos de reposo (múltiplos de 60°); BAKE_MAX_SIDE 2048 px.
 - Cada chunk es también fotograma `preceptoros.floor/1` < 1.024 B (fail-closed, throw).
-- Juez `atlas/motor_35d_casos.mjs`: corrido en node el 2026-11-03, 6/6 verde (hornado, invalidación
+- Juez `atlas/motor_35d_cases.mjs`: corrido en node el 2026-11-03, 6/6 verde (hornado, invalidación
   por zoom/ángulo/dpr, respiración, burbujas elásticas, bruma, sin azar ni reloj).
 - Medible en consola del aparato: `AtlasMapPainter.cacheStats()`.
 
@@ -69,7 +69,7 @@ Los hexágonos del mapa único solo cuadran vistos como cadena completa —
 5. Fotograma Acho (decreto R48): 5 campos, ≤8 átomos, < 1.024 B, fail-closed.
 6. Proyección: `x = 48·q, y = 12·q + 24·r` (sección 1 — el eslabón 6 de la misma cadena).
 7. Cosecha: `hash(v, espectro, válvula+sel) % 100 < 40 + 3·v + 10·válvula` → PENETRATES
-   (`render_combat.js:64-65`; motor puro `combate_ticks.js`, esquema atlas.combate/1).
+   (`render_combat.js:64-65`; motor puro `combat_ticks.js`, esquema atlas.combate/1).
 Vallas: azar legal solo tres familias — xorshift32 del canon (`x^=x<<13; x^=x>>>17; x^=x<<5`),
 FNV-1a (`acho_language.js`), mulberry32 (`bench_mover`); Math.random y Date.now PROHIBIDOS.
 Presupuestos: líneas = vértices·(válvula?3:1) · 25 MiB/bloque (D2) · niebla hash%7==0 → píxel 2×2 ·

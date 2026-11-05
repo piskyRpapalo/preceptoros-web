@@ -37,7 +37,7 @@ test('/play/ answers 301 to /openworld/, keeping the query (Norte 7 · one desti
 });
 
 test('only the redirected portals answer 301: lookalike paths are served as assets', async () => {
-  for (const p of ['/play/x', '/playground/', '/face/', '/es.json', '/esx/', '/assets/enviar-es.js']) {
+  for (const p of ['/play/x', '/playground/', '/face/', '/es.json', '/esx/', '/assets/send-es.js']) {
     const r = await go('https://preceptoros.org' + p);
     assert.equal(r.status, 200, p);
   }

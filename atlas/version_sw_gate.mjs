@@ -2,7 +2,7 @@
 //
 // Why (R-INVESTIGATION, frozen map, 2026-10-25): test_web already marries the huella to
 // VERSION inside ONE tree, but nothing compares VERSION against the base. A PR can re-seal
-// the huella with `sellar.py --version <the same>` and keep VERSION: visitors who already
+// the huella with `seal.py --version <the same>` and keep VERSION: visitors who already
 // hold that VERSION keep its SHELL and OBRA caches and get the change one visit per route
 // late, mixed with old modules. This gate closes that gap across the diff.
 //
@@ -74,7 +74,7 @@ export function message(v) {
   if (v.reused) return [
     `version_sw_gate: RED · VERSION ${v.versionHead} was already served by main; a bump must be a VERSION never shipped.`,
     'Visitors who kept that cache would never fetch the new copies (frozen-map outage, 2026-10-25).',
-    'Cure: python3 bin/sellar.py --sellar --version <a VERSION never used>, then the seal chain in CLAUDE.md.',
+    'Cure: python3 bin/seal.py --sellar --version <a VERSION never used>, then the seal chain in CLAUDE.md.',
   ].join('\n');
   if (v.ok) {
     const why = v.bumped ? `VERSION ${v.versionBase} -> ${v.versionHead}`
@@ -86,7 +86,7 @@ export function message(v) {
     ...v.blocking.slice(0, 12).map((p) => '  ' + p),
     ...(v.blocking.length > 12 ? [`  ... and ${v.blocking.length - 12} more`] : []),
     'Visitors who already hold this VERSION keep serving the old copies (frozen-map outage, 2026-10-25).',
-    'Cure: python3 bin/sellar.py --sellar   (bumps VERSION and re-seals the huella), then the seal chain in CLAUDE.md.',
+    'Cure: python3 bin/seal.py --sellar   (bumps VERSION and re-seals the huella), then the seal chain in CLAUDE.md.',
     `Exception (rare, reviewed): add in THIS diff to ${WAIVERS} one line per path:`,
     '  public/<exact path> | YYYY-MM-DD | why stale copies are harmless',
   ].join('\n');

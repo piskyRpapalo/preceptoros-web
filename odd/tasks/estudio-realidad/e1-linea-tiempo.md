@@ -73,7 +73,7 @@ How it was read: PR counts by `mergedAt`; comments by `created_at`; «headed» m
 |---|---|---|
 | answers to Claude's plan (10-30) | ·6521940119 | IC7 lot: seal contract #419 (10-30) |
 | THE TERMINAL (10-30) | ·6522236505 | 13 terminal PRs; Terminal Familia plan #574 merged 11-02 (`dbd5c114`) |
-| heartbeat and waking (10-30) | ·6522643836 | **only a plan** (#451, 10-30). `public/openworld/estado.json` has 5 commits in its whole life, all by hand in PRs, with `since: 2026-10-30` frozen. **No producer of the heartbeat on main** |
+| heartbeat and waking (10-30) | ·6522643836 | **only a plan** (#451, 10-30). `public/openworld/state.json` has 5 commits in its whole life, all by hand in PRs, with `since: 2026-10-30` frozen. **No producer of the heartbeat on main** |
 | communication of the 4 preceptors (10-31) | ·6547016566 | the mailbox as common channel (practice since 10-20) |
 | goal: HEXELION, the sovereign of the rack (10-31) | ·6550117460 | `NO_DATA: no PR names it` (likely lives in p0x) |
 | app = harness; openworld = the only place (11-01) | ·6551164303 | #522 (W-4) and the shared-map removal `ca9f668a` (11-01) |

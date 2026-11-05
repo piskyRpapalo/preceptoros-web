@@ -8,14 +8,14 @@ Lo no medido o no encontrado va como NO_DATA con causa.
 
 | Pieza | Fuente | sha256 (primeros 16) | Verificación |
 |---|---|---|---|
-| Hash espacial | `render_seed.js` (cosecha joyas) | b909dc1e41f0ca5c | `atlas/bb_canon_casos.mjs`: 280 vectores generados ejecutando el original |
+| Hash espacial | `render_seed.js` (cosecha joyas) | b909dc1e41f0ca5c | `atlas/bb_canon_cases.mjs`: 280 vectores generados ejecutando el original |
 | Fórmula de cosecha | `render_combat.js:64-65` | 409af47e76f0716f | 135 vectores (seed y resultado), fórmula copiada literal |
-| Tabla visual (7 estados) | `fourier-shapes.js` (mockup_mvp) | 73a282e7d747d969 | objeto evaluado en una VM; hue igual que `tabla_semantica.js` |
+| Tabla visual (7 estados) | `fourier-shapes.js` (mockup_mvp) | 73a282e7d747d969 | objeto evaluado en una VM; hue igual que `semantic_table.js` |
 | Registro de cosecha | `joyas.jsonl` (32 filas) · `TABLA_JOYAS.md` | 9e998dff170ae919 · 4342a9fd6b341126 | 32/32 verificados (Desk, 2026-10-26) |
 
 Dónde viven las fuentes: `~/Cuarentena/TheGame.v1.1/` (fuera de git). Por eso ni el repo ni los textos de ideas
 contenían estas constantes: pertenecían al juego viejo y se retiraron con la corte D. El registro las recupera.
-El generador de vectores es `atlas/fixtures/genera_vectores_canon.mjs`; sus salidas están en `atlas/fixtures/bb_canon_vectores.json`.
+El generador de vectores es `atlas/fixtures/generate_canon_vectors.mjs`; sus salidas están en `atlas/fixtures/bb_canon_vectors.json`.
 
 ## 2 · Hash espacial (canon)
 
@@ -34,7 +34,7 @@ Implementación: `cosecha()` en `public/game/bb_canon.js`. Se verifica contra 13
 
 ## 4 · Tabla semántica extendida (aditiva)
 
-`public/game/tabla_semantica.js` conserva intactos los siete estados, sus hues y `DERIVADOS`. Se añade `VISUAL`, con los
+`public/game/semantic_table.js` conserva intactos los siete estados, sus hues y `DERIVADOS`. Se añade `VISUAL`, con los
 campos de cada estado: saturation, lightness, waveAmplitude, waveFrequency, feedbackAlpha, feedbackScale, feedbackRotation,
 pulseActive, pulseFrequency (y fourierTerms en STALE). Acceso: `visual(sello)`; un sello desconocido devuelve `null`.
 
@@ -63,7 +63,7 @@ Fuente de la lista: `p0x/propuestas/2026-10-17_plan-all-in-preceptor.md` (línea
 | F2.5 Hierba, viento y agua sobre la niebla | senos con fase por posición | J-SN-12, decreto §2 | senos con fase según posición |
 | F2.6 Eco de procedencia | espejo emulado; NO_DATA corta el borde | J12, J-TG-02 | NO_DATA corta el borde |
 
-**Discrepancia F2.1:** la escena usa `cos` en el tiempo; la forma de contorno del canon (bb_forma.js) usa `sin` en el ángulo.
+**Discrepancia F2.1:** la escena usa `cos` en el tiempo; la forma de contorno del canon (bb_form.js) usa `sin` en el ángulo.
 Son dos usos distintos de la misma serie. Se registran los dos; decisión pendiente si F2.1 debe usar la forma de contorno.
 
 ## 6 · Ley de presupuesto (con su citación)
@@ -92,4 +92,4 @@ Son dos usos distintos de la misma serie. Se registran los dos; decisión pendie
 
 ## 9 · Verificación
 
-`node atlas/bb_canon_casos.mjs` (12 casos) y `node atlas/bb_lote1_casos.mjs` (15 casos). Recibos: `atlas/bb_lote1_receipt.json`.
+`node atlas/bb_canon_cases.mjs` (12 casos) y `node atlas/bb_batch1_cases.mjs` (15 casos). Recibos: `atlas/bb_batch1_receipt.json`.

@@ -8,7 +8,7 @@ procedencia en la Rosetta (study#95). Se ejecuta con `odd/PROTOCOLO-NODO-WEB.md`
 
 - **«≤ 16 KiB por módulo»**: abolido por `DECRETO-TECHO-NUEVO-20261101`. Queda como métrica de eficiencia; el techo es
   el Doogee más 25 MiB por bloque.
-- **`world_camera.js`**: `/openworld/` no lo carga. La colocación única es `colonia_pagina.js → geometry()`, y ahí viven
+- **`world_camera.js`**: `/openworld/` no lo carga. La colocación única es `colony_page.js → geometry()`, y ahí viven
   el pan (#548) y el giro (#556).
 - **E1 con un cerebro de ~1 GB**: hoy no. Los 105 MB de SmolLM2 en 5 bloques ya hablan, sin red incluida (#543 en main,
   #557). Los modelos mayores entran uno a uno, medidos antes en el S110.
@@ -30,7 +30,7 @@ procedencia en la Rosetta (study#95). Se ejecuta con `odd/PROTOCOLO-NODO-WEB.md`
 | Órbita y zoom anclado (getCoalescedEvents) | #556 | abierto |
 | Guía con herramientas (gramática desde el registro; nunca firma) | en construcción | — |
 | Motor 3.5D: suelo horneado en ImageBitmap, edificios que respiran, burbujas con volumen, neblina de datos | en construcción | — |
-| Arena del Laboratorio: cada modelo de `cerebros.json` es un edificio cuya altura es su medida, más un benchmark del propio dispositivo | en construcción | — |
+| Arena del Laboratorio: cada modelo de `brains.json` es un edificio cuya altura es su medida, más un benchmark del propio dispositivo | en construcción | — |
 | La invocación vive: partículas con física, sonido de la casa, túnel hexagonal | en construcción | — |
 | Guía propio: LoRA de la casa sobre SmolLM2-135M, medido contra la base | en construcción | — |
 
@@ -38,6 +38,6 @@ procedencia en la Rosetta (study#95). Se ejecuta con `odd/PROTOCOLO-NODO-WEB.md`
 
 - **Seats A2A** (openrig, como idea): cada `atlas.lugar/1` es un asiento con dirección fija (`odd/tasks/lugares-del-rack.md`).
 - **Carriles de trabajo en el mapa** (agent-orchestrator, como idea): ⚒ trabajando, `?` necesita al carbono, ✓ listo,
-  leídos de `estado.json`.
+  leídos de `state.json`.
 - **Paquetes de burbuja firmados entre nodos**: Ed25519, con recibo `preimage → verify → apply`. Entran con la firma del
   relay o del WebRTC.

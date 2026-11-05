@@ -3,7 +3,7 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 const here = join(dirname(fileURLToPath(import.meta.url)), '..');
 export const SKINS = JSON.parse(readFileSync(join(here, 'skins.json'), 'utf8'));
-export const SCRIPTS = ['tabla_semantica', 'comic_%74okens', 'comic_accents', 'valores', 'gacha', 'comic_atoms', 'acho_light', 'acho_language', 'acho_bestiary', 'acho_world', 'core', 'isometric_floor_projection', 'world_camera', 'map_zoom', 'fog_of_war', 'assets/atlas-coord', 'canon', 'taller', 'combate_ticks', 'escuadron', 'wave_render', 'assets/worm_transition', 'escena', 'sea-floor', 'gdpr-art25-ephemeral-crab', 'crab_render_hd', 'acho_icons', 'db', 'army-wave-panel', 'summon-wave-card', 'summon_reveal', 'assets/auth'];
+export const SCRIPTS = ['semantic_table', 'comic_%74okens', 'comic_accents', 'valores', 'gacha', 'comic_atoms', 'acho_light', 'acho_language', 'acho_bestiary', 'acho_world', 'core', 'isometric_floor_projection', 'world_camera', 'map_zoom', 'fog_of_war', 'assets/atlas-coord', 'canon', 'taller', 'combat_ticks', 'escuadron', 'wave_render', 'assets/worm_transition', 'escena', 'sea-floor', 'gdpr-art25-ephemeral-crab', 'crab_render_hd', 'acho_icons', 'db', 'army-wave-panel', 'summon-wave-card', 'summon_reveal', 'assets/auth'];
 export const TOOLS = {
   web: [['../../../public/index.html', 'Play theGame'], ['../../../public/creation.html', 'Creation studio']],
   pub: [['/', 'Play theGame'], ['/creation.html', 'Creation studio']],

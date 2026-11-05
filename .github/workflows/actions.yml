@@ -38,6 +38,6 @@ jobs:
           cat actions.txt | tee -a "$GITHUB_STEP_SUMMARY"
           # Una lectura roja llega a buzon#30 (R-ALARMA-ACTIONS). Sin el secreto lo dice y el paso queda rojo igual.
           if [ "$rc" -ne 0 ]; then
-            python3 atlas/actions_alarma.py --texto actions.txt --rc "$rc" --run "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" || true
+            python3 atlas/actions_alarm.py --texto actions.txt --rc "$rc" --run "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" || true
           fi
           exit "$rc"

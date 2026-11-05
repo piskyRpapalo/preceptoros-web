@@ -7,16 +7,16 @@ Más H2 (#533, cabeza 64e313c): `/face/face_terminal.js` pasa a `/game/face_term
 
 ## 0 · Lo que el censo corrige del plan (HECHO, con medida)
 
-- **«atlas.carta/1 ya existe»: solo a medias.** Vive únicamente en `public/assets/atlas-mapa.js` (12,989 B, `:38`), y
-  **ninguna página servida carga ese fichero** (`grep -rl atlas-mapa.js public` = 0). Tampoco hay esquema en `data/`.
+- **«atlas.carta/1 ya existe»: solo a medias.** Vive únicamente en `public/assets/atlas-map.js` (12,989 B, `:38`), y
+  **ninguna página servida carga ese fichero** (`grep -rl atlas-map.js public` = 0). Tampoco hay esquema en `data/`.
   Hoy el contrato es un huérfano: F3 lo **define** (esquema + casos) en vez de heredarlo.
 - **Cinco módulos señalados, uno ya fuera.** `face_world*.js` salen con H2 (#533, a `retirados/face/`). `acho_world.js`
   (6,249 B) no pinta: no tiene canvas ni bucle.
 - **Censo de pintores servidos, sin /face**: 12 ficheros con `getContext('2d')`. Bucles `requestAnimationFrame` en
-  `sea.js`, `openworld_page.js`, `summon_reveal.js`, `summon-wave-card.js`, `wave_duel_scene.js` y `atlas-mapa.js`
+  `sea.js`, `openworld_page.js`, `summon_reveal.js`, `summon-wave-card.js`, `wave_duel_scene.js` y `atlas-map.js`
   (huérfano). La niebla la nombran 7 módulos servidos, pero solo `fog_of_war.js` (`AtlasNiebla`) la calcula.
 - **/openworld/ hoy**: 48 scripts, **249,094 B** sin comprimir, todos del mismo origen. Una sola colocación
-  (`colonia_pagina.js` → `geometry`) y un solo lienzo de mapa (`#surface`, `openworld_page.js`).
+  (`colony_page.js` → `geometry`) y un solo lienzo de mapa (`#surface`, `openworld_page.js`).
 - **Contradicción preservada**: el plan pide «un solo módulo que pinte». Ya es casi cierto en el mapa (un lienzo,
   una geometría), pero no en la escena (el duelo, la revelación y el mar tienen lienzo propio). El plan unifica el
   **mapa**; las escenas siguen siendo vistas a demanda.
@@ -30,11 +30,11 @@ los ejercen sin nombrarlos. El gate F0 lo hace explícito.
 
 | # | módulo | B | global | estado que toca | pruebas que lo nombran |
 |---|---|---|---|---|---|
-| 1 | `game/tabla_semantica.js` | 5462 | AtlasSemantica | — | 20 |
+| 1 | `game/semantic_table.js` | 5462 | AtlasSemantica | — | 20 |
 | 2 | `game/comic_tokens.js` | 1344 | AtlasComicTokens | — | 20 |
 | 3 | `game/comic_accents.js` | 2974 | AtlasComicAccents | — | 13 |
 | 4 | `game/comic_atoms.js` | 5201 | AtlasComicAtoms | — | 11 |
-| 5 | `game/valores.js` | 8584 | AtlasValores | — | 23 |
+| 5 | `game/values.js` | 8584 | AtlasValores | — | 23 |
 | 6 | `game/gacha.js` | 6005 | AtlasGacha | — | 26 |
 | 7 | `game/acho_language.js` | 16240 | AtlasAcho | — | 20 |
 | 8 | `game/acho_letters.js` | 5197 | AtlasAchoLetters | — | 10 |
@@ -44,10 +44,10 @@ los ejercen sin nombrarlos. El gate F0 lo hace explícito.
 | 12 | `game/hex_projection.js` | 542 | HexProjection | — | 9 |
 | 13 | `game/colony_state.js` | 1019 | — | — | 7 |
 | 14 | `game/map_scene.js` | 2188 | AtlasMapScene | — | 1 |
-| 15 | `game/colonia_edificios.js` | 7543 | AtlasEdificios | — | 7 |
+| 15 | `game/colony_buildings.js` | 7543 | AtlasEdificios | — | 7 |
 | 16 | `game/palette_cycle.js` | 3525 | AtlasPaletteCycle | — | 4 |
 | 17 | `game/openworld_state.js` | 4208 | AtlasOpenworldState | — | 3 |
-| 18 | `game/colonia_pagina.js` | 11432 | AtlasColoniaPagina | dataset.zoom | 4 |
+| 18 | `game/colony_page.js` | 11432 | AtlasColoniaPagina | dataset.zoom | 4 |
 | 19 | `game/map_zoom.js` | 1568 | AtlasMapZoom | dataset.zoom | 3 |
 | 20 | `game/tutorial_walk.js` | 4196 | AtlasTutorialWalk | — | 1 |
 | 21 | `game/walk_route.js` | 4419 | AtlasWalkRoute | — | 1 |
@@ -59,10 +59,10 @@ los ejercen sin nombrarlos. El gate F0 lo hace explícito.
 | 27 | `assets/atlas-coord.js` | 2250 | AtlasCoord | — | 5 |
 | 28 | `game/canon.js` | 3149 | AtlasCanon | — | 25 |
 | 29 | `game/gdpr-art25-ephemeral-crab.js` | 4645 | AtlasCangrejo,AtlasCrab | — | 7 |
-| 30 | `game/taller.js` | 4010 | AtlasTaller | — | 11 |
-| 31 | `game/combate_ticks.js` | 6679 | AtlasCombateTicks | — | 5 |
-| 32 | `game/escuadron.js` | 2786 | AtlasEscuadron | — | 4 |
-| 33 | `game/escena.js` | 5136 | AtlasEscena | — | 10 |
+| 30 | `game/workshop.js` | 4010 | AtlasTaller | — | 11 |
+| 31 | `game/combat_ticks.js` | 6679 | AtlasCombateTicks | — | 5 |
+| 32 | `game/squadron.js` | 2786 | AtlasEscuadron | — | 4 |
+| 33 | `game/scene.js` | 5136 | AtlasEscena | — | 10 |
 | 34 | `game/wave_rules.js` | 4463 | AtlasWaveRules | — | 1 |
 | 35 | `game/wave_duel_scene.js` | 16200 | AtlasCalidad,AtlasWaveDuel | — | 4 |
 | 36 | `game/fog_of_war.js` | 3176 | AtlasNiebla | — | 4 |
@@ -83,18 +83,18 @@ los ejercen sin nombrarlos. El gate F0 lo hace explícito.
 
 | función | dónde vive | estado | cómo queda intacta tras los chunks |
 |---|---|---|---|
-| Mapa, cabaña siempre, nodos solo si viven | `global_map.js` `estado()`, `openworld/estado.json` | ninguno (lee frames) | el chunk aporta suelo; quién vive lo sigue diciendo el frame del nodo |
-| Colocación única + clic en nodo | `colonia_pagina.js` `geometry/anchorOf/nodeAt` | `dataset.zoom` | sigue siendo la ÚNICA colocación; el pintor de chunks la consume |
+| Mapa, cabaña siempre, nodos solo si viven | `global_map.js` `estado()`, `openworld/state.json` | ninguno (lee frames) | el chunk aporta suelo; quién vive lo sigue diciendo el frame del nodo |
+| Colocación única + clic en nodo | `colony_page.js` `geometry/anchorOf/nodeAt` | `dataset.zoom` | sigue siendo la ÚNICA colocación; el pintor de chunks la consume |
 | Joystick, rutas, caminar | `map_stick.js`, `walk_route.js`, `tutorial_walk.js`, `colony_controls.js` | `localStorage` | ninguna coordenada cambia de sistema: los chunks se indexan en axial (q,r) |
 | Zoom: pinza, rueda, teclado, botones, voz | `map_zoom.js`, `openworld_page.js` | `dataset.zoom` | la vecindad de chunks se calcula desde `factor()`, no al revés |
 | Cuenta efímera, cangrejo | `visitor_account.js`, `gdpr-art25-ephemeral-crab.js` | memoria | intacto: el cangrejo es actor, no chunk |
 | Huevos, eclosión, revelación | `visitor_eggs.js`, `hatch_reveal.js`, `summon_reveal.js` (a demanda) | IndexedDB (`db.js`) | intacto |
-| Conquista y duelo | `visitor_conquest.js`, `visitor_battle*.js`, `wave_duel_scene.js`, `combate_ticks.js` | memoria | intacto: la conquista apunta a un nodo (id), no a una celda del chunk |
+| Conquista y duelo | `visitor_conquest.js`, `visitor_battle*.js`, `wave_duel_scene.js`, `combat_ticks.js` | memoria | intacto: la conquista apunta a un nodo (id), no a una celda del chunk |
 | Niebla | `fog_of_war.js` | derivado | la niebla se calcula por chunk; un chunk no cargado = NO_DATA con causa (niebla honesta) |
 | Chat, radio, terminal | `map_chat.js`, `radio_message_log.js`, `face_terminal.js` | `dataset.*` de la radio | intacto: el chatbot del edificio escribe en la MISMA radio |
 | Registro de estado (A11Y) | `#state` aria-live + radio | DOM | cada chunk y cada asset añade su frase al registro; nunca se quita una |
 
-**Gate F0** (pieza P0): `atlas/f0_funciones_casos.mjs` lee la tabla de arriba como dato y comprueba tres cosas.
+**Gate F0** (pieza P0): `atlas/f0_functions_cases.mjs` lee la tabla de arriba como dato y comprueba tres cosas.
 Cada global sigue exportado, cada script sigue cargado en `/openworld/`, y cada función tiene al menos una prueba
 de navegador que la ejerce. Quitar una función da rojo. Se enseña en rojo quitando `map_zoom.js` del HTML.
 
@@ -103,7 +103,7 @@ de navegador que la ejerce. Quitar una función da rojo. Se enseña en rojo quit
 - **Unidad**: un **chunk hex** de radio 8 en coordenadas axiales (217 celdas). Su clave es `(cq, cr)`, el centro
   cuantizado. Los chunks teselan el plano con la misma `hex_projection.js` que ya usa la colonia.
 - **Ficheros, todos estáticos, del mismo origen y en el repo**:
-  - `public/map/carta.json` · `atlas.carta/1`: la lista de chunks con `id`, `sha256`, `bytes` y `frame`. El frame es
+  - `public/map/chart.json` · `atlas.carta/1`: la lista de chunks con `id`, `sha256`, `bytes` y `frame`. El frame es
     un marco de burbuja de menos de 1,024 B que lo nombra y lo describe en texto.
   - `public/map/chunks/<cq>_<cr>.<sha8>.json` · `atlas.chunk/1`: suelo (alturas t2, agua, zonas vedadas t1), semilla de
     detalle y referencias a assets **por id**.
@@ -114,16 +114,16 @@ de navegador que la ejerce. Quitar una función da rojo. Se enseña en rojo quit
   exacta, y cada petición queda declarada en el registro («Map loaded chunk 0,8 · 7 of 7»). El resto es niebla con causa.
 - **Integridad**: SHA-256 por chunk, el mismo patrón que `chunk_router.js` (`chunk_hash_mismatch`,
   `cache_chunk_missing`), sin duplicar código. Como el sha va en el nombre, el SW cachea de forma inmutable; un
-  `carta.json` viejo frente a uno nuevo = `STALE` + Δ en el registro.
+  `chart.json` viejo frente a uno nuevo = `STALE` + Δ en el registro.
 - **Culling** por la caja de pantalla según `factor()` del zoom.
 - **Techo**: un chunk de 217 celdas pesa unos KB, lejos de 25 MiB. El límite que manda es el **Doogee**, así que se mide
   el FPS antes de subir el radio.
 
 ## F4 · Cómo se dibuja la aldea
 
-- **Parcela por nodo**: cada nodo vivo de `estado.json` tiene `(q, r)` y su parcela, que es un anillo hex alrededor.
+- **Parcela por nodo**: cada nodo vivo de `state.json` tiene `(q, r)` y su parcela, que es un anillo hex alrededor.
   La cabaña del tutorial es la parcela 0 y siempre está.
-- **Casas = edificios**: los dibuja `colonia_edificios.js` (ya servido), nunca sprites. El tipo y las condiciones los
+- **Casas = edificios**: los dibuja `colony_buildings.js` (ya servido), nunca sprites. El tipo y las condiciones los
   decide la app (laboratorio) en un contrato firmado que **referencia el edificio por id**. La web tiene el catálogo
   pre-creado en `public/art/`.
 - **El `?` de HITL**: un nodo con `REQUIERE_FIRMA` pendiente lleva un `?` sobre su casa. El `?` es un **botón real**
@@ -158,8 +158,8 @@ de navegador que la ejerce. Quitar una función da rojo. Se enseña en rojo quit
 
 | pieza | qué | gate nuevo |
 |---|---|---|
-| P0 · F0 | `f0_funciones_casos.mjs` + la tabla como dato | quitar una función = rojo |
-| P1 · carta | `data/atlas_carta_schema.json`, `atlas_chunk`, `atlas_asset`; casos buenos + 6 violaciones (como `test_atlas.py`) | frame > 1,024 B o sin texto = rojo |
+| P0 · F0 | `f0_functions_cases.mjs` + la tabla como dato | quitar una función = rojo |
+| P1 · carta | `data/atlas_chart_schema.json`, `atlas_chunk`, `atlas_asset`; casos buenos + 6 violaciones (como `test_atlas.py`) | frame > 1,024 B o sin texto = rojo |
 | P2 · horno | `atlas/hornea_chunks.mjs` (laboratorio, fuera de lo servido) genera `public/map/` desde los fixtures t1/t2 | determinista: dos hornadas = mismo sha |
 | P3 · vecindad | `public/game/map_chunks.js`: carga 7 chunks por clave cuantizada; integridad; niebla con causa | petición fuera de la vecindad = rojo; byte corrupto = `chunk_hash_mismatch` |
 | P4 · pintor | el lienzo de `openworld_page.js` pinta el suelo de los chunks por la colocación única | F0 verde; FPS en el Doogee medido |
@@ -185,7 +185,7 @@ Busqué con `grep -rIl` en `p0x/`, `roadmap/`, `mapa-registro/` y en `odd/` y `a
   abierto («ni DOM, ni red, ni reloj, ni azar»: mismo estado, mismo mundo, misma niebla). Tenía 11,750 B y salió con
   Norte 7 corte D (`752338f`). Se lee con `git show 752338f^:public/assets/atlas-carta.js`. Hay una copia comentada de
   16,238 B en `p0x/propuestas/obra-abku/instantaneas/d1-assets-comentados-2026-10-18/`. Por eso, en el §0, «sin
-  esquema» se mantiene, pero «sin módulo» queda corregido. **P1 parte de ese módulo**, no de cero; `atlas-mapa.js` fue
+  esquema» se mantiene, pero «sin módulo» queda corregido. **P1 parte de ese módulo**, no de cero; `atlas-map.js` fue
   su vista y quedó huérfano.
 - **El FPS del Doogee tiene método medido** (`p0x/hexelion/laboratorio/espacios/web-pupilo/huellas.jsonl`, 2026-10-13).
   Es un perfil de CPU por CDP en el teléfono, con un A/B en la misma pestaña y `Network.setBypassServiceWorker`, y su

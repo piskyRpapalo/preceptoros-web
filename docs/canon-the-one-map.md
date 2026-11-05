@@ -61,6 +61,6 @@ its own sign-off.
 
 ## The state contract
 
-estado.json v2 is compacted to under 1 KiB (·6525195489). The 1 KiB
+state.json v2 is compacted to under 1 KiB (·6525195489). The 1 KiB
 interchange limit of ideas13oct §18 stands; the state shrinks, the law does
 not bend.

@@ -4,7 +4,7 @@ Status: proposal on WEB main `08a0be9311066bade3a1225834311597781dc536`.
 
 ## Current contract
 
-`public/assets/atlas-piso.js` requests `atlas-mundo.json` separately from the
+`public/assets/atlas-piso.js` requests `atlas-world.json` separately from the
 language content. A failed world request is converted to `null`; the pure
 `AtlasMotor.leyes(null)` path sets `nd: true` and uses neutral values. A
 successful response with missing or malformed measurement fields is different:
@@ -13,7 +13,7 @@ the current engine may use neutral defaults for individual values while
 world snapshot.
 
 The service worker only handles JSON paths declared in `CONTENIDO_JSON`.
-`atlas-mundo.json` is not in that list and passes through the JSON exclusion
+`atlas-world.json` is not in that list and passes through the JSON exclusion
 in `public/sw.js`. The live-world fetch therefore has no service-worker
 offline guarantee. IndexedDB game state and cached page assets are separate
 inputs; neither proves that the current world measurements were loaded.

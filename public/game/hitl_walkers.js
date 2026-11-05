@@ -2,7 +2,7 @@
 // random numbers, no network. A walker is the bot of one node walking from the tutorial cabin to its parcel over the
 // visible route (walk_route.js). Its pose is a function of (seed, tick) alone. States are a taxonomy, each with its
 // own shape and its own text, never colour alone: walking · building · needs-you · NO_DATA.
-// The browser part draws on the one placement of colonia_pagina.js (anchorOf) and puts one real button over each «?».
+// The browser part draws on the one placement of colony_page.js (anchorOf) and puts one real button over each «?».
 (function (root) {
   'use strict';
   var common = typeof module === 'object' && module.exports;

@@ -13,7 +13,7 @@ Cada pieza va en su PR, con su FIRMA y su letra. Aquí solo hay medida y plan.
 | Giro con dos dedos | **YA EXISTE**: pellizco + giro anclado entre los dedos, botones ↺ ↻ con salto de 60°, Q/E, y Shift+arrastre o botón derecho | `public/game/map_zoom.js` (7.249 B) |
 | Paseo libre | **YA EXISTE** como «Free walk» del tutorial: un toque fuera de un nodo da un paso al cangrejo | `openworld_page.js` (paso con un toque, 2026-11-02) |
 | Arrastrar el mapa con un dedo | **NO EXISTE.** Un dedo solo da toques; para mover la vista hay que usar zoom o botones | — |
-| Voz del dispositivo | **NO EXISTE** en OpenWorld. Hay sonido Acho tras «Listen» (`latido_vivo.js`), pero no lectura en voz | — |
+| Voz del dispositivo | **NO EXISTE** en OpenWorld. Hay sonido Acho tras «Listen» (`live_heartbeat.js`), pero no lectura en voz | — |
 
 La parte nueva de LA MANO se reduce, por tanto, a **arrastrar con un dedo**, y a que no choque con el toque que hace caminar.
 
@@ -25,7 +25,7 @@ La parte nueva de LA MANO se reduce, por tanto, a **arrastrar con un dedo**, y a
 |---|---|---|
 | `game/openworld_page.js` | 20.695 | +4.311 |
 | `game/map_painter.js` | 19.738 | +3.354 |
-| `game/colonia_pagina.js` | 18.530 | +2.146 |
+| `game/colony_page.js` | 18.530 | +2.146 |
 | `game/colony_controls.js` | 16.857 | +473 |
 
 `openworld_page.js` es el monolito: junta la barra de zoom, el teclado, el dibujo, el paseo, el bucle de caminar y los paneles. **Toda pieza de mano o de voz que entre ahí lo engorda.**

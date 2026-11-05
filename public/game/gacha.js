@@ -1,7 +1,7 @@
 (function (raiz) {
   'use strict';
 
-    var V = (typeof module === 'object' && module.exports) ? require('./valores.js') : raiz.AtlasValores;
+    var V = (typeof module === 'object' && module.exports) ? require('./values.js') : raiz.AtlasValores;
   var TCS = V.tcs, PREFIJOS = V.prefijos, SUFIJOS = V.sufijos;
   var RAREZAS = ['normal', 'magico', 'raro', 'unico'];
   var STATS = ['vida', 'armadura', 'velocidad', 'sigilo', 'inercia', 'profundidad', 'aura'];

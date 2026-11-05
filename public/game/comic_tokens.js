@@ -1,6 +1,6 @@
 (function (raiz) {
   'use strict';
-  var AtlasSemantica = typeof module === 'object' && module.exports ? require('./tabla_semantica.js') : raiz.AtlasSemantica;
+  var AtlasSemantica = typeof module === 'object' && module.exports ? require('./semantic_table.js') : raiz.AtlasSemantica;
   var TABLA = AtlasSemantica.TABLA;
   var NEUTRAL = Object.freeze({ ink: '#1E1826', paper: '#F2F5F7', ocean: 'rgb(5,8,18)', cyan: '#00D2FF' });
   var FRONT_DOOR = Object.freeze({ ink: '#060B09', paper: '#94A3B8', 'LIVE.base': '#43F5A0',

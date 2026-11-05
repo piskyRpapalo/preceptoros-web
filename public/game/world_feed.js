@@ -21,7 +21,7 @@
       return data;
     } finally { clearTimeout(timeout); }
   }
-  // merge(tutorial, live) → the state both terminals draw: the tutorial cabin of the baked estado.json, then the live
+  // merge(tutorial, live) → the state both terminals draw: the tutorial cabin of the baked state.json, then the live
   // nodes of the heartbeat. A live node on the cabin's id or hex is refused, never drawn over it.
   function merge(tutorial, live) {
     var cabin = tutorial && tutorial.colonia && Array.isArray(tutorial.colonia.nodes) ? tutorial.colonia.nodes.filter(function (n) { return n.id === 'cabin'; }) : [];

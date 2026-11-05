@@ -37,7 +37,7 @@ Esto es lo que ve un infante en OpenWorld (captura `infante-ow.png`):
   - Los estados crudos (walker, «not measured», «state · turn») viven dentro de «Technical details».
   - Para el infante, el NO_DATA se dice en una frase llana: «The map is still waking up.»
 - **R4. Nada se corta a 390 px.** `scrollWidth <= clientWidth` en cada botón y pestaña.
-- **R5. J1 se mantiene:** 44 px, coordenada de foco, sonido, y el teclado alcanza todo. La batería `acho_a11y_medida.mjs` sigue en verde.
+- **R5. J1 se mantiene:** 44 px, coordenada de foco, sonido, y el teclado alcanza todo. La batería `acho_a11y_measure.mjs` sigue en verde.
 - **El cangrejo no se toca.** `visitor_account.js` y la firma «sign on this device» se quedan como están.
 
 ## 3. Piezas (una PR cada una, en este orden)
@@ -48,7 +48,7 @@ Esto es lo que ve un infante en OpenWorld (captura `infante-ow.png`):
 | e2 | **Frase única del guía dormido.** Una sola línea de estado, en el sitio del guía. | S | página y módulo del guía |
 | e3 | **Controles de mapa en un solo «⋯ Map tools»** (plegable, 44 px). En el pliegue quedan la flecha y «⌂». | M | `world_camera.js` (UI), CSS |
 | e4 | **Panel Radio: caminantes y estado crudo a «Technical details».** Las pestañas se ajustan sin cortarse (R4). | S | panel del mapa |
-| e5 | **Prueba `atlas/infante_browser.mjs`** con R1–R4 sobre `/`, `/openworld/` y `/chat/`. Primero en rojo sobre main (OpenWorld falla R1, R2 y R4), luego en verde pieza a pieza. Entra en `gate.yml`. | M | `atlas/`, `gate.yml` |
+| e5 | **Prueba `atlas/infant_browser.mjs`** con R1–R4 sobre `/`, `/openworld/` y `/chat/`. Primero en rojo sobre main (OpenWorld falla R1, R2 y R4), luego en verde pieza a pieza. Entra en `gate.yml`. | M | `atlas/`, `gate.yml` |
 
 Orden real: **e5 primero, en rojo y declarado.** Después e1 a e4, y cada pieza pone en verde su regla.
 
@@ -72,7 +72,7 @@ Agent: claude-code · Model: claude-opus-5-5
 
 Medida en el teléfono del borde (Chrome remoto, producción a457add6, 360×716): **10.520 caracteres visibles, 2,9 pantallas**. La radio repetía una línea cruda por cada paso de los caminantes, y cada burbuja decía «not measured yet · turn not measured», porque /openworld/ no tiene reloj de juego (theGame retirado). Además, «Conversation» se cortaba.
 
-- **e5 HECHA:** `atlas/infante_browser.mjs` mide R2, R3 y R4, más un techo de texto visible (6.000), a 360×716. Sobre main da ROJO (R3 técnico visible · la radio repite a los caminantes · R4 «Conversation»). En la rama da VERDE: 1.226 caracteres, 0 líneas técnicas, 0 cortes. Entra en `gate.yml`.
+- **e5 HECHA:** `atlas/infant_browser.mjs` mide R2, R3 y R4, más un techo de texto visible (6.000), a 360×716. Sobre main da ROJO (R3 técnico visible · la radio repite a los caminantes · R4 «Conversation»). En la rama da VERDE: 1.226 caracteres, 0 líneas técnicas, 0 cortes. Entra en `gate.yml`.
 - **e4 HECHA:**
   - Sin reloj de juego, la burbuja dice solo quién habla. El sello, la fuente y la causa van en el `title`, y los `data-*` no cambian.
   - Un ciclo inválido sigue diciendo «turn not measured» (`radio_age_cases`, 14/14).

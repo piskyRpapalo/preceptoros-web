@@ -20,22 +20,22 @@
 </head>
 <body>
 <h1>Global map · the first three nodes</h1>
-<p class="sub">One state, rendered at four cycle ticks. Row A is the live state as served (<code>/openworld/estado.json</code>). Row B is a labelled SYNTHETIC fixture with all three nodes alive: it proves the render path, it is not a live node.</p>
+<p class="sub">One state, rendered at four cycle ticks. Row A is the live state as served (<code>/openworld/state.json</code>). Row B is a labelled SYNTHETIC fixture with all three nodes alive: it proves the render path, it is not a live node.</p>
 <div class="row"><h2>A · live state as served</h2><div class="grid" id="filaA"></div></div>
 <div class="row"><h2>B · synthetic fixture · three nodes alive (not a measurement of a live node)</h2><div class="grid" id="filaB"></div></div>
 <h2 style="font-size:14px">Receipt</h2>
 <pre id="recibo">running…</pre>
-<script src="../public/game/tabla_semantica.js"></script>
+<script src="../public/game/semantic_table.js"></script>
 <script src="../public/game/comic_tokens.js"></script>
 <script src="../public/game/comic_accents.js"></script>
 <script src="../public/game/comic_atoms.js"></script>
-<script src="../public/game/valores.js"></script>
+<script src="../public/game/values.js"></script>
 <script src="../public/game/gacha.js"></script>
 <script src="../public/game/acho_language.js"></script>
 <script src="../public/game/acho_letters.js"></script>
 <script src="../public/game/isometric_floor_projection.js"></script>
 <script src="../public/game/global_map.js"></script>
-<script src="../public/game/tabla_semantica.js"></script>
+<script src="../public/game/semantic_table.js"></script>
 <script src="../public/game/comic_tokens.js"></script>
 <script src="../public/game/state_frames.js"></script>
 <script src="../public/game/hex_projection.js"></script>
@@ -102,7 +102,7 @@
         scenes.push({ scene: nombre, t: t, canvas: canvas, entrada: entrada });
       });
     }
-    return fetch('../public/openworld/estado.json', { cache: 'no-cache' })
+    return fetch('../public/openworld/state.json', { cache: 'no-cache' })
       .then(function (r) { return r.ok ? r.json() : { nodes: [] }; }, function () { return { nodes: [] }; })
       .then(function (vivo) {
         fijaEscena('A', filaA, vivo);
