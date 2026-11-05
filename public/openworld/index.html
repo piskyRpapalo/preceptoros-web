@@ -23,7 +23,7 @@
 <section id="map" aria-labelledby="map-h">
 <div class="topbar"><h1 id="map-h">Location · NO_DATA: visitor position unavailable</h1></div>
 <div id="stage" class="stage">
-<canvas class="surface" id="surface" role="img" aria-label="Hexagonal map floor. Use the movement controls or arrow keys to walk. Map information is available in the Explore panel."></canvas>
+<canvas class="surface" id="surface" role="img" aria-label="Hexagonal map. Use the movement controls or arrow keys to walk."></canvas>
 </div>
 </section>
 <section id="chat" aria-labelledby="chat-h">
@@ -43,7 +43,7 @@
 <details class="tech"><summary>Technical details</summary><p id="state-tech"></p></details></li>
 <li class="voice" data-speaker="Floor"><p class="state" id="floor-state" aria-live="polite">Loading the map…</p>
 <details class="tech"><summary>Technical details</summary><p id="floor-tech">Map floor: loading the 7 chunks around the cabin.</p></details></li>
-<li class="voice" id="voice-walkers" data-speaker="Walkers">Walkers are not shown on this surface.</li>
+<li class="voice" id="voice-walkers" data-speaker="Walkers"></li>
 <li class="voice" id="voice-zoom" data-speaker="Zoom"></li>
 <li class="voice" data-speaker="House" data-title="summons"><div id="visitor-play" aria-label="House"></div></li>
 <li class="voice" data-speaker="Army"><p class="state" id="army-visit" aria-live="polite"></p>
@@ -101,6 +101,8 @@
 <script src="/game/walk_route.js"></script>
 <script src="/game/visitor_walk.js"></script>
 <script src="/game/colony_controls.js"></script>
+<script src="/game/hitl_walkers.js"></script>
+<script src="/game/map_focus.js"></script>
 <script src="/game/db.js"></script>
 <script src="/game/visitor_account.js"></script>
 <script src="/game/visitor_eggs.js"></script>

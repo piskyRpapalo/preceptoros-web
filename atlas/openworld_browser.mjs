@@ -69,7 +69,7 @@ async function main() {
       chatAbierto: !!document.querySelector('#chat'),
       entradaOff: !!(document.getElementById('question') || {}).disabled,
       botonChat: [...document.querySelectorAll('button:not([role=tab])')].some((b) => /^\\s*Chat\\s*$/.test(b.textContent)),
-      joystick: (() => { const j = document.getElementById('joy'), r = j.getBoundingClientRect(); return { buttons: j.querySelectorAll('button').length, top: r.top, bottom: r.bottom, visible: r.width > 0 && r.height > 0 && r.top >= 0, touch: getComputedStyle(j.querySelector('button')).minHeight }; })(),
+      joystick: (() => { const j = document.querySelector('#stage .walk-pad'), r = j.getBoundingClientRect(); return { buttons: j.querySelectorAll('button').length, top: r.top, bottom: r.bottom, visible: r.width > 0 && r.height > 0 && r.top >= 0, touch: getComputedStyle(j.querySelector('button')).minHeight }; })(),
       ancho: document.documentElement.scrollWidth, vista: innerWidth, alto: innerHeight,
       texto: document.body.innerText
     }); })()`));
@@ -351,5 +351,5 @@ async function main() {
   console.log(JSON.stringify({ medida: { ...medida, texto: undefined }, telefono: mask.slice(0, 2).map((m) => ({ ancho: m.width, alto: m.height, joystickY: m.joy[0] })), escritorio, externas: externas.length, fallos }));
 }
 
-main().catch((e) => { fallos.push('harness: ' + e.message); })
+main().catch((e) => { fallos.push('harness: ' + e.message); console.error(JSON.stringify({ fallos })); })
   .finally(() => { try { ws && ws.close(); } catch {} ch && ch.close && ch.close(); srv && srv.close(); process.exitCode = fallos.length ? 1 : 0; });

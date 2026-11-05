@@ -94,7 +94,8 @@ async function main() {
       barBelowMap: bar.parentElement.id === 'map' && bar.getBoundingClientRect().top >= stage.getBoundingClientRect().bottom,
       padOnMap: pad.parentElement === stage, chatVisible: getComputedStyle(chat).display !== 'none',
       composerVisible: composer.getBoundingClientRect().height > 0 && composer.getBoundingClientRect().bottom <= innerHeight, pressed: buttons[1].getAttribute('aria-pressed'),
-      noInvisibleTargets: !stage.querySelector('#map-proxies, .hitl-mark') };
+      noInvisibleTargets: !stage.querySelector(':scope > #map-proxies, :scope > .hitl-mark'),
+      placesInPanel: !!voices.querySelector('#map-node-list') };
     buttons[1].click(); out.closed = voices.hidden;
     out.allPanels = Array.from(buttons).every(b => { b.click(); const ok = b.getAttribute('aria-pressed') === 'true' && !voices.hidden &&
       Array.from(voices.querySelectorAll('[data-speaker]')).some(v => v.dataset.cat === b.dataset.cat && getComputedStyle(v).display !== 'none'); b.click(); return ok && voices.hidden; });
