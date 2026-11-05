@@ -74,13 +74,16 @@ async function main() {
     const map = document.getElementById('map'), stage = document.getElementById('stage'), canvas = document.getElementById('surface');
     const voices = document.getElementById('voices'), chat = document.getElementById('chat'), bar = map.querySelector('.cats');
     const pad = stage.querySelector('.walk-pad'), form = document.getElementById('entry'), sr = (e) => { const r=e.getBoundingClientRect(); return [r.left,r.top,r.right,r.bottom,r.width,r.height]; };
+    let inkPixels = 0; try { const data=canvas.getContext('2d').getImageData(0,0,canvas.width,canvas.height).data; for(let i=3;i<data.length;i+=4) if(data[i]) inkPixels++; } catch { inkPixels=-1; }
     return { title: document.querySelector('h1')?.textContent, canvases: document.querySelectorAll('canvas').length,
+      inkPixels,
       map: sr(map), stage: sr(stage), canvas: sr(canvas), bar: sr(bar), panelParent: voices.parentElement.id, panelHidden: voices.hidden,
       chat: sr(chat), form: sr(form), pad: pad && sr(pad), padRight: pad && pad.getBoundingClientRect().right,
       count: bar?.querySelectorAll('button').length, labels: [...(bar?.querySelectorAll('button') || [])].map(b=>b.getAttribute('aria-label')),
       intro: document.body.innerText }; })())`));
   ok(/^Location · /.test(initial.title || ''), 'map title does not identify the ephemeral account location: ' + initial.title);
   ok(initial.canvases === 1, 'OpenWorld renders more than one canvas: ' + initial.canvases);
+  ok(initial.inkPixels > 2000, 'the map is blank: ' + initial.inkPixels);
   ok(initial.panelParent === 'stage' && initial.panelHidden, 'voice panels are not mounted as a closed overlay on the shared map');
   ok(initial.count === 7 && initial.labels.join('|') === 'Start|Map|Tutorial|House|Army|Radio|Models', 'the seven compact voice controls are missing or unnamed: ' + JSON.stringify(initial.labels));
   ok(initial.bar[1] >= initial.stage[3] - 1, 'voice controls are not immediately below the map: ' + JSON.stringify(initial.bar));
@@ -95,11 +98,14 @@ async function main() {
     const overlap = voices.getBoundingClientRect().top < stage.getBoundingClientRect().bottom;
     const place = voices.querySelector('.map-place');
     const hasMapStatus = !!voices.querySelector('#state') && !!voices.querySelector('#floor-state');
+    const floorText = voices.querySelector('#floor-state')?.textContent || '';
+    const cells = window.AtlasMapPainter?.world()?.cells?.list?.length || 0;
     map.click(); const closed = voices.hidden;
-    return { opened, overlap, place: !!place, placeTag: place?.tagName, hasMapStatus, closed,
+    return { opened, overlap, place: !!place, placeTag: place?.tagName, hasMapStatus, floorText, cells, closed,
       chatVisible: chat.getBoundingClientRect().height > 0, sizes }; })())`));
   ok(panel.opened && panel.overlap, 'Map voice does not open over the shared map: ' + JSON.stringify(panel));
   ok(panel.place && panel.placeTag === 'BUTTON' && panel.hasMapStatus, 'map destinations or status are not visible accessible panel content');
+  ok(panel.cells > 1000 && /^Map loaded/.test(panel.floorText), 'the 2.5D floor is not painted: ' + JSON.stringify({ cells: panel.cells, floor: panel.floorText }));
   ok(panel.closed && panel.chatVisible, 'closing a map panel hides chat or does not close the overlay');
   ok(panel.sizes.every(([w,h]) => w >= 44 && h >= 44), 'a voice control is below the 44 px touch target: ' + JSON.stringify(panel.sizes));
 
@@ -111,6 +117,26 @@ async function main() {
       const stillChat=chat.getBoundingClientRect().height>0; b.click(); return {cat,visible,over,stillChat};});
     return results; })())`));
   ok(categories.length === 7 && categories.every((row) => row.visible && row.over && row.stillChat), 'a category panel or persistent chat is broken: ' + JSON.stringify(categories));
+  const start = JSON.parse(await evaluate(`JSON.stringify((() => { const b=document.querySelector('.cats [data-cat=Start]'); b.click(); const p=document.getElementById('play-now');
+    const answer={play:!!p && p.getBoundingClientRect().height>=44,form:document.getElementById('entry').getBoundingClientRect().height>0}; b.click(); return answer; })())`));
+  ok(start.play && start.form, 'Start panel does not expose the next step above the persistent composer');
+
+  const more = JSON.parse(await evaluate(`JSON.stringify((() => { const b=document.querySelector('.cats [data-cat=Radio]'); b.click();
+    const d=document.getElementById('more'), select=document.querySelector('#more-look select');
+    const folded=!!d && !d.open && !!select && d.contains(select); b.click(); return {folded}; })())`));
+  ok(more.folded, 'the terminal look is not folded under More');
+
+  const models = JSON.parse(await evaluate(`(async () => { const b=document.querySelector('.cats [data-cat=Models]'); b.click();
+    const d=document.getElementById('model-catalog'); d.querySelector('summary').click(); await new Promise(r=>setTimeout(r,500));
+    const result={frames:d.querySelectorAll('.model-frame').length,status:document.getElementById('model-catalog-state').textContent,
+      labels:[...d.querySelectorAll('canvas')].every(c=>c.getAttribute('role')==='img' && /residency NO_DATA/.test(c.getAttribute('aria-label')||''))};
+    d.querySelector('summary').click(); b.click(); return JSON.stringify(result); })()`));
+  ok(models.frames > 0 && /declared model frames/.test(models.status) && models.labels, 'the model panel does not show declared Acho frames with honest NO_DATA');
+
+  await key('e','KeyE',69,'e'); await wait(250);
+  const orbit = await evaluate("document.getElementById('surface').dataset.angle || '0'");
+  ok(orbit === '60', 'the E key does not rotate the map to 60 degrees: ' + orbit);
+  await key('Escape','Escape',27); await wait(100);
 
   const movement = JSON.parse(await evaluate(`JSON.stringify((() => {
     const pad=document.querySelector('#stage .walk-pad'), button=pad?.querySelector('[data-direction="east"]'), before=document.querySelector('h1').textContent;
@@ -132,7 +158,10 @@ async function main() {
     const r=b?.getBoundingClientRect(); return {exists:!!b, tag:b?.tagName, label:b?.getAttribute('aria-label'), width:r?.width||0,height:r?.height||0,
       visible:!!b && r.width>0 && getComputedStyle(b).display!=='none'}; })())`));
   ok(hitl.exists && hitl.tag === 'BUTTON' && hitl.visible && hitl.width >= 44 && hitl.height >= 44, 'HITL action is not visible as an accessible panel button: ' + JSON.stringify(hitl));
-  if (hitl.exists) {
+  let reached = false;
+  for (let i=0;i<40 && !reached;i++) { await key('Tab','Tab',9); reached = await evaluate("document.activeElement.matches('#voice-walkers .hitl-mark')"); }
+  ok(reached, 'Tab never reaches the HITL button');
+  if (hitl.exists && reached) {
     await evaluate("document.querySelector('#voice-walkers .hitl-mark').focus()"); await key('Enter','Enter',13,'\r'); await wait(300);
     const opened = await evaluate("document.querySelector('#joy [aria-live]')?.textContent || ''");
     ok(/terminal: basic/.test(opened), 'keyboard Enter does not activate the visible HITL panel button: ' + opened);
@@ -154,7 +183,7 @@ async function main() {
     const shot=await command('Page.captureScreenshot',{format:'png',captureBeyondViewport:true});
     writeFileSync(join(CAPTURE,'openworld-terminal.png'),Buffer.from(shot.result.data,'base64'));
   }
-  console.log(JSON.stringify({ suite:'openworld-terminal', result:failures.length?'ROJO':'VERDE', initial, panel, categories, movement, hitl, failures }));
+  console.log(JSON.stringify({ suite:'openworld-terminal', result:failures.length?'ROJO':'VERDE', initial, panel, categories, movement, models, hitl, failures }));
 }
 
 main().catch((error) => { failures.push('harness: ' + error.message); console.error(JSON.stringify({ suite:'openworld-terminal', result:'ROJO', failures })); })
