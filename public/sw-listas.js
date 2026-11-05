@@ -10,7 +10,7 @@ const JUEGO = [
   '/game/scene.js', '/game/gdpr-art25-ephemeral-crab.js', '/game/summon-wave-card.js',
   '/game/summon_reveal.js', '/game/workshop.js', '/game/army-wave-panel.js', '/game/ui-workshop.js',
   '/game/combat_ticks.js', '/game/fog_of_war.js', '/game/isometric_floor_projection.js',
-  '/game/world_camera.js', '/game/map_zoom.js', '/game/map_drag.js', '/game/map_wide.js', '/game/sea.js',
+  '/game/world_camera.js', '/game/map_zoom.js', '/game/map_drag.js', '/game/map_view_joystick.js', '/game/map_wide.js', '/game/sea.js',
   '/game/crab_render_hd.js',
   '/game/local_app_bridge.js', '/game/sea-floor.js', '/game/node_reception_contract.js',
   '/game/node_trust_anchor.js', '/game/node_trust_manifest.js', '/game/node_signature_messages.js',
