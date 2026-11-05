@@ -71,17 +71,17 @@ class Piso(unittest.TestCase):
 
 
     def test_las_leyes_del_mundo_coinciden_con_lo_medido(self):
-        """`atlas-mundo.json` no es decorado: cada cifra se recalcula aqui.
-        Remedio si falla: python3 atlas/mundo.py"""
+        """`atlas-world.json` no es decorado: cada cifra se recalcula aqui.
+        Remedio si falla: python3 atlas/world.py"""
         sys.path.insert(0, str(RAIZ))
-        import mundo
-        d = json.loads((PUBLICO / "atlas-mundo.json").read_text(encoding="utf-8"))
+        import world
+        d = json.loads((PUBLICO / "atlas-world.json").read_text(encoding="utf-8"))
         self.assertEqual(d["esquema"], "atlas.mundo/1")
-        for clave, valor in (("pruebas_web", mundo.pruebas_web()), ("lenguas", mundo.lenguas()),
-                             ("gzip_juego_b", mundo.gzip_juego()), ("version_sw", mundo.version_sw()),
+        for clave, valor in (("pruebas_web", world.pruebas_web()), ("lenguas", world.lenguas()),
+                             ("gzip_juego_b", world.gzip_juego()), ("version_sw", world.version_sw()),
                              ("techo_bloque_b", 25 * 1024 * 1024)):
             with self.subTest(ley=clave):
-                self.assertEqual(d[clave], valor, f"{clave} desfasado: python3 atlas/mundo.py")
+                self.assertEqual(d[clave], valor, f"{clave} desfasado: python3 atlas/world.py")
         self.assertRegex(d["arnes_sw"], r"^\d+/\d+$|^NO_DATA$")
         # Cuando y donde: la doctrina pide las dos cosas, sin nombre de nodo.
         self.assertRegex(d.get("medido_el", ""), r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}Z$")
@@ -170,7 +170,7 @@ process.stdout.write(JSON.stringify(ok));
         """LEY DEL SUELO (firmada 2026-10-12), paso 1: rombo 2:1, (col,fila) -> x=(col-fila)*W/2, y=(col+fila)*H/2, anclaje al
         CENTRO del rombo, orden de pintor por (col+fila). Sin parallax ni sombras. Sabotaje medido: la rejilla cuadrada
         tumba 3 de 9 casos. La prueba visual vive en el lab (atlas/isometric_floor_prueba.html)."""
-        r = subprocess.run(["node", str(RAIZ / "isometric_floor_casos.mjs")], capture_output=True, text=True, timeout=60)
+        r = subprocess.run(["node", str(RAIZ / "isometric_floor_cases.mjs")], capture_output=True, text=True, timeout=60)
         casos = json.loads(r.stdout)
         self.assertGreaterEqual(len(casos), 9)
         for c in casos:
@@ -233,26 +233,26 @@ process.stdout.write(JSON.stringify(ok));
         ok_ass = {"v": "atlas.asset/1", "id": "sea-palette", "kind": "palette", "frame": {"t": "Tutorial cabin chunk", "d": "Floor and water around the tutorial cabin."}, "data": {"bands": [[23, 19, 31]]}}
         casos = {
             # G0: el eslabon solo firma lo que fija la semilla (ni pseudonimo ni ciclo: eso era pesca de semilla).
-            "atlas_invocacion_schema.json": (ok_inv, [
+            "atlas_invocation_schema.json": (ok_inv, [
                 con(ok_inv, seq=0), con(ok_inv, prev="genesis2"), con(ok_inv, tc="tc9"),
                 con(ok_inv, pseudonimo="x"), con(ok_inv, ciclo=4), sin(ok_inv, "prev")]),
-            "atlas_taller_schema.json": (ok_tal, [
+            "atlas_workshop_schema.json": (ok_tal, [
                 con(ok_tal, op="regalar"), con(ok_tal, saldo=-1), con(ok_tal, stat="velocidad"),
                 con(ok_tal, gramos=-4), con(ok_tal, aristas=2), con(ok_tal, bandera="teal")]),
-            "atlas_accion_schema.json": (ok_acc, [
+            "atlas_action_schema.json": (ok_acc, [
                 con(ok_acc, accion="firmar"), sin(ok_acc, "banda"), con(ok_acc, banda="abismo"),
                 con(ok_acc, origen="gemini"), con(ok_acc, firma_valor="x"), con(ok_acc, ciclo=-1)]),
-            "atlas_aceptacion_schema.json": (ok_ace, [
+            "atlas_acceptance_schema.json": (ok_ace, [
                 con(ok_ace, modo="auto"), con(ok_ace, que_no_hace=["credenciales", "red", "guardado"]),
                 con(ok_ace, que_hace=[]), con(ok_ace, clave_publica="xyz"), sin(ok_ace, "pseudonimo"),
                 con(ok_ace, gasto_max=10)]),
-            "atlas_partida_schema.json": (ok_par, [
+            "atlas_match_schema.json": (ok_par, [
                 con(ok_par, pasos=[{"accion": "firmar", "origen": "humano"}]),
                 con(ok_par, pasos=[{"ciclos": 0}]), con(ok_par, ley={"nd": False}),
                 con(ok_par, pasos=[{"accion": "reparar", "origen": "humano", "dia": "2026-09-27"}]),
                 sin(ok_par, "final"), con(ok_par, hora="12:00")]),
             # P1 del plan 2.5D (odd/tasks/mapa-25d-aldea.md, 2026-11-01): el mapa por chunks hex.
-            "atlas_carta_schema.json": (ok_car, [
+            "atlas_chart_schema.json": (ok_car, [
                 con(ok_car, v="atlas.carta/2"), con(ok_car, radius=0), sin(ok_car, "frame"),
                 con(ok_car, chunks=[]), con(ok_car, chunks=[dict(ok_car["chunks"][0], sha256="x")]),
                 con(ok_car, x=1)]),
@@ -265,7 +265,7 @@ process.stdout.write(JSON.stringify(ok));
                 con(ok_ass, frame={"t": "", "d": "x"}), sin(ok_ass, "data"), con(ok_ass, url="https://x")]),
         }
         # B6 (2026-09-27): con politica lora la firma cubre el modelo concreto.
-        ace = jsonschema.Draft202012Validator(json.loads((DATOS / "atlas_aceptacion_schema.json").read_text(encoding="utf-8")))
+        ace = jsonschema.Draft202012Validator(json.loads((DATOS / "atlas_acceptance_schema.json").read_text(encoding="utf-8")))
         self.assertFalse(ace.is_valid(con(ok_ace, politica="lora")), "lora sin sha del modelo")
         self.assertTrue(ace.is_valid(con(ok_ace, politica="lora", modelo_sha256="b" * 64)))
         self.assertFalse(ace.is_valid(con(ok_ace, modelo_sha256="b" * 64)), "sha de modelo en el piloto base")
@@ -288,20 +288,20 @@ process.stdout.write(JSON.stringify(ok));
 # Modulos de `public/game/` que NINGUN guion pide todavia (ni la puerta ni el Army): el multijugador y
 # la cria, firmados por el Soberano el 2026-09-28 («ve construyendo todo… enfocados al multiplayer»).
 # Ver atlas/POST_VERIFICACION_MGNO_LAB.md y atlas/POST_VERIFICACION_SISIL_CRIA.md.
-PUROS = ("canon.js", "sobres.js", "rating.js", "arena.js", "duelo.js", "battle_choreography.js", "mercado.js", "narragrafo.js", "cria.js")  # genoma.js salio del arbol servido (atlas/puros/, 2026-10-27) · T_CRT §8.1: el orquestador mini lo lee; ningun guion de la web lo pide aun
+PUROS = ("canon.js", "sobres.js", "rating.js", "arena.js", "duelo.js", "battle_choreography.js", "mercado.js", "narragrafo.js", "brood.js")  # genome.js salio del arbol servido (atlas/puros/, 2026-10-27) · T_CRT §8.1: el orquestador mini lo lee; ningun guion de la web lo pide aun
 # La Arena (2026-09-28, «el mapa multi-jugador en una pestana»): se carga al abrir su pestana, detras del Army.
-ARENA = ("sobres.js", "rating.js", "combate_ticks.js", "arena.js", "duelo.js", "sea-anchors.js", "crab_render_hd.js", "audio_feedback_manager.js", "crab_free_move.js", "genesis_tutorial.js", "buildings_toon.js", "reef_place_cards.js", "shell_schematics.js", "reef_buildings_paint.js", "latency_crystal.js", "hexelion_bench.js", "acho_bestiary.js", "map_acho_figures.js", "reef_corals.js", "reef_buildings_layer.js", "sea-crabs.js", "map_pointer_input.js", "semiotic_glyph.js", "hexelion_dictionary.js", "map_nodes_layer.js", "map_zoom.js", "piece_inspector.js", "vector_contract.js", "state_vector.js", "place_reading.js", "npc_territory_map.js", "map_integrity.js", "sea.js", "nodos-pesos.js",
-         "node_reception_contract.js", "node_trust_anchor.js", "node_trust_manifest.js", "node_signature_messages.js", "node_signature_verify.js", "node_bindings_messages.js", "node_bindings.js", "node_projection.js", "nodos.js", "cuenta.js", "ui-nodos.js", "ui-rack.js", "node_preview.js", "node_file_receiver.js",
-         "escuadron.js", "wave_duel_scene.js", "npc_occupancy.js", "npc_walls.js", "ui-arena-comun.js", "combat_screen.js", "ui-arena.js", "ui-duelo.js")
+ARENA = ("sobres.js", "rating.js", "combat_ticks.js", "arena.js", "duelo.js", "sea-anchors.js", "crab_render_hd.js", "audio_feedback_manager.js", "crab_free_move.js", "genesis_tutorial.js", "buildings_toon.js", "reef_place_cards.js", "shell_schematics.js", "reef_buildings_paint.js", "latency_crystal.js", "hexelion_bench.js", "acho_bestiary.js", "map_acho_figures.js", "reef_corals.js", "reef_buildings_layer.js", "sea-crabs.js", "map_pointer_input.js", "semiotic_glyph.js", "hexelion_dictionary.js", "map_nodes_layer.js", "map_zoom.js", "piece_inspector.js", "vector_contract.js", "state_vector.js", "place_reading.js", "npc_territory_map.js", "map_integrity.js", "sea.js", "nodos-pesos.js",
+         "node_reception_contract.js", "node_trust_anchor.js", "node_trust_manifest.js", "node_signature_messages.js", "node_signature_verify.js", "node_bindings_messages.js", "node_bindings.js", "node_projection.js", "nodes.js", "account.js", "ui-nodes.js", "ui-rack.js", "node_preview.js", "node_file_receiver.js",
+         "squadron.js", "wave_duel_scene.js", "npc_occupancy.js", "npc_walls.js", "ui-arena-comun.js", "combat_screen.js", "ui-arena.js", "ui-duelo.js")
 # La CASA (2026-10-05): la primera pantalla, detras del Army. Lleva canon y escena, que la Arena reutiliza.
 # C1+C2 (#264, 2026-10-23): editor Acho y Paint se cargan con la Casa; ambos son modulos v1.5 a demanda.
-CASA = ("canon.js", "tabla_semantica.js", "comic_tokens.js", "comic_atoms.js", "escena.js", "wave_render.js", "gdpr-art25-ephemeral-crab.js", "aiact-art50-crab-terminal.js", "nodos-cedulas.js", "fog_of_war.js", "isometric_floor_projection.js", "world_camera.js", "sea-floor.js", "sea_rift.js", "acho_editor.js", "acho_paint.js", "gdpr-art7-entry-choice.js", "aiact-art50-state-radio.js", "casa-medidas.js", "casa-personaliza.js", "casa-lateral.js", "crab_state_screen.js", "reef_building_lifecycle.js", "home_buildings.js", "summon-wave-card.js", "summon_reveal.js", "taller.js", "army-wave-panel.js", "ui-taller.js", "primer_eco.js", "summon-access.js", "deep_links.js", "hitl_firma.js", "onda_profunda.js", "tarjeta_cantada.js", "cable_llamar.js", "cable_terminal.js")
+CASA = ("canon.js", "semantic_table.js", "comic_tokens.js", "comic_atoms.js", "scene.js", "wave_render.js", "gdpr-art25-ephemeral-crab.js", "aiact-art50-crab-terminal.js", "nodos-cedulas.js", "fog_of_war.js", "isometric_floor_projection.js", "world_camera.js", "sea-floor.js", "sea_rift.js", "acho_editor.js", "acho_paint.js", "gdpr-art7-entry-choice.js", "aiact-art50-state-radio.js", "casa-medidas.js", "casa-personaliza.js", "casa-lateral.js", "crab_state_screen.js", "reef_building_lifecycle.js", "home_buildings.js", "summon-wave-card.js", "summon_reveal.js", "workshop.js", "army-wave-panel.js", "ui-workshop.js", "primer_eco.js", "summon-access.js", "deep_links.js", "hitl_firma.js", "deep_wave.js", "sung_card.js", "cable_llamar.js", "cable_terminal.js")
 # El descenso (obra abku, 2026-10-18): los pide thegame.js por su lista DESCENSO, no con la casa.
-DESCENSO = ("front_door.js", "silueta.js", "en301_practice_model.js", "en301_practice_arena.js", "en301_tutorial_copy.js", "en301_tutorial_model.js", "en301_tutorial_audio.js", "en301_tutorial.js", "deploy_building.js", "etiqueta.js", "en301_tutorial_building.js", "world_creator.js", "tutorial_fases.js", "ui-tutorial-fases.js", "comic_accents.js", "acho_language.js", "acho_light.js", "acho_bestiary.js", "acho_world.js", "acho_letters.js", "bubble_game.js", "acho_icons.js", "descent_sound.js", "local_app_bridge.js")
+DESCENSO = ("front_door.js", "silueta.js", "en301_practice_model.js", "en301_practice_arena.js", "en301_tutorial_copy.js", "en301_tutorial_model.js", "en301_tutorial_audio.js", "en301_tutorial.js", "deploy_building.js", "etiqueta.js", "en301_tutorial_building.js", "world_creator.js", "tutorial_fases.js", "ui-tutorial-phases.js", "comic_accents.js", "acho_language.js", "acho_light.js", "acho_bestiary.js", "acho_world.js", "acho_letters.js", "bubble_game.js", "acho_icons.js", "descent_sound.js", "local_app_bridge.js")
 # VT6 (compuerta de lanzamiento): modulo puro, fuera de la puerta del juego; la pantalla aun no la carga.
 VT6 = ("launch_gate.js",)
 # J1 (estrella Hexelion capturable): modulo puro, fuera de la puerta; la mecanica aun no la carga el juego.
-J1 = ("estrella_captura.js",)
+J1 = ("star_capture.js",)
 # VT5 (tutorial F0-F3, #189 + pantallas): maquina de fases y pantallas; el cargador es el modo aparte de descent_view.
 # VT5 y world_creator entran por la lista del descenso (thegame.js): grupo DESCENSO.
 # VT2 (etiqueta 1 KB) y VT4 (silueta): modulos puros fuera de la puerta (registrados en main tras sus PR).
@@ -313,7 +313,7 @@ VISION_LEXICA = ("lexical_projector.js",)
 CREACION = ("creation_package.js", "creation_feedback.js", "creation_flow.js")
 CREATION_PAGE_DEPENDENCIES = CREACION + (
     "acho_language.js", "comic_tokens.js", "comic_accents.js",
-    "tabla_semantica.js", "acho_editor.js", "acho_paint.js",
+    "semantic_table.js", "acho_editor.js", "acho_paint.js",
 )
 # /aduana/ (Norte N3, 2026-10-26): el catalogo publico de cedulas, puro; solo lo carga la pagina /aduana/.
 ADUANA = ("node_catalogue.js",)
@@ -329,10 +329,10 @@ FACE_PAGE_DEPENDENCIES = tuple(sorted(set(re.findall(r'src="/game/([^"]+)"', (PU
 # La portada (P3 [1d], decreto 2026-10-26) dibuja sus tres puertas en Acho language: carga UNA vez
 # estas piezas de dibujo, y solo estas. Se DECLARAN aqui (no se leen de la pagina), asi la portada no
 # puede ampliar la lista en silencio; test_web.Puerta exige que cargue exactamente esta lista.
-LANDING_PAGE_DEPENDENCIES = ("tabla_semantica.js", "comic_tokens.js", "comic_accents.js", "comic_atoms.js",
+LANDING_PAGE_DEPENDENCIES = ("semantic_table.js", "comic_tokens.js", "comic_accents.js", "comic_atoms.js",
                              "acho_language.js", "acho_letters.js")
 # /openworld/ (NORTE 7 · PR 2, 2026-10-28): el mapa y su cabana dibujan en la misma burbuja que la portada; se DECLARA aqui.
-OPENWORLD_PAGE_DEPENDENCIES = LANDING_PAGE_DEPENDENCIES + ("acho_sonify.js", "valores.js", "gacha.js", "chunk_router.js", "isometric_floor_projection.js", "global_map.js")   # the native sound: on demand, on the first click; the map: the projection and its state
+OPENWORLD_PAGE_DEPENDENCIES = LANDING_PAGE_DEPENDENCIES + ("acho_sonify.js", "values.js", "gacha.js", "chunk_router.js", "isometric_floor_projection.js", "global_map.js")   # the native sound: on demand, on the first click; the map: the projection and its state
 # /aduana/ (Norte N2, 2026-10-26): el comprobador de cedulas, OBSERVANTE, carga la cadena de nodos y solo esa. Se
 # DECLARA aqui; local_first_surface_build.ADUANA_SCRIPTS es la misma lista, y tests/aduana_page.test.mjs exige que
 # coincidan.
@@ -360,7 +360,7 @@ class TheGameV15(unittest.TestCase):
     las dos guardas en el mismo job; moverla es un paso del rack."""
 
     JUEGO = PUBLICO / "game"
-    MODULOS = ("valores.js", "gacha.js", "db.js", "core.js", "killswitch_dot.js", "ui-ficha.js", "ui-invoca.js", "ui.js", "juez.js", "z_cutoff.js")  # T: ui-ficha sale de ui
+    MODULOS = ("values.js", "gacha.js", "db.js", "core.js", "killswitch_dot.js", "ui-ficha.js", "ui-invoca.js", "ui.js", "juez.js", "z_cutoff.js")  # T: ui-ficha sale de ui
 
     def _js(self, nombre):
         return sin_comentarios(_fam(nombre, (self.JUEGO / nombre).read_text(encoding="utf-8")))
@@ -371,10 +371,10 @@ class TheGameV15(unittest.TestCase):
     def test_q1_wave_panel_contract_and_direct_tap(self):
         """Q1 reads the shared wave and verified Workshop receipt in one tap."""
         import subprocess
-        r = subprocess.run(["node", str(RAIZ / "army_wave_casos.mjs")], capture_output=True,
+        r = subprocess.run(["node", str(RAIZ / "army_wave_cases.mjs")], capture_output=True,
                            text=True, timeout=60)
         self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
-        ui = (PUBLICO / "game" / "ui-taller.js").read_text(encoding="utf-8")
+        ui = (PUBLICO / "game" / "ui-workshop.js").read_text(encoding="utf-8")
         self.assertIn("AtlasArmyWavePanel.alToque(t, fichaDe)", ui)
         self.assertIn("AtlasIncubadora", ui)
         module = (PUBLICO / "game" / "army-wave-panel.js").read_text(encoding="utf-8")
@@ -384,7 +384,7 @@ class TheGameV15(unittest.TestCase):
     def test_q2_reveal_card_uses_wave_and_game_cycles(self):
         """Q2 exposes the exact spectrum at the reveal peak and routes to the existing Workshop."""
         import subprocess
-        r = subprocess.run(["node", str(RAIZ / "summon_wave_card_casos.mjs")], capture_output=True,
+        r = subprocess.run(["node", str(RAIZ / "summon_wave_card_cases.mjs")], capture_output=True,
                            text=True, timeout=60)
         self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
         reveal = (PUBLICO / "game" / "summon_reveal.js").read_text(encoding="utf-8")
@@ -408,7 +408,7 @@ class TheGameV15(unittest.TestCase):
                 self.assertIn(f"/game/{module}", page)
                 self.assertIn(f"/game/{module}", lists)
         for module in ("acho_language.js", "comic_tokens.js", "comic_accents.js",
-                       "tabla_semantica.js", "acho_editor.js", "acho_paint.js"):
+                       "semantic_table.js", "acho_editor.js", "acho_paint.js"):
             with self.subTest(dependency=module):
                 self.assertIn(f"/game/{module}", page)
                 self.assertIn(f"/game/{module}", lists)
@@ -512,10 +512,10 @@ class SinCripto(unittest.TestCase):
 class Opiniones(unittest.TestCase):
     """Enviar las opiniones firmadas (Soberano, 2026-09-28: «quiero enviar ya los feedback mios y de
     otros users»): lo envia la PERSONA con el menu de compartir del sistema, con un clic propio y
-    sin servidor; quien lo recibe lo verifica con `atlas/verifica_opinion.mjs`."""
+    sin servidor; quien lo recibe lo verifica con `atlas/verify_opinion.mjs`."""
 
     def test_el_verificador_caza_lo_que_debe(self):
-        r = subprocess.run(["node", str(RAIZ / "opinion_casos.mjs")], capture_output=True, text=True, timeout=60)
+        r = subprocess.run(["node", str(RAIZ / "opinion_cases.mjs")], capture_output=True, text=True, timeout=60)
         self.assertEqual(r.returncode, 0, r.stderr)
         casos = json.loads(r.stdout)
         self.assertGreaterEqual(len(casos), 7)
@@ -525,22 +525,22 @@ class Opiniones(unittest.TestCase):
 
 
     def test_el_workflow_verifica_cada_opinion(self):
-        wf = (RAIZ.parent / ".github" / "workflows" / "opiniones.yml").read_text(encoding="utf-8")
+        wf = (RAIZ.parent / ".github" / "workflows" / "opinions.yml").read_text(encoding="utf-8")
         vivo = "\n".join(l for l in wf.splitlines() if not l.lstrip().startswith("#"))
-        self.assertIn('node atlas/verifica_opinion.mjs "$f"', vivo)
+        self.assertIn('node atlas/verify_opinion.mjs "$f"', vivo)
         self.assertIn("contents: read", vivo)
         self.assertNotIn("pull_request_target", vivo)
         self.assertIn('[ "$fallos" -eq 0 ]', vivo)
         for f in sorted((RAIZ.parent / "opiniones").glob("*.json")):
             with self.subTest(opinion=f.name):
-                r = subprocess.run(["node", str(RAIZ / "verifica_opinion.mjs"), str(f)], capture_output=True,
+                r = subprocess.run(["node", str(RAIZ / "verify_opinion.mjs"), str(f)], capture_output=True,
                                    text=True, timeout=60)
                 self.assertEqual(r.returncode, 0, r.stdout)
-        self.assertIn("node atlas/tabla_opiniones.mjs --comprueba", vivo)
+        self.assertIn("node atlas/opinions_table.mjs --comprueba", vivo)
 
 
     def test_la_tabla_esta_al_dia(self):
-        r = subprocess.run(["node", str(RAIZ / "tabla_opiniones.mjs"), "--comprueba"], capture_output=True,
+        r = subprocess.run(["node", str(RAIZ / "opinions_table.mjs"), "--comprueba"], capture_output=True,
                            text=True, timeout=60)
         self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
 
@@ -554,7 +554,7 @@ class Opiniones(unittest.TestCase):
         with tempfile.TemporaryDirectory() as d:
             for n, o in (("ejemplo-a.json", buena), ("b.json", buena), ("c.json", mala)):
                 (Path(d) / n).write_text(json.dumps(o), encoding="utf-8")
-            js = ("import { tabla } from " + json.dumps((RAIZ / "tabla_opiniones.mjs").as_uri()) +
+            js = ("import { tabla } from " + json.dumps((RAIZ / "opinions_table.mjs").as_uri()) +
                   "; process.stdout.write(JSON.stringify(tabla(process.argv[1])));")
             r = subprocess.run(["node", "--input-type=module", "-e", js, d], capture_output=True, text=True, timeout=60)
         self.assertEqual(r.returncode, 0, r.stderr)
@@ -565,7 +565,7 @@ class Opiniones(unittest.TestCase):
         self.assertEqual([o["fichero"] for o in t["corpus"]], ["b.json"], "el corpus lleva ejemplos o rechazos")
         self.assertEqual(set(t["corpus"][0]), {"fichero", "pseudonimo", "clave_publica", "contenido_v", "sobre",
                                                "ciclo", "estado_sha256", "mostrado", "eleccion", "nota"})
-        r = subprocess.run(["node", str(RAIZ / "tabla_opiniones.mjs"), "--json"], capture_output=True, text=True, timeout=60)
+        r = subprocess.run(["node", str(RAIZ / "opinions_table.mjs"), "--json"], capture_output=True, text=True, timeout=60)
         self.assertEqual(r.returncode, 0, r.stderr)
         self.assertEqual(json.loads(r.stdout)["esquema"], "atlas.opiniones.corpus/1")
 
@@ -585,20 +585,20 @@ class Cria(unittest.TestCase):
             import jsonschema
         except ImportError:
             self.skipTest("NO_DATA · jsonschema no instalado")
-        base = self._node("process.stdout.write(JSON.stringify(require('./public/game/cria.js').desdeValores()))")
-        lim = self._node("process.stdout.write(JSON.stringify(require('./atlas/puros/genoma.js').LIMITES))")
+        base = self._node("process.stdout.write(JSON.stringify(require('./public/game/brood.js').desdeValores()))")
+        lim = self._node("process.stdout.write(JSON.stringify(require('./atlas/puros/genome.js').LIMITES))")
         def con(b, **c):
             d = json.loads(json.dumps(b)); d.update(c); return d
         gen = {"esquema": "atlas.genoma/1", "base": "a" * 64, "procedencia": "sintetico",
                "dominios": {"incubacion": {"ciclos_min_tc1": 15, "ciclos_max_tc1": 25}, "rareza": {"unico_tc4": 60}}}
         rar = json.loads(json.dumps(base["rareza"])); rar["tc1"] = [700.5, 250, 40, 5]
         casos = {
-            "atlas_cria_calibracion_schema.json": (base, [
+            "atlas_brood_calibration_schema.json": (base, [
                 con(base, auto_invoke=True), con(base, rareza=rar),
                 con(base, rareza={k: v for k, v in base["rareza"].items() if k != "tc3"}),
                 con(base, incubacion=dict(base["incubacion"], tc1=[0, 20])), con(base, version="https:" + "//x"),
                 con(base, afijos={"max": base["afijos"]["max"], "exclusiones": [["atlante", "inventado"]]})]),
-            "atlas_genoma_schema.json": (gen, [
+            "atlas_genome_schema.json": (gen, [
                 con(gen, dominios={"invocation_permission": {"x": 1}}), con(gen, dominios={"rareza": {"auto_invoke": 1}}),
                 con(gen, dominios={"rareza": {"unico_tc4": 20000}}), con(gen, dominios={"combate": {"k": 32.5}}),
                 con(gen, procedencia="silicio_firma"), con(gen, dominios={})]),
@@ -614,8 +614,8 @@ class Cria(unittest.TestCase):
                 with self.subTest(contrato=nombre, violacion=i):
                     self.assertFalse(v.is_valid(malo), f"{nombre} deja pasar la violacion {i}")
                     self.assertTrue(relajado.is_valid(malo))
-        # El contrato del genoma es espejo EXACTO de `genoma.js › LIMITES`: no pueden divergir.
-        dom = json.loads((DATOS / "atlas_genoma_schema.json").read_text(encoding="utf-8"))["properties"]["dominios"]["properties"]
+        # El contrato del genoma es espejo EXACTO de `genome.js › LIMITES`: no pueden divergir.
+        dom = json.loads((DATOS / "atlas_genome_schema.json").read_text(encoding="utf-8"))["properties"]["dominios"]["properties"]
         self.assertEqual(sorted(dom), sorted(lim))
         for d, ps in lim.items():
             for k, b in ps.items():
@@ -630,7 +630,7 @@ class Cria(unittest.TestCase):
 class PuenteAppLocal(unittest.TestCase):
     def test_puente_app_local_casos(self):
         """La consulta local solo sale tras accion; indisponibilidad queda como NO_DATA con causa."""
-        r = subprocess.run(["node", str(RAIZ / "local_app_bridge_casos.mjs")], capture_output=True, text=True, timeout=60)
+        r = subprocess.run(["node", str(RAIZ / "local_app_bridge_cases.mjs")], capture_output=True, text=True, timeout=60)
         self.assertEqual(r.returncode, 0, r.stdout[-1200:] + r.stderr[-400:])
 
 
@@ -638,7 +638,7 @@ class PrecacheDelJuego(unittest.TestCase):
     """D7 (mudanza bloque 2, FIRMO 2026-10-11) SUPERSEDIDO por Norte 7 corte C (2026-10-28): el juego ya no entra
     en el precache. web#390 retiro la puerta (301 /play/ -> /openworld/); thegame.js y su hoja siguen en el arbol
     hasta el corte D, asi que esta guarda es de RETIRADA: que no se precacheen mientras existen. Lo que es MEDIDA
-    (atlas-mundo, atlas-record) sigue fuera del precache, como antes."""
+    (atlas-world, atlas-record) sigue fuera del precache, como antes."""
 
     def test_juego_retirado_no_se_precachea(self):
         listas = (PUBLICO / "sw-listas.js").read_text(encoding="utf-8")
@@ -649,7 +649,7 @@ class PrecacheDelJuego(unittest.TestCase):
 
     def test_lo_que_es_medida_sigue_fuera(self):
         listas = (PUBLICO / "sw-listas.js").read_text(encoding="utf-8")
-        for medida in ("/atlas-mundo.json", "/atlas-record.json"):
+        for medida in ("/atlas-world.json", "/atlas-record.json"):
             with self.subTest(medida=medida):
                 self.assertNotIn(medida, listas[listas.index("const JUEGO"):])
 
@@ -710,7 +710,7 @@ class CombateLimpio(unittest.TestCase):
     def test_el_medidor_no_baja_sin_medir(self):
         """Con menos de 60 cuadros medidos el medidor no degrada: si no puede medir, no toca."""
         import subprocess
-        js = ("const vm=require('vm'),fs=require('fs');const c={AtlasValores:require('./public/game/valores.js'),"
+        js = ("const vm=require('vm'),fs=require('fs');const c={AtlasValores:require('./public/game/values.js'),"
               "AtlasGacha:require('./public/game/gacha.js'),Math};vm.runInNewContext(fs.readFileSync('./public/game/wave_render.js','utf-8'),c);"
               "const m=c.AtlasOnda.medidor();let t=0;for(let i=0;i<30;i++){m.cuadro(t);t+=100;}"
               "const pocos=m.nivel(2);for(let i=0;i<80;i++){m.cuadro(t);t+=100;}process.stdout.write(JSON.stringify([pocos,m.nivel(2)]))")
@@ -730,7 +730,7 @@ class CasaGranja(unittest.TestCase):
 
     def test_casos_del_cangrejo(self):
         """J1 (plan de ronda 2026-10-11): misma semilla, mismo paseo (huella fijada); tamano y clase son dato."""
-        r = subprocess.run(["node", str(RAIZ / "gdpr-art25-ephemeral-crab_casos.mjs")], capture_output=True, text=True, timeout=120)
+        r = subprocess.run(["node", str(RAIZ / "gdpr-art25-ephemeral-crab_cases.mjs")], capture_output=True, text=True, timeout=120)
         casos = json.loads(r.stdout)
         self.assertGreaterEqual(len(casos), 10, r.stderr)
         for c in casos:
@@ -799,7 +799,7 @@ class EsteticaMedida(unittest.TestCase):
         # 2026-10-04 (directiva): el dano es desafinacion, no barra. 2026-10-27 ([W] O1, fallo HIBRIDO del Soberano): el
         # duelo de ondas lleva la barra de vida de v1.1 bajo cada tropa Y sigue desafinando la figura con el dano. La
         # desafinacion sigue siendo OBLIGATORIA; la barra solo vive en el duelo, nunca en la libreria compartida.
-        e, d = self._js("escena.js"), self._js("wave_duel_scene.js")
+        e, d = self._js("scene.js"), self._js("wave_duel_scene.js")
         self.assertIn("function afina(arm, d, t)", e)
         self.assertIn("desafina: Math.min(1, (1 - u.vida / u.max)", d, "la vida no desafina la figura")
         self.assertNotIn("function barra(", e, "la barra de vida se sale del duelo")
@@ -816,7 +816,7 @@ class NodosComoCuenta(unittest.TestCase):
     lucha con su niebla. Jugar sin firma no saca nada del navegador; enviar exige gesto, la firma
     de la partida y una SEGUNDA firma de consentimiento (consent 1)."""
 
-    NODOS = ("nodos-pesos.js", "nodos-cedulas.js", "nodos.js", "ui-nodos.js", "node_preview.js", "node_file_receiver.js", "node_catalogue.js")
+    NODOS = ("nodos-pesos.js", "nodos-cedulas.js", "nodes.js", "ui-nodes.js", "node_preview.js", "node_file_receiver.js", "node_catalogue.js")
 
     def _js(self, nombre):
         return sin_comentarios(_fam(nombre, (PUBLICO / "game" / nombre).read_text(encoding="utf-8")))
@@ -872,7 +872,7 @@ class PolvoDeEclosion(unittest.TestCase):
     def test_las_cifras_del_residuo_coinciden_entre_caminos(self):
         """Guarda: la tropa de la eclosion y la copia que queda en el Army dan el mismo residuo (15 casos)."""
         out = self._node(
-            "const G=require('./public/game/gacha.js'),TL=require('./public/game/taller.js'),C=require('crypto');"
+            "const G=require('./public/game/gacha.js'),TL=require('./public/game/workshop.js'),C=require('crypto');"
             "const r=[];for(const tc of ['tc1','tc2','tc3'])for(const x of ['a1','b2','c3','d4','e5']){"
             "const t=G.tirada(C.createHash('sha256').update(x).digest('hex'),tc);"
             "r.push([TL.residuo(t),TL.residuo(JSON.parse(JSON.stringify(t)))]);}"
@@ -883,7 +883,7 @@ class PolvoDeEclosion(unittest.TestCase):
     def test_el_recibo_de_eclosion_es_el_de_desintegrar(self):
         """Guarda: el recibo `atlas.taller/1` se arma igual desde la eclosion que desde el Army."""
         out = self._node(
-            "const G=require('./public/game/gacha.js'),TL=require('./public/game/taller.js'),C=require('crypto');"
+            "const G=require('./public/game/gacha.js'),TL=require('./public/game/workshop.js'),C=require('crypto');"
             "const t=G.tirada(C.createHash('sha256').update('a1').digest('hex'),'tc1');"
             "const e={saldo:0,lijas:{},disueltas:{},tintes:{},ultimo:'0'.repeat(64),clave:null,n:0};"
             "const k='ab'.repeat(32);"
@@ -896,7 +896,7 @@ class PolvoDeEclosion(unittest.TestCase):
     def test_desintegrar_suelta_firma_el_recibo_sin_sacarla_del_army(self):
         """ROJO hasta el cambio: la suelta firma `desintegra` con la misma `opera` y NO llama a `retira`
         (la tropa nunca entro al Army)."""
-        ui = (PUBLICO / "game" / "ui-taller.js").read_text(encoding="utf-8")
+        ui = (PUBLICO / "game" / "ui-workshop.js").read_text(encoding="utf-8")
         m = re.search(r"function desintegraSuelta\(t, panel\)\s*\{(.*?)\n  \}", ui, re.S)
         self.assertTrue(m, "no existe desintegraSuelta")
         cuerpo = m.group(1)
@@ -920,20 +920,20 @@ class EclosionDirecta(unittest.TestCase):
 class CasillerosDelArmy(unittest.TestCase):
     """Mision 2026-10-13, paso 4 (el Army como grid de casilleros). Cada tropa en su casillero (dibujado con
     su ficha, sin imagenes), con aria-label, 44 px y foco visible. Elegir un casillero muestra en la MISMA
-    hoja su ficha, TODAS sus stats y los controles de lija y desintegrar, que ya existen en ui-taller.js."""
+    hoja su ficha, TODAS sus stats y los controles de lija y desintegrar, que ya existen en ui-workshop.js."""
 
 
     def test_cada_casillero_tiene_nombre_y_se_marca_al_elegirlo(self):
-        tal = (PUBLICO / "game" / "ui-taller.js").read_text(encoding="utf-8")
+        tal = (PUBLICO / "game" / "ui-workshop.js").read_text(encoding="utf-8")
         self.assertIn("function casilleros(", tal)
         self.assertIn("el('button', 'army-casillero')", tal)
         self.assertIn("b.setAttribute('aria-label'", tal, "el casillero no tiene nombre accesible")
         self.assertIn("aria-pressed", tal, "el casillero elegido no se marca")
 
     def test_el_detalle_muestra_todas_las_stats_y_reusa_lija_y_polvo(self):
-        tal = (PUBLICO / "game" / "ui-taller.js").read_text(encoding="utf-8")
+        tal = (PUBLICO / "game" / "ui-workshop.js").read_text(encoding="utf-8")
         self.assertIn("G.STATS.forEach(", tal, "no enseña todas las stats")
-        self.assertIn("TL.coste(nv)", tal, "la lija no reusa el coste de taller.js")
+        self.assertIn("TL.coste(nv)", tal, "la lija no reusa el coste de workshop.js")
         self.assertIn("TL.residuo(t)", tal, "el polvo no reusa residuo(t)")
         self.assertIn("lija(t, s.value)", tal)
 
@@ -971,7 +971,7 @@ class LaunchGateVT6(unittest.TestCase):
     """VT6: compuerta de lanzamiento. 1 clic PWA, 2 clics app y modelos, NO_DATA con causa, cero peticiones externas en carga."""
 
     def test_launch_gate_casos_en_node(self):
-        r = subprocess.run(["node", str(RAIZ / "launch_gate_casos.mjs")], capture_output=True, text=True, check=False)
+        r = subprocess.run(["node", str(RAIZ / "launch_gate_cases.mjs")], capture_output=True, text=True, check=False)
         self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
         casos = json.loads(r.stdout)
         self.assertEqual(len(casos), 8)

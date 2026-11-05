@@ -6,4 +6,4 @@
 - `public/game/hatch_reveal.js` · `19cdbc1f7dc8` · no byte match in scanned app paths; parity NO_DATA
 - `public/game/hex_projection.js` · `08615c2c28b1` · no byte match in scanned app paths; parity NO_DATA
 - `public/game/hitl_walkers.js` · `e38fcfc0e8e6` · no byte match in scanned app paths; parity NO_DATA
-- `public/game/invocacion_viva.js` · `d422fd707fbb` · no byte match in scanned app paths; parity NO_DATA
+- `public/game/live_invocation.js` · `d422fd707fbb` · no byte match in scanned app paths; parity NO_DATA

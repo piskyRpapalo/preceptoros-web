@@ -8,7 +8,7 @@
 | Path | NO_DATA: family-to-building mapping not verified | B | NO_DATA: path not connected |
 | Radio | web `public/game/bb_radio.js` | A slice / B service | NO_DATA: user radio not declared |
 | Proposed working label “Wavescraft” | web `public/game/wave_rules.js` | A slice / B user service | NO_DATA: user wave service not connected |
-| Colony | web `public/game/colonia_edificios.js` | A render / B user nodes | NO_DATA: user node not declared |
+| Colony | web `public/game/colony_buildings.js` | A render / B user nodes | NO_DATA: user node not declared |
 
 “Wavescraft” is not canonical vocabulary; Babel and human review are pending.
 Colony is the container/render surface per the current North, not a newly
