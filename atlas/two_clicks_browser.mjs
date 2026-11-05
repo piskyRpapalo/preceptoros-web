@@ -67,6 +67,14 @@ async function main() {
   ok(llegada.path === '/openworld/', 'click 1 did not reach /openworld/: ' + llegada.path);
   ok(llegada.shown && llegada.role === 'dialog' && llegada.modal === 'false', 'the welcome card is not a dialog voice at the top of the panel: ' + JSON.stringify(llegada));
   ok(llegada.title === 'Welcome to the sunken forest', 'the welcome title is wrong: ' + llegada.title);
+  const welcomeStatus = await ev(`(() => {
+    const el=document.getElementById('welcome-live');
+    document.dispatchEvent(new CustomEvent('world:summary',{detail:{ok:true,live:2}}));
+    const measured=el.textContent;
+    document.dispatchEvent(new CustomEvent('world:summary',{detail:{ok:false,cause:'offline'}}));
+    return {measured,offline:el.textContent};
+  })()`);
+  ok(welcomeStatus && welcomeStatus.measured.includes('Live nodes: 2.') && welcomeStatus.measured.includes('Live visitors: NO_DATA') && welcomeStatus.offline.includes('Live nodes: NO_DATA · offline'), 'Welcome must distinguish measured live nodes from unavailable counts');
   ok(llegada.focus === 'welcome-play', 'focus is not on «Play now»: ' + llegada.focus);
   ok(llegada.h >= 44 && llegada.w >= 44 && llegada.top >= 0 && llegada.bottom <= 844, 'the «Play now» button is below 44 px or off screen: ' + JSON.stringify(llegada));
   ok(llegada.look && llegada.ancho <= 390, 'no «Look around first» or sideways scroll: ' + JSON.stringify(llegada));

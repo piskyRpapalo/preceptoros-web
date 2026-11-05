@@ -7,6 +7,13 @@ const feed = require('../public/game/world_feed.js');
 const body = {esquema:'preceptoros.openworld-estado/2',colonia:{nodes:[],buildings:[],units:[]}};
 const req = (method='GET') => new Request('https://preceptoros.org/api/world-state',{method});
 const env = (response) => ({ADUANA:{fetch:async r => {assert.equal(new URL(r.url).pathname,'/api/v1/latidos');return response;}}});
+test('welcome counts only live nodes with measured publisher evidence', () => {
+  const measured = {cobertura:{estado:'MEDIDO'},colonia:{nodes:[{id:'a',alive:true,seal:'LIVE'},{id:'b',alive:true,seal:'STALE'}]}};
+  assert.deepEqual(feed.summary(measured), {ok:true,live:1});
+  assert.equal(feed.summary({cobertura:{estado:'NO_DATA',causa:'offline'},colonia:{nodes:[]}}).ok,false);
+  assert.equal(feed.summary({cobertura:{estado:'MEDIDO'},colonia:{nodes:[{id:'a'}]}}).ok,false);
+  assert.equal(feed.summary({colonia:{nodes:[]}}).ok,false);
+});
 test('fixed binding returns valid evidence without caching', async () => {
   const r = await worldState(req(),env(Response.json(body)));
   assert.equal(r.status,200); assert.equal(r.headers.get('cache-control'),'no-store'); assert.deepEqual(await r.json(),body);
