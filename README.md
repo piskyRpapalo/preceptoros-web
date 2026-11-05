@@ -38,8 +38,8 @@ Anything deeper is NO_DATA, cause: beyond declared depth. -->
 
 ## The ecosystem today — measured 2026-11-05
 
-Seventeen repositories, each with a single role. Nothing here is a promise;
-it is what each house holds today.
+Seventeen repositories measured — sixteen active after the compacting
+below. Nothing here is a promise; it is what each house holds today.
 
 - **Doctrine and corpus** — [study](https://github.com/piskyRpapalo/study)
   (the public doctrine) ·
@@ -68,9 +68,12 @@ it is what each house holds today.
   passports) ·
   [preceptoros-atlas](https://github.com/piskyRpapalo/preceptoros-atlas)
   (the Atlas — counters and the living map)
-- **The preceptors' houses** —
+- **Compacted into this repository** —
   [preceptoros-coder](https://github.com/piskyRpapalo/preceptoros-coder)
-  (codex)
+  (codex's old house: a stale fork of this site — 8 languages and a 16 KB
+  ceiling, measured against today's 9 and 25 MiB — folded back here on
+  2026-11-06; the archive keeps its full history readable; record in
+  `odd/tasks/compactamiento-coder-20261106.md`)
 - **Apart, untouchable** — [CineK](https://github.com/piskyRpapalo/CineK)
   (the Soberano's own)
 
