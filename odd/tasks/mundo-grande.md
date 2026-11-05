@@ -12,7 +12,7 @@ de su techo (16.379 de 16.384 B), así que lo nuevo nunca entra ahí.
 
 | Pieza | Qué hace hoy | Lo medido |
 |---|---|---|
-| `map/carta.json` + `map_chunks.js` | 7 chunks hexagonales de radio 8 alrededor de la cabaña, pedidos por clave de zona y comprobados por SHA-256 | **7 chunks × 217 celdas = 1.519 celdas cargadas**; el Doogee pide los 7 |
+| `map/chart.json` + `map_chunks.js` | 7 chunks hexagonales de radio 8 alrededor de la cabaña, pedidos por clave de zona y comprobados por SHA-256 | **7 chunks × 217 celdas = 1.519 celdas cargadas**; el Doogee pide los 7 |
 | `map_painter.js` | Hornea el suelo 2.5D por chunk (ImageBitmap por zoom, ángulo y dpr) | El mar queda horneado en reposo (`still`); la ola no se ve (J4) |
 | `visitor_walk.js` | El cangrejo camina celda a celda por el suelo horneado; agua o celda sin cargar = NO_DATA y no se mueve | Ya camina por las 1.519 celdas |
 | `global_map.js` | El campo de terreno: **las 19 celdas** a dos pasos de la cabaña | Es el núcleo; los 7 chunks lo rodean |
@@ -53,8 +53,8 @@ G1 va primero porque es la más simple (CSS y un botón), no toca el pintor ni e
   `Date` con autoridad.
 - **J1.** Dianas de 44 px, coordenada dicha en `#zoom-state` y teclado que alcanza todo (Explore
   con Enter, salida con Escape).
-- **Peso.** Cada fichero < 16.384 B; `gzip_juego_b` medido por `atlas/mundo.py` antes y después.
-  Hoy sale `None` en `atlas-mundo.json` de main: el primer recibo lo declara NO_DATA con su causa,
+- **Peso.** Cada fichero < 16.384 B; `gzip_juego_b` medido por `atlas/world.py` antes y después.
+  Hoy sale `None` en `atlas-world.json` de main: el primer recibo lo declara NO_DATA con su causa,
   o lo mide.
 - **Fps.** La vara es el Doogee. G3 y G4 llevan su medida de fps antes y después en el recibo.
 - **Lo que no se toca:** `atlas-motor.js`, el cangrejo (`visitor_account.js`) y

@@ -60,7 +60,7 @@ estado: PROPUESTA · sin firmar · para ejecutar con Claude Code en el rack, fas
 **A5 · Entrenar el LoRA mini (rack, B7-B8 del mapa).**
 - Corpus: partidas de `partidas/` aceptadas por la Aduana, con acciones `humano` y sugerencias respondidas (donde la persona discrepa de la regla está la señal). Nunca las del piloto base solas.
 - Formato: instantánea → acción. Rank y lr bajos, freno térmico `--techo-c 75`.
-- **Solo se publica si le gana al récord de la casa** en `atlas/arnes_piloto.mjs` (misma ley y mismo horizonte), con ≥ 90 % de acciones válidas y sin regresión.
+- **Solo se publica si le gana al récord de la casa** en `atlas/pilot_harness.mjs` (misma ley y mismo horizonte), con ≥ 90 % de acciones válidas y sin regresión.
 
 **A6 · Publicar.** GGUF al release (lo sube el Soberano), `.sha256` en la web, entrada en `loratelier.json` con qué hace / qué falla / base / dataset_hash / medida, y la página de instalación de la app actualizada.
 

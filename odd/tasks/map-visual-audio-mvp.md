@@ -23,7 +23,7 @@ In scope:
 4. **Local voice**: speech of the log through the device's own TTS. No network. Without a local voice the page says NO_DATA with cause.
 5. **Gates and captures**: a pure contract for the mask and the voice; a visual gate in two identical runs; captures on doggee against production before and after deploy.
 
-Out of scope: voice input (the microphone). It is a declared risk (section 20), needs its own FIRMO, and it is not built here. Any change to `estado.json` (the producer is its own piece). The apps (Codex's lane).
+Out of scope: voice input (the microphone). It is a declared risk (section 20), needs its own FIRMO, and it is not built here. Any change to `state.json` (the producer is its own piece). The apps (Codex's lane).
 
 ## Decisions to take (open, with the Sovereign's call)
 
@@ -41,7 +41,7 @@ Out of scope: voice input (the microphone). It is a declared risk (section 20), 
 
 ## Constraints
 
-- Canon §18 (decree ·6525195489): the published state `estado.json` stays compact, under 1 KiB. Measured today: 595 B, one line, evidence kept in the source (`odd/data/nodes.json`).
+- Canon §18 (decree ·6525195489): the published state `state.json` stays compact, under 1 KiB. Measured today: 595 B, one line, evidence kept in the source (`odd/data/nodes.json`).
 
 - Frames under 1,024 UTF-8 bytes, one sentence per atom, a declared sound (`NO_DATA` with cause when none), a time (`t`) and coordinates where they exist (section 18).
 - No network on load; no random numbers, no clock in the render path.

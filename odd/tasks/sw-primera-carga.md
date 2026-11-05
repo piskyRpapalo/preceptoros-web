@@ -23,7 +23,7 @@ primera»). Sale de `PENDIENTES.md` (deploy de web#601).
   - no hubo otra recarga en los últimos 30 s (`sessionStorage`). Si el almacenamiento falla, no se recarga.
 - **No se toca `sw.js`.** El modo avión sigue intacto: sin red no hay SW nuevo, así que no hay `controllerchange`.
 
-## Prueba (`atlas/sw_primera_carga_browser.mjs`, Chrome real; el servidor cambia la VERSION bajo la página)
+## Prueba (`atlas/sw_first_load_browser.mjs`, Chrome real; el servidor cambia la VERSION bajo la página)
 | fase | qué se comprueba |
 |---|---|
 | A | una primera visita no se recarga; en la vuelta, `world_feed.js` ya vive en la caché A |

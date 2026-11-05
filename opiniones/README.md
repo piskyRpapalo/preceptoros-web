@@ -15,8 +15,8 @@ escritorio, donde el menú de compartir ficheros suele faltar. El texto basta pa
 
 **Quien la recibe** la comprueba sin creerse nada:
 
-    node atlas/verifica_opinion.mjs atlas-opinion-120-veredicto.json
-    node atlas/verifica_opinion.mjs - < texto-pegado.json
+    node atlas/verify_opinion.mjs atlas-opinion-120-veredicto.json
+    node atlas/verify_opinion.mjs - < texto-pegado.json
 
 Mira la forma (el contrato `data/atlas_opinion_schema.json`), que la nota no lleve rutas, correos,
 enlaces ni IPs, y la firma. Para guardarlas juntas, súbelas aquí por PR: el workflow `opiniones`
@@ -26,11 +26,11 @@ las verifica una a una y rechaza, con su motivo, la que no cuadre.
 y lista cada opinión verificada. La genera un script determinista, sin reloj y sin LLM; quien añade
 una opinión la regenera en el mismo PR y el CI comprueba que está al día:
 
-    node atlas/tabla_opiniones.mjs --escribe
+    node atlas/opinions_table.mjs --escribe
 
 Solo cuentan las que verifican y no son de ejemplo; las rechazadas salen aparte con su motivo.
 
-**El corpus.** `node atlas/tabla_opiniones.mjs --json` saca por la salida las mismas opiniones verificadas
+**El corpus.** `node atlas/opinions_table.mjs --json` saca por la salida las mismas opiniones verificadas
 (lo que se leyó, la respuesta, la huella del estado): el primer «dónde discrepa la persona» para el
 LoRA mini. No se escribe en ningún sitio: guardarlo es un gesto aparte.
 

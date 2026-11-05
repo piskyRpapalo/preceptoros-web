@@ -47,7 +47,7 @@ The count of 13 against the commission's 12 is the first correction of the study
 
 ## Backbone (cheap consistency)
 
-The VERSION letter chain (bv → … → do) is read from `git log -p public/sw.js` (the same regex as `bin/sellar.py`). Against production, the instrument is `atlas/actions.py` with the diagnostic ladder of `DEPLOY.md` (read the instrument first, run locally, read the probe fields). Today main and production agree byte for byte.
+The VERSION letter chain (bv → … → do) is read from `git log -p public/sw.js` (the same regex as `bin/seal.py`). Against production, the instrument is `atlas/actions.py` with the diagnostic ladder of `DEPLOY.md` (read the instrument first, run locally, read the probe fields). Today main and production agree byte for byte.
 
 ## Sources, in order of weight
 

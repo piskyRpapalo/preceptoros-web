@@ -9,7 +9,7 @@ Sello: MEDIDO · rama claude/web-solo-juego · frontera `frontera-pre-demolicion
 7. Doctrina de fondo: «los personajes son ondas… No hay imágenes» (CLAUDE.md del juego:7) y orden de identidad F132 / demolición F133 del documento de estado.
 8. Gates: test_web OK (180) · arnes_sw 24/24 · motor 48 · piloto 20 · gacha 21 · opinion 7 · mp 49 · cria 12 · duelo 8 · test_atlas 94/95 (indexedDB, deuda previa) · `node --check` OK.
 9. Peso: imágenes 3.476.763 → 896.760 B. Puerta gzip_juego_b 148.418 → 79.615 B (el sprite era casi la mitad).
-10. Desvíos declarados: mundo.py deja de pesar el sprite (lista, no techo) · coherencia-publica.py se corrió importado contra el worktree (portadas 182→180).
+10. Desvíos declarados: world.py deja de pesar el sprite (lista, no techo) · coherencia-publica.py se corrió importado contra el worktree (portadas 182→180).
 11. NO_DATA: pruebas de la app. El gate del MVP está en ROJO (test_pwa) por trabajo ajeno sin commitear en ~/p0x/preceptor (CSS movido a legacy/). No lo toqué. La portada aún dice 924 y counters dice NO_DATA.
 12. Quedan en la propuesta 16 entradas: 8 torre/ y 2 secuencia-256 (en uso por patrón), 3 secuencia-180 (las comparte la app), 1 sha256 de descarga, 2 de lore. Ninguna es huérfana real.
 13. Siguiente: bloque 3 (F2-8, favicon, og:image e iconos PWA desde el emblema) y la capa visual referenciada (CSS, caras en uso, mármol), que pide su propia lista firmada.

@@ -8,8 +8,8 @@ Medido en: Beelink (soberano) contra `origin/main` del 2026-11-01. Doogee por `a
 
 | gate | estado | prueba |
 |---|---|---|
-| G0-1 · toda función de /openworld/ guardada en CI | **NO_DATA**: #535 abierto | `atlas/f0_funciones_casos.mjs` (15 funciones, 48 scripts; 8 pruebas de navegador que no corrían en CI entran) |
-| G0-2 · router de chunks y `atlas.carta/1` en main con recibo | **NO_DATA**: #536 (P1) y #539 (P2/P3) abiertos | `map_carta_casos.mjs`, `map_chunks_casos.mjs`, `hornea_chunks.mjs --check` |
+| G0-1 · toda función de /openworld/ guardada en CI | **NO_DATA**: #535 abierto | `atlas/f0_functions_cases.mjs` (15 funciones, 48 scripts; 8 pruebas de navegador que no corrían en CI entran) |
+| G0-2 · router de chunks y `atlas.carta/1` en main con recibo | **NO_DATA**: #536 (P1) y #539 (P2/P3) abiertos | `map_chart_cases.mjs`, `map_chunks_cases.mjs`, `hornea_chunks.mjs --check` |
 | G0-3 · cero peticiones externas al cargar; modelo solo con clic | **HECHO** en el código: `openworld_browser.mjs` exige `externas.length === 0`, y `chunk_router.js` solo se inyecta en el primer envío del chat (`openworld_page.js:203-210`) | se re-mide en el Doogee en P7 |
 | G0-4 · PRUEBA_5_MINUTOS por un humano en el dispositivo de referencia, red real, con recibo (corrección 1) | **NO_DATA**: `docs/PRUEBA_5_MINUTOS.md` está **desfasado** (re-medido el 2026-10-27; cita `/play/` y `/face/`, ya retirados). Se reescribe para /openworld/ en pieza propia; la pasada la hace el carbono | recibo con fecha + dispositivo |
 
@@ -18,7 +18,7 @@ Medido en: Beelink (soberano) contra `origin/main` del 2026-11-01. Doogee por `a
 Doogee **S110** (`adb shell getprop ro.product.model`), Chrome **156.0.8078.73**, ahorro de batería **apagado**
 (`settings get global low_power` = 0), 360×716 @3x. Si el ahorro está encendido, se mide aparte y se dice.
 **El peor chunk de T1** no lo elige quien reporta: es el de mayor `bytes` × celdas visibles en la vecindad de la cabaña,
-calculado desde `public/map/carta.json`. Método FPS: perfil CDP en el teléfono con un A/B en la misma pestaña y
+calculado desde `public/map/chart.json`. Método FPS: perfil CDP en el teléfono con un A/B en la misma pestaña y
 `Network.setBypassServiceWorker` (huellas del laboratorio, 2026-10-13: 2.8 → 57.8 fps).
 
 ## Presupuesto declarado en el contrato (corrección 3)
@@ -36,7 +36,7 @@ horneado (máximo 4,236 B por chunk; 30,476 B entre los 9 ficheros):
 - **P2 + corrección 6** · un chunk, un PR, un recibo. **Las paletas, léxicos y assets compartidos van en PR propio,
   jamás dentro del PR de un chunk**: hoy `sea-palette` la usan los 7.
 - **P3 + corrección 5** · A11Y como contrato. Los textos equivalentes salen de una tabla con claves, no de cadenas sueltas.
-  ✗ **Contradicción preservada**: la web tiene 9 lenguas solo en `public/assets/enviar-*.js`, y el CLAUDE.md del repo
+  ✗ **Contradicción preservada**: la web tiene 9 lenguas solo en `public/assets/send-*.js`, y el CLAUDE.md del repo
   dice «el juego habla solo inglés hoy; no se traduce sin orden». Se hace la tabla en inglés, con claves, para que
   traducir sea añadir un fichero; traducir espera la orden del Soberano.
 - **P4** · «AAA» es un perfil medido (T1-T6), nunca una frase.
@@ -47,15 +47,15 @@ horneado (máximo 4,236 B por chunk; 30,476 B entre los 9 ficheros):
 
 ## Fase 1 · censo por chunk (corrección 11: extiende, no re-censa)
 
-Parte de F0 (#534, `mapa-25d-aldea.md`) y de `public/map/carta.json`. Por chunk añade marcos, bytes, assets por id, FPS
+Parte de F0 (#534, `mapa-25d-aldea.md`) y de `public/map/chart.json`. Por chunk añade marcos, bytes, assets por id, FPS
 en el S110 y estado A11Y. Hoy hay 7 chunks horneados (de 3,807 a 4,236 B). Los FPS por chunk son **NO_DATA** hasta P4,
 porque todavía nada pinta los chunks.
 
 ## Fase 2 · un chunk cada vez
 
 Pasos a-f del brief, más lo siguiente:
-- **Sonido (corrección 4)**: el marco nuevo pasa `tests/acho_audio_contract.test.mjs`, `atlas/acho_sonify_casos.mjs`
-  y `atlas/audio_feedback_manager_casos.mjs`. Si la radio (#532) dice algo distinto, eso necesita **recibo propio** en el PR.
+- **Sonido (corrección 4)**: el marco nuevo pasa `tests/acho_audio_contract.test.mjs`, `atlas/acho_sonify_cases.mjs`
+  y `atlas/audio_feedback_manager_cases.mjs`. Si la radio (#532) dice algo distinto, eso necesita **recibo propio** en el PR.
 - **Guardián de hash (corrección 8)**: `atlas/frames_hash_casos.mjs` sella el hash del conjunto de marcos de cada chunk.
   Un cambio sin hash nuevo declarado en el PR da rojo: una regresión visual que una máquina puede ver lleva su check.
 - **Cola (corrección 12)**: primero lo que todo visitante ve primero, la cabaña (`0_0`) y su primer anillo. Ese chunk

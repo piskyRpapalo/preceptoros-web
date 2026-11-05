@@ -74,7 +74,7 @@ list below is promised.
 - **Read the numbers.** Site weight, languages and test counts are in
   `public/counters.json`, each with the date it was taken.
 - **Install it.** The site is an installable app (`manifest.webmanifest`) and
-  keeps working with no network; `arnes_sw.mjs` checks the offline path.
+  keeps working with no network; `sw_harness.mjs` checks the offline path.
 - **Study.** The doctrine and the corpus live in
   [study](https://github.com/piskyRpapalo/study): governance, legislation,
   measurement law — written to be read by a human and any AI together.
@@ -103,7 +103,7 @@ list below is promised.
 - **Read and check the numbers.** Site weight, languages and test counts are in
   `public/counters.json`, each with the date it was taken.
 - **Install it and use it offline.** The site is an installable app
-  (`manifest.webmanifest`); `arnes_sw.mjs` checks the offline path.
+  (`manifest.webmanifest`); `sw_harness.mjs` checks the offline path.
 - **Comment on a page.** The in-page ✎ box was retired with theGame (corte D,
   2026-10-28). Signed opinions still arrive by pull request to `opiniones/`;
   the `opiniones` workflow verifies each one and rejects, with its reason,
@@ -122,7 +122,7 @@ There is nothing to build and nothing to install first.
 ## Tests
 
     python3 test_web.py     # the page rules
-    node arnes_sw.mjs       # the offline worker
+    node sw_harness.mjs       # the offline worker
 
 These are not unit tests of functions. They check the promises above: that no
 file grew past the ceiling, that every language has every string, that a
