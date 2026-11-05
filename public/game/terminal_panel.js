@@ -97,7 +97,7 @@
       });
     }).observe(voices, { subtree: true, childList: true, characterData: true });
     doc.addEventListener('keydown', function (e) { if (e.key === 'Escape' && current) { var b = buttons[current]; show(null); b.focus(); } });
-    show('Start');
+    show(null);
     return show;
   }
   // mount(doc): give every voice its header, tag the log lines, and paint the Army voice from the visit.

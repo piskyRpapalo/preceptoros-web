@@ -35,6 +35,8 @@ const fallos = [];
 // 1 · forced colours.
 await cmd('Emulation.setEmulatedMedia', { features: [{ name: 'forced-colors', value: 'active' }] });
 await cmd('Page.navigate', { url: origen + '/openworld/' }); await espera(2000);
+// The terminal opens with no voice overlay; the visitor chooses Start before tabbing its actions.
+await ev("document.querySelector('.cats [data-cat=Start]').click()");
 const fc = JSON.parse(await ev(`JSON.stringify((() => {
   const reglas = [...document.styleSheets].flatMap((s) => { try { return [...s.cssRules]; } catch { return []; } })
     .filter((r) => /forced-colors/.test(r.conditionText || r.media?.mediaText || ''));
