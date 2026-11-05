@@ -35,3 +35,17 @@ for browsers that do not provide one. Service-worker seal assigned by Mesa.
 Sources: `public/assets/intro.js`, `public/assets/pwa.js`, `public/index.html`,
 `public/brains.json`, `public/release.json`; Sovereign's latest Tools commission;
 claim buzon#53 ·6655356201.
+
+## Candidate evidence · 2026-11-05
+Tools opens the catalogue even if an install offer exists; the separate button
+opens it on the next explicit action. Cards are compact summaries generated from
+`brains.json`; historical size dates remain in their expanded fields. The source
+link for the web guide is the model named in `models/web-node/manifest.json`;
+following it is an explicit external navigation, not a request on load.
+`release.json` remains historical, with its existing platform guides preserved.
+
+Local: `python3 -m unittest atlas.test_brain_tools test_web.Puerta` 12/12;
+`atlas/landing_doors_browser.mjs` GREEN (explicit mock browser offer, no prompt
+on Tools, one prompt on Install, focus on heading, 0 external requests);
+lexicon and route census GREEN. Physical browser install remains NO_DATA.
+No seal written: dry-run suggests `ea`, which is also requested by other PRs.

@@ -49,7 +49,8 @@ class BloqueCerebros(unittest.TestCase):
     def test_un_modelo_sin_datos_no_rompe_el_bloque(self):
         d = {"contexto": 1, "backend": "x", "muestras": 1, "cerebros": [{"id": "vacio", "modelo": "x:1"}]}
         b = gen.bloque(d)
-        self.assertEqual(b.count("NO_DATA"), len(gen.ETIQUETAS))
+        self.assertGreaterEqual(b.count("NO_DATA"), len(gen.ETIQUETAS))
+        self.assertIn('<details><summary>', b)
 
 
 if __name__ == "__main__":

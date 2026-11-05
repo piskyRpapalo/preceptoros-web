@@ -7,19 +7,25 @@
   var boton = doc.getElementById('door-tools');
   var estado = doc.getElementById('tools-estado');
   var dispositivo = doc.getElementById('tools-dispositivo');
+  var instalar = doc.getElementById('tools-install');
+  var installStatus = doc.getElementById('tools-install-status');
 
   function sinDatos(causa) { return 'NO_DATA: ' + causa; }
 
-  // Tools is a direct click: if the browser kept its install offer, the click makes the install.
-  // If not, the click opens the device list below, and the label says why.
+  // Tools is the catalogue door. Installation is a separate, explicit action.
   function pintaTools() {
-    if (!boton || !estado || !raiz.PreceptorPwa) { return; }
-    if (raiz.PreceptorPwa.instalada()) {
-      estado.textContent = 'Already installed on this device.';
-    } else if (raiz.PreceptorPwa.instalable()) {
-      estado.textContent = 'Install the app on this device with one click.';
+    if (!boton || !estado) { return; }
+    estado.textContent = 'Choose what to install or explore.';
+    if (!instalar || !installStatus) { return; }
+    if (raiz.PreceptorPwa && raiz.PreceptorPwa.instalada()) {
+      instalar.disabled = true;
+      installStatus.textContent = 'The web app is already installed on this device.';
+    } else if (raiz.PreceptorPwa && raiz.PreceptorPwa.instalable()) {
+      instalar.disabled = false;
+      installStatus.textContent = 'The browser can install the web app on this device.';
     } else {
-      estado.textContent = sinDatos('this browser has not offered to install the app. Pick a download below.');
+      instalar.disabled = true;
+      installStatus.textContent = sinDatos('this browser has not offered an installation.');
     }
   }
 
@@ -44,14 +50,19 @@
   // The intro shows only the doors. Tools opens the device list in place (hidden until pressed).
   if (boton) {
     boton.addEventListener('click', function () {
-      if (raiz.PreceptorPwa && raiz.PreceptorPwa.instalable()) {
-        raiz.PreceptorPwa.instala().then(pintaTools);
-      } else if (dispositivo) {
+      if (dispositivo) {
         if (dispositivo.hidden) { openTools(); } else { closeTools(); }
         pintaTools();
       }
     });
   }
+  if (instalar) instalar.addEventListener('click', function () {
+    if (!raiz.PreceptorPwa || !raiz.PreceptorPwa.instalable()) { pintaTools(); return; }
+    instalar.disabled = true;
+    raiz.PreceptorPwa.instala().then(pintaTools, function () {
+      pintaTools(); installStatus.textContent = sinDatos('the browser could not open the installation offer.');
+    });
+  });
   raiz.addEventListener('pwa-oferta', pintaTools);
   pintaTools();
 
