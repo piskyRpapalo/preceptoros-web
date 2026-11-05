@@ -15,8 +15,23 @@
   var disclosure = doc.createElement('p'); disclosure.textContent = 'Web node brain: SmolLM2 135M Instruct (Apache-2.0) · 105,454,144 weight bytes in 5 chunks plus the wllama runtime (MIT) · 9,146,582 bytes, all from this site, each checked by SHA-256. It runs on this device\'s processor; no graphics card needed. Nothing downloads until you choose; after that it stays on this device. Your chat text stays on this device. The model advises; it never signs or plays for you.'; how.append(disclosure); zone.append(how);
   var start = doc.createElement('button'); start.type = 'button'; start.id = 'brain-load'; start.textContent = 'Download the web node brain and verify it'; start.style.minHeight = '44px'; zone.append(start);
   var selected = doc.createElement('p'); selected.id = 'brain-context'; selected.textContent = context; zone.append(selected);
+  var modeLabel = doc.createElement('label'); modeLabel.htmlFor = 'chat-destination'; modeLabel.textContent = 'Who answers';
+  var mode = doc.createElement('select'); mode.id = 'chat-destination'; mode.style.minHeight = '44px';
+  [['local', 'Device guide'], ['hexelion', 'Hexelion · remote']].forEach(function (item) {
+    var option = doc.createElement('option'); option.value = item[0]; option.textContent = item[1]; mode.append(option);
+  });
+  zone.prepend(modeLabel, mode);
+  var remoteNotice = doc.createElement('p'); remoteNotice.textContent = 'Hexelion is an AI on the rack. Sending shares your message and an ephemeral visit identifier with the gateway. It advises; it never signs.'; remoteNotice.hidden = true; zone.append(remoteNotice);
+  var visitAccount = null, chain = { tic: 0, hash: null, sello: null }, visitGeneration = 0;
+  var visitPanel = doc.getElementById('visitor-play');
+  visitPanel.addEventListener('visitor:render', function (event) { visitAccount = event.detail.account; });
+  visitPanel.addEventListener('visitor:end', function () { visitAccount = null; chain = { tic: 0, hash: null, sello: null }; visitGeneration++; });
+  mode.addEventListener('change', function () {
+    remoteNotice.hidden = mode.value !== 'hexelion';
+    var heading = doc.getElementById('chat-h'); if (heading) heading.textContent = mode.value === 'hexelion' ? 'Hexelion' : (ready ? model : 'Guide');
+  });
   // LAS VOCES (terminal_panel.js): the visitor is «you»; the guide and its NO_DATA are the chunk model's voice, titled by its exact model.
-  function line(who, text) { var P = root.AtlasTerminalPanel; if (P && P.decir) { P.decir(doc, log, who === 'You' ? 'you' : 'chunk', text, who === 'You' || who === 'Companion' ? null : who); return; }
+  function line(who, text) { var P = root.AtlasTerminalPanel; if (P && P.decir) { P.decir(doc, log, who === 'You' ? 'you' : who === 'Hexelion' ? 'hexelion' : 'chunk', text, who === 'You' || who === 'Companion' ? null : who); return; }
     var item = doc.createElement('li'); item.textContent = text.startsWith('NO_DATA') ? text : who + ' · ' + text; log.append(item); }
   function brain() {
     if (root.AtlasWebNodeBrain) { return Promise.resolve(root.AtlasWebNodeBrain); }
@@ -38,7 +53,7 @@
       return Promise.all(urls.map(function (u) { return root.fetch(u).then(function (r) { return r.ok; }, function () { return false; }); }));
     }).then(function () {
       ready = true; var loaded = B && typeof B.model === 'function' ? B.model() : ''; if (typeof loaded === 'string' && loaded) { model = loaded; }
-      var heading = doc.getElementById('chat-h'); if (heading) { heading.textContent = model; }
+      var heading = doc.getElementById('chat-h'); if (heading && mode.value === 'local') { heading.textContent = model; }
       note.textContent = model + ' · ready on this device' + (offline ? ' · offline' : '') + '. Ask the tutorial guide anything.'; start.textContent = 'Web node brain ready';
     }, function (error) { note.textContent = 'NO_DATA · ' + (error.cause || 'model_unavailable') + ': ' + error.message; start.disabled = false; }).then(function () { loading = false; });
   });
@@ -52,6 +67,32 @@
     if (button && button.id !== 'brain-load') { choose(button.textContent); }
   }
   doc.getElementById('visitor-play').addEventListener('visitor:battle', function (event) { choose('Practice battle at ' + event.detail.place + ' · ' + event.detail.combat.gana + ' · balance NO_DATA'); });
+  form.addEventListener('submit', async function (event) {
+    if (mode.value !== 'hexelion') return;
+    event.preventDefault(); event.stopImmediatePropagation();
+    var input = doc.getElementById('question'), text = input.value.trim();
+    if (!text || busy) return;
+    if (!visitAccount) { line('Hexelion', 'NO_DATA · Start an ephemeral visit before sending to Hexelion.'); return; }
+    if (new TextEncoder().encode(text).length > 600) { line('Hexelion', 'NO_DATA · Message exceeds 600 UTF-8 bytes.'); return; }
+    if (!root.AtlasAulaChat) { line('Hexelion', 'NO_DATA · Chat gateway module unavailable.'); return; }
+    var generation = visitGeneration, account = visitAccount, seed;
+    try { seed = account.info().seed; } catch (_) { line('Hexelion', 'NO_DATA · This visit has ended.'); return; }
+    line('You', text); input.value = ''; busy = true;
+    var send = form.querySelector('button[type="submit"]'); send.disabled = true;
+    try {
+      var result = await root.AtlasAulaChat.turn(root.fetch.bind(root), seed, text, chain, '/openworld/');
+      if (generation !== visitGeneration || account !== visitAccount) return;
+      if (!result.ok && result.cause === 'stale') {
+        chain = result.chain;
+        result = await root.AtlasAulaChat.turn(root.fetch.bind(root), seed, text, chain, '/openworld/');
+      }
+      if (generation !== visitGeneration || account !== visitAccount) return;
+      chain = result.chain;
+      line('Hexelion', result.ok ? result.text + (result.cut ? ' [shortened]' : '') : root.AtlasAulaChat.plain(result.cause));
+      if (result.ok && root.AtlasAulaChat.renderReceipt) root.AtlasAulaChat.renderReceipt(doc, log, result.receiptState);
+    } catch (_) { if (generation === visitGeneration) line('Hexelion', 'NO_DATA · The chat gateway did not answer.'); }
+    finally { busy = false; send.disabled = false; }
+  }, true);
   form.addEventListener('submit', async function (event) {
     if (!ready) { return; }  // no brain loaded: the page router answers with its honest NO_DATA
     event.preventDefault();
