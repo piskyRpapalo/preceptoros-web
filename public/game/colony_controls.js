@@ -103,7 +103,7 @@
     var actions = doc.createElement('div');
     actions.setAttribute('role', 'group');
     actions.setAttribute('aria-label', 'Tutorial');
-    actions.appendChild(button('Skip tutorial', function () { handlers.skip(); }));
+    var skip = button('Skip tutorial', function () { handlers.skip(); }); skip.id = 'skip-tutorial'; actions.appendChild(skip);
     var sel = doc.createElement('select');
     sel.setAttribute('aria-label', 'Terminal look');
     [['', 'node default'], ['basic', 'basic'], ['ocean', 'ocean'], ['flat', 'flat']].forEach(function (o) {

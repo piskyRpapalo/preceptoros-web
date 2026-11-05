@@ -80,6 +80,11 @@ async function main() {
   ok(llegada.look && llegada.ancho <= 390, 'no «Look around first» or sideways scroll: ' + JSON.stringify(llegada));
   await foto('dos-clics-welcome.png');
   await clic('#welcome-play', true); await espera(1500);
+  const choice=await ev(`(() => { const b=['welcome-tutorial','welcome-free-walk','welcome-skip-tutorial'].map(id=>document.getElementById(id)); const t=document.getElementById('visitor-play').textContent; return {choices:b.map(x=>!!x && x.getBoundingClientRect().height>=44), copper:Number((/Copper (\\d+)/.exec(t)||[])[1]), beaconAvailable:!document.getElementById('visitor-beacon').disabled}; })()`);
+  ok(choice && choice.choices.every(Boolean) && choice.copper===0 && choice.beaconAvailable, 'visit must offer three choices without claiming the beacon: '+JSON.stringify(choice));
+  await ev("document.getElementById('welcome-skip-tutorial').click()"); await espera(100);
+  const skipped = await ev("AtlasOpenworldView().controls.tutorial().log");
+  ok(Array.isArray(skipped) && skipped.length > 0 && skipped.every(x=>x.outcome==='skipped'), 'skip must record steps skipped, never played: '+JSON.stringify(skipped));
   await ev("document.querySelector('.cats [data-cat=Map]').click()");
   // Ojo del Doogee (2026-11-02): after «Play now» the map stays in view, the summon buttons say place and cost in words, the zoom
   // plate is three labelled 44 px icons, and the place names on the map are legible (>= 12 CSS px) and never collide.
@@ -92,7 +97,7 @@ async function main() {
       zoom: (() => { const z = document.getElementById('zoom-controls').getBoundingClientRect(), q = { x: z.left - m.left, y: z.top - m.top, w: z.width, h: z.height }; return pl.some((a) => hit(a, q)); })(),
       crab: pl.some((a) => a.x < yx && yx < a.x + a.w && a.y < yy && yy < a.y + a.h) }; })())`));
   ok(ojo.mapTop >= 0 && ojo.mapTop < 844, 'after Play now the map scrolled away: ' + JSON.stringify({ top: ojo.mapTop, y: ojo.scrollY }));
-  ok(/^Summon at the Reef · 50 copper$/.test(ojo.sum[0]), 'the reef summon is not human: ' + ojo.sum[0]);
+  ok(/^Summon at the Reef · 50 copper · needs 50 more copper$/.test(ojo.sum[0]), 'the reef summon is not human: ' + ojo.sum[0]);
   ok(ojo.sum.slice(1).every((t) => /^Summon at the [A-Z][a-z]+ · \d+ copper \+ \d+ light · needs \d+ more/.test(t)) && !ojo.sum.some((t) => /tc\d/.test(t)), 'summon labels are not human or do not say what is missing: ' + JSON.stringify(ojo.sum));
   ok(ojo.step === 'Wait one turn', 'the step button is not human: ' + ojo.step);
   ok(ojo.zb.every((b) => b.w >= 44 && b.h >= 44 && b.w <= 48 && /^(Zoom in|Zoom out|Reset zoom)$/.test(b.l || '') && b.t.length === 1), 'the zoom plate is not three labelled 44 px icons: ' + JSON.stringify(ojo.zb));
@@ -102,11 +107,11 @@ async function main() {
       tab: String(!!document.querySelector('#voices [data-speaker="House"]')?.contains(document.getElementById('visitor-play'))), state: document.getElementById('state').textContent, result: document.getElementById('welcome-result').textContent }; })())`));
   ok(clics === 2, 'reaching the game took ' + clics + ' clicks, not 2');
   ok(jugando.end, 'after two clicks no visit is active');
-  ok(jugando.copper >= 100, 'after two clicks the copper is below 100: ' + jugando.copper);
-  ok(jugando.summon, 'after two clicks the reef summon button is not enabled');
+  ok(jugando.copper === 0, 'skipping awarded unearned copper: ' + jugando.copper);
+  ok(!jugando.summon, 'summon must remain unavailable until copper is earned');
   ok(jugando.card === true && jugando.tab === 'true', 'the welcome card did not give way to the House voice of the panel: ' + JSON.stringify(jugando));
-  ok(/Visit started · signed on this device · 100 copper from the beacon · you can summon twice/.test(jugando.state), '#state does not announce the visit: ' + jugando.state);
-  ok(/Play the tutorial by walking to the beacon, or press Skip tutorial/.test(jugando.result), 'the tutorial choice is not said: ' + jugando.result);
+  ok(/Visit started · Skip tutorial/.test(jugando.state), '#state does not announce the visit: ' + jugando.state);
+  ok(/Choose how to begin your visit/.test(jugando.result), 'the tutorial choice is not said: ' + jugando.result);
   await foto('dos-clics-playing.png');
   // «Look around first» and Escape: a fresh page, the card closes and the map is there.
   enMapa = false; await cmd('Page.navigate', { url: origen + '/openworld/' }); await espera(1500);
